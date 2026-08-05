@@ -26,7 +26,7 @@ export default function ExperimentSelector({ models, locale = 'zh' }: Props) {
       <Select label={m.selector.resource} value={resource} onChange={(value) => setResource(value as ResourceTier)} options={resources} />
       <Select label={m.selector.goal} value={goal} onChange={(value) => setGoal(value as Goal)} options={goals} />
     </div>
-    <div className="selector-result-head"><div><span className="section-kicker">{m.selector.candidateKicker}</span><h2>{m.selector.candidateTitle}</h2></div><span className="result-count">{candidates.filter((item) => item.candidate).length} {m.selector.candidateUnit}</span></div>
+    <div className="selector-result-head"><div><h2>{m.selector.candidateTitle}</h2></div><span className="result-count">{candidates.filter((item) => item.candidate).length} {m.selector.candidateUnit}</span></div>
     <p className="muted">{m.selector.disclaimer}</p>
     <div className="candidate-list">
       {candidates.slice(0, 4).map((item) => <article className={`candidate-row ${item.candidate ? 'is-candidate' : ''}`} key={item.model.id}>

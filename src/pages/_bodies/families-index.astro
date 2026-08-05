@@ -8,4 +8,4 @@ const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? As
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 ---
-<div class="shell"><header class="page-header"><div class="eyebrow">{m.families.eyebrow}</div><h1>{m.families.title}</h1><p class="lede">{m.families.lede}</p></header><FamilyTree client:load models={models} locale={locale} /></div>
+<div class="shell"><header class="page-header"><h1>{m.families.title}</h1><p class="lede">{m.families.lede}</p></header><FamilyTree client:load models={models} locale={locale} /></div>

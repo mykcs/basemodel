@@ -38,10 +38,10 @@ export const zh: Messages = {
     statsModels: '模型',
     statsVendors: '厂商 / 提供方',
     statsPapers: '论文记录',
+    statsAria: '网站数据统计',
     selectorKicker: '从这里开始',
     selectorTitle: '告诉我你的实验条件',
     selectorNote: '输出候选，不输出伪排名',
-    supplyKicker: '模型供应层',
     latestTitle: '最近记录的模型',
     viewExplorer: '查看模型浏览器 →',
     contractTitle: '证据状态是产品的一部分',
@@ -49,19 +49,16 @@ export const zh: Messages = {
   },
   modelsIndex: {
     pageTitle: '模型浏览器',
-    eyebrow: '模型供应层',
     lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未核验字段不会自动变成“否”。',
   },
   families: {
     pageTitle: '模型家族',
-    eyebrow: '家族层',
     title: '模型家族与代际',
     lede: '按厂商 → 家族 → 官方代际名 → 具体模型展开。页面不假设每个厂商都有连续的第 1、2、3 代。',
     checkpointUnit: '个模型',
   },
   compare: {
     pageTitle: '模型对比',
-    eyebrow: '决策面',
     title: '横向对比模型',
     lede: '最多选择 5 个具体模型；缺失值显示为具体核验状态，不强行填补。',
     selectKicker: '选 2–5 个',
@@ -73,10 +70,8 @@ export const zh: Messages = {
   },
   papersIndex: {
     pageTitle: '论文采用',
-    eyebrow: '研究采用层',
     title: '自进化智能体论文',
     lede: '论文记录单独维护，通过模型 ID 与供应层建立关系。角色比单一“使用了某模型”更重要。',
-    matrixKicker: '论文 × 模型',
     matrixTitle: '论文—模型矩阵',
     relationsUnit: '个模型关系',
     matrixPaper: '论文',
@@ -142,7 +137,6 @@ export const zh: Messages = {
   },
   dataStatus: {
     pageTitle: '数据状态',
-    eyebrow: '数据治理',
     lede: '显示模型数据的新鲜度、覆盖情况和当前代缺口。这里的告警不会把证据缺口伪装成确定事实。',
     models: '模型记录',
     recent: '近 30 天核验',
@@ -161,13 +155,17 @@ export const zh: Messages = {
     semanticGaps: '语义缺口',
     semanticState: '状态',
     fields: '字段数',
+    severity: '严重级别',
+    record: '记录',
+    field: '字段',
+    issueKind: '问题类型',
+    source: '来源',
   },
   selector: {
     mode: '实验方式',
     task: '任务方向',
     resource: '资源条件',
     goal: '优先目标',
-    candidateKicker: '候选集',
     candidateTitle: '候选模型组合',
     candidateUnit: '个候选',
     disclaimer: '这是基于元数据和用户条件的规则筛选，不是性能排行榜；未核验条件会被明确保留。',
@@ -436,20 +434,19 @@ export type Messages = {
     statsModels: string;
     statsVendors: string;
     statsPapers: string;
+    statsAria: string;
     selectorKicker: string;
     selectorTitle: string;
     selectorNote: string;
-    supplyKicker: string;
     latestTitle: string;
     viewExplorer: string;
     contractTitle: string;
     contractBody: string;
   };
-  modelsIndex: { pageTitle: string; eyebrow: string; lede: string };
-  families: { pageTitle: string; eyebrow: string; title: string; lede: string; checkpointUnit: string };
+  modelsIndex: { pageTitle: string; lede: string };
+  families: { pageTitle: string; title: string; lede: string; checkpointUnit: string };
   compare: {
     pageTitle: string;
-    eyebrow: string;
     title: string;
     lede: string;
     selectKicker: string;
@@ -461,10 +458,8 @@ export type Messages = {
   };
   papersIndex: {
     pageTitle: string;
-    eyebrow: string;
     title: string;
     lede: string;
-    matrixKicker: string;
     matrixTitle: string;
     relationsUnit: string;
     matrixPaper: string;
@@ -515,15 +510,14 @@ export type Messages = {
   };
   evidence: { title: string; body: string; open: string; dataStatus: string };
   dataStatus: {
-    pageTitle: string; eyebrow: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
-    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string;
+    pageTitle: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
+    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string;
   };
   selector: {
     mode: string;
     task: string;
     resource: string;
     goal: string;
-    candidateKicker: string;
     candidateTitle: string;
     candidateUnit: string;
     disclaimer: string;
