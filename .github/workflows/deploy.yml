@@ -17,23 +17,29 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run check && npm run validate && npm test && npm run build
+      - run: npm run check
+      - run: npm run validate
+      - run: npm test
+      - name: Build and upload Pages artifact
+        uses: withastro/action@v6
         env:
           PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
           PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
