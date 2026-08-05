@@ -1,6 +1,8 @@
 ---
 import { statusLabel } from '../lib/format';
-interface Props { status: 'verified' | 'partial' | 'demo' | 'unknown'; }
+import { isLocale, type Locale } from '../i18n';
+interface Props { status: 'verified' | 'partial' | 'demo' | 'unknown'; locale?: Locale; }
 const { status } = Astro.props;
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 ---
-<span class:list={['status-badge', `status-${status}`]}>{statusLabel(status)}</span>
+<span class:list={['status-badge', `status-${status}`]}>{statusLabel(status, locale)}</span>

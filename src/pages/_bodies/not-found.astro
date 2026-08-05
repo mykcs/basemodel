@@ -1,0 +1,7 @@
+---
+import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
+interface Props { locale?: Locale }
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+---
+<div class="shell empty-state" style="min-height:50vh"><h1>{m.notFound.title}</h1><p>{m.notFound.body}</p><a class="text-link" href={localePath(locale, '/')}>{m.notFound.back}</a></div>

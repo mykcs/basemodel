@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Body from '../../_bodies/models-index.astro';
+import { getMessages } from '../../../i18n';
+const m = getMessages('en');
+---
+<BaseLayout title={m.modelsIndex.pageTitle} locale="en"><Body locale="en" /></BaseLayout>

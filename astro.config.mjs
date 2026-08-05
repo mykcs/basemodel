@@ -12,4 +12,12 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
+  // 中文默认留根路径 (现有 URL / SEO 不变); 英文走 /en/ 前缀。
+  i18n: {
+    defaultLocale: 'zh',
+    locales: ['zh', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });

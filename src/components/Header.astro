@@ -1,31 +1,44 @@
 ---
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+import { getMessages, localePath, switchLocalePath, parsePath, type Locale } from '../i18n';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const m = getMessages(locale);
+const otherLocale: Locale = locale === 'zh' ? 'en' : 'zh';
+
+// 站内链接全部走 localePath, 英文版自动带 /en/ 前缀。
 const links = [
-  { href: `${base}`, label: '选择入口' },
-  { href: `${base}models/`, label: '模型' },
-  { href: `${base}families/`, label: '家族' },
-  { href: `${base}compare/`, label: '对比' },
-  { href: `${base}papers/`, label: '论文' },
-];
+  { path: '/', label: m.nav.home },
+  { path: '/models/', label: m.nav.models },
+  { path: '/families/', label: m.nav.families },
+  { path: '/compare/', label: m.nav.compare },
+  { path: '/papers/', label: m.nav.papers },
+].map((link) => ({ href: localePath(locale, link.path), label: link.label }));
+
+// 语言切换: 映射当前路径到另一语言的等价路径。
+const { pathNoBase } = parsePath(Astro.url.pathname);
+const switchHref = switchLocalePath(otherLocale, pathNoBase);
 ---
 <header class="site-header">
   <div class="shell nav-inner">
-    <a class="brand" href={base} aria-label="返回首页">
+    <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">↗</span>
-      <span><strong>Model Atlas</strong><small>智能体基础模型选择地图</small></span>
+      <span><strong>{m.site.name}</strong><small>{m.site.tagline}</small></span>
     </a>
-    <nav aria-label="主导航" class="desktop-nav">
+    <nav aria-label={m.nav.mainNav} class="desktop-nav">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
-    <button class="menu-toggle" type="button" aria-label="打开菜单" aria-expanded="false" data-menu-toggle>
+    <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
+    <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
-    <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle>◐</button>
+    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} data-theme-toggle>◐</button>
   </div>
-  <div class="mobile-menu" data-mobile-menu>
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
     <div class="shell">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
-      <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle-mobile>◐</button>
+      <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
+      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} data-theme-toggle-mobile>◐</button>
     </div>
   </div>
 </header>
@@ -36,15 +49,19 @@ const links = [
     const open = mobileMenu?.classList.toggle('is-open');
     menuToggle?.setAttribute('aria-expanded', String(open));
   });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !mobileMenu?.classList.contains('is-open')) return;
+    mobileMenu.classList.remove('is-open');
+    menuToggle?.setAttribute('aria-expanded', 'false');
+    (menuToggle as HTMLElement | null)?.focus();
+  });
   const applyTheme = (toggle: Element | null) => {
     toggle?.addEventListener('click', () => {
       const dark = document.documentElement.dataset.theme === 'dark';
       document.documentElement.dataset.theme = dark ? 'light' : 'dark';
-      localStorage.setItem('atlas-theme', dark ? 'light' : 'dark');
+      try { localStorage.setItem('atlas-theme', dark ? 'light' : 'dark'); } catch {}
     });
   };
   applyTheme(document.querySelector('[data-theme-toggle]'));
   applyTheme(document.querySelector('[data-theme-toggle-mobile]'));
-  const stored = localStorage.getItem('atlas-theme');
-  if (stored === 'dark') document.documentElement.dataset.theme = 'dark';
 </script>

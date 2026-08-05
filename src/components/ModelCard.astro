@@ -2,26 +2,30 @@
 import type { AtlasModel } from '../lib/types';
 import { displayBoolean, displayUnknown, tierLabel } from '../lib/format';
 import StatusBadge from './StatusBadge.astro';
-interface Props { model: AtlasModel; paperCount?: number; }
+import { getMessages, isLocale, localePath, type Locale } from '../i18n';
+interface Props { model: AtlasModel; paperCount?: number; locale?: Locale; }
 const { model, paperCount = 0 } = Astro.props;
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+// 架构 / 参数后缀属技术性表达, 中英统一保留 "B total / B active" / "B parameters"。
 const parameterLine = model.architecture.type === 'moe'
-  ? `${displayUnknown(model.architecture.total_parameters_b, 'B')} total / ${displayUnknown(model.architecture.active_parameters_b, 'B')} active`
-  : `${displayUnknown(model.architecture.total_parameters_b, 'B')} parameters`;
+  ? `${displayUnknown(model.architecture.total_parameters_b, 'B', locale)} total / ${displayUnknown(model.architecture.active_parameters_b, 'B', locale)} active`
+  : `${displayUnknown(model.architecture.total_parameters_b, 'B', locale)} parameters`;
+const papersLabel = locale === 'zh' ? `${paperCount} 篇论文` : `${paperCount} papers`;
 ---
 <article class="model-card">
-  <div class="card-topline"><span class="eyebrow">{model.vendor}</span><StatusBadge status={model.data_status} /></div>
-  <h3><a href={`${base}models/${model.id}/`}>{model.name}</a></h3>
+  <div class="card-topline"><span class="eyebrow">{model.vendor}</span><StatusBadge status={model.data_status} locale={locale} /></div>
+  <h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3>
   <p class="model-meta">{model.family} · {model.generation} · {model.release_date}</p>
-  <p class="model-architecture"><strong>{model.architecture.type === 'moe' ? 'MoE' : model.architecture.type === 'dense' ? 'Dense' : 'Other'}</strong><span>{parameterLine}</span></p>
+  <p class="model-architecture"><strong>{model.architecture.type === 'moe' ? 'MoE' : model.architecture.type === 'dense' ? 'Dense' : m.explorer.other}</strong><span>{parameterLine}</span></p>
   <div class="tag-row">
     {model.checkpoint.modalities.map((modality) => <span class="tag">{modality}</span>)}
     <span class="tag">{model.checkpoint.type}</span>
-    {model.openness.weights_available === true && <span class="tag tag-open">开放权重</span>}
+    {model.openness.weights_available === true && <span class="tag tag-open">{m.explorer.openWeightsTag}</span>}
   </div>
   <div class="card-footer">
-    <span>RL：{displayBoolean(model.research.suitable_for_rl)}</span>
-    <span>{tierLabel(model.hardware.inference_tier)}</span>
-    <span>{paperCount} 篇论文</span>
+    <span>RL: {displayBoolean(model.research.suitable_for_rl, locale)}</span>
+    <span>{tierLabel(model.hardware.inference_tier, locale)}</span>
+    <span>{papersLabel}</span>
   </div>
 </article>

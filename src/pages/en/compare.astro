@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Body from '../_bodies/compare.astro';
+import { getMessages } from '../../i18n';
+const m = getMessages('en');
+---
+<BaseLayout title={m.compare.pageTitle} locale="en"><Body locale="en" /></BaseLayout>

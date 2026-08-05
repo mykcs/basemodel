@@ -1,17 +1,26 @@
-export function displayUnknown(value: unknown, suffix = ''): string {
-  if (value === null || value === undefined || value === 'unknown') return '未知';
-  if (typeof value === 'boolean') return value ? '是' : '否';
+import { getMessages, type Locale } from '../i18n';
+
+// 枚举值 → 展示文案, 按 locale 取字典。默认 zh 保持向后兼容 (旧调用不传 locale)。
+// 专业名词 (MoE/Dense/Checkpoint/API only 等) 不在此处翻译 —— 它们本就是英文。
+
+export function displayUnknown(value: unknown, suffix = '', locale?: Locale): string {
+  const m = getMessages(locale);
+  if (value === null || value === undefined || value === 'unknown') return m.format.unknown;
+  if (typeof value === 'boolean') return value ? m.format.yes : m.format.no;
   return `${value}${suffix}`;
 }
 
-export function displayBoolean(value: boolean | 'unknown') {
-  return value === 'unknown' ? '未知' : value ? '是' : '否';
+export function displayBoolean(value: boolean | 'unknown', locale?: Locale): string {
+  const m = getMessages(locale);
+  return value === 'unknown' ? m.format.unknown : value ? m.format.yes : m.format.no;
 }
 
-export function statusLabel(status: string) {
-  return { verified: '已核验', partial: '部分核验', demo: '演示数据', unknown: '未知' }[status] ?? status;
+export function statusLabel(status: string, locale?: Locale): string {
+  const m = getMessages(locale);
+  return (m.format.status as Record<string, string>)[status] ?? status;
 }
 
-export function tierLabel(tier: string) {
-  return { cpu_mac: 'CPU / Mac', '16gb': '16GB GPU', '24gb': '24GB GPU', '48gb': '48GB GPU', '80gb': '80GB GPU', multi_gpu: '多卡 GPU', api_only: '仅 API', unknown: '未知' }[tier] ?? tier;
+export function tierLabel(tier: string, locale?: Locale): string {
+  const m = getMessages(locale);
+  return (m.format.tier as Record<string, string>)[tier] ?? tier;
 }

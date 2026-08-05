@@ -1,4 +1,5 @@
 import { hardwareFits } from './hardware';
+import type { Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from './types';
 
 export type ModelFilters = {
@@ -18,6 +19,10 @@ export type ModelFilters = {
   minParams?: number;
   maxParams?: number;
 };
+
+export function parseOptionalBooleanParam(value: string | null): boolean | undefined {
+  return value === null || value === '' ? undefined : value === 'true';
+}
 
 const normalized = (value: string) => value.trim().toLowerCase();
 const matchesBoolean = (value: boolean | 'unknown', expected?: boolean) => expected === undefined || value === expected;
@@ -60,52 +65,72 @@ function numeric(value: number | null | 'unknown') {
   return typeof value === 'number' ? value : -1;
 }
 
-export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task: TaskDirection, resource: ResourceTier, goal: Goal): { matched: string[]; missing: string[]; evidence: 'direct' | 'weak' | 'unknown' } {
+export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task: TaskDirection, resource: ResourceTier, goal: Goal, locale: Locale = 'zh'): { matched: string[]; missing: string[]; evidence: 'direct' | 'weak' | 'unknown' } {
   const matched: string[] = [];
   const missing: string[] = [];
+  const en = locale === 'en';
+  const copy = {
+    unknown: en ? 'unknown' : '未知',
+    instruction: en ? 'Instruction following' : '指令遵循',
+    toolUse: en ? 'Tool-use specialization' : '工具调用专长',
+    hardwareKnown: en ? 'Known hardware tier' : '硬件档位已知',
+    resource: en ? 'Resource tier' : '资源档位',
+    inference: en ? 'Inference-ready' : '适合推理',
+    lora: en ? 'LoRA-ready' : '适合 LoRA',
+    sft: en ? 'SFT-ready' : '适合 SFT',
+    rl: en ? 'RL-ready' : '适合 RL',
+    openWeights: en ? 'Open weights' : '开放权重',
+    lowVram: en ? 'Lower VRAM threshold' : '较低显存门槛',
+    chinese: en ? 'Chinese specialization' : '中文专长',
+    rlSupport: en ? 'RL material support' : 'RL 资料支持',
+    paperEvidence: en ? 'Paper / benchmark record' : '有论文/benchmark 记录',
+    reproducible: en ? 'Reproducible training path or RL support' : '可复现训练路径或 RL 支持',
+    weightsAvailable: en ? 'Weights available' : '权重可获取',
+    active: en ? 'Current status: active' : '当前状态 active',
+  };
   const check = (condition: boolean | 'unknown', yes: string, no: string) => {
     if (condition === true) matched.push(yes);
-    else missing.push(condition === 'unknown' ? `${no}（未知）` : no);
+    else missing.push(condition === 'unknown' ? `${no} (${copy.unknown})` : no);
   };
 
   if (mode === 'harness') {
-    check(model.research.suitable_for_inference, '指令遵循', '指令遵循');
-    check(model.checkpoint.specializations.includes('tool-use'), '工具调用专长', '工具调用专长');
-    check(model.hardware.inference_tier !== 'unknown', '硬件档位已知', '硬件档位已知');
+    check(model.research.suitable_for_inference, copy.instruction, copy.instruction);
+    check(model.checkpoint.specializations.includes('tool-use'), copy.toolUse, copy.toolUse);
+    check(model.hardware.inference_tier !== 'unknown', copy.hardwareKnown, copy.hardwareKnown);
   } else {
-    check(hardwareFits(model, mode, resource), `资源档位：${resource}`, `资源档位：${resource}`);
+    check(hardwareFits(model, mode, resource), `${copy.resource}: ${resource}`, `${copy.resource}: ${resource}`);
   }
-  if (mode === 'inference') check(model.research.suitable_for_inference, '适合推理', '适合推理');
-  if (mode === 'lora') check(model.research.suitable_for_lora, '适合 LoRA', '适合 LoRA');
-  if (mode === 'sft') check(model.research.suitable_for_sft, '适合 SFT', '适合 SFT');
-  if (mode === 'rl') check(model.research.suitable_for_rl, '适合 RL', '适合 RL');
-  if (goal === 'open_weights') check(model.openness.weights_available, '开放权重', '开放权重');
-  if (goal === 'low_cost') check(model.hardware.inference_tier === '16gb' || model.hardware.inference_tier === '24gb', '较低显存门槛', '较低显存门槛');
-  if (goal === 'chinese') check(model.checkpoint.specializations.includes('chinese'), '中文专长', '中文专长');
-  if (goal === 'tool_use') check(model.checkpoint.specializations.includes('tool-use'), '工具调用专长', '工具调用专长');
-  if (goal === 'rl') check(model.research.suitable_for_rl, 'RL 资料支持', 'RL 资料支持');
+  if (mode === 'inference') check(model.research.suitable_for_inference, copy.inference, copy.inference);
+  if (mode === 'lora') check(model.research.suitable_for_lora, copy.lora, copy.lora);
+  if (mode === 'sft') check(model.research.suitable_for_sft, copy.sft, copy.sft);
+  if (mode === 'rl') check(model.research.suitable_for_rl, copy.rl, copy.rl);
+  if (goal === 'open_weights') check(model.openness.weights_available, copy.openWeights, copy.openWeights);
+  if (goal === 'low_cost') check(model.hardware.inference_tier === '16gb' || model.hardware.inference_tier === '24gb', copy.lowVram, copy.lowVram);
+  if (goal === 'chinese') check(model.checkpoint.specializations.includes('chinese'), copy.chinese, copy.chinese);
+  if (goal === 'tool_use') check(model.checkpoint.specializations.includes('tool-use'), copy.toolUse, copy.toolUse);
+  if (goal === 'rl') check(model.research.suitable_for_rl, copy.rlSupport, copy.rlSupport);
 
   let evidence: 'direct' | 'weak' | 'unknown' = 'unknown';
   if (task !== 'general') {
     if (model.checkpoint.specializations.includes(task)) {
-      matched.push(`${task} 方向有直接证据`);
+      matched.push(en ? `Direct evidence for ${task}` : `${task} 方向有直接证据`);
       evidence = 'direct';
     } else if (model.checkpoint.specializations.some((s) => relatedTo(s, task))) {
-      matched.push(`${task} 方向有弱证据（相近专长）`);
+      matched.push(en ? `Related-specialty evidence for ${task}` : `${task} 方向有弱证据（相近专长）`);
       evidence = 'weak';
     } else if (model.checkpoint.specializations.includes('general')) {
-      missing.push(`${task} 方向仅有 general 标签，不能作为直接证据`);
+      missing.push(en ? `Only a general tag for ${task}; not direct evidence` : `${task} 方向仅有 general 标签，不能作为直接证据`);
     } else {
-      missing.push(`${task} 方向证据`);
+      missing.push(en ? `Evidence for ${task}` : `${task} 方向证据`);
     }
   }
 
   if (goal === 'comparability') {
-    check(model.sources.some((s) => s.type === 'paper' || s.type === 'benchmark'), '有论文/benchmark 记录', '有论文/benchmark 记录');
-    check(model.research.verl_recipe_available === true || model.research.suitable_for_rl === true, '可复现训练路径或 RL 支持', '可复现训练路径或 RL 支持');
-    check(model.openness.weights_available === true, '权重可获取', '权重可获取');
+    check(model.sources.some((s) => s.type === 'paper' || s.type === 'benchmark'), copy.paperEvidence, copy.paperEvidence);
+    check(model.research.verl_recipe_available === true || model.research.suitable_for_rl === true, copy.reproducible, copy.reproducible);
+    check(model.openness.weights_available === true, copy.weightsAvailable, copy.weightsAvailable);
   }
-  if (goal === 'current') check(model.status === 'active', '当前状态 active', '当前状态 active');
+  if (goal === 'current') check(model.status === 'active', copy.active, copy.active);
   return { matched, missing, evidence };
 }
 

@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import PaperModelMatrix from '../../components/PaperModelMatrix';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
+
+interface Props { locale?: Locale }
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+const paperEntries = await getCollection('papers');
+const modelEntries = await getCollection('models');
+const papers = paperEntries.map((entry) => entry.data);
+const models = modelEntries.map((entry) => entry.data);
+const joiner = locale === 'zh' ? '、' : ', ';
+---
+<div class="shell"><header class="page-header"><div class="eyebrow">{m.papersIndex.eyebrow}</div><h1>{m.papersIndex.title}</h1><p class="lede">{m.papersIndex.lede}</p></header><section class="section"><div class="paper-list">{papers.map((paper) => <a class="paper-row" href={localePath(locale, `/papers/${paper.id}/`)}><div><h3>{paper.title}</h3><p>{paper.category.join(' · ')} · {paper.models.length} {m.papersIndex.relationsUnit} · {paper.benchmarks.join(joiner)}</p></div><div class="paper-meta"><StatusBadge status={paper.data_status} locale={locale} /><div>{paper.published_at}</div></div></a>)}</div></section><section class="section"><div class="section-heading"><div><div class="section-kicker">{m.papersIndex.matrixKicker}</div><h2>{m.papersIndex.matrixTitle}</h2></div></div><PaperModelMatrix client:load papers={papers} models={models} locale={locale} /></section></div>

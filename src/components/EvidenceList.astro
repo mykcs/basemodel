@@ -1,21 +1,24 @@
 ---
 import type { AtlasModel, AtlasPaper } from '../lib/types';
 import StatusBadge from './StatusBadge.astro';
-interface Props { item: AtlasModel | AtlasPaper; }
+import { getMessages, isLocale, type Locale } from '../i18n';
+interface Props { item: AtlasModel | AtlasPaper; locale?: Locale; }
 const { item } = Astro.props;
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
 ---
 <section class="evidence-block" aria-labelledby="evidence-title">
-  <div class="section-kicker">Evidence</div>
-  <h2 id="evidence-title">来源与核验</h2>
-  <p class="muted">链接来自结构化数据；演示记录使用 example.com 占位，不代表真实事实。</p>
+  <div class="section-kicker">{m.evidence.kicker}</div>
+  <h2 id="evidence-title">{m.evidence.title}</h2>
+  <p class="muted">{m.evidence.body}</p>
   <div class="evidence-list">
     {item.sources.map((source) => (
       <a class="evidence-row" href={source.url} target="_blank" rel="noreferrer">
         <span>{source.type.replaceAll('_', ' ')}</span>
         <span>{source.checked_at}</span>
-        <span class="external-link">打开 ↗</span>
+        <span class="external-link">{m.evidence.open}</span>
       </a>
     ))}
   </div>
-  <div class="evidence-footer"><span>数据状态</span><StatusBadge status={item.data_status} /></div>
+  <div class="evidence-footer"><span>{m.evidence.dataStatus}</span><StatusBadge status={item.data_status} locale={locale} /></div>
 </section>

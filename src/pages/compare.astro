@@ -1,7 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ModelComparison from '../components/ModelComparison';
-const models = (await getCollection('models')).map((entry) => entry.data);
+import Body from './_bodies/compare.astro';
+import { getMessages, isLocale, type Locale } from '../i18n';
+const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
+const m = getMessages(locale);
 ---
-<BaseLayout title="模型对比"><div class="shell"><header class="page-header"><div class="eyebrow">Decision surface</div><h1>横向对比 checkpoint</h1><p class="lede">最多选择 5 个具体 checkpoint；缺失值显示为“未知”，不强行填补。</p></header><ModelComparison client:load models={models} /></div></BaseLayout>
+<BaseLayout title={m.compare.pageTitle}><Body /></BaseLayout>

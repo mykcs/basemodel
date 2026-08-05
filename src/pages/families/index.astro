@@ -1,7 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import FamilyTree from '../../components/FamilyTree';
-const models = (await getCollection('models')).map((entry) => entry.data);
+import Body from '../_bodies/families-index.astro';
+import { getMessages, isLocale, type Locale } from '../../i18n';
+const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
+const m = getMessages(locale);
 ---
-<BaseLayout title="模型家族"><div class="shell"><header class="page-header"><div class="eyebrow">Family layer</div><h1>模型家族与代际</h1><p class="lede">按厂商 → 家族 → 官方代际名 → checkpoint 展开。页面不假设每个厂商都有连续的第 1、2、3 代。</p></header><FamilyTree client:load models={models} /></div></BaseLayout>
+<BaseLayout title={m.families.pageTitle}><Body /></BaseLayout>

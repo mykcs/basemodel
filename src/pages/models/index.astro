@@ -1,12 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ModelExplorer from '../../components/ModelExplorer';
-import { modelIdsUsedByPapers } from '../../lib/modelRelations';
-
-const modelEntries = await getCollection('models');
-const paperEntries = await getCollection('papers');
-const models = modelEntries.map((entry) => entry.data);
-const paperModelIds = [...modelIdsUsedByPapers(paperEntries.map((entry) => entry.data))];
+import Body from '../_bodies/models-index.astro';
+import { getMessages, isLocale, type Locale } from '../../i18n';
+const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
+const m = getMessages(locale);
 ---
-<BaseLayout title="模型浏览器"><div class="shell"><header class="page-header"><div class="eyebrow">Supply layer</div><h1>模型浏览器</h1><p class="lede">按厂商、架构、checkpoint、开放性和研究可用性组合筛选。未知值不会自动变成“否”。</p></header><ModelExplorer client:load models={models} paperModelIds={paperModelIds} /></div></BaseLayout>
+<BaseLayout title={m.modelsIndex.pageTitle}><Body /></BaseLayout>

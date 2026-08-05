@@ -1,14 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import EvidenceList from '../../components/EvidenceList.astro';
-import StatusBadge from '../../components/StatusBadge.astro';
+import Body from '../_bodies/paper-detail.astro';
+import { getMessages, isLocale, type Locale } from '../../i18n';
+
 export async function getStaticPaths() {
   const paperEntries = await getCollection('papers');
   const modelEntries = await getCollection('models');
   return paperEntries.map((entry) => ({ params: { id: entry.data.id }, props: { paper: entry.data, models: modelEntries.map((model) => model.data) } }));
 }
 const { paper, models } = Astro.props;
-const modelMap = new Map(models.map((model) => [model.id, model]));
+const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
+const m = getMessages(locale);
 ---
-<BaseLayout title={paper.title} description={`${paper.title} 的模型角色、进化目标和来源证据。`}><div class="shell detail-layout"><article><div class="eyebrow">Research adoption layer</div><h1 class="detail-title">{paper.title}</h1><p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} /></p><section class="detail-section"><h2>论文信息</h2><div class="fact-grid"><div class="fact"><dt>进化对象</dt><dd>{paper.evolution_targets.join('、')}</dd></div><div class="fact"><dt>Benchmark</dt><dd>{paper.benchmarks.join('、')}</dd></div><div class="fact"><dt>类别</dt><dd>{paper.category.join('、')}</dd></div><div class="fact"><dt>模型关系</dt><dd>{paper.models.length} 个</dd></div></div><div class="tag-row"><a class="button button-secondary" href={paper.paper_url === 'unknown' ? undefined : paper.paper_url} aria-disabled={paper.paper_url === 'unknown'}>论文链接 ↗</a><a class="button button-secondary" href={paper.code_url === 'unknown' ? undefined : paper.code_url} aria-disabled={paper.code_url === 'unknown'}>代码链接 ↗</a></div></section><section class="detail-section"><h2>模型角色</h2><div class="paper-list">{paper.models.map((use) => { const model = modelMap.get(use.model_id); return <div class="paper-row"><div><h3>{model?.name ?? use.model_id}</h3><p>{use.role} · {use.weight_updated === 'unknown' ? '权重更新未知' : use.weight_updated ? '更新了权重' : '未更新权重'}{use.notes ? ` · ${use.notes}` : ''}</p></div><div class="paper-meta"><span class="tag">{model?.family ?? '关系错误'}</span></div></div>; })}</div></section></article><aside class="detail-aside"><div class="section-kicker">Paper evidence</div><h2>证据链</h2><p class="muted">模型关系由 model ID 连接；校验脚本会阻止不存在的关系进入构建。</p><EvidenceList item={paper} /></aside></div></BaseLayout>
+<BaseLayout title={paper.title} description={`${paper.title} ${m.paperDetail.descriptionSuffix}`}><Body paper={paper} models={models} /></BaseLayout>

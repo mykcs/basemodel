@@ -1,11 +1,12 @@
 import { hardwareFits } from './hardware';
 import { matchesExperiment } from './modelFilters';
+import type { Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from './types';
 
-export function recommendModels(models: AtlasModel[], options: { mode: ExperimentMode; task: TaskDirection; resource: ResourceTier; goal: Goal }) {
+export function recommendModels(models: AtlasModel[], options: { mode: ExperimentMode; task: TaskDirection; resource: ResourceTier; goal: Goal }, locale: Locale = 'zh') {
   return models.map((model) => {
     const hardware = hardwareFits(model, options.mode, options.resource);
-    const explanation = matchesExperiment(model, options.mode, options.task, options.resource, options.goal);
+    const explanation = matchesExperiment(model, options.mode, options.task, options.resource, options.goal, locale);
     const directEvidence = explanation.evidence === 'direct';
     const weakEvidence = explanation.evidence === 'weak';
     const tooWeak = options.task !== 'general' && explanation.evidence === 'unknown' && model.checkpoint.specializations.includes('general');

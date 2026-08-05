@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filterModels } from './modelFilters';
+import { filterModels, parseOptionalBooleanParam } from './modelFilters';
 import { hardwareFits } from './hardware';
 import { recommendModels } from './recommendation';
 import { papersForModel } from './modelRelations';
@@ -10,6 +10,12 @@ const paper: AtlasPaper = { id: 'test-paper', title: 'Test Paper', published_at:
 
 describe('atlas rules', () => {
   it('filters by architecture and open weights', () => expect(filterModels([baseModel], { architecture: 'dense', openWeights: true })).toHaveLength(1));
+  it('keeps absent boolean query filters unset', () => {
+    expect(parseOptionalBooleanParam(null)).toBeUndefined();
+    expect(parseOptionalBooleanParam('')).toBeUndefined();
+    expect(parseOptionalBooleanParam('true')).toBe(true);
+    expect(parseOptionalBooleanParam('false')).toBe(false);
+  });
   it('preserves unknown hardware as unknown', () => expect(hardwareFits({ ...baseModel, hardware: { ...baseModel.hardware, inference_tier: 'unknown' } }, 'inference', '24gb')).toBe('unknown'));
   it('treats a larger available tier as sufficient', () => expect(hardwareFits(baseModel, 'inference', '24gb')).toBe(true));
   it('returns a candidate when the rule conditions match', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'chinese', resource: '24gb', goal: 'open_weights' })[0].candidate).toBe(true));

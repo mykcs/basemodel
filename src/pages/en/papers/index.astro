@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Body from '../../_bodies/papers-index.astro';
+import { getMessages } from '../../../i18n';
+const m = getMessages('en');
+---
+<BaseLayout title={m.papersIndex.pageTitle} locale="en"><Body locale="en" /></BaseLayout>
