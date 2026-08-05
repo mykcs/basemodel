@@ -9,6 +9,10 @@ interface Props {
 
 const { title, description = '面向 AI 研究者的基础模型选择与论文采用地图。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const fullTitle = `${title} · Agent Foundation Model Atlas`;
+const siteOrigin = Astro.site ?? new URL('https://mykcs.github.io');
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).href;
+const ogImage = new URL(`${base}favicon.svg`, siteOrigin).href;
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -18,7 +22,20 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f6f4ef" />
     <link rel="icon" href={`${base}favicon.svg`} />
-    <title>{title} · Agent Foundation Model Atlas</title>
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href={`${base}sitemap.xml`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Agent Foundation Model Atlas" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <title>{fullTitle}</title>
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>

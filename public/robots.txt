@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# base path 由部署注入 (PUBLIC_BASE_PATH=/basemodel); 公开路由全放行。
+Sitemap: https://mykcs.github.io/basemodel/sitemap.xml
