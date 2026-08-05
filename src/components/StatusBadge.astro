@@ -1,0 +1,6 @@
+---
+import { statusLabel } from '../lib/format';
+interface Props { status: 'verified' | 'partial' | 'demo' | 'unknown'; }
+const { status } = Astro.props;
+---
+<span class:list={['status-badge', `status-${status}`]}>{statusLabel(status)}</span>

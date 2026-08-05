@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceList from '../../components/EvidenceList.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { displayBoolean, displayUnknown, tierLabel } from '../../lib/format';
+import { paperUsesModel } from '../../lib/modelRelations';
+
+export async function getStaticPaths() {
+  const modelEntries = await getCollection('models');
+  const paperEntries = await getCollection('papers');
+  return modelEntries.map((entry) => ({ params: { id: entry.data.id }, props: { model: entry.data, papers: paperEntries.map((paper) => paper.data).filter((paper) => paper.models.some((use) => use.model_id === entry.data.id)) } }));
+}
+const { model, papers } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<BaseLayout title={model.name} description={`${model.name} 的架构、开放性、研究可用性和证据来源。`}>
+  <div class="shell detail-layout"><article><div class="eyebrow">{model.vendor} / {model.family} / {model.generation}</div><h1 class="detail-title">{model.name}</h1><p class="detail-subtitle">{model.checkpoint.type} checkpoint · {model.release_date} · <StatusBadge status={model.data_status} /></p>
+    <section class="detail-section"><h2>一眼概览</h2><div class="fact-grid"><div class="fact"><dt>架构</dt><dd>{model.architecture.type === 'moe' ? 'MoE' : model.architecture.type === 'dense' ? 'Dense' : 'Other'}</dd></div><div class="fact"><dt>参数</dt><dd>{model.architecture.type === 'moe' ? `${displayUnknown(model.architecture.total_parameters_b, 'B')} total / ${displayUnknown(model.architecture.active_parameters_b, 'B')} active` : displayUnknown(model.architecture.total_parameters_b, 'B')}</dd></div><div class="fact"><dt>Context</dt><dd>{displayUnknown(model.architecture.context_length, ' tokens')}</dd></div><div class="fact"><dt>模态</dt><dd>{model.checkpoint.modalities.join('、')}</dd></div><div class="fact"><dt>开放权重</dt><dd>{displayBoolean(model.openness.weights_available)}</dd></div><div class="fact"><dt>许可证</dt><dd>{model.openness.license_name}</dd></div></div></section>
+    <section class="detail-section"><h2>专长与研究可用性</h2><div class="pill-list">{model.checkpoint.specializations.map((item) => <span class="pill">{item}</span>)}</div><div class="fact-grid" style="margin-top:16px"><div class="fact"><dt>Inference</dt><dd>{displayBoolean(model.research.suitable_for_inference)}</dd></div><div class="fact"><dt>LoRA</dt><dd>{displayBoolean(model.research.suitable_for_lora)}</dd></div><div class="fact"><dt>SFT</dt><dd>{displayBoolean(model.research.suitable_for_sft)}</dd></div><div class="fact"><dt>RL</dt><dd>{displayBoolean(model.research.suitable_for_rl)}</dd></div><div class="fact"><dt>Transformers</dt><dd>{displayBoolean(model.research.transformers_support)}</dd></div><div class="fact"><dt>vLLM</dt><dd>{displayBoolean(model.research.vllm_support)}</dd></div></div></section>
+    <section class="detail-section"><h2>硬件档位</h2><div class="fact-grid"><div class="fact"><dt>推理</dt><dd>{tierLabel(model.hardware.inference_tier)}</dd></div><div class="fact"><dt>LoRA</dt><dd>{tierLabel(model.hardware.lora_tier)}</dd></div><div class="fact"><dt>全参数 SFT</dt><dd>{tierLabel(model.hardware.full_sft_tier)}</dd></div><div class="fact"><dt>RL</dt><dd>{tierLabel(model.hardware.rl_tier)}</dd></div></div></section>
+    <section class="detail-section"><h2>论文采用</h2>{papers.length ? <div class="paper-list">{papers.map((paper) => <a class="paper-row" href={`${base}papers/${paper.id}/`}><div><h3>{paper.title}</h3><p>{paperUsesModel(paper, model.id).map((use) => `${use.role}${use.weight_updated === true ? ' · 更新权重' : ''}`).join('；')}</p></div><div class="paper-meta">{paper.published_at}</div></a>)}</div> : <p class="muted">暂无论文采用记录。没有记录不等于没有使用。</p>}</section>
+  </article><aside class="detail-aside"><div class="section-kicker">Checkpoint identity</div><h2>{model.family}</h2><p class="muted">{model.generation} · {model.status}</p><EvidenceList item={model} /></aside></div>
+</BaseLayout>

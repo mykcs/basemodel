@@ -1,0 +1,32 @@
+---
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const links = [
+  { href: `${base}`, label: '选择入口' },
+  { href: `${base}models/`, label: '模型' },
+  { href: `${base}families/`, label: '家族' },
+  { href: `${base}compare/`, label: '对比' },
+  { href: `${base}papers/`, label: '论文' },
+];
+---
+<header class="site-header">
+  <div class="shell nav-inner">
+    <a class="brand" href={base} aria-label="返回首页">
+      <span class="brand-mark" aria-hidden="true">↗</span>
+      <span><strong>Model Atlas</strong><small>智能体基础模型选择地图</small></span>
+    </a>
+    <nav aria-label="主导航">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle>◐</button>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector('[data-theme-toggle]');
+  const stored = localStorage.getItem('atlas-theme');
+  if (stored === 'dark') document.documentElement.dataset.theme = 'dark';
+  toggle?.addEventListener('click', () => {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+    localStorage.setItem('atlas-theme', dark ? 'light' : 'dark');
+  });
+</script>

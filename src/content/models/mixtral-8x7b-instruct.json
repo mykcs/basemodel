@@ -1,0 +1,17 @@
+{
+  "id": "mixtral-8x7b-instruct",
+  "name": "Mixtral 8x7B Instruct",
+  "official_name": "Mixtral-8x7B-Instruct-v0.1",
+  "vendor": "Mistral AI",
+  "family": "Mixtral",
+  "generation": "Mixtral 8x7B",
+  "release_date": "2023-12-11",
+  "status": "legacy",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "multilingual", "tool-use"]},
+  "architecture": {"type": "moe", "total_parameters_b": 46.7, "active_parameters_b": 12.9, "context_length": 32768, "expert_count": 8, "active_experts_per_token": 2},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Apache 2.0 (demo record)"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": "unknown", "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "48gb", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://example.com/agent-model-atlas/demo/mixtral-8x7b", "type": "demo_record", "checked_at": "2026-08-05"}],
+  "data_status": "demo"
+}

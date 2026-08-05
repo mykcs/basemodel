@@ -1,0 +1,27 @@
+---
+import type { AtlasModel } from '../lib/types';
+import { displayBoolean, displayUnknown, tierLabel } from '../lib/format';
+import StatusBadge from './StatusBadge.astro';
+interface Props { model: AtlasModel; paperCount?: number; }
+const { model, paperCount = 0 } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const parameterLine = model.architecture.type === 'moe'
+  ? `${displayUnknown(model.architecture.total_parameters_b, 'B')} total / ${displayUnknown(model.architecture.active_parameters_b, 'B')} active`
+  : `${displayUnknown(model.architecture.total_parameters_b, 'B')} parameters`;
+---
+<article class="model-card">
+  <div class="card-topline"><span class="eyebrow">{model.vendor}</span><StatusBadge status={model.data_status} /></div>
+  <h3><a href={`${base}models/${model.id}/`}>{model.name}</a></h3>
+  <p class="model-meta">{model.family} · {model.generation} · {model.release_date}</p>
+  <p class="model-architecture"><strong>{model.architecture.type === 'moe' ? 'MoE' : model.architecture.type === 'dense' ? 'Dense' : 'Other'}</strong><span>{parameterLine}</span></p>
+  <div class="tag-row">
+    {model.checkpoint.modalities.map((modality) => <span class="tag">{modality}</span>)}
+    <span class="tag">{model.checkpoint.type}</span>
+    {model.openness.weights_available === true && <span class="tag tag-open">开放权重</span>}
+  </div>
+  <div class="card-footer">
+    <span>RL：{displayBoolean(model.research.suitable_for_rl)}</span>
+    <span>{tierLabel(model.hardware.inference_tier)}</span>
+    <span>{paperCount} 篇论文</span>
+  </div>
+</article>

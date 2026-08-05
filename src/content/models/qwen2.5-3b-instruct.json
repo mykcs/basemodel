@@ -1,0 +1,17 @@
+{
+  "id": "qwen2-5-3b-instruct",
+  "name": "Qwen2.5-3B-Instruct",
+  "official_name": "Qwen2.5-3B-Instruct",
+  "vendor": "Alibaba / Qwen",
+  "family": "Qwen",
+  "generation": "Qwen2.5",
+  "release_date": "2024-09-19",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "multilingual", "chinese", "tool-use"]},
+  "architecture": {"type": "dense", "total_parameters_b": 3.09, "active_parameters_b": 3.09, "context_length": 32768, "expert_count": null, "active_experts_per_token": null},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Qwen License (demo record)"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": "unknown", "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "16gb", "lora_tier": "24gb", "full_sft_tier": "48gb", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://example.com/agent-model-atlas/demo/qwen2-5-3b-instruct", "type": "demo_record", "checked_at": "2026-08-05"}],
+  "data_status": "demo"
+}

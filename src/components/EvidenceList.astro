@@ -1,0 +1,21 @@
+---
+import type { AtlasModel, AtlasPaper } from '../lib/types';
+import StatusBadge from './StatusBadge.astro';
+interface Props { item: AtlasModel | AtlasPaper; }
+const { item } = Astro.props;
+---
+<section class="evidence-block" aria-labelledby="evidence-title">
+  <div class="section-kicker">Evidence</div>
+  <h2 id="evidence-title">来源与核验</h2>
+  <p class="muted">链接来自结构化数据；演示记录使用 example.com 占位，不代表真实事实。</p>
+  <div class="evidence-list">
+    {item.sources.map((source) => (
+      <a class="evidence-row" href={source.url} target="_blank" rel="noreferrer">
+        <span>{source.type.replaceAll('_', ' ')}</span>
+        <span>{source.checked_at}</span>
+        <span class="external-link">打开 ↗</span>
+      </a>
+    ))}
+  </div>
+  <div class="evidence-footer"><span>数据状态</span><StatusBadge status={item.data_status} /></div>
+</section>
