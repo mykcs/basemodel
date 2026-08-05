@@ -4,6 +4,7 @@ import { filterModels, matchesExperiment, parseOptionalBooleanParam } from './mo
 import { hardwareFits } from './hardware';
 import { recommendModels } from './recommendation';
 import { papersForModel } from './modelRelations';
+import { buildDataHealth } from './dataHealth';
 import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, licenseLabel, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
 import type { AtlasModel, AtlasPaper } from './types';
 
@@ -75,5 +76,14 @@ describe('atlas rules', () => {
       expect(noteLabel(note, 'zh')).not.toBe('未知');
       expect(noteLabel(note, 'en')).toBe(note);
     }
+  });
+  it('flags stale verified records and missing current generations', () => {
+    const verified = { ...baseModel, id: 'verified-model', data_status: 'verified' as const, sources: [{ url: 'https://vendor.example/models', type: 'official_docs' as const, checked_at: '2025-01-01' }] };
+    const health = buildDataHealth([verified], [{ id: 'test', name: 'Test', official_catalog_urls: ['https://vendor.example/models'], refresh_days: 14, model_types: ['open-weight'] }], [{ id: 'test', vendor_id: 'test', name: 'Test', current_generation: 'v2' }], new Date('2026-02-01T00:00:00Z'));
+    expect(health.issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({ modelId: 'verified-model', reason: 'stale-source', severity: 'warning' }),
+      expect.objectContaining({ modelId: 'verified-model', reason: 'generic-source-url', severity: 'error' }),
+      expect.objectContaining({ modelId: 'test', reason: 'missing-current-generation', severity: 'warning' }),
+    ]));
   });
 });

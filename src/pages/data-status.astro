@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Body from './_bodies/data-status.astro';
+import { getMessages } from '../i18n';
+const m = getMessages('zh');
+---
+<BaseLayout title={m.dataStatus.pageTitle}><Body locale="zh" /></BaseLayout>

@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import { buildDataHealth, type FamilyCoverage, type VendorCoverage } from '../../lib/dataHealth';
+import { getMessages, isLocale, type Locale } from '../../i18n';
+import vendorsFile from '../../content/coverage/vendors.json';
+import familiesFile from '../../content/coverage/families.json';
+
+interface Props { locale?: Locale }
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+const models = (await getCollection('models')).map((entry) => entry.data);
+const health = buildDataHealth(models, vendorsFile.vendors as VendorCoverage[], familiesFile.families as FamilyCoverage[]);
+const blockingIssues = health.issues.filter((issue) => issue.severity === 'error');
+---
+<div class="shell">
+  <header class="page-header">
+    <div class="eyebrow">{m.dataStatus.eyebrow}</div>
+    <h1>{m.dataStatus.pageTitle}</h1>
+    <p class="lede">{m.dataStatus.lede}</p>
+  </header>
+  <section class="stats" aria-label={m.dataStatus.pageTitle}>
+    <div class="stat"><strong>{health.totalModels}</strong><span>{m.dataStatus.models}</span></div>
+    <div class="stat"><strong>{health.recentModels}</strong><span>{m.dataStatus.recent}</span></div>
+    <div class="stat"><strong>{health.staleModels}</strong><span>{m.dataStatus.stale}</span></div>
+    <div class="stat"><strong>{health.partialOrUnknown}</strong><span>{m.dataStatus.partial}</span></div>
+    <div class="stat"><strong>{health.verified}</strong><span>{m.dataStatus.verified}</span></div>
+  </section>
+  <section class="section" aria-labelledby="vendor-coverage-title">
+    <div class="section-heading"><div><div class="section-kicker">{m.dataStatus.eyebrow}</div><h2 id="vendor-coverage-title">{m.dataStatus.vendors}</h2></div></div>
+    <div class="comparison-table-wrap"><table>
+      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.models}</th><th>{m.dataStatus.latestRelease}</th><th>{m.dataStatus.stale}</th></tr></thead>
+      <tbody>{health.vendorCoverage.map(({ vendor, modelCount, latestRelease, stale }) => <tr><th scope="row">{vendor.name}</th><td>{modelCount}</td><td>{latestRelease}</td><td>{stale}</td></tr>)}</tbody>
+    </table></div>
+    <p class="muted">{m.dataStatus.staleNote}</p>
+  </section>
+  <section class="section" aria-labelledby="generation-title">
+    <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2></div></div>
+    <div class="comparison-table-wrap"><table>
+      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{m.dataStatus.present}</th><th>{m.dataStatus.models}</th></tr></thead>
+      <tbody>{health.familyCoverage.map(({ family, modelCount, generationPresent }) => <tr><th scope="row">{family.name}</th><td>{family.current_generation}</td><td>{generationPresent ? m.dataStatus.present : m.dataStatus.missing}</td><td>{modelCount}</td></tr>)}</tbody>
+    </table></div>
+  </section>
+  <section class="section" aria-labelledby="issues-title">
+    <div class="section-heading"><div><h2 id="issues-title">{m.dataStatus.issues}</h2></div></div>
+    {blockingIssues.length ? <ul>{blockingIssues.map((issue) => <li><code>{issue.modelId}</code> · {issue.reason}</li>)}</ul> : <p class="muted">{m.dataStatus.noIssues}</p>}
+  </section>
+</div>

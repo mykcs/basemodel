@@ -21,6 +21,7 @@ export const zh: Messages = {
     toggleTheme: '切换深色模式',
     switchLang: 'English',
     switchLangLabel: '切换到英文',
+    dataStatus: '数据状态',
   },
   footer: {
     mvp: 'Agent Foundation Model Atlas · MVP',
@@ -138,6 +139,25 @@ export const zh: Messages = {
     body: '链接来自结构化数据；演示记录使用 example.com 占位，不代表真实事实。',
     open: '打开 ↗',
     dataStatus: '数据状态',
+  },
+  dataStatus: {
+    pageTitle: '数据状态',
+    eyebrow: '数据治理',
+    lede: '显示模型数据的新鲜度、覆盖情况和当前代缺口。这里的告警不会把未知值伪装成确定事实。',
+    models: '模型记录',
+    recent: '近 30 天核验',
+    stale: '过期记录',
+    partial: '部分 / 未知',
+    verified: '已核验',
+    vendors: '厂商覆盖',
+    vendor: '厂商',
+    latestRelease: '最新发布',
+    currentGeneration: '当前代',
+    present: '已覆盖',
+    missing: '缺失',
+    issues: '告警',
+    noIssues: '当前没有阻断性告警。',
+    staleNote: '过期只表示需要重新核验，不等于模型不可用。',
   },
   selector: {
     mode: '实验方式',
@@ -391,6 +411,7 @@ export type Messages = {
     toggleTheme: string;
     switchLang: string;
     switchLangLabel: string;
+    dataStatus: string;
   };
   footer: { mvp: string; motto: string };
   home: {
@@ -482,6 +503,10 @@ export type Messages = {
     descriptionSuffix: string;
   };
   evidence: { title: string; body: string; open: string; dataStatus: string };
+  dataStatus: {
+    pageTitle: string; eyebrow: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
+    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string;
+  };
   selector: {
     mode: string;
     task: string;

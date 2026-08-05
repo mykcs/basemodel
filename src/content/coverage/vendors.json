@@ -1,0 +1,14 @@
+{
+  "vendors": [
+    { "id": "openai", "name": "OpenAI", "official_catalog_urls": ["https://platform.openai.com/docs/models"], "refresh_days": 14, "model_types": ["api", "open-weight"] },
+    { "id": "qwen", "name": "Qwen / Alibaba", "official_catalog_urls": ["https://github.com/QwenLM/Qwen3.6", "https://huggingface.co/Qwen"], "refresh_days": 30, "model_types": ["open-weight"] },
+    { "id": "google", "name": "Google", "official_catalog_urls": ["https://ai.google.dev/gemma"], "refresh_days": 30, "model_types": ["api", "open-weight"] },
+    { "id": "meta", "name": "Meta / Llama", "official_catalog_urls": ["https://www.llama.com/models/"], "refresh_days": 30, "model_types": ["open-weight"] },
+    { "id": "anthropic", "name": "Anthropic", "official_catalog_urls": ["https://docs.anthropic.com/en/docs/about-claude/models"], "refresh_days": 14, "model_types": ["api"] },
+    { "id": "deepseek", "name": "DeepSeek", "official_catalog_urls": ["https://www.deepseek.com/"], "refresh_days": 30, "model_types": ["api", "open-weight"] },
+    { "id": "moonshot", "name": "Moonshot AI", "official_catalog_urls": ["https://platform.moonshot.cn/docs/intro"], "refresh_days": 14, "model_types": ["api", "open-weight"] },
+    { "id": "mistral", "name": "Mistral AI", "official_catalog_urls": ["https://docs.mistral.ai/getting-started/models/"], "refresh_days": 30, "model_types": ["api", "open-weight"] },
+    { "id": "glm", "name": "GLM / Z.ai", "official_catalog_urls": ["https://z.ai/"], "refresh_days": 30, "model_types": ["api", "open-weight"] },
+    { "id": "lmsys", "name": "LMSYS", "official_catalog_urls": ["https://lmsys.org/"], "refresh_days": 90, "model_types": ["open-weight"] }
+  ]
+}

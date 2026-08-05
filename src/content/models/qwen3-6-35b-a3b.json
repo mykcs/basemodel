@@ -5,13 +5,13 @@
   "vendor": "Alibaba / Qwen",
   "family": "Qwen",
   "generation": "Qwen3.6",
-  "release_date": "2026-04-24",
+  "release_date": "2026-04-16",
   "status": "preview",
   "checkpoint": {"type": "vision", "modalities": ["text", "image", "video"], "specializations": ["general", "multilingual", "chinese", "reasoning", "agent", "multimodal"]},
   "architecture": {"type": "moe", "total_parameters_b": 35, "active_parameters_b": 3, "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": "unknown", "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Unknown; verify current model card"},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": "unknown", "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Apache-2.0"},
   "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": "unknown", "vllm_support": "unknown", "sglang_support": "unknown", "verl_recipe_available": "unknown"},
   "hardware": {"inference_tier": "48gb", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://huggingface.co/Qwen/models", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "sources": [{"url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B", "type": "official_model_card", "checked_at": "2026-08-06"}, {"url": "https://github.com/QwenLM/Qwen3.6", "type": "official_docs", "checked_at": "2026-08-06"}],
   "data_status": "partial"
 }
