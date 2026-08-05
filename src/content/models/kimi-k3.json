@@ -33,7 +33,7 @@
   "openness": {
     "weights_available": true,
     "base_checkpoint_available": "not_verified",
-    "finetuning_allowed": "not_verified",
+    "finetuning_allowed": true,
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
     "license_name": "Kimi K3 License",
