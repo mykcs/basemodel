@@ -8,7 +8,6 @@ const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? As
 const m = getMessages(locale);
 ---
 <section class="evidence-block" aria-labelledby="evidence-title">
-  <div class="section-kicker">{m.evidence.kicker}</div>
   <h2 id="evidence-title">{m.evidence.title}</h2>
   <p class="muted">{m.evidence.body}</p>
   <div class="evidence-list">

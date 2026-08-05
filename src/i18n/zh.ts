@@ -44,7 +44,6 @@ export const zh: Messages = {
     supplyKicker: '模型供应层',
     latestTitle: '最近记录的模型',
     viewExplorer: '查看模型浏览器 →',
-    contractKicker: '数据约定',
     contractTitle: '证据状态是产品的一部分',
     contractBody: '每条模型和论文记录都要求来源 URL 与最后核验日期。当前 MVP 使用少量演示记录验证页面结构；批量录入真实资料前，请先替换这些占位来源。',
   },
@@ -103,7 +102,6 @@ export const zh: Messages = {
     fullSft: '全参数 SFT',
     adoptionTitle: '论文采用',
     noAdoption: '暂无论文采用记录。没有记录不等于没有使用。',
-    checkpointIdentity: 'Checkpoint 档案',
     weightUpdatedSuffix: ' · 更新权重',
     totalActive: 'total / {active}B active',
     tokensSuffix: ' tokens',
@@ -134,13 +132,9 @@ export const zh: Messages = {
     weightUpdated: '更新了权重',
     weightNotUpdated: '未更新权重',
     relationError: '关系错误',
-    evidenceKicker: '论文证据',
-    evidenceTitle: '证据链',
-    evidenceBody: '模型关系由 model ID 连接；校验脚本会阻止不存在的关系进入构建。',
     descriptionSuffix: '的模型角色、进化目标和来源证据。',
   },
   evidence: {
-    kicker: '证据',
     title: '来源与核验',
     body: '链接来自结构化数据；演示记录使用 example.com 占位，不代表真实事实。',
     open: '打开 ↗',
@@ -333,7 +327,6 @@ export type Messages = {
     supplyKicker: string;
     latestTitle: string;
     viewExplorer: string;
-    contractKicker: string;
     contractTitle: string;
     contractBody: string;
   };
@@ -382,7 +375,6 @@ export type Messages = {
     fullSft: string;
     adoptionTitle: string;
     noAdoption: string;
-    checkpointIdentity: string;
     weightUpdatedSuffix: string;
     totalActive: string;
     tokensSuffix: string;
@@ -404,12 +396,9 @@ export type Messages = {
     weightUpdated: string;
     weightNotUpdated: string;
     relationError: string;
-    evidenceKicker: string;
-    evidenceTitle: string;
-    evidenceBody: string;
     descriptionSuffix: string;
   };
-  evidence: { kicker: string; title: string; body: string; open: string; dataStatus: string };
+  evidence: { title: string; body: string; open: string; dataStatus: string };
   selector: {
     mode: string;
     task: string;
