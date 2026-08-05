@@ -2,10 +2,10 @@
 // 模型名、论文标题、benchmark 名和必要技术缩写保留原样；通用界面词只输出中文。
 export const zh: Messages = {
   site: {
-    name: 'Model Atlas',
-    fullName: 'Agent Foundation Model Atlas',
+    name: '模型图谱',
+    fullName: '智能体基础模型图谱',
     tagline: '智能体基础模型选择地图',
-    titleSuffix: 'Agent Foundation Model Atlas',
+    titleSuffix: '智能体基础模型图谱',
     defaultDescription: '面向 AI 研究者的基础模型选择与论文采用地图。',
     skipLink: '跳到主要内容',
     backHome: '返回首页',
@@ -19,17 +19,17 @@ export const zh: Messages = {
     mainNav: '主导航',
     openMenu: '打开菜单',
     toggleTheme: '切换深色模式',
-    switchLang: 'English',
+    switchLang: '英文',
     switchLangLabel: '切换到英文',
     dataStatus: '数据状态',
   },
   footer: {
-    mvp: 'Agent Foundation Model Atlas · MVP',
+    mvp: '智能体基础模型图谱 · MVP',
     motto: '数据优先，证据先行。',
   },
   home: {
     pageTitle: '研究者的模型选择入口',
-    heroEyebrow: 'Agent Foundation Model Atlas',
+    heroEyebrow: '',
     heroTitle: '把模型选择，变成一条可核验的研究路径。',
     heroLede: '面向智能体与自进化实验的基础模型地图。先看供应层，再看论文采用层；每个未完成字段都保留明确的证据状态。',
     howToRead: '怎么读这份地图',

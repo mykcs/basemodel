@@ -19,7 +19,7 @@ const vendorCount = new Set(models.map((model) => model.vendor)).size;
 <section class="hero">
   <div class="shell hero-grid">
     <div>
-      <div class="eyebrow">{m.home.heroEyebrow}</div>
+      {locale === 'en' && <div class="eyebrow">{m.home.heroEyebrow}</div>}
       <h1>{m.home.heroTitle}</h1>
       <p class="lede">{m.home.heroLede}</p>
     </div>
