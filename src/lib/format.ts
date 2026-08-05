@@ -85,7 +85,7 @@ export function modelIdentityTrail(model: { name: string; vendor: string; family
   // Vendor strings occasionally include the family (for example
   // "Alibaba / Qwen" or "LMSYS / Vicuna"). Keep only the non-redundant
   // provider part so the eyebrow does not reintroduce the family we removed.
-  const vendor = model.vendor.split('/').map((part) => part.trim()).filter((part) => part && !nameContainsCanonicalName(part, model.family)).join(' / ');
+  const vendor = model.vendor.split('/').map((part) => part.trim()).filter((part) => part && !nameContainsCanonicalName(part, model.family) && !nameContainsCanonicalName(model.name, part)).join(' / ');
   return [vendor, ...modelContextLabels(model)].filter(Boolean);
 }
 

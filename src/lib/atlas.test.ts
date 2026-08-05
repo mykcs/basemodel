@@ -52,6 +52,8 @@ describe('atlas rules', () => {
     expect(isSameCanonicalName('Kimi K2 Instruct', 'Kimi-K2-Instruct')).toBe(true);
     expect(isSameCanonicalName('Gemma 3 4B IT', 'Gemma 3 4B Instruction-Tuned')).toBe(false);
     expect(modelIdentityTrail({ name: 'GPT-4', vendor: 'OpenAI', family: 'GPT', generation: 'GPT-4' })).toEqual(['OpenAI']);
+    expect(modelIdentityTrail({ name: 'DeepSeek-Coder-V2-Lite-Instruct', vendor: 'DeepSeek', family: 'DeepSeek-Coder', generation: 'V2' })).toEqual([]);
+    expect(modelIdentityTrail({ name: 'R1', vendor: 'DeepSeek', family: 'DeepSeek', generation: 'R1' })).toEqual(['DeepSeek']);
     expect(modelContextLabels({ name: 'text-davinci-003', family: 'GPT', generation: 'GPT-3.5' })).toEqual(['GPT-3.5']);
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'zh')).toBe('GPT-4 作为 AgentBench 智能体参与基准测试。');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'en')).toBe('GPT-4 benchmarked as an AgentBench agent.');
