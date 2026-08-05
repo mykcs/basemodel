@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, modalityLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
+import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, licenseLabel, modalityLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
 import { getMessages, type Locale } from '../i18n';
 import type { AtlasModel } from '../lib/types';
 
@@ -22,7 +22,7 @@ export default function ModelComparison({ models, locale = 'zh' }: { models: Atl
     [m.compareRows.specializations, (x) => x.checkpoint.specializations.map((value) => specializationLabel(value, locale)).join(joiner) || m.format.unknown],
     [m.compareRows.checkpoint, (x) => checkpointLabel(x.checkpoint.type, locale)],
     [m.compareRows.openWeights, (x) => displayBoolean(x.openness.weights_available, locale)],
-    [m.compareRows.license, (x) => x.openness.license_name],
+    [m.compareRows.license, (x) => licenseLabel(x.openness.license_name, locale)],
     [m.compareRows.loraSftRl, (x) => `${displayBoolean(x.research.suitable_for_lora, locale)} / ${displayBoolean(x.research.suitable_for_sft, locale)} / ${displayBoolean(x.research.suitable_for_rl, locale)}`],
     [m.compareRows.inferenceTier, (x) => tierLabel(x.hardware.inference_tier, locale)],
     [m.compareRows.dataStatus, (x) => statusLabel(x.data_status, locale)],

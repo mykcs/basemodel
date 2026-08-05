@@ -4,7 +4,7 @@ import { filterModels, matchesExperiment, parseOptionalBooleanParam } from './mo
 import { hardwareFits } from './hardware';
 import { recommendModels } from './recommendation';
 import { papersForModel } from './modelRelations';
-import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
+import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, licenseLabel, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
 import type { AtlasModel, AtlasPaper } from './types';
 
 const baseModel: AtlasModel = { id: 'test-model', name: 'Test Model', vendor: 'Test', family: 'Test', generation: 'v1', release_date: '2026-01-01', status: 'active', checkpoint: { type: 'instruct', modalities: ['text'], specializations: ['general', 'chinese', 'tool-use'] }, architecture: { type: 'dense', total_parameters_b: 3, active_parameters_b: 3, context_length: 8192, expert_count: null, active_experts_per_token: null }, openness: { weights_available: true, base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'unknown', commercial_use_allowed: 'unknown', license_name: 'Demo' }, research: { suitable_for_inference: true, suitable_for_lora: true, suitable_for_sft: true, suitable_for_rl: true, transformers_support: true, vllm_support: true, sglang_support: 'unknown', verl_recipe_available: 'unknown' }, hardware: { inference_tier: '16gb', lora_tier: '24gb', full_sft_tier: '48gb', rl_tier: 'multi_gpu' }, sources: [{ url: 'https://example.com/test', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
@@ -55,6 +55,10 @@ describe('atlas rules', () => {
     expect(modelIdentityTrail({ name: 'DeepSeek-Coder-V2-Lite-Instruct', vendor: 'DeepSeek', family: 'DeepSeek-Coder', generation: 'V2' })).toEqual([]);
     expect(modelIdentityTrail({ name: 'R1', vendor: 'DeepSeek', family: 'DeepSeek', generation: 'R1' })).toEqual(['DeepSeek']);
     expect(modelContextLabels({ name: 'text-davinci-003', family: 'GPT', generation: 'GPT-3.5' })).toEqual(['GPT-3.5']);
+    expect(licenseLabel('Unknown; verify official release', 'zh')).toBe('未知；请核验官方发布');
+    expect(licenseLabel('Unknown; verify current model card', 'zh')).toBe('未知；请核验当前模型卡');
+    expect(licenseLabel('Unknown; verify official release', 'en')).toBe('Unknown; verify official release');
+    expect(licenseLabel('MIT', 'zh')).toBe('MIT');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'zh')).toBe('GPT-4 作为 AgentBench 智能体参与基准测试。');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'en')).toBe('GPT-4 benchmarked as an AgentBench agent.');
     expect(noteLabel('unmapped note', 'zh')).toBe('未知');

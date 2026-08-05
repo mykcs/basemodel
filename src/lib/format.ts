@@ -143,6 +143,18 @@ export function noteLabel(note: string | undefined, locale?: Locale): string {
   return zhRelationNotes[normalized] ?? getMessages(locale).format.unknown;
 }
 
+const zhLicenseNames: Record<string, string> = {
+  'Unknown; verify official release': '未知；请核验官方发布',
+  'Unknown; verify current model card': '未知；请核验当前模型卡',
+};
+
+/** Translate only unresolved license placeholders; proper license names stay unchanged. */
+export function licenseLabel(value: string | undefined, locale?: Locale): string {
+  if (!value) return getMessages(locale).format.unknown;
+  if (locale === 'en') return value;
+  return zhLicenseNames[value] ?? value;
+}
+
 export function parameterSummary(total: unknown, active: unknown, type: string, locale?: Locale): string {
   if (type === 'moe') {
     const totalText = displayUnknown(total, 'B', locale);
