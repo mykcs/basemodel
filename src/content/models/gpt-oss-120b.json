@@ -1,0 +1,17 @@
+{
+  "id": "gpt-oss-120b",
+  "name": "gpt-oss-120b",
+  "official_name": "gpt-oss-120b",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "gpt-oss",
+  "release_date": "2025-08-05",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["reasoning", "coding", "agent", "tool-use"]},
+  "architecture": {"type": "moe", "total_parameters_b": 117, "active_parameters_b": 5.1, "context_length": 128000, "expert_count": 128, "active_experts_per_token": 4},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Apache 2.0"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": "unknown", "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "80gb", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://openai.com/index/introducing-gpt-oss/", "type": "official_docs", "checked_at": "2026-08-05"}, {"url": "https://openai.com/index/gpt-oss-model-card/", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "verified"
+}

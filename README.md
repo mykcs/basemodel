@@ -43,7 +43,7 @@ PUBLIC_SITE_URL=https://OWNER.github.io PUBLIC_BASE_PATH=/REPOSITORY npm run bui
 
 真实数据必须来自官方模型卡、官方文档、论文、代码仓库或 benchmark 页面，并记录最后核验日期。`verified` 表示关键字段已有可靠来源；`partial` 表示仍有字段未核验；`demo` 是仅用于演示关系和页面的占位记录；`unknown` 表示当前没有足够证据。`unknown` 不等于 `false`。
 
-当前初始记录全部是明确标记的 `demo` 数据，来源使用 `example.com` 占位，不能作为研究事实引用。批量录入真实资料前，应逐条替换名称、参数、许可证、兼容性、论文关系和来源。
+仓库保留少量明确标记的 `demo` 记录，用于演示论文关系和页面行为；新增的主流模型记录使用官方模型卡、官方文档或官方代码仓库，并按字段完整度标记为 `verified` 或 `partial`。`partial` 记录可以用于浏览和候选发现，但在论文或实验报告中引用前仍应复核模型卡的版本、许可证和硬件要求。
 
 ## GitHub Pages
 

@@ -1,0 +1,17 @@
+{
+  "id": "gpt-5-mini",
+  "name": "GPT-5 mini",
+  "official_name": "GPT-5 mini",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "GPT-5",
+  "release_date": "2025-08-07",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text", "image"], "specializations": ["reasoning", "coding", "agent", "tool-use", "lower-cost"]},
+  "architecture": {"type": "other", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": "unknown", "derivative_release_allowed": false, "commercial_use_allowed": "unknown", "license_name": "OpenAI API terms; not a weight license"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": "unknown", "transformers_support": false, "vllm_support": false, "sglang_support": false, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [{"url": "https://openai.com/index/introducing-gpt-5-for-developers/", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "data_status": "verified"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "mistral-large-3",
+  "name": "Mistral Large 3",
+  "official_name": "Mistral Large 3",
+  "vendor": "Mistral AI",
+  "family": "Mistral",
+  "generation": "Large 3",
+  "release_date": "2025-12-01",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["general", "multilingual", "multimodal", "agent", "coding"]},
+  "architecture": {"type": "moe", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Apache 2.0 (verify model card)"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": "unknown", "vllm_support": true, "sglang_support": "unknown", "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://docs.mistral.ai/models", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

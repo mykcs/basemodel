@@ -1,0 +1,17 @@
+{
+  "id": "llama-4-scout-17b-16e",
+  "name": "Llama 4 Scout 17B-16E",
+  "official_name": "Llama 4 Scout 17B-16E Instruct",
+  "vendor": "Meta",
+  "family": "Llama",
+  "generation": "Llama 4",
+  "release_date": "2025-04-05",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["general", "multilingual", "multimodal", "agent"]},
+  "architecture": {"type": "moe", "total_parameters_b": 109, "active_parameters_b": 17, "context_length": 10000000, "expert_count": 16, "active_experts_per_token": 1},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Llama 4 Community License"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "80gb", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E", "type": "official_model_card", "checked_at": "2026-08-05"}, {"url": "https://ai.meta.com/llama/get-started/", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "gemma-4",
+  "name": "Gemma 4",
+  "official_name": "Gemma 4",
+  "vendor": "Google",
+  "family": "Gemma",
+  "generation": "Gemma 4",
+  "release_date": "2026-04-02",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "audio"], "specializations": ["general", "multilingual", "multimodal", "tool-use"]},
+  "architecture": {"type": "other", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": 256000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Gemma Terms of Use"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": "unknown", "vllm_support": "unknown", "sglang_support": "unknown", "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "48gb", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://ai.google.dev/gemma/docs", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

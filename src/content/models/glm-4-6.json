@@ -1,0 +1,17 @@
+{
+  "id": "glm-4-6",
+  "name": "GLM-4.6",
+  "official_name": "GLM-4.6",
+  "vendor": "Zhipu AI / Z.ai",
+  "family": "GLM",
+  "generation": "GLM-4.6",
+  "release_date": "2025-09-30",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["reasoning", "coding", "agent", "tool-use", "chinese"]},
+  "architecture": {"type": "moe", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Unknown; verify official release"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://github.com/zai-org/GLM-4.5", "type": "code", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}
