@@ -82,7 +82,11 @@ export function modelContextLabels(model: { name: string; family: string; genera
 
 /** Labels suitable for the small context line immediately above a model title. */
 export function modelIdentityTrail(model: { name: string; vendor: string; family: string; generation: string }): string[] {
-  return [model.vendor, ...modelContextLabels(model)];
+  // Vendor strings occasionally include the family (for example
+  // "Alibaba / Qwen" or "LMSYS / Vicuna"). Keep only the non-redundant
+  // provider part so the eyebrow does not reintroduce the family we removed.
+  const vendor = model.vendor.split('/').map((part) => part.trim()).filter((part) => part && !nameContainsCanonicalName(part, model.family)).join(' / ');
+  return [vendor, ...modelContextLabels(model)].filter(Boolean);
 }
 
 const zhRelationNotes: Record<string, string> = {
