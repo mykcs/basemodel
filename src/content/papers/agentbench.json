@@ -4,7 +4,7 @@
   "published_at": "2023-08-07",
   "paper_url": "https://arxiv.org/abs/2308.03688",
   "code_url": "https://github.com/THUDM/AgentBench",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "reasoning",

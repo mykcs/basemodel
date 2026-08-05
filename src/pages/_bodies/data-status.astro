@@ -9,8 +9,11 @@ interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
+const papers = (await getCollection('papers')).map((entry) => entry.data);
 const health = buildDataHealth(models, vendorsFile.vendors as VendorCoverage[], familiesFile.families as FamilyCoverage[]);
+health.semanticGaps.not_published += papers.filter((paper) => paper.checkpoint_url === 'not_published').length;
 const blockingIssues = health.issues.filter((issue) => issue.severity === 'error');
+const semanticLabel = (state: string) => m.format.semanticStatus[state as keyof typeof m.format.semanticStatus] ?? m.format.unknown;
 ---
 <div class="shell">
   <header class="page-header">
@@ -32,6 +35,13 @@ const blockingIssues = health.issues.filter((issue) => issue.severity === 'error
       <tbody>{health.vendorCoverage.map(({ vendor, modelCount, latestRelease, stale }) => <tr><th scope="row">{vendor.name}</th><td>{modelCount}</td><td>{latestRelease}</td><td>{stale}</td></tr>)}</tbody>
     </table></div>
     <p class="muted">{m.dataStatus.staleNote}</p>
+  </section>
+  <section class="section" aria-labelledby="semantic-gaps-title">
+    <div class="section-heading"><div><h2 id="semantic-gaps-title">{m.dataStatus.semanticGaps}</h2></div></div>
+    <div class="comparison-table-wrap"><table>
+      <thead><tr><th>{m.dataStatus.semanticState}</th><th>{m.dataStatus.fields}</th></tr></thead>
+      <tbody>{Object.entries(health.semanticGaps).map(([state, count]) => <tr><th scope="row">{semanticLabel(state)}</th><td>{count}</td></tr>)}</tbody>
+    </table></div>
   </section>
   <section class="section" aria-labelledby="generation-title">
     <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2></div></div>

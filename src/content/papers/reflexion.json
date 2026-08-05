@@ -4,7 +4,7 @@
   "published_at": "2023-03-20",
   "paper_url": "https://arxiv.org/abs/2303.11366",
   "code_url": "https://github.com/noahshinn/reflexion",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "reflection",

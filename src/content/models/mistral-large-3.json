@@ -7,11 +7,65 @@
   "generation": "Large 3",
   "release_date": "2025-12-01",
   "status": "active",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["general", "multilingual", "multimodal", "agent", "coding"]},
-  "architecture": {"type": "moe", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Apache 2.0 (verify model card)"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": "unknown", "vllm_support": true, "sglang_support": "unknown", "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://docs.mistral.ai/models", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "multimodal",
+      "agent",
+      "coding"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 675,
+    "active_parameters_b": 41,
+    "context_length": 256000,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": true,
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Official Mistral model card documents 675B total, 41B active, 256k context, open weights and Apache-2.0 licensing."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Mistral official model card states 41B active parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card lists 256k context Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card states 675B total parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card describes model as open-weight Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card links Apache 2.0 legal terms; Apache 2.0 permits commercial use Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card labels weights as open; downstream commercial terms are governed by Apache 2.0 license Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06. Mistral official model card legal link identifies Apache 2.0 license Source checked https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12 on 2026-08-06."
+    }
+  ],
   "data_status": "partial"
 }

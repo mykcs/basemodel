@@ -4,7 +4,7 @@
   "published_at": "2024-07-26",
   "paper_url": "https://arxiv.org/abs/2407.18901",
   "code_url": "https://github.com/stonybrooknlp/appworld",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "tool-use",

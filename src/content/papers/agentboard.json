@@ -4,7 +4,7 @@
   "published_at": "2024-01-23",
   "paper_url": "https://arxiv.org/abs/2401.12863",
   "code_url": "https://github.com/hkust-nlp/AgentBoard",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "reasoning",

@@ -4,7 +4,7 @@
   "published_at": "2024-05-27",
   "paper_url": "https://arxiv.org/abs/2405.17193",
   "code_url": "https://github.com/princeton-nlp/SWE-agent",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "tool-use",

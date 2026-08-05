@@ -7,11 +7,57 @@
   "generation": "Mistral Small",
   "release_date": "2025-01-28",
   "status": "active",
-  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "agent", "tool-use", "multilingual", "chat"]},
-  "architecture": {"type": "dense", "total_parameters_b": 24, "active_parameters_b": 24, "context_length": 32768, "expert_count": null, "active_experts_per_token": null},
-  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Apache-2.0"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "48gb", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "agent",
+      "tool-use",
+      "multilingual",
+      "chat"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 24,
+    "active_parameters_b": 24,
+    "context_length": 32768,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "80gb",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501",
+      "type": "official_model_card",
+      "checked_at": "2026-08-05"
+    }
+  ],
   "data_status": "partial"
 }

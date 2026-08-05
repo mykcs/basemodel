@@ -7,11 +7,56 @@
   "generation": "K2",
   "release_date": "2025-07-11",
   "status": "active",
-  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "coding", "agent", "tool-use"]},
-  "architecture": {"type": "moe", "total_parameters_b": 1000, "active_parameters_b": 32, "context_length": 128000, "expert_count": 384, "active_experts_per_token": 8},
-  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Modified MIT"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": "unknown", "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "coding",
+      "agent",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 1000,
+    "active_parameters_b": 32,
+    "context_length": 128000,
+    "expert_count": 384,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Modified MIT"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
+      "type": "official_model_card",
+      "checked_at": "2026-08-05"
+    }
+  ],
   "data_status": "verified"
 }

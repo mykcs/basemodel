@@ -4,7 +4,7 @@
   "published_at": "2023-05-19",
   "paper_url": "https://arxiv.org/abs/2305.11738",
   "code_url": "https://github.com/microsoft/ProphetNet/tree/master/CRITIC",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "reflection",

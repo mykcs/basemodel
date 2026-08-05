@@ -4,7 +4,7 @@
   "published_at": "2023-04-19",
   "paper_url": "https://arxiv.org/abs/2304.09842",
   "code_url": "https://github.com/lupantech/chameleon-llm",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "tool-use",
     "reasoning",

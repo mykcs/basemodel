@@ -9,17 +9,27 @@ const models = read(path.join(root, 'src/content/models')).map((value) => modelS
 const papers = read(path.join(root, 'src/content/papers')).map((value) => paperSchema.parse(value));
 const urls = [...new Set([...models, ...papers].flatMap((record) => record.sources.map((source) => source.url)))];
 const check = async (url: string) => {
-  try {
-    const response = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(8000) });
-    return { url, status: response.status, ok: response.ok || response.status === 405 };
-  } catch (error) {
-    return { url, status: 0, ok: false, error: error instanceof Error ? error.message : String(error) };
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const head = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(12000) });
+      if (head.ok || head.status === 405) return { url, status: head.status, ok: true, method: 'HEAD' as const };
+      // Some first-party sites reject HEAD (403) while serving the same page to readers.
+      // Retry with GET before marking a source unhealthy; genuine 404s remain warnings.
+      const response = await fetch(url, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(12000) });
+      return { url, status: response.status, ok: response.ok || response.status === 429, rate_limited: response.status === 429, method: 'GET' as const };
+    } catch (error) {
+      lastError = error;
+    }
   }
+  return { url, status: 0, ok: false, error: lastError instanceof Error ? lastError.message : String(lastError) };
 };
 const results = await Promise.all(urls.map(check));
 const reportDir = path.join(root, 'reports');
 fs.mkdirSync(reportDir, { recursive: true });
 fs.writeFileSync(path.join(reportDir, 'source-health.json'), JSON.stringify(results, null, 2) + '\n');
 const failed = results.filter((result) => !result.ok);
+const rateLimited = results.filter((result) => result.rate_limited);
 console.log(`Checked ${results.length} unique source URLs; ${failed.length} unreachable or non-success responses.`);
+if (rateLimited.length) console.log(`INFO ${rateLimited.length} sources returned HTTP 429 (URL reachable; automated verification was rate-limited).`);
 for (const result of failed) console.log(`WARNING ${result.url}: ${result.status || result.error}`);

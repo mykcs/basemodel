@@ -7,11 +7,58 @@
   "generation": "GLM-4.5",
   "release_date": "2025-07-28",
   "status": "active",
-  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["reasoning", "coding", "agent", "tool-use", "chinese"]},
-  "architecture": {"type": "moe", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": "unknown", "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Unknown; verify official release"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://github.com/zai-org/GLM-4.5", "type": "code", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "chinese"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 355,
+    "active_parameters_b": 32,
+    "context_length": 131072,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/zai-org/GLM-4.5",
+      "type": "code",
+      "checked_at": "2026-08-05",
+      "evidence_note": "Z.AI official GLM repository model table identifies glm-4-5 as 355B-A32B Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Z.AI official documentation: GLM.4.5 context window 131K tokens Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Z.AI official GLM repository model table identifies glm-4-5 family as 355B-A32B; README states 355B total and 32B active for GLM-4.5 and download table applies 355B-A32B to GLM-4.6/4.7 Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README states base models are open-sourced and download table lists base checkpoints Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README states models can be used commercially Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README states models can be used for secondary development Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README states GLM-4.5 series released under MIT open-source license Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README says model code/parser implemented in SGLang Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README fine-tuning table lists LoRA configurations for GLM-4.5/4.5-Air; applies to published GLM weights, not necessarily every API variant Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README fine-tuning table lists RL configurations for GLM-4.5/4.5-Air; applies to published GLM weights, not necessarily every API variant Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README fine-tuning table lists SFT configurations for GLM-4.5/4.5-Air; applies to published GLM weights, not necessarily every API variant Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README says model code is implemented in Transformers Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06. Official README says model code/parser implemented in vLLM Source checked https://github.com/zai-org/GLM-4.5 on 2026-08-06."
+    }
+  ],
   "data_status": "partial"
 }

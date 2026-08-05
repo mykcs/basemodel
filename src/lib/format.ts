@@ -1,17 +1,25 @@
 import { getMessages, type Locale } from '../i18n';
+import type { SemanticStatus } from './schemas';
 
 // 存储枚举只在数据层使用；所有可见枚举都经过这里的 locale formatter。
 
+export function semanticStatusLabel(value: SemanticStatus | string, locale?: Locale): string {
+  const m = getMessages(locale);
+  return (m.format.semanticStatus as Record<string, string>)[value] ?? m.format.unknown;
+}
+
 export function displayUnknown(value: unknown, suffix = '', locale?: Locale): string {
   const m = getMessages(locale);
+  if (typeof value === 'string' && value in m.format.semanticStatus) return semanticStatusLabel(value, locale);
   if (value === null || value === undefined || value === 'unknown') return m.format.unknown;
   if (typeof value === 'boolean') return value ? m.format.yes : m.format.no;
   return `${value}${suffix}`;
 }
 
-export function displayBoolean(value: boolean | 'unknown', locale?: Locale): string {
+export function displayBoolean(value: boolean | SemanticStatus | 'unknown', locale?: Locale): string {
   const m = getMessages(locale);
-  return value === 'unknown' ? m.format.unknown : value ? m.format.yes : m.format.no;
+  if (typeof value === 'string') return value === 'unknown' ? m.format.unknown : semanticStatusLabel(value, locale);
+  return value ? m.format.yes : m.format.no;
 }
 
 export function statusLabel(status: string, locale?: Locale): string {
@@ -21,6 +29,7 @@ export function statusLabel(status: string, locale?: Locale): string {
 
 export function tierLabel(tier: string, locale?: Locale): string {
   const m = getMessages(locale);
+  if (tier in m.format.semanticStatus) return semanticStatusLabel(tier, locale);
   return (m.format.tier as Record<string, string>)[tier] ?? m.format.unknown;
 }
 
@@ -144,18 +153,19 @@ export function noteLabel(note: string | undefined, locale?: Locale): string {
 }
 
 const zhLicenseNames: Record<string, string> = {
-  'Unknown; verify official release': '未知；请核验官方发布',
-  'Unknown; verify current model card': '未知；请核验当前模型卡',
+  'Unknown; verify official release': '待核验；请查看官方发布',
+  'Unknown; verify current model card': '待核验；请查看当前模型卡',
   'Provider API terms': '提供方 API 条款',
   'OpenAI API terms; not a weight license': 'OpenAI API 条款；非权重许可证',
-  'MIT (verify model card)': 'MIT（请核验模型卡）',
-  'Apache 2.0 (verify model card)': 'Apache 2.0（请核验模型卡）',
+  'MIT (verify model card)': 'MIT（模型卡待核验）',
+  'Apache 2.0 (verify model card)': 'Apache 2.0（模型卡待核验）',
   'Non-commercial (derived from LLaMA)': '非商业用途（源自 LLaMA）',
 };
 
 /** Translate only unresolved license placeholders; proper license names stay unchanged. */
-export function licenseLabel(value: string | undefined, locale?: Locale): string {
+export function licenseLabel(value: string | SemanticStatus | undefined, locale?: Locale): string {
   if (!value) return getMessages(locale).format.unknown;
+  if (value in getMessages(locale).format.semanticStatus) return semanticStatusLabel(value, locale);
   if (locale === 'en') return value;
   return zhLicenseNames[value] ?? value;
 }

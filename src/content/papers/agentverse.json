@@ -4,7 +4,7 @@
   "published_at": "2023-08-21",
   "paper_url": "https://arxiv.org/abs/2308.10848",
   "code_url": "https://github.com/OpenBMB/AgentVerse",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "multi-agent",
     "self-evolving-agent",

@@ -2,6 +2,7 @@ import { hardwareFits } from './hardware';
 import { lifecycleLabel, specializationLabel, taskLabel, tierLabel } from './format';
 import type { Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from './types';
+import type { SemanticStatus } from './schemas';
 
 export type ModelFilters = {
   query?: string;
@@ -26,8 +27,8 @@ export function parseOptionalBooleanParam(value: string | null): boolean | undef
 }
 
 const normalized = (value: string) => value.trim().toLowerCase();
-const matchesBoolean = (value: boolean | 'unknown', expected?: boolean) => expected === undefined || value === expected;
-const numericParams = (value: number | null | 'unknown') => (typeof value === 'number' ? value : null);
+const matchesBoolean = (value: boolean | SemanticStatus, expected?: boolean) => expected === undefined || value === expected;
+const numericParams = (value: number | SemanticStatus) => (typeof value === 'number' ? value : null);
 
 export function filterModels(models: AtlasModel[], filters: ModelFilters, paperModelIds?: Set<string>): AtlasModel[] {
   const query = normalized(filters.query ?? '');
@@ -62,7 +63,7 @@ export function sortModels(models: AtlasModel[], key: 'release' | 'parameters' |
   });
 }
 
-function numeric(value: number | null | 'unknown') {
+function numeric(value: number | SemanticStatus) {
   return typeof value === 'number' ? value : -1;
 }
 
@@ -71,7 +72,7 @@ export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task:
   const missing: string[] = [];
   const en = locale === 'en';
   const copy = {
-    unknown: en ? 'unknown' : '未知',
+    unknown: en ? 'pending verification' : '待核验',
     instruction: en ? 'Instruction following' : '指令遵循',
     toolUse: en ? 'Tool-use specialization' : '工具调用专长',
     hardwareKnown: en ? 'Known hardware tier' : '硬件档位已知',
@@ -89,9 +90,9 @@ export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task:
     weightsAvailable: en ? 'Weights available' : '权重可获取',
     active: en ? `Current status: ${lifecycleLabel('active', locale)}` : `当前状态：${lifecycleLabel('active', locale)}`,
   };
-  const check = (condition: boolean | 'unknown', yes: string, no: string) => {
+  const check = (condition: boolean | SemanticStatus, yes: string, no: string) => {
     if (condition === true) matched.push(yes);
-    else missing.push(condition === 'unknown' ? `${no} (${copy.unknown})` : no);
+    else missing.push(condition === 'not_verified' ? `${no} (${copy.unknown})` : no);
   };
 
   if (mode === 'harness') {

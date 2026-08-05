@@ -10,8 +10,9 @@
     "validate": "tsx scripts/validate-data.ts && tsx scripts/check-relations.ts",
     "audit:freshness": "tsx scripts/audit-freshness.ts",
     "audit:coverage": "tsx scripts/audit-coverage.ts",
+    "audit:semantic": "tsx scripts/audit-semantic-gaps.ts",
     "audit:urls": "tsx scripts/check-source-health.ts",
-    "audit": "npm run validate && npm run audit:freshness && npm run audit:coverage",
+    "audit": "npm run validate && npm run audit:semantic && npm run audit:freshness && npm run audit:coverage",
     "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview"

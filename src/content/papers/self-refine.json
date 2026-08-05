@@ -4,7 +4,7 @@
   "published_at": "2023-03-31",
   "paper_url": "https://arxiv.org/abs/2303.17651",
   "code_url": "https://github.com/madaan/self-refine",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "reflection",

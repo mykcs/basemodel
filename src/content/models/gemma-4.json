@@ -7,11 +7,64 @@
   "generation": "Gemma 4",
   "release_date": "2026-04-02",
   "status": "active",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image", "audio"], "specializations": ["general", "multilingual", "multimodal", "tool-use"]},
-  "architecture": {"type": "other", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": 256000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Gemma Terms of Use"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": "unknown", "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": "unknown", "vllm_support": "unknown", "sglang_support": "unknown", "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "48gb", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://ai.google.dev/gemma/docs", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image",
+      "audio"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "multimodal",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": 256000,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_verified",
+    "finetuning_allowed": true,
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Apache-2.0"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "80gb",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://ai.google.dev/gemma/docs",
+      "type": "official_docs",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Google official Gemma 4 model card lists License: Apache 2.0 Source checked https://ai.google.dev/gemma/docs/core/model_card_4 on 2026-08-06."
+    }
+  ],
   "data_status": "partial"
 }

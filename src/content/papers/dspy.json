@@ -4,7 +4,7 @@
   "published_at": "2023-10-05",
   "paper_url": "https://arxiv.org/abs/2310.03714",
   "code_url": "https://github.com/stanfordnlp/dspy",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "prompt-evolution",

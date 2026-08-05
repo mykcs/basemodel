@@ -4,7 +4,7 @@
   "published_at": "2024-07-24",
   "paper_url": "https://arxiv.org/abs/2407.16741",
   "code_url": "https://github.com/All-Hands-AI/OpenHands",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "tool-use",

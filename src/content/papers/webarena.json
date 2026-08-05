@@ -4,7 +4,7 @@
   "published_at": "2023-07-25",
   "paper_url": "https://arxiv.org/abs/2307.13854",
   "code_url": "https://github.com/web-arena-x/webarena",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "web-agent",
     "tool-use",

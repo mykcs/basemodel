@@ -7,11 +7,64 @@
   "generation": "Llama 4",
   "release_date": "2025-04-05",
   "status": "active",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["general", "multilingual", "multimodal", "agent"]},
-  "architecture": {"type": "moe", "total_parameters_b": 400, "active_parameters_b": 17, "context_length": 1000000, "expert_count": 128, "active_experts_per_token": 1},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": "unknown", "commercial_use_allowed": "unknown", "license_name": "Llama 4 Community License"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": "unknown", "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct", "type": "official_model_card", "checked_at": "2026-08-05"}, {"url": "https://ai.meta.com/llama/get-started/", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "multimodal",
+      "agent"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 400,
+    "active_parameters_b": 17,
+    "context_length": 1000000,
+    "expert_count": 128,
+    "active_experts_per_token": 1
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Llama 4 Community License"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct",
+      "type": "official_model_card",
+      "checked_at": "2026-08-05",
+      "evidence_note": "Official Hugging Face model card metadata base_model=['meta-llama/Llama-4-Maverick-17B-128E'] Source checked https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct on 2026-08-06."
+    },
+    {
+      "url": "https://www.llama.com/models/llama-4/",
+      "type": "official_docs",
+      "checked_at": "2026-08-05",
+      "evidence_note": "Meta's official Llama 4 model page lists the Llama 4 family and links the current release documentation Source checked https://www.llama.com/models/llama-4/ on 2026-08-06."
+    }
+  ],
   "data_status": "partial"
 }

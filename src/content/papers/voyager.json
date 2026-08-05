@@ -4,7 +4,7 @@
   "published_at": "2023-05-26",
   "paper_url": "https://arxiv.org/abs/2305.16291",
   "code_url": "https://github.com/MineDojo/Voyager",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "tool-use",

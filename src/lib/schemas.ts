@@ -1,14 +1,24 @@
 import { z } from 'zod';
 
-export const unknownBoolean = z.union([z.boolean(), z.literal('unknown')]);
-export const unknownNumber = z.union([z.number(), z.null(), z.literal('unknown')]);
-export const urlOrUnknown = z.union([z.url(), z.literal('unknown')]);
+/** A missing value is a data state, not a numeric/boolean fact. */
+export const semanticStatus = z.enum([
+  'not_disclosed',
+  'not_applicable',
+  'not_reported',
+  'not_verified',
+  'not_published',
+  'unavailable',
+]);
+export const unknownBoolean = z.union([z.boolean(), semanticStatus]);
+export const unknownNumber = z.union([z.number(), semanticStatus]);
+export const urlOrUnknown = z.union([z.url(), semanticStatus]);
 export const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY-MM-DD');
 
 export const sourceSchema = z.object({
   url: z.url(),
   type: z.enum(['official_model_card', 'official_docs', 'paper', 'code', 'benchmark', 'demo_record']),
   checked_at: dateString,
+  evidence_note: z.string().min(1).optional(),
 });
 
 export const modelSchema = z.object({
@@ -39,7 +49,7 @@ export const modelSchema = z.object({
     finetuning_allowed: unknownBoolean,
     derivative_release_allowed: unknownBoolean,
     commercial_use_allowed: unknownBoolean,
-    license_name: z.string().min(1),
+    license_name: z.union([z.string().min(1), semanticStatus]),
   }),
   research: z.object({
     suitable_for_inference: unknownBoolean,
@@ -52,10 +62,10 @@ export const modelSchema = z.object({
     verl_recipe_available: unknownBoolean,
   }),
   hardware: z.object({
-    inference_tier: z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']),
-    lora_tier: z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']),
-    full_sft_tier: z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']),
-    rl_tier: z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']),
+    inference_tier: z.union([z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']), semanticStatus]),
+    lora_tier: z.union([z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']), semanticStatus]),
+    full_sft_tier: z.union([z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']), semanticStatus]),
+    rl_tier: z.union([z.enum(['cpu_mac', '16gb', '24gb', '48gb', '80gb', 'multi_gpu', 'api_only', 'unknown']), semanticStatus]),
   }),
   sources: z.array(sourceSchema).min(1),
   data_status: z.enum(['verified', 'partial', 'demo', 'unknown']),
@@ -88,4 +98,5 @@ export type AtlasPaper = z.infer<typeof paperSchema>;
 export type PaperModelUse = z.infer<typeof paperModelSchema>;
 export type DataStatus = AtlasModel['data_status'];
 export type UnknownBoolean = z.infer<typeof unknownBoolean>;
+export type SemanticStatus = z.infer<typeof semanticStatus>;
 export type HardwareTier = AtlasModel['hardware']['inference_tier'];

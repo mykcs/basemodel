@@ -8,8 +8,8 @@ import { buildDataHealth } from './dataHealth';
 import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, licenseLabel, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
 import type { AtlasModel, AtlasPaper } from './types';
 
-const baseModel: AtlasModel = { id: 'test-model', name: 'Test Model', vendor: 'Test', family: 'Test', generation: 'v1', release_date: '2026-01-01', status: 'active', checkpoint: { type: 'instruct', modalities: ['text'], specializations: ['general', 'chinese', 'tool-use'] }, architecture: { type: 'dense', total_parameters_b: 3, active_parameters_b: 3, context_length: 8192, expert_count: null, active_experts_per_token: null }, openness: { weights_available: true, base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'unknown', commercial_use_allowed: 'unknown', license_name: 'Demo' }, research: { suitable_for_inference: true, suitable_for_lora: true, suitable_for_sft: true, suitable_for_rl: true, transformers_support: true, vllm_support: true, sglang_support: 'unknown', verl_recipe_available: 'unknown' }, hardware: { inference_tier: '16gb', lora_tier: '24gb', full_sft_tier: '48gb', rl_tier: 'multi_gpu' }, sources: [{ url: 'https://example.com/test', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
-const paper: AtlasPaper = { id: 'test-paper', title: 'Test Paper', published_at: '2026-01-01', paper_url: 'https://example.com/paper', code_url: 'unknown', checkpoint_url: 'unknown', category: ['demo'], models: [{ model_id: 'test-model', role: 'policy', weight_updated: true }], evolution_targets: ['policy-weights'], benchmarks: ['Demo'], sources: [{ url: 'https://example.com/paper-source', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
+const baseModel: AtlasModel = { id: 'test-model', name: 'Test Model', vendor: 'Test', family: 'Test', generation: 'v1', release_date: '2026-01-01', status: 'active', checkpoint: { type: 'instruct', modalities: ['text'], specializations: ['general', 'chinese', 'tool-use'] }, architecture: { type: 'dense', total_parameters_b: 3, active_parameters_b: 3, context_length: 8192, expert_count: 'not_applicable', active_experts_per_token: 'not_applicable' }, openness: { weights_available: true, base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'not_verified', commercial_use_allowed: 'not_verified', license_name: 'Demo' }, research: { suitable_for_inference: true, suitable_for_lora: true, suitable_for_sft: true, suitable_for_rl: true, transformers_support: true, vllm_support: true, sglang_support: 'not_verified', verl_recipe_available: 'not_verified' }, hardware: { inference_tier: '16gb', lora_tier: '24gb', full_sft_tier: '48gb', rl_tier: 'multi_gpu' }, sources: [{ url: 'https://example.com/test', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
+const paper: AtlasPaper = { id: 'test-paper', title: 'Test Paper', published_at: '2026-01-01', paper_url: 'https://example.com/paper', code_url: 'not_verified', checkpoint_url: 'not_published', category: ['demo'], models: [{ model_id: 'test-model', role: 'policy', weight_updated: true }], evolution_targets: ['policy-weights'], benchmarks: ['Demo'], sources: [{ url: 'https://example.com/paper-source', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
 const paperNotes = readdirSync(new URL('../content/papers/', import.meta.url), { withFileTypes: true })
   .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
   .flatMap((entry) => {
@@ -25,7 +25,7 @@ describe('atlas rules', () => {
     expect(parseOptionalBooleanParam('true')).toBe(true);
     expect(parseOptionalBooleanParam('false')).toBe(false);
   });
-  it('preserves unknown hardware as unknown', () => expect(hardwareFits({ ...baseModel, hardware: { ...baseModel.hardware, inference_tier: 'unknown' } }, 'inference', '24gb')).toBe('unknown'));
+  it('preserves an unverified hardware tier as a semantic gap', () => expect(hardwareFits({ ...baseModel, hardware: { ...baseModel.hardware, inference_tier: 'not_verified' } }, 'inference', '24gb')).toBe('not_verified'));
   it('treats a larger available tier as sufficient', () => expect(hardwareFits(baseModel, 'inference', '24gb')).toBe(true));
   it('returns a candidate when the rule conditions match', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'chinese', resource: '24gb', goal: 'open_weights' })[0].candidate).toBe(true));
   // 弱证据：模型只有泛化 tool-use 专长时，webshop 方向应命中相近方向（relatedTo 反向映射）
@@ -40,7 +40,7 @@ describe('atlas rules', () => {
     expect(evolutionTargetLabel('planning-policy', 'zh')).toBe('规划策略');
     expect(taskLabel('webshop', 'zh')).toBe('WebShop 网页导航');
     expect(tierLabel('24gb', 'zh')).toBe('24GB GPU');
-    expect(roleLabel('future-role', 'zh')).toBe('未知');
+    expect(roleLabel('future-role', 'zh')).toBe('待核验');
   });
   it('does not leak raw resource or task enums in selector evidence', () => {
     const explanation = matchesExperiment(baseModel, 'inference', 'webshop', '24gb', 'current', 'zh');
@@ -56,18 +56,18 @@ describe('atlas rules', () => {
     expect(modelIdentityTrail({ name: 'DeepSeek-Coder-V2-Lite-Instruct', vendor: 'DeepSeek', family: 'DeepSeek-Coder', generation: 'V2' })).toEqual([]);
     expect(modelIdentityTrail({ name: 'R1', vendor: 'DeepSeek', family: 'DeepSeek', generation: 'R1' })).toEqual(['DeepSeek']);
     expect(modelContextLabels({ name: 'text-davinci-003', family: 'GPT', generation: 'GPT-3.5' })).toEqual(['GPT-3.5']);
-    expect(licenseLabel('Unknown; verify official release', 'zh')).toBe('未知；请核验官方发布');
-    expect(licenseLabel('Unknown; verify current model card', 'zh')).toBe('未知；请核验当前模型卡');
+    expect(licenseLabel('Unknown; verify official release', 'zh')).toBe('待核验；请查看官方发布');
+    expect(licenseLabel('Unknown; verify current model card', 'zh')).toBe('待核验；请查看当前模型卡');
     expect(licenseLabel('Unknown; verify official release', 'en')).toBe('Unknown; verify official release');
     expect(licenseLabel('Provider API terms', 'zh')).toBe('提供方 API 条款');
     expect(licenseLabel('OpenAI API terms; not a weight license', 'zh')).toBe('OpenAI API 条款；非权重许可证');
-    expect(licenseLabel('MIT (verify model card)', 'zh')).toBe('MIT（请核验模型卡）');
-    expect(licenseLabel('Apache 2.0 (verify model card)', 'zh')).toBe('Apache 2.0（请核验模型卡）');
+    expect(licenseLabel('MIT (verify model card)', 'zh')).toBe('MIT（模型卡待核验）');
+    expect(licenseLabel('Apache 2.0 (verify model card)', 'zh')).toBe('Apache 2.0（模型卡待核验）');
     expect(licenseLabel('Non-commercial (derived from LLaMA)', 'zh')).toBe('非商业用途（源自 LLaMA）');
     expect(licenseLabel('MIT', 'zh')).toBe('MIT');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'zh')).toBe('GPT-4 作为 AgentBench 智能体参与基准测试。');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'en')).toBe('GPT-4 benchmarked as an AgentBench agent.');
-    expect(noteLabel('unmapped note', 'zh')).toBe('未知');
+    expect(noteLabel('unmapped note', 'zh')).toBe('待核验');
   });
   it('localizes every stored paper relation note while preserving English originals', () => {
     expect(paperNotes.length).toBeGreaterThan(0);

@@ -4,7 +4,7 @@
   "published_at": "2023-04-07",
   "paper_url": "https://arxiv.org/abs/2304.03442",
   "code_url": "https://github.com/joonspk-research/generative_agents",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "multi-agent",
     "self-evolving-agent",

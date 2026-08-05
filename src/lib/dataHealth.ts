@@ -1,4 +1,4 @@
-import type { AtlasModel } from './schemas';
+import type { AtlasModel, SemanticStatus } from './schemas';
 
 export type VendorCoverage = {
   id: string;
@@ -24,6 +24,7 @@ export type DataHealth = {
   staleModels: number;
   partialOrUnknown: number;
   verified: number;
+  semanticGaps: Record<SemanticStatus, number>;
   issues: FreshnessIssue[];
   vendorCoverage: Array<{ vendor: VendorCoverage; modelCount: number; latestRelease: string; stale: number }>;
   familyCoverage: Array<{ family: FamilyCoverage; modelCount: number; generationPresent: boolean; modelIds: string[] }>;
@@ -100,12 +101,21 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
     return { family, modelCount: owned.length, generationPresent, modelIds };
   });
 
+  const semanticStates: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
+  const semanticGaps = Object.fromEntries(semanticStates.map((state) => [state, 0])) as Record<SemanticStatus, number>;
+  const countSemantic = (value: unknown): void => {
+    if (typeof value === 'string' && semanticStates.includes(value as SemanticStatus)) semanticGaps[value as SemanticStatus] += 1;
+    else if (Array.isArray(value)) value.forEach(countSemantic);
+    else if (value && typeof value === 'object') Object.values(value).forEach(countSemantic);
+  };
+  models.forEach(countSemantic);
   return {
     totalModels: models.length,
     recentModels: models.filter((model) => { const checked = latestCheckedAt(model); return checked ? ageDays(checked, now) <= 30 : false; }).length,
     staleModels: new Set(issues.filter((issue) => issue.reason === 'stale-source').map((issue) => issue.modelId)).size,
     partialOrUnknown: models.filter((model) => model.data_status === 'partial' || model.data_status === 'unknown').length,
     verified: models.filter((model) => model.data_status === 'verified').length,
+    semanticGaps,
     issues,
     vendorCoverage,
     familyCoverage,

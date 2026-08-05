@@ -31,7 +31,7 @@ export const zh: Messages = {
     pageTitle: '研究者的模型选择入口',
     heroEyebrow: 'Agent Foundation Model Atlas',
     heroTitle: '把模型选择，变成一条可核验的研究路径。',
-    heroLede: '面向智能体与自进化实验的基础模型地图。先看供应层，再看论文采用层；未知值保留未知，演示数据明确标记。',
+    heroLede: '面向智能体与自进化实验的基础模型地图。先看供应层，再看论文采用层；每个未完成字段都保留明确的证据状态。',
     howToRead: '怎么读这份地图',
     howToReadBody: '模型供应层回答“现在能选什么”；研究采用层回答“论文实际怎么用”。推荐只是规则筛选，不是性能排名。',
     browseAll: '浏览全部模型 →',
@@ -45,12 +45,12 @@ export const zh: Messages = {
     latestTitle: '最近记录的模型',
     viewExplorer: '查看模型浏览器 →',
     contractTitle: '证据状态是产品的一部分',
-    contractBody: '每条模型和论文记录都要求来源 URL 与最后核验日期。当前 MVP 使用少量演示记录验证页面结构；批量录入真实资料前，请先替换这些占位来源。',
+    contractBody: '每条模型和论文记录都要求一手来源 URL 与最后核验日期。未核验、官方未公开、未报告和未发布分别标注，不用猜测值填充。',
   },
   modelsIndex: {
     pageTitle: '模型浏览器',
     eyebrow: '模型供应层',
-    lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未知值不会自动变成“否”。',
+    lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未核验字段不会自动变成“否”。',
   },
   families: {
     pageTitle: '模型家族',
@@ -63,7 +63,7 @@ export const zh: Messages = {
     pageTitle: '模型对比',
     eyebrow: '决策面',
     title: '横向对比模型',
-    lede: '最多选择 5 个具体模型；缺失值显示为“未知”，不强行填补。',
+    lede: '最多选择 5 个具体模型；缺失值显示为具体核验状态，不强行填补。',
     selectKicker: '选 2–5 个',
     selectTitle: '选择模型',
     selected: '已选',
@@ -128,7 +128,7 @@ export const zh: Messages = {
     rolesTitle: '模型角色',
     paperLink: '论文链接 ↗',
     codeLink: '代码链接 ↗',
-    weightUnknown: '权重更新未知',
+    weightUnknown: '权重更新：未报告',
     weightUpdated: '更新了权重',
     weightNotUpdated: '未更新权重',
     relationError: '关系错误',
@@ -136,18 +136,18 @@ export const zh: Messages = {
   },
   evidence: {
     title: '证据',
-    body: '链接来自结构化数据；演示记录使用 example.com 占位，不代表真实事实。',
+    body: '链接来自结构化生产数据；每条来源都保留来源类型、核验日期和证据说明。',
     open: '打开 ↗',
     dataStatus: '数据状态',
   },
   dataStatus: {
     pageTitle: '数据状态',
     eyebrow: '数据治理',
-    lede: '显示模型数据的新鲜度、覆盖情况和当前代缺口。这里的告警不会把未知值伪装成确定事实。',
+    lede: '显示模型数据的新鲜度、覆盖情况和当前代缺口。这里的告警不会把证据缺口伪装成确定事实。',
     models: '模型记录',
     recent: '近 30 天核验',
     stale: '过期记录',
-    partial: '部分 / 未知',
+    partial: '部分 / 待核验',
     verified: '已核验',
     vendors: '厂商覆盖',
     vendor: '厂商',
@@ -158,6 +158,9 @@ export const zh: Messages = {
     issues: '告警',
     noIssues: '当前没有阻断性告警。',
     staleNote: '过期只表示需要重新核验，不等于模型不可用。',
+    semanticGaps: '语义缺口',
+    semanticState: '状态',
+    fields: '字段数',
   },
   selector: {
     mode: '实验方式',
@@ -167,7 +170,7 @@ export const zh: Messages = {
     candidateKicker: '候选集',
     candidateTitle: '候选模型组合',
     candidateUnit: '个候选',
-    disclaimer: '这是基于元数据和用户条件的规则筛选，不是性能排行榜；未知条件会被明确保留。',
+    disclaimer: '这是基于元数据和用户条件的规则筛选，不是性能排行榜；未核验条件会被明确保留。',
     view: '查看 →',
     modes: {
       inference: '仅推理',
@@ -244,7 +247,7 @@ export const zh: Messages = {
     of: '/',
     modelsUnit: '个模型',
     withPapers: '个模型有论文采用记录',
-    paramsUnknown: '参数未知',
+    paramsUnknown: '参数待核验',
     openWeightsTag: '开放权重',
     hasPaper: '有论文采用',
     noPaper: '暂无论文采用',
@@ -284,14 +287,22 @@ export const zh: Messages = {
     back: '回到选择入口 →',
   },
   format: {
-    unknown: '未知',
+    unknown: '待核验',
     yes: '是',
     no: '否',
+    semanticStatus: {
+      not_disclosed: '官方未公开',
+      not_applicable: '不适用',
+      not_reported: '未报告',
+      not_verified: '尚未核验',
+      not_published: '未发布',
+      unavailable: '来源不可用',
+    },
     status: {
       verified: '已核验',
       partial: '部分核验',
-      demo: '演示数据',
-      unknown: '未知',
+      demo: '归档示例',
+      unknown: '待核验',
     },
     tier: {
       cpu_mac: 'CPU / Mac',
@@ -301,13 +312,13 @@ export const zh: Messages = {
       '80gb': '80GB GPU',
       multi_gpu: '多卡 GPU',
       api_only: '仅 API',
-      unknown: '未知',
+      unknown: '待核验',
     },
     lifecycle: {
       active: '活跃',
       legacy: '历史版本',
       preview: '预览版',
-      unknown: '未知',
+      unknown: '待核验',
     },
     sourceType: {
       official_model_card: '官方模型卡',
@@ -315,7 +326,7 @@ export const zh: Messages = {
       paper: '论文',
       code: '代码仓库',
       benchmark: '基准测试',
-      demo_record: '演示记录',
+      demo_record: '归档示例',
     },
     architecture: {
       dense: '稠密',
@@ -505,7 +516,7 @@ export type Messages = {
   evidence: { title: string; body: string; open: string; dataStatus: string };
   dataStatus: {
     pageTitle: string; eyebrow: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
-    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string;
+    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string;
   };
   selector: {
     mode: string;
@@ -591,6 +602,7 @@ export type Messages = {
     unknown: string;
     yes: string;
     no: string;
+    semanticStatus: Record<'not_disclosed' | 'not_applicable' | 'not_reported' | 'not_verified' | 'not_published' | 'unavailable', string>;
     status: Record<'verified' | 'partial' | 'demo' | 'unknown', string>;
     lifecycle: Record<'active' | 'legacy' | 'preview' | 'unknown', string>;
     sourceType: Record<string, string>;

@@ -19,7 +19,7 @@ const lines = [
   `- Models: ${health.totalModels}`,
   `- Checked within 30 days: ${health.recentModels}`,
   `- Stale records: ${health.staleModels}`,
-  `- Partial/unknown records: ${health.partialOrUnknown}`,
+  `- Partially verified records: ${health.partialOrUnknown}`,
   `- Verified records: ${health.verified}`,
   '',
   '## Issues',

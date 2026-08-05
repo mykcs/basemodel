@@ -7,11 +7,56 @@
   "generation": "R1",
   "release_date": "2025-01-20",
   "status": "active",
-  "checkpoint": {"type": "thinking", "modalities": ["text"], "specializations": ["reasoning", "mathematics", "coding"]},
-  "architecture": {"type": "moe", "total_parameters_b": 671, "active_parameters_b": 37, "context_length": 128000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "unknown", "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "MIT (verify model card)"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": "unknown", "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
-  "sources": [{"url": "https://huggingface.co/deepseek-ai/DeepSeek-R1", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "mathematics",
+      "coding"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 671,
+    "active_parameters_b": 37,
+    "context_length": 128000,
+    "expert_count": 256,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_verified",
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
+      "type": "official_model_card",
+      "checked_at": "2026-08-05",
+      "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face model card metadata license=mit Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06."
+    }
+  ],
   "data_status": "partial"
 }

@@ -7,11 +7,55 @@
   "generation": "Claude 3",
   "release_date": "2024-03-04",
   "status": "legacy",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["general", "reasoning"]},
-  "architecture": {"type": "other", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": 200000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
-  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "Provider API terms"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": false, "vllm_support": false, "sglang_support": false, "verl_recipe_available": false},
-  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
-  "sources": [{"url": "https://www.anthropic.com/news/claude-3-family", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 200000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "Provider API terms"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-3-family",
+      "type": "official_docs",
+      "checked_at": "2026-08-05"
+    }
+  ],
   "data_status": "partial"
 }

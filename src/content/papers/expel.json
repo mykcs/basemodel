@@ -4,7 +4,7 @@
   "published_at": "2024-01-29",
   "paper_url": "https://arxiv.org/abs/2401.15927",
   "code_url": "https://github.com/LeapLabTHU/ExpeL",
-  "checkpoint_url": "unknown",
+  "checkpoint_url": "not_published",
   "category": [
     "self-evolving-agent",
     "prompt-evolution",

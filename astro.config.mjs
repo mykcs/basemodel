@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
-const site = process.env.PUBLIC_SITE_URL || 'https://example.github.io';
-const base = process.env.PUBLIC_BASE_PATH || '';
+const site = process.env.PUBLIC_SITE_URL || 'https://mykcs.github.io';
+const base = process.env.PUBLIC_BASE_PATH || '/basemodel';
 
 export default defineConfig({
   site,

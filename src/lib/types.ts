@@ -1,4 +1,4 @@
-export type { AtlasModel, AtlasPaper, DataStatus, HardwareTier, PaperModelUse, UnknownBoolean } from './schemas';
+export type { AtlasModel, AtlasPaper, DataStatus, HardwareTier, PaperModelUse, SemanticStatus, UnknownBoolean } from './schemas';
 
 export type ExperimentMode = 'inference' | 'lora' | 'sft' | 'full_sft' | 'rl' | 'harness';
 export type TaskDirection = 'general' | 'webshop' | 'alfworld' | 'coding' | 'research' | 'math' | 'gui' | 'chinese' | 'multilingual';
