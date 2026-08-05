@@ -1,0 +1,22 @@
+{
+  "id": "kimi-dev-72b",
+  "name": "Kimi-Dev-72B",
+  "official_name": "Kimi-Dev-72B",
+  "vendor": "Moonshot AI / Kimi",
+  "family": "Kimi",
+  "generation": "Kimi Dev",
+  "release_date": "2025-06-17",
+  "status": "active",
+  "checkpoint": { "type": "coder", "modalities": ["text"], "specializations": ["coding", "agent"] },
+  "architecture": { "type": "dense", "total_parameters_b": 72, "active_parameters_b": 72, "context_length": "not_reported", "expert_count": "not_applicable", "active_experts_per_token": "not_applicable" },
+  "openness": { "weights_available": true, "base_checkpoint_available": "not_reported", "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "not_verified", "classification": "open_weight" },
+  "access": { "weights_status": "released", "weights_url": "https://huggingface.co/moonshotai/Kimi-Dev-72B", "api_status": "unavailable" },
+  "research": { "suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": true, "sglang_support": "not_verified", "verl_recipe_available": "not_verified" },
+  "hardware": { "inference_tier": "multi_gpu", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified" },
+  "sources": [
+    { "id": "moonshot-kimi-dev-readme", "url": "https://github.com/MoonshotAI/Kimi-Dev", "type": "official_code", "title": "Kimi-Dev official repository", "publisher": "Moonshot AI", "published_at": "2025-06-17", "checked_at": "2026-08-06", "supports": ["checkpoint.type", "architecture.total_parameters_b", "openness.classification", "access.weights_status", "research.vllm_support"], "evidence_note": "Official README documents Kimi-Dev-72B as a coding model with open weights and vLLM tensor parallel deployment." },
+    { "id": "moonshot-kimi-dev-hf", "url": "https://huggingface.co/moonshotai/Kimi-Dev-72B", "type": "official_weights", "title": "Kimi-Dev weights", "publisher": "Moonshot AI", "checked_at": "2026-08-06", "supports": ["access.weights_status", "openness.weights_available"], "evidence_note": "Official Hugging Face model record for Kimi-Dev-72B." }
+  ],
+  "data_status": "partial",
+  "claim_status": "partial"
+}

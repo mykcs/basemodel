@@ -26,6 +26,7 @@ npm test
 npm run build
 npm run audit:claims
 npm run audit:vendor-catalogs
+npm run audit:urls
 ```
 
 默认站点在 `http://localhost:4321`。GitHub Pages 子路径构建可设置：
@@ -41,13 +42,13 @@ PUBLIC_SITE_URL=https://OWNER.github.io PUBLIC_BASE_PATH=/REPOSITORY npm run bui
 - `src/lib/schemas.ts`：Zod schema；非法字段会阻止校验或构建。
 - `src/lib/modelFilters.ts`、`recommendation.ts`、`hardware.ts`：纯规则和可测试逻辑。
 
-添加模型时，复制一个 JSON 文件，确保 `id` 唯一，补齐架构、开放性、研究可用性、硬件档位、来源 URL、`checked_at` 和 `data_status`。如果记录了模型家族的当前旗舰，还要用精确的 `current_flagship_model_id` / `current_open_weight_model_id`，不要用名称模糊匹配。`access` 区分已发布权重、API 和产品入口；API 可用不代表权重可下载，开放权重也不自动等于开源或允许无条件商用。许可证条件使用 `classification`、`custom_license`、`derivative_distribution`、`commercial_use` 和 `conditions` 表达。需要复现时记录模型 revision、tokenizer/config/chat template 是否公开，以及是否必须保留推理历史。
+添加模型时，复制一个 JSON 文件，确保 `id` 唯一，补齐架构、开放性、研究可用性、硬件档位、来源 URL、`checked_at` 和 `data_status`。来源可选填 `title`、`publisher`、`published_at`、`revision`、`locator`、`notes`，并用 `supports` 精确列出它支持的字段。`audit:claims` 会生成 `reports/claim-audit.{json,md,csv}`；没有字段级 `supports` 的旧记录会标成 `legacy-unmapped`，不会伪装成已核验。如果记录了模型家族的当前旗舰，还要用精确的 `current_flagship_model_id` / `current_open_weight_model_id`，不要用名称模糊匹配；没有官方 ID 就显示“待核验”。`access` 区分已发布权重、API 和产品入口；API 可用不代表权重可下载，开放权重也不自动等于开源或允许无条件商用。许可证条件使用 `classification`、`custom_license`、`derivative_distribution`、`commercial_use` 和 `conditions` 表达。需要复现时记录模型 revision、tokenizer/config/chat template 是否公开，以及是否必须保留推理历史。
 
 添加论文时，先确认每个 `model_id` 已存在，再填写角色、是否更新权重、进化对象和 benchmark。提交前运行 `npm run audit:claims` 检查字段级证据，运行 `npm run audit:vendor-catalogs` 检查官方目录可访问性；目录 403、404 或重定向只代表访问结果，不会自动推导模型事实。
 
-真实数据必须来自官方模型卡、官方文档、论文、代码仓库或 benchmark 页面，并记录最后核验日期。`verified` 表示关键字段已有可靠来源；`partial` 表示仍有字段未核验。字段缺口使用语义状态：`not_disclosed`（官方未公开）、`not_applicable`（不适用）、`not_reported`（论文/代码未报告）、`not_verified`（尚未核验）、`not_published`（未发布）、`unavailable`（来源不可用）。这些状态都不等于 `false` 或零。
+真实数据必须来自官方模型卡、官方文档、论文、代码仓库或 benchmark 页面，并记录最后核验日期。`verified` 表示关键字段已有可靠来源；`partial` 表示仍有字段未核验；`claim_status: claim_verified` 只用于字段级证据覆盖完成的记录。字段缺口使用语义状态：`not_disclosed`（官方未公开）、`not_applicable`（不适用）、`not_reported`（论文/代码未报告）、`not_verified`（尚未核验）、`not_published`（未发布）、`unavailable`（来源不可用）。这些状态都不等于 `false` 或零。
 
-`demo-archive/` 仅作为测试夹具，不进入 Astro content loader、搜索、比较器或 sitemap。新增的主流模型记录使用官方模型卡、官方文档或官方代码仓库，并按字段完整度标记为 `verified` 或 `partial`。Kimi K3、K2.6、K2.5、K2 Thinking、K2 Base、K2 Instruct 分别记录 checkpoint 角色、开放权重/API 分发面和一手来源；“当前旗舰”只作为带日期的来源 claim，不作为永久性能排名。
+`demo-archive/` 仅作为测试夹具，不进入 Astro content loader、搜索、比较器或 sitemap。新增的主流模型记录使用官方模型卡、官方文档或官方代码仓库，并按字段完整度标记为 `verified` 或 `partial`。Kimi K3、K2.6、K2.5、K2 Thinking、K2 Base、K2 Instruct 以及 Kimi Linear、Kimi-VL、Kimi-Audio、Kimi-Dev、Moonlight、K2 Instruct 0905 分别记录 checkpoint 角色、开放权重/API 分发面和一手来源；“当前旗舰”只作为带日期的来源 claim，不作为永久性能排名。家族目录中的专线模型使用 `latest_specialized_model_ids`，不会替代旗舰 ID。
 
 ## GitHub Pages
 

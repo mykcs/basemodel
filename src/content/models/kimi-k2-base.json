@@ -72,12 +72,6 @@
       "type": "code",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official Kimi K2 repository documents the base/instruct model family."
-    },
-    {
-      "url": "https://www.kimi.com/tr/blog/",
-      "type": "official_announcement",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Kimi's official research index lists the Kimi K2 announcement on 2025-07-11."
     }
   ],
   "data_status": "verified"

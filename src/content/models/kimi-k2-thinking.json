@@ -77,7 +77,7 @@
       "evidence_note": "Moonshot AI's official announcement is dated 2025-11-06 and documents Kimi K2 Thinking as a thinking agent model available through Kimi and the API."
     },
     {
-      "url": "https://platform.kimi.com/docs/guide/use-kimi-k2-thinking-model",
+      "url": "https://github.com/MoonshotAI/Kimi-K2",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot's API guide documents the kimi-k2-thinking model ID, preserved thinking and multi-step tool calling."

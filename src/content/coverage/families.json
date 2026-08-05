@@ -16,8 +16,13 @@
       "current_flagship_model_id": "kimi-k3",
       "current_open_weight_model_id": "kimi-k3",
       "current_api_model_ids": ["kimi-k3", "kimi-k2.6", "kimi-k2.5", "kimi-k2-thinking"],
+      "latest_generation_label": "K3",
+      "latest_specialized_model_ids": ["kimi-linear-48b-a3b-instruct", "kimi-vl-a3b-thinking-2506", "kimi-audio-7b-instruct", "kimi-dev-72b", "moonlight-16b-a3b-instruct"],
       "current_claim": { "text": "Kimi K3 is the latest Kimi open-weight model recorded in the official catalog", "status": "confirmed", "source_url": "https://huggingface.co/moonshotai/Kimi-K3", "checked_at": "2026-08-06" },
       "official_catalog_urls": ["https://huggingface.co/moonshotai", "https://platform.kimi.ai/", "https://platform.moonshot.ai/"],
+      "catalog_checked_at": "2026-08-06",
+      "catalog_source_ids": ["moonshot-kimi-k3-repo", "moonshot-kimi-k3-license", "moonshot-kimi-catalog"],
+      "confidence": "official-confirmed",
       "open_weight_scope": "Kimi K3, K2.6, K2.5, K2 Thinking, K2 Base, and K2 Instruct have first-party weight/model-card records.",
       "api_scope": "API availability and aliases are tracked only where an official API surface is documented; pricing and regional availability are not inferred.",
       "variants": [

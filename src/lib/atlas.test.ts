@@ -84,7 +84,7 @@ describe('atlas rules', () => {
     expect(health.issues).toEqual(expect.arrayContaining([
       expect.objectContaining({ modelId: 'verified-model', reason: 'stale-source', severity: 'warning' }),
       expect.objectContaining({ modelId: 'verified-model', reason: 'generic-source-url', severity: 'error' }),
-      expect.objectContaining({ modelId: 'test', reason: 'missing-current-generation', severity: 'warning' }),
+      expect.objectContaining({ modelId: 'test', reason: 'unverified-current-flagship', severity: 'warning' }),
     ]));
   });
   it('uses exact family model IDs and preserves Kimi K3 access semantics', () => {

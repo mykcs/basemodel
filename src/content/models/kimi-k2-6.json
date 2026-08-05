@@ -75,13 +75,13 @@
       "evidence_note": "Moonshot AI official model card states 1T total, 32B active, 384 experts, top-8 routing, 256K context, native multimodal support, and Modified MIT."
     },
     {
-      "url": "https://www.kimi.com/help/agent/agent-overview",
+      "url": "https://huggingface.co/moonshotai/Kimi-K2.6",
       "type": "official_announcement",
       "checked_at": "2026-08-06",
       "evidence_note": "Kimi Help Center product timeline records Kimi K2.6 release and open-sourcing on 2026-04-20."
     },
     {
-      "url": "https://platform.kimi.com/docs/guide/use-kimi-k2-thinking-model",
+      "url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot's API guide explicitly lists kimi-k2.6 as an API model with thinking and multi-step tool calling."

@@ -17,7 +17,14 @@ export const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY
 export const sourceSchema = z.object({
   id: z.string().min(1).optional(),
   url: z.url(),
-  type: z.enum(['official_model_card', 'official_docs', 'official_announcement', 'official_weights', 'official_license', 'official_api_docs', 'technical_report', 'paper', 'code', 'benchmark', 'demo_record']),
+  title: z.string().min(1).optional(),
+  publisher: z.string().min(1).optional(),
+  published_at: dateString.optional(),
+  revision: z.string().min(1).optional(),
+  supports: z.array(z.string().min(1)).min(1).optional(),
+  locator: z.string().min(1).optional(),
+  notes: z.string().min(1).optional(),
+  type: z.enum(['official_model_card', 'official_docs', 'official_announcement', 'official_weights', 'official_license', 'official_api_docs', 'official_code', 'official_benchmark', 'third_party_runtime', 'technical_report', 'paper', 'code', 'benchmark', 'demo_record']),
   checked_at: dateString,
   evidence_note: z.string().min(1).optional(),
 });
@@ -103,6 +110,7 @@ export const modelSchema = z.object({
   }),
   sources: z.array(sourceSchema).min(1),
   data_status: z.enum(['verified', 'partial', 'demo', 'unknown']),
+  claim_status: z.enum(['draft', 'partial', 'claim_verified', 'stale', 'disputed', 'demo', 'unknown']).optional(),
 });
 
 export const paperModelSchema = z.object({
@@ -134,3 +142,36 @@ export type DataStatus = AtlasModel['data_status'];
 export type UnknownBoolean = z.infer<typeof unknownBoolean>;
 export type SemanticStatus = z.infer<typeof semanticStatus>;
 export type HardwareTier = AtlasModel['hardware']['inference_tier'];
+
+export const familyVariantSchema = z.object({
+  id: z.string().min(1),
+  role: z.enum(['flagship', 'foundation', 'instruct', 'thinking', 'code']),
+  distribution_surfaces: z.array(z.enum(['open_weight', 'api'])),
+  api_aliases: z.array(z.string().min(1)).optional(),
+  is_current: z.boolean().optional(),
+  source_url: z.url(),
+  checked_at: dateString,
+});
+
+export const familySchema = z.object({
+  id: z.string().min(1),
+  vendor_id: z.string().min(1),
+  name: z.string().min(1),
+  current_generation: z.string().min(1),
+  latest_generation_label: z.string().min(1).optional(),
+  latest_specialized_model_ids: z.array(z.string().min(1)).optional(),
+  current_flagship_model_id: z.string().min(1).optional(),
+  current_open_weight_model_id: z.string().min(1).optional(),
+  current_api_model_ids: z.array(z.string().min(1)).optional(),
+  current_claim: z.object({ text: z.string().min(1), status: z.union([semanticStatus, z.literal('confirmed')]), source_url: z.url(), checked_at: dateString }).optional(),
+  official_catalog_urls: z.array(z.url()).optional(),
+  catalog_checked_at: dateString.optional(),
+  catalog_source_ids: z.array(z.string().min(1)).optional(),
+  confidence: z.enum(['official-confirmed', 'official-partial', 'third-party', 'unverified']).optional(),
+  open_weight_scope: z.string().min(1).optional(),
+  api_scope: z.string().min(1).optional(),
+  variants: z.array(familyVariantSchema).optional(),
+  as_of: dateString.optional(),
+});
+
+export type FamilyCoverageRecord = z.infer<typeof familySchema>;

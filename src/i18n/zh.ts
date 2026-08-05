@@ -78,6 +78,7 @@ export const zh: Messages = {
   },
   detail: {
     overview: '一眼概览',
+    positioning: '模型定位',
     architecture: '架构',
     parameters: '参数',
     activeParams: '激活参数',
@@ -117,6 +118,9 @@ export const zh: Messages = {
     totalActive: '总计 / {active}B 激活',
     tokensSuffix: ' token',
     descriptionSuffix: '的架构、开放性、研究可用性和证据来源。',
+    unresolvedTitle: '未核验字段',
+    unresolvedBody: '这些字段没有被填成猜测值；请回到来源或模型卡逐项核验。',
+    noUnresolved: '关键字段均已填入具体值或明确状态。',
     other: '其他',
     research: {
       inference: '推理',
@@ -150,6 +154,14 @@ export const zh: Messages = {
     body: '链接来自结构化生产数据；每条来源都保留来源类型、核验日期和证据说明。',
     open: '打开 ↗',
     dataStatus: '数据状态',
+    publisher: '发布方',
+    publishedAt: '发布日期',
+    revision: '版本',
+    supports: '支持字段',
+    locator: '定位',
+    notes: '备注',
+    claimCoverage: '字段证据覆盖',
+    unresolvedFields: '未核验字段',
   },
   dataStatus: {
     pageTitle: '数据状态',
@@ -162,7 +174,11 @@ export const zh: Messages = {
     vendors: '厂商覆盖',
     vendor: '厂商',
     latestRelease: '最新发布',
-    currentGeneration: '当前代',
+    currentGeneration: '官方当前代',
+    catalogChecked: '目录核验日期',
+    claimStatus: '声明状态',
+    unresolved: '未解决',
+    catalogSource: '目录来源',
     present: '已覆盖',
     missing: '缺失',
     issues: '告警',
@@ -345,6 +361,9 @@ export const zh: Messages = {
       official_weights: '官方权重',
       official_license: '官方许可证',
       official_api_docs: '官方 API 文档',
+      official_code: '官方代码',
+      official_benchmark: '官方基准测试',
+      third_party_runtime: '第三方运行时',
       technical_report: '技术报告',
       paper: '论文',
       code: '代码仓库',
@@ -491,6 +510,7 @@ export type Messages = {
   };
   detail: {
     overview: string;
+    positioning: string;
     architecture: string;
     parameters: string;
     activeParams: string;
@@ -530,6 +550,9 @@ export type Messages = {
     totalActive: string;
     tokensSuffix: string;
     descriptionSuffix: string;
+    unresolvedTitle: string;
+    unresolvedBody: string;
+    noUnresolved: string;
     other: string;
     research: Record<'inference' | 'lora' | 'sft' | 'rl' | 'transformers' | 'vllm' | 'sglang' | 'verl', string>;
   };
@@ -549,10 +572,10 @@ export type Messages = {
     relationError: string;
     descriptionSuffix: string;
   };
-  evidence: { title: string; body: string; open: string; dataStatus: string };
+  evidence: { title: string; body: string; open: string; dataStatus: string; publisher: string; publishedAt: string; revision: string; supports: string; locator: string; notes: string; claimCoverage: string; unresolvedFields: string };
   dataStatus: {
     pageTitle: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
-    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string; flagship: string; openWeightApi: string; openWeight: string; api: string;
+    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; catalogChecked: string; claimStatus: string; unresolved: string; catalogSource: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string; flagship: string; openWeightApi: string; openWeight: string; api: string;
   };
   selector: {
     mode: string;
