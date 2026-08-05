@@ -11,8 +11,10 @@
     "audit:freshness": "tsx scripts/audit-freshness.ts",
     "audit:coverage": "tsx scripts/audit-coverage.ts",
     "audit:semantic": "tsx scripts/audit-semantic-gaps.ts",
+    "audit:claims": "tsx scripts/audit-claims.ts",
+    "audit:vendor-catalogs": "tsx scripts/audit-vendor-catalogs.ts",
     "audit:urls": "tsx scripts/check-source-health.ts",
-    "audit": "npm run validate && npm run audit:semantic && npm run audit:freshness && npm run audit:coverage",
+    "audit": "npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:vendor-catalogs && npm run audit:freshness && npm run audit:coverage",
     "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview"

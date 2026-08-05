@@ -8,13 +8,39 @@ export type VendorCoverage = {
   model_types: string[];
 };
 
-export type FamilyCoverage = { id: string; vendor_id: string; name: string; current_generation: string };
+export type FamilyVariantCoverage = {
+  id: string;
+  role: 'flagship' | 'foundation' | 'instruct' | 'thinking' | 'code';
+  distribution_surfaces: Array<'open_weight' | 'api'>;
+  api_aliases?: string[];
+  is_current?: boolean;
+  source_url: string;
+  checked_at: string;
+};
+export type FamilyCoverage = {
+  id: string;
+  vendor_id: string;
+  name: string;
+  current_generation: string;
+  current_flagship_model_id?: string;
+  current_open_weight_model_id?: string;
+  current_api_model_ids?: string[];
+  current_claim?: { text: string; status: SemanticStatus | 'confirmed'; source_url: string; checked_at: string };
+  official_catalog_urls?: string[];
+  open_weight_scope?: string;
+  api_scope?: string;
+  variants?: FamilyVariantCoverage[];
+  as_of?: string;
+};
 
 export type FreshnessIssue = {
   modelId: string;
   severity: 'error' | 'warning' | 'info';
-  reason: 'stale-source' | 'missing-current-generation' | 'deprecated-model-marked-active' | 'generic-source-url' | 'source-unreachable' | 'future-release-date';
+  reason: 'stale-source' | 'missing-current-generation' | 'deprecated-model-marked-active' | 'generic-source-url' | 'source-unreachable' | 'future-release-date' | 'semantic-gap' | 'missing-evidence-note';
+  recordType?: 'model' | 'family' | 'vendor';
   field?: string;
+  claimStatus?: SemanticStatus;
+  sourceUrl?: string;
   checkedAt?: string;
 };
 
@@ -34,6 +60,7 @@ const today = () => new Date();
 const parseDate = (value: string) => new Date(`${value}T00:00:00Z`);
 const ageDays = (value: string, now: Date) => Math.floor((now.getTime() - parseDate(value).getTime()) / 86400000);
 const normalizeLabel = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+const semanticStates: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
 
 export function vendorIdFor(model: Pick<AtlasModel, 'vendor'>): string {
   const value = model.vendor.toLowerCase();
@@ -79,6 +106,14 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
       if (!official) issues.push({ modelId: model.id, severity: 'error', reason: 'generic-source-url', field: 'sources' });
       else if (isGenericSourceUrl(official.url, vendor)) issues.push({ modelId: model.id, severity: 'error', reason: 'generic-source-url', field: 'sources', checkedAt: official.checked_at });
     }
+    const visit = (value: unknown, fieldPath: string): void => {
+      if (typeof value === 'string' && semanticStates.includes(value as SemanticStatus)) {
+        issues.push({ modelId: model.id, recordType: 'model', severity: 'info', reason: 'semantic-gap', field: fieldPath, claimStatus: value as SemanticStatus, sourceUrl: model.sources[0]?.url, checkedAt: model.sources[0]?.checked_at });
+      } else if (Array.isArray(value)) value.forEach((item, index) => visit(item, `${fieldPath}[${index}]`));
+      else if (value && typeof value === 'object') Object.entries(value).forEach(([key, item]) => visit(item, `${fieldPath}.${key}`));
+    };
+    visit(model, 'model');
+    if (model.sources.some((source) => !source.evidence_note)) issues.push({ modelId: model.id, recordType: 'model', severity: 'warning', reason: 'missing-evidence-note', field: 'sources' });
   }
 
   const vendorCoverage = vendors.map((vendor) => {
@@ -91,17 +126,18 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
     const currentLabel = normalizeLabel(family.current_generation);
     const owned = models.filter((model) => vendorIdFor(model) === family.vendor_id && (normalizeLabel(model.family).includes(familyLabel) || normalizeLabel(model.generation).includes(familyLabel)));
     const modelIds = owned.map((model) => model.id);
-    const generationPresent = owned.some((model) => {
+    const generationPresent = family.current_flagship_model_id
+      ? models.some((model) => model.id === family.current_flagship_model_id && vendorIdFor(model) === family.vendor_id)
+      : owned.some((model) => {
       const generation = normalizeLabel(model.generation);
       const generationSuffix = generation.startsWith(familyLabel) ? generation.slice(familyLabel.length) : generation;
       const currentSuffix = currentLabel.startsWith(familyLabel) ? currentLabel.slice(familyLabel.length) : currentLabel;
       return generation === currentLabel || generation.includes(currentLabel) || generationSuffix === currentSuffix || generationSuffix.includes(currentSuffix);
-    });
-    if (!generationPresent) issues.push({ modelId: family.id, severity: 'warning', reason: 'missing-current-generation', field: 'generation' });
+      });
+    if (!generationPresent) issues.push({ modelId: family.id, recordType: 'family', severity: 'warning', reason: 'missing-current-generation', field: 'generation' });
     return { family, modelCount: owned.length, generationPresent, modelIds };
   });
 
-  const semanticStates: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
   const semanticGaps = Object.fromEntries(semanticStates.map((state) => [state, 0])) as Record<SemanticStatus, number>;
   const countSemantic = (value: unknown): void => {
     if (typeof value === 'string' && semanticStates.includes(value as SemanticStatus)) semanticGaps[value as SemanticStatus] += 1;

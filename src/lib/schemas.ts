@@ -15,16 +15,47 @@ export const urlOrUnknown = z.union([z.url(), semanticStatus]);
 export const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY-MM-DD');
 
 export const sourceSchema = z.object({
+  id: z.string().min(1).optional(),
   url: z.url(),
-  type: z.enum(['official_model_card', 'official_docs', 'paper', 'code', 'benchmark', 'demo_record']),
+  type: z.enum(['official_model_card', 'official_docs', 'official_announcement', 'official_weights', 'official_license', 'official_api_docs', 'technical_report', 'paper', 'code', 'benchmark', 'demo_record']),
   checked_at: dateString,
   evidence_note: z.string().min(1).optional(),
+});
+
+const accessSchema = z.object({
+  weights_status: z.union([z.enum(['unavailable', 'announced', 'released', 'withdrawn']), semanticStatus]),
+  weights_released_at: dateString.optional(),
+  weights_url: urlOrUnknown.optional(),
+  api_status: z.union([z.enum(['unavailable', 'preview', 'available', 'deprecated']), semanticStatus]),
+  api_model_ids: z.array(z.string().min(1)).optional(),
+  product_status: z.union([z.enum(['unavailable', 'available']), semanticStatus]).optional(),
+  product_names: z.array(z.string().min(1)).optional(),
+});
+
+const reproducibilitySchema = z.object({
+  model_revision_required: z.boolean().optional(),
+  api_version_pinnable: unknownBoolean.optional(),
+  tokenizer_public: unknownBoolean.optional(),
+  config_public: unknownBoolean.optional(),
+  chat_template_public: unknownBoolean.optional(),
+  preserved_reasoning_history_required: unknownBoolean.optional(),
+  known_nondeterminism_notes: z.string().min(1).optional(),
+});
+
+const opennessEvidenceSchema = z.object({
+  classification: z.union([z.enum(['open_source', 'open_weight', 'source_available', 'proprietary']), semanticStatus]).optional(),
+  custom_license: z.boolean().optional(),
+  derivative_distribution: z.union([z.enum(['allowed', 'conditional', 'prohibited']), semanticStatus]).optional(),
+  commercial_use: z.union([z.enum(['allowed', 'conditional', 'prohibited']), semanticStatus]).optional(),
+  conditions: z.array(z.string().min(1)).optional(),
+  license_url: urlOrUnknown.optional(),
 });
 
 export const modelSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   name: z.string().min(1),
   official_name: z.string().optional(),
+  aliases: z.array(z.string().min(1)).optional(),
   vendor: z.string().min(1),
   family: z.string().min(1),
   generation: z.string().min(1),
@@ -50,7 +81,10 @@ export const modelSchema = z.object({
     derivative_release_allowed: unknownBoolean,
     commercial_use_allowed: unknownBoolean,
     license_name: z.union([z.string().min(1), semanticStatus]),
+    ...opennessEvidenceSchema.shape,
   }),
+  access: accessSchema.optional(),
+  reproducibility: reproducibilitySchema.optional(),
   research: z.object({
     suitable_for_inference: unknownBoolean,
     suitable_for_lora: unknownBoolean,

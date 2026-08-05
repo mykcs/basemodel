@@ -1,0 +1,97 @@
+{
+  "id": "kimi-k2-5",
+  "name": "Kimi K2.5",
+  "official_name": "Kimi K2.5",
+  "vendor": "Moonshot AI",
+  "family": "Kimi",
+  "generation": "K2.5",
+  "release_date": "2026-01-27",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "multimodal"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 1000,
+    "active_parameters_b": 32,
+    "context_length": 256000,
+    "expert_count": 384,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_verified",
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Modified MIT"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.5",
+    "api_status": "available",
+    "api_model_ids": ["kimi-k2.5"],
+    "product_status": "available",
+    "product_names": ["Kimi App", "Kimi Agent", "Kimi Code"]
+  },
+  "reproducibility": {
+    "model_revision_required": true,
+    "preserved_reasoning_history_required": false,
+    "known_nondeterminism_notes": "k25_preserved_thinking_not_supported"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/moonshotai/Kimi-K2.5",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI official model card states 1T total, 32B active, 384 experts, top-8 routing, 256K context, native multimodal support, and Modified MIT."
+    },
+    {
+      "url": "https://github.com/MoonshotAI/Kimi-K2.5",
+      "type": "code",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI official repository documents Kimi K2.5 deployment surfaces."
+    },
+    {
+      "url": "https://www.kimi.com/ai-models/kimi-k2-5",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Kimi's official model page records Kimi K2.5 as officially released on 2026-01-27 and describes it as an open-source multimodal model."
+    },
+    {
+      "url": "https://platform.kimi.com/docs/guide/use-kimi-k2-thinking-model",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot's API guide explicitly lists kimi-k2.5 as an API model with thinking and multi-step tool calling."
+    }
+  ],
+  "data_status": "partial"
+}

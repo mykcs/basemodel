@@ -1,14 +1,35 @@
 {
   "families": [
-    { "id": "gpt", "vendor_id": "openai", "name": "GPT", "current_generation": "GPT-5.6" },
+    { "id": "gpt", "vendor_id": "openai", "name": "GPT", "current_generation": "GPT-5.2" },
     { "id": "qwen", "vendor_id": "qwen", "name": "Qwen", "current_generation": "Qwen3.6" },
     { "id": "gemma", "vendor_id": "google", "name": "Gemma", "current_generation": "Gemma 4" },
     { "id": "llama", "vendor_id": "meta", "name": "Llama", "current_generation": "Llama 4" },
     { "id": "claude", "vendor_id": "anthropic", "name": "Claude", "current_generation": "Claude 3.5" },
     { "id": "deepseek", "vendor_id": "deepseek", "name": "DeepSeek", "current_generation": "DeepSeek-V3.2" },
     { "id": "mistral", "vendor_id": "mistral", "name": "Mistral", "current_generation": "Mistral Small 4" },
-    { "id": "glm", "vendor_id": "glm", "name": "GLM", "current_generation": "GLM-4.9" },
-    { "id": "kimi", "vendor_id": "moonshot", "name": "Kimi", "current_generation": "Kimi K2" },
+    { "id": "glm", "vendor_id": "glm", "name": "GLM", "current_generation": "GLM-4.7" },
+    {
+      "id": "kimi",
+      "vendor_id": "moonshot",
+      "name": "Kimi",
+      "current_generation": "Kimi K3",
+      "current_flagship_model_id": "kimi-k3",
+      "current_open_weight_model_id": "kimi-k3",
+      "current_api_model_ids": ["kimi-k3", "kimi-k2.6", "kimi-k2.5", "kimi-k2-thinking"],
+      "current_claim": { "text": "Kimi K3 is the latest Kimi open-weight model recorded in the official catalog", "status": "confirmed", "source_url": "https://huggingface.co/moonshotai/Kimi-K3", "checked_at": "2026-08-06" },
+      "official_catalog_urls": ["https://huggingface.co/moonshotai", "https://platform.kimi.ai/", "https://platform.moonshot.ai/"],
+      "open_weight_scope": "Kimi K3, K2.6, K2.5, K2 Thinking, K2 Base, and K2 Instruct have first-party weight/model-card records.",
+      "api_scope": "API availability and aliases are tracked only where an official API surface is documented; pricing and regional availability are not inferred.",
+      "variants": [
+        { "id": "kimi-k3", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k3"], "is_current": true, "source_url": "https://huggingface.co/moonshotai/Kimi-K3", "checked_at": "2026-08-06" },
+        { "id": "kimi-k2-6", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2.6"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2.6", "checked_at": "2026-08-06" },
+        { "id": "kimi-k2-5", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2.5"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2.5", "checked_at": "2026-08-06" },
+        { "id": "kimi-k2-thinking", "role": "thinking", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2-thinking"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking", "checked_at": "2026-08-06" },
+        { "id": "kimi-k2-base", "role": "foundation", "distribution_surfaces": ["open_weight"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Base", "checked_at": "2026-08-06" },
+        { "id": "kimi-k2-instruct", "role": "instruct", "distribution_surfaces": ["open_weight"], "api_aliases": ["kimi-k2-instruct", "kimi-k2"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct", "checked_at": "2026-08-06" }
+      ],
+      "as_of": "2026-08-06"
+    },
     { "id": "vicuna", "vendor_id": "lmsys", "name": "Vicuna", "current_generation": "Vicuna" }
   ]
 }

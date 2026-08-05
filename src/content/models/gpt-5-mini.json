@@ -57,7 +57,8 @@
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5-mini",
       "type": "official_docs",
-      "checked_at": "2026-08-05"
+      "checked_at": "2026-08-05",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5-mini",

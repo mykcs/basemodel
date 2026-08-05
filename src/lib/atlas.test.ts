@@ -5,6 +5,7 @@ import { hardwareFits } from './hardware';
 import { recommendModels } from './recommendation';
 import { papersForModel } from './modelRelations';
 import { buildDataHealth } from './dataHealth';
+import { modelSchema } from './schemas';
 import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, licenseLabel, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
 import type { AtlasModel, AtlasPaper } from './types';
 
@@ -85,5 +86,16 @@ describe('atlas rules', () => {
       expect.objectContaining({ modelId: 'verified-model', reason: 'generic-source-url', severity: 'error' }),
       expect.objectContaining({ modelId: 'test', reason: 'missing-current-generation', severity: 'warning' }),
     ]));
+  });
+  it('uses exact family model IDs and preserves Kimi K3 access semantics', () => {
+    const kimiK3 = modelSchema.parse(JSON.parse(readFileSync(new URL('../content/models/kimi-k3.json', import.meta.url), 'utf8')));
+    const health = buildDataHealth([kimiK3], [], [{ id: 'kimi', vendor_id: 'moonshot', name: 'Kimi', current_generation: 'Kimi K3', current_flagship_model_id: 'kimi-k3', current_open_weight_model_id: 'kimi-k3' }], new Date('2026-08-06T00:00:00Z'));
+    expect(health.familyCoverage[0]?.generationPresent).toBe(true);
+    expect(health.issues.some((issue) => issue.reason === 'missing-current-generation')).toBe(false);
+    expect(kimiK3.access?.weights_status).toBe('released');
+    expect(kimiK3.access?.api_model_ids).toContain('kimi-k3');
+    expect(kimiK3.openness.classification).toBe('open_weight');
+    expect(kimiK3.openness.commercial_use).toBe('conditional');
+    expect(sourceTypeLabel('official_license', 'zh')).toBe('官方许可证');
   });
 });

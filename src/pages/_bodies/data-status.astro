@@ -46,8 +46,8 @@ const reasonLabel = (reason: string) => locale === 'en' ? ({ 'stale-source': 'St
   <section class="section" aria-labelledby="generation-title">
     <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2></div></div>
     <div class="comparison-table-wrap"><table>
-      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{m.dataStatus.present}</th><th>{m.dataStatus.models}</th></tr></thead>
-      <tbody>{health.familyCoverage.map(({ family, modelCount, generationPresent }) => <tr><th scope="row">{family.name}</th><td>{family.current_generation}</td><td>{generationPresent ? m.dataStatus.present : m.dataStatus.missing}</td><td>{modelCount}</td></tr>)}</tbody>
+      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{m.dataStatus.present}</th><th>{m.dataStatus.models}</th><th>{m.dataStatus.flagship}</th><th>{m.dataStatus.openWeightApi}</th></tr></thead>
+      <tbody>{health.familyCoverage.map(({ family, modelCount, generationPresent }) => <tr><th scope="row">{family.name}</th><td>{family.current_generation}</td><td>{generationPresent ? m.dataStatus.present : m.dataStatus.missing}</td><td>{modelCount}</td><td><code>{family.current_flagship_model_id ?? '—'}</code></td><td>{[family.current_open_weight_model_id ? `${m.dataStatus.openWeight}: ${family.current_open_weight_model_id}` : '', ...(family.current_api_model_ids ?? []).map((id) => `${m.dataStatus.api}: ${id}`)].filter(Boolean).join(' · ') || '—'}</td></tr>)}</tbody>
     </table></div>
   </section>
   <section class="section" aria-labelledby="issues-title">

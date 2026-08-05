@@ -1,0 +1,87 @@
+{
+  "id": "kimi-k2-thinking",
+  "name": "Kimi K2 Thinking",
+  "official_name": "Kimi K2 Thinking",
+  "vendor": "Moonshot AI",
+  "family": "Kimi",
+  "generation": "K2 Thinking",
+  "release_date": "2025-11-06",
+  "status": "active",
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "agent",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 1000,
+    "active_parameters_b": 32,
+    "context_length": 256000,
+    "expert_count": 384,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_verified",
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Modified MIT"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
+    "api_status": "available",
+    "api_model_ids": ["kimi-k2-thinking"],
+    "product_status": "available",
+    "product_names": ["Kimi App"]
+  },
+  "reproducibility": {
+    "model_revision_required": true,
+    "preserved_reasoning_history_required": true,
+    "known_nondeterminism_notes": "preserve_reasoning_and_tool_call_history"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI official model card states open-source thinking model, 1T total, 32B active, 384 experts, top-8 routing, 256K context, native INT4 and tool orchestration."
+    },
+    {
+      "url": "https://www.kimi.com/blog/kimi-k2-thinking",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI's official announcement is dated 2025-11-06 and documents Kimi K2 Thinking as a thinking agent model available through Kimi and the API."
+    },
+    {
+      "url": "https://platform.kimi.com/docs/guide/use-kimi-k2-thinking-model",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot's API guide documents the kimi-k2-thinking model ID, preserved thinking and multi-step tool calling."
+    }
+  ],
+  "data_status": "verified"
+}

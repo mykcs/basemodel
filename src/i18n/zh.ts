@@ -91,6 +91,22 @@ export const zh: Messages = {
     derivativeAllowed: '允许衍生',
     commercialAllowed: '允许商用',
     license: '许可证',
+    accessTitle: '访问与分发',
+    weightsStatus: '权重状态',
+    weightsReleasedAt: '完整权重日期',
+    apiStatus: 'API 状态',
+    apiModelIds: 'API 模型 ID',
+    productStatus: '产品状态',
+    productNames: '产品入口',
+    opennessClass: '开放性分类',
+    customLicense: '自定义许可证',
+    derivativeDistribution: '衍生分发',
+    commercialUse: '商业使用',
+    conditions: '许可证条件',
+    reproducibilityTitle: '复现与版本固定',
+    modelRevision: '模型版本号',
+    preservedReasoning: '保留推理历史',
+    reproducibilityNotes: '复现说明',
     strengthsTitle: '专长与研究可用性',
     hardwareTitle: '硬件档位',
     inference: '推理',
@@ -160,6 +176,10 @@ export const zh: Messages = {
     field: '字段',
     issueKind: '问题类型',
     source: '来源',
+    flagship: '当前旗舰 ID',
+    openWeightApi: '开放权重 / API',
+    openWeight: '开放权重',
+    api: 'API',
   },
   selector: {
     mode: '实验方式',
@@ -321,6 +341,11 @@ export const zh: Messages = {
     sourceType: {
       official_model_card: '官方模型卡',
       official_docs: '官方文档',
+      official_announcement: '官方发布',
+      official_weights: '官方权重',
+      official_license: '官方许可证',
+      official_api_docs: '官方 API 文档',
+      technical_report: '技术报告',
       paper: '论文',
       code: '代码仓库',
       benchmark: '基准测试',
@@ -479,6 +504,22 @@ export type Messages = {
     derivativeAllowed: string;
     commercialAllowed: string;
     license: string;
+    accessTitle: string;
+    weightsStatus: string;
+    weightsReleasedAt: string;
+    apiStatus: string;
+    apiModelIds: string;
+    productStatus: string;
+    productNames: string;
+    opennessClass: string;
+    customLicense: string;
+    derivativeDistribution: string;
+    commercialUse: string;
+    conditions: string;
+    reproducibilityTitle: string;
+    modelRevision: string;
+    preservedReasoning: string;
+    reproducibilityNotes: string;
     strengthsTitle: string;
     hardwareTitle: string;
     inference: string;
@@ -511,7 +552,7 @@ export type Messages = {
   evidence: { title: string; body: string; open: string; dataStatus: string };
   dataStatus: {
     pageTitle: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
-    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string;
+    vendors: string; vendor: string; latestRelease: string; currentGeneration: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string; flagship: string; openWeightApi: string; openWeight: string; api: string;
   };
   selector: {
     mode: string;

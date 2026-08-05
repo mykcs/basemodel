@@ -56,7 +56,8 @@
     {
       "url": "https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E",
       "type": "official_model_card",
-      "checked_at": "2026-08-05"
+      "checked_at": "2026-08-05",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
     },
     {
       "url": "https://www.llama.com/models/llama-4/",

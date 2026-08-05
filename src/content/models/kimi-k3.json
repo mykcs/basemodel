@@ -1,0 +1,112 @@
+{
+  "id": "kimi-k3",
+  "name": "Kimi K3",
+  "official_name": "Kimi K3",
+  "vendor": "Moonshot AI",
+  "family": "Kimi",
+  "generation": "K3",
+  "release_date": "2026-07-16",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "multimodal"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 2800,
+    "active_parameters_b": 104,
+    "context_length": 1048576,
+    "expert_count": 896,
+    "active_experts_per_token": 16
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_verified",
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Kimi K3 License",
+    "classification": "open_weight",
+    "custom_license": true,
+    "derivative_distribution": "conditional",
+    "commercial_use": "conditional",
+    "conditions": [
+      "redistribution_and_commercial_conditions",
+      "not_legal_advice"
+    ],
+    "license_url": "https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "not_verified"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-07-27",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-K3",
+    "api_status": "available",
+    "api_model_ids": ["kimi-k3"],
+    "product_status": "available",
+    "product_names": ["Kimi App", "Kimi Agent", "Kimi Code"]
+  },
+  "reproducibility": {
+    "model_revision_required": true,
+    "api_version_pinnable": "not_verified",
+    "tokenizer_public": true,
+    "config_public": true,
+    "chat_template_public": true,
+    "preserved_reasoning_history_required": true,
+    "known_nondeterminism_notes": "preserve_reasoning_and_tool_call_history"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/moonshotai/Kimi-K3",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context."
+    },
+    {
+      "url": "https://github.com/MoonshotAI/Kimi-K3",
+      "type": "code",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Moonshot AI official repository documents Kimi K3 deployment with vLLM/SGLang and the kimi-k3 API alias, and requires preserving reasoning/tool-call history in multi-turn use."
+    },
+    {
+      "id": "kimi-k3-license",
+      "url": "https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE",
+      "type": "official_license",
+      "checked_at": "2026-08-06",
+      "evidence_note": "The first-party Kimi K3 License grants use, copying, modification, distribution and finetuning subject to its commercial and redistribution conditions."
+    },
+    {
+      "url": "https://www.kimi.com/help/agent/agent-overview",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Kimi Help Center records the Kimi K3 product release on 2026-07-16 and the full-weight release on 2026-07-27; the model release and weight availability dates are stored separately."
+    }
+  ],
+  "data_status": "verified"
+}
