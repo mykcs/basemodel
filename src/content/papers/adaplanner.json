@@ -1,0 +1,20 @@
+{
+  "id": "adaplanner",
+  "title": "AdaPlanner: Adaptive Planning from Feedback with Language Models",
+  "published_at": "2023-05-26",
+  "paper_url": "https://arxiv.org/abs/2305.16653",
+  "code_url": "https://github.com/haotiansun14/AdaPlanner",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "reasoning", "tool-use"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Adaptive planning policy closed-loop refined by environment feedback." },
+    { "model_id": "gpt-4o", "role": "reflector", "weight_updated": false, "notes": "Refines plan in-plan and out-of-plan based on feedback." }
+  ],
+  "evolution_targets": ["planning-policy", "reflection-memory"],
+  "benchmarks": ["ALFWorld", "MiniWoB++"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2305.16653", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/haotiansun14/AdaPlanner", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

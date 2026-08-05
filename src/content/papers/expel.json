@@ -1,0 +1,20 @@
+{
+  "id": "expel",
+  "title": "ExpeL: LLM Agents Are Experiential Learners",
+  "published_at": "2024-01-29",
+  "paper_url": "https://arxiv.org/abs/2401.15927",
+  "code_url": "https://github.com/LeapLabTHU/ExpeL",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "prompt-evolution", "reflection"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Experiential learning policy distilled from prior task trajectories." },
+    { "model_id": "gpt-4o", "role": "reflector", "weight_updated": false, "notes": "Extracts insights and failures from experience to improve future behavior." }
+  ],
+  "evolution_targets": ["experience-memory", "actor-policy"],
+  "benchmarks": ["ALFWorld", "WebShop"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2401.15927", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/LeapLabTHU/ExpeL", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

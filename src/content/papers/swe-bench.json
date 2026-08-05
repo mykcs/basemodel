@@ -1,0 +1,20 @@
+{
+  "id": "swe-bench",
+  "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+  "published_at": "2023-10-10",
+  "paper_url": "https://arxiv.org/abs/2310.06770",
+  "code_url": "https://github.com/princeton-nlp/SWE-bench",
+  "checkpoint_url": "unknown",
+  "category": ["tool-use", "reasoning", "self-evolving-agent"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Baseline LLM agent tested on real GitHub issues." },
+    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Automated test-suite evaluation of generated patches." }
+  ],
+  "evolution_targets": ["agent-evaluation", "tool-use"],
+  "benchmarks": ["SWE-bench", "SWE-bench-Lite"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2310.06770", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/princeton-nlp/SWE-bench", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "openhands",
+  "title": "OpenHands: An Open Platform for AI Software Developers as Generalist Agents",
+  "published_at": "2024-07-24",
+  "paper_url": "https://arxiv.org/abs/2407.16741",
+  "code_url": "https://github.com/All-Hands-AI/OpenHands",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "tool-use", "multi-agent"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Multi-agent orchestration and code editing policy." },
+    { "model_id": "gpt-4o", "role": "actor", "weight_updated": false, "notes": "Runs commands in sandboxed execution environment." }
+  ],
+  "evolution_targets": ["tool-use", "multi-agent-roles", "actor-policy"],
+  "benchmarks": ["SWE-bench", "SWE-bench-Lite", "AppWorld"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2407.16741", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/All-Hands-AI/OpenHands", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

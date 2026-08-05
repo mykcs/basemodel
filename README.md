@@ -47,7 +47,7 @@ PUBLIC_SITE_URL=https://OWNER.github.io PUBLIC_BASE_PATH=/REPOSITORY npm run bui
 
 ## GitHub Pages
 
-仓库根目录的 `.github/workflows/agent-model-atlas-deploy.yml` 使用 Pages artifact 和官方部署 action；校验与数据检查分别在 `agent-model-atlas-validate.yml`、`agent-model-atlas-update-data.yml`。仓库设置中将 Pages 来源设为 **GitHub Actions**。工作流在构建时自动使用仓库 owner 和 repository name 注入 `site` 与 `base`，因此内部链接和静态资源会保留子路径。
+仓库根目录的 `.github/workflows/deploy.yml` 使用 Pages artifact 和官方部署 action；校验与数据检查分别在 `.github/workflows/validate.yml`、`.github/workflows/update-data.yml`。仓库设置中将 Pages 来源设为 **GitHub Actions**。工作流在构建时自动使用仓库 owner 和 repository name 注入 `site` 与 `base`，因此内部链接和静态资源会保留子路径。
 
 `validate.yml` 在相关文件 push / PR 时运行 check、数据校验、测试和 build。`update-data.yml` 目前只做每周或手动数据检查，不写入仓库、不自动部署错误结果；未来可在人工审核后扩展为创建 PR。
 

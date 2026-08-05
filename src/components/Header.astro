@@ -14,19 +14,37 @@ const links = [
       <span class="brand-mark" aria-hidden="true">↗</span>
       <span><strong>Model Atlas</strong><small>智能体基础模型选择地图</small></span>
     </a>
-    <nav aria-label="主导航">
+    <nav aria-label="主导航" class="desktop-nav">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
+    <button class="menu-toggle" type="button" aria-label="打开菜单" aria-expanded="false" data-menu-toggle>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
     <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle>◐</button>
+  </div>
+  <div class="mobile-menu" data-mobile-menu>
+    <div class="shell">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle-mobile>◐</button>
+    </div>
   </div>
 </header>
 <script>
-  const toggle = document.querySelector('[data-theme-toggle]');
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const mobileMenu = document.querySelector('[data-mobile-menu]');
+  menuToggle?.addEventListener('click', () => {
+    const open = mobileMenu?.classList.toggle('is-open');
+    menuToggle?.setAttribute('aria-expanded', String(open));
+  });
+  const applyTheme = (toggle: Element | null) => {
+    toggle?.addEventListener('click', () => {
+      const dark = document.documentElement.dataset.theme === 'dark';
+      document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+      localStorage.setItem('atlas-theme', dark ? 'light' : 'dark');
+    });
+  };
+  applyTheme(document.querySelector('[data-theme-toggle]'));
+  applyTheme(document.querySelector('[data-theme-toggle-mobile]'));
   const stored = localStorage.getItem('atlas-theme');
   if (stored === 'dark') document.documentElement.dataset.theme = 'dark';
-  toggle?.addEventListener('click', () => {
-    const dark = document.documentElement.dataset.theme === 'dark';
-    document.documentElement.dataset.theme = dark ? 'light' : 'dark';
-    localStorage.setItem('atlas-theme', dark ? 'light' : 'dark');
-  });
 </script>

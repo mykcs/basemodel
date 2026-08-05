@@ -1,0 +1,20 @@
+{
+  "id": "agentboard",
+  "title": "AgentBoard: An Analytical Evaluation Board of LLM Agents",
+  "published_at": "2024-01-23",
+  "paper_url": "https://arxiv.org/abs/2401.12863",
+  "code_url": "https://github.com/hkust-nlp/AgentBoard",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "reasoning", "tool-use"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Evaluated as a baseline agent across multiple tasks." },
+    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Fine-grained evaluation and progress tracking." }
+  ],
+  "evolution_targets": ["agent-evaluation", "actor-policy"],
+  "benchmarks": ["AgentBoard", "WebShop", "ALFWorld", "GSM8K"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2401.12863", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/hkust-nlp/AgentBoard", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

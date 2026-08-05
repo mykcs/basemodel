@@ -1,0 +1,17 @@
+{
+  "id": "gemini-1-5-pro",
+  "name": "Gemini 1.5 Pro",
+  "official_name": "Gemini 1.5 Pro",
+  "vendor": "Google",
+  "family": "Gemini",
+  "generation": "Gemini 1.5",
+  "release_date": "2024-02-15",
+  "status": "legacy",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "audio", "video"], "specializations": ["general", "multimodal", "reasoning"]},
+  "architecture": {"type": "moe", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": 1000000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "Provider API terms"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": false, "vllm_support": false, "sglang_support": false, "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [{"url": "https://deepmind.google/technologies/gemini/pro/", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

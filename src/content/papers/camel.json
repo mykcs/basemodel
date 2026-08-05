@@ -1,0 +1,20 @@
+{
+  "id": "camel",
+  "title": "CAMEL: Communicative Agents for Mind Exploration of Large Scale Language Model Society",
+  "published_at": "2023-03-21",
+  "paper_url": "https://arxiv.org/abs/2303.17760",
+  "code_url": "https://github.com/camel-ai/camel",
+  "checkpoint_url": "unknown",
+  "category": ["multi-agent", "self-evolving-agent", "prompt-evolution"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "actor", "weight_updated": false, "notes": "Role-playing AI user and assistant agents that collaborate." },
+    { "model_id": "gpt-4o", "role": "teacher", "weight_updated": false, "notes": "Generates task instructions and knowledge through communication." }
+  ],
+  "evolution_targets": ["multi-agent-roles", "prompt-evolution"],
+  "benchmarks": ["AI Society", "Code Generation", "Role-Play Benchmarks"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2303.17760", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/camel-ai/camel", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

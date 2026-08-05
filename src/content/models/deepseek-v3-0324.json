@@ -1,0 +1,17 @@
+{
+  "id": "deepseek-v3-0324",
+  "name": "DeepSeek-V3-0324",
+  "official_name": "DeepSeek-V3-0324",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "V3",
+  "release_date": "2025-03-24",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["reasoning", "coding", "agent", "tool-use"]},
+  "architecture": {"type": "moe", "total_parameters_b": 685, "active_parameters_b": "unknown", "context_length": 128000, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "MIT"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

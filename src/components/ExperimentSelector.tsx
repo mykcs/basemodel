@@ -4,7 +4,7 @@ import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } fr
 
 type Props = { models: AtlasModel[] };
 
-const modes: [ExperimentMode, string][] = [['inference', '仅推理 / Prompt'], ['lora', 'LoRA'], ['sft', 'SFT'], ['rl', 'RL / 自进化参数训练'], ['harness', '外部 Memory / Harness']];
+const modes: [ExperimentMode, string][] = [['inference', '仅推理 / Prompt'], ['lora', 'LoRA / PEFT'], ['sft', 'SFT'], ['full_sft', '全参数训练'], ['rl', 'RL / 自进化参数训练'], ['harness', '外部 Memory / Harness']];
 const tasks: [TaskDirection, string][] = [['general', '通用 Agent'], ['webshop', 'WebShop / Web navigation'], ['alfworld', 'ALFWorld'], ['coding', 'Coding Agent'], ['research', 'Search / Deep Research'], ['math', '数学推理'], ['gui', 'GUI / 多模态 Agent'], ['chinese', '中文任务'], ['multilingual', '多语言任务']];
 const resources: [ResourceTier, string][] = [['cpu_mac', 'CPU / Mac'], ['16gb', '16GB GPU'], ['24gb', '24GB GPU'], ['48gb', '48GB GPU'], ['80gb', '80GB GPU'], ['multi_gpu', '多卡 GPU'], ['api_only', 'API only']];
 const goals: [Goal, string][] = [['comparability', '论文可比性'], ['current', '当前代模型'], ['low_cost', '低成本'], ['open_weights', '开放权重'], ['chinese', '中文能力'], ['tool_use', 'Agent / Tool use'], ['rl', '容易进行 RL']];

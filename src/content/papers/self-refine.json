@@ -1,0 +1,20 @@
+{
+  "id": "self-refine",
+  "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+  "published_at": "2023-03-31",
+  "paper_url": "https://arxiv.org/abs/2303.17651",
+  "code_url": "https://github.com/madaan/self-refine",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "reflection", "prompt-evolution"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Generation policy that is refined iteratively through feedback." },
+    { "model_id": "gpt-4o", "role": "critic", "weight_updated": false, "notes": "Self-generated feedback critiques and refines outputs." }
+  ],
+  "evolution_targets": ["actor-policy", "reflection-memory"],
+  "benchmarks": ["GSM8K", "HumanEval", "BigBench"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2303.17651", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/madaan/self-refine", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

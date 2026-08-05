@@ -1,0 +1,17 @@
+{
+  "id": "glm-4-9b-chat",
+  "name": "GLM-4-9B-Chat",
+  "official_name": "GLM-4-9B-Chat",
+  "vendor": "Zhipu AI",
+  "family": "GLM",
+  "generation": "GLM-4",
+  "release_date": "2024-06-18",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "chat", "tool-use", "multilingual", "coding"]},
+  "architecture": {"type": "dense", "total_parameters_b": 9, "active_parameters_b": 9, "context_length": 128000, "expert_count": null, "active_experts_per_token": null},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "GLM-4 License"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "24gb", "lora_tier": "48gb", "full_sft_tier": "80gb", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://huggingface.co/THUDM/glm-4-9b-chat", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

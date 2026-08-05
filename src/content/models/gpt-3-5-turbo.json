@@ -1,0 +1,17 @@
+{
+  "id": "gpt-3-5-turbo",
+  "name": "GPT-3.5 Turbo",
+  "official_name": "GPT-3.5 Turbo",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "GPT-3.5",
+  "release_date": "2023-03-01",
+  "status": "legacy",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "reasoning"]},
+  "architecture": {"type": "other", "total_parameters_b": "unknown", "active_parameters_b": "unknown", "context_length": 16385, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "Provider API terms"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": false, "vllm_support": false, "sglang_support": false, "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [{"url": "https://platform.openai.com/docs/models/gpt-3-5-turbo", "type": "official_docs", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

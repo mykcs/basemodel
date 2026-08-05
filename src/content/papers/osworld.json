@@ -1,0 +1,20 @@
+{
+  "id": "osworld",
+  "title": "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments",
+  "published_at": "2024-04-12",
+  "paper_url": "https://arxiv.org/abs/2404.07972",
+  "code_url": "https://github.com/xlang-ai/OSWorld",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "tool-use", "web-agent"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Multimodal OS-level agent policy interpreting screenshots and actions." },
+    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Task success and progress evaluation in the OS environment." }
+  ],
+  "evolution_targets": ["tool-use", "multimodal-policy", "actor-policy"],
+  "benchmarks": ["OSWorld"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2404.07972", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/xlang-ai/OSWorld", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

@@ -3,8 +3,10 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PaperModelMatrix from '../../components/PaperModelMatrix';
 import StatusBadge from '../../components/StatusBadge.astro';
-const papers = (await getCollection('papers')).map((entry) => entry.data);
-const models = (await getCollection('models')).map((entry) => entry.data);
+const paperEntries = await getCollection('papers');
+const modelEntries = await getCollection('models');
+const papers = paperEntries.map((entry) => entry.data);
+const models = modelEntries.map((entry) => entry.data);
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 ---
 <BaseLayout title="论文采用"><div class="shell"><header class="page-header"><div class="eyebrow">Research adoption layer</div><h1>自进化智能体论文</h1><p class="lede">论文记录单独维护，通过 model ID 与供应层建立关系。角色比单一“使用了某模型”更重要。</p></header><section class="section"><div class="paper-list">{papers.map((paper) => <a class="paper-row" href={`${base}papers/${paper.id}/`}><div><h3>{paper.title}</h3><p>{paper.category.join(' · ')} · {paper.models.length} 个模型关系 · {paper.benchmarks.join('、')}</p></div><div class="paper-meta"><StatusBadge status={paper.data_status} /><div>{paper.published_at}</div></div></a>)}</div></section><section class="section"><div class="section-heading"><div><div class="section-kicker">Paper × Model</div><h2>论文—模型矩阵</h2></div></div><PaperModelMatrix client:load papers={papers} models={models} /></section></div></BaseLayout>

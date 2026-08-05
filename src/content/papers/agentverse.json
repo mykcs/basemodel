@@ -1,0 +1,20 @@
+{
+  "id": "agentverse",
+  "title": "AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors",
+  "published_at": "2023-08-21",
+  "paper_url": "https://arxiv.org/abs/2308.10848",
+  "code_url": "https://github.com/OpenBMB/AgentVerse",
+  "checkpoint_url": "unknown",
+  "category": ["multi-agent", "self-evolving-agent", "tool-use"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "actor", "weight_updated": false, "notes": "Agent role-playing in collaborative multi-agent environments." },
+    { "model_id": "gpt-4o", "role": "critic", "weight_updated": false, "notes": "Provides feedback within the multi-agent group." }
+  ],
+  "evolution_targets": ["multi-agent-roles", "actor-policy"],
+  "benchmarks": ["ALFWorld", "Minecraft", "Multi-Agent Reasoning"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2308.10848", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/OpenBMB/AgentVerse", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}

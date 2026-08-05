@@ -1,0 +1,20 @@
+{
+  "id": "agentbench",
+  "title": "AgentBench: Evaluating LLMs as Agents",
+  "published_at": "2023-08-07",
+  "paper_url": "https://arxiv.org/abs/2308.03688",
+  "code_url": "https://github.com/THUDM/AgentBench",
+  "checkpoint_url": "unknown",
+  "category": ["self-evolving-agent", "reasoning", "tool-use"],
+  "models": [
+    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Baseline LLM-as-agent performance across multiple environments." },
+    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Evaluates and ranks LLM agent capabilities." }
+  ],
+  "evolution_targets": ["agent-evaluation", "actor-policy"],
+  "benchmarks": ["AgentBench", "ALFWorld", "WebShop", "OSWorld"],
+  "sources": [
+    { "url": "https://arxiv.org/abs/2308.03688", "type": "paper", "checked_at": "2026-08-05" },
+    { "url": "https://github.com/THUDM/AgentBench", "type": "code", "checked_at": "2026-08-05" }
+  ],
+  "data_status": "verified"
+}
