@@ -5,16 +5,44 @@
   "paper_url": "https://arxiv.org/abs/2401.15927",
   "code_url": "https://github.com/LeapLabTHU/ExpeL",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "prompt-evolution", "reflection"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Experiential learning policy distilled from prior task trajectories." },
-    { "model_id": "gpt-4o", "role": "reflector", "weight_updated": false, "notes": "Extracts insights and failures from experience to improve future behavior." }
+  "category": [
+    "self-evolving-agent",
+    "prompt-evolution",
+    "reflection"
   ],
-  "evolution_targets": ["experience-memory", "actor-policy"],
-  "benchmarks": ["ALFWorld", "WebShop"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4 as the ExpeL agent policy extracting experiential insights."
+    },
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "reflector",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo used in experience-collection / reflection ablations."
+    }
+  ],
+  "evolution_targets": [
+    "experience-memory",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "ALFWorld",
+    "WebShop"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2401.15927", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/LeapLabTHU/ExpeL", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2401.15927",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/LeapLabTHU/ExpeL",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

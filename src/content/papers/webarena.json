@@ -5,16 +5,55 @@
   "paper_url": "https://arxiv.org/abs/2307.13854",
   "code_url": "https://github.com/web-arena-x/webarena",
   "checkpoint_url": "unknown",
-  "category": ["web-agent", "tool-use", "self-evolving-agent"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Baseline agent benchmarked on realistic web tasks." },
-    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Automated evaluation of web task completion." }
+  "category": [
+    "web-agent",
+    "tool-use",
+    "self-evolving-agent"
   ],
-  "evolution_targets": ["web-agent-policy", "agent-evaluation"],
-  "benchmarks": ["WebArena"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-4 benchmarked as a WebArena agent."
+    },
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo benchmarked as a WebArena agent."
+    },
+    {
+      "model_id": "text-davinci-003",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "text-davinci-003 benchmarked as a WebArena agent."
+    },
+    {
+      "model_id": "llama-2-70b-chat",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Llama-2-70B-Chat benchmarked as an open-source WebArena agent."
+    }
+  ],
+  "evolution_targets": [
+    "web-agent-policy",
+    "agent-evaluation"
+  ],
+  "benchmarks": [
+    "WebArena"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2307.13854", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/web-arena-x/webarena", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2307.13854",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/web-arena-x/webarena",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

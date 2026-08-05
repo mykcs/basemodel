@@ -5,16 +5,45 @@
   "paper_url": "https://arxiv.org/abs/2310.03714",
   "code_url": "https://github.com/stanfordnlp/dspy",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "prompt-evolution", "multi-agent"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Programmatic prompt optimization and module composition." },
-    { "model_id": "gpt-4o", "role": "optimizer", "weight_updated": false, "notes": "Optimizes prompts and few-shot demonstrations via compilation." }
+  "category": [
+    "self-evolving-agent",
+    "prompt-evolution",
+    "multi-agent"
   ],
-  "evolution_targets": ["prompt-tuning", "actor-policy"],
-  "benchmarks": ["HotpotQA", "GSM8K", "BoolQ"],
+  "models": [
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo as a target LM whose prompts are compiled by DSPy."
+    },
+    {
+      "model_id": "llama-2-13b-chat",
+      "role": "optimizer",
+      "weight_updated": false,
+      "notes": "Llama-2-13B-Chat used as open-source LM in DSPy pipelines."
+    }
+  ],
+  "evolution_targets": [
+    "prompt-tuning",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "HotpotQA",
+    "GSM8K",
+    "BoolQ"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2310.03714", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/stanfordnlp/dspy", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2310.03714",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/stanfordnlp/dspy",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

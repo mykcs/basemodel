@@ -5,16 +5,58 @@
   "paper_url": "https://arxiv.org/abs/2401.12863",
   "code_url": "https://github.com/hkust-nlp/AgentBoard",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "reasoning", "tool-use"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Evaluated as a baseline agent across multiple tasks." },
-    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Fine-grained evaluation and progress tracking." }
+  "category": [
+    "self-evolving-agent",
+    "reasoning",
+    "tool-use"
   ],
-  "evolution_targets": ["agent-evaluation", "actor-policy"],
-  "benchmarks": ["AgentBoard", "WebShop", "ALFWorld", "GSM8K"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-4 benchmarked on AgentBoard."
+    },
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo benchmarked on AgentBoard."
+    },
+    {
+      "model_id": "llama-2-70b-chat",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Llama-2-70B-Chat benchmarked on AgentBoard."
+    },
+    {
+      "model_id": "qwen-7b-chat",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Qwen-7B-Chat benchmarked on AgentBoard."
+    }
+  ],
+  "evolution_targets": [
+    "agent-evaluation",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "AgentBoard",
+    "WebShop",
+    "ALFWorld",
+    "GSM8K"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2401.12863", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/hkust-nlp/AgentBoard", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2401.12863",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/hkust-nlp/AgentBoard",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

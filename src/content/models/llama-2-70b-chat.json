@@ -1,0 +1,17 @@
+{
+  "id": "llama-2-70b-chat",
+  "name": "Llama 2 70B Chat",
+  "official_name": "Llama 2 70B Chat",
+  "vendor": "Meta",
+  "family": "Llama",
+  "generation": "Llama 2",
+  "release_date": "2023-07-18",
+  "status": "legacy",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "reasoning"]},
+  "architecture": {"type": "dense", "total_parameters_b": 70, "active_parameters_b": 70, "context_length": 4096, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "LLaMA-2 Community License"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": true},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "80gb", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://huggingface.co/meta-llama/Llama-2-70b-chat-hf", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

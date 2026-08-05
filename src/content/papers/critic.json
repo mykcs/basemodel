@@ -5,16 +5,51 @@
   "paper_url": "https://arxiv.org/abs/2305.11738",
   "code_url": "https://github.com/microsoft/ProphetNet/tree/master/CRITIC",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "reflection", "tool-use"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Initial generation policy then iteratively corrected with tools." },
-    { "model_id": "gpt-4o", "role": "critic", "weight_updated": false, "notes": "Tool-interactive critiquing verifies and refines outputs." }
+  "category": [
+    "self-evolving-agent",
+    "reflection",
+    "tool-use"
   ],
-  "evolution_targets": ["self-correction", "tool-use"],
-  "benchmarks": ["HotpotQA", "GSM8K", "HumanEval"],
+  "models": [
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo as initial generator corrected via tool-interactive critique."
+    },
+    {
+      "model_id": "text-davinci-003",
+      "role": "critic",
+      "weight_updated": false,
+      "notes": "text-davinci-003 evaluated as a CRITIC backbone."
+    },
+    {
+      "model_id": "llama-2-70b-chat",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Llama-2-70B-Chat evaluated as open-source CRITIC backbone."
+    }
+  ],
+  "evolution_targets": [
+    "self-correction",
+    "tool-use"
+  ],
+  "benchmarks": [
+    "HotpotQA",
+    "GSM8K",
+    "HumanEval"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2305.11738", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/microsoft/ProphetNet/tree/master/CRITIC", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2305.11738",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/microsoft/ProphetNet/tree/master/CRITIC",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

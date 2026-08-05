@@ -5,16 +5,38 @@
   "paper_url": "https://arxiv.org/abs/2304.03442",
   "code_url": "https://github.com/joonspk-research/generative_agents",
   "checkpoint_url": "unknown",
-  "category": ["multi-agent", "self-evolving-agent", "reflection"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Daily planning and social interaction policy for simulated agents." },
-    { "model_id": "gpt-4o", "role": "reflector", "weight_updated": false, "notes": "Memory reflection and synthesis for emergent behavior." }
+  "category": [
+    "multi-agent",
+    "self-evolving-agent",
+    "reflection"
   ],
-  "evolution_targets": ["memory-reflection", "social-simulation"],
-  "benchmarks": ["Generative Agents Sandbox", "Interview Simulation"],
+  "models": [
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo powers the simulated agents' planning, reflection and dialogue."
+    }
+  ],
+  "evolution_targets": [
+    "memory-reflection",
+    "social-simulation"
+  ],
+  "benchmarks": [
+    "Generative Agents Sandbox",
+    "Interview Simulation"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2304.03442", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/joonspk-research/generative_agents", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2304.03442",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/joonspk-research/generative_agents",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

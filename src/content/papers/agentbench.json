@@ -5,16 +5,58 @@
   "paper_url": "https://arxiv.org/abs/2308.03688",
   "code_url": "https://github.com/THUDM/AgentBench",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "reasoning", "tool-use"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "baseline", "weight_updated": false, "notes": "Baseline LLM-as-agent performance across multiple environments." },
-    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Evaluates and ranks LLM agent capabilities." }
+  "category": [
+    "self-evolving-agent",
+    "reasoning",
+    "tool-use"
   ],
-  "evolution_targets": ["agent-evaluation", "actor-policy"],
-  "benchmarks": ["AgentBench", "ALFWorld", "WebShop", "OSWorld"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-4 benchmarked as an AgentBench agent."
+    },
+    {
+      "model_id": "gpt-3-5-turbo",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-3.5 Turbo benchmarked as an AgentBench agent."
+    },
+    {
+      "model_id": "llama-2-70b-chat",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Llama-2-70B-Chat benchmarked as an open AgentBench agent."
+    },
+    {
+      "model_id": "vicuna-13b",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Vicuna-13B benchmarked as an open AgentBench agent."
+    }
+  ],
+  "evolution_targets": [
+    "agent-evaluation",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "AgentBench",
+    "ALFWorld",
+    "WebShop",
+    "OSWorld"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2308.03688", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/THUDM/AgentBench", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2308.03688",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/THUDM/AgentBench",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

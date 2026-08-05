@@ -5,16 +5,38 @@
   "paper_url": "https://arxiv.org/abs/2305.16291",
   "code_url": "https://github.com/MineDojo/Voyager",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "tool-use", "prompt-evolution"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Open-ended skill exploration and code-as-policy generation." },
-    { "model_id": "gpt-4o", "role": "teacher", "weight_updated": false, "notes": "Automatic curriculum generation for skill acquisition." }
+  "category": [
+    "self-evolving-agent",
+    "tool-use",
+    "prompt-evolution"
   ],
-  "evolution_targets": ["skill-library", "actor-policy"],
-  "benchmarks": ["Minecraft", "MineDojo"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4 is the Voyager policy for code-generation and self-critique in Minecraft."
+    }
+  ],
+  "evolution_targets": [
+    "skill-library",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "Minecraft",
+    "MineDojo"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2305.16291", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/MineDojo/Voyager", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2305.16291",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/MineDojo/Voyager",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

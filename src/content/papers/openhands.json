@@ -5,16 +5,46 @@
   "paper_url": "https://arxiv.org/abs/2407.16741",
   "code_url": "https://github.com/All-Hands-AI/OpenHands",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "tool-use", "multi-agent"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Multi-agent orchestration and code editing policy." },
-    { "model_id": "gpt-4o", "role": "actor", "weight_updated": false, "notes": "Runs commands in sandboxed execution environment." }
+  "category": [
+    "self-evolving-agent",
+    "tool-use",
+    "multi-agent"
   ],
-  "evolution_targets": ["tool-use", "multi-agent-roles", "actor-policy"],
-  "benchmarks": ["SWE-bench", "SWE-bench-Lite", "AppWorld"],
+  "models": [
+    {
+      "model_id": "gpt-4o",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4o evaluated as an OpenHands agent backbone."
+    },
+    {
+      "model_id": "claude-3-5-sonnet",
+      "role": "actor",
+      "weight_updated": false,
+      "notes": "Claude 3.5 Sonnet evaluated as an OpenHands agent backbone."
+    }
+  ],
+  "evolution_targets": [
+    "tool-use",
+    "multi-agent-roles",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "SWE-bench",
+    "SWE-bench-Lite",
+    "AppWorld"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2407.16741", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/All-Hands-AI/OpenHands", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2407.16741",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/All-Hands-AI/OpenHands",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

@@ -5,16 +5,39 @@
   "paper_url": "https://arxiv.org/abs/2308.00352",
   "code_url": "https://github.com/geekan/MetaGPT",
   "checkpoint_url": "unknown",
-  "category": ["multi-agent", "self-evolving-agent", "tool-use"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Product manager, architect, engineer, and QA roles in software development." },
-    { "model_id": "gpt-4o", "role": "analyzer", "weight_updated": false, "notes": "Analyzes requirements and designs into structured outputs." }
+  "category": [
+    "multi-agent",
+    "self-evolving-agent",
+    "tool-use"
   ],
-  "evolution_targets": ["multi-agent-roles", "workflow-evolution"],
-  "benchmarks": ["HumanEval", "MBPP", "Software Dev Benchmarks"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4 drives the role-specialized agents in the MetaGPT SOP framework."
+    }
+  ],
+  "evolution_targets": [
+    "multi-agent-roles",
+    "workflow-evolution"
+  ],
+  "benchmarks": [
+    "HumanEval",
+    "MBPP",
+    "Software Dev Benchmarks"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2308.00352", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/geekan/MetaGPT", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2308.00352",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/geekan/MetaGPT",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

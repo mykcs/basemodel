@@ -5,16 +5,39 @@
   "paper_url": "https://arxiv.org/abs/2303.11366",
   "code_url": "https://github.com/noahshinn/reflexion",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "reflection", "prompt-evolution"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Reflexion agent policy via in-context verbal reinforcement, no weights changed." },
-    { "model_id": "gpt-4o", "role": "reflector", "weight_updated": false, "notes": "Self-evaluation and textual experience summary generation." }
+  "category": [
+    "self-evolving-agent",
+    "reflection",
+    "prompt-evolution"
   ],
-  "evolution_targets": ["reflection-memory", "actor-policy"],
-  "benchmarks": ["HotpotQA", "HumanEval", "ALFWorld"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4 drives the Reflexion agent policy and verbal self-reflection, no weights updated."
+    }
+  ],
+  "evolution_targets": [
+    "reflection-memory",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "HotpotQA",
+    "HumanEval",
+    "ALFWorld"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2303.11366", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/noahshinn/reflexion", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2303.11366",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/noahshinn/reflexion",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

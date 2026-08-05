@@ -1,0 +1,17 @@
+{
+  "id": "qwen-7b-chat",
+  "name": "Qwen 7B Chat",
+  "official_name": "Qwen-7B-Chat",
+  "vendor": "Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen 1",
+  "release_date": "2023-09-25",
+  "status": "legacy",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "reasoning"]},
+  "architecture": {"type": "dense", "total_parameters_b": 7, "active_parameters_b": 7, "context_length": 8192, "expert_count": "unknown", "active_experts_per_token": "unknown"},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Apache 2.0"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": "unknown", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "unknown"},
+  "hardware": {"inference_tier": "24gb", "lora_tier": "16gb", "full_sft_tier": "48gb", "rl_tier": "unknown"},
+  "sources": [{"url": "https://huggingface.co/Qwen/Qwen-7B-Chat", "type": "official_model_card", "checked_at": "2026-08-05"}],
+  "data_status": "partial"
+}

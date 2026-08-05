@@ -5,16 +5,49 @@
   "paper_url": "https://arxiv.org/abs/2407.18901",
   "code_url": "https://github.com/stonybrooknlp/appworld",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "tool-use", "web-agent"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Interactive app-using agent policy." },
-    { "model_id": "gpt-4o", "role": "evaluator", "weight_updated": false, "notes": "Evaluates task completion across app interactions." }
+  "category": [
+    "self-evolving-agent",
+    "tool-use",
+    "web-agent"
   ],
-  "evolution_targets": ["tool-use", "app-interaction-policy"],
-  "benchmarks": ["AppWorld"],
+  "models": [
+    {
+      "model_id": "gpt-4o",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4o evaluated as an AppWorld agent backbone."
+    },
+    {
+      "model_id": "gpt-4",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "GPT-4 benchmarked on AppWorld."
+    },
+    {
+      "model_id": "claude-3-5-sonnet",
+      "role": "baseline",
+      "weight_updated": false,
+      "notes": "Claude 3.5 Sonnet benchmarked on AppWorld."
+    }
+  ],
+  "evolution_targets": [
+    "tool-use",
+    "app-interaction-policy"
+  ],
+  "benchmarks": [
+    "AppWorld"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2407.18901", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/stonybrooknlp/appworld", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2407.18901",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/stonybrooknlp/appworld",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }

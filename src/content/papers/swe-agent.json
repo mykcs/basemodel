@@ -5,16 +5,38 @@
   "paper_url": "https://arxiv.org/abs/2405.17193",
   "code_url": "https://github.com/princeton-nlp/SWE-agent",
   "checkpoint_url": "unknown",
-  "category": ["self-evolving-agent", "tool-use", "reasoning"],
-  "models": [
-    { "model_id": "gpt-4o", "role": "policy", "weight_updated": false, "notes": "Agent-Computer Interface policy for editing and testing code." },
-    { "model_id": "gpt-4o", "role": "actor", "weight_updated": false, "notes": "Executes shell and editor commands in the environment." }
+  "category": [
+    "self-evolving-agent",
+    "tool-use",
+    "reasoning"
   ],
-  "evolution_targets": ["tool-use", "actor-policy"],
-  "benchmarks": ["SWE-bench", "SWE-bench-Lite"],
+  "models": [
+    {
+      "model_id": "gpt-4",
+      "role": "policy",
+      "weight_updated": false,
+      "notes": "GPT-4 is the SWE-agent policy for repository-level issue resolution."
+    }
+  ],
+  "evolution_targets": [
+    "tool-use",
+    "actor-policy"
+  ],
+  "benchmarks": [
+    "SWE-bench",
+    "SWE-bench-Lite"
+  ],
   "sources": [
-    { "url": "https://arxiv.org/abs/2405.17193", "type": "paper", "checked_at": "2026-08-05" },
-    { "url": "https://github.com/princeton-nlp/SWE-agent", "type": "code", "checked_at": "2026-08-05" }
+    {
+      "url": "https://arxiv.org/abs/2405.17193",
+      "type": "paper",
+      "checked_at": "2026-08-05"
+    },
+    {
+      "url": "https://github.com/princeton-nlp/SWE-agent",
+      "type": "code",
+      "checked_at": "2026-08-05"
+    }
   ],
   "data_status": "verified"
 }
