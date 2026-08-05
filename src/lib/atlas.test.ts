@@ -58,6 +58,11 @@ describe('atlas rules', () => {
     expect(licenseLabel('Unknown; verify official release', 'zh')).toBe('未知；请核验官方发布');
     expect(licenseLabel('Unknown; verify current model card', 'zh')).toBe('未知；请核验当前模型卡');
     expect(licenseLabel('Unknown; verify official release', 'en')).toBe('Unknown; verify official release');
+    expect(licenseLabel('Provider API terms', 'zh')).toBe('提供方 API 条款');
+    expect(licenseLabel('OpenAI API terms; not a weight license', 'zh')).toBe('OpenAI API 条款；非权重许可证');
+    expect(licenseLabel('MIT (verify model card)', 'zh')).toBe('MIT（请核验模型卡）');
+    expect(licenseLabel('Apache 2.0 (verify model card)', 'zh')).toBe('Apache 2.0（请核验模型卡）');
+    expect(licenseLabel('Non-commercial (derived from LLaMA)', 'zh')).toBe('非商业用途（源自 LLaMA）');
     expect(licenseLabel('MIT', 'zh')).toBe('MIT');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'zh')).toBe('GPT-4 作为 AgentBench 智能体参与基准测试。');
     expect(noteLabel('GPT-4 benchmarked as an AgentBench agent.', 'en')).toBe('GPT-4 benchmarked as an AgentBench agent.');

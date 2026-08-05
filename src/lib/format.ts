@@ -146,6 +146,11 @@ export function noteLabel(note: string | undefined, locale?: Locale): string {
 const zhLicenseNames: Record<string, string> = {
   'Unknown; verify official release': '未知；请核验官方发布',
   'Unknown; verify current model card': '未知；请核验当前模型卡',
+  'Provider API terms': '提供方 API 条款',
+  'OpenAI API terms; not a weight license': 'OpenAI API 条款；非权重许可证',
+  'MIT (verify model card)': 'MIT（请核验模型卡）',
+  'Apache 2.0 (verify model card)': 'Apache 2.0（请核验模型卡）',
+  'Non-commercial (derived from LLaMA)': '非商业用途（源自 LLaMA）',
 };
 
 /** Translate only unresolved license placeholders; proper license names stay unchanged. */
