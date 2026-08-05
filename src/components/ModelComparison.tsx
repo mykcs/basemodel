@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { displayBoolean, displayUnknown, statusLabel, tierLabel } from '../lib/format';
+import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, modalityLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
 import { getMessages, type Locale } from '../i18n';
 import type { AtlasModel } from '../lib/types';
 
@@ -14,13 +14,13 @@ export default function ModelComparison({ models, locale = 'zh' }: { models: Atl
     [m.compareRows.vendor, (x) => x.vendor],
     [m.compareRows.familyGen, (x) => `${x.family} / ${x.generation}`],
     [m.compareRows.release, (x) => x.release_date],
-    [m.compareRows.architecture, (x) => x.architecture.type.toUpperCase()],
+    [m.compareRows.architecture, (x) => architectureLabel(x.architecture.type, locale)],
     [m.compareRows.totalParams, (x) => displayUnknown(x.architecture.total_parameters_b, 'B', locale)],
     [m.compareRows.activeParams, (x) => displayUnknown(x.architecture.active_parameters_b, 'B', locale)],
     [m.compareRows.context, (x) => displayUnknown(x.architecture.context_length, m.detail.tokensSuffix, locale)],
-    [m.compareRows.modalities, (x) => x.checkpoint.modalities.join(joiner)],
-    [m.compareRows.specializations, (x) => x.checkpoint.specializations.join(joiner) || m.format.unknown],
-    [m.compareRows.checkpoint, (x) => x.checkpoint.type],
+    [m.compareRows.modalities, (x) => x.checkpoint.modalities.map((value) => modalityLabel(value, locale)).join(joiner)],
+    [m.compareRows.specializations, (x) => x.checkpoint.specializations.map((value) => specializationLabel(value, locale)).join(joiner) || m.format.unknown],
+    [m.compareRows.checkpoint, (x) => checkpointLabel(x.checkpoint.type, locale)],
     [m.compareRows.openWeights, (x) => displayBoolean(x.openness.weights_available, locale)],
     [m.compareRows.license, (x) => x.openness.license_name],
     [m.compareRows.loraSftRl, (x) => `${displayBoolean(x.research.suitable_for_lora, locale)} / ${displayBoolean(x.research.suitable_for_sft, locale)} / ${displayBoolean(x.research.suitable_for_rl, locale)}`],

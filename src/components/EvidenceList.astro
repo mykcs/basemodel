@@ -1,6 +1,7 @@
 ---
 import type { AtlasModel, AtlasPaper } from '../lib/types';
 import StatusBadge from './StatusBadge.astro';
+import { sourceTypeLabel } from '../lib/format';
 import { getMessages, isLocale, type Locale } from '../i18n';
 interface Props { item: AtlasModel | AtlasPaper; locale?: Locale; }
 const { item } = Astro.props;
@@ -13,7 +14,7 @@ const m = getMessages(locale);
   <div class="evidence-list">
     {item.sources.map((source) => (
       <a class="evidence-row" href={source.url} target="_blank" rel="noreferrer">
-        <span>{source.type.replaceAll('_', ' ')}</span>
+        <span>{sourceTypeLabel(source.type, locale)}</span>
         <span>{source.checked_at}</span>
         <span class="external-link">{m.evidence.open}</span>
       </a>

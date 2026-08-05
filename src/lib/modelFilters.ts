@@ -1,4 +1,5 @@
 import { hardwareFits } from './hardware';
+import { lifecycleLabel, specializationLabel, taskLabel, tierLabel } from './format';
 import type { Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from './types';
 
@@ -83,10 +84,10 @@ export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task:
     lowVram: en ? 'Lower VRAM threshold' : '较低显存门槛',
     chinese: en ? 'Chinese specialization' : '中文专长',
     rlSupport: en ? 'RL material support' : 'RL 资料支持',
-    paperEvidence: en ? 'Paper / benchmark record' : '有论文/benchmark 记录',
+    paperEvidence: en ? 'Paper / benchmark record' : '有论文或基准测试记录',
     reproducible: en ? 'Reproducible training path or RL support' : '可复现训练路径或 RL 支持',
     weightsAvailable: en ? 'Weights available' : '权重可获取',
-    active: en ? 'Current status: active' : '当前状态 active',
+    active: en ? `Current status: ${lifecycleLabel('active', locale)}` : `当前状态：${lifecycleLabel('active', locale)}`,
   };
   const check = (condition: boolean | 'unknown', yes: string, no: string) => {
     if (condition === true) matched.push(yes);
@@ -98,7 +99,7 @@ export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task:
     check(model.checkpoint.specializations.includes('tool-use'), copy.toolUse, copy.toolUse);
     check(model.hardware.inference_tier !== 'unknown', copy.hardwareKnown, copy.hardwareKnown);
   } else {
-    check(hardwareFits(model, mode, resource), `${copy.resource}: ${resource}`, `${copy.resource}: ${resource}`);
+    check(hardwareFits(model, mode, resource), `${copy.resource}: ${tierLabel(resource, locale)}`, `${copy.resource}: ${tierLabel(resource, locale)}`);
   }
   if (mode === 'inference') check(model.research.suitable_for_inference, copy.inference, copy.inference);
   if (mode === 'lora') check(model.research.suitable_for_lora, copy.lora, copy.lora);
@@ -113,15 +114,15 @@ export function matchesExperiment(model: AtlasModel, mode: ExperimentMode, task:
   let evidence: 'direct' | 'weak' | 'unknown' = 'unknown';
   if (task !== 'general') {
     if (model.checkpoint.specializations.includes(task)) {
-      matched.push(en ? `Direct evidence for ${task}` : `${task} 方向有直接证据`);
+      matched.push(en ? `Direct evidence for ${taskLabel(task, locale)}` : `${taskLabel(task, locale)}方向有直接证据`);
       evidence = 'direct';
     } else if (model.checkpoint.specializations.some((s) => relatedTo(s, task))) {
-      matched.push(en ? `Related-specialty evidence for ${task}` : `${task} 方向有弱证据（相近专长）`);
+      matched.push(en ? `Related-specialty evidence for ${taskLabel(task, locale)}` : `${taskLabel(task, locale)}方向有弱证据（相近专长）`);
       evidence = 'weak';
     } else if (model.checkpoint.specializations.includes('general')) {
-      missing.push(en ? `Only a general tag for ${task}; not direct evidence` : `${task} 方向仅有 general 标签，不能作为直接证据`);
+      missing.push(en ? `Only a ${specializationLabel('general', locale)} tag for ${taskLabel(task, locale)}; not direct evidence` : `${taskLabel(task, locale)}方向仅有${specializationLabel('general', locale)}标签，不能作为直接证据`);
     } else {
-      missing.push(en ? `Evidence for ${task}` : `${task} 方向证据`);
+      missing.push(en ? `Evidence for ${taskLabel(task, locale)}` : `${taskLabel(task, locale)}方向证据`);
     }
   }
 

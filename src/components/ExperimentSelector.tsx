@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { recommendModels } from '../lib/recommendation';
+import { architectureLabel } from '../lib/format';
 import { getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from '../lib/types';
 
@@ -29,7 +30,7 @@ export default function ExperimentSelector({ models, locale = 'zh' }: Props) {
     <p className="muted">{m.selector.disclaimer}</p>
     <div className="candidate-list">
       {candidates.slice(0, 4).map((item) => <article className={`candidate-row ${item.candidate ? 'is-candidate' : ''}`} key={item.model.id}>
-        <div><strong>{item.model.name}</strong><span>{item.model.architecture.type.toUpperCase()} · {item.model.family}</span></div>
+        <div><strong>{item.model.name}</strong><span>{architectureLabel(item.model.architecture.type, locale)} · {item.model.family}</span></div>
         <div className="candidate-evidence">{item.matched.slice(0, 3).map((value, index) => <span className="check-chip" key={`matched-${index}-${value}`}>✓ {value}</span>)}{item.missing.slice(0, 2).map((value, index) => <span className="unknown-chip" key={`missing-${index}-${value}`}>? {value}</span>)}</div>
         <a className="text-link" href={localePath(locale, `/models/${item.model.id}/`)}>{m.selector.view}</a>
       </article>)}

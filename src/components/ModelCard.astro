@@ -1,26 +1,23 @@
 ---
 import type { AtlasModel } from '../lib/types';
-import { displayBoolean, displayUnknown, tierLabel } from '../lib/format';
+import { architectureLabel, checkpointLabel, displayBoolean, modalityLabel, parameterSummary, tierLabel } from '../lib/format';
 import StatusBadge from './StatusBadge.astro';
 import { getMessages, isLocale, localePath, type Locale } from '../i18n';
 interface Props { model: AtlasModel; paperCount?: number; locale?: Locale; }
 const { model, paperCount = 0 } = Astro.props;
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
-// 架构 / 参数后缀属技术性表达, 中英统一保留 "B total / B active" / "B parameters"。
-const parameterLine = model.architecture.type === 'moe'
-  ? `${displayUnknown(model.architecture.total_parameters_b, 'B', locale)} total / ${displayUnknown(model.architecture.active_parameters_b, 'B', locale)} active`
-  : `${displayUnknown(model.architecture.total_parameters_b, 'B', locale)} parameters`;
+const parameterLine = parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale);
 const papersLabel = locale === 'zh' ? `${paperCount} 篇论文` : `${paperCount} papers`;
 ---
 <article class="model-card">
   <div class="card-topline"><span class="eyebrow">{model.vendor}</span><StatusBadge status={model.data_status} locale={locale} /></div>
   <h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3>
   <p class="model-meta">{model.family} · {model.generation} · {model.release_date}</p>
-  <p class="model-architecture"><strong>{model.architecture.type === 'moe' ? 'MoE' : model.architecture.type === 'dense' ? 'Dense' : m.explorer.other}</strong><span>{parameterLine}</span></p>
+  <p class="model-architecture"><strong>{architectureLabel(model.architecture.type, locale)}</strong><span>{parameterLine}</span></p>
   <div class="tag-row">
-    {model.checkpoint.modalities.map((modality) => <span class="tag">{modality}</span>)}
-    <span class="tag">{model.checkpoint.type}</span>
+    {model.checkpoint.modalities.map((modality) => <span class="tag">{modalityLabel(modality, locale)}</span>)}
+    <span class="tag">{checkpointLabel(model.checkpoint.type, locale)}</span>
     {model.openness.weights_available === true && <span class="tag tag-open">{m.explorer.openWeightsTag}</span>}
   </div>
   <div class="card-footer">
