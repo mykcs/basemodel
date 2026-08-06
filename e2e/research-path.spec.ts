@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-test('homepage leads with the research path and an accessible theme toggle', async ({ page }) => {
+test('homepage leads with the research workspace entry and an accessible theme toggle', async ({ page }) => {
   await page.goto('./');
 
-  await expect(page.locator('#experiment-selector')).toBeVisible();
-  await expect(page.getByRole('link', { name: '按实验条件筛选模型 →' })).toHaveAttribute('href', '#experiment-selector');
-  await expect(page.locator('.desktop-nav a[aria-current="page"]')).toHaveText('选择入口');
+  // V2 首页：任务入口 CTA 指向研究工作台，三条研究路径可见。
+  await expect(page.getByRole('link', { name: '开始设计实验' })).toHaveAttribute('href', /\/workspace\/$/);
+  await expect(page.getByRole('heading', { name: '按你的复现目标选路径' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '从场景直接开始' })).toBeVisible();
 
   const themeToggle = page.getByRole('button', { name: '切换深色模式' });
   const before = await themeToggle.getAttribute('aria-pressed');
