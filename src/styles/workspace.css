@@ -134,3 +134,49 @@
   .candidate-board { order: 2; }
   .evidence-inspector { order: 3; }
 }
+
+/* 研究决策引擎 V2 — 三篮候选 / 替换分析 / 决策备忘录 */
+.candidate-bucket { margin-bottom: 18px; }
+.bucket-header h3 { font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 2px; }
+.bucket-hint { font-size: .72rem; color: var(--muted); margin: 0 0 8px; }
+.bucket-baseline .bucket-header h3 { color: var(--accent-deep); }
+.bucket-modern .bucket-header h3 { color: var(--accent); }
+.bucket-resource .bucket-header h3 { color: var(--muted); }
+
+.candidate-name-line strong { display: inline; font-size: .95rem; }
+.candidate-meta { margin-left: 6px; }
+.paper-count { color: var(--accent-deep); }
+.reason-line, .risk-line { display: block; margin-top: 6px; font-size: .74rem; }
+.reason-label { color: var(--muted); margin-right: 4px; }
+.risk-label { color: var(--accent-deep); margin-right: 4px; }
+.chip-row { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.reason-chip, .risk-chip {
+  display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: .7rem; line-height: 1.4;
+}
+.reason-chip { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-deep); }
+.risk-chip { background: color-mix(in srgb, #b3261e 10%, transparent); color: #b3261e; }
+
+.workspace-lower {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;
+}
+@media (max-width: 1024px) { .workspace-lower { grid-template-columns: 1fr; } }
+
+.substitute-lab h2, .decision-memo h2 { font-size: 1rem; margin-bottom: 12px; }
+.substitute-lab select {
+  width: 100%; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); font-size: .82rem;
+}
+.substitute-list { display: grid; gap: 14px; margin-top: 14px; }
+.substitute-card h3 { font-size: .85rem; margin-bottom: 8px; }
+.substitute-table { width: 100%; border-collapse: collapse; font-size: .76rem; }
+.substitute-table th, .substitute-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+.substitute-table tr.is-changed td:last-child { color: var(--accent-deep); font-weight: 600; }
+
+.memo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.memo-actions { display: flex; gap: 8px; }
+.memo-actions .button { font-size: .75rem; padding: 7px 12px; }
+.memo-preview {
+  background: var(--surface-muted); border-radius: 12px; padding: 14px 16px;
+  font-size: .76rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+  max-height: 420px; overflow: auto; margin: 0;
+}
