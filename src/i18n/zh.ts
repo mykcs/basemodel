@@ -448,6 +448,71 @@ export const zh: Messages = {
     openCompare: '打开对比 →',
     clearCompare: '清空',
   },
+  research: {
+    bucketBaseline: '基准候选',
+    bucketModern: '现代候选',
+    bucketResource: '资源可行候选',
+    bucketBaselineHint: '有论文采用记录，适合作为可比较的复现基准。',
+    bucketModernHint: '当前代模型，适合现代化重跑与新实验。',
+    bucketResourceHint: '在你的资源约束下可行，但证据或当前性较弱。',
+    whyRecommended: '推荐理由',
+    mainRisks: '主要风险',
+    papersUsed: '篇论文采用',
+    reasons: {
+      open_weights: '开放权重',
+      fits_gpu: '显存可行',
+      fits_update: '支持目标更新方式',
+      role_match: '角色能力匹配',
+      paper_used: '有论文采用',
+      paper_comparable: '多篇论文可比较',
+      current_gen: '当前代模型',
+      low_cost: '低资源门槛',
+      chinese: '中文专长',
+      tool_use: '工具调用专长',
+      baseline_repro: '适合复现基准',
+      modern_repro: '适合现代化重跑',
+      context_ok: '上下文达标',
+    },
+    risks: {
+      weights_closed: '权重不开放',
+      finetune_prohibited: '禁止微调',
+      context_short: '上下文偏短',
+      gpu_tight: '显存偏紧',
+      no_paper: '无论文采用记录',
+      not_current: '非当前代',
+      update_unverified: '更新方式未核验',
+      legacy: '历史版本',
+    },
+    memo: {
+      title: '决策备忘录',
+      export: '导出 Markdown',
+      download: '下载 .md',
+      copy: '复制',
+      copied: '已复制',
+      empty: '先设定任务并加入候选，再生成决策备忘录。',
+      sectionTask: '研究任务',
+      sectionCandidates: '候选模型',
+      sectionCompare: '对比集合',
+      sectionRisks: '风险与未核验项',
+      unverified: '未核验项',
+    },
+    substitute: {
+      title: '替换分析',
+      selectBase: '选择要替换的原模型',
+      candidates: '现代替代候选',
+      compare: '替换影响对比',
+      field: '维度',
+      original: '原模型',
+      replacement: '替代模型',
+      openness: '开放性',
+      context: '上下文',
+      hardware: '硬件档位',
+      finetune: '微调许可',
+      release: '发布时间',
+      empty: '选一个原模型，查看同家族或同角色的现代替代。',
+      noSubstitute: '暂无可比较的现代替代。',
+    },
+  },
   format: {
     unknown: '待核验',
     yes: '是',
@@ -905,6 +970,48 @@ export type Messages = {
     compareTray: string;
     openCompare: string;
     clearCompare: string;
+  };
+  research: {
+    bucketBaseline: string;
+    bucketModern: string;
+    bucketResource: string;
+    bucketBaselineHint: string;
+    bucketModernHint: string;
+    bucketResourceHint: string;
+    whyRecommended: string;
+    mainRisks: string;
+    papersUsed: string;
+    reasons: Record<string, string>;
+    risks: Record<string, string>;
+    memo: {
+      title: string;
+      export: string;
+      download: string;
+      copy: string;
+      copied: string;
+      empty: string;
+      sectionTask: string;
+      sectionCandidates: string;
+      sectionCompare: string;
+      sectionRisks: string;
+      unverified: string;
+    };
+    substitute: {
+      title: string;
+      selectBase: string;
+      candidates: string;
+      compare: string;
+      field: string;
+      original: string;
+      replacement: string;
+      openness: string;
+      context: string;
+      hardware: string;
+      finetune: string;
+      release: string;
+      empty: string;
+      noSubstitute: string;
+    };
   };
   format: {
     unknown: string;

@@ -7,7 +7,8 @@ import { getCollection } from 'astro:content';
 const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
+const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
 <AppLayout title={m.workspace.pageTitle}>
-  <ResearchWorkspace client:load models={models} m={m} />
+  <ResearchWorkspace client:load models={models} papers={papers} m={m} />
 </AppLayout>
