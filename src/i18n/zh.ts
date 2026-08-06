@@ -355,6 +355,63 @@ export const zh: Messages = {
     body: '返回首页继续探索。',
     back: '回到选择入口 →',
   },
+  v2: {
+    home: {
+      heroEyebrow: '模型研究台',
+      heroTitle: '为你的智能体实验，选择合适且可复现的基础模型。',
+      heroLede: '把论文目标、资源约束和优先目标变成一次可共享的研究任务；在候选模型、证据来源和对比托盘之间走一条可核验的路径。',
+      heroCta: '开始设计实验',
+      exampleKicker: '研究任务示例',
+      exampleTitle: '自进化代码智能体 · LoRA · 24GB',
+      exampleBody: '先锁定“权重更新 = LoRA、单卡 24GB、开放权重”的约束，再从 18 个模型中筛出 5 个候选，其中 3 个证据链较完整。',
+      exampleModels: '个模型',
+      exampleCandidates: '个候选',
+      exampleEvidence: '个证据较完整',
+      entryReproduce: '复现一篇论文',
+      entryChoose: '为新实验选择模型',
+      entryReplace: '查找某个模型的替代品',
+      entryLearn: '学习基础模型概念',
+      pathsKicker: '三条研究路径',
+      pathsTitle: '按你的复现目标选路径',
+      pathStrictTag: '严格复现',
+      pathStrict: '保持原论文模型与环境',
+      pathStrictBody: '尽量用论文同一模型 ID 和 checkpoint，控制环境变量，只替换非模型因素（如数据集版本、随机种子）。',
+      pathMethodTag: '方法复现',
+      pathMethod: '换模型但控制关键变量',
+      pathMethodBody: '在等效或更新一代模型上验证方法是否仍然成立；记录模型差异对结果的影响。',
+      pathModernTag: '现代化重跑',
+      pathModern: '用当前代模型重新验证方法',
+      pathModernBody: '把旧方法放到当前开放权重或 API 旗舰上重跑，看结论是否随代际迁移而失效或增强。',
+      scenariosKicker: '常用研究场景',
+      scenariosTitle: '从场景直接开始',
+      scenariosNote: '点击预填研究工作台',
+      scenarioLora: '单张 24GB GPU 做 LoRA',
+      scenarioLoraLede: '权重更新 = LoRA，单卡 24GB，只考虑开放权重。',
+      scenarioRl: '多卡 RL 或自进化训练',
+      scenarioRlLede: '权重更新 = RL，多卡，开放权重优先。',
+      scenarioOpenWeight: '找开放权重代码模型',
+      scenarioOpenWeightLede: '只看开放权重，适合代码/工具调用实验。',
+      scenarioQwen: '复现使用 Qwen2.5 的论文',
+      scenarioQwenLede: '严格复现路径，优先中文能力。',
+      scenarioReplace: '将旧模型替换为当前代',
+      scenarioReplaceLede: '现代化重跑，关注当前代模型。',
+      scenarioApi: '比较 API 与本地模型',
+      scenarioApiLede: '低成本优先，对比 API 和本地候选。',
+      scenarioAction: '预填工作台',
+      familiesKicker: '最近模型变化',
+      familiesTitle: '家族旗舰变化',
+      familiesCta: '查看全部家族 →',
+      familyFlagship: '旗舰',
+      familyOpenWeight: '开放权重',
+      overviewKicker: '模型空间',
+      overviewTitle: '模型空间概览',
+      overviewCta: '打开 Landscape →',
+      overviewBody: '按发布时间、推理硬件、参数规模和证据状态浏览全部模型，先看供应层，再叠论文采用层。',
+      statModels: '模型总数',
+      statFamilies: '家族数',
+      statOpenWeights: '开放权重数',
+    },
+  },
   workspace: {
     pageTitle: '研究工作台',
     title: '公共研究知识库 + 持久化研究工作台',
@@ -756,6 +813,63 @@ export type Messages = {
   };
   familyUnits: { checkpoints: string };
   notFound: { title: string; body: string; back: string };
+  v2: {
+    home: {
+      heroEyebrow: string;
+      heroTitle: string;
+      heroLede: string;
+      heroCta: string;
+      exampleKicker: string;
+      exampleTitle: string;
+      exampleBody: string;
+      exampleModels: string;
+      exampleCandidates: string;
+      exampleEvidence: string;
+      entryReproduce: string;
+      entryChoose: string;
+      entryReplace: string;
+      entryLearn: string;
+      pathsKicker: string;
+      pathsTitle: string;
+      pathStrictTag: string;
+      pathStrict: string;
+      pathStrictBody: string;
+      pathMethodTag: string;
+      pathMethod: string;
+      pathMethodBody: string;
+      pathModernTag: string;
+      pathModern: string;
+      pathModernBody: string;
+      scenariosKicker: string;
+      scenariosTitle: string;
+      scenariosNote: string;
+      scenarioLora: string;
+      scenarioLoraLede: string;
+      scenarioRl: string;
+      scenarioRlLede: string;
+      scenarioOpenWeight: string;
+      scenarioOpenWeightLede: string;
+      scenarioQwen: string;
+      scenarioQwenLede: string;
+      scenarioReplace: string;
+      scenarioReplaceLede: string;
+      scenarioApi: string;
+      scenarioApiLede: string;
+      scenarioAction: string;
+      familiesKicker: string;
+      familiesTitle: string;
+      familiesCta: string;
+      familyFlagship: string;
+      familyOpenWeight: string;
+      overviewKicker: string;
+      overviewTitle: string;
+      overviewCta: string;
+      overviewBody: string;
+      statModels: string;
+      statFamilies: string;
+      statOpenWeights: string;
+    };
+  };
   workspace: {
     pageTitle: string;
     title: string;
