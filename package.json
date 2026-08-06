@@ -23,12 +23,15 @@
   "dependencies": {
     "@astrojs/react": "^6.0.2",
     "astro": "^7.1.6",
+    "d3": "^7.9.0",
+    "echarts": "^6.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@types/d3": "^7.4.3",
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

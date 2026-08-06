@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Body from '../../_bodies/landscape.astro';
+import { getMessages } from '../../../i18n';
+const m = getMessages('en');
+---
+<BaseLayout title={m.landscape.prototypeTitle} locale="en"><Body locale="en" /></BaseLayout>

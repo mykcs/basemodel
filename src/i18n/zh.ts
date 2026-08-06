@@ -49,6 +49,19 @@ export const zh: Messages = {
     contractTitle: '证据状态是产品的一部分',
     contractBody: '每条模型和论文记录都要求一手来源 URL 与最后核验日期。未核验、官方未公开、未报告和未发布分别标注，不用猜测值填充。',
   },
+  landscape: {
+    kicker: 'Landscape',
+    title: '模型供应层，一眼看清',
+    note: '时间 × 推理硬件；点大小代表参数规模',
+    chartHint: '形状区分 dense / MoE；边框区分证据状态',
+    d3Hint: 'D3 原型：同一数据适配层的自定义 SVG 版本',
+    chartAria: '按发布日期和推理硬件展示模型的散点图',
+    openPrototype: '打开双引擎原型 →',
+    legendNote: '未知参数不会被当成 0：使用固定小点，并在提示信息中标记待核验。',
+    prototypeTitle: 'Landscape 双引擎原型',
+    prototypeLede: 'ECharts 负责首页正式总览；D3 保留为可调试、可扩展的 SVG 原型。两者共享同一份模型数据适配层。',
+    engineLabel: '选择图表引擎',
+  },
   modelsIndex: {
     pageTitle: '模型浏览器',
     lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未核验字段不会自动变成“否”。',
@@ -72,6 +85,10 @@ export const zh: Messages = {
     onlyDifferences: '只看差异',
     allFields: '显示全部字段',
     noDifferences: '当前选择的模型在这些字段上没有差异。',
+    searchLabel: '搜索模型',
+    searchPlaceholder: '按名称、厂商或家族搜索…',
+    noMatches: '没有匹配的模型。',
+    diff: '存在差异',
   },
   compareGroups: {
     identity: '基本信息',
@@ -507,6 +524,19 @@ export type Messages = {
     contractTitle: string;
     contractBody: string;
   };
+  landscape: {
+    kicker: string;
+    title: string;
+    note: string;
+    chartHint: string;
+    d3Hint: string;
+    chartAria: string;
+    openPrototype: string;
+    legendNote: string;
+    prototypeTitle: string;
+    prototypeLede: string;
+    engineLabel: string;
+  };
   modelsIndex: { pageTitle: string; lede: string };
   families: { pageTitle: string; title: string; lede: string; checkpointUnit: string };
   compare: {
@@ -522,6 +552,10 @@ export type Messages = {
     onlyDifferences: string;
     allFields: string;
     noDifferences: string;
+    searchLabel: string;
+    searchPlaceholder: string;
+    noMatches: string;
+    diff: string;
   };
   compareGroups: { identity: string; architecture: string; access: string; research: string; evidence: string };
   papersIndex: {
