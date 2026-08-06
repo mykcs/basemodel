@@ -69,25 +69,27 @@
   },
   "sources": [
     {
-      "url": "https://vercel.com/ai-gateway/models/qwen3-max",
+      "url": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Vercel AI Gateway docs (mirroring Alibaba Cloud Model Studio catalog) confirm Qwen3-Max is API-only, weights not publicly released, 262K context window, and 1+ trillion parameter MoE scale.",
+      "evidence_note": "Alibaba Cloud Model Studio official pricing/model catalog lists Qwen3-Max as an API-only proprietary model with a 262K (262144) context window and the dated snapshot ID 'qwen3-max-2026-01-23'. Weights are not publicly released (closed source).",
       "supports": [
         "openness.weights_available",
         "access.weights_status",
         "access.api_status",
+        "access.api_model_ids",
         "architecture.context_length"
       ]
     },
     {
-      "url": "https://docs.aimlapi.com/api-references/text-models-llm/alibaba-cloud/qwen3-max-2026-01-23",
-      "type": "official_api_docs",
+      "url": "https://vercel.com/ai-gateway/models/qwen3-max",
+      "type": "third_party_runtime",
       "checked_at": "2026-08-06",
-      "evidence_note": "AI/ML API docs confirm Qwen3-Max model ID 'qwen3-max-2026-01-23' and API availability as of 2026-01-23.",
+      "evidence_note": "Vercel AI Gateway (third-party runtime) corroborates Qwen3-Max is API-only, weights not publicly released, 262K context window, and 1+ trillion parameter MoE scale. Total parameter count is not officially disclosed by Alibaba.",
       "supports": [
-        "access.api_model_ids",
-        "release_date"
+        "openness.weights_available",
+        "access.weights_status",
+        "architecture.context_length"
       ]
     }
   ],

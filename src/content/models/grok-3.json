@@ -78,10 +78,10 @@
       ]
     },
     {
-      "url": "https://www.builtinsf.com/artificial-intelligence/grok-3",
+      "url": "https://x.ai/news/grok-3",
       "type": "official_announcement",
       "checked_at": "2026-08-06",
-      "evidence_note": "Launch announcement coverage confirms Grok 3 release date of February 18, 2025 and 131K context window.",
+      "evidence_note": "xAI official Grok 3 announcement confirms the February 2025 launch (livestream Feb 17-18, 2025) and 131K context window.",
       "supports": [
         "release_date",
         "architecture.context_length"
