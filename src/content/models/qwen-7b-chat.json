@@ -2,7 +2,7 @@
   "id": "qwen-7b-chat",
   "name": "Qwen 7B Chat",
   "official_name": "Qwen-7B-Chat",
-  "vendor": "Alibaba",
+  "vendor": "Qwen / Alibaba",
   "family": "Qwen",
   "generation": "Qwen 1",
   "release_date": "2023-09-25",

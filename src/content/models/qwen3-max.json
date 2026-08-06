@@ -1,0 +1,95 @@
+{
+  "id": "qwen3-max",
+  "name": "Qwen3-Max",
+  "official_name": "Qwen3-Max",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3",
+  "release_date": "2026-01-23",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "tool-use",
+      "multimodal"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 262144,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "proprietary",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "qwen3-max-2026-01-23",
+      "qwen3-max"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Alibaba Cloud Model Studio",
+      "Qwen Chat"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://vercel.com/ai-gateway/models/qwen3-max",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Vercel AI Gateway docs (mirroring Alibaba Cloud Model Studio catalog) confirm Qwen3-Max is API-only, weights not publicly released, 262K context window, and 1+ trillion parameter MoE scale.",
+      "supports": [
+        "openness.weights_available",
+        "access.weights_status",
+        "access.api_status",
+        "architecture.context_length"
+      ]
+    },
+    {
+      "url": "https://docs.aimlapi.com/api-references/text-models-llm/alibaba-cloud/qwen3-max-2026-01-23",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "AI/ML API docs confirm Qwen3-Max model ID 'qwen3-max-2026-01-23' and API availability as of 2026-01-23.",
+      "supports": [
+        "access.api_model_ids",
+        "release_date"
+      ]
+    }
+  ],
+  "data_status": "partial"
+}

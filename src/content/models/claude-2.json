@@ -31,7 +31,14 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "Provider API terms"
+    "license_name": "Provider API terms",
+    "classification": "proprietary",
+    "custom_license": false,
+    "derivative_distribution": "prohibited",
+    "commercial_use": "conditional",
+    "conditions": [
+      "subject_to_api_terms"
+    ]
   },
   "research": {
     "suitable_for_inference": true,
@@ -49,13 +56,32 @@
     "full_sft_tier": "api_only",
     "rl_tier": "api_only"
   },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "deprecated",
+    "api_model_ids": [
+      "claude-2.0"
+    ],
+    "product_status": "unavailable"
+  },
   "sources": [
     {
-      "url": "https://www.anthropic.com/news/claude-2",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models",
       "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Anthropic official model catalog lists Claude 2 as retired; no API replacement available.",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids",
+        "access.product_status"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-2",
+      "type": "official_announcement",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "Original launch announcement retained for historical context; parameter and architecture details not disclosed."
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

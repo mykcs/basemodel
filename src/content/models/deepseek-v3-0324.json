@@ -33,7 +33,10 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "MIT"
+    "license_name": "MIT",
+    "classification": "open_source",
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
   },
   "research": {
     "suitable_for_inference": true,
@@ -57,7 +60,37 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06."
+    },
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "openness.classification",
+        "access.weights_status",
+        "architecture.expert_count",
+        "architecture.active_experts_per_token"
+      ],
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
+    },
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "openness.classification",
+        "access.weights_status",
+        "architecture.expert_count",
+        "architecture.active_experts_per_token"
+      ],
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
     }
   ],
-  "data_status": "partial"
+  "data_status": "partial",
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-03-24",
+    "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
+    "api_status": "available"
+  }
 }

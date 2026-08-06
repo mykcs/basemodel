@@ -1,0 +1,94 @@
+{
+  "id": "qwen3-vl-235b-a22b-instruct",
+  "name": "Qwen3-VL-235B-A22B-Instruct",
+  "official_name": "Qwen3-VL-235B-A22B-Instruct",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3-VL",
+  "release_date": "2025-04-29",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "vision-language",
+      "reasoning",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 235,
+    "active_parameters_b": 22,
+    "context_length": 256000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache 2.0",
+    "classification": "open_source",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed",
+    "license_url": "https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct/raw/main/LICENSE"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-04-29",
+    "weights_url": "https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct",
+    "api_status": "available",
+    "api_model_ids": [
+      "qwen3-vl-235b-a22b-instruct"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Qwen Chat",
+      "Alibaba Cloud Model Studio"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "HuggingFace model card confirms 236B params (235B series), 22B active parameters, image-text-to-text modality, native 256K context extensible to 1M, and Apache 2.0 license. Expert count is not explicitly stated.",
+      "supports": [
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "checkpoint.modalities",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

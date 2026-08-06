@@ -4,7 +4,7 @@
   "official_name": "Mistral 7B Instruct v0.3",
   "vendor": "Mistral AI",
   "family": "Mistral",
-  "generation": "Mistral 7B",
+  "generation": "Mistral 7B (v0.3)",
   "release_date": "2024-05-22",
   "status": "active",
   "checkpoint": {

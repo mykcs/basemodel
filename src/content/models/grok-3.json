@@ -1,0 +1,93 @@
+{
+  "id": "grok-3",
+  "name": "Grok 3",
+  "official_name": "Grok 3",
+  "vendor": "xAI",
+  "family": "Grok",
+  "generation": "Grok 3",
+  "release_date": "2025-02-18",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "tool-use",
+      "coding"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 131072,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "proprietary",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "grok-3",
+      "grok-3-latest"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Grok.com",
+      "X Premium+"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://docs.x.ai/docs/models",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "xAI official docs do not list Grok 3 as a current model; current catalog shows Grok 4.x and Grok 4.5, indicating Grok 3 is no longer the current generation. API IDs inferred from historical xAI API naming conventions; docs.x.ai does not expose a legacy Grok 3 page.",
+      "supports": [
+        "status",
+        "access.api_status"
+      ]
+    },
+    {
+      "url": "https://www.builtinsf.com/artificial-intelligence/grok-3",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Launch announcement coverage confirms Grok 3 release date of February 18, 2025 and 131K context window.",
+      "supports": [
+        "release_date",
+        "architecture.context_length"
+      ]
+    }
+  ],
+  "data_status": "partial",
+  "notes": "xAI was folded into SpaceX in February 2026; vendor name remains 'xAI' for historical continuity. Grok 3 is treated as legacy because the official docs currently only promote Grok 4/4.5."
+}

@@ -1,0 +1,78 @@
+{
+  "id": "o3",
+  "name": "o3",
+  "official_name": "o3",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "o3",
+  "release_date": "2025-04-16",
+  "status": "active",
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "mathematics"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 200000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "proprietary",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "o3",
+      "o3-2025-04-16"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_verified",
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://developers.openai.com/api/docs/models/o3",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "access.api_model_ids",
+        "checkpoint.modalities"
+      ],
+      "evidence_note": "OpenAI official API docs list o3 default snapshot o3-2025-04-16, 200K context, 100K max output, text+image input, text output, reasoning model. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "verified"
+}

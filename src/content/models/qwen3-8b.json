@@ -2,7 +2,7 @@
   "id": "qwen3-8b",
   "name": "Qwen3-8B",
   "official_name": "Qwen3-8B",
-  "vendor": "Alibaba / Qwen",
+  "vendor": "Qwen / Alibaba",
   "family": "Qwen",
   "generation": "Qwen3",
   "release_date": "2025-05-14",

@@ -2,20 +2,98 @@
   "id": "moonlight-16b-a3b-instruct",
   "name": "Moonlight-16B-A3B-Instruct",
   "official_name": "Moonlight-16B-A3B-Instruct",
-  "vendor": "Moonshot AI / Kimi",
+  "vendor": "Moonshot AI",
   "family": "Kimi",
   "generation": "Moonlight",
   "release_date": "2025-02-23",
   "status": "active",
-  "checkpoint": { "type": "instruct", "modalities": ["text"], "specializations": ["general", "reasoning"] },
-  "architecture": { "type": "moe", "total_parameters_b": 16, "active_parameters_b": 3, "context_length": 8192, "expert_count": "not_reported", "active_experts_per_token": "not_reported" },
-  "openness": { "weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "MIT", "classification": "open_weight" },
-  "access": { "weights_status": "released", "weights_url": "https://huggingface.co/moonshotai/Moonlight-16B-A3B-Instruct", "api_status": "unavailable" },
-  "research": { "suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": "not_verified", "sglang_support": "not_verified", "verl_recipe_available": "not_verified" },
-  "hardware": { "inference_tier": "48gb", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified" },
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "reasoning"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 16,
+    "active_parameters_b": 3,
+    "context_length": 8192,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "MIT",
+    "classification": "open_weight"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Moonlight-16B-A3B-Instruct",
+    "api_status": "unavailable"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
   "sources": [
-    { "id": "moonshot-moonlight-readme", "url": "https://github.com/MoonshotAI/Moonlight", "type": "official_code", "title": "Moonlight official repository", "publisher": "Moonshot AI", "published_at": "2025-02-23", "checked_at": "2026-08-06", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "openness.classification", "openness.license_name", "access.weights_status", "research.suitable_for_inference"], "evidence_note": "Official README identifies Moonshot AI/Kimi Moonlight as a text MoE model, documents the February 23 release, Instruct checkpoint, 16B total / 3B active parameters, released checkpoints, and MIT licensing." },
-    { "id": "moonshot-moonlight-hf", "url": "https://huggingface.co/moonshotai/Moonlight-16B-A3B", "type": "official_weights", "title": "Moonlight weights", "publisher": "Moonshot AI", "checked_at": "2026-08-06", "supports": ["access.weights_status", "openness.weights_available"], "evidence_note": "Official Hugging Face model record for the Moonlight checkpoint family." }
+    {
+      "id": "moonshot-moonlight-readme",
+      "url": "https://github.com/MoonshotAI/Moonlight",
+      "type": "official_code",
+      "title": "Moonlight official repository",
+      "publisher": "Moonshot AI",
+      "published_at": "2025-02-23",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.classification",
+        "openness.license_name",
+        "access.weights_status",
+        "research.suitable_for_inference"
+      ],
+      "evidence_note": "Official README identifies Moonshot AI/Kimi Moonlight as a text MoE model, documents the February 23 release, Instruct checkpoint, 16B total / 3B active parameters, released checkpoints, and MIT licensing."
+    },
+    {
+      "id": "moonshot-moonlight-hf",
+      "url": "https://huggingface.co/moonshotai/Moonlight-16B-A3B",
+      "type": "official_weights",
+      "title": "Moonlight weights",
+      "publisher": "Moonshot AI",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "access.weights_status",
+        "openness.weights_available"
+      ],
+      "evidence_note": "Official Hugging Face model record for the Moonlight checkpoint family."
+    }
   ],
   "data_status": "partial",
   "claim_status": "partial"

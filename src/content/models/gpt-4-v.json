@@ -33,7 +33,8 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "Provider API terms"
+    "license_name": "proprietary",
+    "classification": "proprietary"
   },
   "research": {
     "suitable_for_inference": true,
@@ -57,6 +58,24 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-4-turbo",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "OpenAI official API docs for gpt-4-turbo do not list the original gpt-4-v snapshot; context_length remains not_disclosed. Source checked 2026-08-06."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-4-turbo",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "OpenAI official API docs for gpt-4-turbo do not list the original gpt-4-v snapshot; context_length remains not_disclosed. Source checked 2026-08-06."
     }
   ],
   "data_status": "partial"

@@ -1,0 +1,99 @@
+{
+  "id": "llama-3-70b-instruct",
+  "name": "Llama 3 70B Instruct",
+  "official_name": "Meta Llama 3 70B Instruct",
+  "vendor": "Meta",
+  "family": "Llama",
+  "generation": "Llama 3",
+  "release_date": "2024-04-18",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "chat",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 70,
+    "active_parameters_b": 70,
+    "context_length": 8192,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Llama 3 Community License",
+    "classification": "open_weight",
+    "custom_license": true,
+    "derivative_distribution": "conditional",
+    "commercial_use": "conditional",
+    "license_url": "https://llama.meta.com/llama3/license"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2024-04-18",
+    "weights_url": "https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct",
+    "api_status": "available",
+    "api_model_ids": [
+      "meta-llama/Meta-Llama-3-70B-Instruct"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "80gb",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 71B params, context length 8k, license llama3, and weights available in safetensors."
+    },
+    {
+      "url": "https://ai.meta.com/blog/meta-llama-3/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "openness.license_name"
+      ],
+      "evidence_note": "Official Meta blog post announces Meta Llama 3 with pretrained and instruction tuned 8B and 70B parameter models on April 18, 2024."
+    }
+  ],
+  "data_status": "verified",
+  "notes": "Original Llama 3 generation. Llama 3.1/3.2/3.3/4 releases have superseded this model; status marked legacy."
+}

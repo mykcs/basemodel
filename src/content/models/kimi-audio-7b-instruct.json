@@ -2,20 +2,98 @@
   "id": "kimi-audio-7b-instruct",
   "name": "Kimi-Audio-7B-Instruct",
   "official_name": "Kimi-Audio-7B-Instruct",
-  "vendor": "Moonshot AI / Kimi",
+  "vendor": "Moonshot AI",
   "family": "Kimi",
   "generation": "Kimi Audio",
   "release_date": "2025-04-25",
   "status": "active",
-  "checkpoint": { "type": "instruct", "modalities": ["audio", "text"], "specializations": ["multimodal", "chat"] },
-  "architecture": { "type": "other", "total_parameters_b": 7, "active_parameters_b": 7, "context_length": "not_reported", "expert_count": "not_applicable", "active_experts_per_token": "not_applicable" },
-  "openness": { "weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "MIT / Apache 2.0 components", "classification": "open_weight" },
-  "access": { "weights_status": "released", "weights_url": "https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct", "api_status": "unavailable" },
-  "research": { "suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": "not_verified", "sglang_support": "not_verified", "verl_recipe_available": "not_verified" },
-  "hardware": { "inference_tier": "48gb", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified" },
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "audio",
+      "text"
+    ],
+    "specializations": [
+      "multimodal",
+      "chat"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": 7,
+    "active_parameters_b": 7,
+    "context_length": "not_reported",
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "MIT / Apache 2.0 components",
+    "classification": "open_weight"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct",
+    "api_status": "unavailable"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
   "sources": [
-    { "id": "moonshot-kimi-audio-readme", "url": "https://github.com/MoonshotAI/Kimi-Audio", "type": "official_code", "title": "Kimi-Audio official repository", "publisher": "Moonshot AI", "published_at": "2025-04-25", "checked_at": "2026-08-06", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.total_parameters_b", "architecture.active_parameters_b", "openness.classification", "openness.license_name", "access.weights_status", "research.suitable_for_inference"], "evidence_note": "Official README identifies Moonshot AI/Kimi-Audio, the 7B Instruct checkpoint, audio and text usage, the April 25 release, runnable inference examples, and MIT/Apache licensing." },
-    { "id": "moonshot-kimi-audio-hf", "url": "https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct", "type": "official_weights", "title": "Kimi-Audio Instruct weights", "publisher": "Moonshot AI", "checked_at": "2026-08-06", "supports": ["access.weights_status", "openness.weights_available"], "evidence_note": "Official Hugging Face model record for the Instruct checkpoint." }
+    {
+      "id": "moonshot-kimi-audio-readme",
+      "url": "https://github.com/MoonshotAI/Kimi-Audio",
+      "type": "official_code",
+      "title": "Kimi-Audio official repository",
+      "publisher": "Moonshot AI",
+      "published_at": "2025-04-25",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "openness.classification",
+        "openness.license_name",
+        "access.weights_status",
+        "research.suitable_for_inference"
+      ],
+      "evidence_note": "Official README identifies Moonshot AI/Kimi-Audio, the 7B Instruct checkpoint, audio and text usage, the April 25 release, runnable inference examples, and MIT/Apache licensing."
+    },
+    {
+      "id": "moonshot-kimi-audio-hf",
+      "url": "https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct",
+      "type": "official_weights",
+      "title": "Kimi-Audio Instruct weights",
+      "publisher": "Moonshot AI",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "access.weights_status",
+        "openness.weights_available"
+      ],
+      "evidence_note": "Official Hugging Face model record for the Instruct checkpoint."
+    }
   ],
   "data_status": "partial",
   "claim_status": "partial"

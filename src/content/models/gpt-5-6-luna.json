@@ -1,0 +1,78 @@
+{
+  "id": "gpt-5-6-luna",
+  "name": "GPT-5.6 Luna",
+  "official_name": "GPT-5.6 Luna",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "GPT-5.6 Luna",
+  "release_date": "2026-07-09",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "low-latency"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 1050000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "proprietary",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "gpt-5.6-luna"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_verified",
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "access.api_model_ids"
+      ],
+      "evidence_note": "OpenAI official API docs list gpt-5.6-luna, 1.05M context, 128K max output, fast model. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "verified"
+}

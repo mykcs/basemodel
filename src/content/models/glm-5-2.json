@@ -1,0 +1,111 @@
+{
+  "id": "glm-5-2",
+  "name": "GLM-5.2",
+  "official_name": "GLM-5.2",
+  "vendor": "GLM / Z.ai",
+  "family": "GLM",
+  "generation": "GLM-5.2",
+  "release_date": "2026-06-16",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "chinese",
+      "long-horizon"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": 40,
+    "context_length": 1000000,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed",
+    "license_url": "https://huggingface.co/zai-org/GLM-5.2"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-06-16",
+    "weights_url": "https://huggingface.co/zai-org/GLM-5.2",
+    "api_status": "available",
+    "api_model_ids": [
+      "glm-5.2"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/zai-org/GLM-5.2",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.total_parameters_b",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card lists GLM-5.2 model size as 753B params (BF16/F32, Safetensors)."
+    },
+    {
+      "url": "https://z.ai/blog/glm-5.2",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "architecture.active_parameters_b",
+        "openness.license_name"
+      ],
+      "evidence_note": "Official Z.ai blog post dated 2026-06-16 announces GLM-5.2 with solid 1M-token context, MIT license, and describes it as latest flagship for long-horizon tasks."
+    },
+    {
+      "url": "https://docs.z.ai/guides/llm/glm-5.2",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids"
+      ],
+      "evidence_note": "Z.ai developer docs list GLM-5.2 context as 1M and maximum output as 128K, API model id glm-5.2."
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Total parameter count for GLM-5.2 is inconsistent: official Hugging Face model card states 753B, while some third-party sources and Z.ai family descriptions cite 744B. total_parameters_b set to not_verified due to conflicting official sources."
+}

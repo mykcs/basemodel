@@ -1,0 +1,99 @@
+{
+  "id": "minimax-m2-7",
+  "name": "MiniMax M2.7",
+  "official_name": "MiniMax-M2.7",
+  "vendor": "MiniMax",
+  "family": "MiniMax",
+  "generation": "M2",
+  "release_date": "2026-03-18",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 230,
+    "active_parameters_b": 10,
+    "context_length": 200000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Modified MIT",
+    "classification": "open_weight",
+    "custom_license": true,
+    "derivative_distribution": "conditional",
+    "commercial_use": "conditional",
+    "license_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/raw/main/LICENSE"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-04-01",
+    "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
+    "api_status": "available",
+    "api_model_ids": [
+      "MiniMax-M2.7",
+      "MiniMax-M2.7-highspeed"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "MiniMax API"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "HuggingFace model card confirms 230B parameters (same M2 architecture), open weights, and Modified MIT license. Release date and context length are not on the card.",
+      "supports": [
+        "architecture.total_parameters_b",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ]
+    },
+    {
+      "url": "https://apisrouter.com/minimax-m2-7-release-date",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Third-party announcement citing MiniMax release notes confirms M2.7 release date of March 18, 2026 and availability today.",
+      "supports": [
+        "release_date"
+      ]
+    }
+  ],
+  "data_status": "partial",
+  "notes": "MiniMax M2.7 parameter count and context length are inferred from the M2 family architecture; not explicitly stated on the M2.7 card."
+}
