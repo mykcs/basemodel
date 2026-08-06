@@ -355,6 +355,42 @@ export const zh: Messages = {
     body: '返回首页继续探索。',
     back: '回到选择入口 →',
   },
+  workspace: {
+    pageTitle: '研究工作台',
+    title: '公共研究知识库 + 持久化研究工作台',
+    lede: '设定研究任务，按约束筛选候选模型，把证据来源、对比清单和候选板串成一条可核验的路径。',
+    constraintTitle: '研究约束',
+    modeLabel: '实验方式',
+    roleLabel: '模型角色',
+    updateLabel: '权重更新',
+    resourceLabel: '资源条件',
+    priorityLabel: '优先目标',
+    openWeightLabel: '只考虑开放权重',
+    contextLabel: '目标上下文长度',
+    setTask: '设定任务',
+    clearTask: '清除任务',
+    candidateTitle: '候选模型',
+    candidateCount: '个候选',
+    emptyCandidates: '调整左侧约束后，会列出满足条件的模型。',
+    addToCompare: '加入对比',
+    removeFromCompare: '移出对比',
+    addCandidate: '加入候选',
+    removeCandidate: '移出候选',
+    evidenceTitle: '证据摘要',
+    openness: '开放性',
+    research: '研究可用性',
+    hardware: '硬件档位',
+    access: '访问',
+    sources: '来源',
+    noSource: '暂无来源',
+    currentTask: '当前研究',
+    editConstraints: '编辑约束',
+    candidates: '候选',
+    compare: '已选对比',
+    compareTray: '对比托盘',
+    openCompare: '打开对比 →',
+    clearCompare: '清空',
+  },
   format: {
     unknown: '待核验',
     yes: '是',
@@ -720,6 +756,42 @@ export type Messages = {
   };
   familyUnits: { checkpoints: string };
   notFound: { title: string; body: string; back: string };
+  workspace: {
+    pageTitle: string;
+    title: string;
+    lede: string;
+    constraintTitle: string;
+    modeLabel: string;
+    roleLabel: string;
+    updateLabel: string;
+    resourceLabel: string;
+    priorityLabel: string;
+    openWeightLabel: string;
+    contextLabel: string;
+    setTask: string;
+    clearTask: string;
+    candidateTitle: string;
+    candidateCount: string;
+    emptyCandidates: string;
+    addToCompare: string;
+    removeFromCompare: string;
+    addCandidate: string;
+    removeCandidate: string;
+    evidenceTitle: string;
+    openness: string;
+    research: string;
+    hardware: string;
+    access: string;
+    sources: string;
+    noSource: string;
+    currentTask: string;
+    editConstraints: string;
+    candidates: string;
+    compare: string;
+    compareTray: string;
+    openCompare: string;
+    clearCompare: string;
+  };
   format: {
     unknown: string;
     yes: string;
