@@ -7,6 +7,7 @@ import { papersForModel } from './modelRelations';
 import { buildDataHealth } from './dataHealth';
 import { modelSchema } from './schemas';
 import { architectureLabel, categoryLabel, evolutionTargetLabel, isSameCanonicalName, licenseLabel, lifecycleLabel, modelContextLabels, modelIdentityTrail, noteLabel, roleLabel, sourceTypeLabel, taskLabel, tierLabel } from './format';
+import { buildLandscapePoints, parameterForLandscape, toLandscapeModelExport } from './landscape';
 import type { AtlasModel, AtlasPaper } from './types';
 
 const baseModel: AtlasModel = { id: 'test-model', name: 'Test Model', vendor: 'Test', family: 'Test', generation: 'v1', release_date: '2026-01-01', status: 'active', checkpoint: { type: 'instruct', modalities: ['text'], specializations: ['general', 'chinese', 'tool-use'] }, architecture: { type: 'dense', total_parameters_b: 3, active_parameters_b: 3, context_length: 8192, expert_count: 'not_applicable', active_experts_per_token: 'not_applicable' }, openness: { weights_available: true, base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'not_verified', commercial_use_allowed: 'not_verified', license_name: 'Demo' }, research: { suitable_for_inference: true, suitable_for_lora: true, suitable_for_sft: true, suitable_for_rl: true, transformers_support: true, vllm_support: true, sglang_support: 'not_verified', verl_recipe_available: 'not_verified' }, hardware: { inference_tier: '16gb', lora_tier: '24gb', full_sft_tier: '48gb', rl_tier: 'multi_gpu' }, sources: [{ url: 'https://example.com/test', type: 'demo_record', checked_at: '2026-01-01' }], data_status: 'demo' };
@@ -97,5 +98,17 @@ describe('atlas rules', () => {
     expect(kimiK3.openness.classification).toBe('open_weight');
     expect(kimiK3.openness.commercial_use).toBe('conditional');
     expect(sourceTypeLabel('official_license', 'zh')).toBe('官方许可证');
+  });
+  it('maps landscape points without turning unknown parameters into zero', () => {
+    const unknown = { ...baseModel, id: 'unknown-landscape', architecture: { ...baseModel.architecture, total_parameters_b: 'not_disclosed' as const, active_parameters_b: 'not_verified' as const }, hardware: { ...baseModel.hardware, inference_tier: 'not_reported' as const } };
+    expect(parameterForLandscape(unknown)).toEqual({ value: null, source: 'unknown' });
+    const [point] = buildLandscapePoints([unknown], 'en');
+    expect(point.parameterB).toBeNull();
+    expect(point.parameterSource).toBe('unknown');
+    expect(point.hardwareIndex).toBe(7);
+    expect(point.dataStatusLabel).toBe('Archived example');
+  });
+  it('exports only the minimal landscape model fields', () => {
+    expect(Object.keys(toLandscapeModelExport(baseModel))).toEqual(['id', 'name', 'vendor', 'family', 'release_date', 'architecture', 'total_parameters_b', 'active_parameters_b', 'inference_tier', 'data_status']);
   });
 });
