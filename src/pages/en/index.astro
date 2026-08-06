@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Body from '../_bodies/home.astro';
+import AppLayout from '../../layouts/AppLayout.astro';
+import Body from '../_bodies/home-v2.astro';
 import { getMessages } from '../../i18n';
 const m = getMessages('en');
 ---
-<BaseLayout title={m.home.pageTitle} locale="en"><Body locale="en" /></BaseLayout>
+<AppLayout title={m.v2.home.overviewTitle} description={m.v2.home.heroLede} locale="en"><Body locale="en" /></AppLayout>
