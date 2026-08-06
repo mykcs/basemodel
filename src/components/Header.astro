@@ -6,6 +6,10 @@ const { locale } = Astro.props;
 const m = getMessages(locale);
 const otherLocale: Locale = locale === 'zh' ? 'en' : 'zh';
 
+// 语言切换与当前页状态共用同一个无 base path 路径，详情页会高亮所属列表入口。
+const { pathNoBase } = parsePath(Astro.url.pathname);
+const isCurrent = (path: string) => pathNoBase === path || (path !== '/' && pathNoBase.startsWith(path));
+
 // 站内链接全部走 localePath, 英文版自动带 /en/ 前缀。
 const links = [
   { path: '/', label: m.nav.home },
@@ -14,10 +18,9 @@ const links = [
   { path: '/compare/', label: m.nav.compare },
   { path: '/papers/', label: m.nav.papers },
   { path: '/data-status/', label: m.nav.dataStatus },
-].map((link) => ({ href: localePath(locale, link.path), label: link.label }));
+].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
 
 // 语言切换: 映射当前路径到另一语言的等价路径。
-const { pathNoBase } = parsePath(Astro.url.pathname);
 const switchHref = switchLocalePath(otherLocale, pathNoBase);
 ---
 <header class="site-header">
@@ -27,19 +30,20 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       <span><strong>{m.site.name}</strong><small>{m.site.tagline}</small></span>
     </a>
     <nav aria-label={m.nav.mainNav} class="desktop-nav">
-      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      <div class="nav-primary">{links.slice(0, 4).map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
+      <div class="nav-secondary">{links.slice(4).map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
     </nav>
     <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
     <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
-    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} data-theme-toggle>◐</button>
+    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle>◐</button>
   </div>
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
     <div class="shell">
-      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      {links.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
       <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
-      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} data-theme-toggle-mobile>◐</button>
+      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle-mobile>◐</button>
     </div>
   </div>
 </header>
@@ -56,13 +60,20 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     menuToggle?.setAttribute('aria-expanded', 'false');
     (menuToggle as HTMLElement | null)?.focus();
   });
-  const applyTheme = (toggle: Element | null) => {
-    toggle?.addEventListener('click', () => {
+  const themeToggles = [...document.querySelectorAll('[data-theme-toggle], [data-theme-toggle-mobile]')];
+  const syncThemeControls = () => {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeToggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(dark)));
+  };
+  themeToggles.forEach((toggle) => {
+    if (toggle.getAttribute('data-theme-bound') === 'true') return;
+    toggle.setAttribute('data-theme-bound', 'true');
+    toggle.addEventListener('click', () => {
       const dark = document.documentElement.dataset.theme === 'dark';
       document.documentElement.dataset.theme = dark ? 'light' : 'dark';
       try { localStorage.setItem('atlas-theme', dark ? 'light' : 'dark'); } catch {}
+      syncThemeControls();
     });
-  };
-  applyTheme(document.querySelector('[data-theme-toggle]'));
-  applyTheme(document.querySelector('[data-theme-toggle-mobile]'));
+  });
+  syncThemeControls();
 </script>

@@ -5,3 +5,5 @@ dist/
 .DS_Store
 .omc/
 reports/
+playwright-report/
+test-results/

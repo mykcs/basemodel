@@ -35,6 +35,11 @@ export default function ModelExplorer({ models, paperModelIds, locale = 'zh' }: 
   const resourceOptions: [string, string][] = [['', m.explorer.any], ...(Object.keys(m.format.tier) as Array<keyof typeof m.format.tier>).filter((key) => key !== 'unknown').map((key) => [key, m.format.tier[key]] as [string, string])];
   const modalityOptions: [string, string][] = [['', m.explorer.any], ...(Object.keys(m.modalities) as Array<keyof typeof m.modalities>).map((key) => [key, m.modalities[key]] as [string, string])];
   const paramOptions: [string, string][] = [['', m.explorer.any], ['1', '≥1B'], ['3', '≥3B'], ['7', '≥7B'], ['14', '≥14B'], ['32', '≥32B'], ['70', '≥70B'], ['100', '≥100B']];
+  const quickFilters: Array<{ key: 'openWeights' | 'rl' | 'paperUse'; label: string }> = [
+    { key: 'openWeights', label: m.explorer.quickOpenWeights },
+    { key: 'rl', label: m.explorer.quickRl },
+    { key: 'paperUse', label: m.explorer.quickPaperUse },
+  ];
 
   useEffect(() => {
     const next = new URLSearchParams();
@@ -57,11 +62,15 @@ export default function ModelExplorer({ models, paperModelIds, locale = 'zh' }: 
   }, [filters]);
 
   const update = (key: keyof ModelFilters, value: string | boolean | number | undefined) => setFilters((current) => ({ ...current, [key]: value === '' ? undefined : value }));
+  const toggleQuickFilter = (key: 'openWeights' | 'rl' | 'paperUse') => update(key, filters[key] === true ? undefined : true);
   const clear = () => setFilters({});
   const yesNo: [string, string][] = [['', m.explorer.any], ['true', m.explorer.yes], ['false', m.explorer.no]];
   const haveNot: [string, string][] = [['', m.explorer.any], ['true', m.explorer.have], ['false', m.explorer.haveNot]];
   return <section className="explorer-shell">
-    <div className="explorer-toolbar"><label className="search-field"><span className="sr-only">{m.explorer.searchLabel}</span><input value={filters.query ?? ''} onChange={(event) => update('query', event.target.value)} placeholder={m.explorer.searchPlaceholder} /></label><button className="button button-secondary filter-button" onClick={() => setShowFilters((value) => !value)} aria-expanded={showFilters}>{m.explorer.filter} {showFilters ? '↑' : '↓'}</button><label className="sort-field"><span>{m.explorer.sort}</span><select value={sort} onChange={(event) => setSort(event.target.value as typeof sort)}><option value="release">{m.explorer.sortRelease}</option><option value="parameters">{m.explorer.sortParams}</option><option value="name">{m.explorer.sortName}</option></select></label></div>
+    <div className="explorer-toolbar"><label className="search-field"><span className="sr-only">{m.explorer.searchLabel}</span><input value={filters.query ?? ''} onChange={(event) => update('query', event.target.value)} placeholder={m.explorer.searchPlaceholder} /></label><button className="button button-secondary filter-button" type="button" onClick={() => setShowFilters((value) => !value)} aria-expanded={showFilters}>{m.explorer.filter} {showFilters ? '↑' : '↓'}</button><label className="sort-field"><span>{m.explorer.sort}</span><select value={sort} onChange={(event) => setSort(event.target.value as typeof sort)}><option value="release">{m.explorer.sortRelease}</option><option value="parameters">{m.explorer.sortParams}</option><option value="name">{m.explorer.sortName}</option></select></label></div>
+    <div className="quick-filter-row" aria-label={m.explorer.filter}>
+      {quickFilters.map(({ key, label }) => <button className={`quick-filter ${filters[key] === true ? 'is-active' : ''}`} type="button" aria-pressed={filters[key] === true} onClick={() => toggleQuickFilter(key)} key={key}>{label}</button>)}
+    </div>
     {showFilters && <div className="filter-panel">
       <Select label={m.explorer.vendor} value={filters.vendor ?? ''} onChange={(value) => update('vendor', value)} options={[['', m.explorer.allVendors], ...vendors.map((value) => [value, value])]} />
       <Select label={m.explorer.family} value={filters.family ?? ''} onChange={(value) => update('family', value)} options={[['', m.explorer.allFamilies], ...families.map((value) => [value, value])]} />
@@ -76,10 +85,10 @@ export default function ModelExplorer({ models, paperModelIds, locale = 'zh' }: 
       <Select label={m.explorer.rl} value={filters.rl === undefined ? '' : String(filters.rl)} onChange={(value) => update('rl', value === '' ? undefined : value === 'true')} options={yesNo} />
       <Select label={m.explorer.paperUse} value={filters.paperUse === undefined ? '' : String(filters.paperUse)} onChange={(value) => update('paperUse', value === '' ? undefined : value === 'true')} options={haveNot} />
       <Select label={m.explorer.hardwareTier} value={filters.resource ?? ''} onChange={(value) => update('resource', value)} options={resourceOptions} />
-      <button className="text-button" onClick={clear}>{m.explorer.clearAll}</button>
+      <button className="text-button" type="button" onClick={clear}>{m.explorer.clearAll}</button>
     </div>}
     <div className="explorer-summary"><span>{m.explorer.showing} {result.length} {m.explorer.of} {models.length} {m.explorer.modelsUnit}</span><span className="muted">{paperModelIds.length} {m.explorer.withPapers}</span></div>
-    <div className="model-grid">{result.map((model) => <article className="model-card" key={model.id}><div className="card-topline"><span className="eyebrow">{model.vendor}</span><span className={`status-badge status-${model.data_status}`}>{statusLabel(model.data_status, locale)}</span></div><h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3><p className="model-meta">{model.family} · {model.generation} · {model.release_date}</p><p className="model-architecture"><strong>{architectureLabel(model.architecture.type, locale)}</strong><span>{parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale)}</span></p><div className="tag-row">{model.checkpoint.modalities.map((value) => <span className="tag" key={value}>{modalityLabel(value, locale)}</span>)}<span className="tag">{checkpointLabel(model.checkpoint.type, locale)}</span>{model.openness.weights_available === true && <span className="tag tag-open">{m.explorer.openWeightsTag}</span>}</div><div className="card-footer"><span>RL: {displayBoolean(model.research.suitable_for_rl, locale)}</span><span>{paperModelIds.includes(model.id) ? m.explorer.hasPaper : m.explorer.noPaper}</span></div></article>)}</div>
+    <div className="model-grid">{result.map((model) => <article className="model-card" key={model.id}><div className="card-topline"><span className="eyebrow">{model.vendor}</span><span className="evidence-status"><span className="status-caption">{m.explorer.evidenceStatus}</span><span className={`status-badge status-${model.data_status}`} title={`${m.explorer.evidenceStatus}: ${statusLabel(model.data_status, locale)}`}>{statusLabel(model.data_status, locale)}</span></span></div><h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3><p className="model-meta">{model.family} · {model.generation} · {model.release_date}</p><p className="model-architecture"><strong>{architectureLabel(model.architecture.type, locale)}</strong><span>{parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale)}</span></p><div className="tag-row">{model.checkpoint.modalities.map((value) => <span className="tag" key={value}>{modalityLabel(value, locale)}</span>)}<span className="tag">{checkpointLabel(model.checkpoint.type, locale)}</span>{model.openness.weights_available === true && <span className="tag tag-open">{m.explorer.openWeightsTag}</span>}</div><div className="card-footer"><span>RL: {displayBoolean(model.research.suitable_for_rl, locale)}</span><span>{paperModelIds.includes(model.id) ? m.explorer.hasPaper : m.explorer.noPaper}</span><a className="card-compare" href={`${localePath(locale, '/compare/')}?models=${encodeURIComponent(model.id)}`} aria-label={m.explorer.compareAria.replace('{name}', model.name)}>{m.explorer.compare}</a></div></article>)}</div>
     {result.length === 0 && <div className="empty-state"><strong>{m.explorer.emptyTitle}</strong><span>{m.explorer.emptyBody}</span></div>}
   </section>;
 }
