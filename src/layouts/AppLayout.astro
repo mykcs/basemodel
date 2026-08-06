@@ -1,0 +1,78 @@
+---
+import Header from '../components/Header.astro';
+import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
+import { CompareTray } from '../components/workspace/CompareTray.tsx';
+import '../styles/global.css';
+import '../styles/workspace.css';
+import { getMessages, isLocale, locales, switchLocalePath, baseUrl, type Locale } from '../i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: Locale;
+}
+
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+const { title, description = m.site.defaultDescription } = Astro.props;
+const base = baseUrl();
+const fullTitle = `${title} · ${m.site.titleSuffix}`;
+const siteOrigin = Astro.site ?? new URL('https://mykcs.github.io');
+const ogImage = new URL(`${base}favicon.svg`, siteOrigin).href;
+
+const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
+const canonicalUrl = new URL(switchLocalePath(locale, pathNoBase), siteOrigin).href;
+const alternateUrls = locales.map((loc) => ({ loc, href: new URL(switchLocalePath(loc, pathNoBase), siteOrigin).href }));
+const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
+---
+<!doctype html>
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      try {
+        const storedTheme = localStorage.getItem('atlas-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = storedTheme ?? (prefersDark ? 'dark' : 'light');
+      } catch {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f4ef" />
+    <link rel="icon" href={`${base}favicon.svg`} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href={`${base}sitemap.xml`} />
+    {alternateUrls.map((alt) => <link rel="alternate" hreflang={alt.loc === 'zh' ? 'zh-CN' : 'en'} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(switchLocalePath('zh', pathNoBase), siteOrigin).href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={m.site.fullName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={ogLocaleMap[locale]} />
+    {alternateUrls.filter((alt) => alt.loc !== locale).map((alt) => <meta property="og:locale:alternate" content={ogLocaleMap[alt.loc]} />)}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
+    <Header locale={locale} />
+    <ResearchContextBar client:load m={m} />
+    <main id="main-content" class="site-main">
+      <slot />
+    </main>
+    <CompareTray client:load m={m} locale={locale} />
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>{m.footer.mvp}</span>
+        <span>{m.footer.motto}</span>
+      </div>
+    </footer>
+</body>
+</html>
