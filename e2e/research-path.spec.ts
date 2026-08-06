@@ -13,6 +13,14 @@ test('homepage leads with the research path and an accessible theme toggle', asy
   await expect(themeToggle).toHaveAttribute('aria-pressed', before === 'true' ? 'false' : 'true');
 });
 
+test('landscape prototype loads both code-split chart engines', async ({ page }) => {
+  await page.goto('landscape/');
+
+  await expect(page.locator('.landscape-chart svg')).toBeVisible();
+  await page.getByRole('button', { name: 'D3', exact: true }).click();
+  await expect(page.locator('.landscape-d3 svg')).toBeVisible();
+});
+
 test('model explorer exposes quick filters and a comparison entry point', async ({ page }) => {
   await page.goto('models/');
 
