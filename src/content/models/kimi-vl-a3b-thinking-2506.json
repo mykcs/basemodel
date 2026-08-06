@@ -2,21 +2,103 @@
   "id": "kimi-vl-a3b-thinking-2506",
   "name": "Kimi-VL-A3B-Thinking-2506",
   "official_name": "Kimi-VL-A3B-Thinking-2506",
-  "aliases": ["Kimi VL"],
-  "vendor": "Moonshot AI / Kimi",
+  "aliases": [
+    "Kimi VL"
+  ],
+  "vendor": "Moonshot AI",
   "family": "Kimi",
   "generation": "Kimi VL",
   "release_date": "2025-06-10",
   "status": "active",
-  "checkpoint": { "type": "thinking", "modalities": ["text", "image", "video"], "specializations": ["reasoning", "multimodal"] },
-  "architecture": { "type": "moe", "total_parameters_b": "not_reported", "active_parameters_b": 2.8, "context_length": 131072, "expert_count": "not_reported", "active_experts_per_token": "not_reported" },
-  "openness": { "weights_available": true, "base_checkpoint_available": "not_reported", "finetuning_allowed": true, "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "not_verified", "classification": "open_weight" },
-  "access": { "weights_status": "released", "weights_url": "https://huggingface.co/moonshotai/Kimi-VL-A3B-Thinking-2506", "api_status": "unavailable" },
-  "research": { "suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": true, "sglang_support": "not_verified", "verl_recipe_available": "not_verified" },
-  "hardware": { "inference_tier": "multi_gpu", "lora_tier": "48gb", "full_sft_tier": "not_verified", "rl_tier": "not_verified" },
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "specializations": [
+      "reasoning",
+      "multimodal"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": 2.8,
+    "context_length": 131072,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_reported",
+    "finetuning_allowed": true,
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "not_verified",
+    "classification": "open_weight"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-VL-A3B-Thinking-2506",
+    "api_status": "unavailable"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": true,
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "48gb",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
   "sources": [
-    { "id": "moonshot-kimi-vl-readme", "url": "https://github.com/MoonshotAI/Kimi-VL", "type": "official_code", "title": "Kimi-VL official repository", "publisher": "Moonshot AI", "published_at": "2025-06-10", "checked_at": "2026-08-06", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.active_parameters_b", "architecture.context_length", "openness.classification", "access.weights_status", "research.vllm_support", "research.suitable_for_lora", "research.suitable_for_inference"], "evidence_note": "Official README identifies Moonshot AI/Kimi-VL, the Thinking-2506 release, text/image/video understanding, 128K context, and runnable inference guidance." },
-    { "id": "moonshot-kimi-vl-hf", "url": "https://huggingface.co/moonshotai/Kimi-VL-A3B-Thinking-2506", "type": "official_weights", "title": "Kimi-VL Thinking-2506 weights", "publisher": "Moonshot AI", "checked_at": "2026-08-06", "supports": ["access.weights_status", "openness.weights_available"], "evidence_note": "Official Hugging Face model record for the Thinking-2506 checkpoint." }
+    {
+      "id": "moonshot-kimi-vl-readme",
+      "url": "https://github.com/MoonshotAI/Kimi-VL",
+      "type": "official_code",
+      "title": "Kimi-VL official repository",
+      "publisher": "Moonshot AI",
+      "published_at": "2025-06-10",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.classification",
+        "access.weights_status",
+        "research.vllm_support",
+        "research.suitable_for_lora",
+        "research.suitable_for_inference"
+      ],
+      "evidence_note": "Official README identifies Moonshot AI/Kimi-VL, the Thinking-2506 release, text/image/video understanding, 128K context, and runnable inference guidance."
+    },
+    {
+      "id": "moonshot-kimi-vl-hf",
+      "url": "https://huggingface.co/moonshotai/Kimi-VL-A3B-Thinking-2506",
+      "type": "official_weights",
+      "title": "Kimi-VL Thinking-2506 weights",
+      "publisher": "Moonshot AI",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "access.weights_status",
+        "openness.weights_available"
+      ],
+      "evidence_note": "Official Hugging Face model record for the Thinking-2506 checkpoint."
+    }
   ],
   "data_status": "partial",
   "claim_status": "partial"

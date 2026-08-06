@@ -1,0 +1,93 @@
+{
+  "id": "deepseek-v4-pro",
+  "name": "DeepSeek-V4-Pro",
+  "official_name": "DeepSeek-V4-Pro",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "V4",
+  "release_date": "2026-04-24",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 1600,
+    "active_parameters_b": 49,
+    "context_length": 1000000,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-04-24",
+    "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+    "api_status": "available",
+    "api_model_ids": [
+      "deepseek-v4-pro"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.license_name",
+        "openness.classification"
+      ],
+      "evidence_note": "Official Hugging Face model card states 1.6T total parameters, 49B active, 1M context, MoE, MIT license. Expert count and top-k not stated in card. Source checked 2026-08-06."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids"
+      ],
+      "evidence_note": "DeepSeek API documentation lists deepseek-v4-pro as a current API model. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "verified"
+}

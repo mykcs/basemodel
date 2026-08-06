@@ -66,5 +66,6 @@
       "evidence_note": "Meta's official Llama 4 model page lists the Llama 4 family and links the current release documentation Source checked https://www.llama.com/models/llama-4/ on 2026-08-06."
     }
   ],
+  "notes": "Llama 4 Behemoth (~2T total / 288B active teacher model, previewed 2025-04) has not been publicly released as of 2026-08-06; Scout and Maverick were distilled from it. Behemoth is intentionally not a separate record because it remains unpublished.",
   "data_status": "partial"
 }

@@ -1,0 +1,113 @@
+{
+  "id": "magistral-small",
+  "name": "Magistral Small",
+  "official_name": "Magistral Small 1.0",
+  "vendor": "Mistral AI",
+  "family": "Mistral",
+  "generation": "Magistral",
+  "release_date": "2025-06-10",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "multilingual",
+      "transparent-reasoning"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 24,
+    "active_parameters_b": 24,
+    "context_length": 40000,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0",
+    "classification": "open_weight",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-06-10",
+    "weights_url": "https://huggingface.co/mistralai/Magistral-Small-2506",
+    "api_status": "available",
+    "api_model_ids": [
+      "magistral-small-2506"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "80gb",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/mistralai/Magistral-Small-2506",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card states Magistral Small is a 24B parameter reasoning model, 128k context window with recommended 40k max, Apache 2.0 license, and weights available."
+    },
+    {
+      "url": "https://mistral.ai/news/magistral/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "checkpoint.type",
+        "checkpoint.specializations",
+        "openness.license_name",
+        "openness.classification"
+      ],
+      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Small as a 24B parameter open-source reasoning model, first reasoning model from Mistral AI."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/magistral-small-1-0-25-06",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "status"
+      ],
+      "evidence_note": "Official Mistral docs model card lists Magistral Small 1.0 as retired with 40k context, replacement Mistral Small 4."
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Magistral Small is Mistral's first open-weight reasoning model. The Hugging Face card recommends 40k context for best performance; docs card lists 40k. Status retired as of 2025-11-30; replacement is Mistral Small 4."
+}

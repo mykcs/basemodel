@@ -1,0 +1,84 @@
+{
+  "id": "gpt-4-5",
+  "name": "GPT-4.5",
+  "official_name": "GPT-4.5",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "GPT-4.5",
+  "release_date": "2025-02-27",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": "not_reported",
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "proprietary",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "deprecated",
+    "api_model_ids": [
+      "gpt-4.5"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_verified",
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://help.openai.com/en/articles/9624314-model-release-notes",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "status"
+      ],
+      "evidence_note": "OpenAI Help Center Model Release Notes state GPT-4.5 was introduced on February 27, 2025 and later deprecated; model page no longer available in API docs. Source checked 2026-08-06."
+    },
+    {
+      "url": "https://openai.com/index/introducing-gpt-4-5/",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "status"
+      ],
+      "evidence_note": "OpenAI announcement confirms GPT-4.5 research preview released February 27, 2025. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "partial"
+}

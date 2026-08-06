@@ -1,0 +1,101 @@
+{
+  "id": "mistral-medium-3",
+  "name": "Mistral Medium 3",
+  "official_name": "Mistral Medium 3",
+  "vendor": "Mistral AI",
+  "family": "Mistral",
+  "generation": "Medium 3",
+  "release_date": "2025-05-07",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "multimodal"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 128000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": false,
+    "license_name": "proprietary",
+    "classification": "proprietary",
+    "custom_license": true,
+    "derivative_distribution": "prohibited",
+    "commercial_use": "prohibited"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "mistral-medium-2505"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": false,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/mistral-medium-3-25-05",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "checkpoint.modalities",
+        "checkpoint.specializations",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.api_status",
+        "access.api_model_ids",
+        "status"
+      ],
+      "evidence_note": "Official Mistral model card dated May 7, 2025 lists Mistral Medium 3 as a frontier-class multimodal model with 128k context, function calling, structured outputs, and API-only availability; status shown as deprecated with replacement Mistral Medium 3.5."
+    },
+    {
+      "url": "https://mistral.ai/news/mistral-medium-3/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "checkpoint.specializations",
+        "access.api_status"
+      ],
+      "evidence_note": "Official Mistral blog post dated May 7, 2025 announces Mistral Medium 3, emphasizing enterprise coding, multimodal understanding, and availability on Mistral La Plateforme and Amazon SageMaker."
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Mistral Medium 3 is a closed-weight, API-only enterprise model. Parameter counts are not publicly disclosed. The model is deprecated as of 2026-05-22; replacement is Mistral Medium 3.5."
+}

@@ -34,7 +34,8 @@
     "finetuning_allowed": "not_applicable",
     "derivative_release_allowed": false,
     "commercial_use_allowed": "not_disclosed",
-    "license_name": "OpenAI API terms; not a weight license"
+    "license_name": "proprietary",
+    "classification": "proprietary"
   },
   "research": {
     "suitable_for_inference": true,
@@ -64,7 +65,23 @@
       "type": "official_docs",
       "checked_at": "2026-08-06",
       "evidence_note": "OpenAI official API model page lists a 400,000-token context window Source checked https://developers.openai.com/api/docs/models/gpt-5-1 on 2026-08-06."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.1",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "OpenAI official API docs list gpt-5-1 context window as 400000 tokens. Source checked 2026-08-06."
     }
   ],
-  "data_status": "verified"
+  "data_status": "verified",
+  "access": {
+    "api_status": "available",
+    "api_model_ids": [
+      "gpt.5.1"
+    ],
+    "weights_status": "unavailable"
+  }
 }

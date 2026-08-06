@@ -34,7 +34,8 @@
     "finetuning_allowed": "not_applicable",
     "derivative_release_allowed": false,
     "commercial_use_allowed": "not_disclosed",
-    "license_name": "OpenAI API terms; not a weight license"
+    "license_name": "proprietary",
+    "classification": "proprietary"
   },
   "research": {
     "suitable_for_inference": true,
@@ -58,7 +59,23 @@
       "type": "official_docs",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-4o",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "OpenAI official API docs list gpt-4o context window as 128000 tokens. Source checked 2026-08-06."
     }
   ],
-  "data_status": "verified"
+  "data_status": "verified",
+  "access": {
+    "api_status": "available",
+    "api_model_ids": [
+      "gpt.4o"
+    ],
+    "weights_status": "unavailable"
+  }
 }

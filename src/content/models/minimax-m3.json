@@ -1,0 +1,108 @@
+{
+  "id": "minimax-m3",
+  "name": "MiniMax M3",
+  "official_name": "MiniMax-M3",
+  "aliases": [
+    "MiniMax-M3-MXFP8"
+  ],
+  "vendor": "MiniMax",
+  "family": "MiniMax",
+  "generation": "M3",
+  "release_date": "2026-06-01",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "tool-use",
+      "multimodal",
+      "long-context"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 428,
+    "active_parameters_b": 23,
+    "context_length": 1000000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "minimax-community",
+    "classification": "open_weight",
+    "custom_license": true,
+    "derivative_distribution": "conditional",
+    "commercial_use": "conditional",
+    "license_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3/raw/main/LICENSE"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-06-07",
+    "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+    "api_status": "available",
+    "api_model_ids": [
+      "MiniMax-M3"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "MiniMax API"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "evidence_note": "HuggingFace model card confirms 428B total parameters (base variant) and 440B for MXFP8 variant, native multimodal image-text-to-text, and 1M context. License is custom minimax-community.",
+      "supports": [
+        "architecture.total_parameters_b",
+        "architecture.context_length",
+        "checkpoint.modalities",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ]
+    },
+    {
+      "url": "https://www.ithome.com/0/964/598.htm",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Launch coverage confirms M3 is a 428B native multimodal MoE with MiniMax Sparse Attention and 1M context, released in June 2026.",
+      "supports": [
+        "architecture.total_parameters_b",
+        "architecture.context_length",
+        "release_date"
+      ]
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Active parameter count (23B) and exact release date are reported by third-party coverage but not stated on the HuggingFace model card; kept as semantic status in evidence."
+}

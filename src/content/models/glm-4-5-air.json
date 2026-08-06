@@ -1,0 +1,110 @@
+{
+  "id": "glm-4-5-air",
+  "name": "GLM-4.5 Air",
+  "official_name": "GLM-4.5 Air",
+  "vendor": "GLM / Z.ai",
+  "family": "GLM",
+  "generation": "GLM-4.5 Air",
+  "release_date": "2025-07-28",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "chinese"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 106,
+    "active_parameters_b": 12,
+    "context_length": 131072,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed",
+    "license_url": "https://huggingface.co/zai-org/GLM-4.5-Air"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-07-28",
+    "weights_url": "https://huggingface.co/zai-org/GLM-4.5-Air",
+    "api_status": "available",
+    "api_model_ids": [
+      "glm-4.5-air"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/zai-org/GLM-4.5-Air",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license."
+    },
+    {
+      "url": "https://z.ai/blog/glm-4.5",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "openness.license_name",
+        "openness.commercial_use_allowed"
+      ],
+      "evidence_note": "Official Z.ai blog post dated July 28, 2025 announces GLM-4.5-Air with 106B total and 12B active parameters, MIT license, and commercial/secondary-development use permitted."
+    },
+    {
+      "url": "https://docs.nvidia.com/nemo/megatron-bridge/0.2.0/models/llm/glm45.html",
+      "type": "third_party_runtime",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "NVIDIA Megatron Bridge documentation confirms GLM-4.5-Air context length of 131,072 tokens."
+    }
+  ],
+  "data_status": "verified"
+}

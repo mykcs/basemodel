@@ -63,7 +63,24 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-oss-120b",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "OpenAI official API docs list gpt-oss-120b context window as 131072 tokens. Source checked 2026-08-06."
     }
   ],
-  "data_status": "verified"
+  "data_status": "verified",
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/openai/gpt-oss-120b",
+    "api_status": "available",
+    "api_model_ids": [
+      "gpt-oss-120b"
+    ]
+  }
 }

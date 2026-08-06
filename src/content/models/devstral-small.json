@@ -1,0 +1,111 @@
+{
+  "id": "devstral-small",
+  "name": "Devstral Small",
+  "official_name": "Devstral Small 1.0",
+  "vendor": "Mistral AI",
+  "family": "Mistral",
+  "generation": "Devstral",
+  "release_date": "2025-05-21",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "coding",
+      "agent",
+      "tool-use",
+      "software-engineering"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 24,
+    "active_parameters_b": 24,
+    "context_length": 128000,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0",
+    "classification": "open_weight",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-05-21",
+    "weights_url": "https://huggingface.co/mistralai/Devstral-Small-2505",
+    "api_status": "available",
+    "api_model_ids": [
+      "devstral-small-2505"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "48gb",
+    "lora_tier": "80gb",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/mistralai/Devstral-Small-2505",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card states Devstral Small 1.0 is a 24B parameter agentic LLM for software engineering, 128k context, Apache 2.0 license, and weights available."
+    },
+    {
+      "url": "https://mistral.ai/news/devstral/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "checkpoint.specializations",
+        "openness.license_name"
+      ],
+      "evidence_note": "Official Mistral blog post dated May 21, 2025 introduces Devstral Small as a 24B open-source model for agentic coding, developed with All Hands AI."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/devstral-small-1-0-25-05",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "status"
+      ],
+      "evidence_note": "Official Mistral docs model card lists Devstral Small 1.0 as retired with 128k context, replacement Mistral Medium 3.5."
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Devstral Small is an open-weight 24B model optimized for software engineering agents, developed with All Hands AI. Status retired as of 2025-11-30; replacement is Mistral Medium 3.5."
+}

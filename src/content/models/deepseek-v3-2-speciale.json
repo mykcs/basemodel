@@ -1,0 +1,87 @@
+{
+  "id": "deepseek-v3-2-speciale",
+  "name": "DeepSeek-V3.2-Speciale",
+  "official_name": "DeepSeek-V3.2-Speciale",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "V3.2",
+  "release_date": "2025-12-01",
+  "status": "active",
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "mathematics",
+      "coding"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 685,
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
+    "expert_count": 256,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-12-01",
+    "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2-Speciale",
+    "api_status": "available"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2-Speciale",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "openness.license_name",
+        "openness.classification"
+      ],
+      "evidence_note": "Official Hugging Face model card states 685B parameters, reasoning-focused variant, no tool-calling, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Temporary API endpoint noted in DeepSeek API docs. Source checked 2026-08-06."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/news/news251201",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "access.api_status"
+      ],
+      "evidence_note": "DeepSeek API release announcement confirms V3.2 and V3.2-Speciale released December 1, 2025; Speciale was API-only with a temporary endpoint expiring December 15, 2025. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "partial"
+}

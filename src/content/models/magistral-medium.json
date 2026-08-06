@@ -1,0 +1,94 @@
+{
+  "id": "magistral-medium",
+  "name": "Magistral Medium",
+  "official_name": "Magistral Medium 1.0",
+  "vendor": "Mistral AI",
+  "family": "Mistral",
+  "generation": "Magistral",
+  "release_date": "2025-06-10",
+  "status": "legacy",
+  "checkpoint": {
+    "type": "thinking",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "multilingual",
+      "transparent-reasoning"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 40000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": false,
+    "license_name": "proprietary",
+    "classification": "proprietary",
+    "custom_license": true,
+    "derivative_distribution": "prohibited",
+    "commercial_use": "prohibited"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "magistral-medium-2506"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": false,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://mistral.ai/news/magistral/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.specializations",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification"
+      ],
+      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Medium as a more powerful enterprise version alongside the 24B open-source Magistral Small; no parameter count or weights disclosed."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/model-cards/magistral-medium-1-0-25-06",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.context_length",
+        "status"
+      ],
+      "evidence_note": "Official Mistral docs model card lists Magistral Medium 1.0 as retired with 40k context, replacement Mistral Medium 3.5."
+    }
+  ],
+  "data_status": "partial",
+  "notes": "Magistral Medium is the closed-weight enterprise sibling of Magistral Small. Parameter counts and architecture details are not disclosed. Status retired as of 2025-11-30; replacement is Mistral Medium 3.5."
+}

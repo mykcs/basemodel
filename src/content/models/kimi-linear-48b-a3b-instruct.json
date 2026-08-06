@@ -2,21 +2,102 @@
   "id": "kimi-linear-48b-a3b-instruct",
   "name": "Kimi Linear 48B-A3B Instruct",
   "official_name": "Kimi-Linear-48B-A3B-Instruct",
-  "aliases": ["Kimi Linear"],
-  "vendor": "Moonshot AI / Kimi",
+  "aliases": [
+    "Kimi Linear"
+  ],
+  "vendor": "Moonshot AI",
   "family": "Kimi",
   "generation": "Kimi Linear",
   "release_date": "2025-12-05",
   "status": "active",
-  "checkpoint": { "type": "instruct", "modalities": ["text"], "specializations": ["general", "reasoning", "tool-use"] },
-  "architecture": { "type": "moe", "total_parameters_b": 48, "active_parameters_b": 3, "context_length": 1048576, "expert_count": "not_reported", "active_experts_per_token": "not_reported" },
-  "openness": { "weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "not_verified", "classification": "open_weight" },
-  "access": { "weights_status": "released", "weights_url": "https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct", "api_status": "unavailable" },
-  "research": { "suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": true, "sglang_support": "not_verified", "verl_recipe_available": "not_verified" },
-  "hardware": { "inference_tier": "multi_gpu", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified" },
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 48,
+    "active_parameters_b": 3,
+    "context_length": 1048576,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": "not_verified",
+    "derivative_release_allowed": "not_verified",
+    "commercial_use_allowed": "not_verified",
+    "license_name": "not_verified",
+    "classification": "open_weight"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_url": "https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct",
+    "api_status": "unavailable"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": "not_verified",
+    "vllm_support": true,
+    "sglang_support": "not_verified",
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
   "sources": [
-    { "id": "moonshot-kimi-linear-readme", "url": "https://github.com/MoonshotAI/Kimi-Linear", "type": "official_code", "title": "Kimi Linear official repository", "publisher": "Moonshot AI", "published_at": "2025-12-05", "checked_at": "2026-08-06", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "openness.classification", "access.weights_status", "research.vllm_support", "research.suitable_for_inference"], "evidence_note": "Official README identifies Moonshot AI/Kimi Linear as a text model, announces the December 5 release, lists 48B total / 3B active parameters, 1M context, Base and Instruct checkpoints, and inference examples." },
-    { "id": "moonshot-kimi-linear-hf", "url": "https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct", "type": "official_weights", "title": "Kimi Linear Instruct weights", "publisher": "Moonshot AI", "checked_at": "2026-08-06", "supports": ["access.weights_status", "openness.weights_available"], "evidence_note": "Official Hugging Face model record for the Instruct checkpoint." }
+    {
+      "id": "moonshot-kimi-linear-readme",
+      "url": "https://github.com/MoonshotAI/Kimi-Linear",
+      "type": "official_code",
+      "title": "Kimi Linear official repository",
+      "publisher": "Moonshot AI",
+      "published_at": "2025-12-05",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.classification",
+        "access.weights_status",
+        "research.vllm_support",
+        "research.suitable_for_inference"
+      ],
+      "evidence_note": "Official README identifies Moonshot AI/Kimi Linear as a text model, announces the December 5 release, lists 48B total / 3B active parameters, 1M context, Base and Instruct checkpoints, and inference examples."
+    },
+    {
+      "id": "moonshot-kimi-linear-hf",
+      "url": "https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct",
+      "type": "official_weights",
+      "title": "Kimi Linear Instruct weights",
+      "publisher": "Moonshot AI",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "access.weights_status",
+        "openness.weights_available"
+      ],
+      "evidence_note": "Official Hugging Face model record for the Instruct checkpoint."
+    }
   ],
   "data_status": "partial",
   "claim_status": "partial"

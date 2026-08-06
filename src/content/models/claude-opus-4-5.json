@@ -1,0 +1,84 @@
+{
+  "id": "claude-opus-4-5",
+  "name": "Claude Opus 4.5",
+  "official_name": "Claude Opus 4.5",
+  "vendor": "Anthropic",
+  "family": "Claude",
+  "generation": "Claude Opus 4.5",
+  "release_date": "2025-11-01",
+  "status": "active",
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 200000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "Provider API terms",
+    "classification": "proprietary",
+    "custom_license": false,
+    "derivative_distribution": "prohibited",
+    "commercial_use": "conditional",
+    "conditions": [
+      "subject_to_api_terms"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": false,
+    "vllm_support": false,
+    "sglang_support": false,
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "claude-opus-4-5-20251101"
+    ],
+    "product_status": "available"
+  },
+  "sources": [
+    {
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "evidence_note": "Anthropic official model catalog lists Claude Opus 4.5 with 200K context window and active lifecycle status; model ID is dated 20251101.",
+      "supports": [
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

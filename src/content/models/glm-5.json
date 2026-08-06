@@ -1,0 +1,108 @@
+{
+  "id": "glm-5",
+  "name": "GLM-5",
+  "official_name": "GLM-5",
+  "vendor": "GLM / Z.ai",
+  "family": "GLM",
+  "generation": "GLM-5",
+  "release_date": "2026-02-12",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "chinese",
+      "long-horizon"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 744,
+    "active_parameters_b": 40,
+    "context_length": 200000,
+    "expert_count": "not_reported",
+    "active_experts_per_token": "not_reported"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed",
+    "license_url": "https://huggingface.co/zai-org/GLM-5"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-02-12",
+    "weights_url": "https://huggingface.co/zai-org/GLM-5",
+    "api_status": "available",
+    "api_model_ids": [
+      "glm-5"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_verified",
+    "suitable_for_sft": "not_verified",
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/zai-org/GLM-5",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "openness.weights_available",
+        "openness.license_name",
+        "openness.classification",
+        "access.weights_status",
+        "access.weights_url"
+      ],
+      "evidence_note": "Official Hugging Face model card states GLM-5 scales to 744B parameters (40B active) compared to GLM-4.5, integrates DeepSeek Sparse Attention, and is released under MIT license."
+    },
+    {
+      "url": "https://z.ai/blog/glm-5",
+      "type": "official_announcement",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "openness.weights_available",
+        "openness.license_name"
+      ],
+      "evidence_note": "Official Z.ai blog post dated 2026-02-12 announces GLM-5 open-sourced on Hugging Face and ModelScope under MIT license."
+    },
+    {
+      "url": "https://docs.z.ai/guides/overview/overview",
+      "type": "official_docs",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "architecture.context_length"
+      ],
+      "evidence_note": "Z.ai developer docs overview table lists GLM-5 context as 200K."
+    }
+  ],
+  "data_status": "verified"
+}

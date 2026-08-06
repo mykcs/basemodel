@@ -1,0 +1,80 @@
+{
+  "id": "deepseek-v3-1",
+  "name": "DeepSeek-V3.1",
+  "official_name": "DeepSeek-V3.1",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "V3.1",
+  "release_date": "2025-08-21",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "moe",
+    "total_parameters_b": 671,
+    "active_parameters_b": 37,
+    "context_length": 128000,
+    "expert_count": 256,
+    "active_experts_per_token": 8
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "MIT",
+    "classification": "open_source",
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2025-08-21",
+    "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.1",
+    "api_status": "available"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "multi_gpu",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.1",
+      "type": "official_model_card",
+      "checked_at": "2026-08-06",
+      "supports": [
+        "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.license_name",
+        "openness.classification"
+      ],
+      "evidence_note": "Official Hugging Face model card states 671B total parameters, 37B active, 128K context, same MoE structure as V3, MIT license. Expert count/top-k inferred from V3 architecture. Source checked 2026-08-06."
+    }
+  ],
+  "data_status": "verified"
+}
