@@ -35,6 +35,8 @@ export const zh: Messages = {
     howToRead: '怎么读这份地图',
     howToReadBody: '模型供应层回答“现在能选什么”；研究采用层回答“论文实际怎么用”。推荐只是规则筛选，不是性能排名。',
     browseAll: '浏览全部模型 →',
+    heroPrimaryCta: '按实验条件筛选模型 →',
+    heroSecondaryCta: '直接浏览模型',
     statsModels: '模型',
     statsVendors: '厂商 / 提供方',
     statsPapers: '论文记录',
@@ -67,6 +69,16 @@ export const zh: Messages = {
     minTwo: '(至少选 2 个)',
     empty: '请选择 2–5 个模型以启用对比。',
     dimension: '维度',
+    onlyDifferences: '只看差异',
+    allFields: '显示全部字段',
+    noDifferences: '当前选择的模型在这些字段上没有差异。',
+  },
+  compareGroups: {
+    identity: '基本信息',
+    architecture: '架构与规模',
+    access: '访问与开放性',
+    research: '研究适配',
+    evidence: '证据状态',
   },
   papersIndex: {
     pageTitle: '论文采用',
@@ -248,6 +260,9 @@ export const zh: Messages = {
     searchPlaceholder: '搜索模型、家族、专长…',
     searchLabel: '搜索模型',
     filter: '筛选',
+    quickOpenWeights: '开放权重',
+    quickRl: '适合 RL',
+    quickPaperUse: '有论文采用',
     sort: '排序',
     sortRelease: '最新发布',
     sortParams: '参数规模',
@@ -283,6 +298,9 @@ export const zh: Messages = {
     withPapers: '个模型有论文采用记录',
     paramsUnknown: '参数待核验',
     openWeightsTag: '开放权重',
+    evidenceStatus: '证据状态',
+    compare: '加入对比',
+    compareAria: '将 {name} 加入模型对比',
     hasPaper: '有论文采用',
     noPaper: '暂无论文采用',
     emptyTitle: '没有匹配结果',
@@ -475,6 +493,8 @@ export type Messages = {
     howToRead: string;
     howToReadBody: string;
     browseAll: string;
+    heroPrimaryCta: string;
+    heroSecondaryCta: string;
     statsModels: string;
     statsVendors: string;
     statsPapers: string;
@@ -499,7 +519,11 @@ export type Messages = {
     minTwo: string;
     empty: string;
     dimension: string;
+    onlyDifferences: string;
+    allFields: string;
+    noDifferences: string;
   };
+  compareGroups: { identity: string; architecture: string; access: string; research: string; evidence: string };
   papersIndex: {
     pageTitle: string;
     title: string;
@@ -595,6 +619,9 @@ export type Messages = {
     searchPlaceholder: string;
     searchLabel: string;
     filter: string;
+    quickOpenWeights: string;
+    quickRl: string;
+    quickPaperUse: string;
     sort: string;
     sortRelease: string;
     sortParams: string;
@@ -630,6 +657,9 @@ export type Messages = {
     withPapers: string;
     paramsUnknown: string;
     openWeightsTag: string;
+    evidenceStatus: string;
+    compare: string;
+    compareAria: string;
     hasPaper: string;
     noPaper: string;
     emptyTitle: string;

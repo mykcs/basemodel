@@ -47,5 +47,6 @@ export function parsePath(pathname: string): { locale: Locale; pathNoBase: strin
   const base = baseUrl();
   let p = pathname.startsWith(base) ? pathname.slice(base.length) : pathname.replace(/^\//, '');
   const locale: Locale = p === 'en' || p.startsWith('en/') ? 'en' : 'zh';
-  return { locale, pathNoBase: `/${p}` };
+  if (locale === 'en') p = p.replace(/^en(?:\/|$)/, '');
+  return { locale, pathNoBase: p ? `/${p}` : '/' };
 }

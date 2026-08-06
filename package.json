@@ -16,6 +16,7 @@
     "audit:urls": "tsx scripts/check-source-health.ts",
     "audit": "npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:vendor-catalogs && npm run audit:freshness && npm run audit:coverage",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "build": "astro build",
     "preview": "astro preview"
   },
@@ -27,9 +28,10 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"
