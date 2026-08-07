@@ -2,12 +2,17 @@ name: Validate Atlas
 
 on:
   push:
-    paths: ['**']
+    branches: [main]
   pull_request:
-    paths: ['**']
 
 permissions:
   contents: read
+
+concurrency:
+  # Keep only the newest validation for the same branch/PR while avoiding
+  # duplicate push + pull_request runs on feature branches.
+  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
