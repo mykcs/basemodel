@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Queue deployments instead of marking an in-flight deployment as cancelled/red
+  # when several PRs are merged in quick succession.
+  cancel-in-progress: false
 
 jobs:
   build:
