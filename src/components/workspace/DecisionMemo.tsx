@@ -1,27 +1,33 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { researchTask, type ResearchTask } from '../../stores/researchTask';
+import { hasMeaningfulResearchTask, researchTask, type ResearchTask } from '../../stores/researchTask';
 import { compareIds } from '../../stores/compare';
 import { candidateIds } from '../../stores/candidates';
 import { scoreModels, bucketize, type ScoredModel } from '../../lib/researchEngine';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
+import type { Locale } from '../../i18n';
+import { roleLabel } from '../../lib/format';
+import { researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
+import { buildDecisionRecord, decisionRecordToJson } from '../../lib/decisionRecord';
+import { collectClaimFingerprints, decisionSnapshots, saveDecisionSnapshot, snapshotChanges } from '../../stores/snapshots';
 
 interface Props {
   models: AtlasModel[];
   papers: AtlasPaper[];
   m: Messages;
+  locale?: Locale;
 }
 
-function taskLines(task: ResearchTask, m: Messages): string[] {
+function taskLines(task: ResearchTask, m: Messages, locale: Locale): string[] {
   const lines: string[] = [];
-  lines.push(`- ${m.workspace.modeLabel}: ${task.mode}`);
-  if (task.roles.length) lines.push(`- ${m.workspace.roleLabel}: ${task.roles.join(', ')}`);
-  lines.push(`- ${m.workspace.updateLabel}: ${task.update}`);
+  lines.push(`- ${m.workspace.modeLabel}: ${researchModeLabel(task.mode, locale)}`);
+  if (task.roles.length) lines.push(`- ${m.workspace.roleLabel}: ${task.roles.map((role) => roleLabel(role, locale)).join(locale === 'zh' ? '、' : ', ')}`);
+  lines.push(`- ${m.workspace.updateLabel}: ${updateMethodLabel(task.update, locale)}`);
   if (typeof task.gpuVramGb === 'number') lines.push(`- GPU: ${task.gpuVramGb}GB × ${task.gpuCount ?? 1}`);
   if (task.openWeight) lines.push(`- ${m.workspace.openWeightLabel}`);
   if (typeof task.contextTarget === 'number') lines.push(`- ${m.workspace.contextLabel}: ${task.contextTarget}`);
-  if (task.priorities.length) lines.push(`- ${m.workspace.priorityLabel}: ${task.priorities.join(', ')}`);
+  if (task.priorities.length) lines.push(`- ${m.workspace.priorityLabel}: ${task.priorities.map((priority) => m.selector.goals[priority as keyof typeof m.selector.goals] ?? priority).join(locale === 'zh' ? '、' : ', ')}`);
   return lines;
 }
 
@@ -33,11 +39,12 @@ function candidateLine(s: ScoredModel, m: Messages): string {
   return `- **${s.model.name}** (${s.model.vendor} · ${s.model.family})${why}${risk}`;
 }
 
-export function DecisionMemo({ models, papers, m }: Props) {
+export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
   const task = useStore(researchTask);
   const compare = useStore(compareIds);
   const candidates = useStore(candidateIds);
   const [copied, setCopied] = useState(false);
+  const [snapshotNotice, setSnapshotNotice] = useState('');
 
   const scored = useMemo(() => scoreModels(models, papers, task), [models, papers, task]);
   const buckets = useMemo(() => bucketize(scored), [scored]);
@@ -51,15 +58,24 @@ export function DecisionMemo({ models, papers, m }: Props) {
     [models, compare]
   );
 
-  const hasTask =
-    task.mode !== 'strict' || task.roles.length > 0 || task.update !== 'none' || task.priorities.length > 0;
+  const hasTask = hasMeaningfulResearchTask(task);
+  const decisionRecord = useMemo(() => buildDecisionRecord(task, scored, candidates, compare), [task, scored, candidates, compare]);
+  const snapshotModels = useMemo(() => {
+    const ids = new Set([...candidates, ...compare]);
+    return models.filter((model) => ids.has(model.id));
+  }, [models, candidates, compare]);
+  const currentFingerprints = useMemo(() => collectClaimFingerprints(snapshotModels), [snapshotModels]);
+  const latestSnapshot = useStore(decisionSnapshots)[0];
+  const changesSinceSnapshot = useMemo(() => latestSnapshot ? snapshotChanges(latestSnapshot, currentFingerprints) : [], [latestSnapshot, currentFingerprints]);
 
   const markdown = useMemo(() => {
     const parts: string[] = [];
     parts.push(`# ${m.research.memo.title}`);
     parts.push('');
+    parts.push(`${m.research.memo.dataRevision}: ${decisionRecord.dataRevision}`);
+    parts.push('');
     parts.push(`## ${m.research.memo.sectionTask}`);
-    parts.push(...taskLines(task, m));
+    parts.push(...taskLines(task, m, locale));
     parts.push('');
 
     parts.push(`## ${m.research.memo.sectionCandidates}`);
@@ -89,7 +105,7 @@ export function DecisionMemo({ models, papers, m }: Props) {
     }
 
     return parts.join('\n');
-  }, [task, chosen, buckets, compareModels, m]);
+  }, [task, chosen, buckets, compareModels, m, locale]);
 
   const download = () => {
     const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
@@ -109,6 +125,23 @@ export function DecisionMemo({ models, papers, m }: Props) {
     } catch {
       // clipboard 不可用时静默
     }
+  };
+
+  const downloadJson = () => {
+    const blob = new Blob([decisionRecordToJson(decisionRecord)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'decision-record.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const saveSnapshot = () => {
+    const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}`;
+    saveDecisionSnapshot({ id, createdAt: new Date().toISOString(), task, candidateIds: candidates, compareIds: compare, claimFingerprints: currentFingerprints, memoMarkdown: markdown });
+    setSnapshotNotice(m.research.memo.snapshotSaved);
+    window.setTimeout(() => setSnapshotNotice(''), 1800);
   };
 
   if (!hasTask) {
@@ -131,8 +164,19 @@ export function DecisionMemo({ models, papers, m }: Props) {
           <button type="button" className="button button-primary" onClick={download}>
             {m.research.memo.download}
           </button>
+          <button type="button" className="button button-secondary" onClick={downloadJson}>
+            {m.research.memo.downloadJson}
+          </button>
+          <button type="button" className="button button-secondary" onClick={saveSnapshot}>
+            {m.research.memo.saveSnapshot}
+          </button>
+          {snapshotNotice && <span className="muted" role="status">{snapshotNotice}</span>}
         </div>
       </div>
+      {changesSinceSnapshot.length > 0 && <aside className="snapshot-change-notice" role="status">
+        <strong>{m.research.memo.snapshotChanged.replace('{count}', String(changesSinceSnapshot.length))}</strong>
+        <div className="snapshot-change-table-wrap"><table className="snapshot-change-table"><thead><tr><th>{m.research.memo.snapshotField}</th><th>{m.research.memo.snapshotPrevious}</th><th>{m.research.memo.snapshotCurrent}</th><th>{m.research.memo.snapshotChecked}</th></tr></thead><tbody>{changesSinceSnapshot.slice(0, 8).map((change) => <tr key={change.key}><th scope="row">{change.key}</th><td>{change.previousValue}</td><td>{change.currentValue}</td><td>{change.checkedAt}</td></tr>)}</tbody></table></div>
+      </aside>}
       <pre className="memo-preview">
         <code>{markdown}</code>
       </pre>

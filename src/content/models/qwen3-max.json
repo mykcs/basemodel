@@ -79,7 +79,8 @@
         "access.api_status",
         "access.api_model_ids",
         "architecture.context_length"
-      ]
+      ],
+      "id": "src_022c49661bbf"
     },
     {
       "url": "https://vercel.com/ai-gateway/models/qwen3-max",
@@ -90,7 +91,8 @@
         "openness.weights_available",
         "access.weights_status",
         "architecture.context_length"
-      ]
+      ],
+      "id": "src_dbddec7154cf"
     }
   ],
   "data_status": "partial"

@@ -78,7 +78,8 @@
         "access.api_status",
         "access.api_model_ids"
       ],
-      "evidence_note": "Official Mistral blog post dated July 10, 2025 introduces Devstral Medium as an enterprise-grade code model available through the API, scoring 61.6% on SWE-Bench Verified; API alias devstral-medium-2507."
+      "evidence_note": "Official Mistral blog post dated July 10, 2025 introduces Devstral Medium as an enterprise-grade code model available through the API, scoring 61.6% on SWE-Bench Verified; API alias devstral-medium-2507.",
+      "id": "src_fabe8f8f1dc3"
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/devstral-medium-1-0-25-07",
@@ -89,7 +90,8 @@
         "architecture.context_length",
         "status"
       ],
-      "evidence_note": "Official Mistral docs model card lists Devstral Medium 1.0 as deprecated with 128k context, replacement Mistral Medium 3.5."
+      "evidence_note": "Official Mistral docs model card lists Devstral Medium 1.0 as deprecated with 128k context, replacement Mistral Medium 3.5.",
+      "id": "src_aa8d7fa79202"
     }
   ],
   "data_status": "partial",

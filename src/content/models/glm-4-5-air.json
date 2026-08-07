@@ -81,7 +81,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license."
+      "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license.",
+      "id": "src_07d9bb7b4cf7"
     },
     {
       "url": "https://z.ai/blog/glm-4.5",
@@ -94,7 +95,8 @@
         "openness.license_name",
         "openness.commercial_use_allowed"
       ],
-      "evidence_note": "Official Z.ai blog post dated July 28, 2025 announces GLM-4.5-Air with 106B total and 12B active parameters, MIT license, and commercial/secondary-development use permitted."
+      "evidence_note": "Official Z.ai blog post dated July 28, 2025 announces GLM-4.5-Air with 106B total and 12B active parameters, MIT license, and commercial/secondary-development use permitted.",
+      "id": "src_c451056f0291"
     },
     {
       "url": "https://docs.nvidia.com/nemo/megatron-bridge/0.2.0/models/llm/glm45.html",
@@ -103,7 +105,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "NVIDIA Megatron Bridge documentation confirms GLM-4.5-Air context length of 131,072 tokens."
+      "evidence_note": "NVIDIA Megatron Bridge documentation confirms GLM-4.5-Air context length of 131,072 tokens.",
+      "id": "src_f07b5d7c5ccc"
     }
   ],
   "data_status": "verified"

@@ -74,7 +74,8 @@
       "evidence_note": "xAI official docs list Grok 4 as a current model. Context length 256K and release date 2025-07-09 are confirmed by external launch reporting because docs.x.ai does not state release dates explicitly.",
       "supports": [
         "access.api_status"
-      ]
+      ],
+      "id": "src_9526a0e44d14"
     },
     {
       "url": "https://www.forbes.com.au/news/innovation/elon-musk-grok-3-release-what-you-need-to-know/",
@@ -84,7 +85,8 @@
       "supports": [
         "release_date",
         "architecture.context_length"
-      ]
+      ],
+      "id": "src_bce1feefe9a3"
     }
   ],
   "data_status": "partial",

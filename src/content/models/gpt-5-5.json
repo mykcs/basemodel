@@ -71,7 +71,8 @@
         "architecture.context_length",
         "access.api_model_ids"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5.5 default snapshot gpt-5.5-2026-04-23, 1.05M context, 128K max output, frontier model. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5.5 default snapshot gpt-5.5-2026-04-23, 1.05M context, 128K max output, frontier model. Source checked 2026-08-06.",
+      "id": "src_b45bd5dce416"
     }
   ],
   "data_status": "verified"

@@ -80,7 +80,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 8B params, context length 8k, license llama3, and weights available in safetensors."
+      "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 8B params, context length 8k, license llama3, and weights available in safetensors.",
+      "id": "src_cb8574d955a6"
     },
     {
       "url": "https://ai.meta.com/blog/meta-llama-3/",
@@ -91,7 +92,8 @@
         "architecture.total_parameters_b",
         "openness.license_name"
       ],
-      "evidence_note": "Official Meta blog post announces Meta Llama 3 with pretrained and instruction tuned 8B and 70B parameter models on April 18, 2024."
+      "evidence_note": "Official Meta blog post announces Meta Llama 3 with pretrained and instruction tuned 8B and 70B parameter models on April 18, 2024.",
+      "id": "src_6dff38638a68"
     }
   ],
   "data_status": "verified",

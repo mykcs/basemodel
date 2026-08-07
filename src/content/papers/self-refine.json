@@ -38,13 +38,15 @@
       "url": "https://arxiv.org/abs/2303.17651",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_ce7be33a9b01"
     },
     {
       "url": "https://github.com/madaan/self-refine",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_5c88317a8c68"
     }
   ],
   "data_status": "verified"

@@ -1,20 +1,18 @@
 import { useStore } from '@nanostores/react';
 import { compareIds, clearCompare } from '../../stores/compare';
-import { baseUrl } from '../../i18n';
+import { compareUrl } from '../../stores/compare';
 import type { Messages } from '../../i18n/zh';
 
 interface Props {
   m: Messages;
   locale: 'zh' | 'en';
+  modelNames: Record<string, string>;
 }
 
-export function CompareTray({ m, locale }: Props) {
+export function CompareTray({ m, locale, modelNames }: Props) {
   const ids = useStore(compareIds);
 
   if (ids.length === 0) return null;
-
-  const base = baseUrl();
-  const compareHref = locale === 'en' ? `${base}en/compare/` : `${base}compare/`;
 
   return (
     <div className="compare-tray" role="region" aria-label={m.workspace.compareTray}>
@@ -22,11 +20,11 @@ export function CompareTray({ m, locale }: Props) {
         <span className="tray-label">{m.workspace.compare}</span>
         <div className="tray-chips">
           {ids.map((id) => (
-            <span key={id} className="tray-chip">{id}</span>
+            <span key={id} className="tray-chip">{modelNames[id] ?? id}</span>
           ))}
         </div>
         <div className="tray-actions">
-          <a className="button button-primary" href={compareHref}>
+          <a className="button button-primary" href={compareUrl(locale)}>
             {m.workspace.openCompare}
           </a>
           <button type="button" className="button" onClick={() => clearCompare()}>

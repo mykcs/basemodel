@@ -69,7 +69,8 @@
         "openness.classification",
         "access.weights_status"
       ],
-      "evidence_note": "Official Hugging Face model card states 685B parameters and MIT license. Active parameters and context length are inferred from the shared V3 architecture (37B active, 128K context); some hosted providers report a 164K extension but the model card does not confirm it. Expert count=256 and top-k=8 inferred from V3 architecture. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 685B parameters and MIT license. Active parameters and context length are inferred from the shared V3 architecture (37B active, 128K context); some hosted providers report a 164K extension but the model card does not confirm it. Expert count=256 and top-k=8 inferred from V3 architecture. Source checked 2026-08-06.",
+      "id": "src_d180dbc95448"
     },
     {
       "url": "https://api-docs.deepseek.com/news/news251201",
@@ -79,7 +80,8 @@
         "release_date",
         "access.api_status"
       ],
-      "evidence_note": "DeepSeek API release announcement confirms DeepSeek-V3.2 released December 1, 2025. Source checked 2026-08-06."
+      "evidence_note": "DeepSeek API release announcement confirms DeepSeek-V3.2 released December 1, 2025. Source checked 2026-08-06.",
+      "id": "src_e4c730fe6d15"
     }
   ],
   "data_status": "partial",

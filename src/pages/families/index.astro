@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import AppLayout from '../../layouts/AppLayout.astro';
 import Body from '../_bodies/families-index.astro';
 import { getMessages, isLocale, type Locale } from '../../i18n';
 const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
 const m = getMessages(locale);
 ---
-<BaseLayout title={m.families.pageTitle}><Body /></BaseLayout>
+<AppLayout title={m.families.pageTitle} locale={locale}><Body locale={locale} /></AppLayout>

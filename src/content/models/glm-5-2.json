@@ -80,7 +80,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card lists GLM-5.2 model size as 753B params (BF16/F32, Safetensors)."
+      "evidence_note": "Official Hugging Face model card lists GLM-5.2 model size as 753B params (BF16/F32, Safetensors).",
+      "id": "src_54a13779046b"
     },
     {
       "url": "https://z.ai/blog/glm-5.2",
@@ -92,7 +93,8 @@
         "architecture.active_parameters_b",
         "openness.license_name"
       ],
-      "evidence_note": "Official Z.ai blog post dated 2026-06-16 announces GLM-5.2 with solid 1M-token context, MIT license, and describes it as latest flagship for long-horizon tasks."
+      "evidence_note": "Official Z.ai blog post dated 2026-06-16 announces GLM-5.2 with solid 1M-token context, MIT license, and describes it as latest flagship for long-horizon tasks.",
+      "id": "src_2ea3ccaf496b"
     },
     {
       "url": "https://docs.z.ai/guides/llm/glm-5.2",
@@ -103,7 +105,8 @@
         "access.api_status",
         "access.api_model_ids"
       ],
-      "evidence_note": "Z.ai developer docs list GLM-5.2 context as 1M and maximum output as 128K, API model id glm-5.2."
+      "evidence_note": "Z.ai developer docs list GLM-5.2 context as 1M and maximum output as 128K, API model id glm-5.2.",
+      "id": "src_2a88d509bbf9"
     }
   ],
   "data_status": "partial",

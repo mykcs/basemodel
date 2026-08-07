@@ -1,0 +1,12 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { getMessages } from '../i18n';
+import { getCollection } from 'astro:content';
+const m = getMessages('zh');
+const guide = (await getCollection('guides'))[0]?.data;
+const steps = guide?.steps_zh ?? m.guide.steps;
+const title = guide?.title_zh ?? m.guide.title;
+const lede = guide?.lede_zh ?? m.guide.lede;
+const note = guide?.note_zh ?? m.guide.note;
+---
+<AppLayout title={m.guide.pageTitle} description={lede} locale="zh"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><ol class="guide-steps">{steps.map((step, index) => <li><span>{index + 1}</span><p>{step}</p></li>)}</ol><p class="callout">{note}</p></div></AppLayout>

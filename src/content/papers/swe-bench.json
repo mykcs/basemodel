@@ -43,13 +43,15 @@
       "url": "https://arxiv.org/abs/2310.06770",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_e0cb42ccf284"
     },
     {
       "url": "https://github.com/princeton-nlp/SWE-bench",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_b4c4c0f4d163"
     }
   ],
   "data_status": "verified"

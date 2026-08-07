@@ -58,13 +58,15 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-5.1",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_0f6a9db4605c"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.1",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "OpenAI official API model page lists a 400,000-token context window Source checked https://developers.openai.com/api/docs/models/gpt-5-1 on 2026-08-06."
+      "evidence_note": "OpenAI official API model page lists a 400,000-token context window Source checked https://developers.openai.com/api/docs/models/gpt-5-1 on 2026-08-06.",
+      "id": "src_0f6a9db4605c"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.1",
@@ -73,7 +75,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5-1 context window as 400000 tokens. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5-1 context window as 400000 tokens. Source checked 2026-08-06.",
+      "id": "src_0f6a9db4605c"
     }
   ],
   "data_status": "verified",

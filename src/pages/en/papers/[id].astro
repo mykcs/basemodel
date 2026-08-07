@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AppLayout from '../../../layouts/AppLayout.astro';
 import Body from '../../_bodies/paper-detail.astro';
 import { getMessages } from '../../../i18n';
 
@@ -12,4 +12,4 @@ export async function getStaticPaths() {
 const { paper, models } = Astro.props;
 const m = getMessages('en');
 ---
-<BaseLayout title={paper.title} description={`${paper.title} ${m.paperDetail.descriptionSuffix}`} locale="en"><Body paper={paper} models={models} locale="en" /></BaseLayout>
+<AppLayout title={paper.title} description={`${paper.title} ${m.paperDetail.descriptionSuffix}`} locale="en"><Body paper={paper} models={models} locale="en" /></AppLayout>

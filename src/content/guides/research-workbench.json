@@ -1,0 +1,21 @@
+{
+  "id": "research-workbench",
+  "title_zh": "如何使用研究工作台",
+  "title_en": "How to use the research workbench",
+  "lede_zh": "从研究问题出发，逐步形成有证据、可复核的模型决策。",
+  "lede_en": "Start from a research question and build a decision that can be checked later.",
+  "steps_zh": [
+    "先选择研究模式：严格复现、方法复现、现代化重跑或全新实验。",
+    "明确论文、角色、训练方式、资源、开放性和复现约束。",
+    "阅读候选模型的进入理由、风险和待核验项，再加入候选或对比。",
+    "导出决策记录，保留任务、候选、比较和证据上下文。"
+  ],
+  "steps_en": [
+    "Choose a research mode: strict reproduction, method reproduction, modern rerun, or a new experiment.",
+    "Set the paper, role, update method, resources, access, and reproducibility constraints.",
+    "Read why candidates enter, what risks remain, and what still needs verification before comparing them.",
+    "Export the decision record with its task, candidates, comparisons, and evidence context."
+  ],
+  "note_zh": "硬件档位是粗粒度研究元数据，不是精确显存计算器。",
+  "note_en": "Hardware tiers are coarse research metadata, not an exact VRAM calculator."
+}

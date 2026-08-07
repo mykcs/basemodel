@@ -71,7 +71,8 @@
         "status",
         "checkpoint.modalities",
         "checkpoint.specializations"
-      ]
+      ],
+      "id": "src_9c9443fb2273"
     },
     {
       "url": "https://ai.google.dev/gemma/docs/core/model_card_4",
@@ -82,13 +83,15 @@
         "openness.license_name",
         "openness.classification",
         "architecture.context_length"
-      ]
+      ],
+      "id": "src_e3cba6b28210"
     },
     {
       "url": "https://arxiv.org/abs/2607.02770",
       "type": "technical_report",
       "checked_at": "2026-08-06",
-      "evidence_note": "Gemma 4 technical report abstract confirms the family includes dense and MoE architectures, 2.3B to 31B parameters, and natively multimodal design; specific per-variant counts and architecture assignments are not disclosed in the abstract."
+      "evidence_note": "Gemma 4 technical report abstract confirms the family includes dense and MoE architectures, 2.3B to 31B parameters, and natively multimodal design; specific per-variant counts and architecture assignments are not disclosed in the abstract.",
+      "id": "src_55faf6954aba"
     }
   ],
   "data_status": "partial"

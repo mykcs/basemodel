@@ -80,7 +80,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card states Devstral Small 1.0 is a 24B parameter agentic LLM for software engineering, 128k context, Apache 2.0 license, and weights available."
+      "evidence_note": "Official Hugging Face model card states Devstral Small 1.0 is a 24B parameter agentic LLM for software engineering, 128k context, Apache 2.0 license, and weights available.",
+      "id": "src_1e56fbd6e1e8"
     },
     {
       "url": "https://mistral.ai/news/devstral/",
@@ -92,7 +93,8 @@
         "checkpoint.specializations",
         "openness.license_name"
       ],
-      "evidence_note": "Official Mistral blog post dated May 21, 2025 introduces Devstral Small as a 24B open-source model for agentic coding, developed with All Hands AI."
+      "evidence_note": "Official Mistral blog post dated May 21, 2025 introduces Devstral Small as a 24B open-source model for agentic coding, developed with All Hands AI.",
+      "id": "src_1769df05578f"
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/devstral-small-1-0-25-05",
@@ -103,7 +105,8 @@
         "architecture.context_length",
         "status"
       ],
-      "evidence_note": "Official Mistral docs model card lists Devstral Small 1.0 as retired with 128k context, replacement Mistral Medium 3.5."
+      "evidence_note": "Official Mistral docs model card lists Devstral Small 1.0 as retired with 128k context, replacement Mistral Medium 3.5.",
+      "id": "src_51aa1d0ea9c2"
     }
   ],
   "data_status": "partial",

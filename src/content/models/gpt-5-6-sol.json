@@ -71,7 +71,8 @@
         "architecture.context_length",
         "access.api_model_ids"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5.6-sol (alias gpt-5.6), 1.05M context, 128K max output, flagship of GPT-5.6 family. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5.6-sol (alias gpt-5.6), 1.05M context, 128K max output, flagship of GPT-5.6 family. Source checked 2026-08-06.",
+      "id": "src_c302d2d33537"
     }
   ],
   "data_status": "verified"

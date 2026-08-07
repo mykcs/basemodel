@@ -75,7 +75,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Hugging Face model card states 671B total parameters (685B including 14B MTP), 37B active, 128K context, 256 experts, top-8 routing, MoE with MLA, MIT license. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 671B total parameters (685B including 14B MTP), 37B active, 128K context, 256 experts, top-8 routing, MoE with MLA, MIT license. Source checked 2026-08-06.",
+      "id": "src_512ba017cfc8"
     }
   ],
   "data_status": "verified"

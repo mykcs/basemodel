@@ -48,9 +48,13 @@
     "weights_status": "released",
     "weights_url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
     "api_status": "available",
-    "api_model_ids": ["kimi-k2-thinking"],
+    "api_model_ids": [
+      "kimi-k2-thinking"
+    ],
     "product_status": "available",
-    "product_names": ["Kimi App"]
+    "product_names": [
+      "Kimi App"
+    ]
   },
   "reproducibility": {
     "model_revision_required": true,
@@ -68,19 +72,22 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official model card states open-source thinking model, 1T total, 32B active, 384 experts, top-8 routing, 256K context, native INT4 and tool orchestration."
+      "evidence_note": "Moonshot AI official model card states open-source thinking model, 1T total, 32B active, 384 experts, top-8 routing, 256K context, native INT4 and tool orchestration.",
+      "id": "src_e6c83dede55c"
     },
     {
       "url": "https://www.kimi.com/blog/kimi-k2-thinking",
       "type": "official_announcement",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI's official announcement is dated 2025-11-06 and documents Kimi K2 Thinking as a thinking agent model available through Kimi and the API."
+      "evidence_note": "Moonshot AI's official announcement is dated 2025-11-06 and documents Kimi K2 Thinking as a thinking agent model available through Kimi and the API.",
+      "id": "src_ebadd0a92934"
     },
     {
       "url": "https://github.com/MoonshotAI/Kimi-K2",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot's API guide documents the kimi-k2-thinking model ID, preserved thinking and multi-step tool calling."
+      "evidence_note": "Moonshot's API guide documents the kimi-k2-thinking model ID, preserved thinking and multi-step tool calling.",
+      "id": "src_e88c54ee251e"
     }
   ],
   "data_status": "verified"

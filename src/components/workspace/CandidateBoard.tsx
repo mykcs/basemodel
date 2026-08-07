@@ -7,22 +7,26 @@ import { openQuickView } from '../../stores/ui';
 import { scoreModels, bucketize, type ScoredModel, type Bucket } from '../../lib/researchEngine';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
+import { fieldLabel } from '../../lib/fieldCatalog';
+import type { Locale } from '../../i18n';
 
 interface Props {
   models: AtlasModel[];
   papers: AtlasPaper[];
   m: Messages;
+  locale?: Locale;
 }
 
 const BUCKETS: Bucket[] = ['baseline', 'modern', 'resource'];
 
-export function CandidateBoard({ models, papers, m }: Props) {
+export function CandidateBoard({ models, papers, m, locale = 'zh' }: Props) {
   const task = useStore(researchTask);
   const compare = useStore(compareIds);
   const candidates = useStore(candidateIds);
 
   const scored = useMemo(() => scoreModels(models, papers, task), [models, papers, task]);
   const buckets = useMemo(() => bucketize(scored), [scored]);
+  const excluded = useMemo(() => scored.filter((entry) => entry.candidateState === 'blocked' || entry.candidateState === 'needs_verification'), [scored]);
 
   const bucketMeta: Record<Bucket, { title: string; hint: string }> = {
     baseline: { title: m.research.bucketBaseline, hint: m.research.bucketBaselineHint },
@@ -41,7 +45,7 @@ export function CandidateBoard({ models, papers, m }: Props) {
         </span>
       </div>
 
-      {total === 0 ? (
+      {total === 0 && excluded.length === 0 ? (
         <p className="empty-state">{m.workspace.emptyCandidates}</p>
       ) : (
         BUCKETS.map((bucket) =>
@@ -66,7 +70,33 @@ export function CandidateBoard({ models, papers, m }: Props) {
           )
         )
       )}
+      {excluded.length > 0 && (
+        <details className="excluded-candidates">
+          <summary>{m.research.excludedTitle} ({excluded.length})</summary>
+          <p className="bucket-hint">{m.research.excludedHint}</p>
+          <ul className="candidate-list">
+            {excluded.map((entry) => <ExcludedRow key={entry.model.id} scored={entry} m={m} locale={locale} />)}
+          </ul>
+        </details>
+      )}
     </section>
+  );
+}
+
+function ExcludedRow({ scored, m, locale }: { scored: ScoredModel; m: Messages; locale: Locale }) {
+  const outcomes = scored.candidateState === 'blocked'
+    ? scored.fit.blockers
+    : scored.outcomes.filter((outcome) => outcome.state === 'unknown');
+  const paths = [...new Set(outcomes.flatMap((outcome) => outcome.fieldPaths))].slice(0, 4);
+  return (
+    <li className="candidate-row excluded-row">
+      <div className="candidate-info">
+        <div className="candidate-name-line"><strong>{scored.model.name}</strong><span className="candidate-meta">{scored.model.vendor} · {scored.model.family}</span></div>
+        <div className="risk-line"><span className="risk-label">{scored.candidateState === 'blocked' ? m.research.excludedBlocked : m.research.excludedPending}</span></div>
+        {paths.length > 0 && <ul className="excluded-reasons">{paths.map((path) => <li key={path}><span aria-hidden="true">{scored.candidateState === 'blocked' ? '✕' : '?'}</span> {fieldLabel(path, locale)}</li>)}</ul>}
+      </div>
+      <button type="button" className="button" onClick={() => openQuickView(scored.model.id)}>{m.detail.overview}</button>
+    </li>
   );
 }
 

@@ -58,7 +58,8 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face model card metadata license=mit Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06."
+      "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06. Official Hugging Face model card metadata license=mit Source checked https://huggingface.co/deepseek-ai/DeepSeek-R1 on 2026-08-06.",
+      "id": "src_18dadc5bb12c"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
@@ -70,7 +71,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-R1 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-R1 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06.",
+      "id": "src_18dadc5bb12c"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
@@ -82,7 +84,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-R1 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-R1 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06.",
+      "id": "src_18dadc5bb12c"
     }
   ],
   "data_status": "partial",

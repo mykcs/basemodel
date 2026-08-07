@@ -75,14 +75,16 @@
         "access.api_status",
         "access.api_model_ids",
         "access.product_status"
-      ]
+      ],
+      "id": "src_3c6aa0c7c522"
     },
     {
       "url": "https://www.anthropic.com/news/claude-3-family",
       "type": "official_announcement",
       "checked_at": "2026-08-05",
-      "evidence_note": "Original launch announcement retained for historical context; parameter and architecture details not disclosed."
+      "evidence_note": "Original launch announcement retained for historical context; parameter and architecture details not disclosed.",
+      "id": "src_d110344e8c87"
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

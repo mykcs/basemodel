@@ -1,0 +1,9 @@
+{
+  "id": "claude-2-status-checked-2026-08-06",
+  "entityType": "model",
+  "entityId": "claude-2",
+  "eventType": "status_changed",
+  "occurredAt": "2026-08-06",
+  "sourceId": "src_3c6aa0c7c522",
+  "note": "Official catalog record marks Claude 2 as retired."
+}

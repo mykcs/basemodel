@@ -1,141 +1,45 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { researchTask } from '../../stores/researchTask';
+import { analyzeReplacement } from '../../lib/research/replacement';
 import { scoreModels } from '../../lib/researchEngine';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
 
-interface Props {
-  models: AtlasModel[];
-  papers: AtlasPaper[];
-  m: Messages;
-}
+interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages }
 
-function boolStr(v: boolean | string, m: Messages): string {
-  if (typeof v === 'boolean') return v ? m.format.yes : m.format.no;
-  return m.format.semanticStatus[v as keyof Messages['format']['semanticStatus']] ?? m.format.unknown;
-}
-
-function tierStr(v: string, m: Messages): string {
-  return m.format.tier[v as keyof Messages['format']['tier']] ?? m.format.unknown;
-}
-
-/**
- * 替换分析：选一个原模型，给出同家族或同角色的现代替代候选，
- * 并排对比替换后在开放性 / 上下文 / 硬件 / 微调许可上的影响。
- */
 export function SubstituteLab({ models, papers, m }: Props) {
   const task = useStore(researchTask);
-  const [baseId, setBaseId] = useState<string>('');
-
-  const base = models.find((x) => x.id === baseId) ?? null;
-
+  const [baseId, setBaseId] = useState('');
+  const base = models.find((model) => model.id === baseId) ?? null;
   const substitutes = useMemo(() => {
     if (!base) return [];
     const scored = scoreModels(models, papers, task);
     return scored
-      .filter((s) => s.model.id !== base.id && s.eligible)
-      .map((s) => {
-        const sameFamily = s.model.vendor === base.vendor && s.model.family === base.family;
-        const sameRole = task.roles.some((role) =>
-          papers.some((p) => p.models.some((u) => u.model_id === s.model.id && u.role === role))
-        );
-        const newer = s.model.release_date > base.release_date;
-        return { s, sameFamily, sameRole, newer };
-      })
-      .filter((x) => (x.sameFamily || x.sameRole) && x.newer)
-      .sort((a, b) => b.s.score - a.s.score)
+      .filter((entry) => entry.model.id !== base.id && entry.eligible)
+      .map((entry) => ({ entry, impacts: analyzeReplacement(base, entry.model, task, papers) }))
+      .filter(({ entry }) => (entry.model.vendor === base.vendor && entry.model.family === base.family) || entry.model.release_date > base.release_date)
+      .sort((left, right) => right.entry.score - left.entry.score)
       .slice(0, 4);
   }, [base, models, papers, task]);
 
-  return (
-    <section className="substitute-lab" aria-label={m.research.substitute.title}>
-      <h2>{m.research.substitute.title}</h2>
-
-      <div className="field">
-        <label htmlFor="substitute-base">{m.research.substitute.selectBase}</label>
-        <select id="substitute-base" value={baseId} onChange={(e) => setBaseId(e.target.value)}>
-          <option value="">—</option>
-          {models.map((x) => (
-            <option key={x.id} value={x.id}>
-              {x.name} ({x.release_date})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {!base ? (
-        <p className="empty-state">{m.research.substitute.empty}</p>
-      ) : substitutes.length === 0 ? (
-        <p className="empty-state">{m.research.substitute.noSubstitute}</p>
-      ) : (
-        <div className="substitute-list">
-          {substitutes.map(({ s }) => (
-            <SubstituteCard key={s.model.id} base={base} rep={s.model} m={m} />
-          ))}
-        </div>
-      )}
-    </section>
-  );
+  return <section className="substitute-lab" aria-label={m.research.substitute.title}>
+    <h2>{m.research.substitute.title}</h2>
+    <div className="field"><label htmlFor="substitute-base">{m.research.substitute.selectBase}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
+    {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} m={m} />)}</div>}
+  </section>;
 }
 
-function SubstituteCard({ base, rep, m }: { base: AtlasModel; rep: AtlasModel; m: Messages }) {
-  const rows: Array<{ label: string; a: string; b: string; changed: boolean }> = [
-    {
-      label: m.research.substitute.openness,
-      a: boolStr(base.openness.weights_available, m),
-      b: boolStr(rep.openness.weights_available, m),
-      changed: base.openness.weights_available !== rep.openness.weights_available,
-    },
-    {
-      label: m.research.substitute.context,
-      a: String(base.architecture.context_length),
-      b: String(rep.architecture.context_length),
-      changed: base.architecture.context_length !== rep.architecture.context_length,
-    },
-    {
-      label: m.research.substitute.hardware,
-      a: tierStr(base.hardware.inference_tier, m),
-      b: tierStr(rep.hardware.inference_tier, m),
-      changed: base.hardware.inference_tier !== rep.hardware.inference_tier,
-    },
-    {
-      label: m.research.substitute.finetune,
-      a: boolStr(base.openness.finetuning_allowed, m),
-      b: boolStr(rep.openness.finetuning_allowed, m),
-      changed: base.openness.finetuning_allowed !== rep.openness.finetuning_allowed,
-    },
-    {
-      label: m.research.substitute.release,
-      a: base.release_date,
-      b: rep.release_date,
-      changed: true,
-    },
-  ];
-
-  return (
-    <div className="substitute-card">
-      <h3>
-        {base.name} → {rep.name}
-      </h3>
-      <table className="substitute-table">
-        <thead>
-          <tr>
-            <th scope="col">{m.research.substitute.field}</th>
-            <th scope="col">{m.research.substitute.original}</th>
-            <th scope="col">{m.research.substitute.replacement}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.label} className={r.changed ? 'is-changed' : ''}>
-              <th scope="row">{r.label}</th>
-              <td>{r.a}</td>
-              <td>{r.b}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+function SubstituteCard({ base, rep, impacts, m }: { base: AtlasModel; rep: AtlasModel; impacts: ReturnType<typeof analyzeReplacement>; m: Messages }) {
+  const visible = impacts.filter((impact) => impact.severity !== 'none' || impact.effect === 'unknown');
+  const valueLabel = (value: string) => value.split('|').map((part) => {
+    if (part === 'true') return m.format.yes;
+    if (part === 'false') return m.format.no;
+    return m.format.semanticStatus[part as keyof Messages['format']['semanticStatus']] ?? part;
+  }).join(' · ');
+  return <article className="substitute-card">
+    <h3>{base.name} → {rep.name}</h3>
+    <p className="muted">{m.research.substitute.modeImpact}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
+    <table className="substitute-table"><thead><tr><th scope="col">{m.research.substitute.field}</th><th scope="col">{m.research.substitute.original}</th><th scope="col">{m.research.substitute.replacement}</th><th scope="col">{m.research.substitute.impact}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
+  </article>;
 }

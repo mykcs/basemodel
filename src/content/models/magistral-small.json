@@ -80,7 +80,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card states Magistral Small is a 24B parameter reasoning model, 128k context window with recommended 40k max, Apache 2.0 license, and weights available."
+      "evidence_note": "Official Hugging Face model card states Magistral Small is a 24B parameter reasoning model, 128k context window with recommended 40k max, Apache 2.0 license, and weights available.",
+      "id": "src_82357e0a153c"
     },
     {
       "url": "https://mistral.ai/news/magistral/",
@@ -94,7 +95,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Small as a 24B parameter open-source reasoning model, first reasoning model from Mistral AI."
+      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Small as a 24B parameter open-source reasoning model, first reasoning model from Mistral AI.",
+      "id": "src_2c8e07e7254c"
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/magistral-small-1-0-25-06",
@@ -105,7 +107,8 @@
         "architecture.context_length",
         "status"
       ],
-      "evidence_note": "Official Mistral docs model card lists Magistral Small 1.0 as retired with 40k context, replacement Mistral Small 4."
+      "evidence_note": "Official Mistral docs model card lists Magistral Small 1.0 as retired with 40k context, replacement Mistral Small 4.",
+      "id": "src_8380b5f5f409"
     }
   ],
   "data_status": "partial",

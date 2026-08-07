@@ -8,9 +8,10 @@ interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
+const papers = (await getCollection('papers')).map((entry) => entry.data);
 const displayModels = models.map((model) => ({
   ...model,
   openness: { ...model.openness, license_name: licenseLabel(model.openness.license_name, locale) },
 }));
 ---
-<div class="shell"><header class="page-header"><h1>{m.compare.title}</h1><p class="lede">{m.compare.lede}</p></header><ModelComparison client:load models={displayModels} locale={locale} /></div>
+<div class="shell"><header class="page-header"><h1>{m.compare.title}</h1><p class="lede">{m.compare.lede}</p></header><ModelComparison client:load models={displayModels} papers={papers} locale={locale} /></div>

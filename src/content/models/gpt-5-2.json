@@ -58,13 +58,15 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-5.2",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "OpenAI official API model page identifies GPT-5.2 as a previous frontier model and documents its API availability Source checked https://developers.openai.com/api/docs/models/gpt-5.2 on 2026-08-06."
+      "evidence_note": "OpenAI official API model page identifies GPT-5.2 as a previous frontier model and documents its API availability Source checked https://developers.openai.com/api/docs/models/gpt-5.2 on 2026-08-06.",
+      "id": "src_9323ecd677f2"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.2",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "OpenAI official API model page lists a 400,000-token context window Source checked https://developers.openai.com/api/docs/models/gpt-5-2 on 2026-08-06."
+      "evidence_note": "OpenAI official API model page lists a 400,000-token context window Source checked https://developers.openai.com/api/docs/models/gpt-5-2 on 2026-08-06.",
+      "id": "src_9323ecd677f2"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.2",
@@ -73,7 +75,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5-2 context window as 400000 tokens. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5-2 context window as 400000 tokens. Source checked 2026-08-06.",
+      "id": "src_9323ecd677f2"
     }
   ],
   "data_status": "verified",

@@ -56,13 +56,15 @@
       "url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Official Mistral model card documents 119B total, 6.5B active, 256k context, open weights and Apache-2.0 licensing."
+      "evidence_note": "Official Mistral model card documents 119B total, 6.5B active, 256k context, open weights and Apache-2.0 licensing.",
+      "id": "src_465a6c813d27"
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Mistral official model card states 6.5B active parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card lists 256k context Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states 119B parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card identifies model as Open v26.03 and the weights section provides open weights Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official Open model card; license terms permit derivatives Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states Apache 2.0 licensing for the open-weight release Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06."
+      "evidence_note": "Mistral official model card states 6.5B active parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card lists 256k context Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states 119B parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card identifies model as Open v26.03 and the weights section provides open weights Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official Open model card; license terms permit derivatives Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states Apache 2.0 licensing for the open-weight release Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06.",
+      "id": "src_465a6c813d27"
     }
   ],
   "data_status": "partial"

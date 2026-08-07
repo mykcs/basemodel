@@ -79,7 +79,8 @@
         "access.weights_status",
         "access.weights_url"
       ],
-      "evidence_note": "Official Hugging Face model card states GLM-5.1 weights are publicly available under MIT license, model size listed as 754B params."
+      "evidence_note": "Official Hugging Face model card states GLM-5.1 weights are publicly available under MIT license, model size listed as 754B params.",
+      "id": "src_ed13df7ee351"
     },
     {
       "url": "https://docs.z.ai/guides/llm/glm-5.1",
@@ -91,7 +92,8 @@
         "access.api_status",
         "access.api_model_ids"
       ],
-      "evidence_note": "Z.ai developer docs list GLM-5.1 as flagship foundation model with 200K context, API model id glm-5.1, and docs page checked 2026-08-06."
+      "evidence_note": "Z.ai developer docs list GLM-5.1 as flagship foundation model with 200K context, API model id glm-5.1, and docs page checked 2026-08-06.",
+      "id": "src_91151f496ccd"
     },
     {
       "url": "https://huggingface.co/zai-org/GLM-5.1/discussions/11",
@@ -100,7 +102,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "Official discussion thread confirms GLM-5.1 max context length of 200k tokens (max_position_embeddings 202752)."
+      "evidence_note": "Official discussion thread confirms GLM-5.1 max context length of 200k tokens (max_position_embeddings 202752).",
+      "id": "src_5df1b2577f6a"
     }
   ],
   "data_status": "partial",

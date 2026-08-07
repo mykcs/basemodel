@@ -75,7 +75,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Medium as a more powerful enterprise version alongside the 24B open-source Magistral Small; no parameter count or weights disclosed."
+      "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Medium as a more powerful enterprise version alongside the 24B open-source Magistral Small; no parameter count or weights disclosed.",
+      "id": "src_2c8e07e7254c"
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/magistral-medium-1-0-25-06",
@@ -86,7 +87,8 @@
         "architecture.context_length",
         "status"
       ],
-      "evidence_note": "Official Mistral docs model card lists Magistral Medium 1.0 as retired with 40k context, replacement Mistral Medium 3.5."
+      "evidence_note": "Official Mistral docs model card lists Magistral Medium 1.0 as retired with 40k context, replacement Mistral Medium 3.5.",
+      "id": "src_9bfb9002bbea"
     }
   ],
   "data_status": "partial",

@@ -71,7 +71,8 @@
         "access.api_model_ids",
         "checkpoint.modalities"
       ],
-      "evidence_note": "OpenAI official API docs list o1 default snapshot o1-2024-12-17, 200K context, 100K max output, text+image input, text output, reasoning model. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list o1 default snapshot o1-2024-12-17, 200K context, 100K max output, text+image input, text output, reasoning model. Source checked 2026-08-06.",
+      "id": "src_9b28c65880a2"
     }
   ],
   "data_status": "verified"

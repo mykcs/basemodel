@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import { getMessages, isLocale, localePath, baseUrl, type Locale } from '../../i18n';
+import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
+import { encodeResearchTask } from '../../lib/researchTaskCodec';
+import { emptyTask, type ResearchTask } from '../../stores/researchTask';
 import familiesData from '../../content/coverage/families.json';
 
 interface Props { locale?: Locale }
@@ -14,11 +16,9 @@ const totalModels = models.length;
 const familyCount = familiesData.families.length;
 const openWeightCount = models.filter((model) => model.openness.weights_available === true).length;
 
-function workspaceHref(task: Record<string, unknown>): string {
-  const base = baseUrl();
-  const workspacePath = locale === 'en' ? `${base}en/workspace/` : `${base}workspace/`;
-  const encoded = encodeURIComponent(JSON.stringify(task));
-  return `${workspacePath}?task=${encoded}`;
+function workspaceHref(task: Partial<ResearchTask>): string {
+  const params = encodeResearchTask({ ...emptyTask, ...task });
+  return `${localePath(locale, '/workspace/') }?${params.toString()}`;
 }
 
 const scenarioCards = [
@@ -70,6 +70,10 @@ const familyChanges = familiesData.families
     openWeight: family.current_open_weight_model_id,
     claim: family.current_claim?.text,
   }));
+const recentModelEvents = [...models]
+  .filter((model) => typeof model.release_date === 'string')
+  .sort((left, right) => right.release_date.localeCompare(left.release_date))
+  .slice(0, 6);
 
 const secondaryEntries = [
   { label: m.v2.home.entryReproduce, href: localePath(locale, '/papers/') },
@@ -155,6 +159,19 @@ const secondaryEntries = [
         </a>
       ))}
     </div>
+  </section>
+
+  <section class="section" aria-labelledby="recent-changes-title">
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">{m.v2.home.recentChangesKicker}</div>
+        <h2 id="recent-changes-title">{m.v2.home.recentChangesTitle}</h2>
+      </div>
+      <span class="muted">{m.v2.home.recentChangesNote}</span>
+    </div>
+    <ol class="model-timeline">
+      {recentModelEvents.map((model) => <li><time datetime={model.release_date}>{model.release_date}</time><div><a href={localePath(locale, `/models/${model.id}/`)}><strong>{model.name}</strong></a><span>{model.vendor} · {model.family}</span><small>{m.v2.home.recentRelease} · {model.sources.length} {m.v2.home.recentSources}</small></div></li>)}
+    </ol>
   </section>
 
   <section class="section" aria-labelledby="families-title">

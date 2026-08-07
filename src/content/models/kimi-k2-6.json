@@ -52,9 +52,14 @@
     "weights_status": "released",
     "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.6",
     "api_status": "available",
-    "api_model_ids": ["kimi-k2.6"],
+    "api_model_ids": [
+      "kimi-k2.6"
+    ],
     "product_status": "available",
-    "product_names": ["Kimi App", "Kimi Agent"]
+    "product_names": [
+      "Kimi App",
+      "Kimi Agent"
+    ]
   },
   "reproducibility": {
     "model_revision_required": true,
@@ -72,19 +77,22 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2.6",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official model card states 1T total, 32B active, 384 experts, top-8 routing, 256K context, native multimodal support, and Modified MIT."
+      "evidence_note": "Moonshot AI official model card states 1T total, 32B active, 384 experts, top-8 routing, 256K context, native multimodal support, and Modified MIT.",
+      "id": "src_941a13de7de8"
     },
     {
       "url": "https://huggingface.co/moonshotai/Kimi-K2.6",
       "type": "official_announcement",
       "checked_at": "2026-08-06",
-      "evidence_note": "Kimi Help Center product timeline records Kimi K2.6 release and open-sourcing on 2026-04-20."
+      "evidence_note": "Kimi Help Center product timeline records Kimi K2.6 release and open-sourcing on 2026-04-20.",
+      "id": "src_941a13de7de8"
     },
     {
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot's API guide explicitly lists kimi-k2.6 as an API model with thinking and multi-step tool calling."
+      "evidence_note": "Moonshot's API guide explicitly lists kimi-k2.6 as an API model with thinking and multi-step tool calling.",
+      "id": "src_e6c83dede55c"
     }
   ],
   "data_status": "verified"

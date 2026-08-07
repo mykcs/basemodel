@@ -1,0 +1,33 @@
+---
+import type { AtlasModel } from '../../lib/types';
+import StatusBadge from '../StatusBadge.astro';
+import SemanticStatus from '../common/SemanticStatus.astro';
+import { buildClaimViews, type EvidenceLevel } from '../../lib/evidence/buildClaimViews';
+import { sourceTypeLabel } from '../../lib/format';
+import { getMessages, isLocale, type Locale } from '../../i18n';
+
+interface Props { item: AtlasModel; locale?: Locale }
+const { item } = Astro.props;
+const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
+const m = getMessages(locale);
+const claims = buildClaimViews(item, locale);
+const levelLabel = (level: EvidenceLevel) => m.evidence[`level${level.charAt(0).toUpperCase()}${level.slice(1)}` as 'levelOfficial' | 'levelPaper' | 'levelSecondary' | 'levelUnsupported'];
+---
+<section class="claim-evidence-panel evidence-block" aria-labelledby="claim-evidence-title">
+  <h2 id="claim-evidence-title">{m.evidence.claimTitle}</h2>
+  <p class="muted">{m.evidence.claimBody}</p>
+  {claims.length ? <div class="claim-list">
+    {claims.map((claim) => <article class="claim-row">
+      <div class="claim-heading"><strong>{claim.label}</strong><span class="claim-level">{levelLabel(claim.evidenceLevel)}</span></div>
+      <p class="claim-value"><SemanticStatus value={claim.value as boolean | string | number | null | undefined} locale={locale} /></p>
+      <div class="claim-sources">
+        <span class="muted">{m.evidence.claimEvidence}</span>
+        {claim.sources.map((source) => <a class="claim-source" href={source.url} target="_blank" rel="noreferrer">
+          <span><strong>{source.title ?? sourceTypeLabel(source.type, locale)}</strong>{source.publisher && <small> · {source.publisher}</small>}<br /><small>{source.checked_at}{source.locator ? ` · ${m.evidence.locator}: ${source.locator}` : ''}</small></span>
+          <span class="external-link">{m.evidence.open}</span>
+        </a>)}
+      </div>
+    </article>)}
+  </div> : <p class="muted claim-empty">{m.evidence.noClaimLinks}</p>}
+  <div class="evidence-footer"><span>{m.evidence.dataStatus}</span><StatusBadge status={item.data_status} locale={locale} /></div>
+</section>

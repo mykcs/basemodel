@@ -51,13 +51,15 @@
       "url": "https://arxiv.org/abs/2308.03688",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_1bb96f4eca55"
     },
     {
       "url": "https://github.com/THUDM/AgentBench",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_485ad5440bba"
     }
   ],
   "data_status": "verified"

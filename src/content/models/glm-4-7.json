@@ -57,13 +57,15 @@
       "url": "https://huggingface.co/zai-org/GLM-4.7",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Model-specific first-party source for GLM-4.7; replaces a generic family/catalog URL."
+      "evidence_note": "Model-specific first-party source for GLM-4.7; replaces a generic family/catalog URL.",
+      "id": "src_1cf3b340383c"
     },
     {
       "url": "https://github.com/zai-org/GLM-4.5",
       "type": "code",
       "checked_at": "2026-08-06",
-      "evidence_note": "Official Z.AI GLM-4.5 family repository documents the 355B-A32B architecture, MIT terms, open base checkpoints, framework support and fine-tuning configurations for GLM-4.7."
+      "evidence_note": "Official Z.AI GLM-4.5 family repository documents the 355B-A32B architecture, MIT terms, open base checkpoints, framework support and fine-tuning configurations for GLM-4.7.",
+      "id": "src_03d68ae47dae"
     }
   ],
   "data_status": "partial"

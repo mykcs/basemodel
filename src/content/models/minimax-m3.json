@@ -89,7 +89,8 @@
         "openness.classification",
         "access.weights_status",
         "access.weights_url"
-      ]
+      ],
+      "id": "src_8ba4f648b783"
     },
     {
       "url": "https://www.ithome.com/0/964/598.htm",
@@ -100,7 +101,8 @@
         "architecture.total_parameters_b",
         "architecture.context_length",
         "release_date"
-      ]
+      ],
+      "id": "src_891d44f09f62"
     }
   ],
   "data_status": "partial",

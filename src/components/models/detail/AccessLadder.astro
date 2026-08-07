@@ -1,0 +1,27 @@
+---
+import { displayBoolean, displayUnknown } from '../../../lib/format';
+import { getMessages, type Locale } from '../../../i18n';
+import type { AtlasModel } from '../../../lib/schemas';
+
+interface Props { model: AtlasModel; locale: Locale }
+const { model, locale } = Astro.props;
+const m = getMessages(locale);
+type LadderState = 'yes' | 'no' | 'unknown';
+const boolState = (value: unknown): LadderState => value === true ? 'yes' : value === false ? 'no' : 'unknown';
+const productState = model.access?.product_status === 'available' ? 'yes' : model.access?.product_status === 'unavailable' ? 'no' : 'unknown';
+const apiState = model.access?.api_status === 'available' || model.access?.api_status === 'preview' ? 'yes' : model.access?.api_status === 'unavailable' || model.access?.api_status === 'deprecated' ? 'no' : 'unknown';
+const labels = { yes: m.format.yes, no: m.format.no, unknown: m.format.unknown };
+const items: Array<{ label: string; state: LadderState; text: string }> = [
+  { label: m.detail.productSurface, state: productState, text: displayUnknown(model.access?.product_status, '', locale) },
+  { label: m.detail.apiSurface, state: apiState, text: displayUnknown(model.access?.api_status, '', locale) },
+  { label: m.detail.weightsSurface, state: boolState(model.openness.weights_available), text: displayBoolean(model.openness.weights_available, locale) },
+  { label: m.detail.baseSurface, state: boolState(model.openness.base_checkpoint_available), text: displayBoolean(model.openness.base_checkpoint_available, locale) },
+  { label: m.detail.finetuneSurface, state: boolState(model.openness.finetuning_allowed), text: displayBoolean(model.openness.finetuning_allowed, locale) },
+  { label: m.detail.derivativeSurface, state: boolState(model.openness.derivative_release_allowed), text: displayBoolean(model.openness.derivative_release_allowed, locale) },
+];
+---
+
+<section class="access-ladder" aria-labelledby="access-ladder-title">
+  <h2 id="access-ladder-title">{m.detail.accessLadderTitle}</h2>
+  <div class="access-ladder-grid">{items.map((item) => <div class={`access-ladder-step ladder-${item.state}`}><span class="ladder-mark" aria-hidden="true">{item.state === 'yes' ? '✓' : item.state === 'no' ? '✕' : '?'}</span><strong>{item.label}</strong><span>{labels[item.state]}</span><small>{item.text}</small></div>)}</div>
+</section>

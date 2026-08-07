@@ -70,7 +70,8 @@
         "access.api_model_ids",
         "checkpoint.type"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5.3-codex, 400K context, 128K max output, agentic coding model, only Responses API. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5.3-codex, 400K context, 128K max output, agentic coding model, only Responses API. Source checked 2026-08-06.",
+      "id": "src_fdb5deeed161"
     }
   ],
   "data_status": "verified"

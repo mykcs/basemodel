@@ -3,26 +3,30 @@ import { useEffect } from 'react';
 import { researchTask, clearResearchTask, initResearchTaskFromUrl, type ResearchTask } from '../../stores/researchTask';
 import { compareIds } from '../../stores/compare';
 import { candidateIds } from '../../stores/candidates';
-import { baseUrl } from '../../i18n';
+import { localePath, type Locale } from '../../i18n';
+import { accessModeLabel, researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
+import { hasMeaningfulResearchTask } from '../../stores/researchTask';
 import type { Messages } from '../../i18n/zh';
 
 interface Props {
   m: Messages;
+  locale: Locale;
 }
 
-function taskSummary(task: ResearchTask, m: Messages): string {
+function taskSummary(task: ResearchTask, m: Messages, locale: Locale): string {
   const parts: string[] = [];
   parts.push(m.workspace.currentTask);
-  parts.push(`mode=${task.mode}`);
-  if (task.roles.length) parts.push(`roles=${task.roles.join(',')}`);
-  if (task.update !== 'none') parts.push(`update=${task.update}`);
-  if (typeof task.gpuVramGb === 'number') parts.push(`vram=${task.gpuVramGb}GB`);
-  if (task.openWeight) parts.push('open-weight');
-  if (typeof task.contextTarget === 'number') parts.push(`ctx=${task.contextTarget}`);
+  parts.push(researchModeLabel(task.mode, locale));
+  if (task.roles.length) parts.push(task.roles.map((role) => m.format.role[role] ?? role).join(locale === 'zh' ? '、' : ', '));
+  if (task.update !== 'none') parts.push(updateMethodLabel(task.update, locale));
+  if (typeof task.gpuVramGb === 'number') parts.push(`${task.gpuVramGb}GB`);
+  if (task.openWeight) parts.push(m.workspace.openWeightLabel);
+  if (typeof task.contextTarget === 'number') parts.push(`${task.contextTarget} tokens`);
+  if (task.accessMode !== 'either') parts.push(accessModeLabel(task.accessMode, locale));
   return parts.join(' · ');
 }
 
-export function ResearchContextBar({ m }: Props) {
+export function ResearchContextBar({ m, locale }: Props) {
   const task = useStore(researchTask);
   const compare = useStore(compareIds);
   const candidates = useStore(candidateIds);
@@ -31,20 +35,16 @@ export function ResearchContextBar({ m }: Props) {
     initResearchTaskFromUrl();
   }, []);
 
-  if (task.mode === 'strict' && task.roles.length === 0 && task.update === 'none' && task.priorities.length === 0) {
-    return null;
-  }
-
-  const base = baseUrl();
+  if (!hasMeaningfulResearchTask(task)) return null;
 
   return (
     <div className="research-context-bar" role="status" aria-live="polite">
       <div className="shell context-inner">
-        <span className="context-summary">{taskSummary(task, m)}</span>
+        <span className="context-summary">{taskSummary(task, m, locale)}</span>
         <span className="context-counts">
           {m.workspace.candidates} {candidates.length} · {m.workspace.compare} {compare.length}
         </span>
-        <a className="context-link" href={`${base}workspace/`}>
+        <a className="context-link" href={localePath(locale, '/workspace/')}>
           {m.workspace.editConstraints}
         </a>
         <button

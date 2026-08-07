@@ -19,13 +19,34 @@ export const zh: Messages = {
     mainNav: '主导航',
     openMenu: '打开菜单',
     toggleTheme: '切换深色模式',
+    toggleDarkTheme: '切换到深色模式',
+    toggleLightTheme: '切换到浅色模式',
     switchLang: '英文',
     switchLangLabel: '切换到英文',
     dataStatus: '数据状态',
+    workspace: '开始研究',
+    guide: '学习指南',
+    methodology: '方法说明',
+    search: '搜索',
+    searchTitle: '全站搜索',
+    searchPlaceholder: '搜索模型、alias、厂商、家族或论文…',
+    noSearchResults: '没有匹配结果。',
+    searchModel: '模型',
+    searchPaper: '论文',
+    searchFamily: '家族',
+    searchGuide: '指南',
+    closeSearch: '关闭搜索',
+    commandHint: '按 Esc 关闭 · Cmd/Ctrl + K 打开',
   },
   footer: {
-    mvp: '智能体基础模型图谱 · MVP',
+    identity: '智能体基础模型图谱',
     motto: '数据优先，证据先行。',
+  },
+  guide: {
+    pageTitle: '学习指南', title: '如何使用研究工作台', lede: '从研究问题出发，逐步形成有证据、可复核的模型决策。', steps: ['先选择研究模式：严格复现、方法复现、现代化重跑或全新实验。', '明确论文、角色、训练方式、资源、开放性和复现约束。', '阅读候选模型的进入理由、风险和待核验项，再加入候选或对比。', '导出决策记录，保留任务、候选、比较和证据上下文。'], note: '硬件档位是粗粒度研究元数据，不是精确显存计算器。'
+  },
+  methodology: {
+    pageTitle: '数据方法', title: '数据、缺失值与证据等级', lede: '公共页面展示事实；研究工作台解释这些事实对当前任务意味着什么。', sections: [{ title: '缺失值语义', body: 'not_verified、not_reported、not_disclosed 和 not_published 都是数据状态，不会被转换成 false、0 或确定事实。' }, { title: '证据等级', body: '字段级 supports 关系优先连接到官方来源；论文、代码和运行记录分别保留来源类型与核验日期。' }, { title: '推荐边界', body: '候选排序是任务内的辅助排序，不是综合性能排行榜；硬冲突才会阻塞，未知事实会进入条件候选或待核验区。' }]
   },
   home: {
     pageTitle: '研究者的模型选择入口',
@@ -54,12 +75,12 @@ export const zh: Messages = {
     title: '模型供应层，一眼看清',
     note: '时间 × 推理硬件；点大小代表参数规模',
     chartHint: '形状区分 dense / MoE；边框区分证据状态',
-    d3Hint: 'D3 原型：同一数据适配层的自定义 SVG 版本',
+    d3Hint: '可访问的 SVG 视图：与正式图表共享同一数据适配层',
     chartAria: '按发布日期和推理硬件展示模型的散点图',
-    openPrototype: '打开双引擎原型 →',
+    openPrototype: '探索 Landscape →',
     legendNote: '未知参数不会被当成 0：使用固定小点，并在提示信息中标记待核验。',
-    prototypeTitle: 'Landscape 双引擎原型',
-    prototypeLede: 'ECharts 负责首页正式总览；D3 保留为可调试、可扩展的 SVG 原型。两者共享同一份模型数据适配层。',
+    prototypeTitle: 'Landscape 交互探索',
+    prototypeLede: '使用正式总览与可访问的 SVG 视图探索同一份模型供应数据。',
     engineLabel: '选择图表引擎',
   },
   modelsIndex: {
@@ -71,6 +92,9 @@ export const zh: Messages = {
     title: '模型家族与代际',
     lede: '按厂商 → 家族 → 官方代际名 → 具体模型展开。页面不假设每个厂商都有连续的第 1、2、3 代。',
     checkpointUnit: '个模型',
+    filterLabel: '家族时间线筛选',
+    current: '当前代',
+    filters: { all: '全部', current: '只看当前代', paper: '只看论文采用', open: '只看开放权重' },
   },
   compare: {
     pageTitle: '模型对比',
@@ -89,12 +113,26 @@ export const zh: Messages = {
     searchPlaceholder: '按名称、厂商或家族搜索…',
     noMatches: '没有匹配的模型。',
     diff: '存在差异',
+    onlyImpacts: '只看影响研究选择',
+    onlyUnknown: '只看未核验',
+    researchImpact: '研究影响',
+    copyMarkdown: '复制 Markdown',
+    downloadCsv: '下载 CSV',
+    copyLink: '复制分享链接',
+    copied: '已复制',
+    downloaded: '已下载',
+    impactLabels: { generation: '代际或发布时间不同，直接比较需要说明时间差。', checkpoint: 'checkpoint 或上下文不同，复现实验变量会改变。', access: '访问方式不同，可能改变本地权重实验路径。', license: '许可证边界不同，需要单独复核分发条件。', training: '训练能力不同，LoRA / SFT / RL 实验不能直接等同。', hardware: '硬件档位不同，资源预算与运行方式需要重新核验。', evidence: '证据状态不同，较弱记录需要优先核验。' },
   },
   compareGroups: {
     identity: '基本信息',
     architecture: '架构与规模',
-    access: '访问与开放性',
-    research: '研究适配',
+    access: '访问方式',
+    openness: '开放性与许可证',
+    training: '训练与微调',
+    runtime: '运行时',
+    hardware: '硬件',
+    adoption: '论文采用',
+    reproducibility: '可复现性',
     evidence: '证据状态',
   },
   papersIndex: {
@@ -150,6 +188,25 @@ export const zh: Messages = {
     unresolvedTitle: '未核验字段',
     unresolvedBody: '这些字段没有被填成猜测值；请回到来源或模型卡逐项核验。',
     noUnresolved: '关键字段均已填入具体值或明确状态。',
+    researchSummaryTitle: '研究摘要',
+    suitableFor: '适合',
+    notSuitableFor: '不适合 / 限制',
+    retrieval: '获取方式',
+    hardwareSummary: '硬件档位',
+    paperAdoptionSummary: '论文采用',
+    reproRisk: '复现风险',
+    evidenceState: '证据状态',
+    pendingVerification: '部分关键事实待核验',
+    noExplicitLimit: '暂无明确限制证据',
+    noPaperAdoption: '暂无论文采用记录',
+    accessLadderTitle: '获取与分发阶梯',
+    productSurface: '产品',
+    apiSurface: 'API',
+    weightsSurface: '权重',
+    baseSurface: 'Base',
+    finetuneSurface: '允许微调',
+    derivativeSurface: '允许衍生分发',
+    unresolvedCount: '{count} 个关键字段待核验',
     other: '其他',
     research: {
       inference: '推理',
@@ -177,6 +234,26 @@ export const zh: Messages = {
     weightNotUpdated: '未更新权重',
     relationError: '关系错误',
     descriptionSuffix: '的模型角色、进化目标和来源证据。',
+    reproductionEntryTitle: '从这篇论文开始研究',
+    reproductionEntryHint: '选择研究模式后，论文和原始模型会进入工作台上下文。',
+    strictReproduction: '严格复现',
+    methodReproduction: '方法复现',
+    modernRerun: '现代化重跑',
+    roleDiagramTitle: '模型角色拓扑',
+    roleDiagramHint: '这里只展示数据明确记录的角色与模型关系，不推断未记录的 workflow 边。',
+    reproducibilityTitle: '复现状态',
+    codeStatus: '代码',
+    checkpointStatus: 'Checkpoint',
+    configStatus: '配置',
+    environmentStatus: '环境',
+    available: '可用',
+    partial: '部分可用',
+    unavailable: '不可用',
+    notVerified: '尚未核验',
+    reported: '已报告',
+    notReported: '未报告',
+    reproNotFilled: '尚未补充结构化复现记录。',
+    reproNotes: '复现备注',
   },
   evidence: {
     title: '证据',
@@ -191,6 +268,14 @@ export const zh: Messages = {
     notes: '备注',
     claimCoverage: '字段证据覆盖',
     unresolvedFields: '未核验字段',
+    claimTitle: '事实与证据',
+    claimBody: '每个判断都尽量连接到支持它的来源；没有字段级关联时，不把来源列表当成直接证明。',
+    claimEvidence: '支持来源',
+    noClaimLinks: '暂无字段级证据关联；来源列表仍保留在数据记录中。',
+    levelOfficial: '一手来源直接支持',
+    levelPaper: '论文或代码来源',
+    levelSecondary: '二手或运行记录',
+    levelUnsupported: '尚未分类',
   },
   dataStatus: {
     pageTitle: '数据状态',
@@ -278,7 +363,10 @@ export const zh: Messages = {
     searchLabel: '搜索模型',
     filter: '筛选',
     quickOpenWeights: '开放权重',
+    quickLora: '可 LoRA',
     quickRl: '适合 RL',
+    quickSingleGpu: '单卡可运行',
+    quickCurrent: '当前代',
     quickPaperUse: '有论文采用',
     sort: '排序',
     sortRelease: '最新发布',
@@ -294,7 +382,13 @@ export const zh: Messages = {
     specialization: '专长',
     openWeights: '开放权重',
     finetuning: '允许微调',
+    lora: '可 LoRA',
     rl: '适合 RL',
+    current: '当前代',
+    baseCheckpoint: 'Base checkpoint',
+    singleGpu: '单卡可运行',
+    toolUse: '工具调用',
+    coding: '代码能力',
     paperUse: '论文采用',
     hardwareTier: '硬件档位',
     clearAll: '清除全部筛选',
@@ -323,6 +417,31 @@ export const zh: Messages = {
     emptyTitle: '没有匹配结果',
     emptyBody: '尝试清除筛选或放宽条件。',
     other: '其他',
+    activeFilters: '当前筛选',
+    viewLabel: '模型视图',
+    views: { decision: '决策', data: '数据', timeline: '时间线' },
+    model: '模型',
+    release: '发布时间',
+    parameters: '参数',
+    feasibility: '可行性',
+    researchSuitability: '研究适配',
+    comparability: '论文可比性',
+    reproducibility: '可复现性',
+    evidenceQuality: '证据完整度',
+    levelHigh: '高',
+    levelMedium: '中',
+    levelLow: '低',
+    levelUnknown: '待核验',
+    taskFitLabel: '当前任务匹配',
+    taskFitPrompt: '设定研究任务后显示适配度',
+    fitHigh: '高匹配',
+    fitConditional: '条件匹配',
+    fitExplore: '探索',
+    fitBlocked: '阻塞',
+    fitHighHint: '已知约束均有支持证据。',
+    fitConditionalHint: '没有明确冲突，但仍有事实待核验。',
+    fitExploreHint: '适合继续探索，当前证据或可比性有限。',
+    fitBlockedHint: '存在明确约束冲突，不进入正式候选。',
   },
   modalities: {
     text: '文本',
@@ -345,6 +464,25 @@ export const zh: Messages = {
     license: '许可证',
     loraSftRl: 'LoRA / SFT / RL',
     inferenceTier: '推理档位',
+    apiStatus: 'API 状态',
+    weightsStatus: '权重状态',
+    baseCheckpoint: 'Base checkpoint',
+    finetuning: '允许微调',
+    derivative: '允许衍生分发',
+    commercial: '允许商业使用',
+    transformers: 'Transformers',
+    vllm: 'vLLM',
+    sglang: 'SGLang',
+    verl: 'veRL 配方',
+    loraTier: 'LoRA 档位',
+    sftTier: 'SFT 档位',
+    rlTier: 'RL 档位',
+    paperRoles: '论文角色',
+    apiPin: 'API 版本可固定',
+    tokenizer: 'Tokenizer 公开',
+    config: 'Config 公开',
+    chatTemplate: 'Chat template 公开',
+    sourceCount: '来源数量',
     dataStatus: '数据状态',
   },
   familyUnits: {
@@ -398,6 +536,11 @@ export const zh: Messages = {
       scenarioApi: '比较 API 与本地模型',
       scenarioApiLede: '低成本优先，对比 API 和本地候选。',
       scenarioAction: '预填工作台',
+      recentChangesKicker: '最近模型变化',
+      recentChangesTitle: '按发布时间查看最近记录',
+      recentChangesNote: '这是数据集中的发布时间流，不等同于厂商实时动态。',
+      recentRelease: '发布时间',
+      recentSources: '个来源',
       familiesKicker: '最近模型变化',
       familiesTitle: '家族旗舰变化',
       familiesCta: '查看全部家族 →',
@@ -424,6 +567,7 @@ export const zh: Messages = {
     priorityLabel: '优先目标',
     openWeightLabel: '只考虑开放权重',
     contextLabel: '目标上下文长度',
+    accessModeLabel: '运行方式',
     setTask: '设定任务',
     clearTask: '清除任务',
     candidateTitle: '候选模型',
@@ -447,8 +591,56 @@ export const zh: Messages = {
     compareTray: '对比托盘',
     openCompare: '打开对比 →',
     clearCompare: '清空',
+    mobileNavLabel: '移动端工作台面板',
+    mobileTask: '任务',
+    mobileCandidates: '候选',
+    mobileEvidence: '证据',
+    mobileCompare: '对比',
+    closeQuickView: '关闭快速查看',
+    taskBuilder: {
+      stepMode: '研究目标', stepReference: '参考论文与模型', stepMethod: '角色与更新方式',
+      stepResource: '资源条件', stepAccess: '访问与复现', stepPriority: '排序偏好',
+      stepOf: '第 {current} / {total} 步', next: '下一步', back: '上一步', finish: '设定研究任务',
+      modeImplication: '这会影响模型如何进入基准、现代和资源候选区。',
+      strictDesc: '尽量保持论文原始模型、checkpoint 和环境。', methodDesc: '保留方法结构，同时寻找可比的替代模型。',
+      modernDesc: '允许换用当前代模型，重点是今天能否重跑。', newDesc: '从零定义实验，不绑定已有论文或原模型。',
+      referenceRequired: '严格复现和方法复现需要先选论文、模型和角色。', referencePaper: '参考论文',
+      referenceModel: '论文中的模型', referenceRole: '论文角色', referencePlaceholder: '请选择', referenceSelected: '已选择参考论文',
+      noReferenceModels: '这篇论文没有可用的模型关系。', methodHint: '角色与训练方式是两件独立的事；未知不会自动变成否定。',
+      resourceHint: '硬件档位来自粗粒度研究元数据，不是精确显存计算器。', gpuVram: '单卡显存（GB）', gpuCount: 'GPU 数量',
+      quantization: '接受 4-bit / 8-bit 量化方案', runtimeTitle: '要求运行时', licenseTitle: '许可证约束',
+      reproTitle: '复现约束', evidenceTitle: '证据策略', priorityHint: '顺序会影响候选排序；用上移、下移调整优先级。',
+      addPriority: '加入排序', removePriority: '移出排序', priorityUp: '上移', priorityDown: '下移',
+      summaryTitle: '任务摘要', summaryEmpty: '还没有设置研究任务。',
+      pinnableRevision: 'API / 模型版本可固定', publicTokenizer: 'tokenizer 必须公开',
+      publicConfig: 'config 必须公开', publicChatTemplate: 'chat template 必须公开',
+      priorityTypeHint: '优先级是排序偏好，不是硬性筛选。',
+    },
   },
   research: {
+    modes: {
+      strict: '严格复现',
+      method: '方法复现',
+      modern: '现代化重跑',
+      new: '全新实验',
+    },
+    updates: {
+      none: '不更新权重',
+      lora: 'LoRA',
+      sft: 'SFT',
+      rl: '强化学习',
+      unsure: '更新方式待定',
+    },
+    accessModes: {
+      local: '必须本地运行',
+      api: '允许 API 运行',
+      either: '本地或 API',
+    },
+    evidencePolicies: {
+      verified_preferred: '优先已核验证据',
+      verified_only: '仅接受已核验证据',
+      allow_unknown: '允许未知状态',
+    },
     bucketBaseline: '基准候选',
     bucketModern: '现代候选',
     bucketResource: '资源可行候选',
@@ -471,7 +663,7 @@ export const zh: Messages = {
       tool_use: '工具调用专长',
       baseline_repro: '适合复现基准',
       modern_repro: '适合现代化重跑',
-      context_ok: '上下文达标',
+    context_ok: '上下文达标',
     },
     risks: {
       weights_closed: '权重不开放',
@@ -482,13 +674,30 @@ export const zh: Messages = {
       not_current: '非当前代',
       update_unverified: '更新方式未核验',
       legacy: '历史版本',
+      evidence_unverified: '证据尚未完整核验',
+      runtime_missing: '所需运行时不满足',
+      license_restricted: '许可证存在限制',
+      reproducibility_unverified: '复现条件尚未完整核验',
     },
+    excludedTitle: '未进入候选',
+    excludedHint: '明确冲突会阻塞；未知事实只会进入待核验状态，不会被当成否定。',
+    excludedBlocked: '明确冲突',
+    excludedPending: '待核验',
     memo: {
       title: '决策备忘录',
       export: '导出 Markdown',
       download: '下载 .md',
+      downloadJson: '下载 JSON',
+      saveSnapshot: '保存研究快照',
+      snapshotSaved: '快照已保存',
+      snapshotChanged: '自该快照以来有 {count} 项研究事实发生变化',
+      snapshotField: '字段',
+      snapshotPrevious: '当时值',
+      snapshotCurrent: '当前值',
+      snapshotChecked: '新核验日期',
       copy: '复制',
       copied: '已复制',
+      dataRevision: '数据版本',
       empty: '先设定任务并加入候选，再生成决策备忘录。',
       sectionTask: '研究任务',
       sectionCandidates: '候选模型',
@@ -511,6 +720,13 @@ export const zh: Messages = {
       release: '发布时间',
       empty: '选一个原模型，查看同家族或同角色的现代替代。',
       noSubstitute: '暂无可比较的现代替代。',
+      modeImpact: '当前研究模式下的替换影响',
+      impact: '影响',
+      impactDimensions: { generation: '模型代际', releaseDate: '发布时间', checkpoint: 'Checkpoint 类型', architecture: '架构', totalParameters: '总参数量', activeParameters: '激活参数量', context: '上下文', openWeights: '开放权重', baseCheckpoint: 'Base checkpoint', finetuning: '微调许可', derivative: '衍生分发', license: '许可证', runtime: '运行时支持', inferenceHardware: '推理硬件', trainingHardware: '训练硬件', apiPin: 'API 版本固定', chatTemplate: 'Chat template', tokenizer: 'Tokenizer', config: 'Config', paperRole: '论文采用角色' },
+      severity: { none: '无变化', low: '低', medium: '中', high: '高', unknown: '未知' },
+      confidence: { direct: '直接事实', derived: '派生判断', unknown: '尚无证据' },
+      effect: { none: '不改变该维度', operational: '需要重新核验运行条件', requires_recalibration: '需要重新校准实验', breaks_direct_comparison: '会破坏直接可比性', unknown: '影响尚无法判断' },
+      impactCodes: { generation_changed: '模型代际变化会改变比较基线。', release_date_changed: '发布时间变化会改变时间窗口。', checkpoint_changed: 'Checkpoint 变化可能改变提示格式与训练初始化。', architecture_changed: '架构变化会改变推理与训练行为。', total_parameters_changed: '总参数变化会改变规模与资源预算。', active_parameters_changed: '激活参数变化会改变 MoE 推理成本。', context_changed: '上下文变化会改变长上下文实验条件。', weights_changed: '开放性变化会改变本地权重实验路径。', base_checkpoint_changed: 'Base 可用性变化会改变训练起点。', finetuning_changed: '微调许可变化会改变权重更新实验。', derivative_changed: '衍生分发变化会改变成果发布边界。', license_changed: '许可证变化需要单独复核法律与分发条件。', runtime_changed: '运行时支持变化会改变工程实现路径。', inference_hardware_changed: '推理硬件档位变化需要重新核验资源。', training_hardware_changed: '训练硬件档位变化需要重新核验资源。', api_pin_changed: 'API 版本可固定性变化会影响重复调用。', chat_template_changed: 'Chat template 变化会影响输入格式复现。', tokenizer_changed: 'Tokenizer 变化会影响切分与训练复现。', config_changed: 'Config 变化会影响架构和推理配置复现。', paper_role_changed: '论文采用角色不同，不能直接假定研究职责相同。' },
     },
   },
   format: {
@@ -646,6 +862,8 @@ export type Messages = {
     skipLink: string;
     backHome: string;
   };
+  guide: { pageTitle: string; title: string; lede: string; steps: string[]; note: string };
+  methodology: { pageTitle: string; title: string; lede: string; sections: Array<{ title: string; body: string }> };
   nav: {
     home: string;
     models: string;
@@ -655,11 +873,26 @@ export type Messages = {
     mainNav: string;
     openMenu: string;
     toggleTheme: string;
+    toggleDarkTheme: string;
+    toggleLightTheme: string;
     switchLang: string;
     switchLangLabel: string;
     dataStatus: string;
+    workspace: string;
+    guide: string;
+    methodology: string;
+    search: string;
+    searchTitle: string;
+    searchPlaceholder: string;
+    noSearchResults: string;
+    searchModel: string;
+    searchPaper: string;
+    searchFamily: string;
+    searchGuide: string;
+    closeSearch: string;
+    commandHint: string;
   };
-  footer: { mvp: string; motto: string };
+  footer: { identity: string; motto: string };
   home: {
     pageTitle: string;
     heroEyebrow: string;
@@ -696,7 +929,7 @@ export type Messages = {
     engineLabel: string;
   };
   modelsIndex: { pageTitle: string; lede: string };
-  families: { pageTitle: string; title: string; lede: string; checkpointUnit: string };
+  families: { pageTitle: string; title: string; lede: string; checkpointUnit: string; filterLabel: string; current: string; filters: Record<'all' | 'current' | 'paper' | 'open', string> };
   compare: {
     pageTitle: string;
     title: string;
@@ -714,8 +947,17 @@ export type Messages = {
     searchPlaceholder: string;
     noMatches: string;
     diff: string;
+    onlyImpacts: string;
+    onlyUnknown: string;
+    researchImpact: string;
+    copyMarkdown: string;
+    downloadCsv: string;
+    copyLink: string;
+    copied: string;
+    downloaded: string;
+    impactLabels: Record<'generation' | 'checkpoint' | 'access' | 'license' | 'training' | 'hardware' | 'evidence', string>;
   };
-  compareGroups: { identity: string; architecture: string; access: string; research: string; evidence: string };
+  compareGroups: { identity: string; architecture: string; access: string; openness: string; training: string; runtime: string; hardware: string; adoption: string; reproducibility: string; evidence: string };
   papersIndex: {
     pageTitle: string;
     title: string;
@@ -769,6 +1011,25 @@ export type Messages = {
     unresolvedTitle: string;
     unresolvedBody: string;
     noUnresolved: string;
+    researchSummaryTitle: string;
+    suitableFor: string;
+    notSuitableFor: string;
+    retrieval: string;
+    hardwareSummary: string;
+    paperAdoptionSummary: string;
+    reproRisk: string;
+    evidenceState: string;
+    pendingVerification: string;
+    noExplicitLimit: string;
+    noPaperAdoption: string;
+    accessLadderTitle: string;
+    productSurface: string;
+    apiSurface: string;
+    weightsSurface: string;
+    baseSurface: string;
+    finetuneSurface: string;
+    derivativeSurface: string;
+    unresolvedCount: string;
     other: string;
     research: Record<'inference' | 'lora' | 'sft' | 'rl' | 'transformers' | 'vllm' | 'sglang' | 'verl', string>;
   };
@@ -787,8 +1048,28 @@ export type Messages = {
     weightNotUpdated: string;
     relationError: string;
     descriptionSuffix: string;
+    reproductionEntryTitle: string;
+    reproductionEntryHint: string;
+    strictReproduction: string;
+    methodReproduction: string;
+    modernRerun: string;
+    roleDiagramTitle: string;
+    roleDiagramHint: string;
+    reproducibilityTitle: string;
+    codeStatus: string;
+    checkpointStatus: string;
+    configStatus: string;
+    environmentStatus: string;
+    available: string;
+    partial: string;
+    unavailable: string;
+    notVerified: string;
+    reported: string;
+    notReported: string;
+    reproNotFilled: string;
+    reproNotes: string;
   };
-  evidence: { title: string; body: string; open: string; dataStatus: string; publisher: string; publishedAt: string; revision: string; supports: string; locator: string; notes: string; claimCoverage: string; unresolvedFields: string };
+  evidence: { title: string; body: string; open: string; dataStatus: string; publisher: string; publishedAt: string; revision: string; supports: string; locator: string; notes: string; claimCoverage: string; unresolvedFields: string; claimTitle: string; claimBody: string; claimEvidence: string; noClaimLinks: string; levelOfficial: string; levelPaper: string; levelSecondary: string; levelUnsupported: string };
   dataStatus: {
     pageTitle: string; lede: string; models: string; recent: string; stale: string; partial: string; verified: string;
     vendors: string; vendor: string; latestRelease: string; currentGeneration: string; catalogChecked: string; claimStatus: string; unresolved: string; catalogSource: string; present: string; missing: string; issues: string; noIssues: string; staleNote: string; semanticGaps: string; semanticState: string; fields: string; severity: string; record: string; field: string; issueKind: string; source: string; flagship: string; openWeightApi: string; openWeight: string; api: string;
@@ -812,7 +1093,10 @@ export type Messages = {
     searchLabel: string;
     filter: string;
     quickOpenWeights: string;
+    quickLora: string;
     quickRl: string;
+    quickSingleGpu: string;
+    quickCurrent: string;
     quickPaperUse: string;
     sort: string;
     sortRelease: string;
@@ -828,7 +1112,13 @@ export type Messages = {
     specialization: string;
     openWeights: string;
     finetuning: string;
+    lora: string;
     rl: string;
+    current: string;
+    baseCheckpoint: string;
+    singleGpu: string;
+    toolUse: string;
+    coding: string;
     paperUse: string;
     hardwareTier: string;
     clearAll: string;
@@ -857,6 +1147,31 @@ export type Messages = {
     emptyTitle: string;
     emptyBody: string;
     other: string;
+    activeFilters: string;
+    viewLabel: string;
+    views: { decision: string; data: string; timeline: string };
+    model: string;
+    release: string;
+    parameters: string;
+    feasibility: string;
+    researchSuitability: string;
+    comparability: string;
+    reproducibility: string;
+    evidenceQuality: string;
+    levelHigh: string;
+    levelMedium: string;
+    levelLow: string;
+    levelUnknown: string;
+    taskFitLabel: string;
+    taskFitPrompt: string;
+    fitHigh: string;
+    fitConditional: string;
+    fitExplore: string;
+    fitBlocked: string;
+    fitHighHint: string;
+    fitConditionalHint: string;
+    fitExploreHint: string;
+    fitBlockedHint: string;
   };
   modalities: Record<'text' | 'image' | 'audio' | 'video', string>;
   compareRows: {
@@ -874,6 +1189,25 @@ export type Messages = {
     license: string;
     loraSftRl: string;
     inferenceTier: string;
+    apiStatus: string;
+    weightsStatus: string;
+    baseCheckpoint: string;
+    finetuning: string;
+    derivative: string;
+    commercial: string;
+    transformers: string;
+    vllm: string;
+    sglang: string;
+    verl: string;
+    loraTier: string;
+    sftTier: string;
+    rlTier: string;
+    paperRoles: string;
+    apiPin: string;
+    tokenizer: string;
+    config: string;
+    chatTemplate: string;
+    sourceCount: string;
     dataStatus: string;
   };
   familyUnits: { checkpoints: string };
@@ -921,6 +1255,11 @@ export type Messages = {
       scenarioApi: string;
       scenarioApiLede: string;
       scenarioAction: string;
+      recentChangesKicker: string;
+      recentChangesTitle: string;
+      recentChangesNote: string;
+      recentRelease: string;
+      recentSources: string;
       familiesKicker: string;
       familiesTitle: string;
       familiesCta: string;
@@ -947,6 +1286,7 @@ export type Messages = {
     priorityLabel: string;
     openWeightLabel: string;
     contextLabel: string;
+    accessModeLabel: string;
     setTask: string;
     clearTask: string;
     candidateTitle: string;
@@ -970,8 +1310,19 @@ export type Messages = {
     compareTray: string;
     openCompare: string;
     clearCompare: string;
+    mobileNavLabel: string;
+    mobileTask: string;
+    mobileCandidates: string;
+    mobileEvidence: string;
+    mobileCompare: string;
+    closeQuickView: string;
+    taskBuilder: Record<string, string>;
   };
   research: {
+    modes: { strict: string; method: string; modern: string; new: string };
+    updates: { none: string; lora: string; sft: string; rl: string; unsure: string };
+    accessModes: { local: string; api: string; either: string };
+    evidencePolicies: { verified_preferred: string; verified_only: string; allow_unknown: string };
     bucketBaseline: string;
     bucketModern: string;
     bucketResource: string;
@@ -983,12 +1334,25 @@ export type Messages = {
     papersUsed: string;
     reasons: Record<string, string>;
     risks: Record<string, string>;
+    excludedTitle: string;
+    excludedHint: string;
+    excludedBlocked: string;
+    excludedPending: string;
     memo: {
       title: string;
       export: string;
       download: string;
+      downloadJson: string;
+      saveSnapshot: string;
+      snapshotSaved: string;
+      snapshotChanged: string;
+      snapshotField: string;
+      snapshotPrevious: string;
+      snapshotCurrent: string;
+      snapshotChecked: string;
       copy: string;
       copied: string;
+      dataRevision: string;
       empty: string;
       sectionTask: string;
       sectionCandidates: string;
@@ -1011,6 +1375,13 @@ export type Messages = {
       release: string;
       empty: string;
       noSubstitute: string;
+      modeImpact: string;
+      impact: string;
+      impactDimensions: Record<string, string>;
+      severity: Record<'none' | 'low' | 'medium' | 'high' | 'unknown', string>;
+      confidence: Record<'direct' | 'derived' | 'unknown', string>;
+      effect: Record<'none' | 'operational' | 'requires_recalibration' | 'breaks_direct_comparison' | 'unknown', string>;
+      impactCodes: Record<string, string>;
     };
   };
   format: {

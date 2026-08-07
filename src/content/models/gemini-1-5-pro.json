@@ -58,7 +58,8 @@
       "url": "https://deepmind.google/technologies/gemini/pro/",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_153d7b5ca2ce"
     }
   ],
   "data_status": "partial"

@@ -66,13 +66,15 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official instruct model card documents 1T total, 32B active, 384 experts, top-8 routing, 128K context, Modified MIT and Transformers/vLLM/SGLang usage."
+      "evidence_note": "Moonshot AI official instruct model card documents 1T total, 32B active, 384 experts, top-8 routing, 128K context, Modified MIT and Transformers/vLLM/SGLang usage.",
+      "id": "src_0c0f9ec6dab8"
     },
     {
       "url": "https://github.com/MoonshotAI/Kimi-K2",
       "type": "code",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official Kimi K2 repository documents the instruct checkpoint and deployment guidance."
+      "evidence_note": "Moonshot AI official Kimi K2 repository documents the instruct checkpoint and deployment guidance.",
+      "id": "src_e88c54ee251e"
     }
   ],
   "data_status": "verified",

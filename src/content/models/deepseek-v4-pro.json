@@ -76,7 +76,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Hugging Face model card states 1.6T total parameters, 49B active, 1M context, MoE, MIT license. Expert count and top-k not stated in card. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 1.6T total parameters, 49B active, 1M context, MoE, MIT license. Expert count and top-k not stated in card. Source checked 2026-08-06.",
+      "id": "src_76ae5fab3137"
     },
     {
       "url": "https://api-docs.deepseek.com/",
@@ -86,7 +87,8 @@
         "access.api_status",
         "access.api_model_ids"
       ],
-      "evidence_note": "DeepSeek API documentation lists deepseek-v4-pro as a current API model. Source checked 2026-08-06."
+      "evidence_note": "DeepSeek API documentation lists deepseek-v4-pro as a current API model. Source checked 2026-08-06.",
+      "id": "src_edfd95646372"
     }
   ],
   "data_status": "verified"

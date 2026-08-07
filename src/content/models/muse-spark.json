@@ -79,7 +79,8 @@
         "openness.classification",
         "access.api_status"
       ],
-      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users."
+      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users.",
+      "id": "src_17a523d995a6"
     },
     {
       "url": "https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/",
@@ -92,7 +93,8 @@
         "openness.commercial_use_allowed",
         "openness.classification"
       ],
-      "evidence_note": "Official Meta newsroom article published April 8, 2026 confirms Muse Spark is proprietary, first model from Meta Superintelligence Labs, and offered in private API preview to select partners."
+      "evidence_note": "Official Meta newsroom article published April 8, 2026 confirms Muse Spark is proprietary, first model from Meta Superintelligence Labs, and offered in private API preview to select partners.",
+      "id": "src_027ccaad6e6b"
     }
   ],
   "data_status": "partial",

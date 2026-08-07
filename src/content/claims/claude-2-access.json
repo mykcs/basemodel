@@ -1,0 +1,9 @@
+{
+  "id": "claude-2-access-api-status",
+  "subjectType": "model",
+  "subjectId": "claude-2",
+  "fieldPath": "access.api_status",
+  "status": "verified",
+  "evidenceIds": ["src_3c6aa0c7c522"],
+  "evidenceNote": "The model record preserves the official catalog source and its checked date."
+}

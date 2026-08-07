@@ -31,13 +31,15 @@
       "url": "https://arxiv.org/abs/2305.16653",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_9ce0c7c8a7af"
     },
     {
       "url": "https://github.com/haotiansun14/AdaPlanner",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_cfc36aa7d9bb"
     }
   ],
   "data_status": "verified"

@@ -56,13 +56,15 @@
       "url": "https://huggingface.co/openai/gpt-oss-120b",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "OpenAI official release states both model weights are freely available for download on Hugging Face Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06. OpenAI official release says post-training included supervised fine-tuning and models are customizable; official model card describes robust fine-tuning Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06."
+      "evidence_note": "OpenAI official release states both model weights are freely available for download on Hugging Face Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06. OpenAI official release says post-training included supervised fine-tuning and models are customizable; official model card describes robust fine-tuning Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06.",
+      "id": "src_9dcfa538700d"
     },
     {
       "url": "https://huggingface.co/openai/gpt-oss-120b",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_9dcfa538700d"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-oss-120b",
@@ -71,7 +73,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-oss-120b context window as 131072 tokens. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-oss-120b context window as 131072 tokens. Source checked 2026-08-06.",
+      "id": "src_c3c6e9f2847c"
     }
   ],
   "data_status": "verified",

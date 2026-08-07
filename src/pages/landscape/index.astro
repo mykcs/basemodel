@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import AppLayout from '../../layouts/AppLayout.astro';
 import Body from '../_bodies/landscape.astro';
 import { getMessages } from '../../i18n';
 const m = getMessages('zh');
 ---
-<BaseLayout title={m.landscape.prototypeTitle}><Body locale="zh" /></BaseLayout>
+<AppLayout title={m.landscape.prototypeTitle} locale="zh"><Body locale="zh" /></AppLayout>

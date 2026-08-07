@@ -9,6 +9,6 @@ const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
-<AppLayout title={m.workspace.pageTitle}>
-  <ResearchWorkspace client:load models={models} papers={papers} m={m} />
+<AppLayout title={m.workspace.pageTitle} locale="zh">
+  <ResearchWorkspace client:load models={models} papers={papers} m={m} locale="zh" />
 </AppLayout>

@@ -73,7 +73,8 @@
         "access.api_model_ids",
         "checkpoint.specializations"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5.4 default snapshot gpt-5.4-2026-03-05, 1.05M context, 128K max output, first native computer use. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5.4 default snapshot gpt-5.4-2026-03-05, 1.05M context, 128K max output, first native computer use. Source checked 2026-08-06.",
+      "id": "src_d0577e81e0d1"
     }
   ],
   "data_status": "verified"

@@ -60,7 +60,8 @@
       "url": "https://huggingface.co/Qwen/Qwen3.5-27B",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Model-specific first-party source for Qwen3.5-27B; replaces a generic family/catalog URL."
+      "evidence_note": "Model-specific first-party source for Qwen3.5-27B; replaces a generic family/catalog URL.",
+      "id": "src_02b150d32523"
     }
   ],
   "data_status": "partial"

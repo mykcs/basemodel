@@ -57,7 +57,8 @@
       "url": "https://qwenlm.github.io/blog/qwen3/",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_f3f12c958485"
     }
   ],
   "data_status": "verified"

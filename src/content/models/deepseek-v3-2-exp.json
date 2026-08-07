@@ -71,7 +71,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Hugging Face model card states 685B parameters and DSA sparse attention experiment, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 685B parameters and DSA sparse attention experiment, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Source checked 2026-08-06.",
+      "id": "src_208c1baedae9"
     }
   ],
   "data_status": "partial"

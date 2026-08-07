@@ -59,7 +59,8 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06."
+      "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06.",
+      "id": "src_6ecdd364144c"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
@@ -71,7 +72,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06.",
+      "id": "src_6ecdd364144c"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
@@ -83,7 +85,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-V3-0324 is MIT licensed open weights with expert_count=256 and top-k=8. Source checked 2026-08-06.",
+      "id": "src_6ecdd364144c"
     }
   ],
   "data_status": "partial",

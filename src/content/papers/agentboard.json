@@ -51,13 +51,15 @@
       "url": "https://arxiv.org/abs/2401.12863",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_126d24390af0"
     },
     {
       "url": "https://github.com/hkust-nlp/AgentBoard",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_610ce76b3a56"
     }
   ],
   "data_status": "verified"

@@ -60,13 +60,15 @@
       "url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Hugging Face model metadata library_name=transformers and/or transformersInfo present Source checked https://huggingface.co/Qwen/Qwen3.6-35B-A3B on 2026-08-06."
+      "evidence_note": "Hugging Face model metadata library_name=transformers and/or transformersInfo present Source checked https://huggingface.co/Qwen/Qwen3.6-35B-A3B on 2026-08-06.",
+      "id": "src_7f760fac949e"
     },
     {
       "url": "https://github.com/QwenLM/Qwen3.6",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Qwen official repository documents the Qwen3.6 release scope and supported serving paths Source checked https://github.com/QwenLM/Qwen3.6 on 2026-08-06."
+      "evidence_note": "Qwen official repository documents the Qwen3.6 release scope and supported serving paths Source checked https://github.com/QwenLM/Qwen3.6 on 2026-08-06.",
+      "id": "src_3589bb513a07"
     }
   ],
   "data_status": "partial"

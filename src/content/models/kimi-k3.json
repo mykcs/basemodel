@@ -68,9 +68,15 @@
     "weights_released_at": "2026-07-27",
     "weights_url": "https://huggingface.co/moonshotai/Kimi-K3",
     "api_status": "available",
-    "api_model_ids": ["kimi-k3"],
+    "api_model_ids": [
+      "kimi-k3"
+    ],
     "product_status": "available",
-    "product_names": ["Kimi App", "Kimi Agent", "Kimi Code"]
+    "product_names": [
+      "Kimi App",
+      "Kimi Agent",
+      "Kimi Code"
+    ]
   },
   "reproducibility": {
     "model_revision_required": true,
@@ -86,15 +92,22 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K3",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context."
+      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context.",
+      "id": "src_7372d8cb937a"
     },
     {
-    "id": "moonshot-kimi-k3-repo",
-    "url": "https://github.com/MoonshotAI/Kimi-K3",
-    "type": "official_code",
+      "id": "moonshot-kimi-k3-repo",
+      "url": "https://github.com/MoonshotAI/Kimi-K3",
+      "type": "official_code",
       "checked_at": "2026-08-06",
-    "evidence_note": "Moonshot AI official repository documents Kimi K3 deployment with vLLM/SGLang and the kimi-k3 API alias, and requires preserving reasoning/tool-call history in multi-turn use.",
-    "supports": ["access.api_status", "access.api_model_ids", "research.vllm_support", "research.sglang_support", "reproducibility.preserved_reasoning_history_required"]
+      "evidence_note": "Moonshot AI official repository documents Kimi K3 deployment with vLLM/SGLang and the kimi-k3 API alias, and requires preserving reasoning/tool-call history in multi-turn use.",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids",
+        "research.vllm_support",
+        "research.sglang_support",
+        "reproducibility.preserved_reasoning_history_required"
+      ]
     },
     {
       "id": "kimi-k3-license",
@@ -104,11 +117,15 @@
       "evidence_note": "The first-party Kimi K3 License grants use, copying, modification, distribution and finetuning subject to its commercial and redistribution conditions."
     },
     {
-    "url": "https://platform.kimi.com/docs/models",
-    "type": "official_api_docs",
+      "url": "https://platform.kimi.com/docs/models",
+      "type": "official_api_docs",
       "checked_at": "2026-08-06",
-    "evidence_note": "Official Kimi API catalog is used for the kimi-k3 API availability and alias.",
-    "supports": ["access.api_status", "access.api_model_ids"]
+      "evidence_note": "Official Kimi API catalog is used for the kimi-k3 API availability and alias.",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids"
+      ],
+      "id": "src_97c3ff186497"
     }
   ],
   "data_status": "verified"

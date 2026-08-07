@@ -1,7 +1,9 @@
 ---
 import Header from '../components/Header.astro';
+import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
+import { CommandMenu } from '../components/navigation/CommandMenu.tsx';
 import '../styles/global.css';
 import '../styles/workspace.css';
 import { getMessages, isLocale, locales, switchLocalePath, baseUrl, type Locale } from '../i18n';
@@ -14,6 +16,7 @@ interface Props {
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
+const modelNames = Object.fromEntries((await getCollection('models')).map((entry) => [entry.data.id, entry.data.name]));
 const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
@@ -63,14 +66,15 @@ const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
   <body>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
-    <ResearchContextBar client:load m={m} />
+    <CommandMenu client:load locale={locale} m={m} />
+    <ResearchContextBar client:load m={m} locale={locale} />
     <main id="main-content" class="site-main">
       <slot />
     </main>
-    <CompareTray client:load m={m} locale={locale} />
+    <CompareTray client:load m={m} locale={locale} modelNames={modelNames} />
     <footer class="site-footer">
       <div class="shell footer-inner">
-        <span>{m.footer.mvp}</span>
+        <span>{m.footer.identity}</span>
         <span>{m.footer.motto}</span>
       </div>
     </footer>

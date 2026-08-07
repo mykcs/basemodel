@@ -77,7 +77,8 @@
         "architecture.context_length",
         "access.api_status",
         "access.api_model_ids"
-      ]
+      ],
+      "id": "src_3c6aa0c7c522"
     },
     {
       "url": "https://docs.anthropic.com/en/docs/about-claude/model-deprecations",
@@ -88,8 +89,9 @@
         "status",
         "access.api_status",
         "access.product_status"
-      ]
+      ],
+      "id": "src_4d9e35312c21"
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

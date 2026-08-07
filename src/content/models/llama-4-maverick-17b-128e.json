@@ -57,13 +57,15 @@
       "url": "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "Official Hugging Face model card metadata base_model=['meta-llama/Llama-4-Maverick-17B-128E'] Source checked https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct on 2026-08-06."
+      "evidence_note": "Official Hugging Face model card metadata base_model=['meta-llama/Llama-4-Maverick-17B-128E'] Source checked https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct on 2026-08-06.",
+      "id": "src_82796a795351"
     },
     {
       "url": "https://www.llama.com/models/llama-4/",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "Meta's official Llama 4 model page lists the Llama 4 family and links the current release documentation Source checked https://www.llama.com/models/llama-4/ on 2026-08-06."
+      "evidence_note": "Meta's official Llama 4 model page lists the Llama 4 family and links the current release documentation Source checked https://www.llama.com/models/llama-4/ on 2026-08-06.",
+      "id": "src_e96748894185"
     }
   ],
   "notes": "Llama 4 Behemoth (~2T total / 288B active teacher model, previewed 2025-04) has not been publicly released as of 2026-08-06; Scout and Maverick were distilled from it. Behemoth is intentionally not a separate record because it remains unpublished.",

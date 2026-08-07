@@ -1,5 +1,6 @@
 import { hardwareFits } from './hardware';
 import { lifecycleLabel, specializationLabel, taskLabel, tierLabel } from './format';
+import { familyCoverageRecords, isCurrentModel } from './familyCoverage';
 import type { Locale } from '../i18n';
 import type { AtlasModel, ExperimentMode, Goal, ResourceTier, TaskDirection } from './types';
 import type { SemanticStatus } from './schemas';
@@ -15,6 +16,12 @@ export type ModelFilters = {
   openWeights?: boolean;
   finetuning?: boolean;
   rl?: boolean;
+  lora?: boolean;
+  current?: boolean;
+  baseCheckpoint?: boolean;
+  singleGpu?: boolean;
+  toolUse?: boolean;
+  coding?: boolean;
   paperUse?: boolean;
   resource?: ResourceTier;
   specialization?: string;
@@ -48,6 +55,12 @@ export function filterModels(models: AtlasModel[], filters: ModelFilters, paperM
       && matchesBoolean(model.openness.weights_available, filters.openWeights)
       && matchesBoolean(model.openness.finetuning_allowed, filters.finetuning)
       && matchesBoolean(model.research.suitable_for_rl, filters.rl)
+      && matchesBoolean(model.research.suitable_for_lora, filters.lora)
+      && (filters.current === undefined || isCurrentModel(model, familyCoverageRecords, models) === filters.current)
+      && matchesBoolean(model.openness.base_checkpoint_available, filters.baseCheckpoint)
+      && (filters.singleGpu === undefined || filters.singleGpu === (model.hardware.inference_tier !== 'multi_gpu' && model.hardware.inference_tier !== 'api_only' && model.hardware.inference_tier !== 'unknown'))
+      && (filters.toolUse === undefined || filters.toolUse === model.checkpoint.specializations.includes('tool-use'))
+      && (filters.coding === undefined || filters.coding === model.checkpoint.specializations.includes('coding'))
       && (filters.paperUse === undefined || (filters.paperUse ? paperModelIds?.has(model.id) : !paperModelIds?.has(model.id)))
       && (!filters.resource || [model.hardware.inference_tier, model.hardware.lora_tier, model.hardware.full_sft_tier, model.hardware.rl_tier].includes(filters.resource))
       && fitsParams

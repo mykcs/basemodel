@@ -1,0 +1,22 @@
+---
+import { displayUnknown, semanticStatusLabel } from '../../lib/format';
+import type { Locale } from '../../i18n';
+import type { SemanticStatus } from '../../lib/schemas';
+
+interface Props {
+  value: boolean | SemanticStatus | string | number | null | undefined;
+  locale?: Locale;
+  class?: string;
+}
+
+const { value, locale = 'zh', class: className = '' } = Astro.props;
+const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable', 'unknown']);
+const isSemantic = typeof value === 'string' && semanticStates.has(value);
+const stateClass = typeof value === 'boolean' ? (value ? 'is-true' : 'is-false') : isSemantic ? 'is-unknown' : 'is-value';
+const icon = value === true ? '✓' : value === false ? '✕' : isSemantic ? '?' : '·';
+const label = isSemantic ? semanticStatusLabel(value as string, locale) : displayUnknown(value, '', locale);
+---
+<span class={`semantic-status ${stateClass} ${className}`.trim()}>
+  <span class="semantic-status-icon" aria-hidden="true">{icon}</span>
+  <span>{label}</span>
+</span>

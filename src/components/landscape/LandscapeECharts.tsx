@@ -17,6 +17,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
     let chart: ReturnType<typeof EChartsCore.init> | null = null;
     let observer: ResizeObserver | null = null;
     let resizeHandler: (() => void) | null = null;
+    let themeHandler: (() => void) | null = null;
 
     void (async () => {
       const [echarts, { GridComponent, LegendComponent, TooltipComponent }, { ScatterChart }, { SVGRenderer }] = await Promise.all([
@@ -75,6 +76,22 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
         })),
       };
       chart.setOption(option);
+      const refreshTheme = () => {
+        const current = getComputedStyle(document.documentElement);
+        const nextInk = current.getPropertyValue('--ink').trim() || ink;
+        const nextMuted = current.getPropertyValue('--muted').trim() || muted;
+        const nextLine = current.getPropertyValue('--line').trim() || line;
+        const nextSurface = current.getPropertyValue('--surface').trim() || surface;
+        chart?.setOption({
+          backgroundColor: nextSurface,
+          legend: { textStyle: { color: nextMuted } },
+          tooltip: { backgroundColor: nextSurface, borderColor: nextLine, textStyle: { color: nextInk } },
+          xAxis: { axisLabel: { color: nextMuted }, axisLine: { lineStyle: { color: nextLine } }, splitLine: { lineStyle: { color: nextLine } } },
+          yAxis: { axisLabel: { color: nextMuted }, axisLine: { lineStyle: { color: nextLine } }, splitLine: { lineStyle: { color: nextLine } } },
+        });
+      };
+      themeHandler = refreshTheme;
+      window.addEventListener('atlas:themechange', refreshTheme);
       chart.on('click', (params) => {
         const point = (params as { data?: { point?: (typeof points)[number] } }).data?.point;
         if (point) window.location.href = localePath(locale, `/models/${point.id}/`);
@@ -88,6 +105,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
     return () => {
       disposed = true;
       observer?.disconnect();
+      if (themeHandler) window.removeEventListener('atlas:themechange', themeHandler);
       if (resizeHandler) window.removeEventListener('resize', resizeHandler);
       chart?.dispose();
     };

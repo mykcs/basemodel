@@ -71,7 +71,8 @@
         "architecture.context_length",
         "access.api_model_ids"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-5.6-terra, 1.05M context, 128K max output, mid-tier model. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-5.6-terra, 1.05M context, 128K max output, mid-tier model. Source checked 2026-08-06.",
+      "id": "src_a1b488467dd4"
     }
   ],
   "data_status": "verified"

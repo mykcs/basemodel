@@ -82,7 +82,8 @@
         "openness.classification",
         "access.weights_status",
         "access.weights_url"
-      ]
+      ],
+      "id": "src_2aa8d36eb900"
     },
     {
       "url": "https://apisrouter.com/minimax-m2-7-release-date",
@@ -91,7 +92,8 @@
       "evidence_note": "Third-party announcement citing MiniMax release notes confirms M2.7 release date of March 18, 2026 and availability today.",
       "supports": [
         "release_date"
-      ]
+      ],
+      "id": "src_0747e61495cb"
     }
   ],
   "data_status": "partial",

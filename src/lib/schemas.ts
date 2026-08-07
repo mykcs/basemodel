@@ -120,6 +120,53 @@ export const paperModelSchema = z.object({
   notes: z.string().optional(),
 });
 
+const workflowSchema = z.object({
+  nodes: z.array(z.object({
+    id: z.string().min(1),
+    type: z.enum(['model', 'environment', 'module', 'artifact']),
+    label: z.string().optional(),
+    model_id: z.string().min(1).optional(),
+  })),
+  edges: z.array(z.object({
+    from: z.string().min(1),
+    to: z.string().min(1),
+    label: z.string().optional(),
+    source_ids: z.array(z.string().min(1)).optional(),
+  })),
+});
+
+const paperReproducibilitySchema = z.object({
+  code_status: z.enum(['available', 'partial', 'unavailable', 'not_verified']),
+  checkpoint_status: z.enum(['available', 'partial', 'unavailable', 'not_verified']),
+  config_status: z.enum(['available', 'partial', 'unavailable', 'not_verified']),
+  environment_status: z.enum(['reported', 'partial', 'not_reported', 'not_verified']),
+  notes: z.array(z.string().min(1)).optional(),
+});
+
+const modelSelectionSchema = z.object({
+  model_id: z.string().min(1),
+  rationale: z.string().min(1),
+  basis: z.enum(['explicit_in_paper', 'explicit_in_code', 'derived', 'unknown']),
+  source_ids: z.array(z.string().min(1)).optional(),
+});
+
+export const claimSchema = z.object({
+  id: z.string().min(1),
+  subject_type: z.enum(['model', 'paper', 'family']),
+  subject_id: z.string().min(1),
+  field: z.string().min(1),
+  value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), semanticStatus]),
+  status: z.enum(['verified', 'partial', 'disputed', 'stale']),
+  confidence: z.enum(['direct_official', 'official_partial', 'paper', 'third_party', 'derived']),
+  valid_from: dateString.optional(),
+  valid_to: dateString.optional(),
+  checked_at: dateString,
+  evidence: z.array(z.object({
+    source_id: z.string().min(1),
+    relation: z.enum(['supports', 'contradicts']),
+  })),
+});
+
 export const paperSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   title: z.string().min(1),
@@ -133,10 +180,14 @@ export const paperSchema = z.object({
   benchmarks: z.array(z.string()).min(1),
   sources: z.array(sourceSchema).min(1),
   data_status: z.enum(['verified', 'partial', 'demo', 'unknown']),
+  workflow: workflowSchema.optional(),
+  reproducibility: paperReproducibilitySchema.optional(),
+  model_selection: z.array(modelSelectionSchema).optional(),
 });
 
 export type AtlasModel = z.infer<typeof modelSchema>;
 export type AtlasPaper = z.infer<typeof paperSchema>;
+export type AtlasClaim = z.infer<typeof claimSchema>;
 export type PaperModelUse = z.infer<typeof paperModelSchema>;
 export type DataStatus = AtlasModel['data_status'];
 export type UnknownBoolean = z.infer<typeof unknownBoolean>;

@@ -10,6 +10,7 @@ const m = getMessages(locale);
 const modelEntries = await getCollection('models');
 const paperEntries = await getCollection('papers');
 const models = modelEntries.map((entry) => entry.data);
+const papers = paperEntries.map((entry) => entry.data);
 const paperModelIds = [...modelIdsUsedByPapers(paperEntries.map((entry) => entry.data))];
 ---
-<div class="shell"><header class="page-header"><h1>{m.modelsIndex.pageTitle}</h1><p class="lede">{m.modelsIndex.lede}</p></header><ModelExplorer client:load models={models} paperModelIds={paperModelIds} locale={locale} /></div>
+<div class="shell"><header class="page-header"><h1>{m.modelsIndex.pageTitle}</h1><p class="lede">{m.modelsIndex.lede}</p></header><ModelExplorer client:load models={models} papers={papers} paperModelIds={paperModelIds} locale={locale} /></div>

@@ -1,0 +1,62 @@
+:root {
+  color-scheme: light;
+  --color-bg: #f6f4ef;
+  --color-surface: #fffdf9;
+  --color-surface-muted: #ece9e1;
+  --color-text: #1e2728;
+  --color-text-muted: #68706d;
+  --color-border: #dcd9d1;
+  --color-accent: #9c3e2a;
+  --color-accent-soft: #d7653b;
+  --color-positive: #245f56;
+  --color-warning: #805e2d;
+  --color-danger: #9f3027;
+  --color-info: #3d6f73;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --content-max: 1180px;
+  --shadow: 0 16px 45px rgba(37, 47, 46, .07);
+
+  /* Compatibility aliases for the existing page styles. */
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --surface-muted: var(--color-surface-muted);
+  --ink: var(--color-text);
+  --text: var(--color-text);
+  --muted: var(--color-text-muted);
+  --line: var(--color-border);
+  --border: var(--color-border);
+  --accent: var(--color-accent-soft);
+  --accent-deep: var(--color-accent);
+  --positive: var(--color-positive);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+  --blue: var(--color-info);
+  font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #151a1a;
+  --color-surface: #1d2525;
+  --color-surface-muted: #27302f;
+  --color-text: #edf0e8;
+  --color-text-muted: #a6b0a9;
+  --color-border: #394542;
+  --color-accent: #ffb08d;
+  --color-accent-soft: #f18b61;
+  --color-positive: #9ed2c6;
+  --color-warning: #e2bd79;
+  --color-danger: #f19a8e;
+  --color-info: #8ec1bd;
+  --shadow: 0 16px 45px rgba(0, 0, 0, .2);
+}

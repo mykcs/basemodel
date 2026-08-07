@@ -77,7 +77,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Hugging Face model card states 284B total parameters, 13B active, 1M context, MoE, MIT license. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 284B total parameters, 13B active, 1M context, MoE, MIT license. Source checked 2026-08-06.",
+      "id": "src_1fcf7628480f"
     },
     {
       "url": "https://api-docs.deepseek.com/",
@@ -87,7 +88,8 @@
         "access.api_status",
         "access.api_model_ids"
       ],
-      "evidence_note": "DeepSeek API documentation lists deepseek-v4-flash as a current API model and notes that the endpoint now points to the V4-Flash-0731 build. Source checked 2026-08-06."
+      "evidence_note": "DeepSeek API documentation lists deepseek-v4-flash as a current API model and notes that the endpoint now points to the V4-Flash-0731 build. Source checked 2026-08-06.",
+      "id": "src_edfd95646372"
     }
   ],
   "data_status": "verified"

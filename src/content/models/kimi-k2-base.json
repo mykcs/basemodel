@@ -65,13 +65,15 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Base",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official base model card and weights metadata document the foundation checkpoint, 1T total, 32B active, 384 experts, top-8 routing, 128K context and Modified MIT."
+      "evidence_note": "Moonshot AI official base model card and weights metadata document the foundation checkpoint, 1T total, 32B active, 384 experts, top-8 routing, 128K context and Modified MIT.",
+      "id": "src_ff5011d4bc0b"
     },
     {
       "url": "https://github.com/MoonshotAI/Kimi-K2",
       "type": "code",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official Kimi K2 repository documents the base/instruct model family."
+      "evidence_note": "Moonshot AI official Kimi K2 repository documents the base/instruct model family.",
+      "id": "src_e88c54ee251e"
     }
   ],
   "data_status": "verified"

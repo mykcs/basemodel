@@ -11,14 +11,13 @@ const { pathNoBase } = parsePath(Astro.url.pathname);
 const isCurrent = (path: string) => pathNoBase === path || (path !== '/' && pathNoBase.startsWith(path));
 
 // 站内链接全部走 localePath, 英文版自动带 /en/ 前缀。
-const links = [
-  { path: '/', label: m.nav.home },
+const primaryLinks = [
+  { path: '/workspace/', label: m.nav.workspace },
   { path: '/models/', label: m.nav.models },
-  { path: '/families/', label: m.nav.families },
-  { path: '/compare/', label: m.nav.compare },
   { path: '/papers/', label: m.nav.papers },
-  { path: '/data-status/', label: m.nav.dataStatus },
+  { path: '/guide/', label: m.nav.guide },
 ].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
+const utilityLinks = [{ path: '/compare/', label: m.nav.compare }].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
 
 // 语言切换: 映射当前路径到另一语言的等价路径。
 const switchHref = switchLocalePath(otherLocale, pathNoBase);
@@ -30,20 +29,20 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       <span><strong>{m.site.name}</strong><small>{m.site.tagline}</small></span>
     </a>
     <nav aria-label={m.nav.mainNav} class="desktop-nav">
-      <div class="nav-primary">{links.slice(0, 4).map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
-      <div class="nav-secondary">{links.slice(4).map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
+      <div class="nav-primary">{primaryLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
+      <div class="nav-secondary">{utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
     </nav>
     <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
     <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
-    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle>◐</button>
+    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle data-dark-label={m.nav.toggleLightTheme} data-light-label={m.nav.toggleDarkTheme}>◐</button>
   </div>
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
     <div class="shell">
-      {links.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
+      {[...primaryLinks, ...utilityLinks].map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
       <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
-      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle-mobile>◐</button>
+      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle-mobile data-dark-label={m.nav.toggleLightTheme} data-light-label={m.nav.toggleDarkTheme}>◐</button>
     </div>
   </div>
 </header>
@@ -63,7 +62,12 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
   const themeToggles = [...document.querySelectorAll('[data-theme-toggle], [data-theme-toggle-mobile]')];
   const syncThemeControls = () => {
     const dark = document.documentElement.dataset.theme === 'dark';
-    themeToggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(dark)));
+    themeToggles.forEach((toggle) => {
+      toggle.setAttribute('aria-pressed', String(dark));
+      toggle.setAttribute('aria-label', dark ? (toggle.getAttribute('data-dark-label') ?? '') : (toggle.getAttribute('data-light-label') ?? ''));
+      toggle.setAttribute('title', dark ? (toggle.getAttribute('data-dark-label') ?? '') : (toggle.getAttribute('data-light-label') ?? ''));
+      toggle.textContent = dark ? '☀' : '◐';
+    });
   };
   themeToggles.forEach((toggle) => {
     if (toggle.getAttribute('data-theme-bound') === 'true') return;
@@ -73,6 +77,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       document.documentElement.dataset.theme = dark ? 'light' : 'dark';
       try { localStorage.setItem('atlas-theme', dark ? 'light' : 'dark'); } catch {}
       syncThemeControls();
+      window.dispatchEvent(new CustomEvent('atlas:themechange', { detail: { theme: dark ? 'light' : 'dark' } }));
     });
   });
   syncThemeControls();

@@ -70,7 +70,8 @@
         "openness.license_name",
         "openness.classification"
       ],
-      "evidence_note": "Official Hugging Face model card states 685B parameters, reasoning-focused variant, no tool-calling, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Temporary API endpoint noted in DeepSeek API docs. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card states 685B parameters, reasoning-focused variant, no tool-calling, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Temporary API endpoint noted in DeepSeek API docs. Source checked 2026-08-06.",
+      "id": "src_44867d02f4c0"
     },
     {
       "url": "https://api-docs.deepseek.com/news/news251201",
@@ -80,7 +81,8 @@
         "release_date",
         "access.api_status"
       ],
-      "evidence_note": "DeepSeek API release announcement confirms V3.2 and V3.2-Speciale released December 1, 2025; Speciale was API-only with a temporary endpoint expiring December 15, 2025. Source checked 2026-08-06."
+      "evidence_note": "DeepSeek API release announcement confirms V3.2 and V3.2-Speciale released December 1, 2025; Speciale was API-only with a temporary endpoint expiring December 15, 2025. Source checked 2026-08-06.",
+      "id": "src_e4c730fe6d15"
     }
   ],
   "data_status": "partial"

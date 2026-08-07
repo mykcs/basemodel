@@ -14,7 +14,7 @@ const m = getMessages(locale);
   <div class="evidence-list">
     {item.sources.map((source) => (
       <a class="evidence-row" href={source.url} target="_blank" rel="noreferrer">
-        <span><strong>{source.title ?? sourceTypeLabel(source.type, locale)}</strong>{source.publisher && <small> · {source.publisher}</small>}<br /><small>{source.evidence_note ?? source.notes ?? m.evidence.claimCoverage}{source.supports?.length ? ` · ${m.evidence.supports}: ${source.supports.join(locale === 'zh' ? '、' : ', ')}` : ''}{source.locator ? ` · ${m.evidence.locator}: ${source.locator}` : ''}</small></span>
+        <span><strong>{source.title ?? sourceTypeLabel(source.type, locale)}</strong>{source.publisher && <small> · {source.publisher}</small>}<br /><small>{source.evidence_note ?? source.notes ?? m.evidence.claimCoverage}{source.locator ? ` · ${m.evidence.locator}: ${source.locator}` : ''}</small></span>
         <span>{source.published_at ?? source.checked_at}{source.revision ? ` · ${source.revision}` : ''}</span>
         <span class="external-link">{m.evidence.open}</span>
       </a>

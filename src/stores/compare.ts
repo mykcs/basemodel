@@ -1,4 +1,5 @@
 import { persistentAtom } from '@nanostores/persistent';
+import { localePath, type Locale } from '../i18n';
 
 const MAX_COMPARE = 5;
 const STORAGE_KEY = 'atlas-compare';
@@ -37,11 +38,8 @@ export function clearCompare() {
   compareIds.set([]);
 }
 
-export function compareUrl(locale: 'zh' | 'en', base: string): string {
+export function compareUrl(locale: Locale): string {
   const ids = compareIds.get();
-  const path = locale === 'en' ? `${base}en/compare/` : `${base}compare/`;
-  if (ids.length === 0) return path;
-  const url = new URL(path, window.location.origin);
-  url.searchParams.set('ids', ids.join(','));
-  return url.pathname + url.search;
+  const path = localePath(locale, '/compare/');
+  return ids.length ? `${path}?models=${encodeURIComponent(ids.join(','))}` : path;
 }

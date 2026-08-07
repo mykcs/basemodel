@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { researchTask, setResearchTask, clearResearchTask, type ResearchTask } from '../../stores/researchTask';
 import type { Messages } from '../../i18n/zh';
+import { accessModeLabel, researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
+import { roleLabel } from '../../lib/format';
 
 interface Props {
   m: Messages;
+  locale?: 'zh' | 'en';
 }
 
 const MODES: ResearchTask['mode'][] = ['strict', 'method', 'modern', 'new'];
@@ -11,7 +14,7 @@ const UPDATES: ResearchTask['update'][] = ['none', 'lora', 'sft', 'rl', 'unsure'
 const ROLES = ['actor', 'policy', 'critic', 'reflector', 'teacher', 'optimizer', 'analyzer', 'reward-model', 'judge', 'evaluator', 'baseline'];
 const PRIORITIES = ['comparability', 'current', 'low_cost', 'open_weights', 'chinese', 'tool_use', 'rl'];
 
-export function ConstraintPanel({ m }: Props) {
+export function ConstraintPanel({ m, locale = 'zh' }: Props) {
   const [task, setLocal] = useState<ResearchTask>(researchTask.get());
 
   const update = (patch: Partial<ResearchTask>) => {
@@ -50,7 +53,7 @@ export function ConstraintPanel({ m }: Props) {
         <label>{m.workspace.modeLabel}</label>
         <select value={task.mode} onChange={(e) => update({ mode: e.target.value as ResearchTask['mode'] })}>
           {MODES.map((mode) => (
-            <option key={mode} value={mode}>{mode}</option>
+            <option key={mode} value={mode}>{researchModeLabel(mode, locale)}</option>
           ))}
         </select>
       </div>
@@ -59,7 +62,7 @@ export function ConstraintPanel({ m }: Props) {
         <label>{m.workspace.updateLabel}</label>
         <select value={task.update} onChange={(e) => update({ update: e.target.value as ResearchTask['update'] })}>
           {UPDATES.map((u) => (
-            <option key={u} value={u}>{u}</option>
+            <option key={u} value={u}>{updateMethodLabel(u, locale)}</option>
           ))}
         </select>
       </div>
@@ -74,10 +77,19 @@ export function ConstraintPanel({ m }: Props) {
               className={`chip ${task.roles.includes(role) ? 'is-active' : ''}`}
               onClick={() => toggleRole(role)}
             >
-              {role}
+              {roleLabel(role)}
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="field">
+        <label>{m.workspace.accessModeLabel}</label>
+        <select value={task.accessMode} onChange={(e) => update({ accessMode: e.target.value as ResearchTask['accessMode'] })}>
+          {(['local', 'api', 'either'] as ResearchTask['accessMode'][]).map((access) => (
+            <option key={access} value={access}>{accessModeLabel(access, locale)}</option>
+          ))}
+        </select>
       </div>
 
       <div className="field">
@@ -90,7 +102,7 @@ export function ConstraintPanel({ m }: Props) {
               className={`chip ${task.priorities.includes(p) ? 'is-active' : ''}`}
               onClick={() => togglePriority(p)}
             >
-              {p}
+              {m.selector.goals[p as keyof typeof m.selector.goals] ?? p}
             </button>
           ))}
         </div>

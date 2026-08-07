@@ -71,7 +71,8 @@
         "access.api_model_ids",
         "checkpoint.modalities"
       ],
-      "evidence_note": "OpenAI official API docs list o4-mini default snapshot o4-mini-2025-04-16, 200K context, 100K max output, text+image input, text output, small reasoning model. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list o4-mini default snapshot o4-mini-2025-04-16, 200K context, 100K max output, text+image input, text output, small reasoning model. Source checked 2026-08-06.",
+      "id": "src_4c3fd87c4680"
     }
   ],
   "data_status": "verified"

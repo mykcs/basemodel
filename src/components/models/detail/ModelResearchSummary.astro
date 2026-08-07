@@ -1,0 +1,44 @@
+---
+import { displayBoolean, specializationLabel, statusLabel, tierLabel } from '../../../lib/format';
+import { paperUsesModel } from '../../../lib/modelRelations';
+import { getMessages, type Locale } from '../../../i18n';
+import type { AtlasModel, AtlasPaper } from '../../../lib/schemas';
+
+interface Props { model: AtlasModel; papers: AtlasPaper[]; locale: Locale }
+const { model, papers, locale } = Astro.props;
+const m = getMessages(locale);
+const joiner = locale === 'zh' ? '、' : ', ';
+const researchChecks = [
+  [m.detail.research.inference, model.research.suitable_for_inference],
+  [m.detail.research.lora, model.research.suitable_for_lora],
+  [m.detail.research.sft, model.research.suitable_for_sft],
+  [m.detail.research.rl, model.research.suitable_for_rl],
+] as Array<[string, unknown]>;
+const suitable = researchChecks.filter(([, value]) => value === true).map(([label]) => label);
+const limits = researchChecks.filter(([, value]) => value === false).map(([label]) => label);
+const paperUses = papers.flatMap((paper) => paperUsesModel(paper, model.id));
+const retrieval = model.openness.weights_available === true
+  ? m.detail.openWeights
+  : model.access?.api_status === 'available' || model.access?.api_status === 'preview'
+    ? m.detail.apiStatus
+    : displayBoolean(model.openness.weights_available, locale);
+const pending = model.data_status !== 'verified' || researchChecks.some(([, value]) => typeof value === 'string');
+const reproPending = model.reproducibility
+  ? [model.reproducibility.api_version_pinnable, model.reproducibility.tokenizer_public, model.reproducibility.config_public, model.reproducibility.chat_template_public].some((value) => typeof value === 'string' || value === undefined)
+  : true;
+---
+
+<section class="research-summary" aria-labelledby="research-summary-title">
+  <div class="section-kicker">{m.detail.researchSummaryTitle}</div>
+  <h2 id="research-summary-title">{m.detail.researchSummaryTitle}</h2>
+  <div class="research-summary-grid">
+    <div class="summary-block"><dt>{m.detail.suitableFor}</dt><dd>{suitable.length ? suitable.join(joiner) : m.format.unknown}</dd></div>
+    <div class="summary-block"><dt>{m.detail.notSuitableFor}</dt><dd>{limits.length ? limits.join(joiner) : m.detail.noExplicitLimit}</dd></div>
+    <div class="summary-block"><dt>{m.detail.retrieval}</dt><dd>{retrieval}</dd></div>
+    <div class="summary-block"><dt>{m.detail.hardwareSummary}</dt><dd>{m.detail.inference}: {tierLabel(model.hardware.inference_tier, locale)} · {m.detail.research.lora}: {tierLabel(model.hardware.lora_tier, locale)}</dd></div>
+    <div class="summary-block"><dt>{m.detail.paperAdoptionSummary}</dt><dd>{paperUses.length ? `${paperUses.length} · ${m.detail.adoptionTitle}` : m.detail.noPaperAdoption}</dd></div>
+    <div class="summary-block"><dt>{m.detail.reproRisk}</dt><dd>{reproPending ? m.detail.pendingVerification : m.detail.noExplicitLimit}</dd></div>
+    <div class="summary-block"><dt>{m.detail.evidenceState}</dt><dd>{statusLabel(model.data_status, locale)}{pending ? ` · ${m.detail.pendingVerification}` : ''}</dd></div>
+  </div>
+  {model.checkpoint.specializations.length > 0 && <div class="summary-specializations"><span>{m.detail.positioning}</span>{model.checkpoint.specializations.map((item) => <span class="pill">{specializationLabel(item, locale)}</span>)}</div>}
+</section>

@@ -74,7 +74,8 @@
       "evidence_note": "xAI official docs list Grok 4.1 as a current model. Release date is confirmed by third-party launch reporting because docs.x.ai does not state release dates explicitly.",
       "supports": [
         "access.api_status"
-      ]
+      ],
+      "id": "src_9526a0e44d14"
     },
     {
       "url": "https://jls42.org/en/news/xai-retrospective-2025",
@@ -84,7 +85,8 @@
       "supports": [
         "release_date",
         "architecture.context_length"
-      ]
+      ],
+      "id": "src_95cac2df4632"
     }
   ],
   "data_status": "partial",

@@ -58,7 +58,8 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-4o",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_bf1658b75f59"
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-4o",
@@ -67,7 +68,8 @@
       "supports": [
         "architecture.context_length"
       ],
-      "evidence_note": "OpenAI official API docs list gpt-4o context window as 128000 tokens. Source checked 2026-08-06."
+      "evidence_note": "OpenAI official API docs list gpt-4o context window as 128000 tokens. Source checked 2026-08-06.",
+      "id": "src_bf1658b75f59"
     }
   ],
   "data_status": "verified",

@@ -58,7 +58,8 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06."
+      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06.",
+      "id": "src_6a555c25eb52"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
@@ -70,7 +71,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-Coder-V2-Lite-Instruct is MIT licensed open weights with expert_count=64 and top-k=6. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-Coder-V2-Lite-Instruct is MIT licensed open weights with expert_count=64 and top-k=6. Source checked 2026-08-06.",
+      "id": "src_6a555c25eb52"
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
@@ -82,7 +84,8 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token"
       ],
-      "evidence_note": "Official Hugging Face model card confirms DeepSeek-Coder-V2-Lite-Instruct is MIT licensed open weights with expert_count=64 and top-k=6. Source checked 2026-08-06."
+      "evidence_note": "Official Hugging Face model card confirms DeepSeek-Coder-V2-Lite-Instruct is MIT licensed open weights with expert_count=64 and top-k=6. Source checked 2026-08-06.",
+      "id": "src_6a555c25eb52"
     }
   ],
   "data_status": "partial",

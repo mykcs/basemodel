@@ -37,13 +37,15 @@
       "url": "https://arxiv.org/abs/2401.15927",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_15610cadea10"
     },
     {
       "url": "https://github.com/LeapLabTHU/ExpeL",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_0df1df0126e4"
     }
   ],
   "data_status": "verified"

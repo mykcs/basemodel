@@ -38,13 +38,15 @@
       "url": "https://arxiv.org/abs/2310.03714",
       "type": "paper",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_23021c8a5f6c"
     },
     {
       "url": "https://github.com/stanfordnlp/dspy",
       "type": "code",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value."
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "id": "src_e6f38ed51797"
     }
   ],
   "data_status": "verified"

@@ -1,0 +1,8 @@
+{
+  "id": "agentbench-reported",
+  "paperId": "agentbench",
+  "modelIds": ["gpt-4", "gpt-3-5-turbo", "llama-2-70b-chat", "vicuna-13b"],
+  "benchmark": "AgentBench",
+  "status": "reported",
+  "sourceIds": ["src_1bb96f4eca55"]
+}
