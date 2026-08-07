@@ -11,6 +11,7 @@ import { WorkspaceMobileNav } from './WorkspaceMobileNav';
 import { ModelQuickViewDialog } from '../models/ModelQuickViewDialog';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
+import { useHydrated } from '../../lib/useHydrated';
 
 interface Props {
   models: AtlasModel[];
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function ResearchWorkspace({ models, papers, m, locale = 'zh' }: Props) {
+  const hydrated = useHydrated();
   const activePane = useStore(mobileWorkspacePane);
 
   useEffect(() => {
@@ -27,6 +29,8 @@ export function ResearchWorkspace({ models, papers, m, locale = 'zh' }: Props) {
   }, []);
 
   const setPane = (pane: MobileWorkspacePane) => mobileWorkspacePane.set(pane);
+
+  if (!hydrated) return null;
 
   return (
     <div className="workspace">

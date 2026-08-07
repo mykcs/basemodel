@@ -1,6 +1,7 @@
 import { useStore } from '@nanostores/react';
 import { compareIds, clearCompare } from '../../stores/compare';
 import { compareUrl } from '../../stores/compare';
+import { useHydrated } from '../../lib/useHydrated';
 import type { Messages } from '../../i18n/zh';
 
 interface Props {
@@ -10,9 +11,10 @@ interface Props {
 }
 
 export function CompareTray({ m, locale, modelNames }: Props) {
+  const hydrated = useHydrated();
   const ids = useStore(compareIds);
 
-  if (ids.length === 0) return null;
+  if (!hydrated || ids.length === 0) return null;
 
   return (
     <div className="compare-tray" role="region" aria-label={m.workspace.compareTray}>

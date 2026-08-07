@@ -15,6 +15,21 @@ test('homepage leads with the research workspace entry and an accessible theme t
   await expect(themeToggle).toHaveAttribute('aria-pressed', before === 'true' ? 'false' : 'true');
 });
 
+test('persistent browser state hydrates without React console errors', async ({ page }) => {
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.addInitScript(() => {
+    localStorage.setItem('atlas-compare', JSON.stringify(['qwen3-8b', 'gpt-oss-20b']));
+    localStorage.setItem('atlas-candidates', JSON.stringify(['qwen3-8b']));
+  });
+  await page.goto('./');
+
+  await expect(page.locator('.compare-tray')).toBeVisible();
+  await expect.poll(() => [...consoleErrors, ...pageErrors]).toEqual([]);
+});
+
 test('landscape prototype loads both code-split chart engines', async ({ page }) => {
   await page.goto('landscape/');
 

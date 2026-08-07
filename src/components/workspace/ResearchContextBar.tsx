@@ -5,6 +5,7 @@ import { compareIds } from '../../stores/compare';
 import { candidateIds } from '../../stores/candidates';
 import { localePath, type Locale } from '../../i18n';
 import { accessModeLabel, researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
+import { useHydrated } from '../../lib/useHydrated';
 import { hasMeaningfulResearchTask } from '../../stores/researchTask';
 import type { Messages } from '../../i18n/zh';
 
@@ -27,6 +28,7 @@ function taskSummary(task: ResearchTask, m: Messages, locale: Locale): string {
 }
 
 export function ResearchContextBar({ m, locale }: Props) {
+  const hydrated = useHydrated();
   const task = useStore(researchTask);
   const compare = useStore(compareIds);
   const candidates = useStore(candidateIds);
@@ -35,7 +37,7 @@ export function ResearchContextBar({ m, locale }: Props) {
     initResearchTaskFromUrl();
   }, []);
 
-  if (!hasMeaningfulResearchTask(task)) return null;
+  if (!hydrated || !hasMeaningfulResearchTask(task)) return null;
 
   return (
     <div className="research-context-bar" role="status" aria-live="polite">

@@ -11,11 +11,13 @@ import { compareIds, addToCompare, removeFromCompare } from '../stores/compare';
 import { evaluateModel } from '../lib/research/evaluateModel';
 import type { ResearchFit } from '../lib/research/types';
 import { ModelDecisionCard } from './models/ModelDecisionCard';
+import { useHydrated } from '../lib/useHydrated';
 
 type ViewMode = 'decision' | 'data' | 'timeline';
 type BooleanFilterKey = 'openWeights' | 'finetuning' | 'rl' | 'lora' | 'current' | 'baseCheckpoint' | 'singleGpu' | 'toolUse' | 'coding' | 'paperUse';
 
 export default function ModelExplorer({ models, papers, paperModelIds, locale = 'zh' }: { models: AtlasModel[]; papers: AtlasPaper[]; paperModelIds: string[]; locale?: Locale }) {
+  const hydrated = useHydrated();
   const m = getMessages(locale);
   const task = useStore(researchTask);
   const selectedCandidates = useStore(candidateIds);
@@ -73,6 +75,8 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     const labels: Partial<Record<keyof ModelFilters, string>> = { query: m.explorer.searchLabel, vendor: m.explorer.vendor, family: m.explorer.family, generation: m.explorer.generation, architecture: m.explorer.architecture, checkpoint: m.explorer.checkpoint, modality: m.explorer.modality, openWeights: m.explorer.openWeights, finetuning: m.explorer.finetuning, rl: m.explorer.rl, lora: m.explorer.lora, current: m.explorer.current, baseCheckpoint: m.explorer.baseCheckpoint, singleGpu: m.explorer.singleGpu, toolUse: m.explorer.toolUse, coding: m.explorer.coding, paperUse: m.explorer.paperUse, resource: m.explorer.hardwareTier, specialization: m.explorer.specialization, minParams: m.explorer.minParams, maxParams: m.explorer.minParams };
     return `${labels[key] ?? key}: ${typeof value === 'boolean' ? (value ? m.explorer.yes : m.explorer.no) : String(value)}`;
   };
+
+  if (!hydrated) return null;
 
   return <section className="explorer-shell">
     <div className="explorer-toolbar"><label className="search-field"><span className="sr-only">{m.explorer.searchLabel}</span><input value={filters.query ?? ''} onChange={(event) => update('query', event.target.value)} placeholder={m.explorer.searchPlaceholder} /></label><button className="button button-secondary filter-button" type="button" onClick={() => setShowFilters((value) => !value)} aria-expanded={showFilters}>{m.explorer.filter} {showFilters ? '↑' : '↓'}</button><label className="sort-field"><span>{m.explorer.sort}</span><select value={sort} onChange={(event) => setSort(event.target.value as typeof sort)}><option value="release">{m.explorer.sortRelease}</option><option value="parameters">{m.explorer.sortParams}</option><option value="name">{m.explorer.sortName}</option></select></label></div>

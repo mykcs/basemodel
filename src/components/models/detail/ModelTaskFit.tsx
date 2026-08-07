@@ -7,15 +7,17 @@ import { evaluateModel } from '../../../lib/research/evaluateModel';
 import type { Locale } from '../../../i18n';
 import type { Messages } from '../../../i18n/zh';
 import type { AtlasModel, AtlasPaper } from '../../../lib/schemas';
+import { useHydrated } from '../../../lib/useHydrated';
 
 interface Props { model: AtlasModel; papers: AtlasPaper[]; m: Messages; locale: Locale }
 
 export function ModelTaskFit({ model, papers, m }: Props) {
+  const hydrated = useHydrated();
   const task = useStore(researchTask);
   const candidates = useStore(candidateIds);
   const compare = useStore(compareIds);
   const evaluation = useMemo(() => hasMeaningfulResearchTask(task) ? evaluateModel(model, papers, task) : null, [model, papers, task]);
-  if (!evaluation) return null;
+  if (!hydrated || !evaluation) return null;
   const fitLabel = ({ high: m.explorer.fitHigh, conditional: m.explorer.fitConditional, explore: m.explorer.fitExplore, blocked: m.explorer.fitBlocked }[evaluation.fit.overall]);
   const dimensions: Array<[string, string]> = [
     [m.explorer.feasibility, evaluation.fit.feasibility.level], [m.explorer.researchSuitability, evaluation.fit.researchSuitability.level], [m.explorer.comparability, evaluation.fit.comparability.level], [m.explorer.reproducibility, evaluation.fit.reproducibility.level], [m.explorer.evidenceQuality, evaluation.fit.evidenceQuality.level],
