@@ -33,6 +33,9 @@ test('persistent browser state hydrates without React console errors', async ({ 
 test('landscape prototype loads both code-split chart engines', async ({ page }) => {
   await page.goto('landscape/');
 
+  await expect(page.locator('#landscape-learning-title')).toBeVisible();
+  await expect(page.locator('.landscape-chart')).toHaveCount(0);
+  await page.getByRole('button', { name: /完整视图|Full view/ }).click();
   await expect(page.locator('.landscape-chart svg')).toBeVisible();
   await page.getByRole('button', { name: 'D3', exact: true }).click();
   await expect(page.locator('.landscape-d3 svg')).toBeVisible();

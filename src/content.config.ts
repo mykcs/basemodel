@@ -35,7 +35,7 @@ const guides = defineCollection({
   schema: z.object({
     id: z.string(), title_zh: z.string(), title_en: z.string(), lede_zh: z.string(), lede_en: z.string(),
     steps_zh: z.array(z.string()), steps_en: z.array(z.string()), note_zh: z.string(), note_en: z.string(),
-    concepts: z.array(z.object({ id: z.string(), title_zh: z.string(), title_en: z.string(), body_zh: z.string(), body_en: z.string(), model_ids: z.array(z.string()).default([]) })).default([]),
+    concepts: z.array(z.object({ id: z.string(), title_zh: z.string(), title_en: z.string(), body_zh: z.string(), body_en: z.string(), model_ids: z.array(z.string()).default([]), links: z.array(z.object({ label_zh: z.string(), label_en: z.string(), href: z.string() })).default([]) })).default([]),
     glossary: z.array(z.object({ term_zh: z.string(), term_en: z.string(), definition_zh: z.string(), definition_en: z.string() })).default([]),
   }),
 });

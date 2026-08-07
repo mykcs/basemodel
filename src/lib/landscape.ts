@@ -31,8 +31,13 @@ export interface LandscapePoint {
   parameterSource: 'total' | 'active' | 'unknown';
   dataStatus: AtlasModel['data_status'];
   dataStatusLabel: string;
+  accessKey: 'weights' | 'api' | 'unknown';
+  accessLabel: string;
   symbolSize: number;
 }
+
+export type LandscapeDimension = 'hardware' | 'parameters';
+export type LandscapeColorBy = 'vendor' | 'access' | 'evidence';
 
 export interface LandscapeModelExport {
   id: string;
@@ -106,9 +111,24 @@ export function buildLandscapePoints(models: AtlasModel[], locale: Locale = 'zh'
       parameterSource: parameter.source,
       dataStatus: model.data_status,
       dataStatusLabel: statusLabel(model.data_status, locale),
+      accessKey: model.openness.weights_available === true ? 'weights' : model.access?.api_status === 'available' || model.access?.api_status === 'preview' ? 'api' : 'unknown',
+      accessLabel: model.openness.weights_available === true ? (locale === 'zh' ? '开放权重' : 'Open weights') : model.access?.api_status === 'available' || model.access?.api_status === 'preview' ? 'API' : (locale === 'zh' ? '访问待核验' : 'Access unknown'),
       symbolSize: symbolSizeForParameter(parameter.value, maximum),
     };
   });
+}
+
+export function landscapeDimensionIndex(point: LandscapePoint, dimension: LandscapeDimension): number {
+  if (dimension === 'hardware') return point.hardwareIndex;
+  if (point.parameterB === null) return 3;
+  if (point.parameterB < 10) return 0;
+  if (point.parameterB < 50) return 1;
+  return 2;
+}
+
+export function landscapeDimensionLabels(points: LandscapePoint[], locale: Locale, dimension: LandscapeDimension): string[] {
+  if (dimension === 'parameters') return locale === 'zh' ? ['<10B 参数', '10–50B 参数', '>50B 参数', '参数待核验'] : ['<10B params', '10–50B params', '>50B params', 'Parameters unknown'];
+  return [...LANDSCAPE_HARDWARE_ORDER.map((tier) => points.find((point) => point.hardwareTier === tier)?.hardwareLabel ?? tier), locale === 'zh' ? '硬件待核验' : 'Hardware unknown'];
 }
 
 export function toLandscapeModelExport(model: AtlasModel): LandscapeModelExport {

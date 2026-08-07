@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import type { EChartsCoreOption } from 'echarts/core';
 import type * as EChartsCore from 'echarts/core';
 import { getMessages, localePath, type Locale } from '../../i18n';
-import { buildLandscapePoints, LANDSCAPE_HARDWARE_ORDER } from '../../lib/landscape';
+import { buildLandscapePoints, landscapeDimensionIndex, landscapeDimensionLabels, type LandscapeColorBy, type LandscapeDimension } from '../../lib/landscape';
 import type { AtlasModel } from '../../lib/types';
 
 const vendorColors = ['#d7653b', '#3d6f73', '#7a5c9e', '#b4873a', '#2f7d5f', '#b14a65', '#6b7280', '#4776a8'];
 const architectureSymbols: Record<string, string> = { dense: 'circle', moe: 'diamond', other: 'rect' };
 const statusDash: Record<string, 'solid' | 'dashed' | 'dotted'> = { verified: 'solid', partial: 'dashed', demo: 'dotted', unknown: 'dotted' };
 
-export default function LandscapeECharts({ models, locale = 'zh' }: { models: AtlasModel[]; locale?: Locale }) {
+export default function LandscapeECharts({ models, locale = 'zh', dimension = 'hardware', colorBy = 'vendor' }: { models: AtlasModel[]; locale?: Locale; dimension?: LandscapeDimension; colorBy?: LandscapeColorBy }) {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,20 +31,17 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
       echarts.use([AriaComponent, GridComponent, LegendComponent, TooltipComponent, ScatterChart, SVGRenderer]);
       chart = echarts.init(chartRef.current, undefined, { renderer: 'svg' });
       const points = buildLandscapePoints(models, locale);
-      const vendors = [...new Set(points.map((point) => point.vendor))];
+      const colorKeys = [...new Set(points.map((point) => colorKey(point, colorBy)))];
       const styles = getComputedStyle(document.documentElement);
       const ink = styles.getPropertyValue('--ink').trim() || '#1e2728';
       const muted = styles.getPropertyValue('--muted').trim() || '#68706d';
       const line = styles.getPropertyValue('--line').trim() || '#dcd9d1';
       const surface = styles.getPropertyValue('--surface').trim() || '#fffdf9';
-      const tierLabels = [...LANDSCAPE_HARDWARE_ORDER, 'unknown'].map((tier) => {
-        const point = points.find((candidate) => candidate.hardwareIndex === [...LANDSCAPE_HARDWARE_ORDER, 'unknown'].indexOf(tier));
-        return tier === 'unknown' ? (locale === 'zh' ? '待核验' : 'Unknown') : point?.hardwareLabel ?? tier;
-      });
+      const dimensionLabels = landscapeDimensionLabels(points, locale, dimension);
       const option: EChartsCoreOption = {
         aria: { enabled: true, decal: { show: true } },
         animationDuration: 350,
-        color: vendors.map((_, index) => vendorColors[index % vendorColors.length]),
+        color: colorKeys.map((_, index) => colorForKey(colorKeys[index], colorBy, index)),
         grid: { left: 78, right: 24, top: 44, bottom: 52 },
         legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 11 } },
         tooltip: {
@@ -57,16 +54,16 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
             const point = (params as { data?: { point?: (typeof points)[number] } }).data?.point;
             if (!point) return '';
             const parameter = point.parameterB === null ? (locale === 'zh' ? '待核验' : 'Unknown') : `${point.parameterB}B (${point.parameterSource})`;
-            return `<strong>${escapeHtml(point.name)}</strong><br/>${escapeHtml(point.vendor)} · ${escapeHtml(point.releaseDate)}<br/>${escapeHtml(point.architectureLabel)} · ${escapeHtml(point.hardwareLabel)}<br/>${locale === 'zh' ? '参数' : 'Parameters'}: ${escapeHtml(parameter)}<br/>${locale === 'zh' ? '证据状态' : 'Evidence'}: ${escapeHtml(point.dataStatusLabel)}<br/><span style="color:${muted}">${locale === 'zh' ? '点击打开模型详情' : 'Click to open model details'}</span>`;
+            return `<strong>${escapeHtml(point.name)}</strong><br/>${escapeHtml(point.vendor)} · ${escapeHtml(point.releaseDate)}<br/>${escapeHtml(point.architectureLabel)} · ${escapeHtml(point.hardwareLabel)}<br/>${locale === 'zh' ? '访问' : 'Access'}: ${escapeHtml(point.accessLabel)}<br/>${locale === 'zh' ? '参数' : 'Parameters'}: ${escapeHtml(parameter)}<br/>${locale === 'zh' ? '证据状态' : 'Evidence'}: ${escapeHtml(point.dataStatusLabel)}<br/><span style="color:${muted}">${locale === 'zh' ? '点击打开模型详情' : 'Click to open model details'}</span>`;
           },
         },
         xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
-        yAxis: { type: 'category', data: tierLabels, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
-        series: vendors.map((vendor) => ({
-          name: vendor,
+        yAxis: { type: 'category', data: dimensionLabels, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
+        series: colorKeys.map((key) => ({
+          name: key,
           type: 'scatter',
-          data: points.filter((point) => point.vendor === vendor).map((point) => ({
-            value: [point.releaseTimestamp, point.hardwareIndex],
+          data: points.filter((point) => colorKey(point, colorBy) === key).map((point) => ({
+            value: [point.releaseTimestamp, landscapeDimensionIndex(point, dimension)],
             name: point.name,
             symbol: architectureSymbols[point.architecture],
             symbolSize: point.symbolSize,
@@ -110,7 +107,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
       if (resizeHandler) window.removeEventListener('resize', resizeHandler);
       chart?.dispose();
     };
-  }, [locale, models]);
+  }, [colorBy, dimension, locale, models]);
 
   const m = getMessages(locale);
   return <div className="landscape-chart-shell">
@@ -118,6 +115,16 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
     <div ref={chartRef} className="landscape-chart" role="img" aria-label={m.landscape.chartAria} />
     <p className="landscape-legend-note">{m.landscape.legendNote}</p>
   </div>;
+}
+
+function colorKey(point: ReturnType<typeof buildLandscapePoints>[number], colorBy: LandscapeColorBy): string {
+  return colorBy === 'access' ? point.accessKey : colorBy === 'evidence' ? point.dataStatus : point.vendor;
+}
+
+function colorForKey(key: string, colorBy: LandscapeColorBy, index: number): string {
+  if (colorBy === 'evidence') return statusColor(key);
+  if (colorBy === 'access') return ({ weights: '#2f7d5f', api: '#4776a8', unknown: '#68706d' } as Record<string, string>)[key] ?? '#68706d';
+  return vendorColors[index % vendorColors.length];
 }
 
 function statusColor(status: string): string {

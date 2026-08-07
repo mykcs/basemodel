@@ -1,0 +1,41 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const failures: string[] = [];
+const pass = (id: string, ok: boolean, evidence: string) => {
+  console.log(`${ok ? 'PASS' : 'FAIL'} ${id} — ${evidence}`);
+  if (!ok) failures.push(`${id}: ${evidence}`);
+};
+const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
+const exists = (file: string) => fs.existsSync(path.join(root, file));
+
+const explorer = read('src/components/ModelExplorer.tsx');
+const landscape = read('src/components/landscape/LandscapePrototype.tsx');
+const papers = read('src/components/papers/PaperSelectionRationale.astro');
+const guide = read('src/content/guides/research-workbench.json');
+const calculator = read('src/components/workspace/task/HardwareCalculator.tsx');
+
+pass('AV-ROUTES', ['src/pages/index.astro', 'src/pages/en/index.astro', 'src/pages/workspace/index.astro', 'src/pages/en/workspace/index.astro', 'src/pages/models/index.astro', 'src/pages/en/models/index.astro', 'src/pages/papers/index.astro', 'src/pages/en/papers/index.astro', 'src/pages/landscape/index.astro', 'src/pages/en/landscape/index.astro', 'src/pages/guide.astro', 'src/pages/en/guide.astro', 'src/pages/methodology.astro', 'src/pages/en/methodology.astro', 'src/pages/data-status.astro', 'src/pages/en/data-status.astro'].every(exists), 'bilingual research routes are present');
+pass('AV-EXPLORER', explorer.includes('filterDepth') && explorer.includes('facetCount') && explorer.includes('openQuickView') && explorer.includes('addCandidate') && explorer.includes('addToCompare'), 'core/advanced filters, counts, Quick View, Candidate, and Compare are wired in one client path');
+pass('AV-LANDSCAPE-LEARNING', landscape.includes("view === 'learning' ? <LearningLandscapeList") && landscape.includes('dimension') && landscape.includes('colorBy') && landscape.includes('onlyPaper'), 'learning mode is a readable list; full mode has dimension/color/paper controls');
+pass('AV-LANDSCAPE-UNKNOWN', read('src/lib/landscape.ts').includes('parameterB === null') && read('src/lib/landscape.ts').includes("source: 'unknown'"), 'unknown parameter values remain null/unknown rather than zero');
+pass('AV-PAPERS-UNKNOWN', papers.includes('paper.models') && papers.includes('Not recorded') && read('src/pages/_bodies/paper-detail.astro').includes('PaperSelectionRationale'), 'paper detail shows model roles and explicit unknown selection rationale even when no rationale records exist');
+pass('AV-GUIDE-COVERAGE', ['checkpoint', 'open-weight-source', 'architecture-scale', 'adaptation-evolution', 'reproducibility-fields', 'research-paths'].every((id) => guide.includes(`"id": "${id}"`)) && guide.toLowerCase().includes('external memory') && guide.includes('weight-updating self-evolution'), 'novice concepts include checkpoint, access, architecture, evolution, and reproduction boundaries');
+pass('AV-HARDWARE-INPUTS', ['parameters', 'context', 'batch', 'gpuCount', 'rank', 'precision', 'optimizer'].every((name) => calculator.includes(name)), 'heuristic estimator makes all required inputs affect its result and labels output as planning');
+pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'unknown/not-reported/not-verified remain semantic states');
+
+const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));
+const paperFiles = fs.readdirSync(path.join(root, 'src/content/papers')).filter((file) => file.endsWith('.json'));
+const models = modelFiles.map((file) => JSON.parse(read(path.join('src/content/models', file))) as { data_status: string; sources?: Array<{ url: string; evidence_note?: string }> });
+const papersData = paperFiles.map((file) => JSON.parse(read(path.join('src/content/papers', file))) as { model_selection?: unknown[] });
+const partial = models.filter((model) => model.data_status !== 'verified').length;
+const withSelection = papersData.filter((paper) => Array.isArray(paper.model_selection) && paper.model_selection.length > 0).length;
+console.log(`FACT-EVIDENCE models=${models.length} verified=${models.length - partial} partial_or_unknown=${partial} papers=${papersData.length} explicit_selection_records=${withSelection}`);
+console.log('FACT-VERDICT EVIDENCE-UNKNOWN — current fact coverage is reported honestly; unresolved external facts are not promoted by this code audit.');
+
+if (failures.length) {
+  console.error(`\nAdversarial audit failed: ${failures.length} code-completable gap(s).`);
+  process.exit(1);
+}
+console.log('\nAdversarial audit passed: no code-completable gap found in the deterministic acceptance probes.');

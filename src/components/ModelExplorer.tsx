@@ -36,10 +36,10 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     specialization: params.get('specialization') ?? undefined, minParams: params.get('minParams') ? Number(params.get('minParams')) : undefined,
     maxParams: params.get('maxParams') ? Number(params.get('maxParams')) : undefined,
   });
-  const [sort, setSort] = useState<'release' | 'parameters' | 'name'>('release');
+  const [sort, setSort] = useState<'release' | 'parameters' | 'name'>((params.get('sort') as 'release' | 'parameters' | 'name') || 'release');
   const [view, setView] = useState<ViewMode>((params.get('view') as ViewMode) || 'decision');
   const [showFilters, setShowFilters] = useState(false);
-  const [filterDepth, setFilterDepth] = useState<'core' | 'advanced'>('core');
+  const [filterDepth, setFilterDepth] = useState<'core' | 'advanced'>((params.get('depth') as 'core' | 'advanced') || 'core');
   const result = useMemo(() => sortModels(filterModels(models, filters, new Set(paperModelIds)), sort), [models, filters, paperModelIds, sort]);
   const taskFits = useMemo(() => {
     if (!hasMeaningfulResearchTask(task)) return new Map<string, ResearchFit>();
@@ -64,9 +64,11 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     const booleans: BooleanFilterKey[] = ['openWeights', 'finetuning', 'rl', 'lora', 'current', 'baseCheckpoint', 'singleGpu', 'toolUse', 'coding', 'paperUse'];
     booleans.forEach((key) => { if (filters[key] !== undefined) next.set(key, String(filters[key])); });
     if (filters.resource) next.set('resource', filters.resource); if (filters.specialization) next.set('specialization', filters.specialization); if (filters.minParams !== undefined) next.set('minParams', String(filters.minParams)); if (filters.maxParams !== undefined) next.set('maxParams', String(filters.maxParams));
+    if (sort !== 'release') next.set('sort', sort);
+    if (filterDepth !== 'core') next.set('depth', filterDepth);
     if (view !== 'decision') next.set('view', view);
     window.history.replaceState({}, '', `${window.location.pathname}${next.toString() ? `?${next}` : ''}`);
-  }, [filters, view]);
+  }, [filterDepth, filters, sort, view]);
 
   const update = (key: keyof ModelFilters, value: string | boolean | number | undefined) => setFilters((current) => ({ ...current, [key]: value === '' ? undefined : value }));
   const toggleQuickFilter = (key: BooleanFilterKey) => update(key, filters[key] === true ? undefined : true);
