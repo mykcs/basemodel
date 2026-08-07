@@ -1,4 +1,5 @@
 import type { TaskStepProps } from './types';
+import { HardwareCalculator } from './HardwareCalculator';
 
 function optionalNumber(value: string): number | undefined {
   if (!value.trim()) return undefined;
@@ -6,7 +7,7 @@ function optionalNumber(value: string): number | undefined {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
 }
 
-export function ResourceStep({ draft, update, m }: TaskStepProps) {
+export function ResourceStep({ draft, update, m, locale }: TaskStepProps) {
   const copy = m.workspace.taskBuilder;
   return (
     <section className="task-step" aria-labelledby="task-step-title">
@@ -19,6 +20,7 @@ export function ResourceStep({ draft, update, m }: TaskStepProps) {
         <label className="field"><span>{m.workspace.contextLabel}</span><input type="number" min="0" step="1024" value={draft.contextTarget ?? ''} onChange={(event) => update({ contextTarget: optionalNumber(event.target.value) })} /></label>
       </div>
       <label className="check-row"><input type="checkbox" checked={draft.quantizationAllowed === true} onChange={(event) => update({ quantizationAllowed: event.target.checked })} /> <span>{copy.quantization}</span></label>
+      <HardwareCalculator locale={locale} />
     </section>
   );
 }

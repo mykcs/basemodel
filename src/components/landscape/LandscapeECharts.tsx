@@ -20,7 +20,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
     let themeHandler: (() => void) | null = null;
 
     void (async () => {
-      const [echarts, { GridComponent, LegendComponent, TooltipComponent }, { ScatterChart }, { SVGRenderer }] = await Promise.all([
+      const [echarts, { AriaComponent, GridComponent, LegendComponent, TooltipComponent }, { ScatterChart }, { SVGRenderer }] = await Promise.all([
         import('echarts/core'),
         import('echarts/components'),
         import('echarts/charts'),
@@ -28,7 +28,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
       ]);
       if (disposed || !chartRef.current) return;
 
-      echarts.use([GridComponent, LegendComponent, TooltipComponent, ScatterChart, SVGRenderer]);
+      echarts.use([AriaComponent, GridComponent, LegendComponent, TooltipComponent, ScatterChart, SVGRenderer]);
       chart = echarts.init(chartRef.current, undefined, { renderer: 'svg' });
       const points = buildLandscapePoints(models, locale);
       const vendors = [...new Set(points.map((point) => point.vendor))];
@@ -42,6 +42,7 @@ export default function LandscapeECharts({ models, locale = 'zh' }: { models: At
         return tier === 'unknown' ? (locale === 'zh' ? '待核验' : 'Unknown') : point?.hardwareLabel ?? tier;
       });
       const option: EChartsCoreOption = {
+        aria: { enabled: true, decal: { show: true } },
         animationDuration: 350,
         color: vendors.map((_, index) => vendorColors[index % vendorColors.length]),
         grid: { left: 78, right: 24, top: 44, bottom: 52 },

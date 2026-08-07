@@ -2,6 +2,8 @@
 
 This is the release gate for the V2 research decision workbench. A checked item must have automated evidence from `scripts/audit-v2-completion.ts` or a recorded browser/build check.
 
+The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLETION_MATRIX.md`](./V2_PRODUCT_COMPLETION_MATRIX.md). This narrow release gate must not be read as proof that external cloud/account/team capabilities or unavailable source facts are complete.
+
 ## Product shell
 
 - [x] V2-SHELL-001 — No page imports `BaseLayout.astro`.

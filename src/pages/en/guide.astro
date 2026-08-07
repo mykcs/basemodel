@@ -2,11 +2,14 @@
 import AppLayout from '../../layouts/AppLayout.astro';
 import { getMessages } from '../../i18n';
 import { getCollection } from 'astro:content';
+import GuideContent from '../../components/GuideContent.astro';
 const m = getMessages('en');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_en ?? m.guide.steps;
 const title = guide?.title_en ?? m.guide.title;
 const lede = guide?.lede_en ?? m.guide.lede;
 const note = guide?.note_en ?? m.guide.note;
+const concepts = guide?.concepts ?? [];
+const glossary = guide?.glossary ?? [];
 ---
-<AppLayout title={m.guide.pageTitle} description={lede} locale="en"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><ol class="guide-steps">{steps.map((step, index) => <li><span>{index + 1}</span><p>{step}</p></li>)}</ol><p class="callout">{note}</p></div></AppLayout>
+<AppLayout title={m.guide.pageTitle} description={lede} locale="en"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} /></div></AppLayout>

@@ -7,10 +7,10 @@ import { getMessages, isLocale, type Locale } from '../../i18n';
 export async function getStaticPaths() {
   const modelEntries = await getCollection('models');
   const paperEntries = await getCollection('papers');
-  return modelEntries.map((entry) => ({ params: { id: entry.data.id }, props: { model: entry.data, papers: paperEntries.map((paper) => paper.data).filter((paper) => paper.models.some((use) => use.model_id === entry.data.id)) } }));
+  return modelEntries.map((entry) => ({ params: { id: entry.data.id }, props: { model: entry.data, models: modelEntries.map((item) => item.data), papers: paperEntries.map((paper) => paper.data).filter((paper) => paper.models.some((use) => use.model_id === entry.data.id)) } }));
 }
-const { model, papers } = Astro.props;
+const { model, models, papers } = Astro.props;
 const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
 const m = getMessages(locale);
 ---
-<AppLayout title={model.name} description={`${model.name} ${m.detail.descriptionSuffix}`} locale={locale}><Body model={model} papers={papers} locale={locale} /></AppLayout>
+<AppLayout title={model.name} description={`${model.name} ${m.detail.descriptionSuffix}`} locale={locale}><Body model={model} models={models} papers={papers} locale={locale} /></AppLayout>

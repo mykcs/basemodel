@@ -4,12 +4,15 @@ import { buildDataHealth, type FamilyCoverage, type VendorCoverage } from '../..
 import { getMessages, isLocale, type Locale } from '../../i18n';
 import vendorsFile from '../../content/coverage/vendors.json';
 import familiesFile from '../../content/coverage/families.json';
+import ClaimHistory from '../../components/evidence/ClaimHistory.astro';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
+const claims = (await getCollection('claims')).map((entry) => entry.data);
+const benchmarkRuns = (await getCollection('benchmarkRuns')).map((entry) => entry.data);
 const health = buildDataHealth(models, vendorsFile.vendors as VendorCoverage[], familiesFile.families as FamilyCoverage[]);
 health.semanticGaps.not_published += papers.filter((paper) => paper.checkpoint_url === 'not_published').length;
 const semanticLabel = (state: string) => m.format.semanticStatus[state as keyof typeof m.format.semanticStatus] ?? m.format.unknown;
@@ -54,4 +57,6 @@ const reasonLabel = (reason: string) => locale === 'en' ? ({ 'stale-source': 'St
     <div class="section-heading"><div><h2 id="issues-title">{m.dataStatus.issues}</h2></div></div>
     {health.issues.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.severity}</th><th>{m.dataStatus.record}</th><th>{m.dataStatus.field}</th><th>{m.dataStatus.issueKind}</th><th>{m.dataStatus.source}</th></tr></thead><tbody>{health.issues.map((issue) => <tr><td>{severityLabel(issue.severity)}</td><th scope="row"><code>{issue.modelId}</code></th><td>{issue.field ?? '—'}</td><td>{reasonLabel(issue.reason)}{issue.claimStatus ? ` · ${semanticLabel(issue.claimStatus)}` : ''}</td><td>{issue.sourceUrl ? <a href={issue.sourceUrl} target="_blank" rel="noreferrer">{issue.checkedAt ?? m.dataStatus.source}</a> : '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{m.dataStatus.noIssues}</p>}
   </section>
+  <ClaimHistory claims={claims} locale={locale} />
+  <section class="section" aria-labelledby="benchmark-runs-title"><div class="section-heading"><div><h2 id="benchmark-runs-title">{locale === 'zh' ? 'Benchmark 运行条件' : 'Benchmark run conditions'}</h2><p class="muted">{locale === 'zh' ? '报告结果和独立复现分开；未报告的硬件、温度和 prompt 不会被补写。' : 'Reported results and independent reproductions remain separate; missing hardware, temperature, and prompt details are not filled in.'}</p></div></div>{benchmarkRuns.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{locale === 'zh' ? 'Benchmark' : 'Benchmark'}</th><th>{locale === 'zh' ? '模型' : 'Models'}</th><th>{locale === 'zh' ? '状态' : 'Status'}</th><th>{locale === 'zh' ? '硬件/精度' : 'Hardware/precision'}</th><th>{locale === 'zh' ? 'Prompt/温度' : 'Prompt/temperature'}</th><th>{locale === 'zh' ? '结果来源' : 'Result source'}</th></tr></thead><tbody>{benchmarkRuns.map((run) => <tr><th scope="row">{run.benchmark}</th><td>{run.modelIds.join(', ')}</td><td>{run.resultStatus ?? run.status}</td><td>{run.conditions?.hardware ?? 'not_reported'} / {run.conditions?.precision ?? 'not_reported'}</td><td>{run.conditions?.promptScaffold ?? 'not_reported'} / {run.conditions?.temperature ?? 'not_reported'}</td><td>{run.sourceIds.join(', ') || '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{locale === 'zh' ? '当前没有 benchmark 运行记录。' : 'No benchmark runs are recorded.'}</p>}</section>
 </div>

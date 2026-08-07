@@ -7,5 +7,7 @@ interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? 'zh';
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
+const papers = (await getCollection('papers')).map((entry) => entry.data);
+const paperModelIds = [...new Set(papers.flatMap((paper) => paper.models.map((use) => use.model_id)))];
 ---
-<div class="shell"><header class="page-header"><div class="section-kicker">{m.landscape.kicker}</div><h1>{m.landscape.prototypeTitle}</h1><p class="lede">{m.landscape.prototypeLede}</p></header><LandscapePrototype client:load models={models} locale={locale} /></div>
+<div class="shell"><header class="page-header"><div class="section-kicker">{m.landscape.kicker}</div><h1>{m.landscape.prototypeTitle}</h1><p class="lede">{m.landscape.prototypeLede}</p></header><LandscapePrototype client:load models={models} paperModelIds={paperModelIds} locale={locale} /></div>

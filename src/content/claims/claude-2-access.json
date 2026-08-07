@@ -3,6 +3,12 @@
   "subjectType": "model",
   "subjectId": "claude-2",
   "fieldPath": "access.api_status",
+  "predicate": "api_status",
+  "value": "available",
+  "scope": "catalog_record",
+  "validFrom": "2023-07-11",
+  "confidence": "direct_official",
+  "relation": "supports",
   "status": "verified",
   "evidenceIds": ["src_3c6aa0c7c522"],
   "evidenceNote": "The model record preserves the official catalog source and its checked date."

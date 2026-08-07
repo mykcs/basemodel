@@ -19,7 +19,8 @@
     "audit": "npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:vendor-catalogs && npm run audit:freshness && npm run audit:coverage",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "verify:v2": "npm run check && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && tsx scripts/audit-v2-completion.ts",
+    "audit:v2": "tsx scripts/audit-v2-completion.ts",
+    "verify:v2": "npm run check && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2",
     "build": "astro build",
     "preview": "astro preview"
   },

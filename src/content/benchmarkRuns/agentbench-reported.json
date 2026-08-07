@@ -4,5 +4,15 @@
   "modelIds": ["gpt-4", "gpt-3-5-turbo", "llama-2-70b-chat", "vicuna-13b"],
   "benchmark": "AgentBench",
   "status": "reported",
-  "sourceIds": ["src_1bb96f4eca55"]
+  "sourceIds": ["src_1bb96f4eca55"],
+  "conditions": {
+    "hardware": "not_reported",
+    "precision": "not_reported",
+    "batchSize": "not_reported",
+    "promptScaffold": "paper_reported",
+    "temperature": "not_reported",
+    "reasoningBudget": "not_reported",
+    "benchmarkVersion": "AgentBench paper version"
+  },
+  "resultStatus": "paper_reported"
 }

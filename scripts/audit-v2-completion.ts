@@ -60,6 +60,14 @@ pass('V2-A11Y-002', read('src/styles/site.css').includes('prefers-reduced-motion
 pass('V2-A11Y-003', read('src/components/landscape/LandscapeD3.tsx').includes("attr('tabindex', 0)"), 'SVG points are keyboard reachable');
 pass('V2-I18N-001', read('src/i18n/zh.ts').includes('toggleLightTheme') && read('src/i18n/en.ts').includes('toggleLightTheme'), 'theme/search/memo copy has both locales');
 pass('V2-FACTS-001', read('src/lib/schemas.ts').includes('semanticStatus') && sourceText.includes('evidence_note'), 'unknown facts preserve semantic state and evidence notes');
+pass('V2-PRODUCT-001', read('src/components/ModelExplorer.tsx').includes('filterDepth') && read('src/components/ModelExplorer.tsx').includes('facetCount') && read('src/components/models/ModelDecisionCard.tsx').includes('onQuickView'), 'model explorer core/advanced filters, facet counts, and quick view are wired');
+pass('V2-PRODUCT-002', read('src/components/papers/PaperExplorer.tsx').includes('reproducibilityLevel') && read('src/pages/_bodies/paper-detail.astro').includes('PaperSelectionRationale'), 'paper cases expose research rationale and reproducibility signals');
+pass('V2-PRODUCT-003', read('src/components/ModelComparison.tsx').includes('copyBibtex') && read('src/components/ModelComparison.tsx').includes("valueMode === 'relative'"), 'compare supports BibTeX and relative baseline mode');
+pass('V2-PRODUCT-004', read('src/components/workspace/task/HardwareCalculator.tsx').includes('optimizerState') && read('src/components/workspace/task/ResourceStep.tsx').includes('HardwareCalculator'), 'resource step mounts transparent VRAM planning calculator');
+pass('V2-PRODUCT-005', read('src/components/landscape/LandscapePrototype.tsx').includes('AccessibleLandscapeTable') && read('src/components/landscape/LandscapeECharts.tsx').includes('AriaComponent'), 'landscape has filtered views and an accessible alternative');
+pass('V2-PRODUCT-006', read('src/components/evidence/ClaimHistory.astro').includes('validFrom') && read('src/pages/_bodies/data-status.astro').includes('benchmarkRuns'), 'claim history and benchmark conditions are visible in data status');
+pass('V2-PRODUCT-007', read('src/pages/_bodies/home-v2.astro').includes("getCollection('changeEvents')") && !existsSync(join(root, 'src/components/ExperimentSelector.tsx')), 'home consumes change events and unused V1 selector is removed');
+pass('V2-PRODUCT-008', read('docs/V2_PRODUCT_COMPLETION_MATRIX.md').includes('R-16') && read('docs/V2_PRODUCT_COMPLETION_MATRIX.md').includes('原始目的复核'), 'full red/yellow matrix and purpose review are recorded');
 
 if (failures.length) {
   console.error(`\nV2 completion audit failed: ${failures.length} item(s)`);

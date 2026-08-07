@@ -8,9 +8,11 @@ import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, isS
 import { paperUsesModel } from '../../lib/modelRelations';
 import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
 import type { AtlasModel, AtlasPaper } from '../../lib/types';
+import ModelDetailTools from '../../components/models/detail/ModelDetailTools';
+import ModelAlternatives from '../../components/models/detail/ModelAlternatives.astro';
 
-interface Props { model: AtlasModel; papers: AtlasPaper[]; locale?: Locale }
-const { model, papers } = Astro.props;
+interface Props { model: AtlasModel; models?: AtlasModel[]; papers: AtlasPaper[]; locale?: Locale }
+const { model, models = [model], papers } = Astro.props;
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const joiner = locale === 'zh' ? '、' : ', ';
@@ -49,7 +51,7 @@ const collectUnresolved = (value: unknown, path: string) => {
 collectUnresolved(model, 'model');
 const positioning = model.checkpoint.specializations.length ? model.checkpoint.specializations.map((item) => specializationLabel(item, locale)).join(joiner) : m.format.unknown;
 ---
-<div class="shell detail-layout"><article>{identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}<h1 class="detail-title">{model.name}</h1>{alternateName && <p class="detail-alias muted">{alternateName}</p>}<p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
+<div class="shell detail-layout"><article>{identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}<h1 class="detail-title">{model.name}</h1>{alternateName && <p class="detail-alias muted">{alternateName}</p>}<p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p><ModelDetailTools client:load model={model} locale={locale} />
   <ModelResearchSummary model={model} papers={papers} locale={locale} />
   <AccessLadder model={model} locale={locale} />
   <ModelTaskFit client:load model={model} papers={papers} m={m} locale={locale} />
@@ -59,4 +61,5 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
   <section class="detail-section"><h2>{m.detail.strengthsTitle}</h2><div class="pill-list">{model.checkpoint.specializations.map((item) => <span class="pill">{specializationLabel(item, locale)}</span>)}</div><div class="fact-grid" style="margin-top:16px"><div class="fact"><dt>{m.detail.research.inference}</dt><dd>{displayBoolean(model.research.suitable_for_inference, locale)}</dd></div><div class="fact"><dt>{m.detail.research.lora}</dt><dd>{displayBoolean(model.research.suitable_for_lora, locale)}</dd></div><div class="fact"><dt>{m.detail.research.sft}</dt><dd>{displayBoolean(model.research.suitable_for_sft, locale)}</dd></div><div class="fact"><dt>{m.detail.research.rl}</dt><dd>{displayBoolean(model.research.suitable_for_rl, locale)}</dd></div><div class="fact"><dt>{m.detail.research.transformers}</dt><dd>{displayBoolean(model.research.transformers_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.vllm}</dt><dd>{displayBoolean(model.research.vllm_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.sglang}</dt><dd>{displayBoolean(model.research.sglang_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.verl}</dt><dd>{displayBoolean(model.research.verl_recipe_available, locale)}</dd></div></div></section>
   <section class="detail-section"><h2>{m.detail.hardwareTitle}</h2><div class="fact-grid"><div class="fact"><dt>{m.detail.inference}</dt><dd>{tierLabel(model.hardware.inference_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.research.lora}</dt><dd>{tierLabel(model.hardware.lora_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.fullSft}</dt><dd>{tierLabel(model.hardware.full_sft_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.research.rl}</dt><dd>{tierLabel(model.hardware.rl_tier, locale)}</dd></div></div></section>
   <section class="detail-section"><h2>{m.detail.adoptionTitle}</h2>{papers.length ? <div class="paper-list">{papers.map((paper) => <a class="paper-row" href={localePath(locale, `/papers/${paper.id}/`)}><div><h3>{paper.title}</h3><p>{paperUsesModel(paper, model.id).map((use) => `${roleLabel(use.role, locale)}${use.weight_updated === true ? m.detail.weightUpdatedSuffix : ''}`).join(relationJoiner)}</p></div><div class="paper-meta">{paper.published_at}</div></a>)}</div> : <p class="muted">{m.detail.noAdoption}</p>}</section>
+  <ModelAlternatives model={model} models={models} locale={locale} />
 </article><aside class="detail-aside"><ClaimEvidencePanel item={model} locale={locale} /></aside></div>

@@ -1,0 +1,8 @@
+---
+import type { AtlasModel, AtlasPaper } from '../../lib/types';
+
+interface Props { paper: AtlasPaper; models: AtlasModel[]; locale: 'zh' | 'en' }
+const { paper, models, locale } = Astro.props;
+const modelMap = new Map(models.map((model) => [model.id, model]));
+---
+{paper.model_selection?.length ? <section class="shell detail-section paper-selection-rationale" id="model-selection"><h2>{locale === 'zh' ? '模型选择依据' : 'Why these models were selected'}</h2><p class="muted">{locale === 'zh' ? '每条依据保留为论文明确说明、代码明确说明、目录推导或未知；推导不等于论文事实。' : 'Each rationale is labeled as explicit in paper, explicit in code, derived, or unknown; derived is not a paper fact.'}</p><div class="paper-list">{paper.model_selection.map((selection) => <div class="paper-row"><div><h3>{modelMap.get(selection.model_id)?.name ?? selection.model_id}</h3><p>{selection.rationale}</p></div><div class="paper-meta"><span class="tag">{selection.basis}</span></div></div>)}</div></section> : null}

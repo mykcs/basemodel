@@ -11,6 +11,7 @@ const m = getMessages(locale);
 
 const modelEntries = await getCollection('models');
 const models = modelEntries.map((entry) => entry.data);
+const changeEventEntries = await getCollection('changeEvents');
 
 const totalModels = models.length;
 const familyCount = familiesData.families.length;
@@ -74,6 +75,9 @@ const recentModelEvents = [...models]
   .filter((model) => typeof model.release_date === 'string')
   .sort((left, right) => right.release_date.localeCompare(left.release_date))
   .slice(0, 6);
+const recentEvents = [...changeEventEntries.map((entry) => entry.data).map((event) => ({ kind: 'event' as const, date: event.occurredAt, title: event.entityId, note: event.note ?? event.eventType })), ...recentModelEvents.map((model) => ({ kind: 'release' as const, date: model.release_date, title: model.name, note: `${model.vendor} · ${model.family}` }))]
+  .sort((left, right) => right.date.localeCompare(left.date))
+  .slice(0, 8);
 
 const secondaryEntries = [
   { label: m.v2.home.entryReproduce, href: localePath(locale, '/papers/') },
@@ -170,7 +174,7 @@ const secondaryEntries = [
       <span class="muted">{m.v2.home.recentChangesNote}</span>
     </div>
     <ol class="model-timeline">
-      {recentModelEvents.map((model) => <li><time datetime={model.release_date}>{model.release_date}</time><div><a href={localePath(locale, `/models/${model.id}/`)}><strong>{model.name}</strong></a><span>{model.vendor} · {model.family}</span><small>{m.v2.home.recentRelease} · {model.sources.length} {m.v2.home.recentSources}</small></div></li>)}
+      {recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据事件' : 'Data event') : m.v2.home.recentRelease}</small></div></li>)}
     </ol>
   </section>
 
