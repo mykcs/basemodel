@@ -4,9 +4,12 @@ This repository is frequently maintained by coding agents through GitHub without
 
 ## Required reading
 
-Before changing hosting, CI, deployment, URL/base-path behavior, SEO deployment output, or repository automation, read:
+Before changing hosting, CI, deployment, URL/base-path behavior, SEO deployment output, or repository automation, read these in order:
 
-- [`docs/agents/cloudflare-pages-deployment.md`](docs/agents/cloudflare-pages-deployment.md)
+1. [`docs/agents/dual-hosting-policy.md`](docs/agents/dual-hosting-policy.md) — authoritative steady-state policy. The intended architecture is long-term GitHub Pages + Cloudflare Pages dual hosting.
+2. [`docs/agents/cloudflare-pages-deployment.md`](docs/agents/cloudflare-pages-deployment.md) — detailed Cloudflare migration/runbook and implementation notes.
+
+If migration-era wording in the Cloudflare runbook suggests retiring GitHub Pages, the dual-hosting policy takes precedence unless the repository owner explicitly requests a different hosting strategy.
 
 Agent-oriented documentation index:
 
@@ -15,9 +18,11 @@ Agent-oriented documentation index:
 ## Operating rules
 
 - GitHub is the canonical source repository.
+- Preserve both Cloudflare Pages and GitHub Pages as public deployment paths unless the owner explicitly requests otherwise.
+- Cloudflare serves from `/`; GitHub Pages serves from `/basemodel/`. Preserve this base-path contract.
 - Prefer branch + pull request for non-trivial changes; do not silently direct-push `main`.
 - Do not treat a GitHub Actions job that fails before step 1 because hosted-runner capacity/allowance is unavailable as an application test failure.
-- Do not disable an existing production deployment path until its replacement is verified on a real deployment.
+- Do not disable an existing production deployment path merely because the other host is healthy.
 - Keep deployment build logic reproducible in the repository rather than only in a provider dashboard.
 - Preserve the distinction between deterministic deployment-blocking checks and expensive/external-network audits.
 - When changing deployment hosts or canonical URLs, verify `base`, sitemap, robots, canonical metadata, assets, and bilingual routes.
