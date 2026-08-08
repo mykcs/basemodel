@@ -151,6 +151,56 @@ const modelSelectionSchema = z.object({
   source_ids: z.array(z.string().min(1)).optional(),
 });
 
+const localizedCopySchema = z.object({
+  zh: z.string().min(1),
+  en: z.string().min(1),
+});
+
+const paperLearningStepSchema = z.object({
+  id: z.string().min(1),
+  title: localizedCopySchema,
+  body: localizedCopySchema,
+  done_when: localizedCopySchema,
+  source_label: localizedCopySchema,
+  source_url: z.url(),
+});
+
+const paperLearningTrackSchema = z.object({
+  id: z.enum(['learn', 'method', 'strict']),
+  title: localizedCopySchema,
+  eyebrow: localizedCopySchema,
+  goal: localizedCopySchema,
+  recommended: z.boolean().default(false),
+  workspace: z.object({
+    mode: z.enum(['strict', 'method', 'modern']),
+    model_id: z.string().min(1),
+    role: z.string().min(1),
+    roles: z.array(z.string().min(1)).default([]),
+    update: z.enum(['none', 'lora', 'sft', 'rl', 'unsure']),
+    access: z.enum(['local', 'api', 'either']).default('either'),
+    gpu_vram_gb: z.number().positive().optional(),
+    gpu_count: z.number().int().positive().optional(),
+    runtimes: z.array(z.enum(['transformers', 'vllm', 'sglang', 'verl'])).default([]),
+    open_weight: z.boolean().optional(),
+  }).optional(),
+  steps: z.array(paperLearningStepSchema).min(2),
+});
+
+const paperLearningGuideSchema = z.object({
+  title: localizedCopySchema,
+  summary: localizedCopySchema,
+  key_idea: localizedCopySchema,
+  novice_note: localizedCopySchema,
+  facts: z.array(z.object({
+    label: localizedCopySchema,
+    value: localizedCopySchema,
+    source_label: localizedCopySchema,
+    source_url: z.url(),
+  })).min(2),
+  tracks: z.array(paperLearningTrackSchema).min(2),
+  pitfalls: z.array(localizedCopySchema).min(1),
+});
+
 export const claimSchema = z.object({
   id: z.string().min(1),
   subject_type: z.enum(['model', 'paper', 'family']),
@@ -184,6 +234,7 @@ export const paperSchema = z.object({
   workflow: workflowSchema.optional(),
   reproducibility: paperReproducibilitySchema.optional(),
   model_selection: z.array(modelSelectionSchema).optional(),
+  learning_guide: paperLearningGuideSchema.optional(),
 });
 
 export type AtlasModel = z.infer<typeof modelSchema>;

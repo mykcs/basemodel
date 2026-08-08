@@ -1,0 +1,96 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import type { AtlasPaper } from '../../lib/schemas';
+
+interface Props {
+  paper: AtlasPaper;
+  locale: Locale;
+}
+
+const { paper, locale } = Astro.props;
+const guide = paper.learning_guide;
+const isZh = locale === 'zh';
+const text = (copy: { zh: string; en: string }) => isZh ? copy.zh : copy.en;
+
+function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): string | undefined {
+  if (!track.workspace) return undefined;
+  const task = track.workspace;
+  const params = new URLSearchParams({
+    v: '2',
+    mode: task.mode,
+    paper: paper.id,
+    model: task.model_id,
+    role: task.role,
+    update: task.update,
+    access: task.access,
+  });
+  if (task.roles.length) params.set('roles', task.roles.join(','));
+  if (task.gpu_vram_gb) params.set('gpu', String(task.gpu_vram_gb));
+  if (task.gpu_count) params.set('gpus', String(task.gpu_count));
+  if (task.runtimes.length) params.set('runtime', task.runtimes.join(','));
+  if (typeof task.open_weight === 'boolean') params.set('open', task.open_weight ? '1' : '0');
+  return `${localePath(locale, '/workspace/')}?${params.toString()}`;
+}
+---
+
+{guide && <section class="paper-learning-guide" aria-labelledby="paper-learning-guide-title">
+  <header class="learning-guide-hero">
+    <div>
+      <span class="section-kicker">{isZh ? '论文新手教学' : 'Paper learning guide'}</span>
+      <h2 id="paper-learning-guide-title">{text(guide.title)}</h2>
+      <p>{text(guide.summary)}</p>
+    </div>
+    <aside class="learning-guide-key" aria-label={isZh ? '核心理解' : 'Core idea'}>
+      <strong>{isZh ? '先记住这一句' : 'Remember this first'}</strong>
+      <p>{text(guide.key_idea)}</p>
+    </aside>
+  </header>
+
+  <p class="learning-guide-note">{text(guide.novice_note)}</p>
+
+  <div class="learning-guide-facts" aria-label={isZh ? '复现前必须知道的事实' : 'Facts to know before reproducing'}>
+    {guide.facts.map((fact) => <article>
+      <span>{text(fact.label)}</span>
+      <strong>{text(fact.value)}</strong>
+      <a href={fact.source_url}>{text(fact.source_label)} ↗</a>
+    </article>)}
+  </div>
+
+  <nav class="learning-track-nav" aria-label={isZh ? '选择学习路径' : 'Choose a learning track'}>
+    {guide.tracks.map((track) => <a href={`#learning-track-${track.id}`}>
+      <span>{text(track.eyebrow)}</span>
+      <strong>{text(track.title)}</strong>
+      {track.recommended && <small>{isZh ? '新手推荐' : 'Recommended for newcomers'}</small>}
+    </a>)}
+  </nav>
+
+  <div class="learning-track-list">
+    {guide.tracks.map((track) => {
+      const workbench = workspaceHref(track);
+      return <article class="learning-track" id={`learning-track-${track.id}`}>
+        <header>
+          <div><span class="section-kicker">{text(track.eyebrow)}</span><h3>{text(track.title)}</h3></div>
+          {track.recommended && <span class="status-badge">{isZh ? '建议从这里开始' : 'Start here'}</span>}
+        </header>
+        <p>{text(track.goal)}</p>
+        <ol class="learning-step-list">
+          {track.steps.map((step, index) => <li>
+            <span class="learning-step-number" aria-hidden="true">{index + 1}</span>
+            <div>
+              <h4>{text(step.title)}</h4>
+              <p>{text(step.body)}</p>
+              <p class="learning-done"><strong>{isZh ? '完成标志：' : 'Done when: '}</strong>{text(step.done_when)}</p>
+              <a class="learning-source" href={step.source_url}>{text(step.source_label)} ↗</a>
+            </div>
+          </li>)}
+        </ol>
+        {workbench && <a class="button button-primary" href={workbench}>{track.id === 'strict' ? (isZh ? '打开严格复现工作台' : 'Open strict reproduction workbench') : (isZh ? '打开方法复现工作台' : 'Open method reproduction workbench')}</a>}
+      </article>;
+    })}
+  </div>
+
+  <aside class="learning-pitfalls" aria-labelledby="learning-pitfalls-title">
+    <h3 id="learning-pitfalls-title">{isZh ? '容易误解的地方' : 'Common misunderstandings'}</h3>
+    <ul>{guide.pitfalls.map((pitfall) => <li>{text(pitfall)}</li>)}</ul>
+  </aside>
+</section>}

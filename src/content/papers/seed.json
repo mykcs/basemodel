@@ -1,0 +1,271 @@
+{
+  "id": "seed",
+  "title": "SEED: Self-Evolving On-Policy Distillation for Agentic Reinforcement Learning",
+  "published_at": "2026-07-16",
+  "paper_url": "https://arxiv.org/abs/2607.14777",
+  "code_url": "https://github.com/jinyangwu/SEED",
+  "checkpoint_url": "not_published",
+  "category": ["self-evolving-agent", "tool-use", "web-agent"],
+  "models": [
+    { "model_id": "qwen2-5-3b-instruct", "role": "actor", "weight_updated": true },
+    { "model_id": "qwen2-5-7b-instruct", "role": "actor", "weight_updated": true },
+    { "model_id": "qwen3-1-7b", "role": "actor", "weight_updated": true },
+    { "model_id": "glm-5-2", "role": "analyzer", "weight_updated": false }
+  ],
+  "evolution_targets": ["actor-policy", "tool-use", "workflow-evolution"],
+  "benchmarks": ["ALFWorld", "WebShop", "Search-based QA"],
+  "workflow": {
+    "nodes": [
+      { "id": "trajectory", "type": "artifact", "label": "Completed on-policy trajectory" },
+      { "id": "hindsight", "type": "module", "label": "Hindsight-skill analyzer" },
+      { "id": "skill", "type": "artifact", "label": "Natural-language hindsight skill" },
+      { "id": "opd", "type": "module", "label": "On-policy distillation + GRPO" },
+      { "id": "policy", "type": "module", "label": "Updated shared policy" }
+    ],
+    "edges": [
+      { "from": "trajectory", "to": "hindsight", "label": "analyze after completion", "source_ids": ["src_seed_paper_20260808"] },
+      { "from": "hindsight", "to": "skill", "label": "extract reusable guidance", "source_ids": ["src_seed_paper_20260808"] },
+      { "from": "skill", "to": "opd", "label": "re-score sampled tokens", "source_ids": ["src_seed_paper_20260808"] },
+      { "from": "opd", "to": "policy", "label": "joint dense OPD + outcome RL", "source_ids": ["src_seed_paper_20260808"] }
+    ]
+  },
+  "reproducibility": {
+    "code_status": "available",
+    "checkpoint_status": "unavailable",
+    "config_status": "partial",
+    "environment_status": "reported"
+  },
+  "learning_guide": {
+    "title": {
+      "zh": "第一次读 SEED？从这里开始",
+      "en": "New to SEED? Start here"
+    },
+    "summary": {
+      "zh": "先用无 GPU 路径理解机制，再做缩小规模的方法验证；只有模型、数据、环境、超参数和 8×A800 80GB 训练条件都对齐时，才进入严格复现。",
+      "en": "Understand the mechanism without a GPU first, then run a reduced method check. Move to strict reproduction only when the model, data, environments, hyperparameters, and 8×A800 80GB setup are aligned."
+    },
+    "key_idea": {
+      "zh": "同一个最新策略既采集轨迹，也分析完整轨迹生成 hindsight skill；skill 只提供训练期稠密监督，推理时只保留更新后的策略。",
+      "en": "The latest policy both collects trajectories and analyzes completed trajectories into hindsight skills. Skills provide dense training-time supervision; inference keeps only the updated policy."
+    },
+    "novice_note": {
+      "zh": "建议先完成“理解机制”。如果没有多卡训练资源，方法验证仍然有价值，但结果必须标成 mechanism smoke test，不能与论文主表分数直接比较。",
+      "en": "Complete the mechanism track first. A method smoke test is still useful without multi-GPU resources, but its score is not directly comparable with the paper's main tables."
+    },
+    "facts": [
+      {
+        "label": { "zh": "训练结构", "en": "Training structure" },
+        "value": { "zh": "Stage 1 hindsight-skill SFT + Stage 2 自进化 OPD/GRPO", "en": "Stage 1 hindsight-skill SFT + Stage 2 self-evolving OPD/GRPO" },
+        "source_label": { "zh": "论文 §3", "en": "Paper §3" },
+        "source_url": "https://arxiv.org/html/2607.14777"
+      },
+      {
+        "label": { "zh": "策略骨干", "en": "Policy backbones" },
+        "value": { "zh": "Qwen2.5-3B/7B-Instruct、Qwen3-1.7B", "en": "Qwen2.5-3B/7B-Instruct and Qwen3-1.7B" },
+        "source_label": { "zh": "实验设置", "en": "Experimental setting" },
+        "source_url": "https://arxiv.org/html/2607.14777"
+      },
+      {
+        "label": { "zh": "主要环境", "en": "Main environments" },
+        "value": { "zh": "ALFWorld、WebShop、Search-based QA", "en": "ALFWorld, WebShop, and Search-based QA" },
+        "source_label": { "zh": "论文 §4.1", "en": "Paper §4.1" },
+        "source_url": "https://arxiv.org/html/2607.14777"
+      },
+      {
+        "label": { "zh": "论文训练资源", "en": "Paper-scale compute" },
+        "value": { "zh": "8×NVIDIA A800 80GB", "en": "8×NVIDIA A800 80GB" },
+        "source_label": { "zh": "论文 Appendix B.4", "en": "Paper Appendix B.4" },
+        "source_url": "https://arxiv.org/html/2607.14777"
+      }
+    ],
+    "tracks": [
+      {
+        "id": "learn",
+        "title": { "zh": "理解机制", "en": "Understand the mechanism" },
+        "eyebrow": { "zh": "无需 GPU", "en": "No GPU required" },
+        "goal": {
+          "zh": "能用自己的话解释 SEED 解决了什么监督缺口、两阶段如何连接，以及它为什么不等于外部记忆。",
+          "en": "Explain the supervision gap SEED addresses, how its two stages connect, and why it is not an external-memory method."
+        },
+        "recommended": true,
+        "steps": [
+          {
+            "id": "learn-problem",
+            "title": { "zh": "先读问题，不先读公式", "en": "Read the problem before the equations" },
+            "body": { "zh": "长程智能体通常只在整条轨迹结束后得到稀疏奖励；这个奖励无法指出中间哪次观察、动作或工具调用值得强化。", "en": "Long-horizon agents often receive sparse reward only after a trajectory ends, so the reward does not identify which intermediate observations, actions, or tool calls deserve credit." },
+            "done_when": { "zh": "你能区分 trajectory-level outcome 与 token-level learning signal。", "en": "You can distinguish a trajectory-level outcome from a token-level learning signal." },
+            "source_label": { "zh": "摘要与引言", "en": "Abstract and introduction" },
+            "source_url": "https://arxiv.org/abs/2607.14777"
+          },
+          {
+            "id": "learn-stage-one",
+            "title": { "zh": "画出 Stage 1", "en": "Sketch Stage 1" },
+            "body": { "zh": "普通策略先采集完整轨迹，外部分析器把成功经验或失败规避规则写成自然语言 hindsight skill，再用这些轨迹—skill 对进行 SFT。", "en": "A normal policy collects completed trajectories. An external analyzer writes reusable or failure-avoidance hindsight skills, and the trajectory–skill pairs train the policy with SFT." },
+            "done_when": { "zh": "你的图包含轨迹、外部分析器、skill 标注和 SFT checkpoint。", "en": "Your diagram includes trajectories, the external analyzer, skill annotations, and the SFT checkpoint." },
+            "source_label": { "zh": "论文 §3.2", "en": "Paper §3.2" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          },
+          {
+            "id": "learn-stage-two",
+            "title": { "zh": "画出 Stage 2", "en": "Sketch Stage 2" },
+            "body": { "zh": "最新冻结策略同时负责 rollout 与轨迹分析；同一批已采样动作在普通上下文和 skill 增强上下文中重新打分，概率差形成 OPD 信号，并与 GRPO 联合优化。", "en": "The latest frozen policy performs rollouts and trajectory analysis. The same sampled actions are re-scored in ordinary and skill-augmented contexts; their probability shift forms the OPD signal optimized jointly with GRPO." },
+            "done_when": { "zh": "你能指出 actor、analyzer、旧策略、可训练策略和 OPD loss 的关系。", "en": "You can identify the actor, analyzer, old policy, trainable policy, and OPD loss." },
+            "source_label": { "zh": "论文 §3.3", "en": "Paper §3.3" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          },
+          {
+            "id": "learn-boundary",
+            "title": { "zh": "确认推理边界", "en": "Confirm the inference boundary" },
+            "body": { "zh": "hindsight skill、分析器和 skill prompt 都是训练期工具；部署时只运行已经内化这些行为变化的策略。", "en": "Hindsight skills, the analyzer, and skill prompts are training-time tools. Deployment runs only the policy that internalized the behavioral change." },
+            "done_when": { "zh": "你不会把 SEED 描述成“推理时检索 skill bank”。", "en": "You would not describe SEED as retrieving a skill bank at inference time." },
+            "source_label": { "zh": "官方代码 Overview", "en": "Official code overview" },
+            "source_url": "https://github.com/jinyangwu/SEED"
+          }
+        ]
+      },
+      {
+        "id": "method",
+        "title": { "zh": "方法验证", "en": "Method smoke test" },
+        "eyebrow": { "zh": "缩小规模", "en": "Reduced scale" },
+        "goal": {
+          "zh": "验证“轨迹 → hindsight skill → token 级 OPD → 策略更新”的代码和数据链是否成立，不追求论文主表分数。",
+          "en": "Validate the trajectory → hindsight skill → token-level OPD → policy-update chain without claiming the paper's main-table scores."
+        },
+        "recommended": false,
+        "workspace": {
+          "mode": "method",
+          "model_id": "qwen2-5-3b-instruct",
+          "role": "actor",
+          "roles": ["actor", "analyzer"],
+          "update": "rl",
+          "access": "local",
+          "runtimes": ["verl"],
+          "open_weight": true
+        },
+        "steps": [
+          {
+            "id": "method-scope",
+            "title": { "zh": "只选一个环境", "en": "Choose one environment" },
+            "body": { "zh": "新手优先从 ALFWorld 开始：官方仓库给出直接安装命令，论文也提供了详细训练动态。固定 split、reward、最大交互步数与评估指标。", "en": "Start with ALFWorld: the official repository provides direct setup commands and the paper reports detailed training dynamics. Pin the split, reward, maximum interaction steps, and metric." },
+            "done_when": { "zh": "实验清单中只有一个环境，并写明评估协议。", "en": "Your manifest contains one environment and an explicit evaluation protocol." },
+            "source_label": { "zh": "官方安装说明", "en": "Official setup guide" },
+            "source_url": "https://github.com/jinyangwu/SEED"
+          },
+          {
+            "id": "method-install",
+            "title": { "zh": "先跑通环境与普通策略", "en": "Run the environment and vanilla policy first" },
+            "body": { "zh": "安装 veRL 与 ALFWorld，固定仓库 commit、Python/CUDA/依赖版本；先保存一条普通 rollout，确认 observation、action、reward 和 terminal outcome 完整。", "en": "Install veRL and ALFWorld; pin the repository commit, Python/CUDA, and dependencies. Save one vanilla rollout and inspect the observation, action, reward, and terminal outcome fields." },
+            "done_when": { "zh": "一条轨迹可重复执行并产生结构完整的记录。", "en": "One trajectory can be rerun and produces a structurally complete record." },
+            "source_label": { "zh": "官方代码 Installation", "en": "Official code installation" },
+            "source_url": "https://github.com/jinyangwu/SEED"
+          },
+          {
+            "id": "method-sft",
+            "title": { "zh": "验证 Stage 1 数据链", "en": "Validate the Stage 1 data chain" },
+            "body": { "zh": "用少量任务生成轨迹与 hindsight skill，检查成功轨迹是否提炼可复用流程、失败轨迹是否产生规避规则；缩小数据规模后只能验证机制。", "en": "Generate trajectories and hindsight skills from a small task subset. Check that successful trajectories yield reusable workflows and failed trajectories yield avoidance guidance. Reduced data validates mechanism only." },
+            "done_when": { "zh": "能追溯一条 SFT 样本从原始轨迹到 skill target。", "en": "You can trace one SFT sample from its raw trajectory to the skill target." },
+            "source_label": { "zh": "Stage 1 脚本", "en": "Stage 1 scripts" },
+            "source_url": "https://github.com/jinyangwu/SEED"
+          },
+          {
+            "id": "method-opd",
+            "title": { "zh": "对照 GRPO 检查 Stage 2", "en": "Check Stage 2 against GRPO" },
+            "body": { "zh": "至少同时记录普通 GRPO 与 SEED 的环境回报、OPD loss、episode length 和有效 token mask。先确认 OPD 分支产生非零、稳定的训练信号，再讨论性能。", "en": "Log environment return, OPD loss, episode length, and valid-token masks for both vanilla GRPO and SEED. Confirm that OPD produces a non-zero, stable signal before discussing performance." },
+            "done_when": { "zh": "你能展示同一批 sampled actions 在普通与 skill 上下文中的分数差。", "en": "You can show the score shift for the same sampled actions under ordinary and skill contexts." },
+            "source_label": { "zh": "论文 §3.3 与训练脚本", "en": "Paper §3.3 and training scripts" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          }
+        ]
+      },
+      {
+        "id": "strict",
+        "title": { "zh": "严格复现", "en": "Strict reproduction" },
+        "eyebrow": { "zh": "论文规模", "en": "Paper scale" },
+        "goal": {
+          "zh": "对齐论文版本、三种 backbone、数据规模、全部基线、超参数和 8×A800 80GB 计算条件，复核主表、训练动态与泛化结论。",
+          "en": "Align the paper version, three backbones, data scale, baselines, hyperparameters, and 8×A800 80GB compute to recheck the main tables, training dynamics, and generalization claims."
+        },
+        "recommended": false,
+        "workspace": {
+          "mode": "strict",
+          "model_id": "qwen2-5-3b-instruct",
+          "role": "actor",
+          "roles": ["actor", "analyzer"],
+          "update": "rl",
+          "access": "local",
+          "gpu_vram_gb": 80,
+          "gpu_count": 8,
+          "runtimes": ["verl"],
+          "open_weight": true
+        },
+        "steps": [
+          {
+            "id": "strict-freeze",
+            "title": { "zh": "冻结论文与代码版本", "en": "Freeze paper and code revisions" },
+            "body": { "zh": "记录 arXiv v1、代码 commit、每个 Qwen checkpoint revision、tokenizer、chat template、CUDA 与依赖锁定文件。", "en": "Record arXiv v1, the code commit, every Qwen checkpoint revision, tokenizer, chat template, CUDA version, and dependency lock state." },
+            "done_when": { "zh": "他人能从 manifest 重建同一软件与模型版本。", "en": "Another researcher can reconstruct the same software and model revisions from your manifest." },
+            "source_label": { "zh": "论文 v1 与官方代码", "en": "Paper v1 and official code" },
+            "source_url": "https://arxiv.org/abs/2607.14777v1"
+          },
+          {
+            "id": "strict-data",
+            "title": { "zh": "对齐数据与 rollout 数量", "en": "Align data and rollout counts" },
+            "body": { "zh": "每个 benchmark 的 SFT 使用 180 个任务、每任务 8 条 rollout；RL 数据分别为 ALFWorld 2,400、WebShop 2,400、Search 19,200。", "en": "For each benchmark, SFT uses 180 tasks with 8 rollouts per task. RL uses 2,400 ALFWorld, 2,400 WebShop, and 19,200 Search instances." },
+            "done_when": { "zh": "数据 manifest 的 split、样本数和预处理产物与论文表 3 一致。", "en": "The data manifest's splits, counts, and preprocessing outputs match Table 3." },
+            "source_label": { "zh": "论文 Table 3", "en": "Paper Table 3" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          },
+          {
+            "id": "strict-hparams",
+            "title": { "zh": "锁定训练超参数与资源", "en": "Lock hyperparameters and compute" },
+            "body": { "zh": "使用 150 次策略更新、rollout group 8、学习率 1e-6、OPD 系数 0.01、KL 系数 0.01，并记录论文的 batch、prompt/response 长度和各环境最大交互步数。", "en": "Use 150 policy updates, rollout group 8, learning rate 1e-6, OPD coefficient 0.01, and KL coefficient 0.01; also record the paper's batches, prompt/response lengths, and environment-specific interaction limits." },
+            "done_when": { "zh": "配置 diff 对照论文 Table 5 没有未解释差异。", "en": "A config diff against Table 5 has no unexplained differences." },
+            "source_label": { "zh": "论文 Table 5", "en": "Paper Table 5" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          },
+          {
+            "id": "strict-evaluate",
+            "title": { "zh": "同时复核分数与训练轨迹", "en": "Recheck scores and training trajectories" },
+            "body": { "zh": "先复现 Vanilla/GRPO，再运行 SEED；除了最终分数，还比较训练曲线、episode length、样本效率、unseen split 和消融结果。", "en": "Reproduce Vanilla/GRPO before SEED. Compare not only final scores but also training curves, episode length, sample efficiency, unseen splits, and ablations." },
+            "done_when": { "zh": "报告区分官方论文结果、你的独立运行结果和无法对齐的条件。", "en": "Your report separates paper-reported results, independent run results, and conditions that could not be aligned." },
+            "source_label": { "zh": "论文 §4.2–4.6", "en": "Paper §4.2–4.6" },
+            "source_url": "https://arxiv.org/html/2607.14777"
+          }
+        ]
+      }
+    ],
+    "pitfalls": [
+      { "zh": "把训练期 hindsight skill 当成推理期 skill bank；SEED 部署时不需要分析器、检索模块或 skill prompt。", "en": "Treating training-time hindsight skills as an inference-time skill bank; SEED deploys without an analyzer, retrieval module, or skill prompt." },
+      { "zh": "Stage 2 继续使用静态外部 teacher；SEED 的关键是最新策略 checkpoint 同步承担 actor 与 analyzer。", "en": "Keeping a static external teacher in Stage 2; SEED's key is synchronizing actor and analyzer in the latest policy checkpoint." },
+      { "zh": "缩小任务数、rollout 或 GPU 后仍与论文主表直接比较；这种运行只能证明代码链路或局部机制。", "en": "Comparing a reduced-task, reduced-rollout, or reduced-GPU run directly with the main tables; that run supports only code-path or local-mechanism validation." },
+      { "zh": "只跑 SEED 不跑 GRPO；没有同环境同模型的基线，就无法归因 OPD 带来的变化。", "en": "Running SEED without GRPO; without a matched baseline, the effect of OPD cannot be attributed." }
+    ]
+  },
+  "sources": [
+    {
+      "id": "src_seed_paper_20260808",
+      "url": "https://arxiv.org/html/2607.14777",
+      "title": "SEED paper (arXiv HTML, v1)",
+      "publisher": "SEED authors",
+      "published_at": "2026-07-16",
+      "revision": "arXiv:2607.14777v1",
+      "type": "paper",
+      "checked_at": "2026-08-08",
+      "supports": ["title", "published_at", "paper_url", "category", "models", "evolution_targets", "benchmarks", "workflow", "learning_guide"],
+      "locator": "Sections 3–4 and Appendices B–C",
+      "evidence_note": "The paper defines the two-stage SEED method, identifies Qwen2.5-3B/7B-Instruct and Qwen3-1.7B backbones plus GLM-5.2 for offline skill annotation, reports ALFWorld/WebShop/Search settings, exact hyperparameters, and eight A800 80GB GPUs. The learning guide paraphrases these claims and labels reduced runs as method checks rather than strict reproductions."
+    },
+    {
+      "id": "src_seed_code_20260808",
+      "url": "https://github.com/jinyangwu/SEED",
+      "title": "Official SEED code repository",
+      "publisher": "SEED authors",
+      "type": "code",
+      "checked_at": "2026-08-08",
+      "supports": ["code_url", "reproducibility.code_status", "reproducibility.config_status", "reproducibility.environment_status", "learning_guide"],
+      "locator": "README: Installation, Training, and Merge Checkpoints",
+      "evidence_note": "The official repository provides environment setup for ALFWorld, WebShop, and Search-based QA, Stage 1 SFT scripts, Stage 2 veRL training entrypoints, and checkpoint merge instructions. It does not link a ready-to-download trained SEED checkpoint at the checked date, so checkpoint_url remains not_published."
+    }
+  ],
+  "data_status": "verified"
+}

@@ -20,6 +20,7 @@ The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLET
 - [x] V2-NAV-001 — Header primary navigation is organized around research actions.
 - [x] V2-SEARCH-001 — Global search loads a build-time index and supports keyboard navigation.
 - [x] V2-COMPARE-001 — Compare tray shows model names and opens the canonical URL.
+- [x] V2-PRODUCT-014 — Paper records can provide bilingual learn/method/strict tutorials; SEED is the first evidence-backed template and deep-links into the workbench.
 
 ## Evidence and data contract
 
