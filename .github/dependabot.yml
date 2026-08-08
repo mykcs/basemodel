@@ -49,5 +49,8 @@ updates:
       time: "06:07"
       timezone: Pacific/Honolulu
     open-pull-requests-limit: 5
+    # GitHub Actions dependency updates cannot change the Cloudflare-built site.
+    # Prefix their commit/PR titles with Cloudflare's documented skip marker so
+    # these maintenance branches do not consume a Pages build slot/count.
     commit-message:
-      prefix: chore(actions)
+      prefix: "[CF-Pages-Skip] chore(actions)"

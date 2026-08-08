@@ -8,6 +8,10 @@ export default defineConfig({
   site,
   base,
   output: 'static',
+  // Astro 7 defaults to JSX-style whitespace compression, which can remove
+  // meaningful spaces between adjacent inline elements. Preserve the Astro 6
+  // HTML-aware behavior so the framework upgrade does not change rendered copy.
+  compressHTML: true,
   integrations: [react()],
   build: {
     format: 'directory',
