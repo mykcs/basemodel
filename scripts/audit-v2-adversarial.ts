@@ -38,7 +38,7 @@ pass('AV-PAPER-WORKFLOW', paperWorkflow.includes('paper.workflow') && paperWorkf
 pass('AV-PROJECT-HISTORY', exists('src/stores/projects.ts') && projectHistory.includes('saveResearchProject') && projectHistory.includes('restore'), 'task builder saves and restores local multi-project history');
 pass('AV-MEMO-EVIDENCE', memo.includes('sectionNotSelected') && memo.includes('sectionEvidence') && claims.includes('conflict'), 'decision memo records exclusions/evidence and claim history flags conflicts');
 pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'unknown/not-reported/not-verified remain semantic states');
-pass('AV-QWEN25-COVERAGE', ['qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b-instruct', 'qwen2-5-14b-instruct', 'qwen2-5-32b-instruct', 'qwen2-5-72b-instruct'].every((id) => exists(`src/content/models/${id}.json`)), 'Qwen2.5 canonical size ladder has no missing 1.5B/3B records');
+pass('AV-QWEN25-COVERAGE', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b', 'qwen2-5-7b-instruct', 'qwen2-5-14b', 'qwen2-5-14b-instruct', 'qwen2-5-32b', 'qwen2-5-32b-instruct', 'qwen2-5-72b', 'qwen2-5-72b-instruct'].every((id) => exists(`src/content/models/${id}.json`)), 'Qwen2.5 canonical size ladder has base and instruct coverage for all seven official sizes');
 
 const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));
 const paperFiles = fs.readdirSync(path.join(root, 'src/content/papers')).filter((file) => file.endsWith('.json'));

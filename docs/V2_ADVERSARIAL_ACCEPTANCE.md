@@ -61,6 +61,6 @@
 
 主路径现在仍是：Research Task → Candidates → Reasons/Risks → Evidence → Compare → Replacement Analysis → Decision Memo → Snapshot/change detection。每次检查必须回到同一个问题：新手研究员能否据此做出、解释、复核并在以后重建一次模型选择；如果只是增加数据库字段而没有进入这条路径，不算完成。
 
-本次数据补充还将 Qwen2.5 官方七尺寸矩阵（0.5B、1.5B、3B、7B、14B、32B、72B）纳入自动审计；新增 1.5B/3B 的 Base 与 Instruct 记录，许可证无法安全提升为确定事实的字段继续保留 `not_verified`。
+本次数据补充还将 Qwen2.5 官方七尺寸矩阵（0.5B、1.5B、3B、7B、14B、32B、72B）的 Base 与 Instruct 记录纳入自动审计；许可证无法安全提升为确定事实的字段继续保留 `not_verified`，硬件资源估算没有一手依据的字段也保持 `not_verified`。
 
 R-16～R-19、R-23 是缺少外部服务/凭据的明确边界；R-20～R-22 是已执行来源审计后仍存在的证据缺口。它们不是前端可以诚实“改代码变绿”的项目。

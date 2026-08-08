@@ -1,7 +1,7 @@
 {
-  "id": "qwen2-5-1-5b",
-  "name": "Qwen2.5-1.5B",
-  "official_name": "Qwen2.5-1.5B",
+  "id": "qwen2-5-0-5b",
+  "name": "Qwen2.5-0.5B",
+  "official_name": "Qwen2.5-0.5B",
   "vendor": "Qwen / Alibaba",
   "family": "Qwen",
   "generation": "Qwen2.5",
@@ -14,9 +14,9 @@
   },
   "architecture": {
     "type": "dense",
-    "total_parameters_b": 1.54,
+    "total_parameters_b": 0.49,
     "active_parameters_b": "not_verified",
-    "context_length": 131072,
+    "context_length": 32768,
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
@@ -39,19 +39,19 @@
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
-    "inference_tier": "16gb",
-    "lora_tier": "16gb",
-    "full_sft_tier": "24gb",
-    "rl_tier": "48gb"
+    "inference_tier": "not_verified",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
   },
   "sources": [
     {
-      "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-0.5B",
       "type": "official_model_card",
       "checked_at": "2026-08-08",
       "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.context_length", "openness.weights_available", "research.transformers_support", "research.vllm_support", "research.sglang_support"],
-      "evidence_note": "Official Qwen model card and repository configuration identify this as the base 1.5B Qwen2.5 checkpoint, report 1.54B parameters and 131,072-token context, and document the supported runtime paths.",
-      "id": "src_qwen25_15b_base_20260808"
+      "evidence_note": "Official Qwen model card and repository configuration identify the base 0.5B Qwen2.5 checkpoint, report 0.49B parameters and 32,768-token context, and document the supported runtime paths.",
+      "id": "src_qwen25_05b_base_20260808"
     },
     {
       "url": "https://qwenlm.github.io/blog/qwen2.5/",
@@ -62,12 +62,12 @@
       "id": "src_qwen25_release_20260808"
     },
     {
-      "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/blob/main/LICENSE",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-0.5B/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-08",
       "supports": ["openness.license_name", "openness.commercial_use_allowed", "openness.derivative_release_allowed", "openness.finetuning_allowed"],
       "evidence_note": "The repository LICENSE is Apache-2.0; licensing permissions are represented only for the fields directly covered by that license.",
-      "id": "src_qwen25_15b_base_license_20260808"
+      "id": "src_qwen25_05b_base_license_20260808"
     }
   ],
   "data_status": "partial"
