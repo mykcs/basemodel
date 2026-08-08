@@ -8,7 +8,8 @@ Before changing hosting, CI, deployment, URL/base-path behavior, SEO deployment 
 
 1. [`docs/agents/dual-hosting-policy.md`](docs/agents/dual-hosting-policy.md) — authoritative steady-state policy. The intended architecture is long-term GitHub Pages + Cloudflare Pages dual hosting.
 2. [`docs/agents/cloudflare-pages-deployment.md`](docs/agents/cloudflare-pages-deployment.md) — current operational runbook for Cloudflare/GitHub Pages behavior.
-3. [`docs/agents/2026-08-09-cloudflare-migration-retrospective.md`](docs/agents/2026-08-09-cloudflare-migration-retrospective.md) — full incident/migration history, successful and failed experiments, tool limitations, quota diagnosis, final workflow, and lessons.
+3. [`docs/agents/2026-08-08-github-actions-ci-optimization-history.md`](docs/agents/2026-08-08-github-actions-ci-optimization-history.md) — CI optimization/hardening history that preceded the quota incident, including successful changes, failed experiments, security boundaries, and cost/latency tradeoffs.
+4. [`docs/agents/2026-08-09-cloudflare-migration-retrospective.md`](docs/agents/2026-08-09-cloudflare-migration-retrospective.md) — full incident/migration history, successful and failed experiments, tool limitations, quota diagnosis, final workflow, and lessons.
 
 If historical migration wording conflicts with the dual-hosting policy, `dual-hosting-policy.md` takes precedence unless the repository owner explicitly requests a different hosting strategy.
 
