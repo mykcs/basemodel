@@ -164,6 +164,29 @@ Keep those repository settings unless the owner explicitly chooses a different r
 
 If ECC Tools is not intentionally used, remove `basemodel` from that App's repository access or uninstall it; during the migration it repeatedly posted paid-upgrade comments without providing private-repository analysis.
 
+## 7. Final cleanup and acceptance record
+
+The final audit deliberately cleaned up obsolete automated branches so they cannot keep rebasing and consuming Cloudflare Preview builds:
+
+```text
+PR #29  withastro/action patch     -> closed; recreate later under the new Actions skip-prefix policy if still needed
+PR #30  upload-artifact patch      -> closed; same policy
+PR #31  @types/node 22 -> 26       -> closed; runtime-major migration only
+PR #33  TypeScript 5 -> 7          -> closed; explicit compiler migration only
+PR #40  Vitest 3 -> 4              -> closed; explicit test-runner migration only
+PR #42  Astro 7 whitespace fix     -> closed only because its valid code/test were consolidated into PR #43
+```
+
+PR #43 became the single final hardening PR. Its complete tree included:
+
+- `compressHTML: true` and the Astro compatibility regression test;
+- GitHub Actions Dependabot `[CF-Pages-Skip]` prefixing;
+- this final hardening addendum and updated Agent instructions.
+
+Cloudflare first completed the deploy-affecting Astro commit `0057cd8` successfully. A later full-tree PR-linked build for commit `7835677` then also completed successfully. At that point the Cloudflare bot's `Latest commit` exactly matched the PR head and reported `Deploy successful`, satisfying the repository's explicit acceptance rule.
+
+Any commits after `7835677` used `[CF-Pages-Skip]` only to record this already-observed acceptance in documentation. They do not change application code, Astro configuration, tests, npm dependencies, or generated site output.
+
 ## Final operating model
 
 ```text
