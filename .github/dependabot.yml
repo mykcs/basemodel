@@ -24,11 +24,18 @@ updates:
           - "*"
         update-types:
           - patch
-    # @types/node models the runtime API surface. Keep version-update majors
-    # aligned with the deliberately pinned Node runtime; security updates are
-    # not suppressed by this SemVer-major version-update rule.
+    # These majors are migration work, not routine maintenance. Keeping stale
+    # major Dependabot PRs open causes automatic rebases to consume Cloudflare
+    # Preview builds. Security updates are not suppressed by these version-only
+    # SemVer-major ignore rules.
     ignore:
       - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "typescript"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "vitest"
         update-types:
           - "version-update:semver-major"
     commit-message:
