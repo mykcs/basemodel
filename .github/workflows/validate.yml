@@ -104,6 +104,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Verify Playwright runtime contract
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'));
+          const workflow = fs.readFileSync('.github/workflows/validate.yml', 'utf8');
+          const expected = '1.62.1';
+          const declared = pkg.devDependencies?.['@playwright/test'];
+          const locked = lock.packages?.['node_modules/@playwright/test']?.version;
+          const imageMatches = workflow.includes(`mcr.microsoft.com/playwright:v${expected}-noble@sha256:`);
+          if (declared !== expected || locked !== expected || !imageMatches) {
+            console.error(`Playwright runtime mismatch: declared=${declared}, locked=${locked}, image=v${expected} expected`);
+            process.exit(1);
+          }
+          console.log(`Playwright package, lockfile and container agree on ${expected}.`);
+          NODE
       - run: npm ci
       - run: npm run check
       - run: npm run validate
