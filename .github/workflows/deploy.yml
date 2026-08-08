@@ -1,7 +1,9 @@
 name: Deploy Atlas to GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Validate Atlas"]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -17,19 +19,21 @@ concurrency:
 
 jobs:
   build:
+    # For automatic deployments, only publish commits that passed Validate Atlas.
+    # Manual dispatch remains available for recovery or administrative use.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout the validated commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run check
-      - run: npm run validate
-      - run: npm test
+          # workflow_run's GITHUB_SHA points at the default branch, so explicitly
+          # build the exact commit that completed validation.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Build and upload Pages artifact
         uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6.1.1
+        with:
+          node-version: 22
         env:
           PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
           PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
