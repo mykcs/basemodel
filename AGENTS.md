@@ -20,6 +20,7 @@ Agent-oriented documentation index:
 - GitHub is the canonical source repository.
 - Preserve both Cloudflare Pages and GitHub Pages as public deployment paths unless the owner explicitly requests otherwise.
 - Cloudflare serves from `/`; GitHub Pages serves from `/basemodel/`. Preserve this base-path contract.
+- Cloudflare Preview deployment for the migration branch was verified successfully on 2026-08-09; do not redo bootstrap setup unless current state shows it is necessary.
 - Prefer branch + pull request for non-trivial changes; do not silently direct-push `main`.
 - Do not treat a GitHub Actions job that fails before step 1 because hosted-runner capacity/allowance is unavailable as an application test failure.
 - Do not disable an existing production deployment path merely because the other host is healthy.
