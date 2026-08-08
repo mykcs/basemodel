@@ -151,6 +151,28 @@ test('paper detail starts a research mode and shows recorded role topology', asy
   await expect(page.locator('body')).not.toContainText('paper.models');
 });
 
+test('SEED paper teaches newcomers and carries a method task into the workbench', async ({ page }) => {
+  await page.goto('papers/seed/');
+
+  await expect(page.getByRole('heading', { name: '第一次读 SEED？从这里开始' })).toBeVisible();
+  await expect(page.locator('.learning-track')).toHaveCount(3);
+  await expect(page.getByRole('link', { name: '理解机制' })).toHaveAttribute('href', '#learning-track-learn');
+  await expect(page.locator('#learning-track-strict')).toContainText('8×A800 80GB');
+  const methodLink = page.getByRole('link', { name: '打开方法复现工作台' });
+  await expect(methodLink).toHaveAttribute('href', /workspace\/\?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor/);
+  await methodLink.click();
+  await expect(page).toHaveURL(/workspace\/\?v=2&mode=method&paper=seed/);
+  await expect(page.getByRole('button', { name: '方法复现' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('SEED learning guide is fully available in English', async ({ page }) => {
+  await page.goto('en/papers/seed/');
+
+  await expect(page.getByRole('heading', { name: 'New to SEED? Start here' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Understand the mechanism' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open strict reproduction workbench' })).toHaveAttribute('href', /en\/workspace\/\?v=2&mode=strict&paper=seed/);
+});
+
 test('family page exposes timeline filters', async ({ page }) => {
   await page.goto('families/');
 

@@ -119,7 +119,7 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
         <h3><a href={localePath(locale, `/papers/${paper.id}/`)}>{paper.title}</a></h3>
         <p className="paper-case-summary"><strong>{m.method}:</strong> {methodSummary(paper, locale)}</p>
         <dl className="paper-case-facts"><div><dt>{m.evolution}</dt><dd>{paper.evolution_targets.map((value) => evolutionTargetLabel(value, locale)).join(locale === 'zh' ? '、' : ', ')}</dd></div><div><dt>{m.roles}</dt><dd>{rolesForPaper.join(locale === 'zh' ? '、' : ', ')}</dd></div><div><dt>{m.weight}</dt><dd>{weightState}</dd></div></dl>
-        <div className="paper-case-actions"><a className="button button-secondary" href={localePath(locale, `/papers/${paper.id}/`)}>{m.open}</a><span className="status-badge">{paper.code_url === 'not_reported' || paper.code_url === 'not_verified' ? m.unknown : m.available}</span></div>
+        <div className="paper-case-actions"><a className="button button-secondary" href={localePath(locale, `/papers/${paper.id}/`)}>{m.open}</a>{paper.learning_guide && <span className="status-badge">{locale === 'zh' ? '新手引导' : 'Learning guide'}</span>}<span className="status-badge">{paper.code_url === 'not_reported' || paper.code_url === 'not_verified' ? m.unknown : m.available}</span></div>
       </article>;
     })}</div> : <div className="empty-state">{m.noResults}</div>}
   </section>;

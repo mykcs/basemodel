@@ -23,6 +23,8 @@ const paperWorkflow = read('src/components/papers/PaperRoleDiagram.tsx');
 const projectHistory = read('src/components/workspace/task/ResearchTaskBuilder.tsx');
 const memo = read('src/components/workspace/DecisionMemo.tsx');
 const claims = read('src/components/evidence/ClaimHistory.astro');
+const paperLearningGuide = read('src/components/papers/PaperLearningGuide.astro');
+const seedGuide = read('src/content/papers/seed.json');
 
 pass('AV-ROUTES', ['src/pages/index.astro', 'src/pages/en/index.astro', 'src/pages/workspace/index.astro', 'src/pages/en/workspace/index.astro', 'src/pages/models/index.astro', 'src/pages/en/models/index.astro', 'src/pages/papers/index.astro', 'src/pages/en/papers/index.astro', 'src/pages/landscape/index.astro', 'src/pages/en/landscape/index.astro', 'src/pages/guide.astro', 'src/pages/en/guide.astro', 'src/pages/methodology.astro', 'src/pages/en/methodology.astro', 'src/pages/data-status.astro', 'src/pages/en/data-status.astro'].every(exists), 'bilingual research routes are present');
 pass('AV-EXPLORER', explorer.includes('filterDepth') && explorer.includes('facetCount') && explorer.includes('openQuickView') && explorer.includes('addCandidate') && explorer.includes('addToCompare'), 'core/advanced filters, counts, Quick View, Candidate, and Compare are wired in one client path');
@@ -38,6 +40,7 @@ pass('AV-PAPER-WORKFLOW', paperWorkflow.includes('paper.workflow') && paperWorkf
 pass('AV-PROJECT-HISTORY', exists('src/stores/projects.ts') && projectHistory.includes('saveResearchProject') && projectHistory.includes('restore'), 'task builder saves and restores local multi-project history');
 pass('AV-MEMO-EVIDENCE', memo.includes('sectionNotSelected') && memo.includes('sectionEvidence') && claims.includes('conflict'), 'decision memo records exclusions/evidence and claim history flags conflicts');
 pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semanticStatusExplanation') && exists('src/components/common/SemanticStatusLegend.astro') && read('src/pages/_bodies/data-status.astro').includes('<SemanticStatus'), 'all semantic unknown states have bilingual explanations, an accessible renderer, a legend, and benchmark-page coverage');
+pass('AV-PAPER-LEARNING-GUIDE', read('src/lib/schemas.ts').includes('paperLearningGuideSchema') && read('src/pages/_bodies/paper-detail.astro').includes('PaperLearningGuide') && ['learn', 'method', 'strict'].every((track) => seedGuide.includes(`\"id\": \"${track}\"`)) && seedGuide.includes('8×NVIDIA A800 80GB') && paperLearningGuide.includes("localePath(locale, '/workspace/')"), 'SEED has bilingual novice, method-smoke, and strict-reproduction tracks with paper-scale compute and real workbench deep links');
 pass('AV-QWEN25-COVERAGE', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b', 'qwen2-5-7b-instruct', 'qwen2-5-14b', 'qwen2-5-14b-instruct', 'qwen2-5-32b', 'qwen2-5-32b-instruct', 'qwen2-5-72b', 'qwen2-5-72b-instruct'].every((id) => exists(`src/content/models/${id}.json`)), 'Qwen2.5 canonical size ladder has base and instruct coverage for all seven official sizes');
 
 const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));
