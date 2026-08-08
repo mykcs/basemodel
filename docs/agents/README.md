@@ -9,7 +9,7 @@ Before changing deployment, CI, hosting, URL/base-path behavior, SEO output, or 
 
 If migration-era wording in the Cloudflare runbook conflicts with the steady-state dual-hosting policy, `dual-hosting-policy.md` takes precedence unless the repository owner explicitly changes that policy.
 
-Migration status (2026-08-09): the initial Cloudflare Pages production bootstrap from `main` succeeded at `https://basemodel.pages.dev/`, and the migration branch Preview succeeded and rendered correctly from the Cloudflare root path. The remaining steps are to merge the migration PR, verify the new `main` production deployment, and switch the Cloudflare dashboard build command to the repository-owned `npm run build:cloudflare` entrypoint. The GitHub Pages deployment is intentionally retained as the second public site.
+Migration status (2026-08-09): the initial Cloudflare Pages production bootstrap from `main` succeeded at `https://basemodel.pages.dev/`, and the migration branch Preview succeeded and rendered correctly from the Cloudflare root path. After this migration PR is merged, verify the new `main` production deployment and switch the Cloudflare dashboard build command to the repository-owned `npm run build:cloudflare` entrypoint. The GitHub Pages deployment is intentionally retained as the second public site.
 
 Repository-level agent entrypoint: [`/AGENTS.md`](../../AGENTS.md).
 
