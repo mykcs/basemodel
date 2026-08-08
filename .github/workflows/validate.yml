@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+  schedule:
+    # Keep a periodic full cross-browser regression even when recent PRs are data-only.
+    - cron: '23 4 * * 0'
 
 permissions:
   contents: read
@@ -15,8 +19,78 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  classify:
+    name: Classify changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      scope: ${{ steps.pr_scope.outputs.scope || steps.default_scope.outputs.scope }}
+    steps:
+      - name: Default to full validation
+        id: default_scope
+        run: echo "scope=full" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout PR head for path classification
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Classify PR changes
+        if: ${{ github.event_name == 'pull_request' }}
+        id: pr_scope
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t files < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          if (( ${#files[@]} == 0 )); then
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          data_changed=false
+          full_required=false
+
+          {
+            echo "### Validation scope input"
+            echo
+            printf -- '- `%s`\n' "${files[@]}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for file in "${files[@]}"; do
+            case "$file" in
+              src/content/models/*.json|src/content/papers/*.json)
+                data_changed=true
+                ;;
+              README.md|docs/*)
+                ;;
+              *)
+                full_required=true
+                ;;
+            esac
+          done
+
+          if [[ "$full_required" == true ]]; then
+            scope=full
+          elif [[ "$data_changed" == true ]]; then
+            scope=data
+          else
+            scope=docs
+          fi
+
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo "Selected scope: **$scope**" >> "$GITHUB_STEP_SUMMARY"
+
   static:
     name: Static checks
+    needs: classify
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -34,8 +108,43 @@ jobs:
       - run: npm run audit:claims
       - run: npm test
 
+  data-smoke:
+    name: E2E (chromium smoke)
+    if: ${{ needs.classify.outputs.scope == 'data' }}
+    needs: classify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify hosted Chrome
+        run: google-chrome --version
+      - name: Run data-driven Chromium smoke tests
+        env:
+          PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+        run: npx playwright test --project=chromium --grep '@data-smoke'
+      - name: Upload Playwright diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: playwright-chromium-smoke-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
   e2e:
     name: E2E (${{ matrix.browser }})
+    if: ${{ needs.classify.outputs.scope == 'full' }}
+    needs: classify
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     container:
