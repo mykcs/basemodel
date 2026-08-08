@@ -12,6 +12,7 @@ Before changing hosting, CI, deployment, URL/base-path behavior, SEO deployment 
 4. [`docs/agents/2026-08-09-cloudflare-migration-retrospective.md`](docs/agents/2026-08-09-cloudflare-migration-retrospective.md) — full incident/migration history, successful and failed experiments, tool limitations, quota diagnosis, final workflow, and lessons.
 5. [`docs/agents/2026-08-09-post-migration-second-audit.md`](docs/agents/2026-08-09-post-migration-second-audit.md) — follow-up audit covering actual Copilot settings, account-vs-repository automatic review, review billing, Dependabot grouping, Node runtime/type alignment, and major-update churn.
 6. [`docs/agents/2026-08-09-final-hardening-addendum.md`](docs/agents/2026-08-09-final-hardening-addendum.md) — final hardening findings: Cloudflare status ordering, Astro 7 whitespace, public Preview access, `main` branch protection, and provider-only build skipping.
+7. [`docs/agents/2026-08-09-actions-cost-after-cloudflare.md`](docs/agents/2026-08-09-actions-cost-after-cloudflare.md) — post-Cloudflare Actions cost model: normal PR and `main` pushes are change-aware; scheduled/manual regressions remain full.
 
 If historical migration wording conflicts with the dual-hosting policy, `dual-hosting-policy.md` takes precedence unless the repository owner explicitly requests a different hosting strategy.
 
@@ -32,6 +33,7 @@ Agent-oriented documentation index:
 - Read Cloudflare's GitHub bot PR comment before asking the owner for deployment screenshots, but always compare the comment's `Latest commit` to the actual PR head SHA. Build completion order can overwrite the comment with an older commit's result.
 - Do not treat a GitHub Actions job that fails before step 1 because hosted-runner capacity/allowance is unavailable as an application test failure.
 - Do not repeatedly retry zero-step GitHub Actions jobs once billing/quota is confirmed.
+- Normal pull requests and normal `main` pushes use the same conservative docs/data/full changed-path tiers; manual and weekly scheduled validation stay full. If a push range cannot be classified safely, fail safe to full.
 - Do not disable an existing production deployment path merely because the other host is healthy.
 - Preserve the distinction between deterministic deployment-blocking checks and expensive/external-network audits.
 - When changing deployment hosts or canonical URLs, verify `base`, sitemap, robots, canonical metadata, assets, and bilingual routes.

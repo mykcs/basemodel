@@ -6,7 +6,8 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    # Keep a periodic full cross-browser regression even when recent PRs are data-only.
+    # Keep a periodic full cross-browser regression even when normal PR/main
+    # validation uses cheaper change-aware tiers.
     - cron: '23 4 * * 0'
 
 permissions:
@@ -24,29 +25,38 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     outputs:
-      scope: ${{ steps.pr_scope.outputs.scope || steps.default_scope.outputs.scope }}
+      scope: ${{ steps.change_scope.outputs.scope || steps.default_scope.outputs.scope }}
     steps:
+      # Manual and scheduled runs intentionally stay full. PRs and main pushes
+      # override this only when their changed-path range can be classified safely.
       - name: Default to full validation
         id: default_scope
         run: echo "scope=full" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout PR head for path classification
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Checkout change range for path classification
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Classify PR changes
-        if: ${{ github.event_name == 'pull_request' }}
-        id: pr_scope
+      - name: Classify PR or main-push changes
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+        id: change_scope
         shell: bash
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
+
+          # A new branch/repository push can expose an all-zero or unavailable
+          # before SHA. Fail safe to the default full tier instead of guessing.
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]] || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            echo "Change range cannot be classified safely; keeping full validation." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
 
           files=()
           while IFS= read -r -d '' file; do
@@ -55,6 +65,7 @@ jobs:
 
           if (( ${#files[@]} == 0 )); then
             echo "scope=full" >> "$GITHUB_OUTPUT"
+            echo "Empty change range; using full validation." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
@@ -63,6 +74,8 @@ jobs:
 
           {
             echo "### Validation scope input"
+            echo
+            echo "Event: **${GITHUB_EVENT_NAME}**"
             echo
             printf -- '- `%s`\n' "${files[@]}"
           } >> "$GITHUB_STEP_SUMMARY"
