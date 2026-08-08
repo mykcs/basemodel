@@ -9,8 +9,8 @@ Before changing deployment, CI, hosting, URL/base-path behavior, SEO output, or 
 
 If migration-era wording in the Cloudflare runbook conflicts with the steady-state dual-hosting policy, `dual-hosting-policy.md` takes precedence unless the repository owner explicitly changes that policy.
 
-Migration status (2026-08-09): the initial Cloudflare Pages production bootstrap from `main` succeeded at `https://basemodel.pages.dev/`, and the migration branch Preview succeeded and rendered correctly from the Cloudflare root path. After this migration PR is merged, verify the new `main` production deployment and switch the Cloudflare dashboard build command to the repository-owned `npm run build:cloudflare` entrypoint. The GitHub Pages deployment is intentionally retained as the second public site.
+Deployment status (2026-08-09): Cloudflare Pages production deployment from merged `main` commit `a4b619f` succeeded, the dashboard Build command has been switched to the repository-owned `npm run build:cloudflare` entrypoint, and this follow-up branch exists solely to verify that the simplified command can still produce an automatic Preview deployment before the dual-hosting migration is considered fully accepted. GitHub Pages remains intentionally retained as the second public site.
 
 Repository-level agent entrypoint: [`/AGENTS.md`](../../AGENTS.md).
 
-Human-facing product/data documentation remains in the normal `docs/` tree and `README.md`; this directory is specifically for implementation and operations context that future agents should not have to rediscover from chat history.
+Human-facing project/data instructions remain in the normal `docs/` tree and `README.md`; this directory is specifically for implementation and operations context that future agents should not have to rediscover from chat history.
