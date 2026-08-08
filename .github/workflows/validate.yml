@@ -114,6 +114,9 @@ jobs:
     needs: classify
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    env:
+      PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+      SMOKE_GREP: 'workspace scores candidates|model explorer exposes quick filters|comparison restores selected models|model detail renders field claims|semantic unknowns stay explicit|paper detail starts a research mode|global command search finds models and papers'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -126,10 +129,19 @@ jobs:
       - run: npm run build
       - name: Verify hosted Chrome
         run: google-chrome --version
+      - name: Verify smoke selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          listing="$(npx playwright test --project=chromium --grep "$SMOKE_GREP" --list)"
+          printf '%s\n' "$listing"
+          count="$(printf '%s\n' "$listing" | sed -n 's/^Total: \([0-9][0-9]*\) tests.*/\1/p')"
+          if [[ "$count" != "7" ]]; then
+            echo "Expected exactly 7 data-smoke tests, found ${count:-unknown}." >&2
+            exit 1
+          fi
       - name: Run data-driven Chromium smoke tests
-        env:
-          PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
-        run: npx playwright test --project=chromium --grep '@data-smoke'
+        run: npx playwright test --project=chromium --grep "$SMOKE_GREP"
       - name: Upload Playwright diagnostics
         if: ${{ failure() }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
