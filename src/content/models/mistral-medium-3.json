@@ -24,8 +24,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 128000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -40,23 +40,23 @@
     "classification": "proprietary",
     "custom_license": true,
     "derivative_distribution": "prohibited",
-    "commercial_use": "prohibited"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "unavailable",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "mistral-medium-2505"
     ]
   },
   "research": {
-    "suitable_for_inference": false,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -80,7 +80,12 @@
         "openness.classification",
         "access.api_status",
         "access.api_model_ids",
-        "status"
+        "status",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "access.weights_status"
       ],
       "evidence_note": "Official Mistral model card dated May 7, 2025 lists Mistral Medium 3 as a frontier-class multimodal model with 128k context, function calling, structured outputs, and API-only availability; status shown as deprecated with replacement Mistral Medium 3.5.",
       "id": "src_fe1f39d996f5"
@@ -98,6 +103,6 @@
       "id": "src_029841ba97ae"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Mistral Medium 3 is a closed-weight, API-only enterprise model. Parameter counts are not publicly disclosed. The model is deprecated as of 2026-05-22; replacement is Mistral Medium 3.5."
 }

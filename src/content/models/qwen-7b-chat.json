@@ -19,9 +19,9 @@
   },
   "architecture": {
     "type": "dense",
-    "total_parameters_b": 7,
-    "active_parameters_b": 7,
-    "context_length": 8192,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
@@ -31,16 +31,16 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "Apache 2.0"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -55,8 +55,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
-      "id": "src_4ce11f660e6b"
+      "id": "src_4ce11f660e6b",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

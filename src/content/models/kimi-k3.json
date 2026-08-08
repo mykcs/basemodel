@@ -24,9 +24,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 2800,
-    "active_parameters_b": 104,
-    "context_length": 1048576,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 896,
     "active_experts_per_token": 16
   },
@@ -48,11 +48,11 @@
     "license_url": "https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": true,
     "sglang_support": true,
     "verl_recipe_available": "not_verified"
@@ -93,7 +93,17 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context.",
-      "id": "src_7372d8cb937a"
+      "id": "src_7372d8cb937a",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status",
+        "openness.classification"
+      ]
     },
     {
       "id": "moonshot-kimi-k3-repo",
@@ -114,7 +124,11 @@
       "url": "https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-06",
-      "evidence_note": "The first-party Kimi K3 License grants use, copying, modification, distribution and finetuning subject to its commercial and redistribution conditions."
+      "evidence_note": "The first-party Kimi K3 License grants use, copying, modification, distribution and finetuning subject to its commercial and redistribution conditions.",
+      "supports": [
+        "openness.license_name",
+        "openness.commercial_use"
+      ]
     },
     {
       "url": "https://platform.kimi.com/docs/models",

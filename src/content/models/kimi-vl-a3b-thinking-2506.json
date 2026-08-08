@@ -24,7 +24,7 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_reported",
+    "total_parameters_b": "not_verified",
     "active_parameters_b": 2.8,
     "context_length": 131072,
     "expert_count": "not_reported",
@@ -82,7 +82,8 @@
         "access.weights_status",
         "research.vllm_support",
         "research.suitable_for_lora",
-        "research.suitable_for_inference"
+        "research.suitable_for_inference",
+        "access.api_status"
       ],
       "evidence_note": "Official README identifies Moonshot AI/Kimi-VL, the Thinking-2506 release, text/image/video understanding, 128K context, and runnable inference guidance."
     },
@@ -100,6 +101,6 @@
       "evidence_note": "Official Hugging Face model record for the Thinking-2506 checkpoint."
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "claim_status": "partial"
 }

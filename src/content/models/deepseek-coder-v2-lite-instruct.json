@@ -20,9 +20,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 16,
-    "active_parameters_b": 2.4,
-    "context_length": 128000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 64,
     "active_experts_per_token": 6
   },
@@ -32,19 +32,19 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "MIT",
+    "license_name": "not_verified",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
+    "commercial_use": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -59,7 +59,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06.",
-      "id": "src_6a555c25eb52"
+      "id": "src_6a555c25eb52",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
@@ -88,11 +97,11 @@
       "id": "src_6a555c25eb52"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-06-27",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
-    "api_status": "available"
+    "api_status": "not_verified"
   }
 }

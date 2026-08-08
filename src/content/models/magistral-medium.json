@@ -21,8 +21,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 40000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -37,23 +37,23 @@
     "classification": "proprietary",
     "custom_license": true,
     "derivative_distribution": "prohibited",
-    "commercial_use": "prohibited"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "unavailable",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "magistral-medium-2506"
     ]
   },
   "research": {
-    "suitable_for_inference": false,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -73,7 +73,11 @@
         "checkpoint.specializations",
         "openness.weights_available",
         "openness.license_name",
-        "openness.classification"
+        "openness.classification",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.modalities"
       ],
       "evidence_note": "Official Mistral blog post dated June 10, 2025 announces Magistral Medium as a more powerful enterprise version alongside the 24B open-source Magistral Small; no parameter count or weights disclosed.",
       "id": "src_2c8e07e7254c"
@@ -85,12 +89,13 @@
       "supports": [
         "release_date",
         "architecture.context_length",
-        "status"
+        "status",
+        "access.weights_status"
       ],
       "evidence_note": "Official Mistral docs model card lists Magistral Medium 1.0 as retired with 40k context, replacement Mistral Medium 3.5.",
       "id": "src_9bfb9002bbea"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Magistral Medium is the closed-weight enterprise sibling of Magistral Small. Parameter counts and architecture details are not disclosed. Status retired as of 2025-11-30; replacement is Mistral Medium 3.5."
 }

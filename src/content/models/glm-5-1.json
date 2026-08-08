@@ -23,8 +23,8 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 744,
-    "active_parameters_b": 40,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 200000,
     "expert_count": "not_reported",
     "active_experts_per_token": "not_reported"
@@ -39,7 +39,7 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/zai-org/GLM-5.1"
   },
   "access": {
@@ -52,13 +52,13 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -77,7 +77,13 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "evidence_note": "Official Hugging Face model card states GLM-5.1 weights are publicly available under MIT license, model size listed as 754B params.",
       "id": "src_ed13df7ee351"
@@ -106,6 +112,6 @@
       "id": "src_5df1b2577f6a"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Total parameters reported inconsistently across sources (744B vs 754B). Hugging Face model card lists 754B params while Z.ai blog/GLM-5 family positioning uses 744B. Architecture.active_parameters_b=40B from GLM-5 family comparison."
 }

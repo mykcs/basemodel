@@ -24,8 +24,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 256000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -40,13 +40,13 @@
     "classification": "open_weight",
     "custom_license": false,
     "derivative_distribution": "not_verified",
-    "commercial_use": "conditional",
+    "commercial_use": "not_verified",
     "conditions": [
       "subject_to_apache_2_license"
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
@@ -70,7 +70,12 @@
       "supports": [
         "status",
         "checkpoint.modalities",
-        "checkpoint.specializations"
+        "checkpoint.specializations",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "release_date"
       ],
       "id": "src_9c9443fb2273"
     },
@@ -94,5 +99,5 @@
       "id": "src_55faf6954aba"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

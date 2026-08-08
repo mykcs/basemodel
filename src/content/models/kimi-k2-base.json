@@ -20,9 +20,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 1000,
-    "active_parameters_b": 32,
-    "context_length": 128000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 384,
     "active_experts_per_token": 8
   },
@@ -32,14 +32,14 @@
     "finetuning_allowed": "not_verified",
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
-    "license_name": "Modified MIT"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -66,7 +66,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official base model card and weights metadata document the foundation checkpoint, 1T total, 32B active, 384 experts, top-8 routing, 128K context and Modified MIT.",
-      "id": "src_ff5011d4bc0b"
+      "id": "src_ff5011d4bc0b",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://github.com/MoonshotAI/Kimi-K2",

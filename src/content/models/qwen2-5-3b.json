@@ -9,8 +9,15 @@
   "status": "active",
   "checkpoint": {
     "type": "base",
-    "modalities": ["text"],
-    "specializations": ["general", "multilingual", "coding", "mathematics"]
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "coding",
+      "mathematics"
+    ]
   },
   "architecture": {
     "type": "dense",
@@ -29,7 +36,7 @@
     "license_name": "Qwen License"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
@@ -49,7 +56,21 @@
       "url": "https://huggingface.co/Qwen/Qwen2.5-3B",
       "type": "official_model_card",
       "checked_at": "2026-08-08",
-      "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.context_length", "openness.weights_available", "research.transformers_support", "research.vllm_support", "research.sglang_support"],
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.type",
+        "architecture.total_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
       "evidence_note": "Official Qwen model card identifies this as the base 3B Qwen2.5 checkpoint, reports 3.09B parameters and 32,768-token context, and documents the supported runtime paths. Commercial-use permission remains not_verified pending legal interpretation of the Qwen License.",
       "id": "src_qwen25_3b_base_20260808"
     },
@@ -57,7 +78,13 @@
       "url": "https://qwenlm.github.io/blog/qwen2.5/",
       "type": "official_announcement",
       "checked_at": "2026-08-08",
-      "supports": ["generation", "release_date", "research.transformers_support", "research.vllm_support", "research.sglang_support"],
+      "supports": [
+        "generation",
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
       "evidence_note": "Official Qwen Team release post dated September 19, 2024 lists the Qwen2.5 release and identifies 3B as one of the non-Apache-2.0 exceptions.",
       "id": "src_qwen25_release_20260808"
     },
@@ -65,10 +92,12 @@
       "url": "https://huggingface.co/Qwen/Qwen2.5-3B/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-08",
-      "supports": ["openness.license_name"],
+      "supports": [
+        "openness.license_name"
+      ],
       "evidence_note": "The repository LICENSE identifies the Qwen License. Commercial-use permission remains not_verified pending legal interpretation.",
       "id": "src_qwen25_3b_base_license_20260808"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

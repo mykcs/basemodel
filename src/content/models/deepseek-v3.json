@@ -36,22 +36,22 @@
     "license_name": "MIT",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-12-26",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3",
-    "api_status": "available"
+    "api_status": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -73,7 +73,13 @@
         "architecture.expert_count",
         "architecture.active_experts_per_token",
         "openness.license_name",
-        "openness.classification"
+        "openness.classification",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "access.weights_status"
       ],
       "evidence_note": "Official Hugging Face model card states 671B total parameters (685B including 14B MTP), 37B active, 128K context, 256 experts, top-8 routing, MoE with MLA, MIT license. Source checked 2026-08-06.",
       "id": "src_512ba017cfc8"

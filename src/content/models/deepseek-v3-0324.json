@@ -21,9 +21,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 685,
-    "active_parameters_b": "not_reported",
-    "context_length": 128000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 256,
     "active_experts_per_token": 8
   },
@@ -33,19 +33,19 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "MIT",
+    "license_name": "not_verified",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
+    "commercial_use": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -60,7 +60,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "Official Hugging Face config.json expert top-k field=8 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06. Official Hugging Face config.json expert-count field=256 Source checked https://huggingface.co/deepseek-ai/DeepSeek-V3-0324 on 2026-08-06.",
-      "id": "src_6ecdd364144c"
+      "id": "src_6ecdd364144c",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
@@ -89,11 +98,11 @@
       "id": "src_6ecdd364144c"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-03-24",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
-    "api_status": "available"
+    "api_status": "not_verified"
   }
 }

@@ -21,9 +21,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 119,
-    "active_parameters_b": 6.5,
-    "context_length": 256000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_reported",
     "active_experts_per_token": "not_reported"
   },
@@ -33,15 +33,15 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "Apache-2.0"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
     "transformers_support": "not_verified",
-    "vllm_support": true,
+    "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
@@ -57,7 +57,15 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Official Mistral model card documents 119B total, 6.5B active, 256k context, open weights and Apache-2.0 licensing.",
-      "id": "src_465a6c813d27"
+      "id": "src_465a6c813d27",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     },
     {
       "url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
@@ -67,5 +75,5 @@
       "id": "src_465a6c813d27"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

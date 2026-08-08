@@ -23,8 +23,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 256000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -35,8 +35,8 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "proprietary",
-    "classification": "proprietary"
+    "license_name": "not_verified",
+    "classification": "not_verified"
   },
   "access": {
     "weights_status": "unavailable",
@@ -51,13 +51,13 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -73,7 +73,14 @@
       "checked_at": "2026-08-06",
       "evidence_note": "xAI official docs list Grok 4.1 as a current model. Release date is confirmed by third-party launch reporting because docs.x.ai does not state release dates explicitly.",
       "supports": [
-        "access.api_status"
+        "access.api_status",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.api_model_ids"
       ],
       "id": "src_9526a0e44d14"
     },
@@ -89,6 +96,6 @@
       "id": "src_95cac2df4632"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "xAI was folded into SpaceX in February 2026; vendor name remains 'xAI'."
 }

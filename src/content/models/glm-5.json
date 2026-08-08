@@ -39,7 +39,7 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/zai-org/GLM-5"
   },
   "access": {
@@ -52,13 +52,13 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -79,7 +79,13 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "evidence_note": "Official Hugging Face model card states GLM-5 scales to 744B parameters (40B active) compared to GLM-4.5, integrates DeepSeek Sparse Attention, and is released under MIT license.",
       "id": "src_c689b3abc395"
@@ -101,7 +107,9 @@
       "type": "official_docs",
       "checked_at": "2026-08-06",
       "supports": [
-        "architecture.context_length"
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids"
       ],
       "evidence_note": "Z.ai developer docs overview table lists GLM-5 context as 200K.",
       "id": "src_3c7047f08532"

@@ -22,9 +22,9 @@
   },
   "architecture": {
     "type": "dense",
-    "total_parameters_b": 27,
-    "active_parameters_b": 27,
-    "context_length": 128000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
@@ -34,15 +34,15 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
-    "license_name": "Gemma Terms of Use"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
@@ -58,7 +58,15 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
-      "id": "src_df14dba6bd3c"
+      "id": "src_df14dba6bd3c",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     },
     {
       "url": "https://ai.google.dev/gemma/docs/get_started",

@@ -23,9 +23,9 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
-    "context_length": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
   },
@@ -39,23 +39,23 @@
     "classification": "proprietary",
     "custom_license": true,
     "derivative_distribution": "prohibited",
-    "commercial_use": "prohibited"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "unavailable",
-    "api_status": "preview",
+    "api_status": "not_verified",
     "api_model_ids": [
       "muse-spark"
     ]
   },
   "research": {
-    "suitable_for_inference": false,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -77,7 +77,10 @@
         "openness.weights_available",
         "openness.license_name",
         "openness.classification",
-        "access.api_status"
+        "access.api_status",
+        "vendor",
+        "family",
+        "generation"
       ],
       "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users.",
       "id": "src_17a523d995a6"
@@ -97,6 +100,6 @@
       "id": "src_027ccaad6e6b"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Meta's first proprietary frontier model and the first product from Meta Superintelligence Labs (April 8, 2026). No public weights; architecture parameters and context length are not disclosed. API access is private-preview only."
 }

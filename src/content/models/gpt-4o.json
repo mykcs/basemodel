@@ -22,8 +22,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 128000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -34,17 +34,17 @@
     "finetuning_allowed": "not_applicable",
     "derivative_release_allowed": false,
     "commercial_use_allowed": "not_disclosed",
-    "license_name": "proprietary",
-    "classification": "proprietary"
+    "license_name": "not_verified",
+    "classification": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": "not_verified",
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -59,7 +59,17 @@
       "type": "official_docs",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
-      "id": "src_bf1658b75f59"
+      "id": "src_bf1658b75f59",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.api_status",
+        "access.api_model_ids"
+      ]
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-4o",

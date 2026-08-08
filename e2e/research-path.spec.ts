@@ -106,7 +106,7 @@ test('model detail leads with research summary and access ladder', async ({ page
   await expect(page.locator('.research-summary')).toBeVisible();
   await expect(page.locator('.access-ladder')).toBeVisible();
   await expect(page.locator('.claim-evidence-panel')).toBeVisible();
-  await expect(page.locator('.claim-empty')).toBeVisible();
+  await expect(page.locator('.claim-row').first()).toBeVisible();
   await expect(page.locator('.access-ladder-step')).toHaveCount(6);
   await expect(page.locator('body')).not.toContainText('architecture.active_parameters_b');
   await expect(page.locator('body')).not.toContainText('research.verl_recipe_available');

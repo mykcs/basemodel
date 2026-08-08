@@ -39,14 +39,14 @@
     "classification": "open_weight",
     "custom_license": true,
     "derivative_distribution": "conditional",
-    "commercial_use": "conditional",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct/raw/main/LICENSE"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-06-06",
     "weights_url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "qwen2-72b-instruct"
     ],
@@ -57,12 +57,12 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
@@ -85,10 +85,24 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "id": "src_c7eba13a3d0c"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct/blob/main/LICENSE",
+      "type": "official_license",
+      "checked_at": "2026-08-08",
+      "supports": ["openness.license_name"],
+      "evidence_note": "Official Qwen repository license text for the Tongyi Qianwen license.",
+      "id": "src_qwen2_72b_instruct_license_20260808"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

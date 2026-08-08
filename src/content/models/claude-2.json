@@ -19,9 +19,9 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
-    "context_length": 100000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
   },
@@ -31,23 +31,23 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "Provider API terms",
-    "classification": "proprietary",
+    "license_name": "not_verified",
+    "classification": "not_verified",
     "custom_license": false,
     "derivative_distribution": "prohibited",
-    "commercial_use": "conditional",
+    "commercial_use": "not_verified",
     "conditions": [
       "subject_to_api_terms"
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -73,7 +73,13 @@
       "supports": [
         "access.api_status",
         "access.api_model_ids",
-        "access.product_status"
+        "access.product_status",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "id": "src_3c6aa0c7c522"
     },
@@ -85,5 +91,5 @@
       "id": "src_fb0472f7a68d"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

@@ -37,7 +37,7 @@
     "license_name": "Apache-2.0"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
@@ -57,7 +57,21 @@
       "url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-08",
-      "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.context_length", "openness.weights_available", "research.transformers_support", "research.vllm_support", "research.sglang_support"],
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.type",
+        "architecture.total_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
       "evidence_note": "Official Qwen model card identifies the instruction-tuned 7B Qwen2.5 checkpoint, reports 7.61B parameters and 32,768-token context, and documents the supported runtime paths.",
       "id": "src_f78a59b988be"
     },
@@ -65,7 +79,13 @@
       "url": "https://qwenlm.github.io/blog/qwen2.5/",
       "type": "official_announcement",
       "checked_at": "2026-08-08",
-      "supports": ["generation", "release_date", "research.transformers_support", "research.vllm_support", "research.sglang_support"],
+      "supports": [
+        "generation",
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
       "evidence_note": "Official Qwen Team release post dated September 19, 2024 lists the Qwen2.5 release and supported deployment ecosystem.",
       "id": "src_qwen25_release_20260808"
     },
@@ -73,10 +93,15 @@
       "url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-08",
-      "supports": ["openness.license_name", "openness.commercial_use_allowed", "openness.derivative_release_allowed", "openness.finetuning_allowed"],
+      "supports": [
+        "openness.license_name",
+        "openness.commercial_use_allowed",
+        "openness.derivative_release_allowed",
+        "openness.finetuning_allowed"
+      ],
       "evidence_note": "The repository LICENSE is Apache-2.0; licensing permissions are represented only for the fields directly covered by that license.",
       "id": "src_qwen25_7b_instruct_license_20260808"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

@@ -42,11 +42,22 @@ pass('AV-QWEN25-COVERAGE', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-
 
 const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));
 const paperFiles = fs.readdirSync(path.join(root, 'src/content/papers')).filter((file) => file.endsWith('.json'));
-const models = modelFiles.map((file) => JSON.parse(read(path.join('src/content/models', file))) as { data_status: string; sources?: Array<{ url: string; evidence_note?: string }> });
+const models = modelFiles.map((file) => JSON.parse(read(path.join('src/content/models', file))) as Record<string, any>);
 const papersData = paperFiles.map((file) => JSON.parse(read(path.join('src/content/papers', file))) as { model_selection?: unknown[] });
 const partial = models.filter((model) => model.data_status !== 'verified').length;
 const withSelection = papersData.filter((paper) => Array.isArray(paper.model_selection) && paper.model_selection.length > 0).length;
+const criticalFields = ['vendor', 'family', 'generation', 'release_date', 'checkpoint.type', 'checkpoint.modalities', 'architecture.total_parameters_b', 'architecture.active_parameters_b', 'architecture.context_length', 'access.weights_status', 'access.api_status', 'openness.license_name', 'openness.classification', 'openness.commercial_use', 'research.suitable_for_inference', 'research.transformers_support', 'research.vllm_support', 'research.sglang_support'];
+const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
+const fieldValue = (model: Record<string, any>, field: string) => field.split('.').reduce((value, key) => value?.[key], model);
+const claimCoverage = models.every((model) => criticalFields.every((field) => {
+  const value = fieldValue(model, field);
+  if (value === undefined || value === null) return true;
+  const unknown = typeof value === 'string' && semanticUnknowns.has(value);
+  const mapped = Array.isArray(model.sources) && model.sources.some((source: Record<string, any>) => source.supports?.includes(field));
+  return unknown || mapped;
+}));
 console.log(`FACT-EVIDENCE models=${models.length} verified=${models.length - partial} partial_or_unknown=${partial} papers=${papersData.length} explicit_selection_records=${withSelection}`);
+pass('AV-CLAIM-COVERAGE', partial === 0 && claimCoverage, 'all model records are verified and critical fields are source-mapped or semantic unknown');
 console.log('FACT-VERDICT EVIDENCE-UNKNOWN — current fact coverage is reported honestly; unresolved external facts are not promoted by this code audit.');
 
 if (failures.length) {

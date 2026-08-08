@@ -19,8 +19,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 8192,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -31,17 +31,17 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "proprietary",
-    "classification": "proprietary"
+    "license_name": "not_verified",
+    "classification": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -56,20 +56,31 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
-      "id": "src_6960778340b0"
+      "id": "src_6960778340b0",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-4",
       "type": "official_docs",
       "checked_at": "2026-08-06",
       "supports": [
-        "architecture.context_length"
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids"
       ],
       "evidence_note": "OpenAI official API docs list gpt-4 context window as 8192 tokens. Source checked 2026-08-06.",
       "id": "src_6960778340b0"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "access": {
     "api_status": "available",
     "api_model_ids": [

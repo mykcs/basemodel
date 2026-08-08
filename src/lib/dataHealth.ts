@@ -106,9 +106,14 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
     if (parseDate(model.release_date).getTime() > now.getTime() + 86400000) issues.push({ modelId: model.id, severity: 'error', reason: 'future-release-date', field: 'release_date' });
     if (checkedAt && ageDays(checkedAt, now) > staleThreshold(model, vendor)) issues.push({ modelId: model.id, severity: 'warning', reason: 'stale-source', checkedAt });
     if (model.data_status === 'verified') {
-      const official = model.sources.find((source) => source.type === 'official_model_card' || source.type === 'official_docs');
-      if (!official) issues.push({ modelId: model.id, severity: 'error', reason: 'generic-source-url', field: 'sources' });
-      else if (isGenericSourceUrl(official.url, vendor)) issues.push({ modelId: model.id, severity: 'error', reason: 'generic-source-url', field: 'sources', checkedAt: official.checked_at });
+      const officialTypes = new Set(['official_model_card', 'official_docs', 'official_announcement', 'official_weights', 'official_license', 'official_api_docs', 'official_code', 'technical_report', 'code']);
+      const officialSources = model.sources.filter((source) => officialTypes.has(source.type));
+      const modelLevelFields = new Set(['vendor', 'family', 'generation', 'release_date', 'checkpoint.type', 'checkpoint.modalities', 'architecture.context_length', 'access.api_status', 'access.weights_status', 'openness.license_name']);
+      const hasModelLevelEvidence = officialSources.some((source) => Array.isArray(source.supports) && source.supports.some((field) => modelLevelFields.has(field)));
+      if (!officialSources.length || !hasModelLevelEvidence) {
+        const source = officialSources[0];
+        issues.push({ modelId: model.id, severity: 'error', reason: 'generic-source-url', field: 'sources', checkedAt: source?.checked_at });
+      }
     }
     const visit = (value: unknown, fieldPath: string): void => {
       if (typeof value === 'string' && semanticStates.includes(value as SemanticStatus)) {

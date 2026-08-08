@@ -22,9 +22,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 355,
-    "active_parameters_b": 32,
-    "context_length": 200000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_reported",
     "active_experts_per_token": "not_reported"
   },
@@ -34,16 +34,16 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "MIT"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -58,7 +58,15 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Model-specific first-party source for GLM-4.6; replaces a generic family/catalog URL.",
-      "id": "src_77051678155d"
+      "id": "src_77051678155d",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     },
     {
       "url": "https://github.com/zai-org/GLM-4.5",
@@ -68,5 +76,5 @@
       "id": "src_03d68ae47dae"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

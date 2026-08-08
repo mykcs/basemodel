@@ -21,8 +21,8 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 117,
-    "active_parameters_b": 5.1,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 128000,
     "expert_count": 128,
     "active_experts_per_token": 4
@@ -33,16 +33,16 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "Apache 2.0"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -57,14 +57,27 @@
       "type": "official_docs",
       "checked_at": "2026-08-05",
       "evidence_note": "OpenAI official release states both model weights are freely available for download on Hugging Face Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06. OpenAI official release says post-training included supervised fine-tuning and models are customizable; official model card describes robust fine-tuning Source checked https://openai.com/index/introducing-gpt-oss/ on 2026-08-06.",
-      "id": "src_9dcfa538700d"
+      "id": "src_9dcfa538700d",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.api_status",
+        "access.api_model_ids"
+      ]
     },
     {
       "url": "https://huggingface.co/openai/gpt-oss-120b",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
-      "id": "src_9dcfa538700d"
+      "id": "src_9dcfa538700d",
+      "supports": [
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-oss-120b",

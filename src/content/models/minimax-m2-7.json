@@ -22,8 +22,8 @@
   "architecture": {
     "type": "moe",
     "total_parameters_b": 230,
-    "active_parameters_b": 10,
-    "context_length": 200000,
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
   },
@@ -37,14 +37,14 @@
     "classification": "open_weight",
     "custom_license": true,
     "derivative_distribution": "conditional",
-    "commercial_use": "conditional",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/raw/main/LICENSE"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2026-04-01",
     "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "MiniMax-M2.7",
       "MiniMax-M2.7-highspeed"
@@ -55,11 +55,11 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -81,7 +81,13 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "id": "src_2aa8d36eb900"
     },
@@ -94,8 +100,16 @@
         "release_date"
       ],
       "id": "src_0747e61495cb"
+    },
+    {
+      "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/blob/main/LICENSE",
+      "type": "official_license",
+      "checked_at": "2026-08-08",
+      "supports": ["openness.license_name"],
+      "evidence_note": "Official MiniMax repository license text for the Modified MIT license.",
+      "id": "src_minimax_m27_license_20260808"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "MiniMax M2.7 parameter count and context length are inferred from the M2 family architecture; not explicitly stated on the M2.7 card."
 }

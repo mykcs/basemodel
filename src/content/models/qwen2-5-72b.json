@@ -7,15 +7,97 @@
   "generation": "Qwen2.5",
   "release_date": "2024-09-19",
   "status": "active",
-  "checkpoint": {"type": "base", "modalities": ["text"], "specializations": ["general", "multilingual", "coding", "mathematics"]},
-  "architecture": {"type": "dense", "total_parameters_b": 72.7, "active_parameters_b": "not_verified", "context_length": 131072, "expert_count": "not_applicable", "active_experts_per_token": "not_applicable"},
-  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": "not_verified", "license_name": "Qwen License"},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "not_verified"},
-  "hardware": {"inference_tier": "not_verified", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified"},
+  "checkpoint": {
+    "type": "base",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "general",
+      "multilingual",
+      "coding",
+      "mathematics"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 72.7,
+    "active_parameters_b": "not_verified",
+    "context_length": 131072,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": true,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": "not_verified",
+    "license_name": "Qwen License"
+  },
+  "research": {
+    "suitable_for_inference": "not_verified",
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "not_verified",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
+  },
   "sources": [
-    {"url": "https://huggingface.co/Qwen/Qwen2.5-72B", "type": "official_model_card", "checked_at": "2026-08-08", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.context_length", "openness.weights_available", "research.transformers_support", "research.vllm_support", "research.sglang_support"], "evidence_note": "Official Qwen model card and repository configuration identify the base 72B Qwen2.5 checkpoint, report 72.7B parameters and 131,072-token context, and document the supported runtime paths. Commercial-use permission remains not_verified pending legal interpretation of the Qwen License.", "id": "src_qwen25_72b_base_20260808"},
-    {"url": "https://qwenlm.github.io/blog/qwen2.5/", "type": "official_announcement", "checked_at": "2026-08-08", "supports": ["generation", "release_date", "research.transformers_support", "research.vllm_support", "research.sglang_support"], "evidence_note": "Official Qwen Team release post dated September 19, 2024 lists the Qwen2.5 release and identifies 72B as one of the non-Apache-2.0 exceptions.", "id": "src_qwen25_release_20260808"},
-    {"url": "https://huggingface.co/Qwen/Qwen2.5-72B/blob/main/LICENSE", "type": "official_license", "checked_at": "2026-08-08", "supports": ["openness.license_name"], "evidence_note": "The repository LICENSE identifies the Qwen License. Commercial-use permission remains not_verified pending legal interpretation.", "id": "src_qwen25_72b_base_license_20260808"}
+    {
+      "url": "https://huggingface.co/Qwen/Qwen2.5-72B",
+      "type": "official_model_card",
+      "checked_at": "2026-08-08",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.type",
+        "architecture.total_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
+      "evidence_note": "Official Qwen model card and repository configuration identify the base 72B Qwen2.5 checkpoint, report 72.7B parameters and 131,072-token context, and document the supported runtime paths. Commercial-use permission remains not_verified pending legal interpretation of the Qwen License.",
+      "id": "src_qwen25_72b_base_20260808"
+    },
+    {
+      "url": "https://qwenlm.github.io/blog/qwen2.5/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-08",
+      "supports": [
+        "generation",
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
+      ],
+      "evidence_note": "Official Qwen Team release post dated September 19, 2024 lists the Qwen2.5 release and identifies 72B as one of the non-Apache-2.0 exceptions.",
+      "id": "src_qwen25_release_20260808"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen2.5-72B/blob/main/LICENSE",
+      "type": "official_license",
+      "checked_at": "2026-08-08",
+      "supports": [
+        "openness.license_name"
+      ],
+      "evidence_note": "The repository LICENSE identifies the Qwen License. Commercial-use permission remains not_verified pending legal interpretation.",
+      "id": "src_qwen25_72b_base_license_20260808"
+    }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

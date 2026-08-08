@@ -22,9 +22,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 400,
-    "active_parameters_b": 17,
-    "context_length": 1000000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 128,
     "active_experts_per_token": 1
   },
@@ -34,16 +34,16 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
-    "license_name": "Llama 4 Community License"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -58,7 +58,15 @@
       "type": "official_model_card",
       "checked_at": "2026-08-05",
       "evidence_note": "Official Hugging Face model card metadata base_model=['meta-llama/Llama-4-Maverick-17B-128E'] Source checked https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct on 2026-08-06.",
-      "id": "src_82796a795351"
+      "id": "src_82796a795351",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     },
     {
       "url": "https://www.llama.com/models/llama-4/",
@@ -69,5 +77,5 @@
     }
   ],
   "notes": "Llama 4 Behemoth (~2T total / 288B active teacher model, previewed 2025-04) has not been publicly released as of 2026-08-06; Scout and Maverick were distilled from it. Behemoth is intentionally not a separate record because it remains unpublished.",
-  "data_status": "partial"
+  "data_status": "verified"
 }

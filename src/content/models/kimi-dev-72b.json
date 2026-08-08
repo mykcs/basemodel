@@ -21,7 +21,7 @@
     "type": "dense",
     "total_parameters_b": 72,
     "active_parameters_b": 72,
-    "context_length": "not_reported",
+    "context_length": "not_verified",
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
@@ -76,7 +76,8 @@
         "openness.classification",
         "access.weights_status",
         "research.vllm_support",
-        "research.suitable_for_inference"
+        "research.suitable_for_inference",
+        "access.api_status"
       ],
       "evidence_note": "Official README identifies Moonshot AI/Kimi-Dev-72B as a text coding model, announces the June 17 release, and documents downloadable weights plus vLLM deployment."
     },
@@ -94,6 +95,6 @@
       "evidence_note": "Official Hugging Face model record for Kimi-Dev-72B."
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "claim_status": "partial"
 }

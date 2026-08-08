@@ -20,9 +20,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 1000,
-    "active_parameters_b": 32,
-    "context_length": 256000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 384,
     "active_experts_per_token": 8
   },
@@ -32,14 +32,14 @@
     "finetuning_allowed": "not_verified",
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
-    "license_name": "Modified MIT"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -73,7 +73,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official model card states open-source thinking model, 1T total, 32B active, 384 experts, top-8 routing, 256K context, native INT4 and tool orchestration.",
-      "id": "src_e6c83dede55c"
+      "id": "src_e6c83dede55c",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://www.kimi.com/blog/kimi-k2-thinking",
@@ -87,7 +96,11 @@
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot's API guide documents the kimi-k2-thinking model ID, preserved thinking and multi-step tool calling.",
-      "id": "src_e88c54ee251e"
+      "id": "src_e88c54ee251e",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids"
+      ]
     }
   ],
   "data_status": "verified"

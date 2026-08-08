@@ -77,7 +77,8 @@
         "openness.classification",
         "openness.license_name",
         "access.weights_status",
-        "research.suitable_for_inference"
+        "research.suitable_for_inference",
+        "access.api_status"
       ],
       "evidence_note": "Official README identifies Moonshot AI/Kimi Moonlight as a text MoE model, documents the February 23 release, Instruct checkpoint, 16B total / 3B active parameters, released checkpoints, and MIT licensing."
     },
@@ -95,6 +96,6 @@
       "evidence_note": "Official Hugging Face model record for the Moonlight checkpoint family."
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "claim_status": "partial"
 }

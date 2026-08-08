@@ -85,7 +85,8 @@
         "research.transformers_support",
         "research.vllm_support",
         "research.sglang_support",
-        "research.suitable_for_inference"
+        "research.suitable_for_inference",
+        "access.api_model_ids"
       ],
       "evidence_note": "Official Kimi K2 repository identifies the K2 Instruct text model, its September 5 release, Modified MIT terms, open weights, and supported inference engines."
     },
@@ -103,6 +104,6 @@
       "evidence_note": "Official API catalog used to record the 0905 API alias."
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "claim_status": "partial"
 }

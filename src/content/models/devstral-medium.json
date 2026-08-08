@@ -21,8 +21,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_disclosed",
-    "active_parameters_b": "not_disclosed",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
     "context_length": 128000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -37,23 +37,23 @@
     "classification": "proprietary",
     "custom_license": true,
     "derivative_distribution": "prohibited",
-    "commercial_use": "prohibited"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "unavailable",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "devstral-medium-2507"
     ]
   },
   "research": {
-    "suitable_for_inference": false,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": false,
-    "vllm_support": false,
-    "sglang_support": false,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -76,7 +76,11 @@
         "openness.license_name",
         "openness.classification",
         "access.api_status",
-        "access.api_model_ids"
+        "access.api_model_ids",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.modalities"
       ],
       "evidence_note": "Official Mistral blog post dated July 10, 2025 introduces Devstral Medium as an enterprise-grade code model available through the API, scoring 61.6% on SWE-Bench Verified; API alias devstral-medium-2507.",
       "id": "src_fabe8f8f1dc3"
@@ -88,12 +92,13 @@
       "supports": [
         "release_date",
         "architecture.context_length",
-        "status"
+        "status",
+        "access.weights_status"
       ],
       "evidence_note": "Official Mistral docs model card lists Devstral Medium 1.0 as deprecated with 128k context, replacement Mistral Medium 3.5.",
       "id": "src_aa8d7fa79202"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Devstral Medium is a closed-weight, API-only enterprise coding model jointly developed with All Hands AI. Parameter counts and architecture details are not disclosed. Status deprecated as of 2026-02-27; replacement is Mistral Medium 3.5."
 }

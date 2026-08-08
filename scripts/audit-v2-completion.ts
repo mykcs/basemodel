@@ -55,6 +55,20 @@ pass('V2-DATA-002', read('src/pages/guide.astro').includes("getCollection('guide
 pass('V2-DATA-003', read('src/lib/schemas.ts').includes('not_verified') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'semantic unknown states are explicit');
 pass('V2-DATA-004', read('src/lib/research/evaluateModel.ts').includes('evidenceQuality') && read('src/lib/research/evaluateModel.ts').includes('license'), 'evidence quality and license constraints are in the engine');
 pass('V2-DATA-005', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b', 'qwen2-5-7b-instruct', 'qwen2-5-14b', 'qwen2-5-14b-instruct', 'qwen2-5-32b', 'qwen2-5-32b-instruct', 'qwen2-5-72b', 'qwen2-5-72b-instruct'].every((id) => existsSync(join(root, `src/content/models/${id}.json`))), 'Qwen2.5 canonical size ladder includes base and instruct records for 0.5B, 1.5B, 3B, 7B, 14B, 32B, and 72B');
+const modelData = readdirSync(join(root, 'src/content/models'))
+  .filter((file) => file.endsWith('.json'))
+  .map((file) => JSON.parse(read(`src/content/models/${file}`)) as Record<string, any>);
+const criticalFields = ['vendor', 'family', 'generation', 'release_date', 'checkpoint.type', 'checkpoint.modalities', 'architecture.total_parameters_b', 'architecture.active_parameters_b', 'architecture.context_length', 'access.weights_status', 'access.api_status', 'openness.license_name', 'openness.classification', 'openness.commercial_use', 'research.suitable_for_inference', 'research.transformers_support', 'research.vllm_support', 'research.sglang_support'];
+const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
+const fieldValue = (model: Record<string, any>, field: string) => field.split('.').reduce((value, key) => value?.[key], model);
+const allCriticalFieldsCovered = modelData.every((model) => criticalFields.every((field) => {
+  const value = fieldValue(model, field);
+  if (value === undefined || value === null) return true;
+  const unknown = typeof value === 'string' && semanticUnknowns.has(value);
+  const mapped = Array.isArray(model.sources) && model.sources.some((source: Record<string, any>) => source.supports?.includes(field));
+  return unknown || mapped;
+}));
+pass('V2-DATA-006', modelData.every((model) => model.data_status === 'verified') && allCriticalFieldsCovered, 'all model records are verified and every critical field is source-mapped or semantic unknown');
 pass('V2-CSS-001', read('src/styles/global.css').trim() === "@import './tokens.css';\n@import './site.css';" && read('src/styles/tokens.css').includes('--space-8'), 'tokens are imported and global CSS is an import layer');
 pass('V2-A11Y-001', read('src/components/Header.astro').includes('atlas:themechange') && read('src/components/landscape/LandscapeECharts.tsx').includes('atlas:themechange'), 'theme state is exposed to chart refresh');
 pass('V2-A11Y-002', read('src/styles/site.css').includes('prefers-reduced-motion') && read('src/styles/site.css').includes('position: sticky'), 'reduced motion and sticky comparison styles exist');

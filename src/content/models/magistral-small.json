@@ -37,24 +37,24 @@
     "classification": "open_weight",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-06-10",
     "weights_url": "https://huggingface.co/mistralai/Magistral-Small-2506",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "magistral-small-2506"
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
@@ -78,7 +78,12 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities"
       ],
       "evidence_note": "Official Hugging Face model card states Magistral Small is a 24B parameter reasoning model, 128k context window with recommended 40k max, Apache 2.0 license, and weights available.",
       "id": "src_82357e0a153c"
@@ -111,6 +116,6 @@
       "id": "src_8380b5f5f409"
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "notes": "Magistral Small is Mistral's first open-weight reasoning model. The Hugging Face card recommends 40k context for best performance; docs card lists 40k. Status retired as of 2025-11-30; replacement is Mistral Small 4."
 }

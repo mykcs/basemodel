@@ -36,26 +36,26 @@
     "classification": "open_weight",
     "custom_license": true,
     "derivative_distribution": "conditional",
-    "commercial_use": "conditional",
+    "commercial_use": "not_verified",
     "license_url": "https://llama.meta.com/llama3/license"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-04-18",
     "weights_url": "https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "meta-llama/Meta-Llama-3-8B-Instruct"
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -78,7 +78,12 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities"
       ],
       "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 8B params, context length 8k, license llama3, and weights available in safetensors.",
       "id": "src_cb8574d955a6"
@@ -94,6 +99,14 @@
       ],
       "evidence_note": "Official Meta blog post announces Meta Llama 3 with pretrained and instruction tuned 8B and 70B parameter models on April 18, 2024.",
       "id": "src_6dff38638a68"
+    },
+    {
+      "url": "https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/blob/main/LICENSE",
+      "type": "official_license",
+      "checked_at": "2026-08-08",
+      "supports": ["openness.license_name", "openness.classification", "openness.commercial_use"],
+      "evidence_note": "Official Meta Llama repository license text for the Llama 3 Community License.",
+      "id": "src_llama3_8b_instruct_license_20260808"
     }
   ],
   "data_status": "verified",

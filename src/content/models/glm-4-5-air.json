@@ -38,26 +38,26 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/zai-org/GLM-4.5-Air"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-07-28",
     "weights_url": "https://huggingface.co/zai-org/GLM-4.5-Air",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "glm-4.5-air"
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -79,7 +79,13 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license.",
       "id": "src_07d9bb7b4cf7"

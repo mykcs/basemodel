@@ -22,8 +22,8 @@
   "architecture": {
     "type": "moe",
     "total_parameters_b": 685,
-    "active_parameters_b": "not_reported",
-    "context_length": "not_reported",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 256,
     "active_experts_per_token": 8
   },
@@ -36,22 +36,22 @@
     "license_name": "MIT",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
+    "commercial_use": "not_verified"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-09-29",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2-Exp",
-    "api_status": "available"
+    "api_status": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
+    "transformers_support": "not_verified",
+    "vllm_support": "not_verified",
+    "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
@@ -69,11 +69,17 @@
         "release_date",
         "architecture.total_parameters_b",
         "openness.license_name",
-        "openness.classification"
+        "openness.classification",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "access.weights_status"
       ],
       "evidence_note": "Official Hugging Face model card states 685B parameters and DSA sparse attention experiment, MIT license. Active parameters, context length, and expert details not stated in card; inferred from V3 architecture where noted. Source checked 2026-08-06.",
       "id": "src_208c1baedae9"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

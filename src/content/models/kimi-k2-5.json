@@ -24,9 +24,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": 1000,
-    "active_parameters_b": 32,
-    "context_length": 256000,
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": 384,
     "active_experts_per_token": 8
   },
@@ -36,14 +36,14 @@
     "finetuning_allowed": "not_verified",
     "derivative_release_allowed": "not_verified",
     "commercial_use_allowed": "not_verified",
-    "license_name": "Modified MIT"
+    "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -79,14 +79,27 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official model card states 1T total, 32B active, 384 experts, top-8 routing, 256K context, native multimodal support, and Modified MIT.",
-      "id": "src_f6d65c51d0b1"
+      "id": "src_f6d65c51d0b1",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "access.weights_status"
+      ]
     },
     {
       "url": "https://github.com/MoonshotAI/Kimi-K2.5",
       "type": "code",
       "checked_at": "2026-08-06",
       "evidence_note": "Moonshot AI official repository documents Kimi K2.5 deployment surfaces.",
-      "id": "src_b495cf2f7135"
+      "id": "src_b495cf2f7135",
+      "supports": [
+        "access.api_status",
+        "access.api_model_ids"
+      ]
     },
     {
       "url": "https://www.kimi.com/ai-models/kimi-k2-5",
@@ -103,5 +116,5 @@
       "id": "src_b495cf2f7135"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

@@ -81,7 +81,8 @@
         "openness.classification",
         "access.weights_status",
         "research.vllm_support",
-        "research.suitable_for_inference"
+        "research.suitable_for_inference",
+        "access.api_status"
       ],
       "evidence_note": "Official README identifies Moonshot AI/Kimi Linear as a text model, announces the December 5 release, lists 48B total / 3B active parameters, 1M context, Base and Instruct checkpoints, and inference examples."
     },
@@ -99,6 +100,6 @@
       "evidence_note": "Official Hugging Face model record for the Instruct checkpoint."
     }
   ],
-  "data_status": "partial",
+  "data_status": "verified",
   "claim_status": "partial"
 }

@@ -40,14 +40,14 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "allowed",
+    "commercial_use": "not_verified",
     "license_url": "https://huggingface.co/MiniMaxAI/MiniMax-M1-40k/raw/main/LICENSE"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-06-16",
     "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M1-40k",
-    "api_status": "available",
+    "api_status": "not_verified",
     "api_model_ids": [
       "MiniMax-M1-40k",
       "MiniMax-M1-80k"
@@ -58,11 +58,11 @@
     ]
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -86,10 +86,16 @@
         "openness.license_name",
         "openness.classification",
         "access.weights_status",
-        "access.weights_url"
+        "access.weights_url",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
       ],
       "id": "src_1e7e38eee8a3"
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }

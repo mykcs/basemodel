@@ -25,9 +25,9 @@
   },
   "architecture": {
     "type": "dense",
-    "total_parameters_b": 27,
-    "active_parameters_b": 27,
-    "context_length": "not_reported",
+    "total_parameters_b": "not_verified",
+    "active_parameters_b": "not_verified",
+    "context_length": "not_verified",
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
@@ -40,11 +40,11 @@
     "license_name": "not_verified"
   },
   "research": {
-    "suitable_for_inference": true,
+    "suitable_for_inference": "not_verified",
     "suitable_for_lora": "not_verified",
     "suitable_for_sft": "not_verified",
     "suitable_for_rl": "not_verified",
-    "transformers_support": true,
+    "transformers_support": "not_verified",
     "vllm_support": "not_verified",
     "sglang_support": "not_verified",
     "verl_recipe_available": "not_verified"
@@ -61,8 +61,16 @@
       "type": "official_model_card",
       "checked_at": "2026-08-06",
       "evidence_note": "Model-specific first-party source for Qwen3.5-27B; replaces a generic family/catalog URL.",
-      "id": "src_02b150d32523"
+      "id": "src_02b150d32523",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date"
+      ]
     }
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }
