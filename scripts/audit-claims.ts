@@ -12,7 +12,7 @@ const files = [
   ...fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json')).map((file) => ({ type: 'model' as const, file: path.join(root, 'src/content/models', file) })),
   ...fs.readdirSync(path.join(root, 'src/content/papers')).filter((file) => file.endsWith('.json')).map((file) => ({ type: 'paper' as const, file: path.join(root, 'src/content/papers', file) })),
 ];
-const semantic = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable', 'unknown']);
+const semantic = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 const get = (value: any, field: string): any => field.split('.').reduce((current, key) => current?.[key], value);
 const printable = (value: unknown) => value === undefined ? '' : typeof value === 'string' ? value : JSON.stringify(value);
 const criticalFields = [

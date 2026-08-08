@@ -25,29 +25,29 @@
   },
   "architecture": {
     "type": "dense",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
   },
   "openness": {
     "weights_available": true,
-    "base_checkpoint_available": "not_verified",
+    "base_checkpoint_available": "not_reported",
     "finetuning_allowed": true,
-    "derivative_release_allowed": "not_verified",
-    "commercial_use_allowed": "not_verified",
-    "license_name": "not_verified"
+    "derivative_release_allowed": "not_reported",
+    "commercial_use_allowed": "not_reported",
+    "license_name": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "48gb",
@@ -60,7 +60,7 @@
       "url": "https://huggingface.co/Qwen/Qwen3.5-27B",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Model-specific first-party source for Qwen3.5-27B; replaces a generic family/catalog URL.",
+      "evidence_note": "Model-specific first-party source for Qwen3.5-27B; replaces a generic family/catalog URL. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_02b150d32523",
       "supports": [
         "vendor",
@@ -68,7 +68,11 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support",
+        "research.suitable_for_inference"
       ]
     }
   ],

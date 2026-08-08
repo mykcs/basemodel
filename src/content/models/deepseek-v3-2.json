@@ -36,17 +36,17 @@
     "license_name": "MIT",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "not_verified"
+    "commercial_use": "allowed"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
-    "suitable_for_sft": "not_verified",
+    "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -73,9 +73,11 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.suitable_for_inference",
+        "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card states 685B parameters and MIT license. Active parameters and context length are inferred from the shared V3 architecture (37B active, 128K context); some hosted providers report a 164K extension but the model card does not confirm it. Expert count=256 and top-k=8 inferred from V3 architecture. Source checked 2026-08-06.",
+      "evidence_note": "Official Hugging Face model card states 685B parameters and MIT license. Active parameters and context length are inferred from the shared V3 architecture (37B active, 128K context); some hosted providers report a 164K extension but the model card does not confirm it. Expert count=256 and top-k=8 inferred from V3 architecture. Source checked 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
       "id": "src_d180dbc95448"
     },
     {
@@ -95,6 +97,6 @@
     "weights_status": "released",
     "weights_released_at": "2025-12-01",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2",
-    "api_status": "not_verified"
+    "api_status": "not_reported"
   }
 }

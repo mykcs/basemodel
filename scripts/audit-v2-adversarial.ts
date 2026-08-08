@@ -47,7 +47,7 @@ const papersData = paperFiles.map((file) => JSON.parse(read(path.join('src/conte
 const partial = models.filter((model) => model.data_status !== 'verified').length;
 const withSelection = papersData.filter((paper) => Array.isArray(paper.model_selection) && paper.model_selection.length > 0).length;
 const criticalFields = ['vendor', 'family', 'generation', 'release_date', 'checkpoint.type', 'checkpoint.modalities', 'architecture.total_parameters_b', 'architecture.active_parameters_b', 'architecture.context_length', 'access.weights_status', 'access.api_status', 'openness.license_name', 'openness.classification', 'openness.commercial_use', 'research.suitable_for_inference', 'research.transformers_support', 'research.vllm_support', 'research.sglang_support'];
-const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
+const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable']);
 const fieldValue = (model: Record<string, any>, field: string) => field.split('.').reduce((value, key) => value?.[key], model);
 const claimCoverage = models.every((model) => criticalFields.every((field) => {
   const value = fieldValue(model, field);

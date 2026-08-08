@@ -5,7 +5,7 @@ import type { SemanticStatus } from '../../lib/schemas';
 
 interface Props { locale?: Locale; compact?: boolean }
 const { locale = 'zh', compact = false } = Astro.props;
-const states: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
+const states: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable'];
 ---
 <section class={`semantic-status-legend ${compact ? 'is-compact' : ''}`} aria-labelledby="semantic-status-legend-title">
   <div class="section-heading">

@@ -22,9 +22,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": 128,
     "active_experts_per_token": 8
   },
@@ -34,17 +34,17 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_verified"
+    "license_name": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "48gb",
@@ -57,7 +57,7 @@
       "url": "https://qwenlm.github.io/blog/qwen3/",
       "type": "official_docs",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_f3f12c958485",
       "supports": [
         "vendor",
@@ -65,7 +65,11 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support",
+        "research.suitable_for_inference"
       ]
     }
   ],

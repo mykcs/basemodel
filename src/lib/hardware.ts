@@ -6,7 +6,7 @@ export function hardwareFits(model: AtlasModel, mode: ExperimentMode, available:
   const field = mode === 'inference' ? 'inference_tier' : mode === 'lora' ? 'lora_tier' : mode === 'sft' || mode === 'full_sft' ? 'full_sft_tier' : 'rl_tier';
   const required = model.hardware[field];
   if (required === 'unknown') return 'not_verified';
-  if (required === 'not_disclosed' || required === 'not_applicable' || required === 'not_reported' || required === 'not_verified' || required === 'not_published' || required === 'unavailable') return required;
+  if (required === 'not_disclosed' || required === 'not_applicable' || required === 'not_reported' || required === 'not_verified' || required === 'conflicting_evidence' || required === 'not_published' || required === 'unavailable') return required;
   if (required === 'api_only') return available === 'api_only';
   if (available === 'api_only') return false;
   if (required === 'multi_gpu') return available === 'multi_gpu';

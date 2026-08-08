@@ -17,7 +17,7 @@ const claims = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/claims' }),
   schema: z.object({
     id: z.string(), subjectType: z.enum(['model', 'paper']), subjectId: z.string(), fieldPath: z.string(),
-    status: z.union([z.literal('verified'), z.enum(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'])]),
+    status: z.union([z.literal('verified'), z.enum(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable'])]),
     predicate: z.string().optional(), value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]).optional(), scope: z.string().optional(), validFrom: z.string().optional(), validTo: z.string().optional(), confidence: z.enum(['direct_official', 'official_partial', 'paper', 'third_party', 'derived']).optional(), relation: z.enum(['supports', 'contradicts']).default('supports'), historyOf: z.string().optional(), evidenceIds: z.array(z.string()).default([]), evidenceNote: z.string().optional(),
   }),
 });

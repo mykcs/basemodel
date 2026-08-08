@@ -22,8 +22,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
     "context_length": 1000000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -34,23 +34,23 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
-    "classification": "not_verified",
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
     "custom_license": false,
     "derivative_distribution": "prohibited",
-    "commercial_use": "not_verified",
+    "commercial_use": "not_applicable",
     "conditions": [
       "subject_to_api_terms"
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -72,7 +72,7 @@
       "url": "https://docs.anthropic.com/en/docs/about-claude/models",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Anthropic official model catalog lists Claude Sonnet 4.6 with 1M context window and active lifecycle status; model ID is dateless pinned snapshot.",
+      "evidence_note": "Anthropic official model catalog lists Claude Sonnet 4.6 with 1M context window and active lifecycle status; model ID is dateless pinned snapshot. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "supports": [
         "architecture.context_length",
         "access.api_status",
@@ -82,7 +82,9 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "openness.classification",
+        "research.suitable_for_inference"
       ],
       "id": "src_3c6aa0c7c522"
     }

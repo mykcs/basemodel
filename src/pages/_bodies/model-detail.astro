@@ -42,7 +42,7 @@ const evidenceText = (value: string) => {
     : { redistribution_and_commercial_conditions: 'Redistribution and commercial deployment are subject to the Kimi K3 License.', not_legal_advice: 'This summary is not legal advice.', preserve_reasoning_and_tool_call_history: 'Preserve complete reasoning and tool-call history across multi-turn tool use.', k26_preserved_thinking_optional: 'Cross-turn preserved thinking is optional and disabled by default.', k25_preserved_thinking_not_supported: 'Kimi K2.5 does not support cross-turn preserved thinking; pass context as required for a single multi-step API call.' };
   return labels[value] ?? value;
 };
-const semanticValues = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable', 'unknown']);
+const semanticValues = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 const unresolvedFields: string[] = [];
 const collectUnresolved = (value: unknown, path: string) => {
   if (typeof value === 'string' && semanticValues.has(value)) unresolvedFields.push(path);

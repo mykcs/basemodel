@@ -20,35 +20,35 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": 384,
     "active_experts_per_token": 8
   },
   "openness": {
     "weights_available": true,
     "base_checkpoint_available": true,
-    "finetuning_allowed": "not_verified",
-    "derivative_release_allowed": "not_verified",
-    "commercial_use_allowed": "not_verified",
-    "license_name": "not_verified"
+    "finetuning_allowed": "not_reported",
+    "derivative_release_allowed": "not_reported",
+    "commercial_use_allowed": "not_reported",
+    "license_name": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_reported",
+    "suitable_for_sft": "not_reported",
+    "suitable_for_rl": "not_reported",
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "access": {
     "weights_status": "released",
     "weights_url": "https://huggingface.co/moonshotai/Kimi-K2-Base",
-    "api_status": "not_verified",
-    "product_status": "not_verified"
+    "api_status": "not_reported",
+    "product_status": "not_reported"
   },
   "reproducibility": {
     "model_revision_required": true,
@@ -65,7 +65,7 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Base",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official base model card and weights metadata document the foundation checkpoint, 1T total, 32B active, 384 experts, top-8 routing, 128K context and Modified MIT.",
+      "evidence_note": "Moonshot AI official base model card and weights metadata document the foundation checkpoint, 1T total, 32B active, 384 experts, top-8 routing, 128K context and Modified MIT. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_ff5011d4bc0b",
       "supports": [
         "vendor",
@@ -74,7 +74,8 @@
         "checkpoint.type",
         "checkpoint.modalities",
         "release_date",
-        "access.weights_status"
+        "access.weights_status",
+        "research.suitable_for_inference"
       ]
     },
     {

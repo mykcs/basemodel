@@ -21,9 +21,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": 384,
     "active_experts_per_token": 8
   },
@@ -33,23 +33,23 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_verified"
+    "license_name": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
-    "suitable_for_sft": "not_verified",
+    "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "access": {
     "weights_status": "released",
     "weights_url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
-    "api_status": "not_verified",
-    "product_status": "not_verified"
+    "api_status": "not_reported",
+    "product_status": "not_reported"
   },
   "reproducibility": {
     "model_revision_required": true,
@@ -66,7 +66,7 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official instruct model card documents 1T total, 32B active, 384 experts, top-8 routing, 128K context, Modified MIT and Transformers/vLLM/SGLang usage.",
+      "evidence_note": "Moonshot AI official instruct model card documents 1T total, 32B active, 384 experts, top-8 routing, 128K context, Modified MIT and Transformers/vLLM/SGLang usage. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_0c0f9ec6dab8",
       "supports": [
         "vendor",
@@ -75,7 +75,8 @@
         "checkpoint.type",
         "checkpoint.modalities",
         "release_date",
-        "access.weights_status"
+        "access.weights_status",
+        "research.suitable_for_inference"
       ]
     },
     {

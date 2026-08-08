@@ -10,6 +10,7 @@ const semanticExplanations: Record<DisplaySemanticStatus, { zh: string; en: stri
   not_applicable: { zh: '该字段不适用于此记录；不是缺失或否定。', en: 'This field does not apply to this record; it is not missing or negative.' },
   not_reported: { zh: '来源或论文没有报告；不是 false、0 或已确认不存在。', en: 'The source or paper did not report it; this is not false, zero, or confirmed absence.' },
   not_verified: { zh: '已保留该字段，但当前证据尚未核验；需要补充一手来源。', en: 'The field is retained, but current evidence is not verified; add first-party evidence before relying on it.' },
+  conflicting_evidence: { zh: '一手来源之间存在冲突；当前不选择任一数值。', en: 'First-party sources conflict; no single value is selected.' },
   not_published: { zh: '当前记录为尚未发布；不等同于来源链接失效。', en: 'The record is not published yet; this is not the same as a broken source link.' },
   unavailable: { zh: '当前来源不可用；不能据此判定事实不存在。', en: 'The current source is unavailable; do not infer that the fact does not exist.' },
   unknown: { zh: '当前没有足够证据；请查看来源与核验日期。', en: 'There is not enough evidence yet; check the sources and verification dates.' },

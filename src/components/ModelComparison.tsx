@@ -7,7 +7,7 @@ import type { AtlasModel, AtlasPaper } from '../lib/types';
 import { compareIds } from '../stores/compare';
 import { useHydrated } from '../lib/useHydrated';
 
-const semanticUnknown = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable', 'unknown']);
+const semanticUnknown = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 
 export default function ModelComparison({ models, papers = [], locale = 'zh' }: { models: AtlasModel[]; papers?: AtlasPaper[]; locale?: Locale }) {
   const hydrated = useHydrated();

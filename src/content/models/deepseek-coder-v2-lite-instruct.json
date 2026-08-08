@@ -20,9 +20,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": 64,
     "active_experts_per_token": 6
   },
@@ -32,20 +32,20 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
+    "license_name": "not_reported",
     "classification": "open_source",
     "derivative_distribution": "allowed",
-    "commercial_use": "not_verified"
+    "commercial_use": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "48gb",
@@ -58,7 +58,7 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06.",
+      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_6a555c25eb52",
       "supports": [
         "vendor",
@@ -67,7 +67,8 @@
         "checkpoint.type",
         "checkpoint.modalities",
         "release_date",
-        "access.weights_status"
+        "access.weights_status",
+        "research.suitable_for_inference"
       ]
     },
     {
@@ -102,6 +103,6 @@
     "weights_status": "released",
     "weights_released_at": "2024-06-27",
     "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
-    "api_status": "not_verified"
+    "api_status": "not_reported"
   }
 }

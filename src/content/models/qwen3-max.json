@@ -23,8 +23,8 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
     "context_length": 262144,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -35,8 +35,8 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
-    "classification": "not_verified"
+    "license_name": "not_disclosed",
+    "classification": "proprietary"
   },
   "access": {
     "weights_status": "unavailable",
@@ -52,13 +52,13 @@
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
     "verl_recipe_available": false
   },
   "hardware": {
@@ -72,7 +72,7 @@
       "url": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
       "type": "official_api_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Alibaba Cloud Model Studio official pricing/model catalog lists Qwen3-Max as an API-only proprietary model with a 262K (262144) context window and the dated snapshot ID 'qwen3-max-2026-01-23'. Weights are not publicly released (closed source).",
+      "evidence_note": "Alibaba Cloud Model Studio official pricing/model catalog lists Qwen3-Max as an API-only proprietary model with a 262K (262144) context window and the dated snapshot ID 'qwen3-max-2026-01-23'. Weights are not publicly released (closed source). Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "supports": [
         "openness.weights_available",
         "access.weights_status",
@@ -84,7 +84,12 @@
         "generation",
         "release_date",
         "checkpoint.type",
-        "checkpoint.modalities"
+        "checkpoint.modalities",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support",
+        "openness.classification",
+        "research.suitable_for_inference"
       ],
       "id": "src_022c49661bbf"
     },

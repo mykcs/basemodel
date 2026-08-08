@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { value, locale = 'zh', class: className = '' } = Astro.props;
-const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable', 'unknown']);
+const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 const isSemantic = typeof value === 'string' && semanticStates.has(value);
 const stateClass = typeof value === 'boolean' ? (value ? 'is-true' : 'is-false') : isSemantic ? 'is-unknown' : 'is-value';
 const icon = value === true ? '✓' : value === false ? '✕' : isSemantic ? '?' : '·';

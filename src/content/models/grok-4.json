@@ -23,8 +23,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
     "context_length": 256000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -35,8 +35,8 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
-    "classification": "not_verified"
+    "license_name": "not_disclosed",
+    "classification": "proprietary"
   },
   "access": {
     "weights_status": "unavailable",
@@ -51,13 +51,13 @@
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -71,7 +71,7 @@
       "url": "https://docs.x.ai/docs/models",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "xAI official docs list Grok 4 as a current model. Context length 256K and release date 2025-07-09 are confirmed by external launch reporting because docs.x.ai does not state release dates explicitly.",
+      "evidence_note": "xAI official docs list Grok 4 as a current model. Context length 256K and release date 2025-07-09 are confirmed by external launch reporting because docs.x.ai does not state release dates explicitly. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "supports": [
         "access.api_status",
         "vendor",
@@ -80,7 +80,9 @@
         "checkpoint.type",
         "checkpoint.modalities",
         "release_date",
-        "access.api_model_ids"
+        "access.api_model_ids",
+        "openness.classification",
+        "research.suitable_for_inference"
       ],
       "id": "src_9526a0e44d14"
     },

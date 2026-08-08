@@ -23,9 +23,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": "not_reported",
     "active_experts_per_token": "not_reported"
   },
@@ -35,17 +35,17 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_verified"
+    "license_name": "not_reported"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -58,7 +58,7 @@
       "url": "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Official Mistral model card documents 675B total, 41B active, 256k context, open weights and Apache-2.0 licensing.",
+      "evidence_note": "Official Mistral model card documents 675B total, 41B active, 256k context, open weights and Apache-2.0 licensing. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_ce7a04423c22",
       "supports": [
         "vendor",
@@ -66,7 +66,8 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.suitable_for_inference"
       ]
     },
     {

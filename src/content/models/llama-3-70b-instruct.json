@@ -36,27 +36,27 @@
     "classification": "open_weight",
     "custom_license": true,
     "derivative_distribution": "conditional",
-    "commercial_use": "not_verified",
+    "commercial_use": "not_reported",
     "license_url": "https://llama.meta.com/llama3/license"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-04-18",
     "weights_url": "https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct",
-    "api_status": "not_verified",
+    "api_status": "not_reported",
     "api_model_ids": [
       "meta-llama/Meta-Llama-3-70B-Instruct"
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "80gb",
@@ -83,9 +83,10 @@
         "family",
         "generation",
         "checkpoint.type",
-        "checkpoint.modalities"
+        "checkpoint.modalities",
+        "research.suitable_for_inference"
       ],
-      "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 71B params, context length 8k, license llama3, and weights available in safetensors.",
+      "evidence_note": "Official Hugging Face model card states Model Release Date April 18, 2024, model size 71B params, context length 8k, license llama3, and weights available in safetensors. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_d30fff7b837f"
     },
     {
@@ -104,7 +105,11 @@
       "url": "https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-08",
-      "supports": ["openness.license_name", "openness.classification", "openness.commercial_use"],
+      "supports": [
+        "openness.license_name",
+        "openness.classification",
+        "openness.commercial_use"
+      ],
       "evidence_note": "Official Meta Llama repository license text for the Llama 3 Community License.",
       "id": "src_llama3_70b_instruct_license_20260808"
     }

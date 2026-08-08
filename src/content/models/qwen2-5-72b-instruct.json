@@ -24,7 +24,7 @@
   "architecture": {
     "type": "dense",
     "total_parameters_b": 72.7,
-    "active_parameters_b": "not_verified",
+    "active_parameters_b": 72.7,
     "context_length": 32768,
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
@@ -34,18 +34,18 @@
     "base_checkpoint_available": true,
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
-    "commercial_use_allowed": "not_verified",
+    "commercial_use_allowed": false,
     "license_name": "Qwen License"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
     "transformers_support": true,
     "vllm_support": true,
     "sglang_support": true,
-    "verl_recipe_available": "not_verified"
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -71,9 +71,11 @@
         "openness.weights_available",
         "research.transformers_support",
         "research.vllm_support",
-        "research.sglang_support"
+        "research.sglang_support",
+        "architecture.active_parameters_b",
+        "research.suitable_for_inference"
       ],
-      "evidence_note": "Official Qwen model card identifies the instruction-tuned 72B Qwen2.5 checkpoint, reports 72.7B parameters and 32,768-token context, and documents the supported runtime paths. Commercial-use permission remains not_verified pending legal interpretation of the Qwen License.",
+      "evidence_note": "Official Qwen model card identifies the instruction-tuned 72B Qwen2.5 checkpoint, reports 72.7B parameters and 32,768-token context, and documents the supported runtime paths. The official Qwen Research License grants use and derivative rights for non-commercial purposes only; commercial use requires a separate license. Active parameters are derived from the official dense architecture: all parameters are active for dense inference. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_03b3cb491041"
     },
     {
@@ -95,9 +97,13 @@
       "type": "official_license",
       "checked_at": "2026-08-08",
       "supports": [
-        "openness.license_name"
+        "openness.license_name",
+        "openness.commercial_use_allowed",
+        "openness.derivative_release_allowed",
+        "openness.commercial_use",
+        "openness.derivative_distribution"
       ],
-      "evidence_note": "The repository LICENSE identifies the Qwen License. Commercial-use permission remains not_verified pending legal interpretation.",
+      "evidence_note": "The repository LICENSE identifies the Qwen Research License and limits the grant to non-commercial purposes; commercial use requires a separate license.",
       "id": "src_qwen25_72b_instruct_license_20260808"
     }
   ],

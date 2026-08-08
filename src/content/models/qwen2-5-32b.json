@@ -22,7 +22,7 @@
   "architecture": {
     "type": "dense",
     "total_parameters_b": 32.5,
-    "active_parameters_b": "not_verified",
+    "active_parameters_b": 32.5,
     "context_length": 131072,
     "expert_count": "not_applicable",
     "active_experts_per_token": "not_applicable"
@@ -36,20 +36,20 @@
     "license_name": "Apache-2.0"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
     "suitable_for_rl": true,
     "transformers_support": true,
     "vllm_support": true,
     "sglang_support": true,
-    "verl_recipe_available": "not_verified"
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
-    "inference_tier": "not_verified",
-    "lora_tier": "not_verified",
-    "full_sft_tier": "not_verified",
-    "rl_tier": "not_verified"
+    "inference_tier": "not_reported",
+    "lora_tier": "not_reported",
+    "full_sft_tier": "not_reported",
+    "rl_tier": "not_reported"
   },
   "sources": [
     {
@@ -69,9 +69,11 @@
         "openness.weights_available",
         "research.transformers_support",
         "research.vllm_support",
-        "research.sglang_support"
+        "research.sglang_support",
+        "architecture.active_parameters_b",
+        "research.suitable_for_inference"
       ],
-      "evidence_note": "Official Qwen model card and repository configuration identify the base 32B Qwen2.5 checkpoint, report 32.5B parameters and 131,072-token context, and document the supported runtime paths.",
+      "evidence_note": "Official Qwen model card and repository configuration identify the base 32B Qwen2.5 checkpoint, report 32.5B parameters and 131,072-token context, and document the supported runtime paths. Active parameters are derived from the official dense architecture: all parameters are active for dense inference. Active parameters are derived from the official dense architecture: all parameters are active for dense inference. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_qwen25_32b_base_20260808"
     },
     {

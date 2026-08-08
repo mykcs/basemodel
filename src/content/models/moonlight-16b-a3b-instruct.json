@@ -28,9 +28,9 @@
   "openness": {
     "weights_available": true,
     "base_checkpoint_available": true,
-    "finetuning_allowed": "not_verified",
-    "derivative_release_allowed": "not_verified",
-    "commercial_use_allowed": "not_verified",
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
     "license_name": "MIT",
     "classification": "open_weight"
   },
@@ -41,19 +41,19 @@
   },
   "research": {
     "suitable_for_inference": true,
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "48gb",
-    "lora_tier": "not_verified",
-    "full_sft_tier": "not_verified",
-    "rl_tier": "not_verified"
+    "lora_tier": "not_reported",
+    "full_sft_tier": "not_reported",
+    "rl_tier": "not_reported"
   },
   "sources": [
     {

@@ -3,7 +3,7 @@ import type { ResearchMode, ResearchTask } from '../../stores/researchTask';
 import type { ImpactSeverity, ReplacementImpact } from './types';
 
 function unknown(value: unknown): boolean {
-  return value === undefined || value === null || (typeof value === 'string' && ['unknown', 'not_verified', 'not_reported', 'not_disclosed', 'not_published', 'unavailable'].includes(value));
+  return value === undefined || value === null || (typeof value === 'string' && ['unknown', 'not_verified', 'conflicting_evidence', 'not_reported', 'not_disclosed', 'not_published', 'unavailable'].includes(value));
 }
 
 function impactSeverity(mode: ResearchMode): ImpactSeverity {

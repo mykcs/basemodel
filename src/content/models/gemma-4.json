@@ -24,8 +24,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
     "context_length": 256000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -34,39 +34,39 @@
     "weights_available": true,
     "base_checkpoint_available": true,
     "finetuning_allowed": true,
-    "derivative_release_allowed": "not_verified",
-    "commercial_use_allowed": "not_verified",
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
     "license_name": "Apache-2.0",
     "classification": "open_weight",
     "custom_license": false,
-    "derivative_distribution": "not_verified",
-    "commercial_use": "not_verified",
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed",
     "conditions": [
       "subject_to_apache_2_license"
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
-    "inference_tier": "not_verified",
-    "lora_tier": "not_verified",
-    "full_sft_tier": "not_verified",
-    "rl_tier": "not_verified"
+    "inference_tier": "not_reported",
+    "lora_tier": "not_reported",
+    "full_sft_tier": "not_reported",
+    "rl_tier": "not_reported"
   },
   "sources": [
     {
       "url": "https://deepmind.google/models/gemma/gemma-4",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Google DeepMind Gemma 4 page lists E2B, E4B, 12B, 26B, 31B instruction-tuned variants, natively multimodal (text, image, audio), and built from Gemini 3 research. Parameter and architecture details are not disclosed; context_length retained from prior source.",
+      "evidence_note": "Google DeepMind Gemma 4 page lists E2B, E4B, 12B, 26B, 31B instruction-tuned variants, natively multimodal (text, image, audio), and built from Gemini 3 research. Parameter and architecture details are not disclosed; context_length retained from prior source. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
       "supports": [
         "status",
         "checkpoint.modalities",
@@ -75,7 +75,9 @@
         "family",
         "generation",
         "checkpoint.type",
-        "release_date"
+        "release_date",
+        "research.suitable_for_inference",
+        "openness.commercial_use"
       ],
       "id": "src_9c9443fb2273"
     },

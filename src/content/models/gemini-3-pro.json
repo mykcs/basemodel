@@ -25,8 +25,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
     "context_length": 1000000,
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -37,23 +37,23 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
-    "classification": "not_verified",
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
     "custom_license": false,
     "derivative_distribution": "prohibited",
-    "commercial_use": "not_verified",
+    "commercial_use": "not_applicable",
     "conditions": [
       "subject_to_api_terms"
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": "unavailable",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -75,7 +75,7 @@
       "url": "https://ai.google.dev/gemini-api/docs/deprecations",
       "type": "official_docs",
       "checked_at": "2026-08-06",
-      "evidence_note": "Google Gemini API deprecations page lists gemini-3-pro-preview released Nov 18, 2025 and shutting down March 9, 2026; replacement is gemini-3.1-pro-preview. Cross-referenced coverage confirms 1M token context window.",
+      "evidence_note": "Google Gemini API deprecations page lists gemini-3-pro-preview released Nov 18, 2025 and shutting down March 9, 2026; replacement is gemini-3.1-pro-preview. Cross-referenced coverage confirms 1M token context window. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category.",
       "supports": [
         "access.api_status",
         "access.api_model_ids",
@@ -86,7 +86,8 @@
         "family",
         "generation",
         "checkpoint.type",
-        "checkpoint.modalities"
+        "checkpoint.modalities",
+        "openness.classification"
       ],
       "id": "src_55f1b59a8cad"
     }

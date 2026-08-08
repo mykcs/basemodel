@@ -39,14 +39,14 @@
     "classification": "open_weight",
     "custom_license": true,
     "derivative_distribution": "conditional",
-    "commercial_use": "not_verified",
+    "commercial_use": "not_reported",
     "license_url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct/raw/main/LICENSE"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2024-06-06",
     "weights_url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct",
-    "api_status": "not_verified",
+    "api_status": "not_reported",
     "api_model_ids": [
       "qwen2-72b-instruct"
     ],
@@ -57,14 +57,14 @@
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -77,7 +77,7 @@
       "url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "HuggingFace model card confirms 72B dense model (73B safetensors size), 131K context via YaRN, text-only, and Tongyi Qianwen license. Release date is not stated on the card and is derived from the Qwen2 Technical Report citation (2024).",
+      "evidence_note": "HuggingFace model card confirms 72B dense model (73B safetensors size), 131K context via YaRN, text-only, and Tongyi Qianwen license. Release date is not stated on the card and is derived from the Qwen2 Technical Report citation (2024). Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",
@@ -91,7 +91,8 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.suitable_for_inference"
       ],
       "id": "src_c7eba13a3d0c"
     },
@@ -99,7 +100,9 @@
       "url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct/blob/main/LICENSE",
       "type": "official_license",
       "checked_at": "2026-08-08",
-      "supports": ["openness.license_name"],
+      "supports": [
+        "openness.license_name"
+      ],
       "evidence_note": "Official Qwen repository license text for the Tongyi Qianwen license.",
       "id": "src_qwen2_72b_instruct_license_20260808"
     }

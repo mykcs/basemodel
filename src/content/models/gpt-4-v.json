@@ -21,8 +21,8 @@
   },
   "architecture": {
     "type": "other",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
     "context_length": "not_disclosed",
     "expert_count": "not_disclosed",
     "active_experts_per_token": "not_disclosed"
@@ -33,17 +33,17 @@
     "finetuning_allowed": false,
     "derivative_release_allowed": false,
     "commercial_use_allowed": true,
-    "license_name": "not_verified",
-    "classification": "not_verified"
+    "license_name": "not_disclosed",
+    "classification": "proprietary"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": "unavailable",
     "suitable_for_lora": false,
     "suitable_for_sft": false,
     "suitable_for_rl": false,
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
     "verl_recipe_available": false
   },
   "hardware": {
@@ -57,7 +57,7 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-4-turbo",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category.",
       "id": "src_34e733f186f7",
       "supports": [
         "vendor",
@@ -65,7 +65,8 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "openness.classification"
       ]
     },
     {

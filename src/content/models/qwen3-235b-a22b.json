@@ -22,9 +22,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": 235,
+    "active_parameters_b": 22,
+    "context_length": 32768,
     "expert_count": 128,
     "active_experts_per_token": 8
   },
@@ -34,17 +34,17 @@
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_verified"
+    "license_name": "Apache-2.0"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -57,7 +57,7 @@
       "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B",
       "type": "official_model_card",
       "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. The official Qwen3-235B-A22B model card reports 235B total parameters, 22B activated parameters, native 32,768-token context, Apache-2.0 licensing, and local inference instructions. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. The official Qwen3-235B-A22B model card reports 235B total parameters, 22B activated parameters, native 32,768-token context, Apache-2.0 licensing, and local inference instructions.",
       "id": "src_c6016ec6a46b",
       "supports": [
         "vendor",
@@ -65,7 +65,16 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.license_name",
+        "openness.commercial_use_allowed",
+        "research.suitable_for_inference"
       ]
     }
   ],

@@ -59,7 +59,7 @@ const modelData = readdirSync(join(root, 'src/content/models'))
   .filter((file) => file.endsWith('.json'))
   .map((file) => JSON.parse(read(`src/content/models/${file}`)) as Record<string, any>);
 const criticalFields = ['vendor', 'family', 'generation', 'release_date', 'checkpoint.type', 'checkpoint.modalities', 'architecture.total_parameters_b', 'architecture.active_parameters_b', 'architecture.context_length', 'access.weights_status', 'access.api_status', 'openness.license_name', 'openness.classification', 'openness.commercial_use', 'research.suitable_for_inference', 'research.transformers_support', 'research.vllm_support', 'research.sglang_support'];
-const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
+const semanticUnknowns = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable']);
 const fieldValue = (model: Record<string, any>, field: string) => field.split('.').reduce((value, key) => value?.[key], model);
 const allCriticalFieldsCovered = modelData.every((model) => criticalFields.every((field) => {
   const value = fieldValue(model, field);

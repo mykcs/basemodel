@@ -38,27 +38,27 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "not_verified",
+    "commercial_use": "allowed",
     "license_url": "https://huggingface.co/zai-org/GLM-4.5-Air"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-07-28",
     "weights_url": "https://huggingface.co/zai-org/GLM-4.5-Air",
-    "api_status": "not_verified",
+    "api_status": "not_reported",
     "api_model_ids": [
       "glm-4.5-air"
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
     "suitable_for_sft": true,
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -85,9 +85,11 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.suitable_for_inference",
+        "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license.",
+      "evidence_note": "Official Hugging Face model card states GLM-4.5-Air has 106B total parameters and 12B active parameters, supports transformers/vLLM/SGLang, and is released under MIT open-source license. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
       "id": "src_07d9bb7b4cf7"
     },
     {

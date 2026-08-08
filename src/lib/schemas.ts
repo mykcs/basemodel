@@ -6,6 +6,7 @@ export const semanticStatus = z.enum([
   'not_applicable',
   'not_reported',
   'not_verified',
+  'conflicting_evidence',
   'not_published',
   'unavailable',
 ]);

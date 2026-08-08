@@ -24,18 +24,18 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_verified",
-    "active_parameters_b": "not_verified",
-    "context_length": "not_verified",
+    "total_parameters_b": "not_reported",
+    "active_parameters_b": "not_reported",
+    "context_length": "not_reported",
     "expert_count": 896,
     "active_experts_per_token": 16
   },
   "openness": {
     "weights_available": true,
-    "base_checkpoint_available": "not_verified",
+    "base_checkpoint_available": "not_reported",
     "finetuning_allowed": true,
-    "derivative_release_allowed": "not_verified",
-    "commercial_use_allowed": "not_verified",
+    "derivative_release_allowed": "not_reported",
+    "commercial_use_allowed": "not_reported",
     "license_name": "Kimi K3 License",
     "classification": "open_weight",
     "custom_license": true,
@@ -48,20 +48,20 @@
     "license_url": "https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE"
   },
   "research": {
-    "suitable_for_inference": "not_verified",
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": "not_reported",
     "vllm_support": true,
     "sglang_support": true,
-    "verl_recipe_available": "not_verified"
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
     "lora_tier": "multi_gpu",
     "full_sft_tier": "multi_gpu",
-    "rl_tier": "not_verified"
+    "rl_tier": "not_reported"
   },
   "access": {
     "weights_status": "released",
@@ -80,7 +80,7 @@
   },
   "reproducibility": {
     "model_revision_required": true,
-    "api_version_pinnable": "not_verified",
+    "api_version_pinnable": "not_reported",
     "tokenizer_public": true,
     "config_public": true,
     "chat_template_public": true,
@@ -92,7 +92,7 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K3",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context.",
+      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_7372d8cb937a",
       "supports": [
         "vendor",
@@ -102,7 +102,8 @@
         "checkpoint.modalities",
         "release_date",
         "access.weights_status",
-        "openness.classification"
+        "openness.classification",
+        "research.suitable_for_inference"
       ]
     },
     {

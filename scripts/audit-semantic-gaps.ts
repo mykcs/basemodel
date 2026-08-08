@@ -4,7 +4,7 @@ import path from 'node:path';
 type Finding = { file: string; kind: string; detail: string };
 const root = process.cwd();
 const productionDirs = [path.join(root, 'src/content/models'), path.join(root, 'src/content/papers'), path.join(root, 'src/content/benchmarkRuns')];
-const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
+const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable']);
 const genericDirectories = [
   'https://huggingface.co/Qwen/models',
   'https://docs.mistral.ai/models',
@@ -39,6 +39,7 @@ for (const file of files) {
   collectStates(data);
   if (statesInRecord.size) {
     semanticRecords.push({ file: path.relative(root, file), states: [...statesInRecord].sort() });
+    if (statesInRecord.has('not_verified')) findings.push({ file: path.relative(root, file), kind: 'legacy-not-verified-value', detail: 'Replace not_verified with a verified fact or a more precise semantic state.' });
     const isBenchmark = file.includes(`${path.sep}benchmarkRuns${path.sep}`);
     const hasEvidenceNote = isBenchmark
       ? typeof data.evidenceNote === 'string' && data.evidenceNote.trim().length > 0
@@ -54,7 +55,7 @@ const uiContract = [
   ['semantic-status-explanation', fs.readFileSync(path.join(root, 'src/components/common/SemanticStatus.astro'), 'utf8').includes('semanticStatusExplanation')],
   ['semantic-status-legend', fs.existsSync(path.join(root, 'src/components/common/SemanticStatusLegend.astro'))],
   ['benchmark-semantic-rendering', fs.readFileSync(path.join(root, 'src/pages/_bodies/data-status.astro'), 'utf8').includes('<SemanticStatus')],
-  ['methodology-all-six-states', ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'].every((state) => fs.readFileSync(path.join(root, 'src/i18n/en.ts'), 'utf8').includes(state))],
+  ['methodology-all-semantic-states', ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable'].every((state) => fs.readFileSync(path.join(root, 'src/i18n/en.ts'), 'utf8').includes(state))],
 ].filter(([, ok]) => !ok).map(([name]) => name);
 if (uiContract.length) findings.push({ file: 'src/components/common/SemanticStatus.astro', kind: 'missing-semantic-ui-contract', detail: uiContract.join(', ') });
 console.log(JSON.stringify({ files: files.length, semanticRecords: semanticRecords.length, semanticGapFindings: findings.length, byKind, uiContract: uiContract.length ? 'fail' : 'pass', findings }, null, 2));

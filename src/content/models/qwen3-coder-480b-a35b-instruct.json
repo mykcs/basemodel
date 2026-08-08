@@ -37,14 +37,14 @@
     "classification": "open_source",
     "custom_license": false,
     "derivative_distribution": "allowed",
-    "commercial_use": "not_verified",
+    "commercial_use": "allowed",
     "license_url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct/raw/main/LICENSE"
   },
   "access": {
     "weights_status": "released",
     "weights_released_at": "2025-07-22",
     "weights_url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
-    "api_status": "not_verified",
+    "api_status": "not_reported",
     "api_model_ids": [
       "qwen3-coder-480b-a35b-instruct"
     ],
@@ -55,14 +55,14 @@
     ]
   },
   "research": {
-    "suitable_for_inference": "not_verified",
+    "suitable_for_inference": true,
     "suitable_for_lora": true,
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": "not_verified",
-    "vllm_support": "not_verified",
-    "sglang_support": "not_verified",
-    "verl_recipe_available": "not_verified"
+    "suitable_for_sft": true,
+    "suitable_for_rl": true,
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
@@ -75,7 +75,7 @@
       "url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-06",
-      "evidence_note": "HuggingFace model card confirms 480B total parameters, 35B activated parameters, 160 experts with 8 activated, 62 layers, native 262K context extensible to 1M with YaRN, Apache 2.0 license, and requires transformers>=4.51.0. Supports only non-thinking mode.",
+      "evidence_note": "HuggingFace model card confirms 480B total parameters, 35B activated parameters, 160 experts with 8 activated, 62 layers, native 262K context extensible to 1M with YaRN, Apache 2.0 license, and requires transformers>=4.51.0. Supports only non-thinking mode. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Qwen official documentation lists Transformers, vLLM, and SGLang deployment paths for Qwen3. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",
@@ -91,7 +91,12 @@
         "generation",
         "checkpoint.type",
         "checkpoint.modalities",
-        "release_date"
+        "release_date",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support",
+        "research.suitable_for_inference",
+        "openness.commercial_use"
       ],
       "id": "src_a94ef869d9a5"
     }

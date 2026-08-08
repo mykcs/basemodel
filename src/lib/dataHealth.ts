@@ -64,7 +64,7 @@ export type DataHealth = {
 const today = () => new Date();
 const parseDate = (value: string) => new Date(`${value}T00:00:00Z`);
 const ageDays = (value: string, now: Date) => Math.floor((now.getTime() - parseDate(value).getTime()) / 86400000);
-const semanticStates: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
+const semanticStates: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable'];
 
 export function vendorIdFor(model: Pick<AtlasModel, 'vendor'>): string {
   const value = model.vendor.toLowerCase();
