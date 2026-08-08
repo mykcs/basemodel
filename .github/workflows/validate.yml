@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   static:
+    name: Static checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,8 +32,12 @@ jobs:
       - run: npm test
 
   e2e:
-    name: e2e (${{ matrix.browser }})
+    name: E2E (${{ matrix.browser }})
     runs-on: ubuntu-latest
+    container:
+      # Keep this tag aligned with the exact @playwright/test version in package-lock.json.
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --ipc=host
     strategy:
       fail-fast: false
       matrix:
@@ -44,11 +49,5 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Cache Playwright browser
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('package-lock.json') }}
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run build
       - run: npx playwright test --project=${{ matrix.browser }}
