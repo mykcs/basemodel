@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "check": "astro sync && npx --yes @astrojs/check@0.9.9",
+    "check": "astro sync && astro check",
     "validate": "tsx scripts/validate-data.ts && tsx scripts/check-relations.ts",
     "audit:freshness": "tsx scripts/audit-freshness.ts",
     "audit:coverage": "tsx scripts/audit-coverage.ts",
@@ -38,6 +38,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.9",
     "@playwright/test": "^1.62.1",
     "@types/d3": "^7.4.3",
     "@types/node": "^22.0.0",
