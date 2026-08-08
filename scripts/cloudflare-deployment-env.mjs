@@ -26,9 +26,10 @@ export const resolveCloudflareSiteUrl = ({
   // Preview identity must always follow the Preview deployment itself. This is
   // intentionally stronger than relying on dashboard env scoping, so an
   // accidentally global PUBLIC_SITE_URL cannot make Preview canonical/OG URLs
-  // impersonate Production.
-  if (!isProduction && deploymentUrl) {
-    return deploymentUrl;
+  // impersonate Production. If Cloudflare ever stops injecting CF_PAGES_URL,
+  // fail rather than silently publishing a Preview with Production identity.
+  if (!isProduction) {
+    return deploymentUrl || null;
   }
 
   if (explicitSiteUrl) {
@@ -36,9 +37,7 @@ export const resolveCloudflareSiteUrl = ({
   }
 
   if (deploymentUrl) {
-    return isProduction
-      ? stablePagesProductionUrl(deploymentUrl)
-      : deploymentUrl;
+    return stablePagesProductionUrl(deploymentUrl);
   }
 
   return null;
