@@ -37,7 +37,7 @@ pass('AV-REPLACEMENT-METHOD', ['architecture_dense_moe_changed', 'checkpoint_sem
 pass('AV-PAPER-WORKFLOW', paperWorkflow.includes('paper.workflow') && paperWorkflow.includes('unrecorded') && paperWorkflow.includes('does not treat'), 'paper detail uses recorded workflow data and labels missing workflow facts');
 pass('AV-PROJECT-HISTORY', exists('src/stores/projects.ts') && projectHistory.includes('saveResearchProject') && projectHistory.includes('restore'), 'task builder saves and restores local multi-project history');
 pass('AV-MEMO-EVIDENCE', memo.includes('sectionNotSelected') && memo.includes('sectionEvidence') && claims.includes('conflict'), 'decision memo records exclusions/evidence and claim history flags conflicts');
-pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'unknown/not-reported/not-verified remain semantic states');
+pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semanticStatusExplanation') && exists('src/components/common/SemanticStatusLegend.astro') && read('src/pages/_bodies/data-status.astro').includes('<SemanticStatus'), 'all semantic unknown states have bilingual explanations, an accessible renderer, a legend, and benchmark-page coverage');
 pass('AV-QWEN25-COVERAGE', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b', 'qwen2-5-7b-instruct', 'qwen2-5-14b', 'qwen2-5-14b-instruct', 'qwen2-5-32b', 'qwen2-5-32b-instruct', 'qwen2-5-72b', 'qwen2-5-72b-instruct'].every((id) => exists(`src/content/models/${id}.json`)), 'Qwen2.5 canonical size ladder has base and instruct coverage for all seven official sizes');
 
 const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));
@@ -58,6 +58,14 @@ const claimCoverage = models.every((model) => criticalFields.every((field) => {
 }));
 console.log(`FACT-EVIDENCE models=${models.length} verified=${models.length - partial} partial_or_unknown=${partial} papers=${papersData.length} explicit_selection_records=${withSelection}`);
 pass('AV-CLAIM-COVERAGE', partial === 0 && claimCoverage, 'all model records are verified and critical fields are source-mapped or semantic unknown');
+const evidenceNoteCoverage = [
+  ['src/content/models', modelFiles],
+  ['src/content/papers', paperFiles],
+].every(([directory, files]) => (files as string[]).every((file) => {
+  const data = JSON.parse(fs.readFileSync(path.join(root, directory as string, file), 'utf8')) as { sources?: Array<{ evidence_note?: string }> };
+  return (data.sources ?? []).some((source) => source.evidence_note?.trim());
+}));
+pass('AV-SEMANTIC-EVIDENCE-NOTES', evidenceNoteCoverage && read('src/content/benchmarkRuns/agentbench-reported.json').includes('evidenceNote'), 'records with semantic unknowns retain source-level evidence notes, including benchmark conditions');
 console.log('FACT-VERDICT EVIDENCE-UNKNOWN — current fact coverage is reported honestly; unresolved external facts are not promoted by this code audit.');
 
 if (failures.length) {

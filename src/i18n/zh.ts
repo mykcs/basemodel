@@ -46,7 +46,7 @@ export const zh: Messages = {
     pageTitle: '学习指南', title: '如何使用研究工作台', lede: '从研究问题出发，逐步形成有证据、可复核的模型决策。', steps: ['先选择研究模式：严格复现、方法复现、现代化重跑或全新实验。', '明确论文、角色、训练方式、资源、开放性和复现约束。', '阅读候选模型的进入理由、风险和待核验项，再加入候选或对比。', '导出决策记录，保留任务、候选、比较和证据上下文。'], note: '硬件档位是粗粒度研究元数据，不是精确显存计算器。'
   },
   methodology: {
-    pageTitle: '数据方法', title: '数据、缺失值与证据等级', lede: '公共页面展示事实；研究工作台解释这些事实对当前任务意味着什么。', sections: [{ title: '缺失值语义', body: 'not_verified、not_reported、not_disclosed 和 not_published 都是数据状态，不会被转换成 false、0 或确定事实。' }, { title: '证据等级', body: '字段级 supports 关系优先连接到官方来源；论文、代码和运行记录分别保留来源类型与核验日期。' }, { title: '推荐边界', body: '候选排序是任务内的辅助排序，不是综合性能排行榜；硬冲突才会阻塞，未知事实会进入条件候选或待核验区。' }]
+    pageTitle: '数据方法', title: '数据、缺失值与证据等级', lede: '公共页面展示事实；研究工作台解释这些事实对当前任务意味着什么。', sections: [{ title: '缺失值语义', body: 'not_disclosed（官方未公开）、not_applicable（不适用）、not_reported（来源未报告）、not_verified（尚未核验）、not_published（尚未发布）和 unavailable（来源不可用）都是数据状态，不会被转换成 false、0 或确定事实。' }, { title: '证据等级', body: '字段级 supports 关系优先连接到官方来源；论文、代码和运行记录分别保留来源类型与核验日期。每个保留未知值都必须能回到来源说明或 evidence_note。' }, { title: '推荐边界', body: '候选排序是任务内的辅助排序，不是综合性能排行榜；硬冲突才会阻塞，未知事实会进入条件候选或待核验区。' }]
   },
   home: {
     pageTitle: '研究者的模型选择入口',

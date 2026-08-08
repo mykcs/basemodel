@@ -1,5 +1,5 @@
 ---
-import { displayUnknown, semanticStatusLabel } from '../../lib/format';
+import { displayUnknown, semanticStatusExplanation, semanticStatusLabel } from '../../lib/format';
 import type { Locale } from '../../i18n';
 import type { SemanticStatus } from '../../lib/schemas';
 
@@ -15,8 +15,10 @@ const isSemantic = typeof value === 'string' && semanticStates.has(value);
 const stateClass = typeof value === 'boolean' ? (value ? 'is-true' : 'is-false') : isSemantic ? 'is-unknown' : 'is-value';
 const icon = value === true ? '✓' : value === false ? '✕' : isSemantic ? '?' : '·';
 const label = isSemantic ? semanticStatusLabel(value as string, locale) : displayUnknown(value, '', locale);
+const explanation = isSemantic ? semanticStatusExplanation(value as string, locale) : '';
 ---
-<span class={`semantic-status ${stateClass} ${className}`.trim()}>
+<span class={`semantic-status ${stateClass} ${className}`.trim()} data-semantic-status={isSemantic ? value : undefined} title={explanation || undefined} aria-label={explanation ? `${label}. ${explanation}` : label}>
   <span class="semantic-status-icon" aria-hidden="true">{icon}</span>
   <span>{label}</span>
+  {explanation && <span class="sr-only">{explanation}</span>}
 </span>

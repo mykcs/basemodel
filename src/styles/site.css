@@ -109,6 +109,13 @@ h1, h2, h3, p { margin-top: 0; } h1 { font-size: clamp(2.5rem, 6vw, 5.2rem); lin
 .semantic-status.is-false .semantic-status-icon { color: #9f3027; background: #f3d9d5; }
 .semantic-status.is-unknown .semantic-status-icon { color: #805e2d; background: #f1e6cf; }
 .semantic-status.is-value .semantic-status-icon { color: var(--muted); background: var(--surface-muted); }
+.semantic-status-legend { margin-top: 28px; padding: 20px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.semantic-status-legend.is-compact { margin-top: 20px; }
+.semantic-status-legend-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; margin: 0; }
+.semantic-status-legend-item { display: grid; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border); }
+.semantic-status-legend-item dt, .semantic-status-legend-item dd { margin: 0; }
+.semantic-status-legend-item dd { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+@media (max-width: 700px) { .semantic-status-legend-list { grid-template-columns: 1fr; } }
 .compare-export { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; } .compare-impact { display: block; margin-top: 5px; color: var(--warning); font-weight: 500; } .comparison-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .role-topology { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; } .role-node { border-top: 2px solid var(--accent); padding: 12px 0; } .role-models { display: grid; gap: 6px; margin-top: 9px; } .role-model { background: var(--surface-muted); border-radius: 7px; padding: 7px 9px; font-size: .84rem; }
 .workflow-flow { display: flex; align-items: stretch; gap: 10px; padding: 0; margin: 18px 0 10px; list-style: none; overflow-x: auto; }

@@ -1,5 +1,7 @@
 # Basemodel 图谱：数据补全与修改计划（截至 2026-08-06）
 
+> **历史快照声明**：本文只记录 2026-08-06 的回填基线，不代表当前模型数量、未知值数量或完成状态。当前规则是：无法由来源证明的字段必须保留为 `not_disclosed`、`not_applicable`、`not_reported`、`not_verified`、`not_published` 或 `unavailable`，并由 `evidence_note` 解释；最新验收以 `audit:semantic`、`audit:v2` 和 `audit:v2:adversarial` 为准。
+
 > 交付对象：执行 Agent。本文档是**代码级修改计划**，包含缺口清单、逐文件修改步骤和验收标准。
 > 执行原则：所有事实字段必须有一手来源（官方模型卡 / 官方文档 / 技术报告 / 官方仓库），并填 `checked_at`；查不到就写语义状态，**禁止猜测填充**。
 

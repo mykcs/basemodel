@@ -26,7 +26,7 @@ const benchmarkRuns = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/benchmarkRuns' }),
   schema: z.object({
     id: z.string(), paperId: z.string().optional(), modelIds: z.array(z.string()), benchmark: z.string(),
-    status: z.enum(['reported', 'reproduced', 'not_verified']), sourceIds: z.array(z.string()).default([]), conditions: z.object({ hardware: z.string().optional(), precision: z.string().optional(), batchSize: z.union([z.number(), z.string()]).optional(), promptScaffold: z.string().optional(), temperature: z.union([z.number(), z.string()]).optional(), reasoningBudget: z.string().optional(), benchmarkVersion: z.string().optional() }).optional(), result: z.union([z.number(), z.string()]).optional(), resultStatus: z.enum(['independent', 'paper_reported', 'not_verified']).optional(),
+    status: z.enum(['reported', 'reproduced', 'not_verified']), sourceIds: z.array(z.string()).default([]), evidenceNote: z.string().optional(), conditions: z.object({ hardware: z.string().optional(), precision: z.string().optional(), batchSize: z.union([z.number(), z.string()]).optional(), promptScaffold: z.string().optional(), temperature: z.union([z.number(), z.string()]).optional(), reasoningBudget: z.string().optional(), benchmarkVersion: z.string().optional() }).optional(), result: z.union([z.number(), z.string()]).optional(), resultStatus: z.enum(['independent', 'paper_reported', 'not_verified']).optional(),
   }),
 });
 

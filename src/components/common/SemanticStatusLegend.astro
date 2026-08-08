@@ -1,0 +1,23 @@
+---
+import { semanticStatusExplanation, semanticStatusLabel } from '../../lib/format';
+import type { Locale } from '../../i18n';
+import type { SemanticStatus } from '../../lib/schemas';
+
+interface Props { locale?: Locale; compact?: boolean }
+const { locale = 'zh', compact = false } = Astro.props;
+const states: SemanticStatus[] = ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'];
+---
+<section class={`semantic-status-legend ${compact ? 'is-compact' : ''}`} aria-labelledby="semantic-status-legend-title">
+  <div class="section-heading">
+    <div>
+      <h2 id="semantic-status-legend-title">{locale === 'zh' ? '未知状态如何阅读' : 'How to read unknown states'}</h2>
+      <p class="muted">{locale === 'zh' ? '这些状态是有意保留的证据边界，不是被填成 false、0 或确定事实。' : 'These states intentionally preserve evidence boundaries; they are not false, zero, or definite facts.'}</p>
+    </div>
+  </div>
+  <dl class="semantic-status-legend-list">
+    {states.map((state) => <div class="semantic-status-legend-item">
+      <dt><span class="semantic-status semantic-status-unknown" data-semantic-status={state} title={semanticStatusExplanation(state, locale)} aria-label={`${semanticStatusLabel(state, locale)}. ${semanticStatusExplanation(state, locale)}`}><span class="semantic-status-icon" aria-hidden="true">?</span><span>{semanticStatusLabel(state, locale)}</span><span class="sr-only">{semanticStatusExplanation(state, locale)}</span></span></dt>
+      <dd>{semanticStatusExplanation(state, locale)}</dd>
+    </div>)}
+  </dl>
+</section>

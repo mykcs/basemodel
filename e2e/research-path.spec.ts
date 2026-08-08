@@ -123,6 +123,22 @@ test('model detail renders field claims when source links exist', async ({ page 
   await expect(page.locator('body')).not.toContainText('access.api_status');
 });
 
+test('semantic unknowns stay explicit, explained, and bilingual', async ({ page }) => {
+  await page.goto('models/qwen3-8b/');
+
+  const unresolved = page.locator('.semantic-status[data-semantic-status="not_verified"]').first();
+  await expect(unresolved).toBeVisible();
+  await expect(unresolved).toHaveAttribute('title', /需要补充一手来源|add first-party evidence/i);
+  await expect(unresolved).toHaveAttribute('aria-label', /尚未核验|Not verified/i);
+  await expect(page.locator('.semantic-status-legend')).toBeVisible();
+  await expect(page.locator('.semantic-status-legend [data-semantic-status="not_disclosed"]')).toContainText('官方未公开');
+  await expect(page.locator('body')).not.toContainText('not_verified');
+
+  await page.goto('data-status/');
+  await expect(page.locator('.semantic-status[data-semantic-status="not_reported"]').first()).toHaveAttribute('title', /不是 false|not false/i);
+  await expect(page.locator('.semantic-status-legend [data-semantic-status="unavailable"]')).toBeVisible();
+});
+
 test('paper detail starts a research mode and shows recorded role topology', async ({ page }) => {
   await page.goto('papers/agentbench/');
 

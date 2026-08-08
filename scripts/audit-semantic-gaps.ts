@@ -3,7 +3,7 @@ import path from 'node:path';
 
 type Finding = { file: string; kind: string; detail: string };
 const root = process.cwd();
-const productionDirs = [path.join(root, 'src/content/models'), path.join(root, 'src/content/papers')];
+const productionDirs = [path.join(root, 'src/content/models'), path.join(root, 'src/content/papers'), path.join(root, 'src/content/benchmarkRuns')];
 const semanticStates = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable']);
 const genericDirectories = [
   'https://huggingface.co/Qwen/models',
@@ -11,6 +11,7 @@ const genericDirectories = [
   'https://platform.openai.com/docs/models',
 ];
 const findings: Finding[] = [];
+const semanticRecords: Array<{ file: string; states: string[] }> = [];
 const files = productionDirs.flatMap((directory) => fs.readdirSync(directory).filter((file) => file.endsWith('.json')).map((file) => path.join(directory, file)));
 
 const walk = (value: unknown, file: string, keyPath = ''): void => {
@@ -29,10 +30,32 @@ const walk = (value: unknown, file: string, keyPath = ''): void => {
 
 for (const file of files) {
   const data = JSON.parse(fs.readFileSync(file, 'utf8')) as Record<string, unknown>;
+  const statesInRecord = new Set<string>();
+  const collectStates = (value: unknown): void => {
+    if (typeof value === 'string' && semanticStates.has(value)) statesInRecord.add(value);
+    else if (Array.isArray(value)) value.forEach(collectStates);
+    else if (value && typeof value === 'object') Object.values(value).forEach(collectStates);
+  };
+  collectStates(data);
+  if (statesInRecord.size) {
+    semanticRecords.push({ file: path.relative(root, file), states: [...statesInRecord].sort() });
+    const isBenchmark = file.includes(`${path.sep}benchmarkRuns${path.sep}`);
+    const hasEvidenceNote = isBenchmark
+      ? typeof data.evidenceNote === 'string' && data.evidenceNote.trim().length > 0
+      : Array.isArray(data.sources) && data.sources.some((source) => Boolean(source && typeof source === 'object' && typeof (source as Record<string, unknown>).evidence_note === 'string' && ((source as Record<string, unknown>).evidence_note as string).trim()));
+    if (!hasEvidenceNote) findings.push({ file: path.relative(root, file), kind: 'missing-semantic-evidence-note', detail: 'semantic unknown exists without an evidence note' });
+  }
   walk(data, path.relative(root, file));
   if ('checkpoint_url' in data && data.checkpoint_url === 'unknown') findings.push({ file: path.relative(root, file), kind: 'checkpoint-unknown', detail: 'checkpoint_url' });
 }
 
 const byKind = Object.fromEntries([...new Set(findings.map((finding) => finding.kind))].map((kind) => [kind, findings.filter((finding) => finding.kind === kind).length]));
-console.log(JSON.stringify({ files: files.length, semanticGapFindings: findings.length, byKind, findings }, null, 2));
+const uiContract = [
+  ['semantic-status-explanation', fs.readFileSync(path.join(root, 'src/components/common/SemanticStatus.astro'), 'utf8').includes('semanticStatusExplanation')],
+  ['semantic-status-legend', fs.existsSync(path.join(root, 'src/components/common/SemanticStatusLegend.astro'))],
+  ['benchmark-semantic-rendering', fs.readFileSync(path.join(root, 'src/pages/_bodies/data-status.astro'), 'utf8').includes('<SemanticStatus')],
+  ['methodology-all-six-states', ['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'not_published', 'unavailable'].every((state) => fs.readFileSync(path.join(root, 'src/i18n/en.ts'), 'utf8').includes(state))],
+].filter(([, ok]) => !ok).map(([name]) => name);
+if (uiContract.length) findings.push({ file: 'src/components/common/SemanticStatus.astro', kind: 'missing-semantic-ui-contract', detail: uiContract.join(', ') });
+console.log(JSON.stringify({ files: files.length, semanticRecords: semanticRecords.length, semanticGapFindings: findings.length, byKind, uiContract: uiContract.length ? 'fail' : 'pass', findings }, null, 2));
 if (findings.length) process.exitCode = 1;

@@ -5,6 +5,7 @@
   "benchmark": "AgentBench",
   "status": "reported",
   "sourceIds": ["src_1bb96f4eca55"],
+  "evidenceNote": "AgentBench reports the benchmark result and prompt scaffold, but does not provide the hardware, precision, batch size, temperature, or reasoning budget in this record; those conditions remain not_reported.",
   "conditions": {
     "hardware": "not_reported",
     "precision": "not_reported",
