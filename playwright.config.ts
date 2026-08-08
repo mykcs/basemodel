@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const useSystemChrome = process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === '1';
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -11,7 +13,13 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        ...(useSystemChrome ? { channel: 'chrome' } : {}),
+      },
+    },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
