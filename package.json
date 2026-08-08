@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "check": "astro check",
+    "check": "astro sync && npx --yes @astrojs/check@0.9.9",
     "validate": "tsx scripts/validate-data.ts && tsx scripts/check-relations.ts",
     "audit:freshness": "tsx scripts/audit-freshness.ts",
     "audit:coverage": "tsx scripts/audit-coverage.ts",
