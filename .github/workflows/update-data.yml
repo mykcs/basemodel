@@ -2,6 +2,9 @@ name: Check Atlas data
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/update-data.yml
   schedule:
     - cron: '0 2 * * 1'
 
@@ -28,6 +31,7 @@ jobs:
       - run: npm run validate
       - run: npm run audit:semantic
       - run: npm run audit:claims
+      - run: npm run audit:vendor-catalogs
       - run: npm run audit:freshness
       - run: npm run audit:coverage
       - run: npm run audit:urls
