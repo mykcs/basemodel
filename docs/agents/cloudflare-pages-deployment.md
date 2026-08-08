@@ -1,134 +1,114 @@
-# Cloudflare Pages deployment architecture and migration runbook
+# Cloudflare Pages deployment runbook
 
 Last reviewed: 2026-08-09
 
-## Purpose
+## Authority and scope
 
-This document is the authoritative operational guide for agents working on hosting, CI, deployment, base-path handling, preview environments, and deployment-related repository settings.
+This is the operational runbook for Cloudflare Pages, GitHub Pages coexistence, deployment URLs, indexing behavior, CI boundaries, quota incidents, and rollback.
 
-The repository remains hosted on GitHub. Cloudflare Pages becomes the primary build/deploy platform so normal development and production deployment do not depend on GitHub-hosted Actions minutes.
+Read these files together:
 
-The intended user workflow is:
+1. `dual-hosting-policy.md` — authoritative steady-state hosting policy.
+2. this file — operational implementation/runbook.
+3. `2026-08-09-cloudflare-migration-retrospective.md` — incident/migration history, successes, failures, and lessons.
+
+If older migration wording conflicts with `dual-hosting-policy.md`, the dual-hosting policy wins.
+
+---
+
+## Current architecture
+
+GitHub remains the canonical source repository and the integration surface used by ChatGPT/coding agents.
 
 ```text
 ChatGPT / coding agent
         |
         v
-GitHub repository -> branch / PR / merge
+GitHub repository
         |
-        +--------------------------+
-        |                          |
-        v                          v
-Cloudflare Pages              GitHub Actions
-build + preview + deploy      deep/periodic CI when available
-        |
-        v
-production site
+        +------------------------------+
+        |                              |
+        v                              v
+Cloudflare Pages                 GitHub Actions
+Preview + Production             deep/scheduled CI
+        |                              |
+        v                              v
+basemodel.pages.dev              GitHub Pages deploy
+                                       |
+                                       v
+                             mykcs.github.io/basemodel/
 ```
 
-The key architectural rule is **do not move source control away from GitHub merely to avoid Actions billing**. GitHub is the source of truth and remains the integration surface for ChatGPT/agents. Build/deployment compute is decoupled from GitHub Actions.
+Cloudflare deployment must not depend on GitHub-hosted Actions minutes.
+
+GitHub Pages is intentionally retained as a second public endpoint, not retired after Cloudflare succeeds.
 
 ---
 
-## Why this architecture exists
+## Verified migration state
 
-In August 2026 the personal GitHub Pro account reached its included GitHub Actions allowance (`3,000 / 3,000` minutes). New GitHub-hosted jobs were created but failed before step 1 and produced no normal job log. Repository code and workflow configuration had recent known-good runs, so the immediate blocker was account-level hosted-runner allowance rather than application code.
+The migration is complete.
 
-This created an undesirable coupling:
+Verified on 2026-08-09:
+
+- Cloudflare Pages project `basemodel` is connected to `mykcs/basemodel`.
+- production branch is `main`.
+- output directory is `dist`.
+- `basemodel.pages.dev` is live.
+- PR/branch Preview deployments work.
+- Cloudflare's GitHub App comments successful Preview URLs directly on PRs.
+- dashboard Build command is `npm run build:cloudflare`.
+- PR #36 proved that repository-owned command succeeds in Preview.
+- merged `main` commit `fcc872a` was confirmed green in Cloudflare Production.
+- GitHub Pages workflow remains in the repository.
+
+Historical identifiers are evidence only; do not hard-code them into automation.
+
+---
+
+## Cloudflare dashboard contract
+
+Current Pages configuration:
 
 ```text
-GitHub Actions allowance exhausted
-        -> validation cannot start
-        -> GitHub Pages deploy workflow cannot start
-        -> otherwise valid site changes cannot reach production
+Project: basemodel
+Repository: mykcs/basemodel
+Production branch: main
+Build command: npm run build:cloudflare
+Build output directory: dist
+Root directory: repository root
 ```
 
-Cloudflare Pages Git integration removes that coupling. Cloudflare pulls the GitHub repository and uses Cloudflare's build infrastructure. GitHub Actions minutes are not consumed by Cloudflare Pages builds.
+Node is pinned in the repository using `.node-version`.
 
-As verified against Cloudflare documentation on 2026-08-09:
+Do not replace the repository-owned build command with a long dashboard-only shell command. The repository is the source of truth for build behavior.
 
-- Pages can connect directly to GitHub, including private repositories.
-- A push to a connected branch triggers a Cloudflare Pages build/deploy.
-- Pull requests from branches in the same repository receive preview deployments and GitHub check runs.
-- The Free plan allows 500 Pages builds per month, one concurrent build, with a 20-minute build timeout.
-- Pages injects `CF_PAGES`, `CF_PAGES_URL`, `CF_PAGES_BRANCH`, and `CF_PAGES_COMMIT_SHA` during builds.
-- The current Pages v3 build image provides Node.js 22 and supports `.node-version`.
+### GitHub App permissions
 
-Official references:
+Use the Cloudflare Workers and Pages GitHub App with selected-repository access rather than all repositories when practical.
 
-- https://developers.cloudflare.com/pages/configuration/git-integration/
-- https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/
-- https://developers.cloudflare.com/pages/configuration/preview-deployments/
-- https://developers.cloudflare.com/pages/configuration/build-configuration/
-- https://developers.cloudflare.com/pages/configuration/build-image/
-- https://developers.cloudflare.com/pages/platform/limits/
-- https://developers.cloudflare.com/pages/framework-guides/deploy-an-astro-site/
+Multiple repositories can be authorized in one App installation; each repository still requires its own Pages/Workers project before it deploys.
 
-Re-check these URLs before making assumptions about current limits or product behavior.
+No Cloudflare API token is required in this repository for Git integration.
 
 ---
 
-## Current and target responsibilities
+## Cloudflare build entrypoint
 
-### GitHub
-
-GitHub remains responsible for:
-
-- canonical source repository
-- branches, pull requests, reviews, and merge history
-- ChatGPT / coding-agent repository access
-- issues and normal collaboration
-- optional/deep CI through GitHub Actions when hosted-runner capacity is available
-
-Do not migrate the repository away from GitHub unless there is a separate product requirement.
-
-### Cloudflare Pages
-
-Cloudflare Pages is the target primary platform for:
-
-- installing dependencies
-- deployment-blocking static/data/unit validation
-- Astro production build
-- pull-request preview deployments
-- production deployment from `main`
-- GitHub deployment/check status
-- serving the static site from Cloudflare's network
-
-### GitHub Actions after migration
-
-GitHub Actions should no longer be required for a production deployment to happen.
-
-When GitHub-hosted runner capacity is available, Actions remains useful for tasks that Cloudflare Pages should not be forced to perform on every deployment:
-
-- full Chromium + WebKit Playwright coverage
-- change-aware browser smoke/full regression tiers
-- scheduled vendor-catalog audits that perform external network requests
-- scheduled URL/source-health checks
-- manually requested deep regressions
-- artifact-heavy diagnostics
-
-A temporary GitHub Actions outage or quota exhaustion must not prevent an otherwise validated Cloudflare production build.
-
----
-
-## Repository implementation
-
-### Cloudflare build entrypoint
-
-Use:
+Long-term entrypoint:
 
 ```bash
 npm run build:cloudflare
 ```
 
-The command is intentionally stored in the repository rather than as a long dashboard-only shell expression.
-
 Implementation:
 
-- `package.json` exposes `build:cloudflare`.
-- `scripts/build-cloudflare.mjs` runs deployment-blocking checks and then the Astro build.
+```text
+package.json
+scripts/build-cloudflare.mjs
+```
 
-The deployment-blocking checks are:
+The entrypoint runs deployment-blocking checks before Astro build:
 
 ```text
 npm run check
@@ -140,415 +120,351 @@ npm test
 npm run build
 ```
 
-The final Astro build receives:
+Keep these checks deterministic and repository-local.
+
+Do not put the following into every Cloudflare deployment without a deliberate reliability decision:
+
+- vendor-catalog network audits;
+- URL/source-health probes;
+- full Chromium/WebKit matrices;
+- other checks whose success depends on third-party network availability.
+
+Those belong in GitHub Actions scheduled/deep CI when runner capacity is available.
+
+---
+
+## Base-path contract
+
+The same source intentionally supports two public path layouts:
 
 ```text
-PUBLIC_SITE_URL = PUBLIC_SITE_URL if explicitly configured,
-                  otherwise CF_PAGES_URL
-PUBLIC_BASE_PATH = /
+Cloudflare Pages: /
+GitHub Pages:     /basemodel/
 ```
 
-Do **not** add `audit:vendor-catalogs` or `audit:urls` to every Cloudflare Pages build without a deliberate decision. Those audits depend on third-party network behavior and can make deployment availability depend on external sites. They belong in scheduled/deep auditing unless product requirements change.
-
-### Node runtime
-
-`.node-version` pins the Pages build runtime to:
-
-```text
-22.16.0
-```
-
-Before changing the value:
-
-1. confirm Cloudflare Pages supports the target version;
-2. confirm Astro and repository dependencies support it;
-3. keep GitHub CI and local development expectations in mind;
-4. update this document if the deployment contract changes materially.
-
-### Base-path strategy
-
-This repository historically deploys to GitHub Pages at:
-
-```text
-https://mykcs.github.io/basemodel/
-```
-
-Therefore the existing Astro defaults intentionally use:
-
-```text
-site = https://mykcs.github.io
-base = /basemodel
-```
-
-Do not casually change those defaults because local Playwright and the existing GitHub Pages fallback were designed around `/basemodel/`.
-
-Instead, the Cloudflare-specific build explicitly overrides:
+Cloudflare build therefore injects:
 
 ```text
 PUBLIC_BASE_PATH=/
 ```
 
-Cloudflare Pages therefore serves the site from the origin root:
+GitHub Pages injects:
 
 ```text
-https://<project>.pages.dev/
+PUBLIC_SITE_URL=https://mykcs.github.io
+PUBLIC_BASE_PATH=/basemodel
 ```
 
-This allows both deployment models to coexist during migration:
+Do not globally change Astro's default base to `/`; that would break GitHub Pages.
+
+Avoid hard-coded `/basemodel/` links in application code. Use base-aware URL helpers.
+
+Base-path-sensitive changes should be checked against both deployment contracts when GitHub Pages capacity is available.
+
+---
+
+## Stable production identity vs deployment URL
+
+Cloudflare injects:
 
 ```text
-GitHub Pages build -> /basemodel/
-Cloudflare build   -> /
+CF_PAGES_URL
+CF_PAGES_BRANCH
+CF_PAGES_COMMIT_SHA
+CF_PAGES=1
 ```
 
-### Site URL strategy
+`CF_PAGES_URL` is the URL of the **current deployment**, not necessarily the durable production hostname.
 
-For normal Cloudflare Pages deployments, `CF_PAGES_URL` is injected automatically and should be used as the Astro `site` value.
+Cloudflare also keeps a stable production alias:
 
-This is especially important for preview deployments because each preview has its own URL.
+```text
+https://basemodel.pages.dev/
+```
 
-If a permanent custom domain is later attached, set a **production-only** environment variable in Cloudflare:
+Unique/hash deployments remain independently addressable.
+
+Therefore `scripts/build-cloudflare.mjs` follows this rule:
+
+```text
+explicit PUBLIC_SITE_URL
+        -> use it (future custom-domain override)
+else main/production
+        -> derive stable <project>.pages.dev origin
+else Preview
+        -> use current CF_PAGES_URL
+```
+
+This prevents production canonical URLs, sitemap URLs, Open Graph metadata, hreflang, and JSON-LD from drifting to a new hash hostname on every release.
+
+If a custom domain becomes the permanent public identity, configure production-only:
 
 ```text
 PUBLIC_SITE_URL=https://<canonical-domain>
 ```
 
-Do not set that same value for previews. Preview builds should continue using `CF_PAGES_URL` so sitemap/canonical generation does not point preview content at a misleading deployment URL.
-
-### robots.txt strategy
-
-`public/robots.txt` was GitHub-Pages-specific and contained a hard-coded sitemap URL. It is replaced by `src/pages/robots.txt.ts`.
-
-Behavior:
-
-- Cloudflare preview branch (`CF_PAGES=1` and branch is not `main`) -> `Disallow: /`
-- production/main or non-Cloudflare build -> `Allow: /` and a deployment-aware sitemap URL
-
-This prevents Cloudflare preview deployments from being indexed while preserving a correct production sitemap reference.
-
-If the production branch is ever changed away from `main`, update the preview-detection rule in `src/pages/robots.txt.ts` at the same time.
+Do not set that override for Preview environments.
 
 ---
 
-## Initial Cloudflare Pages setup
+## Search indexing and duplicate-content policy
 
-This section contains the human dashboard steps required once per project. An agent should prepare the repository first, then guide the account owner through only these required actions.
-
-### 1. Create the Pages project
-
-In Cloudflare dashboard:
+Long-term indexing model:
 
 ```text
-Workers & Pages
--> Create application
--> Pages
--> Connect to Git / Import an existing Git repository
+Cloudflare Production = indexable canonical production site
+Cloudflare Preview    = noindex
+GitHub Pages          = public fallback, noindex
 ```
 
-Authorize GitHub when prompted.
+GitHub Pages remains accessible to humans; `noindex` only prevents it from competing with Cloudflare in search results.
 
-Security preference: grant the `Cloudflare Workers and Pages` GitHub App access to **only the repositories that need Cloudflare deployment**, ideally only `mykcs/basemodel` for this setup.
-
-Select:
+GitHub Pages build sets:
 
 ```text
-Repository: mykcs/basemodel
-Production branch: main
-Build output directory: dist
-Root directory: repository root
+PUBLIC_CANONICAL_SITE_URL=https://basemodel.pages.dev
+PUBLIC_SEARCH_INDEXING=disabled
 ```
 
-Project name may be `basemodel` if available. The chosen name determines the initial `*.pages.dev` hostname and should be treated as durable because Pages project subdomains are not intended to be casually renamed.
+The application then:
 
-### 2. Bootstrap build command before this migration PR is merged
+- emits `meta robots=noindex,follow` on noindex builds;
+- emits canonical/hreflang/OG identity pointing at Cloudflare's stable production paths;
+- does not advertise a sitemap link on noindex pages;
+- emits an empty sitemap for noindex builds.
 
-When the Cloudflare project is first created, `main` may not yet contain `npm run build:cloudflare`.
+### Preview indexing
 
-For the first deployment only, use this dashboard build command:
-
-```bash
-npm run check && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && PUBLIC_SITE_URL="$CF_PAGES_URL" PUBLIC_BASE_PATH=/ npm run build
-```
-
-Output directory:
+Cloudflare Pages automatically adds:
 
 ```text
-dist
+X-Robots-Tag: noindex
 ```
 
-This command is intentionally compatible with the pre-migration `main` branch.
+to Preview deployments.
 
-After the migration PR is merged, replace the dashboard build command with:
+The repository also emits noindex metadata as defense in depth.
 
-```bash
-npm run build:cloudflare
-```
+**Do not block Preview pages with `robots.txt: Disallow /`.** Search crawlers need to fetch a response/page to observe `noindex`. A disallowed URL can still appear as a URL-only search result if discovered elsewhere.
 
-The repository entrypoint is the long-term source of truth.
+For noindex deployments, `robots.txt` therefore allows crawling but does not advertise a sitemap.
 
-### 3. Build environment
-
-Use the current Pages v3 build system.
-
-The repository includes `.node-version`, so a separate `NODE_VERSION` dashboard variable should not normally be necessary.
-
-Do not add secrets unless a future feature genuinely requires them. This static site currently does not require deployment secrets.
-
-### 4. Preview deployments
-
-Keep preview deployments enabled for branches in this repository.
-
-Expected behavior:
-
-- a branch push creates a preview deployment;
-- a pull request from a branch in `mykcs/basemodel` receives a preview URL;
-- subsequent commits update that preview;
-- preview deployment does not modify production;
-- preview `robots.txt` blocks indexing.
-
-PRs from forks do not receive the same automatic preview behavior; account for that if collaboration model changes.
+If Preview content ever becomes sensitive rather than merely unreleased, indexing controls are not access control. Use Cloudflare Access to require authentication.
 
 ---
 
-## Migration verification checklist
+## Normal agent workflow
 
-Do not remove the GitHub Pages fallback until all checks below are complete.
-
-### Cloudflare project health
-
-- [ ] GitHub App is authorized for `mykcs/basemodel`.
-- [ ] Pages project is connected to the correct repository.
-- [ ] Production branch is `main`.
-- [ ] Build output directory is `dist`.
-- [ ] First production build succeeds.
-- [ ] A deployment URL under `*.pages.dev` is reachable.
-
-### Migration-branch preview
-
-For `agent/migrate-cloudflare-pages` or the active migration PR:
-
-- [ ] Cloudflare creates a preview deployment.
-- [ ] Cloudflare build command completes all blocking validation steps.
-- [ ] `/` renders correctly.
-- [ ] `/models/` renders correctly.
-- [ ] `/families/` renders correctly.
-- [ ] `/compare/` renders correctly.
-- [ ] `/papers/` renders correctly.
-- [ ] `/guide/` renders correctly.
-- [ ] `/landscape/` renders correctly.
-- [ ] `/methodology/` renders correctly.
-- [ ] `/workspace/` renders correctly.
-- [ ] `/data-status/` renders correctly.
-- [ ] `/en/` and representative English routes render correctly.
-- [ ] static JS/CSS/assets load from root paths and there are no accidental `/basemodel/` asset requirements.
-- [ ] `/sitemap.xml` uses the preview deployment origin.
-- [ ] `/robots.txt` returns `Disallow: /` on preview.
-- [ ] browser console has no obvious asset/route errors.
-
-### Post-merge production
-
-After the migration PR is merged:
-
-- [ ] Cloudflare builds the new `main` commit.
-- [ ] dashboard build command is simplified to `npm run build:cloudflare`.
-- [ ] production `/robots.txt` returns `Allow: /`.
-- [ ] production sitemap uses the intended production origin.
-- [ ] GitHub PR/check UI reports the Cloudflare deployment status.
-- [ ] production route/asset smoke checks pass.
-
-If a custom domain is introduced:
-
-- [ ] custom domain resolves to Pages.
-- [ ] production `PUBLIC_SITE_URL` equals the canonical custom-domain origin.
-- [ ] sitemap/canonical/robots references use the custom domain.
-- [ ] preview environment does not inherit the production canonical-domain override.
-
----
-
-## GitHub branch protection / required checks
-
-During GitHub Actions quota exhaustion, an old required GitHub Actions check can block merges even though Cloudflare successfully validates and previews the PR.
-
-Do not guess the Cloudflare check name. After the first Pages-connected PR build:
-
-1. open the GitHub PR;
-2. identify the exact Cloudflare Pages check-run name shown by GitHub;
-3. inspect repository branch protection/rulesets;
-4. if `Validate Atlas` / `Validation gate` is required and cannot run because hosted-runner allowance is exhausted, replace or temporarily remove that requirement according to repository policy;
-5. if a Cloudflare build check is made required, verify docs-only/build-skipped behavior cannot leave PRs permanently pending.
-
-Because Cloudflare build-watch exclusions can prevent a check from being created, avoid excluding paths while the Cloudflare check is required unless the ruleset has been designed for that behavior.
-
-The safe interim principle is:
+For normal code/product changes:
 
 ```text
-Cloudflare deployment-blocking validation = required for deploy
-GitHub Actions deep browser regression      = advisory / periodic while quota is unavailable
+1. Read AGENTS.md and relevant docs/agents files.
+2. Create an agent branch from current main.
+3. Batch related edits into intentional commits.
+4. Open a PR.
+5. Wait for/read the Cloudflare Pages bot PR result.
+6. If visual behavior changed, inspect the Preview URL.
+7. Merge after Cloudflare deployment-blocking checks succeed and review is satisfactory.
+8. For deployment-sensitive work, confirm the resulting main Production deployment.
 ```
 
-After GitHub Actions allowance resets, agents may re-enable stricter GitHub required checks if desired, but production deployment should remain decoupled from Actions quota.
+Cloudflare's GitHub App comments the Preview result directly on the PR. Prefer reading that through GitHub tooling instead of requiring the user to repeatedly open the Cloudflare dashboard.
 
 ---
 
-## What to do with existing GitHub Pages deployment
+## GitHub Actions quota exhaustion
 
-During migration, keep `.github/workflows/deploy.yml` unchanged as a fallback. It is already fail-closed behind successful `Validate Atlas` runs.
+A known 2026 incident exhausted the GitHub Pro included Actions allowance (`3,000 / 3,000`). Jobs then failed before step 1.
 
-Once Cloudflare production has been verified and the user explicitly accepts Cloudflare as primary hosting:
+When that state occurs:
 
-1. remove or disable the GitHub Pages deployment workflow so it no longer consumes hosted-runner minutes;
-2. update `README.md` deployment documentation to identify Cloudflare Pages as primary;
-3. keep GitHub Actions validation workflows only for tasks that justify runner cost;
-4. decide whether the legacy `mykcs.github.io/basemodel/` URL should remain as a stale fallback, be retired, or redirect via a separate deliberate mechanism;
-5. do not destroy rollback information until at least one known-good Cloudflare production release exists.
+- continue normal GitHub source development;
+- continue Cloudflare Preview/Production deployment;
+- allow GitHub Pages to lag temporarily;
+- do not weaken code/tests because a hosted runner cannot start;
+- do not repeatedly retry zero-step jobs after billing/quota is confirmed.
 
-Do not disable the old Pages deployment before Cloudflare production is confirmed reachable.
+When quota returns, GitHub Actions resumes deep CI and GitHub Pages deployment without changing the Cloudflare architecture.
 
 ---
 
-## Development workflow while GitHub Actions minutes are exhausted
+## GitHub Pages role
 
-Normal source development can continue.
+Keep `.github/workflows/deploy.yml`.
 
-Expected workflow:
+It is the second public deployment path and is allowed to lag when Actions capacity is unavailable.
+
+The workflow is fail-closed behind a successful `Validate Atlas` main run and builds the exact validated commit.
+
+Search policy is intentionally different from Cloudflare:
 
 ```text
-1. agent creates branch
-2. agent commits changes to GitHub
-3. Cloudflare creates preview build
-4. Cloudflare runs deployment-blocking validation
-5. human/agent checks preview when visual behavior matters
-6. PR is merged
-7. Cloudflare builds main and updates production
+publicly accessible: yes
+search indexed:      no
+canonical identity:  Cloudflare production
 ```
 
-No local clone is required for this workflow.
-
-GitHub Actions failures that occur before step 1 because of account allowance are infrastructure/account state, not application test failures. Do not modify application code merely to make those zero-step jobs green.
-
-When GitHub Actions allowance becomes available again, deep CI can resume without changing the Cloudflare deployment architecture.
+Do not remove the workflow merely to save minutes unless the repository owner explicitly changes the dual-hosting policy.
 
 ---
 
-## Validation boundary: Cloudflare vs GitHub Actions
+## Branch protection and Cloudflare checks
 
-### Must block Cloudflare production deployment
+Cloudflare Git integration produces GitHub check runs/comments for normal builds.
 
-Keep deterministic repository-local checks here:
+If a Cloudflare check becomes a required status check, remember:
 
-- Astro/type/content check
-- data schema/relation validation
-- semantic-gap audit
-- claim evidence audit
-- freshness audit
-- Vitest
-- Astro static build
+- skipped builds do not produce the normal check/status;
+- build-watch exclusions can therefore leave required-check workflows in an awkward state;
+- commit-message skip flags should be used only when compatible with current rulesets.
 
-A non-zero exit from any of these prevents deployment.
-
-### Prefer GitHub Actions scheduled/deep checks
-
-Keep expensive or externally dependent checks out of every deployment unless there is a deliberate reliability tradeoff:
-
-- Chromium full E2E
-- WebKit full E2E
-- Playwright container/matrix jobs
-- vendor official-catalog network audit
-- URL/source-health external requests
-- long-running coverage/adversarial audits
-
-If a future agent moves an external-network audit into the Cloudflare blocking build, document why deployment availability is now allowed to depend on that external service.
+Do not guess a check-run name. Observe the actual name GitHub reports before configuring a required rule.
 
 ---
 
-## Cost-control rules
+## Cost controls
 
-Cloudflare Pages Free currently provides 500 builds/month. This is a different meter from GitHub Actions runner minutes.
+At the 2026-08-09 review, Cloudflare Pages Free documentation listed:
 
-Agents should still avoid waste:
+```text
+500 builds/month
+1 concurrent build
+20 minute build timeout
+```
 
-- batch related edits into intentional commits when practical;
-- do not create repeated no-op commits merely to retrigger preview builds;
-- use Cloudflare's documented skip-build commit flags only for changes that truly do not need a deployment;
-- do not disable preview builds broadly just to save quota without considering PR validation/visibility;
-- before adding build-watch exclusions, check whether Cloudflare check runs are required by GitHub rulesets.
+These are time-sensitive provider limits; re-check official docs before making quota-sensitive decisions.
 
-Re-check Cloudflare limits before making a quota-sensitive architectural decision.
+Agent rules:
+
+- batch related edits;
+- avoid no-op commits;
+- fetch current blob SHA before sequential GitHub file updates;
+- do not create commits merely to preserve wording;
+- keep Dependabot previews because dependency changes benefit from real builds;
+- use `[CF-Pages-Skip]`, `[CI Skip]`, or equivalent only for true non-deploy changes and only when a missing Cloudflare check cannot block policy;
+- do not broadly disable Preview deployments just to save builds.
+
+The migration itself demonstrated why this matters: many tiny documentation commits each generated a real Preview deployment.
 
 ---
 
-## Security rules
+## Copilot review cost note
 
-- Limit the Cloudflare GitHub App to the minimum repository scope practical.
-- Do not put Cloudflare API tokens, GitHub tokens, or other secrets in repository files.
-- Static Pages deployment does not require a Cloudflare API token when using Git integration.
-- Prefer repository-controlled build logic (`npm run build:cloudflare`) over complex dashboard-only scripts.
-- Keep preview deployments non-indexable.
-- Do not expose secrets as `PUBLIC_*` variables; Astro public variables can become client-visible.
-- Before adding Pages Functions, Workers bindings, KV, D1, R2, or secrets, update this architecture document because the security/deployment model will have changed from static hosting.
+GitHub documents that Copilot code review on private repositories consumes GitHub Actions minutes.
+
+For a cost-sensitive private repository:
+
+- request Copilot review selectively;
+- avoid automatic re-review on every push for high-churn agent PRs unless justified;
+- prefer Low review effort unless deeper review is needed.
+
+Copilot review is advisory and does not count as a required approval by itself.
+
+---
+
+## Third-party PR bot noise
+
+During migration, an `ecc-tools` GitHub App repeatedly posted paid-upgrade comments on a private-repository PR and did not provide useful validation.
+
+If that App is not intentionally used for another workflow, remove/disable its repository access in GitHub's installed-app settings.
+
+Do not confuse third-party bot comments with Cloudflare deployment status or repository CI.
 
 ---
 
 ## Rollback
 
-### Before Cloudflare becomes primary
+### Bad Cloudflare production
 
-Rollback is trivial: close/revert the migration PR. Existing GitHub Pages configuration remains intact.
+Cloudflare Pages supports rollback to a previous successful **Production** deployment.
 
-### After Cloudflare becomes primary but GitHub Pages still exists
+Use the Cloudflare Deployments page to roll back, then fix the repository on a branch and validate via Preview.
 
-If a bad Cloudflare configuration is introduced:
+Preview deployments are not production rollback targets.
 
-1. use Cloudflare deployment rollback/redeploy capabilities to restore a known-good production deployment;
-2. fix configuration on a branch and verify via preview;
-3. avoid switching source repositories or recreating the Pages project unless necessary.
+### Cloudflare incident
 
-### If Cloudflare is unavailable
+GitHub remains source of truth. GitHub Pages is the independent public fallback when its latest build is available.
 
-GitHub remains the source repository. Once GitHub Actions runner capacity is available, the historical GitHub Pages deployment path can be restored from Git history if it has been removed.
+### GitHub Actions incident/quota
 
-Never delete repository history or migration documentation as part of a hosting rollback.
+Cloudflare remains deployable. Do not block normal releases solely because GitHub Pages cannot update.
+
+### GitHub Pages incident
+
+Repair GitHub Pages independently. Do not weaken or disable Cloudflare production.
 
 ---
 
-## Agent change protocol
+## Custom domain future state
 
-Any agent modifying deployment-related files must:
+A custom domain is recommended if the project needs a durable public brand independent of provider hostnames.
 
-1. read this document first;
-2. inspect the current Cloudflare/GitHub state rather than assuming the migration status;
-3. preserve GitHub as source of truth unless explicitly instructed otherwise;
-4. use a branch + PR for deployment architecture changes;
-5. avoid disabling the current production path before the replacement is verified;
-6. distinguish account/quota/runner failures from code/test failures;
-7. keep Cloudflare build logic reproducible in the repository;
-8. verify base-path behavior for both `/` and legacy `/basemodel/` when relevant;
-9. verify sitemap/robots/canonical behavior after hostname changes;
-10. update this document when the deployment contract materially changes.
+When adding one:
 
-Files that normally require reading this document before editing include:
+1. attach it to Cloudflare Pages;
+2. set **production-only** `PUBLIC_SITE_URL` to that origin;
+3. change GitHub Pages `PUBLIC_CANONICAL_SITE_URL` to that origin;
+4. verify canonical, hreflang, OG metadata, JSON-LD, sitemap, and robots;
+5. do not make Preview builds inherit the production custom-domain override.
+
+Keep provider URLs as technical/fallback endpoints unless the owner explicitly chooses redirects or retirement.
+
+---
+
+## Security rules
+
+- GitHub remains source of truth.
+- Grant Cloudflare GitHub App only needed repository access.
+- Do not commit Cloudflare/GitHub tokens.
+- Do not put secrets in `PUBLIC_*` variables; public Astro values may reach browser output.
+- Keep repository-owned build logic reproducible.
+- `noindex` is not authentication; use Cloudflare Access for sensitive Previews.
+- If Pages Functions, Workers, KV, D1, R2, secrets, or server-side APIs are introduced, update this runbook because the threat/deployment model changes materially.
+
+---
+
+## Files requiring this runbook before editing
+
+Normally read this file before changing:
 
 ```text
+AGENTS.md
 astro.config.mjs
 package.json
 scripts/build-cloudflare.mjs
+src/layouts/AppLayout.astro
 src/pages/robots.txt.ts
 src/pages/sitemap.xml.ts
 .github/workflows/*.yml
 .node-version
+docs/agents/dual-hosting-policy.md
 ```
 
 ---
 
-## Migration status
+## Official references to re-check
 
-At the time this document was introduced:
+Cloudflare:
 
-- GitHub remains the source repository.
-- Existing GitHub Pages workflow is intentionally preserved during migration.
-- GitHub Actions included minutes are exhausted for the current billing period.
-- Repository-side Cloudflare build support is being prepared on `agent/migrate-cloudflare-pages`.
-- Cloudflare account-side Git integration still requires the account owner to authorize/select the GitHub repository and create the Pages project.
-- The migration is **not complete** until the verification checklist above has been executed against a real Cloudflare preview and production deployment.
+- https://developers.cloudflare.com/pages/configuration/git-integration/
+- https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/
+- https://developers.cloudflare.com/pages/configuration/preview-deployments/
+- https://developers.cloudflare.com/pages/configuration/build-configuration/
+- https://developers.cloudflare.com/pages/configuration/build-watch-paths/
+- https://developers.cloudflare.com/pages/configuration/branch-build-controls/
+- https://developers.cloudflare.com/pages/platform/limits/
+- https://developers.cloudflare.com/pages/configuration/rollbacks/
 
-Future agents must update this section when the state changes so they do not repeat completed setup or accidentally remove the active production path.
+GitHub:
+
+- https://docs.github.com/en/actions/concepts/billing-and-usage
+- https://docs.github.com/en/billing/concepts/product-billing/github-actions
+- https://docs.github.com/en/copilot/how-tos/copilot-on-github/set-up-copilot/configure-runners
+
+Search indexing:
+
+- https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
+- https://developers.google.com/search/docs/crawling-indexing/block-indexing
+
+Re-check provider documentation instead of treating quota/pricing/runtime values in this file as permanent.
