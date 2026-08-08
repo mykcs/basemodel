@@ -15,6 +15,14 @@ const landscape = read('src/components/landscape/LandscapePrototype.tsx');
 const papers = read('src/components/papers/PaperSelectionRationale.astro');
 const guide = read('src/content/guides/research-workbench.json');
 const calculator = read('src/components/workspace/task/HardwareCalculator.tsx');
+const task = read('src/stores/researchTask.ts');
+const codec = read('src/lib/researchTaskCodec.ts');
+const candidates = read('src/components/workspace/CandidateBoard.tsx');
+const replacement = read('src/lib/research/replacement.ts');
+const paperWorkflow = read('src/components/papers/PaperRoleDiagram.tsx');
+const projectHistory = read('src/components/workspace/task/ResearchTaskBuilder.tsx');
+const memo = read('src/components/workspace/DecisionMemo.tsx');
+const claims = read('src/components/evidence/ClaimHistory.astro');
 
 pass('AV-ROUTES', ['src/pages/index.astro', 'src/pages/en/index.astro', 'src/pages/workspace/index.astro', 'src/pages/en/workspace/index.astro', 'src/pages/models/index.astro', 'src/pages/en/models/index.astro', 'src/pages/papers/index.astro', 'src/pages/en/papers/index.astro', 'src/pages/landscape/index.astro', 'src/pages/en/landscape/index.astro', 'src/pages/guide.astro', 'src/pages/en/guide.astro', 'src/pages/methodology.astro', 'src/pages/en/methodology.astro', 'src/pages/data-status.astro', 'src/pages/en/data-status.astro'].every(exists), 'bilingual research routes are present');
 pass('AV-EXPLORER', explorer.includes('filterDepth') && explorer.includes('facetCount') && explorer.includes('openQuickView') && explorer.includes('addCandidate') && explorer.includes('addToCompare'), 'core/advanced filters, counts, Quick View, Candidate, and Compare are wired in one client path');
@@ -22,7 +30,13 @@ pass('AV-LANDSCAPE-LEARNING', landscape.includes("view === 'learning' ? <Learnin
 pass('AV-LANDSCAPE-UNKNOWN', read('src/lib/landscape.ts').includes('parameterB === null') && read('src/lib/landscape.ts').includes("source: 'unknown'"), 'unknown parameter values remain null/unknown rather than zero');
 pass('AV-PAPERS-UNKNOWN', papers.includes('paper.models') && papers.includes('Not recorded') && read('src/pages/_bodies/paper-detail.astro').includes('PaperSelectionRationale'), 'paper detail shows model roles and explicit unknown selection rationale even when no rationale records exist');
 pass('AV-GUIDE-COVERAGE', ['checkpoint', 'open-weight-source', 'architecture-scale', 'adaptation-evolution', 'reproducibility-fields', 'research-paths'].every((id) => guide.includes(`"id": "${id}"`)) && guide.toLowerCase().includes('external memory') && guide.includes('weight-updating self-evolution'), 'novice concepts include checkpoint, access, architecture, evolution, and reproduction boundaries');
-pass('AV-HARDWARE-INPUTS', ['parameters', 'context', 'batch', 'gpuCount', 'rank', 'precision', 'optimizer'].every((name) => calculator.includes(name)), 'heuristic estimator makes all required inputs affect its result and labels output as planning');
+pass('AV-HARDWARE-INPUTS', ['parameters', 'context', 'batch', 'gpuCount', 'rank', 'precision', 'optimizer', 'kvCacheEnabled'].every((name) => calculator.includes(name)), 'heuristic estimator makes all required inputs affect its result and labels output as planning');
+pass('AV-RESOURCE-TASK', ['precision', 'batchSize', 'loraRank', 'optimizer', 'kvCacheEnabled'].every((field) => task.includes(field) && codec.includes(field)), 'resource assumptions persist in the task model and URL codec');
+pass('AV-FIT-PROFILE', ['feasibility', 'researchSuitability', 'comparability', 'reproducibility', 'evidenceQuality'].every((field) => candidates.includes(field)) && candidates.includes('candidate-fit-profile'), 'candidate board exposes all five fit dimensions');
+pass('AV-REPLACEMENT-METHOD', ['architecture_dense_moe_changed', 'checkpoint_semantics_changed', 'context_budget_changed', 'access_local_path_changed', 'apiStatus'].every((field) => replacement.includes(field)), 'replacement analysis has methodology explanations and API-status impact');
+pass('AV-PAPER-WORKFLOW', paperWorkflow.includes('paper.workflow') && paperWorkflow.includes('unrecorded') && paperWorkflow.includes('does not treat'), 'paper detail uses recorded workflow data and labels missing workflow facts');
+pass('AV-PROJECT-HISTORY', exists('src/stores/projects.ts') && projectHistory.includes('saveResearchProject') && projectHistory.includes('restore'), 'task builder saves and restores local multi-project history');
+pass('AV-MEMO-EVIDENCE', memo.includes('sectionNotSelected') && memo.includes('sectionEvidence') && claims.includes('conflict'), 'decision memo records exclusions/evidence and claim history flags conflicts');
 pass('AV-SEMANTIC-BOUNDARY', read('src/lib/schemas.ts').includes('not_disclosed') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'unknown/not-reported/not-verified remain semantic states');
 
 const modelFiles = fs.readdirSync(path.join(root, 'src/content/models')).filter((file) => file.endsWith('.json'));

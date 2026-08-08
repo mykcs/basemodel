@@ -150,6 +150,21 @@ function CandidateRow({ scored, m, inCompare, inCandidate }: RowProps) {
             </span>
           </div>
         )}
+        <details className="candidate-fit-profile">
+          <summary>{m.explorer.taskFitLabel}</summary>
+          <dl className="candidate-fit-grid">
+            {([
+              [m.explorer.feasibility, scored.fit.feasibility.level],
+              [m.explorer.researchSuitability, scored.fit.researchSuitability.level],
+              [m.explorer.comparability, scored.fit.comparability.level],
+              [m.explorer.reproducibility, scored.fit.reproducibility.level],
+              [m.explorer.evidenceQuality, scored.fit.evidenceQuality.level],
+            ] as Array<[string, 'high' | 'medium' | 'low' | 'unknown']>).map(([label, level]) => {
+              const levelKey = `level${String(level).charAt(0).toUpperCase()}${String(level).slice(1)}` as 'levelHigh' | 'levelMedium' | 'levelLow' | 'levelUnknown';
+              return <div key={label}><dt>{label}</dt><dd className={`fit-level-${String(level)}`}>{m.explorer[levelKey]}</dd></div>;
+            })}
+          </dl>
+        </details>
       </div>
 
       <div className="candidate-actions">

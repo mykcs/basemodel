@@ -12,5 +12,6 @@ describe('estimateVram', () => {
     expect(estimateVram({ ...base, parameters: 70, rank: 64 }).adapter).toBeGreaterThan(estimateVram({ ...base, parameters: 70 }).adapter);
     expect(estimateVram({ ...base, optimizer: 'none' }).training).toBeLessThan(oneGpu.training);
     expect(estimateVram({ ...base, gpuCount: 2 }).inference).toBeLessThan(oneGpu.inference);
+    expect(estimateVram({ ...base, kvCacheEnabled: false }).inference).toBeLessThan(oneGpu.inference);
   });
 });

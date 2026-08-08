@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { researchTask } from '../../stores/researchTask';
 import { analyzeReplacement } from '../../lib/research/replacement';
@@ -11,6 +11,9 @@ interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages }
 export function SubstituteLab({ models, papers, m }: Props) {
   const task = useStore(researchTask);
   const [baseId, setBaseId] = useState('');
+  useEffect(() => {
+    if (task.reference?.modelId) setBaseId(task.reference.modelId);
+  }, [task.reference?.modelId]);
   const base = models.find((model) => model.id === baseId) ?? null;
   const substitutes = useMemo(() => {
     if (!base) return [];

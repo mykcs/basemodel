@@ -17,7 +17,8 @@ export function buildDecisionRecord(task: ResearchTask, scored: ScoredModel[], s
   const chosen = scored.filter((entry) => selectedCandidateIds.includes(entry.model.id));
   const candidates = (chosen.length ? chosen : scored.filter((entry) => entry.candidateState !== 'blocked').slice(0, 5)).map((entry) => ({ modelId: entry.model.id, bucket: entry.bucket, fit: entry.fit }));
   const unresolvedClaims = [...new Set(scored.flatMap((entry) => entry.outcomes.filter((outcome) => outcome.state === 'unknown').flatMap((outcome) => outcome.fieldPaths)))];
-  const sources = [...new Map(scored.flatMap((entry) => entry.model.sources).map((source) => [source.url, { url: source.url, type: source.type, checkedAt: source.checked_at }])).values()];
+  const relevant = chosen.length ? chosen : scored.filter((entry) => entry.candidateState !== 'blocked').slice(0, 5);
+  const sources = [...new Map(relevant.flatMap((entry) => entry.model.sources).map((source) => [source.url, { url: source.url, type: source.type, checkedAt: source.checked_at }])).values()];
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),

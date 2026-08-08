@@ -20,7 +20,19 @@ export function ResourceStep({ draft, update, m, locale }: TaskStepProps) {
         <label className="field"><span>{m.workspace.contextLabel}</span><input type="number" min="0" step="1024" value={draft.contextTarget ?? ''} onChange={(event) => update({ contextTarget: optionalNumber(event.target.value) })} /></label>
       </div>
       <label className="check-row"><input type="checkbox" checked={draft.quantizationAllowed === true} onChange={(event) => update({ quantizationAllowed: event.target.checked })} /> <span>{copy.quantization}</span></label>
-      <HardwareCalculator locale={locale} />
+      <HardwareCalculator
+        locale={locale}
+        initial={{ parameters: 7, context: draft.contextTarget ?? 4096, batch: draft.batchSize ?? 1, gpuCount: draft.gpuCount ?? 1, rank: draft.loraRank ?? 16, precision: draft.precision ?? 'bf16', optimizer: draft.optimizer ?? (draft.update === 'none' ? 'none' : 'adam'), kvCacheEnabled: draft.kvCacheEnabled ?? true }}
+        onChange={(input) => update({
+          ...(draft.gpuCount !== undefined || input.gpuCount !== 1 ? { gpuCount: input.gpuCount } : {}),
+          ...(draft.batchSize !== undefined || input.batch !== 1 ? { batchSize: input.batch } : {}),
+          ...(draft.loraRank !== undefined || input.rank !== 16 ? { loraRank: input.rank } : {}),
+          ...(draft.precision !== undefined || input.precision !== 'bf16' ? { precision: input.precision } : {}),
+          ...(draft.optimizer !== undefined || input.optimizer !== (draft.update === 'none' ? 'none' : 'adam') ? { optimizer: input.optimizer } : {}),
+          ...(draft.kvCacheEnabled !== undefined || input.kvCacheEnabled !== true ? { kvCacheEnabled: input.kvCacheEnabled } : {}),
+          ...(draft.contextTarget !== undefined || input.context !== 4096 ? { contextTarget: input.context } : {}),
+        })}
+      />
     </section>
   );
 }

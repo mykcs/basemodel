@@ -1,10 +1,12 @@
-import type { ResearchTask, ResearchMode, UpdateMethod, AccessMode, EvidencePolicy, RuntimeRequirement } from '../stores/researchTask';
+import type { ResearchTask, ResearchMode, UpdateMethod, AccessMode, EvidencePolicy, RuntimeRequirement, ResourcePrecision, ResourceOptimizer } from '../stores/researchTask';
 
 const modes: ResearchMode[] = ['strict', 'method', 'modern', 'new'];
 const updates: UpdateMethod[] = ['none', 'lora', 'sft', 'rl', 'unsure'];
 const accessModes: AccessMode[] = ['local', 'api', 'either'];
 const evidencePolicies: EvidencePolicy[] = ['verified_preferred', 'verified_only', 'allow_unknown'];
 const runtimes: RuntimeRequirement[] = ['transformers', 'vllm', 'sglang', 'verl'];
+const precisions: ResourcePrecision[] = ['fp32', 'bf16', 'fp16', 'int8', 'int4'];
+const optimizers: ResourceOptimizer[] = ['adam', 'sgd', 'none'];
 
 function oneOf<T extends string>(value: string | null, values: readonly T[]): T | undefined {
   return value && (values as readonly string[]).includes(value) ? value as T : undefined;
@@ -32,6 +34,11 @@ export function encodeResearchTask(task: ResearchTask): URLSearchParams {
   if (typeof task.gpuVramGb === 'number') params.set('gpu', String(task.gpuVramGb));
   if (typeof task.gpuCount === 'number') params.set('gpus', String(task.gpuCount));
   if (task.quantizationAllowed !== undefined) params.set('quant', task.quantizationAllowed ? '1' : '0');
+  if (task.precision) params.set('precision', task.precision);
+  if (typeof task.batchSize === 'number') params.set('batch', String(task.batchSize));
+  if (typeof task.loraRank === 'number') params.set('rank', String(task.loraRank));
+  if (task.optimizer) params.set('optimizer', task.optimizer);
+  if (task.kvCacheEnabled !== undefined) params.set('kv', task.kvCacheEnabled ? '1' : '0');
   if (typeof task.contextTarget === 'number') params.set('ctx', String(task.contextTarget));
   if (task.openWeight !== undefined) params.set('open', task.openWeight ? '1' : '0');
   if (task.requireBaseCheckpoint !== undefined) params.set('base', task.requireBaseCheckpoint ? '1' : '0');
@@ -73,6 +80,11 @@ export function decodeResearchTask(params: URLSearchParams): ResearchTask | null
         gpuCount: parsed.gpuCount,
         contextTarget: parsed.contextTarget,
         openWeight: parsed.openWeight,
+        precision: oneOf((parsed as Partial<ResearchTask>).precision ?? null, precisions),
+        batchSize: (parsed as Partial<ResearchTask>).batchSize,
+        loraRank: (parsed as Partial<ResearchTask>).loraRank,
+        optimizer: oneOf((parsed as Partial<ResearchTask>).optimizer ?? null, optimizers),
+        kvCacheEnabled: (parsed as Partial<ResearchTask>).kvCacheEnabled,
         requiredRuntimes: [],
         license: {},
         reproducibility: {},
@@ -102,6 +114,11 @@ export function decodeResearchTask(params: URLSearchParams): ResearchTask | null
     gpuVramGb: number('gpu'),
     gpuCount: number('gpus'),
     quantizationAllowed: flag(params, 'quant'),
+    precision: oneOf(params.get('precision'), precisions),
+    batchSize: number('batch'),
+    loraRank: number('rank'),
+    optimizer: oneOf(params.get('optimizer'), optimizers),
+    kvCacheEnabled: flag(params, 'kv'),
     contextTarget: number('ctx'),
     openWeight: flag(params, 'open'),
     requireBaseCheckpoint: flag(params, 'base'),

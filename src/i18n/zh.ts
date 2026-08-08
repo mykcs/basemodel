@@ -703,6 +703,8 @@ export const zh: Messages = {
       sectionCandidates: '候选模型',
       sectionCompare: '对比集合',
       sectionRisks: '风险与未核验项',
+      sectionNotSelected: '未选择模型及原因',
+      sectionEvidence: '证据来源包',
       unverified: '未核验项',
     },
     substitute: {
@@ -722,11 +724,11 @@ export const zh: Messages = {
       noSubstitute: '暂无可比较的现代替代。',
       modeImpact: '当前研究模式下的替换影响',
       impact: '影响',
-      impactDimensions: { generation: '模型代际', releaseDate: '发布时间', checkpoint: 'Checkpoint 类型', architecture: '架构', totalParameters: '总参数量', activeParameters: '激活参数量', context: '上下文', openWeights: '开放权重', baseCheckpoint: 'Base checkpoint', finetuning: '微调许可', derivative: '衍生分发', license: '许可证', runtime: '运行时支持', inferenceHardware: '推理硬件', trainingHardware: '训练硬件', apiPin: 'API 版本固定', chatTemplate: 'Chat template', tokenizer: 'Tokenizer', config: 'Config', paperRole: '论文采用角色' },
+      impactDimensions: { generation: '模型代际', releaseDate: '发布时间', checkpoint: 'Checkpoint 类型', architecture: '架构', totalParameters: '总参数量', activeParameters: '激活参数量', context: '上下文', openWeights: '开放权重', apiStatus: 'API 状态', baseCheckpoint: 'Base checkpoint', finetuning: '微调许可', derivative: '衍生分发', license: '许可证', runtime: '运行时支持', inferenceHardware: '推理硬件', trainingHardware: '训练硬件', apiPin: 'API 版本固定', chatTemplate: 'Chat template', tokenizer: 'Tokenizer', config: 'Config', paperRole: '论文采用角色' },
       severity: { none: '无变化', low: '低', medium: '中', high: '高', unknown: '未知' },
       confidence: { direct: '直接事实', derived: '派生判断', unknown: '尚无证据' },
       effect: { none: '不改变该维度', operational: '需要重新核验运行条件', requires_recalibration: '需要重新校准实验', breaks_direct_comparison: '会破坏直接可比性', unknown: '影响尚无法判断' },
-      impactCodes: { generation_changed: '模型代际变化会改变比较基线。', release_date_changed: '发布时间变化会改变时间窗口。', checkpoint_changed: 'Checkpoint 变化可能改变提示格式与训练初始化。', architecture_changed: '架构变化会改变推理与训练行为。', total_parameters_changed: '总参数变化会改变规模与资源预算。', active_parameters_changed: '激活参数变化会改变 MoE 推理成本。', context_changed: '上下文变化会改变长上下文实验条件。', weights_changed: '开放性变化会改变本地权重实验路径。', base_checkpoint_changed: 'Base 可用性变化会改变训练起点。', finetuning_changed: '微调许可变化会改变权重更新实验。', derivative_changed: '衍生分发变化会改变成果发布边界。', license_changed: '许可证变化需要单独复核法律与分发条件。', runtime_changed: '运行时支持变化会改变工程实现路径。', inference_hardware_changed: '推理硬件档位变化需要重新核验资源。', training_hardware_changed: '训练硬件档位变化需要重新核验资源。', api_pin_changed: 'API 版本可固定性变化会影响重复调用。', chat_template_changed: 'Chat template 变化会影响输入格式复现。', tokenizer_changed: 'Tokenizer 变化会影响切分与训练复现。', config_changed: 'Config 变化会影响架构和推理配置复现。', paper_role_changed: '论文采用角色不同，不能直接假定研究职责相同。' },
+      impactCodes: { generation_changed: '模型代际变化会改变比较基线。', release_date_changed: '发布时间变化会改变时间窗口。', checkpoint_changed: 'Checkpoint 变化可能改变提示格式与训练初始化。', checkpoint_semantics_changed: 'Base、Instruct 或 Thinking 语义变化会改变输入与优化条件；需匹配 checkpoint 后再比较。', architecture_changed: '架构变化会改变推理与训练行为。', architecture_dense_moe_changed: 'Dense 与 MoE 的路由和激活参数不同；需同时记录架构、激活参数和路由条件，不能只比较总参数。', total_parameters_changed: '总参数变化会改变规模与资源预算。', active_parameters_changed: '激活参数变化会改变 MoE 推理成本。', context_changed: '上下文变化会改变长上下文实验条件。', context_budget_changed: '上下文预算变化会改变记忆/长上下文条件；应固定预算或在结论中报告差异。', weights_changed: '开放性变化会改变本地权重实验路径。', access_local_path_changed: '本地权重与 API 路径不同，会改变版本固定、延迟和权重更新条件。', api_status_changed: 'API 可用性变化会改变部署与重复调用路径。', base_checkpoint_changed: 'Base 可用性变化会改变训练起点。', finetuning_changed: '微调许可变化会改变权重更新实验。', derivative_changed: '衍生分发变化会改变成果发布边界。', license_changed: '许可证变化需要单独复核法律与分发条件。', runtime_changed: '运行时支持变化会改变工程实现路径。', inference_hardware_changed: '推理硬件档位变化需要重新核验资源。', training_hardware_changed: '训练硬件档位变化需要重新核验资源。', api_pin_changed: 'API 版本可固定性变化会影响重复调用。', chat_template_changed: 'Chat template 变化会影响输入格式复现。', tokenizer_changed: 'Tokenizer 变化会影响切分与训练复现。', config_changed: 'Config 变化会影响架构和推理配置复现。', paper_role_changed: '论文采用角色不同，不能直接假定研究职责相同。' },
     },
   },
   format: {
@@ -1358,6 +1360,8 @@ export type Messages = {
       sectionCandidates: string;
       sectionCompare: string;
       sectionRisks: string;
+      sectionNotSelected: string;
+      sectionEvidence: string;
       unverified: string;
     };
     substitute: {

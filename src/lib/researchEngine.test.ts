@@ -112,4 +112,14 @@ describe('researchEngine tri-state evaluation', () => {
     expect(modern.find((impact) => impact.dimension === 'generation')?.severity).toBe('low');
     expect(strict.find((impact) => impact.dimension === 'apiPin')?.severity).toBe('unknown');
   });
+
+  it('explains method-level implications for architecture, checkpoint, context, and access changes', () => {
+    const reference = model({ id: 'reference', checkpoint: { type: 'instruct', modalities: ['text'], specializations: ['general'] }, architecture: { type: 'dense', total_parameters_b: 7, active_parameters_b: 7, context_length: 8192, expert_count: 'not_applicable', active_experts_per_token: 'not_applicable' } });
+    const replacement = model({ id: 'replacement', checkpoint: { type: 'thinking', modalities: ['text'], specializations: ['reasoning'] }, architecture: { type: 'moe', total_parameters_b: 30, active_parameters_b: 3, context_length: 32768, expert_count: 8, active_experts_per_token: 2 }, openness: { weights_available: false, base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'not_verified', commercial_use_allowed: 'not_verified', license_name: 'Apache 2.0' } });
+    const impacts = analyzeReplacement(reference, replacement, { ...baseTask, mode: 'method' });
+    expect(impacts.find((impact) => impact.dimension === 'architecture')?.explanationCode).toBe('architecture_dense_moe_changed');
+    expect(impacts.find((impact) => impact.dimension === 'checkpoint')?.explanationCode).toBe('checkpoint_semantics_changed');
+    expect(impacts.find((impact) => impact.dimension === 'context')?.explanationCode).toBe('context_budget_changed');
+    expect(impacts.find((impact) => impact.dimension === 'openWeights')?.explanationCode).toBe('access_local_path_changed');
+  });
 });

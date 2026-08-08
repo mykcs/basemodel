@@ -25,6 +25,11 @@ function taskLines(task: ResearchTask, m: Messages, locale: Locale): string[] {
   if (task.roles.length) lines.push(`- ${m.workspace.roleLabel}: ${task.roles.map((role) => roleLabel(role, locale)).join(locale === 'zh' ? '、' : ', ')}`);
   lines.push(`- ${m.workspace.updateLabel}: ${updateMethodLabel(task.update, locale)}`);
   if (typeof task.gpuVramGb === 'number') lines.push(`- GPU: ${task.gpuVramGb}GB × ${task.gpuCount ?? 1}`);
+  if (task.precision) lines.push(`- Precision: ${task.precision}`);
+  if (typeof task.batchSize === 'number') lines.push(`- Batch: ${task.batchSize}`);
+  if (typeof task.loraRank === 'number') lines.push(`- LoRA rank: ${task.loraRank}`);
+  if (task.optimizer) lines.push(`- Optimizer: ${task.optimizer}`);
+  if (task.kvCacheEnabled !== undefined) lines.push(`- KV cache: ${task.kvCacheEnabled ? 'included' : 'excluded'}`);
   if (task.openWeight) lines.push(`- ${m.workspace.openWeightLabel}`);
   if (typeof task.contextTarget === 'number') lines.push(`- ${m.workspace.contextLabel}: ${task.contextTarget}`);
   if (task.priorities.length) lines.push(`- ${m.workspace.priorityLabel}: ${task.priorities.map((priority) => m.selector.goals[priority as keyof typeof m.selector.goals] ?? priority).join(locale === 'zh' ? '、' : ', ')}`);
@@ -97,10 +102,37 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
       parts.push('');
     }
 
+    const notSelected = scored.filter((entry) => !candidates.includes(entry.model.id)).slice(0, 5);
+    if (notSelected.length > 0) {
+      parts.push(`## ${m.research.memo.sectionNotSelected}`);
+      notSelected.forEach((entry) => {
+        const reason = entry.candidateState === 'blocked' ? m.research.excludedBlocked : entry.candidateState === 'needs_verification' ? m.research.excludedPending : entry.risks.map((risk) => m.research.risks[risk] ?? risk).join('、');
+        parts.push(`- **${entry.model.name}**: ${reason || m.research.memo.unverified}`);
+      });
+      parts.push('');
+    }
+
     const allRisks = [...new Set(chosen.flatMap((s) => s.risks))];
     if (allRisks.length > 0) {
       parts.push(`## ${m.research.memo.sectionRisks}`);
       allRisks.forEach((r) => parts.push(`- ${m.research.risks[r] ?? r}`));
+      parts.push('');
+    }
+
+    const evidenceSources = [...new Map([
+      ...chosen.flatMap((entry) => entry.model.sources),
+      ...compareModels.flatMap((model) => model.sources),
+      ...papers.filter((paper) => task.reference?.paperId === paper.id).flatMap((paper) => paper.sources),
+    ].map((source) => [source.url, source])).values()];
+    if (evidenceSources.length > 0) {
+      parts.push(`## ${m.research.memo.sectionEvidence}`);
+      evidenceSources.forEach((source) => parts.push(`- ${source.title ?? source.type}: ${source.url} (${source.checked_at})`));
+      parts.push('');
+    }
+    const unresolved = [...new Set(scored.flatMap((entry) => entry.outcomes.filter((outcome) => outcome.state === 'unknown').flatMap((outcome) => outcome.fieldPaths)))];
+    if (unresolved.length > 0) {
+      parts.push(`## ${m.research.memo.unverified}`);
+      unresolved.forEach((field) => parts.push(`- ${field}`));
       parts.push('');
     }
 

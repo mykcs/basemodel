@@ -17,6 +17,14 @@ function changedImpact(mode: ResearchMode): Pick<ReplacementImpact, 'severity' |
   return { severity: impactSeverity(mode), effect: 'operational' };
 }
 
+function researchExplanationCode(dimension: string, before: unknown, after: unknown, fallback: string): string {
+  if (dimension === 'architecture' && [before, after].every((value) => value === 'dense' || value === 'moe') && before !== after) return 'architecture_dense_moe_changed';
+  if (dimension === 'checkpoint' && before !== after) return 'checkpoint_semantics_changed';
+  if (dimension === 'context' && before !== after) return 'context_budget_changed';
+  if (dimension === 'openWeights' && before !== after) return 'access_local_path_changed';
+  return fallback;
+}
+
 function compare(
   dimension: string,
   before: unknown,
@@ -25,9 +33,10 @@ function compare(
   explanationCode: string,
   mode: ResearchMode,
 ): ReplacementImpact {
-  if (unknown(before) || unknown(after)) return { dimension, before: String(before ?? 'unknown'), after: String(after ?? 'unknown'), severity: 'unknown', confidence: 'unknown', effect: 'unknown', explanationCode, fieldPaths };
-  if (Object.is(before, after)) return { dimension, before: String(before), after: String(after), severity: 'none', confidence: 'direct', effect: 'none', explanationCode, fieldPaths };
-  return { dimension, before: String(before), after: String(after), ...changedImpact(mode), confidence: 'direct', explanationCode, fieldPaths };
+  const code = researchExplanationCode(dimension, before, after, explanationCode);
+  if (unknown(before) || unknown(after)) return { dimension, before: String(before ?? 'unknown'), after: String(after ?? 'unknown'), severity: 'unknown', confidence: 'unknown', effect: 'unknown', explanationCode: code, fieldPaths };
+  if (Object.is(before, after)) return { dimension, before: String(before), after: String(after), severity: 'none', confidence: 'direct', effect: 'none', explanationCode: code, fieldPaths };
+  return { dimension, before: String(before), after: String(after), ...changedImpact(mode), confidence: 'direct', explanationCode: code, fieldPaths };
 }
 
 function roleEvidence(modelId: string, papers: AtlasPaper[]): string[] {
@@ -44,6 +53,7 @@ export function analyzeReplacement(before: AtlasModel, after: AtlasModel, task: 
     compare('activeParameters', before.architecture.active_parameters_b, after.architecture.active_parameters_b, ['architecture.active_parameters_b'], 'active_parameters_changed', task.mode),
     compare('context', before.architecture.context_length, after.architecture.context_length, ['architecture.context_length'], 'context_changed', task.mode),
     compare('openWeights', before.openness.weights_available, after.openness.weights_available, ['openness.weights_available'], 'weights_changed', task.mode),
+    compare('apiStatus', before.access?.api_status, after.access?.api_status, ['access.api_status'], 'api_status_changed', task.mode),
     compare('baseCheckpoint', before.openness.base_checkpoint_available, after.openness.base_checkpoint_available, ['openness.base_checkpoint_available'], 'base_checkpoint_changed', task.mode),
     compare('finetuning', before.openness.finetuning_allowed, after.openness.finetuning_allowed, ['openness.finetuning_allowed'], 'finetuning_changed', task.mode),
     compare('derivative', before.openness.derivative_release_allowed, after.openness.derivative_release_allowed, ['openness.derivative_release_allowed'], 'derivative_changed', task.mode),

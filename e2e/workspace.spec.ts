@@ -77,3 +77,22 @@ test('mobile candidate quick view opens a native dialog and supports Escape', as
   await page.keyboard.press('Escape');
   await expect(page.locator('.quick-view-dialog[open]')).toHaveCount(0);
 });
+
+test('task resources, five-dimensional fit, and local project history are connected', async ({ page }) => {
+  await page.goto('workspace/?v=2&mode=modern');
+  await page.getByRole('button', { name: /资源条件|Resource budget/ }).click();
+  await page.locator('.hardware-calculator select').first().selectOption('int8');
+  await page.locator('.hardware-calculator input').nth(2).fill('4');
+  await page.getByRole('button', { name: /排序偏好|Ranking priorities/ }).click();
+  await page.getByRole('button', { name: /设定研究任务|Set research task/ }).click();
+  await expect(page).toHaveURL(/precision=int8/);
+  await expect(page).toHaveURL(/batch=4/);
+  const profile = page.locator('.candidate-fit-profile').first();
+  await profile.locator('summary').click();
+  await expect(profile.locator('dd')).toHaveCount(5);
+  await page.getByPlaceholder(/项目名称|Project name/).fill('LoRA smoke project');
+  await page.getByRole('button', { name: /保存项目|Save project/ }).click();
+  await expect(page.locator('.project-history [role="status"]')).toContainText(/项目已保存|Project saved/);
+  await page.locator('.project-history-list select').selectOption({ index: 1 });
+  await expect(page.locator('.project-history [role="status"]')).toContainText(/项目已恢复|Project restored/);
+});
