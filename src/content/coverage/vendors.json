@@ -40,7 +40,7 @@
       "id": "meta",
       "name": "Meta / Llama",
       "official_catalog_urls": [
-        "https://www.llama.com/models/"
+        "https://github.com/meta-llama/llama-models"
       ],
       "refresh_days": 30,
       "model_types": [
@@ -51,7 +51,7 @@
       "id": "anthropic",
       "name": "Anthropic",
       "official_catalog_urls": [
-        "https://docs.anthropic.com/en/docs/about-claude/models"
+        "https://platform.claude.com/docs/en/about-claude/models/overview"
       ],
       "refresh_days": 14,
       "model_types": [
