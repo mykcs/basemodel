@@ -38,10 +38,6 @@ jobs:
     name: E2E (${{ matrix.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 8
-    container:
-      # Keep this tag aligned with the exact @playwright/test version in package-lock.json.
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
-      options: --ipc=host
     strategy:
       fail-fast: false
       matrix:
@@ -55,6 +51,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Restore Playwright browser cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          # Browser binaries are tied to the Playwright version, not unrelated lockfile changes.
+          key: playwright-${{ runner.os }}-${{ matrix.browser }}-1.62.1
+      - name: Install Playwright browser dependencies
+        run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run build
       - run: npx playwright test --project=${{ matrix.browser }}
       - name: Upload Playwright diagnostics
