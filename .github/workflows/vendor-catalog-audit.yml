@@ -26,4 +26,24 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run audit:vendor-catalogs
+      - name: Audit vendor catalogs
+        run: npm run audit:vendor-catalogs
+      - name: Publish audit summary
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          if [[ -f reports/vendor-catalogs.md ]]; then
+            cat reports/vendor-catalogs.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Vendor catalog report was not generated.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload vendor catalog reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: vendor-catalog-audit-${{ github.run_attempt }}
+          path: |
+            reports/vendor-catalogs.json
+            reports/vendor-catalogs.md
+          retention-days: 14
+          if-no-files-found: warn
