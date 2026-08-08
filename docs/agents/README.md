@@ -6,7 +6,8 @@ Before changing deployment, CI, hosting, URL/base-path behavior, SEO output, or 
 
 1. [`dual-hosting-policy.md`](./dual-hosting-policy.md) — authoritative steady-state hosting policy. GitHub Pages + Cloudflare Pages coexist long-term; GitHub remains the canonical source repository; Cloudflare Production is the indexed identity and GitHub Pages is the noindex fallback.
 2. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — current operational runbook for Cloudflare build/deploy, Preview behavior, stable production URLs, search indexing, GitHub Actions quota fallback, rollback, and cost controls.
-3. [`2026-08-09-cloudflare-migration-retrospective.md`](./2026-08-09-cloudflare-migration-retrospective.md) — complete migration/incident history, including what succeeded, what failed, tool limitations, quota diagnosis, PR acceptance sequence, cost mistakes, and lessons for future agents.
+3. [`2026-08-08-github-actions-ci-optimization-history.md`](./2026-08-08-github-actions-ci-optimization-history.md) — CI optimization/hardening history before the quota incident: static/E2E parallelization, Playwright caching and failed worker experiment, external-network audit separation, Node runtime warning removal, immutable Action SHA pinning, classifier/gate hardening, and tradeoffs.
+4. [`2026-08-09-cloudflare-migration-retrospective.md`](./2026-08-09-cloudflare-migration-retrospective.md) — complete migration/incident history, including what succeeded, what failed, tool limitations, quota diagnosis, PR acceptance sequence, cost mistakes, and lessons for future agents.
 
 If historical/migration wording conflicts with `dual-hosting-policy.md`, the dual-hosting policy takes precedence unless the repository owner explicitly changes that policy.
 
