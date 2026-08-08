@@ -11,6 +11,9 @@ const isZh = locale === 'zh';
 <section class="guide-concept-map" aria-labelledby="guide-concepts-title">
   <div class="section-heading"><div><span class="section-kicker">{isZh ? '概念地图' : 'Concept map'}</span><h2 id="guide-concepts-title">{isZh ? '先建立模型选择的共同语言' : 'Build a shared language for model choice'}</h2></div><p class="muted">{isZh ? '从概念进入真实模型与研究任务。' : 'Move from concepts to real models and research tasks.'}</p></div>
   <nav class="concept-map-nav" aria-label={isZh ? '概念地图导航' : 'Concept map navigation'}>{concepts.map((concept) => <a href={`#concept-${concept.id}`}>{isZh ? concept.title_zh : concept.title_en}</a>)}</nav>
+  <style>
+    .concept-map-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  </style>
   <div class="concept-map-grid">{concepts.map((concept) => <article id={`concept-${concept.id}`} class="concept-card"><h3>{isZh ? concept.title_zh : concept.title_en}</h3><p>{isZh ? concept.body_zh : concept.body_en}</p>{concept.model_ids.length > 0 && <div class="concept-model-links"><span>{isZh ? '真实模型示例' : 'Model examples'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}{concept.links?.length ? <div class="concept-model-links"><span>{isZh ? '继续研究' : 'Continue research'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{isZh ? link.label_zh : link.label_en}</a>)}</div> : null}</article>)}</div>
 </section>
 <section class="guide-glossary" aria-labelledby="guide-glossary-title"><div class="section-heading"><div><span class="section-kicker">{isZh ? '术语表' : 'Glossary'}</span><h2 id="guide-glossary-title">{isZh ? '在页面内解释关键术语' : 'Explain key terms in place'}</h2></div></div><div class="glossary-list">{glossary.map((item) => <details><summary>{isZh ? item.term_zh : item.term_en}</summary><p>{isZh ? item.definition_zh : item.definition_en}</p></details>)}</div></section>

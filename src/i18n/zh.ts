@@ -48,28 +48,6 @@ export const zh: Messages = {
   methodology: {
     pageTitle: '数据方法', title: '数据、缺失值与证据等级', lede: '公共页面展示事实；研究工作台解释这些事实对当前任务意味着什么。', sections: [{ title: '缺失值语义', body: 'not_disclosed（官方未公开）、not_applicable（不适用）、not_reported（来源未报告）、not_verified（尚未核验）、conflicting_evidence（来源冲突）、not_published（尚未发布）和 unavailable（来源不可用）都是数据状态，不会被转换成 false、0 或确定事实。' }, { title: '证据等级', body: '字段级 supports 关系优先连接到官方来源；论文、代码和运行记录分别保留来源类型与核验日期。每个保留未知值都必须能回到来源说明或 evidence_note。' }, { title: '推荐边界', body: '候选排序是任务内的辅助排序，不是综合性能排行榜；明确冲突才会阻塞，其他未知事实会进入条件候选或待核验区。' }]
   },
-  home: {
-    pageTitle: '研究者的模型选择入口',
-    heroEyebrow: '',
-    heroTitle: '把模型选择，变成一条可核验的研究路径。',
-    heroLede: '面向智能体与自进化实验的基础模型地图。先看供应层，再看论文采用层；每个未完成字段都保留明确的证据状态。',
-    howToRead: '怎么读这份地图',
-    howToReadBody: '模型供应层回答“现在能选什么”；研究采用层回答“论文实际怎么用”。推荐只是规则筛选，不是性能排名。',
-    browseAll: '浏览全部模型 →',
-    heroPrimaryCta: '按实验条件筛选模型 →',
-    heroSecondaryCta: '直接浏览模型',
-    statsModels: '模型',
-    statsVendors: '厂商 / 提供方',
-    statsPapers: '论文记录',
-    statsAria: '网站数据统计',
-    selectorKicker: '从这里开始',
-    selectorTitle: '告诉我你的实验条件',
-    selectorNote: '输出候选，不输出伪排名',
-    latestTitle: '最近记录的模型',
-    viewExplorer: '查看模型浏览器 →',
-    contractTitle: '证据状态是产品的一部分',
-    contractBody: '每条模型和论文记录都要求一手来源 URL 与最后核验日期。未核验、官方未公开、未报告和未发布分别标注，不用猜测值填充。',
-  },
   landscape: {
     kicker: 'Landscape',
     title: '模型供应层，一眼看清',
@@ -203,7 +181,7 @@ export const zh: Messages = {
     productSurface: '产品',
     apiSurface: 'API',
     weightsSurface: '权重',
-    baseSurface: 'Base',
+    baseSurface: '基座',
     finetuneSurface: '允许微调',
     derivativeSurface: '允许衍生分发',
     unresolvedCount: '{count} 个关键字段待核验',
@@ -243,7 +221,7 @@ export const zh: Messages = {
     roleDiagramHint: '这里只展示数据明确记录的角色与模型关系，不推断未记录的 workflow 边。',
     reproducibilityTitle: '复现状态',
     codeStatus: '代码',
-    checkpointStatus: 'Checkpoint',
+    checkpointStatus: '权重',
     configStatus: '配置',
     environmentStatus: '环境',
     available: '可用',
@@ -385,7 +363,7 @@ export const zh: Messages = {
     lora: '可 LoRA',
     rl: '适合 RL',
     current: '当前代',
-    baseCheckpoint: 'Base checkpoint',
+    baseCheckpoint: '基座权重',
     singleGpu: '单卡可运行',
     toolUse: '工具调用',
     coding: '代码能力',
@@ -466,7 +444,7 @@ export const zh: Messages = {
     inferenceTier: '推理档位',
     apiStatus: 'API 状态',
     weightsStatus: '权重状态',
-    baseCheckpoint: 'Base checkpoint',
+    baseCheckpoint: '基座权重',
     finetuning: '允许微调',
     derivative: '允许衍生分发',
     commercial: '允许商业使用',
@@ -896,28 +874,6 @@ export type Messages = {
     commandHint: string;
   };
   footer: { identity: string; motto: string };
-  home: {
-    pageTitle: string;
-    heroEyebrow: string;
-    heroTitle: string;
-    heroLede: string;
-    howToRead: string;
-    howToReadBody: string;
-    browseAll: string;
-    heroPrimaryCta: string;
-    heroSecondaryCta: string;
-    statsModels: string;
-    statsVendors: string;
-    statsPapers: string;
-    statsAria: string;
-    selectorKicker: string;
-    selectorTitle: string;
-    selectorNote: string;
-    latestTitle: string;
-    viewExplorer: string;
-    contractTitle: string;
-    contractBody: string;
-  };
   landscape: {
     kicker: string;
     title: string;

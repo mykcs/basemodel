@@ -130,11 +130,11 @@
       "current_claim": {
         "text": "Llama 4 is the latest Llama generation, with Scout and Maverick as the initial open-weight models.",
         "status": "confirmed",
-        "source_url": "https://developer.meta.com/ai/models/",
+        "source_url": "https://www.llama.com/models/",
         "checked_at": "2026-08-06"
       },
       "official_catalog_urls": [
-        "https://developer.meta.com/ai/models/"
+        "https://www.llama.com/models/"
       ],
       "catalog_checked_at": "2026-08-06",
       "confidence": "official-confirmed",
@@ -146,14 +146,14 @@
           "role": "flagship",
           "distribution_surfaces": ["open_weight"],
           "is_current": true,
-          "source_url": "https://developer.meta.com/ai/models/",
+          "source_url": "https://www.llama.com/models/",
           "checked_at": "2026-08-06"
         },
         {
           "id": "llama-4-scout-17b-16e",
           "role": "instruct",
           "distribution_surfaces": ["open_weight"],
-          "source_url": "https://developer.meta.com/ai/models/",
+          "source_url": "https://www.llama.com/models/",
           "checked_at": "2026-08-06"
         }
       ]

@@ -21,12 +21,20 @@ const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
 const siteOrigin = Astro.site ?? new URL('https://mykcs.github.io');
-const ogImage = new URL(`${base}favicon.svg`, siteOrigin).href;
+const ogImage = new URL(`${base}og-cover.png`, siteOrigin).href;
 
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const canonicalUrl = new URL(switchLocalePath(locale, pathNoBase), siteOrigin).href;
 const alternateUrls = locales.map((loc) => ({ loc, href: new URL(switchLocalePath(loc, pathNoBase), siteOrigin).href }));
 const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
+const websiteJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: m.site.fullName,
+  url: new URL(base, siteOrigin).href,
+  description: m.site.defaultDescription,
+  inLanguage: ['zh-CN', 'en'],
+});
 ---
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
@@ -43,7 +51,8 @@ const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
       }
     </script>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f6f4ef" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e" />
     <link rel="icon" href={`${base}favicon.svg`} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" href={`${base}sitemap.xml`} />
@@ -62,6 +71,7 @@ const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <title>{fullTitle}</title>
+    <script type="application/ld+json" set:html={websiteJsonLd} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>

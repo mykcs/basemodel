@@ -11,7 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
   const models = await getCollection('models');
   const papers = await getCollection('papers');
 
-  const staticPaths = ['/', '/models/', '/families/', '/compare/', '/papers/'];
+  const staticPaths = ['/', '/models/', '/families/', '/compare/', '/papers/', '/guide/', '/landscape/', '/methodology/', '/workspace/', '/data-status/'];
   const zhUrls = [
     ...staticPaths.map((path) => `${prefix}${path}`),
     ...models.map((entry) => `${prefix}/models/${entry.data.id}/`),

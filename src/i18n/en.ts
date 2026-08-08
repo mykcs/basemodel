@@ -50,28 +50,6 @@ export const en: Messages = {
   methodology: {
     pageTitle: 'Methodology', title: 'Data, missing values, and evidence levels', lede: 'Public pages state facts; the workbench explains what those facts mean for the current task.', sections: [{ title: 'Missing-value semantics', body: 'not_disclosed, not_applicable, not_reported, not_verified, conflicting_evidence, not_published, and unavailable are data states. They are never converted into false, zero, or a definite fact.' }, { title: 'Evidence levels', body: 'Field-level supports links prefer first-party sources; papers, code, and runtime records retain their source type and check date. Every retained unknown must be traceable to a source note or evidence_note.' }, { title: 'Recommendation boundary', body: 'Candidate ordering is task-scoped assistance, not a composite performance leaderboard. Explicit conflicts block; other unknowns remain conditional or pending verification.' }]
   },
-  home: {
-    pageTitle: 'A model-selection entry for researchers',
-    heroEyebrow: 'Agent Foundation Model Atlas',
-    heroTitle: 'Turn model selection into a verifiable research path.',
-    heroLede: 'A foundation-model map for agentic and self-evolution experiments. Read the supply layer first, then the paper-adoption layer; every unresolved field keeps an explicit evidence state.',
-    howToRead: 'How to read this map',
-    howToReadBody: 'The supply layer answers “what can I choose now”; the research-adoption layer answers “how papers actually use models”. Recommendations are rule-based filtering, not a performance ranking.',
-    browseAll: 'Browse all models →',
-    heroPrimaryCta: 'Filter by experiment setup →',
-    heroSecondaryCta: 'Browse models directly',
-    statsModels: 'model checkpoints',
-    statsVendors: 'vendors / providers',
-    statsPapers: 'paper records',
-    statsAria: 'Site statistics',
-    selectorKicker: 'Start here',
-    selectorTitle: 'Tell me your experiment setup',
-    selectorNote: 'Outputs candidates, not a fake ranking',
-    latestTitle: 'Recently recorded models',
-    viewExplorer: 'Open the model explorer →',
-    contractTitle: 'Evidence status is part of the product',
-    contractBody: 'Every model and paper record requires a first-party source URL and a last-checked date. Unverified, undisclosed, unreported, and unpublished fields are labeled separately instead of being guessed.',
-  },
   landscape: {
     kicker: 'Landscape',
     title: 'See the model supply layer at a glance',
