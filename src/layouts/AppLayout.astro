@@ -6,7 +6,7 @@ import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { CommandMenu } from '../components/navigation/CommandMenu.tsx';
 import '../styles/global.css';
 import '../styles/workspace.css';
-import { getMessages, isLocale, locales, switchLocalePath, baseUrl, type Locale } from '../i18n';
+import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 
 interface Props {
   title: string;
@@ -21,17 +21,41 @@ const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
 const siteOrigin = Astro.site ?? new URL('https://mykcs.github.io');
-const ogImage = new URL(`${base}og-cover.png`, siteOrigin).href;
+const hasCanonicalOverride = Boolean(process.env.PUBLIC_CANONICAL_SITE_URL);
+const canonicalOrigin = hasCanonicalOverride
+  ? new URL(process.env.PUBLIC_CANONICAL_SITE_URL!)
+  : siteOrigin;
+const canonicalBase = hasCanonicalOverride ? '/' : base;
+const isCloudflarePreview =
+  process.env.CF_PAGES === '1' &&
+  Boolean(process.env.CF_PAGES_BRANCH) &&
+  process.env.CF_PAGES_BRANCH !== 'main';
+const shouldNoIndex =
+  process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isCloudflarePreview;
 
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
-const canonicalUrl = new URL(switchLocalePath(locale, pathNoBase), siteOrigin).href;
-const alternateUrls = locales.map((loc) => ({ loc, href: new URL(switchLocalePath(loc, pathNoBase), siteOrigin).href }));
+const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
+const localePathWithoutDeploymentBase = (target: Locale) => {
+  const clean = localeNeutralPath.replace(/^\//, '');
+  return target === 'en' ? `/en/${clean}` : `/${clean}`;
+};
+const withCanonicalBase = (path: string) => {
+  const prefix = canonicalBase === '/' ? '' : canonicalBase.replace(/\/$/, '');
+  return `${prefix}${path}` || '/';
+};
+const canonicalUrl = new URL(withCanonicalBase(localePathWithoutDeploymentBase(locale)), canonicalOrigin).href;
+const alternateUrls = locales.map((loc) => ({
+  loc,
+  href: new URL(withCanonicalBase(localePathWithoutDeploymentBase(loc)), canonicalOrigin).href,
+}));
+const canonicalRoot = new URL(canonicalBase, canonicalOrigin).href;
+const ogImage = new URL(withCanonicalBase('/og-cover.png'), canonicalOrigin).href;
 const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
 const websiteJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: m.site.fullName,
-  url: new URL(base, siteOrigin).href,
+  url: canonicalRoot,
   description: m.site.defaultDescription,
   inLanguage: ['zh-CN', 'en'],
 });
@@ -51,13 +75,14 @@ const websiteJsonLd = JSON.stringify({
       }
     </script>
     <meta name="description" content={description} />
+    {shouldNoIndex && <meta name="robots" content="noindex,follow" />}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e" />
     <link rel="icon" href={`${base}favicon.svg`} />
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="sitemap" href={`${base}sitemap.xml`} />
+    {!shouldNoIndex && <link rel="sitemap" href={`${base}sitemap.xml`} />}
     {alternateUrls.map((alt) => <link rel="alternate" hreflang={alt.loc === 'zh' ? 'zh-CN' : 'en'} href={alt.href} />)}
-    <link rel="alternate" hreflang="x-default" href={new URL(switchLocalePath('zh', pathNoBase), siteOrigin).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(withCanonicalBase(localePathWithoutDeploymentBase('zh')), canonicalOrigin).href} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={m.site.fullName} />
     <meta property="og:title" content={fullTitle} />

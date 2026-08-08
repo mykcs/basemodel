@@ -5,9 +5,14 @@ export const GET: APIRoute = ({ site }) => {
     process.env.CF_PAGES === '1' &&
     Boolean(process.env.CF_PAGES_BRANCH) &&
     process.env.CF_PAGES_BRANCH !== 'main';
+  const shouldNoIndex =
+    process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isCloudflarePreview;
 
-  if (isCloudflarePreview) {
-    return new Response('User-agent: *\nDisallow: /\n', {
+  if (shouldNoIndex) {
+    // Do not use Disallow here. Cloudflare Preview responses already include
+    // X-Robots-Tag: noindex, and backup builds emit meta robots=noindex. Search
+    // engines need to be allowed to fetch pages in order to observe noindex.
+    return new Response('User-agent: *\nAllow: /\n', {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
