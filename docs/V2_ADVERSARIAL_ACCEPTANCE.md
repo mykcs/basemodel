@@ -50,7 +50,7 @@
 | R-17 | 账号登录/OAuth | EXTERNAL-BLOCKER | 缺少身份提供商、OAuth client/secret、回调域名 | 当前研究主路径不需要登录 |
 | R-18 | 团队实时协作 | EXTERNAL-BLOCKER | 缺少数据库、权限、冲突合并、实时服务与部署授权 | 当前单人研究决策可完成 |
 | R-19 | SSR/数据库后端 | EXTERNAL-BLOCKER | 发布契约是静态 Astro + GitHub Pages；切换需要部署目标、数据库与凭据 | 静态架构已足够支撑当前主路径 |
-| R-20 | 模型/论文/benchmark 全部外部事实逐字段核验 | EVIDENCE-UNKNOWN | 已运行 source-health、claim audit、vendor audit；当前 132 模型中 45 verified、87 partial，未验证字段保留 semantic state | 代码已防止猜测，但公开证据覆盖仍不完整 |
+| R-20 | 模型/论文/benchmark 全部外部事实逐字段核验 | EVIDENCE-UNKNOWN | 已运行 source-health、claim audit、vendor audit；当前 136 模型中 45 verified、91 partial，未验证字段保留 semantic state | 代码已防止猜测，但公开证据覆盖仍不完整 |
 | R-21 | Landscape 事实维度全部有来源 | EVIDENCE-UNKNOWN | 图表只消费目录字段、未知保留 unknown；外部事实覆盖与目录更新无法由静态 UI 完成 | 研究意义编码已完成，事实覆盖仍需来源 |
 | R-22 | current/flagship/open-weight/API/license 等全部事实核验 | EVIDENCE-UNKNOWN | 当前 claim audit 仍报告 coverage warnings；页面显示 checked/source/unknown，不提升为 confirmed | 只能在新增可靠一手来源后继续提升 |
 | R-23 | 生产外部服务授权 | EXTERNAL-BLOCKER | 缺少明确服务选择、账号、secret、域名/OAuth 授权 | 不以无授权的 SaaS 代码冒充完成 |
@@ -60,5 +60,7 @@
 ## 原始目的回看
 
 主路径现在仍是：Research Task → Candidates → Reasons/Risks → Evidence → Compare → Replacement Analysis → Decision Memo → Snapshot/change detection。每次检查必须回到同一个问题：新手研究员能否据此做出、解释、复核并在以后重建一次模型选择；如果只是增加数据库字段而没有进入这条路径，不算完成。
+
+本次数据补充还将 Qwen2.5 官方七尺寸矩阵（0.5B、1.5B、3B、7B、14B、32B、72B）纳入自动审计；新增 1.5B/3B 的 Base 与 Instruct 记录，许可证无法安全提升为确定事实的字段继续保留 `not_verified`。
 
 R-16～R-19、R-23 是缺少外部服务/凭据的明确边界；R-20～R-22 是已执行来源审计后仍存在的证据缺口。它们不是前端可以诚实“改代码变绿”的项目。
