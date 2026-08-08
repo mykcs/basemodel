@@ -13,7 +13,7 @@ Before changing deployment, CI, hosting, URL/base-path behavior, SEO output, rep
 
 If historical/migration wording conflicts with `dual-hosting-policy.md`, the dual-hosting policy takes precedence unless the repository owner explicitly changes that policy.
 
-Deployment status (2026-08-09): Cloudflare Pages Preview and Production are verified and the dashboard Build command is `npm run build:cloudflare`. Post-acceptance hardening stabilizes Cloudflare canonical identity, keeps GitHub Pages public but noindex, groups low-risk npm maintenance, suppresses unwanted major-update churn, and preserves a repository-owned validation path. Remaining account/UI hardening is documented explicitly rather than being silently assumed.
+Deployment status (2026-08-09): Cloudflare Pages Preview and Production are verified and the dashboard Build command is `npm run build:cloudflare`. Post-acceptance hardening stabilizes Cloudflare canonical identity, keeps GitHub Pages public but noindex, groups low-risk npm maintenance, suppresses unwanted major-update churn, and preserves a repository-owned validation path. The final Astro 7/provider hardening branch must receive one PR-linked Cloudflare Preview after all changes are present; agents must match the Cloudflare comment's commit SHA to the PR head before accepting that validation.
 
 Repository-level Agent entrypoint: [`/AGENTS.md`](../../AGENTS.md).
 
