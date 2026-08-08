@@ -1,4 +1,9 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+
+async function clickBelowStickyHeader(locator: Locator) {
+  await locator.evaluate((element) => element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }));
+  await locator.click();
+}
 
 test('workspace scores candidates into three buckets and renders reasons, risks, and a decision memo', async ({ page }) => {
   await page.goto('workspace/');
@@ -88,10 +93,10 @@ test('task resources, five-dimensional fit, and local project history are connec
   await expect(page).toHaveURL(/precision=int8/);
   await expect(page).toHaveURL(/batch=4/);
   const profile = page.locator('.candidate-fit-profile').first();
-  await profile.locator('summary').click();
+  await clickBelowStickyHeader(profile.locator('summary'));
   await expect(profile.locator('dd')).toHaveCount(5);
   await page.getByPlaceholder(/项目名称|Project name/).fill('LoRA smoke project');
-  await page.getByRole('button', { name: /保存项目|Save project/ }).click();
+  await clickBelowStickyHeader(page.getByRole('button', { name: /保存项目|Save project/ }));
   await expect(page.locator('.project-history [role="status"]')).toContainText(/项目已保存|Project saved/);
   await page.locator('.project-history-list select').selectOption({ index: 1 });
   await expect(page.locator('.project-history [role="status"]')).toContainText(/项目已恢复|Project restored/);
