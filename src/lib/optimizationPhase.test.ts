@@ -60,6 +60,16 @@ describe('optimization-phase regressions', () => {
     expect(source).toContain('initialSelection(models)');
   });
 
+  it('renders the model catalog deterministically before restoring browser state', () => {
+    const source = readSource('../components/ModelExplorer.tsx');
+    expect(source).not.toContain('if (!hydrated) return null');
+    expect(source).not.toContain("new URLSearchParams(typeof window === 'undefined'");
+    expect(source).toContain('useState<ModelFilters>({})');
+    expect(source).toContain('if (!urlStateReady) return;');
+    expect(source).toContain('const activeCandidates = hydrated ? selectedCandidates : []');
+    expect(source).toContain('const hasActiveTask = hydrated && hasMeaningfulResearchTask(task)');
+  });
+
   it('defers the global compare tray instead of hydrating it on initial load', () => {
     const layout = readSource('../layouts/AppLayout.astro');
     expect(layout).toContain('<CompareTray client:idle');

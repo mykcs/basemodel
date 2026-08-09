@@ -24,27 +24,17 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
   const task = useStore(researchTask);
   const selectedCandidates = useStore(candidateIds);
   const selectedCompare = useStore(compareIds);
-  const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
-  const booleanParam = (name: string) => parseOptionalBooleanParam(params.get(name));
-  const [filters, setFilters] = useState<ModelFilters>({
-    query: params.get('q') ?? '', vendor: params.get('vendor') ?? undefined, family: params.get('family') ?? undefined,
-    generation: params.get('generation') ?? undefined, architecture: (params.get('architecture') as ModelFilters['architecture']) ?? undefined,
-    checkpoint: (params.get('checkpoint') as ModelFilters['checkpoint']) ?? undefined, modality: (params.get('modality') as ModelFilters['modality']) ?? undefined,
-    openWeights: booleanParam('openWeights'), finetuning: booleanParam('finetuning'), rl: booleanParam('rl'), lora: booleanParam('lora'),
-    current: booleanParam('current'), baseCheckpoint: booleanParam('baseCheckpoint'), singleGpu: booleanParam('singleGpu'),
-    toolUse: booleanParam('toolUse'), coding: booleanParam('coding'), paperUse: booleanParam('paperUse'), resource: (params.get('resource') as ModelFilters['resource']) ?? undefined,
-    specialization: params.get('specialization') ?? undefined, minParams: params.get('minParams') ? Number(params.get('minParams')) : undefined,
-    maxParams: params.get('maxParams') ? Number(params.get('maxParams')) : undefined,
-  });
-  const [sort, setSort] = useState<'release' | 'parameters' | 'name'>((params.get('sort') as 'release' | 'parameters' | 'name') || 'release');
-  const [view, setView] = useState<ViewMode>((params.get('view') as ViewMode) || 'decision');
+  const [filters, setFilters] = useState<ModelFilters>({});
+  const [sort, setSort] = useState<'release' | 'parameters' | 'name'>('release');
+  const [view, setView] = useState<ViewMode>('decision');
   const [showFilters, setShowFilters] = useState(false);
-  const [filterDepth, setFilterDepth] = useState<'core' | 'advanced'>((params.get('depth') as 'core' | 'advanced') || 'core');
+  const [filterDepth, setFilterDepth] = useState<'core' | 'advanced'>('core');
+  const [urlStateReady, setUrlStateReady] = useState(false);
   const result = useMemo(() => sortModels(filterModels(models, filters, new Set(paperModelIds)), sort), [models, filters, paperModelIds, sort]);
   const taskFits = useMemo(() => {
-    if (!hasMeaningfulResearchTask(task)) return new Map<string, ResearchFit>();
+    if (!hydrated || !hasMeaningfulResearchTask(task)) return new Map<string, ResearchFit>();
     return new Map(models.map((model) => [model.id, evaluateModel(model, papers, task, models).fit]));
-  }, [models, papers, task]);
+  }, [hydrated, models, papers, task]);
   const vendors = [...new Set(models.map((model) => model.vendor))];
   const families = [...new Set(models.map((model) => model.family))];
   const generations = [...new Set(models.map((model) => model.generation))];
@@ -58,6 +48,28 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
   ];
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const booleanParam = (name: string) => parseOptionalBooleanParam(params.get(name));
+    setFilters({
+      query: params.get('q') ?? '', vendor: params.get('vendor') ?? undefined, family: params.get('family') ?? undefined,
+      generation: params.get('generation') ?? undefined, architecture: (params.get('architecture') as ModelFilters['architecture']) ?? undefined,
+      checkpoint: (params.get('checkpoint') as ModelFilters['checkpoint']) ?? undefined, modality: (params.get('modality') as ModelFilters['modality']) ?? undefined,
+      openWeights: booleanParam('openWeights'), finetuning: booleanParam('finetuning'), rl: booleanParam('rl'), lora: booleanParam('lora'),
+      current: booleanParam('current'), baseCheckpoint: booleanParam('baseCheckpoint'), singleGpu: booleanParam('singleGpu'),
+      toolUse: booleanParam('toolUse'), coding: booleanParam('coding'), paperUse: booleanParam('paperUse'), resource: (params.get('resource') as ModelFilters['resource']) ?? undefined,
+      specialization: params.get('specialization') ?? undefined, minParams: params.get('minParams') ? Number(params.get('minParams')) : undefined,
+      maxParams: params.get('maxParams') ? Number(params.get('maxParams')) : undefined,
+    });
+    const requestedSort = params.get('sort');
+    setSort(requestedSort === 'parameters' || requestedSort === 'name' ? requestedSort : 'release');
+    const requestedView = params.get('view');
+    setView(requestedView === 'data' || requestedView === 'timeline' ? requestedView : 'decision');
+    setFilterDepth(params.get('depth') === 'advanced' ? 'advanced' : 'core');
+    setUrlStateReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!urlStateReady) return;
     const next = new URLSearchParams();
     if (filters.query) next.set('q', filters.query); if (filters.vendor) next.set('vendor', filters.vendor); if (filters.family) next.set('family', filters.family); if (filters.generation) next.set('generation', filters.generation);
     if (filters.architecture) next.set('architecture', filters.architecture); if (filters.checkpoint) next.set('checkpoint', filters.checkpoint); if (filters.modality) next.set('modality', filters.modality);
@@ -68,7 +80,7 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     if (filterDepth !== 'core') next.set('depth', filterDepth);
     if (view !== 'decision') next.set('view', view);
     window.history.replaceState({}, '', `${window.location.pathname}${next.toString() ? `?${next}` : ''}`);
-  }, [filterDepth, filters, sort, view]);
+  }, [filterDepth, filters, sort, urlStateReady, view]);
 
   const update = (key: keyof ModelFilters, value: string | boolean | number | undefined) => setFilters((current) => ({ ...current, [key]: value === '' ? undefined : value }));
   const toggleQuickFilter = (key: BooleanFilterKey) => update(key, filters[key] === true ? undefined : true);
@@ -84,8 +96,9 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     const labels: Partial<Record<keyof ModelFilters, string>> = { query: m.explorer.searchLabel, vendor: m.explorer.vendor, family: m.explorer.family, generation: m.explorer.generation, architecture: m.explorer.architecture, checkpoint: m.explorer.checkpoint, modality: m.explorer.modality, openWeights: m.explorer.openWeights, finetuning: m.explorer.finetuning, rl: m.explorer.rl, lora: m.explorer.lora, current: m.explorer.current, baseCheckpoint: m.explorer.baseCheckpoint, singleGpu: m.explorer.singleGpu, toolUse: m.explorer.toolUse, coding: m.explorer.coding, paperUse: m.explorer.paperUse, resource: m.explorer.hardwareTier, specialization: m.explorer.specialization, minParams: m.explorer.minParams, maxParams: m.explorer.minParams };
     return `${labels[key] ?? key}: ${typeof value === 'boolean' ? (value ? m.explorer.yes : m.explorer.no) : String(value)}`;
   };
-
-  if (!hydrated) return null;
+  const activeCandidates = hydrated ? selectedCandidates : [];
+  const activeCompare = hydrated ? selectedCompare : [];
+  const hasActiveTask = hydrated && hasMeaningfulResearchTask(task);
 
   return <section className="explorer-shell">
     <div className="explorer-toolbar"><label className="search-field"><span className="sr-only">{m.explorer.searchLabel}</span><input value={filters.query ?? ''} onChange={(event) => update('query', event.target.value)} placeholder={m.explorer.searchPlaceholder} /></label><button className="button button-secondary filter-button" type="button" onClick={() => setShowFilters((value) => !value)} aria-expanded={showFilters}>{m.explorer.filter} {showFilters ? '↑' : '↓'}</button><label className="sort-field"><span>{m.explorer.sort}</span><select value={sort} onChange={(event) => setSort(event.target.value as typeof sort)}><option value="release">{m.explorer.sortRelease}</option><option value="parameters">{m.explorer.sortParams}</option><option value="name">{m.explorer.sortName}</option></select></label></div>
@@ -93,8 +106,8 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
     {activeChips.length > 0 && <div className="active-filter-chips" aria-label={m.explorer.activeFilters}>{activeChips.map(([key, value]) => <button type="button" className="active-filter-chip" key={String(key)} onClick={() => update(key, undefined)}>{filterLabel(key, value)} ×</button>)}<button type="button" className="text-button" onClick={clear}>{m.explorer.clearAll}</button></div>}
     {showFilters && <div className="filter-panel"><div className="filter-depth-toggle" role="group" aria-label={locale === 'zh' ? '筛选层级' : 'Filter depth'}><button type="button" className={filterDepth === 'core' ? 'is-active' : ''} onClick={() => setFilterDepth('core')}>{locale === 'zh' ? '核心筛选' : 'Core filters'}</button><button type="button" className={filterDepth === 'advanced' ? 'is-active' : ''} onClick={() => setFilterDepth('advanced')}>{locale === 'zh' ? '高级筛选' : 'Advanced filters'}</button></div><Select label={m.explorer.vendor} value={filters.vendor ?? ''} onChange={(value) => update('vendor', value)} options={[['', m.explorer.allVendors], ...vendors.map((value) => [value, value])]} /><Select label={m.explorer.family} value={filters.family ?? ''} onChange={(value) => update('family', value)} options={[['', m.explorer.allFamilies], ...families.map((value) => [value, value])]} /><Select label={m.explorer.generation} value={filters.generation ?? ''} onChange={(value) => update('generation', value)} options={[['', m.explorer.allGenerations], ...generations.map((value) => [value, value])]} /><Select label={m.explorer.architecture} value={filters.architecture ?? ''} onChange={(value) => update('architecture', value)} options={[['', m.explorer.allArchitectures], ['dense', architectureLabel('dense', locale)], ['moe', architectureLabel('moe', locale)], ['other', architectureLabel('other', locale)]]} /><Select label={m.explorer.checkpoint} value={filters.checkpoint ?? ''} onChange={(value) => update('checkpoint', value)} options={[['', m.explorer.allCheckpoints], ['base', checkpointLabel('base', locale)], ['instruct', checkpointLabel('instruct', locale)], ['thinking', checkpointLabel('thinking', locale)], ['coder', checkpointLabel('coder', locale)], ['vision', checkpointLabel('vision', locale)]]} /><Select label={m.explorer.modality} value={filters.modality ?? ''} onChange={(value) => update('modality', value)} options={modalityOptions} /><Select label={m.explorer.minParams} value={filters.minParams === undefined ? '' : String(filters.minParams)} onChange={(value) => update('minParams', value === '' ? undefined : Number(value))} options={paramOptions} /><Select label={m.explorer.specialization} value={filters.specialization ?? ''} onChange={(value) => update('specialization', value)} options={[['', m.explorer.allSpecializations], ...specializations.map((value) => [value, specializationLabel(value, locale)])]} />{filterDepth === 'advanced' && <><Select label={m.explorer.openWeights} value={filters.openWeights === undefined ? '' : String(filters.openWeights)} onChange={(value) => update('openWeights', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.finetuning} value={filters.finetuning === undefined ? '' : String(filters.finetuning)} onChange={(value) => update('finetuning', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.lora} value={filters.lora === undefined ? '' : String(filters.lora)} onChange={(value) => update('lora', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.rl} value={filters.rl === undefined ? '' : String(filters.rl)} onChange={(value) => update('rl', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.current} value={filters.current === undefined ? '' : String(filters.current)} onChange={(value) => update('current', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.baseCheckpoint} value={filters.baseCheckpoint === undefined ? '' : String(filters.baseCheckpoint)} onChange={(value) => update('baseCheckpoint', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.singleGpu} value={filters.singleGpu === undefined ? '' : String(filters.singleGpu)} onChange={(value) => update('singleGpu', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.toolUse} value={filters.toolUse === undefined ? '' : String(filters.toolUse)} onChange={(value) => update('toolUse', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.coding} value={filters.coding === undefined ? '' : String(filters.coding)} onChange={(value) => update('coding', value === '' ? undefined : value === 'true')} options={yesNo} /><Select label={m.explorer.paperUse} value={filters.paperUse === undefined ? '' : String(filters.paperUse)} onChange={(value) => update('paperUse', value === '' ? undefined : value === 'true')} options={haveNot} /><Select label={m.explorer.hardwareTier} value={filters.resource ?? ''} onChange={(value) => update('resource', value)} options={resourceOptions} /></>}</div>}
     <div className="explorer-view-tabs" role="tablist" aria-label={m.explorer.viewLabel}>{(['decision', 'data', 'timeline'] as ViewMode[]).map((item) => <button key={item} type="button" role="tab" aria-selected={view === item} className={view === item ? 'is-active' : ''} onClick={() => setView(item)}>{m.explorer.views[item]}</button>)}</div>
-    <div className="explorer-summary"><span>{m.explorer.showing} {result.length} {m.explorer.of} {models.length} {m.explorer.modelsUnit}</span><span className="muted">{paperModelIds.length} {m.explorer.withPapers}</span>{hasMeaningfulResearchTask(task) ? <span className="task-fit-summary">{m.explorer.taskFitLabel}</span> : <span className="muted">{m.explorer.taskFitPrompt}</span>}</div>
-    {view === 'decision' && <div className="model-grid">{result.map((model) => <ModelDecisionCard key={model.id} model={model} fit={taskFits.get(model.id)} locale={locale} m={m} inCandidate={selectedCandidates.includes(model.id)} inCompare={selectedCompare.includes(model.id)} onToggleCandidate={() => selectedCandidates.includes(model.id) ? removeCandidate(model.id) : addCandidate(model.id)} onToggleCompare={() => selectedCompare.includes(model.id) ? removeFromCompare(model.id) : addToCompare(model.id)} onQuickView={() => openQuickView(model.id)} paperAdopted={paperModelIds.includes(model.id)} />)}</div>}
+    <div className="explorer-summary"><span>{m.explorer.showing} {result.length} {m.explorer.of} {models.length} {m.explorer.modelsUnit}</span><span className="muted">{paperModelIds.length} {m.explorer.withPapers}</span>{hasActiveTask ? <span className="task-fit-summary">{m.explorer.taskFitLabel}</span> : <span className="muted">{m.explorer.taskFitPrompt}</span>}</div>
+    {view === 'decision' && <div className="model-grid">{result.map((model) => <ModelDecisionCard key={model.id} model={model} fit={taskFits.get(model.id)} locale={locale} m={m} inCandidate={activeCandidates.includes(model.id)} inCompare={activeCompare.includes(model.id)} onToggleCandidate={() => selectedCandidates.includes(model.id) ? removeCandidate(model.id) : addCandidate(model.id)} onToggleCompare={() => selectedCompare.includes(model.id) ? removeFromCompare(model.id) : addToCompare(model.id)} onQuickView={() => openQuickView(model.id)} paperAdopted={paperModelIds.includes(model.id)} />)}</div>}
     {view === 'data' && <DataView models={result} paperModelIds={new Set(paperModelIds)} locale={locale} m={m} />}
     {view === 'timeline' && <TimelineView models={result} paperModelIds={new Set(paperModelIds)} locale={locale} m={m} />}
     {result.length === 0 && <div className="empty-state"><strong>{m.explorer.emptyTitle}</strong><span>{m.explorer.emptyBody}</span></div>}<ModelQuickViewDialog models={models} m={m} locale={locale} />
