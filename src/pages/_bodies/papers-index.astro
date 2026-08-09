@@ -11,8 +11,8 @@ const paperEntries = await getCollection('papers');
 const modelEntries = await getCollection('models');
 const papers = paperEntries.map((entry) => entry.data);
 const models = modelEntries.map((entry) => entry.data);
-// The matrix only needs relation IDs and roles. Do not serialize the source
-// notes into the client island, where English prose would leak into zh HTML.
+// The matrix only needs relation IDs and roles. Strip relation notes so the
+// generated HTML stays focused and Chinese pages do not inherit English-only prose.
 const matrixPapers = papers.map((paper) => ({
   ...paper,
   models: paper.models.map(({ notes, ...use }) => use),
