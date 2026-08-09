@@ -1,5 +1,7 @@
 import crypto from 'node:crypto';
 
+// This helper is build-time only. Keeping one canonical algorithm here prevents
+// migrated raw JSON and Astro content ingestion from producing different source IDs.
 export type SourceWithOptionalId = { id?: string; url: string };
 
 export function normalizeSourceUrl(rawUrl: string): string {
