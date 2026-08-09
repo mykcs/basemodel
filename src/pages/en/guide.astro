@@ -6,10 +6,57 @@ import GuideContent from '../../components/GuideContent.astro';
 const m = getMessages('en');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_en ?? m.guide.steps;
-const title = guide?.title_en ?? m.guide.title;
-const lede = guide?.lede_en ?? m.guide.lede;
+const title = 'From papers to model choice';
+const lede = 'If you are new to agent research, start with SEED to understand why a paper uses a particular model, then compare present-day alternatives, and finally bring your own reproduction goal and hardware constraints into the workspace.';
 const note = 'Hardware tiers in model records remain coarse research metadata. The workbench VRAM calculator combines precision, context length, batch size, LoRA rank, and related assumptions to produce a heuristic planning estimate; it is not a measured hardware result or a guarantee that the configuration will run.';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
+const seedWorkspaceHref = '/en/workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1';
 ---
-<AppLayout title={m.guide.pageTitle} description={lede} locale="en"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} /></div></AppLayout>
+<AppLayout title={m.guide.pageTitle} description={lede} locale="en">
+  <div class="shell editorial-page guide-page">
+    <header class="page-header">
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+    </header>
+
+    <section class="guide-onboarding" aria-labelledby="guide-onboarding-title">
+      <div class="guide-onboarding-intro">
+        <p class="guide-overline">New to the site</p>
+        <h2 id="guide-onboarding-title">Start with three actions</h2>
+        <p>You do not need to memorize model names first. Learn why one paper chose one checkpoint, then add comparison dimensions as you need them.</p>
+      </div>
+      <ol class="guide-onboarding-path">
+        <li>
+          <div>
+            <h3>See how one real paper uses its models</h3>
+            <p>Start with SEED. Identify the actor, analyzer, training stages, and exact checkpoints. The goal is to understand each model's role in the method, not to memorize a conclusion.</p>
+            <a href="/en/papers/seed/">Open the SEED case →</a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Separate the paper's model from today's candidates</h3>
+            <p>A paper using Qwen2.5 does not mean a new experiment must copy it. Use the model explorer to check open weights, RL fit, scale, generation, and paper adoption.</p>
+            <a href="/en/models/?q=qwen2.5&rl=true&paperUse=true">See SEED-related models →</a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Bring in your own research constraints</h3>
+            <p>Strict reproduction, method reproduction, and a modern rerun require different decisions. Add GPU, VRAM, update method, runtime, and openness constraints before choosing candidates.</p>
+            <a href={seedWorkspaceHref}>Open the prefilled SEED workspace →</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <nav class="guide-shortcuts" aria-label="On this page">
+      <a href="#seed-tour-title">SEED site walkthrough</a>
+      <a href="#guide-concepts-title">Concept map</a>
+      <a href="#guide-glossary-title">Glossary</a>
+    </nav>
+
+    <GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} />
+  </div>
+</AppLayout>
