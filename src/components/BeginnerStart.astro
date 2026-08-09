@@ -6,37 +6,38 @@ const { locale } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
 const guideHref = localePath(locale, '/guide/');
-const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
+const seedPaperHref = localePath(locale, '/papers/seed/');
 const steps = [
   {
     number: '01',
-    title: t('先用 10 分钟补齐 Agent 心智模型', 'Build the agent mental model in 10 minutes'),
-    body: t('从你已经熟悉的 checkpoint、API、日志和指标，映射到 policy、tool、trajectory、reward；先看懂 Agent 到底怎么跑。', 'Map checkpoints, APIs, logs, and metrics you already know to policy, tools, trajectories, and rewards; first understand how an agent actually runs.'),
-    href: `${guideHref}#agent-primer-title`,
-    action: t('进入 Agent 101', 'Open Agent 101'),
+    title: t('先看懂 SEED 在 ALFWorld 里到底“跑”了什么', 'First see what SEED actually runs inside ALFWorld'),
+    body: t('用一个真实任务把 policy、action、environment、trajectory 和 reward 串起来；不先背 Agent 术语表。', 'Use one real task to connect policy, action, environment, trajectory, and reward instead of memorizing an agent glossary first.'),
+    href: `${guideHref}#agent-runtime-loop`,
+    action: t('看 Agent 运行循环', 'See the agent runtime loop'),
   },
   {
     number: '02',
-    title: t('再分清运行时和训练时', 'Then separate runtime from training'),
-    body: t('一次任务里通常不更新权重；Agentic RL 是收集很多 rollouts、评分、更新 policy，再进入下一轮。', 'Weights usually stay fixed inside one task; agentic RL collects rollouts, scores them, updates the policy, then repeats.'),
+    title: t('再看 SEED 为什么要做 hindsight skill + OPD / GRPO', 'Then see why SEED uses hindsight skills + OPD / GRPO'),
+    body: t('先分清“一次 episode 在运行”和“很多 rollouts 之后更新权重”，再理解稀疏 reward 为什么需要更密的学习信号。', 'Separate one episode running from weight updates across many rollouts, then understand why sparse rewards motivate a denser learning signal.'),
     href: `${guideHref}#agent-training`,
-    action: t('看运行 / 训练双循环', 'See the two loops'),
+    action: t('看运行 / 训练双循环', 'See runtime vs training'),
   },
   {
     number: '03',
-    title: t('最后用 SEED 把概念落到真实论文', 'Finally ground the concepts in SEED'),
-    body: t('看 hindsight-skill SFT、on-policy rollout、OPD + GRPO，再带着 GPU、开放权重和运行时约束进入工作台。', 'Connect hindsight-skill SFT, on-policy rollouts, and OPD + GRPO, then bring GPU, open-weight, and runtime constraints into the workspace.'),
-    href: seedWorkspaceHref,
-    action: t('打开预填 SEED 工作台', 'Open the prefilled SEED workspace'),
+    title: t('最后真正复现：ALFWorld → WebShop → 算力 → 验证', 'Then reproduce it: ALFWorld → WebShop → compute → validation'),
+    body: t('从官方环境命令开始，先低成本跑通链路；只有要与论文主表比较时，才把目标升级到 8×A800 80GB 的严格复现。', 'Start from the official environment commands and prove the chain cheaply; only move to the paper’s 8×A800 80GB topology when the goal is main-table comparison.'),
+    href: `${guideHref}#seed-reproduction`,
+    action: t('进入 SEED 复现实战', 'Open the SEED reproduction route'),
   },
 ];
 ---
 <section class="learning-start" aria-labelledby="learning-start-title">
   <div class="shell learning-start-inner">
     <div class="learning-start-copy">
-      <span class="learning-start-kicker">{t('懂机器学习，但不熟 Agent？从这里开始', 'Know ML, but new to agents? Start here')}</span>
-      <h2 id="learning-start-title">{t('先看懂 Agent 怎么运行和学习，再谈该选哪个基础模型', 'Understand how agents run and learn before choosing a backbone')}</h2>
-      <p>{t('这个站不是模型排行榜，也不会默认你完全不懂 AI。它假设你已经接触过 Transformer、微调、推理和 API，然后帮你补上 Agent、Agentic RL 和论文复现之间缺失的那一层。', 'This site is not a model leaderboard, and it does not assume you are new to AI. It assumes familiarity with Transformers, fine-tuning, inference, and APIs, then fills the missing layer between agents, agentic RL, and paper reproduction.')}</p>
+      <span class="learning-start-kicker">{t('新手只跟一条主线 · 复现 SEED', 'One beginner thread · reproduce SEED')}</span>
+      <h2 id="learning-start-title">{t('不要同时学十件事：用一篇论文把 Agent、模型、环境和 GPU 串起来', 'Do not learn ten disconnected things at once: use one paper to connect agents, models, environments, and GPUs')}</h2>
+      <p>{t('模型筛选、家族、对比、论文、工作台和数据状态都不是独立功能。先把目标固定为“复现 SEED”，每个功能只回答这条复现链上的一个问题；走完一次，再把方法迁移到其他论文。', 'Model filtering, families, comparisons, papers, the workspace, and data status are not separate features. Fix the goal as “reproduce SEED”; each feature answers one question on that path. Transfer the workflow only after completing it once.')}</p>
+      <a class="text-link" href={seedPaperHref}>{t('先看 SEED 论文案例', 'Open the SEED paper case')} →</a>
     </div>
     <ol class="learning-start-steps">
       {steps.map((step) => (
