@@ -24,6 +24,9 @@ jobs:
     name: Classify changes
     runs-on: ubuntu-24.04
     timeout-minutes: 3
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       scope: ${{ steps.change_scope.outputs.scope || steps.default_scope.outputs.scope }}
     steps:
@@ -48,8 +51,41 @@ jobs:
         env:
           BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
           HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
+          # The repository does not yet have a server-side main ruleset. Only a
+          # main push that GitHub can associate with an already-merged PR may use
+          # a cheaper docs/data tier. Direct pushes and API uncertainty stay full,
+          # so a newer low-risk push cannot cancel a code-bearing run and then
+          # validate the latest tree at a lower tier.
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            associated_prs="$(mktemp)"
+            if ! curl -L --fail --silent --show-error \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              --output "$associated_prs" \
+              "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/commits/${HEAD_SHA}/pulls"; then
+              echo "Could not verify merged-PR association for main push; keeping full validation." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            if ! node - "$associated_prs" <<'NODE'
+          const fs = require('node:fs');
+          const path = process.argv[2];
+          const prs = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const mergedToMain = Array.isArray(prs) && prs.some((pr) => Boolean(pr.merged_at) && pr.base?.ref === 'main');
+          process.exit(mergedToMain ? 0 : 1);
+          NODE
+            then
+              echo "Main push is not verifiably associated with a merged PR; keeping full validation." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            echo "Main push is associated with a merged PR; change-aware classification is allowed." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           # A new branch/repository push can expose an all-zero or unavailable
           # before SHA. Fail safe to the default full tier instead of guessing.
