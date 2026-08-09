@@ -6,10 +6,57 @@ import GuideContent from '../components/GuideContent.astro';
 const m = getMessages('zh');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_zh ?? m.guide.steps;
-const title = guide?.title_zh ?? m.guide.title;
-const lede = guide?.lede_zh ?? m.guide.lede;
+const title = '从论文到模型选择：基础模型入门';
+const lede = '如果你刚接触智能体研究，先用 SEED 看懂“论文为什么选这个模型”，再比较今天可用的替代模型，最后把自己的复现目标和硬件约束放进工作台。';
 const note = '模型记录里的硬件档位仍是粗粒度研究元数据；工作台的显存计算器会结合精度、上下文、batch、LoRA rank 等条件给出启发式规划估算，但它不是硬件实测或可运行保证。';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
+const seedWorkspaceHref = '/workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1';
 ---
-<AppLayout title={m.guide.pageTitle} description={lede} locale="zh"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} /></div></AppLayout>
+<AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
+  <div class="shell editorial-page guide-page">
+    <header class="page-header">
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+    </header>
+
+    <section class="guide-onboarding" aria-labelledby="guide-onboarding-title">
+      <div class="guide-onboarding-intro">
+        <p class="guide-overline">第一次来这里</p>
+        <h2 id="guide-onboarding-title">先完成三个动作</h2>
+        <p>不需要先记住所有模型名。先学会判断一篇论文为什么选某个 checkpoint，再逐步增加比较维度。</p>
+      </div>
+      <ol class="guide-onboarding-path">
+        <li>
+          <div>
+            <h3>先看懂一篇真实论文怎么用模型</h3>
+            <p>从 SEED 开始，识别 actor、analyzer、训练阶段和具体 checkpoint。目标不是背结论，而是看清模型在方法里承担什么角色。</p>
+            <a href="/papers/seed/">打开 SEED 案例 →</a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>再区分“论文原模型”和“今天的候选”</h3>
+            <p>论文使用 Qwen2.5 并不意味着今天的新实验也必须照搬。用模型浏览器检查开放权重、RL、规模、代际和论文采用关系。</p>
+            <a href="/models/?q=qwen2.5&rl=true&paperUse=true">查看 SEED 相关模型 →</a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>最后把你的研究条件放进去</h3>
+            <p>严格复现、方法复现和现代化重跑需要不同判断。把 GPU、显存、训练方式、运行时和开放性要求交给工作台，再决定候选。</p>
+            <a href={seedWorkspaceHref}>打开预填 SEED 工作台 →</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <nav class="guide-shortcuts" aria-label="本页导航">
+      <a href="#seed-tour-title">SEED 全站操作</a>
+      <a href="#guide-concepts-title">概念地图</a>
+      <a href="#guide-glossary-title">术语表</a>
+    </nav>
+
+    <GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} />
+  </div>
+</AppLayout>
