@@ -1,6 +1,6 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-09 16:39 +08:00**
+Last updated: **2026-08-09 16:43 +08:00**
 
 Status: **steady state complete — repository re-layout and final Cloudflare Build Watch Paths are both finished and confirmed**.
 
@@ -90,7 +90,15 @@ The migration-only exclusions for the former `e2e/*` and `demo-archive/*` paths 
 
 Do not exclude production source, `public/*`, `scripts/*`, dependency manifests, Astro/TypeScript configuration or `.node-version`.
 
-No test commit or extra Cloudflare build was intentionally used to validate the final dashboard cleanup; the settings were confirmed by saving and reading them back in the dashboard.
+No test commit or extra Cloudflare build was intentionally required to validate the dashboard cleanup; the final settings were confirmed by saving and reading them back in the dashboard.
+
+## Finalization incident note
+
+During the final documentation update on 2026-08-09, the remote GitHub tool was accidentally invoked once with a create-file action on `main`, creating an empty root file named `__probe_should_not_create__` in commit `18a0b1f`. It was immediately deleted in commit `f89d873`, whose message used `[CF-Pages-Skip]`.
+
+Current repository state is clean: the probe file is absent and no source/runtime file was modified. GitHub exposes no commit status for the accidental commit, so repository-side evidence cannot prove whether Cloudflare started a build before the deletion. Treat **one possible extra Pages build** as the conservative quota accounting assumption for this incident.
+
+This was an execution mistake, not part of the intended validation procedure. Future Agents must not create probe/no-op files to test GitHub or Cloudflare behavior.
 
 ## Current steady-state rule
 
