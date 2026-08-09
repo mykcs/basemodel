@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import BeginnerStart from '../components/BeginnerStart.astro';
+import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
 import ResearchMainline from '../components/ResearchMainline.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
@@ -19,6 +20,8 @@ interface Props {
   locale?: Locale;
 }
 
+type SeedArea = 'home' | 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
+
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const modelNames = Object.fromEntries((await getCollection('models')).map((entry) => [entry.data.id, entry.data.name]));
@@ -36,8 +39,17 @@ const shouldNoIndex =
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isHomePage = localeNeutralPath === '/';
-const showResearchMainline = localeNeutralPath !== '/404';
 const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
+const seedArea: SeedArea | null = isHomePage ? 'home'
+  : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
+  : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
+  : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
+  : /^\/papers\/?$/.test(localeNeutralPath) ? 'papers'
+  : /^\/workspace\/?$/.test(localeNeutralPath) ? 'workspace'
+  : /^\/data-status\/?$/.test(localeNeutralPath) ? 'data-status'
+  : /^\/methodology\/?$/.test(localeNeutralPath) ? 'methodology'
+  : /^\/landscape\/?$/.test(localeNeutralPath) ? 'landscape'
+  : null;
 const localePath = (target: Locale) => {
   const clean = localeNeutralPath.replace(/^\//, '');
   return target === 'en' ? `/en/${clean}` : `/${clean}`;
@@ -103,8 +115,9 @@ const websiteJsonLd = JSON.stringify({
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {showResearchMainline && <ResearchMainline locale={locale} path={localeNeutralPath} />}
+      <ResearchMainline locale={locale} path={localeNeutralPath} />
       {isHomePage && <BeginnerStart locale={locale} />}
+      {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
       <slot />
     </main>
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
