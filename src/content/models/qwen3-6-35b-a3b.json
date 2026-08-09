@@ -7,76 +7,16 @@
   "generation": "Qwen3.6",
   "release_date": "2026-04-16",
   "status": "active",
-  "checkpoint": {
-    "type": "vision",
-    "modalities": ["text", "image", "video"],
-    "specializations": ["general", "multilingual", "reasoning", "coding", "agentic", "multimodal"]
-  },
-  "architecture": {
-    "type": "moe",
-    "total_parameters_b": 35,
-    "active_parameters_b": 3,
-    "context_length": 262144,
-    "expert_count": 256,
-    "active_experts_per_token": 8
-  },
-  "openness": {
-    "weights_available": true,
-    "base_checkpoint_available": "not_verified",
-    "finetuning_allowed": true,
-    "derivative_release_allowed": true,
-    "commercial_use_allowed": true,
-    "license_name": "Apache-2.0",
-    "classification": "open_source",
-    "custom_license": false,
-    "derivative_distribution": "allowed",
-    "commercial_use": "allowed"
-  },
-  "access": {
-    "weights_status": "released",
-    "weights_released_at": "2026-04-16",
-    "weights_url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
-    "api_status": "available",
-    "api_model_ids": ["qwen3.6-35b-a3b"]
-  },
-  "research": {
-    "suitable_for_inference": true,
-    "suitable_for_lora": "not_verified",
-    "suitable_for_sft": "not_verified",
-    "suitable_for_rl": "not_verified",
-    "transformers_support": true,
-    "vllm_support": true,
-    "sglang_support": true,
-    "verl_recipe_available": "not_verified"
-  },
-  "hardware": {
-    "inference_tier": "not_verified",
-    "lora_tier": "not_verified",
-    "full_sft_tier": "not_verified",
-    "rl_tier": "not_verified"
-  },
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "video"], "specializations": ["general", "multilingual", "reasoning", "coding", "agentic", "multimodal"]},
+  "architecture": {"type": "moe", "total_parameters_b": 35, "active_parameters_b": 3, "context_length": 262144, "expert_count": 256, "active_experts_per_token": 8},
+  "openness": {"weights_available": true, "base_checkpoint_available": "not_verified", "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Apache-2.0", "classification": "open_weight", "custom_license": false, "derivative_distribution": "allowed", "commercial_use": "allowed"},
+  "access": {"weights_status": "released", "weights_released_at": "2026-04-16", "weights_url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B", "api_status": "available", "api_model_ids": ["qwen3.6-35b-a3b"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "not_verified"},
+  "hardware": {"inference_tier": "not_verified", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified"},
   "sources": [
-    {
-      "url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
-      "type": "official_model_card",
-      "checked_at": "2026-08-10",
-      "evidence_note": "Qwen's first-party model card confirms a post-trained multimodal MoE with 35B total / 3B activated parameters, 256 experts with 8 routed plus one shared expert, 262,144 native context (extensible to 1,010,000), Apache-2.0 weights, and Transformers/vLLM/SGLang compatibility.",
-      "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "architecture.expert_count", "architecture.active_experts_per_token", "openness.weights_available", "openness.license_name", "access.weights_status", "research.transformers_support", "research.vllm_support", "research.sglang_support", "research.suitable_for_inference", "status"]
-    },
-    {
-      "url": "https://github.com/QwenLM/Qwen3.6",
-      "type": "official_code",
-      "checked_at": "2026-08-10",
-      "evidence_note": "Qwen's official Qwen3.6 repository records the April 16, 2026 open-weight release and states that all Qwen3.6 open-weight models use Apache 2.0.",
-      "supports": ["release_date", "openness.license_name", "access.weights_released_at"]
-    },
-    {
-      "url": "https://www.alibabacloud.com/help/en/model-studio/vision-model",
-      "type": "official_api_docs",
-      "checked_at": "2026-08-10",
-      "evidence_note": "Alibaba Cloud Model Studio lists qwen3.6-35b-a3b as its own API model ID. Qwen3.6 Flash is a separate hosted model and is not treated as an alias of the open 35B checkpoint.",
-      "supports": ["access.api_status", "access.api_model_ids"]
-    }
+    {"url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Qwen's first-party card confirms the released Apache-2.0 multimodal MoE checkpoint: 35B total / 3B activated parameters, 256 experts with 8 routed per token, 262,144 native context and Transformers/vLLM/SGLang support. The site uses open_weight for released model weights; Apache-2.0 permits commercial use.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "architecture.expert_count", "architecture.active_experts_per_token", "openness.weights_available", "openness.license_name", "openness.classification", "openness.commercial_use", "access.weights_status", "research.suitable_for_inference", "research.transformers_support", "research.vllm_support", "research.sglang_support"]},
+    {"url": "https://github.com/QwenLM/Qwen3.6", "type": "official_code", "checked_at": "2026-08-10", "evidence_note": "Qwen's official Qwen3.6 repository records the April 16, 2026 open-weight release.", "supports": ["release_date", "access.weights_released_at"]},
+    {"url": "https://www.alibabacloud.com/help/en/model-studio/vision-model", "type": "official_api_docs", "checked_at": "2026-08-10", "evidence_note": "Model Studio lists qwen3.6-35b-a3b as its own API model ID; Qwen3.6 Flash is a separate hosted model.", "supports": ["access.api_status", "access.api_model_ids"]}
   ],
   "data_status": "verified"
 }
