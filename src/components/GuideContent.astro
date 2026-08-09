@@ -1,20 +1,23 @@
 ---
 import { localePath, type Locale } from '../i18n';
-
 interface Concept { id: string; title_zh: string; title_en: string; body_zh: string; body_en: string; model_ids: string[]; links?: Array<{ label_zh: string; label_en: string; href: string }> }
 interface Glossary { term_zh: string; term_en: string; definition_zh: string; definition_en: string }
 interface Props { locale: Locale; concepts: Concept[]; glossary: Glossary[]; steps: string[]; note: string }
 const { locale, concepts, glossary, steps, note } = Astro.props;
 const isZh = locale === 'zh';
+const byId = new Map(concepts.map((concept) => [concept.id, concept]));
+const chapters = [
+  { id: 'identity', title: isZh ? '1. 我到底在选什么？' : '1. What exactly am I choosing?', lede: isZh ? '先区分家族、代际、checkpoint、revision 和架构，避免只写一个模糊的模型名。' : 'Separate family, generation, checkpoint, revision, and architecture before writing a vague model name.', concepts: ['base-instruct-thinking', 'checkpoint', 'architecture-scale'] },
+  { id: 'access', title: isZh ? '2. 我到底能不能使用它？' : '2. Can I actually use it?', lede: isZh ? 'API 可调用、权重可下载、许可证允许训练和衍生发布，是不同问题。' : 'API access, downloadable weights, training rights, and derivative distribution are different questions.', concepts: ['open-weight-source', 'api-weight-license', 'evidence-status'] },
+  { id: 'training', title: isZh ? '3. 我的实验会怎么改变模型？' : '3. How will my experiment change the model?', lede: isZh ? 'Inference、LoRA、SFT、RL 和外部记忆自进化需要完全不同的模型与资源条件。' : 'Inference, LoRA, SFT, RL, and external-memory evolution require different model and resource conditions.', concepts: ['lora-sft-rl', 'adaptation-evolution'] },
+  { id: 'reproduction', title: isZh ? '4. 我怎么保证论文可比？' : '4. How do I preserve paper comparability?', lede: isZh ? '严格复现、方法复现和现代化重跑的成功标准不同；证据与快照决定结论能否以后重建。' : 'Strict reproduction, method reproduction, and modern reruns have different success criteria; evidence and snapshots make decisions reconstructable.', concepts: ['research-paths', 'paper-learning-template', 'reproducibility-fields'] },
+].map((chapter) => ({ ...chapter, items: chapter.concepts.map((id) => byId.get(id)).filter((item): item is Concept => Boolean(item)) }));
 ---
 <ol class="guide-steps">{steps.map((step, index) => <li><span>{index + 1}</span><p>{step}</p></li>)}</ol>
 <section class="guide-concept-map" aria-labelledby="guide-concepts-title">
-  <div class="section-heading"><div><span class="section-kicker">{isZh ? '概念地图' : 'Concept map'}</span><h2 id="guide-concepts-title">{isZh ? '先建立模型选择的共同语言' : 'Build a shared language for model choice'}</h2></div><p class="muted">{isZh ? '从概念进入真实模型与研究任务。' : 'Move from concepts to real models and research tasks.'}</p></div>
-  <nav class="concept-map-nav" aria-label={isZh ? '概念地图导航' : 'Concept map navigation'}>{concepts.map((concept) => <a href={`#concept-${concept.id}`}>{isZh ? concept.title_zh : concept.title_en}</a>)}</nav>
-  <style>
-    .concept-map-nav { display: flex; flex-wrap: wrap; gap: 8px; }
-  </style>
-  <div class="concept-map-grid">{concepts.map((concept) => <article id={`concept-${concept.id}`} class="concept-card"><h3>{isZh ? concept.title_zh : concept.title_en}</h3><p>{isZh ? concept.body_zh : concept.body_en}</p>{concept.model_ids.length > 0 && <div class="concept-model-links"><span>{isZh ? '真实模型示例' : 'Model examples'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}{concept.links?.length ? <div class="concept-model-links"><span>{isZh ? '继续研究' : 'Continue research'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{isZh ? link.label_zh : link.label_en}</a>)}</div> : null}</article>)}</div>
+  <div class="section-heading"><div><span class="section-kicker">{isZh ? '学习路径' : 'Learning path'}</span><h2 id="guide-concepts-title">{isZh ? '先建立一套能用于研究决策的心智模型' : 'Build a mental model you can use for research decisions'}</h2></div><p class="muted">{isZh ? '不是背术语：每一章都要能把你带回真实模型、论文或工作台。' : 'Do not memorize terms; each chapter should bring you back to real models, papers, or the workbench.'}</p></div>
+  <nav class="concept-map-nav" aria-label={isZh ? '学习章节导航' : 'Learning chapter navigation'}>{chapters.map((chapter) => <a href={`#guide-${chapter.id}`}>{chapter.title}</a>)}</nav>
+  <div class="guide-chapters">{chapters.map((chapter) => <section class="guide-chapter" id={`guide-${chapter.id}`}><header><h2>{chapter.title}</h2><p>{chapter.lede}</p></header><div class="guide-concept-list">{chapter.items.map((concept) => <article id={`concept-${concept.id}`} class="guide-concept-row"><div><h3>{isZh ? concept.title_zh : concept.title_en}</h3><p>{isZh ? concept.body_zh : concept.body_en}</p></div><div class="guide-concept-actions">{concept.model_ids.length > 0 && <div class="concept-model-links"><span>{isZh ? '真实模型' : 'Real models'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}{concept.links?.length ? <div class="concept-model-links"><span>{isZh ? '继续研究' : 'Continue'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{isZh ? link.label_zh : link.label_en}</a>)}</div> : null}</div></article>)}</div></section>)}</div>
 </section>
-<section class="guide-glossary" aria-labelledby="guide-glossary-title"><div class="section-heading"><div><span class="section-kicker">{isZh ? '术语表' : 'Glossary'}</span><h2 id="guide-glossary-title">{isZh ? '在页面内解释关键术语' : 'Explain key terms in place'}</h2></div></div><div class="glossary-list">{glossary.map((item) => <details><summary>{isZh ? item.term_zh : item.term_en}</summary><p>{isZh ? item.definition_zh : item.definition_en}</p></details>)}</div></section>
+<section class="guide-glossary" aria-labelledby="guide-glossary-title"><div class="section-heading"><div><span class="section-kicker">{isZh ? '按需查询' : 'Reference'}</span><h2 id="guide-glossary-title">{isZh ? '只在需要时展开术语' : 'Open terminology only when you need it'}</h2></div></div><div class="glossary-list">{glossary.map((item) => <details><summary>{isZh ? item.term_zh : item.term_en}</summary><p>{isZh ? item.definition_zh : item.definition_en}</p></details>)}</div></section>
 <p class="callout">{note}</p>
