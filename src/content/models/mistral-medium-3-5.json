@@ -1,20 +1,21 @@
 {
   "id": "mistral-medium-3-5",
   "name": "Mistral Medium 3.5",
-  "official_name": "Mistral Medium 3.5",
+  "official_name": "Mistral Medium 3.5 128B",
   "vendor": "Mistral AI",
   "family": "Mistral",
   "generation": "Mistral Medium 3.5",
   "release_date": "2026-04-28",
   "status": "active",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["agentic", "coding", "multimodal", "function-calling"]},
-  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 262144, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
-  "openness": {"weights_available": true, "base_checkpoint_available": "not_verified", "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "Modified MIT", "classification": "open_weight", "custom_license": true, "derivative_distribution": "conditional", "commercial_use": "conditional", "conditions": ["modified_mit_terms_apply"]},
-  "access": {"weights_status": "released", "weights_released_at": "2026-04-28", "weights_url": "https://huggingface.co/mistralai/Mistral-Medium-3.5", "api_status": "available", "api_model_ids": ["mistral-medium-3-5"]},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": "not_verified", "vllm_support": "not_verified", "sglang_support": "not_verified", "verl_recipe_available": "not_verified"},
-  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["reasoning", "agentic", "coding", "multimodal", "function-calling"]},
+  "architecture": {"type": "dense", "total_parameters_b": 128, "active_parameters_b": 128, "context_length": 262144, "expert_count": "not_applicable", "active_experts_per_token": "not_applicable"},
+  "openness": {"weights_available": true, "base_checkpoint_available": "not_verified", "finetuning_allowed": true, "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "Modified MIT", "classification": "open_weight", "custom_license": true, "derivative_distribution": "conditional", "commercial_use": "conditional", "conditions": ["modified_mit_large_revenue_exception"]},
+  "access": {"weights_status": "released", "weights_released_at": "2026-04-28", "weights_url": "https://huggingface.co/mistralai/Mistral-Medium-3.5-128B", "api_status": "available", "api_model_ids": ["mistral-medium-3-5"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": true, "suitable_for_rl": "not_verified", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "not_verified"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "not_verified", "full_sft_tier": "not_verified", "rl_tier": "not_verified"},
   "sources": [
-    {"url": "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Mistral's official model card identifies Mistral Medium 3.5 as an April 28, 2026 frontier-class multimodal model for agentic and coding workloads, released as open weights under a Modified MIT license, with 256k context and API ID mistral-medium-3-5. The card does not by itself establish every downstream license permission, so those booleans remain not_verified.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "checkpoint.specializations", "architecture.context_length", "openness.weights_available", "openness.license_name", "access.weights_status", "access.weights_released_at", "access.api_status", "access.api_model_ids", "status"]}
+    {"url": "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Mistral's official product model card identifies Mistral Medium 3.5 as an April 28, 2026 frontier-class multimodal model for agentic and coding workloads, released as open weights under a Modified MIT license, with 256k context and API ID mistral-medium-3-5.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "checkpoint.specializations", "architecture.context_length", "openness.weights_available", "openness.license_name", "access.weights_status", "access.weights_released_at", "access.api_status", "access.api_model_ids", "status"]},
+    {"url": "https://huggingface.co/mistralai/Mistral-Medium-3.5-128B", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Mistral's first-party weight repository confirms a dense 128B model with 256k context, text/image input, Modified MIT licensing, local deployment through vLLM, SGLang and Transformers, and fine-tuning paths through Axolotl and Unsloth. Its vLLM reference command uses tensor parallelism across eight devices.", "supports": ["official_name", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.expert_count", "architecture.active_experts_per_token", "access.weights_url", "openness.finetuning_allowed", "research.suitable_for_sft", "research.transformers_support", "research.vllm_support", "research.sglang_support", "hardware.inference_tier"]}
   ],
   "data_status": "verified"
 }
