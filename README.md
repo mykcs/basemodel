@@ -4,6 +4,8 @@
 
 在线访问：<https://mykcs.github.io/basemodel/>
 
+Agent 交接上下文：[`docs/agent-context/`](./docs/agent-context/)。
+
 ## MVP 能做什么
 
 - 首页实验选择器：按实验方式、任务、资源和目标给出规则筛选候选；候选不是性能排名。
