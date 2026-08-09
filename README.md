@@ -4,6 +4,18 @@
 
 在线访问：<https://basemodel.pages.dev/>
 
+## Agent 接管入口
+
+新的 Coding Agent 接管仓库时，不需要重新推导部署架构。按下面顺序阅读即可：
+
+1. [`AGENTS.md`](./AGENTS.md)
+2. [`docs/agents/deployment-policy.md`](./docs/agents/deployment-policy.md)
+3. [`docs/agents/repository-map.md`](./docs/agents/repository-map.md)
+4. [`docs/agents/cloudflare-pages-deployment.md`](./docs/agents/cloudflare-pages-deployment.md)
+5. `package.json` 与当前任务直接相关的源文件
+
+其中 `deployment-policy.md` 是当前部署架构的权威规则；历史迁移文档只用于解释过去发生过什么，不应被用来恢复 GitHub Actions 或 GitHub Pages。
+
 ## 架构
 
 长期发布链路是：
@@ -23,6 +35,21 @@ npm run build:cloudflare
 该命令先执行 `npm run verify:deploy`，再运行 Astro production build。`verify:deploy` 包含 Astro/TypeScript check、数据/关系校验、semantic/claims/freshness audit 和 Vitest。这些检查不依赖外部网络，失败会阻止 Preview/Production 发布。
 
 完整 Chromium + WebKit Playwright E2E、vendor catalog audit、URL/source-health probe 仍保留在仓库中，但不在每次 Cloudflare build 自动执行；重大 UI、routing、i18n、Astro major 或浏览器兼容改动时由 Agent/本地按需运行。
+
+## Cloudflare 免费额度怎么理解
+
+当前项目是静态 Astro 站点。按 Cloudflare Pages 2026-08-09 的官方规则：**静态资源请求免费且不限量，但 Free plan 仍有每月 500 次 Pages builds 的构建额度**。
+
+因此：
+
+```text
+用户访问静态页面 -> 不消耗 Pages build 次数
+Git push 触发 Preview/Production build -> 会消耗 Pages build 次数
+```
+
+所以“静态网站”意味着正常访问量不需要像动态 Functions 那样担心请求额度，但并不意味着构建额度与项目无关。Agent 应批量修改、减少无意义 push；中间提交如果明确不需要部署，可以使用 Cloudflare 支持的 `[CF-Pages-Skip]` commit 前缀，但最终需要验收的 PR head 必须真正完成一次 Preview build。
+
+官方限制可能变化，未来做成本/配额判断时应重新查看 Cloudflare 官方 Pages limits/pricing 文档。若以后加入 Pages Functions、Workers、SSR 或服务端 API，也必须重新评估成本模型。
 
 ## 本地运行与验证
 
