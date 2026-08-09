@@ -1,14 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { researchTask } from '../../stores/researchTask';
+import { researchTask, type ResearchMode, type ResearchTask } from '../../stores/researchTask';
 import { analyzeReplacement } from '../../lib/research/replacement';
 import { scoreModels } from '../../lib/researchEngine';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
 
-interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages }
+interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages; locale?: 'zh' | 'en' }
+type Verdict = 'recommended' | 'conditional' | 'not_recommended' | 'unknown';
 
-export function SubstituteLab({ models, papers, m }: Props) {
+function replacementVerdict(base: AtlasModel, rep: AtlasModel, task: ResearchTask, papers: AtlasPaper[], mode: ResearchMode): Verdict {
+  const impacts = analyzeReplacement(base, rep, { ...task, mode }, papers).filter((impact) => impact.severity !== 'none');
+  if (impacts.some((impact) => impact.severity === 'high')) return 'not_recommended';
+  if (impacts.some((impact) => impact.severity === 'medium')) return 'conditional';
+  if (impacts.some((impact) => impact.severity === 'unknown')) return mode === 'modern' ? 'conditional' : 'unknown';
+  return 'recommended';
+}
+
+export function SubstituteLab({ models, papers, m, locale = 'zh' }: Props) {
   const task = useStore(researchTask);
   const [baseId, setBaseId] = useState('');
   useEffect(() => {
@@ -28,20 +37,35 @@ export function SubstituteLab({ models, papers, m }: Props) {
 
   return <section className="substitute-lab" aria-label={m.research.substitute.title}>
     <h2>{m.research.substitute.title}</h2>
+    <p className="muted">{locale === 'zh' ? '每个替代候选同时给出严格复现、方法复现和现代化重跑三种判断；下方明细仍按当前研究任务模式解释影响。' : 'Each substitute is judged for strict reproduction, method reproduction, and a modern rerun. The detailed impact table still follows the current task mode.'}</p>
     <div className="field"><label htmlFor="substitute-base">{m.research.substitute.selectBase}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
-    {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} m={m} />)}</div>}
+    {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} task={task} papers={papers} m={m} locale={locale} />)}</div>}
   </section>;
 }
 
-function SubstituteCard({ base, rep, impacts, m }: { base: AtlasModel; rep: AtlasModel; impacts: ReturnType<typeof analyzeReplacement>; m: Messages }) {
+function SubstituteCard({ base, rep, impacts, task, papers, m, locale }: { base: AtlasModel; rep: AtlasModel; impacts: ReturnType<typeof analyzeReplacement>; task: ResearchTask; papers: AtlasPaper[]; m: Messages; locale: 'zh' | 'en' }) {
   const visible = impacts.filter((impact) => impact.severity !== 'none' || impact.effect === 'unknown');
   const valueLabel = (value: string) => value.split('|').map((part) => {
     if (part === 'true') return m.format.yes;
     if (part === 'false') return m.format.no;
     return m.format.semanticStatus[part as keyof Messages['format']['semanticStatus']] ?? part;
   }).join(' · ');
+  const modeLabels: Record<ResearchMode, string> = locale === 'zh'
+    ? { strict: '严格复现', method: '方法复现', modern: '现代化重跑', new: '新实验' }
+    : { strict: 'Strict', method: 'Method', modern: 'Modern rerun', new: 'New experiment' };
+  const verdictLabels: Record<Verdict, string> = locale === 'zh'
+    ? { recommended: '适合', conditional: '条件适合', not_recommended: '不建议', unknown: '证据不足' }
+    : { recommended: 'Suitable', conditional: 'Conditional', not_recommended: 'Not recommended', unknown: 'Insufficient evidence' };
+  const modes: ResearchMode[] = ['strict', 'method', 'modern'];
+
   return <article className="substitute-card">
     <h3>{base.name} → {rep.name}</h3>
+    <div className="replacement-mode-verdicts" aria-label={locale === 'zh' ? '三种复现模式替换判断' : 'Replacement verdicts by reproduction mode'}>
+      {modes.map((mode) => {
+        const verdict = replacementVerdict(base, rep, task, papers, mode);
+        return <div className={`replacement-verdict verdict-${verdict}`} key={mode}><span>{modeLabels[mode]}</span><strong>{verdictLabels[verdict]}</strong></div>;
+      })}
+    </div>
     <p className="muted">{m.research.substitute.modeImpact}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
     <table className="substitute-table"><thead><tr><th scope="col">{m.research.substitute.field}</th><th scope="col">{m.research.substitute.original}</th><th scope="col">{m.research.substitute.replacement}</th><th scope="col">{m.research.substitute.impact}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
   </article>;
