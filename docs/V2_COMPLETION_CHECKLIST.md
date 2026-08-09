@@ -1,6 +1,6 @@
 # Basemodel V2 completion checklist
 
-This is the release gate for the V2 research decision workbench. A checked item must have automated evidence from `scripts/audit-v2-completion.ts` or a recorded browser/build check.
+This is the release gate for the V2 research decision workbench. A checked item must have automated evidence from `scripts/audit-v2-completion.ts`, `scripts/audit-v2-adversarial.ts`, the unit/E2E suite, or a recorded browser/build check.
 
 The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLETION_MATRIX.md`](./V2_PRODUCT_COMPLETION_MATRIX.md). This narrow release gate must not be read as proof that external cloud/account/team capabilities or unavailable source facts are complete.
 
@@ -28,6 +28,7 @@ The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLET
 - [x] V2-DATA-002 — Guide content is read from the guides collection in both locales.
 - [x] V2-DATA-003 — Semantic missing-value states remain explicit and are not coerced to false or zero.
 - [x] V2-DATA-004 — License risk and evidence-quality signals remain visible in decision output.
+- [x] V2-DATA-005 — Content ingestion guarantees deterministic source IDs from canonical URLs while preserving explicit source IDs; the migration script uses the same algorithm.
 
 ## Visual and accessibility quality
 
@@ -37,8 +38,23 @@ The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLET
 - [x] V2-A11Y-003 — Landscape data points remain keyboard reachable.
 - [x] V2-I18N-001 — UI changes are synchronized in Chinese and English.
 
+## 2026-08-09 adversarial closeout
+
+- [x] V2-CLOSEOUT-001 — A model revision is copyable only when a source carries a real `revision` and explicitly supports `reproducibility.model_revision`; release dates cannot be fabricated into revisions.
+- [x] V2-CLOSEOUT-002 — Paper method summaries are semantically separate from model-selection rationale; missing evidence-checked summaries remain visibly unverified.
+- [x] V2-CLOSEOUT-003 — Paper Explorer has dedicated Benchmark and Checkpoint filters in addition to role/family/code/weight/reproduction filters.
+- [x] V2-CLOSEOUT-004 — Model Quick View is shared at AppLayout level outside the local model/workspace hosts and loads one model on demand from a static per-model JSON route.
+- [x] V2-CLOSEOUT-005 — Model detail has research-first section navigation plus human-readable unresolved facts with research-impact explanations.
+- [x] V2-CLOSEOUT-006 — Family history notices are based on non-current models actually used by papers, not whether the current flagship appears in a paper.
+- [x] V2-CLOSEOUT-007 — Paper model roles and family checkpoints can open Quick View and full model details.
+- [x] V2-CLOSEOUT-008 — Substitute Lab simultaneously reports strict-reproduction, method-reproduction, and modern-rerun verdicts.
+- [x] V2-CLOSEOUT-009 — Mobile Compare uses dedicated per-field comparison cards and does not depend on the desktop wide table.
+- [x] V2-CLOSEOUT-010 — Guides and model detail distinguish catalog hardware tiers, heuristic VRAM planning estimates, and measured hardware facts.
+- [x] V2-CLOSEOUT-011 — Data-issue reporting opens a prefilled GitHub issue with model/page/source context.
+- [x] V2-CLOSEOUT-012 — The closeout invariants are represented in Vitest, Playwright, and the adversarial audit so future Agents cannot satisfy the gate by merely creating unused components.
+
 ## Release verification
 
-- [x] V2-VERIFY-001 — `check`, `validate`, `audit`, unit tests, build, E2E, and this audit pass.
-- [x] V2-VERIFY-002 — Cloudflare-root static output and root-path links build successfully; `/basemodel/` is no longer a maintained deployment contract.
+- [x] V2-VERIFY-001 — `check`, `validate`, `audit`, unit tests, build, E2E, and the V2 completion/adversarial audits are the required release gate.
+- [x] V2-VERIFY-002 — Cloudflare-root static output and root-path links are the deployment contract; `/basemodel/` is no longer maintained.
 - [x] V2-FACTS-001 — Facts that cannot be verified from repository evidence remain explicitly marked as unknown.

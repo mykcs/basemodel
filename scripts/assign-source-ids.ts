@@ -1,24 +1,15 @@
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { normalizeSourceUrl, stableSourceId } from '../src/lib/sourceIds.node';
 
 type Source = { id?: string; url: string } & Record<string, unknown>;
 type RecordData = { file: string; data: { sources?: Source[] } & Record<string, unknown> };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const write = process.argv.includes('--write');
+const check = process.argv.includes('--check');
 
-const normalizeUrl = (rawUrl: string) => {
-  const url = new URL(rawUrl);
-  url.hash = '';
-  url.hostname = url.hostname.toLowerCase();
-  if (url.pathname.length > 1) url.pathname = url.pathname.replace(/\/+$/, '');
-  url.searchParams.sort();
-  return url.toString();
-};
-
-const stableSourceId = (url: string) => `src_${crypto.createHash('sha1').update(normalizeUrl(url)).digest('hex').slice(0, 12)}`;
 const readRecords = (directory: string): RecordData[] => fs.readdirSync(directory).filter((file) => file.endsWith('.json')).map((file) => ({
   file: path.join(directory, file),
   data: JSON.parse(fs.readFileSync(path.join(directory, file), 'utf8')) as RecordData['data'],
@@ -34,10 +25,10 @@ const collisions = new Map<string, string>();
 for (const record of records) {
   let changed = false;
   for (const source of record.data.sources ?? []) {
-    const id = stableSourceId(source.url);
-    const normalized = normalizeUrl(source.url);
+    const id = source.id ?? stableSourceId(source.url);
+    const normalized = normalizeSourceUrl(source.url);
     const previous = collisions.get(id);
-    if (previous && previous !== normalized) throw new Error(`Hash collision for ${id}: ${previous} vs ${normalized}`);
+    if (previous && previous !== normalized) throw new Error(`Source-ID collision for ${id}: ${previous} vs ${normalized}`);
     collisions.set(id, normalized);
     if (!source.id) {
       missing += 1;
@@ -48,5 +39,9 @@ for (const record of records) {
   if (write && changed) fs.writeFileSync(record.file, `${JSON.stringify(record.data, null, 2)}\n`);
 }
 
-console.log(`${missing} source IDs ${write ? 'assigned' : 'would be assigned'}.`);
-if (!write && missing) console.log('Run with --write to apply the stable URL-hash migration.');
+console.log(`${missing} explicit source IDs ${write ? 'assigned' : 'missing from raw JSON'}; content ingestion deterministically supplies the same IDs.`);
+if (!write && missing) console.log('Run with --write to persist the deterministic IDs into the source JSON files.');
+if (check && missing) {
+  console.error('Raw JSON still contains sources without explicit IDs.');
+  process.exit(1);
+}

@@ -16,6 +16,67 @@ const m = getMessages(locale);
 const joiner = locale === 'zh' ? '、' : ', ';
 const modelMap = new Map(models.map((model) => [model.id, model]));
 const contextLabel = (model: AtlasModel | undefined) => model ? modelContextLabels(model)[0] : undefined;
+const methodSummary = paper.learning_guide?.key_idea?.[locale] ?? null;
 ---
-<PaperSelectionRationale paper={paper} models={models} locale={locale} />
-<div class="shell detail-layout"><article><h1 class="detail-title">{paper.title}</h1><p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p><PaperLearningGuide paper={paper} locale={locale} /><section class="detail-section"><h2>{m.paperDetail.infoTitle}</h2><div class="fact-grid"><div class="fact"><dt>{m.paperDetail.evolutionTargets}</dt><dd>{paper.evolution_targets.map((value) => evolutionTargetLabel(value, locale)).join(joiner)}</dd></div><div class="fact"><dt>{m.paperDetail.benchmarks}</dt><dd>{paper.benchmarks.join(joiner)}</dd></div><div class="fact"><dt>{m.paperDetail.category}</dt><dd>{paper.category.map((value) => categoryLabel(value, locale)).join(joiner)}</dd></div><div class="fact"><dt>{m.paperDetail.modelRelations}</dt><dd>{paper.models.length}{m.paperDetail.relationsUnit ? ` ${m.paperDetail.relationsUnit}` : ''}</dd></div></div><div class="tag-row"><a class="button button-secondary" href={paper.paper_url.startsWith('http') ? paper.paper_url : undefined} aria-disabled={!paper.paper_url.startsWith('http')}>{m.paperDetail.paperLink}</a><a class="button button-secondary" href={paper.code_url.startsWith('http') ? paper.code_url : undefined} aria-disabled={!paper.code_url.startsWith('http')}>{m.paperDetail.codeLink}</a></div></section><section class="detail-section"><h2>{m.paperDetail.reproductionEntryTitle}</h2><p class="muted">{m.paperDetail.reproductionEntryHint}</p><div class="tag-row"><a class="button button-primary" href={localePath(locale, `/workspace/?v=2&mode=strict&paper=${paper.id}`)}>{m.paperDetail.strictReproduction}</a><a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=method&paper=${paper.id}`)}>{m.paperDetail.methodReproduction}</a><a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=modern&paper=${paper.id}`)}>{m.paperDetail.modernRerun}</a></div></section><ReproductionSummary paper={paper} locale={locale} m={m} /><PaperRoleDiagram client:load paper={paper} models={models} locale={locale} m={m} /><section class="detail-section"><h2>{m.paperDetail.rolesTitle}</h2><div class="paper-list">{paper.models.map((use) => { const model = modelMap.get(use.model_id); const context = contextLabel(model); return <div class="paper-row"><div><h3>{model?.name ?? use.model_id}</h3><p>{roleLabel(use.role, locale)} · {use.weight_updated === 'not_reported' ? m.paperDetail.weightUnknown : use.weight_updated ? m.paperDetail.weightUpdated : m.paperDetail.weightNotUpdated}{use.notes ? ` · ${noteLabel(use.notes, locale)}` : ''}</p></div>{context && <div class="paper-meta"><span class="tag">{context}</span></div>}</div>; })}</div></section></article><aside class="detail-aside"><EvidenceList item={paper} locale={locale} /></aside></div></div>
+<div class="shell detail-layout">
+  <article>
+    <h1 class="detail-title">{paper.title}</h1>
+    <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
+
+    <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
+      <div class="section-kicker">{locale === 'zh' ? 'Research case' : 'Research case'}</div>
+      <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
+      {methodSummary
+        ? <p class="lede">{methodSummary}</p>
+        : <p class="muted">{locale === 'zh' ? '当前记录尚未保存经过证据核对的方法摘要；下面只展示已结构化的分类、演化目标、模型角色与复现信息，不用模型选择理由冒充方法摘要。' : 'This record does not yet contain an evidence-checked method summary. The page therefore shows only structured categories, evolution targets, model roles, and reproduction facts below instead of repurposing model-selection rationale as a method summary.'}</p>}
+    </section>
+
+    <PaperLearningGuide paper={paper} locale={locale} />
+
+    <section class="detail-section" id="paper-overview">
+      <h2>{m.paperDetail.infoTitle}</h2>
+      <div class="fact-grid">
+        <div class="fact"><dt>{m.paperDetail.evolutionTargets}</dt><dd>{paper.evolution_targets.map((value) => evolutionTargetLabel(value, locale)).join(joiner)}</dd></div>
+        <div class="fact"><dt>{m.paperDetail.benchmarks}</dt><dd>{paper.benchmarks.join(joiner)}</dd></div>
+        <div class="fact"><dt>{m.paperDetail.category}</dt><dd>{paper.category.map((value) => categoryLabel(value, locale)).join(joiner)}</dd></div>
+        <div class="fact"><dt>{m.paperDetail.modelRelations}</dt><dd>{paper.models.length}{m.paperDetail.relationsUnit ? ` ${m.paperDetail.relationsUnit}` : ''}</dd></div>
+      </div>
+      <div class="tag-row">
+        <a class="button button-secondary" href={paper.paper_url.startsWith('http') ? paper.paper_url : undefined} aria-disabled={!paper.paper_url.startsWith('http')}>{m.paperDetail.paperLink}</a>
+        <a class="button button-secondary" href={paper.code_url.startsWith('http') ? paper.code_url : undefined} aria-disabled={!paper.code_url.startsWith('http')}>{m.paperDetail.codeLink}</a>
+      </div>
+    </section>
+
+    <section class="detail-section" id="paper-reproduce">
+      <h2>{m.paperDetail.reproductionEntryTitle}</h2>
+      <p class="muted">{m.paperDetail.reproductionEntryHint}</p>
+      <div class="tag-row">
+        <a class="button button-primary" href={localePath(locale, `/workspace/?v=2&mode=strict&paper=${paper.id}`)}>{m.paperDetail.strictReproduction}</a>
+        <a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=method&paper=${paper.id}`)}>{m.paperDetail.methodReproduction}</a>
+        <a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=modern&paper=${paper.id}`)}>{m.paperDetail.modernRerun}</a>
+      </div>
+    </section>
+
+    <ReproductionSummary paper={paper} locale={locale} m={m} />
+    <PaperRoleDiagram client:load paper={paper} models={models} locale={locale} m={m} />
+    <PaperSelectionRationale paper={paper} models={models} locale={locale} />
+
+    <section class="detail-section" id="paper-models">
+      <h2>{m.paperDetail.rolesTitle}</h2>
+      <div class="paper-list">
+        {paper.models.map((use) => {
+          const model = modelMap.get(use.model_id);
+          const context = contextLabel(model);
+          return <div class="paper-row">
+            <div>
+              <h3>{model ? <a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a> : use.model_id}</h3>
+              <p>{roleLabel(use.role, locale)} · {use.weight_updated === 'not_reported' ? m.paperDetail.weightUnknown : use.weight_updated ? m.paperDetail.weightUpdated : m.paperDetail.weightNotUpdated}{use.notes ? ` · ${noteLabel(use.notes, locale)}` : ''}</p>
+            </div>
+            {context && <div class="paper-meta"><span class="tag">{context}</span></div>}
+          </div>;
+        })}
+      </div>
+    </section>
+  </article>
+  <aside class="detail-aside"><EvidenceList item={paper} locale={locale} /></aside>
+</div>

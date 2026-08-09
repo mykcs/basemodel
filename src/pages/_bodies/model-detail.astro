@@ -3,6 +3,8 @@ import ClaimEvidencePanel from '../../components/evidence/ClaimEvidencePanel.ast
 import StatusBadge from '../../components/StatusBadge.astro';
 import ModelResearchSummary from '../../components/models/detail/ModelResearchSummary.astro';
 import AccessLadder from '../../components/models/detail/AccessLadder.astro';
+import ModelDetailNav from '../../components/models/detail/ModelDetailNav.astro';
+import UnresolvedFieldList from '../../components/models/detail/UnresolvedFieldList.astro';
 import { ModelTaskFit } from '../../components/models/detail/ModelTaskFit';
 import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, isSameCanonicalName, licenseLabel, modelIdentityTrail, modalityLabel, parameterSummary, roleLabel, semanticStatusLabel, specializationLabel, tierLabel } from '../../lib/format';
 import { paperUsesModel } from '../../lib/modelRelations';
@@ -42,26 +44,106 @@ const evidenceText = (value: string) => {
     : { redistribution_and_commercial_conditions: 'Redistribution and commercial deployment are subject to the Kimi K3 License.', not_legal_advice: 'This summary is not legal advice.', preserve_reasoning_and_tool_call_history: 'Preserve complete reasoning and tool-call history across multi-turn tool use.', k26_preserved_thinking_optional: 'Cross-turn preserved thinking is optional and disabled by default.', k25_preserved_thinking_not_supported: 'Kimi K2.5 does not support cross-turn preserved thinking; pass context as required for a single multi-step API call.' };
   return labels[value] ?? value;
 };
-const semanticValues = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
-const unresolvedFields: string[] = [];
-const collectUnresolved = (value: unknown, path: string) => {
-  if (typeof value === 'string' && semanticValues.has(value)) unresolvedFields.push(path);
-  else if (Array.isArray(value)) value.forEach((item, index) => collectUnresolved(item, `${path}[${index}]`));
-  else if (value && typeof value === 'object') Object.entries(value).forEach(([key, item]) => collectUnresolved(item, path ? `${path}.${key}` : key));
-};
-collectUnresolved(model, 'model');
 const positioning = model.checkpoint.specializations.length ? model.checkpoint.specializations.map((item) => specializationLabel(item, locale)).join(joiner) : m.format.unknown;
 ---
-<div class="shell detail-layout"><article>{identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}<h1 class="detail-title">{model.name}</h1>{alternateName && <p class="detail-alias muted">{alternateName}</p>}<p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p><ModelDetailTools client:load model={model} locale={locale} />
-  <ModelResearchSummary model={model} papers={papers} locale={locale} />
-  <AccessLadder model={model} locale={locale} />
-  <ModelTaskFit client:load model={model} papers={papers} m={m} locale={locale} />
-  <section class="detail-section"><h2>{m.detail.overview}</h2><div class="fact-grid"><div class="fact"><dt>{m.detail.positioning}</dt><dd>{positioning}</dd></div><div class="fact"><dt>{m.detail.architecture}</dt><dd>{architectureLabel(model.architecture.type, locale)}</dd></div><div class="fact"><dt>{m.detail.parameters}</dt><dd>{parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale)}</dd></div><div class="fact"><dt>{m.detail.activeParams}</dt><dd>{displayUnknown(model.architecture.active_parameters_b, 'B', locale)}</dd></div><div class="fact"><dt>{m.detail.expertCount}</dt><dd>{displayUnknown(model.architecture.expert_count, '', locale)}</dd></div><div class="fact"><dt>{m.detail.expertsPerToken}</dt><dd>{displayUnknown(model.architecture.active_experts_per_token, '', locale)}</dd></div><div class="fact"><dt>{m.detail.context}</dt><dd>{displayUnknown(model.architecture.context_length, m.detail.tokensSuffix, locale)}</dd></div><div class="fact"><dt>{m.detail.modalities}</dt><dd>{model.checkpoint.modalities.map((value) => modalityLabel(value, locale)).join(joiner)}</dd></div>{!model.openness.classification && <div class="fact"><dt>{m.detail.openWeights}</dt><dd>{displayBoolean(model.openness.weights_available, locale)}</dd></div>}<div class="fact"><dt>{m.detail.baseCheckpoint}</dt><dd>{displayBoolean(model.openness.base_checkpoint_available, locale)}</dd></div><div class="fact"><dt>{m.detail.finetuningAllowed}</dt><dd>{displayBoolean(model.openness.finetuning_allowed, locale)}</dd></div>{!model.openness.derivative_distribution && <div class="fact"><dt>{m.detail.derivativeAllowed}</dt><dd>{displayBoolean(model.openness.derivative_release_allowed, locale)}</dd></div>}{!model.openness.commercial_use && <div class="fact"><dt>{m.detail.commercialAllowed}</dt><dd>{displayBoolean(model.openness.commercial_use_allowed, locale)}</dd></div>}<div class="fact"><dt>{m.detail.license}</dt><dd>{licenseLabel(model.openness.license_name, locale)}</dd></div></div></section>
-  <section class="detail-section"><h2>{m.detail.unresolvedTitle}</h2>{unresolvedFields.length ? <><p class="muted">{m.detail.unresolvedBody}</p><p class="unresolved-count">{m.detail.unresolvedCount.replace('{count}', String(unresolvedFields.length))}</p></> : <p class="muted">{m.detail.noUnresolved}</p>}</section>
-  <SemanticStatusLegend locale={locale} compact />
-  {(model.access || model.openness.classification || model.reproducibility) && <section class="detail-section"><h2>{m.detail.accessTitle}</h2><div class="fact-grid">{model.access && <><div class="fact"><dt>{m.detail.weightsStatus}</dt><dd>{statusText(model.access.weights_status)}</dd></div>{model.access.weights_released_at && <div class="fact"><dt>{m.detail.weightsReleasedAt}</dt><dd>{model.access.weights_released_at}</dd></div>}<div class="fact"><dt>{m.detail.apiStatus}</dt><dd>{statusText(model.access.api_status)}</dd></div>{model.access.api_model_ids?.length && <div class="fact"><dt>{m.detail.apiModelIds}</dt><dd>{model.access.api_model_ids.join(joiner)}</dd></div>}<div class="fact"><dt>{m.detail.productStatus}</dt><dd>{statusText(model.access.product_status)}</dd></div>{model.access.product_names?.length && <div class="fact"><dt>{m.detail.productNames}</dt><dd>{model.access.product_names.join(joiner)}</dd></div>}</>}{model.openness.classification && <div class="fact"><dt>{m.detail.opennessClass}</dt><dd>{enumText(model.openness.classification)}</dd></div>}{model.openness.custom_license !== undefined && <div class="fact"><dt>{m.detail.customLicense}</dt><dd>{displayBoolean(model.openness.custom_license, locale)}</dd></div>}{model.openness.derivative_distribution && <div class="fact"><dt>{m.detail.derivativeDistribution}</dt><dd>{enumText(model.openness.derivative_distribution)}</dd></div>}{model.openness.commercial_use && <div class="fact"><dt>{m.detail.commercialUse}</dt><dd>{enumText(model.openness.commercial_use)}</dd></div>}{model.openness.conditions?.length && <div class="fact"><dt>{m.detail.conditions}</dt><dd>{model.openness.conditions.map(evidenceText).join(locale === 'zh' ? '；' : '; ')}</dd></div>}</div>{model.reproducibility && <div class="fact-grid" style="margin-top:16px"><div class="fact"><dt>{m.detail.modelRevision}</dt><dd>{model.reproducibility.model_revision_required === true ? (locale === 'zh' ? '需固定模型版本号' : 'Pin the model revision') : m.format.unknown}</dd></div><div class="fact"><dt>{m.detail.preservedReasoning}</dt><dd>{displayBoolean(model.reproducibility.preserved_reasoning_history_required ?? 'not_verified', locale)}</dd></div>{model.reproducibility.known_nondeterminism_notes && <div class="fact"><dt>{m.detail.reproducibilityNotes}</dt><dd>{evidenceText(model.reproducibility.known_nondeterminism_notes)}</dd></div>}</div>}</section>}
-  <section class="detail-section"><h2>{m.detail.strengthsTitle}</h2><div class="pill-list">{model.checkpoint.specializations.map((item) => <span class="pill">{specializationLabel(item, locale)}</span>)}</div><div class="fact-grid" style="margin-top:16px"><div class="fact"><dt>{m.detail.research.inference}</dt><dd>{displayBoolean(model.research.suitable_for_inference, locale)}</dd></div><div class="fact"><dt>{m.detail.research.lora}</dt><dd>{displayBoolean(model.research.suitable_for_lora, locale)}</dd></div><div class="fact"><dt>{m.detail.research.sft}</dt><dd>{displayBoolean(model.research.suitable_for_sft, locale)}</dd></div><div class="fact"><dt>{m.detail.research.rl}</dt><dd>{displayBoolean(model.research.suitable_for_rl, locale)}</dd></div><div class="fact"><dt>{m.detail.research.transformers}</dt><dd>{displayBoolean(model.research.transformers_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.vllm}</dt><dd>{displayBoolean(model.research.vllm_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.sglang}</dt><dd>{displayBoolean(model.research.sglang_support, locale)}</dd></div><div class="fact"><dt>{m.detail.research.verl}</dt><dd>{displayBoolean(model.research.verl_recipe_available, locale)}</dd></div></div></section>
-  <section class="detail-section"><h2>{m.detail.hardwareTitle}</h2><div class="fact-grid"><div class="fact"><dt>{m.detail.inference}</dt><dd>{tierLabel(model.hardware.inference_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.research.lora}</dt><dd>{tierLabel(model.hardware.lora_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.fullSft}</dt><dd>{tierLabel(model.hardware.full_sft_tier, locale)}</dd></div><div class="fact"><dt>{m.detail.research.rl}</dt><dd>{tierLabel(model.hardware.rl_tier, locale)}</dd></div></div></section>
-  <section class="detail-section"><h2>{m.detail.adoptionTitle}</h2>{papers.length ? <div class="paper-list">{papers.map((paper) => <a class="paper-row" href={localePath(locale, `/papers/${paper.id}/`)}><div><h3>{paper.title}</h3><p>{paperUsesModel(paper, model.id).map((use) => `${roleLabel(use.role, locale)}${use.weight_updated === true ? m.detail.weightUpdatedSuffix : ''}`).join(relationJoiner)}</p></div><div class="paper-meta">{paper.published_at}</div></a>)}</div> : <p class="muted">{m.detail.noAdoption}</p>}</section>
-  <ModelAlternatives model={model} models={models} locale={locale} />
-</article><aside class="detail-aside"><ClaimEvidencePanel item={model} locale={locale} /></aside></div>
+<div class="shell detail-layout model-detail-v3">
+  <article>
+    {identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}
+    <h1 class="detail-title">{model.name}</h1>
+    {alternateName && <p class="detail-alias muted">{alternateName}</p>}
+    <p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
+    <ModelDetailTools client:load model={model} locale={locale} />
+    <ModelDetailNav locale={locale} />
+
+    <div id="research-summary">
+      <ModelResearchSummary model={model} papers={papers} locale={locale} />
+      <ModelTaskFit client:load model={model} papers={papers} m={m} locale={locale} />
+    </div>
+
+    <div id="access-openness"><AccessLadder model={model} locale={locale} /></div>
+
+    <section class="detail-section" id="architecture">
+      <h2>{m.detail.overview}</h2>
+      <div class="fact-grid">
+        <div class="fact"><dt>{m.detail.positioning}</dt><dd>{positioning}</dd></div>
+        <div class="fact"><dt>{m.detail.architecture}</dt><dd>{architectureLabel(model.architecture.type, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.parameters}</dt><dd>{parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.activeParams}</dt><dd>{displayUnknown(model.architecture.active_parameters_b, 'B', locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.expertCount}</dt><dd>{displayUnknown(model.architecture.expert_count, '', locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.expertsPerToken}</dt><dd>{displayUnknown(model.architecture.active_experts_per_token, '', locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.context}</dt><dd>{displayUnknown(model.architecture.context_length, m.detail.tokensSuffix, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.modalities}</dt><dd>{model.checkpoint.modalities.map((value) => modalityLabel(value, locale)).join(joiner)}</dd></div>
+        {!model.openness.classification && <div class="fact"><dt>{m.detail.openWeights}</dt><dd>{displayBoolean(model.openness.weights_available, locale)}</dd></div>}
+        <div class="fact"><dt>{m.detail.baseCheckpoint}</dt><dd>{displayBoolean(model.openness.base_checkpoint_available, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.finetuningAllowed}</dt><dd>{displayBoolean(model.openness.finetuning_allowed, locale)}</dd></div>
+        {!model.openness.derivative_distribution && <div class="fact"><dt>{m.detail.derivativeAllowed}</dt><dd>{displayBoolean(model.openness.derivative_release_allowed, locale)}</dd></div>}
+        {!model.openness.commercial_use && <div class="fact"><dt>{m.detail.commercialAllowed}</dt><dd>{displayBoolean(model.openness.commercial_use_allowed, locale)}</dd></div>}
+        <div class="fact"><dt>{m.detail.license}</dt><dd>{licenseLabel(model.openness.license_name, locale)}</dd></div>
+      </div>
+    </section>
+
+    <section class="detail-section" id="training-runtime">
+      <h2>{m.detail.strengthsTitle}</h2>
+      <div class="pill-list">{model.checkpoint.specializations.map((item) => <span class="pill">{specializationLabel(item, locale)}</span>)}</div>
+      <div class="fact-grid" style="margin-top:16px">
+        <div class="fact"><dt>{m.detail.research.inference}</dt><dd>{displayBoolean(model.research.suitable_for_inference, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.lora}</dt><dd>{displayBoolean(model.research.suitable_for_lora, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.sft}</dt><dd>{displayBoolean(model.research.suitable_for_sft, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.rl}</dt><dd>{displayBoolean(model.research.suitable_for_rl, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.transformers}</dt><dd>{displayBoolean(model.research.transformers_support, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.vllm}</dt><dd>{displayBoolean(model.research.vllm_support, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.sglang}</dt><dd>{displayBoolean(model.research.sglang_support, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.verl}</dt><dd>{displayBoolean(model.research.verl_recipe_available, locale)}</dd></div>
+      </div>
+    </section>
+
+    <section class="detail-section" id="hardware">
+      <h2>{m.detail.hardwareTitle}</h2>
+      <p class="muted">{locale === 'zh' ? '这些是目录中的粗粒度资源档位；工作台中的显存计算器会在给定精度、上下文、batch 等条件后提供启发式规划估算。两者都不是硬件实测保证。' : 'These are coarse catalog resource tiers. The workbench VRAM calculator provides a heuristic planning estimate after precision, context, batch, and related assumptions are supplied. Neither is a measured hardware guarantee.'}</p>
+      <div class="fact-grid">
+        <div class="fact"><dt>{m.detail.inference}</dt><dd>{tierLabel(model.hardware.inference_tier, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.lora}</dt><dd>{tierLabel(model.hardware.lora_tier, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.fullSft}</dt><dd>{tierLabel(model.hardware.full_sft_tier, locale)}</dd></div>
+        <div class="fact"><dt>{m.detail.research.rl}</dt><dd>{tierLabel(model.hardware.rl_tier, locale)}</dd></div>
+      </div>
+    </section>
+
+    {(model.access || model.openness.classification || model.reproducibility) && <section class="detail-section" id="reproducibility">
+      <h2>{m.detail.accessTitle}</h2>
+      <div class="fact-grid">
+        {model.access && <>
+          <div class="fact"><dt>{m.detail.weightsStatus}</dt><dd>{statusText(model.access.weights_status)}</dd></div>
+          {model.access.weights_released_at && <div class="fact"><dt>{m.detail.weightsReleasedAt}</dt><dd>{model.access.weights_released_at}</dd></div>}
+          <div class="fact"><dt>{m.detail.apiStatus}</dt><dd>{statusText(model.access.api_status)}</dd></div>
+          {model.access.api_model_ids?.length && <div class="fact"><dt>{m.detail.apiModelIds}</dt><dd>{model.access.api_model_ids.join(joiner)}</dd></div>}
+          <div class="fact"><dt>{m.detail.productStatus}</dt><dd>{statusText(model.access.product_status)}</dd></div>
+          {model.access.product_names?.length && <div class="fact"><dt>{m.detail.productNames}</dt><dd>{model.access.product_names.join(joiner)}</dd></div>}
+        </>}
+        {model.openness.classification && <div class="fact"><dt>{m.detail.opennessClass}</dt><dd>{enumText(model.openness.classification)}</dd></div>}
+        {model.openness.custom_license !== undefined && <div class="fact"><dt>{m.detail.customLicense}</dt><dd>{displayBoolean(model.openness.custom_license, locale)}</dd></div>}
+        {model.openness.derivative_distribution && <div class="fact"><dt>{m.detail.derivativeDistribution}</dt><dd>{enumText(model.openness.derivative_distribution)}</dd></div>}
+        {model.openness.commercial_use && <div class="fact"><dt>{m.detail.commercialUse}</dt><dd>{enumText(model.openness.commercial_use)}</dd></div>}
+        {model.openness.conditions?.length && <div class="fact"><dt>{m.detail.conditions}</dt><dd>{model.openness.conditions.map(evidenceText).join(locale === 'zh' ? '；' : '; ')}</dd></div>}
+      </div>
+      {model.reproducibility && <div class="fact-grid" style="margin-top:16px">
+        <div class="fact"><dt>{m.detail.modelRevision}</dt><dd>{model.sources.some((source) => source.revision && source.supports?.includes('reproducibility.model_revision')) ? (locale === 'zh' ? '已有来源固定 revision' : 'A source-pinned revision is recorded') : (locale === 'zh' ? '模型版本尚未固定' : 'Model revision is not pinned')}</dd></div>
+        <div class="fact"><dt>{m.detail.preservedReasoning}</dt><dd>{displayBoolean(model.reproducibility.preserved_reasoning_history_required ?? 'not_verified', locale)}</dd></div>
+        {model.reproducibility.known_nondeterminism_notes && <div class="fact"><dt>{m.detail.reproducibilityNotes}</dt><dd>{evidenceText(model.reproducibility.known_nondeterminism_notes)}</dd></div>}
+      </div>}
+    </section>}
+
+    <section class="detail-section" id="paper-adoption">
+      <h2>{m.detail.adoptionTitle}</h2>
+      {papers.length ? <div class="paper-list">{papers.map((paper) => <a class="paper-row" href={localePath(locale, `/papers/${paper.id}/`)}>
+        <div><h3>{paper.title}</h3><p>{paperUsesModel(paper, model.id).map((use) => `${roleLabel(use.role, locale)}${use.weight_updated === true ? m.detail.weightUpdatedSuffix : ''}`).join(relationJoiner)}</p></div>
+        <div class="paper-meta">{paper.published_at}</div>
+      </a>)}</div> : <p class="muted">{m.detail.noAdoption}</p>}
+    </section>
+
+    <ModelAlternatives model={model} models={models} locale={locale} />
+    <UnresolvedFieldList model={model} locale={locale} />
+    <SemanticStatusLegend locale={locale} compact />
+  </article>
+
+  <aside class="detail-aside" id="evidence"><ClaimEvidencePanel item={model} locale={locale} /></aside>
+</div>

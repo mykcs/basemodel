@@ -1,0 +1,58 @@
+---
+import type { AtlasModel } from '../../../lib/schemas';
+import { fieldCatalog, fieldLabel } from '../../../lib/fieldCatalog';
+import { semanticStatusLabel } from '../../../lib/format';
+import type { Locale } from '../../../i18n';
+
+interface Props {
+  model: AtlasModel;
+  locale: Locale;
+}
+
+const { model, locale } = Astro.props;
+const semanticValues = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
+const unresolved: Array<{ path: string; state: string }> = [];
+
+const collect = (value: unknown, path: string) => {
+  if (typeof value === 'string' && semanticValues.has(value)) {
+    unresolved.push({ path, state: value });
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => collect(item, `${path}[${index}]`));
+    return;
+  }
+  if (value && typeof value === 'object') {
+    Object.entries(value).forEach(([key, item]) => collect(item, path ? `${path}.${key}` : key));
+  }
+};
+
+collect(model, '');
+const unique = [...new Map(unresolved.map((item) => [item.path.replace(/\[\d+\]/g, ''), { ...item, path: item.path.replace(/\[\d+\]/g, '') }])).values()];
+const labelFor = (path: string) => {
+  if (fieldCatalog[path]) return fieldLabel(path, locale);
+  const leaf = path.split('.').at(-1) ?? path;
+  const readable = leaf.replaceAll('_', ' ');
+  return locale === 'zh' ? `待核验：${readable}` : `Pending: ${readable}`;
+};
+const impactFor = (path: string) => {
+  const entry = fieldCatalog[path];
+  if (!entry) return locale === 'zh' ? '该字段尚未完成研究影响分类。' : 'The research impact for this field is not yet classified.';
+  return locale === 'zh' ? entry.impactZh : entry.impactEn;
+};
+---
+<section class="detail-section unresolved-fields" id="unknowns" aria-labelledby="unresolved-fields-title">
+  <h2 id="unresolved-fields-title">{locale === 'zh' ? '仍需核验的研究事实' : 'Research facts still requiring verification'}</h2>
+  {unique.length ? <>
+    <p class="muted">{locale === 'zh' ? `当前有 ${unique.length} 项字段保持明确未知状态。未知不等于“否”，也不会被填成猜测值。` : `${unique.length} fields remain in explicit unknown states. Unknown does not mean “no”, and the site does not fill these with guesses.`}</p>
+    <div class="unresolved-field-list">
+      {unique.map((item) => <article class="unresolved-field-item">
+        <div>
+          <strong>{labelFor(item.path)}</strong>
+          <p>{impactFor(item.path)}</p>
+        </div>
+        <span class="status-badge status-unknown">{semanticStatusLabel(item.state, locale)}</span>
+      </article>)}
+    </div>
+  </> : <p class="muted">{locale === 'zh' ? '当前记录没有语义未知字段。' : 'No semantic-unknown field remains in this record.'}</p>}
+</section>

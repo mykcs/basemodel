@@ -8,6 +8,14 @@ import { compareIds } from '../stores/compare';
 
 const semanticUnknown = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 
+type ComparisonRow = {
+  group: 'identity' | 'architecture' | 'access' | 'openness' | 'training' | 'runtime' | 'hardware' | 'adoption' | 'reproducibility' | 'evidence';
+  label: string;
+  value: (model: AtlasModel) => string;
+  impactCode?: CompareImpactCode;
+  unknown?: (model: AtlasModel) => boolean;
+};
+
 export default function ModelComparison({ models, papers = [], locale = 'zh' }: { models: AtlasModel[]; papers?: AtlasPaper[]; locale?: Locale }) {
   const m = getMessages(locale);
   const [selected, setSelected] = useState<string[]>([]);
@@ -17,6 +25,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
   const [onlyUnknown, setOnlyUnknown] = useState(false);
   const [valueMode, setValueMode] = useState<'absolute' | 'relative'>('absolute');
   const [exportNotice, setExportNotice] = useState('');
+
   const active = useMemo(() => models.filter((model) => selected.includes(model.id)), [models, selected]);
   const visibleModels = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -38,8 +47,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
 
   useEffect(() => {
     const next = new URLSearchParams(window.location.search);
-    if (selected.length) next.set('models', selected.join(','));
-    else next.delete('models');
+    if (selected.length) next.set('models', selected.join(',')); else next.delete('models');
     if (onlyDifferences) next.set('diff', '1'); else next.delete('diff');
     if (onlyImpacts) next.set('impact', '1'); else next.delete('impact');
     if (onlyUnknown) next.set('unknown', '1'); else next.delete('unknown');
@@ -52,6 +60,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     const roles = papers.flatMap((paper) => paper.models.filter((use) => use.model_id === model.id).map((use) => roleLabel(use.role, locale)));
     return [...new Set(roles)].join(joiner) || m.format.unknown;
   };
+
   const rows: ComparisonRow[] = [
     { group: 'identity', label: m.compareRows.vendor, value: (x) => x.vendor, impactCode: 'generation' },
     { group: 'identity', label: m.compareRows.familyGen, value: (x) => `${x.family} / ${x.generation}`, impactCode: 'generation' },
@@ -88,6 +97,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     { group: 'evidence', label: m.compareRows.dataStatus, value: (x) => statusLabel(x.data_status, locale), impactCode: 'evidence', unknown: (x) => x.data_status !== 'verified' },
     { group: 'evidence', label: m.compareRows.sourceCount, value: (x) => String(x.sources.length) },
   ];
+
   const rowState = (row: ComparisonRow) => {
     const values = active.map(row.value);
     const differs = new Set(values).size > 1;
@@ -98,26 +108,19 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     const state = rowState(row);
     return (!onlyDifferences || state.differs) && (!onlyImpacts || state.impact) && (!onlyUnknown || state.hasUnknown);
   });
-  const groupedRows = ['identity', 'architecture', 'access', 'openness', 'training', 'runtime', 'hardware', 'adoption', 'reproducibility', 'evidence'].map((group) => ({ group: group as ComparisonRow['group'], rows: visibleRows.filter((row) => row.group === group) })).filter((section) => section.rows.length);
+  const groupedRows = ['identity', 'architecture', 'access', 'openness', 'training', 'runtime', 'hardware', 'adoption', 'reproducibility', 'evidence']
+    .map((group) => ({ group: group as ComparisonRow['group'], rows: visibleRows.filter((row) => row.group === group) }))
+    .filter((section) => section.rows.length);
   const exportRows: CompareExportRow[] = visibleRows.map((row) => ({ label: row.label, values: rowState(row).values }));
   const impactLabel = (code: CompareImpactCode) => m.compare.impactLabels[code];
-  const copyMarkdown = async () => {
-    await navigator.clipboard.writeText(comparisonToMarkdown(active, exportRows));
-    setExportNotice(m.compare.copied);
-  };
+  const displayCell = (values: string[], index: number) => valueMode === 'absolute' || index === 0 ? values[index] : values[index] === values[0] ? (locale === 'zh' ? '相同' : 'Same') : `${locale === 'zh' ? '差异：' : 'Diff: '}${values[index]}`;
+
+  const copyMarkdown = async () => { await navigator.clipboard.writeText(comparisonToMarkdown(active, exportRows)); setExportNotice(m.compare.copied); };
   const downloadCsv = () => {
     const url = URL.createObjectURL(new Blob([comparisonToCsv(active, exportRows)], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'model-comparison.csv';
-    anchor.click();
-    URL.revokeObjectURL(url);
-    setExportNotice(m.compare.downloaded);
+    const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'model-comparison.csv'; anchor.click(); URL.revokeObjectURL(url); setExportNotice(m.compare.downloaded);
   };
-  const copyShareUrl = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setExportNotice(m.compare.copied);
-  };
+  const copyShareUrl = async () => { await navigator.clipboard.writeText(window.location.href); setExportNotice(m.compare.copied); };
   const copyBibtex = async () => {
     const text = active.map((model) => {
       const modelUrl = new URL(localePath(locale, `/models/${model.id}/`), `${window.location.origin}/`).href;
@@ -127,10 +130,65 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     setExportNotice(locale === 'zh' ? 'BibTeX 已复制' : 'BibTeX copied');
   };
 
-  return <div className="comparison-shell"><div className="comparison-picker"><div><span className="section-kicker">{m.compare.selectKicker}</span><h2>{m.compare.selectTitle}</h2><p className="muted">{m.compare.selected} {selected.length} / 5 {canStart ? '' : m.compare.minTwo}</p></div><div><label className="field" htmlFor="compare-search"><span>{m.compare.searchLabel}</span><input id="compare-search" type="search" value={query} placeholder={m.compare.searchPlaceholder} onChange={(event) => setQuery(event.target.value)} /></label><div className="picker-list">{visibleModels.map((model) => <label className={`picker-item ${selected.includes(model.id) ? 'is-selected' : ''}`} key={model.id}><input type="checkbox" checked={selected.includes(model.id)} disabled={!selected.includes(model.id) && selected.length >= 5} onChange={() => toggle(model.id)} /><span>{model.name}</span></label>)}</div>{visibleModels.length === 0 && <p className="muted">{m.compare.noMatches}</p>}</div></div>{active.length >= 2 ? <><div className="comparison-controls"><label className="comparison-mode"><input type="checkbox" checked={onlyDifferences} onChange={(event) => setOnlyDifferences(event.target.checked)} /><span>{onlyDifferences ? m.compare.allFields : m.compare.onlyDifferences}</span></label><label className="comparison-mode"><input type="checkbox" checked={onlyImpacts} onChange={(event) => setOnlyImpacts(event.target.checked)} /><span>{m.compare.onlyImpacts}</span></label><label className="comparison-mode"><input type="checkbox" checked={onlyUnknown} onChange={(event) => setOnlyUnknown(event.target.checked)} /><span>{m.compare.onlyUnknown}</span></label><div className="compare-export"><button className={`button ${valueMode === 'absolute' ? 'button-primary' : 'button-secondary'}`} type="button" onClick={() => setValueMode('absolute')}>{locale === 'zh' ? '绝对值' : 'Absolute'}</button><button className={`button ${valueMode === 'relative' ? 'button-primary' : 'button-secondary'}`} type="button" onClick={() => setValueMode('relative')}>{locale === 'zh' ? '相对基准' : 'Relative to first'}</button><button className="button button-secondary" type="button" onClick={copyMarkdown}>{m.compare.copyMarkdown}</button><button className="button button-secondary" type="button" onClick={copyBibtex}>{locale === 'zh' ? '复制 BibTeX' : 'Copy BibTeX'}</button><button className="button button-secondary" type="button" onClick={downloadCsv}>{m.compare.downloadCsv}</button><button className="button button-secondary" type="button" onClick={copyShareUrl}>{m.compare.copyLink}</button>{exportNotice && <span className="muted" role="status">{exportNotice}</span>}</div></div>{visibleRows.length ? <div className="comparison-table-wrap"><table className="comparison-table"><caption className="sr-only">{m.compare.title}</caption><thead><tr><th scope="col">{m.compare.dimension}</th>{active.map((model) => <th scope="col" key={model.id}>{model.name}</th>)}</tr></thead>{groupedRows.map((section) => <tbody key={section.group}><tr className="comparison-group"><th scope="rowgroup" colSpan={active.length + 1}>{m.compareGroups[section.group]}</th></tr>{section.rows.map((row) => { const state = rowState(row); return <tr key={row.label} className={state.differs ? 'comparison-row-diff' : undefined}><th scope="row">{row.label}{state.differs && <span className="diff-badge">{m.compare.diff}</span>}{state.impact && row.impactCode && <small className="compare-impact">{m.compare.researchImpact}: {impactLabel(row.impactCode)}</small>}</th>{state.values.map((cell, index) => <td className={state.differs ? 'is-diff' : undefined} key={active[index].id}>{valueMode === 'absolute' || index === 0 ? cell : cell === state.values[0] ? (locale === 'zh' ? '相同' : 'Same') : `${locale === 'zh' ? '差异：' : 'Diff: '}${cell}`}</td>)}</tr>; })}</tbody>)}</table></div> : <div className="empty-state">{m.compare.noDifferences}</div>}</> : <div className="empty-state">{m.compare.empty}</div>}</div>;
-}
+  return <div className="comparison-shell">
+    <div className="comparison-picker">
+      <div><span className="section-kicker">{m.compare.selectKicker}</span><h2>{m.compare.selectTitle}</h2><p className="muted">{m.compare.selected} {selected.length} / 5 {canStart ? '' : m.compare.minTwo}</p></div>
+      <div><label className="field" htmlFor="compare-search"><span>{m.compare.searchLabel}</span><input id="compare-search" type="search" value={query} placeholder={m.compare.searchPlaceholder} onChange={(event) => setQuery(event.target.value)} /></label><div className="picker-list">{visibleModels.map((model) => <label className={`picker-item ${selected.includes(model.id) ? 'is-selected' : ''}`} key={model.id}><input type="checkbox" checked={selected.includes(model.id)} disabled={!selected.includes(model.id) && selected.length >= 5} onChange={() => toggle(model.id)} /><span>{model.name}</span></label>)}</div>{visibleModels.length === 0 && <p className="muted">{m.compare.noMatches}</p>}</div>
+    </div>
 
-type ComparisonRow = { group: 'identity' | 'architecture' | 'access' | 'openness' | 'training' | 'runtime' | 'hardware' | 'adoption' | 'reproducibility' | 'evidence'; label: string; value: (model: AtlasModel) => string; impactCode?: CompareImpactCode; unknown?: (model: AtlasModel) => boolean };
+    {active.length >= 2 ? <>
+      <div className="comparison-controls">
+        <label className="comparison-mode"><input type="checkbox" checked={onlyDifferences} onChange={(event) => setOnlyDifferences(event.target.checked)} /><span>{onlyDifferences ? m.compare.allFields : m.compare.onlyDifferences}</span></label>
+        <label className="comparison-mode"><input type="checkbox" checked={onlyImpacts} onChange={(event) => setOnlyImpacts(event.target.checked)} /><span>{m.compare.onlyImpacts}</span></label>
+        <label className="comparison-mode"><input type="checkbox" checked={onlyUnknown} onChange={(event) => setOnlyUnknown(event.target.checked)} /><span>{m.compare.onlyUnknown}</span></label>
+        <div className="compare-export">
+          <button className={`button ${valueMode === 'absolute' ? 'button-primary' : 'button-secondary'}`} type="button" onClick={() => setValueMode('absolute')}>{locale === 'zh' ? '绝对值' : 'Absolute'}</button>
+          <button className={`button ${valueMode === 'relative' ? 'button-primary' : 'button-secondary'}`} type="button" onClick={() => setValueMode('relative')}>{locale === 'zh' ? '相对基准' : 'Relative to first'}</button>
+          <button className="button button-secondary" type="button" onClick={copyMarkdown}>{m.compare.copyMarkdown}</button>
+          <button className="button button-secondary" type="button" onClick={copyBibtex}>{locale === 'zh' ? '复制 BibTeX' : 'Copy BibTeX'}</button>
+          <button className="button button-secondary" type="button" onClick={downloadCsv}>{m.compare.downloadCsv}</button>
+          <button className="button button-secondary" type="button" onClick={copyShareUrl}>{m.compare.copyLink}</button>
+          {exportNotice && <span className="muted" role="status">{exportNotice}</span>}
+        </div>
+      </div>
+
+      {visibleRows.length ? <>
+        <div className="comparison-table-wrap comparison-desktop-table">
+          <table className="comparison-table">
+            <caption className="sr-only">{m.compare.title}</caption>
+            <thead><tr><th scope="col">{m.compare.dimension}</th>{active.map((model) => <th scope="col" key={model.id}>{model.name}</th>)}</tr></thead>
+            {groupedRows.map((section) => <tbody key={section.group}>
+              <tr className="comparison-group"><th scope="rowgroup" colSpan={active.length + 1}>{m.compareGroups[section.group]}</th></tr>
+              {section.rows.map((row) => {
+                const state = rowState(row);
+                return <tr key={row.label} className={state.differs ? 'comparison-row-diff' : undefined}>
+                  <th scope="row">{row.label}{state.differs && <span className="diff-badge">{m.compare.diff}</span>}{state.impact && row.impactCode && <small className="compare-impact">{m.compare.researchImpact}: {impactLabel(row.impactCode)}</small>}</th>
+                  {state.values.map((cell, index) => <td className={state.differs ? 'is-diff' : undefined} key={active[index].id}>{displayCell(state.values, index)}</td>)}
+                </tr>;
+              })}
+            </tbody>)}
+          </table>
+        </div>
+
+        <div className="comparison-mobile-cards" aria-label={locale === 'zh' ? '移动端模型对比' : 'Mobile model comparison'}>
+          {groupedRows.map((section) => <section className="comparison-mobile-group" key={section.group}>
+            <h3>{m.compareGroups[section.group]}</h3>
+            {section.rows.map((row) => {
+              const state = rowState(row);
+              return <article className="comparison-mobile-field" key={row.label}>
+                <h4>{row.label}{state.differs && <span className="diff-badge">{m.compare.diff}</span>}</h4>
+                <div className="comparison-mobile-values">
+                  {state.values.map((value, index) => <div className="comparison-mobile-value" key={active[index].id}><strong>{active[index].name}</strong><span>{displayCell(state.values, index)}</span></div>)}
+                </div>
+                {state.impact && row.impactCode && <p className="comparison-mobile-impact">{m.compare.researchImpact}: {impactLabel(row.impactCode)}</p>}
+              </article>;
+            })}
+          </section>)}
+        </div>
+      </> : <div className="empty-state">{m.compare.noDifferences}</div>}
+    </> : <div className="empty-state">{m.compare.empty}</div>}
+  </div>;
+}
 
 function isUnknown(value: unknown): boolean {
   return typeof value === 'string' && semanticUnknown.has(value);

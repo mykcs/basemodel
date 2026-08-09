@@ -67,7 +67,11 @@ npm run verify:deploy
   -> npm run audit:claims
   -> npm run audit:freshness
   -> npm test
+  -> npm run audit:v2
+  -> npm run audit:v2:adversarial
 ```
+
+The V2 completion and adversarial audits are intentionally part of the Pages gate because they are deterministic, local, and cheap. They catch product-wiring regressions such as fabricated revisions, semantic boundary violations, missing global Quick View wiring, and mobile comparison regressions without downloading browsers or calling third parties.
 
 Then it resolves deployment identity and runs:
 

@@ -51,7 +51,7 @@ export function ResearchWorkspace({ models, papers, m, locale = 'zh' }: Props) {
           </div>
         </div>
         <div className={`workspace-lower workspace-pane workspace-pane-compare${activePane === 'compare' ? ' is-mobile-active' : ''}`}>
-          <SubstituteLab models={models} papers={papers} m={m} />
+          <SubstituteLab models={models} papers={papers} m={m} locale={locale} />
           <DecisionMemo models={models} papers={papers} m={m} locale={locale} />
         </div>
         <WorkspaceMobileNav activePane={activePane} m={m} onChange={setPane} />

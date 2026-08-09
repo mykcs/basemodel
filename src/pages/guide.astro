@@ -8,7 +8,7 @@ const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_zh ?? m.guide.steps;
 const title = guide?.title_zh ?? m.guide.title;
 const lede = guide?.lede_zh ?? m.guide.lede;
-const note = guide?.note_zh ?? m.guide.note;
+const note = '模型记录里的硬件档位仍是粗粒度研究元数据；工作台的显存计算器会结合精度、上下文、batch、LoRA rank 等条件给出启发式规划估算，但它不是硬件实测或可运行保证。';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
 ---
