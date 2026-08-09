@@ -1,6 +1,6 @@
 # Repository map for agents
 
-Last reviewed: 2026-08-09
+Last reviewed: 2026-08-10
 
 This file is the fast orientation map for coding agents. It explains where to look before making changes; it does not replace the authoritative deployment policy.
 
@@ -10,10 +10,12 @@ Before editing this repository, read in this order:
 
 1. [`/AGENTS.md`](../../../AGENTS.md) — repository-wide operating rules and collaboration expectations.
 2. [`../LATEST.md`](../LATEST.md) — latest timestamped handoff and current state.
-3. [`deployment-policy.md`](./deployment-policy.md) — authoritative GitHub -> Cloudflare Pages architecture and validation boundary.
-4. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Cloudflare build/deploy runbook and quota guardrails.
-5. [`/package.json`](../../../package.json) — available validation, audit, build and E2E commands.
-6. [`/README.md`](../../../README.md) — product purpose, data model and human-facing maintenance notes.
+3. [`product-and-research-integrity.md`](./product-and-research-integrity.md) — durable product/research-integrity contract.
+4. [`model-catalog-verification-policy.md`](./model-catalog-verification-policy.md) — required before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics.
+5. [`deployment-policy.md`](./deployment-policy.md) — authoritative GitHub -> Cloudflare Pages architecture and validation boundary.
+6. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Cloudflare build/deploy runbook and quota guardrails.
+7. [`/package.json`](../../../package.json) — available validation, audit, build and E2E commands.
+8. [`/README.md`](../../../README.md) — product purpose, data model and human-facing maintenance notes.
 
 If a document under `../history/` conflicts with current files, current files win.
 
@@ -50,7 +52,7 @@ src/lib/                   pure domain rules, codecs, recommendation/filter/hard
 src/stores/                client-side application state such as Research Task state
 ```
 
-When changing data shape, start from `src/lib/schemas.ts` and content configuration before touching many records. When changing URL/SEO behavior, inspect `src/layouts/AppLayout.astro`, i18n/path helpers and relevant tests together. When changing interactive behavior, inspect the component plus its unit/E2E coverage rather than patching rendered output only.
+When changing data shape, start from `src/lib/schemas.ts` and content configuration before touching many records. Before broad model/provider freshness work, read `model-catalog-verification-policy.md` and check both model records and family/vendor coverage indexes. When changing URL/SEO behavior, inspect `src/layouts/AppLayout.astro`, i18n/path helpers and relevant tests together. When changing interactive behavior, inspect the component plus its unit/E2E coverage rather than patching rendered output only.
 
 ## `tests/` map
 
@@ -127,7 +129,7 @@ The owner prefers high-autonomy execution. For repository work:
 | UI/component behavior | `npm run verify:deploy`; add/run focused tests |
 | routing/i18n/SEO | `npm run verify:deploy` + relevant Playwright E2E |
 | Astro/React/browser compatibility major change | `npm run verify:deploy` + full `npm run test:e2e` |
-| vendor/source maintenance | relevant external audit commands on demand |
+| vendor/source maintenance | read `model-catalog-verification-policy.md` + relevant external audit commands on demand |
 | deployment architecture | update current Agent docs + verify exact-head Preview before merge |
 
 The Cloudflare build itself is the final automated deployment gate for normal Preview/Production releases.
