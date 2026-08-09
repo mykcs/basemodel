@@ -2,6 +2,7 @@
 import AppLayout from '../layouts/AppLayout.astro';
 import { getMessages } from '../i18n';
 import { getCollection } from 'astro:content';
+import AgentPrimer from '../components/AgentPrimer.astro';
 import GuideContent from '../components/GuideContent.astro';
 const m = getMessages('zh');
 const guide = (await getCollection('guides'))[0]?.data;
@@ -12,4 +13,26 @@ const note = '模型记录里的硬件档位仍是粗粒度研究元数据；工
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
 ---
-<AppLayout title={m.guide.pageTitle} description={lede} locale="zh"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} /></div></AppLayout>
+<AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
+  <div class="shell editorial-page guide-learning-page">
+    <header class="page-header">
+      <span class="section-kicker">{m.nav.guide}</span>
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+    </header>
+    <AgentPrimer locale="zh" />
+    <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
+      <span class="section-kicker">进阶 · 把心智模型用于研究</span>
+      <h2 id="guide-research-layer-title">理解 Agent 之后，再学习怎么选模型、复现论文和核验证据</h2>
+      <p class="muted">下面保留原有的 SEED 全站研究流程、概念地图和术语表。它们现在是第二层，而不是新手进入网站时必须先理解的第一层。</p>
+    </section>
+    <GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} />
+  </div>
+</AppLayout>
+
+<style>
+  .guide-learning-page { max-width: 1080px; }
+  .guide-research-layer { margin: 72px 0 24px; padding-top: 34px; border-top: 1px solid var(--line); }
+  .guide-research-layer h2 { max-width: 760px; margin: 7px 0 10px; }
+  .guide-research-layer p { max-width: 760px; }
+</style>
