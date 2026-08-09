@@ -29,9 +29,9 @@ describe('Cloudflare-only deployment architecture', () => {
     expect(playwright).toContain("baseURL: 'http://127.0.0.1:4327/'");
   });
 
-  it('keeps deterministic checks inside the repository-owned Cloudflare build gate', () => {
+  it('keeps deterministic checks and V2 adversarial audits inside the repository-owned Cloudflare build gate', () => {
     expect(packageJson.scripts['verify:deploy']).toBe(
-      'npm run check && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test',
+      'npm run check && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial',
     );
     expect(buildCloudflare).toContain("run('npm', ['run', 'verify:deploy'])");
     expect(buildCloudflare).not.toContain('PUBLIC_BASE_PATH');
