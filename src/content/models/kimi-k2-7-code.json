@@ -1,0 +1,21 @@
+{
+  "id": "kimi-k2-7-code",
+  "name": "Kimi K2.7 Code",
+  "official_name": "Kimi K2.7 Code",
+  "vendor": "Moonshot AI",
+  "family": "Kimi",
+  "generation": "Kimi K2.7",
+  "release_date": "2026-06-16",
+  "status": "active",
+  "checkpoint": {"type": "coder", "modalities": ["text", "image", "video"], "specializations": ["coding", "agentic", "thinking", "tool-use", "multimodal"]},
+  "architecture": {"type": "moe", "total_parameters_b": 1000, "active_parameters_b": 32, "context_length": 262144, "expert_count": 384, "active_experts_per_token": 8},
+  "openness": {"weights_available": true, "base_checkpoint_available": false, "finetuning_allowed": "not_verified", "derivative_release_allowed": "not_verified", "commercial_use_allowed": "not_verified", "license_name": "Modified MIT", "classification": "open_weight", "custom_license": true, "derivative_distribution": "conditional", "commercial_use": "conditional", "conditions": ["modified_mit_terms_apply"]},
+  "access": {"weights_status": "released", "weights_released_at": "2026-06-16", "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code", "api_status": "available", "api_model_ids": ["kimi-k2.7-code"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "not_verified", "suitable_for_sft": "not_verified", "suitable_for_rl": "not_verified", "transformers_support": true, "vllm_support": true, "sglang_support": true, "verl_recipe_available": "not_verified"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [
+    {"url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Moonshot's first-party model card identifies Kimi K2.7 Code as a coding-focused agentic MoE with 1T total / 32B activated parameters, 384 experts with 8 selected per token, 256K context, image/video input, Modified MIT license, official API access, and vLLM/SGLang deployment support.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "checkpoint.specializations", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "architecture.expert_count", "architecture.active_experts_per_token", "openness.weights_available", "openness.license_name", "access.weights_status", "access.api_status", "access.api_model_ids", "research.transformers_support", "research.vllm_support", "research.sglang_support", "status"]},
+    {"url": "https://forum.moonshot.ai/latest", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Moonshot's official forum lists the Kimi K2.7 Code announcement on June 16, 2026.", "supports": ["release_date", "access.weights_released_at"]}
+  ],
+  "data_status": "verified"
+}
