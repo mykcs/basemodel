@@ -7,8 +7,9 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 1. [`LATEST.md`](./LATEST.md) — fixed timestamped handoff, current repository/deployment state and next action.
 2. [`current/deployment-policy.md`](./current/deployment-policy.md) — authoritative steady-state architecture and validation policy.
 3. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
-4. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
-5. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
+4. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
+5. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
+6. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
 
 If historical wording conflicts with `LATEST.md` or files under `current/`, current guidance wins unless the repository owner explicitly changes policy.
 
@@ -21,6 +22,7 @@ docs/agents/
 ├── current/
 │   ├── deployment-policy.md
 │   ├── repository-map.md
+│   ├── rendering-and-performance-policy.md
 │   └── cloudflare-pages-deployment.md
 └── history/
     ├── repository-layout-plan.md
