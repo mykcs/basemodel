@@ -2,6 +2,7 @@
 import AppLayout from '../../layouts/AppLayout.astro';
 import { getMessages } from '../../i18n';
 import { getCollection } from 'astro:content';
+import AgentPrimer from '../../components/AgentPrimer.astro';
 import GuideContent from '../../components/GuideContent.astro';
 const m = getMessages('en');
 const guide = (await getCollection('guides'))[0]?.data;
@@ -12,4 +13,26 @@ const note = 'Hardware tiers in model records remain coarse research metadata. T
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
 ---
-<AppLayout title={m.guide.pageTitle} description={lede} locale="en"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.guide}</span><h1>{title}</h1><p class="lede">{lede}</p></header><GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} /></div></AppLayout>
+<AppLayout title={m.guide.pageTitle} description={lede} locale="en">
+  <div class="shell editorial-page guide-learning-page">
+    <header class="page-header">
+      <span class="section-kicker">{m.nav.guide}</span>
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+    </header>
+    <AgentPrimer locale="en" />
+    <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
+      <span class="section-kicker">Advanced · apply the mental model to research</span>
+      <h2 id="guide-research-layer-title">After understanding agents, learn model choice, paper reproduction, and evidence verification</h2>
+      <p class="muted">The existing SEED end-to-end research workflow, concept map, and glossary remain below. They are now the second layer rather than prerequisites for first-time visitors.</p>
+    </section>
+    <GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} />
+  </div>
+</AppLayout>
+
+<style>
+  .guide-learning-page { max-width: 1080px; }
+  .guide-research-layer { margin: 72px 0 24px; padding-top: 34px; border-top: 1px solid var(--line); }
+  .guide-research-layer h2 { max-width: 760px; margin: 7px 0 10px; }
+  .guide-research-layer p { max-width: 760px; }
+</style>
