@@ -31,10 +31,14 @@ jobs:
           # build the exact commit that completed validation.
           ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
+      - name: Read pinned Node version
+        id: node_runtime
+        shell: bash
+        run: echo "version=$(tr -d '\r\n' < .node-version)" >> "$GITHUB_OUTPUT"
       - name: Build and upload Pages artifact
         uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6.1.1
         with:
-          node-version: 22
+          node-version: ${{ steps.node_runtime.outputs.version }}
         env:
           PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
           PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
