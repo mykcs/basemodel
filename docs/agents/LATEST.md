@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-10 01:15 +08:00**
+Last updated: **2026-08-10 02:12 +08:00**
 
-Status: **SEED end-to-end guide is merged and its durable research-workflow contract is now captured for future Agents; GitHub -> Cloudflare Pages remains the steady-state architecture.**
+Status: **The 2026-08-10 model-catalog audit is merged and its durable verification/evidence contract is now captured for future Agents; the SEED end-to-end guide remains current and GitHub -> Cloudflare Pages remains the steady-state architecture.**
 
 This is the stable first-stop file for future coding Agents. Read it before historical migration notes.
 
@@ -21,14 +21,50 @@ This is the stable first-stop file for future coding Agents. Read it before hist
 1. `/AGENTS.md`
 2. `docs/agents/LATEST.md`
 3. `docs/agents/current/product-and-research-integrity.md`
-4. `docs/agents/current/seed-guided-research-workflow.md`
-5. `docs/agents/current/deployment-policy.md`
-6. `docs/agents/current/repository-map.md`
-7. `docs/agents/current/rendering-and-performance-policy.md`
-8. `docs/agents/current/cloudflare-pages-deployment.md`
-9. `package.json` and task-specific source files
+4. `docs/agents/current/model-catalog-verification-policy.md`
+5. `docs/agents/current/seed-guided-research-workflow.md`
+6. `docs/agents/current/deployment-policy.md`
+7. `docs/agents/current/repository-map.md`
+8. `docs/agents/current/rendering-and-performance-policy.md`
+9. `docs/agents/current/cloudflare-pages-deployment.md`
+10. `package.json` and task-specific source files
 
-The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
+The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The model-catalog verification document is required reading before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics. The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
+
+## Model catalog verification contract now captured in-repo
+
+Durable model/family verification guidance is in:
+
+`docs/agents/current/model-catalog-verification-policy.md`
+
+The baseline audit was implemented through **PR #77 — `data: audit current model catalog as of 2026-08-10`**.
+
+Final PR head:
+
+`c6b968fdb8eee92b84a20b3361a39a5e1df8822f`
+
+Cloudflare Pages reported **Deploy successful** for that exact Preview head.
+
+PR #77 was squash-merged to `main` as:
+
+`53e94579496cedfafa22c4cbdf6a4791e4971628`
+
+Important interpretation for future Agents:
+
+- “latest model” is not one scalar: latest hosted/API generation, latest open-weight generation, latest base checkpoint, latest specialized checkpoint and latest research-usable checkpoint can differ;
+- family coverage and individual model files must both be audited because either side can be incomplete or stale;
+- provider API slugs belong in `variants[].api_aliases` / model `access.api_model_ids`; family `current_api_model_ids` must use repository model IDs;
+- an old API slug redirecting to a newer model does not mean the old model remains callable;
+- downloadable weights do not automatically mean open source, unrestricted derivatives, commercial use or fine-tuning permission;
+- concrete critical fields should have field-level `sources[].supports` evidence, not merely a page-level source list;
+- unknown facts must not be replaced by guessed hardware tiers, runtime support, training support or product availability;
+- production model data should use precise semantic states such as `not_reported`, `not_disclosed`, `not_published`, `not_applicable` or `unavailable` when appropriate;
+- `npm run audit:semantic` intentionally rejects legacy `not_verified` values in production JSON; the 2026-08-10 audit hit this Gate and fixed the data rather than weakening the audit;
+- future “today/latest/current/full family” requests require fresh first-party verification even if the 2026-08-10 baseline looked complete.
+
+The 2026-08-10 baseline corrected or expanded Qwen, Gemini, Gemma, Claude, DeepSeek, Kimi, Meta Muse, Mistral, GPT and Grok coverage, and refreshed vendor catalog entrypoints. See the dedicated policy file for the exact durable lessons and baseline details.
+
+Deployment evidence boundary: the session proved exact-head Cloudflare Preview success and the GitHub merge SHA. The available tools did not expose an authoritative Cloudflare Production-deployment-to-Git-SHA lookup. Do not cite a bare production HTTP 200 as independent proof that a particular Git SHA is live.
 
 ## SEED guided research workflow now captured in-repo
 
