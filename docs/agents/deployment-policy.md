@@ -43,6 +43,45 @@ The build output directory is:
 dist
 ```
 
+## Cost and quota policy
+
+The reason for leaving GitHub Actions was not that Cloudflare has no limits. It was to remove the runner-minute-heavy Actions/Pages chain and use a deployment platform whose limits match this static site better.
+
+As of 2026-08-09, Cloudflare Pages Free documents these relevant limits:
+
+- 500 Pages builds per month;
+- 1 build at a time;
+- 20-minute build timeout;
+- requests to static assets are free and unlimited when they do not invoke Pages Functions.
+
+Official references:
+
+- <https://developers.cloudflare.com/pages/platform/limits/>
+- <https://developers.cloudflare.com/pages/functions/pricing/>
+- <https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/>
+
+These values can change, so verify the official Cloudflare documentation before making future cost/limit decisions.
+
+For this repository, the practical rule is:
+
+```text
+visitor traffic to static pages != Pages build consumption
+Git push that triggers a Pages deployment = Pages build consumption
+```
+
+Therefore the 500-build allowance still matters to the development workflow even though normal static-site traffic does not consume it. Do not describe the project as having “no Cloudflare quota.” Describe it as having **unlimited free static asset requests under the current Pages pricing, plus a separate monthly build quota**.
+
+Build-budget rules:
+
+- batch related edits before pushing;
+- avoid no-op/speculative push loops;
+- prefer one meaningful PR-head Preview rather than many tiny deployment attempts;
+- `[CF-Pages-Skip]` may be used as a commit-message prefix for intermediate commits that intentionally do not need a deployment;
+- the final PR head must receive a real Cloudflare Preview build before merge for deployment-sensitive work;
+- if the repository becomes a monorepo or hosts multiple Pages projects, configure Cloudflare build watch paths/branch controls so unrelated changes do not trigger unnecessary builds.
+
+If Pages Functions, Workers, SSR, server-side APIs, KV/D1/R2 or other dynamic execution are introduced, revisit both the cost model and this architecture. Static-request assumptions must not be carried over blindly to dynamic workloads.
+
 ## Deployment blocking gate
 
 Every normal Cloudflare Preview/Production build runs:
@@ -113,14 +152,15 @@ Low-risk development dependency minor/patch updates may be grouped; production p
 ## Normal change workflow
 
 ```text
-1. Read current main.
+1. Read current main and the current agent docs.
 2. Create an agent branch.
-3. Make and inspect the complete diff.
-4. Open a PR.
-5. Confirm the Cloudflare Preview for the exact PR head succeeds.
-6. Inspect Preview behavior when visual/routing changes matter.
-7. Merge to main.
-8. Confirm the Cloudflare Production deployment for the merged commit.
+3. Batch the requested work and make the complete diff.
+4. Run the relevant repository-local checks before or during the final Preview build.
+5. Open a PR.
+6. Confirm the Cloudflare Preview for the exact PR head succeeds.
+7. Inspect Preview behavior when visual/routing/SEO behavior matters.
+8. Merge to main.
+9. Confirm the Cloudflare Production deployment for the merged commit.
 ```
 
 Do not make Actions runner availability or GitHub Pages deployment state part of acceptance.
