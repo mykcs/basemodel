@@ -11,6 +11,17 @@ const modelEntries = await getCollection('models');
 const paperEntries = await getCollection('papers');
 const models = modelEntries.map((entry) => entry.data);
 const papers = paperEntries.map((entry) => entry.data);
-const paperModelIds = [...modelIdsUsedByPapers(paperEntries.map((entry) => entry.data))];
+const paperModelIds = [...modelIdsUsedByPapers(papers)];
+const baseCheckpointHref = `${Astro.url.pathname}?baseCheckpoint=true`;
 ---
-<div class="shell"><header class="page-header"><h1>{m.modelsIndex.pageTitle}</h1><p class="lede">{m.modelsIndex.lede}</p></header><ModelExplorer client:load models={models} papers={papers} paperModelIds={paperModelIds} locale={locale} /></div>
+<div class="shell">
+  <header class="page-header">
+    <h1>{m.modelsIndex.pageTitle}</h1>
+    <p class="lede">{m.modelsIndex.lede}</p>
+    <div class="models-page-quick-entry" aria-label={locale === 'zh' ? '研究快捷入口' : 'Research quick entry'}>
+      <span>{locale === 'zh' ? '需要从基础 checkpoint 开始训练？' : 'Need to train from a base checkpoint?'}</span>
+      <a class="button button-secondary" href={baseCheckpointHref}>{locale === 'zh' ? '只看 Base checkpoint' : 'Base checkpoints only'}</a>
+    </div>
+  </header>
+  <ModelExplorer client:load models={models} papers={papers} paperModelIds={paperModelIds} locale={locale} />
+</div>
