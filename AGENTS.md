@@ -7,11 +7,12 @@ This repository is frequently maintained by coding agents through GitHub without
 Before making non-trivial changes, read in this order:
 
 1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed timestamped handoff and current state.
-2. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — authoritative steady-state architecture, build-budget and validation policy.
-3. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — fast map of ownership boundaries and change-to-check guidance.
-4. [`docs/agents/current/cloudflare-pages-deployment.md`](docs/agents/current/cloudflare-pages-deployment.md) — current Cloudflare operational runbook.
-5. [`package.json`](package.json) — executable validation/build/audit commands.
-6. [`README.md`](README.md) — product/data model and human-facing project guidance.
+2. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — durable product north star, research-integrity invariants and false-complete acceptance rules.
+3. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — authoritative steady-state architecture, build-budget and validation policy.
+4. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — fast map of ownership boundaries and change-to-check guidance.
+5. [`docs/agents/current/cloudflare-pages-deployment.md`](docs/agents/current/cloudflare-pages-deployment.md) — current Cloudflare operational runbook.
+6. [`package.json`](package.json) — executable validation/build/audit commands.
+7. [`README.md`](README.md) — product/data model and human-facing project guidance.
 
 Historical migration/incident material now lives under `docs/agents/history/`. It is evidence of what happened, not instructions to restore previous architecture.
 
@@ -116,11 +117,12 @@ The owner prefers high-autonomy execution.
 - For deployment-sensitive PRs, verify the Cloudflare Preview for the exact PR head SHA before merge, then verify Production after merge.
 - Read the Cloudflare GitHub App PR comment before asking the owner for dashboard screenshots; compare any reported commit with the actual PR head SHA because comments can arrive out of order.
 - Preserve Preview `noindex`, stable Production canonical identity, sitemap/robots correctness, bilingual hreflang, OG/JSON-LD identity, and root-relative routing.
+- Preserve the product/research-integrity rules in `docs/agents/current/product-and-research-integrity.md`: unknown must stay unknown, evidence must not be fabricated, and “done” requires wiring into the real user path rather than component/file existence.
 - Do not reintroduce `PUBLIC_BASE_PATH`, `PUBLIC_CANONICAL_SITE_URL`, GitHub Pages workflows, Actions runner containers, required Actions checks, or `github-actions` Dependabot updates without an explicit owner decision.
 - Keep `@types/node` on the same major as `.node-version`; Node, Astro, React, TypeScript, Vitest and Playwright major upgrades are deliberate migration work rather than routine churn.
 - Batch related GitHub edits. Avoid no-op commits because every normal branch push may consume a Cloudflare Pages build.
 - Fetch the latest blob/ref state before sequential writes to avoid conflict-generated commits.
 - Keep Astro 7 `compressHTML: true` unless inline whitespace has been explicitly audited and migrated; a regression test protects this compatibility contract.
-- Update `docs/agents/LATEST.md` plus the relevant file under `docs/agents/current/` when architecture, repository ownership boundaries, quota assumptions or validation boundaries change materially.
+- Update `docs/agents/LATEST.md` plus the relevant file under `docs/agents/current/` when architecture, repository ownership boundaries, product/research-integrity boundaries, quota assumptions or validation boundaries change materially.
 
 Human-facing project/data instructions remain in `README.md` and the rest of `docs/`.
