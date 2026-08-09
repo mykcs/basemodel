@@ -1,0 +1,143 @@
+---
+import { localePath, type Locale } from '../i18n';
+
+interface Props { locale: Locale; compact?: boolean }
+const { locale, compact = false } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+const paperHref = localePath(locale, '/papers/seed/');
+const modelHref = localePath(locale, '/models/qwen2-5-3b-instruct/');
+const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
+const workspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
+
+const alfworldInstall = `conda create -n seed python==3.12 -y
+conda activate seed
+pip3 install vllm==0.11.0
+pip3 install flash-attn==2.7.4.post1 --no-build-isolation --no-cache-dir
+pip install -e .
+pip3 install gymnasium==0.29.1
+pip3 install stable-baselines3==2.6.0
+pip3 install alfworld
+alfworld-download -f`;
+const alfworldRun = `bash scripts/sft/alfworld/prepare_data.sh
+bash scripts/sft/alfworld/train_sft.sh
+bash examples/seed_trainer/run_alfworld_sft_glm_self.sh`;
+const webshopInstall = `conda create -n seed-webshop python==3.10 -y
+conda activate seed-webshop
+cd ./agent_system/environments/env_package/webshop/webshop
+./setup.sh -d all
+cd <SEED_REPO_ROOT>
+pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+pip3 install flash-attn==2.7.4.post1 --no-build-isolation
+pip3 install -e .
+pip3 install vllm==0.8.2`;
+const webshopRun = `bash scripts/sft/webshop/prepare_data.sh
+bash scripts/sft/webshop/train_sft.sh
+bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
+const envFile = `CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+WANDB_MODE=offline
+MODELS_ROOT=/path/to/models
+DATA_ROOT=/path/to/data-root
+OPENAI_API_KEY=...
+OPENAI_BASE_URL=...
+OPENAI_MODEL=glm-5.2`;
+const gpuCheck = `nvidia-smi
+python - <<'PY'
+import torch
+print("visible GPUs:", torch.cuda.device_count())
+PY`;
+---
+
+<section id="seed-reproduction" class:list={['seed-reproduction', { compact }]} aria-labelledby="seed-reproduction-title">
+  <header class="repro-hero">
+    <div>
+      <span class="section-kicker">{t('SEED 复现实战 · 从目标倒推', 'SEED reproduction · work backwards from the claim')}</span>
+      <h2 id="seed-reproduction-title">{t('先证明链路，再租吞吐；先固定论文变量，再谈替代', 'Prove the chain before buying throughput; pin paper variables before substitutions')}</h2>
+      <p>{t('目标不是“把仓库跑起来”，而是验证 trajectory → hindsight skill → OPD/GRPO → policy update 这条因果链，并明确你的结果能不能与论文比较。模型、环境和 GPU 都只是服务这个目标。', 'The goal is not merely to make the repository run. It is to validate trajectory → hindsight skill → OPD/GRPO → policy update and state whether the result is comparable with the paper. Models, environments, and GPUs serve that goal.')}</p>
+    </div>
+    <aside><strong>{t('每次选择只问一句', 'One question for every choice')}</strong><p>{t('“我现在是在证明方法链路，还是在对齐论文结论？” 如果只是前者，不要提前支付后者的算力成本。', '“Am I proving the method chain, or aligning the paper result?” If it is only the former, do not pay paper-scale compute costs yet.')}</p></aside>
+  </header>
+
+  <ol class="mainline">
+    <li><span>01</span><strong>{t('声明', 'Claim')}</strong><small>{t('方法验证 / 严格复现', 'Method / strict')}</small></li>
+    <li><span>02</span><strong>{t('环境', 'Environment')}</strong><small>ALFWorld → WebShop</small></li>
+    <li><span>03</span><strong>{t('训练链', 'Training chain')}</strong><small>rollout → skill → OPD / GRPO</small></li>
+    <li><span>04</span><strong>{t('算力', 'Compute')}</strong><small>{t('小规模先行 / 8×A800 80GB 严格对齐', 'Reduced first / strict 8×A800 80GB')}</small></li>
+    <li><span>05</span><strong>{t('验证', 'Validation')}</strong><small>GRPO baseline → SEED</small></li>
+  </ol>
+
+  <section class="block" aria-labelledby="compute-title">
+    <span class="section-kicker">{t('算力选择不是起点', 'Compute is not the starting point')}</span>
+    <h3 id="compute-title">{t('按你要证明的结论租卡', 'Rent GPUs for the claim you want to make')}</h3>
+    <div class="cards three">
+      <article><small>{t('环境验证', 'Environment check')}</small><h4>{t('先不租 8 卡', 'Do not rent eight GPUs yet')}</h4><p>{t('先安装环境并保存一条完整 observation/action/reward/terminal 轨迹。环境没跑通之前，更多 GPU 不解决问题。', 'First install the environment and save one complete observation/action/reward/terminal trajectory. More GPUs do not fix an unproven environment.')}</p></article>
+      <article><small>{t('工程建议，不是论文条件', 'Engineering advice, not paper setting')}</small><h4>{t('缩小方法验证：从 1×80GB 级资源起步', 'Reduced method check: start from 1×80GB-class capacity')}</h4><p>{t('先用 Qwen2.5-3B 做小规模端到端验证，再根据真实 profiling / OOM 扩卡。它证明代码链，不与论文主表直接比较。', 'Run a reduced Qwen2.5-3B end-to-end check, then scale from actual profiling or OOM. This proves the code path, not the main table.')}</p></article>
+      <article class="strict"><small>{t('论文事实', 'Paper fact')}</small><h4>8×NVIDIA A800 80GB</h4><p>{t('严格复现才对齐这套训练拓扑，同时锁定模型、数据、超参数与基线。换 A100 / H800 / H100 等卡即使能跑，也应标为方法复现或工程重跑。', 'Strict reproduction aligns this topology together with model, data, hyperparameters, and baselines. A100 / H800 / H100 substitutions are method or engineering reruns even if runnable.')}</p></article>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="galaxy-title">
+    <span class="section-kicker">AI Galaxy / 智星云</span>
+    <h3 id="galaxy-title">{t('算力租赁平台上具体怎么选', 'How to choose on the rental platform')}</h3>
+    <p class="muted">{t('库存和价格会变化，所以不写死“当前有货”或固定价格。严格复现时按论文条件搜索；找不到时要改变实验声明，而不是悄悄换卡。', 'Inventory and prices change, so this guide does not hard-code live availability or prices. For strict reproduction, search by the paper condition; if unavailable, change the experiment claim rather than silently substituting hardware.')}</p>
+    <ol class="market-steps">
+      <li><strong>{t('产品形态：', 'Instance form: ')}</strong>{t('进入算力市场。核心是 8 张 GPU 能否在同一节点可见；云主机能满足就用云主机，否则找能保证该拓扑的裸金属。', 'Open the compute marketplace. The key is whether eight GPUs are visible on one node; use cloud host if it provides that topology, otherwise a bare-metal option that guarantees it.')}</li>
+      <li><strong>{t('GPU：', 'GPU: ')}</strong>{t('严格复现筛 A800 80GB ×8；方法验证先从更小资源开始。不要因为 H100 更新，就自动把严格复现改成 H100。', 'For strict reproduction filter A800 80GB ×8; for method checks start smaller. Do not silently turn strict reproduction into H100 because it is newer.')}</li>
+      <li><strong>{t('镜像：', 'Image: ')}</strong>{t('平台官方租用文档提示二代镜像不支持 A / V 系列显卡，因此 A800 应选择一代镜像，再选与 SEED 依赖兼容的 Linux / Ubuntu 环境。', 'The platform’s rental guide says second-generation images do not support A/V-series GPUs, so A800 should use a first-generation image, then a Linux/Ubuntu environment compatible with SEED.')}</li>
+      <li><strong>{t('磁盘：', 'Disk: ')}</strong>{t('为 WebShop 资源、模型权重、rollout 和 SFT/RL checkpoints 留数据盘余量；没有测量前不写死一个“万能容量”。', 'Leave data-disk headroom for WebShop assets, model weights, rollouts, and SFT/RL checkpoints; do not invent a universal capacity before measurement.')}</li>
+      <li><strong>{t('开机先验卡：', 'Verify before setup: ')}</strong><pre><code>{gpuCheck}</code></pre>{t('严格复现应看到 8 张目标 GPU，再检查多卡通信/NCCL 与 CUDA 驱动。', 'A strict run should see all eight target GPUs, then verify multi-GPU/NCCL and CUDA driver health.')}</li>
+    </ol>
+    <div class="links"><a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{t('打开算力市场', 'Open marketplace')} ↗</a><a href="https://gpu.ai-galaxy.com/docs_v2/" target="_blank" rel="noreferrer">{t('平台官方租用流程', 'Official rental guide')} ↗</a></div>
+  </section>
+
+  {!compact && <>
+    <section class="block" aria-labelledby="alf-title">
+      <span class="section-kicker">01 · ALFWorld</span>
+      <h3 id="alf-title">{t('先从 ALFWorld 跑通最短闭环', 'Start with ALFWorld for the shortest complete loop')}</h3>
+      <p class="muted">{t('为什么先它：官方 SEED 仓库给出直接安装路径。先把环境、轨迹结构和训练入口搞清楚，再处理 WebShop 的独立 Python 环境。', 'Why first: the official SEED repository provides a direct setup path. Understand environment, trajectory schema, and training entrypoint before handling WebShop’s separate Python environment.')}</p>
+      <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{alfworldInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{alfworldRun}</code></pre><p>{t('不要直接跑最后一条命令：先看一条 vanilla rollout，再检查 Stage 1 trajectory → skill，最后才进入 Stage 2。', 'Do not jump to the final command: inspect one vanilla rollout, then Stage 1 trajectory → skill, then Stage 2.')}</p></article></div>
+      <p class="protocol"><strong>{t('严格协议：', 'Strict protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 2048；response 512；最大交互 30。测试 140 seen + 134 unseen，并按 6 类任务等权平均。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 2048; response 512; max 30 interactions. Test 140 seen + 134 unseen, equally weighted over six task categories.')}</p>
+    </section>
+
+    <section class="block" aria-labelledby="webshop-title">
+      <span class="section-kicker">02 · WebShop</span>
+      <h3 id="webshop-title">{t('WebShop 单独建 Python 3.10 环境', 'Give WebShop its own Python 3.10 environment')}</h3>
+      <p class="muted">{t('主 SEED 环境用 Python 3.12，而官方 WebShop 路径要求 Python ≤3.10。不要为了目录整齐强行合并环境；复现优先于形式统一。', 'The main SEED environment uses Python 3.12 while the official WebShop path requires Python ≤3.10. Do not force them together for cosmetic neatness; reproduction takes priority.')}</p>
+      <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{webshopInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{webshopRun}</code></pre><p>{t('先确认页面状态、action 与 reward 能形成完整 episode，再生成 SFT 数据和训练。', 'First confirm page state, actions, and rewards form a complete episode before generating SFT data and training.')}</p></article></div>
+      <p class="protocol"><strong>{t('严格协议：', 'Strict protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 4096；response 512；最大交互 15；测试 128 个任务，报告 Score 与 Succ。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 4096; response 512; max 15 interactions; test 128 tasks and report Score and Succ.')}</p>
+    </section>
+
+    <section class="block" aria-labelledby="env-title">
+      <span class="section-kicker">03 · Common training config</span><h3 id="env-title">{t('先固定运行变量，再开始花 GPU 时间', 'Pin runtime variables before spending GPU time')}</h3>
+      <pre class="wide"><code>{envFile}</code></pre>
+      <p class="protocol">{t('严格复现还要记录 repo commit、模型 revision、tokenizer/chat template、CUDA/driver、依赖锁定和实际 GPU 拓扑，使别人能重建同一条件。', 'Strict reproduction also records repo commit, model revision, tokenizer/chat template, CUDA/driver, dependency lock state, and actual GPU topology so another researcher can rebuild the same conditions.')}</p>
+    </section>
+
+    <section class="block" aria-labelledby="validation-title">
+      <span class="section-kicker">{t('最后才谈“复现成功”', 'Only now define reproduction success')}</span><h3 id="validation-title">{t('验证顺序：环境 → 数据链 → 训练信号 → 基线 → 论文结果', 'Validation order: environment → data path → training signal → baseline → paper result')}</h3>
+      <ol class="validation"><li>{t('同一任务能重复启动，轨迹字段完整。', 'The same task starts reliably and yields a complete trajectory.')}</li><li>{t('Stage 1 能从 raw trajectory 追溯到 hindsight skill target。', 'Stage 1 traces a hindsight skill target back to the raw trajectory.')}</li><li>{t('Stage 2 的同一批 sampled actions 在普通与 skill 上下文重打分后产生可检查的 OPD 信号。', 'Stage 2 re-scores the same sampled actions in ordinary and skill contexts and yields an inspectable OPD signal.')}</li><li>{t('同模型同环境先跑 GRPO，再跑 SEED，否则无法归因 OPD。', 'Run GRPO before SEED under the same model and environment or OPD cannot be attributed.')}</li><li>{t('只有模型、数据、Table 5 超参数、8×A800 80GB 与评估协议没有未解释差异，才与论文主表比较。', 'Compare with the main table only when model, data, Table 5 hyperparameters, 8×A800 80GB, and evaluation protocol have no unexplained differences.')}</li></ol>
+    </section>
+  </>}
+
+  <footer class="repro-footer"><strong>{t('主线没有变：', 'The mainline never changes: ')}</strong>{t('先定义想证明什么，再决定模型、环境和算力；每一步结束都回到这个问题检查有没有跑偏。', 'define what you want to prove, then choose model, environment, and compute; after each step, return to that question and check for drift.')}<nav><a href={compact ? guideHref : paperHref}>{compact ? t('打开完整实操', 'Open full practical guide') : t('SEED 论文页', 'SEED paper')} →</a><a href={modelHref}>Qwen2.5-3B-Instruct →</a><a href={workspaceHref}>{t('预填方法验证工作台', 'Prefill method workspace')} →</a></nav></footer>
+  <p class="source-note"><strong>{t('来源边界：', 'Source boundary: ')}</strong>{t('论文规模、数据量、超参数和评估协议来自 SEED arXiv v1；安装命令来自作者官方仓库；AI Galaxy 的 A/V 系列镜像提示来自平台官方租用文档。1×80GB 级起步是本站的低成本工程建议，不是论文条件，也不是可运行保证。', 'Paper-scale compute, data counts, hyperparameters, and evaluation protocols come from SEED arXiv v1; installation commands come from the authors’ repository; AI Galaxy’s A/V-series image note comes from the platform rental guide. Starting from 1×80GB-class capacity is a cost-conscious engineering recommendation, not a paper condition or run guarantee.')} <a href="https://arxiv.org/html/2607.14777v1" target="_blank" rel="noreferrer">SEED arXiv ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED code ↗</a></p>
+</section>
+
+<style>
+  .seed-reproduction { margin: 56px 0; }
+  .repro-hero { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(250px,.7fr); gap:32px; padding-bottom:26px; border-bottom:1px solid var(--line); }
+  .repro-hero h2 { margin:8px 0 12px; max-width:850px; }
+  .repro-hero > div > p, .muted { color:var(--muted); }
+  .repro-hero aside { padding:20px; border-left:3px solid var(--accent); background:var(--surface-muted); border-radius:0 14px 14px 0; }
+  .repro-hero aside p { margin:7px 0 0; color:var(--muted); }
+  .mainline { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:0; margin:26px 0 48px; list-style:none; }
+  .mainline li { padding:13px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+  .mainline span,.mainline strong,.mainline small { display:block; }.mainline span{font-size:.72rem;font-weight:800;color:var(--accent-deep);margin-bottom:7px}.mainline small{color:var(--muted)}
+  .block { margin-top:50px; }.block h3{margin:7px 0 10px}.cards{display:grid;gap:14px;margin-top:18px}.cards.three{grid-template-columns:repeat(3,minmax(0,1fr))}.cards.two{grid-template-columns:repeat(2,minmax(0,1fr))}.cards article{min-width:0;padding:19px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.cards article.strict{border-color:var(--accent)}.cards h4{margin:7px 0}.cards p{color:var(--muted);margin-bottom:0}.cards small{font-weight:750;color:var(--accent-deep)}
+  .market-steps { display:grid; gap:10px; padding-left:24px; }.market-steps li{padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px}.market-steps pre{margin:10px 0}
+  pre { overflow-x:auto; padding:13px; border-radius:10px; background:var(--surface-muted); border:1px solid var(--line); font-size:.78rem; line-height:1.55; }.wide{max-width:820px}.protocol{padding:13px 15px;background:var(--surface-muted);border-radius:10px;color:var(--muted)}
+  .links,.repro-footer nav{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:.87rem;font-weight:700}.validation{display:grid;gap:8px;max-width:900px}.validation li{color:var(--muted)}
+  .repro-footer{margin-top:48px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.source-note{font-size:.82rem;line-height:1.55;color:var(--muted)}.source-note a{margin-left:8px}
+  .compact .block[aria-labelledby="alf-title"],.compact .block[aria-labelledby="webshop-title"],.compact .block[aria-labelledby="env-title"],.compact .block[aria-labelledby="validation-title"]{display:none}.compact{margin:36px 0}.compact .mainline{margin-bottom:34px}
+  @media(max-width:900px){.repro-hero{grid-template-columns:1fr}.mainline{grid-template-columns:repeat(2,minmax(0,1fr))}.cards.three,.cards.two{grid-template-columns:1fr}}@media(max-width:520px){.mainline{grid-template-columns:1fr}}
+</style>
