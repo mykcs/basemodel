@@ -6,10 +6,11 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 
 1. [`LATEST.md`](./LATEST.md) — fixed timestamped handoff, current repository/deployment state and next action.
 2. [`current/deployment-policy.md`](./current/deployment-policy.md) — authoritative steady-state architecture and validation policy.
-3. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
-4. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
-5. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
-6. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
+3. [`current/product-vision-and-design-policy.md`](./current/product-vision-and-design-policy.md) — durable product mission, research workflow, UI/design principles, evidence rules and V3 trigger conditions.
+4. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
+5. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
+6. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
+7. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
 
 If historical wording conflicts with `LATEST.md` or files under `current/`, current guidance wins unless the repository owner explicitly changes policy.
 
@@ -21,6 +22,7 @@ docs/agents/
 ├── LATEST.md
 ├── current/
 │   ├── deployment-policy.md
+│   ├── product-vision-and-design-policy.md
 │   ├── repository-map.md
 │   ├── rendering-and-performance-policy.md
 │   └── cloudflare-pages-deployment.md
@@ -31,6 +33,8 @@ docs/agents/
 ```
 
 `LATEST.md` keeps the same path. Update its timestamp/status after a meaningful repository-layout, deployment-architecture or build-budget change rather than creating a new “latest” file.
+
+The product/design policy is intentionally durable rather than timestamped handoff material. Update it only when the owner materially changes the product mission, research workflow, recommendation/evidence policy, information architecture, or the conditions under which a server-side V3 should be introduced.
 
 ## Historical records
 
