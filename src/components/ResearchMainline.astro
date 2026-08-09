@@ -11,7 +11,7 @@ const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
 
 type Stage = 'question' | 'constraints' | 'candidates' | 'evidence' | 'decision';
-type PageGuide = { stage?: Stage; current: string; why: string; how: string };
+type PageGuide = { stage: Stage; current: string; why: string; how: string };
 
 const stages: Array<{ id: Stage; label: string }> = [
   { id: 'question', label: t('明确问题', 'Define the question') },
@@ -27,6 +27,7 @@ const starts = (value: string) => path.startsWith(`${value}/`);
 let guide: PageGuide;
 if (exact('/')) {
   guide = {
+    stage: 'question',
     current: t('先把研究目标说清楚，再开始看模型。', 'State the research goal before browsing models.'),
     why: t('模型很多，但真正决定选择的是论文目标、更新方式、开放性和资源约束。', 'The model list is large, but the choice is driven by the paper goal, update method, access, and resource constraints.'),
     how: t('第一次使用先走新手引导；已经有明确任务，就从论文案例或工作台进入。', 'If you are new, start with the guide; if the task is already clear, enter through a paper case or the workspace.'),
@@ -56,7 +57,7 @@ if (exact('/')) {
   guide = {
     stage: 'constraints',
     current: t('把抽象研究目标变成显式约束，并形成可解释候选。', 'Turn the research goal into explicit constraints and explainable candidates.'),
-    why: t('开放权重、训练方式、显存、角色和可比性是彼此独立的约束；漏掉任何一个都可能得到“看起来强、实际不能用”的模型。', 'Open weights, update method, memory, role, and comparability are separate constraints; missing one can produce a model that looks strong but is unusable.'),
+    why: t('开放权重、训练方式、显存、角色和可比性是彼此独立的约束；漏掉任何一个都可能得到“看起来强、实际不能用”的模型。', 'Open weights, update method, VRAM, role, and comparability are separate constraints; missing one can produce a model that looks strong but is unusable.'),
     how: t('先填写硬约束，再看 baseline / modern / resource 候选；有未知字段时继续核验证据，不要把未知当成否。', 'Set hard constraints first, inspect baseline / modern / resource candidates, and verify unknown fields instead of treating unknown as false.'),
   };
 } else if (exact('/models')) {
@@ -113,11 +114,11 @@ if (exact('/')) {
 <section class="research-mainline" aria-labelledby="research-mainline-title">
   <div class="shell research-mainline-inner">
     <div class="research-mainline-heading">
-      <p class="research-mainline-label">{t('全站主线', 'Site-wide mainline')}</p>
-      <h2 id="research-mainline-title">{t('从研究问题，到可复现的模型决策', 'From a research question to a reproducible model decision')}</h2>
+      <p class="research-mainline-label">{t('研究路径', 'Research path')}</p>
+      <h2 id="research-mainline-title">{t('从研究问题到可复现的模型决策', 'From a research question to a reproducible model decision')}</h2>
     </div>
 
-    <ol class="research-mainline-stages" aria-label={t('研究决策主线', 'Research decision mainline')}>
+    <ol class="research-mainline-stages" aria-label={t('研究决策路径', 'Research decision path')}>
       {stages.map((stage, index) => (
         <li class:list={{ 'is-active': guide.stage === stage.id }} aria-current={guide.stage === stage.id ? 'step' : undefined}>
           <span>{String(index + 1).padStart(2, '0')}</span>
