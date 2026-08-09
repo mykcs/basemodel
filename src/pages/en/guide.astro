@@ -3,12 +3,13 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { getMessages } from '../../i18n';
 import { getCollection } from 'astro:content';
 import AgentPrimer from '../../components/AgentPrimer.astro';
+import SeedReproductionPath from '../../components/SeedReproductionPath.astro';
 import GuideContent from '../../components/GuideContent.astro';
 const m = getMessages('en');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_en ?? m.guide.steps;
-const title = 'Understand agents first, then choose a foundation model';
-const lede = 'This guide assumes you already know Transformers, fine-tuning, inference, APIs, and GPUs. First build the runtime and agentic-RL mental model, then use SEED to connect those concepts to real papers, checkpoints, and reproduction decisions.';
+const title = 'Understand agents first, then reproduce one paper end to end';
+const lede = 'This guide assumes you already know Transformers, fine-tuning, inference, APIs, and GPUs. Build the agent mental model, then use SEED as one concrete thread from checkpoint and ALFWorld / WebShop setup through compute rental and paper-aligned validation.';
 const note = 'Hardware tiers in model records remain coarse research metadata. The workbench VRAM calculator combines precision, context length, batch size, LoRA rank, and related assumptions to produce a heuristic planning estimate; it is not a measured hardware result or a guarantee that the configuration will run.';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
@@ -20,10 +21,11 @@ const glossary = guide?.glossary ?? [];
       <p class="lede">{lede}</p>
     </header>
     <AgentPrimer locale="en" />
+    <SeedReproductionPath locale="en" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
-      <p class="guide-section-label">Part two</p>
-      <h2 id="guide-research-layer-title">Apply the agent mental model to papers and foundation-model choice</h2>
-      <p class="muted">Continue with SEED through the full research workflow: read model roles in the paper, verify checkpoints and evidence, then narrow candidates with reproduction goals, update methods, and hardware constraints.</p>
+      <p class="guide-section-label">Part three</p>
+      <h2 id="guide-research-layer-title">After one real SEED reproduction, transfer the workflow to other papers and models</h2>
+      <p class="muted">The workbench flow, concept map, and glossary below generalize the same discipline. Keep the order: define the research claim, pin paper variables, then filter models, inspect evidence, and justify substitutions.</p>
     </section>
     <GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} />
   </div>
