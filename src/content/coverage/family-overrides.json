@@ -1,0 +1,30 @@
+{
+  "overrides": [
+    {
+      "id": "qwen",
+      "current_generation": "Qwen3.7",
+      "latest_generation_label": "Qwen3.7",
+      "current_flagship_model_id": "qwen3-7-max",
+      "current_hosted_flagship_model_id": "qwen3-7-max",
+      "current_api_flagship_model_id": "qwen3-7-max",
+      "current_open_weight_model_id": "qwen3-6-35b-a3b",
+      "current_api_model_ids": ["qwen3.7-max", "qwen3.7-plus", "qwen3.6-flash"],
+      "current_research_recommended_model_ids": ["qwen3-7-plus", "qwen3-6-35b-a3b"],
+      "current_claim": {"text": "Qwen3.7 is the current hosted/API generation recorded by Atlas; Qwen3.6-35B-A3B remains the current open-weight flagship in the catalog.", "text_zh": "Qwen3.7 是 Atlas 当前记录的托管/API 主线；当前目录中的开放权重旗舰仍为 Qwen3.6-35B-A3B。", "text_en": "Qwen3.7 is the current hosted/API generation recorded by Atlas; Qwen3.6-35B-A3B remains the current open-weight flagship in the catalog.", "status": "confirmed", "source_url": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model", "checked_at": "2026-08-09"},
+      "official_catalog_urls": ["https://www.alibabacloud.com/help/en/model-studio/text-generation-model", "https://www.alibabacloud.com/help/en/model-studio/models"],
+      "catalog_checked_at": "2026-08-09",
+      "confidence": "official-confirmed",
+      "open_weight_scope": "Qwen3.6-35B-A3B is the latest open-weight flagship currently recorded by Atlas. Qwen3.7 Max/Plus are tracked separately as hosted/API models; no open-weight claim is inferred for them.",
+      "api_scope": "Alibaba Cloud Model Studio lists Qwen3.7-Max and Qwen3.7-Plus as current Qwen API models while Qwen3.6-Flash remains the Flash model.",
+      "as_of": "2026-08-09",
+      "variants": [
+        {"id": "qwen3-7-max", "role": "flagship", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.7-max", "qwen3.7-max-2026-05-20"], "is_current": true, "source_url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "checked_at": "2026-08-09"},
+        {"id": "qwen3-7-plus", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.7-plus", "qwen3.7-plus-2026-05-26"], "is_current": true, "source_url": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model", "checked_at": "2026-08-09"},
+        {"id": "qwen3-6-35b-a3b", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "is_current": true, "source_url": "https://github.com/QwenLM/Qwen3.6", "checked_at": "2026-08-09"}
+      ]
+    },
+    {"id": "kimi", "current_claim": {"text": "Kimi K3 is the latest Kimi open-weight model recorded in the official catalog.", "text_zh": "Kimi K3 是当前官方目录中记录的最新 Kimi 开放权重模型。", "text_en": "Kimi K3 is the latest Kimi open-weight model recorded in the official catalog.", "status": "confirmed", "source_url": "https://huggingface.co/moonshotai/Kimi-K3", "checked_at": "2026-08-09"}},
+    {"id": "llama", "current_claim": {"text": "Llama 4 is the current Llama generation, with Scout and Maverick as released open-weight models.", "text_zh": "Llama 4 是当前 Llama 主线；Scout 与 Maverick 是已发布的开放权重模型。", "text_en": "Llama 4 is the current Llama generation, with Scout and Maverick as released open-weight models.", "status": "confirmed", "source_url": "https://www.llama.com/models/llama-4/", "checked_at": "2026-08-09"}},
+    {"id": "deepseek", "current_claim": {"text": "DeepSeek-V4 is the current DeepSeek generation recorded by Atlas, with Pro and Flash variants tracked across official API and weight surfaces.", "text_zh": "DeepSeek-V4 是 Atlas 当前记录的 DeepSeek 主线；Pro 与 Flash 按官方 API 与权重发布渠道分别追踪。", "text_en": "DeepSeek-V4 is the current DeepSeek generation recorded by Atlas, with Pro and Flash variants tracked across official API and weight surfaces.", "status": "confirmed", "source_url": "https://api-docs.deepseek.com/", "checked_at": "2026-08-09"}}
+  ]
+}
