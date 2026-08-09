@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, licenseLabel, modalityLabel, roleLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
 import { comparisonToCsv, comparisonToMarkdown, type CompareExportRow } from '../lib/research/compareExport';
 import type { CompareImpactCode } from '../lib/research/compareImpact';
-import { getMessages, type Locale } from '../i18n';
+import { getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel, AtlasPaper } from '../lib/types';
 import { compareIds } from '../stores/compare';
 import { useHydrated } from '../lib/useHydrated';
@@ -121,7 +121,10 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     setExportNotice(m.compare.copied);
   };
   const copyBibtex = async () => {
-    const text = active.map((model) => `@misc{${model.id.replace(/[^a-zA-Z0-9]/g, '-')},\n  title = {${model.name}},\n  author = {{${model.vendor}}},\n  year = {${model.release_date.slice(0, 4)}},\n  note = {Catalog record; verify the official revision before citing},\n  url = {${window.location.origin}/models/${model.id}/}\n}`).join('\n\n');
+    const text = active.map((model) => {
+      const modelUrl = new URL(localePath(locale, `/models/${model.id}/`), `${window.location.origin}/`).href;
+      return `@misc{${model.id.replace(/[^a-zA-Z0-9]/g, '-')},\n  title = {${model.name}},\n  author = {{${model.vendor}}},\n  year = {${model.release_date.slice(0, 4)}},\n  note = {Catalog record; verify the official revision before citing},\n  url = {${modelUrl}}\n}`;
+    }).join('\n\n');
     await navigator.clipboard.writeText(text);
     setExportNotice(locale === 'zh' ? 'BibTeX 已复制' : 'BibTeX copied');
   };
