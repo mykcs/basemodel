@@ -1,0 +1,666 @@
+/* Visual learning upgrade — additive overrides only.
+   Keep the research/data model untouched while improving hierarchy, readability,
+   responsive behavior, and collision handling across the site. */
+
+:root {
+  --reading-width: 72ch;
+  --compare-tray-space: 88px;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  min-width: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(circle at 12% -10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 30rem),
+    var(--bg);
+}
+
+img,
+svg,
+canvas,
+video {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd,
+td,
+th {
+  text-wrap: pretty;
+}
+
+p,
+li,
+dd,
+td,
+th,
+.model-card h3,
+.family-card,
+.paper-row,
+.candidate-info,
+.unresolved-field-item,
+.tray-chip {
+  overflow-wrap: anywhere;
+}
+
+pre,
+code {
+  max-width: 100%;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+.shell {
+  width: min(var(--content-max), calc(100% - 48px));
+}
+
+/* Header: put global search in the real navigation flow instead of floating over it. */
+.site-header {
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 55%, transparent);
+}
+
+.nav-inner {
+  gap: 18px;
+}
+
+.brand {
+  min-width: 0;
+}
+
+.brand strong {
+  letter-spacing: -.02em;
+}
+
+.desktop-nav {
+  min-width: 0;
+}
+
+.command-search-trigger {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 7px 11px;
+  border-radius: 10px;
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
+  font-size: .78rem;
+  white-space: nowrap;
+}
+
+.command-search-trigger:hover {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  background: var(--surface-muted);
+}
+
+.command-search-trigger kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface-muted);
+  line-height: 1.2;
+}
+
+.lang-switch {
+  flex: 0 0 auto;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.skip-link {
+  z-index: 80;
+  border-radius: 8px;
+}
+
+/* Global hierarchy and reading comfort. */
+.site-main {
+  min-width: 0;
+}
+
+.hero {
+  padding: clamp(58px, 7vw, 92px) 0 clamp(46px, 5vw, 68px);
+}
+
+.hero-grid {
+  align-items: center;
+  gap: clamp(36px, 5vw, 72px);
+}
+
+.hero h1 {
+  max-width: 820px;
+  margin-bottom: 22px;
+  font-size: clamp(2.7rem, 5.7vw, 5.4rem);
+  letter-spacing: -.058em;
+}
+
+.lede {
+  max-width: var(--reading-width);
+  line-height: 1.65;
+}
+
+.hero-note,
+.selector-shell,
+.explorer-shell,
+.comparison-shell,
+.constraint-panel,
+.candidate-board,
+.evidence-inspector,
+.landscape-chart-shell {
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.page-header {
+  padding: clamp(46px, 6vw, 72px) 0 34px;
+}
+
+.page-header h1,
+.detail-title {
+  max-width: 920px;
+}
+
+.page-header .lede,
+.detail-subtitle,
+.paper-method-summary .lede {
+  line-height: 1.68;
+}
+
+.section {
+  padding: clamp(34px, 4.5vw, 58px) 0;
+}
+
+.section-heading {
+  align-items: flex-end;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.section-heading > .muted,
+.section-heading > p.muted,
+.section-heading > span.muted {
+  max-width: 46ch;
+  line-height: 1.5;
+}
+
+.section-kicker,
+.eyebrow {
+  margin-bottom: 8px;
+}
+
+.editorial-page {
+  padding-top: clamp(46px, 6vw, 72px);
+}
+
+.editorial-page > p,
+.editorial-page > section > p,
+.detail-section > p,
+.callout {
+  max-width: var(--reading-width);
+}
+
+/* Cards: clearer grouping without turning the site into a dashboard of equal-weight boxes. */
+.model-card,
+.entry-card,
+.scenario-card,
+.path-card,
+.family-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card,
+.seed-tour-card,
+.concept-card {
+  min-width: 0;
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, background-color .16s ease;
+}
+
+.model-card:hover,
+.entry-card:hover,
+.scenario-card:hover,
+.paper-row:hover,
+.tree-checkpoint:hover,
+.landscape-learning-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.model-grid,
+.family-grid,
+.scenario-grid,
+.path-grid,
+.landscape-learning-grid {
+  align-items: stretch;
+}
+
+.model-card,
+.family-card,
+.paper-row {
+  border-color: color-mix(in srgb, var(--line) 86%, var(--ink));
+}
+
+.model-card h3,
+.paper-row h3,
+.family-card h3 {
+  line-height: 1.25;
+}
+
+.tag,
+.status-badge,
+.chip,
+.reason-chip,
+.risk-chip,
+.tray-chip {
+  line-height: 1.35;
+}
+
+/* Beginner runway shown only on the home route. */
+.learning-start {
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--accent) 9%, var(--surface)) 0%, var(--surface) 46%, color-mix(in srgb, var(--blue) 6%, var(--surface)) 100%);
+}
+
+.learning-start-inner {
+  display: grid;
+  grid-template-columns: minmax(250px, .72fr) minmax(0, 1.28fr);
+  gap: clamp(28px, 4vw, 52px);
+  align-items: center;
+  padding: 28px 0 30px;
+}
+
+.learning-start-copy {
+  max-width: 430px;
+}
+
+.learning-start-kicker {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: var(--accent-deep);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.learning-start-copy h2 {
+  margin-bottom: 10px;
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  line-height: 1.08;
+}
+
+.learning-start-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.62;
+}
+
+.learning-start-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learning-start-steps li {
+  min-width: 0;
+}
+
+.learning-start-steps a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  height: 100%;
+  min-height: 128px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: inherit;
+  text-decoration: none;
+}
+
+.learning-start-steps a:hover,
+.learning-start-steps a:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.learning-step-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--surface-muted);
+  color: var(--accent-deep);
+  font-size: .72rem;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+
+.learning-step-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.learning-step-copy strong {
+  font-size: .86rem;
+  line-height: 1.35;
+}
+
+.learning-step-copy small {
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.learning-step-action {
+  margin-top: auto;
+  color: var(--accent-deep);
+  font-size: .72rem;
+  font-weight: 750;
+}
+
+/* Guide and learning surfaces: make progression visible. */
+.guide-seed-tour {
+  scroll-margin-top: 92px;
+}
+
+.seed-tour-route {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.seed-tour-card {
+  border-color: color-mix(in srgb, var(--line) 82%, var(--accent));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--ink) 4%, transparent);
+}
+
+.seed-tour-number {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.guide-steps li > span {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* Collision / overflow fixes. */
+body:has(.compare-tray) {
+  padding-bottom: var(--compare-tray-space);
+}
+
+body:has(.compare-tray) .workspace-mobile-nav {
+  bottom: calc(12px + var(--compare-tray-space));
+}
+
+.compare-tray {
+  z-index: 45;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.tray-inner,
+.tray-chips,
+.tray-actions {
+  min-width: 0;
+}
+
+.tray-chips {
+  max-width: min(54vw, 680px);
+}
+
+.tray-chip {
+  max-width: 230px;
+}
+
+.workspace-grid > *,
+.detail-layout > *,
+.comparison-picker > *,
+.candidate-row > *,
+.paper-row > * {
+  min-width: 0;
+}
+
+.button,
+.text-link,
+.card-compare,
+.context-link {
+  max-width: 100%;
+}
+
+.comparison-table-wrap,
+.matrix-wrap,
+.workflow-flow,
+.model-detail-nav,
+.task-stepper {
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.table,
+table {
+  max-width: 100%;
+}
+
+.model-detail-nav {
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.command-menu {
+  max-height: min(78vh, 720px);
+}
+
+.command-results {
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 1080px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .mobile-menu.is-open {
+    display: block;
+  }
+
+  .command-search-trigger kbd {
+    display: none;
+  }
+
+  .learning-start-inner {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .learning-start-copy {
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --compare-tray-space: 146px;
+  }
+
+  .shell {
+    width: min(100% - 30px, var(--content-max));
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .learning-start-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-start-steps a {
+    min-height: 0;
+  }
+
+  .compare-tray {
+    padding: 9px 0 max(9px, env(safe-area-inset-bottom));
+  }
+
+  .tray-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 10px;
+  }
+
+  .tray-label {
+    align-self: center;
+  }
+
+  .tray-chips {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    max-width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .tray-chip {
+    flex: 0 0 auto;
+    max-width: 70vw;
+  }
+
+  .tray-actions {
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+  }
+
+  .tray-actions .button {
+    padding: 7px 9px;
+  }
+
+  .paper-row {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-meta {
+    text-align: left;
+  }
+
+  .hero h1,
+  .detail-title {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 680px) {
+  .nav-inner > .lang-switch {
+    display: none;
+  }
+
+  .mobile-menu .lang-switch {
+    display: block;
+  }
+
+  .hero {
+    padding-top: 46px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.45rem, 13vw, 3.45rem);
+    line-height: .98;
+  }
+
+  .page-header h1 {
+    line-height: 1.02;
+  }
+
+  .section {
+    padding: 34px 0;
+  }
+
+  .learning-start-inner {
+    padding: 22px 0 24px;
+  }
+}
+
+@media (max-width: 410px) {
+  .nav-inner {
+    gap: 9px;
+  }
+
+  .brand {
+    gap: 7px;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .command-search-trigger {
+    width: 36px;
+    min-height: 34px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .command-search-trigger::before {
+    content: '⌕';
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .menu-toggle,
+  .theme-toggle {
+    width: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .model-card,
+  .entry-card,
+  .scenario-card,
+  .paper-row,
+  .tree-checkpoint,
+  .landscape-learning-card {
+    transition: none;
+  }
+
+  .model-card:hover,
+  .entry-card:hover,
+  .scenario-card:hover,
+  .paper-row:hover,
+  .tree-checkpoint:hover,
+  .landscape-learning-card:hover {
+    transform: none;
+  }
+}

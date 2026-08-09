@@ -1,0 +1,55 @@
+---
+import { localePath, type Locale } from '../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
+const steps = [
+  {
+    number: '01',
+    title: t('先理解你在做哪一种研究', 'Start with the kind of research you are doing'),
+    body: t('先区分严格复现、方法复现和现代化重跑，再谈“该选哪个模型”。', 'Separate strict reproduction, method reproduction, and modern reruns before choosing a model.'),
+    href: localePath(locale, '/guide/'),
+    action: t('打开学习指南', 'Open the learning guide'),
+  },
+  {
+    number: '02',
+    title: t('跟着 SEED 看懂论文为什么这样选模型', 'Use SEED to see why a paper chooses its models'),
+    body: t('从论文角色、checkpoint、开放性和证据出发，而不是把“最新”当成“最好”。', 'Read model roles, checkpoints, openness, and evidence instead of treating “newest” as “best”.'),
+    href: localePath(locale, '/papers/seed/'),
+    action: t('进入 SEED 案例', 'Open the SEED case'),
+  },
+  {
+    number: '03',
+    title: t('最后把真实约束放进工作台', 'Then put your real constraints into the workspace'),
+    body: t('GPU、显存、RL、运行时和开放权重条件会把“模型列表”变成真正的研究候选。', 'GPU, VRAM, RL, runtime, and open-weight constraints turn a model list into research candidates.'),
+    href: seedWorkspaceHref,
+    action: t('打开预填 SEED 工作台', 'Open the prefilled SEED workspace'),
+  },
+];
+---
+<section class="learning-start" aria-labelledby="learning-start-title">
+  <div class="shell learning-start-inner">
+    <div class="learning-start-copy">
+      <span class="learning-start-kicker">{t('第一次使用？从这里开始', 'New here? Start here')}</span>
+      <h2 id="learning-start-title">{t('用一个真实案例建立“怎么选基础模型”的思路', 'Build a model-selection mental model with one real case')}</h2>
+      <p>{t('这个站不是模型排行榜。最重要的顺序是：先确定研究问题，再核对论文与模型证据，最后才根据你的资源做选择。', 'This is not a model leaderboard. Start with the research question, verify paper and model evidence, and only then choose under your resource constraints.')}</p>
+    </div>
+    <ol class="learning-start-steps">
+      {steps.map((step) => (
+        <li>
+          <a href={step.href}>
+            <span class="learning-step-number" aria-hidden="true">{step.number}</span>
+            <span class="learning-step-copy">
+              <strong>{step.title}</strong>
+              <small>{step.body}</small>
+              <span class="learning-step-action">{step.action} →</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
