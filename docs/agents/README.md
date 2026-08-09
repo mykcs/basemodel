@@ -13,6 +13,23 @@ Read these before changing deployment, hosting, URL/SEO behavior, release valida
 
 If any historical file conflicts with these documents, the current documents win unless the repository owner explicitly changes policy.
 
+## Consolidated migration and operating summary
+
+[`2026-08-09-cloudflare-steady-state-summary.md`](./2026-08-09-cloudflare-steady-state-summary.md) is the one-file summary of the work and lessons that produced the current architecture. It records:
+
+- why the project moved away from the GitHub Actions + GitHub Pages deployment chain;
+- the final GitHub -> Cloudflare Pages responsibility split;
+- the deterministic deployment gate and retained on-demand E2E/network audits;
+- the application regressions fixed during migration/hardening;
+- the final SEO/base-path/runtime/Dependabot hardening;
+- the Cloudflare Free build-quota model and Agent push discipline;
+- the rule that one logical task/PR should normally target one real final-head Preview instead of many tiny build-triggering pushes;
+- why `[CF-Pages-Skip]` is appropriate for intermediate commits that intentionally do not need deployment;
+- why raw deployment-history row counts must not automatically be interpreted as monthly builds used when skipped entries are present;
+- the high-autonomy owner/Agent collaboration model and the remaining human account-settings boundary.
+
+This summary is explanatory context, not a higher authority than the current policy/runbook files above.
+
 ## Recommended new-agent reading order
 
 For a new coding agent taking over the repository:
@@ -25,6 +42,8 @@ AGENTS.md
   -> README.md
   -> only then the files directly relevant to the requested change
 ```
+
+When an Agent needs the migration rationale or wants to understand why Actions/Pages/build-budget decisions exist, read `2026-08-09-cloudflare-steady-state-summary.md` after the authoritative files rather than reconstructing the history from old PRs.
 
 The goal is to prevent an agent from rediscovering or accidentally reversing settled architecture decisions.
 
