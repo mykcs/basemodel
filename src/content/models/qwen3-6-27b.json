@@ -36,7 +36,8 @@
     "weights_status": "released",
     "weights_released_at": "2026-04-22",
     "weights_url": "https://huggingface.co/Qwen/Qwen3.6-27B",
-    "api_status": "not_verified"
+    "api_status": "available",
+    "api_model_ids": ["qwen3.6-27b"]
   },
   "research": {
     "suitable_for_inference": true,
@@ -49,10 +50,10 @@
     "verl_recipe_available": "not_verified"
   },
   "hardware": {
-    "inference_tier": "80gb",
-    "lora_tier": "multi_gpu",
-    "full_sft_tier": "multi_gpu",
-    "rl_tier": "multi_gpu"
+    "inference_tier": "not_verified",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
   },
   "sources": [
     {
@@ -68,6 +69,13 @@
       "checked_at": "2026-08-10",
       "evidence_note": "Qwen's official Qwen3.6 repository records the April 22, 2026 Qwen3.6-27B release and states that Qwen3.6 open-weight models use Apache 2.0.",
       "supports": ["release_date", "openness.license_name", "openness.weights_available"]
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-10",
+      "evidence_note": "Alibaba Cloud Model Studio's current Qwen3.6 pricing table lists qwen3.6-27b as an available API model.",
+      "supports": ["access.api_status", "access.api_model_ids"]
     }
   ],
   "data_status": "verified"
