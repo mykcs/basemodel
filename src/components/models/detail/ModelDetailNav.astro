@@ -1,0 +1,31 @@
+---
+import type { Locale } from '../../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const items = locale === 'zh'
+  ? [
+      ['research-summary', '研究速览'],
+      ['access-openness', '获取与开放性'],
+      ['architecture', '架构'],
+      ['training-runtime', '训练与运行时'],
+      ['hardware', '硬件'],
+      ['reproducibility', '版本与复现'],
+      ['paper-adoption', '论文采用'],
+      ['evidence', '证据'],
+      ['unknowns', '未知项'],
+    ]
+  : [
+      ['research-summary', 'Research summary'],
+      ['access-openness', 'Access & openness'],
+      ['architecture', 'Architecture'],
+      ['training-runtime', 'Training & runtime'],
+      ['hardware', 'Hardware'],
+      ['reproducibility', 'Revision & reproduction'],
+      ['paper-adoption', 'Paper adoption'],
+      ['evidence', 'Evidence'],
+      ['unknowns', 'Unknowns'],
+    ];
+---
+<nav class="model-detail-nav" aria-label={locale === 'zh' ? '模型详情章节' : 'Model detail sections'}>
+  {items.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+</nav>
