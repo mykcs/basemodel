@@ -664,3 +664,203 @@ table {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Polish pass — remaining gaps after the initial visual upgrade.      */
+/* ------------------------------------------------------------------ */
+
+/* 中文大标题：-.058em/-.065em 跟踪下笔画相叠，放宽到仍紧凑但可读的范围。 */
+h1 {
+  letter-spacing: -.04em;
+  line-height: 1.04;
+}
+
+h2 {
+  letter-spacing: -.028em;
+}
+
+.hero h1 {
+  letter-spacing: -.04em;
+  line-height: 1.02;
+}
+
+/* 指南页概念地图与术语表：SEED 教程已有完整样式，这两块此前没有布局样式。
+   编号用 CSS counter 生成，不改组件结构。 */
+.concept-map-nav a {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .78rem;
+  text-decoration: none;
+  transition: border-color .15s ease;
+}
+
+.concept-map-nav a:hover,
+.concept-map-nav a:focus-visible {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+.concept-map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+  counter-reset: concept;
+}
+
+.concept-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  scroll-margin-top: 96px;
+}
+
+.concept-card h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 1.02rem;
+}
+
+.concept-card h3::before {
+  counter-increment: concept;
+  content: counter(concept, decimal-leading-zero);
+  flex: 0 0 auto;
+  color: var(--accent-deep);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.concept-card > p {
+  color: var(--muted);
+  font-size: .86rem;
+  margin-bottom: 12px;
+}
+
+.concept-model-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.concept-model-links + .concept-model-links {
+  margin-top: 0;
+  padding-top: 2px;
+  border-top: 0;
+}
+
+.concept-model-links > span {
+  margin-right: 2px;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 650;
+}
+
+.concept-model-links a {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: .74rem;
+  text-decoration: none;
+  transition: border-color .15s ease;
+}
+
+.concept-model-links a:hover,
+.concept-model-links a:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.glossary-list {
+  display: grid;
+  gap: 8px;
+}
+
+.glossary-list details {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.glossary-list summary {
+  cursor: pointer;
+  font-weight: 650;
+  font-size: .9rem;
+}
+
+.glossary-list details p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .84rem;
+}
+
+@media (max-width: 700px) {
+  .concept-map-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 模型页“从基础 checkpoint 开始训练”快捷入口：原有类没有任何样式，
+   移动端文字与按钮互相挤压换行。 */
+.models-page-quick-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+.models-page-quick-entry .button {
+  flex: 0 0 auto;
+}
+
+/* 研究摘要“模型定位”标签：与后面的能力胶囊区分层级。 */
+.summary-specializations > span:first-child {
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
+/* 工作台候选卡片：按钮列竖排，不再压住推荐理由/风险 chips；
+   窄屏降为单列，按钮回到内容下方。 */
+.candidate-board .candidate-row {
+  align-items: start;
+}
+
+.candidate-board .candidate-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+@media (max-width: 980px) {
+  .candidate-board .candidate-row {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-board .candidate-row > .button {
+    justify-self: start;
+  }
+
+  .candidate-board .candidate-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
