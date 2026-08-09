@@ -48,6 +48,22 @@ describe('researchTaskCodec', () => {
     expect(next.get('task')).toBeNull();
   });
 
+  it('keeps explicit false constraints while removing stale omitted fields', () => {
+    const current = new URLSearchParams('keep=1&v=2&open=1&quant=1&ctx=32768');
+    const nextTask: ResearchTask = {
+      ...emptyTask,
+      mode: 'method',
+      openWeight: false,
+      quantizationAllowed: false,
+    };
+    const next = replaceResearchTaskSearchParams(current, nextTask);
+
+    expect(next.get('keep')).toBe('1');
+    expect(next.get('open')).toBe('0');
+    expect(next.get('quant')).toBe('0');
+    expect(next.get('ctx')).toBeNull();
+  });
+
   it('clears all task-owned parameters without deleting unrelated URL state', () => {
     const current = new URLSearchParams('keep=1&v=2&open=1&priority=cost');
     const next = replaceResearchTaskSearchParams(current, null);
