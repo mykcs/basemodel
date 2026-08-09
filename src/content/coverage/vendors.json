@@ -4,109 +4,93 @@
       "id": "openai",
       "name": "OpenAI",
       "official_catalog_urls": [
-        "https://platform.openai.com/docs/models"
+        "https://developers.openai.com/api/docs/models"
       ],
       "refresh_days": 14,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "qwen",
       "name": "Qwen / Alibaba",
       "official_catalog_urls": [
+        "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
         "https://github.com/QwenLM/Qwen3.6",
         "https://huggingface.co/Qwen"
       ],
-      "refresh_days": 30,
-      "model_types": [
-        "open-weight"
-      ]
+      "refresh_days": 14,
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "google",
       "name": "Google",
       "official_catalog_urls": [
-        "https://ai.google.dev/gemma"
+        "https://ai.google.dev/gemini-api/docs/models",
+        "https://ai.google.dev/gemma/docs/core/model_card_4",
+        "https://huggingface.co/google"
       ],
-      "refresh_days": 30,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "refresh_days": 14,
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "meta",
-      "name": "Meta / Llama",
+      "name": "Meta",
       "official_catalog_urls": [
-        "https://github.com/meta-llama/llama-models"
+        "https://www.llama.com/models/",
+        "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/"
       ],
-      "refresh_days": 30,
-      "model_types": [
-        "open-weight"
-      ]
+      "refresh_days": 14,
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "anthropic",
       "name": "Anthropic",
       "official_catalog_urls": [
-        "https://platform.claude.com/docs/en/about-claude/models/overview"
+        "https://platform.claude.com/docs/en/about-claude/models/overview",
+        "https://platform.claude.com/docs/en/release-notes/overview"
       ],
       "refresh_days": 14,
-      "model_types": [
-        "api"
-      ]
+      "model_types": ["api"]
     },
     {
       "id": "deepseek",
       "name": "DeepSeek",
       "official_catalog_urls": [
-        "https://www.deepseek.com/"
+        "https://huggingface.co/deepseek-ai",
+        "https://api-docs.deepseek.com/"
       ],
-      "refresh_days": 30,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "refresh_days": 14,
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "moonshot",
       "name": "Moonshot AI",
       "official_catalog_urls": [
-        "https://platform.kimi.ai/",
-        "https://platform.moonshot.ai/",
-        "https://platform.moonshot.cn/docs/intro"
+        "https://www.kimi.com/help/agent/agent-overview",
+        "https://platform.kimi.com/docs/models",
+        "https://huggingface.co/moonshotai"
       ],
       "refresh_days": 14,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "mistral",
       "name": "Mistral AI",
       "official_catalog_urls": [
-        "https://docs.mistral.ai/getting-started/models/"
+        "https://docs.mistral.ai/models/overview",
+        "https://huggingface.co/mistralai"
       ],
-      "refresh_days": 30,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "refresh_days": 14,
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "glm",
       "name": "GLM / Z.ai",
       "official_catalog_urls": [
+        "https://huggingface.co/zai-org",
         "https://z.ai/"
       ],
       "refresh_days": 30,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "model_types": ["api", "open-weight"]
     },
     {
       "id": "lmsys",
@@ -115,20 +99,17 @@
         "https://lmsys.org/"
       ],
       "refresh_days": 90,
-      "model_types": [
-        "open-weight"
-      ]
+      "model_types": ["open-weight"]
     },
     {
       "id": "xai",
-      "name": "xAI",
+      "name": "xAI / SpaceXAI",
       "official_catalog_urls": [
-        "https://docs.x.ai/docs/models"
+        "https://docs.x.ai/developers/models",
+        "https://docs.x.ai/developers/release-notes"
       ],
       "refresh_days": 14,
-      "model_types": [
-        "api"
-      ]
+      "model_types": ["api"]
     },
     {
       "id": "minimax",
@@ -138,10 +119,7 @@
         "https://huggingface.co/MiniMaxAI"
       ],
       "refresh_days": 30,
-      "model_types": [
-        "api",
-        "open-weight"
-      ]
+      "model_types": ["api", "open-weight"]
     }
   ]
 }
