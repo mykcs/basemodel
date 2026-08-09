@@ -8,10 +8,11 @@ Before making non-trivial changes, read in this order:
 
 1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed timestamped handoff and current state.
 2. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — authoritative steady-state architecture, build-budget and validation policy.
-3. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — fast map of ownership boundaries and change-to-check guidance.
-4. [`docs/agents/current/cloudflare-pages-deployment.md`](docs/agents/current/cloudflare-pages-deployment.md) — current Cloudflare operational runbook.
-5. [`package.json`](package.json) — executable validation/build/audit commands.
-6. [`README.md`](README.md) — product/data model and human-facing project guidance.
+3. [`docs/agents/current/product-vision-and-design-policy.md`](docs/agents/current/product-vision-and-design-policy.md) — product mission, research workflow, UI/design principles, evidence policy, anti-regression rules and V3 trigger conditions.
+4. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — fast map of ownership boundaries and change-to-check guidance.
+5. [`docs/agents/current/cloudflare-pages-deployment.md`](docs/agents/current/cloudflare-pages-deployment.md) — current Cloudflare operational runbook.
+6. [`package.json`](package.json) — executable validation/build/audit commands.
+7. [`README.md`](README.md) — product/data model and human-facing project guidance.
 
 Historical migration/incident material now lives under `docs/agents/history/`. It is evidence of what happened, not instructions to restore previous architecture.
 
@@ -80,6 +81,26 @@ Keep, but do not automatically add to every Cloudflare build without a deliberat
 
 Run those on demand for major UI, routing/i18n, Astro/framework, browser compatibility, or data-source maintenance work.
 
+## Product/design guardrail
+
+The durable product definition lives in `docs/agents/current/product-vision-and-design-policy.md`.
+
+Before a non-trivial product, navigation, recommendation, model-detail, paper-detail, evidence, comparison, workspace, or data-model change, verify that the change supports the core research loop:
+
+```text
+define task
+  -> narrow feasible models
+  -> form differentiated candidates
+  -> explain tradeoffs and methodological impact
+  -> trace claims to evidence
+  -> compare / analyze substitutions
+  -> preserve a reproducible decision record
+```
+
+Do not regress the product into a generic vendor catalog, single-score leaderboard, parameter database, paper-link aggregator, or unsupported auto-recommendation system. Unknown and unverified facts must remain explicit.
+
+Do not introduce accounts, databases, SSR, Workers/Functions or a framework migration merely because they are technically possible. The current static-first Astro architecture should remain until a real server-side requirement such as cross-device cloud storage, team collaboration, permissions, notifications, or materially dynamic data services justifies a V3 architecture decision.
+
 ## Normal agent workflow
 
 For non-trivial work, use this default flow:
@@ -122,5 +143,6 @@ The owner prefers high-autonomy execution.
 - Fetch the latest blob/ref state before sequential writes to avoid conflict-generated commits.
 - Keep Astro 7 `compressHTML: true` unless inline whitespace has been explicitly audited and migrated; a regression test protects this compatibility contract.
 - Update `docs/agents/LATEST.md` plus the relevant file under `docs/agents/current/` when architecture, repository ownership boundaries, quota assumptions or validation boundaries change materially.
+- Update `docs/agents/current/product-vision-and-design-policy.md` when the owner materially changes the product mission, research decision workflow, recommendation/evidence rules, information architecture, or V3 trigger conditions.
 
 Human-facing project/data instructions remain in `README.md` and the rest of `docs/`.
