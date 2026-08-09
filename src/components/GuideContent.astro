@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../i18n';
+import AgentPrimer from './AgentPrimer.astro';
 
 interface Concept { id: string; title_zh: string; title_en: string; body_zh: string; body_en: string; model_ids: string[]; links?: Array<{ label_zh: string; label_en: string; href: string }> }
 interface Glossary { term_zh: string; term_en: string; definition_zh: string; definition_en: string }
@@ -132,6 +133,8 @@ const seedTour = [
 ];
 ---
 <ol class="guide-steps">{steps.map((step, index) => <li><span>{index + 1}</span><p>{step}</p></li>)}</ol>
+
+<AgentPrimer locale={locale} />
 
 <section class="guide-seed-tour" aria-labelledby="seed-tour-title">
   <div class="section-heading">

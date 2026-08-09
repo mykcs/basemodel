@@ -1,0 +1,236 @@
+---
+import { localePath, type Locale } from '../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+
+const seedPaperHref = localePath(locale, '/papers/seed/');
+const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
+const methodologyHref = localePath(locale, '/methodology/');
+
+const knownChecklist = [
+  {
+    title: t('预训练 → 指令微调', 'Pre-training → instruction tuning'),
+    detail: t('base model 在海量语料上学会语言；SFT 用指令-回答对教它听懂人话。', 'A base model learns language from massive corpora; SFT teaches it to follow instructions with instruction–answer pairs.'),
+  },
+  {
+    title: t('token 级交叉熵 loss', 'Token-level cross-entropy loss'),
+    detail: t('SFT 的本质：对数据集里的“标准回答”逐 token 模仿。', 'SFT in essence: imitate the dataset’s “reference answer” token by token.'),
+  },
+  {
+    title: t('调用云端 API', 'Calling cloud APIs'),
+    detail: t('单次请求-响应；多轮对话的状态由你自己的代码维护。', 'Single request–response; your own code maintains multi-turn state.'),
+  },
+];
+
+const autonomyRows = [
+  {
+    label: t('单次调用', 'Single call'),
+    tag: t('你熟悉的', 'What you know'),
+    body: t('一个 prompt 进，一个回答出。模型无状态，循环和分支都写在你自己的代码里。', 'One prompt in, one answer out. The model is stateless; loops and branches live in your code.'),
+  },
+  {
+    label: t('工作流 workflow', 'Workflow'),
+    tag: t('预定义路径', 'Predefined path'),
+    body: t('工程师把调用顺序写死：链式、路由、并行、评审……LLM 是流水线里的一个零件。', 'Engineers hard-code the call graph: chaining, routing, parallelization, review… The LLM is a component in a pipeline.'),
+  },
+  {
+    label: t('智能体 agent', 'Agent'),
+    tag: t('模型自主决策', 'Model-directed'),
+    body: t('给一个目标，LLM 自己决定下一步：观察 → 思考 → 调工具 → 看结果 → 再决定，直到任务完成。', 'Given a goal, the LLM decides each next step itself: observe → think → call a tool → read the result → decide again, until done.'),
+  },
+];
+
+const rlStages = [
+  {
+    label: 'RLHF / PPO',
+    when: '2022 · InstructGPT',
+    body: t('人给模型的多个回答排序 → 训一个奖励模型预测人类偏好 → 用 PPO 让策略拿到更高奖励。三阶段：SFT、奖励模型、RL 优化。', 'Humans rank model outputs → train a reward model to predict preference → optimize the policy with PPO. Three stages: SFT, reward model, RL optimization.'),
+  },
+  {
+    label: 'GRPO',
+    when: '2024 · DeepSeekMath / R1',
+    body: t('对同一个 prompt 采样一组回答，用组内相对高低计算优势——省掉单独的 critic 网络。DeepSeek-R1 靠它练出长链推理。', 'Sample a group of responses per prompt and compute advantage from their relative ranking — no separate critic network. DeepSeek-R1 used it to grow long-chain reasoning.'),
+  },
+  {
+    label: 'RLVR',
+    when: t('2025 · 可验证奖励', '2025 · verifiable rewards'),
+    body: t('奖励不用人标：数学答案对不对、代码过不过测试，程序直接判定。SEED 第二阶段的自进化训练就属于这一族。', 'Rewards need no human labels: a program checks whether the math answer is right or the code passes tests. SEED’s second-stage self-evolution belongs to this family.'),
+  },
+];
+
+const verifyDimensions = [
+  {
+    title: t('权重与许可证', 'Weights & license'),
+    detail: t('开放权重才谈得上本地复现；许可证决定你能不能改、能不能发。', 'Open weights make local reproduction possible; the license decides what you may change and publish.'),
+  },
+  {
+    title: t('checkpoint 与 revision 精确性', 'Checkpoint & revision precision'),
+    detail: t('“Qwen2.5-3B”和“Qwen2.5-3B-Instruct 的某个 revision”是两回事——tokenizer、config、chat template 都要对上。', '“Qwen2.5-3B” and “a specific revision of Qwen2.5-3B-Instruct” are different things — tokenizer, config, and chat template must all match.'),
+  },
+  {
+    title: t('证据状态', 'Evidence status'),
+    detail: t('not_verified 的意思是“还没有人核验过”，不是“不支持”。复现记录里这两种结论必须分开写。', 'not_verified means “no one has checked this yet”, not “unsupported”. Reproduction notes must keep these two conclusions apart.'),
+  },
+];
+---
+
+<section class="agent-primer" aria-labelledby="agent-primer-title">
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">{t('新手桥接 · 写给有机器学习基础的你', 'New to agents · for readers with an ML background')}</span>
+      <h2 id="agent-primer-title">{t('从你已经懂的机器学习，到智能体研究', 'From the machine learning you know to agent research')}</h2>
+    </div>
+    <p class="muted">{t('不重复讲预训练、Transformer 或梯度下降——这些你已经会了。这里只补三块拼图：智能体和你熟悉的模型调用差在哪、强化学习在训练中扮演什么角色、为什么复现要从选基础模型开始。读完大约十分钟，然后跟着下方的 SEED 案例动手。', 'No re-explaining pre-training, Transformers, or gradient descent — you know those. This bridge covers only the three missing pieces: how an agent differs from the model calls you know, where reinforcement learning fits in training, and why reproduction starts with base-model choice. About ten minutes, then the SEED case below gets you hands-on.')}</p>
+  </div>
+
+  <nav class="primer-route" aria-label={t('新手桥接路径', 'Primer path')}>
+    <a href="#primer-start"><span class="primer-route-num">00</span>{t('你的起点', 'Your starting point')}</a><span aria-hidden="true">→</span>
+    <a href="#primer-agent"><span class="primer-route-num">01</span>{t('智能体是什么', 'What an agent is')}</a><span aria-hidden="true">→</span>
+    <a href="#primer-rl"><span class="primer-route-num">02</span>{t('强化学习在哪', 'Where RL fits')}</a><span aria-hidden="true">→</span>
+    <a href="#primer-model"><span class="primer-route-num">03</span>{t('为什么先选模型', 'Why model choice first')}</a><span aria-hidden="true">→</span>
+    <a href="#seed-tour-title">{t('SEED 实操', 'SEED hands-on')}</a>
+  </nav>
+
+  <div class="primer-list">
+    <article class="primer-card" id="primer-start">
+      <div class="primer-number" aria-hidden="true">00</div>
+      <div class="primer-main">
+        <span class="primer-kicker">{t('先确认：这些你已经会了', 'First, confirm what you already know')}</span>
+        <h3>{t('你的起点：预训练、SFT、调 API', 'Your starting point: pre-training, SFT, and API calls')}</h3>
+        <p>{t('三块拼图全部建立在你已有的知识上，不需要重学任何东西，只需要把已知概念向智能体方向延伸一步。', 'All three pieces extend what you already know — nothing needs relearning, only a step further toward agents.')}</p>
+        <ul class="primer-checklist">
+          {knownChecklist.map((item) => (
+            <li>
+              <span class="primer-check" aria-hidden="true">✓</span>
+              <div><strong>{item.title}</strong><p>{item.detail}</p></div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
+
+    <article class="primer-card" id="primer-agent">
+      <div class="primer-number" aria-hidden="true">01</div>
+      <div class="primer-main">
+        <span class="primer-kicker">{t('拼图一 · 概念', 'Piece one · concept')}</span>
+        <h3>{t('智能体 = 模型 + 工具 + 自主循环', 'An agent = model + tools + an autonomous loop')}</h3>
+        <p>{t('你熟悉的 API 调用是“问一次、答一次”。智能体的区别在于：循环的控制权从你的代码移交给了模型自己。Anthropic 在《Building effective agents》里给出的判断标准很干脆——执行路径是工程师预定义的，那就是工作流（workflow）；由模型在运行中动态选择的，才是智能体（agent）。', 'The API calls you know are “ask once, answer once”. An agent differs in who controls the loop: it moves from your code into the model itself. Anthropic’s Building Effective Agents draws the line cleanly — if the execution path is predefined by engineers, it is a workflow; if the model picks the path at runtime, it is an agent.')}</p>
+        <div class="primer-compare" role="table" aria-label={t('单次调用、工作流与智能体对照', 'Single call vs workflow vs agent')}>
+          {autonomyRows.map((row) => (
+            <div class="primer-compare-row" role="row">
+              <div class="primer-compare-label" role="cell"><strong>{row.label}</strong><span>{row.tag}</span></div>
+              <p role="cell">{row.body}</p>
+            </div>
+          ))}
+        </div>
+        <p>{t('一个最小可用的智能体只有三样东西：一个接上了工具、检索和记忆的模型，一个它能影响的环境（代码执行器、浏览器、终端……），以及一份告诉它“你是谁、目标是什么”的系统提示。工程上的建议同样克制：能用工作流解决就不要上智能体——自主性是用延迟、成本和逐步累积的错误率换来的。', 'A minimal agent needs only three things: a model wired to tools, retrieval, and memory; an environment it can act on (code executor, browser, terminal…); and a system prompt that states who it is and what the goal is. The engineering advice is equally restrained: reach for an agent only when a workflow cannot do the job — autonomy is paid for with latency, cost, and compounding errors.')}</p>
+        <div class="primer-links">
+          <a href={seedPaperHref}>{t('看一个真实的智能体研究案例（SEED）', 'See a real agent research case (SEED)')}</a>
+          <a href="#guide-concepts-title">{t('跳到下方概念地图', 'Jump to the concept map')}</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="primer-card" id="primer-rl">
+      <div class="primer-number" aria-hidden="true">02</div>
+      <div class="primer-main">
+        <span class="primer-kicker">{t('拼图二 · 训练', 'Piece two · training')}</span>
+        <h3>{t('强化学习：从“模仿答案”到“从结果学习”', 'Reinforcement learning: from imitating answers to learning from outcomes')}</h3>
+        <p>{t('你已经懂 SFT：静态数据集，token 级交叉熵，本质是模仿标准答案。但智能体要解决的是多步任务——“标准轨迹”要么不存在，要么标注不起。强化学习换了信号来源：模型自己生成一组回答（rollout），一个奖励信号告诉它结果好不好，然后调参让好结果更容易出现。没有标准答案，只有结果反馈。', 'You know SFT: a static dataset, token-level cross-entropy, essentially imitating reference answers. Agents face multi-step tasks where a “reference trajectory” either does not exist or is too expensive to label. Reinforcement learning changes the signal source: the model generates its own responses (rollouts), a reward signal grades the outcome, and parameters shift to make good outcomes more likely. No reference answers — only outcome feedback.')}</p>
+        <ol class="primer-rl-stages">
+          {rlStages.map((stage) => (
+            <li>
+              <div class="primer-rl-head"><strong>{stage.label}</strong><span>{stage.when}</span></div>
+              <p>{stage.body}</p>
+            </li>
+          ))}
+        </ol>
+        <p>{t('为什么智能体训练绕不开 RL：多步决策的奖励来得晚而且稀疏；每一步的分支组合爆炸，SFT 数据集永远覆盖不完。SEED 的第二阶段正是用可验证奖励的组内相对优化（GRPO 一族）让模型在自己的轨迹上自我改进。', 'Why agent training cannot skip RL: rewards in multi-step decisions arrive late and sparse; the branching factor explodes so no SFT dataset covers the space. SEED’s second stage uses group-relative optimization with verifiable rewards (the GRPO family) to let the model improve on its own trajectories.')}</p>
+        <div class="primer-takeaway"><strong>{t('一句话记住：', 'One line to remember: ')}</strong>{t('SFT 学的是“别人怎么做的”，RL 学的是“什么结果算好”。', 'SFT learns “how others did it”; RL learns “what counts as a good outcome”.')}</div>
+        <div class="primer-links">
+          <a href={methodologyHref}>{t('本站如何核验训练方法（方法论）', 'How this site verifies training methods')}</a>
+          <a href={seedPaperHref}>{t('看 SEED 第二阶段的 GRPO 自进化', 'See SEED’s stage-2 GRPO self-evolution')}</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="primer-card" id="primer-model">
+      <div class="primer-number" aria-hidden="true">03</div>
+      <div class="primer-main">
+        <span class="primer-kicker">{t('拼图三 · 实践', 'Piece three · practice')}</span>
+        <h3>{t('为什么复现要从“选基础模型”开始', 'Why reproduction starts with base-model choice')}</h3>
+        <p>{t('复现一篇智能体论文，不是“找个更强的模型重新跑一遍”，而是从论文当时用的 checkpoint 出发：tokenizer、架构、预训练分布都对上了，结论才可比较。选错起点，后面所有实验都在回答另一个问题。', 'Reproducing an agent paper is not “rerun it on a stronger model” — it starts from the checkpoint the paper used: tokenizer, architecture, and pre-training distribution must match, or the conclusion is not comparable. Pick the wrong starting point and every later experiment answers a different question.')}</p>
+        <ul class="primer-dimensions">
+          {verifyDimensions.map((dim, index) => (
+            <li>
+              <span class="primer-dim-index" aria-hidden="true">{index + 1}</span>
+              <div><strong>{dim.title}</strong><p>{dim.detail}</p></div>
+            </li>
+          ))}
+        </ul>
+        <p>{t('这个网站做的事，就是把“论文 → 模型 → 训练配置 → 证据”连成一条线，让你少踩“看起来能跑、其实复现不了”的坑。概念已经齐了——下面用 SEED 这篇真实论文把整条线走一遍。', 'This site connects paper → model → training configuration → evidence into one line, so you avoid the trap of “looks runnable, actually irreproducible”. The concepts are now in place — walk the whole line below with the real SEED paper.')}</p>
+        <div class="primer-cta">
+          <a class="button button-primary" href="#seed-tour-title">{t('概念齐了，跟着 SEED 动手 ↓', 'Concepts done — go hands-on with SEED ↓')}</a>
+          <a class="button button-secondary" href={seedWorkspaceHref}>{t('直接打开预填的 SEED 工作台', 'Open the prefilled SEED workspace')}</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .agent-primer { margin: 40px 0 8px; }
+  .primer-route { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 18px 0 26px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font-size: .88rem; }
+  .primer-route a { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; text-decoration: none; }
+  .primer-route > span { color: var(--muted); }
+  .primer-route-num { color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+  .primer-list { display: grid; gap: 14px; }
+  .primer-card { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 18px; padding: 24px 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); scroll-margin-top: 96px; }
+  .primer-number { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; border: 1.5px solid var(--accent-deep); color: var(--accent-deep); background: var(--surface); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .primer-kicker { color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .primer-main h3 { margin: 4px 0 10px; font-size: 1.16rem; }
+  .primer-main > p { color: var(--muted); }
+  .primer-checklist { list-style: none; padding: 0; margin: 16px 0 4px; display: grid; gap: 10px; }
+  .primer-checklist li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+  .primer-checklist strong { font-size: .92rem; }
+  .primer-checklist p { margin: 3px 0 0; color: var(--muted); font-size: .88rem; }
+  .primer-check { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 999px; background: var(--accent-deep); color: #fff; font-size: .8rem; font-weight: 800; }
+  .primer-compare { margin: 16px 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .primer-compare-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; padding: 14px 16px; background: var(--surface); }
+  .primer-compare-row + .primer-compare-row { border-top: 1px solid var(--line); }
+  .primer-compare-row:nth-child(3) { background: var(--surface-muted); }
+  .primer-compare-row p { margin: 0; color: var(--muted); font-size: .9rem; }
+  .primer-compare-label { display: grid; gap: 3px; align-content: start; }
+  .primer-compare-label strong { font-size: .92rem; }
+  .primer-compare-label span { color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .05em; }
+  .primer-rl-stages { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 10px; counter-reset: rl-stage; }
+  .primer-rl-stages li { position: relative; padding: 14px 16px 14px 46px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+  .primer-rl-stages li::before { counter-increment: rl-stage; content: counter(rl-stage); position: absolute; left: 14px; top: 15px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: var(--surface); border: 1px solid var(--line); color: var(--accent-deep); font-size: .74rem; font-weight: 800; }
+  .primer-rl-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .primer-rl-head strong { font-size: .94rem; }
+  .primer-rl-head span { color: var(--muted); font-size: .76rem; }
+  .primer-rl-stages p { margin: 5px 0 0; color: var(--muted); font-size: .89rem; }
+  .primer-takeaway { margin: 16px 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--surface-muted); border-radius: 0 12px 12px 0; font-size: .95rem; }
+  .primer-takeaway strong { color: var(--ink); }
+  .primer-dimensions { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 10px; }
+  .primer-dimensions li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+  .primer-dimensions strong { font-size: .92rem; }
+  .primer-dimensions p { margin: 3px 0 0; color: var(--muted); font-size: .88rem; }
+  .primer-dim-index { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--accent-deep); font-size: .8rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .primer-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .primer-links a { padding: 6px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-muted); color: var(--ink); font-size: .8rem; text-decoration: none; transition: border-color .15s ease; }
+  .primer-links a:hover { border-color: var(--accent-deep); }
+  .primer-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; padding: 16px; border: 1px dashed var(--accent); border-radius: 14px; background: var(--surface-muted); }
+  .primer-cta .button { min-height: 42px; padding: 10px 16px; font-size: .9rem; }
+  @media (max-width: 640px) {
+    .agent-primer { margin: 32px 0 4px; }
+    .primer-card { grid-template-columns: 1fr; padding: 18px; }
+    .primer-number { width: 40px; height: 40px; }
+    .primer-compare-row { grid-template-columns: 1fr; gap: 6px; }
+    .primer-cta { flex-direction: column; }
+    .primer-cta .button { width: 100%; justify-content: center; }
+  }
+</style>
