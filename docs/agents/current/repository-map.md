@@ -8,29 +8,32 @@ This file is the fast orientation map for coding agents. It explains where to lo
 
 Before editing this repository, read in this order:
 
-1. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating rules and collaboration expectations.
-2. [`deployment-policy.md`](./deployment-policy.md) — authoritative GitHub -> Cloudflare Pages architecture and validation boundary.
-3. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Cloudflare build/deploy runbook and current quota guardrails.
-4. [`/package.json`](../../package.json) — available validation, audit, build and E2E commands.
-5. [`/README.md`](../../README.md) — product purpose, data model and human-facing maintenance notes.
+1. [`/AGENTS.md`](../../../AGENTS.md) — repository-wide operating rules and collaboration expectations.
+2. [`../LATEST.md`](../LATEST.md) — latest timestamped handoff and current state.
+3. [`deployment-policy.md`](./deployment-policy.md) — authoritative GitHub -> Cloudflare Pages architecture and validation boundary.
+4. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Cloudflare build/deploy runbook and quota guardrails.
+5. [`/package.json`](../../../package.json) — available validation, audit, build and E2E commands.
+6. [`/README.md`](../../../README.md) — product purpose, data model and human-facing maintenance notes.
 
-If a dated migration/history document conflicts with these current files, the current files win.
+If a document under `../history/` conflicts with current files, current files win.
 
 ## Top-level map
 
 ```text
-AGENTS.md                  agent operating contract
-README.md                  project/data overview for humans and agents
-package.json               executable task surface
-astro.config.mjs           Astro production configuration
-playwright.config.ts       on-demand browser regression configuration
-.github/                   GitHub-native configuration; no Actions workflows
-docs/agents/               current agent runbooks + migration history
-scripts/                   validation, audits, migrations and Cloudflare build entrypoint
-src/                       application, content, schemas and domain logic
-e2e/                       Playwright browser regression tests
-reports/                   generated audit/report outputs when present
-demo-archive/              test/archive fixtures; not production content
+AGENTS.md                         agent operating contract
+README.md                         project/data overview for humans and agents
+package.json                      executable task surface
+astro.config.mjs                  Astro production configuration
+playwright.config.ts              on-demand browser regression configuration
+.github/                          GitHub-native configuration; no Actions workflows
+docs/agents/LATEST.md             stable latest handoff
+docs/agents/current/              authoritative current Agent docs
+docs/agents/history/              migration/superseded architecture records
+scripts/                          validation, audits, migrations and Cloudflare build entrypoint
+src/                              application, content, schemas and domain logic
+tests/e2e/                        Playwright browser regression tests
+tests/fixtures/demo-archive/      non-production demo fixtures
+reports/                          generated audit/report outputs when present
 ```
 
 ## `src/` map
@@ -47,7 +50,17 @@ src/lib/                   pure domain rules, codecs, recommendation/filter/hard
 src/stores/                client-side application state such as Research Task state
 ```
 
-When changing data shape, start from `src/lib/schemas.ts` and content configuration before touching many records. When changing URL/SEO behavior, inspect `src/layouts/AppLayout.astro`, i18n/path helpers and relevant route tests together. When changing interactive behavior, inspect the component plus its unit/E2E coverage rather than patching rendered output only.
+When changing data shape, start from `src/lib/schemas.ts` and content configuration before touching many records. When changing URL/SEO behavior, inspect `src/layouts/AppLayout.astro`, i18n/path helpers and relevant tests together. When changing interactive behavior, inspect the component plus its unit/E2E coverage rather than patching rendered output only.
+
+## `tests/` map
+
+```text
+tests/e2e/                 Chromium/WebKit Playwright regression specs
+tests/fixtures/            non-production fixtures used for examples/tests
+tests/fixtures/demo-archive/ historical demo model records; never production content
+```
+
+`playwright.config.ts` points to `tests/e2e/`. Moving or renaming these paths requires updating the config and Cloudflare Build Watch Paths together.
 
 ## `scripts/` map
 
@@ -92,27 +105,29 @@ Production base path: /
 
 Preview deployments must remain `noindex`. Production is the only maintained indexed identity.
 
+Durable Build Watch exclusions after the repository re-layout are intended to cover docs, Agent files, generated reports, browser-only tests/fixtures and Playwright config while keeping `Include: *` as the safety net. The dashboard is the authority for the actually configured list; `../LATEST.md` records the last verified state.
+
 ## Agent collaboration rules
 
 The owner prefers high-autonomy execution. For repository work:
 
 - inspect GitHub, repository files, PR status and Cloudflare-visible deployment evidence directly when tools allow it;
-- do not make the owner copy information between tools or services when the agent can retrieve it itself;
+- do not make the owner copy information between tools or services when the agent can retrieve them itself;
 - batch related edits and keep the PR focused;
 - avoid repeated speculative pushes; each normal Git-connected push can consume a Cloudflare Pages build;
-- use `[CF-Pages-Skip]` only for intermediate commits that intentionally do not need a deployment, and ensure the final PR head receives a real Cloudflare Preview build;
+- use `[CF-Pages-Skip]` only for intermediate commits that intentionally do not need a deployment, and ensure the final deployment-sensitive PR head receives a real Cloudflare Preview build;
 - ask the owner to intervene only at genuine human/account boundaries such as login/authorization, 2FA/CAPTCHA, billing, unavailable admin settings, or a high-risk/irreversible product decision.
 
 ## Change-to-check matrix
 
 | Change type | Minimum validation |
 | --- | --- |
-| docs-only, no runtime semantics | inspect diff; Cloudflare Preview may be skipped for intermediate commits |
+| docs-only, no runtime semantics | inspect diff; Cloudflare Preview may be skipped |
 | data/schema/domain rules | `npm run verify:deploy` |
 | UI/component behavior | `npm run verify:deploy`; add/run focused tests |
 | routing/i18n/SEO | `npm run verify:deploy` + relevant Playwright E2E |
 | Astro/React/browser compatibility major change | `npm run verify:deploy` + full `npm run test:e2e` |
 | vendor/source maintenance | relevant external audit commands on demand |
-| deployment architecture | update current agent docs + verify exact-head Preview before merge |
+| deployment architecture | update current Agent docs + verify exact-head Preview before merge |
 
 The Cloudflare build itself is the final automated deployment gate for normal Preview/Production releases.

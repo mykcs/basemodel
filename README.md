@@ -9,12 +9,13 @@
 新的 Coding Agent 接管仓库时，不需要重新推导部署架构。按下面顺序阅读即可：
 
 1. [`AGENTS.md`](./AGENTS.md)
-2. [`docs/agents/deployment-policy.md`](./docs/agents/deployment-policy.md)
-3. [`docs/agents/repository-map.md`](./docs/agents/repository-map.md)
-4. [`docs/agents/cloudflare-pages-deployment.md`](./docs/agents/cloudflare-pages-deployment.md)
-5. `package.json` 与当前任务直接相关的源文件
+2. [`docs/agents/LATEST.md`](./docs/agents/LATEST.md)
+3. [`docs/agents/current/deployment-policy.md`](./docs/agents/current/deployment-policy.md)
+4. [`docs/agents/current/repository-map.md`](./docs/agents/current/repository-map.md)
+5. [`docs/agents/current/cloudflare-pages-deployment.md`](./docs/agents/current/cloudflare-pages-deployment.md)
+6. `package.json` 与当前任务直接相关的源文件
 
-其中 `deployment-policy.md` 是当前部署架构的权威规则；历史迁移文档只用于解释过去发生过什么，不应被用来恢复 GitHub Actions 或 GitHub Pages。
+其中 `deployment-policy.md` 是当前部署架构的权威规则；`docs/agents/history/` 只用于解释过去发生过什么，不应被用来恢复 GitHub Actions 或 GitHub Pages。
 
 ## 架构
 
@@ -34,7 +35,7 @@ npm run build:cloudflare
 
 该命令先执行 `npm run verify:deploy`，再运行 Astro production build。`verify:deploy` 包含 Astro/TypeScript check、数据/关系校验、semantic/claims/freshness audit 和 Vitest。这些检查不依赖外部网络，失败会阻止 Preview/Production 发布。
 
-完整 Chromium + WebKit Playwright E2E、vendor catalog audit、URL/source-health probe 仍保留在仓库中，但不在每次 Cloudflare build 自动执行；重大 UI、routing、i18n、Astro major 或浏览器兼容改动时由 Agent/本地按需运行。
+完整 Chromium + WebKit Playwright E2E、vendor catalog audit、URL/source-health probe 仍保留在仓库中，但不在每次 Cloudflare build 自动执行；重大 UI、routing、i18n、Astro major 或浏览器兼容改动时由 Agent/本地按需运行。Playwright 浏览器回归现在集中在 `tests/e2e/`。
 
 ## Cloudflare 免费额度怎么理解
 
@@ -47,7 +48,7 @@ npm run build:cloudflare
 Git push 触发 Preview/Production build -> 会消耗 Pages build 次数
 ```
 
-所以“静态网站”意味着正常访问量不需要像动态 Functions 那样担心请求额度，但并不意味着构建额度与项目无关。Agent 应批量修改、减少无意义 push；中间提交如果明确不需要部署，可以使用 Cloudflare 支持的 `[CF-Pages-Skip]` commit 前缀，但最终需要验收的 PR head 必须真正完成一次 Preview build。
+所以“静态网站”意味着正常访问量不需要像动态 Functions 那样担心请求额度，但并不意味着构建额度与项目无关。Agent 应批量修改、减少无意义 push；中间提交如果明确不需要部署，可以使用 Cloudflare 支持的 `[CF-Pages-Skip]` commit 前缀，但最终需要验收的部署敏感 PR head 必须真正完成一次 Preview build。
 
 官方限制可能变化，未来做成本/配额判断时应重新查看 Cloudflare 官方 Pages limits/pricing 文档。若以后加入 Pages Functions、Workers、SSR 或服务端 API，也必须重新评估成本模型。
 
@@ -81,7 +82,7 @@ npm run audit:coverage
 
 真实数据必须来自官方模型卡、官方文档、论文、代码仓库或 benchmark 页面，并记录最后核验日期。`verified` 表示关键字段已有可靠来源；`partial` 表示仍有字段未核验；`claim_status: claim_verified` 只用于字段级证据覆盖完成的记录。字段缺口使用语义状态：`not_disclosed`（官方未公开）、`not_applicable`（不适用）、`not_reported`（论文/代码未报告）、`not_verified`（尚未核验）、`not_published`（未发布）、`unavailable`（来源不可用）。这些状态都不等于 `false` 或零。
 
-`demo-archive/` 仅作为测试夹具，不进入 Astro content loader、搜索、比较器或 sitemap。新增的主流模型记录使用官方模型卡、官方文档或官方代码仓库，并按字段完整度标记为 `verified` 或 `partial`。
+`tests/fixtures/demo-archive/` 仅作为测试夹具，不进入 Astro content loader、搜索、比较器或 sitemap。新增的主流模型记录使用官方模型卡、官方文档或官方代码仓库，并按字段完整度标记为 `verified` 或 `partial`。
 
 ## 自动发布边界
 
@@ -97,7 +98,7 @@ npm run audit:coverage
 
 以下能力保留但不属于每次发布 gate：
 
-- `npm run test:e2e`：Chromium + WebKit 浏览器回归。
+- `npm run test:e2e`：`tests/e2e/` 中的 Chromium + WebKit 浏览器回归。
 - `npm run audit:vendor-catalogs`：官方厂商目录外部网络审计。
 - `npm run audit:urls`：来源 URL 健康检查。
 - `npm run audit:coverage`：覆盖率/数据健康报告（当前主要生成报告，不额外提供有效 blocking 信号）。
