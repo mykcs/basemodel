@@ -14,5 +14,5 @@
   <text x="264" y="438" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="27" fill="#4a443a">面向 AI 研究者的基础模型选择与论文采用地图 · 数据优先，证据先行</text>
   <!-- footer bar -->
   <rect x="88" y="540" width="1024" height="2" fill="#d9d4c8"/>
-  <text x="88" y="586" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="23" fill="#8a8378">mykcs.github.io/basemodel</text>
+  <text x="88" y="586" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="23" fill="#8a8378">basemodel.pages.dev</text>
 </svg>
