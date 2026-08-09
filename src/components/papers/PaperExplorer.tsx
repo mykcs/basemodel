@@ -53,14 +53,14 @@ function methodSummary(paper: AtlasPaper, locale: Locale): string {
 
 function copy(locale: Locale) {
   return locale === 'zh'
-    ? { search: '搜索论文、方法或 benchmark…', evolution: '演化目标', role: '主要模型角色', family: '模型家族', code: '代码', codeAll: '全部', codeAvailable: '有代码', codeMissing: '无代码', local: '本地复现', localAll: '全部', localReady: '准备较完整', localUnknown: '需要核验', weight: '权重更新', weightAll: '全部', updated: '更新权重', notUpdated: '不更新权重', clear: '清除筛选', results: '篇论文', method: '方法摘要', roles: '模型角色', difficulty: '复现难度', open: '查看案例', noResults: '没有符合条件的论文案例。', available: '可用', unknown: '待核验' }
-    : { search: 'Search papers, methods, or benchmarks…', evolution: 'Evolution target', role: 'Model role', family: 'Model family', code: 'Code', codeAll: 'All', codeAvailable: 'Code available', codeMissing: 'No code', local: 'Local reproduction', localAll: 'All', localReady: 'Mostly ready', localUnknown: 'Needs verification', weight: 'Weight update', weightAll: 'All', updated: 'Weights updated', notUpdated: 'No weight update', clear: 'Clear filters', results: 'papers', method: 'Method summary', roles: 'Model roles', difficulty: 'Reproduction difficulty', open: 'Open case', noResults: 'No paper cases match these filters.', available: 'Available', unknown: 'Pending' };
+    ? { search: '搜索论文、方法或 benchmark…', evolution: '演化目标', role: '主要模型角色', family: '模型家族', code: '代码', codeAll: '全部', codeAvailable: '有代码', codeMissing: '无代码', local: '本地复现', localAll: '全部', localReady: '准备较完整', localUnknown: '需要核验', weight: '权重更新', weightAll: '全部', updated: '更新权重', notUpdated: '不更新权重', clear: '清除筛选', results: '篇论文', total: '总计', method: '方法摘要', roles: '模型角色', difficulty: '复现难度', open: '查看案例', noResults: '没有符合条件的论文案例。', available: '可用', unknown: '待核验' }
+    : { search: 'Search papers, methods, or benchmarks…', evolution: 'Evolution target', role: 'Model role', family: 'Model family', code: 'Code', codeAll: 'All', codeAvailable: 'Code available', codeMissing: 'No code', local: 'Local reproduction', localAll: 'All', localReady: 'Mostly ready', localUnknown: 'Needs verification', weight: 'Weight update', weightAll: 'All', updated: 'Weights updated', notUpdated: 'No weight update', clear: 'Clear filters', results: 'papers', total: 'total', method: 'Method summary', roles: 'Model roles', difficulty: 'Reproduction difficulty', open: 'Open case', noResults: 'No paper cases match these filters.', available: 'Available', unknown: 'Pending' };
 }
 
 export default function PaperExplorer({ papers, models, locale = 'zh' }: { papers: AtlasPaper[]; models: AtlasModel[]; locale?: Locale }) {
   const hydrated = useHydrated();
   const m = copy(locale);
-  const [filters, setFilters] = useState<FilterState>(readFilters);
+  const [filters, setFilters] = useState<FilterState>(emptyFilters);
   const modelFamily = useMemo(() => new Map(models.map((model) => [model.id, model.family])), [models]);
   const evolutions = useMemo(() => [...new Set(papers.flatMap((paper) => paper.evolution_targets))].sort(), [papers]);
   const roles = useMemo(() => [...new Set(papers.flatMap((paper) => paper.models.map((item) => item.role)))].sort(), [papers]);
@@ -82,6 +82,10 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
   }), [filters, modelFamily, papers]);
 
   useEffect(() => {
+    setFilters(readFilters());
+  }, []);
+
+  useEffect(() => {
     if (!hydrated) return;
     const params = new URLSearchParams();
     if (filters.query) params.set('q', filters.query);
@@ -95,7 +99,6 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
   }, [filters, hydrated]);
 
   const update = <K extends keyof FilterState>(key: K, value: FilterState[K]) => setFilters((current) => ({ ...current, [key]: value }));
-  if (!hydrated) return null;
 
   return <section className="paper-explorer" aria-labelledby="paper-explorer-title">
     <div className="paper-explorer-toolbar">
@@ -110,7 +113,7 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
       <fieldset><legend>{m.weight}</legend>{[['all', m.weightAll], ['updated', m.updated], ['not-updated', m.notUpdated]].map(([value, label]) => <label key={value}><input type="radio" name="paper-weight" checked={filters.weight === value} onChange={() => update('weight', value as FilterState['weight'])} />{label}</label>)}</fieldset>
       <button className="text-button" type="button" onClick={() => setFilters(emptyFilters)}>{m.clear}</button>
     </div>
-    <div className="paper-explorer-summary"><h2 id="paper-explorer-title">{filtered.length} {m.results}</h2><span className="muted">{papers.length} total</span></div>
+    <div className="paper-explorer-summary"><h2 id="paper-explorer-title">{filtered.length} {m.results}</h2><span className="muted">{m.total} {papers.length}</span></div>
     {filtered.length ? <div className="paper-case-grid">{filtered.map((paper) => {
       const rolesForPaper = [...new Set(paper.models.map((item) => roleLabel(item.role, locale)))];
       const weightState = paper.models.some((item) => item.weight_updated === true) ? (locale === 'zh' ? '有权重更新' : 'Weights updated') : paper.models.every((item) => item.weight_updated === false) ? (locale === 'zh' ? '未更新权重' : 'No weight update') : m.unknown;
