@@ -71,6 +71,28 @@
 .paper-case-scope { color: var(--muted); font-size: .82rem; }
 .paper-method-summary .lede { max-width: 780px; }
 
+.replacement-mode-verdicts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 10px 0 12px;
+}
+.replacement-verdict {
+  display: grid;
+  gap: 2px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-muted);
+  font-size: .72rem;
+}
+.replacement-verdict span { color: var(--muted); }
+.replacement-verdict strong { font-size: .8rem; }
+.verdict-recommended strong { color: var(--positive); }
+.verdict-conditional strong { color: var(--accent-deep); }
+.verdict-not_recommended strong { color: var(--danger, #a7322c); }
+.verdict-unknown strong { color: var(--muted); }
+
 .comparison-mobile-cards { display: none; }
 .comparison-mobile-group { display: grid; gap: 10px; }
 .comparison-mobile-group + .comparison-mobile-group { margin-top: 22px; }
@@ -103,6 +125,7 @@
 @media (max-width: 720px) {
   .model-detail-nav { top: 64px; margin-inline: -2px; }
   .unresolved-field-item { grid-template-columns: 1fr; gap: 8px; }
+  .replacement-mode-verdicts { grid-template-columns: 1fr; }
   .comparison-table-wrap.comparison-desktop-table { display: none; }
   .comparison-mobile-cards { display: block; margin-top: 18px; }
   .global-quick-view {
