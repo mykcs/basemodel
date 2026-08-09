@@ -1,0 +1,186 @@
+---
+import { localePath, type Locale } from '../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+
+const seedPaperHref = localePath(locale, '/papers/seed/');
+const seedModelHref = localePath(locale, '/models/qwen2-5-3b-instruct/');
+const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
+
+const bridge = [
+  { known: t('LLM / checkpoint', 'LLM / checkpoint'), agent: t('Policy（策略）', 'Policy'), note: t('在 LLM Agent 里，可以把模型看成“根据当前上下文决定下一步动作”的参数化策略。', 'In an LLM agent, the model can be viewed as a parameterized policy that chooses the next action from the current context.') },
+  { known: t('Prompt / context', 'Prompt / context'), agent: t('Instructions + observation history', 'Instructions + observation history'), note: t('系统指令规定行为边界；工具结果、页面状态和历史消息构成模型此刻能看到的环境信息。', 'System instructions define behavior; tool results, UI state, and message history form the environment information visible to the model.') },
+  { known: t('Function / API / MCP', 'Function / API / MCP'), agent: t('Tool / action space', 'Tool / action space'), note: t('工具不是“知识库插件”而已，它定义了 Agent 能对外部世界做哪些动作。', 'Tools are more than knowledge plugins: they define actions the agent can take in the external world.') },
+  { known: t('App / browser / sandbox', 'App / browser / sandbox'), agent: t('Environment（环境）', 'Environment'), note: t('Agent 的动作会改变环境，环境再返回新的 observation；长任务就是这样一轮轮推进。', 'The action changes the environment, which returns a new observation; long tasks advance through repeated interaction.') },
+  { known: t('Logs / traces', 'Logs / traces'), agent: t('Trajectory / rollout', 'Trajectory / rollout'), note: t('一次任务里连续的 observation → action → observation 序列，就是一条 trajectory，也常叫 rollout / episode。', 'The observation → action → observation sequence for one task is a trajectory, also commonly called a rollout or episode.') },
+  { known: t('Metric / test / grader', 'Metric / test / grader'), agent: t('Reward / evaluator', 'Reward / evaluator'), note: t('训练时需要把“这条轨迹做得怎么样”变成可用于学习的信号；它可以来自环境、规则、模型评审或测试。', 'Training needs a signal for how well a trajectory performed; it can come from the environment, rules, model graders, or tests.') },
+];
+
+const rlTerms = [
+  { term: 'Policy', zh: '决定下一步动作的策略；对 LLM 来说，本质上是条件概率分布。', en: 'The rule that chooses the next action; for an LLM, fundamentally a conditional probability distribution.' },
+  { term: 'Action', zh: '一次输出或工具调用。Agentic 场景里，动作可能会真正改变外部环境。', en: 'An output or tool call. In agentic settings, actions can actually change an external environment.' },
+  { term: 'Trajectory', zh: '从任务开始到结束的一整段交互记录。RL 通常不是只看某一个 token，而是从整条 rollout 的结果学习。', en: 'The interaction record from task start to finish. RL often learns from the outcome of the rollout, not from one isolated token.' },
+  { term: 'Reward', zh: '结果好坏的评分。它可以很稀疏，例如“任务最终成功 = 1，失败 = 0”。', en: 'A score for the outcome. It can be sparse, for example success = 1 and failure = 0.' },
+  { term: 'Advantage', zh: '“这个动作/答案比当前策略通常会做的好多少”的相对学习信号；policy-gradient 类方法据此调整概率。', en: 'A relative learning signal for how much better an action or completion is than the policy baseline; policy-gradient methods use it to change probabilities.' },
+];
+---
+
+<section class="agent-primer" aria-labelledby="agent-primer-title">
+  <header class="primer-hero">
+    <div>
+      <span class="section-kicker">{t('Agent 101 · 给懂机器学习的人', 'Agent 101 · for people who know ML')}</span>
+      <h2 id="agent-primer-title">{t('先把你已经会的概念，翻译成 Agent 的语言', 'Translate what you already know into agent language')}</h2>
+      <p class="primer-lede">{t('如果你知道 Transformer、微调、推理、API 和基本训练流程，这一节不从“什么是神经网络”讲起。目标是用大约 10 分钟补齐：Agent 怎么运行、训练时发生什么、RL 为什么会出现，以及 SEED 到底在改哪一层。', 'If you already know Transformers, fine-tuning, inference, APIs, and basic training pipelines, this section does not restart from neural-network basics. The goal is to fill the missing layer in about ten minutes: how agents run, what happens during training, why RL appears, and exactly what SEED changes.')}</p>
+      <div class="primer-prereqs" aria-label={t('默认前置知识', 'Assumed prerequisites')}><span>Transformer</span><span>Fine-tuning</span><span>Inference</span><span>API / tool calling</span><span>GPU</span></div>
+    </div>
+    <aside class="primer-goal">
+      <strong>{t('学完这一节，你应该能回答', 'After this section, you should be able to answer')}</strong>
+      <ol>
+        <li>{t('Agent 和普通聊天模型到底差在哪？', 'How is an agent different from a chat model?')}</li>
+        <li>{t('“Agent 在运行”与“Agent 在学习”有什么区别？', 'What is the difference between an agent running and an agent learning?')}</li>
+        <li>{t('trajectory、reward、GRPO 在代码里分别对应什么？', 'What do trajectory, reward, and GRPO correspond to in code?')}</li>
+        <li>{t('为什么一篇 Agent 论文会特别在意基础模型和 checkpoint？', 'Why does an agent paper care so much about its backbone and checkpoint?')}</li>
+      </ol>
+    </aside>
+  </header>
+
+  <nav class="primer-route" aria-label={t('Agent 入门学习路径', 'Agent primer learning path')}>
+    <a href="#agent-bridge"><span>01</span>{t('翻译旧知识', 'Bridge ML knowledge')}</a>
+    <a href="#agent-runtime-loop"><span>02</span>{t('看懂运行循环', 'Runtime loop')}</a>
+    <a href="#agent-training"><span>03</span>{t('分清运行与训练', 'Runtime vs training')}</a>
+    <a href="#agent-rl"><span>04</span>{t('只学必要的 RL', 'Essential RL')}</a>
+    <a href="#agent-seed"><span>05</span>{t('用 SEED 串起来', 'Connect with SEED')}</a>
+  </nav>
+
+  <section id="agent-bridge" class="primer-section">
+    <div class="primer-section-head"><div><span class="primer-step">01</span><h3>{t('不是一套全新的世界，只是换了观察尺度', 'It is not a new universe; the unit of analysis changed')}</h3></div><p>{t('你熟悉的是“单次 forward / 一批训练样本”；Agent 更关心“一个模型在环境里连续做很多步之后，整个任务发生了什么”。', 'You may be used to a single forward pass or a training batch; agent work focuses on what happens after a model takes many consecutive steps in an environment.')}</p></div>
+    <div class="bridge-grid">{bridge.map((item) => <article class="bridge-card"><span class="bridge-known">{item.known}</span><span class="bridge-arrow" aria-hidden="true">→</span><strong>{item.agent}</strong><p>{item.note}</p></article>)}</div>
+  </section>
+
+  <section id="agent-runtime-loop" class="primer-section">
+    <div class="primer-section-head"><div><span class="primer-step">02</span><h3>{t('Agent 的最小心智模型：模型在一个反馈循环里控制下一步', 'The minimum agent mental model: a model controls the next step inside a feedback loop')}</h3></div><p>{t('真正关键的不是“会不会调用函数”，而是谁决定下一步做什么。固定脚本按预写步骤运行；Agent 则让模型根据当前 observation 决定下一步工具或动作。', 'The key is not merely whether functions can be called, but who controls the next step. A fixed workflow follows prewritten steps; an agent lets the model choose the next tool or action from the current observation.')}</p></div>
+    <div class="runtime-loop" role="img" aria-label={t('Agent 运行循环：任务进入策略，策略选择动作或工具，环境返回观察，再回到策略，直到结束。', 'Agent runtime loop: a task enters the policy, the policy chooses an action or tool, the environment returns an observation, and the loop repeats until completion.')}>
+      <div class="loop-node"><span>{t('用户目标', 'Goal')}</span><strong>{t('完成一个多步任务', 'Complete a multi-step task')}</strong></div><span class="loop-edge" aria-hidden="true">→</span>
+      <div class="loop-node loop-policy"><span>{t('模型 / Policy', 'Model / policy')}</span><strong>{t('根据当前上下文决定下一步', 'Choose the next step from context')}</strong></div><span class="loop-edge" aria-hidden="true">→</span>
+      <div class="loop-node"><span>{t('Action / Tool', 'Action / tool')}</span><strong>{t('搜索、点击、运行代码、写文件…', 'Search, click, run code, write files…')}</strong></div><span class="loop-edge" aria-hidden="true">→</span>
+      <div class="loop-node"><span>{t('Environment', 'Environment')}</span><strong>{t('世界发生变化并返回 observation', 'World changes and returns an observation')}</strong></div><span class="loop-return" aria-hidden="true">↺</span>
+    </div>
+    <pre class="primer-code"><code>{`history = [user_goal]\nwhile not done:\n    action = policy(history, tools)\n    observation = environment.step(action)\n    history += [action, observation]`}</code></pre>
+    <p class="primer-note">{t('运行这段循环时，通常没有反向传播，也没有更新模型权重。它只是“用当前 policy 做事”。这点对理解后面的 Agentic RL 极其重要。', 'During this loop there is usually no backpropagation and no weight update. It is simply using the current policy to act. This distinction is essential for understanding agentic RL.')}</p>
+  </section>
+
+  <section id="agent-training" class="primer-section">
+    <div class="primer-section-head"><div><span class="primer-step">03</span><h3>{t('先分清两个循环：执行循环和学习循环', 'Separate two loops: execution and learning')}</h3></div><p>{t('很多“自进化 Agent”论文难读，是因为运行时的多步交互和训练时的多轮参数更新画在同一张图里。先把它们拆开。', 'Many self-evolving-agent papers are hard to read because runtime interaction and training updates appear in one figure. Separate them first.')}</p></div>
+    <div class="two-loop-grid">
+      <article class="loop-card"><span class="loop-card-label">{t('Runtime · 一次任务内部', 'Runtime · inside one task')}</span><h4>{t('权重固定，状态在变', 'Weights stay fixed; state changes')}</h4><ol><li>{t('模型读当前 observation / history', 'Read current observation / history')}</li><li>{t('选择 action 或 tool call', 'Choose an action or tool call')}</li><li>{t('环境返回新 observation', 'Receive a new observation')}</li><li>{t('重复，直到成功、失败或停止', 'Repeat until success, failure, or stop')}</li></ol></article>
+      <article class="loop-card loop-card-training"><span class="loop-card-label">{t('Training · 多个任务之间', 'Training · across many tasks')}</span><h4>{t('收集经验，再更新权重', 'Collect experience, then update weights')}</h4><ol><li>{t('用当前 policy 跑很多任务，得到 rollouts', 'Run many tasks with the current policy')}</li><li>{t('用 reward / grader 判断结果', 'Score outcomes with rewards / graders')}</li><li>{t('把结果转成 advantage / loss', 'Convert outcomes into advantages / losses')}</li><li>{t('反向传播更新 policy，再开始下一轮', 'Backpropagate into the policy and repeat')}</li></ol></article>
+    </div>
+  </section>
+
+  <section id="agent-rl" class="primer-section">
+    <div class="primer-section-head"><div><span class="primer-step">04</span><h3>{t('读 Agentic RL 论文前，只需要先掌握这 5 个词', 'Before agentic RL papers, learn these five terms')}</h3></div><p>{t('这里先不推 PPO/GRPO 的完整公式。先建立“变量在系统里是什么”的直觉，之后公式才有意义。', 'Do not start with the full PPO/GRPO derivation. First understand what each variable represents in the system.')}</p></div>
+    <div class="rl-term-grid">{rlTerms.map((item) => <article><strong>{item.term}</strong><p>{isZh ? item.zh : item.en}</p></article>)}</div>
+    <div class="sft-rl-compare"><article><span>{t('你熟悉的 SFT', 'Familiar SFT')}</span><h4>{t('老师告诉模型“应该输出什么”', 'A teacher tells the model what to output')}</h4><p>{t('数据里有目标 token / response。优化目标直接让模型更像这些示范。', 'The dataset contains target tokens or responses, and optimization directly imitates them.')}</p></article><span class="compare-vs">vs</span><article><span>{t('Agentic RL', 'Agentic RL')}</span><h4>{t('模型先自己做，再根据结果学', 'The model acts first, then learns from outcomes')}</h4><p>{t('当前 policy 在环境里采样 trajectory；reward 告诉你结果好坏，policy-gradient 方法再提高好行为、压低差行为的概率。', 'The current policy samples trajectories; rewards score outcomes, and policy-gradient methods adjust behavior probabilities.')}</p></article></div>
+    <aside class="grpo-box"><strong>GRPO {t('可以先这样理解', 'in one mental picture')}</strong><p>{t('对同一个 prompt / task 生成一组 completions，分别算 reward，再用“这条结果相对同组平均水平好多少”构造 group-relative advantage。然后用这个相对信号更新 policy，同时限制它不要离 reference policy 太远。', 'Generate a group of completions for the same prompt or task, score each, construct a group-relative advantage from how each compares with its peers, and update the policy while limiting drift from the reference policy.')}</p></aside>
+  </section>
+
+  <section id="agent-seed" class="primer-section primer-seed">
+    <div class="primer-section-head"><div><span class="primer-step">05</span><h3>{t('现在再看 SEED：它解决的是“整条轨迹只有一个结果分数，监督太稀疏”', 'Now read SEED: it addresses sparse supervision from trajectory-level outcomes')}</h3></div><p>{t('长任务里，最终失败并不会直接告诉你“到底是哪一步开始错了”。SEED 从完成的 on-policy trajectory 里提炼 hindsight skill，再把事后信息变成更密的 token-level 学习信号。', 'In a long task, final failure does not tell you which step went wrong. SEED extracts hindsight skills from completed on-policy trajectories and turns them into denser token-level learning signals.')}</p></div>
+    <div class="seed-pipeline">
+      <article><span>Stage 1</span><strong>Hindsight-skill SFT</strong><p>{t('收集普通 Agent trajectories，让 backbone 学会从完成轨迹中总结可复用 skill；同一个 checkpoint 同时学会“行动”和“分析轨迹”。', 'Collect ordinary agent trajectories and teach the backbone to summarize reusable skills; the same checkpoint learns to act and analyze trajectories.')}</p></article><span class="seed-arrow" aria-hidden="true">→</span>
+      <article><span>Stage 2A</span><strong>On-policy rollout</strong><p>{t('冻结当前 policy，用它在环境里实际跑任务，得到当前分布下的 trajectories。', 'Freeze the current policy and run tasks to obtain trajectories from its current distribution.')}</p></article><span class="seed-arrow" aria-hidden="true">→</span>
+      <article><span>Stage 2B</span><strong>Self analysis + OPD</strong><p>{t('同一个 policy 分析自己刚跑完的 trajectory，生成 hindsight skill；再比较普通上下文与 skill-augmented 上下文下同一动作 token 的概率变化。', 'The same policy analyzes its trajectory, generates hindsight skills, and compares sampled token probabilities under ordinary and skill-augmented contexts.')}</p></article><span class="seed-arrow" aria-hidden="true">→</span>
+      <article><span>Update</span><strong>GRPO + dense OPD signal</strong><p>{t('结果 reward 仍是 RL 主干；skill 产生的概率变化提供额外密集监督。更新后的 policy 又成为下一轮 actor + analyzer。', 'Outcome reward remains the RL backbone; skill-induced probability shifts add dense supervision. The updated policy becomes the next actor + analyzer.')}</p></article>
+    </div>
+    <div class="seed-inference-note"><strong>{t('最容易误解的一点：', 'The easiest point to misunderstand:')}</strong>{t('SEED 的 analyzer / skill 是训练机制，不是部署时必须保留的 Agent 架构。官方实现说明，推理时只使用学好的 policy，不需要 analyzer、skill bank、retrieval 或 skill prompt。', 'SEED’s analyzer and skills are training machinery, not required deployment architecture. Inference uses only the learned policy, without analyzer, skill bank, retrieval, or skill prompt.')}</div>
+  </section>
+
+  <section class="primer-section primer-why-model">
+    <div class="primer-section-head"><div><span class="primer-step">06</span><h3>{t('这时你就知道：为什么这个网站要研究“基础模型”', 'Now the purpose of this site becomes clear: why study the backbone')}</h3></div><p>{t('Agent 的最终能力不是只由一个 leaderboard 分数决定。基础 checkpoint 会同时影响工具调用、长轨迹稳定性、可训练方式、显存、运行时兼容、许可证和论文可复现性。', 'Agent capability is not determined by one leaderboard score. The backbone affects tool use, long-horizon stability, trainability, memory, runtime compatibility, licensing, and reproducibility.')}</p></div>
+    <div class="why-model-grid"><article><strong>{t('运行能力', 'Runtime ability')}</strong><span>{t('推理、tool calling、context、agent loop 稳定性', 'Reasoning, tool calling, context, loop stability')}</span></article><article><strong>{t('训练能力', 'Trainability')}</strong><span>{t('能否拿到权重、LoRA/RL、训练框架兼容性', 'Weights, LoRA/RL, trainer compatibility')}</span></article><article><strong>{t('研究边界', 'Research boundary')}</strong><span>{t('许可证、checkpoint identity、论文实际使用什么', 'License, checkpoint identity, what the paper used')}</span></article><article><strong>{t('资源约束', 'Resource constraints')}</strong><span>{t('参数量、显存、GPU 数、吞吐与成本', 'Parameters, VRAM, GPU count, throughput, cost')}</span></article></div>
+  </section>
+
+  <section class="primer-next" aria-labelledby="primer-next-title"><span class="section-kicker">{t('现在开始用本站', 'Now use the site')}</span><h3 id="primer-next-title">{t('不要先浏览所有模型；按这条路径把概念落到真实证据', 'Do not browse every model first; ground the concepts in evidence')}</h3><div class="primer-next-grid"><a href={seedPaperHref}><span>1</span><strong>{t('打开 SEED 论文案例', 'Open the SEED paper case')}</strong><small>{t('先找 actor、analyzer、trajectory、reward、Stage 1/2 分别在哪里。', 'Locate actor, analyzer, trajectory, reward, and Stage 1/2.')}</small></a><a href={seedModelHref}><span>2</span><strong>{t('看 Qwen2.5-3B-Instruct', 'Inspect Qwen2.5-3B-Instruct')}</strong><small>{t('理解一个 Agent 论文里的 backbone checkpoint 需要核对哪些属性。', 'See what must be verified for a backbone checkpoint.')}</small></a><a href={seedWorkspaceHref}><span>3</span><strong>{t('进入预填 SEED 工作台', 'Open the prefilled SEED workspace')}</strong><small>{t('最后才加入你的 GPU、开放权重、RL 与运行时约束。', 'Only now add GPU, open-weight, RL, and runtime constraints.')}</small></a></div></section>
+
+  <aside class="primer-sources"><strong>{t('这一节依据的核心资料', 'Core sources for this primer')}</strong><div><a href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/" target="_blank" rel="noreferrer">OpenAI · A practical guide to building agents ↗</a><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noreferrer">Anthropic · Building effective agents ↗</a><a href="https://spinningup.openai.com/en/latest/spinningup/rl_intro.html" target="_blank" rel="noreferrer">OpenAI Spinning Up · Key Concepts in RL ↗</a><a href="https://huggingface.co/docs/trl/en/grpo_trainer" target="_blank" rel="noreferrer">Hugging Face TRL · GRPO Trainer ↗</a><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">SEED · arXiv 2607.14777 ↗</a><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED · Official code ↗</a></div></aside>
+</section>
+
+<style>
+  .agent-primer { margin: 0 0 64px; }
+  .primer-hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); gap: 28px; align-items: start; padding: clamp(22px, 4vw, 38px); border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: 22px; background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 8%, var(--surface)) 0%, var(--surface) 52%, var(--surface-muted) 100%); }
+  .primer-hero h2 { margin: 8px 0 12px; max-width: 720px; }
+  .primer-lede { color: var(--muted); font-size: 1rem; max-width: 760px; }
+  .primer-prereqs { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+  .primer-prereqs span { padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .72rem; }
+  .primer-goal { padding: 18px 20px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
+  .primer-goal > strong { display: block; margin-bottom: 10px; color: var(--accent-deep); font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; }
+  .primer-goal ol { margin: 0; padding-left: 1.15rem; display: grid; gap: 9px; font-size: .82rem; }
+  .primer-route { position: sticky; top: 76px; z-index: 7; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 18px 0 44px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(12px); }
+  .primer-route a { min-width: 0; padding: 9px 8px; border-radius: 9px; color: var(--muted); text-decoration: none; font-size: .72rem; font-weight: 650; text-align: center; }
+  .primer-route a:hover, .primer-route a:focus-visible { background: var(--surface-muted); color: var(--ink); }
+  .primer-route span { margin-right: 5px; color: var(--accent-deep); }
+  .primer-section { scroll-margin-top: 150px; margin: 48px 0; }
+  .primer-section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .65fr); gap: 28px; align-items: end; margin-bottom: 20px; }
+  .primer-section-head > div { display: flex; align-items: baseline; gap: 12px; }
+  .primer-section-head h3 { margin: 0; font-size: clamp(1.35rem, 2.4vw, 1.9rem); line-height: 1.08; }
+  .primer-section-head > p { margin: 0; color: var(--muted); font-size: .88rem; }
+  .primer-step { flex: 0 0 auto; color: var(--accent-deep); font-size: .72rem; font-weight: 800; }
+  .bridge-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .bridge-card { display: grid; grid-template-columns: minmax(0, .8fr) 24px minmax(0, 1fr); gap: 8px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  .bridge-card p { grid-column: 1 / -1; margin: 5px 0 0; color: var(--muted); font-size: .8rem; }
+  .bridge-known { color: var(--muted); font-size: .8rem; }
+  .bridge-arrow, .loop-edge, .seed-arrow { color: var(--accent-deep); text-align: center; }
+  .runtime-loop { position: relative; display: grid; grid-template-columns: minmax(130px, .85fr) 24px minmax(150px, 1fr) 24px minmax(150px, 1fr) 24px minmax(150px, 1fr); gap: 6px; align-items: center; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+  .loop-node { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+  .loop-node span { display: block; color: var(--muted); font-size: .68rem; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; }
+  .loop-node strong { font-size: .83rem; line-height: 1.35; }
+  .loop-policy { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+  .loop-return { position: absolute; right: 14px; bottom: -21px; width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--accent-deep); font-size: 1.25rem; }
+  .primer-code { margin: 22px 0 12px; padding: 16px 18px; overflow-x: auto; border-radius: 12px; background: #17201f; color: #eaf1ea; font-size: .78rem; line-height: 1.65; }
+  .primer-note { padding: 12px 14px; border-left: 3px solid var(--positive); background: color-mix(in srgb, var(--positive) 9%, var(--surface)); color: var(--muted); font-size: .84rem; }
+  .two-loop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .loop-card { padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+  .loop-card-training { border-color: color-mix(in srgb, var(--accent) 42%, var(--line)); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
+  .loop-card-label { color: var(--accent-deep); font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .loop-card h4 { margin: 7px 0 12px; font-size: 1.05rem; }
+  .loop-card ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 8px; color: var(--muted); font-size: .84rem; }
+  .rl-term-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .rl-term-grid article { padding: 14px; border-top: 3px solid var(--accent); border-radius: 8px 8px 12px 12px; background: var(--surface-muted); }
+  .rl-term-grid p { margin: 6px 0 0; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  .sft-rl-compare { display: grid; grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr); gap: 12px; align-items: stretch; margin-top: 18px; }
+  .sft-rl-compare article { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  .sft-rl-compare article > span { color: var(--accent-deep); font-size: .72rem; font-weight: 800; }
+  .sft-rl-compare h4 { margin: 6px 0 8px; font-size: .98rem; }
+  .sft-rl-compare p { margin: 0; color: var(--muted); font-size: .82rem; }
+  .compare-vs { display: grid; place-items: center; color: var(--muted); font-weight: 800; }
+  .grpo-box { margin-top: 12px; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--surface-muted); }
+  .grpo-box p { margin: 6px 0 0; color: var(--muted); font-size: .84rem; }
+  .primer-seed { padding: clamp(20px, 3vw, 30px); border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-radius: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)) 0%, var(--surface) 100%); }
+  .seed-pipeline { display: grid; grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr) 24px minmax(0, 1fr) 24px minmax(0, 1fr); gap: 5px; align-items: stretch; }
+  .seed-pipeline article { padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .seed-pipeline article > span { color: var(--accent-deep); font-size: .66rem; font-weight: 800; text-transform: uppercase; }
+  .seed-pipeline article > strong { display: block; margin: 5px 0 7px; font-size: .84rem; }
+  .seed-pipeline article > p { margin: 0; color: var(--muted); font-size: .75rem; }
+  .seed-arrow { display: grid; place-items: center; }
+  .seed-inference-note { margin-top: 14px; padding: 13px 15px; border-radius: 10px; background: color-mix(in srgb, var(--positive) 10%, var(--surface)); color: var(--muted); font-size: .82rem; }
+  .seed-inference-note strong { color: var(--ink); }
+  .why-model-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+  .why-model-grid article { display: grid; gap: 5px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .why-model-grid span { color: var(--muted); font-size: .76rem; }
+  .primer-next { margin-top: 54px; padding: 26px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface-muted); }
+  .primer-next h3 { margin: 6px 0 18px; font-size: 1.35rem; }
+  .primer-next-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .primer-next-grid a { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 5px 10px; padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: inherit; text-decoration: none; }
+  .primer-next-grid a:hover { border-color: var(--accent); }
+  .primer-next-grid a > span { grid-row: 1 / 3; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; background: var(--accent); color: #fff; font-size: .72rem; font-weight: 800; }
+  .primer-next-grid small { color: var(--muted); line-height: 1.45; }
+  .primer-sources { margin-top: 18px; padding: 16px 18px; border-top: 1px solid var(--line); color: var(--muted); }
+  .primer-sources > strong { display: block; margin-bottom: 8px; color: var(--ink); font-size: .78rem; }
+  .primer-sources > div { display: flex; flex-wrap: wrap; gap: 7px 14px; }
+  .primer-sources a { color: var(--accent-deep); font-size: .74rem; }
+  @media (max-width: 900px) { .primer-hero, .primer-section-head { grid-template-columns: 1fr; } .primer-route { grid-template-columns: repeat(5, minmax(150px, 1fr)); overflow-x: auto; } .runtime-loop, .seed-pipeline { grid-template-columns: 1fr; gap: 7px; } .loop-edge, .seed-arrow { transform: rotate(90deg); min-height: 20px; } .loop-return { right: 10px; bottom: 10px; } .rl-term-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .why-model-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .agent-primer { margin-bottom: 44px; } .primer-hero { padding: 20px; border-radius: 17px; } .primer-route { top: 64px; margin-bottom: 34px; } .bridge-grid, .two-loop-grid, .primer-next-grid { grid-template-columns: 1fr; } .bridge-card { grid-template-columns: 1fr 22px 1fr; } .rl-term-grid, .why-model-grid, .sft-rl-compare { grid-template-columns: 1fr; } .compare-vs { min-height: 30px; } .primer-section { margin: 40px 0; } .primer-section-head > div { align-items: flex-start; } .primer-next { padding: 20px; } }
+</style>
