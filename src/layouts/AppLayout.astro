@@ -3,11 +3,11 @@ import Header from '../components/Header.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
-import { CommandMenu } from '../components/navigation/CommandMenu.tsx';
 import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
 import '../styles/global.css';
 import '../styles/workspace.css';
 import '../styles/v2-closeout.css';
+import '../styles/visual-upgrade.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 
 interface Props {
@@ -95,7 +95,6 @@ const websiteJsonLd = JSON.stringify({
   <body>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
-    <CommandMenu client:load locale={locale} m={m} />
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">

@@ -6,219 +6,91 @@ interface Glossary { term_zh: string; term_en: string; definition_zh: string; de
 interface Props { locale: Locale; concepts: Concept[]; glossary: Glossary[]; steps: string[]; note: string }
 const { locale, concepts, glossary, steps, note } = Astro.props;
 const isZh = locale === 'zh';
-const t = (zh: string, en: string) => isZh ? zh : en;
 
-const seedPaperHref = localePath(locale, '/papers/seed/');
-const seedModelHref = localePath(locale, '/models/qwen2-5-3b-instruct/');
-const seedModelFilterHref = `${localePath(locale, '/models/')}?q=qwen2.5&rl=true&paperUse=true`;
-const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
-const seedCompareHref = `${localePath(locale, '/compare/')}?models=qwen2-5-3b-instruct,qwen3-1-7b&diff=1&impact=1`;
-
-const seedTour = [
+// 学习路径是纯导航引导：把“先学什么、再看什么、最后去哪做”显式化，不产生新的研究结论。
+const learningPath = [
   {
-    area: t('首页', 'Home'),
-    title: t('先确定研究路径，不要先找“最强模型”', 'Choose the research path before hunting for the “best model”'),
-    body: t('首页把任务分成严格复现、方法复现和现代化重跑。对 SEED 来说：要复刻论文条件就选严格复现；只验证“轨迹 → hindsight skill → OPD → 策略更新”的因果链就选方法复现；要把方法迁移到更新模型才选现代化重跑。', 'The home page separates strict reproduction, method reproduction, and modern reruns. For SEED, strict means matching the paper setup; method reproduction checks the trajectory → hindsight skill → OPD → policy-update chain; a modern rerun intentionally changes the backbone or surrounding stack.'),
-    task: t('第一次使用本站时，建议先把 SEED 当作“方法复现”任务；理解清楚之后，再决定是否值得投入严格复现资源。', 'For a first pass, treat SEED as a method-reproduction task. Move to strict reproduction only after the mechanism and resource boundary are clear.'),
-    done: t('你能明确说出当前实验属于严格复现、方法复现还是现代化重跑。', 'You can state whether the current experiment is strict, method-level, or a modern rerun.'),
-    links: [
-      { label: t('回到首页', 'Open home'), href: localePath(locale, '/') },
-      { label: t('打开 SEED 案例', 'Open the SEED case'), href: seedPaperHref },
-    ],
+    num: '01',
+    title: isZh ? '建立共同语言' : 'Learn the shared language',
+    desc: isZh ? '先读下方概念地图，弄清 Base / Instruct、checkpoint、证据状态这些词在说什么。' : 'Start with the concept map below: Base vs Instruct, checkpoints, and what evidence states mean.',
+    href: '#guide-concepts-title',
+    go: isZh ? '就在本页 ↓' : 'On this page ↓',
+    here: true,
   },
   {
-    area: t('全局搜索', 'Global search'),
-    title: t('用 ⌘K 把论文、模型、家族和指南当成一个入口', 'Use ⌘K as one entry point for papers, models, families, and guides'),
-    body: t('顶部搜索加载构建期索引，并支持键盘上下选择。它不是只搜模型：论文、模型家族和指南都在同一个搜索入口里。', 'The header search loads a build-time index and supports keyboard navigation. It searches more than models: papers, families, and guides share the same entry point.'),
-    task: t('按 ⌘K（Windows/Linux 用 Ctrl+K），先输入 “SEED”，再输入 “Qwen2.5-3B-Instruct”。分别观察论文结果与模型结果。', 'Press ⌘K (Ctrl+K on Windows/Linux), search “SEED”, then “Qwen2.5-3B-Instruct”, and notice the paper and model result types.'),
-    done: t('你知道“我在找一篇论文”与“我在找一个 checkpoint”是两种不同对象。', 'You can distinguish searching for a paper from searching for a specific checkpoint.'),
-    links: [{ label: t('直接打开 SEED', 'Open SEED directly'), href: seedPaperHref }],
+    num: '02',
+    title: isZh ? '看真实模型' : 'See real models',
+    desc: isZh ? '在模型浏览器里按开放权重、LoRA、RL 等研究约束筛选真实候选。' : 'Filter real candidates in the model browser by open weights, LoRA, RL, and other research constraints.',
+    href: localePath(locale, '/models/'),
+    go: isZh ? '打开模型浏览器 →' : 'Open the model browser →',
+    here: false,
   },
   {
-    area: t('论文案例库', 'Paper explorer'),
-    title: t('先读论文案例，再决定要不要复现', 'Read the paper case before deciding how to reproduce it'),
-    body: t('论文页可以按演化目标、模型角色、家族、Benchmark、代码、Checkpoint、权重更新和复现难度筛选。SEED 详情页进一步把方法摘要、工作流、模型角色、复现状态和 learn / method / strict 三层教程分开。', 'The paper explorer filters by evolution target, model role, family, benchmark, code, checkpoint, weight update, and reproducibility. The SEED detail page then separates method summary, workflow, model roles, reproducibility status, and learn / method / strict tracks.'),
-    task: t('打开 SEED 后先完成“理解机制”：确认 Stage 1 hindsight-skill SFT、Stage 2 自进化 OPD/GRPO，以及推理时不需要 skill bank。', 'Open SEED and complete the learning track first: identify Stage 1 hindsight-skill SFT, Stage 2 self-evolving OPD/GRPO, and the fact that deployment does not require a skill bank.'),
-    done: t('你能解释 SEED 为什么属于更新权重的自进化，而不是只在 prompt 或外部记忆上自我改写。', 'You can explain why SEED is weight-updating self-evolution rather than prompt-only or external-memory evolution.'),
-    links: [
-      { label: t('浏览全部论文', 'Browse all papers'), href: localePath(locale, '/papers/') },
-      { label: t('进入 SEED 详情', 'Open SEED detail'), href: seedPaperHref },
-    ],
+    num: '03',
+    title: isZh ? '读一篇论文案例' : 'Read one paper case',
+    desc: isZh ? '看真实论文如何使用模型，以及替换模型时哪些结论会变化。' : 'See how real papers used models, and which conclusions change when a model is replaced.',
+    href: localePath(locale, '/papers/'),
+    go: isZh ? '打开论文案例库 →' : 'Open paper cases →',
+    here: false,
   },
   {
-    area: t('Quick View / 模型详情', 'Quick View / model detail'),
-    title: t('从论文角色直接落到 Qwen2.5-3B-Instruct', 'Move from the paper role to Qwen2.5-3B-Instruct'),
-    body: t('论文角色、家族时间线等位置都能打开共享 Quick View，再进入完整模型详情。详情页重点不是“一个总分”，而是 checkpoint 类型、开放性、许可证、训练方式、运行时、硬件档位、可复现字段、来源与未知项。', 'Paper roles and family timelines can open the shared Quick View and then the full model detail. The detail page is not a single score: it exposes checkpoint type, openness, license, update methods, runtimes, hardware tiers, reproducibility fields, sources, and unresolved facts.'),
-    task: t('在 SEED 中打开 Qwen2.5-3B-Instruct，确认它是 Instruct checkpoint，并检查权重、RL 适用性、veRL 配方、许可证和 revision 是否真的有来源支持。', 'Open Qwen2.5-3B-Instruct from SEED. Confirm it is an Instruct checkpoint, then inspect weights, RL suitability, veRL recipe status, licensing, and whether a real revision is actually source-backed.'),
-    done: t('你不会把发布日期当成 revision，也不会把“未核验”当成“不支持”。', 'You will not treat a release date as a revision or interpret “not verified” as “unsupported”.'),
-    links: [{ label: t('打开 Qwen2.5-3B-Instruct', 'Open Qwen2.5-3B-Instruct'), href: seedModelHref }],
-  },
-  {
-    area: t('模型浏览器', 'Model explorer'),
-    title: t('把论文里的模型变成可筛选、可比较的候选', 'Turn paper models into filterable, comparable candidates'),
-    body: t('模型浏览器支持关键词、厂商、家族、代际、架构、checkpoint、模态、参数规模，以及开放权重、LoRA、RL、单卡、当前代、论文采用等快捷/高级筛选；还能切换决策、数据和时间线视图。', 'The model explorer supports query, vendor, family, generation, architecture, checkpoint, modality, parameter scale, and quick/advanced filters for open weights, LoRA, RL, single-GPU use, current generation, and paper adoption. It also offers decision, data, and timeline views.'),
-    task: t('打开预筛选结果：Qwen2.5 + RL + 被论文采用。把 Qwen2.5-3B-Instruct 放进候选/对比，再观察 Qwen3-1.7B 这类同论文 backbone。', 'Open the prefiltered view: Qwen2.5 + RL + used by a paper. Add Qwen2.5-3B-Instruct to candidates/compare, then inspect another SEED backbone such as Qwen3-1.7B.'),
-    done: t('你开始依据研究约束缩小候选，而不是按“发布时间最新”自动选模型。', 'You are narrowing candidates from research constraints instead of automatically choosing the newest release.'),
-    links: [
-      { label: t('打开 SEED 模型筛选', 'Open SEED model filter'), href: seedModelFilterHref },
-      { label: t('浏览全部模型', 'Browse all models'), href: localePath(locale, '/models/') },
-    ],
-  },
-  {
-    area: t('家族 / Landscape', 'Families / Landscape'),
-    title: t('区分“论文当时用的模型”和“今天这个家族到哪一代”', 'Separate the paper-time model from the family’s current generation'),
-    body: t('家族页保留当前代标记和历史论文采用关系；Landscape 则提供学习/完整视图、论文模型过滤、可交互图和表格替代路径。它们解决的是“模型处在生态中的什么位置”，不是替论文自动换 backbone。', 'Family pages preserve current-generation markers and historical paper adoption. Landscape adds learning/full views, paper-model filtering, interactive charts, and an accessible table. These views locate a model in the ecosystem; they do not silently replace the paper backbone.'),
-    task: t('查看 Qwen 家族，找到论文里的 Qwen2.5 与 Qwen3 checkpoint，再到 Landscape 看它们与其他开放权重模型的规模、架构和研究属性位置。', 'Open the Qwen family, locate the Qwen2.5 and Qwen3 checkpoints used by the paper, then use Landscape to place them among other open-weight models by scale, architecture, and research attributes.'),
-    done: t('你知道“家族已更新”只说明现代化重跑有新候选，不会自动改变严格复现的原始 checkpoint。', 'You understand that a newer family generation creates modern-rerun candidates but does not change the checkpoint required for strict reproduction.'),
-    links: [
-      { label: t('查看模型家族', 'Open families'), href: localePath(locale, '/families/') },
-      { label: t('打开 Landscape', 'Open Landscape'), href: localePath(locale, '/landscape/') },
-    ],
-  },
-  {
-    area: t('研究工作台', 'Research workspace'),
-    title: t('把 SEED 变成一份真正的研究任务', 'Turn SEED into an actual research task'),
-    body: t('工作台把研究模式、参考论文、模型角色、更新方式、资源、访问方式、运行时和优先级统一成一个任务状态。任务会驱动后续候选评价，而不是让筛选器彼此独立。', 'The workspace combines research mode, reference paper, model roles, update method, resources, access mode, runtimes, and priorities into one task state. That task then drives candidate evaluation instead of leaving filters disconnected.'),
-    task: t('使用预填 SEED 方法复现任务：paper=SEED、model=Qwen2.5-3B-Instruct、actor/analyzer、RL、local、veRL、open weight。随后再填写你真实拥有的 GPU 数、显存、精度、上下文和 batch。', 'Use the prefilled SEED method-reproduction task: paper=SEED, model=Qwen2.5-3B-Instruct, actor/analyzer, RL, local, veRL, open weight. Then enter your actual GPU count, VRAM, precision, context length, and batch assumptions.'),
-    done: t('页面顶部研究上下文能概括你的任务，候选卡开始给出“为什么进入 / 风险 / 待核验”而不是通用推荐。', 'The research context bar summarizes the task, and candidate cards start explaining why a model enters, what risks remain, and what still needs verification.'),
-    links: [{ label: t('打开预填 SEED 工作台', 'Open prefilled SEED workspace'), href: seedWorkspaceHref }],
-  },
-  {
-    area: t('资源估算 / 候选判断', 'Resource planning / candidate fit'),
-    title: t('把“能下载”与“能按你的方案训练”分开', 'Separate “downloadable” from “trainable under your plan”'),
-    body: t('工作台显存计算器会结合精度、上下文、batch、LoRA rank、优化器和 KV cache 做启发式规划；候选板再把资源、开放性、许可证、角色和证据状态一起纳入判断。它不是硬件实测，也不是可运行保证。', 'The VRAM planner combines precision, context, batch, LoRA rank, optimizer, and KV-cache assumptions into a heuristic estimate. The candidate board then weighs resources, openness, licensing, roles, and evidence. This is not a measured hardware result or a run guarantee.'),
-    task: t('先用 Qwen2.5-3B-Instruct 填入你的真实资源，再改变精度或 batch，观察估算如何变化；如果资源不足，把结论写成“当前配置不合适”，而不是把模型本身判成“不支持 RL”。', 'Enter your real resources for Qwen2.5-3B-Instruct, then change precision or batch and observe the estimate. If resources are insufficient, record that the current configuration is unsuitable rather than claiming the model itself does not support RL.'),
-    done: t('你能区分目录硬件档位、启发式显存估算和论文报告的真实硬件条件。', 'You can distinguish catalog hardware tiers, heuristic VRAM estimates, and hardware actually reported by the paper.'),
-    links: [{ label: t('继续在工作台验证', 'Continue in workspace'), href: seedWorkspaceHref }],
-  },
-  {
-    area: t('模型对比', 'Compare'),
-    title: t('只比较真正会改变复现结论的字段', 'Compare the fields that can actually change the research conclusion'),
-    body: t('Compare 最多可放 5 个模型，并能只看差异、只看研究影响或只看未知项；绝对/相对模式用于快速找变化。结果还能复制 Markdown、下载 CSV、复制 BibTeX 和分享带 models 参数的 URL；移动端会改成逐字段比较卡。', 'Compare accepts up to five models and can show only differences, research-impacting fields, or unknowns. Absolute/relative modes make changes easier to scan. You can copy Markdown, download CSV, copy BibTeX, and share a URL whose canonical state uses the models parameter; mobile uses per-field comparison cards.'),
-    task: t('直接比较 SEED 使用过的 Qwen2.5-3B-Instruct 与 Qwen3-1.7B，先打开“只看差异 + 只看研究影响”，重点看 checkpoint、开放性、RL/运行时、硬件与可复现字段。', 'Compare two SEED backbones directly: Qwen2.5-3B-Instruct and Qwen3-1.7B. Start with “differences only + research impacts” and focus on checkpoint, openness, RL/runtime, hardware, and reproducibility fields.'),
-    done: t('你能说出“换模型”具体改变了哪些研究变量，而不只是说新模型“更强”。', 'You can name the research variables changed by a model swap instead of merely saying the newer model is “stronger”.'),
-    links: [{ label: t('打开 SEED backbone 对比', 'Open SEED backbone comparison'), href: seedCompareHref }],
-  },
-  {
-    area: t('Decision Memo / 快照', 'Decision Memo / snapshots'),
-    title: t('把一次判断保存成之后能复核的记录', 'Save a decision that can be audited later'),
-    body: t('工作台会在浏览器本地保存研究任务、候选、比较和快照；Decision Memo 支持保存快照与字段级变化检查，并可以导出决策记录。当前站点没有账号、数据库或团队同步，所以“本地项目”不能被理解成跨设备云端保存。', 'The workbench persists research tasks, candidates, comparisons, and snapshots locally in the browser. Decision Memo supports snapshots, field-level change checks, and decision export. The site currently has no account system, database, or team sync, so a local project is not cross-device cloud storage.'),
-    task: t('在调整 SEED 候选和资源后保存一个快照，再改变一个关键条件（例如 GPU 数或候选模型），查看字段变化，然后导出决策记录。', 'After setting SEED candidates and resources, save a snapshot. Change one key condition such as GPU count or candidate model, inspect the field-level change, then export the decision record.'),
-    done: t('你可以在几天后解释“当时为什么选这个模型”，并能看到条件变化导致的判断变化。', 'Days later, you can explain why that model was chosen and how a changed constraint altered the decision.'),
-    links: [{ label: t('打开研究工作台', 'Open research workspace'), href: localePath(locale, '/workspace/') }],
-  },
-  {
-    area: t('证据 / 数据状态', 'Evidence / data status'),
-    title: t('遇到 unknown 时先查来源，不要补一个看起来合理的值', 'When you see unknown, inspect evidence instead of filling a plausible value'),
-    body: t('本站把 not_reported、not_disclosed、not_verified、conflicting_evidence 等状态保留下来；Data Status 还展示声明历史、Benchmark 条件和证据边界。模型详情中的数据问题入口会预填模型、页面和来源上下文。', 'The site preserves states such as not_reported, not_disclosed, not_verified, and conflicting_evidence. Data Status also exposes claim history, benchmark conditions, and evidence boundaries. The model-detail data-issue action prefills model, page, and source context.'),
-    task: t('以 SEED 为例，分别核对论文训练硬件、checkpoint/revision、Benchmark 条件和代码/权重可用性。没有来源的字段就保留 unknown；发现来源冲突时用“报告数据问题”提交上下文。', 'For SEED, separately verify reported training hardware, checkpoint/revision, benchmark conditions, and code/weight availability. Keep unsupported fields unknown; if sources conflict, use the data-issue action with its prefilled context.'),
-    done: t('你的复现记录能清楚区分“论文明确报告”“本站有来源核验”“尚未报告/尚未核验”。', 'Your reproduction notes clearly separate paper-reported facts, site-verified facts, and fields that remain unreported or unverified.'),
-    links: [
-      { label: t('查看数据状态', 'Open data status'), href: localePath(locale, '/data-status/') },
-      { label: t('阅读方法论', 'Read methodology'), href: localePath(locale, '/methodology/') },
-    ],
-  },
-  {
-    area: t('语言 / 主题 / 分享', 'Language / theme / sharing'),
-    title: t('最后再用界面工具完成分享和复核', 'Use interface utilities last to share and review'),
-    body: t('中英文切换会映射到当前页面的等价路径；主题切换会保存到本地，并通知图表同步主题。工作台任务和 Compare 都能把关键状态编码到 URL，适合把“同一问题”交给别人复核。', 'Language switching maps to the equivalent current route. Theme choice is stored locally and propagated to charts. Workspace and Compare encode key state in URLs, which makes it easier to hand the same research question to someone else for review.'),
-    task: t('在 SEED 详情页切到 English 再切回中文；切换明暗主题；最后复制你的 Compare 或工作台 URL，确认重新打开后关键状态仍在。', 'Switch the SEED detail page to English and back, toggle light/dark theme, then copy a Compare or workspace URL and confirm that reopening it preserves the important state.'),
-    done: t('你能把“页面截图”升级为一条可重新打开、可继续检查的研究链接。', 'You can replace a static screenshot with a research link that can be reopened and inspected.'),
-    links: [
-      { label: t('再次打开 SEED', 'Open SEED again'), href: seedPaperHref },
-      { label: t('打开可分享对比', 'Open shareable compare'), href: seedCompareHref },
-    ],
+    num: '04',
+    title: isZh ? '做第一次决策' : 'Make your first decision',
+    desc: isZh ? '打开工作台设定研究任务，把候选、对比和证据导出为一份决策记录。' : 'Set a research task in the workbench and export candidates, comparisons, and evidence as a decision memo.',
+    href: localePath(locale, '/workspace/'),
+    go: isZh ? '打开工作台 →' : 'Open the workbench →',
+    here: false,
   },
 ];
 ---
 <ol class="guide-steps">{steps.map((step, index) => <li><span>{index + 1}</span><p>{step}</p></li>)}</ol>
-
-<section class="guide-seed-tour" aria-labelledby="seed-tour-title">
-  <div class="section-heading">
-    <div>
-      <span class="section-kicker">{t('贯穿案例 · SEED', 'End-to-end case · SEED')}</span>
-      <h2 id="seed-tour-title">{t('用一篇论文走完 Basemodel 的全部研究功能', 'Use one paper to walk through Basemodel’s research workflow')}</h2>
-    </div>
-    <p class="muted">{t('建议按顺序做一遍；之后再把同样的方法迁移到其他论文。', 'Follow the sequence once, then reuse the same workflow for other papers.')}</p>
-  </div>
-
-  <div class="seed-tour-route" aria-label={t('SEED 快速研究路径', 'SEED quick research path')}>
-    <a href={seedPaperHref}>SEED</a><span aria-hidden="true">→</span>
-    <a href={seedModelHref}>Qwen2.5-3B-Instruct</a><span aria-hidden="true">→</span>
-    <a href={seedWorkspaceHref}>{t('方法复现工作台', 'Method workspace')}</a><span aria-hidden="true">→</span>
-    <a href={seedCompareHref}>{t('模型对比', 'Compare')}</a><span aria-hidden="true">→</span>
-    <a href={localePath(locale, '/data-status/')}>{t('证据复核', 'Evidence check')}</a>
-  </div>
-
-  <div class="seed-tour-context">
-    <strong>{t('案例事实边界', 'Case boundary')}</strong>
-    <p>{t('SEED 于 2026-07-16 发布；站内案例记录了 Qwen2.5-3B/7B-Instruct 与 Qwen3-1.7B 等策略骨干，并把“学习机制、缩小规模方法验证、严格复现”分成不同结论层级。这里的目标是教你使用网站，不是声称一次轻量实验就复现了论文主表。', 'SEED was released on 2026-07-16. The site case records policy backbones including Qwen2.5-3B/7B-Instruct and Qwen3-1.7B, while separating mechanism learning, reduced method checks, and strict reproduction. This walkthrough teaches the site; a lightweight experiment must not be presented as reproducing the paper’s main tables.')}</p>
-  </div>
-
-  <ol class="seed-tour-list">
-    {seedTour.map((item, index) => (
-      <li class="seed-tour-card">
-        <div class="seed-tour-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
-        <div class="seed-tour-main">
-          <span class="seed-tour-area">{item.area}</span>
-          <h3>{item.title}</h3>
-          <p>{item.body}</p>
-          <div class="seed-tour-task"><strong>{t('在 SEED 里这样做', 'Do this with SEED')}</strong><span>{item.task}</span></div>
-          <p class="seed-tour-done"><strong>{t('完成标志：', 'Done when: ')}</strong>{item.done}</p>
-          <div class="seed-tour-actions">
-            {item.links.map((link) => <a class="button button-secondary" href={link.href}>{link.label} →</a>)}
-          </div>
-        </div>
-      </li>
-    ))}
-  </ol>
-
-  <aside class="seed-tour-boundary">
-    <h3>{t('三个最容易误用本站的地方', 'Three common ways to misuse the site')}</h3>
-    <ul>
-      <li>{t('“当前代模型”不等于“严格复现应该换掉论文模型”；换 backbone 属于方法复现或现代化重跑，需要重新定义结论。', '“Current-generation model” does not mean a strict reproduction should replace the paper model; changing the backbone changes the research path and conclusion.')}</li>
-      <li>{t('“可下载 / 可调用”不等于“可复现”；revision、tokenizer、config、chat template、许可证和运行时条件要分别核验。', '“Downloadable / callable” does not mean reproducible; revision, tokenizer, config, chat template, license, and runtime conditions must be checked separately.')}</li>
-      <li>{t('浏览器本地项目、快照和 URL 分享不是账号、云端存储或团队协作；当前生产架构刻意保持 GitHub → Cloudflare Pages 的静态优先边界。', 'Browser-local projects, snapshots, and URL sharing are not accounts, cloud storage, or team collaboration; the current production architecture intentionally keeps a static-first GitHub → Cloudflare Pages boundary.')}</li>
-    </ul>
-  </aside>
+<section class="guide-path" aria-labelledby="guide-path-title">
+  <div class="section-heading"><div><span class="section-kicker">{isZh ? '学习路径' : 'Learning path'}</span><h2 id="guide-path-title">{isZh ? '四步走到第一次模型决策' : 'Four steps to your first model decision'}</h2></div><p class="muted">{isZh ? '刚接触智能体和基础模型时，按这个顺序走一遍。' : 'New to agents and foundation models? Follow this order once.'}</p></div>
+  <ol class="guide-path-list">{learningPath.map((item) => <li><a class:list={['guide-path-card', { 'is-here': item.here }]} href={item.href}><span class="guide-path-num" aria-hidden="true">{item.num}</span><strong>{item.title}</strong><small>{item.desc}</small><span class="guide-path-go">{item.go}</span></a></li>)}</ol>
 </section>
-
 <section class="guide-concept-map" aria-labelledby="guide-concepts-title">
   <div class="section-heading"><div><span class="section-kicker">{isZh ? '概念地图' : 'Concept map'}</span><h2 id="guide-concepts-title">{isZh ? '先建立模型选择的共同语言' : 'Build a shared language for model choice'}</h2></div><p class="muted">{isZh ? '从概念进入真实模型与研究任务。' : 'Move from concepts to real models and research tasks.'}</p></div>
   <nav class="concept-map-nav" aria-label={isZh ? '概念地图导航' : 'Concept map navigation'}>{concepts.map((concept) => <a href={`#concept-${concept.id}`}>{isZh ? concept.title_zh : concept.title_en}</a>)}</nav>
-  <div class="concept-map-grid">{concepts.map((concept) => <article id={`concept-${concept.id}`} class="concept-card"><h3>{isZh ? concept.title_zh : concept.title_en}</h3><p>{isZh ? concept.body_zh : concept.body_en}</p>{concept.model_ids.length > 0 && <div class="concept-model-links"><span>{isZh ? '真实模型示例' : 'Model examples'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}{concept.links?.length ? <div class="concept-model-links"><span>{isZh ? '继续研究' : 'Continue research'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{isZh ? link.label_zh : link.label_en}</a>)}</div> : null}</article>)}</div>
+  <div class="concept-map-grid">{concepts.map((concept, index) => <article id={`concept-${concept.id}`} class="concept-card"><h3><span class="concept-num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{isZh ? concept.title_zh : concept.title_en}</h3><p>{isZh ? concept.body_zh : concept.body_en}</p>{concept.model_ids.length > 0 && <div class="concept-model-links"><span>{isZh ? '真实模型示例' : 'Model examples'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}{concept.links?.length ? <div class="concept-model-links"><span>{isZh ? '继续研究' : 'Continue research'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{isZh ? link.label_zh : link.label_en}</a>)}</div> : null}</article>)}</div>
 </section>
 <section class="guide-glossary" aria-labelledby="guide-glossary-title"><div class="section-heading"><div><span class="section-kicker">{isZh ? '术语表' : 'Glossary'}</span><h2 id="guide-glossary-title">{isZh ? '在页面内解释关键术语' : 'Explain key terms in place'}</h2></div></div><div class="glossary-list">{glossary.map((item) => <details><summary>{isZh ? item.term_zh : item.term_en}</summary><p>{isZh ? item.definition_zh : item.definition_en}</p></details>)}</div></section>
 <p class="callout">{note}</p>
-
 <style>
+  .guide-path { margin: 34px 0 40px; }
+  .guide-path-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .guide-path-list li { min-width: 0; }
+  .guide-path-card { display: grid; gap: 7px; align-content: start; height: 100%; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: inherit; text-decoration: none; transition: border-color .15s ease; }
+  .guide-path-card:hover, .guide-path-card:focus-visible { border-color: var(--accent); }
+  .guide-path-card.is-here { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
+  .guide-path-num { color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .1em; }
+  .guide-path-card strong { font-size: .95rem; }
+  .guide-path-card small { color: var(--muted); font-size: .78rem; line-height: 1.55; }
+  .guide-path-go { margin-top: 4px; color: var(--accent-deep); font-size: .76rem; font-weight: 700; }
   .concept-map-nav { display: flex; flex-wrap: wrap; gap: 8px; }
-  .guide-seed-tour { margin: 56px 0; }
-  .seed-tour-route { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 18px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font-size: .88rem; }
-  .seed-tour-route a { font-weight: 700; text-decoration: none; }
-  .seed-tour-route span { color: var(--muted); }
-  .seed-tour-context { display: grid; gap: 6px; padding: 18px 20px; margin-bottom: 24px; border-left: 3px solid var(--accent); background: var(--surface-muted); border-radius: 0 14px 14px 0; }
-  .seed-tour-context p { margin: 0; color: var(--muted); }
-  .seed-tour-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
-  .seed-tour-card { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 18px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
-  .seed-tour-number { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: var(--surface-muted); color: var(--accent-deep); font-weight: 800; font-variant-numeric: tabular-nums; }
-  .seed-tour-main h3 { margin: 4px 0 8px; font-size: 1.12rem; }
-  .seed-tour-main > p { color: var(--muted); }
-  .seed-tour-area { color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-  .seed-tour-task { display: grid; gap: 5px; margin: 14px 0; padding: 14px 16px; border-radius: 12px; background: var(--surface-muted); }
-  .seed-tour-task strong { font-size: .78rem; color: var(--ink); }
-  .seed-tour-task span { color: var(--muted); font-size: .9rem; }
-  .seed-tour-done { margin-bottom: 14px; font-size: .88rem; }
-  .seed-tour-done strong { color: var(--ink); }
-  .seed-tour-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-  .seed-tour-actions .button { min-height: 38px; padding: 8px 12px; font-size: .82rem; }
-  .seed-tour-boundary { margin-top: 24px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-muted); }
-  .seed-tour-boundary h3 { margin-bottom: 10px; font-size: 1rem; }
-  .seed-tour-boundary ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 8px; color: var(--muted); }
-  @media (max-width: 640px) {
-    .guide-seed-tour { margin: 40px 0; }
-    .seed-tour-card { grid-template-columns: 1fr; padding: 18px; }
-    .seed-tour-number { width: 40px; height: 40px; }
-    .seed-tour-actions .button { width: 100%; justify-content: center; }
+  .concept-map-nav a { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .78rem; text-decoration: none; transition: border-color .15s ease; }
+  .concept-map-nav a:hover, .concept-map-nav a:focus-visible { color: var(--ink); border-color: var(--accent); }
+  .concept-map-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+  .concept-card { display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); scroll-margin-top: 96px; }
+  .concept-card h3 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; font-size: 1.02rem; }
+  .concept-num { flex: 0 0 auto; color: var(--accent-deep); font-size: .7rem; font-weight: 800; letter-spacing: .08em; }
+  .concept-card > p { color: var(--muted); font-size: .86rem; margin-bottom: 12px; }
+  .concept-model-links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); }
+  .concept-model-links + .concept-model-links { margin-top: 0; border-top: 0; padding-top: 2px; }
+  .concept-model-links > span { color: var(--muted); font-size: .72rem; font-weight: 650; margin-right: 2px; }
+  .concept-model-links a { padding: 5px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-muted); color: var(--ink); font-size: .74rem; text-decoration: none; transition: border-color .15s ease; }
+  .concept-model-links a:hover, .concept-model-links a:focus-visible { border-color: var(--accent); color: var(--accent-deep); }
+  .guide-glossary { margin-top: 40px; }
+  .glossary-list { display: grid; gap: 8px; }
+  .glossary-list details { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .glossary-list summary { cursor: pointer; font-weight: 650; font-size: .9rem; }
+  .glossary-list details p { margin: 8px 0 0; color: var(--muted); font-size: .84rem; }
+  @media (max-width: 900px) {
+    .guide-path-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 700px) {
+    .concept-map-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .guide-path-list { grid-template-columns: 1fr; }
   }
 </style>

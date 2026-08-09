@@ -1,0 +1,69 @@
+/* visual-upgrade.css — 视觉升级覆盖层。
+   在 global.css / workspace.css / v2-closeout.css 之后加载，只做覆盖与新增，不改写既有文件。
+   修复方向：移动端头部重叠、缺失样式的组件、窄屏布局挤压、中文大标题字距。 */
+
+/* 1. 大标题字距与行高：-.065em 下中文笔画相叠，放宽跟踪与行高提升可读性。 */
+h1 { letter-spacing: -.038em; line-height: 1.03; }
+h2 { letter-spacing: -.03em; }
+
+/* 2. 搜索触发器：从写死视口坐标的 fixed 定位改为头部文档流内元素，
+   解决宽屏下与头部脱节、移动端与语言切换/菜单/主题按钮重叠的问题。 */
+.command-search-trigger {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.command-search-trigger:hover { color: var(--ink); border-color: var(--accent); }
+.command-search-trigger kbd { margin-left: 2px; color: var(--muted); font-size: .68rem; }
+
+/* 移动端头部减负：语言切换收纳进移动菜单（菜单里已有同一入口），
+   搜索触发器隐藏快捷键提示。 */
+@media (max-width: 820px) {
+  .nav-inner > .lang-switch { display: none; }
+}
+@media (max-width: 560px) {
+  .command-search-trigger { padding: 7px 10px; }
+  .command-search-trigger kbd { display: none; }
+}
+
+/* 3. 模型页“从基础 checkpoint 开始训练”快捷入口：原有类没有任何样式，
+   移动端文字与按钮互相挤压换行。 */
+.models-page-quick-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: .88rem;
+}
+.models-page-quick-entry .button { flex: 0 0 auto; }
+
+/* 4. 研究摘要“模型定位”标签：与后面的能力胶囊区分层级。 */
+.summary-specializations > span:first-child {
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
+/* 5. 工作台候选卡片：按钮列竖排，不再压住推荐理由/风险 chips；
+   窄屏降为单列，按钮回到内容下方。 */
+.candidate-board .candidate-row { align-items: start; }
+.candidate-board .candidate-actions { flex-direction: column; align-items: stretch; }
+@media (max-width: 980px) {
+  .candidate-board .candidate-row { grid-template-columns: 1fr; }
+  .candidate-board .candidate-row > .button { justify-self: start; }
+  .candidate-board .candidate-actions { flex-direction: row; flex-wrap: wrap; }
+}
