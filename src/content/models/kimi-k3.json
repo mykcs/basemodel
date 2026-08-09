@@ -24,9 +24,9 @@
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_reported",
-    "active_parameters_b": "not_reported",
-    "context_length": "not_reported",
+    "total_parameters_b": 2800,
+    "active_parameters_b": 104,
+    "context_length": 1048576,
     "expert_count": 896,
     "active_experts_per_token": 16
   },
@@ -91,8 +91,8 @@
     {
       "url": "https://huggingface.co/moonshotai/Kimi-K3",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image summary, and 1M context. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
+      "checked_at": "2026-08-09",
+      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image support, and a 1,048,576-token context window. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
       "id": "src_7372d8cb937a",
       "supports": [
         "vendor",
@@ -101,6 +101,11 @@
         "checkpoint.type",
         "checkpoint.modalities",
         "release_date",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "architecture.expert_count",
+        "architecture.active_experts_per_token",
         "access.weights_status",
         "openness.classification",
         "research.suitable_for_inference"
@@ -110,7 +115,7 @@
       "id": "moonshot-kimi-k3-repo",
       "url": "https://github.com/MoonshotAI/Kimi-K3",
       "type": "official_code",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-09",
       "evidence_note": "Moonshot AI official repository documents Kimi K3 deployment with vLLM/SGLang and the kimi-k3 API alias, and requires preserving reasoning/tool-call history in multi-turn use.",
       "supports": [
         "access.api_status",
