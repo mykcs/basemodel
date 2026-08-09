@@ -22,7 +22,7 @@ This was reasonable before Cloudflare became independently deployable, but becam
 
 ## New steady-state behavior
 
-Both pull requests and normal pushes to `main` now classify their changed path range with the same conservative rules:
+Pull requests and `main` pushes that GitHub can verify came from an already-merged pull request classify their changed path range with the same conservative rules:
 
 ```text
 README.md or docs/** only
@@ -31,7 +31,7 @@ README.md or docs/** only
 
 src/content/models/*.json or src/content/papers/*.json, with no code/config changes
 -> data
--> static checks + 7 Chromium data smoke tests
+-> static checks + 7 Chromium smoke tests
 
 any code, config, workflow, dependency, test, rename-sensitive, or otherwise unclassified change
 -> full
@@ -40,7 +40,18 @@ any code, config, workflow, dependency, test, rename-sensitive, or otherwise unc
 
 Manual `workflow_dispatch` and weekly scheduled validation continue to default to `full` cross-browser coverage.
 
-The classifier remains fail-safe: if a push has an all-zero/unavailable `before` SHA or the change range cannot be resolved, it keeps the default `full` tier instead of guessing.
+The classifier remains fail-safe. It keeps the default `full` tier instead of guessing when any of the following is true:
+
+- a push has an all-zero/unavailable `before` SHA;
+- the change range cannot be resolved;
+- a `main` push cannot be associated with an already-merged PR targeting `main`;
+- the GitHub API call used to verify that PR association fails or returns an unexpected result.
+
+The merged-PR check uses GitHub's read-only `List pull requests associated with a commit` endpoint and grants only `pull-requests: read` to the classifier job. It does not grant write access.
+
+This direct-push fallback matters because the repository still has no server-side `main` ruleset. With `cancel-in-progress: true`, a newer docs-only direct push could otherwise cancel an older code-bearing main run and then validate the newest tree at the cheaper docs tier. Forcing every direct or unverifiable main push back to `full` closes that CI fail-open path while preserving the savings for the intended PR-based workflow.
+
+A minimal GitHub `main` ruleset requiring pull requests is still recommended because only a repository rule can prevent direct pushes from landing at all. The workflow fallback makes CI safe when that account-level rule is absent; it is not a substitute for source-control enforcement.
 
 Rename safety remains preserved with:
 
@@ -54,7 +65,9 @@ so moving a code/config file into a docs path cannot hide the original path and 
 
 This optimization does **not** make code/config changes cheaper.
 
-A code/config PR is still `full`; the matching `main` push remains `full` because the pushed range also contains code/config paths. The savings come from avoiding full cross-browser reruns for changes whose own classifier already says they are docs-only or data-only.
+A code/config PR is still `full`; the matching verified PR merge to `main` remains `full` because the pushed range also contains code/config paths. The savings come from avoiding full cross-browser reruns for changes whose own classifier already says they are docs-only or data-only.
+
+A direct or unverifiable push to `main` is deliberately more expensive: it is always `full`, regardless of its apparent changed paths.
 
 The weekly scheduled full regression remains a backstop for browser coverage across the whole site.
 
@@ -62,7 +75,7 @@ The weekly scheduled full regression remains a backstop for browser coverage acr
 
 Cloudflare remains responsible for deployment-blocking deterministic checks and Astro build on meaningful site deployments.
 
-GitHub Actions remains the secondary/deeper assurance layer when hosted-runner allowance is available. GitHub Pages remains fail-closed behind a successful `Validation gate`, but that gate now enforces the selected tier for a main push instead of forcing every push into the most expensive tier.
+GitHub Actions remains the secondary/deeper assurance layer when hosted-runner allowance is available. GitHub Pages remains fail-closed behind a successful `Validation gate`, but that gate now enforces the selected tier for a verified PR merge and falls back to `full` for direct/unverifiable main pushes.
 
 This preserves the dual-hosting contract while reducing the chance that GitHub Actions minutes are exhausted again by routine data/documentation maintenance.
 
@@ -73,11 +86,11 @@ The account's included GitHub Actions minutes were still exhausted when this wor
 Agents must distinguish two kinds of validation:
 
 1. GitHub accepting/creating the workflow for the PR proves the YAML/workflow definition is parseable enough to be registered.
-2. Only an actual future runner execution proves the event-specific classifier/gate behavior on GitHub infrastructure.
+2. Only an actual future runner execution proves the event-specific classifier/API/gate behavior on GitHub infrastructure.
 
 Do not claim a zero-step quota failure is application or classifier evidence.
 
-When Actions capacity returns, the first docs-only, data-only, and code/config PR/main merges should be inspected to confirm the selected tiers match this document.
+When Actions capacity returns, inspect the first verified PR merge and the first direct/unverifiable main push (if one ever occurs) to confirm the intended `docs/data/full` versus forced-`full` behavior. Do not intentionally direct-push solely to test this guard if a ruleset has already been enabled.
 
 ## Cost principle
 
@@ -85,9 +98,11 @@ The final principle is:
 
 ```text
 Cloudflare -> deployment availability and deterministic validation
-GitHub Actions PR/main -> change-proportional browser assurance
+GitHub Actions PR -> change-proportional browser assurance
+GitHub Actions verified PR merge to main -> change-proportional browser assurance
+GitHub Actions direct/unverifiable main push -> full browser assurance
 GitHub Actions schedule/manual -> full cross-browser regression
 GitHub Pages -> secondary public mirror after the selected main validation gate
 ```
 
-This optimizes billed runner minutes without removing the full validation path for risky changes.
+This optimizes billed runner minutes without allowing an unverified direct-main path to downgrade validation.
