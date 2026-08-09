@@ -13,6 +13,7 @@ describe('Cloudflare-only deployment architecture', () => {
   const buildCloudflare = readText('../../scripts/build-cloudflare.mjs');
   const dependabot = readText('../../.github/dependabot.yml');
   const playwright = readText('../../playwright.config.ts');
+  const ogCover = readText('../../public/og-cover.svg');
   const packageJson = readJson<{ scripts: Record<string, string> }>('../../package.json');
 
   it('keeps GitHub Actions retired', () => {
@@ -39,5 +40,15 @@ describe('Cloudflare-only deployment architecture', () => {
 
   it('does not maintain GitHub Actions dependencies through Dependabot', () => {
     expect(dependabot).not.toContain('package-ecosystem: github-actions');
+  });
+
+  it('keeps browser major upgrades deliberate', () => {
+    expect(dependabot).toContain('dependency-name: "@playwright/test"');
+    expect(dependabot).toContain('version-update:semver-major');
+  });
+
+  it('keeps public branding on the active Cloudflare production identity', () => {
+    expect(ogCover).toContain('basemodel.pages.dev');
+    expect(ogCover).not.toContain('mykcs.github.io/basemodel');
   });
 });
