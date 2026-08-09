@@ -27,7 +27,7 @@
     "verify:deploy": "npm run check && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
     "verify:v2": "npm run check && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
     "build": "astro build",
-    "build:cloudflare": "node scripts/build-cloudflare.mjs",
+    "build:cloudflare": "node scripts/debug-cloudflare-gate.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
