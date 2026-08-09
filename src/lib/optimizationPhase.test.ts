@@ -52,6 +52,14 @@ describe('optimization-phase regressions', () => {
     expect(page).toContain('<PaperModelMatrix papers={matrixPapers}');
   });
 
+  it('renders the comparison picker as static HTML before client state restoration', () => {
+    const source = readSource('../components/ModelComparison.tsx');
+    expect(source).not.toContain("from '../lib/useHydrated'");
+    expect(source).not.toContain('if (!hydrated) return null');
+    expect(source).toContain('className="comparison-picker"');
+    expect(source).toContain('initialSelection(models)');
+  });
+
   it('defers the global compare tray instead of hydrating it on initial load', () => {
     const layout = readSource('../layouts/AppLayout.astro');
     expect(layout).toContain('<CompareTray client:idle');
