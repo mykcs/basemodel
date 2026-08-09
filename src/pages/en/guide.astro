@@ -8,7 +8,7 @@ const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_en ?? m.guide.steps;
 const title = guide?.title_en ?? m.guide.title;
 const lede = guide?.lede_en ?? m.guide.lede;
-const note = guide?.note_en ?? m.guide.note;
+const note = 'Hardware tiers in model records remain coarse research metadata. The workbench VRAM calculator combines precision, context length, batch size, LoRA rank, and related assumptions to produce a heuristic planning estimate; it is not a measured hardware result or a guarantee that the configuration will run.';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
 ---
