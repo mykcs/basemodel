@@ -1,0 +1,22 @@
+{
+  "id": "gemma-4-e2b",
+  "name": "Gemma 4 E2B",
+  "official_name": "Gemma 4 E2B",
+  "vendor": "Google",
+  "family": "Gemma",
+  "generation": "Gemma 4",
+  "release_date": "2026-04-02",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "audio", "video"], "specializations": ["reasoning", "agentic", "multimodal", "on-device"]},
+  "architecture": {"type": "dense", "total_parameters_b": 5.1, "active_parameters_b": "not_reported", "context_length": 131072, "expert_count": "not_applicable", "active_experts_per_token": "not_applicable"},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "Apache-2.0", "classification": "open_source", "custom_license": false, "derivative_distribution": "allowed", "commercial_use": "allowed"},
+  "access": {"weights_status": "released", "weights_released_at": "2026-04-02", "weights_url": "https://huggingface.co/google/gemma-4-E2B", "api_status": "not_applicable"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": "not_verified", "transformers_support": true, "vllm_support": "not_verified", "sglang_support": "not_verified", "verl_recipe_available": "not_verified"},
+  "hardware": {"inference_tier": "16gb", "lora_tier": "24gb", "full_sft_tier": "80gb", "rl_tier": "multi_gpu"},
+  "sources": [
+    {"url": "https://ai.google.dev/gemma/docs/core/model_card_4", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Google's Gemma 4 model card lists E2B as a dense multimodal model with 2.3B effective / 5.1B including embeddings, 128K context, text/image/audio support, open pretrained and instruction-tuned weights, and Apache 2.0 licensing.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.context_length", "openness.weights_available", "openness.base_checkpoint_available", "openness.license_name", "status"]},
+    {"url": "https://huggingface.co/google/gemma-4-E2B", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "Google's first-party Hugging Face repository confirms released weights, Transformers support and Apache-2.0 licensing for Gemma 4 E2B.", "supports": ["access.weights_status", "access.weights_released_at", "research.transformers_support", "openness.license_name"]},
+    {"url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Google announced the initial Gemma 4 E2B/E4B/26B/31B release on April 2, 2026.", "supports": ["release_date"]}
+  ],
+  "data_status": "verified"
+}
