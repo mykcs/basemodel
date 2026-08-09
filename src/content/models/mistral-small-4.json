@@ -1,79 +1,74 @@
 {
   "id": "mistral-small-4",
   "name": "Mistral Small 4",
-  "official_name": "Mistral Small 4",
+  "official_name": "Mistral Small 4 119B A6B",
   "vendor": "Mistral AI",
   "family": "Mistral",
   "generation": "Small 4",
-  "release_date": "2026-03-01",
+  "release_date": "2026-03-16",
   "status": "active",
   "checkpoint": {
     "type": "thinking",
-    "modalities": [
-      "text"
-    ],
-    "specializations": [
-      "general",
-      "reasoning",
-      "coding",
-      "agent"
-    ]
+    "modalities": ["text", "image"],
+    "specializations": ["general", "reasoning", "coding", "agentic", "multimodal", "tool-use"]
   },
   "architecture": {
     "type": "moe",
-    "total_parameters_b": "not_reported",
-    "active_parameters_b": "not_reported",
-    "context_length": "not_reported",
-    "expert_count": "not_reported",
-    "active_experts_per_token": "not_reported"
+    "total_parameters_b": 119,
+    "active_parameters_b": 6.5,
+    "context_length": 262144,
+    "expert_count": 128,
+    "active_experts_per_token": 4
   },
   "openness": {
     "weights_available": true,
-    "base_checkpoint_available": true,
+    "base_checkpoint_available": "not_verified",
     "finetuning_allowed": true,
     "derivative_release_allowed": true,
     "commercial_use_allowed": true,
-    "license_name": "not_reported"
+    "license_name": "Apache-2.0",
+    "classification": "open_weight",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-03-16",
+    "weights_url": "https://huggingface.co/mistralai/Mistral-Small-4-119B-2603",
+    "api_status": "available",
+    "api_model_ids": ["mistral-small-2603"]
   },
   "research": {
     "suitable_for_inference": true,
-    "suitable_for_lora": true,
+    "suitable_for_lora": "not_verified",
     "suitable_for_sft": true,
-    "suitable_for_rl": true,
-    "transformers_support": "not_reported",
-    "vllm_support": "not_reported",
-    "sglang_support": "not_reported",
-    "verl_recipe_available": "not_reported"
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
   },
   "hardware": {
-    "inference_tier": "48gb",
-    "lora_tier": "80gb",
-    "full_sft_tier": "multi_gpu",
-    "rl_tier": "multi_gpu"
+    "inference_tier": "not_verified",
+    "lora_tier": "not_verified",
+    "full_sft_tier": "not_verified",
+    "rl_tier": "not_verified"
   },
   "sources": [
     {
       "url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Official Mistral model card documents 119B total, 6.5B active, 256k context, open weights and Apache-2.0 licensing. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
-      "id": "src_465a6c813d27",
-      "supports": [
-        "vendor",
-        "family",
-        "generation",
-        "checkpoint.type",
-        "checkpoint.modalities",
-        "release_date",
-        "research.suitable_for_inference"
-      ]
+      "checked_at": "2026-08-10",
+      "evidence_note": "Mistral's current official model card dates Mistral Small 4 to March 16, 2026, identifies it as GA under Apache 2.0, lists 119B total and 6.5B active parameters, a 256K context window, API ID mistral-small-2603 and downloadable weights.",
+      "supports": ["vendor", "family", "generation", "release_date", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "openness.license_name", "openness.classification", "openness.commercial_use", "access.weights_status", "access.weights_released_at", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]
     },
     {
-      "url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
-      "type": "official_docs",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Mistral official model card states 6.5B active parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card lists 256k context Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states 119B parameters Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card identifies model as Open v26.03 and the weights section provides open weights Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official Open model card; license terms permit derivatives Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06. Mistral official model card states Apache 2.0 licensing for the open-weight release Source checked https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03 on 2026-08-06.",
-      "id": "src_465a6c813d27"
+      "url": "https://huggingface.co/mistralai/Mistral-Small-4-119B-2603",
+      "type": "official_model_card",
+      "checked_at": "2026-08-10",
+      "evidence_note": "Mistral's first-party weight repository names the model Mistral Small 4 119B A6B and documents its MoE architecture with 128 experts / 4 active, 119B total / 6.5B activated parameters, 256K context, text+image multimodal input, Apache-2.0 commercial use, released weights, fine-tuning support, and Transformers/vLLM/SGLang inference support.",
+      "supports": ["checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "architecture.expert_count", "architecture.active_experts_per_token", "openness.license_name", "openness.classification", "openness.commercial_use", "access.weights_status", "research.suitable_for_inference", "research.suitable_for_sft", "research.transformers_support", "research.vllm_support", "research.sglang_support"]
     }
   ],
   "data_status": "verified"
