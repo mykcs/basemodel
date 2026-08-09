@@ -5,26 +5,27 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
+const guideHref = localePath(locale, '/guide/');
 const seedWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`;
 const steps = [
   {
     number: '01',
-    title: t('先理解你在做哪一种研究', 'Start with the kind of research you are doing'),
-    body: t('先区分严格复现、方法复现和现代化重跑，再谈“该选哪个模型”。', 'Separate strict reproduction, method reproduction, and modern reruns before choosing a model.'),
-    href: localePath(locale, '/guide/'),
-    action: t('打开学习指南', 'Open the learning guide'),
+    title: t('先用 10 分钟补齐 Agent 心智模型', 'Build the agent mental model in 10 minutes'),
+    body: t('从你已经熟悉的 checkpoint、API、日志和指标，映射到 policy、tool、trajectory、reward；先看懂 Agent 到底怎么跑。', 'Map checkpoints, APIs, logs, and metrics you already know to policy, tools, trajectories, and rewards; first understand how an agent actually runs.'),
+    href: `${guideHref}#agent-primer-title`,
+    action: t('进入 Agent 101', 'Open Agent 101'),
   },
   {
     number: '02',
-    title: t('跟着 SEED 看懂论文为什么这样选模型', 'Use SEED to see why a paper chooses its models'),
-    body: t('从论文角色、checkpoint、开放性和证据出发，而不是把“最新”当成“最好”。', 'Read model roles, checkpoints, openness, and evidence instead of treating “newest” as “best”.'),
-    href: localePath(locale, '/papers/seed/'),
-    action: t('进入 SEED 案例', 'Open the SEED case'),
+    title: t('再分清运行时和训练时', 'Then separate runtime from training'),
+    body: t('一次任务里通常不更新权重；Agentic RL 是收集很多 rollouts、评分、更新 policy，再进入下一轮。', 'Weights usually stay fixed inside one task; agentic RL collects rollouts, scores them, updates the policy, then repeats.'),
+    href: `${guideHref}#agent-training`,
+    action: t('看运行 / 训练双循环', 'See the two loops'),
   },
   {
     number: '03',
-    title: t('最后把真实约束放进工作台', 'Then put your real constraints into the workspace'),
-    body: t('GPU、显存、RL、运行时和开放权重条件会把“模型列表”变成真正的研究候选。', 'GPU, VRAM, RL, runtime, and open-weight constraints turn a model list into research candidates.'),
+    title: t('最后用 SEED 把概念落到真实论文', 'Finally ground the concepts in SEED'),
+    body: t('看 hindsight-skill SFT、on-policy rollout、OPD + GRPO，再带着 GPU、开放权重和运行时约束进入工作台。', 'Connect hindsight-skill SFT, on-policy rollouts, and OPD + GRPO, then bring GPU, open-weight, and runtime constraints into the workspace.'),
     href: seedWorkspaceHref,
     action: t('打开预填 SEED 工作台', 'Open the prefilled SEED workspace'),
   },
@@ -33,9 +34,9 @@ const steps = [
 <section class="learning-start" aria-labelledby="learning-start-title">
   <div class="shell learning-start-inner">
     <div class="learning-start-copy">
-      <span class="learning-start-kicker">{t('第一次使用？从这里开始', 'New here? Start here')}</span>
-      <h2 id="learning-start-title">{t('用一个真实案例建立“怎么选基础模型”的思路', 'Build a model-selection mental model with one real case')}</h2>
-      <p>{t('这个站不是模型排行榜。最重要的顺序是：先确定研究问题，再核对论文与模型证据，最后才根据你的资源做选择。', 'This is not a model leaderboard. Start with the research question, verify paper and model evidence, and only then choose under your resource constraints.')}</p>
+      <span class="learning-start-kicker">{t('懂机器学习，但不熟 Agent？从这里开始', 'Know ML, but new to agents? Start here')}</span>
+      <h2 id="learning-start-title">{t('先看懂 Agent 怎么运行和学习，再谈该选哪个基础模型', 'Understand how agents run and learn before choosing a backbone')}</h2>
+      <p>{t('这个站不是模型排行榜，也不会默认你完全不懂 AI。它假设你已经接触过 Transformer、微调、推理和 API，然后帮你补上 Agent、Agentic RL 和论文复现之间缺失的那一层。', 'This site is not a model leaderboard, and it does not assume you are new to AI. It assumes familiarity with Transformers, fine-tuning, inference, and APIs, then fills the missing layer between agents, agentic RL, and paper reproduction.')}</p>
     </div>
     <ol class="learning-start-steps">
       {steps.map((step) => (
