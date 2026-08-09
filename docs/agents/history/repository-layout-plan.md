@@ -1,53 +1,32 @@
-# Repository layout and Cloudflare build-watch plan
+# Repository layout and Cloudflare build-watch plan — execution record
 
-Planned: **2026-08-09 15:40 +08:00**
+Planned: **2026-08-09 15:40 +08:00**  
+Executed: **2026-08-09 16:18 +08:00**
 
-Status: **approved design candidate; waiting for owner Cloudflare dashboard update before execution**.
+Status: **repository re-layout executed; retained as historical decision record**.
 
-## Why this plan exists
+## Design decision
 
-The goal is to improve repository readability for humans and coding Agents without moving the working Astro application merely for aesthetics, and without increasing Cloudflare Pages build consumption.
+The Astro application stays at the repository root. Moving `src/`, `public/`, package manifests or build configuration for cosmetic uniformity would add deployment risk without product value.
 
-Astro's application source is already correctly rooted at the repository root: `src/`, `public/`, `package.json`, `astro.config.mjs` and `tsconfig.json` follow the normal Astro project shape. The repository should keep that boundary.
-
-## Current high-level layout
-
-```text
-/
-├─ src/                  Astro pages/components/content/domain logic
-├─ public/               passthrough static assets
-├─ scripts/              build, validation, audit and maintenance scripts
-├─ e2e/                  Playwright browser regression tests
-├─ demo-archive/         non-production fixtures/archive samples
-├─ docs/agents/          current + historical Agent documentation mixed together
-├─ reports/              generated audit output (gitignored)
-├─ .github/              GitHub-native metadata / Dependabot
-├─ AGENTS.md
-├─ README.md
-├─ package.json
-├─ astro.config.mjs
-├─ playwright.config.ts
-└─ tsconfig.json
-```
-
-## Target layout
+The cleanup was limited to auxiliary structure:
 
 ```text
 /
-├─ src/                  unchanged: production application source
-├─ public/               unchanged: passthrough static assets
-├─ scripts/              unchanged: repository-owned build/validation/audit tooling
+├─ src/                         production application source
+├─ public/                      production static assets
+├─ scripts/                     build/validation/audit tooling
 ├─ tests/
-│  ├─ e2e/               Playwright specs moved from /e2e
+│  ├─ e2e/                      Playwright specs (moved from /e2e)
 │  └─ fixtures/
-│     └─ demo-archive/    non-production fixtures moved from /demo-archive
+│     └─ demo-archive/           demo fixtures (moved from /demo-archive)
 ├─ docs/
 │  └─ agents/
-│     ├─ README.md        Agent documentation index
-│     ├─ LATEST.md        fixed latest handoff, timestamped
-│     ├─ current/         authoritative current policy/runbooks/maps
-│     └─ history/         dated/superseded migration and architecture records
-├─ reports/              generated output, remains gitignored
+│     ├─ README.md
+│     ├─ LATEST.md
+│     ├─ current/                authoritative current policy/runbooks/maps
+│     └─ history/                migration/superseded architecture records
+├─ reports/                     generated output
 ├─ .github/
 ├─ AGENTS.md
 ├─ README.md
@@ -57,34 +36,19 @@ Astro's application source is already correctly rooted at the repository root: `
 └─ tsconfig.json
 ```
 
-## What will NOT move
+## Mechanical changes executed
 
-To keep deployment risk low, do not move:
+1. `e2e/*` -> `tests/e2e/*`.
+2. `playwright.config.ts` now uses `testDir: './tests/e2e'`.
+3. `demo-archive/*` -> `tests/fixtures/demo-archive/*`.
+4. Current Agent policy/runbooks/maps -> `docs/agents/current/`.
+5. Dated, retired and migration records -> `docs/agents/history/`.
+6. Root `AGENTS.md`, `README.md`, Agent index and repository map were updated for the new paths.
+7. `docs/agents/LATEST.md` remains the fixed handoff path.
 
-- `src/`;
-- `public/`;
-- `scripts/`;
-- `package.json` / lockfile;
-- `astro.config.mjs`;
-- `tsconfig.json`;
-- `.node-version`;
-- Cloudflare build entrypoint or deterministic deployment checks.
+## Cloudflare transition configuration used
 
-This avoids turning a readability cleanup into a deployment architecture migration.
-
-## Planned mechanical changes
-
-1. Move `e2e/*` -> `tests/e2e/*`.
-2. Set Playwright `testDir` to `./tests/e2e`.
-3. Move `demo-archive/*` -> `tests/fixtures/demo-archive/*`.
-4. Split `docs/agents/` into `current/` and `history/` while preserving `README.md` and `LATEST.md` as stable entrypoints.
-5. Update internal documentation links and repository map.
-6. Run repository-local validation appropriate to the changed files.
-7. Refresh `docs/agents/LATEST.md` with a completion timestamp and final map.
-
-## Cloudflare Build Watch Paths — transition configuration
-
-Before the repository moves are executed, temporarily use this superset so both the old and new non-production paths are ignored:
+Before execution, the owner confirmed this transitional superset was configured so both old and new non-production paths were ignored:
 
 ```text
 Include:
@@ -103,11 +67,11 @@ tests/fixtures/*
 playwright.config.ts
 ```
 
-Why the old paths remain temporarily: a Git move is represented as delete-old + add-new. If only the destination is excluded, deleting `e2e/*` or `demo-archive/*` can still make the push look deployment-sensitive.
+This avoids spending Pages builds on a Git move represented as delete-old + add-new.
 
-## Cloudflare Build Watch Paths — final configuration
+## Intended durable configuration
 
-After the migration is complete and the old directories are absent, simplify to:
+After the owner removes now-obsolete old-path entries, the durable list is:
 
 ```text
 Include:
@@ -124,23 +88,8 @@ tests/fixtures/*
 playwright.config.ts
 ```
 
-Keep `Include: *`. Production source, dependency manifests, build scripts and config must continue to trigger Cloudflare.
+Keep `Include: *`. Do not exclude `src/*`, `public/*`, `scripts/*`, dependency manifests, Astro/TypeScript configuration or `.node-version`.
 
-## Build-budget behavior
+## Why this record is under history
 
-- Documentation-only and Agent-policy changes should be skipped by Build Watch Paths.
-- Intermediate organizational commits may also use `[CF-Pages-Skip]`.
-- A future change touching production source/build semantics must still receive a real exact-head Preview before merge.
-- Do not broaden exclusions to `src/*`, `public/*`, `scripts/*`, `package*.json`, `astro.config.mjs`, `tsconfig*` or `.node-version`.
-
-## Completion criteria
-
-The re-layout is complete only when:
-
-- old `e2e/` and `demo-archive/` paths are gone;
-- Playwright points to `tests/e2e/`;
-- fixture references resolve from `tests/fixtures/`;
-- current and historical Agent docs are clearly separated;
-- repository-local validation passes;
-- final Cloudflare exclusions are recorded in `LATEST.md`;
-- `LATEST.md` has a new completion timestamp.
+This file describes a completed migration rather than a standing operating policy. Current rules live under `../current/`; the latest timestamped handoff remains `../LATEST.md`.
