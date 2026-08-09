@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { CommandMenu } from '../components/navigation/CommandMenu.tsx';
+import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
 import '../styles/global.css';
 import '../styles/workspace.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
@@ -30,6 +31,7 @@ const shouldNoIndex =
 
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
+const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
 const localePath = (target: Locale) => {
   const clean = localeNeutralPath.replace(/^\//, '');
   return target === 'en' ? `/en/${clean}` : `/${clean}`;
@@ -94,6 +96,7 @@ const websiteJsonLd = JSON.stringify({
     <Header locale={locale} />
     <CommandMenu client:load locale={locale} m={m} />
     <ResearchContextBar client:load m={m} locale={locale} />
+    {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
       <slot />
     </main>
@@ -104,5 +107,5 @@ const websiteJsonLd = JSON.stringify({
         <span>{m.footer.motto}</span>
       </div>
     </footer>
-</body>
+  </body>
 </html>
