@@ -2,15 +2,16 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'zod';
 import { modelSchema, paperSchema } from './lib/schemas';
+import { withStableSourceIds } from './lib/sourceIds.node';
 
 const models = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/models' }),
-  schema: modelSchema,
+  schema: modelSchema.transform((record) => withStableSourceIds(record)),
 });
 
 const papers = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/papers' }),
-  schema: paperSchema,
+  schema: paperSchema.transform((record) => withStableSourceIds(record)),
 });
 
 const claims = defineCollection({
