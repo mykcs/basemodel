@@ -97,7 +97,7 @@ const websiteJsonLd = JSON.stringify({
     <main id="main-content" class="site-main">
       <slot />
     </main>
-    <CompareTray client:load m={m} locale={locale} modelNames={modelNames} />
+    <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
     <footer class="site-footer">
       <div class="shell footer-inner">
         <span>{m.footer.identity}</span>
