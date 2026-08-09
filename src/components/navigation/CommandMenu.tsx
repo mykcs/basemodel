@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { localePath, type Locale } from '../../i18n';
+import { baseUrl, localePath, type Locale } from '../../i18n';
 import type { Messages } from '../../i18n/zh';
 
 type SearchType = 'model' | 'paper' | 'family' | 'guide';
@@ -49,11 +49,14 @@ export function CommandMenu({ locale, m }: { locale: Locale; m: Messages }) {
 
   useEffect(() => {
     if (loaded) return;
-    fetch(localePath(locale, '/search-index.json'))
+    // The search index is deployment-scoped, not locale-scoped. Keep the
+    // Cloudflare root/GitHub Pages base path while avoiding a nonexistent
+    // /en/search-index.json route on English pages.
+    fetch(`${baseUrl()}search-index.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('search index unavailable')))
       .then((data: SearchItem[]) => { setItems(data); setLoaded(true); })
       .catch(() => setLoaded(true));
-  }, [locale, loaded]);
+  }, [loaded]);
 
   const needle = query.trim().toLowerCase();
   const results = useMemo(() => {
