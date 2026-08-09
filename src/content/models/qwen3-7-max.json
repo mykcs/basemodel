@@ -1,0 +1,19 @@
+{
+  "id": "qwen3-7-max",
+  "name": "Qwen3.7-Max",
+  "official_name": "Qwen3.7-Max",
+  "aliases": ["qwen3.7-max", "qwen3.7-max-2026-05-20"],
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3.7",
+  "release_date": "2026-05-20",
+  "status": "active",
+  "checkpoint": {"type": "instruct", "modalities": ["text"], "specializations": ["general", "multilingual", "chinese", "reasoning", "agent", "tool-use", "coding"]},
+  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
+  "openness": {"weights_available": "not_disclosed", "base_checkpoint_available": "not_disclosed", "finetuning_allowed": false, "derivative_release_allowed": "not_disclosed", "commercial_use_allowed": "not_disclosed", "license_name": "not_disclosed", "classification": "not_disclosed"},
+  "access": {"weights_status": "not_disclosed", "api_status": "available", "api_model_ids": ["qwen3.7-max", "qwen3.7-max-2026-05-20"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": "not_disclosed", "suitable_for_sft": "not_disclosed", "suitable_for_rl": "not_disclosed", "transformers_support": "not_disclosed", "vllm_support": "not_disclosed", "sglang_support": "not_disclosed", "verl_recipe_available": "not_disclosed"},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "not_disclosed", "full_sft_tier": "not_disclosed", "rl_tier": "not_disclosed"},
+  "sources": [{"url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "type": "official_docs", "checked_at": "2026-08-09", "supports": ["vendor", "family", "generation", "release_date", "architecture.context_length", "access.api_status", "access.api_model_ids", "openness.finetuning_allowed", "research.suitable_for_inference"], "evidence_note": "Alibaba Cloud Model Studio documents Qwen3.7-Max as the largest and strongest Qwen3.7 Max model, with a 1M-token context window. The dated API snapshot qwen3.7-max-2026-05-20 anchors the recorded release date. The reviewed API documentation does not disclose a public-weight release or local-runtime/training support, so those fields remain not_disclosed rather than false."}],
+  "data_status": "partial"
+}
