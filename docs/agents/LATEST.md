@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-10 00:30 +08:00**
+Last updated: **2026-08-10 01:15 +08:00**
 
-Status: **V2 adversarial closeout merged; product/research-integrity contract is now durable Agent guidance; GitHub -> Cloudflare Pages architecture remains the steady state.**
+Status: **SEED end-to-end guide is merged and its durable research-workflow contract is now captured for future Agents; GitHub -> Cloudflare Pages remains the steady-state architecture.**
 
 This is the stable first-stop file for future coding Agents. Read it before historical migration notes.
 
@@ -21,13 +21,49 @@ This is the stable first-stop file for future coding Agents. Read it before hist
 1. `/AGENTS.md`
 2. `docs/agents/LATEST.md`
 3. `docs/agents/current/product-and-research-integrity.md`
-4. `docs/agents/current/deployment-policy.md`
-5. `docs/agents/current/repository-map.md`
-6. `docs/agents/current/rendering-and-performance-policy.md`
-7. `docs/agents/current/cloudflare-pages-deployment.md`
-8. `package.json` and task-specific source files
+4. `docs/agents/current/seed-guided-research-workflow.md`
+5. `docs/agents/current/deployment-policy.md`
+6. `docs/agents/current/repository-map.md`
+7. `docs/agents/current/rendering-and-performance-policy.md`
+8. `docs/agents/current/cloudflare-pages-deployment.md`
+9. `package.json` and task-specific source files
 
-The new product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes.
+The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
+
+## SEED guided research workflow now captured in-repo
+
+Durable workflow guidance is in:
+
+`docs/agents/current/seed-guided-research-workflow.md`
+
+The underlying product change was merged through **PR #72 — `docs(guide): teach Basemodel end to end with SEED`** as squash commit:
+
+`8130066f9bff2ea322647a2fd0e8cc81d87f2531`
+
+Important interpretation for future Agents:
+
+- the SEED work did **not** create every research feature from scratch;
+- model/paper exploration, Quick View, Families/Landscape, Workspace, Compare, Decision Memo/snapshots, evidence/data-status, bilingual routes, theme and URL-shareable state largely already existed;
+- the new value is the coherent bilingual walkthrough that connects those capabilities into a real paper-driven research decision process;
+- the guide uses SEED as a worked example, not as a universal assumption for all papers;
+- strict reproduction, method reproduction and modern rerun must remain separate;
+- “newer model” must not be treated as an automatic paper-model replacement;
+- downloadable/callable does not automatically mean reproducible;
+- local projects/snapshots/share URLs are not account-backed cloud storage or team collaboration.
+
+Canonical SEED workflow routes currently include:
+
+```text
+/papers/seed/
+/models/qwen2-5-3b-instruct/
+/models/?q=qwen2.5&rl=true&paperUse=true
+/workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1
+/compare/?models=qwen2-5-3b-instruct,qwen3-1-7b&diff=1&impact=1
+```
+
+`src/components/GuideContent.test.ts` protects the core route/terminology contract. If these URLs or state contracts change, update the guide and test together.
+
+Deployment evidence from the original SEED session has an explicit boundary: Cloudflare Preview successfully built a commit containing the tutorial component, and the final PR was merged to `main`; however the tools available during that session did not expose a direct Cloudflare Production-deployment-to-Git-SHA lookup. Do not cite the earlier Preview or a bare production HTTP 200 as independent proof of the exact final Production SHA.
 
 ## Product north star now captured in-repo
 

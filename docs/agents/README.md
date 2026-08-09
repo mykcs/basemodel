@@ -6,11 +6,12 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 
 1. [`LATEST.md`](./LATEST.md) — fixed timestamped handoff, current repository/deployment state and next action.
 2. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, research-integrity invariants, recommendation philosophy and false-complete acceptance rules.
-3. [`current/deployment-policy.md`](./current/deployment-policy.md) — authoritative steady-state architecture and validation policy.
-4. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
-5. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
-6. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
-7. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
+3. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — durable SEED worked-example workflow connecting paper/model exploration, Workspace, Compare, evidence and decision-record behavior.
+4. [`current/deployment-policy.md`](./current/deployment-policy.md) — authoritative steady-state architecture and validation policy.
+5. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
+6. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
+7. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages build/deploy runbook and build-budget rules.
+8. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
 
 If historical wording conflicts with `LATEST.md` or files under `current/`, current guidance wins unless the repository owner explicitly changes policy.
 
@@ -22,6 +23,7 @@ docs/agents/
 ├── LATEST.md
 ├── current/
 │   ├── product-and-research-integrity.md
+│   ├── seed-guided-research-workflow.md
 │   ├── deployment-policy.md
 │   ├── repository-map.md
 │   ├── rendering-and-performance-policy.md
@@ -46,7 +48,9 @@ docs/agents/
 - file/component existence is not proof that a feature is complete;
 - server-only capabilities such as accounts, cross-device cloud save and team collaboration remain explicit external boundaries until real services exist.
 
-Future Agents should read that file before broad UI, data-model or framework redesign work.
+`current/seed-guided-research-workflow.md` records how those product principles are taught through the concrete SEED example. It preserves the canonical paper/model/workspace/compare routes, the 12-step teaching path, the “existing features vs guided workflow” distinction, misuse warnings and the deployment-evidence boundary from PR #72.
+
+Future Agents should read both files before broad UI, data-model, research-workflow or framework redesign work.
 
 ## Historical records
 
