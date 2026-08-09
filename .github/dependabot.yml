@@ -24,12 +24,23 @@ updates:
           - "*"
         update-types:
           - patch
-    # These majors are migration work, not routine maintenance. Keeping stale
-    # major Dependabot PRs open causes automatic rebases to consume Cloudflare
-    # Preview builds. Security updates are not suppressed by these version-only
-    # SemVer-major ignore rules.
+    # Runtime/framework/compiler/test-runner majors are explicit migration work,
+    # not routine maintenance. Security updates are not suppressed by these
+    # version-update-only ignore rules.
     ignore:
       - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "astro"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@astrojs/react"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "react"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "react-dom"
         update-types:
           - "version-update:semver-major"
       - dependency-name: "typescript"
@@ -40,17 +51,3 @@ updates:
           - "version-update:semver-major"
     commit-message:
       prefix: chore(deps)
-
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: sunday
-      time: "06:07"
-      timezone: Pacific/Honolulu
-    open-pull-requests-limit: 5
-    # GitHub Actions dependency updates cannot change the Cloudflare-built site.
-    # Prefix their commit/PR titles with Cloudflare's documented skip marker so
-    # these maintenance branches do not consume a Pages build slot/count.
-    commit-message:
-      prefix: "[CF-Pages-Skip] chore(actions)"

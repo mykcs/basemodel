@@ -40,5 +40,5 @@ The complete 18-yellow/25-red audit matrix is maintained in [`V2_PRODUCT_COMPLET
 ## Release verification
 
 - [x] V2-VERIFY-001 — `check`, `validate`, `audit`, unit tests, build, E2E, and this audit pass.
-- [x] V2-VERIFY-002 — GitHub Pages static output and `/basemodel` base-path links build successfully.
+- [x] V2-VERIFY-002 — Cloudflare-root static output and root-path links build successfully; `/basemodel/` is no longer a maintained deployment contract.
 - [x] V2-FACTS-001 — Facts that cannot be verified from repository evidence remain explicitly marked as unknown.

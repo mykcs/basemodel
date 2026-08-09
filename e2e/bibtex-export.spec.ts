@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('English BibTeX export preserves deployment base and locale', async ({ page }) => {
+test('English BibTeX export preserves the Cloudflare root and locale', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -20,7 +20,7 @@ test('English BibTeX export preserves deployment base and locale', async ({ page
     (window as Window & { __atlasClipboard?: string }).__atlasClipboard ?? '',
   );
 
-  expect(copied).toContain('url = {http://127.0.0.1:4327/basemodel/en/models/qwen3-8b/}');
-  expect(copied).toContain('url = {http://127.0.0.1:4327/basemodel/en/models/gpt-oss-20b/}');
-  expect(copied).not.toContain('http://127.0.0.1:4327/models/');
+  expect(copied).toContain('url = {http://127.0.0.1:4327/en/models/qwen3-8b/}');
+  expect(copied).toContain('url = {http://127.0.0.1:4327/en/models/gpt-oss-20b/}');
+  expect(copied).not.toContain('/basemodel/');
 });
