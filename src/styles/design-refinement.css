@@ -1,0 +1,383 @@
+/* Final visual refinement.
+   Keep the site's research semantics intact while reducing template-like visual
+   noise, strengthening reading order, and making dense UI safer at narrow widths. */
+
+:root {
+  --reading-width: 68ch;
+  --quiet-shadow: 0 8px 26px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+/* Editorial tone: research tool first, landing page second. */
+body { background: var(--bg); }
+
+h1 { letter-spacing: -.032em; }
+h2 { letter-spacing: -.018em; }
+
+.section-kicker,
+.eyebrow,
+.learning-start-kicker {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.page-header { padding: clamp(42px, 5vw, 64px) 0 30px; }
+.page-header h1 {
+  max-width: 18ch;
+  font-size: clamp(2.1rem, 4.4vw, 3.65rem);
+  line-height: 1.06;
+  margin-bottom: 14px;
+}
+.page-header .lede,
+.detail-subtitle,
+.paper-method-summary .lede {
+  max-width: var(--reading-width);
+  line-height: 1.72;
+}
+
+.section-heading { align-items: flex-start; }
+.section-heading h2 { max-width: 22ch; }
+
+/* Do not make every panel appear equally elevated. */
+.hero-note,
+.selector-shell,
+.explorer-shell,
+.comparison-shell,
+.constraint-panel,
+.candidate-board,
+.evidence-inspector,
+.landscape-chart-shell,
+.model-card,
+.entry-card,
+.scenario-card,
+.path-card,
+.family-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card,
+.seed-tour-card,
+.concept-card {
+  box-shadow: none;
+}
+
+.model-card:hover,
+.entry-card:hover,
+.scenario-card:hover,
+.paper-row:hover,
+.tree-checkpoint:hover,
+.landscape-learning-card:hover {
+  transform: none;
+  box-shadow: var(--quiet-shadow);
+}
+
+.model-card,
+.entry-card,
+.scenario-card,
+.path-card,
+.family-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card,
+.seed-tour-card,
+.concept-card,
+.glossary-list details {
+  border-radius: 12px;
+}
+
+/* Dense controls should wrap before labels collide. */
+.card-topline,
+.card-footer,
+.explorer-summary,
+.evidence-footer,
+.decision-card-actions,
+.project-history-actions,
+.models-page-quick-entry,
+.hero-actions { flex-wrap: wrap; }
+
+.model-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.fit-dimensions {
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+}
+.model-card,
+.family-card,
+.paper-row,
+.candidate-row,
+.comparison-shell,
+.explorer-shell,
+.constraint-panel,
+.candidate-board { min-width: 0; }
+.model-card h3,
+.family-card h3,
+.paper-row h3,
+.candidate-info,
+.detail-title,
+.unresolved-field-item,
+.tray-chip { overflow-wrap: anywhere; }
+.button,
+.text-button,
+.card-compare { white-space: normal; }
+
+/* Header: collapse to the mobile navigation before search/language/theme compete. */
+.nav-inner { min-height: 66px; gap: 14px; }
+.command-search-trigger,
+.lang-switch,
+.theme-toggle,
+.menu-toggle { flex: 0 0 auto; }
+.desktop-nav a { white-space: nowrap; }
+
+/* Home onboarding should read as a syllabus, not three marketing cards. */
+.learning-start {
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+}
+.learning-start-inner { gap: clamp(30px, 5vw, 68px); }
+.learning-start-copy h2 { max-width: 17ch; }
+.learning-start-steps { gap: 0; }
+.learning-start-steps li + li { border-top: 1px solid var(--line); }
+.learning-start-steps a {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.learning-start-steps a:hover,
+.learning-start-steps a:focus-visible {
+  transform: none;
+  background: color-mix(in srgb, var(--surface-muted) 52%, transparent);
+  box-shadow: none;
+}
+.learning-step-number {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--accent-deep);
+}
+
+/* Guide + Agent 101: preserve the diagrams, remove dashboard-card repetition. */
+.guide-learning-page > .page-header {
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(320px, 1.18fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.guide-learning-page > .page-header h1,
+.guide-learning-page > .page-header .lede { margin-bottom: 0; }
+.guide-learning-page > .page-header .lede { max-width: 60ch; }
+
+.site-main .guide-learning-page .primer-hero {
+  padding: clamp(24px, 3vw, 34px) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .primer-goal {
+  padding: 4px 0 4px 20px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.site-main .guide-learning-page .primer-goal > strong,
+.site-main .guide-learning-page .loop-card-label,
+.site-main .guide-learning-page .loop-node span,
+.site-main .guide-learning-page .seed-pipeline article > span {
+  text-transform: none;
+  letter-spacing: .01em;
+}
+
+.site-main .guide-learning-page .primer-route {
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+}
+.site-main .guide-learning-page .primer-route a {
+  padding: 11px 8px;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+}
+.site-main .guide-learning-page .primer-route a:hover,
+.site-main .guide-learning-page .primer-route a:focus-visible {
+  background: transparent;
+  border-bottom-color: var(--accent);
+}
+
+.site-main .guide-learning-page .bridge-grid { gap: 0; }
+.site-main .guide-learning-page .bridge-card {
+  padding: 18px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .bridge-card:nth-child(-n + 2) { border-top: 0; }
+
+.site-main .guide-learning-page .runtime-loop {
+  border-radius: 12px;
+  box-shadow: none;
+}
+.site-main .guide-learning-page .loop-node { border-radius: 8px; }
+.site-main .guide-learning-page .loop-policy {
+  background: transparent;
+  border-width: 2px;
+}
+
+.site-main .guide-learning-page .two-loop-grid { gap: 0; }
+.site-main .guide-learning-page .loop-card {
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+  background: transparent;
+}
+.site-main .guide-learning-page .loop-card:first-child { border-left: 0; padding-left: 0; }
+.site-main .guide-learning-page .loop-card-training { background: transparent; }
+
+.site-main .guide-learning-page .rl-term-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.site-main .guide-learning-page .rl-term-grid article {
+  padding: 16px 14px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .rl-term-grid article:last-child { border-right: 0; }
+
+.site-main .guide-learning-page .sft-rl-compare article {
+  border-radius: 10px;
+  box-shadow: none;
+}
+.site-main .guide-learning-page .grpo-box {
+  background: transparent;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-left-width: 3px;
+}
+
+.site-main .guide-learning-page .primer-seed {
+  padding: clamp(24px, 3vw, 30px) 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .seed-pipeline article {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.site-main .guide-learning-page .seed-inference-note { border-radius: 8px; }
+
+.site-main .guide-learning-page .why-model-grid { gap: 0; }
+.site-main .guide-learning-page .why-model-grid article {
+  padding: 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .primer-next {
+  padding: 26px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .primer-next-grid { gap: 0; }
+.site-main .guide-learning-page .primer-next-grid a {
+  border-width: 1px 0 0;
+  border-radius: 0;
+  background: transparent;
+}
+.site-main .guide-learning-page .primer-next-grid a:first-child { border-top: 0; }
+.site-main .guide-learning-page .primer-next-grid a > span {
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--accent-deep);
+}
+
+.guide-research-layer {
+  padding-top: 38px !important;
+  border-top: 1px solid var(--line);
+}
+.guide-research-layer .guide-section-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+/* Footer is identity, not a slogan surface. */
+.footer-inner { justify-content: flex-start; min-height: 64px; }
+
+@media (max-width: 1080px) {
+  .nav-inner { gap: 10px; }
+  .brand small { display: none; }
+  .nav-primary, .nav-secondary { gap: 11px; }
+  .nav-secondary { padding-left: 11px; }
+}
+
+@media (max-width: 960px) {
+  .desktop-nav { display: none; }
+  .nav-inner > .lang-switch { display: none; }
+  .menu-toggle { display: flex; }
+  .mobile-menu.is-open { display: block; }
+  .guide-learning-page > .page-header { grid-template-columns: 1fr; gap: 18px; }
+  .guide-learning-page > .page-header h1 { max-width: 18ch; }
+  .candidate-row { grid-template-columns: minmax(0, 1fr); }
+  .site-main .guide-learning-page .bridge-card:nth-child(2) { border-top: 1px solid var(--line); }
+}
+
+@media (max-width: 720px) {
+  .shell { width: min(var(--content-max), calc(100% - 28px)); }
+  .page-header { padding-top: 34px; }
+  .page-header h1 { font-size: clamp(2rem, 11vw, 2.8rem); }
+  .section-heading { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .site-main .guide-learning-page .primer-goal {
+    padding: 16px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .site-main .guide-learning-page .two-loop-grid { grid-template-columns: 1fr; }
+  .site-main .guide-learning-page .loop-card,
+  .site-main .guide-learning-page .loop-card:first-child {
+    padding: 18px 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .site-main .guide-learning-page .loop-card:first-child { border-top: 0; }
+  .site-main .guide-learning-page .rl-term-grid { grid-template-columns: 1fr; }
+  .site-main .guide-learning-page .rl-term-grid article {
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .site-main .guide-learning-page .rl-term-grid article:first-child { border-top: 0; }
+  .concept-map-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .nav-inner { min-height: 60px; }
+  .brand span:last-child { display: none; }
+  .command-search-trigger {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .command-search-trigger kbd { display: none; }
+  .page-header h1 { max-width: none; }
+  .decision-card-actions .button,
+  .models-page-quick-entry .button,
+  .models-page-quick-entry a { width: 100%; justify-content: center; }
+}
