@@ -1,0 +1,628 @@
+/* Learning-first refinement.
+   This layer intentionally removes visual noise from the previous polish pass,
+   strengthens reading order, and adds conservative responsive safeguards.
+   It does not alter research data, evidence semantics, or recommendation logic. */
+
+:root {
+  --reading-width: 68ch;
+  --section-gap: clamp(38px, 5vw, 64px);
+  --quiet-shadow: 0 8px 28px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tone: editorial research tool, not a marketing landing page.               */
+/* -------------------------------------------------------------------------- */
+
+body {
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+h1 {
+  letter-spacing: -.032em;
+}
+
+h2 {
+  letter-spacing: -.018em;
+}
+
+p,
+li,
+dd,
+td,
+th {
+  line-height: 1.65;
+}
+
+.section-kicker,
+.eyebrow,
+.learning-start-kicker {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.page-header {
+  padding: clamp(42px, 5vw, 64px) 0 28px;
+}
+
+.page-header h1 {
+  max-width: 18ch;
+  font-size: clamp(2.1rem, 4.4vw, 3.65rem);
+  line-height: 1.06;
+  margin-bottom: 14px;
+}
+
+.page-header .lede,
+.detail-subtitle,
+.paper-method-summary .lede {
+  max-width: var(--reading-width);
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+  line-height: 1.72;
+}
+
+.section {
+  padding: var(--section-gap) 0;
+}
+
+.section-heading {
+  align-items: flex-start;
+}
+
+.section-heading h2 {
+  max-width: 22ch;
+}
+
+/* The previous visual pass deliberately gave most functional panels a large
+   shadow and hover lift. That makes every object compete for attention. Keep
+   depth only where it communicates an actual floating layer. */
+.hero-note,
+.selector-shell,
+.explorer-shell,
+.comparison-shell,
+.constraint-panel,
+.candidate-board,
+.evidence-inspector,
+.landscape-chart-shell,
+.model-card,
+.entry-card,
+.scenario-card,
+.path-card,
+.family-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card,
+.seed-tour-card,
+.concept-card {
+  box-shadow: none;
+}
+
+.model-card:hover,
+.entry-card:hover,
+.scenario-card:hover,
+.paper-row:hover,
+.tree-checkpoint:hover,
+.landscape-learning-card:hover {
+  transform: none;
+  box-shadow: var(--quiet-shadow);
+}
+
+.model-card,
+.entry-card,
+.scenario-card,
+.path-card,
+.family-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card,
+.seed-tour-card,
+.concept-card,
+.glossary-list details {
+  border-radius: 12px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header: reserve space early enough that search/language/theme never collide. */
+/* -------------------------------------------------------------------------- */
+
+.site-header {
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+}
+
+.nav-inner {
+  min-height: 66px;
+  gap: 14px;
+}
+
+.brand {
+  flex: 0 1 auto;
+}
+
+.desktop-nav,
+.nav-primary,
+.nav-secondary {
+  min-width: 0;
+}
+
+.desktop-nav a {
+  white-space: nowrap;
+}
+
+.command-search-trigger,
+.lang-switch,
+.theme-toggle,
+.menu-toggle {
+  flex: 0 0 auto;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Functional density: let controls wrap before text starts colliding.         */
+/* -------------------------------------------------------------------------- */
+
+.card-topline,
+.card-footer,
+.explorer-summary,
+.evidence-footer,
+.decision-card-actions,
+.project-history-actions,
+.models-page-quick-entry,
+.hero-actions {
+  flex-wrap: wrap;
+}
+
+.model-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+.fit-dimensions {
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+}
+
+.research-summary-grid,
+.overview-stats,
+.landscape-learning-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.model-card,
+.family-card,
+.paper-row,
+.candidate-row,
+.research-summary-grid > *,
+.comparison-shell,
+.explorer-shell,
+.constraint-panel,
+.candidate-board {
+  min-width: 0;
+}
+
+.model-card h3,
+.family-card h3,
+.paper-row h3,
+.candidate-info,
+.detail-title,
+.unresolved-field-item,
+.tray-chip {
+  overflow-wrap: anywhere;
+}
+
+.button,
+.text-button,
+.card-compare {
+  white-space: normal;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Guide: concrete first actions before the long reference material.           */
+/* -------------------------------------------------------------------------- */
+
+.guide-page {
+  padding-top: 0;
+}
+
+.guide-page > .page-header {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(320px, 1.2fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-page > .page-header h1 {
+  max-width: 12ch;
+  margin: 0;
+}
+
+.guide-page > .page-header .lede {
+  margin: 0;
+  max-width: 60ch;
+}
+
+.guide-onboarding {
+  display: grid;
+  grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr);
+  gap: clamp(30px, 5vw, 72px);
+  padding: clamp(36px, 5vw, 62px) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-onboarding-intro {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+}
+
+.guide-overline {
+  margin: 0 0 8px;
+  color: var(--accent-deep);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.guide-onboarding h2 {
+  max-width: 14ch;
+  margin-bottom: 12px;
+  font-size: clamp(1.55rem, 2.6vw, 2.25rem);
+}
+
+.guide-onboarding-intro > p:last-child {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.guide-onboarding-path {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  counter-reset: guide-entry;
+}
+
+.guide-onboarding-path li {
+  counter-increment: guide-entry;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.guide-onboarding-path li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.guide-onboarding-path li::before {
+  content: counter(guide-entry, decimal-leading-zero);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--accent-deep);
+  font-size: .72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.guide-onboarding-path h3 {
+  margin: 1px 0 6px;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.guide-onboarding-path p {
+  max-width: 58ch;
+  margin: 0 0 9px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.guide-onboarding-path a,
+.guide-shortcuts a {
+  color: var(--accent-deep);
+  font-size: .84rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.guide-onboarding-path a:hover,
+.guide-onboarding-path a:focus-visible,
+.guide-shortcuts a:hover,
+.guide-shortcuts a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.guide-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-shortcuts::before {
+  content: '页面导航';
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+html[lang='en'] .guide-shortcuts::before {
+  content: 'On this page';
+}
+
+/* The old generic four-step list duplicates the new concrete entry path.
+   Keep it in the DOM/source contract, but do not present two competing starts. */
+.guide-page .guide-steps {
+  display: none;
+}
+
+.guide-page .guide-seed-tour,
+.guide-page .guide-concept-map,
+.guide-page .guide-glossary {
+  margin-block: clamp(44px, 6vw, 74px);
+}
+
+.guide-page .section-heading {
+  margin-bottom: 18px;
+}
+
+.guide-page .seed-tour-card {
+  padding: clamp(18px, 2.6vw, 26px);
+}
+
+.guide-page .concept-map-nav {
+  gap: 6px;
+}
+
+.guide-page .concept-map-nav a {
+  background: transparent;
+  border-color: var(--line);
+  border-radius: 8px;
+}
+
+.guide-page .concept-map-grid {
+  gap: 10px;
+}
+
+.guide-page .concept-card {
+  padding: 18px;
+}
+
+.guide-page .glossary-list details {
+  background: transparent;
+}
+
+.guide-page .callout {
+  padding: 16px 18px;
+  border-left: 3px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-muted);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Home beginner runway: make it read like a syllabus, not three CTA cards.    */
+/* -------------------------------------------------------------------------- */
+
+.learning-start {
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+
+.learning-start-inner {
+  gap: clamp(30px, 5vw, 70px);
+}
+
+.learning-start-copy h2 {
+  max-width: 16ch;
+}
+
+.learning-start-steps {
+  gap: 0;
+}
+
+.learning-start-steps li + li {
+  border-top: 1px solid var(--line);
+}
+
+.learning-start-steps a {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.learning-start-steps a:hover,
+.learning-start-steps a:focus-visible {
+  transform: none;
+  background: color-mix(in srgb, var(--surface-muted) 55%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Footer: identity only.                                                      */
+/* -------------------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: clamp(54px, 8vw, 96px);
+}
+
+.footer-inner {
+  min-height: 64px;
+  justify-content: flex-start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive collision guards.                                               */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1080px) {
+  .nav-inner {
+    gap: 10px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .nav-primary,
+  .nav-secondary {
+    gap: 11px;
+  }
+
+  .nav-secondary {
+    padding-left: 11px;
+  }
+}
+
+@media (max-width: 960px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .nav-inner > .lang-switch {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .mobile-menu.is-open {
+    display: block;
+  }
+
+  .guide-page > .page-header,
+  .guide-onboarding {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .guide-page > .page-header h1 {
+    max-width: 16ch;
+  }
+
+  .guide-onboarding-intro {
+    position: static;
+  }
+
+  .guide-onboarding-intro > p:last-child,
+  .guide-onboarding h2 {
+    max-width: var(--reading-width);
+  }
+
+  .candidate-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .shell {
+    width: min(var(--content-max), calc(100% - 28px));
+  }
+
+  .page-header {
+    padding-top: 34px;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+  }
+
+  .section-heading {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .guide-onboarding-path li {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .guide-onboarding-path li::before {
+    width: 32px;
+    height: 32px;
+  }
+
+  .concept-map-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-card-actions > *,
+  .project-history-actions > .button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .nav-inner {
+    min-height: 60px;
+  }
+
+  .brand span:last-child {
+    display: none;
+  }
+
+  .command-search-trigger {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .command-search-trigger kbd {
+    display: none;
+  }
+
+  .page-header h1 {
+    max-width: none;
+  }
+
+  .guide-shortcuts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .guide-shortcuts::before {
+    margin-bottom: 2px;
+  }
+
+  .card-footer,
+  .decision-card-actions,
+  .models-page-quick-entry,
+  .project-history-actions {
+    align-items: stretch;
+  }
+
+  .decision-card-actions .button,
+  .models-page-quick-entry .button,
+  .models-page-quick-entry a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .model-card,
+  .entry-card,
+  .scenario-card,
+  .paper-row,
+  .tree-checkpoint,
+  .landscape-learning-card {
+    transition: none;
+  }
+}
