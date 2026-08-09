@@ -1,0 +1,18 @@
+{
+  "id": "deepseek-v4-flash-base",
+  "name": "DeepSeek-V4-Flash-Base",
+  "official_name": "DeepSeek-V4-Flash-Base",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "DeepSeek-V4",
+  "release_date": "2026-04-24",
+  "status": "active",
+  "checkpoint": {"type": "base", "modalities": ["text"], "specializations": ["foundation", "long-context"]},
+  "architecture": {"type": "moe", "total_parameters_b": 284, "active_parameters_b": 13, "context_length": 1000000, "expert_count": "not_reported", "active_experts_per_token": "not_reported"},
+  "openness": {"weights_available": true, "base_checkpoint_available": true, "finetuning_allowed": true, "derivative_release_allowed": true, "commercial_use_allowed": true, "license_name": "MIT", "classification": "open_source", "custom_license": false, "derivative_distribution": "allowed", "commercial_use": "allowed"},
+  "access": {"weights_status": "released", "weights_released_at": "2026-04-24", "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Base", "api_status": "not_applicable"},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": true, "suitable_for_sft": true, "suitable_for_rl": true, "transformers_support": "not_verified", "vllm_support": "not_verified", "sglang_support": "not_verified", "verl_recipe_available": "not_verified"},
+  "hardware": {"inference_tier": "multi_gpu", "lora_tier": "multi_gpu", "full_sft_tier": "multi_gpu", "rl_tier": "multi_gpu"},
+  "sources": [{"url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "type": "official_model_card", "checked_at": "2026-08-10", "evidence_note": "DeepSeek's first-party V4 model card download table lists DeepSeek-V4-Flash-Base as a released 284B MoE base checkpoint with 13B activated parameters, 1M context and a first-party Hugging Face download. The V4 repository is licensed under MIT.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "openness.weights_available", "openness.base_checkpoint_available", "openness.license_name", "access.weights_status", "access.weights_released_at", "status"]}],
+  "data_status": "verified"
+}
