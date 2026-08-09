@@ -250,6 +250,18 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npx playwright test --project=${{ matrix.browser }}
+      - name: Build Cloudflare-root Chromium smoke target
+        if: ${{ matrix.browser == 'chromium' }}
+        env:
+          PUBLIC_SITE_URL: https://basemodel.pages.dev
+          PUBLIC_BASE_PATH: /
+          PUBLIC_SEARCH_INDEXING: disabled
+        run: npm run build
+      - name: Run Cloudflare-root Chromium smoke
+        if: ${{ matrix.browser == 'chromium' }}
+        env:
+          PLAYWRIGHT_BASE_PATH: /
+        run: npx playwright test cloudflare-root.spec.ts --project=chromium
       - name: Upload Playwright diagnostics
         if: ${{ failure() }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
