@@ -1,8 +1,8 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 
-// 静态 sitemap: 列出全部公开路由, zh (根) + en (/en/ 前缀) 双语。
-// Astro.site 来自 PUBLIC_SITE_URL, base 来自 PUBLIC_BASE_PATH (构建期注入), 二者拼出绝对 URL。
+// 静态 sitemap：列出全部公开路由，zh（根）+ en（/en/ 前缀）双语。
+// Astro.site 来自 Cloudflare 构建期的 PUBLIC_SITE_URL；正常部署基路径为 /。
 export const GET: APIRoute = async ({ site }) => {
   if (process.env.PUBLIC_SEARCH_INDEXING === 'disabled') {
     return new Response(
@@ -11,7 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
     );
   }
 
-  const origin = (site ?? new URL('https://mykcs.github.io')).href.replace(/\/$/, '');
+  const origin = (site ?? new URL('https://basemodel.pages.dev')).href.replace(/\/$/, '');
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const prefix = `${origin}${base}`;
 
@@ -24,7 +24,6 @@ export const GET: APIRoute = async ({ site }) => {
     ...models.map((entry) => `${prefix}/models/${entry.data.id}/`),
     ...papers.map((entry) => `${prefix}/papers/${entry.data.id}/`),
   ];
-  // en 镜像路由: 每个 zh 路径加 /en 前缀。
   const enUrls = zhUrls.map((url) => url.replace(`${prefix}/`, `${prefix}/en/`));
   const urls = [...zhUrls, ...enUrls];
 

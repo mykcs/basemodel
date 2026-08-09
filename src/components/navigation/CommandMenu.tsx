@@ -49,9 +49,8 @@ export function CommandMenu({ locale, m }: { locale: Locale; m: Messages }) {
 
   useEffect(() => {
     if (loaded) return;
-    // The search index is deployment-scoped, not locale-scoped. Keep the
-    // Cloudflare root/GitHub Pages base path while avoiding a nonexistent
-    // /en/search-index.json route on English pages.
+    // The search index is deployment-scoped, not locale-scoped. Resolve it
+    // from the site root rather than a nonexistent /en/search-index.json route.
     fetch(`${baseUrl()}search-index.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('search index unavailable')))
       .then((data: SearchItem[]) => { setItems(data); setLoaded(true); })
