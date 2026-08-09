@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decodeResearchTask, encodeResearchTask } from './researchTaskCodec';
+import { decodeResearchTask, encodeResearchTask, replaceResearchTaskSearchParams } from './researchTaskCodec';
 import { emptyTask, type ResearchTask } from '../stores/researchTask';
 
 describe('researchTaskCodec', () => {
@@ -32,6 +32,43 @@ describe('researchTaskCodec', () => {
     expect(encoded.get('task')).toBeNull();
     expect(encoded.get('v')).toBe('2');
     expect(decodeResearchTask(encoded)).toEqual(task);
+  });
+
+  it('replaces stale task-owned query fields while preserving unrelated parameters', () => {
+    const current = new URLSearchParams('keep=1&v=2&mode=method&open=1&ctx=32768&runtime=vllm&task=%7B%7D');
+    const nextTask: ResearchTask = { ...emptyTask, mode: 'method' };
+    const next = replaceResearchTaskSearchParams(current, nextTask);
+
+    expect(next.get('keep')).toBe('1');
+    expect(next.get('v')).toBe('2');
+    expect(next.get('mode')).toBe('method');
+    expect(next.get('open')).toBeNull();
+    expect(next.get('ctx')).toBeNull();
+    expect(next.get('runtime')).toBeNull();
+    expect(next.get('task')).toBeNull();
+  });
+
+  it('keeps explicit false constraints while removing stale omitted fields', () => {
+    const current = new URLSearchParams('keep=1&v=2&open=1&quant=1&ctx=32768');
+    const nextTask: ResearchTask = {
+      ...emptyTask,
+      mode: 'method',
+      openWeight: false,
+      quantizationAllowed: false,
+    };
+    const next = replaceResearchTaskSearchParams(current, nextTask);
+
+    expect(next.get('keep')).toBe('1');
+    expect(next.get('open')).toBe('0');
+    expect(next.get('quant')).toBe('0');
+    expect(next.get('ctx')).toBeNull();
+  });
+
+  it('clears all task-owned parameters without deleting unrelated URL state', () => {
+    const current = new URLSearchParams('keep=1&v=2&open=1&priority=cost');
+    const next = replaceResearchTaskSearchParams(current, null);
+
+    expect(next.toString()).toBe('keep=1');
   });
 
   it('accepts the legacy JSON task only as a migration path', () => {

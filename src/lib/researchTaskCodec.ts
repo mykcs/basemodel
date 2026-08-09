@@ -8,6 +8,12 @@ const runtimes: RuntimeRequirement[] = ['transformers', 'vllm', 'sglang', 'verl'
 const precisions: ResourcePrecision[] = ['fp32', 'bf16', 'fp16', 'int8', 'int4'];
 const optimizers: ResourceOptimizer[] = ['adam', 'sgd', 'none'];
 
+const researchTaskQueryKeys = [
+  'v', 'mode', 'paper', 'model', 'role', 'roles', 'update', 'access', 'gpu', 'gpus',
+  'quant', 'precision', 'batch', 'rank', 'optimizer', 'kv', 'ctx', 'open', 'base',
+  'runtime', 'license', 'repro', 'evidence', 'priority', 'task',
+] as const;
+
 function oneOf<T extends string>(value: string | null, values: readonly T[]): T | undefined {
   return value && (values as readonly string[]).includes(value) ? value as T : undefined;
 }
@@ -61,6 +67,19 @@ export function encodeResearchTask(task: ResearchTask): URLSearchParams {
   if (task.evidencePolicy !== 'verified_preferred') params.set('evidence', task.evidencePolicy);
   if (task.priorities.length) params.set('priority', task.priorities.join(','));
   return params;
+}
+
+/** Replace only Research Task-owned query parameters while preserving unrelated URL state. */
+export function replaceResearchTaskSearchParams(
+  current: URLSearchParams,
+  task: ResearchTask | null,
+): URLSearchParams {
+  const next = new URLSearchParams(current);
+  for (const key of researchTaskQueryKeys) next.delete(key);
+  if (task) {
+    for (const [key, value] of encodeResearchTask(task)) next.set(key, value);
+  }
+  return next;
 }
 
 export function decodeResearchTask(params: URLSearchParams): ResearchTask | null {
