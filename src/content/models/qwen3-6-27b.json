@@ -1,0 +1,74 @@
+{
+  "id": "qwen3-6-27b",
+  "name": "Qwen3.6-27B",
+  "official_name": "Qwen3.6-27B",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3.6",
+  "release_date": "2026-04-22",
+  "status": "active",
+  "checkpoint": {
+    "type": "vision",
+    "modalities": ["text", "image", "video"],
+    "specializations": ["general", "reasoning", "coding", "agentic", "multimodal"]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 27,
+    "active_parameters_b": 27,
+    "context_length": 262144,
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0",
+    "classification": "open_source",
+    "custom_license": false,
+    "derivative_distribution": "allowed",
+    "commercial_use": "allowed"
+  },
+  "access": {
+    "weights_status": "released",
+    "weights_released_at": "2026-04-22",
+    "weights_url": "https://huggingface.co/Qwen/Qwen3.6-27B",
+    "api_status": "not_verified"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": true,
+    "suitable_for_sft": true,
+    "suitable_for_rl": "not_verified",
+    "transformers_support": true,
+    "vllm_support": true,
+    "sglang_support": true,
+    "verl_recipe_available": "not_verified"
+  },
+  "hardware": {
+    "inference_tier": "80gb",
+    "lora_tier": "multi_gpu",
+    "full_sft_tier": "multi_gpu",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3.6-27B",
+      "type": "official_model_card",
+      "checked_at": "2026-08-10",
+      "evidence_note": "First-party Qwen model card confirms the released post-trained Qwen3.6-27B weights, Apache-2.0 license, 27B dense language model, multimodal vision encoder, 262,144 native context with extension to 1,010,000, and Transformers/vLLM/SGLang compatibility.",
+      "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length", "openness.weights_available", "openness.license_name", "access.weights_status", "access.weights_released_at", "research.transformers_support", "research.vllm_support", "research.sglang_support"]
+    },
+    {
+      "url": "https://github.com/QwenLM/Qwen3.6",
+      "type": "official_code",
+      "checked_at": "2026-08-10",
+      "evidence_note": "Qwen's official Qwen3.6 repository records the April 22, 2026 Qwen3.6-27B release and states that Qwen3.6 open-weight models use Apache 2.0.",
+      "supports": ["release_date", "openness.license_name", "openness.weights_available"]
+    }
+  ],
+  "data_status": "verified"
+}
