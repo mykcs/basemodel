@@ -37,7 +37,7 @@
     "weights_released_at": "2026-04-16",
     "weights_url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
     "api_status": "available",
-    "api_model_ids": ["qwen3.6-flash"]
+    "api_model_ids": ["qwen3.6-35b-a3b"]
   },
   "research": {
     "suitable_for_inference": true,
@@ -67,8 +67,15 @@
       "url": "https://github.com/QwenLM/Qwen3.6",
       "type": "official_code",
       "checked_at": "2026-08-10",
-      "evidence_note": "Qwen's official Qwen3.6 repository records the April 16, 2026 release and states that all Qwen3.6 open-weight models use Apache 2.0. The repository also documents qwen3.6-flash as the hosted API alias for this model family.",
-      "supports": ["release_date", "openness.license_name", "access.weights_released_at", "access.api_status", "access.api_model_ids"]
+      "evidence_note": "Qwen's official Qwen3.6 repository records the April 16, 2026 open-weight release and states that all Qwen3.6 open-weight models use Apache 2.0.",
+      "supports": ["release_date", "openness.license_name", "access.weights_released_at"]
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/vision-model",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-10",
+      "evidence_note": "Alibaba Cloud Model Studio lists qwen3.6-35b-a3b as its own API model ID. Qwen3.6 Flash is a separate hosted model and is not treated as an alias of the open 35B checkpoint.",
+      "supports": ["access.api_status", "access.api_model_ids"]
     }
   ],
   "data_status": "verified"
