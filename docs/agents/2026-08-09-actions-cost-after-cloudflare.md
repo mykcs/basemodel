@@ -71,11 +71,28 @@ A direct or unverifiable push to `main` is deliberately more expensive: it is al
 
 The weekly scheduled full regression remains a backstop for browser coverage across the whole site.
 
+## Dual-base browser coverage without a third runner
+
+The public hosts intentionally use different base paths:
+
+```text
+Cloudflare Pages -> /
+GitHub Pages      -> /basemodel/
+```
+
+The normal Playwright suite continues to run against `/basemodel/`, which exercises the more failure-prone nested deployment base and preserves existing GitHub Pages coverage.
+
+For `full` validation, the Chromium matrix job now performs one additional build with `PUBLIC_BASE_PATH=/` after its normal suite finishes, then runs two dedicated `cloudflare-root.spec.ts` smoke tests against `PLAYWRIGHT_BASE_PATH=/`. Those tests cover the bilingual command-search route and BibTeX URL generation, both of which previously exposed real base-path bugs.
+
+The root smoke reuses the already-running Chromium job/container and browser installation. WebKit does not repeat it, and data/docs tiers do not run it. This closes the root-base browser gap without adding a third runner to every full validation.
+
 ## Relationship to Cloudflare
 
 Cloudflare remains responsible for deployment-blocking deterministic checks and Astro build on meaningful site deployments.
 
 GitHub Actions remains the secondary/deeper assurance layer when hosted-runner allowance is available. GitHub Pages remains fail-closed behind a successful `Validation gate`, but that gate now enforces the selected tier for a verified PR merge and falls back to `full` for direct/unverifiable main pushes.
+
+Cloudflare Preview builds still do not run Playwright browsers themselves. They validate the application/test/build surface and repository contracts; the root browser smoke executes in the full GitHub Actions Chromium job when hosted-runner allowance is available.
 
 This preserves the dual-hosting contract while reducing the chance that GitHub Actions minutes are exhausted again by routine data/documentation maintenance.
 
@@ -86,11 +103,11 @@ The account's included GitHub Actions minutes were still exhausted when this wor
 Agents must distinguish two kinds of validation:
 
 1. GitHub accepting/creating the workflow for the PR proves the YAML/workflow definition is parseable enough to be registered.
-2. Only an actual future runner execution proves the event-specific classifier/API/gate behavior on GitHub infrastructure.
+2. Only an actual future runner execution proves the event-specific classifier/API/gate and browser-smoke behavior on GitHub infrastructure.
 
-Do not claim a zero-step quota failure is application or classifier evidence.
+Do not claim a zero-step quota failure is application, classifier, or browser evidence.
 
-When Actions capacity returns, inspect the first verified PR merge and the first direct/unverifiable main push (if one ever occurs) to confirm the intended `docs/data/full` versus forced-`full` behavior. Do not intentionally direct-push solely to test this guard if a ruleset has already been enabled.
+When Actions capacity returns, inspect the first verified PR merge and the first direct/unverifiable main push (if one ever occurs) to confirm the intended `docs/data/full` versus forced-`full` behavior. For the first `full` run, also confirm the Chromium job completes both the normal `/basemodel/` suite and the two Cloudflare-root smoke tests. Do not intentionally direct-push solely to test the guard if a ruleset has already been enabled.
 
 ## Cost principle
 
@@ -101,8 +118,9 @@ Cloudflare -> deployment availability and deterministic validation
 GitHub Actions PR -> change-proportional browser assurance
 GitHub Actions verified PR merge to main -> change-proportional browser assurance
 GitHub Actions direct/unverifiable main push -> full browser assurance
+GitHub Actions full Chromium -> normal suite + 2 root-base smoke tests on the same runner
 GitHub Actions schedule/manual -> full cross-browser regression
 GitHub Pages -> secondary public mirror after the selected main validation gate
 ```
 
-This optimizes billed runner minutes without allowing an unverified direct-main path to downgrade validation.
+This optimizes billed runner minutes without allowing an unverified direct-main path to downgrade validation and without leaving the Cloudflare root deployment completely outside browser coverage.
