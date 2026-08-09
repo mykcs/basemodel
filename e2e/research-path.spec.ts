@@ -83,12 +83,12 @@ test('comparison restores selected models, groups fields, and filters difference
   await expect(page).toHaveURL(/gpt-5-2/);
 });
 
-test('English routes preserve the base path and active navigation state', async ({ page }) => {
+test('English routes preserve root deployment and active navigation state', async ({ page }) => {
   await page.goto('en/models/');
 
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('.desktop-nav a[aria-current="page"]')).toHaveText('Models');
-  await expect(page.getByRole('link', { name: 'Switch to Chinese' })).toHaveAttribute('href', '/basemodel/models/');
+  await expect(page.getByRole('link', { name: 'Switch to Chinese' })).toHaveAttribute('href', '/models/');
 });
 
 test('English workspace exposes the same task builder shell', async ({ page }) => {
