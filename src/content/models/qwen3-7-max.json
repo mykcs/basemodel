@@ -1,0 +1,22 @@
+{
+  "id": "qwen3-7-max",
+  "name": "Qwen3.7 Max",
+  "official_name": "Qwen3.7 Max",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3.7",
+  "release_date": "2026-05-21",
+  "status": "active",
+  "checkpoint": {"type": "thinking", "modalities": ["text"], "specializations": ["reasoning", "coding", "agentic", "tool-use", "long-horizon", "productivity"]},
+  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "proprietary", "classification": "proprietary", "custom_license": true, "derivative_distribution": "prohibited", "commercial_use": "not_applicable", "conditions": ["subject_to_model_studio_terms"]},
+  "access": {"weights_status": "unavailable", "api_status": "available", "api_model_ids": ["qwen3.7-max", "qwen3.7-max-2026-05-20", "qwen3.7-max-2026-06-08"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": "not_applicable", "vllm_support": "not_applicable", "sglang_support": "not_applicable", "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [
+    {"url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "type": "official_api_docs", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud's current Qwen3.7 Max page identifies Max as the largest and most capable Qwen3.7 model, documents a 1,000,000-token context window, no fine-tuning, API availability, and the May 20 and June 8 snapshot IDs. The rolling qwen3.7-max alias is currently equivalent to the May 20 text-only snapshot; the June 8 snapshot separately adds visual input.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "checkpoint.specializations", "architecture.context_length", "openness.weights_available", "openness.finetuning_allowed", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]},
+    {"url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud's model lifecycle table records the international qwen3.7-max / qwen3.7-max-2026-05-20 release on May 21, 2026 and identifies it as the next-generation Qwen Max flagship.", "supports": ["release_date", "checkpoint.specializations", "status"]}
+  ],
+  "data_status": "verified",
+  "notes": "The rolling qwen3.7-max alias is currently text-only and equivalent to the 2026-05-20 snapshot. The separately addressable 2026-06-08 snapshot adds image/video understanding; do not infer that the rolling alias has the same modality until Alibaba changes the alias mapping."
+}
