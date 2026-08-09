@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-09 16:43 +08:00**
+Last updated: **2026-08-10 00:30 +08:00**
 
-Status: **steady state complete — repository re-layout and final Cloudflare Build Watch Paths are both finished and confirmed**.
+Status: **V2 adversarial closeout merged; product/research-integrity contract is now durable Agent guidance; GitHub -> Cloudflare Pages architecture remains the steady state.**
 
 This is the stable first-stop file for future coding Agents. Read it before historical migration notes.
 
@@ -16,6 +16,95 @@ This is the stable first-stop file for future coding Agents. Read it before hist
 - Cloudflare Root directory: repository root.
 - GitHub Actions and GitHub Pages are intentionally retired.
 
+## Agent reading order
+
+1. `/AGENTS.md`
+2. `docs/agents/LATEST.md`
+3. `docs/agents/current/product-and-research-integrity.md`
+4. `docs/agents/current/deployment-policy.md`
+5. `docs/agents/current/repository-map.md`
+6. `docs/agents/current/rendering-and-performance-policy.md`
+7. `docs/agents/current/cloudflare-pages-deployment.md`
+8. `package.json` and task-specific source files
+
+The new product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes.
+
+## Product north star now captured in-repo
+
+The durable contract is in:
+
+`docs/agents/current/product-and-research-integrity.md`
+
+Key rules:
+
+- this project is a **research decision system**, not merely a model database or leaderboard;
+- the core job is to narrow feasible model candidates for a concrete research task and produce an evidence-backed, reproducible selection rationale;
+- strict reproduction, method reproduction and modern rerun are distinct modes and can yield different model recommendations;
+- recommendation output should expose feasibility, research fit, comparability, reproducibility and evidence quality rather than hide everything behind one score;
+- unknown does not mean false/zero/absent;
+- open weights does not mean open source and must remain separate from license/derivative/commercial rights;
+- release dates/model IDs must never be fabricated into reproducible model revisions;
+- paper method summaries must not be synthesized from model-selection rationale;
+- hardware catalog tiers, heuristic VRAM estimates and measured hardware results are separate evidence levels;
+- Claim -> Evidence links are preferred over treating a page-level source list as proof for every field;
+- active Research Task / candidate / compare state is cross-page product state;
+- “done” means wired into a real user path and protected by acceptance tests, not merely that a component or helper file exists;
+- account login, cross-device cloud save, team collaboration and other server-owned capabilities remain explicit external boundaries until real services exist.
+
+Future Agents should update this contract only when the product/research methodology actually changes.
+
+## V2 adversarial closeout
+
+PR: **#67 — V2 adversarial closeout: finish remaining research-workbench gaps**
+
+Merged to `main` as squash commit:
+
+`ea97be21f0a3bc2babeb5c2a1d5f0bdc00f74e4b`
+
+Final PR head:
+
+`c39d4eeae06905839d01d018037131ca012d3770`
+
+The exact final PR head received a successful Cloudflare Preview after the complete deterministic deployment gate was restored.
+
+Durable fixes from that PR include:
+
+- no fabricated `model.id@release_date` revision values;
+- real prefilled data-issue reporting flow;
+- paper method-summary vs model-selection-rationale boundary;
+- benchmark/checkpoint paper filters;
+- global AppLayout-level model Quick View with on-demand model JSON;
+- human-readable unresolved model facts and research impact;
+- sticky model-detail research navigation;
+- paper/family model linking and Quick View;
+- corrected historical paper-adoption semantics;
+- simultaneous strict/method/modern replacement verdicts;
+- dedicated mobile comparison cards;
+- hardware-tier vs heuristic-estimate wording;
+- deterministic source-ID normalization shared by ingestion/migration;
+- additional Vitest, Playwright and adversarial V2 regression coverage.
+
+## Current deployment-blocking gate
+
+`npm run verify:deploy` currently runs deterministic repository-local checks including:
+
+```text
+npm run check
+npm run validate
+npm run audit:semantic
+npm run audit:claims
+npm run audit:freshness
+npm test
+npm run audit:v2
+npm run audit:v2:adversarial
+```
+
+Then `npm run build:cloudflare` performs the Astro production build.
+
+The V2 audits are now deployment blockers because they protect false-complete/research-integrity invariants. Keep `package.json`, `src/lib/deploymentArchitecture.test.ts`, deployment docs and audit scripts synchronized if this contract changes.
+
+Full Chromium/WebKit Playwright remains on-demand; do not add browser downloads or third-party network probes to every Pages build without a deliberate reliability/cost decision.
+
 ## Current repository layout
 
 ```text
@@ -24,50 +113,15 @@ public/                      production static assets
 scripts/                     build, validation, audit and maintenance tooling
 tests/e2e/                   Playwright browser regression tests
 tests/fixtures/demo-archive/ non-production demo fixtures
-docs/agents/current/         authoritative current Agent policy/runbooks/maps
+docs/agents/current/         authoritative current Agent policy/product/runbooks/maps
 docs/agents/history/         migration and superseded architecture records
 docs/agents/README.md        Agent documentation index
 docs/agents/LATEST.md        fixed latest handoff
 ```
 
-The production Astro root, `src/`, `public/`, `scripts/`, dependency manifests and build configuration were deliberately not moved.
+The production Astro root, `src/`, `public/`, `scripts/`, dependency manifests and build configuration are deliberately kept in their conventional locations.
 
-## Agent reading order
-
-1. `/AGENTS.md`
-2. `docs/agents/LATEST.md`
-3. `docs/agents/current/deployment-policy.md`
-4. `docs/agents/current/repository-map.md`
-5. `docs/agents/current/cloudflare-pages-deployment.md`
-6. `package.json` and task-specific source files
-
-## Repository re-layout completed
-
-PR: **#57 — Reorganize tests and Agent documentation**
-
-Completed changes:
-
-- `e2e/*` -> `tests/e2e/*`;
-- Playwright `testDir` -> `./tests/e2e`;
-- `demo-archive/*` -> `tests/fixtures/demo-archive/*`;
-- current Agent docs -> `docs/agents/current/`;
-- dated/retired/migration Agent docs -> `docs/agents/history/`;
-- root `AGENTS.md`, `README.md`, Agent index and repository map updated for new paths;
-- the repository-layout plan retained under history as the execution record.
-
-## Verification evidence
-
-Verified during the migration and on merged `main`:
-
-- old `e2e/` and `demo-archive/` paths are gone;
-- `tests/e2e/` and `tests/fixtures/demo-archive/` contain the moved files;
-- current deployment policy/runbooks live under `docs/agents/current/`;
-- `playwright.config.ts` uses `testDir: './tests/e2e'`;
-- production `src/`, `public/`, `scripts/`, dependency manifests and Astro build configuration were not changed by the re-layout.
-
-The re-layout was organizational and did not change runtime website semantics.
-
-## Cloudflare Build Watch Paths — final confirmed state
+## Cloudflare Build Watch Paths — last confirmed state
 
 The repository owner saved these settings in the Cloudflare dashboard and read them back successfully on **2026-08-09**:
 
@@ -86,38 +140,55 @@ tests/fixtures/*
 playwright.config.ts
 ```
 
-The migration-only exclusions for the former `e2e/*` and `demo-archive/*` paths have been removed.
-
 Do not exclude production source, `public/*`, `scripts/*`, dependency manifests, Astro/TypeScript configuration or `.node-version`.
 
-No test commit or extra Cloudflare build was intentionally required to validate the dashboard cleanup; the final settings were confirmed by saving and reading them back in the dashboard.
+Because Agent documentation is excluded, documentation-only updates normally should not consume a Pages build. Do not create probe/no-op runtime files merely to test this behavior.
 
-## Finalization incident note
+## Repository re-layout is closed
 
-During the final documentation update on 2026-08-09, the remote GitHub tool was accidentally invoked once with a create-file action on `main`, creating an empty root file named `__probe_should_not_create__` in commit `18a0b1f`. It was immediately deleted in commit `f89d873`, whose message used `[CF-Pages-Skip]`.
+PR #57 completed the organizational migration:
 
-Current repository state is clean: the probe file is absent and no source/runtime file was modified. GitHub exposes no commit status for the accidental commit, so repository-side evidence cannot prove whether Cloudflare started a build before the deletion. Treat **one possible extra Pages build** as the conservative quota accounting assumption for this incident.
+- `e2e/*` -> `tests/e2e/*`;
+- Playwright `testDir` -> `./tests/e2e`;
+- `demo-archive/*` -> `tests/fixtures/demo-archive/*`;
+- current Agent docs -> `docs/agents/current/`;
+- dated/retired/migration Agent docs -> `docs/agents/history/`.
 
-This was an execution mistake, not part of the intended validation procedure. Future Agents must not create probe/no-op files to test GitHub or Cloudflare behavior.
+There is no pending repository-layout or Build Watch cleanup.
 
-## Current steady-state rule
+## Steady-state change flow
 
 For normal deployment-sensitive work:
 
 ```text
 one logical task
 -> batched intermediate work (skip deployment when appropriate)
--> one meaningful final-head Preview
+-> one meaningful exact-head Preview
 -> merge
 -> one Production build
 ```
 
-Documentation, Agent files, generated reports, browser-only E2E tests and fixtures are excluded from Pages builds by the final watch-path configuration.
+For docs-only changes under current Build Watch exclusions:
 
-## Pending repository-layout / Build Watch work
+```text
+focused branch/PR
+-> inspect diff and links
+-> merge without manufacturing a runtime change merely to force Preview
+```
 
-**None.** The 2026-08-09 repository-layout and Cloudflare Build Watch migration is closed.
+## Current external boundaries
+
+Do not mark these as complete without real external capabilities/evidence:
+
+- cross-device cloud project storage;
+- account/OAuth identity;
+- team permissions/realtime collaboration;
+- server-side notifications/personalized APIs;
+- paper hardware measurements, author intent, benchmark conditions or other facts that reliable sources do not provide;
+- exhaustive current-world fact verification that requires new external evidence.
+
+LocalStorage, static JSON, inferred metadata or UI labels are not substitutes for those capabilities/facts.
 
 ## Historical context
 
-Completed migration/incident records live under `docs/agents/history/`. They are evidence, not current operating policy. Current rules live under `docs/agents/current/` and this fixed handoff file.
+Completed migration/incident records live under `docs/agents/history/`. They are evidence, not current operating policy. Current rules live under `docs/agents/current/`, `/AGENTS.md` and this fixed handoff file.
