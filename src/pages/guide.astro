@@ -7,8 +7,8 @@ import GuideContent from '../components/GuideContent.astro';
 const m = getMessages('zh');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_zh ?? m.guide.steps;
-const title = guide?.title_zh ?? m.guide.title;
-const lede = guide?.lede_zh ?? m.guide.lede;
+const title = '先理解 Agent，再学会选择基础模型';
+const lede = '这一页假设你已经了解 Transformer、微调、推理、API 和 GPU。先补齐 Agent 的运行循环与 Agentic RL，再用 SEED 把这些概念落到真实论文、checkpoint 和复现决策里。';
 const note = '模型记录里的硬件档位仍是粗粒度研究元数据；工作台的显存计算器会结合精度、上下文、batch、LoRA rank 等条件给出启发式规划估算，但它不是硬件实测或可运行保证。';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
@@ -16,15 +16,14 @@ const glossary = guide?.glossary ?? [];
 <AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
   <div class="shell editorial-page guide-learning-page">
     <header class="page-header">
-      <span class="section-kicker">{m.nav.guide}</span>
       <h1>{title}</h1>
       <p class="lede">{lede}</p>
     </header>
     <AgentPrimer locale="zh" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
-      <span class="section-kicker">进阶 · 把心智模型用于研究</span>
-      <h2 id="guide-research-layer-title">理解 Agent 之后，再学习怎么选模型、复现论文和核验证据</h2>
-      <p class="muted">下面保留原有的 SEED 全站研究流程、概念地图和术语表。它们现在是第二层，而不是新手进入网站时必须先理解的第一层。</p>
+      <p class="guide-section-label">第二部分</p>
+      <h2 id="guide-research-layer-title">把 Agent 心智模型用于论文和基础模型选择</h2>
+      <p class="muted">下面继续用 SEED 走完整个研究流程：看论文中的模型角色，检查 checkpoint 和证据，再根据复现目标、训练方式与硬件约束形成候选。</p>
     </section>
     <GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} />
   </div>
