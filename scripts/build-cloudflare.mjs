@@ -20,18 +20,10 @@ const run = (command, args, env = process.env) => {
   }
 };
 
-const checks = [
-  ['run', 'check'],
-  ['run', 'validate'],
-  ['run', 'audit:semantic'],
-  ['run', 'audit:claims'],
-  ['run', 'audit:freshness'],
-  ['test'],
-];
-
-for (const args of checks) {
-  run('npm', args);
-}
+// Cloudflare is the normal automated deployment boundary. Keep this gate
+// deterministic and repository-local: no browser downloads and no external
+// vendor/source probes belong in every Preview or Production build.
+run('npm', ['run', 'verify:deploy']);
 
 const branch = process.env.CF_PAGES_BRANCH;
 const siteUrl = resolveCloudflareSiteUrl({
@@ -56,6 +48,4 @@ run('npm', ['run', 'build'], {
   ...process.env,
   PUBLIC_SITE_URL: siteUrl,
   PUBLIC_SEARCH_INDEXING: searchIndexing,
-  // GitHub Pages owns /basemodel; Cloudflare Pages serves this project at the origin root.
-  PUBLIC_BASE_PATH: '/',
 });
