@@ -1,0 +1,290 @@
+---
+import { type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+
+type Stage = 'question' | 'constraints' | 'candidates' | 'evidence' | 'decision';
+type PageGuide = { stage?: Stage; current: string; why: string; how: string };
+
+const stages: Array<{ id: Stage; label: string }> = [
+  { id: 'question', label: t('明确问题', 'Define the question') },
+  { id: 'constraints', label: t('收紧约束', 'Narrow constraints') },
+  { id: 'candidates', label: t('形成候选', 'Form candidates') },
+  { id: 'evidence', label: t('核验证据', 'Verify evidence') },
+  { id: 'decision', label: t('做出决策', 'Make the decision') },
+];
+
+const exact = (value: string) => path === value || path === `${value}/`;
+const starts = (value: string) => path.startsWith(`${value}/`);
+
+let guide: PageGuide;
+if (exact('/')) {
+  guide = {
+    current: t('先把研究目标说清楚，再开始看模型。', 'State the research goal before browsing models.'),
+    why: t('模型很多，但真正决定选择的是论文目标、更新方式、开放性和资源约束。', 'The model list is large, but the choice is driven by the paper goal, update method, access, and resource constraints.'),
+    how: t('第一次使用先走新手引导；已经有明确任务，就从论文案例或工作台进入。', 'If you are new, start with the guide; if the task is already clear, enter through a paper case or the workspace.'),
+  };
+} else if (exact('/guide')) {
+  guide = {
+    stage: 'question',
+    current: t('建立后面选模型会反复用到的 Agent 与训练心智模型。', 'Build the agent and training mental model used throughout model selection.'),
+    why: t('如果混淆运行时、训练时、checkpoint 和权重更新，后面的硬件与模型选择会从起点就跑偏。', 'If runtime, training, checkpoints, and weight updates are conflated, later hardware and model choices start from the wrong premise.'),
+    how: t('按概念 → 真实论文 → 工作台的顺序走，不需要先背完整术语表。', 'Move from concepts → real paper → workspace; there is no need to memorize the full glossary first.'),
+  };
+} else if (exact('/papers')) {
+  guide = {
+    stage: 'question',
+    current: t('先理解原论文的问题、模型角色和训练方式。', 'First understand the paper question, model roles, and training method.'),
+    why: t('不先固定原实验，就无法判断后面的模型替换是在复现方法，还是已经变成另一个实验。', 'Without fixing the original experiment first, a later model swap may become a different experiment rather than a reproduction.'),
+    how: t('用 benchmark、模型角色和 checkpoint 缩小论文范围，再打开案例看复现条件。', 'Use benchmark, model role, and checkpoint filters, then open a case to inspect reproduction conditions.'),
+  };
+} else if (starts('/papers')) {
+  guide = {
+    stage: 'question',
+    current: t('把这篇论文转换成可执行的复现基准。', 'Turn this paper into an executable reproduction baseline.'),
+    why: t('论文里的模型角色、权重是否更新、checkpoint 与环境条件决定什么可以替换、什么必须保留。', 'Model roles, weight updates, checkpoints, and environment conditions determine what may be replaced and what must stay fixed.'),
+    how: t('先确认原模型与角色，再选择严格复现、方法复现或现代化重跑，最后把条件带入工作台。', 'Confirm the original models and roles, choose strict reproduction, method reproduction, or a modern rerun, then carry the conditions into the workspace.'),
+  };
+} else if (exact('/workspace')) {
+  guide = {
+    stage: 'constraints',
+    current: t('把抽象研究目标变成显式约束，并形成可解释候选。', 'Turn the research goal into explicit constraints and explainable candidates.'),
+    why: t('开放权重、训练方式、显存、角色和可比性是彼此独立的约束；漏掉任何一个都可能得到“看起来强、实际不能用”的模型。', 'Open weights, update method, memory, role, and comparability are separate constraints; missing one can produce a model that looks strong but is unusable.'),
+    how: t('先填写硬约束，再看 baseline / modern / resource 候选；有未知字段时继续核验证据，不要把未知当成否。', 'Set hard constraints first, inspect baseline / modern / resource candidates, and verify unknown fields instead of treating unknown as false.'),
+  };
+} else if (exact('/models')) {
+  guide = {
+    stage: 'candidates',
+    current: t('按研究约束缩小模型集合，而不是浏览“最强模型”。', 'Narrow the model set by research constraints instead of browsing for a single “best model”.'),
+    why: t('模型能力只是一个维度；checkpoint、权重可得性、可训练性、资源和论文可比性共同决定是否值得进入候选。', 'Capability is only one dimension; checkpoint, weight access, trainability, resources, and paper comparability determine whether a model belongs in the candidate set.'),
+    how: t('先筛开放性、训练方式、资源和论文采用，再打开详情检查证据与风险。', 'Filter by access, training method, resources, and paper adoption, then open details to inspect evidence and risks.'),
+  };
+} else if (starts('/models')) {
+  guide = {
+    stage: 'candidates',
+    current: t('判断这个模型是否适合当前研究任务。', 'Decide whether this model fits the current research task.'),
+    why: t('“更新、更大、更强”不能替代对 checkpoint、访问方式、训练适配、资源和证据状态的逐项判断。', '“Newer, larger, stronger” cannot replace checking checkpoint, access path, training fit, resources, and evidence status one by one.'),
+    how: t('先看研究适配与访问路径，再看训练/运行条件和论文采用；需要时加入候选或比较。', 'Check research fit and access first, then training/runtime conditions and paper adoption; add it to candidates or comparison when useful.'),
+  };
+} else if (exact('/families') || starts('/families') || exact('/landscape')) {
+  guide = {
+    stage: 'candidates',
+    current: t('理解模型家族的代际、分发面和时间关系。', 'Understand family generations, distribution surfaces, and time relationships.'),
+    why: t('同一家族里的 API 旗舰、开放权重模型和论文历史 checkpoint 可能不是同一个对象，不能只用一个“最新模型”概括。', 'A family’s API flagship, open-weight model, and historical paper checkpoint may be different objects; one “latest model” label is not enough.'),
+    how: t('先看代际与发布时间，再区分 API / 开放权重 / 论文采用，最后进入具体模型做任务级判断。', 'Start with generation and release time, separate API / open-weight / paper adoption, then enter a specific model for task-level evaluation.'),
+  };
+} else if (exact('/compare')) {
+  guide = {
+    stage: 'decision',
+    current: t('比较替换模型后究竟改变了什么。', 'Compare what actually changes when one model replaces another.'),
+    why: t('参数、checkpoint、架构、上下文、访问方式和训练条件的变化都可能成为方法学混杂因素。', 'Changes in scale, checkpoint, architecture, context, access, or training conditions can become methodological confounds.'),
+    how: t('逐项看差异与未知字段；只有确认关键条件可接受后，才把替换写进最终决策。', 'Inspect each difference and unknown field; only commit the replacement after the important conditions are acceptable.'),
+  };
+} else if (exact('/methodology')) {
+  guide = {
+    stage: 'evidence',
+    current: t('检查本站如何从事实形成判断，以及判断的边界在哪里。', 'Inspect how the site turns facts into judgments and where those judgments stop.'),
+    why: t('推荐规则只有在来源、未知状态和推导逻辑都可追溯时才值得信任。', 'Recommendation rules are trustworthy only when sources, unknown states, and derivation logic are traceable.'),
+    how: t('查看字段语义、证据规则和估算假设；遇到启发式结果时回到原始事实核对。', 'Review field semantics, evidence rules, and estimation assumptions; trace heuristic results back to the underlying facts.'),
+  };
+} else if (exact('/data-status')) {
+  guide = {
+    stage: 'evidence',
+    current: t('检查当前数据是否足够新、足够完整，能否支撑研究结论。', 'Check whether the current data is fresh and complete enough to support a research conclusion.'),
+    why: t('过期来源、语义缺口和未核验字段会直接改变候选结论的置信度。', 'Stale sources, semantic gaps, and unverified fields directly affect confidence in candidate conclusions.'),
+    how: t('先看来源日期和当前代覆盖，再看 semantic gaps 与 issues；重要未知项回到原始来源继续核验。', 'Check source dates and current-generation coverage first, then semantic gaps and issues; verify important unknowns against primary sources.'),
+  };
+} else {
+  guide = {
+    stage: 'evidence',
+    current: t('把当前页面的信息放回研究决策链，而不是孤立阅读。', 'Place the information on this page back into the research-decision chain instead of reading it in isolation.'),
+    why: t('单个事实只有和研究问题、约束、候选与证据连接起来，才会变成可执行判断。', 'A fact becomes actionable only when connected to the research question, constraints, candidates, and evidence.'),
+    how: t('确认它回答了哪一步，再继续到下一步；不要因为页面信息很多就改变原来的研究目标。', 'Identify which step it answers, then continue to the next step; do not let a dense page change the original research goal.'),
+  };
+}
+---
+<section class="research-mainline" aria-labelledby="research-mainline-title">
+  <div class="shell research-mainline-inner">
+    <div class="research-mainline-heading">
+      <p class="research-mainline-label">{t('全站主线', 'Site-wide mainline')}</p>
+      <h2 id="research-mainline-title">{t('从研究问题，到可复现的模型决策', 'From a research question to a reproducible model decision')}</h2>
+    </div>
+
+    <ol class="research-mainline-stages" aria-label={t('研究决策主线', 'Research decision mainline')}>
+      {stages.map((stage, index) => (
+        <li class:list={{ 'is-active': guide.stage === stage.id }} aria-current={guide.stage === stage.id ? 'step' : undefined}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{stage.label}</strong>
+        </li>
+      ))}
+    </ol>
+
+    <dl class="research-mainline-guide">
+      <div>
+        <dt>{t('现在做什么', 'What you are doing')}</dt>
+        <dd>{guide.current}</dd>
+      </div>
+      <div>
+        <dt>{t('为什么', 'Why it matters')}</dt>
+        <dd>{guide.why}</dd>
+      </div>
+      <div>
+        <dt>{t('怎么做', 'How to proceed')}</dt>
+        <dd>{guide.how}</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  .research-mainline {
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 58%, transparent);
+  }
+
+  .research-mainline-inner {
+    padding-top: 18px;
+    padding-bottom: 20px;
+  }
+
+  .research-mainline-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .research-mainline-label {
+    margin: 0;
+    color: var(--muted);
+    font-size: .75rem;
+    font-weight: 700;
+  }
+
+  .research-mainline-heading h2 {
+    margin: 0;
+    font-size: .98rem;
+    line-height: 1.35;
+    letter-spacing: -.01em;
+  }
+
+  .research-mainline-stages {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .research-mainline-stages li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    padding: 9px 10px 9px 0;
+    color: var(--muted);
+  }
+
+  .research-mainline-stages li + li {
+    padding-left: 12px;
+    border-left: 1px solid var(--line);
+  }
+
+  .research-mainline-stages span {
+    flex: 0 0 auto;
+    font-size: .68rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .research-mainline-stages strong {
+    min-width: 0;
+    font-size: .78rem;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+
+  .research-mainline-stages .is-active {
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--accent-deep);
+  }
+
+  .research-mainline-stages .is-active span {
+    color: var(--accent-deep);
+    font-weight: 800;
+  }
+
+  .research-mainline-guide {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+  }
+
+  .research-mainline-guide > div {
+    padding: 14px 18px 0 0;
+  }
+
+  .research-mainline-guide > div + div {
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+  }
+
+  .research-mainline-guide dt {
+    margin-bottom: 5px;
+    color: var(--muted);
+    font-size: .7rem;
+    font-weight: 700;
+  }
+
+  .research-mainline-guide dd {
+    margin: 0;
+    font-size: .82rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 760px) {
+    .research-mainline-inner {
+      padding-top: 14px;
+      padding-bottom: 16px;
+    }
+
+    .research-mainline-heading {
+      display: grid;
+      gap: 3px;
+    }
+
+    .research-mainline-stages {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .research-mainline-stages li {
+      flex: 0 0 auto;
+      min-width: 118px;
+    }
+
+    .research-mainline-guide {
+      grid-template-columns: 1fr;
+    }
+
+    .research-mainline-guide > div,
+    .research-mainline-guide > div + div {
+      padding: 11px 0;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .research-mainline-guide > div:first-child {
+      border-top: 0;
+    }
+  }
+</style>
