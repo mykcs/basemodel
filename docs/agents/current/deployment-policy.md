@@ -47,7 +47,7 @@ dist
 
 The reason for leaving GitHub Actions was not that Cloudflare has no limits. It was to remove the runner-minute-heavy Actions/Pages chain and use a deployment platform whose limits match this static site better.
 
-As of 2026-08-09, Cloudflare Pages Free documents these relevant limits:
+As of 2026-08-09, the Cloudflare Pages Free plan documents these relevant limits:
 
 - 500 Pages builds per month;
 - 1 build at a time;
@@ -94,10 +94,12 @@ npm run verify:deploy
   -> npm run audit:claims
   -> npm run audit:freshness
   -> npm test
+  -> npm run audit:v2
+  -> npm run audit:v2:adversarial
 npm run build
 ```
 
-These checks are intentionally deterministic and repository-local. Any failure blocks the deployment.
+These checks are intentionally deterministic and repository-local. Any failure blocks the deployment. The two V2 audits are part of the deployment gate because they catch false-complete product regressions such as fabricated model revisions, broken cross-page Quick View wiring, semantic paper-summary errors, and loss of mobile comparison behavior without requiring browser downloads or third-party network access.
 
 `audit:coverage` remains available but currently mainly generates a report after already parsing the same local data, so it is not a useful extra blocking signal on every deployment.
 
