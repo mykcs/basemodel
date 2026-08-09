@@ -4,13 +4,29 @@ This directory contains current operational guidance plus historical architectur
 
 ## Current authoritative documents
 
-Read these before changing deployment, hosting, URL/SEO behavior, release validation, or repository automation:
+Read these before changing deployment, hosting, URL/SEO behavior, release validation, repository automation, or repository structure:
 
 1. [`deployment-policy.md`](./deployment-policy.md) — authoritative steady-state policy: GitHub source -> Cloudflare Pages, with GitHub Actions and GitHub Pages intentionally retired.
-2. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — current Cloudflare build/deploy and verification runbook.
-3. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating rules.
+2. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — current Cloudflare build/deploy runbook, including quota/build-budget rules.
+3. [`repository-map.md`](./repository-map.md) — fast repository orientation: what each directory owns, what to read first, and what validation each kind of change needs.
+4. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating rules and collaboration expectations.
 
 If any historical file conflicts with these documents, the current documents win unless the repository owner explicitly changes policy.
+
+## Recommended new-agent reading order
+
+For a new coding agent taking over the repository:
+
+```text
+AGENTS.md
+  -> docs/agents/deployment-policy.md
+  -> docs/agents/repository-map.md
+  -> package.json
+  -> README.md
+  -> only then the files directly relevant to the requested change
+```
+
+The goal is to prevent an agent from rediscovering or accidentally reversing settled architecture decisions.
 
 ## Historical records
 
