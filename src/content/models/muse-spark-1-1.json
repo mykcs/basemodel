@@ -1,0 +1,18 @@
+{
+  "id": "muse-spark-1-1",
+  "name": "Muse Spark 1.1",
+  "official_name": "Muse Spark 1.1",
+  "vendor": "Meta",
+  "family": "Muse",
+  "generation": "Muse Spark 1.1",
+  "release_date": "2026-07-09",
+  "status": "preview",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "video"], "specializations": ["reasoning", "agentic", "coding", "tool-use", "computer-use", "multimodal", "multi-agent"]},
+  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "not_disclosed", "classification": "proprietary", "custom_license": false, "derivative_distribution": "prohibited", "commercial_use": "not_applicable", "conditions": ["meta_model_api_public_preview"]},
+  "access": {"weights_status": "unavailable", "api_status": "preview", "product_status": "available", "product_names": ["Meta Model API", "Meta AI", "meta.ai"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": "not_applicable", "vllm_support": "not_applicable", "sglang_support": "not_applicable", "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [{"url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Meta's July 9, 2026 announcement calls Muse Spark 1.1 the latest Muse model, a hosted multimodal reasoning model for agentic work with coding, tool/computer use, multi-agent orchestration, 1M context and Meta Model API public-preview access. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.context_length", "openness.classification", "access.api_status", "research.suitable_for_inference", "status"]}],
+  "data_status": "verified"
+}

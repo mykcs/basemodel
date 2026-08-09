@@ -1,0 +1,18 @@
+{
+  "id": "qwen3-6-plus",
+  "name": "Qwen3.6 Plus",
+  "official_name": "Qwen3.6 Plus",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3.6",
+  "release_date": "2026-04-02",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "video"], "specializations": ["reasoning", "coding", "agentic", "multimodal", "tool-use"]},
+  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "not_disclosed", "classification": "proprietary", "custom_license": false, "derivative_distribution": "prohibited", "commercial_use": "not_applicable", "conditions": ["subject_to_model_studio_terms"]},
+  "access": {"weights_status": "unavailable", "api_status": "available", "api_model_ids": ["qwen3.6-plus", "qwen3.6-plus-2026-04-02"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": "not_applicable", "vllm_support": "not_applicable", "sglang_support": "not_applicable", "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [{"url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud records Qwen3.6 Plus on April 2, 2026 and documents its multimodal agentic API availability and 1M context. No public weights are listed, so the hosted model is classified as proprietary while its exact license name remains undisclosed.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.context_length", "openness.classification", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]}],
+  "data_status": "verified"
+}

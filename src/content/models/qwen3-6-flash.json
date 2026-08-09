@@ -1,0 +1,21 @@
+{
+  "id": "qwen3-6-flash",
+  "name": "Qwen3.6 Flash",
+  "official_name": "Qwen3.6 Flash",
+  "vendor": "Qwen / Alibaba",
+  "family": "Qwen",
+  "generation": "Qwen3.6",
+  "release_date": "2026-04-16",
+  "status": "active",
+  "checkpoint": {"type": "vision", "modalities": ["text", "image", "video"], "specializations": ["reasoning", "coding", "agentic", "multimodal", "tool-use", "high-throughput"]},
+  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
+  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "not_disclosed", "classification": "proprietary", "custom_license": false, "derivative_distribution": "prohibited", "commercial_use": "not_applicable", "conditions": ["subject_to_model_studio_terms"]},
+  "access": {"weights_status": "unavailable", "api_status": "available", "api_model_ids": ["qwen3.6-flash", "qwen3.6-flash-2026-04-16"]},
+  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": "not_reported", "suitable_for_rl": false, "transformers_support": "not_applicable", "vllm_support": "not_applicable", "sglang_support": "not_applicable", "verl_recipe_available": false},
+  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "sources": [
+    {"url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud records Qwen3.6 Flash on April 16, 2026 as a hosted native vision-language model. No public weights are listed, and SFT suitability is not reported in the cited current sources.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "openness.classification", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]},
+    {"url": "https://www.alibabacloud.com/help/en/model-studio/vision-model", "type": "official_api_docs", "checked_at": "2026-08-10", "evidence_note": "Current Model Studio vision documentation lists qwen3.6-flash with text/image/video input and a 1M context window.", "supports": ["checkpoint.modalities", "architecture.context_length", "access.api_status", "access.api_model_ids"]}
+  ],
+  "data_status": "verified"
+}
