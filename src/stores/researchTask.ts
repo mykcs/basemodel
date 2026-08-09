@@ -1,6 +1,6 @@
 import { persistentAtom } from '@nanostores/persistent';
 import type { AtlasModel } from '../lib/schemas';
-import { decodeResearchTask, encodeResearchTask } from '../lib/researchTaskCodec';
+import { decodeResearchTask, replaceResearchTaskSearchParams } from '../lib/researchTaskCodec';
 
 export type ResearchMode = 'strict' | 'method' | 'modern' | 'new';
 export type UpdateMethod = 'none' | 'lora' | 'sft' | 'rl' | 'unsure';
@@ -131,23 +131,15 @@ export function clearResearchTask() {
   researchTask.set(emptyTask);
   if (typeof window !== 'undefined') {
     const url = new URL(window.location.href);
-    for (const key of ['v', 'mode', 'paper', 'model', 'role', 'roles', 'update', 'access', 'gpu', 'gpus', 'quant', 'precision', 'batch', 'rank', 'optimizer', 'kv', 'ctx', 'open', 'base', 'runtime', 'license', 'repro', 'evidence', 'priority']) {
-      url.searchParams.delete(key);
-    }
-    url.searchParams.delete('task');
+    url.search = replaceResearchTaskSearchParams(url.searchParams, null).toString();
     window.history.replaceState(null, '', url.toString());
   }
 }
 
 function syncResearchTaskToUrl(task: ResearchTask) {
   const url = new URL(window.location.href);
-  for (const [key, value] of encodeResearchTask(task)) url.searchParams.set(key, value);
-  if (!hasMeaningfulResearchTask(task)) {
-    for (const key of ['v', 'mode', 'paper', 'model', 'role', 'roles', 'update', 'access', 'gpu', 'gpus', 'quant', 'precision', 'batch', 'rank', 'optimizer', 'kv', 'ctx', 'open', 'base', 'runtime', 'license', 'repro', 'evidence', 'priority']) {
-      url.searchParams.delete(key);
-    }
-  }
-  url.searchParams.delete('task');
+  const currentTask = hasMeaningfulResearchTask(task) ? task : null;
+  url.search = replaceResearchTaskSearchParams(url.searchParams, currentTask).toString();
   window.history.replaceState(null, '', url.toString());
 }
 
