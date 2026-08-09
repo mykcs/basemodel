@@ -83,7 +83,7 @@ const secondaryEntries = [
   { label: m.v2.home.entryReproduce, href: localePath(locale, '/papers/') },
   { label: m.v2.home.entryChoose, href: localePath(locale, '/workspace/') },
   { label: m.v2.home.entryReplace, href: localePath(locale, '/models/') },
-  { label: m.v2.home.entryLearn, href: localePath(locale, '/families/') },
+  { label: m.v2.home.entryLearn, href: localePath(locale, '/guide/') },
 ];
 ---
 
@@ -166,16 +166,18 @@ const secondaryEntries = [
   </section>
 
   <section class="section" aria-labelledby="recent-changes-title">
-    <div class="section-heading">
-      <div>
-        <div class="section-kicker">{m.v2.home.recentChangesKicker}</div>
-        <h2 id="recent-changes-title">{m.v2.home.recentChangesTitle}</h2>
+    <div class="recent-layout">
+      <div class="section-heading recent-heading">
+        <div>
+          <div class="section-kicker">{m.v2.home.recentChangesKicker}</div>
+          <h2 id="recent-changes-title">{m.v2.home.recentChangesTitle}</h2>
+        </div>
+        <span class="muted">{m.v2.home.recentChangesNote}</span>
       </div>
-      <span class="muted">{m.v2.home.recentChangesNote}</span>
+      <ol class="model-timeline">
+        {recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据事件' : 'Data event') : m.v2.home.recentRelease}</small></div></li>)}
+      </ol>
     </div>
-    <ol class="model-timeline">
-      {recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据事件' : 'Data event') : m.v2.home.recentRelease}</small></div></li>)}
-    </ol>
   </section>
 
   <section class="section" aria-labelledby="families-title">
@@ -342,6 +344,26 @@ const secondaryEntries = [
     font-weight: 700;
     font-size: 0.85rem;
   }
+  .recent-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.85fr) 1.6fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .recent-heading {
+    display: block;
+    position: sticky;
+    top: 96px;
+    margin-bottom: 0;
+  }
+  .recent-heading .muted {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.84rem;
+  }
+  .recent-layout .model-timeline {
+    max-width: 600px;
+  }
   .family-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -412,6 +434,8 @@ const secondaryEntries = [
     .entry-grid { grid-template-columns: 1fr; }
     .path-grid { grid-template-columns: 1fr; }
     .scenario-grid { grid-template-columns: 1fr; }
+    .recent-layout { grid-template-columns: 1fr; gap: 20px; }
+    .recent-heading { position: static; }
     .family-grid { grid-template-columns: 1fr; }
     .overview-stats { grid-template-columns: 1fr; }
     .overview-stats .stat + .stat { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
