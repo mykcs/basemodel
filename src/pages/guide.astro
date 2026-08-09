@@ -3,12 +3,13 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { getMessages } from '../i18n';
 import { getCollection } from 'astro:content';
 import AgentPrimer from '../components/AgentPrimer.astro';
+import SeedReproductionPath from '../components/SeedReproductionPath.astro';
 import GuideContent from '../components/GuideContent.astro';
 const m = getMessages('zh');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_zh ?? m.guide.steps;
-const title = '先理解 Agent，再学会选择基础模型';
-const lede = '这一页假设你已经了解 Transformer、微调、推理、API 和 GPU。先补齐 Agent 的运行循环与 Agentic RL，再用 SEED 把这些概念落到真实论文、checkpoint 和复现决策里。';
+const title = '先理解 Agent，再完整复现一篇论文';
+const lede = '这一页假设你已经了解 Transformer、微调、推理、API 和 GPU。先补齐 Agent 的运行循环与 Agentic RL，再用 SEED 这一条真实主线，把 checkpoint、ALFWorld / WebShop、算力租赁和论文复现串起来。';
 const note = '模型记录里的硬件档位仍是粗粒度研究元数据；工作台的显存计算器会结合精度、上下文、batch、LoRA rank 等条件给出启发式规划估算，但它不是硬件实测或可运行保证。';
 const concepts = guide?.concepts ?? [];
 const glossary = guide?.glossary ?? [];
@@ -20,10 +21,11 @@ const glossary = guide?.glossary ?? [];
       <p class="lede">{lede}</p>
     </header>
     <AgentPrimer locale="zh" />
+    <SeedReproductionPath locale="zh" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
-      <p class="guide-section-label">第二部分</p>
-      <h2 id="guide-research-layer-title">把 Agent 心智模型用于论文和基础模型选择</h2>
-      <p class="muted">下面继续用 SEED 走完整个研究流程：看论文中的模型角色，检查 checkpoint 和证据，再根据复现目标、训练方式与硬件约束形成候选。</p>
+      <p class="guide-section-label">第三部分</p>
+      <h2 id="guide-research-layer-title">完成一次 SEED 实战后，再把同一套方法迁移到其他论文</h2>
+      <p class="muted">下面的工作台流程、概念地图和术语表用于泛化这套方法。顺序不要反过来：先定义研究声明，再固定论文变量，然后才筛模型、看证据和做替代。</p>
     </section>
     <GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} />
   </div>

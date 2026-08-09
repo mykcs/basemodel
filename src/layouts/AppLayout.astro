@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import BeginnerStart from '../components/BeginnerStart.astro';
+import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
@@ -17,6 +18,8 @@ interface Props {
   description?: string;
   locale?: Locale;
 }
+
+type SeedArea = 'home' | 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -36,6 +39,16 @@ const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isHomePage = localeNeutralPath === '/';
 const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
+const seedArea: SeedArea | null = isHomePage ? 'home'
+  : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
+  : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
+  : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
+  : /^\/papers\/?$/.test(localeNeutralPath) ? 'papers'
+  : /^\/workspace\/?$/.test(localeNeutralPath) ? 'workspace'
+  : /^\/data-status\/?$/.test(localeNeutralPath) ? 'data-status'
+  : /^\/methodology\/?$/.test(localeNeutralPath) ? 'methodology'
+  : /^\/landscape\/?$/.test(localeNeutralPath) ? 'landscape'
+  : null;
 const localePath = (target: Locale) => {
   const clean = localeNeutralPath.replace(/^\//, '');
   return target === 'en' ? `/en/${clean}` : `/${clean}`;
@@ -102,6 +115,7 @@ const websiteJsonLd = JSON.stringify({
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
       {isHomePage && <BeginnerStart locale={locale} />}
+      {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
       <slot />
     </main>
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
