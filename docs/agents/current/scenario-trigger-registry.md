@@ -235,6 +235,114 @@ Follow `project-agent-operating-principles.md`:
 
 ---
 
+## TRIGGER: credential / token / secret injection / private repository
+
+### Cues
+
+Any task mentioning or implying:
+
+- API tokens, bearer credentials, Account IDs, Wrangler login/auth;
+- “put the token in a private GitHub repo so ChatGPT can read it”;
+- GitHub Actions Secrets / Agent Secrets;
+- persistent credentials for a web Agent or coding Agent.
+
+### Automatic response
+
+1. Distinguish **technically readable** from **appropriate secret storage**.
+2. Do not commit a live bearer token as plaintext to a normal Git-tracked file, including in a private repository.
+3. Prefer secure execution-environment injection, a connected provider capability, OS/keychain-backed authenticated CLI state for a persistent local Agent, or a real secret manager integrated with the runtime.
+4. Do not assume GitHub Secrets are a readable key-value store: their normal APIs expose metadata, not decrypted values for an unrelated ChatGPT sandbox.
+5. Use the narrowest provider permission and shortest practical lifetime for task-specific credentials.
+6. Never ask the owner to paste a live token into chat when a secure authorization path can be used instead.
+7. If current Agent/provider secret capabilities are unclear, verify current first-party docs before concluding the path is impossible.
+
+### Refresh cue
+
+Agent secret-injection and provider connector capabilities change quickly. Re-check current product/provider behavior before treating any 2026 limitation as permanent.
+
+---
+
+## TRIGGER: hosting/platform modernization / “should we change stack?”
+
+### Cues
+
+Any discussion of:
+
+- Vercel vs Cloudflare;
+- Pages vs Workers;
+- “modern/elegant stack”;
+- whether using Vercel implies Next.js;
+- replacing Astro/React/GitHub because the hosting provider changed.
+
+### Automatic response
+
+1. Decompose the question into **application stack**, **Preview/CI ownership**, **Production hosting**, **product identity/domain**, and **provider-native services**.
+2. Inspect current first-party platform guidance and current repository constraints before migrating.
+3. Do not rewrite Astro/React merely because Vercel is used for Preview. Preserve a sound application stack unless product/runtime requirements provide evidence for a rewrite.
+4. Prefer narrow provider ownership over duplicate orchestration: one provider may own ordinary Preview while another owns Production.
+5. Do not create fake symmetry between providers or restore retired CI merely to make the architecture look uniform.
+6. If the product gains SSR/server APIs/state that invalidate the static-host assumption, re-evaluate from requirements rather than from branding.
+
+### Refresh cue
+
+Hosting products and framework integration change rapidly. Verify current provider/framework docs when the architecture decision depends on present capabilities.
+
+---
+
+## TRIGGER: Workers shadow complete / Production cutover / provider behavior differences
+
+### Cues
+
+Any task mentioning:
+
+- `basemodel-workers-shadow`;
+- “finish the Workers migration”;
+- attach Production domain/route;
+- retire/delete Cloudflare Pages;
+- a difference between Pages and Workers redirects/cache/MIME/headers;
+- a green shadow being treated as permission to release.
+
+### Automatic response
+
+1. Read `docs/agents/LATEST.md` and `hosting-architecture.md` for live migration state before repeating shadow work.
+2. The repository/Vercel/real Workers shadow and parity phases are already complete as of the current handoff. Do not make “deploy another shadow” the default next step unless fresh evidence invalidates the prior result.
+3. The remaining release chain is:
+
+```text
+rollback plan
+-> state expected Production impact
+-> explicit owner release intent
+-> Production cutover
+-> public Production verification
+-> retain Pages until rollback is no longer needed
+```
+
+4. A working shadow URL is evidence, **not release authorization**.
+5. When Pages and Workers differ, ask whether the difference breaks product/SEO/security semantics before forcing parity. Preserve acceptable provider-native asymmetry rather than encoding cosmetic equality.
+6. If a custom domain/canonical migration is proposed, treat it as a separate SEO/release decision; do not casually bundle it into the first hosting cutover.
+
+### Refresh cue
+
+Rewrite this trigger immediately after a real Production cutover is independently verified so future Agents do not keep treating Pages as Production.
+
+---
+
+## TRIGGER: cross-repository architecture reuse
+
+### Cues
+
+The owner asks to apply a successful hosting/workflow/design pattern to other website repositories or “make the other repos use the same stack”.
+
+### Automatic response
+
+1. Reuse the **decision pattern**, not literal configuration.
+2. Inspect each target repo’s `AGENTS.md`/docs, framework, canonical host, base path, deployment provider, server/functions/API dependencies, and release constraints first.
+3. Use `basemodel` as a reference implementation or suggestion when helpful, but preserve intentional asymmetry where the target repo differs.
+4. Do not write website deployment guidance into non-web repositories merely for account-wide consistency.
+5. Prefer an advisory/evaluation note when migration is not yet justified; only encode executable config after the target repo passes its own acceptance reasoning.
+
+---
+
 ## TRIGGER: overlapping PRs / large cross-site change
 
 ### Cues
