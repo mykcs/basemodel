@@ -3,16 +3,16 @@ import { describe, expect, it } from 'vitest';
 
 const root = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 const readme = readFileSync(new URL('../../docs/agents/README.md', import.meta.url), 'utf8');
-const latest = readFileSync(new URL('../../docs/agents/LATEST.md', import.meta.url), 'utf8');
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
-    for (const file of [root, readme, latest]) {
+    for (const file of [root, readme]) {
       expect(file).toContain('scenario-trigger-registry.md');
     }
-    expect(root).toContain('scan');
+    expect(root).toContain('scan scenario-trigger-registry');
+    expect(readme).toContain('scan scenario-trigger-registry against the task');
     expect(registry).toContain('Do not wait for the owner to repeat these reminders');
   });
 
