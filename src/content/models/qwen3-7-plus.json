@@ -17,5 +17,5 @@
     {"url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-plus-us", "type": "official_api_docs", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud documents Qwen3.7 Plus as a hosted multimodal hybrid agent with text/image/video input, coding, tool use and GUI operation, 1M context and no hosted fine-tuning. That service limitation is not promoted into a model-level license or local-training claim. The reviewed API documentation does not establish a public-weight release, local runtime, derivative-distribution right, or model-license classification, so those fields remain semantic unknowns.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "architecture.context_length", "access.api_status", "research.suitable_for_inference", "status"]},
     {"url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud records qwen3.7-plus and its May 26 snapshot as internationally available beginning June 1, 2026.", "supports": ["release_date", "access.api_status", "access.api_model_ids"]}
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }
