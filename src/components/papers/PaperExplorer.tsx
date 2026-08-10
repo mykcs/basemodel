@@ -27,9 +27,15 @@ function readFilters(): FilterState {
   };
 }
 
+const hasHttpUrl = (value: AtlasPaper['code_url'] | AtlasPaper['checkpoint_url']) => typeof value === 'string' && value.startsWith('http');
+
 function reproducibilityLevel(paper: AtlasPaper): 'ready' | 'unknown' {
   const repro = paper.reproducibility;
-  return repro?.code_status === 'available' && repro.checkpoint_status === 'available' && repro.config_status !== 'unavailable' ? 'ready' : 'unknown';
+  const codeReady = repro?.code_status === 'available' || hasHttpUrl(paper.code_url);
+  const checkpointReady = repro?.checkpoint_status === 'available' || hasHttpUrl(paper.checkpoint_url);
+  const configReady = repro?.config_status === 'available' || repro?.config_status === 'partial';
+  const environmentReady = repro?.environment_status === 'reported' || repro?.environment_status === 'partial';
+  return codeReady && checkpointReady && configReady && environmentReady ? 'ready' : 'unknown';
 }
 
 function evidenceCompleteness(paper: AtlasPaper, locale: Locale): string {
@@ -48,7 +54,7 @@ function experimentBurden(paper: AtlasPaper, modelMap: Map<string, AtlasModel>, 
   if (referenced.some((model) => model.hardware.rl_tier === 'multi_gpu' || model.hardware.full_sft_tier === 'multi_gpu')) score += 2;
   if (referenced.some((model) => model.hardware.inference_tier === 'api_only')) score += 1;
   if (!paper.reproducibility || ['partial', 'not_reported', 'not_verified'].includes(paper.reproducibility.environment_status)) score += 1;
-  if (paper.code_url === 'not_reported' || paper.code_url === 'not_verified' || paper.code_url === 'unavailable') score += 1;
+  if (!hasHttpUrl(paper.code_url)) score += 1;
   return {
     label: score >= 4 ? (locale === 'zh' ? '实验负担高' : 'High experiment burden') : score >= 2 ? (locale === 'zh' ? '实验负担中等' : 'Moderate experiment burden') : (locale === 'zh' ? '实验负担较低' : 'Lower experiment burden'),
     note: locale === 'zh' ? 'Atlas 估算：综合权重更新、多卡资源、API 依赖、环境与代码条件；不是论文实测成本。' : 'Atlas heuristic: combines weight updates, multi-GPU needs, API dependency, environment, and code conditions; it is not a measured paper cost.',
@@ -86,8 +92,8 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
     const paperFamilies = paper.models.map((item) => modelFamily.get(item.model_id));
     const weightMatches = paper.models.some((item) => item.weight_updated === true);
     const noWeightMatches = paper.models.every((item) => item.weight_updated === false);
-    const codeAvailable = paper.reproducibility?.code_status === 'available' || (typeof paper.code_url === 'string' && paper.code_url.startsWith('http'));
-    const checkpointAvailable = paper.reproducibility?.checkpoint_status === 'available' || (typeof paper.checkpoint_url === 'string' && paper.checkpoint_url.startsWith('http'));
+    const codeAvailable = paper.reproducibility?.code_status === 'available' || hasHttpUrl(paper.code_url);
+    const checkpointAvailable = paper.reproducibility?.checkpoint_status === 'available' || hasHttpUrl(paper.checkpoint_url);
     return (!needle || searchable.includes(needle))
       && (!filters.evolution || paper.evolution_targets.includes(filters.evolution))
       && (!filters.role || paperRoles.includes(filters.role as typeof paperRoles[number]))
@@ -136,7 +142,7 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
         <p className={`paper-case-summary${summary ? '' : ' is-unverified'}`}><strong>{m.method}:</strong> {summary ?? m.methodPending} {summary && <span className="provenance-badge provenance-checked">{m.checked}</span>}</p>
         <p className="paper-case-scope"><strong>{m.scope}:</strong> {researchScope(paper, locale)} <span className="provenance-badge provenance-derived">{m.derived}</span></p>
         <dl className="paper-case-facts"><div><dt>{m.evolution}</dt><dd>{paper.evolution_targets.map((value) => evolutionTargetLabel(value, locale)).join(locale === 'zh' ? '、' : ', ')}</dd></div><div><dt>{m.roles}</dt><dd>{rolesForPaper.join(locale === 'zh' ? '、' : ', ')}</dd></div><div><dt>{m.weight}</dt><dd>{weightState}</dd></div><div><dt>{m.burden}</dt><dd>{burden.label} <span className="provenance-badge provenance-estimated" title={burden.note}>{m.estimated}</span></dd></div></dl>
-        <div className="paper-case-actions"><a className="button button-secondary" href={localePath(locale, `/papers/${paper.id}/`)}>{m.open}</a>{paper.learning_guide && <span className="status-badge">{locale === 'zh' ? '新手引导' : 'Learning guide'}</span>}<span className="status-badge">{paper.reproducibility?.code_status === 'available' || (typeof paper.code_url === 'string' && paper.code_url.startsWith('http')) ? m.available : m.unknown}</span></div>
+        <div className="paper-case-actions"><a className="button button-secondary" href={localePath(locale, `/papers/${paper.id}/`)}>{m.open}</a>{paper.learning_guide && <span className="status-badge">{locale === 'zh' ? '新手引导' : 'Learning guide'}</span>}<span className="status-badge">{paper.reproducibility?.code_status === 'available' || hasHttpUrl(paper.code_url) ? m.available : m.unknown}</span></div>
       </article>;
     })}</div> : <div className="empty-state">{m.noResults}</div>}
   </section>;
