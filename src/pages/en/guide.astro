@@ -4,6 +4,7 @@ import { getMessages } from '../../i18n';
 import { getCollection } from 'astro:content';
 import AgentPrimer from '../../components/AgentPrimer.astro';
 import SeedReproductionPath from '../../components/SeedReproductionPath.astro';
+import SeedComputeTimeBudget from '../../components/SeedComputeTimeBudget.astro';
 import GuideContent from '../../components/GuideContent.astro';
 import GuideDecisionChapters from '../../components/GuideDecisionChapters.astro';
 const m = getMessages('en');
@@ -20,6 +21,7 @@ const glossary = guide?.glossary ?? [];
     <header class="page-header"><h1>{title}</h1><p class="lede">{lede}</p></header>
     <AgentPrimer locale="en" />
     <SeedReproductionPath locale="en" />
+    <SeedComputeTimeBudget locale="en" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
       <p class="guide-section-label">Part three</p>
       <h2 id="guide-research-layer-title">After one real SEED reproduction, transfer the workflow to other papers and models</h2>
