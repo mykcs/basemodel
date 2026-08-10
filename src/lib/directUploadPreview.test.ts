@@ -5,8 +5,8 @@ const script = readFileSync(new URL('../../scripts/direct-upload-preview.mjs', i
 const packageJson = JSON.parse(
   readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
 ) as { scripts: Record<string, string> };
-const policy = readFileSync(
-  new URL('../../docs/agents/current/direct-upload-preview-policy.md', import.meta.url),
+const commandDoc = readFileSync(
+  new URL('../../docs/agents/current/direct-upload-preview-command.md', import.meta.url),
   'utf8',
 );
 
@@ -41,6 +41,7 @@ describe('safe Cloudflare Direct Upload preview command', () => {
     expect(script).toContain('--branch=${previewBranch}');
     expect(script).toContain('--commit-hash=${sha}');
     expect(script).toContain('working tree is dirty');
+    expect(script).toContain('--commit-dirty=true');
   });
 
   it('uses Wrangler v4 Direct Upload and returns machine-readable URLs', () => {
@@ -51,9 +52,10 @@ describe('safe Cloudflare Direct Upload preview command', () => {
   });
 
   it('documents the one-command credential and production-safety contract', () => {
-    expect(policy).toContain('npm run preview:cloudflare');
-    expect(policy).toContain('Account → Cloudflare Pages → Edit');
-    expect(policy).toContain('never commit');
-    expect(policy).toContain('Production');
+    expect(commandDoc).toContain('npm run preview:cloudflare');
+    expect(commandDoc).toContain('Account → Cloudflare Pages → Edit');
+    expect(commandDoc).toContain('Never commit');
+    expect(commandDoc).toContain('Production');
+    expect(commandDoc).toContain('DIRECT_UPLOAD_PREVIEW_URL');
   });
 });
