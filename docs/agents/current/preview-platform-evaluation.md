@@ -1,235 +1,150 @@
-# Preview platform evaluation for Agent-driven web work
+# Preview platform evaluation — decision record
 
-Last reviewed: **2026-08-11 +08:00**
-Status: **evaluation / not yet an architecture change**
+Last reviewed: **2026-08-11 01:32 +08:00**
+Status: **Decision made: Vercel adopted for ordinary non-main Preview; Cloudflare remains Production**
 
-## Why this file exists
+## Decision
 
-The owner originally optimized the workflow around Cloudflare Pages because Cloudflare was the known hosting option. The resulting policy — Agent-side build, Wrangler Direct Upload for ordinary previews, and Git-integrated Cloudflare Production only at release — is still valid and remains authoritative until this evaluation is completed.
-
-The owner’s actual workflow constraint is broader:
-
-> ChatGPT/Codex should be able to inspect GitHub, change the site, validate it, produce a public Preview URL, let the owner review it, and only then publish Production — with minimal human relay work and without anxiety about a small hosted-build quota.
-
-This document records candidate workflows and the decision gate. If a new preview platform is validated successfully, update this file and the other deployment docs in `docs/agents/current/` rather than creating a parallel conflicting policy.
-
-## Project facts that constrain the decision
-
-`basemodel` is currently:
-
-- a static Astro site (`output: 'static'`);
-- built with `npm run verify:deploy` plus the Astro production build;
-- hosted in Production on Cloudflare Pages at `basemodel.pages.dev`;
-- GitHub-first, with GitHub Actions intentionally retired;
-- maintained heavily by web-based ChatGPT/Codex agents;
-- preview-heavy: visual/UI/research-guide work benefits from a real public URL before merge;
-- sensitive to unnecessary Cloudflare Pages Git-build consumption.
-
-Because the current output is static, Preview hosting does not need to be the same provider as Production for most UI/content validation. Platform-specific behavior such as headers, redirects, canonical URLs, noindex behavior, or future Functions/SSR still needs a Cloudflare-specific release check when relevant.
-
-## Evaluation criteria, in priority order
-
-1. **Agent autonomy** — can ChatGPT/Codex complete build/deploy/log inspection without asking the owner to relay dashboard state?
-2. **Public Preview ergonomics** — one PR/branch should yield a stable public Preview plus an exact-deployment URL.
-3. **Preview cost / quota anxiety** — ordinary iteration should not consume a small monthly production-host build budget.
-4. **GitHub fit** — PR status/comment/URL should be visible from GitHub so the GitHub connector can recover deployment state.
-5. **Astro/static compatibility** — should require little or no framework-specific migration.
-6. **Failure diagnosability** — failed previews must expose enough evidence for an Agent to fix them autonomously.
-7. **Production fidelity** — preview should be close enough to Production for the feature under review; Cloudflare-specific behavior can have a separate release gate.
-8. **Lock-in / reversibility** — Preview-provider experiments must not require moving the Production domain first.
-
-## Candidate A — keep Cloudflare, fix Direct Upload access
-
-### Shape
-
-```text
-ChatGPT/Codex
-  -> GitHub branch/PR
-  -> Agent-side verify:deploy + build
-  -> Wrangler Direct Upload to Cloudflare preview branch
-  -> public pages.dev Preview
-  -> owner accepts
-  -> merge main
-  -> Cloudflare Production build
-```
-
-### Strengths
-
-- highest Production fidelity because Preview and Production use Cloudflare;
-- Direct Upload deploys prebuilt assets and avoids the Git-connected Pages build count;
-- current repository policy and scripts already target this model;
-- no second hosting provider.
-
-### Weakness observed in current ChatGPT sessions
-
-The practical blocker has been tooling/credential availability, not Cloudflare’s static hosting capability. Several web-GPT sessions could read GitHub and Cloudflare documentation but could not obtain a usable Wrangler login/API deployment surface. When the owner explicitly demanded a Preview URL, the Agent had to fall back to a Git-integrated Cloudflare Preview Build, consuming the monthly build budget.
-
-### Decision
-
-Keep as the **reference architecture** and fallback. It becomes the best option again if the web Agent can reliably obtain a writable Cloudflare deployment surface without owner relay work.
-
-## Candidate B — Vercel for Preview, Cloudflare for Production
-
-### Shape
+The project now uses this operating model:
 
 ```text
 GitHub feature branch / PR
   -> Vercel Preview
-  -> public vercel.app branch + commit URL
-  -> owner accepts
-  -> merge main
-  -> Cloudflare Production
+  -> repository-owned verify:deploy + Astro build
+  -> Agent inspects logs + real Preview
+  -> owner reviews
+  -> merge/release to main
+  -> Cloudflare Pages Production
 ```
 
-Alternative Agent-controlled path:
+Cloudflare Direct Upload is retained as a fallback and Cloudflare-specific integration-preview mechanism.
 
-```text
-Agent-side build
-  -> vercel build
-  -> vercel deploy --prebuilt
-  -> Preview URL on stdout
-```
+Netlify remains the strongest alternate Preview provider from the earlier comparison, but no Netlify pilot is necessary while the validated Vercel path is working.
 
-### Why it fits this repository
+## Why Vercel won for this repository
 
-- Vercel officially supports static Astro with zero configuration and Git-generated Preview URLs for PRs;
-- Git deployments provide both branch-stable and commit-specific URLs;
-- CLI deployment prints the deployment URL directly;
-- `vercel build` + `vercel deploy --prebuilt` supports an Agent-side build-before-upload model;
-- current Hobby limits are daily/hourly rather than Cloudflare Pages’ 500 Git-builds/month: 100 deployments/day, 32 builds/hour, one concurrent build, 45-minute max build;
-- a Vercel ChatGPT plugin/connector is discoverable in the current ChatGPT plugin catalog, which may materially improve web-only deployment and failure diagnosis if it exposes the needed write/log capabilities.
+The decision was based on an end-to-end real PR pilot, not feature marketing.
 
-### Important caveats
+The owner’s highest-priority requirement is Agent autonomy: ChatGPT/Codex should be able to move from GitHub source to a real Preview, inspect failure evidence, and return a review URL without making the owner relay screenshots/logs between services.
 
-- Hobby is restricted by Vercel’s current terms to personal/non-commercial use;
-- Preview is not the Production platform, so Cloudflare-specific headers/redirects/build environment still need a release-boundary check when relevant;
-- the Vercel ChatGPT connector must be tested before treating it as an operational advantage; existence in the plugin catalog is not proof that it exposes every deploy/log action required;
-- daily/hourly deployment limits still exist even though there is no analogous 500/month Pages build counter.
+The Vercel pilot demonstrated that, after the one-time private GitHub repository authorization:
 
-### Current standing
+- the connected Vercel capability can discover the project and deployments;
+- Git branch pushes create non-main Preview deployments;
+- GitHub receives a Vercel deployment status/comment;
+- the Agent can retrieve build logs directly;
+- failed repository Gates expose actionable errors;
+- the Agent can inspect protected Preview responses;
+- the Agent can create a temporary share URL for owner review;
+- Vercel can be configured to disable Git deployments for `main`;
+- the repository can preserve its existing deterministic `verify:deploy` Gate before Astro build;
+- Preview iteration no longer needs a Cloudflare Git-integrated branch build merely to obtain a review URL.
 
-**Leading candidate for the owner’s web-GPT workflow**, subject to an end-to-end pilot from GitHub change -> Preview -> log/status retrieval without human relay.
+This directly solves the failure mode that motivated the evaluation: Cloudflare Direct Upload is technically sound, but web-Agent sessions have not always had reliable writable Wrangler/Cloudflare credentials.
 
-## Candidate C — Netlify for Preview, Cloudflare for Production
+## Pilot evidence
 
-### Shape
+Pilot PR: **#99 — SEED / 4×RTX 3090 student reproduction Guide**
 
-```text
-GitHub PR
-  -> Netlify Deploy Preview
-  -> deploy-preview-<PR>--<site>.netlify.app
-  -> owner accepts
-  -> merge main
-  -> Cloudflare Production
-```
+Final tested head:
 
-### Why it is unusually attractive for Preview-only use
+`674f60bb57b37cd712cc745bf8dcf1ce513b722f`
 
-Current Netlify credit-based Free pricing explicitly lists:
+Vercel project:
 
-- unlimited Deploy Previews;
-- Deploy Preview / branch deploy = 0 credits;
-- automatic Deploy Previews from Git pull requests;
-- immutable deploy permalinks plus PR-stable Preview URLs;
-- Agent Runners that support OpenAI Codex, Claude Code and Gemini.
+- project: `basemodel-preview`
+- project ID: `prj_UQRbjvnik0lW21LrzotTLPhKkgAK`
+- team: `wangrui92-team`
 
-This makes Netlify potentially better than Vercel on **pure Preview quota economics**.
+Final deployment:
 
-### Caveats
+- ID: `dpl_E3NeYkTLnsgUJyfNVUtomUqpmMuJ`
+- state: `READY`
+- exact URL: `https://basemodel-preview-be5vofsnz-wangrui92-team.vercel.app`
+- stable branch alias: `https://basemodel-preview-git-agent-seed-owned-4x-54f1f3-wangrui92-team.vercel.app`
 
-- preview traffic still contributes to bandwidth/web-request usage credits;
-- Free has a 300-credit monthly hard limit for metered usage overall;
-- no dedicated Netlify connector was discoverable in the current ChatGPT plugin catalog, so failed-build logs/admin state may be harder for ChatGPT to inspect autonomously than with a working Vercel connector;
-- Netlify Agent Runners are a separate Netlify-dashboard agent surface and consume AI inference/compute credits; using them would change the owner’s preferred ChatGPT-first surface.
+Final Gate evidence:
 
-### Current standing
+- Astro check: 0 errors;
+- 14 Vitest files / 75 tests passed;
+- V2 completion audit passed;
+- V2 adversarial audit passed;
+- hardening audit passed;
+- 392 pages generated;
+- GitHub combined status reported `Vercel = success`.
 
-**Best quota-first challenger.** If Vercel’s connector does not actually close the web-Agent loop, test Netlify next; GitHub-integrated Deploy Previews may be sufficient even without a ChatGPT-specific connector.
+The full Gate found and forced fixes for two real Guide regressions before final acceptance: the `guides` content-collection contract and the heuristic-estimate-vs-measured-hardware evidence boundary. This is evidence that preserving the repository-owned Gate on Vercel is materially useful.
 
-## Candidate D — Render static PR previews
+## Why not switch Production now
 
-Render can create free PR previews for a free static site, including manual preview activation through a GitHub PR label. This gives good control over which PRs build and provides `onrender.com` URLs.
+This evaluation was about the Preview workflow, not about finding a replacement CDN/Production host.
 
-However, Render Hobby currently includes a finite monthly build-pipeline budget (500 Starter pipeline minutes), and no dedicated Render connector was discovered in the current ChatGPT plugin catalog. For this static Astro project, it does not beat Vercel on Agent integration or Netlify on Preview economics.
+Cloudflare Production already works and is the canonical/indexed identity at:
 
-**Status: reserve option, not first pilot.**
+`https://basemodel.pages.dev`
 
-## Rejected / lower-priority options
+Moving Production would add DNS, canonical, redirect, rollback, and platform-fidelity risk without solving an additional current problem. Therefore Vercel is deliberately Preview-only and `vercel.json` disables Git deployment for `main`.
 
-### Firebase Hosting Preview Channels
+A future Vercel-Production migration requires a separate explicit decision and acceptance plan.
 
-Good manual preview channels and public temporary URLs, but the natural workflow is CLI-driven. GitHub PR automation usually adds more integration/CI machinery, and no ChatGPT-native connector advantage was identified. It also introduces Firebase project-level storage/data-transfer quotas unrelated to the current problem.
+## Earlier alternatives and their current status
 
-### GitHub Pages
+### Cloudflare Direct Upload
 
-The project intentionally retired GitHub Pages and GitHub Actions. PR-preview ergonomics are weak without reintroducing Actions or another deployment layer. Do not restore this path merely to avoid Cloudflare build limits.
+**Status: retained fallback / Cloudflare-specific Preview.**
 
-### Cloudflare Workers Static Assets
+Strengths remain:
 
-Technically viable and separate from Pages build quotas, but still depends on a writable Wrangler/Cloudflare API path. It does not solve the current web-Agent credential/tooling problem by itself and would add a hosting migration without a user-facing benefit for the current static site.
+- highest Production fidelity;
+- prebuilt asset upload avoids Cloudflare Git build consumption;
+- one-provider architecture.
 
-### Ephemeral tunnels / forwarded local ports
+Operational weakness remains that some ChatGPT/Agent sessions do not expose a usable Wrangler/Cloudflare write credential. The repository now also contains a dedicated Direct Upload command/runbook; use it when that path is available.
 
-Useful for a quick same-session inspection, but URLs depend on a running Agent process and are not durable review artifacts. They are not a replacement for PR Preview deployments.
+### Netlify
 
-## Recommended experiment before changing architecture
+**Status: deferred alternate, not rejected.**
 
-Do **not** move Production yet.
+It remained especially attractive on Deploy Preview economics and Agent Runner support, but the Vercel connector provided the decisive web-GPT advantage in the real pilot: project/deployment/log inspection and temporary protected-Preview access were directly available from the same ChatGPT workflow.
 
-Use one existing representative PR (preferably a static UI/content PR such as the current SEED/Guide work) as a controlled pilot.
+Test Netlify only if Vercel becomes operationally unsuitable.
 
-### Pilot 1 — Vercel Preview-only
+### Render
 
-Success criteria:
+**Status: reserve option.**
 
-1. connect/import `mykcs/basemodel` as a Preview project without changing the Cloudflare Production domain;
-2. build the existing static Astro project with the repository-owned gate;
-3. obtain a public branch Preview and exact-deployment URL;
-4. surface Preview status/URL back to GitHub;
-5. from ChatGPT web, retrieve enough deployment state/log evidence to diagnose a failed build without the owner relaying dashboard screenshots;
-6. confirm no Cloudflare Preview Build is triggered during the pilot;
-7. confirm Cloudflare Production remains unchanged.
+It did not beat Vercel on Agent integration or Netlify on Preview economics for this static Astro site.
 
-### Pilot 2 — Netlify only if needed
+### Firebase Hosting Preview Channels / GitHub Pages / ephemeral tunnels
 
-Run the same PR if either:
+**Status: lower priority.**
 
-- the Vercel connector cannot actually perform/read the needed deployment operations; or
-- Vercel Hobby policy/limits are undesirable for the project.
+They add CLI/CI or durability compromises without improving the current validated workflow.
 
-Compare time-to-preview, failure diagnosis, GitHub visibility and owner intervention count.
+## Current selection criteria for future reassessment
 
-## Decision rule
+Re-open this decision if any of these materially change:
 
-Choose **Vercel Preview + Cloudflare Production** if the Vercel pilot completes end-to-end from ChatGPT/GitHub with no owner relay and normal iteration remains comfortably under Vercel’s daily/hourly limits.
+1. Vercel Preview limits/pricing no longer fit actual iteration volume;
+2. Vercel Deployment Protection becomes too disruptive for review;
+3. Vercel connected tools lose deployment/log access;
+4. Cloudflare gains reliable first-class writable Agent access in every normal web session;
+5. the site moves from static Astro to provider-specific SSR/Functions where Preview/Production fidelity matters more;
+6. the project’s commercial status makes the current Vercel plan inappropriate;
+7. Netlify or another provider offers a clearly better end-to-end Agent loop.
 
-Choose **Netlify Preview + Cloudflare Production** if Netlify’s zero-credit/unlimited Deploy Preview model works through GitHub with equally low owner intervention and Vercel’s connector advantage does not materialize.
+Always re-check current first-party provider documentation before relying on quotas, pricing, or product limits.
 
-Stay on **Cloudflare Direct Upload + Cloudflare Production** if Cloudflare write access becomes reliably available to the web Agent; this remains the simplest and highest-fidelity one-provider architecture.
+## Authority
 
-Do not migrate Production to Vercel/Netlify during the preview-platform experiment. Production migration is a separate decision requiring SEO/canonical/domain/headers/redirects/rollback verification.
+For the executable current workflow, read:
 
-## If a pilot succeeds
+`docs/agents/current/vercel-preview-migration-plan.md`
 
-Update, do not duplicate:
+For Cloudflare fallback mechanics, read:
 
-- this file — record measured pilot results and final choice;
-- `docs/agents/LATEST.md` — new steady-state architecture and exact operating rule;
-- `docs/agents/README.md` — reading order / authority;
-- `AGENTS.md` and `CLAUDE.md` — default preview/release workflow;
-- `direct-upload-preview-policy.md`, `deployment-policy.md`, `repository-map.md`, and `cloudflare-pages-deployment.md` as needed;
-- deployment tests/scripts if provider-specific assumptions change.
+- `docs/agents/current/direct-upload-preview-command.md`
+- `docs/agents/current/direct-upload-preview-policy.md`
+- `docs/agents/current/cloudflare-pages-deployment.md`
 
-Move superseded Cloudflare-only workflow text to history only after the replacement workflow is proven.
-
-## Evidence reviewed on 2026-08-11
-
-Primary vendor documentation checked for this evaluation:
-
-- Cloudflare Pages limits, Direct Upload, Preview branch controls and Git integration;
-- Vercel limits, Git deployments, generated URLs, Astro support, CLI build/deploy, Hobby terms;
-- Netlify current credit-based pricing, Deploy Previews, CLI/manual deploys and Agent Runners;
-- Firebase Hosting preview channels and Hosting quotas;
-- Render static sites, PR previews and build-pipeline minutes.
-
-Vendor limits and pricing are time-sensitive. Re-check first-party documentation before changing provider or relying on a quota number.
+Historical Cloudflare-only wording must not override the validated Vercel Preview / Cloudflare Production split.
