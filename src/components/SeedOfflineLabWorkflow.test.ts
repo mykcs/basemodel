@@ -21,6 +21,7 @@ describe('SEED offline four-GPU lab workflow', () => {
       'HF_HUB_OFFLINE=1',
       'TRANSFORMERS_OFFLINE=1',
       'WANDB_MODE=offline',
+      '/srv/seed/',
     ]) {
       expect(workflow).toContain(token);
     }
@@ -30,8 +31,10 @@ describe('SEED offline four-GPU lab workflow', () => {
     expect(workflow).toContain('RUN_MODE=smoke');
     expect(workflow).toContain('DATA_PARALLEL_SIZE=4');
     expect(workflow).toContain('SKILL_BASE_URL');
+    expect(workflow).toContain('train_sft.sh');
     expect(workflow).toContain('N_GPUS_PER_NODE=4');
     expect(workflow).toContain('DRY_RUN=true');
+    expect(workflow).toContain('TOTAL_EPOCHS=10');
   });
 
   it('keeps hardware topology and result-validation evidence explicit', () => {
