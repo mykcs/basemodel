@@ -18,14 +18,15 @@ const benchmarkRuns = (await getCollection('benchmarkRuns')).map((entry) => entr
 const health = buildDataHealth(models, vendorsFile.vendors as VendorCoverage[], familiesFile.families as FamilyCoverage[]);
 health.semanticGaps.not_published += papers.filter((paper) => paper.checkpoint_url === 'not_published').length;
 const semanticLabel = (state: string) => m.format.semanticStatus[state as keyof typeof m.format.semanticStatus] ?? m.format.unknown;
-const severityLabel = (severity: string) => locale === 'en' ? ({ error: 'Error', warning: 'Warning', info: 'Info' }[severity] ?? severity) : ({ error: '错误', warning: '警告', info: '信息' }[severity] ?? severity);
-const reasonLabel = (reason: string) => locale === 'en' ? ({ 'stale-source': 'Stale source', 'missing-current-generation': 'Current generation missing', 'unverified-current-flagship': 'Flagship ID not configured', 'current-flagship-missing': 'Current flagship missing', 'current-open-weight-model-missing': 'Open-weight ID missing', 'generic-source-url': 'Generic source URL', 'future-release-date': 'Future release date', 'semantic-gap': 'Semantic gap', 'missing-evidence-note': 'Missing evidence note', 'source-claim-coverage-missing': 'Claim coverage missing' }[reason] ?? reason) : ({ 'stale-source': '来源过期', 'missing-current-generation': '当前代缺失', 'unverified-current-flagship': '未配置官方旗舰 ID', 'current-flagship-missing': '官方旗舰缺失', 'current-open-weight-model-missing': '开放权重 ID 缺失', 'generic-source-url': '泛目录来源', 'future-release-date': '未来发布日期', 'semantic-gap': '语义缺口', 'missing-evidence-note': '缺少证据说明', 'source-claim-coverage-missing': '字段证据未映射' }[reason] ?? reason);
+const severityLabels: Record<string, string> = locale === 'en' ? { error: 'Error', warning: 'Warning', info: 'Info' } : { error: '错误', warning: '警告', info: '信息' };
+const reasonLabels: Record<string, string> = locale === 'en'
+  ? { 'stale-source': 'Stale source', 'missing-current-generation': 'Current generation missing', 'unverified-current-flagship': 'Current hosted/API model not configured', 'current-flagship-missing': 'Current hosted/API model missing', 'current-open-weight-model-missing': 'Open-weight model missing', 'generic-source-url': 'Generic source URL', 'future-release-date': 'Future release date', 'semantic-gap': 'Semantic gap', 'missing-evidence-note': 'Missing evidence note', 'source-claim-coverage-missing': 'Claim coverage missing' }
+  : { 'stale-source': '来源过期', 'missing-current-generation': '当前代缺失', 'unverified-current-flagship': '未配置当前托管/API 模型', 'current-flagship-missing': '当前托管/API 模型缺失', 'current-open-weight-model-missing': '开放权重模型缺失', 'generic-source-url': '泛目录来源', 'future-release-date': '未来发布日期', 'semantic-gap': '语义缺口', 'missing-evidence-note': '缺少证据说明', 'source-claim-coverage-missing': '字段证据未映射' };
+const severityLabel = (severity: string) => severityLabels[severity] ?? severity;
+const reasonLabel = (reason: string) => reasonLabels[reason] ?? reason;
 ---
 <div class="shell">
-  <header class="page-header">
-    <h1>{m.dataStatus.pageTitle}</h1>
-    <p class="lede">{m.dataStatus.lede}</p>
-  </header>
+  <header class="page-header"><h1>{m.dataStatus.pageTitle}</h1><p class="lede">{m.dataStatus.lede}</p></header>
   <section class="stats" aria-label={m.dataStatus.pageTitle}>
     <div class="stat"><strong>{health.totalModels}</strong><span>{m.dataStatus.models}</span></div>
     <div class="stat"><strong>{health.recentModels}</strong><span>{m.dataStatus.recent}</span></div>
@@ -33,34 +34,36 @@ const reasonLabel = (reason: string) => locale === 'en' ? ({ 'stale-source': 'St
     <div class="stat"><strong>{health.partialOrUnknown}</strong><span>{m.dataStatus.partial}</span></div>
     <div class="stat"><strong>{health.verified}</strong><span>{m.dataStatus.verified}</span></div>
   </section>
+
   <section class="section" aria-labelledby="vendor-coverage-title">
     <div class="section-heading"><div><h2 id="vendor-coverage-title">{m.dataStatus.vendors}</h2></div></div>
-    <div class="comparison-table-wrap"><table>
-      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.models}</th><th>{m.dataStatus.latestRelease}</th><th>{m.dataStatus.stale}</th></tr></thead>
-      <tbody>{health.vendorCoverage.map(({ vendor, modelCount, latestRelease, stale }) => <tr><th scope="row">{vendor.name}</th><td>{modelCount}</td><td>{latestRelease}</td><td>{stale}</td></tr>)}</tbody>
-    </table></div>
+    <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.models}</th><th>{m.dataStatus.latestRelease}</th><th>{m.dataStatus.stale}</th></tr></thead><tbody>{health.vendorCoverage.map(({ vendor, modelCount, latestRelease, stale }) => <tr><th scope="row">{vendor.name}</th><td>{modelCount}</td><td>{latestRelease}</td><td>{stale}</td></tr>)}</tbody></table></div>
     <p class="muted">{m.dataStatus.staleNote}</p>
   </section>
+
   <section class="section" aria-labelledby="semantic-gaps-title">
     <div class="section-heading"><div><h2 id="semantic-gaps-title">{m.dataStatus.semanticGaps}</h2></div></div>
-    <div class="comparison-table-wrap"><table>
-      <thead><tr><th>{m.dataStatus.semanticState}</th><th>{m.dataStatus.fields}</th></tr></thead>
-      <tbody>{Object.entries(health.semanticGaps).map(([state, count]) => <tr><th scope="row">{semanticLabel(state)}</th><td>{count}</td></tr>)}</tbody>
-    </table></div>
+    <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.semanticState}</th><th>{m.dataStatus.fields}</th></tr></thead><tbody>{Object.entries(health.semanticGaps).map(([state, count]) => <tr><th scope="row">{semanticLabel(state)}</th><td>{count}</td></tr>)}</tbody></table></div>
   </section>
+
   <section class="section" aria-labelledby="generation-title">
-    <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2></div></div>
+    <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2><p class="muted">{locale === 'zh' ? '托管/API 当前模型与开放权重当前模型分开记录。它们可能属于不同代，也服务于不同研究任务。' : 'Current hosted/API models and current open-weight models are tracked separately. They may belong to different generations and serve different research tasks.'}</p></div></div>
     <div class="comparison-table-wrap"><table>
-      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{m.dataStatus.flagship}</th><th>{m.dataStatus.openWeightApi}</th><th>{m.dataStatus.catalogChecked}</th><th>{m.dataStatus.unresolved}</th><th>{m.dataStatus.catalogSource}</th></tr></thead>
-      <tbody>{health.familyCoverage.map(({ family, modelCount, flagshipPresent, openWeightPresent, unresolvedCount, catalogSourceUrl }) => <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}</td><td><code>{family.current_flagship_model_id ?? '—'}</code> · {flagshipPresent ? m.dataStatus.present : m.dataStatus.missing}</td><td>{[family.current_open_weight_model_id ? `${m.dataStatus.openWeight}: ${family.current_open_weight_model_id} (${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing})` : '', ...(family.current_api_model_ids ?? []).map((id) => `${m.dataStatus.api}: ${id}`)].filter(Boolean).join(' · ') || '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer">{m.dataStatus.source} ↗</a> : '—'}</td></tr>)}</tbody>
+      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{locale === 'zh' ? '托管 / API 当前模型' : 'Current hosted / API model'}</th><th>{locale === 'zh' ? '开放权重当前模型' : 'Current open-weight model'}</th><th>{m.dataStatus.catalogChecked}</th><th>{m.dataStatus.unresolved}</th><th>{m.dataStatus.catalogSource}</th></tr></thead>
+      <tbody>{health.familyCoverage.map(({ family, modelCount, flagshipPresent, openWeightPresent, unresolvedCount, catalogSourceUrl }) => {
+        const apiCurrent = family.current_api_model_ids?.[0] ?? family.current_flagship_model_id;
+        return <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}</td><td><code>{apiCurrent ?? '—'}</code>{apiCurrent ? ` · ${flagshipPresent ? m.dataStatus.present : m.dataStatus.missing}` : ''}</td><td>{family.current_open_weight_model_id ? <><code>{family.current_open_weight_model_id}</code>{` · ${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing}`}</> : '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer">{m.dataStatus.source} ↗</a> : '—'}</td></tr>;
+      })}</tbody>
     </table></div>
   </section>
+
   <section class="section" aria-labelledby="issues-title">
     <div class="section-heading"><div><h2 id="issues-title">{m.dataStatus.issues}</h2></div></div>
     {health.issues.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.severity}</th><th>{m.dataStatus.record}</th><th>{m.dataStatus.field}</th><th>{m.dataStatus.issueKind}</th><th>{m.dataStatus.source}</th></tr></thead><tbody>{health.issues.map((issue) => <tr><td>{severityLabel(issue.severity)}</td><th scope="row"><code>{issue.modelId}</code></th><td>{issue.field ?? '—'}</td><td>{reasonLabel(issue.reason)}{issue.claimStatus ? ` · ${semanticLabel(issue.claimStatus)}` : ''}</td><td>{issue.sourceUrl ? <a href={issue.sourceUrl} target="_blank" rel="noreferrer">{issue.checkedAt ?? m.dataStatus.source}</a> : '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{m.dataStatus.noIssues}</p>}
   </section>
+
   <ClaimHistory claims={claims} locale={locale} />
-  <section class="section" aria-labelledby="benchmark-runs-title"><div class="section-heading"><div><h2 id="benchmark-runs-title">{locale === 'zh' ? 'Benchmark 运行条件' : 'Benchmark run conditions'}</h2><p class="muted">{locale === 'zh' ? '报告结果和独立复现分开；未报告的硬件、温度和 prompt 不会被补写。' : 'Reported results and independent reproductions remain separate; missing hardware, temperature, and prompt details are not filled in.'}</p></div></div>{benchmarkRuns.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{locale === 'zh' ? 'Benchmark' : 'Benchmark'}</th><th>{locale === 'zh' ? '模型' : 'Models'}</th><th>{locale === 'zh' ? '状态' : 'Status'}</th><th>{locale === 'zh' ? '硬件/精度' : 'Hardware/precision'}</th><th>{locale === 'zh' ? 'Prompt/温度' : 'Prompt/temperature'}</th><th>{locale === 'zh' ? '结果来源' : 'Result source'}</th></tr></thead><tbody>{benchmarkRuns.map((run) => <tr><th scope="row">{run.benchmark}</th><td>{run.modelIds.join(', ')}</td><td><SemanticStatus value={run.resultStatus ?? run.status} locale={locale} /></td><td><SemanticStatus value={run.conditions?.hardware ?? 'not_reported'} locale={locale} /> / <SemanticStatus value={run.conditions?.precision ?? 'not_reported'} locale={locale} /></td><td><SemanticStatus value={run.conditions?.promptScaffold ?? 'not_reported'} locale={locale} /> / <SemanticStatus value={run.conditions?.temperature ?? 'not_reported'} locale={locale} /></td><td>{run.sourceIds.join(', ') || '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{locale === 'zh' ? '当前没有 benchmark 运行记录。' : 'No benchmark runs are recorded.'}</p>}</section>
+  <section class="section" aria-labelledby="benchmark-runs-title"><div class="section-heading"><div><h2 id="benchmark-runs-title">Benchmark {locale === 'zh' ? '运行条件' : 'run conditions'}</h2><p class="muted">{locale === 'zh' ? '报告结果和独立复现分开；未报告的硬件、温度和 prompt 不会被补写。' : 'Reported results and independent reproductions remain separate; missing hardware, temperature, and prompt details are not filled in.'}</p></div></div>{benchmarkRuns.length ? <div class="comparison-table-wrap"><table><thead><tr><th>Benchmark</th><th>{locale === 'zh' ? '模型' : 'Models'}</th><th>{locale === 'zh' ? '状态' : 'Status'}</th><th>{locale === 'zh' ? '硬件/精度' : 'Hardware/precision'}</th><th>{locale === 'zh' ? 'Prompt/温度' : 'Prompt/temperature'}</th><th>{locale === 'zh' ? '结果来源' : 'Result source'}</th></tr></thead><tbody>{benchmarkRuns.map((run) => <tr><th scope="row">{run.benchmark}</th><td>{run.modelIds.join(', ')}</td><td><SemanticStatus value={run.resultStatus ?? run.status} locale={locale} /></td><td><SemanticStatus value={run.conditions?.hardware ?? 'not_reported'} locale={locale} /> / <SemanticStatus value={run.conditions?.precision ?? 'not_reported'} locale={locale} /></td><td><SemanticStatus value={run.conditions?.promptScaffold ?? 'not_reported'} locale={locale} /> / <SemanticStatus value={run.conditions?.temperature ?? 'not_reported'} locale={locale} /></td><td>{run.sourceIds.join(', ') || '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{locale === 'zh' ? '当前没有 benchmark 运行记录。' : 'No benchmark runs are recorded.'}</p>}</section>
   {benchmarkRuns.some((run) => run.evidenceNote) && <section class="section benchmark-evidence-notes" aria-labelledby="benchmark-evidence-notes-title"><div class="section-heading"><div><h2 id="benchmark-evidence-notes-title">{locale === 'zh' ? 'Benchmark 证据说明' : 'Benchmark evidence notes'}</h2><p class="muted">{locale === 'zh' ? '运行条件没有被来源报告的部分会保留为未知状态，并在这里说明原因。' : 'Conditions not reported by the source remain unknown and are explained here.'}</p></div></div>{benchmarkRuns.filter((run) => run.evidenceNote).map((run) => <p class="muted"><strong>{run.benchmark}:</strong> {run.evidenceNote}</p>)}</section>}
   <SemanticStatusLegend locale={locale} compact />
 </div>
