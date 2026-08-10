@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 const PROJECT_NAME = 'basemodel';
@@ -80,6 +81,13 @@ const assertPreviewNoindex = () => {
   }
 };
 
+const localWranglerMajor = (wranglerPath) => {
+  const version = spawnSync(wranglerPath, ['--version'], { encoding: 'utf8' });
+  if (version.error || version.status !== 0) return null;
+  const match = `${version.stdout ?? ''} ${version.stderr ?? ''}`.match(/\b(\d+)\./);
+  return match ? Number(match[1]) : null;
+};
+
 const resolveWrangler = () => {
   const local = resolve(
     'node_modules',
@@ -87,7 +95,7 @@ const resolveWrangler = () => {
     process.platform === 'win32' ? 'wrangler.cmd' : 'wrangler',
   );
 
-  if (existsSync(local)) {
+  if (existsSync(local) && (localWranglerMajor(local) ?? 0) >= 4) {
     return { command: local, prefixArgs: [] };
   }
 
@@ -137,8 +145,9 @@ const main = async () => {
   const sourceBranch = git(['rev-parse', '--abbrev-ref', 'HEAD']);
   const commitMessage = git(['log', '-1', '--pretty=%s']);
   const dirty = git(['status', '--porcelain']);
+  const allowDirty = process.env.DIRECT_UPLOAD_ALLOW_DIRTY === '1';
 
-  if (dirty && process.env.DIRECT_UPLOAD_ALLOW_DIRTY !== '1') {
+  if (dirty && !allowDirty) {
     fail('working tree is dirty. Commit the Preview state first so the uploaded assets match --commit-hash. Set DIRECT_UPLOAD_ALLOW_DIRTY=1 only for an explicitly disposable Preview.');
   }
 
@@ -158,7 +167,7 @@ const main = async () => {
 
   console.log('Cloudflare Preview plan');
   console.log(`  project: ${PROJECT_NAME}`);
-  console.log(`  source: ${sourceBranch}@${sha.slice(0, 7)}`);
+  console.log(`  source: ${sourceBranch}@${sha.slice(0, 7)}${dirty ? ' (dirty)' : ''}`);
   console.log(`  preview branch: ${previewBranch}`);
   console.log('  production: protected / untouched');
   console.log('  mode: local repository build + Wrangler Direct Upload');
@@ -176,6 +185,7 @@ const main = async () => {
     `--branch=${previewBranch}`,
     `--commit-hash=${sha}`,
     `--commit-message=[Direct Upload Preview] ${commitMessage}`,
+    ...(dirty ? ['--commit-dirty=true'] : []),
   ];
 
   const deploy = run(command, deployArgs, {
@@ -202,7 +212,8 @@ const main = async () => {
   console.log('Production was not targeted by this command.');
 };
 
-const invokedDirectly = process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname);
+const invokedDirectly = process.argv[1]
+  && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (invokedDirectly) {
   main().catch((error) => fail(error?.stack ?? error?.message ?? String(error)));
 }
