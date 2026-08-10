@@ -25,6 +25,10 @@ describe('Agent scenario-trigger discovery', () => {
       'TRIGGER: beginner-facing technical writing / broad UI rewrite',
       'TRIGGER: actionable content / code blocks / generated artifacts',
       'TRIGGER: blocked Agent / unavailable tool / failed approach',
+      'TRIGGER: credential / token / secret injection / private repository',
+      'TRIGGER: hosting/platform modernization / “should we change stack?”',
+      'TRIGGER: Workers shadow complete / Production cutover / provider behavior differences',
+      'TRIGGER: cross-repository architecture reuse',
       'TRIGGER: overlapping PRs / large cross-site change',
       'TRIGGER: reusable lesson discovered',
     ]) expect(registry).toContain(trigger);
@@ -60,6 +64,17 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('what observable evidence counts as PASS');
   });
 
+  it('protects secret, hosting-modernization, cutover, and cross-repo boundaries', () => {
+    for (const token of [
+      'Do not commit a live bearer token as plaintext',
+      'Do not assume GitHub Secrets are a readable key-value store',
+      'Do not rewrite Astro/React merely because Vercel is used for Preview',
+      'A working shadow URL is evidence, **not release authorization**',
+      'Preserve acceptable provider-native asymmetry',
+      'Reuse the **decision pattern**, not literal configuration',
+    ]) expect(registry).toContain(token);
+  });
+
   it('keeps the historical case reusable without freezing transient state', () => {
     for (const token of [
       'Build-budget lesson',
@@ -67,6 +82,10 @@ describe('Agent scenario-trigger discovery', () => {
       'Offline-server lesson',
       'Time/cost lesson',
       'Actionable-content lesson',
+      'Credential lesson',
+      'Provider-ownership lesson',
+      'Workers-shadow lesson',
+      'Cross-repository lesson',
       'Agent-knowledge lesson',
     ]) expect(history).toContain(token);
     expect(history).toContain('avoids preserving temporary Preview share URLs');
