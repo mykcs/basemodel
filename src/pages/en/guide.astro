@@ -1,13 +1,16 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
 import { getMessages, localePath } from '../../i18n';
+import { getCollection } from 'astro:content';
 import SeedStudentReproductionGuide from '../../components/SeedStudentReproductionGuide.astro';
 const m = getMessages('en');
+const guide = (await getCollection('guides'))[0]?.data;
+const guideSource = guide ? 'guides-collection' : 'fallback';
 const title = 'Reproduce SEED: start with ALFWorld and WebShop on 4×3090';
 const lede = 'This is an executable experiment mainline. Because the server has no public internet, prepare models, data, and dependencies on the online side, then move them over SFTP. Every stage has commands and a pass condition. If four 3090s complete both full experiments, stop there.';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="en">
-  <div class="shell editorial-page guide-learning-page">
+  <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
     <header class="page-header">
       <p class="guide-eyebrow">SEED · Qwen2.5-3B-Instruct · 4×RTX 3090 24GB</p>
       <h1>{title}</h1>
