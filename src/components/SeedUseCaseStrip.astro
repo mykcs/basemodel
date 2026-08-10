@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../i18n';
+import { aiGalaxySeedSnapshot as market } from '../data/aiGalaxySeedSnapshot';
 
 type Area = 'home' | 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
 
@@ -31,23 +32,23 @@ const zhCopy: Record<Area, { title: string; body: string }> = {
   },
   papers: {
     title: '论文页先把“方法、环境、算力”钉死',
-    body: '以 SEED 为例：先确认 ALFWorld / WebShop、Qwen checkpoint、训练阶段和论文报告的 8×A800 80GB，再进入实现。论文页的作用是把这些事实变成可执行约束。',
+    body: '以 SEED 为例：论文事实是 ALFWorld / WebShop、Qwen checkpoint、训练阶段和 8×A800 80G。接下来必须再看今天的算力市场是否真的提供这些条件，而不是看到“80G”就自动当成同一张卡。',
   },
   workspace: {
-    title: '工作台把论文事实变成一份实验清单',
-    body: '先选“方法验证”或“严格复现”，再固定模型、RL、运行时与 GPU。算力不是越大越好：方法验证先用小规模证明链路；只有要和论文主表对齐时，才按 8×A800 80GB 组织资源。',
+    title: '工作台把论文事实变成一份现实可执行的实验清单',
+    body: '先选“方法验证”或“严格复现”，再固定模型、RL、运行时与 GPU。当前智星云公开目录没有 A800 80G×8，因此严格复现和 A100 替代必须作为两条不同路径记录。',
   },
   'data-status': {
-    title: '数据状态页解决的是：哪些是事实，哪些仍不能假设？',
-    body: '例如论文报告了训练硬件，不代表作者发布了可直接下载的训练后 checkpoint。缺失值继续保持未知，避免为了“看起来完整”而把猜测带进复现实验。',
+    title: '数据状态页解决的是：哪些是事实，哪些会过期？',
+    body: '模型论文是相对稳定事实；云平台卡型、价格和可用性是时效信息。算力结论必须带核验时间，并区分“公开产品目录”和“登录后的实时库存”。',
   },
   methodology: {
-    title: '方法页负责把“论文事实”和“工程建议”分开',
-    body: '“8×A800 80GB”是论文事实；“先用一张 80GB 级 GPU 跑小规模链路”是工程建议。两者不能混写，否则新手很容易把能运行误认为已严格复现。',
+    title: '方法页负责把“论文事实、市场事实、工程建议”分开',
+    body: '“8×A800 80G”是论文事实；“智星云当前公开最接近的是 A100 80G NVLINK×8”是带时间戳的市场事实；“先用 4090 跑环境、再用单张 A100 80G 做缩小训练”是工程建议。三者不能混写。',
   },
   landscape: {
     title: '模型空间不是排行榜，而是替代方案地图',
-    body: '只有当你的目标从严格复现切换为方法复现或现代化重跑时，才应该在这里找替代模型。先固定问题，再看候选；不要让候选反过来改变问题。',
+    body: '只有当你的目标从严格复现切换为方法复现或现代化重跑时，才应该在这里找替代模型。硬件也是同样逻辑：A100 可以是替代，但不能被重新命名成 A800。',
   },
 };
 
@@ -70,23 +71,23 @@ const enCopy: Record<Area, { title: string; body: string }> = {
   },
   papers: {
     title: 'Pin method, environment, and compute before implementation',
-    body: 'For SEED, fix ALFWorld / WebShop, the Qwen checkpoint, the training stages, and the paper-reported 8×A800 80GB setup before touching the implementation. The paper page turns facts into constraints.',
+    body: 'For SEED, the paper fixes ALFWorld / WebShop, the Qwen checkpoint, training stages, and 8×A800 80G. The next step is checking whether today’s compute market actually offers those conditions—not treating every “80G” GPU as equivalent.',
   },
   workspace: {
-    title: 'The workspace turns paper facts into an experiment manifest',
-    body: 'Choose method reproduction or strict reproduction first, then pin model, RL, runtime, and GPUs. More compute is not automatically better: prove the chain at reduced scale before paying for paper-scale 8×A800 80GB.',
+    title: 'The workspace turns paper facts into a realistically executable manifest',
+    body: 'Choose method reproduction or strict reproduction first, then pin model, RL, runtime, and GPUs. AI Galaxy’s current public catalog does not list 8×A800 80G, so exact reproduction and A100 substitution must remain distinct paths.',
   },
   'data-status': {
-    title: 'Data status answers: what is a fact, and what must remain unknown?',
-    body: 'A reported training setup does not imply a downloadable trained checkpoint exists. Unknown values stay unknown so an apparently complete record does not smuggle assumptions into reproduction.',
+    title: 'Data status answers: what is stable, and what expires?',
+    body: 'Paper facts are relatively stable; cloud GPU models, prices, and availability are time-sensitive. Compute claims need a checked-at timestamp and must distinguish public catalog listings from live post-login inventory.',
   },
   methodology: {
-    title: 'Methodology separates paper facts from engineering recommendations',
-    body: '“8×A800 80GB” is a paper-reported fact. “Start with one 80GB-class GPU for a reduced end-to-end check” is an engineering recommendation. Keeping them separate prevents “it runs” from being mistaken for strict reproduction.',
+    title: 'Methodology separates paper facts, market facts, and engineering advice',
+    body: '“8×A800 80G” is a paper fact; “AI Galaxy’s closest current public option is A100 80G NVLINK×8” is a timestamped market fact; “use 4090 for environment bring-up, then one A100 80G for reduced training” is engineering advice. Do not merge them.',
   },
   landscape: {
     title: 'The model space is a replacement map, not a leaderboard',
-    body: 'Look for alternatives here only after the goal changes from strict reproduction to method reproduction or a modern rerun. Fix the question first; do not let the available candidates redefine it for you.',
+    body: 'Look for alternatives only after the goal changes from strict reproduction to method reproduction or a modern rerun. Hardware follows the same rule: A100 can be a substitute, but it cannot be renamed A800.',
   },
 };
 
@@ -112,13 +113,24 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
   <ol class="seed-mainline">
     <li><span>01</span><div><strong>{isZh ? '目标' : 'Goal'}</strong><small>{isZh ? '先决定方法验证还是严格复现' : 'Method check or strict reproduction first'}</small></div></li>
     <li><span>02</span><div><strong>{isZh ? '环境' : 'Environment'}</strong><small>ALFWorld / WebShop</small></div></li>
-    <li><span>03</span><div><strong>{isZh ? '算力' : 'Compute'}</strong><small>{isZh ? '先证明链路；严格复现才对齐 8×A800 80GB' : 'Prove the chain first; strict uses 8×A800 80GB'}</small></div></li>
-    <li><span>04</span><div><strong>{isZh ? '验证' : 'Validation'}</strong><small>{isZh ? '同模型同环境：GRPO → SEED' : 'Same model and environment: GRPO → SEED'}</small></div></li>
+    <li><span>03</span><div><strong>{isZh ? '真实算力' : 'Real compute'}</strong><small>{isZh ? '论文 A800×8；智星云当前公开最接近 A100 80G NVLINK×8' : 'Paper: A800×8; current closest public AI Galaxy option: A100 80G NVLINK×8'}</small></div></li>
+    <li><span>04</span><div><strong>{isZh ? '验证' : 'Validation'}</strong><small>{isZh ? '同模型同环境：GRPO → SEED；硬件替代单独标注' : 'Same model and environment: GRPO → SEED; label hardware substitutions'}</small></div></li>
   </ol>
+
+  <aside class="market-snapshot">
+    <div>
+      <strong>{isZh ? '智星云公开算力快照' : 'AI Galaxy public compute snapshot'}</strong>
+      <small>{isZh ? market.checkedAtZh : market.checkedAtEn}</small>
+    </div>
+    <p>{isZh
+      ? '当前公开页面未列出 A800 80G×8。要在智星云继续做论文规模的替代复现，选择 A100 80G NVLINK×8（¥30,000/月）；要做严格硬件复现，则先预约/询价 A800 80G×8，拿不到就换供应商。'
+      : 'The current public pages do not list 8×A800 80G. For a paper-scale substitute on AI Galaxy, choose 8×A100 80G NVLINK (¥30,000/month). For exact hardware reproduction, request/reserve 8×A800 80G; if unavailable, switch providers.'}</p>
+    <small>{isZh ? market.evidenceBoundary.zh : market.evidenceBoundary.en}</small>
+  </aside>
 
   <div class="seed-use-case-links">
     <a href={strictWorkspaceHref}>{isZh ? '预填严格复现工作台' : 'Prefill strict workspace'} →</a>
-    <a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{isZh ? '打开算力市场' : 'Open GPU marketplace'} ↗</a>
+    <a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{isZh ? '打开算力市场核对实时库存' : 'Open marketplace for live inventory'} ↗</a>
   </div>
 </section>
 
@@ -183,6 +195,21 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
   .seed-mainline small { display: block; }
   .seed-mainline strong { margin-bottom: 2px; font-size: 0.9rem; }
   .seed-mainline small { color: var(--muted); line-height: 1.45; }
+  .market-snapshot {
+    display: grid;
+    grid-template-columns: minmax(170px, .35fr) minmax(0, 1.4fr);
+    gap: 18px 24px;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    background: var(--surface);
+  }
+  .market-snapshot strong,
+  .market-snapshot small { display: block; }
+  .market-snapshot small { color: var(--muted); line-height: 1.45; }
+  .market-snapshot > small { grid-column: 2; }
   .seed-use-case-links {
     display: flex;
     flex-wrap: wrap;
@@ -195,6 +222,8 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
     .seed-use-case-head { grid-template-columns: 1fr; }
     .seed-use-case-actions { justify-content: flex-start; }
     .seed-mainline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .market-snapshot { grid-template-columns: 1fr; }
+    .market-snapshot > small { grid-column: auto; }
   }
   @media (max-width: 520px) {
     .seed-use-case { padding: 18px; }
