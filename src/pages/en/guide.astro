@@ -1,41 +1,46 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
-import { getMessages } from '../../i18n';
-import { getCollection } from 'astro:content';
-import AgentPrimer from '../../components/AgentPrimer.astro';
-import SeedReproductionPath from '../../components/SeedReproductionPath.astro';
-import SeedComputeTimeBudget from '../../components/SeedComputeTimeBudget.astro';
-import GuideContent from '../../components/GuideContent.astro';
-import GuideDecisionChapters from '../../components/GuideDecisionChapters.astro';
+import { getMessages, localePath } from '../../i18n';
+import SeedStudentReproductionGuide from '../../components/SeedStudentReproductionGuide.astro';
 const m = getMessages('en');
-const guide = (await getCollection('guides'))[0]?.data;
-const steps = guide?.steps_en ?? m.guide.steps;
-const title = 'Understand agents first, then reproduce one paper end to end';
-const lede = 'This guide assumes you already know Transformers, fine-tuning, inference, APIs, and GPUs. Build the agent mental model, then use SEED as one concrete thread from checkpoint and ALFWorld / WebShop setup through compute rental and paper-aligned validation.';
-const note = 'Hardware tiers in model records remain coarse research metadata. The workbench VRAM calculator combines precision, context length, batch size, LoRA rank, and related assumptions to produce a heuristic planning estimate; it is not a measured hardware result or a guarantee that the configuration will run.';
-const concepts = guide?.concepts ?? [];
-const glossary = guide?.glossary ?? [];
+const title = 'Reproduce SEED: start with ALFWorld and WebShop on 4×3090';
+const lede = 'Follow the experiment in the order you will actually run it: prepare the offline server, bring up ALFWorld and WebShop, train SFT, then prove four-GPU RL. Every stage has commands, pass criteria, and a first debugging step. If four 3090s finish full training and evaluation, stop there; move to 8×A800/A100 only when memory or total runtime becomes a real blocker.';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="en">
   <div class="shell editorial-page guide-learning-page">
-    <header class="page-header"><h1>{title}</h1><p class="lede">{lede}</p></header>
-    <AgentPrimer locale="en" />
-    <SeedReproductionPath locale="en" />
-    <SeedComputeTimeBudget locale="en" />
-    <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
-      <p class="guide-section-label">Part three</p>
-      <h2 id="guide-research-layer-title">After one real SEED reproduction, transfer the workflow to other papers and models</h2>
-      <p class="muted">First reorganize the core concepts around four research decisions, then move into the end-to-end workbench flow and glossary. Keep the order: define the research claim, pin paper variables, then filter models, inspect evidence, and justify substitutions.</p>
+    <header class="page-header">
+      <p class="guide-eyebrow">SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+    </header>
+
+    <SeedStudentReproductionGuide locale="en" />
+
+    <section class="after-reproduction" aria-labelledby="after-reproduction-title">
+      <p class="guide-eyebrow">After the run</p>
+      <h2 id="after-reproduction-title">Use the rest of the site for the next research question</h2>
+      <p>Keep the checkpoint, configuration, hardware fingerprint, results, and evidence from this reproduction. If you later replace the model, compare a newer Qwen generation, or move the four-GPU run to cloud hardware, the paper, model, compare, and workspace pages continue from this experiment record.</p>
+      <div class="next-links">
+        <a href={localePath('en', '/papers/seed/')}><strong>SEED paper</strong><span>Re-check paper conditions and results</span></a>
+        <a href={localePath('en', '/models/qwen2-5-3b-instruct/')}><strong>Qwen2.5-3B-Instruct</strong><span>Confirm checkpoint, weights, and trainability</span></a>
+        <a href={`${localePath('en', '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1`}><strong>Research workspace</strong><span>Record four-GPU results, eight-GPU migration, and model changes</span></a>
+      </div>
     </section>
-    <GuideDecisionChapters locale="en" concepts={concepts} />
-    <GuideContent locale="en" concepts={concepts} glossary={glossary} steps={steps} note={note} />
   </div>
 </AppLayout>
 
 <style>
   .guide-learning-page { max-width: 1080px; }
-  .guide-research-layer { margin: 72px 0 24px; padding-top: 34px; border-top: 1px solid var(--line); }
-  .guide-research-layer h2 { max-width: 760px; margin: 7px 0 10px; }
-  .guide-research-layer p { max-width: 760px; }
-  :global(.guide-concept-map) { display: none; }
+  .page-header { max-width: 920px; padding-bottom: 20px; }
+  .page-header h1 { max-width: 880px; }
+  .guide-eyebrow { margin: 0 0 7px; color: var(--muted); font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .after-reproduction { margin: 0 0 80px; padding-top: 34px; border-top: 1px solid var(--line); }
+  .after-reproduction h2 { max-width: 760px; margin: 6px 0 10px; }
+  .after-reproduction > p:not(.guide-eyebrow) { max-width: 800px; color: var(--muted); line-height: 1.7; }
+  .next-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 22px; border-top: 1px solid var(--line); }
+  .next-links a { padding: 16px 16px 16px 0; color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+  .next-links a + a { padding-left: 16px; border-left: 1px solid var(--line); }
+  .next-links strong, .next-links span { display: block; }
+  .next-links span { margin-top: 4px; color: var(--muted); font-size: .86rem; }
+  @media (max-width: 700px) { .next-links { grid-template-columns: 1fr; } .next-links a + a { padding-left: 0; border-left: 0; } }
 </style>
