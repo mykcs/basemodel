@@ -31,3 +31,5 @@ This file records the final product-audit defects that must remain closed after 
 Any future closeout claiming these items complete must include static assertions and Playwright coverage for the actual user paths, not just component existence.
 
 The `agent/final-product-hardening-final` branch is intentionally a single-push Cloudflare validation branch created from the completed implementation head. Its purpose is to validate the final state once, without replaying intermediate commits that intentionally failed later acceptance gates.
+
+PR #88 is the authoritative final-state Cloudflare validation run for this hardening batch.
