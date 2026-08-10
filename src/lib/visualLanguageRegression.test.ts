@@ -13,8 +13,8 @@ describe('visual language regression guards', () => {
 
   it('keeps page-level SEED context compact while preserving the full worked example', () => {
     expect(seedStripSource).toContain('seed-use-case-compact');
-    expect(seedStripSource).toContain('standalone &&');
-    expect(seedStripSource).toContain('!standalone &&');
+    expect(seedStripSource).toContain('.seed-use-case-standalone .seed-use-case-detail');
+    expect(seedStripSource).toContain('.seed-use-case-standalone .seed-paper-action');
     expect(seedStripSource).toContain('market-snapshot');
     expect(seedStripSource).toContain('ALFWorld / WebShop');
   });
