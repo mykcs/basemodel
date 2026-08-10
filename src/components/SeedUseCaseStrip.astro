@@ -106,43 +106,39 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
     </div>
     <div class="seed-use-case-actions">
       <a class="button button-primary" href={guideHref}>{isZh ? '完整复现路线' : 'Full reproduction route'}</a>
-      {!standalone && <a class="button button-secondary" href={paperHref}>{isZh ? '打开 SEED 论文页' : 'Open SEED paper'}</a>}
+      <a class="button button-secondary seed-paper-action" href={paperHref}>{isZh ? '打开 SEED 论文页' : 'Open SEED paper'}</a>
     </div>
   </div>
 
-  {standalone && (
-    <div class="seed-use-case-compact">
-      <span>{isZh ? '当前主线：目标 → 环境 → 算力 → 验证' : 'Current thread: goal → environment → compute → validation'}</span>
-      <a href={strictWorkspaceHref}>{isZh ? '预填严格复现工作台' : 'Prefill strict workspace'} →</a>
-    </div>
-  )}
+  <div class="seed-use-case-compact">
+    <span>{isZh ? '当前主线：目标 → 环境 → 算力 → 验证' : 'Current thread: goal → environment → compute → validation'}</span>
+    <a href={strictWorkspaceHref}>{isZh ? '预填严格复现工作台' : 'Prefill strict workspace'} →</a>
+  </div>
 
-  {!standalone && (
-    <div class="seed-use-case-detail">
-      <ol class="seed-mainline">
-        <li><span>01</span><div><strong>{isZh ? '目标' : 'Goal'}</strong><small>{isZh ? '先决定方法验证还是严格复现' : 'Method check or strict reproduction first'}</small></div></li>
-        <li><span>02</span><div><strong>{isZh ? '环境' : 'Environment'}</strong><small>ALFWorld / WebShop</small></div></li>
-        <li><span>03</span><div><strong>{isZh ? '真实算力' : 'Real compute'}</strong><small>{isZh ? '论文 A800×8；智星云当前公开最接近 A100 80G NVLINK×8' : 'Paper: A800×8; current closest public AI Galaxy option: A100 80G NVLINK×8'}</small></div></li>
-        <li><span>04</span><div><strong>{isZh ? '验证' : 'Validation'}</strong><small>{isZh ? '同模型同环境：GRPO → SEED；硬件替代单独标注' : 'Same model and environment: GRPO → SEED; label hardware substitutions'}</small></div></li>
-      </ol>
+  <div class="seed-use-case-detail">
+    <ol class="seed-mainline">
+      <li><span>01</span><div><strong>{isZh ? '目标' : 'Goal'}</strong><small>{isZh ? '先决定方法验证还是严格复现' : 'Method check or strict reproduction first'}</small></div></li>
+      <li><span>02</span><div><strong>{isZh ? '环境' : 'Environment'}</strong><small>ALFWorld / WebShop</small></div></li>
+      <li><span>03</span><div><strong>{isZh ? '真实算力' : 'Real compute'}</strong><small>{isZh ? '论文 A800×8；智星云当前公开最接近 A100 80G NVLINK×8' : 'Paper: A800×8; current closest public AI Galaxy option: A100 80G NVLINK×8'}</small></div></li>
+      <li><span>04</span><div><strong>{isZh ? '验证' : 'Validation'}</strong><small>{isZh ? '同模型同环境：GRPO → SEED；硬件替代单独标注' : 'Same model and environment: GRPO → SEED; label hardware substitutions'}</small></div></li>
+    </ol>
 
-      <aside class="market-snapshot">
-        <div>
-          <strong>{isZh ? '智星云公开算力快照' : 'AI Galaxy public compute snapshot'}</strong>
-          <small>{isZh ? market.checkedAtZh : market.checkedAtEn}</small>
-        </div>
-        <p>{isZh
-          ? '当前公开页面未列出 A800 80G×8。要在智星云继续做论文规模的替代复现，选择 A100 80G NVLINK×8（¥30,000/月）；要做严格硬件复现，则先预约/询价 A800 80G×8，拿不到就换供应商。'
-          : 'The current public pages do not list 8×A800 80G. For a paper-scale substitute on AI Galaxy, choose 8×A100 80G NVLINK (¥30,000/month). For exact hardware reproduction, request/reserve 8×A800 80G; if unavailable, switch providers.'}</p>
-        <small>{isZh ? market.evidenceBoundary.zh : market.evidenceBoundary.en}</small>
-      </aside>
-
-      <div class="seed-use-case-links">
-        <a href={strictWorkspaceHref}>{isZh ? '预填严格复现工作台' : 'Prefill strict workspace'} →</a>
-        <a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{isZh ? '打开算力市场核对实时库存' : 'Open marketplace for live inventory'} ↗</a>
+    <aside class="market-snapshot">
+      <div>
+        <strong>{isZh ? '智星云公开算力快照' : 'AI Galaxy public compute snapshot'}</strong>
+        <small>{isZh ? market.checkedAtZh : market.checkedAtEn}</small>
       </div>
+      <p>{isZh
+        ? '当前公开页面未列出 A800 80G×8。要在智星云继续做论文规模的替代复现，选择 A100 80G NVLINK×8（¥30,000/月）；要做严格硬件复现，则先预约/询价 A800 80G×8，拿不到就换供应商。'
+        : 'The current public pages do not list 8×A800 80G. For a paper-scale substitute on AI Galaxy, choose 8×A100 80G NVLINK (¥30,000/month). For exact hardware reproduction, request/reserve 8×A800 80G; if unavailable, switch providers.'}</p>
+      <small>{isZh ? market.evidenceBoundary.zh : market.evidenceBoundary.en}</small>
+    </aside>
+
+    <div class="seed-use-case-links">
+      <a href={strictWorkspaceHref}>{isZh ? '预填严格复现工作台' : 'Prefill strict workspace'} →</a>
+      <a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{isZh ? '打开算力市场核对实时库存' : 'Open marketplace for live inventory'} ↗</a>
     </div>
-  )}
+  </div>
 </section>
 
 <style>
@@ -205,7 +201,7 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
     font-size: .78rem;
   }
   .seed-use-case-compact {
-    display: flex;
+    display: none;
     justify-content: space-between;
     gap: 16px;
     margin-top: 10px;
@@ -215,6 +211,9 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
     font-size: .78rem;
     line-height: 1.45;
   }
+  .seed-use-case-standalone .seed-use-case-compact { display: flex; }
+  .seed-use-case-standalone .seed-use-case-detail,
+  .seed-use-case-standalone .seed-paper-action { display: none; }
   .seed-use-case-compact a {
     flex: 0 0 auto;
     color: var(--accent-deep);
@@ -283,7 +282,7 @@ const strictWorkspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=stric
     .seed-use-case { padding: 18px; }
     .seed-use-case-standalone { padding: 12px 0 14px; }
     .seed-use-case-standalone .button { width: 100%; justify-content: center; }
-    .seed-use-case-compact { align-items: flex-start; flex-direction: column; gap: 5px; }
+    .seed-use-case-standalone .seed-use-case-compact { align-items: flex-start; flex-direction: column; gap: 5px; }
     .seed-mainline { grid-template-columns: 1fr; }
   }
 </style>
