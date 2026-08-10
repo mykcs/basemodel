@@ -10,6 +10,8 @@ import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 const changeEventEntries = await getCollection('changeEvents');
@@ -21,6 +23,14 @@ function workspaceHref(task: Partial<ResearchTask>): string {
   const params = encodeResearchTask({ ...emptyTask, ...task });
   return `${localePath(locale, '/workspace/')}?${params.toString()}`;
 }
+
+const decisionSteps = [
+  { title: t('明确问题', 'Define the question'), body: t('先说清楚你在复现论文、验证方法，还是设计新实验。不要从“哪个模型最强”开始。', 'Start by deciding whether you are reproducing a paper, validating a method, or designing a new experiment. Do not begin with “which model is strongest?”') },
+  { title: t('收紧约束', 'Narrow constraints'), body: t('固定 checkpoint 语义、开放性、训练方式、显存与运行时，把不可行选项尽早排除。', 'Fix checkpoint semantics, openness, update method, VRAM, and runtime so infeasible options disappear early.') },
+  { title: t('形成候选', 'Form candidates'), body: t('候选不是排行榜前三名，而是 baseline、当前代和资源友好等不同研究角色。', 'Candidates are not the top three on a leaderboard; they serve roles such as baseline, current-generation, and resource-efficient options.') },
+  { title: t('核验证据', 'Verify evidence'), body: t('查看来源、revision、许可证与未知项。没有证据的字段保持未知，不替它猜答案。', 'Inspect sources, revisions, licenses, and unknowns. Unsupported fields stay unknown instead of being guessed.') },
+  { title: t('做出决策', 'Make the decision'), body: t('把替换模型会改变什么、为什么仍可比较，以及仍有哪些风险写进可复现的决策记录。', 'Record what a model swap changes, why the result remains comparable, and which risks remain in a reproducible decision record.') },
+];
 
 const primaryIntents = [
   { label: locale === 'zh' ? '复现一篇论文' : 'Reproduce a paper', lede: locale === 'zh' ? '从论文案例进入，再决定严格复现、方法复现还是现代化重跑。' : 'Start from a paper case, then choose strict reproduction, method reproduction, or a modern rerun.', href: localePath(locale, '/papers/') },
@@ -58,8 +68,11 @@ const recentEvents = [
       <div class="eyebrow">{m.v2.home.heroEyebrow}</div>
       <h1>{m.v2.home.heroTitle}</h1>
       <p class="lede">{m.v2.home.heroLede}</p>
-      <div class="hero-actions"><a class="button button-primary" href={localePath(locale, '/workspace/')}>{m.v2.home.heroCta}</a></div>
-      <p class="novice-entry">{locale === 'zh' ? '第一次接触 Agent 模型？' : 'New to agent model research?'} <a class="text-link" href={localePath(locale, '/guide/')}>{locale === 'zh' ? '先学习基础知识 →' : 'Start with the guide →'}</a></p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={localePath(locale, '/guide/')}>{t('从 SEED 实战开始', 'Start with the SEED walkthrough')}</a>
+        <a class="button button-secondary" href={localePath(locale, '/workspace/')}>{t('我已有研究任务', 'I already have a research task')}</a>
+      </div>
+      <p class="novice-entry">{t('第一次来？用一条完整路线理解“Agent 概念 → 论文条件 → 模型候选 → 算力 → 证据 → 决策”，再回来看模型目录。', 'First visit? Follow one complete route from agent concepts → paper conditions → candidates → compute → evidence → decision before browsing the catalog.')}</p>
     </div>
     <aside class="hero-note example-card">
       <div class="section-kicker">{locale === 'zh' ? '实时示例' : 'Live example'}</div>
@@ -72,7 +85,26 @@ const recentEvents = [
 </section>
 
 <div class="shell">
-  <section class="section section-first" aria-labelledby="intent-title">
+  <section class="section section-first home-compass" aria-labelledby="home-compass-title">
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">{t('先学会判断，再记模型名字', 'Learn the decision process before model names')}</div>
+        <h2 id="home-compass-title">{t('研究员只需要守住这一条主线', 'One mainline is enough to stay oriented')}</h2>
+      </div>
+      <a class="text-link" href={localePath(locale, '/guide/')}>{t('用 SEED 完整走一遍 →', 'Walk it end to end with SEED →')}</a>
+    </div>
+    <ol class="home-compass-list">
+      {decisionSteps.map((step, index) => (
+        <li>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div><h3>{step.title}</h3><p>{step.body}</p></div>
+        </li>
+      ))}
+    </ol>
+    <p class="home-compass-rule">{t('视觉规则也遵循这条主线：结论与下一步在前，原始事实与证据在后；“最新”“最强”只作为背景信息，不允许把你的研究问题带偏。', 'The visual hierarchy follows the same rule: conclusion and next action first, raw facts and evidence after. “Newest” and “strongest” stay contextual and never replace the research question.')}</p>
+  </section>
+
+  <section class="section" aria-labelledby="intent-title">
     <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '从问题开始' : 'Start from the question'}</div><h2 id="intent-title">{locale === 'zh' ? '你现在正在做什么？' : 'What are you trying to do?'}</h2></div></div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
   </section>
@@ -106,3 +138,73 @@ const recentEvents = [
     <p class="muted">{m.v2.home.overviewBody}</p>
   </section>
 </div>
+
+<style>
+  .home-compass {
+    position: relative;
+  }
+  .home-compass-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .home-compass-list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    min-width: 0;
+    padding: 15px 14px;
+  }
+  .home-compass-list li + li {
+    border-left: 1px solid var(--line);
+  }
+  .home-compass-list li > span {
+    color: var(--accent-deep);
+    font-size: .7rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .home-compass-list h3 {
+    margin: 0 0 6px;
+    font-size: .9rem;
+    line-height: 1.25;
+  }
+  .home-compass-list p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .78rem;
+    line-height: 1.55;
+  }
+  .home-compass-rule {
+    max-width: 900px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.6;
+  }
+  @media (max-width: 980px) {
+    .home-compass-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-bottom: 0;
+    }
+    .home-compass-list li {
+      border-bottom: 1px solid var(--line);
+    }
+    .home-compass-list li:nth-child(odd) {
+      border-left: 0;
+    }
+  }
+  @media (max-width: 620px) {
+    .home-compass-list {
+      grid-template-columns: 1fr;
+    }
+    .home-compass-list li,
+    .home-compass-list li + li {
+      border-left: 0;
+    }
+  }
+</style>
