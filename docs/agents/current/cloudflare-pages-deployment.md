@@ -1,180 +1,157 @@
 # Cloudflare Pages deployment runbook
 
-Last reviewed: 2026-08-09
+Last reviewed: 2026-08-10
 
 ## Current architecture
 
 ```text
-ChatGPT / coding agent
+GitHub source of truth
         |
-        v
-GitHub repository
+        +---- ordinary preview: local/Agent build -> Wrangler Direct Upload -> public Preview URL
         |
-        v
-Cloudflare Pages
-Preview + Production + build gate + hosting
+        +---- explicit formal release: Git-integrated Cloudflare Pages build -> Preview / Production
 ```
 
-GitHub Actions and GitHub Pages are intentionally retired. Historical documents may describe the earlier dual-hosting state; they are not instructions to restore it.
+Cloudflare Pages remains the Production host. GitHub Actions and GitHub Pages are intentionally retired.
 
-## Cloudflare dashboard contract
+For normal Agent-driven website changes, [`direct-upload-preview-policy.md`](./direct-upload-preview-policy.md) is the default preview/build-budget authority. This runbook retains the Cloudflare project contract, SEO identity, formal Git-release flow and rollback rules.
+
+## Cloudflare project contract
 
 ```text
 Project: basemodel
 Repository: mykcs/basemodel
 Production branch: main
-Build command: npm run build:cloudflare
+Formal Git build command: npm run build:cloudflare
 Build output directory: dist
 Root directory: repository root
 ```
 
-Node is pinned in the repository using `.node-version`. Keep the actual build logic in the repository rather than expanding it into dashboard-only shell commands.
+Node is pinned with `.node-version`; keep build logic in the repository.
 
-## Free-plan build budget
+## Default: local build + Direct Upload preview
 
-As of 2026-08-09, the Cloudflare Pages Free plan documents 500 builds per month, one concurrent build, and a 20-minute build timeout. Static asset requests that do not invoke Pages Functions are free and unlimited.
+The owner prioritizes conserving Cloudflare Pages Git-build quota.
 
-This means the site being static is highly favorable for traffic cost, but **does not make the monthly build limit irrelevant**. A Git-connected push that triggers Pages can still consume one build.
+For ordinary website changes:
+
+```text
+1. edit and batch the requested source changes;
+2. run repository-local validation on the Agent/local side;
+3. build the production output locally/agent-side;
+4. Direct Upload dist/ to a unique non-production Pages branch;
+5. capture the public Preview URL returned by Wrangler;
+6. inspect the Preview when UI/routing/SEO behavior changed;
+7. synchronize source to GitHub with a Cloudflare-supported skip-build commit strategy;
+8. report completion, Preview URL, Git state, Production state, and whether a Pages Build was triggered.
+```
+
+Practical command pattern:
+
+```bash
+PREVIEW_BRANCH="agent-preview-<short-task-name>-<short-id>"
+PREVIEW_ORIGIN="https://${PREVIEW_BRANCH}.basemodel.pages.dev"
+
+CF_PAGES_BRANCH="$PREVIEW_BRANCH" \
+PUBLIC_SITE_URL="$PREVIEW_ORIGIN" \
+PUBLIC_SEARCH_INDEXING=disabled \
+npm run build:cloudflare
+
+npx wrangler pages deploy dist \
+  --project-name=basemodel \
+  --branch="$PREVIEW_BRANCH"
+```
+
+Use the actual deployment URL returned by Wrangler as primary evidence. Direct Upload uploads prebuilt assets, so Cloudflare does not run the Git-connected build step for that deployment. It still creates a Pages deployment and remains subject to upload/deployment/file/platform limits; do not describe it as broadly quota-free.
 
 Official references:
 
-- <https://developers.cloudflare.com/pages/platform/limits/>
-- <https://developers.cloudflare.com/pages/functions/pricing/>
+- <https://developers.cloudflare.com/pages/get-started/direct-upload/>
+- <https://developers.cloudflare.com/pages/configuration/git-integration/>
 - <https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/>
+- <https://developers.cloudflare.com/pages/platform/limits/>
 
-Agent build discipline:
+Re-check current Cloudflare docs before quota/cost decisions.
 
-1. Batch related changes instead of pushing after every small edit.
-2. Avoid empty/no-op commits and speculative push loops.
-3. Use `[CF-Pages-Skip]` as a commit-message prefix only when an intermediate commit intentionally does not need a deployment.
-4. Do not skip the final deployment-sensitive PR head; verify its exact Cloudflare Preview before merge.
-5. For monorepos/multiple Pages projects, configure Build watch paths so unrelated directories do not rebuild every site.
-6. Re-check Cloudflare's current official limits before making quota/cost assumptions; plan values can change.
+## Git synchronization without intentionally spending a Pages Build
 
-The desired steady state is not “zero platform limits.” It is “normal visitor traffic is served as static assets without consuming a request quota, while development builds are kept deliberate and low-volume.”
-
-## Repository-owned build entrypoint
-
-`npm run build:cloudflare` performs two phases.
-
-First, deterministic deployment blocking validation:
+When source should be saved to GitHub but the owner did not request a formal Git-integrated release, use Build Watch / branch controls or a Cloudflare-supported skip prefix on commits that would otherwise trigger Pages, for example:
 
 ```text
-npm run verify:deploy
-  -> npm run check
-  -> npm run validate
-  -> npm run audit:semantic
-  -> npm run audit:claims
-  -> npm run audit:freshness
-  -> npm test
-  -> npm run audit:v2
-  -> npm run audit:v2:adversarial
+[Skip CI] ...
 ```
 
-The V2 completion and adversarial audits are intentionally part of the Pages gate because they are deterministic, local, and cheap. They catch product-wiring regressions such as fabricated revisions, semantic boundary violations, missing global Quick View wiring, and mobile comparison regressions without downloading browsers or calling third parties.
+Cloudflare also documents variants such as `[CF-Pages-Skip]`, `[CI Skip]`, `[CI-Skip]`, and `[Skip-CI]`.
 
-Then it resolves deployment identity and runs:
+Batch related changes. Avoid no-op commits, probe branches and speculative push loops merely to test whether Pages is healthy.
 
-```text
-npm run build
-```
+## Repository-owned validation
 
-Do not add vendor-catalog network audits, URL/source probes, browser downloads, full Chromium/WebKit E2E, or other third-party-dependent monitoring to every Pages build without a deliberate reliability decision.
+`npm run build:cloudflare` performs deterministic deployment validation and the production Astro build. Repository scripts in `package.json` are executable truth.
 
-## URL, base path and canonical identity
+For Direct Upload, run the same relevant checks locally/agent-side before uploading `dist`; moving validation off the hosted Git builder is not permission to weaken the research-integrity gates.
 
-Cloudflare is the only maintained deployment target, so the application base is `/`.
-
-Cloudflare injects `CF_PAGES_URL`, `CF_PAGES_BRANCH`, `CF_PAGES_COMMIT_SHA`, and `CF_PAGES=1`.
-
-Production identity rule:
-
-```text
-explicit PUBLIC_SITE_URL
-        -> use it (future custom domain)
-else main Production
-        -> derive stable https://basemodel.pages.dev origin
-```
-
-Preview identity rule:
-
-```text
-Preview -> always use current CF_PAGES_URL
-```
-
-This keeps Production canonical/hreflang/OG/JSON-LD/sitemap stable while making Preview metadata describe the Preview itself.
-
-`PUBLIC_BASE_PATH` and `PUBLIC_CANONICAL_SITE_URL` are no longer part of the deployment contract.
-
-## Search indexing
-
-```text
-Cloudflare Production = indexable by default
-Cloudflare Preview    = noindex
-```
-
-Preview builds force `PUBLIC_SEARCH_INDEXING=disabled`. The application emits `meta robots=noindex,follow`, omits the advertised sitemap, and serves an empty sitemap when directly requested. Cloudflare also adds `X-Robots-Tag: noindex` to Preview responses.
-
-Do not use `robots.txt: Disallow /` as the noindex mechanism. Crawlers need to fetch pages to observe noindex. If Preview content becomes sensitive, use access control; SEO directives are not authentication.
-
-## Normal agent workflow
-
-1. Read `AGENTS.md`, deployment policy and repository map.
-2. Create an agent branch from current `main`.
-3. Batch related changes into a deliberate diff/commit sequence.
-4. Open a PR.
-5. Read the Cloudflare GitHub App result and verify it corresponds to the actual PR head SHA.
-6. Open the Preview URL when visual/routing/SEO behavior needs inspection.
-7. Merge only after the deployment-blocking build succeeds for the exact final head.
-8. Verify the resulting Production deployment and public site after merge.
-
-If the Cloudflare connector/dashboard is unavailable to an Agent, GitHub's Cloudflare PR comment plus the public Preview/Production URL are acceptable verification surfaces. Ask the owner for dashboard intervention only for settings that cannot be changed or observed through available tools.
-
-## On-demand deep validation
-
-Run full Playwright E2E for major UI, routing/i18n, browser compatibility, Astro/framework upgrades, or substantial component refactors:
+Keep full Chromium/WebKit Playwright and third-party-dependent audits on demand unless the change actually needs them:
 
 ```bash
 npm run test:e2e
-```
-
-Run external data/source health checks separately when relevant:
-
-```bash
 npm run audit:vendor-catalogs
 npm run audit:urls
 npm run audit:coverage
 ```
 
-These scripts are deliberately retained after Actions retirement.
+## Formal Git-integrated deployment boundary
 
-## GitHub Pages retirement
+Only use the normal Git-connected Preview / Production workflow when the owner explicitly asks for a formal Git-integrated deployment, merge-and-deploy, Production release, or equivalent production boundary.
 
-Do not maintain a second `/basemodel/` build path, duplicate-host canonical override, Pages workflow, or Pages-specific tests.
+Before intentionally triggering it:
 
-If GitHub Pages remains enabled in repository settings and serves stale content, disable it in the repository settings when a connected tool with that permission is available. This is an administrative cleanup; it must not block the Cloudflare release path or cause build code to be reintroduced.
+1. tell the owner the next push/merge may consume Cloudflare Pages Build quota;
+2. state whether Preview, Production or both are expected to build;
+3. batch and validate the final diff locally first;
+4. use the exact final head as the release boundary;
+5. verify the exact deployment/commit rather than assuming success.
 
-## When this architecture must be revisited
+Do not silently convert an ordinary “show me the website” request into a Git-connected Pages build.
 
-Re-evaluate this runbook before introducing any of the following:
+## Required completion report
 
-- Pages Functions or Workers execution on normal requests;
-- SSR or server-side APIs;
-- KV, D1, R2, Durable Objects, Queues or scheduled workloads;
-- multiple deployable applications in one repository;
-- a need for scheduled/recurring CI or monitoring;
-- a build volume that approaches the Pages plan limit.
+After a website modification, explicitly state whether the requested acceptance boundary is complete and report:
 
-Do not assume the current static-request cost model applies to those workloads.
+- local validation/build result;
+- Direct Upload result and public Preview URL when that is the default/requested path;
+- `Cloudflare Pages Build triggered: yes / no / unknown`;
+- Git synchronization status;
+- whether Production was intentionally changed;
+- any blocker or unverified boundary.
 
-## Rollback
+If the Agent cannot build locally, cannot authenticate Wrangler, cannot upload, cannot inspect the Preview, or cannot confirm relevant quota/deployment evidence, say so. Do not claim success or safety at that boundary.
 
-For a bad Production release, use Cloudflare Pages rollback to a previous successful Production deployment, then fix the repository on a branch and validate through Preview. GitHub remains the source of truth; do not edit generated deployment output as the canonical fix.
+## Preview identity and indexing
 
-## Security rules
+Cloudflare is the only maintained hosting target, so application base is `/`.
+
+Production remains the indexed canonical identity. Every non-production Preview, including Direct Upload branch Previews, must remain `noindex` and must be built with the Preview origin so generated canonical/OG/JSON-LD metadata do not impersonate Production. `noindex` is not access control.
+
+## Build budget and limits
+
+As of the 2026-08-10 review, Cloudflare documents a Free Pages Git-build allowance of 500 builds/month, one concurrent build and a 20-minute build timeout. Values can change.
+
+Project distinction:
+
+```text
+normal static requests != Git build consumption
+Git-connected push/merge deployment = may consume Pages Build
+local build + Direct Upload = prebuilt Pages deployment, not a Git-connected Pages Build
+```
+
+Direct Upload still has deployment/upload/file/platform limits.
+
+## Rollback and security
+
+For a bad Production release, roll back to a previous successful Cloudflare Pages Production deployment, then fix the repository on a branch. GitHub remains source of truth.
 
 - Do not commit Cloudflare/GitHub tokens.
 - Do not put secrets in `PUBLIC_*` variables.
-- Keep Cloudflare GitHub App repository access scoped as narrowly as practical.
-- `noindex` is not authentication.
-- If Pages Functions, Workers, KV, D1, R2, secrets, or server-side APIs are introduced, revisit this runbook because the threat/deployment model changes materially.
+- Keep Cloudflare GitHub App access scoped narrowly.
+- Revisit this runbook if Pages Functions, Workers, SSR, server APIs, KV/D1/R2, Durable Objects, Queues, scheduled workloads or multiple deployable applications change the deployment/cost model.
