@@ -36,7 +36,15 @@ assert('HARDEN-UX-002', coreBlockStart >= 0 && openWeightSelect >= 0 && vendorSe
 const paperExplorer = read('src/components/papers/PaperExplorer.tsx');
 assert('HARDEN-PAPER-002', paperExplorer.includes('evidenceCompleteness') && paperExplorer.includes('experimentBurden') && !paperExplorer.includes('function difficulty('), 'reproduction evidence completeness is separate from experiment burden');
 assert('HARDEN-PAPER-003', paperExplorer.includes('证据化摘要') && paperExplorer.includes('Atlas 推导') && paperExplorer.includes('Atlas 估算'), 'paper-derived and heuristic statements expose provenance');
-assert('HARDEN-PAPER-004', paperExplorer.includes("config_status === 'available'") && paperExplorer.includes("environment_status === 'reported'") && paperExplorer.includes('!hasHttpUrl(paper.code_url)'), 'reproduction-ready and burden heuristics use explicit evidence conditions');
+assert(
+  'HARDEN-PAPER-004',
+  paperExplorer.includes("repro?.config_status === 'available'")
+    && paperExplorer.includes("repro?.config_status === 'partial'")
+    && paperExplorer.includes("repro?.environment_status === 'reported'")
+    && paperExplorer.includes("repro?.environment_status === 'partial'")
+    && paperExplorer.includes('!hasHttpUrl(paper.code_url)'),
+  'reproduction-ready and burden heuristics use explicit evidence conditions',
+);
 
 const home = read('src/pages/_bodies/home-v2.astro');
 assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('scoreModels') && home.includes('sampleFeasible'), 'home starts from three intents, links beginners to Guide, and computes a live example');
