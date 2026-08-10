@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-11 02:17 +08:00**
+Last updated: **2026-08-11 02:35 +08:00**
 
-Status: **Vercel Preview is the validated ordinary Preview path. Cloudflare Pages is still the real Production host today. The approved target is Cloudflare Workers Static Assets; the repository contract and exact-head Vercel validation are complete, and the next step is a real non-production Workers shadow deployment. Production has not cut over.**
+Status: **Vercel Preview is the validated ordinary Preview path. Cloudflare Pages is still the real Production host today. The approved target is Cloudflare Workers Static Assets; the repository, Vercel, and real Workers shadow phases are complete. Production has not cut over.**
 
 This is the stable first-stop handoff for future coding Agents.
 
@@ -41,13 +41,19 @@ Completed:
 - the exact PR head `5eb372491e3cd6ec7f974c1817883818cc632ea3` passed the full Vercel Gate and a 392-page Astro build;
 - Vercel deployment `dpl_3tA1HQrdUrVWZbwoc6rEEH4eGVAg` is READY; the real Preview returned HTTP 200 with `robots noindex`, `x-robots-tag: noindex`, and canonical/hreflang pointing to current Pages Production;
 - migration branch and merge commits used `[CF-Pages-Skip]`; the merge commit showed no Cloudflare Pages status/check.
+- the application artifact based on `origin/main` commit `4f9c55124bbbd6f1c9c188d3acc4f9dce497e56a`, plus the task-owned shadow-header contract, passed the full Gate and a 392-page shadow build;
+- `basemodel-workers-shadow` is live at `https://basemodel-workers-shadow.mykcs01.workers.dev`; latest verified version: `df40fca7-46d7-4140-9b12-7b2a8bdba28b`;
+- route, asset, redirect, custom 404, canonical, hreflang, robots/sitemap, security-header, workspace query-state, compare query-state, and SEED-to-workspace browser checks passed;
+- the shadow keeps `robots noindex`, omits the Production sitemap advertisement, and emits an empty sitemap while canonical/hreflang remain on `https://basemodel.pages.dev`;
+- the browser pass reported zero console errors, page errors, or failed requests.
 
-Pending:
+Known non-blocking provider differences:
 
-- no real `basemodel-workers-shadow` Workers deployment exists yet from this session because the available ChatGPT toolset exposes Vercel/GitHub but no Cloudflare account/deploy connector or injected Cloudflare runtime credential;
-- therefore Workers `workers.dev` route/404/header/asset parity has not yet been proven;
-- **next Cloudflare-capable Agent should deploy the existing shadow contract, not redesign it**;
-- Production remains Pages and Pages remains rollback infrastructure.
+- Workers uses HTTP 307 rather than Pages HTTP 308 for automatic trailing-slash redirects;
+- Workers returns `public, max-age=0, must-revalidate` rather than Pages `no-store` for custom 404 responses;
+- Workers MIME formatting differs (`text/html` without an explicit charset and `text/javascript` for JavaScript), but real Chrome hydration and representative product flows passed;
+- the live workers.dev response does not add `X-Robots-Tag`; shadow indexing remains disabled by the verified HTML meta tag plus the empty sitemap/no sitemap advertisement;
+- Production remains Pages and Pages remains rollback infrastructure; cutover still requires explicit owner release intent.
 
 GitHub Actions and GitHub Pages remain intentionally retired for this repository.
 
@@ -73,8 +79,8 @@ Migration sequence:
 ```text
 repository contract                  [DONE]
 -> exact-head Vercel validation      [DONE]
--> non-production Workers shadow     [NEXT]
--> route / SEO / asset / header comparison
+-> non-production Workers shadow     [DONE]
+-> route / SEO / asset / header comparison [DONE WITH DOCUMENTED PROVIDER DIFFERENCES]
 -> rollback plan
 -> explicit owner cutover decision
 -> Production verification

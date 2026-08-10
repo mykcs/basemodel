@@ -1,8 +1,8 @@
 # Hosting architecture — Vercel Preview + Cloudflare Workers Static Assets Production
 
-Last reviewed: **2026-08-11 02:17 +08:00**
+Last reviewed: **2026-08-11 02:35 +08:00**
 
-Status: **target architecture approved; repository contract and exact-head Vercel validation are complete; real Workers shadow deployment is the next step; Production has not cut over.**
+Status: **target architecture approved; repository, exact-head Vercel, and real Workers shadow validation are complete; Production has not cut over.**
 
 Read this immediately after `docs/agents/LATEST.md` before changing hosting, deployment, Preview, CI/CD, Cloudflare or Vercel behavior.
 
@@ -18,13 +18,16 @@ Completed:
 - its real Preview returned HTTP 200, `robots noindex`, `x-robots-tag: noindex`, and canonical/hreflang identity pointing to `https://basemodel.pages.dev`;
 - both the migration commit and its squash merge used `[CF-Pages-Skip]`; the merge commit exposed no Cloudflare Pages status/check.
 
-Not yet completed:
+Shadow validation completed:
 
-- `basemodel-workers-shadow` has **not** been deployed to Cloudflare Workers in the implementation session because that ChatGPT session has no Cloudflare account/deploy connector or injected Cloudflare credential;
-- therefore Workers route/404/header/asset parity has not yet been tested on a real `workers.dev` shadow URL;
-- Production remains Cloudflare Pages and no cutover is authorized.
+- application source base: `4f9c55124bbbd6f1c9c188d3acc4f9dce497e56a` from current `origin/main`; deployment also includes the task-owned `public/_headers` contract recorded with this handoff;
+- shadow URL: `https://basemodel-workers-shadow.mykcs01.workers.dev`; latest verified version: `df40fca7-46d7-4140-9b12-7b2a8bdba28b`;
+- the artifact passed the full repository Gate and generated 392 pages before deployment;
+- sampled Chinese/English routes, representative model/paper pages, hashed assets, trailing-slash redirect, custom 404, canonical/hreflang, robots/sitemap, and security headers were verified live;
+- real Chrome verified workspace and compare query-state restoration plus the SEED-to-method-workspace handoff, with zero console errors, page errors, or failed requests;
+- `public/_headers` preserves the Pages Production `nosniff` and referrer-policy headers on the workers.dev shadow host.
 
-**Next Agent action:** if a Cloudflare-capable execution surface is available, do not redesign the architecture. Build the shadow artifact with `npm run build:workers:shadow`, deploy `wrangler.jsonc` to the distinct `basemodel-workers-shadow` service, capture the actual `workers.dev` URL, and execute the Phase 2 parity checks below. Do not attach Production routing/domain during this step.
+Known provider differences are documented rather than hidden: Workers uses 307 instead of 308 for the automatic slash redirect, uses revalidation rather than `no-store` on custom 404s, and formats HTML/JavaScript MIME types differently. The workers.dev response does not expose `X-Robots-Tag`, so verified shadow indexing defense is the HTML `robots noindex` tag plus no sitemap advertisement and an empty sitemap. Production remains Cloudflare Pages and no cutover is authorized.
 
 ## Decision
 
@@ -119,7 +122,7 @@ Verify at minimum:
 - cache/content-type/security headers that the current product depends on;
 - exact Git/source provenance of the artifact being compared.
 
-**Status: pending a Cloudflare-capable execution surface.**
+**Status: complete with the documented provider-default differences above.**
 
 ### Phase 3 — cutover decision
 

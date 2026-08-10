@@ -14,6 +14,7 @@ const packageJson = JSON.parse(read('package.json')) as {
   scripts: Record<string, string>;
 };
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
+const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 
 describe('hosting architecture shadow migration', () => {
@@ -48,6 +49,12 @@ describe('hosting architecture shadow migration', () => {
     expect(shadowBuild).toContain("run('npm', ['run', 'build']");
     expect(shadowBuild).toContain('robots noindex');
     expect(shadowBuild).toContain('WORKERS_SHADOW_PRODUCTION_CHANGED=no');
+  });
+
+  it('preserves the Production security headers on Workers static assets', () => {
+    expect(staticHeaders).toContain('https://basemodel-workers-shadow.mykcs01.workers.dev/*');
+    expect(staticHeaders).toContain('X-Content-Type-Options: nosniff');
+    expect(staticHeaders).toContain('Referrer-Policy: strict-origin-when-cross-origin');
   });
 
   it('documents current Pages Production separately from target Workers Production', () => {
