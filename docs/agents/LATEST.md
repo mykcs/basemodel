@@ -1,6 +1,6 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-11 02:35 +08:00**
+Last updated: **2026-08-11 03:07 +08:00**
 
 Status: **Vercel Preview is the validated ordinary Preview path. Cloudflare Pages is still the real Production host today. The approved target is Cloudflare Workers Static Assets; the repository, Vercel, and real Workers shadow phases are complete. Production has not cut over.**
 
@@ -198,17 +198,18 @@ The SEED worked-example product flow remains documented in `current/seed-guided-
 
 1. `/AGENTS.md`
 2. `docs/agents/LATEST.md`
-3. `docs/agents/current/hosting-architecture.md`
-4. `docs/agents/current/vercel-preview-migration-plan.md`
-5. `docs/agents/current/preview-platform-evaluation.md`
-6. `docs/agents/current/product-and-research-integrity.md`
-7. `docs/agents/current/model-catalog-verification-policy.md`
-8. `docs/agents/current/seed-guided-research-workflow.md`
-9. `docs/agents/current/deployment-policy.md`
-10. `docs/agents/current/direct-upload-preview-command.md`
-11. `docs/agents/current/cloudflare-pages-deployment.md`
-12. `docs/agents/current/repository-map.md`
-13. `package.json`, `vercel.json`, `wrangler.jsonc` when present, and task-specific source/tests
+3. `docs/agents/current/project-agent-operating-principles.md`
+4. `docs/agents/current/hosting-architecture.md`
+5. `docs/agents/current/vercel-preview-migration-plan.md`
+6. `docs/agents/current/preview-platform-evaluation.md`
+7. `docs/agents/current/product-and-research-integrity.md`
+8. `docs/agents/current/model-catalog-verification-policy.md`
+9. `docs/agents/current/seed-guided-research-workflow.md`
+10. `docs/agents/current/deployment-policy.md`
+11. `docs/agents/current/direct-upload-preview-command.md`
+12. `docs/agents/current/cloudflare-pages-deployment.md`
+13. `docs/agents/current/repository-map.md`
+14. `package.json`, `vercel.json`, `wrangler.jsonc` when present, and task-specific source/tests
 
 If older Cloudflare-only text conflicts with the validated Vercel Preview split or the approved Workers shadow migration, this handoff plus `current/hosting-architecture.md` wins.
 
@@ -220,7 +221,6 @@ During the shadow migration, use skip-build commits for intermediate synchroniza
 
 Do not falsely mark these complete without real services/evidence:
 
-- Workers shadow deployment and parity verification until an actual Workers URL has been tested;
 - Production Pages-to-Workers cutover until the real public route changes and is verified;
 - account-backed cross-device storage;
 - team/realtime collaboration;
