@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import AgentPrimer from '../components/AgentPrimer.astro';
 import SeedReproductionPath from '../components/SeedReproductionPath.astro';
 import SeedComputeTimeBudget from '../components/SeedComputeTimeBudget.astro';
+import SeedOwnedComputePath from '../components/SeedOwnedComputePath.astro';
 import GuideContent from '../components/GuideContent.astro';
 import GuideDecisionChapters from '../components/GuideDecisionChapters.astro';
 const m = getMessages('zh');
@@ -22,6 +23,7 @@ const glossary = guide?.glossary ?? [];
     <AgentPrimer locale="zh" />
     <SeedReproductionPath locale="zh" />
     <SeedComputeTimeBudget locale="zh" />
+    <SeedOwnedComputePath locale="zh" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
       <p class="guide-section-label">第三部分</p>
       <h2 id="guide-research-layer-title">完成一次 SEED 实战后，再把同一套方法迁移到其他论文</h2>
