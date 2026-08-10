@@ -1,13 +1,16 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
 import { getMessages, localePath } from '../../i18n';
+import { getCollection } from 'astro:content';
 import SeedStudentReproductionGuide from '../../components/SeedStudentReproductionGuide.astro';
 const m = getMessages('en');
+const guideRecord = (await getCollection('guides'))[0]?.data;
+const guideSource = guideRecord ? 'collection' : 'fallback';
 const title = 'Reproduce SEED: start with ALFWorld and WebShop on 4×3090';
 const lede = 'Follow the experiment in the order you will actually run it: prepare the offline server, bring up ALFWorld and WebShop, train SFT, then prove four-GPU RL. Every stage has commands, pass criteria, and a first debugging step. If four 3090s finish full training and evaluation, stop there; move to 8×A800/A100 only when memory or total runtime becomes a real blocker.';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="en">
-  <div class="shell editorial-page guide-learning-page">
+  <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
     <header class="page-header">
       <p class="guide-eyebrow">SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
       <h1>{title}</h1>
