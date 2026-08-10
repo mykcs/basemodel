@@ -1,6 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import type { AtlasPaper } from '../../lib/schemas';
+import SeedReproductionPath from '../SeedReproductionPath.astro';
 
 interface Props {
   paper: AtlasPaper;
@@ -55,6 +56,8 @@ function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): stri
       <a href={fact.source_url}>{text(fact.source_label)} ↗</a>
     </article>)}
   </div>
+
+  {paper.id === 'seed' && <SeedReproductionPath locale={locale} compact />}
 
   <nav class="learning-track-nav" aria-label={isZh ? '选择学习路径' : 'Choose a learning track'}>
     {guide.tracks.map((track) => <a href={`#learning-track-${track.id}`}>
