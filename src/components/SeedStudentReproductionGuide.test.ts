@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+const bridge = readFileSync(new URL('./AgentToSeedBridge.astro', import.meta.url), 'utf8');
 const guide = readFileSync(new URL('./SeedStudentReproductionGuide.astro', import.meta.url), 'utf8');
 const zhPage = readFileSync(new URL('../pages/guide.astro', import.meta.url), 'utf8');
 const enPage = readFileSync(new URL('../pages/en/guide.astro', import.meta.url), 'utf8');
@@ -8,13 +9,32 @@ const preflight = readFileSync(new URL('../../public/guides/seed-4x3090-prefligh
 const stage1 = readFileSync(new URL('../../public/guides/seed-stage1-check.py', import.meta.url), 'utf8');
 
 describe('SEED student reproduction mainline', () => {
-  it('makes one bilingual experiment flow the primary guide', () => {
+  it('starts with a compact bilingual Agent mental-model bridge, then one experiment flow', () => {
+    expect(zhPage).toContain('<AgentToSeedBridge locale="zh" />');
+    expect(enPage).toContain('<AgentToSeedBridge locale="en" />');
     expect(zhPage).toContain('<SeedStudentReproductionGuide locale="zh" />');
     expect(enPage).toContain('<SeedStudentReproductionGuide locale="en" />');
     for (const oldBlock of ['<AgentPrimer', '<SeedReproductionPath', '<SeedComputeTimeBudget', '<GuideDecisionChapters']) {
       expect(zhPage).not.toContain(oldBlock);
       expect(enPage).not.toContain(oldBlock);
     }
+  });
+
+  it('bridges familiar ML concepts into runtime, training, RL, and the SEED update loop', () => {
+    for (const token of [
+      'Checkpoint / LLM',
+      'Policy',
+      'Action / tool',
+      'Trajectory / rollout',
+      'Reward',
+      'Runtime loop',
+      'Training loop',
+      'Advantage',
+      'GRPO',
+      'hindsight skill',
+      'OPD + GRPO',
+      '部署/推理时只留下最终学好的 policy',
+    ]) expect(bridge).toContain(token);
   });
 
   it('keeps the 4x3090-first finish line and evidence-based migration path', () => {
