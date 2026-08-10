@@ -1,13 +1,16 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
 import { getMessages, localePath } from '../i18n';
+import { getCollection } from 'astro:content';
 import SeedStudentReproductionGuide from '../components/SeedStudentReproductionGuide.astro';
 const m = getMessages('zh');
+const guide = (await getCollection('guides'))[0]?.data;
+const guideSource = guide ? 'guides-collection' : 'fallback';
 const title = '复现 SEED：先在 4×3090 跑通 ALFWorld 和 WebShop';
 const lede = '这是一条可以照着执行的实验主线。服务器没有公网，就先在联网端把模型、数据和依赖准备齐，再用 SFTP 送进四卡服务器。每一步都有命令和通过标准；四张 3090 如果能把两套实验完整跑完，就在这里结束。';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
-  <div class="shell editorial-page guide-learning-page">
+  <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
     <header class="page-header">
       <p class="guide-eyebrow">SEED · Qwen2.5-3B-Instruct · 4×RTX 3090 24GB</p>
       <h1>{title}</h1>
