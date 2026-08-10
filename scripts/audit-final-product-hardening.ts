@@ -68,6 +68,18 @@ assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.incl
 assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet is loaded last');
 assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
 
+const actionableLayer = read('src/components/common/ActionableContentLayer.astro');
+const copyButton = read('src/components/common/CopyButton.tsx');
+const clipboard = read('src/lib/clipboard.ts');
+const actionableCss = read('src/styles/actionable-content.css');
+const hardwareCalculator = read('src/components/workspace/task/HardwareCalculator.tsx');
+const taskSummary = read('src/components/workspace/task/TaskSummary.tsx');
+const modelTools = read('src/components/models/detail/ModelDetailTools.tsx');
+assert('HARDEN-ACTION-001', layout.includes('ActionableContentLayer') && layout.includes("../styles/actionable-content.css") && actionableLayer.includes("querySelectorAll?.('pre')") && actionableLayer.includes("querySelectorAll?.('code')") && actionableLayer.includes('MutationObserver') && actionableLayer.includes("closest('astro-island')"), 'static actionable content is enhanced site-wide without mutating React islands');
+assert('HARDEN-ACTION-002', actionableLayer.includes('aria-live="polite"') && actionableLayer.includes('fallbackCopy') && actionableCss.includes('@media(max-width:640px)') && actionableCss.includes('prefers-reduced-motion'), 'copy affordances expose feedback, fallback, mobile behavior, and reduced-motion handling');
+assert('HARDEN-ACTION-003', copyButton.includes('copyTextToClipboard') && clipboard.includes("document.execCommand('copy')") && hardwareCalculator.includes('<CopyButton') && taskSummary.includes('<CopyButton') && memo.includes('<CopyButton') && modelTools.includes('<CopyButton'), 'React-owned reusable outputs use the shared copy primitive and fallback');
+assert('HARDEN-ACTION-004', memo.includes('复制这段 Markdown') && modelTools.includes('打开主要来源') && fs.existsSync(path.join(root, 'docs/agents/current/actionable-content-ux.md')), 'generated artifacts have in-place actions and the interaction contract is documented for future agents');
+
 const catalogDiff = read('scripts/audit-catalog-diff.ts');
 assert('HARDEN-FRESHNESS-001', catalogDiff.includes('discoveryCandidates') && catalogDiff.includes('CATALOG_DIFF_STRICT') && catalogDiff.includes('review prompts'), 'catalog discovery produces review candidates without auto-promoting them to facts');
 
