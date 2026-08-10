@@ -1,6 +1,5 @@
 ---
 import Header from '../components/Header.astro';
-import BeginnerStart from '../components/BeginnerStart.astro';
 import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
@@ -14,13 +13,8 @@ import '../styles/design-refinement.css';
 import '../styles/final-hardening.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 
-interface Props {
-  title: string;
-  description?: string;
-  locale?: Locale;
-}
-
-type SeedArea = 'home' | 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
+interface Props { title: string; description?: string; locale?: Locale }
+type SeedArea = 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -31,12 +25,11 @@ const fullTitle = `${title} · ${m.site.titleSuffix}`;
 const siteOrigin = Astro.site ?? new URL('https://basemodel.pages.dev');
 const isCloudflarePreview = process.env.CF_PAGES === '1' && Boolean(process.env.CF_PAGES_BRANCH) && process.env.CF_PAGES_BRANCH !== 'main';
 const shouldNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isCloudflarePreview;
-
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isHomePage = localeNeutralPath === '/';
 const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
-const seedArea: SeedArea | null = isHomePage ? 'home'
+const seedArea: SeedArea | null = isHomePage ? null
   : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
   : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
   : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
@@ -98,7 +91,6 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {isHomePage && <BeginnerStart locale={locale} />}
       {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
       <slot />
     </main>
