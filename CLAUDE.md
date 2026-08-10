@@ -1,22 +1,37 @@
 # Claude Code project entrypoint
 
-Provider-neutral repository policy lives in [`AGENTS.md`](AGENTS.md) and wins over Claude-specific conventions.
+Provider-neutral repository policy lives in [`AGENTS.md`](AGENTS.md). For deployment behavior, the newer Agent handoff files below take precedence over older Cloudflare-only wording.
 
 Before non-trivial work, read:
 
-1. [`AGENTS.md`](AGENTS.md)
-2. [`docs/agents/current/direct-upload-preview-policy.md`](docs/agents/current/direct-upload-preview-policy.md)
+1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md)
+2. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md)
 3. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md)
-4. the other current Agent docs referenced by `AGENTS.md`
+4. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md)
+5. the other current Agent docs referenced by `docs/agents/README.md`
 
-## Cloudflare Pages preview rule
+## Preview / Production rule
 
-For normal website work, default to repository-local validation/build followed by Wrangler Direct Upload of the prebuilt `dist/` to a non-production preview branch. Return the new public preview URL and explicitly report whether a Cloudflare Pages Build was triggered.
+For ordinary website work:
 
-Do not trigger a Git-connected Cloudflare Pages Preview/Production build merely to obtain a preview. Use skip-build Git semantics such as `[CF-Pages-Skip]` / another currently supported Cloudflare skip prefix when source synchronization should not deploy.
+```text
+non-main GitHub branch / PR
+-> Vercel Preview
+-> npm run verify:deploy
+-> npm run build
+-> inspect exact Preview
 
-Only intentionally use the formal Git-integrated deployment path when the owner explicitly asks for it. Before doing so, state that the next push/merge may consume a Cloudflare Pages Build.
+main
+-> Vercel Git deployment disabled
+-> Cloudflare Pages Production
+```
 
-If local build, Wrangler upload, authentication, public-preview verification, or quota/build status cannot be confirmed, say so explicitly and do not claim completion at that boundary.
+Cloudflare Direct Upload remains the fallback / Cloudflare-specific Preview path.
 
-Do not duplicate the full deployment policy here; the files above are the source of truth.
+Intermediate non-release commits may use `[CF-Pages-Skip]` where appropriate to avoid intentionally triggering Cloudflare branch builds. Do not use a Cloudflare skip prefix on the final merge/release commit when the owner expects Production to deploy.
+
+Because the repository is private, Vercel Preview URLs may be protected. Generate a temporary share URL when the owner needs anonymous review access rather than asking them to relay dashboard state.
+
+Do not claim completion from a READY badge alone: verify the exact Git head, repository Gate, and real Preview route.
+
+Do not duplicate the full policy here; `docs/agents/LATEST.md`, `vercel-preview-migration-plan.md`, and `deployment-policy.md` are the deployment sources of truth.
