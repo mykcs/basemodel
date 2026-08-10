@@ -1,0 +1,233 @@
+/* Final product hardening: favor research readability over component density. */
+
+/* Contrast-safe filled controls: soft terracotta remains an accent/tint only. */
+.brand-mark,
+.button-primary,
+.chip.is-active,
+.quick-filter.is-active,
+.filter-depth-toggle button.is-active,
+.engine-switch .button.is-active,
+.timeline-filters .button-primary,
+.landscape-controls .button.is-active {
+  background: var(--accent-fill) !important;
+  border-color: var(--accent-fill) !important;
+  color: var(--accent-on-fill) !important;
+}
+
+/* Research-critical explanations must read like body copy, not metadata. */
+.reason-line,
+.risk-line,
+.bucket-hint,
+.task-step-hint,
+.task-inline-note,
+.evidence-inspector,
+.paper-case-summary,
+.paper-case-scope,
+.paper-case-facts,
+.memo-readable,
+.snapshot-change-notice {
+  font-size: .86rem;
+  line-height: 1.58;
+}
+.reason-chip,
+.risk-chip,
+.provenance-badge,
+.fit-dimensions dt,
+.fit-dimensions dd,
+.paper-case-meta,
+.paper-case-actions,
+.status-caption {
+  font-size: .78rem;
+}
+.candidate-info > span,
+.candidate-meta,
+.source-meta { font-size: .8rem; }
+
+/* Give the analytical workbench enough room without making mobile a squeezed desktop. */
+.workspace .shell { width: min(1360px, calc(100% - 32px)); }
+.workspace-grid {
+  grid-template-columns: minmax(300px, .9fr) minmax(0, 1.8fr) minmax(360px, 1fr);
+  gap: 20px;
+}
+.constraint-panel,
+.candidate-board,
+.evidence-inspector {
+  border-radius: 14px;
+  box-shadow: none;
+}
+.candidate-row { border-radius: 9px; }
+
+/* Decision view is editorially grouped rather than one undifferentiated card catalog. */
+.decision-sections { display: grid; gap: 44px; }
+.decision-section { border-top: 1px solid var(--line); padding-top: 22px; }
+.decision-section:first-child { border-top: 0; padding-top: 0; }
+.decision-section-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr);
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+.decision-section-heading h2 { margin: 0; font-size: 1.35rem; }
+.decision-section-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
+.model-card { box-shadow: none; border-radius: 11px; }
+
+/* Home: three intents first; secondary scenarios are progressively disclosed. */
+.novice-entry { margin: 18px 0 0; color: var(--muted); }
+.intent-grid { border-top: 1px solid var(--line); }
+.intent-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 2px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.intent-row:hover h3,
+.intent-row:focus-visible h3 { color: var(--accent-deep); }
+.intent-row h3 { margin-bottom: 5px; }
+.intent-row p { margin: 0; max-width: 780px; color: var(--muted); }
+.intent-row > span { font-size: 1.4rem; color: var(--accent-deep); }
+.research-path-list { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.research-path-row { padding: 22px 22px 22px 0; }
+.research-path-row + .research-path-row { border-left: 1px solid var(--line); padding-left: 22px; }
+.research-path-row p { margin: 0; color: var(--muted); }
+.family-current-list { border-top: 1px solid var(--line); }
+.family-current-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+  gap: 30px;
+  padding: 21px 0;
+  border-bottom: 1px solid var(--line);
+}
+.family-current-row p { color: var(--muted); margin-bottom: 0; }
+.family-current-row dl { display: grid; gap: 7px; margin: 0; }
+.family-current-row dl div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; }
+.family-current-row dt { color: var(--muted); }
+.family-current-row dd { margin: 0; overflow-wrap: anywhere; }
+.home-scenarios-advanced,
+.paper-matrix-advanced,
+.memo-source-preview {
+  margin: 30px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 17px 0;
+}
+.home-scenarios-advanced > summary,
+.paper-matrix-advanced > summary,
+.memo-source-preview > summary {
+  cursor: pointer;
+  font-weight: 750;
+  color: var(--accent-deep);
+}
+.home-scenarios-advanced[open] > summary,
+.paper-matrix-advanced[open] > summary,
+.memo-source-preview[open] > summary { margin-bottom: 16px; }
+
+/* Paper cards: provenance is part of the scientific meaning. */
+.provenance-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.provenance-checked { color: var(--positive); border-color: color-mix(in srgb, var(--positive) 42%, var(--line)); }
+.provenance-derived,
+.provenance-estimated { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 42%, var(--line)); }
+.paper-case-facts { gap: 9px; }
+.paper-case-facts dt { color: var(--muted); }
+.paper-case-facts dd { line-height: 1.5; }
+.paper-case-card { box-shadow: none !important; border-radius: 10px !important; }
+
+/* Four-chapter guide: one decision model instead of another wall of concept cards. */
+.guide-decision-chapters { margin: 48px 0 70px; }
+.guide-decision-intro { max-width: 780px; margin-bottom: 24px; }
+.guide-decision-intro p { color: var(--muted); }
+.guide-chapter-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 48px;
+}
+.guide-chapter-nav a { padding: 15px 12px 15px 0; text-decoration: none; color: var(--ink); font-weight: 700; }
+.guide-chapter-nav a + a { border-left: 1px solid var(--line); padding-left: 12px; }
+.guide-chapter-nav span { color: var(--accent-deep); margin-right: 7px; font-variant-numeric: tabular-nums; }
+.guide-chapters { display: grid; gap: 58px; }
+.guide-chapter > header { max-width: 800px; margin-bottom: 18px; }
+.guide-chapter-number { color: var(--accent-deep); font-weight: 800; font-size: .78rem; letter-spacing: .08em; }
+.guide-chapter > header h3 { font-size: 1.6rem; margin: 5px 0 8px; }
+.guide-chapter > header p { color: var(--muted); }
+.guide-concept-list { border-top: 1px solid var(--line); }
+.guide-concept-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, .6fr);
+  gap: 28px;
+  padding: 21px 0;
+  border-bottom: 1px solid var(--line);
+}
+.guide-concept-row h4 { font-size: 1rem; margin: 0 0 7px; }
+.guide-concept-row p { margin: 0; color: var(--muted); }
+.guide-concept-actions { display: grid; align-content: start; gap: 13px; }
+.guide-concept-actions .concept-model-links { display: flex; flex-wrap: wrap; gap: 7px; }
+.guide-concept-actions .concept-model-links > span { flex-basis: 100%; color: var(--muted); font-size: .8rem; }
+.guide-concept-actions .concept-model-links a { font-size: .84rem; text-decoration: none; color: var(--accent-deep); }
+
+/* Human-readable memo first; raw Markdown remains an export detail. */
+.memo-header { align-items: flex-start; gap: 18px; }
+.memo-header h2 { margin-bottom: 3px; }
+.memo-revision { margin: 0; font-size: .8rem; }
+.memo-actions { flex-wrap: wrap; justify-content: flex-end; }
+.memo-readable { display: grid; gap: 30px; }
+.memo-readable > section { border-top: 1px solid var(--line); padding-top: 19px; }
+.memo-readable > section:first-child { border-top: 0; padding-top: 0; }
+.memo-readable h3 { font-size: 1rem; margin-bottom: 12px; }
+.memo-readable ul { margin: 0; padding-left: 20px; }
+.memo-candidate-list { display: grid; gap: 16px; }
+.memo-candidate-list article { border-left: 3px solid var(--line); padding-left: 14px; }
+.memo-candidate-list h4 { margin: 0 0 2px; font-size: .96rem; }
+.memo-model-meta { color: var(--muted); font-size: .8rem; margin-bottom: 9px; }
+.memo-candidate-list p { margin-bottom: 7px; }
+.memo-risk { color: var(--danger); }
+.memo-unverified { background: color-mix(in srgb, var(--warning) 7%, transparent); padding: 16px !important; border: 1px solid color-mix(in srgb, var(--warning) 25%, var(--line)) !important; border-radius: 10px; }
+.memo-evidence-list { display: grid; gap: 7px; }
+.memo-evidence-list li { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+.memo-evidence-list span { color: var(--muted); font-size: .8rem; }
+.memo-preview { margin-top: 12px; }
+
+/* Landscape learning mode is the default low-cognitive-load path. */
+.landscape-learning-card { box-shadow: none !important; border-radius: 10px !important; }
+.accessible-landscape { margin-top: 20px; }
+
+@media (max-width: 1180px) {
+  .workspace-grid { grid-template-columns: minmax(280px, .85fr) minmax(0, 1.6fr) minmax(320px, .95fr); gap: 16px; }
+  .guide-chapter-nav { grid-template-columns: repeat(2, 1fr); }
+  .guide-chapter-nav a:nth-child(3) { border-left: 0; }
+}
+
+@media (max-width: 980px) {
+  .workspace .shell { width: min(100% - 24px, 760px); }
+  .workspace-grid { grid-template-columns: 1fr; }
+  .decision-section-heading,
+  .family-current-row,
+  .guide-concept-row { grid-template-columns: 1fr; gap: 11px; }
+  .research-path-list { grid-template-columns: 1fr; }
+  .research-path-row { padding: 17px 0; }
+  .research-path-row + .research-path-row { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+}
+
+@media (max-width: 640px) {
+  .intent-row { grid-template-columns: 1fr auto; gap: 12px; }
+  .family-current-row dl div { grid-template-columns: 86px 1fr; }
+  .guide-chapter-nav { grid-template-columns: 1fr; }
+  .guide-chapter-nav a + a { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+  .memo-header { display: grid; }
+  .memo-actions { justify-content: flex-start; }
+  .memo-evidence-list li { grid-template-columns: 1fr; gap: 2px; }
+}

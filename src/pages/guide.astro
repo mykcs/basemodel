@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import AgentPrimer from '../components/AgentPrimer.astro';
 import SeedReproductionPath from '../components/SeedReproductionPath.astro';
 import GuideContent from '../components/GuideContent.astro';
+import GuideDecisionChapters from '../components/GuideDecisionChapters.astro';
 const m = getMessages('zh');
 const guide = (await getCollection('guides'))[0]?.data;
 const steps = guide?.steps_zh ?? m.guide.steps;
@@ -16,17 +17,15 @@ const glossary = guide?.glossary ?? [];
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
   <div class="shell editorial-page guide-learning-page">
-    <header class="page-header">
-      <h1>{title}</h1>
-      <p class="lede">{lede}</p>
-    </header>
+    <header class="page-header"><h1>{title}</h1><p class="lede">{lede}</p></header>
     <AgentPrimer locale="zh" />
     <SeedReproductionPath locale="zh" />
     <section class="guide-research-layer" aria-labelledby="guide-research-layer-title">
       <p class="guide-section-label">第三部分</p>
       <h2 id="guide-research-layer-title">完成一次 SEED 实战后，再把同一套方法迁移到其他论文</h2>
-      <p class="muted">下面的工作台流程、概念地图和术语表用于泛化这套方法。顺序不要反过来：先定义研究声明，再固定论文变量，然后才筛模型、看证据和做替代。</p>
+      <p class="muted">下面先用四个研究问题重组基础概念，再进入工作台全流程与术语表。顺序不要反过来：先定义研究声明，再固定论文变量，然后才筛模型、看证据和做替代。</p>
     </section>
+    <GuideDecisionChapters locale="zh" concepts={concepts} />
     <GuideContent locale="zh" concepts={concepts} glossary={glossary} steps={steps} note={note} />
   </div>
 </AppLayout>
@@ -36,4 +35,5 @@ const glossary = guide?.glossary ?? [];
   .guide-research-layer { margin: 72px 0 24px; padding-top: 34px; border-top: 1px solid var(--line); }
   .guide-research-layer h2 { max-width: 760px; margin: 7px 0 10px; }
   .guide-research-layer p { max-width: 760px; }
+  :global(.guide-concept-map) { display: none; }
 </style>

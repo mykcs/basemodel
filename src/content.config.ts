@@ -3,6 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'zod';
 import { modelSchema, paperSchema } from './lib/schemas';
 import { withStableSourceIds } from './lib/sourceIds.node';
+import { applyPaperCorrection } from './lib/paperCorrections';
 
 const models = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/models' }),
@@ -11,7 +12,7 @@ const models = defineCollection({
 
 const papers = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/papers' }),
-  schema: paperSchema.transform((record) => withStableSourceIds(record)),
+  schema: paperSchema.transform((record) => withStableSourceIds(applyPaperCorrection(record))),
 });
 
 const claims = defineCollection({

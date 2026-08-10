@@ -8,6 +8,8 @@
   --color-border: #dcd9d1;
   --color-accent: #9c3e2a;
   --color-accent-soft: #d7653b;
+  --color-accent-fill: #9c3e2a;
+  --color-accent-on-fill: #ffffff;
   --color-positive: #245f56;
   --color-warning: #805e2d;
   --color-danger: #9f3027;
@@ -37,6 +39,8 @@
   --border: var(--color-border);
   --accent: var(--color-accent-soft);
   --accent-deep: var(--color-accent);
+  --accent-fill: var(--color-accent-fill);
+  --accent-on-fill: var(--color-accent-on-fill);
   --positive: var(--color-positive);
   --warning: var(--color-warning);
   --danger: var(--color-danger);
@@ -54,6 +58,8 @@
   --color-border: #394542;
   --color-accent: #ffb08d;
   --color-accent-soft: #f18b61;
+  --color-accent-fill: #ffb08d;
+  --color-accent-on-fill: #151a1a;
   --color-positive: #9ed2c6;
   --color-warning: #e2bd79;
   --color-danger: #f19a8e;

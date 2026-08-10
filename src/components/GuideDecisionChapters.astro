@@ -1,0 +1,79 @@
+---
+import { localePath, type Locale } from '../i18n';
+
+interface Concept {
+  id: string;
+  title_zh: string;
+  title_en: string;
+  body_zh: string;
+  body_en: string;
+  model_ids: string[];
+  links?: Array<{ label_zh: string; label_en: string; href: string }>;
+}
+interface Props { locale: Locale; concepts: Concept[] }
+const { locale, concepts } = Astro.props;
+const zh = locale === 'zh';
+const conceptMap = new Map(concepts.map((concept) => [concept.id, concept]));
+const chapters = [
+  {
+    id: 'identity',
+    number: '01',
+    title: zh ? '我到底在选什么？' : 'What exactly am I choosing?',
+    lede: zh ? '先区分家族、代际、checkpoint、架构与 revision。论文复现选的是具体模型状态，不是品牌名。' : 'Separate family, generation, checkpoint, architecture, and revision. Reproduction targets a concrete model state, not a brand name.',
+    conceptIds: ['base-instruct-thinking', 'checkpoint', 'architecture-scale'],
+  },
+  {
+    id: 'access',
+    number: '02',
+    title: zh ? '我到底能不能使用它？' : 'Can I actually use it?',
+    lede: zh ? 'API、开放权重、开源、许可证和衍生发布是不同问题。能调用不等于能训练，能下载也不等于能发表衍生模型。' : 'API access, open weights, open source, licensing, and derivative distribution are different questions. Callable is not trainable; downloadable is not automatically redistributable.',
+    conceptIds: ['open-weight-source', 'api-weight-license'],
+  },
+  {
+    id: 'training',
+    number: '03',
+    title: zh ? '我的实验会怎么改模型？' : 'How will my experiment change the model?',
+    lede: zh ? '推理、LoRA、SFT、RL 和自进化需要不同的模型访问、训练栈与资源。先确定更新方式，再谈候选。' : 'Inference, LoRA, SFT, RL, and self-evolution require different access, training stacks, and resources. Choose the update method before choosing candidates.',
+    conceptIds: ['lora-sft-rl', 'adaptation-evolution'],
+  },
+  {
+    id: 'reproduction',
+    number: '04',
+    title: zh ? '我怎么保证论文可比？' : 'How do I preserve paper comparability?',
+    lede: zh ? '严格复现、方法复现和现代化重跑回答不同问题。证据状态、固定版本和快照决定你的结论以后还能不能被复核。' : 'Strict reproduction, method reproduction, and modern reruns answer different questions. Evidence states, pinned versions, and snapshots determine whether the decision remains auditable.',
+    conceptIds: ['research-paths', 'paper-learning-template', 'reproducibility-fields', 'evidence-status'],
+  },
+];
+---
+<section class="guide-decision-chapters" aria-labelledby="guide-decision-title">
+  <header class="guide-decision-intro">
+    <span class="section-kicker">{zh ? '四个问题' : 'Four decisions'}</span>
+    <h2 id="guide-decision-title">{zh ? '不要背术语，按研究决策建立认知顺序' : 'Do not memorize terms; learn them in decision order'}</h2>
+    <p>{zh ? '下面不是另一份词典。每一章都对应你在工作台里必须做出的一个决定，并直接连到真实模型或下一步操作。' : 'This is not another glossary. Each chapter maps to a decision you must make in the workbench and links directly to real models or the next action.'}</p>
+  </header>
+
+  <nav class="guide-chapter-nav" aria-label={zh ? '四章学习导航' : 'Four-chapter guide navigation'}>
+    {chapters.map((chapter) => <a href={`#guide-${chapter.id}`}><span>{chapter.number}</span>{chapter.title}</a>)}
+  </nav>
+
+  <div class="guide-chapters">
+    {chapters.map((chapter) => {
+      const items = chapter.conceptIds.map((id) => conceptMap.get(id)).filter(Boolean) as Concept[];
+      return <section class="guide-chapter" id={`guide-${chapter.id}`}>
+        <header><span class="guide-chapter-number">{chapter.number}</span><h3>{chapter.title}</h3><p>{chapter.lede}</p></header>
+        <div class="guide-concept-list">
+          {items.map((concept) => <article class="guide-concept-row" id={`decision-concept-${concept.id}`}>
+            <div>
+              <h4>{zh ? concept.title_zh : concept.title_en}</h4>
+              <p>{zh ? concept.body_zh : concept.body_en}</p>
+            </div>
+            <div class="guide-concept-actions">
+              {concept.model_ids.length > 0 && <div class="concept-model-links"><span>{zh ? '真实模型例子' : 'Real model examples'}</span>{concept.model_ids.map((id) => <a href={localePath(locale, `/models/${id}/`)}>{id}</a>)}</div>}
+              {concept.links?.length ? <div class="concept-model-links"><span>{zh ? '继续做研究' : 'Continue the research'}</span>{concept.links.map((link) => <a href={localePath(locale, link.href)}>{zh ? link.label_zh : link.label_en} →</a>)}</div> : null}
+            </div>
+          </article>)}
+        </div>
+      </section>;
+    })}
+  </div>
+</section>
