@@ -1,0 +1,343 @@
+---
+import type { Locale } from '../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+
+const freezeCode = `# 在联网工作站 / 本地仓库执行
+git status --short
+git rev-parse HEAD | tee EXPERIMENT_COMMIT
+git diff --exit-code
+
+# 把这次实验实际使用的提交同步到 GitHub
+git push origin <experiment-branch>`;
+
+const serverFingerprint = `cat EXPERIMENT_COMMIT
+sha256sum -c SHA256SUMS.txt
+nvidia-smi
+nvidia-smi topo -m
+nvcc --version || true
+uname -a
+python --version
+
+python - <<'PY'
+import torch
+print('cuda:', torch.cuda.is_available())
+print('count:', torch.cuda.device_count())
+for i in range(torch.cuda.device_count()):
+    p = torch.cuda.get_device_properties(i)
+    print(i, p.name, round(p.total_memory / 1024**3, 1), 'GiB')
+PY`;
+
+const offlineEnv = `export CUDA_VISIBLE_DEVICES=0,1,2,3
+export WANDB_MODE=offline
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+export MODELS_ROOT=/srv/seed/models
+export DATA_ROOT=/srv/seed/data`;
+
+const alfworldSmoke = `# 只有当服务器内可访问本地 OpenAI-compatible analyzer 时，
+# 才在离线服务器上执行 Stage 1 skill annotation。
+RUN_MODE=smoke \
+DATA_PARALLEL_SIZE=4 \
+TENSOR_PARALLEL_SIZE=1 \
+MODEL_PATH="$MODELS_ROOT/Qwen2.5-3B-Instruct" \
+SKILL_BASE_URL=http://127.0.0.1:<port>/v1 \
+bash scripts/sft/alfworld/prepare_data.sh`;
+
+const rlDryRun = `# 官方 wrapper 默认按 8 GPU；四卡服务器必须显式覆盖。
+N_GPUS_PER_NODE=4 DRY_RUN=true \
+bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
+
+N_GPUS_PER_NODE=4 DRY_RUN=true \
+bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
+
+const reducedRl = `# 工程 profiling，不是论文规模结果。
+# 先缩短训练 horizon，确认四卡路径、显存和通信都稳定。
+N_GPUS_PER_NODE=4 TOTAL_EPOCHS=10 SAVE_FREQ=5 TEST_FREQ=5 \
+bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
+
+# WebShop 同理；先单独跑，不要两个环境同时抢四张 GPU。
+N_GPUS_PER_NODE=4 TOTAL_EPOCHS=10 SAVE_FREQ=5 TEST_FREQ=5 \
+bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
+
+const manifestExample = `{
+  "git_commit": "<sha>",
+  "server": "offline-4x3090",
+  "gpu_topology_file": "nvidia-smi-topo.txt",
+  "model": "Qwen2.5-3B-Instruct",
+  "model_sha256_manifest": "models.SHA256SUMS",
+  "dataset_manifest": "data.SHA256SUMS",
+  "environment": "alfworld | webshop",
+  "condition": "grpo | seed",
+  "seed": 0,
+  "n_gpus_per_node": 4,
+  "started_at": "<timestamp>",
+  "ended_at": "<timestamp>",
+  "notes": "engineering rerun on 4x3090; not exact hardware reproduction"
+}`;
+---
+
+<section id="seed-offline-lab" class="offline-lab" aria-labelledby="seed-offline-lab-title">
+  <header class="offline-head">
+    <div>
+      <span class="section-kicker">{t('4×3090 · 无外网实验室工作流', '4×3090 · offline lab workflow')}</span>
+      <h2 id="seed-offline-lab-title">{t('服务器不能上网时：把联网电脑当“桥”，把四卡服务器当纯执行端', 'When the server has no internet: use the online workstation as the bridge and the four-GPU host as a pure execution endpoint')}</h2>
+      <p>{t('最稳的结构不是让服务器参与 GitHub 同步，而是让本地 Git 仓库成为代码真相源：本地修改 → commit → GitHub 备份/协作，同时把同一个已提交版本和离线资产通过 SFTP 送进服务器。服务器只负责运行、记录和把结果送回来。', 'The cleanest structure is not to make the server participate in GitHub sync. Keep the local Git repository as the code source of truth: edit locally → commit → push to GitHub for backup/collaboration, while sending that exact committed tree plus offline assets to the server over SFTP. The server only executes, records, and returns results.')}</p>
+    </div>
+    <aside class="ethernet-note">
+      <strong>{t('先纠正一个容易混淆的点', 'One important distinction')}</strong>
+      <p>{t('那一根实体网线只负责“工作站 ↔ 服务器”的文件与 SSH/SFTP 通信；四张 3090 之间的训练通信发生在服务器内部 PCIe / P2P / 可能的成对 NVLink 上。网线速度不会直接决定单机四卡梯度同步速度。第一天必须用 nvidia-smi topo -m 看真实拓扑。', 'The physical Ethernet cable only carries workstation ↔ server SSH/SFTP traffic. Training communication among the four 3090s happens inside the server over PCIe / P2P / possible paired NVLink. Ethernet speed does not directly determine single-node four-GPU gradient synchronization. Inspect the real topology with nvidia-smi topo -m on day one.')}</p>
+    </aside>
+  </header>
+
+  <div class="architecture" aria-label={t('离线实验室同步架构', 'Offline lab sync architecture')}>
+    <div class="arch-node">
+      <small>01 · {t('联网端', 'Online side')}</small>
+      <strong>{t('本地工作站 + VS Code / Cursor', 'Local workstation + VS Code / Cursor')}</strong>
+      <span>{t('写代码、Git commit、访问 GitHub、下载模型/依赖/环境数据', 'Edit code, commit, access GitHub, download models/dependencies/environment data')}</span>
+    </div>
+    <div class="arch-link">
+      <b>GitHub ↑</b>
+      <span>SFTP / SSH ↔</span>
+      <small>{t('一根网线', 'one cable')}</small>
+    </div>
+    <div class="arch-node">
+      <small>02 · {t('离线端', 'Offline side')}</small>
+      <strong>{t('4×RTX 3090 服务器', '4×RTX 3090 server')}</strong>
+      <span>{t('不访问 GitHub / Hugging Face / pip；只使用已传入的代码、模型、数据和环境', 'No GitHub / Hugging Face / pip access; use only transferred code, models, data, and environments')}</span>
+    </div>
+  </div>
+
+  <aside class="rule-line">
+    <strong>{t('版本规则：SFTP 是部署通道，不是版本控制', 'Version rule: SFTP is a deployment channel, not version control')}</strong>
+    <p>{t('可以用 SFTP 插件实时同步文件，但每次真正开始实验前必须冻结一个 Git commit。若临时在服务器上直接改了文件，要先把改动拉回本地、commit，再开始下一次可计入结果的 run。否则最后会出现“指标有了，但不知道到底是哪份代码跑出来的”。', 'Live SFTP sync is fine during development, but every reportable experiment must freeze one Git commit before it starts. If you hot-fix a file directly on the server, bring that change back to the local repository and commit it before the next reportable run. Otherwise you can end up with metrics but no trustworthy record of which code produced them.')}</p>
+  </aside>
+
+  <div class="offline-timeline">
+    <section class="phase">
+      <div class="phase-index">01</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('联网电脑：冻结代码', 'Online workstation: freeze code')}</span>
+        <h3>{t('先固定 commit，再把同一份代码送往 GitHub 和服务器', 'Freeze the commit first, then send the same tree to GitHub and the server')}</h3>
+        <p>{t('GitHub 保存代码历史；SFTP 负责把可运行副本送进离线服务器。实验目录里额外保留一个 EXPERIMENT_COMMIT 文件，即使 SFTP 插件没有同步 .git 目录，也能从结果目录反查来源。', 'GitHub preserves code history; SFTP carries a runnable copy into the offline server. Keep an EXPERIMENT_COMMIT file inside the experiment bundle so provenance survives even if the SFTP extension does not transfer the .git directory.')}</p>
+        <pre><code>{freezeCode}</code></pre>
+        <div class="checkpoint"><b>{t('通过条件', 'Pass condition')}</b><span>{t('本地 working tree 干净；GitHub 上能找到该 SHA；服务器收到的 EXPERIMENT_COMMIT 与它一致。', 'Local working tree is clean; the SHA exists on GitHub; the server receives the same EXPERIMENT_COMMIT.')}</span></div>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">02</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('联网电脑：准备离线资产', 'Online workstation: prepare offline assets')}</span>
+        <h3>{t('不要只传源码：真正会让离线服务器卡住的是模型、Python/CUDA 包和环境数据', 'Do not transfer source alone: models, Python/CUDA packages, and environment data are what usually block an offline server')}</h3>
+        <div class="artifact-table">
+          <div><strong>{t('模型', 'Model')}</strong><p>{t('预先下载 Qwen2.5-3B-Instruct、tokenizer/config，以及之后生成的 SFT checkpoint。大模型不要塞进 GitHub；用 SFTP 单独传，并生成 SHA256 清单。', 'Pre-download Qwen2.5-3B-Instruct, tokenizer/config, and later SFT checkpoints. Do not put large models in GitHub; transfer them separately over SFTP and create a SHA256 manifest.')}</p></div>
+          <div><strong>ALFWorld</strong><p>{t('在能联网的 Linux 环境先安装并执行 alfworld-download -f；官方数据默认进入 ~/.cache/alfworld/，也可以使用 ALFWORLD_DATA 指向专用目录。把完整数据目录打包送入服务器。', 'On an internet-connected Linux environment, install ALFWorld and run alfworld-download -f. Official data is cached under ~/.cache/alfworld/ by default, or ALFWORLD_DATA can point to dedicated storage. Transfer the complete data directory.')}</p></div>
+          <div><strong>WebShop</strong><p>{t('必须在联网端先完成 ./setup.sh -d all：它会安装依赖、下载商品/指令数据、下载 spaCy 模型并建立搜索索引。离线服务器收到的应该是“已经准备好的 WebShop”，不是等待联网初始化的裸源码。', 'Complete ./setup.sh -d all on the online side first: it installs dependencies, downloads product/instruction data, downloads the spaCy model, and builds the search index. The offline server should receive a prepared WebShop tree, not raw source that still expects internet initialization.')}</p></div>
+          <div><strong>{t('Python / CUDA 环境', 'Python / CUDA environment')}</strong><p>{t('vLLM、PyTorch、flash-attn 都与 Linux / Python / CUDA 紧密相关。不要在 macOS/Windows 笔记本上下载一堆 wheel 然后假设能装到 Linux GPU 服务器；最好在与服务器同架构、Python/CUDA 版本匹配的联网 Linux staging 机上准备 wheelhouse 或打包已验证的 conda 环境。', 'vLLM, PyTorch, and flash-attn are tightly coupled to Linux / Python / CUDA. Do not build a wheel bundle on macOS/Windows and assume it will install on a Linux GPU server; prepare the wheelhouse or packed conda environment on an internet-connected Linux staging host that matches the server architecture and Python/CUDA stack.')}</p></div>
+        </div>
+        <div class="checkpoint"><b>{t('建议目录', 'Suggested bundle')}</b><span><code>code/ · models/ · data/alfworld/ · data/webshop/ · env/ · SHA256SUMS.txt</code></span></div>
+      </div>
+    </section>
+
+    <section class="phase analyzer-phase">
+      <div class="phase-index">03</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('Stage 1 特殊问题', 'Stage 1 special case')}</span>
+        <h3>{t('无外网服务器不能直接调用官方流程里的远程 analyzer：这里必须提前选一条路', 'An offline server cannot directly call the remote analyzer used by the Stage-1 workflow: choose one path before entering the lab')}</h3>
+        <div class="choice-grid">
+          <article>
+            <small>{t('推荐 · 最干净', 'Recommended · cleanest')}</small>
+            <h4>{t('A. 在联网环境完成 Stage 1 数据构造', 'A. Build Stage-1 data on the online side')}</h4>
+            <p>{t('使用你记录下来的 analyzer endpoint/model 生成 hindsight-skill SFT 数据；生成完成后冻结数据目录和 hash，再传入实验室。离线服务器从 train_sft.sh 开始训练。这样四卡服务器不需要任何外网 API。', 'Use the recorded analyzer endpoint/model to generate hindsight-skill SFT data online; freeze the generated data directory and hashes, then transfer it into the lab. The offline server begins at train_sft.sh, so the four-GPU host needs no external API.')}</p>
+          </article>
+          <article>
+            <small>{t('可行但改变资源条件', 'Possible but changes resource conditions')}</small>
+            <h4>{t('B. 在实验室内部提供 OpenAI-compatible analyzer', 'B. Host an OpenAI-compatible analyzer inside the lab')}</h4>
+            <p>{t('让 SKILL_BASE_URL 指向 127.0.0.1 或实验室局域网地址。这样 prepare_data.sh 可以完全离线运行，但 analyzer 模型、额外显存占用和 endpoint 实现都必须写进 manifest；如果 analyzer 与目标复现协议不同，这应标为方法重跑，而不是悄悄算作严格复现。', 'Point SKILL_BASE_URL to 127.0.0.1 or a lab-LAN endpoint. prepare_data.sh can then run fully offline, but the analyzer model, extra VRAM use, and endpoint implementation must be recorded in the manifest. If the analyzer differs from the target protocol, label the run as a method rerun rather than silently calling it strict reproduction.')}</p>
+          </article>
+        </div>
+        <p class="source-boundary">{t('官方 ALFWorld Stage-1 脚本要求 SKILL_BASE_URL / API key / analyzer model；同时提供 RUN_MODE=smoke。smoke 默认把每类任务缩到 1 个 task × 1 rollout，适合先证明数据链能走通。', 'The official ALFWorld Stage-1 script requires SKILL_BASE_URL / API key / analyzer model and also supports RUN_MODE=smoke. Smoke mode reduces each task type to 1 task × 1 rollout, making it appropriate for proving the data path first.')}</p>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">04</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('SFTP 到服务器', 'SFTP into the server')}</span>
+        <h3>{t('传输完成后先校验，不要直接开训练', 'Verify the transfer before launching training')}</h3>
+        <p>{t('建议把实验材料放在固定根目录，例如 /srv/seed/。代码、模型和环境数据分开，这样日常 SFTP 代码同步不会误删几百 GB 模型或 WebShop 索引。大文件传完后用 SHA256 校验；如果一个模型分片损坏，训练到一半才发现会浪费更多时间。', 'Use a stable root such as /srv/seed/. Keep code, models, and environment data separate so everyday SFTP code sync cannot accidentally delete hundreds of GB of models or WebShop indexes. Verify large files with SHA256 before training; discovering a damaged model shard mid-run wastes far more time.')}</p>
+        <div class="path-grid">
+          <code>/srv/seed/code/</code><code>/srv/seed/models/</code><code>/srv/seed/data/alfworld/</code><code>/srv/seed/data/webshop/</code><code>/srv/seed/env/</code><code>/srv/seed/runs/</code>
+        </div>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">05</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('服务器：第一次只做硬件指纹', 'Server: first capture the hardware fingerprint')}</span>
+        <h3>{t('确认四张卡真的都可见、拓扑是什么、服务器上到底跑的是什么版本', 'Confirm all four GPUs are visible, inspect topology, and record the exact runtime stack')}</h3>
+        <p>{t('这一阶段不训练。把输出保存到 run 目录。对 4×3090 来说，nvidia-smi topo -m 尤其关键：它能告诉你 GPU-GPU 之间经过 PCIe switch / CPU root complex 还是存在 NVLink/P2P 路径。以后解释“为什么这台四卡比另一台慢”时，这份文件比“都是 3090”更有用。', 'Do not train yet. Save these outputs in the run directory. nvidia-smi topo -m matters especially on 4×3090 because it shows whether GPU pairs traverse PCIe switches / CPU root complexes or have NVLink/P2P paths. That file explains performance differences far better than simply saying both machines use 3090s.')}</p>
+        <pre><code>{serverFingerprint}</code></pre>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">06</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('服务器：强制离线运行', 'Server: enforce offline execution')}</span>
+        <h3>{t('让程序在缺文件时立刻报错，而不是偷偷尝试联网', 'Fail fast on missing files instead of silently trying the internet')}</h3>
+        <p>{t('除了 SEED 自带的 WANDB_MODE=offline，再把 Hugging Face / Transformers 设为 offline。这样缺 tokenizer、模型分片或 config 时会尽早暴露“离线包没准备完整”，不会出现代码卡在网络重试上的假死。', 'In addition to SEED’s WANDB_MODE=offline, set Hugging Face / Transformers offline modes. Missing tokenizers, model shards, or configs then reveal an incomplete offline bundle early instead of producing apparent hangs from network retries.')}</p>
+        <pre><code>{offlineEnv}</code></pre>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">07</div>
+      <div class="phase-body">
+        <span class="phase-kicker">ALFWorld</span>
+        <h3>{t('先验证环境，再验证 SEED 的数据构造；不要一上来跑 180×8', 'Validate the environment first, then SEED data construction; do not start with 180×8')}</h3>
+        <ol class="step-list">
+          <li>{t('先确认 ALFWorld cache/PDDL/game files 可以读取，并用一个普通 episode reset/step 跑通。', 'Confirm the ALFWorld cache/PDDL/game files are readable and complete one ordinary reset/step episode.')}</li>
+          <li>{t('如果 Stage 1 数据已在联网端生成，直接校验其 hash，跳到 train_sft.sh；不要在服务器重复调用 analyzer。', 'If Stage-1 data was generated online, verify its hashes and continue at train_sft.sh; do not repeat analyzer calls on the server.')}</li>
+          <li>{t('如果实验室有本地 analyzer endpoint，再用官方 RUN_MODE=smoke 做最小数据链验证。四卡机器把 DATA_PARALLEL_SIZE 从默认 8 显式改成 4。', 'If the lab has a local analyzer endpoint, use official RUN_MODE=smoke for the smallest data-path check. Explicitly change DATA_PARALLEL_SIZE from the default 8 to 4 on the four-GPU host.')}</li>
+        </ol>
+        <pre><code>{alfworldSmoke}</code></pre>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">08</div>
+      <div class="phase-body">
+        <span class="phase-kicker">WebShop</span>
+        <h3>{t('WebShop 的“离线可运行”取决于你有没有把完整数据和搜索索引提前带进来', 'WebShop is offline-capable only if its data and search index were prepared before transfer')}</h3>
+        <p>{t('官方 setup.sh -d all 本身会联网：pip/conda 安装、Google Drive 数据、spaCy en_core_web_lg、搜索索引构建和示例 trajectories 都发生在 setup 阶段。因此实验室里不应该再执行这一步。把准备好的 WebShop 目录整体传入后，先启动本地环境并跑一个商品搜索/episode；只有 localhost 路径稳定后才进入 SFT/RL。', 'The official setup.sh -d all itself is networked: pip/conda installation, Google Drive data, spaCy en_core_web_lg, search-index construction, and example trajectories all happen during setup. Do not rerun it inside the lab. Transfer the prepared WebShop tree, start the local environment, and complete one product-search/episode path before entering SFT/RL.')}</p>
+        <div class="checkpoint"><b>{t('失败时先查', 'If it fails, check first')}</b><span>{t('data/ 是否完整、search_engine/indexes/ 是否存在、Java/faiss/spaCy 环境是否来自离线包；不要先怀疑 3090。', 'data/ completeness, search_engine/indexes/, and whether Java/faiss/spaCy came from the offline environment; do not blame the 3090 first.')}</span></div>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">09</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('SFT → 四卡 RL', 'SFT → four-GPU RL')}</span>
+        <h3>{t('官方 Stage-2 wrapper 默认 8 GPU；四张 3090 必须显式写 N_GPUS_PER_NODE=4', 'The official Stage-2 wrapper defaults to 8 GPUs; a four-3090 host must explicitly set N_GPUS_PER_NODE=4')}</h3>
+        <p>{t('先跑 DRY_RUN 只检查配置和路径。之后再做一个缩短 horizon 的工程 profiling。TOTAL_EPOCHS=10 这里只用于“让四卡路径真正动起来并收集耗时/显存”，不是论文设置；如果遇到 OOM，再围绕官方脚本暴露的 micro-batch、tensor parallel、rollout memory utilization 等参数做四卡适配，并把每个改动写进 manifest。', 'Run DRY_RUN first to validate configuration and paths. Then run a shortened-horizon engineering profile. TOTAL_EPOCHS=10 here exists only to make the four-GPU path execute long enough to collect timing/VRAM data; it is not a paper setting. If OOM occurs, adapt the four-GPU run using the micro-batch, tensor-parallel, rollout-memory-utilization and related knobs exposed by the official scripts, and record every override in the manifest.')}</p>
+        <pre><code>{rlDryRun}</code></pre>
+        <pre><code>{reducedRl}</code></pre>
+        <div class="checkpoint"><b>{t('最关键的记录', 'Most important measurement')}</b><span>{t('跳过第一个 warm-up update，保存接下来至少 5 个稳定 update 的 wall-clock、每卡峰值显存、GPU 利用率和是否发生 OOM/restart。它们才是后面估算 150-step / 云租赁时间的依据。', 'Skip the first warm-up update and record at least five subsequent stable update wall-clocks, per-GPU peak VRAM, utilization, and any OOM/restart. Those measurements—not the generic 3090 estimate—should drive the later 150-step/cloud-rental budget.')}</span></div>
+      </div>
+    </section>
+
+    <section class="phase validation-phase">
+      <div class="phase-index">10</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('结果验证', 'Result validation')}</span>
+        <h3>{t('不要把“能训练”当成“复现成功”：按四层证据逐级升级结论', 'Do not equate “it trains” with “reproduced”: upgrade the claim through four evidence levels')}</h3>
+        <div class="evidence-ladder">
+          <div><span>1</span><div><strong>{t('环境成立', 'Environment works')}</strong><p>{t('ALFWorld/WebShop 能完成 episode；只证明环境与 agent I/O 正常。', 'ALFWorld/WebShop complete episodes; proves only environment and agent I/O.')}</p></div></div>
+          <div><span>2</span><div><strong>{t('训练链成立', 'Training chain works')}</strong><p>{t('SFT checkpoint 可加载，RL 有正常 loss/reward/gradient，checkpoint 能保存和恢复。', 'SFT checkpoint loads; RL has sane loss/reward/gradients; checkpoints save and resume.')}</p></div></div>
+          <div><span>3</span><div><strong>{t('方法效果成立', 'Method effect holds')}</strong><p>{t('在同一模型、同一环境、同一评测和同一四卡硬件下，用 GRPO/结果型 RL 基线对照 SEED；比较多次 run，而不是挑一个最好 seed。', 'On the same model, environment, evaluation, and four-GPU hardware, compare a GRPO/outcome-only RL baseline against SEED across multiple runs rather than selecting one lucky seed.')}</p></div></div>
+          <div><span>4</span><div><strong>{t('论文可比性', 'Paper comparability')}</strong><p>{t('再检查数据规模、超参数、checkpoint、评测集和 8×A800 等差异。四卡 3090 即使趋势一致，也仍属于硬件替代的方法复现，而不是严格硬件复现。', 'Then check data scale, hyperparameters, checkpoint, evaluation set, and 8×A800 differences. Even if the trend matches, 4×3090 remains a hardware-substituted method reproduction rather than exact-hardware reproduction.')}</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="phase">
+      <div class="phase-index">11</div>
+      <div class="phase-body">
+        <span class="phase-kicker">{t('结果回传', 'Return results')}</span>
+        <h3>{t('把“小而关键”的证据通过 SFTP 拉回本地，再由 GitHub 保存可审计记录', 'Pull small, critical evidence back over SFTP and preserve an auditable record in GitHub')}</h3>
+        <p>{t('服务器保留大 checkpoint、完整 trajectory 和原始日志；本地至少拿回 manifest、最终 metrics、profiling、环境指纹、命令、配置和小型评测输出。GitHub 适合存脚本/config/manifest/摘要，不适合存几十 GB checkpoint。', 'Keep large checkpoints, complete trajectories, and raw logs on the server; bring back at least the manifest, final metrics, profiling, environment fingerprint, commands, configs, and compact evaluation outputs. GitHub is appropriate for scripts/config/manifests/summaries, not tens-of-GB checkpoints.')}</p>
+        <pre><code>{manifestExample}</code></pre>
+      </div>
+    </section>
+  </div>
+
+  <section class="decision-gate" aria-labelledby="offline-rent-gate-title">
+    <span class="section-kicker">{t('什么时候才离开实验室去租云卡', 'When to leave the lab and rent cloud GPUs')}</span>
+    <h3 id="offline-rent-gate-title">{t('四卡实验室应该先回答“方法是否值得继续”，云端八卡只负责回答“论文规模是否值得跑”', 'Use the four-GPU lab to answer whether the method is worth pursuing; use eight cloud GPUs only to answer whether paper-scale execution is worth buying')}</h3>
+    <div class="gate-grid">
+      <div><strong>{t('继续用 4×3090', 'Stay on 4×3090')}</strong><p>{t('环境/代码仍不稳定；还在 OOM 调参；GRPO 与 SEED 的趋势尚不清楚；5-update profiling 还没拿到。此时租云卡主要是在付费调试。', 'Environment/code is unstable; OOM tuning continues; the GRPO-vs-SEED trend is unclear; five-update profiling is missing. Renting now mostly pays for debugging.')}</p></div>
+      <div><strong>{t('可以考虑云端 A100×8', 'Consider cloud 8×A100')}</strong><p>{t('离线包完整，两个环境都跑稳，SFT/RL 能恢复，基线与 SEED 的实验协议已冻结，且 4×3090 的实际 wall-clock 已经告诉你论文规模运行可能值得做。', 'Offline bundle is complete; both environments are stable; SFT/RL resume correctly; baseline and SEED protocols are frozen; measured 4×3090 wall-clock suggests paper-scale execution is worth doing.')}</p></div>
+    </div>
+    <p class="formula">T<sub>RL</sub> ≈ median({t('稳定 update', 'stable update')}) × {t('目标更新数', 'target updates')} · T<sub>reserve</sub> ≈ (T<sub>prepare/SFT</sub> + T<sub>RL</sub> + T<sub>eval</sub>) × 1.15</p>
+  </section>
+
+  <footer class="offline-sources">
+    <strong>{t('事实 / 建议边界：', 'Fact / guidance boundary: ')}</strong>
+    <span>{t('SEED 的 Stage 1/2 入口、RUN_MODE=smoke、默认 8-GPU wrapper、N_GPUS_PER_NODE 覆盖项来自官方 SEED 仓库；ALFWorld 下载位置/ALFWORLD_DATA 来自 ALFWorld 官方仓库；WebShop setup.sh 的下载和索引步骤来自 WebShop 官方仓库。SFTP 目录布局、离线 wheel/env 打包、hash/manifest、四卡 profiling 和结果回传顺序是本站针对“单机 4×3090 + 无外网服务器”的工程工作流。', 'SEED Stage-1/2 entrypoints, RUN_MODE=smoke, the default 8-GPU wrapper, and the N_GPUS_PER_NODE override come from the official SEED repository; ALFWorld download paths/ALFWORLD_DATA come from the official ALFWorld repository; WebShop setup.sh download/index steps come from the official WebShop repository. The SFTP layout, offline wheel/env packaging, hash/manifest practice, four-GPU profiling, and result-return sequence are this site’s engineering workflow for a single-node 4×3090 server without internet access.')}</span>
+    <div class="source-links">
+      <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED ↗</a>
+      <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer">ALFWorld ↗</a>
+      <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer">WebShop ↗</a>
+    </div>
+  </footer>
+</section>
+
+<style>
+  .offline-lab { margin: 0 0 74px; padding-top: 42px; border-top: 1px solid var(--line); }
+  .offline-head { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, .62fr); gap: 24px; align-items: start; }
+  .offline-head h2 { max-width: 850px; margin: 7px 0 10px; }
+  .offline-head p { max-width: 850px; color: var(--muted); }
+  .ethernet-note { padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+  .ethernet-note p { margin: 6px 0 0; font-size: .88rem; }
+  .architecture { display: grid; grid-template-columns: 1fr 150px 1fr; gap: 14px; align-items: stretch; margin: 26px 0 18px; }
+  .arch-node { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  .arch-node small, .arch-node strong, .arch-node span { display: block; }
+  .arch-node small { color: var(--muted); }
+  .arch-node strong { margin: 6px 0; }
+  .arch-node span { color: var(--muted); font-size: .86rem; line-height: 1.55; }
+  .arch-link { display: grid; place-content: center; justify-items: center; gap: 5px; color: var(--muted); text-align: center; }
+  .arch-link b { color: var(--text); }
+  .rule-line { margin: 0 0 28px; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--surface-muted); }
+  .rule-line p { margin: 5px 0 0; color: var(--muted); }
+  .offline-timeline { border-top: 1px solid var(--line); }
+  .phase { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 20px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .phase-index { font-family: var(--font-mono, ui-monospace, monospace); font-size: .82rem; font-weight: 800; color: var(--accent-deep); }
+  .phase-kicker { color: var(--muted); font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+  .phase-body h3 { max-width: 880px; margin: 5px 0 9px; }
+  .phase-body > p { max-width: 900px; color: var(--muted); }
+  pre { margin: 15px 0; padding: 15px 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-muted); overflow-x: auto; }
+  pre code { font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: .78rem; line-height: 1.55; }
+  .checkpoint { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--surface-muted); font-size: .84rem; }
+  .checkpoint span { color: var(--muted); }
+  .artifact-table { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+  .artifact-table > div { padding: 15px; border: 1px solid var(--line); border-radius: 11px; }
+  .artifact-table p { margin: 5px 0 0; color: var(--muted); font-size: .84rem; }
+  .choice-grid, .gate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+  .choice-grid article, .gate-grid > div { padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .choice-grid small { color: var(--muted); }
+  .choice-grid h4 { margin: 6px 0; }
+  .choice-grid p, .gate-grid p { color: var(--muted); }
+  .source-boundary { padding: 12px 14px; border-radius: 10px; background: var(--surface-muted); font-size: .84rem; }
+  .path-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .path-grid code { padding: 10px 11px; border-radius: 8px; background: var(--surface-muted); overflow-wrap: anywhere; }
+  .step-list { padding-left: 1.15rem; color: var(--muted); }
+  .step-list li + li { margin-top: 7px; }
+  .evidence-ladder { display: grid; gap: 8px; margin-top: 16px; }
+  .evidence-ladder > div { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 10px; }
+  .evidence-ladder > div > span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--surface-muted); font-weight: 800; }
+  .evidence-ladder strong { display: block; }
+  .evidence-ladder p { margin: 3px 0 0; color: var(--muted); font-size: .84rem; }
+  .decision-gate { margin-top: 32px; padding: 24px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); }
+  .decision-gate h3 { max-width: 860px; margin: 6px 0 0; }
+  .formula { margin: 16px 0 0; padding: 12px 14px; border-radius: 9px; background: var(--surface-muted); font-family: var(--font-mono, ui-monospace, monospace); font-size: .83rem; overflow-wrap: anywhere; }
+  .offline-sources { margin-top: 18px; color: var(--muted); font-size: .81rem; line-height: 1.65; }
+  .offline-sources strong { color: var(--text); }
+  .source-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 7px; }
+  .source-links a { font-weight: 700; }
+  @media (max-width: 820px) {
+    .offline-head, .architecture, .artifact-table, .choice-grid, .gate-grid { grid-template-columns: 1fr; }
+    .arch-link { grid-auto-flow: column; justify-content: start; padding: 2px 4px; }
+    .path-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .phase { grid-template-columns: 1fr; gap: 7px; }
+    .checkpoint, .path-grid { grid-template-columns: 1fr; }
+    .decision-gate { padding: 17px; }
+  }
+</style>
