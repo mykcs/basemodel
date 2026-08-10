@@ -69,6 +69,17 @@ To protect the build budget:
 
 If Pages Functions, Workers, SSR, APIs or other dynamic execution are introduced, revisit the cost and deployment model instead of assuming static-site rules still apply.
 
+### Temporary preview webpages — Direct Upload default (owner policy, 2026-08-10)
+
+For ad-hoc or temporary preview webpages outside the formal PR Preview flow:
+
+- Default to a local build plus Cloudflare Direct Upload (for example `wrangler pages deploy`) and hand the owner the new public preview URL. Direct Upload builds locally, so it does not consume the 500 builds/month Pages quota; preview capability is unchanged (unique per-deployment URL, plus a branch alias when `--branch` is set).
+- Use the formal Git-integrated deployment path only when the owner explicitly requests it, and remind them first that it consumes a Pages build.
+- After any website change is verified, explicitly tell the owner the work is complete and state whether a Cloudflare Pages build was triggered.
+- If a build fails, an upload fails, or the quota impact cannot be confirmed, report that honestly; never claim the quota was untouched without evidence.
+
+This policy covers temporary previews only. The steady-state Git-integrated Preview/Production architecture above is unchanged.
+
 ## Validation rules
 
 Cloudflare automated blocking checks must stay deterministic and repository-local. The current deployment gate is `npm run verify:deploy`, followed by `npm run build`.
