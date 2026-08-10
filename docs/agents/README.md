@@ -7,17 +7,18 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 1. [`LATEST.md`](./LATEST.md) — current handoff and authoritative day-to-day architecture.
 2. [`current/vercel-preview-migration-plan.md`](./current/vercel-preview-migration-plan.md) — **validated ordinary Preview workflow: non-main GitHub branches/PRs -> Vercel Preview; `main` Vercel deployment disabled; Cloudflare remains Production.**
 3. [`current/preview-platform-evaluation.md`](./current/preview-platform-evaluation.md) — decision record explaining why Vercel won the real pilot, why Netlify is deferred, and why Cloudflare Direct Upload remains fallback.
-4. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, evidence semantics, recommendation philosophy, and false-complete acceptance rules.
-5. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — rules for current-model/family verification, first-party evidence, API-vs-open-weight boundaries, and semantic unknowns.
-6. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — SEED worked-example research workflow and teaching contract.
-7. [`current/deployment-policy.md`](./current/deployment-policy.md) — provider/release boundaries and deployment acceptance rules.
-8. [`current/direct-upload-preview-command.md`](./current/direct-upload-preview-command.md) — repository-owned Cloudflare Direct Upload command; use as fallback / Cloudflare-specific Preview path.
-9. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — detailed Cloudflare Direct Upload mechanics and build-budget rules.
-10. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Production / rollback / Direct Upload runbook.
-11. [`current/repository-map.md`](./current/repository-map.md) — repository ownership map and change-to-check guidance.
-12. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance, and rendering rules.
-13. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — older Cloudflare-first execution model; retain as fallback context, but it no longer overrides the validated Vercel ordinary-Preview workflow.
-14. [`/AGENTS.md`](../../AGENTS.md) — repository-wide collaboration / operating rules.
+4. [`current/cloudflare-direct-upload-credential-handoff.md`](./current/cloudflare-direct-upload-credential-handoff.md) — **current Wrangler credential-injection handoff: repository-side Direct Upload is complete; try Agent/runtime secret injection first, narrow GitHub Actions second, plaintext private-repo token only as explicit last resort.**
+5. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, evidence semantics, recommendation philosophy, and false-complete acceptance rules.
+6. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — rules for current-model/family verification, first-party evidence, API-vs-open-weight boundaries, and semantic unknowns.
+7. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — SEED worked-example research workflow and teaching contract.
+8. [`current/deployment-policy.md`](./current/deployment-policy.md) — provider/release boundaries and deployment acceptance rules.
+9. [`current/direct-upload-preview-command.md`](./current/direct-upload-preview-command.md) — repository-owned Cloudflare Direct Upload command; use as fallback / Cloudflare-specific Preview path.
+10. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — detailed Cloudflare Direct Upload mechanics and build-budget rules.
+11. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Production / rollback / Direct Upload runbook.
+12. [`current/repository-map.md`](./current/repository-map.md) — repository ownership map and change-to-check guidance.
+13. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance, and rendering rules.
+14. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — older Cloudflare-first execution model; retain as fallback context, but it no longer overrides the validated Vercel ordinary-Preview workflow.
+15. [`/AGENTS.md`](../../AGENTS.md) — repository-wide collaboration / operating rules.
 
 ## Current deployment authority
 
@@ -64,6 +65,7 @@ docs/agents/
 ├── current/
 │   ├── vercel-preview-migration-plan.md
 │   ├── preview-platform-evaluation.md
+│   ├── cloudflare-direct-upload-credential-handoff.md
 │   ├── product-and-research-integrity.md
 │   ├── model-catalog-verification-policy.md
 │   ├── seed-guided-research-workflow.md
