@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+// Vercel preview pilot trigger only; no runtime behavior change.
 const guide = readFileSync(new URL('./SeedStudentReproductionGuide.astro', import.meta.url), 'utf8');
 const zhPage = readFileSync(new URL('../pages/guide.astro', import.meta.url), 'utf8');
 const enPage = readFileSync(new URL('../pages/en/guide.astro', import.meta.url), 'utf8');
