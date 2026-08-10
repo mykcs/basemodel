@@ -1,0 +1,1 @@
+Diagnostic branch only. This inert source-path file exists solely to trigger the Cloudflare Pages gate for the post-#88 tree.
