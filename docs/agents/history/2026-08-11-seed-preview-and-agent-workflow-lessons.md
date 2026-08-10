@@ -13,6 +13,9 @@ Several lessons recurred across otherwise different tasks and were expensive to 
 - an offline GPU server changes the experiment-preparation workflow more than it changes Git itself;
 - a time estimate is only useful when its derivation and evidence level are visible;
 - a code block or generated result is not really usable if the user must manually select/retype it;
+- a technically workable provider workaround can become the wrong default once a native platform path solves the real job better;
+- “private GitHub repo” and “secret manager” are not interchangeable concepts;
+- changing Preview/hosting providers does not automatically justify changing the application framework;
 - durable Agent knowledge works best when future tasks can trigger it just in time rather than loading every historical note on every turn.
 
 These lessons are now routed through `docs/agents/current/scenario-trigger-registry.md` instead of requiring the owner to repeat them.
@@ -189,7 +192,98 @@ Do not merge unrelated work merely to tidy the branch graph.
 
 Also: do not probe write permissions by creating throwaway files on `main`. Use discovery/read operations or create the intended branch first.
 
-## 9. Agent-knowledge lesson: future triggers are more useful than exhaustive memory
+## 9. Credential lesson: readable is not the same as securely injectable
+
+### Situation
+
+The conversation explored whether a Cloudflare token could be stored as a normal file in a private GitHub repository so ChatGPT could read it and then use Wrangler.
+
+### What mattered
+
+A normal private-repository file is still Git-tracked source. If it contains a live bearer credential, that credential becomes part of Git history and its read surface expands to every person/app/integration with sufficient repository access.
+
+Real GitHub secret stores deliberately behave differently: they can be consumed by the intended runtime, but their decrypted values are not exposed as a generic readable key-value database to an unrelated ChatGPT sandbox.
+
+### Durable rule
+
+Prefer secure execution-environment injection, a connected provider capability, authenticated CLI/keychain state on a persistent Agent machine, or a real secret manager integrated with the runtime.
+
+The repository should own **how to deploy**; the execution environment should own **how credentials are injected**.
+
+Do not freeze a 2026 Agent limitation as timeless truth: secret/connector capabilities must be re-checked against current first-party product documentation.
+
+## 10. Provider-ownership lesson: using Vercel did not mean rewriting Astro
+
+### Situation
+
+Once Vercel became the ordinary Preview provider, it was reasonable to ask whether the project should also move to a Vercel-centered application stack such as Next.js.
+
+### Result
+
+That would have solved the wrong problem. The site remained well suited to Astro/static generation. The original pain was Preview/build ownership, not the application framework.
+
+The cleaner architecture was intentionally asymmetric:
+
+```text
+GitHub = source/history/PRs
+Vercel = ordinary non-main Preview + build feedback
+Cloudflare = Production provider
+```
+
+Later, Cloudflare Workers Static Assets became the approved Production target inside Cloudflare while Vercel stayed Preview-only.
+
+### Durable rule
+
+Decompose “the stack” before modernizing it. A hosting-layer improvement does not automatically justify application-framework churn. Prefer native capabilities and narrow ownership over duplicate provider pipelines or cosmetic symmetry.
+
+## 11. Workers-shadow lesson: prove semantic parity, not cosmetic provider equality
+
+### Situation
+
+Cloudflare Workers Static Assets was prepared as the modern Production target, but Production still lived on Pages.
+
+### What worked
+
+Use a distinct non-production shadow first, then verify the product contract: representative routes, assets, custom 404, canonical/hreflang, indexing defense, security headers, workspace/compare URL state, and real browser behavior.
+
+The shadow passed while still exposing provider-native differences such as redirect status, cache behavior for 404s, MIME formatting, and response-header behavior.
+
+### Durable rule
+
+Do not force every provider difference away. Ask whether the difference breaks product behavior, SEO/security semantics, or an explicit contract. Preserve acceptable native asymmetry.
+
+A green shadow is evidence, not release authorization. The remaining release chain is:
+
+```text
+rollback plan
+-> explicit owner release intent
+-> Production cutover
+-> public verification
+-> keep Pages until rollback is no longer needed
+```
+
+If a custom domain/canonical migration is desired, treat it as a separate SEO/release decision rather than bundling it casually into the first hosting cutover.
+
+## 12. Cross-repository lesson: copy the decision process, not literal config
+
+When the owner asked for the architecture idea to be shared with other website repositories, the safe approach was not to push identical provider/config files everywhere.
+
+Each target repository can have different constraints: GitHub Pages base paths, canonical hosts, provider functions/APIs, framework/runtime choices, or local Agent rules.
+
+The reusable pattern is:
+
+```text
+inspect target repo
+-> identify the actual problem
+-> compare with basemodel as a reference implementation
+-> preserve target-specific asymmetry
+-> write an advisory/evaluation first when migration is not yet justified
+-> encode executable config only after target-specific acceptance
+```
+
+Non-web repositories should not receive website hosting policy merely for account-wide consistency.
+
+## 13. Agent-knowledge lesson: future triggers are more useful than exhaustive memory
 
 The owner does not need every temporary SHA, Preview URL, log, or transient provider status preserved forever. Those are reconstructible.
 
@@ -201,6 +295,10 @@ What is worth preserving is the ability to recognize recurring situations automa
 - beginner-facing cross-site rewrites;
 - actionable content;
 - blocked tool/provider paths;
+- credential/secret boundaries;
+- hosting/platform modernization;
+- Workers cutover/provider differences;
+- cross-repository reuse;
 - overlapping PRs;
 - genuinely reusable lessons.
 
