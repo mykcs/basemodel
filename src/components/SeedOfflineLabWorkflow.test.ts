@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+// Preview-trigger marker: no runtime behavior change.
 const workflow = readFileSync(new URL('./SeedOfflineLabWorkflow.astro', import.meta.url), 'utf8');
 const zhGuide = readFileSync(new URL('../pages/guide.astro', import.meta.url), 'utf8');
 const enGuide = readFileSync(new URL('../pages/en/guide.astro', import.meta.url), 'utf8');
