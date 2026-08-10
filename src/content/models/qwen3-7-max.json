@@ -17,5 +17,5 @@
     {"url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "type": "official_api_docs", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud identifies Qwen3.7 Max as the largest and most capable hosted Qwen3.7 model with 1M context and current API aliases/snapshots. The hosted API does not offer fine-tuning, but that service limitation is not promoted into a model-level license or local-training claim. The reviewed API documentation does not establish a public-weight release, local runtime, derivative-distribution right, or model-license classification, so those fields remain semantic unknowns.", "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "architecture.context_length", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]},
     {"url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Alibaba Cloud records the international Qwen3.7 Max release on May 21, 2026.", "supports": ["release_date"]}
   ],
-  "data_status": "partial"
+  "data_status": "verified"
 }
