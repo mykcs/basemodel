@@ -1,0 +1,50 @@
+---
+import type { Locale } from '../i18n';
+
+interface Props { locale: Locale; path: string }
+type Stage = 'question' | 'constraints' | 'candidates' | 'evidence' | 'decision';
+type Guide = { stage: Stage; current: string; next: string };
+
+const { locale, path } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+const stages: Array<{ id: Stage; label: string }> = [
+  { id: 'question', label: t('先定实验', 'Fix experiment') },
+  { id: 'constraints', label: t('确认限制', 'Check constraints') },
+  { id: 'candidates', label: t('选择方案', 'Choose candidates') },
+  { id: 'evidence', label: t('核对证据', 'Verify evidence') },
+  { id: 'decision', label: t('记录结论', 'Record decision') },
+];
+const exact = (v: string) => path === v || path === `${v}/`;
+const starts = (v: string) => path.startsWith(`${v}/`);
+
+let guide: Guide;
+if (exact('/guide')) {
+  guide = { stage: 'question', current: t('现在就从 4×3090 开始复现 SEED 的 ALFWorld 和 WebShop。', 'Start reproducing SEED on ALFWorld and WebShop with 4×3090 now.'), next: t('按目录从离线包、环境 smoke、SFT、短跑 RL 一路做到完整训练；每一步看到 PASS 再继续。', 'Follow offline bundle → environment smoke → SFT → short RL → full runs; continue only after each PASS.') };
+} else if (exact('/papers') || starts('/papers')) {
+  guide = { stage: 'question', current: t('先确认论文到底用了什么模型、环境、训练阶段和硬件。', 'Confirm the paper model, environments, training stages, and hardware.'), next: t('准备复现时回到 Guide；准备换模型时再进入模型页和工作台。', 'Return to the Guide for reproduction; use models/workspace only when considering a model change.') };
+} else if (exact('/workspace')) {
+  guide = { stage: 'constraints', current: t('把你手上的真实资源写进去：4×24GB、离线、可训练、需要本地权重。', 'Enter the resources you actually have: 4×24GB, offline, trainable, local weights required.'), next: t('先排除跑不了的方案；如果 3090 已经完成实验，就不用为了“更强”再换机器。', 'Remove infeasible options first; if the 3090 run already answers the experiment, do not change hardware just because it is stronger.') };
+} else if (exact('/models') || starts('/models')) {
+  guide = { stage: 'candidates', current: t('先看这个 checkpoint 能不能服务当前实验，再看它强不强。', 'Check whether this checkpoint fits the experiment before asking how strong it is.'), next: t('复现 SEED 先保留 Qwen2.5-3B-Instruct；换模型时把变化写进比较和实验记录。', 'Keep Qwen2.5-3B-Instruct for SEED reproduction; record every change when substituting a model.') };
+} else if (exact('/families') || starts('/families') || exact('/landscape')) {
+  guide = { stage: 'candidates', current: t('这里用来理解代际和替代方案，不用来把论文里的旧 checkpoint 自动升级。', 'Use this page to understand generations and alternatives, not to auto-upgrade a paper checkpoint.'), next: t('只有研究问题变成“换一个新模型再跑”时，才从家族里挑新的候选。', 'Choose a newer family candidate only when the research question explicitly changes to a rerun with a new model.') };
+} else if (exact('/methodology') || exact('/data-status')) {
+  guide = { stage: 'evidence', current: t('把论文事实、市场价格、工程估算和真机结果分开看。', 'Keep paper facts, market prices, engineering estimates, and measured runs separate.'), next: t('关键结论回到一手来源；时间和价格带核验日期，真机数据带 run 和硬件记录。', 'Use primary sources for key claims; timestamp time-sensitive prices and attach run/hardware records to measurements.') };
+} else if (exact('/compare')) {
+  guide = { stage: 'decision', current: t('只比较会改变实验解释的差异。', 'Compare only differences that change the experiment interpretation.'), next: t('确认差异能接受后，把替换原因、风险和证据一起写进 Decision Memo。', 'Once differences are acceptable, record the reason, risk, and evidence in the Decision Memo.') };
+} else {
+  guide = { stage: 'evidence', current: t('先想清楚这页在当前实验里解决什么问题。', 'Ask what problem this page solves in the current experiment.'), next: t('拿到答案就回到原来的实验主线，不要被页面里的其他信息带走。', 'Once answered, return to the experiment mainline instead of following unrelated information.') };
+}
+---
+<section class="research-mainline" aria-label={t('研究主线', 'Research mainline')}>
+  <div class="shell research-mainline-inner">
+    <ol class="research-mainline-stages">
+      {stages.map((stage, index) => <li class:list={{ 'is-active': guide.stage === stage.id }}><span>{String(index + 1).padStart(2, '0')}</span><strong>{stage.label}</strong></li>)}
+    </ol>
+    <div class="research-mainline-context"><strong>{guide.current}</strong><span>{guide.next}</span></div>
+  </div>
+</section>
+<style>
+  .research-mainline{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 76%,transparent)}.research-mainline-inner{padding-top:10px;padding-bottom:11px}.research-mainline-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}.research-mainline-stages li{display:flex;gap:7px;padding:6px 8px 7px;color:var(--muted);border-bottom:2px solid transparent}.research-mainline-stages li+li{border-left:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.research-mainline-stages span{font-size:.62rem}.research-mainline-stages strong{font-size:.72rem;line-height:1.25}.research-mainline-stages .is-active{color:var(--ink);border-bottom-color:var(--accent-deep)}.research-mainline-stages .is-active span{color:var(--accent-deep);font-weight:800}.research-mainline-context{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:9px;font-size:.78rem;line-height:1.5}.research-mainline-context span{color:var(--muted)}@media(max-width:760px){.research-mainline-stages{display:flex;overflow-x:auto}.research-mainline-stages li{flex:0 0 auto;min-width:112px}.research-mainline-context{grid-template-columns:1fr;gap:5px}}
+</style>
