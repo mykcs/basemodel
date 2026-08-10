@@ -69,7 +69,23 @@ Prefer updating an existing canonical document over creating another near-duplic
 
 Do not mechanically create memory, case, ADR, or handoff files after every task. Persistence should be earned by future utility.
 
-## 4. What a useful deposited lesson should contain
+## 4. Make recurring lessons triggerable
+
+A reusable lesson is incomplete if future Agents cannot recognize **when** it should become active.
+
+When a lesson is valuable only in a recognizable situation:
+
+1. describe the trigger using observable cues rather than a vague “remember this later” note;
+2. add or refine a concise route in [`scenario-trigger-registry.md`](./scenario-trigger-registry.md);
+3. keep detailed truth in the existing owning policy/runbook/test/history case rather than copying it into the registry;
+4. include the automatic response and a refresh cue when the knowledge is time-sensitive;
+5. prefer executable protection when a machine-checkable invariant exists.
+
+The registry should be scanned at task start **and re-scanned when the task changes state**: a new blocker appears, an overlapping PR is discovered, a provider/deployment boundary is crossed, `main` moves before final acceptance, a deterministic Gate reveals a hidden invariant, a current/latest claim becomes material, or the finished task appears to have produced a reusable lesson.
+
+This is progressive disclosure: recognize the situation first, then load only the relevant material.
+
+## 5. What a useful deposited lesson should contain
 
 When prose is the right representation, preserve the parts that make the lesson reusable:
 
@@ -81,7 +97,7 @@ When prose is the right representation, preserve the parts that make the lesson 
 - **boundaries** — what is project-specific, provider-specific, temporary, or still uncertain;
 - **future refresh cue** — what should be re-checked against current docs/research instead of frozen as timeless truth.
 
-## 5. Core judgment rule
+## 6. Core judgment rule
 
 > Do not try to make the Agent remember everything. Make it able to solve forward, know when current knowledge may be stale, know where to look, and leave genuinely reusable knowledge where a future Agent will naturally discover and act on it.
 

@@ -16,6 +16,9 @@ Several lessons recurred across otherwise different tasks and were expensive to 
 - a technically workable provider workaround can become the wrong default once a native platform path solves the real job better;
 - “private GitHub repo” and “secret manager” are not interchangeable concepts;
 - changing Preview/hosting providers does not automatically justify changing the application framework;
+- a previously correct workflow can become stale while the conversation is still active;
+- a green Preview can become stale evidence if `main` advances before final acceptance;
+- a deterministic Gate can reveal a real evidence boundary even when the edit looks cosmetic;
 - durable Agent knowledge works best when future tasks can trigger it just in time rather than loading every historical note on every turn.
 
 These lessons are now routed through `docs/agents/current/scenario-trigger-registry.md` instead of requiring the owner to repeat them.
@@ -300,10 +303,117 @@ What is worth preserving is the ability to recognize recurring situations automa
 - Workers cutover/provider differences;
 - cross-repository reuse;
 - overlapping PRs;
+- stale prior plans/current-doc contradictions;
+- exact-head validation drift;
 - genuinely reusable lessons.
 
 That recognition now lives in `docs/agents/current/scenario-trigger-registry.md`, which routes future Agents to the appropriate current source of truth.
 
+## 14. Workflow-drift lesson: conversation memory is a hypothesis, not authority
+
+### Situation
+
+An earlier plan recommended Cloudflare Direct Upload as the ordinary Preview path. By the time the task was resumed, the repository had validated Vercel Preview and was separately progressing a Workers Static Assets Production migration.
+
+At the same time, one `current/` repository-map document still described Direct Upload as the default, so simply “reading current docs” was not enough unless contradictions were resolved against executable/live truth.
+
+### What worked
+
+The task was restarted from:
+
+```text
+AGENTS.md
+-> LATEST.md
+-> executable config/tests
+-> owning current policy
+-> open PRs
+-> live provider state
+```
+
+The stale current document was then corrected rather than left behind as a known trap.
+
+### Durable rule
+
+When the owner says a prior plan may be outdated, or when current documents disagree, refresh first. Do not defend a remembered workflow because it was correct in a previous session.
+
+## 15. Exact-head lesson: a green Preview can become stale evidence
+
+### Situation
+
+A PR head passed the full Vercel Gate and reached READY. Before final acceptance, `main` advanced through parallel Agent work.
+
+### What worked
+
+The branch was compared against the new `main`, intervening changes were inspected for overlap, the feature was synchronized where appropriate, and the exact-head validation was repeated.
+
+### Durable rule
+
+A Preview proves **that commit**. It does not automatically prove a later synchronized head or compatibility with a materially newer merge base.
+
+Before final merge/release on a long-running task:
+
+```text
+compare branch vs current main
+-> inspect overlap/contract changes
+-> synchronize if needed
+-> validate the new exact head
+```
+
+READY, deterministic Gate success, route/browser inspection, and Production state are separate evidence levels.
+
+## 16. Gate-integrity lesson: fix the implementation before weakening a valid invariant
+
+### Situation
+
+A Guide wording change failed a hardware-evidence audit because the wording no longer made the boundary between a heuristic planning estimate and a measured hardware result explicit enough for the existing invariant.
+
+### What worked
+
+The invariant was checked and found to still represent the intended research-integrity boundary. The Guide wording was fixed; the audit was preserved.
+
+### Durable rule
+
+When a seemingly harmless change fails a semantic/adversarial/hardening Gate, first ask what the Gate is protecting. If the protected rule is still correct, repair the product/copy rather than editing the Gate for convenience.
+
+## 17. Beginner-bridge lesson: teach the missing mental model, not all of RL
+
+### Situation
+
+The target beginner was not a general computer novice. The intended user already understood ML/DL, Transformers, fine-tuning, inference, APIs/tools and GPUs, but lacked a clear Agent / agentic-RL model.
+
+Two inferior teaching orders emerged:
+
+- starting with research-mode taxonomy and site navigation before the learner knew what an Agent loop was;
+- jumping directly into four-GPU reproduction commands without explaining runtime vs training.
+
+### What worked
+
+The better sequence was:
+
+```text
+known ML concepts
+-> Agent runtime loop
+-> runtime vs training
+-> minimum RL vocabulary
+-> map into SEED
+-> executable ALFWorld / WebShop work
+-> deeper reproduction/model-selection decisions
+```
+
+The useful concept bridge stays small:
+
+- model/checkpoint -> policy;
+- API/function/MCP/tool call -> action/tool;
+- application/browser/sandbox -> environment;
+- logs/traces -> trajectory/rollout;
+- evaluator/metric/grader -> reward;
+- runtime normally changes history/state with fixed weights;
+- training collects rollouts, forms a learning signal, and updates policy weights.
+
+### Durable rule
+
+A beginner guide should bridge from what the learner already knows to the smallest missing mental model, then return quickly to the real job-to-be-done. Do not turn onboarding into a full RL course unless the user asks for one.
+
 ## Boundary
 
-This record intentionally avoids preserving temporary Preview share URLs, current PR heads, exact remaining build quota, or other reconstructible state. Future Agents should query Git/provider state when those facts matter.
+This record intentionally avoids preserving temporary Preview share URLs, transient deployment IDs, current/intermediate branch heads, exact remaining build quota, or other reconstructible state. Future Agents should query Git/provider state when those facts matter.
