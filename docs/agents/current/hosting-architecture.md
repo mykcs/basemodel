@@ -1,10 +1,30 @@
 # Hosting architecture — Vercel Preview + Cloudflare Workers Static Assets Production
 
-Last reviewed: **2026-08-11 01:56 +08:00**
+Last reviewed: **2026-08-11 02:17 +08:00**
 
-Status: **target architecture approved for shadow migration; Production has not cut over yet.**
+Status: **target architecture approved; repository contract and exact-head Vercel validation are complete; real Workers shadow deployment is the next step; Production has not cut over.**
 
 Read this immediately after `docs/agents/LATEST.md` before changing hosting, deployment, Preview, CI/CD, Cloudflare or Vercel behavior.
+
+## Current migration progress
+
+Completed:
+
+- architecture decision recorded in the top-level Agent handoff/index;
+- PR #105 added the Workers Static Assets shadow contract and was squash-merged to `main` as `3bb916d5754b352e59687b0ec6085179a85e674e`;
+- repository configuration now contains `wrangler.jsonc`, `npm run build:workers:shadow`, and a hosting-architecture regression test;
+- the exact PR head `5eb372491e3cd6ec7f974c1817883818cc632ea3` passed the full Vercel repository Gate and Astro build;
+- Vercel deployment `dpl_3tA1HQrdUrVWZbwoc6rEEH4eGVAg` reached READY;
+- its real Preview returned HTTP 200, `robots noindex`, `x-robots-tag: noindex`, and canonical/hreflang identity pointing to `https://basemodel.pages.dev`;
+- both the migration commit and its squash merge used `[CF-Pages-Skip]`; the merge commit exposed no Cloudflare Pages status/check.
+
+Not yet completed:
+
+- `basemodel-workers-shadow` has **not** been deployed to Cloudflare Workers in the implementation session because that ChatGPT session has no Cloudflare account/deploy connector or injected Cloudflare credential;
+- therefore Workers route/404/header/asset parity has not yet been tested on a real `workers.dev` shadow URL;
+- Production remains Cloudflare Pages and no cutover is authorized.
+
+**Next Agent action:** if a Cloudflare-capable execution surface is available, do not redesign the architecture. Build the shadow artifact with `npm run build:workers:shadow`, deploy `wrangler.jsonc` to the distinct `basemodel-workers-shadow` service, capture the actual `workers.dev` URL, and execute the Phase 2 parity checks below. Do not attach Production routing/domain during this step.
 
 ## Decision
 
@@ -68,6 +88,8 @@ Add/maintain a Workers Static Assets configuration that points to the existing `
 
 The shadow Worker must use a distinct name. Do not reuse the existing Pages project name as evidence that migration is complete.
 
+**Status: complete via PR #105.**
+
 ### Phase 1 — repository / Vercel validation
 
 On a focused non-main branch:
@@ -77,6 +99,8 @@ On a focused non-main branch:
 3. let Vercel validate the exact branch/PR head;
 4. keep Preview noindex/canonical behavior pointing to the current Production identity;
 5. fix repository regressions before any Workers deployment.
+
+**Status: complete for PR #105 exact head `5eb372491e3cd6ec7f974c1817883818cc632ea3`.**
 
 ### Phase 2 — Cloudflare Workers shadow deployment
 
@@ -94,6 +118,8 @@ Verify at minimum:
 - canonical/hreflang/search-indexing behavior;
 - cache/content-type/security headers that the current product depends on;
 - exact Git/source provenance of the artifact being compared.
+
+**Status: pending a Cloudflare-capable execution surface.**
 
 ### Phase 3 — cutover decision
 
@@ -129,6 +155,8 @@ Do not store Cloudflare API tokens in tracked source or a plaintext private-repo
 
 The existing Wrangler credential investigation is retained only for fallback/Cloudflare-specific execution. Ordinary Preview no longer depends on solving that credential path because Vercel already provides the normal Preview surface.
 
+For the one-time/current Workers shadow deployment, use a Cloudflare-connected Agent/tool or secure runtime credential injection. If the current session has neither, stop at the credential/tool boundary and hand off the exact next command/state rather than spending a Pages Build or committing a token.
+
 ## Acceptance evidence
 
 Keep these states distinct in every report:
@@ -147,7 +175,7 @@ Until all required cutover evidence exists, report the architecture as:
 ```text
 CURRENT: Vercel Preview + Cloudflare Pages Production
 TARGET:  Vercel Preview + Cloudflare Workers Static Assets Production
-STATUS:  shadow migration in progress / not cut over
+STATUS:  repository + Vercel phases passed; Workers shadow pending; not cut over
 ```
 
 ## Related current docs
