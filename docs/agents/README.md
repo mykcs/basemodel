@@ -5,17 +5,18 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 ## Start here
 
 1. [`LATEST.md`](./LATEST.md) — fixed timestamped handoff, current repository/deployment state and next action.
-2. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, research-integrity invariants, recommendation philosophy and false-complete acceptance rules.
-3. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — durable SEED worked-example workflow connecting paper/model exploration, Workspace, Compare, evidence and decision-record behavior.
-4. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — durable rules for current-model/family verification, first-party evidence, API-vs-open-weight generation boundaries, semantic unknowns and catalog-audit acceptance.
-5. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — **default day-to-day website preview workflow and Cloudflare Pages Build-budget rule**. Read this before intentionally triggering any Git-connected Pages build.
-6. [`current/deployment-policy.md`](./current/deployment-policy.md) — steady-state architecture and the boundary between normal Direct Upload previews and explicit formal Git-integrated releases.
-7. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
-8. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
-9. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages Direct Upload / formal Git release runbook, SEO identity and rollback rules.
-10. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
+2. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — **latest owner decision for web-GPT + GitHub + Cloudflare work: Agent-side build, Wrangler Preview, Preview auto-builds off, and normally one Cloudflare Production Build only at release. Read this before any ordinary website push/deploy.**
+3. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, research-integrity invariants, recommendation philosophy and false-complete acceptance rules.
+4. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — durable SEED worked-example workflow connecting paper/model exploration, Workspace, Compare, evidence and decision-record behavior.
+5. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — durable rules for current-model/family verification, first-party evidence, API-vs-open-weight generation boundaries, semantic unknowns and catalog-audit acceptance.
+6. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — project-specific Direct Upload commands, PR isolation, integration-preview and Cloudflare Pages Build-budget details.
+7. [`current/deployment-policy.md`](./current/deployment-policy.md) — steady-state architecture and the boundary between normal Direct Upload previews and explicit formal Git-integrated releases.
+8. [`current/repository-map.md`](./current/repository-map.md) — current repository ownership map and change-to-check matrix.
+9. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance and evidence-quality rules.
+10. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — Cloudflare Pages Direct Upload / formal Git release runbook, SEO identity and rollback rules.
+11. [`/AGENTS.md`](../../AGENTS.md) — repository-wide operating and collaboration rules.
 
-If historical wording conflicts with `LATEST.md` or files under `current/`, current guidance wins unless the repository owner explicitly changes policy. For **preview/build-budget behavior**, `current/direct-upload-preview-policy.md` is the newest and most specific authority: ordinary website changes should not spend a Git-connected Pages Build merely to obtain a preview.
+If historical wording conflicts with `LATEST.md` or files under `current/`, current guidance wins unless the repository owner explicitly changes policy. For **ordinary web-GPT preview/build-budget behavior**, `current/web-gpt-cloudflare-build-budget-workflow.md` is the newest owner-level decision; use `current/direct-upload-preview-policy.md` for the project-specific commands and detailed Direct Upload mechanics.
 
 ## Stable structure
 
@@ -24,6 +25,7 @@ docs/agents/
 ├── README.md
 ├── LATEST.md
 ├── current/
+│   ├── web-gpt-cloudflare-build-budget-workflow.md
 │   ├── product-and-research-integrity.md
 │   ├── seed-guided-research-workflow.md
 │   ├── model-catalog-verification-policy.md
@@ -56,7 +58,9 @@ docs/agents/
 
 `current/model-catalog-verification-policy.md` records the durable data-maintenance lessons from the 2026-08-10 full-catalog audit. It requires future Agents to distinguish latest hosted/API generations from latest open-weight/base/research checkpoints, verify family ladders against first-party catalogs, map concrete claims to evidence fields, use precise semantic unknown states, and preserve deployment Gates rather than weakening them to make a data update pass.
 
-`current/direct-upload-preview-policy.md` records the owner's cost-sensitive deployment preference for Codex, ChatGPT conversations and work-mode Agents: locally validate/build first, Direct Upload the prebuilt `dist` to a unique non-production Pages branch, return the public preview URL, and explicitly report whether a Cloudflare Pages Build was triggered. If build/upload/auth/quota evidence is unavailable, say so rather than claiming completion or safety. Only an explicit request for a formal Git-integrated release should intentionally spend the Git-connected Pages Build budget.
+`current/web-gpt-cloudflare-build-budget-workflow.md` records the owner's final 2026-08-10 execution model: ordinary development should be fully orchestratable from ChatGPT/Codex-style web tooling; Agent-side builds are sufficient for the build step; public review uses Wrangler Direct Upload; Cloudflare Preview automatic deployments should be `None`; and `main` remains the deliberate Production boundary so a normal accepted feature usually consumes one Git-integrated Pages Build only when released.
+
+`current/direct-upload-preview-policy.md` contains the detailed repository-specific implementation of that decision: build the prebuilt `dist`, Direct Upload to a unique non-production Pages branch, return the public preview URL, isolate parallel PRs, and explicitly report whether a Cloudflare Pages Build was triggered. If build/upload/auth/quota evidence is unavailable, say so rather than claiming completion or safety.
 
 Future Agents should read the relevant current policy files before broad UI, data-model, research-workflow, model-catalog, framework or deployment redesign work.
 
