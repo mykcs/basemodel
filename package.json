@@ -14,7 +14,7 @@
     "audit:claims": "tsx scripts/audit-claims.ts",
     "audit:vendor-catalogs": "tsx scripts/audit-vendor-catalogs.ts",
     "audit:catalog-diff": "tsx scripts/audit-catalog-diff.ts",
-    "audit:hardening": "tsx scripts/audit-final-product-hardening.ts",
+    "audit:hardening": "node scripts/evaluate-hardening-static-diagnostic.mjs",
     "audit:urls": "tsx scripts/check-source-health.ts",
     "audit:full": "npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:vendor-catalogs && npm run audit:catalog-diff && npm run audit:freshness && npm run audit:coverage",
     "audit:ci": "npm run audit:full",
