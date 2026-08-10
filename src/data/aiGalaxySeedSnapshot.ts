@@ -1,7 +1,7 @@
 export const aiGalaxySeedSnapshot = {
-  checkedAtIso: '2026-08-10T13:15:00+08:00',
-  checkedAtZh: '2026-08-10 13:15（UTC+8）',
-  checkedAtEn: '2026-08-10 13:15 (UTC+8)',
+  checkedAtIso: '2026-08-10T14:54:00+08:00',
+  checkedAtZh: '2026-08-10 14:54（UTC+8）',
+  checkedAtEn: '2026-08-10 14:54 (UTC+8)',
   evidenceBoundary: {
     zh: '这是智星云公开官网与企业算力页在核验时间点展示的公开产品，不等于登录后的实时库存锁定。若算力市场显示“机器已满”，官方文档允许预约。',
     en: 'This snapshot records products publicly listed on AI Galaxy official pages at the checked time; it is not a guarantee of live post-login inventory. If the marketplace shows a machine as full, the official guide supports reservation.',
