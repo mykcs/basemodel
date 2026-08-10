@@ -1,23 +1,14 @@
 ---
 import type { Locale } from '../i18n';
-
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
 
-const preflight = String.raw`# 在离线服务器上，从 /srv/seed 执行
-chmod +x /srv/seed/code/public/guides/seed-4x3090-preflight.sh
-SEED_ROOT=/srv/seed \
-EXPECTED_GPU_COUNT=4 \
-bash /srv/seed/code/public/guides/seed-4x3090-preflight.sh`;
-
-const offlineEnv = String.raw`# 四卡默认值。以后迁移八卡时只改 4 -> 8。
-export EXPECTED_GPU_COUNT="\${EXPECTED_GPU_COUNT:-4}"
+const offlineEnv = `export EXPECTED_GPU_COUNT="\${EXPECTED_GPU_COUNT:-4}"
 export N_GPUS_PER_NODE="\${N_GPUS_PER_NODE:-\$EXPECTED_GPU_COUNT}"
 export DATA_PARALLEL_SIZE="\${DATA_PARALLEL_SIZE:-\$EXPECTED_GPU_COUNT}"
 export TENSOR_PARALLEL_SIZE="\${TENSOR_PARALLEL_SIZE:-1}"
-
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 export WANDB_MODE=offline
 export HF_HUB_OFFLINE=1
@@ -25,38 +16,43 @@ export TRANSFORMERS_OFFLINE=1
 export MODELS_ROOT=/srv/seed/models
 export DATA_ROOT=/srv/seed/data`;
 
-const alfworldSmoke = String.raw`# 前提：skill analyzer 在实验室内可访问。
-# 如果没有本地 analyzer，就在联网环境完成 Stage 1 数据构造，
-# hash 后传入服务器，再从 train_sft.sh 开始。
-RUN_MODE=smoke \
+const preflight = String.raw`chmod +x /srv/seed/tools/seed-4x3090-preflight.sh
+SEED_ROOT=/srv/seed EXPECTED_GPU_COUNT=4 \
+bash /srv/seed/tools/seed-4x3090-preflight.sh`;
+
+const alfworldSmoke = String.raw`RUN_MODE=smoke \
 DATA_PARALLEL_SIZE=4 \
 TENSOR_PARALLEL_SIZE=1 \
 MODEL_PATH="$MODELS_ROOT/Qwen2.5-3B-Instruct" \
-SKILL_BASE_URL=http://127.0.0.1:<port>/v1 \
-SKILL_API_KEY=<local-key-or-empty> \
-SKILL_MODEL=<analyzer-model> \
+SKILL_BASE_URL=http://127.0.0.1:8000/v1 \
+SKILL_API_KEY=EMPTY \
+SKILL_MODEL=local-analyzer \
 bash scripts/sft/alfworld/prepare_data.sh`;
 
-const webshopSmoke = String.raw`# WebShop 没有 RUN_MODE=smoke；用官方可覆盖参数缩到 1 task x 1 rollout。
-NUM_TASKS=1 \
+const webshopSmoke = String.raw`NUM_TASKS=1 \
 ROLLOUTS_PER_TASK=1 \
 MAX_TASKS=1 \
 MAX_CANDIDATES=2 \
+WEBSHOP_USE_SMALL=1 \
 DATA_PARALLEL_SIZE=4 \
 TENSOR_PARALLEL_SIZE=1 \
 MODEL_PATH="$MODELS_ROOT/Qwen2.5-3B-Instruct" \
-SKILL_BASE_URL=http://127.0.0.1:<port>/v1 \
-SKILL_API_KEY=<local-key-or-empty> \
-SKILL_MODEL=<analyzer-model> \
+SKILL_BASE_URL=http://127.0.0.1:8000/v1 \
+SKILL_API_KEY=EMPTY \
+SKILL_MODEL=local-analyzer \
 bash scripts/sft/webshop/prepare_data.sh`;
 
-const sftCommands = String.raw`# ALFWorld
-NPROC_PER_NODE=4 \
-bash scripts/sft/alfworld/train_sft.sh
+const progressCheck = String.raw`python - <<'PY'
+import json, pathlib
+for path in pathlib.Path('outputs').glob('*/progress.json'):
+    p = json.loads(path.read_text())
+    print(path)
+    for k in ['status','completed_rollouts','expected_rollouts','completed_skills','parse_ok_skills','sft_records']:
+        print(f'  {k}: {p.get(k)}')
+PY`;
 
-# WebShop 使用独立的 Python <= 3.10 环境
-NPROC_PER_NODE=4 \
-bash scripts/sft/webshop/train_sft.sh`;
+const sft = String.raw`NPROC_PER_NODE=4 bash scripts/sft/alfworld/train_sft.sh
+NPROC_PER_NODE=4 bash scripts/sft/webshop/train_sft.sh`;
 
 const dryRun = String.raw`N_GPUS_PER_NODE=4 DRY_RUN=true \
 bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
@@ -64,277 +60,144 @@ bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
 N_GPUS_PER_NODE=4 DRY_RUN=true \
 bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
 
-const shortRun = String.raw`# 先做工程验证：让四卡真实训练一段，收集显存和 update 时间。
-N_GPUS_PER_NODE=4 TOTAL_EPOCHS=10 SAVE_FREQ=5 TEST_FREQ=5 \
+const shortRun = String.raw`N_GPUS_PER_NODE=4 TOTAL_EPOCHS=10 SAVE_FREQ=5 TEST_FREQ=5 \
 bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
 
-# 两个环境分开跑，不要同时抢四张卡。
 N_GPUS_PER_NODE=4 TOTAL_EPOCHS=10 SAVE_FREQ=5 TEST_FREQ=5 \
 bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
 
-const fullRun = String.raw`# 当短跑稳定以后，回到正式实验配置。
-# 不在这里硬编码 TOTAL_EPOCHS：先核对当前公开 wrapper 与论文“150 policy updates”的对应关系。
-N_GPUS_PER_NODE=4 \
-bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
+const fullRun = String.raw`N_GPUS_PER_NODE=4 bash examples/seed_trainer/run_alfworld_sft_glm_self.sh
+N_GPUS_PER_NODE=4 bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
 
-N_GPUS_PER_NODE=4 \
-bash examples/seed_trainer/run_webshop_sft_glm_self.sh`;
+const grpo = String.raw`MODEL_PATH="$MODELS_ROOT/Qwen2.5-3B-Instruct" \
+bash examples/grpo_trainer/run_alfworld.sh trainer.n_gpus_per_node=4
 
-const migrateEight = String.raw`# 同一份代码迁移到 8 卡节点
-export EXPECTED_GPU_COUNT=8
+MODEL_PATH="$MODELS_ROOT/Qwen2.5-3B-Instruct" \
+bash examples/grpo_trainer/run_webshop.sh trainer.n_gpus_per_node=4`;
+
+const migrate = String.raw`export EXPECTED_GPU_COUNT=8
 export N_GPUS_PER_NODE=8
 export DATA_PARALLEL_SIZE=8
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-
-# 先做同样的 preflight 和 DRY_RUN，再开正式训练。
 SEED_ROOT=/srv/seed EXPECTED_GPU_COUNT=8 \
-bash /srv/seed/code/public/guides/seed-4x3090-preflight.sh
-
+bash /srv/seed/tools/seed-4x3090-preflight.sh
 N_GPUS_PER_NODE=8 DRY_RUN=true \
 bash examples/seed_trainer/run_alfworld_sft_glm_self.sh`;
 
-const progressCheck = String.raw`python - <<'PY'
-import json, pathlib
-paths = list(pathlib.Path('outputs').glob('*/progress.json'))
-for path in paths:
-    p = json.loads(path.read_text())
-    print(path)
-    for key in ['status', 'completed_rollouts', 'expected_rollouts', 'completed_skills', 'parse_ok_skills', 'sft_records']:
-        print(f'  {key}: {p.get(key)}')
-PY`;
-
-const mainline = [
-  ['00', t('把实验材料准备齐', 'Prepare the complete experiment bundle'), t('代码、模型、ALFWorld、准备好的 WebShop、Python/CUDA 环境、hash。', 'Code, model, ALFWorld, prepared WebShop, Python/CUDA environment, and hashes.')],
-  ['01', t('让 4×3090 服务器通过体检', 'Pass the 4×3090 server preflight'), t('先证明四张卡、模型和离线数据都真的可用。', 'Prove the four GPUs, model, and offline data are actually usable.')],
-  ['02', t('ALFWorld 最小跑通', 'Run the smallest ALFWorld path'), t('一个最小 rollout + skill 数据链完成。', 'Complete a minimal rollout + skill data path.')],
-  ['03', t('WebShop 最小跑通', 'Run the smallest WebShop path'), t('本地搜索环境能启动，再完成 1 task × 1 rollout。', 'Start the local search environment, then complete 1 task × 1 rollout.')],
-  ['04', t('完成两套 SFT', 'Finish SFT for both environments'), t('拿到能被 Stage 2 识别和加载的 checkpoint。', 'Produce checkpoints that Stage 2 can recognize and load.')],
-  ['05', t('四卡 RL 先短跑', 'Short-run RL on four GPUs'), t('DRY_RUN → 10 epochs 工程跑 → 5 个稳定 update。', 'DRY_RUN → 10-epoch engineering run → five stable updates.')],
-  ['06', t('完整训练并评测', 'Run full training and evaluation'), t('ALFWorld、WebShop 都完成，保留 checkpoint、metrics 和日志。', 'Complete both ALFWorld and WebShop, keeping checkpoints, metrics, and logs.')],
-  ['07', t('只在需要时迁移 8 卡', 'Move to eight GPUs only if needed'), t('3090 已经答完研究问题就结束；时间/显存卡住再迁移。', 'Stop if 3090 already answers the question; migrate only for time/memory limits.')],
+const route = [
+  ['00', t('准备离线包', 'Prepare offline bundle')],
+  ['01', t('四卡服务器体检', 'Preflight four GPUs')],
+  ['02', t('ALFWorld 最小跑通', 'ALFWorld smoke')],
+  ['03', t('WebShop 最小跑通', 'WebShop smoke')],
+  ['04', t('训练两套 SFT', 'Train both SFT checkpoints')],
+  ['05', t('四卡 RL 短跑', 'Short-run four-GPU RL')],
+  ['06', t('完整训练 + GRPO 对照', 'Full run + GRPO control')],
+  ['07', t('必要时迁移 8 卡', 'Migrate to eight GPUs if needed')],
 ];
 ---
 
-<section id="seed-student-mainline" class="seed-student" aria-labelledby="seed-student-title">
-  <header class="student-head">
+<section id="seed-student-mainline" class="seed-mainline" aria-labelledby="seed-mainline-title">
+  <header class="hero">
     <p class="section-kicker">{t('SEED 复现主线 · ALFWorld + WebShop', 'SEED reproduction mainline · ALFWorld + WebShop')}</p>
-    <h2 id="seed-student-title">{t('先用 4×RTX 3090 把两套实验一路跑到底', 'Start by taking both experiments end to end on 4×RTX 3090')}</h2>
-    <p class="intro">{t('你的第一目标很具体：在没有公网的四卡服务器上，让 ALFWorld 和 WebShop 都从离线数据、SFT 走到 RL 和评测。每一步先做最小验证，过了再放大。四张 3090 如果能完成计划中的完整训练和评测，我们在这个 3090 上就全部做完了。8×A800 / 8×A100 只保留成后续迁移入口。', 'The first goal is concrete: on the offline four-GPU server, take both ALFWorld and WebShop from offline data through SFT, RL, and evaluation. Validate the smallest version first, then scale up. If the four 3090s complete the planned full runs and evaluations, the reproduction work is done there. Keep 8×A800 / 8×A100 only as a later migration path.')}</p>
-    <div class="finish-line">
-      <strong>{t('最终一句话标准', 'One-line finish condition')}</strong>
-      <span>{t('两套环境都跑完完整训练和评测，结果与配置能追溯到同一个 Git commit：我们在这个 3090 上就全部做完了。', 'Both environments finish full training and evaluation, and every result/config traces back to one Git commit: the 3090 reproduction is complete.')}</span>
-    </div>
+    <h2 id="seed-mainline-title">{t('先用 4×RTX 3090 把两套实验一路跑到底', 'Take both experiments end to end on 4×RTX 3090 first')}</h2>
+    <p>{t('服务器没有公网，所以先在联网端把模型、数据和依赖准备齐，再通过 SFTP 放进实验室。每一步只做一个判断：这一步有没有真的跑通。过了再放大。四张 3090 如果能完成计划中的完整训练和评测，我们在这个 3090 上就全部做完了。', 'The server has no public internet, so prepare models, data, and dependencies online and move them into the lab over SFTP. Each step answers one question: did this stage really work? Scale only after it passes. If four 3090s finish the planned full training and evaluation, the reproduction is complete there.')}</p>
+    <div class="finish"><b>{t('最后怎么算完成？', 'When are we done?')}</b><span>{t('ALFWorld 和 WebShop 都完成完整训练与评测；SEED 与同条件 GRPO 有可比较结果；checkpoint、metrics、日志、配置、Git SHA 和数据 hash 都能追溯。', 'ALFWorld and WebShop both finish full training/evaluation; SEED has a comparable same-condition GRPO control; checkpoints, metrics, logs, configs, Git SHA, and data hashes are traceable.')}</span></div>
   </header>
 
-  <nav class="mainline-nav" aria-label={t('SEED 复现主线目录', 'SEED reproduction mainline')}>
-    {mainline.map(([index, title, note]) => <a href={`#seed-step-${index}`}><b>{index}</b><span><strong>{title}</strong><small>{note}</small></span></a>)}
+  <nav class="route" aria-label={t('SEED 复现目录', 'SEED reproduction route')}>
+    {route.map(([n, label]) => <a href={`#seed-step-${n}`}><b>{n}</b><span>{label}</span></a>)}
   </nav>
 
-  <section class="orientation" aria-labelledby="seed-orientation-title">
-    <h3 id="seed-orientation-title">{t('先知道“复现成功”有几层', 'Know what “success” means before running')}</h3>
-    <p>{t('你不用等到最后才判断。下面每一层都能单独验收。前一层没过，就先修这一层，不要继续堆更大的训练。', 'You do not need to wait until the end to judge success. Each level below is independently testable. If one level fails, fix it before scaling the run.')}</p>
-    <ol class="success-ladder">
-      <li><b>1</b><div><strong>{t('机器准备好了', 'Machine ready')}</strong><span>{t('四张 GPU、模型、数据、依赖和版本记录都通过 preflight。', 'Four GPUs, model, data, dependencies, and provenance pass preflight.')}</span></div></li>
-      <li><b>2</b><div><strong>{t('环境能玩一局', 'Environment can run an episode')}</strong><span>{t('ALFWorld / WebShop 都能 reset、action、observation，不缺本地资源。', 'ALFWorld / WebShop can reset, act, and observe without missing local assets.')}</span></div></li>
-      <li><b>3</b><div><strong>{t('Stage 1 真产出数据', 'Stage 1 produces real data')}</strong><span>{t('progress.json 里 rollout、skill、可解析 skill 和 SFT records 都出现有效结果。', 'progress.json reports completed rollouts, skills, parseable skills, and SFT records.')}</span></div></li>
-      <li><b>4</b><div><strong>{t('训练链跑通', 'Training chain works')}</strong><span>{t('SFT checkpoint 能加载；RL 能更新、保存、恢复；loss/reward 没有 NaN/Inf。', 'SFT checkpoint loads; RL updates, saves, and resumes; loss/reward stay finite.')}</span></div></li>
-      <li><b>5</b><div><strong>{t('方法复现成立', 'Method reproduction holds')}</strong><span>{t('同样的模型、环境和评测下，SEED 与 GRPO 基线做多次可比较运行，整体趋势支持 SEED 的方法效果。', 'Under the same model, environment, and evaluation, repeated comparable SEED vs GRPO runs support the method effect.')}</span></div></li>
-      <li><b>6</b><div><strong>{t('论文可比性', 'Paper comparability')}</strong><span>{t('再对齐论文的 180×8 Stage 1、3-epoch SFT、150 policy updates、评测协议和 8×A800 80GB 等条件。', 'Then align the paper’s 180×8 Stage 1, 3-epoch SFT, 150 policy updates, evaluation protocol, and 8×A800 80GB hardware condition.')}</span></div></li>
+  <section class="success" aria-labelledby="success-title">
+    <h3 id="success-title">{t('先把“成功”分成 6 层', 'Use six levels of success')}</h3>
+    <ol>
+      <li><b>1</b><span><strong>{t('机器准备好', 'Machine ready')}</strong>{t('preflight 全 PASS。', 'Preflight is all PASS.')}</span></li>
+      <li><b>2</b><span><strong>{t('环境能跑', 'Environment works')}</strong>{t('能 reset、action、observation，WebShop 本地搜索也能用。', 'Reset/action/observation work, including local WebShop search.')}</span></li>
+      <li><b>3</b><span><strong>{t('Stage 1 有产物', 'Stage 1 has artifacts')}</strong>{t('progress.json 里 rollout、skill、parse_ok_skills、sft_records 都有有效值。', 'progress.json has real rollout, skill, parse_ok_skills, and sft_records values.')}</span></li>
+      <li><b>4</b><span><strong>{t('训练链跑通', 'Training chain works')}</strong>{t('SFT checkpoint 能加载；RL 能更新、保存、恢复；没有 NaN/Inf。', 'SFT checkpoint loads; RL updates, saves, resumes; no NaN/Inf.')}</span></li>
+      <li><b>5</b><span><strong>{t('方法复现', 'Method reproduction')}</strong>{t('同模型/环境/评测下，多次 SEED 与 GRPO 对照能支持方法效果。', 'Repeated SEED vs GRPO controls under the same model/environment/evaluation support the method effect.')}</span></li>
+      <li><b>6</b><span><strong>{t('论文可比', 'Paper comparable')}</strong>{t('再对齐 180×8 Stage 1、SFT 3 epochs、150 policy updates、评测和 8×A800 80GB。', 'Then align 180×8 Stage 1, 3 SFT epochs, 150 policy updates, evaluation, and 8×A800 80GB.')}</span></li>
     </ol>
   </section>
 
-  <section id="seed-step-00" class="step-section">
-    <div class="step-number">00</div>
-    <div class="step-copy">
-      <p class="step-kicker">{t('联网电脑上做', 'Do this on the online side')}</p>
-      <h3>{t('把离线服务器会用到的东西一次准备齐', 'Prepare everything the offline server will need')}</h3>
-      <p>{t('服务器不能临时去 GitHub、Hugging Face、pip 或 WebShop 下载缺失文件，所以真正的第一步是做一个完整离线包。代码用 GitHub 管版本；大模型和数据通过 SFTP 单独传；每批大文件都保留 SHA256。', 'The server cannot fetch missing files from GitHub, Hugging Face, pip, or WebShop during a run, so the real first step is a complete offline bundle. Use GitHub for code history; transfer large models and data separately over SFTP; keep SHA256 manifests for large assets.')}</p>
-      <div class="bundle-line"><code>code/</code><code>models/</code><code>data/alfworld/</code><code>data/webshop/</code><code>env/</code><code>runs/</code><code>SHA256SUMS.txt</code></div>
-      <div class="plain-note"><strong>{t('WebShop 要特别注意', 'WebShop matters here')}</strong><span>{t('先在联网 Linux 环境完成它的 setup：数据下载、spaCy、Java/faiss 依赖和搜索索引都准备好，再整体搬进实验室。', 'Complete WebShop setup on an online Linux environment first: data download, spaCy, Java/faiss dependencies, and the search index should be ready before the tree enters the lab.')}</span></div>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span>{t('离线包有固定目录；模型/数据有 hash；实验代码有明确 Git SHA；服务器不需要临时联网补文件。', 'Bundle layout is fixed; model/data have hashes; experiment code has a Git SHA; the server needs no last-minute internet downloads.')}</span></div>
+  <section id="seed-step-00" class="step"><b class="num">00</b><div>
+    <h3>{t('联网端先做完整离线包', 'Build the full offline bundle on the online side')}</h3>
+    <p>{t('代码放 GitHub 管版本；模型、ALFWorld 数据、准备好的 WebShop、Linux/Python/CUDA 依赖和 preflight 脚本通过 SFTP 搬运。WebShop 的 setup 会联网下载数据、spaCy 并建立搜索索引，所以要在联网 Linux 环境先做完。', 'Use GitHub for code history; move the model, ALFWorld data, prepared WebShop, Linux/Python/CUDA dependencies, and preflight script over SFTP. WebShop setup downloads data/spaCy and builds the search index, so finish it on an online Linux host.')}</p>
+    <p class="paths"><code>code/</code><code>models/</code><code>data/alfworld/</code><code>data/webshop/</code><code>env/</code><code>tools/</code><code>runs/</code><code>SHA256SUMS.txt</code></p>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span>{t('服务器不需要临时联网补文件；实验代码有 Git SHA；模型和数据有 SHA256。', 'No last-minute internet downloads; code has a Git SHA; models/data have SHA256.')}</span></div>
+  </div></section>
+
+  <section id="seed-step-01" class="step"><b class="num">01</b><div>
+    <h3>{t('看到 READY 再开始训练', 'Start training only after READY')}</h3>
+    <pre><code>{preflight}</code></pre><pre><code>{offlineEnv}</code></pre>
+    <a href="/guides/seed-4x3090-preflight.sh">{t('打开 preflight 脚本', 'Open the preflight script')}</a>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span><code>READY: offline bundle and GPU visibility passed the preflight gate.</code></span></div>
+  </div></section>
+
+  <section id="seed-step-02" class="step"><b class="num">02</b><div>
+    <h3>ALFWorld · {t('先跑官方 smoke', 'run the official smoke path')}</h3>
+    <p>{t('官方脚本支持 RUN_MODE=smoke；每类默认 1 task × 1 rollout。四卡把 DATA_PARALLEL_SIZE 从默认 8 改成 4。Stage 1 还需要 skill analyzer：实验室有本地 analyzer 就用内网地址；没有就把 Stage 1 数据在合规联网环境生成并 hash 后带回来。', 'The official script supports RUN_MODE=smoke, defaulting to 1 task × 1 rollout per type. On four GPUs set DATA_PARALLEL_SIZE=4 instead of the default 8. Stage 1 also needs a skill analyzer: use an internal endpoint if available, otherwise generate Stage-1 data in an approved online environment and bring it back with hashes.')}</p>
+    <pre><code>{alfworldSmoke}</code></pre><pre><code>{progressCheck}</code></pre>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span><code>completed_rollouts == expected_rollouts</code>；<code>completed_skills</code>、<code>parse_ok_skills</code>、<code>sft_records</code> &gt; 0。</span></div>
+  </div></section>
+
+  <section id="seed-step-03" class="step"><b class="num">03</b><div>
+    <h3>WebShop · {t('先确认本地商店，再跑 1×1', 'prove the local shop, then run 1×1')}</h3>
+    <p>{t('先运行 WebShop text environment。能看到 Products loaded、Loaded goals、Available actions，并完成一次 search/click，再进入 SEED。WebShop prepare_data 没有 RUN_MODE=smoke，所以用官方可覆盖参数缩成 1 task × 1 rollout。', 'Run the WebShop text environment first. Once it prints Products loaded, Loaded goals, Available actions and completes a search/click interaction, move to SEED. WebShop prepare_data has no RUN_MODE=smoke, so use its official override knobs for 1 task × 1 rollout.')}</p>
+    <pre><code>{webshopSmoke}</code></pre>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span>{t('本地交互成功，随后 progress.json 出现完成 rollout、有效 skill 和 SFT records。', 'Local interaction succeeds, then progress.json shows a completed rollout, valid skill, and SFT records.')}</span></div>
+  </div></section>
+
+  <section id="seed-step-04" class="step"><b class="num">04</b><div>
+    <h3>{t('两套 Stage 1 都过了，再训练 SFT', 'Train SFT only after both Stage-1 paths pass')}</h3>
+    <pre><code>{sft}</code></pre>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span>{t('导出的 checkpoint 有 config.json 和模型权重；Stage-2 wrapper 能真正加载，不再报 HF model not found。', 'Exported checkpoint has config.json and weights; the Stage-2 wrapper loads it and no longer reports HF model not found.')}</span></div>
+  </div></section>
+
+  <section id="seed-step-05" class="step"><b class="num">05</b><div>
+    <h3>{t('RL 先 DRY_RUN，再做 10 epochs 短跑', 'DRY_RUN first, then a 10-epoch RL short run')}</h3>
+    <p>{t('官方 wrapper 默认 8 GPU，并提供 DRY_RUN。四卡显式写 N_GPUS_PER_NODE=4。短跑只用来确认显存、通信、保存/恢复和真实 update 时间。ALFWorld 与 WebShop 分开跑。', 'The official wrapper defaults to 8 GPUs and provides DRY_RUN. Explicitly set N_GPUS_PER_NODE=4. The short run checks memory, communication, save/resume, and real update time. Run ALFWorld and WebShop separately.')}</p>
+    <pre><code>{dryRun}</code></pre><pre><code>{shortRun}</code></pre>
+    <div class="gate"><b>{t('通过', 'Pass')}</b><span>{t('跨过 warm-up 后至少 5 个 update 稳定完成；loss/reward 有限；没有持续 OOM；checkpoint 能保存并恢复。记录每个 update wall-clock、峰值显存和 GPU 利用率。', 'After warm-up, at least five updates complete stably; loss/reward are finite; no persistent OOM; checkpoint saves/resumes. Record update wall-clock, peak VRAM, and GPU utilization.')}</span></div>
+  </div></section>
+
+  <section id="seed-step-06" class="step"><b class="num">06</b><div>
+    <h3>{t('短跑稳定后，完整训练；再做同条件 GRPO', 'After stable short runs, finish training and add same-condition GRPO')}</h3>
+    <pre><code>{fullRun}</code></pre>
+    <p>{t('论文报告 150 policy updates；当前公开 Stage-2 wrapper 的 TOTAL_EPOCHS 默认是 160。做论文可比实验前，要核对代码里 epoch 与实际 update 的映射，不要只把一个变量改成 150 就当作对齐。', 'The paper reports 150 policy updates; the current public Stage-2 wrapper defaults TOTAL_EPOCHS to 160. Before a paper-comparable run, verify how epochs map to actual updates instead of simply setting one variable to 150.')}</p>
+    <h4>{t('GRPO 对照', 'GRPO control')}</h4><pre><code>{grpo}</code></pre>
+    <p class="paper">{t('论文 Qwen2.5-3B-Instruct 参考：ALFWorld avg 91.8；WebShop score 88.5；success 78.9。它们是量级和趋势参考，四卡单次 run 不需要精确复刻。', 'Paper reference for Qwen2.5-3B-Instruct: ALFWorld avg 91.8; WebShop score 88.5; success 78.9. These are scale/trend references, not exact targets for one four-GPU run.')}</p>
+    <div class="gate final"><b>{t('主线完成', 'Mainline complete')}</b><span>{t('两环境完整训练 + 评测完成，SEED/GRPO 可比较，所有结果能追溯。研究问题已经回答时：我们在这个 3090 上就全部做完了。', 'Both environments finish full training + evaluation, SEED/GRPO are comparable, and all results are traceable. If the research question is answered, the 3090 reproduction is complete.')}</span></div>
+  </div></section>
+
+  <section id="seed-step-07" class="step"><b class="num">07</b><div>
+    <h3>{t('3090 卡在显存或时间，再迁移 8 卡', 'Move to eight GPUs only if 3090 is blocked by memory or time')}</h3>
+    <p>{t('实验逻辑不改；模型/数据/评测/run manifest 不改。只把 GPU 数、data parallel 和必要显存参数换到 8 卡，再重复 preflight → DRY_RUN → short run。8×A800 80GB 更接近论文硬件；8×A100 80GB 是硬件替代的方法复现。', 'Keep experiment logic, model/data/evaluation/run manifest unchanged. Change GPU count, data parallel, and necessary memory knobs, then repeat preflight → DRY_RUN → short run. 8×A800 80GB matches paper hardware more closely; 8×A100 80GB is a hardware-substituted method reproduction.')}</p>
+    <pre><code>{migrate}</code></pre>
+  </div></section>
+
+  <section class="time-risk">
+    <div><p class="section-kicker">{t('需要多久', 'Time')}</p><h3>{t('先按 1–2 天跑通链路；完整两环境先按 3–6 天排期', 'Plan 1–2 days to prove the chain; 3–6 days for both full environments')}</h3>
+      <p>{t('离线材料 4–12h；服务器和两环境体检 2–6h；最小数据链 1–3h（analyzer 已解决）；SFT + 缩小 RL + profiling 先留 12–24h；完整两环境目前只把 72–144h 当四卡排期先验。拿到 5 个稳定 update 后，立刻用实测 wall-clock 重算。', 'Offline staging 4–12h; server/two-environment bring-up 2–6h; minimal data paths 1–3h once analyzer is solved; reserve 12–24h for SFT + reduced RL + profiling; use 72–144h only as an initial four-GPU scheduling prior for both full environments. Recalculate immediately after five stable updates.')}</p>
+      <small>{t('这些是工程排期，不是 RTX 3090 实测 benchmark。', 'These are engineering planning ranges, not measured RTX 3090 benchmarks.')}</small>
     </div>
+    <aside><p class="section-kicker">{t('主要难点', 'Main difficulties')}</p><ol>
+      <li>{t('离线依赖：wheel、模型分片、ALFWorld 数据、WebShop 索引缺一个都会硬阻塞。', 'Offline dependencies: one missing wheel, model shard, ALFWorld asset, or WebShop index can hard-block the run.')}</li>
+      <li>{t('Stage 1 analyzer：论文数据构造需要外部 analyzer，你的服务器没有公网。', 'Stage-1 analyzer: paper-style data construction needs an external analyzer while the server is offline.')}</li>
+      <li>{t('4×24GB：OOM 后要调 micro-batch / parallelism，并受 GPU topology 影响。', '4×24GB: OOM tuning may require micro-batch/parallelism changes and depends on GPU topology.')}</li>
+      <li>{t('WebShop：数据、搜索索引和旧依赖栈比 ALFWorld 更容易出环境问题。', 'WebShop: data, search index, and older dependencies create more environment risk than ALFWorld.')}</li>
+      <li>{t('“能跑”与“方法复现”不同：最后必须有同条件 GRPO 对照。', '“Runs” and “method reproduced” differ: the final evidence needs a same-condition GRPO control.')}</li>
+    </ol></aside>
   </section>
 
-  <section id="seed-step-01" class="step-section">
-    <div class="step-number">01</div>
-    <div class="step-copy">
-      <p class="step-kicker">{t('离线服务器第一条命令', 'First command on the offline server')}</p>
-      <h3>{t('先跑体检脚本，看到 READY 再碰训练', 'Run preflight first; touch training only after READY')}</h3>
-      <p>{t('这份脚本会检查 GPU 数量、PyTorch CUDA、Git commit、SHA256、Qwen config、ALFWorld 数据和 WebShop 目录，同时保存 nvidia-smi 与 GPU topology。它默认四卡，以后迁移八卡只需要把 EXPECTED_GPU_COUNT 改成 8。', 'The script checks GPU count, PyTorch CUDA, Git commit, SHA256, Qwen config, ALFWorld data, and WebShop directories, while saving nvidia-smi and GPU topology. It defaults to four GPUs; later migration only changes EXPECTED_GPU_COUNT to 8.')}</p>
-      <pre><code>{preflight}</code></pre>
-      <a class="script-link" href="/guides/seed-4x3090-preflight.sh">{t('打开可复制的 preflight 脚本', 'Open the reusable preflight script')}</a>
-      <pre><code>{offlineEnv}</code></pre>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span><code>READY: offline bundle and GPU visibility passed the preflight gate.</code></span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-02" class="step-section">
-    <div class="step-number">02</div>
-    <div class="step-copy">
-      <p class="step-kicker">ALFWorld</p>
-      <h3>{t('先做最小数据链，不要直接跑论文规模', 'Start with the smallest data path, not paper scale')}</h3>
-      <p>{t('官方 ALFWorld prepare_data.sh 自带 RUN_MODE=smoke：每类任务默认只取 1 个 task、1 个 rollout，正适合第一次验证。四卡机把 data parallel 从默认 8 改成 4。', 'The official ALFWorld prepare_data.sh includes RUN_MODE=smoke: by default it uses one task and one rollout per task type, which is ideal for first validation. On four GPUs, change data parallel from the default 8 to 4.')}</p>
-      <pre><code>{alfworldSmoke}</code></pre>
-      <p>{t('服务器没有公网时，Stage 1 的 analyzer 是最容易卡住的地方。实验室允许内部 analyzer，就让 SKILL_BASE_URL 指向它；没有的话，在合规的联网环境把 Stage 1 数据生成好、做 hash，再传回服务器。不要为了方便偷偷给服务器做代理绕过网络策略。', 'On an offline server, the Stage-1 analyzer is the most likely blocker. If the lab provides an internal analyzer, point SKILL_BASE_URL to it. Otherwise generate Stage-1 data in an approved online environment, hash it, and transfer it back. Do not proxy around the lab network policy just for convenience.')}</p>
-      <pre><code>{progressCheck}</code></pre>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span>{t('progress.json 里的 completed_rollouts 达到 expected_rollouts，并且 completed_skills、parse_ok_skills、sft_records 都大于 0。', 'progress.json reaches completed_rollouts == expected_rollouts and completed_skills, parse_ok_skills, and sft_records are all greater than zero.')}</span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-03" class="step-section">
-    <div class="step-number">03</div>
-    <div class="step-copy">
-      <p class="step-kicker">WebShop</p>
-      <h3>{t('先确认本地商店真的能用，再跑 1 task × 1 rollout', 'Make sure the local shop works, then run 1 task × 1 rollout')}</h3>
-      <p>{t('WebShop 的官方 setup 会下载商品/指令数据、spaCy 模型并建立搜索索引，所以这一步必须在联网端提前完成。搬进服务器以后，先跑它的 text environment；能看到 Products loaded、Loaded goals 和 Available actions，再进入 SEED 的 prepare_data。', 'WebShop setup downloads product/instruction data, the spaCy model, and builds the search index, so setup belongs on the online side. After transfer, run the text environment first; once it prints product loading, goals, and available actions, move into SEED prepare_data.')}</p>
-      <pre><code>{webshopSmoke}</code></pre>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span>{t('本地 WebShop 能完成一次 search/click 交互；随后 progress.json 出现完成 rollout、有效 skill 和 SFT records。', 'Local WebShop completes a search/click interaction; then progress.json reports a completed rollout, valid skill, and SFT records.')}</span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-04" class="step-section">
-    <div class="step-number">04</div>
-    <div class="step-copy">
-      <p class="step-kicker">Stage 1 · SFT</p>
-      <h3>{t('两套数据链都过了，再训练 SFT checkpoint', 'Train SFT checkpoints only after both data paths pass')}</h3>
-      <pre><code>{sftCommands}</code></pre>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span>{t('训练正常结束；导出的 checkpoint 至少有 config.json 和模型权重；下一阶段 wrapper 不再报 “HF model not found”，并能实际加载 checkpoint。', 'Training exits cleanly; the exported checkpoint contains config.json and model weights; the next-stage wrapper no longer reports “HF model not found” and can load the checkpoint.')}</span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-05" class="step-section">
-    <div class="step-number">05</div>
-    <div class="step-copy">
-      <p class="step-kicker">Stage 2 · 4 GPU RL</p>
-      <h3>{t('先 DRY_RUN，再短跑；第一次别拿 3–6 天去赌配置', 'DRY_RUN, then short-run; do not gamble days on the first config')}</h3>
-      <p>{t('官方 Stage-2 wrapper 默认 8 GPU，同时提供 DRY_RUN。四卡先显式写 N_GPUS_PER_NODE=4。DRY_RUN 过了，再用 10 epochs 做工程短跑，目的只是确认显存、通信、保存和恢复都工作。', 'The official Stage-2 wrapper defaults to 8 GPUs and provides DRY_RUN. On the four-GPU host, explicitly set N_GPUS_PER_NODE=4. After DRY_RUN passes, use a 10-epoch engineering run only to verify memory, communication, checkpoint save, and resume.')}</p>
-      <pre><code>{dryRun}</code></pre>
-      <pre><code>{shortRun}</code></pre>
-      <div class="gate"><b>{t('这一关算过', 'Pass when')}</b><span>{t('训练至少跨过 warm-up；后面 5 个 update 都能稳定完成；loss/reward 是有限数；没有持续 OOM；checkpoint 能保存并恢复。记录每个稳定 update 的 wall-clock、每卡峰值显存和 GPU 利用率。', 'Training gets past warm-up; the next five updates complete stably; loss/reward are finite; there is no persistent OOM; checkpoints save and resume. Record wall-clock per stable update, peak VRAM per GPU, and GPU utilization.')}</span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-06" class="step-section">
-    <div class="step-number">06</div>
-    <div class="step-copy">
-      <p class="step-kicker">{t('正式运行', 'Full run')}</p>
-      <h3>{t('短跑稳定以后，才让 ALFWorld 和 WebShop 各自完整跑完', 'Once the short run is stable, complete ALFWorld and WebShop separately')}</h3>
-      <pre><code>{fullRun}</code></pre>
-      <p>{t('论文报告的是 150 个 policy updates；当前公开 wrapper 的 TOTAL_EPOCHS 默认值是 160。做论文可比实验前，要核对当前代码里的 epoch/update 映射和最终实际 update 数，不要只把某个变量改成 150 就宣布对齐。', 'The paper reports 150 policy updates, while the current public wrapper defaults TOTAL_EPOCHS to 160. Before a paper-comparable run, verify how the current code maps epochs to actual policy updates; do not simply rename or set one variable to 150 and declare alignment.')}</p>
-      <div class="paper-reference">
-        <strong>{t('论文里的 Qwen2.5-3B-Instruct 参考坐标', 'Paper reference for Qwen2.5-3B-Instruct')}</strong>
-        <span>ALFWorld avg <b>91.8</b></span><span>WebShop score <b>88.5</b></span><span>WebShop success <b>78.9</b></span>
-        <small>{t('这些数字用来检查量级和趋势。四卡方法复现不要求单次 run 精确等于论文数字。', 'Use these numbers to check scale and trend. A four-GPU method reproduction does not require one run to exactly equal the paper values.')}</small>
-      </div>
-      <div class="gate final-gate"><b>{t('完整复现主线算过', 'Mainline complete when')}</b><span>{t('ALFWorld + WebShop 都完成计划中的完整训练与评测；checkpoint、metrics、日志、配置、Git SHA 和数据 hash 都保留下来；SEED 与同条件 GRPO 有可比较结果。此时如果研究问题已经回答：我们在这个 3090 上就全部做完了。', 'ALFWorld + WebShop both finish the planned full training and evaluation; checkpoint, metrics, logs, configs, Git SHA, and data hashes are retained; SEED and same-condition GRPO have comparable results. If that answers the research question, the 3090 work is complete.')}</span></div>
-    </div>
-  </section>
-
-  <section id="seed-step-07" class="step-section migration-section">
-    <div class="step-number">07</div>
-    <div class="step-copy">
-      <p class="step-kicker">{t('8 卡迁移', 'Eight-GPU migration')}</p>
-      <h3>{t('把“4 卡”留在配置里，不要写死在实验逻辑里', 'Keep “4 GPUs” in configuration, not in experiment logic')}</h3>
-      <p>{t('如果 3090 因显存或总耗时无法完成，再迁移。代码、模型路径、数据路径、评测和 run manifest 都保持不变，只把 GPU 数、data parallel 和必要的显存参数重新做一次 preflight → DRY_RUN → short run。A800 80GB×8 用于更接近论文硬件；A100 80GB×8 可以做八卡硬件替代的方法复现。', 'Migrate only if memory or total runtime prevents completion on 3090. Keep code, model paths, data paths, evaluation, and run manifest unchanged; change GPU count, data parallel, and any necessary memory knobs, then repeat preflight → DRY_RUN → short run. 8×A800 80GB is the paper hardware; 8×A100 80GB is an eight-GPU hardware-substituted method run.')}</p>
-      <pre><code>{migrateEight}</code></pre>
-      <div class="gate"><b>{t('迁移完成', 'Migration pass')}</b><span>{t('同一个实验 commit、同一份数据 hash 和同一套评测，在八卡节点通过 preflight/DRY_RUN，并从既定 checkpoint 正常启动。', 'The same experiment commit, data hashes, and evaluation pass preflight/DRY_RUN on the eight-GPU node and launch from the intended checkpoint.')}</span></div>
-    </div>
-  </section>
-
-  <section class="time-and-risk" aria-labelledby="seed-time-title">
-    <div>
-      <p class="section-kicker">{t('大概要多久', 'How long this will take')}</p>
-      <h3 id="seed-time-title">{t('先按 1–2 天跑通整条链，再决定要不要花 3–6 天跑完整实验', 'Budget 1–2 days to prove the chain, then decide whether to spend 3–6 days on full runs')}</h3>
-      <ul>
-        <li><b>{t('离线材料准备', 'Offline staging')}</b><span>{t('约 4–12h；如果没有匹配的联网 Linux 环境，依赖打包可能更久。', '~4–12h; dependency packaging can take longer without a matching online Linux host.')}</span></li>
-        <li><b>{t('服务器 + 两环境体检', 'Server + two environments')}</b><span>{t('约 2–6h。', '~2–6h.')}</span></li>
-        <li><b>{t('两套最小数据链', 'Two minimal data paths')}</b><span>{t('约 1–3h，前提是 analyzer 路线已解决。', '~1–3h once the analyzer path is solved.')}</span></li>
-        <li><b>{t('SFT + 缩小 RL + profiling', 'SFT + reduced RL + profiling')}</b><span>{t('先按 12–24h 预留。', 'Reserve 12–24h initially.')}</span></li>
-        <li><b>{t('两环境完整运行', 'Full runs for both environments')}</b><span>{t('目前只用 72–144h 作为四卡排期先验；拿到 5 个稳定 update 后立刻用实测 wall-clock 重算。', 'Use 72–144h only as an initial four-GPU scheduling prior; replace it as soon as five stable update wall-clocks are measured.')}</span></li>
-      </ul>
-      <p class="time-note">{t('这里的小时数是工程排期，不是 3090 实测 benchmark。机器拓扑、OOM 调参、WebShop 依赖和 analyzer 都可能把时间拉长。', 'These hours are engineering planning ranges, not measured 3090 benchmarks. GPU topology, OOM tuning, WebShop dependencies, and the analyzer can all extend the schedule.')}</p>
-    </div>
-    <aside>
-      <p class="section-kicker">{t('最难的 5 件事', 'The five hardest parts')}</p>
-      <ol>
-        <li><strong>{t('离线依赖', 'Offline dependencies')}</strong><span>{t('缺一个 wheel、模型分片或 WebShop 索引都会在服务器上变成硬阻塞。', 'One missing wheel, model shard, or WebShop index becomes a hard blocker offline.')}</span></li>
-        <li><strong>Stage 1 analyzer</strong><span>{t('论文 SFT 数据需要外部 analyzer；你的服务器没有公网，必须提前确定合规路径。', 'Paper-style SFT data needs an external analyzer; the offline server needs an approved route planned in advance.')}</span></li>
-        <li><strong>4×24GB</strong><span>{t('显存和 GPU 拓扑决定能否直接用默认配置，OOM 后需要调整 micro-batch / parallelism。', 'VRAM and topology determine whether defaults fit; OOM may require micro-batch / parallelism changes.')}</span></li>
-        <li><strong>WebShop</strong><span>{t('它的数据、搜索索引和较老依赖栈比 ALFWorld 更容易出现环境问题。', 'Its data, search index, and older dependency stack make environment failures more likely than ALFWorld.')}</span></li>
-        <li><strong>{t('判断“成功”', 'Judging success')}</strong><span>{t('脚本能跑只证明工程链通了；最终还要把 SEED 和同条件 GRPO 放在一起比较。', 'A running script proves the engineering chain only; final method evidence still compares SEED against same-condition GRPO.')}</span></li>
-      </ol>
-    </aside>
-  </section>
-
-  <footer class="source-note">
-    <strong>{t('依据', 'Sources')}</strong>
-    <span>{t('命令与默认参数来自当前官方 SEED 仓库；论文规模、150 policy updates、8×A800 80GB 和参考结果来自 SEED 论文；WebShop 本地环境输出与 setup 行为来自官方 WebShop 仓库。12–24h、72–144h 是本站的工程排期，需要被四卡真机 profiling 替换。', 'Commands and defaults come from the current official SEED repository; paper scale, 150 policy updates, 8×A800 80GB, and reference results come from the SEED paper; WebShop local-environment output and setup behavior come from the official WebShop repository. The 12–24h and 72–144h ranges are engineering planning ranges and should be replaced by four-GPU profiling.')}</span>
-    <div><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED code ↗</a><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">SEED paper ↗</a><a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer">ALFWorld ↗</a><a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer">WebShop ↗</a></div>
-  </footer>
+  <footer class="sources"><strong>{t('依据：', 'Sources: ')}</strong>{t('当前官方 SEED 代码与论文，以及官方 ALFWorld / WebShop 仓库。论文规模是 Stage 1 180×8、SFT 3 epochs、RL 150 policy updates，训练硬件为 8×NVIDIA A800 80GB。', 'Current official SEED code/paper and official ALFWorld/WebShop repositories. Paper scale is Stage 1 180×8, SFT 3 epochs, RL 150 policy updates, trained on 8×NVIDIA A800 80GB.')} <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED ↗</a> · <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">paper ↗</a> · <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer">ALFWorld ↗</a> · <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer">WebShop ↗</a></footer>
 </section>
 
 <style>
-  .seed-student { margin: 18px 0 76px; }
-  .student-head { max-width: 900px; padding: 28px 0 30px; border-bottom: 1px solid var(--line); }
-  .student-head h2 { max-width: 820px; margin: 7px 0 12px; font-size: clamp(1.7rem, 3vw, 2.55rem); letter-spacing: -.025em; }
-  .intro { max-width: 850px; color: var(--muted); font-size: 1.02rem; line-height: 1.75; }
-  .finish-line { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; margin-top: 22px; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--surface-muted); }
-  .finish-line span { color: var(--muted); }
-  .mainline-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 24px 0 46px; border-top: 1px solid var(--line); }
-  .mainline-nav a { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 16px 10px; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
-  .mainline-nav a:nth-child(odd) { padding-right: 24px; }
-  .mainline-nav a:nth-child(even) { padding-left: 24px; border-left: 1px solid var(--line); }
-  .mainline-nav b { font-family: var(--font-mono, monospace); color: var(--accent-deep); }
-  .mainline-nav strong, .mainline-nav small { display: block; }
-  .mainline-nav small { margin-top: 3px; color: var(--muted); line-height: 1.45; }
-  .orientation { margin: 0 0 44px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; }
-  .orientation h3 { margin: 0 0 7px; }
-  .orientation > p { max-width: 760px; color: var(--muted); }
-  .success-ladder { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 10px; }
-  .success-ladder li { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; align-items: start; }
-  .success-ladder li > b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface-muted); }
-  .success-ladder strong, .success-ladder span { display: block; }
-  .success-ladder span { margin-top: 2px; color: var(--muted); }
-  .step-section { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 22px; padding: 38px 0; border-top: 1px solid var(--line); scroll-margin-top: 90px; }
-  .step-number { padding-top: 4px; font: 800 .85rem/1 var(--font-mono, monospace); color: var(--accent-deep); }
-  .step-copy { max-width: 920px; }
-  .step-kicker { margin: 0 0 4px; color: var(--muted); font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
-  .step-copy h3 { max-width: 790px; margin: 4px 0 9px; font-size: 1.3rem; }
-  .step-copy > p { max-width: 850px; color: var(--muted); line-height: 1.7; }
-  pre { margin: 16px 0; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-muted); overflow-x: auto; }
-  pre code { font-family: var(--font-mono, ui-monospace, monospace); font-size: .78rem; line-height: 1.58; }
-  .bundle-line { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-  .bundle-line code { padding: 8px 10px; border-radius: 7px; background: var(--surface-muted); }
-  .plain-note, .gate { display: grid; grid-template-columns: 135px minmax(0, 1fr); gap: 12px; margin-top: 15px; padding: 13px 15px; background: var(--surface-muted); }
-  .plain-note span, .gate span { color: var(--muted); }
-  .gate { border-left: 3px solid var(--line-strong, var(--line)); }
-  .final-gate { border-left-color: var(--accent); }
-  .script-link { display: inline-block; margin: -4px 0 8px; font-weight: 750; }
-  .paper-reference { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: 10px; }
-  .paper-reference strong { flex-basis: 100%; }
-  .paper-reference span { color: var(--muted); }
-  .paper-reference small { flex-basis: 100%; color: var(--muted); }
-  .migration-section { padding-bottom: 48px; }
-  .time-and-risk { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr); gap: 34px; padding: 34px 0; border-top: 2px solid var(--text); }
-  .time-and-risk h3 { max-width: 700px; margin: 6px 0 16px; }
-  .time-and-risk ul, .time-and-risk ol { margin: 0; padding-left: 1.1rem; }
-  .time-and-risk li + li { margin-top: 10px; }
-  .time-and-risk li b, .time-and-risk li strong { margin-right: 8px; }
-  .time-and-risk li span, .time-note { color: var(--muted); }
-  .time-and-risk aside { padding-left: 24px; border-left: 1px solid var(--line); }
-  .time-and-risk aside li span { display: block; margin-top: 2px; }
-  .source-note { padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; line-height: 1.65; }
-  .source-note strong { color: var(--text); margin-right: 8px; }
-  .source-note div { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
-  .source-note a { font-weight: 700; }
-  @media (max-width: 760px) {
-    .mainline-nav, .time-and-risk { grid-template-columns: 1fr; }
-    .mainline-nav a:nth-child(n) { padding-left: 6px; padding-right: 6px; border-left: 0; }
-    .time-and-risk aside { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--line); }
-  }
-  @media (max-width: 560px) {
-    .finish-line, .plain-note, .gate, .step-section { grid-template-columns: 1fr; }
-    .step-section { gap: 7px; }
-    .orientation { padding: 18px; }
-  }
+  .seed-mainline{margin:18px 0 76px}.hero{max-width:900px;padding:28px 0 30px;border-bottom:1px solid var(--line)}.hero h2{max-width:820px;margin:7px 0 12px;font-size:clamp(1.7rem,3vw,2.55rem);letter-spacing:-.025em}.hero>p{max-width:850px;color:var(--muted);line-height:1.75}.finish,.gate{display:grid;grid-template-columns:140px minmax(0,1fr);gap:12px;padding:14px 16px;margin-top:16px;background:var(--surface-muted);border-left:3px solid var(--line)}.finish,.gate.final{border-left-color:var(--accent)}.finish span,.gate span{color:var(--muted)}
+  .route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:24px 0 44px;border-top:1px solid var(--line)}.route a{display:flex;gap:9px;padding:13px 9px;color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}.route b,.num{font-family:var(--font-mono,monospace);color:var(--accent-deep)}
+  .success{padding:22px;border:1px solid var(--line);border-radius:12px;margin-bottom:40px}.success h3{margin-top:0}.success ol{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:9px}.success li{display:grid;grid-template-columns:30px 1fr;gap:10px}.success li>b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--surface-muted)}.success strong{display:block}.success span{color:var(--muted)}
+  .step{display:grid;grid-template-columns:54px minmax(0,1fr);gap:20px;padding:34px 0;border-top:1px solid var(--line);scroll-margin-top:90px}.step>div{max-width:920px}.step h3{margin:0 0 9px;max-width:800px}.step p{max-width:850px;color:var(--muted);line-height:1.7}.step h4{margin:22px 0 8px}.paths{display:flex;flex-wrap:wrap;gap:7px}.paths code{padding:6px 8px;background:var(--surface-muted);border-radius:6px}pre{padding:15px 17px;margin:14px 0;overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--surface-muted)}pre code{font-family:var(--font-mono,monospace);font-size:.78rem;line-height:1.58}.paper{padding:14px 16px;border:1px solid var(--line);border-radius:9px}
+  .time-risk{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;padding:34px 0;border-top:2px solid var(--text)}.time-risk h3{margin:6px 0 10px}.time-risk p,.time-risk small,.time-risk aside{color:var(--muted)}.time-risk aside{padding-left:24px;border-left:1px solid var(--line)}.time-risk li+li{margin-top:9px}.sources{padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;line-height:1.65}.sources strong{color:var(--text)}
+  @media(max-width:760px){.route{grid-template-columns:repeat(2,1fr)}.time-risk{grid-template-columns:1fr}.time-risk aside{padding:22px 0 0;border-left:0;border-top:1px solid var(--line)}}@media(max-width:560px){.step,.finish,.gate{grid-template-columns:1fr}.step{gap:6px}.route{grid-template-columns:1fr}}
 </style>
