@@ -2,22 +2,24 @@
 import AppLayout from '../layouts/AppLayout.astro';
 import { getMessages, localePath } from '../i18n';
 import { getCollection } from 'astro:content';
+import AgentToSeedBridge from '../components/AgentToSeedBridge.astro';
 import SeedStudentReproductionGuide from '../components/SeedStudentReproductionGuide.astro';
 const m = getMessages('zh');
 const guideRecord = (await getCollection('guides'))[0]?.data;
 const guideSource = guideRecord ? 'collection' : 'fallback';
-const title = '复现 SEED：先用 4×3090 跑通 ALFWorld 和 WebShop';
-const lede = '这页按你真正做实验的顺序写：先准备离线服务器，再跑 ALFWorld、WebShop、SFT 和四卡 RL。每一步都给命令、通过标准和排错顺序。四张 3090 能把完整训练和评测做完，就在这里结束；只有显存或总时间真的卡住，才迁到 8×A800 / A100。';
+const title = '先看懂 Agent，再复现 SEED';
+const lede = '假设你已经了解 Transformer、微调、推理、API 和 GPU。先用一屏把 policy、tool、environment、trajectory、reward、GRPO 和 SEED 对上号，然后立刻进入 4×3090 的 ALFWorld / WebShop 实验主线。';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
     <header class="page-header">
-      <p class="guide-eyebrow">SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
+      <p class="guide-eyebrow">Agent 101 → SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
       <h1>{title}</h1>
       <p class="lede">{lede}</p>
-      <p class="hardware-note">工作台里的显存数字只用来做<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>。真正能不能跑、每个 update 要多久，以这页第 05 步在四张 3090 上测到的结果为准。</p>
+      <p class="hardware-note">这里不会先讲完整 RL 数学。目标是先知道<strong>运行时哪里在循环、训练时哪里在更新权重</strong>，再把同一套概念放进真实命令。工作台里的显存数字仍然只是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>；真正能不能跑、每个 update 要多久，以四张 3090 上的 profiling 为准。</p>
     </header>
 
+    <AgentToSeedBridge locale="zh" />
     <SeedStudentReproductionGuide locale="zh" />
 
     <section class="after-reproduction" aria-labelledby="after-reproduction-title">
@@ -38,7 +40,7 @@ const lede = '这页按你真正做实验的顺序写：先准备离线服务器
   .page-header { max-width: 920px; padding-bottom: 20px; }
   .page-header h1 { max-width: 880px; }
   .guide-eyebrow { margin: 0 0 7px; color: var(--muted); font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
-  .hardware-note { max-width: 820px; margin-top: 14px; padding: 12px 14px; border-left: 3px solid var(--line); background: var(--surface-muted); color: var(--muted); font-size: .86rem; line-height: 1.6; }
+  .hardware-note { max-width: 840px; margin-top: 14px; padding: 12px 14px; border-left: 3px solid var(--line); background: var(--surface-muted); color: var(--muted); font-size: .86rem; line-height: 1.6; }
   .hardware-note strong { color: var(--text); }
   .after-reproduction { margin: 0 0 80px; padding-top: 34px; border-top: 1px solid var(--line); }
   .after-reproduction h2 { max-width: 760px; margin: 6px 0 10px; }
