@@ -20,6 +20,7 @@ assert('HARDEN-DATA-002', Boolean(qwen && qwen.current_flagship_model_id === 'qw
 const qwenMax = modelSchema.parse(json('src/content/models/qwen3-7-max.json'));
 const qwenPlus = modelSchema.parse(json('src/content/models/qwen3-7-plus.json'));
 assert('HARDEN-DATA-003', qwenMax.access?.api_status === 'available' && qwenMax.openness.weights_available === 'not_disclosed' && qwenPlus.access?.api_status === 'available' && qwenPlus.openness.weights_available === 'not_disclosed', 'Qwen3.7 API availability does not coerce unverified weight facts to false');
+assert('HARDEN-DATA-004', qwenMax.openness.finetuning_allowed === 'not_disclosed' && qwenPlus.openness.finetuning_allowed === 'not_disclosed' && qwenMax.research.suitable_for_lora === 'not_disclosed' && qwenPlus.research.suitable_for_sft === 'not_disclosed', 'hosted service limitations are not promoted into model-level training-right claims');
 
 const seed = applyPaperCorrection(paperSchema.parse(json('src/content/papers/seed.json')));
 assert('HARDEN-PAPER-001', seed.checkpoint_url === 'https://huggingface.co/Jinyang23/Seed-AlfWorld-3B' && seed.reproducibility?.checkpoint_status === 'available', 'SEED released checkpoint is exposed through the correction layer');
@@ -35,10 +36,14 @@ assert('HARDEN-UX-002', coreBlockStart >= 0 && openWeightSelect >= 0 && vendorSe
 const paperExplorer = read('src/components/papers/PaperExplorer.tsx');
 assert('HARDEN-PAPER-002', paperExplorer.includes('evidenceCompleteness') && paperExplorer.includes('experimentBurden') && !paperExplorer.includes('function difficulty('), 'reproduction evidence completeness is separate from experiment burden');
 assert('HARDEN-PAPER-003', paperExplorer.includes('证据化摘要') && paperExplorer.includes('Atlas 推导') && paperExplorer.includes('Atlas 估算'), 'paper-derived and heuristic statements expose provenance');
+assert('HARDEN-PAPER-004', paperExplorer.includes("config_status === 'available'") && paperExplorer.includes("environment_status === 'reported'") && paperExplorer.includes('!hasHttpUrl(paper.code_url)'), 'reproduction-ready and burden heuristics use explicit evidence conditions');
 
 const home = read('src/pages/_bodies/home-v2.astro');
 assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('scoreModels') && home.includes('sampleFeasible'), 'home starts from three intents, links beginners to Guide, and computes a live example');
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
+const intentIndex = home.indexOf('intent-grid');
+const seedIndex = home.indexOf('<SeedUseCaseStrip');
+assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the primary intent choice instead of preceding the hero');
 
 const guide = read('src/components/GuideDecisionChapters.astro');
 assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
@@ -50,7 +55,7 @@ const memo = read('src/components/workspace/DecisionMemo.tsx');
 assert('HARDEN-MEMO-001', memo.includes('memo-readable') && memo.includes('memo-source-preview') && memo.includes('View exported Markdown source'), 'Decision Memo renders a human-readable primary view and keeps Markdown secondary');
 
 const dataStatus = read('src/pages/_bodies/data-status.astro');
-assert('HARDEN-DATA-004', dataStatus.includes('托管 / API 当前模型') && dataStatus.includes('开放权重当前模型'), 'Data Status presents hosted/API and open-weight current surfaces separately');
+assert('HARDEN-DATA-STATUS-001', dataStatus.includes('托管 / API 当前模型') && dataStatus.includes('开放权重当前模型') && dataStatus.includes('const apiPresent = apiCurrent ? models.some'), 'Data Status separates current surfaces and verifies the displayed API model directly');
 
 const landscape = read('src/components/landscape/LandscapePrototype.tsx');
 assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>('learning')") && landscape.includes('仅显示论文采用模型') && landscape.includes('AccessibleLandscapeTable'), 'Landscape defaults to a low-cognitive-load learning view with paper filtering and an accessible table');
@@ -61,6 +66,7 @@ const layout = read('src/layouts/AppLayout.astro');
 assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #9c3e2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens provide dedicated light/dark foreground pairs');
 assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.includes('.workspace-grid') && hardening.includes('.intent-row') && hardening.includes('.guide-chapter') && hardening.includes('.memo-readable'), 'research-critical typography, workbench density, and editorial hierarchy are hardened');
 assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet is loaded last');
+assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
 
 const catalogDiff = read('scripts/audit-catalog-diff.ts');
 assert('HARDEN-FRESHNESS-001', catalogDiff.includes('discoveryCandidates') && catalogDiff.includes('CATALOG_DIFF_STRICT') && catalogDiff.includes('review prompts'), 'catalog discovery produces review candidates without auto-promoting them to facts');
