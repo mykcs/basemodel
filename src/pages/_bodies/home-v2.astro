@@ -21,7 +21,7 @@ function workspaceHref(task: Partial<ResearchTask>): string {
 }
 
 const primaryIntents = [
-  { label: locale === 'zh' ? '先把 SEED 复现跑起来' : 'Start the SEED reproduction', lede: locale === 'zh' ? '从 4×3090 离线服务器开始，按 ALFWorld、WebShop、SFT、RL 和 GRPO 的顺序一步一步做。' : 'Start from an offline 4×3090 server and work through ALFWorld, WebShop, SFT, RL, and GRPO in order.', href: localePath(locale, '/guide/') },
+  { label: locale === 'zh' ? '先看懂 Agent，再把 SEED 跑起来' : 'Understand the agent loop, then run SEED', lede: locale === 'zh' ? '先把 policy、tool、trajectory、reward 和 GRPO 对上号，再从 4×3090 离线服务器进入 ALFWorld / WebShop 实验。' : 'Map policy, tools, trajectories, rewards, and GRPO first, then enter the ALFWorld / WebShop experiment on an offline 4×3090 server.', href: `${localePath(locale, '/guide/')}#agent-to-seed` },
   { label: locale === 'zh' ? '设计一个新实验' : 'Design a new experiment', lede: locale === 'zh' ? '已经有新的研究问题时，再按训练方式、资源、开放性和可复现性形成候选。' : 'Once you have a new research question, form candidates from training method, resources, access, and reproducibility.', href: localePath(locale, '/workspace/') },
   { label: locale === 'zh' ? '替换一个旧模型' : 'Replace an older model', lede: locale === 'zh' ? '先保留论文原 checkpoint；完成复现后，再比较新模型会改变哪些实验条件。' : 'Keep the paper checkpoint first; after reproduction, compare which experimental conditions a newer model would change.', href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
 ];
@@ -49,18 +49,18 @@ const recentEvents = [
 <section class="hero">
   <div class="shell hero-grid">
     <div>
-      <div class="eyebrow">{locale === 'zh' ? '先做完一篇真实实验' : 'Finish one real experiment first'}</div>
-      <h1>{locale === 'zh' ? '从 SEED 开始学基础模型研究' : 'Learn foundation-model research by reproducing SEED'}</h1>
-      <p class="lede">{locale === 'zh' ? '先用你能拿到的四张 RTX 3090，把 ALFWorld 和 WebShop 从环境、数据一路做到训练和评测。做到哪一步算成功，Guide 会逐项告诉你。' : 'Use four RTX 3090s you can access and take ALFWorld and WebShop from environment setup through data, training, and evaluation. The Guide gives a pass criterion at every stage.'}</p>
-      <div class="hero-actions"><a class="button button-primary" href={`${localePath(locale, '/guide/')}#seed-reproduction`}>{locale === 'zh' ? '从第 00 步开始 →' : 'Start at step 00 →'}</a></div>
-      <p class="novice-entry">{locale === 'zh' ? '已经有自己的研究问题？' : 'Already have your own research question?'} <a class="text-link" href={localePath(locale, '/workspace/')}>{locale === 'zh' ? '再打开研究工作台 →' : 'Open the research workspace →'}</a></p>
+      <div class="eyebrow">{locale === 'zh' ? '懂 ML，但还没形成 Agent 心智模型？' : 'Know ML, but still building an agent mental model?'}</div>
+      <h1>{locale === 'zh' ? '先看懂 Agent 怎么运行和学习，再完整做完一篇真实实验' : 'Understand how agents run and learn, then finish one real experiment'}</h1>
+      <p class="lede">{locale === 'zh' ? '先用一屏把 checkpoint、tool、trajectory、reward 和 GRPO 串起来，然后用四张 RTX 3090 把 SEED 的 ALFWorld 和 WebShop 从环境、数据一路做到训练和评测。' : 'Use one screen to connect checkpoints, tools, trajectories, rewards, and GRPO, then take SEED on four RTX 3090s from ALFWorld / WebShop setup through training and evaluation.'}</p>
+      <div class="hero-actions"><a class="button button-primary" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先用 10 分钟看懂 Agent →' : 'Build the agent model first →'}</a></div>
+      <p class="novice-entry">{locale === 'zh' ? '已经懂 Agent，只想直接做实验？' : 'Already understand agents and want the experiment?'} <a class="text-link" href={`${localePath(locale, '/guide/')}#seed-reproduction`}>{locale === 'zh' ? '直接从第 00 步开始 →' : 'Jump to step 00 →'}</a></p>
     </div>
     <aside class="hero-note example-card">
-      <div class="section-kicker">{locale === 'zh' ? '这次就做这个实验' : 'The experiment for this guide'}</div>
+      <div class="section-kicker">{locale === 'zh' ? '心智模型马上落到这个实验' : 'Ground the mental model in this experiment'}</div>
       <h2 class="example-card-title">4×RTX 3090 24GB · {locale === 'zh' ? '离线服务器' : 'offline server'}</h2>
-      <p>{locale === 'zh' ? '目标很简单：先让 ALFWorld 和 WebShop 都跑通，再训练 SFT 和 SEED RL，最后用同条件 GRPO 做对照。四卡能把完整实验做完，就不用为了复现再租八卡。' : 'Bring up ALFWorld and WebShop, train SFT and SEED RL, then run a same-condition GRPO control. If four GPUs finish the complete experiment, you do not need eight rented GPUs for this reproduction.'}</p>
-      <div class="example-stats"><div class="example-stat"><strong>4×24GB</strong><span>{locale === 'zh' ? '先用现有 GPU' : 'GPUs first'}</span></div><div class="example-stat"><strong>2</strong><span>ALFWorld + WebShop</span></div><div class="example-stat"><strong>PASS</strong><span>{locale === 'zh' ? '逐步验收' : 'stage by stage'}</span></div></div>
-      <a class="text-link" href={`${localePath(locale, '/guide/')}#seed-reproduction`}>{locale === 'zh' ? '看完整复现路线 →' : 'Open the full reproduction route →'}</a>
+      <p>{locale === 'zh' ? 'Agent loop 不是抽象图：Qwen2.5-3B-Instruct 是 policy，ALFWorld / WebShop 是 environment，连续交互形成 trajectory；SEED 再把这些 rollout 的结果变成训练信号。理解完就立刻在同一页开始操作。' : 'The agent loop is not an abstract diagram: Qwen2.5-3B-Instruct is the policy, ALFWorld / WebShop are environments, and repeated interaction forms a trajectory. SEED then turns those rollouts into training signals. The same page moves directly into the hands-on run.'}</p>
+      <div class="example-stats"><div class="example-stat"><strong>1 loop</strong><span>policy → action → observation</span></div><div class="example-stat"><strong>2</strong><span>ALFWorld + WebShop</span></div><div class="example-stat"><strong>PASS</strong><span>{locale === 'zh' ? '逐步验收' : 'stage by stage'}</span></div></div>
+      <a class="text-link" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先看 Agent → SEED 映射 →' : 'Open the Agent → SEED map →'}</a>
     </aside>
   </div>
 </section>
