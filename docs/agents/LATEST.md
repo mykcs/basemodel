@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-11 01:56 +08:00**
+Last updated: **2026-08-11 02:17 +08:00**
 
-Status: **Vercel Preview is the validated ordinary Preview path. Cloudflare Pages is still the real Production host today, but the approved target is Cloudflare Workers Static Assets. A reversible shadow migration is now in progress; do not treat Workers as Production or retire Pages until the shadow acceptance gate and an explicit cutover are complete.**
+Status: **Vercel Preview is the validated ordinary Preview path. Cloudflare Pages is still the real Production host today. The approved target is Cloudflare Workers Static Assets; the repository contract and exact-head Vercel validation are complete, and the next step is a real non-production Workers shadow deployment. Production has not cut over.**
 
 This is the stable first-stop handoff for future coding Agents.
 
@@ -31,6 +31,24 @@ GitHub
 
 **Read `docs/agents/current/hosting-architecture.md` before any hosting/deployment change.** It is the current migration authority and explicitly separates current Production from the target architecture.
 
+## Workers migration: exact current progress
+
+Completed:
+
+- PR #105 added the Workers Static Assets shadow contract and was squash-merged to `main` as `3bb916d5754b352e59687b0ec6085179a85e674e`;
+- `wrangler.jsonc` now defines a distinct pure-static service named `basemodel-workers-shadow` using `./dist`, `404-page`, and `auto-trailing-slash`;
+- `npm run build:workers:shadow` preserves `https://basemodel.pages.dev` as canonical Production identity and forces shadow indexing off;
+- the exact PR head `5eb372491e3cd6ec7f974c1817883818cc632ea3` passed the full Vercel Gate and a 392-page Astro build;
+- Vercel deployment `dpl_3tA1HQrdUrVWZbwoc6rEEH4eGVAg` is READY; the real Preview returned HTTP 200 with `robots noindex`, `x-robots-tag: noindex`, and canonical/hreflang pointing to current Pages Production;
+- migration branch and merge commits used `[CF-Pages-Skip]`; the merge commit showed no Cloudflare Pages status/check.
+
+Pending:
+
+- no real `basemodel-workers-shadow` Workers deployment exists yet from this session because the available ChatGPT toolset exposes Vercel/GitHub but no Cloudflare account/deploy connector or injected Cloudflare runtime credential;
+- therefore Workers `workers.dev` route/404/header/asset parity has not yet been proven;
+- **next Cloudflare-capable Agent should deploy the existing shadow contract, not redesign it**;
+- Production remains Pages and Pages remains rollback infrastructure.
+
 GitHub Actions and GitHub Pages remain intentionally retired for this repository.
 
 ## Ordinary website workflow
@@ -53,9 +71,9 @@ The application framework is not being replaced. Astro/React/GitHub stay in plac
 Migration sequence:
 
 ```text
-repository contract
--> exact-head Vercel validation
--> non-production Workers Static Assets shadow deployment
+repository contract                  [DONE]
+-> exact-head Vercel validation      [DONE]
+-> non-production Workers shadow     [NEXT]
 -> route / SEO / asset / header comparison
 -> rollback plan
 -> explicit owner cutover decision
