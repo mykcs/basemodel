@@ -1,0 +1,246 @@
+---
+import type { Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  path: string;
+}
+
+type Stage = 'question' | 'constraints' | 'candidates' | 'evidence' | 'decision';
+type Guide = { stage: Stage; current: string; why: string; next: string };
+
+const { locale, path } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+
+const stages: Array<{ id: Stage; label: string }> = [
+  { id: 'question', label: t('明确问题', 'Define question') },
+  { id: 'constraints', label: t('收紧约束', 'Narrow constraints') },
+  { id: 'candidates', label: t('形成候选', 'Form candidates') },
+  { id: 'evidence', label: t('核验证据', 'Verify evidence') },
+  { id: 'decision', label: t('做出决策', 'Make decision') },
+];
+
+const exact = (value: string) => path === value || path === `${value}/`;
+const starts = (value: string) => path.startsWith(`${value}/`);
+
+let guide: Guide;
+if (exact('/guide')) {
+  guide = {
+    stage: 'question',
+    current: t('先建立 Agent、训练与 checkpoint 的最小心智模型。', 'Build a minimal mental model of agents, training, and checkpoints.'),
+    why: t('如果把运行、训练、模型家族和具体 checkpoint 混在一起，后面的模型与硬件选择会从起点就跑偏。', 'If runtime, training, model families, and concrete checkpoints are conflated, later model and hardware choices start from the wrong premise.'),
+    next: t('按“概念 → SEED → 工作台”走一遍，不需要先背完整术语表。', 'Follow concepts → SEED → workspace; do not memorize a full glossary first.'),
+  };
+} else if (exact('/papers') || starts('/papers')) {
+  guide = {
+    stage: 'question',
+    current: t('先把原论文的问题、模型角色与训练条件固定下来。', 'Fix the paper question, model roles, and training conditions first.'),
+    why: t('只有先知道原实验是什么，才能判断后续模型替换是在复现方法，还是已经变成另一个实验。', 'Only after the original experiment is fixed can you tell whether a model swap reproduces the method or creates a different experiment.'),
+    next: t('确认角色、checkpoint、权重更新与环境，再选择严格复现、方法复现或现代化重跑。', 'Confirm roles, checkpoints, weight updates, and environment, then choose strict, method, or modern reproduction.'),
+  };
+} else if (exact('/workspace')) {
+  guide = {
+    stage: 'constraints',
+    current: t('把研究目标翻译成模型、访问、训练与资源约束。', 'Translate the research goal into model, access, training, and resource constraints.'),
+    why: t('开放权重、训练方式、显存、角色与可比性彼此独立；漏掉一个就可能得到“看起来强、实际不能用”的候选。', 'Open weights, update method, VRAM, role, and comparability are independent; missing one can yield a candidate that looks strong but is unusable.'),
+    next: t('先填硬约束，再看 baseline / modern / resource 候选；未知字段继续核验，不要当成否。', 'Set hard constraints first, then inspect baseline / modern / resource candidates; verify unknowns instead of treating them as false.'),
+  };
+} else if (exact('/models') || starts('/models')) {
+  guide = {
+    stage: 'candidates',
+    current: t('按研究约束缩小模型集合，而不是寻找一个“最强模型”。', 'Narrow the model set by research constraints instead of looking for one “best model”.'),
+    why: t('能力只是一个维度；checkpoint、权重可得性、可训练性、资源与论文可比性共同决定是否值得进入候选。', 'Capability is one dimension; checkpoint, weight access, trainability, resources, and paper comparability determine whether a model belongs in the candidate set.'),
+    next: t('先看 checkpoint 与访问方式，再看训练/运行条件、论文采用与证据缺口；需要时加入候选或比较。', 'Check checkpoint and access first, then training/runtime conditions, paper adoption, and evidence gaps; add to candidates or compare when useful.'),
+  };
+} else if (exact('/families') || starts('/families') || exact('/landscape')) {
+  guide = {
+    stage: 'candidates',
+    current: t('把具体 checkpoint 放回家族、代际与分发方式中理解。', 'Place a checkpoint back into its family, generation, and distribution surfaces.'),
+    why: t('同一家族的 API 旗舰、开放权重模型和论文历史 checkpoint 可能不是同一个对象，不能用一个“最新模型”概括。', 'A family’s API flagship, open-weight model, and historical paper checkpoint may be different objects; one “latest model” label is not enough.'),
+    next: t('先看代际与时间，再区分 API / 开放权重 / 论文采用，最后进入具体模型做任务级判断。', 'Start with generation and time, separate API / open-weight / paper adoption, then enter a concrete model for task-level evaluation.'),
+  };
+} else if (exact('/methodology') || exact('/data-status')) {
+  guide = {
+    stage: 'evidence',
+    current: t('检查事实、未知项、来源时间与推导边界。', 'Inspect facts, unknowns, source dates, and inference boundaries.'),
+    why: t('推荐只有在来源、未知状态和推导逻辑都可追溯时才值得信任；没有证据的字段不能被填成一个方便的答案。', 'Recommendations are trustworthy only when sources, unknown states, and reasoning are traceable; unsupported fields cannot be filled with convenient answers.'),
+    next: t('对关键未知项回到一手来源；把市场时效信息与论文稳定事实分开记录。', 'Return to primary sources for critical unknowns; keep time-sensitive market facts separate from stable paper facts.'),
+  };
+} else if (exact('/compare')) {
+  guide = {
+    stage: 'decision',
+    current: t('比较替换模型后真正改变实验结论的变量。', 'Compare the variables that actually change the experimental claim after a model swap.'),
+    why: t('参数、checkpoint、架构、上下文、访问方式与训练条件都可能成为方法学混杂因素。', 'Scale, checkpoint, architecture, context, access, and training conditions can all become methodological confounds.'),
+    next: t('逐项看差异与未知；关键条件可接受后，再把替换写进 Decision Memo。', 'Inspect differences and unknowns one by one; only then record the replacement in the Decision Memo.'),
+  };
+} else {
+  guide = {
+    stage: 'evidence',
+    current: t('把当前页面的信息放回研究决策链，而不是孤立阅读。', 'Place this page back into the research-decision chain instead of reading it in isolation.'),
+    why: t('单个事实只有和研究问题、约束、候选与证据连接起来，才会变成可执行判断。', 'A fact becomes actionable only when connected to the research question, constraints, candidates, and evidence.'),
+    next: t('确认这页回答了哪一步，再继续下一步；不要因为页面信息很多就改变原来的研究目标。', 'Identify which step this page answers, then continue; do not let page density change the original research goal.'),
+  };
+}
+---
+
+<section class="research-mainline" aria-label={t('研究决策坐标', 'Research decision compass')}>
+  <div class="shell research-mainline-inner">
+    <div class="research-mainline-top">
+      <div class="research-mainline-title">
+        <span>{t('研究坐标', 'Research compass')}</span>
+        <strong>{t('从问题到可复现的模型决策', 'From question to reproducible model decision')}</strong>
+      </div>
+      <ol class="research-mainline-stages" aria-label={t('研究决策五步', 'Five-step research decision path')}>
+        {stages.map((stage, index) => (
+          <li class:list={{ 'is-active': guide.stage === stage.id }} aria-current={guide.stage === stage.id ? 'step' : undefined}>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <strong>{stage.label}</strong>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="research-mainline-context">
+      <div class="research-mainline-current">
+        <span>{t('现在做什么', 'What now')}</span>
+        <strong>{guide.current}</strong>
+      </div>
+      <dl>
+        <div><dt>{t('为什么', 'Why')}</dt><dd>{guide.why}</dd></div>
+        <div><dt>{t('下一步', 'Next')}</dt><dd>{guide.next}</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .research-mainline {
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 74%, transparent);
+  }
+  .research-mainline-inner {
+    padding-top: 12px;
+    padding-bottom: 13px;
+  }
+  .research-mainline-top {
+    display: grid;
+    grid-template-columns: minmax(180px, .62fr) minmax(0, 1.7fr);
+    gap: 24px;
+    align-items: end;
+  }
+  .research-mainline-title span,
+  .research-mainline-title strong {
+    display: block;
+  }
+  .research-mainline-title span {
+    margin-bottom: 3px;
+    color: var(--accent-deep);
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .research-mainline-title strong {
+    font-size: .86rem;
+    line-height: 1.35;
+  }
+  .research-mainline-stages {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .research-mainline-stages li {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+    padding: 6px 8px 7px;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+  .research-mainline-stages li + li {
+    border-left: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  }
+  .research-mainline-stages li > span {
+    flex: 0 0 auto;
+    font-size: .62rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .research-mainline-stages li > strong {
+    min-width: 0;
+    font-size: .72rem;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+  .research-mainline-stages .is-active {
+    color: var(--ink);
+    border-bottom-color: var(--accent-deep);
+  }
+  .research-mainline-stages .is-active > span {
+    color: var(--accent-deep);
+    font-weight: 800;
+  }
+  .research-mainline-context {
+    display: grid;
+    grid-template-columns: minmax(220px, .72fr) minmax(0, 1.5fr);
+    gap: 24px;
+    margin-top: 10px;
+  }
+  .research-mainline-current span,
+  .research-mainline-context dt {
+    color: var(--muted);
+    font-size: .66rem;
+    font-weight: 700;
+  }
+  .research-mainline-current strong {
+    display: block;
+    margin-top: 3px;
+    font-size: .82rem;
+    line-height: 1.42;
+  }
+  .research-mainline-context dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin: 0;
+  }
+  .research-mainline-context dd {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: .76rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 820px) {
+    .research-mainline-top,
+    .research-mainline-context {
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+    .research-mainline-stages {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .research-mainline-stages li {
+      flex: 0 0 auto;
+      min-width: 118px;
+    }
+    .research-mainline-context dl {
+      gap: 14px;
+    }
+  }
+  @media (max-width: 560px) {
+    .research-mainline-inner {
+      padding-top: 10px;
+      padding-bottom: 11px;
+    }
+    .research-mainline-context dl {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>
