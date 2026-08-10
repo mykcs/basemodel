@@ -9,6 +9,8 @@ const t = (zh: string, en: string) => isZh ? zh : en;
 
 const hourly4090 = market.hourly.find((item) => item.gpu === 'RTX 4090 24G')?.cnyPerHour ?? 1.65;
 const hourlyA100 = market.hourly.find((item) => item.gpu === 'NVIDIA A100 80G')?.cnyPerHour ?? 8;
+const a100Eight = market.bareMetal.find((item) => item.gpu === 'A100 80G NVLINK');
+const monthlyA100Eight = a100Eight?.cnyPerMonth ?? 30000;
 const cloudPrepLow = 4 * hourly4090 + 10 * hourlyA100;
 const cloudPrepHigh = 8 * hourly4090 + 18 * hourlyA100;
 const money = (value: number) => `¥${value.toFixed(1)}`;
@@ -58,24 +60,24 @@ const money = (value: number) => `¥${value.toFixed(1)}`;
     <article class="owned-card rent-last">
       <small>{t('什么时候才值得真的租 8×A100', 'When 8×A100 is actually worth renting')}</small>
       <h3>{t('只把昂贵节点留给论文规模实验', 'Reserve the expensive node for paper-scale work only')}</h3>
-      <div class="metric">¥30,000/{t('月', 'month')}</div>
-      <div class="price">{t('当前智星云公开 A100 80G NVLINK×8 裸金属标价', 'Current public AI Galaxy 8×A100 80G NVLINK bare-metal price')}</div>
+      <div class="metric">¥{monthlyA100Eight.toLocaleString()}/{t('月', 'month')}</div>
+      <div class="price">{t('智星云公开 A100 80G NVLINK×8 裸金属快照价格', 'AI Galaxy public 8×A100 80G NVLINK bare-metal snapshot price')}</div>
       <ol>
         <li>{t('先在已有 4×3090 上把 ALFWorld / WebShop、模型、依赖、数据、analyzer API 全部跑稳。', 'Stabilize ALFWorld / WebShop, model, dependencies, data, and analyzer API on the existing 4×3090 first.')}</li>
         <li>{t('至少完成一次 SFT + 缩小 RL，并保存 5 个稳定 update 的时间与显存峰值。', 'Complete at least one SFT + reduced-RL pass and record five stable update times plus peak VRAM.')}</li>
         <li>{t('冻结 repo commit、依赖、数据和启动参数；确认问题不是代码问题后再租八卡。', 'Freeze repo commit, dependencies, data, and launch arguments; rent eight GPUs only after code/environment failure is no longer the main risk.')}</li>
         <li>{t('月租一旦开始，让第一小时做训练/正式 profiling，而不是下载和修环境。', 'Once monthly billing begins, spend the first hour on training/formal profiling—not downloads and environment repair.')}</li>
       </ol>
-      <p class="billing">{t('因为当前公开八卡 A100 是月租，提前省掉 10 或 20 小时通常不会把发票从 ¥30,000 直接减掉；真正的收益是一个月里能容纳更多完整尝试，并显著降低“花整月价格买调试时间”的风险。', 'Because the current public 8×A100 product is monthly, saving 10 or 20 hours beforehand does not normally reduce a ¥30,000 monthly invoice directly. The gain is fitting more complete attempts into the month and sharply reducing the risk of paying a full month for debugging time.')}</p>
+      <p class="billing">{t('因为当前公开八卡 A100 是月租，提前省掉 10 或 20 小时通常不会直接降低月租账单；真正的收益是一个月里能容纳更多完整尝试，并显著降低“用昂贵月租时间做调试”的风险。', 'Because the current public 8×A100 product is monthly, saving 10 or 20 hours beforehand does not normally reduce the monthly invoice directly. The gain is fitting more complete attempts into the month and sharply reducing the risk of spending expensive monthly time on debugging.')}</p>
     </article>
   </div>
 
   <aside class="decision-line">
     <strong>{t('省钱决策线', 'Cost-minimizing decision line')}</strong>
-    <p>{t('4×3090 先跑 12–24h → 方法链不稳就继续在已有算力上修 → 如果方法验证已经回答研究问题，平台支出可以停在 ¥0 → 只有确实需要论文规模结果时，才进入 ¥30,000/月的 A100×8。严格硬件复现仍然要另找 8×A800 80G。', 'Run 4×3090 for 12–24h first → if the method chain is unstable, keep debugging on existing compute → if method validation already answers the research question, platform spend can remain ¥0 → only buy the ¥30,000/month 8×A100 tier when paper-scale results are actually needed. Exact hardware reproduction still requires sourcing 8×A800 80G separately.')}</p>
+    <p>{t('4×3090 先跑 12–24h → 方法链不稳就继续在已有算力上修 → 如果方法验证已经回答研究问题，平台支出可以停在 ¥0 → 只有确实需要论文规模结果时，才进入八卡 A100 月租。严格硬件复现仍然要另找 8×A800 80G。', 'Run 4×3090 for 12–24h first → if the method chain is unstable, keep debugging on existing compute → if method validation already answers the research question, platform spend can remain ¥0 → only buy the monthly 8×A100 tier when paper-scale results are actually needed. Exact hardware reproduction still requires sourcing 8×A800 80G separately.')}</p>
   </aside>
 
-  <p class="evidence-note">{t('证据边界：3090 的 24GB/Ampere/NVLink 支持来自 NVIDIA 官方规格；12–24h、72–144h 和省钱顺序是本站的工程规划，不是 SEED 作者实测，也不是对任何具体四卡主机的性能保证。四卡机器的实际 P2P/NVLink/PCIe、CPU、存储、驱动和散热都会改变结果。', 'Evidence boundary: the 3090’s 24GB/Ampere/NVLink support comes from NVIDIA’s official specifications. The 12–24h and 72–144h ranges and the cost-minimizing order are this site’s engineering planning guidance—not measured SEED runtimes or a performance guarantee for any particular four-GPU host. Actual P2P/NVLink/PCIe topology, CPU, storage, drivers, and thermals can change the result.')}</p>
+  <p class="evidence-note">{t('证据边界：3090 的 24GB/Ampere/NVLink 支持来自 NVIDIA 官方规格；12–24h、72–144h 和省钱顺序是本站的工程规划，不是 SEED 作者实测，也不是对任何具体四卡主机的性能保证。四卡机器的实际 P2P/NVLink/PCIe、CPU、存储、驱动和散热都会改变结果；云端价格继承上方带时间戳的智星云快照。', 'Evidence boundary: the 3090’s 24GB/Ampere/NVLink support comes from NVIDIA’s official specifications. The 12–24h and 72–144h ranges and the cost-minimizing order are this site’s engineering planning guidance—not measured SEED runtimes or a performance guarantee for any particular four-GPU host. Actual P2P/NVLink/PCIe topology, CPU, storage, drivers, and thermals can change the result; cloud prices inherit the timestamped AI Galaxy snapshot above.')}</p>
 </section>
 
 <style>
