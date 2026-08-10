@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import ResearchMainline from '../components/ResearchMainline.astro';
 import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
@@ -91,10 +92,11 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
+      {!isHomePage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
       {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
       <slot />
     </main>
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
-    <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span><span>{m.footer.motto}</span></div></footer>
+    <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
   </body>
 </html>
