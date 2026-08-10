@@ -17,6 +17,9 @@ const joiner = locale === 'zh' ? '、' : ', ';
 const modelMap = new Map(models.map((model) => [model.id, model]));
 const contextLabel = (model: AtlasModel | undefined) => model ? modelContextLabels(model)[0] : undefined;
 const methodSummary = paper.learning_guide?.key_idea?.[locale] ?? null;
+const hasPaperLink = typeof paper.paper_url === 'string' && paper.paper_url.startsWith('http');
+const hasCodeLink = typeof paper.code_url === 'string' && paper.code_url.startsWith('http');
+const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.checkpoint_url.startsWith('http');
 ---
 <div class="shell detail-layout">
   <article>
@@ -24,7 +27,7 @@ const methodSummary = paper.learning_guide?.key_idea?.[locale] ?? null;
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
-      <div class="section-kicker">{locale === 'zh' ? 'Research case' : 'Research case'}</div>
+      <div class="section-kicker">Research case</div>
       <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary
         ? <p class="lede">{methodSummary}</p>
@@ -42,8 +45,9 @@ const methodSummary = paper.learning_guide?.key_idea?.[locale] ?? null;
         <div class="fact"><dt>{m.paperDetail.modelRelations}</dt><dd>{paper.models.length}{m.paperDetail.relationsUnit ? ` ${m.paperDetail.relationsUnit}` : ''}</dd></div>
       </div>
       <div class="tag-row">
-        <a class="button button-secondary" href={paper.paper_url.startsWith('http') ? paper.paper_url : undefined} aria-disabled={!paper.paper_url.startsWith('http')}>{m.paperDetail.paperLink}</a>
-        <a class="button button-secondary" href={paper.code_url.startsWith('http') ? paper.code_url : undefined} aria-disabled={!paper.code_url.startsWith('http')}>{m.paperDetail.codeLink}</a>
+        <a class="button button-secondary" href={hasPaperLink ? paper.paper_url : undefined} aria-disabled={!hasPaperLink}>{m.paperDetail.paperLink}</a>
+        <a class="button button-secondary" href={hasCodeLink ? paper.code_url : undefined} aria-disabled={!hasCodeLink}>{m.paperDetail.codeLink}</a>
+        {hasCheckpointLink && <a class="button button-secondary" href={paper.checkpoint_url} target="_blank" rel="noreferrer">{locale === 'zh' ? '打开 Checkpoint ↗' : 'Open checkpoint ↗'}</a>}
       </div>
     </section>
 
