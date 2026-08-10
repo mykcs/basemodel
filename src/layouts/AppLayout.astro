@@ -5,7 +5,6 @@ import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
-import ResearchMainline from '../components/ResearchMainline.astro';
 import '../styles/global.css';
 import '../styles/workspace.css';
 import '../styles/v2-closeout.css';
@@ -92,7 +91,6 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {!isHomePage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
       {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
       <slot />
     </main>

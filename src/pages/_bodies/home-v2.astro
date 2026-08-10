@@ -10,8 +10,6 @@ import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
-const isZh = locale === 'zh';
-const t = (zh: string, en: string) => isZh ? zh : en;
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 const changeEventEntries = await getCollection('changeEvents');
@@ -80,33 +78,6 @@ const recentEvents = [
   </section>
 
   <SeedUseCaseStrip locale={locale} area="home" />
-
-  <section class="section" aria-labelledby="philosophy-title">
-    <div class="section-heading">
-      <div>
-        <div class="section-kicker">{t('设计哲学', 'Design philosophy')}</div>
-        <h2 id="philosophy-title">{t('一条主线，每页三问', 'One mainline, three questions per page')}</h2>
-      </div>
-      <span class="muted">{t('先明白为什么，再动手做', 'Understand why before acting')}</span>
-    </div>
-    <div class="path-grid">
-      <div class="path-card">
-        <span class="path-tag">{t('主线', 'Mainline')}</span>
-        <h3>{t('从研究问题到模型决策，只走一条线', 'One line from research question to decision')}</h3>
-        <p>{t('全站页面挂在同一条主线上：明确问题 → 收紧约束 → 形成候选 → 核验证据 → 做出决策。“最新模型”“最强跑分”只是背景信息，不会在半路替换掉你的研究问题。', 'Every page sits on the same mainline: define the question → narrow constraints → form candidates → verify evidence → decide. The “latest model” or “top score” is background information; it never replaces your research question midway.')}</p>
-      </div>
-      <div class="path-card">
-        <span class="path-tag">{t('每页三问', 'Three questions')}</span>
-        <h3>{t('现在做什么 · 为什么 · 怎么做', 'What · Why · How')}</h3>
-        <p>{t('每个页面顶部固定回答三件事：这一步在做什么，为什么重要，具体怎么往下走。先看为什么，再看怎么做——细节再多，也不会忘记自己要干什么。', 'The top of every page answers three fixed questions: what this step does, why it matters, and how to proceed. Read the why before the how — details never make you lose the goal.')}</p>
-      </div>
-      <div class="path-card">
-        <span class="path-tag">{t('证据先行', 'Evidence first')}</span>
-        <h3>{t('未知保持未知，结论可以悬置', 'Unknown stays unknown; conclusions may wait')}</h3>
-        <p>{t('不把“没查到”填成“没有”，不把估算写成事实。每个推荐都附来源、风险和待核验项；暂时下不了结论时，页面会明说，而不是编一个。', '“Not found” is never filled in as “no”, and estimates are never shown as facts. Every recommendation ships with sources, risks, and pending checks; when no conclusion can be drawn yet, the page says so instead of inventing one.')}</p>
-      </div>
-    </div>
-  </section>
 
   <section class="section" aria-labelledby="paths-title">
     <div class="section-heading"><div><div class="section-kicker">{m.v2.home.pathsKicker}</div><h2 id="paths-title">{m.v2.home.pathsTitle}</h2></div></div>
