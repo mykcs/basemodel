@@ -1,22 +1,9 @@
-# Claude Code project entrypoint
+@AGENTS.md
 
-Provider-neutral repository policy lives in [`AGENTS.md`](AGENTS.md) and wins over Claude-specific conventions.
+# Claude Code-specific notes
 
-Before non-trivial work, read:
+The imported `AGENTS.md` is the provider-neutral repository contract. Keep this file as a thin Claude adapter rather than a second copy of Preview, Production, validation or collaboration policy.
 
-1. [`AGENTS.md`](AGENTS.md)
-2. [`docs/agents/current/direct-upload-preview-policy.md`](docs/agents/current/direct-upload-preview-policy.md)
-3. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md)
-4. the other current Agent docs referenced by `AGENTS.md`
+For non-trivial work, follow the current paths routed from `AGENTS.md`, especially `docs/agents/LATEST.md`, the task-relevant files under `docs/agents/current/`, `package.json`, and `vercel.json`.
 
-## Cloudflare Pages preview rule
-
-For normal website work, default to repository-local validation/build followed by Wrangler Direct Upload of the prebuilt `dist/` to a non-production preview branch. Return the new public preview URL and explicitly report whether a Cloudflare Pages Build was triggered.
-
-Do not trigger a Git-connected Cloudflare Pages Preview/Production build merely to obtain a preview. Use skip-build Git semantics such as `[CF-Pages-Skip]` / another currently supported Cloudflare skip prefix when source synchronization should not deploy.
-
-Only intentionally use the formal Git-integrated deployment path when the owner explicitly asks for it. Before doing so, state that the next push/merge may consume a Cloudflare Pages Build.
-
-If local build, Wrangler upload, authentication, public-preview verification, or quota/build status cannot be confirmed, say so explicitly and do not claim completion at that boundary.
-
-Do not duplicate the full deployment policy here; the files above are the source of truth.
+Claude-local/global helpers may be used when available, but they are not repository dependencies and remote Agents must not invent them.

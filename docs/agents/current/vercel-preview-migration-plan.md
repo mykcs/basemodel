@@ -1,274 +1,200 @@
-# Vercel Preview migration plan
+# Vercel Preview workflow — validated and adopted
 
-Status: **Proposed — not yet validated**
+Status: **Validated / adopted for non-main Preview only**
 
-Last reviewed: **2026-08-11 00:37 +08:00**
+Last reviewed: **2026-08-11 01:32 +08:00**
 
-Owner intent: reduce Cloudflare Pages Build consumption during high-frequency Agent-driven website development while preserving Cloudflare as the current Production host until a Vercel Preview path is proven in practice.
-
-## Decision summary
-
-The proposed intermediate architecture is:
+## Adopted architecture
 
 ```text
-GitHub feature branch / PR
-        |
-        v
-Vercel Preview deployment
-        |
-        v
-public *.vercel.app URL for review
+GitHub = source of truth
 
-main branch
-        |
-        v
-Cloudflare Pages Production
-        |
-        v
-https://basemodel.pages.dev
+non-main feature branch / PR
+        -> Vercel project `basemodel-preview`
+        -> repository-owned `npm run verify:deploy`
+        -> Astro production build
+        -> protected *.vercel.app Preview
+        -> Agent reads build state/logs + verifies the real page
+        -> Agent generates a temporary share URL when the owner needs anonymous access
+
+main
+        -> Vercel Git deployment disabled
+        -> Cloudflare Pages Production
+        -> https://basemodel.pages.dev
 ```
 
-This is **not yet the repository's adopted deployment architecture**. Until the acceptance gate below passes, the existing Cloudflare Direct Upload policy remains authoritative for ordinary Preview work and Cloudflare remains the only validated Production host.
+Cloudflare Direct Upload remains a supported fallback and a useful Cloudflare-specific integration Preview. It is no longer the ordinary first-choice Preview path when Vercel is available.
 
-The purpose of this experiment is narrow: determine whether Vercel can become the default public Preview surface for web-GPT / Codex / Agent work so that routine Preview iteration no longer depends on the Cloudflare Pages Git-build quota.
+Do not move the canonical Production domain to Vercel as a side effect of this decision. A Production-host migration is a separate project.
 
-## Why test this architecture
+## Vercel project
 
-The current Cloudflare policy is sound when an Agent environment has a working Wrangler login: build locally/Agent-side, Direct Upload prebuilt assets, return a public Preview URL, and reserve Git-integrated Pages Builds for deliberate release boundaries.
+- Team: `wangrui92-team`
+- Team ID: `team_Vz2qUrJvqqw5RAIgGQwNtbkR`
+- Project: `basemodel-preview`
+- Project ID: `prj_UQRbjvnik0lW21LrzotTLPhKkgAK`
+- Git repository: private `mykcs/basemodel`
+- Framework: Astro / static output
+- Canonical Production remains `https://basemodel.pages.dev`
 
-The recurring operational failure mode is different: some ChatGPT/Agent sessions have GitHub write access but do not expose a usable Cloudflare deployment credential. In those sessions, obtaining a public Cloudflare Preview can force a fallback to Git-integrated Pages Preview builds, which consumes the monthly Cloudflare Pages Build budget.
+The first private-repository connection required a one-time human OAuth / GitHub App authorization. After that boundary was crossed, the connected Vercel tools could list projects/deployments, inspect build logs, fetch protected deployments, and create temporary share links without asking the owner to relay dashboard state.
 
-Vercel is being evaluated because its product model is natively aligned with the repository's high-frequency Preview workflow:
+## Repository configuration
 
-- Vercel supports static Astro projects with zero-configuration deployment.
-- Git-connected projects can create Preview deployments for branch pushes / pull requests.
-- Preview deployments receive unique public URLs.
-- Vercel automatically adds `X-Robots-Tag: noindex` to Preview deployments by default, which matches this repository's Preview SEO requirement.
-- The Vercel CLI supports `vercel build` followed by `vercel deploy --prebuilt`, allowing Agent-side build validation before a Preview is uploaded.
-- Current Hobby limits are materially different from Cloudflare Pages' Git-build quota and should be evaluated against this project's actual Preview cadence rather than assumed unlimited.
+`vercel.json` is now part of the deployment contract:
 
-Primary references checked on 2026-08-11:
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run verify:deploy && npm run build",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- src public scripts package.json package-lock.json astro.config.mjs tsconfig.json .node-version vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
+}
+```
 
-- https://vercel.com/docs/frameworks/frontend/astro
-- https://vercel.com/docs/git
-- https://vercel.com/docs/git/vercel-for-github
-- https://vercel.com/docs/deployments/environments
-- https://vercel.com/docs/deployments/generated-urls
-- https://vercel.com/docs/headers/response-headers
-- https://vercel.com/docs/cli/build
-- https://vercel.com/docs/cli/deploy
-- https://vercel.com/docs/limits
+Interpretation:
 
-## Non-goals
+- non-main Vercel Previews must run the complete deterministic repository Gate before Astro build;
+- docs-only / Agent-only changes normally do not create a Vercel deployment;
+- Vercel does not deploy `main` from Git integration;
+- Cloudflare remains the only intended Production host.
 
-This experiment does **not** authorize the following:
+If the list of runtime-affecting repository paths changes, keep `ignoreCommand` synchronized. Do not let a new runtime directory become invisible to Preview builds.
 
-- moving `basemodel.pages.dev` Production to Vercel;
-- changing DNS or canonical Production identity;
-- removing Cloudflare Pages;
-- changing SEO canonical URLs to `vercel.app`;
-- enabling Vercel-only framework features, SSR, Functions, ISR, Image Optimization, Analytics, or other runtime coupling;
-- adding `@astrojs/vercel` merely to get a static Preview working;
-- changing the repository build contract away from its existing Astro static build unless a real incompatibility is proven;
-- deleting the existing Cloudflare Direct Upload policy before Vercel is validated.
+## Pilot evidence — PR #99
 
-The first experiment should treat Vercel as a **disposable Preview provider for the existing static artifact**, not as a reason to redesign the application architecture.
+The controlled pilot used the real SEED / 4×RTX 3090 Guide PR rather than a no-op sample.
 
-## Phase 0 — preserve current Production
+Final tested PR head:
 
-Before any Vercel experiment:
+`674f60bb57b37cd712cc745bf8dcf1ce513b722f`
 
-1. Keep Cloudflare Pages Production branch = `main`.
-2. Keep `https://basemodel.pages.dev` as canonical Production.
-3. Do not merge a Vercel-specific experiment merely to obtain a Preview.
-4. Do not trigger a Cloudflare Git-integrated Preview as part of the Vercel test.
-5. Keep Cloudflare Preview automatic deployments disabled where the current account configuration supports that state.
-6. Keep repository validation/build commands provider-neutral.
+Final Vercel deployment:
 
-A failed Vercel experiment must leave Production unchanged.
+- deployment ID: `dpl_E3NeYkTLnsgUJyfNVUtomUqpmMuJ`
+- exact deployment: `https://basemodel-preview-be5vofsnz-wangrui92-team.vercel.app`
+- branch alias: `https://basemodel-preview-git-agent-seed-owned-4x-54f1f3-wangrui92-team.vercel.app`
+- GitHub commit status: `Vercel = success`
+- Vercel state: `READY`
 
-## Phase 1 — connect Vercel as Preview-only
-
-Create or select a Vercel project under the owner's Vercel account and connect GitHub repository:
+The final build cloned the exact PR head and ran the complete Gate:
 
 ```text
-mykcs/basemodel
+npm run check
+npm run validate
+npm run audit:semantic
+npm run audit:claims
+npm run audit:freshness
+npm test
+npm run audit:v2
+npm run audit:v2:adversarial
+npm run audit:hardening
+npm run build
 ```
 
-Initial target settings:
+Observed final result:
+
+- Astro check: 0 errors;
+- data validation: 164 models / 21 papers;
+- semantic audit: 0 findings;
+- Vitest: 14 files / 75 tests passed;
+- V2 completion audit: passed;
+- V2 adversarial audit: passed;
+- hardening audit: passed;
+- Astro generated 392 pages;
+- deployment: READY.
+
+The stronger Gate caught two real regressions in PR #99 that a plain `astro build` had hidden:
+
+1. the simplified Guide stopped reading the `guides` content collection (`V2-DATA-002`);
+2. the Guide had lost the research-integrity boundary that heuristic VRAM/resource estimates are not measured hardware results (`AV-GUIDE-HARDWARE-TRUTH`).
+
+Both were fixed before the final READY deployment. Do not weaken these audits merely to make a Preview pass.
+
+## Preview SEO / identity contract
+
+The final Chinese Guide Preview was opened through the connected Vercel capability and verified to return/render:
+
+- HTTP success after authenticated access;
+- `X-Robots-Tag: noindex`;
+- `<meta name="robots" content="noindex,follow">`;
+- canonical URL pointing to `https://basemodel.pages.dev/guide/`;
+- bilingual hreflang identity pointing to the Cloudflare canonical host;
+- the new 4×3090-first SEED workflow and restored evidence-boundary copy.
+
+`PUBLIC_SEARCH_INDEXING=disabled` and `PUBLIC_SITE_URL=https://basemodel.pages.dev` are part of the Preview identity assumptions. Preserve them when recreating the Vercel project.
+
+## Private Preview protection
+
+Because the GitHub repository is private, Vercel Deployment Protection is currently active for Preview URLs.
+
+Consequences:
+
+- a normal exact/branch `*.vercel.app` URL may redirect an anonymous visitor to Vercel authentication;
+- connected Vercel tooling can still inspect the deployment and its logs;
+- when the owner needs to open the Preview without Vercel login, use `get_access_to_vercel_url` and return the generated temporary share link;
+- the temporary share link currently expires after roughly 23 hours, so regenerate it rather than treating it as a permanent artifact.
+
+Do not disable Deployment Protection merely for convenience without an explicit security/product decision. If permanent anonymous PR URLs become important, evaluate that change separately.
+
+## Normal feature workflow
 
 ```text
-Framework: Astro / auto-detected
-Production branch: main (connection metadata only)
-Preview source: non-main branches / PRs
-Production domain: none assigned for this experiment
-Custom domain: none
+1. Read current Agent docs and inspect overlapping PRs.
+2. Make one focused feature branch / PR.
+3. Push the source branch; use `[CF-Pages-Skip]` where appropriate so branch iteration does not intentionally request a Cloudflare Pages build.
+4. Vercel creates the non-main Preview.
+5. Confirm the exact PR head received Vercel success.
+6. Read Vercel build logs; do not accept a Preview that skipped `verify:deploy`.
+7. Inspect the real Preview route(s).
+8. Generate a temporary Vercel share URL when owner access requires it.
+9. Iterate until the exact head is READY and acceptance checks pass.
+10. Only after owner acceptance, merge/release to `main`.
+11. `main` is not deployed by Vercel; Cloudflare remains the Production release boundary.
 ```
 
-Do not point the Production domain at Vercel during this phase. The Vercel project may technically create a Production-environment deployment for `main`; that deployment is not the site's canonical Production and should not be advertised or indexed as such.
+### Critical release caveat
 
-If Vercel's Git integration would create an unwanted deployment from `main` during connection, avoid changing Cloudflare and record the Vercel deployment as non-canonical test infrastructure only.
+Intermediate feature commits may deliberately use `[CF-Pages-Skip]` to protect Cloudflare Preview build quota.
 
-## Phase 2 — validate with an existing real PR
+However, when the owner actually wants the accepted change released to Cloudflare Production, the final merge/release commit **must not accidentally carry a Cloudflare skip prefix**. A skip-prefixed merge can prevent the intended Production deployment.
 
-Use a real feature PR rather than a no-op probe. The preferred first validation candidate is the current SEED / 4×3090 offline-lab work if that PR is still open and relevant.
+Use a normal semantic merge title/message for the real Production release.
 
-Acceptance sequence:
+## Cloudflare evidence boundary
 
-```text
-exact PR head
--> Vercel Preview deployment
--> unique commit Preview URL
--> branch Preview URL if provided
--> inspect target Guide route
--> verify headers / SEO / static assets / routes
--> confirm Cloudflare Production unchanged
--> confirm no Cloudflare Git-integrated Pages Build was intentionally triggered
-```
+During the Vercel pilot, the final PR head exposed a successful Vercel GitHub status. The Cloudflare PR bot remained on the older `828aaf4` Preview and did not record a newer Cloudflare branch deployment for the Vercel-pilot heads.
 
-Do not create meaningless source edits solely to trigger Vercel if a real feature head already exists.
+Therefore:
 
-## Phase 3 — Preview acceptance gate
+- no new Cloudflare Git-integrated Preview was intentionally requested for the Vercel pilot;
+- Cloudflare Production was not intentionally changed by the pilot;
+- do **not** infer the exact account-level monthly build counter from this evidence because the available tools do not expose that authoritative counter.
 
-Vercel Preview is considered **validated** only if all of the following are true:
+## Cloudflare Direct Upload fallback
 
-### Repository and build
+Keep the repository-owned Direct Upload path. Use it when:
 
-- Vercel builds the current Astro project without requiring a Vercel-specific application rewrite.
-- Existing bilingual routes render.
-- Static assets load from the root correctly.
-- Existing repository-local build/validation can still run before hosted deployment.
-- No Production-only absolute host assumption breaks the Preview.
+- Cloudflare-specific Preview fidelity is the thing under test;
+- Vercel is unavailable or rate-limited;
+- a release issue appears Cloudflare-specific;
+- the owner explicitly requests a `pages.dev` Preview.
 
-### URL and PR integration
+Prefer the repository-owned command/runbook rather than inventing a new ad-hoc Wrangler path.
 
-- A GitHub PR receives or exposes a Vercel Preview URL for the exact tested head.
-- The URL is publicly reachable without requiring the owner to relay dashboard information manually.
-- A stable branch Preview URL is available or the commit-specific URL is sufficient for review.
+## What this decision does not mean
 
-### SEO / identity
+- Vercel Hobby is not unlimited; re-check current Vercel limits before quota/cost decisions.
+- Vercel Preview success is not proof of a Cloudflare Production deployment.
+- Production has not been migrated to Vercel.
+- GitHub Actions remains retired.
+- Cloudflare Direct Upload remains useful; it is simply no longer the ordinary first-choice Preview route.
+- A protected Preview share link is not permanent and should not be stored as a durable canonical URL.
 
-- `*.vercel.app` Preview responses include `X-Robots-Tag: noindex` or equivalent verified noindex behavior.
-- Canonical metadata continues to identify the real Production site rather than promoting the Preview host.
-- sitemap / robots / hreflang behavior does not create a new indexed site identity.
+## If this workflow later fails
 
-### Cloudflare isolation
-
-- `https://basemodel.pages.dev` remains unchanged during Preview validation.
-- No Cloudflare Production deployment is triggered.
-- No Cloudflare Git-integrated Preview Build is triggered merely to validate Vercel.
-
-### Product behavior
-
-For the first real validation, inspect at minimum:
-
-- `/`
-- `/guide/`
-- `/guide/#seed-reproduction`
-- the specific route/anchor changed by the candidate PR
-- `/en/guide/` when the change is bilingual
-
-A source-level success or a Vercel "READY" badge alone is not enough; the actual public Preview must be opened and checked.
-
-## Preferred steady state if validation passes
-
-If Phase 3 passes, update this file from `Proposed` to `Validated`, then change the day-to-day architecture guidance to:
-
-```text
-ordinary feature work
--> Agent-side repository validation + production build
--> GitHub focused branch / PR
--> Vercel Preview
--> inspect public *.vercel.app URL
--> iterate
--> owner accepts
--> merge main
--> Cloudflare Production release remains the explicit production boundary
-```
-
-Cloudflare Direct Upload should remain documented as a valid fallback / independent integration-preview mechanism unless the owner explicitly retires it.
-
-The primary benefit is operational: ordinary Preview iteration is no longer blocked on a Cloudflare Wrangler credential in every Agent session and no longer needs to consume Cloudflare Git-integrated Preview Builds merely to obtain a review URL.
-
-## Optional CLI/prebuilt path after Git Preview validation
-
-After Git-connected Vercel Preview works, test whether the Agent environment can use:
-
-```bash
-vercel pull
-vercel build
-vercel deploy --prebuilt
-```
-
-Vercel documents that `vercel build` writes Build Output API artifacts to `.vercel/output`, and `vercel deploy --prebuilt` deploys those artifacts; the deploy command returns the Deployment URL on stdout.
-
-This path is desirable when the Agent has Vercel credentials because it preserves the owner's preferred order:
-
-```text
-validate locally first -> upload prebuilt result -> public Preview
-```
-
-Do not assume `--prebuilt` is always equivalent to Git deployment. Vercel warns that system environment variables are not available at build time in the same way when using prebuilt output; if this repository later depends on Vercel build-time system variables, re-evaluate the path.
-
-## Vercel quota / limit interpretation
-
-Do not describe Vercel Hobby as unlimited.
-
-As checked on 2026-08-11, Vercel's limits documentation lists, among other limits:
-
-- 100 deployments created per day on Hobby;
-- 2,000 CLI-created deployments per week;
-- 45 minutes maximum build time per deployment;
-- 1 concurrent build on Hobby;
-- per-hour build rate limits and other platform limits documented separately/currently on the same limits page.
-
-These limits can change. Re-check official Vercel documentation before making quota/cost claims.
-
-The architecture decision should be based on whether those limits fit this repository's actual Agent Preview cadence, not on the false claim that Vercel Preview is quota-free.
-
-## Failure / rollback rule
-
-If Vercel Preview is unreliable, incompatible, inaccessible from ChatGPT/Agent tooling, or creates worse operational constraints:
-
-1. mark this plan `Rejected` or `Deferred` with dated evidence;
-2. do not change Cloudflare Production;
-3. keep the existing Direct Upload policy as default;
-4. record the exact blocker so a later Agent does not repeat the same experiment blindly.
-
-There is no Production rollback needed if the experiment obeys the Preview-only boundary.
-
-## Documentation update rule after the experiment
-
-If Vercel validation succeeds, update together:
-
-- this file: `Proposed` -> `Validated` / `Adopted`;
-- `docs/agents/LATEST.md`;
-- `docs/agents/README.md`;
-- `/AGENTS.md` architecture and normal workflow sections;
-- `deployment-policy.md` if Vercel Preview becomes authoritative;
-- `repository-map.md` if provider ownership boundaries change;
-- `cloudflare-pages-deployment.md` only where Cloudflare's role changes;
-- `web-gpt-cloudflare-build-budget-workflow.md` so it no longer implies Cloudflare Direct Upload is the only ordinary Preview path.
-
-Do **not** edit all of these files merely because a Vercel project was created. Update the authoritative architecture only after a real public Preview passes the acceptance gate.
-
-## Required experiment report
-
-The Agent performing the first Vercel test must report:
-
-```text
-Vercel project connected: yes / no
-GitHub repository connected: yes / no
-Candidate PR / exact head: <PR + SHA>
-Agent-side validation/build: passed / failed / not run
-Vercel Preview status: READY / ERROR / unknown
-Commit Preview URL: <URL or none>
-Branch Preview URL: <URL or none>
-Preview noindex verified: yes / no / unknown
-Cloudflare Git-integrated Pages Builds triggered by this experiment: 0 / more / unknown
-Cloudflare Production changed: no / yes / unknown
-Canonical Production URL: https://basemodel.pages.dev
-Plan status after experiment: Proposed / Validated / Rejected / Deferred
-```
-
-Do not call the migration successful until the real Preview URL and isolation checks are verified.
+Record the exact blocker here and fall back to Cloudflare Direct Upload. Netlify remains the strongest previously evaluated alternate Preview platform if both Vercel and Cloudflare Agent paths become unsuitable.
