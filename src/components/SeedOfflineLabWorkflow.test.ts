@@ -37,7 +37,7 @@ describe('SEED offline four-GPU lab workflow', () => {
   it('keeps hardware topology and result-validation evidence explicit', () => {
     expect(workflow).toContain('nvidia-smi topo -m');
     expect(workflow).toContain('GRPO');
-    expect(workflow).toContain('4×A800');
+    expect(workflow).toContain('8×A800');
     expect(workflow).toContain('method reproduction');
   });
 });
