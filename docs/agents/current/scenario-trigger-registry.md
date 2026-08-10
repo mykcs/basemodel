@@ -8,6 +8,8 @@ Future Agents should scan it at the start of non-trivial work after `AGENTS.md` 
 
 **Do not wait for the owner to repeat these reminders.** If the situation matches, trigger the corresponding behavior automatically.
 
+Re-scan when the task materially changes state: a new blocker appears, an overlapping PR is discovered, a provider/deployment boundary is crossed, a previously green branch becomes behind `main`, a Gate exposes an unexpected invariant, or a current/latest external claim becomes important.
+
 Precedence remains:
 
 ```text
@@ -18,6 +20,33 @@ current user instruction
 ```
 
 A trigger routes attention; it does not override newer evidence or explicit user instructions.
+
+---
+
+## TRIGGER: previous plan / handoff / current doc may be stale
+
+### Cues
+
+Any task where:
+
+- the owner says an earlier plan may be outdated;
+- remembered chat guidance conflicts with current repository files;
+- two `docs/agents/current/*` files disagree;
+- provider behavior no longer matches a prior session;
+- the plan depends on fast-moving models, Agent harnesses, frameworks, APIs, or hosting products.
+
+### Automatic response
+
+1. Treat remembered/conversational state as a hypothesis, not authority.
+2. Re-read `AGENTS.md`, `docs/agents/LATEST.md`, executable config/tests, and the task-owning current policy.
+3. Inspect live provider state for provider-side claims when available.
+4. For fast-moving technical claims, verify current first-party docs/source repositories and relevant primary research before redesigning.
+5. If executable/live truth contradicts a `current/` document, update or demote the stale document instead of adding another workaround layer.
+6. Preserve a sound current design when fresh evidence does not justify churn.
+
+### Refresh cue
+
+Trigger this again whenever the task crosses a platform/provider boundary or the owner explicitly challenges an assumption as stale.
 
 ---
 
@@ -49,6 +78,67 @@ Hosting products, quotas, build semantics, and provider limits are time-sensitiv
 
 ---
 
+## TRIGGER: exact-head Preview / `main` moved / provider says READY
+
+### Cues
+
+Any situation where:
+
+- a PR Preview passed but the branch is now behind `main`;
+- a long-running Agent task outlived other merges;
+- the validated Preview head is not based on the current intended merge base;
+- Vercel/Cloudflare/GitHub says READY/success and the user asked to see or verify the real site;
+- Deployment Protection blocks anonymous inspection.
+
+### Automatic response
+
+1. Compare the PR branch against current `main` before final acceptance.
+2. Inspect whether intervening `main` changes touch the same files, contracts, deployment config, or assumptions.
+3. Synchronize onto current `main` when needed without discarding either side's intended ownership.
+4. Re-run the deterministic Gate and build for the **new exact head** when user-facing/runtime behavior is involved.
+5. Confirm provider metadata points to that exact commit and that the expected Gate actually ran.
+6. Inspect the real route/interaction/metadata required by the task; a READY badge alone is not visual/product acceptance.
+7. If Vercel Deployment Protection blocks owner review, generate a temporary share link rather than disabling protection.
+8. Keep temporary share links, transient deployment IDs, and intermediate SHAs out of durable project knowledge unless a specific historical case truly needs them.
+
+### Acceptance boundary
+
+Completion reports distinguish:
+
+```text
+source synchronization
+!= deterministic Gate/build success
+!= Preview deployment READY
+!= real route/browser acceptance
+!= Production acceptance
+```
+
+Do not cite an earlier Preview as proof for a later synchronized head.
+
+---
+
+## TRIGGER: deterministic Gate fails / weakening the check looks tempting
+
+### Cues
+
+- copy/docs-like edits fail a semantic, evidence, adversarial, or hardening audit;
+- a harmless-looking wording change breaks an acceptance invariant;
+- the easiest route to green appears to be removing or weakening a check.
+
+### Automatic response
+
+1. Read the failing invariant and the policy/research boundary it protects.
+2. Decide whether the invariant remains valid using current executable/product/research truth.
+3. If valid, fix the implementation/content so the protected meaning stays explicit.
+4. Change the Gate only when evidence shows the Gate itself is stale or incorrectly specified.
+5. If the failure reveals a recurring boundary, encode it in the existing test/runbook or historical case instead of merely remembering the incident.
+
+### Anti-pattern
+
+Do not trade research integrity or deployment safety for a green badge.
+
+---
+
 ## TRIGGER: SEED / ALFWorld / WebShop / reproduction / GPU choice
 
 ### Cues
@@ -71,6 +161,7 @@ Any task involving:
 5. Separate “the code runs”, “the training chain is healthy”, “the method effect is reproduced”, and “the run is paper-hardware comparable”.
 6. Require observable pass criteria and provenance: code revision, data/model hashes, config, hardware/topology, logs, checkpoint save/resume, evaluation results, and appropriate controls.
 7. If a newer model is proposed, first ask whether the task is strict reproduction, method reproduction, or a modern rerun. Do not silently upgrade the paper checkpoint.
+8. Keep paper-reported hardware, catalog/rental specs, heuristic estimates, and measured profiling as distinct evidence classes.
 
 ### Refresh cue
 
@@ -159,6 +250,7 @@ Any request to:
 
 - make the site easier for a technical beginner/student;
 - rewrite Guide/onboarding/copy;
+- teach Agent / agentic-RL concepts to someone who already knows modern ML;
 - “make it sound human”;
 - add a new educational feature or concept block;
 - change one part of a workflow that affects the surrounding reading order.
@@ -166,16 +258,36 @@ Any request to:
 ### Automatic response
 
 1. Read the current product/research and SEED workflow docs before editing.
-2. Rewrite the **whole affected journey**, not only the paragraph explicitly criticized, when local patching would make the page feel fragmented.
-3. Put the next action first. Prefer short direct lab-mentor language over abstract slogans.
-4. For experiment steps, use the pattern:
+2. Define the learner's assumed prior knowledge explicitly instead of treating “beginner” as “knows nothing”.
+3. If the target user knows ML/DL/Transformers/fine-tuning/inference/APIs/GPUs but not Agents, bridge familiar concepts into the missing mental model before product taxonomy or long RL derivations:
+
+```text
+known ML concepts
+-> Agent runtime loop
+-> runtime vs training
+-> minimum RL vocabulary
+-> map into the real paper/method
+-> executable experiment
+-> deeper research-mode/model-selection layer
+```
+
+4. Teach the runtime loop before optimization details: observation/context -> policy/model -> action/tool -> environment -> next observation.
+5. Separate runtime (normally fixed weights, changing history/state) from training (collect rollouts -> reward/evaluator -> advantage/loss -> weight update).
+6. Introduce only the RL vocabulary needed for the next real task. For SEED, policy, trajectory/rollout, reward, advantage, and GRPO intuition are enough before the practical workflow.
+7. Rewrite the **whole affected journey**, not only the paragraph explicitly criticized, when local patching would make the page feel fragmented.
+8. Put the next action first. Prefer short direct lab-mentor language over abstract slogans.
+9. For experiment steps, use the pattern:
    - what to do now;
    - exact command/path/action;
    - what observable evidence counts as PASS;
    - what to check first if it fails;
    - what evidence to paste to an Agent if help is needed.
-5. Avoid rhetorical filler such as “不是……而是……” / “它的价值是……” / “把 X 翻译成 Y 的语言” when a concrete instruction is available.
-6. Check surrounding pages/navigation so the site still reads as one system after the change.
+10. Avoid rhetorical filler when a concrete instruction is available.
+11. Check surrounding pages/navigation so the site still reads as one system after the change.
+
+### Acceptance boundary
+
+For the target ML-literate Agent newcomer, the learner should be able to explain both **how the Agent runs** and **where training changes the policy** before being asked to choose a reproduction mode or execute a long-horizon RL run.
 
 ---
 
@@ -352,6 +464,8 @@ Multiple open PRs touch the same page/layout/policy, or a new request substantia
 ### Automatic response
 
 - inspect overlap before editing;
+- compare changed files, base/head relationships, validation state, and product intent;
+- prefer continuing the most complete/current path when it safely subsumes earlier work;
 - prefer one clean branch from current `main` when an old feature branch has diverged heavily and a partial cherry-pick would preserve stale assumptions;
 - keep one focused feature/PR when practical;
 - stack deliberately only when the dependency is explicit and reviewable;
@@ -372,6 +486,8 @@ A task reveals a repeated failure mode, a reliable new workflow, a non-obvious b
 
 Use `project-agent-operating-principles.md` to decide whether to encode it as a test, script, config rule, runbook, architecture decision, navigation rule, historical case, or not persist it at all.
 
+If the lesson should only fire under a recognizable future situation, add/refine a short trigger in this registry and link to the existing owner of the detailed rule.
+
 Do not create a new memory file simply because the task ended. Persist only information whose future utility exceeds the cost of another rule/document.
 
 ---
@@ -385,5 +501,15 @@ When adding a new scenario:
 3. include a refresh cue for time-sensitive knowledge;
 4. add or update an executable invariant when feasible;
 5. remove/supersede triggers that no longer match the current architecture.
+
+Re-scan this registry at least at these state transitions:
+
+- task start;
+- new blocker/tool failure;
+- discovery of overlapping PRs;
+- Preview/build success before claiming final acceptance;
+- before merge/release if `main` may have advanced;
+- current/latest external fact becomes decision-relevant;
+- task completion when deciding whether a lesson deserves persistence.
 
 This registry should stay compact enough to scan at task start. Detailed procedures belong in the owning current doc/runbook/test.
