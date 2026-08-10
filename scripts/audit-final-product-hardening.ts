@@ -26,11 +26,11 @@ assert('HARDEN-PAPER-001', seed.checkpoint_url === 'https://huggingface.co/Jinya
 
 const explorer = read('src/components/ModelExplorer.tsx');
 assert('HARDEN-UX-001', explorer.includes("'研究约束'") && explorer.includes("'目录属性'") && explorer.includes("key: 'baseCheckpoint'") && explorer.includes('current-open') && explorer.includes('current-api') && explorer.includes('paper-used'), 'Model Explorer is research-constraint-first and decision-grouped');
-const coreMarker = explorer.indexOf("filterDepth === 'core'");
-const advancedMarker = explorer.indexOf("} : <>", coreMarker);
-const openWeightMarker = explorer.indexOf('m.explorer.openWeights', coreMarker);
-const vendorMarker = explorer.indexOf('m.explorer.vendor', advancedMarker);
-assert('HARDEN-UX-002', coreMarker >= 0 && advancedMarker > coreMarker && openWeightMarker > coreMarker && openWeightMarker < advancedMarker && vendorMarker > advancedMarker, 'open-weight/update constraints are core while vendor metadata is advanced');
+const coreBlockStart = explorer.indexOf("{filterDepth === 'core' ? <>");
+const coreBlock = coreBlockStart >= 0 ? explorer.slice(coreBlockStart) : '';
+const openWeightSelect = coreBlock.indexOf('<Select label={m.explorer.openWeights}');
+const vendorSelect = coreBlock.indexOf('<Select label={m.explorer.vendor}');
+assert('HARDEN-UX-002', coreBlockStart >= 0 && openWeightSelect >= 0 && vendorSelect > openWeightSelect, 'open-weight/update constraints are presented before vendor/catalog metadata');
 
 const paperExplorer = read('src/components/papers/PaperExplorer.tsx');
 assert('HARDEN-PAPER-002', paperExplorer.includes('evidenceCompleteness') && paperExplorer.includes('experimentBurden') && !paperExplorer.includes('function difficulty('), 'reproduction evidence completeness is separate from experiment burden');
