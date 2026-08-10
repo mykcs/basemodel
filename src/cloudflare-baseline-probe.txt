@@ -1,0 +1,1 @@
+This file is a non-runtime Cloudflare Pages baseline probe for current main. It exists only on the diagnostic branch and is not intended for merge.
