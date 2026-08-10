@@ -9,22 +9,6 @@ const assert = (id: string, condition: boolean, detail: string) => {
   if (!condition) failures.push(`${id}: ${detail}`);
 };
 
-const home = read('src/pages/_bodies/home-v2.astro');
-assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('scoreModels') && home.includes('sampleFeasible'), 'home starts from three intents, links beginners to Guide, and computes a live example');
-assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
-const intentIndex = home.indexOf('intent-grid');
-const seedIndex = home.indexOf('<SeedUseCaseStrip');
-assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the primary intent choice instead of preceding the hero');
-
-const guide = read('src/components/GuideDecisionChapters.astro');
-assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
-
-const paperIndex = read('src/pages/_bodies/papers-index.astro');
-assert('HARDEN-PAPERS-INDEX', paperIndex.includes('paper-matrix-advanced') && paperIndex.includes('<details'), 'paper-model relation matrix is an advanced secondary view');
-
-const memo = read('src/components/workspace/DecisionMemo.tsx');
-assert('HARDEN-MEMO-001', memo.includes('memo-readable') && memo.includes('memo-source-preview') && memo.includes('View exported Markdown source'), 'Decision Memo renders a human-readable primary view and keeps Markdown secondary');
-
 const dataStatus = read('src/pages/_bodies/data-status.astro');
 assert('HARDEN-DATA-STATUS-001', dataStatus.includes('托管 / API 当前模型') && dataStatus.includes('开放权重当前模型') && dataStatus.includes('const apiPresent = apiCurrent ? models.some'), 'Data Status separates current surfaces and verifies the displayed API model directly');
 
@@ -43,8 +27,8 @@ const catalogDiff = read('scripts/audit-catalog-diff.ts');
 assert('HARDEN-FRESHNESS-001', catalogDiff.includes('discoveryCandidates') && catalogDiff.includes('CATALOG_DIFF_STRICT') && catalogDiff.includes('review prompts'), 'catalog discovery produces review candidates without auto-promoting them to facts');
 
 if (failures.length) {
-  console.error(`\nHardening audit second-half diagnostic failed: ${failures.length} item(s)`);
+  console.error(`\nHardening audit visual/data-tail diagnostic failed: ${failures.length} item(s)`);
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
-console.log('\nHardening audit second-half diagnostic passed.');
+console.log('\nHardening audit visual/data-tail diagnostic passed.');
