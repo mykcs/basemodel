@@ -92,31 +92,53 @@ GitHub Actions Secrets / Agent Secrets are safer, but their APIs intentionally d
 
 Proceed in this order. Do not jump directly to plaintext Git storage.
 
-### 1. Agent / execution-environment secret injection
+### 1. Codex / Agent execution-environment injection
 
-Goal:
+Current OpenAI Codex Cloud behavior was re-checked against official documentation on 2026-08-11:
+
+- Codex Cloud checks out the selected repository into a cloud container before the Agent phase;
+- normal **Environment variables** are available for the full cloud chat, including setup scripts and the Agent phase;
+- encrypted **Secrets** are decrypted only for setup scripts and are removed before the Agent phase;
+- setup scripts run before the Agent edits the task state, so a setup-only Secret cannot directly perform the final post-edit Wrangler deployment;
+- do **not** bypass this security boundary by copying a setup-only Secret into a repository file or other Agent-readable plaintext location.
+
+Therefore the original ideal of "Codex Secret -> final Agent-phase `wrangler pages deploy`" is **not directly supported by the current Codex Secret lifecycle**.
+
+The practical first experiment is instead:
 
 ```text
-trusted Agent execution runtime
-  + repository checkout
-  + CLOUDFLARE_API_TOKEN injected as secret
-  + CLOUDFLARE_ACCOUNT_ID injected as environment value/secret
+Codex Cloud environment for mykcs/basemodel
+  + CLOUDFLARE_API_TOKEN as an Environment variable
+  + CLOUDFLARE_ACCOUNT_ID as an Environment variable
+  + narrowly restricted Agent internet access
   -> npm run preview:cloudflare
 ```
 
-This is the preferred architecture because the model does not need to retrieve the token as ordinary source content; the runtime injects it only when executing the command.
+This is still preferable to committing the token into Git because it keeps the token outside repository history, but it is weaker than a setup-only Codex Secret: an Agent-phase environment variable is available to commands the Agent runs.
+
+Risk reduction for this experiment:
+
+- create a dedicated Cloudflare API token, never use the Global API Key;
+- grant only the minimum Pages permission required by current Cloudflare documentation;
+- restrict the token to the relevant Cloudflare account as far as Cloudflare allows;
+- prefer a short expiration / TTL for the first proof;
+- enable Agent internet access only for the domains needed for build/deploy rather than unrestricted access;
+- remember that Wrangler deployment requires non-read HTTP methods, so a GET/HEAD-only network policy will not be sufficient for the final upload;
+- remove/rotate the environment variable token after the proof if persistent Agent-phase exposure is not acceptable.
 
 Acceptance gate:
 
-- secret value is not committed to Git;
-- secret value is not pasted into chat / PR / issue text;
-- runtime can execute the private repository;
+- token is not committed to Git;
+- token is not pasted into chat / PR / issue text;
+- Codex runtime can execute the private repository;
 - `npm run preview:cloudflare` returns an actual public `pages.dev` URL;
 - exact Git SHA is reported;
 - Production remains untouched;
 - Cloudflare Git-integrated Pages Build count is not intentionally consumed.
 
-### 2. Narrow GitHub Actions Direct Upload runner, only if step 1 is unavailable
+If this environment-variable experiment is judged too permissive, stop and move to step 2 rather than weakening the token or Codex security model.
+
+### 2. Narrow GitHub Actions Direct Upload runner, only if step 1 is unavailable or rejected
 
 This is not a return to GitHub Actions as general CI.
 
@@ -150,22 +172,23 @@ If ever used:
 - document that deletion from the current branch does not erase Git history;
 - treat any accidental exposure as a compromise and rotate, rather than trying to "hide" the old commit.
 
-This remains inferior to runtime secret injection.
+This remains inferior to runtime injection.
 
 ## Current next action
 
-**Do not redesign the repository Direct Upload script again.** The next useful work is to determine whether the user's current ChatGPT/Codex execution environment exposes a persistent secret/environment configuration that can inject:
+The current next action is **not** another repository redesign.
 
-```text
-CLOUDFLARE_API_TOKEN
-CLOUDFLARE_ACCOUNT_ID
+Configure a Codex Cloud environment for `mykcs/basemodel` with a short-lived, minimum-permission Cloudflare token supplied as an **Environment variable** (not a setup-only Secret), plus `CLOUDFLARE_ACCOUNT_ID`, and narrowly scoped Agent internet access. Then run one real task that ends with:
+
+```bash
+npm run preview:cloudflare
 ```
 
-into an Agent runtime that can execute `mykcs/basemodel`.
+If the real Direct Upload succeeds, record the returned `DIRECT_UPLOAD_PREVIEW_URL` and exact Git SHA and then decide whether the Agent-phase environment-variable exposure is acceptable for continued fallback use.
 
-If such a runtime exists, configure the credentials there and perform one real Direct Upload proof using `npm run preview:cloudflare`.
+If it fails because Environment variables cannot be configured securely enough, network policy cannot support Wrangler without excessive exposure, or the owner rejects Agent-phase token availability, move to the narrow GitHub Actions runner.
 
-If not, evaluate the narrow GitHub Actions runner. Only after that should plaintext-in-private-repo be reconsidered.
+Only after that should plaintext-in-private-repo be reconsidered.
 
 ## Security / evidence rules
 
@@ -180,9 +203,24 @@ GitHub can read the repository
 != Production changed
 ```
 
-Never claim the credential problem is solved until a real runtime receives the secret and a real Direct Upload returns a verified public URL.
+Never claim the credential problem is solved until a real runtime receives the credential and a real Direct Upload returns a verified public URL.
 
 Never spend a Git-integrated Cloudflare Pages Build merely to compensate for missing Wrangler credentials without first warning the owner and receiving permission.
+
+## Official references checked for this decision
+
+OpenAI Codex Cloud:
+
+- <https://developers.openai.com/codex/environments/cloud-environment>
+- <https://learn.chatgpt.com/codex/cloud/internet-access>
+
+Cloudflare Wrangler / Direct Upload:
+
+- <https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/>
+- <https://developers.cloudflare.com/workers/wrangler/system-environment-variables/>
+- <https://developers.cloudflare.com/workers/wrangler/commands/pages/>
+
+Re-check these before changing the credential lifecycle or network policy; both products evolve quickly.
 
 ## Related records
 
