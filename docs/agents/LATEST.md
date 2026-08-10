@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-10 02:12 +08:00**
+Last updated: **2026-08-10 21:40 +08:00**
 
-Status: **The 2026-08-10 model-catalog audit is merged and its durable verification/evidence contract is now captured for future Agents; the SEED end-to-end guide remains current and GitHub -> Cloudflare Pages remains the steady-state architecture.**
+Status: **The 2026-08-10 model-catalog audit is merged and its durable verification/evidence contract is now captured for future Agents; the SEED end-to-end guide remains current; GitHub -> Cloudflare Pages remains the steady-state architecture; and the owner’s 2026-08-10 build-budget directive now makes local build + Direct Upload the default preview path.**
 
 This is the stable first-stop file for future coding Agents. Read it before historical migration notes.
 
@@ -16,20 +16,35 @@ This is the stable first-stop file for future coding Agents. Read it before hist
 - Cloudflare Root directory: repository root.
 - GitHub Actions and GitHub Pages are intentionally retired.
 
+## Owner build-budget directive (2026-08-10)
+
+The owner cares strongly about Cloudflare Pages Build consumption. The durable policy is captured in:
+
+`docs/agents/current/direct-upload-preview-policy.md`
+
+Operating summary for every Agent session:
+
+- default ordinary previews to **repository-local build + Wrangler Direct Upload** on a unique non-production preview branch, and hand the owner the new public preview URL;
+- **do not** trigger Git-connected Preview/Production builds for ordinary work; reserve them for an explicit owner-requested formal Git-integrated deployment, and warn about expected Pages Build consumption first;
+- synchronize source/docs to GitHub with skip-build commits (`[Skip CI]` etc.) when no formal deployment was requested;
+- every completion report must state whether a Cloudflare Pages Build was triggered (`yes / no / unknown`), the local build result, the preview URL, Git sync status, and Production status;
+- if build/upload/auth/quota evidence is unavailable, report that honestly — never claim “safe”, “deployed”, or “no build consumed” without evidence.
+
 ## Agent reading order
 
 1. `/AGENTS.md`
 2. `docs/agents/LATEST.md`
 3. `docs/agents/current/product-and-research-integrity.md`
 4. `docs/agents/current/model-catalog-verification-policy.md`
-5. `docs/agents/current/seed-guided-research-workflow.md`
-6. `docs/agents/current/deployment-policy.md`
-7. `docs/agents/current/repository-map.md`
-8. `docs/agents/current/rendering-and-performance-policy.md`
-9. `docs/agents/current/cloudflare-pages-deployment.md`
-10. `package.json` and task-specific source files
+5. `docs/agents/current/direct-upload-preview-policy.md`
+6. `docs/agents/current/seed-guided-research-workflow.md`
+7. `docs/agents/current/deployment-policy.md`
+8. `docs/agents/current/repository-map.md`
+9. `docs/agents/current/rendering-and-performance-policy.md`
+10. `docs/agents/current/cloudflare-pages-deployment.md`
+11. `package.json` and task-specific source files
 
-The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The model-catalog verification document is required reading before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics. The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
+The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The model-catalog verification document is required reading before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics. The Direct Upload preview policy is required reading before any website change that would previously have defaulted to “push a branch and let Cloudflare build it.” The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
 
 ## Model catalog verification contract now captured in-repo
 
@@ -222,7 +237,7 @@ PR #57 completed the organizational migration:
 
 - `e2e/*` -> `tests/e2e/*`;
 - Playwright `testDir` -> `./tests/e2e`;
-- `demo-archive/*` -> `tests/fixtures/demo-archive/*`;
+- `demo-archive/*` -> `tests/fixtures/demo-archive/`;
 - current Agent docs -> `docs/agents/current/`;
 - dated/retired/migration Agent docs -> `docs/agents/history/`.
 
@@ -230,20 +245,32 @@ There is no pending repository-layout or Build Watch cleanup.
 
 ## Steady-state change flow
 
-For normal deployment-sensitive work:
+For ordinary website work (owner directive 2026-08-10):
 
 ```text
 one logical task
--> batched intermediate work (skip deployment when appropriate)
+-> batched edits
+-> repository-local validation + production build (agent-side)
+-> Direct Upload to a unique non-production preview branch
+-> verify the returned public preview URL
+-> sync source to GitHub with skip-build commits
+-> report: completed?, local build result, preview URL, Pages Build triggered?, Git sync, Production status
+```
+
+For an explicit owner-requested formal Git-integrated deployment:
+
+```text
+warn about expected Pages Build consumption first
 -> one meaningful exact-head Preview
 -> merge
 -> one Production build
+-> verify the exact commit/deployment
 ```
 
 For docs-only changes under current Build Watch exclusions:
 
 ```text
-focused branch/PR
+skip-build direct commit or focused branch/PR
 -> inspect diff and links
 -> merge without manufacturing a runtime change merely to force Preview
 ```
