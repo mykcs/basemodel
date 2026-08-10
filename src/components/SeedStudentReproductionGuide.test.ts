@@ -27,27 +27,40 @@ describe('SEED student reproduction mainline', () => {
     ]) expect(guide).toContain(token);
   });
 
-  it('uses real small-run knobs and observable Stage-1 progress', () => {
+  it('uses real small-run knobs, copyable analyzer examples, and observable Stage-1 progress', () => {
     for (const token of [
       'RUN_MODE=smoke',
       'NUM_TASKS=1',
       'ROLLOUTS_PER_TASK=1',
       'MAX_TASKS=1',
+      'WEBSHOP_USE_SMALL=1',
+      'SKILL_BASE_URL=http://127.0.0.1:8000/v1',
+      'SKILL_API_KEY=EMPTY',
       'DRY_RUN=true',
       'progress.json',
       'completed_rollouts',
       'parse_ok_skills',
       'sft_records',
     ]) expect(guide).toContain(token);
+    expect(guide).not.toContain('<port>');
   });
 
-  it('keeps paper references separate from beginner pass conditions', () => {
-    for (const token of ['180×8', '150 policy updates', '91.8', '88.5', '78.9', '72–144h']) {
-      expect(guide).toContain(token);
-    }
+  it('keeps an explicit same-condition GRPO control and paper references', () => {
+    for (const token of [
+      'examples/grpo_trainer/run_alfworld.sh',
+      'examples/grpo_trainer/run_webshop.sh',
+      'trainer.n_gpus_per_node=4',
+      '180×8',
+      '150 policy updates',
+      '91.8',
+      '88.5',
+      '78.9',
+      '72–144h',
+    ]) expect(guide).toContain(token);
   });
 
   it('ships a reusable hardware-neutral preflight script', () => {
+    expect(guide).toContain('/srv/seed/tools/seed-4x3090-preflight.sh');
     for (const token of ['EXPECTED_GPU_COUNT="${EXPECTED_GPU_COUNT:-4}"', 'nvidia-smi topo -m', 'EXPERIMENT_COMMIT', 'sha256sum -c', 'ALFWORLD_DATA', 'WEBSHOP_ROOT', 'READY:']) {
       expect(preflight).toContain(token);
     }
