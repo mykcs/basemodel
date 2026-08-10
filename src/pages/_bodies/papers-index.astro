@@ -11,11 +11,15 @@ const paperEntries = await getCollection('papers');
 const modelEntries = await getCollection('models');
 const papers = paperEntries.map((entry) => entry.data);
 const models = modelEntries.map((entry) => entry.data);
-// The matrix only needs relation IDs and roles. Strip relation notes so the
-// generated HTML stays focused and Chinese pages do not inherit English-only prose.
-const matrixPapers = papers.map((paper) => ({
-  ...paper,
-  models: paper.models.map(({ notes, ...use }) => use),
-}));
+const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map(({ notes, ...use }) => use) }));
 ---
-<div class="shell"><header class="page-header"><h1>{m.papersIndex.title}</h1><p class="lede">{m.papersIndex.lede}</p></header><section class="section"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section><section class="section"><div class="section-heading"><div><h2>{m.papersIndex.matrixTitle}</h2></div></div><PaperModelMatrix papers={matrixPapers} models={models} locale={locale} /></section></div>
+<div class="shell">
+  <header class="page-header"><h1>{m.papersIndex.title}</h1><p class="lede">{m.papersIndex.lede}</p></header>
+  <section class="section"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
+  <details class="paper-matrix-advanced">
+    <summary>{locale === 'zh' ? '高级视图：展开论文—模型关系矩阵' : 'Advanced view: open the paper–model relation matrix'}</summary>
+    <p class="muted">{locale === 'zh' ? '矩阵适合查关系，不是论文案例库的默认阅读顺序。先从上面的研究问题和复现条件选择论文，再用矩阵交叉检查模型角色。' : 'The matrix is useful for relation lookup, not as the default paper-reading flow. Start from research questions and reproduction conditions above, then use the matrix to cross-check model roles.'}</p>
+    <div class="section-heading"><div><h2>{m.papersIndex.matrixTitle}</h2></div></div>
+    <PaperModelMatrix papers={matrixPapers} models={models} locale={locale} />
+  </details>
+</div>
