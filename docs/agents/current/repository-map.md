@@ -2,7 +2,7 @@
 
 Last reviewed: 2026-08-10
 
-This file is the fast orientation map for coding agents. It explains where to look before making changes; it does not replace the authoritative deployment policy.
+This file is the fast orientation map for coding agents. It explains where to look before making changes; it does not replace the authoritative current policy files.
 
 ## 60-second start
 
@@ -12,12 +12,13 @@ Before editing this repository, read in this order:
 2. [`../LATEST.md`](../LATEST.md) — latest timestamped handoff and current state.
 3. [`product-and-research-integrity.md`](./product-and-research-integrity.md) — durable product/research-integrity contract.
 4. [`model-catalog-verification-policy.md`](./model-catalog-verification-policy.md) — required before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics.
-5. [`deployment-policy.md`](./deployment-policy.md) — authoritative GitHub -> Cloudflare Pages architecture and validation boundary.
-6. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Cloudflare build/deploy runbook and quota guardrails.
-7. [`/package.json`](../../../package.json) — available validation, audit, build and E2E commands.
-8. [`/README.md`](../../../README.md) — product purpose, data model and human-facing maintenance notes.
+5. [`direct-upload-preview-policy.md`](./direct-upload-preview-policy.md) — **default website preview workflow and Cloudflare Pages Build-budget rule**.
+6. [`deployment-policy.md`](./deployment-policy.md) — GitHub -> Cloudflare Pages architecture and the formal Git-release boundary.
+7. [`cloudflare-pages-deployment.md`](./cloudflare-pages-deployment.md) — Direct Upload / formal release runbook, SEO identity and quota guardrails.
+8. [`/package.json`](../../../package.json) — validation, audit, build and E2E commands.
+9. [`/README.md`](../../../README.md) — product purpose, data model and human-facing maintenance notes.
 
-If a document under `../history/` conflicts with current files, current files win.
+If a document under `../history/` conflicts with current files, current files win. For ordinary preview/build-budget behavior, `direct-upload-preview-policy.md` is the most specific authority.
 
 ## Top-level map
 
@@ -70,14 +71,14 @@ The repository keeps quality logic in scripts instead of tying it to a CI vendor
 
 Important commands are exposed through `package.json`:
 
-- `npm run verify:deploy` — deterministic repository-local deployment gate run by Cloudflare.
-- `npm run build:cloudflare` — Cloudflare build entrypoint; runs the gate and then Astro production build.
-- `npm run test:e2e` — full Chromium + WebKit regression, retained for on-demand use.
+- `npm run verify:deploy` — deterministic repository-local deployment gate.
+- `npm run build:cloudflare` — repository-owned Cloudflare/preview build entrypoint; runs the gate and then Astro production build.
+- `npm run test:e2e` — full Chromium + WebKit regression, on demand.
 - `npm run audit:vendor-catalogs` — external vendor catalog audit, on demand.
 - `npm run audit:urls` — external source-health probes, on demand.
 - `npm run audit:coverage` — data-health/coverage report, on demand.
 
-Do not move external-network probes or browser downloads into every Cloudflare build unless the owner deliberately changes the reliability/cost policy.
+For ordinary previews, run the relevant deterministic checks and `build:cloudflare` locally/agent-side, then Direct Upload the prebuilt `dist`. Do not spend a hosted Git build merely to execute repository-local scripts.
 
 ## GitHub surface
 
@@ -86,10 +87,11 @@ GitHub is the source/review system, not the build runner.
 Expected steady state:
 
 - `main` is the Production source branch.
-- non-trivial work uses `agent/<description>` branch -> PR -> Cloudflare Preview -> merge -> Production.
 - `.github/workflows/` remains absent/empty.
 - `.github/dependabot.yml` manages npm dependencies only.
 - GitHub Pages remains retired; `/basemodel/` is not a maintained deployment base.
+- ordinary Agent work may use a focused branch/PR, but Git synchronization should use Build Watch exclusions or a Cloudflare-supported skip prefix when a formal Git-integrated deployment was not requested.
+- do not manufacture a deployment-sensitive final PR head just to obtain a preview; use Direct Upload instead.
 
 ## Cloudflare surface
 
@@ -99,37 +101,47 @@ Expected Pages project contract:
 Project: basemodel
 Repository: mykcs/basemodel
 Production branch: main
-Build command: npm run build:cloudflare
+Formal Git build command: npm run build:cloudflare
 Build output directory: dist
 Root directory: repository root
 Production base path: /
 ```
 
+Default Preview path:
+
+```text
+repository-local validation/build
+-> wrangler pages deploy dist --project-name=basemodel --branch=<unique-preview-branch>
+-> public non-production Preview URL
+```
+
 Preview deployments must remain `noindex`. Production is the only maintained indexed identity.
 
-Durable Build Watch exclusions after the repository re-layout are intended to cover docs, Agent files, generated reports, browser-only tests/fixtures and Playwright config while keeping `Include: *` as the safety net. The dashboard is the authority for the actually configured list; `../LATEST.md` records the last verified state.
+Durable Build Watch exclusions are intended to cover docs, Agent files, generated reports, browser-only tests/fixtures and Playwright config while keeping production source/build inputs included. The Cloudflare dashboard remains the authority for actual current settings; `../LATEST.md` records the last known state.
 
 ## Agent collaboration rules
 
-The owner prefers high-autonomy execution. For repository work:
+The owner prefers high-autonomy execution and is highly sensitive to unnecessary Cloudflare Pages Build consumption.
 
-- inspect GitHub, repository files, PR status and Cloudflare-visible deployment evidence directly when tools allow it;
-- do not make the owner copy information between tools or services when the agent can retrieve them itself;
-- batch related edits and keep the PR focused;
-- avoid repeated speculative pushes; each normal Git-connected push can consume a Cloudflare Pages build;
-- use `[CF-Pages-Skip]` only for intermediate commits that intentionally do not need a deployment, and ensure the final deployment-sensitive PR head receives a real Cloudflare Preview build;
+- inspect GitHub, repository files, PR state and available Cloudflare evidence directly when tools allow it;
+- do not make the owner copy information between tools/services when the Agent can retrieve it;
+- batch related edits and avoid speculative/no-op push loops;
+- **default to local build + Direct Upload public Preview** for ordinary website changes;
+- return the Preview URL and explicitly state `Cloudflare Pages Build triggered: yes / no / unknown`;
+- if local build, Wrangler upload, authentication, Preview verification or quota evidence is unavailable, say so rather than claiming completion or safety;
+- only intentionally allow a Git-connected Cloudflare Preview/Production build after the owner explicitly requests a formal Git-integrated deployment; warn about possible Pages Build consumption before doing it;
 - ask the owner to intervene only at genuine human/account boundaries such as login/authorization, 2FA/CAPTCHA, billing, unavailable admin settings, or a high-risk/irreversible product decision.
 
 ## Change-to-check matrix
 
-| Change type | Minimum validation |
-| --- | --- |
-| docs-only, no runtime semantics | inspect diff; Cloudflare Preview may be skipped |
-| data/schema/domain rules | `npm run verify:deploy` |
-| UI/component behavior | `npm run verify:deploy`; add/run focused tests |
-| routing/i18n/SEO | `npm run verify:deploy` + relevant Playwright E2E |
-| Astro/React/browser compatibility major change | `npm run verify:deploy` + full `npm run test:e2e` |
-| vendor/source maintenance | read `model-catalog-verification-policy.md` + relevant external audit commands on demand |
-| deployment architecture | update current Agent docs + verify exact-head Preview before merge |
+| Change type | Minimum local/Agent validation | Default public verification |
+| --- | --- | --- |
+| docs-only, no runtime semantics | inspect diff/links | no runtime Preview required; sync with no-build Git semantics |
+| data/schema/domain rules | `npm run verify:deploy` | Direct Upload Preview when user-facing output changes |
+| UI/component behavior | `npm run verify:deploy` + focused tests | Direct Upload Preview + visual inspection |
+| routing/i18n/SEO | `npm run verify:deploy` + relevant Playwright | Direct Upload Preview + route/metadata inspection |
+| Astro/React/browser compatibility major change | `npm run verify:deploy` + full `npm run test:e2e` | Direct Upload Preview before any formal release |
+| vendor/source maintenance | read model-catalog policy + relevant external audits | Direct Upload if rendered content changed |
+| deployment architecture | update current Agent docs + local validation | Direct Upload for ordinary validation; formal Git build only when explicitly requested |
 
-The Cloudflare build itself is the final automated deployment gate for normal Preview/Production releases.
+A hosted Cloudflare Git build is no longer the default acceptance surface for normal iteration. The repository-owned checks plus a verified Direct Upload Preview are the normal day-to-day path.
