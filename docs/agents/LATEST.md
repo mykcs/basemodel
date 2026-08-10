@@ -1,179 +1,111 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-10 21:40 +08:00**
+Last updated: **2026-08-11 01:32 +08:00**
 
-Status: **The 2026-08-10 model-catalog audit is merged and its durable verification/evidence contract is now captured for future Agents; the SEED end-to-end guide remains current; GitHub -> Cloudflare Pages remains the steady-state architecture; and the owner’s 2026-08-10 build-budget directive now makes local build + Direct Upload the default preview path.**
+Status: **Vercel Preview + Cloudflare Production is now the validated deployment split for Agent-driven website work. Vercel handles non-main PR/branch Previews with the full repository Gate; Vercel Git deployment is disabled for `main`; Cloudflare Pages remains canonical Production. Cloudflare Direct Upload remains the fallback / Cloudflare-specific Preview path.**
 
-This is the stable first-stop file for future coding Agents. Read it before historical migration notes.
+This is the stable first-stop handoff for future coding Agents.
 
-## Current deployment state
-
-- Source of truth: GitHub `mykcs/basemodel`.
-- Hosting/build: Cloudflare Pages project `basemodel`.
-- Production branch: `main`.
-- Cloudflare build command: `npm run build:cloudflare`.
-- Build output: `dist`.
-- Cloudflare Root directory: repository root.
-- GitHub Actions and GitHub Pages are intentionally retired.
-
-## Owner build-budget directive (2026-08-10)
-
-The owner cares strongly about Cloudflare Pages Build consumption. The durable policy is captured in:
-
-`docs/agents/current/direct-upload-preview-policy.md`
-
-Operating summary for every Agent session:
-
-- default ordinary previews to **repository-local build + Wrangler Direct Upload** on a unique non-production preview branch, and hand the owner the new public preview URL;
-- **do not** trigger Git-connected Preview/Production builds for ordinary work; reserve them for an explicit owner-requested formal Git-integrated deployment, and warn about expected Pages Build consumption first;
-- synchronize source/docs to GitHub with skip-build commits (`[Skip CI]` etc.) when no formal deployment was requested;
-- every completion report must state whether a Cloudflare Pages Build was triggered (`yes / no / unknown`), the local build result, the preview URL, Git sync status, and Production status;
-- if build/upload/auth/quota evidence is unavailable, report that honestly — never claim “safe”, “deployed”, or “no build consumed” without evidence.
-
-## Agent reading order
-
-1. `/AGENTS.md`
-2. `docs/agents/LATEST.md`
-3. `docs/agents/current/product-and-research-integrity.md`
-4. `docs/agents/current/model-catalog-verification-policy.md`
-5. `docs/agents/current/direct-upload-preview-policy.md`
-6. `docs/agents/current/seed-guided-research-workflow.md`
-7. `docs/agents/current/deployment-policy.md`
-8. `docs/agents/current/repository-map.md`
-9. `docs/agents/current/rendering-and-performance-policy.md`
-10. `docs/agents/current/cloudflare-pages-deployment.md`
-11. `package.json` and task-specific source files
-
-The product/research-integrity document is required reading before broad UI, data-model, recommendation, evidence or framework changes. The model-catalog verification document is required reading before broad current-model/family audits, vendor-catalog refreshes or changes to model evidence semantics. The Direct Upload preview policy is required reading before any website change that would previously have defaulted to “push a branch and let Cloudflare build it.” The SEED workflow document is required reading before changing the onboarding/guide path, paper-to-model research journey, Workspace/Compare teaching flow or related URL contracts.
-
-## Model catalog verification contract now captured in-repo
-
-Durable model/family verification guidance is in:
-
-`docs/agents/current/model-catalog-verification-policy.md`
-
-The baseline audit was implemented through **PR #77 — `data: audit current model catalog as of 2026-08-10`**.
-
-Final PR head:
-
-`c6b968fdb8eee92b84a20b3361a39a5e1df8822f`
-
-Cloudflare Pages reported **Deploy successful** for that exact Preview head.
-
-PR #77 was squash-merged to `main` as:
-
-`53e94579496cedfafa22c4cbdf6a4791e4971628`
-
-Important interpretation for future Agents:
-
-- “latest model” is not one scalar: latest hosted/API generation, latest open-weight generation, latest base checkpoint, latest specialized checkpoint and latest research-usable checkpoint can differ;
-- family coverage and individual model files must both be audited because either side can be incomplete or stale;
-- provider API slugs belong in `variants[].api_aliases` / model `access.api_model_ids`; family `current_api_model_ids` must use repository model IDs;
-- an old API slug redirecting to a newer model does not mean the old model remains callable;
-- downloadable weights do not automatically mean open source, unrestricted derivatives, commercial use or fine-tuning permission;
-- concrete critical fields should have field-level `sources[].supports` evidence, not merely a page-level source list;
-- unknown facts must not be replaced by guessed hardware tiers, runtime support, training support or product availability;
-- production model data should use precise semantic states such as `not_reported`, `not_disclosed`, `not_published`, `not_applicable` or `unavailable` when appropriate;
-- `npm run audit:semantic` intentionally rejects legacy `not_verified` values in production JSON; the 2026-08-10 audit hit this Gate and fixed the data rather than weakening the audit;
-- future “today/latest/current/full family” requests require fresh first-party verification even if the 2026-08-10 baseline looked complete.
-
-The 2026-08-10 baseline corrected or expanded Qwen, Gemini, Gemma, Claude, DeepSeek, Kimi, Meta Muse, Mistral, GPT and Grok coverage, and refreshed vendor catalog entrypoints. See the dedicated policy file for the exact durable lessons and baseline details.
-
-Deployment evidence boundary: the session proved exact-head Cloudflare Preview success and the GitHub merge SHA. The available tools did not expose an authoritative Cloudflare Production-deployment-to-Git-SHA lookup. Do not cite a bare production HTTP 200 as independent proof that a particular Git SHA is live.
-
-## SEED guided research workflow now captured in-repo
-
-Durable workflow guidance is in:
-
-`docs/agents/current/seed-guided-research-workflow.md`
-
-The underlying product change was merged through **PR #72 — `docs(guide): teach Basemodel end to end with SEED`** as squash commit:
-
-`8130066f9bff2ea322647a2fd0e8cc81d87f2531`
-
-Important interpretation for future Agents:
-
-- the SEED work did **not** create every research feature from scratch;
-- model/paper exploration, Quick View, Families/Landscape, Workspace, Compare, Decision Memo/snapshots, evidence/data-status, bilingual routes, theme and URL-shareable state largely already existed;
-- the new value is the coherent bilingual walkthrough that connects those capabilities into a real paper-driven research decision process;
-- the guide uses SEED as a worked example, not as a universal assumption for all papers;
-- strict reproduction, method reproduction and modern rerun must remain separate;
-- “newer model” must not be treated as an automatic paper-model replacement;
-- downloadable/callable does not automatically mean reproducible;
-- local projects/snapshots/share URLs are not account-backed cloud storage or team collaboration.
-
-Canonical SEED workflow routes currently include:
+## Current architecture
 
 ```text
-/papers/seed/
-/models/qwen2-5-3b-instruct/
-/models/?q=qwen2.5&rl=true&paperUse=true
-/workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1
-/compare/?models=qwen2-5-3b-instruct,qwen3-1-7b&diff=1&impact=1
+GitHub `mykcs/basemodel` = source of truth
+
+non-main branch / PR
+  -> Vercel `basemodel-preview`
+  -> npm run verify:deploy
+  -> npm run build
+  -> protected *.vercel.app Preview
+
+main
+  -> Vercel Git deployment disabled
+  -> Cloudflare Pages Production
+  -> https://basemodel.pages.dev
 ```
 
-`src/components/GuideContent.test.ts` protects the core route/terminology contract. If these URLs or state contracts change, update the guide and test together.
+GitHub Actions and GitHub Pages remain intentionally retired.
 
-Deployment evidence from the original SEED session has an explicit boundary: Cloudflare Preview successfully built a commit containing the tutorial component, and the final PR was merged to `main`; however the tools available during that session did not expose a direct Cloudflare Production-deployment-to-Git-SHA lookup. Do not cite the earlier Preview or a bare production HTTP 200 as independent proof of the exact final Production SHA.
+## Ordinary website workflow
 
-## Product north star now captured in-repo
+1. Read this file plus the task-relevant files under `docs/agents/current/`.
+2. Inspect overlapping PRs before editing.
+3. Work on one focused branch / PR.
+4. For ordinary branch synchronization, use `[CF-Pages-Skip]` where appropriate so Cloudflare does not intentionally spend a Git Preview build.
+5. Let Vercel create the non-main Preview.
+6. Verify that the exact PR head received `Vercel = success` and that Vercel actually ran `npm run verify:deploy` before `npm run build`.
+7. Inspect the real Preview route(s). Do not equate a source diff or READY badge with product acceptance.
+8. Because the repository is private, generate a temporary Vercel share URL when the owner needs anonymous access. Share links expire; regenerate them rather than storing them as permanent URLs.
+9. Iterate until the exact head passes.
+10. After owner acceptance, merge/release to `main` with a **normal non-skip merge message** so the intended Cloudflare Production deployment is not accidentally skipped.
 
-The durable contract is in:
+## Vercel Preview contract
 
-`docs/agents/current/product-and-research-integrity.md`
+Project:
 
-Key rules:
+- team: `wangrui92-team`
+- project: `basemodel-preview`
+- project ID: `prj_UQRbjvnik0lW21LrzotTLPhKkgAK`
 
-- this project is a **research decision system**, not merely a model database or leaderboard;
-- the core job is to narrow feasible model candidates for a concrete research task and produce an evidence-backed, reproducible selection rationale;
-- strict reproduction, method reproduction and modern rerun are distinct modes and can yield different model recommendations;
-- recommendation output should expose feasibility, research fit, comparability, reproducibility and evidence quality rather than hide everything behind one score;
-- unknown does not mean false/zero/absent;
-- open weights does not mean open source and must remain separate from license/derivative/commercial rights;
-- release dates/model IDs must never be fabricated into reproducible model revisions;
-- paper method summaries must not be synthesized from model-selection rationale;
-- hardware catalog tiers, heuristic VRAM estimates and measured hardware results are separate evidence levels;
-- Claim -> Evidence links are preferred over treating a page-level source list as proof for every field;
-- active Research Task / candidate / compare state is cross-page product state;
-- “done” means wired into a real user path and protected by acceptance tests, not merely that a component or helper file exists;
-- account login, cross-device cloud save, team collaboration and other server-owned capabilities remain explicit external boundaries until real services exist.
+`vercel.json` is authoritative for Vercel behavior:
 
-Future Agents should update this contract only when the product/research methodology actually changes.
+- `buildCommand`: `npm run verify:deploy && npm run build`;
+- docs-only / Agent-only changes are ignored through `ignoreCommand` unless runtime-owned paths changed;
+- `git.deploymentEnabled.main = false` keeps Vercel Preview-only.
 
-## V2 adversarial closeout
+Preview identity must preserve:
 
-PR: **#67 — V2 adversarial closeout: finish remaining research-workbench gaps**
+- `PUBLIC_SEARCH_INDEXING=disabled`;
+- `PUBLIC_SITE_URL=https://basemodel.pages.dev`;
+- `noindex` on Preview;
+- canonical / hreflang identity pointing to Cloudflare Production.
 
-Merged to `main` as squash commit:
+## First validated pilot
 
-`ea97be21f0a3bc2babeb5c2a1d5f0bdc00f74e4b`
+Pilot: **PR #99 — SEED / 4×RTX 3090 student reproduction Guide**
 
-Final PR head:
+Final tested head:
 
-`c39d4eeae06905839d01d018037131ca012d3770`
+`674f60bb57b37cd712cc745bf8dcf1ce513b722f`
 
-The exact final PR head received a successful Cloudflare Preview after the complete deterministic deployment gate was restored.
+Final Vercel deployment:
 
-Durable fixes from that PR include:
+- deployment ID: `dpl_E3NeYkTLnsgUJyfNVUtomUqpmMuJ`;
+- exact URL: `https://basemodel-preview-be5vofsnz-wangrui92-team.vercel.app`;
+- branch alias: `https://basemodel-preview-git-agent-seed-owned-4x-54f1f3-wangrui92-team.vercel.app`;
+- state: READY;
+- GitHub status: Vercel success.
 
-- no fabricated `model.id@release_date` revision values;
-- real prefilled data-issue reporting flow;
-- paper method-summary vs model-selection-rationale boundary;
-- benchmark/checkpoint paper filters;
-- global AppLayout-level model Quick View with on-demand model JSON;
-- human-readable unresolved model facts and research impact;
-- sticky model-detail research navigation;
-- paper/family model linking and Quick View;
-- corrected historical paper-adoption semantics;
-- simultaneous strict/method/modern replacement verdicts;
-- dedicated mobile comparison cards;
-- hardware-tier vs heuristic-estimate wording;
-- deterministic source-ID normalization shared by ingestion/migration;
-- additional Vitest, Playwright and adversarial V2 regression coverage.
+Final Gate:
 
-## Current deployment-blocking gate
+- Astro check: 0 errors;
+- data validation: 164 models / 21 papers;
+- semantic audit: 0 findings;
+- 14 Vitest files / 75 tests passed;
+- V2 completion: pass;
+- V2 adversarial: pass;
+- hardening: pass;
+- Astro build: 392 pages.
 
-`npm run verify:deploy` currently runs deterministic repository-local checks including:
+The full Gate caught two real PR regressions before final acceptance: loss of the `guides` collection contract and loss of the “heuristic resource estimate != measured hardware result” evidence boundary. Both were fixed. Preserve these audits.
+
+## Cloudflare boundary
+
+Cloudflare remains canonical Production and the release target for `main`.
+
+During the Vercel pilot:
+
+- no new Cloudflare Git-integrated Preview was intentionally requested;
+- GitHub showed Vercel success for the final pilot head;
+- the Cloudflare PR bot remained on an older `828aaf4` Preview;
+- Production was not intentionally changed by the pilot.
+
+Do not claim the exact monthly Cloudflare build counter from this evidence; the available tools do not expose the authoritative account-level counter.
+
+Cloudflare Direct Upload remains supported through the repository-owned command/runbooks and is preferred when Cloudflare-specific Preview fidelity is the thing being tested.
+
+## Current deployment Gate
+
+`npm run verify:deploy` includes deterministic repository-local checks:
 
 ```text
 npm run check
@@ -184,110 +116,58 @@ npm run audit:freshness
 npm test
 npm run audit:v2
 npm run audit:v2:adversarial
+npm run audit:hardening
 ```
 
-Then `npm run build:cloudflare` performs the Astro production build.
+Vercel Previews run this Gate before `npm run build`. Cloudflare formal builds retain their repository-owned gate via `npm run build:cloudflare`.
 
-The V2 audits are now deployment blockers because they protect false-complete/research-integrity invariants. Keep `package.json`, `src/lib/deploymentArchitecture.test.ts`, deployment docs and audit scripts synchronized if this contract changes.
+Full Playwright browser suites and third-party network/vendor audits remain on-demand unless deliberately promoted into the blocking Gate.
 
-Full Chromium/WebKit Playwright remains on-demand; do not add browser downloads or third-party network probes to every Pages build without a deliberate reliability/cost decision.
+## Product / research integrity — still authoritative
 
-## Current repository layout
+Read `current/product-and-research-integrity.md` before broad UI/data/recommendation work and `current/model-catalog-verification-policy.md` before current/latest model-family audits.
 
-```text
-src/                         production application/content/domain logic
-public/                      production static assets
-scripts/                     build, validation, audit and maintenance tooling
-tests/e2e/                   Playwright browser regression tests
-tests/fixtures/demo-archive/ non-production demo fixtures
-docs/agents/current/         authoritative current Agent policy/product/runbooks/maps
-docs/agents/history/         migration and superseded architecture records
-docs/agents/README.md        Agent documentation index
-docs/agents/LATEST.md        fixed latest handoff
-```
+Durable invariants include:
 
-The production Astro root, `src/`, `public/`, `scripts/`, dependency manifests and build configuration are deliberately kept in their conventional locations.
+- this is a research decision system, not merely a leaderboard;
+- strict reproduction, method reproduction, and modern rerun are separate modes;
+- unknown must remain unknown rather than guessed;
+- open weights != open source / unrestricted licensing;
+- hardware catalog tiers, heuristic estimates, and measured hardware results are separate evidence levels;
+- “done” means wired into the real user path and protected by acceptance checks.
 
-## Cloudflare Build Watch Paths — last confirmed state
+The SEED worked-example product flow remains documented in `current/seed-guided-research-workflow.md`.
 
-The repository owner saved these settings in the Cloudflare dashboard and read them back successfully on **2026-08-09**:
+## Agent reading order
 
-```text
-Include:
-*
+1. `/AGENTS.md`
+2. `docs/agents/LATEST.md`
+3. `docs/agents/current/vercel-preview-migration-plan.md`
+4. `docs/agents/current/preview-platform-evaluation.md`
+5. `docs/agents/current/product-and-research-integrity.md`
+6. `docs/agents/current/model-catalog-verification-policy.md`
+7. `docs/agents/current/seed-guided-research-workflow.md`
+8. `docs/agents/current/deployment-policy.md`
+9. `docs/agents/current/direct-upload-preview-command.md`
+10. `docs/agents/current/direct-upload-preview-policy.md`
+11. `docs/agents/current/cloudflare-pages-deployment.md`
+12. `docs/agents/current/repository-map.md`
+13. `package.json`, `vercel.json`, and task-specific source/tests
 
-Exclude:
-docs/*
-AGENTS.md
-README.md
-.github/*
-reports/*
-tests/e2e/*
-tests/fixtures/*
-playwright.config.ts
-```
+If older Cloudflare-only text conflicts with the validated Vercel Preview / Cloudflare Production split, this handoff plus `current/vercel-preview-migration-plan.md` wins for ordinary Preview behavior.
 
-Do not exclude production source, `public/*`, `scripts/*`, dependency manifests, Astro/TypeScript configuration or `.node-version`.
+## Release warning
 
-Because Agent documentation is excluded, documentation-only updates normally should not consume a Pages build. Do not create probe/no-op runtime files merely to test this behavior.
+Do not use `[CF-Pages-Skip]`, `[Skip CI]`, or another Cloudflare skip prefix on the final merge/release commit when the owner expects Cloudflare Production to deploy. Skip prefixes are for intermediate/non-release synchronization, not the real Production boundary.
 
-## Repository re-layout is closed
+## External boundaries
 
-PR #57 completed the organizational migration:
+Do not falsely mark these complete without real services/evidence:
 
-- `e2e/*` -> `tests/e2e/*`;
-- Playwright `testDir` -> `./tests/e2e`;
-- `demo-archive/*` -> `tests/fixtures/demo-archive/`;
-- current Agent docs -> `docs/agents/current/`;
-- dated/retired/migration Agent docs -> `docs/agents/history/`.
-
-There is no pending repository-layout or Build Watch cleanup.
-
-## Steady-state change flow
-
-For ordinary website work (owner directive 2026-08-10):
-
-```text
-one logical task
--> batched edits
--> repository-local validation + production build (agent-side)
--> Direct Upload to a unique non-production preview branch
--> verify the returned public preview URL
--> sync source to GitHub with skip-build commits
--> report: completed?, local build result, preview URL, Pages Build triggered?, Git sync, Production status
-```
-
-For an explicit owner-requested formal Git-integrated deployment:
-
-```text
-warn about expected Pages Build consumption first
--> one meaningful exact-head Preview
--> merge
--> one Production build
--> verify the exact commit/deployment
-```
-
-For docs-only changes under current Build Watch exclusions:
-
-```text
-skip-build direct commit or focused branch/PR
--> inspect diff and links
--> merge without manufacturing a runtime change merely to force Preview
-```
-
-## Current external boundaries
-
-Do not mark these as complete without real external capabilities/evidence:
-
-- cross-device cloud project storage;
-- account/OAuth identity;
-- team permissions/realtime collaboration;
+- account-backed cross-device storage;
+- team/realtime collaboration;
 - server-side notifications/personalized APIs;
-- paper hardware measurements, author intent, benchmark conditions or other facts that reliable sources do not provide;
-- exhaustive current-world fact verification that requires new external evidence.
+- unreported paper hardware measurements or author intent;
+- exact Cloudflare account-level build-quota counters when the account API is unavailable.
 
-LocalStorage, static JSON, inferred metadata or UI labels are not substitutes for those capabilities/facts.
-
-## Historical context
-
-Completed migration/incident records live under `docs/agents/history/`. They are evidence, not current operating policy. Current rules live under `docs/agents/current/`, `/AGENTS.md` and this fixed handoff file.
+Historical migration/incident records live under `docs/agents/history/` and are evidence, not current operating policy.
