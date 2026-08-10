@@ -10,6 +10,8 @@ import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 const changeEventEntries = await getCollection('changeEvents');
@@ -72,7 +74,40 @@ const recentEvents = [
 </section>
 
 <div class="shell">
-  <section class="section section-first" aria-labelledby="intent-title">
+  <section class="section section-first" aria-labelledby="philosophy-title">
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">{t('设计哲学', 'Design philosophy')}</div>
+        <h2 id="philosophy-title">{t('一条主线，每页三问', 'One mainline, three questions per page')}</h2>
+      </div>
+      <span class="muted">{t('先明白为什么，再动手做', 'Understand why before acting')}</span>
+    </div>
+    <div class="research-path-list">
+      <div class="research-path-row">
+        <span class="path-tag">{t('主线', 'Mainline')}</span>
+        <div>
+          <h3>{t('从研究问题到模型决策，只走一条线', 'One line from research question to model decision')}</h3>
+          <p>{t('全站页面挂在同一条主线上：明确问题 → 收紧约束 → 形成候选 → 核验证据 → 做出决策。“最新模型”“最强跑分”只是背景信息，不会在半路替换掉你的研究问题。', 'Every page hangs on the same mainline: define the question → narrow constraints → form candidates → verify evidence → make the decision. “Latest model” and “top score” are background context, never a mid-way replacement for your research question.')}</p>
+        </div>
+      </div>
+      <div class="research-path-row">
+        <span class="path-tag">{t('每页三问', 'Three questions')}</span>
+        <div>
+          <h3>{t('现在做什么 · 为什么 · 怎么做', 'What now · why · how')}</h3>
+          <p>{t('每个非首页顶部都有一条研究路径条：标出当前页面处在主线的哪一步，并回答现在做什么、为什么、怎么做，不会走到一半忘了自己要干什么。', 'Every non-home page opens with a research-path strip: it marks where the page sits on the mainline and answers what to do now, why, and how, so you never lose sight of your goal mid-way.')}</p>
+        </div>
+      </div>
+      <div class="research-path-row">
+        <span class="path-tag">{t('证据先行', 'Evidence first')}</span>
+        <div>
+          <h3>{t('未知保持未知，结论可以悬置', 'Unknown stays unknown, conclusions may wait')}</h3>
+          <p>{t('没有证据的字段标为未知，而不是猜一个答案；替换模型之前，先把代际、checkpoint 与可比性风险摆到桌面上，再写进决策。', 'Fields without evidence are marked unknown instead of guessed; before replacing a model, generation, checkpoint, and comparability risks are put on the table first, then written into the decision.')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="intent-title">
     <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '从问题开始' : 'Start from the question'}</div><h2 id="intent-title">{locale === 'zh' ? '你现在正在做什么？' : 'What are you trying to do?'}</h2></div></div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
   </section>
