@@ -39,7 +39,7 @@ assert('HARDEN-PAPER-003', paperExplorer.includes('证据化摘要') && paperExp
 assert('HARDEN-PAPER-004', paperExplorer.includes("config_status === 'available'") && paperExplorer.includes("environment_status === 'reported'") && paperExplorer.includes('!hasHttpUrl(paper.code_url)'), 'reproduction-ready and burden heuristics use explicit evidence conditions');
 
 const home = read('src/pages/_bodies/home-v2.astro');
-assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('scoreModels') && home.includes('sampleFeasible'), 'home starts from three intents, links beginners to Guide, and computes a live example');
+assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('4×RTX 3090') && home.includes('ALFWorld + WebShop') && home.includes('#seed-reproduction'), 'home starts from three intents and makes the four-GPU SEED reproduction the concrete beginner example');
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
 const seedIndex = home.indexOf('<SeedUseCaseStrip');
