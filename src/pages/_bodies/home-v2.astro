@@ -120,8 +120,7 @@ const recentEvents = [
 
   <section class="section" aria-labelledby="families-title">
     <div class="section-heading"><div><div class="section-kicker">{m.v2.home.familiesKicker}</div><h2 id="families-title">{m.v2.home.familiesTitle}</h2></div><a class="text-link" href={localePath(locale, '/families/')}>{m.v2.home.familiesCta}</a></div>
-    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `当前代：${family.generation}。API/托管与开放权重分开发现和维护。` : `Current generation: ${family.generation}. Hosted/API and open-weight surfaces are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录当前开放权重旗舰' : 'No current open-weight flagship recorded')}</dd></div></dl></div>)}
-    </div>
+    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `当前代：${family.generation}。API/托管与开放权重分开发现和维护。` : `Current generation: ${family.generation}. Hosted/API and open-weight surfaces are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录当前开放权重旗舰' : 'No current open-weight flagship recorded')}</dd></div></dl></div>)}</div>
   </section>
 
   <details class="home-scenarios-advanced">
