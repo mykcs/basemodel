@@ -1,185 +1,104 @@
-# Hosting architecture — Vercel Preview + Cloudflare Workers Static Assets Production
+# Hosting architecture — Vercel Preview + Cloudflare Pages Production
 
-Last reviewed: **2026-08-11 02:35 +08:00**
+Last reviewed: **2026-08-11**
 
-Status: **target architecture approved; repository, exact-head Vercel, and real Workers shadow validation are complete; Production has not cut over.**
+Status: **accepted current recommendation after cross-provider audit.** Vercel remains the ordinary Preview provider. Cloudflare Pages remains the recommended Production host at `https://basemodel.pages.dev`. The validated Workers Static Assets shadow is retained as a dormant future option; Production cutover is paused.
 
-Read this immediately after `docs/agents/LATEST.md` before changing hosting, deployment, Preview, CI/CD, Cloudflare or Vercel behavior.
-
-## Current migration progress
-
-Completed:
-
-- architecture decision recorded in the top-level Agent handoff/index;
-- PR #105 added the Workers Static Assets shadow contract and was squash-merged to `main` as `3bb916d5754b352e59687b0ec6085179a85e674e`;
-- repository configuration now contains `wrangler.jsonc`, `npm run build:workers:shadow`, and a hosting-architecture regression test;
-- the exact PR head `5eb372491e3cd6ec7f974c1817883818cc632ea3` passed the full Vercel repository Gate and Astro build;
-- Vercel deployment `dpl_3tA1HQrdUrVWZbwoc6rEEH4eGVAg` reached READY;
-- its real Preview returned HTTP 200, `robots noindex`, `x-robots-tag: noindex`, and canonical/hreflang identity pointing to `https://basemodel.pages.dev`;
-- both the migration commit and its squash merge used `[CF-Pages-Skip]`; the merge commit exposed no Cloudflare Pages status/check.
-
-Shadow validation completed:
-
-- application source base: `4f9c55124bbbd6f1c9c188d3acc4f9dce497e56a` from current `origin/main`; deployment also includes the task-owned `public/_headers` contract recorded with this handoff;
-- shadow URL: `https://basemodel-workers-shadow.mykcs01.workers.dev`; latest verified version: `df40fca7-46d7-4140-9b12-7b2a8bdba28b`;
-- the artifact passed the full repository Gate and generated 392 pages before deployment;
-- sampled Chinese/English routes, representative model/paper pages, hashed assets, trailing-slash redirect, custom 404, canonical/hreflang, robots/sitemap, and security headers were verified live;
-- real Chrome verified workspace and compare query-state restoration plus the SEED-to-method-workspace handoff, with zero console errors, page errors, or failed requests;
-- `public/_headers` preserves the Pages Production `nosniff` and referrer-policy headers on the workers.dev shadow host.
-
-Known provider differences are documented rather than hidden: Workers uses 307 instead of 308 for the automatic slash redirect, uses revalidation rather than `no-store` on custom 404s, and formats HTML/JavaScript MIME types differently. The workers.dev response does not expose `X-Robots-Tag`, so verified shadow indexing defense is the HTML `robots noindex` tag plus no sitemap advertisement and an empty sitemap. Production remains Cloudflare Pages and no cutover is authorized.
+Read this after `docs/agents/LATEST.md` before changing hosting, Preview, CI/CD, Cloudflare, Vercel, canonical URLs, or release behavior.
 
 ## Decision
 
-Keep the application stack stable:
-
-- Astro remains the site framework;
-- React remains available where the current site uses it;
-- GitHub remains the source of truth;
-- do not migrate to Next.js merely because Vercel is used for Preview.
-
-Separate Preview and Production responsibilities:
+Keep the current split:
 
 ```text
-GitHub
-├─ non-main branch / PR
-│    -> Vercel `basemodel-preview`
-│    -> repository Gate (`npm run verify:deploy`)
-│    -> Astro build
-│    -> real Preview for Agent / owner review
-│
-└─ main
-     -> target: Cloudflare Workers Static Assets
-     -> production static artifact from `dist/`
+GitHub = source / branches / PR history
+
+non-main branch / PR
+  -> Vercel `basemodel-preview`
+  -> npm run verify:deploy
+  -> npm run build
+  -> protected Preview for review
+
+main / explicit release
+  -> Cloudflare Pages Production
+  -> https://basemodel.pages.dev
 ```
 
-Until the Workers migration passes its acceptance gate, **Cloudflare Pages remains the real Production host** at `https://basemodel.pages.dev` and remains the rollback surface.
+Do **not** migrate Production merely to make provider ownership look uniform. The earlier problem was excessive Cloudflare Preview/Git build consumption; Vercel already solved that problem by owning ordinary Preview. Moving Production to Vercel would not eliminate the normal Preview-versus-Production release distinction and would also require a deliberate production-hostname/canonical migration away from `basemodel.pages.dev`.
 
-Cloudflare Direct Upload (`npm run preview:cloudflare`) remains a supported Cloudflare-specific integration/fallback tool. It is not the ordinary Preview mainline while Vercel is healthy.
+## Provider roles
 
-## Why this architecture
+- **GitHub** — source of truth, branches, PRs, merge history.
+- **Vercel** — ordinary non-main Preview, repository Gate/build feedback, owner/Agent review.
+- **Cloudflare Pages** — current and recommended Production static delivery and current public identity.
+- **Cloudflare Workers Static Assets shadow** — validated fallback/future capability, not an active Production target.
+- **Cloudflare Direct Upload** — Cloudflare-specific fidelity/fallback tool, not the ordinary Preview mainline while Vercel is healthy.
 
-### Vercel already solved the ordinary Preview problem
+Adding or removing a provider requires a role audit: identify which distinct responsibility changes, what existing role is replaced, what identity/SEO/runtime contract moves, and what rollback remains. Do not create a third routine Preview/CI/release path for symmetry.
 
-The repository has a validated Vercel PR/branch Preview path. It binds deployments to GitHub commits, runs the repository-owned Gate, exposes build failures/logs to Agents, and avoids spending a Cloudflare Pages Git build merely so the owner can inspect a change.
+## Why Pages remains Production
 
-Do not re-create this ordinary Preview layer with Cloudflare credentials/Wrangler unless Vercel is unavailable or the question being tested is specifically Cloudflare behavior.
+The current product is a static Astro research site. Cloudflare Pages already serves the canonical production identity reliably, while ordinary Preview builds have been removed from its day-to-day iteration path. The Pages build-budget problem is therefore an orchestration problem that has already been addressed, not evidence that the Production host itself is unsuitable.
 
-### Workers Static Assets is the modern Cloudflare production target
+`https://basemodel.pages.dev` is also part of the current product identity: canonical/hreflang, sitemap/robots, external links, and verification all depend on it. A move to Vercel or Workers would be a hostname/SEO/release migration, not a transparent backend swap.
 
-Cloudflare's current guidance recommends Workers Static Assets for new static projects and provides an official Pages-to-Workers migration path. The Astro site already emits a static `dist/`, so the production-host migration should be an infrastructure change, not an application-framework rewrite.
+## Workers shadow: validated but frozen
 
-### Keep provider responsibilities narrow
+The repository intentionally retains the already-validated Workers Static Assets shadow contract:
 
-The intended steady state is:
+- `wrangler.jsonc` defines the static-only `basemodel-workers-shadow` service;
+- `npm run build:workers:shadow` builds the same Astro output with Production identity preserved and indexing disabled;
+- the real shadow deployment previously passed representative route, asset, redirect, 404, canonical/hreflang, robots/sitemap, security-header, query-state, and browser checks;
+- known provider differences were documented rather than hidden.
+
+That evidence proves Workers is a viable option. It does **not** create an obligation to cut over. Keep the shadow configuration available unless a separate cleanup decision shows that even dormant maintenance cost is no longer justified.
+
+### Re-open a Workers Production cutover only when at least one trigger is real
+
+1. the project adopts a custom domain and deliberately decouples product identity from `pages.dev`;
+2. a genuine Workers-native requirement appears (for example server/runtime behavior or Cloudflare-native services that materially benefit the product);
+3. Cloudflare Pages develops a measured operational/cost/limit problem that the current Preview split does not solve;
+4. the owner explicitly requests a Production-host migration for reasons stronger than provider uniformity.
+
+When a trigger is real, re-check current first-party Cloudflare/Vercel docs and current repository/provider state before relying on this 2026-08-11 audit.
+
+## Ordinary workflow and build budget
 
 ```text
-GitHub = source / branches / PR / merge history
-Vercel = Preview / build feedback / visual review
-Cloudflare Workers = Production static delivery and future Cloudflare-native services if genuinely needed
+focused branch / PR
+-> coherent change (batch before push)
+-> Vercel exact-head Gate + Preview
+-> inspect the real affected route(s)
+-> merge/release only after acceptance
+-> verify Cloudflare Pages Production separately
 ```
 
-Do not add a third routine CI/Preview system merely for symmetry.
+Intermediate branch synchronization should avoid intentionally spending Cloudflare Pages Git builds; use the repository's documented Cloudflare skip convention where appropriate. Do not use a skip prefix on an explicit Pages Production release that is expected to publish.
 
-## Migration rule: shadow first, cut over later
-
-The Workers migration must be reversible and must not mutate the current Production site while being evaluated.
-
-### Phase 0 — repository contract
-
-Add/maintain a Workers Static Assets configuration that points to the existing `dist/` output and a regression test that protects the architecture split.
-
-The shadow Worker must use a distinct name. Do not reuse the existing Pages project name as evidence that migration is complete.
-
-**Status: complete via PR #105.**
-
-### Phase 1 — repository / Vercel validation
-
-On a focused non-main branch:
-
-1. run the normal repository Gate;
-2. run the normal Astro build;
-3. let Vercel validate the exact branch/PR head;
-4. keep Preview noindex/canonical behavior pointing to the current Production identity;
-5. fix repository regressions before any Workers deployment.
-
-**Status: complete for PR #105 exact head `5eb372491e3cd6ec7f974c1817883818cc632ea3`.**
-
-### Phase 2 — Cloudflare Workers shadow deployment
-
-Deploy the same prebuilt `dist/` to a non-production Workers Static Assets service such as `basemodel-workers-shadow`.
-
-Do **not** attach the Production custom domain/route or remove Pages during this phase.
-
-Verify at minimum:
-
-- `/`;
-- `/guide/` and `/en/guide/`;
-- representative model and paper detail pages;
-- `/workspace/` and `/compare/` URL-state behavior;
-- static assets, redirects and 404 behavior;
-- canonical/hreflang/search-indexing behavior;
-- cache/content-type/security headers that the current product depends on;
-- exact Git/source provenance of the artifact being compared.
-
-**Status: complete with the documented provider-default differences above.**
-
-### Phase 3 — cutover decision
-
-Only after the shadow Worker passes:
-
-1. compare Workers and current Pages behavior;
-2. record any Pages-specific behavior that needs a Workers equivalent;
-3. define rollback before routing changes;
-4. warn the owner before any Production-impacting operation;
-5. cut over only with explicit release intent;
-6. verify the public Production route after cutover;
-7. keep Pages available until the new Production path is independently verified and rollback is no longer needed.
-
-A working shadow URL is **not** authorization to change Production.
-
-## Production identity
-
-The current public identity remains `https://basemodel.pages.dev` during migration.
-
-A future custom domain is recommended because it decouples product identity from the hosting provider, but domain migration is a separate SEO/release decision. Do not bundle a hostname/canonical migration into the initial Pages-to-Workers shadow migration.
-
-## Build-budget rule during migration
-
-- Vercel handles ordinary PR Preview builds.
-- Intermediate Git synchronization should continue to avoid intentionally triggering Cloudflare Pages Builds; use the current skip-build convention where appropriate.
-- Do not trigger a Git-integrated Cloudflare Pages Preview to test Workers.
-- A Workers shadow deployment is separate evidence from a Pages Git build.
-- Before any action expected to change the current Production deployment, state the expected impact and obtain the owner's release intent.
-
-## Credential rule
-
-Do not store Cloudflare API tokens in tracked source or a plaintext private-repository file.
-
-The existing Wrangler credential investigation is retained only for fallback/Cloudflare-specific execution. Ordinary Preview no longer depends on solving that credential path because Vercel already provides the normal Preview surface.
-
-For the one-time/current Workers shadow deployment, use a Cloudflare-connected Agent/tool or secure runtime credential injection. If the current session has neither, stop at the credential/tool boundary and hand off the exact next command/state rather than spending a Pages Build or committing a token.
+Avoid Vercel build storms as well: batch coherent edits before push, prefer one exact-head Preview per meaningful iteration, and do not create trigger-only commits just to obtain another hosted status.
 
 ## Acceptance evidence
 
-Keep these states distinct in every report:
+Keep these states separate:
 
 ```text
 repository Gate passed
-!= Vercel Preview passed
-!= Workers shadow deployed
-!= Workers shadow behavior verified
-!= Production cut over
-!= old Pages Production retired
+!= Vercel deployment READY
+!= real Preview inspected
+!= source merged
+!= Cloudflare Pages Production updated
+!= Production behavior verified
 ```
 
-Until all required cutover evidence exists, report the architecture as:
+A provider READY badge is infrastructure evidence, not visual/product acceptance.
 
-```text
-CURRENT: Vercel Preview + Cloudflare Pages Production
-TARGET:  Vercel Preview + Cloudflare Workers Static Assets Production
-STATUS:  repository + Vercel phases passed; Workers shadow pending; not cut over
-```
+## Production identity and future domain work
+
+Current Production/canonical identity remains:
+
+`https://basemodel.pages.dev`
+
+A custom domain may be useful later because it separates product identity from host choice. Treat that as its own SEO/release decision. Do not bundle a domain migration into routine hosting cleanup.
 
 ## Related current docs
 
@@ -187,7 +106,7 @@ STATUS:  repository + Vercel phases passed; Workers shadow pending; not cut over
 - `docs/agents/current/vercel-preview-migration-plan.md`
 - `docs/agents/current/preview-platform-evaluation.md`
 - `docs/agents/current/deployment-policy.md`
+- `docs/agents/current/cloudflare-pages-deployment.md`
 - `docs/agents/current/direct-upload-preview-command.md`
-- `docs/agents/current/cloudflare-direct-upload-credential-handoff.md`
 
-When this migration reaches a real cutover, update this file, `LATEST.md`, `docs/agents/README.md`, deployment policy, Cloudflare runbook, tests and any canonical/hosting references together.
+Historical Workers migration/shadow evidence remains useful rationale, but it does not override this current recommendation.

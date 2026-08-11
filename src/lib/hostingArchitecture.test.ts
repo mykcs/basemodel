@@ -16,15 +16,16 @@ const packageJson = JSON.parse(read('package.json')) as {
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
+const latest = read('docs/agents/LATEST.md');
 
-describe('hosting architecture shadow migration', () => {
+describe('hosting architecture', () => {
   it('keeps Vercel as non-main Preview with the repository Gate', () => {
     expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
     expect(vercel.git?.deploymentEnabled?.main).toBe(false);
     expect(vercel.ignoreCommand).toContain('wrangler.jsonc');
   });
 
-  it('defines a static-only non-production Workers shadow service', () => {
+  it('retains a static-only non-production Workers shadow service', () => {
     expect(wrangler.name).toBe('basemodel-workers-shadow');
     expect(wrangler.compatibility_date).toBe('2026-08-11');
     expect(wrangler.workers_dev).toBe(true);
@@ -51,16 +52,17 @@ describe('hosting architecture shadow migration', () => {
     expect(shadowBuild).toContain('WORKERS_SHADOW_PRODUCTION_CHANGED=no');
   });
 
-  it('preserves the Production security headers on Workers static assets', () => {
+  it('preserves Production security headers on Workers static assets', () => {
     expect(staticHeaders).toContain('https://basemodel-workers-shadow.mykcs01.workers.dev/*');
     expect(staticHeaders).toContain('X-Content-Type-Options: nosniff');
     expect(staticHeaders).toContain('Referrer-Policy: strict-origin-when-cross-origin');
   });
 
-  it('documents current Pages Production separately from target Workers Production', () => {
-    expect(architecture).toContain('Cloudflare Pages remains the real Production host');
-    expect(architecture).toContain('Cloudflare Workers Static Assets');
-    expect(architecture).toContain('shadow first, cut over later');
-    expect(architecture).toContain('A working shadow URL is **not** authorization to change Production');
+  it('documents Pages as recommended Production and Workers as a frozen option', () => {
+    expect(architecture).toContain('Cloudflare Pages remains the recommended Production host');
+    expect(architecture).toContain('validated but frozen');
+    expect(architecture).toContain('provider uniformity');
+    expect(latest).toContain('Vercel Preview + Cloudflare Pages Production');
+    expect(latest).toContain('Workers is no longer an approved automatic next step');
   });
 });
