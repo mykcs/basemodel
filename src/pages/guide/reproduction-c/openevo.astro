@@ -1,0 +1,371 @@
+---
+import AppLayout from '../../../layouts/AppLayout.astro';
+
+const title = '复现 C：OpenEVO × WebShop / ALFWorld 实验实录';
+const description = '把 OpenEVO 接入 WebShop 与 ALFWorld 的研究复现页：左线给出当前最短成功路径，右线保留真实 bug、误区、证据与修复过程。';
+
+const directSteps = [
+  {
+    no: '01',
+    title: '先冻结研究声明，不先写代码',
+    body: 'P0 只做 OpenEVO × WebShop 的真实端到端证明；ALFWorld 在 WebShop 跑稳后再接。把 contract test、真实 CUDA rollout、自进化机制、官方 E2E 分成不同证据等级，不用一个“能跑”概括全部。',
+    gate: '最终 P0 = real rollout + real reflection/evolution + official OpenEVO E2E。reward=0.0 可以是有效执行结果。',
+  },
+  {
+    no: '02',
+    title: '固定源码与 patch，执行端不再重新设计',
+    body: '固定 OpenEVO commit；WebShop adapter 保留在 benchmark 层，不修改 OpenEVO 核心算法。规划 Agent 把 CLI、runner、evaluator、reflection、官方 gateway/runtime 链全部检查并生成一键执行包，远端 Agent 主要负责执行与回传证据。',
+    gate: 'patch 必须先通过 parser/strict apply/py_compile；运行端不要临时 fuzzy patch。',
+  },
+  {
+    no: '03',
+    title: '把 Mac 当 acquisition relay，把 RTX6 当 execution plane',
+    body: '代码、数据、模型、离线运行时都由有公网能力的 Mac 获取并校验，再通过实验室物理网络 relay 到 4×RTX 3090。RTX6 不承担 GitHub/Hugging Face/Google Drive 的公网下载责任。',
+    gate: '控制面、资产获取面、GPU 执行面分开；任何资产都要有 source / pin / cache / validation / transfer。',
+  },
+  {
+    no: '04',
+    title: 'WebShop 数据一次准备，永久缓存',
+    body: 'small WebShop 真实运行至少需要 items_shuffle_1000.json、items_ins_v2_1000.json、items_human_ins.json。当前稳定方案是从固定 AgentGym commit 的 GitHub blobs 获取，Mac 端做 JSON、大小、结构和 SHA256 校验，写 persistent cache，再 relay。',
+    gate: '代码 snapshot 可以一次性；benchmark data 不应该因为代码 commit 变化而重复下载。',
+  },
+  {
+    no: '05',
+    title: '先修 Python 3.11 runtime，再选 GPU',
+    body: 'OpenEVO 当前包要求 Python ≥3.11。RTX6 先寻找/恢复 task-owned Python 3.11 + uv persistent venv，严格离线复用本机 cache；固定 vLLM / Torch / Transformers / Pydantic / WebShop 依赖并做完整 import gate。',
+    gate: '环境不 ready 时不要占 3090；不要在 system Python 3.8 上把缺的包逐个补进去。',
+  },
+  {
+    no: '06',
+    title: '先建并打开 Lucene index，再加载模型',
+    body: 'WebShop 的 JSON 不是全部运行资产。缺 indexes_100 时，用真实数据生成 resources_100，再用 Pyserini 构建 Lucene index；先用 LuceneSearcher 做一次真实 query smoke。',
+    gate: 'Java / Pyserini / index 问题应该在 GPU 前失败，而不是模型加载后才发现。',
+  },
+  {
+    no: '07',
+    title: '做最小真实 CUDA rollout',
+    body: '使用 Qwen2.5-3B-Instruct，在一张独立确认空闲的 3090 上跑 1 个 WebShop episode。验证器要求真实环境、有数值 task score，并且至少一条 action 是模型输出成功 parse，而不是全部 fallback。',
+    gate: 'P0_REAL_ROLLOUT_PASS：这是第一个真正进入 GPU/benchmark 的证据，但仍不是最终 P0。',
+  },
+  {
+    no: '08',
+    title: '证明“自进化机制”真的发生',
+    body: '跑 gen0 baseline → 独立 model reflector → evolution text 注入最终 prompt → gen1。静态 heuristic fallback 必须显式标记失败，不能假装 reflector 成功。',
+    gate: 'P0_EVOLUTION_PASS：必须有真实 reflector 证据 + prompt mutation + gen1。',
+  },
+  {
+    no: '09',
+    title: '最后撞官方 OpenEVO service stack',
+    body: 'host 侧只加载一份 vLLM；OpenEVO rollout / gateway 负责服务编排；Docker runtime 只装 WebShop/Java/CPU 依赖，通过 gateway proxy 调模型，最后 evaluator 必须返回非 None 数值 reward。',
+    gate: 'P0_OFFICIAL_E2E_PASS + P0_EVOLUTION_PASS 才组成最终 P0_PASS。',
+  },
+  {
+    no: '10',
+    title: 'WebShop 绿后，再写 ALFWorld adapter',
+    body: '不要简单复制 WebShop 名字。先读 OpenEVO terminal/env abstraction，再追 ALFWorld 的 reset、goal、text observation、admissible action、step、reward、done、split、data path；只写最小 adapter，不把 benchmark-specific 逻辑塞回 OpenEVO core。',
+    gate: 'ALFWorld 复用同样的 real component → mechanism → official E2E 证据层级。',
+  },
+];
+
+const bugs = [
+  {
+    id: 'B01',
+    title: '新 worktree 不能 checkout main',
+    symptom: '另一个工作区已经占用 main，dispatcher 却硬编码 git checkout main。',
+    wrong: '把“正确 commit”错误地等同成“必须拥有 main 这个分支名”。',
+    fix: '允许 exact clean detached HEAD；stale source 自动切 API snapshot，不修改用户 workspace。',
+    lesson: '执行固定的是内容身份，不是本地分支所有权。',
+  },
+  {
+    id: 'B02',
+    title: 'Git HTTPS 反复断开，但 GitHub API 正常',
+    symptom: '很小的 clone/fetch 也 timeout / unexpected disconnect。',
+    wrong: '继续 retry 同一 transport，或考虑换 SSH 身份。',
+    fix: 'read-only execution bootstrap 改用 api.github.com exact snapshot/tarball。',
+    lesson: '同一服务不同 hostname/protocol 是不同网络证据。',
+  },
+  {
+    id: 'B03',
+    title: 'API snapshot 被祖先 ~/.cache/.git 冒充',
+    symptom: 'snapshot 没 .git，却读到 mykcs/.cache.git 的 origin。',
+    wrong: '第一反应以为 bootstrap 给 snapshot 错误 git init。',
+    fix: 'snapshot marker 优先；只有 git --show-toplevel 精确等于 source root 才认作 Git checkout。',
+    lesson: 'git discovery 会向父目录递归；bundle/source marker 比“是否处于 Git 内”更可靠。',
+  },
+  {
+    id: 'B04',
+    title: 'corrupt patch 被误判成“pin 不匹配”',
+    symptom: 'git apply: corrupt patch at line 24。',
+    wrong: '把 parser failure 当成 source context mismatch，想换 OpenEVO commit。',
+    fix: '发现 unified-diff hunk count 写错；只重算 @@ count，再 strict git apply --check。',
+    lesson: 'corrupt patch ≠ patch does not apply。先尊重错误类型，再改架构。',
+  },
+  {
+    id: 'B05',
+    title: 'WebShop data 根本没进入 RTX6',
+    symptom: 'preflight 卡 items_shuffle_1000.json missing。',
+    wrong: '我们写了“server 不需要 GitHub”，却没真正设计 data lifecycle。',
+    fix: '把数据当一等资产：immutable source、persistent cache、validation、relay 全部写进流程。',
+    lesson: '“代码完整”不代表“实验资产完整”。',
+  },
+  {
+    id: 'B06',
+    title: 'HF reset + Google Drive timeout 还在继续 retry',
+    symptom: '相同 Mac / 相同网络 / 相同两个 source 连续失败。',
+    wrong: '重试次数增加了，但因果变量没有变化。',
+    fix: '两次同类失败后停止；寻找已经 vendored 到固定 Git commit 的数据本体。',
+    lesson: '第三次相同 retry 通常不是 debugging，而是在等运气。',
+  },
+  {
+    id: 'B07',
+    title: 'GitHub Actions bridge 看起来像下载失败，其实 job 根本没启动',
+    symptom: 'BlobNotFound / gh 404，run 十几秒结束，artifact=0。',
+    wrong: '先去猜 Hugging Face/Azure URL。',
+    fix: '查 job steps=空、check annotation；真实原因是 payment/spending limit，属于 scheduler admission。删除 Actions critical path。',
+    lesson: '先定位失败层：admission → runner → step → process → network → data。',
+  },
+  {
+    id: 'B08',
+    title: '最终稳定 data path：pinned GitHub blobs',
+    symptom: '需要绕开 Mac 对 HF/GD 的跨境网络。',
+    wrong: '继续寻找“第三个下载镜像”会继续增加外部依赖。',
+    fix: '找到 AgentGym 固定 commit 中 vendored 的真实 WebShop data；Contents API → blob API → decode → validate。',
+    lesson: '先找 immutable vendored copy，再考虑增加代理/中继基础设施。',
+  },
+  {
+    id: 'B09',
+    title: 'OpenEVO pin lookup 是一个冗余网络 Gate',
+    symptom: 'commits/$SHA 偶发失败，但 exact-SHA tarball 已缓存且手动查询立刻成功。',
+    wrong: '把“多查一次”当成“更安全”。',
+    fix: '用 exact-SHA archive + tar integrity + source marker；删掉重复 pre-lookup。',
+    lesson: '一个强 deterministic proof 胜过多个高度相关的 remote checks。',
+  },
+  {
+    id: 'B10',
+    title: '九个 ModuleNotFoundError 的根因先是 Python 3.8',
+    symptom: 'torch / transformers / gym / pyserini / spacy 等全部缺。',
+    wrong: '如果直接在 system Python 3.8 上 pip install，会把问题越修越乱。',
+    fix: '先确认 OpenEVO 要求 Python ≥3.11；恢复 task-owned offline venv，再装 pinned stack。',
+    lesson: 'dependency missing 之前先验证 interpreter / env identity。',
+  },
+];
+
+const compareRows = [
+  ['框架版本', '固定 OpenEVO commit；固定 SEED commit', '不能一个跑最新版、一个跑旧 adapter'],
+  ['模型', '同 checkpoint / tokenizer / chat template', '至少保证 policy 模型可比'],
+  ['任务', '同 benchmark split / task IDs', 'smoke 与 paper-scale 不混写'],
+  ['预算', 'episodes / max steps / generation tokens / reflection budget', 'OpenEVO 的“多想几次”也属于预算'],
+  ['解码', 'temperature / top-p / max tokens', '避免把 sampling 差异当算法收益'],
+  ['指标', '同 reward / task success 口径', '0 分执行成功与方法效果要分开'],
+  ['算力', 'GPU 型号、数量、wall-clock、显存峰值', '工程替代必须写进报告'],
+];
+---
+
+<AppLayout title={title} description={description} locale="zh">
+  <main class="openevo-case shell">
+    <nav class="crumbs" aria-label="面包屑">
+      <a href="/guide/">Guide</a><span>/</span><a href="/guide/#seed-reproduction">复现 C</a><span>/</span><strong>OpenEVO</strong>
+    </nav>
+
+    <header class="hero" id="top">
+      <p class="eyebrow">复现 C · METHOD REPRODUCTION · OPEN EVO / SEED / WEBSHOP / ALFWORLD</p>
+      <h1>不要只看最后一条成功命令：<br />把“怎么跑通”和“为什么会跑偏”一起学会</h1>
+      <p class="lede">这个案例来自一次真实的远程复现实验：规划 Agent 能改 GitHub，MiniMax 能访问实验室 Mac，Mac 再通过物理网线进入 4×RTX 3090。最初我们以为只差“执行一下”，随后连续暴露 Git、patch、数据、托管服务、Python runtime 等隐藏假设。这里把最终路线和失败路线并排保留。</p>
+
+      <div class="status-grid">
+        <article>
+          <small>研究目标</small>
+          <strong>OpenEVO × WebShop P0</strong>
+          <span>先证明真实 benchmark + 自进化机制 + 官方 framework E2E；之后才接 ALFWorld。</span>
+        </article>
+        <article>
+          <small>已验证</small>
+          <strong>控制面 → 数据 → RTX6 pipeline</strong>
+          <span>API snapshot、pinned source、patch、Mac relay、WebShop 三份真实 data 已经实际跨过。</span>
+        </article>
+        <article class="pending">
+          <small>当前证据边界</small>
+          <strong>最终 P0 尚未宣布成功</strong>
+          <span>页面写作时，最新实证推进到 RTX6 runtime dependency / Python ≥3.11 修复层；CUDA rollout、evolution、official E2E 仍需真实产物。</span>
+        </article>
+      </div>
+
+      <div class="claim-note">
+        <b>为什么这是“复现 C”？</b>
+        <span>我们复现的是方法与实验因果链，并允许 4×3090、离线 relay、工程化 adapter 等替代；但每一个替代都要显式记录。它不是“论文原硬件严格复现”，也不是“只要程序没报错就算复现”。</span>
+      </div>
+    </header>
+
+    <nav class="jump" aria-label="页面目录">
+      <a href="#direct">最短成功路径</a>
+      <a href="#bugs">Bug / 死胡同</a>
+      <a href="#why">为什么会错</a>
+      <a href="#alfworld">ALFWorld 下一步</a>
+      <a href="#compare">和 SEED 怎么公平比</a>
+    </nav>
+
+    <section id="direct" class="section">
+      <div class="section-head">
+        <p class="eyebrow">TRACK A · CURRENT RUNBOOK</p>
+        <h2>如果今天重新开始，我们会按这条线做</h2>
+        <p>这不是把所有历史 workaround 串起来，而是把已经被证据淘汰的路径删掉，只保留当前最短、最可解释的因果链。</p>
+      </div>
+
+      <div class="direct-list">
+        {directSteps.map((step) => (
+          <article class="direct-step">
+            <div class="step-no">{step.no}</div>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+              <aside><b>Gate</b><span>{step.gate}</span></aside>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="proof-ladder section" aria-labelledby="proof-title">
+      <div class="section-head">
+        <p class="eyebrow">EVIDENCE LADDER</p>
+        <h2 id="proof-title">“能跑”必须拆成四个不同结论</h2>
+      </div>
+      <div class="proof-grid">
+        <article><span>1</span><small>partial</small><h3>REAL ROLLOUT</h3><p>真实 WebShop reset/step；真实 CUDA Qwen；至少一条 non-fallback action；数值 task score。</p></article>
+        <article><span>2</span><small>partial</small><h3>EVOLUTION</h3><p>gen0 → 真实 reflector → evolution text → prompt mutation → gen1。heuristic fallback 不算。</p></article>
+        <article><span>3</span><small>partial</small><h3>OFFICIAL E2E</h3><p>rollout → gateway → Docker runtime → harness → gateway LLM proxy → evaluator，得到数值 reward。</p></article>
+        <article class="final"><span>4</span><small>final</small><h3>P0 PASS</h3><p>Evolution 与 Official E2E 同时绿。只有这时才说“OpenEVO × WebShop 本轮跑通”。</p></article>
+      </div>
+    </section>
+
+    <section id="bugs" class="section bugs">
+      <div class="section-head">
+        <p class="eyebrow">TRACK B · FAILURE CHRONOLOGY</p>
+        <h2>同一个目标，我们具体在哪些地方绕远了</h2>
+        <p>右侧不是“趣闻”。每一个 bug 都暴露了总方案里一个没有被显式建模的层。</p>
+      </div>
+
+      <div class="bug-list">
+        {bugs.map((bug) => (
+          <article class="bug-card">
+            <div class="bug-id">{bug.id}</div>
+            <div class="bug-main">
+              <h3>{bug.title}</h3>
+              <dl>
+                <div><dt>症状</dt><dd>{bug.symptom}</dd></div>
+                <div><dt>当时的思维误区</dt><dd>{bug.wrong}</dd></div>
+                <div><dt>最终修法</dt><dd>{bug.fix}</dd></div>
+                <div class="lesson"><dt>沉淀规则</dt><dd>{bug.lesson}</dd></div>
+              </dl>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="why" class="section why">
+      <div class="section-head">
+        <p class="eyebrow">WHY WE GOT STUCK</p>
+        <h2>最大的错误不是“技术不够强”，而是没有把实验看成多层系统</h2>
+      </div>
+
+      <div class="why-grid">
+        <article><b>01 · 把静态完整当成经验完整</b><p>第一次总方案经过代码审查后很像“天衣无缝”，但它只是 executable hypothesis v1。真实机器仍然能揭露 transport、data、runtime、billing 等代码仓库看不到的状态。</p></article>
+        <article><b>02 · 同一根因重复 retry</b><p>HF reset / Google timeout 已经两次同类失败，再 retry 不会增加信息。以后规则是：条件不变、错误类不变，两次后必须改变一个因果变量。</p></article>
+        <article><b>03 · 没先找“失败发生在哪一层”</b><p>Actions job 连 step 都没启动，却差点去 debug HF URL。正确顺序是 admission → runner → step → process → network → data → runtime。</p></article>
+        <article><b>04 · 资产没有和代码同等建模</b><p>一开始详细设计了 adapter 与 E2E，却只写了“WebShop data 应该存在”。以后每个非代码资产都必须有 source、pin、cache、validation、transfer 和 missing blocker。</p></article>
+        <article><b>05 · 验证越多不一定越可靠</b><p>额外的 OpenEVO commit lookup 和 exact-SHA tarball 高度重复，只增加 transient failure surface。应该保留能 falsify 新假设的 Gate，删掉冗余相关检查。</p></article>
+        <article><b>06 · 为了“先有一个 PASS”容易偷偷降标准</b><p>contract test、mock 或 0-rollout 当然有价值，但它们只能叫 partial evidence。最终目标难，不代表可以把 partial 重命名成 final。</p></article>
+      </div>
+
+      <div class="escape-loop">
+        <h3>以后遇到 blocker，固定执行这个 recovery loop</h3>
+        <ol>
+          <li>保留完整失败 artifact。</li>
+          <li>定位精确失败层。</li>
+          <li>写下这次已经证明正常的上游层。</li>
+          <li>和上一轮错误类比较。</li>
+          <li>同类错误两次 → 改一个因果变量。</li>
+          <li>只修最小确定性问题。</li>
+          <li>从最近的 persistent cache / safe checkpoint 恢复，而不是每次从零开始。</li>
+          <li>只有新证据通过，才把它晋升为当前 runbook。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="alfworld" class="section">
+      <div class="section-head">
+        <p class="eyebrow">NEXT BENCHMARK · ALFWORLD</p>
+        <h2>WebShop P0 之后，ALFWorld 不应该再复制一遍这十个坑</h2>
+        <p>ALFWorld 的第一步不是“照 WebShop adapter 改几个名字”，而是先做 execution-asset review + environment-contract review。</p>
+      </div>
+
+      <div class="alf-grid">
+        <article><span>A</span><h3>读 OpenEVO 的 terminal / env abstraction</h3><p>先确认框架期望的 reset、observation、action、step、terminal、score 接口，不从 benchmark 名字猜。</p></article>
+        <article><span>B</span><h3>追 ALFWorld 的真实 contract</h3><p>goal 文本、text observation、admissible action、reward/done、task split、data path、依赖与 Python runtime 都要在 coding 前确认。</p></article>
+        <article><span>C</span><h3>只做最小 adapter</h3><p>reset task → prompt → generate action → parse/step → trace → numeric result。benchmark-specific evolution 不写回 OpenEVO core。</p></article>
+        <article><span>D</span><h3>复制证据层级，不复制 bug</h3><p>real environment/model smoke → real evolution/reflection → official framework E2E → final pass。同样禁止 fallback-only 假成功。</p></article>
+      </div>
+    </section>
+
+    <section id="compare" class="section compare">
+      <div class="section-head">
+        <p class="eyebrow">OPEN EVO vs SEED</p>
+        <h2>真正研究价值在这里：把两个方法放到同一个实验口径里</h2>
+        <p>跑通只是前提。比较时至少要控制下面这些变量；否则“谁分高”可能只是预算、模型或任务不同。</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>维度</th><th>要固定什么</th><th>为什么</th></tr></thead>
+          <tbody>
+            {compareRows.map((row) => <tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="report-template">
+        <h3>最后写实验报告时，把结论分成三类</h3>
+        <div>
+          <article><small>执行结论</small><strong>链路是否真实跑通</strong><p>环境、模型、mechanism、E2E 的证据。</p></article>
+          <article><small>方法结论</small><strong>同预算下 reward / success 是否变化</strong><p>这才是 OpenEVO vs SEED 的研究问题。</p></article>
+          <article><small>工程结论</small><strong>3090 / A800 / offline relay 的代价</strong><p>wall-clock、显存、依赖、适配代码与运维复杂度。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section sources">
+      <div class="section-head"><p class="eyebrow">EVIDENCE BOUNDARY</p><h2>这页什么时候需要更新</h2></div>
+      <p>这页故意保留“当前 P0 尚未完全通过”的状态。后续真实 CUDA rollout、evolution、official E2E 或 ALFWorld adapter 获得新 artifact 后，应该更新“已验证”区，而不是回头重写历史 bug。成功路径是 current state；Bug 线是 historical evidence，两者同时保留。</p>
+      <div class="source-links">
+        <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED 官方仓库 ↗</a>
+        <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer">WebShop ↗</a>
+        <a href="https://github.com/WooooDyy/AgentGym" target="_blank" rel="noreferrer">AgentGym（vendored WebShop data 证据）↗</a>
+        <a href="/guide/#seed-reproduction">回到 SEED 复现 C ↑</a>
+      </div>
+    </section>
+  </main>
+</AppLayout>
+
+<style>
+  .openevo-case{max-width:1180px;margin:0 auto;padding:2rem 1rem 6rem;line-height:1.65}
+  .crumbs{display:flex;gap:.5rem;align-items:center;font-size:.82rem;opacity:.68;margin:.5rem 0 2.5rem}.crumbs a{color:inherit}
+  .hero{padding:1rem 0 2.6rem;border-bottom:1px solid var(--border,rgba(127,127,127,.25))}
+  .eyebrow{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;opacity:.6}
+  h1{font-size:clamp(2.3rem,6vw,5.2rem);line-height:.98;letter-spacing:-.052em;margin:.65rem 0 1.2rem;max-width:1040px}
+  .lede{font-size:clamp(1.03rem,2vw,1.3rem);max-width:900px;opacity:.8}
+  .status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1.6rem 0}.status-grid article{border:1px solid var(--border,rgba(127,127,127,.28));border-radius:12px;padding:1rem;display:grid;gap:.35rem}.status-grid small{font-weight:800;opacity:.55}.status-grid strong{font-size:1.08rem}.status-grid span{font-size:.9rem;opacity:.72}.status-grid .pending{border-style:dashed}
+  .claim-note{display:flex;gap:.75rem;padding:1rem;border-left:3px solid currentColor;background:color-mix(in srgb,currentColor 3%,transparent)}.claim-note b{white-space:nowrap}.claim-note span{opacity:.78}
+  .jump{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:1.2rem 0 0}.jump a{color:inherit;text-decoration:none;border:1px solid var(--border,rgba(127,127,127,.25));border-radius:9px;padding:.7rem;font-size:.83rem;text-align:center}
+  .section{padding:4rem 0 1.5rem;scroll-margin-top:1rem}.section-head{max-width:850px;margin-bottom:1.6rem}.section-head h2{font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.05;letter-spacing:-.035em;margin:.4rem 0 .7rem}.section-head p{opacity:.72}
+  .direct-list{display:grid;gap:.65rem}.direct-step{display:grid;grid-template-columns:62px 1fr;gap:1rem;padding:1.2rem 0;border-top:1px solid var(--border,rgba(127,127,127,.25))}.step-no{font-size:1.4rem;font-weight:900;opacity:.32}.direct-step h3{font-size:1.18rem;margin:0 0 .35rem}.direct-step p{margin:.2rem 0 .7rem;max-width:900px}.direct-step aside{display:flex;gap:.5rem;font-size:.86rem;padding:.55rem .7rem;border-radius:8px;background:color-mix(in srgb,currentColor 4%,transparent)}.direct-step aside b{font-size:.72rem;letter-spacing:.08em}.direct-step aside span{opacity:.75}
+  .proof-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.proof-grid article{border:1px solid var(--border,rgba(127,127,127,.28));border-radius:11px;padding:1rem}.proof-grid article>span{font-size:1.8rem;font-weight:900;opacity:.25}.proof-grid small{display:block;text-transform:uppercase;letter-spacing:.08em;font-size:.67rem}.proof-grid h3{font-size:1rem;margin:.4rem 0}.proof-grid p{font-size:.88rem;opacity:.72}.proof-grid .final{border-width:2px}
+  .bug-list{display:grid;gap:.7rem}.bug-card{display:grid;grid-template-columns:72px 1fr;border-top:1px solid var(--border,rgba(127,127,127,.25));padding:1.1rem 0}.bug-id{font:800 .82rem ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.45;padding-top:.25rem}.bug-main h3{margin:0 0 .8rem;font-size:1.18rem}.bug-main dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.bug-main dl div{padding:.75rem;border:1px solid var(--border,rgba(127,127,127,.2));border-radius:8px}.bug-main dt{font-size:.7rem;font-weight:800;opacity:.5;margin-bottom:.25rem}.bug-main dd{margin:0;font-size:.89rem}.bug-main .lesson{grid-column:1/-1;background:color-mix(in srgb,currentColor 4%,transparent)}
+  .why-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.why-grid article{border:1px solid var(--border,rgba(127,127,127,.25));border-radius:10px;padding:1rem}.why-grid b{font-size:.9rem}.why-grid p{font-size:.88rem;opacity:.72}.escape-loop{margin-top:1.4rem;padding:1.2rem;border:1px solid var(--border,rgba(127,127,127,.3));border-radius:12px}.escape-loop h3{margin-top:0}.escape-loop ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem 1.5rem;padding-left:1.25rem}
+  .alf-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}.alf-grid article{border:1px solid var(--border,rgba(127,127,127,.25));border-radius:10px;padding:1rem}.alf-grid span{font-weight:900;font-size:1.4rem;opacity:.25}.alf-grid h3{font-size:1rem}.alf-grid p{font-size:.86rem;opacity:.72}
+  .table-wrap{overflow:auto;border:1px solid var(--border,rgba(127,127,127,.25));border-radius:10px}.table-wrap table{width:100%;border-collapse:collapse;min-width:720px}.table-wrap th,.table-wrap td{text-align:left;padding:.8rem;border-bottom:1px solid var(--border,rgba(127,127,127,.2));font-size:.86rem}.table-wrap th{font-size:.72rem;opacity:.55;text-transform:uppercase;letter-spacing:.06em}
+  .report-template{margin-top:1.3rem}.report-template>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.report-template article{padding:1rem;border:1px solid var(--border,rgba(127,127,127,.25));border-radius:10px;display:grid;gap:.3rem}.report-template small{opacity:.5}.report-template p{font-size:.86rem;opacity:.7}
+  .sources{border-top:1px solid var(--border,rgba(127,127,127,.25));margin-top:2rem}.source-links{display:flex;gap:.75rem;flex-wrap:wrap}.source-links a{color:inherit;border-bottom:1px solid currentColor;text-decoration:none;font-size:.88rem}
+  @media(max-width:900px){.status-grid,.why-grid,.report-template>div{grid-template-columns:1fr}.jump{grid-template-columns:repeat(2,minmax(0,1fr))}.proof-grid,.alf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bug-main dl{grid-template-columns:1fr}.bug-main .lesson{grid-column:auto}}
+  @media(max-width:620px){.openevo-case{padding-inline:.8rem}.claim-note{display:block}.claim-note b{display:block;margin-bottom:.35rem}.direct-step,.bug-card{grid-template-columns:42px 1fr}.proof-grid,.alf-grid{grid-template-columns:1fr}.escape-loop ol{grid-template-columns:1fr}.jump{grid-template-columns:1fr}}
+</style>
