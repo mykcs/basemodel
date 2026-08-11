@@ -16,15 +16,23 @@ const packageJson = JSON.parse(read('package.json')) as {
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
+const latest = read('docs/agents/LATEST.md');
 
-describe('hosting architecture shadow migration', () => {
+describe('hosting architecture ownership', () => {
   it('keeps Vercel as non-main Preview with the repository Gate', () => {
     expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
     expect(vercel.git?.deploymentEnabled?.main).toBe(false);
     expect(vercel.ignoreCommand).toContain('wrangler.jsonc');
   });
 
-  it('defines a static-only non-production Workers shadow service', () => {
+  it('keeps Cloudflare Pages as the current Production identity', () => {
+    expect(architecture).toContain('Cloudflare Pages Production');
+    expect(architecture).toContain('https://basemodel.pages.dev');
+    expect(latest).toContain('Cloudflare Pages Production');
+    expect(latest).toContain('https://basemodel.pages.dev');
+  });
+
+  it('retains a static-only non-production Workers shadow option', () => {
     expect(wrangler.name).toBe('basemodel-workers-shadow');
     expect(wrangler.compatibility_date).toBe('2026-08-11');
     expect(wrangler.workers_dev).toBe(true);
@@ -57,10 +65,16 @@ describe('hosting architecture shadow migration', () => {
     expect(staticHeaders).toContain('Referrer-Policy: strict-origin-when-cross-origin');
   });
 
-  it('documents current Pages Production separately from target Workers Production', () => {
-    expect(architecture).toContain('Cloudflare Pages remains the real Production host');
-    expect(architecture).toContain('Cloudflare Workers Static Assets');
-    expect(architecture).toContain('shadow first, cut over later');
-    expect(architecture).toContain('A working shadow URL is **not** authorization to change Production');
+  it('documents Workers as validated but frozen instead of the default target', () => {
+    expect(architecture).toContain('validated but frozen');
+    expect(architecture).toContain('Do not continue Workers cutover work by default');
+    expect(latest).toContain('validated/frozen non-production option');
+    expect(latest).toContain('do not continue Pages -> Workers cutover by default');
+  });
+
+  it('protects the distinction between provider consolidation and build reduction', () => {
+    expect(architecture).toContain('fewer hosting providers');
+    expect(architecture).toContain('!= fewer hosted builds');
+    expect(architecture).toContain('build-once');
   });
 });
