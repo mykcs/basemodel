@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
 import { encodeResearchTask } from '../../lib/researchTaskCodec';
-import { scoreModels } from '../../lib/researchEngine';
 import { emptyTask, type ResearchTask } from '../../stores/researchTask';
 import familiesData from '../../content/coverage/families.json';
 import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
@@ -11,7 +10,6 @@ interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
-const papers = (await getCollection('papers')).map((entry) => entry.data);
 const changeEventEntries = await getCollection('changeEvents');
 const totalModels = models.length;
 const familyCount = familiesData.families.length;
@@ -23,9 +21,9 @@ function workspaceHref(task: Partial<ResearchTask>): string {
 }
 
 const primaryIntents = [
-  { label: locale === 'zh' ? '复现一篇论文' : 'Reproduce a paper', lede: locale === 'zh' ? '从论文案例进入，再决定严格复现、方法复现还是现代化重跑。' : 'Start from a paper case, then choose strict reproduction, method reproduction, or a modern rerun.', href: localePath(locale, '/papers/') },
-  { label: locale === 'zh' ? '设计一个新实验' : 'Design a new experiment', lede: locale === 'zh' ? '按训练方式、资源、开放性和可复现性形成候选。' : 'Form candidates from training method, resources, access, and reproducibility.', href: localePath(locale, '/workspace/') },
-  { label: locale === 'zh' ? '替换一个旧模型' : 'Replace an older model', lede: locale === 'zh' ? '比较论文原模型与当前候选，显式暴露代际与可比性风险。' : 'Compare the original paper model with current candidates and expose generation and comparability risks.', href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
+  { label: locale === 'zh' ? '先看懂 Agent，再把 SEED 跑起来' : 'Understand the agent loop, then run SEED', lede: locale === 'zh' ? '先把 policy、tool、trajectory、reward 和 GRPO 对上号，再从 4×3090 离线服务器进入 ALFWorld / WebShop 实验。' : 'Map policy, tools, trajectories, rewards, and GRPO first, then enter the ALFWorld / WebShop experiment on an offline 4×3090 server.', href: `${localePath(locale, '/guide/')}#agent-to-seed` },
+  { label: locale === 'zh' ? '设计一个新实验' : 'Design a new experiment', lede: locale === 'zh' ? '已经有新的研究问题时，再按训练方式、资源、开放性和可复现性形成候选。' : 'Once you have a new research question, form candidates from training method, resources, access, and reproducibility.', href: localePath(locale, '/workspace/') },
+  { label: locale === 'zh' ? '替换一个旧模型' : 'Replace an older model', lede: locale === 'zh' ? '先保留论文原 checkpoint；完成复现后，再比较新模型会改变哪些实验条件。' : 'Keep the paper checkpoint first; after reproduction, compare which experimental conditions a newer model would change.', href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
 ];
 const researchPaths = [
   { title: m.v2.home.pathStrict, body: m.v2.home.pathStrictBody, tag: m.v2.home.pathStrictTag },
@@ -40,10 +38,6 @@ const scenarioCards = [
   { label: m.v2.home.scenarioReplace, lede: m.v2.home.scenarioReplaceLede, href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
   { label: m.v2.home.scenarioApi, lede: m.v2.home.scenarioApiLede, href: workspaceHref({ mode: 'new', update: 'none', priorities: ['low_cost'] }) },
 ];
-const sampleTask: ResearchTask = { ...emptyTask, mode: 'new', update: 'lora', gpuVramGb: 24, gpuCount: 1, openWeight: true };
-const sampleScored = scoreModels(models, papers, sampleTask);
-const sampleFeasible = sampleScored.filter((entry) => entry.candidateState !== 'blocked').length;
-const sampleEvidenceReady = sampleScored.filter((entry) => entry.candidateState === 'candidate').length;
 const highlightedFamilies = ['kimi', 'qwen', 'llama', 'deepseek'];
 const familyChanges = familiesData.families.filter((family) => highlightedFamilies.includes(family.id)).map((family) => ({ name: family.name, generation: family.current_generation, api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id, openWeight: family.current_open_weight_model_id }));
 const recentModelEvents = [...models].filter((model) => typeof model.release_date === 'string').sort((left, right) => right.release_date.localeCompare(left.release_date)).slice(0, 6);
@@ -55,25 +49,25 @@ const recentEvents = [
 <section class="hero">
   <div class="shell hero-grid">
     <div>
-      <div class="eyebrow">{m.v2.home.heroEyebrow}</div>
-      <h1>{m.v2.home.heroTitle}</h1>
-      <p class="lede">{m.v2.home.heroLede}</p>
-      <div class="hero-actions"><a class="button button-primary" href={localePath(locale, '/workspace/')}>{m.v2.home.heroCta}</a></div>
-      <p class="novice-entry">{locale === 'zh' ? '第一次接触 Agent 模型？' : 'New to agent model research?'} <a class="text-link" href={localePath(locale, '/guide/')}>{locale === 'zh' ? '先学习基础知识 →' : 'Start with the guide →'}</a></p>
+      <div class="eyebrow">{locale === 'zh' ? '懂 ML，但还没形成 Agent 心智模型？' : 'Know ML, but still building an agent mental model?'}</div>
+      <h1>{locale === 'zh' ? '先看懂 Agent 怎么运行和学习，再完整做完一篇真实实验' : 'Understand how agents run and learn, then finish one real experiment'}</h1>
+      <p class="lede">{locale === 'zh' ? '先用一屏把 checkpoint、tool、trajectory、reward 和 GRPO 串起来，然后用四张 RTX 3090 把 SEED 的 ALFWorld 和 WebShop 从环境、数据一路做到训练和评测。' : 'Use one screen to connect checkpoints, tools, trajectories, rewards, and GRPO, then take SEED on four RTX 3090s from ALFWorld / WebShop setup through training and evaluation.'}</p>
+      <div class="hero-actions"><a class="button button-primary" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先用 10 分钟看懂 Agent →' : 'Build the agent model first →'}</a></div>
+      <p class="novice-entry">{locale === 'zh' ? '已经懂 Agent，只想直接做实验？' : 'Already understand agents and want the experiment?'} <a class="text-link" href={`${localePath(locale, '/guide/')}#seed-reproduction`}>{locale === 'zh' ? '直接从第 00 步开始 →' : 'Jump to step 00 →'}</a></p>
     </div>
     <aside class="hero-note example-card">
-      <div class="section-kicker">{locale === 'zh' ? '实时示例' : 'Live example'}</div>
-      <h2 class="example-card-title">{locale === 'zh' ? '24GB · LoRA · 必须开放权重' : '24GB · LoRA · open weights required'}</h2>
-      <p>{locale === 'zh' ? '数字由当前模型目录和推荐规则实时计算，不是演示占位符。' : 'These counts are computed from the current catalog and recommendation rules, not placeholder demo values.'}</p>
-      <div class="example-stats"><div class="example-stat"><strong>{totalModels}</strong><span>{m.v2.home.exampleModels}</span></div><div class="example-stat"><strong>{sampleFeasible}</strong><span>{m.v2.home.exampleCandidates}</span></div><div class="example-stat"><strong>{sampleEvidenceReady}</strong><span>{m.v2.home.exampleEvidence}</span></div></div>
-      <a class="text-link" href={workspaceHref(sampleTask)}>{locale === 'zh' ? '打开这个任务 →' : 'Open this task →'}</a>
+      <div class="section-kicker">{locale === 'zh' ? '心智模型马上落到这个实验' : 'Ground the mental model in this experiment'}</div>
+      <h2 class="example-card-title">4×RTX 3090 24GB · {locale === 'zh' ? '离线服务器' : 'offline server'}</h2>
+      <p>{locale === 'zh' ? 'Agent loop 不是抽象图：Qwen2.5-3B-Instruct 是 policy，ALFWorld / WebShop 是 environment，连续交互形成 trajectory；SEED 再把这些 rollout 的结果变成训练信号。理解完就立刻在同一页开始操作。' : 'The agent loop is not an abstract diagram: Qwen2.5-3B-Instruct is the policy, ALFWorld / WebShop are environments, and repeated interaction forms a trajectory. SEED then turns those rollouts into training signals. The same page moves directly into the hands-on run.'}</p>
+      <div class="example-stats"><div class="example-stat"><strong>1 loop</strong><span>policy → action → observation</span></div><div class="example-stat"><strong>2</strong><span>ALFWorld + WebShop</span></div><div class="example-stat"><strong>PASS</strong><span>{locale === 'zh' ? '逐步验收' : 'stage by stage'}</span></div></div>
+      <a class="text-link" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先看 Agent → SEED 映射 →' : 'Open the Agent → SEED map →'}</a>
     </aside>
   </div>
 </section>
 
 <div class="shell">
   <section class="section section-first" aria-labelledby="intent-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '从问题开始' : 'Start from the question'}</div><h2 id="intent-title">{locale === 'zh' ? '你现在正在做什么？' : 'What are you trying to do?'}</h2></div></div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '先决定今天做什么' : 'Choose today’s task first'}</div><h2 id="intent-title">{locale === 'zh' ? '第一次来，先走第一条' : 'New here? Start with the first path'}</h2></div></div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
   </section>
 
@@ -95,7 +89,7 @@ const recentEvents = [
   </section>
 
   <details class="home-scenarios-advanced">
-    <summary>{locale === 'zh' ? '更多预设研究场景' : 'More preset research scenarios'}</summary>
+    <summary>{locale === 'zh' ? '完成主线后，再看更多研究场景' : 'After the mainline, explore more research scenarios'}</summary>
     <p class="muted">{m.v2.home.scenariosNote}</p>
     <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
   </details>

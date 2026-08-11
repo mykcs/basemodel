@@ -11,6 +11,7 @@ import { roleLabel } from '../../lib/format';
 import { researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
 import { buildDecisionRecord, decisionRecordToJson } from '../../lib/decisionRecord';
 import { collectClaimFingerprints, decisionSnapshots, saveDecisionSnapshot, snapshotChanges } from '../../stores/snapshots';
+import { CopyButton } from '../common/CopyButton';
 
 interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages; locale?: Locale }
 
@@ -43,7 +44,6 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
   const task = useStore(researchTask);
   const compare = useStore(compareIds);
   const candidates = useStore(candidateIds);
-  const [copied, setCopied] = useState(false);
   const [snapshotNotice, setSnapshotNotice] = useState('');
 
   const scored = useMemo(() => scoreModels(models, papers, task), [models, papers, task]);
@@ -105,7 +105,6 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
   }, [allRisks, compareModels, decisionRecord.dataRevision, displayedCandidates, evidenceSources, locale, m, notSelected, task, unresolved]);
 
   const download = () => { const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'decision-memo.md'; a.click(); URL.revokeObjectURL(url); };
-  const copy = async () => { try { await navigator.clipboard.writeText(markdown); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch { /* clipboard unavailable */ } };
   const downloadJson = () => { const blob = new Blob([decisionRecordToJson(decisionRecord)], { type: 'application/json;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'decision-record.json'; a.click(); URL.revokeObjectURL(url); };
   const saveSnapshot = () => { const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}`; saveDecisionSnapshot({ id, createdAt: new Date().toISOString(), task, candidateIds: candidates, compareIds: compare, claimFingerprints: currentFingerprints, memoMarkdown: markdown }); setSnapshotNotice(m.research.memo.snapshotSaved); window.setTimeout(() => setSnapshotNotice(''), 1800); };
 
@@ -118,7 +117,7 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
     <div className="memo-header">
       <div><h2>{m.research.memo.title}</h2><p className="memo-revision muted">{m.research.memo.dataRevision}: {decisionRecord.dataRevision}</p></div>
       <div className="memo-actions">
-        <button type="button" className="button" onClick={copy}>{copied ? m.research.memo.copied : m.research.memo.copy}</button>
+        <CopyButton value={markdown} label={m.research.memo.copy} copiedLabel={m.research.memo.copied} />
         <button type="button" className="button button-primary" onClick={download}>{m.research.memo.download}</button>
         <button type="button" className="button button-secondary" onClick={downloadJson}>{m.research.memo.downloadJson}</button>
         <button type="button" className="button button-secondary" onClick={saveSnapshot}>{m.research.memo.saveSnapshot}</button>
@@ -140,6 +139,10 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
       {unresolved.length > 0 && <section className="memo-unverified"><h3>{m.research.memo.unverified}</h3><p>{locale === 'zh' ? '这些字段没有足够证据。它们不会被自动当成 false，也不应被写成确定结论。' : 'These fields do not have sufficient evidence. They are not coerced to false and should not be written as certain conclusions.'}</p><ul>{unresolved.slice(0, 20).map((field) => <li key={field}><code>{field}</code></li>)}</ul></section>}
     </div>
 
-    <details className="memo-source-preview"><summary>{locale === 'zh' ? '查看导出的 Markdown 源文' : 'View exported Markdown source'}</summary><pre className="memo-preview"><code>{markdown}</code></pre></details>
+    <details className="memo-source-preview">
+      <summary>{locale === 'zh' ? '查看导出的 Markdown 源文' : 'View exported Markdown source'}</summary>
+      <div className="actionable-result-actions"><CopyButton compact value={markdown} label={locale === 'zh' ? '复制这段 Markdown' : 'Copy this Markdown'} copiedLabel={locale === 'zh' ? 'Markdown 已复制' : 'Markdown copied'} /></div>
+      <pre className="memo-preview"><code>{markdown}</code></pre>
+    </details>
   </section>;
 }

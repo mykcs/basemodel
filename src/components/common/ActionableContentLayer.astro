@@ -1,0 +1,178 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+---
+<div
+  id="actionable-content-system"
+  class="actionable-content-status"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  data-copy={zh ? '复制' : 'Copy'}
+  data-copy-code={zh ? '复制代码' : 'Copy code'}
+  data-copied={zh ? '已复制' : 'Copied'}
+  data-copy-inline={zh ? '复制这段内容' : 'Copy this value'}
+  data-copy-failed={zh ? '复制失败，请手动选择内容' : 'Copy failed. Select the content manually.'}
+></div>
+
+<script is:inline>
+(() => {
+  if (window.__basemodelActionableContentReady) return;
+  window.__basemodelActionableContentReady = true;
+
+  const system = document.getElementById('actionable-content-system');
+  if (!system) return;
+  const labels = system.dataset;
+  let statusTimer;
+
+  const announce = (message, failed = false) => {
+    system.textContent = message;
+    system.dataset.active = 'true';
+    system.dataset.failed = failed ? 'true' : 'false';
+    window.clearTimeout(statusTimer);
+    statusTimer = window.setTimeout(() => {
+      system.dataset.active = 'false';
+      system.dataset.failed = 'false';
+    }, 1800);
+  };
+
+  const fallbackCopy = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    textarea.style.pointerEvents = 'none';
+    document.body.appendChild(textarea);
+    textarea.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch { ok = false; }
+    textarea.remove();
+    return ok;
+  };
+
+  const write = async (text, description) => {
+    if (!text) return false;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        announce(`${labels.copied}: ${description}`);
+        return true;
+      }
+      if (fallbackCopy(text)) {
+        announce(`${labels.copied}: ${description}`);
+        return true;
+      }
+    } catch {}
+    announce(labels.copyFailed || 'Copy failed', true);
+    return false;
+  };
+
+  const copyIcon = () => {
+    const icon = document.createElement('span');
+    icon.className = 'actionable-copy-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>';
+    return icon;
+  };
+
+  const insideHydratedIsland = (element) => Boolean(element.closest('astro-island'));
+
+  const enhancePre = (pre) => {
+    if (!(pre instanceof HTMLElement) || insideHydratedIsland(pre) || pre.dataset.actionableReady === 'true' || pre.dataset.noCopy === 'true') return;
+    pre.dataset.actionableReady = 'true';
+    pre.style.setProperty('padding-top', '49px', 'important');
+    const code = pre.querySelector('code');
+    const textSource = code || pre;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'actionable-code-shell';
+    const parent = pre.parentNode;
+    if (!parent) return;
+    parent.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'actionable-copy-button';
+    const label = pre.dataset.copyLabel || labels.copyCode || labels.copy || 'Copy';
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+    button.appendChild(copyIcon());
+    const text = document.createElement('span');
+    text.textContent = labels.copy || 'Copy';
+    button.appendChild(text);
+    button.addEventListener('click', async () => {
+      const ok = await write(textSource.textContent || '', label);
+      if (!ok) return;
+      text.textContent = labels.copied || 'Copied';
+      button.dataset.copied = 'true';
+      window.setTimeout(() => {
+        text.textContent = labels.copy || 'Copy';
+        button.dataset.copied = 'false';
+      }, 1500);
+    });
+    wrapper.appendChild(button);
+  };
+
+  const selectionTouches = (element) => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.toString()) return false;
+    const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+    return Boolean(range && range.intersectsNode(element));
+  };
+
+  const enhanceInlineCode = (code) => {
+    if (!(code instanceof HTMLElement) || insideHydratedIsland(code) || code.closest('pre, a, button') || code.dataset.noCopy === 'true' || code.dataset.inlineCopyReady === 'true') return;
+    code.dataset.inlineCopyReady = 'true';
+    code.classList.add('actionable-inline-code');
+    code.tabIndex = 0;
+    code.setAttribute('role', 'button');
+    const label = code.dataset.copyLabel || labels.copyInline || labels.copy || 'Copy';
+    code.setAttribute('aria-label', `${label}: ${code.textContent || ''}`);
+    code.setAttribute('title', label);
+    const copyInline = () => write(code.textContent || '', label);
+    code.addEventListener('click', () => { if (!selectionTouches(code)) copyInline(); });
+    code.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        copyInline();
+      }
+    });
+  };
+
+  const enhanceExplicit = (element) => {
+    if (!(element instanceof HTMLElement) || insideHydratedIsland(element) || element.dataset.explicitCopyReady === 'true') return;
+    const value = element.dataset.copyValue;
+    if (typeof value !== 'string') return;
+    element.dataset.explicitCopyReady = 'true';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'actionable-inline-copy-button';
+    const label = element.dataset.copyLabel || labels.copy || 'Copy';
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+    button.appendChild(copyIcon());
+    button.addEventListener('click', () => write(value, label));
+    element.insertAdjacentElement('afterend', button);
+  };
+
+  const enhance = (root = document) => {
+    const scope = root instanceof Element || root instanceof Document ? root : document;
+    if (scope.matches?.('pre')) enhancePre(scope);
+    if (scope.matches?.('code')) enhanceInlineCode(scope);
+    if (scope.matches?.('[data-copy-value]')) enhanceExplicit(scope);
+    scope.querySelectorAll?.('pre').forEach(enhancePre);
+    scope.querySelectorAll?.('code').forEach(enhanceInlineCode);
+    scope.querySelectorAll?.('[data-copy-value]').forEach(enhanceExplicit);
+  };
+
+  enhance(document);
+  new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      mutation.addedNodes.forEach((node) => { if (node.nodeType === Node.ELEMENT_NODE) enhance(node); });
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
