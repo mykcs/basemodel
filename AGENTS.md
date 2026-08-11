@@ -10,12 +10,13 @@ Before non-trivial work, read in this order:
 2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — **scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.**
-5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-6. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-7. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
-8. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
-9. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-10. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+5. [`docs/agents/current/reproduction-case-study-policy.md`](docs/agents/current/reproduction-case-study-policy.md) — load when a reproduction page must preserve both the current runbook and real debugging history.
+6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
+7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
+8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
+9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
+10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
 Files under `docs/agents/history/` are evidence and rationale, not instructions to restore previous architecture.
 
@@ -125,9 +126,11 @@ Preserve these even when simplifying UI or data flows:
 - open weights are not automatically open source or unrestricted licensing;
 - heuristic resource estimates, catalog tiers and measured hardware results are distinct evidence levels;
 - current/latest/full-family claims require current first-party verification;
-- “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing.
+- “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing;
+- when a real reproduction history materially changed the runbook, keep the current shortest path and the historical debugging evidence in parallel instead of rewriting a fictional clean history;
+- a pending runtime/mechanism/E2E gate remains pending until a real artifact crosses it.
 
-Read the detailed current product/model policies before broad UI/data/recommendation changes.
+Read the detailed current product/model policies before broad UI/data/recommendation changes. For mature reproduction case studies, read `docs/agents/current/reproduction-case-study-policy.md` and the relevant historical evidence before rewriting the page.
 
 ## Stable technical constraints
 
