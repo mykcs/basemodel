@@ -68,7 +68,7 @@ describe('hosting architecture ownership', () => {
   it('documents Workers as validated but frozen instead of the default target', () => {
     expect(architecture).toContain('validated but frozen');
     expect(architecture).toContain('Do not continue Workers cutover work by default');
-    expect(latest).toContain('validated/frozen non-production option');
+    expect(latest).toContain('validated frozen option');
     expect(latest).toContain('do not continue Pages -> Workers cutover by default');
   });
 
