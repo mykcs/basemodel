@@ -65,6 +65,31 @@ const description = '从旧 Mac 跳板机、4×RTX 3090 登录、环境与模型
         <li><input type="checkbox" data-check="s0-4" /><div><strong>确认磁盘配额</strong><span>至少先争取 150GB 空闲；若要保留多个 checkpoint，300GB+ 更稳。</span></div></li>
         <li><input type="checkbox" data-check="s0-5" /><div><strong>确认你是否有 Conda/Mamba</strong><span>没有 root 权限也没关系，用户目录 Conda 就够；不要为了今天复现去改系统 Python。</span></div></li>
       </ol>
+      <details class="branch-box">
+        <summary>服务器没有 Conda / Mamba：不要停，按这里装用户目录 Miniconda</summary>
+        <div class="branch-body">
+          <p>先执行 <code>uname -m</code>。4×3090 服务器通常是 <code>x86_64</code>；只有确认输出是 <code>x86_64</code> 才照下面使用 x86_64 安装包。</p>
+          <pre><code># 服务器有外网
+cd $HOME
+curl -fL -o Miniconda3-latest-Linux-x86_64.sh \
+  https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
+source $HOME/miniconda3/etc/profile.d/conda.sh
+conda init bash
+conda --version</code></pre>
+          <p>服务器没有外网时，只让旧 Mac 下载<strong>Linux 安装器这个文件</strong>，再经实验室网线传过去；不要在 Mac 上安装后把它的 Python 环境复制给 Linux。</p>
+          <pre><code># 旧 Mac
+curl -fL -o $HOME/Miniconda3-latest-Linux-x86_64.sh \
+  https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+rsync -avP $HOME/Miniconda3-latest-Linux-x86_64.sh \
+  &lt;用户&gt;@&lt;3090服务器IP&gt;:$HOME/
+
+# 3090 服务器
+bash $HOME/Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
+source $HOME/miniconda3/etc/profile.d/conda.sh
+conda init bash</code></pre>
+        </div>
+      </details>
       <div class="pass"><b>PASS</b><span>旧 Mac 能 SSH 到服务器，并且你知道“服务器是否有外网、可用磁盘多少、Conda 在不在”。</span></div>
     </section>
 
@@ -291,7 +316,27 @@ test -d "$ALFWORLD_DATA/json_2.1.1/train" &amp;&amp; echo ALFWORLD_OK</code></pr
       <pre><code>cd $HOME/work/SEED
 conda activate seed
 
+# 如果没有 tmux 且服务器能访问 conda-forge，先装到 seed 环境
+command -v tmux || conda install -n seed -c conda-forge tmux -y
+
 tmux new -s seed-stage1</code></pre>
+      <details class="branch-box">
+        <summary>没有 tmux，而且服务器也不能联网安装：用 screen 或 nohup 兜底</summary>
+        <div class="branch-body">
+          <pre><code>command -v screen || true
+# 如果有 screen：
+screen -S seed-stage1
+# Ctrl+A 然后 D 可 detach；回来执行 screen -r seed-stage1</code></pre>
+          <p>连 <code>screen</code> 也没有时，把要跑的长命令保存成 <code>run-stage1.sh</code>，再：</p>
+          <pre><code>chmod +x run-stage1.sh
+nohup ./run-stage1.sh \
+  &gt; $HOME/seed-lab-20260811/stage1-nohup.log 2&gt;&amp;1 &amp;
+echo $! | tee $HOME/seed-lab-20260811/stage1.pid
+
+tail -f $HOME/seed-lab-20260811/stage1-nohup.log</code></pre>
+          <p>优先级仍是 <strong>tmux &gt; screen &gt; nohup</strong>；nohup 能保命，但不如 tmux 方便交互和恢复现场。</p>
+        </div>
+      </details>
       <p>进入 tmux 后执行：</p>
       <pre><code>cd $HOME/work/SEED
 RUN_MODE=smoke \
@@ -470,7 +515,7 @@ bash scripts/sft/webshop/prepare_data.sh</code></pre>
     </section>
 
     <section class="panel" id="s10">
-      <div class="panel-head"><span class="step-badge">10</span><div><h2>让 VPN / SSH 断线不再影响训练</h2><p>真正长跑只在 tmux 中启动。新 Mac 只是观察窗口，不是训练进程的生命线。</p></div></div>
+      <div class="panel-head"><span class="step-badge">10</span><div><h2>让 VPN / SSH 断线不再影响训练</h2><p>真正长跑只在 tmux 中启动；若 tmux 不可用，第 06 步已经给了 screen / nohup 兜底。新 Mac 只是观察窗口，不是训练进程的生命线。</p></div></div>
       <pre><code># 新建会话
 tmux new -s seed
 
