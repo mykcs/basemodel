@@ -131,7 +131,7 @@ mkdir -p $HOME/seed-lab-20260811
 cd $HOME/seed-lab-20260811
 
 # 把机器事实保存下来
-{
+(
   date
   hostname
   uname -a
@@ -144,7 +144,7 @@ cd $HOME/seed-lab-20260811
   command -v conda || true
   command -v nvcc || true
   nvcc --version || true
-} 2&gt;&amp;1 | tee machine-preflight.txt</code></pre>
+) 2&gt;&amp;1 | tee machine-preflight.txt</code></pre>
       <div class="note"><b>看到什么算正常？</b><span><code>nvidia-smi</code> 必须列出 4 张 RTX 3090，并且没有掉卡。磁盘、RAM、驱动/CUDA 版本先记录，不要因为和论文不同就马上改。</span></div>
       <div class="fail"><b>STOP</b><span>不是 4 张卡、GPU 报 Xid / ERR、磁盘几乎满、SSH 不稳定：先解决机器问题，不要继续装 SEED。</span></div>
     </section>
@@ -239,10 +239,11 @@ ls -la "$ALFWORLD_DATA/json_2.1.1/train" | head</code></pre>
       <h3>4D · 下载基础模型</h3>
       <pre><code>pip install -U huggingface_hub
 python - &lt;&lt;'PY'
+import os
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id='Qwen/Qwen2.5-3B-Instruct',
-    local_dir=f"{__import__('os').path.expanduser('~')}/models/Qwen2.5-3B-Instruct",
+    local_dir=os.path.expanduser('~/models/Qwen2.5-3B-Instruct'),
 )
 PY
 
@@ -308,7 +309,8 @@ bash scripts/sft/alfworld/prepare_data.sh \
       <h3>6B · 另开一个 SSH 窗口看 GPU 和进度</h3>
       <pre><code>watch -n 2 nvidia-smi</code></pre>
       <pre><code>cd $HOME/work/SEED
-find outputs -name progress.json -print -exec cat {} \;</code></pre>
+find outputs -name progress.json -print
+for f in $(find outputs -name progress.json); do cat "$f"; done</code></pre>
       <div class="pass"><b>PASS</b><span><code>progress.json</code> 的状态结束正常，并生成 <code>sft_episode_skill_train.parquet</code> / <code>sft_episode_skill_val.parquet</code>。至少一条 skill 能被解析。</span></div>
 
       <details class="branch-box">
