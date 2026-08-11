@@ -231,3 +231,228 @@
   .memo-actions { justify-content: flex-start; }
   .memo-evidence-list li { grid-template-columns: 1fr; gap: 2px; }
 }
+
+/* Incremental interface polish: keep the original Research Editorial / Analytical Workbench split.
+   Borrow only compact comparison rhythm, clearer data alignment, and restrained interaction chrome. */
+:root {
+  --data-rule: color-mix(in srgb, var(--line) 84%, var(--ink));
+  --interactive-wash: color-mix(in srgb, var(--surface-muted) 46%, transparent);
+}
+
+/* Navigation should feel precise without becoming a redesign. */
+.site-header .desktop-nav a {
+  position: relative;
+  padding: 22px 0 20px;
+  transition: color .14s ease;
+}
+.site-header .desktop-nav a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-deep);
+}
+.site-header .command-search-trigger,
+.site-header .theme-toggle,
+.site-header .menu-toggle {
+  box-shadow: none;
+  border-color: var(--data-rule);
+}
+
+/* Preserve the hero composition; only make the live research example read more like data. */
+.site-main .hero-note.example-card {
+  border-radius: 16px;
+  border-color: var(--data-rule);
+  padding: 22px;
+}
+.site-main .example-card-title { letter-spacing: -.018em; }
+.site-main .example-stats {
+  border-top: 1px solid var(--data-rule);
+  border-bottom: 1px solid var(--data-rule);
+}
+.site-main .example-stat strong,
+.site-main .overview-stats strong,
+.site-main .result-count,
+.site-main time,
+.site-main td,
+.site-main dd {
+  font-variant-numeric: tabular-nums;
+}
+.site-main .example-stat strong { letter-spacing: -.035em; }
+
+/* Home rows keep their existing hierarchy, with faster scanning and quieter hover feedback. */
+.site-main .intent-row {
+  padding-top: 19px;
+  padding-bottom: 19px;
+  transition: background-color .14s ease, padding-left .14s ease;
+}
+.site-main .intent-row:hover,
+.site-main .intent-row:focus-visible {
+  padding-left: 10px;
+  background: var(--interactive-wash);
+}
+.site-main .intent-row > span { transition: transform .14s ease; }
+.site-main .intent-row:hover > span,
+.site-main .intent-row:focus-visible > span { transform: translateX(3px); }
+.site-main .research-path-row h3,
+.site-main .family-current-row h3 { margin-bottom: 6px; }
+.site-main .research-path-row p,
+.site-main .family-current-row p { line-height: 1.58; }
+
+/* Recent changes become a compact chronology rather than another card surface. */
+.site-main .model-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--data-rule);
+}
+.site-main .model-timeline li {
+  display: grid;
+  grid-template-columns: 122px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--data-rule);
+}
+.site-main .model-timeline time {
+  color: var(--muted);
+  font-size: .76rem;
+  line-height: 1.55;
+}
+.site-main .model-timeline li > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 16px;
+  align-items: baseline;
+}
+.site-main .model-timeline strong { font-size: .9rem; }
+.site-main .model-timeline span {
+  color: var(--muted);
+  font-size: .8rem;
+}
+.site-main .model-timeline small {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: var(--muted);
+  font-size: .7rem;
+  white-space: nowrap;
+}
+
+/* Family state is easier to compare when key/value pairs share one stable rhythm. */
+.site-main .family-current-row dl { gap: 0; }
+.site-main .family-current-row dl div {
+  padding: 8px 0;
+  border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+}
+.site-main .family-current-row dl div:first-child { border-top: 0; }
+.site-main .family-current-row dt {
+  font-size: .74rem;
+  font-weight: 700;
+}
+.site-main .family-current-row dd {
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+/* Catalog cards remain cards, but read as comparable research records instead of tiles. */
+.site-main .model-card {
+  min-height: 0;
+  padding: 16px 17px;
+  border-color: var(--data-rule);
+  background: color-mix(in srgb, var(--surface) 97%, var(--bg));
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.site-main .model-card:hover,
+.site-main .model-card:focus-within {
+  border-color: color-mix(in srgb, var(--accent-deep) 42%, var(--line));
+  background: var(--surface);
+  box-shadow: none;
+}
+.site-main .model-card .card-topline {
+  align-items: flex-start;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+.site-main .model-card .model-architecture { margin: 11px 0 9px; }
+.site-main .model-card .tag-row { padding: 10px 0 12px; }
+.site-main .model-card .tag {
+  padding: 3px 6px;
+  background: color-mix(in srgb, var(--surface-muted) 38%, transparent);
+}
+.site-main .model-card .card-footer { padding-top: 10px; }
+
+/* Workbench gains density through alignment, not smaller unreadable text. */
+.workspace .constraint-panel,
+.workspace .candidate-board,
+.workspace .evidence-inspector {
+  border-color: var(--data-rule);
+  background: color-mix(in srgb, var(--surface) 98%, var(--bg));
+}
+.workspace .candidate-row {
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  background: color-mix(in srgb, var(--surface-muted) 62%, var(--surface));
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.workspace .candidate-row:hover,
+.workspace .candidate-row:focus-within {
+  border-color: color-mix(in srgb, var(--accent-deep) 34%, var(--line));
+  background: var(--surface);
+}
+.workspace .fit-dimensions dd,
+.workspace .candidate-meta,
+.workspace .evidence-inspector dd { font-variant-numeric: tabular-nums; }
+
+/* Shared controls stay restrained and consistent across editorial and workbench surfaces. */
+.site-main .button,
+.site-main select,
+.site-main input,
+.site-main .chip,
+.site-main .quick-filter,
+.site-main .status-badge {
+  border-radius: 8px;
+}
+.site-main .status-badge,
+.site-main .tag,
+.site-main .reason-chip,
+.site-main .risk-chip { letter-spacing: .005em; }
+
+@media (max-width: 760px) {
+  .site-header .desktop-nav a { padding: 0; }
+  .site-main .model-timeline li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 12px 0;
+  }
+  .site-main .model-timeline li > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .site-main .intent-row:hover,
+  .site-main .intent-row:focus-visible { padding-left: 6px; }
+  .site-main .hero-note.example-card { padding: 19px; }
+}
+
+@media (max-width: 520px) {
+  .site-main .model-timeline li > div { grid-template-columns: 1fr; }
+  .site-main .model-timeline small {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    margin-top: 2px;
+  }
+  .site-main .family-current-row dl div {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-main .intent-row,
+  .site-main .intent-row > span,
+  .site-main .model-card,
+  .workspace .candidate-row { transition: none; }
+}
