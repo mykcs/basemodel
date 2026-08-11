@@ -1,12 +1,13 @@
 # OpenEvo reproduction research page
 
 Status: current product/content ownership
-Route:
+Routes:
 
-- Chinese: `/guide/openevo-reproduction/`
-- English: `/en/guide/openevo-reproduction/`
+- Chinese: `/guide/reproduction-c/openevo/`
+- English: `/en/guide/reproduction-c/openevo/`
 
 Primary component: `src/components/OpenEvoReproductionResearch.astro`
+Entry surface: `src/components/GuideDecisionChapters.astro` → reproduction chapter → **复现 C · 真实案例** card.
 
 ## Purpose
 
@@ -113,13 +114,15 @@ Proof should progress from static contract → real reset/action → real CUDA m
 
 The page is deliberately long-form and self-contained, but must remain mobile-readable:
 
+- the existing Guide reproduction chapter contains a compact forward card into this child page;
 - direct route = ordered steps;
 - bug route = compact two-column cards on desktop, one column on mobile;
 - P0 criteria = scannable proof grid;
 - ALFWorld contract = horizontally scrollable table on narrow screens;
-- bilingual content lives in one shared component via `locale`/`t()`.
+- bilingual content lives in one shared component via `locale`/`t()`;
+- breadcrumb links back to the SEED reproduction guide / reproduction-C context.
 
-The page links back to the SEED reproduction guide / reproduction-C context through its breadcrumb. A future edit may add a prominent forward link inside the C decision card if that can be done without weakening the surrounding market-decision semantics.
+Keep the child route under `/guide/reproduction-c/` so the information architecture makes the relationship explicit rather than creating a disconnected top-level guide page.
 
 ## Validation
 
@@ -132,7 +135,8 @@ npm run build
 
 Then inspect the exact Vercel Preview for:
 
-- both routes return 200;
+- reproduction-C entry card appears in the Guide;
+- both child routes return 200;
 - no missing translation/layout imports;
 - mobile and desktop readability;
 - table overflow works on mobile;
