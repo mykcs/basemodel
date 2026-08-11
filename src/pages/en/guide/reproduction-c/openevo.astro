@@ -1,0 +1,23 @@
+---
+import AppLayout from '../../../../layouts/AppLayout.astro';
+
+const title = 'Reproduction C: OpenEVO × WebShop / ALFWorld';
+const description = 'A method-reproduction case that keeps the current runbook, the real debugging chronology, and the evidence boundary together.';
+---
+<AppLayout title={title} description={description} locale="en">
+  <main class="shell english-case">
+    <p class="eyebrow">REPRODUCTION C · OPEN EVO / SEED / WEBSHOP / ALFWORLD</p>
+    <h1>OpenEVO × WebShop / ALFWorld reproduction case</h1>
+    <p class="lede">The detailed experiment notebook is currently maintained in Chinese because it records the live lab debugging sequence. It contains two parallel tracks: the shortest current path to a real OpenEVO × WebShop proof, and the bugs / reasoning traps that changed that path.</p>
+    <div class="cards">
+      <article><strong>Track A · Current runbook</strong><span>source pinning → WebShop data → offline Python ≥3.11 runtime → Lucene index → real CUDA rollout → real reflection/evolution → official E2E → ALFWorld adapter.</span></article>
+      <article><strong>Track B · Debugging evidence</strong><span>worktree ownership, Git/API transport, ancestor Git discovery, corrupt patch headers, WebShop data delivery, blocked GitHub Actions, pinned GitHub blobs, redundant checks, and interpreter/dependency mistakes.</span></article>
+    </div>
+    <p class="boundary"><b>Evidence boundary:</b> at publication time the control/data path has been verified through the RTX6 runtime dependency gate; the final CUDA rollout, evolution proof, and official OpenEVO E2E are not yet presented as completed.</p>
+    <a class="primary" href="/guide/reproduction-c/openevo/">Open the detailed Chinese lab record →</a>
+    <a class="secondary" href="/en/guide/#guide-reproduction">Back to reproduction methodology</a>
+  </main>
+</AppLayout>
+<style>
+  .english-case{max-width:900px;margin:0 auto;padding:5rem 1rem 7rem}.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.1em;opacity:.55}.english-case h1{font-size:clamp(2.4rem,6vw,4.8rem);line-height:1;letter-spacing:-.045em;margin:.7rem 0 1.2rem}.lede{font-size:1.16rem;opacity:.78}.cards{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1.7rem 0}.cards article{border:1px solid var(--border,rgba(127,127,127,.28));border-radius:12px;padding:1rem;display:grid;gap:.45rem}.cards span{font-size:.9rem;opacity:.7}.boundary{padding:1rem;border-left:3px solid currentColor;background:color-mix(in srgb,currentColor 3%,transparent)}.primary,.secondary{display:inline-block;margin:1rem .7rem 0 0;color:inherit;font-weight:800}.secondary{font-weight:500;opacity:.7}@media(max-width:650px){.cards{grid-template-columns:1fr}}
+</style>
