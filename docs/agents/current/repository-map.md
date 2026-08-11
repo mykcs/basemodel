@@ -12,7 +12,7 @@ Before editing this repository, read in this order:
 2. [`../LATEST.md`](../LATEST.md) — latest handoff and current provider/deployment state.
 3. [`project-agent-operating-principles.md`](./project-agent-operating-principles.md) — proactive problem solving, clean ownership, and selective experience deposition.
 4. [`scenario-trigger-registry.md`](./scenario-trigger-registry.md) — scan situation cues and load only matched guidance.
-5. [`hosting-architecture.md`](./hosting-architecture.md) — current-vs-target hosting authority.
+5. [`hosting-architecture.md`](./hosting-architecture.md) — current hosting authority and architecture-audit decision.
 6. [`vercel-preview-migration-plan.md`](./vercel-preview-migration-plan.md) — **default ordinary Preview workflow**.
 7. [`product-and-research-integrity.md`](./product-and-research-integrity.md) — durable product/research-integrity contract.
 8. [`model-catalog-verification-policy.md`](./model-catalog-verification-policy.md) — required before broad current-model/family audits or evidence-semantics changes.
@@ -30,7 +30,7 @@ README.md                         project/data overview for humans and Agents
 package.json                      executable task surface
 astro.config.mjs                  Astro production configuration
 vercel.json                       ordinary non-main Preview contract
-wrangler.jsonc                    Cloudflare Workers Static Assets shadow/target config
+wrangler.jsonc                    validated/frozen Workers Static Assets shadow option
 .github/                          GitHub-native configuration; no Actions workflows
 docs/agents/LATEST.md             stable latest handoff
 docs/agents/current/              authoritative current Agent docs/runbooks/maps
@@ -64,6 +64,7 @@ When changing data shape, start from `src/lib/schemas.ts` and content configurat
 ```text
 src/lib/*.test.ts                             domain and lightweight repository invariants
 src/lib/agentScenarioTriggerRegistry.test.ts Agent router/trigger-registry invariant
+src/lib/hostingArchitecture.test.ts          hosting ownership + frozen Workers option invariant
 tests/e2e/                                   Chromium/WebKit Playwright regression specs
 tests/fixtures/                              non-production fixtures used for examples/tests
 tests/fixtures/demo-archive/                 historical demo model records; never production content
@@ -79,8 +80,8 @@ Important commands exposed through `package.json` include:
 
 - `npm run verify:deploy` — deterministic repository-local deployment Gate;
 - `npm run build` — Astro static build;
-- `npm run build:cloudflare` — current Cloudflare Pages formal build entrypoint while Pages remains Production;
-- `npm run build:workers:shadow` — Workers Static Assets shadow artifact path during migration;
+- `npm run build:cloudflare` — current Cloudflare Pages formal Production build entrypoint;
+- `npm run build:workers:shadow` — retained Workers Static Assets shadow artifact path; do not treat it as the default next release path;
 - `npm run preview:cloudflare` — repository-owned Direct Upload helper for fallback / Cloudflare-specific validation;
 - `npm run test:e2e` — full Chromium + WebKit regression, on demand;
 - `npm run audit:vendor-catalogs` / `audit:urls` / `audit:coverage` — broader external/data-health maintenance audits, on demand.
@@ -121,16 +122,27 @@ A READY deployment is not sufficient evidence for user-facing acceptance by itse
 
 ## Cloudflare surface
 
-Current vs target:
+Current steady state:
 
 ```text
-CURRENT Production: Cloudflare Pages -> https://basemodel.pages.dev
-TARGET Production:  Cloudflare Workers Static Assets after explicit cutover
+Cloudflare Pages Production -> https://basemodel.pages.dev
+Workers Static Assets       -> validated/frozen non-production option
+Direct Upload               -> fallback / Cloudflare-specific Preview
 ```
 
-Cloudflare Direct Upload remains a supported fallback and Cloudflare-specific integration Preview. It is not the ordinary first-choice Preview while Vercel is available.
+The 2026-08-11 architecture audit explicitly **paused the previously intended Pages -> Workers Production cutover**. The current provider split is not treated as accidental duplication:
 
-Workers shadow/parity work does not implicitly authorize Production cutover. Read `hosting-architecture.md` and `deployment-policy.md` before changing Production routing/identity.
+```text
+GitHub = source
+Vercel = Preview
+Cloudflare Pages = Production
+```
+
+The original Cloudflare build-budget problem is already contained because ordinary Preview no longer consumes Pages Git builds.
+
+Do not assume that reducing provider count reduces hosted-build count. A future Vercel-only or Workers migration must re-evaluate build semantics, quota concentration, product identity/domain migration, rollback and actual provider-native requirements.
+
+Cloudflare Direct Upload remains a supported fallback and Cloudflare-specific integration Preview. It is not the ordinary first-choice Preview while Vercel is available.
 
 Do not claim an exact account-level Cloudflare build counter without authoritative provider evidence.
 
@@ -151,13 +163,13 @@ The owner prefers high-autonomy execution and low unnecessary provider-build con
 
 | Change type | Minimum repository validation | Default public verification |
 | --- | --- | --- |
-| docs/Agent-only, no runtime semantics | inspect diff, links, precedence; Agent-routing test when practical | no runtime Preview required; keep Cloudflare skip/no-build semantics |
+| docs/Agent-only, no runtime semantics | inspect diff, links, precedence; Agent-routing/architecture test when practical | no runtime Preview required; keep Cloudflare skip/no-build semantics |
 | data/schema/domain rules | `npm run verify:deploy` | Vercel Preview when rendered/runtime behavior changes |
 | UI/component behavior | `npm run verify:deploy` + focused tests | exact-head Vercel Preview + visual/interaction inspection |
 | routing/i18n/SEO | `npm run verify:deploy` + relevant Playwright | exact-head Vercel Preview + route/metadata inspection |
 | Astro/React/browser compatibility major change | `npm run verify:deploy` + full `npm run test:e2e` | exact-head Vercel Preview before release |
 | vendor/source maintenance | read model-catalog policy + relevant external audits | Vercel Preview if rendered content changed |
 | deployment architecture | update current Agent docs + repository/provider validation | Vercel for ordinary Preview; provider-specific shadow/Direct Upload only when the architecture task requires it |
-| Production hosting cutover | current hosting/deployment policy + rollback + explicit owner intent | verify the real public Production route after cutover |
+| Production hosting migration | current hosting/deployment policy + domain/canonical plan + rollback + explicit owner intent | verify the real public Production identity after cutover |
 
 The default acceptance path can change again in the future. If it does, update this map and the owning current docs in the same architecture change; do not leave an obsolete default in `current/` and hope precedence rules compensate forever.

@@ -7,9 +7,9 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 1. [`LATEST.md`](./LATEST.md) — current handoff and authoritative day-to-day architecture.
 2. [`current/project-agent-operating-principles.md`](./current/project-agent-operating-principles.md) — durable project-wide standard for proactive problem solving, modern/clean workflow ownership, and selective deposition of reusable experience.
 3. [`current/scenario-trigger-registry.md`](./current/scenario-trigger-registry.md) — **just-in-time router for recurring situations. Scan it against each non-trivial task and load the matched guidance automatically; do not wait for the owner to repeat known constraints.**
-4. [`current/hosting-architecture.md`](./current/hosting-architecture.md) — **approved target hosting architecture and active shadow-migration rule: Vercel for PR Preview; Cloudflare Workers Static Assets is the target Production host; Cloudflare Pages remains real Production until explicit cutover.**
+4. [`current/hosting-architecture.md`](./current/hosting-architecture.md) — **current hosting authority: Vercel owns ordinary PR Preview; Cloudflare Pages remains Production; the validated Workers Static Assets path is frozen as an optional future migration rather than the default target.**
 5. [`current/vercel-preview-migration-plan.md`](./current/vercel-preview-migration-plan.md) — validated ordinary Preview workflow: non-main GitHub branches/PRs -> Vercel Preview; `main` Vercel deployment disabled.
-6. [`current/preview-platform-evaluation.md`](./current/preview-platform-evaluation.md) — decision record explaining why Vercel won the real pilot, why Netlify is deferred, and why Cloudflare Direct Upload remains fallback.
+6. [`current/preview-platform-evaluation.md`](./current/preview-platform-evaluation.md) — decision record explaining why Vercel won the real Preview pilot and why Cloudflare Direct Upload remains fallback.
 7. [`current/cloudflare-direct-upload-credential-handoff.md`](./current/cloudflare-direct-upload-credential-handoff.md) — Wrangler credential-injection handoff retained for fallback / Cloudflare-specific Preview work; ordinary Preview no longer depends on solving it.
 8. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, evidence semantics, recommendation philosophy, and false-complete acceptance rules.
 9. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — rules for current-model/family verification, first-party evidence, API-vs-open-weight boundaries, and semantic unknowns.
@@ -17,7 +17,7 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 11. [`current/deployment-policy.md`](./current/deployment-policy.md) — provider/release boundaries and deployment acceptance rules.
 12. [`current/direct-upload-preview-command.md`](./current/direct-upload-preview-command.md) — repository-owned Cloudflare Direct Upload command; use as fallback / Cloudflare-specific Preview path.
 13. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — detailed Cloudflare Direct Upload mechanics and build-budget rules.
-14. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — current Pages Production / rollback / Direct Upload runbook during migration.
+14. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — current Pages Production / rollback / Direct Upload runbook.
 15. [`current/repository-map.md`](./current/repository-map.md) — repository ownership map and change-to-check guidance.
 16. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance, and rendering rules.
 17. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — older Cloudflare-first execution model; retain as fallback/history context.
@@ -37,16 +37,13 @@ read LATEST + operating principles
 -> if a new reusable lesson appears, decide whether to encode it in an existing owner/test/runbook or leave it ephemeral
 ```
 
-Examples of recurring triggers currently covered include protected Cloudflare build budget, SEED/offline-lab reproduction, GPU time/cost decisions, beginner-facing cross-site rewrites, actionable content, unavailable tool/provider paths, overlapping PRs, and reusable-lesson deposition.
+Examples of recurring triggers include protected Cloudflare build budget, hosting/platform modernization, exact-head Preview drift, SEED/offline-lab reproduction, GPU time/cost decisions, beginner-facing rewrites, actionable content, unavailable tool/provider paths, overlapping PRs, and reusable-lesson deposition.
 
 Historical cases can explain why a trigger exists, but current policy and executable truth win.
 
 ## Current deployment authority
 
-Do not collapse CURRENT and TARGET into one claim:
-
 ```text
-CURRENT
 GitHub non-main branch / PR
   -> Vercel Preview
   -> npm run verify:deploy
@@ -57,18 +54,28 @@ main
   -> Vercel Git deployment disabled
   -> Cloudflare Pages Production
   -> https://basemodel.pages.dev
-
-TARGET AFTER SHADOW ACCEPTANCE
-GitHub
-├─ PR / non-main -> Vercel Preview
-└─ main          -> Cloudflare Workers Static Assets Production
 ```
 
-Cloudflare Pages stays Production and rollback infrastructure until the Workers shadow deployment passes the acceptance gate and the owner explicitly authorizes cutover.
+The 2026-08-11 architecture re-audit reaffirmed this as the **current steady state**, not merely a temporary migration midpoint.
+
+The previously validated Workers Static Assets shadow remains available as a reversible future option, but it is **not** the default next Production target. Reopen that decision only when a real requirement changes: independent custom domain, demonstrated Pages limitation, Cloudflare-native server capability need, materially different provider economics, or another explicit architecture trigger.
 
 Cloudflare Direct Upload remains a supported fallback and a Cloudflare-specific integration Preview. It is not the ordinary first-choice path when Vercel is available.
 
-If older current/history material conflicts with this split, `LATEST.md` plus `current/hosting-architecture.md` wins.
+If older current/history material says Workers is the automatic next Production target, `LATEST.md` plus `current/hosting-architecture.md` wins.
+
+## Provider-count vs build-count rule
+
+Do not infer that removing a provider removes a build.
+
+```text
+fewer providers
+!= fewer hosted builds
+```
+
+A normal PR -> Production flow can still have separate Preview and Production deployments on one provider. If the real requirement is one hosted build, inspect a deliberate build-once -> staged inspection -> artifact-promotion design instead of treating provider deletion as the solution.
+
+The detailed audit reasoning is preserved in [`history/2026-08-11-hosting-architecture-audit.md`](./history/2026-08-11-hosting-architecture-audit.md).
 
 ## Preview access rule
 
@@ -79,13 +86,13 @@ The Vercel project is connected to a private GitHub repository, so Deployment Pr
 - When the owner needs a click-through review URL without Vercel login, generate a temporary Vercel share link and return it.
 - Do not store temporary share links as durable documentation because they expire.
 
-## Release / migration rule
+## Release rule
 
-Intermediate feature and migration commits may use `[CF-Pages-Skip]` / `[Skip CI]` where appropriate so Cloudflare Pages is not intentionally rebuilt during ordinary Preview/shadow work.
+Intermediate feature commits may use `[CF-Pages-Skip]` / `[Skip CI]` where appropriate so Cloudflare Pages is not intentionally rebuilt during ordinary Preview work.
 
-Do not assume that landing `wrangler.jsonc` or Workers migration code on `main` changes Production. A Workers Production cutover is a separate release boundary: shadow deploy -> compare -> rollback plan -> explicit owner intent -> route/hosting switch -> public verification.
+When the owner intentionally releases through the current Pages Production path, the release commit must not accidentally carry a Cloudflare skip prefix.
 
-Likewise, if the owner intentionally releases through the still-current Pages Production path before cutover, the release commit must not accidentally carry a Cloudflare skip prefix.
+Do not interpret `wrangler.jsonc` or the existence of a validated Workers shadow as release authorization. Any future Production-host migration is a separate architecture/release decision with domain/canonical planning, rollback, explicit owner intent and public verification.
 
 ## Stable structure
 
@@ -111,12 +118,12 @@ docs/agents/
 │   ├── rendering-and-performance-policy.md
 │   └── web-gpt-cloudflare-build-budget-workflow.md
 └── history/
-    └── dated / retired migration and incident records
+    └── dated migration / incident / audit records
 ```
 
 ## Product contract
 
-The deployment change does not alter the research/product north star:
+The deployment decision does not alter the research/product north star:
 
 - the site is a research decision system rather than merely a model database;
 - strict reproduction, method reproduction, and modern rerun remain distinct;
@@ -129,6 +136,6 @@ Read `current/product-and-research-integrity.md` and the task-relevant research/
 
 ## Historical records
 
-Files under [`history/`](./history/) describe how previous architectures were reached. They are evidence, not a reason to restore GitHub Actions, GitHub Pages, or superseded Cloudflare-only ordinary-Preview assumptions.
+Files under [`history/`](./history/) explain how previous decisions were reached. They are evidence, not a reason to restore GitHub Actions, GitHub Pages, superseded Cloudflare-only ordinary-Preview assumptions, or a paused Workers cutover.
 
-Update `LATEST.md` and the relevant current policy whenever deployment architecture, ownership boundaries, validation Gates, build-budget behavior, shadow status or Production cutover changes materially.
+Update `LATEST.md` and the relevant current policy whenever deployment architecture, ownership boundaries, validation Gates, build-budget behavior or Production hosting changes materially.

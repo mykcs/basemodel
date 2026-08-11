@@ -1,20 +1,25 @@
 # Cloudflare Pages deployment runbook
 
-Last reviewed: 2026-08-10
+Last reviewed: **2026-08-11 15:27 +08:00**
+
+Status: **Cloudflare Pages is the current Production host. Vercel is the ordinary Preview path. Direct Upload is fallback / Cloudflare-specific validation. The previously prepared Workers cutover is paused.**
 
 ## Current architecture
 
 ```text
 GitHub source of truth
         |
-        +---- ordinary preview: local/Agent build -> Wrangler Direct Upload -> public Preview URL
+        +---- non-main branch / PR -> Vercel Preview
         |
-        +---- explicit formal release: Git-integrated Cloudflare Pages build -> Preview / Production
+        +---- accepted release on main -> Cloudflare Pages Production
+
+Cloudflare Direct Upload -> fallback / same-provider Preview when specifically useful
+Workers Static Assets     -> validated/frozen non-production option
 ```
 
-Cloudflare Pages remains the Production host. GitHub Actions and GitHub Pages are intentionally retired.
+GitHub Actions and GitHub Pages remain intentionally retired.
 
-For normal Agent-driven website changes, [`direct-upload-preview-policy.md`](./direct-upload-preview-policy.md) is the default preview/build-budget authority. This runbook retains the Cloudflare project contract, SEO identity, formal Git-release flow and rollback rules.
+For ordinary Preview behavior read `vercel-preview-migration-plan.md` and `deployment-policy.md`. This runbook owns the current Pages Production contract, formal release path, same-provider fallback, SEO identity and rollback rules.
 
 ## Cloudflare project contract
 
@@ -25,73 +30,72 @@ Production branch: main
 Formal Git build command: npm run build:cloudflare
 Build output directory: dist
 Root directory: repository root
+Production identity: https://basemodel.pages.dev
 ```
 
 Node is pinned with `.node-version`; keep build logic in the repository.
 
-## Default: local build + Direct Upload preview
+## Ordinary Preview is Vercel, not Pages
 
-The owner prioritizes conserving Cloudflare Pages Git-build quota.
+Do not intentionally spend a Cloudflare Pages Git Preview build merely so the owner can inspect a branch while the validated Vercel path is available.
 
-For ordinary website changes:
+Normal flow:
 
 ```text
-1. edit and batch the requested source changes;
-2. run repository-local validation on the Agent/local side;
-3. build the production output locally/agent-side;
-4. Direct Upload dist/ to a unique non-production Pages branch;
-5. capture the public Preview URL returned by Wrangler;
-6. inspect the Preview when UI/routing/SEO behavior changed;
-7. synchronize source to GitHub with a Cloudflare-supported skip-build commit strategy;
-8. report completion, Preview URL, Git state, Production state, and whether a Pages Build was triggered.
+focused PR branch
+-> Vercel runs npm run verify:deploy
+-> Vercel runs npm run build
+-> inspect exact-head Preview
+-> owner accepts
+-> release to main
+-> Cloudflare Pages Production build
 ```
 
-Practical command pattern:
+Intermediate/non-release Git synchronization may use the documented Cloudflare skip-build convention where appropriate.
+
+This division is the mechanism that protects Pages build budget. Do not redesign Production merely because Preview consumes Vercel resources; provider count and hosted-build count are separate variables.
+
+## Cloudflare Direct Upload fallback
+
+Use Direct Upload when:
+
+- Cloudflare-specific Pages behavior is under test;
+- Vercel is unavailable/rate-limited and a Cloudflare-hosted Preview is actually useful;
+- the owner explicitly requests a `pages.dev` Preview;
+- a Production issue needs same-provider pre-release reproduction;
+- a temporary integration state needs Cloudflare-specific fidelity.
+
+Follow `direct-upload-preview-policy.md` and `direct-upload-preview-command.md` rather than inventing an ad-hoc Wrangler workflow.
+
+Representative low-level command:
 
 ```bash
-PREVIEW_BRANCH="agent-preview-<short-task-name>-<short-id>"
-PREVIEW_ORIGIN="https://${PREVIEW_BRANCH}.basemodel.pages.dev"
-
-CF_PAGES_BRANCH="$PREVIEW_BRANCH" \
-PUBLIC_SITE_URL="$PREVIEW_ORIGIN" \
-PUBLIC_SEARCH_INDEXING=disabled \
-npm run build:cloudflare
-
 npx wrangler pages deploy dist \
   --project-name=basemodel \
-  --branch="$PREVIEW_BRANCH"
+  --branch=<unique-preview-branch>
 ```
 
-Use the actual deployment URL returned by Wrangler as primary evidence. Direct Upload uploads prebuilt assets, so Cloudflare does not run the Git-connected build step for that deployment. It still creates a Pages deployment and remains subject to upload/deployment/file/platform limits; do not describe it as broadly quota-free.
-
-Official references:
-
-- <https://developers.cloudflare.com/pages/get-started/direct-upload/>
-- <https://developers.cloudflare.com/pages/configuration/git-integration/>
-- <https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/>
-- <https://developers.cloudflare.com/pages/platform/limits/>
-
-Re-check current Cloudflare docs before quota/cost decisions.
+Use the deployment URL returned by Wrangler as primary evidence. Direct Upload uploads prebuilt assets, so Cloudflare does not run the Git-connected build step for that deployment. It is still a platform deployment and remains subject to deployment/upload/file/platform limits.
 
 ## Git synchronization without intentionally spending a Pages Build
 
-When source should be saved to GitHub but the owner did not request a formal Git-integrated release, use Build Watch / branch controls or a Cloudflare-supported skip prefix on commits that would otherwise trigger Pages, for example:
+When source should be saved to GitHub but the owner did not request a release, use a supported Cloudflare skip prefix or current Build Watch/branch controls where appropriate.
 
-```text
-[Skip CI] ...
-```
-
-Cloudflare also documents variants such as `[CF-Pages-Skip]`, `[CI Skip]`, `[CI-Skip]`, and `[Skip-CI]`.
+Repository convention includes `[CF-Pages-Skip]` for non-release work.
 
 Batch related changes. Avoid no-op commits, probe branches and speculative push loops merely to test whether Pages is healthy.
+
+### Production warning
+
+A real release expected to update Pages must **not** accidentally carry `[CF-Pages-Skip]`, `[Skip CI]` or another Cloudflare skip prefix.
 
 ## Repository-owned validation
 
 `npm run build:cloudflare` performs deterministic deployment validation and the production Astro build. Repository scripts in `package.json` are executable truth.
 
-For Direct Upload, run the same relevant checks locally/agent-side before uploading `dist`; moving validation off the hosted Git builder is not permission to weaken the research-integrity gates.
+Do not weaken a failing repository Gate to make a deployment green. Fix the product/data/test mismatch or revise the invariant only with evidence.
 
-Keep full Chromium/WebKit Playwright and third-party-dependent audits on demand unless the change actually needs them:
+Keep full Chromium/WebKit Playwright and third-party-dependent audits on demand unless the change requires them:
 
 ```bash
 npm run test:e2e
@@ -100,52 +104,58 @@ npm run audit:urls
 npm run audit:coverage
 ```
 
-## Formal Git-integrated deployment boundary
+## Formal Production release boundary
 
-Only use the normal Git-connected Preview / Production workflow when the owner explicitly asks for a formal Git-integrated deployment, merge-and-deploy, Production release, or equivalent production boundary.
+Only a deliberate accepted release should spend the normal Git-connected Pages Production build.
 
-Before intentionally triggering it:
+Before the release:
 
-1. tell the owner the next push/merge may consume Cloudflare Pages Build quota;
-2. state whether Preview, Production or both are expected to build;
-3. batch and validate the final diff locally first;
-4. use the exact final head as the release boundary;
-5. verify the exact deployment/commit rather than assuming success.
+1. ensure the intended PR head is current with the merge base;
+2. ensure the deterministic Gate/build passed for the exact accepted state;
+3. inspect the real Vercel Preview when user-facing behavior changed;
+4. merge/release with a normal non-skip commit;
+5. verify the real `https://basemodel.pages.dev` Production route after deployment.
 
-Do not silently convert an ordinary “show me the website” request into a Git-connected Pages build.
+Do not merge merely to obtain a Preview.
 
-## Required completion report
+## Production identity and indexing
 
-After a website modification, explicitly state whether the requested acceptance boundary is complete and report:
+Production remains the indexed canonical identity:
 
-- local validation/build result;
-- Direct Upload result and public Preview URL when that is the default/requested path;
-- `Cloudflare Pages Build triggered: yes / no / unknown`;
-- Git synchronization status;
-- whether Production was intentionally changed;
-- any blocker or unverified boundary.
+```text
+https://basemodel.pages.dev
+```
 
-If the Agent cannot build locally, cannot authenticate Wrangler, cannot upload, cannot inspect the Preview, or cannot confirm relevant quota/deployment evidence, say so. Do not claim success or safety at that boundary.
+Every non-production Preview must remain `noindex` and must not impersonate Production canonical identity.
 
-## Preview identity and indexing
+Leaving Pages is therefore not just a hosting change: because `pages.dev` is provider-owned, a future migration must explicitly handle hostname/canonical/hreflang/robots/sitemap/external-link/rollback semantics, normally together with an independent custom-domain decision.
 
-Cloudflare is the only maintained hosting target, so application base is `/`.
+## Workers Static Assets boundary
 
-Production remains the indexed canonical identity. Every non-production Preview, including Direct Upload branch Previews, must remain `noindex` and must be built with the Preview origin so generated canonical/OG/JSON-LD metadata do not impersonate Production. `noindex` is not access control.
+The repository retains a previously validated pure-static Workers shadow path.
+
+That path proves migration feasibility, but the 2026-08-11 architecture audit paused the default Pages -> Workers cutover because:
+
+- the current Astro product does not require Workers runtime features;
+- ordinary Preview/build-budget pressure is already solved by Vercel;
+- moving off Pages changes the `basemodel.pages.dev` product identity unless a separate domain migration is performed.
+
+Do not continue Workers Production cutover by default. Re-read `hosting-architecture.md` and reopen the decision only when current requirements justify it.
 
 ## Build budget and limits
 
-As of the 2026-08-10 review, Cloudflare documents a Free Pages Git-build allowance of 500 builds/month, one concurrent build and a 20-minute build timeout. Values can change.
-
-Project distinction:
+Keep these distinctions explicit:
 
 ```text
-normal static requests != Git build consumption
-Git-connected push/merge deployment = may consume Pages Build
-local build + Direct Upload = prebuilt Pages deployment, not a Git-connected Pages Build
+static visitor request != Git build consumption
+Vercel branch Preview    != Cloudflare Pages Git build
+Cloudflare release       = intended Pages Production build boundary
+Direct Upload            = prebuilt Pages deployment, not Git-connected build
 ```
 
-Direct Upload still has deployment/upload/file/platform limits.
+Provider limits and pricing are time-sensitive. Re-check current first-party documentation/account evidence when exact quota or cost affects a decision.
+
+Do not freeze an old numeric limit into architecture logic and do not claim an exact remaining account-level build count without authoritative evidence.
 
 ## Rollback and security
 
@@ -154,4 +164,20 @@ For a bad Production release, roll back to a previous successful Cloudflare Page
 - Do not commit Cloudflare/GitHub tokens.
 - Do not put secrets in `PUBLIC_*` variables.
 - Keep Cloudflare GitHub App access scoped narrowly.
-- Revisit this runbook if Pages Functions, Workers, SSR, server APIs, KV/D1/R2, Durable Objects, Queues, scheduled workloads or multiple deployable applications change the deployment/cost model.
+- Revisit hosting architecture if Pages Functions, Workers, SSR, server APIs, KV/D1/R2, Durable Objects, Queues, scheduled workloads or multiple deployable applications materially change the product requirements.
+
+## Required completion report
+
+After deployment-related website work, report the relevant boundaries separately:
+
+```text
+Repository Gate/build: passed / failed / not run
+Vercel Preview: READY / ERROR / none
+Direct Upload: succeeded / failed / not run
+Cloudflare Git Preview intentionally triggered: yes / no
+Merged/released to main: yes / no
+Cloudflare Pages Production changed: yes / no / unknown
+Production verification: passed / failed / not run
+```
+
+Do not conflate source sync, Preview, merge and Production state.
