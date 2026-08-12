@@ -39,11 +39,28 @@ assert('HARDEN-PAPER-003', paperExplorer.includes('证据化摘要') && paperExp
 assert('HARDEN-PAPER-004', paperExplorer.includes("config_status === 'available'") && paperExplorer.includes("environment_status === 'reported'") && paperExplorer.includes('!hasHttpUrl(paper.code_url)'), 'reproduction-ready and burden heuristics use explicit evidence conditions');
 
 const home = read('src/pages/_bodies/home-v2.astro');
-assert('HARDEN-HOME-001', home.includes('primaryIntents') && home.includes("'/guide/'") && home.includes('4×RTX 3090') && home.includes('ALFWorld + WebShop') && home.includes('#seed-reproduction'), 'home starts from three intents and makes the four-GPU SEED reproduction the concrete beginner example');
+const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
+assert(
+  'HARDEN-HOME-001',
+  home.includes('SeedOpenEvoMissionHero')
+    && home.includes('primaryIntents')
+    && home.includes("'/research/seed-openevo/'")
+    && home.includes("'/guide/openevo-webshop-alfworld/'")
+    && home.includes("'/research/seed-openevo/loops/'"),
+  'home starts from the explicit SEED × OpenEvo research mission and offers Learn / Run / Compare entry paths',
+);
+assert(
+  'HARDEN-HOME-005',
+  missionHero.includes('Qwen2.5-3B-Instruct')
+    && missionHero.includes('SEED ↔ OpenEvo')
+    && missionHero.includes('ALFWorld + WebShop')
+    && missionHero.includes("t('改进 OpenEvo', 'Improve OpenEvo')"),
+  'the first-screen mission chain connects model, frameworks, benchmarks, evidence, and OpenEvo improvement',
+);
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
 const seedIndex = home.indexOf('<SeedUseCaseStrip');
-assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the primary intent choice instead of preceding the hero');
+assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the mission entry choice instead of obscuring the first viewport');
 
 const guide = read('src/components/GuideDecisionChapters.astro');
 assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
