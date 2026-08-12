@@ -1,0 +1,67 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import AgentEnvironmentTrajectory from './AgentEnvironmentTrajectory.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const route = [
+  ['01', t('先看环境对话', 'Read one environment dialogue'), t('分清 task、observation、model action、environment response 与 evaluator signal。', 'Separate task, observation, model action, environment response, and evaluator signal.'), '#trajectory-title-reproduction'],
+  ['02', t('再跑最小真实链', 'Run the smallest real chain'), t('用 WebShop 证明非 fallback 的 CUDA action、真实状态变化与 gen1 artifact。', 'Use WebShop to prove a non-fallback CUDA action, real state change, and a gen1 artifact.'), p('/guide/openevo-webshop-alfworld/')],
+  ['03', t('最后公平比较', 'Then compare fairly'), t('冻结模型、任务、prompt、seed、预算、parser 与 evaluator，再比较 V0、O1 和后续 SEED。', 'Freeze model, task, prompt, seed, budget, parser, and evaluator before comparing V0, O1, and later SEED.'), p('/research/seed-openevo/loops/')],
+];
+
+const gates = [
+  ['G1', t('模型真的行动', 'The model really acted'), t('保存 raw output、parsed action 与 fallback 标记；至少一个有效动作由 CUDA 模型产生。', 'Preserve raw output, parsed action, and fallback flag; at least one valid action comes from the CUDA model.'), t('只证明 action path。', 'Proves only the action path.')],
+  ['G2', t('环境真的变化', 'The environment really changed'), t('动作进入 WebShop / ALFWorld，产生新 observation、reward、termination 与失败类型。', 'The action enters WebShop / ALFWorld and produces a new observation, reward, termination, and failure type.'), t('退出码不能替代 evaluator。', 'An exit code cannot replace the evaluator.')],
+  ['G3', t('OpenEvo 真的进化', 'OpenEvo really evolved'), t('封存 gen0，运行明确 method，生成版本化 artifact，并让 successor revision 在后续任务生效。', 'Seal gen0, run an identified method, create a versioned artifact, and activate the successor revision later.'), t('reflection 文本本身不等于 evolution。', 'Reflection text alone is not evolution.')],
+  ['G4', t('结果可以比较', 'The result is comparable'), t('V0 与 O1 使用同一任务、checkpoint、prompt、seed、step budget、sampling、parser 与 evaluator。', 'V0 and O1 use the same task, checkpoint, prompt, seed, step budget, sampling, parser, and evaluator.'), t('资格赛后才进入多 seed 与 ALFWorld。', 'Multiple seeds and ALFWorld come after qualification.')],
+];
+
+const lanes = [
+  [t('先用 WebShop 做资格赛', 'Qualify on WebShop first'), t('网页状态可逐步检查；同时保留 normalized score 与 exact success，先证明模型动作、环境反馈、文本记忆注入和 gen1 链路。', 'Page state is easy to inspect; preserve normalized score and exact success while proving model action, environment feedback, text-memory injection, and the gen1 path.'), [t('V0：无记忆 baseline', 'V0: no-memory baseline'), t('O1：OpenEvo 外部文本记忆', 'O1: OpenEvo external text memory'), t('同任务 / 同模型 / 同预算', 'same task / model / budget')]],
+  [t('再用 ALFWorld 检查长程状态', 'Then test long-horizon state in ALFWorld'), t('具身文本任务会暴露搜索循环、前置条件、物体状态与超步数问题。WebShop 链路稳定后，再迁移同一公平协议。', 'Embodied text tasks expose search loops, prerequisites, object state, and step-budget exhaustion. Move the same fair protocol only after WebShop is stable.'), [t('按任务家族报告 success rate', 'success rate by task family'), t('计算不加权 macro-average', 'unweighted macro-average'), t('单列 invalid / loop / state-loss', 'separate invalid / loop / state-loss')]],
+];
+---
+
+<div class="gateway">
+  <header class="gateway__hero">
+    <div>
+      <span class="eyebrow">{t('主线 02 · OpenEvo 实验', 'Journey 02 · OpenEvo experiments')}</span>
+      <h1>{t('先看 Agent 与环境如何对话，再开始 WebShop / ALFWorld 自进化实验', 'See how the agent and environment converse before running WebShop / ALFWorld evolution experiments')}</h1>
+      <p>{t('把任务执行、真实动作证据、OpenEvo 轨迹消费与公平比较放在同一条路径上，让第一次接触 Agent 实验的人也能判断每一步证明了什么。', 'Task execution, real-action evidence, OpenEvo trajectory consumption, and fair comparison share one path, so a first-time agent researcher can tell what every step proves.')}</p>
+      <div class="actions"><a class="button button-primary" href="#trajectory-title-reproduction">{t('先看交互轨迹', 'Read the interaction')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('进入逐步复现', 'Open reproduction')}</a></div>
+    </div>
+    <aside aria-label={t('当前实验阶段', 'Current experiment stage')}>
+      <span>{t('2026-08-12 · 当前 Gate', '2026-08-12 · Current gate')}</span>
+      <strong>V0 ↔ O1</strong>
+      <p>{t('无记忆 baseline 与 OpenEvo 外部文本记忆的公平资格赛。SEED 参数内化比较属于后续阶段。', 'Fair qualification between the no-memory baseline and OpenEvo external text memory. SEED parameter internalization comes later.')}</p>
+      <dl><div><dt>{t('先冻结', 'Freeze first')}</dt><dd>{t('任务 · 模型 · prompt · seed · 预算', 'task · model · prompt · seed · budget')}</dd></div><div><dt>{t('先证明', 'Prove first')}</dt><dd>{t('真实 action · 环境反馈 · evolution artifact', 'real action · environment feedback · evolution artifact')}</dd></div></dl>
+    </aside>
+  </header>
+
+  <nav class="route" aria-label={t('OpenEvo 实验阅读路径', 'OpenEvo experiment reading path')}>
+    {route.map(([index, label, body, href]) => <a href={href}><span>{index}</span><div><strong>{label}</strong><p>{body}</p></div><i aria-hidden="true"></i></a>)}
+  </nav>
+
+  <AgentEnvironmentTrajectory locale={locale} context="reproduction" />
+
+  <section class="gates" aria-labelledby="gates-title">
+    <header><span class="eyebrow">{t('科学证据门', 'Scientific evidence gates')}</span><h2 id="gates-title">{t('不要把“脚本跑完”误判成“机制成立”', 'Do not mistake “the script finished” for “the mechanism worked”')}</h2><p>{t('每一层只允许一个有边界的结论；上一层不会自动替代下一层。', 'Each level permits one bounded conclusion; one level never substitutes for the next.')}</p></header>
+    <ol>{gates.map(([level, title, proof, limit]) => <li><span>{level}</span><div><h3>{title}</h3><p>{proof}</p><small>{t('边界：', 'Boundary: ')}{limit}</small></div></li>)}</ol>
+  </section>
+
+  <section class="lanes" aria-labelledby="lanes-title">
+    <header><span class="eyebrow">{t('Benchmark 顺序', 'Benchmark order')}</span><h2 id="lanes-title">{t('先把短反馈链跑稳，再增加长程状态难度', 'Stabilize the short feedback loop before adding long-horizon state')}</h2></header>
+    <div>{lanes.map(([title, body, checks], index) => <article><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{body}</p><ul>{(checks as string[]).map((check) => <li>{check}</li>)}</ul></div></article>)}</div>
+  </section>
+
+  <footer class="next"><div><span class="eyebrow">{t('下一步', 'Next')}</span><h2>{t('把示意轨迹换成真实 artifact', 'Replace the illustrative trajectory with real artifacts')}</h2><p>{t('保存 observation、raw model output、parsed action、fallback 标记、reward、termination、evolution input/output 与激活 revision。', 'Preserve observation, raw model output, parsed action, fallback flag, reward, termination, evolution input/output, and activated revision.')}</p></div><a class="button button-primary" href={p('/guide/openevo-webshop-alfworld/')}>{t('打开复现指南', 'Open reproduction guide')}</a></footer>
+</div>
+
+<style>
+  .gateway{--a:var(--accent,#2457d6);width:min(1180px,calc(100% - 2rem));margin:0 auto clamp(3rem,7vw,6rem);color:var(--text,var(--ink))}.gateway__hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.6fr);overflow:hidden;border:1px solid var(--line);border-radius:24px;background:color-mix(in srgb,var(--surface) 94%,transparent)}.gateway__hero>div{padding:clamp(1.5rem,4vw,3.5rem);background:radial-gradient(circle at 15% 0%,color-mix(in srgb,var(--a) 13%,transparent),transparent 38%)}.eyebrow{color:var(--a);font-size:.72rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase}.gateway h1{max-width:15ch;margin:.9rem 0 1rem;font-size:clamp(2.2rem,5.3vw,5rem);line-height:.98;letter-spacing:-.055em}.gateway__hero>div>p{max-width:68ch;margin:0;color:var(--muted);font-size:clamp(1rem,1.35vw,1.12rem);line-height:1.75}.actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.4rem}.gateway aside{display:flex;flex-direction:column;padding:clamp(1.2rem,2.5vw,2rem);border-left:1px solid var(--line)}.gateway aside>span{width:fit-content;padding:.3rem .55rem;border:1px solid color-mix(in srgb,var(--a) 30%,var(--line));border-radius:999px;color:var(--a);font-size:.67rem;font-weight:800}.gateway aside>strong{margin-top:auto;padding-top:2rem;font-size:clamp(2rem,4vw,3.4rem);line-height:1;letter-spacing:-.05em}.gateway aside>p{margin:.75rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}.gateway aside dl{display:grid;gap:.5rem;margin:1.2rem 0 0}.gateway aside dl div{padding-top:.65rem;border-top:1px solid var(--line)}.gateway dt{color:var(--muted);font-size:.62rem;font-weight:800}.gateway dd{margin:.25rem 0 0;font-size:.69rem;line-height:1.5}.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:1rem 0 0}.route a{display:grid;grid-template-columns:auto minmax(0,1fr) 20px;gap:.75rem;align-items:center;min-height:112px;padding:1rem;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 92%,transparent);color:inherit;text-decoration:none;transition:160ms ease}.route a:hover,.route a:focus-visible{border-color:var(--a);transform:translateY(-2px)}.route>a>span,.lanes article>span{color:var(--a);font:850 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.route strong{display:block;font-size:.86rem}.route p{margin:.35rem 0 0;color:var(--muted);font-size:.69rem;line-height:1.5}.route i{position:relative;width:18px;height:18px}.route i:before{content:'';position:absolute;top:50%;left:0;width:14px;height:1.5px;background:var(--a)}.route i:after{content:'';position:absolute;top:calc(50% - 3px);right:0;width:6px;height:6px;border:1.5px solid var(--a);border-left:0;border-bottom:0;transform:rotate(45deg)}.gateway :global(.trajectory-lab){width:100%;margin-inline:0}.gates,.lanes{margin-top:clamp(2.5rem,6vw,5rem)}.gates>header,.lanes>header{display:grid;grid-template-columns:minmax(120px,.3fr) minmax(260px,.8fr) minmax(280px,1fr);gap:1rem;align-items:start;padding-bottom:1.2rem;border-bottom:1px solid var(--line)}.gates h2,.lanes h2,.next h2{margin:0;font-size:clamp(1.55rem,2.8vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.gates>header p{margin:0;color:var(--muted);font-size:.83rem;line-height:1.65}.gates>ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}.gates li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.75rem;padding:1.2rem 1rem;border-right:1px solid var(--line)}.gates li:last-child{border-right:0}.gates li>span{color:var(--a);font:850 .65rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.gates h3{margin:0;font-size:.86rem}.gates li p{margin:.5rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.58}.gates small{display:block;margin-top:.7rem;padding-top:.62rem;border-top:1px dashed var(--line);color:var(--muted);font-size:.64rem;line-height:1.5}.lanes>header{grid-template-columns:minmax(120px,.3fr) minmax(0,1fr)}.lanes>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1rem}.lanes article{display:grid;grid-template-columns:44px minmax(0,1fr);gap:1rem;padding:clamp(1rem,2.5vw,1.5rem);border:1px solid var(--line);border-radius:17px;background:color-mix(in srgb,var(--surface) 92%,transparent)}.lanes h3{margin:.15rem 0 0}.lanes article p{margin:.6rem 0 0;color:var(--muted);font-size:.77rem;line-height:1.65}.lanes ul{display:grid;gap:.5rem;margin:.85rem 0 0;padding:0;list-style:none}.lanes li{position:relative;padding-left:1rem;color:var(--muted);font-size:.69rem}.lanes li:before{content:'';position:absolute;top:.4em;left:0;width:5px;height:5px;border:1.5px solid var(--a);border-radius:50%}.next{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:end;margin-top:clamp(2.5rem,6vw,5rem);padding:clamp(1.3rem,3vw,2rem);border:1px solid color-mix(in srgb,var(--a) 26%,var(--line));border-radius:20px;background:color-mix(in srgb,var(--a) 6%,var(--surface))}.next h2{max-width:20ch;margin-top:.55rem}.next p{max-width:70ch;margin:.75rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.63}@media(max-width:980px){.gateway__hero,.gates>header,.lanes>header,.next{grid-template-columns:1fr}.gateway aside{border-top:1px solid var(--line);border-left:0}.route{grid-template-columns:1fr}.route a{min-height:88px}.gates>ol{grid-template-columns:repeat(2,minmax(0,1fr))}.gates li:nth-child(2){border-right:0}.gates li:nth-child(-n+2){border-bottom:1px solid var(--line)}}@media(max-width:680px){.gateway{width:min(calc(100% - 1rem),1180px)}.gateway__hero{border-radius:18px}.gateway h1{max-width:none;font-size:clamp(2.05rem,12vw,3.25rem)}.actions{display:grid;grid-template-columns:1fr}.actions .button,.next .button{justify-content:center;min-height:44px}.gates>ol,.lanes>div{grid-template-columns:1fr}.gates li,.gates li:nth-child(2){border-right:0;border-bottom:1px solid var(--line)}.gates li:last-child{border-bottom:0}.lanes article{grid-template-columns:34px minmax(0,1fr);gap:.75rem}.next .button{width:100%}}@media(prefers-reduced-motion:reduce){.route a{transition:none}}
+</style>

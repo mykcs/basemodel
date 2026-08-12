@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../layouts/AppLayout.astro';
+import OpenEvoExperimentGateway from '../../../components/research/OpenEvoExperimentGateway.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="OpenEvo × WebShop / ALFWorld 实验入口"
+  description="用网页对话轨迹解释 WebShop 与 ALFWorld 的观察、模型动作、环境反馈、评测信号，以及 OpenEvo evolution artifact 的证据边界。"
+  locale={locale}
+>
+  <OpenEvoExperimentGateway locale={locale} />
+</AppLayout>
