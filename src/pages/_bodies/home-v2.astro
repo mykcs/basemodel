@@ -5,6 +5,7 @@ import { encodeResearchTask } from '../../lib/researchTaskCodec';
 import { emptyTask, type ResearchTask } from '../../stores/researchTask';
 import familiesData from '../../content/coverage/families.json';
 import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
+import SeedOpenEvoMissionHero from '../../components/research/SeedOpenEvoMissionHero.astro';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
@@ -21,9 +22,21 @@ function workspaceHref(task: Partial<ResearchTask>): string {
 }
 
 const primaryIntents = [
-  { label: locale === 'zh' ? '先看懂 Agent，再把 SEED 跑起来' : 'Understand the agent loop, then run SEED', lede: locale === 'zh' ? '先把 policy、tool、trajectory、reward 和 GRPO 对上号，再从 4×3090 离线服务器进入 ALFWorld / WebShop 实验。' : 'Map policy, tools, trajectories, rewards, and GRPO first, then enter the ALFWorld / WebShop experiment on an offline 4×3090 server.', href: `${localePath(locale, '/guide/')}#agent-to-seed` },
-  { label: locale === 'zh' ? '设计一个新实验' : 'Design a new experiment', lede: locale === 'zh' ? '已经有新的研究问题时，再按训练方式、资源、开放性和可复现性形成候选。' : 'Once you have a new research question, form candidates from training method, resources, access, and reproducibility.', href: localePath(locale, '/workspace/') },
-  { label: locale === 'zh' ? '替换一个旧模型' : 'Replace an older model', lede: locale === 'zh' ? '先保留论文原 checkpoint；完成复现后，再比较新模型会改变哪些实验条件。' : 'Keep the paper checkpoint first; after reproduction, compare which experimental conditions a newer model would change.', href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
+  {
+    label: locale === 'zh' ? '先看清整个研究问题' : 'Understand the complete research question',
+    lede: locale === 'zh' ? '从 Base Model、SEED、OpenEvo 到 ALFWorld / WebShop，把七个关键问题串成一张研究地图。' : 'Connect Base Models, SEED, OpenEvo, ALFWorld, and WebShop into one seven-question research map.',
+    href: localePath(locale, '/research/seed-openevo/'),
+  },
+  {
+    label: locale === 'zh' ? '直接复现 OpenEvo × WebShop / ALFWorld' : 'Reproduce OpenEvo × WebShop / ALFWorld',
+    lede: locale === 'zh' ? '按环境、代码、数据、runtime、真实 CUDA action、真实 evolution 和结果 artifact 顺序执行。' : 'Execute environment, code, data, runtime, real CUDA action, real evolution, and result artifacts in order.',
+    href: localePath(locale, '/guide/openevo-webshop-alfworld/'),
+  },
+  {
+    label: locale === 'zh' ? '比较两个循环并设计 OpenEvo 改进' : 'Compare both loops and design an OpenEvo improvement',
+    lede: locale === 'zh' ? '先明确 SEED 更新 policy 参数、OpenEvo 更新跨 session artifact/revision，再冻结协议、分析失败分布。' : 'First distinguish SEED policy-parameter updates from OpenEvo cross-session artifact/revision updates, then freeze the protocol and analyze failure distributions.',
+    href: localePath(locale, '/research/seed-openevo/loops/'),
+  },
 ];
 const researchPaths = [
   { title: m.v2.home.pathStrict, body: m.v2.home.pathStrictBody, tag: m.v2.home.pathStrictTag },
@@ -46,28 +59,17 @@ const recentEvents = [
   ...recentModelEvents.map((model) => ({ kind: 'release' as const, date: model.release_date, title: model.name, note: `${model.vendor} · ${model.family}` })),
 ].sort((left, right) => right.date.localeCompare(left.date)).slice(0, 8);
 ---
-<section class="hero">
-  <div class="shell hero-grid">
-    <div>
-      <div class="eyebrow">{locale === 'zh' ? '懂 ML，但还没形成 Agent 心智模型？' : 'Know ML, but still building an agent mental model?'}</div>
-      <h1>{locale === 'zh' ? '先看懂 Agent 怎么运行和学习，再完整做完一篇真实实验' : 'Understand how agents run and learn, then finish one real experiment'}</h1>
-      <p class="lede">{locale === 'zh' ? '先用一屏把 checkpoint、tool、trajectory、reward 和 GRPO 串起来，然后用四张 RTX 3090 把 SEED 的 ALFWorld 和 WebShop 从环境、数据一路做到训练和评测。' : 'Use one screen to connect checkpoints, tools, trajectories, rewards, and GRPO, then take SEED on four RTX 3090s from ALFWorld / WebShop setup through training and evaluation.'}</p>
-      <div class="hero-actions"><a class="button button-primary" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先用 10 分钟看懂 Agent →' : 'Build the agent model first →'}</a></div>
-      <p class="novice-entry">{locale === 'zh' ? '已经懂 Agent，只想直接做实验？' : 'Already understand agents and want the experiment?'} <a class="text-link" href={`${localePath(locale, '/guide/')}#seed-reproduction`}>{locale === 'zh' ? '直接从第 00 步开始 →' : 'Jump to step 00 →'}</a></p>
-    </div>
-    <aside class="hero-note example-card">
-      <div class="section-kicker">{locale === 'zh' ? '心智模型马上落到这个实验' : 'Ground the mental model in this experiment'}</div>
-      <h2 class="example-card-title">4×RTX 3090 24GB · {locale === 'zh' ? '离线服务器' : 'offline server'}</h2>
-      <p>{locale === 'zh' ? 'Agent loop 不是抽象图：Qwen2.5-3B-Instruct 是 policy，ALFWorld / WebShop 是 environment，连续交互形成 trajectory；SEED 再把这些 rollout 的结果变成训练信号。理解完就立刻在同一页开始操作。' : 'The agent loop is not an abstract diagram: Qwen2.5-3B-Instruct is the policy, ALFWorld / WebShop are environments, and repeated interaction forms a trajectory. SEED then turns those rollouts into training signals. The same page moves directly into the hands-on run.'}</p>
-      <div class="example-stats"><div class="example-stat"><strong>1 loop</strong><span>policy → action → observation</span></div><div class="example-stat"><strong>2</strong><span>ALFWorld + WebShop</span></div><div class="example-stat"><strong>PASS</strong><span>{locale === 'zh' ? '逐步验收' : 'stage by stage'}</span></div></div>
-      <a class="text-link" href={`${localePath(locale, '/guide/')}#agent-to-seed`}>{locale === 'zh' ? '先看 Agent → SEED 映射 →' : 'Open the Agent → SEED map →'}</a>
-    </aside>
-  </div>
-</section>
+
+<SeedOpenEvoMissionHero locale={locale} />
 
 <div class="shell">
   <section class="section section-first" aria-labelledby="intent-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '先决定今天做什么' : 'Choose today’s task first'}</div><h2 id="intent-title">{locale === 'zh' ? '第一次来，先走第一条' : 'New here? Start with the first path'}</h2></div></div>
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">{locale === 'zh' ? '同一研究任务的三种入口' : 'Three entries into the same research mission'}</div>
+        <h2 id="intent-title">{locale === 'zh' ? '学习、执行、比较，不再是三套互不相干的网站' : 'Learn, run, and compare are no longer disconnected products'}</h2>
+      </div>
+    </div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
   </section>
 
@@ -89,7 +91,7 @@ const recentEvents = [
   </section>
 
   <details class="home-scenarios-advanced">
-    <summary>{locale === 'zh' ? '完成主线后，再看更多研究场景' : 'After the mainline, explore more research scenarios'}</summary>
+    <summary>{locale === 'zh' ? '完成 SEED × OpenEvo 主线后，再看更多研究场景' : 'After the SEED × OpenEvo mainline, explore more research scenarios'}</summary>
     <p class="muted">{m.v2.home.scenariosNote}</p>
     <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
   </details>
