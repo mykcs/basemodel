@@ -23,7 +23,7 @@ But these are no longer presented as two competing visual narratives. The curren
 
 ## Structural reference
 
-The information architecture intentionally follows the style of a concise academic reproduction manual such as the GDKVM reproduction page supplied by the owner:
+The information architecture intentionally follows the style of the GDKVM reproduction page supplied by the owner:
 
 `Environment Setup → Get/Pin Code → Data Preparation → Runtime/Dependencies → Run → Outputs/Acceptance → next benchmark → Troubleshooting`
 
