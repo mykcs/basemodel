@@ -9,20 +9,18 @@ Routes:
 Primary component: `src/components/OpenEvoReproductionResearch.astro`
 Entry: `src/components/GuideDecisionChapters.astro` → reproduction chapter → **复现 C · 真实案例**.
 
-## Purpose and template
+## Template contract
 
 This is an execution-first academic reproduction manual. A new reader should be able to move from top to bottom and run the experiment without first reading the complete project history.
 
-The owner supplied the GDKVM reproduction page as the structural template. Preserve this reading order:
+The owner supplied the GDKVM reproduction page as the structural template. Preserve this order:
 
 `Environment Setup → Get/Pin Code → Data Preparation → Runtime/Dependencies → Run → Outputs/Acceptance → next benchmark → Troubleshooting`
 
-Use the same manual mindset, not GDKVM-specific content. Do not copy its project-specific text, commands, claims, or implementation.
+Use its manual mindset only; do not copy GDKVM-specific content. Executable subsections should normally read: **short explanation → command/action → expected result/acceptance → local Troubleshooting**.
 
-For executable subsections prefer: short explanation → command/action → expected result/acceptance → local Troubleshooting.
-
-The original dual-line requirement remains, but is integrated:
-- **current success path** owns the numbered main flow;
+The owner’s original two-line requirement is integrated into this structure:
+- the **current success path** owns the numbered main flow;
 - **failure knowledge** appears beside the relevant step and again in the final diagnostic index.
 
 Do not turn the page back into a dashboard, research-card gallery, architecture pitch, or chronological incident diary.
@@ -45,9 +43,9 @@ P2 must not redefine P0.
 
 1. **Environment Setup** — control/acquisition/runtime topology, Mac prerequisites, GPU safety.
 2. **Get & Pin Project Code** — GitHub API snapshot, pinned OpenEvo, canonical bootstrap, strict patch validation.
-3. **Data Preparation** — three WebShop small JSON assets, pinned AgentGym vendored source, Mac cache → validation → relay.
+3. **Data Preparation** — required WebShop data, pinned vendored source, Mac cache → validation → relay.
 4. **Runtime & Dependencies** — Python ≥3.11 + CUDA Torch core, deterministic overlay, offline wheelhouse, Lucene gate; no P2 infrastructure requirement.
-5. **Run WebShop Scientific P0** — canonical bootstrap and explicit machine-verifiable P0 criteria.
+5. **Run WebShop Scientific P0** — canonical bootstrap and machine-verifiable P0 criteria.
 6. **Outputs & Acceptance** — STATUS/artifacts, persistent result cache, separate P1/P2/P3 claims.
 7. **OpenEvo × ALFWorld next stage** — interface archaeology and staged proof ladder; not yet validated one-command reproduction.
 8. **Troubleshooting** — known-failure index plus anti-loop rules.
@@ -86,8 +84,7 @@ If the same error class occurs twice under materially unchanged conditions, the 
 
 ALFWorld is currently a next-stage execution specification, not validated one-command reproduction. Before coding, map task/instruction, reset, action grammar/parser/admissible actions, observation, terminal/done, reward/evaluator, trajectory serialization, seed/determinism, and data/game/cache paths.
 
-Proof ladder:
-`static contract → real reset/action → real CUDA model action → complete episode + numeric reward → real evolution → optional P2 infrastructure E2E`
+Proof ladder: `static contract → real reset/action → real CUDA model action → complete episode + numeric reward → real evolution → optional P2 infrastructure E2E`.
 
 ## Product/UX rules
 
@@ -101,9 +98,4 @@ Proof ladder:
 
 ## Validation
 
-```bash
-npm run verify:deploy
-npm run build
-```
-
-Then inspect exact-head Vercel Preview: Guide entry, both child routes, TOC/anchors, commands, mobile overflow, backlinks, evidence boundaries, and execution-manual flow.
+Run `npm run verify:deploy` and `npm run build`, then inspect exact-head Vercel Preview for the Guide entry, both child routes, TOC/anchors, commands, mobile overflow, backlinks, evidence boundaries, and execution-manual flow.
