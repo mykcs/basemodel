@@ -7,6 +7,38 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
+
+const route = [
+  { n: '01', href: '#environment', title: t('确认拓扑', 'Confirm topology'), meta: t('Mac + RTX6', 'Mac + RTX6') },
+  { n: '02', href: '#code', title: t('固定代码', 'Pin code'), meta: 'GitHub API' },
+  { n: '03', href: '#data', title: t('准备资产', 'Prepare assets'), meta: t('数据 + cache', 'data + cache') },
+  { n: '04', href: '#runtime', title: t('建立运行时', 'Build runtime'), meta: t('离线 overlay', 'offline overlay') },
+  { n: '05', href: '#run', title: t('跑真实实验', 'Run real experiment'), meta: 'CUDA + WebShop' },
+  { n: '06', href: '#outputs', title: t('验收证据', 'Verify evidence'), meta: 'P0 artifacts' },
+];
+
+const evidence = [
+  {
+    level: t('准备完成', 'Setup ready'),
+    proof: t('代码、数据、依赖、索引可用', 'Code, data, dependencies, and index are ready'),
+    not: t('还不能证明模型真的做过任务', 'Does not prove the model actually acted'),
+  },
+  {
+    level: t('真实 CUDA action', 'Real CUDA action'),
+    proof: t('Qwen 在 GPU 上产生至少一个非 fallback 动作', 'Qwen produces at least one non-fallback action on GPU'),
+    not: t('还不能证明发生了自进化', 'Does not yet prove self-evolution'),
+  },
+  {
+    level: t('真实 evolution', 'Real evolution'),
+    proof: t('gen0 → model reflector → injection → gen1', 'gen0 → model reflector → injection → gen1'),
+    not: t('0.0→0.0 仍不能宣称性能提升', '0.0→0.0 still does not prove performance improvement'),
+  },
+  {
+    level: 'P0 PASS',
+    proof: t('machine verifier 接受完整科学链', 'Machine verifier accepts the full scientific chain'),
+    not: t('vLLM / gateway / Docker 仍属于独立 P2', 'vLLM / gateway / Docker remain a separate P2 claim'),
+  },
+];
 ---
 
 <div class="seed-benchmark-guide">
@@ -14,11 +46,94 @@ const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
     <p class="seed-guide-kicker">{t('SEED 论文相关基准 · OpenEvo', 'SEED paper benchmarks · OpenEvo')}</p>
     <h1>{t('OpenEvo × WebShop / ALFWorld 复现指南', 'OpenEvo × WebShop / ALFWorld Reproduction Guide')}</h1>
     <p>{t(
-      '围绕 SEED 论文涉及的 WebShop 与 ALFWorld 基准，记录 OpenEvo 自进化实验的可执行复现流程、真实故障与修复经验。',
-      'An execution-first guide to reproducing OpenEvo self-evolution experiments on the WebShop and ALFWorld benchmarks discussed in the SEED paper, including the real failure and repair trail.',
+      '围绕 SEED 论文涉及的 WebShop 与 ALFWorld 基准，记录 OpenEvo 自进化实验的可执行复现流程、真实故障与修复经验。主线只负责让你跑通；故障知识按需展开。',
+      'An execution-first guide to reproducing OpenEvo self-evolution experiments on the WebShop and ALFWorld benchmarks discussed in the SEED paper. The main line gets the experiment running; failure knowledge expands only when needed.',
     )}</p>
-    <a href={guideHref}>← {t('返回 SEED 研究指南', 'Back to the SEED research guide')}</a>
+    <div class="seed-guide-actions">
+      <a class="primary" href="#environment">{t('从第 1 步开始', 'Start at step 1')} →</a>
+      <a href="#run">{t('直接看运行', 'Jump to run')}</a>
+      <a href="#troubleshooting">{t('故障索引', 'Troubleshooting')}</a>
+    </div>
+    <a class="seed-guide-back" href={guideHref}>← {t('返回 SEED 研究指南', 'Back to the SEED research guide')}</a>
   </header>
+
+  <section class="visual-primer" aria-labelledby="visual-primer-title">
+    <header class="visual-primer-head">
+      <span>{t('先看全局，再开始操作', 'Orient first, then execute')}</span>
+      <h2 id="visual-primer-title">{t('一张图看懂：在哪里做、按什么顺序、什么才算成功', 'One-screen map: where work happens, in what order, and what counts as success')}</h2>
+    </header>
+
+    <figure class="topology-figure">
+      <div class="topology-track" role="img" aria-label={t('ChatGPT 和 GitHub 到实验室 Mac 再到 RTX6 的执行拓扑', 'Execution topology from ChatGPT and GitHub to the lab Mac and then RTX6')}>
+        <div class="topology-node control">
+          <span>{t('控制面', 'Control plane')}</span>
+          <strong>ChatGPT / GitHub</strong>
+          <small>{t('方案、固定版本、脚本与状态', 'Plans, pins, scripts, status')}</small>
+        </div>
+        <div class="topology-arrow" aria-hidden="true"><span>→</span><small>{t('API snapshot', 'API snapshot')}</small></div>
+        <div class="topology-node mac">
+          <span>{t('资产面', 'Asset plane')}</span>
+          <strong>Lab Mac</strong>
+          <small>{t('公网下载、persistent cache、校验', 'Internet acquisition, cache, validation')}</small>
+        </div>
+        <div class="topology-arrow" aria-hidden="true"><span>→</span><small>SSH / rsync</small></div>
+        <div class="topology-node gpu">
+          <span>{t('运行面', 'Runtime plane')}</span>
+          <strong>RTX6 · 4×3090</strong>
+          <small>{t('离线 GPU 执行与 artifacts', 'Offline GPU execution and artifacts')}</small>
+        </div>
+      </div>
+      <figcaption>{t(
+        '最重要的边界：Mac 负责获取资产，RTX6 负责计算。不要把网络失败和实验失败混成一个问题。',
+        'Critical boundary: the Mac acquires assets; RTX6 computes. Do not mix network failure with experiment failure.',
+      )}</figcaption>
+    </figure>
+
+    <nav class="run-map" aria-label={t('OpenEvo WebShop 六步执行路线', 'Six-step OpenEvo WebShop execution route')}>
+      <ol>
+        {route.map((step) => (
+          <li>
+            <a href={step.href}>
+              <span class="run-map-number">{step.n}</span>
+              <span class="run-map-copy"><strong>{step.title}</strong><small>{step.meta}</small></span>
+              <span class="run-map-go" aria-hidden="true">↘</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <section class="evidence-panel" aria-labelledby="evidence-title">
+      <div class="evidence-intro">
+        <span>{t('证据阶梯', 'Evidence ladder')}</span>
+        <h3 id="evidence-title">{t('“环境装好了”距离“复现成功”还很远', '“Environment ready” is still far from “reproduced”')}</h3>
+        <p>{t('每一级只证明自己的那一件事。不要把 clean exit、import 成功或 infrastructure readiness 冒充 scientific P0。', 'Each rung proves only one claim. Never promote a clean exit, successful import, or infrastructure readiness into scientific P0 evidence.')}</p>
+      </div>
+      <ol class="evidence-ladder">
+        {evidence.map((item, index) => (
+          <li>
+            <div class="evidence-dot" aria-hidden="true">{index + 1}</div>
+            <div>
+              <strong>{item.level}</strong>
+              <p><span>{t('证明', 'Proves')}</span>{item.proof}</p>
+              <p class="not-proof"><span>{t('不证明', 'Does not prove')}</span>{item.not}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <details class="design-disclosure">
+      <summary>{t('为什么页面要这样设计？', 'Why is the page designed this way?')}</summary>
+      <div>
+        <p>{t(
+          '复现指南首先服务“执行者”，不是先展示我们知道多少。主线保持线性；Bug、错误假设和事故史属于次级诊断线。HTML 的锚点、语义列表、figure、aside 与 details 用来表达顺序、边界、证据和故障分支，而不是只做装饰。',
+          'A reproduction guide serves the executor first, not the amount of knowledge we can display. The main line stays linear; bugs, wrong assumptions, and incident history form a subordinate diagnostic line. HTML anchors, semantic lists, figures, asides, and details encode order, boundaries, evidence, and failure branches rather than decoration.',
+        )}</p>
+        <a href="#troubleshooting">{t('查看已知故障分支 →', 'See known failure branches →')}</a>
+      </div>
+    </details>
+  </section>
 
   <OpenEvoReproductionResearch locale={locale} />
 
@@ -27,15 +142,69 @@ const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
   </footer>
 </div>
 
+<script is:inline>
+  document.querySelectorAll('.seed-benchmark-guide .trouble').forEach((node) => {
+    if (!(node instanceof HTMLElement) || node.dataset.enhanced === 'details') return;
+    const heading = node.querySelector('h4');
+    if (!heading) return;
+    const details = document.createElement('details');
+    details.className = `${node.className} trouble-details`;
+    details.dataset.enhanced = 'details';
+    const summary = document.createElement('summary');
+    summary.innerHTML = heading.innerHTML;
+    details.appendChild(summary);
+    Array.from(node.childNodes).forEach((child) => {
+      if (child !== heading) details.appendChild(child);
+    });
+    node.replaceWith(details);
+  });
+</script>
+
 <style is:global>
-  .seed-benchmark-guide > .seed-guide-head{max-width:930px;margin:0 auto;padding:3rem 1.25rem 0;line-height:1.72}
+  .seed-benchmark-guide{--guide-border:var(--border,rgba(127,127,127,.24));--guide-soft:color-mix(in srgb,currentColor 3%,transparent)}
+  .seed-benchmark-guide > .seed-guide-head{max-width:1040px;margin:0 auto;padding:3rem 1.25rem 0;line-height:1.72}
   .seed-benchmark-guide > .seed-guide-head .seed-guide-kicker{margin:0 0 .45rem;font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
-  .seed-benchmark-guide > .seed-guide-head h1{margin:0;font-size:clamp(2.4rem,7vw,4.8rem);line-height:1;letter-spacing:-.05em}
-  .seed-benchmark-guide > .seed-guide-head p:not(.seed-guide-kicker){margin:.8rem 0 1rem;max-width:780px;font-size:1.04rem;opacity:.72}
-  .seed-benchmark-guide > .seed-guide-head a,.seed-benchmark-guide > .seed-guide-foot a{color:inherit;font-size:.9rem}
+  .seed-benchmark-guide > .seed-guide-head h1{margin:0;max-width:900px;font-size:clamp(2.5rem,7vw,5.3rem);line-height:.96;letter-spacing:-.055em}
+  .seed-benchmark-guide > .seed-guide-head p:not(.seed-guide-kicker){margin:1rem 0;max-width:820px;font-size:1.05rem;opacity:.74}
+  .seed-guide-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.25rem 0}
+  .seed-guide-actions a{padding:.55rem .75rem;border:1px solid var(--guide-border);border-radius:8px;color:inherit;text-decoration:none;font-size:.84rem;font-weight:750}
+  .seed-guide-actions a.primary{background:currentColor;color:var(--background,#fff);border-color:currentColor}
+  .seed-guide-back,.seed-benchmark-guide > .seed-guide-foot a{color:inherit;font-size:.88rem;opacity:.72}
+
+  .visual-primer{max-width:1040px;margin:2.5rem auto 2rem;padding:0 1.25rem}
+  .visual-primer-head{display:grid;grid-template-columns:minmax(0,.6fr) minmax(0,1.4fr);gap:1rem;align-items:end;margin-bottom:1rem}
+  .visual-primer-head>span,.evidence-intro>span{font-size:.7rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;opacity:.5}
+  .visual-primer-head h2{margin:0;font-size:clamp(1.45rem,3vw,2.3rem);line-height:1.12;letter-spacing:-.025em}
+
+  .topology-figure{margin:0;padding:1rem;border:1px solid var(--guide-border);border-radius:14px;background:var(--guide-soft)}
+  .topology-track{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);align-items:stretch;gap:.65rem}
+  .topology-node{display:grid;gap:.25rem;align-content:center;min-height:128px;padding:1rem;border:1px solid var(--guide-border);border-radius:10px;background:var(--background,#fff)}
+  .topology-node>span{font-size:.68rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;opacity:.48}.topology-node strong{font-size:1.05rem}.topology-node small{font-size:.76rem;line-height:1.35;opacity:.62}
+  .topology-arrow{display:grid;place-content:center;justify-items:center;min-width:48px}.topology-arrow span{font-size:1.45rem}.topology-arrow small{writing-mode:vertical-rl;font-size:.62rem;opacity:.45}
+  .topology-figure figcaption{margin-top:.75rem;font-size:.78rem;line-height:1.45;opacity:.62}
+
+  .run-map{margin:1rem 0}.run-map ol{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}
+  .run-map li{min-width:0}.run-map a{display:grid;grid-template-columns:auto 1fr auto;gap:.55rem;align-items:start;min-height:92px;padding:.8rem;border:1px solid var(--guide-border);border-radius:10px;color:inherit;text-decoration:none;background:var(--background,#fff)}
+  .run-map a:hover{background:var(--guide-soft)}.run-map-number{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.7rem;font-weight:850;opacity:.45}.run-map-copy{display:grid;gap:.18rem}.run-map-copy strong{font-size:.85rem;line-height:1.25}.run-map-copy small{font-size:.68rem;opacity:.52}.run-map-go{font-size:.78rem;opacity:.38}
+
+  .evidence-panel{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:1.4rem;margin:1rem 0;padding:1.1rem;border:1px solid var(--guide-border);border-radius:14px}
+  .evidence-intro h3{margin:.25rem 0 .5rem;font-size:1.3rem;line-height:1.15;letter-spacing:-.02em}.evidence-intro p{margin:0;font-size:.83rem;line-height:1.55;opacity:.65}
+  .evidence-ladder{position:relative;display:grid;gap:.7rem;margin:0;padding:0;list-style:none}.evidence-ladder:before{content:"";position:absolute;left:14px;top:18px;bottom:18px;width:1px;background:var(--guide-border)}
+  .evidence-ladder li{position:relative;display:grid;grid-template-columns:30px 1fr;gap:.7rem}.evidence-dot{position:relative;z-index:1;display:grid;place-items:center;width:29px;height:29px;border:1px solid currentColor;border-radius:999px;background:var(--background,#fff);font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .evidence-ladder strong{font-size:.88rem}.evidence-ladder p{display:grid;grid-template-columns:66px 1fr;gap:.35rem;margin:.18rem 0;font-size:.74rem;line-height:1.35}.evidence-ladder p span{font-weight:800;opacity:.5}.evidence-ladder .not-proof{opacity:.62}
+
+  .design-disclosure{margin:1rem 0;border:1px dashed var(--guide-border);border-radius:10px}.design-disclosure summary{cursor:pointer;padding:.8rem 1rem;font-size:.84rem;font-weight:800}.design-disclosure>div{padding:0 1rem 1rem;font-size:.82rem;line-height:1.55;opacity:.78}.design-disclosure p{margin:.15rem 0 .55rem}.design-disclosure a{color:inherit;font-weight:750}
+
   .seed-benchmark-guide .reprod > .page-head{display:none}
-  .seed-benchmark-guide .reprod{padding-top:1.2rem}
+  .seed-benchmark-guide .reprod{padding-top:.75rem}
   .seed-benchmark-guide .reprod > .page-foot a{display:none}
+  .seed-benchmark-guide .trouble-details{padding:0!important;overflow:hidden}
+  .seed-benchmark-guide .trouble-details>summary{cursor:pointer;padding:.85rem 1rem;font-size:.9rem;font-weight:800;list-style-position:inside}
+  .seed-benchmark-guide .trouble-details>p,.seed-benchmark-guide .trouble-details>ul,.seed-benchmark-guide .trouble-details>ol{margin-left:1rem!important;margin-right:1rem!important}
+  .seed-benchmark-guide .trouble-details[open]{padding-bottom:.65rem!important}
   .seed-benchmark-guide > .seed-guide-foot{max-width:930px;margin:-4.5rem auto 0;padding:0 1.25rem 5rem}
-  @media(max-width:680px){.seed-benchmark-guide > .seed-guide-head{padding:2rem .9rem 0}.seed-benchmark-guide > .seed-guide-foot{padding:0 .9rem 4rem}}
+
+  @media(max-width:900px){.run-map ol{grid-template-columns:repeat(3,minmax(0,1fr))}.evidence-panel{grid-template-columns:1fr}.visual-primer-head{grid-template-columns:1fr}.topology-track{grid-template-columns:1fr}.topology-arrow{min-height:28px}.topology-arrow span{transform:rotate(90deg)}.topology-arrow small{writing-mode:horizontal-tb}}
+  @media(max-width:680px){.seed-benchmark-guide > .seed-guide-head{padding:2rem .9rem 0}.visual-primer{padding:0 .9rem}.run-map ol{grid-template-columns:1fr 1fr}.run-map a{min-height:80px}.evidence-ladder p{grid-template-columns:58px 1fr}.seed-benchmark-guide > .seed-guide-foot{padding:0 .9rem 4rem}}
+  @media(max-width:430px){.run-map ol{grid-template-columns:1fr}}
 </style>
