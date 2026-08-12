@@ -54,11 +54,11 @@ const journeyLinks = [
 }));
 
 const utilityLinks = [
-  { path: '/research/seed-openevo/', label: t('研究总览', 'Research map'), description: t('把七个问题串成一条路线', 'Connect the seven research questions') },
-  { path: '/models/', label: m.nav.models, description: t('查看模型证据与边界', 'Inspect model evidence and boundaries') },
-  { path: '/papers/', label: m.nav.papers, description: t('阅读方法与来源', 'Read methods and sources') },
-  { path: '/workspace/', label: m.nav.workspace, description: t('形成可保存的研究任务', 'Build a saveable research task') },
-  { path: '/compare/', label: m.nav.compare, description: t('并排比较候选模型', 'Compare candidate models side by side') },
+  { path: '/research/seed-openevo/', label: t('实验总览', 'Experiment overview'), description: t('查看 SEED、OpenEvo、ALFWorld 与 WebShop 的完整步骤', 'See the complete SEED, OpenEvo, ALFWorld, and WebShop flow') },
+  { path: '/models/', label: m.nav.models, description: t('查看模型版本、权重、显存和来源', 'Check model revisions, weights, memory, and sources') },
+  { path: '/papers/', label: m.nav.papers, description: t('查看论文方法、训练条件和来源', 'Check paper methods, training conditions, and sources') },
+  { path: '/workspace/', label: t('实验工作台', 'Experiment workspace'), description: t('保存模型、GPU、网络和训练条件', 'Save model, GPU, network, and training settings') },
+  { path: '/compare/', label: t('比较模型', 'Compare models'), description: t('并排比较模型版本和实验影响', 'Compare model revisions and experiment impact side by side') },
 ].map((link) => ({
   ...link,
   href: localePath(locale, link.path),
@@ -73,12 +73,12 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       <span class="brand-mark" aria-hidden="true">BM</span>
       <span>
         <strong>{m.site.name}</strong>
-        <small>{t('面向 Agent 研究的 Base Model 工作台', 'A Base Model workbench for agent research')}</small>
+        <small>{t('查看 Agent 实验里的模型、论文和复现步骤', 'Models, papers, and reproduction steps for agent experiments')}</small>
       </span>
     </a>
 
     <nav aria-label={m.nav.mainNav} class="desktop-nav mission-nav">
-      <div class="journey-nav" aria-label={t('三条核心任务', 'Three core journeys')}>
+      <div class="journey-nav" aria-label={t('你可以做的三件事', 'Three things you can do')}>
         {journeyLinks.map((link, index) => (
           <a class="journey-link" href={link.href} aria-current={link.current ? 'page' : undefined} data-active={link.active ? 'true' : undefined} data-journey={link.id}>
             <span class="journey-link__index">{String(index + 1).padStart(2, '0')}</span>
@@ -88,14 +88,14 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       </div>
 
       <details class="resource-menu" data-resource-menu>
-        <summary aria-label={t('打开研究工具菜单', 'Open research tools menu')}>
-          <span>{t('研究工具', 'Tools')}</span>
+        <summary aria-label={t('打开更多工具', 'Open more tools')}>
+          <span>{t('更多工具', 'More tools')}</span>
           <i aria-hidden="true"></i>
         </summary>
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
-            <small>{t('辅助页面', 'Supporting surfaces')}</small>
-            <strong>{t('需要证据、筛选或比较时再进入', 'Open these when you need evidence, filtering, or comparison')}</strong>
+            <small>{t('按需查看', 'Open when needed')}</small>
+            <strong>{t('查模型、论文、实验配置或比较结果时再打开', 'Open these to check models, papers, experiment settings, or comparisons')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -121,10 +121,10 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     <div class="shell mobile-menu__inner">
       <section class="mobile-menu__section" aria-labelledby="mobile-journeys-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-journeys-title">{t('三条核心任务', 'Three core journeys')}</span>
+          <span id="mobile-journeys-title">{t('你可以做的三件事', 'Three things you can do')}</span>
           <small>{t('先选你现在要完成的事', 'Start with what you need to accomplish')}</small>
         </div>
-        <nav class="mobile-journeys" aria-label={t('移动端核心任务', 'Mobile core journeys')}>
+        <nav class="mobile-journeys" aria-label={t('主要操作', 'Main actions')}>
           {journeyLinks.map((link, index) => (
             <a href={link.href} aria-current={link.current ? 'page' : undefined} data-active={link.active ? 'true' : undefined}>
               <span>{String(index + 1).padStart(2, '0')}</span>
@@ -136,10 +136,10 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-tools-title">{t('研究工具', 'Research tools')}</span>
-          <small>{t('按需打开，不打断主线', 'Open on demand without losing the mainline')}</small>
+          <span id="mobile-tools-title">{t('更多工具', 'More tools')}</span>
+          <small>{t('需要查模型、论文、实验配置或比较结果时再打开', 'Open these to check models, papers, experiment settings, or comparisons')}</small>
         </div>
-        <nav class="mobile-utility-links" aria-label={t('移动端研究工具', 'Mobile research tools')}>
+        <nav class="mobile-utility-links" aria-label={t('更多工具', 'More tools')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
         </nav>
       </section>
@@ -538,13 +538,13 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     border: 1px solid var(--line);
     border-radius: 999px;
     color: var(--muted);
-    content: 'Swipe horizontally to inspect the complete chain';
+    content: 'Swipe horizontally to inspect all experiment steps';
     font-size: .64rem;
     font-weight: 700;
   }
 
   html[lang='zh-CN'] .mission-chain figcaption::after {
-    content: '横向滑动查看完整研究链';
+    content: '横向滑动查看完整实验步骤';
   }
 
   .mission-chain ol {

@@ -8,6 +8,6 @@ const m = getMessages('en');
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
-<AppLayout title={m.workspace.pageTitle} description={m.workspace.lede} locale="en">
+<AppLayout title="Experiment workspace" description="Enter the model, GPU, network, weight-access, and training conditions, remove infeasible plans, and keep candidates, sources, and comparisons together." locale="en">
   <ResearchWorkspace client:load models={models} papers={papers} m={m} locale="en" />
 </AppLayout>

@@ -1,6 +1,17 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { getMessages } from '../i18n';
-const m = getMessages('zh');
 ---
-<AppLayout title={m.methodology.pageTitle} description={m.methodology.lede} locale="zh"><div class="shell editorial-page"><header class="page-header"><span class="section-kicker">{m.nav.methodology}</span><h1>{m.methodology.title}</h1><p class="lede">{m.methodology.lede}</p></header><div class="methodology-sections">{m.methodology.sections.map((section) => <section><h2>{section.title}</h2><p>{section.body}</p></section>)}</div></div></AppLayout>
+<AppLayout title="数据来源与缺失信息" description="说明页面里的数字来自论文、官方目录、工程估算还是真机运行，以及没有来源时为什么保持未知。" locale="zh">
+  <div class="shell editorial-page">
+    <header class="page-header">
+      <span class="section-kicker">数据怎么来的</span>
+      <h1>这些数字从哪里来，缺数据时怎么看</h1>
+      <p class="lede">页面会把论文原文、官方目录、工程估算和真机结果分开标记。没有来源的字段保持未知，不会自动补成 0、false 或一个看起来合理的答案。</p>
+    </header>
+    <div class="methodology-sections">
+      <section><h2>没有数据时，页面怎样显示</h2><p><code>not_disclosed</code> 表示官方未公开，<code>not_reported</code> 表示来源没有报告，<code>not_verified</code> 表示还没有核验，<code>conflicting_evidence</code> 表示来源互相冲突。它们都是具体的数据状态，不等于“否”或“0”。</p></section>
+      <section><h2>哪些来源能证明什么</h2><p>模型字段优先连接到官方模型卡、厂商文档或论文；论文、代码和真机运行记录分别保留来源类型与核验日期。一个数字只有在来源直接支持它时，才能当作已核验事实。</p></section>
+      <section><h2>模型推荐能说明什么</h2><p>候选排序只回答“在你填写的模型、硬件、训练和复现条件下，哪些方案更值得先看”。它不是模型综合性能排行榜；来源冲突会阻塞推荐，其他未知信息会明确留在待核验项里。</p></section>
+    </div>
+  </div>
+</AppLayout>

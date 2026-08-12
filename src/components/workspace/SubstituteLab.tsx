@@ -35,10 +35,11 @@ export function SubstituteLab({ models, papers, m, locale = 'zh' }: Props) {
       .slice(0, 4);
   }, [base, models, papers, task]);
 
-  return <section className="substitute-lab" aria-label={m.research.substitute.title}>
-    <h2>{m.research.substitute.title}</h2>
-    <p className="muted">{locale === 'zh' ? '每个替代候选同时给出严格复现、方法复现和现代化重跑三种判断；下方明细仍按当前研究任务模式解释影响。' : 'Each substitute is judged for strict reproduction, method reproduction, and a modern rerun. The detailed impact table still follows the current task mode.'}</p>
-    <div className="field"><label htmlFor="substitute-base">{m.research.substitute.selectBase}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
+  const title = locale === 'zh' ? '换一个模型会改变什么？' : 'What changes if you replace the model?';
+  return <section className="substitute-lab" aria-label={title}>
+    <h2>{title}</h2>
+    <p className="muted">{locale === 'zh' ? '同一个替代模型会分别按严格复现、方法复现和现代化重跑判断。下方表格按你在工作台选择的复现方式解释每项变化。' : 'The same replacement is judged separately for strict reproduction, method reproduction, and a modern rerun. The table below explains each change using the reproduction mode selected in the workspace.'}</p>
+    <div className="field"><label htmlFor="substitute-base">{locale === 'zh' ? '要替换哪个模型' : 'Model to replace'}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
     {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} task={task} papers={papers} m={m} locale={locale} />)}</div>}
   </section>;
 }
@@ -60,13 +61,13 @@ function SubstituteCard({ base, rep, impacts, task, papers, m, locale }: { base:
 
   return <article className="substitute-card">
     <h3>{base.name} → {rep.name}</h3>
-    <div className="replacement-mode-verdicts" aria-label={locale === 'zh' ? '三种复现模式替换判断' : 'Replacement verdicts by reproduction mode'}>
+    <div className="replacement-mode-verdicts" aria-label={locale === 'zh' ? '三种复现方式下是否适合替换' : 'Replacement verdicts by reproduction mode'}>
       {modes.map((mode) => {
         const verdict = replacementVerdict(base, rep, task, papers, mode);
         return <div className={`replacement-verdict verdict-${verdict}`} key={mode}><span>{modeLabels[mode]}</span><strong>{verdictLabels[verdict]}</strong></div>;
       })}
     </div>
-    <p className="muted">{m.research.substitute.modeImpact}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
-    <table className="substitute-table"><thead><tr><th scope="col">{m.research.substitute.field}</th><th scope="col">{m.research.substitute.original}</th><th scope="col">{m.research.substitute.replacement}</th><th scope="col">{m.research.substitute.impact}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
+    <p className="muted">{locale === 'zh' ? '最主要的变化' : 'Main change'}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
+    <table className="substitute-table"><thead><tr><th scope="col">{locale === 'zh' ? '比较项' : 'Field'}</th><th scope="col">{locale === 'zh' ? '原模型' : 'Original'}</th><th scope="col">{locale === 'zh' ? '替代模型' : 'Replacement'}</th><th scope="col">{locale === 'zh' ? '会带来什么变化' : 'What changes'}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
   </article>;
 }

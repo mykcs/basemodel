@@ -9,6 +9,10 @@ const sourceRules = read('src/AGENTS.md');
 const claudeAdapter = read('src/CLAUDE.md');
 const standard = read('docs/agents/current/audience-centered-technical-copy.md');
 const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
+const header = read('src/components/Header.astro');
+const methodology = read('src/pages/methodology.astro');
+const paperDetail = read('src/pages/_bodies/paper-detail.astro');
+const workspace = read('src/components/workspace/ResearchWorkspace.tsx');
 const audit = read('scripts/audit-audience-copy.ts');
 
 describe('human-readable product language contract', () => {
@@ -26,6 +30,24 @@ describe('human-readable product language contract', () => {
     expect(missionHero).toContain('Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo');
     expect(missionHero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
     expect(missionHero).not.toContain('Use SEED’s two agent benchmarks to evaluate and improve OpenEvo');
+  });
+
+  it('keeps high-traffic navigation and tools concrete', () => {
+    expect(header).toContain("t('实验总览', 'Experiment overview')");
+    expect(header).toContain("t('实验工作台', 'Experiment workspace')");
+    expect(header).toContain("t('更多工具', 'More tools')");
+    expect(header).not.toContain("t('研究总览', 'Research map')");
+    expect(header).not.toContain("t('研究工具', 'Research tools')");
+    expect(header).not.toContain('形成可保存的研究任务');
+  });
+
+  it('states what methodology, paper, and workspace pages actually show', () => {
+    expect(methodology).toContain('这些数字从哪里来，缺数据时怎么看');
+    expect(methodology).toContain('没有数据时，页面怎样显示');
+    expect(paperDetail).toContain('这些模型在论文里分别负责什么');
+    expect(paperDetail).toContain('选择要怎样复现这篇论文');
+    expect(workspace).toContain("'实验工作台'");
+    expect(workspace).toContain('填写模型、GPU、网络、权重和训练条件');
   });
 
   it('keeps the durable standard and scanner aligned with the rule', () => {

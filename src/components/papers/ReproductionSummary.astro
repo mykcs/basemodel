@@ -9,7 +9,7 @@ interface Props {
   m: Messages;
 }
 
-const { paper, m } = Astro.props;
+const { paper, locale, m } = Astro.props;
 const reproduction = paper.reproducibility;
 const statusLabels = {
   available: m.paperDetail.available,
@@ -32,24 +32,24 @@ const displayIcon = (value: keyof typeof statusIcons | undefined) => value ? sta
 ---
 
 <section class="detail-section reproduction-summary" aria-labelledby="reproduction-summary-title">
-  <h2 id="reproduction-summary-title">{m.paperDetail.reproducibilityTitle}</h2>
+  <h2 id="reproduction-summary-title">{locale === 'zh' ? '复现这篇论文需要的材料是否齐全' : 'Are the materials needed to reproduce this paper available?'}</h2>
   <div class="reproduction-grid">
     <div class="reproduction-item">
-      <span class="reproduction-label">{m.paperDetail.codeStatus}</span>
+      <span class="reproduction-label">{locale === 'zh' ? '代码' : 'Code'}</span>
       <span class="semantic-status semantic-status-unknown"><span aria-hidden="true">{displayIcon(reproduction?.code_status)}</span>{displayStatus(reproduction?.code_status)}</span>
     </div>
     <div class="reproduction-item">
-      <span class="reproduction-label">{m.paperDetail.checkpointStatus}</span>
+      <span class="reproduction-label">{locale === 'zh' ? '模型权重 / checkpoint' : 'Model weights / checkpoint'}</span>
       <span class="semantic-status semantic-status-unknown"><span aria-hidden="true">{displayIcon(reproduction?.checkpoint_status)}</span>{displayStatus(reproduction?.checkpoint_status)}</span>
     </div>
     <div class="reproduction-item">
-      <span class="reproduction-label">{m.paperDetail.configStatus}</span>
+      <span class="reproduction-label">{locale === 'zh' ? '训练与运行配置' : 'Training and run configuration'}</span>
       <span class="semantic-status semantic-status-unknown"><span aria-hidden="true">{displayIcon(reproduction?.config_status)}</span>{displayStatus(reproduction?.config_status)}</span>
     </div>
     <div class="reproduction-item">
-      <span class="reproduction-label">{m.paperDetail.environmentStatus}</span>
+      <span class="reproduction-label">{locale === 'zh' ? '环境与数据' : 'Environment and data'}</span>
       <span class="semantic-status semantic-status-unknown"><span aria-hidden="true">{displayIcon(reproduction?.environment_status)}</span>{displayStatus(reproduction?.environment_status)}</span>
     </div>
   </div>
-  {reproduction?.notes?.length ? <div class="reproduction-notes"><strong>{m.paperDetail.reproNotes}</strong><ul>{reproduction.notes.map((note) => <li>{note}</li>)}</ul></div> : <p class="muted">{m.paperDetail.reproNotFilled}</p>}
+  {reproduction?.notes?.length ? <div class="reproduction-notes"><strong>{locale === 'zh' ? '复现时还要注意' : 'Additional reproduction notes'}</strong><ul>{reproduction.notes.map((note) => <li>{note}</li>)}</ul></div> : <p class="muted">{locale === 'zh' ? '这条论文记录还没有补充更多复现说明。' : 'No additional reproduction notes have been recorded yet.'}</p>}
 </section>
