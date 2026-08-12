@@ -38,7 +38,7 @@ describe('three-journey research experience', () => {
     expect(trajectory).toContain('memory / skill / agent-system artifact / revision');
     expect(trajectory).toContain('生效边界：下一次 policy update 后');
     expect(trajectory).toContain('successor revision');
-    expect(trajectory).toContain('reflection 文本仍不足以证明 evolution');
+    expect(trajectory).toContain('不要把“反思文本出现了”误判成“框架已经进化”');
   });
 
   it('exposes a bilingual OpenEvo experiment gateway and reuses the lab on benchmark pages', () => {
