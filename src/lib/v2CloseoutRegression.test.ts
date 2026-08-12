@@ -21,7 +21,8 @@ describe('V2 adversarial closeout invariants', () => {
     expect(explorer).toContain('methodPending');
     expect(explorer).toContain('researchScope');
     expect(explorer).not.toContain('model_selection?.[0]?.rationale');
-    expect(detail).toContain('尚未保存经过证据核对的方法摘要');
+    expect(detail).toContain('这条记录还没有经过来源核对的方法摘要');
+    expect(detail).not.toContain('model_selection?.[0]?.rationale');
   });
 
   it('keeps Quick View global without serializing every full model into the shell', () => {
