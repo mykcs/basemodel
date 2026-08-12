@@ -1,0 +1,336 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  compact?: boolean;
+}
+
+const { locale, compact = false } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const chain = [
+  {
+    eyebrow: t('模型', 'Model'),
+    title: 'Qwen2.5-3B-Instruct',
+    body: t('先明确 checkpoint、参数、精度与运行边界。', 'Identify the checkpoint, parameters, precision, and runtime boundary.'),
+    href: p('/research/seed-openevo/base-model/'),
+  },
+  {
+    eyebrow: t('框架', 'Frameworks'),
+    title: 'SEED ↔ OpenEvo',
+    body: t('比较两种自进化机制究竟更新什么对象。', 'Compare what each self-evolving mechanism actually updates.'),
+    href: p('/research/seed-openevo/loops/'),
+  },
+  {
+    eyebrow: t('基准', 'Benchmarks'),
+    title: 'ALFWorld + WebShop',
+    body: t('在同一实验协议下观察长程交互与失败模式。', 'Observe long-horizon interaction and failure modes under one protocol.'),
+    href: p('/research/seed-openevo/benchmarks/'),
+  },
+  {
+    eyebrow: t('证据', 'Evidence'),
+    title: t('轨迹、分数与失败', 'Trajectories, scores, failures'),
+    body: t('区分环境可用、真实动作、演化与可比结果。', 'Separate environment readiness, real action, evolution, and comparable results.'),
+    href: p('/research/seed-openevo/results/'),
+  },
+  {
+    eyebrow: t('反馈', 'Feedback'),
+    title: t('改进 OpenEvo', 'Improve OpenEvo'),
+    body: t('把数据集特性与重复故障转成框架设计假设。', 'Turn benchmark properties and recurring failures into framework hypotheses.'),
+    href: p('/research/seed-openevo/'),
+  },
+];
+---
+<section class:list={['mission-hero', compact && 'mission-hero--compact']} aria-labelledby="mission-title">
+  <div class="mission-hero__copy">
+    <div class="mission-hero__eyebrow">{t('当前研究任务', 'Current research mission')}</div>
+    <h1 id="mission-title">{t('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo', 'Use SEED’s two agent benchmarks to evaluate and improve OpenEvo')}</h1>
+    <p class="mission-hero__lede">
+      {t(
+        '这个网站把 Base Model、SEED 方法、OpenEvo 演化机制、ALFWorld / WebShop 设置、复现步骤和结果证据组织成一条研究路径。目标不是浏览最多的模型，而是得到一个可复核的框架改进结论。',
+        'This site connects Base Models, the SEED method, OpenEvo evolution, ALFWorld / WebShop protocols, reproduction steps, and result evidence into one research path. The goal is not to browse the most models; it is to reach an auditable framework-improvement conclusion.',
+      )}
+    </p>
+    <div class="mission-hero__actions">
+      <a class="button button-primary" href={p('/research/seed-openevo/')}>{t('打开研究总览 →', 'Open the research map →')}</a>
+      <a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('直接进入复现', 'Start the reproduction')}</a>
+    </div>
+    <div class="mission-hero__modes" aria-label={t('三种阅读方式', 'Three reading modes')}>
+      <a href={p('/research/seed-openevo/base-model/')}><strong>{t('先学懂', 'Learn')}</strong><span>{t('模型、方法、基准', 'model, methods, benchmarks')}</span></a>
+      <a href={p('/guide/openevo-webshop-alfworld/')}><strong>{t('直接执行', 'Run')}</strong><span>{t('环境、代码、真实 GPU 证据', 'environment, code, real GPU evidence')}</span></a>
+      <a href={p('/research/seed-openevo/loops/')}><strong>{t('比较改进', 'Compare')}</strong><span>{t('循环、变量、失败与设计假设', 'loops, controls, failures, design hypotheses')}</span></a>
+    </div>
+  </div>
+
+  <figure class="mission-chain" aria-labelledby="mission-chain-caption">
+    <figcaption id="mission-chain-caption">
+      <span>{t('第一性研究链', 'First-principles research chain')}</span>
+      <strong>{t('模型不是结论；模型进入框架、环境与评测之后才产生研究证据。', 'A model is not a conclusion; evidence appears only after it enters a framework, environment, and evaluation protocol.')}</strong>
+    </figcaption>
+    <ol>
+      {chain.map((node, index) => (
+        <li>
+          <a href={node.href}>
+            <span class="mission-chain__index">{String(index + 1).padStart(2, '0')}</span>
+            <small>{node.eyebrow}</small>
+            <strong>{node.title}</strong>
+            <p>{node.body}</p>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="mission-chain__benchmarks" aria-label={t('两个实验环境', 'Two experimental environments')}>
+      <span><b>ALFWorld</b>{t('具身文本任务 · 家族成功率', 'embodied text tasks · family success rates')}</span>
+      <span><b>WebShop</b>{t('网页购物任务 · 归一化分数 + 精确成功率', 'web shopping · normalized score + exact success')}</span>
+    </div>
+  </figure>
+</section>
+
+<style>
+  .mission-hero {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 1.4rem auto 2.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(520px, 1.08fr);
+    gap: 1.4rem;
+    align-items: stretch;
+  }
+
+  .mission-hero__copy,
+  .mission-chain {
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 24px;
+    background: color-mix(in srgb, var(--surface, #fff) 92%, transparent);
+    box-shadow: 0 18px 60px rgba(28, 24, 17, 0.08);
+  }
+
+  .mission-hero__copy {
+    padding: clamp(1.5rem, 3vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mission-hero__eyebrow {
+    width: fit-content;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent, #2457d6) 12%, transparent);
+    color: var(--accent, #2457d6);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mission-hero h1 {
+    margin: 1rem 0 0.9rem;
+    max-width: 16ch;
+    font-size: clamp(2.25rem, 4.7vw, 4.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+
+  .mission-hero__lede {
+    max-width: 66ch;
+    margin: 0;
+    color: var(--muted, #5d584f);
+    font-size: clamp(1rem, 1.4vw, 1.16rem);
+    line-height: 1.75;
+  }
+
+  .mission-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+  }
+
+  .mission-hero__modes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+  }
+
+  .mission-hero__modes a {
+    min-width: 0;
+    padding: 0.8rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 14px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  }
+
+  .mission-hero__modes a:hover,
+  .mission-hero__modes a:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--accent, #2457d6);
+    background: color-mix(in srgb, var(--accent, #2457d6) 6%, transparent);
+  }
+
+  .mission-hero__modes strong,
+  .mission-hero__modes span {
+    display: block;
+  }
+
+  .mission-hero__modes strong { font-size: 0.9rem; }
+  .mission-hero__modes span { margin-top: 0.25rem; color: var(--muted, #5d584f); font-size: 0.72rem; line-height: 1.4; }
+
+  .mission-chain {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .mission-chain::before {
+    content: '';
+    position: absolute;
+    inset: -35% auto auto -10%;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent, #2457d6) 16%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .mission-chain figcaption {
+    position: relative;
+    padding: 0.65rem 0.75rem 1rem;
+  }
+
+  .mission-chain figcaption span,
+  .mission-chain figcaption strong { display: block; }
+  .mission-chain figcaption span { color: var(--accent, #2457d6); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .mission-chain figcaption strong { margin-top: 0.35rem; max-width: 56ch; font-size: 0.95rem; line-height: 1.5; }
+
+  .mission-chain ol {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mission-chain li {
+    position: relative;
+    min-width: 0;
+  }
+
+  .mission-chain li:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    right: -0.45rem;
+    transform: translateY(-50%);
+    color: var(--accent, #2457d6);
+    font-weight: 900;
+  }
+
+  .mission-chain li a {
+    position: relative;
+    display: flex;
+    min-height: 190px;
+    height: 100%;
+    flex-direction: column;
+    padding: 0.85rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--surface, #fff) 88%, transparent);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 160ms ease, border-color 160ms ease;
+  }
+
+  .mission-chain li a:hover,
+  .mission-chain li a:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--accent, #2457d6);
+  }
+
+  .mission-chain__index {
+    width: fit-content;
+    color: var(--accent, #2457d6);
+    font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .mission-chain small {
+    margin-top: auto;
+    color: var(--muted, #5d584f);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mission-chain strong {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .mission-chain p {
+    margin: 0.5rem 0 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .mission-chain__benchmarks {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+  }
+
+  .mission-chain__benchmarks span {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.55rem;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--accent, #2457d6) 7%, var(--surface, #fff));
+    color: var(--muted, #5d584f);
+    font-size: 0.72rem;
+  }
+
+  .mission-chain__benchmarks b { color: var(--text, #201c16); font-size: 0.8rem; }
+
+  .mission-hero--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-hero--compact .mission-hero__copy { display: none; }
+
+  @media (max-width: 1020px) {
+    .mission-hero { grid-template-columns: 1fr; }
+    .mission-chain ol { grid-template-columns: 1fr; }
+    .mission-chain li:not(:last-child)::after { content: '↓'; top: auto; right: 50%; bottom: -0.48rem; transform: translateX(50%); }
+    .mission-chain li a { min-height: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .mission-hero { width: min(100% - 1rem, 1180px); margin-top: 0.75rem; }
+    .mission-hero__copy,
+    .mission-chain { border-radius: 18px; }
+    .mission-hero__modes,
+    .mission-chain__benchmarks { grid-template-columns: 1fr; }
+    .mission-hero h1 { font-size: clamp(2rem, 13vw, 3.4rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mission-hero__modes a,
+    .mission-chain li a { transition: none; }
+  }
+</style>
