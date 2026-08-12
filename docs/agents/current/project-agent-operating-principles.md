@@ -40,6 +40,37 @@ Default preferences:
 
 Do not modernize for appearance alone. Avoid duplicate abstractions, cosmetic orchestration layers, and churn that has no measurable benefit.
 
+### User-facing work must externalize human thinking
+
+Any change to visible website content, page structure, interaction, copy, navigation, comparison, explanation, or feature automatically loads [`human-thinking-web-expression-contract.md`](./human-thinking-web-expression-contract.md).
+
+This is a project invariant, not an optional style preference. Even a request such as “add one item to this page” must consider:
+
+- the reader’s mental model and next action;
+- the role of the page or section in the whole-site journey;
+- the primary reading path versus secondary depth;
+- information-density allocation;
+- the semantic shape of the information;
+- whether HTML, a table, a process map, a hierarchy, an evidence ladder, progressive disclosure, or another web-native form communicates it better than appended prose;
+- the browser visual acceptance gate after implementation.
+
+Before implementation, form a concise **Page Expression Brief**. Broad user-facing changes should expose it in the PR description or design note; small changes may use a compact version, but they may not skip the reasoning entirely.
+
+The default sequence is:
+
+```text
+expression goal
+-> page role and reader state
+-> primary path
+-> density layers
+-> semantic HTML / visual form
+-> implementation
+-> browser UI gate
+-> exact-head Preview
+```
+
+Do not wait for the owner to repeat “use HTML well,” “keep the page coherent,” or “balance information density.”
+
 ## 3. Deposit reusable experience where it belongs
 
 After solving a meaningful problem, evaluate whether the result has durable reuse value. Useful material can include:

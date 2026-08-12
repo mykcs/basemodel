@@ -7,22 +7,24 @@ This directory is the stable Agent entrypoint for `mykcs/basemodel`.
 1. [`LATEST.md`](./LATEST.md) — current handoff and authoritative day-to-day architecture.
 2. [`current/project-agent-operating-principles.md`](./current/project-agent-operating-principles.md) — durable project-wide standard for proactive problem solving, modern/clean workflow ownership, and selective deposition of reusable experience.
 3. [`current/scenario-trigger-registry.md`](./current/scenario-trigger-registry.md) — **just-in-time router for recurring situations. Scan it against each non-trivial task and load the matched guidance automatically; do not wait for the owner to repeat known constraints.**
-4. [`current/ui-change-visual-acceptance-gate.md`](./current/ui-change-visual-acceptance-gate.md) — **mandatory scenario gate for CSS/theme/layout/typography/responsive/animation/UI changes; prevents the owner from becoming the first dark-mode, overlap, clipping, or theme-transition tester.**
-5. [`current/hosting-architecture.md`](./current/hosting-architecture.md) — **current hosting authority: Vercel owns ordinary PR Preview; Cloudflare Pages remains Production; the validated Workers Static Assets path is frozen as an optional future migration rather than the default target.**
-6. [`current/vercel-preview-migration-plan.md`](./current/vercel-preview-migration-plan.md) — validated ordinary Preview workflow: non-main GitHub branches/PRs -> Vercel Preview; `main` Vercel deployment disabled.
-7. [`current/preview-platform-evaluation.md`](./current/preview-platform-evaluation.md) — decision record explaining why Vercel won the real Preview pilot and why Cloudflare Direct Upload remains fallback.
-8. [`current/cloudflare-direct-upload-credential-handoff.md`](./current/cloudflare-direct-upload-credential-handoff.md) — Wrangler credential-injection handoff retained for fallback / Cloudflare-specific Preview work; ordinary Preview no longer depends on solving it.
-9. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, evidence semantics, recommendation philosophy, and false-complete acceptance rules.
-10. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — rules for current-model/family verification, first-party evidence, API-vs-open-weight boundaries, and semantic unknowns.
-11. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — SEED worked-example research workflow and teaching contract.
-12. [`current/deployment-policy.md`](./current/deployment-policy.md) — provider/release boundaries and deployment acceptance rules.
-13. [`current/direct-upload-preview-command.md`](./current/direct-upload-preview-command.md) — repository-owned Cloudflare Direct Upload command; use as fallback / Cloudflare-specific Preview path.
-14. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — detailed Cloudflare Direct Upload mechanics and build-budget rules.
-15. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — current Pages Production / rollback / Direct Upload runbook.
-16. [`current/repository-map.md`](./current/repository-map.md) — repository ownership map and change-to-check guidance.
-17. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance, and rendering rules.
-18. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — older Cloudflare-first execution model; retain as fallback/history context.
-19. [`/AGENTS.md`](../../AGENTS.md) — repository-wide collaboration / operating rules and fast router.
+4. [`current/human-thinking-web-expression-contract.md`](./current/human-thinking-web-expression-contract.md) — **mandatory upstream design contract for every user-facing page, section, copy, navigation, comparison, explanation, or feature change. It converts the owner’s durable preference into a Page Expression Brief, information-density plan, semantic HTML choice, and whole-site flow check.**
+5. [`current/ui-change-visual-acceptance-gate.md`](./current/ui-change-visual-acceptance-gate.md) — mandatory downstream browser gate for theme, viewport, overlap, clipping, interaction, and exact-head Preview evidence.
+6. [`current/theme-contrast-contract.md`](./current/theme-contrast-contract.md) — semantic light/dark color-pair and contrast contract.
+7. [`current/hosting-architecture.md`](./current/hosting-architecture.md) — **current hosting authority: Vercel owns ordinary PR Preview; Cloudflare Pages remains Production; the validated Workers Static Assets path is frozen as an optional future migration rather than the default target.**
+8. [`current/vercel-preview-migration-plan.md`](./current/vercel-preview-migration-plan.md) — validated ordinary Preview workflow: non-main GitHub branches/PRs -> Vercel Preview; `main` Vercel deployment disabled.
+9. [`current/preview-platform-evaluation.md`](./current/preview-platform-evaluation.md) — decision record explaining why Vercel won the real Preview pilot and why Cloudflare Direct Upload remains fallback.
+10. [`current/cloudflare-direct-upload-credential-handoff.md`](./current/cloudflare-direct-upload-credential-handoff.md) — Wrangler credential-injection handoff retained for fallback / Cloudflare-specific Preview work; ordinary Preview no longer depends on solving it.
+11. [`current/product-and-research-integrity.md`](./current/product-and-research-integrity.md) — durable product north star, evidence semantics, recommendation philosophy, and false-complete acceptance rules.
+12. [`current/model-catalog-verification-policy.md`](./current/model-catalog-verification-policy.md) — rules for current-model/family verification, first-party evidence, API-vs-open-weight boundaries, and semantic unknowns.
+13. [`current/seed-guided-research-workflow.md`](./current/seed-guided-research-workflow.md) — SEED worked-example research workflow and teaching contract.
+14. [`current/deployment-policy.md`](./current/deployment-policy.md) — provider/release boundaries and deployment acceptance rules.
+15. [`current/direct-upload-preview-command.md`](./current/direct-upload-preview-command.md) — repository-owned Cloudflare Direct Upload command; use as fallback / Cloudflare-specific Preview path.
+16. [`current/direct-upload-preview-policy.md`](./current/direct-upload-preview-policy.md) — detailed Cloudflare Direct Upload mechanics and build-budget rules.
+17. [`current/cloudflare-pages-deployment.md`](./current/cloudflare-pages-deployment.md) — current Pages Production / rollback / Direct Upload runbook.
+18. [`current/repository-map.md`](./current/repository-map.md) — repository ownership map and change-to-check guidance.
+19. [`current/rendering-and-performance-policy.md`](./current/rendering-and-performance-policy.md) — static-first Astro, hydration, performance, and rendering rules.
+20. [`current/web-gpt-cloudflare-build-budget-workflow.md`](./current/web-gpt-cloudflare-build-budget-workflow.md) — older Cloudflare-first execution model; retain as fallback/history context.
+21. [`/AGENTS.md`](../../AGENTS.md) — repository-wide collaboration / operating rules and fast router.
 
 ## How scenario triggers work
 
@@ -33,14 +35,15 @@ At the start of a non-trivial task:
 ```text
 read LATEST + operating principles
 -> scan scenario-trigger-registry against the task
--> load only matched current docs/tests/provider evidence
+-> for user-facing work, load the human-thinking web expression contract
+-> load only other matched current docs/tests/provider evidence
 -> execute
 -> if a new reusable lesson appears, decide whether to encode it in an existing owner/test/runbook or leave it ephemeral
 ```
 
-Examples of recurring triggers include protected Cloudflare build budget, hosting/platform modernization, exact-head Preview drift, **UI/theme/layout visual acceptance**, SEED/offline-lab reproduction, GPU time/cost decisions, beginner-facing rewrites, actionable content, unavailable tool/provider paths, overlapping PRs, and reusable-lesson deposition.
+Examples of recurring triggers include protected Cloudflare build budget, hosting/platform modernization, exact-head Preview drift, SEED/offline-lab reproduction, GPU time/cost decisions, beginner-facing rewrites, actionable content, unavailable tool/provider paths, overlapping PRs, and reusable-lesson deposition.
 
-For UI-affecting work, the trigger is automatic even when the requested change sounds small. Load `ui-change-visual-acceptance-gate.md`, classify the change, and run `npm run test:ui` or `npm run test:ui:all` as required. A successful build or Vercel READY state is not visual acceptance.
+The user-facing expression contract is broader than a rare trigger: any visible page/content/feature change activates it automatically, even when the prompt asks for only one small addition.
 
 Historical cases can explain why a trigger exists, but current policy and executable truth win.
 
@@ -106,8 +109,11 @@ docs/agents/
 ├── current/
 │   ├── project-agent-operating-principles.md
 │   ├── scenario-trigger-registry.md
+│   ├── human-thinking-web-expression-contract.md
 │   ├── ui-change-visual-acceptance-gate.md
 │   ├── theme-contrast-contract.md
+│   ├── sitewide-visual-knowledge-architecture.md
+│   ├── reproduction-guide-design-principles.md
 │   ├── hosting-architecture.md
 │   ├── vercel-preview-migration-plan.md
 │   ├── preview-platform-evaluation.md
@@ -131,16 +137,18 @@ docs/agents/
 The deployment decision does not alter the research/product north star:
 
 - the site is a research decision system rather than merely a model database;
+- user-facing additions externalize a real thought structure rather than merely increasing page content;
+- information density is layered into orientation, primary path, supporting detail, and optional diagnostics;
 - strict reproduction, method reproduction, and modern rerun remain distinct;
 - unknown/evidence/license/revision/hardware semantics must not be simplified into false facts;
 - recommendations should expose tradeoffs rather than hide them behind one score;
 - heuristic compute estimates must remain distinct from measured hardware results;
 - “done” means connected to the real user path and protected by acceptance checks.
 
-Read `current/product-and-research-integrity.md` and the task-relevant research/data policies before broad product changes.
+Read `current/human-thinking-web-expression-contract.md`, `current/product-and-research-integrity.md`, and the task-relevant research/data policies before user-facing product changes.
 
 ## Historical records
 
 Files under [`history/`](./history/) explain how previous decisions were reached. They are evidence, not a reason to restore GitHub Actions, GitHub Pages, superseded Cloudflare-only ordinary-Preview assumptions, or a paused Workers cutover.
 
-Update `LATEST.md` and the relevant current policy whenever deployment architecture, ownership boundaries, validation Gates, build-budget behavior or Production hosting changes materially.
+Update `LATEST.md` and the relevant current policy whenever deployment architecture, ownership boundaries, validation Gates, build-budget behavior, user-facing expression rules, or Production hosting changes materially.

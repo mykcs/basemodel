@@ -10,13 +10,14 @@ Before non-trivial work, read in this order:
 2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — **scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.**
-5. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) — **mandatory whenever CSS, theme, typography, layout, responsive behavior, animation, or visible component structure changes. The owner must not be the first person to discover unreadable text, clipping, overlap, or stale theme state.**
-6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
-9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
-10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+5. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory for every user-facing page, section, copy, navigation, comparison, explanation, or feature change. Treat the website as an externalized thinking interface; form the page role, primary path, information-density plan, and semantic HTML/visual expression before implementation.**
+6. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) — **mandatory whenever visible UI changes. The owner must not be the first person to discover unreadable text, clipping, overlap, stale theme state, or responsive breakage.**
+7. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
+8. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
+9. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
+10. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
+11. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+12. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
 Files under `docs/agents/history/` are evidence and rationale, not instructions to restore previous architecture.
 
@@ -75,6 +76,27 @@ package.json                 executable validation/build entrypoints
 
 Do not move production directories merely for visual uniformity, and do not treat generated output, archive fixtures or Agent scratch state as production source.
 
+## User-facing expression invariant
+
+Every visible website change—even a request that sounds as small as “add one item here”—must be treated as a change to the reader’s cognitive path.
+
+Before implementation, form a concise **Page Expression Brief** covering:
+
+```text
+reader and starting state
+-> page/section role
+-> target mental model and next action
+-> primary path
+-> secondary depth
+-> information-density layers
+-> semantic HTML / visualization form
+-> acceptance evidence
+```
+
+Use HTML, layout, comparison, hierarchy, progressive disclosure, diagrams, and restrained animation when they encode real sequence, dependency, hierarchy, evidence, state, or failure branches. Do not add decorative visualization, append isolated prose without checking the whole journey, or make every concept an equal-weight card.
+
+The durable owner is `docs/agents/current/human-thinking-web-expression-contract.md`. This requirement is automatic and does not depend on the owner repeating it in the prompt.
+
 ## Validation
 
 For ordinary deployable changes, the repository-owned deterministic Gate is:
@@ -100,15 +122,18 @@ Run the Chromium + WebKit matrix when changing theme tokens, global CSS, shared 
 npm run test:ui:all
 ```
 
-A successful build, token test, or Vercel READY badge is not proof that text is readable, elements do not overlap, mobile layout fits, or theme switching works after hydration. The Agent must inspect browser evidence before asking the owner to review.
+A successful build, token test, or Vercel READY badge is not proof that the information architecture is coherent, text is readable, elements do not overlap, mobile layout fits, or theme switching works after hydration. The Agent must inspect browser evidence before asking the owner to review.
 
 ## Ordinary Agent workflow
 
 ```text
 read LATEST + current policy
 -> scan scenario-trigger-registry and load matched guidance
+-> for user-facing work, form the Page Expression Brief
 -> inspect overlapping PRs and relevant code/data/tests
 -> make one focused branch/PR
+-> implement semantic HTML / visual form and information-density plan
+-> run static Gate + UI scenario matrix when applicable
 -> synchronize branch without intentionally spending a Cloudflare Preview build
 -> let Vercel create the non-main Preview
 -> verify the exact PR head and build logs
@@ -132,7 +157,7 @@ Because the repository is private, normal Vercel Preview URLs may require Vercel
 
 ## Cloudflare build-budget boundary
 
-Intermediate branch commits may use `[CF-Pages-Skip]` / another documented Cloudflare skip prefix when Cloudflare should not build that branch iteration.
+Intermediate feature commits may use `[CF-Pages-Skip]` / another documented Cloudflare skip prefix when Cloudflare should not build that branch iteration.
 
 The **final merge/release commit must not carry a skip prefix** when the owner expects Cloudflare Production to update.
 
@@ -145,6 +170,8 @@ Do not claim an exact account-level build counter without authoritative provider
 Preserve these even when simplifying UI or data flows:
 
 - this is a research decision system, not merely a leaderboard/model database;
+- every user-facing addition should externalize the relevant human thought structure and preserve a coherent primary path;
+- information density must be deliberately layered into orientation, mainline, supporting detail, and on-demand diagnostics;
 - strict reproduction, method reproduction and modern rerun are distinct;
 - unknown must remain unknown rather than guessed;
 - open weights are not automatically open source or unrestricted licensing;
@@ -152,7 +179,7 @@ Preserve these even when simplifying UI or data flows:
 - current/latest/full-family claims require current first-party verification;
 - “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing.
 
-Read the detailed current product/model policies before broad UI/data/recommendation changes.
+Read the detailed current product/model and web-expression policies before broad UI/data/recommendation changes.
 
 ## Stable technical constraints
 
@@ -171,14 +198,14 @@ For the durable project-level standard on expanding the solution space, keeping 
 
 For recurring situations that should trigger without a fresh reminder from the owner, scan [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) and follow the matched route. Keep detailed truth in the owning policy/runbook/test; the registry is a trigger router, not a duplicate knowledge store.
 
-For UI work, `docs/agents/current/ui-change-visual-acceptance-gate.md` is the owning scenario policy. Future Agents should improve that file and its executable tests when a new visual failure class appears rather than relying on conversational memory.
+For all user-facing work, `docs/agents/current/human-thinking-web-expression-contract.md` is the upstream design owner. For visual/browser failure prevention, `docs/agents/current/ui-change-visual-acceptance-gate.md` is the downstream acceptance owner. Future Agents should update the owning file and executable tests when a new recurring failure class appears rather than relying on conversational memory.
 
 Human intervention is appropriate for real authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
 
-Completion reports must distinguish source synchronization, validation, Preview state and Production state. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
+Completion reports must distinguish source synchronization, validation, Preview state and Production state. A successful source diff or READY badge alone is not proof that the intended product outcome happened.
 
 ## Documentation maintenance
 
-Update `docs/agents/LATEST.md` in place when current state changes materially. Update the owning file under `docs/agents/current/` when architecture, validation, deployment, evidence semantics or repository ownership changes.
+Update `docs/agents/LATEST.md` in place when current state changes materially. Update the owning file under `docs/agents/current/` when architecture, validation, deployment, evidence semantics, user-facing expression, or repository ownership changes.
 
 Do not duplicate those detailed policies back into this root file. The purpose of `AGENTS.md` is to get a new Agent onto the correct current documents quickly.
