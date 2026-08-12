@@ -13,7 +13,7 @@ This is an execution-first academic reproduction manual. The owner supplied the 
 
 Use its manual mindset only, not GDKVM project content. Executable subsections normally read: **explanation → command/action → expected result/acceptance → local Troubleshooting**.
 
-The original dual-line requirement is integrated: the current success path owns the numbered main flow; failure knowledge appears beside relevant steps and in the final diagnostic index. Do not turn this back into a dashboard, research-card gallery, architecture pitch, or chronological incident diary.
+The original dual-line requirement is integrated: current success path owns the numbered flow; failure knowledge appears beside relevant steps and in the final diagnostic index. Do not turn the page back into a dashboard, research-card gallery, architecture pitch, or chronological incident diary.
 
 ## Scientific boundary
 
