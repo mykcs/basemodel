@@ -22,6 +22,8 @@ Files under `docs/agents/history/` are evidence and rationale, not instructions 
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
+When a task involves the owner's MacBook/iPhone/iPad, the physical-Ethernet-only 4×RTX 3090 lab server, SSH/SFTP/rsync, or Codex/MiniMax remote behavior, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). The editable device facts are owned only by `mykcs/fuhuo_20260419`; **do not create a second editable device inventory in this repository.** Preserve the difference between user-reported facts, time-sensitive observations, network inferences, and current official product capabilities.
+
 ## Knowledge precedence
 
 ```text
