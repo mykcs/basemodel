@@ -1,0 +1,48 @@
+---
+interface Layer {
+  label: string;
+  title: string;
+  body: string;
+  meta?: string;
+  href?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  layers: Layer[];
+  caption?: string;
+}
+
+const { eyebrow, title, lede, layers, caption } = Astro.props;
+---
+<figure class="ka-layer-figure">
+  <header class="ka-visual-header">
+    {eyebrow && <span>{eyebrow}</span>}
+    <h3>{title}</h3>
+    {lede && <p>{lede}</p>}
+  </header>
+  <ol class="ka-layer-map">
+    {layers.map((layer, index) => (
+      <li style={`--ka-layer-index:${index}`}>
+        {layer.href ? (
+          <a href={layer.href}>
+            <span class="ka-layer-label">{layer.label}</span>
+            <strong>{layer.title}</strong>
+            <p>{layer.body}</p>
+            {layer.meta && <small>{layer.meta}</small>}
+          </a>
+        ) : (
+          <div>
+            <span class="ka-layer-label">{layer.label}</span>
+            <strong>{layer.title}</strong>
+            <p>{layer.body}</p>
+            {layer.meta && <small>{layer.meta}</small>}
+          </div>
+        )}
+      </li>
+    ))}
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
