@@ -1,8 +1,12 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
+import Seed3090EvidenceGate from '../../../../components/research/Seed3090EvidenceGate.astro';
+import Seed3090PairedRunAudit from '../../../../components/research/Seed3090PairedRunAudit.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × SEED results and evidence" description="Separate historical notebooks, current RTX6 artifacts, real model actions, real evolution, comparable benchmark results, and validated OpenEvo improvements." locale={locale}>
+<AppLayout title="OpenEvo × SEED experiment results" description="Show how the seed3090 V0/O1 pair holds the model, tasks, random seeds, and budget fixed while preserving actions, scores, and source records; compare whether external text memory helps WebShop only after the runs are valid." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
+  <Seed3090EvidenceGate locale={locale} />
+  <Seed3090PairedRunAudit locale={locale} />
 </AppLayout>
