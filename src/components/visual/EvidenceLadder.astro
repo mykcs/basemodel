@@ -1,0 +1,37 @@
+---
+interface EvidenceItem {
+  level: string;
+  proof: string;
+  limit: string;
+  href?: string;
+  status?: 'default' | 'partial' | 'strong';
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  items: EvidenceItem[];
+}
+
+const { eyebrow, title, lede, items } = Astro.props;
+---
+<section class="ka-evidence-block" data-ui-audit="contrast layout">
+  <header class="ka-visual-header">
+    {eyebrow && <span>{eyebrow}</span>}
+    <h3>{title}</h3>
+    {lede && <p>{lede}</p>}
+  </header>
+  <ol class="ka-evidence-ladder">
+    {items.map((item, index) => (
+      <li class:list={[`is-${item.status ?? 'default'}`]} data-ui-audit-item>
+        <span class="ka-evidence-index" aria-hidden="true">{index + 1}</span>
+        <div>
+          {item.href ? <a href={item.href}><strong>{item.level}</strong></a> : <strong>{item.level}</strong>}
+          <p><b>✓</b><span>{item.proof}</span></p>
+          <p class="ka-evidence-limit"><b>≠</b><span>{item.limit}</span></p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

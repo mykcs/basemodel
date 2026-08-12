@@ -4,6 +4,8 @@
 
 在线访问：<https://basemodel-preview.vercel.app/>
 
+Agent 交接与历史研究工作台上下文：[`docs/agent-context/`](./docs/agent-context/)。当前执行规则仍以 [`AGENTS.md`](./AGENTS.md) 和 [`docs/agents/`](./docs/agents/) 为准。
+
 ## 当前部署架构
 
 ```text
@@ -30,6 +32,8 @@ npm run dev
 npm run verify:deploy
 npm run build
 npm run test:e2e
+npm run test:ui
+npm run test:ui:all
 npm run audit:vendor-catalogs
 npm run audit:urls
 npm run audit:coverage
@@ -51,4 +55,4 @@ npm run audit:coverage
 
 ## 产品边界
 
-Basemodel 是研究决策系统，不只是排行榜/模型数据库。严格复现、方法复现和现代重跑是不同模式；启发式资源估计、目录规格与真实硬件测量也必须区分。详情见 `docs/agents/current/product-and-research-integrity.md`。
+Basemodel 是研究决策系统，不只是排行榜/模型数据库。当前产品主线围绕 `Base Model → SEED / OpenEvo → ALFWorld / WebShop → 证据 → OpenEvo 改进` 展开。严格复现、方法复现和现代重跑是不同模式；启发式资源估计、目录规格与真实硬件测量也必须区分。详情见 `docs/agents/current/product-and-research-integrity.md` 与 `docs/agents/current/seed-openevo-research-mission-first-principles.md`。

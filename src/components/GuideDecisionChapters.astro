@@ -61,6 +61,14 @@ const chapters = [
       const items = chapter.conceptIds.map((id) => conceptMap.get(id)).filter(Boolean) as Concept[];
       return <section class="guide-chapter" id={`guide-${chapter.id}`}>
         <header><span class="guide-chapter-number">{chapter.number}</span><h3>{chapter.title}</h3><p>{chapter.lede}</p></header>
+        {chapter.id === 'reproduction' && <aside class="reproduction-case-link">
+          <div>
+            <span>{zh ? 'SEED 相关基准 · OpenEvo' : 'SEED benchmarks · OpenEvo'}</span>
+            <strong>{zh ? 'WebShop / ALFWorld 自进化复现指南' : 'WebShop / ALFWorld self-evolution reproduction guide'}</strong>
+            <p>{zh ? '围绕 SEED 论文涉及的两个 agent benchmark，记录 OpenEvo 的最短可执行路线，以及 Git、patch、数据、依赖和运行环境的真实故障复盘。' : 'For the two agent benchmarks discussed in SEED, follow the shortest executable OpenEvo path alongside the real Git, patch, data, dependency, and runtime failure trail.'}</p>
+          </div>
+          <a href={localePath(locale, '/guide/openevo-webshop-alfworld/')}>{zh ? '打开指南 →' : 'Open guide →'}</a>
+        </aside>}
         <div class="guide-concept-list">
           {items.map((concept) => <article class="guide-concept-row" id={`decision-concept-${concept.id}`}>
             <div>
@@ -77,3 +85,9 @@ const chapters = [
     })}
   </div>
 </section>
+
+<style>
+  .reproduction-case-link{display:flex;justify-content:space-between;gap:1.2rem;align-items:center;margin:0 0 1rem;padding:1rem;border:1px solid var(--border,rgba(127,127,127,.28));border-radius:12px;background:color-mix(in srgb,currentColor 3%,transparent)}
+  .reproduction-case-link div{display:grid;gap:.2rem;max-width:760px}.reproduction-case-link span{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55}.reproduction-case-link strong{font-size:1rem}.reproduction-case-link p{margin:0;font-size:.86rem;opacity:.7}.reproduction-case-link>a{flex:0 0 auto;color:inherit;font-weight:800;text-decoration:none;border-bottom:1px solid currentColor;font-size:.86rem}
+  @media(max-width:700px){.reproduction-case-link{align-items:flex-start;flex-direction:column}}
+</style>

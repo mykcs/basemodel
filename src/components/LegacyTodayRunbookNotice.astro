@@ -1,0 +1,83 @@
+---
+import type { Locale } from '../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const labHref = zh ? '/lab/' : '/en/lab/';
+---
+
+<aside class="legacy-runbook-notice" aria-labelledby="legacy-runbook-notice-title">
+  <div class="legacy-runbook-marker" aria-hidden="true">2026-08-11</div>
+  <div>
+    <p class="legacy-runbook-kicker">{zh ? '场景边界' : 'Scenario boundary'}</p>
+    <h2 id="legacy-runbook-notice-title">
+      {zh ? '这是一份“旧 Intel Mac 作为专用堡垒机”的当日运行方案' : 'This is a dated runbook for using an older Intel Mac as a dedicated bastion'}
+    </h2>
+    <p>
+      {zh
+        ? '它保留为可选实验室拓扑，不代表当前设备清单。当前公开设备事实由复活仓库统一维护：MacBook Pro M4、iPhone、iPad，以及只能通过物理网线访问的 4×RTX 3090 服务器。没有第二台旧 Mac 时，直接让 M4 MacBook 同时保留 Wi‑Fi（互联网）和 Ethernet（实验室私网），再通过 SSH / SFTP / rsync 进入服务器。'
+        : 'It is preserved as an optional lab topology, not as the current device inventory. Current public device facts are owned by the fuhuo repository: a MacBook Pro M4, iPhone, iPad, and a 4×RTX 3090 server reachable only through physical Ethernet. Without a second older Mac, keep Wi-Fi for Internet and Ethernet for the private lab network on the M4 MacBook, then use SSH / SFTP / rsync.'}
+    </p>
+    <a href={labHref}>{zh ? '先查看当前设备与连接拓扑 →' : 'Review the current devices and connection topology →'}</a>
+  </div>
+</aside>
+
+<style>
+  .legacy-runbook-notice {
+    width: min(1120px, calc(100% - 32px));
+    margin: 28px auto 0;
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--warning);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--warning) 6%, var(--surface));
+  }
+  .legacy-runbook-marker {
+    padding-top: 3px;
+    color: var(--warning);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .03em;
+  }
+  .legacy-runbook-kicker {
+    margin: 0 0 4px;
+    color: var(--warning);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .legacy-runbook-notice h2 {
+    margin: 0 0 8px;
+    font-size: clamp(1rem, 2vw, 1.22rem);
+    letter-spacing: -.015em;
+  }
+  .legacy-runbook-notice p:not(.legacy-runbook-kicker) {
+    max-width: 88ch;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .legacy-runbook-notice a {
+    display: inline-flex;
+    margin-top: 10px;
+    color: var(--accent-deep);
+    font-weight: 750;
+    text-decoration: none;
+  }
+  .legacy-runbook-notice a:hover,
+  .legacy-runbook-notice a:focus-visible { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .legacy-runbook-notice {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 17px;
+    }
+  }
+</style>

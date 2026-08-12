@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="SEED × OpenEvo 研究总览" description="围绕 SEED 的 ALFWorld 与 WebShop 实验，理解 Base Model、比较 SEED 与 OpenEvo、完成复现并形成框架改进证据。" locale={locale}>
+  <SeedOpenEvoResearchPage locale={locale} page="hub" />
+</AppLayout>
