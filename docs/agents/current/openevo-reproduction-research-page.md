@@ -5,6 +5,7 @@ Routes: `/guide/openevo-webshop-alfworld/`, `/en/guide/openevo-webshop-alfworld/
 Primary page shell: `src/components/OpenEvoSeedBenchmarksGuide.astro`
 Execution manual body: `src/components/OpenEvoReproductionResearch.astro`
 Entry: `src/components/GuideDecisionChapters.astro` → paper-comparability chapter → **SEED 相关基准 · OpenEvo**.
+General reproduction-page design contract: `docs/agents/current/reproduction-guide-design-principles.md`.
 
 ## Naming / information-architecture correction
 
@@ -17,15 +18,44 @@ Canonical English title: **OpenEvo × WebShop / ALFWorld Reproduction Guide**.
 
 Do not place the route under `/guide/reproduction-c/`, do not use a “复现 C” kicker, and do not backlink to “SEED 复现 C”.
 
-## Template contract
+## Design contract
 
-This is an execution-first academic reproduction manual. The owner supplied the GDKVM reproduction page as the structural template. Preserve:
+This is an execution-first academic reproduction manual. The owner supplied the GDKVM reproduction page as the structural reference, but the durable rule is now codified separately in `reproduction-guide-design-principles.md`.
 
-`Environment Setup → Get/Pin Code → Data Preparation → Runtime/Dependencies → Run → Outputs/Acceptance → next benchmark → Troubleshooting`
+Preserve this execution schema:
 
-Use its manual mindset only, not GDKVM project content. Executable subsections normally read: **explanation → command/action → expected result/acceptance → local Troubleshooting**.
+`Scope → Environment → Get/Pin Code → Data Preparation → Runtime/Dependencies → Run → Outputs/Acceptance → next benchmark → Troubleshooting`
 
-The original dual-line requirement is integrated: current success path owns the numbered flow; failure knowledge appears beside relevant steps and in the final diagnostic index. Do not turn the page back into a dashboard, research-card gallery, architecture pitch, or chronological incident diary.
+The page uses three reading layers:
+
+1. **visual orientation** — topology, six-step route map, and evidence ladder;
+2. **executable manual** — the narrow numbered reproduction flow;
+3. **diagnostic depth** — local Troubleshooting disclosures and the final known-failure index.
+
+Do not turn the page back into a dashboard, research-card gallery, architecture pitch, or chronological incident diary.
+
+The original dual-line requirement is integrated asymmetrically: current success path owns the main reading flow; failure history is subordinate and appears only where it helps a blocked reader.
+
+## HTML / visualization ownership
+
+The web implementation should use HTML semantics to encode meaning rather than decoration:
+
+- stable anchors + navigation for repeated jumping during execution;
+- ordered lists for strict execution order;
+- `<figure>` / `<figcaption>` for topology and dependency flow;
+- native `<details>/<summary>` for optional diagnostic depth;
+- `<aside>` for nearby constraints/evidence warnings;
+- `<table>` for adapter/file/version contracts;
+- `<pre><code>` for canonical commands and machine-verifiable expected output;
+- definition-list semantics for claim levels where appropriate.
+
+The top visual primer must answer before the long manual begins:
+
+1. where work happens: ChatGPT/GitHub → lab Mac → RTX6;
+2. what the execution order is;
+3. what each evidence rung proves and does not prove.
+
+Visualization must make it harder—not easier—to confuse setup success with scientific success.
 
 ## Scientific boundary
 
@@ -84,8 +114,18 @@ Proof: `static contract → real reset/action → real CUDA model action → com
 
 ## UX / validation
 
-Use a narrow numbered academic-document flow, monospaced commands, local Troubleshooting, compact failure index, mobile-safe code/tables, and shared bilingual content. The page may be linked from the Guide's paper-comparability/reproduction chapter as a SEED-related benchmark case, but it is not a “Reproduction C” child page.
+Use a narrow numbered academic-document flow beneath the visual primer, monospaced commands, progressive disclosure for local Troubleshooting, a compact failure index, mobile-safe code/tables, and shared bilingual content.
 
 Never treat setup/stubs/mocks/fallback-only/clean exit/`COMPLETED` as P0.
 
-Run `npm run verify:deploy` and `npm run build`, then inspect exact-head Vercel Preview for routing, TOC/anchors, commands, mobile overflow, backlinks, evidence boundaries, and execution-manual flow.
+Run `npm run verify:deploy` and `npm run build`, then inspect exact-head Vercel Preview for:
+
+- corrected independent routes;
+- visual primer legibility on desktop/mobile;
+- topology labels remain understandable without color;
+- six-step map anchors resolve;
+- evidence ladder does not overclaim;
+- native/progressively enhanced Troubleshooting remains accessible;
+- TOC/anchors and commands remain readable;
+- mobile overflow works for code/tables;
+- current scientific evidence boundary remains truthful.
