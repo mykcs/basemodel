@@ -1,0 +1,76 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+<section class="mechanism-section" id="openevo-seed-mechanisms" aria-labelledby="mechanism-title">
+  <header class="mechanism-heading">
+    <span>06</span>
+    <div>
+      <small>{t('不是比较名字，而是看两台机器怎么工作', 'Not a name comparison: watch how each machine works')}</small>
+      <h2 id="mechanism-title">{t('同一条任务轨迹进入以后，OpenEvo 和 SEED 内部分别发生了什么？', 'When the same task experience enters, what happens inside OpenEvo and SEED?')}</h2>
+      <p>{t('把它想成视频目标分割：输入不是停在框外，而是一路穿过内部模块。这里让 observation、action、trajectory 和学习结果真的沿着模块流动。', 'Think of video object segmentation: the input does not stop outside the box; it travels through the internal modules. Here observations, actions, trajectories, and learned results visibly move through each mechanism.')}</p>
+    </div>
+  </header>
+
+  <div class="shared-input">
+    <b>{t('共同起点', 'Shared starting point')}</b>
+    <div class="input-reel" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <strong>WebShop / ALFWorld + Qwen2.5-3B-Instruct</strong>
+    <span>{t('环境给 observation → Qwen 产生 action → 环境返回下一 observation，直到形成完整 trajectory', 'environment gives observation → Qwen emits action → environment returns the next observation, until a complete trajectory exists')}</span>
+  </div>
+
+  <div class="machines">
+    <article class="machine machine--openevo">
+      <header><span>OpenEvo</span><small>{t('外部演化载体 · 跨 session', 'external evolution carriers · cross-session')}</small></header>
+      <div class="pipeline" aria-label={t('OpenEvo 原理流程', 'OpenEvo mechanism flow')}>
+        <div class="node"><small>01</small><b>{t('任务运行', 'Run task')}</b><p>observation → Qwen → action</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node"><small>02</small><b>{t('封存证据', 'Seal evidence')}</b><p>{t('trajectory · score · failure evidence', 'trajectory · score · failure evidence')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node node--core"><small>03</small><b>{t('Evolution Method', 'Evolution Method')}</b><p>{t('读取完成任务的数据，提炼下一次可用的改变', 'reads completed-task data and derives a change usable later')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node"><small>04</small><b>{t('Artifact', 'Artifact')}</b><p>{t('text memory · skill bundle · system instructions · parametric carrier', 'text memory · skill bundle · system instructions · parametric carrier')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node node--output"><small>05</small><b>{t('Successor Revision', 'Successor Revision')}</b><p>{t('通过验证后，下一任务统一加载', 'after validation, the next task loads it as one revision')}</p></div>
+      </div>
+      <div class="loopback"><span>{t('下一次任务', 'next task')}</span><i></i><b>{t('更新后的外部上下文 / artifact 回到 Qwen 周围', 'updated external context / artifacts return around Qwen')}</b></div>
+      <footer><b>{t('变化主要存在哪里？', 'Where does the change live?')}</b><span>{t('模型外的版本化载体；只有选择参数化 carrier 时才涉及参数。当前公平实验重点是外部文本记忆。', 'In versioned carriers outside the model; parameters are involved only for a parametric carrier. The current fair experiment focuses on external text memory.')}</span></footer>
+    </article>
+
+    <article class="machine machine--seed">
+      <header><span>SEED</span><small>{t('hindsight → 参数内化 · 训练循环', 'hindsight → parameter internalization · training loop')}</small></header>
+      <div class="pipeline" aria-label={t('SEED 原理流程', 'SEED mechanism flow')}>
+        <div class="node"><small>01</small><b>{t('On-policy Rollout', 'On-policy Rollout')}</b><p>observation → policy → action</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node"><small>02</small><b>{t('完整轨迹', 'Completed trajectory')}</b><p>{t('同一 policy 既是 actor，也分析自己刚才的行为', 'the same policy acts and then analyzes its own behavior')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node node--core"><small>03</small><b>{t('Hindsight Skill', 'Hindsight Skill')}</b><p>{t('事后提炼“如果当时知道这条技能，会怎么行动”', 'extracts what the policy would do if it had known the skill')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node"><small>04</small><b>{t('双上下文 Re-score', 'Dual-context Re-score')}</b><p>{t('原始上下文 vs skill-augmented 上下文，对同一 sampled action 重算概率', 'ordinary vs skill-augmented context re-scores the same sampled action')}</p></div>
+        <div class="pipe"><i></i><i></i></div>
+        <div class="node node--output"><small>05</small><b>{t('GRPO + OPD 联合更新', 'Joint GRPO + OPD update')}</b><p>{t('reward 学结果，OPD 学 hindsight 带来的策略变化', 'reward learns outcomes; OPD learns the policy shift induced by hindsight')}</p></div>
+      </div>
+      <div class="loopback"><span>{t('下一轮 rollout', 'next rollout')}</span><i></i><b>{t('新的 Qwen policy checkpoint 自己已经变了', 'the new Qwen policy checkpoint itself has changed')}</b></div>
+      <footer><b>{t('变化主要存在哪里？', 'Where does the change live?')}</b><span>{t('模型参数里。推理时不需要再把 hindsight skill 当作外部记忆塞回 prompt。', 'Inside model parameters. At inference time, the hindsight skill does not need to be re-injected as external prompt memory.')}</span></footer>
+    </article>
+  </div>
+
+  <div class="takeaway">
+    <b>{t('看动画时只抓住这一件事', 'Keep one idea while watching')}</b>
+    <span>{t('OpenEvo：经验 → 外部 artifact / revision → 下一任务加载。SEED：经验 → hindsight skill → re-score → 参数更新 → 下一轮直接用新 policy。Qwen2.5-3B 是两条管线里被控制为相同的基础模型，不是第三种演化方法。', 'OpenEvo: experience → external artifact / revision → loaded by the next task. SEED: experience → hindsight skill → re-score → parameter update → the next rollout directly uses the new policy. Qwen2.5-3B is the controlled base model shared by both pipelines, not a third evolution method.')}</span>
+  </div>
+</section>
+
+<style>
+.mechanism-section{width:min(1180px,calc(100% - 32px));margin:72px auto 0;padding:34px;border:1px solid var(--border);border-radius:28px;background:color-mix(in srgb,var(--surface) 95%,var(--accent) 5%)}
+.mechanism-heading{display:grid;grid-template-columns:52px 1fr;gap:20px}.mechanism-heading>span{width:46px;aspect-ratio:1;display:grid;place-items:center;border-radius:14px;background:var(--text);color:var(--background);font-weight:800}.mechanism-heading small,.machine header small{color:var(--muted);font-size:.76rem;font-weight:750;letter-spacing:.07em;text-transform:uppercase}.mechanism-heading h2{margin:.2rem 0 .7rem;font-size:clamp(1.7rem,3vw,2.65rem);line-height:1.08;max-width:940px}.mechanism-heading p{margin:0;color:var(--muted);line-height:1.7;max-width:900px}
+.shared-input{margin:28px 0 20px;padding:18px 20px;border:1px solid var(--border);border-radius:18px;background:var(--background);display:grid;grid-template-columns:max-content 90px minmax(210px,max-content) 1fr;align-items:center;gap:14px}.shared-input>b{font-size:.75rem;text-transform:uppercase;color:var(--muted)}.shared-input>span{color:var(--muted);font-size:.86rem;line-height:1.5}.input-reel{height:4px;position:relative;background:color-mix(in srgb,var(--accent) 40%,var(--border))}.input-reel i,.pipe i{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent);top:50%;margin-top:-4px;animation:packet 2.4s linear infinite}.input-reel i:nth-child(2),.pipe i:nth-child(2){animation-delay:-1.2s}.input-reel i:nth-child(3){animation-delay:-.6s}.input-reel i:nth-child(4){animation-delay:-1.8s}
+.machines{display:grid;grid-template-columns:1fr 1fr;gap:18px}.machine{border:1px solid var(--border);border-radius:22px;background:var(--background);padding:20px;overflow:hidden}.machine>header{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-bottom:16px;border-bottom:1px solid var(--border)}.machine>header span{font-size:1.4rem;font-weight:850}.pipeline{display:grid;grid-template-columns:1fr;gap:0;margin-top:18px}.node{position:relative;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface);z-index:1}.node small{position:absolute;right:12px;top:10px;color:var(--muted);font-size:.68rem}.node b{display:block;padding-right:28px}.node p{margin:.35rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.45}.node--core{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 8%,transparent)}.node--output{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.pipe{height:28px;width:3px;margin:0 auto;position:relative;background:color-mix(in srgb,var(--accent) 35%,var(--border));overflow:visible}.pipe i{left:50%;margin-left:-4px;animation-name:packet-y}.loopback{margin-top:18px;display:grid;grid-template-columns:max-content 1fr;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.loopback span{font-size:.72rem;color:var(--muted);font-weight:750;text-transform:uppercase}.loopback i{height:2px;background:var(--accent);position:relative;overflow:hidden}.loopback i:after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);top:-4px;animation:packet 2.5s linear infinite}.loopback b{grid-column:1/-1;font-size:.86rem}.machine footer{margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);display:grid;gap:5px}.machine footer b{font-size:.78rem}.machine footer span{color:var(--muted);font-size:.82rem;line-height:1.5}.takeaway{margin-top:20px;padding:18px 20px;border-radius:18px;background:var(--text);color:var(--background);display:grid;grid-template-columns:max-content 1fr;gap:18px}.takeaway span{line-height:1.6;opacity:.82}
+@keyframes packet{from{left:0}to{left:100%}}@keyframes packet-y{from{top:0}to{top:100%}}
+@media(max-width:820px){.mechanism-section{padding:22px}.shared-input{grid-template-columns:1fr}.input-reel{width:100%}.machines{grid-template-columns:1fr}.takeaway{grid-template-columns:1fr}}
+@media(max-width:560px){.mechanism-section{width:min(100% - 20px,1180px);margin-top:48px;padding:18px;border-radius:20px}.mechanism-heading{grid-template-columns:38px 1fr;gap:12px}.mechanism-heading>span{width:36px;border-radius:10px}.machine{padding:15px}.machine>header{align-items:flex-start;flex-direction:column}.mechanism-heading h2{font-size:1.55rem}}
+@media(prefers-reduced-motion:reduce){.input-reel i,.pipe i,.loopback i:after{animation:none}.input-reel i{display:none}.pipe i{display:none}}
+</style>
