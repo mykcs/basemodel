@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import PersonalComputeProfile from '../../components/PersonalComputeProfile.astro';
+const description = 'A single-source profile for the MacBook Pro M4, iPhone, iPad, and offline 4×RTX 3090 lab server, with recommended connection paths.';
+---
+<AppLayout title="Lab devices and connections" description={description} locale="en">
+  <PersonalComputeProfile locale="en" />
+</AppLayout>
