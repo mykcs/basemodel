@@ -76,44 +76,18 @@ P2 infrastructure success/failure must not redefine P0 scientific success.
 
 Keep this linear order unless the owner deliberately changes the reproduction-manual template:
 
-1. **Environment Setup**
-   - ChatGPT/GitHub → lab Mac → RTX6 topology;
-   - Mac prerequisites;
-   - idle-GPU safety check.
-2. **Get & Pin Project Code**
-   - GitHub API snapshot rather than mandatory `git clone`;
-   - pinned OpenEvo commit;
-   - single bootstrap entrypoint;
-   - strict patch validation.
-3. **Data Preparation**
-   - three required WebShop small JSON files;
-   - pinned AgentGym vendored source;
-   - Mac persistent cache → validation → rsync relay.
-4. **Runtime & Dependencies**
-   - Python ≥3.11 + CUDA Torch core first;
-   - deterministic WebShop/OpenEvo overlay;
-   - offline wheelhouse from Mac;
-   - LuceneSearcher/index gate before GPU-heavy work;
-   - no vLLM/gateway/Docker requirement for P0.
-5. **Run WebShop Scientific P0**
-   - single official bootstrap command;
-   - explicit machine-verifiable P0 criteria;
-   - longer run begins only after P0 pass.
-6. **Outputs & Acceptance**
-   - inspect `STATUS` and artifacts, not just process exit code;
-   - persistent Mac result cache;
-   - keep P1/P2/P3 claims separate.
-7. **OpenEvo × ALFWorld next stage**
-   - explicitly labeled as a next-stage execution specification until validated;
-   - interface archaeology before coding;
-   - staged proof ladder.
-8. **Troubleshooting index**
-   - compact symptom → fix entries;
-   - anti-tunnel-vision rules.
+1. **Environment Setup** — topology, Mac prerequisites, GPU safety.
+2. **Get & Pin Project Code** — GitHub API snapshot, OpenEvo pin, single bootstrap, strict patch validation.
+3. **Data Preparation** — three WebShop JSON assets, pinned AgentGym source, persistent cache → validation → relay.
+4. **Runtime & Dependencies** — Python ≥3.11 + CUDA Torch core, deterministic overlay, offline wheelhouse, Lucene gate, no P2 infrastructure dependency.
+5. **Run WebShop Scientific P0** — canonical bootstrap and explicit machine-verifiable P0 criteria.
+6. **Outputs & Acceptance** — STATUS/artifacts, persistent result cache, separate P1/P2/P3 claims.
+7. **OpenEvo × ALFWorld next stage** — interface archaeology and staged proof ladder, explicitly not yet a validated one-command reproduction.
+8. **Troubleshooting index** — compact symptom → fix records and anti-tunnel-vision rules.
 
 ## Current executable entrypoint
 
-The guide should expose one canonical Mac-side command rather than teaching the reader to manually rebuild the dispatcher:
+Expose one canonical Mac-side command rather than teaching the reader to manually rebuild the dispatcher:
 
 ```bash
 gh api 'repos/mykcs/seed3090/contents/scripts/openevo_webshop/api_bootstrap.sh?ref=main' --jq .content \
@@ -121,34 +95,25 @@ gh api 'repos/mykcs/seed3090/contents/scripts/openevo_webshop/api_bootstrap.sh?r
   | bash
 ```
 
-The implementation details behind this entrypoint may evolve in `mykcs/seed3090`. If they do, update the experiment repository first, then reconcile this page.
+Implementation details behind this entrypoint may evolve in `mykcs/seed3090`. Update the experiment repository first, then reconcile this page.
 
 ## Technical facts currently taught
 
 - GitHub API snapshot is the robust control-plane fallback when normal Git transport/worktree ownership is unreliable.
 - OpenEvo validation pin: `b9fac2e1f9a078229124c6fd3bd5ab1379c46d05`.
-- WebShop small requires at least:
-  - `items_shuffle_1000.json`
-  - `items_ins_v2_1000.json`
-  - `items_human_ins.json`
+- WebShop small requires at least `items_shuffle_1000.json`, `items_ins_v2_1000.json`, and `items_human_ins.json`.
 - WebShop data is acquired from a fixed AgentGym vendored copy through GitHub Contents/Blob API, stored in the Mac persistent cache, validated, then relayed to RTX6.
-- The Mac WebShop cache is `~/.cache/seed3090-openevo-webshop/webshop-data/`.
-- Result artifacts are retrieved under `~/.cache/seed3090-openevo-webshop/results/`.
-- WebShop runtime dependencies include the current pinned/curated stack such as `gym==0.24.0`, `env==0.1.0`, `train==0.0.5`, `pyserini==0.17.0`, `faiss-cpu`, and spaCy model support.
-- The sparse/Lucene path validates `LuceneSearcher`; a superficial top-level import is not sufficient.
+- Mac WebShop cache: `~/.cache/seed3090-openevo-webshop/webshop-data/`.
+- Mac results: `~/.cache/seed3090-openevo-webshop/results/`.
+- Current WebShop runtime stack includes pinned/curated dependencies such as `gym==0.24.0`, `env==0.1.0`, `train==0.0.5`, `pyserini==0.17.0`, `faiss-cpu`, and spaCy model support.
+- The sparse/Lucene path validates `LuceneSearcher`; a superficial top-level import is insufficient.
 - P0 prioritizes CUDA Torch + Transformers + WebShop/OpenEvo scientific execution. vLLM belongs to P2.
-- Deterministic failures must not be blindly rerun with identical conditions.
 
 ## Failure-knowledge contract
 
-Known bugs must stay useful without overwhelming the main path. For each failure, preserve at least:
+Known bugs must stay useful without overwhelming the main path. Preserve at least failure layer, observable symptom, actual fix, and durable rule.
 
-- failure layer;
-- observable symptom;
-- actual fix;
-- durable rule.
-
-Important classes already learned include:
+Important classes already learned:
 
 - Git transport/worktree ownership;
 - ancestor `.git` misidentification;
@@ -165,19 +130,7 @@ Every 2–3 blocker rounds, re-check whether the work still serves the owner's o
 
 ## ALFWorld boundary
 
-The ALFWorld section is not yet a claim of validated one-command reproduction.
-
-Before implementation, map:
-
-- task/instruction;
-- reset;
-- action grammar/parser/admissible actions;
-- observation;
-- done/terminal;
-- reward/evaluator;
-- trajectory serialization;
-- seed/determinism;
-- data/game/cache paths.
+The ALFWorld section is not yet a claim of validated one-command reproduction. Before implementation, map task/instruction, reset, action grammar/parser/admissible actions, observation, terminal/done, reward/evaluator, trajectory serialization, seed/determinism, and data/game/cache paths.
 
 Proof should progress:
 
@@ -194,12 +147,12 @@ Proof should progress:
 ## UX ownership
 
 - Prefer a narrow academic-document reading column over dashboard-style grids.
-- Number the main sections and subsections.
+- Number main sections and subsections.
 - Commands use obvious monospaced blocks and remain horizontally scrollable on mobile.
 - `Troubleshooting` notes sit immediately after the step they explain.
 - Keep the final diagnostic index compact.
-- Tables must remain horizontally usable on narrow screens.
-- Chinese and English share the same component via `locale`/`t()`.
+- Tables remain horizontally usable on narrow screens.
+- Chinese and English share one component via `locale`/`t()`.
 - Keep the child route under `/guide/reproduction-c/` and preserve the forward entry from the existing Guide reproduction chapter.
 
 ## Validation
@@ -211,13 +164,4 @@ npm run verify:deploy
 npm run build
 ```
 
-Then inspect the exact Vercel Preview for:
-
-- Guide reproduction-C entry card still resolves;
-- both child routes return successfully;
-- numbering/TOC/anchors work;
-- command blocks do not overflow destructively on mobile;
-- table remains usable on mobile;
-- backlinks resolve;
-- no current RTX6 P0 success is claimed without fresh evidence;
-- the main flow reads as an executable reproduction manual rather than a research showcase.
+Then inspect the exact Vercel Preview for the Guide entry, both child routes, numbering/TOC/anchors, mobile command overflow, mobile table behavior, backlinks, evidence-boundary language, and overall execution-manual reading flow.
