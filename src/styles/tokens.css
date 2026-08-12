@@ -1,19 +1,25 @@
 :root {
   color-scheme: light;
-  --color-bg: #f6f4ef;
-  --color-surface: #fffdf9;
-  --color-surface-muted: #ece9e1;
-  --color-text: #1e2728;
-  --color-text-muted: #68706d;
-  --color-border: #dcd9d1;
-  --color-accent: #9c3e2a;
-  --color-accent-soft: #d7653b;
-  --color-accent-fill: #9c3e2a;
+
+  /* Durable visual identity: Research Editorial × Experimental Workbench. */
+  --canvas-editorial: #f7f3eb;
+  --canvas-workbench: #eef1ef;
+
+  --color-bg: var(--canvas-editorial);
+  --color-surface: #fffdf8;
+  --color-surface-muted: #ebe8df;
+  --color-text: #18201f;
+  --color-text-muted: #65706c;
+  --color-border: #d9d4c9;
+  --color-accent: #8f3d2a;
+  --color-accent-soft: #c97858;
+  --color-accent-fill: #8f3d2a;
   --color-accent-on-fill: #ffffff;
-  --color-positive: #245f56;
-  --color-warning: #805e2d;
-  --color-danger: #9f3027;
+  --color-positive: #2f6b65;
+  --color-warning: #8a642b;
+  --color-danger: #963b32;
   --color-info: #3d6f73;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -22,11 +28,27 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --content-max: 1180px;
-  --shadow: 0 16px 45px rgba(37, 47, 46, .07);
+
+  /* Only three ordinary radius levels. Pills remain a special control shape. */
+  --radius-control: 6px;
+  --radius-panel: 10px;
+  --radius-feature: 16px;
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-panel);
+  --radius-lg: var(--radius-feature);
+
+  --reading-width: 720px;
+  --editorial-max: 1120px;
+  --workbench-max: 1440px;
+  --content-max: 1180px; /* compatibility width for legacy shared shells */
+
+  /* Elevation is reserved for genuinely floating layers. */
+  --shadow-floating: 0 20px 60px rgba(24, 32, 31, .12);
+  --shadow: var(--shadow-floating);
+
+  --font-interface: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+  --font-editorial: "Noto Serif SC", "Songti SC", STSong, Georgia, "Times New Roman", serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
   /* Compatibility aliases for the existing page styles. */
   --bg: var(--color-bg);
@@ -54,12 +76,14 @@
   --background: var(--color-surface);
   --foreground: var(--color-text);
 
-  font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+  font-family: var(--font-interface);
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --color-bg: #151a1a;
+  --canvas-editorial: #151a1a;
+  --canvas-workbench: #111818;
+  --color-bg: var(--canvas-editorial);
   --color-surface: #1d2525;
   --color-surface-muted: #27302f;
   --color-text: #edf0e8;
@@ -73,5 +97,5 @@
   --color-warning: #e2bd79;
   --color-danger: #f19a8e;
   --color-info: #8ec1bd;
-  --shadow: 0 16px 45px rgba(0, 0, 0, .2);
+  --shadow-floating: 0 24px 70px rgba(0, 0, 0, .34);
 }
