@@ -5,323 +5,375 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
-const seedGuideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
-const paperHref = localePath(locale, '/papers/seed/');
+const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
 
-const claims = [
-  {
-    id: 'P0',
-    title: t('科学复现', 'Scientific reproduction'),
-    text: t('真实 WebShop + Qwen CUDA + 非 fallback 动作 + 真实 reflector + evolution 注入 + gen0→gen1。做到这里，就证明核心自进化机制真的跑了。', 'Real WebShop + Qwen on CUDA + non-fallback action + real reflector + evolution injection + gen0→gen1. This is the proof that the scientific self-evolution mechanism really ran.'),
-  },
-  {
-    id: 'P1',
-    title: t('冻结黄金环境', 'Freeze the golden environment'),
-    text: t('第一次 P0 成功后，再固定 Python / Torch / CUDA / Transformers / Java / Pyserini / spaCy / wheelhouse / 数据与模型身份。', 'After the first P0 success, freeze Python / Torch / CUDA / Transformers / Java / Pyserini / spaCy / wheelhouse / data and model identity.'),
-  },
-  {
-    id: 'P2',
-    title: t('OpenEvo 基础设施 E2E', 'OpenEvo infrastructure E2E'),
-    text: t('再验证 vLLM → rollout → gateway → Docker → WebShopHarness → evaluator。它很重要，但回答的是基础设施问题，不再阻塞科学 P0。', 'Then validate vLLM → rollout → gateway → Docker → WebShopHarness → evaluator. It matters, but it answers an infrastructure question and no longer blocks scientific P0.'),
-  },
-  {
-    id: 'P3',
-    title: t('规模与 A800 迁移', 'Scale and A800 migration'),
-    text: t('用 3090 实测的显存、episode 时间、模型加载和长跑数据，估算 8×A800 的迁移与规模化。', 'Use measured 3090 memory, episode time, model loading, and sustained-run evidence to plan the 8×A800 migration.'),
-  },
+const bootstrap = `gh api 'repos/mykcs/seed3090/contents/scripts/openevo_webshop/api_bootstrap.sh?ref=main' --jq .content \\
+  | python3 -c 'import base64,sys; sys.stdout.buffer.write(base64.b64decode(sys.stdin.read()))' \\
+  | bash`;
+
+const macChecks = `gh auth status
+python3 --version
+rsync --version | head -n 1
+ssh -V`;
+
+const gpuCheck = `nvidia-smi --query-gpu=index,name,memory.total,memory.used,utilization.gpu --format=csv`;
+
+const successStatus = `STATUS=P0_PASS
+SCIENTIFIC_REPRO=pass
+EVOLUTION_SMOKE=pass
+OFFICIAL_E2E=not_run
+INFRA_E2E_STATUS=deferred_p2
+FIRST_BLOCKER=none
+LONG_RUN=<pid>
+MAC_RESULT_DIR=<path>`;
+
+const dataFiles = [
+  'items_shuffle_1000.json',
+  'items_ins_v2_1000.json',
+  'items_human_ins.json',
 ];
 
-const directSteps = [
-  {
-    n: '01',
-    title: t('先把“成功”拆成 P0 / P1 / P2 / P3', 'Split success into P0 / P1 / P2 / P3 first'),
-    body: t('不要再用一个“OpenEvo 跑通了”同时表示科学机制、环境、服务栈和规模。最先要证明的是科学 P0；官方服务栈放到 P2。', 'Do not let one phrase—“OpenEvo works”—mean mechanism, environment, service stack, and scale at once. Prove scientific P0 first; keep the official service stack in P2.'),
-    gate: t('P0 的正证据写成机器可判断的条件。', 'Write P0 as machine-verifiable positive evidence.'),
-  },
-  {
-    n: '02',
-    title: t('先找历史黄金样本，再配环境', 'Find the historical golden run before designing the environment'),
-    body: t('2026-07-29 的 WEIYING / Kaggle / Colab 记录是核心参考：真实 WebAgentTextEnv、Qwen2.5-3B、Transformers + CUDA、真实 reflector、inject_evolution、gen0→gen1。7/27 的 COMPLETED 是 stub 证据，不能混为一谈。', 'The 2026-07-29 WEIYING / Kaggle / Colab run is the core reference: real WebAgentTextEnv, Qwen2.5-3B, Transformers + CUDA, real reflector, inject_evolution, gen0→gen1. The 7/27 COMPLETED result was a stub proof and must not be conflated with it.'),
-    gate: t('确认“历史成功”到底证明了哪一层，而不是只看 COMPLETED。', 'Classify what the historical success actually proved instead of reading only COMPLETED.'),
-  },
-  {
-    n: '03',
-    title: t('复用现有 WebShop adapter，不从零重写', 'Reuse the existing WebShop adapter; do not rewrite it from scratch'),
-    body: t('OpenEvo 已经有 WebShop adapter 与 Colab 级历史证据。当前工作是把真实 Linux/GPU 科学链迁到 RTX6，而不是让远程执行 Agent 再设计一套 adapter。', 'OpenEvo already has a WebShop adapter and historical Colab-level evidence. The job is to move the real Linux/GPU scientific path onto RTX6, not to have the remote executor design another adapter.'),
-    gate: t('先做 contract / schema / patch 静态检查；真正成功仍要靠真实环境。', 'Run contract / schema / patch static checks first; real success still requires the real environment.'),
-  },
-  {
-    n: '04',
-    title: t('把代码、资产、运行时分成三层', 'Separate code, assets, and runtime into three planes'),
-    body: t('GitHub 是 control plane；WebShop JSON、wheelhouse、模型、索引是 asset plane；Python/CUDA/Java/GPU 是 runtime plane。先判断 blocker 属于哪层，再修。', 'GitHub is the control plane; WebShop JSON, wheelhouse, model, and index are the asset plane; Python/CUDA/Java/GPU are the runtime plane. Identify the owning plane before fixing a blocker.'),
-    gate: t('不要因为 RTX6 无公网，就把下载逻辑塞进 GPU 运行阶段。', 'Do not push internet-download logic into the GPU runtime merely because RTX6 is offline.'),
-  },
-  {
-    n: '05',
-    title: t('WebShop 数据走已验证的 GitHub API 资产路线', 'Move WebShop data through the verified GitHub API asset route'),
-    body: t('三份 small 数据从固定 AgentGym commit 的 GitHub Contents/Blob API 获取，在 Mac 做 JSON / size / SHA256 校验，写入 persistent cache，再 rsync 到 RTX6。成功一次后后续直接 cache hit。', 'Fetch the three small data files from a fixed AgentGym commit through GitHub Contents/Blob APIs, validate JSON / size / SHA256 on the Mac, persist the cache, then rsync to RTX6. Later runs should be cache hits.'),
-    gate: t('RTX6 不需要访问 GitHub、HF 或 Google Drive 才能启动 WebShop。', 'RTX6 should not need GitHub, HF, or Google Drive access to start WebShop.'),
-  },
-  {
-    n: '06',
-    title: t('固定 OpenEvo SHA，严格打补丁', 'Pin OpenEvo and apply the validation patch strictly'),
-    body: t('精确 tarball → archive 检查 → 解包 → 只修 unified diff hunk count → git apply --check → apply → py_compile。不要用 fuzzy / 3-way 把真实不匹配藏起来。', 'Exact tarball → archive check → extract → repair unified-diff hunk counts only → git apply --check → apply → py_compile. Do not use fuzzy / 3-way matching to hide a real mismatch.'),
-    gate: t('patch 能解析与 patch 真匹配是两个不同的 gate。', 'Patch syntax and patch/source semantic compatibility are two different gates.'),
-  },
-  {
-    n: '07',
-    title: t('Mac 做 Linux wheelhouse，RTX6 离线装 overlay', 'Build the Linux wheelhouse on the Mac; install the overlay offline on RTX6'),
-    body: t('保留老 WebShop 依赖：gym 0.24、env 0.1、train 0.0.5、Pyserini 0.17、faiss-cpu、spaCy model。Pyserini 本体 --no-deps，并显式验证 LuceneSearcher。', 'Preserve the old WebShop dependencies: gym 0.24, env 0.1, train 0.0.5, Pyserini 0.17, faiss-cpu, and the spaCy model. Install Pyserini itself with --no-deps and explicitly validate LuceneSearcher.'),
-    gate: t('不是“import pyserini”就算过，而是 Lucene sparse path 真能 import/open index。', 'Do not pass on import pyserini alone; the Lucene sparse path must import and open the index.'),
-  },
-  {
-    n: '08',
-    title: t('P0 runtime 只要求真正需要的 CUDA core', 'Require only the CUDA core P0 actually needs'),
-    body: t('快速找一个 Python≥3.11（当前 wheelhouse 对齐 3.12）且 CUDA Torch 可用的环境，再叠 overlay。找不到就建立项目专属 GPU env；不要扫描几十上百个历史 venv 追求偶然的完美组合。', 'Quickly find Python≥3.11 (current wheelhouse targets 3.12) with CUDA-capable Torch, then layer the overlay. If none is obvious, create a project-owned GPU env; do not mine dozens of historical venvs for an accidental perfect combination.'),
-    gate: t('环境是实验的容器，不是实验本身。', 'The environment is a container for the experiment, not the experiment itself.'),
-  },
-  {
-    n: '09',
-    title: t('先开 Lucene index，再碰模型', 'Open the Lucene index before loading the model'),
-    body: t('先确认 small data、resources_100、indexes_100、Java/Pyserini/Lucene 都通。索引缺失就重建最小 100-product index。', 'Verify small data, resources_100, indexes_100, Java/Pyserini/Lucene first. If needed, rebuild only the minimal 100-product index.'),
-    gate: t('`LuceneSearcher(...).search()` 返回真实结果。', '`LuceneSearcher(...).search()` returns a real result.'),
-  },
-  {
-    n: '10',
-    title: t('跑最小真实 Transformers + CUDA rollout', 'Run the smallest real Transformers + CUDA rollout'),
-    body: t('Qwen2.5-3B-Instruct 在 CUDA 上对真实 WebShop 生成动作；至少一个 parsed action 不能来自 fallback；reward=0.0 也可以。', 'Qwen2.5-3B-Instruct generates actions on CUDA against real WebShop; at least one parsed action must not come from fallback; reward=0.0 is valid.'),
-    gate: t('真实 env + 真实 CUDA model + non-fallback action + numeric score。', 'Real env + real CUDA model + non-fallback action + numeric score.'),
-  },
-  {
-    n: '11',
-    title: t('马上跑真实 evolution：gen0 → reflector → injection → gen1', 'Immediately prove real evolution: gen0 → reflector → injection → gen1'),
-    body: t('reflector 必须真调用模型，静态 heuristic fallback 不计成功；evolution text 必须非空且真的进入 gen1 prompt；最后由 verifier 验收。', 'The reflector must really call the model; static heuristic fallback does not count. Evolution text must be non-empty and actually enter the gen1 prompt, then the verifier accepts the artifacts.'),
-    gate: t('这一层通过 = 科学 P0_PASS；立刻开始长跑。', 'Passing this layer = scientific P0_PASS; start the longer run immediately.'),
-  },
-  {
-    n: '12',
-    title: t('成功后先冻结 P1，再单独做 P2', 'Freeze P1 after success; do P2 separately'),
-    body: t('先保存黄金环境清单与 hashes；P2 再验证 vLLM/gateway/Docker 服务栈。P2 失败不能把已经通过的 P0 改回失败。', 'First freeze the golden environment manifest and hashes; then validate the vLLM/gateway/Docker service stack as P2. A P2 failure cannot downgrade a proven P0.'),
-    gate: t('科学证据与基础设施证据分别报告。', 'Report scientific evidence and infrastructure evidence separately.'),
-  },
-];
-
-const bugs = [
+const bugIndex = [
   {
     id: 'B01',
-    title: t('Git clone / worktree 卡死', 'Git clone / worktree dead end'),
-    symptom: t('github.com:443 git transport 断连；另一个 worktree 已占 main。', 'github.com:443 Git transport disconnected; another worktree already owned main.'),
-    wrong: t('假设远程执行一定能先得到正常 main checkout。', 'Assumed remote execution could always start from a normal main checkout.'),
-    fix: t('改成 GitHub API exact snapshot；精确 detached HEAD 也合法；不改用户工作区。', 'Use exact GitHub API snapshots; exact detached HEAD is valid; do not mutate the user workspace.'),
-    lesson: t('transport 不是实验声明的一部分。', 'Transport is not part of the experiment claim.'),
+    where: t('获取代码', 'Code acquisition'),
+    symptom: t('Git clone / fetch 经常在 github.com:443 断开，worktree 还可能已经占用 main。', 'Git clone / fetch can disconnect on github.com:443, and another worktree may already own main.'),
+    fix: t('执行链改用 api.github.com 的 exact snapshot / tarball；固定内容身份，而不是要求本地一定拥有 main。', 'Use exact api.github.com snapshots / tarballs; pin content identity instead of requiring local ownership of main.'),
   },
   {
     id: 'B02',
-    title: t('祖先 .git 被误认成仓库', 'Ancestor .git mistaken for the repo'),
-    symptom: t('snapshot 没有 .git，但 git rev-parse 向上找到 ~/.cache/.git，origin 变成 mykcs/.cache.git。', 'The snapshot had no .git, but git rev-parse walked upward into ~/.cache/.git and reported mykcs/.cache.git.'),
-    wrong: t('“git 命令成功”被误当成“当前目录就是这个 repo”。', 'A successful Git discovery command was mistaken for proof that the current directory was the repo.'),
-    fix: t('snapshot marker 优先；show-toplevel 必须精确等于 source root。', 'Snapshot marker wins; show-toplevel must exactly equal the source root.'),
-    lesson: t('工具会跨作用域搜索，必须验证 scope。', 'Tools can search across scopes; verify the scope.'),
+    where: t('源码校验', 'Source validation'),
+    symptom: t('API snapshot 没有 .git，却被父目录 ~/.cache/.git 冒充成当前仓库。', 'An API snapshot had no .git, but a parent ~/.cache/.git was discovered as if it were the current repository.'),
+    fix: t('snapshot marker 优先；只有 git show-toplevel 精确等于 source root 才承认是 Git checkout。', 'Prefer the snapshot marker; accept a Git checkout only when show-toplevel exactly matches the source root.'),
   },
   {
     id: 'B03',
-    title: t('corrupt patch 被误判成错 pin', 'Corrupt patch mistaken for a bad pin'),
-    symptom: t('git apply 报 corrupt patch at line 24。', 'git apply reported corrupt patch at line 24.'),
-    wrong: t('第一反应想换 OpenEvo commit。', 'The first impulse was to change the OpenEvo commit.'),
-    fix: t('先修 hunk count 格式，再 strict apply-check；不改 payload。', 'Repair hunk-count syntax first, then strict apply-check without altering payload.'),
-    lesson: t('先区分 parser failure 与 semantic mismatch。', 'Distinguish parser failure from semantic mismatch first.'),
+    where: t('Patch', 'Patch'),
+    symptom: t('git apply 报 corrupt patch，最初误以为 OpenEvo pin 不匹配。', 'git apply reported corrupt patch and was initially misdiagnosed as an OpenEvo pin mismatch.'),
+    fix: t('先修 unified-diff hunk count，再 strict git apply --check；不使用 fuzzy / 3-way 掩盖真正不匹配。', 'Repair unified-diff hunk counts first, then use strict git apply --check; do not hide real mismatches with fuzzy / 3-way apply.'),
   },
   {
     id: 'B04',
-    title: t('数据下载反复钻牛角尖', 'Data-download tunnel vision'),
-    symptom: t('HF reset、Google Drive timeout，换顺序和 retry 仍一样。', 'HF reset, Google Drive timeout, and retry/source reordering changed nothing.'),
-    wrong: t('把结构性网络边界当成可通过多试几次解决的 transient bug。', 'Treated a structural network boundary as a transient problem that more retries could solve.'),
-    fix: t('换 plane：固定 AgentGym 数据 → GitHub API → Mac persistent cache → RTX6。', 'Change plane: fixed AgentGym data → GitHub API → Mac persistent cache → RTX6.'),
-    lesson: t('同一边界连续确定性失败，就改架构，不改 timeout。', 'Repeated deterministic boundary failure means change architecture, not timeout.'),
+    where: t('WebShop 数据', 'WebShop data'),
+    symptom: t('HF reset、Google Drive timeout，重复 retry 没有改变因果条件。', 'HF resets and Google Drive timeouts repeated without changing the causal conditions.'),
+    fix: t('改用固定 AgentGym commit 中 vendored 的真实数据，经 GitHub API 下载到 Mac persistent cache，再 rsync 到 RTX6。', 'Use the real vendored data from a pinned AgentGym commit, download it through the GitHub API to the Mac persistent cache, then rsync it to RTX6.'),
   },
   {
     id: 'B05',
-    title: t('GitHub Actions 桥在运行前就失败', 'GitHub Actions bridge failed before execution'),
-    symptom: t('workflow 没有任何 step，账户 billing/spending policy 直接拒绝 job。', 'The workflow had no steps because account billing/spending policy rejected the job before start.'),
-    wrong: t('先设计 provider workflow，后检查账户能力。', 'Designed around the provider before checking account capability.'),
-    fix: t('删掉 Actions bridge，回到已验证可达的 GitHub API。', 'Remove the Actions bridge and use the already verified GitHub API path.'),
-    lesson: t('provider capability / billing 是架构前置条件。', 'Provider capability / billing is an architecture precondition.'),
+    where: t('托管服务', 'Hosted services'),
+    symptom: t('GitHub Actions bridge 十几秒结束、steps 为空、artifact=0，看起来像下载失败。', 'A GitHub Actions bridge ended in seconds with empty steps and no artifact, initially resembling a download failure.'),
+    fix: t('先定位 admission → runner → step → process → network → data；确认是托管侧 admission/billing 后，移出关键路径。', 'Locate the failure layer in order: admission → runner → step → process → network → data; once hosted admission/billing is confirmed, remove it from the critical path.'),
   },
   {
     id: 'B06',
-    title: t('重复 pin lookup 增加失败面', 'Redundant pin lookup added fragility'),
-    symptom: t('exact tarball 已缓存，但额外 commit lookup 临时失败直接阻塞。', 'The exact tarball was cached, yet an extra commit lookup transiently failed and blocked the run.'),
-    wrong: t('认为更多检查总是更安全。', 'Assumed more checks always meant more safety.'),
-    fix: t('用 exact SHA tarball + archive integrity 作为单一强 identity proof。', 'Use the exact SHA tarball + archive integrity as the strong identity proof.'),
-    lesson: t('每个远程检查也是 failure surface。', 'Every remote check is also a failure surface.'),
+    where: t('Python / 依赖', 'Python / dependencies'),
+    symptom: t('大量 ModuleNotFoundError 容易诱导我们逐个补包，但根因可能是错误解释器或错误环境。', 'Many ModuleNotFoundError messages invite package-by-package fixes even when the real issue is the wrong interpreter or environment.'),
+    fix: t('P0 先找 Python ≥3.11 + CUDA Torch 的明确核心，再叠 deterministic overlay；不要无限考古历史 venv。', 'For P0, first obtain an obvious Python ≥3.11 + CUDA Torch core, then layer the deterministic overlay; do not mine historical venvs indefinitely.'),
   },
   {
     id: 'B07',
-    title: t('太晚才回看 Kaggle / Colab 黄金环境', 'Consulted the Kaggle / Colab golden environment too late'),
-    symptom: t('自己重建依赖时漏掉 env、train、faiss-cpu、旧 WebShop 约束。', 'Reconstructed dependencies missed env, train, faiss-cpu, and old WebShop constraints.'),
-    wrong: t('先相信现代 requirements / 经验，再看历史成功记录。', 'Trusted modern requirements and memory before looking at historical success.'),
-    fix: t('把 7/29 真实成功 notebook 当作第一环境假设。', 'Use the real 7/29 notebook as the first environment hypothesis.'),
-    lesson: t('复现工作先做 golden-run archaeology。', 'Reproduction work starts with golden-run archaeology.'),
+    where: t('验收', 'Acceptance'),
+    symptom: t('曾把 vLLM / gateway / Docker official E2E 当成科学 P0 的必要条件。', 'vLLM / gateway / Docker official E2E was once treated as a requirement for scientific P0.'),
+    fix: t('重新拆分：P0 科学复现；P1 冻结黄金环境；P2 基础设施 E2E；P3 扩展到 A800。', 'Split the claims: P0 scientific reproduction; P1 golden environment; P2 infrastructure E2E; P3 A800 scale-up.'),
   },
   {
     id: 'B08',
-    title: t('Pyserini metadata 把 onnxruntime 拉进死胡同', 'Pyserini metadata dragged in an onnxruntime dead end'),
-    symptom: t('wheelhouse resolver 因镜像没有 onnxruntime 而失败。', 'The wheelhouse resolver failed because the mirror did not contain onnxruntime.'),
-    wrong: t('默认所有 transitive metadata dependency 都是当前 WebShop path 必需。', 'Assumed every transitive metadata dependency was required by the current WebShop path.'),
-    fix: t('Pyserini --no-deps；显式管理 sparse/Lucene 依赖；实际 import LuceneSearcher。', 'Install Pyserini with --no-deps, explicitly manage sparse/Lucene dependencies, and import LuceneSearcher for real.'),
-    lesson: t('验证实际 code path，而不是满足包的所有可能功能。', 'Validate the actual code path, not every possible package feature.'),
+    where: t('结果解释', 'Result interpretation'),
+    symptom: t('reward=0.0 容易被误判成“实验失败”，或 0.0→0.0 被写成性能提升。', 'reward=0.0 can be mistaken for an execution failure, or a 0.0→0.0 tie can be mislabeled as an improvement.'),
+    fix: t('0.0 可以证明链路真实执行；只有数值提升才能证明性能改善。把机制证据和效果证据分开。', '0.0 may prove real execution; only a numerical improvement proves performance improvement. Separate mechanism evidence from effectiveness evidence.'),
   },
-  {
-    id: 'B09',
-    title: t('把 vLLM 绑到所有早期 gate', 'Coupled vLLM to every early gate'),
-    symptom: t('扫描 100+ venv 找 torch+vllm+pydantic，科学 rollout 还没开始。', 'Scanned 100+ venvs for torch+vllm+pydantic before the scientific rollout even started.'),
-    wrong: t('把最终基础设施依赖当成所有阶段的依赖。', 'Treated final infrastructure dependencies as dependencies of every stage.'),
-    fix: t('P0 只要 CUDA Torch + overlay + Transformers；vLLM 移到 P2。', 'P0 needs CUDA Torch + overlay + Transformers; move vLLM to P2.'),
-    lesson: t('dependency scope 跟 gate 走。', 'Dependency scope follows the gate.'),
-  },
-  {
-    id: 'B10',
-    title: t('同一个确定性 blocker 被重复跑', 'Repeated the same deterministic blocker'),
-    symptom: t('相同 main、相同 source、相同缺包/网络边界，仍想“再跑一次看看”。', 'Same main, same source, same missing package/network boundary, yet tempted to “try once more.”'),
-    wrong: t('没有先区分 transient 与 deterministic。', 'Failed to classify transient vs deterministic first.'),
-    fix: t('只有 transient 才允许 identical retry；deterministic 必须先改变代码/资产/假设。', 'Only transient failures justify identical retry; deterministic blockers require code/asset/assumption changes first.'),
-    lesson: t('重复失败不是进展。', 'Repeated failure is not progress.'),
-  },
-  {
-    id: 'B11',
-    title: t('auto-pilot 可能并发踩同一个 remote root', 'Auto-pilot could overlap on the same remote root'),
-    symptom: t('每 20 分钟看到新 main 就启动，会让两个版本同时 rsync / 执行。', 'Starting every new main on a timer could make two versions rsync/run concurrently.'),
-    wrong: t('把“自动推进”理解成“每个 commit 都排队跑”。', 'Interpreted autonomy as running every commit in a queue.'),
-    fix: t('一条 active P0；只记录 latest pending SHA；当前任务结束后只跑最新。', 'One active P0; keep only the latest pending SHA; run only the latest when the current task ends.'),
-    lesson: t('auto-pilot 需要 coalescing，不是堆队列。', 'Auto-pilot needs coalescing, not a growing queue.'),
-  },
-  {
-    id: 'B12',
-    title: t('局部修补累积，整体目标漂移', 'Local fixes accumulated until the goal drifted'),
-    symptom: t('每一轮修复都合理，但最后开始把 official service stack 当成科学 P0 本身。', 'Each local fix was reasonable, but eventually the official service stack started to replace scientific P0 itself.'),
-    wrong: t('长期调试没有周期性重新问“我们究竟要证明什么”。', 'Long debugging lacked a periodic re-check of what we were actually trying to prove.'),
-    fix: t('每 2–3 轮做一次 re-synthesis：重画 claim、plane、gate、dependency。', 'Every 2–3 rounds, re-synthesize the claim, planes, gates, and dependencies.'),
-    lesson: t('这是防止“钻牛角尖”最重要的制度。', 'This is the most important institutional defense against tunnel vision.'),
-  },
-];
-
-const alfContract = [
-  [t('任务/指令', 'Task/instruction'), t('OpenEvo task request', 'OpenEvo task request'), t('ALFWorld goal text / task type', 'ALFWorld goal text / task type')],
-  [t('reset', 'reset'), t('创建 episode 初始 observation', 'Create initial episode observation'), t('现有 ALFWorld env reset', 'Existing ALFWorld env reset')],
-  [t('动作', 'Action'), t('模型输出 → parser → env action', 'Model output → parser → env action'), t('ALFWorld textual action grammar', 'ALFWorld textual action grammar')],
-  [t('观察', 'Observation'), t('trajectory observation message', 'Trajectory observation message'), t('文本 observation / feedback', 'Text observation / feedback')],
-  [t('终止', 'Terminal'), t('done / terminal state', 'done / terminal state'), t('ALFWorld episode done', 'ALFWorld episode done')],
-  [t('奖励', 'Reward'), t('numeric evaluator/result field', 'numeric evaluator/result field'), t('ALFWorld reward / success', 'ALFWorld reward / success')],
-  [t('轨迹', 'Trajectory'), t('OpenEvo serializable turns', 'OpenEvo serializable turns'), t('action-observation sequence', 'action-observation sequence')],
-  [t('确定性', 'Determinism'), t('seed / task identity', 'seed / task identity'), t('task split + seed', 'task split + seed')],
 ];
 ---
 
-<article class="openevo-research">
-  <header class="hero">
-    <div class="breadcrumbs"><a href={seedGuideHref}>{t('SEED 复现 C', 'SEED reproduction C')}</a><span>/</span><span>OpenEvo</span></div>
-    <p class="eyebrow">{t('研究扩展 · OpenEvo × WebShop / ALFWorld', 'Research extension · OpenEvo × WebShop / ALFWorld')}</p>
-    <h1>{t('一条最短成功路线，和一条真实踩坑路线', 'One shortest-success route, plus the real bug trail')}</h1>
-    <p class="lede">{t('这不是“已经一次写对的教程”。它来自一轮真实的远程复现实验：ChatGPT 负责设计与 GitHub 控制面，MiniMax 在实验室 Mac 上执行，RTX6 负责 4×3090 运行。我们把最终可复用的方法和当时走过的死胡同都保留下来。', 'This is not a tutorial that was magically correct on the first try. It comes from a real remote reproduction loop: ChatGPT designed through the GitHub control plane, MiniMax executed from the lab Mac, and RTX6 hosted the 4×3090 runtime. We preserve both the shortest reusable method and the dead ends that shaped it.')}</p>
-    <div class="status-boundary">
-      <strong>{t('当前证据边界', 'Current evidence boundary')}</strong>
-      <p>{t('2026-07-29 历史 WEIYING/Kaggle/Colab 记录已经证明真实 WebShop + Qwen2.5-3B + Transformers CUDA + reflector + gen0→gen1 可以跑。当前 RTX6 科学 P0 仍需新鲜运行证据；不要把历史成功或环境准备状态写成“RTX6 已完成”。', 'The 2026-07-29 WEIYING/Kaggle/Colab record already proves real WebShop + Qwen2.5-3B + Transformers CUDA + reflector + gen0→gen1 can run. The current RTX6 scientific P0 still needs fresh runtime evidence; do not describe historical success or environment readiness as “RTX6 complete.”')}</p>
-    </div>
-    <div class="hero-actions"><a class="primary" href="#direct-line">{t('先看最短成功路线', 'Read the shortest success route')}</a><a href="#bug-line">{t('看我们怎么踩坑', 'Read the bug trail')}</a><a href={paperHref}>{t('回 SEED 论文页', 'Back to SEED paper')}</a></div>
+<main class="reprod shell">
+  <header class="page-head">
+    <p class="kicker">{t('复现 C · OpenEvo 实验', 'Reproduction C · OpenEvo experiments')}</p>
+    <h1>{t('复现流程', 'Reproduction Process')}</h1>
+    <p class="subtitle">{t(
+      'OpenEvo × WebShop / ALFWorld：从实验室 Mac 到 4×RTX3090 的自进化实验复现手册',
+      'OpenEvo × WebShop / ALFWorld: a step-by-step self-evolution reproduction manual from the lab Mac to 4×RTX3090',
+    )}</p>
+    <a class="back-link" href={guideHref}>← {t('返回 SEED 复现 C', 'Back to SEED Reproduction C')}</a>
   </header>
 
-  <section class="claims" aria-labelledby="claim-title">
-    <p class="eyebrow">{t('第一件事：别再把四种“成功”混在一起', 'First: stop mixing four different meanings of success')}</p>
-    <h2 id="claim-title">P0 → P1 → P2 → P3</h2>
-    <div class="claim-grid">{claims.map((claim) => <article><span>{claim.id}</span><h3>{claim.title}</h3><p>{claim.text}</p></article>)}</div>
-  </section>
-
-  <section class="architecture" aria-labelledby="architecture-title">
-    <p class="eyebrow">{t('远程实验架构', 'Remote experiment architecture')}</p>
-    <h2 id="architecture-title">{t('GitHub 是控制面，Mac 是桥，RTX6 是运行面', 'GitHub is the control plane, the Mac is the bridge, RTX6 is the runtime')}</h2>
-    <pre><code>{`ChatGPT / planning Agent
-        ↓ code · plan · acceptance · fixes
-GitHub seed3090  ────────────── control plane
-        ↓ exact snapshot / current plan
-MiniMax Code on lab Mac ─────── online asset + SSH bridge
-        ↓ rsync / evidence return
-RTX6 · 4×RTX3090 ───────────── runtime plane
-        ↓
-WebShop / Qwen CUDA / evolution
-        ↓
-P0 scientific proof
-        ↓
-P1 freeze env · P2 service E2E · P3 scale`}</code></pre>
-    <p>{t('把数据、wheel、模型称为 asset plane 很重要：很多早期 bug 其实不是“GPU 环境坏了”，而是资产根本没有可靠地到达 RTX6。', 'Naming data, wheels, and models as an asset plane matters: many early bugs were not “GPU environment failures” at all—the assets simply had no reliable path to RTX6.')}</p>
-  </section>
-
-  <section id="direct-line" class="track direct" aria-labelledby="direct-title">
-    <div class="track-head"><span>A</span><div><p class="eyebrow">{t('最直接的线', 'The direct line')}</p><h2 id="direct-title">{t('如果今天从头来一次，按这 12 步走', 'If we restarted today, follow these 12 steps')}</h2><p>{t('目标不是“少写命令”，而是让每一步都最大化信息增益，并尽早碰到真实 WebShop + CUDA。', 'The goal is not fewer commands; it is maximal information gain per step and reaching real WebShop + CUDA as early as possible.')}</p></div></div>
-    <ol class="steps">{directSteps.map((step) => <li><span class="num">{step.n}</span><div><h3>{step.title}</h3><p>{step.body}</p><div class="gate"><b>{t('通过标准', 'Pass when')}</b><span>{step.gate}</span></div></div></li>)}</ol>
-  </section>
-
-  <section class="p0-proof" aria-labelledby="p0-proof-title">
-    <p class="eyebrow">{t('P0 的机器可验证定义', 'Machine-verifiable P0 definition')}</p>
-    <h2 id="p0-proof-title">{t('0 分可以成功；fallback、mock 和空 COMPLETED 不行', 'A zero reward can pass; fallback, mocks, and empty COMPLETED cannot')}</h2>
-    <div class="proof-grid">
-      <article><b>1</b><span>{t('真实 WebShop reset / step', 'Real WebShop reset / step')}</span></article>
-      <article><b>2</b><span>{t('Qwen2.5-3B 在 CUDA', 'Qwen2.5-3B on CUDA')}</span></article>
-      <article><b>3</b><span>{t('至少一个 non-fallback 动作', 'At least one non-fallback action')}</span></article>
-      <article><b>4</b><span>{t('numeric score，0.0 合法', 'Numeric score; 0.0 is valid')}</span></article>
-      <article><b>5</b><span>{t('gen0 完成', 'gen0 completes')}</span></article>
-      <article><b>6</b><span>{t('真实 model reflector', 'Real model reflector')}</span></article>
-      <article><b>7</b><span>{t('evolution text 真注入 gen1', 'Evolution text really injected into gen1')}</span></article>
-      <article><b>8</b><span>{t('gen1 + verifier 通过', 'gen1 + verifier pass')}</span></article>
+  <aside class="scope-note">
+    <strong>{t('当前范围', 'Current scope')}</strong>
+    <p>{t(
+      '这是一份“照着做”的实验手册。当前第一目标是 OpenEvo × WebShop 的科学 P0；ALFWorld 放在 WebShop 跑通之后。页面不会把历史 Kaggle/Colab 成功误写成当前 RTX6 已完成。',
+      'This is an execution-first manual. The immediate target is scientific P0 for OpenEvo × WebShop; ALFWorld follows after WebShop is stable. Historical Kaggle/Colab success is not presented as current RTX6 completion.',
+    )}</p>
+    <div class="claim-row">
+      <span><b>P0</b> {t('真实 WebShop + CUDA Qwen + real reflector + gen0→gen1', 'real WebShop + CUDA Qwen + real reflector + gen0→gen1')}</span>
+      <span><b>P1</b> {t('冻结黄金环境', 'freeze golden environment')}</span>
+      <span><b>P2</b> {t('vLLM / gateway / Docker E2E', 'vLLM / gateway / Docker E2E')}</span>
+      <span><b>P3</b> {t('3090 → A800 扩展', '3090 → A800 scale-up')}</span>
     </div>
-    <p class="warning">{t('0.0 → 0.0 可以证明机制执行，但绝不能写成“性能提升”或“promoted”。', '0.0 → 0.0 can prove mechanism execution, but must never be described as performance improvement or promotion.')}</p>
-  </section>
+  </aside>
 
-  <section id="bug-line" class="track bugs" aria-labelledby="bug-title">
-    <div class="track-head"><span>B</span><div><p class="eyebrow">{t('另一侧：真实 Bug 线', 'The other side: the real bug trail')}</p><h2 id="bug-title">{t('12 个失败不是 12 个随机事故，而是 8 类错误思维', 'Twelve failures were not random; they exposed recurring reasoning errors')}</h2><p>{t('每张卡都同时记录症状、错误假设、真正修法和可以沉淀的规则。', 'Each card records the symptom, the wrong assumption, the actual fix, and the durable rule.')}</p></div></div>
-    <div class="bug-grid">{bugs.map((bug) => <article><span class="bug-id">{bug.id}</span><h3>{bug.title}</h3><dl><div><dt>{t('症状', 'Symptom')}</dt><dd>{bug.symptom}</dd></div><div><dt>{t('错误假设', 'Wrong assumption')}</dt><dd>{bug.wrong}</dd></div><div><dt>{t('真正修复', 'Actual fix')}</dt><dd>{bug.fix}</dd></div><div><dt>{t('沉淀规则', 'Durable rule')}</dt><dd>{bug.lesson}</dd></div></dl></article>)}</div>
-  </section>
+  <nav class="toc" aria-label={t('复现目录', 'Reproduction contents')}>
+    <strong>{t('目录', 'Contents')}</strong>
+    <ol>
+      <li><a href="#environment">{t('环境准备', 'Environment Setup')}</a></li>
+      <li><a href="#code">{t('获取与固定代码', 'Get & Pin Project Code')}</a></li>
+      <li><a href="#data">{t('数据准备', 'Data Preparation')}</a></li>
+      <li><a href="#runtime">{t('运行环境与依赖', 'Runtime & Dependencies')}</a></li>
+      <li><a href="#run">{t('执行 WebShop P0', 'Run WebShop P0')}</a></li>
+      <li><a href="#outputs">{t('输出与验收', 'Outputs & Acceptance')}</a></li>
+      <li><a href="#alfworld">{t('ALFWorld 下一步', 'ALFWorld Next')}</a></li>
+      <li><a href="#troubleshooting">{t('故障索引', 'Troubleshooting Index')}</a></li>
+    </ol>
+  </nav>
 
-  <section class="reasoning" aria-labelledby="reasoning-title">
-    <p class="eyebrow">{t('为什么我们会不停犯错？', 'Why did we keep making mistakes?')}</p>
-    <h2 id="reasoning-title">{t('真正的问题不是不会写代码，而是没有定期重新综合', 'The deeper problem was not coding skill—it was failing to re-synthesize')}</h2>
-    <div class="reasoning-grid">
-      <article><h3>{t('完整性幻觉', 'Completeness illusion')}</h3><p>{t('总方案写得很长，于是自然产生“应该不会再有问题”的心理预期。真实机器却永远能暴露静态文档看不到的约束。', 'A long master plan created the feeling that nothing should go wrong. Real machines inevitably expose constraints static prose cannot see.')}</p></article>
-      <article><h3>{t('路径执着', 'Path fixation')}</h3><p>{t('HF/GD 不通时，我们先想到换镜像、重试、加 timeout，而不是先问“为什么一定要走这条网络边界”。', 'When HF/GD failed, we first changed mirrors, retries, and timeouts instead of asking why that network boundary was required at all.')}</p></article>
-      <article><h3>{t('基础设施替代科学目标', 'Infrastructure substituted for science')}</h3><p>{t('official service stack 越做越完整，最后差点变成 P0 本身；但它和“自进化机制是否真实运行”是两个问题。', 'The official service stack became increasingly complete until it almost replaced P0 itself, even though it answers a different question from whether self-evolution really runs.')}</p></article>
-      <article><h3>{t('依赖大一统', 'Dependency over-unification')}</h3><p>{t('试图找一个 venv 一次满足 Torch、vLLM、Pydantic、WebShop 所有未来阶段，导致扫描 100+ 环境。', 'Trying to find one venv satisfying Torch, vLLM, Pydantic, and every future WebShop stage caused a scan across 100+ environments.')}</p></article>
-      <article><h3>{t('历史证据用得太晚', 'Historical evidence came too late')}</h3><p>{t('如果一开始先读 7/29 的真实成功 notebook，env/train/faiss、Transformers path、0 分语义都会更早明确。', 'If we had started with the real 7/29 notebook, env/train/faiss, the Transformers path, and zero-reward semantics would have been clear much earlier.')}</p></article>
-      <article><h3>{t('局部最优累积', 'Local optima accumulated')}</h3><p>{t('每次只修眼前 blocker，看起来都合理；但 2–3 轮后如果不重新画 claim/plane/gate，整体会越来越偏。', 'Each local blocker fix looked reasonable, but without redrawing claim/plane/gates every 2–3 rounds, the global design drifted.')}</p></article>
+  <section id="environment" class="section">
+    <h2>{t('1. 环境准备', '1. Environment Setup')}</h2>
+
+    <h3>{t('1.0 先确认实验拓扑', '1.0 Confirm the experiment topology')}</h3>
+    <p>{t(
+      '不要把“Mac 有公网”和“RTX6 有公网”混在一起。当前稳定架构是：ChatGPT/GitHub 负责控制面；实验室 Mac 负责下载与资产缓存；Mac 通过物理网络 + SSH/rsync 把代码、WebShop 数据和离线依赖送到 RTX6；RTX6 只负责 GPU 执行。',
+      'Do not conflate internet access on the Mac with internet access on RTX6. The stable topology is: ChatGPT/GitHub as the control plane; the lab Mac as the acquisition/cache plane; the Mac relays code, WebShop data, and offline dependencies over the physical network with SSH/rsync; RTX6 only performs GPU execution.',
+    )}</p>
+    <pre class="diagram"><code>ChatGPT / GitHub
+        ↓
+Lab Mac  ── internet acquisition + persistent cache
+        ↓  SSH / rsync over lab network
+RTX6 (4× RTX3090) ── offline GPU execution</code></pre>
+
+    <h3>{t('1.1 检查 Mac 端工具', '1.1 Check tools on the Mac')}</h3>
+    <p>{t('在实验室 Mac 上运行：', 'Run on the lab Mac:')}</p>
+    <pre><code>{macChecks}</code></pre>
+    <p class="expected"><b>{t('预期：', 'Expected:')}</b> {t('GitHub CLI 已登录；Python 3 可用；rsync 与 SSH 存在。当前自动脚本还会检查 tar、bash、cp、git、sshpass 和 macOS security。', 'GitHub CLI is authenticated; Python 3 is available; rsync and SSH exist. The automation also checks tar, bash, cp, git, sshpass, and macOS security.')}</p>
+
+    <h3>{t('1.2 GPU 安全检查', '1.2 GPU safety check')}</h3>
+    <p>{t('RTX6 上只使用真正空闲的 GPU。不要 kill、reset 或抢占别人的进程。', 'Use only a genuinely idle GPU on RTX6. Never kill, reset, or preempt unrelated processes.')}</p>
+    <pre><code>{gpuCheck}</code></pre>
+
+    <div class="trouble">
+      <h4>{t('Troubleshooting：为什么不直接让 RTX6 下载？', 'Troubleshooting: why not download directly on RTX6?')}</h4>
+      <p>{t('因为这台服务器的出网能力不是可靠前提。过去的数据与源码问题已经证明：把下载塞进 GPU 阶段只会让“网络失败”和“实验失败”混在一起。资产先在 Mac 准备好，再 relay。', 'Outbound access from this server is not a reliable premise. Earlier source/data incidents showed that downloading during the GPU phase only mixes network failure with experiment failure. Prepare assets on the Mac, then relay them.')}</p>
     </div>
-    <div class="resynthesis"><strong>{t('新的制度', 'New rule')}</strong><span>{t('连续修 2–3 轮以后，必须重新问：P0 到底证明什么？当前 blocker 属于哪个 plane？有没有黄金样本？这个 gate 真必要吗？同一个 deterministic failure 是否在被重复跑？', 'After 2–3 fixes, explicitly re-ask: what does P0 prove? Which plane owns the blocker? Is there a golden run? Is this gate truly necessary? Are we repeating the same deterministic failure?')}</span></div>
   </section>
 
-  <section class="alfworld" aria-labelledby="alfworld-title">
-    <p class="eyebrow">{t('下一条研究线 · OpenEvo × ALFWorld', 'Next research line · OpenEvo × ALFWorld')}</p>
-    <h2 id="alfworld-title">{t('不要照抄 WebShop adapter；先做接口考古', 'Do not clone the WebShop adapter blindly; do interface archaeology first')}</h2>
-    <p>{t('WebShop P0 稳定以后，再开始 ALFWorld。第一步不是写代码，而是同时读 OpenEvo terminal interface、WebShop adapter、SEED 的 ALFWorld 集成，把契约对齐。', 'After WebShop P0 stabilizes, start ALFWorld. The first step is not coding; inspect the OpenEvo terminal interface, the WebShop adapter, and SEED’s ALFWorld integration together and align their contracts.')}</p>
-    <div class="table-wrap"><table><thead><tr><th>{t('契约', 'Contract')}</th><th>OpenEvo</th><th>ALFWorld</th></tr></thead><tbody>{alfContract.map((row) => <tr>{row.map((cell) => <td>{cell}</td>)}</tr>)}</tbody></table></div>
-    <h3>{t('ALFWorld 最小证明梯', 'Minimal ALFWorld proof ladder')}</h3>
-    <ol class="alf-ladder"><li>{t('static adapter / parser tests', 'static adapter / parser tests')}</li><li>{t('真实 ALFWorld reset + 一个合法动作', 'real ALFWorld reset + one legal action')}</li><li>{t('真实 CUDA model action', 'real CUDA model action')}</li><li>{t('完整 episode + numeric reward', 'full episode + numeric reward')}</li><li>{t('真实 reflector / evolution proof', 'real reflector / evolution proof')}</li><li>{t('需要时再做 P2 official orchestration', 'P2 official orchestration only when needed')}</li></ol>
+  <section id="code" class="section">
+    <h2>{t('2. 获取与固定代码', '2. Get & Pin Project Code')}</h2>
+
+    <h3>{t('2.1 不要把 git clone 当成必需步骤', '2.1 Do not make git clone a prerequisite')}</h3>
+    <p>{t(
+      '当前 lab Mac 的 github.com Git transport 曾经间歇断连，因此正式入口使用 GitHub API snapshot。OpenEvo 也固定到已审查 commit，不跟随 stable/main 漂移。',
+      'The lab Mac has experienced intermittent github.com Git transport failures, so the official entrypoint uses GitHub API snapshots. OpenEvo is also pinned to a reviewed commit instead of following stable/main drift.',
+    )}</p>
+    <div class="facts">
+      <div><span>{t('OpenEvo pin', 'OpenEvo pin')}</span><code>b9fac2e1f9a078229124c6fd3bd5ab1379c46d05</code></div>
+      <div><span>{t('控制仓库', 'Control repository')}</span><code>mykcs/seed3090</code></div>
+    </div>
+
+    <h3>{t('2.2 当前唯一执行入口', '2.2 Current single execution entrypoint')}</h3>
+    <p>{t('在 Mac 上执行下面一条命令。它会读取最新 seed3090/main，而不会修改你已有的工作区。', 'Run this single command on the Mac. It reads the latest seed3090/main without mutating an existing worktree.')}</p>
+    <pre><code>{bootstrap}</code></pre>
+
+    <h3>{t('2.3 这条命令内部会做什么', '2.3 What this command does internally')}</h3>
+    <ol class="steps">
+      <li>{t('确认 gh 已登录且账号正确。', 'Verify GitHub CLI authentication and account identity.')}</li>
+      <li>{t('通过 api.github.com 获取 seed3090/main 的 exact tarball snapshot。', 'Fetch an exact seed3090/main tarball snapshot through api.github.com.')}</li>
+      <li>{t('复用或下载固定 OpenEvo tarball。', 'Reuse or download the pinned OpenEvo tarball.')}</li>
+      <li>{t('规范化 patch hunk count，然后 strict apply-check + py_compile。', 'Normalize patch hunk counts, then strict apply-check + py_compile.')}</li>
+      <li>{t('把源码、数据和 wheelhouse rsync 到 RTX6。', 'Rsync source, data, and wheelhouse to RTX6.')}</li>
+      <li>{t('在 RTX6 启动 scientific P0 pipeline，最后把 artifacts 拉回 Mac。', 'Start the scientific P0 pipeline on RTX6 and retrieve artifacts back to the Mac.')}</li>
+    </ol>
+
+    <div class="trouble">
+      <h4>{t('Troubleshooting：Git clone / worktree 问题', 'Troubleshooting: Git clone / worktree problems')}</h4>
+      <p>{t('不要因为 clone 失败就反复重试，也不要为了拿 main 去破坏已有 worktree。当前入口只关心“exact content identity”，不要求本地必须持有 main 分支。', 'Do not keep retrying clone failures or disturb an existing worktree just to own main. The current entrypoint cares about exact content identity, not local branch ownership.')}</p>
+    </div>
   </section>
 
-  <section class="takeaways" aria-labelledby="takeaway-title">
-    <p class="eyebrow">{t('最终沉淀', 'What we keep')}</p>
-    <h2 id="takeaway-title">{t('以后再做类似实验，先记住这 10 条', 'Ten rules to carry into the next reproduction')}</h2>
-    <ol><li>{t('详细方案 ≠ 已验证方案。', 'A detailed plan is not a validated plan.')}</li><li>{t('复现先找黄金历史运行。', 'Start reproduction from a golden historical run.')}</li><li>{t('把 scientific claim 和 infrastructure claim 分开。', 'Separate scientific and infrastructure claims.')}</li><li>{t('把 control / asset / runtime 三层分开。', 'Separate control / asset / runtime planes.')}</li><li>{t('一个边界连续确定性失败，就换架构。', 'Repeated deterministic boundary failure means change architecture.')}</li><li>{t('provider billing/权限先验证，再设计工作流。', 'Verify provider billing/permissions before designing around it.')}</li><li>{t('只要求当前 gate 真需要的依赖。', 'Require only dependencies the current gate truly needs.')}</li><li>{t('测试实际 code path，不迷信 metadata。', 'Test the real code path, not package metadata alone.')}</li><li>{t('deterministic blocker 不用同样代码无限重跑。', 'Do not endlessly rerun deterministic blockers with identical code.')}</li><li>{t('auto-pilot 串行 + latest SHA coalescing；每几轮强制重新综合。', 'Serialize auto-pilot + latest-SHA coalescing; force re-synthesis every few rounds.')}</li></ol>
+  <section id="data" class="section">
+    <h2>{t('3. 数据准备', '3. Data Preparation')}</h2>
+
+    <h3>{t('3.1 WebShop small 数据', '3.1 WebShop small data')}</h3>
+    <p>{t('P0 使用的 WebShop small 路线至少需要这三份 JSON：', 'The WebShop small path used by P0 requires at least these three JSON files:')}</p>
+    <pre><code>{dataFiles.join('\n')}</code></pre>
+
+    <h3>{t('3.2 数据如何获取', '3.2 How data is acquired')}</h3>
+    <p>{t(
+      '当前不再依赖 Hugging Face 或 Google Drive。bootstrap 会从固定 AgentGym commit 中 vendored 的真实 WebShop 数据，经 GitHub Contents/Blob API 下载到 Mac persistent cache；先做 JSON / size / SHA256 校验，再 relay 到 RTX6。',
+      'The current path no longer depends on Hugging Face or Google Drive. The bootstrap retrieves real vendored WebShop data from a pinned AgentGym commit through the GitHub Contents/Blob API into a persistent Mac cache, validates JSON / size / SHA256, then relays it to RTX6.',
+    )}</p>
+
+    <div class="facts">
+      <div><span>{t('Mac cache', 'Mac cache')}</span><code>~/.cache/seed3090-openevo-webshop/webshop-data/</code></div>
+      <div><span>{t('策略', 'Policy')}</span><code>cache hit → validate → relay</code></div>
+    </div>
+
+    <p class="note"><b>{t('注意：', 'Note:')}</b> {t('代码 snapshot 是一次性的；benchmark data 是长期资产。成功缓存一次以后，不应该因为 seed3090 commit 变化就重新从公网下载。', 'Code snapshots are disposable; benchmark data is a durable asset. Once cached successfully, it should not be re-downloaded merely because the seed3090 commit changes.')}</p>
+
+    <div class="trouble">
+      <h4>{t('Troubleshooting：HF / Google Drive 一直失败', 'Troubleshooting: repeated HF / Google Drive failures')}</h4>
+      <p>{t('这就是我们之前最典型的“钻牛角尖”：网络条件没变，却不断换顺序、延长 timeout、继续 retry。现在的规则是：同一错误类、同一条件连续两次后，必须改变一个因果变量。这里的变量就是数据源与传输拓扑。', 'This was the clearest example of tunnel vision: network conditions stayed the same while retry order and timeouts changed repeatedly. The current rule is: after the same error class twice under the same conditions, change one causal variable. Here that variable is the data source and transfer topology.')}</p>
+    </div>
   </section>
-</article>
+
+  <section id="runtime" class="section">
+    <h2>{t('4. 运行环境与依赖', '4. Runtime & Dependencies')}</h2>
+
+    <h3>{t('4.1 P0 只安装科学链真正需要的东西', '4.1 Install only what scientific P0 needs')}</h3>
+    <p>{t(
+      'P0 不是基础设施展示。先得到 Python ≥3.11 + CUDA-capable Torch 的核心环境，再叠 WebShop/OpenEvo deterministic overlay。vLLM、rollout server、gateway、Docker 留到 P2。',
+      'P0 is not an infrastructure showcase. First obtain a Python ≥3.11 + CUDA-capable Torch core, then layer the deterministic WebShop/OpenEvo overlay. vLLM, rollout server, gateway, and Docker belong to P2.',
+    )}</p>
+
+    <h3>{t('4.2 Mac 负责准备离线 wheelhouse', '4.2 The Mac prepares the offline wheelhouse')}</h3>
+    <p>{t('bootstrap 会在 Mac 端缓存 Linux CPython 3.12 wheelhouse，再随同源码 relay 到 RTX6。当前 WebShop sparse/Lucene 路径重点包含：', 'The bootstrap caches a Linux CPython 3.12 wheelhouse on the Mac and relays it with the source to RTX6. The WebShop sparse/Lucene path currently focuses on:')}</p>
+    <ul>
+      <li><code>gym==0.24.0</code></li>
+      <li><code>env==0.1.0</code></li>
+      <li><code>train==0.0.5</code></li>
+      <li><code>pyserini==0.17.0</code> ({t('本体按当前方案 --no-deps', 'package installed with --no-deps in the current plan')})</li>
+      <li><code>faiss-cpu</code></li>
+      <li>{t('spaCy + en_core_web_sm', 'spaCy + en_core_web_sm')}</li>
+    </ul>
+
+    <h3>{t('4.3 先验证 Lucene，再加载模型', '4.3 Validate Lucene before loading the model')}</h3>
+    <p>{t('JSON 数据存在还不够。pipeline 必须能准备/打开 WebShop small index，并让 LuceneSearcher 做真实查询。Java / Pyserini / index 的问题应该在占用 GPU 之前暴露。', 'Having the JSON files is not sufficient. The pipeline must prepare/open the WebShop small index and run a real LuceneSearcher query. Java / Pyserini / index failures should surface before GPU allocation.')}</p>
+
+    <div class="trouble">
+      <h4>{t('Troubleshooting：一串 ModuleNotFoundError', 'Troubleshooting: a cascade of ModuleNotFoundError')}</h4>
+      <p>{t('不要直接在错误的 system Python 上逐个 pip install。先确认解释器版本、CUDA Torch 与当前 overlay 的身份。环境是实验容器，不是实验目标。', 'Do not package-by-package pip install into the wrong system Python. First verify interpreter version, CUDA Torch, and overlay identity. The environment is the experiment container, not the experiment objective.')}</p>
+    </div>
+  </section>
+
+  <section id="run" class="section">
+    <h2>{t('5. 执行 WebShop 科学 P0', '5. Run WebShop Scientific P0')}</h2>
+
+    <h3>{t('5.1 启动实验', '5.1 Start the experiment')}</h3>
+    <p>{t('正式运行仍然只需要前面的 single entrypoint；不要绕过它手动拼接多条服务器命令。', 'The official run still uses the single entrypoint above; do not bypass it by manually reconstructing the server pipeline.')}</p>
+    <pre><code>{bootstrap}</code></pre>
+
+    <h3>{t('5.2 P0 必须真实证明什么', '5.2 What P0 must prove for real')}</h3>
+    <ol class="steps">
+      <li>{t('真实 WebAgentTextEnv reset / step。', 'Real WebAgentTextEnv reset / step.')}</li>
+      <li>{t('Qwen2.5-3B-Instruct 在 CUDA 上推理。', 'Qwen2.5-3B-Instruct performs inference on CUDA.')}</li>
+      <li>{t('至少一个模型产生的 action 被接受，不能全部依赖 fallback。', 'At least one model-produced action is accepted; trajectories cannot be fallback-only.')}</li>
+      <li>{t('存在数值 task score；0.0 合法。', 'A numeric task score exists; 0.0 is valid.')}</li>
+      <li>{t('gen0 完成。', 'gen0 completes.')}</li>
+      <li>{t('真实 model-backed reflector 成功；heuristic fallback 不算。', 'A real model-backed reflector succeeds; heuristic fallback does not count.')}</li>
+      <li>{t('非空 evolution text 真的注入 gen1 prompt。', 'Non-empty evolution text is actually injected into the gen1 prompt.')}</li>
+      <li>{t('gen1 完成，machine verifier 通过。', 'gen1 completes and the machine verifier passes.')}</li>
+    </ol>
+
+    <h3>{t('5.3 成功后立即做什么', '5.3 What happens immediately after success')}</h3>
+    <p>{t('P0_PASS 后，pipeline 应立即在同一已验证 runtime 上开始更长的 OpenEvo × WebShop run；同时进入 P1，把这个第一次成功的环境冻结成 golden environment。', 'After P0_PASS, the pipeline should immediately start a longer OpenEvo × WebShop run on the validated runtime, while P1 freezes this first successful environment as the golden environment.')}</p>
+
+    <div class="trouble">
+      <h4>{t('Troubleshooting：为什么 reward=0.0 仍可能 PASS？', 'Troubleshooting: why can reward=0.0 still PASS?')}</h4>
+      <p>{t('P0 证明的是“真实自进化机制执行了”，不是“方法已经带来性能提升”。0.0 是合法的数值 reward，可以证明执行链；但 0.0→0.0 不能写成性能提升。', 'P0 proves that the real self-evolution mechanism executed, not that the method already improved performance. A numeric 0.0 reward can validate execution, but 0.0→0.0 must not be described as a performance improvement.')}</p>
+    </div>
+  </section>
+
+  <section id="outputs" class="section">
+    <h2>{t('6. 输出与验收', '6. Outputs & Acceptance')}</h2>
+
+    <h3>{t('6.1 成功状态', '6.1 Successful status')}</h3>
+    <p>{t('最终不要只看“脚本退出码=0”。检查 STATUS 文件和 artifact。完整 scientific P0 预期：', 'Do not accept only “script exit code = 0”. Inspect the STATUS file and artifacts. A complete scientific P0 should report:')}</p>
+    <pre><code>{successStatus}</code></pre>
+
+    <h3>{t('6.2 结果目录', '6.2 Result directories')}</h3>
+    <p>{t('RTX6 结果会被回收至 Mac 的 persistent results cache。即使中途失败，dispatcher 也会尽量把已经产生的日志与 artifacts 拉回来。', 'RTX6 results are retrieved into the persistent Mac results cache. Even on failure, the dispatcher attempts to preserve and retrieve logs and artifacts already produced.')}</p>
+    <pre><code>~/.cache/seed3090-openevo-webshop/results/</code></pre>
+
+    <h3>{t('6.3 P1 / P2 / P3 不要混写', '6.3 Do not conflate P1 / P2 / P3')}</h3>
+    <dl class="claims">
+      <div><dt>P1</dt><dd>{t('第一次 P0 成功后冻结 Python、Torch/CUDA、Transformers、WebShop deps、Java/Pyserini、spaCy、数据/模型身份、wheelhouse 与 patch hash。', 'After the first P0 success, freeze Python, Torch/CUDA, Transformers, WebShop deps, Java/Pyserini, spaCy, data/model identity, wheelhouse, and patch hashes.')}</dd></div>
+      <div><dt>P2</dt><dd>{t('单独验证 vLLM → rollout → gateway → Docker → WebShopHarness → evaluator。P2 失败不能推翻已通过的 P0。', 'Separately validate vLLM → rollout → gateway → Docker → WebShopHarness → evaluator. A P2 failure cannot downgrade a proven P0.')}</dd></div>
+      <div><dt>P3</dt><dd>{t('用 3090 的真实显存、episode 时间、吞吐和长跑数据，估算 8×A800 的迁移与规模。', 'Use measured 3090 memory, episode time, throughput, and sustained-run data to plan the 8×A800 migration.')}</dd></div>
+    </dl>
+  </section>
+
+  <section id="alfworld" class="section">
+    <h2>{t('7. OpenEvo × ALFWorld：下一阶段复现', '7. OpenEvo × ALFWorld: Next Reproduction Stage')}</h2>
+
+    <p class="note"><b>{t('证据边界：', 'Evidence boundary:')}</b> {t('这一部分目前是“下一阶段执行规范”，不是已经验证通过的 ALFWorld one-command reproduction。WebShop P0 没绿之前，不要让 ALFWorld 抢占主线。', 'This section is currently the execution specification for the next stage, not a validated one-command ALFWorld reproduction. Do not let ALFWorld preempt the WebShop P0 path before WebShop is green.')}</p>
+
+    <h3>{t('7.1 先做接口考古，不复制 WebShop 名字', '7.1 Do interface archaeology before copying WebShop')}</h3>
+    <p>{t('先从 OpenEvo 的 terminal / environment abstraction 反推 adapter contract，再逐项映射 ALFWorld：', 'Start from OpenEvo terminal/environment abstractions to derive the adapter contract, then map ALFWorld field by field:')}</p>
+    <table>
+      <thead><tr><th>{t('接口', 'Interface')}</th><th>{t('需要确认', 'What to confirm')}</th><th>{t('证据', 'Evidence')}</th></tr></thead>
+      <tbody>
+        <tr><td>task / instruction</td><td>{t('任务文本与 split 从哪里来', 'where task text and split come from')}</td><td>{t('固定 task id 可重复 reset', 'fixed task id can reset deterministically')}</td></tr>
+        <tr><td>reset</td><td>{t('初始 observation / goal', 'initial observation / goal')}</td><td>{t('真实环境 reset 成功', 'real environment reset succeeds')}</td></tr>
+        <tr><td>action</td><td>{t('动作语法、parser、admissible actions', 'action grammar, parser, admissible actions')}</td><td>{t('模型动作被真实 step 接受', 'model action accepted by a real step')}</td></tr>
+        <tr><td>observation</td><td>{t('文本 observation 如何进入 prompt', 'how textual observations enter the prompt')}</td><td>{t('trajectory 保存真实 observation', 'trajectory stores real observations')}</td></tr>
+        <tr><td>done / reward</td><td>{t('终止条件、reward 与 evaluator', 'termination, reward, evaluator')}</td><td>{t('episode 返回数值结果', 'episode returns a numeric result')}</td></tr>
+        <tr><td>assets</td><td>{t('ALFWorld data / game files / cache 路径', 'ALFWorld data / game files / cache paths')}</td><td>{t('无公网 RTX6 也可启动', 'RTX6 can start without outbound internet')}</td></tr>
+      </tbody>
+    </table>
+
+    <h3>{t('7.2 ALFWorld 的证据阶梯', '7.2 ALFWorld evidence ladder')}</h3>
+    <ol class="steps">
+      <li>{t('静态 adapter / contract 检查。', 'Static adapter / contract check.')}</li>
+      <li>{t('真实 ALFWorld reset + 一步真实 action。', 'Real ALFWorld reset + one real action.')}</li>
+      <li>{t('CUDA Qwen 产生可接受动作。', 'CUDA Qwen produces an accepted action.')}</li>
+      <li>{t('完整 episode + numeric reward。', 'Complete episode + numeric reward.')}</li>
+      <li>{t('gen0 → real reflector → evolution injection → gen1。', 'gen0 → real reflector → evolution injection → gen1.')}</li>
+      <li>{t('最后再考虑 OpenEvo P2 service stack。', 'Only then consider the OpenEvo P2 service stack.')}</li>
+    </ol>
+  </section>
+
+  <section id="troubleshooting" class="section">
+    <h2>{t('8. Troubleshooting：已经踩过的坑', '8. Troubleshooting: Known Failure Modes')}</h2>
+    <p>{t('下面不是历史流水账，而是出现同类 blocker 时应该直接套用的诊断索引。', 'This is not a chronological diary; it is a diagnostic index to reuse when the same blocker class appears.')}</p>
+
+    <div class="bug-list">
+      {bugIndex.map((bug) => (
+        <article>
+          <header><code>{bug.id}</code><strong>{bug.where}</strong></header>
+          <p><b>{t('症状：', 'Symptom:')}</b>{bug.symptom}</p>
+          <p><b>{t('正确修法：', 'Fix:')}</b>{bug.fix}</p>
+        </article>
+      ))}
+    </div>
+
+    <h3>{t('8.1 防止再次钻牛角尖的固定规则', '8.1 Fixed anti-tunnel-vision rules')}</h3>
+    <ol class="steps">
+      <li>{t('保留完整失败 artifact，不要只记最后一行报错。', 'Preserve the complete failure artifact, not only the final error line.')}</li>
+      <li>{t('先定位失败层：admission → runner → process → network → asset → runtime → experiment。', 'Locate the failure layer first: admission → runner → process → network → asset → runtime → experiment.')}</li>
+      <li>{t('写下已经被本轮证据证明正常的上游层。', 'Record which upstream layers this run already proved healthy.')}</li>
+      <li>{t('同一错误类、同一条件连续两次后，第三次必须改变一个因果变量。', 'After the same error class twice under the same conditions, the third attempt must change a causal variable.')}</li>
+      <li>{t('只修最小确定性问题；不要每个 blocker 都重新设计总架构。', 'Fix the smallest deterministic problem; do not redesign the whole architecture for every blocker.')}</li>
+      <li>{t('每 2–3 轮 blocker 重新检查：我们现在修的东西，还是用户最初要证明的科学问题吗？', 'Every 2–3 blocker rounds, ask again: are we still fixing the scientific question the user originally wanted to prove?')}</li>
+    </ol>
+  </section>
+
+  <footer class="page-foot">
+    <p>{t('这份指南的 current path 会随着 seed3090 的真实实验证据更新；Bug 记录保留为历史证据，不因为后来跑通而删除。', 'The current path in this guide should evolve with real seed3090 experiment evidence; the bug record remains as historical evidence and is not deleted after later success.')}</p>
+    <a href={guideHref}>← {t('返回复现 C', 'Back to Reproduction C')}</a>
+  </footer>
+</main>
 
 <style>
-  .openevo-research{max-width:1180px;margin:0 auto;padding:clamp(1.2rem,3vw,3rem) clamp(1rem,3vw,2rem) 5rem;color:var(--color-text,#e9eef7)}
-  .hero,.claims,.architecture,.track,.p0-proof,.reasoning,.alfworld,.takeaways{margin-top:1.3rem;border:1px solid color-mix(in srgb,currentColor 14%,transparent);border-radius:24px;padding:clamp(1.2rem,3vw,2.2rem);background:color-mix(in srgb,var(--color-bg,#0b1020) 88%,transparent)}
-  .hero{margin-top:0;background:linear-gradient(135deg,color-mix(in srgb,#6f7cff 18%,var(--color-bg,#0b1020)),color-mix(in srgb,#38d9a9 7%,var(--color-bg,#0b1020)))}
-  .breadcrumbs{display:flex;gap:.55rem;align-items:center;font-size:.85rem;opacity:.75}.breadcrumbs a{color:inherit}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.76rem;font-weight:800;opacity:.7;margin:0 0 .5rem}.hero h1{font-size:clamp(2.1rem,6vw,4.8rem);line-height:.98;max-width:13ch;margin:.7rem 0 1.2rem}.lede{font-size:clamp(1rem,2vw,1.25rem);max-width:78ch;line-height:1.7}.status-boundary,.resynthesis,.warning{margin-top:1.2rem;padding:1rem 1.1rem;border-radius:16px;background:color-mix(in srgb,#ffcc66 13%,transparent);border:1px solid color-mix(in srgb,#ffcc66 35%,transparent)}.status-boundary p{margin:.4rem 0 0;line-height:1.6}.hero-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.3rem}.hero-actions a{padding:.72rem 1rem;border:1px solid color-mix(in srgb,currentColor 20%,transparent);border-radius:999px;color:inherit;text-decoration:none}.hero-actions .primary{background:#eef2ff;color:#10152a;border-color:transparent}
-  .claim-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}.claim-grid article,.reasoning-grid article{padding:1rem;border-radius:16px;background:color-mix(in srgb,currentColor 5%,transparent)}.claim-grid span{font-size:1.7rem;font-weight:900}.claim-grid h3{margin:.4rem 0}.claim-grid p,.architecture p{line-height:1.55;opacity:.85}.architecture pre{overflow:auto;padding:1rem;border-radius:16px;background:#080c18;line-height:1.55;color:#d9e5ff}
-  .track-head{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start}.track-head>span{display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:50%;font-size:1.5rem;font-weight:900;background:#eef2ff;color:#10152a}.track-head h2,.claims h2,.architecture h2,.p0-proof h2,.reasoning h2,.alfworld h2,.takeaways h2{font-size:clamp(1.55rem,3vw,2.5rem);margin:.2rem 0 .6rem}.track-head p{max-width:76ch;line-height:1.55}.steps{list-style:none;padding:0;margin:1.6rem 0 0;display:grid;gap:.7rem}.steps li{display:grid;grid-template-columns:3rem 1fr;gap:.8rem;padding:1rem;border-radius:18px;background:color-mix(in srgb,currentColor 5%,transparent)}.num{font-variant-numeric:tabular-nums;font-weight:900;opacity:.55}.steps h3{margin:0 0 .45rem}.steps p{margin:0;line-height:1.58;opacity:.84}.gate{display:flex;gap:.65rem;margin-top:.7rem;padding:.65rem .8rem;border-left:3px solid #6f7cff;background:color-mix(in srgb,#6f7cff 7%,transparent);font-size:.92rem}.gate b{white-space:nowrap}
-  .proof-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.proof-grid article{display:flex;gap:.7rem;align-items:center;padding:.9rem;border-radius:14px;background:color-mix(in srgb,#38d9a9 8%,transparent)}.proof-grid b{font-size:1.35rem}.warning{line-height:1.55}
-  .bug-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;margin-top:1.4rem}.bug-grid article{padding:1.05rem;border-radius:18px;border:1px solid color-mix(in srgb,#ff7b72 20%,transparent);background:color-mix(in srgb,#ff7b72 5%,transparent)}.bug-id{font-size:.72rem;font-weight:900;letter-spacing:.1em;opacity:.65}.bug-grid h3{margin:.35rem 0 .9rem}.bug-grid dl,.bug-grid dl div{margin:0}.bug-grid dl{display:grid;gap:.65rem}.bug-grid dl div{display:grid;grid-template-columns:5.2rem 1fr;gap:.55rem}.bug-grid dt{font-weight:800;font-size:.82rem;opacity:.7}.bug-grid dd{margin:0;line-height:1.5}
-  .reasoning-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.reasoning-grid h3{margin:.1rem 0 .45rem}.reasoning-grid p{margin:0;line-height:1.55;opacity:.83}.resynthesis{display:grid;grid-template-columns:auto 1fr;gap:.8rem;line-height:1.6}
-  .table-wrap{overflow:auto;border:1px solid color-mix(in srgb,currentColor 12%,transparent);border-radius:16px;margin:1rem 0}.table-wrap table{width:100%;border-collapse:collapse;min-width:680px}.table-wrap th,.table-wrap td{text-align:left;padding:.75rem;border-bottom:1px solid color-mix(in srgb,currentColor 10%,transparent)}.alf-ladder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;padding:0;list-style-position:inside}.alf-ladder li,.takeaways li{padding:.8rem;border-radius:14px;background:color-mix(in srgb,currentColor 5%,transparent)}.takeaways ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;padding:0;list-style:none}
-  @media (max-width:900px){.claim-grid,.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.reasoning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.alf-ladder{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:640px){.openevo-research{padding-inline:.75rem}.hero,.claims,.architecture,.track,.p0-proof,.reasoning,.alfworld,.takeaways{border-radius:18px;padding:1rem}.claim-grid,.proof-grid,.bug-grid,.reasoning-grid,.alf-ladder,.takeaways ol{grid-template-columns:1fr}.steps li{grid-template-columns:2.4rem 1fr}.bug-grid dl div{grid-template-columns:1fr;gap:.15rem}.gate,.resynthesis{grid-template-columns:1fr;display:grid}.hero h1{font-size:2.45rem}}
+  .reprod{max-width:930px;margin:0 auto;padding:3rem 1.25rem 6rem;line-height:1.72}
+  .page-head{margin-bottom:2.2rem}
+  .kicker{margin:0 0 .45rem;font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+  h1{margin:0;font-size:clamp(2.4rem,7vw,4.8rem);line-height:1;letter-spacing:-.05em}
+  .subtitle{margin:.8rem 0 1rem;max-width:780px;font-size:1.04rem;opacity:.72}
+  .back-link,.page-foot a{color:inherit;font-size:.9rem}
+  .scope-note{margin:2rem 0;padding:1rem 1.1rem;border:1px solid var(--border,rgba(127,127,127,.28));border-radius:10px;background:color-mix(in srgb,currentColor 2.5%,transparent)}
+  .scope-note>strong{font-size:.9rem}.scope-note p{margin:.35rem 0 .8rem}
+  .claim-row{display:flex;gap:.45rem;flex-wrap:wrap}.claim-row span{font-size:.78rem;border:1px solid var(--border,rgba(127,127,127,.24));border-radius:999px;padding:.25rem .55rem}.claim-row b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .toc{margin:2rem 0 3rem;padding:1rem 1.2rem;border-left:3px solid currentColor}.toc strong{font-size:.82rem}.toc ol{columns:2;margin:.45rem 0 0;padding-left:1.4rem}.toc li{break-inside:avoid;margin:.2rem 0}.toc a{color:inherit}
+  .section{padding:1rem 0 3.2rem;scroll-margin-top:1rem;border-top:1px solid var(--border,rgba(127,127,127,.22))}
+  .section h2{margin:2rem 0 1.4rem;font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.025em}
+  .section h3{margin:2rem 0 .6rem;font-size:1.18rem}.section h4{margin:0 0 .35rem;font-size:.94rem}
+  .section p{margin:.55rem 0}.section ul,.section ol{padding-left:1.35rem}
+  pre{overflow:auto;margin:.8rem 0;padding:1rem 1.05rem;border:1px solid var(--border,rgba(127,127,127,.24));border-radius:8px;background:color-mix(in srgb,currentColor 3.5%,transparent);font-size:.83rem;line-height:1.55}
+  pre code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.diagram{white-space:pre-wrap}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}
+  .expected,.note{padding:.75rem .9rem;border-left:3px solid currentColor;background:color-mix(in srgb,currentColor 2.5%,transparent);font-size:.9rem}
+  .facts{display:grid;gap:.45rem;margin:.8rem 0}.facts>div{display:grid;grid-template-columns:140px 1fr;gap:.75rem;padding:.55rem .7rem;border-bottom:1px solid var(--border,rgba(127,127,127,.2))}.facts span{font-size:.76rem;font-weight:800;opacity:.55}.facts code{overflow-wrap:anywhere}
+  .steps li{margin:.4rem 0;padding-left:.18rem}
+  .trouble{margin:1.25rem 0;padding:.85rem 1rem;border:1px dashed var(--border,rgba(127,127,127,.4));border-radius:8px}.trouble p{font-size:.9rem;opacity:.82}
+  .claims{display:grid;gap:.65rem}.claims>div{display:grid;grid-template-columns:56px 1fr;gap:.8rem;padding:.75rem 0;border-bottom:1px solid var(--border,rgba(127,127,127,.2))}.claims dt{font-weight:900;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.claims dd{margin:0}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.87rem}th,td{text-align:left;vertical-align:top;padding:.65rem;border-bottom:1px solid var(--border,rgba(127,127,127,.22))}th{font-size:.75rem;opacity:.58}
+  .bug-list{display:grid;gap:.7rem;margin-top:1rem}.bug-list article{padding:.9rem 1rem;border:1px solid var(--border,rgba(127,127,127,.22));border-radius:8px}.bug-list header{display:flex;gap:.65rem;align-items:center;margin-bottom:.35rem}.bug-list header code{font-size:.78rem;opacity:.55}.bug-list p{font-size:.89rem;margin:.3rem 0}.bug-list b{margin-right:.2rem}
+  .page-foot{margin-top:1rem;padding-top:1.5rem;border-top:1px solid var(--border,rgba(127,127,127,.25));font-size:.88rem;opacity:.78}
+  @media(max-width:680px){.reprod{padding:2rem .9rem 4rem}.toc ol{columns:1}.facts>div{grid-template-columns:1fr;gap:.15rem}pre{font-size:.76rem}.claim-row{display:grid}.claims>div{grid-template-columns:44px 1fr}table{display:block;overflow-x:auto;white-space:normal}}
 </style>
