@@ -15,7 +15,8 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
 10. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
 11. `current/repository-map.md` — ownership/change-to-check map.
-12. Task-relevant model/data policies plus executable source, config and tests.
+12. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
+13. Task-relevant model/data policies plus executable source, config and tests.
 
 The personal device/lab profile consumer is owned by `current/personal-compute-profile-consumer.md`; editable device facts stay only in `mykcs/fuhuo_20260419`.
 

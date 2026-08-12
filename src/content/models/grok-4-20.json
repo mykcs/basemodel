@@ -1,0 +1,125 @@
+{
+  "id": "grok-4-20",
+  "name": "Grok 4.20",
+  "official_name": "Grok 4.20",
+  "aliases": [
+    "Grok 4.20 Reasoning",
+    "Grok 4.20 Non-Reasoning"
+  ],
+  "vendor": "xAI",
+  "family": "Grok",
+  "generation": "Grok 4",
+  "release_date": "2026-03-10",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "coding",
+      "agent",
+      "tool-use",
+      "long-context"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 1000000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": "not_published",
+    "base_checkpoint_available": "not_published",
+    "finetuning_allowed": "not_reported",
+    "derivative_release_allowed": "not_reported",
+    "commercial_use_allowed": "not_reported",
+    "license_name": "not_disclosed",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "not_published",
+    "api_status": "available",
+    "api_model_ids": [
+      "grok-4.20",
+      "grok-4.20-0309-reasoning",
+      "grok-4.20-0309-non-reasoning"
+    ],
+    "product_status": "not_reported"
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_applicable",
+    "suitable_for_sft": "not_applicable",
+    "suitable_for_rl": "not_applicable",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": "not_reported"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "not_applicable",
+    "full_sft_tier": "not_applicable",
+    "rl_tier": "not_applicable"
+  },
+  "sources": [
+    {
+      "id": "xai-grok-420-reasoning-20260812",
+      "url": "https://docs.x.ai/developers/models/grok-4.20",
+      "title": "Grok 4.20",
+      "publisher": "xAI",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-12",
+      "evidence_note": "The first-party xAI model page documents the Grok 4.20 reasoning snapshot, text/image input, one-million-token context, API aliases and tool-calling surface. Provider-only distribution is recorded as proprietary; no downloadable weight claim is made.",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids",
+        "openness.classification",
+        "research.suitable_for_inference"
+      ]
+    },
+    {
+      "id": "xai-grok-420-nonreasoning-20260812",
+      "url": "https://docs.x.ai/developers/models/grok-4.20-non-reasoning",
+      "title": "Grok 4.20 (Non-Reasoning)",
+      "publisher": "xAI",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-12",
+      "evidence_note": "The first-party xAI model page documents the separate non-reasoning snapshot grok-4.20-0309-non-reasoning with the same text/image and one-million-token API surface.",
+      "supports": [
+        "checkpoint.modalities",
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids"
+      ]
+    },
+    {
+      "id": "xai-grok-420-release-20260812",
+      "url": "https://docs.x.ai/developers/release-notes",
+      "title": "xAI API release notes",
+      "publisher": "xAI",
+      "published_at": "2026-03-10",
+      "type": "official_announcement",
+      "checked_at": "2026-08-12",
+      "evidence_note": "xAI release notes state that Grok 4.20 and Grok 4.20 Multi-Agent went live on March 10, 2026.",
+      "supports": [
+        "release_date",
+        "access.api_status"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}
