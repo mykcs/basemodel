@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-12 16:44 +08:00**
+Last updated: **2026-08-12**
 
-Status: **Production ownership is migrating to Vercel. The intended steady state is Vercel Preview + Vercel Production. Cloudflare Pages is a frozen legacy rollback snapshot and should consume zero normal Git builds.**
+Status: **Production is owned by Vercel Preview + Vercel Production. Cloudflare Pages is a frozen legacy rollback snapshot and should consume zero normal Git builds. Vercel builds are also budgeted: batch coherent work and avoid push loops.**
 
 ## Current architecture authority
 
@@ -27,7 +27,7 @@ Read `current/hosting-architecture.md` and `current/deployment-policy.md` before
 
 ## Why the prior Pages decision changed
 
-The 2026-08-11 audit correctly concluded that provider count alone does not reduce build count. The owner has now made the stronger requirement explicit: **stop spending Cloudflare Pages Builds and let Vercel own both build environments.** That new requirement reopens and supersedes the prior steady-state choice.
+The 2026-08-11 audit correctly concluded that provider count alone does not reduce build count. The owner then made the stronger requirement explicit: **stop spending Cloudflare Pages Builds and let Vercel own both build environments.** That requirement superseded the prior steady-state choice.
 
 The application stack is unchanged: Astro + React + GitHub remain. This is deployment ownership consolidation, not a Next.js/framework migration.
 
@@ -37,9 +37,9 @@ Current Vercel canonical target:
 
 `https://basemodel-preview.vercel.app`
 
-The code treats stale `PUBLIC_SITE_URL=https://basemodel.pages.dev` as legacy and falls back to the Vercel Production identity. Vercel Preview is automatically `noindex` via `VERCEL_ENV=preview`; Production is expected to be indexable and must be verified after release.
+The code treats stale `PUBLIC_SITE_URL=https://basemodel.pages.dev` as legacy and falls back to the Vercel Production identity. Vercel Preview is automatically `noindex` via `VERCEL_ENV=preview`; Production is indexable and must be verified after release.
 
-An independent custom domain remains a recommended future product-identity improvement, but domain purchase is not required for this cutover and must not be performed without explicit spending authorization.
+An independent custom domain remains a recommended future product-identity improvement, but domain purchase is not required and must not be performed without explicit spending authorization.
 
 ## Cloudflare boundary
 
@@ -50,18 +50,37 @@ Direct Upload and `basemodel-workers-shadow` remain dormant Cloudflare-specific 
 ## Ordinary workflow
 
 1. read current policy + scan `scenario-trigger-registry.md`;
-2. inspect overlapping PRs;
-3. focused branch/PR;
-4. exact-head Vercel Preview + repository Gate/build;
-5. inspect real routes/metadata;
-6. sync against current `main` if it moved materially;
-7. merge with `[CF-Pages-Skip]` while legacy Pages integration exists;
-8. verify the Vercel Production deployment separately;
-9. report Cloudflare as unchanged rollback unless authoritative provider evidence says otherwise.
+2. inspect overlapping PRs and decide whether work is independent, stacked, or already superseded;
+3. finish one coherent change and run the strongest available local/Agent validation before the first provider-triggering push;
+4. publish the branch as one atomic multi-file push whenever the tool allows it;
+5. inspect the exact-head Vercel Preview + repository Gate/build;
+6. batch any evidence-driven fixes into one corrective push rather than pushing every small edit;
+7. sync against current `main` only when it moved materially;
+8. merge with `[CF-Pages-Skip]` while legacy Pages integration exists;
+9. verify the Vercel Production deployment separately;
+10. report Cloudflare as unchanged rollback unless authoritative provider evidence says otherwise.
+
+## Vercel build budget
+
+Default target:
+
+```text
+one coherent branch/PR
+-> one atomic multi-file push
+-> one initial exact-head Preview
+-> at most one corrective Preview after real inspection
+-> one Production build per accepted release batch
+```
+
+A build is justified by a meaningful review checkpoint, not by every file write or thought iteration. When using GitHub APIs, prefer a checked-out worktree or one Git data API commit (`blob/tree/commit/ref`) over sequential Contents API writes, because each ref update can create another Vercel deployment.
+
+`vercel.json` keeps auto-cancellation enabled for superseded same-branch jobs and delegates ignored-build decisions to `scripts/vercel-ignore-build.mjs`. That script compares the current commit with `VERCEL_GIT_PREVIOUS_SHA`, skips Agent/docs-only changes, and fails open to a real build when it cannot prove that skipping is safe.
+
+If several accepted PRs are intended for the same release window, consider one explicit integration/release head and one Production merge when authorship, review, rollback and ownership remain clear. Do not combine unrelated unfinished work merely to save a build.
 
 ## Open work safety
 
-Do not mix hosting migration with unrelated product PRs. At this handoff, #121 and #119 are separate product work; #116 is an older divergent UI branch. Re-check live PR state before acting.
+Do not mix deployment-policy changes with unrelated product PRs. At this handoff, #121, #125 and #119 are separate product work; #116 is an older divergent UI branch. Re-check live PR state before acting.
 
 ## Agent reading order
 
@@ -75,7 +94,7 @@ Do not mix hosting migration with unrelated product PRs. At this handoff, #121 a
 8. `current/repository-map.md`
 9. executable source/config/tests
 
-History is evidence, not current policy. If older material says Cloudflare Pages is Production, this handoff plus the current hosting/deployment files wins after the Vercel cutover commit.
+History is evidence, not current policy. If older material says Cloudflare Pages is Production, this handoff plus the current hosting/deployment files wins.
 
 ## External boundary still requiring provider access
 

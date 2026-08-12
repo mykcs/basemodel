@@ -10,6 +10,7 @@ const vercel = JSON.parse(read('vercel.json')) as {
 };
 const packageJson = JSON.parse(read('package.json')) as { scripts: Record<string, string> };
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
+const vercelIgnoreBuild = read('scripts/vercel-ignore-build.mjs');
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 const latest = read('docs/agents/LATEST.md');
@@ -20,7 +21,8 @@ describe('hosting architecture ownership', () => {
   it('uses Vercel for both Preview and Production with the repository Gate', () => {
     expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
-    expect(vercel.ignoreCommand).toContain('wrangler.jsonc');
+    expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
+    expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(architecture).toContain('Vercel Preview + Vercel Production');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
