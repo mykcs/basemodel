@@ -32,7 +32,7 @@
     "active_parameters_b": 41,
     "context_length": 256000,
     "expert_count": "not_reported",
-    "active_experts_per_toen": "not_reported"
+    "active_experts_per_token": "not_reported"
   },
   "openness": {
     "weights_available": true,
@@ -122,7 +122,7 @@
         "access.weights_status",
         "openness.license_name",
         "openness.classification",
-       "openness.commercial_use",
+        "openness.commercial_use",
         "research.vllm_support",
         "openness.base_checkpoint_available",
         "openness.finetuning_allowed",
