@@ -17,7 +17,7 @@ interface Props {
 
 const { eyebrow, title, lede, layers, caption } = Astro.props;
 ---
-<figure class="ka-layer-figure">
+<figure class="ka-layer-figure" data-ui-audit="contrast layout">
   <header class="ka-visual-header">
     {eyebrow && <span>{eyebrow}</span>}
     <h3>{title}</h3>
@@ -25,7 +25,7 @@ const { eyebrow, title, lede, layers, caption } = Astro.props;
   </header>
   <ol class="ka-layer-map">
     {layers.map((layer, index) => (
-      <li style={`--ka-layer-index:${index}`}>
+      <li style={`--ka-layer-index:${index}`} data-ui-audit-item>
         {layer.href ? (
           <a href={layer.href}>
             <span class="ka-layer-label">{layer.label}</span>
