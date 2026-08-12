@@ -13,9 +13,7 @@ const experimentEn = read('../pages/en/research/seed-openevo/experiment.astro');
 
 describe('three-journey research experience', () => {
   it('turns the global navigation into the three enduring user goals', () => {
-    for (const label of ['复现 SEED', 'OpenEvo 实验', '相关知识']) {
-      expect(header).toContain(label);
-    }
+    for (const label of ['复现 SEED', 'OpenEvo 实验', '相关知识']) expect(header).toContain(label);
     expect(header).toContain('journey-nav');
     expect(header).toContain('mobile-journeys');
     expect(header).toContain('/research/seed-openevo/experiment/');
@@ -23,12 +21,16 @@ describe('three-journey research experience', () => {
     expect(header).not.toContain('const primaryLinks');
   });
 
-  it('uses semantic HTML to express both benchmark conversations', () => {
+  it('uses semantic HTML to express both benchmark data pipelines', () => {
     expect(trajectory).toContain("id: 'webshop'");
     expect(trajectory).toContain("id: 'alfworld'");
     expect(trajectory).toContain('<details class="trajectory-scenario"');
     expect(trajectory).toContain('<ol class="trajectory-dialogue">');
-    expect(trajectory).toContain('<code>{turn.code}</code>');
+    expect(trajectory).toContain('trajectory-turn__io');
+    expect(trajectory).toContain("t('流入','IN')");
+    expect(trajectory).toContain("t('加工','PROCESS')");
+    expect(trajectory).toContain("t('流出','OUT')");
+    expect(trajectory).toContain('step.code && <code>{step.code}</code>');
     expect(trajectory).toContain('交互示意');
     expect(trajectory).toContain('不是 benchmark 实测结果');
   });
@@ -41,6 +43,13 @@ describe('three-journey research experience', () => {
     expect(trajectory).toContain('不要把“反思文本出现了”误判成“框架已经进化”');
   });
 
+  it('adds visible structural pipes, data packet motion, mobile flow, and reduced-motion fallback', () => {
+    expect(trajectory).toContain('class="trajectory-pipe"');
+    expect(trajectory).toContain('@keyframes trajectory-packet');
+    expect(trajectory).toContain('@media(max-width:720px)');
+    expect(trajectory).toContain('@media(prefers-reduced-motion:reduce)');
+  });
+
   it('exposes a bilingual OpenEvo experiment gateway and reuses the lab on benchmark pages', () => {
     expect(experimentZh).toContain('OpenEvoExperimentGateway');
     expect(experimentEn).toContain('OpenEvoExperimentGateway');
@@ -50,7 +59,7 @@ describe('three-journey research experience', () => {
     expect(benchmarkEn).toContain('AgentEnvironmentTrajectory');
   });
 
-  it('renders process connectors structurally instead of restoring text-arrow diagrams', () => {
+  it('keeps the existing navigation connectors structural', () => {
     expect(header).toContain(".mission-chain li:not(:last-child)::after");
     expect(header).toContain("content: '' !important");
     expect(header).toContain('grid-auto-flow: column');
