@@ -1,0 +1,825 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const sourceRoot = 'https://github.com/mykcs/seed3090/blob/main';
+const claims = [
+  {
+    id: 'mechanism',
+    state: 'passed',
+    step: '01',
+    status: t('已通过', 'Passed'),
+    title: t('机制：真实链路确实跑通', 'Mechanism: the real chain ran'),
+    proof: t(
+      '真实 WebShop → Qwen2.5-3B 在 CUDA 上产生动作 → 模型反思 → 文本记忆注入 → gen1。',
+      'Real WebShop → Qwen2.5-3B acts on CUDA → model-backed reflection → text-memory injection → gen1.',
+    ),
+    boundary: t(
+      'gen0 与 gen1 的平均分都为 0.0。这证明执行链真实，不证明效果变好。',
+      'Both gen0 and gen1 mean scores were 0.0. This proves the execution chain was real, not that outcomes improved.',
+    ),
+  },
+  {
+    id: 'attribution',
+    state: 'active',
+    step: '02',
+    status: t('当前门槛', 'Current gate'),
+    title: t('归因：差异必须只来自记忆', 'Attribution: memory must be the only difference'),
+    proof: t(
+      'V0 与 O1 要共用同一模型、runner、任务、提示词、随机种子和预算；唯一处理变量是“空记忆”与“冻结文本记忆”。',
+      'V0 and O1 must share the same model, runner, tasks, prompts, seeds, and budget; the sole treatment is empty versus frozen text memory.',
+    ),
+    boundary: t(
+      '前瞻协议已经冻结，但在 evaluator、seed、隔离、索引和证据封存全部过门前，不授权 GPU 资格赛。',
+      'The prospective protocol is frozen, but the GPU qualification is not authorized until evaluator, seed, isolation, index, and evidence-sealing gates pass.',
+    ),
+  },
+  {
+    id: 'efficacy',
+    state: 'pending',
+    step: '03',
+    status: t('尚未检验', 'Not tested'),
+    title: t('效果：需要新的、可比较的结果', 'Efficacy: fresh comparable outcomes are required'),
+    proof: t(
+      '先完成有效的 8 episode / 4 pair 资格赛，再进入未暴露任务上的 pilot、多随机种子比较和后续参数学习对照。',
+      'First complete a valid 8-episode / 4-pair qualification, then move to a fresh-task pilot, multi-seed comparison, and later parametric-learning controls.',
+    ),
+    boundary: t(
+      '现在不能声称 OpenEvo 提升 WebShop，也不能声称它优于、劣于或复现了完整 SEED。',
+      'The current evidence cannot claim that OpenEvo improves WebShop, beats or loses to SEED, or reproduces full SEED training.',
+    ),
+  },
+] as const;
+
+const programStages = [
+  {
+    status: t('已通过', 'Passed'),
+    title: 'P0',
+    text: t('机制复现', 'Mechanism reproduction'),
+    state: 'passed',
+  },
+  {
+    status: t('已通过', 'Passed'),
+    title: 'P1',
+    text: t('黄金环境冻结', 'Golden environment frozen'),
+    state: 'passed',
+  },
+  {
+    status: t('当前', 'Current'),
+    title: 'V0 / O1',
+    text: t('公平资格赛门前', 'Fair-qualification gate'),
+    state: 'active',
+  },
+  {
+    status: t('未开始', 'Not started'),
+    title: t('Pilot', 'Pilot'),
+    text: t('新任务小样本', 'Fresh-task pilot'),
+    state: 'pending',
+  },
+  {
+    status: t('未开始', 'Not started'),
+    title: t('因果比较', 'Causal comparison'),
+    text: t('多随机种子完整实验', 'Full multi-seed study'),
+    state: 'pending',
+  },
+  {
+    status: t('后置', 'Deferred'),
+    title: 'ALFWorld',
+    text: t('跨基准与规模扩展', 'Cross-benchmark scale-up'),
+    state: 'deferred',
+  },
+] as const;
+
+const unlocks = [
+  {
+    title: t('一个 runner', 'One runner'),
+    text: t(
+      'V0 / O1 走同一条代码路径，只允许记忆字节不同。',
+      'V0 / O1 use one code path; only memory bytes may differ.',
+    ),
+  },
+  {
+    title: t('端到端 seed 与隔离', 'End-to-end seeds and isolation'),
+    text: t(
+      '随机种子必须到达环境与模型；每个 episode 都要 reset、清理并独立记账。',
+      'Seeds must reach environment and model; every episode resets, cleans up, and receives its own ledger entry.',
+    ),
+  },
+  {
+    title: t('先过 CPU 门', 'Pass CPU gates first'),
+    text: t(
+      '锁定 indexes_1k、精确三补丁、固定分母；门前证据必须显示 GPU_WORKLOAD_LAUNCHED=0。',
+      'Lock indexes_1k, replay the exact three patches, and fix denominators; preflight evidence must show GPU_WORKLOAD_LAUNCHED=0.',
+    ),
+  },
+  {
+    title: t('失败即整组无效', 'Fail closed'),
+    text: t(
+      'fallback、异常或缺失 provenance 不能被过滤掉；任何一项都让资格赛无效，而不是“清洗后继续”。',
+      'Fallbacks, errors, or missing provenance cannot be filtered away; any one invalidates the qualification instead of being cleaned after the fact.',
+    ),
+  },
+] as const;
+---
+
+<section
+  id="seed3090-evidence-gate"
+  class="seed3090-case"
+  aria-labelledby="seed3090-case-title"
+  data-testid="seed3090-evidence-gate"
+>
+  <header class="seed3090-case__header">
+    <div>
+      <p class="seed3090-case__eyebrow">
+        {t('seed3090 真实实验快照', 'seed3090 live experiment snapshot')}
+        <span aria-hidden="true">·</span>
+        <time datetime="2026-08-12">2026-08-12</time>
+      </p>
+      <h2 id="seed3090-case-title">
+        {t(
+          '机制、归因、效果，必须分开证明',
+          'Mechanism, attribution, and efficacy need separate proof',
+        )}
+      </h2>
+      <p class="seed3090-case__lede">
+        {t(
+          '这个仓库最值得带回网站的，不是一个更大的结果数字，而是一套不会把“跑通”误写成“有效”的证据门槛。下面把真实进度放进同一张研究地图。',
+          'The most reusable lesson from this repository is not a larger result number. It is an evidence gate that prevents “it ran” from becoming “it worked.” The map below places the live program on that boundary.',
+        )}
+      </p>
+    </div>
+    <aside class="seed3090-case__snapshot" aria-label={t('当前结论', 'Current conclusion')}>
+      <span>{t('一句话结论', 'One-line conclusion')}</span>
+      <strong>
+        {t(
+          'P0 / P1 已通过；V0 / O1 公平资格赛仍停在 GPU 门前。',
+          'P0 / P1 passed; the V0 / O1 fair qualification is still blocked before GPU execution.',
+        )}
+      </strong>
+    </aside>
+  </header>
+
+  <figure class="claim-map" aria-labelledby="claim-map-title">
+    <figcaption>
+      <span>{t('三层声明地图', 'Three-layer claim map')}</span>
+      <h3 id="claim-map-title">
+        {t(
+          '每一层都回答不同问题，不能互相代替',
+          'Each layer answers a different question and cannot substitute for another',
+        )}
+      </h3>
+    </figcaption>
+    <ol>
+      {claims.map((claim) => (
+        <li data-state={claim.state} data-claim={claim.id}>
+          <div class="claim-map__topline">
+            <span class="claim-map__step" aria-hidden="true">{claim.step}</span>
+            <span class="claim-map__status">{claim.status}</span>
+          </div>
+          <h4>{claim.title}</h4>
+          <dl>
+            <div>
+              <dt>{t('已有 / 所需证据', 'Evidence in hand / required')}</dt>
+              <dd>{claim.proof}</dd>
+            </div>
+            <div>
+              <dt>{t('声明边界', 'Claim boundary')}</dt>
+              <dd>{claim.boundary}</dd>
+            </div>
+          </dl>
+        </li>
+      ))}
+    </ol>
+  </figure>
+
+  <div class="claim-boundary" role="group" aria-label={t('可以说与不能说', 'What can and cannot be claimed')}>
+    <article>
+      <span aria-hidden="true">✓</span>
+      <div>
+        <h3>{t('现在可以说', 'Supported now')}</h3>
+        <p>
+          {t(
+            '真实 WebShop、Qwen CUDA 动作、模型反思、记忆注入和 gen1 均完成；成功环境已冻结并通过严格校验。',
+            'Real WebShop, Qwen CUDA actions, model-backed reflection, memory injection, and gen1 completed; the successful environment is frozen and strictly verified.',
+          )}
+        </p>
+      </div>
+    </article>
+    <article>
+      <span aria-hidden="true">×</span>
+      <div>
+        <h3>{t('现在不能说', 'Not supported yet')}</h3>
+        <p>
+          {t(
+            '不能把 0.0 → 0.0 写成收益提升，也不能把外部文本记忆资格赛写成 SEED 的 SFT + GRPO + OPD 参数学习复现。',
+            'A 0.0 → 0.0 run is not reward improvement, and an external text-memory qualification is not a reproduction of SEED’s SFT + GRPO + OPD parameter learning.',
+          )}
+        </p>
+      </div>
+    </article>
+  </div>
+
+  <section class="program-map" aria-labelledby="program-map-title">
+    <div class="program-map__heading">
+      <div>
+        <span>{t('项目现在走到哪里', 'Where the program stands')}</span>
+        <h3 id="program-map-title">
+          {t('先取得可归因结果，再扩到完整比较', 'Establish attributable results before expanding the comparison')}
+        </h3>
+      </div>
+      <p>
+        {t(
+          '横向滑动可查看完整路线。状态文字与边框同时表达进度，不依赖颜色判断。',
+          'Scroll horizontally to inspect the full route. Status text and borders carry meaning without relying on color.',
+        )}
+      </p>
+    </div>
+    <ol>
+      {programStages.map((stage) => (
+        <li data-state={stage.state}>
+          <span>{stage.status}</span>
+          <strong>{stage.title}</strong>
+          <small>{stage.text}</small>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="unlock-map" aria-labelledby="unlock-map-title">
+    <div class="unlock-map__intro">
+      <span>{t('下一步不是“多跑几次”', 'The next step is not “run it more”')}</span>
+      <h3 id="unlock-map-title">
+        {t('先把四个公平性门槛变成机器证据', 'Turn four fairness gates into machine evidence first')}
+      </h3>
+      <p>
+        {t(
+          '这些门槛的作用，是在消耗 3090 计算之前，先证明即将得到的差异可以解释、可以复核。',
+          'These gates prove that a future difference will be interpretable and auditable before spending 3090 compute.',
+        )}
+      </p>
+    </div>
+    <ol>
+      {unlocks.map((item, index) => (
+        <li>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <strong>{item.title}</strong>
+            <p>{item.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <details class="beginner-note" open>
+    <summary>{t('小白最容易误解：两代都是 0，为什么 P0 还能通过？', 'Common beginner question: if both generations scored 0, why did P0 pass?')}</summary>
+    <p>
+      {t(
+        '因为 P0 预先要回答的是“真实环境、真实模型动作、反思和记忆注入有没有连成一条链”，不是“奖励有没有上涨”。机制门通过后，归因门才决定比较是否公平；效果门最后才回答方法是否改善结果。',
+        'Because P0 was pre-registered to ask whether the real environment, model action, reflection, and memory injection formed one working chain—not whether reward increased. Attribution comes next to establish a fair comparison; efficacy comes last to test outcome improvement.',
+      )}
+    </p>
+  </details>
+
+  <footer class="seed3090-case__sources">
+    <div>
+      <span>{t('打开原始证据', 'Open source evidence')}</span>
+      <p>{t('网站只做结构化导读；状态、协议和限制以 seed3090 仓库为准。', 'The site provides a structured reading path; the seed3090 repository remains authoritative for status, protocol, and limitations.')}</p>
+    </div>
+    <nav aria-label={t('seed3090 证据来源', 'seed3090 evidence sources')}>
+      <a href={`${sourceRoot}/docs/project/CURRENT_STATUS.md`}>
+        {t('当前状态', 'Current status')}
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href={`${sourceRoot}/docs/project/EXPERIMENT_PLAN.md`}>
+        {t('实验计划', 'Experiment plan')}
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href={`${sourceRoot}/docs/agent-handoffs/OPENEVO-SEED-WEBSHOP-COMPARISON-GATE-20260812.md`}>
+        {t('比较门槛', 'Comparison gate')}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </footer>
+</section>
+
+<style>
+  .seed3090-case {
+    width: min(1120px, calc(100% - 2rem));
+    margin: -2.25rem auto 4rem;
+    padding: clamp(1.15rem, 3vw, 2.2rem);
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 28px;
+    background:
+      linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--accent, #2457d6) 7%, transparent),
+        transparent 42%
+      ),
+      var(--surface, #fff);
+    box-shadow: 0 24px 80px color-mix(in srgb, var(--text, #201c16) 8%, transparent);
+  }
+
+  .seed3090-case__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.55fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: end;
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .seed3090-case__eyebrow,
+  .claim-map figcaption > span,
+  .program-map__heading span,
+  .unlock-map__intro > span,
+  .seed3090-case__sources > div > span {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0 0 0.7rem;
+    color: var(--accent, #2457d6);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .seed3090-case__header h2 {
+    max-width: 16ch;
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 4.35rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+  }
+
+  .seed3090-case__lede {
+    max-width: 68ch;
+    margin: 1rem 0 0;
+    color: var(--muted, #5d584f);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .seed3090-case__snapshot {
+    padding: 1.05rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-left: 4px solid var(--accent, #2457d6);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--surface, #fff) 90%, var(--accent, #2457d6));
+  }
+
+  .seed3090-case__snapshot span {
+    display: block;
+    margin-bottom: 0.55rem;
+    color: var(--muted, #5d584f);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .seed3090-case__snapshot strong {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .claim-map {
+    margin: 0;
+    padding: clamp(1.15rem, 3vw, 2rem) 0;
+    border-top: 1px solid var(--line, #d9d4c8);
+  }
+
+  .claim-map figcaption h3,
+  .program-map__heading h3,
+  .unlock-map__intro h3 {
+    max-width: 30ch;
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 2.2rem);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+  }
+
+  .claim-map > ol {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin: 1.35rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .claim-map > ol::before {
+    position: absolute;
+    z-index: 0;
+    top: 1.55rem;
+    right: 12%;
+    left: 12%;
+    height: 2px;
+    background: var(--line, #d9d4c8);
+    content: '';
+  }
+
+  .claim-map > ol > li {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 18px;
+    background: var(--surface, #fff);
+  }
+
+  .claim-map > ol > li[data-state='passed'] {
+    border-top: 4px solid var(--accent, #2457d6);
+  }
+
+  .claim-map > ol > li[data-state='active'] {
+    border: 2px solid var(--accent, #2457d6);
+    box-shadow: 0 16px 42px color-mix(in srgb, var(--accent, #2457d6) 12%, transparent);
+  }
+
+  .claim-map > ol > li[data-state='pending'] {
+    border-style: dashed;
+  }
+
+  .claim-map__topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.6rem;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+
+  .claim-map__step {
+    display: grid;
+    width: 3.05rem;
+    height: 3.05rem;
+    place-items: center;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 50%;
+    background: var(--surface, #fff);
+    color: var(--accent, #2457d6);
+    font: 850 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .claim-map__status {
+    padding: 0.38rem 0.55rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 999px;
+    color: var(--muted, #5d584f);
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
+  .claim-map h4 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .claim-map dl {
+    display: grid;
+    gap: 0.85rem;
+    margin: 1rem 0 0;
+  }
+
+  .claim-map dl div {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line, #d9d4c8);
+  }
+
+  .claim-map dt {
+    margin-bottom: 0.35rem;
+    color: var(--muted, #5d584f);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .claim-map dd {
+    margin: 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .claim-boundary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: clamp(1rem, 3vw, 1.6rem) 0;
+    border-top: 1px solid var(--line, #d9d4c8);
+  }
+
+  .claim-boundary article {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 16px;
+  }
+
+  .claim-boundary article:last-child {
+    border-style: dashed;
+  }
+
+  .claim-boundary article > span {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 50%;
+    color: var(--accent, #2457d6);
+    font-weight: 900;
+  }
+
+  .claim-boundary h3 {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .claim-boundary p {
+    margin: 0.45rem 0 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .program-map,
+  .unlock-map {
+    padding: clamp(1.2rem, 3vw, 2rem) 0;
+    border-top: 1px solid var(--line, #d9d4c8);
+  }
+
+  .program-map__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.45fr);
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .program-map__heading > p,
+  .unlock-map__intro > p {
+    margin: 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .program-map > ol {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .program-map li {
+    min-width: 0;
+    padding: 0.8rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 14px;
+  }
+
+  .program-map li[data-state='passed'] {
+    border-top: 3px solid var(--accent, #2457d6);
+  }
+
+  .program-map li[data-state='active'] {
+    border: 2px solid var(--accent, #2457d6);
+  }
+
+  .program-map li[data-state='pending'],
+  .program-map li[data-state='deferred'] {
+    border-style: dashed;
+  }
+
+  .program-map li > span {
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--muted, #5d584f);
+    font-size: 0.64rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .program-map li strong,
+  .program-map li small {
+    display: block;
+  }
+
+  .program-map li strong {
+    font-size: 0.9rem;
+  }
+
+  .program-map li small {
+    margin-top: 0.35rem;
+    color: var(--muted, #5d584f);
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .unlock-map {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.55fr) minmax(0, 1.45fr);
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .unlock-map__intro {
+    align-self: start;
+  }
+
+  .unlock-map__intro > p {
+    margin-top: 0.85rem;
+  }
+
+  .unlock-map > ol {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .unlock-map li {
+    display: grid;
+    grid-template-columns: 2.3rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 0.85rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 14px;
+  }
+
+  .unlock-map li > span {
+    color: var(--accent, #2457d6);
+    font: 850 0.72rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .unlock-map li strong {
+    font-size: 0.84rem;
+  }
+
+  .unlock-map li p {
+    margin: 0.25rem 0 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .beginner-note {
+    margin-top: 0;
+    padding: 1rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--accent, #2457d6) 5%, var(--surface, #fff));
+  }
+
+  .beginner-note summary {
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .beginner-note p {
+    max-width: 78ch;
+    margin: 0.8rem 0 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .seed3090-case__sources {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: end;
+    margin-top: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line, #d9d4c8);
+  }
+
+  .seed3090-case__sources p {
+    max-width: 64ch;
+    margin: 0;
+    color: var(--muted, #5d584f);
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .seed3090-case__sources nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.45rem;
+  }
+
+  .seed3090-case__sources a {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    min-height: 2.65rem;
+    padding: 0.58rem 0.72rem;
+    border: 1px solid var(--line, #d9d4c8);
+    border-radius: 11px;
+    color: var(--text, #201c16);
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .seed3090-case__sources a:hover,
+  .seed3090-case__sources a:focus-visible {
+    border-color: var(--accent, #2457d6);
+    background: color-mix(in srgb, var(--accent, #2457d6) 7%, transparent);
+  }
+
+  @media (max-width: 900px) {
+    .seed3090-case__header,
+    .program-map__heading,
+    .unlock-map,
+    .seed3090-case__sources {
+      grid-template-columns: 1fr;
+    }
+
+    .seed3090-case__header h2 {
+      max-width: 20ch;
+    }
+
+    .program-map > ol {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(11.5rem, 62vw);
+      grid-template-columns: none;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x proximity;
+    }
+
+    .program-map li {
+      scroll-snap-align: start;
+    }
+
+    .seed3090-case__sources nav {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .seed3090-case {
+      width: min(100% - 1rem, 1120px);
+      margin-top: -2.75rem;
+      padding: 0.9rem;
+      border-radius: 21px;
+    }
+
+    .seed3090-case__header h2 {
+      font-size: clamp(2rem, 11vw, 3.2rem);
+    }
+
+    .claim-map > ol,
+    .claim-boundary {
+      grid-template-columns: 1fr;
+    }
+
+    .claim-map > ol::before {
+      top: 2rem;
+      right: auto;
+      bottom: 2rem;
+      left: 2.5rem;
+      width: 2px;
+      height: auto;
+    }
+
+    .claim-map > ol > li {
+      min-height: auto;
+    }
+
+    .program-map > ol {
+      grid-auto-columns: minmax(10.5rem, 76vw);
+    }
+
+    .seed3090-case__sources a {
+      flex: 1 1 9rem;
+      justify-content: space-between;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .program-map > ol {
+      scroll-behavior: auto;
+    }
+  }
+</style>
