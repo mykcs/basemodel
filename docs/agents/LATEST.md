@@ -107,6 +107,10 @@ Vercel Production deployment and public verification
 
 Do not add Cloudflare or another legacy provider to an ordinary report merely because historical configuration or an old snapshot still exists. Mention legacy hosting only when the task explicitly concerns retirement/rollback, the legacy surface changed, or live evidence shows unexpected activity.
 
+## Legacy hosting note — conditional only
+
+Historical Cloudflare material, snapshots and dormant fallback scripts remain conditional evidence only. A still-connected external integration may keep an existing skip prefix as a silent safeguard, but treat it **not as a normal deployment step or completion-report line**. Load or report legacy hosting only for an explicit rollback/retirement task or when live evidence shows unexpected legacy activity.
+
 ## Agent reading order
 
 1. `/AGENTS.md`
