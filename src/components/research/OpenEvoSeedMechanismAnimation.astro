@@ -9,68 +9,242 @@ const t = (cn: string, en: string) => zh ? cn : en;
   <header class="mechanism-heading">
     <span>06</span>
     <div>
-      <small>{t('不是比较名字，而是看两台机器怎么工作', 'Not a name comparison: watch how each machine works')}</small>
-      <h2 id="mechanism-title">{t('同一条任务轨迹进入以后，OpenEvo 和 SEED 内部分别发生了什么？', 'When the same task experience enters, what happens inside OpenEvo and SEED?')}</h2>
-      <p>{t('把它想成视频目标分割：输入不是停在框外，而是一路穿过内部模块。这里让 observation、action、trajectory 和学习结果真的沿着模块流动。', 'Think of video object segmentation: the input does not stop outside the box; it travels through the internal modules. Here observations, actions, trajectories, and learned results visibly move through each mechanism.')}</p>
+      <small>{t('把算法拆开看：输入怎样穿过内部模块', 'Open the machine: watch the input travel through the internals')}</small>
+      <h2 id="mechanism-title">{t('像看视频目标分割网络一样，看懂 OpenEvo 和 SEED 自己的工作原理', 'Read OpenEvo and SEED like a video-segmentation network: input, internal modules, state change, output')}</h2>
+      <p>{t('这里不把 OpenEvo、SEED、Qwen 做成三个并列产品。Qwen2.5-3B 是两条管线内部共同使用的基础模型；动画只追踪一条任务经验怎样进入系统、在哪个模块被处理、最后“什么东西真的变了”。', 'This is not a three-product comparison. Qwen2.5-3B is the shared base model inside both pipelines. The animation follows one task experience through the system and shows what state actually changes at the end.')}</p>
     </div>
   </header>
 
-  <div class="shared-input">
-    <b>{t('共同起点', 'Shared starting point')}</b>
-    <div class="input-reel" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <strong>WebShop / ALFWorld + Qwen2.5-3B-Instruct</strong>
-    <span>{t('环境给 observation → Qwen 产生 action → 环境返回下一 observation，直到形成完整 trajectory', 'environment gives observation → Qwen emits action → environment returns the next observation, until a complete trajectory exists')}</span>
+  <div class="visual-legend" aria-label={t('动画图例', 'Animation legend')}>
+    <span><i class="legend-dot legend-dot--experience"></i>{t('任务经验 / trajectory', 'task experience / trajectory')}</span>
+    <span><i class="legend-dot legend-dot--memory"></i>{t('外部 artifact / memory', 'external artifact / memory')}</span>
+    <span><i class="legend-dot legend-dot--weights"></i>{t('模型参数变化', 'model-parameter change')}</span>
+    <b>{t('动画是 HTML + CSS；关闭系统动画时自动静止。', 'HTML + CSS only; motion stops automatically when reduced motion is enabled.')}</b>
   </div>
 
-  <div class="machines">
-    <article class="machine machine--openevo">
-      <header><span>OpenEvo</span><small>{t('外部演化载体 · 跨 session', 'external evolution carriers · cross-session')}</small></header>
-      <div class="pipeline" aria-label={t('OpenEvo 原理流程', 'OpenEvo mechanism flow')}>
-        <div class="node"><small>01</small><b>{t('任务运行', 'Run task')}</b><p>observation → Qwen → action</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node"><small>02</small><b>{t('封存证据', 'Seal evidence')}</b><p>{t('trajectory · score · failure evidence', 'trajectory · score · failure evidence')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node node--core"><small>03</small><b>{t('Evolution Method', 'Evolution Method')}</b><p>{t('读取完成任务的数据，提炼下一次可用的改变', 'reads completed-task data and derives a change usable later')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node"><small>04</small><b>{t('Artifact', 'Artifact')}</b><p>{t('text memory · skill bundle · system instructions · parametric carrier', 'text memory · skill bundle · system instructions · parametric carrier')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node node--output"><small>05</small><b>{t('Successor Revision', 'Successor Revision')}</b><p>{t('通过验证后，下一任务统一加载', 'after validation, the next task loads it as one revision')}</p></div>
+  <div class="episode-source" aria-label={t('共同输入：环境和 Qwen2.5-3B 形成一条完整任务轨迹', 'Shared input: environment and Qwen2.5-3B form a complete task trajectory')}>
+    <div class="episode-source__label">
+      <small>{t('共同输入', 'shared input')}</small>
+      <strong>{t('一条完整任务经历', 'one completed task experience')}</strong>
+    </div>
+    <div class="filmstrip" aria-hidden="true">
+      <div class="frame"><b>obs₀</b><span>{t('商品页 / 房间状态', 'page / room state')}</span></div>
+      <div class="frame frame--action"><b>act₀</b><span>{t('点击 / 文本动作', 'click / text action')}</span></div>
+      <div class="frame"><b>obs₁</b><span>{t('环境反馈', 'environment feedback')}</span></div>
+      <div class="frame frame--action"><b>act₁</b><span>{t('下一动作', 'next action')}</span></div>
+      <div class="frame frame--done"><b>done</b><span>reward + outcome</span></div>
+    </div>
+    <div class="source-model">
+      <span>Qwen2.5-3B-Instruct</span>
+      <small>{t('两条方法里都把它固定成同一个基础模型', 'the same controlled base model inside both methods')}</small>
+    </div>
+  </div>
+
+  <article class="machine machine--openevo" aria-labelledby="openevo-machine-title">
+    <header class="machine__header">
+      <div>
+        <small>{t('机器 A · OpenEvo', 'Machine A · OpenEvo')}</small>
+        <h3 id="openevo-machine-title">{t('任务结束后，把证据变成下一次 session 可加载的演化载体', 'After a task ends, turn its evidence into an evolution carrier loadable by the next session')}</h3>
       </div>
-      <div class="loopback"><span>{t('下一次任务', 'next task')}</span><i></i><b>{t('更新后的外部上下文 / artifact 回到 Qwen 周围', 'updated external context / artifacts return around Qwen')}</b></div>
-      <footer><b>{t('变化主要存在哪里？', 'Where does the change live?')}</b><span>{t('模型外的版本化载体；只有选择参数化 carrier 时才涉及参数。当前公平实验重点是外部文本记忆。', 'In versioned carriers outside the model; parameters are involved only for a parametric carrier. The current fair experiment focuses on external text memory.')}</span></footer>
-    </article>
+      <div class="state-badge state-badge--memory"><i></i>{t('主要改变：模型外状态', 'main change: state outside the model')}</div>
+    </header>
 
-    <article class="machine machine--seed">
-      <header><span>SEED</span><small>{t('hindsight → 参数内化 · 训练循环', 'hindsight → parameter internalization · training loop')}</small></header>
-      <div class="pipeline" aria-label={t('SEED 原理流程', 'SEED mechanism flow')}>
-        <div class="node"><small>01</small><b>{t('On-policy Rollout', 'On-policy Rollout')}</b><p>observation → policy → action</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node"><small>02</small><b>{t('完整轨迹', 'Completed trajectory')}</b><p>{t('同一 policy 既是 actor，也分析自己刚才的行为', 'the same policy acts and then analyzes its own behavior')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node node--core"><small>03</small><b>{t('Hindsight Skill', 'Hindsight Skill')}</b><p>{t('事后提炼“如果当时知道这条技能，会怎么行动”', 'extracts what the policy would do if it had known the skill')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node"><small>04</small><b>{t('双上下文 Re-score', 'Dual-context Re-score')}</b><p>{t('原始上下文 vs skill-augmented 上下文，对同一 sampled action 重算概率', 'ordinary vs skill-augmented context re-scores the same sampled action')}</p></div>
-        <div class="pipe"><i></i><i></i></div>
-        <div class="node node--output"><small>05</small><b>{t('GRPO + OPD 联合更新', 'Joint GRPO + OPD update')}</b><p>{t('reward 学结果，OPD 学 hindsight 带来的策略变化', 'reward learns outcomes; OPD learns the policy shift induced by hindsight')}</p></div>
+    <div class="machine-shell machine-shell--openevo">
+      <div class="shell-caption shell-caption--left"><b>{t('当前 session', 'current session')}</b><span>{t('先完成任务，不在中途偷偷改版本', 'finish the task before publishing a new revision')}</span></div>
+      <div class="shell-caption shell-caption--right"><b>{t('任务边界之后', 'after the task boundary')}</b><span>{t('封存证据 → 演化 → 验证 → 发布', 'seal → evolve → validate → publish')}</span></div>
+
+      <div class="openevo-runtime organ">
+        <span class="organ__tag">01 · Agent runtime</span>
+        <div class="runtime-loop" aria-hidden="true">
+          <div class="env-box"><b>Environment</b><small>observation</small></div>
+          <div class="mini-rail mini-rail--forward"><i></i><i></i></div>
+          <div class="qwen-core qwen-core--locked">
+            <span class="lock-mark">🔒</span>
+            <small>Base model</small>
+            <b>Qwen2.5-3B</b>
+            <div class="weight-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <em>{t('本轮参数保持不变', 'weights stay fixed in this round')}</em>
+          </div>
+          <div class="mini-rail mini-rail--back"><i></i><i></i></div>
+          <div class="tool-box"><b>Action / Tool</b><small>{t('作用回环境', 'acts on environment')}</small></div>
+        </div>
+        <p>{t('observation、action、reward 不断循环，先得到完整 trajectory。', 'Observations, actions, and rewards loop until a complete trajectory exists.')}</p>
       </div>
-      <div class="loopback"><span>{t('下一轮 rollout', 'next rollout')}</span><i></i><b>{t('新的 Qwen policy checkpoint 自己已经变了', 'the new Qwen policy checkpoint itself has changed')}</b></div>
-      <footer><b>{t('变化主要存在哪里？', 'Where does the change live?')}</b><span>{t('模型参数里。推理时不需要再把 hindsight skill 当作外部记忆塞回 prompt。', 'Inside model parameters. At inference time, the hindsight skill does not need to be re-injected as external prompt memory.')}</span></footer>
-    </article>
-  </div>
 
-  <div class="takeaway">
-    <b>{t('看动画时只抓住这一件事', 'Keep one idea while watching')}</b>
-    <span>{t('OpenEvo：经验 → 外部 artifact / revision → 下一任务加载。SEED：经验 → hindsight skill → re-score → 参数更新 → 下一轮直接用新 policy。Qwen2.5-3B 是两条管线里被控制为相同的基础模型，不是第三种演化方法。', 'OpenEvo: experience → external artifact / revision → loaded by the next task. SEED: experience → hindsight skill → re-score → parameter update → the next rollout directly uses the new policy. Qwen2.5-3B is the controlled base model shared by both pipelines, not a third evolution method.')}</span>
-  </div>
+      <div class="main-rail main-rail--oe-1" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <div class="evidence-vault organ">
+        <span class="organ__tag">02 · Session seal</span>
+        <div class="vault-stack" aria-hidden="true">
+          <span>trajectory</span><span>score</span><span>failure</span><span>metadata</span>
+        </div>
+        <b>{t('证据仓', 'Evidence vault')}</b>
+        <p>{t('任务完成后一次性封存，形成可复核输入。', 'Seal the completed run into an auditable input bundle.')}</p>
+      </div>
+
+      <div class="main-rail main-rail--oe-2" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="evolution-chamber organ organ--core">
+        <span class="organ__tag">03 · Evolution method</span>
+        <div class="chamber-rotor" aria-hidden="true"><i></i><i></i><i></i></div>
+        <b>{t('演化方法读取证据', 'Evolution method reads the evidence')}</b>
+        <p>{t('从完成任务的数据中提炼以后可复用的改变；当前公平实验主要观察外部文本记忆。', 'Derive a reusable change from completed-task evidence; the current fair comparison focuses on external text memory.')}</p>
+      </div>
+
+      <div class="main-rail main-rail--oe-3 main-rail--memory" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="artifact-rack organ">
+        <span class="organ__tag">04 · Artifact</span>
+        <div class="cartridge cartridge--building" aria-hidden="true">
+          <i></i><b>memory / skill</b><small>revision n+1</small>
+        </div>
+        <b>{t('生成版本化载体', 'Build a versioned carrier')}</b>
+        <p>{t('载体先被验证；通过后才成为 successor revision。', 'Validate the carrier first; only an accepted carrier becomes the successor revision.')}</p>
+      </div>
+
+      <div class="successor-stage organ">
+        <span class="organ__tag">05 · Next session</span>
+        <div class="next-runtime" aria-hidden="true">
+          <div class="cartridge cartridge--inserted"><i></i><b>memory n+1</b></div>
+          <span class="insert-arrow">↓</span>
+          <div class="qwen-core qwen-core--locked qwen-core--next">
+            <span class="lock-mark">🔒</span><small>same base model</small><b>Qwen2.5-3B</b>
+            <div class="weight-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <b>{t('下一任务加载新 revision', 'The next task loads the new revision')}</b>
+        <p>{t('你看到的“学习结果”首先位于 Qwen 外部；基础 checkpoint 可以仍然完全相同。', 'The learned result first lives outside Qwen; the base checkpoint itself can remain identical.')}</p>
+      </div>
+
+      <div class="loop-rail loop-rail--openevo" aria-hidden="true"><i></i><i></i></div>
+    </div>
+
+    <div class="machine-readout">
+      <div><small>{t('输入', 'input')}</small><b>completed trajectory</b></div>
+      <span>→</span>
+      <div><small>{t('内部关键状态', 'internal state')}</small><b>sealed evidence → evolution method → artifact</b></div>
+      <span>→</span>
+      <div class="readout-change readout-change--memory"><small>{t('最后真的变了', 'what actually changed')}</small><b>{t('下一 session 加载的外部 revision', 'external revision loaded by the next session')}</b></div>
+    </div>
+  </article>
+
+  <article class="machine machine--seed" aria-labelledby="seed-machine-title">
+    <header class="machine__header">
+      <div>
+        <small>{t('机器 B · SEED', 'Machine B · SEED')}</small>
+        <h3 id="seed-machine-title">{t('同一 policy 先行动，再用 hindsight 重看自己的轨迹，把变化蒸馏回参数', 'The same policy acts first, then uses hindsight to reinterpret its own trajectory and distill the change into parameters')}</h3>
+      </div>
+      <div class="state-badge state-badge--weights"><i></i>{t('主要改变：模型参数', 'main change: model parameters')}</div>
+    </header>
+
+    <div class="machine-shell machine-shell--seed">
+      <div class="shell-caption shell-caption--left"><b>{t('On-policy rollout', 'On-policy rollout')}</b><span>{t('当前 policy 自己采样动作', 'the current policy samples its own actions')}</span></div>
+      <div class="shell-caption shell-caption--right"><b>{t('训练阶段', 'training stage')}</b><span>{t('hindsight → re-score → joint update', 'hindsight → re-score → joint update')}</span></div>
+
+      <div class="seed-runtime organ">
+        <span class="organ__tag">01 · Actor</span>
+        <div class="runtime-loop" aria-hidden="true">
+          <div class="env-box"><b>Environment</b><small>observation</small></div>
+          <div class="mini-rail mini-rail--forward"><i></i><i></i></div>
+          <div class="qwen-core qwen-core--trainable">
+            <small>policy θₜ</small>
+            <b>Qwen2.5-3B</b>
+            <div class="weight-grid weight-grid--live"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <em>{t('先用当前参数完成 rollout', 'first complete the rollout with current weights')}</em>
+          </div>
+          <div class="mini-rail mini-rail--back"><i></i><i></i></div>
+          <div class="tool-box"><b>Action</b><small>sampled by θₜ</small></div>
+        </div>
+        <p>{t('先让当前 policy 自己产生完整 on-policy trajectory。', 'First let the current policy generate a complete on-policy trajectory.')}</p>
+      </div>
+
+      <div class="main-rail main-rail--seed-1" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <div class="trajectory-spool organ">
+        <span class="organ__tag">02 · Trajectory</span>
+        <div class="spool" aria-hidden="true"><i></i><i></i><span></span></div>
+        <b>{t('完整轨迹卷', 'Completed trajectory reel')}</b>
+        <p>{t('保留 action、reward 和上下文，作为 hindsight 分析的原材料。', 'Keep actions, rewards, and context as the raw material for hindsight analysis.')}</p>
+      </div>
+
+      <div class="main-rail main-rail--seed-2" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="hindsight-chamber organ organ--core">
+        <span class="organ__tag">03 · Hindsight</span>
+        <div class="skill-prism" aria-hidden="true"><span>trajectory</span><i></i><b>skill</b></div>
+        <b>{t('事后提炼 Hindsight Skill', 'Extract a hindsight skill')}</b>
+        <p>{t('让 policy 回看已经发生的轨迹：如果事先掌握这条技能，哪些动作概率应该不同？', 'The policy looks back at what happened: if this skill had been known in advance, which action probabilities should differ?')}</p>
+      </div>
+
+      <div class="main-rail main-rail--seed-3" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="rescore-organ organ">
+        <span class="organ__tag">04 · Re-score</span>
+        <div class="dual-context" aria-hidden="true">
+          <div><small>{t('原始上下文', 'ordinary context')}</small><span>log p(a|x)</span><i></i></div>
+          <div class="dual-context__skill"><small>+ hindsight skill</small><span>log p(a|x,s)</span><i></i></div>
+          <b>{t('同一个 sampled action', 'same sampled action')}</b>
+        </div>
+        <b>{t('双上下文重算概率', 'Re-score under two contexts')}</b>
+        <p>{t('不是再采一个新动作，而是比较同一 sampled action 在普通上下文和 skill-augmented 上下文下的概率变化。', 'Do not sample a new action here; compare the same sampled action under ordinary and skill-augmented contexts.')}</p>
+      </div>
+
+      <div class="main-rail main-rail--seed-4 main-rail--weights" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="optimizer-organ organ">
+        <span class="organ__tag">05 · Optimizer</span>
+        <div class="optimizer-gauges" aria-hidden="true"><span><i></i><b>GRPO</b></span><span><i></i><b>OPD</b></span><em>+</em></div>
+        <b>{t('联合训练信号', 'Joint training signal')}</b>
+        <p>{t('GRPO 提供任务 reward 的强化学习信号；OPD 把 hindsight skill 诱导出的策略变化蒸馏回当前 policy。', 'GRPO supplies the task-reward RL signal; OPD distills the policy shift induced by the hindsight skill back into the current policy.')}</p>
+      </div>
+
+      <div class="parameter-update organ">
+        <span class="organ__tag">06 · New policy</span>
+        <div class="qwen-core qwen-core--updated" aria-hidden="true">
+          <small>policy θₜ₊₁</small>
+          <b>Qwen2.5-3B</b>
+          <div class="weight-grid weight-grid--updated"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <em>{t('新 checkpoint', 'new checkpoint')}</em>
+        </div>
+        <b>{t('参数本身被更新', 'The model weights themselves are updated')}</b>
+        <p>{t('下一轮 rollout 直接使用 θt+1；hindsight skill 不需要作为外部 memory 永久塞回 prompt。', 'The next rollout directly uses θt+1; the hindsight skill does not need to remain permanently injected as external prompt memory.')}</p>
+      </div>
+
+      <div class="loop-rail loop-rail--seed" aria-hidden="true"><i></i><i></i></div>
+    </div>
+
+    <div class="machine-readout">
+      <div><small>{t('输入', 'input')}</small><b>on-policy trajectory</b></div>
+      <span>→</span>
+      <div><small>{t('内部关键状态', 'internal state')}</small><b>hindsight skill → dual-context re-score → GRPO + OPD</b></div>
+      <span>→</span>
+      <div class="readout-change readout-change--weights"><small>{t('最后真的变了', 'what actually changed')}</small><b>{t('Qwen policy 的参数 / checkpoint', 'Qwen policy weights / checkpoint')}</b></div>
+    </div>
+  </article>
+
+  <aside class="mechanism-note">
+    <b>{t('怎样读这两台机器', 'How to read the two machines')}</b>
+    <p>{t('不要先问“谁更先进”。像看一个分割模型的 memory bank、encoder、decoder 一样，先顺着运动的输入看：经验进入哪里 → 哪个内部模块消费它 → 哪个状态被更新 → 下一轮从哪里重新开始。这个图是研究协议的机制抽象，不是假装逐函数复现源码调用栈。', 'Do not start with “which one is more advanced.” Read them like the memory bank, encoder, and decoder of a segmentation model: follow the moving input, see which module consumes it, identify the state that changes, and find where the next round restarts. This is a mechanism-level abstraction of the research protocol, not a fake function-by-function runtime trace.')}</p>
+  </aside>
 </section>
 
 <style>
-.mechanism-section{width:min(1180px,calc(100% - 32px));margin:72px auto 0;padding:34px;border:1px solid var(--border);border-radius:28px;background:color-mix(in srgb,var(--surface) 95%,var(--accent) 5%)}
-.mechanism-heading{display:grid;grid-template-columns:52px 1fr;gap:20px}.mechanism-heading>span{width:46px;aspect-ratio:1;display:grid;place-items:center;border-radius:14px;background:var(--text);color:var(--background);font-weight:800}.mechanism-heading small,.machine header small{color:var(--muted);font-size:.76rem;font-weight:750;letter-spacing:.07em;text-transform:uppercase}.mechanism-heading h2{margin:.2rem 0 .7rem;font-size:clamp(1.7rem,3vw,2.65rem);line-height:1.08;max-width:940px}.mechanism-heading p{margin:0;color:var(--muted);line-height:1.7;max-width:900px}
-.shared-input{margin:28px 0 20px;padding:18px 20px;border:1px solid var(--border);border-radius:18px;background:var(--background);display:grid;grid-template-columns:max-content 90px minmax(210px,max-content) 1fr;align-items:center;gap:14px}.shared-input>b{font-size:.75rem;text-transform:uppercase;color:var(--muted)}.shared-input>span{color:var(--muted);font-size:.86rem;line-height:1.5}.input-reel{height:4px;position:relative;background:color-mix(in srgb,var(--accent) 40%,var(--border))}.input-reel i,.pipe i{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent);top:50%;margin-top:-4px;animation:packet 2.4s linear infinite}.input-reel i:nth-child(2),.pipe i:nth-child(2){animation-delay:-1.2s}.input-reel i:nth-child(3){animation-delay:-.6s}.input-reel i:nth-child(4){animation-delay:-1.8s}
-.machines{display:grid;grid-template-columns:1fr 1fr;gap:18px}.machine{border:1px solid var(--border);border-radius:22px;background:var(--background);padding:20px;overflow:hidden}.machine>header{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-bottom:16px;border-bottom:1px solid var(--border)}.machine>header span{font-size:1.4rem;font-weight:850}.pipeline{display:grid;grid-template-columns:1fr;gap:0;margin-top:18px}.node{position:relative;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface);z-index:1}.node small{position:absolute;right:12px;top:10px;color:var(--muted);font-size:.68rem}.node b{display:block;padding-right:28px}.node p{margin:.35rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.45}.node--core{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 8%,transparent)}.node--output{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.pipe{height:28px;width:3px;margin:0 auto;position:relative;background:color-mix(in srgb,var(--accent) 35%,var(--border));overflow:visible}.pipe i{left:50%;margin-left:-4px;animation-name:packet-y}.loopback{margin-top:18px;display:grid;grid-template-columns:max-content 1fr;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.loopback span{font-size:.72rem;color:var(--muted);font-weight:750;text-transform:uppercase}.loopback i{height:2px;background:var(--accent);position:relative;overflow:hidden}.loopback i:after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);top:-4px;animation:packet 2.5s linear infinite}.loopback b{grid-column:1/-1;font-size:.86rem}.machine footer{margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);display:grid;gap:5px}.machine footer b{font-size:.78rem}.machine footer span{color:var(--muted);font-size:.82rem;line-height:1.5}.takeaway{margin-top:20px;padding:18px 20px;border-radius:18px;background:var(--text);color:var(--background);display:grid;grid-template-columns:max-content 1fr;gap:18px}.takeaway span{line-height:1.6;opacity:.82}
-@keyframes packet{from{left:0}to{left:100%}}@keyframes packet-y{from{top:0}to{top:100%}}
-@media(max-width:820px){.mechanism-section{padding:22px}.shared-input{grid-template-columns:1fr}.input-reel{width:100%}.machines{grid-template-columns:1fr}.takeaway{grid-template-columns:1fr}}
-@media(max-width:560px){.mechanism-section{width:min(100% - 20px,1180px);margin-top:48px;padding:18px;border-radius:20px}.mechanism-heading{grid-template-columns:38px 1fr;gap:12px}.mechanism-heading>span{width:36px;border-radius:10px}.machine{padding:15px}.machine>header{align-items:flex-start;flex-direction:column}.mechanism-heading h2{font-size:1.55rem}}
-@media(prefers-reduced-motion:reduce){.input-reel i,.pipe i,.loopback i:after{animation:none}.input-reel i{display:none}.pipe i{display:none}}
+.mechanism-section{width:min(1180px,calc(100% - 32px));margin:72px auto 0;padding:34px;border:1px solid var(--border);border-radius:28px;background:color-mix(in srgb,var(--surface) 96%,var(--accent) 4%);overflow:hidden}.mechanism-heading{display:grid;grid-template-columns:52px 1fr;gap:20px}.mechanism-heading>span{width:46px;aspect-ratio:1;display:grid;place-items:center;border-radius:14px;background:var(--text);color:var(--background);font-weight:850}.mechanism-heading small,.machine__header small,.shell-caption span,.organ__tag,.episode-source small,.machine-readout small{color:var(--muted);font-size:.72rem;font-weight:760;letter-spacing:.065em;text-transform:uppercase}.mechanism-heading h2{margin:.22rem 0 .72rem;font-size:clamp(1.75rem,3.1vw,2.72rem);line-height:1.06;max-width:980px;letter-spacing:-.025em}.mechanism-heading p{margin:0;color:var(--muted);line-height:1.72;max-width:940px}
+.visual-legend{margin:24px 0 16px;display:flex;flex-wrap:wrap;gap:9px;align-items:center}.visual-legend span{display:flex;gap:7px;align-items:center;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:var(--background);font-size:.73rem}.visual-legend b{margin-left:auto;color:var(--muted);font-size:.72rem;font-weight:650}.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block}.legend-dot--experience{background:var(--accent)}.legend-dot--memory{background:#9b6bde}.legend-dot--weights{background:#e36b47}
+.episode-source{display:grid;grid-template-columns:150px minmax(0,1fr) 250px;gap:14px;align-items:center;padding:16px;border:1px solid var(--border);border-radius:20px;background:var(--background);box-shadow:0 12px 36px color-mix(in srgb,var(--text) 6%,transparent)}.episode-source__label{display:grid;gap:4px}.episode-source__label strong{font-size:.92rem}.filmstrip{position:relative;display:grid;grid-template-columns:repeat(5,minmax(88px,1fr));gap:7px;padding:7px;background:color-mix(in srgb,var(--text) 7%,var(--surface));border-radius:13px;overflow:hidden}.filmstrip:before,.filmstrip:after{content:'';position:absolute;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,var(--border) 0 7px,transparent 7px 13px)}.filmstrip:before{top:2px}.filmstrip:after{bottom:2px}.frame{min-height:62px;padding:12px 9px 9px;border:1px solid var(--border);border-radius:9px;background:var(--surface);display:grid;gap:2px;animation:frame-breathe 5s ease-in-out infinite}.frame b{font:800 .72rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent)}.frame span{font-size:.66rem;color:var(--muted);line-height:1.25}.frame--action{animation-delay:-1.25s;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.frame--done{animation-delay:-2.5s;border-color:color-mix(in srgb,var(--accent) 50%,var(--border))}.source-model{padding-left:14px;border-left:1px solid var(--border);display:grid;gap:4px}.source-model>span{font:780 .84rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace}.source-model small{text-transform:none;letter-spacing:0;line-height:1.4}
+.machine{margin-top:24px;border:1px solid var(--border);border-radius:25px;background:var(--background);padding:22px;box-shadow:0 16px 48px color-mix(in srgb,var(--text) 5%,transparent)}.machine__header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:16px}.machine__header h3{margin:.35rem 0 0;max-width:820px;font-size:clamp(1.25rem,2.3vw,1.85rem);line-height:1.16;letter-spacing:-.02em}.state-badge{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--border);border-radius:999px;font-size:.72rem;font-weight:780;white-space:nowrap}.state-badge i{width:9px;height:9px;border-radius:50%}.state-badge--memory i{background:#9b6bde;box-shadow:0 0 0 5px color-mix(in srgb,#9b6bde 15%,transparent)}.state-badge--weights i{background:#e36b47;box-shadow:0 0 0 5px color-mix(in srgb,#e36b47 15%,transparent)}
+.machine-shell{position:relative;display:grid;grid-template-columns:minmax(170px,1.2fr) 46px minmax(150px,.82fr) 46px minmax(170px,1fr) 46px minmax(170px,1fr);grid-template-rows:auto minmax(280px,auto) 82px;gap:0;align-items:stretch;padding:48px 18px 18px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 97%,var(--accent) 3%),var(--surface));overflow:hidden}.machine-shell:before{content:'';position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb,var(--border) 35%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--border) 35%,transparent) 1px,transparent 1px);background-size:24px 24px;opacity:.28;pointer-events:none}.shell-caption{position:absolute;top:12px;z-index:2;display:grid;gap:2px}.shell-caption b{font-size:.72rem}.shell-caption--left{left:18px}.shell-caption--right{right:18px;text-align:right}.organ{position:relative;z-index:2;min-width:0;padding:14px;border:1px solid var(--border);border-radius:16px;background:color-mix(in srgb,var(--background) 96%,transparent);box-shadow:0 8px 22px color-mix(in srgb,var(--text) 4%,transparent);display:flex;flex-direction:column;justify-content:flex-start}.organ--core{border-color:color-mix(in srgb,var(--accent) 50%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 8%,transparent),0 8px 22px color-mix(in srgb,var(--text) 4%,transparent)}.organ__tag{display:block;margin-bottom:10px;color:var(--accent)}.organ>b{font-size:.85rem}.organ>p{margin:.4rem 0 0;color:var(--muted);font-size:.75rem;line-height:1.48}.openevo-runtime,.seed-runtime{grid-column:1;grid-row:2}.evidence-vault,.trajectory-spool{grid-column:3;grid-row:2}.evolution-chamber,.hindsight-chamber{grid-column:5;grid-row:2}.artifact-rack,.rescore-organ{grid-column:7;grid-row:2}.successor-stage{grid-column:5/8;grid-row:3;margin-top:14px}.optimizer-organ{grid-column:5;grid-row:3;margin:14px 0 0}.parameter-update{grid-column:7;grid-row:3;margin:14px 0 0}
+.runtime-loop{display:grid;grid-template-columns:1fr 16px 1.18fr 16px 1fr;gap:5px;align-items:center;margin:auto 0 12px}.env-box,.tool-box{min-height:70px;padding:8px;border:1px dashed var(--border);border-radius:11px;display:grid;place-content:center;text-align:center;gap:3px;background:var(--surface)}.env-box b,.tool-box b{font-size:.69rem}.env-box small,.tool-box small{font-size:.6rem;color:var(--muted);text-transform:none;letter-spacing:0}.mini-rail{position:relative;height:3px;background:color-mix(in srgb,var(--accent) 40%,var(--border));overflow:visible}.mini-rail i,.main-rail i,.loop-rail i{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);top:50%;margin-top:-3.5px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 10%,transparent);animation:packet-x 2.4s linear infinite}.mini-rail i:nth-child(2),.main-rail i:nth-child(2),.loop-rail i:nth-child(2){animation-delay:-1.2s}.main-rail i:nth-child(3){animation-delay:-.6s}.mini-rail--back i{animation-direction:reverse}.qwen-core{position:relative;min-height:116px;padding:12px 8px 9px;border:1px solid color-mix(in srgb,var(--accent) 42%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--accent) 6%,var(--surface));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}.qwen-core small{font-size:.58rem;color:var(--muted);text-transform:none;letter-spacing:0}.qwen-core>b{font:820 .72rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.qwen-core em{margin-top:6px;font-size:.56rem;color:var(--muted);font-style:normal;line-height:1.25}.lock-mark{position:absolute;top:5px;right:6px;font-size:.65rem;filter:grayscale(1);opacity:.65}.weight-grid{width:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:8px auto}.weight-grid i{height:5px;border-radius:2px;background:color-mix(in srgb,var(--accent) 42%,var(--border))}.weight-grid--live i:nth-child(3n),.weight-grid--updated i:nth-child(2n){animation:weight-pulse 1.8s ease-in-out infinite}.weight-grid--updated i{background:#e36b47}.qwen-core--updated{border-color:color-mix(in srgb,#e36b47 55%,var(--border));background:color-mix(in srgb,#e36b47 8%,var(--surface));animation:core-glow 2.5s ease-in-out infinite}
+.main-rail{position:relative;z-index:2;align-self:center;height:4px;margin:0 7px;background:color-mix(in srgb,var(--accent) 38%,var(--border))}.main-rail--oe-1,.main-rail--seed-1{grid-column:2;grid-row:2}.main-rail--oe-2,.main-rail--seed-2{grid-column:4;grid-row:2}.main-rail--oe-3,.main-rail--seed-3{grid-column:6;grid-row:2}.main-rail--seed-4{grid-column:6;grid-row:3;margin-top:50px}.main-rail--memory i{background:#9b6bde;box-shadow:0 0 0 4px color-mix(in srgb,#9b6bde 12%,transparent)}.main-rail--weights i{background:#e36b47;box-shadow:0 0 0 4px color-mix(in srgb,#e36b47 12%,transparent)}
+.vault-stack{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:auto 0 14px}.vault-stack span{padding:7px 5px;border:1px solid var(--border);border-radius:8px;background:var(--surface);text-align:center;font:700 .6rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;animation:vault-arrive 4s ease-in-out infinite}.vault-stack span:nth-child(2){animation-delay:-1s}.vault-stack span:nth-child(3){animation-delay:-2s}.vault-stack span:nth-child(4){animation-delay:-3s}.chamber-rotor{position:relative;width:80px;height:80px;margin:auto;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--border));border-radius:50%;animation:rotor 8s linear infinite}.chamber-rotor:before{content:'evolve';position:absolute;inset:16px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--accent) 10%,var(--surface));font:800 .6rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.chamber-rotor i{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent);left:50%;top:3px;margin-left:-4px;transform-origin:4px 37px}.chamber-rotor i:nth-child(2){transform:rotate(120deg)}.chamber-rotor i:nth-child(3){transform:rotate(240deg)}.cartridge{position:relative;width:min(128px,100%);min-height:78px;margin:auto;padding:12px;border:1px solid color-mix(in srgb,#9b6bde 58%,var(--border));border-radius:13px;background:color-mix(in srgb,#9b6bde 9%,var(--surface));display:grid;place-content:center;text-align:center;gap:4px}.cartridge>i{position:absolute;left:8px;right:8px;top:8px;height:4px;border-radius:4px;background:#9b6bde;animation:memory-fill 3s ease-in-out infinite}.cartridge b{font-size:.7rem}.cartridge small{font-size:.58rem;color:var(--muted);text-transform:none;letter-spacing:0}.next-runtime{display:flex;align-items:center;justify-content:center;gap:8px;margin:auto 0}.cartridge--inserted{width:112px;min-height:58px}.insert-arrow{font-weight:900;color:#9b6bde}.qwen-core--next{width:150px;min-height:88px}.successor-stage{display:grid;grid-template-columns:minmax(210px,.9fr) 1.1fr;gap:12px;align-items:center}.successor-stage>.organ__tag{position:absolute;top:12px;left:14px}.successor-stage>b,.successor-stage>p{grid-column:2}.successor-stage>p{margin-top:0}.successor-stage .next-runtime{grid-row:1/4}
+.spool{position:relative;width:90px;height:72px;margin:auto}.spool>i{position:absolute;width:48px;height:48px;border:6px solid color-mix(in srgb,var(--accent) 35%,var(--border));border-radius:50%;top:8px}.spool>i:first-child{left:0}.spool>i:nth-child(2){right:0}.spool>span{position:absolute;left:22px;right:22px;top:32px;height:5px;background:var(--accent);animation:spool-line 2s linear infinite}.skill-prism{width:min(150px,100%);margin:auto;display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;gap:6px}.skill-prism span,.skill-prism b{padding:10px 6px;border:1px solid var(--border);border-radius:9px;background:var(--surface);text-align:center;font:700 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.skill-prism b{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));background:color-mix(in srgb,var(--accent) 8%,var(--surface))}.skill-prism i{height:3px;background:var(--accent);position:relative}.skill-prism i:after{content:'';position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);top:-2px;animation:packet-x 1.6s linear infinite}.dual-context{margin:auto 0 12px;display:grid;gap:6px}.dual-context>div{position:relative;padding:8px;border:1px solid var(--border);border-radius:9px;background:var(--surface);overflow:hidden}.dual-context>div small,.dual-context>div span{display:block;font-size:.58rem;text-transform:none;letter-spacing:0}.dual-context>div span{margin-top:3px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.dual-context>div i{position:absolute;left:0;bottom:0;height:3px;width:58%;background:var(--accent);animation:score-bar 2.4s ease-in-out infinite}.dual-context__skill i{width:82%!important;background:#e36b47!important;animation-delay:-1.2s!important}.dual-context>b{font-size:.58rem;text-align:center;color:var(--muted)}.optimizer-gauges{display:flex;align-items:center;justify-content:center;gap:8px;margin:auto 0 12px}.optimizer-gauges span{width:56px;height:56px;border:1px solid var(--border);border-radius:50%;display:grid;place-content:center;position:relative;background:var(--surface);overflow:hidden}.optimizer-gauges span i{position:absolute;inset:auto 6px 6px;height:18px;border-radius:12px;background:color-mix(in srgb,var(--accent) 35%,transparent);animation:gauge 2.2s ease-in-out infinite}.optimizer-gauges span:nth-child(2) i{background:color-mix(in srgb,#e36b47 42%,transparent);animation-delay:-1.1s}.optimizer-gauges b{font-size:.58rem;z-index:1}.optimizer-gauges em{font-style:normal;font-weight:900}.parameter-update{padding-top:10px}.parameter-update>.qwen-core{margin:auto;width:min(160px,100%);min-height:95px}
+.loop-rail{position:absolute;z-index:1;height:3px;border-bottom:2px dashed color-mix(in srgb,var(--accent) 46%,var(--border));border-left:2px dashed color-mix(in srgb,var(--accent) 46%,var(--border));border-radius:0 0 0 18px}.loop-rail--openevo{left:12%;right:11%;bottom:42px}.loop-rail--openevo i{background:#9b6bde}.loop-rail--seed{left:12%;right:11%;bottom:38px}.loop-rail--seed i{background:#e36b47}.loop-rail i{top:auto;bottom:-4px}
+.machine-readout{display:grid;grid-template-columns:1fr 24px 1.45fr 24px 1.05fr;gap:8px;align-items:stretch;margin-top:12px}.machine-readout>div{padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);display:grid;gap:4px}.machine-readout>span{align-self:center;text-align:center;color:var(--muted);font-weight:900}.machine-readout b{font-size:.72rem;line-height:1.35}.readout-change--memory{border-color:color-mix(in srgb,#9b6bde 48%,var(--border))!important;background:color-mix(in srgb,#9b6bde 6%,var(--surface))!important}.readout-change--weights{border-color:color-mix(in srgb,#e36b47 48%,var(--border))!important;background:color-mix(in srgb,#e36b47 6%,var(--surface))!important}
+.mechanism-note{margin-top:20px;padding:18px 20px;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:16px;background:color-mix(in srgb,var(--accent) 5%,var(--surface));display:grid;grid-template-columns:180px 1fr;gap:18px}.mechanism-note b{font-size:.82rem}.mechanism-note p{margin:0;color:var(--muted);font-size:.8rem;line-height:1.6}
+@keyframes packet-x{from{left:0}to{left:100%}}@keyframes frame-breathe{0%,100%{transform:translateY(0);opacity:.72}50%{transform:translateY(-2px);opacity:1}}@keyframes weight-pulse{0%,100%{opacity:.35;transform:scaleX(.75)}50%{opacity:1;transform:scaleX(1.1)}}@keyframes core-glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,#e36b47 0%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,#e36b47 10%,transparent)}}@keyframes vault-arrive{0%,100%{transform:translateY(0);opacity:.55}40%,60%{transform:translateY(-2px);opacity:1}}@keyframes rotor{to{transform:rotate(360deg)}}@keyframes memory-fill{0%,100%{right:82%;opacity:.45}55%{right:8%;opacity:1}}@keyframes spool-line{from{background-position:0 0}to{background-position:18px 0}}@keyframes score-bar{0%,100%{transform:scaleX(.62);transform-origin:left}50%{transform:scaleX(1);transform-origin:left}}@keyframes gauge{0%,100%{height:12px}50%{height:35px}}
+@media(max-width:1040px){.machine-shell{grid-template-columns:1fr 34px 1fr;grid-template-rows:auto auto 34px auto 34px auto}.openevo-runtime,.seed-runtime{grid-column:1;grid-row:2}.evidence-vault,.trajectory-spool{grid-column:3;grid-row:2}.main-rail--oe-1,.main-rail--seed-1{grid-column:2;grid-row:2}.evolution-chamber,.hindsight-chamber{grid-column:1;grid-row:4}.artifact-rack,.rescore-organ{grid-column:3;grid-row:4}.main-rail--oe-2,.main-rail--seed-2{grid-column:1/4;grid-row:3;width:3px;height:34px;margin:0 auto}.main-rail--oe-2 i,.main-rail--seed-2 i{animation-name:packet-y;left:50%;margin-left:-3.5px}.main-rail--oe-3,.main-rail--seed-3{grid-column:2;grid-row:4}.successor-stage{grid-column:1/4;grid-row:6;margin-top:0}.optimizer-organ{grid-column:1;grid-row:6;margin-top:0}.parameter-update{grid-column:3;grid-row:6;margin-top:0}.main-rail--seed-4{grid-column:2;grid-row:6;margin-top:0}.loop-rail{display:none}.shell-caption--right{display:none}}
+@keyframes packet-y{from{top:0}to{top:100%}}
+@media(max-width:760px){.mechanism-section{padding:22px}.mechanism-heading{grid-template-columns:42px 1fr;gap:14px}.mechanism-heading>span{width:38px;border-radius:11px}.visual-legend b{width:100%;margin-left:0}.episode-source{grid-template-columns:1fr}.source-model{padding:10px 0 0;border-left:0;border-top:1px solid var(--border)}.filmstrip{overflow-x:auto;grid-template-columns:repeat(5,105px)}.machine{padding:16px}.machine__header{flex-direction:column}.state-badge{white-space:normal}.machine-shell{grid-template-columns:1fr;grid-template-rows:auto;gap:12px;padding:46px 12px 12px}.shell-caption--left{left:12px}.openevo-runtime,.seed-runtime,.evidence-vault,.trajectory-spool,.evolution-chamber,.hindsight-chamber,.artifact-rack,.rescore-organ,.successor-stage,.optimizer-organ,.parameter-update{grid-column:1;grid-row:auto;margin:0}.main-rail{grid-column:1!important;grid-row:auto!important;width:3px!important;height:26px!important;margin:0 auto!important}.main-rail i{animation-name:packet-y;left:50%;margin-left:-3.5px}.successor-stage{display:flex}.successor-stage>.organ__tag{position:static}.successor-stage>b,.successor-stage>p{grid-column:auto}.successor-stage .next-runtime{grid-row:auto}.machine-readout{grid-template-columns:1fr}.machine-readout>span{transform:rotate(90deg)}.mechanism-note{grid-template-columns:1fr}.runtime-loop{grid-template-columns:1fr 12px 1.2fr 12px 1fr}.qwen-core{min-height:104px}}
+@media(max-width:480px){.mechanism-section{width:min(100% - 16px,1180px);margin-top:48px;padding:16px;border-radius:20px}.mechanism-heading{grid-template-columns:34px 1fr;gap:10px}.mechanism-heading>span{width:32px;border-radius:9px}.mechanism-heading h2{font-size:1.45rem}.machine{padding:12px;border-radius:18px}.runtime-loop{grid-template-columns:1fr;gap:7px}.mini-rail{width:3px;height:18px;margin:0 auto}.mini-rail i{animation-name:packet-y;left:50%;margin-left:-3.5px}.mini-rail--back i{animation-direction:normal}.successor-stage .next-runtime{flex-direction:column}.insert-arrow{transform:none}.filmstrip{margin-right:-4px}.machine__header h3{font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){.frame,.mini-rail i,.main-rail i,.loop-rail i,.weight-grid i,.qwen-core--updated,.vault-stack span,.chamber-rotor,.cartridge>i,.skill-prism i:after,.dual-context>div i,.optimizer-gauges span i{animation:none!important}.frame{opacity:1}.cartridge>i{right:8px}.weight-grid i{opacity:1;transform:none}}
 </style>
