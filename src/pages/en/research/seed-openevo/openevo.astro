@@ -1,8 +1,10 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
+import OpenEvoModelExperimentGuide from '../../../../components/research/OpenEvoModelExperimentGuide.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo framework and cross-task evolution loop" description="Explain OpenEvo task/session boundaries, sealed data, evolution targets and methods, artifacts, Project Heads, and successor revisions." locale={locale}>
+<AppLayout title="OpenEvo experiments: evolution, model choice, and beginner questions" description="Explain the OpenEvo cross-task evolution loop, why Qwen2.5-3B is the baseline, how to compare peer and newer models, and the eight questions beginners should ask first." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo" />
+  <OpenEvoModelExperimentGuide locale={locale} />
 </AppLayout>
