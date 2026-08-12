@@ -14,20 +14,20 @@ Entry surface: `src/components/GuideDecisionChapters.astro` → reproduction cha
 
 This is the execution-first child guide for the SEED Reproduction-C path. Its primary reader should be able to reproduce the experiment by moving from top to bottom without first learning the entire project history.
 
-The page still preserves two kinds of knowledge:
+The page preserves two forms of knowledge:
 
 1. **current success path** — what to do now;
 2. **failure knowledge** — what failed before, why, and the durable rule learned from it.
 
-But these are no longer presented as two competing visual narratives. The current success path owns the main document flow; failure knowledge appears as local `Troubleshooting` notes beside the relevant step and again as a compact diagnostic index near the end.
+The success path owns the main document flow. Failure knowledge appears as local `Troubleshooting` notes beside the relevant step and again as a compact diagnostic index near the end.
 
 ## Structural reference
 
-The information architecture intentionally follows the style of the GDKVM reproduction page supplied by the owner:
+The information architecture intentionally follows the owner-supplied GDKVM reproduction page as a structural template:
 
 `Environment Setup → Get/Pin Code → Data Preparation → Runtime/Dependencies → Run → Outputs/Acceptance → next benchmark → Troubleshooting`
 
-This is structural inspiration only. Do not copy GDKVM project-specific text, commands, claims, or styling.
+Use the same academic reproduction-manual mindset, not GDKVM-specific content. Do not copy its project-specific text, commands, claims, or implementation.
 
 For executable sections, prefer this micro-pattern whenever practical:
 
