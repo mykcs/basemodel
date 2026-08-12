@@ -5,7 +5,8 @@
   --canvas-editorial: #f7f3eb;
   --canvas-workbench: #eef1ef;
 
-  --color-bg: var(--canvas-editorial);
+  /* Keep --color-bg as a direct hex: themeContrast.test.ts treats it as executable contrast evidence. */
+  --color-bg: #f7f3eb;
   --color-surface: #fffdf8;
   --color-surface-muted: #ebe8df;
   --color-text: #18201f;
@@ -83,7 +84,7 @@
   color-scheme: dark;
   --canvas-editorial: #151a1a;
   --canvas-workbench: #111818;
-  --color-bg: var(--canvas-editorial);
+  --color-bg: #151a1a;
   --color-surface: #1d2525;
   --color-surface-muted: #27302f;
   --color-text: #edf0e8;
