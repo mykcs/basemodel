@@ -5,24 +5,17 @@ import {
   shouldBuildForFiles,
 } from '../../scripts/vercel-ignore-build.mjs';
 
-const vercel = JSON.parse(
-  readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'),
-) as {
+const read = (path: string) =>
+  readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+
+const vercel = JSON.parse(read('vercel.json')) as {
   ignoreCommand?: string;
   github?: { autoJobCancelation?: boolean };
 };
-const latest = readFileSync(
-  new URL('../../docs/agents/LATEST.md', import.meta.url),
-  'utf8',
-);
-const deploymentPolicy = readFileSync(
-  new URL('../../docs/agents/current/deployment-policy.md', import.meta.url),
-  'utf8',
-);
-const vercelWorkflow = readFileSync(
-  new URL('../../docs/agents/current/vercel-preview-migration-plan.md', import.meta.url),
-  'utf8',
-);
+const root = read('AGENTS.md');
+const latest = read('docs/agents/LATEST.md');
+const deploymentPolicy = read('docs/agents/current/deployment-policy.md');
+const vercelWorkflow = read('docs/agents/current/vercel-preview-migration-plan.md');
 
 describe('Vercel build-budget contract', () => {
   it('keeps automatic cancellation and the repository-owned ignored-build step enabled', () => {
@@ -86,5 +79,21 @@ describe('Vercel build-budget contract', () => {
     expect(latest).toContain('Git data API commit (`blob/tree/commit/ref`)');
     expect(vercelWorkflow).toContain('The main saving comes from reducing pushes');
     expect(vercelWorkflow).toContain('VERCEL_GIT_PREVIOUS_SHA');
+  });
+
+  it('makes ordinary deployment reporting Vercel-first', () => {
+    expect(root).toContain('Vercel is the only ordinary deployment provider');
+    expect(root).toContain('Ordinary completion reports are **Vercel-first**');
+    expect(latest).toContain('Vercel-first reporting');
+    expect(latest).toContain(
+      'Do not add Cloudflare or another legacy provider to an ordinary report',
+    );
+    expect(deploymentPolicy).toContain('Vercel-first completion report');
+    expect(deploymentPolicy).toContain(
+      'Do not include Cloudflare in an ordinary completion report',
+    );
+    expect(vercelWorkflow).toContain(
+      'Historical providers are not ordinary report dimensions',
+    );
   });
 });

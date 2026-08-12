@@ -29,9 +29,9 @@ Project:
 
 ## Production contract
 
-A deploy-relevant merge to `main` is expected to create a Vercel Production deployment. Verify the deployment corresponds to the merge head and then inspect the public project domain separately.
+A deploy-relevant merge to `main` is expected to create one Vercel Production deployment for the accepted release batch. Verify the deployment corresponds to the merge head and then inspect the public project domain separately.
 
-While legacy Cloudflare Pages Git integration exists, use `[CF-Pages-Skip]` on the merge so Production is built only by Vercel.
+Do not follow a successful merge with avoidable deploy-relevant micro-commits to `main`. Release wording, documentation and configuration that belong to the same accepted batch should be finished before merge whenever practical.
 
 ## Build-budget workflow
 
@@ -66,9 +66,23 @@ Agent/tool guidance:
 - if multiple accepted PRs must ship together, consider one explicit integration/release head only when traceability and rollback remain clean;
 - do not push merely to obtain a new badge or URL.
 
+## Reporting contract
+
+Ordinary reports focus on Vercel:
+
+```text
+trigger count
+READY / ERROR / CANCELED / ignored or skipped
+exact-head Preview acceptance
+Production deployment ID + Git SHA
+public Production verification
+```
+
+Historical providers are not ordinary report dimensions. Mention one only when the task explicitly concerns it or live evidence shows unexpected activity.
+
 ## Pilot evidence
 
-The original PR #99 pilot proved that Vercel can clone the private repository, run the full deterministic Gate, build the Astro static site and expose deployment/build state to connected Agent tooling. Preserve that evidence; the ownership decision has simply expanded from Preview-only to Preview + Production.
+The original PR #99 pilot proved that Vercel can clone the private repository, run the full deterministic Gate, build the Astro static site and expose deployment/build state to connected Agent tooling. Preserve that evidence; the ownership decision has expanded from Preview-only to Preview + Production.
 
 ## Quota behavior
 
@@ -76,4 +90,8 @@ Vercel is not unlimited. Provider limits and billing semantics are time-sensitiv
 
 A push may still create a deployment record even when an older job is canceled or an ignored-build step stops execution. Therefore completion reports should distinguish total triggers from `READY`, `ERROR`, `CANCELED` and ignored/skipped outcomes when live provider data is available.
 
-If Vercel becomes a repeated blocker, re-open provider ownership from measured evidence rather than automatically restoring Cloudflare builds.
+If Vercel becomes a repeated blocker, re-open provider ownership from measured evidence rather than restoring a historical provider by habit.
+
+## Legacy hosting exception
+
+Dormant fallback files or a still-connected external legacy Git integration may remain outside the ordinary Vercel path. Load that context only for an explicit retirement, rollback or unexpected-provider-activity task. A compatibility skip prefix, when still required, is a silent safeguard rather than a normal deployment stage or completion-report item.

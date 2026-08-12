@@ -9,12 +9,12 @@ Before non-trivial work, read in this order:
 1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and deployment state.
 2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
-4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — **scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.**
+4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
 5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
 6. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) — required baseline for comfortable, readable, learning-first UI and responsive desktop/mobile behavior.
 7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — Vercel Preview + Production workflow.
-9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
+8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — current Vercel Preview + Production workflow.
+9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — Vercel build budget, release and Production boundary.
 10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
 11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
@@ -22,7 +22,7 @@ Files under `docs/agents/history/` are evidence and rationale, not instructions 
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
-When a task involves the owner's MacBook/iPhone/iPad, the physical-Ethernet-only 4×RTX 3090 lab server, SSH/SFTP/rsync, or Codex/MiniMax remote behavior, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). The editable device facts are owned only by `mykcs/fuhuo_20260419`; **do not create a second editable device inventory in this repository.** Preserve the difference between user-reported facts, time-sensitive observations, network inferences, and current official product capabilities.
+When a task involves the owner's MacBook/iPhone/iPad, the physical-Ethernet-only 4×RTX 3090 lab server, SSH/SFTP/rsync, or Codex/MiniMax remote behavior, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). The editable device facts are owned only by `mykcs/fuhuo_20260419`; do not create a second editable device inventory in this repository. Preserve the difference between user-reported facts, time-sensitive observations, network inferences, and current official product capabilities.
 
 ## Knowledge precedence
 
@@ -51,13 +51,9 @@ non-main branch / PR
 main
   -> Vercel project `basemodel-preview` Production
   -> https://basemodel-preview.vercel.app
-
-Cloudflare Pages
-  -> frozen legacy rollback snapshot
-  -> normal Git Builds = 0
 ```
 
-Cloudflare Direct Upload and the Workers shadow remain supported fallback / Cloudflare-specific diagnostic paths. They are not ordinary Preview or Production paths.
+**Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
 GitHub Actions and GitHub Pages remain intentionally retired. Astro/React remain the application stack; do not rewrite them merely because deployment ownership changed.
 
@@ -66,14 +62,13 @@ GitHub Actions and GitHub Pages remain intentionally retired. Astro/React remain
 ```text
 src/                         production application/content/domain logic
 public/                      production static assets
-scripts/                     build, validation, audit and retained provider helpers
+scripts/                     build, validation and audit helpers
 tests/e2e/                   browser regression tests
 tests/fixtures/demo-archive/ non-production fixtures
 docs/agents/current/         authoritative current Agent policies/runbooks/maps
 docs/agents/history/         migration/incident/superseded records
 docs/agents/LATEST.md        stable current handoff
 vercel.json                  Vercel Preview + Production contract
-wrangler.jsonc               dormant Workers shadow option
 package.json                 executable validation/build entrypoints
 ```
 
@@ -98,26 +93,48 @@ Run full browser suites or third-party network/vendor audits when the changed su
 read LATEST + current policy
 -> scan scenario-trigger-registry and load matched guidance
 -> inspect overlapping PRs and relevant code/data/tests
--> make one focused branch/PR
+-> finish one coherent change before the first provider-triggering push
+-> publish one atomic multi-file branch update when possible
 -> let Vercel create the exact-head non-main Preview
 -> verify build logs and inspect real Preview route(s)
--> synchronize with current main when needed
--> merge/release with [CF-Pages-Skip] while legacy Pages Git integration still exists
--> let Vercel create Production from main
+-> batch evidence-driven fixes into at most one normal corrective push
+-> synchronize with current main only when materially required
+-> merge the accepted release to main
+-> let Vercel create one Production deployment for the accepted release batch
 -> verify https://basemodel-preview.vercel.app separately
 ```
 
 Because the repository is private, normal Vercel Preview URLs may require Vercel authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability instead of disabling protection for convenience.
 
-## Cloudflare zero-build boundary
+## Vercel build-budget boundary
 
-**Cloudflare Pages Build = 0 for normal development and releases.** Do not intentionally trigger a Cloudflare Pages Git Preview or Production build unless the owner has first been told why Cloudflare-specific execution is necessary and explicitly authorizes it.
+Vercel deployments/builds are finite resources. Optimize provider-triggering ref updates, not only build duration.
 
-Until the Cloudflare account-side Git integration is disabled, branch synchronization and merge/release commits use `[CF-Pages-Skip]` / another documented skip prefix so Vercel can deploy without waking the frozen Pages builder.
+Default target for one coherent feature:
 
-Cloudflare Direct Upload is appropriate only when Cloudflare-specific fidelity is under test, Vercel cannot answer the question, or a `pages.dev` Preview is explicitly required. Never store provider tokens in Git.
+```text
+one branch / PR
+-> one atomic push
+-> one initial Preview
+-> at most one corrective Preview after real inspection
+-> one Production build per accepted release batch
+```
 
-Do not claim an exact account-level build counter without authoritative provider evidence.
+Do not push every typo, file write, speculative experiment or intermediate thought. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes.
+
+Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
+
+```text
+Vercel deployment triggers: total
+READY / ERROR / CANCELED / ignored or skipped
+exact-head Preview acceptance
+merge commit
+Production deployment and public verification
+```
+
+Do not add a Cloudflare line merely because historical config exists. Mention a legacy provider only when the task explicitly concerns it, it changed, or live provider evidence shows unexpected activity.
+
+A legacy external Git integration may still require an existing skip prefix until it is disabled account-side. Treat that as a silent compatibility safeguard, not as an ordinary deployment stage or reporting requirement.
 
 ## Product / research-integrity invariants
 
@@ -154,7 +171,7 @@ For recurring situations that should trigger without a fresh reminder from the o
 
 Human intervention is appropriate for real authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
 
-Completion reports must distinguish source synchronization, validation, Preview state, merge, Vercel Production state and Cloudflare rollback state. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
+Completion reports must distinguish source synchronization, repository validation, Vercel trigger counts/status, exact-head Preview acceptance, merge, and Vercel Production acceptance. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
 
 ## Documentation maintenance
 
