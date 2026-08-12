@@ -1,0 +1,41 @@
+---
+import { localePath, type Locale } from '../i18n';
+import OpenEvoReproductionResearch from './OpenEvoReproductionResearch.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
+---
+
+<div class="seed-benchmark-guide">
+  <header class="seed-guide-head">
+    <p class="seed-guide-kicker">{t('SEED 论文相关基准 · OpenEvo', 'SEED paper benchmarks · OpenEvo')}</p>
+    <h1>{t('OpenEvo × WebShop / ALFWorld 复现指南', 'OpenEvo × WebShop / ALFWorld Reproduction Guide')}</h1>
+    <p>{t(
+      '围绕 SEED 论文涉及的 WebShop 与 ALFWorld 基准，记录 OpenEvo 自进化实验的可执行复现流程、真实故障与修复经验。',
+      'An execution-first guide to reproducing OpenEvo self-evolution experiments on the WebShop and ALFWorld benchmarks discussed in the SEED paper, including the real failure and repair trail.',
+    )}</p>
+    <a href={guideHref}>← {t('返回 SEED 研究指南', 'Back to the SEED research guide')}</a>
+  </header>
+
+  <OpenEvoReproductionResearch locale={locale} />
+
+  <footer class="seed-guide-foot">
+    <a href={guideHref}>← {t('返回 SEED 研究指南', 'Back to the SEED research guide')}</a>
+  </footer>
+</div>
+
+<style is:global>
+  .seed-benchmark-guide > .seed-guide-head{max-width:930px;margin:0 auto;padding:3rem 1.25rem 0;line-height:1.72}
+  .seed-benchmark-guide > .seed-guide-head .seed-guide-kicker{margin:0 0 .45rem;font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+  .seed-benchmark-guide > .seed-guide-head h1{margin:0;font-size:clamp(2.4rem,7vw,4.8rem);line-height:1;letter-spacing:-.05em}
+  .seed-benchmark-guide > .seed-guide-head p:not(.seed-guide-kicker){margin:.8rem 0 1rem;max-width:780px;font-size:1.04rem;opacity:.72}
+  .seed-benchmark-guide > .seed-guide-head a,.seed-benchmark-guide > .seed-guide-foot a{color:inherit;font-size:.9rem}
+  .seed-benchmark-guide .reprod > .page-head{display:none}
+  .seed-benchmark-guide .reprod{padding-top:1.2rem}
+  .seed-benchmark-guide .reprod > .page-foot a{display:none}
+  .seed-benchmark-guide > .seed-guide-foot{max-width:930px;margin:-4.5rem auto 0;padding:0 1.25rem 5rem}
+  @media(max-width:680px){.seed-benchmark-guide > .seed-guide-head{padding:2rem .9rem 0}.seed-benchmark-guide > .seed-guide-foot{padding:0 .9rem 4rem}}
+</style>
