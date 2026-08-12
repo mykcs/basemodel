@@ -10,12 +10,13 @@ Before non-trivial work, read in this order:
 2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — **scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.**
-5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-6. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-7. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
-8. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
-9. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-10. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+5. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) — **mandatory whenever CSS, theme, typography, layout, responsive behavior, animation, or visible component structure changes. The owner must not be the first person to discover unreadable text, clipping, overlap, or stale theme state.**
+6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
+7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
+8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
+9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
+10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
 Files under `docs/agents/history/` are evidence and rationale, not instructions to restore previous architecture.
 
@@ -87,6 +88,20 @@ npm run build
 
 Run full browser suites or third-party network/vendor audits when the changed surface requires them; they are not automatically part of every blocking hosted build.
 
+For any UI-affecting change, classify it through `ui-change-visual-acceptance-gate.md` and run at least:
+
+```bash
+npm run test:ui
+```
+
+Run the Chromium + WebKit matrix when changing theme tokens, global CSS, shared visual primitives, navigation, workspace layout, responsive behavior, or animation:
+
+```bash
+npm run test:ui:all
+```
+
+A successful build, token test, or Vercel READY badge is not proof that text is readable, elements do not overlap, mobile layout fits, or theme switching works after hydration. The Agent must inspect browser evidence before asking the owner to review.
+
 ## Ordinary Agent workflow
 
 ```text
@@ -101,6 +116,16 @@ read LATEST + current policy
 -> iterate until accepted
 -> merge/release with a normal non-skip message
 -> verify Cloudflare Production separately
+```
+
+For UI work, insert the browser visual gate before owner review:
+
+```text
+static Gate
+-> UI scenario matrix (themes × viewports × representative routes × locales)
+-> inspect failure screenshot/trace/video when needed
+-> exact-head Preview inspection
+-> owner review
 ```
 
 Because the repository is private, normal Vercel Preview URLs may require Vercel authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability instead of disabling protection for convenience.
@@ -145,6 +170,8 @@ Prefer autonomous end-to-end execution using connected repository/provider evide
 For the durable project-level standard on expanding the solution space, keeping ownership/tooling clean, and deciding whether/where experience deserves persistence, follow [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) rather than creating a second governance layer.
 
 For recurring situations that should trigger without a fresh reminder from the owner, scan [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) and follow the matched route. Keep detailed truth in the owning policy/runbook/test; the registry is a trigger router, not a duplicate knowledge store.
+
+For UI work, `docs/agents/current/ui-change-visual-acceptance-gate.md` is the owning scenario policy. Future Agents should improve that file and its executable tests when a new visual failure class appears rather than relying on conversational memory.
 
 Human intervention is appropriate for real authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
 
