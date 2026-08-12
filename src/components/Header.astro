@@ -3,25 +3,249 @@ import { getMessages, localePath, switchLocalePath, parsePath, type Locale } fro
 import { CommandMenu } from './navigation/CommandMenu.tsx';
 
 interface Props { locale: Locale; }
+type MatchMode = 'exact' | 'prefix';
+interface NavPathDefinition {
+  path: string;
+  match?: MatchMode;
+}
+interface NavItemDefinition extends NavPathDefinition {
+  label: string;
+  description: string;
+}
+interface NavGroupDefinition {
+  id: 'reproduce-seed' | 'train-openevo' | 'foundations';
+  index: string;
+  label: string;
+  action: string;
+  description: string;
+  landingPath: string;
+  landingMatch?: MatchMode;
+  items: NavItemDefinition[];
+  activePaths?: NavPathDefinition[];
+}
+
 const { locale } = Astro.props;
 const m = getMessages(locale);
 const otherLocale: Locale = locale === 'zh' ? 'en' : 'zh';
 
-// 语言切换与当前页状态共用同一个无 base path 路径，详情页会高亮所属列表入口。
+// 语言切换与导航状态共用 locale-neutral 路径。
 const { pathNoBase } = parsePath(Astro.url.pathname);
-const isCurrent = (path: string) => pathNoBase === path || (path !== '/' && pathNoBase.startsWith(path));
+const matchesPath = ({ path, match = 'prefix' }: NavPathDefinition) =>
+  match === 'exact'
+    ? pathNoBase === path
+    : pathNoBase === path || pathNoBase.startsWith(path);
 
-// 研究任务是整个网站的解释入口；其余页面是这项任务的知识、执行和证据工具。
-const primaryLinks = [
-  { path: '/research/seed-openevo/', label: locale === 'zh' ? '研究任务' : 'Research mission' },
-  { path: '/guide/', label: m.nav.guide },
-  { path: '/models/', label: m.nav.models },
-  { path: '/papers/', label: m.nav.papers },
-].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
-const utilityLinks = [
-  { path: '/workspace/', label: m.nav.workspace },
-  { path: '/compare/', label: m.nav.compare },
-].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
+const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
+  ? [
+      {
+        id: 'reproduce-seed',
+        index: '01',
+        label: '复现 SEED',
+        action: '从共同研究问题开始',
+        description: '理解论文协议，完成复现，并检查证据边界。',
+        landingPath: '/research/seed-openevo/',
+        landingMatch: 'exact',
+        items: [
+          {
+            path: '/research/seed-openevo/seed/',
+            label: 'SEED 方法',
+            description: '学习两阶段训练、hindsight skill、OPD 与 GRPO。',
+          },
+          {
+            path: '/research/seed-openevo/results/',
+            label: '结果与证据',
+            description: '区分环境可用、真实动作、训练结果与可比较结论。',
+          },
+        ],
+        activePaths: [{ path: '/data-status/' }],
+      },
+      {
+        id: 'train-openevo',
+        index: '02',
+        label: 'OpenEvo 训练',
+        action: '进入可执行实验',
+        description: '用 OpenEvo 在 WebShop / ALFWorld 上运行与训练。',
+        landingPath: '/guide/openevo-webshop-alfworld/',
+        items: [
+          {
+            path: '/research/seed-openevo/openevo/',
+            label: 'OpenEvo 框架',
+            description: '理解跨会话演化、artifact 与 successor revision。',
+          },
+          {
+            path: '/research/seed-openevo/benchmarks/',
+            label: 'WebShop / ALFWorld',
+            description: '掌握两个环境的动作、观测与指标语义。',
+          },
+          {
+            path: '/research/seed-openevo/loops/',
+            label: '训练循环对照',
+            description: '对照 SEED 参数更新与 OpenEvo 载体演化。',
+          },
+          {
+            path: '/workspace/',
+            label: '运行工作台',
+            description: '筛选模型、约束与证据，形成实验决策。',
+          },
+          {
+            path: '/compare/',
+            label: '比较与改进',
+            description: '把差异翻译成可比性与框架改进假设。',
+          },
+        ],
+        activePaths: [
+          { path: '/lab/' },
+          { path: '/guide/today/' },
+        ],
+      },
+      {
+        id: 'foundations',
+        index: '03',
+        label: '相关知识',
+        action: '建立实验所需心智模型',
+        description: '补齐模型、智能体与训练所需的基础知识。',
+        landingPath: '/guide/',
+        landingMatch: 'exact',
+        items: [
+          {
+            path: '/research/seed-openevo/base-model/',
+            label: '基础模型',
+            description: '读懂 checkpoint、Instruct、精度、量化与硬件。',
+          },
+          {
+            path: '/models/',
+            label: '模型目录',
+            description: '查询可用模型、家族、访问方式与证据。',
+          },
+          {
+            path: '/papers/',
+            label: '论文与方法',
+            description: '查看方法、模型角色、基准与复现条件。',
+          },
+        ],
+        activePaths: [
+          { path: '/families/' },
+          { path: '/landscape/' },
+          { path: '/model-data/' },
+          { path: '/methodology/' },
+        ],
+      },
+    ]
+  : [
+      {
+        id: 'reproduce-seed',
+        index: '01',
+        label: 'Reproduce SEED',
+        action: 'Start from the shared research question',
+        description: 'Understand the paper protocol, reproduce it, and inspect the evidence boundary.',
+        landingPath: '/research/seed-openevo/',
+        landingMatch: 'exact',
+        items: [
+          {
+            path: '/research/seed-openevo/seed/',
+            label: 'SEED method',
+            description: 'Learn the two stages, hindsight skills, OPD, and GRPO.',
+          },
+          {
+            path: '/research/seed-openevo/results/',
+            label: 'Results & evidence',
+            description: 'Separate environment readiness, real actions, training results, and comparable claims.',
+          },
+        ],
+        activePaths: [{ path: '/data-status/' }],
+      },
+      {
+        id: 'train-openevo',
+        index: '02',
+        label: 'Run OpenEvo',
+        action: 'Enter the executable experiment',
+        description: 'Run and train OpenEvo on WebShop and ALFWorld.',
+        landingPath: '/guide/openevo-webshop-alfworld/',
+        items: [
+          {
+            path: '/research/seed-openevo/openevo/',
+            label: 'OpenEvo framework',
+            description: 'Understand cross-session evolution, artifacts, and successor revisions.',
+          },
+          {
+            path: '/research/seed-openevo/benchmarks/',
+            label: 'WebShop / ALFWorld',
+            description: 'Learn each environment’s actions, observations, and metric semantics.',
+          },
+          {
+            path: '/research/seed-openevo/loops/',
+            label: 'Training-loop comparison',
+            description: 'Compare SEED parameter updates with OpenEvo carrier evolution.',
+          },
+          {
+            path: '/workspace/',
+            label: 'Run workspace',
+            description: 'Turn models, constraints, and evidence into an experiment decision.',
+          },
+          {
+            path: '/compare/',
+            label: 'Compare & improve',
+            description: 'Translate differences into comparability and framework hypotheses.',
+          },
+        ],
+        activePaths: [
+          { path: '/lab/' },
+          { path: '/guide/today/' },
+        ],
+      },
+      {
+        id: 'foundations',
+        index: '03',
+        label: 'Foundations',
+        action: 'Build the experiment’s mental model',
+        description: 'Learn the models, Agents, and training concepts the experiment depends on.',
+        landingPath: '/guide/',
+        landingMatch: 'exact',
+        items: [
+          {
+            path: '/research/seed-openevo/base-model/',
+            label: 'Base models',
+            description: 'Decode checkpoints, Instruct variants, precision, quantization, and hardware.',
+          },
+          {
+            path: '/models/',
+            label: 'Model catalog',
+            description: 'Inspect available models, families, access modes, and evidence.',
+          },
+          {
+            path: '/papers/',
+            label: 'Papers & methods',
+            description: 'Trace methods, model roles, benchmarks, and reproduction conditions.',
+          },
+        ],
+        activePaths: [
+          { path: '/families/' },
+          { path: '/landscape/' },
+          { path: '/model-data/' },
+          { path: '/methodology/' },
+        ],
+      },
+    ];
+
+const navGroups = groupDefinitions.map((group) => {
+  const landingActive = matchesPath({ path: group.landingPath, match: group.landingMatch });
+  const items = group.items.map((item) => ({
+    ...item,
+    href: localePath(locale, item.path),
+    active: matchesPath(item),
+  }));
+  const active = landingActive
+    || items.some((item) => item.active)
+    || (group.activePaths ?? []).some(matchesPath);
+
+  return {
+    ...group,
+    href: localePath(locale, group.landingPath),
+    landingActive,
+    items,
+    active,
+  };
+});
 
 // 语言切换: 映射当前路径到另一语言的等价路径。
 const switchHref = switchLocalePath(otherLocale, pathNoBase);
@@ -30,40 +254,173 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">↗</span>
-      <span><strong>{m.site.name}</strong><small>{locale === 'zh' ? 'SEED 基准上的 OpenEvo 研究工作台' : 'OpenEvo research on SEED benchmarks'}</small></span>
+      <span>
+        <strong>{m.site.name}</strong>
+        <small>{locale === 'zh' ? 'SEED 基准上的 OpenEvo 研究工作台' : 'OpenEvo research on SEED benchmarks'}</small>
+      </span>
     </a>
-    <nav aria-label={m.nav.mainNav} class="desktop-nav">
-      <div class="nav-primary">{primaryLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
-      <div class="nav-secondary">{utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
+
+    <nav aria-label={m.nav.mainNav} class="desktop-nav three-part-nav" data-ui-audit="contrast layout">
+      {navGroups.map((group) => (
+        <details class:list={['nav-cluster', { 'is-active': group.active }]} data-nav-cluster>
+          <summary data-ui-audit-item>
+            <span class="nav-cluster-number" aria-hidden="true">{group.index}</span>
+            <span class="nav-cluster-label">{group.label}</span>
+            <span class="nav-cluster-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="nav-cluster-panel">
+            <a class="nav-cluster-intro" href={group.href} aria-current={group.landingActive ? 'page' : undefined}>
+              <span class="nav-cluster-kicker">{group.action}</span>
+              <strong>{group.label}</strong>
+              <small>{group.description}</small>
+            </a>
+            <ul class="nav-cluster-links">
+              {group.items.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={item.active ? 'page' : undefined}>
+                    <span>
+                      <strong>{item.label}</strong>
+                      <small>{item.description}</small>
+                    </span>
+                    <span class="nav-cluster-link-arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      ))}
     </nav>
+
     <CommandMenu client:load locale={locale} m={m} />
-    <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
-    <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
-      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    <a
+      class="lang-switch"
+      href={switchHref}
+      aria-label={m.nav.switchLangLabel}
+      hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}
+    >{m.nav.switchLang}</a>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label={m.nav.openMenu}
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
     </button>
-    <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle data-dark-label={m.nav.toggleLightTheme} data-light-label={m.nav.toggleDarkTheme}>◐</button>
+    <button
+      class="theme-toggle"
+      type="button"
+      aria-label={m.nav.toggleTheme}
+      title={m.nav.toggleTheme}
+      aria-pressed="false"
+      data-theme-toggle
+      data-dark-label={m.nav.toggleLightTheme}
+      data-light-label={m.nav.toggleDarkTheme}
+    >◐</button>
   </div>
+
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
-    <div class="shell">
-      {[...primaryLinks, ...utilityLinks].map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
-      <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>
-      <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle-mobile data-dark-label={m.nav.toggleLightTheme} data-light-label={m.nav.toggleDarkTheme}>◐</button>
+    <div class="shell mobile-nav-map" data-ui-audit="contrast layout">
+      <p class="mobile-nav-heading">
+        <span>{locale === 'zh' ? '三个研究入口' : 'Three research paths'}</span>
+        <small>{locale === 'zh' ? '复现 → 训练 → 补齐知识' : 'Reproduce → run → learn'}</small>
+      </p>
+      {navGroups.map((group) => (
+        <details
+          class:list={['mobile-nav-cluster', { 'is-active': group.active }]}
+          open={group.active}
+          data-mobile-nav-cluster
+        >
+          <summary data-ui-audit-item>
+            <span class="nav-cluster-number" aria-hidden="true">{group.index}</span>
+            <span class="mobile-nav-cluster-title">
+              <strong>{group.label}</strong>
+              <small>{group.description}</small>
+            </span>
+            <span class="nav-cluster-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="mobile-nav-cluster-body">
+            <a class="mobile-nav-start" href={group.href} aria-current={group.landingActive ? 'page' : undefined}>
+              <span>{group.action}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <ul>
+              {group.items.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={item.active ? 'page' : undefined}>
+                    <strong>{item.label}</strong>
+                    <small>{item.description}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      ))}
+      <div class="mobile-nav-utilities">
+        <a
+          class="lang-switch"
+          href={switchHref}
+          aria-label={m.nav.switchLangLabel}
+          hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}
+        >{m.nav.switchLang}</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label={m.nav.toggleTheme}
+          title={m.nav.toggleTheme}
+          aria-pressed="false"
+          data-theme-toggle-mobile
+          data-dark-label={m.nav.toggleLightTheme}
+          data-light-label={m.nav.toggleDarkTheme}
+        >◐</button>
+      </div>
     </div>
   </div>
 </header>
+
 <script>
   const menuToggle = document.querySelector('[data-menu-toggle]');
   const mobileMenu = document.querySelector('[data-mobile-menu]');
-  menuToggle?.addEventListener('click', () => {
-    const open = mobileMenu?.classList.toggle('is-open');
-    menuToggle?.setAttribute('aria-expanded', String(open));
+  const navClusters = Array.from(document.querySelectorAll<HTMLDetailsElement>('[data-nav-cluster]'));
+
+  const closeNavClusters = () => {
+    navClusters.forEach((cluster) => { cluster.open = false; });
+  };
+
+  navClusters.forEach((cluster) => {
+    cluster.addEventListener('toggle', () => {
+      if (!cluster.open) return;
+      navClusters.forEach((other) => {
+        if (other !== cluster) other.open = false;
+      });
+    });
   });
+
+  menuToggle?.addEventListener('click', () => {
+    const open = mobileMenu?.classList.toggle('is-open') ?? false;
+    menuToggle.setAttribute('aria-expanded', String(open));
+    if (open) closeNavClusters();
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target instanceof Element && !target.closest('[data-nav-cluster]')) closeNavClusters();
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || !mobileMenu?.classList.contains('is-open')) return;
+    if (event.key !== 'Escape') return;
+    closeNavClusters();
+    if (!mobileMenu?.classList.contains('is-open')) return;
     mobileMenu.classList.remove('is-open');
     menuToggle?.setAttribute('aria-expanded', 'false');
     (menuToggle as HTMLElement | null)?.focus();
   });
+
   const themeToggles = [...document.querySelectorAll('[data-theme-toggle], [data-theme-toggle-mobile]')];
   const syncThemeControls = () => {
     const dark = document.documentElement.dataset.theme === 'dark';
@@ -74,6 +431,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       toggle.textContent = dark ? '☀' : '◐';
     });
   };
+
   themeToggles.forEach((toggle) => {
     if (toggle.getAttribute('data-theme-bound') === 'true') return;
     toggle.setAttribute('data-theme-bound', 'true');
@@ -85,5 +443,6 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       window.dispatchEvent(new CustomEvent('atlas:themechange', { detail: { theme: dark ? 'light' : 'dark' } }));
     });
   });
+
   syncThemeControls();
 </script>
