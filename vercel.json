@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run verify:deploy && npm run build",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- src public scripts package.json package-lock.json astro.config.mjs tsconfig.json .node-version vercel.json wrangler.jsonc"
+  "ignoreCommand": "node scripts/vercel-ignore-build.mjs",
+  "github": {
+    "autoJobCancelation": true
+  }
 }
