@@ -11,14 +11,17 @@ const otherLocale: Locale = locale === 'zh' ? 'en' : 'zh';
 const { pathNoBase } = parsePath(Astro.url.pathname);
 const isCurrent = (path: string) => pathNoBase === path || (path !== '/' && pathNoBase.startsWith(path));
 
-// 站内链接全部走 localePath, 英文版自动带 /en/ 前缀。
+// 研究任务是整个网站的解释入口；其余页面是这项任务的知识、执行和证据工具。
 const primaryLinks = [
-  { path: '/workspace/', label: m.nav.workspace },
+  { path: '/research/seed-openevo/', label: locale === 'zh' ? '研究任务' : 'Research mission' },
+  { path: '/guide/', label: m.nav.guide },
   { path: '/models/', label: m.nav.models },
   { path: '/papers/', label: m.nav.papers },
-  { path: '/guide/', label: m.nav.guide },
 ].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
-const utilityLinks = [{ path: '/compare/', label: m.nav.compare }].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
+const utilityLinks = [
+  { path: '/workspace/', label: m.nav.workspace },
+  { path: '/compare/', label: m.nav.compare },
+].map((link) => ({ ...link, href: localePath(locale, link.path), active: isCurrent(link.path) }));
 
 // 语言切换: 映射当前路径到另一语言的等价路径。
 const switchHref = switchLocalePath(otherLocale, pathNoBase);
@@ -27,7 +30,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">↗</span>
-      <span><strong>{m.site.name}</strong><small>{m.site.tagline}</small></span>
+      <span><strong>{m.site.name}</strong><small>{locale === 'zh' ? 'SEED 基准上的 OpenEvo 研究工作台' : 'OpenEvo research on SEED benchmarks'}</small></span>
     </a>
     <nav aria-label={m.nav.mainNav} class="desktop-nav">
       <div class="nav-primary">{primaryLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}</div>
