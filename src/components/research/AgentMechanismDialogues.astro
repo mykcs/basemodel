@@ -1,526 +1,113 @@
 ---
 import type { Locale } from '../../i18n';
 
-type Role = 'researcher' | 'agent' | 'environment' | 'analyzer' | 'trainer' | 'evaluator' | 'evolver' | 'verifier';
-
-type Turn = {
-  role: Role;
-  phase: string;
-  speech: string;
-  technical: string;
-};
-
-type Mechanism = {
-  id: 'seed' | 'openevo';
-  name: string;
-  eyebrow: string;
-  title: string;
-  lede: string;
-  facts: Array<{ label: string; value: string }>;
-  turns: Turn[];
-  boundary: string;
-};
-
-interface Props {
-  locale: Locale;
-}
+interface Props { locale: Locale; }
+type MechanismId = 'seed' | 'openevo';
+type Stage = { n: string; role: string; title: string; input: string; process: string; output: string; detail: string };
+type Mechanism = { id: MechanismId; name: string; eyebrow: string; summary: string; updated: string; activation: string; stages: Stage[]; boundary: string };
 
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
-const roleLabels: Record<Role, string> = {
-  researcher: t('研究者', 'Researcher'),
-  agent: 'Agent',
-  environment: t('环境', 'Environment'),
-  analyzer: t('轨迹分析器', 'Trajectory analyzer'),
-  trainer: t('训练器', 'Trainer'),
-  evaluator: t('评测器', 'Evaluator'),
-  evolver: t('演化方法', 'Evolution method'),
-  verifier: t('验证器', 'Verifier'),
-};
-
-const roleMarks: Record<Role, string> = {
-  researcher: 'R',
-  agent: 'A',
-  environment: 'E',
-  analyzer: 'H',
-  trainer: 'T',
-  evaluator: 'S',
-  evolver: 'V',
-  verifier: 'C',
-};
-
 const mechanisms: Mechanism[] = [
   {
-    id: 'seed',
-    name: 'SEED',
-    eyebrow: t('参数内化学习', 'Parameter-internalizing learning'),
-    title: t('一轮训练不是“边做任务边改参数”', 'One training round does not update weights while the task is still running'),
-    lede: t(
-      'episode 内使用同一个 policy revision。任务结束后，完整轨迹才进入 hindsight、重打分和参数更新；下一组 rollout 才看到新 checkpoint。',
-      'One policy revision serves the whole episode. Only after completion does the trajectory enter hindsight, re-scoring, and parameter updates; the next rollout group sees the new checkpoint.',
-    ),
-    facts: [
-      { label: t('更新对象', 'Updated object'), value: t('policy 参数', 'policy parameters') },
-      { label: t('生效时间', 'Activation'), value: t('下一次 policy update 后', 'after the next policy update') },
-      { label: t('推理阶段', 'At inference'), value: t('目标是不再依赖额外 skill prompt', 'the goal is to avoid an extra skill prompt') },
+    id: 'seed', name: 'SEED', eyebrow: t('参数加工线', 'Parameter-processing line'),
+    summary: t('把一次完整 episode 产生的轨迹加工成训练信号，最后写回新的 policy checkpoint。', 'Turn a completed episode trajectory into training signals, then write them into a new policy checkpoint.'),
+    updated: t('更新对象：policy 参数', 'Updated object: policy parameters'),
+    activation: t('生效边界：下一次 policy update 后', 'Activation boundary: after the next policy update'),
+    stages: [
+      { n:'01', role:t('起点','Input'), title:t('固定 checkpoint r17','Pin checkpoint r17'), input:t('任务 + r17','task + r17'), process:t('冻结本轮权重','freeze weights for this episode'), output:t('稳定的运行起点','stable runtime start'), detail:t('episode 进行中不切换 policy revision。','The policy revision does not change inside the episode.') },
+      { n:'02', role:'Agent × Environment', title:t('交互并产生轨迹','Interact and produce a trajectory'), input:t('观察 / 状态','observations / state'), process:t('模型动作改变环境，环境返回新观察','model actions change the environment; the environment returns observations'), output:t('完整 trajectory','complete trajectory'), detail:t('保存观察、动作、reward、失败步骤、循环和终止原因。','Preserve observations, actions, rewards, failed steps, loops, and termination reasons.') },
+      { n:'03', role:t('轨迹分析器','Trajectory analyzer'), title:t('回看并生成 hindsight skill','Generate a hindsight skill'), input:t('完整 trajectory','complete trajectory'), process:t('总结哪些状态应关注、哪些行为应避免','summarize what to notice and avoid'), output:t('skill / hindsight','skill / hindsight'), detail:t('这是对已完成轨迹的加工，不是 episode 中途偷偷修改参数。','This processes a completed trajectory; it is not a mid-episode weight update.') },
+      { n:'04', role:t('训练器','Trainer'), title:t('重打分 + GRPO / OPD','Re-score + GRPO / OPD'), input:t('原动作 + skill','original actions + skill'), process:t('比较普通与 skill context 下原动作概率并联合优化','compare original-action probabilities under ordinary and skill contexts, then optimize'), output:t('gradient / optimizer signal','gradient / optimizer signal'), detail:t('固定已采样动作，让 hindsight 的收益被蒸馏进 policy。','Keep sampled actions fixed so hindsight gains can be distilled into the policy.') },
+      { n:'05', role:t('参数写回','Write-back'), title:t('产生 checkpoint r18','Produce checkpoint r18'), input:t('optimizer signal','optimizer signal'), process:t('更新 policy 参数','update policy parameters'), output:t('新 checkpoint r18','new checkpoint r18'), detail:t('到这里才有“参数真的变了”的证据。','Only here do we have evidence that parameters actually changed.') },
+      { n:'06', role:t('下一轮','Next rollout'), title:t('r18 重新进入运行管线','Feed r18 back into the runtime'), input:t('下一组任务 + r18','next tasks + r18'), process:t('重新开始新的 rollout','start a new rollout'), output:t('新的 on-policy 数据','new on-policy data'), detail:t('新的 checkpoint 只服务下一组 rollout，不倒灌进已经结束的 episode。','The new checkpoint serves the next rollout group; it does not flow backward into the finished episode.') },
     ],
-    turns: [
-      {
-        role: 'researcher',
-        phase: t('01 · 固定起点', '01 · Pin the starting point'),
-        speech: t('这一组 rollout 使用 checkpoint r17。一个 episode 从开始到结束都不切换权重。', 'This rollout group uses checkpoint r17. The weights do not change from the start to the end of an episode.'),
-        technical: t('运行时持续增长的是观察、动作历史和环境状态；policy revision 保持固定。', 'Observations, action history, and environment state grow at runtime; the policy revision stays fixed.'),
-      },
-      {
-        role: 'agent',
-        phase: t('02 · 与环境交互', '02 · Interact with the environment'),
-        speech: t('我读取观察，生成可执行动作；环境返回下一条观察后，我继续完成任务。', 'I read an observation and emit an executable action; after the environment returns the next observation, I continue the task.'),
-        technical: t('这部分是普通 Agent runtime loop，本身还没有发生训练。', 'This is the ordinary agent runtime loop; training has not happened yet.'),
-      },
-      {
-        role: 'environment',
-        phase: t('03 · 完成并保存轨迹', '03 · Complete and preserve the trajectory'),
-        speech: t('任务结束。我保留 reward、全部观察、动作、绕路、失败步骤和终止原因。', 'The task ends. I preserve the reward, all observations and actions, detours, failed steps, and the termination reason.'),
-        technical: t('终局 reward 只给出结果信号；完整 trajectory 才提供可以回看的中间证据。', 'The terminal reward gives an outcome signal; the full trajectory supplies intermediate evidence for hindsight.'),
-      },
-      {
-        role: 'analyzer',
-        phase: t('04 · 生成 hindsight skill', '04 · Generate a hindsight skill'),
-        speech: t('我回看整段轨迹，总结相似状态下应该关注什么、避免什么。', 'I review the completed trajectory and summarize what to notice and avoid in a similar state.'),
-        technical: t('Stage 1 先通过 SFT 教会同一模型生成 skill；Stage 2 再在 on-policy 数据上使用这项能力。', 'Stage 1 SFT first teaches the same model to generate skills; Stage 2 then uses that capability on on-policy data.'),
-      },
-      {
-        role: 'trainer',
-        phase: t('05 · 固定动作重打分', '05 · Re-score fixed actions'),
-        speech: t('我不重新采样动作，而是比较普通上下文和 skill 上下文下原动作的 token 概率，再与 GRPO 一起优化。', 'I do not re-sample actions. I compare the original actions under ordinary and skill contexts, then optimize that signal together with GRPO.'),
-        technical: t('OPD 蒸馏 skill 引起的概率变化；联合 loss 最终更新 policy 参数。', 'OPD distills the probability shift induced by the skill; the joint loss ultimately updates policy parameters.'),
-      },
-      {
-        role: 'researcher',
-        phase: t('06 · 下一轮加载新 revision', '06 · Load the new revision next round'),
-        speech: t('checkpoint r18 已产生。下一组 rollout 的 actor 与 analyzer 一起使用 r18。', 'Checkpoint r18 now exists. The next rollout group uses r18 for both actor and analyzer.'),
-        technical: t('参数更新发生在 episode 之后，因此实验可以明确区分 runtime 状态变化与 training revision 变化。', 'Because parameter updates happen after the episode, the experiment can distinguish runtime state changes from training-revision changes.'),
-      },
-    ],
-    boundary: t('读完后应能判断：一次 episode 成功结束不等于 SEED 已经更新参数；还需要 OPD / GRPO loss、optimizer step 和新 checkpoint 证据。', 'After reading, you should be able to tell that completing an episode does not prove SEED updated parameters; OPD/GRPO loss, an optimizer step, and a new checkpoint are still required.'),
+    boundary: t('一次 episode 成功结束 ≠ SEED 已更新参数。还需要看到训练 loss、optimizer step 与新 checkpoint。','A successful episode ≠ a SEED parameter update. Training loss, an optimizer step, and a new checkpoint are still required.'),
   },
   {
-    id: 'openevo',
-    name: 'OpenEvo',
-    eyebrow: t('跨 session 演化', 'Cross-session evolution'),
-    title: t('当前任务先完成，successor revision 才能在后续任务生效', 'The current task completes before a successor revision can activate for a later task'),
-    lede: t(
-      'OpenEvo 把 task / session completion 作为边界。任务中固定 Project Head；任务后封存证据、运行声明的演化方法、验证 artifact，并把接受的载体组成 successor revision。',
-      'OpenEvo treats task or session completion as the boundary. The Project Head stays pinned during the task; afterward, evidence is sealed, a declared evolution method runs, artifacts are validated, and accepted carriers form a successor revision.',
-    ),
-    facts: [
-      { label: t('更新对象', 'Updated object'), value: t('memory、skill、agent-system artifact 或内部参数载体', 'memory, skills, agent-system artifacts, or an internal parameter carrier') },
-      { label: t('生效时间', 'Activation'), value: t('后续任务加载 successor revision 时', 'when a later task loads the successor revision') },
-      { label: t('任务进行中', 'During the task'), value: t('Project Head 固定', 'the Project Head stays pinned') },
+    id: 'openevo', name: 'OpenEvo', eyebrow: t('跨任务加工线', 'Cross-task processing line'),
+    summary: t('把已完成任务封存成证据，再加工成 memory、skill 或其他 artifact，验证后组成下一版 successor revision。', 'Seal a completed task as evidence, process it into memory, skills, or other artifacts, validate them, then form the next successor revision.'),
+    updated: t('更新对象：memory / skill / agent-system artifact / revision', 'Updated object: memory / skill / agent-system artifact / revision'),
+    activation: t('生效边界：后续任务加载 successor revision 时', 'Activation boundary: when a later task loads the successor revision'),
+    stages: [
+      { n:'01', role:t('起点','Input'), title:t('固定 Project Head r17','Pin Project Head r17'), input:t('任务 + context + r17','task + context + r17'), process:t('锁定 model / adapter / context revision','pin model / adapter / context revisions'), output:t('可归因的任务起点','attributable task start'), detail:t('任务进行中 Project Head 固定，避免一条任务同时混入多个版本。','The Project Head stays fixed during the task so one task does not mix multiple revisions.') },
+      { n:'02', role:'Agent × Environment', title:t('运行真实任务','Run the real task'), input:t('观察 / 页面 / 世界状态','observations / page / world state'), process:t('模型动作与环境往返','model actions and environment responses alternate'), output:t('transcript + trajectory + score','transcript + trajectory + score'), detail:t('同时保存 raw model output、parsed action、fallback 和终止原因。','Also preserve raw model output, parsed actions, fallbacks, and termination reasons.') },
+      { n:'03', role:t('证据封存','Evidence seal'), title:t('任务结束后冻结数据','Freeze data after task completion'), input:t('完整运行记录','complete run record'), process:t('按时间顺序封存证据','seal evidence in order'), output:t('sealed dataset','sealed dataset'), detail:t('未完成的中间状态不进入本次 evolution input。','Unfinished in-session state does not enter this evolution input.') },
+      { n:'04', role:t('演化方法','Evolution method'), title:t('加工成版本化 artifact','Process into a versioned artifact'), input:t('sealed dataset','sealed dataset'), process:t('反思 / 汇总 / skill extraction / adapter method','reflection / synthesis / skill extraction / adapter method'), output:t('memory / skill / artifact','memory / skill / artifact'), detail:t('OpenEvo 是跨 session 演化接口，不自动等于参数训练；具体 carrier 决定更新什么。','OpenEvo is a cross-session evolution interface, not automatically parameter training; the carrier determines what changes.') },
+      { n:'05', role:t('验证器','Verifier'), title:t('验证并组成 r18','Validate and form r18'), input:t('候选 artifact','candidate artifact'), process:t('检查来源、完整性、类型和激活边界','check provenance, completeness, type, and activation boundary'), output:t('accepted successor revision r18','accepted successor revision r18'), detail:t('只有被接受的 carrier 才进入 successor revision。','Only accepted carriers enter the successor revision.') },
+      { n:'06', role:t('后续任务','Later task'), title:t('r18 重新进入任务入口','Feed r18 into a later task'), input:t('新任务 + r18','new task + r18'), process:t('materialize 已接受载体并运行','materialize accepted carriers and run'), output:t('下一条任务轨迹','next task trajectory'), detail:t('上一任务仍属于 r17；r18 从后续任务开始生效。','The previous task remains attributed to r17; r18 activates only for later tasks.') },
     ],
-    turns: [
-      {
-        role: 'researcher',
-        phase: t('01 · 接收任务并固定 Project Head', '01 · Admit the task and pin the Project Head'),
-        speech: t('这项任务使用 Project Head r17。context、model 和 adapter revision 在开始时一起确定。', 'This task uses Project Head r17. Context, model, and adapter revisions are fixed together at admission.'),
-        technical: t('固定起点让同一 task 的输出可以归因到明确 revision，避免中途切换状态。', 'A pinned starting point ties one task to a definite revision and prevents mid-task state changes from breaking attribution.'),
-      },
-      {
-        role: 'agent',
-        phase: t('02 · 运行真实任务', '02 · Run the real task'),
-        speech: t('我在 r17 下与环境交互，留下 transcript、timeline、trajectory、分数和输出。', 'I interact with the environment under r17 and leave a transcript, timeline, trajectory, score, and outputs.'),
-        technical: t('benchmark adapter 需要同时保存观察、raw model output、parsed action、fallback 标记和终止原因。', 'The benchmark adapter must preserve observations, raw model output, parsed actions, fallback flags, and termination reasons.'),
-      },
-      {
-        role: 'evaluator',
-        phase: t('03 · 任务结束后封存证据', '03 · Seal evidence after task completion'),
-        speech: t('任务已经结束。现在封存完整数据和评价；未完成的中间状态不会进入这次演化。', 'The task is complete. I now seal the full data and evaluation; unfinished in-session state does not enter this evolution.'),
-        technical: t('sealed dataset 定义 method 的输入边界，并让后续 artifact 可以追溯到明确 task / session。', 'The sealed dataset defines the method input boundary and makes later artifacts traceable to a definite task or session.'),
-      },
-      {
-        role: 'evolver',
-        phase: t('04 · 产生版本化 artifact', '04 · Produce a versioned artifact'),
-        speech: t('我按声明的方法读取有序证据，生成文本记忆、技能包、Agent 系统指令或内部 adapter 载体。', 'I consume ordered evidence with a declared method and produce text memory, a skill bundle, agent-system instructions, or an internal adapter carrier.'),
-        technical: t('OpenEvo 描述跨 session 演化接口，不自动等同于参数训练；carrier 与 method 决定更新对象。', 'OpenEvo describes a cross-session evolution interface and does not automatically mean parameter training; carrier and method contracts determine the updated object.'),
-      },
-      {
-        role: 'verifier',
-        phase: t('05 · 验证并组成 successor revision', '05 · Validate and form a successor revision'),
-        speech: t('我检查 artifact 类型、来源、完整性和激活边界。通过后，把接受的载体加入 r18。', 'I check artifact type, provenance, completeness, and activation boundary. After acceptance, I add the carrier to r18.'),
-        technical: t('版本化存储与 materializer 让多个接受的 carrier 在同一 revision 下统一激活。', 'Versioned storage and the materializer let multiple accepted carriers activate consistently under one revision.'),
-      },
-      {
-        role: 'agent',
-        phase: t('06 · 后续任务加载 r18', '06 · A later task loads r18'),
-        speech: t('下一项任务使用 r18。上一项任务仍然保留在 r17 的证据边界里。', 'The next task uses r18. The previous task remains inside the evidence boundary of r17.'),
-        technical: t('successor revision 只在任务完成后激活，因此性能变化可以与明确的 revision 差异对应。', 'The successor revision activates only after task completion, so performance changes can be tied to an explicit revision difference.'),
-      },
-    ],
-    boundary: t('读完后应能判断：生成了一段反思或 memory 不等于 OpenEvo 已完成演化；还需要 artifact 注册、验证、successor revision 和后续任务激活证据。', 'After reading, you should be able to tell that reflection text or memory alone does not prove OpenEvo evolved; artifact registration, validation, a successor revision, and activation in a later task are still required.'),
+    boundary: t('出现反思文本或保存 memory ≠ OpenEvo 已完成演化。还需要 artifact 注册、验证、successor revision 与后续任务激活。','Reflection text or saved memory ≠ completed OpenEvo evolution. Artifact registration, validation, a successor revision, and later-task activation are still required.'),
   },
 ];
 ---
 
 <section class="mechanism-dialogues" aria-labelledby="mechanism-dialogues-title" data-ui-audit="contrast layout">
   <header class="mechanism-dialogues__header">
-    <span>{t('给第一次接触自进化 Agent 的读者', 'For readers new to self-evolving agents')}</span>
-    <h2 id="mechanism-dialogues-title">{t('先听懂谁在什么时候说什么，再比较两个循环', 'Understand who acts when before comparing the two loops')}</h2>
-    <p>{t(
-      '下面不是聊天装饰，而是把输入、角色交接、更新对象和生效边界外化成可阅读的时间顺序。技术术语留在每轮对话的展开区里。',
-      'The dialogue is not decoration. It externalizes inputs, role handoffs, updated objects, and activation boundaries as a readable timeline. Technical terms stay inside each turn’s disclosure.',
-    )}</p>
+    <span>{t('把自进化 Agent 当成一条加工线看', 'Think of a self-evolving agent as a processing line')}</span>
+    <h2 id="mechanism-dialogues-title">{t('数据从哪里进来，经过什么加工，最后流向哪里', 'See where data enters, how it is processed, and where it flows next')}</h2>
+    <p>{t('每个大方块是一台“加工机器”，细线是数据管道，沿管道移动的小光点代表正在流动的数据包。先看输入与产出，再展开技术细节。','Each large node is a processing machine. Lines are data pipes, and the moving dot represents a data packet. Read inputs and outputs first; expand technical details only when needed.')}</p>
   </header>
 
   <div class="mechanism-dialogues__grid">
     {mechanisms.map((mechanism) => (
       <article class:list={['mechanism-dialogue', `mechanism-dialogue--${mechanism.id}`]} data-ui-audit-item>
         <header class="mechanism-dialogue__intro">
-          <div>
-            <span>{mechanism.eyebrow}</span>
-            <strong>{mechanism.name}</strong>
-          </div>
-          <h3>{mechanism.title}</h3>
-          <p>{mechanism.lede}</p>
-          <dl>
-            {mechanism.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
-          </dl>
+          <div class="mechanism-dialogue__identity"><span>{mechanism.eyebrow}</span><strong>{mechanism.name}</strong></div>
+          <p>{mechanism.summary}</p>
+          <div class="mechanism-dialogue__facts"><span>{mechanism.updated}</span><span>{mechanism.activation}</span></div>
         </header>
 
         <ol class="mechanism-dialogue__turns">
-          {mechanism.turns.map((turn) => (
-            <li class:list={['mechanism-turn', `mechanism-turn--${turn.role}`]}>
-              <div class="mechanism-turn__rail" aria-hidden="true">
-                <span>{roleMarks[turn.role]}</span>
-              </div>
+          {mechanism.stages.map((stage, index) => (
+            <li class="mechanism-turn">
               <div class="mechanism-turn__content">
-                <small>{turn.phase} · {roleLabels[turn.role]}</small>
-                <p>{turn.speech}</p>
-                <details>
-                  <summary>{t('展开技术映射', 'Open technical mapping')}</summary>
-                  <p>{turn.technical}</p>
-                </details>
+                <div class="mechanism-turn__top"><span>{stage.n}</span><small>{stage.role}</small></div>
+                <h3>{stage.title}</h3>
+                <div class="mechanism-turn__io">
+                  <div><small>{t('流入','IN')}</small><strong>{stage.input}</strong></div>
+                  <div class="mechanism-turn__processor"><small>{t('加工','PROCESS')}</small><p>{stage.process}</p></div>
+                  <div><small>{t('流出','OUT')}</small><strong>{stage.output}</strong></div>
+                </div>
+                <details><summary>{t('为什么这一步重要？','Why does this step matter?')}</summary><p>{stage.detail}</p></details>
               </div>
+              {index < mechanism.stages.length - 1 && (
+                <div class="flow-pipe" aria-hidden="true"><span class="flow-pipe__line"></span><span class="flow-pipe__packet"></span><span class="flow-pipe__head"></span></div>
+              )}
             </li>
           ))}
         </ol>
 
-        <aside class="mechanism-dialogue__boundary">
-          <strong>{t('证据边界', 'Evidence boundary')}</strong>
-          <p>{mechanism.boundary}</p>
-        </aside>
+        <aside class="mechanism-dialogue__boundary"><strong>{t('证据边界','Evidence boundary')}</strong><p>{mechanism.boundary}</p></aside>
       </article>
     ))}
   </div>
 
   <footer class="mechanism-dialogues__check">
-    <strong>{t('用三个问题检查自己是否看懂', 'Check your understanding with three questions')}</strong>
+    <strong>{t('第一次学 Agent，只要先抓住这三个问题','If you are new to agents, start with these three questions')}</strong>
     <dl>
-      <div><dt>{t('什么时候改变 policy 参数？', 'When do policy parameters change?')}</dt><dd>{t('SEED 在 episode 完成后的 optimizer step；OpenEvo 只有使用参数载体的方法才可能改参数。', 'SEED changes them at an optimizer step after episode completion; OpenEvo changes them only when a selected method uses a parameter carrier.')}</dd></div>
-      <div><dt>{t('什么时候允许新结果生效？', 'When may a new result activate?')}</dt><dd>{t('SEED 的新 checkpoint 用于下一组 rollout；OpenEvo 的 successor revision 用于后续任务。', 'SEED uses the new checkpoint for the next rollout group; OpenEvo uses the successor revision for a later task.')}</dd></div>
-      <div><dt>{t('什么证据还不够？', 'Which evidence is insufficient?')}</dt><dd>{t('进程退出、出现反思文本或保存 memory 都不单独证明机制完成。', 'A clean process exit, reflection text, or saved memory alone does not prove that the mechanism completed.')}</dd></div>
+      <div><dt>{t('什么东西在流动？','What is flowing?')}</dt><dd>{t('任务、观察、模型动作、轨迹、训练信号、memory / skill / artifact。','Tasks, observations, model actions, trajectories, training signals, memory, skills, and artifacts.')}</dd></div>
+      <div><dt>{t('什么东西被加工？','What is being processed?')}</dt><dd>{t('SEED 最终加工 policy 参数；OpenEvo 加工跨任务可复用的载体。','SEED ultimately processes policy parameters; OpenEvo processes reusable cross-task carriers.')}</dd></div>
+      <div><dt>{t('什么时候反馈到下一轮？','When does feedback return?')}</dt><dd>{t('都不是任务进行到一半就改；都在明确完成边界之后进入下一轮。','Neither changes halfway through a task; both feed back only after an explicit completion boundary.')}</dd></div>
     </dl>
   </footer>
 </section>
 
 <style>
-  .mechanism-dialogues {
-    --dialogue-accent: var(--accent, #2457d6);
-    --dialogue-text: var(--text, var(--ink, #201c16));
-    --dialogue-muted: var(--muted, #625d54);
-    --dialogue-line: var(--line, #d9d4c8);
-    width: min(1180px, calc(100% - 2rem));
-    margin: clamp(2rem, 5vw, 4.5rem) auto;
-    padding: clamp(1rem, 2.8vw, 2.2rem);
-    border: 1px solid var(--dialogue-line);
-    border-radius: 28px;
-    background:
-      radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--dialogue-accent) 10%, transparent), transparent 32%),
-      color-mix(in srgb, var(--surface, #fff) 94%, transparent);
-    box-shadow: 0 24px 80px color-mix(in srgb, var(--dialogue-text) 8%, transparent);
-  }
-
-  .mechanism-dialogues__header {
-    max-width: 850px;
-    padding: .5rem .5rem 1.6rem;
-  }
-
-  .mechanism-dialogues__header > span {
-    color: var(--dialogue-accent);
-    font-size: .72rem;
-    font-weight: 850;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-  }
-
-  .mechanism-dialogues__header h2 {
-    max-width: 21ch;
-    margin: .7rem 0 .75rem;
-    color: var(--dialogue-text);
-    font-size: clamp(1.8rem, 3.5vw, 3.35rem);
-    line-height: 1.04;
-    letter-spacing: -.04em;
-  }
-
-  .mechanism-dialogues__header p {
-    max-width: 72ch;
-    margin: 0;
-    color: var(--dialogue-muted);
-    line-height: 1.75;
-  }
-
-  .mechanism-dialogues__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .mechanism-dialogue {
-    min-width: 0;
-    overflow: clip;
-    border: 1px solid var(--dialogue-line);
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--surface, #fff) 91%, transparent);
-  }
-
-  .mechanism-dialogue__intro {
-    padding: 1.15rem;
-    border-bottom: 1px solid var(--dialogue-line);
-    background: color-mix(in srgb, var(--dialogue-accent) 5%, transparent);
-  }
-
-  .mechanism-dialogue__intro > div:first-child {
-    display: flex;
-    gap: .65rem;
-    align-items: center;
-  }
-
-  .mechanism-dialogue__intro > div:first-child span {
-    color: var(--dialogue-muted);
-    font-size: .69rem;
-    font-weight: 750;
-  }
-
-  .mechanism-dialogue__intro > div:first-child strong {
-    color: var(--dialogue-accent);
-    font: 850 .82rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
-  .mechanism-dialogue__intro h3 {
-    margin: .7rem 0 .55rem;
-    color: var(--dialogue-text);
-    font-size: clamp(1.25rem, 2.1vw, 1.75rem);
-    line-height: 1.15;
-    letter-spacing: -.025em;
-  }
-
-  .mechanism-dialogue__intro > p {
-    margin: 0;
-    color: var(--dialogue-muted);
-    font-size: .86rem;
-    line-height: 1.62;
-  }
-
-  .mechanism-dialogue__intro dl {
-    display: grid;
-    gap: .5rem;
-    margin: 1rem 0 0;
-  }
-
-  .mechanism-dialogue__intro dl div {
-    display: grid;
-    grid-template-columns: minmax(5.5rem, .36fr) minmax(0, 1fr);
-    gap: .65rem;
-    padding-top: .5rem;
-    border-top: 1px solid var(--dialogue-line);
-  }
-
-  .mechanism-dialogue__intro dt {
-    color: var(--dialogue-muted);
-    font-size: .67rem;
-    font-weight: 800;
-  }
-
-  .mechanism-dialogue__intro dd {
-    margin: 0;
-    color: var(--dialogue-text);
-    font-size: .73rem;
-    line-height: 1.45;
-  }
-
-  .mechanism-dialogue__turns {
-    position: relative;
-    display: grid;
-    gap: .7rem;
-    margin: 0;
-    padding: 1rem;
-    list-style: none;
-  }
-
-  .mechanism-dialogue__turns::before {
-    content: '';
-    position: absolute;
-    top: 2rem;
-    bottom: 2rem;
-    left: 2.15rem;
-    width: 2px;
-    background: linear-gradient(var(--dialogue-line), color-mix(in srgb, var(--dialogue-accent) 50%, var(--dialogue-line)), var(--dialogue-line));
-  }
-
-  .mechanism-turn {
-    position: relative;
-    display: grid;
-    grid-template-columns: 2.35rem minmax(0, 1fr);
-    gap: .75rem;
-  }
-
-  .mechanism-turn__rail {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    place-items: start center;
-    padding-top: .8rem;
-  }
-
-  .mechanism-turn__rail span {
-    display: grid;
-    width: 1.85rem;
-    height: 1.85rem;
-    place-items: center;
-    border: 1px solid color-mix(in srgb, var(--dialogue-accent) 35%, var(--dialogue-line));
-    border-radius: 50%;
-    background: var(--surface, #fff);
-    color: var(--dialogue-accent);
-    font: 850 .63rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
-  .mechanism-turn__content {
-    min-width: 0;
-    padding: .8rem .9rem;
-    border: 1px solid var(--dialogue-line);
-    border-radius: 15px;
-    background: color-mix(in srgb, var(--surface, #fff) 94%, transparent);
-  }
-
-  .mechanism-turn__content > small {
-    display: block;
-    color: var(--dialogue-accent);
-    font-size: .65rem;
-    font-weight: 800;
-    letter-spacing: .025em;
-  }
-
-  .mechanism-turn__content > p {
-    margin: .45rem 0 0;
-    color: var(--dialogue-text);
-    font-size: .82rem;
-    line-height: 1.58;
-  }
-
-  .mechanism-turn details {
-    margin-top: .65rem;
-    border-top: 1px dashed var(--dialogue-line);
-  }
-
-  .mechanism-turn summary {
-    min-height: 42px;
-    padding: .65rem 0 .1rem;
-    cursor: pointer;
-    color: var(--dialogue-muted);
-    font-size: .7rem;
-    font-weight: 750;
-  }
-
-  .mechanism-turn details p {
-    margin: .35rem 0 .2rem;
-    color: var(--dialogue-muted);
-    font-size: .73rem;
-    line-height: 1.52;
-  }
-
-  .mechanism-dialogue__boundary {
-    margin: 0 1rem 1rem;
-    padding: .9rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--dialogue-accent) 32%, var(--dialogue-line));
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--dialogue-accent) 6%, transparent);
-  }
-
-  .mechanism-dialogue__boundary strong {
-    color: var(--dialogue-accent);
-    font-size: .72rem;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-  }
-
-  .mechanism-dialogue__boundary p {
-    margin: .45rem 0 0;
-    color: var(--dialogue-text);
-    font-size: .76rem;
-    line-height: 1.55;
-  }
-
-  .mechanism-dialogues__check {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid var(--dialogue-line);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--surface-muted, #f3f0e8) 72%, transparent);
-  }
-
-  .mechanism-dialogues__check > strong {
-    color: var(--dialogue-text);
-    font-size: .9rem;
-  }
-
-  .mechanism-dialogues__check dl {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .7rem;
-    margin: .8rem 0 0;
-  }
-
-  .mechanism-dialogues__check dl div {
-    min-width: 0;
-    padding: .75rem;
-    border-left: 2px solid color-mix(in srgb, var(--dialogue-accent) 55%, var(--dialogue-line));
-  }
-
-  .mechanism-dialogues__check dt {
-    color: var(--dialogue-text);
-    font-size: .74rem;
-    font-weight: 800;
-  }
-
-  .mechanism-dialogues__check dd {
-    margin: .4rem 0 0;
-    color: var(--dialogue-muted);
-    font-size: .71rem;
-    line-height: 1.5;
-  }
-
-  @media (max-width: 980px) {
-    .mechanism-dialogues__grid { grid-template-columns: 1fr; }
-    .mechanism-dialogues__check dl { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 640px) {
-    .mechanism-dialogues {
-      width: min(100% - 1rem, 1180px);
-      border-radius: 20px;
-    }
-
-    .mechanism-dialogue__intro dl div { grid-template-columns: 1fr; gap: .2rem; }
-    .mechanism-dialogue__turns { padding: .75rem; }
-    .mechanism-dialogue__turns::before { left: 1.78rem; }
-    .mechanism-turn { grid-template-columns: 2rem minmax(0, 1fr); gap: .55rem; }
-    .mechanism-turn__rail span { width: 1.65rem; height: 1.65rem; }
-    .mechanism-turn__content { padding: .75rem; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mechanism-turn summary { scroll-behavior: auto; }
-  }
+  .mechanism-dialogues{--a:var(--accent,#2457d6);--tx:var(--text,var(--ink,#201c16));--mu:var(--muted,#625d54);--ln:var(--line,#d9d4c8);width:min(1240px,calc(100% - 2rem));margin:clamp(2rem,5vw,4rem) auto;padding:clamp(1rem,2.7vw,2rem);border:1px solid var(--ln);border-radius:28px;background:color-mix(in srgb,var(--surface,#fff) 94%,transparent)}
+  .mechanism-dialogues__header{max-width:900px;margin-bottom:1.4rem}.mechanism-dialogues__header>span{color:var(--a);font-weight:800;font-size:.75rem;letter-spacing:.06em}.mechanism-dialogues__header h2{max-width:24ch;margin:.65rem 0;font-size:clamp(1.75rem,3.2vw,3rem);line-height:1.08;color:var(--tx)}.mechanism-dialogues__header p{max-width:76ch;margin:0;color:var(--mu);line-height:1.7}
+  .mechanism-dialogues__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}.mechanism-dialogue{min-width:0;border:1px solid var(--ln);border-radius:22px;overflow:hidden;background:color-mix(in srgb,var(--surface,#fff) 96%,transparent)}
+  .mechanism-dialogue__intro{padding:1.1rem;background:color-mix(in srgb,var(--a) 5%,transparent);border-bottom:1px solid var(--ln)}.mechanism-dialogue__identity{display:flex;justify-content:space-between;gap:.8rem;align-items:center}.mechanism-dialogue__identity span{color:var(--mu);font-size:.72rem;font-weight:750}.mechanism-dialogue__identity strong{color:var(--a);font:850 .9rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.mechanism-dialogue__intro p{margin:.65rem 0;color:var(--tx);line-height:1.55;font-size:.86rem}.mechanism-dialogue__facts{display:flex;flex-wrap:wrap;gap:.4rem}.mechanism-dialogue__facts span{padding:.36rem .55rem;border:1px solid color-mix(in srgb,var(--a) 28%,var(--ln));border-radius:999px;color:var(--mu);font-size:.68rem}
+  .mechanism-dialogue__turns{position:relative;display:grid;margin:0;padding:1rem;list-style:none}.mechanism-turn{position:relative}.mechanism-turn__content{position:relative;z-index:2;padding:.9rem;border:1px solid var(--ln);border-radius:16px;background:var(--surface,#fff)}.mechanism-turn__top{display:flex;align-items:center;gap:.55rem}.mechanism-turn__top>span{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--a);color:white;font-size:.63rem;font-weight:850}.mechanism-turn__top small{color:var(--a);font-weight:800}.mechanism-turn h3{margin:.55rem 0 .75rem;color:var(--tx);font-size:1rem;line-height:1.25}
+  .mechanism-turn__io{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.35fr) minmax(0,.8fr);gap:.45rem;align-items:stretch}.mechanism-turn__io>div{min-width:0;padding:.55rem;border:1px solid var(--ln);border-radius:11px;background:color-mix(in srgb,var(--surface-muted,#f3f0e8) 64%,transparent)}.mechanism-turn__io small{display:block;margin-bottom:.3rem;color:var(--mu);font-size:.58rem;font-weight:850;letter-spacing:.07em}.mechanism-turn__io strong,.mechanism-turn__io p{display:block;margin:0;color:var(--tx);font-size:.7rem;line-height:1.4;overflow-wrap:anywhere}.mechanism-turn__processor{border-color:color-mix(in srgb,var(--a) 28%,var(--ln))!important;background:color-mix(in srgb,var(--a) 6%,transparent)!important}
+  .mechanism-turn details{margin-top:.55rem;border-top:1px dashed var(--ln)}.mechanism-turn summary{padding-top:.55rem;cursor:pointer;color:var(--mu);font-size:.68rem;font-weight:750}.mechanism-turn details p{margin:.35rem 0 0;color:var(--mu);font-size:.7rem;line-height:1.5}
+  .flow-pipe{position:relative;height:2.2rem;margin:0 1.6rem}.flow-pipe__line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:color-mix(in srgb,var(--a) 50%,var(--ln));transform:translateX(-50%)}.flow-pipe__head{position:absolute;left:50%;bottom:.08rem;width:.55rem;height:.55rem;border-right:2px solid var(--a);border-bottom:2px solid var(--a);transform:translateX(-50%) rotate(45deg)}.flow-pipe__packet{position:absolute;left:50%;top:.1rem;width:.48rem;height:.48rem;border-radius:50%;background:var(--a);transform:translateX(-50%);box-shadow:0 0 0 4px color-mix(in srgb,var(--a) 12%,transparent);animation:data-packet 2.2s ease-in-out infinite}
+  .mechanism-dialogue__boundary{margin:0 1rem 1rem;padding:.9rem;border:1px solid color-mix(in srgb,var(--a) 32%,var(--ln));border-radius:14px;background:color-mix(in srgb,var(--a) 6%,transparent)}.mechanism-dialogue__boundary strong{color:var(--a);font-size:.7rem}.mechanism-dialogue__boundary p{margin:.4rem 0 0;color:var(--tx);font-size:.74rem;line-height:1.5}
+  .mechanism-dialogues__check{margin-top:1rem;padding:1rem;border:1px solid var(--ln);border-radius:16px}.mechanism-dialogues__check>strong{color:var(--tx)}.mechanism-dialogues__check dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin:.8rem 0 0}.mechanism-dialogues__check dl div{padding:.7rem;border-left:2px solid var(--a)}.mechanism-dialogues__check dt{color:var(--tx);font-size:.73rem;font-weight:800}.mechanism-dialogues__check dd{margin:.35rem 0 0;color:var(--mu);font-size:.7rem;line-height:1.5}
+  @keyframes data-packet{0%{top:.05rem;opacity:.2}20%{opacity:1}80%{opacity:1}100%{top:1.65rem;opacity:.15}}
+  @media(max-width:980px){.mechanism-dialogues__grid{grid-template-columns:1fr}.mechanism-dialogues__check dl{grid-template-columns:1fr}}
+  @media(max-width:640px){.mechanism-dialogues{width:min(100% - 1rem,1240px);border-radius:20px}.mechanism-turn__io{grid-template-columns:1fr}.mechanism-turn__io>div{position:relative}.mechanism-turn__io>div:not(:last-child)::after{content:'';display:block;width:2px;height:.45rem;margin:.4rem auto -.4rem;background:color-mix(in srgb,var(--a) 45%,var(--ln))}.mechanism-dialogue__facts{display:grid}.mechanism-dialogues__header h2{font-size:1.75rem}}
+  @media(prefers-reduced-motion:reduce){.flow-pipe__packet{animation:none;top:.8rem}.mechanism-turn summary{scroll-behavior:auto}}
 </style>
