@@ -6,6 +6,7 @@ import SiteRoutePrimer from '../components/visual/SiteRoutePrimer.astro';
 import SeedOpenEvoMissionRibbon from '../components/research/SeedOpenEvoMissionRibbon.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
+import PageOutline from '../components/navigation/PageOutline.astro';
 import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
@@ -110,6 +111,7 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
       {!isHomePage && !isMissionPage && <SiteRoutePrimer locale={locale} path={localeNeutralPath} />}
       <slot />
     </main>
+    <PageOutline locale={locale} />
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
     <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
     <ActionableContentLayer locale={locale} />
