@@ -118,6 +118,8 @@ For each route, switch themes after the page has loaded and inspect:
 7. native `<details>` content;
 8. table headers, borders, and code blocks.
 
+The executable route/theme/viewport matrix now lives in `tests/e2e/ui-safety.spec.ts`; the broader scenario and completion contract lives in `ui-change-visual-acceptance-gate.md`.
+
 ## 7. Animation cannot carry contrast or meaning alone
 
 Flow animation may reinforce direction, but the static route, numbering, arrows, and labels must remain understandable. The animated marker must use a theme token and disappear under `prefers-reduced-motion`.
@@ -128,6 +130,8 @@ Flow animation may reinforce direction, but the static route, numbering, arrows,
 - sitewide visual grammar: `src/styles/knowledge-architecture.css`;
 - sitewide primer: `src/components/visual/SiteRoutePrimer.astro`;
 - OpenEvo visual primer: `src/components/OpenEvoSeedBenchmarksGuide.astro`;
-- regression test: `src/lib/themeContrast.test.ts`.
+- token regression test: `src/lib/themeContrast.test.ts`;
+- browser theme/layout regression: `tests/e2e/ui-safety.spec.ts`;
+- UI scenario policy: `docs/agents/current/ui-change-visual-acceptance-gate.md`.
 
-When a new visual component is added, identify its semantic surface/text pair before styling it. Do not wait for a dark-mode screenshot to reveal that the pair was undefined.
+When a new visual component is added, identify its semantic surface/text pair before styling it and opt the component into the browser audit with `data-ui-audit`. Do not wait for a dark-mode screenshot to reveal that the pair was undefined.
