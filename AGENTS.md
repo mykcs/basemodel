@@ -11,11 +11,12 @@ Before non-trivial work, read in this order:
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — **scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.**
 5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-6. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-7. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
-8. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
-9. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-10. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+6. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) — required baseline for comfortable, readable, learning-first UI and responsive desktop/mobile behavior.
+7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
+8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
+9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
+10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
 Files under `docs/agents/history/` are evidence and rationale, not instructions to restore previous architecture.
 
@@ -126,6 +127,8 @@ Preserve these even when simplifying UI or data flows:
 - heuristic resource estimates, catalog tiers and measured hardware results are distinct evidence levels;
 - current/latest/full-family claims require current first-party verification;
 - “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing.
+
+For all user-facing UI work, also follow [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md): the interface should be comfortable and readable for learning, and responsive behavior across desktop and mobile is a completion requirement rather than optional polish.
 
 Read the detailed current product/model policies before broad UI/data/recommendation changes.
 
