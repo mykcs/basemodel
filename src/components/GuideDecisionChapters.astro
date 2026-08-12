@@ -63,11 +63,11 @@ const chapters = [
         <header><span class="guide-chapter-number">{chapter.number}</span><h3>{chapter.title}</h3><p>{chapter.lede}</p></header>
         {chapter.id === 'reproduction' && <aside class="reproduction-case-link">
           <div>
-            <span>{zh ? '复现 C · 真实案例' : 'Reproduction C · real case'}</span>
-            <strong>{zh ? 'OpenEvo × WebShop / ALFWorld：最短成功路线与多轮故障复盘' : 'OpenEvo × WebShop / ALFWorld: shortest path plus the debugging trail'}</strong>
-            <p>{zh ? '同一页并排看：现在怎么做最短，以及 Git、patch、数据、依赖与基础设施为什么曾把我们带进死胡同。' : 'Read the current shortest path beside the Git, patch, data, dependency, and infrastructure failures that shaped it.'}</p>
+            <span>{zh ? 'SEED 相关基准 · OpenEvo' : 'SEED benchmarks · OpenEvo'}</span>
+            <strong>{zh ? 'WebShop / ALFWorld 自进化复现指南' : 'WebShop / ALFWorld self-evolution reproduction guide'}</strong>
+            <p>{zh ? '围绕 SEED 论文涉及的两个 agent benchmark，记录 OpenEvo 的最短可执行路线，以及 Git、patch、数据、依赖和运行环境的真实故障复盘。' : 'For the two agent benchmarks discussed in SEED, follow the shortest executable OpenEvo path alongside the real Git, patch, data, dependency, and runtime failure trail.'}</p>
           </div>
-          <a href={localePath(locale, '/guide/reproduction-c/openevo/')}>{zh ? '打开子页 →' : 'Open case →'}</a>
+          <a href={localePath(locale, '/guide/openevo-webshop-alfworld/')}>{zh ? '打开指南 →' : 'Open guide →'}</a>
         </aside>}
         <div class="guide-concept-list">
           {items.map((concept) => <article class="guide-concept-row" id={`decision-concept-${concept.id}`}>
