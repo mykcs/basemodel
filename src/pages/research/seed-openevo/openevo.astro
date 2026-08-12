@@ -1,10 +1,12 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import OpenEvoModelExperimentGuide from '../../../components/research/OpenEvoModelExperimentGuide.astro';
+import OpenSeedSeedModelLayers from '../../../components/research/OpenSeedSeedModelLayers.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo 实验：跨任务演化、模型选择与新手问题" description="解释 OpenEvo 的跨任务演化循环，并说明为什么以 Qwen2.5-3B 为基线、如何比较同级与新一代模型，以及新手应先追问的八个问题。" locale={locale}>
+<AppLayout title="OpenEvo 实验：跨任务演化、模型选择与新手问题" description="解释 OpenEvo 的跨任务演化循环、为什么以 Qwen2.5-3B 为基线，并用图解区分 OpenSeed、基础模型与 SEED 参数学习。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo" />
   <OpenEvoModelExperimentGuide locale={locale} />
+  <OpenSeedSeedModelLayers locale={locale} />
 </AppLayout>
