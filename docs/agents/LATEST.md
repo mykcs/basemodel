@@ -119,10 +119,11 @@ Historical Cloudflare material, snapshots and dormant fallback scripts remain co
 4. `current/scenario-trigger-registry.md`
 5. `current/product-and-research-integrity.md`
 6. `current/human-thinking-web-expression-contract.md`
-7. task-relevant mission/UI/data policies
-8. `current/hosting-architecture.md`
-9. `current/deployment-policy.md`
-10. `current/repository-map.md`
-11. executable source/config/tests
+7. `current/audience-centered-technical-copy.md` and `current/audience-copy-audit-2026-08-12.md` for any user-visible copy, onboarding, status, or bilingual change
+8. task-relevant mission/UI/data policies
+9. `current/hosting-architecture.md`
+10. `current/deployment-policy.md`
+11. `current/repository-map.md`
+12. executable source/config/tests
 
 History is evidence, not current policy. Older material must not restore a retired provider, obsolete product hierarchy or superseded visual outcome.

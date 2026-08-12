@@ -17,6 +17,8 @@ src/                              production application/content/domain logic
 public/                           production static assets
 scripts/                          provider-neutral validation + retained provider helpers
 tests/ + src/lib/*.test.ts        executable regression/invariant checks
+scripts/audit-audience-copy.ts    public-copy candidate scan + strict invariants
+docs/agents/current/audience-*    copy contract + source-owner audit inventory
 vercel.json                       active Preview + Production build contract
 wrangler.jsonc                    dormant Workers shadow option
 package.json                      executable task/Gate surface
@@ -41,6 +43,7 @@ Cloudflare Direct Upload remains a supported fallback for Cloudflare-specific va
 - docs/Agent-only: inspect precedence/links; no hosted deployment unless executable semantics changed.
 - data/schema/domain: `npm run verify:deploy`; Preview if rendered behavior changes.
 - UI/routing/i18n/SEO: Gate + exact-head Vercel Preview + real route/metadata/interaction inspection; Playwright when relevant.
+- public copy/onboarding/status: read the audience-copy contract and inventory, run `npm run audit:copy`, resolve candidates contextually, then run `npm run audit:copy:strict` (also included in `verify:deploy`).
 - deployment architecture: update current docs + machine invariant + provider validation together.
 - Production release: verify the real Vercel Production deployment separately from Preview/merge.
 

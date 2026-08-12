@@ -48,8 +48,8 @@ const chapters = [
 <section class="guide-decision-chapters" aria-labelledby="guide-decision-title">
   <header class="guide-decision-intro">
     <span class="section-kicker">{zh ? '四个问题' : 'Four decisions'}</span>
-    <h2 id="guide-decision-title">{zh ? '不要背术语，按研究决策建立认知顺序' : 'Do not memorize terms; learn them in decision order'}</h2>
-    <p>{zh ? '下面不是另一份词典。每一章都对应你在工作台里必须做出的一个决定，并直接连到真实模型或下一步操作。' : 'This is not another glossary. Each chapter maps to a decision you must make in the workbench and links directly to real models or the next action.'}</p>
+    <h2 id="guide-decision-title">{zh ? '按四个研究决定建立认知顺序' : 'Build the mental model through four research decisions'}</h2>
+    <p>{zh ? '四章依次回答：选择哪一个模型状态、能否访问和训练、实验如何更新模型、以及如何保持论文可比性。每章都连到真实模型或下一步操作。' : 'The four chapters answer which model state to choose, whether it is accessible and trainable, how the experiment updates it, and how to preserve paper comparability. Each chapter links to a real model or next action.'}</p>
   </header>
 
   <nav class="guide-chapter-nav" aria-label={zh ? '四章学习导航' : 'Four-chapter guide navigation'}>
@@ -64,8 +64,8 @@ const chapters = [
         {chapter.id === 'reproduction' && <aside class="reproduction-case-link">
           <div>
             <span>{zh ? 'SEED 相关基准 · OpenEvo' : 'SEED benchmarks · OpenEvo'}</span>
-            <strong>{zh ? 'WebShop / ALFWorld 自进化复现指南' : 'WebShop / ALFWorld self-evolution reproduction guide'}</strong>
-            <p>{zh ? '围绕 SEED 论文涉及的两个 agent benchmark，记录 OpenEvo 的最短可执行路线，以及 Git、patch、数据、依赖和运行环境的真实故障复盘。' : 'For the two agent benchmarks discussed in SEED, follow the shortest executable OpenEvo path alongside the real Git, patch, data, dependency, and runtime failure trail.'}</p>
+            <strong>{zh ? 'OpenEvo × WebShop / ALFWorld 复现指南' : 'OpenEvo × WebShop / ALFWorld Reproduction Guide'}</strong>
+            <p>{zh ? '按环境、代码、数据、运行时、真实动作和真实演化的顺序执行 OpenEvo。遇到阻碍时，再展开 Git、patch、数据、依赖和运行环境的诊断说明。' : 'Execute OpenEvo in order through environment, code, data, runtime, real actions, and real evolution. Open the Git, patch, data, dependency, and runtime diagnostics only when blocked.'}</p>
           </div>
           <a href={localePath(locale, '/guide/openevo-webshop-alfworld/')}>{zh ? '打开指南 →' : 'Open guide →'}</a>
         </aside>}

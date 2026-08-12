@@ -1,15 +1,16 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
 
-const title = '今天下午：SEED 实验室逐步操作手册';
-const description = '从旧 Mac 跳板机、4×RTX 3090 登录、环境与模型下载，到 ALFWorld Stage 1、SFT、四卡 RL profiling、WebShop 和结果导出的现场逐步 runbook。';
+const title = '2026-08-11 专用旧 Mac 场景：SEED 实验室操作手册';
+const description = '本项目在 2026-08-11 使用专用旧 Mac 跳板机与 4×RTX 3090 的现场 runbook；这是带绝对日期的实验室实例，不是所有读者的通用硬件前提。';
 ---
 
 <AppLayout title={title} description={description} locale="zh">
   <main class="lab-runbook shell">
     <header class="hero" id="top">
       <div class="eyebrow">LAB MODE · 2026-08-11 · SEED / Qwen2.5-3B-Instruct / 4×RTX 3090</div>
-      <h1>今天下午照着这页做，不需要现场重新想流程</h1>
+      <h1>2026-08-11 专用旧 Mac 实验室路线</h1>
+      <p class="lede"><strong>本项目实例：</strong>本页记录一次带绝对日期的专用旧 Mac → 4×RTX 3090 操作路线。通用复现请先阅读 <a href="/guide/#seed-reproduction">SEED 复现主线</a>；只有拥有相同实验室拓扑的读者才需要本页的 Mac 跳板细节。</p>
       <p class="lede">目标不是第一天就追到论文最终分数，而是把<strong>连接 → 环境 → 数据 → Stage 1 → SFT → SEED RL</strong>整条链真正跑通，并留下足够的显存、耗时和日志证据，决定 4×3090 能跑到哪一步。</p>
       <div class="hero-grid">
         <article><b>今天最低成功线</b><span>4 张 GPU 可见；ALFWorld 可 reset；Stage 1 smoke 产生有效记录；SFT 能启动；4 卡 RL 至少完成短跑或明确定位 OOM。</span></article>
@@ -41,7 +42,7 @@ const description = '从旧 Mac 跳板机、4×RTX 3090 登录、环境与模型
       </div>
     </section>
 
-    <nav class="route" aria-label="今天实验路线">
+    <nav class="route" aria-label="2026-08-11 实验路线">
       <a href="#s0"><b>00</b><span>到实验室先做什么</span></a>
       <a href="#s1"><b>01</b><span>旧 Mac 常驻与安全</span></a>
       <a href="#s2"><b>02</b><span>连 3090 + 机器体检</span></a>

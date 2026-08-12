@@ -9,7 +9,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
 
 const route = [
-  { n: '01', href: '#environment', title: t('确认拓扑', 'Confirm topology'), meta: t('Mac + RTX6', 'Mac + RTX6') },
+  { n: '01', href: '#environment', title: t('确认拓扑', 'Confirm topology'), meta: t('联网工作站 + GPU 服务器', 'online workstation + GPU server') },
   { n: '02', href: '#code', title: t('固定代码', 'Pin code'), meta: 'GitHub API' },
   { n: '03', href: '#data', title: t('准备资产', 'Prepare assets'), meta: t('数据 + cache', 'data + cache') },
   { n: '04', href: '#runtime', title: t('建立运行时', 'Build runtime'), meta: t('离线 overlay', 'offline overlay') },
@@ -64,7 +64,11 @@ const evidence = [
     </header>
 
     <figure class="topology-figure">
-      <div class="topology-track" role="img" aria-label={t('ChatGPT 和 GitHub 到实验室 Mac 再到 RTX6 的执行拓扑', 'Execution topology from ChatGPT and GitHub to the lab Mac and then RTX6')}>
+      <p>{t(
+        '复现此类实验时，研究者通常用一台可访问公网的工作站准备代码、模型、数据与离线依赖，再把经过校验的材料同步到实验室内网的 GPU 服务器。本项目的具体实例是 Lab Mac → RTX6；RTX6 是一台共享的 4×RTX 3090 计算服务器。',
+        'For this kind of reproduction, an internet-connected workstation usually prepares code, models, data, and offline dependencies, then transfers the validated bundle to an internal GPU server. This project uses Lab Mac → RTX6, where RTX6 is a shared 4×RTX 3090 compute server.',
+      )}</p>
+      <div class="topology-track" role="img" aria-label={t('联网工作站准备并校验材料，再同步到内网 GPU 服务器执行实验；本项目实例是 Lab Mac 到 RTX6', 'An online workstation prepares and validates assets before syncing them to an internal GPU server; this project uses Lab Mac to RTX6')}>
         <div class="topology-node control">
           <span>{t('控制面', 'Control plane')}</span>
           <strong>ChatGPT / GitHub</strong>
@@ -84,8 +88,8 @@ const evidence = [
         </div>
       </div>
       <figcaption>{t(
-        '最重要的边界：Mac 负责获取资产，RTX6 负责计算。不要把网络失败和实验失败混成一个问题。',
-        'Critical boundary: the Mac acquires assets; RTX6 computes. Do not mix network failure with experiment failure.',
+        '这条职责边界把故障分成四层：工作站的网络获取、资产校验与传输、GPU 服务器运行时，以及实验本身。先定位失败所在层，再修改对应环节，可以避免把下载故障误判成模型或基准失败。',
+        'This responsibility boundary separates four failure layers: workstation network access, asset validation and transfer, GPU-server runtime, and the experiment itself. Locate the failing layer before changing the corresponding part, so an acquisition failure is not mistaken for a model or benchmark failure.',
       )}</figcaption>
     </figure>
 
@@ -106,8 +110,8 @@ const evidence = [
     <section class="evidence-panel" aria-labelledby="evidence-title">
       <div class="evidence-intro">
         <span>{t('证据阶梯', 'Evidence ladder')}</span>
-        <h3 id="evidence-title">{t('“环境装好了”距离“复现成功”还很远', '“Environment ready” is still far from “reproduced”')}</h3>
-        <p>{t('每一级只证明自己的那一件事。不要把 clean exit、import 成功或 infrastructure readiness 冒充 scientific P0。', 'Each rung proves only one claim. Never promote a clean exit, successful import, or infrastructure readiness into scientific P0 evidence.')}</p>
+        <h3 id="evidence-title">{t('用逐级证据判断复现进展', 'Judge reproduction progress with an evidence ladder')}</h3>
+        <p>{t('进程正常退出只证明程序结束，import 成功只证明依赖可加载，基础设施就绪只证明服务链可用；这些证据都还不能证明模型产生了真实动作，也不能满足科学 P0。P0 是机器验收器对完整科学链的通过结论。', 'A clean exit proves only that the process ended, a successful import proves only that dependencies load, and infrastructure readiness proves only that the service chain is available. None proves a real model action or satisfies scientific P0. P0 is the machine verifier’s acceptance of the complete scientific chain.')}</p>
       </div>
       <ol class="evidence-ladder">
         {evidence.map((item, index) => (

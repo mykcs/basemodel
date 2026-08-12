@@ -17,7 +17,7 @@ const seedCompareHref = `${localePath(locale, '/compare/')}?models=qwen2-5-3b-in
 const seedTour = [
   {
     area: t('首页', 'Home'),
-    title: t('先确定研究路径，不要先找“最强模型”', 'Choose the research path before hunting for the “best model”'),
+    title: t('先确定研究路径，再按约束寻找模型', 'Choose the research path, then find models from constraints'),
     body: t('首页把任务分成严格复现、方法复现和现代化重跑。对 SEED 来说：要复刻论文条件就选严格复现；只验证“轨迹 → hindsight skill → OPD → 策略更新”的因果链就选方法复现；要把方法迁移到更新模型才选现代化重跑。', 'The home page separates strict reproduction, method reproduction, and modern reruns. For SEED, strict means matching the paper setup; method reproduction checks the trajectory → hindsight skill → OPD → policy-update chain; a modern rerun intentionally changes the backbone or surrounding stack.'),
     task: t('第一次使用本站时，建议先把 SEED 当作“方法复现”任务；理解清楚之后，再决定是否值得投入严格复现资源。', 'For a first pass, treat SEED as a method-reproduction task. Move to strict reproduction only after the mechanism and resource boundary are clear.'),
     done: t('你能明确说出当前实验属于严格复现、方法复现还是现代化重跑。', 'You can state whether the current experiment is strict, method-level, or a modern rerun.'),
@@ -50,7 +50,7 @@ const seedTour = [
     title: t('从论文角色直接落到 Qwen2.5-3B-Instruct', 'Move from the paper role to Qwen2.5-3B-Instruct'),
     body: t('论文角色、家族时间线等位置都能打开共享 Quick View，再进入完整模型详情。详情页重点不是“一个总分”，而是 checkpoint 类型、开放性、许可证、训练方式、运行时、硬件档位、可复现字段、来源与未知项。', 'Paper roles and family timelines can open the shared Quick View and then the full model detail. The detail page is not a single score: it exposes checkpoint type, openness, license, update methods, runtimes, hardware tiers, reproducibility fields, sources, and unresolved facts.'),
     task: t('在 SEED 中打开 Qwen2.5-3B-Instruct，确认它是 Instruct checkpoint，并检查权重、RL 适用性、veRL 配方、许可证和 revision 是否真的有来源支持。', 'Open Qwen2.5-3B-Instruct from SEED. Confirm it is an Instruct checkpoint, then inspect weights, RL suitability, veRL recipe status, licensing, and whether a real revision is actually source-backed.'),
-    done: t('你不会把发布日期当成 revision，也不会把“未核验”当成“不支持”。', 'You will not treat a release date as a revision or interpret “not verified” as “unsupported”.'),
+    done: t('你能把发布日期与 revision 分开，并把“未核验”保留为未知状态。', 'You can separate release dates from revisions and preserve “not verified” as an unknown state.'),
     links: [{ label: t('打开 Qwen2.5-3B-Instruct', 'Open Qwen2.5-3B-Instruct'), href: seedModelHref }],
   },
   {
@@ -66,7 +66,7 @@ const seedTour = [
   },
   {
     area: t('家族 / Landscape', 'Families / Landscape'),
-    title: t('区分“论文当时用的模型”和“今天这个家族到哪一代”', 'Separate the paper-time model from the family’s current generation'),
+    title: t('区分论文模型与核验日期下的家族代际', 'Separate the paper model from the family generation at the check date'),
     body: t('家族页保留当前代标记和历史论文采用关系；Landscape 则提供学习/完整视图、论文模型过滤、可交互图和表格替代路径。它们解决的是“模型处在生态中的什么位置”，不是替论文自动换 backbone。', 'Family pages preserve current-generation markers and historical paper adoption. Landscape adds learning/full views, paper-model filtering, interactive charts, and an accessible table. These views locate a model in the ecosystem; they do not silently replace the paper backbone.'),
     task: t('查看 Qwen 家族，找到论文里的 Qwen2.5 与 Qwen3 checkpoint，再到 Landscape 看它们与其他开放权重模型的规模、架构和研究属性位置。', 'Open the Qwen family, locate the Qwen2.5 and Qwen3 checkpoints used by the paper, then use Landscape to place them among other open-weight models by scale, architecture, and research attributes.'),
     done: t('你知道“家族已更新”只说明现代化重跑有新候选，不会自动改变严格复现的原始 checkpoint。', 'You understand that a newer family generation creates modern-rerun candidates but does not change the checkpoint required for strict reproduction.'),
@@ -109,7 +109,7 @@ const seedTour = [
   },
   {
     area: t('证据 / 数据状态', 'Evidence / data status'),
-    title: t('遇到 unknown 时先查来源，不要补一个看起来合理的值', 'When you see unknown, inspect evidence instead of filling a plausible value'),
+    title: t('让 unknown 保持可追溯的未知状态', 'Keep unknowns traceable as unknown states'),
     body: t('本站把 not_reported、not_disclosed、not_verified、conflicting_evidence 等状态保留下来；Data Status 还展示声明历史、Benchmark 条件和证据边界。模型详情中的数据问题入口会预填模型、页面和来源上下文。', 'The site preserves states such as not_reported, not_disclosed, not_verified, and conflicting_evidence. Data Status also exposes claim history, benchmark conditions, and evidence boundaries. The model-detail data-issue action prefills model, page, and source context.'),
     task: t('以 SEED 为例，分别核对论文训练硬件、checkpoint/revision、Benchmark 条件和代码/权重可用性。没有来源的字段就保留 unknown；发现来源冲突时用“报告数据问题”提交上下文。', 'For SEED, separately verify reported training hardware, checkpoint/revision, benchmark conditions, and code/weight availability. Keep unsupported fields unknown; if sources conflict, use the data-issue action with its prefilled context.'),
     done: t('你的复现记录能清楚区分“论文明确报告”“本站有来源核验”“尚未报告/尚未核验”。', 'Your reproduction notes clearly separate paper-reported facts, site-verified facts, and fields that remain unreported or unverified.'),
@@ -178,7 +178,7 @@ const seedTour = [
     <ul>
       <li>{t('“当前代模型”不等于“严格复现应该换掉论文模型”；换 backbone 属于方法复现或现代化重跑，需要重新定义结论。', '“Current-generation model” does not mean a strict reproduction should replace the paper model; changing the backbone changes the research path and conclusion.')}</li>
       <li>{t('“可下载 / 可调用”不等于“可复现”；revision、tokenizer、config、chat template、许可证和运行时条件要分别核验。', '“Downloadable / callable” does not mean reproducible; revision, tokenizer, config, chat template, license, and runtime conditions must be checked separately.')}</li>
-      <li>{t('浏览器本地项目、快照和 URL 分享不是账号、云端存储或团队协作；当前生产架构刻意保持 GitHub → Cloudflare Pages 的静态优先边界。', 'Browser-local projects, snapshots, and URL sharing are not accounts, cloud storage, or team collaboration; the current production architecture intentionally keeps a static-first GitHub → Cloudflare Pages boundary.')}</li>
+      <li>{t('浏览器本地项目、快照和 URL 分享只提供本机持久化与可分享状态；它们不提供账号、云端存储或团队协作。本站采用 GitHub → Vercel 的静态优先边界。', 'Browser-local projects, snapshots, and URL sharing provide local persistence and shareable state; they do not provide accounts, cloud storage, or team collaboration. The site uses a static-first GitHub → Vercel boundary.')}</li>
     </ul>
   </aside>
 </section>

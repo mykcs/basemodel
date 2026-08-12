@@ -10,14 +10,14 @@ const mappings = [
   ['Checkpoint / LLM', 'Policy', t('当前上下文下，决定下一步输出或动作的参数化策略。', 'The parameterized policy that chooses the next output or action from the current context.')],
   ['API / function / MCP', 'Action / tool', t('模型真正能对外部世界做的动作，而不只是“多一点知识”。', 'What the model can actually do to the outside world, not merely extra knowledge.')],
   ['Logs / traces', 'Trajectory / rollout', t('一次任务从开始到结束的 observation → action → observation 记录。', 'The observation → action → observation record from task start to finish.')],
-  ['Metric / grader', 'Reward', t('把“这次任务做得怎么样”变成训练可用的结果信号。', 'Turns “how did this run go?” into an outcome signal that training can use.')],
+  ['Metric / grader', 'Reward', t('把“一次任务做得怎么样”变成训练可用的结果信号。', 'Turns “how did this run go?” into an outcome signal that training can use.')],
 ];
 
 const terms = [
   ['Policy', t('模型现在倾向怎么做', 'what the model currently tends to do')],
   ['Trajectory', t('一次完整交互过程', 'one complete interaction run')],
   ['Reward', t('结果好不好', 'how good the outcome was')],
-  ['Advantage', t('相对当前策略，这次结果好多少', 'how much better this result was relative to the current policy')],
+  ['Advantage', t('相对当前策略，一次结果好多少', 'how much better this result was relative to the current policy')],
   ['GRPO', t('同一问题采样一组结果，用组内相对 reward 形成更新信号', 'sample a group of outcomes for one prompt and use group-relative rewards to form the update signal')],
 ];
 ---
@@ -62,7 +62,7 @@ const terms = [
       <div><small>Environment</small><strong>ALFWorld / WebShop</strong></div><i>↺</i>
       <div><small>Observation</small><strong>{t('新状态回到上下文', 'new state returns to context')}</strong></div>
     </div>
-    <p class="bridge-note">{t('这一条完整记录就是 trajectory / rollout / episode。只是在跑任务时，一般没有 backprop；模型权重没因为“刚刚做错一步”就自动改变。', 'That full record is a trajectory / rollout / episode. Merely running the task normally does not backpropagate; the weights do not automatically change because the model made one bad step.')}</p>
+    <p class="bridge-note">{t('这一条完整记录就是 trajectory / rollout / episode。只是在跑任务时，一般没有 backprop；模型做错一个动作后，权重也不会在运行循环里自动改变。', 'That full record is a trajectory / rollout / episode. Merely running the task normally does not backpropagate; the weights do not automatically change because the model made one bad step.')}</p>
   </section>
 
   <section class="two-loops" aria-labelledby="training-model-title">

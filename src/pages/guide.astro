@@ -8,7 +8,7 @@ const m = getMessages('zh');
 const guideRecord = (await getCollection('guides'))[0]?.data;
 const guideSource = guideRecord ? 'collection' : 'fallback';
 const title = '先看懂 Agent，再复现 SEED';
-const lede = '假设你已经了解 Transformer、微调、推理、API 和 GPU。先用一屏把 policy、tool、environment、trajectory、reward、GRPO 和 SEED 对上号，然后立刻进入 4×3090 的 ALFWorld / WebShop 实验主线。';
+const lede = '面向已经了解 Transformer、微调、推理、API 和 GPU 的读者：先用一屏理解 policy、tool、environment、trajectory、reward、GRPO 和 SEED 的关系，再进入可迁移的 ALFWorld / WebShop 复现主线。';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="zh">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
@@ -16,23 +16,23 @@ const lede = '假设你已经了解 Transformer、微调、推理、API 和 GPU�
       <p class="guide-eyebrow">Agent 101 → SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
       <h1>{title}</h1>
       <p class="lede">{lede}</p>
-      <p class="hardware-note">这里不会先讲完整 RL 数学。目标是先知道<strong>运行时哪里在循环、训练时哪里在更新权重</strong>，再把同一套概念放进真实命令。工作台里的显存数字仍然只是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>；真正能不能跑、每个 update 要多久，以四张 3090 上的 profiling 为准。</p>
+      <p class="hardware-note">本页先帮助读者理解<strong>运行时哪里在循环、训练时哪里在更新权重</strong>，再把同一套概念放进真实命令。本项目用 4×RTX 3090 24GB 离线服务器作为具体实例；其他读者可以沿用“联网工作站准备 → 内网 GPU 服务器执行”的方法。工作台里的显存数字是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>；真机 profiling 才是运行时间与显存证据。</p>
     </header>
 
     <section class="tomorrow-plan" aria-labelledby="tomorrow-plan-title">
       <div class="plan-head">
-        <p class="guide-eyebrow">明天就按这三步做</p>
-        <h2 id="tomorrow-plan-title">4×3090 先把不花钱能验证的全部验证，再把同一实验搬到 8×A800</h2>
-        <p>下面把“论文复现”先拆成小白也能执行的三大阶段。第一天不要追求论文最终分数，先证明服务器、离线材料、两个环境和训练链是通的；只有拿到真机的显存与耗时数据以后，才决定四卡跑到底，还是迁移到论文硬件。</p>
+        <p class="guide-eyebrow">可迁移的三阶段路线</p>
+        <h2 id="tomorrow-plan-title">先验证最小科学链，再依据真机证据决定是否迁移硬件</h2>
+        <p>论文复现分为准备执行环境、逐级放大实验、按证据决定迁移三阶段。首次进入实验室时，先证明离线材料、两个环境和训练链可用；拿到真机的显存与耗时数据后，再决定在现有服务器完成实验，或迁移到论文硬件。本项目实例从 4×3090 开始，论文硬件是 8×A800。</p>
       </div>
 
       <div class="reality-banner">
-        <strong>先记住一个关键事实</strong>
-        <span><b>4×RTX 3090 24GB ≠ 一张 96GB 显卡。</b> 每张卡仍只有 24GB，模型分片、FSDP、vLLM、optimizer 和通信方式决定能不能放得下。SEED 论文的训练条件是 8×NVIDIA A800 80GB，所以四卡 3090 的正确任务是：先跑通、先测量、再决定。</span>
+        <strong>本项目实例的显存约束</strong>
+        <span><b>4×RTX 3090 24GB 仍然受每卡 24GB 显存限制。</b> 模型分片、FSDP、vLLM、optimizer 和通信方式共同决定能否运行。SEED 论文的训练条件是 8×NVIDIA A800 80GB；本项目先在四卡 3090 上跑通并测量，再依据证据决定是否迁移。</span>
       </div>
 
       <nav class="macro-route" aria-label="SEED 三阶段复现路线">
-        <a href="#macro-connect"><b>01</b><strong>连接服务器</strong><span>旧 Mac 跳板 → SSH → 体检 → 无外网方案</span></a>
+        <a href="#macro-connect"><b>01</b><strong>准备执行拓扑</strong><span>联网工作站 → SSH / rsync → 内网 GPU 服务器</span></a>
         <a href="#macro-reproduce"><b>02</b><strong>复现与预估</strong><span>smoke → SFT → RL profiling → 时间账</span></a>
         <a href="#macro-migrate"><b>03</b><strong>迁到 8×A800</strong><span>冻结证据 → 重建环境 → 短跑 → 完整训练</span></a>
       </nav>
@@ -41,14 +41,14 @@ const lede = '假设你已经了解 Transformer、微调、推理、API 和 GPU�
         <div class="ledger-intro">
           <p class="guide-eyebrow">资源账本</p>
           <h3 id="resource-ledger-title">开始前先把电脑、显卡、磁盘、时间、钱和难度看清楚</h3>
-          <p>论文只明确给出了核心实验硬件与训练规模；CPU、内存、磁盘、四卡耗时和租赁价格下面都按工程规划写，并明确标成估算。明天拿到真机数据后，用实测替换估算。</p>
+          <p>论文只明确给出了核心实验硬件与训练规模；CPU、内存、磁盘、四卡耗时和租赁价格都按工程规划写，并明确标成估算。完成至少 5 个稳定 update 后，用实测替换估算。</p>
         </div>
         <div class="ledger-grid">
           <article><small>联网准备机</small><strong>不需要 GPU</strong><span>建议 Linux / WSL2，16–32GB RAM，至少 150–300GB 可用磁盘。负责下载代码、模型、wheel/conda 包、ALFWorld、WebShop，并制作离线包。</span><em>难度 2/5 · 工程估算</em></article>
-          <article><small>免费实验机</small><strong>4×RTX 3090 24GB</strong><span>建议 ≥128GB 系统内存、≥32 CPU 线程、300–500GB NVMe。重点不是假定能跑满论文配置，而是测 OOM、通信、每个 update 时间和 checkpoint 行为。</span><em>难度 5/5 · 机器规格需明天实测</em></article>
+          <article><small>本项目实验机</small><strong>4×RTX 3090 24GB</strong><span>建议 ≥128GB 系统内存、≥32 CPU 线程、300–500GB NVMe。目标是测量 OOM、通信、每个 update 时间和 checkpoint 行为，再判断能否完成计划。</span><em>难度 5/5 · 机器规格需现场实测</em></article>
           <article><small>论文目标机</small><strong>8×A800 80GB</strong><span>论文明确使用的训练硬件。工程上建议准备 ≥256GB RAM 与 ≥500GB 快速磁盘；如果保留很多 optimizer/checkpoint，1TB 更安心。</span><em>难度 3/5 · GPU 条件来自论文</em></article>
-          <article><small>代码量</small><strong>不要从零实现 SEED</strong><span>正常复现主要复用官方仓库。预计自写 50–300 行配置/脚本；离线打包和 3090 兼容调参可能累计 200–800 行。若开始重写 RL/veRL 核心，工作量会变成数千行级，不适合小白第一轮。</span><em>工程估算</em></article>
-          <article><small>四卡机器费用</small><strong>如果服务器对你免费：GPU 租赁 $0</strong><span>仍可能产生 Stage‑1 外部 analyzer 的 API 成本，以及你自己的准备时间。API 不要先猜总价，先记录真实请求数和 token，再按供应商账单算。</span><em>不含人力与 API</em></article>
+          <article><small>代码量</small><strong>从官方 SEED 仓库开始</strong><span>正常复现主要复用官方实现。预计自写 50–300 行配置/脚本；离线打包和 3090 兼容调参可能累计 200–800 行。重写 RL/veRL 核心会把工作量扩大到数千行级，不适合作为首次复现路径。</span><em>工程估算</em></article>
+          <article><small>四卡机器费用</small><strong>若实验室服务器免费：GPU 租赁 $0</strong><span>Stage‑1 外部 analyzer 仍可能产生 API 成本。先记录真实请求数和 token，再按供应商账单计算，避免把未知调用量写成确定总价。</span><em>不含人力与 API</em></article>
           <article><small>A800 费用</small><strong>总价 = 8 × 单卡小时价 × 实际小时</strong><span>敏感性示例：若报价是 $2 / GPU·h，整机就是 $16/h；跑 24h≈$384，48h≈$768，72h≈$1,152。这里只是算式示例，不冒充当前市场报价。</span><em>拿到供应商报价后替换</em></article>
         </div>
       </section>
@@ -56,18 +56,20 @@ const lede = '假设你已经了解 Transformer、微调、推理、API 和 GPU�
       <section id="macro-connect" class="macro-step">
         <div class="macro-number">01</div>
         <div>
-          <p class="guide-eyebrow">连接服务器</p>
-          <h3>先把旧 MacBook 做成安全的实验室跳板机，再从新 MacBook 进入 4×3090</h3>
-          <p>你的旧 MacBook 最适合承担“实验室固定入口”：长期插电、物理网线接实验室网络、外接显示器/键鼠，平时合盖并锁屏；新 MacBook 只需要进入同一实验室网络或实验室批准的 VPN，就能先到旧 Mac，再由旧 Mac 访问 4×3090。这样不需要把 3090 服务器直接暴露到公网。</p>
+          <p class="guide-eyebrow">准备执行拓扑</p>
+          <h3>联网工作站准备材料，内网 GPU 服务器执行实验</h3>
+          <p>许多实验室让个人电脑或工作站访问公网，同时让 GPU 服务器留在内网。联网工作站负责下载、缓存并校验代码、模型、数据和离线依赖；GPU 服务器通过 SSH / rsync 接收同一份材料并承担计算。先确认工作站能到达服务器，再执行 60 秒体检。本项目的实例服务器是 4×RTX 3090。</p>
 
-          <h4>A. 先明确这条连接拓扑</h4>
+          <h4>A. 通用连接拓扑</h4>
           <div class="math-grid">
-            <article><small>你随身的新 MacBook</small><strong>控制端</strong><span>日常写代码、传文件、看日志。先通过同一 LAN 或实验室批准的 VPN 到达旧 Mac。</span></article>
-            <article><small>放在实验室的旧 MacBook</small><strong>跳板机 / Bastion</strong><span>电源 + 物理网线 + 外接显示器 + 键盘/鼠标。开启 Screen Sharing 与 Remote Login，只允许你的专用账户。</span></article>
-            <article><small>实验室服务器</small><strong>4×RTX 3090</strong><span>保持内网地址；由旧 Mac 访问。日常推荐用 SSH ProxyJump 直接从新 Mac 穿过旧 Mac 登录。</span></article>
-            <article><small>GUI 备用入口</small><strong>Mac 屏幕共享</strong><span>需要维护图形界面时再用 Screen Sharing；真正跑实验、传文件优先用 SSH/SFTP/rsync。</span></article>
+            <article><small>联网工作站</small><strong>准备与控制</strong><span>下载、缓存、校验并记录固定版本；通过实验室 LAN 或批准的 VPN 连接内网。</span></article>
+            <article><small>可选跳板机</small><strong>Bastion / relay</strong><span>只有网络边界要求中转时才需要；它提供到 GPU 内网的受控 SSH 路径。</span></article>
+            <article><small>内网 GPU 服务器</small><strong>执行与产出</strong><span>接收固定材料，运行实验并保存日志、checkpoint 与结果证据。</span></article>
+            <article><small>传输与维护</small><strong>SSH / SFTP / rsync</strong><span>命令、文件和结果优先走可审计的加密通道；GUI 远程桌面只用于必要维护。</span></article>
           </div>
-          <div class="warning-card"><strong>网络边界</strong><span>Apple 的 Screen Sharing 本质上仍要求两台 Mac 之间存在可达网络路径。Apple 官方排错文档也要求两台 Mac 在同一网络。若你的新 Mac 不在实验室 LAN，请先使用学校/实验室批准的 VPN 或其他批准的私有网络方案；不要把旧 Mac 的 SSH 22 端口或 VNC/Screen Sharing 5900 端口直接暴露到公网。</span></div>
+          <div class="warning-card"><strong>网络安全边界</strong><span>远程入口需要工作站与实验室内网之间存在获批的可达路径。使用学校/实验室批准的 LAN、VPN 或私有网络方案。不要把 SSH、VNC 或 Screen Sharing 端口直接暴露到公网，因为这会扩大账户和实验资产的攻击面。</span></div>
+
+          <details class="lab-mac-case"><summary>本项目实例：用专用旧 Mac 作为实验室跳板机</summary><div>
 
           <h4>A1. 让旧 MacBook 合盖、插电、长期不休眠</h4>
           <ol class="tomorrow-checklist">
@@ -126,7 +128,9 @@ rsync -avP ./seed-offline-bundle/ seed3090:/srv/seed/</code></pre>
           <div class="pass-card"><strong>整条链路验收</strong><span>先在旧 Mac 上按 <code>Control + Command + Q</code> 锁屏并合盖；等 30 分钟。然后新 Mac 连上同一实验室网络/VPN，执行 <code>ssh lab-mac 'date; uptime'</code>，再执行 <code>ssh seed3090 'hostname; nvidia-smi -L'</code>。两条都成功，才算“合盖常驻 + 锁屏安全 + 远程跳板”三件事同时成立。</span></div>
           <p class="estimate-note">Apple 官方资料依据：<a href="https://support.apple.com/en-us/102282" target="_blank" rel="noreferrer">合盖与外设 ↗</a> · <a href="https://support.apple.com/guide/mac-help/-mchle41a6ccd/mac" target="_blank" rel="noreferrer">睡眠/网络唤醒 ↗</a> · <a href="https://support.apple.com/guide/mac-help/mchlp1066/mac" target="_blank" rel="noreferrer">Remote Login ↗</a> · <a href="https://support.apple.com/en-euro/guide/mac-help/mh11848/mac" target="_blank" rel="noreferrer">Screen Sharing ↗</a> · <a href="https://support.apple.com/en-ie/guide/mac-help/-mh11785/mac" target="_blank" rel="noreferrer">FileVault ↗</a> · <a href="https://support.apple.com/en-us/102384" target="_blank" rel="noreferrer">Intel Firmware Password ↗</a>。</p>
 
-          <h4>B. 连接 4×3090：在实验室本地可直连；远程时优先走上面的 <code>seed3090</code></h4>
+          </div></details>
+
+          <h4>B. 连接 GPU 服务器：实验室本地可直连；需要中转时使用获批跳板</h4>
           <p>管理员通常会给你四样东西：服务器 IP/域名、用户名、SSH 端口、密码或私钥。不要把密码和私钥粘到网页、GitHub 或实验日志里。</p>
           <pre><code># 如果你就在实验室 LAN，可直接连
 ssh &lt;用户名&gt;@&lt;服务器IP&gt; -p &lt;端口&gt;
@@ -177,7 +181,7 @@ scp -P &lt;端口&gt; -r seed-offline-bundle/ \
         <div class="macro-number">02</div>
         <div>
           <p class="guide-eyebrow">复现与预估</p>
-          <h3>第二步不要直接跑 150 updates：先把规模从 1 条轨迹放大到 5 个稳定 update</h3>
+          <h3>先从 1 条轨迹放大到 5 个稳定 update，再估算完整 150 updates</h3>
           <p>官方仓库当前的 Stage‑1 论文规模是每个 benchmark <strong>180 tasks × 8 rollouts = 1,440 条轨迹</strong>，SFT 训练 3 epochs。论文 RL 阶段是 <strong>150 policy updates、batch 16、group size 8</strong>。按算法逐 update 采新轨迹的量级推演，每个 benchmark 大约是 <strong>150×16×8 = 19,200 条 RL 轨迹</strong>；ALFWorld + WebShop 两套约 38,400 条。这个 19,200 是根据论文 batch/group 推导的规划量级，最终以真实日志计数为准。</p>
           <div class="math-grid">
             <article><small>Stage‑1 / benchmark</small><strong>1,440 trajectories</strong><span>180 tasks × 8 rollouts</span></article>
@@ -186,7 +190,7 @@ scp -P &lt;端口&gt; -r seed-offline-bundle/ \
             <article><small>最长环境交互上界</small><strong>≈864,000 steps</strong><span>ALFWorld 19,200×30 + WebShop 19,200×15；实际成功轨迹通常会更短</span></article>
           </div>
 
-          <h4>明天按这个顺序放大</h4>
+          <h4>按这个顺序逐级放大</h4>
           <ol class="tomorrow-checklist">
             <li><b>1</b><div><strong>Preflight</strong><span>4 张 GPU、CUDA、模型、数据、hash 全部 PASS。</span></div></li>
             <li><b>2</b><div><strong>ALFWorld smoke</strong><span>只做最小 task/rollout，确认 reset → action → observation → skill → SFT record。</span></div></li>
@@ -198,7 +202,7 @@ scp -P &lt;端口&gt; -r seed-offline-bundle/ \
 
           <div class="warning-card"><strong>3090 最可能卡在显存</strong><span>官方公开配置以 8 GPU 为主。若四卡真实 OOM，优先按日志逐项减小 actor/rollout micro-batch、降低 rollout 的 GPU memory utilization，必要时再考虑 FSDP parameter/optimizer offload。每次只改一个变量，并保存“改前/改后”峰值显存和 update 时间；不要同时乱改一串参数。</span></div>
 
-          <h4>用真机速度算剩余时间，不再猜</h4>
+          <h4>用真机速度计算剩余时间</h4>
           <p>取 warm-up 后 5 个 update 的中位数。单 benchmark 的 RL 主循环粗算就是：<code>150 × 中位分钟/update ÷ 60</code>。两套环境再乘 2，然后额外加 SFT、评测、失败重跑和约 15% 首次运行缓冲。</p>
           <div class="time-table" role="table" aria-label="SEED update 时间敏感性">
             <div class="time-row time-head" role="row"><span>实测中位数</span><span>1 个 benchmark / 150 updates</span><span>ALFWorld + WebShop RL 主循环</span></div>
@@ -215,7 +219,7 @@ scp -P &lt;端口&gt; -r seed-offline-bundle/ \
         <div class="macro-number">03</div>
         <div>
           <p class="guide-eyebrow">代码迁移到真正的 8×A800</p>
-          <h3>迁移不是“把文件复制过去就开跑”，而是冻结同一实验，再在 A800 上重新验收</h3>
+          <h3>冻结同一实验，再在 8×A800 上重新验收后启动完整训练</h3>
           <p>真正想接近论文条件时，最重要的是让“硬件”成为主要变化量。模型、数据、评测、seed、代码 commit 和实验记录格式尽量保持不变。</p>
           <ol class="tomorrow-checklist">
             <li><b>1</b><div><strong>冻结 3090 实验</strong><span>记录 Git SHA、模型 revision、数据 SHA256、环境 lock、关键配置、GPU topology、5 个稳定 update 的时间/显存、最后一个可加载 checkpoint。</span></div></li>
@@ -257,7 +261,7 @@ N_GPUS_PER_NODE=8 DRY_RUN=true \
     <section class="after-reproduction" aria-labelledby="after-reproduction-title">
       <p class="guide-eyebrow">实验跑完之后</p>
       <h2 id="after-reproduction-title">再用网站里的其他页面回答新的问题</h2>
-      <p>先把这次复现的 checkpoint、配置、硬件、结果和证据存好。下一步如果要换模型、比较新一代 Qwen，或者把四卡实验迁到云端，网站里的论文页、模型页、对比页和工作台就接着用这份实验记录往下走。</p>
+      <p>先保存本次复现的 checkpoint、配置、硬件、结果和证据。后续如果要换模型、比较新一代 Qwen，或者把四卡实验迁到云端，论文页、模型页、对比页和工作台会继续使用这份实验记录。</p>
       <div class="next-links">
         <a href={localePath('zh', '/papers/seed/')}><strong>SEED 论文页</strong><span>重新核对论文条件和结果</span></a>
         <a href={localePath('zh', '/models/qwen2-5-3b-instruct/')}><strong>Qwen2.5-3B-Instruct</strong><span>确认 checkpoint、权重和可训练性</span></a>
@@ -298,6 +302,8 @@ N_GPUS_PER_NODE=8 DRY_RUN=true \
   .ledger-grid span, .math-grid span { margin-top: 7px; color: var(--muted); font-size: .86rem; line-height: 1.55; }
   .ledger-grid em { margin-top: 10px; color: var(--accent-deep); font-size: .75rem; font-style: normal; font-weight: 750; }
   .macro-step { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 20px; padding: 38px 0; border-top: 1px solid var(--line); scroll-margin-top: 140px; }
+  .macro-step > div, .lab-mac-case, .lab-mac-case > div { min-width: 0; max-width: 100%; }
+  .lab-mac-case summary { overflow-wrap: anywhere; }
   .macro-number { color: var(--accent-deep); font-family: var(--font-mono, monospace); font-size: 1.05rem; font-weight: 850; }
   .macro-step h3 { margin: 5px 0 10px; max-width: 850px; font-size: clamp(1.45rem, 2.8vw, 2.05rem); line-height: 1.18; }
   .macro-step h4 { margin: 24px 0 9px; }

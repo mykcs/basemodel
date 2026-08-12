@@ -8,7 +8,7 @@ const m = getMessages('en');
 const guideRecord = (await getCollection('guides'))[0]?.data;
 const guideSource = guideRecord ? 'collection' : 'fallback';
 const title = 'Understand the agent loop, then reproduce SEED';
-const lede = 'Assume you already know Transformers, fine-tuning, inference, APIs, and GPUs. First map policy, tools, environments, trajectories, rewards, GRPO, and SEED onto one mental model; then move straight into the ALFWorld / WebShop experiment on 4×3090.';
+const lede = 'For readers who already know Transformers, fine-tuning, inference, APIs, and GPUs: first map policy, tools, environments, trajectories, rewards, GRPO, and SEED onto one mental model; then follow a transferable ALFWorld / WebShop reproduction path from an online workstation to an internal GPU server.';
 ---
 <AppLayout title={m.guide.pageTitle} description={lede} locale="en">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideSource}>
@@ -16,7 +16,7 @@ const lede = 'Assume you already know Transformers, fine-tuning, inference, APIs
       <p class="guide-eyebrow">Agent 101 → SEED · Qwen2.5-3B-Instruct · ALFWorld + WebShop</p>
       <h1>{title}</h1>
       <p class="lede">{lede}</p>
-      <p class="hardware-note">This guide does not begin with full RL derivations. First identify <strong>what loops at runtime and where training changes weights</strong>, then see the same concepts in real commands. The workbench VRAM number remains a <strong>heuristic planning estimate</strong>, <strong>not a measured hardware result</strong>; whether the run really fits and how long each update takes comes from profiling on the four 3090s.</p>
+      <p class="hardware-note">First identify <strong>what loops at runtime and where training changes weights</strong>, then see the same concepts in real commands. <strong>This project uses an offline 4×RTX 3090 24GB server as a concrete example</strong>; other readers can reuse the “online workstation prepares → internal GPU server executes” pattern with approved hardware they actually have. The workbench VRAM number remains a <strong>heuristic planning estimate</strong>, <strong>not a measured hardware result</strong>; fit, memory, and update time must come from profiling the reader’s actual server.</p>
     </header>
 
     <AgentToSeedBridge locale="en" />
@@ -25,7 +25,7 @@ const lede = 'Assume you already know Transformers, fine-tuning, inference, APIs
     <section class="after-reproduction" aria-labelledby="after-reproduction-title">
       <p class="guide-eyebrow">After the run</p>
       <h2 id="after-reproduction-title">Use the rest of the site for the next research question</h2>
-      <p>Keep the checkpoint, configuration, hardware fingerprint, results, and evidence from this reproduction. If you later replace the model, compare a newer Qwen generation, or move the four-GPU run to cloud hardware, the paper, model, compare, and workspace pages continue from this experiment record.</p>
+      <p>Keep the checkpoint, configuration, hardware fingerprint, results, and evidence from this reproduction. If you later replace the model, compare a newer Qwen generation, or move this project's four-GPU example to cloud hardware, the paper, model, compare, and workspace pages continue from this experiment record.</p>
       <div class="next-links">
         <a href={localePath('en', '/papers/seed/')}><strong>SEED paper</strong><span>Re-check paper conditions and results</span></a>
         <a href={localePath('en', '/models/qwen2-5-3b-instruct/')}><strong>Qwen2.5-3B-Instruct</strong><span>Confirm checkpoint, weights, and trainability</span></a>

@@ -5,5 +5,7 @@
   "eventType": "status_changed",
   "occurredAt": "2026-08-06",
   "sourceId": "src_3c6aa0c7c522",
-  "note": "Official catalog record marks Claude 2 as retired."
+  "note": "Official catalog record marks Claude 2 as retired.",
+  "note_zh": "官方目录记录将 Claude 2 标记为已退役。",
+  "note_en": "Official catalog record marks Claude 2 as retired."
 }

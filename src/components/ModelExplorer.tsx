@@ -149,7 +149,7 @@ export default function ModelExplorer({ models, papers, paperModelIds, locale = 
       {
         id: 'current-api',
         title: locale === 'zh' ? '当前 API / 托管模型' : 'Current API / hosted models',
-        body: locale === 'zh' ? '适合推理、评测或作为 teacher/judge；不要与开放权重可训练模型混为一类。' : 'Useful for inference, evaluation, teacher, or judge roles; keep them distinct from trainable open-weight models.',
+        body: locale === 'zh' ? 'API / 托管模型适合推理、评测或 teacher/judge 角色；它们依赖服务接口，通常不提供本地可训练权重，因此与开放权重候选分组展示。' : 'API/hosted models suit inference, evaluation, or teacher/judge roles. They depend on a service interface and usually do not provide locally trainable weights, so they are grouped separately from open-weight candidates.',
         models: take((model) => current(model) && (model.access?.api_status === 'available' || model.access?.api_status === 'preview')),
       },
       {

@@ -6,9 +6,9 @@ export const en: Messages = {
   site: {
     name: 'Model Atlas',
     fullName: 'Agent Foundation Model Atlas',
-    tagline: 'A selection map of agent foundation models',
-    titleSuffix: 'Agent Foundation Model Atlas',
-    defaultDescription: 'A map of foundation-model choices and paper adoption for AI researchers.',
+    tagline: 'An OpenEvo research workbench on SEED benchmarks',
+    titleSuffix: 'Agent Foundation Model Atlas · SEED × OpenEvo Research Workbench',
+    defaultDescription: 'Understand base models, reproduce ALFWorld and WebShop experiments from SEED, evaluate OpenEvo, and turn trajectory, score, and failure evidence into improvements.',
     skipLink: 'Skip to main content',
     backHome: 'Back to home',
   },

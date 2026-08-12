@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
 import { encodeResearchTask } from '../../lib/researchTaskCodec';
+import { localizedChangeEventNote } from '../../lib/localizedChangeEvent';
 import { emptyTask, type ResearchTask } from '../../stores/researchTask';
 import familiesData from '../../content/coverage/families.json';
 import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
@@ -55,7 +56,7 @@ const highlightedFamilies = ['kimi', 'qwen', 'llama', 'deepseek'];
 const familyChanges = familiesData.families.filter((family) => highlightedFamilies.includes(family.id)).map((family) => ({ name: family.name, generation: family.current_generation, api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id, openWeight: family.current_open_weight_model_id }));
 const recentModelEvents = [...models].filter((model) => typeof model.release_date === 'string').sort((left, right) => right.release_date.localeCompare(left.release_date)).slice(0, 6);
 const recentEvents = [
-  ...changeEventEntries.map((entry) => entry.data).map((event) => ({ kind: 'event' as const, date: event.occurredAt, title: event.entityId, note: event.note ?? event.eventType })),
+  ...changeEventEntries.map((entry) => entry.data).map((event) => ({ kind: 'event' as const, date: event.occurredAt, title: event.entityId, note: localizedChangeEventNote(event, locale) })),
   ...recentModelEvents.map((model) => ({ kind: 'release' as const, date: model.release_date, title: model.name, note: `${model.vendor} · ${model.family}` })),
 ].sort((left, right) => right.date.localeCompare(left.date)).slice(0, 8);
 ---
@@ -67,7 +68,7 @@ const recentEvents = [
     <div class="section-heading">
       <div>
         <div class="section-kicker">{locale === 'zh' ? '同一研究任务的三种入口' : 'Three entries into the same research mission'}</div>
-        <h2 id="intent-title">{locale === 'zh' ? '学习、执行、比较，不再是三套互不相干的网站' : 'Learn, run, and compare are no longer disconnected products'}</h2>
+        <h2 id="intent-title">{locale === 'zh' ? '从学习、执行或比较进入同一项研究任务' : 'Enter the same research mission through learning, running, or comparing'}</h2>
       </div>
     </div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>

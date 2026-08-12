@@ -47,7 +47,7 @@ const changeEvents = defineCollection({
   schema: z.object({
     id: z.string(), entityType: z.enum(['model', 'paper', 'family']), entityId: z.string(),
     eventType: z.enum(['release', 'evidence_checked', 'status_changed']), occurredAt: z.string(),
-    sourceId: z.string().optional(), note: z.string().optional(),
+    sourceId: z.string().optional(), note: z.string().optional(), note_zh: z.string().optional(), note_en: z.string().optional(),
   }),
 });
 

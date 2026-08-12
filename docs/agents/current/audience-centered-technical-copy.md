@@ -196,6 +196,8 @@ Before merging a user-facing technical page, review every heading, introductory 
 9. Does the English version preserve the same explanation rather than translating the shorthand literally?
 10. Could a reader follow the page without access to the original chat or Agent handoff?
 
+Run `npm run audit:copy` before this contextual review. It reports file, line, rule ID, snippet, and reason across public source owners. Candidate output is advisory; `npm run audit:copy:strict` blocks only the small set of repository-approved high-confidence invariants and is included in `verify:deploy`.
+
 ## 9. HTML presentation rules
 
 Use the medium to make context visible:

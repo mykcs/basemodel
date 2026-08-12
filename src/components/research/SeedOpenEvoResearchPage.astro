@@ -234,7 +234,7 @@ const current = titles[page];
   {page === 'benchmarks' && (
     <>
       <section class="mission-section">
-        <div class="mission-section__heading"><span>01</span><div><small>{t('两个实验仪器', 'Two experimental instruments')}</small><h2>{t('不要把 ALFWorld 和 WebShop 当成两份名字不同的数据集', 'Do not treat ALFWorld and WebShop as two datasets with different names only')}</h2></div></div>
+        <div class="mission-section__heading"><span>01</span><div><small>{t('先区分两种 benchmark 的交互契约', 'Separate the interaction contracts first')}</small><h2>{t('ALFWorld 与 WebShop 使用不同的交互结构、动作空间和评测信号', 'ALFWorld and WebShop use different interaction structures, action spaces, and evaluation signals')}</h2></div></div>
         <div class="benchmark-grid">
           <article><div class="benchmark-grid__name"><span>A</span><h3>ALFWorld</h3></div><p>{t('文本化具身任务。Agent 根据观察执行高层动作，在房间、物体和任务约束中完成多步计划。', 'Text-based embodied tasks. The agent executes high-level actions from observations and completes multi-step plans over rooms, objects, and task constraints.')}</p><dl><div><dt>{t('主要证据', 'Primary evidence')}</dt><dd>{t('每个任务家族的 success rate + 不加权 macro-average', 'success rate per task family + unweighted macro-average')}</dd></div><div><dt>{t('常见失败', 'Common failures')}</dt><dd>{t('搜索循环、状态遗漏、前置条件错误、无效动作、超步数', 'search loops, missed state, prerequisite errors, invalid actions, step-budget exhaustion')}</dd></div></dl></article>
           <article><div class="benchmark-grid__name"><span>W</span><h3>WebShop</h3></div><p>{t('网页购物导航任务。Agent 需要搜索商品、理解属性约束、打开页面并选择符合要求的商品和选项。', 'A web-shopping navigation task. The agent searches products, interprets attribute constraints, opens pages, and selects matching products and options.')}</p><dl><div><dt>{t('主要证据', 'Primary evidence')}</dt><dd>{t('mean normalized task-completion score + exact success rate', 'mean normalized task-completion score + exact success rate')}</dd></div><div><dt>{t('常见失败', 'Common failures')}</dt><dd>{t('搜索词错误、属性匹配不全、页面导航循环、错误选项、fallback action', 'bad queries, incomplete attribute matching, navigation loops, wrong options, fallback actions')}</dd></div></dl></article>
@@ -270,7 +270,7 @@ const current = titles[page];
       </section>
 
       <section class="mission-section">
-        <div class="mission-section__heading"><span>02</span><div><small>{t('不要做错误类比', 'Avoid false equivalence')}</small><h2>{t('“self-evolving” 是研究主题，不是同一个算法接口', '“Self-evolving” is a research theme, not one identical algorithmic interface')}</h2></div></div>
+        <div class="mission-section__heading"><span>02</span><div><small>{t('按更新对象建立可比边界', 'Define comparability through the updated object')}</small><h2>{t('“self-evolving” 是共同研究主题；SEED 与 OpenEvo 使用不同算法接口', '“Self-evolving” is the shared research theme; SEED and OpenEvo use different algorithmic interfaces')}</h2></div></div>
         <table class="mission-table"><thead><tr><th>{t('维度', 'Dimension')}</th><th>SEED</th><th>OpenEvo</th></tr></thead><tbody>
           <tr><td>{t('经验来源', 'Experience source')}</td><td>{t('当前 policy 的 on-policy trajectories', 'on-policy trajectories from the current policy')}</td><td>{t('完成 task/session 的封存数据与 artifact history', 'sealed completed-task/session data and artifact history')}</td></tr>
           <tr><td>{t('反思输出', 'Reflection output')}</td><td>{t('自然语言 hindsight skill', 'natural-language hindsight skill')}</td><td>{t('由目标/方法定义的版本化 artifact', 'versioned artifacts defined by target/method')}</td></tr>

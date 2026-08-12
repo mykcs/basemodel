@@ -22,24 +22,24 @@ let guide: Guide;
 if (exact('/guide')) {
   guide = {
     stage: 'question',
-    current: t('先分清 Agent 的运行循环和训练循环，再开始 4×3090 的 SEED 实验。', 'Separate the agent runtime loop from the training loop before starting the 4×3090 SEED run.'),
+    current: t('本页解释 Agent 的运行循环与训练循环，再把概念接到 SEED 复现。', 'This page separates the agent runtime and training loops, then connects them to SEED reproduction.'),
     why: t('如果不知道 trajectory、reward 和 policy update 分别发生在哪一层，后面的 RL 命令只会变成需要照抄的黑箱。', 'Without knowing where trajectory, reward, and policy update live, the RL commands become a black box to copy rather than an experiment you understand.'),
     next: t('看完一屏 Agent → SEED 映射后，从第 00 步开始；每一步看到 PASS 再继续。', 'After the one-screen Agent → SEED map, start at step 00 and continue only after each PASS.'),
   };
 } else if (exact('/papers') || starts('/papers')) {
   guide = { stage: 'question', current: t('先确认论文到底用了什么模型、环境、训练阶段和硬件。', 'Confirm the paper model, environments, training stages, and hardware.'), why: t('先固定原实验，才能判断后面的变化是在复现方法，还是已经变成另一个实验。', 'Fixing the original experiment first is what lets you tell method reproduction from a different experiment.'), next: t('准备复现时回到 Guide；准备换模型时再进入模型页和工作台。', 'Return to the Guide for reproduction; use models/workspace only when considering a model change.') };
 } else if (exact('/workspace')) {
-  guide = { stage: 'constraints', current: t('把你手上的真实资源写进去：4×24GB、离线、可训练、需要本地权重。', 'Enter the resources you actually have: 4×24GB, offline, trainable, local weights required.'), why: t('硬约束先决定“能不能做”，模型能力才决定“值不值得做”；顺序反过来会得到漂亮但不可执行的候选。', 'Hard constraints decide whether the experiment is possible before capability decides whether a candidate is worth trying.'), next: t('先排除跑不了的方案；如果 3090 已经完成实验，就不用为了“更强”再换机器。', 'Remove infeasible options first; if the 3090 run already answers the experiment, do not change hardware just because it is stronger.') };
+  guide = { stage: 'constraints', current: t('本页把研究者真实拥有的 GPU、网络、权重访问和训练要求写成约束。', 'This page records the researcher’s real GPU, network, weight-access, and training constraints.'), why: t('硬约束先决定“能不能做”，模型能力才决定“值不值得做”；顺序反过来会得到漂亮但不可执行的候选。本项目示例是 4×24GB 离线服务器。', 'Hard constraints decide whether the experiment is possible before capability decides whether a candidate is worth trying. This project’s example is an offline 4×24GB server.'), next: t('先排除不可执行的方案；若现有机器已经回答研究问题，就保存证据并完成实验。', 'Remove infeasible options first; if the existing machine answers the research question, save the evidence and complete the experiment there.') };
 } else if (exact('/models') || starts('/models')) {
   guide = { stage: 'candidates', current: t('先看这个 checkpoint 能不能服务当前实验，再看它强不强。', 'Check whether this checkpoint fits the experiment before asking how strong it is.'), why: t('论文角色、权重访问、可训练性、显存和可比性都可能比排行榜分数更早淘汰一个模型。', 'Paper role, weight access, trainability, memory, and comparability can eliminate a model before leaderboard strength matters.'), next: t('复现 SEED 先保留 Qwen2.5-3B-Instruct；换模型时把变化写进比较和实验记录。', 'Keep Qwen2.5-3B-Instruct for SEED reproduction; record every change when substituting a model.') };
 } else if (exact('/families') || starts('/families') || exact('/landscape')) {
   guide = { stage: 'candidates', current: t('这里用来理解代际和替代方案，不用来把论文里的旧 checkpoint 自动升级。', 'Use this page to understand generations and alternatives, not to auto-upgrade a paper checkpoint.'), why: t('“同一家族更新”不等于“实验变量没变”；API、开放权重和论文 checkpoint 可能根本不是同一个对象。', 'A newer family member does not mean the experimental variable stayed constant; API, open-weight, and paper checkpoints may be different objects.'), next: t('只有研究问题变成“换一个新模型再跑”时，才从家族里挑新的候选。', 'Choose a newer family candidate only when the research question explicitly changes to a rerun with a new model.') };
 } else if (exact('/methodology') || exact('/data-status')) {
-  guide = { stage: 'evidence', current: t('把论文事实、市场价格、工程估算和真机结果分开看。', 'Keep paper facts, market prices, engineering estimates, and measured runs separate.'), why: t('这些证据的时效性和可信边界不同，混在一起会把估算说成实测、把今天价格说成论文条件。', 'These evidence types have different freshness and confidence boundaries; mixing them turns estimates into measurements and current prices into paper facts.'), next: t('关键结论回到一手来源；时间和价格带核验日期，真机数据带 run 和硬件记录。', 'Use primary sources for key claims; timestamp time-sensitive prices and attach run/hardware records to measurements.') };
+  guide = { stage: 'evidence', current: t('把论文事实、市场价格、工程估算和真机结果分开看。', 'Keep paper facts, market prices, engineering estimates, and measured runs separate.'), why: t('这些证据的时效性和可信边界不同，混在一起会把估算说成实测、把核验日期下的价格说成论文条件。', 'These evidence types have different freshness and confidence boundaries; mixing them turns estimates into measurements and check-date prices into paper facts.'), next: t('关键结论回到一手来源；时间和价格带核验日期，真机数据带 run 和硬件记录。', 'Use primary sources for key claims; timestamp time-sensitive prices and attach run/hardware records to measurements.') };
 } else if (exact('/compare')) {
   guide = { stage: 'decision', current: t('只比较会改变实验解释的差异。', 'Compare only differences that change the experiment interpretation.'), why: t('参数量、checkpoint、架构、上下文、权重访问和训练条件都可能成为混杂变量。', 'Scale, checkpoint, architecture, context, access, and training conditions can all become confounds.'), next: t('确认差异能接受后，把替换原因、风险和证据一起写进 Decision Memo。', 'Once differences are acceptable, record the reason, risk, and evidence in the Decision Memo.') };
 } else {
-  guide = { stage: 'evidence', current: t('先想清楚这页在当前实验里解决什么问题。', 'Ask what problem this page solves in the current experiment.'), why: t('页面信息再多，也只有和当前研究问题连接起来的部分才值得改变你的下一步。', 'No matter how much information is on the page, only what connects to the current research question should change your next step.'), next: t('拿到答案就回到原来的实验主线，不要被页面里的其他信息带走。', 'Once answered, return to the experiment mainline instead of following unrelated information.') };
+  guide = { stage: 'evidence', current: t('本页提供研究任务中的一个证据或决策对象。', 'This page contributes one evidence or decision object to the research mission.'), why: t('只有与研究问题连接的信息才需要改变后续实验步骤。', 'Only information connected to the research question should change the next experimental step.'), next: t('取得所需答案后，带着结论返回研究主线。', 'After obtaining the needed answer, return to the research mainline with that conclusion.') };
 }
 ---
 <section class="research-mainline" aria-label={t('研究主线', 'Research mainline')}>
@@ -48,7 +48,7 @@ if (exact('/guide')) {
       {stages.map((stage, index) => <li class:list={{ 'is-active': guide.stage === stage.id }} aria-current={guide.stage === stage.id ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><strong>{stage.label}</strong></li>)}
     </ol>
     <div class="research-mainline-context">
-      <div><small>{t('现在', 'Now')}</small><strong>{guide.current}</strong></div>
+      <div><small>{t('本页职责', 'Page role')}</small><strong>{guide.current}</strong></div>
       <div><small>{t('为什么', 'Why')}</small><span>{guide.why}</span></div>
       <div><small>{t('下一步', 'Next')}</small><span>{guide.next}</span></div>
     </div>
