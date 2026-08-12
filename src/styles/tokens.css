@@ -45,6 +45,15 @@
   --warning: var(--color-warning);
   --danger: var(--color-danger);
   --blue: var(--color-info);
+
+  /*
+   * Legacy visual components used --background for card surfaces. Keep it
+   * theme-aware so a missing variable can never fall back to white in dark
+   * mode. --foreground is the matching readable text token.
+   */
+  --background: var(--color-surface);
+  --foreground: var(--color-text);
+
   font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
 }
 
