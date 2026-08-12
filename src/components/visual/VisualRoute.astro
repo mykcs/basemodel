@@ -1,0 +1,65 @@
+---
+interface Step {
+  number?: string;
+  title: string;
+  body?: string;
+  meta?: string;
+  href?: string;
+  state?: 'default' | 'active' | 'future' | 'evidence';
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  steps: Step[];
+  ariaLabel?: string;
+  compact?: boolean;
+  animated?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  steps,
+  ariaLabel = title ?? 'Process',
+  compact = false,
+  animated = false,
+} = Astro.props;
+---
+<section class:list={['ka-route-block', { 'is-compact': compact, 'is-animated': animated }]} data-ui-audit="contrast layout"> 
+  {(eyebrow || title || lede) && <header class="ka-visual-header">
+    {eyebrow && <span>{eyebrow}</span>}
+    {title && <h3>{title}</h3>}
+    {lede && <p>{lede}</p>}
+  </header>}
+  <nav class="ka-route-nav" aria-label={ariaLabel}>
+    <ol class="ka-route" style={`--ka-route-columns:${Math.min(Math.max(steps.length, 1), 6)}`}>
+      {steps.map((step, index) => (
+        <li class:list={[`is-${step.state ?? 'default'}`]} data-ui-audit-item>
+          {step.href ? (
+            <a href={step.href}>
+              <span class="ka-route-number">{step.number ?? String(index + 1).padStart(2, '0')}</span>
+              <span class="ka-route-copy">
+                <strong>{step.title}</strong>
+                {step.body && <small>{step.body}</small>}
+                {step.meta && <em>{step.meta}</em>}
+              </span>
+              <span class="ka-route-arrow" aria-hidden="true">↘</span>
+            </a>
+          ) : (
+            <div>
+              <span class="ka-route-number">{step.number ?? String(index + 1).padStart(2, '0')}</span>
+              <span class="ka-route-copy">
+                <strong>{step.title}</strong>
+                {step.body && <small>{step.body}</small>}
+                {step.meta && <em>{step.meta}</em>}
+              </span>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+</section>

@@ -11,14 +11,16 @@ Before non-trivial work, read in this order:
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
 5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-6. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) — required baseline for comfortable, readable, learning-first UI and responsive desktop/mobile behavior.
-7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — current Vercel Preview + Production workflow.
-9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — Vercel build budget, release and Production boundary.
-10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+6. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory for every user-facing page**, section, copy, navigation, comparison, explanation, or feature change.
+7. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) and [`docs/agents/current/sitewide-visual-knowledge-architecture.md`](docs/agents/current/sitewide-visual-knowledge-architecture.md) — learning-first responsive UI and the whole-site knowledge journey.
+8. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
+9. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
+10. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
+11. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Preview + Production workflow, build budget, parallel integration, release and Production boundary.
+12. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+13. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
-Files under `docs/agents/history/` are evidence and rationale, not instructions to restore previous architecture.
+Files under `docs/agents/history/` and `docs/agent-context/` are evidence and rationale, not instructions to restore previous architecture. The older product-vision document from PR #64 is retained under history; current product authority is the executable product plus the current integrity, research-mission, visual and deployment policies.
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
@@ -32,10 +34,24 @@ current user instruction
 > executable repository truth (code/config/tests/manifests)
 > docs/agents/current/*
 > docs/agents/LATEST.md
-> historical handoffs / archives
+> historical handoffs / archives / docs/agent-context
 ```
 
 If two current documents disagree, resolve the disagreement against executable/live truth and update the stale document. Do not add another contradictory policy layer.
+
+## Current product mission
+
+The site is a research decision system centered on a concrete mission:
+
+```text
+Base Model
+-> SEED / OpenEvo
+-> ALFWorld / WebShop
+-> trajectories, scores and failures
+-> defensible OpenEvo improvements
+```
+
+Preserve Learn / Run / Compare as distinct entry modes. Keep ALFWorld success-rate semantics separate from WebShop normalized score/exact success. Keep environment readiness, real model action, real evolution, comparable results and causal improvement as different evidence levels.
 
 ## Current deployment architecture
 
@@ -67,6 +83,7 @@ tests/e2e/                   browser regression tests
 tests/fixtures/demo-archive/ non-production fixtures
 docs/agents/current/         authoritative current Agent policies/runbooks/maps
 docs/agents/history/         migration/incident/superseded records
+docs/agent-context/          retained historical research-workbench context
 docs/agents/LATEST.md        stable current handoff
 vercel.json                  Vercel Preview + Production contract
 package.json                 executable validation/build entrypoints
@@ -85,7 +102,14 @@ npm run build
 
 `verify:deploy` includes the repository's check/validation/semantic/evidence/test/V2/hardening gates. Do not weaken these audits merely to make a deployment pass.
 
-Run full browser suites or third-party network/vendor audits when the changed surface requires them; they are not automatically part of every blocking hosted build.
+For theme, CSS, layout, responsive, navigation, typography, animation, i18n-length, or shared visual changes, follow the UI acceptance policy and run the strongest available browser matrix:
+
+```bash
+npm run test:ui
+npm run test:ui:all   # shared/global/theme/cross-browser changes
+```
+
+Full browser suites or third-party network/vendor audits remain on demand when the changed surface requires them; they are not automatically part of every blocking hosted build.
 
 ## Ordinary Agent workflow
 
@@ -93,16 +117,19 @@ Run full browser suites or third-party network/vendor audits when the changed su
 read LATEST + current policy
 -> scan scenario-trigger-registry and load matched guidance
 -> inspect overlapping PRs and relevant code/data/tests
--> finish one coherent change before the first provider-triggering push
+-> classify independent, stacked, superseded and semantically conflicting work
+-> finish one coherent change or one explicit integration/release head before the first provider-triggering push
 -> publish one atomic multi-file branch update when possible
 -> let Vercel create the exact-head non-main Preview
 -> verify build logs and inspect real Preview route(s)
 -> batch evidence-driven fixes into at most one normal corrective push
 -> synchronize with current main only when materially required
--> merge the accepted release to main
+-> merge the accepted release to main once
 -> let Vercel create one Production deployment for the accepted release batch
 -> verify https://basemodel-preview.vercel.app separately
 ```
+
+A clean Git merge is not combined-product acceptance. When several PRs belong to one release, use the parallel/stacked integration policy in `deployment-policy.md`; preserve attribution and ancestry, but resolve the final file tree by current product intent, executable invariants and current provider truth.
 
 Because the repository is private, normal Vercel Preview URLs may require Vercel authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability instead of disabling protection for convenience.
 
@@ -110,10 +137,10 @@ Because the repository is private, normal Vercel Preview URLs may require Vercel
 
 Vercel deployments/builds are finite resources. Optimize provider-triggering ref updates, not only build duration.
 
-Default target for one coherent feature:
+Default target for one coherent feature or accepted release batch:
 
 ```text
-one branch / PR
+one branch / integration PR
 -> one atomic push
 -> one initial Preview
 -> at most one corrective Preview after real inspection
@@ -146,9 +173,11 @@ Preserve these even when simplifying UI or data flows:
 - open weights are not automatically open source or unrestricted licensing;
 - heuristic resource estimates, catalog tiers and measured hardware results are distinct evidence levels;
 - current/latest/full-family claims require current first-party verification;
-- “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing.
+- “done” means wired into the real user path and protected by acceptance checks, not merely a component/file existing;
+- a visualization must externalize order, hierarchy, comparison, evidence, decision, failure, topology or executable action; decoration alone is not justification;
+- the owner must not become the first real dark-mode, overlap, clipping, responsive or theme-transition tester.
 
-For all user-facing UI work, also follow [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md): the interface should be comfortable and readable for learning, and responsive behavior across desktop and mobile is a completion requirement rather than optional polish.
+For all user-facing UI work, follow the human-thinking expression contract, UI design principles, sitewide visual architecture, theme contract and browser acceptance gate. Responsive behavior across desktop and mobile is a completion requirement rather than optional polish.
 
 Read the detailed current product/model policies before broad UI/data/recommendation changes.
 
@@ -171,7 +200,7 @@ For recurring situations that should trigger without a fresh reminder from the o
 
 Human intervention is appropriate for real authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
 
-Completion reports must distinguish source synchronization, repository validation, Vercel trigger counts/status, exact-head Preview acceptance, merge, and Vercel Production acceptance. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
+Completion reports must distinguish source synchronization, repository validation, Vercel trigger counts/status, exact-head Preview acceptance, merge, worker-PR disposition and Vercel Production acceptance. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
 
 ## Documentation maintenance
 

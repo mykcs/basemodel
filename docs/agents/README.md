@@ -4,15 +4,19 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 
 ## Start here
 
-1. `LATEST.md` — live handoff and provider state.
+1. `LATEST.md` — live handoff and provider/release state.
 2. `current/project-agent-operating-principles.md` — autonomous/clean workflow standard.
-3. `current/scenario-trigger-registry.md` — just-in-time trigger router; **scan scenario-trigger-registry against the task** automatically.
-4. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
-5. `current/deployment-policy.md` — release/validation boundary.
-6. `current/repository-map.md` — ownership/change-to-check map.
-7. `current/ui-design-principles.md` and task-relevant product/research/data docs plus executable source/tests.
+3. `current/scenario-trigger-registry.md` — just-in-time trigger router; scan it automatically against the task.
+4. `current/product-and-research-integrity.md` — product and scientific completion boundary.
+5. `current/human-thinking-web-expression-contract.md` — mandatory expression/density/semantic-HTML contract for every user-facing change.
+6. `current/ui-design-principles.md`, `current/sitewide-visual-knowledge-architecture.md`, `current/theme-contrast-contract.md`, and `current/ui-change-visual-acceptance-gate.md` — UI system and browser acceptance.
+7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, and `current/audience-centered-technical-copy.md` — current research mission, reproduction and copy ownership.
+8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
+9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
+10. `current/repository-map.md` — ownership/change-to-check map.
+11. Task-relevant model/data policies plus executable source, config and tests.
 
-Retained files such as `preview-platform-evaluation.md`, Direct Upload runbooks, `cloudflare-pages-deployment.md`, and Workers shadow configuration document historical or fallback paths. They do not override the current Vercel Production authority.
+The personal device/lab profile consumer is owned by `current/personal-compute-profile-consumer.md`; editable device facts stay only in `mykcs/fuhuo_20260419`.
 
 ## Current deployment authority
 
@@ -20,13 +24,28 @@ Retained files such as `preview-platform-evaluation.md`, Direct Upload runbooks,
 GitHub source
 ├─ non-main -> Vercel Preview
 └─ main     -> Vercel Production -> https://basemodel-preview.vercel.app
-
-Cloudflare Pages -> frozen legacy rollback snapshot; normal Git builds = 0
 ```
 
-**Cloudflare Pages Build = 0** is the normal operating target. Until Pages Git integration is disabled at the account level, use `[CF-Pages-Skip]` for branch and release commits.
+Vercel is the only ordinary deployment authority. Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral and never canonical.
 
-Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral and never canonical.
+Historical Cloudflare files, Direct Upload runbooks, snapshots and Workers-shadow configuration are conditional legacy evidence/fallbacks. They do not override current Vercel authority and do not belong in ordinary completion reporting unless the legacy surface is explicitly involved or unexpectedly activates.
+
+## Parallel release batches
+
+When the owner asks to ship several open PRs together:
+
+```text
+refresh main and every candidate head
+-> classify independent / stacked / superseded / conflicting intent
+-> create one explicit integration/release head
+-> resolve the final tree by current product and executable truth
+-> run one combined exact-head Gate/build and Preview
+-> merge main once
+-> verify one Vercel Production release
+-> record every worker PR disposition
+```
+
+A clean textual merge is not semantic acceptance. Preserve ancestry and attribution, but do not let old deployment, UI or research semantics overwrite newer current authority.
 
 ## Scenario triggers and durable knowledge
 
@@ -40,8 +59,8 @@ read LATEST + operating principles
 -> encode only genuinely reusable lessons in the best existing owner
 ```
 
-Historical records explain past decisions and should not restore retired GitHub Actions/Pages or a superseded hosting architecture.
+`docs/agent-context/` contains retained research-workbench context. `docs/agents/history/` contains superseded product, hosting, incident and release evidence. Neither is current policy. In particular, the former PR #64 product-vision document is historical; current authority lives in the current integrity, mission, visual and deployment documents.
 
 ## Product contract
 
-Deployment changes do not alter the research-decision-system north star, evidence semantics, reproduction-mode distinctions, UI design principles, or acceptance rules. Read the relevant current policies before broad changes.
+The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements. Keep Learn / Run / Compare, evidence levels, benchmark metrics and framework update objects distinct.

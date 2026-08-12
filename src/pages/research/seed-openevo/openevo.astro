@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="OpenEvo 框架原理与跨任务演化循环" description="解释 OpenEvo 的 task/session 边界、封存数据、演化 target/method、artifact、Project Head 和 successor revision。" locale={locale}>
+  <SeedOpenEvoResearchPage locale={locale} page="openevo" />
+</AppLayout>
