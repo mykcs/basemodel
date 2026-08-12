@@ -16,7 +16,7 @@ interface Props {
 
 const { eyebrow, title, lede, items } = Astro.props;
 ---
-<section class="ka-evidence-block">
+<section class="ka-evidence-block" data-ui-audit="contrast layout">
   <header class="ka-visual-header">
     {eyebrow && <span>{eyebrow}</span>}
     <h3>{title}</h3>
@@ -24,7 +24,7 @@ const { eyebrow, title, lede, items } = Astro.props;
   </header>
   <ol class="ka-evidence-ladder">
     {items.map((item, index) => (
-      <li class:list={[`is-${item.status ?? 'default'}`]}>
+      <li class:list={[`is-${item.status ?? 'default'}`]} data-ui-audit-item>
         <span class="ka-evidence-index" aria-hidden="true">{index + 1}</span>
         <div>
           {item.href ? <a href={item.href}><strong>{item.level}</strong></a> : <strong>{item.level}</strong>}
