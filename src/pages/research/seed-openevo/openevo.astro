@@ -5,6 +5,7 @@ import OpenEvoSeedMechanismAnimation from '../../../components/research/OpenEvoS
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'zh' as const;
 ---
+<!-- Section 06 intentionally visualizes mechanism internals, not product-name taxonomy. -->
 <AppLayout title="OpenEvo 实验：跨任务演化、模型选择与新手问题" description="解释 OpenEvo 的跨任务演化循环、为什么以 Qwen2.5-3B 为基线，以及 OpenEvo 与 SEED 各自如何让同一个基础模型从任务经验中演化。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo" />
   <OpenEvoModelExperimentGuide locale={locale} />
