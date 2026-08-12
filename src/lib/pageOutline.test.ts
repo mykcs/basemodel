@@ -17,7 +17,7 @@ describe('long-page outline', () => {
   });
 
   it('derives a semantic outline from headings only when the page is long enough', () => {
-    expect(component).toContain("main.querySelectorAll('h2, h3')");
+    expect(component).toContain("main.querySelectorAll<HTMLHeadingElement>('h2, h3')");
     expect(component).toContain('levelTwo.length >= 4 ? levelTwo : candidates');
     expect(component).toContain('headings.length < 4 || !longEnough');
     expect(component).toContain("link.setAttribute('aria-current', 'location')");
