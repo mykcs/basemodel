@@ -1,104 +1,129 @@
 ---
 import { getCollection } from 'astro:content';
-import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
-import { encodeResearchTask } from '../../lib/researchTaskCodec';
-import { emptyTask, type ResearchTask } from '../../stores/researchTask';
-import familiesData from '../../content/coverage/families.json';
+import { isLocale, localePath, type Locale } from '../../i18n';
 import SeedUseCaseStrip from '../../components/SeedUseCaseStrip.astro';
 import SeedOpenEvoMissionHero from '../../components/research/SeedOpenEvoMissionHero.astro';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
-const m = getMessages(locale);
-const models = (await getCollection('models')).map((entry) => entry.data);
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
 const changeEventEntries = await getCollection('changeEvents');
-const totalModels = models.length;
-const familyCount = familiesData.families.length;
-const openWeightCount = models.filter((model) => model.openness.weights_available === true).length;
-
-function workspaceHref(task: Partial<ResearchTask>): string {
-  const params = encodeResearchTask({ ...emptyTask, ...task });
-  return `${localePath(locale, '/workspace/')}?${params.toString()}`;
-}
+const latestChange = [...changeEventEntries].sort((a, b) => b.data.occurredAt.localeCompare(a.data.occurredAt))[0]?.data;
 
 const primaryIntents = [
   {
-    label: locale === 'zh' ? '先看清整个研究问题' : 'Understand the complete research question',
-    lede: locale === 'zh' ? '从 Base Model、SEED、OpenEvo 到 ALFWorld / WebShop，把七个关键问题串成一张研究地图。' : 'Connect Base Models, SEED, OpenEvo, ALFWorld, and WebShop into one seven-question research map.',
-    href: localePath(locale, '/research/seed-openevo/'),
+    index: '01',
+    title: t('复现 SEED', 'Reproduce SEED'),
+    question: t('SEED 到底做了什么，我怎样确认自己真的复现了它？', 'What does SEED actually do, and how do I know I reproduced it?'),
+    body: t('从 Qwen2.5-3B-Instruct、SEED 方法、WebShop / ALFWorld，到训练循环、原论文结果和复现证据，按实验发生顺序理解。', 'Follow the experiment in order: Qwen2.5-3B-Instruct, the SEED method, WebShop / ALFWorld, the training loop, paper results, and reproduction evidence.'),
+    href: p('/research/seed-openevo/'),
+    cta: t('进入 SEED 复现', 'Open SEED reproduction'),
+    secondaryHref: p('/research/seed-openevo/seed/'),
+    secondaryLabel: t('先看 SEED 方法', 'Read the SEED method first'),
   },
   {
-    label: locale === 'zh' ? '直接复现 OpenEvo × WebShop / ALFWorld' : 'Reproduce OpenEvo × WebShop / ALFWorld',
-    lede: locale === 'zh' ? '按环境、代码、数据、runtime、真实 CUDA action、真实 evolution 和结果 artifact 顺序执行。' : 'Execute environment, code, data, runtime, real CUDA action, real evolution, and result artifacts in order.',
-    href: localePath(locale, '/guide/openevo-webshop-alfworld/'),
+    index: '02',
+    title: t('OpenEvo 实验', 'Run OpenEvo'),
+    question: t('保持任务和预算一致，用 OpenEvo 解同一个 WebShop / ALFWorld，会发生什么？', 'What happens when OpenEvo tackles the same WebShop / ALFWorld tasks under the same controls?'),
+    body: t('把环境、模型、prompt、seed 和预算冻结下来，观察 action → reward → reflection → memory / evolution，再与 SEED 的参数更新循环公平比较。', 'Freeze environment, model, prompt, seed, and budget; observe action → reward → reflection → memory / evolution, then compare fairly against SEED parameter updates.'),
+    href: p('/guide/openevo-webshop-alfworld/'),
+    cta: t('进入 OpenEvo 执行指南', 'Open the OpenEvo runbook'),
+    secondaryHref: p('/research/seed-openevo/loops/'),
+    secondaryLabel: t('比较两种 evolution loop', 'Compare the two evolution loops'),
   },
   {
-    label: locale === 'zh' ? '比较两个循环并设计 OpenEvo 改进' : 'Compare both loops and design an OpenEvo improvement',
-    lede: locale === 'zh' ? '先明确 SEED 更新 policy 参数、OpenEvo 更新跨 session artifact/revision，再冻结协议、分析失败分布。' : 'First distinguish SEED policy-parameter updates from OpenEvo cross-session artifact/revision updates, then freeze the protocol and analyze failure distributions.',
-    href: localePath(locale, '/research/seed-openevo/loops/'),
+    index: '03',
+    title: t('相关知识', 'Foundations'),
+    question: t('模型、智能体或训练概念看不懂时，只补当前需要的知识。', 'When a model, agent, or training concept blocks you, learn only what you need next.'),
+    body: t('模型：checkpoint / Instruct / 参数量 / 开放权重；智能体：环境 / observation / action / memory；训练：SFT / distillation / RL / GRPO / on-policy。', 'Models: checkpoint / Instruct / parameters / open weights. Agents: environment / observation / action / memory. Training: SFT / distillation / RL / GRPO / on-policy.'),
+    href: p('/guide/'),
+    cta: t('打开相关知识', 'Open foundations'),
+    secondaryHref: p('/models/'),
+    secondaryLabel: t('需要时再查模型目录', 'Browse the model catalog when needed'),
   },
 ];
-const researchPaths = [
-  { title: m.v2.home.pathStrict, body: m.v2.home.pathStrictBody, tag: m.v2.home.pathStrictTag },
-  { title: m.v2.home.pathMethod, body: m.v2.home.pathMethodBody, tag: m.v2.home.pathMethodTag },
-  { title: m.v2.home.pathModern, body: m.v2.home.pathModernBody, tag: m.v2.home.pathModernTag },
-];
-const scenarioCards = [
-  { label: m.v2.home.scenarioLora, lede: m.v2.home.scenarioLoraLede, href: workspaceHref({ mode: 'new', update: 'lora', gpuVramGb: 24, openWeight: true }) },
-  { label: m.v2.home.scenarioRl, lede: m.v2.home.scenarioRlLede, href: workspaceHref({ mode: 'modern', update: 'rl', gpuCount: 4, openWeight: true }) },
-  { label: m.v2.home.scenarioOpenWeight, lede: m.v2.home.scenarioOpenWeightLede, href: workspaceHref({ mode: 'new', update: 'none', openWeight: true }) },
-  { label: m.v2.home.scenarioQwen, lede: m.v2.home.scenarioQwenLede, href: workspaceHref({ mode: 'strict', update: 'none', priorities: ['chinese'] }) },
-  { label: m.v2.home.scenarioReplace, lede: m.v2.home.scenarioReplaceLede, href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
-  { label: m.v2.home.scenarioApi, lede: m.v2.home.scenarioApiLede, href: workspaceHref({ mode: 'new', update: 'none', priorities: ['low_cost'] }) },
-];
-const highlightedFamilies = ['kimi', 'qwen', 'llama', 'deepseek'];
-const familyChanges = familiesData.families.filter((family) => highlightedFamilies.includes(family.id)).map((family) => ({ name: family.name, generation: family.current_generation, api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id, openWeight: family.current_open_weight_model_id }));
-const recentModelEvents = [...models].filter((model) => typeof model.release_date === 'string').sort((left, right) => right.release_date.localeCompare(left.release_date)).slice(0, 6);
-const recentEvents = [
-  ...changeEventEntries.map((entry) => entry.data).map((event) => ({ kind: 'event' as const, date: event.occurredAt, title: event.entityId, note: event.note ?? event.eventType })),
-  ...recentModelEvents.map((model) => ({ kind: 'release' as const, date: model.release_date, title: model.name, note: `${model.vendor} · ${model.family}` })),
-].sort((left, right) => right.date.localeCompare(left.date)).slice(0, 8);
 ---
 
 <SeedOpenEvoMissionHero locale={locale} />
 
-<div class="shell">
-  <section class="section section-first" aria-labelledby="intent-title">
-    <div class="section-heading">
+<div class="shell home-mainline">
+  <section class="section section-first home-research-paths" id="research-paths" aria-labelledby="research-paths-title">
+    <div class="section-heading home-section-heading">
       <div>
-        <div class="section-kicker">{locale === 'zh' ? '同一研究任务的三种入口' : 'Three entries into the same research mission'}</div>
-        <h2 id="intent-title">{locale === 'zh' ? '学习、执行、比较，不再是三套互不相干的网站' : 'Learn, run, and compare are no longer disconnected products'}</h2>
+        <div class="section-kicker">{t('整个网站只有三条主线', 'Only three main paths')}</div>
+        <h2 id="research-paths-title">{t('先沿主线工作，遇到概念再下钻', 'Stay on the research path; drill down only when needed')}</h2>
+        <p>{t('不要先浏览数据库。先完成你当前的研究动作；模型目录、论文库和 Landscape 都是证据与查询工具。', 'Do not start by browsing databases. Finish the research action in front of you; models, papers, and Landscape are evidence and lookup tools.')}</p>
       </div>
     </div>
-    <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
+
+    <div class="intent-grid home-path-grid">
+      {primaryIntents.map((intent) => (
+        <article class="home-path-card">
+          <div class="home-path-card__topline"><span>{intent.index}</span><strong>{intent.title}</strong></div>
+          <h3>{intent.question}</h3>
+          <p>{intent.body}</p>
+          <div class="home-path-card__actions">
+            <a class="button button-primary" href={intent.href}>{intent.cta} →</a>
+            <a class="text-link" href={intent.secondaryHref}>{intent.secondaryLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
   </section>
 
-  <SeedUseCaseStrip locale={locale} area="home" />
-
-  <section class="section" aria-labelledby="paths-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.pathsKicker}</div><h2 id="paths-title">{m.v2.home.pathsTitle}</h2></div></div>
-    <div class="research-path-list">{researchPaths.map((path) => <div class="research-path-row"><span class="path-tag">{path.tag}</span><div><h3>{path.title}</h3><p>{path.body}</p></div></div>)}</div>
+  <section class="section home-continuity" aria-labelledby="continuity-title">
+    <div class="section-heading home-section-heading">
+      <div>
+        <div class="section-kicker">{t('一条连续的实验故事', 'One continuous experiment story')}</div>
+        <h2 id="continuity-title">{t('你不需要在“教程、数据库、工作台”之间重新理解网站', 'You should not have to relearn the site as tutorial, database, and workbench')}</h2>
+      </div>
+    </div>
+    <ol class="home-storyline">
+      <li><span>1</span><div><strong>{t('先复现', 'Reproduce')}</strong><p>{t('看懂 SEED，用论文给出的任务与证据建立 baseline。', 'Understand SEED and establish a baseline from its tasks and evidence.')}</p></div></li>
+      <li><span>2</span><div><strong>{t('再替换 evolution 机制', 'Change the evolution mechanism')}</strong><p>{t('模型、benchmark、prompt、seed、预算尽量不动，只把 SEED 的参数内化学习换成 OpenEvo 的外部演化。', 'Keep model, benchmark, prompt, seed, and budget fixed where possible; replace SEED parameter internalization with OpenEvo external evolution.')}</p></div></li>
+      <li><span>3</span><div><strong>{t('最后比较证据', 'Compare evidence')}</strong><p>{t('比较成功率、分数、轨迹、失败模式与计算成本，再决定 OpenEvo 应该怎样改。', 'Compare success, scores, trajectories, failure modes, and compute cost before deciding how OpenEvo should change.')}</p></div></li>
+    </ol>
   </section>
 
-  <section class="section" aria-labelledby="recent-changes-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.recentChangesKicker}</div><h2 id="recent-changes-title">{m.v2.home.recentChangesTitle}</h2></div><span class="muted">{m.v2.home.recentChangesNote}</span></div>
-    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据事件' : 'Data event') : m.v2.home.recentRelease}</small></div></li>)}</ol>
-  </section>
-
-  <section class="section" aria-labelledby="families-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.familiesKicker}</div><h2 id="families-title">{m.v2.home.familiesTitle}</h2></div><a class="text-link" href={localePath(locale, '/families/')}>{m.v2.home.familiesCta}</a></div>
-    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `当前代：${family.generation}。API/托管与开放权重分开发现和维护。` : `Current generation: ${family.generation}. Hosted/API and open-weight surfaces are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录当前开放权重旗舰' : 'No current open-weight flagship recorded')}</dd></div></dl></div>)}</div>
-  </section>
-
-  <details class="home-scenarios-advanced">
-    <summary>{locale === 'zh' ? '完成 SEED × OpenEvo 主线后，再看更多研究场景' : 'After the SEED × OpenEvo mainline, explore more research scenarios'}</summary>
-    <p class="muted">{m.v2.home.scenariosNote}</p>
-    <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
+  <details class="home-secondary-tools">
+    <summary>{t('高级工具与其他研究入口', 'Advanced tools and other research entries')}</summary>
+    <p>{t('当主线需要更多模型筛选、比较、证据状态或其他研究场景时再展开。它们不再与三条主线竞争首页注意力。', 'Expand this only when the mainline needs model filtering, comparison, evidence status, or other research scenarios. These tools no longer compete with the three primary paths.')}</p>
+    <SeedUseCaseStrip locale={locale} area="home" />
   </details>
 
-  <section class="section landscape-overview" aria-labelledby="overview-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.overviewKicker}</div><h2 id="overview-title">{m.v2.home.overviewTitle}</h2></div><a class="text-link" href={localePath(locale, '/landscape/')}>{m.v2.home.overviewCta}</a></div>
-    <div class="overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{m.v2.home.statModels}</span></div><div class="stat"><strong>{familyCount}</strong><span>{m.v2.home.statFamilies}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{m.v2.home.statOpenWeights}</span></div></div>
-    <p class="muted">{m.v2.home.overviewBody}</p>
-  </section>
+  {latestChange && (
+    <p class="home-data-freshness">
+      <span>{t('数据维护记录', 'Data maintenance')}</span>
+      <time datetime={latestChange.occurredAt}>{latestChange.occurredAt}</time>
+      <strong>{latestChange.entityId}</strong>
+    </p>
+  )}
 </div>
+
+<style>
+  .home-mainline { padding-bottom: clamp(3rem, 7vw, 6rem); }
+  .home-section-heading { max-width: 860px; }
+  .home-section-heading p { max-width: 70ch; margin: .8rem 0 0; color: var(--muted); line-height: 1.7; }
+  .home-path-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; }
+  .home-path-card { display: flex; min-width: 0; flex-direction: column; padding: clamp(1.15rem, 2vw, 1.65rem); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
+  .home-path-card__topline { display: flex; gap: .65rem; align-items: center; color: var(--accent); font-size: .8rem; font-weight: 800; letter-spacing: .04em; }
+  .home-path-card__topline span { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .home-path-card h3 { margin: 1.1rem 0 .65rem; font-size: clamp(1.15rem, 1.7vw, 1.45rem); line-height: 1.3; letter-spacing: -.02em; }
+  .home-path-card > p { margin: 0; color: var(--muted); line-height: 1.7; }
+  .home-path-card__actions { display: flex; flex-direction: column; align-items: flex-start; gap: .7rem; margin-top: auto; padding-top: 1.25rem; }
+  .home-continuity { border-top: 1px solid var(--line); }
+  .home-storyline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+  .home-storyline li { display: grid; grid-template-columns: auto 1fr; gap: .8rem; padding: 1rem 0; }
+  .home-storyline li > span { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); font: 800 .78rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .home-storyline strong { display: block; font-size: .95rem; }
+  .home-storyline p { margin: .35rem 0 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
+  .home-secondary-tools { margin-top: 2.25rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1rem 0; }
+  .home-secondary-tools > summary { cursor: pointer; font-weight: 800; }
+  .home-secondary-tools > p { max-width: 72ch; color: var(--muted); line-height: 1.65; }
+  .home-data-freshness { display: flex; flex-wrap: wrap; gap: .55rem; align-items: baseline; margin: 1rem 0 0; color: var(--muted); font-size: .75rem; }
+  .home-data-freshness span { font-weight: 800; color: var(--text); }
+  @media (max-width: 900px) { .home-path-grid, .home-storyline { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .home-path-card { border-radius: 16px; } .home-path-card__actions .button { width: 100%; text-align: center; } }
+</style>

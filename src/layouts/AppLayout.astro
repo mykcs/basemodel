@@ -2,8 +2,6 @@
 import Header from '../components/Header.astro';
 import ResearchMainline from '../components/ResearchMainline.astro';
 import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
-import SiteRoutePrimer from '../components/visual/SiteRoutePrimer.astro';
-import SeedOpenEvoMissionRibbon from '../components/research/SeedOpenEvoMissionRibbon.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
 import { getCollection } from 'astro:content';
@@ -104,11 +102,9 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {!isHomePage && !isMissionPage && <SeedOpenEvoMissionRibbon locale={locale} path={localeNeutralPath} />}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
       {!isHomePage && !isMissionPage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
       {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
-      {!isHomePage && !isMissionPage && <SiteRoutePrimer locale={locale} path={localeNeutralPath} />}
       <slot />
     </main>
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
