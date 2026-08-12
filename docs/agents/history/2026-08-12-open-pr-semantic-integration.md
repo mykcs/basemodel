@@ -66,3 +66,74 @@ Required before release:
 5. representative mission, reproduction, lab and legacy-runbook routes return successfully;
 6. final `main` Vercel Production deployment is READY and the public canonical site is verified;
 7. all worker PRs are shown as merged or explicitly closed as superseded by the integration release.
+
+## Actual release chain
+
+- Integration PR: [#131](https://github.com/mykcs/basemodel/pull/131)
+- Integration merge commit: `a53ff3ef3a9e1bfa5316b5295cded876f2d096a1`
+- Post-release sitemap corrective PR: [#132](https://github.com/mykcs/basemodel/pull/132)
+- Final corrective merge commit: `b6b481177f81d94a16c1e72a811b679c746649aa`
+
+The integration release passed the repository Gate and built 411 pages. Production was READY and the new routes returned successfully.
+
+## Post-release finding
+
+The first Production release proved that **route existence and build success are not discovery completeness**.
+
+The new SEED × OpenEvo research pages, OpenEvo reproduction guide, `/lab/`, and `/guide/today/` were built and live, but the pre-release static route list in `sitemap.xml` did not include them. This was not detected by checking the homepage, route HTTP status, or the generic build result alone.
+
+PR #132 corrected the omission by:
+
+- centralizing public static routes in `src/lib/sitemapRoutes.ts`;
+- adding bilingual mission, reproduction and lab routes;
+- keeping `/guide/today/` Chinese-only because no English route exists;
+- adding route coverage, duplicate-path and English-path tests;
+- re-verifying Production sitemap output after merge.
+
+This finding added metadata/discovery as an explicit conflict and acceptance class in the reusable playbook.
+
+## What worked
+
+### Separate ancestry from final behavior
+
+The integration preserved authorship and worker history without treating every worker outcome as current runtime authority. PR #116 is the clearest example: its history remains attributable, but its old homepage/CSS result does not overwrite the newer mission-first visual system.
+
+### Start from current `main`
+
+Beginning from current `main` preserved the latest Vercel, indexing, device-profile and validation contracts. Starting from an older stacked branch would have silently restored stale assumptions.
+
+### Resolve stacked work path by path
+
+The #121 → #125 → #128 chain contained compatible dependencies and overlapping ownership. Selecting compatible files and components by current intent was safer than accepting one branch wholesale.
+
+### Use one explicit release head
+
+The combined head made exact-head Gate/build/Preview evidence possible and avoided merging every worker PR independently into `main`.
+
+### Record worker-PR disposition explicitly
+
+Some stacked PRs did not naturally display the same merged state as direct-to-main PRs. Explicit comments and closure prevented duplicate release paths from remaining ambiguous.
+
+## What could have gone wrong
+
+- A clean Git merge could have restored old CSS or product hierarchy.
+- Historical Cloudflare-era policy could have overwritten current Vercel authority.
+- A dated old-Mac scenario could have become false current device truth.
+- Squashing the integration PR could have destroyed deliberately preserved ancestry.
+- A READY Production deployment could have been accepted without checking sitemap/discovery.
+- Worker PRs could have remained open and appeared unprocessed despite incorporation.
+
+## Durable lessons
+
+1. Freeze exact candidate heads and stack relations before integration.
+2. Establish current authority before resolving files.
+3. Treat semantic, research, device, provider and metadata conflicts as first-class, not only textual conflicts.
+4. Preserve attribution independently from deciding which outcome ships.
+5. Use one explicit integration head and exact-head acceptance evidence.
+6. Declare the required merge method when ancestry matters.
+7. Verify Production separately from Preview.
+8. Audit sitemap, robots, canonical/hreflang, navigation/search discovery and representative routes after release.
+9. Record every worker PR disposition explicitly.
+10. Use a focused corrective PR when a narrow post-release omission is discovered; do not reconstruct the whole release unnecessarily.
+
+The reusable procedure now lives in [`../current/multi-pr-semantic-integration-playbook.md`](../current/multi-pr-semantic-integration-playbook.md). Current provider/build-budget boundaries remain in [`../current/deployment-policy.md`](../current/deployment-policy.md).
