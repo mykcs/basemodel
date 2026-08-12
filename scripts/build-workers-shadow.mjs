@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const CURRENT_PRODUCTION_URL = 'https://basemodel.pages.dev';
+const CURRENT_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
 const buildDir = resolve('dist');
 
 const fail = (message) => {
@@ -11,18 +11,9 @@ const fail = (message) => {
 };
 
 const run = (command, args, env = process.env) => {
-  const result = spawnSync(command, args, {
-    env,
-    stdio: 'inherit',
-  });
-
-  if (result.error) {
-    fail(result.error.message);
-  }
-
-  if (result.status !== 0) {
-    fail(`${command} ${args.join(' ')} exited with status ${result.status ?? 'unknown'}`);
-  }
+  const result = spawnSync(command, args, { env, stdio: 'inherit' });
+  if (result.error) fail(result.error.message);
+  if (result.status !== 0) fail(`${command} ${args.join(' ')} exited with status ${result.status ?? 'unknown'}`);
 };
 
 console.log('Workers Static Assets shadow build');
@@ -38,23 +29,15 @@ run('npm', ['run', 'build'], {
 });
 
 const indexPath = resolve(buildDir, 'index.html');
-if (!existsSync(indexPath)) {
-  fail('dist/index.html does not exist after build');
-}
+if (!existsSync(indexPath)) fail('dist/index.html does not exist after build');
 
 const html = readFileSync(indexPath, 'utf8');
 const metaTags = html.match(/<meta\b[^>]*>/gi) ?? [];
 const hasRobotsNoindex = metaTags.some(
   (tag) => /name=["']robots["']/i.test(tag) && /noindex/i.test(tag),
 );
-
-if (!hasRobotsNoindex) {
-  fail('shadow artifact is missing a robots noindex meta tag');
-}
-
-if (!html.includes(CURRENT_PRODUCTION_URL)) {
-  fail(`shadow artifact does not retain current Production identity: ${CURRENT_PRODUCTION_URL}`);
-}
+if (!hasRobotsNoindex) fail('shadow artifact is missing a robots noindex meta tag');
+if (!html.includes(CURRENT_PRODUCTION_URL)) fail(`shadow artifact does not retain current Production identity: ${CURRENT_PRODUCTION_URL}`);
 
 console.log('\nWorkers shadow artifact ready');
 console.log(`WORKERS_SHADOW_BUILD_DIR=${buildDir}`);
