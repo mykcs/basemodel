@@ -59,6 +59,21 @@ describe('audience copy audit', () => {
     expect(enGuide).not.toContain('profiling on the four 3090s');
   });
 
+  it('requires concrete actor-action-object titles instead of abstract packaging', () => {
+    const hero = fs.readFileSync(path.join(root, 'src/components/research/SeedOpenEvoMissionHero.astro'), 'utf8');
+    const standard = fs.readFileSync(path.join(root, 'docs/agents/current/audience-centered-technical-copy.md'), 'utf8');
+    const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
+
+    expect(hero).toContain('用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验');
+    expect(hero).toContain('Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo');
+    expect(hero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
+    expect(hero).not.toContain('Use SEED’s two agent benchmarks to evaluate and improve OpenEvo');
+    expect(standard).toContain('谁用什么做什么');
+    expect(standard).toContain('把框架与基准讲成一场可追踪的对话');
+    expect(auditSource).toContain('COPY-ABSTRACT-PACKAGING');
+    expect(auditSource).toContain('COPY-ACTION-TITLE-002');
+  });
+
   it('reports contextual candidates with actionable evidence', () => {
     const findings = scanAudienceCopy(root);
     expect(findings.length).toBeGreaterThan(0);

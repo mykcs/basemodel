@@ -15,60 +15,60 @@ const chain = [
   {
     eyebrow: t('模型', 'Model'),
     title: 'Qwen2.5-3B-Instruct',
-    body: t('先明确 checkpoint、参数、精度与运行边界。', 'Identify the checkpoint, parameters, precision, and runtime boundary.'),
+    body: t('确认模型版本、精度和运行设置。', 'Confirm the model revision, precision, and runtime settings.'),
     href: p('/research/seed-openevo/base-model/'),
   },
   {
-    eyebrow: t('框架', 'Frameworks'),
-    title: 'SEED ↔ OpenEvo',
-    body: t('比较两种自进化机制究竟更新什么对象。', 'Compare what each self-evolving mechanism actually updates.'),
+    eyebrow: t('方法', 'Methods'),
+    title: t('SEED 与 OpenEvo', 'SEED and OpenEvo'),
+    body: t('分别记录两种方法在任务结束后更新了什么。', 'Record what each method changes after a task finishes.'),
     href: p('/research/seed-openevo/loops/'),
   },
   {
-    eyebrow: t('基准', 'Benchmarks'),
-    title: 'ALFWorld + WebShop',
-    body: t('在同一实验协议下观察长程交互与失败模式。', 'Observe long-horizon interaction and failure modes under one protocol.'),
+    eyebrow: t('环境', 'Environments'),
+    title: t('ALFWorld 与 WebShop', 'ALFWorld and WebShop'),
+    body: t('运行相同任务，并保存每一步动作和环境反馈。', 'Run the same tasks and save every action and environment response.'),
     href: p('/research/seed-openevo/benchmarks/'),
   },
   {
-    eyebrow: t('证据', 'Evidence'),
-    title: t('轨迹、分数与失败', 'Trajectories, scores, failures'),
-    body: t('区分环境可用、真实动作、演化与可比结果。', 'Separate environment readiness, real action, evolution, and comparable results.'),
+    eyebrow: t('结果', 'Results'),
+    title: t('分数、轨迹与失败原因', 'Scores, trajectories, and failures'),
+    body: t('保存成功率、任务分数、无效动作、循环和结束原因。', 'Save success, task scores, invalid actions, loops, and termination reasons.'),
     href: p('/research/seed-openevo/results/'),
   },
   {
-    eyebrow: t('反馈', 'Feedback'),
-    title: t('改进 OpenEvo', 'Improve OpenEvo'),
-    body: t('把数据集特性与重复故障转成框架设计假设。', 'Turn benchmark properties and recurring failures into framework hypotheses.'),
+    eyebrow: t('改动', 'Change'),
+    title: t('修改 OpenEvo', 'Change OpenEvo'),
+    body: t('根据重复失败提出一个改动，再用相同条件重新运行。', 'Make one change based on repeated failures, then rerun under the same conditions.'),
     href: p('/research/seed-openevo/'),
   },
 ];
 ---
 <section class:list={['mission-hero', compact && 'mission-hero--compact']} aria-labelledby="mission-title">
   <div class="mission-hero__copy">
-    <div class="mission-hero__eyebrow">{t('当前研究任务', 'Current research mission')}</div>
-    <h1 id="mission-title">{t('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo', 'Use SEED’s two agent benchmarks to evaluate and improve OpenEvo')}</h1>
+    <div class="mission-hero__eyebrow">{t('OpenEvo × SEED 实验', 'OpenEvo × SEED experiment')}</div>
+    <h1 id="mission-title">{t('用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验', 'Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo')}</h1>
     <p class="mission-hero__lede">
       {t(
-        '这个网站把 Base Model、SEED 方法、OpenEvo 演化机制、ALFWorld / WebShop 设置、复现步骤和结果证据组织成一条研究路径。目标不是浏览最多的模型，而是得到一个可复核的框架改进结论。',
-        'This site connects Base Models, the SEED method, OpenEvo evolution, ALFWorld / WebShop protocols, reproduction steps, and result evidence into one research path. The goal is not to browse the most models; it is to reach an auditable framework-improvement conclusion.',
+        '先按 SEED 的设置跑通 ALFWorld 和 WebShop，再在相同模型、提示词、随机种子和计算预算下运行 OpenEvo。页面会保存动作、分数、失败轨迹和更新结果，帮助你判断 OpenEvo 哪些地方需要修改。',
+        'First run ALFWorld and WebShop with the SEED setup, then run OpenEvo with the same model, prompts, random seeds, and compute budget. The site keeps actions, scores, failed trajectories, and update results so you can decide what to change in OpenEvo.',
       )}
     </p>
     <div class="mission-hero__actions">
-      <a class="button button-primary" href={p('/research/seed-openevo/')}>{t('打开研究总览 →', 'Open the research map →')}</a>
-      <a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('直接进入复现', 'Start the reproduction')}</a>
+      <a class="button button-primary" href={p('/research/seed-openevo/')}>{t('查看实验步骤 →', 'View the experiment steps →')}</a>
+      <a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('直接开始复现', 'Start the reproduction')}</a>
     </div>
-    <div class="mission-hero__modes" aria-label={t('三种阅读方式', 'Three reading modes')}>
-      <a href={p('/research/seed-openevo/base-model/')}><strong>{t('先学懂', 'Learn')}</strong><span>{t('模型、方法、基准', 'model, methods, benchmarks')}</span></a>
-      <a href={p('/guide/openevo-webshop-alfworld/')}><strong>{t('直接执行', 'Run')}</strong><span>{t('环境、代码、真实 GPU 证据', 'environment, code, real GPU evidence')}</span></a>
-      <a href={p('/research/seed-openevo/loops/')}><strong>{t('比较改进', 'Compare')}</strong><span>{t('循环、变量、失败与设计假设', 'loops, controls, failures, design hypotheses')}</span></a>
+    <div class="mission-hero__modes" aria-label={t('三种使用方式', 'Three ways to use the site')}>
+      <a href={p('/research/seed-openevo/base-model/')}><strong>{t('了解实验', 'Understand the experiment')}</strong><span>{t('模型、SEED、OpenEvo 与两个环境', 'the model, SEED, OpenEvo, and both environments')}</span></a>
+      <a href={p('/guide/openevo-webshop-alfworld/')}><strong>{t('开始运行', 'Run the experiment')}</strong><span>{t('环境、代码、GPU 与结果文件', 'environment, code, GPU, and result files')}</span></a>
+      <a href={p('/research/seed-openevo/loops/')}><strong>{t('比较结果', 'Compare results')}</strong><span>{t('分数、轨迹、失败和改动', 'scores, trajectories, failures, and changes')}</span></a>
     </div>
   </div>
 
   <figure class="mission-chain" aria-labelledby="mission-chain-caption">
     <figcaption id="mission-chain-caption">
-      <span>{t('第一性研究链', 'First-principles research chain')}</span>
-      <strong>{t('模型不是结论；模型进入框架、环境与评测之后才产生研究证据。', 'A model is not a conclusion; evidence appears only after it enters a framework, environment, and evaluation protocol.')}</strong>
+      <span>{t('实验顺序', 'Experiment order')}</span>
+      <strong>{t('先固定模型和实验条件，再运行两个环境、保存结果，并比较 SEED 与 OpenEvo。', 'Fix the model and experiment settings first, then run both environments, save the results, and compare SEED with OpenEvo.')}</strong>
     </figcaption>
     <ol>
       {chain.map((node, index) => (
@@ -83,8 +83,8 @@ const chain = [
       ))}
     </ol>
     <div class="mission-chain__benchmarks" aria-label={t('两个实验环境', 'Two experimental environments')}>
-      <span><b>ALFWorld</b>{t('具身文本任务 · 家族成功率', 'embodied text tasks · family success rates')}</span>
-      <span><b>WebShop</b>{t('网页购物任务 · 归一化分数 + 精确成功率', 'web shopping · normalized score + exact success')}</span>
+      <span><b>ALFWorld</b>{t('具身文本任务 · 按任务家族统计成功率', 'embodied text tasks · success rates by task family')}</span>
+      <span><b>WebShop</b>{t('网页购物任务 · 归一化分数与精确成功率', 'web shopping · normalized score and exact success')}</span>
     </div>
   </figure>
 </section>

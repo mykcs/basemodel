@@ -17,12 +17,13 @@ type Rule = {
 };
 
 const candidateRules: Rule[] = [
-  { id: 'COPY-NEGATIVE-HEADING', pattern: /(?:^|[>"'`])\s*(?:不要|不是|当前不再|不再)[^\n<]{0,100}/g, reason: 'Negative-first copy may need reader context before the warning.' },
+  { id: 'COPY-NEGATIVE-HEADING', pattern: /(?:^|[>"'`])\s*(?:不要|不是|当前不再|不再)[^\n<]{0,100}/g, reason: 'Negative-first copy may nedd reader context before the warning.' },
   { id: 'COPY-RELATIVE-TIME', pattern: /今天|明天|昨天|之前|这次|刚刚/g, reason: 'Relative time needs a visible date, release, or experiment reference.' },
   { id: 'COPY-PROJECT-TERM', pattern: /RTX6|\bP[0-3]\b|wheelhouse|artifact|API snapshot|successor revision|fallback/gi, reason: 'Project terminology should be explained at first use.' },
   { id: 'COPY-SHARED-HARDWARE', pattern: /4\s*[×x]\s*(?:RTX\s*)?3090|4\s*[×x]\s*24GB|旧\s*MacBook|新\s*MacBook/gi, reason: 'Hardware in shared copy must be labeled as a project example, not a universal prerequisite.' },
   { id: 'COPY-CHAT-TONE', pattern: /我们刚才|又失败|正确修法|这就是我们踩过的坑/g, reason: 'Chat or incident-history language should not lead the public success path.' },
   { id: 'COPY-LEGACY-POSITIONING', pattern: /智能体基础模型选择地图|Agent Foundation Model Atlas|通用模型选择与论文采用地图/g, reason: 'Legacy product positioning may conflict with the SEED × OpenEvo research mission.' },
+  { id: 'COPY-ABSTRACT-PACKAGING', pattern: /研究任务|研究主线|研究路径|研究地图|第一性研究链|框架改进结论|可核验的路径|可追踪的对话|证据链|讲成一场对话/g, reason: 'Abstract packaging may hide who does what to which concrete object.' },
   { id: 'COPY-ZH-EN-SENTENCE', pattern: /[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g, reason: 'A Chinese surface may be exposing an unexplained full English sentence.' },
 ];
 
@@ -97,6 +98,10 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   for (const file of discoverAudienceCopySources(root)) {
     add(file, 'COPY-NAME-001', '复现 C', 'The OpenEvo guide must never use the erroneous Reproduction C name.');
     add(file, 'COPY-NAME-001', 'Reproduction C', 'The OpenEvo guide must never use the erroneous Reproduction C name.');
+    add(file, 'COPY-ACTION-TITLE-001', '用 SEED 的两个 Agent 基准，检验并改进 OpenEvo', 'The primary mission title must name the tool, action, and concrete experiments.');
+    add(file, 'COPY-ACTION-TITLE-001', 'Use SEED’s two agent benchmarks to evaluate and improve OpenEvo', 'The primary mission title must name the tool, action, and concrete experiments.');
+    add(file, 'COPY-ACTION-TITLE-002', '把框架与基准讲成一场可追踪的对话', 'A heading must state the concrete interaction or result instead of packaging it as an abstract conversation.');
+    add(file, 'COPY-ACTION-TITLE-002', 'Turn frameworks and benchmarks into a traceable conversation', 'A heading must state the concrete interaction or result instead of packaging it as an abstract conversation.');
   }
 
   const exactBanned = [
@@ -149,6 +154,21 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   const guide = fs.readFileSync(path.join(root, 'src/components/OpenEvoSeedBenchmarksGuide.astro'), 'utf8');
   for (const title of ['OpenEvo × WebShop / ALFWorld 复现指南', 'OpenEvo × WebShop / ALFWorld Reproduction Guide']) {
     if (!guide.includes(title)) failures.push({ file: 'src/components/OpenEvoSeedBenchmarksGuide.astro', line: 1, ruleId: 'COPY-I18N-001', snippet: title, reason: 'The canonical guide title must exist in both locales.', strict: true });
+  }
+
+  const missionHeroPath = 'src/components/research/SeedOpenEvoMissionHero.astro';
+  const missionHero = fs.readFileSync(path.join(root, missionHeroPath), 'utf8');
+  for (const title of [
+    '用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验',
+    'Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo',
+  ]) {
+    if (!missionHero.includes(title)) failures.push({ file: missionHeroPath, line: 1, ruleId: 'COPY-ACTION-TITLE-003', snippet: title, reason: 'The bilingual mission title must name OpenEvo, the reproduction action, SEED, ALFWorld, and WebShop.', strict: true });
+  }
+
+  const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
+  const standard = fs.readFileSync(path.join(root, standardPath), 'utf8');
+  for (const required of ['谁用什么做什么', '用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验', '把框架与基准讲成一场可追踪的对话']) {
+    if (!standard.includes(required)) failures.push({ file: standardPath, line: 1, ruleId: 'COPY-STANDARD-001', snippet: required, reason: 'The durable copy standard must preserve the concrete-action rule and both canonical examples.', strict: true });
   }
 
   return failures;

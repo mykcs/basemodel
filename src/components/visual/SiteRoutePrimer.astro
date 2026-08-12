@@ -27,184 +27,184 @@ const visible = !isOpenEvo && (isHome || isGuide || isModels || isModelDetail ||
 
 const siteLayers = [
   {
-    label: t('供应层', 'Supply layer'),
-    title: t('模型、家族与代际', 'Models, families, generations'),
-    body: t('先辨认具体 checkpoint、开放性、运行时与硬件边界。', 'Identify the concrete checkpoint, access, runtime, and hardware boundary.'),
-    meta: t('模型 · 家族 · Landscape', 'Models · Families · Landscape'),
+    label: t('先看模型', 'Start with the model'),
+    title: t('具体 checkpoint 与运行条件', 'Concrete checkpoint and runtime settings'),
+    body: t('确认模型版本、权重访问、精度、运行时和硬件要求。', 'Confirm revision, weight access, precision, runtime, and hardware requirements.'),
+    meta: t('模型 · 家族 · 图表', 'Models · Families · Chart'),
     href: p('/models/'),
   },
   {
-    label: t('方法层', 'Method layer'),
-    title: t('论文、角色与基准', 'Papers, roles, benchmarks'),
-    body: t('再看模型在方法中扮演什么角色、什么变量会被更新。', 'See what role each model plays and which variables the method updates.'),
+    label: t('再看论文', 'Then read the paper'),
+    title: t('模型在论文里做什么', 'What the model does in the paper'),
+    body: t('确认模型角色、任务环境、训练步骤和真正被更新的对象。', 'Confirm the model role, task environments, training steps, and the object that is actually updated.'),
     meta: t('论文 · 指南 · 复现', 'Papers · Guide · Reproduction'),
     href: p('/papers/'),
   },
   {
-    label: t('决策层', 'Decision layer'),
-    title: t('约束、比较与选择', 'Constraints, comparison, choice'),
-    body: t('把论文目标、资源和访问方式变成候选与研究影响。', 'Turn paper goals, resources, and access constraints into candidates and impacts.'),
+    label: t('开始实验', 'Run the experiment'),
+    title: t('用资源和任务筛选可运行方案', 'Filter runnable plans by resources and task'),
+    body: t('填写 GPU、网络、权重和训练要求，再选择能运行的模型。', 'Enter GPU, network, weight, and training requirements, then choose a model that can run.'),
     meta: t('工作台 · 对比', 'Workspace · Compare'),
     href: p('/workspace/'),
   },
   {
-    label: t('证据层', 'Evidence layer'),
-    title: t('来源、未知与新鲜度', 'Sources, unknowns, freshness'),
-    body: t('最后核对每个判断能否回到来源，以及哪些事实仍然未知。', 'Verify which claims map to sources and which facts remain unknown.'),
+    label: t('核对结果', 'Check the results'),
+    title: t('确认每个数字和结论来自哪里', 'Confirm where every number and conclusion comes from'),
+    body: t('查看来源、核验日期、未知字段和真机运行记录。', 'Inspect sources, check dates, unknown fields, and measured run records.'),
     meta: t('数据状态 · 方法说明', 'Data status · Methodology'),
     href: p('/data-status/'),
   },
 ];
 
 const siteRoute = [
-  { title: t('理解', 'Understand'), body: t('建立 Agent 与模型心智结构', 'Build the agent/model mental model'), href: p('/guide/') },
-  { title: t('探索', 'Explore'), body: t('浏览模型、家族与论文', 'Browse models, families, and papers'), href: p('/models/') },
-  { title: t('比较', 'Compare'), body: t('把差异翻译成研究影响', 'Translate differences into research impact'), href: p('/compare/') },
-  { title: t('决策', 'Decide'), body: t('在任务约束下形成候选', 'Form candidates under task constraints'), href: p('/workspace/') },
-  { title: t('核验', 'Verify'), body: t('检查来源、未知与数据状态', 'Check sources, unknowns, and data health'), href: p('/data-status/') },
+  { title: t('看懂实验', 'Understand the experiment'), body: t('模型、Agent、SEED 与 OpenEvo', 'model, agent, SEED, and OpenEvo'), href: p('/guide/') },
+  { title: t('查模型和论文', 'Look up models and papers'), body: t('找到具体 checkpoint 与论文设置', 'find the checkpoint and paper setup'), href: p('/models/') },
+  { title: t('比较候选', 'Compare candidates'), body: t('查看哪些差异会改变实验', 'see which differences change the experiment'), href: p('/compare/') },
+  { title: t('填写实际资源', 'Enter actual resources'), body: t('GPU、网络、权重和训练条件', 'GPU, network, weights, and training setup'), href: p('/workspace/') },
+  { title: t('核对来源', 'Check sources'), body: t('确认数字、未知项与核验日期', 'confirm numbers, unknowns, and check dates'), href: p('/data-status/') },
 ];
 
 const siteEvidence = [
-  { level: t('目录记录', 'Catalog record'), proof: t('这个模型或论文被结构化记录', 'The model or paper is structurally recorded'), limit: t('不等于关键字段已核验', 'Does not mean key fields are verified') },
-  { level: t('字段级证据', 'Field-level evidence'), proof: t('具体事实连接到支持来源', 'A concrete fact maps to a supporting source'), limit: t('不等于适合当前任务', 'Does not mean it fits the current task') },
-  { level: t('任务内解释', 'Task-conditioned interpretation'), proof: t('已结合资源、角色和复现约束', 'Resources, roles, and reproduction constraints are applied'), limit: t('不等于已有最终选择', 'Does not mean a final choice exists') },
-  { level: t('可复核决策', 'Auditable decision'), proof: t('候选、风险、未知与来源被一起导出', 'Candidates, risks, unknowns, and sources are exported together'), limit: t('不等于模型具有普遍排名', 'Does not create a universal model ranking'), status: 'strong' as const },
+  { level: t('已收录', 'Recorded'), proof: t('网站中已有这个模型或论文记录', 'The model or paper has a site record'), limit: t('关键字段可能还没有来源', 'Key fields may still lack sources') },
+  { level: t('有来源', 'Source-backed'), proof: t('具体字段连接到支持它的来源', 'A concrete field links to a supporting source'), limit: t('还不代表适合本次实验', 'It may still not fit this experiment') },
+  { level: t('能用于本次实验', 'Fits this experiment'), proof: t('已经检查模型角色、资源和复现要求', 'Model role, resources, and reproduction needs have been checked'), limit: t('还没有记录最终选择理由', 'The final choice has not yet been recorded') },
+  { level: t('已保存选择理由', 'Decision recorded'), proof: t('候选、风险、未知项和来源一起导出', 'Candidates, risks, unknowns, and sources are exported together'), limit: t('只回答本次实验，不是通用排行榜', 'It answers this experiment, not a universal ranking'), status: 'strong' as const },
 ];
 
 const pageConfig = (() => {
   if (isGuide) return {
     kind: 'guide',
-    eyebrow: t('知识结构 + 实验路径', 'Knowledge structure + experiment path'),
-    title: t('先看懂循环，再进入真实复现', 'Understand the loop, then enter a real reproduction'),
-    lede: t('概念不是词典条目：它们先组成 Agent 循环，再映射到 SEED 的环境、rollout、训练与评测。', 'Concepts are not glossary entries: they form the agent loop, then map into SEED environments, rollouts, training, and evaluation.'),
+    eyebrow: t('先学概念，再跑实验', 'Learn the concepts, then run the experiment'),
+    title: t('看懂 Agent 循环后，开始复现 SEED', 'Understand the agent loop, then reproduce SEED'),
+    lede: t('先看模型怎样观察环境、选择动作、获得 reward，再把同一过程对应到 SEED 的 rollout、训练和评测。', 'See how the model observes the environment, chooses actions, and receives reward, then map the same process to SEED rollouts, training, and evaluation.'),
     route: [
-      { title: 'Checkpoint / policy', body: t('产生下一步动作', 'Produces the next action'), href: '#agent-to-seed' },
-      { title: t('Action / tool', 'Action / tool'), body: t('作用于环境', 'Acts on the environment'), href: '#agent-to-seed' },
-      { title: t('Observation', 'Observation'), body: t('返回新的状态', 'Returns a new state'), href: '#agent-to-seed' },
-      { title: t('Trajectory / reward', 'Trajectory / reward'), body: t('形成学习证据', 'Forms learning evidence'), href: '#agent-to-seed' },
-      { title: t('Update', 'Update'), body: t('SFT / RL / 自进化', 'SFT / RL / self-evolution'), href: '#seed-reproduction' },
+      { title: 'Checkpoint / policy', body: t('根据上下文产生下一步动作', 'Produces the next action from context'), href: '#agent-to-seed' },
+      { title: t('Action / tool', 'Action / tool'), body: t('对环境执行一个动作', 'Performs an action in the environment'), href: '#agent-to-seed' },
+      { title: t('Observation', 'Observation'), body: t('把新的环境状态返回给模型', 'Returns the new environment state to the model'), href: '#agent-to-seed' },
+      { title: t('Trajectory / reward', 'Trajectory / reward'), body: t('保存完整过程并判断结果', 'Saves the full run and scores the outcome'), href: '#agent-to-seed' },
+      { title: t('Update', 'Update'), body: t('用 SFT、RL 或演化更新后续行为', 'Changes later behavior through SFT, RL, or evolution'), href: '#seed-reproduction' },
     ],
     secondary: [
-      { title: t('理解', 'Understand'), body: t('概念与角色', 'Concepts and roles'), href: '#agent-to-seed' },
-      { title: t('准备', 'Prepare'), body: t('机器、代码、资产', 'Machine, code, assets'), href: '#seed-reproduction' },
-      { title: t('环境', 'Environment'), body: 'ALFWorld / WebShop', href: '#seed-reproduction' },
-      { title: t('Rollout', 'Rollout'), body: t('真实交互轨迹', 'Real interaction trajectories'), href: '#seed-reproduction' },
-      { title: t('训练', 'Train'), body: 'SFT → RL / GRPO', href: '#seed-reproduction' },
-      { title: t('评测', 'Evaluate'), body: t('证据与可比性', 'Evidence and comparability'), href: '#seed-reproduction' },
+      { title: t('理解概念', 'Understand concepts'), body: t('模型、环境、动作与 reward', 'model, environment, action, and reward'), href: '#agent-to-seed' },
+      { title: t('准备材料', 'Prepare assets'), body: t('机器、代码、模型和数据', 'machine, code, model, and data'), href: '#seed-reproduction' },
+      { title: t('跑通环境', 'Bring up environments'), body: 'ALFWorld / WebShop', href: '#seed-reproduction' },
+      { title: t('保存轨迹', 'Save trajectories'), body: t('记录每一步真实交互', 'record every real interaction step'), href: '#seed-reproduction' },
+      { title: t('运行训练', 'Run training'), body: 'SFT → RL / GRPO', href: '#seed-reproduction' },
+      { title: t('比较结果', 'Compare results'), body: t('检查分数、失败与公平性', 'check scores, failures, and fairness'), href: '#seed-reproduction' },
     ],
   };
   if (isModels || isModelDetail) return {
     kind: isModelDetail ? 'model-detail' : 'models',
-    eyebrow: t('五个阅读镜头', 'Five reading lenses'),
-    title: isModelDetail ? t('先确认 checkpoint 能否进入实验，再解释参数规模', 'Confirm experiment fit before interpreting parameter scale') : t('筛选模型前，先知道自己在筛什么', 'Before filtering models, know what you are filtering'),
-    lede: t('同名家族、API 产品、开放权重和具体 checkpoint 不是同一个对象。', 'A family name, API product, open weights, and a concrete checkpoint are not the same object.'),
+    eyebrow: t('查看模型时按这五项检查', 'Check these five items for each model'),
+    title: isModelDetail ? t('确认这个 checkpoint 能否运行你的实验', 'Confirm that this checkpoint can run your experiment') : t('按实验要求筛选具体 checkpoint', 'Filter concrete checkpoints using the experiment requirements'),
+    lede: t('家族名、API 产品、开放权重和具体 checkpoint 是不同对象；实验必须记录真正运行的版本。', 'A family name, API product, open weights, and a concrete checkpoint are different objects; the experiment must record the exact version it runs.'),
     route: [
-      { title: t('身份', 'Identity'), body: t('家族、代际、checkpoint', 'Family, generation, checkpoint'), href: isModelDetail ? '#research-summary' : undefined },
-      { title: t('访问', 'Access'), body: t('产品、API、权重、基座', 'Product, API, weights, base'), href: isModelDetail ? '#access-openness' : undefined },
-      { title: t('适配', 'Adapt'), body: t('推理、LoRA、SFT、RL', 'Inference, LoRA, SFT, RL'), href: isModelDetail ? '#training-runtime' : undefined },
-      { title: t('资源', 'Resources'), body: t('运行时与硬件档位', 'Runtime and hardware tier'), href: isModelDetail ? '#hardware' : undefined },
-      { title: t('证据', 'Evidence'), body: t('来源、版本与未知', 'Sources, revisions, unknowns'), href: isModelDetail ? '#evidence' : undefined },
+      { title: t('具体版本', 'Exact version'), body: t('家族、代际、checkpoint', 'family, generation, checkpoint'), href: isModelDetail ? '#research-summary' : undefined },
+      { title: t('怎样获取', 'How to access it'), body: t('产品、API、权重、基座', 'product, API, weights, base'), href: isModelDetail ? '#access-openness' : undefined },
+      { title: t('怎样训练', 'How to train it'), body: t('推理、LoRA、SFT、RL', 'inference, LoRA, SFT, RL'), href: isModelDetail ? '#training-runtime' : undefined },
+      { title: t('需要什么机器', 'Required hardware'), body: t('运行时与硬件档位', 'runtime and hardware tier'), href: isModelDetail ? '#hardware' : undefined },
+      { title: t('来源是否完整', 'Source coverage'), body: t('来源、revision 与未知项', 'sources, revision, unknowns'), href: isModelDetail ? '#evidence' : undefined },
     ],
   };
   if (isFamilies) return {
     kind: 'families',
-    eyebrow: t('层级，不是排行榜', 'Hierarchy, not a leaderboard'),
-    title: t('从厂商名走到可运行的具体模型状态', 'Move from vendor name to a runnable model state'),
-    lede: t('代际名称由厂商定义，不要强行补成连续的第 1、2、3 代。', 'Generation names are vendor-defined; do not force them into a continuous 1/2/3 sequence.'),
+    eyebrow: t('从厂商找到具体模型', 'Move from vendor to concrete model'),
+    title: t('按厂商、家族、代际找到可运行的 checkpoint', 'Find a runnable checkpoint by vendor, family, and generation'),
+    lede: t('代际名称按厂商公开说法记录，不自行补成连续编号；真正进入实验的是最后的具体 checkpoint。', 'Generation names follow the vendor’s published terminology rather than invented numbering; the experiment ultimately runs a concrete checkpoint.'),
     layers: [
-      { label: '01', title: t('厂商', 'Vendor'), body: t('发布和维护多个产品线', 'Publishes and maintains several product lines') },
-      { label: '02', title: t('家族', 'Family'), body: t('共享命名、技术路线或产品身份', 'Shares naming, technical lineage, or product identity') },
-      { label: '03', title: t('官方代际', 'Official generation'), body: t('按厂商公开口径记录', 'Recorded using the vendor’s own terminology') },
-      { label: '04', title: t('具体 checkpoint', 'Concrete checkpoint'), body: t('真正进入推理或训练的对象', 'The object that actually enters inference or training') },
+      { label: '01', title: t('厂商', 'Vendor'), body: t('发布和维护多个产品线', 'Publishes and maintains product lines') },
+      { label: '02', title: t('家族', 'Family'), body: t('共享命名和技术路线', 'Shares naming and technical lineage') },
+      { label: '03', title: t('官方代际', 'Official generation'), body: t('使用厂商公开的代际名称', 'Uses the vendor’s published generation name') },
+      { label: '04', title: t('具体 checkpoint', 'Concrete checkpoint'), body: t('真正下载、调用或训练的版本', 'The version actually downloaded, called, or trained') },
     ],
   };
   if (isLandscape) return {
     kind: 'landscape',
-    eyebrow: t('先学会读图', 'Learn how to read the map'),
-    title: t('每个视觉变量都代表一个研究维度', 'Every visual variable represents a research dimension'),
-    lede: t('图形是供应层的总览，不是综合性能排名。未知参数不会被画成 0。', 'The chart is a supply-layer overview, not a global performance ranking. Unknown parameters are never plotted as zero.'),
+    eyebrow: t('图表怎么看', 'How to read the chart'),
+    title: t('横轴是时间，纵轴是硬件，点的大小是参数量', 'X is release time, Y is hardware tier, and point size is parameter scale'),
+    lede: t('形状表示 Dense 或 MoE，边框表示证据状态；图表不把这些信息合成一个性能总排名。', 'Shape shows Dense or MoE and the border shows evidence status; the chart does not combine them into one performance ranking.'),
     route: [
-      { title: 'X', body: t('发布时间', 'Release time'), meta: t('越右越新', 'Newer to the right') },
-      { title: 'Y', body: t('推理硬件档位', 'Inference hardware tier'), meta: t('资源门槛', 'Resource threshold') },
-      { title: t('大小', 'Size'), body: t('参数规模', 'Parameter scale'), meta: t('未知值用固定小点', 'Unknown uses a fixed small point') },
-      { title: t('形状', 'Shape'), body: 'Dense / MoE', meta: t('架构类别', 'Architecture class') },
-      { title: t('边框', 'Border'), body: t('证据状态', 'Evidence state'), meta: t('强弱与待核验', 'Strength and pending checks') },
+      { title: 'X', body: t('发布时间', 'Release time'), meta: t('越右发布时间越晚', 'Later releases are farther right') },
+      { title: 'Y', body: t('推理硬件档位', 'Inference hardware tier'), meta: t('越高通常需要更多资源', 'Higher usually means more resources') },
+      { title: t('大小', 'Size'), body: t('参数规模', 'Parameter scale'), meta: t('未知参数使用固定小点', 'Unknown parameters use a fixed small point') },
+      { title: t('形状', 'Shape'), body: 'Dense / MoE', meta: t('模型架构类别', 'Model architecture class') },
+      { title: t('边框', 'Border'), body: t('证据状态', 'Evidence status'), meta: t('已核验、部分或待核验', 'Verified, partial, or pending') },
     ],
   };
   if (isPapers || isPaperDetail) return {
     kind: isPaperDetail ? 'paper-detail' : 'papers',
-    eyebrow: t('论文不是标题列表', 'Papers are not a title list'),
-    title: isPaperDetail ? t('把这篇论文拆成方法、角色、基准与复现条件', 'Decompose this paper into method, roles, benchmarks, and reproduction conditions') : t('按研究问题和方法结构发现论文', 'Discover papers through research questions and method structure'),
-    lede: t('“使用了某模型”信息不足；模型在论文中扮演的角色和是否更新权重更重要。', '“Uses a model” is insufficient; the model role and whether its weights change matter more.'),
+    eyebrow: t('按实验内容看论文', 'Read papers by experiment content'),
+    title: isPaperDetail ? t('查看这篇论文使用的方法、模型、环境和复现条件', 'See the method, models, environments, and reproduction setup used by this paper') : t('按任务、方法和环境查找论文', 'Find papers by task, method, and environment'),
+    lede: t('仅知道论文“用了某模型”还不够；还要确认模型角色、是否更新权重，以及在哪些环境中评测。', 'Knowing that a paper “uses a model” is not enough; confirm the model role, whether weights change, and which environments are evaluated.'),
     route: [
-      { title: t('问题', 'Question'), body: t('论文要解决什么', 'What the paper tries to solve'), href: isPaperDetail ? '#paper-method-summary' : undefined },
-      { title: t('方法', 'Method'), body: t('什么循环或对象被改变', 'Which loop or object changes'), href: isPaperDetail ? '#paper-overview' : undefined },
-      { title: t('模型角色', 'Model roles'), body: t('actor / reflector / teacher…', 'actor / reflector / teacher…'), href: isPaperDetail ? '#paper-models' : undefined },
-      { title: t('基准', 'Benchmarks'), body: t('在哪些环境上验证', 'Where the method is evaluated'), href: isPaperDetail ? '#paper-overview' : undefined },
-      { title: t('复现', 'Reproduce'), body: t('严格 / 方法 / 现代化', 'Strict / method / modern'), href: isPaperDetail ? '#paper-reproduce' : undefined },
-      { title: t('证据', 'Evidence'), body: t('代码、权重、配置、环境', 'Code, weights, config, environment') },
+      { title: t('要解决什么', 'Problem'), body: t('论文要解决的具体问题', 'the concrete problem the paper addresses'), href: isPaperDetail ? '#paper-method-summary' : undefined },
+      { title: t('怎样做', 'Method'), body: t('循环如何运行、什么对象改变', 'how the loop runs and what changes'), href: isPaperDetail ? '#paper-overview' : undefined },
+      { title: t('模型做什么', 'Model role'), body: t('actor / reflector / teacher…', 'actor / reflector / teacher…'), href: isPaperDetail ? '#paper-models' : undefined },
+      { title: t('在哪里测试', 'Benchmarks'), body: t('任务环境与指标', 'task environments and metrics'), href: isPaperDetail ? '#paper-overview' : undefined },
+      { title: t('怎样复现', 'Reproduce'), body: t('原条件 / 方法验证 / 换模型重跑', 'original setup / method test / model replacement'), href: isPaperDetail ? '#paper-reproduce' : undefined },
+      { title: t('需要哪些材料', 'Required assets'), body: t('代码、权重、配置和环境', 'code, weights, config, and environment') },
     ],
   };
   if (isCompare) return {
     kind: 'compare',
-    eyebrow: t('差异不是结论', 'A difference is not a conclusion'),
-    title: t('把字段差异翻译成研究影响', 'Translate field differences into research impact'),
-    lede: t('参数、访问、许可证或 checkpoint 不同，只说明变量变了；还要判断它是否破坏可比性。', 'A change in parameters, access, license, or checkpoint only says a variable changed; you must still judge comparability impact.'),
+    eyebrow: t('比较具体差异', 'Compare concrete differences'),
+    title: t('比较模型差异，并判断是否影响实验', 'Compare model differences and decide whether they change the experiment'),
+    lede: t('参数量、访问方式、许可证或 checkpoint 不同，只说明变量发生了变化；还要判断这种变化是否破坏公平比较。', 'Different parameters, access, license, or checkpoint show that a variable changed; you must still decide whether the change breaks a fair comparison.'),
     route: [
-      { title: t('选择', 'Select'), body: t('2–5 个具体模型', '2–5 concrete models') },
-      { title: t('找差异', 'Isolate differences'), body: t('只看真正变化的字段', 'Keep only changed fields') },
-      { title: t('解释影响', 'Interpret impact'), body: t('运行、训练、许可、可比性', 'Runtime, training, license, comparability') },
-      { title: t('检查未知', 'Inspect unknowns'), body: t('未知不能当成相同', 'Unknown is not equality') },
-      { title: t('导出', 'Export'), body: t('链接、Markdown、CSV', 'Link, Markdown, CSV') },
+      { title: t('选择模型', 'Select models'), body: t('选择 2–5 个具体 checkpoint', 'choose 2–5 concrete checkpoints') },
+      { title: t('找出差异', 'Find differences'), body: t('只展示真正变化的字段', 'show only fields that actually differ') },
+      { title: t('说明影响', 'Explain impact'), body: t('运行、训练、许可证和可比性', 'runtime, training, license, comparability') },
+      { title: t('检查未知项', 'Check unknowns'), body: t('未知不能当成相同', 'unknown does not mean equal') },
+      { title: t('保存比较', 'Save comparison'), body: t('链接、Markdown 或 CSV', 'link, Markdown, or CSV') },
     ],
   };
   if (isWorkspace) return {
     kind: 'workspace',
-    eyebrow: t('持久化研究流程', 'Persistent research workflow'),
-    title: t('从约束到备忘录，不跳过证据', 'From constraints to memo without skipping evidence'),
-    lede: t('工作台不是一个筛选器集合，而是一条可复核的决策管线。', 'The workspace is not a collection of filters; it is an auditable decision pipeline.'),
+    eyebrow: t('从资源条件到实验记录', 'From resource setup to experiment record'),
+    title: t('填写资源、筛选模型、比较差异并导出记录', 'Enter resources, filter models, compare differences, and export the record'),
+    lede: t('工作台把每一步的输入和结果保存下来：先写实验条件，再得到候选，核对来源，最后导出选择理由。', 'The workspace saves each input and result: define the experiment, form candidates, check sources, and export the choice rationale.'),
     route: [
-      { title: t('定义任务', 'Define task'), body: t('模式、论文、角色、资源', 'Mode, paper, role, resources') },
-      { title: t('形成候选', 'Form candidates'), body: t('基准 / 当前 / 资源桶', 'Baseline / current / resource buckets') },
-      { title: t('读证据', 'Inspect evidence'), body: t('理由、风险、待核验项', 'Reasons, risks, pending facts') },
-      { title: t('做比较', 'Compare'), body: t('差异与研究影响', 'Differences and research impact') },
-      { title: t('导出备忘录', 'Export memo'), body: t('任务、候选、风险与来源', 'Task, candidates, risks, sources') },
+      { title: t('填写实验', 'Define experiment'), body: t('模式、论文、角色和资源', 'mode, paper, role, resources') },
+      { title: t('得到候选', 'Form candidates'), body: t('原模型、新模型和资源适配模型', 'paper model, newer models, and resource-fit models') },
+      { title: t('核对来源', 'Check sources'), body: t('选择理由、风险和待核验项', 'reasons, risks, and pending facts') },
+      { title: t('比较差异', 'Compare differences'), body: t('查看每项变化对实验的影响', 'see how every change affects the experiment') },
+      { title: t('导出记录', 'Export record'), body: t('实验条件、候选、风险和来源', 'setup, candidates, risks, sources') },
     ],
   };
   if (isDataStatus) return {
     kind: 'data-status',
-    eyebrow: t('证据治理管线', 'Evidence governance pipeline'),
-    title: t('数据健康不是一个总分，而是一条可追溯链', 'Data health is not one score; it is a traceable chain'),
-    lede: t('先问来源支持了哪个字段，再问是否核验、是否过期、是否存在语义缺口。', 'Ask which field a source supports, then whether it is verified, stale, or semantically unresolved.'),
+    eyebrow: t('检查每条数据的来源', 'Check the source of every data point'),
+    title: t('查看哪些字段有来源、何时核验、哪些仍未知', 'See which fields have sources, when they were checked, and which remain unknown'),
+    lede: t('先看来源具体支持哪个字段，再看核验日期、过期状态和来源冲突。', 'First see which field a source supports, then check its date, freshness, and conflicts.'),
     route: [
-      { title: t('来源', 'Source'), body: t('官方文档、模型卡、论文、代码', 'Docs, model cards, papers, code') },
-      { title: t('声明映射', 'Claim mapping'), body: t('来源具体支持哪个字段', 'Which exact field is supported') },
-      { title: t('核验', 'Verification'), body: t('已核验 / 部分 / 待核验', 'Verified / partial / pending') },
-      { title: t('新鲜度与语义', 'Freshness & semantics'), body: t('过期、未报告、未公开、冲突', 'Stale, unreported, undisclosed, conflicting') },
-      { title: t('告警与行动', 'Alert & action'), body: t('重新核验或保留未知', 'Re-check or preserve unknown') },
+      { title: t('打开来源', 'Open source'), body: t('官方文档、模型卡、论文或代码', 'docs, model cards, papers, or code') },
+      { title: t('对应字段', 'Map field'), body: t('确认来源支持哪个具体字段', 'confirm which exact field it supports') },
+      { title: t('查看核验状态', 'Check verification'), body: t('已核验、部分或待核验', 'verified, partial, or pending') },
+      { title: t('检查日期和冲突', 'Check date and conflicts'), body: t('过期、未报告、未公开或来源冲突', 'stale, unreported, undisclosed, or conflicting') },
+      { title: t('决定下一步', 'Take action'), body: t('重新核验或保留未知', 're-check or keep unknown') },
     ],
     evidence: [
-      { level: t('来源存在', 'Source exists'), proof: t('记录可以回到一个链接', 'The record points to a source'), limit: t('不证明该来源支持当前字段', 'Does not prove the source supports this field') },
-      { level: t('字段已映射', 'Field mapped'), proof: t('supports 关系明确', 'The supports relation is explicit'), limit: t('不证明信息仍然新鲜', 'Does not prove freshness') },
-      { level: t('已核验且新鲜', 'Verified and fresh'), proof: t('事实可以公开展示', 'The fact may be shown publicly'), limit: t('不自动产生任务内推荐', 'Does not automatically create a recommendation') },
+      { level: t('有来源链接', 'Source link exists'), proof: t('记录可以回到一个具体页面', 'The record points to a concrete page'), limit: t('还不知道它支持哪个字段', 'It may not support the current field') },
+      { level: t('已对应字段', 'Field mapped'), proof: t('来源和字段的 supports 关系明确', 'The source-to-field supports relation is explicit'), limit: t('还要检查核验日期', 'The check date still matters') },
+      { level: t('已核验且未过期', 'Verified and fresh'), proof: t('这个事实可以公开展示', 'The fact may be shown publicly'), limit: t('还不能自动替你选择模型', 'It does not choose a model for you') },
     ],
   };
   if (isMethodology) return {
     kind: 'methodology',
-    eyebrow: t('全站阅读图例', 'Sitewide reading legend'),
-    title: t('未知、证据与推荐必须分开处理', 'Unknowns, evidence, and recommendations must remain separate'),
-    lede: t('这个页面解释网站为什么宁可保留“不知道”，也不把缺失值补成 false、0 或确定事实。', 'This page explains why the site preserves “unknown” instead of converting missing values into false, zero, or certainty.'),
+    eyebrow: t('网站如何处理未知和证据', 'How the site handles unknowns and evidence'),
+    title: t('区分事实、来源、未知状态和推荐', 'Separate facts, sources, unknown states, and recommendations'),
+    lede: t('缺少信息时保留“未报告、未公开、未核验或冲突”，而不是把缺失值补成 false、0 或确定事实。', 'When information is missing, keep it as unreported, undisclosed, unverified, or conflicting instead of converting it into false, zero, or certainty.'),
     route: [
-      { title: t('事实', 'Fact'), body: t('一个具体字段声明', 'A concrete field claim') },
-      { title: t('来源', 'Source'), body: t('谁、何时、在哪里公开', 'Who published it, when, and where') },
-      { title: t('语义状态', 'Semantic state'), body: t('未报告 / 未公开 / 未核验 / 冲突', 'Unreported / undisclosed / unverified / conflicting') },
-      { title: t('任务约束', 'Task constraint'), body: t('这条事实对当前实验意味着什么', 'What the fact means for this experiment') },
-      { title: t('候选与风险', 'Candidate & risk'), body: t('条件进入、阻塞或待核验', 'Conditional entry, block, or pending check') },
+      { title: t('具体事实', 'Fact'), body: t('一个明确字段的值', 'the value of one explicit field') },
+      { title: t('支持来源', 'Source'), body: t('谁在何时、哪里公开', 'who published it, when, and where') },
+      { title: t('未知原因', 'Unknown state'), body: t('未报告、未公开、未核验或冲突', 'unreported, undisclosed, unverified, or conflicting') },
+      { title: t('对本次实验的影响', 'Experiment impact'), body: t('这个事实会改变哪一步', 'which experiment step this fact changes') },
+      { title: t('候选与风险', 'Candidate and risk'), body: t('可以使用、被阻塞或需要核验', 'usable, blocked, or pending verification') },
     ],
     evidence: [
-      { level: t('一手来源直接支持', 'Primary source directly supports'), proof: t('可作为公开事实展示', 'May be displayed as a public fact'), limit: t('不等于适合所有研究任务', 'Does not fit every research task') },
-      { level: t('论文 / 代码证据', 'Paper / code evidence'), proof: t('可解释方法、角色或复现条件', 'Can explain method, role, or reproduction condition'), limit: t('未报告条件仍然未知', 'Unreported conditions remain unknown') },
-      { level: t('派生判断', 'Derived judgment'), proof: t('在明确规则下形成任务内解释', 'Creates a task-specific interpretation under explicit rules'), limit: t('只适用于当前任务，不代表模型综合性能排名', 'Applies to the current task rather than a universal performance ranking') },
+      { level: t('一手来源支持', 'Primary source support'), proof: t('可以把它展示为公开事实', 'It may be shown as a public fact'), limit: t('不代表适合所有实验', 'It does not fit every experiment') },
+      { level: t('论文或代码支持', 'Paper or code support'), proof: t('可以说明方法、角色或复现条件', 'It can explain method, role, or reproduction setup'), limit: t('论文没写的条件继续保持未知', 'Unreported conditions remain unknown') },
+      { level: t('按规则形成判断', 'Rule-based judgment'), proof: t('结合本次实验的资源和任务解释', 'It combines resources and task requirements for this experiment'), limit: t('只适用于本次实验，不是综合排名', 'It applies only to this experiment, not a universal ranking') },
     ],
   };
   return null;
@@ -215,18 +215,18 @@ const pageConfig = (() => {
     {isHome ? (
       <>
         <header class="ka-primer-intro">
-          <span>{t('全站知识地图', 'Site knowledge map')}</span>
-          <h2>{t('从看懂模型空间，到形成一份有证据的研究决策', 'From understanding the model space to an evidence-backed research decision')}</h2>
-          <p>{t('这个网站把模型供应、论文方法、任务决策和证据治理分成四层，再用一条研究路径把它们连接起来。', 'The site separates model supply, paper methods, task decisions, and evidence governance into four layers, then connects them through one research journey.')}</p>
+          <span>{t('网站里有什么', 'What the site contains')}</span>
+          <h2>{t('先看懂实验，再查模型、运行任务和保存结果', 'Understand the experiment, look up models, run tasks, and save results')}</h2>
+          <p>{t('网站分成模型、论文、实验和数据来源四部分。每个入口都直接告诉你下一步能做什么。', 'The site is organized around models, papers, experiments, and data sources. Each entry tells you what you can do next.')}</p>
         </header>
         <div class="ka-primer-grid is-home-grid">
-          <LayerMap title={t('四层知识结构', 'Four knowledge layers')} lede={t('每层回答不同问题，不能压成一个排行榜。', 'Each layer answers a different question and cannot be collapsed into one leaderboard.')} layers={siteLayers} caption={t('模型事实、论文方法、任务选择与证据状态彼此关联，但保持独立语义。', 'Model facts, paper methods, task choices, and evidence states are linked while preserving separate semantics.')} />
-          <VisualRoute eyebrow={t('主研究路径', 'Main research journey')} title={t('理解 → 探索 → 比较 → 决策 → 核验', 'Understand → Explore → Compare → Decide → Verify')} steps={siteRoute} animated ariaLabel={t('全站研究路径', 'Sitewide research journey')} />
+          <LayerMap title={t('四类内容', 'Four content areas')} lede={t('模型、论文、实验和来源分别回答不同问题。', 'Models, papers, experiments, and sources answer different questions.')} layers={siteLayers} caption={t('先确认具体对象，再执行实验，最后核对结果来源。', 'Confirm the concrete objects, run the experiment, then check where the results came from.')} />
+          <VisualRoute eyebrow={t('使用顺序', 'Use order')} title={t('看懂实验 → 查资料 → 比较模型 → 填写资源 → 核对来源', 'Understand → look up → compare → enter resources → verify sources')} steps={siteRoute} animated ariaLabel={t('网站使用顺序', 'Site use order')} />
         </div>
-        <EvidenceLadder eyebrow={t('从记录到结论', 'From record to conclusion')} title={t('每一步只证明自己的那一件事', 'Each stage proves only its own claim')} items={siteEvidence} />
+        <EvidenceLadder eyebrow={t('从收录记录到可用于实验', 'From a catalog record to experiment use')} title={t('每一步说明目前已经确认了什么', 'Each step states what has been confirmed so far')} items={siteEvidence} />
         <details class="ka-primer-details">
-          <summary>{t('第一次来，我应该从哪里开始？', 'Where should I start?')}</summary>
-          <p>{t('想先理解 Agent 与 SEED，进入学习指南；已有研究问题，进入工作台；只想查模型或论文，直接进入对应索引。', 'To understand agents and SEED, open the Guide; with a research question, enter the Workspace; for lookup, open the model or paper index.')}</p>
+          <summary>{t('第一次来，从哪里开始？', 'Where should I start?')}</summary>
+          <p>{t('先打开实验总览，确认 SEED、OpenEvo、ALFWorld 和 WebShop 分别是什么；准备运行时打开实验步骤；只查某个模型或论文时直接进入对应目录。', 'Start with the experiment overview to identify SEED, OpenEvo, ALFWorld, and WebShop. Open the experiment steps when ready to run, or use the model and paper catalogs for direct lookup.')}</p>
         </details>
       </>
     ) : pageConfig ? (
@@ -238,8 +238,8 @@ const pageConfig = (() => {
         </header>
         {pageConfig.layers && <LayerMap title={pageConfig.title} layers={pageConfig.layers} />}
         {pageConfig.route && <VisualRoute steps={pageConfig.route} compact animated={isGuide || isWorkspace || isCompare} ariaLabel={pageConfig.title} />}
-        {pageConfig.secondary && <VisualRoute eyebrow={t('从学习到实验', 'From learning to experiment')} title={t('同一知识结构最终落到可执行步骤', 'The same knowledge structure becomes an executable process')} steps={pageConfig.secondary} compact />}
-        {pageConfig.evidence && <EvidenceLadder title={t('证据边界', 'Evidence boundary')} items={pageConfig.evidence} />}
+        {pageConfig.secondary && <VisualRoute eyebrow={t('学完概念后', 'After the concepts')} title={t('按步骤运行实验', 'Run the experiment step by step')} steps={pageConfig.secondary} compact />}
+        {pageConfig.evidence && <EvidenceLadder title={t('目前能确认什么', 'What is confirmed so far')} items={pageConfig.evidence} />}
       </>
     ) : null}
   </div>

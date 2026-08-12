@@ -24,18 +24,18 @@ function workspaceHref(task: Partial<ResearchTask>): string {
 
 const primaryIntents = [
   {
-    label: locale === 'zh' ? '先看清整个研究问题' : 'Understand the complete research question',
-    lede: locale === 'zh' ? '从 Base Model、SEED、OpenEvo 到 ALFWorld / WebShop，把七个关键问题串成一张研究地图。' : 'Connect Base Models, SEED, OpenEvo, ALFWorld, and WebShop into one seven-question research map.',
+    label: locale === 'zh' ? '查看 SEED 原实验' : 'Review the original SEED experiment',
+    lede: locale === 'zh' ? '确认 Qwen2.5-3B-Instruct、ALFWorld、WebShop、训练步骤和论文结果。' : 'Confirm Qwen2.5-3B-Instruct, ALFWorld, WebShop, the training steps, and the paper results.',
     href: localePath(locale, '/research/seed-openevo/'),
   },
   {
-    label: locale === 'zh' ? '直接复现 OpenEvo × WebShop / ALFWorld' : 'Reproduce OpenEvo × WebShop / ALFWorld',
-    lede: locale === 'zh' ? '按环境、代码、数据、runtime、真实 CUDA action、真实 evolution 和结果 artifact 顺序执行。' : 'Execute environment, code, data, runtime, real CUDA action, real evolution, and result artifacts in order.',
+    label: locale === 'zh' ? '用 OpenEvo 复现 ALFWorld 与 WebShop' : 'Reproduce ALFWorld and WebShop with OpenEvo',
+    lede: locale === 'zh' ? '准备环境和代码，运行两个任务，并保存动作、分数、失败原因和更新文件。' : 'Prepare the environment and code, run both tasks, and save actions, scores, failure reasons, and update files.',
     href: localePath(locale, '/guide/openevo-webshop-alfworld/'),
   },
   {
-    label: locale === 'zh' ? '比较两个循环并设计 OpenEvo 改进' : 'Compare both loops and design an OpenEvo improvement',
-    lede: locale === 'zh' ? '先明确 SEED 更新 policy 参数、OpenEvo 更新跨 session artifact/revision，再冻结协议、分析失败分布。' : 'First distinguish SEED policy-parameter updates from OpenEvo cross-session artifact/revision updates, then freeze the protocol and analyze failure distributions.',
+    label: locale === 'zh' ? '比较 SEED 与 OpenEvo' : 'Compare SEED with OpenEvo',
+    lede: locale === 'zh' ? '固定模型、提示词、随机种子和预算，再比较结果并决定 OpenEvo 要改什么。' : 'Hold the model, prompts, random seeds, and budget fixed, then compare results and decide what to change in OpenEvo.',
     href: localePath(locale, '/research/seed-openevo/loops/'),
   },
 ];
@@ -67,8 +67,8 @@ const recentEvents = [
   <section class="section section-first" aria-labelledby="intent-title">
     <div class="section-heading">
       <div>
-        <div class="section-kicker">{locale === 'zh' ? '同一研究任务的三种入口' : 'Three entries into the same research mission'}</div>
-        <h2 id="intent-title">{locale === 'zh' ? '从学习、执行或比较进入同一项研究任务' : 'Enter the same research mission through learning, running, or comparing'}</h2>
+        <div class="section-kicker">{locale === 'zh' ? '从这里开始' : 'Start here'}</div>
+        <h2 id="intent-title">{locale === 'zh' ? '先看 SEED 原实验，再运行 OpenEvo，最后比较结果' : 'Review the SEED experiment, run OpenEvo, then compare the results'}</h2>
       </div>
     </div>
     <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
@@ -77,28 +77,28 @@ const recentEvents = [
   <SeedUseCaseStrip locale={locale} area="home" />
 
   <section class="section" aria-labelledby="paths-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.pathsKicker}</div><h2 id="paths-title">{m.v2.home.pathsTitle}</h2></div></div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '选择复现范围' : 'Choose the reproduction scope'}</div><h2 id="paths-title">{locale === 'zh' ? '按论文原条件复现、只验证方法，或更换新模型重跑' : 'Match the paper, test the method, or rerun with a newer model'}</h2></div></div>
     <div class="research-path-list">{researchPaths.map((path) => <div class="research-path-row"><span class="path-tag">{path.tag}</span><div><h3>{path.title}</h3><p>{path.body}</p></div></div>)}</div>
   </section>
 
   <section class="section" aria-labelledby="recent-changes-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.recentChangesKicker}</div><h2 id="recent-changes-title">{m.v2.home.recentChangesTitle}</h2></div><span class="muted">{m.v2.home.recentChangesNote}</span></div>
-    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据事件' : 'Data event') : m.v2.home.recentRelease}</small></div></li>)}</ol>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '最近更新' : 'Recent updates'}</div><h2 id="recent-changes-title">{locale === 'zh' ? '查看模型和数据记录最近发生了什么变化' : 'See what changed in the model and data records'}</h2></div><span class="muted">{m.v2.home.recentChangesNote}</span></div>
+    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据记录更新' : 'Data record update') : m.v2.home.recentRelease}</small></div></li>)}</ol>
   </section>
 
   <section class="section" aria-labelledby="families-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.familiesKicker}</div><h2 id="families-title">{m.v2.home.familiesTitle}</h2></div><a class="text-link" href={localePath(locale, '/families/')}>{m.v2.home.familiesCta}</a></div>
-    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `当前代：${family.generation}。API/托管与开放权重分开发现和维护。` : `Current generation: ${family.generation}. Hosted/API and open-weight surfaces are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录当前开放权重旗舰' : 'No current open-weight flagship recorded')}</dd></div></dl></div>)}</div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '模型家族' : 'Model families'}</div><h2 id="families-title">{locale === 'zh' ? '需要替换模型时，查看各家族目前有哪些可用版本' : 'When replacing a model, see which versions each family currently offers'}</h2></div><a class="text-link" href={localePath(locale, '/families/')}>{m.v2.home.familiesCta}</a></div>
+    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `核验日期下的代际：${family.generation}。API / 托管模型与开放权重模型分开记录。` : `Generation at the recorded check date: ${family.generation}. API/hosted models and open-weight models are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录开放权重旗舰' : 'No open-weight flagship recorded')}</dd></div></dl></div>)}</div>
   </section>
 
   <details class="home-scenarios-advanced">
-    <summary>{locale === 'zh' ? '完成 SEED × OpenEvo 主线后，再看更多研究场景' : 'After the SEED × OpenEvo mainline, explore more research scenarios'}</summary>
+    <summary>{locale === 'zh' ? '完成这两个实验后，再查看其他模型和训练场景' : 'After these experiments, explore other model and training scenarios'}</summary>
     <p class="muted">{m.v2.home.scenariosNote}</p>
     <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
   </details>
 
   <section class="section landscape-overview" aria-labelledby="overview-title">
-    <div class="section-heading"><div><div class="section-kicker">{m.v2.home.overviewKicker}</div><h2 id="overview-title">{m.v2.home.overviewTitle}</h2></div><a class="text-link" href={localePath(locale, '/landscape/')}>{m.v2.home.overviewCta}</a></div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '模型目录' : 'Model catalog'}</div><h2 id="overview-title">{locale === 'zh' ? '查看本站记录了多少模型、家族和开放权重版本' : 'See how many models, families, and open-weight versions are recorded'}</h2></div><a class="text-link" href={localePath(locale, '/landscape/')}>{m.v2.home.overviewCta}</a></div>
     <div class="overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{m.v2.home.statModels}</span></div><div class="stat"><strong>{familyCount}</strong><span>{m.v2.home.statFamilies}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{m.v2.home.statOpenWeights}</span></div></div>
     <p class="muted">{m.v2.home.overviewBody}</p>
   </section>

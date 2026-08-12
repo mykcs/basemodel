@@ -47,20 +47,22 @@ assert(
     && home.includes("'/research/seed-openevo/'")
     && home.includes("'/guide/openevo-webshop-alfworld/'")
     && home.includes("'/research/seed-openevo/loops/'"),
-  'home starts from the explicit SEED × OpenEvo research mission and offers Learn / Run / Compare entry paths',
+  'home starts from the explicit SEED × OpenEvo experiment and offers review / run / compare entry paths',
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes('Qwen2.5-3B-Instruct')
-    && missionHero.includes('SEED ↔ OpenEvo')
-    && missionHero.includes('ALFWorld + WebShop')
-    && missionHero.includes("t('改进 OpenEvo', 'Improve OpenEvo')"),
-  'the first-screen mission chain connects model, frameworks, benchmarks, evidence, and OpenEvo improvement',
+  missionHero.includes('用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验')
+    && missionHero.includes('Qwen2.5-3B-Instruct')
+    && missionHero.includes("t('SEED 与 OpenEvo', 'SEED and OpenEvo')")
+    && missionHero.includes("t('ALFWorld 与 WebShop', 'ALFWorld and WebShop')")
+    && missionHero.includes("t('分数、轨迹与失败原因', 'Scores, trajectories, and failures')")
+    && missionHero.includes("t('修改 OpenEvo', 'Change OpenEvo')"),
+  'the first screen names the tool, reproduction action, model, both methods, both environments, saved results, and the OpenEvo change',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
 const seedIndex = home.indexOf('<SeedUseCaseStrip');
-assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the mission entry choice instead of obscuring the first viewport');
+assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the experiment entry choice instead of obscuring the first viewport');
 
 const guide = read('src/components/GuideDecisionChapters.astro');
 assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');

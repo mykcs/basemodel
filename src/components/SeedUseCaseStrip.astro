@@ -8,41 +8,41 @@ const { locale, area, standalone = false } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
 const zh: Record<Area, { title: string; body: string }> = {
-  home: { title: '从一个可执行实验进入研究任务', body: '这个组件说明当前页面如何服务 SEED × OpenEvo 研究。本项目先在 4×RTX 3090 上复现 ALFWorld 和 WebShop；若现有机器完成训练、评测与对照，就保存证据并结束，只有显存或时间成为真实阻碍时才评估 8×A800 / A100。' },
-  models: { title: '判断 checkpoint 是否适合 SEED 实验', body: '复现主线使用 Qwen2.5-3B-Instruct。计划替换模型时，再比较权重、训练支持、运行时和实验可比性。' },
-  families: { title: '为后续现代化重跑寻找候选', body: '先完成原定 SEED 实验。研究问题明确变为新一代 Qwen 的现代化重跑时，再从家族和代际中选择候选。' },
-  compare: { title: '只比较会改变实验解释的差异', body: '模型、checkpoint、权重可得性、RL 路径、上下文和硬件变化都要写清楚。和当前实验无关的排行榜差异先放一边。' },
-  papers: { title: '先把论文条件抄准，再去写代码', body: 'SEED 的两套环境、训练阶段、模型角色和论文硬件都在这里核对。Guide 负责把这些条件变成你能照着执行的步骤。' },
-  workspace: { title: '把真实资源条件写进实验', body: '工作台接受每位读者自己的 GPU、网络、权重与 RL 约束。本项目实例填写 4×24GB、离线和本地权重；四卡能完成就无需租云卡，需要迁移时再记录 8 卡配置。' },
-  'data-status': { title: '区分论文事实与时效性市场信息', body: '论文条件相对稳定；云 GPU 的型号、价格和库存会变。时效性信息带核验日期，真机结果另存运行与硬件记录。' },
-  methodology: { title: '每个数字都先问一句：它从哪里来？', body: '论文给出的条件、云平台当前报价、我们为了排机器做的时间估算、以及你在 3090 上测到的结果，四类证据分开记录。' },
-  landscape: { title: '模型空间留到第二个问题再用', body: '第一件事先完成 SEED。第二件事如果是“换新模型后还成立吗”，再从这里找替代方案。' },
+  home: { title: '用 OpenEvo 复现 SEED 的两个实验', body: '先在现有 4×RTX 3090 服务器上跑通 ALFWorld 与 WebShop，保存训练、评测和对照结果。只有显存或时间被真机数据证明不足时，再评估 8×A800 / A100。' },
+  models: { title: '确认 checkpoint 能否运行 SEED 实验', body: '原实验使用 Qwen2.5-3B-Instruct。需要替换模型时，逐项比较权重、训练支持、运行时、显存和实验可比性。' },
+  families: { title: '需要换模型时，再从家族页找候选', body: 'SEED 原实验继续使用论文中的 checkpoint。只有新实验明确要换模型时，才按家族和代际寻找替代版本。' },
+  compare: { title: '比较会影响实验结果的差异', body: '逐项查看模型、checkpoint、权重访问、RL 路径、上下文和硬件差异，并说明每项差异是否破坏公平比较。' },
+  papers: { title: '确认 SEED 使用的模型、环境和训练设置', body: '在论文页核对 Qwen2.5-3B-Instruct、ALFWorld、WebShop、训练阶段、模型角色和论文硬件，再把这些条件写进执行记录。' },
+  workspace: { title: '填写实际 GPU、网络、权重和训练条件', body: '工作台按你真实拥有的资源筛选方案。本项目示例是 4×24GB、离线运行和本地权重；需要迁移时再记录 8 卡配置。' },
+  'data-status': { title: '确认数字来自论文、市场目录还是真机运行', body: '论文条件、云 GPU 目录、工程估算和真机结果分开保存。会变化的价格与库存带核验日期，运行结果带机器和日志记录。' },
+  methodology: { title: '查看每个数字和判断的来源', body: '论文事实、市场目录、工程估算和真机测量使用不同标记。缺少来源的字段保持未知，不补成看似合理的数值。' },
+  landscape: { title: '需要替换模型时，再从图表中找候选', body: '图表用于比较发布时间、参数规模、架构和硬件门槛。它不会自动替换 SEED 原实验使用的 checkpoint。' },
 };
 const en: Record<Area, { title: string; body: string }> = {
-  home: { title: 'Enter the mission through one executable experiment', body: 'This component shows how the current page serves the SEED × OpenEvo mission. This project starts with ALFWorld and WebShop on 4×RTX 3090. If that machine completes training, evaluation, and controls, save the evidence and finish there; evaluate 8×A800/A100 only when memory or runtime is a measured blocker.' },
-  models: { title: 'Judge whether a checkpoint fits the SEED experiment', body: 'Keep Qwen2.5-3B-Instruct for the reproduction mainline. Compare weights, trainability, runtime, and comparability when the experiment intentionally changes the model.' },
-  families: { title: 'Find candidates for a later modern rerun', body: 'Complete the planned SEED experiment first. Choose a newer Qwen generation here when the research question explicitly becomes a modern rerun.' },
-  compare: { title: 'Compare only differences that change the experiment', body: 'Model, checkpoint, weight access, RL path, context, and hardware changes matter. Leaderboard gaps that do not answer this experiment can wait.' },
-  papers: { title: 'Copy the paper conditions correctly before writing code', body: 'Verify SEED environments, training stages, model roles, and paper hardware here. The Guide turns those facts into executable steps.' },
-  workspace: { title: 'Record the resources you actually have', body: 'The workspace accepts each reader’s GPU, network, weight, and RL constraints. This project uses 4×24GB, offline execution, and local weights as its example. If four GPUs finish the work, cloud rental is unnecessary; record eight GPUs only for a justified migration.' },
-  'data-status': { title: 'Separate paper facts from time-sensitive market information', body: 'Paper conditions are relatively stable; cloud GPU models, prices, and inventory change. Date time-sensitive facts and keep measured runs with their run and hardware records.' },
-  methodology: { title: 'For every number, ask where it came from', body: 'Keep paper conditions, current cloud prices, engineering time estimates, and measurements from your 3090 machine as four different evidence levels.' },
-  landscape: { title: 'Save the model landscape for the second question', body: 'Finish SEED first. Use this space when the next experiment asks whether the method still works with a newer model.' },
+  home: { title: 'Reproduce both SEED experiments with OpenEvo', body: 'First run ALFWorld and WebShop on the available 4×RTX 3090 server and save training, evaluation, and control results. Consider 8×A800/A100 only when measurements show that memory or time is insufficient.' },
+  models: { title: 'Confirm that a checkpoint can run the SEED experiment', body: 'The original experiment uses Qwen2.5-3B-Instruct. When replacing it, compare weight access, training support, runtime, memory, and experimental comparability field by field.' },
+  families: { title: 'Use model families only when the experiment needs a replacement', body: 'Keep the paper checkpoint for the original SEED experiment. Search by family and generation only when a new experiment explicitly changes the model.' },
+  compare: { title: 'Compare differences that can change the experiment', body: 'Inspect model, checkpoint, weight access, RL path, context, and hardware differences, then state whether each one breaks a fair comparison.' },
+  papers: { title: 'Confirm the model, environments, and training settings used by SEED', body: 'Verify Qwen2.5-3B-Instruct, ALFWorld, WebShop, training stages, model roles, and paper hardware, then copy those settings into the run record.' },
+  workspace: { title: 'Enter the GPU, network, weights, and training setup you actually have', body: 'The workspace filters plans using your real resources. This project uses 4×24GB, offline execution, and local weights as its example; record eight GPUs only when migration is needed.' },
+  'data-status': { title: 'Check whether a number comes from the paper, a market catalog, or a measured run', body: 'Paper conditions, cloud-GPU catalogs, engineering estimates, and measured results stay separate. Prices and inventory carry check dates; runs carry machine and log records.' },
+  methodology: { title: 'See where each number and judgment comes from', body: 'Paper facts, market catalogs, engineering estimates, and measurements use different labels. Fields without sources remain unknown instead of receiving plausible-looking values.' },
+  landscape: { title: 'Use the chart to find candidates only when the model must change', body: 'The chart compares release time, parameter scale, architecture, and hardware threshold. It does not automatically replace the checkpoint used by the SEED experiment.' },
 };
 const copy = (isZh ? zh : en)[area];
 const guideHref = `${localePath(locale, '/guide/')}#seed-reproduction`;
 const paperHref = localePath(locale, '/papers/seed/');
 const workspaceHref = `${localePath(locale, '/workspace/')}?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&gpu=24&gpus=4&runtime=verl&open=1`;
 ---
-<section class:list={['seed-use-case', { standalone }]} aria-label={t('SEED 实验主线', 'SEED experiment mainline')}>
-  <div class="head"><div><span class="section-kicker">{standalone ? t('当前页面对研究任务的作用', 'This page in the research mission') : t('SEED × OpenEvo 研究主线', 'SEED × OpenEvo research mainline')}</span><h2>{copy.title}</h2><p>{copy.body}</p></div><a class="button button-primary" href={guideHref}>{t('打开复现步骤', 'Open reproduction steps')}</a></div>
+<section class:list={['seed-use-case', { standalone }]} aria-label={t('SEED 与 OpenEvo 实验步骤', 'SEED and OpenEvo experiment steps')}>
+  <div class="head"><div><span class="section-kicker">{standalone ? t('这页能帮你做什么', 'What this page helps you do') : t('实验步骤', 'Experiment steps')}</span><h2>{copy.title}</h2><p>{copy.body}</p></div><a class="button button-primary" href={guideHref}>{t('查看实验步骤', 'View experiment steps')}</a></div>
   {standalone ? (
-    <div class="compact"><span><strong>{t('本项目实例', 'Project example')}</strong> · 4×3090 → ALFWorld → WebShop → SFT → RL → GRPO</span><a href={workspaceHref}>{t('把结论记进工作台', 'Record this in Workspace')} →</a></div>
+    <div class="compact"><span><strong>{t('本项目实例', 'Project example')}</strong> · 4×3090 → ALFWorld → WebShop → SFT → RL → GRPO</span><a href={workspaceHref}>{t('把实验条件记进工作台', 'Record the experiment setup in Workspace')} →</a></div>
   ) : (
     <div class="detail">
-      <ol><li><b>01</b><span><strong>{t('先用现有机器', 'Use the machine you have')}</strong><small>4×RTX 3090 24GB</small></span></li><li><b>02</b><span><strong>{t('先跑两个环境', 'Bring up both environments')}</strong><small>ALFWorld / WebShop</small></span></li><li><b>03</b><span><strong>{t('再做训练', 'Then train')}</strong><small>SFT → SEED RL → GRPO</small></span></li><li><b>04</b><span><strong>{t('最后决定要不要 8 卡', 'Only then decide on eight GPUs')}</strong><small>{t('3090 完成就结束；卡住再迁移', 'Stop if 3090 finishes; migrate only if blocked')}</small></span></li></ol>
-      <aside><strong>{t('云端备用方案', 'Cloud fallback')}</strong><p>{t(`公开算力快照：${market.checkedAtZh}。如果四卡被显存或时间卡住，再核对 A800/A100 的实际库存和价格。`, `Public compute snapshot: ${market.checkedAtEn}. If four GPUs are blocked by memory or time, then re-check current A800/A100 inventory and prices.`)}</p><small>{isZh ? market.evidenceBoundary.zh : market.evidenceBoundary.en}</small></aside>
-      <div class="links"><a href={paperHref}>{t('核对 SEED 论文', 'Check the SEED paper')} →</a><a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{t('需要迁移时再看算力市场', 'Check compute market only when migrating')} ↗</a></div>
+      <ol><li><b>01</b><span><strong>{t('用现有 GPU 先跑小测试', 'Run a small test on the available GPU')}</strong><small>4×RTX 3090 24GB</small></span></li><li><b>02</b><span><strong>{t('跑通 ALFWorld 与 WebShop', 'Bring up ALFWorld and WebShop')}</strong><small>{t('真实 observation / action / score', 'real observation / action / score')}</small></span></li><li><b>03</b><span><strong>{t('运行训练和对照', 'Run training and controls')}</strong><small>SFT → SEED RL → GRPO</small></span></li><li><b>04</b><span><strong>{t('显存或时间不足时才迁移', 'Migrate only when memory or time is insufficient')}</strong><small>{t('用真机数据决定是否使用 8 卡', 'Use measurements to decide on eight GPUs')}</small></span></li></ol>
+      <aside><strong>{t('云端备用方案', 'Cloud fallback')}</strong><p>{t(`公开算力快照：${market.checkedAtZh}。只有四卡被真机显存或耗时数据证明不足时，再核对 A800/A100 的实际库存和价格。`, `Public compute snapshot: ${market.checkedAtEn}. Re-check A800/A100 inventory and prices only when measured memory or runtime shows that four GPUs are insufficient.`)}</p><small>{isZh ? market.evidenceBoundary.zh : market.evidenceBoundary.en}</small></aside>
+      <div class="links"><a href={paperHref}>{t('核对 SEED 论文设置', 'Check the SEED paper settings')} →</a><a href="https://gpu.ai-galaxy.com/store" target="_blank" rel="noreferrer">{t('需要迁移时查看算力目录', 'Open the compute catalog when migration is needed')} ↗</a></div>
     </div>
   )}
 </section>

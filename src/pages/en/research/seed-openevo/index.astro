@@ -3,6 +3,6 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="SEED × OpenEvo research map" description="Understand Base Models, compare SEED and OpenEvo, reproduce ALFWorld and WebShop, and turn benchmark evidence into OpenEvo improvements." locale={locale}>
+<AppLayout title="Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo" description="Run ALFWorld and WebShop with the SEED setup, then run OpenEvo with the same model, prompts, random seeds, and budget while saving scores, trajectories, failure reasons, and update results." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="hub" />
 </AppLayout>

@@ -23,7 +23,7 @@ describe('three-journey research experience', () => {
     expect(header).not.toContain('const primaryLinks');
   });
 
-  it('uses semantic HTML to express both benchmark conversations', () => {
+  it('uses semantic HTML to express both benchmark interactions', () => {
     expect(trajectory).toContain("id: 'webshop'");
     expect(trajectory).toContain("id: 'alfworld'");
     expect(trajectory).toContain('<details class="trajectory-scenario"');
@@ -38,12 +38,16 @@ describe('three-journey research experience', () => {
     expect(trajectory).toContain('memory / skill / agent-system artifact / revision');
     expect(trajectory).toContain('生效边界：下一次 policy update 后');
     expect(trajectory).toContain('successor revision');
-    expect(trajectory).toContain('不要把“反思文本出现了”误判成“框架已经进化”');
+    expect(trajectory).toContain('比较 SEED 更新模型参数与 OpenEvo 更新外部载体');
+    expect(trajectory).not.toContain('把框架与基准讲成一场可追踪的对话');
+    expect(trajectory).not.toContain('不要把“反思文本出现了”误判成“框架已经进化”');
   });
 
-  it('exposes a bilingual OpenEvo experiment gateway and reuses the lab on benchmark pages', () => {
+  it('exposes a bilingual OpenEvo experiment gateway and reuses the interaction view on benchmark pages', () => {
     expect(experimentZh).toContain('OpenEvoExperimentGateway');
     expect(experimentEn).toContain('OpenEvoExperimentGateway');
+    expect(gateway).toContain('运行 OpenEvo 的 WebShop 与 ALFWorld 实验');
+    expect(gateway).toContain('Run OpenEvo experiments on WebShop and ALFWorld');
     expect(gateway).toContain('V0 ↔ O1');
     expect(gateway).toContain('Scientific evidence gates');
     expect(benchmarkZh).toContain('AgentEnvironmentTrajectory');

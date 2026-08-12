@@ -31,6 +31,47 @@ common reader situation
 
 Do not begin with a correction such as “不要混淆……”, “不要再……”, or “当前不再……” unless the preceding sentence has already explained who might make that mistake and why.
 
+## 1. Concrete action before abstract framing
+
+A public title, button, menu item, or first sentence should let the reader answer:
+
+> 谁用什么做什么？作用于哪个具体对象？接下来会得到什么？
+
+Use this default formula:
+
+```text
+actor or tool
++ concrete action
++ concrete object
++ optional result
+```
+
+Good titles usually contain a verb such as `复现`, `运行`, `比较`, `查看`, `保存`, `筛选`, or `核对`, plus a named object such as `OpenEvo`, `SEED`, `ALFWorld`, `WebShop`, a checkpoint, a file, or a result.
+
+Avoid:
+
+> 用 SEED 的两个 Agent 基准，检验并改进 OpenEvo
+
+Prefer:
+
+> 用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验
+
+The comparison and improvement goal can follow in the next sentence:
+
+> 在相同模型、提示词、随机种子和计算预算下比较结果，再根据分数、失败轨迹和更新文件决定 OpenEvo 要改什么。
+
+Avoid:
+
+> 把框架与基准讲成一场可追踪的对话
+
+Prefer:
+
+> 逐步展示 OpenEvo 收到什么输入、执行什么动作、得到什么结果，以及下一次任务加载了什么更新。
+
+Words such as `研究任务`, `研究主线`, `研究路径`, `研究地图`, `证据链`, `可追踪的对话`, and `框架改进结论` may describe structure after the concrete action is clear. They must not carry the whole meaning of a heading or call to action by themselves.
+
+Buttons follow the same rule. Prefer `查看实验步骤`, `开始运行 ALFWorld`, `比较 SEED 与 OpenEvo`, and `保存实验记录` over `打开总览`, `进入研究`, `继续探索`, or `形成决策`.
+
 ## Canonical example
 
 Avoid:
@@ -45,7 +86,7 @@ Prefer:
 
 The revised version establishes the general situation first, then explains this project's concrete topology.
 
-## 1. Reader context before project shorthand
+## 2. Reader context before project shorthand
 
 Before using a project-specific machine, service, script, status, or acronym, answer the question a new reader will silently ask:
 
@@ -61,7 +102,7 @@ Examples:
 
 A label is not an explanation.
 
-## 2. Practical consequence before abstract mechanism
+## 3. Practical consequence before abstract mechanism
 
 Lead with what changes for the reader, then explain the mechanism.
 
@@ -75,7 +116,7 @@ Over:
 
 The first version explains the evidence gap before naming the technical check.
 
-## 3. Use positive descriptions for the main path
+## 4. Use positive descriptions for the main path
 
 The main path should describe what to do and why. Negative language belongs in safety rules or optional troubleshooting.
 
@@ -95,7 +136,7 @@ Avoid using these as default section headings:
 
 Safety-critical warnings may use direct prohibitions after the shared context is clear. For example, on a shared GPU server it is appropriate to say not to kill or reset another researcher's process.
 
-## 4. Remove conversation-dependent words
+## 5. Remove conversation-dependent words
 
 Words such as the following often reveal that public copy was written from an internal debugging conversation:
 
@@ -119,7 +160,7 @@ Ask:
 
 When the reference point is not useful to a new reader, remove the conversational word and state the durable rule directly.
 
-## 5. Translate mixed jargon at first use
+## 6. Translate mixed jargon at first use
 
 The site can retain precise English technical terms, but the surrounding sentence must explain their role.
 
@@ -133,7 +174,7 @@ Examples:
 
 Do not replace all terminology with vague Chinese. Explain the term once, then use it consistently.
 
-## 6. Separate public guidance from incident history
+## 7. Separate public guidance from incident history
 
 The public success path answers:
 
@@ -167,7 +208,7 @@ common context
 
 Do not write them as fragments from a chat transcript.
 
-## 7. Explain evidence boundaries in ordinary language
+## 8. Explain evidence boundaries in ordinary language
 
 When using a claim ladder, state both what an event proves and what it does not prove.
 
@@ -181,24 +222,26 @@ Examples:
 
 Prefer complete causal sentences over slogans such as “X ≠ Y” when the audience may not yet know either side.
 
-## 8. Audience-centered copy review pass
+## 9. Audience-centered copy review pass
 
 Before merging a user-facing technical page, review every heading, introductory paragraph, callout, and troubleshooting summary with these questions:
 
 1. Can a colleague who only knows the project goal understand why this paragraph appears here?
-2. Does the sentence identify the person, machine, or experimental situation before giving a warning?
-3. Does “current / previous / still / again” have a visible reference point?
-4. Is the practical consequence stated before low-level implementation detail?
-5. Is the first use of each project-specific term explained?
-6. Is a negative instruction necessary for safety, or can the main path be phrased positively?
-7. Has internal incident chronology been moved out of the default reading path?
-8. Does each pass/fail statement say what evidence it relies on?
-9. Does the English version preserve the same explanation rather than translating the shorthand literally?
-10. Could a reader follow the page without access to the original chat or Agent handoff?
+2. Can the reader underline the actor or tool, the action, the concrete object, and the result in the main title?
+3. Does every button say what it opens, starts, compares, changes, or saves?
+4. Does the sentence identify the person, machine, or experimental situation before giving a warning?
+5. Does “current / previous / still / again” have a visible reference point?
+6. Is the practical consequence stated before low-level implementation detail?
+7. Is the first use of each project-specific term explained?
+8. Is a negative instruction necessary for safety, or can the main path be phrased positively?
+9. Has internal incident chronology been moved out of the default reading path?
+10. Does each pass/fail statement say what evidence it relies on?
+11. Does the English version preserve the same explanation rather than translating the shorthand literally?
+12. Could a reader follow the page without access to the original chat or Agent handoff?
 
 Run `npm run audit:copy` before this contextual review. It reports file, line, rule ID, snippet, and reason across public source owners. Candidate output is advisory; `npm run audit:copy:strict` blocks only the small set of repository-approved high-confidence invariants and is included in `verify:deploy`.
 
-## 9. HTML presentation rules
+## 10. HTML presentation rules
 
 Use the medium to make context visible:
 
@@ -212,7 +255,7 @@ Use the medium to make context visible:
 
 A visual cannot repair missing prose. The diagram and its introduction must tell the same causal story.
 
-## 10. Repository placement and build-cost rule
+## 11. Repository placement and build-cost rule
 
 This standard lives under:
 
@@ -223,13 +266,14 @@ Keep future changes to the writing standard in this documentation path. Do not m
 For changes that affect both runtime copy and the standard:
 
 1. batch all Astro/user-facing copy edits into one runtime commit and validate that exact head once;
-2. make the durable writing-standard update as a separate docs-only commit;
-3. do not request another Preview solely for the docs-only commit;
-4. preserve the repository's Build Watch / ignored-build behavior for documentation paths.
+2. make the durable writing-standard update as a separate docs-only commit when it can avoid a hosted build;
+3. when runtime and governance changes are intentionally combined to minimize branch pushes, keep them in the same prepared Git tree and move the branch ref once;
+4. do not request another Preview solely for a docs-only follow-up;
+5. preserve the repository's Build Watch / ignored-build behavior for documentation paths.
 
 On this project, prior docs-only commits have been skipped by the Vercel Preview path. Treat that as a deployment optimization, not as permission to skip source review of the document.
 
-## 11. Ownership
+## 12. Ownership
 
 This document is the general copy contract. More specific documents may add constraints but should not weaken it:
 
