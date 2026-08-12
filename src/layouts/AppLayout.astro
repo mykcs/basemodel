@@ -25,9 +25,10 @@ const modelNames = Object.fromEntries((await getCollection('models')).map((entry
 const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
-const siteOrigin = Astro.site ?? new URL('https://basemodel.pages.dev');
+const siteOrigin = Astro.site ?? new URL('https://basemodel-preview.vercel.app');
+const isVercelPreview = process.env.VERCEL_ENV === 'preview';
 const isCloudflarePreview = process.env.CF_PAGES === '1' && Boolean(process.env.CF_PAGES_BRANCH) && process.env.CF_PAGES_BRANCH !== 'main';
-const shouldNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isCloudflarePreview;
+const shouldNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isVercelPreview || isCloudflarePreview;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isHomePage = localeNeutralPath === '/';

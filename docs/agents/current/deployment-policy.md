@@ -1,175 +1,68 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-11 01:32 +08:00**
+Last reviewed: **2026-08-12 16:44 +08:00**
 
 ## Authority
-
-This file defines the steady-state deployment boundary for `mykcs/basemodel`.
 
 ```text
 GitHub = canonical source
 non-main branches / PRs = Vercel Preview
-main = Cloudflare Pages Production
-Cloudflare Direct Upload = fallback / Cloudflare-specific Preview
+main = Vercel Production
+Production identity = https://basemodel-preview.vercel.app
+Cloudflare Pages = frozen legacy rollback snapshot
+Cloudflare Direct Upload / Workers shadow = Cloudflare-specific fallback only
 ```
 
-GitHub Actions and GitHub Pages remain intentionally retired.
+GitHub Actions and GitHub Pages remain retired.
 
-## Provider responsibilities
+## Vercel responsibilities
 
-### GitHub
+Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
 
-- canonical source and Git history;
-- branches / pull requests;
-- Dependabot for npm dependencies;
-- review metadata and deployment-status surface.
+`npm run verify:deploy && npm run build`
 
-### Vercel
+Do not disable Vercel Git deployment on `main`.
 
-- ordinary non-main Preview host through project `basemodel-preview`;
-- runs `npm run verify:deploy && npm run build` through `vercel.json`;
-- exposes deployment/build logs to the connected Agent tooling;
-- creates stable branch + exact deployment URLs;
-- currently protects private-repository Previews with Vercel Authentication;
-- does **not** Git-deploy `main` (`git.deploymentEnabled.main = false`).
+Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-### Cloudflare Pages
+## Production release
 
-- canonical Production host at `https://basemodel.pages.dev`;
-- Production branch remains `main`;
-- formal Cloudflare build command remains `npm run build:cloudflare`;
-- build output remains `dist`;
-- Direct Upload remains supported for Cloudflare-specific Preview/fallback work.
-
-## Default non-main Preview workflow
+After the accepted exact head is current with `main`:
 
 ```text
-focused feature branch / PR
--> push source
--> Vercel runs verify:deploy
--> Vercel runs Astro build
--> confirm exact head has Vercel success
--> read build logs
--> inspect real Preview
--> generate temporary share URL if owner access needs protection bypass
--> iterate until accepted
+merge to main
+-> Vercel Production build
+-> https://basemodel-preview.vercel.app
+-> verify indexability, canonical/hreflang, robots/sitemap, representative routes and interaction
 ```
 
-Do not intentionally trigger a Cloudflare Git Preview merely to obtain a review URL when the Vercel path is available.
+Until Cloudflare Pages Git integration is disabled externally, the merge/release commit should keep `[CF-Pages-Skip]`. This is the opposite of the old Pages release rule: Cloudflare is no longer supposed to wake up on release.
 
-Intermediate branch commits may use `[CF-Pages-Skip]` where appropriate to protect Cloudflare build quota. Vercel still handles the non-main Preview unless the change is ignored by `vercel.json`'s `ignoreCommand`.
+## Cloudflare zero-build policy
 
-## Production release boundary
+**Cloudflare Pages Build = 0** for ordinary work and releases. Do not intentionally trigger a Git-connected Pages build unless the owner has first been told why Cloudflare-specific execution is necessary and explicitly authorizes it.
 
-After the owner accepts the exact PR head:
+The old Pages deployment remains a rollback/legacy snapshot. Direct Upload and Workers shadow remain optional diagnostic surfaces. Do not commit Cloudflare tokens.
 
-```text
-merge/release to main
--> Vercel main Git deployment stays disabled
--> Cloudflare Production is the intended release target
-```
+## Repository Gate
 
-**Critical:** the real release merge/commit must not accidentally include `[CF-Pages-Skip]`, `[Skip CI]`, or another Cloudflare skip prefix if the owner expects Cloudflare Production to deploy.
+Executable truth lives in `package.json`. `npm run verify:deploy` remains provider-neutral and includes the project’s deterministic checks/tests/audits. Do not weaken a valid Gate to get a green deployment.
 
-Do not merge merely to obtain a Preview.
-
-## Repository validation Gate
-
-Executable truth lives in `package.json`.
-
-At the time of this policy update, `npm run verify:deploy` includes:
-
-```text
-npm run check
-npm run validate
-npm run audit:semantic
-npm run audit:claims
-npm run audit:freshness
-npm test
-npm run audit:v2
-npm run audit:v2:adversarial
-npm run audit:hardening
-```
-
-Vercel Preview must run that Gate before `npm run build`.
-
-Cloudflare formal Git builds retain their repository-owned gate through `npm run build:cloudflare`.
-
-Do not weaken a failing Gate to make a deployment green. Fix the product/data/test mismatch or explicitly revise the contract with evidence.
-
-Full Chromium/WebKit Playwright, vendor-catalog network audits, URL/source probes, and other third-party-dependent checks remain on-demand unless deliberately promoted into the deterministic Gate.
-
-## Preview identity
-
-Canonical/indexed identity belongs to Cloudflare Production.
-
-For Vercel Preview preserve:
-
-- `PUBLIC_SEARCH_INDEXING=disabled`;
-- `PUBLIC_SITE_URL=https://basemodel.pages.dev`;
-- page/meta `noindex` behavior;
-- `X-Robots-Tag: noindex` where provided by Vercel;
-- canonical/hreflang pointing to Production, not the Preview host.
-
-Because the repo is private, normal Vercel Preview URLs may require Vercel authentication. Connected Agents should generate a temporary share URL when the owner needs an anonymous click-through link. Treat it as ephemeral, not canonical.
-
-## Cloudflare Direct Upload fallback
-
-Use the repository-owned Direct Upload command/runbook when:
-
-- Cloudflare-specific deployment behavior is under test;
-- Vercel is unavailable or rate-limited;
-- the owner explicitly requests a `pages.dev` Preview;
-- a Cloudflare release issue cannot be reproduced on Vercel.
-
-Direct Upload uses prebuilt output and does not require a Git-connected Cloudflare build, but it is still a platform deployment and remains subject to Cloudflare deployment/upload limits.
-
-See:
-
-- `direct-upload-preview-command.md`
-- `direct-upload-preview-policy.md`
-- `cloudflare-pages-deployment.md`
+Full browser suites and third-party/network audits remain on demand when the changed surface requires them.
 
 ## Completion report
 
-For website work, report the relevant boundaries separately:
+Report separately:
 
 ```text
-Change complete: yes / no
-Repository Gate: passed / failed / not run
-Vercel Preview: READY / ERROR / none
-Preview URL / share URL: <actual URL or reason unavailable>
-Exact Git head: <SHA>
-Cloudflare Git-integrated Preview intentionally triggered: yes / no
-Cloudflare Production changed: yes / no / unknown
-Merged to main: yes / no
+Repository Gate/build
+Vercel Preview + exact head
+Preview route/metadata acceptance
+Merged to main
+Vercel Production deployment + public verification
+Cloudflare Pages Build intentionally triggered: yes/no
+Cloudflare legacy rollback changed: yes/no/unknown
+External provider boundary, if any
 ```
 
-Do not conflate Preview success, PR merge, and Production deployment.
-
-Do not infer the exact Cloudflare monthly build counter unless an authoritative account-level source is available.
-
-## Cost / quota policy
-
-The owner cares about hosted-build consumption, but no provider should be described as unlimited.
-
-- ordinary Preview iteration should use Vercel and stay within current Vercel limits;
-- Cloudflare Git Preview builds should not be spent merely to review a branch;
-- Cloudflare Direct Upload is the fallback when a Cloudflare-hosted Preview is required;
-- re-check current first-party Vercel/Cloudflare limits before quota/cost decisions.
-
-If SSR, Pages Functions, Workers, server-side APIs, KV/D1/R2, or provider-specific runtime features are introduced, re-evaluate this split rather than assuming static-site rules still apply.
-
-## GitHub Actions / Pages
-
-GitHub Actions remains retired; do not add workflows “just in case.” Repository tests/scripts remain provider-neutral assets.
-
-GitHub Pages remains retired; `/basemodel/` deployment compatibility and GitHub-Pages-specific base-path environment variables are not release requirements.
-
-## Validated evidence
-
-The first full Vercel pilot was PR #99 at exact head `674f60bb57b37cd712cc745bf8dcf1ce513b722f`.
-
-Vercel deployment `dpl_E3NeYkTLnsgUJyfNVUtomUqpmMuJ` reached READY after the complete Gate passed, including 75 tests, V2 completion/adversarial/hardening audits, and a 392-page Astro build.
-
-See `vercel-preview-migration-plan.md` for the full evidence record and private-Preview access mechanics.
+Do not infer exact provider quota counters without authoritative account evidence.

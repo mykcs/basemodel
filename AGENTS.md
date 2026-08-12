@@ -13,7 +13,7 @@ Before non-trivial work, read in this order:
 5. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
 6. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) — required baseline for comfortable, readable, learning-first UI and responsive desktop/mobile behavior.
 7. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — ordinary Preview workflow.
+8. [`docs/agents/current/vercel-preview-migration-plan.md`](docs/agents/current/vercel-preview-migration-plan.md) — Vercel Preview + Production workflow.
 9. [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — release/Production boundary.
 10. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
 11. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
@@ -37,8 +37,6 @@ If two current documents disagree, resolve the disagreement against executable/l
 
 ## Current deployment architecture
 
-The validated ordinary workflow is:
-
 ```text
 GitHub = source of truth
 
@@ -49,27 +47,31 @@ non-main branch / PR
   -> protected Vercel Preview
 
 main
-  -> Vercel Git deployment disabled
-  -> Cloudflare Pages Production
-  -> https://basemodel.pages.dev
+  -> Vercel project `basemodel-preview` Production
+  -> https://basemodel-preview.vercel.app
+
+Cloudflare Pages
+  -> frozen legacy rollback snapshot
+  -> normal Git Builds = 0
 ```
 
-Cloudflare Direct Upload remains a supported fallback / Cloudflare-specific integration Preview. It is **not** the ordinary first-choice Preview path while Vercel is available.
+Cloudflare Direct Upload and the Workers shadow remain supported fallback / Cloudflare-specific diagnostic paths. They are not ordinary Preview or Production paths.
 
-GitHub Actions and GitHub Pages remain intentionally retired. Do not restore them merely because historical files mention them.
+GitHub Actions and GitHub Pages remain intentionally retired. Astro/React remain the application stack; do not rewrite them merely because deployment ownership changed.
 
 ## Repository map
 
 ```text
 src/                         production application/content/domain logic
 public/                      production static assets
-scripts/                     build, validation, audit and maintenance tooling
+scripts/                     build, validation, audit and retained provider helpers
 tests/e2e/                   browser regression tests
 tests/fixtures/demo-archive/ non-production fixtures
 docs/agents/current/         authoritative current Agent policies/runbooks/maps
 docs/agents/history/         migration/incident/superseded records
 docs/agents/LATEST.md        stable current handoff
-vercel.json                  Vercel Preview contract
+vercel.json                  Vercel Preview + Production contract
+wrangler.jsonc               dormant Workers shadow option
 package.json                 executable validation/build entrypoints
 ```
 
@@ -84,7 +86,7 @@ npm run verify:deploy
 npm run build
 ```
 
-`verify:deploy` includes the repository's check/validation/semantic/evidence/test/V2/hardening gates. Do not weaken these audits merely to make a Preview pass.
+`verify:deploy` includes the repository's check/validation/semantic/evidence/test/V2/hardening gates. Do not weaken these audits merely to make a deployment pass.
 
 Run full browser suites or third-party network/vendor audits when the changed surface requires them; they are not automatically part of every blocking hosted build.
 
@@ -95,24 +97,23 @@ read LATEST + current policy
 -> scan scenario-trigger-registry and load matched guidance
 -> inspect overlapping PRs and relevant code/data/tests
 -> make one focused branch/PR
--> synchronize branch without intentionally spending a Cloudflare Preview build
--> let Vercel create the non-main Preview
--> verify the exact PR head and build logs
--> inspect the real Preview route(s)
--> iterate until accepted
--> merge/release with a normal non-skip message
--> verify Cloudflare Production separately
+-> let Vercel create the exact-head non-main Preview
+-> verify build logs and inspect real Preview route(s)
+-> synchronize with current main when needed
+-> merge/release with [CF-Pages-Skip] while legacy Pages Git integration still exists
+-> let Vercel create Production from main
+-> verify https://basemodel-preview.vercel.app separately
 ```
 
 Because the repository is private, normal Vercel Preview URLs may require Vercel authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability instead of disabling protection for convenience.
 
-## Cloudflare build-budget boundary
+## Cloudflare zero-build boundary
 
-Intermediate branch commits may use `[CF-Pages-Skip]` / another documented Cloudflare skip prefix when Cloudflare should not build that branch iteration.
+**Cloudflare Pages Build = 0 for normal development and releases.** Do not intentionally trigger a Cloudflare Pages Git Preview or Production build unless the owner has first been told why Cloudflare-specific execution is necessary and explicitly authorizes it.
 
-The **final merge/release commit must not carry a skip prefix** when the owner expects Cloudflare Production to update.
+Until the Cloudflare account-side Git integration is disabled, branch synchronization and merge/release commits use `[CF-Pages-Skip]` / another documented skip prefix so Vercel can deploy without waking the frozen Pages builder.
 
-Cloudflare Direct Upload is appropriate when Cloudflare-specific fidelity is under test, Vercel is unavailable, or a `pages.dev` Preview is explicitly requested. Follow the repository-owned Direct Upload runbook rather than inventing an ad-hoc path.
+Cloudflare Direct Upload is appropriate only when Cloudflare-specific fidelity is under test, Vercel cannot answer the question, or a `pages.dev` Preview is explicitly required. Never store provider tokens in Git.
 
 Do not claim an exact account-level build counter without authoritative provider evidence.
 
@@ -134,7 +135,7 @@ Read the detailed current product/model policies before broad UI/data/recommenda
 
 ## Stable technical constraints
 
-- Preserve Preview `noindex` and Production canonical/hreflang identity.
+- Preserve Vercel Preview `noindex` and Vercel Production canonical/hreflang identity.
 - Keep `PUBLIC_SITE_URL` / search-indexing semantics aligned with the current deployment policies.
 - Keep Node type/tooling majors aligned with the repository's declared Node target.
 - Astro/React/TypeScript/Vitest/Playwright major upgrades are deliberate migration work, not routine dependency churn.
@@ -151,7 +152,7 @@ For recurring situations that should trigger without a fresh reminder from the o
 
 Human intervention is appropriate for real authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
 
-Completion reports must distinguish source synchronization, validation, Preview state and Production state. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
+Completion reports must distinguish source synchronization, validation, Preview state, merge, Vercel Production state and Cloudflare rollback state. A successful source diff or READY badge alone is not proof that the intended production outcome happened.
 
 ## Documentation maintenance
 
