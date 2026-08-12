@@ -8,6 +8,8 @@ describe('Vercel production deployment architecture', () => {
   const workflowsDir = new URL('../../.github/workflows/', import.meta.url);
   const astroConfig = readText('../../astro.config.mjs');
   const appLayout = readText('../../src/layouts/AppLayout.astro');
+  const robots = readText('../../src/pages/robots.txt.ts');
+  const sitemap = readText('../../src/pages/sitemap.xml.ts');
   const buildCloudflare = readText('../../scripts/build-cloudflare.mjs');
   const dependabot = readText('../../.github/dependabot.yml');
   const playwright = readText('../../playwright.config.ts');
@@ -24,6 +26,14 @@ describe('Vercel production deployment architecture', () => {
     expect(astroConfig).toMatch(/\bbase:\s*['"]\/['"]/);
     expect(appLayout).toContain("process.env.VERCEL_ENV === 'preview'");
     expect(playwright).toContain("baseURL: 'http://127.0.0.1:4327/'");
+  });
+
+  it('keeps Vercel Production indexable even if an old Preview-only noindex variable survives', () => {
+    for (const source of [appLayout, robots, sitemap]) {
+      expect(source).toContain("process.env.VERCEL_ENV === 'production'");
+      expect(source).toContain("process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !isVercelProduction");
+      expect(source).toContain("process.env.VERCEL_ENV === 'preview'");
+    }
   });
 
   it('keeps deterministic checks provider-neutral and preserves Cloudflare fallback validation', () => {
