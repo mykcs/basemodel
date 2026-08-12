@@ -1,9 +1,18 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 
-// Static bilingual sitemap. Vercel Preview is always non-indexable; Production uses Astro.site.
+// Static bilingual sitemap. Preview surfaces stay non-indexable; Vercel Production uses Astro.site.
 export const GET: APIRoute = async ({ site }) => {
-  const shouldNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || process.env.VERCEL_ENV === 'preview';
+  const isVercelProduction = process.env.VERCEL_ENV === 'production';
+  const isVercelPreview = process.env.VERCEL_ENV === 'preview';
+  const isCloudflarePreview =
+    process.env.CF_PAGES === '1' &&
+    Boolean(process.env.CF_PAGES_BRANCH) &&
+    process.env.CF_PAGES_BRANCH !== 'main';
+  const explicitNoIndex =
+    process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !isVercelProduction;
+  const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
+
   if (shouldNoIndex) {
     return new Response(
       '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>\n',
