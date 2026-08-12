@@ -1,0 +1,123 @@
+{
+  "id": "grok-build-0-1",
+  "name": "Grok Build 0.1",
+  "official_name": "Grok Build 0.1",
+  "aliases": [
+    "grok-code-fast-1",
+    "grok-code-fast"
+  ],
+  "vendor": "xAI",
+  "family": "Grok",
+  "generation": "Grok Build",
+  "release_date": "2026-05-19",
+  "status": "active",
+  "checkpoint": {
+    "type": "coder",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "coding",
+      "reasoning",
+      "agent",
+      "tool-use"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 256000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": "not_published",
+    "base_checkpoint_available": "not_published",
+    "finetuning_allowed": "not_reported",
+    "derivative_release_allowed": "not_reported",
+    "commercial_use_allowed": "not_reported",
+    "license_name": "not_disclosed",
+    "classification": "proprietary"
+  },
+  "access": {
+    "weights_status": "not_published",
+    "api_status": "available",
+    "api_model_ids": [
+      "grok-build-0.1",
+      "grok-code-fast-1"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Grok Build"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_applicable",
+    "suitable_for_sft": "not_applicable",
+    "suitable_for_rl": "not_applicable",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": "not_reported"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "not_applicable",
+    "full_sft_tier": "not_applicable",
+    "rl_tier": "not_applicable"
+  },
+  "sources": [
+    {
+      "id": "xai-grok-build-model-20260812",
+      "url": "https://docs.x.ai/developers/models/grok-build-0.1",
+      "title": "Grok Build 0.1",
+      "publisher": "xAI",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-12",
+      "evidence_note": "The first-party model page identifies grok-build-0.1 as xAI's coding model for agentic software-engineering workflows, with text/image input, 256K context and legacy aliases.",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.context_length",
+        "access.api_status",
+        "access.api_model_ids",
+        "openness.classification",
+        "research.suitable_for_inference"
+      ]
+    },
+    {
+      "id": "xai-grok-build-release-20260812",
+      "url": "https://docs.x.ai/developers/release-notes",
+      "title": "xAI API release notes",
+      "publisher": "xAI",
+      "published_at": "2026-05-19",
+      "type": "official_announcement",
+      "checked_at": "2026-08-12",
+      "evidence_note": "xAI release notes introduced Grok Build 0.1 on May 19, 2026 and identify grok-build-0.1 as the model slug for agentic coding workflows.",
+      "supports": [
+        "release_date",
+        "access.api_status",
+        "access.api_model_ids"
+      ]
+    },
+    {
+      "id": "xai-grok-build-migration-20260812",
+      "url": "https://docs.x.ai/developers/migration/may-15-retirement",
+      "title": "May 15, 2026 model retirement",
+      "publisher": "xAI",
+      "type": "official_docs",
+      "checked_at": "2026-08-12",
+      "evidence_note": "The migration guide maps the retired grok-code-fast-1 slug to Grok Build 0.1.",
+      "supports": [
+        "access.api_model_ids"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

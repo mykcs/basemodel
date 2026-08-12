@@ -1,8 +1,13 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
+import OpenEvoModelExperimentGuide from '../../../../components/research/OpenEvoModelExperimentGuide.astro';
+import OpenEvoSeedMechanismAnimation from '../../../../components/research/OpenEvoSeedMechanismAnimation.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo framework and cross-task evolution loop" description="Explain OpenEvo task/session boundaries, sealed data, evolution targets and methods, artifacts, Project Heads, and successor revisions." locale={locale}>
+<!-- Internal mechanism animation: experience flows through each evolution path. -->
+<AppLayout title="OpenEvo experiments: evolution, model choice, and beginner questions" description="Explain the OpenEvo cross-task evolution loop, why Qwen2.5-3B is the baseline, and how OpenEvo and SEED each evolve the same base model from task experience." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo" />
+  <OpenEvoModelExperimentGuide locale={locale} />
+  <OpenEvoSeedMechanismAnimation locale={locale} />
 </AppLayout>

@@ -1,0 +1,234 @@
+/*
+ * 2026-08-12 visual identity enforcement.
+ *
+ * This file is intentionally global and token-driven. It narrows visual
+ * variance without taking semantic ownership away from page-specific PRs.
+ * Durable rules live in docs/agents/current/ui-design-principles.md.
+ */
+
+body {
+  background: var(--canvas-editorial);
+  font-family: var(--font-interface);
+}
+
+/* Editorial titles carry research-publication tone; operational UI stays sans. */
+.site-main .page-header h1,
+.site-main .home-mainline .section-heading h2,
+.site-main .guide-learning-page > .page-header h1 {
+  font-family: var(--font-editorial);
+  font-weight: 650;
+  text-wrap: balance;
+}
+
+.site-main .workspace .page-header h1,
+.site-main .workspace h2,
+.site-main .workspace h3 {
+  font-family: var(--font-interface);
+}
+
+.site-main .page-header .lede,
+.site-main .detail-subtitle,
+.site-main .paper-method-summary .lede {
+  max-width: var(--reading-width);
+}
+
+/* One shared shape system. Fully-rounded pills remain reserved for chips/tags. */
+body .button,
+body input,
+body select,
+body textarea,
+body .command-search-trigger,
+body .theme-toggle,
+body .menu-toggle {
+  border-radius: var(--radius-control);
+}
+
+.site-main :is(
+  .model-card,
+  .entry-card,
+  .scenario-card,
+  .path-card,
+  .family-card,
+  .paper-row,
+  .tree-checkpoint,
+  .landscape-learning-card,
+  .seed-tour-card,
+  .concept-card,
+  .constraint-panel,
+  .candidate-board,
+  .evidence-inspector
+) {
+  border-radius: var(--radius-panel);
+  box-shadow: none;
+}
+
+body .site-main .home-mainline .home-path-card {
+  border-radius: var(--radius-panel);
+  box-shadow: none;
+}
+
+body :is(.hero-note, .runtime-loop, .quick-view-dialog[open]) {
+  border-radius: var(--radius-feature);
+}
+
+/* Interactive surfaces respond without jumping or acquiring card-elevation chrome. */
+.site-main :is(
+  .model-card,
+  .entry-card,
+  .scenario-card,
+  .paper-row,
+  .tree-checkpoint,
+  .landscape-learning-card
+):hover,
+body .site-main .home-mainline .home-path-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: color-mix(in srgb, var(--accent-deep) 34%, var(--line));
+  background: color-mix(in srgb, var(--surface) 86%, var(--surface-muted));
+}
+
+/* Workbench = a cooler, denser decision canvas with a dominant center lane. */
+.site-main .workspace {
+  background: var(--canvas-workbench);
+  border-block: 1px solid var(--line);
+}
+
+.site-main .workspace > .shell {
+  width: min(var(--workbench-max), calc(100% - 48px));
+}
+
+.site-main .workspace .workspace-grid {
+  grid-template-columns: 260px minmax(0, 1fr) 320px;
+  gap: 18px;
+}
+
+.site-main .workspace :is(.constraint-panel, .candidate-board, .evidence-inspector) {
+  padding: 18px;
+  border-radius: var(--radius-panel);
+  box-shadow: none;
+}
+
+.site-main .workspace .constraint-panel {
+  background: color-mix(in srgb, var(--surface) 72%, var(--canvas-workbench));
+}
+
+.site-main .workspace .candidate-board {
+  background: var(--surface);
+  border-color: color-mix(in srgb, var(--accent-deep) 18%, var(--line));
+}
+
+.site-main .workspace .evidence-inspector {
+  background: color-mix(in srgb, var(--surface) 84%, var(--canvas-workbench));
+}
+
+.site-main .workspace .candidate-list {
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.site-main .workspace .candidate-row {
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.site-main .workspace .candidate-row:hover {
+  background: color-mix(in srgb, var(--surface-muted) 58%, transparent);
+}
+
+.site-main .workspace .candidate-fit-profile {
+  border-top-color: color-mix(in srgb, var(--line) 74%, transparent);
+}
+
+.site-main .workspace .inspector-section {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.site-main .workspace .inspector-section h3,
+.site-main .workspace .bucket-header h3 {
+  text-transform: none;
+  letter-spacing: .01em;
+}
+
+.site-main .workspace :is(.reason-chip, .risk-chip) {
+  border-radius: 999px;
+}
+
+.site-main .workspace .risk-chip {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+/* Genuine floating layers keep the elevation token. */
+body .quick-view-dialog[open],
+body .compare-tray {
+  box-shadow: var(--shadow-floating);
+}
+
+@media (max-width: 980px) {
+  .site-main .workspace > .shell {
+    width: min(var(--workbench-max), calc(100% - 28px));
+  }
+
+  .site-main .workspace .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * Phone persistence budget: global header + one contextual layer.
+ * Compare remains available but is compact; if it coexists with the workspace
+ * nav, the nav is moved above it instead of overlapping content.
+ */
+@media (max-width: 720px) {
+  body .compare-tray {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    padding: 7px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-feature);
+  }
+
+  body .compare-tray .tray-inner {
+    width: 100%;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  body .compare-tray .tray-label {
+    flex: 0 0 auto;
+  }
+
+  body .compare-tray .tray-chips {
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  body .compare-tray .tray-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  body .compare-tray .tray-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  body .compare-tray .tray-actions {
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+
+  body .compare-tray .tray-actions button {
+    display: none;
+  }
+
+  body:has(.compare-tray) .workspace-mobile-nav {
+    bottom: 76px;
+  }
+}
