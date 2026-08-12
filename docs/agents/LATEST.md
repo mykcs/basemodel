@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-12**
 
-Status: **Production is owned by Vercel Preview + Vercel Production. Cloudflare Pages is a frozen legacy rollback snapshot and should consume zero normal Git builds. Vercel builds are also budgeted: batch coherent work and avoid push loops.**
+Status: **Vercel is the only ordinary deployment provider for this repository. PRs use Vercel Preview; `main` uses Vercel Production. Vercel deployments/builds are budgeted, so batch coherent work and avoid push loops.**
 
 ## Current architecture authority
 
@@ -17,35 +17,17 @@ non-main branch / PR
 main
   -> Vercel Production
   -> https://basemodel-preview.vercel.app
-
-Cloudflare Pages
-  -> legacy snapshot / rollback only
-  -> no ordinary Preview or Production Build
 ```
 
 Read `current/hosting-architecture.md` and `current/deployment-policy.md` before hosting/release changes.
 
-## Why the prior Pages decision changed
-
-The 2026-08-11 audit correctly concluded that provider count alone does not reduce build count. The owner then made the stronger requirement explicit: **stop spending Cloudflare Pages Builds and let Vercel own both build environments.** That requirement superseded the prior steady-state choice.
-
-The application stack is unchanged: Astro + React + GitHub remain. This is deployment ownership consolidation, not a Next.js/framework migration.
-
 ## Production identity
 
-Current Vercel canonical target:
+Current canonical Production target:
 
 `https://basemodel-preview.vercel.app`
 
-The code treats stale `PUBLIC_SITE_URL=https://basemodel.pages.dev` as legacy and falls back to the Vercel Production identity. Vercel Preview is automatically `noindex` via `VERCEL_ENV=preview`; Production is indexable and must be verified after release.
-
-An independent custom domain remains a recommended future product-identity improvement, but domain purchase is not required and must not be performed without explicit spending authorization.
-
-## Cloudflare boundary
-
-**Cloudflare Pages Build = 0** for normal work. Until the external Pages Git integration can be disabled, branch and merge commits should keep the `[CF-Pages-Skip]` convention. The existing `basemodel.pages.dev` deployment remains available as a frozen rollback/legacy snapshot; do not update it just to keep it synchronized.
-
-Direct Upload and `basemodel-workers-shadow` remain dormant Cloudflare-specific diagnostics, not release paths.
+Vercel Preview is automatically `noindex` via `VERCEL_ENV=preview`. Production is indexable and must be verified after release. An independent custom domain remains a possible future improvement, but domain purchase requires explicit spending authorization.
 
 ## Ordinary workflow
 
@@ -53,12 +35,12 @@ Direct Upload and `basemodel-workers-shadow` remain dormant Cloudflare-specific 
 2. inspect overlapping PRs and decide whether work is independent, stacked, or already superseded;
 3. finish one coherent change and run the strongest available local/Agent validation before the first provider-triggering push;
 4. publish the branch as one atomic multi-file push whenever the tool allows it;
-5. inspect the exact-head Vercel Preview + repository Gate/build;
-6. batch any evidence-driven fixes into one corrective push rather than pushing every small edit;
-7. sync against current `main` only when it moved materially;
-8. merge with `[CF-Pages-Skip]` while legacy Pages integration exists;
+5. inspect the exact-head Vercel Preview, repository Gate/build logs and real routes;
+6. batch evidence-driven fixes into at most one normal corrective push rather than pushing every small edit;
+7. synchronize against current `main` only when it moved materially;
+8. merge the accepted release to `main`;
 9. verify the Vercel Production deployment separately;
-10. report Cloudflare as unchanged rollback unless authoritative provider evidence says otherwise.
+10. report Vercel trigger counts/status and Production acceptance.
 
 ## Vercel build budget
 
@@ -78,9 +60,27 @@ A build is justified by a meaningful review checkpoint, not by every file write 
 
 If several accepted PRs are intended for the same release window, consider one explicit integration/release head and one Production merge when authorship, review, rollback and ownership remain clear. Do not combine unrelated unfinished work merely to save a build.
 
+## Vercel-first reporting
+
+Ordinary completion reports should lead with:
+
+```text
+Repository Gate/build
+Vercel deployment triggers: total / READY / ERROR / CANCELED / ignored when known
+exact-head Preview acceptance
+merge commit
+Vercel Production deployment and public verification
+```
+
+Do not add Cloudflare or another legacy provider to an ordinary report merely because historical configuration or an old snapshot still exists. Mention legacy hosting only when the task explicitly concerns retirement/rollback, the legacy surface changed, or live evidence shows unexpected activity.
+
+## Legacy hosting note — conditional only
+
+Historical Cloudflare material and dormant fallback scripts are not part of the normal workflow. A still-connected external Git integration may require an existing skip prefix until it is disabled account-side. Treat that as a silent compatibility safeguard, not as a normal deployment step or completion-report line.
+
 ## Open work safety
 
-Do not mix deployment-policy changes with unrelated product PRs. At this handoff, #121, #125 and #119 are separate product work; #116 is an older divergent UI branch. Re-check live PR state before acting.
+Do not mix deployment-policy changes with unrelated product PRs. Re-check live PR state before acting; older PR numbers in historical notes are not current authority.
 
 ## Agent reading order
 
@@ -94,8 +94,4 @@ Do not mix deployment-policy changes with unrelated product PRs. At this handoff
 8. `current/repository-map.md`
 9. executable source/config/tests
 
-History is evidence, not current policy. If older material says Cloudflare Pages is Production, this handoff plus the current hosting/deployment files wins.
-
-## External boundary still requiring provider access
-
-The connected session can change GitHub and Vercel, but currently has no Cloudflare account write connector. Therefore disabling Pages Git automatic deployments or adding an old-host redirect is an external Cloudflare-account action. Do not spend a Pages Build as a workaround. The repository protects zero-build behavior with skip commits until that provider-side switch is available.
+History is evidence, not current policy. If older material describes Cloudflare as an active Preview or Production provider, this handoff plus current Vercel config and deployment policy wins.

@@ -9,9 +9,9 @@ GitHub = canonical source
 non-main branches / PRs = Vercel Preview
 main = Vercel Production
 Production identity = https://basemodel-preview.vercel.app
-Cloudflare Pages = frozen legacy rollback snapshot
-Cloudflare Direct Upload / Workers shadow = Cloudflare-specific fallback only
 ```
+
+**Vercel is the only ordinary deployment authority.** Historical provider files, snapshots or fallback scripts are not normal Preview, release, Production verification, quota-reporting or completion-report surfaces.
 
 GitHub Actions and GitHub Pages remain retired.
 
@@ -27,7 +27,7 @@ Preview acceptance requires exact-head provider success plus real route/metadata
 
 ## Vercel build-budget discipline
 
-Vercel is the normal deployment provider, but its deployments/builds are still finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.
+Vercel deployments/builds are finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.
 
 Default target for a coherent feature:
 
@@ -50,7 +50,7 @@ Rules:
 7. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
 8. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
 9. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
-10. When build usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
+10. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
 
 ## Executable build-scope protection
 
@@ -74,13 +74,7 @@ merge to main
 -> verify indexability, canonical/hreflang, robots/sitemap, representative routes and interaction
 ```
 
-Until Cloudflare Pages Git integration is disabled externally, the merge/release commit should keep `[CF-Pages-Skip]`. This is the opposite of the old Pages release rule: Cloudflare is no longer supposed to wake up on release.
-
-## Cloudflare zero-build policy
-
-**Cloudflare Pages Build = 0** for ordinary work and releases. Do not intentionally trigger a Git-connected Pages build unless the owner has first been told why Cloudflare-specific execution is necessary and explicitly authorizes it.
-
-The old Pages deployment remains a rollback/legacy snapshot. Direct Upload and Workers shadow remain optional diagnostic surfaces. Do not commit Cloudflare tokens.
+One accepted release batch should normally create one Production build. Do not add a second `main` micro-commit merely to adjust release notes or wording that could have been included before merge.
 
 ## Repository Gate
 
@@ -88,9 +82,9 @@ Executable truth lives in `package.json`. `npm run verify:deploy` remains provid
 
 Full browser suites and third-party/network audits remain on demand when the changed surface requires them.
 
-## Completion report
+## Vercel-first completion report
 
-Report separately:
+Ordinary completion reports are Vercel-first and report separately:
 
 ```text
 Repository Gate/build
@@ -99,9 +93,18 @@ Vercel Preview + exact head
 Preview route/metadata acceptance
 Merged to main
 Vercel Production deployment + public verification
-Cloudflare Pages Build intentionally triggered: yes/no
-Cloudflare legacy rollback changed: yes/no/unknown
-External provider boundary, if any
+External boundary, only when it materially blocked or changed the result
 ```
+
+Do not include Cloudflare in an ordinary completion report merely because historical config, an old snapshot or dormant fallback code still exists. Mention a legacy provider only when:
+
+- the user explicitly asks about it;
+- the task changes or retires that legacy surface;
+- rollback is actually being exercised; or
+- live provider evidence shows unexpected legacy activity.
+
+## Legacy external-integration safeguard
+
+A historical external Git integration may still exist outside repository control. Until it is disabled account-side, an existing skip prefix may remain necessary as a silent compatibility safeguard. It is not an ordinary deployment stage, quota to monitor, or completion-report line unless it unexpectedly activates or the task explicitly concerns its retirement.
 
 Do not infer exact provider quota counters without authoritative account evidence.
