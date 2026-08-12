@@ -1,9 +1,21 @@
-# OpenEvo reproduction research page
+# OpenEvo × WebShop / ALFWorld reproduction guide
 
 Status: current product/content ownership
-Routes: `/guide/reproduction-c/openevo/`, `/en/guide/reproduction-c/openevo/`
-Primary component: `src/components/OpenEvoReproductionResearch.astro`
-Entry: `src/components/GuideDecisionChapters.astro` → reproduction chapter → **复现 C · 真实案例**.
+Routes: `/guide/openevo-webshop-alfworld/`, `/en/guide/openevo-webshop-alfworld/`
+Primary page shell: `src/components/OpenEvoSeedBenchmarksGuide.astro`
+Execution manual body: `src/components/OpenEvoReproductionResearch.astro`
+Entry: `src/components/GuideDecisionChapters.astro` → paper-comparability chapter → **SEED 相关基准 · OpenEvo**.
+
+## Naming / information-architecture correction
+
+This page is **not Reproduction C** and must never be labeled as such.
+
+The owner clarified that the OpenEvo work is a reproduction/research track on the **WebShop and ALFWorld agent benchmarks discussed in the SEED paper**. The site's SEED “C” item refers to a separate speech-recognition-related misconception/path and is unrelated to this OpenEvo benchmark work.
+
+Canonical Chinese title: **OpenEvo × WebShop / ALFWorld 复现指南**.
+Canonical English title: **OpenEvo × WebShop / ALFWorld Reproduction Guide**.
+
+Do not place the route under `/guide/reproduction-c/`, do not use a “复现 C” kicker, and do not backlink to “SEED 复现 C”.
 
 ## Template contract
 
@@ -72,6 +84,8 @@ Proof: `static contract → real reset/action → real CUDA model action → com
 
 ## UX / validation
 
-Use a narrow numbered academic-document flow, monospaced commands, local Troubleshooting, compact failure index, mobile-safe code/tables, shared bilingual component, and `/guide/reproduction-c/` hierarchy. Never treat setup/stubs/mocks/fallback-only/clean exit/`COMPLETED` as P0.
+Use a narrow numbered academic-document flow, monospaced commands, local Troubleshooting, compact failure index, mobile-safe code/tables, and shared bilingual content. The page may be linked from the Guide's paper-comparability/reproduction chapter as a SEED-related benchmark case, but it is not a “Reproduction C” child page.
+
+Never treat setup/stubs/mocks/fallback-only/clean exit/`COMPLETED` as P0.
 
 Run `npm run verify:deploy` and `npm run build`, then inspect exact-head Vercel Preview for routing, TOC/anchors, commands, mobile overflow, backlinks, evidence boundaries, and execution-manual flow.
