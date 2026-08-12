@@ -13,8 +13,9 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, and `current/audience-centered-technical-copy.md` — current research mission, reproduction and copy ownership.
 8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
-10. `current/repository-map.md` — ownership/change-to-check map.
-11. Task-relevant model/data policies plus executable source, config and tests.
+10. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
+11. `current/repository-map.md` — ownership/change-to-check map.
+12. Task-relevant model/data policies plus executable source, config and tests.
 
 The personal device/lab profile consumer is owned by `current/personal-compute-profile-consumer.md`; editable device facts stay only in `mykcs/fuhuo_20260419`.
 
@@ -32,7 +33,7 @@ Historical Cloudflare files, Direct Upload runbooks, snapshots and Workers-shado
 
 ## Parallel release batches
 
-When the owner asks to ship several open PRs together:
+When the owner asks to ship several open PRs together, load `current/multi-pr-semantic-integration-playbook.md` and follow this release shape:
 
 ```text
 refresh main and every candidate head
@@ -43,6 +44,7 @@ refresh main and every candidate head
 -> merge main once
 -> verify one Vercel Production release
 -> record every worker PR disposition
+-> audit post-release discovery surfaces such as sitemap/robots/canonical/navigation
 ```
 
 A clean textual merge is not semantic acceptance. Preserve ancestry and attribution, but do not let old deployment, UI or research semantics overwrite newer current authority.

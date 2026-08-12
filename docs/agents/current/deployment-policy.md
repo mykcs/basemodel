@@ -54,6 +54,8 @@ Rules:
 
 ## Parallel Agent and stacked-PR integration
 
+The detailed semantic decision procedure is owned by [`multi-pr-semantic-integration-playbook.md`](./multi-pr-semantic-integration-playbook.md). This section owns the provider, build-budget and release boundaries. The historical case that produced the playbook is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
+
 The reusable cross-project protocol is owned by `mykcs/myk-skills/website-improve/references/parallel-agent-delivery.md`. This repository adapts it as follows:
 
 ```text
@@ -63,14 +65,18 @@ latest intended base
 └─ focused worker branch / Draft PR C ┘        -> one exact-head combined Preview
                                                -> one accepted merge to main
                                                -> one Vercel Production build
+                                               -> one post-release route/metadata audit
 ```
 
 - Worker conversations do not merge their PRs to `main` independently when the owner intends one release batch. They record base/head SHA, changed files, checks, dependencies and shared surfaces such as layouts, global CSS, theme tokens, navigation, dependency manifests, lockfiles and deployment configuration.
-- The integration conversation refreshes current `main`, inspects every candidate diff/check, and classifies textual, semantic/UI, dependency/generated and provider/release conflicts. A clean Git merge is not combined-product acceptance.
+- The integration conversation refreshes current `main`, inspects every candidate diff/check, and classifies textual, semantic/UI, research/evidence, device/runtime, dependency/generated, metadata/discovery and provider/release conflicts. A clean Git merge is not combined-product acceptance.
+- Record which current authority owns every material overlapping surface, what each PR contributes, and which outcome is deliberately superseded before constructing the final tree.
 - For stacked PRs, preserve the real dependency chain while it is still under review. Once the selected changes are accepted for one release, create one explicit integration head from the current intended base rather than merging each stacked layer separately into `main`.
+- Choose ancestry deliberately. When worker heads must remain recognized while the resolved final tree differs from the mechanical merge, preserve that ancestry and state the required merge method; do not accidentally squash it away.
 - Run `npm run verify:deploy` and `npm run build` on the exact integrated head. When hosted review is necessary, use one combined Vercel Preview and inspect the affected real routes, desktop/mobile behavior and light/dark themes before release.
 - Earlier worker-branch Previews that already ran remain consumed. Opening a new integration chat or PR cannot retroactively turn them into one build; only future ref updates and current Vercel trigger rules can be controlled.
-- After the integration PR is accepted, merge/update `main` once. Mark worker PRs as merged, superseded or still pending with explicit links instead of leaving ambiguous duplicate release paths.
+- After the integration PR is accepted, merge/update `main` once. Mark worker PRs as merged, incorporated-but-closed, superseded, deferred or rejected with explicit links instead of leaving ambiguous duplicate release paths.
+- After Production is READY, inspect discovery and metadata surfaces separately. The 2026-08-12 release proved that new pages can build and return 200 while still being absent from `sitemap.xml`.
 - Do not batch unrelated or unaccepted work merely to save builds. Reviewability, attribution, rollback and research/product integrity remain hard requirements.
 
 ## Executable build-scope protection
@@ -117,7 +123,7 @@ Vercel Production deployment + public verification
 External boundary, only when it materially blocked or changed the result
 ```
 
-For a parallel release batch, also report candidate PRs inspected, accepted/deferred/superseded, conflict classes checked, integration head SHA, combined Preview evidence and final worker-PR disposition.
+For a parallel release batch, also report candidate PRs inspected, accepted/deferred/superseded, conflict classes checked, integration head SHA, combined Preview evidence, merge method, final worker-PR disposition and any post-release corrective PR.
 
 Do not include Cloudflare in an ordinary completion report merely because historical config, an old snapshot or dormant fallback code still exists. Mention a legacy provider only when:
 
