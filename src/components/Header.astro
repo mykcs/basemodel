@@ -12,14 +12,12 @@ interface NavItemDefinition extends NavPathDefinition {
   label: string;
   description: string;
 }
-interface NavGroupDefinition {
+interface NavGroupDefinition extends NavPathDefinition {
   id: 'reproduce-seed' | 'train-openevo' | 'foundations';
   index: string;
   label: string;
   action: string;
   description: string;
-  landingPath: string;
-  landingMatch?: MatchMode;
   items: NavItemDefinition[];
   activePaths?: NavPathDefinition[];
 }
@@ -43,8 +41,8 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: '复现 SEED',
         action: '从共同研究问题开始',
         description: '理解论文协议，完成复现，并检查证据边界。',
-        landingPath: '/research/seed-openevo/',
-        landingMatch: 'exact',
+        path: '/research/seed-openevo/',
+        match: 'exact',
         items: [
           {
             path: '/research/seed-openevo/seed/',
@@ -57,7 +55,6 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
             description: '区分环境可用、真实动作、训练结果与可比较结论。',
           },
         ],
-        activePaths: [{ path: '/data-status/' }],
       },
       {
         id: 'train-openevo',
@@ -65,7 +62,7 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: 'OpenEvo 训练',
         action: '进入可执行实验',
         description: '用 OpenEvo 在 WebShop / ALFWorld 上运行与训练。',
-        landingPath: '/guide/openevo-webshop-alfworld/',
+        path: '/guide/openevo-webshop-alfworld/',
         items: [
           {
             path: '/research/seed-openevo/openevo/',
@@ -104,8 +101,8 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: '相关知识',
         action: '建立实验所需心智模型',
         description: '补齐模型、智能体与训练所需的基础知识。',
-        landingPath: '/guide/',
-        landingMatch: 'exact',
+        path: '/guide/',
+        match: 'exact',
         items: [
           {
             path: '/research/seed-openevo/base-model/',
@@ -138,8 +135,8 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: 'Reproduce SEED',
         action: 'Start from the shared research question',
         description: 'Understand the paper protocol, reproduce it, and inspect the evidence boundary.',
-        landingPath: '/research/seed-openevo/',
-        landingMatch: 'exact',
+        path: '/research/seed-openevo/',
+        match: 'exact',
         items: [
           {
             path: '/research/seed-openevo/seed/',
@@ -152,7 +149,6 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
             description: 'Separate environment readiness, real actions, training results, and comparable claims.',
           },
         ],
-        activePaths: [{ path: '/data-status/' }],
       },
       {
         id: 'train-openevo',
@@ -160,7 +156,7 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: 'Run OpenEvo',
         action: 'Enter the executable experiment',
         description: 'Run and train OpenEvo on WebShop and ALFWorld.',
-        landingPath: '/guide/openevo-webshop-alfworld/',
+        path: '/guide/openevo-webshop-alfworld/',
         items: [
           {
             path: '/research/seed-openevo/openevo/',
@@ -199,8 +195,8 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
         label: 'Foundations',
         action: 'Build the experiment’s mental model',
         description: 'Learn the models, Agents, and training concepts the experiment depends on.',
-        landingPath: '/guide/',
-        landingMatch: 'exact',
+        path: '/guide/',
+        match: 'exact',
         items: [
           {
             path: '/research/seed-openevo/base-model/',
@@ -228,7 +224,7 @@ const groupDefinitions: NavGroupDefinition[] = locale === 'zh'
     ];
 
 const navGroups = groupDefinitions.map((group) => {
-  const landingActive = matchesPath({ path: group.landingPath, match: group.landingMatch });
+  const landingActive = matchesPath(group);
   const items = group.items.map((item) => ({
     ...item,
     href: localePath(locale, item.path),
@@ -240,7 +236,7 @@ const navGroups = groupDefinitions.map((group) => {
 
   return {
     ...group,
-    href: localePath(locale, group.landingPath),
+    href: localePath(locale, group.path),
     landingActive,
     items,
     active,
