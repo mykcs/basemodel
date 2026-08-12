@@ -33,8 +33,9 @@ const shouldNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' || isClo
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isHomePage = localeNeutralPath === '/';
+const isMissionPage = /^\/research\/seed-openevo(?:\/|$)/.test(localeNeutralPath);
 const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
-const seedArea: SeedArea | null = isHomePage ? null
+const seedArea: SeedArea | null = isHomePage || isMissionPage ? null
   : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
   : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
   : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
@@ -96,9 +97,9 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {!isHomePage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
+      {!isHomePage && !isMissionPage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
       {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
-      <SiteRoutePrimer locale={locale} path={localeNeutralPath} />
+      {!isHomePage && !isMissionPage && <SiteRoutePrimer locale={locale} path={localeNeutralPath} />}
       <slot />
     </main>
     <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
