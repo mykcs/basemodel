@@ -27,6 +27,6 @@ describe('semantic release integration policy', () => {
   it('protects ancestry and semantic conflict resolution from squash loss', () => {
     expect(integrationRecord).toContain('current `main` plus every candidate PR head as parents');
     expect(integrationRecord).toContain('Do not squash away this ancestry');
-    expect(integrationRecord).toContain('resolve the final file tree by current product intent');
+    expect(integrationRecord).toContain('the commit tree remains the intentionally resolved product state');
   });
 });
