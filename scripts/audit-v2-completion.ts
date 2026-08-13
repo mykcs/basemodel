@@ -69,7 +69,14 @@ const allCriticalFieldsCovered = modelData.every((model) => criticalFields.every
   return unknown || mapped;
 }));
 pass('V2-DATA-006', modelData.every((model) => model.data_status === 'verified') && allCriticalFieldsCovered, 'all model records are verified and every critical field is source-mapped or semantic unknown');
-pass('V2-CSS-001', read('src/styles/global.css').trim() === "@import './tokens.css';\n@import './site.css';" && read('src/styles/tokens.css').includes('--space-8'), 'tokens are imported and global CSS is an import layer');
+const globalCss = read('src/styles/global.css').trim();
+pass(
+  'V2-CSS-001',
+  globalCss === "@import './tokens.css';\n@import './site.css';\n@import './visual-identity.css';" &&
+    read('src/styles/tokens.css').includes('--space-8') &&
+    existsSync(join(root, 'src/styles/visual-identity.css')),
+  'tokens, site styles, and visual identity layer are imported in stable order',
+);
 pass('V2-A11Y-001', read('src/components/Header.astro').includes('atlas:themechange') && read('src/components/landscape/LandscapeECharts.tsx').includes('atlas:themechange'), 'theme state is exposed to chart refresh');
 pass('V2-A11Y-002', read('src/styles/site.css').includes('prefers-reduced-motion') && read('src/styles/site.css').includes('position: sticky'), 'reduced motion and sticky comparison styles exist');
 pass('V2-A11Y-003', read('src/components/landscape/LandscapeD3.tsx').includes("attr('tabindex', 0)"), 'SVG points are keyboard reachable');
