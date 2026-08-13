@@ -15,6 +15,10 @@ describe('Vercel production deployment architecture', () => {
   const playwright = readText('../../playwright.config.ts');
   const ogCover = readText('../../public/og-cover.svg');
   const packageJson = readJson<{ scripts: Record<string, string> }>('../../package.json');
+  const vercelConfig = readJson<{
+    git?: { deploymentEnabled?: Record<string, boolean> };
+    github?: { autoJobCancelation?: boolean };
+  }>('../../vercel.json');
 
   it('keeps GitHub Actions retired', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
@@ -41,6 +45,15 @@ describe('Vercel production deployment architecture', () => {
     expect(packageJson.scripts['verify:deploy']).toContain('npm test');
     expect(buildCloudflare).toContain("run('npm', ['run', 'verify:deploy'])");
     expect(buildCloudflare).toContain('Legacy/fallback Cloudflare validation only');
+  });
+
+  it('spends automatic Vercel deployments only on production and semantic release branches', () => {
+    expect(vercelConfig.git?.deploymentEnabled).toEqual({
+      '*': false,
+      main: true,
+      'agent/semantic-release-*': true,
+    });
+    expect(vercelConfig.github?.autoJobCancelation).toBe(true);
   });
 
   it('does not maintain GitHub Actions dependencies through Dependabot', () => {
