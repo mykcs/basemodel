@@ -1,12 +1,10 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import Seed3090EvidenceGate from '../../../components/research/Seed3090EvidenceGate.astro';
-import Seed3090PairedRunAudit from '../../../components/research/Seed3090PairedRunAudit.astro';
+import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × SEED 实验结果" description="展示 seed3090 的 V0 / O1 比较怎样固定模型、任务、随机种子和预算，并保存动作、评分与来源记录；只有实验有效后，才比较外部文本记忆是否帮助 WebShop。" locale={locale}>
+<AppLayout title="OpenEvo × SEED 实验结果" description="展示 seed3090 最新的 OpenEvo official SD-LoRA × WebShop 参数进化：真实训练闭环、关键运行结果、声明边界与下一轮科学诊断；明确区分工程跑通与稳定效果。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
-  <Seed3090EvidenceGate locale={locale} />
-  <Seed3090PairedRunAudit locale={locale} />
+  <Seed3090ParametricProgress locale={locale} />
 </AppLayout>

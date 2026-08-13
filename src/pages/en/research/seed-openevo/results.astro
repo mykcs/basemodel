@@ -1,12 +1,10 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
-import Seed3090EvidenceGate from '../../../../components/research/Seed3090EvidenceGate.astro';
-import Seed3090PairedRunAudit from '../../../../components/research/Seed3090PairedRunAudit.astro';
+import Seed3090ParametricProgress from '../../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × SEED experiment results" description="Show how the seed3090 V0/O1 pair holds the model, tasks, random seeds, and budget fixed while preserving actions, scores, and source records; compare whether external text memory helps WebShop only after the runs are valid." locale={locale}>
+<AppLayout title="OpenEvo × SEED experiment results" description="Show the latest seed3090 OpenEvo official SD-LoRA × WebShop parametric-evolution evidence: the real training loop, key runs, claim boundaries, and the next scientific diagnosis, with engineering closure separated from stable efficacy." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
-  <Seed3090EvidenceGate locale={locale} />
-  <Seed3090PairedRunAudit locale={locale} />
+  <Seed3090ParametricProgress locale={locale} />
 </AppLayout>

@@ -8,8 +8,8 @@ const component = read('src/components/research/Seed3090PairedRunAudit.astro');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 
-describe('seed3090 paired-run audit', () => {
-  it('makes external memory the sole treatment in one shared runner contract', () => {
+describe('seed3090 paired-run audit archive', () => {
+  it('preserves external memory as the sole treatment in the historical shared-runner contract', () => {
     expect(component).toContain('external_memory_bytes');
     expect(component).toContain('Same runner and entrypoint');
     expect(component).toContain('同一 runner 与入口');
@@ -28,7 +28,7 @@ describe('seed3090 paired-run audit', () => {
     expect(component).toContain('independent Mac attestation');
   });
 
-  it('renders the fail-closed promotion decision without overstating efficacy', () => {
+  it('preserves the fail-closed promotion decision without presenting it as the current mainline', () => {
     expect(component).toContain('GPU_WORKLOAD_LAUNCHED=0');
     expect(component).toContain('8 episodes / 4 pairs');
     expect(component).toContain('PROMOTION_PASS');
@@ -36,19 +36,10 @@ describe('seed3090 paired-run audit', () => {
     expect(component).toContain('QUALIFICATION_INVALID');
     expect(component).toContain('not an efficacy or significance claim');
     expect(component).toContain('does not show text memory is ineffective');
-  });
-
-  it('is bilingual, static, and follows the existing evidence gate on both result routes', () => {
-    expect(component).toContain("import type { Locale } from '../../i18n'");
-    expect(component).toContain('data-testid="seed3090-paired-run-audit"');
-    expect(component).not.toContain('client:');
 
     for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('Seed3090PairedRunAudit');
-      expect(route).toContain('<Seed3090PairedRunAudit locale={locale} />');
-      expect(route.indexOf('<Seed3090EvidenceGate locale={locale} />')).toBeLessThan(
-        route.indexOf('<Seed3090PairedRunAudit locale={locale} />'),
-      );
+      expect(route).not.toContain('Seed3090PairedRunAudit');
+      expect(route).toContain('Seed3090ParametricProgress');
     }
   });
 });
