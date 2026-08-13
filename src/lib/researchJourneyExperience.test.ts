@@ -22,8 +22,8 @@ describe('three-journey research experience', () => {
   });
 
   it('uses semantic HTML to express both benchmark data pipelines', () => {
-    expect(trajectory).toContain("id: 'webshop'");
-    expect(trajectory).toContain("id: 'alfworld'");
+    expect(trajectory).toMatch(/id:\s*'webshop'/);
+    expect(trajectory).toMatch(/id:\s*'alfworld'/);
     expect(trajectory).toContain('<details class="trajectory-scenario"');
     expect(trajectory).toContain('<ol class="trajectory-dialogue">');
     expect(trajectory).toContain('trajectory-turn__io');
