@@ -166,6 +166,13 @@ describe('2026-08-12 official model catalog differential audit', () => {
       };
       openness: { license_name: string; classification: string };
       access: { api_status: string; api_model_ids: string[] };
+      research: { transformers_support: boolean };
+      hardware: {
+        inference_tier: string;
+        lora_tier: string;
+        full_sft_tier: string;
+        rl_tier: string;
+      };
     }>('../content/models/mistral-large-3.json');
     const families = readJson<{
       families: Array<{ id: string; current_api_model_ids?: string[] }>;
@@ -186,6 +193,15 @@ describe('2026-08-12 official model catalog differential audit', () => {
       access: {
         api_status: 'available',
         api_model_ids: ['mistral-large-2512'],
+      },
+      research: {
+        transformers_support: false,
+      },
+      hardware: {
+        inference_tier: 'multi_gpu',
+        lora_tier: 'not_reported',
+        full_sft_tier: 'not_reported',
+        rl_tier: 'not_reported',
       },
     });
     expect(mistral?.current_api_model_ids).toContain('mistral-large-3');

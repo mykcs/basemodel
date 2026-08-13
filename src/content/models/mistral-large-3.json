@@ -69,15 +69,15 @@
     "suitable_for_lora": "not_reported",
     "suitable_for_sft": true,
     "suitable_for_rl": "not_reported",
-    "transformers_support": "not_reported",
+    "transformers_support": false,
     "vllm_support": true,
     "sglang_support": "not_reported",
     "verl_recipe_available": "not_reported"
   },
   "hardware": {
     "inference_tier": "multi_gpu",
-    "lora_tier": "multi_gpu",
-    "full_sft_tier": "multi_gpu",
+    "lora_tier": "not_reported",
+    "full_sft_tier": "not_reported",
     "rl_tier": "not_reported"
   },
   "sources": [
@@ -114,7 +114,7 @@
       "publisher": "Mistral AI",
       "type": "official_weights",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party weight card provides downloadable instruct weights, a matching Base checkpoint, Apache-2.0 licensing, 256K context and vLLM deployment guidance.",
+      "evidence_note": "The first-party weights card provides downloadable weights, a matching Base checkpoint, Apache-2.0 licensing and vLLM deployment. It documents a single-node multi-GPU inference path (8xH200 with tensor parallelism), explicitly states that Mistral Large 3 was not added to the Transformers architecture at release, and does not provide a reproducible LoRA or full-SFT hardware tier. Fine-tuning permission and the FP8 fine-tuning note are therefore not treated as evidence for a concrete training hardware requirement.",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",
@@ -123,7 +123,11 @@
         "openness.license_name",
         "openness.classification",
         "openness.commercial_use",
+        "research.transformers_support",
         "research.vllm_support",
+        "hardware.inference_tier",
+        "hardware.lora_tier",
+        "hardware.full_sft_tier",
         "openness.base_checkpoint_available",
         "openness.finetuning_allowed",
         "openness.derivative_release_allowed",
@@ -137,14 +141,16 @@
       "publisher": "Mistral AI",
       "type": "official_weights",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party Base checkpoint confirms that the pre-trained foundation weights are separately available for custom post-training under Apache-2.0.",
+      "evidence_note": "The first-party Base checkpoint confirms that the pre-trained foundation weights are separately available for custom post-training under Apache-2.0; it does not establish a reproducible LoRA or full-SFT hardware tier.",
       "supports": [
         "openness.base_checkpoint_available",
         "openness.finetuning_allowed",
         "openness.derivative_release_allowed",
         "openness.commercial_use_allowed",
         "openness.license_name",
-        "research.suitable_for_sft"
+        "research.suitable_for_sft",
+        "hardware.lora_tier",
+        "hardware.full_sft_tier"
       ]
     }
   ],
