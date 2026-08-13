@@ -163,6 +163,8 @@ describe('2026-08-12 official model catalog differential audit', () => {
         total_parameters_b: number;
         active_parameters_b: number;
         context_length: number;
+        expert_count: string;
+        active_experts_per_token: string;
       };
       openness: { license_name: string; classification: string };
       access: { api_status: string; api_model_ids: string[] };
@@ -185,6 +187,8 @@ describe('2026-08-12 official model catalog differential audit', () => {
         total_parameters_b: 675,
         active_parameters_b: 41,
         context_length: 256_000,
+        expert_count: 'not_reported',
+        active_experts_per_token: 'not_reported',
       },
       openness: {
         license_name: 'Apache-2.0',
@@ -204,6 +208,7 @@ describe('2026-08-12 official model catalog differential audit', () => {
         rl_tier: 'not_reported',
       },
     });
+    expect(model.architecture).not.toHaveProperty('active_experts_per_toen');
     expect(mistral?.current_api_model_ids).toContain('mistral-large-3');
   });
 });
