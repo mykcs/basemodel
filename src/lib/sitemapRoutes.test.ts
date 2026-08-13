@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   bilingualStaticPaths,
@@ -10,10 +11,24 @@ const missionPaths = [
   '/research/seed-openevo/base-model/',
   '/research/seed-openevo/seed/',
   '/research/seed-openevo/openevo/',
+  '/research/seed-openevo/experiment/',
   '/research/seed-openevo/benchmarks/',
   '/research/seed-openevo/loops/',
   '/research/seed-openevo/results/',
 ];
+
+const missionRouteFiles = (directory: string) =>
+  readdirSync(new URL(directory, import.meta.url))
+    .filter((name) => name.endsWith('.astro'))
+    .sort();
+
+const missionRoutePaths = missionRouteFiles('../pages/research/seed-openevo/').map((name) =>
+  name === 'index.astro'
+    ? '/research/seed-openevo/'
+    : `/research/seed-openevo/${name.replace(/\.astro$/, '')}/`,
+);
+
+const englishMissionRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/');
 
 describe('sitemap route coverage', () => {
   it('covers the released bilingual product and research routes', () => {
@@ -23,6 +38,16 @@ describe('sitemap route coverage', () => {
       ...missionPaths,
     ]) {
       expect(bilingualStaticPaths).toContain(path);
+    }
+  });
+
+  it('keeps every mission route in the sitemap and preserves bilingual route parity', () => {
+    expect(new Set(missionPaths)).toEqual(new Set(missionRoutePaths));
+    expect(englishMissionRouteFiles).toEqual(
+      missionRouteFiles('../pages/research/seed-openevo/'),
+    );
+    for (const path of missionRoutePaths) {
+      expect(bilingualStaticPaths, `${path} is missing from the sitemap`).toContain(path);
     }
   });
 
