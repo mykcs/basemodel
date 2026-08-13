@@ -82,9 +82,9 @@ assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>
 const tokens = read('src/styles/tokens.css');
 const hardening = read('src/styles/final-hardening.css');
 const layout = read('src/layouts/AppLayout.astro');
-assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #9c3e2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens provide dedicated light/dark foreground pairs');
+assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #8f3d2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens preserve the current Research Editorial × Experimental Workbench identity with dedicated light/dark foreground pairs');
 assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.includes('.workspace-grid') && hardening.includes('.intent-row') && hardening.includes('.guide-chapter') && hardening.includes('.memo-readable'), 'research-critical typography, workbench density, and editorial hierarchy are hardened');
-assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet is loaded last');
+assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet follows design refinement');
 assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
 
 const actionableLayer = read('src/components/common/ActionableContentLayer.astro');
