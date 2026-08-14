@@ -11,7 +11,7 @@ const scenarios = [
 ---
 <section class:list={['trajectory-lab',`trajectory-lab--${context}`]} aria-labelledby={`trajectory-title-${context}`} data-agent-trajectory>
   <header><span>{t('Benchmark 数据流','Benchmark data flow')}</span><h2 id={`trajectory-title-${context}`}>{t('WebShop 与 ALFWorld 数据流','WebShop and ALFWorld data flow')}</h2><p>{t('两种环境都需要保存原始 observation、模型 action、环境反馈、评分与终止原因；差别在交互结构和评价信号。','Both environments require raw observations, model actions, environment feedback, scoring, and termination reasons; their interaction structures and evaluation signals differ.')}</p></header>
-  <div class="scenario-grid">{scenarios.map((scenario)=><article><div class="scenario-title"><span>{scenario.kind}</span><h3>{scenario.name}</h3></div><p class="input"><strong>{t('输入','Input')}</strong>{scenario.input}</p><ol>{scenario.steps.map((step,index)=><li><b>{String(index+1).padStart(2,'0')}</b><span>{step}</span>{index<scenario.steps.length-1&&<i aria-hidden="true">↓</i>}</li>)}</ol></article>)}</div>
+  <div class="scenario-grid">{scenarios.map((scenario)=><article><div class="scenario-title"><span>{scenario.kind}</span><h3>{scenario.name}</h3></div><p class="input"><strong>{t('输入','Input')}</strong>{scenario.input}</p><ol>{scenario.steps.map((step,index)=><li><b>{String(index+1).padStart(2,'0')}</b><span>{step}</span>{index < scenario.steps.length - 1 ? <i aria-hidden="true">↓</i> : null}</li>)}</ol></article>)}</div>
   <aside class="evolution"><strong>{t('轨迹的后续处理','Downstream trajectory processing')}</strong><div><span>SEED</span><p>trajectory → hindsight skill → GRPO + OPD → policy update</p></div><div><span>OpenEvo</span><p>sealed trajectory → evolution method → artifact / adapter → successor revision</p></div></aside>
 </section>
 <style>
