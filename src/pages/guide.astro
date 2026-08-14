@@ -29,6 +29,7 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
     <section class="section" aria-labelledby="openevo-guide-title">
       <div class="section-heading"><div><span class="section-kicker">当前实验</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
       <p>当前主线已经离开 RTX6（4×RTX3090）。正式实验由 <code>openevo-experiment</code> 维护，当前实验分配为 <strong>5×RTX5090</strong>；Phase G 已完成，下一阶段是 Phase H0 Natural Success Search。</p>
+      <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>。当前 5×RTX5090 分配和服务器可见 8×RTX5090 属于实际实验/资产记录，运行时间与显存仍以具体真机 profiling 为准。</p>
       <div class="guide-cards">
         <a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><strong>复现指南</strong><span>当前运行拓扑、实验身份、WebShop 记录与 Phase H0</span></a>
         <a href={localePath('zh','/research/seed-openevo/experiment/')}><strong>实验入口</strong><span>WebShop 任务数据流和当前实验阶段</span></a>
@@ -44,5 +45,5 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
 </AppLayout>
 
 <style>
-  .guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.guide-cards a{padding:1rem;border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none}.guide-cards strong,.guide-cards span{display:block}.guide-cards span{margin-top:.4rem;color:var(--muted);font-size:.76rem;line-height:1.45}.section>p{max-width:78ch;color:var(--muted);line-height:1.65}@media(max-width:720px){.guide-cards{grid-template-columns:1fr}}
+  .guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.guide-cards a{padding:1rem;border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none}.guide-cards strong,.guide-cards span{display:block}.guide-cards span{margin-top:.4rem;color:var(--muted);font-size:.76rem;line-height:1.45}.section>p{max-width:78ch;color:var(--muted);line-height:1.65}.hardware-truth{padding:.75rem .85rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted);font-size:.78rem}@media(max-width:720px){.guide-cards{grid-template-columns:1fr}}
 </style>
