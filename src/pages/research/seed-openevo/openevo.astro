@@ -3,10 +3,12 @@ import AppLayout from '../../../layouts/AppLayout.astro';
 import OpenEvoModelExperimentGuide from '../../../components/research/OpenEvoModelExperimentGuide.astro';
 import OpenEvoFrameworkDiagram from '../../../components/research/OpenEvoFrameworkDiagram.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
 <AppLayout title="OpenEvo 实验：跨任务演化、模型选择与新手问题" description="解释 OpenEvo 的跨任务演化循环、为什么以 Qwen2.5-3B 为基线，以及 OpenEvo 如何从真实任务轨迹产生可验证的 successor revision。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo" />
+  <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
   <OpenEvoFrameworkDiagram locale={locale} />
   <OpenEvoModelExperimentGuide locale={locale} />
 </AppLayout>

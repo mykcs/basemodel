@@ -2,6 +2,7 @@
 import AppLayout from '../../layouts/AppLayout.astro';
 import { localePath } from '../../i18n';
 import ServerAuthorityDiagram from '../../components/research/ServerAuthorityDiagram.astro';
+import InteractiveResearchExplainer from '../../components/research/InteractiveResearchExplainer.tsx';
 const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
 ---
@@ -13,6 +14,7 @@ const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
       <p class="lede">The active OpenEvo × WebShop scientific experiment is maintained in <code>openevo-experiment</code> and currently has a <strong>5×RTX5090</strong> allocation. RTX6 with 4×RTX3090 remains only as historical experiment and migration evidence.</p>
     </header>
 
+    <InteractiveResearchExplainer locale="en" kind="server" client:visible />
     <ServerAuthorityDiagram locale="en" />
 
     <section class="section" aria-labelledby="current-server-title">
