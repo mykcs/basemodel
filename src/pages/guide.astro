@@ -1,11 +1,13 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
+import { getCollection } from 'astro:content';
 import { getMessages, localePath } from '../i18n';
 import AgentToSeedBridge from '../components/AgentToSeedBridge.astro';
 const m = getMessages('zh');
+const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
 <AppLayout title={m.guide.pageTitle} description="理解 Agent、SEED 与 OpenEvo 的运行和训练机制，并进入当前 WebShop 实验与复现指南。" locale="zh">
-  <div class="shell editorial-page guide-learning-page">
+  <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
     <header class="page-header">
       <span class="section-kicker">学习指南</span>
       <h1>Agent、SEED 与 OpenEvo</h1>

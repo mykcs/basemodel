@@ -1,11 +1,13 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
+import { getCollection } from 'astro:content';
 import { getMessages, localePath } from '../../i18n';
 import AgentToSeedBridge from '../../components/AgentToSeedBridge.astro';
 const m = getMessages('en');
+const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
 <AppLayout title={m.guide.pageTitle} description="Understand Agent, SEED, and OpenEvo runtime/training mechanisms, then enter the current WebShop experiment and reproduction guide." locale="en">
-  <div class="shell editorial-page guide-learning-page">
+  <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
     <header class="page-header">
       <span class="section-kicker">Learning guide</span>
       <h1>Agent, SEED, and OpenEvo</h1>
