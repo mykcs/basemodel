@@ -19,7 +19,7 @@ export function PaperRoleDiagram({ paper, models, locale, m: _m }: { paper: Atla
     const nodes = paper.workflow.nodes;
     const edges = new Map(paper.workflow.edges.map((edge) => [`${edge.from}->${edge.to}`, edge]));
     return <section className="paper-role-diagram" aria-labelledby="paper-role-diagram-title">
-      <h2 id="paper-role-diagram-title">{locale === 'zh' ? '这些模型按什么顺序参与实验' : 'How the models take part in the experiment'}</h2>
+      <h2 id="paper-role-diagram-title">{locale === 'zh' ? '模型参与顺序' : 'Model participation order'}</h2>
       <p className="muted">{locale === 'zh' ? '按论文记录展示模型、环境和步骤之间的先后关系；论文没有记录的连接不会补写。' : 'Show the recorded order between models, environments, and steps. Connections the paper did not record are left absent.'}</p>
       <ol className="workflow-flow">
         {nodes.map((node, index) => <li className="workflow-node" key={node.id}>
@@ -37,7 +37,7 @@ export function PaperRoleDiagram({ paper, models, locale, m: _m }: { paper: Atla
 
   const roles = [...new Set(paper.models.map((use) => use.role))];
   return <section className="paper-role-diagram" aria-labelledby="paper-role-diagram-title">
-    <h2 id="paper-role-diagram-title">{locale === 'zh' ? '这些模型在论文里分别负责什么' : 'What each model does in the paper'}</h2>
+    <h2 id="paper-role-diagram-title">{locale === 'zh' ? '模型角色' : 'Model roles'}</h2>
     <p className="muted">{locale === 'zh' ? '论文没有记录完整步骤顺序时，就按 actor、teacher、critic 等已记录职责把模型分组。' : 'When the paper does not record a complete step-by-step workflow, group models by the recorded actor, teacher, critic, or other roles.'}</p>
     <div className="role-topology">{roles.map((role) => <div className="role-node" key={role}>
       <strong>{roleLabel(role, locale)}</strong>

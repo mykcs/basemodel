@@ -20,26 +20,22 @@ function replacementVerdict(base: AtlasModel, rep: AtlasModel, task: ResearchTas
 export function SubstituteLab({ models, papers, m, locale = 'zh' }: Props) {
   const task = useStore(researchTask);
   const [baseId, setBaseId] = useState('');
-  useEffect(() => {
-    if (task.reference?.modelId) setBaseId(task.reference.modelId);
-  }, [task.reference?.modelId]);
+  useEffect(() => { if (task.reference?.modelId) setBaseId(task.reference.modelId); }, [task.reference?.modelId]);
   const base = models.find((model) => model.id === baseId) ?? null;
   const substitutes = useMemo(() => {
     if (!base) return [];
     const scored = scoreModels(models, papers, task);
-    return scored
-      .filter((entry) => entry.model.id !== base.id && entry.eligible)
+    return scored.filter((entry) => entry.model.id !== base.id && entry.eligible)
       .map((entry) => ({ entry, impacts: analyzeReplacement(base, entry.model, task, papers) }))
       .filter(({ entry }) => (entry.model.vendor === base.vendor && entry.model.family === base.family) || entry.model.release_date > base.release_date)
-      .sort((left, right) => right.entry.score - left.entry.score)
-      .slice(0, 4);
+      .sort((left, right) => right.entry.score - left.entry.score).slice(0, 4);
   }, [base, models, papers, task]);
 
-  const title = locale === 'zh' ? '换一个模型会改变什么？' : 'What changes if you replace the model?';
+  const title = locale === 'zh' ? '模型替换分析' : 'Model replacement analysis';
   return <section className="substitute-lab" aria-label={title}>
     <h2>{title}</h2>
     <p className="muted">{locale === 'zh' ? '同一个替代模型会分别按严格复现、方法复现和现代化重跑判断。下方表格按你在工作台选择的复现方式解释每项变化。' : 'The same replacement is judged separately for strict reproduction, method reproduction, and a modern rerun. The table below explains each change using the reproduction mode selected in the workspace.'}</p>
-    <div className="field"><label htmlFor="substitute-base">{locale === 'zh' ? '要替换哪个模型' : 'Model to replace'}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
+    <div className="field"><label htmlFor="substitute-base">{locale === 'zh' ? '要替换的模型' : 'Model to replace'}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
     {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} task={task} papers={papers} m={m} locale={locale} />)}</div>}
   </section>;
 }
@@ -61,13 +57,10 @@ function SubstituteCard({ base, rep, impacts, task, papers, m, locale }: { base:
 
   return <article className="substitute-card">
     <h3>{base.name} → {rep.name}</h3>
-    <div className="replacement-mode-verdicts" aria-label={locale === 'zh' ? '三种复现方式下是否适合替换' : 'Replacement verdicts by reproduction mode'}>
-      {modes.map((mode) => {
-        const verdict = replacementVerdict(base, rep, task, papers, mode);
-        return <div className={`replacement-verdict verdict-${verdict}`} key={mode}><span>{modeLabels[mode]}</span><strong>{verdictLabels[verdict]}</strong></div>;
-      })}
+    <div className="replacement-mode-verdicts" aria-label={locale === 'zh' ? '三种复现方式下的替换判断' : 'Replacement verdicts by reproduction mode'}>
+      {modes.map((mode) => { const verdict = replacementVerdict(base, rep, task, papers, mode); return <div className={`replacement-verdict verdict-${verdict}`} key={mode}><span>{modeLabels[mode]}</span><strong>{verdictLabels[verdict]}</strong></div>; })}
     </div>
-    <p className="muted">{locale === 'zh' ? '最主要的变化' : 'Main change'}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
-    <table className="substitute-table"><thead><tr><th scope="col">{locale === 'zh' ? '比较项' : 'Field'}</th><th scope="col">{locale === 'zh' ? '原模型' : 'Original'}</th><th scope="col">{locale === 'zh' ? '替代模型' : 'Replacement'}</th><th scope="col">{locale === 'zh' ? '会带来什么变化' : 'What changes'}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
+    <p className="muted">{locale === 'zh' ? '主要变化' : 'Main change'}: {m.research.substitute.effect[visible.find((impact) => impact.effect !== 'none')?.effect ?? 'none']}</p>
+    <table className="substitute-table"><thead><tr><th scope="col">{locale === 'zh' ? '比较项' : 'Field'}</th><th scope="col">{locale === 'zh' ? '原模型' : 'Original'}</th><th scope="col">{locale === 'zh' ? '替代模型' : 'Replacement'}</th><th scope="col">{locale === 'zh' ? '变化' : 'Change'}</th></tr></thead><tbody>{visible.map((impact) => <tr key={impact.dimension} className={`impact-${impact.severity}`}><th scope="row">{m.research.substitute.impactDimensions[impact.dimension]}</th><td>{valueLabel(impact.before)}</td><td>{valueLabel(impact.after)}</td><td><strong>{m.research.substitute.severity[impact.severity]}</strong><br /><span>{m.research.substitute.impactCodes[impact.explanationCode]}</span><br /><small>{m.research.substitute.confidence[impact.confidence]}</small></td></tr>)}</tbody></table>
   </article>;
 }
