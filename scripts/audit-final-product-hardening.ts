@@ -46,18 +46,19 @@ assert(
     && home.includes('primaryIntents')
     && home.includes("'/research/seed-openevo/'")
     && home.includes("'/guide/openevo-webshop-alfworld/'")
-    && home.includes("'/research/seed-openevo/loops/'"),
-  'home starts from the explicit SEED × OpenEvo experiment and offers review / run / compare entry paths',
+    && home.includes("'/research/seed-openevo/results/'"),
+  'home starts from the explicit SEED × OpenEvo experiment and offers overview / current-results / reproduction entry paths',
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes('用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验')
+  missionHero.includes("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')")
     && missionHero.includes('Qwen2.5-3B-Instruct')
-    && missionHero.includes("t('SEED 与 OpenEvo', 'SEED and OpenEvo')")
-    && missionHero.includes("t('ALFWorld 与 WebShop', 'ALFWorld and WebShop')")
-    && missionHero.includes("t('分数、轨迹与失败原因', 'Scores, trajectories, and failures')")
-    && missionHero.includes("t('修改 OpenEvo', 'Change OpenEvo')"),
-  'the first screen names the tool, reproduction action, model, both methods, both environments, saved results, and the OpenEvo change',
+    && missionHero.includes("title:'SEED / OpenEvo'")
+    && missionHero.includes("title:'ALFWorld / WebShop'")
+    && missionHero.includes("t('实验结果','Experiment results')")
+    && missionHero.includes('5× RTX 5090')
+    && missionHero.includes('Phase H0'),
+  'the first screen names the research subject, model, both methods, both environments, current results, and current experiment status without promoting workflow prose into headings',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
