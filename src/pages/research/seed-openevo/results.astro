@@ -1,10 +1,12 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+import OpenEvoExperimentProgram from '../../../components/research/OpenEvoExperimentProgram.astro';
 import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × SEED 实验结果" description="展示 seed3090 最新的 OpenEvo official SD-LoRA × WebShop 参数进化：真实训练闭环、关键运行结果、声明边界与下一轮科学诊断；明确区分工程跑通与稳定效果。" locale={locale}>
+<AppLayout title="OpenEvo × SEED 实验结果" description="从已退休的 seed3090 / openevo-webshop 历史证据追踪到当前 openevo-experiment RTX 5090 主线：展示 Phase D–F 的真实参数更新与 reload 证据、W&B host gate，以及尚未消费正式任务的 Phase G base / adapter 三臂 WebShop 比较。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
+  <OpenEvoExperimentProgram locale={locale} />
   <Seed3090ParametricProgress locale={locale} />
 </AppLayout>
