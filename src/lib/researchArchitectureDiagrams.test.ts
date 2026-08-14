@@ -45,7 +45,7 @@ describe('research architecture diagrams', () => {
   });
 
   it('renders dedicated SEED and OpenEvo method architectures', () => {
-    for (const term of ['on-policy rollout', 'hindsight skill', 'dual-context re-score', 'GRPO + OPD']) expect(seed).toContain(term);
+    for (const term of ['ON-POLICY', 'environment rollout', 'hindsight skill', 'dual-context re-score', 'GRPO + OPD']) expect(seed).toContain(term);
     for (const term of ['PROJECT HEAD', 'SEALED EVIDENCE', 'EVOLUTION METHOD', 'SUCCESSOR REVISION', 'SD-LoRA train']) expect(openevo).toContain(term);
     expect(compare).toContain('SEED vs OpenEvo');
   });

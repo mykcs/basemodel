@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const header = read('../components/Header.astro');
 const trajectory = read('../components/research/AgentEnvironmentTrajectory.astro');
+const benchmarkDiagram = read('../components/research/BenchmarkDatasetDiagram.astro');
+const comparison = read('../components/research/SeedOpenEvoComparisonDiagram.astro');
 const gateway = read('../components/research/OpenEvoExperimentGateway.astro');
 const benchmarkZh = read('../pages/research/seed-openevo/benchmarks.astro');
 const benchmarkEn = read('../pages/en/research/seed-openevo/benchmarks.astro');
@@ -17,18 +19,23 @@ describe('three-journey research experience', () => {
     expect(header).toContain('/research/seed-openevo/experiment/');
   });
 
-  it('keeps both benchmark data flows visible with normal subject headings', () => {
-    expect(trajectory).toContain("name:'WebShop'");
-    expect(trajectory).toContain("name:'ALFWorld'");
-    expect(trajectory).toContain('WebShop 与 ALFWorld 数据流');
-    expect(trajectory).toContain('trajectory-lab');
-    expect(trajectory).toContain('normalized score and exact success');
-    expect(trajectory).toContain('task success and failure traces');
+  it('keeps both benchmark data flows visible as real architecture diagrams', () => {
+    expect(trajectory).toContain('BenchmarkDatasetDiagram');
+    expect(benchmarkDiagram).toContain('WebShop');
+    expect(benchmarkDiagram).toContain('ALFWorld');
+    expect(benchmarkDiagram).toContain('WebShop 与 ALFWorld 的数据集设定');
+    expect(benchmarkDiagram).toContain('1.18M');
+    expect(benchmarkDiagram).toContain('valid_seen');
+    expect(benchmarkDiagram).toContain('pipe-arrow');
+    expect(benchmarkDiagram).toContain('branch-arrow');
   });
 
-  it('keeps SEED and OpenEvo downstream processing explicit', () => {
-    expect(trajectory).toContain('trajectory → hindsight skill → GRPO + OPD → policy update');
-    expect(trajectory).toContain('sealed trajectory → evolution method → artifact / adapter → successor revision');
+  it('keeps SEED and OpenEvo downstream processing explicit without text-arrow-only diagrams', () => {
+    expect(comparison).toContain('hindsight skill');
+    expect(comparison).toContain('GRPO + OPD');
+    expect(comparison).toContain('sealed evidence');
+    expect(comparison).toContain('successor revision');
+    expect(comparison).toContain('.flow>i:after');
   });
 
   it('exposes the current bilingual OpenEvo gateway and current campaign stage', () => {
