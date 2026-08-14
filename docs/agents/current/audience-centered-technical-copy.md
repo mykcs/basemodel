@@ -2,284 +2,154 @@
 
 Status: current design and writing contract
 Audience: product, design, content, research, and implementation Agents
-Applies to: Basemodel public pages, SEED/OpenEvo research pages, reproduction guides, explanatory callouts, troubleshooting text, and user-facing status language
+Applies to: Basemodel public pages, SEED/OpenEvo research pages, reproduction guides, callouts, troubleshooting, and status language
 
-## Why this document exists
+## Core editorial rule
 
-A technically correct sentence can still be difficult to understand when it starts from project-internal history rather than the reader's situation.
+**Headings name the subject. 标题先命名主题。**
 
-The site is read by:
+A heading is navigation, not a miniature essay, instruction to the reader, disclaimer, or explanation of how the page should be interpreted. H1/H2/H3 should normally be short noun phrases or stable topic names such as:
 
-- the researcher currently running the experiment;
-- students trying to reproduce the work on their own machines;
-- colleagues who know the project exists but do not know its implementation history;
-- Agent practitioners who understand parts of the stack but may not know this laboratory's topology, scripts, names, or previous failures.
+- `ALFWorld 与 WebShop 研究`
+- `实验结果与证据`
+- `SEED 训练阶段`
+- `OpenEvo 演化载体`
+- `WebShop 与 ALFWorld 数据流`
+- `方法摘要`
+- `模型角色`
+- `数据来源与缺失信息`
 
-These readers do not share the conversation, incident log, or assumptions that produced the current implementation. Public copy must supply the missing context before it states a warning or conclusion.
+Put the explanatory sentence immediately below the heading. Put the action in a button, link, checklist item, or body sentence when an action is actually needed.
 
-## Core rule
+Avoid promoting editorial instructions into headings, for example:
 
-For user-facing technical explanations, use this order:
+- `把“曾经成功”“当前准备好”“现在测得结果”分开`
+- `先用一段话看懂方法`
+- `这些模型在论文里分别负责什么`
+- `先做 A，再做 B，最后比较 C`
+- `真正重要的不是 X，而是 Y`
+- `为什么我们现在要……`
+
+These can be useful explanations, but they should not visually outrank the subject itself.
+
+## 1. Concrete language still matters
+
+Normal headings do **not** mean vague headings. Prefer a specific subject over abstract packaging:
+
+- Prefer `Phase G WebShop 对比` over `当前声明边界`.
+- Prefer `Run Manifest 与 W&B` over `可复现与可观察，但不能污染科学变量`.
+- Prefer `参数训练闭环` over `先看“训练”到底发生了什么`.
+- Prefer `公平比较协议` over `先冻结协议，再比较框架`.
+
+Buttons and action links should still say what they do: `查看实验结果`, `打开复现指南`, `比较模型`, `保存实验记录`.
+
+## 2. Separate subject, status, and interpretation
+
+For experiment pages, use three visual levels:
 
 ```text
-common reader situation
-→ practical constraint
-→ why the constraint matters
-→ what this project does
-→ what the reader should do next
+heading: stable subject
+status label / compact fact: current phase, date, hardware, result
+body paragraph: interpretation and claim boundary
 ```
 
-Do not begin with a correction such as “不要混淆……”, “不要再……”, or “当前不再……” unless the preceding sentence has already explained who might make that mistake and why.
-
-## 1. Concrete action before abstract framing
-
-A public title, button, menu item, or first sentence should let the reader answer:
-
-> 谁用什么做什么？作用于哪个具体对象？接下来会得到什么？
-
-Use this default formula:
+Example:
 
 ```text
-actor or tool
-+ concrete action
-+ concrete object
-+ optional result
+H2: 当前实验进展
+status: Phase H0 · 5×RTX5090
+body: Phase G completed 12 WebShop episodes; all three arms had zero score/win outcomes. Phase D–F still provides independent mechanism evidence.
 ```
 
-Good titles usually contain a verb such as `复现`, `运行`, `比较`, `查看`, `保存`, `筛选`, or `核对`, plus a named object such as `OpenEvo`, `SEED`, `ALFWorld`, `WebShop`, a checkpoint, a file, or a result.
+Do not turn the interpretation itself into the largest heading.
 
-Avoid:
+## 3. Hardware chronology must be explicit
 
-> 用 SEED 的两个 Agent 基准，检验并改进 OpenEvo
+Project hardware names are not universal prerequisites and must carry their role in time.
 
-Prefer:
+Current project state (2026-08-14):
 
-> 用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验
+- **current experiment allocation:** `5×RTX5090` on the OpenEvo server;
+- **server inventory fact:** the server record shows `8×RTX5090` visible; visible inventory is not the same as experiment allocation;
+- **historical platform:** `RTX6 / 4×RTX3090`;
+- `seed3090` and `openevo-webshop` are historical/provenance sources;
+- `openevo-experiment` is the active experimental source of truth.
 
-The comparison and improvement goal can follow in the next sentence:
+A historical hardware fact can remain on a page when it explains provenance, but it must not read as the current experiment configuration.
 
-> 在相同模型、提示词、随机种子和计算预算下比较结果，再根据分数、失败轨迹和更新文件决定 OpenEvo 要改什么。
+## 4. Reader context before project shorthand
 
-Avoid:
+Before using a project-specific machine, service, script, phase, or artifact, explain its role once. Examples:
 
-> 把框架与基准讲成一场可追踪的对话
-
-Prefer:
-
-> 逐步展示 OpenEvo 收到什么输入、执行什么动作、得到什么结果，以及下一次任务加载了什么更新。
-
-Words such as `研究任务`, `研究主线`, `研究路径`, `研究地图`, `证据链`, `可追踪的对话`, and `框架改进结论` may describe structure after the concrete action is clear. They must not carry the whole meaning of a heading or call to action by themselves.
-
-Buttons follow the same rule. Prefer `查看实验步骤`, `开始运行 ALFWorld`, `比较 SEED 与 OpenEvo`, and `保存实验记录` over `打开总览`, `进入研究`, `继续探索`, or `形成决策`.
-
-## Canonical example
-
-Avoid:
-
-> 不要把“Mac 有公网”和“RTX6 有公网”混在一起。
-
-This sentence assumes the reader already knows why the Mac and RTX6 are being discussed, that they are different machines, and that network access caused previous failures.
-
-Prefer:
-
-> 复现这类实验时，学生通常会有一台可以访问公网的个人电脑或实验室工作站，同时使用一台位于实验室内网的 GPU 服务器。GPU 服务器主要承担计算任务，可能无法直接访问外网。本项目中，实验室 Mac 负责获取和缓存代码、模型、数据与离线依赖，再通过 SSH / rsync 把同一份实验材料同步到 RTX6；RTX6 负责运行 GPU 实验。
-
-The revised version establishes the general situation first, then explains this project's concrete topology.
-
-## 2. Reader context before project shorthand
-
-Before using a project-specific machine, service, script, status, or acronym, answer the question a new reader will silently ask:
-
-> Why is this object here?
-
-Examples:
-
-- Before `RTX6`, explain that it is a shared laboratory GPU server on an internal network.
-- Before `Mac relay`, explain that a workstation may have internet access while the compute server does not.
-- Before `P0`, state the scientific claim that P0 is designed to prove.
-- Before `snapshot`, explain that ordinary Git transport or worktree ownership may be unreliable in this environment.
-- Before `wheelhouse`, explain that the server needs a repeatable offline dependency bundle.
-
-A label is not an explanation.
-
-## 3. Practical consequence before abstract mechanism
-
-Lead with what changes for the reader, then explain the mechanism.
-
-Prefer:
-
-> 三份 JSON 只证明原始数据存在。还要打开 Lucene 索引并完成一次查询，才能确认 WebShop 搜索链可用。
-
-Over:
-
-> JSON 数据存在还不够，pipeline 必须验证 LuceneSearcher。
-
-The first version explains the evidence gap before naming the technical check.
-
-## 4. Use positive descriptions for the main path
-
-The main path should describe what to do and why. Negative language belongs in safety rules or optional troubleshooting.
-
-Prefer headings such as:
-
-- `用可验证的源码快照避免分支和网络差异`
-- `从固定来源下载并长期缓存`
-- `先建立最小科学运行环境`
-- `分开记录四种结论`
-
-Avoid using these as default section headings:
-
-- `不要把 git clone 当成必需步骤`
-- `不要依赖 Hugging Face`
-- `P0 不是基础设施展示`
-- `P1 / P2 / P3 不要混写`
-
-Safety-critical warnings may use direct prohibitions after the shared context is clear. For example, on a shared GPU server it is appropriate to say not to kill or reset another researcher's process.
-
-## 5. Remove conversation-dependent words
-
-Words such as the following often reveal that public copy was written from an internal debugging conversation:
-
-- 当前
-- 仍然
-- 之前
-- 又
-- 重新
-- 这就是我们踩过的坑
-- 正确修法
-- 不要再
-
-They are not forbidden, but each one needs an explicit reference point.
-
-Ask:
-
-- Current relative to which release, run, or date?
-- Still true after which earlier state?
-- Previous in which documented experiment?
-- Correct for which failure signature and environment?
-
-When the reference point is not useful to a new reader, remove the conversational word and state the durable rule directly.
-
-## 6. Translate mixed jargon at first use
-
-The site can retain precise English technical terms, but the surrounding sentence must explain their role.
-
-Examples:
-
+- `Run Manifest` — the local record that pins experiment identity and inputs;
 - `artifact` — a versioned output produced by an evolution method;
-- `successor revision` — the accepted context/model/adapter state used by a later task;
-- `fallback action` — a predefined safe action used when the model output cannot be executed;
-- `exact snapshot` — source content tied to one commit SHA rather than a moving branch;
-- `wheelhouse` — a local directory containing installable dependency packages for an offline machine.
+- `successor revision` — the accepted state used by a later task;
+- `fallback action` — a predefined action used when model output cannot be executed;
+- `Phase H0` — the Natural Success Search after the bounded Phase G comparison.
 
-Do not replace all terminology with vague Chinese. Explain the term once, then use it consistently.
+After first-use explanation, use the precise technical term consistently instead of replacing it with vague prose.
 
-## 7. Separate public guidance from incident history
+## 5. Current results must use dated evidence
 
-The public success path answers:
+Do not describe a preparation gate as current after the experiment has advanced.
 
-```text
-What do I have?
-What do I need?
-What command do I run?
-What output should I see?
-What does that output prove?
-```
+For the OpenEvo × WebShop line on 2026-08-14:
 
-Incident history answers:
+- Phase D–F: real model generation, SD-LoRA optimizer steps, adapter reload, cumulative state, and nonzero model-output changes are mechanism evidence.
+- Phase G: 12 formal promotion-dev episodes completed across `base`, `adapter1x`, and `cumulative`; all three arms measured `0.000` mean score and `0/4` wins in the bounded matrix.
+- Phase H0: search for natural successful trajectories on new train-only WebShop tasks before learner hyperparameter sweeps.
 
-```text
-What failed before?
-How was it diagnosed?
-What rule prevents recurrence?
-```
+The public page may explain what these results do and do not prove, but that interpretation belongs under a normal result heading.
 
-Keep incident history in `<details>/<summary>`, troubleshooting sections, or Agent documents. A first-time reader should be able to complete the main path without reading the project's chronology.
+## 6. Positive main path; warnings after context
 
-Troubleshooting entries should use:
+The main reading path should state the object, method, and next action positively. Safety or research-integrity prohibitions can be direct after the protected object and consequence are clear.
 
-```text
-common context
-→ visible symptom
-→ likely failure layer
-→ smallest safe check
-→ fix
-```
+Avoid using `不要…`, `不是…`, `不能…`, or incident-history corrections as section titles unless the page is explicitly a warning/error surface.
 
-Do not write them as fragments from a chat transcript.
+## 7. Remove conversation-dependent language
 
-## 8. Explain evidence boundaries in ordinary language
+Words such as `当前`, `之前`, `又`, `重新`, `这次`, and `正确修法` require a visible reference point. Prefer dates, phase names, repository roles, or experiment IDs when chronology matters.
 
-When using a claim ladder, state both what an event proves and what it does not prove.
+Incident history belongs in historical sections, provenance notes, or `<details>` rather than the first screen.
+
+## 8. Evidence boundaries in ordinary language
+
+State what evidence supports without making the boundary itself a theatrical headline.
 
 Examples:
 
-- A clean process exit proves the program ended; it does not prove the task succeeded.
-- Environment reset proves the benchmark can start; it does not prove the model produced a real action.
-- A numeric reward of `0.0` can come from a real run; it does not prove a performance improvement.
-- Historical Kaggle/Colab success can identify a golden environment; it does not prove the current RTX6 run completed.
-- A working vLLM/gateway/Docker path proves infrastructure availability; it is separate from the scientific P0 claim.
+- A clean process exit shows the program ended; task success requires task metrics.
+- A real parameter digest change shows an update occurred; it does not establish reward improvement.
+- Phase G’s all-zero task outcomes show no measured advantage in that bounded matrix; they do not erase the separate Phase D–F mechanism evidence.
+- RTX6 results remain useful historical evidence; they are not the current 5×RTX5090 experiment state.
 
-Prefer complete causal sentences over slogans such as “X ≠ Y” when the audience may not yet know either side.
+## 9. Sitewide review checklist
 
-## 9. Audience-centered copy review pass
+Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragraph under it:
 
-Before merging a user-facing technical page, review every heading, introductory paragraph, callout, and troubleshooting summary with these questions:
+1. Does the heading name the subject directly?
+2. Is it short enough to scan in navigation and on mobile?
+3. Is an explanatory sentence masquerading as a heading?
+4. Is a disclaimer, reading rule, chronology note, or claim boundary visually louder than the subject?
+5. Does the body explain technical terms at first use?
+6. Do buttons describe the action they perform?
+7. Does hardware say whether it is current allocation, visible inventory, historical, or a reader example?
+8. Does current experiment status match the latest source-of-truth repository?
+9. Are Chinese and English versions equivalent in meaning and hierarchy?
+10. Could a reader understand the page without the originating chat?
 
-1. Can a colleague who only knows the project goal understand why this paragraph appears here?
-2. Can the reader underline the actor or tool, the action, the concrete object, and the result in the main title?
-3. Does every button say what it opens, starts, compares, changes, or saves?
-4. Does the sentence identify the person, machine, or experimental situation before giving a warning?
-5. Does “current / previous / still / again” have a visible reference point?
-6. Is the practical consequence stated before low-level implementation detail?
-7. Is the first use of each project-specific term explained?
-8. Is a negative instruction necessary for safety, or can the main path be phrased positively?
-9. Has internal incident chronology been moved out of the default reading path?
-10. Does each pass/fail statement say what evidence it relies on?
-11. Does the English version preserve the same explanation rather than translating the shorthand literally?
-12. Could a reader follow the page without access to the original chat or Agent handoff?
+Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 
-Run `npm run audit:copy` before this contextual review. It reports file, line, rule ID, snippet, and reason across public source owners. Candidate output is advisory; `npm run audit:copy:strict` blocks only the small set of repository-approved high-confidence invariants and is included in `verify:deploy`.
+## 10. HTML presentation
 
-## 10. HTML presentation rules
+- H1: page subject only.
+- H2: major subject within the page.
+- H3: subsection/object name.
+- Eyebrow/kicker: phase, date, category, status, or provenance label.
+- Paragraph: interpretation, caveat, explanation, or chronology.
+- `<dl>` / compact facts: configuration and status values.
+- `<details>`: optional incident history and troubleshooting.
+- Diagrams: boundaries and flows, not decorative slogans.
 
-Use the medium to make context visible:
-
-- Use `<figure>` for machine and data-flow topology, with a caption explaining why the machines have different responsibilities.
-- Use ordered lists for required execution order.
-- Use `<dl>` for term definitions and claim levels.
-- Use `<details>` for optional incident history and troubleshooting.
-- Place expected output next to the command that produces it.
-- Put safety warnings beside the shared resource they protect.
-- Use diagrams to show boundaries, not decorative movement.
-
-A visual cannot repair missing prose. The diagram and its introduction must tell the same causal story.
-
-## 11. Repository placement and build-cost rule
-
-This standard lives under:
-
-`docs/agents/current/`
-
-Keep future changes to the writing standard in this documentation path. Do not modify `.github/`, build scripts, package files, or `src/` merely to revise the standard itself.
-
-For changes that affect both runtime copy and the standard:
-
-1. batch all Astro/user-facing copy edits into one runtime commit and validate that exact head once;
-2. make the durable writing-standard update as a separate docs-only commit when it can avoid a hosted build;
-3. when runtime and governance changes are intentionally combined to minimize branch pushes, keep them in the same prepared Git tree and move the branch ref once;
-4. do not request another Preview solely for a docs-only follow-up;
-5. preserve the repository's Build Watch / ignored-build behavior for documentation paths.
-
-On this project, prior docs-only commits have been skipped by the Vercel Preview path. Treat that as a deployment optimization, not as permission to skip source review of the document.
-
-## 12. Ownership
-
-This document is the general copy contract. More specific documents may add constraints but should not weaken it:
-
-- `reproduction-guide-design-principles.md`
-- `seed-openevo-research-mission-first-principles.md`
-- `openevo-reproduction-research-page.md`
-- `sitewide-visual-knowledge-architecture.md`
-
-When a public sentence feels technically correct but strangely abrupt, use this document before making a grammar-only edit. Rewrite the causal explanation from the reader's starting point.
+A visual cannot repair a bad information hierarchy. If a sentence is valuable but not a section subject, keep it as prose instead of making it bigger.

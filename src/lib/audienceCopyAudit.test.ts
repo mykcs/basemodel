@@ -39,7 +39,7 @@ describe('audience copy audit', () => {
     expect(localizedChangeEventNote({ eventType: 'status_changed', note: 'Legacy fallback.' }, 'zh')).toBe('Legacy fallback.');
   });
 
-  it('blocks the verified relative-time and negative-heading regressions', () => {
+  it('blocks verified relative-time and negative-heading regressions', () => {
     const seedPath = fs.readFileSync(path.join(root, 'src/components/SeedReproductionPath.astro'), 'utf8');
     const guide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
     expect(seedPath).not.toMatch(/今天真的租|rent today/);
@@ -47,31 +47,30 @@ describe('audience copy audit', () => {
     expect(guide).not.toMatch(/<h[1-6][^>]*>[^<]*(?:不要|不是|不再)/);
   });
 
-  it('keeps the bilingual Guide topology and project-hardware boundary equivalent', () => {
+  it('keeps the bilingual Guide current/historical hardware boundary equivalent', () => {
     const zhGuide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
     const enGuide = fs.readFileSync(path.join(root, 'src/pages/en/guide.astro'), 'utf8');
-    expect(zhGuide).toContain('联网工作站准备 → 内网 GPU 服务器执行');
-    expect(zhGuide).toContain('本项目用 4×RTX 3090 24GB 离线服务器作为具体实例');
-    expect(enGuide).toContain('online workstation prepares → internal GPU server executes');
-    expect(enGuide).toContain('This project uses an offline 4×RTX 3090 24GB server as a concrete example');
-    expect(enGuide).toContain("profiling the reader’s actual server");
+    expect(zhGuide).toContain('5×RTX5090');
+    expect(zhGuide).toContain('RTX6（4×RTX3090）');
+    expect(zhGuide).toContain('Phase H0');
+    expect(enGuide).toContain('5×RTX5090');
+    expect(enGuide).toContain('RTX6 (4×RTX3090)');
+    expect(enGuide).toContain('Phase H0');
     expect(enGuide).not.toContain('move straight into the ALFWorld / WebShop experiment on 4×3090');
-    expect(enGuide).not.toContain('profiling on the four 3090s');
   });
 
-  it('requires concrete actor-action-object titles instead of abstract packaging', () => {
+  it('requires subject headings while keeping actions concrete', () => {
     const hero = fs.readFileSync(path.join(root, 'src/components/research/SeedOpenEvoMissionHero.astro'), 'utf8');
     const standard = fs.readFileSync(path.join(root, 'docs/agents/current/audience-centered-technical-copy.md'), 'utf8');
     const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
 
-    expect(hero).toContain('用 OpenEvo 复现 SEED 的 ALFWorld 与 WebShop 实验');
-    expect(hero).toContain('Reproduce SEED’s ALFWorld and WebShop experiments with OpenEvo');
-    expect(hero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
-    expect(hero).not.toContain('Use SEED’s two agent benchmarks to evaluate and improve OpenEvo');
-    expect(standard).toContain('谁用什么做什么');
-    expect(standard).toContain('把框架与基准讲成一场可追踪的对话');
-    expect(auditSource).toContain('COPY-ABSTRACT-PACKAGING');
-    expect(auditSource).toContain('COPY-ACTION-TITLE-002');
+    expect(hero).toContain("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')");
+    expect(hero).toContain("t('实验结果','Experiment results')");
+    expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
+    expect(standard).toContain('Headings name the subject');
+    expect(standard).toContain('标题先命名主题');
+    expect(auditSource).toContain('COPY-EDITORIAL-AS-HEADING');
+    expect(auditSource).toContain('COPY-SUBJECT-TITLE-001');
   });
 
   it('reports contextual candidates with actionable evidence', () => {
