@@ -8,18 +8,85 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
-const activeRoot = 'https://github.com/mykcs/openevo-experiment/blob/main';
-const seedRoot = 'https://github.com/mykcs/seed3090/blob/main';
-const bridgeRoot = 'https://github.com/mykcs/openevo-webshop/blob/main';
+const WORKSPACE = '/data/home/wangr/workspace';
+const OPENEVO_SHA = '796e6248a61112a61c880885844d3b0420c0b6ae';
+const MODEL_ID = 'Qwen/Qwen2.5-3B-Instruct';
+const MODEL_REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1';
+const VERIFIED_IMAGE = 'wangr/openevo-experiment:torch-2.12.1-cu130-uid1001-a48fa308';
+const VERIFIED_IMAGE_DIGEST = 'sha256:0457114462b7c8bffd5dbd74509ccb1a41c5c3bfe40ee8fc1a73dd21a06f9cde';
+const AGENTGYM_REV = '3ef9235d23e68e7c2920c5422ad957dc8ced5c6c';
 
-const steps = [
-  { n:'01', title:t('固定实验身份','Pin experiment identity'), body:t('记录 openevo-experiment commit、OpenEvo SHA、Qwen2.5-3B revision、campaign、任务 split 与 adapter 身份。','Record the openevo-experiment commit, OpenEvo SHA, Qwen2.5-3B revision, campaign, task split, and adapter identity.') },
-  { n:'02', title:t('确认运行环境','Validate runtime'), body:t('检查 Python、CUDA、WebShop 依赖、模型加载与任务合同；服务器可见 GPU 数量与本次实验分配分开记录。','Check Python, CUDA, WebShop dependencies, model loading, and the task contract; record visible server inventory separately from the experiment allocation.') },
-  { n:'03', title:t('运行 WebShop','Run WebShop'), body:t('使用冻结的 prompt、parser、evaluator、step budget 与 generation seeds；每个 episode 保存原始动作、观察、score、termination 和 fallback。','Use frozen prompts, parser, evaluator, step budget, and generation seeds; preserve raw actions, observations, score, termination, and fallbacks for every episode.') },
-  { n:'04', title:t('保存参数状态','Preserve parameter state'), body:t('adapter 训练、fresh reload、参数 digest 与累计 component 都必须有可追溯记录；不能只保存一个文件名。','Adapter training, fresh reload, parameter digests, and cumulative components must be traceable; a filename alone is not enough.') },
-  { n:'05', title:t('比较实验结果','Compare outcomes'), body:t('先比较同合同下的 base / adapter，再分析失败分布。Phase G 已完成 12 个 episodes；三臂 score / win 均为 0。','Compare base and adapter under one contract before studying failure distributions. Phase G completed 12 episodes; all three arms had zero score/win outcomes.') },
-  { n:'06', title:t('进入 Phase H0','Enter Phase H0'), body:t('在新的 train-only WebShop tasks 上先搜索 64–128 个有效 rollouts；仍无成功时最多扩到 256，再决定成功监督或 teacher bootstrap。','Search 64–128 valid rollouts on new train-only WebShop tasks; extend to at most 256 if success remains zero, then choose successful supervision or teacher bootstrap.') },
+const links = {
+  server: 'https://github.com/mykcs/zju-server',
+  environment: 'https://github.com/mykcs/wangrui-server-environment',
+  experiment: 'https://github.com/mykcs/openevo-experiment',
+  core: 'https://github.com/CompLifeLab-ZJU/OpenEvo',
+  seed: 'https://github.com/jinyangwu/SEED',
+  seed3090: 'https://github.com/mykcs/seed3090',
+  oldWebshop: 'https://github.com/mykcs/openevo-webshop',
+};
+
+const route = [
+  ['01', '#server-access', t('服务器入口', 'Server access')],
+  ['02', '#authority', t('权限边界', 'Authority boundary')],
+  ['03', '#workspace', t('持久工作区', 'Persistent workspace')],
+  ['04', '#repositories', t('仓库布局', 'Repository layout')],
+  ['05', '#container', t('实验容器', 'Experiment container')],
+  ['06', '#openevo-model', t('OpenEvo 与模型', 'OpenEvo and model')],
+  ['07', '#webshop-runtime', t('WebShop 运行时', 'WebShop runtime')],
+  ['08', '#webshop-assets', t('数据与索引', 'Data and index')],
+  ['09', '#preflight', t('任务合同', 'Task contract')],
+  ['10', '#gpu-run', t('GPU 实验', 'GPU run')],
+  ['11', '#evidence', t('结果证据', 'Result evidence')],
+  ['12', '#phase-h0', t('Phase H0', 'Phase H0')],
 ] as const;
+
+const repositories = [
+  {
+    name: 'mykcs/zju-server',
+    role: t('服务器事实与运维', 'Live server facts and operations'),
+    detail: t('SSH、账号、Docker 权限、GPU/存储事实、持久 workspace 与安全规则。', 'SSH, accounts, Docker authority, GPU/storage facts, persistent workspace, and safety rules.'),
+    href: links.server,
+  },
+  {
+    name: 'mykcs/wangrui-server-environment',
+    role: t('可重建环境', 'Portable environment layer'),
+    detail: t('运行环境元数据、恢复/备份合同与可移植配置；不保存服务器私密状态。', 'Runtime metadata, recovery/backup contracts, and portable configuration; no private server state.'),
+    href: links.environment,
+  },
+  {
+    name: 'mykcs/openevo-experiment',
+    role: t('当前科研主仓库', 'Current research repository'),
+    detail: t('WebShop adapter、实验脚本、任务合同、Run Manifest、W&B 配置、结果与科学结论。', 'WebShop adapter, experiment scripts, task contracts, Run Manifests, W&B configuration, results, and claims.'),
+    href: links.experiment,
+  },
+  {
+    name: 'CompLifeLab-ZJU/OpenEvo',
+    role: t('外部 OpenEvo Core', 'External OpenEvo Core'),
+    detail: t('不复制进实验仓库；每次实验固定 Git SHA。', 'Not vendored into the experiment repo; every run pins an exact Git SHA.'),
+    href: links.core,
+  },
+] as const;
+
+const commands = {
+  dailyLogin: `# 在自己的 Mac 上先配置严格 host-key 校验的日常 SSH alias\nssh <daily-alias>\nhostname\nwhoami\nid`,
+  adminLogin: `# 只有服务器初始化 / Docker 控制面操作才使用管理员入口\nssh <admin-alias>\nwhoami\nid\ndocker version`,
+  bootstrapWorkspace: `# 管理员控制面：只做一次 workspace 初始化/恢复\ncd /path/to/zju-server\nbash scripts/bootstrap-research-workspace.sh`,
+  verifyWorkspace: `# 普通科研账号：验证真正的持久写盘路径\ncd /data/home/wangr/workspace\nid\nprintf 'probe\\n' > .ordinary-user-write-test\nrm .ordinary-user-write-test`,
+  cloneRepos: `export WORKSPACE=/data/home/wangr/workspace\nmkdir -p "$WORKSPACE/repos" "$WORKSPACE/runtime/src"\ncd "$WORKSPACE/repos"\n\n# 有 GitHub 访问能力时的标准重建方式\ngit clone https://github.com/mykcs/zju-server.git\ngit clone https://github.com/mykcs/wangrui-server-environment.git\ngit clone https://github.com/mykcs/openevo-experiment.git\n\n# 每次实验前记录而不是猜测版本\ngit -C openevo-experiment rev-parse HEAD\ngit -C openevo-experiment status --short`,
+  coreCheckout: `export WORKSPACE=/data/home/wangr/workspace\nexport OPENEVO_SHA=${OPENEVO_SHA}\n\ngit clone https://github.com/CompLifeLab-ZJU/OpenEvo.git \\\n  "$WORKSPACE/runtime/src/openevo-core"\ngit -C "$WORKSPACE/runtime/src/openevo-core" checkout "$OPENEVO_SHA"\ngit -C "$WORKSPACE/runtime/src/openevo-core" rev-parse HEAD`,
+  containerGate: `export WORKSPACE=/data/home/wangr/workspace\ncd "$WORKSPACE/repos/openevo-experiment"\nexport IMAGE=openevo-experiment:torch-2.12.1-cu130\n\n./scripts/build_experiment_image.sh\nGPU_REQUEST=device=0 ./scripts/run_gpu_smoke.sh\nRESEARCH_WORKSPACE="$WORKSPACE" ./scripts/run_bind_mount_identity_gate.sh`,
+  runtimeEnv: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\nexport ENV="$WORKSPACE/runtime/envs/openevo"\n\n# <python-3.11-or-newer> 必须来自科研 runtime，不是 dev-wangr 控制面的 Python\n<python-3.11-or-newer> -m venv "$ENV"\nsource "$ENV/bin/activate"\npython -m pip install -U pip\n\n# 先确认 GPU 栈，再装 benchmark 依赖\npython -c 'import torch; print(torch.__version__, torch.version.cuda)'\nTORCH_BEFORE="$(python -c 'import torch; print(torch.__version__)')"\npython -m pip install -r "$REPO/scripts/openevo_webshop/runtime-overlay-requirements.txt"\npython -m pip install 'peft==0.15.2' 'accelerate==1.10.1' 'safetensors==0.5.3'\npython -m pip install --no-deps -e "$REPO/vendor/openevo-webshop"\ntest "$(python -c 'import torch; print(torch.__version__)')" = "$TORCH_BEFORE"`,
+  runtimePins: `source /data/home/wangr/workspace/runtime/envs/openevo/bin/activate\npython - <<'PY'\nimport torch, transformers, peft, accelerate, safetensors, wandb, gym\nprint('torch', torch.__version__)\nprint('transformers', transformers.__version__)\nprint('peft', peft.__version__)\nprint('accelerate', accelerate.__version__)\nprint('safetensors', safetensors.__version__)\nprint('wandb', wandb.__version__)\nprint('gym', gym.__version__)\nPY`,
+  seedSource: `export WORKSPACE=/data/home/wangr/workspace\nexport SEED_ROOT="$WORKSPACE/runtime/src/seed"\nexport WEBSHOP_ROOT="$SEED_ROOT/agent_system/environments/env_package/webshop/webshop"\n\n# 获取 SEED/WebShop 源码后，必须 checkout Run Manifest / provenance 指定的 revision\ngit clone https://github.com/jinyangwu/SEED.git "$SEED_ROOT"\ngit -C "$SEED_ROOT" checkout <seed-source-sha-from-run-manifest>\n\ntest -d "$WEBSHOP_ROOT/web_agent_site"\ntest -f "$WEBSHOP_ROOT/setup.sh"`,
+  dataFetch: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\nexport DATA_DIR="$WORKSPACE/datasets/webshop-1k/data"\nmkdir -p "$DATA_DIR"\n\n# 数据尚未存在时：使用项目内的 pinned GitHub-API helper\nbash "$REPO/scripts/openevo_webshop/fetch_webshop_data_via_github_api.sh" "$DATA_DIR"\n\n# 无论数据从哪里来，都要重新校验并写 manifest\npython "$REPO/scripts/openevo_webshop/prepare_webshop_data.py" \\\n  --validate-only --write-manifest \\\n  --source "AgentGym@${AGENTGYM_REV}" \\\n  "$DATA_DIR"`,
+  installData: `export DATA_DIR=/data/home/wangr/workspace/datasets/webshop-1k/data\nexport WEBSHOP_ROOT=/data/home/wangr/workspace/runtime/src/seed/agent_system/environments/env_package/webshop/webshop\nmkdir -p "$WEBSHOP_ROOT/data"\n\nfor f in items_shuffle_1000.json items_ins_v2_1000.json items_human_ins.json; do\n  ln -sfn "$DATA_DIR/$f" "$WEBSHOP_ROOT/data/$f"\ndone\n\npython - <<'PY'\nimport json, os\nroot=os.environ['WEBSHOP_ROOT']\nitems=json.load(open(root+'/data/items_shuffle_1000.json'))\nassert len(items)==1000\nprint('WebShop catalog OK:', len(items), 'products')\nPY`,
+  indexVerify: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\nexport WEBSHOP_ROOT="$WORKSPACE/runtime/src/seed/agent_system/environments/env_package/webshop/webshop"\nexport RUN_ROOT="$WORKSPACE/runs/repro-webshop-preflight"\nmkdir -p "$RUN_ROOT"\n\npython "$REPO/scripts/openevo_webshop/verify_indexes_1k.py" \\\n  --index "$WEBSHOP_ROOT/search_engine/indexes_1k" \\\n  --catalog "$WEBSHOP_ROOT/data/items_shuffle_1000.json" \\\n  --resources "$WEBSHOP_ROOT/search_engine/resources_1k/documents.jsonl" \\\n  --fingerprint-out "$RUN_ROOT/indexes-1k-fingerprint.json"`,
+  preflight: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\ncd "$REPO"\n\npython3 scripts/experiment_startup_report.py\npython3 scripts/validate_run_manifest.py templates/run-manifest.example.json\npython3 -m unittest discover -s tests -v\ngit diff --check`,
+  taskManifest: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\nexport SEED_ROOT="$WORKSPACE/runtime/src/seed"\nexport RUN_ROOT="$WORKSPACE/runs/repro-webshop-preflight"\n\npython "$REPO/scripts/openevo_webshop/webshop_task_manifest.py" capture \\\n  --seed-root "$SEED_ROOT" \\\n  --out "$RUN_ROOT/task-manifest.json" \\\n  --ledger-out "$RUN_ROOT/task-access-ledger.json"\n\npython "$REPO/scripts/openevo_webshop/webshop_task_manifest.py" verify \\\n  "$RUN_ROOT/task-manifest.json"`,
+  phaseGRun: `export WORKSPACE=/data/home/wangr/workspace\nexport REPO="$WORKSPACE/repos/openevo-experiment"\nexport SEED_ROOT="$WORKSPACE/runtime/src/seed"\nexport RUN_ROOT="$WORKSPACE/runs/repro-phase-g"\n\n# 先用 --help 对照当前 CLI；adapter 路径必须来自已有 manifest/evidence，不按 mtime 猜\npython "$REPO/scripts/openevo_webshop/run_parametric_eval.py" --help\n\npython "$REPO/scripts/openevo_webshop/run_parametric_eval.py" \\\n  --seed-root "$SEED_ROOT" \\\n  --task-manifest "$WORKSPACE/runs/repro-webshop-preflight/task-manifest.json" \\\n  --access-ledger "$WORKSPACE/runs/repro-webshop-preflight/task-access-ledger.json" \\\n  --model ${MODEL_ID} \\\n  --model-revision ${MODEL_REVISION} \\\n  --adapter-one <verified-adapter-one-path> \\\n  --adapter-cumulative <verified-adapter-cumulative-path> \\\n  --gpu-index <authorized-gpu-index> \\\n  --gpu-uuid <authorized-gpu-uuid> \\\n  --dtype bfloat16 \\\n  --output "$RUN_ROOT"`,
+  resultCheck: `export RUN_ROOT=/data/home/wangr/workspace/runs/repro-phase-g\npython -m json.tool "$RUN_ROOT/summary.json" | head -n 80\npython -m json.tool "$RUN_ROOT/run-manifest.json" | head -n 120\nfind "$RUN_ROOT/episodes" -type f -name '*.json' | sort | wc -l\nsha256sum "$RUN_ROOT/summary.json" "$RUN_ROOT/run-manifest.json"`,
+};
 ---
 
 <section class="seed-benchmark-guide" aria-labelledby="seed-benchmark-guide-title">
@@ -27,43 +94,149 @@ const steps = [
     <div>
       <span class="seed-guide-kicker">OpenEvo · WebShop / ALFWorld</span>
       <h1 id="seed-benchmark-guide-title">{t('OpenEvo 实验复现指南', 'OpenEvo experiment reproduction guide')}</h1>
-      <p>{t('当前执行主线来自 openevo-experiment。指南先覆盖 WebShop 的真实模型、参数更新、任务评测和结果记录；ALFWorld 在当前 WebShop 科学门槛之后接入。','The active execution line comes from openevo-experiment. This guide first covers real-model WebShop execution, parameter updates, task evaluation, and result records; ALFWorld follows after the current WebShop scientific gate.')}</p>
-      <div class="seed-guide-actions"><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('当前实验结果 →','Current experiment results →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/experiment/')}>{t('实验入口','Experiment entry')}</a></div>
+      <p>{t(
+        '这不是“环境已经准备好”的状态页，而是从拿到服务器开始的操作手册：先建立 SSH 与权限边界，再做持久工作区、仓库、实验容器、OpenEvo/Qwen、WebShop 数据与索引，最后跑到可审计的真实 episode。当前主线先完整讲 WebShop；ALFWorld 在 WebShop 科学门槛之后接入。',
+        'This is not a setup-status page. It is an operator runbook starting from a newly assigned server: establish SSH and authority boundaries, create persistent storage, reconstruct repositories, validate the experiment container, pin OpenEvo/Qwen, prepare WebShop data/indexes, and finally produce auditable real episodes. The active path fully covers WebShop first; ALFWorld follows after the WebShop gate.'
+      )}</p>
+      <div class="seed-guide-actions">
+        <a class="button button-primary" href="#server-access">{t('从服务器入口开始 →','Start from server access →')}</a>
+        <a class="button button-secondary" href={p('/research/seed-openevo/results/')}>{t('当前实验结果','Current results')}</a>
+      </div>
     </div>
-    <aside class="current-hardware"><span>{t('当前实验分配','Current experiment allocation')}</span><strong>5× RTX 5090</strong><p>{t('OpenEvo 服务器资产记录可见 8×RTX5090；本次实验使用其中 5 张。','OpenEvo server inventory records 8 visible RTX5090 GPUs; this experiment uses 5 of them.')}</p><small>{t('历史：RTX6 · 4×RTX3090','Historical: RTX6 · 4×RTX3090')}</small></aside>
+    <aside class="current-hardware">
+      <span>{t('当前实验分配','Current experiment allocation')}</span>
+      <strong>5× RTX 5090</strong>
+      <p>{t('服务器资产记录可见 8×RTX5090；5 张是当前实验分配，不代表每个单独 job 都必须占 5 张。基础 Gate 与 Phase D–F 都可以从 1 张已授权 GPU 开始。','Server inventory records 8 visible RTX5090 GPUs; 5 are allocated to the current experiment. That does not mean every job must occupy five GPUs. Infrastructure gates and Phase D–F can start on one authorized GPU.')}</p>
+      <small>{t('历史平台：RTX6（4×RTX 3090）','Historical platform: RTX6 (4×RTX 3090)')}</small>
+    </aside>
   </header>
 
-  <section class="guide-section" aria-labelledby="topology-title">
-    <div class="section-heading"><span>01</span><div><small>{t('环境','Environment')}</small><h2 id="topology-title">{t('实验拓扑', 'Experiment topology')}</h2></div></div>
-    <div class="topology">
-      <article><small>{t('实验仓库','Experiment repo')}</small><strong>openevo-experiment</strong><span>{t('campaign、配置、Run Manifest 与结果证据','campaign, configuration, Run Manifests, and result evidence')}</span></article>
-      <i aria-hidden="true">→</i>
-      <article><small>{t('OpenEvo 服务器','OpenEvo server')}</small><strong>5× RTX 5090</strong><span>{t('当前实验分配；服务器总可见库存单独记录','current allocation; total visible inventory is recorded separately')}</span></article>
-      <i aria-hidden="true">→</i>
-      <article><small>WebShop</small><strong>Qwen2.5-3B-Instruct</strong><span>{t('冻结任务合同、parser、evaluator 与 generation seeds','frozen task contract, parser, evaluator, and generation seeds')}</span></article>
-      <i aria-hidden="true">→</i>
-      <article><small>{t('证据','Evidence')}</small><strong>Run Manifest + JSON + W&B</strong><span>{t('本地 provenance 为核心记录，W&B 负责观测','local provenance is canonical; W&B provides observability')}</span></article>
+  <nav class="run-route" aria-label={t('复现路线','Reproduction route')}>
+    {route.map(([n, href, title]) => <a href={href}><span>{n}</span><strong>{title}</strong></a>)}
+  </nav>
+
+  <section class="guide-section" id="server-access" aria-labelledby="server-access-title">
+    <div class="section-heading"><span>01</span><div><small>{t('Mac → 服务器','Mac → server')}</small><h2 id="server-access-title">{t('服务器入口','Server access')}</h2></div></div>
+    <p>{t('我们在 Mac 上把日常账号和管理员账号拆成两个 SSH alias，并坚持严格 host-key 校验。公开复现页不发布真实服务器地址、端口、私钥路径或凭据；复现者把自己的值填进 alias。登录以后第一件事不是装 CUDA，而是确认“我现在到底在哪个容器、用什么身份”。','We separated the daily and administrative identities into two SSH aliases on the Mac and kept strict host-key checking. This public guide intentionally omits the real host, port, key path, and credentials; substitute your own alias. After login, do not start by installing CUDA—first prove which container and identity you are actually using.')}</p>
+    <div class="command-grid">
+      <div class="command-card"><h3>{t('日常账号','Daily account')}</h3><pre><code>{commands.dailyLogin}</code></pre><p>{t('当前服务器应进入 hostname=wangr-dev 的开发/控制容器；日常科研身份是非 root 用户。','The current server should enter the development/control container with hostname=wangr-dev; normal research uses a non-root identity.')}</p></div>
+      <div class="command-card"><h3>{t('管理员账号','Administrative account')}</h3><pre><code>{commands.adminLogin}</code></pre><p>{t('管理员 shell 是 dev-wangr 内的 root + Docker daemon 管理能力，不等于物理宿主机 root。','The administrative shell is root inside dev-wangr with Docker-daemon authority; it is not verified physical-host root.')}</p></div>
     </div>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('hostname、whoami、UID/GID 与预期一致；host key 有变化就停止。','hostname, whoami, and UID/GID match the assignment; stop if the host key changes unexpectedly.')}</span></div>
   </section>
 
-  <section class="guide-section" aria-labelledby="steps-title">
-    <div class="section-heading"><span>02</span><div><small>{t('执行','Execution')}</small><h2 id="steps-title">{t('复现步骤', 'Reproduction steps')}</h2></div></div>
-    <ol class="step-list">{steps.map((step)=><li><span>{step.n}</span><div><strong>{step.title}</strong><p>{step.body}</p></div></li>)}</ol>
+  <section class="guide-section" id="authority" aria-labelledby="authority-title">
+    <div class="section-heading"><span>02</span><div><small>{t('控制面','Control plane')}</small><h2 id="authority-title">{t('权限边界','Authority boundary')}</h2></div></div>
+    <div class="boundary-grid">
+      <article><strong>dev-wangr / wangr-dev</strong><p>{t('负责 SSH、Docker 生命周期和受控的实验容器启动。不要把模型 Python 环境装在这里。','Owns SSH, Docker lifecycle, and approved experiment-container launch. Do not turn it into the model Python environment.')}</p></article>
+      <article><strong>{t('非 root 实验容器','Non-root experiment container')}</strong><p>{t('负责 CUDA、Qwen、OpenEvo、WebShop 与训练/评测；没有 Docker socket，不使用 --privileged。','Owns CUDA, Qwen, OpenEvo, WebShop, training, and evaluation; no Docker socket and no --privileged mode.')}</p></article>
+      <article><strong>{WORKSPACE}</strong><p>{t('负责模型缓存、数据集、索引、adapter、日志、Run Manifest 和结果的持久化。','Owns persistent model caches, datasets, indexes, adapters, logs, Run Manifests, and results.')}</p></article>
+    </div>
+    <ul class="rule-list">
+      <li>{t('不为了实验去升级宿主 Driver、系统 CUDA、控制面 Python 或 Docker daemon。','Do not upgrade the host Driver, system CUDA, control-plane Python, or Docker daemon for an experiment.')}</li>
+      <li>{t('不 stop/restart/remove/exec 其他人的 sibling container，也不做全局 docker prune。','Do not stop/restart/remove/exec into sibling users’ containers and do not run global docker prune.')}</li>
+      <li>{t('普通科研 job 不以 root 身份写 checkpoint、adapter、日志或数据。','Normal research jobs do not write checkpoints, adapters, logs, or data as root.')}</li>
+    </ul>
   </section>
 
-  <section class="guide-section" aria-labelledby="results-title">
-    <div class="section-heading"><span>03</span><div><small>{t('当前状态','Current status')}</small><h2 id="results-title">{t('Phase G 与 Phase H0', 'Phase G and Phase H0')}</h2></div></div>
-    <div class="phase-grid"><article><span>Phase G · completed</span><strong>2 goals × 2 seeds × 3 arms = 12 episodes</strong><p>{t('base、adapter1x、cumulative 的 mean score 均为 0.000，wins 均为 0/4。','base, adapter1x, and cumulative all had mean score 0.000 and 0/4 wins.')}</p></article><article><span>Phase H0 · next</span><strong>Natural Success Search</strong><p>{t('先判断 Qwen2.5-3B 在新 train-only tasks 上能否产生自然成功经验，再决定监督数据策略。','First determine whether Qwen2.5-3B can produce natural successful experience on new train-only tasks, then choose the supervision-data strategy.')}</p></article></div>
+  <section class="guide-section" id="workspace" aria-labelledby="workspace-title">
+    <div class="section-heading"><span>03</span><div><small>{t('存储','Storage')}</small><h2 id="workspace-title">{t('持久工作区','Persistent workspace')}</h2></div></div>
+    <p>{t('最初旧实验散落在容器本地目录。迁到 5090 服务器后，我们把长期科研状态收敛到一个普通用户拥有的持久目录。root 可以创建/修复目录，但正常实验写入必须与普通科研 UID/GID 一致。','Earlier work lived in container-local paths. On the RTX5090 server we consolidated durable research state into one persistent directory owned by the ordinary research identity. Root may bootstrap or repair it, but normal experiment writes must match the research UID/GID.')}</p>
+    <div class="command-grid">
+      <div class="command-card"><h3>{t('初始化','Bootstrap')}</h3><pre><code>{commands.bootstrapWorkspace}</code></pre></div>
+      <div class="command-card"><h3>{t('普通用户写盘 Gate','Ordinary-user write gate')}</h3><pre><code>{commands.verifyWorkspace}</code></pre></div>
+    </div>
+    <pre class="tree"><code>{`/data/home/wangr/workspace/\n├── repos/       active Git checkouts\n├── runtime/\n│   ├── tools/\n│   ├── envs/\n│   └── src/     pinned external source checkouts\n├── cache/       Hugging Face / package caches\n├── datasets/    WebShop data + indexes\n├── models/      model material when policy permits\n├── runs/        adapters, logs, manifests, W&B data\n└── migration/   retained historical snapshots`}</code></pre>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('普通账号可以创建/删除文件；实验容器稍后还要通过同 UID/GID 的 bind-mount Gate。持久化不等于独立备份。','The ordinary user can create/delete files; the experiment container must later pass the same UID/GID bind-mount gate. Persistence is not an independent backup.')}</span></div>
   </section>
 
-  <section class="guide-section" aria-labelledby="history-title">
-    <div class="section-heading"><span>04</span><div><small>{t('来源迁移','Source migration')}</small><h2 id="history-title">{t('历史仓库', 'Historical repositories')}</h2></div></div>
-    <div class="history-grid"><article><code>seed3090</code><strong>{t('RTX6 / 4×3090 历史实验','RTX6 / 4×3090 historical experiments')}</strong><p>{t('保留 WebShop / ALFWorld bring-up、失败轨迹和早期参数实验。','Preserves WebShop/ALFWorld bring-up, failure traces, and early parametric experiments.')}</p><a href={`${seedRoot}/README.md`}>README ↗</a></article><article><code>openevo-webshop</code><strong>{t('WebShop × SD-LoRA 迁移仓库','WebShop × SD-LoRA migration repository')}</strong><p>{t('保留 runner、dataset adapter 与迁移前的 WebShop 诊断。','Preserves the runner, dataset adapter, and pre-migration WebShop diagnostics.')}</p><a href={`${bridgeRoot}/README.md`}>README ↗</a></article><article><code>openevo-experiment</code><strong>{t('当前实验仓库','Current experiment repository')}</strong><p>{t('新的实验开发、campaign 与结论从这里继续。','New experimental development, campaigns, and conclusions continue here.')}</p><a href={`${activeRoot}/README.md`}>README ↗</a></article></div>
+  <section class="guide-section" id="repositories" aria-labelledby="repositories-title">
+    <div class="section-heading"><span>04</span><div><small>{t('代码','Code')}</small><h2 id="repositories-title">{t('仓库布局','Repository layout')}</h2></div></div>
+    <p>{t('我们没有把“服务器配置 + 环境 + 实验 + OpenEvo Core”塞进一个仓库。四层各有自己的 source of truth。这样换服务器时能重建环境，换实验时也不会误改共享机器。','We deliberately did not combine server configuration, portable environment, experiment code, and OpenEvo Core into one repository. Each layer has its own source of truth, so a server can be rebuilt without rewriting the experiment and an experiment can change without mutating shared machine state.')}</p>
+    <div class="repo-grid">{repositories.map((repo)=><article><code>{repo.name}</code><strong>{repo.role}</strong><p>{repo.detail}</p><a href={repo.href} target="_blank" rel="noreferrer">GitHub ↗</a></article>)}</div>
+    <div class="command-card wide"><h3>{t('标准重建','Standard reconstruction')}</h3><pre><code>{commands.cloneRepos}</code></pre><p>{t('我们这台服务器当时没有 GitHub 认证，因此真实迁移使用了已认证端生成的 Git bundle，再在服务器重建 exact checkout；如果你的服务器能正常访问 GitHub，clone/fetch + checkout exact SHA 是等价且更简单的路线。不要把 migration/ 里的旧 worktree 直接当 active checkout。','The actual server did not have GitHub authentication, so the migration used Git bundles created on an authenticated machine and reconstructed exact checkouts on the server. If your server can access GitHub normally, clone/fetch plus an exact SHA checkout is the simpler equivalent. Never promote a copied migration worktree directly into the active checkout.')}</p></div>
+    <aside class="history-note"><strong>{t('历史仓库','Historical repositories')}</strong><p><a href={links.seed3090} target="_blank" rel="noreferrer">seed3090</a> {t('保存 RTX6 / 4×3090 的 WebShop/ALFWorld 工程史与证据；','preserves RTX6 / 4×3090 WebShop/ALFWorld engineering history and evidence;')} <a href={links.oldWebshop} target="_blank" rel="noreferrer">openevo-webshop</a> {t('保存迁移前的 WebShop parameter-evolution 路线。新的实验修改只进入 openevo-experiment。','preserves the pre-migration WebShop parameter-evolution line. New experiment changes belong only in openevo-experiment.')}</p></aside>
   </section>
 
-  <AgentMechanismDialogues locale={locale} />
+  <section class="guide-section" id="container" aria-labelledby="container-title">
+    <div class="section-heading"><span>05</span><div><small>{t('Blackwell Gate','Blackwell gate')}</small><h2 id="container-title">{t('实验容器','Experiment container')}</h2></div></div>
+    <p>{t('这一层只回答“5090 上的 PyTorch 和持久写盘是否可靠”，不回答 WebShop 是否配置好。基础镜像使用 CUDA runtime 容器，PyTorch 由固定 CUDA 13.0 wheel 提供；容器 UID/GID 动态对齐普通科研用户。','This layer answers only whether PyTorch on the RTX5090 and persistent writes are reliable; it does not claim WebShop is configured. The base uses a CUDA runtime container, PyTorch comes from the pinned CUDA 13.0 wheel, and the container UID/GID is aligned with the ordinary research account.')}</p>
+    <div class="command-card wide"><pre><code>{commands.containerGate}</code></pre></div>
+    <div class="fact-strip"><span><small>{t('已验证镜像','Verified image')}</small><code>{VERIFIED_IMAGE}</code></span><span><small>digest</small><code>{VERIFIED_IMAGE_DIGEST}</code></span><span><small>{t('验证内容','Gate')}</small><strong>CUDA · BF16 · matmul · backward · optimizer · bind mount</strong></span></div>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('GPU smoke PASS + bind_mount_identity PASS。这里只能写“基础 runtime 可用”，不能写“OpenEvo/WebShop 已复现”。','GPU smoke PASS plus bind_mount_identity PASS. The only justified claim here is that the base runtime works—not that OpenEvo/WebShop has been reproduced.')}</span></div>
+  </section>
+
+  <section class="guide-section" id="openevo-model" aria-labelledby="openevo-model-title">
+    <div class="section-heading"><span>06</span><div><small>{t('固定依赖','Pinned dependencies')}</small><h2 id="openevo-model-title">{t('OpenEvo 与模型','OpenEvo and model')}</h2></div></div>
+    <p>{t('OpenEvo Core 始终保持外部 checkout，不复制到实验仓库。当前已验证机制证据使用 Qwen2.5-3B-Instruct 和固定 revision；模型权重留在服务器 cache，不提交 Git。','OpenEvo Core stays as an external checkout rather than a copied fork. The verified mechanism evidence uses Qwen2.5-3B-Instruct at a fixed revision; model weights remain in the server cache and never enter Git.')}</p>
+    <div class="command-card wide"><pre><code>{commands.coreCheckout}</code></pre></div>
+    <div class="identity-grid"><article><small>OpenEvo</small><strong>{OPENEVO_SHA.slice(0,12)}…</strong></article><article><small>model</small><strong>{MODEL_ID}</strong></article><article><small>model revision</small><strong>{MODEL_REVISION.slice(0,12)}…</strong></article></div>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('run manifest 里能回答：experiment SHA、OpenEvo SHA、model/tokenizer revision、dtype、GPU UUID。任何一个不清楚都不要开始正式比较。','The run manifest can answer: experiment SHA, OpenEvo SHA, model/tokenizer revision, dtype, and GPU UUID. Do not start a formal comparison if any identity is ambiguous.')}</span></div>
+  </section>
+
+  <section class="guide-section" id="webshop-runtime" aria-labelledby="webshop-runtime-title">
+    <div class="section-heading"><span>07</span><div><small>{t('Python + benchmark adapter','Python + benchmark adapter')}</small><h2 id="webshop-runtime-title">{t('WebShop 运行时','WebShop runtime')}</h2></div></div>
+    <div class="warning-box"><strong>{t('两个 WebShop 环境不要混在一起','Do not mix the two WebShop runtimes')}</strong><p>{t('官方 SEED README 为严格 SEED 训练建立单独 Python 3.10 的 seed-webshop 环境；我们当前的 OpenEvo benchmark adapter 声明 Python ≥3.11。OpenEvo × WebShop 复现因此使用自己的科研 runtime，并把 SEED/WebShop 当环境源码与数据来源，而不是直接把官方 SEED 的 Python 3.10 RL 环境塞进 OpenEvo。','The official SEED README creates a separate Python 3.10 seed-webshop environment for strict SEED training, while the current OpenEvo benchmark adapter declares Python ≥3.11. The OpenEvo × WebShop reproduction therefore uses its own research runtime and treats SEED/WebShop as environment source/data, rather than forcing the official SEED Python 3.10 RL runtime into OpenEvo.')}</p></div>
+    <div class="command-card wide"><h3>{t('OpenEvo 路线','OpenEvo path')}</h3><pre><code>{commands.runtimeEnv}</code></pre><p>{t('runtime-overlay-requirements.txt 仍保留 RTX6 历史注释，但它的重要设计是“不安装 torch / vLLM”。它用于 benchmark 依赖清单；安装前后必须检查 torch 没有被替换。若 resolver 想改 GPU 栈，就停止并重建隔离环境，不要在原环境硬修。','runtime-overlay-requirements.txt still contains RTX6-era comments, but its important design is that torch/vLLM are excluded. Treat it as the benchmark dependency inventory and verify that torch is unchanged before/after installation. If the resolver tries to reshape the GPU stack, stop and rebuild an isolated environment rather than patching the working runtime in place.')}</p></div>
+    <div class="command-card wide"><h3>{t('版本检查','Version check')}</h3><pre><code>{commands.runtimePins}</code></pre><p>{t('已验证 5090 机制链的核心版本是 torch 2.12.1+cu130、transformers 4.51.1、PEFT 0.15.2、accelerate 1.10.1、safetensors 0.5.3、W&B 0.26.1。','The verified RTX5090 mechanism chain used torch 2.12.1+cu130, transformers 4.51.1, PEFT 0.15.2, accelerate 1.10.1, safetensors 0.5.3, and W&B 0.26.1.')}</p></div>
+    <details class="strict-seed"><summary>{t('严格 SEED 论文路线','Strict SEED-paper route')}</summary><div><p>{t('如果目标不是复现我们的 OpenEvo 实验，而是严格运行 SEED 官方 WebShop，则单独 clone 官方 SEED，并按其 README 建 Python 3.10 seed-webshop、在 webshop 目录执行 setup.sh -d all，再安装它的 torch/vLLM 组合。那是一条独立实验路线，不与当前 OpenEvo runtime 共用环境。','If the goal is strict SEED rather than our OpenEvo experiment, clone the official SEED repository separately, create its Python 3.10 seed-webshop environment, run setup.sh -d all inside the WebShop directory, and install the torch/vLLM versions specified there. That is a separate experiment path and should not share the current OpenEvo runtime.')}</p><a href={links.seed} target="_blank" rel="noreferrer">SEED README ↗</a></div></details>
+  </section>
+
+  <section class="guide-section" id="webshop-assets" aria-labelledby="webshop-assets-title">
+    <div class="section-heading"><span>08</span><div><small>{t('SEED source + 1k catalog + Lucene','SEED source + 1k catalog + Lucene')}</small><h2 id="webshop-assets-title">{t('数据与索引','Data and index')}</h2></div></div>
+    <p>{t('当前 WebShop adapter 的 seed_root 指向一个 SEED 源码树，其中必须存在 agent_system/environments/env_package/webshop/webshop。不要只因为另一个仓库也叫 WebShop 就替换它；每次实验都要记录源码 revision。','The current WebShop adapter expects seed_root to point to a SEED source tree containing agent_system/environments/env_package/webshop/webshop. Do not silently substitute another repository just because it is also called WebShop; record the exact source revision for every run.')}</p>
+    <div class="command-card wide"><h3>{t('WebShop 源码树','WebShop source tree')}</h3><pre><code>{commands.seedSource}</code></pre></div>
+    <div class="command-card wide"><h3>{t('1k 数据集','1k dataset')}</h3><pre><code>{commands.dataFetch}</code></pre><pre><code>{commands.installData}</code></pre><p>{t('当前 campaign 使用固定 1000-product 数据身份，而不是“随手执行最新版 setup.sh 下载到什么就用什么”。三个 JSON 都要校验字节大小、结构和 SHA-256。','The current campaign uses a pinned 1000-product data identity rather than whatever a latest setup.sh happens to download. All three JSON files are checked for size, structure, and SHA-256 identity.')}</p></div>
+    <div class="command-card wide"><h3>{t('Lucene 索引 Gate','Lucene index gate')}</h3><pre><code>{commands.indexVerify}</code></pre><p>{t('Phase G 接受的是“固定数据 + 固定构建链 + 搜索行为 fingerprint”的语义一致索引，不要求和某个已经丢失的历史 Lucene 目录逐字节相同。当前仓库已经有严格 verifier，但索引从零构建的完整命令还没有被提升成一个独立的一键脚本；这是目前复现链里仍应继续工程化的一处，而不是在网页里编造一条命令。','Phase G accepts semantic identity from pinned data, a pinned build chain, and a search-behavior fingerprint; it does not require byte identity with an unavailable historical Lucene directory. The repository has a strict verifier, but the full zero-to-index build chain has not yet been promoted into a standalone one-command script. That is a remaining reproducibility engineering task, not something this guide should fabricate.')}</p></div>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('1000 个唯一 product IDs、resources_1k hash、1000-document Lucene index、固定 query panel fingerprint 全部通过以后，才允许进入 GPU campaign。','Only after 1000 unique product IDs, the resources_1k hash, the 1000-document Lucene index, and the fixed query-panel fingerprint all pass may a GPU campaign begin.')}</span></div>
+  </section>
+
+  <section class="guide-section" id="preflight" aria-labelledby="preflight-title">
+    <div class="section-heading"><span>09</span><div><small>{t('CPU Gate','CPU gate')}</small><h2 id="preflight-title">{t('任务合同','Task contract')}</h2></div></div>
+    <p>{t('WebShop“能 reset”还不够。正式比较之前先冻结任务、环境 seed、generation seed、prompt、parser、max steps、temperature、adapter 身份和访问账本；之后看到结果也不能偷偷改。','A WebShop environment that can reset is not enough. Before a formal comparison, freeze tasks, environment seed, generation seeds, prompt, parser, max steps, temperature, adapter identities, and the access ledger; do not change them after seeing results.')}</p>
+    <div class="command-grid">
+      <div class="command-card"><h3>{t('仓库预检','Repository preflight')}</h3><pre><code>{commands.preflight}</code></pre></div>
+      <div class="command-card"><h3>{t('任务 manifest','Task manifest')}</h3><pre><code>{commands.taskManifest}</code></pre></div>
+    </div>
+    <div class="protocol-grid"><article><small>environment seed</small><strong>2026</strong></article><article><small>Phase G goals</small><strong>6680 · 2590</strong></article><article><small>generation seeds</small><strong>202652 · 202653</strong></article><article><small>arms</small><strong>base · adapter1x · cumulative</strong></article></div>
+    <div class="checkpoint"><strong>{t('验收','Checkpoint')}</strong><span>{t('startup report 没有身份漂移；测试全过；task manifest verify PASS；index fingerprint PASS；adapter digest/fresh reload 可追溯。','The startup report shows no identity drift; tests pass; task manifest verification passes; index fingerprint passes; adapter digests and fresh reloads are traceable.')}</span></div>
+  </section>
+
+  <section class="guide-section" id="gpu-run" aria-labelledby="gpu-run-title">
+    <div class="section-heading"><span>10</span><div><small>{t('真实 episode','Real episodes')}</small><h2 id="gpu-run-title">{t('GPU 实验','GPU run')}</h2></div></div>
+    <p>{t('复现已经完成的 Phase G 时，用专用 evaluator，而不是把一次 smoke 当成结果。它会固定 2 goals × 2 generation seeds × 3 arms = 12 episodes，并为每个 arm 创建干净模型状态。adapter 路径必须从 Run Manifest / parameter-update evidence 解析，不能按“最新目录”猜。','To reproduce completed Phase G, use the dedicated evaluator rather than treating a smoke as a result. It freezes 2 goals × 2 generation seeds × 3 arms = 12 episodes and creates a clean model state for every arm. Adapter paths must be resolved from Run Manifest / parameter-update evidence, never guessed from the newest directory.')}</p>
+    <div class="command-card wide"><pre><code>{commands.phaseGRun}</code></pre></div>
+    <ul class="rule-list">
+      <li>{t('启动前检查 GPU UUID、PID、user、显存和 utilization；只用明确授权且空闲的卡。','Before launch, inspect GPU UUID, PID, user, memory, and utilization; use only an explicitly authorized idle GPU.')}</li>
+      <li>{t('当前有 5 张实验分配，但单次复现可以从 1 张卡顺序跑；多卡用于独立 task/seed slot，不需要为了利用率做 DDP。','Five GPUs are currently allocated to the experiment, but a reproduction can run sequentially on one GPU; multiple GPUs are for independent task/seed slots, not gratuitous DDP.')}</li>
+      <li>{t('runtime/parser/tracking failure 不算算法 0 分；先判 INVALID，再修工程问题。','Runtime/parser/tracking failure is not an algorithmic zero; classify it INVALID and repair the engineering issue first.')}</li>
+    </ul>
+  </section>
+
+  <section class="guide-section" id="evidence" aria-labelledby="evidence-title">
+    <div class="section-heading"><span>11</span><div><small>{t('可审计输出','Auditable outputs')}</small><h2 id="evidence-title">{t('结果证据','Result evidence')}</h2></div></div>
+    <div class="command-card wide"><pre><code>{commands.resultCheck}</code></pre></div>
+    <div class="evidence-grid">
+      <article><strong>episodes/*.json</strong><p>{t('每个任务/seed/arm 的完整 trace、action、raw completion、score、parser/fallback 与 error。','Full trace, action, raw completion, score, parser/fallback, and error state for each task/seed/arm.')}</p></article>
+      <article><strong>summary.json</strong><p>{t('按 arm 的 task score、success、fallback、episode length 与 paired delta。','Per-arm task score, success, fallback, episode length, and paired deltas.')}</p></article>
+      <article><strong>run-manifest.json</strong><p>{t('代码、OpenEvo、模型、数据/索引、GPU、seed、命令和 artifact hash 的总收据。','Canonical receipt for code, OpenEvo, model, data/index, GPU, seeds, commands, and artifact hashes.')}</p></article>
+      <article><strong>W&B</strong><p>{t('负责在线/离线观测，不替代 Git + 本地 Run Manifest；W&B 挂了不应改变科学协议。','Provides online/offline observability but does not replace Git plus the local Run Manifest; a W&B failure must not change the scientific protocol.')}</p></article>
+    </div>
+    <div class="phase-grid"><article><span>Phase D–F</span><strong>{t('参数更新机制 PASS','Parameter-update mechanism PASS')}</strong><p>{t('真实 Qwen、optimizer step、adapter 状态改变、fresh reload 和非零模型行为变化都已验证。','Real Qwen, optimizer steps, adapter-state changes, fresh reload, and non-zero model-output changes were verified.')}</p></article><article><span>Phase G</span><strong>12 episodes · completed</strong><p>{t('base / adapter1x / cumulative 的 mean score 均为 0.000，wins 均为 0/4。它说明当前小矩阵没有任务级成功，不等于“adapter 没有改变模型”。','base / adapter1x / cumulative all had mean score 0.000 and 0/4 wins. This shows no task-level success in the bounded matrix; it does not mean the adapter had no effect on the model.')}</p></article></div>
+  </section>
+
+  <section class="guide-section" id="phase-h0" aria-labelledby="phase-h0-title">
+    <div class="section-heading"><span>12</span><div><small>{t('当前科学主线','Current scientific line')}</small><h2 id="phase-h0-title">Phase H0 · Natural Success Search</h2></div></div>
+    <p>{t('复现 Phase G 之后不要直接 sweep rank / LR / epoch。下一步是在新的 train-only WebShop tasks 上先估计冻结 Qwen2.5-3B 的自然成功率：初始 64–128 个有效 rollouts，仍为 0 时同协议最多扩到 256。出现自主成功，就优先用这些成功轨迹做 H1 successful-supervision train-fit；如果 H0 上限仍为 0，再引入 verified teacher-success trajectory 做 bootstrap。','After reproducing Phase G, do not jump to rank/LR/epoch sweeps. The next step is to estimate the spontaneous success rate of frozen Qwen2.5-3B on new train-only WebShop tasks: start with 64–128 valid rollouts and extend the same protocol to at most 256 if success remains zero. If self-success appears, prioritize those successful trajectories for H1 successful-supervision train-fit; if the H0 ceiling remains zero, bootstrap with verified teacher-success trajectories.')}</p>
+    <div class="finish-list"><strong>{t('复现完成标准','Reproduction completion criteria')}</strong><ol><li>{t('SSH/UID/权限边界清楚。','SSH/UID/authority boundary is explicit.')}</li><li>{t('持久 workspace 和 bind-mount ownership Gate 通过。','Persistent workspace and bind-mount ownership gate pass.')}</li><li>{t('四层仓库/依赖关系与 exact SHA 可追溯。','The four repository/dependency layers and exact SHAs are traceable.')}</li><li>{t('RTX5090 PyTorch Gate 通过且没有改宿主 GPU 栈。','RTX5090 PyTorch gate passes without modifying the host GPU stack.')}</li><li>{t('OpenEvo/Qwen/WebShop runtime 版本固定。','OpenEvo/Qwen/WebShop runtime versions are pinned.')}</li><li>{t('1k 数据、Lucene index、task manifest 全部 fingerprint/verify PASS。','1k data, Lucene index, and task manifest all pass fingerprint/verification.')}</li><li>{t('真实 GPU episodes 生成原子 JSON + summary + Run Manifest。','Real GPU episodes produce atomic JSON, summary, and a Run Manifest.')}</li><li>{t('结论只覆盖证据真正支持的层级。','The conclusion stays within the level actually supported by evidence.')}</li></ol></div>
+  </section>
+
+  <section class="guide-section mechanism-appendix" aria-labelledby="mechanism-appendix-title">
+    <div class="section-heading"><span>A</span><div><small>{t('附录','Appendix')}</small><h2 id="mechanism-appendix-title">{t('Agent 与参数演变机制','Agent and parameter-evolution mechanism')}</h2></div></div>
+    <AgentMechanismDialogues locale={locale} />
+  </section>
 </section>
 
 <style>
-  .seed-benchmark-guide{width:min(1180px,calc(100% - 2rem));margin:1.2rem auto 5rem}.seed-guide-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:1rem;align-items:start;padding:clamp(1.2rem,3vw,2rem);border:1px solid var(--line);border-radius:20px;background:var(--surface)}.seed-guide-kicker{color:var(--accent-deep);font-size:.72rem;font-weight:800}.seed-guide-hero h1{margin:.5rem 0 .7rem}.seed-guide-hero>div>p{max-width:72ch;margin:0;color:var(--muted);line-height:1.7}.seed-guide-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.current-hardware{padding:1rem;border:1px solid var(--line);border-radius:13px;background:var(--surface-muted)}.current-hardware span,.current-hardware strong,.current-hardware small{display:block}.current-hardware span,.current-hardware small{color:var(--muted);font-size:.68rem}.current-hardware strong{margin:.4rem 0;font-size:1.35rem}.current-hardware p{margin:.4rem 0;color:var(--muted);font-size:.74rem;line-height:1.5}.guide-section{padding:1.6rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.6rem;margin-bottom:1rem}.section-heading>span{color:var(--accent-deep);font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.66rem}.section-heading h2{margin:.15rem 0 0}.topology{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.4rem;align-items:center}.topology article{grid-column:span 1;padding:.8rem;border:1px solid var(--line);border-radius:12px}.topology i{text-align:center;color:var(--accent-deep);font-style:normal}.topology small,.topology strong,.topology span{display:block}.topology small{color:var(--muted);font-size:.62rem}.topology strong{margin:.35rem 0;font-size:.78rem}.topology span{color:var(--muted);font-size:.66rem;line-height:1.4}.step-list{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}.step-list li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.7rem;padding:.8rem;border:1px solid var(--line);border-radius:12px}.step-list li>span{color:var(--accent-deep);font:800 .68rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.step-list strong{font-size:.8rem}.step-list p{margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.phase-grid,.history-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.history-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phase-grid article,.history-grid article{padding:.9rem;border:1px solid var(--line);border-radius:13px}.phase-grid span,.history-grid code{color:var(--accent-deep);font-size:.68rem;font-weight:800}.phase-grid strong,.history-grid strong{display:block;margin:.45rem 0;font-size:.82rem}.phase-grid p,.history-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}.history-grid a{display:inline-block;margin-top:.55rem;font-size:.7rem}@media(max-width:900px){.seed-guide-hero{grid-template-columns:1fr}.topology{grid-template-columns:1fr}.topology i{transform:rotate(90deg)}.phase-grid,.history-grid{grid-template-columns:1fr}}@media(max-width:560px){.seed-benchmark-guide{width:min(100% - 1rem,1180px)}}
+  .seed-benchmark-guide{width:min(1180px,calc(100% - 2rem));margin:1.2rem auto 5rem}.seed-guide-hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:1rem;align-items:start;padding:clamp(1.2rem,3vw,2rem);border:1px solid var(--line);border-radius:20px;background:var(--surface)}.seed-guide-kicker{color:var(--accent-deep);font-size:.72rem;font-weight:800}.seed-guide-hero h1{margin:.5rem 0 .7rem}.seed-guide-hero>div>p{max-width:76ch;margin:0;color:var(--muted);line-height:1.72}.seed-guide-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.current-hardware{padding:1rem;border:1px solid var(--line);border-radius:13px;background:var(--surface-muted)}.current-hardware span,.current-hardware strong,.current-hardware small{display:block}.current-hardware span,.current-hardware small{color:var(--muted);font-size:.68rem}.current-hardware strong{margin:.4rem 0;font-size:1.35rem}.current-hardware p{margin:.4rem 0;color:var(--muted);font-size:.74rem;line-height:1.5}.run-route{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:1rem 0 2rem}.run-route a{display:grid;grid-template-columns:auto 1fr;gap:.45rem;align-items:center;padding:.65rem;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;background:var(--surface)}.run-route span{color:var(--accent-deep);font:800 .64rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.run-route strong{font-size:.7rem}.guide-section{scroll-margin-top:7rem;padding:1.8rem 0;border-top:1px solid var(--line)}.guide-section>p{max-width:86ch;color:var(--muted);line-height:1.72}.section-heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.6rem;margin-bottom:1rem}.section-heading>span{color:var(--accent-deep);font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.66rem}.section-heading h2{margin:.15rem 0 0}.command-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}.command-card{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.command-card.wide{margin:.65rem 0}.command-card h3{margin:0 0 .55rem;font-size:.82rem}.command-card>p{margin:.65rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.55}.command-card pre,.tree{overflow:auto;margin:.35rem 0 0;padding:.78rem;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);border-radius:9px;background:var(--surface-muted);font-size:.68rem;line-height:1.55}.command-card pre+pre{margin-top:.55rem}.checkpoint{display:grid;grid-template-columns:6rem minmax(0,1fr);gap:.7rem;margin-top:.7rem;padding:.75rem .85rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted);font-size:.74rem;line-height:1.5}.checkpoint span{color:var(--muted)}.boundary-grid,.repo-grid,.evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.repo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.evidence-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.boundary-grid article,.repo-grid article,.evidence-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.boundary-grid p,.repo-grid p,.evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.repo-grid code{display:block;color:var(--accent-deep);font-size:.66rem;overflow-wrap:anywhere}.repo-grid strong{display:block;margin:.45rem 0;font-size:.8rem}.repo-grid a{display:inline-block;margin-top:.5rem;font-size:.7rem}.rule-list{margin:.8rem 0 0;padding-left:1.2rem;color:var(--muted);font-size:.76rem;line-height:1.65}.history-note,.warning-box,.finish-list{margin:.75rem 0;padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.history-note p,.warning-box p{margin:.4rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.55}.history-note a{color:inherit}.fact-strip{display:grid;grid-template-columns:1.25fr 1.1fr 1fr;gap:.55rem;margin:.6rem 0}.fact-strip>span,.identity-grid article,.protocol-grid article{min-width:0;padding:.7rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.fact-strip small,.fact-strip code,.fact-strip strong{display:block}.fact-strip small,.identity-grid small,.protocol-grid small{color:var(--muted);font-size:.62rem}.fact-strip code{margin-top:.35rem;font-size:.64rem;overflow-wrap:anywhere}.fact-strip strong{margin-top:.35rem;font-size:.7rem}.identity-grid,.protocol-grid,.phase-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.7rem 0}.protocol-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.phase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.identity-grid strong,.protocol-grid strong{display:block;margin-top:.35rem;font-size:.72rem;overflow-wrap:anywhere}.phase-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px}.phase-grid span{color:var(--accent-deep);font-size:.66rem;font-weight:800}.phase-grid strong{display:block;margin:.4rem 0;font-size:.8rem}.phase-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}.strict-seed{margin:.7rem 0;border:1px solid var(--line);border-radius:10px}.strict-seed summary{cursor:pointer;padding:.75rem .85rem;font-size:.76rem;font-weight:800}.strict-seed>div{padding:0 .85rem .85rem}.strict-seed p{color:var(--muted);font-size:.73rem;line-height:1.55}.strict-seed a{font-size:.72rem}.finish-list ol{margin:.6rem 0 0;padding-left:1.25rem;color:var(--muted);font-size:.76rem;line-height:1.65}.mechanism-appendix{margin-top:1rem}@media(max-width:980px){.seed-guide-hero{grid-template-columns:1fr}.run-route{grid-template-columns:repeat(4,minmax(0,1fr))}.repo-grid,.evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.boundary-grid{grid-template-columns:1fr}.fact-strip{grid-template-columns:1fr}.protocol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.seed-benchmark-guide{width:min(100% - 1rem,1180px)}.run-route{grid-template-columns:repeat(2,minmax(0,1fr))}.command-grid,.repo-grid,.evidence-grid,.identity-grid,.protocol-grid,.phase-grid{grid-template-columns:1fr}.checkpoint{grid-template-columns:1fr}.section-heading{grid-template-columns:2rem minmax(0,1fr)}}
 </style>
