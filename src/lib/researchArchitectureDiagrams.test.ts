@@ -9,6 +9,9 @@ const seed = read('src/components/research/SeedFrameworkDiagram.astro');
 const openevo = read('src/components/research/OpenEvoFrameworkDiagram.astro');
 const compare = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
+const labZh = read('src/pages/lab.astro');
+const labEn = read('src/pages/en/lab.astro');
+const sourceRules = read('src/AGENTS.md');
 
 describe('research architecture diagrams', () => {
   it('renders real framed, color-coded architecture instead of text-arrow prose', () => {
@@ -29,6 +32,7 @@ describe('research architecture diagrams', () => {
     expect(server).toContain('/var/run/docker.sock');
     expect(server).toContain('I am not the global administrator');
     expect(server).toContain('UID/GID 1001:1001');
+    for (const route of [guide, labZh, labEn]) expect(route).toContain('ServerAuthorityDiagram');
   });
 
   it('models the actual WebShop and ALFWorld benchmark setup', () => {
@@ -51,10 +55,16 @@ describe('research architecture diagrams', () => {
   });
 
   it('keeps the reproduction guide executable and embeds the visual diagrams', () => {
-    expect(guide).toContain('ServerAuthorityDiagram');
     expect(guide).toContain('AgentEnvironmentTrajectory');
     expect(guide).toContain('12 reproduction gates');
     expect(guide).toContain('run_parametric_eval.py');
     expect(guide).toContain('verify_indexes_1k.py');
+  });
+
+  it('makes the visual diagram contract durable for future UI changes', () => {
+    expect(sourceRules).toContain('Non-negotiable diagram rule');
+    expect(sourceRules).toContain('framed node/card');
+    expect(sourceRules).toContain('CSS connector lines with arrowheads');
+    expect(sourceRules).toContain('must not be the only visual expression of a flow');
   });
 });

@@ -46,6 +46,33 @@ If the sentence contains useful information, keep it as prose below the subject 
 
 Normal headings must still be specific. Prefer `Phase G WebShop 对比` over vague packaging such as `当前声明边界`. Buttons should state their action: `查看实验结果`, `打开复现指南`, `比较模型`, `保存实验记录`.
 
+## Non-negotiable diagram rule
+
+**A process, architecture, model loop, repository lineage, or data flow must look like a diagram, not a sentence with arrow characters.** When a user needs to understand how objects move or how modules relate, use semantic HTML/Astro + CSS to encode the structure visually.
+
+Minimum visual contract for a diagram:
+
+- every meaningful module is a framed node/card with padding, border, and a distinct surface;
+- related node classes use deliberate color families (for example environment/model/update/evidence/infrastructure), not one undifferentiated list;
+- relationships use CSS connector lines with arrowheads, including branch/merge/return geometry when the relationship is not linear;
+- stages or authority layers are spatially grouped and labeled;
+- desktop layouts may be horizontal or multi-lane; narrow layouts must collapse to a readable vertical flow;
+- the diagram remains semantic HTML; do not replace primary technical content with a raster screenshot;
+- arrow glyphs such as `→` may appear inside compact labels, but **must not be the only visual expression of a flow**;
+- diagrams must preserve reduced-motion and static readability; animation is optional and never required to understand the system.
+
+Preferred visual references are ML-paper pipeline figures, neural-network architecture diagrams, systems diagrams, and experimental data-flow figures: boxes, colored stages, explicit connectors, and a clear input/process/output hierarchy.
+
+For SEED/OpenEvo research specifically, preserve dedicated visual components for:
+
+- server/authority hierarchy: host → control-plane container → experiment runtime → persistent workspace;
+- WebShop/ALFWorld dataset and environment setup;
+- SEED hindsight-skill SFT + self-evolving OPD/GRPO loop;
+- OpenEvo completed-task → sealed-evidence → evolution-carrier → successor-revision loop;
+- side-by-side SEED vs OpenEvo comparison.
+
+If an existing public surface expresses one of these relationships mainly as prose/cards or text arrows, upgrade it to the shared architecture-diagram language rather than adding another explanatory paragraph.
+
 ## Current experiment chronology
 
 When shared copy discusses project hardware or repositories, preserve these roles until newer source-of-truth evidence supersedes them:
@@ -70,6 +97,7 @@ Do not present historical RTX6/4×3090 configuration or a pre-Phase-G gate as th
 7. Keep safety and research-integrity warnings direct, but do not let them visually outrank the page subject unless the page is specifically a warning/error surface.
 8. Review adjacent shared copy when a shared component changes.
 9. Check current experiment status against the source-of-truth repository before publishing time-sensitive claims.
+10. If the content describes a process, architecture, dependency graph, or data flow, verify that the public surface uses framed/color-coded nodes and real CSS connectors rather than prose arrows alone.
 
 ## Acceptance
 
