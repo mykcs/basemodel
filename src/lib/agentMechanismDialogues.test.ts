@@ -12,16 +12,18 @@ describe('SEED and OpenEvo architecture comparison', () => {
   it('keeps both update mechanisms explicit', () => {
     expect(component).toContain('SEED');
     expect(component).toContain('OpenEvo');
-    expect(component).toContain('model parameters');
+    expect(component).toContain('updated policy checkpoint');
     expect(component).toContain('memory / artifact / adapter');
     expect(component).toContain('successor revision');
   });
 
-  it('uses framed color-coded nodes and CSS connectors', () => {
-    expect(component).toContain('SEED vs OpenEvo');
-    expect(component).toContain('compare-grid');
-    expect(component).toContain('border-top:4px solid');
-    expect(component).toContain('.flow>i:after');
+  it('uses framed color-coded nodes and vector connectors', () => {
+    expect(component).toContain('SEED 与 OpenEvo 的经验载体');
+    expect(component).toContain('fork-scene');
+    expect(component).toContain('border-top:5px solid');
+    expect(component).toContain('<svg class="fork-wires"');
+    expect(component).toContain('<marker');
+    expect(component).toContain('marker-end=');
   });
 
   it('remains mounted on both localized loop-comparison routes', () => {

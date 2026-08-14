@@ -52,9 +52,10 @@ describe('sitewide editorial heading policy', () => {
   it('uses subject headings for the major public surfaces', () => {
     for (const expected of [
       '实验结果与证据', '实验进度', '当前实验进展', 'OpenEvo × WebShop 实验', 'OpenEvo 实验复现指南',
-      '模型扩展实验', 'WebShop 与 ALFWorld 的数据集设定', 'SEED 自进化训练框架', 'OpenEvo 跨任务演化框架',
-      '我在 OpenEvo 服务器上的权限边界', '方法摘要', '数据来源与缺失信息', '模型参与顺序', '模型角色',
-      '论文学习指南', '复现材料', '模型选择依据', '模型替换分析', '实验设备与服务器', 'RTX6 复现记录',
+      '模型扩展实验', 'WebShop 与 ALFWorld 环境模型', 'SEED 自进化训练机制', 'OpenEvo 跨任务演化机制',
+      'OpenEvo 服务器权限模型', 'SEED 与 OpenEvo 的经验载体', '方法摘要', '数据来源与缺失信息',
+      '模型参与顺序', '模型角色', '论文学习指南', '复现材料', '模型选择依据', '模型替换分析',
+      '实验设备与服务器', 'RTX6 复现记录',
     ]) expect(joined).toContain(expected);
   });
 

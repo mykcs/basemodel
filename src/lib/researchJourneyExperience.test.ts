@@ -23,19 +23,21 @@ describe('three-journey research experience', () => {
     expect(trajectory).toContain('BenchmarkDatasetDiagram');
     expect(benchmarkDiagram).toContain('WebShop');
     expect(benchmarkDiagram).toContain('ALFWorld');
-    expect(benchmarkDiagram).toContain('WebShop 与 ALFWorld 的数据集设定');
+    expect(benchmarkDiagram).toContain('WebShop 与 ALFWorld 环境模型');
     expect(benchmarkDiagram).toContain('1.18M');
     expect(benchmarkDiagram).toContain('valid_seen');
-    expect(benchmarkDiagram).toContain('pipe-arrow');
-    expect(benchmarkDiagram).toContain('branch-arrow');
+    expect(benchmarkDiagram).toContain('scene-wires');
+    expect(benchmarkDiagram).toContain('state transition');
+    expect(benchmarkDiagram).toContain('new observation feeds the next step');
   });
 
   it('keeps SEED and OpenEvo downstream processing explicit without text-arrow-only diagrams', () => {
     expect(comparison).toContain('hindsight skill');
-    expect(comparison).toContain('GRPO + OPD');
+    expect(comparison).toContain('OPD + GRPO');
     expect(comparison).toContain('sealed evidence');
     expect(comparison).toContain('successor revision');
-    expect(comparison).toContain('.flow>i:after');
+    expect(comparison).toContain('fork-wires');
+    expect(comparison).toContain('marker-end=');
   });
 
   it('exposes the current bilingual OpenEvo gateway and current campaign stage', () => {
