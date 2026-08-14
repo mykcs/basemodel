@@ -1,7 +1,30 @@
 node_modules/
 dist/
 .astro/
+
+# Local environment / provider credentials
 .env
+.env.*
+!.env.example
+!.env.sample
+.dev.vars
+.dev.vars.*
+.vercel/
+.wrangler/
+.cloudflare/
+.secrets*
+.credentials*
+
+# Private keys / local access material
+*.pem
+*.key
+*.p12
+*.pfx
+*.ovpn
+id_rsa
+id_ed25519
+
+# Agent / OS / test scratch state
 .DS_Store
 .omc/
 reports/

@@ -1,6 +1,6 @@
 # Hosting architecture — Vercel Preview + Vercel Production
 
-Last reviewed: **2026-08-12**
+Last reviewed: **2026-08-14**
 
 Status: **current release authority. Vercel is the only ordinary deployment provider for Preview and Production.**
 
@@ -25,8 +25,7 @@ Astro, React and GitHub do not change. This is provider-ownership consolidation,
 ## Vercel contract
 
 - project: `basemodel-preview`
-- project ID: `prj_UQRbjvnik0lW21LrzotTLPhKkgAK`
-- team: `wangrui92-team`
+- account/team and opaque project IDs: provider-side state, intentionally not stored in public source
 - production branch: `main`
 - build: `npm run verify:deploy && npm run build`
 - current canonical project domain: `https://basemodel-preview.vercel.app`
@@ -70,6 +69,10 @@ repository contract updated
 ```
 
 A READY Preview is not Production evidence.
+
+## Public-source boundary
+
+Provider authentication, bearer tokens, share/access query parameters, account IDs and opaque project/team IDs are not repository documentation. Keep them in provider-side configuration or ephemeral tool output. A temporary Preview share URL must never be committed or persisted in a GitHub PR/Issue body or comment.
 
 ## Legacy hosting — not ordinary workflow
 

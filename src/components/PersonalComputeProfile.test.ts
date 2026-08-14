@@ -7,43 +7,32 @@ const enPage = readFileSync(new URL('../pages/en/lab.astro', import.meta.url), '
 const policy = readFileSync(new URL('../../docs/agents/current/personal-compute-profile-consumer.md', import.meta.url), 'utf8');
 const agents = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 
-describe('personal compute profile consumer', () => {
-  it('uses the fuhuo public endpoint as the only editable data source', () => {
-    const endpoint = 'https://mykcs.github.io/fuhuo_20260419/shared/personal-compute-profile.js';
-    expect(component).toContain(endpoint);
-    expect(policy).toContain(endpoint);
-    expect(policy).toContain('must not keep a second editable object');
-  });
+const publicSurface = [component, zhPage, enPage, policy, agents].join('\n');
 
-  it('mounts equivalent Chinese and English routes', () => {
+describe('public lab topology privacy boundary', () => {
+  it('keeps the lab routes generic and bilingual', () => {
+    expect(component).toContain('data-public-lab-topology');
     expect(zhPage).toContain('<PersonalComputeProfile locale="zh" />');
     expect(enPage).toContain('<PersonalComputeProfile locale="en" />');
+    expect(component).toContain('Public boundary');
   });
 
-  it('fails honestly instead of embedding a duplicated device inventory', () => {
-    expect(component).toContain('script.onerror=fail');
-    expect(component).toContain('共享档案暂时无法读取');
-    expect(component).toContain('does not keep a second device inventory');
-    for (const forbidden of ['vramPerGpuGb: 24', 'publicInternet: false', 'codex-remote-ethernet-failure']) expect(component).not.toContain(forbidden);
+  it('does not reconnect the former personal device profile', () => {
+    for (const forbidden of [
+      'fuhuo_20260419',
+      'personal-compute-profile.js',
+      '__MYKCS_PERSONAL_COMPUTE_PROFILE__',
+      'MacBook Pro M4',
+      'iPhone',
+      'iPad',
+      '4×RTX 3090',
+    ]) expect(publicSurface).not.toContain(forbidden);
   });
 
-  it('preserves time-sensitive observation and security boundaries', () => {
-    expect(policy).toContain('user-observed time-sensitive outcome');
-    expect(policy).toContain('must not become “Codex never works”');
-    expect(policy).toContain('server offline');
+  it('protects identifying infrastructure details', () => {
+    expect(policy).toContain('must not publish or dynamically load the owner');
     expect(policy).toContain('IP addresses, hostnames, usernames');
-  });
-
-  it('shows ownership and source state to the reader', () => {
-    expect(component).toContain('data-profile-status');
-    expect(component).toContain('查看唯一源文件');
-    expect(component).toContain('Single-source boundary');
-    expect(component).toContain('updatedAt');
-  });
-
-  it('is discoverable by future Agents without duplicating the profile', () => {
-    expect(agents).toContain('personal-compute-profile-consumer.md');
-    expect(agents).toContain('mykcs/fuhuo_20260419');
-    expect(agents).toContain('do not create a second editable device inventory');
+    expect(policy).toContain('minimum scientifically relevant aggregate specification');
+    expect(agents).toContain('generic public topology');
   });
 });
