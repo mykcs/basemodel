@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import PaperModelMatrix from '../../components/PaperModelMatrix';
 import PaperExplorer from '../../components/papers/PaperExplorer';
 import { getMessages, isLocale, type Locale } from '../../i18n';
-
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -17,9 +16,9 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
   <header class="page-header"><h1>{m.papersIndex.title}</h1><p class="lede">{m.papersIndex.lede}</p></header>
   <section class="section"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
   <details class="paper-matrix-advanced">
-    <summary>{locale === 'zh' ? '高级视图：查看每篇论文用了哪些模型' : 'Advanced view: see which models each paper used'}</summary>
-    <p class="muted">{locale === 'zh' ? '先按研究问题和复现条件选择论文。需要确认某个模型在论文里负责 actor、teacher、critic 等什么工作时，再展开这张表。' : 'Choose a paper from its question and reproduction conditions first. Open this table when you need to see whether a model served as an actor, teacher, critic, or another role.'}</p>
-    <div class="section-heading"><div><h2>{locale === 'zh' ? '每篇论文用了哪些模型，以及它们负责什么' : 'Which models each paper used and what they did'}</h2></div></div>
+    <summary>{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</summary>
+    <p class="muted">{locale === 'zh' ? '需要确认某个模型在论文里负责 actor、teacher、critic 等角色时，再展开这张表。' : 'Open this table when you need to inspect actor, teacher, critic, or other model roles in each paper.'}</p>
+    <div class="section-heading"><div><h2>{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</h2></div></div>
     <PaperModelMatrix papers={matrixPapers} models={models} locale={locale} />
   </details>
 </div>

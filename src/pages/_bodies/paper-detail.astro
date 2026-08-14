@@ -27,8 +27,8 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
-      <div class="section-kicker">{locale === 'zh' ? '这篇论文做了什么' : 'What this paper does'}</div>
-      <h2 id="paper-method-summary-title">{locale === 'zh' ? '先用一段话看懂方法' : 'Understand the method in one paragraph'}</h2>
+      <div class="section-kicker">{locale === 'zh' ? '方法' : 'Method'}</div>
+      <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary
         ? <p class="lede">{methodSummary}</p>
         : <p class="muted">{locale === 'zh' ? '这条记录还没有经过来源核对的方法摘要。下面只展示已经记录的论文类别、模型、训练更新对象和复现材料，不用其他字段猜测方法。' : 'This record does not yet contain a source-checked method summary. The page therefore shows only recorded categories, models, update targets, and reproduction material instead of guessing the method from other fields.'}</p>}
@@ -52,7 +52,7 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
     </section>
 
     <section class="detail-section" id="paper-reproduce">
-      <h2>{locale === 'zh' ? '选择要怎样复现这篇论文' : 'Choose how you want to reproduce this paper'}</h2>
+      <h2>{locale === 'zh' ? '复现方式' : 'Reproduction modes'}</h2>
       <p class="muted">{locale === 'zh' ? '严格复现尽量保持论文原模型和环境；方法复现保留核心机制但允许可比替代；现代化重跑明确换用更新模型或运行栈。' : 'Strict reproduction keeps the paper model and environment as closely as possible; method reproduction preserves the mechanism while allowing comparable substitutes; a modern rerun explicitly uses newer models or runtime components.'}</p>
       <div class="tag-row">
         <a class="button button-primary" href={localePath(locale, `/workspace/?v=2&mode=strict&paper=${paper.id}`)}>{m.paperDetail.strictReproduction}</a>
@@ -66,7 +66,7 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
     <PaperSelectionRationale paper={paper} models={models} locale={locale} />
 
     <section class="detail-section" id="paper-models">
-      <h2>{locale === 'zh' ? '这些模型在论文里分别负责什么' : 'What each model does in the paper'}</h2>
+      <h2>{locale === 'zh' ? '模型角色' : 'Model roles'}</h2>
       <div class="paper-list">
         {paper.models.map((use) => {
           const model = modelMap.get(use.model_id);

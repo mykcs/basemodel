@@ -1,7 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import AgentEnvironmentTrajectory from './AgentEnvironmentTrajectory.astro';
-
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -9,110 +8,44 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const route = [
-  {
-    index: '01',
-    title: t('看一条任务怎样执行', 'See how one task runs'),
-    body: t('分开查看任务、环境观察、模型动作和评分。', 'Separate the task, environment observation, model action, and evaluation.'),
-    href: '#trajectory-title-reproduction',
-  },
-  {
-    index: '02',
-    title: t('运行 WebShop 的 V0 与 O1', 'Run WebShop V0 and O1'),
-    body: t('固定模型、任务、提示词、随机种子和预算，只改变 OpenEvo 外部文本记忆。', 'Fix the model, task, prompt, random seed, and budget; change only the OpenEvo external text memory.'),
-    href: p('/guide/openevo-webshop-alfworld/'),
-  },
-  {
-    index: '03',
-    title: t('比较结果后再进入 ALFWorld', 'Compare results before moving to ALFWorld'),
-    body: t('先确认真实动作、环境变化和更新文件，再扩大到多随机种子与长程状态任务。', 'Confirm real actions, environment changes, and update files before expanding to multiple seeds and long-horizon tasks.'),
-    href: p('/research/seed-openevo/loops/'),
-  },
-];
-
-const gates = [
-  {
-    level: 'G1',
-    title: t('模型生成了真实动作', 'The model generated a real action'),
-    proof: t('保存 raw output、parsed action 和 fallback 标记；至少一个有效动作来自 CUDA 模型。', 'Save raw output, parsed action, and fallback flag; at least one valid action must come from the CUDA model.'),
-    limit: t('只证明模型动作链可用。', 'This proves only the model-action path.'),
-  },
-  {
-    level: 'G2',
-    title: t('动作改变了真实环境状态', 'The action changed real environment state'),
-    proof: t('动作进入 WebShop 或 ALFWorld，并产生新的 observation、reward、termination 和失败类型。', 'The action enters WebShop or ALFWorld and produces a new observation, reward, termination, and failure type.'),
-    limit: t('退出码不能替代任务评分。', 'An exit code cannot replace task evaluation.'),
-  },
-  {
-    level: 'G3',
-    title: t('OpenEvo 生成并加载了新版本', 'OpenEvo created and loaded a new version'),
-    proof: t('封存 gen0，运行明确方法，保存版本化 artifact，并让后续任务加载 successor revision。', 'Seal gen0, run an identified method, save a versioned artifact, and let a later task load the successor revision.'),
-    limit: t('只有反思文本还不能证明更新生效。', 'Reflection text alone does not prove that the update took effect.'),
-  },
-  {
-    level: 'G4',
-    title: t('V0 与 O1 可以公平比较', 'V0 and O1 are fairly comparable'),
-    proof: t('两组使用同一任务、checkpoint、prompt、seed、step budget、sampling、parser 和 evaluator。', 'Both groups use the same task, checkpoint, prompt, seed, step budget, sampling, parser, and evaluator.'),
-    limit: t('通过资格赛后，再进入多随机种子与 ALFWorld。', 'Move to multiple seeds and ALFWorld only after qualification.'),
-  },
-];
-
-const lanes = [
-  {
-    index: '01',
-    title: t('先在 WebShop 比较 V0 与 O1', 'Compare V0 and O1 on WebShop first'),
-    body: t('网页状态容易逐步检查，同时保留 normalized score 与 exact success，适合先验证模型动作、环境反馈、记忆注入和 gen1 文件。', 'Page state is easy to inspect step by step, while normalized score and exact success preserve both partial and exact outcomes. This makes WebShop suitable for validating model action, environment feedback, memory injection, and gen1 files.'),
-    checks: [t('V0：无记忆 baseline', 'V0: no-memory baseline'), t('O1：OpenEvo 外部文本记忆', 'O1: OpenEvo external text memory'), t('同任务、同模型、同预算', 'same task, model, and budget')],
-  },
-  {
-    index: '02',
-    title: t('WebShop 稳定后，再运行 ALFWorld', 'Run ALFWorld after WebShop is stable'),
-    body: t('ALFWorld 会暴露搜索循环、前置条件、物体状态和超步数问题。继续使用同一公平协议，并按任务家族报告成功率。', 'ALFWorld exposes search loops, prerequisites, object state, and step-budget exhaustion. Keep the same fair protocol and report success by task family.'),
-    checks: [t('按任务家族报告 success rate', 'report success rate by task family'), t('计算不加权 macro-average', 'compute an unweighted macro-average'), t('单列 invalid、loop 与 state loss', 'separate invalid actions, loops, and state loss')],
-  },
-];
+  { index:'01', title:t('实验配置','Experiment configuration'), body:t('Qwen2.5-3B-Instruct、WebShop、Run Manifest 与当前 5×RTX5090 实验分配。','Qwen2.5-3B-Instruct, WebShop, Run Manifest, and the current 5×RTX5090 experiment allocation.'), href:p('/research/seed-openevo/base-model/') },
+  { index:'02', title:'Phase G', body:t('12 个正式 episodes 已完成；base、adapter1x、cumulative 的 score / win 均为 0。','12 formal episodes completed; base, adapter1x, and cumulative all had zero score/win outcomes.'), href:p('/research/seed-openevo/results/') },
+  { index:'03', title:'Phase H0', body:t('在新的 train-only WebShop tasks 上搜索自然成功轨迹，先解决监督经验不足的问题。','Search new train-only WebShop tasks for naturally successful trajectories before tuning the learner.'), href:p('/research/seed-openevo/results/') },
+] as const;
 ---
 
 <div class="gateway">
   <header class="gateway__hero">
     <div>
-      <span>{t('OpenEvo · WebShop / ALFWorld', 'OpenEvo · WebShop / ALFWorld')}</span>
-      <h1>{t('运行 OpenEvo 的 WebShop 与 ALFWorld 实验', 'Run OpenEvo experiments on WebShop and ALFWorld')}</h1>
-      <p>{t('先看一条任务怎样执行，再用相同模型、任务、提示词、随机种子和预算运行 V0 与 O1。保存动作、环境反馈、评分和更新文件后，再决定是否进入 ALFWorld 与后续 SEED 对比。', 'First see how one task runs, then execute V0 and O1 with the same model, task, prompt, random seed, and budget. Save actions, environment feedback, scores, and update files before moving to ALFWorld and the later SEED comparison.')}</p>
-      <div class="gateway__actions"><a class="button button-primary" href="#trajectory-title-reproduction">{t('查看任务执行过程', 'View the task execution')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('开始运行 V0 与 O1', 'Start V0 and O1')}</a></div>
+      <span>OpenEvo · WebShop</span>
+      <h1>{t('OpenEvo × WebShop 实验', 'OpenEvo × WebShop experiment')}</h1>
+      <p>{t('当前实验以 openevo-experiment 为 source of truth。RTX6 / 4×3090 与 openevo-webshop 已经进入历史；正式 WebShop 主线已经完成 Phase G，正在进入 Phase H0。','The active experiment is governed by openevo-experiment. RTX6 / 4×3090 and openevo-webshop are historical; the formal WebShop line has completed Phase G and is moving into Phase H0.')}</p>
+      <div class="gateway__actions"><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('实验结果 →','Experiment results →')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('复现指南','Reproduction guide')}</a></div>
     </div>
-    <aside aria-label={t('当前实验阶段', 'Current experiment stage')}>
-      <small>{t('当前比较', 'Current comparison')}</small>
-      <strong>V0 ↔ O1</strong>
-      <p>{t('V0 不加载记忆；O1 加载 OpenEvo 外部文本记忆。SEED 参数更新属于后续阶段。', 'V0 loads no memory; O1 loads OpenEvo external text memory. SEED parameter updates belong to a later stage.')}</p>
-      <dl><div><dt>{t('保持一致', 'Keep fixed')}</dt><dd>{t('任务 · 模型 · prompt · seed · 预算', 'task · model · prompt · seed · budget')}</dd></div><div><dt>{t('保存材料', 'Save')}</dt><dd>{t('action · observation · score · artifact', 'action · observation · score · artifact')}</dd></div></dl>
+    <aside aria-label={t('当前实验阶段','Current experiment phase')}>
+      <small>{t('当前阶段','Current phase')}</small><strong>Phase H0</strong>
+      <dl><div><dt>{t('实验分配','Allocation')}</dt><dd>5× RTX 5090</dd></div><div><dt>{t('当前 benchmark','Benchmark')}</dt><dd>WebShop</dd></div><div><dt>{t('当前任务','Current question')}</dt><dd>{t('自然成功经验是否足够','whether natural successful experience is available')}</dd></div></dl>
     </aside>
   </header>
 
-  <nav class="gateway__route" aria-label={t('运行顺序', 'Run order')}>
-    {route.map((item) => <a href={item.href}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}
-  </nav>
+  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
 
   <AgentEnvironmentTrajectory locale={locale} context="reproduction" />
 
-  <section class="gateway__gates" aria-labelledby="gates-title">
-    <header><span>Scientific evidence gates</span><h2 id="gates-title">{t('每一层只回答一个具体问题', 'Each gate answers one concrete question')}</h2><p>{t('模型动作、环境变化、OpenEvo 更新和公平比较需要分别保存证据。', 'Model action, environment change, OpenEvo update, and fair comparison require separate evidence.')}</p></header>
-    <ol>{gates.map((gate) => <li><span>{gate.level}</span><div><h3>{gate.title}</h3><p>{gate.proof}</p><small>{t('目前只能说明：', 'Current limit: ')}{gate.limit}</small></div></li>)}</ol>
+  <section class="gateway__section" aria-labelledby="phaseg-gateway-title">
+    <header><span>Phase G</span><h2 id="phaseg-gateway-title">{t('正式比较结果', 'Formal comparison result')}</h2></header>
+    <div class="summary-grid"><article><strong>base</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>adapter1x</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>cumulative</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article></div>
+    <p>{t('这组 bounded matrix 没有测到任务收益差异，但 Phase D–F 已独立证明 adapter 的参数状态、reload 与模型输出确实发生变化。','This bounded matrix did not measure a task-outcome difference, while Phase D–F independently established real adapter-state, reload, and model-output changes.')}</p>
   </section>
 
-  <section class="gateway__lanes" aria-labelledby="lanes-title">
-    <header><span>{t('环境顺序', 'Environment order')}</span><h2 id="lanes-title">{t('先完成 WebShop 资格赛，再增加 ALFWorld 的长程状态难度', 'Complete WebShop qualification before adding ALFWorld’s long-horizon state')}</h2></header>
-    <div>{lanes.map((lane) => <article><span>{lane.index}</span><div><h3>{lane.title}</h3><p>{lane.body}</p><ul>{lane.checks.map((check) => <li>{check}</li>)}</ul></div></article>)}</div>
+  <section class="gateway__section" aria-labelledby="phaseh-gateway-title">
+    <header><span>Phase H0</span><h2 id="phaseh-gateway-title">{t('自然成功样本搜索', 'Natural success search')}</h2></header>
+    <ol class="next-track"><li><b>64–128</b><span>{t('新的 train-only WebShop rollouts','new train-only WebShop rollouts')}</span></li><li><b>≤256</b><span>{t('仍无成功时的最大扩展','maximum extension if success remains zero')}</span></li><li><b>H1</b><span>{t('成功样本存在时做 train-fit / supervision sanity check','train-fit / supervision sanity check if successes exist')}</span></li><li><b>teacher</b><span>{t('仍无成功时才进入 teacher-success bootstrap','teacher-success bootstrap only if natural success remains absent')}</span></li></ol>
   </section>
 
-  <footer class="gateway__next"><div><span>{t('运行后', 'After the run')}</span><h2>{t('把示意内容替换成真实运行文件', 'Replace the illustration with real run files')}</h2><p>{t('保存 observation、raw model output、parsed action、fallback、reward、termination、evolution input/output 和激活 revision。', 'Save observation, raw model output, parsed action, fallback, reward, termination, evolution input/output, and activated revision.')}</p></div><a class="button button-primary" href={p('/guide/openevo-webshop-alfworld/')}>{t('打开复现步骤', 'Open reproduction steps')}</a></footer>
+  <footer class="gateway__next"><div><span>{t('当前实验记录','Current record')}</span><h2>{t('Run Manifest、结果 JSON 与 W&B', 'Run Manifest, result JSON, and W&B')}</h2><p>{t('本地 provenance 决定实验身份与结果；W&B 用于观测和比较，不替代实验协议。','Local provenance determines experiment identity and results; W&B provides observability and comparison without replacing the protocol.')}</p></div><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('查看完整进展','Full status')}</a></footer>
 </div>
 
 <style>
-  .gateway{--a:var(--accent-deep,var(--accent));width:min(1180px,calc(100% - 2rem));margin:0 auto clamp(3rem,7vw,6rem)}
-  .gateway__hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.62fr);overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--surface)}.gateway__hero>div{padding:clamp(1.5rem,4vw,3.4rem);background:radial-gradient(circle at 12% 0%,color-mix(in srgb,var(--a) 11%,transparent),transparent 38%)}.gateway__hero>div>span,.gateway__gates>header>span,.gateway__lanes>header>span,.gateway__next>div>span{color:var(--a);font-size:.72rem;font-weight:800}.gateway h1{max-width:16ch;margin:.8rem 0 1rem;font-size:clamp(2.2rem,5vw,4.8rem);line-height:1;letter-spacing:-.045em}.gateway__hero>div>p{max-width:70ch;margin:0;color:var(--muted);font-size:clamp(.98rem,1.3vw,1.1rem);line-height:1.72}.gateway__actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.35rem}.gateway__hero aside{display:flex;flex-direction:column;padding:clamp(1.2rem,2.5vw,2rem);border-left:1px solid var(--line)}.gateway__hero aside>small{color:var(--muted);font-size:.7rem}.gateway__hero aside>strong{margin-top:auto;padding-top:2rem;font-size:clamp(2rem,4vw,3.4rem)}.gateway__hero aside>p{margin:.65rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.6}.gateway__hero dl{display:grid;gap:.5rem;margin:1rem 0 0}.gateway__hero dl div{padding-top:.6rem;border-top:1px solid var(--line)}.gateway__hero dt{color:var(--muted);font-size:.64rem}.gateway__hero dd{margin:.2rem 0 0;font-size:.7rem;line-height:1.45}
-  .gateway__route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:1rem 0}.gateway__route a{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.75rem;min-height:112px;padding:1rem;border:1px solid var(--line);border-radius:15px;background:var(--surface);color:inherit;text-decoration:none}.gateway__route a:hover,.gateway__route a:focus-visible{border-color:var(--a)}.gateway__route>a>span,.gateway__lanes article>span{color:var(--a);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.gateway__route strong{font-size:.86rem}.gateway__route p{margin:.35rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.gateway :global(.trajectory-lab){width:100%;margin-inline:0}
-  .gateway__gates,.gateway__lanes{margin-top:clamp(2.5rem,6vw,4.5rem)}.gateway__gates>header,.gateway__lanes>header{display:grid;grid-template-columns:minmax(120px,.3fr) minmax(260px,.8fr) minmax(280px,1fr);gap:1rem;align-items:start;padding-bottom:1.1rem;border-bottom:1px solid var(--line)}.gateway__gates h2,.gateway__lanes h2,.gateway__next h2{margin:0;font-size:clamp(1.45rem,2.8vw,2.4rem);line-height:1.14}.gateway__gates>header p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.6}.gateway__gates>ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}.gateway__gates li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;padding:1.1rem .9rem;border-right:1px solid var(--line)}.gateway__gates li:last-child{border-right:0}.gateway__gates li>span{color:var(--a);font:800 .65rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.gateway__gates h3{margin:0;font-size:.86rem}.gateway__gates li p{margin:.5rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.55}.gateway__gates small{display:block;margin-top:.7rem;padding-top:.6rem;border-top:1px dashed var(--line);color:var(--warning);font-size:.66rem;line-height:1.5}
-  .gateway__lanes>header{grid-template-columns:minmax(120px,.3fr) minmax(0,1fr)}.gateway__lanes>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1rem}.gateway__lanes article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.9rem;padding:1.15rem;border:1px solid var(--line);border-radius:15px;background:var(--surface)}.gateway__lanes h3{margin:0}.gateway__lanes article p{margin:.55rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.6}.gateway__lanes ul{display:grid;gap:.35rem;margin:.75rem 0 0;padding-left:1rem}.gateway__lanes li{color:var(--muted);font-size:.7rem}.gateway__next{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:end;margin-top:2.5rem;padding:1.4rem;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--a) 5%,var(--surface))}.gateway__next p{max-width:70ch;margin:.55rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.6}
-  @media(max-width:900px){.gateway__hero{grid-template-columns:1fr}.gateway__hero aside{border-top:1px solid var(--line);border-left:0}.gateway__route,.gateway__gates>ol,.gateway__lanes>div{grid-template-columns:1fr}.gateway__gates>header,.gateway__lanes>header{grid-template-columns:1fr}.gateway__gates li{border-right:0;border-bottom:1px solid var(--line)}.gateway__next{grid-template-columns:1fr}}
-  @media(max-width:640px){.gateway{width:min(100% - 1rem,1180px)}.gateway__hero{border-radius:16px}.gateway h1{max-width:none}.gateway__route a{min-height:0}}
+  .gateway{width:min(1120px,calc(100% - 2rem));margin:1rem auto 5rem}.gateway__hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface)}.gateway__hero>div{padding:clamp(1.4rem,3vw,2.5rem)}.gateway__hero>div>span,.gateway__section>header>span,.gateway__next>div>span{color:var(--accent-deep);font-size:.7rem;font-weight:800}.gateway__hero h1{margin:.55rem 0 .75rem}.gateway__hero>div>p{max-width:70ch;margin:0;color:var(--muted);line-height:1.7}.gateway__actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.gateway__hero aside{display:flex;flex-direction:column;padding:1.2rem;border-left:1px solid var(--line);background:var(--surface-muted)}.gateway__hero aside>small{color:var(--muted)}.gateway__hero aside>strong{margin:.5rem 0;font-size:1.7rem}.gateway__hero dl{margin:auto 0 0}.gateway__hero dl div{padding:.55rem 0;border-top:1px solid var(--line)}.gateway__hero dt{color:var(--muted);font-size:.65rem}.gateway__hero dd{margin:.2rem 0 0;font-size:.74rem}.gateway__route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:1rem 0}.gateway__route a{display:grid;grid-template-columns:auto 1fr;gap:.7rem;padding:.9rem;border:1px solid var(--line);border-radius:13px;color:inherit;text-decoration:none}.gateway__route>a>span{color:var(--accent-deep);font:800 .66rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.gateway__route strong{font-size:.82rem}.gateway__route p{margin:.3rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.45}.gateway :global(.trajectory-lab){width:100%;margin-inline:0}.gateway__section{margin-top:2rem;padding-top:1.3rem;border-top:1px solid var(--line)}.gateway__section header h2{margin:.2rem 0 .8rem}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.summary-grid article,.next-track li{padding:.85rem;border:1px solid var(--line);border-radius:12px}.summary-grid strong,.summary-grid b,.summary-grid span{display:block}.summary-grid strong{font-size:.74rem}.summary-grid b{margin:.4rem 0;font:800 .9rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.summary-grid span,.gateway__section>p{color:var(--muted);font-size:.72rem;line-height:1.5}.next-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.next-track b,.next-track span{display:block}.next-track b{color:var(--accent-deep)}.next-track span{margin-top:.35rem;color:var(--muted);font-size:.7rem;line-height:1.45}.gateway__next{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:end;margin-top:2rem;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.gateway__next h2{margin:.2rem 0}.gateway__next p{max-width:70ch;margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}@media(max-width:860px){.gateway__hero{grid-template-columns:1fr}.gateway__hero aside{border-top:1px solid var(--line);border-left:0}.gateway__route,.summary-grid,.next-track{grid-template-columns:1fr 1fr}.gateway__next{grid-template-columns:1fr}}@media(max-width:560px){.gateway{width:min(100% - 1rem,1120px)}.gateway__route,.summary-grid,.next-track{grid-template-columns:1fr}}
 </style>

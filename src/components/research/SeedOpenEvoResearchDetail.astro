@@ -3,12 +3,7 @@ import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
 
 type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'loops' | 'results';
-
-interface Props {
-  locale: Locale;
-  page: DetailPage;
-}
-
+interface Props { locale: Locale; page: DetailPage }
 const { locale, page } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
@@ -17,43 +12,43 @@ const p = (path: string) => localePath(locale, path);
 const pages = [
   { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
-  { id: 'seed', label: t('SEED 方法', 'SEED method'), href: p('/research/seed-openevo/seed/') },
-  { id: 'openevo', label: t('OpenEvo 方法', 'OpenEvo method'), href: p('/research/seed-openevo/openevo/') },
+  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
+  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
   { id: 'benchmarks', label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
-  { id: 'loops', label: t('比较两种更新', 'Compare updates'), href: p('/research/seed-openevo/loops/') },
-  { id: 'results', label: t('查看结果', 'View results'), href: p('/research/seed-openevo/results/') },
+  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
+  { id: 'results', label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
 ] as const;
 
 const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }> = {
   'base-model': {
-    eyebrow: t('模型设置', 'Model setup'),
-    title: t('确认 Qwen2.5-3B-Instruct 的版本和运行设置', 'Confirm the Qwen2.5-3B-Instruct revision and runtime settings'),
-    lede: t('记录具体 checkpoint、revision、精度、量化、上下文、推理后端和是否更新权重，避免只写一个家族名。', 'Record the exact checkpoint, revision, precision, quantization, context, inference backend, and whether weights change instead of writing only a family name.'),
+    eyebrow: t('实验模型', 'Experiment model'),
+    title: t('Qwen2.5-3B-Instruct 实验设置', 'Qwen2.5-3B-Instruct experiment setup'),
+    lede: t('记录 checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式。', 'Record the checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode.'),
   },
   seed: {
-    eyebrow: t('SEED 方法', 'SEED method'),
-    title: t('查看 SEED 如何从轨迹生成 skill 并更新模型参数', 'See how SEED turns trajectories into skills and updates model parameters'),
-    lede: t('先收集完整轨迹，再生成 hindsight skill，并用 OPD 与 RL 把行为变化写回 policy 参数。', 'SEED collects completed trajectories, generates hindsight skills, and uses OPD plus RL to write the behavioral change back into policy parameters.'),
+    eyebrow: t('方法', 'Method'),
+    title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
+    lede: t('SEED 从完整轨迹生成 hindsight skill，并通过 OPD 与 RL 把学习信号写回 policy 参数。', 'SEED generates hindsight skills from completed trajectories and writes the learning signal back into policy parameters through OPD and RL.'),
   },
   openevo: {
-    eyebrow: t('OpenEvo 方法', 'OpenEvo method'),
-    title: t('查看 OpenEvo 如何保存任务结果，并让下一次任务加载更新', 'See how OpenEvo saves task results and lets a later task load the update'),
-    lede: t('任务结束后封存数据，运行选定方法，保存 artifact 或 revision，再由后续任务加载接受的更新。', 'After a task ends, OpenEvo seals the data, runs the selected method, saves an artifact or revision, and lets a later task load the accepted update.'),
+    eyebrow: t('方法', 'Method'),
+    title: t('OpenEvo 演化流程', 'OpenEvo evolution flow'),
+    lede: t('OpenEvo 以任务边界封存证据，运行演化方法，并让后续任务加载接受的 artifact、adapter 或 revision。', 'OpenEvo seals evidence at task boundaries, runs evolution methods, and lets later tasks load accepted artifacts, adapters, or revisions.'),
   },
   benchmarks: {
-    eyebrow: t('两个实验环境', 'Two experiment environments'),
-    title: t('比较 ALFWorld 与 WebShop 的任务、动作和评分方式', 'Compare the tasks, actions, and scoring used by ALFWorld and WebShop'),
-    lede: t('ALFWorld 主要比较不同任务家族的成功率；WebShop 同时提供归一化任务分数和精确成功率，两者应分别分析。', 'ALFWorld focuses on success rates across task families; WebShop provides both normalized task score and exact success, so the two environments should be analyzed separately.'),
+    eyebrow: t('实验环境', 'Experiment environments'),
+    title: 'ALFWorld 与 WebShop',
+    lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
   },
   loops: {
-    eyebrow: t('两种更新方式', 'Two update methods'),
-    title: t('比较 SEED 更新模型参数与 OpenEvo 更新外部载体', 'Compare SEED parameter updates with OpenEvo external-carrier updates'),
-    lede: t('逐步对齐每种方法的输入、输出、更新对象和生效时间，再固定模型、任务、提示词、随机种子与预算进行比较。', 'Align each method’s inputs, outputs, updated object, and activation time, then compare them with the model, tasks, prompts, random seeds, and budget fixed.'),
+    eyebrow: t('比较', 'Comparison'),
+    title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
+    lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
   },
   results: {
-    eyebrow: t('运行结果', 'Run results'),
-    title: t('查看每次运行保存了什么，以及目前能得出什么结论', 'See what each run saved and which conclusions are currently supported'),
-    lede: t('分别查看环境状态、真实动作、更新文件、benchmark 分数、失败轨迹和同条件重跑；每类材料只支持与它相符的结论。', 'Inspect environment status, real actions, update files, benchmark scores, failed trajectories, and same-condition reruns separately; each artifact supports only the matching claim.'),
+    eyebrow: t('实验', 'Experiment'),
+    title: t('实验结果与证据', 'Experiment results and evidence'),
+    lede: t('当前结果以 openevo-experiment 为准；seed3090 与 openevo-webshop 作为历史来源保留。', 'Current results are governed by openevo-experiment; seed3090 and openevo-webshop remain historical sources.'),
   },
 };
 
@@ -68,27 +63,9 @@ const current = copy[page];
   <nav class="plain-detail__tabs" aria-label={t('SEED 与 OpenEvo 实验页面', 'SEED and OpenEvo experiment pages')}>
     {pages.map((item) => <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>)}
   </nav>
-  <div class="plain-detail-core">
-    <SeedOpenEvoResearchPageCore locale={locale} page={page} />
-  </div>
+  <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>
 </div>
 
 <style>
-  .plain-detail { width: min(1120px, calc(100% - 2rem)); margin: 1rem auto 4rem; }
-  .plain-detail__header { max-width: 920px; padding: clamp(1.5rem, 4vw, 3.4rem) 0 1rem; }
-  .plain-detail__header > div { color: var(--accent-deep); font-size: .76rem; font-weight: 850; letter-spacing: .05em; }
-  .plain-detail__header h1 { max-width: 20ch; margin: .8rem 0; font-size: clamp(2.15rem, 5.2vw, 5rem); line-height: 1; letter-spacing: -.045em; }
-  .plain-detail__header p { max-width: 72ch; margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.72; }
-  .plain-detail__tabs { position: sticky; z-index: 12; top: .5rem; display: flex; gap: .35rem; overflow-x: auto; margin: 1rem 0 2rem; padding: .45rem; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(16px); }
-  .plain-detail__tabs a { flex: 0 0 auto; padding: .62rem .8rem; border-radius: 11px; color: var(--muted); font-size: .78rem; font-weight: 750; text-decoration: none; }
-  .plain-detail__tabs a:hover, .plain-detail__tabs a:focus-visible { color: var(--ink); background: color-mix(in srgb, var(--accent) 7%, transparent); }
-  .plain-detail__tabs a[aria-current='page'] { color: var(--accent-on-fill, #fff); background: var(--accent-fill, var(--accent)); }
-  .plain-detail-core :global(.mission-page) { width: 100%; margin: 0; }
-  .plain-detail-core :global(.mission-page__header),
-  .plain-detail-core :global(.mission-tabs) { display: none; }
-  @media (max-width: 720px) {
-    .plain-detail { width: min(100% - 1rem, 1120px); }
-    .plain-detail__header h1 { max-width: none; font-size: clamp(2rem, 11vw, 3.4rem); }
-    .plain-detail__header p { font-size: .96rem; }
-  }
+  .plain-detail{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem}.plain-detail__header{max-width:920px;padding:clamp(1.2rem,3vw,2.4rem) 0 1rem}.plain-detail__header>div{color:var(--accent-deep);font-size:.72rem;font-weight:800}.plain-detail__header h1{margin:.55rem 0}.plain-detail__header p{max-width:72ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.7}.plain-detail__tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:.35rem;overflow-x:auto;margin:1rem 0 2rem;padding:.45rem;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(16px)}.plain-detail__tabs a{flex:0 0 auto;padding:.58rem .76rem;border-radius:10px;color:var(--muted);font-size:.76rem;font-weight:700;text-decoration:none}.plain-detail__tabs a:hover,.plain-detail__tabs a:focus-visible{color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,transparent)}.plain-detail__tabs a[aria-current='page']{color:var(--accent-on-fill,#fff);background:var(--accent-fill,var(--accent))}.plain-detail-core :global(.mission-page){width:100%;margin:0}.plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}@media(max-width:720px){.plain-detail{width:min(100% - 1rem,1120px)}.plain-detail__header p{font-size:.94rem}}
 </style>

@@ -3,10 +3,6 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../components/research/OpenEvoExperimentGateway.astro';
 const locale = 'en' as const;
 ---
-<AppLayout
-  title="OpenEvo × WebShop / ALFWorld experiment entry"
-  description="A dialogue-first explanation of WebShop and ALFWorld observations, model actions, environment feedback, evaluation signals, and the evidence boundary for OpenEvo evolution artifacts."
-  locale={locale}
->
+<AppLayout title="OpenEvo × WebShop experiment" description="The current experiment is governed by openevo-experiment: a 5×RTX5090 experiment allocation, 12 completed formal Phase G WebShop episodes, and Phase H0 Natural Success Search next." locale={locale}>
   <OpenEvoExperimentGateway locale={locale} />
 </AppLayout>

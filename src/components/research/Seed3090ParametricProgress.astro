@@ -1,250 +1,79 @@
 ---
 import type { Locale } from '../../i18n';
 
-interface Props {
-  locale: Locale;
-}
-
+interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const sourceRoot = 'https://github.com/mykcs/seed3090/blob/main';
 
-const loop = [
-  {
-    step: '01',
-    title: t('真实 WebShop 轨迹', 'Real WebShop trajectories'),
-    text: t('Qwen2.5-3B-Instruct 在真实环境中产生动作，保存完整 episode 证据。', 'Qwen2.5-3B-Instruct acts in the real environment and preserves complete episode evidence.'),
-  },
-  {
-    step: '02',
-    title: t('构造官方 dataset artifact', 'Build the official dataset artifact'),
-    text: t('把已完成轨迹转成 SD-LoRA 可消费的训练样本，而不是手工伪造一个训练入口。', 'Turn completed trajectories into the dataset artifact consumed by SD-LoRA instead of inventing a parallel training path.'),
-  },
-  {
-    step: '03',
-    title: t('CUDA 参数更新', 'CUDA parameter update'),
-    text: t('真实执行 causal-LM loss、backward、optimizer.step，并产生 LoRA / PARAMETRIC_MEMORY artifact。', 'Run real causal-LM loss, backward, and optimizer.step, producing a LoRA / PARAMETRIC_MEMORY artifact.'),
-  },
-  {
-    step: '04',
-    title: t('重新加载并再次 rollout', 'Reload and roll out again'),
-    text: t('同一 runner 加载演化后的 adapter，再进入真实 WebShop；要求 zero fallback。', 'The same runner reloads the evolved adapter and returns to real WebShop with zero fallback required.'),
-  },
-] as const;
-
 const runs = [
   {
-    badge: t('参数 P0 · 已证明工程闭环', 'Parametric P0 · engineering loop proven'),
-    title: t('2 条轨迹 → 30 个训练样本 → 2 个 optimizer steps', '2 trajectories → 30 training examples → 2 optimizer steps'),
+    label: 'P0',
     score: '0.0 → 0.0',
-    detail: t('loss 1.25966 · 峰值显存约 6.82 GiB · adapter 成功 reload · 2-step WebShop rollout · zero fallback', 'loss 1.25966 · peak VRAM ≈ 6.82 GiB · adapter reload succeeded · 2-step WebShop rollout · zero fallback'),
-    meaning: t('它证明“轨迹真的能变成参数更新，再影响下一次运行的模型载体”；不证明奖励提升。', 'It proves trajectories can become a real parameter update that is reloaded for a later run; it does not prove reward improvement.'),
+    title: t('参数训练闭环', 'Parametric training loop'),
+    text: t('2 条轨迹、30 个训练样本、2 个 optimizer steps；adapter reload 与真实 WebShop rollout 均完成。', '2 trajectories, 30 training examples, and 2 optimizer steps; adapter reload and real WebShop rollout completed.'),
   },
   {
-    badge: t('task-bound gen1 · 单点正变化', 'task-bound gen1 · one positive observation'),
-    title: t('固定 seed 2026，task 612 出现一次提升', 'With seed 2026 fixed, task 612 improved once'),
+    label: 'gen1',
     score: '0 → 0.429',
-    detail: t('tasks 612 / 566 · 30 traces · 4 steps · loss 0.67396 · task 566 仍为 0', 'tasks 612 / 566 · 30 traces · 4 steps · loss 0.67396 · task 566 remained 0'),
-    meaning: t('这是目前唯一的 fixed-seed 单任务正变化，样本太少，不能当成稳定效果。', 'This is the only fixed-seed positive single-task change so far; it is too sparse to count as a stable effect.'),
+    title: t('单次正变化', 'One positive observation'),
+    text: t('固定 seed 2026 时，task 612 出现一次正变化；样本太少，不能视为稳定收益。', 'With seed 2026 fixed, task 612 improved once; the sample is too small to count as stable efficacy.'),
   },
   {
-    badge: t('cumulative gen2 · 回退', 'cumulative gen2 · regression'),
-    title: t('第二代累计 artifact 能工作，但 task 612 又回到 0', 'The second-generation cumulative artifact works, but task 612 returned to 0'),
+    label: 'gen2',
     score: '0 → 0.429 → 0',
-    detail: t('12 条新 traces + 12 条 replay traces · 4 steps · loss 0.69925 · 2 components / rank 8 · zero fallback', '12 new traces + 12 replay traces · 4 steps · loss 0.69925 · 2 components / rank 8 · zero fallback'),
-    meaning: t('多代 artifact、replay、存储和 reload 已稳定；行为收益是否累积仍未证明。', 'Multi-generation artifact, replay, storage, and reload are stable; cumulative behavioral benefit is still unproven.'),
-  },
-] as const;
-
-const questions = [
-  {
-    number: '01',
-    title: t('SD-LoRA 先学会训练任务了吗？', 'Did SD-LoRA first learn the training tasks?'),
-    text: t('先测 teacher-forced target-token loss、action accuracy 和同任务 fixed-seed rollout；如果训练集都没拟合，不能急着谈泛化。', 'Measure teacher-forced target-token loss, action accuracy, and same-task fixed-seed rollout first. If train tasks are not fitted, generalization is premature.'),
-  },
-  {
-    number: '02',
-    title: t('正样本是不是太少、太单一？', 'Are positive examples too sparse or too specific?'),
-    text: t('在相同训练预算下比较 frozen positive-only 与 mixed dataset，先判断监督信号本身够不够。', 'Under the same training budget, compare a frozen positive-only dataset with a mixed dataset to test whether the supervision is strong enough.'),
-  },
-  {
-    number: '03',
-    title: t('gen2 回退是遗忘还是 rollout 方差？', 'Is the gen2 regression forgetting or rollout variance?'),
-    text: t('在下一次更新前，对 gen1 / gen2 做 source 与 replay tasks 的多随机种子 paired evaluation。', 'Before another update, run multi-seed paired evaluation of gen1 and gen2 on source and replay tasks.'),
-  },
-  {
-    number: '04',
-    title: t('参数变化从哪一步开始改变行为？', 'Where does the parameter change first alter behavior?'),
-    text: t('离线拟合正确后，再定位第一个 online state / action divergence，而不是只盯最终 reward。', 'Once offline fitting is correct, locate the first online state/action divergence instead of watching only final reward.'),
+    title: t('累计状态回退', 'Cumulative-state regression'),
+    text: t('两代 cumulative artifact、replay、保存和 reload 能工作，但 task 612 回到 0。', 'Two-generation cumulative artifacts, replay, storage, and reload worked, but task 612 returned to 0.'),
   },
 ] as const;
 ---
 
-<section id="seed3090-parametric-progress" class="parametric" aria-labelledby="parametric-title" data-testid="seed3090-parametric-progress">
-  <header class="parametric__header">
+<section id="seed3090-parametric-progress" class="history" aria-labelledby="seed3090-history-title" data-testid="seed3090-parametric-progress">
+  <header class="history__header">
     <div>
-      <p class="eyebrow">
-        {t('seed3090 · OpenEvo × WebShop 参数进化', 'seed3090 · OpenEvo × WebShop parametric evolution')}
-        <span aria-hidden="true">·</span>
-        <time datetime="2026-08-13">2026-08-13</time>
-      </p>
-      <h2 id="parametric-title">{t('训练闭环已经跑通，但“有效”还没有被证明', 'The training loop is real; efficacy is not proven yet')}</h2>
-      <p class="lede">{t('最新主线已经从“只验证外部文本记忆”推进到 official SD-LoRA 参数更新。现在真正值得研究的，不再是“能不能训练”，而是“它到底学到了什么、为什么第二代会回退”。', 'The current mainline has moved beyond external-text-memory qualification to official SD-LoRA parameter updates. The useful question is no longer “can it train?” but “what did it learn, and why did generation two regress?”')}</p>
+      <p class="eyebrow">seed3090 <span aria-hidden="true">·</span> <time datetime="2026-08-13">2026-08-13</time></p>
+      <h2 id="seed3090-history-title">{t('RTX6 参数实验记录', 'RTX6 parametric experiment record')}</h2>
+      <p>{t('这一节只保留历史诊断价值。RTX6（4×RTX 3090）已经退出当前实验主线；新的 WebShop 科学结论以 openevo-experiment 为准。', 'This section is retained only for historical diagnostic value. RTX6 (4×RTX 3090) is no longer the active experiment platform; current WebShop claims are governed by openevo-experiment.')}</p>
     </div>
-    <aside class="verdict" aria-label={t('当前研究结论', 'Current research verdict')}>
-      <span>{t('当前结论', 'Current verdict')}</span>
-      <strong>{t('工程闭环：已通过', 'Engineering loop: passed')}</strong>
-      <p>{t('稳定收益：未证明', 'Stable reward gain: unproven')}</p>
-    </aside>
+    <aside><span>{t('历史方法', 'Historical method')}</span><strong>OpenEvo SD-LoRA · continual LoRA-SFT</strong><small>{t('不是 SEED 的 OPD + GRPO 复现', 'Not a reproduction of SEED OPD + GRPO')}</small></aside>
   </header>
 
-  <section class="loop" aria-labelledby="loop-title">
-    <div class="section-heading">
-      <span>01</span>
-      <div><small>{t('先看“训练”到底发生了什么', 'First: what “training” actually means')}</small><h3 id="loop-title">{t('从一次 WebShop 任务，到下一次加载新参数', 'From one WebShop task to a later run with updated parameters')}</h3></div>
-    </div>
-    <ol class="loop__track">
-      {loop.map((item) => (
-        <li>
-          <b>{item.step}</b>
-          <div><strong>{item.title}</strong><p>{item.text}</p></div>
-        </li>
-      ))}
-    </ol>
-    <aside class="method-boundary">
-      <strong>{t('方法边界', 'Method boundary')}</strong>
-      <p>{t('当前 official SD-LoRA 的实际优化目标是 assistant target tokens 上的监督式 causal-LM loss。reward 用于整条记录的筛选 / metadata，不是 advantage、policy-gradient 或 SEED 的 OPD + GRPO loss。因此现在做的是 OpenEvo 的 continual LoRA-SFT 路线，不能写成“已经复现 SEED”。', 'The current official SD-LoRA optimization target is supervised causal-LM loss on assistant target tokens. Reward filters whole records / acts as metadata; it is not an advantage, policy-gradient, or SEED OPD + GRPO loss. This is an OpenEvo continual LoRA-SFT track, not a reproduction of SEED.')}</p>
-    </aside>
-  </section>
-
-  <section class="evidence" aria-labelledby="evidence-title">
-    <div class="section-heading">
-      <span>02</span>
-      <div><small>{t('把结果按证据强度来读', 'Read results by evidence strength')}</small><h3 id="evidence-title">{t('三次关键观察：闭环、一次提升、第二代回退', 'Three key observations: closure, one improvement, then regression')}</h3></div>
-    </div>
-    <div class="run-grid">
-      {runs.map((run) => (
-        <article>
-          <span class="run-badge">{run.badge}</span>
-          <h4>{run.title}</h4>
-          <div class="score" aria-label={t('WebShop 分数变化', 'WebShop score change')}>{run.score}</div>
-          <p class="run-detail">{run.detail}</p>
-          <p class="run-meaning"><strong>{t('怎么解释：', 'Interpretation: ')}</strong>{run.meaning}</p>
-        </article>
-      ))}
-    </div>
-    <div class="claim-boundary" role="group" aria-label={t('声明边界', 'Claim boundary')}>
-      <article>
-        <span aria-hidden="true">✓</span>
-        <div><strong>{t('现在可以说', 'Supported now')}</strong><p>{t('真实 CUDA forward / backward / optimizer.step、不同 adapter、重新加载、真实 WebShop rollout，以及两代 cumulative artifact 机制都已经有证据。', 'There is evidence for real CUDA forward/backward/optimizer.step, distinct adapters, reload, real WebShop rollout, and a two-generation cumulative-artifact mechanism.')}</p></div>
-      </article>
-      <article>
-        <span aria-hidden="true">×</span>
-        <div><strong>{t('现在还不能说', 'Not supported yet')}</strong><p>{t('不能声称 SD-LoRA 稳定拟合训练任务、提升 WebShop、具备泛化或抗遗忘，也不能做 OpenEvo > SEED 的结论。当前还没有 multi-seed effect estimate 和正式 test split。', 'We cannot yet claim stable train-task fitting, WebShop improvement, generalization, anti-forgetting, or OpenEvo > SEED. There is no multi-seed effect estimate or formal test split yet.')}</p></div>
-      </article>
-    </div>
-  </section>
-
-  <section class="diagnosis" aria-labelledby="diagnosis-title">
-    <div class="section-heading">
-      <span>03</span>
-      <div><small>{t('下一轮实验不是盲目扩规模', 'The next experiment is diagnosis, not blind scale-up')}</small><h3 id="diagnosis-title">{t('先回答四个问题，再决定怎么改 OpenEvo', 'Answer four questions before changing OpenEvo')}</h3></div>
-    </div>
-    <ol class="question-grid">
-      {questions.map((item) => (
-        <li>
-          <span>{item.number}</span>
-          <div><strong>{item.title}</strong><p>{item.text}</p></div>
-        </li>
-      ))}
+  <section aria-labelledby="history-loop-title">
+    <div class="section-heading"><span>01</span><div><small>{t('历史机制', 'Historical mechanism')}</small><h3 id="history-loop-title">{t('参数训练闭环', 'Parametric training loop')}</h3></div></div>
+    <ol class="flow">
+      <li><strong>{t('WebShop 轨迹', 'WebShop trajectories')}</strong><span>{t('真实环境动作与完整 episode 记录', 'real environment actions and complete episode records')}</span></li>
+      <li><strong>dataset artifact</strong><span>{t('轨迹转换为 SD-LoRA 训练样本', 'trajectories converted into SD-LoRA training examples')}</span></li>
+      <li><strong>causal-LM loss → backward → optimizer.step</strong><span>{t('产生 LoRA / PARAMETRIC_MEMORY', 'produces LoRA / PARAMETRIC_MEMORY')}</span></li>
+      <li><strong>{t('reload → WebShop rollout', 'reload → WebShop rollout')}</strong><span>{t('下一次运行加载更新后的 adapter', 'a later run loads the updated adapter')}</span></li>
     </ol>
   </section>
 
-  <aside class="track-note">
-    <div>
-      <span>{t('和 8 月 12 日网页内容是什么关系？', 'How does this relate to the August 12 site content?')}</span>
-      <strong>{t('V0 / O1 文本记忆资格赛保留为“公平比较方法”，不再代表当前实验主线。', 'The V0 / O1 text-memory qualification remains useful as a fair-comparison method, but no longer represents the current experimental mainline.')}</strong>
-    </div>
-    <p>{t('当前先诊断 SD-LoRA × WebShop 参数学习。ALFWorld、8×A800 和正式 SEED 对比都后置到这个科学门槛之后。', 'The present focus is diagnosing SD-LoRA × WebShop parameter learning. ALFWorld, 8×A800 scale-up, and formal SEED comparison are deferred until this scientific gate is cleared.')}</p>
-  </aside>
+  <section aria-labelledby="history-runs-title">
+    <div class="section-heading"><span>02</span><div><small>{t('历史结果', 'Historical results')}</small><h3 id="history-runs-title">{t('关键运行记录', 'Key run records')}</h3></div></div>
+    <div class="run-grid">{runs.map((run) => <article><span>{run.label}</span><strong>{run.title}</strong><b>{run.score}</b><p>{run.text}</p></article>)}</div>
+    <p class="note">{t('这些运行证明参数路径可以真实执行，但没有给出 multi-seed effect estimate，也没有建立稳定 WebShop 收益。', 'These runs establish a real parametric path, but they do not provide a multi-seed effect estimate or stable WebShop efficacy.')}</p>
+  </section>
+
+  <section aria-labelledby="history-diagnosis-title">
+    <div class="section-heading"><span>03</span><div><small>{t('迁移到当前实验的问题', 'Questions carried forward')}</small><h3 id="history-diagnosis-title">{t('遗留诊断问题', 'Inherited diagnostic questions')}</h3></div></div>
+    <ul class="questions">
+      <li>{t('SD-LoRA 是否先拟合训练任务？', 'Does SD-LoRA first fit the training tasks?')}</li>
+      <li>{t('成功监督样本是否过少？', 'Are successful supervision examples too sparse?')}</li>
+      <li>{t('gen2 回退来自遗忘还是 rollout 方差？', 'Does gen2 regression come from forgetting or rollout variance?')}</li>
+      <li>{t('参数变化从哪个 state / action 开始改变在线行为？', 'At which state/action does the parameter change first alter online behavior?')}</li>
+    </ul>
+    <p class="note">{t('当前 openevo-experiment 已把其中最紧迫的问题收敛为 Phase H0：先寻找自然成功轨迹，再决定监督诊断或 teacher-success bootstrap。', 'The active openevo-experiment campaign has narrowed the immediate question to Phase H0: search for natural successes before choosing successful-supervision diagnostics or teacher-success bootstrap.')}</p>
+  </section>
 
   <footer class="sources">
-    <div><strong>{t('直接来自 seed3090 的最新阶段报告', 'Sourced directly from the latest seed3090 stage report')}</strong><p>{t('网站只做可视化导读；实验数字、边界和后续优先级以仓库证据为准。', 'The site is a visual guide; experiment numbers, claim boundaries, and priorities remain governed by repository evidence.')}</p></div>
-    <nav aria-label={t('seed3090 参数进化来源', 'seed3090 parametric-evolution sources')}>
-      <a href={`${sourceRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('阶段报告', 'Stage report')} <span aria-hidden="true">↗</span></a>
-      <a href={`${sourceRoot}/docs/project/CURRENT_STATUS.md`} target="_blank" rel="noreferrer">{t('当前状态', 'Current status')} <span aria-hidden="true">↗</span></a>
-      <a href={`${sourceRoot}/scripts/openevo_webshop/README.md`} target="_blank" rel="noreferrer">{t('运行入口', 'Runner guide')} <span aria-hidden="true">↗</span></a>
-    </nav>
+    <a href={`${sourceRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('历史阶段报告', 'Historical stage report')} ↗</a>
+    <a href={`${sourceRoot}/README.md`} target="_blank" rel="noreferrer">seed3090 README ↗</a>
   </footer>
 </section>
 
 <style>
-  .parametric { width: min(1180px, calc(100% - 2rem)); margin: 4rem auto 6rem; }
-  .parametric__header { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(240px, .7fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: end; padding-block: 1rem 2.5rem; border-bottom: 1px solid var(--line); }
-  .eyebrow, .section-heading small { color: var(--accent-deep); font-size: .76rem; font-weight: 850; letter-spacing: .055em; text-transform: uppercase; }
-  .eyebrow { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 .8rem; }
-  h2 { max-width: 17ch; margin: 0; font-size: clamp(2.35rem, 5.7vw, 5.3rem); line-height: .98; letter-spacing: -.055em; }
-  .lede { max-width: 73ch; margin: 1.25rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.18rem); line-height: 1.75; }
-  .verdict { padding: 1.25rem; border: 1px solid var(--line); border-radius: 20px; background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%); }
-  .verdict span, .run-badge, .track-note span { display: block; color: var(--muted); font-size: .74rem; font-weight: 800; letter-spacing: .04em; }
-  .verdict strong { display: block; margin-top: .5rem; font-size: 1.15rem; }
-  .verdict p { margin: .45rem 0 0; color: var(--muted); }
-  .loop, .evidence, .diagnosis { margin-top: 4.5rem; }
-  .section-heading { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; margin-bottom: 1.5rem; }
-  .section-heading > span { display: grid; place-items: center; width: 2.3rem; aspect-ratio: 1; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .72rem; font-weight: 800; }
-  .section-heading h3 { max-width: 25ch; margin: .35rem 0 0; font-size: clamp(1.7rem, 3.3vw, 3rem); line-height: 1.08; letter-spacing: -.035em; }
-  .loop__track { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; list-style: none; padding: 0; margin: 0; counter-reset: loop; }
-  .loop__track li { position: relative; display: grid; gap: .9rem; min-height: 220px; padding: 1.15rem; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
-  .loop__track li:not(:last-child)::after { content: '›'; position: absolute; z-index: 2; top: 50%; right: -.72rem; display: grid; place-items: center; width: 1.45rem; height: 1.45rem; translate: 0 -50%; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: 1.2rem; }
-  .loop__track b { color: var(--accent-deep); font-size: .72rem; }
-  .loop__track strong { display: block; font-size: 1.04rem; line-height: 1.3; }
-  .loop__track p, .method-boundary p, .run-detail, .run-meaning, .question-grid p, .track-note p, .sources p { color: var(--muted); line-height: 1.65; }
-  .loop__track p { margin: .55rem 0 0; font-size: .9rem; }
-  .method-boundary { display: grid; grid-template-columns: minmax(130px, .3fr) minmax(0, 1.7fr); gap: 1rem; margin-top: 1rem; padding: 1.15rem 1.25rem; border: 1px dashed var(--line); border-radius: 18px; }
-  .method-boundary p { margin: 0; font-size: .92rem; }
-  .run-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  .run-grid article { padding: 1.3rem; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); }
-  .run-grid h4 { min-height: 3.3em; margin: .65rem 0 .9rem; font-size: 1.15rem; line-height: 1.4; }
-  .score { margin-block: .3rem 1rem; font-variant-numeric: tabular-nums; font-size: clamp(1.8rem, 4vw, 3.1rem); font-weight: 900; letter-spacing: -.045em; }
-  .run-detail { min-height: 5.1em; font-size: .86rem; }
-  .run-meaning { padding-top: .85rem; border-top: 1px solid var(--line); font-size: .9rem; }
-  .run-meaning strong { color: var(--ink); }
-  .claim-boundary { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-  .claim-boundary article { display: grid; grid-template-columns: auto 1fr; gap: .9rem; padding: 1.15rem; border: 1px solid var(--line); border-radius: 18px; }
-  .claim-boundary article > span { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--line); border-radius: 999px; font-weight: 900; }
-  .claim-boundary p { margin: .4rem 0 0; color: var(--muted); line-height: 1.65; }
-  .question-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; list-style: none; padding: 0; }
-  .question-grid li { display: grid; grid-template-columns: auto 1fr; gap: .9rem; padding: 1.2rem; border-top: 1px solid var(--line); }
-  .question-grid li > span { color: var(--muted); font-size: .72rem; font-weight: 850; }
-  .question-grid strong { font-size: 1.02rem; }
-  .question-grid p { margin: .5rem 0 0; font-size: .9rem; }
-  .track-note { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 4rem; padding: clamp(1.2rem, 3vw, 2rem); border-radius: 22px; background: color-mix(in srgb, var(--surface) 90%, var(--accent) 10%); }
-  .track-note strong { display: block; margin-top: .55rem; font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.35; }
-  .track-note p { margin: 0; }
-  .sources { display: flex; justify-content: space-between; gap: 1.5rem; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
-  .sources p { max-width: 58ch; margin: .4rem 0 0; font-size: .85rem; }
-  .sources nav { display: flex; gap: .65rem; flex-wrap: wrap; align-content: flex-start; justify-content: flex-end; }
-  .sources a { padding: .55rem .7rem; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); font-size: .78rem; font-weight: 750; text-decoration: none; }
-  .sources a:hover, .sources a:focus-visible { border-color: var(--accent); }
-  @media (max-width: 900px) {
-    .parametric__header { grid-template-columns: 1fr; }
-    .loop__track { grid-template-columns: 1fr 1fr; }
-    .loop__track li:nth-child(2)::after { display: none; }
-    .run-grid { grid-template-columns: 1fr; }
-    .run-grid h4, .run-detail { min-height: 0; }
-  }
-  @media (max-width: 640px) {
-    .parametric { width: min(100% - 1rem, 1180px); margin-top: 2.5rem; }
-    h2 { max-width: none; font-size: clamp(2.2rem, 12vw, 3.7rem); }
-    .loop, .evidence, .diagnosis { margin-top: 3.5rem; }
-    .loop__track, .claim-boundary, .question-grid, .track-note { grid-template-columns: 1fr; }
-    .loop__track li { min-height: 0; }
-    .loop__track li:nth-child(2)::after { display: grid; }
-    .loop__track li:not(:last-child)::after { content: '⌄'; top: auto; right: 50%; bottom: -.72rem; translate: 50% 0; }
-    .method-boundary { grid-template-columns: 1fr; }
-    .question-grid { gap: 0; }
-    .sources { display: grid; }
-    .sources nav { justify-content: flex-start; }
-  }
+  .history{width:min(1120px,calc(100% - 2rem));margin:2rem auto 5rem;padding:clamp(1rem,3vw,1.6rem);border:1px solid var(--line);border-radius:20px;background:var(--surface)}.history__header{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.6fr);gap:1rem;align-items:start}.history__header .eyebrow{margin:0;color:var(--muted);font-size:.7rem}.history__header h2{margin:.4rem 0 .6rem}.history__header p{max-width:72ch;margin:0;color:var(--muted);line-height:1.65}.history__header aside{padding:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.history__header aside span,.history__header aside strong,.history__header aside small{display:block}.history__header aside span,.history__header aside small{color:var(--muted);font-size:.68rem}.history__header aside strong{margin:.35rem 0;font-size:.8rem}.history section{padding:1.4rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.6rem;margin-bottom:.8rem}.section-heading>span{color:var(--accent-deep);font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.66rem}.section-heading h3{margin:.15rem 0 0}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}.flow li,.run-grid article{padding:.8rem;border:1px solid var(--line);border-radius:12px}.flow strong,.flow span{display:block}.flow strong{font-size:.8rem}.flow span{margin-top:.35rem;color:var(--muted);font-size:.7rem;line-height:1.45}.run-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.run-grid article>span{color:var(--accent-deep);font-size:.66rem;font-weight:800}.run-grid article>strong,.run-grid article>b{display:block}.run-grid article>strong{margin-top:.5rem;font-size:.82rem}.run-grid article>b{margin-top:.65rem;font:800 1rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.run-grid p,.note{color:var(--muted);font-size:.74rem;line-height:1.55}.note{max-width:82ch}.questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.questions li{padding:.75rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted);font-size:.76rem;line-height:1.45}.sources{display:flex;flex-wrap:wrap;gap:.45rem;padding-top:.9rem;border-top:1px solid var(--line)}.sources a{font-size:.7rem}
+  @media(max-width:800px){.history__header{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.run-grid{grid-template-columns:1fr}}
+  @media(max-width:560px){.history{width:min(100% - 1rem,1120px)}.flow,.questions{grid-template-columns:1fr}}
 </style>

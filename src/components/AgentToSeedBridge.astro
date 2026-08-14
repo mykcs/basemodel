@@ -1,130 +1,28 @@
 ---
-import type { Locale } from '../i18n';
-
+import { localePath, type Locale } from '../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
-const isZh = locale === 'zh';
-const t = (zh: string, en: string) => isZh ? zh : en;
-
-const mappings = [
-  ['Checkpoint / LLM', 'Policy', t('当前上下文下，决定下一步输出或动作的参数化策略。', 'The parameterized policy that chooses the next output or action from the current context.')],
-  ['API / function / MCP', 'Action / tool', t('模型真正能对外部世界做的动作，而不只是“多一点知识”。', 'What the model can actually do to the outside world, not merely extra knowledge.')],
-  ['Logs / traces', 'Trajectory / rollout', t('一次任务从开始到结束的 observation → action → observation 记录。', 'The observation → action → observation record from task start to finish.')],
-  ['Metric / grader', 'Reward', t('把“一次任务做得怎么样”变成训练可用的结果信号。', 'Turns “how did this run go?” into an outcome signal that training can use.')],
-];
-
-const terms = [
-  ['Policy', t('模型现在倾向怎么做', 'what the model currently tends to do')],
-  ['Trajectory', t('一次完整交互过程', 'one complete interaction run')],
-  ['Reward', t('结果好不好', 'how good the outcome was')],
-  ['Advantage', t('相对当前策略，一次结果好多少', 'how much better this result was relative to the current policy')],
-  ['GRPO', t('同一问题采样一组结果，用组内相对 reward 形成更新信号', 'sample a group of outcomes for one prompt and use group-relative rewards to form the update signal')],
-];
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
 ---
-
-<section id="agent-to-seed" class="agent-bridge" aria-labelledby="agent-to-seed-title">
+<section class="agent-bridge" aria-labelledby="agent-bridge-title">
   <header class="agent-bridge-head">
-    <div>
-      <p class="section-kicker">{t('开始敲命令前 · 先用 10 分钟补这一层', 'Before the terminal · spend 10 minutes on this layer')}</p>
-      <h2 id="agent-to-seed-title">{t('你已经懂机器学习；现在只需要把它翻译成 Agent 的运行方式', 'You already know ML; now translate it into how an agent actually runs')}</h2>
-      <p>{t('这里不重新讲神经网络，也不先推 PPO / GRPO 公式。先看清两个循环：模型怎样在环境里连续做事，以及很多次做事之后，训练怎样改变模型。看懂这两件事，后面的 SEED 命令就不再是一串陌生缩写。', 'We will not restart from neural networks or begin with PPO / GRPO derivations. First separate two loops: how the model keeps acting inside an environment, and how training changes the model after many runs. Once those are clear, the SEED commands stop looking like disconnected acronyms.')}</p>
-    </div>
-    <aside class="bridge-check">
-      <strong>{t('进入第 00 步前，你只要能回答', 'Before step 00, be able to answer')}</strong>
-      <ol>
-        <li>{t('谁在决定下一步 action？', 'Who decides the next action?')}</li>
-        <li>{t('一次任务里模型权重什么时候会变？', 'When do model weights change inside one task?')}</li>
-        <li>{t('trajectory 和 reward 最后怎样影响下一版 policy？', 'How do trajectory and reward affect the next policy?')}</li>
-      </ol>
-    </aside>
+    <span>{t('Agent 基础', 'Agent basics')}</span>
+    <h2 id="agent-bridge-title">{t('Agent 运行与训练', 'Agent runtime and training')}</h2>
+    <p>{t('如果已经理解 Transformer、微调、推理和 API，只需要补齐 Agent 的多步交互、trajectory、reward 与参数更新之间的关系。','If you already understand Transformers, fine-tuning, inference, and APIs, the missing layer is how multi-step interaction, trajectories, rewards, and parameter updates fit together.')}</p>
   </header>
 
-  <div class="known-to-agent" aria-label={t('机器学习概念到 Agent 概念的映射', 'Mapping familiar ML concepts to agent concepts')}>
-    {mappings.map(([known, agent, note]) => (
-      <article>
-        <span>{known}</span>
-        <b aria-hidden="true">→</b>
-        <strong>{agent}</strong>
-        <p>{note}</p>
-      </article>
-    ))}
+  <div class="bridge-grid">
+    <article><span>01</span><h3>{t('Agent 运行循环', 'Agent runtime loop')}</h3><p>{t('模型根据当前 observation 选择 action / tool，环境返回新的 observation，直到任务终止。运行时通常不做反向传播。','The model chooses an action/tool from the current observation; the environment returns the next observation until termination. Runtime usually has no backpropagation.')}</p><code>observation → policy → action → environment → observation</code></article>
+    <article><span>02</span><h3>{t('Agent 训练循环', 'Agent training loop')}</h3><p>{t('多个 rollout 被 reward / evaluator 评分，再转换为 loss 或 advantage，通过 optimizer 更新 policy。','Multiple rollouts are scored by rewards/evaluators, converted into losses or advantages, and used by an optimizer to update the policy.')}</p><code>rollouts → reward → loss / advantage → optimizer → policy'</code></article>
+    <article><span>03</span><h3>{t('Agentic RL 基础', 'Agentic RL basics')}</h3><p>{t('Policy、Action、Trajectory、Reward、Advantage 是后面读 GRPO、OPD 和 SEED 时最重要的五个词。','Policy, Action, Trajectory, Reward, and Advantage are the five key concepts needed for GRPO, OPD, and SEED.')}</p></article>
+    <article><span>04</span><h3>{t('SEED 的两阶段流程', 'SEED two-stage flow')}</h3><p>{t('Stage 1 用 hindsight-skill SFT 学会分析完整轨迹；Stage 2 用 on-policy rollout、hindsight、GRPO 与 OPD 更新 policy 参数。','Stage 1 uses hindsight-skill SFT to learn trajectory analysis; Stage 2 uses on-policy rollouts, hindsight, GRPO, and OPD to update policy parameters.')}</p></article>
   </div>
 
-  <section class="runtime-model" aria-labelledby="runtime-model-title">
-    <div class="bridge-title-row">
-      <span>01</span>
-      <div><h3 id="runtime-model-title">{t('运行时：权重通常不变，环境状态一直在变', 'Runtime: weights usually stay fixed while environment state changes')}</h3><p>{t('Agent 和普通聊天最关键的差别，不是“能不能调用函数”，而是模型会根据新 observation 一轮一轮决定下一步。', 'The key difference from ordinary chat is not simply function calling: the model repeatedly chooses the next step from new observations.')}</p></div>
-    </div>
-    <div class="agent-loop" role="img" aria-label={t('目标进入模型策略，策略选择动作，环境返回观察，再回到策略。', 'A goal enters the model policy, the policy chooses an action, the environment returns an observation, then the loop returns to the policy.')}>
-      <div><small>{t('目标', 'Goal')}</small><strong>{t('完成任务', 'finish task')}</strong></div><i>→</i>
-      <div class="is-policy"><small>Policy</small><strong>Qwen2.5-3B-Instruct</strong></div><i>→</i>
-      <div><small>Action</small><strong>{t('文本 / 工具调用', 'text / tool call')}</strong></div><i>→</i>
-      <div><small>Environment</small><strong>ALFWorld / WebShop</strong></div><i>↺</i>
-      <div><small>Observation</small><strong>{t('新状态回到上下文', 'new state returns to context')}</strong></div>
-    </div>
-    <p class="bridge-note">{t('这一条完整记录就是 trajectory / rollout / episode。只是在跑任务时，一般没有 backprop；模型做错一个动作后，权重也不会在运行循环里自动改变。', 'That full record is a trajectory / rollout / episode. Merely running the task normally does not backpropagate; the weights do not automatically change because the model made one bad step.')}</p>
-  </section>
-
-  <section class="two-loops" aria-labelledby="training-model-title">
-    <div class="bridge-title-row">
-      <span>02</span>
-      <div><h3 id="training-model-title">{t('训练时：收集很多 trajectories，再把结果变成一次参数更新', 'Training: collect many trajectories, then turn outcomes into a parameter update')}</h3><p>{t('把“Agent 在做任务”和“Agent 在学习”拆开，Agentic RL 就容易读很多。', 'Agentic RL becomes much easier to read once “the agent is acting” and “the agent is learning” are separated.')}</p></div>
-    </div>
-    <div class="loop-cards">
-      <article><small>Runtime loop</small><strong>{t('一次任务内部', 'inside one task')}</strong><p>{t('observation → policy → action → environment → observation。权重固定，history 变长。', 'observation → policy → action → environment → observation. Weights stay fixed while history grows.')}</p></article>
-      <article class="is-training"><small>Training loop</small><strong>{t('很多任务之间', 'across many tasks')}</strong><p>{t('rollouts → reward → advantage / loss → backprop → 新 policy。这里才真正更新权重。', 'rollouts → reward → advantage / loss → backprop → new policy. This is where weights actually change.')}</p></article>
-    </div>
-  </section>
-
-  <section class="rl-minimum" aria-labelledby="rl-minimum-title">
-    <div class="bridge-title-row">
-      <span>03</span>
-      <div><h3 id="rl-minimum-title">{t('读 SEED 前，RL 先只记住这 5 个词', 'Before SEED, keep only these five RL terms in working memory')}</h3><p>{t('先知道变量在系统里指什么，再去看公式；顺序反过来很容易只记住符号。', 'Know what each variable means in the system before reading equations; reversing that order tends to leave only symbols in memory.')}</p></div>
-    </div>
-    <dl class="term-strip">
-      {terms.map(([term, meaning]) => <div><dt>{term}</dt><dd>{meaning}</dd></div>)}
-    </dl>
-  </section>
-
-  <section class="seed-translation" aria-labelledby="seed-translation-title">
-    <div class="bridge-title-row">
-      <span>04</span>
-      <div><h3 id="seed-translation-title">{t('现在把 SEED 翻译回这两个循环', 'Now translate SEED back into these two loops')}</h3><p>{t('你后面真正执行的是同一个故事，只是代码把每一段拆成脚本。', 'The commands below implement the same story; the code simply splits each part into scripts.')}</p></div>
-    </div>
-    <ol class="seed-steps">
-      <li><b>Stage 1</b><div><strong>{t('先让模型学会分析完成的 trajectory', 'First teach the model to analyze completed trajectories')}</strong><p>{t('普通 Agent 轨迹 → hindsight skill → SFT。这里是在准备“会事后分析”的同一个 backbone。', 'ordinary agent trajectories → hindsight skill → SFT. This prepares the same backbone to analyze a completed run.')}</p></div></li>
-      <li><b>Stage 2</b><div><strong>{t('当前 policy 自己采 on-policy rollout，再分析自己的结果', 'The current policy samples on-policy rollouts, then analyzes its own results')}</strong><p>{t('SEED 把 hindsight skill 带来的 token 概率变化变成更密集的 OPD 信号，同时保留任务 reward。', 'SEED turns the token-probability change induced by hindsight skills into a denser OPD signal while retaining task reward.')}</p></div></li>
-      <li><b>Update</b><div><strong>{t('OPD + GRPO 一起更新 policy', 'OPD + GRPO update the policy together')}</strong><p>{t('更新之后的新 policy 再去跑下一轮；部署/推理时只留下最终学好的 policy，不需要 skill bank 或额外 analyzer。', 'The updated policy runs the next round; at deployment/inference only the learned policy remains, with no skill bank or extra analyzer required.')}</p></div></li>
-    </ol>
-  </section>
-
-  <div class="bridge-handoff">
-    <div><strong>{t('到这里就够了。', 'That is enough theory for now.')}</strong><span>{t('接下来从第 00 步开始，把上面的每个概念在真实命令、日志和 PASS 标准里看到一次。', 'Now start at step 00 and see each concept once in real commands, logs, and PASS criteria.')}</span></div>
-    <a href="#seed-reproduction">{t('进入 SEED 实验主线 ↓', 'Enter the SEED experiment ↓')}</a>
-  </div>
-
-  <details class="bridge-sources">
-    <summary>{t('这套最小心智模型来自哪些一手资料？', 'Which primary sources support this minimal model?')}</summary>
-    <div>
-      <a href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/">OpenAI · Practical guide to building agents</a>
-      <a href="https://spinningup.openai.com/en/latest/spinningup/rl_intro.html">OpenAI Spinning Up · Key RL concepts</a>
-      <a href="https://huggingface.co/docs/trl/grpo_trainer">Hugging Face TRL · GRPO Trainer</a>
-      <a href="https://github.com/jinyangwu/SEED">SEED · official code</a>
-    </div>
-  </details>
+  <div class="bridge-links"><a class="button button-primary" href={p('/research/seed-openevo/seed/')}>{t('SEED 方法 →','SEED method →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/loops/')}>{t('SEED / OpenEvo 更新机制','SEED / OpenEvo update mechanisms')}</a></div>
 </section>
 
 <style>
-  .agent-bridge{margin:24px 0 56px;padding:clamp(20px,3vw,32px);border:1px solid var(--line);border-radius:22px;background:var(--surface)}
-  .agent-bridge-head{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.65fr);gap:28px;align-items:start}.agent-bridge-head h2{max-width:780px;margin:6px 0 10px;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.05}.agent-bridge-head p:not(.section-kicker){max-width:760px;margin:0;color:var(--muted);line-height:1.65}
-  .bridge-check{padding:16px;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.bridge-check strong{font-size:.82rem}.bridge-check ol{margin:9px 0 0;padding-left:1.15rem;display:grid;gap:7px;color:var(--muted);font-size:.8rem}
-  .known-to-agent{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:26px 0 42px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.known-to-agent article{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:14px}.known-to-agent article+article{border-left:1px solid var(--line)}.known-to-agent span{color:var(--muted);font-size:.7rem}.known-to-agent b{grid-row:1/3;grid-column:2;color:var(--accent-deep)}.known-to-agent strong{font-size:.88rem}.known-to-agent p{grid-column:1/-1;margin:4px 0 0;color:var(--muted);font-size:.76rem;line-height:1.48}
-  .runtime-model,.two-loops,.rl-minimum,.seed-translation{margin-top:38px}.bridge-title-row{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;margin-bottom:16px}.bridge-title-row>span{color:var(--accent-deep);font-size:.7rem;font-weight:850}.bridge-title-row h3{margin:0;font-size:clamp(1.15rem,2.2vw,1.55rem);line-height:1.15}.bridge-title-row p{max-width:800px;margin:6px 0 0;color:var(--muted);font-size:.84rem;line-height:1.55}
-  .agent-loop{display:grid;grid-template-columns:minmax(0,.7fr) 20px minmax(0,1.15fr) 20px minmax(0,.9fr) 20px minmax(0,1.05fr) 20px minmax(0,1fr);gap:5px;align-items:center;padding:16px;border:1px solid var(--line);background:var(--surface-muted)}.agent-loop>div{min-width:0}.agent-loop small,.agent-loop strong{display:block}.agent-loop small{color:var(--muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em}.agent-loop strong{margin-top:3px;font-size:.79rem;line-height:1.35;overflow-wrap:anywhere}.agent-loop i{color:var(--accent-deep);font-style:normal;text-align:center}.agent-loop .is-policy{padding:10px;border:1px solid color-mix(in srgb,var(--accent-deep) 42%,var(--line));background:var(--surface)}.bridge-note{margin:10px 0 0;padding-left:12px;border-left:2px solid var(--line);color:var(--muted);font-size:.8rem;line-height:1.55}
-  .loop-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.loop-cards article{padding:16px;border:1px solid var(--line);background:var(--surface-muted)}.loop-cards .is-training{border-color:color-mix(in srgb,var(--accent-deep) 35%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--surface))}.loop-cards small,.loop-cards strong{display:block}.loop-cards small{color:var(--accent-deep);font-size:.68rem;font-weight:800;text-transform:uppercase}.loop-cards strong{margin-top:5px}.loop-cards p{margin:7px 0 0;color:var(--muted);font-size:.8rem;line-height:1.55}
-  .term-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.term-strip>div{padding:13px}.term-strip>div+div{border-left:1px solid var(--line)}.term-strip dt{font-size:.8rem;font-weight:850}.term-strip dd{margin:5px 0 0;color:var(--muted);font-size:.73rem;line-height:1.45}
-  .seed-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.seed-steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:16px}.seed-steps li+li{border-left:1px solid var(--line)}.seed-steps b{color:var(--accent-deep);font-size:.72rem}.seed-steps strong{font-size:.83rem;line-height:1.4}.seed-steps p{margin:5px 0 0;color:var(--muted);font-size:.76rem;line-height:1.5}
-  .bridge-handoff{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:28px;padding:16px 18px;background:var(--surface-muted)}.bridge-handoff strong,.bridge-handoff span{display:block}.bridge-handoff span{margin-top:3px;color:var(--muted);font-size:.79rem}.bridge-handoff a{flex:0 0 auto;color:var(--accent-deep);font-weight:800;text-decoration:none;font-size:.82rem}.bridge-sources{margin-top:16px;color:var(--muted);font-size:.76rem}.bridge-sources summary{cursor:pointer;font-weight:750}.bridge-sources div{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px}.bridge-sources a{color:var(--accent-deep)}
-  @media(max-width:900px){.agent-bridge-head{grid-template-columns:1fr}.known-to-agent{grid-template-columns:repeat(2,minmax(0,1fr))}.known-to-agent article:nth-child(3){border-left:0;border-top:1px solid var(--line)}.known-to-agent article:nth-child(4){border-top:1px solid var(--line)}.agent-loop{grid-template-columns:1fr}.agent-loop i{transform:rotate(90deg);min-height:18px}.term-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.term-strip>div{border-bottom:1px solid var(--line)}.term-strip>div:nth-child(odd){border-left:0}.seed-steps{grid-template-columns:1fr}.seed-steps li+li{border-left:0;border-top:1px solid var(--line)}}
-  @media(max-width:620px){.agent-bridge{padding:18px;border-radius:16px}.known-to-agent,.loop-cards,.term-strip{grid-template-columns:1fr}.known-to-agent article+article,.known-to-agent article:nth-child(3),.known-to-agent article:nth-child(4),.term-strip>div+div{border-left:0;border-top:1px solid var(--line)}.bridge-handoff{align-items:flex-start;flex-direction:column}.bridge-title-row{grid-template-columns:28px minmax(0,1fr)}}
+  .agent-bridge{margin:2rem 0;padding:clamp(1rem,3vw,1.5rem);border:1px solid var(--line);border-radius:18px;background:var(--surface)}.agent-bridge-head{max-width:820px}.agent-bridge-head>span{color:var(--accent-deep);font-size:.7rem;font-weight:800}.agent-bridge-head h2{margin:.35rem 0 .55rem}.agent-bridge-head p{margin:0;color:var(--muted);line-height:1.65}.bridge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1rem}.bridge-grid article{padding:.9rem;border:1px solid var(--line);border-radius:13px}.bridge-grid article>span{color:var(--accent-deep);font:800 .66rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.bridge-grid h3{margin:.55rem 0 .4rem}.bridge-grid p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}.bridge-grid code{display:block;margin-top:.65rem;padding:.5rem;border-radius:8px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.bridge-links{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1rem}@media(max-width:640px){.bridge-grid{grid-template-columns:1fr}}
 </style>

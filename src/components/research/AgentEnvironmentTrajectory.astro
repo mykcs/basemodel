@@ -1,99 +1,19 @@
 ---
 import type { Locale } from '../../i18n';
-
-interface Props { locale: Locale; context?: 'benchmark' | 'reproduction'; }
-type Scenario = { id:'webshop'|'alfworld'; name:string; kind:string; question:string; inputs:string[]; steps:Array<{role:string; title:string; in:string; process:string; out:string; code?:string; note?:string}>; score:string };
+interface Props { locale: Locale; context?: 'benchmark' | 'reproduction' }
 const { locale, context = 'benchmark' } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn:string,en:string) => zh ? cn : en;
-
-const scenarios: Scenario[] = [
-  {
-    id:'webshop', name:'WebShop', kind:t('网页购物环境','Web-shopping environment'), question:t('自然语言需求怎样一路变成最终购买动作？','How does a natural-language request become a final purchase action?'),
-    inputs:[t('用户约束：男款 / 黑色 / 防水 / 尺码 10 / ≤ $100','User constraints: men / black / waterproof / size 10 / ≤ $100'),t('网页当前状态','current page state')],
-    steps:[
-      {role:t('任务入口','Task input'),title:t('接收自然语言目标','Receive the natural-language goal'),in:t('用户需求','user request'),process:t('拆出必须满足的属性与预算','extract required attributes and budget'),out:t('约束集合','constraint set')},
-      {role:'Agent',title:t('把约束加工成搜索动作','Turn constraints into a search action'),in:t('约束集合 + 首页观察','constraints + home observation'),process:t('选择关键词并生成合法 action grammar','choose query terms and emit valid action grammar'),out:t('search action','search action'),code:'search[men black waterproof hiking shoes size 10 under 100]'},
-      {role:t('WebShop 环境','WebShop environment'),title:t('搜索动作改变页面状态','Search changes page state'),in:t('search action','search action'),process:t('执行查询并返回候选商品页面','execute the query and return candidate products'),out:t('候选列表观察','candidate-list observation')},
-      {role:'Agent',title:t('读取新观察并筛掉不合格候选','Filter candidates using the new observation'),in:t('候选列表 + 原始约束','candidate list + original constraints'),process:t('核对价格、颜色、防水等属性','check price, color, waterproofing, and other attributes'),out:t('商品点击 / 选项动作','product click / option actions'),code:'click[TrailGuard Mid] · click[Black] · click[Size 10]'},
-      {role:t('WebShop 环境','WebShop environment'),title:t('选择动作继续改变页面','Selections continue changing page state'),in:t('点击与选项动作','click and option actions'),process:t('打开商品、应用尺码与颜色、提交购买','open product, apply size/color, submit purchase'),out:t('最终购物状态','final shopping state'),code:'click[Buy Now]'},
-      {role:t('评测器','Evaluator'),title:t('把最终状态加工成分数','Turn final state into scores'),in:t('最终商品 + 目标约束','final product + target constraints'),process:t('逐项比对所有目标属性','compare every target attribute'),out:t('exact success + normalized score','exact success + normalized score'),note:t('部分匹配可以得到归一化分数，但不能冒充 exact success。','Partial matching may earn normalized score but must not be presented as exact success.')},
-    ],
-    score:t('同时保存 query、点击、错误选项、循环、fallback 与步骤数，才能解释为什么得到这个分数。','Preserve queries, clicks, wrong options, loops, fallbacks, and step count so the score remains explainable.')
-  },
-  {
-    id:'alfworld', name:'ALFWorld', kind:t('文本化具身环境','Text-based embodied environment'), question:t('一个目标怎样经过状态观察、前置条件和多步动作，最终变成成功状态？','How does a goal pass through observations, prerequisites, and multi-step actions to become a success state?'),
-    inputs:[t('任务：把苹果加热后放到餐桌','Task: heat the apple, then place it on the dining table'),t('房间 / 物体 / 容器状态','room / object / receptacle state')],
-    steps:[
-      {role:t('任务入口','Task input'),title:t('接收具身目标','Receive the embodied goal'),in:t('目标描述','goal description'),process:t('拆成“找到 → 拿取 → 加热 → 放置”子目标','decompose into find, pick up, heat, and place'),out:t('计划约束','plan constraints')},
-      {role:t('ALFWorld 环境','ALFWorld environment'),title:t('环境输出当前世界状态','Environment emits current world state'),in:t('当前 simulator state','current simulator state'),process:t('文本化可见房间、容器和物体','textualize visible rooms, receptacles, and objects'),out:t('观察：冰箱关闭，苹果不可见','observation: fridge closed, apple hidden')},
-      {role:'Agent',title:t('根据观察满足前置条件','Satisfy prerequisites from the observation'),in:t('观察 + 计划约束','observation + plan constraints'),process:t('判断必须先打开冰箱','infer that the fridge must be opened first'),out:t('合法动作','valid action'),code:'open fridge 1'},
-      {role:t('ALFWorld 环境','ALFWorld environment'),title:t('动作改变世界，返回新观察','Action changes the world and returns a new observation'),in:t('open action','open action'),process:t('更新容器状态并重新计算可见物体','update receptacle state and recompute visible objects'),out:t('apple 1 可见且可拿取','apple 1 visible and pickable')},
-      {role:'Agent',title:t('沿状态链执行多步动作','Execute a multi-step state chain'),in:t('新观察 + 已完成步骤','new observation + completed steps'),process:t('持续维护“在哪里 / 是否已拿 / 是否已加热”','maintain location, possession, and heating state'),out:t('拿取 / 加热 / 放置动作序列','pickup / heat / place action sequence'),code:'take apple 1 from fridge 1 · heat apple 1 with microwave 1 · put apple 1 on diningtable 1'},
-      {role:t('评测器','Evaluator'),title:t('把世界终态加工成成功率证据','Turn terminal world state into success evidence'),in:t('终态 predicate','terminal predicates'),process:t('检查“苹果已加热”与“苹果在餐桌”是否同时成立','check whether heated and on-table predicates both hold'),out:t('task success / failure','task success / failure'),note:t('ALFWorld 按任务家族报告 success rate，再算不加权 macro-average。','ALFWorld reports success rate by task family, then an unweighted macro-average.')},
-    ],
-    score:t('搜索循环、状态遗漏、无效动作和超步数应该单独记录，而不是只留下最后一个 0/1。','Search loops, missed state, invalid actions, and step-budget exhaustion should be recorded separately rather than collapsing everything into one 0/1.')
-  }
-];
-
-const engineFlows = [
-  {name:'SEED',updated:t('更新对象：policy 参数','Updated object: policy parameters'),activation:t('生效边界：下一次 policy update 后','Activation boundary: after the next policy update'),body:t('trajectory 进入 hindsight → 重打分 → GRPO + OPD → optimizer → 新 checkpoint。','The trajectory enters hindsight, re-scoring, GRPO + OPD, optimizer, then a new checkpoint.')},
-  {name:'OpenEvo',updated:t('更新对象：memory / skill / agent-system artifact / revision','Updated object: memory / skill / agent-system artifact / revision'),activation:t('生效边界：后续任务加载 successor revision 时','Activation boundary: when a later task loads the successor revision'),body:t('sealed trajectory 进入 evolution method → artifact → validation → successor revision。不要把“反思文本出现了”误判成“框架已经进化”。','A sealed trajectory enters an evolution method, artifact creation, validation, then a successor revision. Do not mistake reflection text for proof that the framework evolved.')},
-];
+const scenarios = [
+  { name:'WebShop', kind:t('网页购物','Web shopping'), input:t('自然语言商品约束 + 当前页面状态','natural-language product constraints + current page state'), steps:[t('解析商品属性与预算','parse attributes and budget'),t('生成 search / click / option action','generate search / click / option actions'),t('环境返回新页面状态','environment returns new page state'),t('核对属性并提交购买','check attributes and submit purchase'),t('记录 normalized score 与 exact success','record normalized score and exact success')] },
+  { name:'ALFWorld', kind:t('文本化具身','Text-based embodied'), input:t('任务目标 + 房间 / 物体 / 容器状态','task goal + room / object / receptacle state'), steps:[t('拆解子目标','decompose subgoals'),t('读取当前世界状态','read world state'),t('满足动作前置条件','satisfy action prerequisites'),t('执行多步状态转换','execute multi-step state changes'),t('记录 task success 与失败轨迹','record task success and failure traces')] },
+] as const;
 ---
-
 <section class:list={['trajectory-lab',`trajectory-lab--${context}`]} aria-labelledby={`trajectory-title-${context}`} data-agent-trajectory>
-  <header class="trajectory-lab__header">
-    <div><span>{t('Agent 数据流实验室','Agent data-flow lab')}</span><h2 id={`trajectory-title-${context}`}>{t('像看加工流水线一样理解 WebShop 与 ALFWorld','Read WebShop and ALFWorld like processing lines')}</h2><p>{t('下面的光点代表一份数据在任务、Agent、环境和评测器之间移动。真正重要的是：谁接收什么输入，做了什么加工，又产出了什么。','The moving dot represents one data packet travelling among the task, agent, environment, and evaluator. Focus on who receives what, how it is processed, and what comes out.')}</p></div>
-    <aside class="trajectory-lab__status"><span aria-hidden="true"></span><div><strong>{t('交互示意','Illustrative interaction')}</strong><small>{t('不是 benchmark 实测结果','Not a measured benchmark result')}</small></div></aside>
-  </header>
-
-  <div class="trajectory-scenarios">
-    {scenarios.map((scenario,index) => (
-      <details class="trajectory-scenario" open={index===0}>
-        <summary><div><small>{scenario.kind}</small><strong>{scenario.name}</strong></div><span>{scenario.question}</span><i aria-hidden="true"></i></summary>
-        <div class="trajectory-scenario__body">
-          <div class="trajectory-inputs"><small>{t('原始输入','RAW INPUT')}</small>{scenario.inputs.map(input => <span>{input}</span>)}</div>
-          <ol class="trajectory-dialogue">
-            {scenario.steps.map((step,stepIndex) => (
-              <li class="trajectory-turn">
-                <article class="trajectory-turn__bubble">
-                  <header><span>{String(stepIndex+1).padStart(2,'0')}</span><small>{step.role}</small></header>
-                  <h3>{step.title}</h3>
-                  <div class="trajectory-turn__io">
-                    <div><small>{t('流入','IN')}</small><strong>{step.in}</strong></div>
-                    <div class="trajectory-turn__process"><small>{t('加工','PROCESS')}</small><p>{step.process}</p></div>
-                    <div><small>{t('流出','OUT')}</small><strong>{step.out}</strong></div>
-                  </div>
-                  {step.code && <code>{step.code}</code>}
-                  {step.note && <p class="trajectory-turn__note">{step.note}</p>}
-                </article>
-                {stepIndex < scenario.steps.length - 1 && <div class="trajectory-pipe" aria-hidden="true"><span></span><b></b><i></i></div>}
-              </li>
-            ))}
-          </ol>
-          <aside class="trajectory-score"><strong>{t('为什么不能只看最终分数','Why the final score is not enough')}</strong><p>{scenario.score}</p></aside>
-        </div>
-      </details>
-    ))}
-  </div>
-
-  <section class="trajectory-evolution" aria-label={t('轨迹离开 benchmark 后去哪','Where the trajectory goes after the benchmark')}>
-    <header><small>{t('同一份 trajectory，后续可以进入两条不同加工线','The same trajectory can enter two different downstream processing lines')}</small><h3>{t('环境对话结束，不代表自进化结束','The environment dialogue ends before self-evolution does')}</h3></header>
-    <div>{engineFlows.map(flow => <article><strong>{flow.name}</strong><p>{flow.body}</p><span>{flow.updated}</span><span>{flow.activation}</span></article>)}</div>
-  </section>
+  <header><span>{t('Benchmark 数据流','Benchmark data flow')}</span><h2 id={`trajectory-title-${context}`}>{t('WebShop 与 ALFWorld 数据流','WebShop and ALFWorld data flow')}</h2><p>{t('两种环境都需要保存原始 observation、模型 action、环境反馈、评分与终止原因；差别在交互结构和评价信号。','Both environments require raw observations, model actions, environment feedback, scoring, and termination reasons; their interaction structures and evaluation signals differ.')}</p></header>
+  <div class="scenario-grid">{scenarios.map((scenario)=><article><div class="scenario-title"><span>{scenario.kind}</span><h3>{scenario.name}</h3></div><p class="input"><strong>{t('输入','Input')}</strong>{scenario.input}</p><ol>{scenario.steps.map((step,index)=><li><b>{String(index+1).padStart(2,'0')}</b><span>{step}</span>{index<scenario.steps.length-1&&<i aria-hidden="true">↓</i>}</li>)}</ol></article>)}</div>
+  <aside class="evolution"><strong>{t('轨迹的后续处理','Downstream trajectory processing')}</strong><div><span>SEED</span><p>trajectory → hindsight skill → GRPO + OPD → policy update</p></div><div><span>OpenEvo</span><p>sealed trajectory → evolution method → artifact / adapter → successor revision</p></div></aside>
 </section>
-
 <style>
-  .trajectory-lab{--a:var(--accent,#2457d6);--tx:var(--text,var(--ink,#201c16));--mu:var(--muted,#625d54);--ln:var(--line,#d9d4c8);margin:clamp(2rem,5vw,4rem) 0;padding:clamp(1rem,2.5vw,2rem);border:1px solid var(--ln);border-radius:26px;background:color-mix(in srgb,var(--surface,#fff) 95%,transparent)}
-  .trajectory-lab__header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:start;margin-bottom:1rem}.trajectory-lab__header>div>span{color:var(--a);font-size:.74rem;font-weight:800}.trajectory-lab__header h2{max-width:25ch;margin:.55rem 0;color:var(--tx);font-size:clamp(1.6rem,3vw,2.7rem);line-height:1.08}.trajectory-lab__header p{max-width:76ch;margin:0;color:var(--mu);line-height:1.65}.trajectory-lab__status{display:flex;gap:.55rem;align-items:center;padding:.65rem .8rem;border:1px solid var(--ln);border-radius:14px}.trajectory-lab__status>span{width:.55rem;height:.55rem;border-radius:50%;background:var(--a)}.trajectory-lab__status strong,.trajectory-lab__status small{display:block}.trajectory-lab__status strong{color:var(--tx);font-size:.72rem}.trajectory-lab__status small{color:var(--mu);font-size:.62rem}
-  .trajectory-scenarios{display:grid;gap:.8rem}.trajectory-scenario{border:1px solid var(--ln);border-radius:18px;overflow:hidden;background:var(--surface,#fff)}.trajectory-scenario>summary{display:grid;grid-template-columns:auto minmax(0,1fr) 1.3rem;gap:.9rem;align-items:center;padding:1rem;cursor:pointer;list-style:none}.trajectory-scenario>summary::-webkit-details-marker{display:none}.trajectory-scenario>summary div small,.trajectory-scenario>summary div strong{display:block}.trajectory-scenario>summary div small{color:var(--mu);font-size:.64rem}.trajectory-scenario>summary div strong{color:var(--a);font-size:1rem}.trajectory-scenario>summary>span{color:var(--tx);font-size:.82rem}.trajectory-scenario>summary>i{width:.7rem;height:.7rem;border-right:2px solid var(--a);border-bottom:2px solid var(--a);transform:rotate(45deg);transition:transform .2s ease}.trajectory-scenario[open]>summary>i{transform:rotate(225deg)}.trajectory-scenario__body{padding:0 1rem 1rem;border-top:1px solid var(--ln)}
-  .trajectory-inputs{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;padding:1rem 0}.trajectory-inputs small{color:var(--mu);font-size:.6rem;font-weight:850}.trajectory-inputs span{padding:.35rem .55rem;border-radius:999px;background:color-mix(in srgb,var(--a) 7%,transparent);border:1px solid color-mix(in srgb,var(--a) 24%,var(--ln));color:var(--tx);font-size:.68rem}
-  .trajectory-dialogue{display:grid;margin:0;padding:0;list-style:none}.trajectory-turn__bubble{padding:.9rem;border:1px solid var(--ln);border-radius:15px;background:color-mix(in srgb,var(--surface,#fff) 97%,transparent)}.trajectory-turn__bubble header{display:flex;gap:.55rem;align-items:center}.trajectory-turn__bubble header span{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--a);color:white;font-size:.62rem;font-weight:850}.trajectory-turn__bubble header small{color:var(--a);font-weight:800}.trajectory-turn__bubble h3{margin:.5rem 0 .7rem;color:var(--tx);font-size:1rem}.trajectory-turn__io{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.35fr) minmax(0,.8fr);gap:.45rem}.trajectory-turn__io>div{min-width:0;padding:.55rem;border:1px solid var(--ln);border-radius:10px;background:color-mix(in srgb,var(--surface-muted,#f3f0e8) 62%,transparent)}.trajectory-turn__io small{display:block;margin-bottom:.3rem;color:var(--mu);font-size:.57rem;font-weight:850;letter-spacing:.06em}.trajectory-turn__io strong,.trajectory-turn__io p{margin:0;color:var(--tx);font-size:.7rem;line-height:1.4;overflow-wrap:anywhere}.trajectory-turn__process{border-color:color-mix(in srgb,var(--a) 28%,var(--ln))!important;background:color-mix(in srgb,var(--a) 6%,transparent)!important}.trajectory-turn code{display:block;margin-top:.55rem;padding:.55rem .65rem;border-radius:9px;background:color-mix(in srgb,var(--tx) 5%,transparent);color:var(--tx);font-size:.68rem;white-space:normal;overflow-wrap:anywhere}.trajectory-turn__note{margin:.5rem 0 0;color:var(--mu);font-size:.68rem;line-height:1.45}
-  .trajectory-pipe{position:relative;height:2.2rem;margin:0 1.4rem}.trajectory-pipe>span{position:absolute;left:50%;top:0;bottom:0;width:2px;background:color-mix(in srgb,var(--a) 52%,var(--ln));transform:translateX(-50%)}.trajectory-pipe>b{position:absolute;left:50%;top:.1rem;width:.46rem;height:.46rem;border-radius:50%;background:var(--a);transform:translateX(-50%);animation:trajectory-packet 2s ease-in-out infinite}.trajectory-pipe>i{position:absolute;left:50%;bottom:.08rem;width:.52rem;height:.52rem;border-right:2px solid var(--a);border-bottom:2px solid var(--a);transform:translateX(-50%) rotate(45deg)}
-  .trajectory-score{margin-top:.8rem;padding:.8rem;border:1px solid color-mix(in srgb,var(--a) 30%,var(--ln));border-radius:12px;background:color-mix(in srgb,var(--a) 5%,transparent)}.trajectory-score strong{color:var(--a);font-size:.72rem}.trajectory-score p{margin:.35rem 0 0;color:var(--tx);font-size:.72rem;line-height:1.5}
-  .trajectory-evolution{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--ln)}.trajectory-evolution header small{color:var(--a);font-weight:800}.trajectory-evolution header h3{margin:.35rem 0 .8rem;color:var(--tx)}.trajectory-evolution>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.trajectory-evolution article{padding:.8rem;border:1px solid var(--ln);border-radius:13px}.trajectory-evolution article strong{color:var(--a)}.trajectory-evolution article p{color:var(--tx);font-size:.75rem;line-height:1.5}.trajectory-evolution article span{display:block;margin-top:.35rem;color:var(--mu);font-size:.68rem}
-  @keyframes trajectory-packet{0%{top:.05rem;opacity:.2}20%{opacity:1}80%{opacity:1}100%{top:1.65rem;opacity:.15}}
-  @media(max-width:720px){.trajectory-lab__header{grid-template-columns:1fr}.trajectory-turn__io{grid-template-columns:1fr}.trajectory-turn__io>div:not(:last-child)::after{content:'';display:block;width:2px;height:.42rem;margin:.38rem auto -.4rem;background:color-mix(in srgb,var(--a) 45%,var(--ln))}.trajectory-evolution>div{grid-template-columns:1fr}.trajectory-scenario>summary{grid-template-columns:1fr 1.2rem}.trajectory-scenario>summary>span{grid-column:1/-1;grid-row:2}.trajectory-scenario>summary>i{grid-column:2;grid-row:1}}
-  @media(prefers-reduced-motion:reduce){.trajectory-pipe>b{animation:none;top:.8rem}.trajectory-scenario>summary>i{transition:none}}
+.trajectory-lab{margin:2rem 0;padding:1rem;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.trajectory-lab>header{max-width:820px}.trajectory-lab>header>span{color:var(--accent-deep);font-size:.68rem;font-weight:800}.trajectory-lab h2{margin:.25rem 0 .45rem}.trajectory-lab>header p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.55}.scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1rem}.scenario-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px}.scenario-title span{color:var(--muted);font-size:.64rem}.scenario-title h3{margin:.2rem 0 .5rem}.input{padding:.6rem;border-radius:9px;background:var(--surface-muted);font-size:.7rem;line-height:1.45}.input strong{display:block;color:var(--accent-deep);font-size:.62rem}.scenario-grid ol{display:grid;gap:.3rem;margin:.6rem 0 0;padding:0;list-style:none}.scenario-grid li{position:relative;display:grid;grid-template-columns:1.7rem 1fr;gap:.5rem;padding:.55rem;border:1px solid var(--line);border-radius:9px}.scenario-grid li b{color:var(--accent-deep);font:800 .62rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.scenario-grid li span{font-size:.69rem}.scenario-grid li i{position:absolute;right:.5rem;bottom:-.35rem;color:var(--accent-deep);font-style:normal}.evolution{display:grid;grid-template-columns:10rem repeat(2,minmax(0,1fr));gap:.6rem;align-items:center;margin-top:.7rem;padding:.75rem;border-top:1px solid var(--line)}.evolution>strong{font-size:.72rem}.evolution>div{padding:.55rem;border-left:2px solid var(--accent-deep)}.evolution span{font-weight:800;font-size:.68rem}.evolution p{margin:.25rem 0 0;color:var(--muted);font-size:.66rem;line-height:1.4}@media(max-width:700px){.scenario-grid,.evolution{grid-template-columns:1fr}}
 </style>

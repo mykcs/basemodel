@@ -1,39 +1,30 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-
 const root = process.cwd();
 const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 
-describe('SEED and OpenEvo beginner data-pipeline integration', () => {
+describe('SEED and OpenEvo data-flow explanation', () => {
   const component = read('src/components/research/AgentMechanismDialogues.astro');
   const zhRoute = read('src/pages/research/seed-openevo/loops.astro');
   const enRoute = read('src/pages/en/research/seed-openevo/loops.astro');
 
-  it('externalizes both update mechanisms as input-process-output pipelines', () => {
-    expect(component).toContain("id: 'seed'");
-    expect(component).toContain("id: 'openevo'");
-    expect(component).toContain('<ol class="mechanism-dialogue__turns">');
-    expect(component).toContain('mechanism-turn__io');
-    expect(component).toContain("t('流入','IN')");
-    expect(component).toContain("t('加工','PROCESS')");
-    expect(component).toContain("t('流出','OUT')");
-    expect(component).toContain('data-ui-audit="contrast layout"');
-    expect(component).toContain('更新对象：policy 参数');
+  it('keeps both update mechanisms explicit', () => {
+    expect(component).toContain("name:'SEED'");
+    expect(component).toContain("name:'OpenEvo'");
+    expect(component).toContain('policy 参数');
+    expect(component).toContain('artifact / adapter / revision');
     expect(component).toContain('successor revision');
   });
 
-  it('draws the flow structurally and animates data packets without character-arrow diagrams', () => {
-    for (const glyph of ['→', '↔', '↓', '↑', '⇒']) expect(component).not.toContain(glyph);
-    expect(component).toContain('class="flow-pipe"');
-    expect(component).toContain('.flow-pipe__line');
-    expect(component).toContain('.flow-pipe__packet');
-    expect(component).toContain('@keyframes data-packet');
-    expect(component).toContain('@media(prefers-reduced-motion:reduce)');
+  it('uses a quiet subject heading instead of a process sentence', () => {
+    expect(component).toContain('SEED 与 OpenEvo 数据流');
+    expect(component).not.toContain('数据从哪里进来，经过什么加工，最后流向哪里');
+    expect(component).toContain('flow-grid');
   });
 
-  it('mounts the pipeline on both localized loop-comparison routes', () => {
-    for (const route of [zhRoute, enRoute]) {
+  it('remains mounted on both localized loop-comparison routes', () => {
+    for (const route of [zhRoute,enRoute]) {
       expect(route).toContain('AgentMechanismDialogues');
       expect(route).toContain('<AgentMechanismDialogues locale={locale} />');
     }

@@ -4,14 +4,14 @@ import AppLayout from '../../layouts/AppLayout.astro';
 <AppLayout title="Data sources and missing information" description="Explain whether numbers come from papers, official catalogs, engineering estimates, or measured runs, and why unsupported fields remain unknown." locale="en">
   <div class="shell editorial-page">
     <header class="page-header">
-      <span class="section-kicker">Where the data comes from</span>
-      <h1>Where these numbers come from, and how missing data is shown</h1>
+      <span class="section-kicker">Data methodology</span>
+      <h1>Data sources and missing information</h1>
       <p class="lede">The site labels paper facts, official catalogs, engineering estimates, and measured runs separately. A field without supporting evidence stays unknown instead of becoming 0, false, or a plausible-looking guess.</p>
     </header>
     <div class="methodology-sections">
-      <section><h2>How the page shows missing information</h2><p><code>not_disclosed</code> means the source did not disclose it, <code>not_reported</code> means the source did not report it, <code>not_verified</code> means it has not been checked, and <code>conflicting_evidence</code> means sources disagree. These are data states, not “no” or “0”.</p></section>
-      <section><h2>What each source can prove</h2><p>Model fields prefer official model cards, vendor documentation, or papers. Papers, code, and measured run records keep their source type and check date. A number is treated as verified only when its source directly supports it.</p></section>
-      <section><h2>What model recommendations can and cannot tell you</h2><p>Candidate ordering answers which options deserve attention under the model, hardware, training, and reproduction conditions you entered. It is not a universal performance ranking; source conflicts block a recommendation, while other unknowns remain visible as items to verify.</p></section>
+      <section><h2>Missing-value states</h2><p><code>not_disclosed</code> means the source did not disclose it, <code>not_reported</code> means the source did not report it, <code>not_verified</code> means it has not been checked, and <code>conflicting_evidence</code> means sources disagree. These are data states, not “no” or “0”.</p></section>
+      <section><h2>Evidence sources</h2><p>Model fields prefer official model cards, vendor documentation, or papers. Papers, code, and measured run records keep their source type and check date. A number is treated as verified only when its source directly supports it.</p></section>
+      <section><h2>Recommendation boundaries</h2><p>Candidate ordering answers which options deserve attention under the model, hardware, training, and reproduction conditions you entered. It is not a universal performance ranking; source conflicts block a recommendation, while other unknowns remain visible as items to verify.</p></section>
     </div>
   </div>
 </AppLayout>

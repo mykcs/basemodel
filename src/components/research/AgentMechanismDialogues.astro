@@ -1,113 +1,19 @@
 ---
 import type { Locale } from '../../i18n';
-
-interface Props { locale: Locale; }
-type MechanismId = 'seed' | 'openevo';
-type Stage = { n: string; role: string; title: string; input: string; process: string; output: string; detail: string };
-type Mechanism = { id: MechanismId; name: string; eyebrow: string; summary: string; updated: string; activation: string; stages: Stage[]; boundary: string };
-
+interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
-const t = (cn: string, en: string) => zh ? cn : en;
-
-const mechanisms: Mechanism[] = [
-  {
-    id: 'seed', name: 'SEED', eyebrow: t('参数加工线', 'Parameter-processing line'),
-    summary: t('把一次完整 episode 产生的轨迹加工成训练信号，最后写回新的 policy checkpoint。', 'Turn a completed episode trajectory into training signals, then write them into a new policy checkpoint.'),
-    updated: t('更新对象：policy 参数', 'Updated object: policy parameters'),
-    activation: t('生效边界：下一次 policy update 后', 'Activation boundary: after the next policy update'),
-    stages: [
-      { n:'01', role:t('起点','Input'), title:t('固定 checkpoint r17','Pin checkpoint r17'), input:t('任务 + r17','task + r17'), process:t('冻结本轮权重','freeze weights for this episode'), output:t('稳定的运行起点','stable runtime start'), detail:t('episode 进行中不切换 policy revision。','The policy revision does not change inside the episode.') },
-      { n:'02', role:'Agent × Environment', title:t('交互并产生轨迹','Interact and produce a trajectory'), input:t('观察 / 状态','observations / state'), process:t('模型动作改变环境，环境返回新观察','model actions change the environment; the environment returns observations'), output:t('完整 trajectory','complete trajectory'), detail:t('保存观察、动作、reward、失败步骤、循环和终止原因。','Preserve observations, actions, rewards, failed steps, loops, and termination reasons.') },
-      { n:'03', role:t('轨迹分析器','Trajectory analyzer'), title:t('回看并生成 hindsight skill','Generate a hindsight skill'), input:t('完整 trajectory','complete trajectory'), process:t('总结哪些状态应关注、哪些行为应避免','summarize what to notice and avoid'), output:t('skill / hindsight','skill / hindsight'), detail:t('这是对已完成轨迹的加工，不是 episode 中途偷偷修改参数。','This processes a completed trajectory; it is not a mid-episode weight update.') },
-      { n:'04', role:t('训练器','Trainer'), title:t('重打分 + GRPO / OPD','Re-score + GRPO / OPD'), input:t('原动作 + skill','original actions + skill'), process:t('比较普通与 skill context 下原动作概率并联合优化','compare original-action probabilities under ordinary and skill contexts, then optimize'), output:t('gradient / optimizer signal','gradient / optimizer signal'), detail:t('固定已采样动作，让 hindsight 的收益被蒸馏进 policy。','Keep sampled actions fixed so hindsight gains can be distilled into the policy.') },
-      { n:'05', role:t('参数写回','Write-back'), title:t('产生 checkpoint r18','Produce checkpoint r18'), input:t('optimizer signal','optimizer signal'), process:t('更新 policy 参数','update policy parameters'), output:t('新 checkpoint r18','new checkpoint r18'), detail:t('到这里才有“参数真的变了”的证据。','Only here do we have evidence that parameters actually changed.') },
-      { n:'06', role:t('下一轮','Next rollout'), title:t('r18 重新进入运行管线','Feed r18 back into the runtime'), input:t('下一组任务 + r18','next tasks + r18'), process:t('重新开始新的 rollout','start a new rollout'), output:t('新的 on-policy 数据','new on-policy data'), detail:t('新的 checkpoint 只服务下一组 rollout，不倒灌进已经结束的 episode。','The new checkpoint serves the next rollout group; it does not flow backward into the finished episode.') },
-    ],
-    boundary: t('一次 episode 成功结束 ≠ SEED 已更新参数。还需要看到训练 loss、optimizer step 与新 checkpoint。','A successful episode ≠ a SEED parameter update. Training loss, an optimizer step, and a new checkpoint are still required.'),
-  },
-  {
-    id: 'openevo', name: 'OpenEvo', eyebrow: t('跨任务加工线', 'Cross-task processing line'),
-    summary: t('把已完成任务封存成证据，再加工成 memory、skill 或其他 artifact，验证后组成下一版 successor revision。', 'Seal a completed task as evidence, process it into memory, skills, or other artifacts, validate them, then form the next successor revision.'),
-    updated: t('更新对象：memory / skill / agent-system artifact / revision', 'Updated object: memory / skill / agent-system artifact / revision'),
-    activation: t('生效边界：后续任务加载 successor revision 时', 'Activation boundary: when a later task loads the successor revision'),
-    stages: [
-      { n:'01', role:t('起点','Input'), title:t('固定 Project Head r17','Pin Project Head r17'), input:t('任务 + context + r17','task + context + r17'), process:t('锁定 model / adapter / context revision','pin model / adapter / context revisions'), output:t('可归因的任务起点','attributable task start'), detail:t('任务进行中 Project Head 固定，避免一条任务同时混入多个版本。','The Project Head stays fixed during the task so one task does not mix multiple revisions.') },
-      { n:'02', role:'Agent × Environment', title:t('运行真实任务','Run the real task'), input:t('观察 / 页面 / 世界状态','observations / page / world state'), process:t('模型动作与环境往返','model actions and environment responses alternate'), output:t('transcript + trajectory + score','transcript + trajectory + score'), detail:t('同时保存 raw model output、parsed action、fallback 和终止原因。','Also preserve raw model output, parsed actions, fallbacks, and termination reasons.') },
-      { n:'03', role:t('证据封存','Evidence seal'), title:t('任务结束后冻结数据','Freeze data after task completion'), input:t('完整运行记录','complete run record'), process:t('按时间顺序封存证据','seal evidence in order'), output:t('sealed dataset','sealed dataset'), detail:t('未完成的中间状态不进入本次 evolution input。','Unfinished in-session state does not enter this evolution input.') },
-      { n:'04', role:t('演化方法','Evolution method'), title:t('加工成版本化 artifact','Process into a versioned artifact'), input:t('sealed dataset','sealed dataset'), process:t('反思 / 汇总 / skill extraction / adapter method','reflection / synthesis / skill extraction / adapter method'), output:t('memory / skill / artifact','memory / skill / artifact'), detail:t('OpenEvo 是跨 session 演化接口，不自动等于参数训练；具体 carrier 决定更新什么。','OpenEvo is a cross-session evolution interface, not automatically parameter training; the carrier determines what changes.') },
-      { n:'05', role:t('验证器','Verifier'), title:t('验证并组成 r18','Validate and form r18'), input:t('候选 artifact','candidate artifact'), process:t('检查来源、完整性、类型和激活边界','check provenance, completeness, type, and activation boundary'), output:t('accepted successor revision r18','accepted successor revision r18'), detail:t('只有被接受的 carrier 才进入 successor revision。','Only accepted carriers enter the successor revision.') },
-      { n:'06', role:t('后续任务','Later task'), title:t('r18 重新进入任务入口','Feed r18 into a later task'), input:t('新任务 + r18','new task + r18'), process:t('materialize 已接受载体并运行','materialize accepted carriers and run'), output:t('下一条任务轨迹','next task trajectory'), detail:t('上一任务仍属于 r17；r18 从后续任务开始生效。','The previous task remains attributed to r17; r18 activates only for later tasks.') },
-    ],
-    boundary: t('出现反思文本或保存 memory ≠ OpenEvo 已完成演化。还需要 artifact 注册、验证、successor revision 与后续任务激活。','Reflection text or saved memory ≠ completed OpenEvo evolution. Artifact registration, validation, a successor revision, and later-task activation are still required.'),
-  },
-];
+const t = (cn:string,en:string) => zh ? cn : en;
+const flows = [
+  { name:'SEED', tag:t('参数学习','Parameter learning'), update:t('policy 参数','policy parameters'), steps:[t('on-policy trajectory','on-policy trajectory'),t('hindsight skill','hindsight skill'),t('re-score','re-score'),t('GRPO + OPD','GRPO + OPD'),t('new checkpoint','new checkpoint')] },
+  { name:'OpenEvo', tag:t('跨任务演化','Cross-task evolution'), update:t('artifact / adapter / revision','artifact / adapter / revision'), steps:[t('completed task','completed task'),t('sealed evidence','sealed evidence'),t('evolution method','evolution method'),t('validation','validation'),t('successor revision','successor revision')] },
+] as const;
 ---
-
-<section class="mechanism-dialogues" aria-labelledby="mechanism-dialogues-title" data-ui-audit="contrast layout">
-  <header class="mechanism-dialogues__header">
-    <span>{t('把自进化 Agent 当成一条加工线看', 'Think of a self-evolving agent as a processing line')}</span>
-    <h2 id="mechanism-dialogues-title">{t('数据从哪里进来，经过什么加工，最后流向哪里', 'See where data enters, how it is processed, and where it flows next')}</h2>
-    <p>{t('每个大方块是一台“加工机器”，细线是数据管道，沿管道移动的小光点代表正在流动的数据包。先看输入与产出，再展开技术细节。','Each large node is a processing machine. Lines are data pipes, and the moving dot represents a data packet. Read inputs and outputs first; expand technical details only when needed.')}</p>
-  </header>
-
-  <div class="mechanism-dialogues__grid">
-    {mechanisms.map((mechanism) => (
-      <article class:list={['mechanism-dialogue', `mechanism-dialogue--${mechanism.id}`]} data-ui-audit-item>
-        <header class="mechanism-dialogue__intro">
-          <div class="mechanism-dialogue__identity"><span>{mechanism.eyebrow}</span><strong>{mechanism.name}</strong></div>
-          <p>{mechanism.summary}</p>
-          <div class="mechanism-dialogue__facts"><span>{mechanism.updated}</span><span>{mechanism.activation}</span></div>
-        </header>
-
-        <ol class="mechanism-dialogue__turns">
-          {mechanism.stages.map((stage, index) => (
-            <li class="mechanism-turn">
-              <div class="mechanism-turn__content">
-                <div class="mechanism-turn__top"><span>{stage.n}</span><small>{stage.role}</small></div>
-                <h3>{stage.title}</h3>
-                <div class="mechanism-turn__io">
-                  <div><small>{t('流入','IN')}</small><strong>{stage.input}</strong></div>
-                  <div class="mechanism-turn__processor"><small>{t('加工','PROCESS')}</small><p>{stage.process}</p></div>
-                  <div><small>{t('流出','OUT')}</small><strong>{stage.output}</strong></div>
-                </div>
-                <details><summary>{t('为什么这一步重要？','Why does this step matter?')}</summary><p>{stage.detail}</p></details>
-              </div>
-              {index < mechanism.stages.length - 1 && (
-                <div class="flow-pipe" aria-hidden="true"><span class="flow-pipe__line"></span><span class="flow-pipe__packet"></span><span class="flow-pipe__head"></span></div>
-              )}
-            </li>
-          ))}
-        </ol>
-
-        <aside class="mechanism-dialogue__boundary"><strong>{t('证据边界','Evidence boundary')}</strong><p>{mechanism.boundary}</p></aside>
-      </article>
-    ))}
-  </div>
-
-  <footer class="mechanism-dialogues__check">
-    <strong>{t('第一次学 Agent，只要先抓住这三个问题','If you are new to agents, start with these three questions')}</strong>
-    <dl>
-      <div><dt>{t('什么东西在流动？','What is flowing?')}</dt><dd>{t('任务、观察、模型动作、轨迹、训练信号、memory / skill / artifact。','Tasks, observations, model actions, trajectories, training signals, memory, skills, and artifacts.')}</dd></div>
-      <div><dt>{t('什么东西被加工？','What is being processed?')}</dt><dd>{t('SEED 最终加工 policy 参数；OpenEvo 加工跨任务可复用的载体。','SEED ultimately processes policy parameters; OpenEvo processes reusable cross-task carriers.')}</dd></div>
-      <div><dt>{t('什么时候反馈到下一轮？','When does feedback return?')}</dt><dd>{t('都不是任务进行到一半就改；都在明确完成边界之后进入下一轮。','Neither changes halfway through a task; both feed back only after an explicit completion boundary.')}</dd></div>
-    </dl>
-  </footer>
+<section class="mechanism-dialogues" aria-labelledby="mechanism-dialogues-title">
+  <header><span>{t('数据流','Data flow')}</span><h2 id="mechanism-dialogues-title">{t('SEED 与 OpenEvo 数据流','SEED and OpenEvo data flow')}</h2><p>{t('先看输入、加工步骤、更新对象和生效边界，再进入实现细节。','Read inputs, processing stages, updated objects, and activation boundaries before implementation details.')}</p></header>
+  <div class="flow-grid">{flows.map((flow)=><article><div class="flow-title"><span>{flow.tag}</span><strong>{flow.name}</strong></div><ol>{flow.steps.map((step,index)=><li><b>{String(index+1).padStart(2,'0')}</b><span>{step}</span>{index<flow.steps.length-1&&<i aria-hidden="true">↓</i>}</li>)}</ol><footer><span>{t('更新对象','Updated object')}</span><strong>{flow.update}</strong></footer></article>)}</div>
+  <div class="read-grid"><article><strong>{t('什么在流动','What flows')}</strong><p>{t('任务、观察、动作、轨迹、训练信号与 artifact。','Tasks, observations, actions, trajectories, training signals, and artifacts.')}</p></article><article><strong>{t('什么被更新','What changes')}</strong><p>{t('SEED 更新 policy 参数；OpenEvo 依据 carrier 更新可跨任务复用的状态。','SEED updates policy parameters; OpenEvo updates reusable cross-task state according to the carrier.')}</p></article><article><strong>{t('何时生效','When it activates')}</strong><p>{t('都在明确完成边界之后进入下一轮，不在同一任务中途偷偷切换。','Both activate only after an explicit completion boundary, not by silently switching state mid-task.')}</p></article></div>
 </section>
-
 <style>
-  .mechanism-dialogues{--a:var(--accent,#2457d6);--tx:var(--text,var(--ink,#201c16));--mu:var(--muted,#625d54);--ln:var(--line,#d9d4c8);width:min(1240px,calc(100% - 2rem));margin:clamp(2rem,5vw,4rem) auto;padding:clamp(1rem,2.7vw,2rem);border:1px solid var(--ln);border-radius:28px;background:color-mix(in srgb,var(--surface,#fff) 94%,transparent)}
-  .mechanism-dialogues__header{max-width:900px;margin-bottom:1.4rem}.mechanism-dialogues__header>span{color:var(--a);font-weight:800;font-size:.75rem;letter-spacing:.06em}.mechanism-dialogues__header h2{max-width:24ch;margin:.65rem 0;font-size:clamp(1.75rem,3.2vw,3rem);line-height:1.08;color:var(--tx)}.mechanism-dialogues__header p{max-width:76ch;margin:0;color:var(--mu);line-height:1.7}
-  .mechanism-dialogues__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}.mechanism-dialogue{min-width:0;border:1px solid var(--ln);border-radius:22px;overflow:hidden;background:color-mix(in srgb,var(--surface,#fff) 96%,transparent)}
-  .mechanism-dialogue__intro{padding:1.1rem;background:color-mix(in srgb,var(--a) 5%,transparent);border-bottom:1px solid var(--ln)}.mechanism-dialogue__identity{display:flex;justify-content:space-between;gap:.8rem;align-items:center}.mechanism-dialogue__identity span{color:var(--mu);font-size:.72rem;font-weight:750}.mechanism-dialogue__identity strong{color:var(--a);font:850 .9rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.mechanism-dialogue__intro p{margin:.65rem 0;color:var(--tx);line-height:1.55;font-size:.86rem}.mechanism-dialogue__facts{display:flex;flex-wrap:wrap;gap:.4rem}.mechanism-dialogue__facts span{padding:.36rem .55rem;border:1px solid color-mix(in srgb,var(--a) 28%,var(--ln));border-radius:999px;color:var(--mu);font-size:.68rem}
-  .mechanism-dialogue__turns{position:relative;display:grid;margin:0;padding:1rem;list-style:none}.mechanism-turn{position:relative}.mechanism-turn__content{position:relative;z-index:2;padding:.9rem;border:1px solid var(--ln);border-radius:16px;background:var(--surface,#fff)}.mechanism-turn__top{display:flex;align-items:center;gap:.55rem}.mechanism-turn__top>span{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--a);color:white;font-size:.63rem;font-weight:850}.mechanism-turn__top small{color:var(--a);font-weight:800}.mechanism-turn h3{margin:.55rem 0 .75rem;color:var(--tx);font-size:1rem;line-height:1.25}
-  .mechanism-turn__io{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.35fr) minmax(0,.8fr);gap:.45rem;align-items:stretch}.mechanism-turn__io>div{min-width:0;padding:.55rem;border:1px solid var(--ln);border-radius:11px;background:color-mix(in srgb,var(--surface-muted,#f3f0e8) 64%,transparent)}.mechanism-turn__io small{display:block;margin-bottom:.3rem;color:var(--mu);font-size:.58rem;font-weight:850;letter-spacing:.07em}.mechanism-turn__io strong,.mechanism-turn__io p{display:block;margin:0;color:var(--tx);font-size:.7rem;line-height:1.4;overflow-wrap:anywhere}.mechanism-turn__processor{border-color:color-mix(in srgb,var(--a) 28%,var(--ln))!important;background:color-mix(in srgb,var(--a) 6%,transparent)!important}
-  .mechanism-turn details{margin-top:.55rem;border-top:1px dashed var(--ln)}.mechanism-turn summary{padding-top:.55rem;cursor:pointer;color:var(--mu);font-size:.68rem;font-weight:750}.mechanism-turn details p{margin:.35rem 0 0;color:var(--mu);font-size:.7rem;line-height:1.5}
-  .flow-pipe{position:relative;height:2.2rem;margin:0 1.6rem}.flow-pipe__line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:color-mix(in srgb,var(--a) 50%,var(--ln));transform:translateX(-50%)}.flow-pipe__head{position:absolute;left:50%;bottom:.08rem;width:.55rem;height:.55rem;border-right:2px solid var(--a);border-bottom:2px solid var(--a);transform:translateX(-50%) rotate(45deg)}.flow-pipe__packet{position:absolute;left:50%;top:.1rem;width:.48rem;height:.48rem;border-radius:50%;background:var(--a);transform:translateX(-50%);box-shadow:0 0 0 4px color-mix(in srgb,var(--a) 12%,transparent);animation:data-packet 2.2s ease-in-out infinite}
-  .mechanism-dialogue__boundary{margin:0 1rem 1rem;padding:.9rem;border:1px solid color-mix(in srgb,var(--a) 32%,var(--ln));border-radius:14px;background:color-mix(in srgb,var(--a) 6%,transparent)}.mechanism-dialogue__boundary strong{color:var(--a);font-size:.7rem}.mechanism-dialogue__boundary p{margin:.4rem 0 0;color:var(--tx);font-size:.74rem;line-height:1.5}
-  .mechanism-dialogues__check{margin-top:1rem;padding:1rem;border:1px solid var(--ln);border-radius:16px}.mechanism-dialogues__check>strong{color:var(--tx)}.mechanism-dialogues__check dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin:.8rem 0 0}.mechanism-dialogues__check dl div{padding:.7rem;border-left:2px solid var(--a)}.mechanism-dialogues__check dt{color:var(--tx);font-size:.73rem;font-weight:800}.mechanism-dialogues__check dd{margin:.35rem 0 0;color:var(--mu);font-size:.7rem;line-height:1.5}
-  @keyframes data-packet{0%{top:.05rem;opacity:.2}20%{opacity:1}80%{opacity:1}100%{top:1.65rem;opacity:.15}}
-  @media(max-width:980px){.mechanism-dialogues__grid{grid-template-columns:1fr}.mechanism-dialogues__check dl{grid-template-columns:1fr}}
-  @media(max-width:640px){.mechanism-dialogues{width:min(100% - 1rem,1240px);border-radius:20px}.mechanism-turn__io{grid-template-columns:1fr}.mechanism-turn__io>div{position:relative}.mechanism-turn__io>div:not(:last-child)::after{content:'';display:block;width:2px;height:.45rem;margin:.4rem auto -.4rem;background:color-mix(in srgb,var(--a) 45%,var(--ln))}.mechanism-dialogue__facts{display:grid}.mechanism-dialogues__header h2{font-size:1.75rem}}
-  @media(prefers-reduced-motion:reduce){.flow-pipe__packet{animation:none;top:.8rem}.mechanism-turn summary{scroll-behavior:auto}}
+.mechanism-dialogues{width:min(1120px,calc(100% - 2rem));margin:2rem auto;padding:1rem;border:1px solid var(--line);border-radius:16px}.mechanism-dialogues>header{max-width:800px}.mechanism-dialogues>header>span{color:var(--accent-deep);font-size:.68rem;font-weight:800}.mechanism-dialogues h2{margin:.25rem 0 .45rem}.mechanism-dialogues>header p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}.flow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1rem}.flow-grid>article{padding:.8rem;border:1px solid var(--line);border-radius:12px}.flow-title{display:flex;justify-content:space-between;gap:.5rem}.flow-title span{color:var(--muted);font-size:.66rem}.flow-title strong{color:var(--accent-deep);font-size:.76rem}.flow-grid ol{display:grid;gap:.25rem;margin:.7rem 0;padding:0;list-style:none}.flow-grid li{position:relative;display:grid;grid-template-columns:1.7rem 1fr;gap:.5rem;padding:.5rem;border:1px solid var(--line);border-radius:9px}.flow-grid li b{color:var(--accent-deep);font:800 .62rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.flow-grid li span{font-size:.7rem}.flow-grid li i{position:absolute;right:.55rem;bottom:-.38rem;color:var(--accent-deep);font-style:normal}.flow-grid footer{padding-top:.55rem;border-top:1px solid var(--line)}.flow-grid footer span,.flow-grid footer strong{display:block}.flow-grid footer span{color:var(--muted);font-size:.62rem}.flow-grid footer strong{margin-top:.25rem;font-size:.7rem}.read-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-top:.6rem}.read-grid article{padding:.7rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted)}.read-grid strong{font-size:.72rem}.read-grid p{margin:.3rem 0 0;color:var(--muted);font-size:.68rem;line-height:1.45}@media(max-width:700px){.mechanism-dialogues{width:min(100% - 1rem,1120px)}.flow-grid,.read-grid{grid-template-columns:1fr}}
 </style>
