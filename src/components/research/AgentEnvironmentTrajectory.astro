@@ -1,19 +1,9 @@
 ---
 import type { Locale } from '../../i18n';
+import BenchmarkDatasetDiagram from './BenchmarkDatasetDiagram.astro';
 interface Props { locale: Locale; context?: 'benchmark' | 'reproduction' }
 const { locale, context = 'benchmark' } = Astro.props;
-const zh = locale === 'zh';
-const t = (cn:string,en:string) => zh ? cn : en;
-const scenarios = [
-  { name:'WebShop', kind:t('网页购物','Web shopping'), input:t('自然语言商品约束 + 当前页面状态','natural-language product constraints + current page state'), steps:[t('解析商品属性与预算','parse attributes and budget'),t('生成 search / click / option action','generate search / click / option actions'),t('环境返回新页面状态','environment returns new page state'),t('核对属性并提交购买','check attributes and submit purchase'),t('记录 normalized score 与 exact success','record normalized score and exact success')] },
-  { name:'ALFWorld', kind:t('文本化具身','Text-based embodied'), input:t('任务目标 + 房间 / 物体 / 容器状态','task goal + room / object / receptacle state'), steps:[t('拆解子目标','decompose subgoals'),t('读取当前世界状态','read world state'),t('满足动作前置条件','satisfy action prerequisites'),t('执行多步状态转换','execute multi-step state changes'),t('记录 task success 与失败轨迹','record task success and failure traces')] },
-] as const;
 ---
-<section class:list={['trajectory-lab',`trajectory-lab--${context}`]} aria-labelledby={`trajectory-title-${context}`} data-agent-trajectory>
-  <header><span>{t('Benchmark 数据流','Benchmark data flow')}</span><h2 id={`trajectory-title-${context}`}>{t('WebShop 与 ALFWorld 数据流','WebShop and ALFWorld data flow')}</h2><p>{t('两种环境都需要保存原始 observation、模型 action、环境反馈、评分与终止原因；差别在交互结构和评价信号。','Both environments require raw observations, model actions, environment feedback, scoring, and termination reasons; their interaction structures and evaluation signals differ.')}</p></header>
-  <div class="scenario-grid">{scenarios.map((scenario)=><article><div class="scenario-title"><span>{scenario.kind}</span><h3>{scenario.name}</h3></div><p class="input"><strong>{t('输入','Input')}</strong>{scenario.input}</p><ol>{scenario.steps.map((step,index)=><li><b>{String(index+1).padStart(2,'0')}</b><span>{step}</span>{index < scenario.steps.length - 1 ? <i aria-hidden="true">↓</i> : null}</li>)}</ol></article>)}</div>
-  <aside class="evolution"><strong>{t('轨迹的后续处理','Downstream trajectory processing')}</strong><div><span>SEED</span><p>trajectory → hindsight skill → GRPO + OPD → policy update</p></div><div><span>OpenEvo</span><p>sealed trajectory → evolution method → artifact / adapter → successor revision</p></div></aside>
-</section>
-<style>
-.trajectory-lab{margin:2rem 0;padding:1rem;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.trajectory-lab>header{max-width:820px}.trajectory-lab>header>span{color:var(--accent-deep);font-size:.68rem;font-weight:800}.trajectory-lab h2{margin:.25rem 0 .45rem}.trajectory-lab>header p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.55}.scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1rem}.scenario-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px}.scenario-title span{color:var(--muted);font-size:.64rem}.scenario-title h3{margin:.2rem 0 .5rem}.input{padding:.6rem;border-radius:9px;background:var(--surface-muted);font-size:.7rem;line-height:1.45}.input strong{display:block;color:var(--accent-deep);font-size:.62rem}.scenario-grid ol{display:grid;gap:.3rem;margin:.6rem 0 0;padding:0;list-style:none}.scenario-grid li{position:relative;display:grid;grid-template-columns:1.7rem 1fr;gap:.5rem;padding:.55rem;border:1px solid var(--line);border-radius:9px}.scenario-grid li b{color:var(--accent-deep);font:800 .62rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.scenario-grid li span{font-size:.69rem}.scenario-grid li i{position:absolute;right:.5rem;bottom:-.35rem;color:var(--accent-deep);font-style:normal}.evolution{display:grid;grid-template-columns:10rem repeat(2,minmax(0,1fr));gap:.6rem;align-items:center;margin-top:.7rem;padding:.75rem;border-top:1px solid var(--line)}.evolution>strong{font-size:.72rem}.evolution>div{padding:.55rem;border-left:2px solid var(--accent-deep)}.evolution span{font-weight:800;font-size:.68rem}.evolution p{margin:.25rem 0 0;color:var(--muted);font-size:.66rem;line-height:1.4}@media(max-width:700px){.scenario-grid,.evolution{grid-template-columns:1fr}}
-</style>
+<div data-agent-trajectory data-trajectory-context={context}>
+  <BenchmarkDatasetDiagram locale={locale} compact={context === 'reproduction'} />
+</div>
