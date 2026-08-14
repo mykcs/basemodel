@@ -48,28 +48,67 @@ Normal headings must still be specific. Prefer `Phase G WebShop 对比` over vag
 
 ## Non-negotiable diagram rule
 
-**A process, architecture, model loop, repository lineage, or data flow must look like a diagram, not a sentence with arrow characters.** When a user needs to understand how objects move or how modules relate, use semantic HTML/Astro + CSS to encode the structure visually.
+**A process, architecture, model loop, repository lineage, or data flow must look like a diagram, not a sentence with arrow characters.** When a user needs to understand how objects move or how modules relate, use semantic HTML/Astro plus browser-native vector/CSS capabilities to encode the structure visually.
 
 Minimum visual contract for a diagram:
 
 - every meaningful module is a framed node/card with padding, border, and a distinct surface;
-- related node classes use deliberate color families (for example environment/model/update/evidence/infrastructure), not one undifferentiated list;
-- relationships use CSS connector lines with arrowheads, including branch/merge/return geometry when the relationship is not linear;
-- stages or authority layers are spatially grouped and labeled;
+- related node classes use deliberate semantic color families, not one undifferentiated list;
+- relationships use real connector geometry with arrowheads, including branch/merge/return paths when the relationship is not linear;
+- stages, containment, authority boundaries, and sibling relationships are spatially grouped and labeled;
 - desktop layouts may be horizontal or multi-lane; narrow layouts must collapse to a readable vertical flow;
-- the diagram remains semantic HTML; do not replace primary technical content with a raster screenshot;
+- the node content remains semantic HTML; do not replace primary technical content with a raster screenshot;
 - arrow glyphs such as `→` may appear inside compact labels, but **must not be the only visual expression of a flow**;
 - diagrams must preserve reduced-motion and static readability; animation is optional and never required to understand the system.
 
-Preferred visual references are ML-paper pipeline figures, neural-network architecture diagrams, systems diagrams, and experimental data-flow figures: boxes, colored stages, explicit connectors, and a clear input/process/output hierarchy.
+### Shared research-diagram visual grammar
+
+Use the same meanings across SEED/OpenEvo/benchmark/server diagrams so color and line style carry information instead of decoration:
+
+- **blue** = environment, benchmark, observation, external world state;
+- **amber** = experience, hindsight, extracted evidence/knowledge;
+- **red** = loss, optimization signal, policy-learning pressure;
+- **violet** = model, policy, agent revision, parametric/control state;
+- **green** = validated state that can persist into the next run/task;
+- **solid connector** = data or state actually flows along this relation;
+- **dashed connector** = control, authority, reference, or a boundary relation rather than payload flow;
+- **return/loop connector** = explains why the next round can differ from the current round.
+
+Do not use a color simply because a figure “needs more color.” If two nodes have the same semantic role, their color family should normally match across pages.
+
+### Browser-native technical implementation
+
+For non-trivial architecture figures, prefer this stack before adding a heavy client library:
+
+1. semantic HTML/Astro for nodes, labels, reading order, and accessible details;
+2. CSS Grid / named areas for spatial structure and responsive collapse;
+3. inline SVG for curved connectors, fan-out/fan-in, containment edges, arrow markers, and feedback loops;
+4. CSS custom properties for the shared semantic color grammar;
+5. CSS motion such as `stroke-dashoffset` only when it clarifies direction, always disabled by `prefers-reduced-motion`;
+6. native `<details>` for optional technical depth so the main figure remains beginner-readable.
+
+SVG is not a screenshot: it is browser-native vector markup and is encouraged for connector geometry while the actual module content stays HTML. Add a JavaScript/visualization library only when the diagram is genuinely data-driven or interactive enough that native HTML/CSS/SVG would become harder to audit.
+
+### Beginner-first semantic contract
+
+Every major technical diagram should answer these questions before exposing implementation detail:
+
+1. **What enters the system?** task, observation, trajectory, evidence, etc.
+2. **What is transformed or updated?** world state, policy probabilities, carrier state, permissions, etc.
+3. **What persists into the next round?** model parameters, memory/artifact/adapter, Run Manifest evidence, etc.
+4. **Where is the boundary?** task completion, optimizer step, validation gate, container/host boundary, train/eval split.
+
+When a term such as `OPD`, `carrier`, `successor revision`, `Docker socket`, or `valid_unseen` is important, make the core meaning visible in the figure and place exact implementation detail in compact body copy or a native `<details>` section.
+
+Preferred visual references are ML-paper pipeline figures, neural-network architecture diagrams, systems diagrams, and experimental data-flow figures: boxes, colored stages, explicit connectors, containment, and a clear input/process/output hierarchy.
 
 For SEED/OpenEvo research specifically, preserve dedicated visual components for:
 
-- server/authority hierarchy: host → control-plane container → experiment runtime → persistent workspace;
+- server/authority hierarchy: physical host, host Docker daemon, sibling control/experiment containers, and persistent workspace;
 - WebShop/ALFWorld dataset and environment setup;
-- SEED hindsight-skill SFT + self-evolving OPD/GRPO loop;
-- OpenEvo completed-task → sealed-evidence → evolution-carrier → successor-revision loop;
-- side-by-side SEED vs OpenEvo comparison.
+- SEED hindsight-skill SFT plus the self-evolving OPD/GRPO branch/merge loop;
+- OpenEvo completed-task → sealed-evidence → evolution-carrier fan-out → validation → successor-revision loop;
+- side-by-side SEED vs OpenEvo comparison centered on where experience persists.
 
 If an existing public surface expresses one of these relationships mainly as prose/cards or text arrows, upgrade it to the shared architecture-diagram language rather than adding another explanatory paragraph.
 
@@ -97,7 +136,9 @@ Do not present historical RTX6/4×3090 configuration or a pre-Phase-G gate as th
 7. Keep safety and research-integrity warnings direct, but do not let them visually outrank the page subject unless the page is specifically a warning/error surface.
 8. Review adjacent shared copy when a shared component changes.
 9. Check current experiment status against the source-of-truth repository before publishing time-sensitive claims.
-10. If the content describes a process, architecture, dependency graph, or data flow, verify that the public surface uses framed/color-coded nodes and real CSS connectors rather than prose arrows alone.
+10. If the content describes a process, architecture, dependency graph, or data flow, verify that the public surface uses framed/color-coded nodes and real connector geometry rather than prose arrows alone.
+11. Check that color, line style, containment, and loop geometry communicate the same semantic meaning as adjacent research diagrams.
+12. Keep the novice reading path visible without forcing the user to open technical-detail sections.
 
 ## Acceptance
 

@@ -1,0 +1,27 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale; compact?: boolean }
+const { locale, compact = false } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const items = [
+  { cls:'env', label:t('环境 / observation','Environment / observation') },
+  { cls:'experience', label:t('经验 / hindsight','Experience / hindsight') },
+  { cls:'signal', label:t('训练信号 / loss','Training signal / loss') },
+  { cls:'state', label:t('模型 / agent 状态','Model / agent state') },
+  { cls:'persist', label:t('验证后可继承状态','Validated persistent state') },
+] as const;
+---
+<div class:list={['research-diagram-legend', compact && 'research-diagram-legend--compact']} aria-label={t('研究框架图视觉图例','Research diagram visual legend')}>
+  <div class="legend-colors">
+    {items.map((item)=><span class={`legend-item legend-item--${item.cls}`}><i aria-hidden="true"></i>{item.label}</span>)}
+  </div>
+  <div class="legend-lines">
+    <span><i class="line solid" aria-hidden="true"></i>{t('数据 / 状态流','data / state flow')}</span>
+    <span><i class="line dashed" aria-hidden="true"></i>{t('控制 / 权限 / 引用','control / authority / reference')}</span>
+    <span><i class="line loop" aria-hidden="true"></i>{t('进入下一轮','feeds the next round')}</span>
+  </div>
+</div>
+<style>
+.research-diagram-legend{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;display:flex;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-top:.75rem;padding:.62rem .7rem;border:1px solid var(--line);border-radius:11px;background:color-mix(in srgb,var(--surface-muted) 80%,transparent)}.legend-colors,.legend-lines{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center}.legend-item,.legend-lines>span{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);font-size:.58rem;line-height:1.2}.legend-item i{width:11px;height:11px;border-radius:3px;border:1px solid color-mix(in srgb,currentColor 55%,var(--line));background:color-mix(in srgb,currentColor 12%,var(--surface))}.legend-item--env{color:var(--env)}.legend-item--experience{color:var(--experience)}.legend-item--signal{color:var(--signal)}.legend-item--state{color:var(--state)}.legend-item--persist{color:var(--persist)}.legend-lines .line{position:relative;display:inline-block;width:27px;height:0;border-top:2px solid var(--muted)}.legend-lines .line:after{content:"";position:absolute;right:-1px;top:-4px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid var(--muted)}.legend-lines .dashed{border-top-style:dashed}.legend-lines .loop{border-top-color:var(--persist);border-radius:99px}.legend-lines .loop:after{border-left-color:var(--persist)}.research-diagram-legend--compact{padding:.45rem .55rem}.research-diagram-legend--compact .legend-item,.research-diagram-legend--compact .legend-lines>span{font-size:.54rem}@media(max-width:700px){.research-diagram-legend{display:grid;grid-template-columns:1fr}.legend-colors,.legend-lines{gap:.42rem}}
+</style>

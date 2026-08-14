@@ -1,77 +1,91 @@
 ---
 import type { Locale } from '../../i18n';
+import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn:string,en:string) => zh ? cn : en;
 ---
-<section class="authority-diagram" aria-labelledby="authority-diagram-title">
+<section class="authority-diagram" aria-labelledby="authority-diagram-title" data-explainer="server-authority">
   <header class="diagram-head">
-    <span>{t('服务器权限结构','Server authority model')}</span>
-    <h2 id="authority-diagram-title">{t('我在 OpenEvo 服务器上的权限边界','My authority boundary on the OpenEvo server')}</h2>
-    <p>{t('这里的 root 不是物理宿主机的全局 root。SSH 进入的是分配给我的开发 / 控制平面容器；我在这个容器里是 root，并通过 Docker socket 管理获准的实验容器。','The root shell here is not global root on the physical host. SSH lands in my assigned development/control-plane container; I am root inside that container and can manage approved experiment containers through the Docker socket.')}</p>
+    <span>SERVER · AUTHORITY MODEL</span>
+    <h2 id="authority-diagram-title">{t('OpenEvo 服务器权限模型','OpenEvo server authority model')}</h2>
+    <p>{t('最重要的区别：我不是物理宿主机的总管理员；我在分配给我的 dev-wangr 控制容器里拥有 root，并通过挂载的 Docker socket 请求宿主 Docker daemon 创建或管理获准的实验容器。正式科研任务再以 non-root 身份运行。','The key distinction: I am not the global administrator of the physical host. I have root inside my assigned dev-wangr control container, and its mounted Docker socket lets me request the host Docker daemon to create or manage approved experiment containers. Scientific jobs then run non-root.')}</p>
   </header>
 
-  <div class="authority-canvas" role="img" aria-label={t('宿主机到控制容器、Docker daemon、实验容器与持久工作区的权限关系图','Authority diagram from physical host to control container, Docker daemon, experiment container, and persistent workspace')}>
-    <div class="layer host-layer">
-      <div class="layer-label"><b>01</b><span>HOST</span></div>
-      <article class="node node-host">
-        <small>{t('物理 / 云宿主层','Physical / cloud host')}</small>
-        <strong>OpenEvo Server Host</strong>
-        <p>{t('平台管理员维护内核、驱动、存储、全局 Docker daemon 与其他用户资源。','Platform administrators own the kernel, drivers, storage, global Docker daemon, and other users’ resources.')}</p>
-        <em>{t('我不是这一层的总管理员','I am not the global administrator of this layer')}</em>
-      </article>
-    </div>
-
-    <div class="vertical-connector" aria-hidden="true"><span></span><i></i></div>
-
-    <div class="layer control-layer">
-      <div class="layer-label"><b>02</b><span>CONTROL PLANE</span></div>
-      <article class="node node-control">
-        <small>{t('我的开发 / 控制容器','My development / control container')}</small>
-        <strong>dev-wangr · hostname wangr-dev</strong>
-        <div class="chips"><span>root UID 0</span><span>Docker CLI</span><span>/var/run/docker.sock</span></div>
-        <p>{t('这里我有 root 权限。sudo 不存在也不是问题；真正的敏感能力是 Docker socket，因为它能让这个容器向宿主 Docker daemon 发出容器生命周期请求。','I have root here. The absence of sudo is irrelevant; the sensitive capability is the Docker socket because it lets this container issue lifecycle requests to the host Docker daemon.')}</p>
-      </article>
-      <div class="docker-link" aria-hidden="true"><span></span><i></i></div>
-      <article class="node node-daemon">
-        <small>{t('共享控制面','Shared control plane')}</small>
-        <strong>Docker Engine 29.1.3</strong>
-        <p>{t('daemon 同时管理我的容器和其他用户容器，所以“能操作”不等于“被授权操作”。','The daemon also manages sibling users’ containers, so technical capability does not equal authorization.')}</p>
-      </article>
-      <aside class="sibling-zone">
-        <strong>{t('其他用户区域','Sibling-user zone')}</strong>
-        <span>dev-guozy</span><span>dev-huzh</span>
-        <small>{t('不进入、不停止、不清理','Do not exec, stop, or clean')}</small>
-      </aside>
-    </div>
-
-    <div class="vertical-connector" aria-hidden="true"><span></span><i></i></div>
-
-    <div class="layer runtime-layer">
-      <div class="layer-label"><b>03</b><span>EXPERIMENT RUNTIME</span></div>
-      <article class="node node-runtime">
-        <small>{t('正式科研运行层','Scientific execution layer')}</small>
-        <strong>isolated experiment container</strong>
-        <div class="chips"><span>non-root</span><span>UID/GID 1001:1001</span><span>explicit GPU</span><span>no Docker socket</span></div>
-        <p>{t('模型加载、WebShop rollout、SD-LoRA 训练和评测放在这里运行，而不是直接用控制平面 root 跑科研任务。','Model loading, WebShop rollout, SD-LoRA training, and evaluation run here instead of running scientific jobs directly as control-plane root.')}</p>
-      </article>
-      <div class="workspace-link" aria-hidden="true"><span></span><i></i></div>
-      <article class="node node-workspace">
-        <small>{t('持久资产层','Persistent asset layer')}</small>
-        <strong>/data/home/wangr/workspace</strong>
-        <div class="workspace-grid"><span>repos/</span><span>runtime/</span><span>cache/</span><span>datasets/</span><span>models/</span><span>runs/</span></div>
-        <p>{t('实验容器以普通科研用户身份写入；容器删除后，代码、数据身份、adapter、日志和 Run Manifest 仍留在持久工作区。','The experiment container writes as the ordinary research identity; deleting the container does not delete code, dataset identities, adapters, logs, or Run Manifests stored here.')}</p>
-      </article>
-    </div>
+  <div class="principles" aria-label={t('服务器权限的三个核心原则','Three core server-authority principles')}>
+    <article><b>1</b><div><small>{t('root 的范围','Scope of root')}</small><strong>{t('root 只描述 dev-wangr 容器内身份','root describes my identity inside dev-wangr')}</strong></div></article>
+    <article><b>2</b><div><small>{t('Docker 能力从哪里来','Where Docker authority comes from')}</small><strong>{t('Docker socket 把控制请求送到 host daemon','the Docker socket sends control requests to the host daemon')}</strong></div></article>
+    <article><b>3</b><div><small>{t('科研任务用什么身份','Scientific execution identity')}</small><strong>{t('实验容器 non-root，持久结果写回 workspace','experiment containers are non-root and persist evidence to the workspace')}</strong></div></article>
   </div>
 
-  <div class="authority-summary">
-    <article><span>{t('我有','I have')}</span><strong>{t('控制容器 root + 创建 / 管理获准 Docker 实验容器的能力','root in my control container + ability to create/manage approved Docker experiment containers')}</strong></article>
-    <article><span>{t('我没有','I do not have')}</span><strong>{t('物理宿主机的全局管理员身份，也没有操作其他用户容器的授权','global host-admin status or authorization to operate sibling users’ containers')}</strong></article>
-  </div>
+  <figure class="host-shell" role="img" aria-label={t('宿主机内部 Docker daemon、dev-wangr、实验容器、其他用户容器和持久工作区之间的真实关系','Real relationship among the host Docker daemon, dev-wangr, experiment container, sibling-user containers, and persistent workspace')}>
+    <figcaption><span>{t('物理 / 云宿主机边界','Physical / cloud host boundary')}</span><strong>OpenEvo Server Host</strong><small>{t('内核、NVIDIA driver、全局存储和 Docker daemon 由平台管理员维护','Kernel, NVIDIA driver, global storage, and Docker daemon are maintained by platform administrators')}</small></figcaption>
+
+    <article class="box daemon">
+      <span class="box-tag">HOST SERVICE</span>
+      <strong>Docker daemon · Engine 29.1.3</strong>
+      <p>{t('它才是真正创建 / 停止容器的宿主服务。dev-wangr 只是通过 socket 向它发 API 请求。','This is the host service that actually creates and stops containers. dev-wangr only sends API requests to it through the socket.')}</p>
+    </article>
+
+    <article class="box dev">
+      <span class="box-tag">MY CONTROL PLANE</span>
+      <strong>dev-wangr · wangr-dev</strong>
+      <div class="chips"><span>root UID 0</span><span>Docker CLI</span><span>/var/run/docker.sock</span></div>
+      <p>{t('我在这里有 root。这个 root 让控制容器内部可完全管理，但不自动等于宿主机全局 root。','I am root here. That gives full control inside the control container, but it does not automatically mean global root on the physical host.')}</p>
+    </article>
+
+    <article class="box experiment">
+      <span class="box-tag">MY SCIENCE RUNTIME</span>
+      <strong>isolated experiment container</strong>
+      <div class="chips"><span>UID/GID 1001:1001</span><span>explicit GPU</span><span>no Docker socket</span></div>
+      <p>{t('Qwen 加载、WebShop rollout、SD-LoRA、评测在这里执行。即使控制层有 root，科研运行层仍刻意降权。','Qwen loading, WebShop rollout, SD-LoRA, and evaluation execute here. Scientific execution is intentionally de-privileged even though the control layer has root.')}</p>
+    </article>
+
+    <aside class="box siblings">
+      <span class="box-tag">SIBLING USERS</span>
+      <strong>{t('其他用户容器','Other users’ containers')}</strong>
+      <div class="sibling-pills"><span>dev-guozy</span><span>dev-huzh</span><span>…</span></div>
+      <p>{t('同一个 daemon 能“看见”不代表我被授权进入、停止或清理。权限边界来自项目授权，不只来自技术能力。','Being visible to the same daemon does not authorize me to enter, stop, or clean them. Authorization comes from project boundaries, not technical capability alone.')}</p>
+    </aside>
+
+    <article class="box workspace">
+      <span class="box-tag">PERSISTENT STATE</span>
+      <strong>/data/home/wangr/workspace</strong>
+      <div class="workspace-grid"><span>repos/</span><span>runtime/</span><span>cache/</span><span>datasets/</span><span>models/</span><span>runs/</span></div>
+      <p>{t('容器是可替换的执行外壳；真正需要跨容器保留的是代码身份、数据、adapter、日志与 Run Manifest。','Containers are replaceable execution shells; code identity, data, adapters, logs, and Run Manifests are the state that must survive across containers.')}</p>
+    </article>
+
+    <svg class="authority-wires" viewBox="0 0 1200 610" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="server-arrow-violet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7c3aed" /></marker>
+        <marker id="server-arrow-cyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#0891b2" /></marker>
+        <marker id="server-arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#059669" /></marker>
+        <marker id="server-arrow-muted" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#64748b" /></marker>
+      </defs>
+      <path class="wire wire-control" d="M260 310 C300 205 435 175 535 170" marker-end="url(#server-arrow-violet)" />
+      <path class="wire wire-create" d="M600 198 C600 220 600 250 600 286" marker-end="url(#server-arrow-cyan)" />
+      <path class="wire wire-sibling" d="M685 175 C855 185 970 225 1010 285" marker-end="url(#server-arrow-muted)" />
+      <path class="wire wire-dev-store" d="M260 402 C300 455 340 482 395 503" marker-end="url(#server-arrow-green)" />
+      <path class="wire wire-run-store" d="M600 402 C570 455 530 482 468 503" marker-end="url(#server-arrow-green)" />
+    </svg>
+    <span class="wire-label docker-api">Docker API / socket</span>
+    <span class="wire-label create-runtime">{t('daemon 创建 sibling container','daemon creates sibling container')}</span>
+    <span class="wire-label bind-mount">bind mount</span>
+  </figure>
+
+  <ResearchDiagramLegend locale={locale} compact />
+
+  <details class="technical-details">
+    <summary>{t('技术细节：为什么“容器里有 root”不等于“宿主机总管理员”？','Technical detail: why root inside a container is not global host administration')}</summary>
+    <div class="technical-grid">
+      <article><strong>Linux namespace</strong><p>{t('dev-wangr 的 UID 0 是容器 namespace 中的 root 身份；容器本身仍受宿主机内核、挂载和 daemon 配置约束。','UID 0 in dev-wangr is root in the container namespace; the container remains constrained by the host kernel, mounts, and daemon configuration.')}</p></article>
+      <article><strong>Docker socket</strong><p>{t('socket 是高权限控制通道，所以它扩大了技术能力；但项目仍规定只能管理获准资源。能力与授权必须分开记录。','The socket is a high-authority control channel and expands technical capability, but project policy still limits operations to approved resources. Capability and authorization must be recorded separately.')}</p></article>
+      <article><strong>UID/GID persistence</strong><p>{t('实验容器用 1001:1001 写 bind-mounted 结果，避免 root-owned artifact 让普通科研账号无法继续复现或审计。','The experiment container writes bind-mounted outputs as 1001:1001 so root-owned artifacts do not block later reproduction or audit by the ordinary research account.')}</p></article>
+    </div>
+  </details>
 </section>
 
 <style>
-.authority-diagram{--blue:#2563eb;--cyan:#0891b2;--violet:#7c3aed;--green:#059669;--amber:#d97706;--red:#dc2626;width:min(1180px,calc(100% - 2rem));margin:2rem auto;padding:1.2rem;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 96%,var(--blue) 4%),var(--surface));box-shadow:0 22px 70px color-mix(in srgb,#000 9%,transparent)}.diagram-head{max-width:900px}.diagram-head>span{color:var(--blue);font-size:.7rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.diagram-head h2{margin:.35rem 0 .55rem}.diagram-head p{margin:0;color:var(--muted);line-height:1.65}.authority-canvas{display:grid;gap:0;margin-top:1.2rem}.layer{position:relative;display:grid;grid-template-columns:120px minmax(0,1fr);gap:.8rem;padding:1rem;border:1px solid var(--line);border-radius:18px}.host-layer{background:color-mix(in srgb,var(--blue) 7%,var(--surface))}.control-layer{grid-template-columns:120px minmax(0,1.3fr) 72px minmax(0,.9fr) minmax(150px,.55fr);background:color-mix(in srgb,var(--violet) 7%,var(--surface))}.runtime-layer{grid-template-columns:120px minmax(0,1.1fr) 72px minmax(0,1fr);background:color-mix(in srgb,var(--green) 7%,var(--surface))}.layer-label{display:flex;flex-direction:column;justify-content:flex-start;gap:.2rem;padding-top:.35rem}.layer-label b{font:850 .72rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}.layer-label span{font:850 .64rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--muted)}.node{position:relative;padding:1rem;border:1.5px solid;border-radius:15px;background:var(--surface);box-shadow:0 10px 28px color-mix(in srgb,#000 7%,transparent)}.node small,.node strong,.node em{display:block}.node small{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.node strong{margin:.32rem 0;font-size:.92rem}.node p{margin:.45rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.52}.node em{margin-top:.7rem;font-size:.68rem;font-style:normal;font-weight:800}.node-host{border-color:color-mix(in srgb,var(--blue) 55%,var(--line))}.node-host em{color:var(--blue)}.node-control{border-color:color-mix(in srgb,var(--violet) 58%,var(--line))}.node-daemon{border-color:color-mix(in srgb,var(--amber) 58%,var(--line))}.node-runtime{border-color:color-mix(in srgb,var(--cyan) 58%,var(--line))}.node-workspace{border-color:color-mix(in srgb,var(--green) 58%,var(--line))}.chips{display:flex;gap:.35rem;flex-wrap:wrap;margin:.55rem 0}.chips span,.workspace-grid span{padding:.28rem .48rem;border-radius:999px;background:var(--surface-muted);font:750 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.32rem;margin:.6rem 0}.workspace-grid span{text-align:center;border-radius:8px}.vertical-connector{height:42px;position:relative;margin-left:calc(120px + .8rem)}.vertical-connector span{position:absolute;left:30px;top:0;bottom:9px;width:3px;border-radius:99px;background:linear-gradient(var(--blue),var(--violet))}.vertical-connector i{position:absolute;left:23px;bottom:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid var(--violet)}.docker-link,.workspace-link{position:relative;align-self:center;height:32px}.docker-link span,.workspace-link span{position:absolute;left:0;right:10px;top:14px;height:3px;border-radius:99px}.docker-link span{background:var(--amber)}.workspace-link span{background:var(--green)}.docker-link i,.workspace-link i{position:absolute;right:0;top:8px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent}.docker-link i{border-left:11px solid var(--amber)}.workspace-link i{border-left:11px solid var(--green)}.sibling-zone{align-self:stretch;padding:.8rem;border:1.5px dashed color-mix(in srgb,var(--red) 55%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--red) 6%,var(--surface))}.sibling-zone strong,.sibling-zone span,.sibling-zone small{display:block}.sibling-zone strong{font-size:.7rem;color:var(--red)}.sibling-zone span{margin-top:.35rem;padding:.25rem .4rem;border-radius:7px;background:var(--surface);font:700 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.sibling-zone small{margin-top:.5rem;color:var(--muted);font-size:.62rem}.authority-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:.8rem}.authority-summary article{padding:.8rem;border-left:4px solid var(--green);border-radius:10px;background:var(--surface-muted)}.authority-summary article+article{border-left-color:var(--red)}.authority-summary span,.authority-summary strong{display:block}.authority-summary span{font-size:.62rem;color:var(--muted)}.authority-summary strong{margin-top:.22rem;font-size:.72rem;line-height:1.45}@media(max-width:900px){.control-layer,.runtime-layer,.host-layer{grid-template-columns:1fr}.layer-label{flex-direction:row;align-items:center}.docker-link,.workspace-link{height:42px}.docker-link span,.workspace-link span{left:50%;right:auto;top:0;bottom:10px;width:3px;height:auto}.docker-link i,.workspace-link i{left:calc(50% - 7px);right:auto;top:auto;bottom:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--green);border-bottom:0}.docker-link i{border-top-color:var(--amber)}.vertical-connector{margin-left:50%}.authority-summary{grid-template-columns:1fr}.workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.authority-diagram{width:min(100% - 1rem,1180px);padding:.8rem}.layer{padding:.75rem}.node{padding:.8rem}}
+.authority-diagram{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;--cyan:#0891b2;width:min(1180px,calc(100% - 2rem));margin:2rem auto;padding:1.2rem;border:1px solid var(--line);border-radius:24px;background:radial-gradient(circle at 80% 0,color-mix(in srgb,var(--state) 8%,transparent),transparent 34%),var(--surface);box-shadow:0 24px 80px color-mix(in srgb,#000 9%,transparent)}.diagram-head{max-width:920px}.diagram-head>span{color:var(--state);font:850 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.diagram-head h2{margin:.38rem 0 .55rem}.diagram-head p{margin:0;color:var(--muted);line-height:1.68}.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:1rem 0}.principles article{display:grid;grid-template-columns:34px 1fr;gap:.55rem;align-items:start;padding:.7rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.principles b{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:color-mix(in srgb,var(--state) 12%,var(--surface));color:var(--state);font:850 .64rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.principles small,.principles strong{display:block}.principles small{color:var(--muted);font-size:.56rem}.principles strong{margin-top:.18rem;font-size:.66rem;line-height:1.4}.host-shell{position:relative;isolation:isolate;display:grid;grid-template-columns:1fr 1fr .78fr;grid-template-areas:"cap cap cap" "daemon daemon daemon" "dev experiment siblings" "workspace workspace siblings";gap:.78rem;min-height:590px;margin:0;padding:1rem;border:2px solid color-mix(in srgb,var(--env) 28%,var(--line));border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--env) 5%,var(--surface)),var(--surface));overflow:hidden}.host-shell:before{content:"";position:absolute;inset:48px 0 auto;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--env) 24%,var(--line)),transparent)}.host-shell figcaption{grid-area:cap;z-index:2;display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}.host-shell figcaption span{color:var(--env);font:850 .59rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.host-shell figcaption strong{font-size:.74rem}.host-shell figcaption small{color:var(--muted);font-size:.58rem}.box{z-index:2;position:relative;padding:.82rem;border:1.5px solid;border-radius:15px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 12px 30px color-mix(in srgb,#000 7%,transparent);backdrop-filter:blur(6px)}.box-tag{display:block;color:var(--muted);font:850 .54rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.box>strong{display:block;margin:.32rem 0;font-size:.78rem}.box p{margin:.4rem 0 0;color:var(--muted);font-size:.62rem;line-height:1.48}.daemon{grid-area:daemon;justify-self:center;width:min(54%,600px);border-color:color-mix(in srgb,var(--cyan) 58%,var(--line));border-top:5px solid var(--cyan)}.dev{grid-area:dev;border-color:color-mix(in srgb,var(--state) 58%,var(--line));border-top:5px solid var(--state)}.experiment{grid-area:experiment;border-color:color-mix(in srgb,var(--cyan) 58%,var(--line));border-top:5px solid var(--cyan)}.siblings{grid-area:siblings;border-style:dashed;border-color:color-mix(in srgb,var(--signal) 42%,var(--line));background:color-mix(in srgb,var(--signal) 4%,var(--surface))}.workspace{grid-area:workspace;align-self:end;border-color:color-mix(in srgb,var(--persist) 58%,var(--line));border-top:5px solid var(--persist)}.chips,.sibling-pills{display:flex;gap:.32rem;flex-wrap:wrap;margin:.5rem 0}.chips span,.sibling-pills span,.workspace-grid span{padding:.27rem .42rem;border:1px solid var(--line);border-radius:7px;background:var(--surface-muted);font:730 .55rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.28rem;margin:.55rem 0}.workspace-grid span{text-align:center}.authority-wires{z-index:1;position:absolute;inset:48px 0 0;width:100%;height:calc(100% - 48px);overflow:visible;pointer-events:none}.wire{fill:none;stroke-width:4;vector-effect:non-scaling-stroke}.wire-control{stroke:var(--state);stroke-dasharray:10 8;animation:serverDash 4.5s linear infinite}.wire-create{stroke:var(--cyan)}.wire-sibling{stroke:#64748b;stroke-dasharray:7 8;opacity:.72}.wire-dev-store,.wire-run-store{stroke:var(--persist);stroke-width:3}.wire-label{z-index:3;position:absolute;padding:.22rem .38rem;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 5px 13px color-mix(in srgb,#000 6%,transparent);font:750 .5rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.docker-api{left:29%;top:34%;color:var(--state)}.create-runtime{left:51%;top:37%;color:var(--cyan)}.bind-mount{left:42%;bottom:16%;color:var(--persist)}.technical-details{margin-top:.75rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.technical-details summary{cursor:pointer;padding:.72rem .8rem;font-size:.66rem;font-weight:800}.technical-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;padding:0 .8rem .8rem}.technical-grid article{padding:.65rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.technical-grid strong{font-size:.64rem}.technical-grid p{margin:.28rem 0 0;color:var(--muted);font-size:.59rem;line-height:1.45}@keyframes serverDash{to{stroke-dashoffset:-36}}@media(prefers-reduced-motion:reduce){.wire-control{animation:none}}@media(max-width:900px){.principles{grid-template-columns:1fr}.host-shell{grid-template-columns:1fr;grid-template-areas:"cap" "daemon" "dev" "experiment" "workspace" "siblings";min-height:auto}.daemon{width:100%}.authority-wires,.wire-label{display:none}.technical-grid{grid-template-columns:1fr}.workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.box:not(:last-child):after{content:"";position:absolute;left:50%;bottom:-.8rem;width:3px;height:.8rem;background:color-mix(in srgb,var(--muted) 55%,transparent)}}@media(max-width:560px){.authority-diagram{width:min(100% - 1rem,1180px);padding:.8rem}.host-shell{padding:.7rem}.workspace-grid{grid-template-columns:1fr 1fr}}
 </style>
