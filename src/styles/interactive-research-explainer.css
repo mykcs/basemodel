@@ -43,6 +43,11 @@
 .irx .irx-stepper button,.irx .irx-transport .irx-reset{color:var(--ink)}
 .irx .irx-transport button:disabled{opacity:.65;color:var(--ink)}
 
+/* The validated/persistent action keeps the same semantic green but needs a
+ * darker solid surface for white normal-size text. #059669 + white is only
+ * 3.77:1; mixing 20% black raises the ready-state action above 5:1. */
+.irx .irx-product-detail button[data-ready=true]{border-color:color-mix(in srgb,var(--irx-persist) 80%,#000);background:color-mix(in srgb,var(--irx-persist) 80%,#000);color:#fff}
+
 /* Keep the state-transition arrow inside each audited grid cell. The former
  * right:-8px diamond enlarged the first four items' scrollWidth by 6px even
  * though the relationship was visually correct. */
