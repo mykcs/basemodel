@@ -89,7 +89,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           </dl>
         </aside>
       </div>
-      <aside className="irx-boundary-note"><b>{zh ? '研究边界' : 'Research boundary'}</b><span>{zh ? '上面的 1.0 只是教学演示，不是 Phase G 测得结果。当前 OpenEvo 使用冻结 1,000-product 环境；SEED wrapper 中 goal 0–499 用于 evaluation、goal 500–end 用于 training。Phase G 只消费了 promotion-dev goals 6680 / 2590，下一 Gate 是 Phase H0 Natural Success Search。' : 'The 1.0 above is a teaching demo, not a measured Phase G result. Current OpenEvo uses the frozen 1,000-product environment; in the SEED wrapper, goal 0–499 is evaluation and goal 500–end is training. Phase G consumed only promotion-dev goals 6680 / 2590, and the next gate is Phase H0 Natural Success Search.'}</span></aside>
+      <aside className="irx-boundary-note"><b>{zh ? '研究边界' : 'Research boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是 Phase G 测得结果。当前 OpenEvo 使用冻结 1,000-product 环境；SEED wrapper 中 goal 0–499 用于 evaluation、goal 500–end 用于 training。Phase G 只消费了 promotion-dev goals 6680 / 2590，下一 Gate 是 Phase H0 Natural Success Search。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured Phase G result. Current OpenEvo uses the frozen 1,000-product environment; in the SEED wrapper, goal 0–499 is evaluation and goal 500–end is training. Phase G consumed only promotion-dev goals 6680 / 2590, and the next gate is Phase H0 Natural Success Search.'}</span></aside>
     </>
   );
 }

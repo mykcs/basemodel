@@ -83,7 +83,6 @@ const zh = locale === 'zh';
   const enhancePre = (pre) => {
     if (!(pre instanceof HTMLElement) || insideHydratedIsland(pre) || pre.dataset.actionableReady === 'true' || pre.dataset.noCopy === 'true') return;
     pre.dataset.actionableReady = 'true';
-    pre.style.setProperty('padding-top', '49px', 'important');
     const code = pre.querySelector('code');
     const textSource = code || pre;
     const wrapper = document.createElement('div');
