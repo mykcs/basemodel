@@ -14,6 +14,13 @@ body .site-main a {
   display: none !important;
 }
 
+/* PageOutline already exposes the same accessible name on the nav via
+ * aria-label. Keeping a second 1px visually-hidden label inside the fixed
+ * right-edge rail made Chromium count its 64px text width toward the root. */
+.page-outline__sr {
+  display: none !important;
+}
+
 @media (max-width: 1020px) {
   body .site-main .mission-chain ol {
     max-width: 100%;
