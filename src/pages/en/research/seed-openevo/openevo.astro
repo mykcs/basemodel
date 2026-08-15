@@ -1,14 +1,13 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoModelExperimentGuide from '../../../../components/research/OpenEvoModelExperimentGuide.astro';
-import OpenEvoFrameworkDiagram from '../../../../components/research/OpenEvoFrameworkDiagram.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
 <AppLayout title="OpenEvo experiments: cross-task evolution, model choice, and beginner questions" description="Explain OpenEvo's cross-task evolution loop, why Qwen2.5-3B is the baseline, and how real task trajectories become validated successor revisions." locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="openevo" />
-  <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
-  <OpenEvoFrameworkDiagram locale={locale} />
+  <SeedOpenEvoResearchPage locale={locale} page="openevo">
+    <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
+  </SeedOpenEvoResearchPage>
   <OpenEvoModelExperimentGuide locale={locale} />
 </AppLayout>

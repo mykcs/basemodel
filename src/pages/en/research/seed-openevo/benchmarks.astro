@@ -5,6 +5,7 @@ import AgentEnvironmentTrajectory from '../../../../components/research/AgentEnv
 const locale = 'en' as const;
 ---
 <AppLayout title="ALFWorld and WebShop experiment protocol" description="Explain both agent benchmarks, action spaces, success criteria, normalized task scores, macro averages, failure modes, and controlled comparison." locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="benchmarks" />
-  <AgentEnvironmentTrajectory locale={locale} context="benchmark" />
+  <SeedOpenEvoResearchPage locale={locale} page="benchmarks">
+    <AgentEnvironmentTrajectory locale={locale} context="benchmark" />
+  </SeedOpenEvoResearchPage>
 </AppLayout>

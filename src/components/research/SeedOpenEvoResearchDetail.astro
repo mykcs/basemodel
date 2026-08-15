@@ -8,6 +8,7 @@ const { locale, page } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const hasExplainer = Astro.slots.has('default');
 
 const pages = [
   { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
@@ -63,9 +64,26 @@ const current = copy[page];
   <nav class="plain-detail__tabs" aria-label={t('SEED 与 OpenEvo 实验页面', 'SEED and OpenEvo experiment pages')}>
     {pages.map((item) => <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>)}
   </nav>
+  {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
   <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>
 </div>
 
 <style>
-  .plain-detail{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem}.plain-detail__header{max-width:920px;padding:clamp(1.2rem,3vw,2.4rem) 0 1rem}.plain-detail__header>div{color:var(--accent-deep);font-size:.72rem;font-weight:800}.plain-detail__header h1{margin:.55rem 0}.plain-detail__header p{max-width:72ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.7}.plain-detail__tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:.35rem;overflow-x:auto;margin:1rem 0 2rem;padding:.45rem;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(16px)}.plain-detail__tabs a{flex:0 0 auto;padding:.58rem .76rem;border-radius:10px;color:var(--muted);font-size:.76rem;font-weight:700;text-decoration:none}.plain-detail__tabs a:hover,.plain-detail__tabs a:focus-visible{color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,transparent)}.plain-detail__tabs a[aria-current='page']{color:var(--accent-on-fill,#fff);background:var(--accent-fill,var(--accent))}.plain-detail-core :global(.mission-page){width:100%;margin:0}.plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}@media(max-width:720px){.plain-detail{width:min(100% - 1rem,1120px)}.plain-detail__header p{font-size:.94rem}}
+  .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
+  .plain-detail__header>div{color:var(--accent-deep);font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+  .plain-detail__header h1{margin:.5rem 0 .7rem;letter-spacing:-.035em}
+  .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}
+  .plain-detail__tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:0;overflow-x:auto;margin:.5rem 0 2rem;padding:0;border-block:1px solid var(--line);background:color-mix(in srgb,var(--surface) 96%,transparent);backdrop-filter:blur(14px)}
+  .plain-detail__tabs a{position:relative;flex:0 0 auto;padding:.72rem .78rem;color:var(--muted);font-size:.73rem;font-weight:720;text-decoration:none}
+  .plain-detail__tabs a+a{border-left:1px solid var(--line)}
+  .plain-detail__tabs a:hover,.plain-detail__tabs a:focus-visible{color:var(--ink);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+  .plain-detail__tabs a[aria-current='page']{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .plain-detail__tabs a[aria-current='page']:after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;background:var(--accent-deep)}
+  .plain-detail__interactive{margin:0 0 2.6rem}
+  .plain-detail__interactive :global(.irx){width:100%;margin:0;padding-top:1.7rem}
+  .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
+  .plain-detail-core :global(.mission-page){width:100%;margin:0}
+  .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
+  @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__tabs{margin-bottom:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}}
 </style>
