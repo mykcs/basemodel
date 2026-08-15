@@ -16,4 +16,4 @@ const detailPage = page as DetailPage;
 ---
 {page === 'hub'
   ? <SeedOpenEvoResearchHub locale={locale} />
-  : <SeedOpenEvoResearchDetail locale={locale} page={detailPage} />}
+  : <SeedOpenEvoResearchDetail locale={locale} page={detailPage}><slot /></SeedOpenEvoResearchDetail>}

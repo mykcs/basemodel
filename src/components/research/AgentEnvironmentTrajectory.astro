@@ -1,9 +1,27 @@
 ---
 import type { Locale } from '../../i18n';
+import AlfworldTaskFamilies from './AlfworldTaskFamilies.astro';
 import BenchmarkDatasetDiagram from './BenchmarkDatasetDiagram.astro';
+import InteractiveResearchExplainer from './InteractiveResearchExplainer.tsx';
 interface Props { locale: Locale; context?: 'benchmark' | 'reproduction' }
 const { locale, context = 'benchmark' } = Astro.props;
+const zh = locale === 'zh';
 ---
-<div data-agent-trajectory data-trajectory-context={context}>
-  <BenchmarkDatasetDiagram locale={locale} compact={context === 'reproduction'} />
+<div class="agent-trajectory" data-agent-trajectory data-trajectory-context={context}>
+  <InteractiveResearchExplainer locale={locale} kind="webshop" compact={context === 'reproduction'} client:visible />
+  <InteractiveResearchExplainer locale={locale} kind="alfworld" compact={context === 'reproduction'} client:visible />
+  <details class="agent-trajectory__technical">
+    <summary><span>Level 3</span>{zh ? 'benchmark split、task family 与数据结构' : 'benchmark splits, task families, and dataset structure'}</summary>
+    <div class="agent-trajectory__technical-body">
+      <AlfworldTaskFamilies locale={locale} />
+      <BenchmarkDatasetDiagram locale={locale} compact={context === 'reproduction'} />
+    </div>
+  </details>
 </div>
+<style>
+.agent-trajectory__technical{width:min(1180px,calc(100% - 2rem));margin:-1rem auto 2.8rem;border-block:1px solid var(--line)}
+.agent-trajectory__technical>summary{display:flex;align-items:center;gap:.55rem;min-height:44px;padding:.55rem .2rem;cursor:pointer;font-size:.72rem;font-weight:760}
+.agent-trajectory__technical>summary span{color:var(--accent-deep);font:800 .52rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.agent-trajectory__technical-body{padding:.4rem 0 1.4rem}
+@media(max-width:760px){.agent-trajectory__technical{width:min(100% - 1rem,1180px);margin-top:-.5rem}}
+</style>

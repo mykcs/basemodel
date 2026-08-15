@@ -1,10 +1,11 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
-import SeedOpenEvoComparisonDiagram from '../../../components/research/SeedOpenEvoComparisonDiagram.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
 <AppLayout title="SEED 与 OpenEvo 循环对比" description="并排比较 SEED 的参数更新循环与 OpenEvo 的跨任务 carrier/revision 循环，明确经验流向、更新对象、激活边界和当前实验位置。" locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="loops" />
-  <SeedOpenEvoComparisonDiagram locale={locale} />
+  <SeedOpenEvoResearchPage locale={locale} page="loops">
+    <InteractiveResearchExplainer locale={locale} kind="compare" client:visible />
+  </SeedOpenEvoResearchPage>
 </AppLayout>

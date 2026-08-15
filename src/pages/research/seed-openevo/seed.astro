@@ -1,10 +1,11 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import SeedFrameworkDiagram from '../../../components/research/SeedFrameworkDiagram.astro';
+import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
 <AppLayout title="SEED 框架原理与实验循环" description="解释 hindsight-skill SFT、自进化 on-policy distillation、GRPO、actor/analyzer 同步以及 SEED 在 ALFWorld/WebShop 上的循环。" locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="seed" />
-  <SeedFrameworkDiagram locale={locale} />
+  <SeedOpenEvoResearchPage locale={locale} page="seed">
+    <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
+  </SeedOpenEvoResearchPage>
 </AppLayout>
