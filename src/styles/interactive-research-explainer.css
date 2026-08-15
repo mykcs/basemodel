@@ -30,3 +30,17 @@
   .benchmark-architecture .scene-node{position:relative!important}
   .benchmark-architecture .scene-node:not(:last-of-type)::after{content:""!important;position:absolute!important;left:calc(50% - 5px)!important;top:auto!important;bottom:-1.42rem!important;width:10px!important;height:1.42rem!important;transform:none!important;background:color-mix(in srgb,var(--muted) 52%,transparent)!important;clip-path:polygon(35% 0,65% 0,65% calc(100% - 6px),100% calc(100% - 6px),50% 100%,0 calc(100% - 6px),35% calc(100% - 6px))!important;pointer-events:none!important}
 }
+
+/*
+ * Browser-gate hardening for the interactive benchmark explainer.
+ * --muted is readable on ordinary surfaces, but it falls to ~4.19:1 on the
+ * muted control strip in the light theme. Mix it toward --ink for controls
+ * that carry instructions/state while preserving the quieter hierarchy.
+ */
+.irx{--irx-readable-muted:color-mix(in srgb,var(--muted) 80%,var(--ink))}
+.irx .irx-transport .irx-reset,.irx .irx-stepper button,.irx .irx-live,.irx .irx-browser-bar code{color:var(--irx-readable-muted)}
+
+/* Keep the state-transition arrow inside each audited grid cell. The former
+ * right:-8px diamond enlarged the first four items' scrollWidth by 6px even
+ * though the relationship was visually correct. */
+.irx-linear-map li:not(:last-child)::after{right:2px;top:50%;width:8px;height:12px;border:0;background:var(--line);clip-path:polygon(0 0,100% 50%,0 100%,26% 50%);transform:translateY(-50%)}

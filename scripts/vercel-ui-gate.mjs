@@ -76,6 +76,11 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
   process.exit(ldd.status ?? 1);
 }
 
+// A fast real-browser document-width preflight prints concrete offending
+// elements before the larger route matrix runs. It is a guard, not a bypass:
+// any remaining horizontal overflow fails the deployment.
+run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
+
 run('npm', ['run', 'test:ui'], {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',
