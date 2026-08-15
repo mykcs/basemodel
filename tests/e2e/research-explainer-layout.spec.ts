@@ -154,6 +154,29 @@ async function auditRoot(root: Locator, viewportWidth: number) {
       const endError = distance(expectedEnd, measuredEnd);
       if (startError > 5) issues.push(`connector start drift ${startError.toFixed(1)}px: ${edge.dataset.flowEdge}`);
       if (endError > 5) issues.push(`connector end drift ${endError.toFixed(1)}px: ${edge.dataset.flowEdge}`);
+
+      const matrix = svg.getScreenCTM();
+      if (!matrix) return;
+      const nodes = Array.from(container.querySelectorAll<HTMLElement>('[data-flow-id]'));
+      const length = edge.getTotalLength();
+      const sampleCount = Math.max(12, Math.min(120, Math.ceil(length / 8)));
+      for (let index = 1; index < sampleCount; index += 1) {
+        const local = edge.getPointAtLength((length * index) / sampleCount);
+        const point = svg.createSVGPoint();
+        point.x = local.x;
+        point.y = local.y;
+        const screen = point.matrixTransform(matrix);
+        const crossing = nodes.find((node) => {
+          const id = node.dataset.flowId;
+          if (!id || id === fromId || id === toId || !visible(node)) return false;
+          const nodeRect = node.getBoundingClientRect();
+          return screen.x > nodeRect.left + 3 && screen.x < nodeRect.right - 3 && screen.y > nodeRect.top + 3 && screen.y < nodeRect.bottom - 3;
+        });
+        if (crossing) {
+          issues.push(`connector crosses unrelated node: ${edge.dataset.flowEdge} → ${crossing.dataset.flowId}`);
+          break;
+        }
+      }
     });
 
     return issues;

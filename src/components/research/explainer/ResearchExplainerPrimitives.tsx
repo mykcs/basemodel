@@ -13,7 +13,7 @@ export type Kind = 'webshop' | 'alfworld' | 'seed' | 'openevo' | 'compare' | 'se
 export type Carrier = 'memory' | 'artifact' | 'adapter';
 export type Tone = 'env' | 'experience' | 'signal' | 'state' | 'persist' | 'neutral';
 export type Anchor = 'left' | 'right' | 'top' | 'bottom';
-export type EdgeShape = 'smooth' | 'orthogonal' | 'loop-top' | 'loop-right';
+export type EdgeShape = 'smooth' | 'orthogonal' | 'loop-top' | 'loop-right' | 'perimeter-left' | 'outside-left-down' | 'outside-right-down' | 'between-y';
 
 export interface StepMeta {
   label: string;
@@ -182,10 +182,28 @@ function connectorPath(start: { x: number; y: number }, end: { x: number; y: num
     const midX = start.x + (end.x - start.x) / 2;
     return `M ${start.x} ${start.y} H ${midX} V ${end.y} H ${end.x}`;
   }
+  if (shape === 'perimeter-left') {
+    const laneX = 12;
+    return `M ${start.x} ${start.y} H ${laneX} V ${end.y} H ${end.x}`;
+  }
+  if (shape === 'outside-left-down') {
+    const laneX = Math.max(10, start.x - 14);
+    const laneY = end.y - 12;
+    return `M ${start.x} ${start.y} H ${laneX} V ${laneY} H ${end.x} V ${end.y}`;
+  }
+  if (shape === 'outside-right-down') {
+    const laneX = Math.min(root.width - 10, start.x + 14);
+    const laneY = end.y - 12;
+    return `M ${start.x} ${start.y} H ${laneX} V ${laneY} H ${end.x} V ${end.y}`;
+  }
+  if (shape === 'between-y') {
+    const laneY = start.y + (end.y - start.y) / 2;
+    return `M ${start.x} ${start.y} V ${laneY} H ${end.x} V ${end.y}`;
+  }
   if (shape === 'loop-top') {
-    const lift = Math.max(34, Math.min(90, Math.abs(end.x - start.x) * 0.12));
-    const top = Math.max(12, Math.min(start.y, end.y) - lift);
-    return `M ${start.x} ${start.y} C ${start.x} ${top}, ${end.x} ${top}, ${end.x} ${end.y}`;
+    const laneX = start.x >= end.x ? root.width - 12 : 12;
+    const laneY = 12;
+    return `M ${start.x} ${start.y} H ${laneX} V ${laneY} H ${end.x} V ${end.y}`;
   }
   if (shape === 'loop-right') {
     const right = Math.min(root.width - 12, Math.max(start.x, end.x) + Math.max(44, root.width * 0.07));
@@ -203,6 +221,15 @@ function connectorPath(start: { x: number; y: number }, end: { x: number; y: num
   const c1y = start.y + (dy >= 0 ? bend : -bend);
   const c2y = end.y - (dy >= 0 ? bend : -bend);
   return `M ${start.x} ${start.y} C ${start.x} ${c1y}, ${end.x} ${c2y}, ${end.x} ${end.y}`;
+}
+
+function connectorLabelPoint(start: { x: number; y: number }, end: { x: number; y: number }, shape: EdgeShape, root: DOMRect) {
+  if (shape === 'loop-top') {
+    const laneX = start.x >= end.x ? root.width - 12 : 12;
+    return { x: (laneX + end.x) / 2, y: 24 };
+  }
+  if (shape === 'perimeter-left') return { x: 28, y: (start.y + end.y) / 2 };
+  return { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 - 7 };
 }
 
 export function ConnectorLayer({
@@ -230,15 +257,17 @@ export function ConnectorLayer({
       if (!from || !to) continue;
       const start = getAnchorPoint(from.getBoundingClientRect(), rootRect, edge.fromAnchor);
       const end = getAnchorPoint(to.getBoundingClientRect(), rootRect, edge.toAnchor);
+      const shape = edge.shape ?? 'smooth';
+      const label = connectorLabelPoint(start, end, shape, rootRect);
       measured.push({
         ...edge,
-        d: connectorPath(start, end, edge.shape ?? 'smooth', rootRect),
+        d: connectorPath(start, end, shape, rootRect),
         startX: start.x,
         startY: start.y,
         endX: end.x,
         endY: end.y,
-        labelX: (start.x + end.x) / 2,
-        labelY: (start.y + end.y) / 2,
+        labelX: label.x,
+        labelY: label.y,
       });
     }
     setGeometry({ width: rootRect.width, height: rootRect.height, edges: measured });
@@ -304,7 +333,7 @@ export function ConnectorLayer({
             data-end-x={edge.endX.toFixed(2)}
             data-end-y={edge.endY.toFixed(2)}
           />
-          {edge.label && <text x={edge.labelX} y={edge.labelY - 7} className="irx-edge-label">{edge.label}</text>}
+          {edge.label && <text x={edge.labelX} y={edge.labelY} className="irx-edge-label">{edge.label}</text>}
         </g>
       ))}
     </svg>

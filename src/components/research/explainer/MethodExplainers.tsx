@@ -10,16 +10,16 @@ export function SeedExplainer({ locale, step }: { locale: Locale; step: number }
     { id: 'rollout-trajectory', from: 'seed-rollout', to: 'seed-trajectory', tone: 'env', fromAnchor: 'right', toAnchor: 'left', active: step >= 1 },
     { id: 'trajectory-hindsight', from: 'seed-trajectory', to: 'seed-hindsight', tone: 'experience', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 2 },
     { id: 'policy-analyzer', from: 'seed-policy', to: 'seed-hindsight', tone: 'state', fromAnchor: 'bottom', toAnchor: 'left', shape: 'smooth', dashed: true, label: zh ? 'same checkpoint' : 'same checkpoint', active: step >= 2 },
-    { id: 'trajectory-plain', from: 'seed-trajectory', to: 'seed-plain', tone: 'env', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 3 },
-    { id: 'trajectory-skill', from: 'seed-trajectory', to: 'seed-skill', tone: 'env', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 3 },
+    { id: 'trajectory-plain', from: 'seed-trajectory', to: 'seed-plain', tone: 'env', fromAnchor: 'left', toAnchor: 'top', shape: 'outside-left-down', active: step >= 3 },
+    { id: 'trajectory-skill', from: 'seed-trajectory', to: 'seed-skill', tone: 'env', fromAnchor: 'right', toAnchor: 'top', shape: 'outside-right-down', active: step >= 3 },
     { id: 'hindsight-skill', from: 'seed-hindsight', to: 'seed-skill', tone: 'experience', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 3 },
     { id: 'plain-opd', from: 'seed-plain', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4 },
-    { id: 'skill-opd', from: 'seed-skill', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'right', active: step >= 4 },
+    { id: 'skill-opd', from: 'seed-skill', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'top', shape: 'between-y', active: step >= 4 },
     { id: 'trajectory-grpo', from: 'seed-trajectory', to: 'seed-grpo', tone: 'env', fromAnchor: 'right', toAnchor: 'top', shape: 'smooth', active: step >= 4 },
     { id: 'opd-optimizer', from: 'seed-opd', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4 },
     { id: 'grpo-optimizer', from: 'seed-grpo', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'right', active: step >= 4 },
     { id: 'optimizer-next', from: 'seed-optimizer', to: 'seed-next', tone: 'persist', fromAnchor: 'right', toAnchor: 'left', active: step >= 5 },
-    { id: 'next-loop', from: 'seed-next', to: 'seed-policy', tone: 'persist', fromAnchor: 'top', toAnchor: 'top', shape: 'loop-top', label: zh ? 'next rollout' : 'next rollout', active: step >= 5 },
+    { id: 'next-loop', from: 'seed-next', to: 'seed-policy', tone: 'persist', fromAnchor: 'right', toAnchor: 'top', shape: 'loop-top', label: zh ? 'next rollout' : 'next rollout', active: step >= 5 },
   ];
   return (
     <>
@@ -62,7 +62,7 @@ export function OpenEvoExplainer({ locale, step, carrier, setCarrier, onStep }: 
     ...carriers.map((item) => ({ id: `${item.id}-validation`, from: `evo-${item.id}`, to: 'evo-validation', tone: item.tone, fromAnchor: 'bottom' as Anchor, toAnchor: 'top' as Anchor, active: step >= 4 })),
     { id: 'validation-successor', from: 'evo-validation', to: 'evo-successor', tone: 'persist', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 5 },
     { id: 'successor-next', from: 'evo-successor', to: 'evo-next', tone: 'persist', fromAnchor: 'right', toAnchor: 'left', active: step >= 6 },
-    { id: 'next-loop', from: 'evo-next', to: 'evo-head', tone: 'persist', fromAnchor: 'top', toAnchor: 'top', shape: 'loop-top', label: zh ? 'successor revision 生效' : 'successor revision activates', active: step >= 6 },
+    { id: 'next-loop', from: 'evo-next', to: 'evo-head', tone: 'persist', fromAnchor: 'right', toAnchor: 'top', shape: 'loop-top', label: zh ? 'successor revision 生效' : 'successor revision activates', active: step >= 6 },
   ];
   return (
     <>

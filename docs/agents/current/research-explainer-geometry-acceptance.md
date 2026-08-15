@@ -13,7 +13,7 @@ The explainer layer therefore uses one of two patterns only:
 1. linear teaching flow: semantic HTML + CSS layout/connector treatment;
 2. branch / merge / feedback / authority relation: live DOM measurement (`getBoundingClientRect` + `ResizeObserver`) feeding an overlay SVG in the same container coordinate system.
 
-No responsive architecture may use hand-authored absolute path coordinates as its source of truth.
+No responsive architecture may use hand-authored absolute path coordinates as its source of truth. Correct endpoints are also not sufficient: routed connectors must use open lanes or perimeter corridors rather than cutting through unrelated nodes.
 
 ## Required visual matrix
 
@@ -34,6 +34,8 @@ For every interactive step:
 - audited sibling nodes do not overlap by more than 2px in both axes;
 - connector start and end points resolve from the current DOM node rectangles;
 - connector endpoint error must be <= 5px from its declared node anchor;
+- a connector may not enter the interior of an unrelated `data-flow-id` node; the browser gate samples the rendered SVG path and treats a point more than 3px inside a non-endpoint node as a failure;
+- feedback loops and authority/control return paths must use explicit open-lane or perimeter routing when a direct curve would cross another module;
 - no connector may depend on a hard-coded responsive architecture `d="M…"` path;
 - at <=760px the desktop SVG edge layer is removed from layout and the explainer becomes a guided vertical flow;
 - mobile must retain relationship meaning in text/state, not merely hide the diagram.
