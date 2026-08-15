@@ -9,7 +9,7 @@ describe('SEED and OpenEvo architecture comparison', () => {
   const zhRoute = read('src/pages/research/seed-openevo/loops.astro');
   const enRoute = read('src/pages/en/research/seed-openevo/loops.astro');
 
-  it('keeps both update mechanisms explicit', () => {
+  it('keeps both update mechanisms explicit in the static technical reference', () => {
     expect(component).toContain('SEED');
     expect(component).toContain('OpenEvo');
     expect(component).toContain('updated policy checkpoint');
@@ -17,7 +17,7 @@ describe('SEED and OpenEvo architecture comparison', () => {
     expect(component).toContain('successor revision');
   });
 
-  it('uses framed color-coded nodes and vector connectors', () => {
+  it('keeps the legacy technical reference visually testable', () => {
     expect(component).toContain('SEED 与 OpenEvo 的经验载体');
     expect(component).toContain('fork-scene');
     expect(component).toContain('border-top:5px solid');
@@ -26,10 +26,12 @@ describe('SEED and OpenEvo architecture comparison', () => {
     expect(component).toContain('marker-end=');
   });
 
-  it('remains mounted on both localized loop-comparison routes', () => {
-    for (const route of [zhRoute,enRoute]) {
-      expect(route).toContain('SeedOpenEvoComparisonDiagram');
-      expect(route).toContain('<SeedOpenEvoComparisonDiagram locale={locale} />');
+  it('mounts the interactive comparison as the primary bilingual loop explainer', () => {
+    for (const route of [zhRoute, enRoute]) {
+      expect(route).toContain('InteractiveResearchExplainer');
+      expect(route).toContain('kind="compare"');
+      expect(route).toContain('client:visible');
+      expect(route).not.toContain('SeedOpenEvoComparisonDiagram');
     }
   });
 });

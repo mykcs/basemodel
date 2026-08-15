@@ -45,7 +45,7 @@ describe('research architecture diagrams', () => {
     }
   });
 
-  it('uses browser-native vector geometry for branch, merge, feedback, and authority relations', () => {
+  it('keeps the static technical references vector-based for branch, merge, feedback, and authority relations', () => {
     for (const source of [server, benchmarks, seed, openevo, compare]) {
       expect(source).toContain('<svg');
       expect(source).toContain('viewBox=');
@@ -73,7 +73,12 @@ describe('research architecture diagrams', () => {
       'daemon creates sibling container',
       'I am not the global administrator',
     ]) expect(server).toContain(term);
-    for (const route of [guide, labZh, labEn]) expect(route).toContain('ServerAuthorityDiagram');
+    for (const route of [guide, labZh, labEn]) {
+      expect(route).toContain('InteractiveResearchExplainer');
+      expect(route).toContain('kind="server"');
+      expect(route).toContain('client:visible');
+      expect(route).not.toContain('ServerAuthorityDiagram');
+    }
   });
 
   it('teaches WebShop and ALFWorld as interactive world models, not dataset names alone', () => {
@@ -134,8 +139,9 @@ describe('research architecture diagrams', () => {
     expect(sourceRules).toContain('dashed connector');
   });
 
-  it('keeps the reproduction guide executable while the diagrams explain the mental model', () => {
+  it('keeps the reproduction guide executable while the interactive explainers teach the mental model', () => {
     expect(guide).toContain('AgentEnvironmentTrajectory');
+    expect(guide).toContain('InteractiveResearchExplainer');
     expect(guide).toContain('12 reproduction gates');
     expect(guide).toContain('run_parametric_eval.py');
     expect(guide).toContain('verify_indexes_1k.py');

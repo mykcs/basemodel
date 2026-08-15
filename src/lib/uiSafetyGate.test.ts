@@ -8,16 +8,20 @@ const packageJson = JSON.parse(read('../../package.json')) as {
 };
 const playwrightConfig = read('../../playwright.config.ts');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
+const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
+const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const visualRoute = read('../components/visual/VisualRoute.astro');
 const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the focused and cross-browser UI commands wired', () => {
-    expect(packageJson.scripts?.['test:ui']).toContain('ui-safety.spec.ts');
+  it('keeps the general and research-geometry browser commands wired', () => {
+    for (const script of ['test:ui', 'test:ui:all'] as const) {
+      expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+    }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
-    expect(packageJson.scripts?.['test:ui:all']).toBe('playwright test tests/e2e/ui-safety.spec.ts');
   });
 
   it('retains evidence when browser verification fails', () => {
@@ -37,6 +41,14 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('audited siblings overlap');
     expect(browserGate).toContain('low contrast');
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
+  });
+
+  it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
+    for (const term of ['width: 390', 'width: 768', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift', 'startError > 5', 'endError > 5']) {
+      expect(researchGeometryGate).toContain(term);
+    }
+    expect(geometryPolicy).toContain('connector endpoint error must be <= 5px');
+    expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
   });
 
   it('keeps shared visual primitives opted into browser auditing', () => {

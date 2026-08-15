@@ -47,7 +47,10 @@ describe('interactive research explainers', () => {
   it('places the progressive explainer before the long technical core through a shared slot', () => {
     expect(pageRouter).toContain('<slot />');
     expect(detail).toContain('<slot />');
-    expect(detail.indexOf('<slot />')).toBeLessThan(detail.indexOf('SeedOpenEvoResearchPageCore'));
+    const slotPosition = detail.indexOf('<slot />');
+    const coreMarkupPosition = detail.lastIndexOf('<SeedOpenEvoResearchPageCore');
+    expect(slotPosition).toBeGreaterThan(-1);
+    expect(coreMarkupPosition).toBeGreaterThan(slotPosition);
     expect(seedZh).not.toContain('SeedFrameworkDiagram');
     expect(seedEn).not.toContain('SeedFrameworkDiagram');
     expect(evoZh).not.toContain('OpenEvoFrameworkDiagram');
@@ -108,7 +111,7 @@ describe('interactive research explainers', () => {
     for (const term of ['SHARED EXPERIENCE', 'update mechanism', 'task boundary', 'carrier', 'validation', 'what persists', 'activation timing']) expect(explainer).toContain(term);
     expect(explainer).toContain('shared-seed');
     expect(explainer).toContain('shared-evo');
-    expect(explainer).toContain('current OpenEvo WebShop path');
+    expect(explainer).toContain('current WebShop SD-LoRA adapter is one concrete parametric path');
   });
 
   it('preserves the server sibling-container and authorization model with measured connectors', () => {
