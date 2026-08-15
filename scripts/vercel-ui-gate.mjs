@@ -26,7 +26,9 @@ const run = (command, args, extraEnv = {}) => {
 };
 
 console.log(`[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`);
-run('npx', ['playwright', 'install', '--with-deps', 'chromium']);
+// Vercel's build image does not expose apt-get. Download the Playwright-pinned
+// browser only; the subsequent launch is the real compatibility check.
+run('npx', ['playwright', 'install', 'chromium']);
 run('npm', ['run', 'test:ui'], {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',

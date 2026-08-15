@@ -30,7 +30,7 @@ describe('hosting architecture ownership', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(vercelUiGate).toContain("branch.startsWith('agent/visual-closeout-')");
-    expect(vercelUiGate).toContain("['playwright', 'install', '--with-deps', 'chromium']");
+    expect(vercelUiGate).toContain("['playwright', 'install', 'chromium']");
     expect(vercelUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(architecture).toContain('Vercel Preview + Vercel Production');
     expect(architecture).toContain(
