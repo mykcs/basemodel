@@ -25,6 +25,20 @@ const run = (command, args, extraEnv = {}) => {
   }
 };
 
+const capture = (command, args) => {
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+    env: process.env,
+  });
+  if (result.error || result.status !== 0) {
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    console.error(`[vercel-ui-gate] ${command} preflight failed`, result.error ?? '');
+    process.exit(result.status ?? 1);
+  }
+  return result.stdout.trim();
+};
+
 console.log(`[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`);
 
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
@@ -45,17 +59,22 @@ run('npx', ['playwright', 'install', 'chromium']);
 // Fail before Playwright starts if the downloaded browser still has any
 // unresolved shared-library dependency. This keeps environment failures
 // distinct from actual geometry/rendering regressions.
-run('bash', ['-lc', [
-  'set -euo pipefail',
-  'browser="$(find /vercel/.cache/ms-playwright -type f -name chrome-headless-shell | head -n 1)"',
-  'test -n "$browser"',
-  'echo "[vercel-ui-gate] ldd preflight: $browser"',
-  'ldd "$browser" | tee /tmp/playwright-ldd.txt',
-  'if grep -q "not found" /tmp/playwright-ldd.txt; then',
-  '  echo "[vercel-ui-gate] unresolved browser runtime libraries" >&2',
-  '  exit 1',
-  'fi',
-].join('; ')]);
+const browser = capture('bash', [
+  '-lc',
+  'find /vercel/.cache/ms-playwright -type f -name chrome-headless-shell | head -n 1',
+]);
+if (!browser) {
+  console.error('[vercel-ui-gate] Playwright headless-shell binary not found');
+  process.exit(1);
+}
+console.log(`[vercel-ui-gate] ldd preflight: ${browser}`);
+const ldd = spawnSync('ldd', [browser], { encoding: 'utf8', env: process.env });
+const lddOutput = `${ldd.stdout ?? ''}${ldd.stderr ?? ''}`;
+process.stdout.write(lddOutput);
+if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
+  console.error('[vercel-ui-gate] unresolved browser runtime libraries');
+  process.exit(ldd.status ?? 1);
+}
 
 run('npm', ['run', 'test:ui'], {
   CI: '1',
