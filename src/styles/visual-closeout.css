@@ -14,21 +14,12 @@ body .site-main a {
   display: none !important;
 }
 
-/* PageOutline already exposes the same accessible name on the nav via
- * aria-label. Keeping a second 1px visually-hidden label inside the fixed
- * right-edge rail made Chromium count its text toward the root. */
-.page-outline__sr {
-  display: none !important;
-}
-
-/* The desktop outline is a fixed 48px progress rail. Give the fixed container
- * the same explicit inline size as its links so intrinsic descendants cannot
- * widen the root scrolling area while the rail is active. */
-@media (min-width: 1320px) {
-  .page-outline {
-    inline-size: 48px;
-    max-inline-size: 48px;
-  }
+/* The global research connector layer renders absolute pseudo-elements on
+ * mission-chain cards. Establish their intended local containing blocks so
+ * connector dots/rails attach to each card instead of the viewport. */
+body .site-main .mission-chain li,
+body .site-main .mission-chain li > a {
+  position: relative;
 }
 
 @media (max-width: 1020px) {
