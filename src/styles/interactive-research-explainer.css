@@ -32,13 +32,16 @@
 }
 
 /*
- * Browser-gate hardening for the interactive benchmark explainer.
- * --muted is readable on ordinary surfaces, but it falls to ~4.19:1 on the
- * muted control strip in the light theme. Mix it toward --ink for controls
- * that carry instructions/state while preserving the quieter hierarchy.
+ * Browser-gate hardening for interactive research controls.
+ * Muted prose can stay visually quiet, but buttons are actionable state and
+ * must retain WCAG-normal-text contrast in both themes. Disabled controls use
+ * ink at 65% opacity: this remains >4.5:1 on the muted control surface while
+ * still making the unavailable state visibly distinct.
  */
 .irx{--irx-readable-muted:color-mix(in srgb,var(--muted) 80%,var(--ink))}
-.irx .irx-transport .irx-reset,.irx .irx-stepper button,.irx .irx-live,.irx .irx-browser-bar code{color:var(--irx-readable-muted)}
+.irx .irx-live,.irx .irx-browser-bar code{color:var(--irx-readable-muted)}
+.irx .irx-stepper button,.irx .irx-transport .irx-reset{color:var(--ink)}
+.irx .irx-transport button:disabled{opacity:.65;color:var(--ink)}
 
 /* Keep the state-transition arrow inside each audited grid cell. The former
  * right:-8px diamond enlarged the first four items' scrollWidth by 6px even
