@@ -1,0 +1,45 @@
+/* Final browser-gate constraints.
+ * These rules preserve horizontal learning rails while keeping their scroll
+ * containers inside the document viewport. They intentionally fix geometry
+ * rather than hiding document overflow at html/body level. */
+
+body .site-main a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1020px) {
+  body .site-main .mission-chain ol {
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-inline: 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body .site-main .mission-hero__modes,
+  body .site-main .seed-use-case:not(.standalone) .detail > ol,
+  body .site-main .research-path-list {
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-inline: 0 !important;
+  }
+
+  body .site-main .mission-page,
+  body .site-main .mission-section {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* A table cannot be its own effective horizontal scroll container while its
+   * intrinsic table width is also sizing the box. Cap the box at its parent;
+   * the table contents then scroll inside that box instead of widening the page. */
+  body .site-main .mission-table {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+}

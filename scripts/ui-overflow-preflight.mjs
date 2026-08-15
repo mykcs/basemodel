@@ -36,7 +36,12 @@ function describeDiagnostics(payload) {
     ].filter(Boolean).join(', ');
     const pseudo = [item.before, item.after].filter((value) => value && value.content !== 'none' && value.content !== 'normal');
     const pseudoText = pseudo.length ? ` pseudos=${JSON.stringify(pseudo)}` : '';
-    return `  - ${item.selector}: ${reasons}; overflowX=${item.overflowX}; position=${item.position}${pseudoText}`;
+    const context = [
+      item.text ? `text=${JSON.stringify(item.text)}` : '',
+      item.href ? `href=${JSON.stringify(item.href)}` : '',
+      item.parent ? `parent=${item.parent}` : '',
+    ].filter(Boolean).join(' ');
+    return `  - ${item.selector}: ${reasons}; overflowX=${item.overflowX}; position=${item.position}${context ? `; ${context}` : ''}${pseudoText}`;
   }).join('\n');
 }
 
@@ -84,8 +89,12 @@ try {
           const escapes = rect.left < -2 || rect.right > viewportWidth + 2;
           const internalOverflow = element.scrollWidth > element.clientWidth + 2;
           if (!escapes && !internalOverflow) return [];
+          const parent = element.parentElement;
           return [{
             selector: selectorFor(element),
+            text: (element.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 110),
+            href: element instanceof HTMLAnchorElement ? element.getAttribute('href') ?? '' : '',
+            parent: parent ? selectorFor(parent) : '',
             left: rect.left,
             right: rect.right,
             clientWidth: element.clientWidth,
