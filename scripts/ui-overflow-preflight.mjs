@@ -62,7 +62,7 @@ try {
         if ('fonts' in document) await document.fonts.ready;
       });
       await page.waitForTimeout(100);
-      const payload = await page.evaluate(() => {
+      const payload = await page.evaluate(async () => {
         const root = document.documentElement;
         const viewportWidth = root.clientWidth;
         const selectorFor = (element) => {
@@ -107,18 +107,50 @@ try {
             after: pseudo(element, '::after'),
           }];
         }).sort((a, b) => Number(b.escapes) - Number(a.escapes) || (b.scrollWidth - b.clientWidth) - (a.scrollWidth - a.clientWidth)).slice(0, 24);
+
+        const isolate = [];
+        if (root.scrollWidth > viewportWidth + 2) {
+          const targets = [
+            ...document.body.children,
+            ...document.querySelectorAll('#main-content > *, .mission-hero > *, .page-outline > *'),
+          ];
+          const unique = [...new Set(targets)];
+          for (const element of unique) {
+            const style = getComputedStyle(element);
+            if (style.display === 'none') continue;
+            const previousStyle = element.getAttribute('style');
+            element.style.setProperty('display', 'none', 'important');
+            await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+            const width = root.scrollWidth;
+            if (width < root.scrollWidth || width <= viewportWidth + 2) {
+              isolate.push({ selector: selectorFor(element), width });
+            } else {
+              isolate.push({ selector: selectorFor(element), width });
+            }
+            if (previousStyle === null) element.removeAttribute('style');
+            else element.setAttribute('style', previousStyle);
+            await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+          }
+        }
+
         return {
           clientWidth: viewportWidth,
           scrollWidth: root.scrollWidth,
           bodyScrollWidth: document.body.scrollWidth,
           suspects,
+          isolate: isolate.sort((a, b) => a.width - b.width).slice(0, 20),
         };
       });
       const overflow = payload.scrollWidth > payload.clientWidth + 2;
       console.log(`[ui-overflow-preflight] ${viewport.width}x${viewport.height} ${path} scroll=${payload.scrollWidth}/${payload.clientWidth} body=${payload.bodyScrollWidth}`);
       if (overflow) {
         failed = true;
-        console.error(describeDiagnostics(payload));
+        const diagnostics = describeDiagnostics(payload);
+        if (diagnostics) console.error(diagnostics);
+        if (payload.isolate.length) {
+          console.error('[ui-overflow-preflight] isolation widths:');
+          payload.isolate.forEach((entry) => console.error(`  - hide ${entry.selector} => root ${entry.width}px`));
+        }
       }
     }
     await page.close();
