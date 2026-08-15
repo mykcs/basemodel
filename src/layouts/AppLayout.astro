@@ -97,7 +97,7 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <title>{fullTitle}</title>
-    <script type="application/ld+json" set:html={websiteJsonLd} />
+    <script type="application/ld+json" is:inline set:html={websiteJsonLd} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>

@@ -38,30 +38,11 @@ const zh = locale === 'zh';
     }, 1800);
   };
 
-  const fallbackCopy = (text) => {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    textarea.style.pointerEvents = 'none';
-    document.body.appendChild(textarea);
-    textarea.select();
-    let ok = false;
-    try { ok = document.execCommand('copy'); } catch { ok = false; }
-    textarea.remove();
-    return ok;
-  };
-
   const write = async (text, description) => {
     if (!text) return false;
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
-        announce(`${labels.copied}: ${description}`);
-        return true;
-      }
-      if (fallbackCopy(text)) {
         announce(`${labels.copied}: ${description}`);
         return true;
       }
