@@ -1,0 +1,44 @@
+/* Sitewide editorial hierarchy.
+ * Headings name the subject. Explanations, status caveats, and reading rules belong in body copy.
+ * Keep section headings quieter than page titles so supporting material never competes with the page topic.
+ */
+
+:where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
+  max-width: 24ch;
+  font-size: clamp(2rem, 4.6vw, 3.55rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.035em !important;
+}
+
+:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .trajectory-lab__header, .visual-primer-head, .program__header, .parametric__header) h2,
+:where(.detail-section, .section, .mission-section, .oe-section, .primer-section, .agent-bridge, .paper-learning-guide, .program, .parametric) > h2 {
+  max-width: 34ch;
+  font-size: clamp(1.3rem, 2.4vw, 2rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 720 !important;
+}
+
+:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .bridge-title-row, .primer-section-head, .program, .parametric, .gateway, .trajectory-lab, .mechanism-dialogues) h3 {
+  max-width: 42ch;
+  font-size: clamp(1rem, 1.7vw, 1.35rem) !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.012em !important;
+  font-weight: 700 !important;
+}
+
+:where(.section-kicker, .guide-eyebrow, .eyebrow, .mission-page__eyebrow, .seed-guide-kicker, .program__header .eyebrow, .parametric__header .eyebrow) {
+  letter-spacing: 0.055em !important;
+}
+
+/* Metadata and caveats are supporting information, not headline competitors. */
+:where(.program__verdict, .verdict, .seed3090-case__snapshot, .reality-banner, .hardware-note, .mission-callout, .archive-note, .track-note) strong {
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  :where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
+    font-size: clamp(1.9rem, 9.5vw, 2.85rem) !important;
+  }
+}

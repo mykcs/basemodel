@@ -1,0 +1,90 @@
+---
+import type { Locale } from '../../i18n';
+import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+---
+<section class="seed-framework" aria-labelledby="seed-framework-title" data-explainer="seed-core">
+  <header class="diagram-head">
+    <span>SEED · CORE PRINCIPLE</span>
+    <h2 id="seed-framework-title">{t('SEED 自进化训练机制','SEED self-evolving training mechanism')}</h2>
+    <p>{t('最容易误解的一点：SEED 不是简单把一段 skill 文本长期塞进 prompt。训练时，skill 只作为一个更有信息的上下文，用来告诉模型“同一批已经采样的动作，在知道 hindsight 后应该更偏向哪些动作”；这种概率差被变成 OPD 信号，再和 GRPO 一起更新 policy。','The most common misunderstanding is to treat SEED as permanently appending a skill text to the prompt. During training, the skill is a more informative context used to ask how the probability of the same already-sampled actions should shift under hindsight. That probability shift becomes the OPD signal and is optimized together with GRPO to update the policy.')}</p>
+  </header>
+
+  <div class="principles">
+    <article><small>{t('谁产生轨迹','Who acts?')}</small><strong>{t('当前 policy 自己 on-policy rollout','the current policy performs its own on-policy rollout')}</strong></article>
+    <article><small>{t('谁做 hindsight','Who analyzes?')}</small><strong>{t('同步的同一 policy checkpoint','the synchronized same policy checkpoint')}</strong></article>
+    <article><small>{t('真正留下什么','What persists?')}</small><strong>{t('不是 skill prompt，而是更新后的 policy 参数','not the skill prompt, but the updated policy parameters')}</strong></article>
+  </div>
+
+  <section class="stage-one" aria-labelledby="seed-stage-one-title">
+    <header><span>STAGE 1</span><h3 id="seed-stage-one-title">{t('Hindsight-skill SFT','Hindsight-skill SFT')}</h3></header>
+    <div class="sft-flow">
+      <article class="mini-node env"><small>COMPLETED EPISODES</small><strong>trajectory + outcome</strong></article>
+      <div class="mini-wire" aria-hidden="true"></div>
+      <article class="mini-node experience"><small>ANNOTATION</small><strong>hindsight skill</strong></article>
+      <div class="mini-wire" aria-hidden="true"></div>
+      <article class="mini-node state"><small>SUPERVISED FINE-TUNING</small><strong>{t('具备 analyzer 能力的 policy','analyzer-capable policy')}</strong></article>
+    </div>
+    <p>{t('这一步的意义不是直接得到最终 agent，而是让后面的同一个 checkpoint 能既行动，也能看完 episode 后总结“如果早知道什么，会更容易做对”。','This stage is not the final agent improvement by itself. It gives the later checkpoint the ability to both act and, after an episode, summarize what hindsight would have made better decisions easier.')}</p>
+  </section>
+
+  <figure class="seed-scene" role="img" aria-label={t('SEED Stage 2：当前 policy 产生 on-policy trajectory，trajectory 同时进入 hindsight analyzer 和 reward 分支；普通上下文与 skill 上下文对同一动作 token 重新打分形成 OPD，reward 形成 GRPO，两个训练信号合并更新下一版 policy','SEED Stage 2: the current policy produces an on-policy trajectory; the trajectory feeds both hindsight analysis and reward branches; plain and skill contexts re-score the same action tokens to form OPD, reward forms GRPO, and both signals update the next policy')}>
+    <figcaption><span>STAGE 2</span><strong>Self-evolving OPD + GRPO</strong><small>{t('同一个 policy 在一轮里同时是 actor 与 analyzer','the same policy serves as actor and analyzer in the same iteration')}</small></figcaption>
+
+    <article class="node policy"><span class="node-role">CURRENT POLICY</span><strong>policy θ<sub>t</sub></strong><small>{t('行动者 + 同步 analyzer 来源','actor + synchronized analyzer source')}</small></article>
+    <article class="node rollout"><span class="node-role">ON-POLICY</span><strong>{t('环境 rollout','environment rollout')}</strong><small>observation · sampled actions · reward</small></article>
+    <article class="node trajectory"><span class="node-role">EPISODE EVIDENCE</span><strong>{t('完整 on-policy trajectory','completed on-policy trajectory')}</strong><small>{t('动作已经采样完成，后面不重新“换一条动作轨迹”','actions are already sampled; later branches do not replace them with a new trajectory')}</small></article>
+
+    <article class="node analyzer"><span class="node-role">SAME POLICY · ANALYZER</span><strong>hindsight skill</strong><small>{t('看完整 episode 后提炼“什么信息会让决策更好”','extracts what information would have improved decisions after seeing the full episode')}</small></article>
+    <article class="node plain"><span class="node-role">CONTEXT A</span><strong>{t('普通上下文重打分','plain-context re-score')}</strong><small>log p<sub>plain</sub>(same sampled action)</small></article>
+    <article class="node skill"><span class="node-role">CONTEXT B</span><strong>{t('skill 上下文重打分','skill-context re-score')}</strong><small>log p<sub>skill</sub>(same sampled action)</small></article>
+
+    <article class="node opd"><span class="node-role">DENSE DISTILLATION SIGNAL</span><strong>OPD</strong><small>{t('比较同一动作在两种上下文下的概率变化','compare the probability shift of the same action under the two contexts')}</small></article>
+    <article class="node grpo"><span class="node-role">OUTCOME RL SIGNAL</span><strong>GRPO</strong><small>{t('来自环境 reward / relative outcome','comes from environment reward / relative outcome')}</small></article>
+    <article class="node joint"><span class="node-role">JOINT OBJECTIVE</span><strong>GRPO + OPD</strong><small>{t('稀疏结果信号 + 稠密 hindsight 信号','sparse outcome signal + dense hindsight signal')}</small></article>
+    <article class="node next"><span class="node-role">OPTIMIZER UPDATE</span><strong>policy θ<sub>t+1</sub></strong><small>{t('下一轮直接用更新后的 checkpoint','the next round directly uses the updated checkpoint')}</small></article>
+
+    <svg class="seed-wires" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="seed-arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2563eb" /></marker>
+        <marker id="seed-arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#d97706" /></marker>
+        <marker id="seed-arrow-red" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#dc2626" /></marker>
+        <marker id="seed-arrow-violet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7c3aed" /></marker>
+        <marker id="seed-arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#059669" /></marker>
+      </defs>
+      <path class="wire state" d="M190 150 C260 150 320 150 370 150" marker-end="url(#seed-arrow-violet)" />
+      <path class="wire env" d="M510 150 C585 150 645 150 690 150" marker-end="url(#seed-arrow-blue)" />
+      <path class="wire experience" d="M810 205 C810 250 985 245 985 292" marker-end="url(#seed-arrow-amber)" />
+      <path class="wire env" d="M760 205 C700 250 565 250 535 292" marker-end="url(#seed-arrow-blue)" />
+      <path class="wire experience" d="M980 365 C930 405 850 410 815 445" marker-end="url(#seed-arrow-amber)" />
+      <path class="wire env" d="M530 365 C560 405 640 410 675 445" marker-end="url(#seed-arrow-blue)" />
+      <path class="wire signal" d="M675 515 C650 550 600 565 565 592" marker-end="url(#seed-arrow-red)" />
+      <path class="wire signal" d="M815 515 C835 550 870 565 885 592" marker-end="url(#seed-arrow-red)" />
+      <path class="wire env reward-branch" d="M760 205 C675 315 315 430 285 592" marker-end="url(#seed-arrow-blue)" />
+      <path class="wire signal" d="M350 630 C450 630 510 630 555 630" marker-end="url(#seed-arrow-red)" />
+      <path class="wire signal" d="M890 630 C835 630 805 630 755 630" marker-end="url(#seed-arrow-red)" />
+      <path class="wire persist" d="M735 665 C785 700 915 700 985 662" marker-end="url(#seed-arrow-green)" />
+      <path class="wire loop" d="M1045 605 C1110 500 1110 110 240 92 C175 90 145 105 140 122" marker-end="url(#seed-arrow-green)" />
+      <path class="wire control" d="M205 200 C265 250 900 230 950 295" marker-end="url(#seed-arrow-violet)" />
+    </svg>
+    <span class="wire-label same-checkpoint">{t('同一 checkpoint','same checkpoint')}</span>
+    <span class="wire-label same-actions">{t('关键：两边重打分的是同一批 sampled action tokens','key: both branches re-score the same sampled action tokens')}</span>
+    <span class="wire-label next-round">θ<sub>t+1</sub> {t('进入下一轮','feeds the next round')}</span>
+  </figure>
+
+  <div class="mental-model">
+    <article><small>{t('一句话直觉','One-sentence intuition')}</small><strong>{t('“事后知道正确经验”不直接当提示词留到部署，而是用来教当前 policy：以后在类似状态下，哪些动作概率应该更高。','Hindsight is not kept as a deployment prompt; it teaches the current policy which actions should become more probable in similar states next time.')}</strong></article>
+    <article><small>{t('为什么叫 self-evolving','Why “self-evolving”?')}</small><strong>{t('下一轮的 actor 和 analyzer 都来自刚更新后的 policy，所以监督来源会跟着 policy 一起变化。','The next round’s actor and analyzer both come from the newly updated policy, so the supervision source evolves with the policy.')}</strong></article>
+  </div>
+
+  <ResearchDiagramLegend locale={locale} />
+
+  <details class="technical-details"><summary>{t('技术细节：OPD 与普通 imitation / SFT 的差别','Technical detail: how OPD differs from ordinary imitation / SFT')}</summary><div class="technical-grid"><article><strong>{t('固定 sampled actions','Fixed sampled actions')}</strong><p>{t('OPD 关注同一批 on-policy action token 在普通上下文与 skill-augmented 上下文中的概率差，而不是让 teacher 重新生成一条完全不同的轨迹。','OPD compares probabilities of the same on-policy action tokens under plain and skill-augmented contexts rather than asking a teacher to generate an entirely different trajectory.')}</p></article><article><strong>{t('稠密 token 级信号','Dense token-level signal')}</strong><p>{t('最终 reward 很稀疏，OPD 用 hindsight 引起的概率变化提供更细的 token-level 训练方向。','Final reward is sparse; OPD uses hindsight-induced probability changes to provide denser token-level training direction.')}</p></article><article><strong>{t('部署边界','Deployment boundary')}</strong><p>{t('论文设定下，hindsight skill 只服务训练；推理时不需要 analyzer、skill bank 或 skill-augmented prompt。','In the paper setup, hindsight skills serve training only; inference does not require the analyzer, a skill bank, or a skill-augmented prompt.')}</p></article></div></details>
+</section>
+
+<style>
+.seed-framework{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;--teal:#0f766e;width:min(1180px,calc(100% - 2rem));margin:2rem auto;padding:1.2rem;border:1px solid var(--line);border-radius:24px;background:radial-gradient(circle at 82% 2%,color-mix(in srgb,var(--signal) 6%,transparent),transparent 30%),var(--surface);box-shadow:0 24px 76px color-mix(in srgb,#000 8%,transparent)}.diagram-head{max-width:930px}.diagram-head>span{color:var(--signal);font:850 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.diagram-head h2{margin:.38rem 0 .55rem}.diagram-head p{margin:0;color:var(--muted);line-height:1.68}.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:1rem 0}.principles article{padding:.65rem .72rem;border:1px solid var(--line);border-radius:11px;background:var(--surface-muted)}.principles small,.principles strong{display:block}.principles small{color:var(--muted);font-size:.56rem}.principles strong{margin-top:.2rem;font-size:.67rem;line-height:1.38}.stage-one{padding:.8rem;border:1px solid color-mix(in srgb,var(--experience) 34%,var(--line));border-radius:15px;background:color-mix(in srgb,var(--experience) 4%,var(--surface))}.stage-one>header{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}.stage-one>header span{color:var(--experience);font:850 .57rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.stage-one h3{margin:0;font-size:.73rem}.sft-flow{display:grid;grid-template-columns:1fr 52px 1fr 52px 1fr;align-items:center;gap:.35rem;margin-top:.65rem}.mini-node{padding:.58rem;border:1px solid var(--line);border-top:4px solid;border-radius:10px;background:var(--surface)}.mini-node.env{border-top-color:var(--env)}.mini-node.experience{border-top-color:var(--experience)}.mini-node.state{border-top-color:var(--state)}.mini-node small,.mini-node strong{display:block}.mini-node small{color:var(--muted);font-size:.5rem}.mini-node strong{margin-top:.2rem;font-size:.61rem}.mini-wire{height:3px;background:var(--muted);position:relative}.mini-wire:after{content:"";position:absolute;right:-1px;top:-4px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--muted)}.stage-one>p{margin:.55rem 0 0;color:var(--muted);font-size:.62rem;line-height:1.46}.seed-scene{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"cap cap cap cap" "policy rollout trajectory analyzer" "grpo plain skill opd" "grpo joint joint next";gap:1.05rem .75rem;min-height:700px;margin:1rem 0 0;padding:1rem;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb,var(--state) 4%,var(--surface)),var(--surface));overflow:hidden}.seed-scene figcaption{grid-area:cap;z-index:2;display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}.seed-scene figcaption span{color:var(--signal);font:850 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.seed-scene figcaption strong{font-size:.72rem}.seed-scene figcaption small{color:var(--muted);font-size:.57rem}.node{z-index:2;align-self:center;min-height:112px;padding:.72rem;border:1.5px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 10px 24px color-mix(in srgb,#000 6%,transparent);backdrop-filter:blur(5px)}.node-role{display:block;color:var(--muted);font:850 .51rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.node strong,.node small{display:block}.node strong{margin:.3rem 0;font-size:.69rem;line-height:1.3}.node small{color:var(--muted);font-size:.56rem;line-height:1.42}.policy{grid-area:policy;border-top:5px solid var(--state)}.rollout{grid-area:rollout;border-top:5px solid var(--env)}.trajectory{grid-area:trajectory;border-top:5px solid var(--experience)}.analyzer{grid-area:analyzer;border-top:5px solid var(--experience)}.plain{grid-area:plain;border-top:5px solid var(--env)}.skill{grid-area:skill;border-top:5px solid var(--experience)}.opd{grid-area:opd;border-top:5px solid var(--signal)}.grpo{grid-area:grpo;border-top:5px solid var(--signal);align-self:stretch}.joint{grid-area:joint;justify-self:center;width:58%;border-top:5px solid var(--signal)}.next{grid-area:next;border-top:5px solid var(--persist)}.seed-wires{z-index:1;position:absolute;inset:45px 0 0;width:100%;height:calc(100% - 45px);pointer-events:none}.wire{fill:none;stroke-width:4;vector-effect:non-scaling-stroke}.wire.env{stroke:var(--env)}.wire.experience{stroke:var(--experience)}.wire.signal{stroke:var(--signal)}.wire.state,.wire.control{stroke:var(--state)}.wire.persist,.wire.loop{stroke:var(--persist)}.wire.control{stroke-dasharray:8 8}.wire.loop{stroke-dasharray:12 9;animation:seedLoop 5s linear infinite}.reward-branch{stroke-dasharray:7 8}.wire-label{z-index:3;position:absolute;padding:.2rem .36rem;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 4px 11px color-mix(in srgb,#000 5%,transparent);font:730 .49rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.same-checkpoint{right:13%;top:29%;color:var(--state)}.same-actions{left:48%;top:59%;transform:translateX(-50%);max-width:310px;text-align:center;color:var(--signal)}.next-round{right:5%;bottom:2%;color:var(--persist)}.mental-model{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:.65rem}.mental-model article{padding:.7rem;border:1px solid var(--line);border-radius:10px;background:var(--surface-muted)}.mental-model small,.mental-model strong{display:block}.mental-model small{color:var(--muted);font-size:.55rem}.mental-model strong{margin-top:.22rem;font-size:.65rem;line-height:1.45}.technical-details{margin-top:.7rem;border:1px solid var(--line);border-radius:11px;background:var(--surface-muted)}.technical-details summary{cursor:pointer;padding:.68rem .75rem;font-size:.63rem;font-weight:800}.technical-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem;padding:0 .75rem .75rem}.technical-grid article{padding:.62rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.technical-grid strong{font-size:.61rem}.technical-grid p{margin:.25rem 0 0;color:var(--muted);font-size:.56rem;line-height:1.45}@keyframes seedLoop{to{stroke-dashoffset:-42}}@media(prefers-reduced-motion:reduce){.wire.loop{animation:none}}@media(max-width:960px){.principles{grid-template-columns:1fr}.sft-flow{grid-template-columns:1fr}.mini-wire{width:3px;height:24px;margin:auto}.mini-wire:after{left:-4px;right:auto;top:auto;bottom:-1px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--muted);border-bottom:0}.seed-scene{grid-template-columns:1fr;grid-template-areas:"cap" "policy" "rollout" "trajectory" "analyzer" "plain" "skill" "opd" "grpo" "joint" "next";min-height:auto}.node,.joint{width:100%}.seed-wires,.wire-label{display:none}.node:not(.next):after{content:"";position:absolute;left:50%;bottom:-1.05rem;width:3px;height:1.05rem;background:color-mix(in srgb,var(--muted) 45%,transparent)}.mental-model,.technical-grid{grid-template-columns:1fr}}@media(max-width:560px){.seed-framework{width:min(100% - 1rem,1180px);padding:.8rem}}
+</style>

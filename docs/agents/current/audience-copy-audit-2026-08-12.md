@@ -1,204 +1,112 @@
 # Audience-centered copy audit — 2026-08-12
 
-Status: source-level audit baseline for PR #128
-Branch reviewed: `agent/seed-openevo-research-mission`
+Status: completed source-owner audit and sustainable verification baseline
+
 Primary standard: `audience-centered-technical-copy.md`
+
+Executable inventory/scanner: `scripts/audit-audience-copy.ts`
 
 ## Executive conclusion
 
-The site has **not** undergone a literal sentence-by-sentence rewrite of every user-facing source.
-
-The completed rewrite covers the highest-priority new research surfaces and the OpenEvo reproduction manual. Existing shared Guide, SEED onboarding, model-explorer, route-context, pricing, and structured content sources still contain a mixture of:
-
-- copy that already satisfies the standard;
-- direct warnings that are justified by nearby safety/evidence context;
-- negative-first or project-internal copy that should be improved in a later sitewide copy pass.
-
-Do not describe PR #128 as “all website text rewritten.” Describe it as:
-
-> the first audience-centered rewrite of the SEED × OpenEvo mission and reproduction path, plus a source-level audit baseline for the remaining site.
-
-## Audit scope
-
-The audit reviewed source templates rather than attempting to inspect 408 generated HTML files independently. Shared templates and structured content generate most repeated copy.
-
-Reviewed surfaces:
-
-- mission-first home and navigation;
-- SEED × OpenEvo research pages;
-- OpenEvo × WebShop / ALFWorld reproduction guide;
-- Guide content and decision chapters;
-- Agent primer;
-- SEED student reproduction guide;
-- SEED compute/time-budget explanation;
-- sitewide SEED use-case strip;
-- sitewide research-mainline context;
-- model explorer decision copy;
-- core Chinese UI dictionary;
-- research-workbench structured guide content.
-
-Not exhaustively rewritten in this pass:
-
-- every model and paper record description;
-- every error message and empty state in all React islands;
-- every historical document;
-- every English sentence outside the changed mission/reproduction surfaces;
-- every generated page considered as an independent artifact.
-
-## Completed / strong surfaces
-
-### OpenEvo reproduction manual
-
-The manual now establishes the common student/lab topology before naming the Mac and RTX6, explains technical terms at first use, places incident history behind `<details>`, and separates P0/P1/P2/P3 claims.
-
-### Mission-first research pages
-
-The new pages start from the research question, then introduce Base Model, SEED, OpenEvo, benchmarks, loops, and evidence. Their copy generally supplies the object and purpose before the warning or boundary.
-
-### Evidence-language boundaries
-
-The new pages explain in complete sentences why:
-
-- a successful process exit is not task success;
-- environment readiness is not a real model action;
-- a real action is not real evolution;
-- a numeric `0.0` can be real evidence without proving performance improvement;
-- historical notebook evidence is not current RTX6 evidence.
-
-## Remaining high-priority copy risks
-
-### 1. `SeedUseCaseStrip.astro`
-
-Risk:
-
-- appears across multiple general routes;
-- assumes the reader is already inside a 4×3090 SEED experiment;
-- uses directive phrases such as “现在只问”, “不用来改今天的实验”, and “机器能做完就到此为止”.
-
-Recommended change:
-
-- begin with one sentence explaining that the strip shows how the current page contributes to the site's SEED/OpenEvo research mission;
-- replace imperative wording with route-purpose wording;
-- keep the concrete 4×3090 case as an example, not an unexplained universal context.
-
-### 2. `ResearchMainline.astro`
-
-Risk:
-
-- generic pages can show highly specific instructions such as `4×24GB、离线、本地权重` without first identifying the example experiment;
-- fallback copy says “不要被页面里的其他信息带走”, which reads like an internal coaching instruction.
-
-Recommended change:
-
-- label the active experiment context explicitly;
-- state what information the page contributes, then link back to the mission;
-- use positive navigation language rather than controlling the reader.
-
-### 3. `GuideDecisionChapters.astro`
-
-Risk:
-
-- the heading “不要背术语” is negative-first;
-- the OpenEvo card foregrounds the “真实故障复盘” instead of the reader's execution goal.
-
-Recommended change:
-
-- use “按四个研究决定理解术语”;
-- describe the OpenEvo card as an execution guide with optional known-failure diagnostics.
-
-### 4. `GuideContent.astro`
-
-Risk:
-
-- several titles use “不要先……” or “遇到 unknown 时……” as the first explanation;
-- copy is understandable in context, but it remains instructor-centric rather than reader-situation-first.
-
-Recommended change:
-
-- rewrite section titles as positive decisions;
-- preserve the warnings in the body after the reader's task is established.
-
-### 5. `AgentPrimer.astro`
-
-Risk:
-
-- most of the primer is strong and contextual;
-- the final heading “不要先浏览所有模型” is an unnecessary negative-first instruction.
-
-Recommended change:
-
-- replace with “把概念按论文 → checkpoint → 工作台的顺序落到真实证据”.
-
-## Remaining medium-priority copy risks
-
-### `SeedStudentReproductionGuide.astro`
-
-Most warnings are tied to commands and pass criteria, which is appropriate. The opening assumes a specific offline server. A later pass should generalize the first paragraph to “workstation with internet + internal GPU server” before narrowing to this lab's setup.
-
-### `SeedComputeTimeBudget.astro`
-
-The page contains direct warnings such as not multiplying monthly SKU hours into a fake payable amount. These are justified because the pricing context appears immediately before the warning. The main risk is tone (“把能算死的东西算死”), which is colloquial but not structurally confusing.
-
-### `ModelExplorer.tsx`
-
-The warning that hosted/API models should not be mixed with trainable open-weight models is supported by the surrounding category explanation. It is a valid classification boundary, not an abrupt incident fragment.
-
-### `research-workbench.json`
-
-Most concepts use complete causal explanations. A few sentences remain negative-first, for example “不要把可调用写成可复现”; these are lower priority because the preceding sentence explains API/weight/license distinctions.
-
-## Direct warnings that should remain
-
-The standard does not ban the word “不要”. Keep direct prohibitions when the context and protected resource are explicit:
-
-- do not kill or reset another researcher's GPU process;
-- do not present a monthly SKU time estimate as an hourly payable amount;
-- do not jump to the next experiment stage when the current gate lacks evidence;
-- do not fill an unknown field with a plausible value;
-- do not call a fallback-only trajectory a real model action.
-
-These statements protect safety or research integrity and are understandable from nearby context.
-
-## Sustainability assessment
-
-### Current state: medium sustainability
-
-Strengths:
-
-- a durable copy standard exists;
-- the standard names the actual audiences;
-- the standard includes a review checklist and HTML guidance;
-- the OpenEvo manual demonstrates the target style;
-- docs-only standards are ignored by the Preview build path.
-
-Weaknesses:
-
-- the standard is not yet an executable lint/gate;
-- not every future Agent is guaranteed to open the file unless the task routing explicitly points to it;
-- heuristic word searches can identify candidates but cannot determine whether a warning has sufficient context;
-- existing shared copy predates the standard.
-
-### Target state: high sustainability
-
-Use four layers:
-
-1. **Discoverability** — user-facing writing tasks must route to `audience-centered-technical-copy.md`.
-2. **Author checklist** — every changed heading, introduction, callout, empty state, error message, and troubleshooting summary gets the ten-question review.
-3. **Heuristic audit** — a manual source scanner reports negative-first phrases, unexplained project nouns, conversation-dependent time words, and mixed jargon. It reports candidates; it does not auto-fail every match.
-4. **Human/Agent contextual review** — inspect each candidate in the actual paragraph and decide whether it is a valid safety/evidence warning or an unexplained internal fragment.
-
-A purely automatic ban on words such as `不要`, `当前`, or `仍然` would damage valid safety and evidence language. Automation should produce a review queue, not replace semantic judgment.
-
-## Recommended next implementation
-
-Do not spend another Preview build only to add governance.
-
-In a later intentionally batched runtime pass:
-
-- rewrite the five high-priority shared components above;
-- add a lightweight manually invoked copy-audit script;
-- run it locally or in an existing validation session;
-- do not add a new always-on CI job merely for prose linting;
-- update the exact-head Preview only after the batched runtime rewrite is ready for visual review.
-
-Until that pass, completion reports must state that the new mission/reproduction surfaces meet the standard while the rest of the site has an audited improvement backlog.
+All production user-visible copy owners are covered below as individual high-impact owners or bounded owner groups. The audit works at source-owner level, then validates representative generated routes; it does not pretend that hundreds of generated HTML files are independent authored sources.
+
+The 13 priority surfaces from the task are **FIXED**. Remaining candidate matches are either contextual technical terms that are explained nearby, direct safety/research-integrity warnings, dated project-instance material, or factual structured records whose semantics must not be rewritten. No known high-priority copy risk remains in the defined production scope.
+
+## Audit method and baseline
+
+The scanner discovers the complete production source boundary: every non-test `src/**/*.astro`, `src/**/*.tsx`, and `src/**/*.ts`; every public structured record under `src/content` and `src/data`; and the public Guide scripts and social image copy in `public/guides/**` and `public/og-cover.svg`. It excludes only concrete non-owner classes: `src/**/*.test.{ts,tsx}`, `src/**/*.spec.{ts,tsx}`, directories named `fixtures` / `__fixtures__`, generated `dist`, dependencies, and private `.omc` state. Repository documentation and test-only strings are not runtime public-copy owners.
+
+Baseline before the rewrite:
+
+- 325 production source files discovered;
+- 408 contextual review candidates;
+- 5 strict invariant failures: three known negative/history-dependent headings and two mission-metadata gaps.
+
+The final expanded-boundary scan discovers 367 production sources and reports 383 contextual review candidates with 0 strict invariant failures. Candidate count is a triage signal; PASS/FIXED/EXEMPT classification below, not raw string matching, determines completion.
+
+Strict mode is intentionally narrow. It blocks the incorrect `复现 C` / `Reproduction C` name, known prohibited headings, missing SEED/OpenEvo locale metadata, or missing canonical bilingual OpenEvo guide titles. Ordinary candidate matches return success and require paragraph-level judgment.
+
+## Source-owner inventory
+
+| Source owner | Generated routes / surfaces | Locale | Status | Result / evidence |
+|---|---|---|---|---|
+| `src/components/OpenEvoSeedBenchmarksGuide.astro` | OpenEvo reproduction guide | zh/en | FIXED | General online-workstation → internal-GPU topology precedes Lab Mac → RTX6; four failure layers and full P0 evidence sentences added. |
+| `src/pages/guide.astro` + `src/pages/en/guide.astro` | `/guide/`, `/en/guide/` | zh/en | FIXED | Both locales lead with the transferable online-workstation → internal-GPU-server topology, label 4×3090 as this project's example, and require profiling on the reader's actual hardware; the Chinese dedicated old-Mac case remains behind `<details>`. |
+| `src/components/ResearchMainline.astro` | shared route context | zh/en | FIXED | Page role appears first; 4×24GB is a project example; positive return-to-mainline guidance. |
+| `src/components/SeedUseCaseStrip.astro` | home/models/families/compare/papers/workspace/data/methodology/landscape | zh/en | FIXED | Explains why the strip exists and labels 4×3090 as this project’s example. |
+| `src/components/GuideDecisionChapters.astro` | Guide decision chapters | zh/en | FIXED | Four decisions stated positively; OpenEvo entry leads with execution and keeps diagnostics secondary. |
+| `src/components/GuideContent.astro` | structured Guide walkthrough | zh/en | FIXED | Positive decision headings, traceable unknown semantics, and current Vercel architecture wording. |
+| `src/components/AgentPrimer.astro` + `AgentToSeedBridge.astro` | Agent primer / Guide bridge | zh/en | FIXED | Explicit ML-literate reader bridge; runtime/training split; paper → checkpoint → workspace next action. |
+| `src/components/SeedStudentReproductionGuide.astro` | SEED execution manual | zh/en | FIXED | Starts from a reusable online-workstation + internal-GPU pattern, then names the 4×3090 project instance. |
+| `src/components/SeedComputeTimeBudget.astro` | Guide compute budget | zh/en | FIXED | Replaced colloquial headings while preserving planning-vs-measurement and monthly-billing warnings. |
+| `src/components/ModelExplorer.tsx` + explorer i18n | `/models/` decisions, filters, empty states | zh/en | FIXED | API/hosted vs open-weight grouping now explains service/weight consequences; existing empty/filter states remain actionable. |
+| `src/i18n/zh.ts` + `src/i18n/en.ts` | global title, description, navigation, statuses | zh/en | FIXED | Atlas brand retained; tagline/title suffix/default description align to the SEED × OpenEvo mission. |
+| `src/pages/_bodies/home-v2.astro` + mission hero | `/`, `/en/` | zh/en | FIXED | Positive Learn/Run/Compare entry; mission-first first viewport retained. |
+| `src/content/guides/**` | Guide structured concepts | zh/en | FIXED | API accessibility vs reproducibility is now a complete causal explanation. |
+| `src/content/changeEvents/**` + schema | home/event-derived surfaces | zh/en | FIXED | Change-event public note now has explicit Chinese and English fields; original source note retained. |
+| `src/lib/localizedChangeEvent.ts` + `src/pages/_bodies/home-v2.astro` | `/`, `/en/` recent-change timeline | zh/en | FIXED | Selects `note_zh` / `note_en` from the page locale and falls back to the other locale, legacy note, then event type. Built output is checked independently per locale. |
+| `src/components/SeedReproductionPath.astro` + `src/components/papers/PaperLearningGuide.astro` | `/papers/seed/`, `/en/papers/seed/` | zh/en | FIXED | Persistent heading now points to a dated catalog snapshot instead of unanchored “今天 / today”; the market snapshot still exposes its exact check date. |
+| `src/components/research/**` + `src/pages/research/**` | research hub and child routes | zh/en | FIXED | Benchmark and loop headings now establish interaction/update boundaries positively; scientific states remain unchanged. |
+| `src/components/visual/**` | major route primers | zh/en | FIXED | Model-detail and evidence-limit headings state the decision boundary without negative-first framing. |
+| `src/pages/guide/today.astro` | dated old-Mac lab runbook | zh | EXEMPT | Explicitly labeled as the **2026-08-11 project instance** with a link back to the general route. Relative “today” language inside this dated operational snapshot retains its absolute-date reference. |
+| `src/layouts/AppLayout.astro` | every HTML route: title suffix, description, canonical, hreflang, OG/Twitter, JSON-LD, global status/quick-view shell | zh/en | PASS | Explicit SEO/metadata owner is scanner-covered; bilingual built-route assertions verify title, description, canonical, mission terms, and locale separation. |
+| `src/components/Header.astro`, `StatusBadge.astro`, `EvidenceList.astro`, `FamilyTimeline.tsx`, `PaperModelMatrix.tsx`, `ModelComparison.tsx` | global navigation/status; model/paper/family/compare surfaces | zh/en | PASS | Shared navigation, status, empty and evidence language reviewed as one bounded shared-shell group; status values retain semantic meaning. |
+| `src/components/common/**`, `src/components/navigation/**` | global copy/action controls, command menu, semantic-status legend | zh/en | PASS | Concrete shared-control owner group; empty/error/action labels are locale-aware and scanner-covered. |
+| `src/components/models/**` | `/models/`, `/models/:id/`, corresponding `/en/` routes, global quick view | zh/en | PASS | Model decision cards, detail navigation, unresolved-field list, access ladder, alternatives, task fit and quick-view copy are scanner-covered; unknown values remain explicit. |
+| `src/components/papers/**` | `/papers/`, `/papers/:id/`, corresponding `/en/` routes | zh/en | PASS | Paper explorer, learning guide, role diagram, reproduction summary and selection rationale map to paper routes; missing evidence stays “not recorded / verify”. |
+| `src/components/workspace/**` | `/workspace/`, `/en/workspace/` | zh/en | PASS | Task builder steps, constraints, candidate board, evidence inspector, substitute lab, decision memo, compare tray and mobile navigation include actionable empty/error/status states. |
+| `src/components/landscape/**` | `/landscape/`, `/en/landscape/` | zh/en | PASS | D3/ECharts/accessible-table labels and empty states share the locale contract and keep unknown access distinct. |
+| Exact route shells `src/pages/{index,404,lab,guide,compare,methodology,data-status}.astro`, `src/pages/{models,papers,families,workspace,landscape}/**`, and matching `src/pages/en/**` | named HTML routes and English counterparts | zh/en | PASS | Every Astro route shell is discovered. Copy ownership delegates explicitly to its body/component plus `AppLayout`; route generation is verified in the 411-page build. |
+| Exact body owners `src/pages/_bodies/{home-v2,not-found,families-index,papers-index,model-detail,compare,paper-detail,models-index,landscape,data-status}.astro` | home, 404, families, papers, model detail, compare, paper detail, model explorer, landscape, data status | zh/en | PASS | Each bounded body owner maps to both locale shells where available; 404/empty/status language and table containment are included in UI checks. |
+| Machine-route owners `src/pages/{search-index.json,robots.txt,sitemap.xml}.ts`, `src/pages/{,en/}landscape/models.json.ts`, `src/pages/model-data/[id].json.ts` | search, robots, sitemap, public model/landscape JSON | machine-readable / shared | EXEMPT | Public outputs are scanner-covered, but identifiers/URLs/serialized facts are machine contracts rather than prose; their route tests remain authoritative. |
+| `src/content/benchmarkRuns/**` | `/data-status/`, `/en/data-status/` benchmark run conditions | shared factual record with localized renderer | EXEMPT | Exact record owner is scanner-covered; benchmark, status, conditions and source IDs are evidence facts and are not stylistically rewritten. |
+| `src/content/claims/**` | `/data-status/`, `/en/data-status/` claim history/conflicts | shared factual record with localized renderer | EXEMPT | Exact claim owner is scanner-covered; predicate/value/validity/support relation preserve evidence semantics. |
+| `src/lib/fieldCatalog.ts` | unresolved-field list and Candidate Board on model/workspace routes | zh/en | PASS | Field labels and research-impact explanations are public copy; both locale columns are scanner-covered and consumer-linked. |
+| `src/lib/modelFilters.ts`, `src/lib/researchLabels.ts`, `src/lib/recommendation.ts`, `src/lib/format.ts` | model filters/reasons, research labels, recommendations, formatted status across model/workspace/paper routes | zh/en | PASS | Bounded computed-copy owners are scanned; tests preserve actionable recommendations and localized enum/status labels. |
+| `src/lib/{dataHealth,landscape,researchEngine}.ts` + `src/lib/research/**` | Data Status findings, Landscape labels, Candidate/compare/substitution reasons | zh/en / semantic facts | PASS | Public computed labels/reasons are in scope; ranking/math-only fields remain unchanged and unknown states are not coerced. |
+| `src/i18n/index.ts`, `src/i18n/{zh,en}.ts` | all shared locale strings | zh/en | FIXED | Locale registry and both message catalogs are discovered; mission metadata, navigation, empty/error/status strings are route consumers, not isolated documentation. |
+| `src/content/models/**` | model detail/generated catalog records | mostly shared factual data | EXEMPT | Public factual records are scanner-covered, but model facts, unknowns, licenses, dates, and evidence notes are not stylistically rewritten without source verification. |
+| `src/content/papers/**` | paper details and role/reproduction records | zh/en where provided | EXEMPT | Scanner-covered scientific records retain paper claims, `not_reported`/`not_verified`, and evidence boundaries. |
+| `src/content/coverage/**`, `src/content/guides/**`, `src/content/changeEvents/**`, `src/data/**` | family/data status, Guide concepts, home events, market/compute callouts | shared/zh/en | PASS / EXEMPT | Bilingual authored presentation fields are reviewed; catalog, date, price, hardware and evidence values are explicit factual exemptions. |
+| `src/content.config.ts`, `src/lib/schemas.ts`, `src/lib/types.ts`, `src/stores/**` | content validation and persisted task/project defaults consumed by public routes | schema/state | EXEMPT | Discovered because they bound public values, but type keys, validation enums and empty state objects are runtime contracts, not direct prose owners. |
+| `src/styles/**` | all visual routes | CSS identifiers / generated content only | EXEMPT | Scanner discovery includes `.ts`/UI sources, while CSS is concretely excluded from prose matching because it contains no authored visible prose; visual behavior is covered by UI safety tests. |
+| `public/guides/seed-4x3090-preflight.sh`, `public/guides/seed-stage1-check.py` | downloadable Guide tools and their terminal help/error/status output | English/technical | PASS | Both downloadable public-copy owners are scanned; command/error text is operational and keeps exact evidence semantics. |
+| `public/og-cover.svg` | social preview image text | English/brand | PASS | Scanner-covered social-image owner aligns with current mission; `public/favicon.svg`, `public/og-cover.png`, and `_headers` contain no authored prose or are binary/protocol assets. |
+| Concrete exclusions: `src/**/*.test.{ts,tsx}`, `src/**/*.spec.{ts,tsx}`, fixture directories, `dist/`, `node_modules/`, `.omc/`, `docs/agents/**` | test/history/generated/private material | n/a | EXEMPT | These named classes do not own runtime public copy. Tests may intentionally contain banned samples; docs preserve audit history; generated/dependency/private state is not authored production source. |
+
+## Necessary direct warnings retained
+
+Direct prohibitions remain when the nearby context names the protected object and consequence:
+
+- shared GPU safety: do not kill or reset another researcher’s process;
+- network/account safety: do not expose SSH/VNC publicly or publish passwords, keys, or tokens;
+- research integrity: do not promote fallback-only actions, clean exit, import success, unknown values, P2 infrastructure, or `0.0→0.0` into stronger scientific claims;
+- billing integrity: do not multiply a monthly-only SKU into a fictional hourly payable amount;
+- gate integrity: do not advance when the required evidence is absent.
+
+These are **EXEMPT** from negative-word cleanup because each protects a named resource, person, cost, or scientific conclusion.
+
+## Representative route coverage
+
+Chinese source/render coverage:
+
+`/`, `/guide/`, `/guide/openevo-webshop-alfworld/`, `/research/seed-openevo/`, `/research/seed-openevo/base-model/`, `/research/seed-openevo/seed/`, `/research/seed-openevo/openevo/`, `/research/seed-openevo/benchmarks/`, `/research/seed-openevo/loops/`, `/research/seed-openevo/results/`, `/models/`, `/models/qwen2-5-3b-instruct/`, `/papers/`, `/papers/seed/`, `/workspace/`, `/compare/`, `/data-status/`, `/methodology/`.
+
+English source/render coverage:
+
+`/en/`, `/en/guide/`, `/en/guide/openevo-webshop-alfworld/`, `/en/research/seed-openevo/`, `/en/research/seed-openevo/loops/`, `/en/models/qwen2-5-3b-instruct/`, `/en/papers/seed/`.
+
+The build and browser UI matrix verify generation, responsive layout, overflow, details controls, and theme/locale behavior. Exact-head Preview inspection remains a release-stage responsibility after the final synchronized push.
+
+## Sustainable author workflow
+
+1. A user-visible page/copy/status/i18n change triggers the scenario registry.
+2. Read the copy standard, this inventory, visual architecture, and the relevant research contract.
+3. Identify source owner → generated routes → locales before editing.
+4. Run `npm run audit:copy`; review changed-source candidates in context.
+5. Run `npm run audit:copy:strict`, focused tests, `npm run verify:deploy`, build, and the relevant browser gate in one validation session.
+6. Update this canonical inventory only when ownership, coverage, or a justified exemption changes.
+
+## Coverage boundary after completion
+
+There are no unresolved high-priority copy items in the defined production source-owner scope. Candidate output is intentionally non-zero because precise research terminology, dated source evidence, bilingual source literals, and justified warnings require contextual review. A candidate count is not a defect count, and automatic rewriting of factual model/paper records would violate the project’s evidence contract.

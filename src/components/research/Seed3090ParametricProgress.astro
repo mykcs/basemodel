@@ -1,0 +1,79 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const sourceRoot = 'https://github.com/mykcs/seed3090/blob/main';
+
+const runs = [
+  {
+    label: 'P0',
+    score: '0.0 → 0.0',
+    title: t('参数训练闭环', 'Parametric training loop'),
+    text: t('2 条轨迹、30 个训练样本、2 个 optimizer steps；adapter reload 与真实 WebShop rollout 均完成。', '2 trajectories, 30 training examples, and 2 optimizer steps; adapter reload and real WebShop rollout completed.'),
+  },
+  {
+    label: 'gen1',
+    score: '0 → 0.429',
+    title: t('单次正变化', 'One positive observation'),
+    text: t('固定 seed 2026 时，task 612 出现一次正变化；样本太少，不能视为稳定收益。', 'With seed 2026 fixed, task 612 improved once; the sample is too small to count as stable efficacy.'),
+  },
+  {
+    label: 'gen2',
+    score: '0 → 0.429 → 0',
+    title: t('累计状态回退', 'Cumulative-state regression'),
+    text: t('两代 cumulative artifact、replay、保存和 reload 能工作，但 task 612 回到 0。', 'Two-generation cumulative artifacts, replay, storage, and reload worked, but task 612 returned to 0.'),
+  },
+] as const;
+---
+
+<section id="seed3090-parametric-progress" class="history" aria-labelledby="seed3090-history-title" data-testid="seed3090-parametric-progress">
+  <header class="history__header">
+    <div>
+      <p class="eyebrow">seed3090 <span aria-hidden="true">·</span> <time datetime="2026-08-13">2026-08-13</time></p>
+      <h2 id="seed3090-history-title">{t('RTX6 参数实验记录', 'RTX6 parametric experiment record')}</h2>
+      <p>{t('这一节只保留历史诊断价值。RTX6（4×RTX 3090）已经退出当前实验主线；新的 WebShop 科学结论以 openevo-experiment 为准。', 'This section is retained only for historical diagnostic value. RTX6 (4×RTX 3090) is no longer the active experiment platform; current WebShop claims are governed by openevo-experiment.')}</p>
+    </div>
+    <aside><span>{t('历史方法', 'Historical method')}</span><strong>OpenEvo SD-LoRA · continual LoRA-SFT</strong><small>{t('不是 SEED 的 OPD + GRPO 复现', 'Not a reproduction of SEED OPD + GRPO')}</small></aside>
+  </header>
+
+  <section aria-labelledby="history-loop-title">
+    <div class="section-heading"><span>01</span><div><small>{t('历史机制', 'Historical mechanism')}</small><h3 id="history-loop-title">{t('参数训练闭环', 'Parametric training loop')}</h3></div></div>
+    <ol class="flow">
+      <li><strong>{t('WebShop 轨迹', 'WebShop trajectories')}</strong><span>{t('真实环境动作与完整 episode 记录', 'real environment actions and complete episode records')}</span></li>
+      <li><strong>dataset artifact</strong><span>{t('轨迹转换为 SD-LoRA 训练样本', 'trajectories converted into SD-LoRA training examples')}</span></li>
+      <li><strong>causal-LM loss → backward → optimizer.step</strong><span>{t('产生 LoRA / PARAMETRIC_MEMORY', 'produces LoRA / PARAMETRIC_MEMORY')}</span></li>
+      <li><strong>{t('reload → WebShop rollout', 'reload → WebShop rollout')}</strong><span>{t('下一次运行加载更新后的 adapter', 'a later run loads the updated adapter')}</span></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="history-runs-title">
+    <div class="section-heading"><span>02</span><div><small>{t('历史结果', 'Historical results')}</small><h3 id="history-runs-title">{t('关键运行记录', 'Key run records')}</h3></div></div>
+    <div class="run-grid">{runs.map((run) => <article><span>{run.label}</span><strong>{run.title}</strong><b>{run.score}</b><p>{run.text}</p></article>)}</div>
+    <p class="note">{t('这些运行证明参数路径可以真实执行，但没有给出 multi-seed effect estimate，也没有建立稳定 WebShop 收益。', 'These runs establish a real parametric path, but they do not provide a multi-seed effect estimate or stable WebShop efficacy.')}</p>
+  </section>
+
+  <section aria-labelledby="history-diagnosis-title">
+    <div class="section-heading"><span>03</span><div><small>{t('迁移到当前实验的问题', 'Questions carried forward')}</small><h3 id="history-diagnosis-title">{t('遗留诊断问题', 'Inherited diagnostic questions')}</h3></div></div>
+    <ul class="questions">
+      <li>{t('SD-LoRA 是否先拟合训练任务？', 'Does SD-LoRA first fit the training tasks?')}</li>
+      <li>{t('成功监督样本是否过少？', 'Are successful supervision examples too sparse?')}</li>
+      <li>{t('gen2 回退来自遗忘还是 rollout 方差？', 'Does gen2 regression come from forgetting or rollout variance?')}</li>
+      <li>{t('参数变化从哪个 state / action 开始改变在线行为？', 'At which state/action does the parameter change first alter online behavior?')}</li>
+    </ul>
+    <p class="note">{t('当前 openevo-experiment 已把其中最紧迫的问题收敛为 Phase H0：先寻找自然成功轨迹，再决定监督诊断或 teacher-success bootstrap。', 'The active openevo-experiment campaign has narrowed the immediate question to Phase H0: search for natural successes before choosing successful-supervision diagnostics or teacher-success bootstrap.')}</p>
+  </section>
+
+  <footer class="sources">
+    <a href={`${sourceRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('历史阶段报告', 'Historical stage report')} ↗</a>
+    <a href={`${sourceRoot}/README.md`} target="_blank" rel="noreferrer">seed3090 README ↗</a>
+  </footer>
+</section>
+
+<style>
+  .history{width:min(1120px,calc(100% - 2rem));margin:2rem auto 5rem;padding:clamp(1rem,3vw,1.6rem);border:1px solid var(--line);border-radius:20px;background:var(--surface)}.history__header{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.6fr);gap:1rem;align-items:start}.history__header .eyebrow{margin:0;color:var(--muted);font-size:.7rem}.history__header h2{margin:.4rem 0 .6rem}.history__header p{max-width:72ch;margin:0;color:var(--muted);line-height:1.65}.history__header aside{padding:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.history__header aside span,.history__header aside strong,.history__header aside small{display:block}.history__header aside span,.history__header aside small{color:var(--muted);font-size:.68rem}.history__header aside strong{margin:.35rem 0;font-size:.8rem}.history section{padding:1.4rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.6rem;margin-bottom:.8rem}.section-heading>span{color:var(--accent-deep);font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.66rem}.section-heading h3{margin:.15rem 0 0}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}.flow li,.run-grid article{padding:.8rem;border:1px solid var(--line);border-radius:12px}.flow strong,.flow span{display:block}.flow strong{font-size:.8rem}.flow span{margin-top:.35rem;color:var(--muted);font-size:.7rem;line-height:1.45}.run-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.run-grid article>span{color:var(--accent-deep);font-size:.66rem;font-weight:800}.run-grid article>strong,.run-grid article>b{display:block}.run-grid article>strong{margin-top:.5rem;font-size:.82rem}.run-grid article>b{margin-top:.65rem;font:800 1rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.run-grid p,.note{color:var(--muted);font-size:.74rem;line-height:1.55}.note{max-width:82ch}.questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.questions li{padding:.75rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted);font-size:.76rem;line-height:1.45}.sources{display:flex;flex-wrap:wrap;gap:.45rem;padding-top:.9rem;border-top:1px solid var(--line)}.sources a{font-size:.7rem}
+  @media(max-width:800px){.history__header{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.run-grid{grid-template-columns:1fr}}
+  @media(max-width:560px){.history{width:min(100% - 1rem,1120px)}.flow,.questions{grid-template-columns:1fr}}
+</style>

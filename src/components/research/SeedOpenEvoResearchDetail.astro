@@ -1,0 +1,89 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
+
+type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'loops' | 'results';
+interface Props { locale: Locale; page: DetailPage }
+const { locale, page } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const hasExplainer = Astro.slots.has('default');
+
+const pages = [
+  { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
+  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
+  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
+  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
+  { id: 'benchmarks', label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
+  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
+  { id: 'results', label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
+] as const;
+
+const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }> = {
+  'base-model': {
+    eyebrow: t('实验模型', 'Experiment model'),
+    title: t('Qwen2.5-3B-Instruct 实验设置', 'Qwen2.5-3B-Instruct experiment setup'),
+    lede: t('记录 checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式。', 'Record the checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode.'),
+  },
+  seed: {
+    eyebrow: t('方法', 'Method'),
+    title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
+    lede: t('SEED 从完整轨迹生成 hindsight skill，并通过 OPD 与 RL 把学习信号写回 policy 参数。', 'SEED generates hindsight skills from completed trajectories and writes the learning signal back into policy parameters through OPD and RL.'),
+  },
+  openevo: {
+    eyebrow: t('方法', 'Method'),
+    title: t('OpenEvo 演化流程', 'OpenEvo evolution flow'),
+    lede: t('OpenEvo 以任务边界封存证据，运行演化方法，并让后续任务加载接受的 artifact、adapter 或 revision。', 'OpenEvo seals evidence at task boundaries, runs evolution methods, and lets later tasks load accepted artifacts, adapters, or revisions.'),
+  },
+  benchmarks: {
+    eyebrow: t('实验环境', 'Experiment environments'),
+    title: 'ALFWorld 与 WebShop',
+    lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
+  },
+  loops: {
+    eyebrow: t('比较', 'Comparison'),
+    title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
+    lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
+  },
+  results: {
+    eyebrow: t('实验', 'Experiment'),
+    title: t('实验结果与证据', 'Experiment results and evidence'),
+    lede: t('当前结果以 openevo-experiment 为准；seed3090 与 openevo-webshop 作为历史来源保留。', 'Current results are governed by openevo-experiment; seed3090 and openevo-webshop remain historical sources.'),
+  },
+};
+
+const current = copy[page];
+---
+<div class="plain-detail">
+  <header class="plain-detail__header">
+    <div>{current.eyebrow}</div>
+    <h1>{current.title}</h1>
+    <p>{current.lede}</p>
+  </header>
+  <nav class="plain-detail__tabs" aria-label={t('SEED 与 OpenEvo 实验页面', 'SEED and OpenEvo experiment pages')}>
+    {pages.map((item) => <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>)}
+  </nav>
+  {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
+  <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>
+</div>
+
+<style>
+  .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
+  .plain-detail__header>div{color:var(--accent-deep);font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+  .plain-detail__header h1{margin:.5rem 0 .7rem;letter-spacing:-.035em}
+  .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}
+  .plain-detail__tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:0;overflow-x:auto;margin:.5rem 0 2rem;padding:0;border-block:1px solid var(--line);background:color-mix(in srgb,var(--surface) 96%,transparent);backdrop-filter:blur(14px)}
+  .plain-detail__tabs a{position:relative;flex:0 0 auto;padding:.72rem .78rem;color:var(--muted);font-size:.73rem;font-weight:720;text-decoration:none}
+  .plain-detail__tabs a+a{border-left:1px solid var(--line)}
+  .plain-detail__tabs a:hover,.plain-detail__tabs a:focus-visible{color:var(--ink);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+  .plain-detail__tabs a[aria-current='page']{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .plain-detail__tabs a[aria-current='page']:after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;background:var(--accent-deep)}
+  .plain-detail__interactive{margin:0 0 2.6rem}
+  .plain-detail__interactive :global(.irx){width:100%;margin:0;padding-top:1.7rem}
+  .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
+  .plain-detail-core :global(.mission-page){width:100%;margin:0}
+  .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
+  @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__tabs{margin-bottom:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}}
+</style>

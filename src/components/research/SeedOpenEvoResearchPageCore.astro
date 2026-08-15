@@ -1,0 +1,144 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+export type MissionPage = 'hub' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'loops' | 'results';
+interface Props { locale: Locale; page: MissionPage }
+const { locale, page } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+---
+
+<div class="mission-page">
+  {page === 'base-model' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('模型', 'Model')}</small><h2>Qwen2.5-3B-Instruct</h2></div></div>
+      <div class="model-name-diagram">
+        <div><strong>Qwen</strong><span>{t('模型家族', 'model family')}</span></div>
+        <div><strong>2.5</strong><span>{t('代际标签', 'generation label')}</span></div>
+        <div><strong>3B</strong><span>{t('参数规模', 'parameter scale')}</span></div>
+        <div><strong>Instruct</strong><span>{t('指令对齐 checkpoint', 'instruction-aligned checkpoint')}</span></div>
+      </div>
+      <p class="section-copy">{t('模型名只是入口。复现实验还需要固定具体 revision、精度、量化、上下文、推理后端、chat template、prompt/action grammar 和权重是否更新。', 'The model name is only the entry point. Reproduction also requires the exact revision, precision, quantization, context, inference backend, chat template, prompt/action grammar, and whether weights are updated.')}</p>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('字段', 'Fields')}</small><h2>{t('实验字段', 'Experiment fields')}</h2></div></div>
+      <dl class="term-grid">
+        <div><dt>Base / Instruct</dt><dd>{t('不同 checkpoint 类型，不能在复现中无说明地互换。', 'Different checkpoint types; they are not interchangeable without disclosure.')}</dd></div>
+        <div><dt>Parameters</dt><dd>{t('影响存储、显存与计算，不直接等同于任务表现。', 'Affects storage, memory, and compute; it is not task performance itself.')}</dd></div>
+        <div><dt>Context</dt><dd>{t('一次推理可处理的 token 窗口，不等于 Agent 的有效长期记忆。', 'The token window for one inference call, not effective long-term agent memory.')}</dd></div>
+        <div><dt>BF16 / FP16 / INT4</dt><dd>{t('数值精度或量化状态，会影响显存、吞吐和数值行为。', 'Precision or quantization affects memory, throughput, and numerical behavior.')}</dd></div>
+        <div><dt>SFT / LoRA / RL</dt><dd>{t('不同的权重更新方式，必须在比较时明确。', 'Different weight-update modes that must be explicit in comparisons.')}</dd></div>
+        <div><dt>Checkpoint / revision</dt><dd>{t('真正可复现的模型状态。', 'The reproducible model state.')}</dd></div>
+      </dl>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('控制变量', 'Controls')}</small><h2>{t('可比性变量', 'Comparability variables')}</h2></div></div>
+      <table class="mission-table"><thead><tr><th>{t('变量', 'Variable')}</th><th>{t('影响', 'Impact')}</th><th>{t('处理', 'Treatment')}</th></tr></thead><tbody>
+        <tr><td>checkpoint</td><td>{t('动作质量、token 分布、训练起点', 'action quality, token distribution, training start')}</td><td>{t('严格复现固定；换模型另立实验', 'pin for strict reproduction; model changes are separate experiments')}</td></tr>
+        <tr><td>{t('精度 / 量化', 'precision / quantization')}</td><td>{t('显存、吞吐、采样', 'memory, throughput, sampling')}</td><td>{t('记录并固定', 'record and hold fixed')}</td></tr>
+        <tr><td>{t('推理后端', 'inference backend')}</td><td>{t('采样与运行行为', 'sampling and runtime behavior')}</td><td>{t('作为协议变量记录', 'record as a protocol variable')}</td></tr>
+        <tr><td>prompt / parser</td><td>{t('合法动作与 fallback', 'valid actions and fallbacks')}</td><td>{t('比较时保持一致', 'hold fixed in comparisons')}</td></tr>
+      </tbody></table>
+      <div class="section-actions"><a class="button button-primary" href={p('/models/qwen2-5-3b-instruct/')}>{t('模型记录 →', 'Model record →')}</a></div>
+    </section>
+  </>}
+
+  {page === 'seed' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('学习信号', 'Learning signal')}</small><h2>{t('奖励与 hindsight skill', 'Reward and hindsight skill')}</h2></div></div>
+      <p class="section-copy">{t('Agent 任务常只有稀疏终局奖励。SEED 用完整轨迹生成 hindsight skill，再把 skill 导致的动作概率变化转成更密集的 token 级学习信号。', 'Agent tasks often provide sparse terminal rewards. SEED generates hindsight skills from completed trajectories, then converts skill-induced action-probability changes into denser token-level learning signals.')}</p>
+      <div class="flow"><div><b>{t('完整轨迹', 'Completed trajectory')}</b></div><i>→</i><div><b>hindsight skill</b></div><i>→</i><div><b>OPD signal</b></div></div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('训练', 'Training')}</small><h2>{t('SEED 训练阶段', 'SEED training stages')}</h2></div></div>
+      <div class="two-grid">
+        <article><span>Stage 1</span><h3>Hindsight-skill SFT</h3><ol><li>{t('收集离线轨迹', 'Collect offline trajectories')}</li><li>{t('外部 analyzer 生成 hindsight skill', 'External analyzer generates hindsight skills')}</li><li>{t('模型学习轨迹分析能力', 'The model learns trajectory analysis')}</li></ol></article>
+        <article><span>Stage 2</span><h3>Self-evolving OPD + RL</h3><ol><li>{t('当前 policy 收集 on-policy 轨迹', 'Current policy collects on-policy trajectories')}</li><li>{t('同一 checkpoint 生成 skill', 'The same checkpoint generates skills')}</li><li>{t('固定原动作进行双上下文重打分', 'Re-score the same sampled actions under two contexts')}</li><li>{t('联合优化 RL 与 OPD', 'Jointly optimize RL and OPD')}</li></ol></article>
+      </div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('时间尺度', 'Time scales')}</small><h2>{t('SEED 的双时间尺度', 'SEED time scales')}</h2></div></div>
+      <div class="two-grid"><article><h3>Episode / rollout</h3><p>{t('观察 → 动作 → 环境反馈，直到终止；本轮权重保持固定。', 'Observation → action → environment feedback until termination; weights stay fixed within the rollout.')}</p></article><article><h3>Policy update</h3><p>{t('收集一组轨迹 → hindsight → reward / advantage / OPD → optimizer → 新 checkpoint。', 'Collect trajectories → hindsight → reward / advantage / OPD → optimizer → new checkpoint.')}</p></article></div>
+      <p class="section-copy">{t('SEED 的目标是把行为变化内化进 policy 参数，而不是部署时永久携带额外 skill prompt。', 'SEED aims to internalize behavioral change into policy parameters rather than carrying an extra skill prompt at deployment.')}</p>
+      <div class="section-actions"><a class="button button-primary" href={p('/papers/seed/')}>{t('SEED 论文页 →', 'SEED paper →')}</a></div>
+    </section>
+  </>}
+
+  {page === 'openevo' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('任务边界', 'Task boundary')}</small><h2>{t('OpenEvo 的任务边界', 'OpenEvo task boundary')}</h2></div></div>
+      <ol class="step-track"><li><b>{t('固定 Project Head', 'Pin Project Head')}</b><span>{t('任务开始时锁定 model / adapter / context revision', 'pin model / adapter / context revisions at task start')}</span></li><li><b>{t('运行任务', 'Run task')}</b><span>{t('保存 transcript、trajectory、score 与失败信息', 'save transcript, trajectory, score, and failures')}</span></li><li><b>{t('封存证据', 'Seal evidence')}</b><span>{t('完成任务的数据成为 evolution input', 'completed-task data becomes evolution input')}</span></li><li><b>{t('运行演化方法', 'Run evolution method')}</b><span>{t('生成声明类型的 artifact / adapter', 'produce the declared artifact / adapter')}</span></li><li><b>{t('验证与发布', 'Validate and publish')}</b><span>{t('接受的状态组成 successor revision', 'accepted state forms a successor revision')}</span></li><li><b>{t('后续任务加载', 'Load later')}</b><span>{t('新 revision 从后续任务开始生效', 'the new revision activates on a later task')}</span></li></ol>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('载体', 'Carriers')}</small><h2>{t('OpenEvo 演化载体', 'OpenEvo evolution carriers')}</h2></div></div>
+      <div class="four-grid"><article><span>text_memory</span><h3>{t('文本记忆', 'Text memory')}</h3><p>{t('把历史经验作为后续上下文。', 'Carry prior experience as later context.')}</p></article><article><span>skill_bundle</span><h3>{t('技能包', 'Skill bundle')}</h3><p>{t('保存可复用代码、规则或工具化技能。', 'Preserve reusable code, rules, or tool-oriented skills.')}</p></article><article><span>agent_system</span><h3>{t('系统行为', 'Agent system')}</h3><p>{t('版本化系统级行为指导。', 'Versioned system-level behavior guidance.')}</p></article><article><span>parametric_memory</span><h3>{t('参数载体', 'Parametric carrier')}</h3><p>{t('adapter / 参数更新路径；当前正式实验使用 SD-LoRA。', 'Adapter / parameter update path; the active experiment uses SD-LoRA.')}</p></article></div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('基准', 'Benchmarks')}</small><h2>{t('Benchmark 接入契约', 'Benchmark integration contract')}</h2></div></div>
+      <table class="mission-table"><thead><tr><th>{t('层', 'Layer')}</th><th>{t('必须保存', 'Required evidence')}</th></tr></thead><tbody><tr><td>{t('环境', 'Environment')}</td><td>reset / observation / valid action / termination</td></tr><tr><td>{t('轨迹', 'Trajectory')}</td><td>{t('动作、观察、分数、结束原因、模型输出', 'actions, observations, scores, termination, model outputs')}</td></tr><tr><td>{t('评测', 'Evaluation')}</td><td>{t('连续分数、exact success、步骤与失败类型', 'continuous score, exact success, steps, failure types')}</td></tr><tr><td>{t('演化', 'Evolution')}</td><td>{t('输入 artifact、方法身份、输出 artifact、激活 revision', 'input artifact, method identity, output artifact, activated revision')}</td></tr></tbody></table>
+    </section>
+  </>}
+
+  {page === 'benchmarks' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('环境', 'Environments')}</small><h2>{t('交互与评测', 'Interaction and evaluation')}</h2></div></div>
+      <div class="two-grid"><article><h3>ALFWorld</h3><p>{t('文本化具身任务。核心结果是各任务家族 success rate 与不加权 macro-average；循环、无效动作和状态遗漏单独记录。', 'Text-based embodied tasks. Core outcomes are per-family success rates and an unweighted macro-average; loops, invalid actions, and missed state remain separate diagnostics.')}</p></article><article><h3>WebShop</h3><p>{t('网页购物导航任务。同时报告 normalized task-completion score 与 exact success；query、点击、属性选择和 fallback 单独记录。', 'Web-shopping navigation. Report normalized task-completion score and exact success together; preserve queries, clicks, attribute choices, and fallbacks separately.')}</p></article></div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('证据', 'Evidence')}</small><h2>{t('结果与轨迹证据', 'Outcome and trajectory evidence')}</h2></div></div>
+      <table class="mission-table"><thead><tr><th>{t('证据', 'Evidence')}</th><th>ALFWorld</th><th>WebShop</th></tr></thead><tbody><tr><td>{t('最终成功', 'Final success')}</td><td>success / failure</td><td>exact success</td></tr><tr><td>{t('部分完成', 'Partial completion')}</td><td>—</td><td>normalized score</td></tr><tr><td>{t('轨迹诊断', 'Trajectory diagnostics')}</td><td>{t('循环、无效动作、状态遗漏', 'loops, invalid actions, missed state')}</td><td>{t('query、click、option、fallback', 'query, click, option, fallback')}</td></tr></tbody></table>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('对比', 'Comparison')}</small><h2>{t('公平比较协议', 'Fair-comparison protocol')}</h2></div></div>
+      <ul class="control-list"><li>{t('同一模型 checkpoint / revision', 'Same model checkpoint / revision')}</li><li>{t('同一任务集与 split', 'Same task set and split')}</li><li>{t('同一 prompt、action grammar 与 parser', 'Same prompt, action grammar, and parser')}</li><li>{t('同一步数、rollout 数与 sampling 参数', 'Same step, rollout, and sampling budgets')}</li><li>{t('同一 evaluator 与 score 定义', 'Same evaluator and score definition')}</li><li>{t('同一推理精度与后端，或明确记录替代', 'Same precision and backend, or an explicit substitution')}</li></ul>
+    </section>
+  </>}
+
+  {page === 'loops' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('循环', 'Loops')}</small><h2>{t('两种更新循环', 'Two update loops')}</h2></div></div>
+      <div class="two-grid"><article><span>SEED</span><h3>{t('参数更新', 'Parameter update')}</h3><p>on-policy trajectories → hindsight skill → re-score → GRPO + OPD → policy θt+1</p></article><article><span>OpenEvo</span><h3>{t('跨任务演化', 'Cross-task evolution')}</h3><p>completed task → sealed evidence → evolution method → artifact / adapter → successor revision</p></article></div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('接口', 'Interfaces')}</small><h2>{t('更新对象与接口', 'Updated objects and interfaces')}</h2></div></div>
+      <table class="mission-table"><thead><tr><th>{t('维度', 'Dimension')}</th><th>SEED</th><th>OpenEvo</th></tr></thead><tbody><tr><td>{t('经验来源', 'Experience')}</td><td>on-policy trajectories</td><td>sealed task/session evidence</td></tr><tr><td>{t('中间产物', 'Intermediate')}</td><td>hindsight skill</td><td>versioned artifact / adapter</td></tr><tr><td>{t('更新对象', 'Updated object')}</td><td>policy parameters</td><td>carrier / adapter / successor revision</td></tr><tr><td>{t('生效边界', 'Activation')}</td><td>{t('下一次 policy update 后', 'after policy update')}</td><td>{t('后续任务加载 revision 时', 'when a later task loads the revision')}</td></tr></tbody></table>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('实验设计', 'Experiment design')}</small><h2>{t('受控比较', 'Controlled comparison')}</h2></div></div>
+      <ol class="comparison-route"><li><b>{t('同一 baseline', 'Same baseline')}</b><span>{t('固定普通 policy 起点', 'fix the ordinary-policy start')}</span></li><li><b>{t('机制验收', 'Mechanism validation')}</b><span>{t('分别证明参数或 artifact 真正生效', 'prove the parameter/artifact mechanism activates')}</span></li><li><b>{t('协议对齐', 'Protocol alignment')}</b><span>{t('任务、模型、预算、parser、evaluator', 'tasks, model, budget, parser, evaluator')}</span></li><li><b>{t('结果比较', 'Outcome comparison')}</b><span>{t('分数 + 失败分布', 'metrics + failure distributions')}</span></li><li><b>{t('单变量改动', 'One-variable change')}</b><span>{t('在相同协议下重跑', 'rerun under the same protocol')}</span></li></ol>
+    </section>
+  </>}
+
+  {page === 'results' && <>
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>01</span><div><small>{t('状态', 'Status')}</small><h2>{t('实验进度', 'Experiment progress')}</h2></div></div>
+      <div class="status-board"><article><span>{t('历史', 'Historical')}</span><h3>seed3090 · RTX6 / 4×RTX 3090</h3><p>{t('保存早期 WebShop / ALFWorld、工程 bring-up 和参数进化证据。', 'Preserves early WebShop/ALFWorld bring-up and parametric-evolution evidence.')}</p></article><article><span>{t('历史', 'Historical')}</span><h3>openevo-webshop</h3><p>{t('保存 WebShop × SD-LoRA 的迁移代码和诊断。', 'Preserves the WebShop × SD-LoRA migration code and diagnostics.')}</p></article><article><span>{t('当前', 'Current')}</span><h3>openevo-experiment · RTX 5090</h3><p>{t('当前 campaign、正式运行与下一步实验以这个仓库为准。', 'Current campaigns, formal runs, and next experiments are governed here.')}</p></article></div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>02</span><div><small>{t('保存', 'Preserve')}</small><h2>{t('运行记录', 'Run records')}</h2></div></div>
+      <ul class="artifact-list"><li><code>Run Manifest</code><span>{t('模型、代码、adapter、任务与实验身份', 'model, code, adapter, task, and experiment identity')}</span></li><li><code>result JSON</code><span>{t('分数、成功、步数、fallback 与失败原因', 'score, success, steps, fallback, and failure causes')}</span></li><li><code>logs</code><span>{t('环境、模型、训练与评测日志', 'environment, model, training, and evaluation logs')}</span></li><li><code>W&B</code><span>{t('可视化观测；不替代本地 provenance', 'observability; not a substitute for local provenance')}</span></li></ul>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-section__heading"><span>03</span><div><small>{t('研究', 'Research')}</small><h2>{t('下一步实验假设', 'Next experimental hypothesis')}</h2></div></div>
+      <p class="section-copy">{t('当前 Phase G 已完成但三臂 score / win 都为零。下一步不是继续盲目扫超参数，而是先确认能否在新的 train-only WebShop tasks 上获得自然成功经验；成功样本存在时再做 train-fit / supervision sanity check，否则进入 teacher-success bootstrap。', 'Phase G is complete but all three arms have zero score/win outcomes. The next step is not a blind hyperparameter sweep: first test whether new train-only WebShop tasks yield natural successful experience; use successful examples for train-fit/supervision sanity checks if available, otherwise move to teacher-success bootstrap.')}</p>
+      <div class="section-actions"><a class="button button-primary" href={p('/workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1')}>{t('研究工作台 →', 'Research workspace →')}</a></div>
+    </section>
+  </>}
+</div>
+
+<style>
+  .mission-page{width:100%;margin:0}.mission-section{padding:clamp(1.3rem,3vw,2.2rem) 0;border-top:1px solid var(--line);scroll-margin-top:5rem}.mission-section__heading{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:.65rem;align-items:start;margin-bottom:1rem}.mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.mission-section__heading small{display:block;color:var(--muted);font-size:.68rem}.mission-section__heading h2{margin:.18rem 0 0}.section-copy{max-width:78ch;color:var(--muted);line-height:1.7}.model-name-diagram,.term-grid,.two-grid,.four-grid,.status-board{display:grid;gap:.65rem}.model-name-diagram{grid-template-columns:1.2fr .8fr .8fr 1fr}.model-name-diagram div,.term-grid div,.two-grid article,.four-grid article,.status-board article{padding:.95rem;border:1px solid var(--line);border-radius:14px}.model-name-diagram strong,.model-name-diagram span{display:block;text-align:center}.model-name-diagram span{margin-top:.35rem;color:var(--muted);font-size:.7rem}.term-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}.term-grid div{border-left:3px solid var(--accent-deep)}.term-grid dt{font-weight:800}.term-grid dd{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.5}.mission-table{width:100%;border-collapse:collapse;font-size:.78rem}.mission-table th,.mission-table td{padding:.72rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.mission-table th{color:var(--muted);font-size:.68rem}.section-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.55rem;align-items:center}.flow div{padding:.9rem;border:1px solid var(--line);border-radius:12px;text-align:center}.flow i{color:var(--accent-deep);font-style:normal}.two-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two-grid article>span,.four-grid article>span,.status-board article>span{color:var(--accent-deep);font-size:.68rem;font-weight:800}.two-grid h3,.four-grid h3,.status-board h3{margin:.5rem 0}.two-grid p,.four-grid p,.status-board p{color:var(--muted);font-size:.76rem;line-height:1.55}.two-grid ol{padding-left:1.2rem;color:var(--muted);font-size:.76rem;line-height:1.6}.step-track,.comparison-route{display:grid;gap:.55rem;margin:0;padding:0;list-style:none}.step-track{grid-template-columns:repeat(6,minmax(0,1fr))}.comparison-route{grid-template-columns:repeat(5,minmax(0,1fr))}.step-track li,.comparison-route li{padding:.85rem;border:1px solid var(--line);border-radius:12px}.step-track b,.step-track span,.comparison-route b,.comparison-route span{display:block}.step-track b,.comparison-route b{font-size:.76rem}.step-track span,.comparison-route span{margin-top:.4rem;color:var(--muted);font-size:.68rem;line-height:1.45}.four-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.control-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.control-list li{padding:.8rem;border:1px solid var(--line);border-radius:12px;font-size:.74rem}.status-board{grid-template-columns:repeat(3,minmax(0,1fr))}.status-board article:last-child{border-color:var(--accent-deep)}.artifact-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.artifact-list li{padding:.8rem;border:1px solid var(--line);border-radius:12px}.artifact-list code,.artifact-list span{display:block}.artifact-list code{color:var(--accent-deep);font-weight:800}.artifact-list span{margin-top:.3rem;color:var(--muted);font-size:.72rem;line-height:1.45}@media(max-width:900px){.step-track,.comparison-route,.four-grid,.term-grid,.control-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.mission-section__heading{grid-template-columns:2rem minmax(0,1fr)}.model-name-diagram,.term-grid,.two-grid,.four-grid,.status-board,.step-track,.comparison-route,.control-list,.artifact-list{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow i{transform:rotate(90deg);text-align:center}.mission-table{display:block;overflow-x:auto}}
+</style>

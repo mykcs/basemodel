@@ -103,10 +103,10 @@ export function GlobalModelQuickView({ m, locale }: Props) {
       {loadError && <p className="empty-state">{zh ? '快速查看数据加载失败。可直接打开模型详情页。' : 'Quick-view data failed to load. Open the full model page instead.'}</p>}
 
       {model && <>
-        {hasMeaningfulResearchTask(task) && <section className="quick-view-task-fit" aria-label={zh ? '当前研究任务匹配' : 'Current research-task fit'}>
-          <h3>{zh ? '当前研究任务' : 'Current research task'}</h3>
+        {hasMeaningfulResearchTask(task) && <section className="quick-view-task-fit" aria-label={zh ? '模型与已填写实验条件的匹配情况' : 'Fit with the experiment conditions you entered'}>
+          <h3>{zh ? '这个模型符合已填写的实验条件吗？' : 'Does this model fit the experiment conditions you entered?'}</h3>
           {blockers.length === 0
-            ? <p className="fit-ok">{zh ? '未发现硬性约束冲突；仍需在工作台查看完整五维适配与证据。' : 'No hard constraint conflict found; use the workbench for the full five-dimension fit and evidence.'}</p>
+            ? <p className="fit-ok">{zh ? '没有发现模型与已填写条件的硬冲突。打开实验工作台继续查看显存、训练方式和来源。' : 'No hard conflict was found with the conditions you entered. Open the experiment workspace to inspect memory, training support, and sources.'}</p>
             : <ul>{blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}</ul>}
         </section>}
         <dl className="quick-view-facts">

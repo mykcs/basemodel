@@ -1,10 +1,12 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import Seed3090EvidenceGate from '../../../components/research/Seed3090EvidenceGate.astro';
+import OpenEvoExperimentProgram from '../../../components/research/OpenEvoExperimentProgram.astro';
+import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × SEED 结果与证据" description="区分历史 notebook、当前 artifact、真实模型动作、真实演化、可比 benchmark 结果与框架改进，并以 seed3090 展示机制、归因和效果三层证据门槛。" locale={locale}>
+<AppLayout title="OpenEvo × SEED 实验结果" description="当前结果以 openevo-experiment 为准：5×RTX5090 实验分配下，Phase G 的 12 个 WebShop episodes 已完成，三臂 score / win 均为 0；下一步进入 Phase H0 Natural Success Search。seed3090 与 openevo-webshop 作为历史证据保留。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
-  <Seed3090EvidenceGate locale={locale} />
+  <OpenEvoExperimentProgram locale={locale} />
+  <Seed3090ParametricProgress locale={locale} />
 </AppLayout>

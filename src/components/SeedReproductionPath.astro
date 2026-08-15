@@ -48,7 +48,7 @@ OPENAI_MODEL=glm-5.2`;
   <header class="repro-hero">
     <div>
       <span class="section-kicker">{t('SEED 复现实战 · 从目标倒推', 'SEED reproduction · work backwards from the claim')}</span>
-      <h2 id="seed-reproduction-title">{t('先决定你要证明什么，再决定今天真的租哪张卡', 'Decide what you need to prove before choosing the GPU you can actually rent today')}</h2>
+      <h2 id="seed-reproduction-title">{t('先决定你要证明什么，再按带核验日期的目录选择实际可租 GPU', 'Decide what you need to prove, then choose an available GPU from a dated catalog snapshot')}</h2>
       <p>{t('论文写的是 8×NVIDIA A800 80G，但算力市场不是论文附录：卡型、价格和库存都会变化。正确做法不是把“80G”都当成一样，而是把论文条件、当前市场和你的实验声明分开。', 'The paper uses 8×NVIDIA A800 80G, but a cloud marketplace is not a paper appendix: SKUs, prices, and inventory change. Do not treat every “80G” GPU as equivalent; keep paper conditions, current market facts, and your experiment claim separate.')}</p>
     </div>
     <aside>
@@ -128,7 +128,7 @@ OPENAI_MODEL=glm-5.2`;
     <section class="why-a100" aria-labelledby="why-a100-title">
       <div>
         <span class="section-kicker">{t('为什么 C 选 A100 80G NVLINK×8', 'Why option C is 8×A100 80G NVLINK')}</span>
-        <h4 id="why-a100-title">{t('不是因为 A100 “更强”，而是因为它改动的关键条件最少', 'Not because A100 is “better,” but because it changes the fewest critical conditions')}</h4>
+        <h4 id="why-a100-title">{t('A100 替代方案尽量减少关键条件变化', 'An A100 substitute minimizes changes to critical conditions')}</h4>
       </div>
       <ul>
         <li>{t('仍然是 8 张 GPU：不先把论文的并行规模改掉。', 'Still eight GPUs: preserve the paper’s parallel scale first.')}</li>
@@ -172,7 +172,7 @@ OPENAI_MODEL=glm-5.2`;
       <span class="section-kicker">01 · ALFWorld</span>
       <h3 id="alf-title">{t('第一阶段：先用最便宜、最容易诊断的配置把 ALFWorld 跑通', 'Stage one: bring up ALFWorld with the cheapest easy-to-debug configuration')}</h3>
       <p class="muted">{t('这里的目标不是训练出论文分数，而是确认 observation → action → reward → terminal outcome 这条环境链完整。对 Qwen2.5-3B 的单条推理 smoke test，优先用智星云当前公开的 1×RTX 4090 24G；环境没通之前，不要租八卡。', 'The goal here is not paper scores; it is verifying a complete observation → action → reward → terminal-outcome path. For a single Qwen2.5-3B inference smoke test, start with AI Galaxy’s current public 1×RTX 4090 24G option; do not rent eight GPUs before the environment works.')}</p>
-      <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{alfworldInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{alfworldRun}</code></pre><p>{t('不要直接跑最后一条命令：先保存一条 vanilla rollout，再检查 Stage 1 trajectory → skill，最后才进入 Stage 2。', 'Do not jump to the final command: save one vanilla rollout, inspect Stage 1 trajectory → skill, then enter Stage 2.')}</p></article></div>
+      <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{alfworldInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{alfworldRun}</code></pre><p>{t('按顺序保存一条 vanilla rollout，检查 Stage 1 trajectory → skill，再进入 Stage 2；这个顺序让每层证据都能独立验收。', 'Save a vanilla rollout, inspect Stage 1 trajectory → skill, then enter Stage 2. This order makes each evidence layer independently verifiable.')}</p></article></div>
       <p class="protocol"><strong>{t('论文协议：', 'Paper protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 2048；response 512；最大交互 30。测试 140 seen + 134 unseen，并按 6 类任务等权平均。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 2048; response 512; max 30 interactions. Test 140 seen + 134 unseen, equally weighted over six task categories.')}</p>
     </section>
 

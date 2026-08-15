@@ -12,7 +12,6 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (target: string) => localePath(locale, target);
 
 const exact = (target: string) => path === target || path === `${target}/`;
-const starts = (target: string) => path.startsWith(`${target}/`);
 const relevant = exact('/guide')
   || exact('/guide/openevo-webshop-alfworld')
   || exact('/models')
@@ -29,21 +28,21 @@ const active = exact('/models') || exact('/models/qwen2-5-3b-instruct') ? 'model
   : 'mission';
 
 const steps = [
-  { id: 'mission', label: t('研究总览', 'Mission'), href: p('/research/seed-openevo/') },
-  { id: 'model', label: 'Base Model', href: p('/research/seed-openevo/base-model/') },
-  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
-  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
+  { id: 'mission', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
+  { id: 'model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
+  { id: 'seed', label: t('SEED 方法', 'SEED method'), href: p('/research/seed-openevo/seed/') },
+  { id: 'openevo', label: t('OpenEvo 方法', 'OpenEvo method'), href: p('/research/seed-openevo/openevo/') },
   { id: 'benchmarks', label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
-  { id: 'run', label: t('复现', 'Reproduce'), href: p('/guide/openevo-webshop-alfworld/') },
-  { id: 'evidence', label: t('结果 / 改进', 'Results / improve'), href: p('/research/seed-openevo/results/') },
+  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
+  { id: 'evidence', label: t('比较结果', 'Compare results'), href: p('/research/seed-openevo/results/') },
 ];
 ---
 {relevant && (
-  <aside class="mission-ribbon" aria-label={t('当前页面在 SEED × OpenEvo 研究中的位置', 'This page in the SEED × OpenEvo research mission')}>
+  <aside class="mission-ribbon" aria-label={t('SEED 与 OpenEvo 实验导航', 'SEED and OpenEvo experiment navigation')}>
     <div class="shell mission-ribbon__inner">
       <div class="mission-ribbon__label">
-        <small>{t('你正在同一项研究里', 'One connected research mission')}</small>
-        <strong>{t('SEED 基准 → OpenEvo 复现与改进', 'SEED benchmarks → OpenEvo reproduction and improvement')}</strong>
+        <small>{t('实验顺序', 'Experiment order')}</small>
+        <strong>{t('复现 SEED → 运行 OpenEvo → 比较结果', 'Reproduce SEED → run OpenEvo → compare results')}</strong>
       </div>
       <nav>
         {steps.map((step) => <a href={step.href} aria-current={step.id === active ? 'step' : undefined}>{step.label}</a>)}

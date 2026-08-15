@@ -15,6 +15,7 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/base-model/',
   '/research/seed-openevo/seed/',
   '/research/seed-openevo/openevo/',
+  '/research/seed-openevo/experiment/',
   '/research/seed-openevo/benchmarks/',
   '/research/seed-openevo/loops/',
   '/research/seed-openevo/results/',

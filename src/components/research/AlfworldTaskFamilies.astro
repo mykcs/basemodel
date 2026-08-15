@@ -1,0 +1,41 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const families = [
+  ['pick_and_place_simple', zh ? '拿起物体并放到目标容器' : 'pick an object and place it in a target receptacle'],
+  ['look_at_obj_in_light', zh ? '拿起物体并在灯光下查看' : 'pick an object and inspect it under a light'],
+  ['pick_clean_then_place_in_recep', zh ? '清洁后再放置' : 'clean an object before placing it'],
+  ['pick_heat_then_place_in_recep', zh ? '加热后再放置' : 'heat an object before placing it'],
+  ['pick_cool_then_place_in_recep', zh ? '冷却后再放置' : 'cool an object before placing it'],
+  ['pick_two_obj_and_place', zh ? '处理两个同类物体并完成放置' : 'handle two same-type objects and place them'],
+] as const;
+---
+<details class="alf-family" data-alfworld-task-families>
+  <summary>{zh ? 'Level 3 · ALFWorld task family identity' : 'Level 3 · ALFWorld task-family identity'}</summary>
+  <p>{zh ? '教学层把六类核心 household task family 单独列出，保留上游 identity；环境 split 仍是 train / valid_seen / valid_unseen。' : 'The teaching layer lists six core household task families with their upstream identities; environment splits remain train / valid_seen / valid_unseen.'}</p>
+  <div class="alf-family-grid">
+    {families.map(([id, description], index) => (
+      <article>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <code>{id}</code>
+        <small>{description}</small>
+      </article>
+    ))}
+  </div>
+  <p class="alf-family-boundary"><strong>{zh ? '上游边界：' : 'Upstream boundary: '}</strong>{zh ? 'SEED 所带 ALFWorld generator 还定义了 ' : 'The ALFWorld generator vendored by SEED also defines '}<code>pick_and_place_with_movable_recep</code>{zh ? '。因此“六类核心”是本站的教学分组，不应被读成上游代码只有六个 GOALS。' : '. Therefore “six core” is a teaching grouping here, not a claim that the upstream generator contains only six GOALS.'}</p>
+</details>
+
+<style>
+.alf-family{width:min(1180px,calc(100% - 2rem));margin:-.75rem auto 2rem;padding:.75rem 1rem;border:1px solid var(--line);border-left:4px solid #2563eb;border-radius:12px;background:var(--surface)}
+.alf-family summary{cursor:pointer;font-size:.72rem;font-weight:800;color:var(--ink)}
+.alf-family>p{max-width:90ch;margin:.65rem 0;color:var(--muted);font-size:.66rem;line-height:1.6}
+.alf-family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem}
+.alf-family-grid article{display:grid;gap:.28rem;padding:.55rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}
+.alf-family-grid span{color:#2563eb;font:800 .5rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.alf-family-grid code{font-size:.55rem;white-space:normal;overflow-wrap:anywhere}
+.alf-family-grid small{color:var(--muted);font-size:.55rem;line-height:1.4}
+.alf-family .alf-family-boundary{padding:.55rem;border-left:3px dashed #64748b;background:var(--surface-muted)}
+@media(max-width:720px){.alf-family{width:min(100% - 1rem,1180px);padding:.65rem}.alf-family-grid{grid-template-columns:1fr}}
+</style>

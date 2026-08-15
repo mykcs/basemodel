@@ -1,0 +1,59 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import SeedOpenEvoMissionHero from './SeedOpenEvoMissionHero.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const pages = [
+  { label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/'), active: true },
+  { label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
+  { label: 'SEED', href: p('/research/seed-openevo/seed/') },
+  { label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
+  { label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
+  { label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
+  { label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
+];
+const objects = [
+  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验模型、revision、精度与运行设置。','Experiment model, revision, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
+  { index:'02', title:'SEED', body:t('hindsight skill、OPD、GRPO 与参数更新。','Hindsight skills, OPD, GRPO, and parameter updates.'), href:p('/research/seed-openevo/seed/') },
+  { index:'03', title:'OpenEvo', body:t('任务封存、artifact / adapter 与 successor revision。','Task sealing, artifacts/adapters, and successor revisions.'), href:p('/research/seed-openevo/openevo/') },
+  { index:'04', title:'ALFWorld', body:t('文本化具身任务与任务家族成功率。','Text-based embodied tasks and per-family success rates.'), href:p('/research/seed-openevo/benchmarks/') },
+  { index:'05', title:'WebShop', body:t('网页购物任务、normalized score 与 exact success。','Web-shopping tasks, normalized score, and exact success.'), href:p('/research/seed-openevo/benchmarks/') },
+];
+---
+<div class="mission-page plain-mission-hub">
+  <SeedOpenEvoMissionHero locale={locale} compact />
+  <nav class="mission-tabs" aria-label={t('SEED 与 OpenEvo 实验页面', 'SEED and OpenEvo experiment pages')}>{pages.map((item)=><a href={item.href} aria-current={item.active?'page':undefined}>{item.label}</a>)}</nav>
+
+  <section class="mission-section" id="questions">
+    <div class="mission-section__heading"><span>01</span><div><small>{t('范围', 'Scope')}</small><h2>{t('研究对象', 'Research objects')}</h2></div></div>
+    <div class="object-grid">{objects.map((item)=><a href={item.href}><span>{item.index}</span><strong>{item.title}</strong><p>{item.body}</p></a>)}</div>
+  </section>
+
+  <section class="mission-section" id="site-map">
+    <div class="mission-section__heading"><span>02</span><div><small>{t('流程', 'Workflow')}</small><h2>{t('实验路线', 'Experiment route')}</h2></div></div>
+    <ol class="run-step-grid">
+      <li><span>1</span><h3>{t('复现 SEED 条件', 'Reproduce SEED conditions')}</h3><p>{t('固定 Qwen2.5-3B-Instruct、ALFWorld、WebShop 与论文评测条件。','Pin Qwen2.5-3B-Instruct, ALFWorld, WebShop, and paper evaluation conditions.')}</p><a href={p('/research/seed-openevo/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
+      <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('当前正式实验以 openevo-experiment 为准；RTX6 路线只作为历史参考。','Current formal experiments are governed by openevo-experiment; the RTX6 path is historical reference only.')}</p><a href={p('/guide/openevo-webshop-alfworld/')}>{t('实验指南','Experiment guide')} →</a></li>
+      <li><span>3</span><h3>{t('比较与诊断', 'Compare and diagnose')}</h3><p>{t('比较任务结果、轨迹、fallback、失败模式与 adapter 状态，再决定下一轮实验。','Compare outcomes, trajectories, fallbacks, failure modes, and adapter states before choosing the next experiment.')}</p><a href={p('/research/seed-openevo/results/')}>{t('实验结果','Experiment results')} →</a></li>
+    </ol>
+  </section>
+
+  <section class="mission-section" id="evidence">
+    <div class="mission-section__heading"><span>03</span><div><small>{t('记录', 'Records')}</small><h2>{t('证据要求', 'Evidence requirements')}</h2></div></div>
+    <ol class="evidence-grid">
+      <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实 reset、真实 CUDA 动作、模型 revision。','Real reset, real CUDA actions, model revision.')}</p></li>
+      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数 digest、adapter、artifact 或 successor revision。','Parameter digests, adapters, artifacts, or successor revisions.')}</p></li>
+      <li><span>03</span><strong>{t('任务结果', 'Task outcomes')}</strong><p>{t('score、success、steps、fallback、termination。','score, success, steps, fallback, termination.')}</p></li>
+      <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('Run Manifest、代码 SHA、配置与任务集合。','Run Manifest, code SHA, configuration, and task set.')}</p></li>
+    </ol>
+  </section>
+</div>
+
+<style>
+  .mission-page{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem}.mission-tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:.35rem;overflow-x:auto;margin:1rem 0 2rem;padding:.45rem;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(16px)}.mission-tabs a{flex:0 0 auto;padding:.58rem .76rem;border-radius:10px;color:var(--muted);font-size:.76rem;font-weight:700;text-decoration:none}.mission-tabs a[aria-current='page']{color:#fff;background:var(--accent)}.mission-section{padding:1.6rem 0;border-top:1px solid var(--line)}.mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:1rem}.mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.mission-section__heading small{display:block;color:var(--muted);font-size:.68rem}.mission-section__heading h2{margin:.15rem 0 0}.object-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}.object-grid a{display:flex;min-height:145px;flex-direction:column;padding:.85rem;border:1px solid var(--line);border-radius:13px;color:inherit;text-decoration:none}.object-grid a>span{color:var(--accent-deep);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.object-grid strong{margin-top:auto}.object-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.45}.run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:0;padding:0;list-style:none}.run-step-grid li{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--line);border-radius:14px}.run-step-grid li>span{display:grid;width:1.8rem;height:1.8rem;place-items:center;border-radius:50%;color:#fff;background:var(--accent);font-size:.72rem}.run-step-grid h3{margin:.7rem 0 .4rem}.run-step-grid p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}.run-step-grid a{margin-top:auto;padding-top:.8rem;font-size:.72rem;font-weight:750}.evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}.evidence-grid li{padding:.85rem;border:1px solid var(--line);border-radius:13px}.evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid strong{display:block;margin-top:.65rem}.evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.45}@media(max-width:900px){.object-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.mission-page{width:min(100% - 1rem,1120px)}.object-grid,.run-step-grid,.evidence-grid{grid-template-columns:1fr}}
+</style>

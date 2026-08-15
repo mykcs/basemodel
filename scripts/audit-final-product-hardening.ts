@@ -46,21 +46,24 @@ assert(
     && home.includes('primaryIntents')
     && home.includes("'/research/seed-openevo/'")
     && home.includes("'/guide/openevo-webshop-alfworld/'")
-    && home.includes("'/research/seed-openevo/loops/'"),
-  'home starts from the explicit SEED × OpenEvo research mission and offers Learn / Run / Compare entry paths',
+    && home.includes("'/research/seed-openevo/results/'"),
+  'home starts from the explicit SEED × OpenEvo experiment and offers overview / current-results / reproduction entry paths',
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes('Qwen2.5-3B-Instruct')
-    && missionHero.includes('SEED ↔ OpenEvo')
-    && missionHero.includes('ALFWorld + WebShop')
-    && missionHero.includes("t('改进 OpenEvo', 'Improve OpenEvo')"),
-  'the first-screen mission chain connects model, frameworks, benchmarks, evidence, and OpenEvo improvement',
+  missionHero.includes("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')")
+    && missionHero.includes('Qwen2.5-3B-Instruct')
+    && missionHero.includes("title:'SEED / OpenEvo'")
+    && missionHero.includes("title:'ALFWorld / WebShop'")
+    && missionHero.includes("t('实验结果','Experiment results')")
+    && missionHero.includes('5× RTX 5090')
+    && missionHero.includes('Phase H0'),
+  'the first screen names the research subject, model, both methods, both environments, current results, and current experiment status without promoting workflow prose into headings',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
 const seedIndex = home.indexOf('<SeedUseCaseStrip');
-assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the mission entry choice instead of obscuring the first viewport');
+assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the experiment entry choice instead of obscuring the first viewport');
 
 const guide = read('src/components/GuideDecisionChapters.astro');
 assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
@@ -80,9 +83,9 @@ assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>
 const tokens = read('src/styles/tokens.css');
 const hardening = read('src/styles/final-hardening.css');
 const layout = read('src/layouts/AppLayout.astro');
-assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #9c3e2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens provide dedicated light/dark foreground pairs');
+assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #8f3d2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens preserve the current Research Editorial × Experimental Workbench identity with dedicated light/dark foreground pairs');
 assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.includes('.workspace-grid') && hardening.includes('.intent-row') && hardening.includes('.guide-chapter') && hardening.includes('.memo-readable'), 'research-critical typography, workbench density, and editorial hierarchy are hardened');
-assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet is loaded last');
+assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet follows design refinement');
 assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
 
 const actionableLayer = read('src/components/common/ActionableContentLayer.astro');

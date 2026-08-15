@@ -1,8 +1,11 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
+import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
-<AppLayout title="SEED and OpenEvo loop comparison" description="Compare SEED parameter updates with OpenEvo cross-session artifact and revision evolution, including update objects, activation boundaries, and controlled evaluation." locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="loops" />
+<AppLayout title="SEED and OpenEvo loop comparison" description="Compare SEED's parameter-update loop with OpenEvo's cross-task carrier/revision loop, including experience flow, updated objects, activation boundaries, and the current experimental position." locale={locale}>
+  <SeedOpenEvoResearchPage locale={locale} page="loops">
+    <InteractiveResearchExplainer locale={locale} kind="compare" client:visible />
+  </SeedOpenEvoResearchPage>
 </AppLayout>

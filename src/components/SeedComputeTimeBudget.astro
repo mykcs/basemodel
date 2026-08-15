@@ -54,7 +54,7 @@ const exampleReserveHours = exampleRawHours * 1.15;
 
   <section class="derivation" aria-labelledby="workload-derivation-title">
     <div>
-      <span class="section-kicker">{t('先把能算死的东西算死', 'Calculate the fixed workload first')}</span>
+      <span class="section-kicker">{t('先计算论文明确给出的工作量', 'Calculate the paper-specified workload first')}</span>
       <h3 id="workload-derivation-title">{t('为什么 ALFWorld 通常要比 WebShop 预留更多时间', 'Why ALFWorld usually deserves a larger time budget than WebShop')}</h3>
     </div>
     <div class="equations">
@@ -108,7 +108,7 @@ const exampleReserveHours = exampleRawHours * 1.15;
   </div>
 
   <section class="calibration" aria-labelledby="calibration-title">
-    <span class="section-kicker">{t('开机后的正确算法', 'The correct calculation after startup')}</span>
+    <span class="section-kicker">{t('开机后用实测校准', 'Calibrate with measurements after startup')}</span>
     <h3 id="calibration-title">{t('跑 5 个稳定 update，把网页估算换成你这台机器的数字', 'Run five stable updates and replace this webpage estimate with your machine’s numbers')}</h3>
     <div class="formula-box">
       <code>T_RL ≈ median(update_2..6) × 150 ÷ 60</code>

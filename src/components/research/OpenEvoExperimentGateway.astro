@@ -1,0 +1,51 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import AgentEnvironmentTrajectory from './AgentEnvironmentTrajectory.astro';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const route = [
+  { index:'01', title:t('实验配置','Experiment configuration'), body:t('Qwen2.5-3B-Instruct、WebShop、Run Manifest 与当前 5×RTX5090 实验分配。','Qwen2.5-3B-Instruct, WebShop, Run Manifest, and the current 5×RTX5090 experiment allocation.'), href:p('/research/seed-openevo/base-model/') },
+  { index:'02', title:'Phase G', body:t('12 个正式 episodes 已完成；base、adapter1x、cumulative 的 score / win 均为 0。','12 formal episodes completed; base, adapter1x, and cumulative all had zero score/win outcomes.'), href:p('/research/seed-openevo/results/') },
+  { index:'03', title:'Phase H0', body:t('在新的 train-only WebShop tasks 上搜索自然成功轨迹，先解决监督经验不足的问题。','Search new train-only WebShop tasks for naturally successful trajectories before tuning the learner.'), href:p('/research/seed-openevo/results/') },
+] as const;
+---
+
+<div class="gateway">
+  <header class="gateway__hero">
+    <div>
+      <span>OpenEvo · WebShop</span>
+      <h1>{t('OpenEvo × WebShop 实验', 'OpenEvo × WebShop experiment')}</h1>
+      <p>{t('当前实验以 openevo-experiment 为 source of truth。RTX6 / 4×3090 与 openevo-webshop 已经进入历史；正式 WebShop 主线已经完成 Phase G，正在进入 Phase H0。','The active experiment is governed by openevo-experiment. RTX6 / 4×3090 and openevo-webshop are historical; the formal WebShop line has completed Phase G and is moving into Phase H0.')}</p>
+      <div class="gateway__actions"><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('实验结果 →','Experiment results →')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('复现指南','Reproduction guide')}</a></div>
+    </div>
+    <aside aria-label={t('当前实验阶段','Current experiment phase')}>
+      <small>{t('当前阶段','Current phase')}</small><strong>Phase H0</strong>
+      <dl><div><dt>{t('实验分配','Allocation')}</dt><dd>5× RTX 5090</dd></div><div><dt>{t('当前 benchmark','Benchmark')}</dt><dd>WebShop</dd></div><div><dt>{t('当前任务','Current question')}</dt><dd>{t('自然成功经验是否足够','whether natural successful experience is available')}</dd></div></dl>
+    </aside>
+  </header>
+
+  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
+
+  <AgentEnvironmentTrajectory locale={locale} context="reproduction" />
+
+  <section class="gateway__section" aria-labelledby="phaseg-gateway-title">
+    <header><span>Phase G</span><h2 id="phaseg-gateway-title">{t('正式比较结果', 'Formal comparison result')}</h2></header>
+    <div class="summary-grid"><article><strong>base</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>adapter1x</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>cumulative</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article></div>
+    <p>{t('这组 bounded matrix 没有测到任务收益差异，但 Phase D–F 已独立证明 adapter 的参数状态、reload 与模型输出确实发生变化。','This bounded matrix did not measure a task-outcome difference, while Phase D–F independently established real adapter-state, reload, and model-output changes.')}</p>
+  </section>
+
+  <section class="gateway__section" aria-labelledby="phaseh-gateway-title">
+    <header><span>Phase H0</span><h2 id="phaseh-gateway-title">{t('自然成功样本搜索', 'Natural success search')}</h2></header>
+    <ol class="next-track"><li><b>64–128</b><span>{t('新的 train-only WebShop rollouts','new train-only WebShop rollouts')}</span></li><li><b>≤256</b><span>{t('仍无成功时的最大扩展','maximum extension if success remains zero')}</span></li><li><b>H1</b><span>{t('成功样本存在时做 train-fit / supervision sanity check','train-fit / supervision sanity check if successes exist')}</span></li><li><b>teacher</b><span>{t('仍无成功时才进入 teacher-success bootstrap','teacher-success bootstrap only if natural success remains absent')}</span></li></ol>
+  </section>
+
+  <footer class="gateway__next"><div><span>{t('当前实验记录','Current record')}</span><h2>{t('Run Manifest、结果 JSON 与 W&B', 'Run Manifest, result JSON, and W&B')}</h2><p>{t('本地 provenance 决定实验身份与结果；W&B 用于观测和比较，不替代实验协议。','Local provenance determines experiment identity and results; W&B provides observability and comparison without replacing the protocol.')}</p></div><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('查看完整进展','Full status')}</a></footer>
+</div>
+
+<style>
+  .gateway{width:min(1120px,calc(100% - 2rem));margin:1rem auto 5rem}.gateway__hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface)}.gateway__hero>div{padding:clamp(1.4rem,3vw,2.5rem)}.gateway__hero>div>span,.gateway__section>header>span,.gateway__next>div>span{color:var(--accent-deep);font-size:.7rem;font-weight:800}.gateway__hero h1{margin:.55rem 0 .75rem}.gateway__hero>div>p{max-width:70ch;margin:0;color:var(--muted);line-height:1.7}.gateway__actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.gateway__hero aside{display:flex;flex-direction:column;padding:1.2rem;border-left:1px solid var(--line);background:var(--surface-muted)}.gateway__hero aside>small{color:var(--muted)}.gateway__hero aside>strong{margin:.5rem 0;font-size:1.7rem}.gateway__hero dl{margin:auto 0 0}.gateway__hero dl div{padding:.55rem 0;border-top:1px solid var(--line)}.gateway__hero dt{color:var(--muted);font-size:.65rem}.gateway__hero dd{margin:.2rem 0 0;font-size:.74rem}.gateway__route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:1rem 0}.gateway__route a{display:grid;grid-template-columns:auto 1fr;gap:.7rem;padding:.9rem;border:1px solid var(--line);border-radius:13px;color:inherit;text-decoration:none}.gateway__route>a>span{color:var(--accent-deep);font:800 .66rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.gateway__route strong{font-size:.82rem}.gateway__route p{margin:.3rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.45}.gateway :global(.trajectory-lab){width:100%;margin-inline:0}.gateway__section{margin-top:2rem;padding-top:1.3rem;border-top:1px solid var(--line)}.gateway__section header h2{margin:.2rem 0 .8rem}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.summary-grid article,.next-track li{padding:.85rem;border:1px solid var(--line);border-radius:12px}.summary-grid strong,.summary-grid b,.summary-grid span{display:block}.summary-grid strong{font-size:.74rem}.summary-grid b{margin:.4rem 0;font:800 .9rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.summary-grid span,.gateway__section>p{color:var(--muted);font-size:.72rem;line-height:1.5}.next-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}.next-track b,.next-track span{display:block}.next-track b{color:var(--accent-deep)}.next-track span{margin-top:.35rem;color:var(--muted);font-size:.7rem;line-height:1.45}.gateway__next{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:end;margin-top:2rem;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.gateway__next h2{margin:.2rem 0}.gateway__next p{max-width:70ch;margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}@media(max-width:860px){.gateway__hero{grid-template-columns:1fr}.gateway__hero aside{border-top:1px solid var(--line);border-left:0}.gateway__route,.summary-grid,.next-track{grid-template-columns:1fr 1fr}.gateway__next{grid-template-columns:1fr}}@media(max-width:560px){.gateway{width:min(100% - 1rem,1120px)}.gateway__route,.summary-grid,.next-track{grid-template-columns:1fr}}
+</style>

@@ -1,59 +1,263 @@
 # UI design principles
 
-Status: **current project-wide UI requirement**
+Status: **current project-wide visual identity and UI requirement**  
+Decision date: **2026-08-12**
 
-This file defines the minimum design standard for all user-facing BaseModel pages and components.
+This file is the durable visual contract for every user-facing BaseModel page and component. It is intentionally more specific than a general “make it clean” guideline so future UI work does not drift when different Agents work on different pages.
 
-## Core goals
+The visual north star is:
 
-### 1. The interface should feel comfortable to read and learn from
+> **Research Editorial × Experimental Workbench**
 
-The site is a learning and research tool. UI decisions should reduce visual fatigue and cognitive load rather than maximize density for its own sake.
+The site should feel like a careful research publication when the user is learning or inspecting evidence, and like a precise experimental workbench when the user is making or recording a research decision.
 
-Prefer:
+It must not drift toward a generic SaaS dashboard, card gallery, leaderboard, or blue-purple “AI product” landing page.
 
-- clear information hierarchy;
-- readable typography and line length;
-- enough whitespace between unrelated ideas;
-- restrained colors, borders, shadows, and motion;
-- consistent spacing and interaction patterns;
-- obvious primary actions without excessive visual competition.
+## 1. Product personality
 
-Do not make a page look more sophisticated at the cost of making it harder to understand.
+The interface should communicate:
 
-## 2. Responsive behavior is a non-negotiable requirement
+- **precise** — hierarchy and terminology have deliberate meaning;
+- **restrained** — visual emphasis is scarce and therefore useful;
+- **traceable** — claims visibly connect to evidence and decisions;
+- **readable** — long technical material remains comfortable to learn from;
+- **operational** — dense controls appear only where the user is actually doing work.
 
-Every user-facing page must work well across different viewport sizes, including both desktop and mobile.
+A more decorated page is not automatically a better page. If a visual treatment does not improve order, hierarchy, comparison, evidence, decision, failure, topology, or executable action, remove it.
 
-Do not design only for one fixed desktop width and then shrink it afterward.
+## 2. Two canvases, one product
 
-Layouts should adapt naturally as space changes:
+### A. Research Editorial
 
-- multi-column desktop layouts should collapse or reorganize when the viewport becomes narrow;
-- text should remain readable without horizontal page scrolling;
-- navigation and controls should remain usable on small screens;
-- buttons and interactive targets should remain comfortably tappable on touch devices;
-- code blocks, tables, long URLs, diagrams, and other wide content must have an intentional narrow-screen strategy;
-- images and media must not overflow their containers;
-- important information must not disappear merely because the viewport is smaller.
+Use for learning, explanation, papers, model detail, methodology, evidence narratives, family/history views, and public orientation.
 
-Use content-driven breakpoints and fluid sizing where practical instead of assuming specific devices.
+Visual character:
 
-## Practical acceptance check
+- warm paper-like canvas;
+- generous whitespace and strong typographic rhythm;
+- restrained borders and almost no permanent shadow;
+- approximately **720px** reading width for long prose;
+- approximately **1120px** editorial width for public page composition;
+- selective editorial/serif display typography for major research titles;
+- facts, definitions, timelines, source notes, tables, diagrams, and separators instead of repeated cards.
 
-Before considering a UI change complete, inspect representative large and small viewports and confirm:
+The Editorial canvas should feel like a technical publication with interactive evidence, not a marketing landing page.
 
-- the page is visually comfortable and easy to scan;
-- hierarchy is still clear;
-- there is no accidental horizontal overflow or clipped content;
-- text remains readable;
-- navigation and interactive controls remain usable;
-- the learning/research flow is preserved on both desktop and mobile.
+### B. Experimental Workbench
 
-A layout that only looks correct on the developer's current screen is not complete.
+Use for `/workspace/`, comparison, candidate analysis, substitution, and decision memo work.
+
+Visual character:
+
+- slightly cooler neutral canvas;
+- interface/sans typography;
+- denser spacing than Editorial pages;
+- approximately **1440px** maximum workbench composition width;
+- desktop decision layout biased toward **260px / flexible center / 320px**;
+- the candidate/decision surface is the visual center;
+- constraints are quieter;
+- evidence reads like a source notebook, not a competing dashboard.
+
+The Workbench may be dense, but it should still feel calm. Density must come from useful information, not extra chrome.
+
+## 3. The site-wide visual signature is an evidence line
+
+Prefer a reusable visible reasoning chain over decorative motifs.
+
+Canonical forms include:
+
+```text
+Model → Framework → Benchmark → Evidence → Feedback
+Fact → Evidence → Judgment → Decision
+Source → Claim → Verification → User-facing statement
+```
+
+Use semantic HTML, structural CSS, SVG, or real tables/figures when appropriate. Do not encode important process meaning as character-arrow art in production UI.
+
+This evidence-line grammar should recur across home, paper detail, model detail, workspace, comparison, methodology, and research results so the site becomes visually recognizable through how it reasons.
+
+## 4. Card budget: cards are scarce
+
+A bordered rounded rectangle is justified only when at least one of these is true:
+
+1. the user can **choose** the object;
+2. the user can **operate** on the object;
+3. the object is a summary that must be **isolated** from surrounding content.
+
+Normal explanation, facts, evidence, methods, and sequential steps should prefer:
+
+- whitespace;
+- section rhythm;
+- thin separators;
+- definition lists;
+- ordered lists;
+- timelines;
+- tables;
+- evidence/source notebooks;
+- structural diagrams;
+- inline status labels.
+
+Do not solve a hierarchy problem by wrapping every idea in a new card.
+
+## 5. Shape and elevation contract
+
+Use only three ordinary radius levels:
+
+```text
+control  = 6px
+panel    = 10px
+feature  = 16px
+```
+
+Pills are reserved for compact tags/chips/status controls and may remain fully rounded.
+
+Permanent shadows are not an ordinary hierarchy tool.
+
+- flat content: no shadow;
+- interactive content: border/background/focus change, normally no shadow;
+- floating layers only: dialog, drawer, command menu, popover, compare tray may use a shadow.
+
+Hovering a normal card must not make it “float upward”. Prefer a border or subtle background response and keep layout geometry stable.
+
+Adding another radius family or a new permanent card shadow requires updating this contract and the shared tokens first. Do not introduce one-off values inside a component.
+
+## 6. Color semantics
+
+The durable palette is warm neutral + terracotta + evidence teal.
+
+- terracotta / accent: current selection, primary action, project emphasis;
+- teal / positive: evidence verified or supported;
+- amber / warning: conditional, partial, or needs attention;
+- red / danger: conflict, invalid state, blocker, destructive action;
+- gray / unknown: not reported, not verified, or unavailable;
+- blue/info: remote/API/access semantics when genuinely useful, not a decorative second accent.
+
+Color never carries state alone. Pair it with text, iconography, shape, or another non-color cue.
+
+Do not introduce a generic neon/blue-purple AI gradient system. Decorative gradients are not part of the product identity.
+
+## 7. Typography
+
+Use the shared interface font stack for navigation, controls, workbench UI, filters, metadata, and dense operational content.
+
+Editorial/serif typography may be used selectively for:
+
+- home research mission titles;
+- paper titles;
+- major research conclusions;
+- major editorial section titles.
+
+Do not use editorial typography for dense workbench controls.
+
+Use the shared mono stack for revision IDs, hashes, field paths, commands, machine-readable keys, and similar technical identifiers.
+
+Long-form reading should remain near the shared reading-width token rather than stretching across the entire page.
+
+## 8. Hierarchy before decoration
+
+Every screen should establish, in order:
+
+1. **where the reader is**;
+2. **what question or task is active**;
+3. **what the next primary action is**;
+4. **what evidence supports the current state**;
+5. **what optional depth exists**.
+
+Do not give five unrelated sections equal headline/card/CTA weight.
+
+Home is orientation, not a catalog.  
+Paper pages are research cases, not product cards.  
+Model pages are decision evidence, not spec sheets.  
+Workspace is a staged decision process, not three equal dashboards.
+
+## 9. Responsive and mobile contract
+
+Responsive behavior is a completion requirement.
+
+- multi-column layouts must reorganize intentionally rather than merely shrink;
+- text must remain readable without page-level horizontal scrolling;
+- tables, diagrams, code, and long identifiers need an explicit narrow-screen strategy;
+- important evidence must not disappear on mobile;
+- touch targets remain comfortable;
+- horizontal rails are acceptable only when continuation is visible and the page itself does not horizontally scroll.
+
+### Persistent-layer budget
+
+On a phone, show at most **two persistent UI layers at the same time**:
+
+1. the global/site header;
+2. one contextual action/navigation layer.
+
+If compare state also needs to persist, compact or integrate it so it does not stack a third or fourth full-width bar over the content.
+
+## 10. Motion
+
+Motion exists to explain:
+
+- sequence;
+- flow;
+- state transition;
+- evidence/decision relationship.
+
+Good examples: a data packet moving through a real pipeline, a research step becoming active, evidence highlighting after a claim is selected.
+
+Do not use continuous decorative floating, card lift, parallax, or motion that makes static data look live.
+
+Honor `prefers-reduced-motion`. The static state must remain fully understandable.
+
+## 11. Parallel-PR integration rule
+
+Before broad UI work:
+
+1. inspect currently open PRs and their changed-file ownership;
+2. classify work as independent, stacked, superseded, or semantically conflicting;
+3. prefer shared tokens and low-conflict visual contracts when page owners are moving in parallel;
+4. if the intended design depends on an open architectural PR, stack on its exact head and say so explicitly;
+5. never overwrite another PR's semantic improvements merely to make a visual diff easier to merge;
+6. after the prerequisite PR merges, retarget/rebase and validate the combined product, not only the isolated branch.
+
+A clean Git merge is not visual acceptance.
+
+## 12. Non-drift stop conditions
+
+Stop and reconsider before adding any of the following:
+
+- a fourth ordinary radius scale;
+- a new permanent card-shadow style;
+- a new decorative gradient family;
+- a new color that duplicates an existing semantic state;
+- another global sticky bar;
+- a component that turns explanation into a card only for visual variety;
+- a page-specific design language that cannot reuse the Editorial/Workbench system;
+- a large hero/CTA that competes with the page's real research action.
+
+If a new visual primitive is genuinely necessary, update the shared token/system contract and acceptance test in the same change.
+
+## 13. Acceptance
+
+For a shared/global visual change, completion requires the repository UI acceptance policy and the strongest available browser matrix.
+
+At minimum inspect:
+
+- light and dark themes;
+- Chinese and English long-copy pressure;
+- phone, tablet, and desktop;
+- page-level overflow;
+- sticky/fixed-layer collisions;
+- hover/focus/touch behavior;
+- reduced-motion behavior when animation changed;
+- real representative routes rather than only an isolated component.
+
+The owner must not become the first real tester of dark mode, overflow, clipping, or sticky-layer collisions.
 
 ## Relationship to other project rules
 
-These principles describe the durable visual and responsive baseline. Product/research semantics, evidence integrity, deployment rules, and executable acceptance checks remain governed by their existing owning documents and tests.
+This file owns the **visual identity and non-drift rules**.
 
-When redesigning or polishing UI, preserve the product's research-learning hierarchy rather than replacing it with a generic dashboard, leaderboard, or decorative presentation surface.
+- `human-thinking-web-expression-contract.md` owns how thought structures become web structures.
+- `sitewide-visual-knowledge-architecture.md` owns the whole-site knowledge journey and reusable information grammar.
+- `ui-change-visual-acceptance-gate.md` owns browser-level acceptance.
+- `theme-contrast-contract.md` owns theme/contrast correctness.
+- product/research semantics and evidence truth remain owned by their corresponding current policies and executable tests.
+
+When these documents are applied together, the expected result is not “more UI”; it is a coherent research system whose visual language stays stable even when different Agents change different parts of the site.

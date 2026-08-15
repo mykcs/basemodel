@@ -1,0 +1,132 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const seedRoot = 'https://github.com/mykcs/seed3090/blob/main';
+const bridgeRoot = 'https://github.com/mykcs/openevo-webshop/blob/main';
+const activeRoot = 'https://github.com/mykcs/openevo-experiment/blob/main';
+const serverRoot = 'https://github.com/mykcs/zju-server/blob/main';
+
+const repos = [
+  {
+    name: 'seed3090',
+    state: t('历史', 'Historical'),
+    role: t('RTX6 / 4×RTX 3090 实验与调试档案', 'RTX6 / 4×RTX 3090 experiment and debugging archive'),
+    note: t('保留 WebShop、ALFWorld、失败轨迹、RTX6 工程经验和早期参数进化证据；不再启动新实验。', 'Preserves WebShop, ALFWorld, failure traces, RTX6 engineering, and early parametric-evolution evidence; no new experiments start here.'),
+    href: `${seedRoot}/README.md`,
+  },
+  {
+    name: 'openevo-webshop',
+    state: t('历史', 'Historical'),
+    role: t('WebShop × SD-LoRA 迁移桥梁', 'WebShop × SD-LoRA migration bridge'),
+    note: t('沉淀 WebShop runner、dataset adapter、SD-LoRA 路径和成功经验不足的诊断；有效内容已迁入正式仓库。', 'Curated the WebShop runner, dataset adapter, SD-LoRA path, and the sparse-success diagnosis; useful work was migrated forward.'),
+    href: `${bridgeRoot}/README.md`,
+  },
+  {
+    name: 'openevo-experiment',
+    state: t('当前', 'Current'),
+    role: t('正式实验 source of truth', 'Active experimental source of truth'),
+    note: t('当前 campaign、Run Manifest、WebShop 协议、W&B 记录和后续科学实验都在这里继续。', 'The current campaign, Run Manifests, WebShop contract, W&B tracking, and subsequent scientific work live here.'),
+    href: `${activeRoot}/configs/experiment/current-campaign.json`,
+  },
+] as const;
+
+const phaseG = [
+  { arm: 'base', score: '0.000', wins: '0 / 4', steps: '9.50', fallback: '3 / 38' },
+  { arm: 'adapter1x', score: '0.000', wins: '0 / 4', steps: '14.25', fallback: '1 / 57' },
+  { arm: 'cumulative', score: '0.000', wins: '0 / 4', steps: '6.00', fallback: '3 / 24' },
+] as const;
+---
+
+<section id="openevo-experiment-program" class="program" aria-labelledby="program-title" data-testid="openevo-experiment-program">
+  <header class="program__header">
+    <div>
+      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> <time datetime="2026-08-14">2026-08-14</time></p>
+      <h2 id="program-title">{t('当前实验进展', 'Current experiment status')}</h2>
+      <p class="lede">{t(
+        'RTX6（4×RTX 3090）和 openevo-webshop 已经进入历史档案。当前科学主线在 openevo-experiment：Phase G 的 base / adapter 小矩阵已经跑完，下一步进入 Phase H0，先寻找可用于监督诊断的自然成功轨迹。',
+        'RTX6 (4×RTX 3090) and openevo-webshop are now historical. The active scientific line is openevo-experiment: the Phase G base/adapter matrix is complete, and Phase H0 now searches for naturally successful trajectories for supervision diagnostics.',
+      )}</p>
+    </div>
+    <aside class="program__status" aria-label={t('当前实验状态', 'Current experiment status')}>
+      <span>{t('当前阶段', 'Current phase')}</span>
+      <strong>Phase H0</strong>
+      <p>{t('当前实验分配：5× RTX 5090', 'Current experiment allocation: 5× RTX 5090')}</p>
+      <small>{t('服务器资产记录可见 8× RTX 5090；可见库存不等于本实验分配。', 'Server inventory records 8 visible RTX 5090 GPUs; visible inventory is not the same as this experiment’s allocation.')}</small>
+    </aside>
+  </header>
+
+  <section class="program__section" aria-labelledby="lineage-title">
+    <div class="section-heading"><span>01</span><div><small>{t('来源', 'Sources')}</small><h3 id="lineage-title">{t('仓库迁移', 'Repository lineage')}</h3></div></div>
+    <ol class="repo-grid">
+      {repos.map((repo) => <li>
+        <div><span>{repo.state}</span><code>{repo.name}</code></div>
+        <strong>{repo.role}</strong>
+        <p>{repo.note}</p>
+        <a href={repo.href} target="_blank" rel="noreferrer">{t('查看仓库证据', 'Open repository evidence')} ↗</a>
+      </li>)}
+    </ol>
+  </section>
+
+  <section class="program__section" aria-labelledby="mechanism-title">
+    <div class="section-heading"><span>02</span><div><small>Phase D–F</small><h3 id="mechanism-title">{t('参数更新与重新加载', 'Parameter update and reload')}</h3></div></div>
+    <div class="fact-grid">
+      <article><span>{t('模型', 'Model')}</span><strong>Qwen2.5-3B-Instruct</strong><p>{t('真实 BF16 CUDA generation，模型 revision 固定。', 'Real BF16 CUDA generation with a pinned model revision.')}</p></article>
+      <article><span>{t('训练', 'Training')}</span><strong>SD-LoRA optimizer steps</strong><p>{t('forward、backward、optimizer.step 与 trainable-state digest 变化均有证据。', 'forward, backward, optimizer.step, and changed trainable-state digests are evidenced.')}</p></article>
+      <article><span>{t('累计状态', 'Cumulative state')}</span><strong>2 components · effective rank 8</strong><p>{t('prior component 被保留，累计 adapter 可以 fresh reload。', 'The prior component is preserved and the cumulative adapter fresh-reloads successfully.')}</p></article>
+      <article><span>{t('行为探针', 'Behavior probe')}</span><strong>nonzero logit delta</strong><p>{t('adapter 加载后出现非零 logit 差异，并至少改变过一次 deterministic generation。', 'Adapter loading produced nonzero logit deltas and changed at least one deterministic generation.')}</p></article>
+    </div>
+    <p class="section-note">{t('这些是机制证据，不是 WebShop 效果结论。', 'These are mechanism results, not a WebShop efficacy claim.')}</p>
+  </section>
+
+  <section class="program__section" aria-labelledby="phaseg-title">
+    <div class="section-heading"><span>03</span><div><small>Phase G · completed</small><h3 id="phaseg-title">{t('Base / Adapter WebShop 对比', 'Base / Adapter WebShop comparison')}</h3></div></div>
+    <p class="section-intro">{t('固定 2 个 goals、2 个 generation seeds 和 3 个模型状态，共完成 12 个 promotion-dev episodes。', 'The frozen matrix used 2 goals, 2 generation seeds, and 3 model states, completing 12 promotion-dev episodes.')}</p>
+    <div class="result-table-wrap"><table>
+      <thead><tr><th>{t('模型状态', 'Arm')}</th><th>{t('平均分', 'Mean score')}</th><th>{t('成功', 'Wins')}</th><th>{t('平均步数', 'Mean steps')}</th><th>{t('Parser fallback', 'Parser fallback')}</th></tr></thead>
+      <tbody>{phaseG.map((row) => <tr><th scope="row"><code>{row.arm}</code></th><td>{row.score}</td><td>{row.wins}</td><td>{row.steps}</td><td>{row.fallback}</td></tr>)}</tbody>
+    </table></div>
+    <aside class="interpretation"><strong>{t('这次测得的结果', 'Measured result')}</strong><p>{t('这个小矩阵中，三组的 score 与 win delta 都为 0。它说明当前 bounded evaluation 没测到任务收益差异；它不否定 Phase D–F 已经观察到的真实参数与模型行为变化。', 'In this bounded matrix, all score and win deltas are zero. The evaluation did not measure a task-outcome advantage, but this does not negate the real parameter and behavioral changes already established in Phase D–F.')}</p></aside>
+  </section>
+
+  <section class="program__section" aria-labelledby="phaseh-title">
+    <div class="section-heading"><span>04</span><div><small>{t('下一步', 'Next')}</small><h3 id="phaseh-title">Phase H0 · Natural Success Search</h3></div></div>
+    <div class="next-grid">
+      <article><strong>64–128</strong><span>{t('先在新的 train-only WebShop tasks 上收集有效 rollouts', 'initial valid rollouts on new train-only WebShop tasks')}</span></article>
+      <article><strong>≤ 256</strong><span>{t('如果仍然没有自然成功，最多扩展到这一上限', 'maximum extension if no spontaneous success appears')}</span></article>
+      <article><strong>H1</strong><span>{t('找到自然成功后，用成功样本做 train-fit / supervision sanity check', 'if natural successes exist, use them for train-fit / supervision sanity checks')}</span></article>
+      <article><strong>Fallback</strong><span>{t('仍为零时再进入 teacher-success bootstrap，而不是先扫 rank / LR / epoch', 'if success remains zero, use teacher-success bootstrap instead of sweeping rank / LR / epoch first')}</span></article>
+    </div>
+  </section>
+
+  <section class="program__section" aria-labelledby="tracking-title">
+    <div class="section-heading"><span>05</span><div><small>{t('实验记录', 'Experiment records')}</small><h3 id="tracking-title">{t('Run Manifest 与 W&B', 'Run Manifest and W&B')}</h3></div></div>
+    <div class="tracking-grid">
+      <div><span>campaign</span><code>20260814-1431-phaseg-base-vs-adapters</code></div>
+      <div><span>W&B</span><code>wandb==0.26.1</code></div>
+      <div><span>{t('角色', 'Role')}</span><strong>{t('观测与比较，不定义科学变量', 'observability and comparison, not scientific-variable definition')}</strong></div>
+    </div>
+    <p class="section-note">{t('Run Manifest 和本地 JSON 继续作为可追溯实验身份与结果的核心记录。', 'Run Manifests and local JSON evidence remain the core provenance for experiment identity and results.')}</p>
+  </section>
+
+  <footer class="sources">
+    <a href={`${activeRoot}/configs/experiment/current-campaign.json`} target="_blank" rel="noreferrer">current-campaign.json ↗</a>
+    <a href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} target="_blank" rel="noreferrer">Phase G result ↗</a>
+    <a href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} target="_blank" rel="noreferrer">Phase D–F evidence ↗</a>
+    <a href={`${serverRoot}/docs/server-facts.md`} target="_blank" rel="noreferrer">server facts ↗</a>
+  </footer>
+</section>
+
+<style>
+  .program{width:min(1120px,calc(100% - 2rem));margin:3rem auto 5rem;padding:clamp(1rem,3vw,1.8rem);border:1px solid var(--line);border-radius:22px;background:var(--surface)}
+  .program__header{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr);gap:1.25rem;align-items:start}.eyebrow{margin:0;color:var(--accent-deep);font-size:.74rem;font-weight:800}.program__header h2{margin:.45rem 0 .7rem}.lede{max-width:72ch;margin:0;color:var(--muted);line-height:1.7}.program__status{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.program__status span,.program__status strong,.program__status small{display:block}.program__status span{color:var(--muted);font-size:.68rem}.program__status strong{margin:.35rem 0;font-size:1.5rem}.program__status p{margin:.35rem 0;font-size:.82rem}.program__status small{color:var(--muted);line-height:1.45}
+  .program__section{padding:1.6rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;align-items:start;margin-bottom:1rem}.section-heading>span{color:var(--accent-deep);font:800 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.68rem}.section-heading h3{margin:.2rem 0 0}
+  .repo-grid,.fact-grid,.next-grid{display:grid;gap:.65rem;margin:0;padding:0;list-style:none}.repo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.repo-grid li,.fact-grid article,.next-grid article{padding:.9rem;border:1px solid var(--line);border-radius:13px}.repo-grid li>div{display:flex;justify-content:space-between;gap:.5rem;align-items:center}.repo-grid li>div span{color:var(--muted);font-size:.68rem}.repo-grid strong{display:block;margin-top:.65rem;font-size:.86rem}.repo-grid p,.fact-grid p{margin:.45rem 0;color:var(--muted);font-size:.76rem;line-height:1.5}.repo-grid a{font-size:.72rem;font-weight:750}.fact-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.fact-grid span,.fact-grid strong{display:block}.fact-grid span{color:var(--muted);font-size:.68rem}.fact-grid strong{margin-top:.35rem;font-size:.88rem}.section-note,.section-intro{max-width:78ch;color:var(--muted);font-size:.8rem;line-height:1.6}.section-note{margin:.8rem 0 0}.section-intro{margin:0 0 .8rem}
+  .result-table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.78rem}th,td{padding:.7rem;text-align:left;border-bottom:1px solid var(--line)}thead th{color:var(--muted);font-size:.68rem}.interpretation{margin-top:.8rem;padding:.85rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.interpretation strong{font-size:.78rem}.interpretation p{margin:.3rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.55}.next-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.next-grid strong,.next-grid span{display:block}.next-grid strong{color:var(--accent-deep);font-size:1.2rem}.next-grid span{margin-top:.35rem;color:var(--muted);font-size:.72rem;line-height:1.5}.tracking-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.tracking-grid>div{padding:.8rem;border:1px solid var(--line);border-radius:12px}.tracking-grid span,.tracking-grid code,.tracking-grid strong{display:block}.tracking-grid span{color:var(--muted);font-size:.66rem}.tracking-grid code,.tracking-grid strong{margin-top:.3rem;font-size:.75rem;overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:.45rem;padding-top:1rem;border-top:1px solid var(--line)}.sources a{padding:.45rem .6rem;border:1px solid var(--line);border-radius:9px;color:inherit;font-size:.7rem;text-decoration:none}
+  @media(max-width:900px){.program__header{grid-template-columns:1fr}.repo-grid,.fact-grid,.next-grid,.tracking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:620px){.program{width:min(100% - 1rem,1120px)}.repo-grid,.fact-grid,.next-grid,.tracking-grid{grid-template-columns:1fr}}
+</style>

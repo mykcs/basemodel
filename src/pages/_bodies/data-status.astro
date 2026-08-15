@@ -68,3 +68,7 @@ const reasonLabel = (reason: string) => reasonLabels[reason] ?? reason;
   {benchmarkRuns.some((run) => run.evidenceNote) && <section class="section benchmark-evidence-notes" aria-labelledby="benchmark-evidence-notes-title"><div class="section-heading"><div><h2 id="benchmark-evidence-notes-title">{locale === 'zh' ? 'Benchmark 证据说明' : 'Benchmark evidence notes'}</h2><p class="muted">{locale === 'zh' ? '运行条件没有被来源报告的部分会保留为未知状态，并在这里说明原因。' : 'Conditions not reported by the source remain unknown and are explained here.'}</p></div></div>{benchmarkRuns.filter((run) => run.evidenceNote).map((run) => <p class="muted"><strong>{run.benchmark}:</strong> {run.evidenceNote}</p>)}</section>}
   <SemanticStatusLegend locale={locale} compact />
 </div>
+
+<style>
+  .comparison-table-wrap { contain: paint; }
+</style>

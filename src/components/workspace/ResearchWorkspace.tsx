@@ -36,8 +36,10 @@ export function ResearchWorkspace({ models, papers, m, locale = 'zh' }: Props) {
     <div className="workspace">
       <div className="shell">
         <header className="page-header">
-          <h1>{m.workspace.title}</h1>
-          <p className="lede">{m.workspace.lede}</p>
+          <h1>{locale === 'zh' ? '实验工作台' : 'Experiment workspace'}</h1>
+          <p className="lede">{locale === 'zh'
+            ? '填写模型、GPU、网络、权重和训练条件。页面会筛掉跑不起来的方案，并把候选、来源和比较结果保存成实验记录。'
+            : 'Enter the model, GPU, network, weight-access, and training conditions. The workspace removes infeasible options and keeps candidates, sources, and comparisons together as an experiment record.'}</p>
         </header>
         <div className="workspace-grid">
           <div className={`workspace-pane workspace-pane-task${activePane === 'task' ? ' is-mobile-active' : ''}`}>

@@ -8,8 +8,8 @@ const component = read('src/components/research/Seed3090EvidenceGate.astro');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 
-describe('seed3090 evidence gate', () => {
-  it('keeps mechanism, attribution, and efficacy as separate claims', () => {
+describe('seed3090 evidence gate archive', () => {
+  it('keeps the August 12 mechanism, attribution, and efficacy methodology intact', () => {
     expect(component).toContain('data-claim={claim.id}');
     expect(component).toContain("id: 'mechanism'");
     expect(component).toContain("id: 'attribution'");
@@ -20,7 +20,7 @@ describe('seed3090 evidence gate', () => {
     expect(component).toContain('cannot claim that OpenEvo improves WebShop');
   });
 
-  it('shows the fail-closed qualification path and authoritative sources', () => {
+  it('preserves the fail-closed qualification path and authoritative sources', () => {
     expect(component).toContain('indexes_1k');
     expect(component).toContain('GPU_WORKLOAD_LAUNCHED=0');
     expect(component).toContain('8 episode / 4 pair');
@@ -31,15 +31,14 @@ describe('seed3090 evidence gate', () => {
     );
   });
 
-  it('is bilingual, static, and wired only into both results routes', () => {
+  it('keeps the old component static but no longer exposes it as the current results snapshot', () => {
     expect(component).toContain("import type { Locale } from '../../i18n'");
     expect(component).toContain('data-testid="seed3090-evidence-gate"');
     expect(component).not.toContain('client:');
 
     for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('Seed3090EvidenceGate');
-      expect(route).toContain('<Seed3090EvidenceGate locale={locale} />');
-      expect(route).toContain('page="results"');
+      expect(route).not.toContain('Seed3090EvidenceGate');
+      expect(route).toContain('Seed3090ParametricProgress');
     }
   });
 });

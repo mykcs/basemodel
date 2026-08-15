@@ -1,0 +1,310 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const label = locale === 'zh' ? '本页导航' : 'On this page';
+---
+
+<nav class="page-outline" data-page-outline data-ui-audit="contrast layout" aria-label={label} hidden>
+  <span class="page-outline__sr">{label}</span>
+  <ol class="page-outline__list" data-page-outline-list></ol>
+  <span class="page-outline__text" data-page-outline-tooltip hidden></span>
+</nav>
+
+<script>
+  type PageOutlineWindow = Window & { __atlasPageOutlineCleanup?: () => void };
+  const ignoredAncestorSelector = [
+    '[data-page-outline-ignore]',
+    '[hidden]',
+    '[aria-hidden="true"]',
+    'dialog',
+    '[role="dialog"]',
+    'details:not([open])',
+  ].join(',');
+
+  const normalizeLabel = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+  const ensureHeadingId = (heading: HTMLHeadingElement, usedIds: Set<string>, index: number) => {
+    if (heading.id) {
+      usedIds.add(heading.id);
+      return heading.id;
+    }
+
+    const normalized = normalizeLabel(heading.textContent ?? '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase()
+      .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 72);
+    const baseId = normalized || `section-${index + 1}`;
+    let candidate = baseId;
+    let suffix = 2;
+    while (usedIds.has(candidate) || document.getElementById(candidate)) {
+      candidate = `${baseId}-${suffix}`;
+      suffix += 1;
+    }
+    heading.id = candidate;
+    usedIds.add(candidate);
+    return candidate;
+  };
+
+  const collectHeadings = (main: HTMLElement) => {
+    const candidates = [...main.querySelectorAll<HTMLHeadingElement>('h2, h3')].filter((heading) => {
+      if (heading.closest(ignoredAncestorSelector)) return false;
+      const style = getComputedStyle(heading);
+      return style.display !== 'none' && style.visibility !== 'hidden' && normalizeLabel(heading.textContent ?? '').length > 0;
+    });
+    const levelTwo = candidates.filter((heading) => heading.tagName === 'H2');
+    return levelTwo.length >= 4 ? levelTwo : candidates;
+  };
+
+  const initPageOutline = () => {
+    const windowState = window as PageOutlineWindow;
+    windowState.__atlasPageOutlineCleanup?.();
+
+    const root = document.querySelector<HTMLElement>('[data-page-outline]');
+    const main = document.querySelector<HTMLElement>('#main-content');
+    const list = root?.querySelector<HTMLOListElement>('[data-page-outline-list]');
+    const tooltip = root?.querySelector<HTMLSpanElement>('[data-page-outline-tooltip]');
+    if (!root || !main || !list || !tooltip) return;
+
+    root.hidden = true;
+    root.classList.remove('is-visible');
+    list.replaceChildren();
+    tooltip.hidden = true;
+
+    const headings = collectHeadings(main).slice(0, 48);
+    const longEnough = main.scrollHeight >= Math.max(1400, window.innerHeight * 1.65);
+    if (headings.length < 4 || !longEnough) return;
+
+    const usedIds = new Set([...document.querySelectorAll('[id]')].map((element) => element.id));
+    const links: HTMLAnchorElement[] = [];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    headings.forEach((heading, index) => {
+      const id = ensureHeadingId(heading, usedIds, index);
+      const text = normalizeLabel(heading.textContent ?? '');
+      const item = document.createElement('li');
+      item.className = 'page-outline__item';
+      item.dataset.outlineLevel = heading.tagName.toLowerCase();
+
+      const link = document.createElement('a');
+      link.className = 'page-outline__link';
+      link.href = `#${encodeURIComponent(id)}`;
+      link.dataset.outlineTarget = id;
+      link.setAttribute('aria-label', text);
+
+      const bar = document.createElement('span');
+      bar.className = 'page-outline__bar';
+      bar.setAttribute('aria-hidden', 'true');
+
+      link.append(bar);
+      item.append(link);
+      list.append(item);
+      links.push(link);
+
+      const showTooltip = () => {
+        const rootRect = root.getBoundingClientRect();
+        const linkRect = link.getBoundingClientRect();
+        tooltip.textContent = text;
+        tooltip.style.top = `${linkRect.top - rootRect.top + linkRect.height / 2}px`;
+        tooltip.hidden = false;
+      };
+      const hideTooltip = () => {
+        tooltip.hidden = true;
+      };
+      link.addEventListener('mouseenter', showTooltip);
+      link.addEventListener('mouseleave', hideTooltip);
+      link.addEventListener('focus', showTooltip);
+      link.addEventListener('blur', hideTooltip);
+
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const top = heading.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({
+          top: Math.max(0, top),
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+        history.replaceState(null, '', `#${encodeURIComponent(id)}`);
+        setActive(index);
+      });
+    });
+
+    const setActive = (activeIndex: number) => {
+      links.forEach((link, index) => {
+        const active = index === activeIndex;
+        link.toggleAttribute('aria-current', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        link.classList.toggle('is-past', index < activeIndex);
+      });
+      root.dataset.activeIndex = String(activeIndex);
+    };
+
+    let frame = 0;
+    const updateActive = () => {
+      frame = 0;
+      const marker = window.scrollY + Math.min(window.innerHeight * 0.34, 320) + 72;
+      let activeIndex = 0;
+      headings.forEach((heading, index) => {
+        const top = heading.getBoundingClientRect().top + window.scrollY;
+        if (top <= marker) activeIndex = index;
+      });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 12) {
+        activeIndex = headings.length - 1;
+      }
+      setActive(activeIndex);
+    };
+
+    const scheduleActiveUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateActive);
+    };
+
+    const abortController = new AbortController();
+    window.addEventListener('scroll', scheduleActiveUpdate, { passive: true, signal: abortController.signal });
+    window.addEventListener('resize', scheduleActiveUpdate, { passive: true, signal: abortController.signal });
+    window.addEventListener('hashchange', scheduleActiveUpdate, { signal: abortController.signal });
+
+    root.hidden = false;
+    root.classList.add('is-visible');
+    updateActive();
+
+    windowState.__atlasPageOutlineCleanup = () => {
+      abortController.abort();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  };
+
+  initPageOutline();
+  document.addEventListener('astro:page-load', initPageOutline);
+</script>
+
+<style>
+  .page-outline {
+    position: fixed;
+    z-index: 18;
+    top: 50%;
+    inset-inline-end: max(22px, calc((100vw - 1160px) / 2 - 64px));
+    display: none;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .page-outline__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .page-outline__list {
+    display: grid;
+    gap: 2px;
+    max-height: min(68vh, 680px);
+    padding: 8px 0;
+    margin: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+    scrollbar-width: none;
+  }
+
+  .page-outline__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-outline__item {
+    display: block;
+    margin: 0;
+  }
+
+  .page-outline__link {
+    position: relative;
+    display: flex;
+    width: 48px;
+    min-height: 24px;
+    align-items: center;
+    justify-content: flex-end;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .page-outline__bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--muted) 62%, transparent);
+    transform-origin: right center;
+    transition: width 160ms ease, height 160ms ease, background-color 160ms ease, transform 160ms ease;
+  }
+
+  .page-outline__item[data-outline-level='h3'] .page-outline__bar {
+    width: 12px;
+    background: color-mix(in srgb, var(--muted) 46%, transparent);
+  }
+
+  .page-outline__link.is-past .page-outline__bar {
+    background: color-mix(in srgb, var(--accent-deep) 42%, var(--line));
+  }
+
+  .page-outline__link[aria-current='location'] .page-outline__bar,
+  .page-outline__link:hover .page-outline__bar,
+  .page-outline__link:focus-visible .page-outline__bar {
+    width: 36px;
+    height: 3px;
+    background: var(--accent-deep);
+  }
+
+  .page-outline__text {
+    position: absolute;
+    inset-inline-end: calc(100% + 10px);
+    width: max-content;
+    max-width: min(280px, calc(100vw - 120px));
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    font-size: .78rem;
+    font-weight: 650;
+    line-height: 1.35;
+    text-align: start;
+    white-space: normal;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  @media (min-width: 1320px) and (min-height: 640px) and (hover: hover) and (pointer: fine) {
+    .page-outline.is-visible {
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-outline,
+    .page-outline__bar,
+    .page-outline__text {
+      transition: none;
+    }
+  }
+
+  @media print {
+    .page-outline {
+      display: none !important;
+    }
+  }
+</style>

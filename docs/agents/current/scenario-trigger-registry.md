@@ -291,6 +291,26 @@ For the target ML-literate Agent newcomer, the learner should be able to explain
 
 ---
 
+## TRIGGER: user-visible copy / onboarding / status language
+
+### Cues
+
+Any task that adds or changes a public page, heading, introduction, callout, onboarding/Guide section, empty/error/status message, research explanation, bilingual copy, process/evidence visual, or broad UI structure.
+
+### Automatic response
+
+1. Read `audience-centered-technical-copy.md`, `audience-copy-audit-2026-08-12.md`, and `sitewide-visual-knowledge-architecture.md`, plus the relevant research/reproduction contract.
+2. Identify the copy-owning source and every generated route it affects; review headings, introductions, calls to action, status/empty/error states, and both locales together.
+3. Run `npm run audit:copy` for the contextual review queue. Resolve each changed-source candidate as a fix or a justified warning/exemption.
+4. Run `npm run audit:copy:strict` and the existing repository Gate before Preview. Strict mode protects only high-confidence naming, mission-metadata, and bilingual-route invariants.
+5. Update the canonical audit inventory when ownership, coverage, or a durable exemption changes. Do not create a second copy standard or audit file.
+
+### Acceptance boundary
+
+The scanner identifies review candidates; it does not mechanically ban words such as “不要”, “current”, or “still”. Contextual review remains responsible for safety warnings, evidence boundaries, time references, and bilingual semantic equivalence.
+
+---
+
 ## TRIGGER: actionable content / code blocks / generated artifacts
 
 ### Cues

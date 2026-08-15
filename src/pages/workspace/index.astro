@@ -9,6 +9,6 @@ const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
-<AppLayout title={m.workspace.pageTitle} locale="zh">
+<AppLayout title="实验工作台" description="填写模型、GPU、网络、权重和训练条件，筛掉跑不起来的方案，并保存候选、来源和比较结果。" locale="zh">
   <ResearchWorkspace client:load models={models} papers={papers} m={m} locale="zh" />
 </AppLayout>

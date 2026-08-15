@@ -1,8 +1,11 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
+import AgentEnvironmentTrajectory from '../../../components/research/AgentEnvironmentTrajectory.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout title="ALFWorld 与 WebShop 实验设置" description="解释两个 Agent benchmark 的环境、动作、任务、成功标准、归一化分数、宏平均与公平比较条件。" locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="benchmarks" />
+  <SeedOpenEvoResearchPage locale={locale} page="benchmarks">
+    <AgentEnvironmentTrajectory locale={locale} context="benchmark" />
+  </SeedOpenEvoResearchPage>
 </AppLayout>

@@ -1,16 +1,219 @@
 {
   "vendors": [
-    {"id": "openai", "name": "OpenAI", "official_catalog_urls": ["https://developers.openai.com/api/docs/models"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "qwen", "name": "Qwen / Alibaba", "official_catalog_urls": ["https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "https://github.com/QwenLM/Qwen3.6", "https://huggingface.co/Qwen"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "google", "name": "Google", "official_catalog_urls": ["https://ai.google.dev/gemini-api/docs/models", "https://ai.google.dev/gemma/docs/core/model_card_4", "https://huggingface.co/google"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "meta", "name": "Meta", "official_catalog_urls": ["https://www.llama.com/models/", "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "anthropic", "name": "Anthropic", "official_catalog_urls": ["https://platform.claude.com/docs/en/about-claude/models/overview", "https://platform.claude.com/docs/en/release-notes/overview"], "refresh_days": 14, "model_types": ["api"]},
-    {"id": "deepseek", "name": "DeepSeek", "official_catalog_urls": ["https://huggingface.co/deepseek-ai", "https://api-docs.deepseek.com/"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "moonshot", "name": "Moonshot AI", "official_catalog_urls": ["https://www.kimi.com/help/agent/agent-overview", "https://platform.kimi.ai/", "https://huggingface.co/moonshotai"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "mistral", "name": "Mistral AI", "official_catalog_urls": ["https://docs.mistral.ai/models/overview", "https://huggingface.co/mistralai"], "refresh_days": 14, "model_types": ["api", "open-weight"]},
-    {"id": "glm", "name": "GLM / Z.ai", "official_catalog_urls": ["https://huggingface.co/zai-org", "https://z.ai/"], "refresh_days": 30, "model_types": ["api", "open-weight"]},
-    {"id": "lmsys", "name": "LMSYS", "official_catalog_urls": ["https://lmsys.org/"], "refresh_days": 90, "model_types": ["open-weight"]},
-    {"id": "xai", "name": "xAI", "official_catalog_urls": ["https://docs.x.ai/developers/models", "https://docs.x.ai/developers/release-notes"], "refresh_days": 14, "model_types": ["api"]},
-    {"id": "minimax", "name": "MiniMax", "official_catalog_urls": ["https://www.minimax.io/", "https://huggingface.co/MiniMaxAI"], "refresh_days": 30, "model_types": ["api", "open-weight"]}
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "official_catalog_urls": [
+        "https://developers.openai.com/api/docs/models",
+        "https://platform.openai.com/docs/models"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "openai-model-catalog"
+      ]
+    },
+    {
+      "id": "qwen",
+      "name": "Qwen / Alibaba Cloud",
+      "official_catalog_urls": [
+        "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+        "https://www.alibabacloud.com/help/en/model-studio/models",
+        "https://github.com/QwenLM",
+        "https://huggingface.co/Qwen"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "qwen-model-catalog",
+        "qwen-github-catalog",
+        "qwen-hf-catalog"
+      ]
+    },
+    {
+      "id": "google",
+      "name": "Google / Google DeepMind",
+      "official_catalog_urls": [
+        "https://ai.google.dev/gemini-api/docs/models",
+        "https://ai.google.dev/gemini-api/docs/deprecations",
+        "https://ai.google.dev/gemma/docs",
+        "https://huggingface.co/google"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "google-gemini-catalog",
+        "google-gemma-catalog"
+      ]
+    },
+    {
+      "id": "meta",
+      "name": "Meta",
+      "official_catalog_urls": [
+        "https://www.llama.com/models/",
+        "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
+        "https://huggingface.co/meta-llama"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "meta-llama-catalog",
+        "meta-muse-catalog"
+      ]
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic",
+      "official_catalog_urls": [
+        "https://platform.claude.com/docs/en/about-claude/models/overview",
+        "https://platform.claude.com/docs/en/release-notes/overview"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "anthropic-model-catalog"
+      ]
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "official_catalog_urls": [
+        "https://huggingface.co/deepseek-ai",
+        "https://api-docs.deepseek.com/"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "deepseek-model-catalog"
+      ]
+    },
+    {
+      "id": "moonshot",
+      "name": "Moonshot AI",
+      "official_catalog_urls": [
+        "https://www.kimi.com/help/agent/agent-overview",
+        "https://huggingface.co/moonshotai",
+        "https://platform.kimi.ai/"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "moonshot-kimi-catalog"
+      ]
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral AI",
+      "official_catalog_urls": [
+        "https://docs.mistral.ai/models/overview",
+        "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
+        "https://huggingface.co/mistralai"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "mistral-model-catalog"
+      ]
+    },
+    {
+      "id": "glm",
+      "name": "Z.ai / GLM",
+      "official_catalog_urls": [
+        "https://huggingface.co/zai-org",
+        "https://z.ai/"
+      ],
+      "refresh_days": 30,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "glm-model-catalog"
+      ]
+    },
+    {
+      "id": "lmsys",
+      "name": "LMSYS Org",
+      "official_catalog_urls": [
+        "https://lmsys.org/",
+        "https://huggingface.co/lmsys"
+      ],
+      "refresh_days": 90,
+      "model_types": [
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "lmsys-vicuna-catalog"
+      ]
+    },
+    {
+      "id": "xai",
+      "name": "xAI",
+      "official_catalog_urls": [
+        "https://docs.x.ai/developers/models",
+        "https://docs.x.ai/developers/rate-limits",
+        "https://docs.x.ai/developers/release-notes",
+        "https://docs.x.ai/developers/migration/may-15-retirement"
+      ],
+      "refresh_days": 14,
+      "model_types": [
+        "api"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "xai-model-catalog"
+      ]
+    },
+    {
+      "id": "minimax",
+      "name": "MiniMax",
+      "official_catalog_urls": [
+        "https://www.minimax.io/models/text/m3",
+        "https://www.minimax.io/blog/minimax-m3",
+        "https://huggingface.co/MiniMaxAI"
+      ],
+      "refresh_days": 30,
+      "model_types": [
+        "api",
+        "open-weight"
+      ],
+      "catalog_checked_at": "2026-08-12",
+      "catalog_source_ids": [
+        "minimax-model-catalog"
+      ]
+    }
   ]
 }
