@@ -22,7 +22,9 @@ const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
   it('uses Vercel for both Preview and Production with the repository Gate', () => {
-    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
+    expect(vercel.buildCommand).toBe(
+      'npm run verify:deploy && npm run build && node scripts/vercel-lab-browser-gate.mjs',
+    );
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
