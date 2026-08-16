@@ -96,7 +96,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       lede: zh ? '控制容器、科研运行容器与其他用户容器是 host Docker daemon 管理的 sibling containers。技术能力、宿主机所有权和项目授权是三个不同概念。' : 'The control container, scientific runtime, and other users’ containers are siblings managed by the host Docker daemon. Technical capability, host ownership, and project authorization are distinct concepts.',
       steps: [
         { label: 'daemon', narration: zh ? 'Host daemon 才是容器生命周期的实际管理者。' : 'The host daemon actually owns container lifecycle management.' },
-        { label: 'control', narration: zh ? 'dev-wangr 中的 root UID 0 是控制容器内部身份。' : 'root UID 0 in dev-wangr is an identity inside the control container.' },
+        { label: 'control', narration: zh ? '当前开发容器中的 root UID 0 只是该控制容器内部身份。' : 'root UID 0 in the current development container is an identity inside that control container.' },
         { label: 'socket', narration: zh ? 'Docker socket 把 CLI 请求送到 host daemon。' : 'The Docker socket sends CLI requests to the host daemon.' },
         { label: 'runtime', narration: zh ? '科研执行进入 non-root、explicit GPU、no-socket 实验容器。' : 'Scientific execution moves into a non-root, explicit-GPU, no-socket experiment container.' },
         { label: 'workspace', narration: zh ? '长期状态写入持久 workspace，而不是容器临时 home。' : 'Durable state is written to the persistent workspace rather than container-local home.' },
