@@ -114,11 +114,12 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('current WebShop SD-LoRA adapter is one concrete parametric path');
   });
 
-  it('preserves the server sibling-container and authorization model with measured connectors', () => {
-    for (const term of ['Docker daemon', 'dev-wangr / wangr-dev', 'root UID 0', '/var/run/docker.sock', 'UID/GID 1001:1001', 'no Docker socket', '/data/home/wangr/workspace', 'dev-guozy · dev-huzh', 'container root ≠ physical-host ownership', 'technical capability ≠ authorization scope']) expect(explainer).toContain(term);
+  it('preserves the server sibling-container and authorization model with measured connectors and public-safe labels', () => {
+    for (const term of ['Docker daemon', 'current development container', 'root UID 0', '/var/run/docker.sock', 'ordinary UID · explicit GPU · no Docker socket', 'approved persistent workspace', 'User A · User B · …', 'container root ≠ physical-host root', 'technical capability ≠ authorization scope']) expect(explainer).toContain(term);
     for (const edge of ['dev-socket', 'socket-daemon', 'daemon-exp', 'daemon-siblings', 'dev-workspace', 'exp-workspace']) expect(explainer).toContain(edge);
+    for (const forbidden of ['dev-wangr', 'wangr-dev', 'dev-guozy', 'dev-huzh', '/data/home/wangr']) expect(explainer).not.toContain(forbidden);
     expect(explainer).toContain('irx-mobile-relations');
-    expect(explainer).toContain('they are not child containers of dev-wangr');
+    expect(explainer).toContain('not child containers of the current development container');
   });
 
   it('supports keyboard navigation, static SSR content, audit markup, and reduced-motion fallback', () => {

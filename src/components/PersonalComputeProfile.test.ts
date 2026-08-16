@@ -15,15 +15,19 @@ describe('personal compute profile consumer', () => {
     expect(policy).toContain('must not keep a second editable object');
   });
 
-  it('keeps public lab routes on the current OpenEvo experiment timeline instead of mounting the stale profile', () => {
+  it('keeps public lab routes server-first while preserving experiment lineage instead of mounting the stale profile', () => {
     expect(zhPage).toContain('实验设备与服务器');
+    expect(zhPage).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(zhPage).toContain('5×RTX5090');
-    expect(zhPage).toContain('RTX6 · 4×RTX3090');
-    expect(zhPage).toContain('Phase H0');
+    expect(zhPage).toContain('RTX6 · historical');
+    expect(zhPage).toContain('4×RTX3090');
+    expect(zhPage).toContain('/research/seed-openevo/results/');
     expect(enPage).toContain('Experiment devices and servers');
+    expect(enPage).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(enPage).toContain('5×RTX5090');
-    expect(enPage).toContain('RTX6 · 4×RTX3090');
-    expect(enPage).toContain('Phase H0');
+    expect(enPage).toContain('RTX6 · historical');
+    expect(enPage).toContain('4×RTX3090');
+    expect(enPage).toContain('/research/seed-openevo/results/');
     expect(zhPage).not.toContain('<PersonalComputeProfile locale="zh" />');
     expect(enPage).not.toContain('<PersonalComputeProfile locale="en" />');
   });
