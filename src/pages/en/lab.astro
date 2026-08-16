@@ -4,32 +4,102 @@ import { localePath } from '../../i18n';
 import InteractiveResearchExplainer from '../../components/research/InteractiveResearchExplainer.tsx';
 const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
+const auditPrompt = `Perform a strict read-only beginner audit of the Linux / GPU server I am authorized to access. The goal is not to change the machine. Answer: what machine did I receive, what permissions do I have, which resources are shared, and where can I safely place experiment state?
+
+Safety boundary:
+1. Read-only commands only. Do not install or upgrade software, change config/permissions/users/Docker/drivers/CUDA/firewall/SSH, start training/benchmarks/large models/new containers, or kill processes.
+2. Do not read or output passwords, tokens, API keys, SSH keys, cookies, environment variables, private file contents, other users' command lines, IPs, hostnames, ports, MACs, fingerprints, or GPU UUIDs.
+3. Aggregate other-user evidence anonymously as User A / User B. If something cannot be safely verified, return UNKNOWN instead of guessing.
+4. If a check needs a sudo password, privilege escalation, or a write, skip it.
+
+Actually connect to the server and inspect:
+- OS, kernel, architecture, and whether the current shell is a physical host or a container namespace.
+- CPU model/sockets/physical cores/logical CPUs/NUMA; RAM, swap, cgroup CPU/RAM limits.
+- GPU count/model/VRAM, NVIDIA driver, nvidia-smi CUDA compatibility, MIG, topology, and current GPU/VRAM use.
+- UID/GID/groups; ordinary-user sudo, Docker, and GPU access. Keep root SSH, Docker admin, and physical-host root as separate claims.
+- Whether the machine is shared: anonymous probable-human accounts, login sessions, other ordinary-UID processes, independent development containers/workspaces, with namespace limits stated.
+- lsblk / df / findmnt storage, filesystems, mounts; run du only on my own HOME/workspace; check quota. No detected quota must never be translated into unlimited space.
+- Docker client/server, storage driver, Compose, Buildx, NVIDIA runtime.
+- NVIDIA driver, driver CUDA compatibility, system nvcc, and Python/PyTorch compiled CUDA as separate layers.
+- Python/pip/uv/Conda, Git, Node, tmux, Bash/Fish/Zsh and other core development tools.
+- Owner/UID/GID/writability/mixed ownership for my own HOME/workspace; distinguish persistent binds from container overlay.
+- Current uptime/load, RAM available, GPU busy count, disk free. Timestamp every dynamic value with timezone.
+
+Evidence rules: classify claims as Verified (live command), Reported (docs/admin statement), or Unknown. If server documentation exists, cross-check live results as MATCH / STALE / UNKNOWN / LIVE-ONLY.
+
+Return, in order: EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS → SHARED SERVER ANALYSIS → STORAGE & QUOTA → GPU & CUDA STACK → DOCKER & DEVELOPMENT ENVIRONMENT → WORKSPACE & FILE OWNERSHIP → CURRENT SNAPSHOT → DOCUMENTATION CROSS-CHECK → PRIVACY REVIEW → parseable JSON facts package → SANITIZED EVIDENCE → UNKNOWNS.
+
+Final self-check: no server changes; no secrets, real other-user identities, or network addresses; unknown stays unknown; visible resources are never silently reinterpreted as exclusive or administratively allocated resources.`;
 ---
-<AppLayout title="Experiment devices and servers" description="The current OpenEvo experiment uses a 5×RTX5090 allocation; server inventory records 8 visible RTX5090 GPUs. RTX6 / 4×RTX3090 is a historical experiment platform." locale="en">
+<AppLayout title="Experiment devices and servers" description="Read-only audit from 2026-08-16: Ubuntu 22.04, 80 physical CPU cores / 160 threads, about 1 TiB RAM, and 8 visible RTX 5090 GPUs. The server is very likely shared; visibility is not allocation." locale="en">
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
-      <span class="section-kicker">Experiment environment · 2026-08-14</span>
-      <h1>Experiment devices and servers</h1>
-      <p class="lede">The active OpenEvo × WebShop scientific experiment is maintained in <code>openevo-experiment</code> and currently has a <strong>5×RTX5090</strong> allocation. RTX6 with 4×RTX3090 remains only as historical experiment and migration evidence.</p>
+      <span class="section-kicker">ZJU GPU Server · read-only audit 2026-08-16</span>
+      <h1>What server did I actually receive?</h1>
+      <p class="lede">This is a public-safe snapshot for a first-time server user. SSH lands in a <strong>development container</strong> that can see 160 CPU threads, about 1 TiB of RAM, and eight RTX 5090 GPUs. But “visible” does not mean “exclusive” or “allocated to me.” The machine is very likely shared, while formal GPU allocation and personal storage quota remain policy questions.</p>
     </header>
-    <InteractiveResearchExplainer locale="en" kind="server" client:visible />
 
     <section class="lab-section" aria-labelledby="current-server-title">
-      <header class="lab-section__heading"><span>CURRENT RECORD</span><h2 id="current-server-title">OpenEvo experiment server</h2></header>
-      <dl class="lab-ledger" data-ui-audit="contrast layout">
-        <div data-ui-audit-item><dt>Experiment allocation</dt><dd>5× NVIDIA GeForce RTX 5090</dd></div>
-        <div data-ui-audit-item><dt>Visible server inventory</dt><dd>8× NVIDIA GeForce RTX 5090</dd></div>
-        <div data-ui-audit-item><dt>Experiment repository</dt><dd><code>mykcs/openevo-experiment</code></dd></div>
-        <div data-ui-audit-item><dt>Current phase</dt><dd>Phase H0 · Natural Success Search</dd></div>
+      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">At a glance</h2></header>
+      <dl class="lab-ledger lab-ledger--overview" data-ui-audit="contrast layout">
+        <div data-ui-audit-item><dt>System</dt><dd>Ubuntu 22.04 · Linux 5.15 · x86_64</dd></div>
+        <div data-ui-audit-item><dt>CPU</dt><dd>2× Xeon Platinum 8380 · 80 physical cores / 160 threads</dd></div>
+        <div data-ui-audit-item><dt>Memory</dt><dd>1007.51 GiB RAM · 8 GiB swap</dd></div>
+        <div data-ui-audit-item><dt>GPU</dt><dd>8× GeForce RTX 5090 · 31.84 GiB each</dd></div>
+        <div data-ui-audit-item><dt>GPU driver</dt><dd>610.57.04 · driver CUDA compatibility 13.3</dd></div>
+        <div data-ui-audit-item><dt>Visible storage pool</dt><dd>436.04 GiB · 138.66 GiB available at snapshot</dd></div>
+        <div data-ui-audit-item><dt>Ordinary account</dt><dd>GPU access · no sudo · no Docker API administration</dd></div>
+        <div data-ui-audit-item><dt>Admin entry</dt><dd>root SSH works · Docker admin · not verified physical-host root</dd></div>
       </dl>
-      <p class="lab-note">Eight visible GPUs is a server-inventory fact; it does not mean every experiment uses all eight. This page shows the current five-GPU experiment allocation.</p>
-      <nav class="lab-actions" aria-label="Experiment sources"><a href={serverFacts} target="_blank" rel="noreferrer">Server facts ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">Experiment repo ↗</a><a href={localePath('en','/research/seed-openevo/results/')}>Experiment results →</a></nav>
+      <p class="lab-note">Canonical server facts remain owned by <code>mykcs/zju-server</code>. This is a sanitized presentation snapshot from <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time>, not a second editable server inventory.</p>
+      <nav class="lab-actions" aria-label="Experiment and server sources"><a href={serverFacts} target="_blank" rel="noreferrer">Server facts ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">Experiment repo ↗</a><a href={localePath('en','/research/seed-openevo/results/')}>Experiment results →</a></nav>
+
+      <div class="lab-snapshot" data-ui-audit="contrast layout" aria-label="Dynamic snapshot from 2026-08-16">
+        <div data-ui-audit-item><span>GPU</span><strong>0 / 8 busy</strong><small>no compute process at snapshot</small></div>
+        <div data-ui-audit-item><span>RAM</span><strong>993.9 GiB available</strong><small>instantaneous, not a quota</small></div>
+        <div data-ui-audit-item><span>DISK</span><strong>138.66 GiB available</strong><small>shared filesystem free space</small></div>
+        <div data-ui-audit-item><span>CONTAINERS</span><strong>6 running</strong><small>including 4 development containers</small></div>
+      </div>
+    </section>
+
+    <InteractiveResearchExplainer locale="en" kind="server" client:visible />
+
+    <section class="lab-section" aria-labelledby="shared-title">
+      <header class="lab-section__heading"><span>OWNED vs VISIBLE</span><h2 id="shared-title">What can I see, and what is actually mine?</h2></header>
+      <p>This is the easiest boundary for a beginner to miss. Live evidence can prove that a resource is <strong>visible</strong> or that a capability <strong>works</strong>; it does not automatically prove exclusive ownership, administrative authorization, or a fixed personal quota.</p>
+      <div class="lab-table-wrap" data-ui-audit="contrast layout">
+        <table class="lab-fact-table">
+          <thead><tr><th>Dimension</th><th>Live evidence</th><th>What it proves</th><th>What it does not prove</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">GPU</th><td>8 RTX 5090 GPUs visible; 0 busy at the snapshot</td><td>The ordinary account has GPU capability</td><td>It does not prove all eight are allocated to you, and idle GPUs are not automatic permission to occupy them</td></tr>
+            <tr><th scope="row">CPU / RAM</th><td>160 logical CPUs; about 1 TiB RAM; no visible container cgroup cap</td><td>The development container sees machine-scale resources</td><td>It does not prove the resources are exclusive</td></tr>
+            <tr><th scope="row">Sharing</th><td>4 independent development containers and 4 persistent workspace roots were visible</td><td>The machine is very likely shared, with high confidence</td><td>A safe human-user count cannot be inferred; host-wide account count is unknown</td></tr>
+            <tr><th scope="row">Docker / root</th><td>root SSH works and can administer the shared Docker daemon</td><td>Strong container-management capability</td><td>container root / Docker admin ≠ physical-host root, and capability ≠ authorization over others' resources</td></tr>
+            <tr><th scope="row">Storage</th><td>138.66 GiB free in the visible shared pool; no explicit quota detected</td><td>Short-term writes are constrained by the shared pool</td><td>138.66 GiB is not a personal allowance; no detected quota does not mean unlimited space</td></tr>
+            <tr><th scope="row">Workspace</th><td>Ordinary project tree had clean ownership; persistent workspace had mixed ownership</td><td>Long-lived writes should use the intended ordinary UID/GID</td><td>The canonical workspace and approved long-job method are still unknown</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="lab-section" aria-labelledby="storage-title">
+      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">Why three 436 GiB views do not add up</h2></header>
+      <p><code>/</code>, <code>/root</code>, and <code>/share</code> look like three entry points inside the container, but the audit shows they ultimately share the same visible backing filesystem of about 436 GiB. They are <strong>three views, not three independent disks</strong>.</p>
+      <figure class="lab-storage-map" data-ui-audit="contrast layout">
+        <figcaption>One visible shared storage pool · 2026-08-16 snapshot</figcaption>
+        <div class="lab-storage-pool" data-ui-audit-item><span>BACKING FILESYSTEM</span><strong>436.04 GiB total</strong><small>275.16 GiB used · 138.66 GiB available · 67%</small></div>
+        <ol>
+          <li data-ui-audit-item><span>VIEW 01</span><strong>Container root /</strong><small>overlay view</small></li>
+          <li data-ui-audit-item><span>VIEW 02</span><strong>/root</strong><small>persistent bind</small></li>
+          <li data-ui-audit-item><span>VIEW 03</span><strong>/share</strong><small>persistent bind · same pool</small></li>
+        </ol>
+      </figure>
+      <p class="lab-note">Part of the ordinary home/workspace currently lives on container overlay, so rebuild persistence is unknown; the persistent workspace also contains mixed ownership. Before long experiments, confirm the canonical persistent workspace, backup/cleanup policy, and quota/fair-use rules.</p>
     </section>
 
     <section class="lab-section" aria-labelledby="interactive-env-title">
       <header class="lab-section__heading"><span>INTERACTIVE ENVIRONMENT</span><h2 id="interactive-env-title">Interactive development environment</h2></header>
-      <p>The interactive command-line environment was verified on <time datetime="2026-08-16">2026-08-16</time>: human SSH sessions enter Fish 4.8.1 while the underlying login shell remains Bash. This provides completion, syntax highlighting, and searchable history without changing the Bash semantics used by non-interactive SSH, file transfer, and Agent automation.</p>
-
+      <p>The interactive command-line environment was verified on <time datetime="2026-08-16">2026-08-16</time>: human SSH sessions enter Fish 4.8.1 while the underlying login shell remains Bash. This provides completion, syntax highlighting, and searchable history while non-interactive SSH, file transfer, and Agent automation keep stable Bash semantics.</p>
       <div class="lab-shell-paths" data-ui-audit="contrast layout" aria-label="Separate shell paths for interactive work and automation">
         <ol aria-label="Interactive session path">
           <li data-ui-audit-item><span>01</span><strong>Interactive session</strong><small>terminal work</small></li>
@@ -42,30 +112,64 @@ const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
           <li data-ui-audit-item><span>03</span><strong>Bash compatibility</strong><small>stable scripting semantics</small></li>
         </ol>
       </div>
-
       <dl class="lab-ledger" data-ui-audit="contrast layout">
-        <div data-ui-audit-item><dt>Prompt</dt><dd>Starship 1.26.0 · Catppuccin Mocha</dd></div>
-        <div data-ui-audit-item><dt>Command history</dt><dd>Atuin 18.19.0 · <code>Ctrl-R</code> search</dd></div>
+        <div data-ui-audit-item><dt>Shell</dt><dd>Bash default · Fish 4.8.1 interactive</dd></div>
+        <div data-ui-audit-item><dt>Prompt / history</dt><dd>Starship 1.26.0 · Atuin 18.19.0</dd></div>
         <div data-ui-audit-item><dt>Navigation & search</dt><dd>zoxide · fzf · eza · bat · rg · fd</dd></div>
-        <div data-ui-audit-item><dt>Long-running work</dt><dd>tmux 3.2a · btop</dd></div>
-        <div data-ui-audit-item><dt>Fish interaction</dt><dd>autosuggestion · syntax highlighting · completion</dd></div>
-        <div data-ui-audit-item><dt>Compatibility boundary</dt><dd>non-interactive SSH, scp, rsync, and Agent automation stay Bash-compatible</dd></div>
+        <div data-ui-audit-item><dt>Long-running tools</dt><dd>tmux 3.2a · btop</dd></div>
+        <div data-ui-audit-item><dt>Python</dt><dd>ordinary 3.12.13 · root python3 3.10.12</dd></div>
+        <div data-ui-audit-item><dt>GPU software layer</dt><dd>system <code>nvcc</code> absent · PyTorch absent in live sessions</dd></div>
+        <div data-ui-audit-item><dt>Docker</dt><dd>29.1.3 · overlayfs · NVIDIA runtime advertised</dd></div>
+        <div data-ui-audit-item><dt>Compose / Buildx</dt><dd>absent in the current root session</dd></div>
       </dl>
-      <p class="lab-note">This public page exposes only the safe interaction model and compatibility design. Login endpoints, hostnames, accounts, keys, and other operational details remain in the private server source of truth.</p>
+      <p class="lab-note">CUDA 13.3 in <code>nvidia-smi</code> is driver compatibility. It does not mean the system CUDA Toolkit is installed, and it does not identify the PyTorch CUDA version inside an experiment image.</p>
+    </section>
+
+    <section class="lab-section" aria-labelledby="first-login-title">
+      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">Five things to check on your first login</h2></header>
+      <ol class="lab-first-login" data-ui-audit="contrast layout">
+        <li data-ui-audit-item><span>01</span><strong>Who am I, and where am I?</strong><p><code>id</code> + <code>pwd</code>. Confirm identity, working directory, and whether you are inside a container.</p></li>
+        <li data-ui-audit-item><span>02</span><strong>What are the GPUs doing?</strong><p><code>nvidia-smi</code>. Check model/count/load first; idle does not equal authorized.</p></li>
+        <li data-ui-audit-item><span>03</span><strong>How much RAM is available?</strong><p><code>free -h</code>. Available RAM is an instantaneous pool, not your personal quota.</p></li>
+        <li data-ui-audit-item><span>04</span><strong>How much disk is left?</strong><p><code>df -hT</code>. Understand shared mounts before saying “I have X GiB left.”</p></li>
+        <li data-ui-audit-item><span>05</span><strong>Will this survive a rebuild?</strong><p><code>findmnt</code>. Separate overlay from persistent binds before placing models, data, and run output.</p></li>
+      </ol>
+      <aside class="lab-warning"><strong>Still requires administrator confirmation:</strong> formal allocation/scheduling of the eight GPUs, personal quota, backup/snapshot/retention policy, canonical workspace, approved long-job method, and the physical-host root boundary.</aside>
+    </section>
+
+    <section class="lab-section" aria-labelledby="agent-audit-title">
+      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">Let an Agent inspect an unfamiliar server</h2></header>
+      <p>These facts should not be hand-entered from memory. A more reproducible flow is to let an SSH-capable Agent run a <strong>read-only audit</strong>, force it to separate live evidence / documentation / unknowns, redact sensitive details, and return a facts package the website can consume.</p>
+      <ol class="lab-audit-flow" data-ui-audit="contrast layout" aria-label="Server audit to website workflow">
+        <li data-ui-audit-item><span>01</span><strong>Give the Agent a prompt</strong><small>define read-only boundaries and beginner questions</small></li>
+        <li data-ui-audit-item><span>02</span><strong>Verify over SSH</strong><small>OS · CPU · RAM · GPU · storage · permissions</small></li>
+        <li data-ui-audit-item><span>03</span><strong>Redact + preserve unknowns</strong><small>no identities, addresses, credentials, or other-user content</small></li>
+        <li data-ui-audit-item><span>04</span><strong>Produce a facts package</strong><small>separate stable specifications from dynamic snapshots</small></li>
+        <li data-ui-audit-item><span>05</span><strong>Write the web page</strong><small>specs → authority boundaries → beginner actions</small></li>
+      </ol>
+      <details class="lab-prompt-details">
+        <summary>Copy the generic Server Audit Prompt</summary>
+        <p>Suitable for Codex, Claude Code, or another Agent with SSH tools. It contains no ZJU-specific username, address, or repository detail.</p>
+        <pre><code>{auditPrompt}</code></pre>
+      </details>
     </section>
 
     <section class="lab-section" aria-labelledby="history-server-title">
-      <header class="lab-section__heading"><span>HISTORICAL LINEAGE</span><h2 id="history-server-title">RTX6 · 4×RTX3090</h2></header>
-      <p>RTX6 previously handled WebShop / ALFWorld bring-up, early OpenEvo parameter experiments, and extensive engineering debugging. Its logs, failure traces, and migration evidence remain in <code>seed3090</code> and historical run records, but it no longer represents current experiment hardware.</p>
-      <ol class="lab-lineage" data-ui-audit="contrast layout"><li data-ui-audit-item><span>01</span><strong>seed3090</strong><p>RTX6 engineering and early experiment archive</p></li><li data-ui-audit-item><span>02</span><strong>openevo-webshop</strong><p>WebShop × SD-LoRA migration repository</p></li><li data-ui-audit-item><span>03</span><strong>openevo-experiment</strong><p>Current formal experimental source of truth</p></li></ol>
+      <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">Current and historical experiment hardware</h2></header>
+      <p>This page first answers “what is this server?” Experiment allocation is a separate claim: eight RTX 5090 GPUs are visible live, but the formal GPU allocation policy could not be safely verified in this audit. A prior experiment record used a five-GPU allocation; RTX6 with four RTX 3090 GPUs is the pre-migration historical platform.</p>
+      <ol class="lab-lineage" data-ui-audit="contrast layout">
+        <li data-ui-audit-item><span>01</span><strong>ZJU server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
+        <li data-ui-audit-item><span>02</span><strong>OpenEvo campaign</strong><p>historical record: 5×RTX5090 allocation; follow the latest run contract in the experiment repo</p></li>
+        <li data-ui-audit-item><span>03</span><strong>RTX6 · historical</strong><p>4×RTX3090 · early WebShop / ALFWorld and migration evidence</p></li>
+      </ol>
     </section>
 
     <section class="lab-section" aria-labelledby="paths-title">
-      <header class="lab-section__heading"><span>ENTRY POINTS</span><h2 id="paths-title">Experiment pages</h2></header>
-      <nav class="lab-route-list" aria-label="Experiment pages"><a href={localePath('en','/guide/openevo-webshop-alfworld/')}><span>01</span><strong>Reproduction guide</strong><small>Current server, WebShop contract, and Phase H0</small></a><a href={localePath('en','/research/seed-openevo/experiment/')}><span>02</span><strong>Experiment entry</strong><small>OpenEvo × WebShop data flow</small></a><a href={localePath('en','/research/seed-openevo/results/')}><span>03</span><strong>Experiment results</strong><small>Phase D–F, Phase G, and historical evidence</small></a></nav>
+      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">Where to go next</h2></header>
+      <nav class="lab-route-list" aria-label="Experiment pages"><a href={localePath('en','/guide/openevo-webshop-alfworld/')}><span>01</span><strong>Reproduction guide</strong><small>From environment checks to the WebShop / ALFWorld run contract</small></a><a href={localePath('en','/research/seed-openevo/experiment/')}><span>02</span><strong>Experiment entry</strong><small>OpenEvo × WebShop data flow and evolution boundary</small></a><a href={localePath('en','/research/seed-openevo/results/')}><span>03</span><strong>Experiment results</strong><small>Inspect real scores, failures, evidence, and next decisions</small></a></nav>
     </section>
   </div>
 </AppLayout>
 <style>
-.lab-current-page{--lab-rule:color-mix(in srgb,var(--line) 88%,transparent);padding-bottom:5rem}.lab-intro{max-width:920px;padding-bottom:.5rem}.lab-section{width:min(1120px,calc(100% - 1rem));margin:3.6rem auto 0;padding-top:1.25rem;border-top:1px solid var(--lab-rule)}.lab-section__heading{display:grid;grid-template-columns:150px minmax(0,1fr);gap:1rem;align-items:baseline;margin-bottom:1.15rem}.lab-section__heading>span{color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.lab-section__heading h2{margin:0;font-size:clamp(1.15rem,2vw,1.55rem)}.lab-section>p{max-width:78ch;line-height:1.7}.lab-ledger{display:grid;grid-template-columns:1fr 1fr;margin:0;border-block:1px solid var(--lab-rule)}.lab-ledger>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.3fr);gap:.8rem;padding:.9rem .2rem}.lab-ledger>div:nth-child(odd){padding-right:1rem;border-right:1px solid var(--lab-rule)}.lab-ledger>div:nth-child(even){padding-left:1rem}.lab-ledger>div:nth-child(n+3){border-top:1px solid var(--lab-rule)}.lab-ledger dt{color:var(--muted);font-size:.68rem}.lab-ledger dd{margin:0;font-size:.82rem;font-weight:750;overflow-wrap:anywhere}.lab-note{margin:.8rem 0 0;color:var(--muted);font-size:.76rem}.lab-actions{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1rem}.lab-actions a{color:var(--accent-deep);font-size:.75rem;font-weight:750;text-underline-offset:.2em}.lab-shell-paths{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0 1rem}.lab-shell-paths ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-shell-paths li{min-width:0;padding:.85rem .75rem .85rem 0}.lab-shell-paths li+li{padding-left:.75rem;border-left:1px solid var(--lab-rule)}.lab-shell-paths span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-shell-paths strong{display:block;margin:.45rem 0 .25rem;font-size:.76rem}.lab-shell-paths small{display:block;color:var(--muted);font-size:.66rem;line-height:1.45;overflow-wrap:anywhere}.lab-lineage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.2rem 0 0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-lineage li{position:relative;padding:1rem .9rem 1rem 0}.lab-lineage li+li{padding-left:1rem;border-left:1px solid var(--lab-rule)}.lab-lineage span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-lineage strong{display:block;margin:.45rem 0 .3rem;font-size:.8rem}.lab-lineage p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.45}.lab-route-list{display:grid;border-block:1px solid var(--lab-rule)}.lab-route-list a{display:grid;grid-template-columns:52px minmax(150px,.55fr) minmax(0,1fr);gap:.75rem;align-items:center;min-height:58px;color:inherit;text-decoration:none}.lab-route-list a+a{border-top:1px solid var(--lab-rule)}.lab-route-list a>span{color:var(--accent-deep);font:850 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-route-list strong{font-size:.78rem}.lab-route-list small{color:var(--muted);font-size:.7rem}.lab-route-list a:hover strong,.lab-route-list a:focus-visible strong{color:var(--accent-deep)}@media(max-width:900px){.lab-shell-paths{grid-template-columns:1fr}}@media(max-width:720px){.lab-section{width:100%;margin-top:2.8rem}.lab-section__heading{grid-template-columns:1fr;gap:.35rem}.lab-ledger{grid-template-columns:1fr}.lab-ledger>div,.lab-ledger>div:nth-child(odd),.lab-ledger>div:nth-child(even){padding:.8rem .1rem;border-right:0}.lab-ledger>div+div{border-top:1px solid var(--lab-rule)}.lab-shell-paths ol{grid-template-columns:1fr}.lab-shell-paths li,.lab-shell-paths li+li{padding:.75rem .1rem;border-left:0}.lab-shell-paths li+li{border-top:1px solid var(--lab-rule)}.lab-lineage{grid-template-columns:1fr}.lab-lineage li,.lab-lineage li+li{padding:.9rem .1rem;border-left:0}.lab-lineage li+li{border-top:1px solid var(--lab-rule)}.lab-route-list a{grid-template-columns:36px 1fr;gap:.45rem .6rem;padding:.75rem 0}.lab-route-list small{grid-column:2}}
+.lab-current-page{--lab-rule:color-mix(in srgb,var(--line) 88%,transparent);padding-bottom:5rem}.lab-intro{max-width:940px;padding-bottom:.5rem}.lab-section{width:min(1120px,calc(100% - 1rem));margin:3.6rem auto 0;padding-top:1.25rem;border-top:1px solid var(--lab-rule)}.lab-section__heading{display:grid;grid-template-columns:150px minmax(0,1fr);gap:1rem;align-items:baseline;margin-bottom:1.15rem}.lab-section__heading>span{color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.lab-section__heading h2{margin:0;font-size:clamp(1.15rem,2vw,1.55rem)}.lab-section>p{max-width:80ch;line-height:1.7}.lab-ledger{display:grid;grid-template-columns:1fr 1fr;margin:0;border-block:1px solid var(--lab-rule)}.lab-ledger>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.3fr);gap:.8rem;padding:.9rem .2rem}.lab-ledger>div:nth-child(odd){padding-right:1rem;border-right:1px solid var(--lab-rule)}.lab-ledger>div:nth-child(even){padding-left:1rem}.lab-ledger>div:nth-child(n+3){border-top:1px solid var(--lab-rule)}.lab-ledger dt{color:var(--muted);font-size:.68rem}.lab-ledger dd{margin:0;font-size:.82rem;font-weight:750;overflow-wrap:anywhere}.lab-note{margin:.8rem 0 0;color:var(--muted);font-size:.76rem}.lab-actions{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1rem}.lab-actions a{color:var(--accent-deep);font-size:.75rem;font-weight:750;text-underline-offset:.2em}.lab-snapshot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:1.35rem;border-block:1px solid var(--lab-rule)}.lab-snapshot>div{padding:.9rem .8rem .9rem 0}.lab-snapshot>div+div{padding-left:.8rem;border-left:1px solid var(--lab-rule)}.lab-snapshot span,.lab-storage-pool span,.lab-storage-map li span,.lab-first-login span,.lab-audit-flow span,.lab-lineage span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}.lab-snapshot strong{display:block;margin:.35rem 0 .2rem;font-size:.78rem}.lab-snapshot small{display:block;color:var(--muted);font-size:.65rem;line-height:1.4}.lab-table-wrap{overflow-x:auto;border-block:1px solid var(--lab-rule)}.lab-fact-table{width:100%;min-width:820px;border-collapse:collapse;font-size:.72rem;line-height:1.5}.lab-fact-table th,.lab-fact-table td{padding:.8rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--lab-rule)}.lab-fact-table thead th{color:var(--muted);font-size:.62rem;letter-spacing:.03em}.lab-fact-table tbody th{width:12%;font-size:.7rem}.lab-fact-table tbody tr:last-child th,.lab-fact-table tbody tr:last-child td{border-bottom:0}.lab-storage-map{margin:1.2rem 0 0}.lab-storage-map figcaption{margin-bottom:.65rem;color:var(--muted);font-size:.68rem}.lab-storage-pool{padding:1rem 1.1rem;border:1px solid var(--lab-rule)}.lab-storage-pool strong{display:block;margin:.4rem 0 .2rem;font-size:1.1rem}.lab-storage-pool small{color:var(--muted);font-size:.7rem}.lab-storage-map ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;list-style:none;border-inline:1px solid var(--lab-rule);border-bottom:1px solid var(--lab-rule)}.lab-storage-map li{padding:.9rem 1rem}.lab-storage-map li+li{border-left:1px solid var(--lab-rule)}.lab-storage-map li strong{display:block;margin:.4rem 0 .2rem;font-size:.76rem}.lab-storage-map li small{color:var(--muted);font-size:.66rem}.lab-shell-paths{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0 1rem}.lab-shell-paths ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-shell-paths li{min-width:0;padding:.85rem .75rem .85rem 0}.lab-shell-paths li+li{padding-left:.75rem;border-left:1px solid var(--lab-rule)}.lab-shell-paths span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-shell-paths strong{display:block;margin:.45rem 0 .25rem;font-size:.76rem}.lab-shell-paths small{display:block;color:var(--muted);font-size:.66rem;line-height:1.45;overflow-wrap:anywhere}.lab-first-login,.lab-audit-flow,.lab-lineage{display:grid;margin:1.2rem 0 0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-first-login{grid-template-columns:repeat(5,minmax(0,1fr))}.lab-audit-flow{grid-template-columns:repeat(5,minmax(0,1fr))}.lab-lineage{grid-template-columns:repeat(3,minmax(0,1fr))}.lab-first-login li,.lab-audit-flow li,.lab-lineage li{min-width:0;padding:1rem .8rem 1rem 0}.lab-first-login li+li,.lab-audit-flow li+li,.lab-lineage li+li{padding-left:.8rem;border-left:1px solid var(--lab-rule)}.lab-first-login strong,.lab-audit-flow strong,.lab-lineage strong{display:block;margin:.45rem 0 .28rem;font-size:.76rem}.lab-first-login p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.48}.lab-audit-flow small,.lab-lineage p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.45}.lab-warning{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--surface) 92%,var(--accent) 8%);font-size:.72rem;line-height:1.6}.lab-prompt-details{margin-top:1.25rem;border-block:1px solid var(--lab-rule);padding:.85rem 0}.lab-prompt-details summary{cursor:pointer;font-size:.78rem;font-weight:800}.lab-prompt-details>p{max-width:76ch;color:var(--muted);font-size:.7rem;line-height:1.55}.lab-prompt-details pre{max-height:520px;overflow:auto}.lab-route-list{display:grid;border-block:1px solid var(--lab-rule)}.lab-route-list a{display:grid;grid-template-columns:52px minmax(150px,.55fr) minmax(0,1fr);gap:.75rem;align-items:center;min-height:58px;color:inherit;text-decoration:none}.lab-route-list a+a{border-top:1px solid var(--lab-rule)}.lab-route-list a>span{color:var(--accent-deep);font:850 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-route-list strong{font-size:.78rem}.lab-route-list small{color:var(--muted);font-size:.7rem}.lab-route-list a:hover strong,.lab-route-list a:focus-visible strong{color:var(--accent-deep)}@media(max-width:980px){.lab-snapshot{grid-template-columns:1fr 1fr}.lab-snapshot>div:nth-child(3){border-left:0;border-top:1px solid var(--lab-rule);padding-left:0}.lab-snapshot>div:nth-child(4){border-top:1px solid var(--lab-rule)}.lab-first-login,.lab-audit-flow{grid-template-columns:1fr 1fr}.lab-first-login li,.lab-audit-flow li{border-top:1px solid var(--lab-rule)}.lab-first-login li:nth-child(-n+2),.lab-audit-flow li:nth-child(-n+2){border-top:0}.lab-first-login li:nth-child(odd),.lab-audit-flow li:nth-child(odd){padding-left:0;border-left:0}.lab-shell-paths{grid-template-columns:1fr}}@media(max-width:720px){.lab-section{width:100%;margin-top:2.8rem}.lab-section__heading{grid-template-columns:1fr;gap:.35rem}.lab-ledger,.lab-snapshot,.lab-first-login,.lab-audit-flow,.lab-lineage,.lab-storage-map ol{grid-template-columns:1fr}.lab-ledger>div,.lab-ledger>div:nth-child(odd),.lab-ledger>div:nth-child(even){padding:.8rem .1rem;border-right:0}.lab-ledger>div+div{border-top:1px solid var(--lab-rule)}.lab-snapshot>div,.lab-snapshot>div+div,.lab-snapshot>div:nth-child(3),.lab-snapshot>div:nth-child(4){padding:.8rem .1rem;border-left:0;border-top:0}.lab-snapshot>div+div{border-top:1px solid var(--lab-rule)}.lab-storage-map li,.lab-storage-map li+li,.lab-first-login li,.lab-first-login li+li,.lab-audit-flow li,.lab-audit-flow li+li,.lab-lineage li,.lab-lineage li+li{padding:.85rem .1rem;border-left:0}.lab-storage-map li+li,.lab-first-login li+li,.lab-audit-flow li+li,.lab-lineage li+li{border-top:1px solid var(--lab-rule)}.lab-shell-paths ol{grid-template-columns:1fr}.lab-shell-paths li,.lab-shell-paths li+li{padding:.75rem .1rem;border-left:0}.lab-shell-paths li+li{border-top:1px solid var(--lab-rule)}.lab-route-list a{grid-template-columns:36px 1fr;gap:.45rem .6rem;padding:.75rem 0}.lab-route-list small{grid-column:2}}
 </style>
