@@ -59,11 +59,11 @@ describe('sitewide editorial heading policy', () => {
     ]) expect(joined).toContain(expected);
   });
 
-  it('makes RTX6 historical and the current experiment allocation explicit across routes', () => {
+  it('makes RTX6 historical, live ZJU visibility, and experiment allocation boundaries explicit across routes', () => {
     expect(joined).toContain('RTX6（4×RTX 3090）');
     expect(joined).toContain('5× RTX 5090');
     expect(joined).toContain('5×RTX5090');
-    expect(joined).toContain('8× NVIDIA GeForce RTX 5090');
+    expect(joined).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(joined).toContain('Phase H0');
     expect(joined).toContain('Phase G');
     expect(joined).not.toContain('formal_task_consumption_allowed = false');
