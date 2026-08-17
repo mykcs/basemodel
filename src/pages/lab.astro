@@ -4,25 +4,173 @@ import { localePath } from '../i18n';
 import InteractiveResearchExplainer from '../components/research/InteractiveResearchExplainer.tsx';
 const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
+const auditPrompt = `请对我已授权访问的 Linux / GPU 服务器做一次严格只读的新手体检。目标不是改服务器，而是回答“我拿到了一台什么机器、我有什么权限、哪些资源是共享的、我能安全把实验放在哪里”。
+
+安全边界：
+1. 只执行只读命令；不要安装/升级软件，不要修改配置、权限、用户、Docker、驱动、CUDA、防火墙或 SSH，不要启动训练、benchmark、大模型或新容器，不要 kill 任何进程。
+2. 不读取或输出密码、token、API key、SSH key、Cookie、环境变量、私有文件内容、其他用户命令行、IP、hostname、端口、MAC、fingerprint、GPU UUID。
+3. 其他用户只允许匿名汇总，例如 User A / User B；如果无法安全验证就写 UNKNOWN，不要猜。
+4. 如果 sudo 需要密码、需要越权或需要写入服务器，立即跳过该检查。
+
+请实际连接服务器并调查：
+- OS、kernel、architecture；判断当前 shell 是物理宿主机还是容器。
+- CPU 型号、socket、物理核、逻辑线程、NUMA；RAM、swap、cgroup CPU/RAM limit。
+- GPU 数量/型号/单卡显存、NVIDIA driver、nvidia-smi CUDA compatibility、MIG、topology、当前 GPU/显存占用。
+- 当前 UID/GID/groups；普通账户的 sudo、Docker、GPU 权限；root SSH、Docker admin 与 physical-host root 必须分开判断。
+- 是否多人共享：匿名统计 probable human accounts、login sessions、其他普通 UID 进程、独立开发容器/持久 workspace；明确 namespace 限制。
+- lsblk / df / findmnt：磁盘、filesystem、mount；只对自己的 HOME/workspace 做 du；检查 quota。没有检测到 quota 绝不能写成“无限空间”。
+- Docker client/server、storage driver、Compose、Buildx、NVIDIA runtime。
+- NVIDIA driver、driver CUDA compatibility、system nvcc、Python/PyTorch 编译 CUDA 分层报告，不能混成一个“CUDA 版本”。
+- Python/pip/uv/Conda、Git、Node、tmux、Bash/Fish/Zsh 等主要开发工具。
+- 自己的 HOME/workspace owner、UID/GID、是否可写、是否 mixed ownership、哪些目录是 persistent bind、哪些只是 container overlay。
+- 当前 uptime/load、RAM available、GPU busy count、disk free；所有动态值必须带 timezone timestamp。
+
+证据规则：把结论分成 Verified（本次实时命令）、Reported（文档/管理员陈述）、Unknown。若有服务器文档，把它和 live 结果分成 MATCH / STALE / UNKNOWN / LIVE-ONLY。
+
+最终请按以下顺序输出：
+EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS → SHARED SERVER ANALYSIS → STORAGE & QUOTA → GPU & CUDA STACK → DOCKER & DEVELOPMENT ENVIRONMENT → WORKSPACE & FILE OWNERSHIP → CURRENT SNAPSHOT → DOCUMENTATION CROSS-CHECK → PRIVACY REVIEW → 可解析 JSON facts package → SANITIZED EVIDENCE → UNKNOWNS。
+
+最后自检：没有修改服务器；没有 secret、真实其他用户名或网络地址；所有 unknown 保持 unknown；“资源可见”没有被偷换成“资源归我独占/已获授权”。`;
 ---
-<AppLayout title="实验设备与服务器" description="当前 OpenEvo 实验使用 5×RTX5090 分配；服务器资产记录可见 8×RTX5090。RTX6 / 4×RTX3090 为历史实验平台。" locale="zh">
+<AppLayout title="实验设备与服务器" description="2026-08-16 只读核验：Ubuntu 22.04、80 物理核 / 160 线程、约 1 TiB RAM、8×RTX 5090 可见。服务器很可能共享；可见资源不等于个人分配。" locale="zh">
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
-      <span class="section-kicker">实验环境 · 2026-08-14</span>
-      <h1>实验设备与服务器</h1>
-      <p class="lede">当前 OpenEvo × WebShop 科学实验由 <code>openevo-experiment</code> 维护，本次实验分配为 <strong>5×RTX5090</strong>。RTX6 的 4×RTX3090 只作为历史实验与迁移证据保留。</p>
+      <span class="section-kicker">浙江大学 GPU Server · 只读核验 2026-08-16</span>
+      <h1>我拿到的服务器，到底是什么？</h1>
+      <p class="lede">这是一次面向新手的公开安全快照：你登录后进入的是<strong>开发容器</strong>，能看到 160 个 CPU 线程、约 1 TiB RAM 和 8 张 RTX 5090；但“看得见”不等于“独占”或“已经获准全部使用”。服务器很可能多人共享，正式资源分配与个人 quota 仍需按实验室规则确认。</p>
     </header>
-    <InteractiveResearchExplainer locale="zh" kind="server" client:visible />
+
     <section class="lab-section" aria-labelledby="current-server-title">
-      <header class="lab-section__heading"><span>CURRENT RECORD</span><h2 id="current-server-title">OpenEvo 实验服务器</h2></header>
-      <dl class="lab-ledger" data-ui-audit="contrast layout"><div data-ui-audit-item><dt>实验分配</dt><dd>5× NVIDIA GeForce RTX 5090</dd></div><div data-ui-audit-item><dt>服务器可见库存</dt><dd>8× NVIDIA GeForce RTX 5090</dd></div><div data-ui-audit-item><dt>实验仓库</dt><dd><code>mykcs/openevo-experiment</code></dd></div><div data-ui-audit-item><dt>当前阶段</dt><dd>Phase H0 · Natural Success Search</dd></div></dl>
-      <p class="lab-note">“服务器可见 8 卡”是机器资产事实，不等于每次实验都使用 8 卡。本页按当前实验分配显示 5 卡。</p>
-      <nav class="lab-actions" aria-label="实验来源"><a href={serverFacts} target="_blank" rel="noreferrer">服务器事实 ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">实验仓库 ↗</a><a href={localePath('zh','/research/seed-openevo/results/')}>实验结果 →</a></nav>
+      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">一眼看懂</h2></header>
+      <dl class="lab-ledger lab-ledger--overview" data-ui-audit="contrast layout">
+        <div data-ui-audit-item><dt>系统</dt><dd>Ubuntu 22.04 · Linux 5.15 · x86_64</dd></div>
+        <div data-ui-audit-item><dt>CPU</dt><dd>2× Xeon Platinum 8380 · 80 物理核 / 160 线程</dd></div>
+        <div data-ui-audit-item><dt>内存</dt><dd>1007.51 GiB RAM · 8 GiB swap</dd></div>
+        <div data-ui-audit-item><dt>GPU</dt><dd>8× GeForce RTX 5090 · 31.84 GiB/卡</dd></div>
+        <div data-ui-audit-item><dt>GPU 驱动</dt><dd>610.57.04 · driver CUDA compatibility 13.3</dd></div>
+        <div data-ui-audit-item><dt>可见存储池</dt><dd>436.04 GiB · 快照时剩余 138.66 GiB</dd></div>
+        <div data-ui-audit-item><dt>普通账户</dt><dd>GPU 可用 · 无 sudo · 无 Docker API 管理权</dd></div>
+        <div data-ui-audit-item><dt>管理员入口</dt><dd>root SSH 可用 · Docker admin · 不是已验证的 physical-host root</dd></div>
+      </dl>
+      <p class="lab-note">Canonical server facts 仍由 <code>mykcs/zju-server</code> 维护；这里是 <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time> 的脱敏展示快照，不是第二份可编辑服务器库存。</p>
+      <nav class="lab-actions" aria-label="实验与服务器来源"><a href={serverFacts} target="_blank" rel="noreferrer">服务器事实源 ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">实验仓库 ↗</a><a href={localePath('zh','/research/seed-openevo/results/')}>实验结果 →</a></nav>
+
+      <div class="lab-snapshot" data-ui-audit="contrast layout" aria-label="2026-08-16 动态状态快照">
+        <div data-ui-audit-item><span>GPU</span><strong>0 / 8 busy</strong><small>当时无 compute process</small></div>
+        <div data-ui-audit-item><span>RAM</span><strong>993.9 GiB available</strong><small>瞬时值，不是配额</small></div>
+        <div data-ui-audit-item><span>DISK</span><strong>138.66 GiB available</strong><small>共享 filesystem 余量</small></div>
+        <div data-ui-audit-item><span>CONTAINERS</span><strong>6 running</strong><small>其中 4 个开发容器</small></div>
+      </div>
     </section>
-    <section class="lab-section" aria-labelledby="history-server-title"><header class="lab-section__heading"><span>HISTORICAL LINEAGE</span><h2 id="history-server-title">RTX6 · 4×RTX3090</h2></header><p>RTX6 曾承担 WebShop / ALFWorld bring-up、早期 OpenEvo 参数实验和大量工程调试。相关日志、失败轨迹和迁移证据继续保存在 <code>seed3090</code> 与历史运行记录中，但它不再代表当前实验硬件。</p><ol class="lab-lineage" data-ui-audit="contrast layout"><li data-ui-audit-item><span>01</span><strong>seed3090</strong><p>RTX6 工程与早期实验档案</p></li><li data-ui-audit-item><span>02</span><strong>openevo-webshop</strong><p>WebShop × SD-LoRA 迁移仓库</p></li><li data-ui-audit-item><span>03</span><strong>openevo-experiment</strong><p>当前正式实验 source of truth</p></li></ol></section>
-    <section class="lab-section" aria-labelledby="paths-title"><header class="lab-section__heading"><span>ENTRY POINTS</span><h2 id="paths-title">实验页面</h2></header><nav class="lab-route-list" aria-label="实验页面"><a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><span>01</span><strong>复现指南</strong><small>当前服务器、WebShop 合同与 Phase H0</small></a><a href={localePath('zh','/research/seed-openevo/experiment/')}><span>02</span><strong>实验入口</strong><small>OpenEvo × WebShop 数据流</small></a><a href={localePath('zh','/research/seed-openevo/results/')}><span>03</span><strong>实验结果</strong><small>Phase D–F、Phase G 与历史证据</small></a></nav></section>
+
+    <InteractiveResearchExplainer locale="zh" kind="server" client:visible />
+
+    <section class="lab-section" aria-labelledby="shared-title">
+      <header class="lab-section__heading"><span>OWNED vs VISIBLE</span><h2 id="shared-title">哪些是“我能看到的”，哪些才是“属于我的”</h2></header>
+      <p>这是新手最容易误解的一层。实时证据能证明资源<strong>可见</strong>、某种权限<strong>可用</strong>，但不能自动证明资源<strong>独占</strong>、已经获得行政授权，或拥有固定配额。</p>
+      <div class="lab-table-wrap" data-ui-audit="contrast layout">
+        <table class="lab-fact-table">
+          <thead><tr><th>维度</th><th>本次实时证据</th><th>可以得出的结论</th><th>不能得出的结论</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">GPU</th><td>8 张 RTX 5090 对会话可见；快照时 0 张忙</td><td>普通账户具备 GPU 使用能力</td><td>不能证明 8 张都分配给你，也不能因空闲就直接占用</td></tr>
+            <tr><th scope="row">CPU / RAM</th><td>160 logical CPUs；约 1 TiB RAM；未见容器 cgroup 限额</td><td>当前开发容器能看到整机级资源</td><td>不能证明这些资源是独占的</td></tr>
+            <tr><th scope="row">共享状态</th><td>可见 4 个独立开发容器与 4 个持久 workspace roots</td><td>服务器很可能多人共享，confidence high</td><td>不能安全推出具体有几个人；host-wide 账户数未知</td></tr>
+            <tr><th scope="row">Docker / root</th><td>root SSH 可用并能管理共享 Docker daemon</td><td>拥有很强的容器管理能力</td><td>container root / Docker admin ≠ physical-host root，也 ≠ 有权操作其他人的资源</td></tr>
+            <tr><th scope="row">存储</th><td>共享可见池剩余 138.66 GiB；没有检测到显式 quota</td><td>短期可用空间受这个共享池约束</td><td>138.66 GiB 不是你的个人额度；“没发现 quota”不等于无限空间</td></tr>
+            <tr><th scope="row">Workspace</th><td>普通项目树 ownership 干净；持久 workspace 存在 mixed ownership</td><td>普通用户 UID/GID 应作为长期写入身份</td><td>canonical workspace 与长期任务机制仍未得到管理员确认</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="lab-section" aria-labelledby="storage-title">
+      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">为什么你不能把三个 436 GiB 加起来</h2></header>
+      <p><code>/</code>、<code>/root</code> 和 <code>/share</code> 在容器里看起来是三个入口，但本次证据显示它们最终指向同一块约 436 GiB 的可见 backing filesystem。它们是<strong>三个视图，不是三块独立磁盘</strong>。</p>
+      <figure class="lab-storage-map" data-ui-audit="contrast layout">
+        <figcaption>同一个可见共享存储池 · 2026-08-16 snapshot</figcaption>
+        <div class="lab-storage-pool" data-ui-audit-item><span>BACKING FILESYSTEM</span><strong>436.04 GiB total</strong><small>275.16 GiB used · 138.66 GiB available · 67%</small></div>
+        <ol>
+          <li data-ui-audit-item><span>VIEW 01</span><strong>Container root /</strong><small>overlay view</small></li>
+          <li data-ui-audit-item><span>VIEW 02</span><strong>/root</strong><small>persistent bind</small></li>
+          <li data-ui-audit-item><span>VIEW 03</span><strong>/share</strong><small>persistent bind · same pool</small></li>
+        </ol>
+      </figure>
+      <p class="lab-note">普通账户 home / workspace 的一部分目前位于 container overlay，重建后的持久性未知；持久 workspace 又有 mixed ownership。正式长期实验前，应先确认 canonical persistent workspace、备份/清理政策和 quota/fair-use 规则。</p>
+    </section>
+
+    <section class="lab-section" aria-labelledby="interactive-env-title">
+      <header class="lab-section__heading"><span>INTERACTIVE ENVIRONMENT</span><h2 id="interactive-env-title">交互开发环境</h2></header>
+      <p>交互命令行在 <time datetime="2026-08-16">2026-08-16</time> 完成核验：人类 SSH 会话进入 Fish 4.8.1，而底层登录 shell 继续保留 Bash。这样既获得补全、语法高亮和可搜索历史，也让非交互 SSH、文件传输与 Agent 自动化继续遵循稳定的 Bash 语义。</p>
+      <div class="lab-shell-paths" data-ui-audit="contrast layout" aria-label="交互与自动化的两条 Shell 路径">
+        <ol aria-label="交互会话路径">
+          <li data-ui-audit-item><span>01</span><strong>交互会话</strong><small>终端工作</small></li>
+          <li data-ui-audit-item><span>02</span><strong>受保护桥接</strong><small>仅 interactive 生效</small></li>
+          <li data-ui-audit-item><span>03</span><strong>Fish 4.8.1</strong><small>补全 · 高亮 · autosuggestion</small></li>
+        </ol>
+        <ol aria-label="自动化路径">
+          <li data-ui-audit-item><span>01</span><strong>自动化调用</strong><small>命令 · 文件传输 · Agent</small></li>
+          <li data-ui-audit-item><span>02</span><strong>跳过桥接</strong><small>不进入交互 Fish</small></li>
+          <li data-ui-audit-item><span>03</span><strong>Bash 兼容</strong><small>保持脚本语义稳定</small></li>
+        </ol>
+      </div>
+      <dl class="lab-ledger" data-ui-audit="contrast layout">
+        <div data-ui-audit-item><dt>Shell</dt><dd>Bash default · Fish 4.8.1 interactive</dd></div>
+        <div data-ui-audit-item><dt>Prompt / history</dt><dd>Starship 1.26.0 · Atuin 18.19.0</dd></div>
+        <div data-ui-audit-item><dt>导航与检索</dt><dd>zoxide · fzf · eza · bat · rg · fd</dd></div>
+        <div data-ui-audit-item><dt>长任务工具</dt><dd>tmux 3.2a · btop</dd></div>
+        <div data-ui-audit-item><dt>Python</dt><dd>ordinary 3.12.13 · root python3 3.10.12</dd></div>
+        <div data-ui-audit-item><dt>GPU 软件层</dt><dd>system <code>nvcc</code> absent · live sessions PyTorch absent</dd></div>
+        <div data-ui-audit-item><dt>Docker</dt><dd>29.1.3 · overlayfs · NVIDIA runtime advertised</dd></div>
+        <div data-ui-audit-item><dt>Compose / Buildx</dt><dd>当前 root session 中 absent</dd></div>
+      </dl>
+      <p class="lab-note"><code>nvidia-smi</code> 显示的 CUDA 13.3 是 driver compatibility，不代表系统安装了 CUDA Toolkit，也不代表某个实验镜像里的 PyTorch CUDA 版本。</p>
+    </section>
+
+    <section class="lab-section" aria-labelledby="first-login-title">
+      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">新手第一次登录，先看这 5 件事</h2></header>
+      <ol class="lab-first-login" data-ui-audit="contrast layout">
+        <li data-ui-audit-item><span>01</span><strong>我是谁、在哪一层？</strong><p><code>id</code> + <code>pwd</code>。先确认身份、目录，以及你是不是在容器里。</p></li>
+        <li data-ui-audit-item><span>02</span><strong>GPU 现在什么状态？</strong><p><code>nvidia-smi</code>。先看型号、数量、占用；空闲不代表已获授权。</p></li>
+        <li data-ui-audit-item><span>03</span><strong>内存还够吗？</strong><p><code>free -h</code>。available 是瞬时余量，不是你的个人配额。</p></li>
+        <li data-ui-audit-item><span>04</span><strong>磁盘还剩多少？</strong><p><code>df -hT</code>。先确认 mount 是否共享，再谈“我还有多少空间”。</p></li>
+        <li data-ui-audit-item><span>05</span><strong>数据会不会随容器消失？</strong><p><code>findmnt</code>。把 overlay 和 persistent bind 分清，再决定模型、数据和 run 输出放哪里。</p></li>
+      </ol>
+      <aside class="lab-warning"><strong>当前仍需管理员确认：</strong>8 张 GPU 的正式分配/调度、个人 quota、备份/快照/保留政策、canonical workspace、长期任务运行方式，以及 physical-host root 权限边界。</aside>
+    </section>
+
+    <section class="lab-section" aria-labelledby="agent-audit-title">
+      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">让 Agent 帮你检查一台陌生服务器</h2></header>
+      <p>网页里的这些事实不是手填出来的。更可复现的流程是：让能 SSH 的 Agent 做<strong>只读体检</strong>，强制区分 live evidence / 文档 / unknown，再脱敏成网页可消费的事实包。</p>
+      <ol class="lab-audit-flow" data-ui-audit="contrast layout" aria-label="服务器体检到网页的流程">
+        <li data-ui-audit-item><span>01</span><strong>给 Agent Prompt</strong><small>明确只读、安全边界和要回答的问题</small></li>
+        <li data-ui-audit-item><span>02</span><strong>实际 SSH 核验</strong><small>OS · CPU · RAM · GPU · storage · permission</small></li>
+        <li data-ui-audit-item><span>03</span><strong>脱敏 + 保留 Unknown</strong><small>不泄露用户名、地址、凭据或其他人的内容</small></li>
+        <li data-ui-audit-item><span>04</span><strong>生成 facts package</strong><small>静态规格与动态 snapshot 分开</small></li>
+        <li data-ui-audit-item><span>05</span><strong>再写网页</strong><small>参数 → 权限边界 → 新手动作</small></li>
+      </ol>
+      <details class="lab-prompt-details">
+        <summary>复制通用 Server Audit Prompt</summary>
+        <p>适用于 Codex / Claude Code / 具备 SSH 工具的 Agent。它不包含这台浙江大学服务器的用户名、地址或仓库信息。</p>
+        <pre><code>{auditPrompt}</code></pre>
+      </details>
+    </section>
+
+    <section class="lab-section" aria-labelledby="history-server-title">
+      <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">当前与历史实验硬件</h2></header>
+      <p>本页首先描述“这台服务器是什么”，实验分配是另一层事实：服务器实时可见 8×RTX5090，但正式 GPU allocation policy 本次无法安全验证。此前实验记录曾使用 5×RTX5090；RTX6 的 4×RTX3090 则属于迁移前的历史实验平台。</p>
+      <ol class="lab-lineage" data-ui-audit="contrast layout">
+        <li data-ui-audit-item><span>01</span><strong>ZJU server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
+        <li data-ui-audit-item><span>02</span><strong>OpenEvo campaign</strong><p>历史记录：5×RTX5090 allocation；以实验仓库最新 run contract 为准</p></li>
+        <li data-ui-audit-item><span>03</span><strong>RTX6 · historical</strong><p>4×RTX3090 · 早期 WebShop / ALFWorld 与迁移证据</p></li>
+      </ol>
+    </section>
+
+    <section class="lab-section" aria-labelledby="paths-title">
+      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">接下来去哪里</h2></header>
+      <nav class="lab-route-list" aria-label="实验页面"><a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><span>01</span><strong>复现指南</strong><small>从环境检查到 WebShop / ALFWorld 运行合同</small></a><a href={localePath('zh','/research/seed-openevo/experiment/')}><span>02</span><strong>实验入口</strong><small>OpenEvo × WebShop 数据流与演化边界</small></a><a href={localePath('zh','/research/seed-openevo/results/')}><span>03</span><strong>实验结果</strong><small>看真实分数、失败、证据与下一步决策</small></a></nav>
+    </section>
   </div>
 </AppLayout>
 <style>
-.lab-current-page{--lab-rule:color-mix(in srgb,var(--line) 88%,transparent);padding-bottom:5rem}.lab-intro{max-width:920px;padding-bottom:.5rem}.lab-section{width:min(1120px,calc(100% - 1rem));margin:3.6rem auto 0;padding-top:1.25rem;border-top:1px solid var(--lab-rule)}.lab-section__heading{display:grid;grid-template-columns:150px minmax(0,1fr);gap:1rem;align-items:baseline;margin-bottom:1.15rem}.lab-section__heading>span{color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.lab-section__heading h2{margin:0;font-size:clamp(1.15rem,2vw,1.55rem)}.lab-section>p{max-width:78ch;line-height:1.7}.lab-ledger{display:grid;grid-template-columns:1fr 1fr;margin:0;border-block:1px solid var(--lab-rule)}.lab-ledger>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.3fr);gap:.8rem;padding:.9rem .2rem}.lab-ledger>div:nth-child(odd){padding-right:1rem;border-right:1px solid var(--lab-rule)}.lab-ledger>div:nth-child(even){padding-left:1rem}.lab-ledger>div:nth-child(n+3){border-top:1px solid var(--lab-rule)}.lab-ledger dt{color:var(--muted);font-size:.68rem}.lab-ledger dd{margin:0;font-size:.82rem;font-weight:750;overflow-wrap:anywhere}.lab-note{margin:.8rem 0 0;color:var(--muted);font-size:.76rem}.lab-actions{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1rem}.lab-actions a{color:var(--accent-deep);font-size:.75rem;font-weight:750;text-underline-offset:.2em}.lab-lineage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.2rem 0 0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-lineage li{position:relative;padding:1rem .9rem 1rem 0}.lab-lineage li+li{padding-left:1rem;border-left:1px solid var(--lab-rule)}.lab-lineage span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-lineage strong{display:block;margin:.45rem 0 .3rem;font-size:.8rem}.lab-lineage p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.45}.lab-route-list{display:grid;border-block:1px solid var(--lab-rule)}.lab-route-list a{display:grid;grid-template-columns:52px minmax(150px,.55fr) minmax(0,1fr);gap:.75rem;align-items:center;min-height:58px;color:inherit;text-decoration:none}.lab-route-list a+a{border-top:1px solid var(--lab-rule)}.lab-route-list a>span{color:var(--accent-deep);font:850 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-route-list strong{font-size:.78rem}.lab-route-list small{color:var(--muted);font-size:.7rem}.lab-route-list a:hover strong,.lab-route-list a:focus-visible strong{color:var(--accent-deep)}@media(max-width:720px){.lab-section{width:100%;margin-top:2.8rem}.lab-section__heading{grid-template-columns:1fr;gap:.35rem}.lab-ledger{grid-template-columns:1fr}.lab-ledger>div,.lab-ledger>div:nth-child(odd),.lab-ledger>div:nth-child(even){padding:.8rem .1rem;border-right:0}.lab-ledger>div+div{border-top:1px solid var(--lab-rule)}.lab-lineage{grid-template-columns:1fr}.lab-lineage li,.lab-lineage li+li{padding:.9rem .1rem;border-left:0}.lab-lineage li+li{border-top:1px solid var(--lab-rule)}.lab-route-list a{grid-template-columns:36px 1fr;gap:.45rem .6rem;padding:.75rem 0}.lab-route-list small{grid-column:2}}
+.lab-current-page{--lab-rule:color-mix(in srgb,var(--line) 88%,transparent);padding-bottom:5rem}.lab-intro{max-width:940px;padding-bottom:.5rem}.lab-section{width:min(1120px,calc(100% - 1rem));margin:3.6rem auto 0;padding-top:1.25rem;border-top:1px solid var(--lab-rule)}.lab-section__heading{display:grid;grid-template-columns:150px minmax(0,1fr);gap:1rem;align-items:baseline;margin-bottom:1.15rem}.lab-section__heading>span{color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.lab-section__heading h2{margin:0;font-size:clamp(1.15rem,2vw,1.55rem)}.lab-section>p{max-width:80ch;line-height:1.7}.lab-ledger{display:grid;grid-template-columns:1fr 1fr;margin:0;border-block:1px solid var(--lab-rule)}.lab-ledger>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.3fr);gap:.8rem;padding:.9rem .2rem}.lab-ledger>div:nth-child(odd){padding-right:1rem;border-right:1px solid var(--lab-rule)}.lab-ledger>div:nth-child(even){padding-left:1rem}.lab-ledger>div:nth-child(n+3){border-top:1px solid var(--lab-rule)}.lab-ledger dt{color:var(--muted);font-size:.68rem}.lab-ledger dd{margin:0;font-size:.82rem;font-weight:750;overflow-wrap:anywhere}.lab-note{margin:.8rem 0 0;color:var(--muted);font-size:.76rem}.lab-actions{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1rem}.lab-actions a{color:var(--accent-deep);font-size:.75rem;font-weight:750;text-underline-offset:.2em}.lab-snapshot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:1.35rem;border-block:1px solid var(--lab-rule)}.lab-snapshot>div{padding:.9rem .8rem .9rem 0}.lab-snapshot>div+div{padding-left:.8rem;border-left:1px solid var(--lab-rule)}.lab-snapshot span,.lab-storage-pool span,.lab-storage-map li span,.lab-first-login span,.lab-audit-flow span,.lab-lineage span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}.lab-snapshot strong{display:block;margin:.35rem 0 .2rem;font-size:.78rem}.lab-snapshot small{display:block;color:var(--muted);font-size:.65rem;line-height:1.4}.lab-table-wrap{overflow-x:auto;border-block:1px solid var(--lab-rule)}.lab-fact-table{width:100%;min-width:820px;border-collapse:collapse;font-size:.72rem;line-height:1.5}.lab-fact-table th,.lab-fact-table td{padding:.8rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--lab-rule)}.lab-fact-table thead th{color:var(--muted);font-size:.62rem;letter-spacing:.03em}.lab-fact-table tbody th{width:12%;font-size:.7rem}.lab-fact-table tbody tr:last-child th,.lab-fact-table tbody tr:last-child td{border-bottom:0}.lab-storage-map{margin:1.2rem 0 0}.lab-storage-map figcaption{margin-bottom:.65rem;color:var(--muted);font-size:.68rem}.lab-storage-pool{padding:1rem 1.1rem;border:1px solid var(--lab-rule)}.lab-storage-pool strong{display:block;margin:.4rem 0 .2rem;font-size:1.1rem}.lab-storage-pool small{color:var(--muted);font-size:.7rem}.lab-storage-map ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;list-style:none;border-inline:1px solid var(--lab-rule);border-bottom:1px solid var(--lab-rule)}.lab-storage-map li{padding:.9rem 1rem}.lab-storage-map li+li{border-left:1px solid var(--lab-rule)}.lab-storage-map li strong{display:block;margin:.4rem 0 .2rem;font-size:.76rem}.lab-storage-map li small{color:var(--muted);font-size:.66rem}.lab-shell-paths{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0 1rem}.lab-shell-paths ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-shell-paths li{min-width:0;padding:.85rem .75rem .85rem 0}.lab-shell-paths li+li{padding-left:.75rem;border-left:1px solid var(--lab-rule)}.lab-shell-paths span{display:block;color:var(--accent-deep);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-shell-paths strong{display:block;margin:.45rem 0 .25rem;font-size:.76rem}.lab-shell-paths small{display:block;color:var(--muted);font-size:.66rem;line-height:1.45;overflow-wrap:anywhere}.lab-first-login,.lab-audit-flow,.lab-lineage{display:grid;margin:1.2rem 0 0;padding:0;border-block:1px solid var(--lab-rule);list-style:none}.lab-first-login{grid-template-columns:repeat(5,minmax(0,1fr))}.lab-audit-flow{grid-template-columns:repeat(5,minmax(0,1fr))}.lab-lineage{grid-template-columns:repeat(3,minmax(0,1fr))}.lab-first-login li,.lab-audit-flow li,.lab-lineage li{min-width:0;padding:1rem .8rem 1rem 0}.lab-first-login li+li,.lab-audit-flow li+li,.lab-lineage li+li{padding-left:.8rem;border-left:1px solid var(--lab-rule)}.lab-first-login strong,.lab-audit-flow strong,.lab-lineage strong{display:block;margin:.45rem 0 .28rem;font-size:.76rem}.lab-first-login p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.48}.lab-audit-flow small,.lab-lineage p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.45}.lab-warning{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--surface) 92%,var(--accent) 8%);font-size:.72rem;line-height:1.6}.lab-prompt-details{margin-top:1.25rem;border-block:1px solid var(--lab-rule);padding:.85rem 0}.lab-prompt-details summary{cursor:pointer;font-size:.78rem;font-weight:800}.lab-prompt-details>p{max-width:76ch;color:var(--muted);font-size:.7rem;line-height:1.55}.lab-prompt-details pre{max-height:520px;overflow:auto}.lab-route-list{display:grid;border-block:1px solid var(--lab-rule)}.lab-route-list a{display:grid;grid-template-columns:52px minmax(150px,.55fr) minmax(0,1fr);gap:.75rem;align-items:center;min-height:58px;color:inherit;text-decoration:none}.lab-route-list a+a{border-top:1px solid var(--lab-rule)}.lab-route-list a>span{color:var(--accent-deep);font:850 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.lab-route-list strong{font-size:.78rem}.lab-route-list small{color:var(--muted);font-size:.7rem}.lab-route-list a:hover strong,.lab-route-list a:focus-visible strong{color:var(--accent-deep)}@media(max-width:980px){.lab-snapshot{grid-template-columns:1fr 1fr}.lab-snapshot>div:nth-child(3){border-left:0;border-top:1px solid var(--lab-rule);padding-left:0}.lab-snapshot>div:nth-child(4){border-top:1px solid var(--lab-rule)}.lab-first-login,.lab-audit-flow{grid-template-columns:1fr 1fr}.lab-first-login li,.lab-audit-flow li{border-top:1px solid var(--lab-rule)}.lab-first-login li:nth-child(-n+2),.lab-audit-flow li:nth-child(-n+2){border-top:0}.lab-first-login li:nth-child(odd),.lab-audit-flow li:nth-child(odd){padding-left:0;border-left:0}.lab-shell-paths{grid-template-columns:1fr}}@media(max-width:720px){.lab-section{width:100%;margin-top:2.8rem}.lab-section__heading{grid-template-columns:1fr;gap:.35rem}.lab-ledger,.lab-snapshot,.lab-first-login,.lab-audit-flow,.lab-lineage,.lab-storage-map ol{grid-template-columns:1fr}.lab-ledger>div,.lab-ledger>div:nth-child(odd),.lab-ledger>div:nth-child(even){padding:.8rem .1rem;border-right:0}.lab-ledger>div+div{border-top:1px solid var(--lab-rule)}.lab-snapshot>div,.lab-snapshot>div+div,.lab-snapshot>div:nth-child(3),.lab-snapshot>div:nth-child(4){padding:.8rem .1rem;border-left:0;border-top:0}.lab-snapshot>div+div{border-top:1px solid var(--lab-rule)}.lab-storage-map li,.lab-storage-map li+li,.lab-first-login li,.lab-first-login li+li,.lab-audit-flow li,.lab-audit-flow li+li,.lab-lineage li,.lab-lineage li+li{padding:.85rem .1rem;border-left:0}.lab-storage-map li+li,.lab-first-login li+li,.lab-audit-flow li+li,.lab-lineage li+li{border-top:1px solid var(--lab-rule)}.lab-shell-paths ol{grid-template-columns:1fr}.lab-shell-paths li,.lab-shell-paths li+li{padding:.75rem .1rem;border-left:0}.lab-shell-paths li+li{border-top:1px solid var(--lab-rule)}.lab-route-list a{grid-template-columns:36px 1fr;gap:.45rem .6rem;padding:.75rem 0}.lab-route-list small{grid-column:2}}
 </style>
