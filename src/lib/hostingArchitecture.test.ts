@@ -14,6 +14,8 @@ const packageJson = JSON.parse(read('package.json')) as {
 };
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const vercelIgnoreBuild = read('scripts/vercel-ignore-build.mjs');
+const vercelUiGate = read('scripts/vercel-ui-gate.mjs');
+const vercelLabBrowserGate = read('scripts/vercel-lab-browser-gate.mjs');
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 const latest = read('docs/agents/LATEST.md');
@@ -21,13 +23,24 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('uses Vercel for both Preview and Production with the repository Gate', () => {
+  it('uses Vercel for both Preview and Production with repository-owned browser gates', () => {
     expect(vercel.buildCommand).toBe(
-      'npm run verify:deploy && npm run build && node scripts/vercel-lab-browser-gate.mjs',
+      'npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs',
     );
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
+
+    expect(vercelUiGate).toContain("branch.startsWith('agent/visual-closeout-')");
+    expect(vercelUiGate).toContain("['playwright', 'install', 'chromium']");
+    expect(vercelUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
+
+    expect(vercelLabBrowserGate).toContain(
+      "branch === 'agent/sync-zju-shell-environment-20260816'",
+    );
+    expect(vercelLabBrowserGate).toContain("['playwright', 'install', 'chromium']");
+    expect(vercelLabBrowserGate).toContain('tests/e2e/lab-playwright.config.ts');
+
     expect(architecture).toContain('Vercel Preview + Vercel Production');
     expect(architecture).toContain(
       'Vercel is the only ordinary deployment provider',

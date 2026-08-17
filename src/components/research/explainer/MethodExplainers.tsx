@@ -15,7 +15,7 @@ export function SeedExplainer({ locale, step }: { locale: Locale; step: number }
     { id: 'hindsight-skill', from: 'seed-hindsight', to: 'seed-skill', tone: 'experience', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 3 },
     { id: 'plain-opd', from: 'seed-plain', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4 },
     { id: 'skill-opd', from: 'seed-skill', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'top', shape: 'between-y', active: step >= 4 },
-    { id: 'trajectory-grpo', from: 'seed-trajectory', to: 'seed-grpo', tone: 'env', fromAnchor: 'right', toAnchor: 'top', shape: 'smooth', active: step >= 4 },
+    { id: 'trajectory-grpo', from: 'seed-trajectory', to: 'seed-grpo', tone: 'env', fromAnchor: 'right', toAnchor: 'right', shape: 'loop-right', active: step >= 4 },
     { id: 'opd-optimizer', from: 'seed-opd', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4 },
     { id: 'grpo-optimizer', from: 'seed-grpo', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'right', active: step >= 4 },
     { id: 'optimizer-next', from: 'seed-optimizer', to: 'seed-next', tone: 'persist', fromAnchor: 'right', toAnchor: 'left', active: step >= 5 },

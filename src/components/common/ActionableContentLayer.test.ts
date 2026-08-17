@@ -34,10 +34,13 @@ describe('site-wide actionable content UX', () => {
     expect(layer).toContain('insideHydratedIsland');
   });
 
-  it('provides bilingual status feedback and a clipboard fallback', () => {
+  it('provides bilingual status feedback and a modern clipboard path', () => {
     for (const token of ['复制代码', 'Copy code', '已复制', 'Copied', '复制失败', 'Copy failed', 'aria-live="polite"']) expect(layer).toContain(token);
-    expect(layer).toContain('fallbackCopy');
-    expect(clipboard).toContain("document.execCommand('copy')");
+    expect(layer).toContain('navigator.clipboard');
+    expect(layer).toContain('window.isSecureContext');
+    expect(clipboard).toContain('navigator.clipboard.writeText');
+    expect(layer).not.toContain('fallbackCopy');
+    expect(clipboard).not.toContain('document.execCommand');
     expect(copyButton).toContain('copyTextToClipboard');
   });
 

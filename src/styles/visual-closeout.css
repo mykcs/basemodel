@@ -1,0 +1,77 @@
+/* Final browser-gate constraints.
+ * These rules preserve horizontal learning rails while keeping their scroll
+ * containers inside the document viewport. They intentionally fix geometry
+ * rather than hiding document overflow at html/body level. */
+
+body .site-main a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A closed details popover must contribute no off-screen geometry. Chromium
+ * otherwise still counts a long menu link toward documentElement.scrollWidth. */
+.site-header .resource-menu:not([open]) .resource-menu__panel {
+  display: none !important;
+}
+
+/* The global research connector layer renders absolute pseudo-elements on
+ * mission-chain cards. Establish their intended local containing blocks so
+ * connector dots/rails attach to each card instead of the viewport. */
+body .site-main .mission-chain li,
+body .site-main .mission-chain li > a {
+  position: relative;
+}
+
+@media (max-width: 1020px) {
+  body .site-main .mission-chain ol {
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-inline: 0 !important;
+  }
+
+  /* Keep both visual relationship markers inside the scrollable card rail.
+   * Their former negative-right offsets added ~7px to the root scroll width. */
+  body .site-main .mission-chain li:not(:last-child)::after {
+    right: 2px !important;
+  }
+
+  body .site-main .mission-chain a::after {
+    right: 8px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body .site-main .mission-hero__modes,
+  body .site-main .seed-use-case:not(.standalone) .detail > ol,
+  body .site-main .research-path-list {
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-inline: 0 !important;
+  }
+
+  body .site-main .mission-page,
+  body .site-main .mission-section {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Mobile evidence tables should wrap inside the reading column. Using the
+   * table itself as an overflow:auto box does not defeat its intrinsic table
+   * width in Chromium and previously widened a 390px page to 728px. */
+  body .site-main .mission-table {
+    display: table !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed;
+    box-sizing: border-box;
+    overflow: visible !important;
+  }
+
+  body .site-main .mission-table th,
+  body .site-main .mission-table td {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

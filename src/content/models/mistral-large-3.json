@@ -152,6 +152,18 @@
         "hardware.lora_tier",
         "hardware.full_sft_tier"
       ]
+    },
+    {
+      "id": "mistral-api-chat-20260815",
+      "url": "https://docs.mistral.ai/api/endpoint/chat",
+      "title": "Chat Endpoints",
+      "publisher": "Mistral AI",
+      "type": "official_api_docs",
+      "checked_at": "2026-08-15",
+      "evidence_note": "Mistral's official Chat Completion API reference documents POST /v1/chat/completions and model-ID selection. The Large 3 model card above supplies the exact mistral-large-2512 identifier.",
+      "supports": [
+        "access.api_status"
+      ]
     }
   ],
   "data_status": "verified"
