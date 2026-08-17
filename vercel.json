@@ -4,12 +4,12 @@
   "ignoreCommand": "node scripts/vercel-ignore-build.mjs",
   "git": {
     "deploymentEnabled": {
+      "*": false,
       "main": true,
-      "agent/**": true,
-      "landing/**": true,
-      "feat/**": true,
-      "fix/**": true,
-      "chore/**": true
+      "agent/semantic-release-*": true
     }
+  },
+  "github": {
+    "autoJobCancelation": true
   }
 }
