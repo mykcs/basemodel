@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../../i18n';
+import { openEvoScientificState } from '../../lib/openEvoScientificState';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -28,9 +29,9 @@ const repos = [
   },
   {
     name: 'openevo-experiment',
-    state: t('当前', 'Current'),
-    role: t('正式实验 source of truth', 'Active experimental source of truth'),
-    note: t('当前 campaign、Run Manifest、WebShop 协议、W&B 记录和后续科学实验都在这里继续。', 'The current campaign, Run Manifests, WebShop contract, W&B tracking, and subsequent scientific work live here.'),
+    state: t('当前 source of truth', 'Current source of truth'),
+    role: t('正式实验与科学状态路由', 'Formal experiments and scientific-state routing'),
+    note: t('实时 campaign、Run Manifest、WebShop 协议、W&B 记录和科学结论都要从实际工作 branch 继续解析。', 'Resolve live campaigns, Run Manifests, the WebShop contract, W&B tracking, and scientific claims from the branch actually in use.'),
     href: `${activeRoot}/configs/experiment/current-campaign.json`,
   },
 ] as const;
@@ -45,18 +46,18 @@ const phaseG = [
 <section id="openevo-experiment-program" class="program" aria-labelledby="program-title" data-testid="openevo-experiment-program">
   <header class="program__header">
     <div>
-      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> <time datetime="2026-08-14">2026-08-14</time></p>
-      <h2 id="program-title">{t('当前实验进展', 'Current experiment status')}</h2>
+      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('默认分支快照', 'default-branch snapshot')} <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time></p>
+      <h2 id="program-title">{t('实验历史、默认分支快照与实时状态入口', 'Experiment history, default-branch snapshot, and live-state source')}</h2>
       <p class="lede">{t(
-        'RTX6（4×RTX 3090）和 openevo-webshop 已经进入历史档案。当前科学主线在 openevo-experiment：Phase G 的 base / adapter 小矩阵已经跑完，下一步进入 Phase H0，先寻找可用于监督诊断的自然成功轨迹。',
-        'RTX6 (4×RTX 3090) and openevo-webshop are now historical. The active scientific line is openevo-experiment: the Phase G base/adapter matrix is complete, and Phase H0 now searches for naturally successful trajectories for supervision diagnostics.',
+        `RTX6（4×RTX 3090）和 openevo-webshop 已进入历史档案。Phase D–G 与 H0 是可追溯的历史里程碑。本站在 ${openEvoScientificState.checkedAt} 核验 openevo-experiment/main 时，current-campaign 记录 ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}；活跃科学分支可能更靠前。`,
+        `RTX6 (4×RTX 3090) and openevo-webshop are historical. Phase D–G and H0 are traceable milestones. When this site checked openevo-experiment/main on ${openEvoScientificState.checkedAt}, current-campaign recorded ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}; an active scientific branch may be newer.`,
       )}</p>
     </div>
-    <aside class="program__status" aria-label={t('当前实验状态', 'Current experiment status')}>
-      <span>{t('当前阶段', 'Current phase')}</span>
-      <strong>Phase H0</strong>
-      <p>{t('当前实验分配：5× RTX 5090', 'Current experiment allocation: 5× RTX 5090')}</p>
-      <small>{t('服务器资产记录可见 8× RTX 5090；可见库存不等于本实验分配。', 'Server inventory records 8 visible RTX 5090 GPUs; visible inventory is not the same as this experiment’s allocation.')}</small>
+    <aside class="program__status" aria-label={t('默认分支科学快照', 'Default-branch scientific snapshot')}>
+      <span>{t('默认 main 快照', 'Default main snapshot')}</span>
+      <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong>
+      <p><code>{openEvoScientificState.defaultBranchSnapshot.status}</code></p>
+      <small>{t(`核验于 ${openEvoScientificState.checkedAt}。实时阶段和 GPU 分配必须从实际工作 branch 与 preregistration 解析。`,`Checked ${openEvoScientificState.checkedAt}. Resolve the live phase and GPU allocation from the actual working branch and preregistration.`)}</small>
     </aside>
   </header>
 
@@ -73,7 +74,7 @@ const phaseG = [
   </section>
 
   <section class="program__section" aria-labelledby="mechanism-title">
-    <div class="section-heading"><span>02</span><div><small>Phase D–F</small><h3 id="mechanism-title">{t('参数更新与重新加载', 'Parameter update and reload')}</h3></div></div>
+    <div class="section-heading"><span>02</span><div><small>{t('历史证据 · Phase D–F', 'Historical evidence · Phase D–F')}</small><h3 id="mechanism-title">{t('参数更新与重新加载', 'Parameter update and reload')}</h3></div></div>
     <div class="fact-grid">
       <article><span>{t('模型', 'Model')}</span><strong>Qwen2.5-3B-Instruct</strong><p>{t('真实 BF16 CUDA generation，模型 revision 固定。', 'Real BF16 CUDA generation with a pinned model revision.')}</p></article>
       <article><span>{t('训练', 'Training')}</span><strong>SD-LoRA optimizer steps</strong><p>{t('forward、backward、optimizer.step 与 trainable-state digest 变化均有证据。', 'forward, backward, optimizer.step, and changed trainable-state digests are evidenced.')}</p></article>
@@ -84,40 +85,45 @@ const phaseG = [
   </section>
 
   <section class="program__section" aria-labelledby="phaseg-title">
-    <div class="section-heading"><span>03</span><div><small>Phase G · completed</small><h3 id="phaseg-title">{t('Base / Adapter WebShop 对比', 'Base / Adapter WebShop comparison')}</h3></div></div>
+    <div class="section-heading"><span>03</span><div><small>{t('历史证据 · Phase G · completed', 'Historical evidence · Phase G · completed')}</small><h3 id="phaseg-title">{t('Base / Adapter WebShop 对比', 'Base / Adapter WebShop comparison')}</h3></div></div>
     <p class="section-intro">{t('固定 2 个 goals、2 个 generation seeds 和 3 个模型状态，共完成 12 个 promotion-dev episodes。', 'The frozen matrix used 2 goals, 2 generation seeds, and 3 model states, completing 12 promotion-dev episodes.')}</p>
     <div class="result-table-wrap"><table>
       <thead><tr><th>{t('模型状态', 'Arm')}</th><th>{t('平均分', 'Mean score')}</th><th>{t('成功', 'Wins')}</th><th>{t('平均步数', 'Mean steps')}</th><th>{t('Parser fallback', 'Parser fallback')}</th></tr></thead>
       <tbody>{phaseG.map((row) => <tr><th scope="row"><code>{row.arm}</code></th><td>{row.score}</td><td>{row.wins}</td><td>{row.steps}</td><td>{row.fallback}</td></tr>)}</tbody>
     </table></div>
-    <aside class="interpretation"><strong>{t('这次测得的结果', 'Measured result')}</strong><p>{t('这个小矩阵中，三组的 score 与 win delta 都为 0。它说明当前 bounded evaluation 没测到任务收益差异；它不否定 Phase D–F 已经观察到的真实参数与模型行为变化。', 'In this bounded matrix, all score and win deltas are zero. The evaluation did not measure a task-outcome advantage, but this does not negate the real parameter and behavioral changes already established in Phase D–F.')}</p></aside>
+    <aside class="interpretation"><strong>{t('这次测得的结果', 'Measured result')}</strong><p>{t('这个小矩阵中，三组的 score 与 win delta 都为 0。它说明该 bounded evaluation 没测到任务收益差异；它不否定 Phase D–F 已经观察到的真实参数与模型行为变化。', 'In this bounded matrix, all score and win deltas are zero. That evaluation did not measure a task-outcome advantage, but this does not negate the real parameter and behavioral changes already established in Phase D–F.')}</p></aside>
   </section>
 
-  <section class="program__section" aria-labelledby="phaseh-title">
-    <div class="section-heading"><span>04</span><div><small>{t('下一步', 'Next')}</small><h3 id="phaseh-title">Phase H0 · Natural Success Search</h3></div></div>
+  <section class="program__section" aria-labelledby="snapshot-title">
+    <div class="section-heading"><span>04</span><div><small>{t(`默认 main 快照 · ${openEvoScientificState.checkedAt}`, `Default main snapshot · ${openEvoScientificState.checkedAt}`)}</small><h3 id="snapshot-title">{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.defaultBranchSnapshot.title}</h3></div></div>
     <div class="next-grid">
-      <article><strong>64–128</strong><span>{t('先在新的 train-only WebShop tasks 上收集有效 rollouts', 'initial valid rollouts on new train-only WebShop tasks')}</span></article>
-      <article><strong>≤ 256</strong><span>{t('如果仍然没有自然成功，最多扩展到这一上限', 'maximum extension if no spontaneous success appears')}</span></article>
-      <article><strong>H1</strong><span>{t('找到自然成功后，用成功样本做 train-fit / supervision sanity check', 'if natural successes exist, use them for train-fit / supervision sanity checks')}</span></article>
-      <article><strong>Fallback</strong><span>{t('仍为零时再进入 teacher-success bootstrap，而不是先扫 rank / LR / epoch', 'if success remains zero, use teacher-success bootstrap instead of sweeping rank / LR / epoch first')}</span></article>
+      <article><strong>{openEvoScientificState.defaultBranchSnapshot.observedAttempts}</strong><span>{t('observed attempts', 'observed attempts')}</span></article>
+      <article><strong>{openEvoScientificState.defaultBranchSnapshot.scientificValidAttempts}</strong><span>{t('scientific-valid attempts', 'scientific-valid attempts')}</span></article>
+      <article><strong>{openEvoScientificState.defaultBranchSnapshot.parserOrFallbackInvalidAttempts}</strong><span>{t('parser / fallback invalid', 'parser / fallback invalid')}</span></article>
+      <article><strong>{openEvoScientificState.defaultBranchSnapshot.measuredGpuHours.toFixed(3)} h</strong><span>{t('记录的 GPU 时间', 'measured GPU time')}</span></article>
     </div>
+    <aside class="interpretation"><strong>{t('默认分支分类', 'Default-branch classification')}</strong><p><code>{openEvoScientificState.defaultBranchSnapshot.classification}</code></p></aside>
+    <p class="section-note">{t('这是带日期的默认分支快照，不声称覆盖更靠前的活跃科学分支。', 'This is a dated default-branch snapshot and does not claim to cover a newer active scientific branch.')}</p>
   </section>
 
   <section class="program__section" aria-labelledby="tracking-title">
-    <div class="section-heading"><span>05</span><div><small>{t('实验记录', 'Experiment records')}</small><h3 id="tracking-title">{t('Run Manifest 与 W&B', 'Run Manifest and W&B')}</h3></div></div>
+    <div class="section-heading"><span>05</span><div><small>{t('实时状态合同', 'Live-state contract')}</small><h3 id="tracking-title">{t('实际 branch → campaign → reconciliation/result', 'Actual branch → campaign → reconciliation/result')}</h3></div></div>
     <div class="tracking-grid">
-      <div><span>campaign</span><code>20260814-1431-phaseg-base-vs-adapters</code></div>
-      <div><span>W&B</span><code>wandb==0.26.1</code></div>
-      <div><span>{t('角色', 'Role')}</span><strong>{t('观测与比较，不定义科学变量', 'observability and comparison, not scientific-variable definition')}</strong></div>
+      <div><span>branch / SHA</span><strong>{t('确认真正运行实验的 checkout', 'identify the checkout actually running the experiment')}</strong></div>
+      <div><span>current-campaign.json</span><strong>{t('读取该 branch 的 campaign router', 'read the campaign router on that branch')}</strong></div>
+      <div><span>reconciliation / result</span><strong>{t('用最新有效结果决定科学 claim', 'use the latest valid result to determine the scientific claim')}</strong></div>
     </div>
-    <p class="section-note">{t('Run Manifest 和本地 JSON 继续作为可追溯实验身份与结果的核心记录。', 'Run Manifests and local JSON evidence remain the core provenance for experiment identity and results.')}</p>
+    <p class="section-note">{zh ? openEvoScientificState.liveStateRule.zh : openEvoScientificState.liveStateRule.en}</p>
+    <p class="section-note">{t('实时状态的起点是实际使用的 branch。', 'The live-state source is the actual branch in use.')}</p>
+    <p class="section-note">{zh ? openEvoScientificState.gpuRule.zh : openEvoScientificState.gpuRule.en}</p>
+    <p class="section-note">{t('W&B 继续承担观测与比较，不定义科学变量；Run Manifest 与本地 JSON/evidence 决定可追溯实验身份和结果。', 'W&B remains observability/comparison rather than scientific-variable definition; Run Manifests and local JSON/evidence determine traceable experiment identity and results.')}</p>
   </section>
 
   <footer class="sources">
-    <a href={`${activeRoot}/configs/experiment/current-campaign.json`} target="_blank" rel="noreferrer">current-campaign.json ↗</a>
+    <a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default main current-campaign ↗</a>
     <a href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} target="_blank" rel="noreferrer">Phase G result ↗</a>
     <a href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} target="_blank" rel="noreferrer">Phase D–F evidence ↗</a>
-    <a href={`${serverRoot}/docs/server-facts.md`} target="_blank" rel="noreferrer">server facts ↗</a>
+    <a href={`${serverRoot}/docs/experiment-execution-policy.md`} target="_blank" rel="noreferrer">current server execution policy ↗</a>
   </footer>
 </section>
 

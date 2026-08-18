@@ -8,6 +8,7 @@ Before changing user-facing source, read:
 
 - `../docs/agents/current/human-thinking-web-expression-contract.md`
 - `../docs/agents/current/audience-centered-technical-copy.md`
+- `../docs/agents/current/scientific-state-provenance.md`
 - `../docs/agents/current/ui-design-principles.md`
 - `../docs/agents/current/ui-change-visual-acceptance-gate.md`
 
@@ -112,18 +113,40 @@ For SEED/OpenEvo research specifically, preserve dedicated visual components for
 
 If an existing public surface expresses one of these relationships mainly as prose/cards or text arrows, upgrade it to the shared architecture-diagram language rather than adding another explanatory paragraph.
 
-## Current experiment chronology
+## Scientific-state chronology is delegated, not copied
 
-When shared copy discusses project hardware or repositories, preserve these roles until newer source-of-truth evidence supersedes them:
+The stable repository roles are:
 
-- current experiment allocation: `5×RTX5090` on the OpenEvo server;
-- server inventory: `8×RTX5090` visible is an inventory fact, not the experiment allocation;
 - historical platform: `RTX6 / 4×RTX3090`;
+- historical allocation example: `5×RTX5090` only when explicitly dated and labelled historical;
 - historical repositories: `seed3090`, `openevo-webshop`;
-- active experimental source of truth: `openevo-experiment`;
-- current experiment stage after completed Phase G: `Phase H0 Natural Success Search`.
+- scientific source of truth: `openevo-experiment`;
+- live server/resource policy: current `mykcs/zju-server` policy.
 
-Do not present historical RTX6/4×3090 configuration or a pre-Phase-G gate as the current experiment.
+Do **not** hard-code one moving experiment phase, next step, or GPU allocation as undated current truth in `src/`, tests, or Agent guidance.
+
+Resolve OpenEvo live scientific state as:
+
+```text
+actual openevo-experiment branch / SHA
+-> configs/experiment/current-campaign.json on that branch
+-> latest valid reconciliation / result for that campaign or successor
+```
+
+An active scientific branch may be ahead of default `main`. A static public page may show a **dated, branch-labelled default-branch snapshot**, but it must not present that snapshot as live state after its check date.
+
+Resolve GPU use from:
+
+```text
+current zju-server execution policy
++ active preregistration
++ explicitly authorized GPU UUIDs
++ live-idle check immediately before launch
+```
+
+Server inventory is not experiment allocation, and experiment allocation is not authorization. Historical allocations may remain only when explicitly labelled historical evidence.
+
+See `../docs/agents/current/scientific-state-provenance.md` for the full contract.
 
 ## Every feature and UI change must check copy
 
@@ -135,7 +158,7 @@ Do not present historical RTX6/4×3090 configuration or a pre-Phase-G gate as th
 6. Preserve Chinese/English meaning and hierarchy.
 7. Keep safety and research-integrity warnings direct, but do not let them visually outrank the page subject unless the page is specifically a warning/error surface.
 8. Review adjacent shared copy when a shared component changes.
-9. Check current experiment status against the source-of-truth repository before publishing time-sensitive claims.
+9. For time-sensitive experiment claims, resolve the actual experiment branch/campaign/reconciliation before publishing; do not infer live state from an old page or default branch alone.
 10. If the content describes a process, architecture, dependency graph, or data flow, verify that the public surface uses framed/color-coded nodes and real connector geometry rather than prose arrows alone.
 11. Check that color, line style, containment, and loop geometry communicate the same semantic meaning as adjacent research diagrams.
 12. Keep the novice reading path visible without forcing the user to open technical-detail sections.

@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import { openEvoScientificState } from '../../lib/openEvoScientificState';
 import AgentEnvironmentTrajectory from './AgentEnvironmentTrajectory.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -8,9 +9,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const route = [
-  { index:'01', title:t('实验配置','Experiment configuration'), body:t('Qwen2.5-3B-Instruct、WebShop、Run Manifest 与当前 5×RTX5090 实验分配。','Qwen2.5-3B-Instruct, WebShop, Run Manifest, and the current 5×RTX5090 experiment allocation.'), href:p('/research/seed-openevo/base-model/') },
-  { index:'02', title:'Phase G', body:t('12 个正式 episodes 已完成；base、adapter1x、cumulative 的 score / win 均为 0。','12 formal episodes completed; base, adapter1x, and cumulative all had zero score/win outcomes.'), href:p('/research/seed-openevo/results/') },
-  { index:'03', title:'Phase H0', body:t('在新的 train-only WebShop tasks 上搜索自然成功轨迹，先解决监督经验不足的问题。','Search new train-only WebShop tasks for naturally successful trajectories before tuning the learner.'), href:p('/research/seed-openevo/results/') },
+  { index:'01', title:t('实时状态入口','Live-state source'), body:t('实际工作 branch 的 current-campaign.json + 最新有效 reconciliation/result。','current-campaign.json on the branch actually in use + the latest valid reconciliation/result.'), href:p('/research/seed-openevo/results/') },
+  { index:'02', title:t('历史里程碑 · Phase G','Historical milestone · Phase G'), body:t('12 个正式 episodes 已完成；base、adapter1x、cumulative 的 score / win 均为 0。','12 formal episodes completed; base, adapter1x, and cumulative all had zero score/win outcomes.'), href:p('/research/seed-openevo/results/') },
+  { index:'03', title:`${t('默认分支快照','Default-branch snapshot')} · ${openEvoScientificState.defaultBranchSnapshot.phase}`, body:t(`截至 ${openEvoScientificState.checkedAt}，main 记录 ${openEvoScientificState.defaultBranchSnapshot.status}；活跃科学分支可能领先。`,`As checked ${openEvoScientificState.checkedAt}, main records ${openEvoScientificState.defaultBranchSnapshot.status}; an active scientific branch may be ahead.`), href:openEvoScientificState.currentCampaignUrl },
 ] as const;
 ---
 
@@ -19,31 +20,32 @@ const route = [
     <div>
       <span>OpenEvo · WebShop</span>
       <h1>{t('OpenEvo × WebShop 实验', 'OpenEvo × WebShop experiment')}</h1>
-      <p>{t('当前实验以 openevo-experiment 为 source of truth。RTX6 / 4×3090 与 openevo-webshop 已经进入历史；正式 WebShop 主线已经完成 Phase G，正在进入 Phase H0。','The active experiment is governed by openevo-experiment. RTX6 / 4×3090 and openevo-webshop are historical; the formal WebShop line has completed Phase G and is moving into Phase H0.')}</p>
-      <div class="gateway__actions"><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('实验结果 →','Experiment results →')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('复现指南','Reproduction guide')}</a></div>
+      <p>{t('openevo-experiment 是科学 source of truth。Phase G、H0 以及后续 H1.x 诊断属于可追溯的实验历史；本站不再把某个静态阶段或 GPU 数量冒充实时状态。','openevo-experiment is the scientific source of truth. Phase G, H0, and later H1.x diagnostics are traceable experiment history; this static site no longer presents one frozen phase or GPU count as live state.')}</p>
+      <div class="gateway__actions"><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('实验状态与结果 →','Experiment state and results →')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('复现指南','Reproduction guide')}</a></div>
     </div>
-    <aside aria-label={t('当前实验阶段','Current experiment phase')}>
-      <small>{t('当前阶段','Current phase')}</small><strong>Phase H0</strong>
-      <dl><div><dt>{t('实验分配','Allocation')}</dt><dd>5× RTX 5090</dd></div><div><dt>{t('当前 benchmark','Benchmark')}</dt><dd>WebShop</dd></div><div><dt>{t('当前任务','Current question')}</dt><dd>{t('自然成功经验是否足够','whether natural successful experience is available')}</dd></div></dl>
+    <aside aria-label={t('实验状态解析','Experiment state resolution')}>
+      <small>{t('默认 main 快照','Default main snapshot')}</small><strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong>
+      <dl><div><dt>{t('核验日期','Checked')}</dt><dd>{openEvoScientificState.checkedAt}</dd></div><div><dt>{t('状态','Status')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.status}</dd></div><div><dt>{t('实时状态','Live state')}</dt><dd>{t('实际 branch → campaign → reconciliation','actual branch → campaign → reconciliation')}</dd></div></dl>
     </aside>
   </header>
 
-  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
+  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
 
   <AgentEnvironmentTrajectory locale={locale} context="reproduction" />
 
   <section class="gateway__section" aria-labelledby="phaseg-gateway-title">
-    <header><span>Phase G</span><h2 id="phaseg-gateway-title">{t('正式比较结果', 'Formal comparison result')}</h2></header>
+    <header><span>{t('历史证据 · Phase G','Historical evidence · Phase G')}</span><h2 id="phaseg-gateway-title">{t('正式比较结果', 'Formal comparison result')}</h2></header>
     <div class="summary-grid"><article><strong>base</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>adapter1x</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article><article><strong>cumulative</strong><b>0.000 · 0/4</b><span>{t('平均分 · 成功','mean score · wins')}</span></article></div>
-    <p>{t('这组 bounded matrix 没有测到任务收益差异，但 Phase D–F 已独立证明 adapter 的参数状态、reload 与模型输出确实发生变化。','This bounded matrix did not measure a task-outcome difference, while Phase D–F independently established real adapter-state, reload, and model-output changes.')}</p>
+    <p>{t('这组 bounded matrix 没有测到任务收益差异，但 Phase D–F 已独立证明 adapter 的参数状态、reload 与模型输出确实发生变化。该结果是历史证据，不是当前 campaign 的替代品。','This bounded matrix did not measure a task-outcome difference, while Phase D–F independently established real adapter-state, reload, and model-output changes. This is historical evidence, not a substitute for the current campaign.')}</p>
   </section>
 
-  <section class="gateway__section" aria-labelledby="phaseh-gateway-title">
-    <header><span>Phase H0</span><h2 id="phaseh-gateway-title">{t('自然成功样本搜索', 'Natural success search')}</h2></header>
-    <ol class="next-track"><li><b>64–128</b><span>{t('新的 train-only WebShop rollouts','new train-only WebShop rollouts')}</span></li><li><b>≤256</b><span>{t('仍无成功时的最大扩展','maximum extension if success remains zero')}</span></li><li><b>H1</b><span>{t('成功样本存在时做 train-fit / supervision sanity check','train-fit / supervision sanity check if successes exist')}</span></li><li><b>teacher</b><span>{t('仍无成功时才进入 teacher-success bootstrap','teacher-success bootstrap only if natural success remains absent')}</span></li></ol>
+  <section class="gateway__section" aria-labelledby="live-state-gateway-title">
+    <header><span>{t('实时状态合同','Live-state contract')}</span><h2 id="live-state-gateway-title">{t('实验状态解析路径', 'Experiment state resolution')}</h2></header>
+    <ol class="next-track"><li><b>branch</b><span>{t('先确认真正执行实验的 openevo-experiment branch / SHA','identify the openevo-experiment branch / SHA actually running the science')}</span></li><li><b>campaign</b><span>{t('读取该 branch 的 current-campaign.json','read current-campaign.json from that branch')}</span></li><li><b>result</b><span>{t('继续解析该 campaign 或 successor 的最新有效 reconciliation / result','follow the latest valid reconciliation/result for that campaign or successor')}</span></li><li><b>GPU</b><span>{t('按 preregistration、父级策略、授权 UUID 与 live-idle 核验解析分配','resolve allocation from preregistration, parent policy, authorized UUIDs, and live-idle checks')}</span></li></ol>
+    <p>{zh ? openEvoScientificState.liveStateRule.zh : openEvoScientificState.liveStateRule.en}</p>
   </section>
 
-  <footer class="gateway__next"><div><span>{t('当前实验记录','Current record')}</span><h2>{t('Run Manifest、结果 JSON 与 W&B', 'Run Manifest, result JSON, and W&B')}</h2><p>{t('本地 provenance 决定实验身份与结果；W&B 用于观测和比较，不替代实验协议。','Local provenance determines experiment identity and results; W&B provides observability and comparison without replacing the protocol.')}</p></div><a class="button button-primary" href={p('/research/seed-openevo/results/')}>{t('查看完整进展','Full status')}</a></footer>
+  <footer class="gateway__next"><div><span>{t('默认分支快照','Default-branch snapshot')}</span><h2>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.defaultBranchSnapshot.status}</h2><p>{t(`这是 ${openEvoScientificState.checkedAt} 对 main 的带日期核验，不声称覆盖更靠前的活跃科学分支。`,`This is a dated ${openEvoScientificState.checkedAt} check of main and does not claim to cover a newer active scientific branch.`)}</p></div><a class="button button-primary" href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">current-campaign ↗</a></footer>
 </div>
 
 <style>
