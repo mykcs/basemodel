@@ -3,6 +3,6 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../components/research/OpenEvoExperimentGateway.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × WebShop experiment" description="The current experiment is governed by openevo-experiment: a 5×RTX5090 experiment allocation, 12 completed formal Phase G WebShop episodes, and Phase H0 Natural Success Search next." locale={locale}>
+<AppLayout title="OpenEvo × WebShop experiment" description="openevo-experiment is the scientific source of truth; this site preserves dated default-branch snapshots and historical results, while the live phase and GPU allocation are resolved from current-campaign, the latest reconciliation/result, and preregistration on the branch actually in use." locale={locale}>
   <OpenEvoExperimentGateway locale={locale} />
 </AppLayout>
