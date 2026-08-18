@@ -311,3 +311,37 @@ for (const viewport of [
     }
   });
 }
+
+test('home catalog stats use a desktop row and mobile column', async ({ page }) => {
+  for (const path of ['/', '/en/'] as const) {
+    await test.step(`${path} desktop`, async () => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      const stats = page.locator('.overview-stats .stat');
+      await expect(stats).toHaveCount(3);
+      const boxes = await stats.evaluateAll((items) => items.map((item) => {
+        const rect = item.getBoundingClientRect();
+        return { x: rect.x, y: rect.y, width: rect.width };
+      }));
+      expect(Math.max(...boxes.map((box) => box.y)) - Math.min(...boxes.map((box) => box.y))).toBeLessThanOrEqual(2);
+      expect(boxes[1].x).toBeGreaterThan(boxes[0].x + 20);
+      expect(boxes[2].x).toBeGreaterThan(boxes[1].x + 20);
+    });
+
+    await test.step(`${path} mobile`, async () => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      const stats = page.locator('.overview-stats .stat');
+      await expect(stats).toHaveCount(3);
+      const boxes = await stats.evaluateAll((items) => items.map((item) => {
+        const rect = item.getBoundingClientRect();
+        return { x: rect.x, y: rect.y, width: rect.width };
+      }));
+      expect(Math.max(...boxes.map((box) => box.x)) - Math.min(...boxes.map((box) => box.x))).toBeLessThanOrEqual(2);
+      expect(boxes[1].y).toBeGreaterThan(boxes[0].y + 20);
+      expect(boxes[2].y).toBeGreaterThan(boxes[1].y + 20);
+    });
+  }
+});

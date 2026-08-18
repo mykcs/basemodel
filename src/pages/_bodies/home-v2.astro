@@ -82,7 +82,7 @@ const recentEvents = [
 
   <section class="section landscape-overview" aria-labelledby="overview-title">
     <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '目录规模' : 'Catalog size'}</div><h2 id="overview-title">{locale === 'zh' ? '模型目录' : 'Model catalog'}</h2></div><a class="text-link" href={localePath(locale, '/landscape/')}>{m.v2.home.overviewCta}</a></div>
-    <div class="overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{m.v2.home.statModels}</span></div><div class="stat"><strong>{familyCount}</strong><span>{m.v2.home.statFamilies}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{m.v2.home.statOpenWeights}</span></div></div>
+    <div class="stats overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{m.v2.home.statModels}</span></div><div class="stat"><strong>{familyCount}</strong><span>{m.v2.home.statFamilies}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{m.v2.home.statOpenWeights}</span></div></div>
     <p class="muted">{m.v2.home.overviewBody}</p>
   </section>
 </div>
