@@ -43,7 +43,7 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(state).toContain('parserOrFallbackInvalidAttempts: 16');
     expect(component).toContain('默认 main 快照');
     expect(component).toContain('default-branch snapshot');
-    expect(component).toContain('H1.27');
+    expect(component).toContain('openEvoScientificState.defaultBranchSnapshot.phase');
     expect(component).not.toContain('当前阶段</span>\n      <strong>Phase H0</strong>');
     expect(component).not.toContain('Current experiment allocation: 5× RTX 5090');
   });
