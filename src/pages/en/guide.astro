@@ -3,15 +3,16 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { getCollection } from 'astro:content';
 import { getMessages, localePath } from '../../i18n';
 import AgentToSeedBridge from '../../components/AgentToSeedBridge.astro';
+import { openEvoScientificState } from '../../lib/openEvoScientificState';
 const m = getMessages('en');
 const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
-<AppLayout title={m.guide.pageTitle} description="Understand Agent, SEED, and OpenEvo runtime/training mechanisms, then enter the current WebShop experiment and reproduction guide." locale="en">
+<AppLayout title={m.guide.pageTitle} description="Understand Agent, SEED, and OpenEvo runtime/training mechanisms, then enter traceable WebShop experiment state and reproduction guidance." locale="en">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
     <header class="page-header">
       <span class="section-kicker">Learning guide</span>
       <h1>Agent, SEED, and OpenEvo</h1>
-      <p class="lede">Start from multi-step agent runtime, understand SEED parameter learning and OpenEvo cross-task evolution, then enter the current WebShop experiment.</p>
+      <p class="lede">Start from multi-step agent runtime, understand SEED parameter learning and OpenEvo cross-task evolution, then enter the WebShop experiment’s historical evidence, dated default-branch snapshot, and live-state source.</p>
     </header>
 
     <AgentToSeedBridge locale="en" />
@@ -27,13 +28,14 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
     </section>
 
     <section class="section" aria-labelledby="openevo-guide-title">
-      <div class="section-heading"><div><span class="section-kicker">Current experiment</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
-      <p>The active line has moved beyond RTX6 (4×RTX3090). Formal experiments are maintained in <code>openevo-experiment</code>, with a current allocation of <strong>5×RTX5090</strong>; Phase G is complete and Phase H0 Natural Success Search is next.</p>
-      <p class="hardware-truth">Hardware tiers in the model catalog are coarse categories; the workspace VRAM calculator is a <strong>heuristic planning estimate</strong>, <strong>not a measured hardware result</strong>. The current 5×RTX5090 allocation and the server’s 8 visible RTX5090 GPUs are experiment/inventory records, while runtime and memory usage still require machine profiling.</p>
+      <div class="section-heading"><div><span class="section-kicker">Experiment state</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
+      <p>Formal experiments are maintained in <code>openevo-experiment</code>. When this site checked default <code>main</code> on <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time>, <code>current-campaign.json</code> recorded <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong> / <code>{openEvoScientificState.defaultBranchSnapshot.status}</code>. This is a dated default-branch snapshot, not a claim about any newer active scientific branch.</p>
+      <p class="hardware-truth">Hardware tiers in the model catalog are coarse categories; the workspace VRAM calculator is a <strong>heuristic planning estimate</strong>, <strong>not a measured hardware result</strong>. {openEvoScientificState.gpuRule.en}</p>
+      <p>{openEvoScientificState.liveStateRule.en}</p>
       <div class="guide-cards">
-        <a href={localePath('en','/guide/openevo-webshop-alfworld/')}><strong>Reproduction guide</strong><span>Current topology, experiment identity, WebShop records, and Phase H0</span></a>
-        <a href={localePath('en','/research/seed-openevo/experiment/')}><strong>Experiment entry</strong><span>WebShop task data flow and current experiment phase</span></a>
-        <a href={localePath('en','/research/seed-openevo/results/')}><strong>Experiment results</strong><span>Phase D–F, Phase G, historical repositories, and next steps</span></a>
+        <a href={localePath('en','/guide/openevo-webshop-alfworld/')}><strong>Reproduction guide</strong><span>Runtime topology, experiment identity, WebShop contract, and state resolution</span></a>
+        <a href={localePath('en','/research/seed-openevo/experiment/')}><strong>Experiment entry</strong><span>WebShop data flow, historical milestones, and live-state source</span></a>
+        <a href={localePath('en','/research/seed-openevo/results/')}><strong>Experiment results</strong><span>Phase D–G historical evidence, default-branch snapshot, and live claim routing</span></a>
       </div>
     </section>
 

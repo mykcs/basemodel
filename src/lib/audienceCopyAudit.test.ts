@@ -47,15 +47,20 @@ describe('audience copy audit', () => {
     expect(guide).not.toMatch(/<h[1-6][^>]*>[^<]*(?:不要|不是|不再)/);
   });
 
-  it('keeps the bilingual Guide current/historical hardware boundary equivalent', () => {
+  it('keeps the bilingual Guide historical/live-state boundary equivalent', () => {
     const zhGuide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
     const enGuide = fs.readFileSync(path.join(root, 'src/pages/en/guide.astro'), 'utf8');
-    expect(zhGuide).toContain('5×RTX5090');
+    const state = fs.readFileSync(path.join(root, 'src/lib/openEvoScientificState.ts'), 'utf8');
     expect(zhGuide).toContain('RTX6（4×RTX3090）');
-    expect(zhGuide).toContain('Phase H0');
-    expect(enGuide).toContain('5×RTX5090');
     expect(enGuide).toContain('RTX6 (4×RTX3090)');
-    expect(enGuide).toContain('Phase H0');
+    expect(zhGuide).toContain('current-campaign.json');
+    expect(enGuide).toContain('current-campaign.json');
+    expect(zhGuide).toContain('默认分支快照');
+    expect(enGuide).toContain('default-branch snapshot');
+    expect(state).toContain("phase: 'H1.27'");
+    expect(state).toContain('active scientific branch may be ahead');
+    expect(zhGuide).not.toContain('当前实验分配为 <strong>5×RTX5090</strong>');
+    expect(enGuide).not.toContain('current allocation of <strong>5×RTX5090</strong>');
     expect(enGuide).not.toContain('move straight into the ALFWorld / WebShop experiment on 4×3090');
   });
 
@@ -69,6 +74,7 @@ describe('audience copy audit', () => {
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
     expect(standard).toContain('Headings name the subject');
     expect(standard).toContain('标题先命名主题');
+    expect(standard).toContain('Current scientific claims must be delegated, not copied');
     expect(auditSource).toContain('COPY-EDITORIAL-AS-HEADING');
     expect(auditSource).toContain('COPY-SUBJECT-TITLE-001');
   });
