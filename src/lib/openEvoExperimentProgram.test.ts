@@ -2,15 +2,17 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const component = read('src/components/research/OpenEvoExperimentProgram.astro');
+const state = read('src/lib/openEvoScientificState.ts');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 
-describe('current OpenEvo × WebShop experiment program', () => {
-  it('separates retired sources from the active experiment repository', () => {
-    for (const repo of ['seed3090','openevo-webshop','openevo-experiment']) expect(component).toContain(repo);
+describe('OpenEvo × WebShop experiment state provenance', () => {
+  it('separates retired sources from the scientific source of truth', () => {
+    for (const repo of ['seed3090', 'openevo-webshop', 'openevo-experiment']) expect(component).toContain(repo);
     expect(component).toContain("state: t('历史', 'Historical')");
-    expect(component).toContain("state: t('当前', 'Current')");
-    expect(component).toContain('RTX6（4×RTX 3090）');
+    expect(component).toContain("state: t('当前 source of truth', 'Current source of truth')");
+    expect(component).toContain('RTX6 / 4×RTX 3090');
+    expect(component).toContain('actual branch');
   });
 
   it('keeps Phase D–F mechanism evidence distinct from task efficacy', () => {
@@ -21,8 +23,8 @@ describe('current OpenEvo × WebShop experiment program', () => {
     expect(component).toContain('RTX5090_PHASE_D_F_2026-08-14.md');
   });
 
-  it('shows completed Phase G measurements rather than the old preflight state', () => {
-    expect(component).toContain('Phase G · completed');
+  it('keeps completed Phase G measurements as historical evidence', () => {
+    expect(component).toContain('历史证据 · Phase G · completed');
     expect(component).toContain('12 个 promotion-dev episodes');
     expect(component).toContain("{ arm: 'base', score: '0.000'");
     expect(component).toContain("{ arm: 'adapter1x', score: '0.000'");
@@ -31,24 +33,40 @@ describe('current OpenEvo × WebShop experiment program', () => {
     expect(component).not.toContain('0 consumed');
   });
 
-  it('makes Phase H0 and the current 5×RTX5090 experiment allocation visible', () => {
-    expect(component).toContain('Phase H0');
-    expect(component).toContain('64–128');
-    expect(component).toContain('≤ 256');
-    expect(component).toContain('teacher-success bootstrap');
-    expect(component).toContain('5× RTX 5090');
-    expect(component).toContain('8 visible RTX 5090 GPUs');
+  it('shows a dated default-main H1.27 snapshot without pretending it is live state', () => {
+    expect(state).toContain("checkedAt: '2026-08-18'");
+    expect(state).toContain("phase: 'H1.27'");
+    expect(state).toContain("status: 'completed-descriptive-only'");
+    expect(state).toContain("classification: 'scale-only-not-supported-or-task-local'");
+    expect(state).toContain('observedAttempts: 64');
+    expect(state).toContain('scientificValidAttempts: 48');
+    expect(state).toContain('parserOrFallbackInvalidAttempts: 16');
+    expect(component).toContain('默认 main 快照');
+    expect(component).toContain('default-branch snapshot');
+    expect(component).toContain('H1.27');
+    expect(component).not.toContain('当前阶段</span>\n      <strong>Phase H0</strong>');
+    expect(component).not.toContain('Current experiment allocation: 5× RTX 5090');
+  });
+
+  it('routes live state through branch, campaign, reconciliation/result, and preregistered GPU authority', () => {
+    for (const token of ['current-campaign.json', 'actual branch', 'reconciliation / result', 'preregistration', 'authorized UUIDs']) {
+      expect(component + state).toContain(token);
+    }
+    expect(state).toContain('active scientific branch may be ahead');
+    expect(state).toContain('GPU allocation is not a static-site fact');
   });
 
   it('keeps W&B observational and wires the bilingual static section before historical evidence', () => {
-    expect(component).toContain('wandb==0.26.1');
-    expect(component).toContain('20260814-1431-phaseg-base-vs-adapters');
-    expect(component).toContain('Run Manifests and local JSON evidence remain the core provenance');
+    expect(component).toContain('W&B 继续承担观测与比较');
+    expect(component).toContain('Run Manifest');
     expect(component).toContain('data-testid="openevo-experiment-program"');
     expect(component).not.toContain('client:');
-    for (const route of [zhRoute,enRoute]) {
+    for (const route of [zhRoute, enRoute]) {
       expect(route).toContain('<OpenEvoExperimentProgram locale={locale} />');
       expect(route.indexOf('<OpenEvoExperimentProgram locale={locale} />')).toBeLessThan(route.indexOf('<Seed3090ParametricProgress locale={locale} />'));
+      expect(route).toContain('reconciliation/result');
+      expect(route).not.toContain('5×RTX5090');
+      expect(route).not.toContain('Phase H0 Natural Success Search');
     }
   });
 });
