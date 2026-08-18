@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+const state = read('src/lib/openEvoScientificState.ts');
 const files = [
   'src/pages/_bodies/home-v2.astro',
   'src/pages/_bodies/paper-detail.astro',
@@ -64,7 +65,8 @@ describe('sitewide editorial heading policy', () => {
     expect(joined).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(joined).toContain('历史记录：5×RTX5090 allocation');
     expect(joined).toContain('Phase G');
-    expect(joined).toContain('H1.27');
+    expect(state).toContain("phase: 'H1.27'");
+    expect(state).toContain("checkedAt: '2026-08-18'");
     expect(joined).toContain('current-campaign');
     expect(joined).toContain('reconciliation');
     expect(joined).not.toContain('formal_task_consumption_allowed = false');
