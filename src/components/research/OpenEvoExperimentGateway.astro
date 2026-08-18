@@ -40,7 +40,7 @@ const route = [
   </section>
 
   <section class="gateway__section" aria-labelledby="live-state-gateway-title">
-    <header><span>{t('实时状态合同','Live-state contract')}</span><h2 id="live-state-gateway-title">{t('不要从静态网页猜当前阶段', 'Do not infer the current phase from a static page')}</h2></header>
+    <header><span>{t('实时状态合同','Live-state contract')}</span><h2 id="live-state-gateway-title">{t('实验状态解析路径', 'Experiment state resolution')}</h2></header>
     <ol class="next-track"><li><b>branch</b><span>{t('先确认真正执行实验的 openevo-experiment branch / SHA','identify the openevo-experiment branch / SHA actually running the science')}</span></li><li><b>campaign</b><span>{t('读取该 branch 的 current-campaign.json','read current-campaign.json from that branch')}</span></li><li><b>result</b><span>{t('继续解析该 campaign 或 successor 的最新有效 reconciliation / result','follow the latest valid reconciliation/result for that campaign or successor')}</span></li><li><b>GPU</b><span>{t('按 preregistration、父级策略、授权 UUID 与 live-idle 核验解析分配','resolve allocation from preregistration, parent policy, authorized UUIDs, and live-idle checks')}</span></li></ol>
     <p>{zh ? openEvoScientificState.liveStateRule.zh : openEvoScientificState.liveStateRule.en}</p>
   </section>
