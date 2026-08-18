@@ -28,8 +28,8 @@ describe('SEED student reproduction mainline', () => {
   });
 
   it('keeps RTX6 historical and routes moving experiment state through dated provenance', () => {
-    for (const token of ['openevo-experiment','RTX6（4×RTX3090）','current-campaign.json','默认分支快照']) expect(zhPage).toContain(token);
-    for (const token of ['openevo-experiment','RTX6 (4×RTX3090)','current-campaign.json','default-branch snapshot']) expect(enPage).toContain(token);
+    for (const token of ['openevo-experiment','RTX6（4×RTX 3090）','current-campaign.json','默认分支快照']) expect(zhPage).toContain(token);
+    for (const token of ['openevo-experiment','RTX6 (4×RTX 3090)','current-campaign.json','default-branch snapshot']) expect(enPage).toContain(token);
     expect(state).toContain("phase: 'H1.27'");
     expect(state).toContain("checkedAt: '2026-08-18'");
     expect(state).toContain('active scientific branch may be ahead');
