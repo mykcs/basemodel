@@ -5,6 +5,7 @@ const bridge = readFileSync(new URL('./AgentToSeedBridge.astro', import.meta.url
 const legacyGuide = readFileSync(new URL('./SeedStudentReproductionGuide.astro', import.meta.url), 'utf8');
 const zhPage = readFileSync(new URL('../pages/guide.astro', import.meta.url), 'utf8');
 const enPage = readFileSync(new URL('../pages/en/guide.astro', import.meta.url), 'utf8');
+const state = readFileSync(new URL('../lib/openEvoScientificState.ts', import.meta.url), 'utf8');
 const preflight = readFileSync(new URL('../../public/guides/seed-4x3090-preflight.sh', import.meta.url), 'utf8');
 const stage1 = readFileSync(new URL('../../public/guides/seed-stage1-check.py', import.meta.url), 'utf8');
 
@@ -26,9 +27,14 @@ describe('SEED student reproduction mainline', () => {
     for (const token of ['Agent 运行与训练','Agent 运行循环','Agent 训练循环','Policy','Action','Trajectory','Reward','Advantage','GRPO','hindsight skill','OPD']) expect(bridge).toContain(token);
   });
 
-  it('makes 5x5090 current while keeping RTX6 / 4x3090 historical', () => {
-    for (const token of ['openevo-experiment','5×RTX5090','Phase H0','RTX6（4×RTX3090）']) expect(zhPage).toContain(token);
-    for (const token of ['openevo-experiment','5×RTX5090','Phase H0','RTX6 (4×RTX3090)']) expect(enPage).toContain(token);
+  it('keeps RTX6 historical and routes moving experiment state through dated provenance', () => {
+    for (const token of ['openevo-experiment','RTX6（4×RTX3090）','current-campaign.json','默认分支快照']) expect(zhPage).toContain(token);
+    for (const token of ['openevo-experiment','RTX6 (4×RTX3090)','current-campaign.json','default-branch snapshot']) expect(enPage).toContain(token);
+    expect(state).toContain("phase: 'H1.27'");
+    expect(state).toContain("checkedAt: '2026-08-18'");
+    expect(state).toContain('active scientific branch may be ahead');
+    expect(zhPage).not.toContain('当前实验分配为 <strong>5×RTX5090</strong>');
+    expect(enPage).not.toContain('current allocation of <strong>5×RTX5090</strong>');
   });
 
   it('retains the old 4x3090 reproduction material as historical executable evidence', () => {

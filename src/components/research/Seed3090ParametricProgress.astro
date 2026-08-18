@@ -34,7 +34,7 @@ const runs = [
     <div>
       <p class="eyebrow">seed3090 <span aria-hidden="true">·</span> <time datetime="2026-08-13">2026-08-13</time></p>
       <h2 id="seed3090-history-title">{t('RTX6 参数实验记录', 'RTX6 parametric experiment record')}</h2>
-      <p>{t('这一节只保留历史诊断价值。RTX6（4×RTX 3090）已经退出当前实验主线；新的 WebShop 科学结论以 openevo-experiment 为准。', 'This section is retained only for historical diagnostic value. RTX6 (4×RTX 3090) is no longer the active experiment platform; current WebShop claims are governed by openevo-experiment.')}</p>
+      <p>{t('这一节只保留历史诊断价值。RTX6（4×RTX 3090）已经退出当前实验主线；新的 WebShop 科学结论以 openevo-experiment 实际工作分支的 campaign 与最新 reconciliation/result 为准。', 'This section is retained only for historical diagnostic value. RTX6 (4×RTX 3090) is no longer the active experiment platform; newer WebShop claims are resolved from the campaign and latest reconciliation/result on the openevo-experiment branch actually in use.')}</p>
     </div>
     <aside><span>{t('历史方法', 'Historical method')}</span><strong>OpenEvo SD-LoRA · continual LoRA-SFT</strong><small>{t('不是 SEED 的 OPD + GRPO 复现', 'Not a reproduction of SEED OPD + GRPO')}</small></aside>
   </header>
@@ -63,7 +63,7 @@ const runs = [
       <li>{t('gen2 回退来自遗忘还是 rollout 方差？', 'Does gen2 regression come from forgetting or rollout variance?')}</li>
       <li>{t('参数变化从哪个 state / action 开始改变在线行为？', 'At which state/action does the parameter change first alter online behavior?')}</li>
     </ul>
-    <p class="note">{t('当前 openevo-experiment 已把其中最紧迫的问题收敛为 Phase H0：先寻找自然成功轨迹，再决定监督诊断或 teacher-success bootstrap。', 'The active openevo-experiment campaign has narrowed the immediate question to Phase H0: search for natural successes before choosing successful-supervision diagnostics or teacher-success bootstrap.')}</p>
+     <p class="note">{t('这些问题后来进入 openevo-experiment 的后续 campaign；Phase H0 自然成功轨迹搜索只是历史上的一个阶段。当前应从实际实验 branch 的 current-campaign 与最新 reconciliation/result 确定下一问题。', 'These questions later flowed into subsequent openevo-experiment campaigns; Phase H0 natural-success search is one historical stage. Resolve the current question from current-campaign and the latest reconciliation/result on the experiment branch actually in use.')}</p>
   </section>
 
   <footer class="sources">

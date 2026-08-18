@@ -60,19 +60,23 @@ describe('research architecture diagrams', () => {
     expect(compare).toContain('fork-wires');
   });
 
-  it('explains the server as sibling containers controlled through the host daemon', () => {
+  it('explains sibling-container authority without publishing private machine identities', () => {
     for (const term of [
       'OpenEvo Server Host',
       'Docker daemon',
-      'dev-wangr',
+      'approved control container',
       'root UID 0',
       '/var/run/docker.sock',
       'isolated experiment container',
-      'UID/GID 1001:1001',
+      'ordinary UID/GID',
       'SIBLING USERS',
+      'User A',
+      'User B',
       'daemon creates sibling container',
-      'I am not the global administrator',
+      'container root ≠ physical-host root',
+      'technical capability ≠ authorization scope',
     ]) expect(server).toContain(term);
+    for (const forbidden of ['dev-wangr', 'wangr-dev', 'dev-guozy', 'dev-huzh', '/data/home/wangr']) expect(server).not.toContain(forbidden);
     for (const route of [guide, labZh, labEn]) {
       expect(route).toContain('InteractiveResearchExplainer');
       expect(route).toContain('kind="server"');
@@ -86,6 +90,8 @@ describe('research architecture diagrams', () => {
     for (const term of ['train / valid_seen / valid_unseen', 'AlfredTWEnv', 'Pick & Place', '10 × won']) expect(benchmarks).toContain(term);
     expect(benchmarks).toContain('state transition');
     expect(benchmarks).toContain('new observation feeds the next step');
+    expect(benchmarks).toContain('historical Phase G');
+    expect(benchmarks).toContain('historical H0');
   });
 
   it('makes the SEED core idea visually explicit', () => {
@@ -120,13 +126,16 @@ describe('research architecture diagrams', () => {
     expect(openevo).toContain('seal first, evolve second');
   });
 
-  it('compares SEED and OpenEvo by where experience persists', () => {
+  it('compares SEED and OpenEvo by where experience persists without freezing the live campaign', () => {
     expect(compare).toContain('SHARED EXPERIENCE');
     expect(compare).toContain('Core fork question');
     expect(compare).toContain('Where does this experience ultimately live?');
     expect(compare).toContain('memory / artifact / adapter');
     expect(compare).toContain('updated policy checkpoint');
     expect(compare).toContain('too simple');
+    expect(compare).toContain('historically validated path');
+    expect(compare).toContain('experiment branch actually in use');
+    expect(compare).not.toContain('当前项目里正在测什么');
   });
 
   it('keeps optional technical depth native, static, and reduced-motion safe', () => {
@@ -139,11 +148,16 @@ describe('research architecture diagrams', () => {
     expect(sourceRules).toContain('dashed connector');
   });
 
-  it('keeps the reproduction guide executable while the interactive explainers teach the mental model', () => {
+  it('keeps the reproduction guide executable, public-safe, and content-height-driven', () => {
     expect(guide).toContain('AgentEnvironmentTrajectory');
     expect(guide).toContain('InteractiveResearchExplainer');
     expect(guide).toContain('12 reproduction gates');
     expect(guide).toContain('run_parametric_eval.py');
     expect(guide).toContain('verify_indexes_1k.py');
+    expect(guide).toContain('<ordinary-account>');
+    expect(guide).toContain('<approved-control-account>');
+    expect(guide).toContain('<approved-persistent-workspace>');
+    expect(guide).toContain('.gate-copy pre{min-height:0!important;height:auto!important');
+    for (const forbidden of ['dev-wangr', 'wangr-dev', '/data/home/wangr', 'ssh wangrui_user', 'ssh wangrui_root']) expect(guide).not.toContain(forbidden);
   });
 });

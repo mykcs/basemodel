@@ -16,7 +16,7 @@ const candidateRules: Rule[] = [
   { id: 'COPY-NEGATIVE-HEADING', pattern: /(?:^|[>"'`])\s*(?:不要|不是|当前不再|不再)[^\n<]{0,100}/g, reason: 'Negative-first copy may need reader context before the warning.' },
   { id: 'COPY-RELATIVE-TIME', pattern: /今天|明天|昨天|之前|这次|刚刚/g, reason: 'Relative time needs a visible date, release, or experiment reference.' },
   { id: 'COPY-PROJECT-TERM', pattern: /RTX6|\bP[0-3]\b|wheelhouse|artifact|API snapshot|successor revision|fallback/gi, reason: 'Project terminology should be explained at first use.' },
-  { id: 'COPY-SHARED-HARDWARE', pattern: /(?:4\s*[×x]\s*(?:RTX\s*)?3090|5\s*[×x]\s*(?:RTX\s*)?5090|8\s*[×x]\s*(?:RTX\s*)?5090|4\s*[×x]\s*24GB)/gi, reason: 'Explicit project hardware must say whether it is historical, current allocation, visible inventory, or a reader example.' },
+  { id: 'COPY-SHARED-HARDWARE', pattern: /(?:4\s*[×x]\s*(?:RTX\s*)?3090|5\s*[×x]\s*(?:RTX\s*)?5090|8\s*[×x]\s*(?:RTX\s*)?5090|4\s*[×x]\s*24GB)/gi, reason: 'Explicit project hardware must say whether it is historical, inventory, allocation, authorization context, or a reader example.' },
   { id: 'COPY-CHAT-TONE', pattern: /我们刚才|又失败|正确修法|这就是我们踩过的坑/g, reason: 'Chat or incident-history language should not lead the public path.' },
   { id: 'COPY-LEGACY-POSITIONING', pattern: /智能体基础模型选择地图|Agent Foundation Model Atlas|通用模型选择与论文采用地图/g, reason: 'Legacy product positioning may conflict with the SEED × OpenEvo research mission.' },
   { id: 'COPY-ABSTRACT-PACKAGING', pattern: /第一性研究链|框架改进结论|可核验的路径|可追踪的对话|讲成一场对话/g, reason: 'Abstract packaging may hide the concrete subject or result.' },
@@ -28,14 +28,14 @@ const productionRoots = ['src', 'public/guides', 'public/og-cover.svg'];
 const eligibleExtensions = new Set(['.astro', '.tsx', '.ts', '.json', '.md', '.mdx', '.sh', '.py', '.svg']);
 const exclusions = [/(?:^|\/)\.omc(?:\/|$)/, /(?:^|\/)__fixtures__(?:\/|$)/, /(?:^|\/)fixtures?(?:\/|$)/, /\.test\.(?:ts|tsx)$/, /\.spec\.(?:ts|tsx)$/];
 
-function walk(root: string, relative = root): string[] {
+function walk(_root: string, relative: string): string[] {
   if (!fs.existsSync(relative)) return [];
   const stat = fs.statSync(relative);
   if (stat.isFile()) return [relative];
   return fs.readdirSync(relative, { withFileTypes: true }).flatMap((entry) => {
     const next = path.join(relative, entry.name);
     if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist') return [];
-    return entry.isDirectory() ? walk(root, next) : [next];
+    return entry.isDirectory() ? walk(_root, next) : [next];
   });
 }
 
@@ -112,20 +112,31 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
 
   const hero = 'src/components/research/SeedOpenEvoMissionHero.astro';
   requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');
-  requireText(hero, 'COPY-STATUS-001', '5× RTX 5090', 'The current experiment allocation must be visible.');
-  requireText(hero, 'COPY-STATUS-001', 'RTX6 · 4× RTX 3090', 'RTX6 must be visibly labeled as historical context.');
+  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.phase', 'The research hero must expose a dated default-branch snapshot instead of freezing one live phase.');
+  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'actual branch → campaign → reconciliation', 'The research hero must route readers to branch-aware live state.');
+  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'preregistration + authorized UUIDs', 'The research hero must separate GPU use from static inventory/allocation copy.');
+  ban(hero, 'COPY-STATE-PROVENANCE-002', '当前实验分配', 'The research hero must not hard-code a moving GPU allocation as live truth.');
+  ban(hero, 'COPY-STATE-PROVENANCE-002', 'Current allocation', 'The research hero must not hard-code a moving GPU allocation as live truth.');
+
+  const state = 'src/lib/openEvoScientificState.ts';
+  for (const required of ["checkedAt: '2026-08-18'", "phase: 'H1.27'", "status: 'completed-descriptive-only'", 'active scientific branch may be ahead']) requireText(state, 'COPY-STATE-PROVENANCE-005', required, 'The dated default-main snapshot must remain explicit in the dedicated state owner.');
 
   const program = 'src/components/research/OpenEvoExperimentProgram.astro';
-  for (const required of ['当前实验进展', 'Phase G · completed', 'Phase H0', '5× RTX 5090', 'RTX6（4×RTX 3090）']) requireText(program, 'COPY-STATUS-002', required, 'Current experiment status and hardware chronology must remain explicit.');
+  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'openEvoScientificState.defaultBranchSnapshot.phase', 'current-campaign.json', 'actual branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
   ban(program, 'COPY-STATUS-003', 'formal_task_consumption_allowed = false', 'The old pre-Phase-G state must not return as current status.');
+  ban(program, 'COPY-STATE-PROVENANCE-003', '当前实验分配：5× RTX 5090', 'A historical allocation must not return as undated live state.');
+  ban(program, 'COPY-STATE-PROVENANCE-003', 'Current experiment allocation: 5× RTX 5090', 'A historical allocation must not return as undated live state.');
 
   const zhGuide = 'src/pages/guide.astro';
   const enGuide = 'src/pages/en/guide.astro';
-  for (const required of ['5×RTX5090', 'RTX6（4×RTX3090）', 'Phase H0']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve current-versus-historical experiment status.');
-  for (const required of ['5×RTX5090', 'RTX6 (4×RTX3090)', 'Phase H0']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve current-versus-historical experiment status.');
+  for (const required of ['RTX6（4×RTX3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
+  for (const required of ['RTX6 (4×RTX3090)', 'current-campaign.json', 'default-branch snapshot']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve historical provenance and branch-aware live-state routing.');
+  ban(zhGuide, 'COPY-STATE-PROVENANCE-004', '当前实验分配为 <strong>5×RTX5090</strong>', 'The Chinese Guide must not freeze a prior GPU allocation as current.');
+  ban(enGuide, 'COPY-STATE-PROVENANCE-004', 'current allocation of <strong>5×RTX5090</strong>', 'The English Guide must not freeze a prior GPU allocation as current.');
 
   const experimentGuide = 'src/components/OpenEvoSeedBenchmarksGuide.astro';
   for (const title of ['OpenEvo 实验复现指南', 'OpenEvo experiment reproduction guide']) requireText(experimentGuide, 'COPY-I18N-001', title, 'The current guide must have a normal bilingual subject title.');
+  for (const forbidden of ['dev-wangr', 'wangr-dev', '/data/home/wangr', 'ssh wangrui_user', 'ssh wangrui_root']) ban(experimentGuide, 'COPY-PRIVACY-001', forbidden, 'The public reproduction guide must not publish private server identifiers.');
 
   const methodology = 'src/pages/methodology.astro';
   for (const title of ['数据来源与缺失信息','缺失值状态','证据来源','模型推荐边界']) requireText(methodology, 'COPY-SUBJECT-TITLE-002', title, 'Methodology headings must name their subject directly.');
@@ -139,7 +150,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
-  for (const required of ['Headings name the subject', '标题先命名主题', 'ALFWorld 与 WebShop 研究', '5×RTX5090']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve the subject-heading rule and current hardware chronology example.');
+  for (const required of ['Headings name the subject', '标题先命名主题', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings and branch-aware scientific-state provenance.');
 
   return failures;
 }

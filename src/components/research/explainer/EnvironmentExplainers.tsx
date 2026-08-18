@@ -112,7 +112,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           </dl>
         </aside>
       </div>
-      <aside className="irx-boundary-note"><b>{zh ? '研究边界' : 'Research boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是 Phase G 测得结果。当前 OpenEvo 使用冻结 1,000-product 环境；SEED wrapper 中 goal 0–499 用于 evaluation、goal 500–end 用于 training。Phase G 只消费了 promotion-dev goals 6680 / 2590，下一 Gate 是 Phase H0 Natural Success Search。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured Phase G result. Current OpenEvo uses the frozen 1,000-product environment; in the SEED wrapper, goal 0–499 is evaluation and goal 500–end is training. Phase G consumed only promotion-dev goals 6680 / 2590, and the next gate is Phase H0 Natural Success Search.'}</span></aside>
+      <aside className="irx-boundary-note"><b>{zh ? '研究边界' : 'Research boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是 Phase G 测得结果。冻结 1,000-product 环境与 SEED wrapper 的 goal 0–499、goal 500–end 属于 benchmark / reproduction contract；Phase G 的 promotion-dev goals 6680 / 2590 与后续 H0 属于历史实验边界。实时 OpenEvo campaign 必须从实际实验 branch 的 current-campaign 与最新 reconciliation/result 解析。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured Phase G result. The frozen 1,000-product environment and SEED wrapper goal 0–499, goal 500–end split are benchmark/reproduction contracts; Phase G promotion-dev goals 6680 / 2590 and later H0 are historical experiment boundaries. Resolve the live OpenEvo campaign from current-campaign and the latest reconciliation/result on the experiment branch actually in use.'}</span></aside>
     </>
   );
 }
