@@ -21,7 +21,7 @@ describe('historical seed3090 parametric evidence', () => {
   it('carries diagnosis forward without calling it the current mainline', () => {
     expect(component).toContain('SD-LoRA 是否先拟合训练任务？');
     expect(component).toContain('gen2 回退来自遗忘还是 rollout 方差？');
-    expect(component).toContain('Phase H0');
+    expect(component).toContain('H0 natural-success search');
     expect(component).toContain('data-testid="seed3090-parametric-progress"');
     expect(component).not.toContain('client:');
     for (const route of [zhRoute,enRoute]) expect(route).toContain('<Seed3090ParametricProgress locale={locale} />');
