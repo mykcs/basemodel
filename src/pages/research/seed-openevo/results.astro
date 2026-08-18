@@ -5,7 +5,7 @@ import OpenEvoExperimentProgram from '../../../components/research/OpenEvoExperi
 import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × SEED 实验结果" description="当前结果以 openevo-experiment 为准：5×RTX5090 实验分配下，Phase G 的 12 个 WebShop episodes 已完成，三臂 score / win 均为 0；下一步进入 Phase H0 Natural Success Search。seed3090 与 openevo-webshop 作为历史证据保留。" locale={locale}>
+<AppLayout title="OpenEvo × SEED 实验结果" description="以 openevo-experiment 为科学 source of truth：Phase D–G 与后续诊断按日期保留为历史证据；本站展示带日期的默认分支快照，实时科学 claim 从实际工作 branch 的 current-campaign 与最新 reconciliation/result 解析。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results" />
   <OpenEvoExperimentProgram locale={locale} />
   <Seed3090ParametricProgress locale={locale} />
