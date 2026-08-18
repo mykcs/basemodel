@@ -10,7 +10,7 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 4. `current/product-and-research-integrity.md` — product and scientific completion boundary.
 5. `current/human-thinking-web-expression-contract.md` — mandatory expression/density/semantic-HTML contract for every user-facing change.
 6. `current/ui-design-principles.md`, `current/sitewide-visual-knowledge-architecture.md`, `current/theme-contrast-contract.md`, and `current/ui-change-visual-acceptance-gate.md` — UI system and browser acceptance.
-7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, and `current/audience-centered-technical-copy.md` — current research mission, reproduction and copy ownership.
+7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, `current/audience-centered-technical-copy.md`, and `current/scientific-state-provenance.md` — current research mission, reproduction, copy, and live scientific-state ownership.
 8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
 10. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
