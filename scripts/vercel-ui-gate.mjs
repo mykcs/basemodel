@@ -1,7 +1,8 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const shouldRun = branch.startsWith('agent/visual-closeout-');
+const shouldRun = branch.startsWith('agent/visual-closeout-')
+  || branch.startsWith('agent/semantic-release-visual-closeout-');
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);

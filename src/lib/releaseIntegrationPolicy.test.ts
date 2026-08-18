@@ -17,8 +17,11 @@ describe('semantic release integration policy', () => {
     expect(agents).toContain('parallel/stacked integration policy');
   });
 
-  it('keeps the current release and candidate dispositions discoverable', () => {
-    expect(latest).toContain('semantically resolved release head');
+  it('keeps the current release and historical candidate dispositions discoverable', () => {
+    expect(latest).toContain('## Current release state');
+    expect(latest).toContain('#144 — semantic release integration');
+    expect(latest).toContain('#147 — final visual closeout');
+    expect(latest).toContain('14 passed');
     for (const pr of ['#64', '#69', '#116', '#119', '#121', '#125', '#128', '#129']) {
       expect(integrationRecord).toContain(pr);
     }
