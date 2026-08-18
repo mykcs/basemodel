@@ -6,14 +6,16 @@ const reuseBuiltOutput = process.env.PLAYWRIGHT_REUSE_BUILD === '1';
 export default defineConfig({
   testDir: './tests/e2e',
   // The focused research-geometry cases intentionally walk every bilingual
-  // explainer route and every step in sequence. On Vercel's 2-core build
-  // environment the desktop cases consistently take ~31–33s, so keep a
-  // modest execution-time margin without changing any geometry/contrast/
-  // overflow acceptance threshold.
-  timeout: 45_000,
+  // explainer route and every step in sequence. After the route expansion,
+  // Vercel's 2-core build environment needs roughly 45–55s for a desktop
+  // matrix. Give the deterministic walk enough execution time without
+  // changing any geometry/contrast/overflow acceptance threshold.
+  timeout: 90_000,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 2 : 0,
+  // Release acceptance is fail-closed: a flaky retry must not turn a failed
+  // exact-head browser run into accepted evidence.
+  retries: 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
