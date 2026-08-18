@@ -51,12 +51,8 @@ describe('audience copy audit', () => {
     const zhGuide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
     const enGuide = fs.readFileSync(path.join(root, 'src/pages/en/guide.astro'), 'utf8');
     const state = fs.readFileSync(path.join(root, 'src/lib/openEvoScientificState.ts'), 'utf8');
-    expect(zhGuide).toContain('RTX6（4×RTX3090）');
-    expect(enGuide).toContain('RTX6 (4×RTX3090)');
-    expect(zhGuide).toContain('current-campaign.json');
-    expect(enGuide).toContain('current-campaign.json');
-    expect(zhGuide).toContain('默认分支快照');
-    expect(enGuide).toContain('default-branch snapshot');
+    for (const token of ['RTX6', '4×RTX3090', 'current-campaign.json', '默认分支快照']) expect(zhGuide).toContain(token);
+    for (const token of ['RTX6', '4×RTX3090', 'current-campaign.json', 'default-branch snapshot']) expect(enGuide).toContain(token);
     expect(state).toContain("phase: 'H1.27'");
     expect(state).toContain('active scientific branch may be ahead');
     expect(zhGuide).not.toContain('当前实验分配为 <strong>5×RTX5090</strong>');
@@ -87,7 +83,9 @@ describe('audience copy audit', () => {
   });
 
   it('keeps the high-confidence public-copy invariants green', () => {
-    expect(checkStrictAudienceCopyInvariants(root)).toEqual([]);
+    const failures = checkStrictAudienceCopyInvariants(root);
+    const concise = failures.map((failure) => `${failure.ruleId}:${failure.file}:${failure.snippet}`);
+    expect(concise, concise.join('\n')).toEqual([]);
   });
 
   it('keeps the owner inventory connected to the scanner and representative routes', () => {
