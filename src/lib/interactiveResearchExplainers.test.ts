@@ -18,6 +18,7 @@ const css = [
 ].join('\n');
 const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
+const detailCore = read('src/components/research/SeedOpenEvoResearchPageCore.astro');
 const pageRouter = read('src/components/research/SeedOpenEvoResearchPage.astro');
 const seedZh = read('src/pages/research/seed-openevo/seed.astro');
 const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
@@ -129,5 +130,22 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('data-ui-audit-item');
     expect(explainer).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')");
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
+  });
+
+  it('opens as one complete framework figure before tracing local modules', () => {
+    for (const token of [
+      'useState(true)', 'data-overview={overview}', 'irx-paper-figure', 'SYSTEM MAP',
+      'irx-visual-key', 'irx-inspector', 'onOverview={showOverview}',
+    ]) expect(explainer).toContain(token);
+    expect(css).toContain('.irx[data-overview=true] .irx-edge-layer g .irx-edge');
+    expect(css).toContain('.irx-paper-caption');
+    expect(css).not.toContain('.irx-figures{');
+  });
+
+  it('keeps the explainer eyebrow descriptive instead of repeating the page title', () => {
+    expect(explainer).toContain("eyebrow: 'WEBSHOP'");
+    expect(explainer).not.toContain('WEBSHOP · INTERACTIVE ENVIRONMENT');
+    expect(detailCore).toContain("t('购物任务', 'Shopping task')");
+    expect(detailCore).toContain("t('世界状态', 'World state')");
   });
 });

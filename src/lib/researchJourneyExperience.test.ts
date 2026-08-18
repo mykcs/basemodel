@@ -8,6 +8,10 @@ const comparison = read('../components/research/SeedOpenEvoComparisonDiagram.ast
 const gateway = read('../components/research/OpenEvoExperimentGateway.astro');
 const benchmarkZh = read('../pages/research/seed-openevo/benchmarks.astro');
 const benchmarkEn = read('../pages/en/research/seed-openevo/benchmarks.astro');
+const webshopZh = read('../pages/research/seed-openevo/webshop.astro');
+const webshopEn = read('../pages/en/research/seed-openevo/webshop.astro');
+const alfworldZh = read('../pages/research/seed-openevo/alfworld.astro');
+const alfworldEn = read('../pages/en/research/seed-openevo/alfworld.astro');
 const experimentZh = read('../pages/research/seed-openevo/experiment.astro');
 const experimentEn = read('../pages/en/research/seed-openevo/experiment.astro');
 
@@ -49,5 +53,20 @@ describe('three-journey research experience', () => {
     expect(gateway).not.toContain('V0 ↔ O1');
     expect(benchmarkZh).toContain('AgentEnvironmentTrajectory');
     expect(benchmarkEn).toContain('AgentEnvironmentTrajectory');
+  });
+
+  it('keeps dedicated bilingual environment explainers isolated by subject', () => {
+    for (const page of [webshopZh, webshopEn]) {
+      expect(page).toContain('kind="webshop"');
+      expect(page).not.toContain('kind="alfworld"');
+    }
+    for (const page of [alfworldZh, alfworldEn]) {
+      expect(page).toContain('kind="alfworld"');
+      expect(page).not.toContain('kind="webshop"');
+    }
+    for (const page of [benchmarkZh, benchmarkEn]) {
+      expect(page).toContain('/research/seed-openevo/webshop/');
+      expect(page).toContain('/research/seed-openevo/alfworld/');
+    }
   });
 });

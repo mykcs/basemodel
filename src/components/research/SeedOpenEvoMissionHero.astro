@@ -8,7 +8,7 @@ const p = (path: string) => localePath(locale, path);
 const chain = [
   { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定 checkpoint、精度和运行设置。','Pin checkpoint, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
   { eyebrow:t('方法','Methods'), title:'SEED / OpenEvo', body:t('区分参数更新与跨任务演化。','Separate parameter updates from cross-task evolution.'), href:p('/research/seed-openevo/loops/') },
-  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('分别记录交互、评分与失败模式。','Record interactions, scoring, and failure modes separately.'), href:p('/research/seed-openevo/benchmarks/') },
+  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('先对照任务与评分，再进入各自的交互讲解。','Compare tasks and metrics, then open each dedicated interactive explainer.'), href:p('/research/seed-openevo/benchmarks/') },
   { eyebrow:t('实验','Experiment'), title:'openevo-experiment', body:t('当前 WebShop 正式实验 source of truth。','Current source of truth for formal WebShop experiments.'), href:p('/research/seed-openevo/results/') },
 ] as const;
 ---

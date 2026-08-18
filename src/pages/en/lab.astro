@@ -2,6 +2,7 @@
 import AppLayout from '../../layouts/AppLayout.astro';
 import { localePath } from '../../i18n';
 import InteractiveResearchExplainer from '../../components/research/InteractiveResearchExplainer.tsx';
+import ExplainerScrollLink from '../../components/research/ExplainerScrollLink.astro';
 const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
 const auditPrompt = `Perform a strict read-only beginner audit of the Linux / GPU server I am authorized to access. The goal is not to change the machine. Answer: what machine did I receive, what permissions do I have, which resources are shared, and where can I safely place experiment state?
@@ -39,7 +40,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <p class="lede">This is a public-safe snapshot for a first-time server user. SSH lands in a <strong>development container</strong> that can see 160 CPU threads, about 1 TiB of RAM, and eight RTX 5090 GPUs. But “visible” does not mean “exclusive” or “allocated to me.” The machine is very likely shared, while formal GPU allocation and personal storage quota remain policy questions.</p>
     </header>
 
-    <section class="lab-section" aria-labelledby="current-server-title">
+    <section class="lab-section" aria-labelledby="current-server-title" data-explainer-step="0">
       <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">At a glance</h2></header>
       <dl class="lab-ledger lab-ledger--overview" data-ui-audit="contrast layout">
         <div data-ui-audit-item><dt>System</dt><dd>Ubuntu 22.04 · Linux 5.15 · x86_64</dd></div>
@@ -62,9 +63,13 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       </div>
     </section>
 
-    <InteractiveResearchExplainer locale="en" kind="server" client:visible />
+    <div class="irx-split">
+      <div class="irx-split__rail">
+        <InteractiveResearchExplainer locale="en" kind="server" client:visible />
+      </div>
+      <div class="irx-split__flow">
 
-    <section class="lab-section" aria-labelledby="shared-title">
+    <section class="lab-section" aria-labelledby="shared-title" data-explainer-step="5">
       <header class="lab-section__heading"><span>OWNED vs VISIBLE</span><h2 id="shared-title">What can I see, and what is actually mine?</h2></header>
       <p>This is the easiest boundary for a beginner to miss. Live evidence can prove that a resource is <strong>visible</strong> or that a capability <strong>works</strong>; it does not automatically prove exclusive ownership, administrative authorization, or a fixed personal quota.</p>
       <div class="lab-table-wrap" data-ui-audit="contrast layout">
@@ -82,7 +87,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       </div>
     </section>
 
-    <section class="lab-section" aria-labelledby="storage-title">
+    <section class="lab-section" aria-labelledby="storage-title" data-explainer-step="4">
       <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">Why three 436 GiB views do not add up</h2></header>
       <p><code>/</code>, <code>/root</code>, and <code>/share</code> look like three entry points inside the container, but the audit shows they ultimately share the same visible backing filesystem of about 436 GiB. They are <strong>three views, not three independent disks</strong>.</p>
       <figure class="lab-storage-map" data-ui-audit="contrast layout">
@@ -97,7 +102,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <p class="lab-note">Part of the ordinary home/workspace currently lives on container overlay, so rebuild persistence is unknown; the persistent workspace also contains mixed ownership. Before long experiments, confirm the canonical persistent workspace, backup/cleanup policy, and quota/fair-use rules.</p>
     </section>
 
-    <section class="lab-section" aria-labelledby="interactive-env-title">
+    <section class="lab-section" aria-labelledby="interactive-env-title" data-explainer-step="1">
       <header class="lab-section__heading"><span>INTERACTIVE ENVIRONMENT</span><h2 id="interactive-env-title">Interactive development environment</h2></header>
       <p>The interactive command-line environment was verified on <time datetime="2026-08-16">2026-08-16</time>: human SSH sessions enter Fish 4.8.1 while the underlying login shell remains Bash. This provides completion, syntax highlighting, and searchable history while non-interactive SSH, file transfer, and Agent automation keep stable Bash semantics.</p>
       <div class="lab-shell-paths" data-ui-audit="contrast layout" aria-label="Separate shell paths for interactive work and automation">
@@ -125,7 +130,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <p class="lab-note">CUDA 13.3 in <code>nvidia-smi</code> is driver compatibility. It does not mean the system CUDA Toolkit is installed, and it does not identify the PyTorch CUDA version inside an experiment image.</p>
     </section>
 
-    <section class="lab-section" aria-labelledby="first-login-title">
+    <section class="lab-section" aria-labelledby="first-login-title" data-explainer-step="1">
       <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">Five things to check on your first login</h2></header>
       <ol class="lab-first-login" data-ui-audit="contrast layout">
         <li data-ui-audit-item><span>01</span><strong>Who am I, and where am I?</strong><p><code>id</code> + <code>pwd</code>. Confirm identity, working directory, and whether you are inside a container.</p></li>
@@ -137,7 +142,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <aside class="lab-warning"><strong>Still requires administrator confirmation:</strong> formal allocation/scheduling of the eight GPUs, personal quota, backup/snapshot/retention policy, canonical workspace, approved long-job method, and the physical-host root boundary.</aside>
     </section>
 
-    <section class="lab-section" aria-labelledby="agent-audit-title">
+    <section class="lab-section" aria-labelledby="agent-audit-title" data-explainer-step="1">
       <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">Let an Agent inspect an unfamiliar server</h2></header>
       <p>These facts should not be hand-entered from memory. A more reproducible flow is to let an SSH-capable Agent run a <strong>read-only audit</strong>, force it to separate live evidence / documentation / unknowns, redact sensitive details, and return a facts package the website can consume.</p>
       <ol class="lab-audit-flow" data-ui-audit="contrast layout" aria-label="Server audit to website workflow">
@@ -154,7 +159,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       </details>
     </section>
 
-    <section class="lab-section" aria-labelledby="history-server-title">
+    <section class="lab-section" aria-labelledby="history-server-title" data-explainer-step="3">
       <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">Current and historical experiment hardware</h2></header>
       <p>This page first answers “what is this server?” Experiment allocation is a separate claim: eight RTX 5090 GPUs are visible live, but the formal GPU allocation policy could not be safely verified in this audit. A prior experiment record used a five-GPU allocation; RTX6 with four RTX 3090 GPUs is the pre-migration historical platform.</p>
       <ol class="lab-lineage" data-ui-audit="contrast layout">
@@ -168,6 +173,9 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">Where to go next</h2></header>
       <nav class="lab-route-list" aria-label="Experiment pages"><a href={localePath('en','/guide/openevo-webshop-alfworld/')}><span>01</span><strong>Reproduction guide</strong><small>From environment checks to the WebShop / ALFWorld run contract</small></a><a href={localePath('en','/research/seed-openevo/experiment/')}><span>02</span><strong>Experiment entry</strong><small>OpenEvo × WebShop data flow and evolution boundary</small></a><a href={localePath('en','/research/seed-openevo/results/')}><span>03</span><strong>Experiment results</strong><small>Inspect real scores, failures, evidence, and next decisions</small></a></nav>
     </section>
+      </div>
+    </div>
+    <ExplainerScrollLink />
   </div>
 </AppLayout>
 <style>

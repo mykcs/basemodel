@@ -13,7 +13,9 @@ const pages = [
   { label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
   { label: 'SEED', href: p('/research/seed-openevo/seed/') },
   { label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
-  { label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
+  { label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
+  { label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
+  { label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
   { label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
 ];
@@ -21,8 +23,8 @@ const objects = [
   { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验模型、revision、精度与运行设置。','Experiment model, revision, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
   { index:'02', title:'SEED', body:t('hindsight skill、OPD、GRPO 与参数更新。','Hindsight skills, OPD, GRPO, and parameter updates.'), href:p('/research/seed-openevo/seed/') },
   { index:'03', title:'OpenEvo', body:t('任务封存、artifact / adapter 与 successor revision。','Task sealing, artifacts/adapters, and successor revisions.'), href:p('/research/seed-openevo/openevo/') },
-  { index:'04', title:'ALFWorld', body:t('文本化具身任务与任务家族成功率。','Text-based embodied tasks and per-family success rates.'), href:p('/research/seed-openevo/benchmarks/') },
-  { index:'05', title:'WebShop', body:t('网页购物任务、normalized score 与 exact success。','Web-shopping tasks, normalized score, and exact success.'), href:p('/research/seed-openevo/benchmarks/') },
+  { index:'04', title:'ALFWorld', body:t('文本化具身任务、世界状态与任务家族成功率。','Text-based embodied tasks, world state, and per-family success rates.'), href:p('/research/seed-openevo/alfworld/') },
+  { index:'05', title:'WebShop', body:t('网页购物交互、normalized score 与 exact success。','Web-shopping interaction, normalized score, and exact success.'), href:p('/research/seed-openevo/webshop/') },
 ];
 ---
 <div class="mission-page plain-mission-hub">

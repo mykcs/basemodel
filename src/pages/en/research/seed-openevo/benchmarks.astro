@@ -2,10 +2,19 @@
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import AgentEnvironmentTrajectory from '../../../../components/research/AgentEnvironmentTrajectory.astro';
+import { localePath } from '../../../../i18n';
 const locale = 'en' as const;
 ---
 <AppLayout title="ALFWorld and WebShop experiment protocol" description="Explain both agent benchmarks, action spaces, success criteria, normalized task scores, macro averages, failure modes, and controlled comparison." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="benchmarks">
+    <nav class="benchmark-route-links" aria-label="Dedicated environment explainers">
+      <a href={localePath(locale, '/research/seed-openevo/webshop/')}><strong>WebShop</strong><span>Shopping interaction and scoring →</span></a>
+      <a href={localePath(locale, '/research/seed-openevo/alfworld/')}><strong>ALFWorld</strong><span>Object state and action preconditions →</span></a>
+    </nav>
     <AgentEnvironmentTrajectory locale={locale} context="benchmark" />
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style>
+  .benchmark-route-links{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem}.benchmark-route-links a{padding:.85rem 1rem;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none}.benchmark-route-links strong,.benchmark-route-links span{display:block}.benchmark-route-links span{margin-top:.28rem;color:var(--muted);font-size:.72rem}.benchmark-route-links a:hover,.benchmark-route-links a:focus-visible{border-color:var(--accent-deep);background:color-mix(in srgb,var(--accent) 5%,var(--surface))}@media(max-width:640px){.benchmark-route-links{grid-template-columns:1fr}}
+</style>

@@ -4,6 +4,7 @@ import {
   useId,
   useLayoutEffect,
   useState,
+  type CSSProperties,
   type ReactNode,
   type RefObject,
 } from 'react';
@@ -31,6 +32,8 @@ export interface EdgeSpec {
   dashed?: boolean;
   label?: string;
   active?: boolean;
+  /** 'strong' renders a thicker stroke, encoding a heavier signal/weight. */
+  weight?: 'strong';
 }
 
 interface MeasuredEdge extends EdgeSpec {
@@ -62,25 +65,33 @@ export function StepControls({
   step,
   maxStep,
   steps,
+  overview,
   playing,
   reducedMotion,
   onStep,
   onPlay,
+  onOverview,
 }: {
   locale: Locale;
   step: number;
   maxStep: number;
   steps: StepMeta[];
+  overview: boolean;
   playing: boolean;
   reducedMotion: boolean;
   onStep: (step: number) => void;
   onPlay: () => void;
+  onOverview: () => void;
 }) {
   const zh = locale === 'zh';
+  const activeLabel = overview ? (zh ? '系统总览' : 'System overview') : steps[step]?.label;
+  const activeNarration = overview
+    ? (zh ? '先看完整拓扑、模块分组与回环；播放后再沿数据流逐步聚焦。' : 'Read the complete topology, module groups, and loops first; playback then follows the data flow step by step.')
+    : steps[step]?.narration;
   return (
-    <div className="irx-controls" aria-label={zh ? '交互步骤控制' : 'Explainer step controls'}>
+    <div className="irx-controls" data-overview={overview} aria-label={zh ? '交互步骤控制' : 'Explainer step controls'}>
       <div className="irx-transport">
-        <button type="button" onClick={() => onStep(step - 1)} disabled={step === 0} aria-label={zh ? '上一步' : 'Previous step'}>
+        <button type="button" onClick={() => onStep(step - 1)} disabled={overview || step === 0} aria-label={zh ? '上一步' : 'Previous step'}>
           <span aria-hidden="true">←</span><span>{zh ? '上一步' : 'Previous'}</span>
         </button>
         <button
@@ -91,23 +102,35 @@ export function StepControls({
           aria-pressed={playing}
           title={reducedMotion ? (zh ? '系统已启用减少动态效果' : 'Reduced motion is enabled') : undefined}
         >
-          <span aria-hidden="true">{playing ? 'Ⅱ' : '▶'}</span><span>{reducedMotion ? (zh ? '减少动态' : 'Reduced motion') : playing ? (zh ? '暂停' : 'Pause') : (zh ? '播放' : 'Play')}</span>
+          <span aria-hidden="true">{playing ? 'Ⅱ' : '▶'}</span><span>{reducedMotion ? (zh ? '减少动态' : 'Reduced motion') : playing ? (zh ? '暂停' : 'Pause') : overview ? (zh ? '开始追踪' : 'Start trace') : (zh ? '播放' : 'Play')}</span>
         </button>
-        <button type="button" onClick={() => onStep(step + 1)} disabled={step === maxStep} aria-label={zh ? '下一步' : 'Next step'}>
+        <button type="button" onClick={() => onStep(overview ? 0 : step + 1)} disabled={!overview && step === maxStep} aria-label={zh ? '下一步' : 'Next step'}>
           <span>{zh ? '下一步' : 'Next'}</span><span aria-hidden="true">→</span>
         </button>
-        <button type="button" className="irx-reset" onClick={() => onStep(0)} disabled={step === 0}>{zh ? '重置' : 'Reset'}</button>
+        <button type="button" className="irx-reset" onClick={onOverview} disabled={overview}>{zh ? '总览图' : 'System map'}</button>
+      </div>
+      <div
+        className="irx-progress"
+        role="progressbar"
+        aria-label={zh ? '播放进度' : 'Playback progress'}
+        aria-valuemin={0}
+        aria-valuemax={maxStep + 1}
+        aria-valuenow={overview ? 0 : step + 1}
+        aria-valuetext={activeLabel}
+      >
+        <i style={{ width: overview ? '0%' : `${((step + 1) / (maxStep + 1)) * 100}%` }} />
+        <span>{overview ? 'MAP' : `${String(step + 1).padStart(2, '0')} / ${String(maxStep + 1).padStart(2, '0')}`}</span>
       </div>
       <ol className="irx-stepper" aria-label={zh ? '步骤' : 'Steps'}>
         {steps.map((item, index) => (
-          <li key={`${item.label}-${index}`} data-active={index === step} data-complete={index < step}>
-            <button type="button" aria-current={index === step ? 'step' : undefined} aria-label={`${index + 1}. ${item.label}`} onClick={() => onStep(index)}>
+          <li key={`${item.label}-${index}`} data-active={!overview && index === step} data-complete={!overview && index < step}>
+            <button type="button" aria-current={!overview && index === step ? 'step' : undefined} aria-label={`${index + 1}. ${item.label}`} onClick={() => onStep(index)}>
               <span>{String(index + 1).padStart(2, '0')}</span><small>{item.label}</small>
             </button>
           </li>
         ))}
       </ol>
-      <p className="irx-live" aria-live="polite"><b>{steps[step]?.label}</b><span aria-hidden="true">/</span>{steps[step]?.narration}</p>
+      <p className="irx-live" aria-live="polite"><b>{activeLabel}</b><span aria-hidden="true">/</span>{activeNarration}</p>
     </div>
   );
 }
@@ -133,6 +156,8 @@ export function FlowNode({
   role,
   title,
   detail,
+  more,
+  moreLabel,
   tone,
   active = false,
   complete = false,
@@ -144,6 +169,8 @@ export function FlowNode({
   role: string;
   title: string;
   detail?: string;
+  more?: string;
+  moreLabel?: string;
   tone: Tone;
   active?: boolean;
   complete?: boolean;
@@ -163,6 +190,12 @@ export function FlowNode({
       <span className="irx-node-role">{role}</span>
       <strong>{title}</strong>
       {detail && <small>{detail}</small>}
+      {more && (
+        <details className="irx-node-more">
+          <summary>{moreLabel ?? 'Details'}</summary>
+          <p>{more}</p>
+        </details>
+      )}
       {children}
     </Tag>
   );
@@ -317,7 +350,7 @@ export function ConnectorLayer({
         ))}
       </defs>
       {geometry.edges.map((edge) => (
-        <g key={edge.id} data-active={edge.active ?? true}>
+        <g key={edge.id} data-active={edge.active ?? true} data-weight={edge.weight}>
           <path
             className={`irx-edge irx-edge-${edge.tone}`}
             d={edge.d}
@@ -337,5 +370,147 @@ export function ConnectorLayer({
         </g>
       ))}
     </svg>
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * Visual atoms — pre-attentive encodings shared by all six explainers.
+ * Shape encodes data type, so the diagram reads before any text does:
+ * chips = tokens/actions, bars = probabilities, grids = parameter matrices,
+ * stacks = memory/sealed evidence, gauges = 0-1 scores.
+ * All atoms stay legible with zero animation (reduced-motion safe).
+ * ------------------------------------------------------------------------- */
+
+export function ChipSequence({
+  tokens,
+  tone = 'neutral',
+  label,
+  className = '',
+}: {
+  tokens: string[];
+  tone?: Tone;
+  label: string;
+  className?: string;
+}) {
+  return (
+    <span className={`irx-chips ${className}`} role="group" aria-label={label}>
+      {tokens.map((token, index) => (
+        <span key={`${token}-${index}`} className={`irx-chip irx-chip-${tone}`}>{token}</span>
+      ))}
+    </span>
+  );
+}
+
+export function ProbBar({
+  label,
+  value,
+  display,
+  tone,
+  delta,
+  className = '',
+}: {
+  label: string;
+  value: number;
+  display: string;
+  tone: Tone;
+  /** Delta annotation rendered as a highlighted bracket, e.g. "Δ +0.34 → OPD". */
+  delta?: string;
+  className?: string;
+}) {
+  return (
+    <div className={`irx-probbar ${className}`}>
+      <label>{label}</label>
+      <div className="irx-probbar-track" role="img" aria-label={`${label} = ${display}`}>
+        <i className={`irx-probbar-fill irx-probbar-${tone}`} style={{ width: `${clamp(value, 0, 1) * 100}%` }} />
+      </div>
+      <b>{display}</b>
+      {delta && <em className="irx-probbar-delta">{delta}</em>}
+    </div>
+  );
+}
+
+export function ParamGrid({
+  label,
+  cells,
+  changed = [],
+  tone = 'state',
+  className = '',
+}: {
+  label: string;
+  /** 0..1 cell intensities; brightness encodes magnitude. */
+  cells: number[];
+  /** Indexes whose value changed this step; they flash to the new intensity. */
+  changed?: number[];
+  tone?: Tone;
+  className?: string;
+}) {
+  return (
+    <span className={`irx-pgrid irx-pgrid-${tone} ${className}`} role="img" aria-label={label}>
+      {cells.map((value, index) => (
+        <i
+          key={index}
+          data-changed={changed.includes(index)}
+          style={{ '--cell': value } as CSSProperties}
+        />
+      ))}
+    </span>
+  );
+}
+
+export function DocStack({
+  label,
+  items,
+  strapped = false,
+  tone = 'experience',
+  className = '',
+}: {
+  label: string;
+  items: string[];
+  /** When true the stack is drawn with a band around it: a sealed package. */
+  strapped?: boolean;
+  tone?: Tone;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`irx-docstack irx-docstack-${tone} ${className}`}
+      data-strapped={strapped}
+      role="group"
+      aria-label={label}
+    >
+      {items.map((item, index) => (
+        <span key={item} className="irx-doc" style={{ '--i': index } as CSSProperties}>{item}</span>
+      ))}
+      <i className="irx-strap" aria-hidden="true" />
+    </span>
+  );
+}
+
+export function Gauge({
+  label,
+  value,
+  display,
+  tone = 'persist',
+  demo,
+  className = '',
+}: {
+  label: string;
+  /** 0..1 fill of the gauge track. */
+  value: number;
+  display: string;
+  tone?: Tone;
+  /** Marks illustrative values so a demo score can never masquerade as a run result. */
+  demo?: string;
+  className?: string;
+}) {
+  return (
+    <div className={`irx-gauge ${className}`} role="group" aria-label={`${label}: ${display}`}>
+      <span className="irx-gauge-label">{label}</span>
+      <span className="irx-gauge-track" aria-hidden="true">
+        <i className={`irx-gauge-fill irx-gauge-${tone}`} style={{ width: `${clamp(value, 0, 1) * 100}%` }} />
+      </span>
+      <b>{display}</b>
+      {demo && <em className="irx-demo-tag">{demo}</em>}
+    </div>
   );
 }
