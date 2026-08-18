@@ -18,7 +18,7 @@ const taskTypes = [
   <header class="diagram-head">
     <span>BENCHMARK · WORLD MODEL</span>
     <h2 id="benchmark-architecture-title">{t('WebShop 与 ALFWorld 环境模型','WebShop and ALFWorld environment models')}</h2>
-    <p>{t('对初学者最重要的不是先记数字，而是先理解一条任务如何变成 observation、action、状态变化和 reward。下面把原始数据、环境包装、Agent 循环和我们当前冻结的实验合同分开画。','For a beginner, the first goal is not memorizing numbers but understanding how a task becomes observations, actions, state transitions, and reward. The diagrams separate the original data, environment wrapper, agent loop, and our currently frozen experiment contract.')}</p>
+    <p>{t('对初学者最重要的不是先记数字，而是先理解一条任务如何变成 observation、action、状态变化和 reward。下面把原始数据、环境包装、Agent 循环和带日期的实验合同示例分开画。','For a beginner, the first goal is not memorizing numbers but understanding how a task becomes observations, actions, state transitions, and reward. The diagrams separate the original data, environment wrapper, agent loop, and dated experiment-contract examples.')}</p>
   </header>
 
   <div class="principle-strip">
@@ -59,11 +59,11 @@ const taskTypes = [
     <div class="split-model">
       <article><small>SEED · EVAL</small><strong>goal 0–499</strong><span>{t('评估池','evaluation pool')}</span></article>
       <article><small>SEED · TRAIN</small><strong>goal 500–end</strong><span>{t('训练池','training pool')}</span></article>
-      <article class="active"><small>OpenEvo · Phase G</small><strong>6680 · 2590</strong><span>{t('已消费 promotion-dev','consumed promotion-dev')}</span></article>
-      <article class="next"><small>OpenEvo · Phase H0</small><strong>new train-only tasks</strong><span>{t('搜索自然成功轨迹','natural-success search')}</span></article>
+      <article class="active"><small>OpenEvo · historical Phase G</small><strong>6680 · 2590</strong><span>{t('历史 promotion-dev 消耗','historical promotion-dev consumption')}</span></article>
+      <article class="next"><small>OpenEvo · historical H0</small><strong>new train-only tasks</strong><span>{t('历史自然成功轨迹搜索','historical natural-success search')}</span></article>
     </div>
 
-    <details class="technical-details"><summary>{t('技术细节：为什么同叫 WebShop，也可能不是同一个实验？','Technical detail: why two “WebShop” experiments may still differ')}</summary><p>{t('商品快照、Lucene index、goal split、environment seed、generation seed、prompt、parser、step budget 与 evaluator 都会改变实际任务合同。因此当前实验把这些身份写入 manifest，而不是只写 benchmark 名称。','Product snapshot, Lucene index, goal split, environment seed, generation seed, prompt, parser, step budget, and evaluator all affect the actual contract. The current experiment therefore records these identities in manifests instead of relying on the benchmark name alone.')}</p></details>
+    <details class="technical-details"><summary>{t('技术细节：为什么同叫 WebShop，也可能不是同一个实验？','Technical detail: why two “WebShop” experiments may still differ')}</summary><p>{t('商品快照、Lucene index、goal split、environment seed、generation seed、prompt、parser、step budget 与 evaluator 都会改变实际任务合同。因此实验 manifest 会记录这些身份，而不是只写 benchmark 名称；实时 campaign 还要回到实际实验 branch 解析。','Product snapshot, Lucene index, goal split, environment seed, generation seed, prompt, parser, step budget, and evaluator all affect the actual contract. Experiment manifests therefore record these identities instead of relying on the benchmark name alone; resolve the live campaign from the experiment branch actually in use.')}</p></details>
   </article>
 
   <article class="benchmark-card alfworld-card">
