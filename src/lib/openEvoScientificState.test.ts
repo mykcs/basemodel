@@ -32,7 +32,7 @@ describe('OpenEvo scientific-state provenance', () => {
   });
 
   it('requires branch-aware campaign and reconciliation routing for live claims', () => {
-    expect(state).toContain('actual scientific branch may be ahead');
+    expect(state).toContain('active scientific branch may be ahead');
     expect(state).toContain('current-campaign.json');
     expect(state).toContain('reconciliation/result');
     expect(joined).toContain('current-campaign');
