@@ -40,6 +40,7 @@ assert('HARDEN-PAPER-004', paperExplorer.includes("config_status === 'available'
 
 const home = read('src/pages/_bodies/home-v2.astro');
 const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
+const scienceState = read('src/lib/openEvoScientificState.ts');
 assert(
   'HARDEN-HOME-001',
   home.includes('SeedOpenEvoMissionHero')
@@ -47,7 +48,7 @@ assert(
     && home.includes("'/research/seed-openevo/'")
     && home.includes("'/guide/openevo-webshop-alfworld/'")
     && home.includes("'/research/seed-openevo/results/'"),
-  'home starts from the explicit SEED × OpenEvo experiment and offers overview / current-results / reproduction entry paths',
+  'home starts from the explicit SEED × OpenEvo experiment and offers overview / experiment-state / reproduction entry paths',
 );
 assert(
   'HARDEN-HOME-005',
@@ -56,9 +57,14 @@ assert(
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")
     && missionHero.includes("t('实验结果','Experiment results')")
-    && missionHero.includes('5× RTX 5090')
-    && missionHero.includes('Phase H0'),
-  'the first screen names the research subject, model, both methods, both environments, current results, and current experiment status without promoting workflow prose into headings',
+    && missionHero.includes('openEvoScientificState.defaultBranchSnapshot.phase')
+    && missionHero.includes('actual branch → campaign → reconciliation')
+    && missionHero.includes('preregistration + authorized UUIDs')
+    && scienceState.includes("phase: 'H1.27'")
+    && scienceState.includes("checkedAt: '2026-08-18'")
+    && !missionHero.includes('当前实验分配')
+    && !missionHero.includes('Current allocation'),
+  'the first screen names the research subject and routes moving scientific state through dated provenance instead of freezing one phase/allocation',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
