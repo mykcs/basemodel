@@ -23,22 +23,28 @@ const generalRoutes = [
 ] as const;
 
 const explainerRoutes = [
-  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'] },
-  { path: '/research/seed-openevo/seed/', kinds: ['seed'] },
-  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'] },
-  { path: '/research/seed-openevo/loops/', kinds: ['compare'] },
-  { path: '/lab/', kinds: ['server'] },
-  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'] },
-  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'] },
-  { path: '/en/research/seed-openevo/seed/', kinds: ['seed'] },
-  { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'] },
-  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'] },
-  { path: '/en/lab/', kinds: ['server'] },
-  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'] },
+  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
+  { path: '/lab/', kinds: ['server'], requiresMainStage: false },
+  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
+  { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
+  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
 ] as const;
 
 const stepperRoutes = [
   { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'] },
+  { path: '/research/seed-openevo/webshop/', kinds: ['webshop'] },
+  { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'] },
   { path: '/research/seed-openevo/seed/', kinds: ['seed'] },
   { path: '/research/seed-openevo/openevo/', kinds: ['openevo'] },
   { path: '/research/seed-openevo/loops/', kinds: ['compare'] },
@@ -91,8 +97,9 @@ async function audit1280Page(page: Page) {
   });
 }
 
-async function auditConnectorGeometry(root: Locator, viewportWidth: number) {
-  return root.evaluate((element, width) => {
+async function auditConnectorGeometry(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
+  return root.evaluate((element, context) => {
+    const { width, requiresMainStage } = context;
     const issues: string[] = [];
     const root = element as HTMLElement;
     const rootRect = root.getBoundingClientRect();
@@ -117,6 +124,9 @@ async function auditConnectorGeometry(root: Locator, viewportWidth: number) {
 
     if (rootRect.left < -2 || rootRect.right > width + 2) {
       issues.push(`explainer escapes 1280 viewport: left=${rootRect.left.toFixed(1)} right=${rootRect.right.toFixed(1)}`);
+    }
+    if (requiresMainStage && width >= 1200 && rootRect.width < Math.min(920, width * 0.7)) {
+      issues.push(`explainer remains a narrow desktop rail: width=${rootRect.width.toFixed(1)} viewport=${width}`);
     }
     if (root.scrollWidth > root.clientWidth + 2) {
       issues.push(`explainer horizontal overflow: ${root.scrollWidth} > ${root.clientWidth}`);
@@ -182,7 +192,7 @@ async function auditConnectorGeometry(root: Locator, viewportWidth: number) {
     });
 
     return issues;
-  }, viewportWidth);
+  }, { width: viewportWidth, requiresMainStage });
 }
 
 type StepperBox = { x: number; y: number; width: number; height: number; buttonWidth: number };
@@ -224,11 +234,11 @@ function assertStepperStable(baseline: StepperBox[], current: StepperBox[], labe
   });
 }
 
-async function walkGeometry(root: Locator, viewportWidth: number) {
+async function walkGeometry(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
   await ensureHydrated(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
   for (;;) {
-    const issues = await auditConnectorGeometry(root, viewportWidth);
+    const issues = await auditConnectorGeometry(root, viewportWidth, requiresMainStage);
     expect(issues, issues.join('\n')).toEqual([]);
     if (await next.isDisabled()) break;
     await next.click();
@@ -272,7 +282,7 @@ for (const theme of ['light', 'dark'] as const) {
         for (const kind of route.kinds) {
           const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
           await expect(root).toBeVisible();
-          await walkGeometry(root, 1280);
+          await walkGeometry(root, 1280, route.requiresMainStage);
         }
       });
     }

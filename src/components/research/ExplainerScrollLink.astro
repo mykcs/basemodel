@@ -1,0 +1,64 @@
+---
+// Scroll-linked explainer highlight: article sections carry
+// `data-explainer-step="N"`, this observer picks the dominant visible section
+// and dispatches `irx:scroll-step` so the full-width explainer preserves the
+// article's corresponding step when a reader returns to the stage.
+// Only active on wide screens; the mobile reading flow is never hijacked.
+---
+<script>
+  const STEP_ATTR = 'data-explainer-step';
+  const EVENT_NAME = 'irx:scroll-step';
+  const media = window.matchMedia('(min-width: 1200px)');
+  const ratios = new Map<Element, number>();
+  let observer: IntersectionObserver | null = null;
+  let frame = 0;
+
+  const emit = () => {
+    frame = 0;
+    let best: Element | undefined;
+    let bestRatio = 0;
+    ratios.forEach((ratio, el) => {
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        best = el;
+      }
+    });
+    if (best === undefined || bestRatio <= 0) return;
+    const step = Number(best.getAttribute(STEP_ATTR));
+    if (Number.isNaN(step)) return;
+    window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: { step } }));
+  };
+
+  const start = () => {
+    if (observer) return;
+    // Queried lazily: this inline script may run before the article body is
+    // parsed, so the target list must be read at start time, not at parse time.
+    const targets = Array.from(document.querySelectorAll(`[${STEP_ATTR}]`));
+    if (targets.length === 0) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        ratios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
+      }
+      if (!frame) frame = window.requestAnimationFrame(emit);
+    }, { rootMargin: '-18% 0px -42% 0px', threshold: [0, 0.15, 0.35, 0.6, 1] });
+    observer = io;
+    targets.forEach((target) => io.observe(target));
+  };
+
+  const stop = () => {
+    observer?.disconnect();
+    observer = null;
+    ratios.clear();
+  };
+
+  const sync = () => (media.matches ? start() : stop());
+  const boot = () => {
+    sync();
+    media.addEventListener('change', sync);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+</script>

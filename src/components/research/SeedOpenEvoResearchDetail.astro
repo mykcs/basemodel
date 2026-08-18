@@ -1,8 +1,9 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
+import ExplainerScrollLink from './ExplainerScrollLink.astro';
 
-type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'loops' | 'results';
+type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
 interface Props { locale: Locale; page: DetailPage }
 const { locale, page } = Astro.props;
 const zh = locale === 'zh';
@@ -15,7 +16,9 @@ const pages = [
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
   { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
-  { id: 'benchmarks', label: 'ALFWorld / WebShop', href: p('/research/seed-openevo/benchmarks/') },
+  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
+  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
+  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
   { id: 'results', label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
 ] as const;
@@ -40,6 +43,16 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
     eyebrow: t('实验环境', 'Experiment environments'),
     title: 'ALFWorld 与 WebShop',
     lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
+  },
+  webshop: {
+    eyebrow: t('实验环境', 'Experiment environment'),
+    title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
+    lede: t('沿着 goal、网页 observation、可执行 action、页面状态变化与终局评分，理解一次购物 Agent 任务。', 'Follow goals, page observations, executable actions, page-state transitions, and terminal scoring through one shopping-agent task.'),
+  },
+  alfworld: {
+    eyebrow: t('实验环境', 'Experiment environment'),
+    title: t('ALFWorld 世界状态与任务成功', 'ALFWorld world state and task success'),
+    lede: t('沿着物体位置、容器状态、动作前置条件与终局目标，理解文本化具身任务的长期规划。', 'Follow object locations, receptacle state, action preconditions, and terminal goals through a text-based embodied task.'),
   },
   loops: {
     eyebrow: t('比较', 'Comparison'),
@@ -66,6 +79,7 @@ const current = copy[page];
   </nav>
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
   <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>
+  {hasExplainer && <ExplainerScrollLink />}
 </div>
 
 <style>
@@ -81,9 +95,11 @@ const current = copy[page];
   .plain-detail__tabs a[aria-current='page']{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}
   .plain-detail__tabs a[aria-current='page']:after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;background:var(--accent-deep)}
   .plain-detail__interactive{margin:0 0 2.6rem}
-  .plain-detail__interactive :global(.irx){width:100%;margin:0;padding-top:1.7rem}
+  .plain-detail__interactive :global(.irx){width:100%;margin:0}
   .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
   .plain-detail-core :global(.mission-page){width:100%;margin:0}
   .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
+  .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
+  .plain-detail-core{width:min(780px,100%);margin-inline:auto}
   @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__tabs{margin-bottom:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}}
 </style>

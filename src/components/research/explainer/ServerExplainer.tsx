@@ -27,6 +27,12 @@ export function ServerExplainer({ locale, step, onStep }: { locale: Locale; step
     <div className="irx-server-layout" data-ui-audit="contrast layout">
       <figure className="irx-host-boundary" ref={sceneRef}>
         <figcaption><span>{zh ? '物理 / 云宿主边界' : 'Physical / cloud host boundary'}</span><strong>{zh ? '共享 GPU 服务器' : 'Shared GPU server'}</strong></figcaption>
+        <div className="irx-gpu-row" role="group" aria-label={zh ? '8 块 GPU；高亮两块为实验容器的显式分配示例' : '8 GPUs; two highlighted as an example explicit assignment'}>
+          {Array.from({ length: 8 }, (_, index) => (
+            <span key={index} className="irx-gpu-chip" data-assigned={step >= 3 && index < 2}>GPU{index}</span>
+          ))}
+          <small>{zh ? '高亮 = 显式分配示例（示意）' : 'highlighted = example explicit assignment (schematic)'}</small>
+        </div>
         {nodeButton(0, 'srv-daemon', 'HOST SERVICE', 'Docker daemon', 'Engine 29.1.3', 'srv-daemon', 'neutral')}
         {nodeButton(1, 'srv-dev', 'MY CONTROL PLANE', zh ? '当前开发容器' : 'current development container', 'root UID 0 · Docker CLI', 'srv-dev', 'state')}
         {nodeButton(2, 'srv-socket', 'CONTROL CHANNEL', '/var/run/docker.sock', 'Docker API → host daemon', 'srv-socket', 'state')}

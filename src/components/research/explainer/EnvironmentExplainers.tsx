@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { ConnectorLayer, type EdgeSpec, type Locale } from './ResearchExplainerPrimitives';
+import { useLayoutEffect, useRef } from 'react';
+import { ChipSequence, ConnectorLayer, Gauge, type EdgeSpec, type Locale } from './ResearchExplainerPrimitives';
 
 export function WebShopExplainer({ locale, step }: { locale: Locale; step: number }) {
   const zh = locale === 'zh';
@@ -8,6 +8,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       observation: zh ? '任务目标：买一件黑色、M 码、价格低于 $50 的运动衫。' : 'Goal: buy a black, size-M sports sweatshirt under $50.',
       actions: zh ? '环境已就绪；可从搜索开始。' : 'Environment ready; search can begin.',
       selected: '—',
+      selectedTokens: ['—'],
       transition: zh ? '任务载入，网页处于首页。' : 'Task loaded; storefront is at the home page.',
       reward: 'task_score = 0',
     },
@@ -15,6 +16,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       observation: zh ? '首页提供搜索框。Agent 只能基于当前 observation 选择动作。' : 'The home page exposes a search box. The agent chooses from the current observation.',
       actions: 'search[query]',
       selected: 'search["black sports sweatshirt"]',
+      selectedTokens: ['search', '[', '"black sports sweatshirt"', ']'],
       transition: zh ? '环境返回搜索结果页。' : 'The environment returns a results page.',
       reward: 'task_score = 0',
     },
@@ -22,6 +24,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       observation: zh ? '搜索结果里出现 Core Run Hoodie，$39。' : 'Search results include Core Run Hoodie at $39.',
       actions: 'click[product] · search[new query]',
       selected: 'click["Core Run Hoodie"]',
+      selectedTokens: ['click', '[', '"Core Run Hoodie"', ']'],
       transition: zh ? '网页切换到商品详情页。' : 'The page transitions to product detail.',
       reward: 'task_score = 0',
     },
@@ -29,6 +32,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       observation: zh ? '商品页暴露颜色与尺码选项：Black / Gray，S / M / L。' : 'The product page exposes color and size options: Black / Gray, S / M / L.',
       actions: 'click[color] · click[size] · click[buy]',
       selected: 'click["Black"] + click["M"]',
+      selectedTokens: ['click["Black"]', '+', 'click["M"]'],
       transition: zh ? '环境保存当前商品选项。' : 'The environment stores the selected options.',
       reward: 'task_score = 0',
     },
@@ -36,6 +40,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       observation: zh ? '商品、颜色、尺码、价格都满足目标。' : 'Product, color, size, and price now satisfy the goal.',
       actions: 'click[buy]',
       selected: 'click["Buy Now"]',
+      selectedTokens: ['click["Buy Now"]'],
       transition: zh ? '进入终局评测，环境检查任务约束。' : 'Terminal evaluation checks the task constraints.',
       reward: 'DEMO: task_score = 1.0 · won = true',
     },
@@ -63,6 +68,13 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
             <div className="irx-shop-welcome">
               <span>GOAL</span><b>{zh ? '黑色 · M 码 · 运动衫 · ≤ $50' : 'Black · M · sweatshirt · ≤ $50'}</b>
               <p>{zh ? '这里不是问答题。Agent 必须通过一连串页面状态变化完成任务。' : 'This is not a question-answer task. The agent must complete a sequence of page-state transitions.'}</p>
+              <figure className="irx-pool" aria-label={zh ? '原始商品池约 118 万，当前冻结子集 1,000；面积经压缩示意' : 'Original pool is about 1.18M products; the frozen subset is 1,000; areas are compressed for display'}>
+                <span className="irx-pool-all">
+                  <em>≈1.18M<small>{zh ? '原始商品池' : 'original pool'}</small></em>
+                  <i className="irx-pool-frozen"><b>1,000</b><small>{zh ? '冻结子集' : 'frozen subset'}</small></i>
+                </span>
+                <figcaption>{zh ? '数量是真实口径；面积经压缩示意，不成比例。' : 'Counts are real; areas are a compressed schematic, not to scale.'}</figcaption>
+              </figure>
             </div>
           )}
           {step >= 1 && step <= 2 && (
@@ -79,11 +91,22 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
             </div>
           )}
         </section>
+        {step === 4 && (
+          <div className="irx-score-strip" data-ui-audit="contrast layout">
+            <Gauge
+              label="task_score"
+              value={1}
+              display="1.0"
+              tone="persist"
+              demo={zh ? 'DEMO · 教学示意，非实测' : 'DEMO · illustrative, not measured'}
+            />
+          </div>
+        )}
         <aside className="irx-event-tape" aria-label={zh ? 'Agent 与环境事件' : 'Agent and environment events'}>
           <dl>
             <div data-active><dt>OBSERVATION</dt><dd>{current.observation}</dd></div>
             <div><dt>AVAILABLE ACTIONS</dt><dd><code>{current.actions}</code></dd></div>
-            <div><dt>AGENT SELECTED</dt><dd><code>{current.selected}</code></dd></div>
+            <div><dt>AGENT SELECTED</dt><dd><ChipSequence label={current.selected} tone="env" tokens={current.selectedTokens} /></dd></div>
             <div><dt>ENVIRONMENT TRANSITION</dt><dd>{current.transition}</dd></div>
             <div data-reward><dt>REWARD / SCORE</dt><dd><strong>{current.reward}</strong></dd></div>
           </dl>
@@ -94,13 +117,21 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
   );
 }
 
-function Apple({ heated, step }: { heated: boolean; step: number }) {
-  return <span key={step} className="irx-apple" data-heated={heated} aria-label={heated ? 'heated apple' : 'apple'}><i aria-hidden="true"></i><b>APPLE</b>{heated && <small>HEATED</small>}</span>;
+function Lock({ open, label }: { open: boolean; label: string }) {
+  return (
+    <span className="irx-lock" data-open={open} role="img" aria-label={label}>
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path className="irx-lock-shackle" d={open ? 'M5 7V5a3 3 0 0 1 6-.4' : 'M5 7V5a3 3 0 0 1 6 0v2'} />
+        <rect className="irx-lock-body" x="3.4" y="7" width="9.2" height="6.4" rx="1.4" />
+      </svg>
+    </span>
+  );
 }
 
 export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: number }) {
   const zh = locale === 'zh';
   const worldRef = useRef<HTMLDivElement>(null);
+  const appleRef = useRef<HTMLSpanElement>(null);
   const states = [
     { action: '—', apple: 'counter', previous: null, open: false, heated: false, result: zh ? '任务载入。' : 'Task loaded.' },
     { action: 'goto kitchen', apple: 'counter', previous: null, open: false, heated: false, result: zh ? '进入厨房。' : 'Entered the kitchen.' },
@@ -113,6 +144,35 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
     { action: 'put apple on counter', apple: 'counter', previous: 'inventory', open: true, heated: true, result: zh ? '目标状态满足：heated apple 位于 counter。' : 'Goal state satisfied: the heated apple is on the counter.' },
   ] as const;
   const current = states[step];
+
+  // Object constancy: ONE apple chip lives for the whole episode and slides
+  // between zones (counter → inventory → microwave → …) instead of being
+  // re-drawn as separate per-zone cards. Position is measured from live DOM.
+  useLayoutEffect(() => {
+    const canvas = worldRef.current;
+    const appleEl = appleRef.current;
+    if (!canvas || !appleEl) return;
+    const place = () => {
+      const zone = canvas.querySelector<HTMLElement>(`[data-flow-id="${current.apple}"]`);
+      if (!zone) return;
+      const c = canvas.getBoundingClientRect();
+      const z = zone.getBoundingClientRect();
+      appleEl.style.left = `${z.left - c.left + z.width / 2}px`;
+      appleEl.style.top = `${z.top - c.top + z.height / 2 + 12}px`;
+      appleEl.style.visibility = 'visible';
+    };
+    const frame = requestAnimationFrame(place);
+    const observer = new ResizeObserver(place);
+    observer.observe(canvas);
+    canvas.querySelectorAll('[data-flow-id]').forEach((el) => observer.observe(el));
+    window.addEventListener('resize', place);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener('resize', place);
+    };
+  }, [current.apple, current.open, step]);
+
   const movementEdges: EdgeSpec[] = current.previous ? [{
     id: `move-${step}`,
     from: current.previous,
@@ -129,10 +189,19 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
       <section className="irx-world" aria-label={zh ? 'ALFWorld 厨房世界状态' : 'ALFWorld kitchen world state'}>
         <header><span>HOUSEHOLD WORLD STATE</span><strong>{zh ? '任务：加热 apple，并把它放回 counter' : 'Task: heat the apple and place it on the counter'}</strong></header>
         <div className="irx-world-canvas" ref={worldRef}>
-          <div className="irx-zone irx-zone-counter" data-flow-id="counter" data-ui-audit-item><small>COUNTER</small>{current.apple === 'counter' ? <Apple heated={current.heated} step={step} /> : <span className="irx-empty">empty</span>}</div>
-          <div className="irx-zone irx-zone-microwave" data-flow-id="microwave" data-open={current.open} data-ui-audit-item><small>MICROWAVE · {current.open ? 'OPEN' : 'CLOSED'}</small>{current.apple === 'microwave' ? <Apple heated={current.heated} step={step} /> : <span className="irx-empty">empty</span>}</div>
-          <div className="irx-zone irx-zone-fridge" data-ui-audit-item><small>FRIDGE</small><span className="irx-empty">closed</span></div>
-          <div className="irx-zone irx-zone-inventory" data-flow-id="inventory" data-ui-audit-item><small>AGENT INVENTORY</small>{current.apple === 'inventory' ? <Apple heated={current.heated} step={step} /> : <span className="irx-empty">empty</span>}</div>
+          <div className="irx-zone irx-zone-counter" data-flow-id="counter" data-ui-audit-item><small>COUNTER</small></div>
+          <div className="irx-zone irx-zone-microwave" data-flow-id="microwave" data-open={current.open} data-failed={step === 3} data-ui-audit-item>
+            <small>MICROWAVE · {current.open ? 'OPEN' : 'CLOSED'}</small>
+            <Lock open={current.open} label={current.open ? (zh ? 'microwave 已打开' : 'microwave open') : (zh ? 'microwave 上锁关闭' : 'microwave locked closed')} />
+          </div>
+          <div className="irx-zone irx-zone-fridge" data-ui-audit-item>
+            <small>FRIDGE</small>
+            <Lock open={false} label={zh ? 'fridge 关闭' : 'fridge closed'} />
+          </div>
+          <div className="irx-zone irx-zone-inventory" data-flow-id="inventory" data-ui-audit-item><small>AGENT INVENTORY</small></div>
+          <span ref={appleRef} className="irx-apple" data-heated={current.heated} style={{ visibility: 'hidden' }} aria-label={current.heated ? 'heated apple' : 'apple'}>
+            <i aria-hidden="true"></i><b>APPLE</b>{current.heated && <small>HEATED</small>}
+          </span>
           <ConnectorLayer containerRef={worldRef} edges={movementEdges} ariaLabel={zh ? '当前动作导致的物体状态移动' : 'Object-state movement caused by the current action'} />
         </div>
       </section>

@@ -13,6 +13,8 @@ const missionPaths = [
   '/research/seed-openevo/openevo/',
   '/research/seed-openevo/experiment/',
   '/research/seed-openevo/benchmarks/',
+  '/research/seed-openevo/webshop/',
+  '/research/seed-openevo/alfworld/',
   '/research/seed-openevo/loops/',
   '/research/seed-openevo/results/',
 ];

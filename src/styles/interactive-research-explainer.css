@@ -52,3 +52,10 @@
  * right:-8px diamond enlarged the first four items' scrollWidth by 6px even
  * though the relationship was visually correct. */
 .irx-linear-map li:not(:last-child)::after{right:2px;top:50%;width:8px;height:12px;border:0;background:var(--line);clip-path:polygon(0 0,100% 50%,0 100%,26% 50%);transform:translateY(-50%)}
+
+/* Research explainers stay in the full-width reading stage. `irx-split` is a
+ * legacy DOM name used by the lab routes; it now stacks the explainer before
+ * the article instead of turning it into a narrow sticky rail. */
+.irx-split{display:block}
+.irx-split__rail{position:static;max-height:none;overflow:visible}
+.irx-split__rail .irx{width:min(1180px,calc(100% - 2rem));margin:2.2rem auto 3.4rem}

@@ -4,18 +4,22 @@ type Theme = 'light' | 'dark';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
 const routes = [
-  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'] },
-  { path: '/research/seed-openevo/seed/', kinds: ['seed'] },
-  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'] },
-  { path: '/research/seed-openevo/loops/', kinds: ['compare'] },
-  { path: '/lab/', kinds: ['server'] },
-  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'] },
-  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'] },
-  { path: '/en/research/seed-openevo/seed/', kinds: ['seed'] },
-  { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'] },
-  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'] },
-  { path: '/en/lab/', kinds: ['server'] },
-  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'] },
+  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
+  { path: '/lab/', kinds: ['server'], requiresMainStage: false },
+  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
+  { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
+  { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
+  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
 ] as const;
 
 const matrices = [
@@ -41,8 +45,9 @@ async function ensureHydrated(root: Locator) {
   if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
 }
 
-async function auditRoot(root: Locator, viewportWidth: number) {
-  return root.evaluate((element, width) => {
+async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
+  return root.evaluate((element, context) => {
+    const { width, requiresMainStage } = context;
     const issues: string[] = [];
     const root = element as HTMLElement;
     const visible = (node: Element) => {
@@ -62,6 +67,17 @@ async function auditRoot(root: Locator, viewportWidth: number) {
 
     const rect = root.getBoundingClientRect();
     if (rect.left < -2 || rect.right > width + 2) issues.push(`explainer escapes viewport: left=${rect.left.toFixed(1)} right=${rect.right.toFixed(1)} viewport=${width}`);
+    if (requiresMainStage) {
+      if (width >= 1200 && rect.width < Math.min(1000, width * 0.72)) issues.push(`explainer remains a narrow desktop rail: width=${rect.width.toFixed(1)} viewport=${width}`);
+      let ancestor: HTMLElement | null = root.parentElement;
+      while (ancestor) {
+        if (getComputedStyle(ancestor).position === 'sticky') {
+          issues.push(`explainer remains inside sticky ancestor: ${ancestor.className}`);
+          break;
+        }
+        ancestor = ancestor.parentElement;
+      }
+    }
     if (root.scrollWidth > root.clientWidth + 2) issues.push(`explainer horizontal overflow: ${root.scrollWidth} > ${root.clientWidth}`);
 
     root.querySelectorAll<HTMLElement>('[data-ui-audit-item]').forEach((item) => {
@@ -180,14 +196,16 @@ async function auditRoot(root: Locator, viewportWidth: number) {
     });
 
     return issues;
-  }, viewportWidth);
+  }, { width: viewportWidth, requiresMainStage });
 }
 
-async function stepThrough(root: Locator, viewportWidth: number) {
+async function stepThrough(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
   await ensureHydrated(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
+  await expect(root).toHaveAttribute('data-overview', 'true');
+  await next.click();
   for (;;) {
-    const issues = await auditRoot(root, viewportWidth);
+    const issues = await auditRoot(root, viewportWidth, requiresMainStage);
     expect(issues, issues.join('\n')).toEqual([]);
     if (await next.isDisabled()) break;
     await next.click();
@@ -208,7 +226,7 @@ for (const matrix of matrices) {
         for (const kind of route.kinds) {
           const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
           await expect(root).toBeVisible();
-          await stepThrough(root, matrix.viewport.width);
+          await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
         }
       });
     }
@@ -224,4 +242,17 @@ test('research explainers preserve meaning with reduced motion', async ({ page }
   await expect(root).toHaveAttribute('data-reduced-motion', 'true');
   await expect(root.locator('.irx-transport button').filter({ hasText: /减少动态|Reduced motion/ })).toBeDisabled();
   await expect(root.locator('[data-flow-id="seed-next"]')).toBeVisible();
+});
+
+test('research framework opens as a system map and can enter and leave trace mode', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/research/seed-openevo/openevo/', { waitUntil: 'domcontentloaded' });
+  const root = page.locator('[data-interactive-research-explainer="openevo"]');
+  await ensureHydrated(root);
+  await expect(root).toHaveAttribute('data-overview', 'true');
+  await expect(root.locator('.irx-paper-caption')).toContainText('SYSTEM MAP');
+  await root.getByRole('button', { name: '开始追踪' }).click();
+  await expect(root).toHaveAttribute('data-overview', 'false');
+  await root.getByRole('button', { name: '总览图' }).click();
+  await expect(root).toHaveAttribute('data-overview', 'true');
 });

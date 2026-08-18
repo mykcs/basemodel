@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import '../../styles/interactive-research-explainer.css';
 import { ExplainerHeader, StepControls, clamp, useReducedMotion, type Carrier, type Kind, type Locale, type StepMeta } from './explainer/ResearchExplainerPrimitives';
 import { ALFWorldExplainer, WebShopExplainer } from './explainer/EnvironmentExplainers';
@@ -24,7 +24,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   const zh = locale === 'zh';
   const configs: Record<Kind, { title: string; eyebrow: string; lede: string; steps: StepMeta[] }> = {
     webshop: {
-      eyebrow: 'WEBSHOP · INTERACTIVE ENVIRONMENT',
+      eyebrow: 'WEBSHOP',
       title: zh ? 'WebShop 环境模型' : 'WebShop environment model',
       lede: zh ? '把一次购物任务按真实 Agent 循环逐步播放：observation → action → 页面状态变化 → 新 observation → score。' : 'Play one shopping task as an agent loop: observation → action → page transition → new observation → score.',
       steps: [
@@ -36,7 +36,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     alfworld: {
-      eyebrow: 'ALFWORLD · STATEFUL HOUSEHOLD',
+      eyebrow: 'ALFWORLD',
       title: zh ? 'ALFWorld 环境模型' : 'ALFWorld environment model',
       lede: zh ? '物体位置、容器开关和 heated 状态都会约束下一步动作；一次失败动作不会被“语言合理性”自动纠正。' : 'Object locations, receptacle state, and heated state constrain the next action; a plausible sentence does not bypass world preconditions.',
       steps: [
@@ -52,7 +52,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     seed: {
-      eyebrow: 'SEED · SAME ACTIONS, TWO CONTEXTS',
+      eyebrow: 'SEED',
       title: zh ? 'SEED 自进化训练机制' : 'SEED self-evolving training mechanism',
       lede: zh ? 'SEED 不重新生成一条“知道 hindsight 后的正确轨迹”；它固定原来已采样的 action token，在 plain 与 skill context 下重新计算概率，再把差异蒸馏回 policy 参数。' : 'SEED does not generate a new “correct trajectory with hindsight”; it holds the original sampled action tokens fixed, re-scores them under plain and skill contexts, then distills the shift back into policy parameters.',
       steps: [
@@ -65,7 +65,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     openevo: {
-      eyebrow: 'OPENEVO · CROSS-TASK EVOLUTION',
+      eyebrow: 'OPENEVO',
       title: zh ? 'OpenEvo 跨任务演化机制' : 'OpenEvo cross-task evolution mechanism',
       lede: zh ? '先完成 Task N 并封存 evidence，再运行 evolution method；不同 carrier 真正分叉，只有通过 validation gate 的状态才能组成 successor revision，并从 Task N+1 开始生效。' : 'Finish Task N and seal evidence first, then run the evolution method; carriers truly fan out, and only state that passes validation forms a successor revision that activates from Task N+1.',
       steps: [
@@ -79,7 +79,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     compare: {
-      eyebrow: 'SEED × OPENEVO · SHARED EXPERIENCE',
+      eyebrow: 'SEED × OPENEVO',
       title: zh ? 'SEED 与 OpenEvo 更新机制' : 'SEED and OpenEvo update mechanisms',
       lede: zh ? '从同一份 completed experience 真正分叉，比较经验如何被处理、以什么状态保存、什么时候对下一轮或下一任务生效。' : 'Fork from the same completed experience and compare how it is processed, what persists, and when it activates in the next round or task.',
       steps: [
@@ -91,7 +91,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     server: {
-      eyebrow: 'SERVER · AUTHORITY BOUNDARIES',
+      eyebrow: 'SERVER',
       title: zh ? 'OpenEvo 服务器权限模型' : 'OpenEvo server authority model',
       lede: zh ? '控制容器、科研运行容器与其他用户容器是 host Docker daemon 管理的 sibling containers。技术能力、宿主机所有权和项目授权是三个不同概念。' : 'The control container, scientific runtime, and other users’ containers are siblings managed by the host Docker daemon. Technical capability, host ownership, and project authorization are distinct concepts.',
       steps: [
@@ -106,15 +106,57 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   };
   const config = configs[kind];
   const [step, setStep] = useState(0);
+  const [overview, setOverview] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [carrier, setCarrier] = useState<Carrier>('adapter');
   const reducedMotion = useReducedMotion();
   const maxStep = config.steps.length - 1;
+  const rootRef = useRef<HTMLElement>(null);
 
   const go = useCallback((next: number) => {
+    setOverview(false);
     setPlaying(false);
     setStep(clamp(next, 0, maxStep));
   }, [maxStep]);
+
+  const showOverview = useCallback(() => {
+    setPlaying(false);
+    setOverview(true);
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    if (reducedMotion) return;
+    if (overview) {
+      setOverview(false);
+      setStep(0);
+      setPlaying(true);
+      return;
+    }
+    setPlaying((value) => !value);
+  }, [overview, reducedMotion]);
+
+  // Article sections may dispatch `irx:scroll-step` (see ExplainerScrollLink.astro)
+  // so returning to the full-width stage keeps the corresponding step selected.
+  useEffect(() => {
+    const onReveal = (event: Event) => {
+      const raw = (event as CustomEvent<{ step?: number }>).detail?.step;
+      if (typeof raw !== 'number' || Number.isNaN(raw)) return;
+      const target = raw < 0 ? maxStep : clamp(Math.round(raw), 0, maxStep);
+      setOverview(false);
+      setPlaying(false);
+      setStep((current) => {
+        if (current === target) return current;
+        window.requestAnimationFrame(() => {
+          const root = rootRef.current;
+          const active = root?.querySelector<HTMLElement>('.irx-stage [data-active="true"], .irx-stepper li[data-active="true"]');
+          active?.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+        });
+        return target;
+      });
+    };
+    window.addEventListener('irx:scroll-step', onReveal);
+    return () => window.removeEventListener('irx:scroll-step', onReveal);
+  }, [maxStep, reducedMotion]);
 
   useEffect(() => {
     if (!playing || reducedMotion) return;
@@ -135,17 +177,24 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   }, [reducedMotion]);
 
   const onKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
-    if (event.key === 'ArrowRight') { event.preventDefault(); go(step + 1); }
-    if (event.key === 'ArrowLeft') { event.preventDefault(); go(step - 1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); go(overview ? 0 : step + 1); }
+    if (event.key === 'ArrowLeft' && !overview) { event.preventDefault(); go(step - 1); }
     if (event.key === 'Home') { event.preventDefault(); go(0); }
     if (event.key === 'End') { event.preventDefault(); go(maxStep); }
-    if (event.key === ' ' && !reducedMotion) { event.preventDefault(); setPlaying((value) => !value); }
+    if (event.key === ' ' && !reducedMotion) { event.preventDefault(); togglePlay(); }
   };
+
+  const activeStep = config.steps[step] ?? config.steps[0]!;
+  const overviewCopy = zh
+    ? '总览模式保留完整拓扑。颜色区分角色，形状区分数据类型，实线表示数据流，虚线表示控制或回环。'
+    : 'Overview mode preserves the complete topology. Color separates roles, shape separates data types, solid lines carry data, and dashed lines show control or feedback.';
 
   return (
     <section
+      ref={rootRef}
       className={`irx irx-${kind}`}
       data-interactive-research-explainer={kind}
+      data-overview={overview}
       data-reduced-motion={reducedMotion}
       data-compact={compact}
       data-ui-audit="contrast layout"
@@ -154,15 +203,35 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       aria-label={config.title}
     >
       <ExplainerHeader locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
-      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={() => setPlaying((value) => !value)} />
-      <div className="irx-stage" data-step={step}>
-        {kind === 'webshop' && <WebShopExplainer locale={locale} step={step} />}
-        {kind === 'alfworld' && <ALFWorldExplainer locale={locale} step={step} />}
-        {kind === 'seed' && <SeedExplainer locale={locale} step={step} />}
-        {kind === 'openevo' && <OpenEvoExplainer locale={locale} step={step} carrier={carrier} setCarrier={setCarrier} onStep={go} />}
-        {kind === 'compare' && <CompareExplainer locale={locale} step={step} />}
-        {kind === 'server' && <ServerExplainer locale={locale} step={step} onStep={go} />}
-      </div>
+      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+      <figure className="irx-paper-figure" data-overview={overview}>
+        <div className="irx-stage" data-step={step}>
+          {kind === 'webshop' && <WebShopExplainer locale={locale} step={step} />}
+          {kind === 'alfworld' && <ALFWorldExplainer locale={locale} step={step} />}
+          {kind === 'seed' && <SeedExplainer locale={locale} step={step} />}
+          {kind === 'openevo' && <OpenEvoExplainer locale={locale} step={step} carrier={carrier} setCarrier={setCarrier} onStep={go} />}
+          {kind === 'compare' && <CompareExplainer locale={locale} step={step} />}
+          {kind === 'server' && <ServerExplainer locale={locale} step={step} onStep={go} />}
+        </div>
+        <figcaption className="irx-paper-caption">
+          <div><span>FIGURE · {overview ? 'SYSTEM MAP' : `TRACE ${String(step + 1).padStart(2, '0')}`}</span><strong>{overview ? (zh ? '先读全局结构，再追踪一次运算' : 'Read the whole structure, then trace one computation') : activeStep.label}</strong><p>{overview ? overviewCopy : activeStep.narration}</p></div>
+          <ul className="irx-visual-key" aria-label={zh ? '框架图视觉图例' : 'Framework figure visual key'}>
+            <li data-tone="env">{zh ? '环境 / 输入' : 'Environment / input'}</li>
+            <li data-tone="experience">{zh ? '经验 / 证据' : 'Experience / evidence'}</li>
+            <li data-tone="signal">{zh ? '学习信号' : 'Learning signal'}</li>
+            <li data-tone="state">{zh ? '模型 / 状态' : 'Model / state'}</li>
+            <li data-tone="persist">{zh ? '持久化结果' : 'Persisted result'}</li>
+            <li data-tone="flow">{zh ? '实线数据 · 虚线控制' : 'Solid data · dashed control'}</li>
+          </ul>
+        </figcaption>
+      </figure>
+      <aside className="irx-inspector" aria-label={zh ? '当前模块说明' : 'Current module explanation'}>
+        <div className="irx-inspector-current"><span>{overview ? 'MAP' : `STEP ${String(step + 1).padStart(2, '0')}`}</span><div><strong>{overview ? (zh ? '完整框架' : 'Complete framework') : activeStep.label}</strong><p>{overview ? overviewCopy : activeStep.narration}</p></div></div>
+        <details>
+          <summary>{zh ? '查看全部模块说明' : 'View every module note'}</summary>
+          <ol>{config.steps.map((item, index) => <li key={`note-${index}`} data-active={!overview && index === step}><button type="button" onClick={() => go(index)}><span>{String(index + 1).padStart(2, '0')}</span><b>{item.label}</b><small>{item.narration}</small></button></li>)}</ol>
+        </details>
+      </aside>
       <details className="irx-tech">
         <summary><span>Level 3</span>{zh ? '技术边界与复现提示' : 'Technical boundary and reproduction notes'}</summary>
         <p>{technicalCopy(kind, locale)}</p>
