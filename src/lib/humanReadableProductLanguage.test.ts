@@ -21,7 +21,9 @@ describe('human-readable product language contract', () => {
     expect(sourceRules).toContain('Every feature and UI change must check copy');
     expect(sourceRules).toContain('../docs/agents/current/audience-centered-technical-copy.md');
     expect(sourceRules).toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
-    expect(sourceRules).toContain('5×RTX5090');
+    expect(sourceRules).toContain('actual openevo-experiment branch / SHA');
+    expect(sourceRules).toContain('configs/experiment/current-campaign.json');
+    expect(sourceRules).toContain('explicitly authorized GPU UUIDs');
     expect(sourceRules).toContain('RTX6 / 4×RTX3090');
     expect(claudeAdapter).toContain('@AGENTS.md');
     expect(claudeAdapter).toContain('new features, UI work, navigation, responsive changes, and copy changes');
