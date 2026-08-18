@@ -28,14 +28,14 @@ const productionRoots = ['src', 'public/guides', 'public/og-cover.svg'];
 const eligibleExtensions = new Set(['.astro', '.tsx', '.ts', '.json', '.md', '.mdx', '.sh', '.py', '.svg']);
 const exclusions = [/(?:^|\/)\.omc(?:\/|$)/, /(?:^|\/)__fixtures__(?:\/|$)/, /(?:^|\/)fixtures?(?:\/|$)/, /\.test\.(?:ts|tsx)$/, /\.spec\.(?:ts|tsx)$/];
 
-function walk(root: string, relative = root): string[] {
+function walk(_root: string, relative: string): string[] {
   if (!fs.existsSync(relative)) return [];
   const stat = fs.statSync(relative);
   if (stat.isFile()) return [relative];
   return fs.readdirSync(relative, { withFileTypes: true }).flatMap((entry) => {
     const next = path.join(relative, entry.name);
     if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist') return [];
-    return entry.isDirectory() ? walk(root, next) : [next];
+    return entry.isDirectory() ? walk(_root, next) : [next];
   });
 }
 
@@ -118,8 +118,11 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ban(hero, 'COPY-STATE-PROVENANCE-002', '当前实验分配', 'The research hero must not hard-code a moving GPU allocation as live truth.');
   ban(hero, 'COPY-STATE-PROVENANCE-002', 'Current allocation', 'The research hero must not hard-code a moving GPU allocation as live truth.');
 
+  const state = 'src/lib/openEvoScientificState.ts';
+  for (const required of ["checkedAt: '2026-08-18'", "phase: 'H1.27'", "status: 'completed-descriptive-only'", 'active scientific branch may be ahead']) requireText(state, 'COPY-STATE-PROVENANCE-005', required, 'The dated default-main snapshot must remain explicit in the dedicated state owner.');
+
   const program = 'src/components/research/OpenEvoExperimentProgram.astro';
-  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'H1.27', 'current-campaign.json', 'actual branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
+  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'openEvoScientificState.defaultBranchSnapshot.phase', 'current-campaign.json', 'actual branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
   ban(program, 'COPY-STATUS-003', 'formal_task_consumption_allowed = false', 'The old pre-Phase-G state must not return as current status.');
   ban(program, 'COPY-STATE-PROVENANCE-003', '当前实验分配：5× RTX 5090', 'A historical allocation must not return as undated live state.');
   ban(program, 'COPY-STATE-PROVENANCE-003', 'Current experiment allocation: 5× RTX 5090', 'A historical allocation must not return as undated live state.');
@@ -133,6 +136,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
 
   const experimentGuide = 'src/components/OpenEvoSeedBenchmarksGuide.astro';
   for (const title of ['OpenEvo 实验复现指南', 'OpenEvo experiment reproduction guide']) requireText(experimentGuide, 'COPY-I18N-001', title, 'The current guide must have a normal bilingual subject title.');
+  for (const forbidden of ['dev-wangr', 'wangr-dev', '/data/home/wangr', 'ssh wangrui_user', 'ssh wangrui_root']) ban(experimentGuide, 'COPY-PRIVACY-001', forbidden, 'The public reproduction guide must not publish private server identifiers.');
 
   const methodology = 'src/pages/methodology.astro';
   for (const title of ['数据来源与缺失信息','缺失值状态','证据来源','模型推荐边界']) requireText(methodology, 'COPY-SUBJECT-TITLE-002', title, 'Methodology headings must name their subject directly.');
