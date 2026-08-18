@@ -82,9 +82,11 @@ describe('interactive research explainers', () => {
     expect(css).toContain('.irx-edge-layer{display:none}');
   });
 
-  it('teaches WebShop as a changing website environment with explicit benchmark boundaries', () => {
+  it('teaches WebShop as a changing website environment with explicit benchmark and historical experiment boundaries', () => {
     for (const term of ['OBSERVATION', 'AVAILABLE ACTIONS', 'AGENT SELECTED', 'ENVIRONMENT TRANSITION', 'REWARD / SCORE', 'search["black sports sweatshirt"]', 'click["Buy Now"]']) expect(explainer).toContain(term);
-    for (const boundary of ['1,000-product', '6680 / 2590', 'Phase H0 Natural Success Search', 'goal 0–499', 'goal 500–end']) expect(explainer).toContain(boundary);
+    for (const boundary of ['1,000-product', '6680 / 2590', 'goal 0–499', 'goal 500–end']) expect(explainer).toContain(boundary);
+    expect(explainer).toContain('Phase G/H0 are dated historical scientific boundaries');
+    expect(explainer).toContain('experiment branch actually in use');
     expect(explainer).toContain('教学演示');
     expect(explainer).toContain('not a measured Phase G result');
   });
@@ -112,7 +114,7 @@ describe('interactive research explainers', () => {
     for (const term of ['SHARED EXPERIENCE', 'update mechanism', 'task boundary', 'carrier', 'validation', 'what persists', 'activation timing']) expect(explainer).toContain(term);
     expect(explainer).toContain('shared-seed');
     expect(explainer).toContain('shared-evo');
-    expect(explainer).toContain('current WebShop SD-LoRA adapter is one concrete parametric path');
+    expect(explainer).toContain('SD-LoRA adapter used in the WebShop experiment is one validated parametric path');
   });
 
   it('preserves the server sibling-container and authorization model with measured connectors and public-safe labels', () => {

@@ -3,15 +3,16 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { getCollection } from 'astro:content';
 import { getMessages, localePath } from '../i18n';
 import AgentToSeedBridge from '../components/AgentToSeedBridge.astro';
+import { openEvoScientificState } from '../lib/openEvoScientificState';
 const m = getMessages('zh');
 const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
-<AppLayout title={m.guide.pageTitle} description="理解 Agent、SEED 与 OpenEvo 的运行和训练机制，并进入当前 WebShop 实验与复现指南。" locale="zh">
+<AppLayout title={m.guide.pageTitle} description="理解 Agent、SEED 与 OpenEvo 的运行和训练机制，并进入可追溯的 WebShop 实验状态与复现指南。" locale="zh">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
     <header class="page-header">
       <span class="section-kicker">学习指南</span>
       <h1>Agent、SEED 与 OpenEvo</h1>
-      <p class="lede">从多步 Agent 运行开始，理解 SEED 的参数学习与 OpenEvo 的跨任务演化，再进入当前 WebShop 实验。</p>
+      <p class="lede">从多步 Agent 运行开始，理解 SEED 的参数学习与 OpenEvo 的跨任务演化，再进入 WebShop 实验的历史证据、默认分支快照和实时状态入口。</p>
     </header>
 
     <AgentToSeedBridge locale="zh" />
@@ -27,19 +28,20 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
     </section>
 
     <section class="section" aria-labelledby="openevo-guide-title">
-      <div class="section-heading"><div><span class="section-kicker">当前实验</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
-      <p>当前主线已经离开 RTX6（4×RTX3090）。正式实验由 <code>openevo-experiment</code> 维护，当前实验分配为 <strong>5×RTX5090</strong>；Phase G 已完成，下一阶段是 Phase H0 Natural Success Search。</p>
-      <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>。当前 5×RTX5090 分配和服务器可见 8×RTX5090 属于实际实验/资产记录，运行时间与显存仍以具体真机 profiling 为准。</p>
+      <div class="section-heading"><div><span class="section-kicker">实验状态</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
+      <p>正式实验由 <code>openevo-experiment</code> 维护。本站在 <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time> 核验默认 <code>main</code> 时，<code>current-campaign.json</code> 记录 <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong> / <code>{openEvoScientificState.defaultBranchSnapshot.status}</code>。这是带日期的默认分支快照，不等于任何可能更靠前的活跃科学分支。</p>
+      <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>。{openEvoScientificState.gpuRule.zh}</p>
+      <p>{openEvoScientificState.liveStateRule.zh}</p>
       <div class="guide-cards">
-        <a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><strong>复现指南</strong><span>当前运行拓扑、实验身份、WebShop 记录与 Phase H0</span></a>
-        <a href={localePath('zh','/research/seed-openevo/experiment/')}><strong>实验入口</strong><span>WebShop 任务数据流和当前实验阶段</span></a>
-        <a href={localePath('zh','/research/seed-openevo/results/')}><strong>实验结果</strong><span>Phase D–F、Phase G、历史仓库与下一步</span></a>
+        <a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><strong>复现指南</strong><span>运行拓扑、实验身份、WebShop 合同与状态解析</span></a>
+        <a href={localePath('zh','/research/seed-openevo/experiment/')}><strong>实验入口</strong><span>WebShop 数据流、历史里程碑和实时状态来源</span></a>
+        <a href={localePath('zh','/research/seed-openevo/results/')}><strong>实验结果</strong><span>Phase D–G 历史证据、默认分支快照与实时 claim 路由</span></a>
       </div>
     </section>
 
     <section class="section" aria-labelledby="history-guide-title">
       <div class="section-heading"><div><span class="section-kicker">历史</span><h2 id="history-guide-title">RTX6 与旧仓库</h2></div></div>
-      <p><code>seed3090</code> 与 <code>openevo-webshop</code> 仍用于追溯 4×RTX3090 工程经验、WebShop bring-up、失败轨迹和早期 SD-LoRA 诊断，但不再是当前实验入口。</p>
+      <p><code>seed3090</code> 与 <code>openevo-webshop</code> 仍用于追溯 RTX6（4×RTX3090）工程经验、WebShop bring-up、失败轨迹和早期 SD-LoRA 诊断，但不再是当前实验入口。</p>
     </section>
   </div>
 </AppLayout>
