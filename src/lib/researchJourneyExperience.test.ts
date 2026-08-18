@@ -6,6 +6,7 @@ const trajectory = read('../components/research/AgentEnvironmentTrajectory.astro
 const benchmarkDiagram = read('../components/research/BenchmarkDatasetDiagram.astro');
 const comparison = read('../components/research/SeedOpenEvoComparisonDiagram.astro');
 const gateway = read('../components/research/OpenEvoExperimentGateway.astro');
+const state = read('./openEvoScientificState.ts');
 const benchmarkZh = read('../pages/research/seed-openevo/benchmarks.astro');
 const benchmarkEn = read('../pages/en/research/seed-openevo/benchmarks.astro');
 const experimentZh = read('../pages/research/seed-openevo/experiment.astro');
@@ -40,13 +41,18 @@ describe('three-journey research experience', () => {
     expect(comparison).toContain('marker-end=');
   });
 
-  it('exposes the current bilingual OpenEvo gateway and current campaign stage', () => {
+  it('exposes a bilingual OpenEvo gateway without freezing live state into the static page', () => {
     expect(experimentZh).toContain('OpenEvoExperimentGateway');
     expect(experimentEn).toContain('OpenEvoExperimentGateway');
-    expect(gateway).toContain('Phase G');
-    expect(gateway).toContain('Phase H0');
-    expect(gateway).toContain('5× RTX 5090');
-    expect(gateway).not.toContain('V0 ↔ O1');
+    expect(gateway).toContain('历史证据 · Phase G');
+    expect(gateway).toContain('Historical evidence · Phase G');
+    expect(gateway).toContain('H1.27');
+    expect(gateway).toContain('current-campaign');
+    expect(gateway).toContain('reconciliation');
+    expect(gateway).toContain('actual branch');
+    expect(state).toContain('active scientific branch may be ahead');
+    expect(gateway).not.toContain('Current experiment allocation: 5× RTX 5090');
+    expect(gateway).not.toContain('当前阶段</small><strong>Phase H0</strong>');
     expect(benchmarkZh).toContain('AgentEnvironmentTrajectory');
     expect(benchmarkEn).toContain('AgentEnvironmentTrajectory');
   });
