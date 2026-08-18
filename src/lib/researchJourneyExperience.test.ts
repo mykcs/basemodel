@@ -46,7 +46,8 @@ describe('three-journey research experience', () => {
     expect(experimentEn).toContain('OpenEvoExperimentGateway');
     expect(gateway).toContain('历史证据 · Phase G');
     expect(gateway).toContain('Historical evidence · Phase G');
-    expect(gateway).toContain('H1.27');
+    expect(gateway).toContain('openEvoScientificState.defaultBranchSnapshot.phase');
+    expect(state).toContain("phase: 'H1.27'");
     expect(gateway).toContain('current-campaign');
     expect(gateway).toContain('reconciliation');
     expect(gateway).toContain('actual branch');
