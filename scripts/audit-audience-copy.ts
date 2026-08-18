@@ -122,15 +122,15 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   for (const required of ["checkedAt: '2026-08-18'", "phase: 'H1.27'", "status: 'completed-descriptive-only'", 'active scientific branch may be ahead']) requireText(state, 'COPY-STATE-PROVENANCE-005', required, 'The dated default-main snapshot must remain explicit in the dedicated state owner.');
 
   const program = 'src/components/research/OpenEvoExperimentProgram.astro';
-  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'openEvoScientificState.defaultBranchSnapshot.phase', 'current-campaign.json', 'actual branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
+  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'openEvoScientificState.defaultBranchSnapshot.phase', 'current-campaign.json', 'branch / SHA', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
   ban(program, 'COPY-STATUS-003', 'formal_task_consumption_allowed = false', 'The old pre-Phase-G state must not return as current status.');
   ban(program, 'COPY-STATE-PROVENANCE-003', '当前实验分配：5× RTX 5090', 'A historical allocation must not return as undated live state.');
   ban(program, 'COPY-STATE-PROVENANCE-003', 'Current experiment allocation: 5× RTX 5090', 'A historical allocation must not return as undated live state.');
 
   const zhGuide = 'src/pages/guide.astro';
   const enGuide = 'src/pages/en/guide.astro';
-  for (const required of ['RTX6（4×RTX3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
-  for (const required of ['RTX6 (4×RTX3090)', 'current-campaign.json', 'default-branch snapshot']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve historical provenance and branch-aware live-state routing.');
+  for (const required of ['RTX6（4×RTX 3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
+  for (const required of ['RTX6 (4×RTX 3090)', 'current-campaign.json', 'default-branch snapshot']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve historical provenance and branch-aware live-state routing.');
   ban(zhGuide, 'COPY-STATE-PROVENANCE-004', '当前实验分配为 <strong>5×RTX5090</strong>', 'The Chinese Guide must not freeze a prior GPU allocation as current.');
   ban(enGuide, 'COPY-STATE-PROVENANCE-004', 'current allocation of <strong>5×RTX5090</strong>', 'The English Guide must not freeze a prior GPU allocation as current.');
 
