@@ -14,9 +14,10 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
 10. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
-11. `current/repository-map.md` — ownership/change-to-check map.
-12. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
-13. Task-relevant model/data policies plus executable source, config and tests.
+11. `current/release-closeout-protocol.md` — final exact-head acceptance, stale-evidence invalidation, failure classification, retry/flaky handling, pre-merge race check, expected-head merge locking, and Preview → Production closeout.
+12. `current/repository-map.md` — ownership/change-to-check map.
+13. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
+14. Task-relevant model/data policies plus executable source, config and tests.
 
 The personal device/lab profile consumer is owned by `current/personal-compute-profile-consumer.md`; editable device facts stay only in `mykcs/fuhuo_20260419`.
 
@@ -49,6 +50,8 @@ refresh main and every candidate head
 ```
 
 A clean textual merge is not semantic acceptance. Preserve ancestry and attribution, but do not let old deployment, UI or research semantics overwrite newer current authority.
+
+When the work reaches final merge authorization, switch from integration logic to `current/release-closeout-protocol.md`: acceptance belongs to an exact head/base pair, stale green reports must be invalidated, the final combined tree must be tested, and the merge should be locked to the accepted head when the tool supports it.
 
 ## Scenario triggers and durable knowledge
 
