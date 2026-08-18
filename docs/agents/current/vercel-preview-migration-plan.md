@@ -2,7 +2,7 @@
 
 Status: **adopted for both non-main Preview and `main` Production**
 
-Last reviewed: **2026-08-12**
+Last reviewed: **2026-08-14**
 
 ## Architecture
 
@@ -12,8 +12,8 @@ GitHub main      -> Vercel `basemodel-preview` Production -> verify:deploy -> bu
 ```
 
 Project:
-- team `wangrui92-team` (`team_Vz2qUrJvqqw5RAIgGQwNtbkR`)
-- project `basemodel-preview` (`prj_UQRbjvnik0lW21LrzotTLPhKkgAK`)
+- project `basemodel-preview`
+- account/team and opaque project IDs are provider-side state and intentionally omitted from public source
 - framework Astro/static
 - Production project domain `https://basemodel-preview.vercel.app`
 
@@ -24,7 +24,9 @@ Project:
 - exact-head Gate/build must really run for runtime/deployment changes;
 - `VERCEL_ENV=preview` makes Preview non-indexable in repository code;
 - canonical/hreflang use the stable Production identity;
-- private Preview protection stays enabled; generate a temporary share URL when owner click-through requires it;
+- private Preview protection stays enabled;
+- when owner click-through needs a temporary share URL, deliver it only through an ephemeral tool/chat surface and let it expire;
+- never persist a share URL or `_vercel_share` access parameter in repository files, PR/Issue bodies, or GitHub comments;
 - READY alone is not product acceptance.
 
 ## Production contract

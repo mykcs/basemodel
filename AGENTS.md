@@ -24,14 +24,15 @@ Before non-trivial work, read in this order:
 9. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
 10. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
 11. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Preview + Production workflow, build budget, parallel integration, release and Production boundary.
-12. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-13. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+12. [`docs/agents/current/public-release-security-gate.md`](docs/agents/current/public-release-security-gate.md) — required before any private → public visibility change.
+13. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
+14. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
 
 Files under `docs/agents/history/` and `docs/agent-context/` are evidence and rationale, not instructions to restore previous architecture. The older product-vision document from PR #64 is retained under history; current product authority is the executable product plus the current integrity, research-mission, visual and deployment policies.
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
-When a task involves the owner's MacBook/iPhone/iPad, the physical-Ethernet-only 4×RTX 3090 lab server, SSH/SFTP/rsync, or Codex/MiniMax remote behavior, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). The editable device facts are owned only by `mykcs/fuhuo_20260419`; do not create a second editable device inventory in this repository. Preserve the difference between user-reported facts, time-sensitive observations, network inferences, and current official product capabilities.
+When a task involves lab connectivity, remote compute, SSH/SFTP/rsync, or hardware disclosure, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). Base Model stores only a generic public topology: never add the owner's personal device inventory, private profile feed, IP/hostname/username, VPN endpoint, access token or other identifying infrastructure detail. Publish only the minimum aggregate hardware facts required for a reproducible experiment.
 
 ## Knowledge precedence
 
@@ -138,7 +139,7 @@ read LATEST + current policy
 
 A clean Git merge is not combined-product acceptance. When several PRs belong to one release, use the parallel/stacked integration policy in `deployment-policy.md`; preserve attribution and ancestry, but resolve the final file tree by current product intent, executable invariants and current provider truth.
 
-Because the repository is private, normal Vercel Preview URLs may require Vercel authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability instead of disabling protection for convenience.
+Protected Vercel Preview URLs may require authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability, deliver it only through an ephemeral review/chat surface, and never persist the URL or `_vercel_share` parameter in repository files, PR/Issue bodies, or GitHub comments.
 
 ## Vercel build-budget boundary
 
@@ -196,6 +197,7 @@ Read the detailed current product/model policies before broad UI/data/recommenda
 - Astro/React/TypeScript/Vitest/Playwright major upgrades are deliberate migration work, not routine dependency churn.
 - Keep Astro `compressHTML: true` unless inline-whitespace behavior has been explicitly audited/migrated; regression coverage protects this contract.
 - Do not reintroduce retired GitHub Pages compatibility/config or Actions infrastructure without an explicit architecture decision.
+- Keep the Public Release Security Gate fail-closed: private → public requires a complete all-ref/full-history secret scan with zero unresolved real secrets.
 
 ## Collaboration expectations
 

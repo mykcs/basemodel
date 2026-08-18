@@ -13,13 +13,14 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, and `current/audience-centered-technical-copy.md` — current research mission, reproduction and copy ownership.
 8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
-10. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
-11. `current/release-closeout-protocol.md` — final exact-head acceptance, stale-evidence invalidation, failure classification, retry/flaky handling, pre-merge race check, expected-head merge locking, and Preview → Production closeout.
-12. `current/repository-map.md` — ownership/change-to-check map.
+10. `current/public-release-security-gate.md` — fail-closed tracked-tree, collaboration-surface, all-ref/history and public-intent gate before repository visibility changes.
+11. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
+12. `current/release-closeout-protocol.md` — final exact-head acceptance, stale-evidence invalidation, failure classification, retry/flaky handling, pre-merge race check, expected-head merge locking, and Preview → Production closeout.
+13. `current/repository-map.md` — ownership/change-to-check map.
 13. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
-14. Task-relevant model/data policies plus executable source, config and tests.
+15. Task-relevant model/data policies plus executable source, config and tests.
 
-The personal device/lab profile consumer is owned by `current/personal-compute-profile-consumer.md`; editable device facts stay only in `mykcs/fuhuo_20260419`.
+The `/lab/` routes are governed by `current/personal-compute-profile-consumer.md`, which now defines a generic public lab topology privacy boundary. Personal device inventories and private infrastructure profiles must stay outside this public repository.
 
 ## Current deployment authority
 
@@ -29,7 +30,7 @@ GitHub source
 └─ main     -> Vercel Production -> https://basemodel-preview.vercel.app
 ```
 
-Vercel is the only ordinary deployment authority. Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral and never canonical.
+Vercel is the only ordinary deployment authority. Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral, never canonical, and must not be persisted in repository text or GitHub PR/Issue bodies/comments.
 
 Historical Cloudflare files, Direct Upload runbooks, snapshots and Workers-shadow configuration are conditional legacy evidence/fallbacks. They do not override current Vercel authority and do not belong in ordinary completion reporting unless the legacy surface is explicitly involved or unexpectedly activates.
 
