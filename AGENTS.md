@@ -1,5 +1,12 @@
 # Repository Agent instructions
 
+## Historical Codex dialogue archive
+
+When prior product, deployment, or research-workbench decisions are relevant,
+consult the private [basemodel dialogue archive](https://github.com/mykcs/Codex-Dialogue/tree/main/projects/basemodel).
+It is historical evidence only and never overrides current task instructions,
+executable repository truth, or live provider state.
+
 This repository is frequently maintained by coding Agents through GitHub. Keep this root file as a **fast router + non-negotiable project invariants**; detailed current policy belongs under `docs/agents/current/` rather than being duplicated here.
 
 ## Fast start
