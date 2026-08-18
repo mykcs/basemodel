@@ -12,7 +12,7 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(component).toContain("state: t('历史', 'Historical')");
     expect(component).toContain("state: t('当前 source of truth', 'Current source of truth')");
     expect(component).toContain('RTX6 / 4×RTX 3090');
-    expect(component).toContain('actual branch');
+    expect(component).toContain('branch / SHA');
   });
 
   it('keeps Phase D–F mechanism evidence distinct from task efficacy', () => {
@@ -49,7 +49,7 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
   });
 
   it('routes live state through branch, campaign, reconciliation/result, and preregistered GPU authority', () => {
-    for (const token of ['current-campaign.json', 'actual branch', 'reconciliation / result', 'preregistration', 'authorized UUIDs']) {
+    for (const token of ['current-campaign.json', 'branch / SHA', 'reconciliation / result', 'preregistration', 'authorized UUIDs']) {
       expect(component + state).toContain(token);
     }
     expect(state).toContain('active scientific branch may be ahead');
