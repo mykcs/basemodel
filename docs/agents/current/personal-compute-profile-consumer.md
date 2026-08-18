@@ -1,63 +1,43 @@
-# Personal compute profile consumer
+# Public lab topology privacy boundary
 
-Last reviewed: **2026-08-12**
+Last reviewed: **2026-08-14**
 
-## Ownership
+Status: **the former personal-device runtime profile is retired from Base Model before public release.**
 
-The editable device/lab profile is owned by:
+## Public-source rule
 
-```text
-repository: mykcs/fuhuo_20260419
-path: public/shared/personal-compute-profile.js
-```
+Base Model may document a reusable research-compute topology, but it must not publish or dynamically load the owner's personal device inventory or private lab profile.
 
-Base Model must not keep a second editable object.
+The public `/lab/` and `/en/lab/` routes may explain only generic concepts such as:
 
-Current public runtime endpoint:
+- an Internet-connected control workstation;
+- an approved access boundary;
+- an internal compute host or cluster;
+- keeping credentials and private network details outside Git;
+- separating scientifically relevant compute constraints from identifying infrastructure metadata.
 
-```text
-https://mykcs.github.io/fuhuo_20260419/shared/personal-compute-profile.js
-```
+## Forbidden public details
 
-Consumer routes: `/lab/` and `/en/lab/`.
+Do not add or mirror:
 
-## Why runtime consumption
+- personal device names or model inventory unless independently required by a published experiment;
+- private profile endpoints or cross-repository device feeds;
+- IP addresses, hostnames, usernames, serial numbers, MAC addresses or physical lab location;
+- SSH keys, passwords, credentials, access tokens, VPN endpoints or share/access query parameters;
+- port-forwarding instructions that expose an internal host publicly;
+- time-sensitive observations that identify the owner's private network or account setup.
 
-The fuhuo repository is private, while its GitHub Pages artifact is public. Loading a classic JavaScript data endpoint at runtime avoids embedding repository credentials and lets both websites update from one file. Each website owns only its presentation.
+If a paper or experiment requires hardware disclosure, publish the minimum scientifically relevant aggregate specification rather than the owner's broader personal-device topology.
 
-A cache-busting query is added at load time so the browser rechecks the published profile after fuhuo changes.
+## Agent rule
 
-## Failure behavior
+When a task concerns lab connectivity or compute setup, begin from the generic public topology in this repository. User-specific infrastructure belongs in private context or a private repository and must not be copied into Base Model.
 
-If the public endpoint is unavailable:
-
-- show an explicit unavailable state;
-- keep the canonical source and owner-site links visible;
-- do not copy or fabricate a fallback device inventory in this repository;
-- do not claim that a source edit is already published.
-
-At the time this consumer was introduced, the fuhuo GitHub Pages workflow was blocked before runner allocation by a GitHub account billing/spending-limit failure. That is provider infrastructure state, not a profile-code result. Once fuhuo publication succeeds, the Base Model route will populate without another data copy.
-
-## Evidence semantics
-
-Preserve distinctions supplied by the canonical profile:
-
-- user-reported device/tool fact;
-- official product capability;
-- user-observed time-sensitive outcome;
-- inferred network explanation;
-- recommended operational pattern.
-
-The observed Codex/MiniMax result must not become “Codex never works” or “MiniMax always works.” Retest when app versions, account entitlements, macOS, or network routing changes.
-
-## Security boundary
-
-Do not publish or mirror IP addresses, hostnames, usernames, serial numbers, physical lab location, SSH keys, credentials, access tokens, VPN endpoints, or port-forwarding instructions that expose the lab server publicly. The recommended topology keeps the MacBook dual-homed and the server offline.
+A future Agent must not reconnect the former personal profile feed merely because historical PRs or commits mention it. History is evidence of prior design, not permission to republish private infrastructure.
 
 ## Change checklist
 
-1. Change facts in fuhuo only.
-2. Validate and publish fuhuo.
-3. Open `/lab/` and confirm `updatedAt`.
-4. Change Base Model only for presentation, routing, accessibility, or consumer-contract changes.
-5. Keep the consumer source URL protected by `PersonalComputeProfile.test.ts`.
+1. Keep `/lab/` generic and non-identifying.
+2. Keep secrets and provider/account identifiers outside source control.
+3. Add only the minimum hardware facts needed for a reproducible public experiment.
+4. Run the Public Release Security Gate before changing repository visibility.
