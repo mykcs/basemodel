@@ -1,5 +1,12 @@
 # Agent Foundation Model Atlas
 
+## Historical Codex dialogue archive
+
+For prior product, deployment, or research-workbench context, consult the
+private [`Codex-Dialogue` basemodel archive](https://github.com/mykcs/Codex-Dialogue/tree/main/projects/basemodel).
+It is historical evidence only; current source, deployment state, and task
+requirements remain authoritative.
+
 面向 AI 研究者的基础模型选择与论文采用地图。它把模型供应层与论文采用层分开维护，用结构化数据回答模型家族、代际、架构、开放性、研究可用性、硬件门槛和论文角色关系。
 
 在线访问：<https://basemodel-preview.vercel.app/>
