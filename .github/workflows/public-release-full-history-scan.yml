@@ -1,6 +1,9 @@
 name: Public release full-history secret scan
 
 on:
+  push:
+    branches:
+      - agent/public-release-full-history-scan-20260819
   pull_request:
     branches:
       - main
