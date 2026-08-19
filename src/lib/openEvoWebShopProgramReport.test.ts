@@ -71,6 +71,34 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(programTimeline.find((item) => item.id === 'h1-26-28')?.summary.en).toContain('paired delta of -0.3 against both controls');
   });
 
+  it('keeps every H1.9–H1.16 semantic result and validity boundary distinct', () => {
+    const expected = {
+      'h1-9': ['negative', 'fresh seeds', 'broad generalization'],
+      'h1-10': ['negative', 'state-aware arm', 'treatment effect'],
+      'h1-11': ['negative', 'positive supervision', 'Fit is not behavioral transfer'],
+      'h1-12': ['negative', 'state-aware recovery cue', 'global impossibility'],
+      'h1-13': ['negative', 'action-only supervision targets', 'target-format'],
+      'h1-14': ['protocol', 'successful-state teacher route', 'no H1.14 comparative scientific result'],
+      'h1-15': ['invalid', 'executable-SHA drift', 'use H1.16'],
+      'h1-16': ['negative', 'zero qualified positives', 'clean negative'],
+    } as const;
+    for (const [id, [result, summaryToken, boundaryToken]] of Object.entries(expected)) {
+      const item = programTimeline.find((entry) => entry.id === id);
+      expect(item?.result).toBe(result);
+      expect(item?.summary.en).toContain(summaryToken);
+      expect(item?.boundary.en).toContain(boundaryToken);
+    }
+  });
+
+  it('defines laboratory terms bilingually before asking readers to use them', () => {
+    expect(component).toContain('task identity 指一个具体 WebShop 任务实例');
+    expect(component).toContain('A task identity is one specific WebShop task instance');
+    expect(programTimeline.find((item) => item.id === 'h1-29')?.summary.en).toContain('SD-LoRA (the current sequential-difference LoRA update path)');
+    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('acquisition (new learning)');
+    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('retention (preservation of old capabilities)');
+    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('untouched transfer (transfer to unseen tasks)');
+  });
+
   it('freezes exact H1.38A-C denominators and inferential statistics', () => {
     expect(h138Metrics.reduce((sum, arm) => sum + arm.attempts, 0)).toBe(768);
     expect(h138Metrics.reduce((sum, arm) => sum + arm.valid, 0)).toBe(764);

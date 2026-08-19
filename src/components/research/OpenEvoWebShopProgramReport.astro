@@ -27,8 +27,8 @@ const resultEntries = Object.entries(programResultLabels);
       <p class="eyebrow">OPENEVO × WEBSHOP · {t('实验项目报告', 'EXPERIMENT PROGRAM REPORT')}</p>
       <h2>{t('固定 16 条成功记录时，增加训练 task identity 多样性没有形成单调收益', 'With 16 successful records fixed, greater training task-identity diversity did not produce a monotonic benefit')}</h2>
       <p class="lede">{t(
-        '从 Phase G 到 H1.38A-C，实验逐层回答了闭环能否运行、成功经验是否充足、参数变化是否生效、以及新任务上是否真的更好。D4、D8、D16 分别表示：固定 16 条成功记录，但记录来自 4、8、16 个训练 task identity 的三种 adapter arm；三组相对 base 的 task-cluster 95% CI 均跨 0。',
-        'From Phase G through H1.38A-C, the program tested whether the loop runs, successful experience is sufficient, parameter changes activate, and fresh-task performance actually improves. D4, D8, and D16 are three adapter arms with 16 successful records fixed and drawn from 4, 8, or 16 training task identities, respectively; every task-cluster 95% CI versus base crosses zero.'
+        '从 Phase G 到 H1.38A-C，实验逐层回答了闭环能否运行、成功经验是否充足、参数变化是否生效、以及新任务上是否真的更好。task identity 指一个具体 WebShop 任务实例。D4、D8、D16 分别表示：固定 16 条成功记录，但记录来自 4、8、16 个训练 task identity 的三种 adapter arm；三组相对 base 的 task-cluster 95% CI 均跨 0。',
+        'From Phase G through H1.38A-C, the program tested whether the loop runs, successful experience is sufficient, parameter changes activate, and fresh-task performance actually improves. A task identity is one specific WebShop task instance. D4, D8, and D16 are three adapter arms with 16 successful records fixed and drawn from 4, 8, or 16 training task identities, respectively; every task-cluster 95% CI versus base crosses zero.'
       )}</p>
     </div>
     <aside class="snapshot" aria-label={t('冻结证据快照', 'Frozen evidence snapshot')}>
