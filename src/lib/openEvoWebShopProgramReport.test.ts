@@ -39,10 +39,36 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(programTimeline.find((item) => item.id === 'h1-29')?.result).toBe('negative');
     expect(programTimeline.find((item) => item.id === 'h1-30')?.result).toBe('protocol');
     expect(programTimeline.find((item) => item.id === 'h1-33')?.result).toBe('negative');
+    expect(programTimeline.find((item) => item.id === 'h1-33')?.coverage).toEqual(['H1.33']);
+    expect(coverage).toContain('H1.37-R');
     expect(programTimeline.find((item) => item.id === 'phase-g')?.result).toBe('invalid');
     expect(programTimeline.find((item) => item.id === 'h1-34')?.boundary.en).toContain('embeds H1.30 schema/claim metadata');
     expect(programTimeline.find((item) => item.id === 'h1-35')?.boundary.en).toContain('embeds H1.30 schema/claim metadata');
-    expect(programTimeline.find((item) => item.id === 'h1-38b')?.summary.en).toContain('no execution authorization');
+    expect(programTimeline.find((item) => item.id === 'h1-38b')).toMatchObject({ result: 'design' });
+    expect(programTimeline.find((item) => item.id === 'h1-38b')?.summary.en).toContain('no accepted preregistration');
+    expect(programTimeline.find((item) => item.id === 'h1-38b')?.summary.en).toContain('authorization, execution, or sealed result');
+  });
+
+  it('uses the frozen scientific variables and defines specialized terms at first use', () => {
+    const narrative = `${JSON.stringify(programTimeline)}\n${component}`;
+    for (const forbidden of [
+      ['deeper', 'training'].join(' '), ['加深', '训练'].join(''), ['training', 'depth'].join(' '), ['训练', '深度'].join(''),
+      ['preregistered', 'significance'].join(' '), ['预注册', '显著'].join(''), ['H1.33', 'R'].join(''),
+      ['protocol', 'draft'].join(' '), ['协议', '草案'].join(''),
+    ]) expect(narrative).not.toContain(forbidden);
+
+    expect(component).toContain('固定 16 条成功记录');
+    expect(component).toContain('drawn from 4, 8, or 16 training task identities');
+    expect(component).toContain('task-cluster 95% CI');
+    expect(programTimeline.find((item) => item.id === 'h1-1-4')?.summary.en).toContain('fallback (a substitute action used after parsing failure)');
+    expect(programTimeline.find((item) => item.id === 'h1-34')?.boundary.en).toContain('artifact (a frozen saved experiment output)');
+  });
+
+  it('keeps H1.17–H1.28 aligned to the frozen diagnostic lineage', () => {
+    expect(programTimeline.find((item) => item.id === 'h1-17-21')?.summary.en).toContain('text-memory versus parametric carriers');
+    expect(programTimeline.find((item) => item.id === 'h1-22-25')).toMatchObject({ result: 'invalid' });
+    expect(programTimeline.find((item) => item.id === 'h1-22-25')?.boundary.en).toContain('cannot support an OpenEvo efficacy');
+    expect(programTimeline.find((item) => item.id === 'h1-26-28')?.summary.en).toContain('paired delta of -0.3 against both controls');
   });
 
   it('freezes exact H1.38A-C denominators and inferential statistics', () => {

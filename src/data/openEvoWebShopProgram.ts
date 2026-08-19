@@ -23,7 +23,7 @@ export const openEvoProgramLinks = {
 
 export type ProgramLocale = 'zh' | 'en';
 export type ProgramStage = 'foundation' | 'diagnostic' | 'transfer' | 'closeout';
-export type ProgramResult = 'supported' | 'negative' | 'invalid' | 'protocol';
+export type ProgramResult = 'supported' | 'negative' | 'invalid' | 'protocol' | 'design';
 
 export const programStageLabels = {
   foundation: { zh: '基础与机制', en: 'Foundation & mechanism' },
@@ -37,6 +37,7 @@ export const programResultLabels = {
   negative: { zh: '未支持预期', en: 'Expected effect not supported' },
   invalid: { zh: '无效或仅诊断', en: 'Invalid or diagnostic-only' },
   protocol: { zh: '仅协议', en: 'Protocol only' },
+  design: { zh: '目标 / 设计移交', en: 'Goal / design handoff' },
 } as const;
 
 export const programTimeline = [
@@ -57,7 +58,7 @@ export const programTimeline = [
   {
     id: 'h1-1-4', stage: 'diagnostic', result: 'invalid', coverage: ['H1.1', 'H1.2', 'H1.3', 'H1.4'],
     title: { zh: 'H1.1–H1.4：先修可比性', en: 'H1.1–H1.4: repair comparability first' },
-    summary: { zh: '围绕动作解析、fallback、任务抽样和评估器一致性建立诊断；部分运行只能作为工程证据。', en: 'Diagnostics targeted action parsing, fallback behavior, task sampling, and evaluator consistency; some runs remain engineering evidence only.' },
+    summary: { zh: '围绕动作解析、fallback（解析失败时执行的替代动作）、任务抽样和评估器一致性建立诊断；部分运行只能作为工程证据。', en: 'Diagnostics targeted action parsing, fallback (a substitute action used after parsing failure), task sampling, and evaluator consistency; some runs remain engineering evidence only.' },
     boundary: { zh: '解析或 fallback 污染的尝试不得进入科学分母。', en: 'Attempts contaminated by parsing or fallback must not enter the scientific denominator.' },
     evidence: openEvoProgramLinks.ledger,
   },
@@ -83,24 +84,24 @@ export const programTimeline = [
     evidence: openEvoProgramLinks.ledger,
   },
   {
-    id: 'h1-17-20', stage: 'diagnostic', result: 'negative', coverage: ['H1.17', 'H1.18', 'H1.19', 'H1.20'],
-    title: { zh: 'H1.17–H1.20：运行恢复与严谨分母', en: 'H1.17–H1.20: runtime recovery and strict denominators' },
-    summary: { zh: 'GPU/容器恢复后继续受控实验，同时把运行成功、工程有效和科学有效分开。', en: 'Controlled experiments resumed after GPU/container recovery while separating runtime success, engineering validity, and scientific validity.' },
-    boundary: { zh: '能跑完不是能用于结论；无效尝试必须显式保留。', en: 'Completion is not scientific usability; invalid attempts must remain explicit.' },
+    id: 'h1-17-21', stage: 'diagnostic', result: 'negative', coverage: ['H1.17', 'H1.18', 'H1.19', 'H1.20', 'H1.21'],
+    title: { zh: 'H1.17–H1.21：horizon、admissibility 与 carrier 的简单解释减弱', en: 'H1.17–H1.21: simple horizon, admissibility, and carrier explanations weakened' },
+    summary: { zh: 'horizon 从 15 增至 30 仍无改善；96 次 H1.18 尝试中 88 次科学有效，但未出现 recovery-vs-success 跨 partition 选择性收益；text-memory/parametric carrier 无 paired gain，过滤不可执行动作和匹配长 horizon 也未恢复 reward。', en: 'Increasing horizon from 15 to 30 did not improve outcomes; 88 of 96 H1.18 attempts were scientifically valid without recovery-versus-success selectivity across partitions; text-memory versus parametric carriers had no paired gain, and executable-action filtering plus matched longer horizon did not restore reward.' },
+    boundary: { zh: '这些是在各自冻结契约下的否定诊断；不能外推为所有 horizon、动作过滤或经验载体都无效。', en: 'These are negative diagnostics under their frozen contracts; they do not establish that every horizon, action filter, or experience carrier is ineffective.' },
     evidence: openEvoProgramLinks.ledger,
   },
   {
-    id: 'h1-21-24', stage: 'diagnostic', result: 'negative', coverage: ['H1.21', 'H1.22', 'H1.23', 'H1.24'],
-    title: { zh: 'H1.21–H1.24：尺度与任务局部性', en: 'H1.21–H1.24: scale and task locality' },
-    summary: { zh: '扩大或重配训练信号后，仍未形成跨任务稳定收益，提示问题不只是训练量不足。', en: 'Increasing or reallocating training signal still did not produce stable cross-task benefit, suggesting the issue was not merely insufficient scale.' },
-    boundary: { zh: '不能把更大训练量等同于更强自进化。', en: 'More training cannot be equated with stronger self-evolution.' },
+    id: 'h1-22-25', stage: 'diagnostic', result: 'invalid', coverage: ['H1.22', 'H1.23', 'H1.24', 'H1.25'],
+    title: { zh: 'H1.22–H1.25：任务异质性的描述性诊断', en: 'H1.22–H1.25: descriptive diagnosis of task heterogeneity' },
+    summary: { zh: 'descriptive-only 分析确认 task complexity、task family 与具体 task identity 会明显影响结果；这些实验没有 OpenEvo treatment arm。', en: 'Descriptive-only analyses showed that task complexity, task family, and exact task identity materially affect outcomes; these experiments had no OpenEvo treatment arm.' },
+    boundary: { zh: '只能描述任务异质性，不能作为 OpenEvo 方法效果或因果证据。', en: 'They describe task heterogeneity only and cannot support an OpenEvo efficacy or causal claim.' },
     evidence: openEvoProgramLinks.ledger,
   },
   {
-    id: 'h1-25-28', stage: 'diagnostic', result: 'negative', coverage: ['H1.25', 'H1.26', 'H1.27', 'H1.28'],
-    title: { zh: 'H1.25–H1.28：尺度假设未获支持', en: 'H1.25–H1.28: scale hypothesis not supported' },
-    summary: { zh: '密封结果显示扩大训练规模不足以解释改善，且一部分尝试因解析/fallback 被排除。', en: 'Sealed results showed that scaling training was insufficient to explain improvement, with some attempts excluded for parsing/fallback contamination.' },
-    boundary: { zh: '支持“仅靠尺度不够”的否定性结论，不支持“方法已失败于所有设置”。', en: 'Supports the negative claim that scale alone is insufficient; not that the method fails in every setting.' },
+    id: 'h1-26-28', stage: 'diagnostic', result: 'negative', coverage: ['H1.26', 'H1.27', 'H1.28'],
+    title: { zh: 'H1.26–H1.28：grounding、模型与动作标签诊断', en: 'H1.26–H1.28: grounding, model, and action-label diagnostics' },
+    summary: { zh: '标题/价格 grounding 改变点击但未改变 score/win；H1.27 的 64 次尝试中 48 次有效、16 次 parser/fallback invalid，且无完整多任务赢家；H1.28 的 96 次尝试中 84 次有效、12 次 parser invalid，精确 oracle action 相对两种控制的 paired delta 均为 -0.3。', en: 'Title/price grounding changed clicks but not score or wins; H1.27 had 48 valid and 16 parser/fallback-invalid attempts out of 64, with no complete multi-task winner; H1.28 had 84 valid and 12 parser-invalid attempts out of 96, and the exact oracle action had a paired delta of -0.3 against both controls.' },
+    boundary: { zh: '不支持 grounding 足以改善得分或精确动作标签带来收益；parser/fallback 无效尝试不进入科学分母。', en: 'Does not support grounding as sufficient for score improvement or a benefit from exact action labels; parser/fallback-invalid attempts stay outside the scientific denominator.' },
     evidence: openEvoProgramLinks.ledger,
   },
   {
@@ -125,7 +126,7 @@ export const programTimeline = [
     evidence: openEvoProgramLinks.ledger,
   },
   {
-    id: 'h1-33', stage: 'transfer', result: 'negative', coverage: ['H1.33', 'H1.33R'],
+    id: 'h1-33', stage: 'transfer', result: 'negative', coverage: ['H1.33'],
     title: { zh: 'H1.33：正例 replay 未支持迁移', en: 'H1.33: positive replay did not support transfer' },
     summary: { zh: '用 H0.1 正例 replay 后，complete-valid tasks 上 BASE mean 为 0.142857、SELF mean 为 0。', en: 'After replaying H0.1 positives, BASE mean was 0.142857 and SELF mean was 0 on complete-valid tasks.' },
     boundary: { zh: '不支持正向迁移；也不提供 OpenEvo-vs-SEED 比较。', en: 'Does not support positive transfer and does not provide an OpenEvo-versus-SEED comparison.' },
@@ -135,7 +136,7 @@ export const programTimeline = [
     id: 'h1-34', stage: 'transfer', result: 'negative', coverage: ['H1.34'],
     title: { zh: 'H1.34：bounded parser repair 提高有效率', en: 'H1.34: bounded parser repair increased validity' },
     summary: { zh: '64 次尝试中有 60 次有效；parser repair 改善了可解释性，但 mean score 仍为 0。', en: 'Sixty of 64 attempts were valid; parser repair improved interpretability, but mean score remained 0.' },
-    boundary: { zh: '仅诊断；历史 artifact 内嵌 H1.30 schema/claim metadata，虽源行与身份为 H1.34，现仅披露而不改写。没有行为收益或迁移主张。', en: 'Diagnostic only; the historical artifact embeds H1.30 schema/claim metadata although its source rows and identity are H1.34. The mismatch is disclosed, not rewritten; no behavioral-gain or transfer claim.' },
+    boundary: { zh: '仅诊断；历史 artifact（冻结保存的实验产物文件）内嵌 H1.30 schema/claim metadata，虽源行与身份为 H1.34，现仅披露而不改写。没有行为收益或迁移主张。', en: 'Diagnostic only; the historical artifact (a frozen saved experiment output) embeds H1.30 schema/claim metadata although its source rows and identity are H1.34. The mismatch is disclosed, not rewritten; no behavioral-gain or transfer claim.' },
     evidence: openEvoProgramLinks.ledger,
   },
   {
@@ -153,6 +154,13 @@ export const programTimeline = [
     evidence: openEvoProgramLinks.ledger,
   },
   {
+    id: 'h1-37-r', stage: 'transfer', result: 'negative', coverage: ['H1.37-R'],
+    title: { zh: 'H1.37-R：同期 BASE 重跑排除时期漂移', en: 'H1.37-R: contemporaneous BASE rerun rules out period drift' },
+    summary: { zh: '重跑 48 个 BASE task × 4 seeds；BASE-original 与 BASE-R 完全相同，同周期 SELF-vs-BASE 仍为 null-like 且 underpowered。', en: 'Forty-eight BASE tasks × four seeds were rerun; BASE-original and BASE-R were identical, while contemporaneous SELF versus BASE remained null-like and underpowered.' },
+    boundary: { zh: '排除了执行时期漂移这一简单解释；未建立可靠正向迁移，也未证明零效应。', en: 'Rules out execution-period drift as a simple explanation; it establishes neither reliable positive transfer nor a zero effect.' },
+    evidence: openEvoProgramLinks.ledger,
+  },
+  {
     id: 'h1-38a-original', stage: 'closeout', result: 'invalid', coverage: ['H1.38A'],
     title: { zh: 'H1.38A 原始启动：面板未完整，结论无效', en: 'H1.38A original launch: incomplete panel, invalid conclusion' },
     summary: { zh: '原始大面板因缺失 cell 无法密封，保留为失败证据，随后按冻结清单只补缺失 cell。', en: 'The original large panel could not be sealed because cells were missing; it remains failure evidence, followed by completion of only the frozen missing cells.' },
@@ -162,19 +170,19 @@ export const programTimeline = [
   {
     id: 'h1-38ac', stage: 'closeout', result: 'supported', coverage: ['H1.38A-C'],
     title: { zh: 'H1.38A-C：冻结面板完整收口', en: 'H1.38A-C: complete frozen-panel closeout' },
-    summary: { zh: '四臂共 768 次尝试，764 次科学有效；D4、D8、D16 相对 base 均未达到预注册显著性标准。', en: 'Across four arms, 764 of 768 attempts were scientifically valid; D4, D8, and D16 did not meet the preregistered significance criterion versus base.' },
-    boundary: { zh: '建立“本冻结面板未检出显著收益”；不证明所有深度或所有 OpenEvo 修改都无效。', en: 'Establishes no detected significant benefit on this frozen panel; does not prove every depth or every OpenEvo modification ineffective.' },
+    summary: { zh: '四臂共 768 次尝试，764 次科学有效；D4、D8、D16 相对 base 的 task-cluster 95% CI 均跨 0，ordered delta 不单调。', en: 'Across four arms, 764 of 768 attempts were scientifically valid; the task-cluster 95% CI versus base crosses zero for D4, D8, and D16, and the ordered deltas are non-monotonic.' },
+    boundary: { zh: '建立完整固定面板与非单调 ordered delta，未建立可靠正向迁移；不证明所有 task-identity diversity 选择或 OpenEvo 修改都无效。', en: 'Establishes a complete fixed panel and non-monotonic ordered deltas without reliable positive transfer; it does not prove every task-identity diversity choice or OpenEvo modification ineffective.' },
     evidence: openEvoProgramLinks.reconciliation,
   },
   {
-    id: 'h1-38b', stage: 'closeout', result: 'protocol', coverage: ['H1.38B'],
-    title: { zh: 'H1.38B：方法对照尚未获授权', en: 'H1.38B: method control not authorized' },
-    summary: { zh: '存在协议草案，但当前 campaign 明确关闭任务消耗；没有密封结果，也没有执行授权。', en: 'A protocol draft exists, but the current campaign explicitly closes task consumption; there is no sealed result and no execution authorization.' },
-    boundary: { zh: '只能写 protocol-only / not-established，不能写成已运行或已证明。', en: 'May only be described as protocol-only / not-established, never as executed or proven.' },
+    id: 'h1-38b', stage: 'closeout', result: 'design', coverage: ['H1.38B'],
+    title: { zh: 'H1.38B：方法对照仅有 goal/design handoff', en: 'H1.38B: method control is only a goal/design handoff' },
+    summary: { zh: '当前只有 goal/design handoff；尚未形成 accepted preregistration，未授权、未执行，也没有密封结果。', en: 'Only a goal/design handoff exists: there is no accepted preregistration, authorization, execution, or sealed result.' },
+    boundary: { zh: 'not-established；它不是协议结果或已执行实验，不能写成已运行或已证明。', en: 'Not established; this is neither a protocol result nor an executed experiment and cannot be presented as run or proven.' },
     evidence: openEvoProgramLinks.campaign,
   },
   {
-    id: 'next', stage: 'closeout', result: 'protocol', coverage: ['Next'],
+    id: 'next', stage: 'closeout', result: 'design', coverage: ['Next'],
     title: { zh: '下一步：方法修改是推断，不是结果', en: 'Next: method changes are inference, not results' },
     summary: { zh: '优先冻结 H1.38 D8 的同一份数据，比较 ordinary sequential LoRA 与现有 SD-LoRA，并拆开 acquisition、retention 与 untouched transfer。', en: 'First freeze the same H1.38 D8 data, compare ordinary sequential LoRA with the current SD-LoRA, and separate acquisition, retention, and untouched transfer.' },
     boundary: { zh: '这是 inference/recommendation，必须经新预注册实验验证。', en: 'This is inference/recommendation and requires a new preregistered experiment.' },
@@ -191,12 +199,12 @@ export const h138Metrics = [
 
 export const claimState = {
   confirmed: {
-    zh: ['完整冻结面板为 768 次尝试、764 次科学有效。', 'D4/D8/D16 相对 base 均未达到预注册显著性标准。', '扩大训练深度本身没有成为稳定改进规律。'],
-    en: ['The complete frozen panel contains 768 attempts, 764 scientifically valid.', 'D4/D8/D16 did not meet the preregistered significance criterion versus base.', 'Increasing training depth alone did not become a stable improvement rule.'],
+    zh: ['完整冻结面板为 768 次尝试、764 次科学有效。', 'D4/D8/D16 相对 base 的 task-cluster 95% CI 均跨 0。', '固定 16 条成功记录时，4/8/16 个 training task identity 的 ordered delta 不单调。'],
+    en: ['The complete frozen panel contains 768 attempts, 764 scientifically valid.', 'The task-cluster 95% CI versus base crosses zero for D4, D8, and D16.', 'With 16 successful records fixed, the ordered deltas for 4/8/16 training task identities are non-monotonic.'],
   },
   inferred: {
-    zh: ['经验质量和信用分配可能比单独增加深度更关键。', '框架应在持久化前加入反事实验证与回滚门控。'],
-    en: ['Experience quality and credit assignment may matter more than depth alone.', 'The framework should add counterfactual validation and rollback gates before persistence.'],
+    zh: ['经验质量和信用分配可能比单独增加 task-identity 数量更关键。', '框架应在持久化前加入反事实验证与回滚门控。'],
+    en: ['Experience quality and credit assignment may matter more than task-identity count alone.', 'The framework should add counterfactual validation and rollback gates before persistence.'],
   },
   unknown: {
     zh: ['带匹配方法对照的 H1.38B 尚未授权或执行。', '这些修改能否跨任务、跨种子稳定改善仍未知。'],

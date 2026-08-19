@@ -25,17 +25,17 @@ const resultEntries = Object.entries(programResultLabels);
   <header class="program-hero">
     <div>
       <p class="eyebrow">OPENEVO × WEBSHOP · {t('实验项目报告', 'EXPERIMENT PROGRAM REPORT')}</p>
-      <h2>{t('我们没有找到“加深训练就会自进化”的证据', 'We did not find evidence that deeper training alone creates self-evolution')}</h2>
+      <h2>{t('固定 16 条成功记录时，增加训练 task identity 多样性没有形成单调收益', 'With 16 successful records fixed, greater training task-identity diversity did not produce a monotonic benefit')}</h2>
       <p class="lede">{t(
-        '从 Phase G 到 H1.38A-C，实验逐层回答了闭环能否运行、成功经验是否充足、参数变化是否生效、以及新任务上是否真的更好。最终冻结面板完整，但 D4、D8、D16 相对 base 均未达到预注册显著性标准。',
-        'From Phase G through H1.38A-C, the program tested whether the loop runs, successful experience is sufficient, parameter changes activate, and fresh-task performance actually improves. The final frozen panel is complete, but D4, D8, and D16 did not meet the preregistered significance criterion versus base.'
+        '从 Phase G 到 H1.38A-C，实验逐层回答了闭环能否运行、成功经验是否充足、参数变化是否生效、以及新任务上是否真的更好。D4、D8、D16 分别表示：固定 16 条成功记录，但记录来自 4、8、16 个训练 task identity 的三种 adapter arm；三组相对 base 的 task-cluster 95% CI 均跨 0。',
+        'From Phase G through H1.38A-C, the program tested whether the loop runs, successful experience is sufficient, parameter changes activate, and fresh-task performance actually improves. D4, D8, and D16 are three adapter arms with 16 successful records fixed and drawn from 4, 8, or 16 training task identities, respectively; every task-cluster 95% CI versus base crosses zero.'
       )}</p>
     </div>
     <aside class="snapshot" aria-label={t('冻结证据快照', 'Frozen evidence snapshot')}>
       <p><span>{t('完整尝试', 'Complete attempts')}</span><strong>768</strong></p>
       <p><span>{t('科学有效', 'Scientifically valid')}</span><strong>764</strong></p>
       <p><span>{t('无效', 'Invalid')}</span><strong>4</strong></p>
-      <p><span>{t('当前结论', 'Current conclusion')}</span><strong>{t('未检出显著收益', 'No significant benefit detected')}</strong></p>
+      <p><span>{t('当前结论', 'Current conclusion')}</span><strong>{t('三组 CI 均跨 0', 'All three CIs cross zero')}</strong></p>
     </aside>
   </header>
 
@@ -98,15 +98,15 @@ const resultEntries = Object.entries(programResultLabels);
       <div><p class="section-kicker">02 · VALIDITY</p><h3 id="validity-title">{t('为什么“跑完了”不等于“能用于结论”', 'Why “completed” does not mean “usable for a claim”')}</h3></div>
     </div>
     <div class="validity-grid">
-      <article class="valid-card valid"><span>{t('有效', 'VALID')}</span><h4>{t('进入科学分母', 'Enters the scientific denominator')}</h4><p>{t('任务身份、模型与协议匹配；动作可解析；没有 fallback 污染；最终 reconciliation 密封。', 'Task identity, model, and protocol match; actions parse; no fallback contamination; final reconciliation is sealed.')}</p><strong>764 / 768</strong></article>
-      <article class="valid-card invalid"><span>{t('无效', 'INVALID')}</span><h4>{t('保留，但不解释效果', 'Retained, but not interpreted as efficacy')}</h4><p>{t('H1.38A-C 的 4 次 D4 尝试因 parser/fallback 无效。更早期的 canary、缺失 cell 和协议草案也不能冒充科学结果。', 'Four H1.38A-C D4 attempts were invalid due to parser/fallback. Earlier canaries, missing cells, and protocol drafts also cannot stand in for scientific results.')}</p><strong>4 / 768</strong></article>
+      <article class="valid-card valid"><span>{t('有效', 'VALID')}</span><h4>{t('进入科学分母', 'Enters the scientific denominator')}</h4><p>{t('任务身份、模型与协议匹配；动作可解析；没有 fallback（解析失败时的替代动作）污染；最终 reconciliation 密封。', 'Task identity, model, and protocol match; actions parse; there is no fallback (substitute action after parsing failure) contamination; final reconciliation is sealed.')}</p><strong>764 / 768</strong></article>
+      <article class="valid-card invalid"><span>{t('无效', 'INVALID')}</span><h4>{t('保留，但不解释效果', 'Retained, but not interpreted as efficacy')}</h4><p>{t('H1.38A-C 的 4 次 D4 尝试因 parser/fallback 无效。更早期的 canary、缺失 cell 和未接受的设计也不能冒充科学结果。', 'Four H1.38A-C D4 attempts were invalid due to parser/fallback. Earlier canaries, missing cells, and unaccepted designs also cannot stand in for scientific results.')}</p><strong>4 / 768</strong></article>
     </div>
   </section>
 
   <section class="report-section" aria-labelledby="h138-title">
     <div class="section-heading">
-      <div><p class="section-kicker">03 · H1.38A-C</p><h3 id="h138-title">{t('深度增加带来了什么？', 'What did increasing depth produce?')}</h3></div>
-      <p>{t('条形显示各臂平均 WebShop 得分；配对差异及 95% CI 决定是否支持收益主张。', 'Bars show mean WebShop score by arm; paired differences and 95% CIs determine whether a benefit claim is supported.')}</p>
+      <div><p class="section-kicker">03 · H1.38A-C</p><h3 id="h138-title">{t('training task-identity diversity 带来了什么？', 'What did greater training task-identity diversity produce?')}</h3></div>
+      <p>{t('16 条成功记录固定不变；条形显示各臂平均 WebShop 得分，配对差异及 task-cluster 95% CI 决定证据边界。', 'The 16 successful records stay fixed; bars show mean WebShop score by arm, while paired differences and task-cluster 95% CIs define the evidence boundary.')}</p>
     </div>
     <div class="metric-layout">
       <figure class="score-chart">
@@ -145,7 +145,7 @@ const resultEntries = Object.entries(programResultLabels);
 
   <section class="report-section" aria-labelledby="decision-title">
     <div class="section-heading">
-      <div><p class="section-kicker">05 · NEXT OPENEVO</p><h3 id="decision-title">{t('下一轮不再只调深度，而是重构“学什么、怎么验”', 'The next round should redesign what to learn and how to validate—not just tune depth')}</h3></div>
+      <div><p class="section-kicker">05 · NEXT OPENEVO</p><h3 id="decision-title">{t('下一轮先做同数据方法对照，再决定框架改造', 'Run the same-data method control first, then decide framework changes')}</h3></div>
       <p>{t('以下均为 inference/recommendation，不是现有实验结果。每一步都需要新预注册实验。', 'Everything below is inference/recommendation, not a result of the existing experiments. Every step requires a new preregistered experiment.')}</p>
     </div>
     <ol class="decision-flow">
@@ -153,7 +153,7 @@ const resultEntries = Object.entries(programResultLabels);
     </ol>
     <div class="next-gate">
       <strong>{t('停止线', 'Stop line')}</strong>
-      <p>{t('H1.38B 只有协议草案：尚未授权、尚未执行、尚无 sealed result。网页和仓库均不得把它写成已完成比较。', 'H1.38B is only a protocol draft: not authorized, not executed, and without a sealed result. Neither the site nor repository may present it as a completed comparison.')}</p>
+      <p>{t('H1.38B 只有 goal/design handoff：尚未形成 accepted preregistration、尚未授权、尚未执行、尚无 sealed result。网页和仓库均不得把它写成协议结果或已完成比较。', 'H1.38B is only a goal/design handoff: there is no accepted preregistration, authorization, execution, or sealed result. Neither the site nor repository may present it as a protocol result or completed comparison.')}</p>
     </div>
   </section>
 </section>
@@ -220,7 +220,7 @@ const resultEntries = Object.entries(programResultLabels);
   .report-section{padding:clamp(3rem,7vw,6rem) 0;border-bottom:1px solid var(--line)}
   .section-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,.55fr);gap:2rem;align-items:end;margin-bottom:2rem}.section-heading h3{font-size:clamp(1.8rem,3.8vw,3.3rem);line-height:1.08;letter-spacing:-.04em;margin:0;max-width:24ch}.section-heading>p{color:var(--muted);line-height:1.65;margin:0}
   .filters{display:grid;gap:.8rem;padding:1rem;background:var(--wash);border:1px solid var(--line);border-radius:16px;margin-bottom:1.5rem}.filter-group{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}.filter-group>span{min-width:6rem;color:var(--muted);font-size:.78rem;font-weight:700}.filter{appearance:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:.48rem .78rem;font:inherit;font-size:.8rem;cursor:pointer}.filter.active{color:#fff;background:var(--ink);border-color:var(--ink)}.filter:focus-visible,.timeline-card:focus-visible,.dialog-close:focus-visible{outline:3px solid #75a1ff;outline-offset:3px}.filter-status{margin:0;color:var(--muted);font-size:.78rem}
-  .timeline{list-style:none;margin:0;padding:0;display:grid;gap:.65rem}.timeline-card{width:100%;display:grid;grid-template-columns:2.5rem minmax(0,1fr) 1.5rem;gap:1rem;text-align:left;padding:1.15rem;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:inherit;font:inherit;cursor:pointer}.timeline-card:hover{border-color:#8ca7df;background:#f9fbff}.timeline-index{font:700 .8rem ui-monospace,SFMono-Regular,monospace;color:var(--blue);padding-top:.2rem}.timeline-copy{display:grid;gap:.5rem;min-width:0}.timeline-copy>strong{font-size:1.08rem}.timeline-copy>span:not(.timeline-meta){color:var(--muted);line-height:1.55}.timeline-copy small{color:var(--ink);line-height:1.5;padding-left:.7rem;border-left:3px solid var(--line)}.timeline-meta{display:flex;flex-wrap:wrap;gap:.4rem}.timeline-meta span{background:var(--wash);border-radius:4px;padding:.2rem .4rem;color:var(--muted);font-size:.68rem;font-weight:700}.open-mark{color:var(--blue)}
+  .timeline{list-style:none;margin:0;padding:0;display:grid;gap:.65rem}.timeline-card{width:100%;display:grid;grid-template-columns:2.5rem minmax(0,1fr) 1.5rem;gap:1rem;text-align:left;padding:1.15rem;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:inherit;font:inherit;cursor:pointer}.timeline-card:hover{border-color:var(--blue);background:var(--wash)}.timeline-index{font:700 .8rem ui-monospace,SFMono-Regular,monospace;color:var(--blue);padding-top:.2rem}.timeline-copy{display:grid;gap:.5rem;min-width:0}.timeline-copy>strong{font-size:1.08rem}.timeline-copy>span:not(.timeline-meta){color:var(--muted);line-height:1.55}.timeline-copy small{color:var(--ink);line-height:1.5;padding-left:.7rem;border-left:3px solid var(--line)}.timeline-meta{display:flex;flex-wrap:wrap;gap:.4rem}.timeline-meta span{background:var(--wash);border-radius:4px;padding:.2rem .4rem;color:var(--muted);font-size:.68rem;font-weight:700}.open-mark{color:var(--blue)}
   .evidence-dialog{max-width:min(650px,calc(100vw - 2rem));border:1px solid var(--line);border-radius:18px;padding:2rem;color:var(--ink);box-shadow:0 20px 70px rgba(14,27,53,.25)}.evidence-dialog::backdrop{background:rgba(14,22,38,.65)}.evidence-dialog form{float:right}.dialog-close{border:1px solid var(--line);background:#fff;border-radius:50%;width:2rem;height:2rem;font-size:1.2rem;cursor:pointer}.evidence-dialog h4{font-size:1.6rem;margin:.5rem 0}.evidence-dialog>p{line-height:1.65;color:var(--muted)}.boundary{padding:1rem;border-left:4px solid var(--amber);background:#fff8e8;margin:1rem 0}.boundary p{margin:.4rem 0 0;line-height:1.55}.evidence-link{color:var(--blue);font-weight:700}
   .validity-grid,.claim-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.valid-card{padding:clamp(1.4rem,3vw,2.5rem);border:1px solid var(--line);border-radius:18px;background:var(--wash)}.valid-card>span{font:700 .76rem ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.valid-card h4{font-size:1.5rem;margin:.5rem 0}.valid-card p{color:var(--muted);line-height:1.65}.valid-card>strong{font-size:2rem}.valid{border-top:5px solid var(--green)}.invalid{border-top:5px solid var(--red)}
   .metric-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.7fr);gap:2rem;align-items:center}.score-chart{margin:0;padding:clamp(1rem,3vw,2rem);background:var(--wash);border:1px solid var(--line);border-radius:18px}.score-chart figcaption{font-weight:700;margin-bottom:1.4rem}.score-row{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.8rem;align-items:center;margin:.9rem 0}.score-track{height:2rem;background:#e5e9f0;border-radius:6px;overflow:hidden}.score-track span{display:flex;align-items:center;justify-content:flex-end;width:calc(var(--score) * 100%);min-width:3.2rem;height:100%;padding-right:.45rem;background:var(--blue);color:#fff}.score-track i{font-style:normal;font-size:.72rem;font-weight:700}.metric-summary{display:grid;gap:1rem}.callout{font-size:1.05rem;line-height:1.65;padding-left:1rem;border-left:4px solid var(--amber)}.metric-summary a{color:var(--blue);font-weight:700}.table-wrap{max-width:100%;overflow-x:auto;margin-top:1.5rem;border:1px solid var(--line);border-radius:12px}.table-wrap:focus-visible{outline:3px solid #75a1ff}.table-wrap table{width:100%;min-width:760px;border-collapse:collapse}.table-wrap th,.table-wrap td{text-align:left;padding:.8rem;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.table-wrap thead{background:var(--wash)}

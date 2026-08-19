@@ -67,3 +67,26 @@ test('decision flow uses geometric connectors across responsive layouts', async 
   expect(mobile.lineHeight).toBeGreaterThan(0);
   expect(mobile.borderBottom + mobile.borderRight).toBeGreaterThan(0);
 });
+
+test('dark-mode timeline hover preserves readable contrast', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/research/seed-openevo/results/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const card = page.locator('.timeline-card').first();
+  await card.hover();
+  const ratio = await card.evaluate((node) => {
+    const parse = (color: string) => (color.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+    const luminance = (color: string) => {
+      const channels = parse(color).map((value) => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    };
+    const style = getComputedStyle(node);
+    const foreground = luminance(style.color);
+    const background = luminance(style.backgroundColor);
+    return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+  });
+  expect(ratio).toBeGreaterThanOrEqual(4.5);
+});
