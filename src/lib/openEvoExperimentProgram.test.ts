@@ -56,15 +56,15 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(state).toContain('GPU allocation is not a static-site fact');
   });
 
-  it('keeps W&B observational and wires the bilingual static section before historical evidence', () => {
+  it('keeps W&B observational and routes the complete report before historical evidence', () => {
     expect(component).toContain('W&B 继续承担观测与比较');
     expect(component).toContain('Run Manifest');
     expect(component).toContain('data-testid="openevo-experiment-program"');
     expect(component).not.toContain('client:');
     for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('<OpenEvoExperimentProgram locale={locale} />');
-      expect(route.indexOf('<OpenEvoExperimentProgram locale={locale} />')).toBeLessThan(route.indexOf('<Seed3090ParametricProgress locale={locale} />'));
-      expect(route).toContain('reconciliation/result');
+      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale} />');
+      expect(route.indexOf('<OpenEvoWebShopProgramReport locale={locale} />')).toBeLessThan(route.indexOf('<Seed3090ParametricProgress locale={locale} />'));
+      expect(route).toContain('H1.38A-C');
       expect(route).not.toContain('5×RTX5090');
       expect(route).not.toContain('Phase H0 Natural Success Search');
     }

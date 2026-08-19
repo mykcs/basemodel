@@ -17,7 +17,7 @@ const pages = [
   { label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
   { label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
-  { label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
+  { label: t('完整实验报告', 'Full experiment report'), href: p('/research/seed-openevo/results/') },
 ];
 const objects = [
   { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验模型、revision、精度与运行设置。','Experiment model, revision, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
@@ -41,7 +41,7 @@ const objects = [
     <ol class="run-step-grid">
       <li><span>1</span><h3>{t('复现 SEED 条件', 'Reproduce SEED conditions')}</h3><p>{t('固定 Qwen2.5-3B-Instruct、ALFWorld、WebShop 与论文评测条件。','Pin Qwen2.5-3B-Instruct, ALFWorld, WebShop, and paper evaluation conditions.')}</p><a href={p('/research/seed-openevo/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('当前正式实验以 openevo-experiment 为准；RTX6 路线只作为历史参考。','Current formal experiments are governed by openevo-experiment; the RTX6 path is historical reference only.')}</p><a href={p('/guide/openevo-webshop-alfworld/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('比较与诊断', 'Compare and diagnose')}</h3><p>{t('比较任务结果、轨迹、fallback、失败模式与 adapter 状态，再决定下一轮实验。','Compare outcomes, trajectories, fallbacks, failure modes, and adapter states before choosing the next experiment.')}</p><a href={p('/research/seed-openevo/results/')}>{t('实验结果','Experiment results')} →</a></li>
+      <li><span>3</span><h3>{t('比较与诊断', 'Compare and diagnose')}</h3><p>{t('比较任务结果、轨迹、fallback、失败模式与 adapter 状态，再决定下一轮实验。','Compare outcomes, trajectories, fallbacks, failure modes, and adapter states before choosing the next experiment.')}</p><a href={p('/research/seed-openevo/results/')}>{t('完整实验报告','Full experiment report')} →</a></li>
     </ol>
   </section>
 

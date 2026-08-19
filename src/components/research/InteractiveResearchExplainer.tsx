@@ -135,8 +135,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     setPlaying((value) => !value);
   }, [overview, reducedMotion]);
 
-  // Article sections may dispatch `irx:scroll-step` (see ExplainerScrollLink.astro)
-  // so returning to the full-width stage keeps the corresponding step selected.
+  // Article sections may dispatch `irx:scroll-step` (see ExplainerScrollLink.astro).
+  // This passive synchronization changes selection only; it must not move the document.
   useEffect(() => {
     const onReveal = (event: Event) => {
       const raw = (event as CustomEvent<{ step?: number }>).detail?.step;
@@ -144,19 +144,11 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       const target = raw < 0 ? maxStep : clamp(Math.round(raw), 0, maxStep);
       setOverview(false);
       setPlaying(false);
-      setStep((current) => {
-        if (current === target) return current;
-        window.requestAnimationFrame(() => {
-          const root = rootRef.current;
-          const active = root?.querySelector<HTMLElement>('.irx-stage [data-active="true"], .irx-stepper li[data-active="true"]');
-          active?.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
-        });
-        return target;
-      });
+      setStep((current) => current === target ? current : target);
     };
     window.addEventListener('irx:scroll-step', onReveal);
     return () => window.removeEventListener('irx:scroll-step', onReveal);
-  }, [maxStep, reducedMotion]);
+  }, [maxStep]);
 
   useEffect(() => {
     if (!playing || reducedMotion) return;

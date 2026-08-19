@@ -20,7 +20,7 @@ const pages = [
   { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
   { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
-  { id: 'results', label: t('结果', 'Results'), href: p('/research/seed-openevo/results/') },
+  { id: 'results', label: t('完整实验报告', 'Full experiment report'), href: p('/research/seed-openevo/results/') },
 ] as const;
 
 const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }> = {
@@ -61,8 +61,8 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   },
   results: {
     eyebrow: t('实验', 'Experiment'),
-    title: t('实验结果与证据', 'Experiment results and evidence'),
-    lede: t('当前结果以 openevo-experiment 为准；seed3090 与 openevo-webshop 作为历史来源保留。', 'Current results are governed by openevo-experiment; seed3090 and openevo-webshop remain historical sources.'),
+    title: t('OpenEvo × WebShop 完整实验报告', 'OpenEvo × WebShop complete experiment report'),
+    lede: t('从 Phase G 到 H1.38A-C：当前冻结面板已完整收口；seed3090 与 openevo-webshop 只作为历史来源保留。', 'From Phase G through H1.38A-C: the current frozen panel is complete; seed3090 and openevo-webshop remain historical sources only.'),
   },
 };
 
@@ -78,8 +78,8 @@ const current = copy[page];
     {pages.map((item) => <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>)}
   </nav>
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
-  <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>
-  {hasExplainer && <ExplainerScrollLink />}
+  {page !== 'results' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
+  {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
 </div>
 
 <style>
