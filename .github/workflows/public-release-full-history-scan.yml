@@ -1,0 +1,131 @@
+name: Public release full-history secret scan
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/public-release-full-history-scan.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-release-full-history-secret-scan
+  cancel-in-progress: false
+
+jobs:
+  full-history:
+    name: All refs / full history / Gitleaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITLEAKS_VERSION: "8.30.1"
+      GITLEAKS_ASSET_SHA256: "5c2a4ee657a27614e10352bed2b8f1018ef9b05fc6c037cf737776bbe1255766"
+    steps:
+      - name: Fetch, verify, and scan every advertised ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mirror="$RUNNER_TEMP/basemodel.git"
+          refs_before="$RUNNER_TEMP/refs.before.txt"
+          refs_after="$RUNNER_TEMP/refs.after.txt"
+          report="$RUNNER_TEMP/gitleaks-redacted.json"
+          scan_log="$RUNNER_TEMP/gitleaks.log"
+          asset="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          download="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${asset}"
+
+          auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+
+          git init --bare "$mirror"
+          git -C "$mirror" remote add origin "$repo_url"
+          git -C "$mirror"             -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth_header"             fetch --force --prune origin '+refs/*:refs/*'
+
+          git -C "$mirror" fsck --full --no-reflogs
+          git -C "$mirror" for-each-ref             --format='%(refname) %(objectname)' |
+            LC_ALL=C sort > "$refs_before"
+
+          ref_count="$(wc -l < "$refs_before" | tr -d ' ')"
+          commit_count="$(git -C "$mirror" rev-list --all --count)"
+          object_count="$(git -C "$mirror" rev-list --objects --all | wc -l | tr -d ' ')"
+          refs_sha256="$(sha256sum "$refs_before" | awk '{print $1}')"
+
+          curl --fail --silent --show-error --location             "$download" --output "$RUNNER_TEMP/$asset"
+          printf '%s  %s\n' "$GITLEAKS_ASSET_SHA256" "$RUNNER_TEMP/$asset" |
+            sha256sum --check -
+          tar -xzf "$RUNNER_TEMP/$asset" -C "$RUNNER_TEMP" gitleaks
+          "$RUNNER_TEMP/gitleaks" version
+
+          set +e
+          "$RUNNER_TEMP/gitleaks" git             --no-banner             --no-color             --redact=100             --ignore-gitleaks-allow             --exit-code=42             --report-format=json             --report-path="$report"             --log-opts="--all --full-history"             "$mirror" > "$scan_log" 2>&1
+          scan_status="$?"
+          set -e
+
+          if [[ ! -f "$report" ]]; then
+            echo "Gitleaks did not produce the required report." >&2
+            sed -E 's/[[:alnum:]_+\/=.-]{20,}/[REDACTED]/g' "$scan_log" >&2
+            exit 3
+          fi
+
+          finding_count="$(jq 'length' "$report")"
+
+          git -C "$mirror"             -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth_header"             fetch --force --prune origin '+refs/*:refs/*'
+          git -C "$mirror" for-each-ref             --format='%(refname) %(objectname)' |
+            LC_ALL=C sort > "$refs_after"
+
+          refs_stable=PASS
+          if ! cmp --silent "$refs_before" "$refs_after"; then
+            refs_stable=FAIL
+          fi
+
+          {
+            echo "## Public release full-history secret scan"
+            echo
+            echo "- Repository: \`$GITHUB_REPOSITORY\`"
+            echo "- Trigger SHA: \`$GITHUB_SHA\`"
+            echo "- Gitleaks: \`$("$RUNNER_TEMP/gitleaks" version)\`"
+            echo "- Gitleaks asset SHA-256: \`$GITLEAKS_ASSET_SHA256\`"
+            echo "- Advertised refs: \`$ref_count\`"
+            echo "- Reachable commits: \`$commit_count\`"
+            echo "- Reachable objects: \`$object_count\`"
+            echo "- Ref snapshot SHA-256: \`$refs_sha256\`"
+            echo "- Refs stable during scan: \`$refs_stable\`"
+            echo "- Findings: \`$finding_count\`"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if (( finding_count > 0 )); then
+            {
+              echo "### Redacted finding metadata"
+              echo
+              echo "| Rule | Commit | Path | Line | Fingerprint |"
+              echo "|---|---|---|---:|---|"
+              jq -r '.[] | "| \\(.RuleID) | \\(if .Commit == "" then "working-tree" else .Commit end) | \\(.File | gsub("\\|"; "\\\\|")) | \\(.StartLine) | \\(.Fingerprint) |"' "$report"
+              echo
+              echo "Matched values are intentionally omitted. Treat every entry as HOLD until reviewed."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [[ "$refs_stable" != PASS ]]; then
+            echo "Remote refs changed during the scan; rerun against a stable snapshot." >&2
+            exit 4
+          fi
+
+          if [[ "$scan_status" -eq 0 && "$finding_count" -eq 0 ]]; then
+            echo "ALL_REFS_HISTORY_SCAN=PASS" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [[ "$scan_status" -eq 42 && "$finding_count" -gt 0 ]]; then
+            echo "ALL_REFS_HISTORY_SCAN=HOLD" >> "$GITHUB_STEP_SUMMARY"
+            exit 42
+          fi
+
+          echo "Gitleaks execution failed with status $scan_status." >&2
+          sed -E 's/[[:alnum:]_+\/=.-]{20,}/[REDACTED]/g' "$scan_log" >&2
+          exit 5
