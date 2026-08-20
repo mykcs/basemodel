@@ -7,6 +7,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
   scripts?: Record<string, string>;
 };
 const playwrightConfig = read('../../playwright.config.ts');
+const vercelUiGate = read('../../scripts/vercel-ui-gate.mjs');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
@@ -37,6 +38,17 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
     }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
+    expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
+  });
+
+  it('keeps the Vercel hosted browser gate Chromium-only and delegates WebKit to supported runners', () => {
+    expect(vercelUiGate).toContain("branch.startsWith('agent/css-')");
+    expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', 'chromium'])");
+    expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
+    expect(vercelUiGate).not.toContain('--project=webkit');
+    expect(policy).toContain('repository-owned Vercel browser gate is **Chromium-only**');
+    expect(policy).toContain('Playwright-supported macOS, Ubuntu, or Debian runner');
+    expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
   it('retains evidence when browser verification fails', () => {

@@ -107,6 +107,8 @@ This is intentionally gradual so visual output stays stable.
 - add `npm run audit:css`;
 - make the deployment gate reject new patch-style global layers.
 
+Phase 1 is deliberately a **cascade-preserving CSS composition refactor**: it changes the import root, not selectors, declarations, tokens, media queries, typography, responsive behavior, or ownership scope. Its acceptance therefore consists of the structural CSS audit, the full exact-head hosted Chromium matrix, and exact-head Preview review. It does not require forcing Playwright WebKit into Vercel's Amazon Linux build image.
+
 ### Phase 2 — global shell ownership
 
 When header/navigation/footer work is next touched:
@@ -114,6 +116,8 @@ When header/navigation/footer work is next touched:
 - move header-specific overrides out of `mobile-composition.css`, `final-hardening.css`, and `visual-closeout.css` into the Header/shared-shell owner;
 - keep global theme/tokens in the foundation;
 - run the full header + UI browser matrix before deleting old rules.
+
+Phase 2 changes selector ownership and potentially rendered cascade semantics, so it must run `npm run test:ui:all` on a Playwright-supported macOS/Ubuntu/Debian runner in addition to exact-head Preview review.
 
 ### Phase 3 — responsive ownership
 
@@ -145,6 +149,8 @@ If a pilot is run:
 - no new patch-style stylesheet family is introduced.
 
 The audit does **not** prove visual correctness. Shared/global CSS changes still require the repository UI acceptance policy and real browser coverage for light/dark, Chinese/English pressure, phone/tablet/desktop, overflow, focus/touch, sticky layers, and reduced motion where relevant.
+
+Browser depth follows the semantic change, not the filename alone. A composition-only import-root refactor with unchanged declarations/order may use `audit:css` + hosted Chromium + exact-head Preview. Any declaration, token, selector ownership, cascade order, typography, theme, responsive, animation, or layout change is classified upward and requires the cross-browser command on a supported runner.
 
 ## Relationship to project UI policy
 
