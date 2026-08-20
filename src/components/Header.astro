@@ -9,8 +9,8 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const otherLocale: Locale = zh ? 'en' : 'zh';
 
-// The global navigation keeps the two requested research surfaces visible. Everything
-// else stays in the secondary menu so the header reads as a research map, not a catalog.
+// Keep the global header focused on two research surfaces plus a small set of
+// genuinely top-level resources. Research subpages live inside their local nav.
 const { pathNoBase } = parsePath(Astro.url.pathname);
 const starts = (path: string) => pathNoBase === path || pathNoBase.startsWith(path.endsWith('/') ? path : `${path}/`);
 
@@ -36,17 +36,12 @@ const journeyLinks = [
 }));
 
 const utilityLinks = [
-  { path: '/guide/', label: t('复现 SEED', 'Reproduce SEED'), description: t('从 Agent 基础、训练链和证据开始', 'Start with the agent loop, training, and evidence') },
-  { path: '/research/seed-openevo/seed/', label: 'SEED', description: t('查看 SEED 的方法框架与更新机制', 'Read the SEED method and update mechanism') },
-  { path: '/research/seed-openevo/openevo/', label: 'OpenEvo', description: t('查看 OpenEvo 的跨任务演化流程', 'Read the OpenEvo cross-task evolution flow') },
-  { path: '/research/seed-openevo/benchmarks/', label: t('环境总览', 'Environment overview'), description: t('分别进入 ALFWorld 与 WebShop 的交互流程', 'Enter the ALFWorld and WebShop interaction flows') },
-  { path: '/research/seed-openevo/alfworld/', label: 'ALFWorld', description: t('文本化具身任务、世界状态与评分', 'Text embodied tasks, world state, and scoring') },
-  { path: '/research/seed-openevo/webshop/', label: 'WebShop', description: t('网页购物任务、动作与终局评测', 'Web shopping tasks, actions, and terminal evaluation') },
-  { path: '/models/', label: m.nav.models, description: t('查看模型版本、权重、显存和来源', 'Check model revisions, weights, memory, and sources') },
-  { path: '/papers/', label: m.nav.papers, description: t('查看论文方法、训练条件和来源', 'Check paper methods, training conditions, and sources') },
+  { path: '/models/', label: m.nav.models, description: t('具体模型、checkpoint、权重和运行条件', 'Concrete models, checkpoints, weights, and runtime conditions') },
+  { path: '/papers/', label: m.nav.papers, description: t('论文方法、模型角色、训练条件和来源', 'Paper methods, model roles, training conditions, and sources') },
+  { path: '/compare/', label: t('比较模型', 'Compare models'), description: t('并排检查会改变实验公平性的模型差异', 'Inspect model differences that can change experimental fairness') },
   { path: '/workspace/', label: t('实验工作台', 'Experiment workspace'), description: t('保存模型、GPU、网络和训练条件', 'Save model, GPU, network, and training settings') },
-  { path: '/compare/', label: t('比较模型', 'Compare models'), description: t('并排比较模型版本和实验影响', 'Compare model revisions and experiment impact side by side') },
-  { path: '/methodology/', label: t('方法与边界', 'Methodology'), description: t('查看事实来源、证据等级和比较边界', 'Check sources, evidence levels, and comparison boundaries') },
+  { path: '/data-status/', label: m.nav.dataStatus, description: t('数据更新、目录核验、未知字段与证据状态', 'Dataset updates, catalog checks, unknown fields, and evidence status') },
+  { path: '/methodology/', label: t('方法与边界', 'Methodology'), description: t('事实来源、证据等级和比较边界', 'Sources, evidence levels, and comparison boundaries') },
 ].map((link) => ({
   ...link,
   href: localePath(locale, link.path),
@@ -76,14 +71,14 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       </div>
 
       <details class="resource-menu" data-resource-menu>
-        <summary aria-label={t('打开更多入口', 'Open more destinations')}>
-          <span>{t('更多', 'More')}</span>
+        <summary aria-label={t('打开资料入口', 'Open resource destinations')}>
+          <span>{t('资料', 'Resources')}</span>
           <i aria-hidden="true"></i>
         </summary>
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
-            <small>{t('其他入口', 'Other destinations')}</small>
-            <strong>{t('没有放在主导航里的内容，都从这里进入', 'Everything outside the two main research surfaces lives here')}</strong>
+            <small>{t('一级资料区', 'Top-level resources')}</small>
+            <strong>{t('研究子页留在各自模块里，这里只保留全站一级入口', 'Research subpages stay inside their own modules; this menu only contains top-level site areas')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -124,10 +119,10 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-tools-title">{t('更多', 'More')}</span>
-          <small>{t('其他页面和资料都从这里进入', 'All other pages and references live here')}</small>
+          <span id="mobile-tools-title">{t('资料', 'Resources')}</span>
+          <small>{t('这里只列全站一级资料入口', 'Only top-level resource areas are listed here')}</small>
         </div>
-        <nav class="mobile-utility-links" aria-label={t('更多', 'More')}>
+        <nav class="mobile-utility-links" aria-label={t('资料', 'Resources')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
         </nav>
       </section>
