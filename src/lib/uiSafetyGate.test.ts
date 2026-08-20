@@ -12,6 +12,9 @@ const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec
 const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
+const appLayout = read('../layouts/AppLayout.astro');
+const header = read('../components/Header.astro');
+const visualCloseout = read('../styles/visual-closeout.css');
 const visualRoute = read('../components/visual/VisualRoute.astro');
 const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
@@ -49,13 +52,14 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
   });
 
-  it('crawls public route classes and requires computed global navigation to stay usable', () => {
+  it('crawls public route classes and requires the computed global shell to stay usable', () => {
     for (const term of [
       'bilingualStaticPaths',
       'zhOnlyStaticPaths',
       'toEnglishPath',
       'dynamicTemplateRoutes',
       '[data-site-header]',
+      '#main-content.site-main',
       "theme: 'light'",
       "theme: 'dark'",
       'width: 390',
@@ -64,6 +68,11 @@ describe('UI visual acceptance gate contract', () => {
       '.desktop-nav',
       '[data-menu-toggle]',
       'global site header must be visible after computed CSS',
+      'document horizontal overflow on public route',
+      'body overflow-x must not mask layout failures',
+      'main content shell must not collapse',
+      'responsive navigation controls remain operable instead of merely visible',
+      'mobile navigation sections must stack vertically rather than squeeze side-by-side',
       '/__header-gate-404__/',
     ]) {
       expect(headerVisibilityGate).toContain(term);
@@ -71,6 +80,27 @@ describe('UI visual acceptance gate contract', () => {
     expect(headerVisibilityGate).toContain("testInfo.project.name === 'chromium'");
     expect(headerVisibilityGate).toContain('public route must render successfully');
     expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
+  });
+
+  it('keeps root overflow observable and the refactored mobile menu vertically composed', () => {
+    expect(visualCloseout).toContain('overflow-x: visible');
+    expect(visualCloseout).toContain('Root overflow must stay observable');
+    expect(visualCloseout).toContain('The current Header owns a sectioned mobile navigation');
+    expect(visualCloseout).toContain('body .site-header .mobile-menu .mobile-menu__inner');
+    expect(visualCloseout).toContain('grid-template-columns: none');
+    const hardeningImport = appLayout.indexOf("import '../styles/final-hardening.css';");
+    const closeoutImport = appLayout.indexOf("import '../styles/visual-closeout.css';");
+    expect(hardeningImport).toBeGreaterThan(-1);
+    expect(closeoutImport).toBeGreaterThan(hardeningImport);
+  });
+
+  it('keeps the two-path header copy accurate and restores focus when More closes', () => {
+    expect(header).toContain("t('两条研究主线', 'Two primary research paths')");
+    expect(header).not.toContain('你可以做的三件事');
+    expect(header).not.toContain('Three things you can do');
+    expect(header).toContain('const focusWasInside = resourceMenu.contains(document.activeElement)');
+    expect(header).toContain("resourceMenu.querySelector<HTMLElement>('summary')?.focus()");
+    expect(headerVisibilityGate).toContain('await expect(resourceSummary).toBeFocused()');
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {

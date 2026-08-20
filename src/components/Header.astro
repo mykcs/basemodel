@@ -66,7 +66,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     </a>
 
     <nav aria-label={m.nav.mainNav} class="desktop-nav mission-nav">
-      <div class="journey-nav" aria-label={t('你可以做的三件事', 'Three things you can do')}>
+      <div class="journey-nav" aria-label={t('两条研究主线', 'Two primary research paths')}>
         {journeyLinks.map((link, index) => (
           <a class="journey-link" href={link.href} aria-current={link.current ? 'page' : undefined} data-active={link.active ? 'true' : undefined} data-journey={link.id}>
             <span class="journey-link__index">{String(index + 1).padStart(2, '0')}</span>
@@ -109,7 +109,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     <div class="shell mobile-menu__inner">
       <section class="mobile-menu__section" aria-labelledby="mobile-journeys-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-journeys-title">{t('你可以做的三件事', 'Three things you can do')}</span>
+          <span id="mobile-journeys-title">{t('两条研究主线', 'Two primary research paths')}</span>
           <small>{t('先选你现在要完成的事', 'Start with what you need to accomplish')}</small>
         </div>
         <nav class="mobile-journeys" aria-label={t('主要操作', 'Main actions')}>
@@ -170,7 +170,11 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
-    if (resourceMenu?.open) resourceMenu.open = false;
+    if (resourceMenu?.open) {
+      const focusWasInside = resourceMenu.contains(document.activeElement);
+      resourceMenu.open = false;
+      if (focusWasInside) resourceMenu.querySelector<HTMLElement>('summary')?.focus();
+    }
     if (mobileMenu?.classList.contains('is-open')) setMobileMenu(false, true);
   });
 
