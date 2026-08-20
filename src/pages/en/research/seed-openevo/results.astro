@@ -5,10 +5,22 @@ import OpenEvoWebShopProgramReport from '../../../../components/research/OpenEvo
 import Seed3090ParametricProgress from '../../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × WebShop experiment report" description="A paper-like H1.38A-C report with the primary result, confidence intervals, claim boundaries, next method control, and a collapsed complete lineage." locale={locale}>
+<AppLayout title="OpenEvo × WebShop: self-evolution results" description="How OpenEvo learns from WebShop experience, what the current data establishes, and which changes should be tested next for self-evolving agents." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results">
     <OpenEvoWebShopProgramReport locale={locale}>
       <Seed3090ParametricProgress slot="historical" locale={locale} />
     </OpenEvoWebShopProgramReport>
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style is:global>
+  body:has([data-program-report]) .plain-detail__header,
+  body:has([data-program-report]) .plain-detail__tabs,
+  body:has([data-program-report]) .research-context-bar,
+  body:has([data-program-report]) .page-outline,
+  body:has([data-program-report]) .compare-tray,
+  body:has([data-program-report]) .global-quick-view { display:none!important; }
+  body:has([data-program-report]) .plain-detail { width:min(1120px,calc(100% - 2rem));margin:1.4rem auto 4rem; }
+  body:has([data-program-report]) .plain-detail__interactive { margin:0; }
+  @media(max-width:720px){body:has([data-program-report]) .plain-detail{width:min(100% - 1rem,1120px);margin-top:.75rem}}
+</style>
