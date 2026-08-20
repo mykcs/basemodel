@@ -9,7 +9,7 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 3. `current/scenario-trigger-registry.md` — just-in-time trigger router; scan it automatically against the task.
 4. `current/product-and-research-integrity.md` — product and scientific completion boundary.
 5. `current/human-thinking-web-expression-contract.md` — mandatory expression/density/semantic-HTML contract for every user-facing change.
-6. `current/ui-design-principles.md`, `current/sitewide-visual-knowledge-architecture.md`, `current/theme-contrast-contract.md`, and `current/ui-change-visual-acceptance-gate.md` — UI system and browser acceptance.
+6. `current/ui-design-principles.md`, `current/css-architecture.md`, `current/sitewide-visual-knowledge-architecture.md`, `current/theme-contrast-contract.md`, and `current/ui-change-visual-acceptance-gate.md` — UI system, CSS ownership, and browser acceptance.
 7. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, `current/audience-centered-technical-copy.md`, and `current/scientific-state-provenance.md` — current research mission, reproduction, copy, and live scientific-state ownership.
 8. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
 9. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
@@ -17,7 +17,7 @@ Stable Agent entrypoint for `mykcs/basemodel`.
 11. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
 12. `current/release-closeout-protocol.md` — final exact-head acceptance, stale-evidence invalidation, failure classification, retry/flaky handling, pre-merge race check, expected-head merge locking, and Preview → Production closeout.
 13. `current/repository-map.md` — ownership/change-to-check map.
-13. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
+14. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
 15. Task-relevant model/data policies plus executable source, config and tests.
 
 The `/lab/` routes are governed by `current/personal-compute-profile-consumer.md`, which now defines a generic public lab topology privacy boundary. Personal device inventories and private infrastructure profiles must stay outside this public repository.
