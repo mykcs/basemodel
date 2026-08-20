@@ -17,11 +17,15 @@ const experimentZh = read('../pages/research/seed-openevo/experiment.astro');
 const experimentEn = read('../pages/en/research/seed-openevo/experiment.astro');
 
 describe('three-journey research experience', () => {
-  it('keeps the global navigation centered on the enduring user goals', () => {
-    for (const label of ['复现 SEED', 'OpenEvo 实验', '相关知识']) expect(header).toContain(label);
+  it('keeps the global navigation centered on the two research surfaces plus More', () => {
+    for (const label of ['流程理解图', 'OpenEvo × WebShop 科学研究', "t('更多', 'More')"]) expect(header).toContain(label);
     expect(header).toContain('journey-nav');
     expect(header).toContain('mobile-journeys');
     expect(header).toContain('/research/seed-openevo/experiment/');
+    expect(header).toContain('/research/seed-openevo/seed/');
+    expect(header).toContain('/research/seed-openevo/openevo/');
+    expect(header).toContain('/research/seed-openevo/webshop/');
+    expect(header).toContain('/research/seed-openevo/alfworld/');
   });
 
   it('keeps both benchmark data flows visible as real architecture diagrams', () => {

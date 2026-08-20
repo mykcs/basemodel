@@ -9,45 +9,25 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const otherLocale: Locale = zh ? 'en' : 'zh';
 
-// The global navigation follows the three enduring user journeys rather than the
-// implementation's page inventory. Secondary research utilities remain one step away.
+// The global navigation keeps the two requested research surfaces visible. Everything
+// else stays in the secondary menu so the header reads as a research map, not a catalog.
 const { pathNoBase } = parsePath(Astro.url.pathname);
 const starts = (path: string) => pathNoBase === path || pathNoBase.startsWith(path.endsWith('/') ? path : `${path}/`);
 
 const journeyLinks = [
   {
-    id: 'seed',
-    path: '/guide/',
-    label: t('复现 SEED', 'Reproduce SEED'),
-    meta: t('Agent 101 · 训练链 · 真机证据', 'Agent 101 · training loop · real evidence'),
-    active: pathNoBase === '/guide/' || starts('/research/seed-openevo/seed/'),
+    id: 'flow',
+    path: '/research/seed-openevo/',
+    label: t('流程理解图', 'Flow map'),
+    meta: 'OpenEvo · SEED · ALFWorld · WebShop',
+    active: starts('/research/seed-openevo/') && !starts('/research/seed-openevo/experiment/') && !starts('/research/seed-openevo/results/'),
   },
   {
-    id: 'openevo',
+    id: 'study',
     path: '/research/seed-openevo/experiment/',
-    label: t('OpenEvo 实验', 'OpenEvo experiments'),
-    meta: 'WebShop · ALFWorld',
-    active: starts('/research/seed-openevo/experiment/') || starts('/guide/openevo-webshop-alfworld/') || [
-      '/research/seed-openevo/openevo/',
-      '/research/seed-openevo/benchmarks/',
-      '/research/seed-openevo/webshop/',
-      '/research/seed-openevo/alfworld/',
-      '/research/seed-openevo/loops/',
-      '/research/seed-openevo/results/',
-    ].some(starts),
-  },
-  {
-    id: 'knowledge',
-    path: '/research/seed-openevo/base-model/',
-    label: t('相关知识', 'Foundations'),
-    meta: t('模型 · Agent · 训练', 'models · agents · training'),
-    active: starts('/research/seed-openevo/base-model/') || [
-      '/models/',
-      '/families/',
-      '/papers/',
-      '/landscape/',
-      '/methodology/',
-    ].some(starts),
+    label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study'),
+    meta: t('实验 · 复现 · 结论 · 下一步', 'experiments · reproduce · findings · next'),
+    active: starts('/research/seed-openevo/experiment/') || starts('/research/seed-openevo/results/') || starts('/guide/openevo-webshop-alfworld/'),
   },
 ].map((link) => ({
   ...link,
@@ -56,11 +36,17 @@ const journeyLinks = [
 }));
 
 const utilityLinks = [
-  { path: '/research/seed-openevo/', label: t('实验总览', 'Experiment overview'), description: t('查看 SEED、OpenEvo、ALFWorld 与 WebShop 的完整步骤', 'See the complete SEED, OpenEvo, ALFWorld, and WebShop flow') },
+  { path: '/guide/', label: t('复现 SEED', 'Reproduce SEED'), description: t('从 Agent 基础、训练链和证据开始', 'Start with the agent loop, training, and evidence') },
+  { path: '/research/seed-openevo/seed/', label: 'SEED', description: t('查看 SEED 的方法框架与更新机制', 'Read the SEED method and update mechanism') },
+  { path: '/research/seed-openevo/openevo/', label: 'OpenEvo', description: t('查看 OpenEvo 的跨任务演化流程', 'Read the OpenEvo cross-task evolution flow') },
+  { path: '/research/seed-openevo/benchmarks/', label: t('环境总览', 'Environment overview'), description: t('分别进入 ALFWorld 与 WebShop 的交互流程', 'Enter the ALFWorld and WebShop interaction flows') },
+  { path: '/research/seed-openevo/alfworld/', label: 'ALFWorld', description: t('文本化具身任务、世界状态与评分', 'Text embodied tasks, world state, and scoring') },
+  { path: '/research/seed-openevo/webshop/', label: 'WebShop', description: t('网页购物任务、动作与终局评测', 'Web shopping tasks, actions, and terminal evaluation') },
   { path: '/models/', label: m.nav.models, description: t('查看模型版本、权重、显存和来源', 'Check model revisions, weights, memory, and sources') },
   { path: '/papers/', label: m.nav.papers, description: t('查看论文方法、训练条件和来源', 'Check paper methods, training conditions, and sources') },
   { path: '/workspace/', label: t('实验工作台', 'Experiment workspace'), description: t('保存模型、GPU、网络和训练条件', 'Save model, GPU, network, and training settings') },
   { path: '/compare/', label: t('比较模型', 'Compare models'), description: t('并排比较模型版本和实验影响', 'Compare model revisions and experiment impact side by side') },
+  { path: '/methodology/', label: t('方法与边界', 'Methodology'), description: t('查看事实来源、证据等级和比较边界', 'Check sources, evidence levels, and comparison boundaries') },
 ].map((link) => ({
   ...link,
   href: localePath(locale, link.path),
@@ -90,14 +76,14 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       </div>
 
       <details class="resource-menu" data-resource-menu>
-        <summary aria-label={t('打开更多工具', 'Open more tools')}>
-          <span>{t('更多工具', 'More tools')}</span>
+        <summary aria-label={t('打开更多入口', 'Open more destinations')}>
+          <span>{t('更多', 'More')}</span>
           <i aria-hidden="true"></i>
         </summary>
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
-            <small>{t('按需查看', 'Open when needed')}</small>
-            <strong>{t('查模型、论文、实验配置或比较结果时再打开', 'Open these to check models, papers, experiment settings, or comparisons')}</strong>
+            <small>{t('其他入口', 'Other destinations')}</small>
+            <strong>{t('没有放在主导航里的内容，都从这里进入', 'Everything outside the two main research surfaces lives here')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -138,10 +124,10 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-tools-title">{t('更多工具', 'More tools')}</span>
-          <small>{t('需要查模型、论文、实验配置或比较结果时再打开', 'Open these to check models, papers, experiment settings, or comparisons')}</small>
+          <span id="mobile-tools-title">{t('更多', 'More')}</span>
+          <small>{t('其他页面和资料都从这里进入', 'All other pages and references live here')}</small>
         </div>
-        <nav class="mobile-utility-links" aria-label={t('更多工具', 'More tools')}>
+        <nav class="mobile-utility-links" aria-label={t('更多', 'More')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
         </nav>
       </section>
@@ -238,7 +224,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
   .journey-nav {
     display: grid;
-    grid-template-columns: repeat(3, minmax(118px, 1fr));
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
     gap: .32rem;
     min-width: 0;
   }
@@ -326,7 +312,11 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     z-index: 50;
     top: calc(100% + .65rem);
     right: 0;
+    box-sizing: border-box;
     width: min(520px, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    max-height: min(72vh, 640px);
+    overflow-y: auto;
     padding: .75rem;
     border: 1px solid var(--line);
     border-radius: 17px;
@@ -337,13 +327,13 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
 
   .resource-menu__intro {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
     gap: .8rem;
     align-items: baseline;
     padding: .45rem .55rem .75rem;
   }
   .resource-menu__intro small { color: var(--nav-accent); font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  .resource-menu__intro strong { color: var(--ink); font-size: .72rem; line-height: 1.4; }
+  .resource-menu__intro strong { min-width: 0; color: var(--ink); font-size: .72rem; line-height: 1.4; overflow-wrap: anywhere; white-space: normal; }
 
   .resource-menu__links {
     display: grid;
@@ -351,7 +341,11 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     gap: .38rem;
   }
   .resource-menu__links a {
+    display: grid;
+    align-content: start;
     min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .2rem;
     padding: .72rem;
     border: 1px solid transparent;
     border-radius: 11px;
@@ -365,9 +359,15 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
     background: color-mix(in srgb, var(--nav-accent) 6%, transparent);
   }
   .resource-menu__links strong,
-  .resource-menu__links span { display: block; }
+  .resource-menu__links span { display: block; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
   .resource-menu__links strong { color: var(--ink); font-size: .73rem; }
-  .resource-menu__links span { margin-top: .25rem; color: var(--muted); font-size: .62rem; line-height: 1.4; }
+  .resource-menu__links span { margin-top: 0; color: var(--muted); font-size: .62rem; line-height: 1.4; }
+
+  @media (max-width: 760px) {
+    .resource-menu__panel { width: min(520px, calc(100vw - 1rem)); max-width: calc(100vw - 1rem); }
+    .resource-menu__intro { grid-template-columns: 1fr; gap: .22rem; }
+    .resource-menu__links { grid-template-columns: 1fr; }
+  }
 
   .mobile-menu__inner {
     max-height: calc(100dvh - 66px);
@@ -430,14 +430,14 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
   :global(html.mobile-nav-open) { overflow: hidden; }
 
   @media (max-width: 1220px) {
-    .journey-nav { grid-template-columns: repeat(3, minmax(104px, 1fr)); }
+    .journey-nav { grid-template-columns: repeat(2, minmax(128px, 1fr)); }
     .journey-link { padding-inline: .42rem; }
     .journey-link__copy small { display: none; }
   }
 
   @media (max-width: 1080px) {
     .brand { flex: 0 0 auto; }
-    .journey-nav { grid-template-columns: repeat(3, minmax(96px, 1fr)); }
+    .journey-nav { grid-template-columns: repeat(2, minmax(112px, 1fr)); }
     .journey-link__index { display: none; }
     .journey-link { grid-template-columns: minmax(0, 1fr); text-align: center; }
     .resource-menu summary > span { display: none; }

@@ -15,6 +15,14 @@ const stages: Array<{ id: Stage; label: string }> = [
   { id: 'evidence', label: t('运行并记录', 'Run and record') },
   { id: 'decision', label: t('比较结果', 'Compare results') },
 ];
+const stageTargets: Record<Stage, string> = {
+  question: '/guide/',
+  constraints: '/workspace/',
+  candidates: '/models/',
+  evidence: '/research/seed-openevo/',
+  decision: '/research/seed-openevo/results/',
+};
+const localized = (target: string) => locale === 'en' ? `/en${target}` : target;
 const exact = (v: string) => path === v || path === `${v}/`;
 const starts = (v: string) => path.startsWith(`${v}/`);
 
@@ -45,7 +53,7 @@ if (exact('/guide')) {
 <section class="research-mainline" aria-label={t('实验步骤', 'Experiment steps')}>
   <div class="shell research-mainline-inner">
     <ol class="research-mainline-stages">
-      {stages.map((stage, index) => <li class:list={{ 'is-active': guide.stage === stage.id }} aria-current={guide.stage === stage.id ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><strong>{stage.label}</strong></li>)}
+      {stages.map((stage, index) => <li class:list={{ 'is-active': guide.stage === stage.id }}><a href={localized(stageTargets[stage.id])} aria-current={guide.stage === stage.id ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><strong>{stage.label}</strong></a></li>)}
     </ol>
     <div class="research-mainline-context">
       <div><small>{t('这页讲什么', 'What this page covers')}</small><strong>{guide.current}</strong></div>
@@ -55,5 +63,5 @@ if (exact('/guide')) {
   </div>
 </section>
 <style>
-  .research-mainline{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 76%,transparent)}.research-mainline-inner{padding-top:10px;padding-bottom:11px}.research-mainline-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}.research-mainline-stages li{display:flex;gap:7px;padding:6px 8px 7px;color:var(--muted);border-bottom:2px solid transparent}.research-mainline-stages li+li{border-left:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.research-mainline-stages span{font-size:.62rem}.research-mainline-stages strong{font-size:.72rem;line-height:1.25}.research-mainline-stages .is-active{color:var(--ink);border-bottom-color:var(--accent-deep)}.research-mainline-stages .is-active span{color:var(--accent-deep);font-weight:800}.research-mainline-context{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:9px}.research-mainline-context>div{min-width:0}.research-mainline-context small{display:block;margin-bottom:3px;color:var(--accent-deep);font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.research-mainline-context strong,.research-mainline-context span{display:block;font-size:.76rem;line-height:1.48}.research-mainline-context span{color:var(--muted)}@media(max-width:760px){.research-mainline-stages{display:flex;overflow-x:auto}.research-mainline-stages li{flex:0 0 auto;min-width:112px}.research-mainline-context{grid-template-columns:1fr;gap:7px}.research-mainline-context>div{padding-left:10px;border-left:2px solid var(--line)}}
+  .research-mainline{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 76%,transparent)}.research-mainline-inner{padding-top:10px;padding-bottom:11px}.research-mainline-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}.research-mainline-stages li{min-width:0;padding:6px 8px 7px;color:var(--muted);border-bottom:2px solid transparent}.research-mainline-stages li+li{border-left:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.research-mainline-stages a{display:flex;align-items:baseline;gap:7px;min-width:0;width:100%;padding:4px 3px;border-radius:6px;color:inherit;text-decoration:none;transition:color 150ms ease,background 150ms ease}.research-mainline-stages a:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}.research-mainline-stages a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:1px}.research-mainline-stages span{font-size:.62rem}.research-mainline-stages strong{font-size:.72rem;line-height:1.25}.research-mainline-stages .is-active{color:var(--ink);border-bottom-color:var(--accent-deep)}.research-mainline-stages .is-active span{color:var(--accent-deep);font-weight:800}.research-mainline-context{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:9px}.research-mainline-context>div{min-width:0}.research-mainline-context small{display:block;margin-bottom:3px;color:var(--accent-deep);font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.research-mainline-context strong,.research-mainline-context span{display:block;font-size:.76rem;line-height:1.48}.research-mainline-context span{color:var(--muted)}@media(max-width:760px){.research-mainline-stages{display:flex;overflow-x:auto}.research-mainline-stages li{flex:0 0 auto;min-width:112px}.research-mainline-context{grid-template-columns:1fr;gap:7px}.research-mainline-context>div{padding-left:10px;border-left:2px solid var(--line)}}
 </style>

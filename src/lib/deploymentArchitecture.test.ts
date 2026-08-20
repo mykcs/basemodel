@@ -29,7 +29,9 @@ describe('Vercel production deployment architecture', () => {
     expect(astroConfig).toContain("'https://basemodel-preview.vercel.app'");
     expect(astroConfig).toMatch(/\bbase:\s*['"]\/['"]/);
     expect(appLayout).toContain("process.env.VERCEL_ENV === 'preview'");
-    expect(playwright).toContain("baseURL: 'http://127.0.0.1:4327/'");
+    expect(playwright).toContain("process.env.PLAYWRIGHT_PORT ?? '4327'");
+    expect(playwright).toContain('const previewURL = `http://127.0.0.1:${previewPort}/`');
+    expect(playwright).toContain('baseURL: previewURL');
   });
 
   it('keeps Vercel Production indexable even if an old Preview-only noindex variable survives', () => {

@@ -233,6 +233,157 @@ for (const matrix of matrices) {
   });
 }
 
+test('standalone explainers keep fixed transport controls reachable without covering the stage', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const routes = [
+    ['/research/seed-openevo/seed/', 'seed'],
+    ['/research/seed-openevo/openevo/', 'openevo'],
+    ['/research/seed-openevo/webshop/', 'webshop'],
+    ['/research/seed-openevo/alfworld/', 'alfworld'],
+    ['/en/research/seed-openevo/seed/', 'seed'],
+    ['/en/research/seed-openevo/openevo/', 'openevo'],
+    ['/en/research/seed-openevo/webshop/', 'webshop'],
+    ['/en/research/seed-openevo/alfworld/', 'alfworld'],
+  ] as const;
+  for (const [path, kind] of routes) {
+    await test.step(path, async () => {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+      await ensureHydrated(root);
+      const transport = root.locator('.irx-transport');
+      await expect(transport).toHaveCSS('position', 'fixed');
+      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight * 0.55, behavior: 'auto' }));
+      await page.waitForTimeout(120);
+      await expect(transport).toBeInViewport();
+      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' }));
+      await page.waitForTimeout(120);
+      const collision = await page.evaluate(() => {
+        const dock = document.querySelector<HTMLElement>('.plain-detail__interactive .irx-transport')?.getBoundingClientRect();
+        const footerText = document.querySelector<HTMLElement>('.site-footer .footer-inner > span')?.getBoundingClientRect();
+        if (!dock || !footerText || footerText.top >= innerHeight) return 0;
+        return Math.max(0, Math.min(dock.right, footerText.right) - Math.max(dock.left, footerText.left))
+          * Math.max(0, Math.min(dock.bottom, footerText.bottom) - Math.max(dock.top, footerText.top));
+      });
+      expect(collision).toBeLessThanOrEqual(2);
+    });
+  }
+});
+
+test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
+  const viewport = { width: 440, height: 956 };
+  await page.setViewportSize(viewport);
+  for (const path of ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/']) {
+    await test.step(path, async () => {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
+      await ensureHydrated(root);
+      const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
+      for (let index = 0; index < 5; index += 1) await next.click();
+      await page.waitForTimeout(120);
+      const result = await page.evaluate(({ height }) => {
+        const stage = document.querySelector<HTMLElement>('.irx-webshop .irx-stage')?.getBoundingClientRect();
+        const image = document.querySelector<HTMLElement>('.irx-webshop .irx-product-image-large')?.getBoundingClientRect();
+        const info = document.querySelector<HTMLElement>('.irx-webshop .irx-product-detail > div:last-child')?.getBoundingClientRect();
+        const overlap = image && info
+          ? Math.max(0, Math.min(image.right, info.right) - Math.max(image.left, info.left))
+            * Math.max(0, Math.min(image.bottom, info.bottom) - Math.max(image.top, info.top))
+          : 0;
+        return {
+          stageHeight: stage?.height ?? Number.POSITIVE_INFINITY,
+          overlap,
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          viewportHeight: height,
+        };
+      }, viewport);
+      expect(result.stageHeight).toBeLessThanOrEqual(result.viewportHeight);
+      expect(result.overlap).toBeLessThanOrEqual(2);
+      expect(result.overflow).toBeLessThanOrEqual(2);
+    });
+  }
+});
+
+test('key environment explainers stay inside a narrow tablet viewport', async ({ page }) => {
+  const routes = [
+    { path: '/research/seed-openevo/webshop/', kind: 'webshop' },
+    { path: '/research/seed-openevo/alfworld/', kind: 'alfworld' },
+    { path: '/en/research/seed-openevo/webshop/', kind: 'webshop' },
+    { path: '/en/research/seed-openevo/alfworld/', kind: 'alfworld' },
+  ] as const;
+  const viewport = { width: 680, height: 900 };
+  await page.setViewportSize(viewport);
+  for (const route of routes) {
+    await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+    await settle(page);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    await stepThrough(page.locator(`[data-interactive-research-explainer="${route.kind}"]`).first(), viewport.width, true);
+  }
+});
+
+test('WebShop product detail columns do not overlap at an intermediate desktop width', async ({ page }) => {
+  await page.setViewportSize({ width: 1082, height: 900 });
+  for (const path of ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await settle(page);
+    const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
+    await ensureHydrated(root);
+    const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
+    for (let index = 0; index < 5; index += 1) await next.click();
+    await page.waitForTimeout(100);
+    const overlap = await page.evaluate(() => {
+      const image = document.querySelector<HTMLElement>('.irx-product-image-large')?.getBoundingClientRect();
+      const info = document.querySelector<HTMLElement>('.irx-product-detail > div:last-child')?.getBoundingClientRect();
+      if (!image || !info) return 0;
+      return Math.max(0, Math.min(image.right, info.right) - Math.max(image.left, info.left))
+        * Math.max(0, Math.min(image.bottom, info.bottom) - Math.max(image.top, info.top));
+    });
+    expect(overlap).toBeLessThanOrEqual(2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+  }
+});
+
+test('resource menu keeps utility labels and descriptions from overlapping', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 738 });
+  await page.goto('/research/seed-openevo/webshop/', { waitUntil: 'domcontentloaded' });
+  await settle(page);
+  await page.locator('[data-resource-menu] summary').click();
+  await expect(page.locator('.resource-menu__panel')).toBeVisible();
+  const issues = await page.evaluate(() => {
+    const panel = document.querySelector<HTMLElement>('.resource-menu__panel');
+    const links = [...document.querySelectorAll<HTMLElement>('.resource-menu__links a')];
+    if (!panel) return ['resource menu panel is missing'];
+    const issues: string[] = [];
+    const panelRect = panel.getBoundingClientRect();
+    if (panelRect.left < -2 || panelRect.right > document.documentElement.clientWidth + 2) issues.push('panel escapes viewport');
+    if (panel.scrollWidth > panel.clientWidth + 2) issues.push('panel has horizontal overflow');
+    const overlaps = (left: DOMRect, right: DOMRect) => Math.min(left.right, right.right) - Math.max(left.left, right.left) > 2
+      && Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top) > 2;
+    links.forEach((link, index) => {
+      const title = link.querySelector<HTMLElement>('strong');
+      const description = link.querySelector<HTMLElement>('span');
+      if (!title || !description) return issues.push(`utility card ${index} is missing text blocks`);
+      if (overlaps(title.getBoundingClientRect(), description.getBoundingClientRect())) issues.push(`utility card ${index} title overlaps description`);
+      if (description.scrollWidth > description.clientWidth + 2) issues.push(`utility card ${index} description overflows`);
+    });
+    return issues;
+  });
+  expect(issues, issues.join('\n')).toEqual([]);
+});
+
+test('research mainline stages are direct navigation targets', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 738 });
+  await page.goto('/guide/openevo-webshop-alfworld/', { waitUntil: 'domcontentloaded' });
+  await settle(page);
+  const stages = page.locator('.research-mainline-stages a');
+  await expect(stages).toHaveCount(5);
+  await expect(stages.nth(0)).toHaveAttribute('href', '/guide/');
+  await expect(stages.nth(1)).toHaveAttribute('href', '/workspace/');
+  await expect(stages.nth(2)).toHaveAttribute('href', '/models/');
+  await expect(stages.nth(3)).toHaveAttribute('href', '/research/seed-openevo/');
+  await expect(stages.nth(4)).toHaveAttribute('href', '/research/seed-openevo/results/');
+});
+
 test('research explainers preserve meaning with reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -242,6 +393,23 @@ test('research explainers preserve meaning with reduced motion', async ({ page }
   await expect(root).toHaveAttribute('data-reduced-motion', 'true');
   await expect(root.locator('.irx-transport button').filter({ hasText: /减少动态|Reduced motion/ })).toBeDisabled();
   await expect(root.locator('[data-flow-id="seed-next"]')).toBeVisible();
+});
+
+test('scroll-linked explainer updates do not pull a fast reader back to the stage', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 738 });
+  await page.goto('/research/seed-openevo/seed/', { waitUntil: 'domcontentloaded' });
+  const root = page.locator('[data-interactive-research-explainer="seed"]');
+  await ensureHydrated(root);
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
+  await page.waitForTimeout(650);
+  const before = await page.evaluate(() => window.scrollY);
+  expect(before).toBeGreaterThan(900);
+  await page.evaluate(() => window.dispatchEvent(new CustomEvent('irx:scroll-step', { detail: { step: 2 } })));
+  await page.waitForTimeout(350);
+  const after = await page.evaluate(() => window.scrollY);
+  expect(after).toBeGreaterThan(900);
+  expect(Math.abs(after - before)).toBeLessThan(12);
+  await expect(root).toHaveAttribute('data-overview', 'false');
 });
 
 test('research framework opens as a system map and can enter and leave trace mode', async ({ page }) => {

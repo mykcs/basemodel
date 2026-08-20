@@ -88,7 +88,7 @@ Stable examples:
 - **historical allocation:** a prior campaign may record `5×RTX5090` when explicitly labelled historical;
 - **live allocation/authorization:** must come from the current parent execution policy + active preregistration + explicitly authorized GPU UUIDs + live-idle checks.
 
-`seed3090` and `openevo-webshop` are historical/provenance sources. `openevo-experiment` owns scientific state. `zju-server` owns live server/resource policy.
+`seed3090` and `openevo-webshop` are historical/provenance sources. `openevo-experiment` owns scientific state. The private laboratory infrastructure repository owns live server/resource policy.
 
 Never promote a prior allocation into an undated `current allocation` sentence merely because an older page or test contained it.
 

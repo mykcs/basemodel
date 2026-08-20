@@ -40,7 +40,7 @@
 
 /* Step controls — TE-style playback bar: transport pills, progress track, step chips. */
 .irx-controls{display:grid;gap:.9rem;margin:1.45rem 0 1.25rem;padding:1rem 1.05rem 1.05rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--irx-shadow-soft)}
-.irx-transport{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.irx-transport{position:sticky;top:.6rem;z-index:10;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.35rem;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:8px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 8px 20px -16px color-mix(in srgb,var(--ink) 36%,transparent);backdrop-filter:blur(10px)}
 .irx-transport button{display:inline-flex;align-items:center;justify-content:center;gap:.38rem;min-height:36px;padding:.42rem .8rem;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font:750 .68rem/1.1 inherit;cursor:pointer}
 .irx-transport button:hover:not(:disabled),.irx-transport button:focus-visible{border-color:color-mix(in srgb,var(--irx-state) 55%,var(--line));background:color-mix(in srgb,var(--irx-state) 7%,var(--surface))}
 .irx-transport button:focus-visible{outline:2px solid color-mix(in srgb,var(--irx-state) 55%,transparent);outline-offset:2px}
@@ -71,6 +71,14 @@
 .irx-live>span{color:var(--line)}
 .irx-controls[data-overview=true]{border-color:color-mix(in srgb,var(--irx-state) 24%,var(--line))}
 .irx-controls[data-overview=true] .irx-progress i{width:0!important}
+
+/* Standalone method/environment pages keep transport controls reachable while
+ * the reader studies the long figure. Embedded benchmark stacks stay sticky
+ * so two explainers never compete for the same fixed dock. */
+.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:fixed;left:50%;right:auto;bottom:max(.75rem,env(safe-area-inset-bottom,0px));top:auto;z-index:40;width:min(520px,calc(100vw - 1rem));transform:translateX(-50%);justify-content:center;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 20%,transparent)}
+.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport .irx-reset{margin-left:auto}
+body:has(.plain-detail__interactive) .site-footer .footer-inner{padding-bottom:max(6rem,calc(5rem + env(safe-area-inset-bottom,0px)))}
+@media(max-width:760px){.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport button{min-height:34px;padding:.35rem .55rem}}
 
 /* Stage + node cards — white cards, rounded corners, soft elevation. */
 .irx-stage{position:relative;padding:0}

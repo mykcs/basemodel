@@ -7,7 +7,8 @@ const labZh = read('src/pages/lab.astro');
 const labEn = read('src/pages/en/lab.astro');
 const serverExplainer = read('src/components/research/explainer/ServerExplainer.tsx');
 const staticServerDiagram = read('src/components/research/ServerAuthorityDiagram.astro');
-const publicOwners = [guide, labZh, labEn, serverExplainer, staticServerDiagram];
+const experimentProgram = read('src/components/research/OpenEvoExperimentProgram.astro');
+const publicOwners = [guide, labZh, labEn, serverExplainer, staticServerDiagram, experimentProgram];
 
 const forbidden = [
   'dev-wangr',
@@ -17,6 +18,10 @@ const forbidden = [
   '/data/home/wangr',
   'ssh wangrui_user',
   'ssh wangrui_root',
+  '浙江大学',
+  'ZJU',
+  'zju-server',
+  'CompLifeLab-ZJU',
 ] as const;
 
 describe('public server copy', () => {
@@ -27,11 +32,20 @@ describe('public server copy', () => {
   });
 
   it('uses transferable role placeholders in the public reproduction runbook', () => {
-    for (const placeholder of ['<ordinary-account>', '<approved-control-account>', '<approved-persistent-workspace>', '<zju-server-checkout>']) {
+    for (const placeholder of ['<ordinary-account>', '<approved-control-account>', '<approved-persistent-workspace>', '<lab-infrastructure-checkout>']) {
       expect(guide).toContain(placeholder);
     }
-    expect(guide).toContain('真实服务器身份和路径回 zju-server 当前运行文档解析');
-    expect(guide).toContain('resolve real server identities and paths from the current zju-server runbook');
+    expect(guide).toContain('真实服务器身份和路径回实验室私有运行文档解析');
+    expect(guide).toContain('resolve real server identities and paths from the private laboratory runbook');
+  });
+
+  it('uses neutral laboratory naming and explains the 436 GiB provenance before the conclusion', () => {
+    expect(labZh).toContain('实验室 GPU Server');
+    expect(labZh).toContain('同一个容器里报告出来的三个入口');
+    expect(labZh).toContain('不同 backing device 的容量');
+    expect(labZh).not.toContain('OWNED vs VISIBLE');
+    expect(labEn).not.toContain('OWNED vs VISIBLE');
+    expect(staticServerDiagram).toContain('实验室服务器权限模型');
   });
 
   it('keeps server authority diagrams descriptive rather than identifying sibling users', () => {
