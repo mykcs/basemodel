@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
+type ResearchPage = 'hub' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
 
 interface Props {
   locale: Locale;
@@ -22,7 +22,8 @@ const pages = [
   { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
   { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
-  { id: 'results', label: t('完整实验报告', 'Full experiment report'), href: p('/research/seed-openevo/results/') },
+  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
+  { id: 'results', label: t('实验结果', 'Experiment results'), href: p('/research/seed-openevo/results/') },
 ] as const;
 ---
 <div class="research-navigation" data-research-navigation>

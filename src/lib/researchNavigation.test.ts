@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const navigation = read('src/components/research/SeedOpenEvoResearchNav.astro');
+const missionRibbon = read('src/components/research/SeedOpenEvoMissionRibbon.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
 const report = read('src/components/research/OpenEvoWebShopProgramReport.astro');
@@ -18,6 +19,7 @@ const orderedIds = [
   "id: 'webshop'",
   "id: 'alfworld'",
   "id: 'loops'",
+  "id: 'run'",
   "id: 'results'",
 ];
 
@@ -31,11 +33,17 @@ describe('SEED × OpenEvo research navigation', () => {
     }
     expect(navigation).toContain("t('研究导航', 'Research navigation')");
     expect(navigation).toContain("t('SEED 与 OpenEvo 全局研究导航', 'SEED and OpenEvo global research navigation')");
+    expect(navigation).toContain("t('运行实验', 'Run experiment')");
+    expect(navigation).toContain("t('实验结果', 'Experiment results')");
   });
 
-  it('renders that same global navigation on the hub and every detail route', () => {
+  it('renders that same global navigation on the hub, every detail route, and the experiment guide bridge', () => {
     expect(hub).toContain('<SeedOpenEvoResearchNav locale={locale} page="hub" />');
     expect(detail).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
+    expect(missionRibbon).toContain("import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';");
+    expect(missionRibbon).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
+    expect(missionRibbon).toContain("exact('/guide/openevo-webshop-alfworld') ? 'run'");
+    expect(missionRibbon).not.toContain('const steps = [');
     expect(hub).not.toContain('const pages = [');
     expect(detail).not.toContain('const pages = [');
     expect(detail).not.toContain('navIds');
