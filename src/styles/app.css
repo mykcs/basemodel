@@ -1,0 +1,33 @@
+/*
+ * Canonical site-wide stylesheet entrypoint.
+ *
+ * Keep AppLayout pointed at this file only. The import order below preserves
+ * the currently validated cascade while CSS ownership is migrated gradually.
+ * Do not add another page-wide hardening/closeout/refinement layer; place new
+ * rules in the owning foundation, feature, or component stylesheet instead.
+ */
+
+/* Foundation: tokens -> site primitives -> durable visual identity. */
+@import './global.css';
+
+/* Owned global surfaces. */
+@import './workspace.css';
+
+/*
+ * Frozen legacy compatibility layers. These remain in the validated order for
+ * now, but they are migration debt rather than extension points. When a rule
+ * here is touched, prefer moving it to its semantic owner and deleting the
+ * override from the legacy layer.
+ */
+@import './v2-closeout.css';
+@import './visual-upgrade.css';
+@import './design-refinement.css';
+@import './final-hardening.css';
+
+/* Cross-cutting product capabilities with explicit ownership. */
+@import './actionable-content.css';
+@import './knowledge-architecture.css';
+@import './mobile-composition.css';
+
+/* Last validated geometry constraints; shrink this file as owners absorb it. */
+@import './visual-closeout.css';

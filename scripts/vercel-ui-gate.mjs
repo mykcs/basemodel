@@ -2,7 +2,14 @@ import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const shouldRun = branch.startsWith('agent/visual-closeout-')
-  || branch.startsWith('agent/semantic-release-visual-closeout-');
+  || branch.startsWith('agent/semantic-release-visual-closeout-')
+  || branch.startsWith('agent/css-')
+  || branch.startsWith('agent/ui-')
+  || branch.startsWith('agent/layout-')
+  || branch.startsWith('agent/theme-')
+  || branch.startsWith('agent/responsive-')
+  || branch.startsWith('agent/nav-')
+  || branch.startsWith('agent/navigation-');
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -43,8 +50,14 @@ const capture = (command, args) => {
 console.log(`[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`);
 
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
-// installer assumes Ubuntu/apt, so install the equivalent AL2023 runtime
-// libraries explicitly with Vercel's supported dnf package manager.
+// installer assumes Ubuntu/apt, so install the equivalent AL2023 Chromium
+// runtime libraries explicitly with Vercel's supported dnf package manager.
+//
+// This hosted gate is intentionally Chromium-only. Playwright WebKit fallback
+// binaries target supported Ubuntu/Debian environments and must not be forced
+// into the AL2023 build image with ad-hoc ABI shims. When cross-browser
+// acceptance is required, run `npm run test:ui:all` on a Playwright-supported
+// runner instead of weakening or destabilizing the Vercel Preview gate.
 run('dnf', [
   'install', '-y', '--setopt=install_weak_deps=False',
   'nspr', 'nss',
@@ -86,4 +99,5 @@ run('npm', ['run', 'test:ui'], {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',
 });
+
 console.log('[vercel-ui-gate] PASS');

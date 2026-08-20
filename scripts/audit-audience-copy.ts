@@ -108,7 +108,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   const discovered = new Set(discoveredFiles);
   for (const file of requiredOwners) if (!discovered.has(file)) failures.push({ file, line: 1, ruleId: 'COPY-OWNER-001', snippet: file, reason: 'A known production copy owner must remain in scanner discovery.', strict: true });
 
-  requireText('src/pages/_bodies/home-v2.astro', 'COPY-I18N-002', 'localizedChangeEventNote(event, locale)', 'Home change-event notes must be selected by page locale with an explicit fallback.');
+  requireText('src/pages/_bodies/data-status.astro', 'COPY-I18N-002', 'localizedChangeEventNote(event, locale)', 'Data-status change-event notes must be selected by page locale with an explicit fallback.');
 
   const hero = 'src/components/research/SeedOpenEvoMissionHero.astro';
   requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const layer = readFileSync(new URL('./ActionableContentLayer.astro', import.meta.url), 'utf8');
 const copyButton = readFileSync(new URL('./CopyButton.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../../layouts/AppLayout.astro', import.meta.url), 'utf8');
+const appStyles = readFileSync(new URL('../../styles/app.css', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../../styles/actionable-content.css', import.meta.url), 'utf8');
 const clipboard = readFileSync(new URL('../../lib/clipboard.ts', import.meta.url), 'utf8');
 const hardware = readFileSync(new URL('../workspace/task/HardwareCalculator.tsx', import.meta.url), 'utf8');
@@ -15,8 +16,11 @@ describe('site-wide actionable content UX', () => {
   it('mounts one global layer and loads its styles after prior hardening', () => {
     expect(layout).toContain('ActionableContentLayer');
     expect(layout).toContain('<ActionableContentLayer locale={locale} />');
-    expect(layout).toContain("../styles/actionable-content.css");
-    expect(layout.indexOf("../styles/actionable-content.css")).toBeGreaterThan(layout.indexOf("../styles/final-hardening.css"));
+    expect(layout).toContain("import '../styles/app.css';");
+    const hardeningImport = appStyles.indexOf("@import './final-hardening.css';");
+    const actionableImport = appStyles.indexOf("@import './actionable-content.css';");
+    expect(hardeningImport).toBeGreaterThan(-1);
+    expect(actionableImport).toBeGreaterThan(hardeningImport);
   });
 
   it('automatically enhances static block and inline code', () => {

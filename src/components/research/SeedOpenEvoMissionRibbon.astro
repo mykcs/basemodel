@@ -1,15 +1,17 @@
 ---
-import { localePath, type Locale } from '../../i18n';
+import type { Locale } from '../../i18n';
+import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';
 
 interface Props {
   locale: Locale;
   path: string;
 }
 
+type ResearchPage = 'hub' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+
 const { locale, path } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const p = (target: string) => localePath(locale, target);
 
 const exact = (target: string) => path === target || path === `${target}/`;
 const relevant = exact('/guide')
@@ -20,66 +22,27 @@ const relevant = exact('/guide')
   || exact('/workspace')
   || exact('/compare');
 
-const active = exact('/models') || exact('/models/qwen2-5-3b-instruct') ? 'model'
+const page: ResearchPage = exact('/models') || exact('/models/qwen2-5-3b-instruct') ? 'base-model'
   : exact('/papers/seed') ? 'seed'
   : exact('/guide/openevo-webshop-alfworld') ? 'run'
-  : exact('/workspace') || exact('/compare') ? 'evidence'
-  : exact('/guide') ? 'learn'
-  : 'mission';
-
-const steps = [
-  { id: 'mission', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
-  { id: 'model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
-  { id: 'seed', label: t('SEED 方法', 'SEED method'), href: p('/research/seed-openevo/seed/') },
-  { id: 'openevo', label: t('OpenEvo 方法', 'OpenEvo method'), href: p('/research/seed-openevo/openevo/') },
-  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
-  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
-  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
-  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
-  { id: 'evidence', label: t('比较结果', 'Compare results'), href: p('/research/seed-openevo/results/') },
-];
+  : exact('/workspace') || exact('/compare') ? 'results'
+  : 'hub';
 ---
 {relevant && (
   <aside class="mission-ribbon" aria-label={t('SEED 与 OpenEvo 实验导航', 'SEED and OpenEvo experiment navigation')}>
-    <div class="shell mission-ribbon__inner">
-      <div class="mission-ribbon__label">
-        <small>{t('实验顺序', 'Experiment order')}</small>
-        <strong>{t('复现 SEED → 运行 OpenEvo → 比较结果', 'Reproduce SEED → run OpenEvo → compare results')}</strong>
-      </div>
-      <nav>
-        {steps.map((step) => <a href={step.href} aria-current={step.id === active ? 'step' : undefined}>{step.label}</a>)}
-      </nav>
+    <div class="mission-ribbon__inner">
+      <SeedOpenEvoResearchNav locale={locale} page={page} />
     </div>
   </aside>
 )}
 
 <style>
-  .mission-ribbon {
-    border-bottom: 1px solid var(--line, #d9d4c8);
-    background: color-mix(in srgb, var(--accent, #2457d6) 5%, var(--surface, #fff));
+  .mission-ribbon__inner{
+    width:min(1160px,calc(100% - 2rem));
+    margin-inline:auto;
   }
 
-  .mission-ribbon__inner {
-    display: grid;
-    grid-template-columns: minmax(190px, 0.55fr) minmax(0, 1.45fr);
-    gap: 1rem;
-    align-items: center;
-    padding-top: 0.55rem;
-    padding-bottom: 0.55rem;
-  }
-
-  .mission-ribbon__label small,
-  .mission-ribbon__label strong { display: block; }
-  .mission-ribbon__label small { color: var(--accent, #2457d6); font-size: 0.62rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
-  .mission-ribbon__label strong { margin-top: 0.2rem; font-size: 0.75rem; line-height: 1.35; }
-
-  .mission-ribbon nav { display: flex; gap: 0.25rem; overflow-x: auto; padding: 0.2rem; }
-  .mission-ribbon a { flex: 0 0 auto; padding: 0.45rem 0.6rem; border-radius: 999px; color: var(--muted, #5d584f); font-size: 0.66rem; font-weight: 750; text-decoration: none; }
-  .mission-ribbon a:hover,
-  .mission-ribbon a:focus-visible { color: var(--text, #201c16); background: color-mix(in srgb, var(--accent, #2457d6) 8%, transparent); }
-  .mission-ribbon a[aria-current='step'] { color: #fff; background: var(--accent, #2457d6); }
-
-  @media (max-width: 760px) {
-    .mission-ribbon__inner { grid-template-columns: 1fr; gap: 0.35rem; }
+  @media(max-width:720px){
+    .mission-ribbon__inner{width:min(100% - 1rem,1160px)}
   }
 </style>
