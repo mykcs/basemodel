@@ -12,3 +12,9 @@ const locale = 'zh' as const;
     </OpenEvoWebShopProgramReport>
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style is="global">
+  body:has([data-program-report]) .site-footer,
+  body:has([data-program-report]) .plain-detail__header,
+  body:has([data-program-report]) .plain-detail__tabs { display:none!important; }
+</style>
