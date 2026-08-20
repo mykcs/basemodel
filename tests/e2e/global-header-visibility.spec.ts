@@ -86,6 +86,12 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
 
     const headers = [...document.querySelectorAll('[data-site-header]')];
     const header = headers[0] ?? null;
+    const main = document.querySelector('#main-content.site-main');
+    const root = document.documentElement;
+    const bodyStyle = getComputedStyle(document.body);
+    const rootStyle = getComputedStyle(root);
+    const mainRect = main?.getBoundingClientRect() ?? null;
+
     if (!header) {
       return {
         count: 0,
@@ -97,6 +103,14 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
         height: 0,
         brandVisible: false,
         navigationVisible: false,
+        rootScrollWidth: root.scrollWidth,
+        rootClientWidth: root.clientWidth,
+        bodyOverflowX: bodyStyle.overflowX,
+        rootOverflowX: rootStyle.overflowX,
+        mainVisible: visible(main),
+        mainWidth: mainRect?.width ?? 0,
+        mainLeft: mainRect?.left ?? 0,
+        mainRight: mainRect?.right ?? 0,
       };
     }
 
@@ -112,6 +126,14 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
       height: rect.height,
       brandVisible: visible(header.querySelector('.brand')),
       navigationVisible: visible(header.querySelector(desktop ? '.desktop-nav' : '[data-menu-toggle]')),
+      rootScrollWidth: root.scrollWidth,
+      rootClientWidth: root.clientWidth,
+      bodyOverflowX: bodyStyle.overflowX,
+      rootOverflowX: rootStyle.overflowX,
+      mainVisible: visible(main),
+      mainWidth: mainRect?.width ?? 0,
+      mainLeft: mainRect?.left ?? 0,
+      mainRight: mainRect?.right ?? 0,
     };
   }, { desktop: state.viewport.width >= 1080 });
 
@@ -129,9 +151,23 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
       ? `${context}: desktop navigation must be visible`
       : `${context}: responsive navigation control must be visible`,
   ).toBe(true);
+
+  expect(snapshot.bodyOverflowX, `${context}: body overflow-x must not mask layout failures`).not.toBe('hidden');
+  expect(snapshot.bodyOverflowX, `${context}: body overflow-x must not mask layout failures`).not.toBe('clip');
+  expect(snapshot.rootOverflowX, `${context}: html overflow-x must not mask layout failures`).not.toBe('hidden');
+  expect(snapshot.rootOverflowX, `${context}: html overflow-x must not mask layout failures`).not.toBe('clip');
+  expect(
+    snapshot.rootScrollWidth,
+    `${context}: document horizontal overflow on public route (${snapshot.rootScrollWidth}px > ${snapshot.rootClientWidth}px)`,
+  ).toBeLessThanOrEqual(snapshot.rootClientWidth + 2);
+
+  expect(snapshot.mainVisible, `${context}: main content must remain visible`).toBe(true);
+  expect(snapshot.mainWidth, `${context}: main content shell must not collapse`).toBeGreaterThan(state.viewport.width * 0.9);
+  expect(snapshot.mainLeft, `${context}: main content must not escape left viewport edge`).toBeGreaterThanOrEqual(-2);
+  expect(snapshot.mainRight, `${context}: main content must not escape right viewport edge`).toBeLessThanOrEqual(state.viewport.width + 2);
 }
 
-test('global navigation survives computed CSS across every public route class', async ({ page }, testInfo) => {
+test('global shell and navigation survive computed CSS across every public route class', async ({ page }, testInfo) => {
   test.setTimeout(testInfo.project.name === 'chromium' ? 180_000 : 120_000);
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
 
@@ -152,6 +188,79 @@ test('global navigation survives computed CSS across every public route class', 
       }
     });
   }
+});
+
+test('responsive navigation controls remain operable instead of merely visible', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
+
+  const toggle = page.locator('[data-menu-toggle]');
+  const mobileMenu = page.locator('[data-mobile-menu]');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(mobileMenu).toHaveAttribute('aria-hidden', 'false');
+  await expect(mobileMenu).toBeVisible();
+  await expect(mobileMenu.locator('.mobile-journeys a').first()).toBeVisible();
+  await expect(mobileMenu.locator('.lang-switch')).toHaveAttribute('href', '/en/research/seed-openevo/results/');
+
+  const mobileGeometry = await mobileMenu.locator('.mobile-menu__inner').evaluate((inner) => {
+    const sections = [...inner.querySelectorAll<HTMLElement>('.mobile-menu__section')];
+    const controls = inner.querySelector<HTMLElement>('.mobile-menu__controls');
+    const innerRect = inner.getBoundingClientRect();
+    const sectionRects = sections.map((section) => section.getBoundingClientRect());
+    const controlsRect = controls?.getBoundingClientRect() ?? null;
+    return {
+      display: getComputedStyle(inner).display,
+      innerWidth: innerRect.width,
+      sectionRects: sectionRects.map((rect) => ({
+        top: rect.top,
+        bottom: rect.bottom,
+        width: rect.width,
+      })),
+      controlsRect: controlsRect ? {
+        top: controlsRect.top,
+        bottom: controlsRect.bottom,
+        width: controlsRect.width,
+      } : null,
+    };
+  });
+  expect(mobileGeometry.display, 'phone navigation shell must not reuse the legacy two-column tile grid').not.toBe('grid');
+  expect(mobileGeometry.sectionRects.length).toBeGreaterThanOrEqual(2);
+  for (const section of mobileGeometry.sectionRects) {
+    expect(section.width, 'each mobile navigation section should use the full menu reading width').toBeGreaterThan(mobileGeometry.innerWidth * 0.9);
+  }
+  expect(
+    mobileGeometry.sectionRects[1].top,
+    'mobile navigation sections must stack vertically rather than squeeze side-by-side',
+  ).toBeGreaterThanOrEqual(mobileGeometry.sectionRects[0].bottom - 1);
+  expect(mobileGeometry.controlsRect, 'mobile navigation controls must exist').not.toBeNull();
+  if (mobileGeometry.controlsRect) {
+    expect(mobileGeometry.controlsRect.width).toBeGreaterThan(mobileGeometry.innerWidth * 0.9);
+    expect(mobileGeometry.controlsRect.top).toBeGreaterThanOrEqual(mobileGeometry.sectionRects.at(-1)!.bottom - 1);
+  }
+
+  await mobileMenu.locator('[data-theme-toggle-mobile]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+
+  await page.keyboard.press('Escape');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(mobileMenu).toHaveAttribute('aria-hidden', 'true');
+  await expect(toggle).toBeFocused();
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
+  const resourceMenu = page.locator('[data-resource-menu]');
+  const resourceSummary = resourceMenu.locator('summary');
+  await resourceSummary.click();
+  await expect(resourceMenu).toHaveAttribute('open', '');
+  await expect(resourceMenu.locator('.resource-menu__panel')).toBeVisible();
+  const firstResourceLink = resourceMenu.locator('.resource-menu__links a').first();
+  await firstResourceLink.focus();
+  await expect(firstResourceLink).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(resourceMenu).not.toHaveAttribute('open', '');
+  await expect(resourceSummary).toBeFocused();
 });
 
 test('404 fallback keeps a usable global navigation escape hatch', async ({ page }) => {
