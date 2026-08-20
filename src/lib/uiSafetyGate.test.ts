@@ -8,6 +8,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
 };
 const playwrightConfig = read('../../playwright.config.ts');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
+const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
@@ -16,10 +17,15 @@ const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the general and research-geometry browser commands wired', () => {
+  it('keeps the general, global-header, and research-geometry browser commands wired', () => {
+    expect(packageJson.scripts?.['test:header']).toContain('global-header-visibility.spec.ts');
+    expect(packageJson.scripts?.['test:header']).toContain('--project=chromium');
+    expect(packageJson.scripts?.['test:header:all']).toContain('global-header-visibility.spec.ts');
     for (const script of ['test:ui', 'test:ui:all'] as const) {
+      expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
     }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
   });
@@ -41,6 +47,30 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('audited siblings overlap');
     expect(browserGate).toContain('low contrast');
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
+  });
+
+  it('crawls public route classes and requires computed global navigation to stay usable', () => {
+    for (const term of [
+      'bilingualStaticPaths',
+      'zhOnlyStaticPaths',
+      'toEnglishPath',
+      'dynamicTemplateRoutes',
+      '[data-site-header]',
+      "theme: 'light'",
+      "theme: 'dark'",
+      'width: 390',
+      'width: 768',
+      'width: 1440',
+      '.desktop-nav',
+      '[data-menu-toggle]',
+      'global site header must be visible after computed CSS',
+      '/__header-gate-404__/',
+    ]) {
+      expect(headerVisibilityGate).toContain(term);
+    }
+    expect(headerVisibilityGate).toContain("testInfo.project.name === 'chromium'");
+    expect(headerVisibilityGate).toContain('public route must render successfully');
+    expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
