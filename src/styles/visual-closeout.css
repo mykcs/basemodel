@@ -23,20 +23,6 @@ body .site-main a {
   display: none !important;
 }
 
-/* Keep the responsive navigation handoff continuous. Header.astro collapses
- * the mission navigation at 960px, while the legacy site layer originally did
- * not expose the menu toggle until 820px. Without this final handoff rule,
- * 821–960px had no usable primary navigation at all. */
-@media (max-width: 960px) {
-  body .site-header .menu-toggle {
-    display: flex;
-  }
-
-  body .site-header .mobile-menu.is-open {
-    display: block;
-  }
-}
-
 /* The current Header owns a sectioned mobile navigation. An older global
  * composition layer still treated every direct child of `.mobile-menu .shell`
  * as a small two-column tile; after the header refactor that meant whole

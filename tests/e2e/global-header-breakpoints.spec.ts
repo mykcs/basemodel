@@ -6,7 +6,9 @@ const handoffCases = [
   { width: 821, mode: 'mobile' },
   { width: 900, mode: 'mobile' },
   { width: 960, mode: 'mobile' },
-  { width: 961, mode: 'desktop' },
+  { width: 961, mode: 'mobile' },
+  { width: 1080, mode: 'mobile' },
+  { width: 1081, mode: 'desktop' },
 ] as const;
 
 test('responsive header breakpoint handoff has no navigation dead zone', async ({ page }) => {

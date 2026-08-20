@@ -15,6 +15,7 @@ const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const appLayout = read('../layouts/AppLayout.astro');
 const header = read('../components/Header.astro');
+const visualUpgrade = read('../styles/visual-upgrade.css');
 const visualCloseout = read('../styles/visual-closeout.css');
 const visualRoute = read('../components/visual/VisualRoute.astro');
 const layerMap = read('../components/visual/LayerMap.astro');
@@ -86,13 +87,15 @@ describe('UI visual acceptance gate contract', () => {
     expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
   });
 
-  it('covers the 820/960 responsive navigation handoff without a dead zone', () => {
+  it('covers the actual 1080px responsive navigation handoff without a dead zone', () => {
     for (const term of [
-      "width: 820",
-      "width: 821",
-      "width: 900",
-      "width: 960",
-      "width: 961",
+      'width: 820',
+      'width: 821',
+      'width: 900',
+      'width: 960',
+      'width: 961',
+      'width: 1080',
+      'width: 1081',
       "mode: 'mobile'",
       "mode: 'desktop'",
       'responsive header breakpoint handoff has no navigation dead zone',
@@ -100,9 +103,10 @@ describe('UI visual acceptance gate contract', () => {
     ]) {
       expect(headerBreakpointGate).toContain(term);
     }
-    expect(visualCloseout).toContain('@media (max-width: 960px)');
-    expect(visualCloseout).toContain('body .site-header .menu-toggle');
-    expect(visualCloseout).toContain('body .site-header .mobile-menu.is-open');
+    expect(visualUpgrade).toContain('@media (max-width: 1080px)');
+    expect(visualUpgrade).toContain('.desktop-nav');
+    expect(visualUpgrade).toContain('.menu-toggle');
+    expect(visualUpgrade).toContain('.mobile-menu.is-open');
   });
 
   it('keeps root overflow observable and the refactored mobile menu vertically composed', () => {
