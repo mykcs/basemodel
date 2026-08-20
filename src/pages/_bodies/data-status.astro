@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { buildDataHealth, type FamilyCoverage, type VendorCoverage } from '../../lib/dataHealth';
 import { getMessages, isLocale, type Locale } from '../../i18n';
+import { localizedChangeEventNote } from '../../lib/localizedChangeEvent';
 import vendorsFile from '../../content/coverage/vendors.json';
 import familiesFile from '../../content/coverage/families.json';
 import ClaimHistory from '../../components/evidence/ClaimHistory.astro';
@@ -15,6 +16,7 @@ const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 const claims = (await getCollection('claims')).map((entry) => entry.data);
 const benchmarkRuns = (await getCollection('benchmarkRuns')).map((entry) => entry.data);
+const changeEventEntries = await getCollection('changeEvents');
 const health = buildDataHealth(models, vendorsFile.vendors as VendorCoverage[], familiesFile.families as FamilyCoverage[]);
 health.semanticGaps.not_published += papers.filter((paper) => paper.checkpoint_url === 'not_published').length;
 const semanticLabel = (state: string) => m.format.semanticStatus[state as keyof typeof m.format.semanticStatus] ?? m.format.unknown;
@@ -24,6 +26,14 @@ const reasonLabels: Record<string, string> = locale === 'en'
   : { 'stale-source': '来源过期', 'missing-current-generation': '当前代缺失', 'unverified-current-flagship': '未配置当前托管/API 模型', 'current-flagship-missing': '当前托管/API 模型缺失', 'current-open-weight-model-missing': '开放权重模型缺失', 'generic-source-url': '泛目录来源', 'future-release-date': '未来发布日期', 'semantic-gap': '语义缺口', 'missing-evidence-note': '缺少证据说明', 'source-claim-coverage-missing': '字段证据未映射' };
 const severityLabel = (severity: string) => severityLabels[severity] ?? severity;
 const reasonLabel = (reason: string) => reasonLabels[reason] ?? reason;
+const recentModelEvents = [...models]
+  .filter((model) => typeof model.release_date === 'string')
+  .sort((left, right) => right.release_date.localeCompare(left.release_date))
+  .slice(0, 6);
+const recentEvents = [
+  ...changeEventEntries.map((entry) => entry.data).map((event) => ({ kind: 'event' as const, date: event.occurredAt, title: event.entityId, note: localizedChangeEventNote(event, locale) })),
+  ...recentModelEvents.map((model) => ({ kind: 'release' as const, date: model.release_date, title: model.name, note: `${model.vendor} · ${model.family}` })),
+].sort((left, right) => right.date.localeCompare(left.date)).slice(0, 8);
 ---
 <div class="shell">
   <header class="page-header"><h1>{m.dataStatus.pageTitle}</h1><p class="lede">{m.dataStatus.lede}</p></header>
@@ -33,6 +43,11 @@ const reasonLabel = (reason: string) => reasonLabels[reason] ?? reason;
     <div class="stat"><strong>{health.staleModels}</strong><span>{m.dataStatus.stale}</span></div>
     <div class="stat"><strong>{health.partialOrUnknown}</strong><span>{m.dataStatus.partial}</span></div>
     <div class="stat"><strong>{health.verified}</strong><span>{m.dataStatus.verified}</span></div>
+  </section>
+
+  <section class="section" aria-labelledby="recent-changes-title">
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '数据记录' : 'Data records'}</div><h2 id="recent-changes-title">{locale === 'zh' ? '最近更新' : 'Recent updates'}</h2></div><span class="muted">{locale === 'zh' ? '这是数据集中的发布时间流，不等同于厂商实时动态。' : 'This is the dataset publication timeline, not a live vendor news feed.'}</span></div>
+    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据记录更新' : 'Data record update') : (locale === 'zh' ? '模型发布记录' : 'Model release record')}</small></div></li>)}</ol>
   </section>
 
   <section class="section" aria-labelledby="vendor-coverage-title">

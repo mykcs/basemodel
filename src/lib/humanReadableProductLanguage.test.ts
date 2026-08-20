@@ -39,7 +39,7 @@ describe('human-readable product language contract', () => {
     expect(header).toContain("t('流程理解图', 'Flow map')");
     expect(header).toContain("t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study')");
     expect(header).toContain("t('实验工作台', 'Experiment workspace')");
-    expect(header).toContain("t('更多', 'More')");
+    expect(header).toContain("t('资料', 'Resources')");
     expect(header).not.toContain("t('研究总览', 'Research map')");
     expect(header).not.toContain("t('研究工具', 'Research tools')");
     expect(header).not.toContain('形成可保存的研究任务');
