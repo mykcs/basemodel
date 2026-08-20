@@ -1,4 +1,9 @@
-import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+import {
+  bilingualStaticPaths,
+  toEnglishPath,
+  zhOnlyStaticPaths,
+} from '../../src/lib/sitemapRoutes';
 
 type Theme = 'light' | 'dark';
 
@@ -17,6 +22,27 @@ const headerStates: HeaderState[] = [
   { name: 'desktop-dark', theme: 'dark', viewport: { width: 1440, height: 1000 } },
 ];
 
+const staticPublicRoutes = [...new Set([
+  ...bilingualStaticPaths,
+  ...zhOnlyStaticPaths,
+  ...bilingualStaticPaths.map((path) => toEnglishPath(path)),
+])];
+
+// Model and paper detail pages are generated from one template per locale, so
+// one real detail route per template class covers their page-owned CSS while
+// the complete static route registry covers every standalone public page.
+const dynamicTemplateRoutes = [
+  '/models/qwen2-5-3b-instruct/',
+  '/en/models/qwen2-5-3b-instruct/',
+  '/papers/seed/',
+  '/en/papers/seed/',
+] as const;
+
+const chromiumRoutePaths = [...new Set([
+  ...staticPublicRoutes,
+  ...dynamicTemplateRoutes,
+])];
+
 const webkitRepresentativeRoutes = [
   '/',
   '/guide/',
@@ -32,22 +58,6 @@ const webkitRepresentativeRoutes = [
 
 const fallbackRoute = '/__header-gate-404__/';
 
-async function readSitemapRoutes(request: APIRequestContext) {
-  const response = await request.get('/sitemap.xml');
-  expect(response.ok(), 'local preview must expose sitemap.xml for the global header crawl').toBeTruthy();
-
-  const xml = await response.text();
-  const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
-    .map((match) => {
-      const url = new URL(match[1]);
-      return `${url.pathname}${url.search}`;
-    });
-
-  const uniqueRoutes = [...new Set(routes)];
-  expect(uniqueRoutes.length, 'sitemap route crawl unexpectedly found too few public pages').toBeGreaterThan(20);
-  return uniqueRoutes;
-}
-
 async function settleLayout(page: Page) {
   await page.evaluate(() => new Promise<void>((resolve) => {
     requestAnimationFrame(() => resolve());
@@ -62,59 +72,78 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
   await settleLayout(page);
 
   const context = `${path} / ${state.name}`;
-  const header = page.locator('[data-site-header]');
-  await expect(header, `${context}: exactly one global site header must exist`).toHaveCount(1);
-  await expect(header, `${context}: global site header must be visible after computed CSS`).toBeVisible();
+  const snapshot = await page.evaluate(({ desktop }) => {
+    const visible = (element: Element | null) => {
+      if (!element) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && Number(style.opacity) > 0
+        && rect.width > 0.5
+        && rect.height > 0.5;
+    };
 
-  const metrics = await header.evaluate((element) => {
-    const style = getComputedStyle(element);
-    const rect = element.getBoundingClientRect();
+    const headers = [...document.querySelectorAll('[data-site-header]')];
+    const header = headers[0] ?? null;
+    if (!header) {
+      return {
+        count: 0,
+        headerVisible: false,
+        display: 'missing',
+        visibility: 'missing',
+        opacity: 0,
+        width: 0,
+        height: 0,
+        brandVisible: false,
+        navigationVisible: false,
+      };
+    }
+
+    const style = getComputedStyle(header);
+    const rect = header.getBoundingClientRect();
     return {
+      count: headers.length,
+      headerVisible: visible(header),
       display: style.display,
       visibility: style.visibility,
       opacity: Number(style.opacity),
       width: rect.width,
       height: rect.height,
+      brandVisible: visible(header.querySelector('.brand')),
+      navigationVisible: visible(header.querySelector(desktop ? '.desktop-nav' : '[data-menu-toggle]')),
     };
-  });
+  }, { desktop: state.viewport.width >= 1080 });
 
-  expect(metrics.display, `${context}: header display`).not.toBe('none');
-  expect(metrics.visibility, `${context}: header visibility`).not.toBe('hidden');
-  expect(metrics.opacity, `${context}: header opacity`).toBeGreaterThan(0);
-  expect(metrics.height, `${context}: header must not collapse`).toBeGreaterThan(40);
-  expect(metrics.width, `${context}: header must span the usable viewport`).toBeGreaterThan(state.viewport.width * 0.9);
-
-  await expect(
-    page.locator('[data-site-header] .brand'),
-    `${context}: brand/home escape hatch must remain visible`,
-  ).toBeVisible();
-
-  if (state.viewport.width >= 1080) {
-    await expect(
-      page.locator('[data-site-header] .desktop-nav'),
-      `${context}: desktop navigation must be visible`,
-    ).toBeVisible();
-  } else {
-    await expect(
-      page.locator('[data-site-header] [data-menu-toggle]'),
-      `${context}: responsive navigation control must be visible`,
-    ).toBeVisible();
-  }
+  expect(snapshot.count, `${context}: exactly one global site header must exist`).toBe(1);
+  expect(snapshot.headerVisible, `${context}: global site header must be visible after computed CSS`).toBe(true);
+  expect(snapshot.display, `${context}: header display`).not.toBe('none');
+  expect(snapshot.visibility, `${context}: header visibility`).not.toBe('hidden');
+  expect(snapshot.opacity, `${context}: header opacity`).toBeGreaterThan(0);
+  expect(snapshot.height, `${context}: header must not collapse`).toBeGreaterThan(40);
+  expect(snapshot.width, `${context}: header must span the usable viewport`).toBeGreaterThan(state.viewport.width * 0.9);
+  expect(snapshot.brandVisible, `${context}: brand/home escape hatch must remain visible`).toBe(true);
+  expect(
+    snapshot.navigationVisible,
+    state.viewport.width >= 1080
+      ? `${context}: desktop navigation must be visible`
+      : `${context}: responsive navigation control must be visible`,
+  ).toBe(true);
 }
 
-test('global navigation survives computed CSS on every public route', async ({ page, request }, testInfo) => {
-  test.setTimeout(testInfo.project.name === 'chromium' ? 300_000 : 150_000);
+test('global navigation survives computed CSS across every public route class', async ({ page }, testInfo) => {
+  test.setTimeout(testInfo.project.name === 'chromium' ? 180_000 : 120_000);
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
 
-  const sitemapRoutes = await readSitemapRoutes(request);
+  expect(staticPublicRoutes.length, 'public static route registry unexpectedly shrank').toBeGreaterThan(40);
   const routePaths = testInfo.project.name === 'chromium'
-    ? sitemapRoutes
+    ? chromiumRoutePaths
     : [...webkitRepresentativeRoutes];
 
   for (const path of routePaths) {
     await test.step(path, async () => {
       const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
-      expect(response?.status(), `${path}: sitemap route must render successfully`).toBe(200);
+      expect(response?.status(), `${path}: public route must render successfully`).toBe(200);
 
       // One navigation per route is enough: theme attributes and media queries are
       // switched live so the same page is checked at 390 / 768 / 1440 and light / dark.
