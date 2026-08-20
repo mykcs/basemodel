@@ -35,10 +35,13 @@ describe('public release security gate', () => {
     expect(gate).toContain('Temporary Vercel share URLs are ephemeral delivery artifacts');
   });
 
-  it('keeps the visibility decision fail-closed until all refs and history are scanned', () => {
-    expect(gate).toContain('HOLD until every gate below passes');
-    expect(gate).toContain('all refs and complete history');
+  it('keeps an audited PASS eligibility result fail-closed across future ref drift', () => {
+    expect(gate).toContain('The repository remains private; this document does not change visibility.');
+    expect(gate).toContain('returns the release decision to HOLD until the delta is scanned');
+    expect(gate).toContain('all advertised refs and complete reachable history');
     expect(gate).toContain('ALL_REFS_HISTORY=PASS');
     expect(gate).toContain('PUBLIC_RELEASE_GATE=PASS');
+    expect(gate).toContain('This PASS is an eligibility result, not a visibility mutation.');
+    expect(gate).toContain('return to HOLD on any finding, ambiguity or unstable ref set');
   });
 });
