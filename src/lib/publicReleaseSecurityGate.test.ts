@@ -1,14 +1,23 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const root = new URL('../../', import.meta.url);
-const gitignore = readFileSync(new URL('.gitignore', root), 'utf8');
+const gitignoreFile = new URL('.gitignore', root);
+const gitignore = existsSync(gitignoreFile) ? readFileSync(gitignoreFile, 'utf8') : null;
 const hosting = readFileSync(new URL('docs/agents/current/hosting-architecture.md', root), 'utf8');
 const vercel = readFileSync(new URL('docs/agents/current/vercel-preview-migration-plan.md', root), 'utf8');
 const gate = readFileSync(new URL('docs/agents/current/public-release-security-gate.md', root), 'utf8');
 
 describe('public release security gate', () => {
   it('ignores common local secret and provider-state paths', () => {
+    // Vercel CLI intentionally omits .gitignore from direct-upload build inputs.
+    // Locally, keep the source-of-truth policy test strict; remotely, assert this
+    // is that documented Vercel build context rather than silently accepting it.
+    if (!gitignore) {
+      expect(process.env.VERCEL).toBeTruthy();
+      return;
+    }
+
     for (const value of ['.env.*', '.dev.vars', '.vercel/', '.wrangler/', '*.pem', '*.key', '.omc/']) {
       expect(gitignore).toContain(value);
     }

@@ -92,7 +92,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     },
     server: {
       eyebrow: 'SERVER',
-      title: zh ? 'OpenEvo 服务器权限模型' : 'OpenEvo server authority model',
+      title: zh ? '实验室服务器权限模型' : 'Laboratory server authority model',
       lede: zh ? '控制容器、科研运行容器与其他用户容器是 host Docker daemon 管理的 sibling containers。技术能力、宿主机所有权和项目授权是三个不同概念。' : 'The control container, scientific runtime, and other users’ containers are siblings managed by the host Docker daemon. Technical capability, host ownership, and project authorization are distinct concepts.',
       steps: [
         { label: 'daemon', narration: zh ? 'Host daemon 才是容器生命周期的实际管理者。' : 'The host daemon actually owns container lifecycle management.' },

@@ -3,7 +3,6 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { localePath } from '../i18n';
 import InteractiveResearchExplainer from '../components/research/InteractiveResearchExplainer.tsx';
 import ExplainerScrollLink from '../components/research/ExplainerScrollLink.astro';
-const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
 const auditPrompt = `请对我已授权访问的 Linux / GPU 服务器做一次严格只读的新手体检。目标不是改服务器，而是回答“我拿到了一台什么机器、我有什么权限、哪些资源是共享的、我能安全把实验放在哪里”。
 
@@ -36,7 +35,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
 <AppLayout title="实验设备与服务器" description="2026-08-16 只读核验：Ubuntu 22.04、80 物理核 / 160 线程、约 1 TiB RAM、8×RTX 5090 可见。服务器很可能共享；可见资源不等于个人分配。" locale="zh">
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
-      <span class="section-kicker">浙江大学 GPU Server · 只读核验 2026-08-16</span>
+      <span class="section-kicker">实验室 GPU Server · 只读核验 2026-08-16</span>
       <h1>我拿到的服务器，到底是什么？</h1>
       <p class="lede">这是一次面向新手的公开安全快照：你登录后进入的是<strong>开发容器</strong>，能看到 160 个 CPU 线程、约 1 TiB RAM 和 8 张 RTX 5090；但“看得见”不等于“独占”或“已经获准全部使用”。服务器很可能多人共享，正式资源分配与个人 quota 仍需按实验室规则确认。</p>
     </header>
@@ -53,8 +52,8 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
         <div data-ui-audit-item><dt>普通账户</dt><dd>GPU 可用 · 无 sudo · 无 Docker API 管理权</dd></div>
         <div data-ui-audit-item><dt>管理员入口</dt><dd>root SSH 可用 · Docker admin · 不是已验证的 physical-host root</dd></div>
       </dl>
-      <p class="lab-note">Canonical server facts 仍由 <code>mykcs/zju-server</code> 维护；这里是 <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time> 的脱敏展示快照，不是第二份可编辑服务器库存。</p>
-      <nav class="lab-actions" aria-label="实验与服务器来源"><a href={serverFacts} target="_blank" rel="noreferrer">服务器事实源 ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">实验仓库 ↗</a><a href={localePath('zh','/research/seed-openevo/results/')}>实验结果 →</a></nav>
+      <p class="lab-note">Canonical server facts 由实验室私有基础设施仓库维护；这里是 <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time> 的脱敏展示快照，不是第二份可编辑服务器库存。</p>
+      <nav class="lab-actions" aria-label="实验与服务器来源"><span>服务器事实源 · 实验室私有</span><a href={experimentRepo} target="_blank" rel="noreferrer">实验仓库 ↗</a><a href={localePath('zh','/research/seed-openevo/results/')}>实验结果 →</a></nav>
 
       <div class="lab-snapshot" data-ui-audit="contrast layout" aria-label="2026-08-16 动态状态快照">
         <div data-ui-audit-item><span>GPU</span><strong>0 / 8 busy</strong><small>当时无 compute process</small></div>
@@ -71,7 +70,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
       <div class="irx-split__flow">
 
     <section class="lab-section" aria-labelledby="shared-title" data-explainer-step="5">
-      <header class="lab-section__heading"><span>OWNED vs VISIBLE</span><h2 id="shared-title">哪些是“我能看到的”，哪些才是“属于我的”</h2></header>
+      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">哪些资源可见，哪些权限仍需确认</h2></header>
       <p>这是新手最容易误解的一层。实时证据能证明资源<strong>可见</strong>、某种权限<strong>可用</strong>，但不能自动证明资源<strong>独占</strong>、已经获得行政授权，或拥有固定配额。</p>
       <div class="lab-table-wrap" data-ui-audit="contrast layout">
         <table class="lab-fact-table">
@@ -89,8 +88,8 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
     </section>
 
     <section class="lab-section" aria-labelledby="storage-title" data-explainer-step="4">
-      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">为什么你不能把三个 436 GiB 加起来</h2></header>
-      <p><code>/</code>、<code>/root</code> 和 <code>/share</code> 在容器里看起来是三个入口，但本次证据显示它们最终指向同一块约 436 GiB 的可见 backing filesystem。它们是<strong>三个视图，不是三块独立磁盘</strong>。</p>
+      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">为什么三个 436 GiB 不能相加</h2></header>
+      <p>先看它们的来源：<code>/</code>、<code>/root</code> 和 <code>/share</code> 是同一个容器里报告出来的三个入口，不是三块被分别挂载的磁盘。本次证据显示它们最终指向同一块约 436 GiB 的 backing filesystem，因此只能把<strong>不同 backing device 的容量</strong>相加；这里是<strong>三个视图，不是三份容量</strong>。</p>
       <figure class="lab-storage-map" data-ui-audit="contrast layout">
         <figcaption>同一个可见共享存储池 · 2026-08-16 snapshot</figcaption>
         <div class="lab-storage-pool" data-ui-audit-item><span>BACKING FILESYSTEM</span><strong>436.04 GiB total</strong><small>275.16 GiB used · 138.66 GiB available · 67%</small></div>
@@ -155,7 +154,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
       </ol>
       <details class="lab-prompt-details">
         <summary>复制通用 Server Audit Prompt</summary>
-        <p>适用于 Codex / Claude Code / 具备 SSH 工具的 Agent。它不包含这台浙江大学服务器的用户名、地址或仓库信息。</p>
+        <p>适用于 Codex / Claude Code / 具备 SSH 工具的 Agent。它不包含这台实验室服务器的用户名、地址或仓库信息。</p>
         <pre><code>{auditPrompt}</code></pre>
       </details>
     </section>
@@ -164,7 +163,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
       <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">当前与历史实验硬件</h2></header>
       <p>本页首先描述“这台服务器是什么”，实验分配是另一层事实：服务器实时可见 8×RTX5090，但正式 GPU allocation policy 本次无法安全验证。此前实验记录曾使用 5×RTX5090；RTX6 的 4×RTX3090 则属于迁移前的历史实验平台。</p>
       <ol class="lab-lineage" data-ui-audit="contrast layout">
-        <li data-ui-audit-item><span>01</span><strong>ZJU server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
+        <li data-ui-audit-item><span>01</span><strong>Lab server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
         <li data-ui-audit-item><span>02</span><strong>OpenEvo campaign</strong><p>历史记录：5×RTX5090 allocation；以实验仓库最新 run contract 为准</p></li>
         <li data-ui-audit-item><span>03</span><strong>RTX6 · historical</strong><p>4×RTX3090 · 早期 WebShop / ALFWorld 与迁移证据</p></li>
       </ol>

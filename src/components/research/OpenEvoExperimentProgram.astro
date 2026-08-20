@@ -10,7 +10,6 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const seedRoot = 'https://github.com/mykcs/seed3090/blob/main';
 const bridgeRoot = 'https://github.com/mykcs/openevo-webshop/blob/main';
 const activeRoot = 'https://github.com/mykcs/openevo-experiment/blob/main';
-const serverRoot = 'https://github.com/mykcs/zju-server/blob/main';
 
 const repos = [
   {
@@ -123,7 +122,7 @@ const phaseG = [
     <a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default main current-campaign ↗</a>
     <a href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} target="_blank" rel="noreferrer">Phase G result ↗</a>
     <a href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} target="_blank" rel="noreferrer">Phase D–F evidence ↗</a>
-    <a href={`${serverRoot}/docs/experiment-execution-policy.md`} target="_blank" rel="noreferrer">current server execution policy ↗</a>
+    <span>{t('服务器执行策略 · 实验室私有来源', 'Server execution policy · private lab source')}</span>
   </footer>
 </section>
 

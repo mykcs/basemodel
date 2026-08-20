@@ -40,7 +40,11 @@ body .site-main .mission-chain li > a {
   }
 }
 
-@media (max-width: 640px) {
+/* A narrow tablet is still a real two-column browser capture in practice
+ * (high-DPI screenshots commonly expose ~680 CSS px). Keep the evidence
+ * tables inside the reading column before their global 720px minimum can
+ * widen the document and crop the interactive stage above them. */
+@media (max-width: 760px) {
   body .site-main .mission-hero__modes,
   body .site-main .seed-use-case:not(.standalone) .detail > ol,
   body .site-main .research-path-list {

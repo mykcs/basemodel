@@ -34,7 +34,7 @@ test('public reproduction guide stays public-safe and content-height-driven', as
         expect(bodyText).not.toMatch(/GPU-[0-9a-f]{8,}(?:-[0-9a-f]{4,})+/i);
         expect(bodyText).not.toMatch(/(?:[0-9a-f]{2}:){5}[0-9a-f]{2}/i);
 
-        for (const placeholder of ['<ordinary-account>', '<approved-control-account>', '<approved-persistent-workspace>', '<zju-server-checkout>']) {
+        for (const placeholder of ['<ordinary-account>', '<approved-control-account>', '<approved-persistent-workspace>', '<lab-infrastructure-checkout>']) {
           expect(bodyText).toContain(placeholder);
         }
         expect(bodyText).toContain('current-campaign');

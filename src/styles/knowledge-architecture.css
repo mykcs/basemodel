@@ -233,6 +233,9 @@
   100% { transform: translateX(calc(1120px - 5.5rem)); opacity: 0; }
 }
 
+/* Static routes communicate structure without a distracting moving dot. */
+.ka-route-block.is-animated .ka-route::before{animation:none!important;display:none}
+
 .ka-layer-figure {
   display: grid;
   gap: .8rem;

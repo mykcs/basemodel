@@ -60,7 +60,7 @@ server inventory / visibility
 != live idle capacity
 ```
 
-Live GPU use comes from the current `mykcs/zju-server` execution policy plus the active preregistration, explicitly authorized GPU UUIDs, and live-idle checks immediately before launch.
+Live GPU use comes from the current private laboratory execution policy plus the active preregistration, explicitly authorized GPU UUIDs, and live-idle checks immediately before launch.
 
 A historical `5×RTX5090` allocation may remain as historical evidence. A dated server audit may state that 8 RTX 5090 GPUs were visible when that audit supports it. Neither fact should be rewritten as the current allocation without current run evidence.
 

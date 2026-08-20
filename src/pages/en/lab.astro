@@ -3,7 +3,6 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { localePath } from '../../i18n';
 import InteractiveResearchExplainer from '../../components/research/InteractiveResearchExplainer.tsx';
 import ExplainerScrollLink from '../../components/research/ExplainerScrollLink.astro';
-const serverFacts = 'https://github.com/mykcs/zju-server/blob/main/docs/server-facts.md';
 const experimentRepo = 'https://github.com/mykcs/openevo-experiment';
 const auditPrompt = `Perform a strict read-only beginner audit of the Linux / GPU server I am authorized to access. The goal is not to change the machine. Answer: what machine did I receive, what permissions do I have, which resources are shared, and where can I safely place experiment state?
 
@@ -35,7 +34,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
 <AppLayout title="Experiment devices and servers" description="Read-only audit from 2026-08-16: Ubuntu 22.04, 80 physical CPU cores / 160 threads, about 1 TiB RAM, and 8 visible RTX 5090 GPUs. The server is very likely shared; visibility is not allocation." locale="en">
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
-      <span class="section-kicker">ZJU GPU Server · read-only audit 2026-08-16</span>
+      <span class="section-kicker">Lab GPU Server · read-only audit 2026-08-16</span>
       <h1>What server did I actually receive?</h1>
       <p class="lede">This is a public-safe snapshot for a first-time server user. SSH lands in a <strong>development container</strong> that can see 160 CPU threads, about 1 TiB of RAM, and eight RTX 5090 GPUs. But “visible” does not mean “exclusive” or “allocated to me.” The machine is very likely shared, while formal GPU allocation and personal storage quota remain policy questions.</p>
     </header>
@@ -52,8 +51,8 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
         <div data-ui-audit-item><dt>Ordinary account</dt><dd>GPU access · no sudo · no Docker API administration</dd></div>
         <div data-ui-audit-item><dt>Admin entry</dt><dd>root SSH works · Docker admin · not verified physical-host root</dd></div>
       </dl>
-      <p class="lab-note">Canonical server facts remain owned by <code>mykcs/zju-server</code>. This is a sanitized presentation snapshot from <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time>, not a second editable server inventory.</p>
-      <nav class="lab-actions" aria-label="Experiment and server sources"><a href={serverFacts} target="_blank" rel="noreferrer">Server facts ↗</a><a href={experimentRepo} target="_blank" rel="noreferrer">Experiment repo ↗</a><a href={localePath('en','/research/seed-openevo/results/')}>Experiment results →</a></nav>
+      <p class="lab-note">Canonical server facts remain in the private laboratory infrastructure repository. This is a sanitized presentation snapshot from <time datetime="2026-08-16T21:43:24+08:00">2026-08-16 21:43 CST</time>, not a second editable server inventory.</p>
+      <nav class="lab-actions" aria-label="Experiment and server sources"><span>Server facts · private lab source</span><a href={experimentRepo} target="_blank" rel="noreferrer">Experiment repo ↗</a><a href={localePath('en','/research/seed-openevo/results/')}>Experiment results →</a></nav>
 
       <div class="lab-snapshot" data-ui-audit="contrast layout" aria-label="Dynamic snapshot from 2026-08-16">
         <div data-ui-audit-item><span>GPU</span><strong>0 / 8 busy</strong><small>no compute process at snapshot</small></div>
@@ -70,7 +69,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <div class="irx-split__flow">
 
     <section class="lab-section" aria-labelledby="shared-title" data-explainer-step="5">
-      <header class="lab-section__heading"><span>OWNED vs VISIBLE</span><h2 id="shared-title">What can I see, and what is actually mine?</h2></header>
+      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">What is visible, and what still needs authorization?</h2></header>
       <p>This is the easiest boundary for a beginner to miss. Live evidence can prove that a resource is <strong>visible</strong> or that a capability <strong>works</strong>; it does not automatically prove exclusive ownership, administrative authorization, or a fixed personal quota.</p>
       <div class="lab-table-wrap" data-ui-audit="contrast layout">
         <table class="lab-fact-table">
@@ -89,7 +88,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
 
     <section class="lab-section" aria-labelledby="storage-title" data-explainer-step="4">
       <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">Why three 436 GiB views do not add up</h2></header>
-      <p><code>/</code>, <code>/root</code>, and <code>/share</code> look like three entry points inside the container, but the audit shows they ultimately share the same visible backing filesystem of about 436 GiB. They are <strong>three views, not three independent disks</strong>.</p>
+      <p>Start with where the numbers come from: <code>/</code>, <code>/root</code>, and <code>/share</code> are three entry points reported inside one container, not three separately mounted disks. The audit shows they ultimately share one backing filesystem of about 436 GiB, so only <strong>different backing devices</strong> can be summed; these are <strong>three views, not three copies of capacity</strong>.</p>
       <figure class="lab-storage-map" data-ui-audit="contrast layout">
         <figcaption>One visible shared storage pool · 2026-08-16 snapshot</figcaption>
         <div class="lab-storage-pool" data-ui-audit-item><span>BACKING FILESYSTEM</span><strong>436.04 GiB total</strong><small>275.16 GiB used · 138.66 GiB available · 67%</small></div>
@@ -154,7 +153,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       </ol>
       <details class="lab-prompt-details">
         <summary>Copy the generic Server Audit Prompt</summary>
-        <p>Suitable for Codex, Claude Code, or another Agent with SSH tools. It contains no ZJU-specific username, address, or repository detail.</p>
+        <p>Suitable for Codex, Claude Code, or another Agent with SSH tools. It contains no lab-specific username, address, or repository detail.</p>
         <pre><code>{auditPrompt}</code></pre>
       </details>
     </section>
@@ -163,7 +162,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">Current and historical experiment hardware</h2></header>
       <p>This page first answers “what is this server?” Experiment allocation is a separate claim: eight RTX 5090 GPUs are visible live, but the formal GPU allocation policy could not be safely verified in this audit. A prior experiment record used a five-GPU allocation; RTX6 with four RTX 3090 GPUs is the pre-migration historical platform.</p>
       <ol class="lab-lineage" data-ui-audit="contrast layout">
-        <li data-ui-audit-item><span>01</span><strong>ZJU server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
+        <li data-ui-audit-item><span>01</span><strong>Lab server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
         <li data-ui-audit-item><span>02</span><strong>OpenEvo campaign</strong><p>historical record: 5×RTX5090 allocation; follow the latest run contract in the experiment repo</p></li>
         <li data-ui-audit-item><span>03</span><strong>RTX6 · historical</strong><p>4×RTX3090 · early WebShop / ALFWorld and migration evidence</p></li>
       </ol>

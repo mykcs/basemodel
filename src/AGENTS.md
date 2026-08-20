@@ -121,7 +121,7 @@ The stable repository roles are:
 - historical allocation example: `5×RTX5090` only when explicitly dated and labelled historical;
 - historical repositories: `seed3090`, `openevo-webshop`;
 - scientific source of truth: `openevo-experiment`;
-- live server/resource policy: current `mykcs/zju-server` policy.
+- live server/resource policy: current private laboratory infrastructure policy.
 
 Do **not** hard-code one moving experiment phase, next step, or GPU allocation as undated current truth in `src/`, tests, or Agent guidance.
 
@@ -138,7 +138,7 @@ An active scientific branch may be ahead of default `main`. A static public page
 Resolve GPU use from:
 
 ```text
-current zju-server execution policy
+current private laboratory execution policy
 + active preregistration
 + explicitly authorized GPU UUIDs
 + live-idle check immediately before launch

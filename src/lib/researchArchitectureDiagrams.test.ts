@@ -16,7 +16,7 @@ const sourceRules = read('src/AGENTS.md');
 
 describe('research architecture diagrams', () => {
   it('uses short subject headings while keeping the core explanation in prose', () => {
-    expect(server).toContain('OpenEvo 服务器权限模型');
+    expect(server).toContain('实验室服务器权限模型');
     expect(benchmarks).toContain('WebShop 与 ALFWorld 环境模型');
     expect(seed).toContain('SEED 自进化训练机制');
     expect(openevo).toContain('OpenEvo 跨任务演化机制');

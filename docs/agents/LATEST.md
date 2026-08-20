@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-18**
 
-Status: **Current `main` includes the 2026-08-15 semantic release integration (#144), the interactive research-explainer layer (#146), the verified public-safe ZJU Lab update (#148), and the final real-browser visual closeout (#147). Vercel is the only ordinary deployment provider: non-main work uses Vercel Preview and `main` uses Vercel Production.**
+Status: **Current `main` includes the 2026-08-15 semantic release integration (#144), the interactive research-explainer layer (#146), the verified public-safe Lab update (#148), and the final real-browser visual closeout (#147). Vercel is the only ordinary deployment provider: non-main work uses Vercel Preview and `main` uses Vercel Production.**
 
 ## Current release state
 
@@ -10,14 +10,14 @@ The current release line is no longer the 2026-08-12 eight-PR batch alone. The a
 
 - **#144 — semantic release integration:** reconciles the newer product/mobile, OpenEvo model-choice, process-visualization, visual-identity, and model-catalog work into one current release ancestry rather than mechanically choosing whole branches;
 - **#146 — interactive research explainer layer:** makes the SEED, OpenEvo, benchmark, loop, lab, and reproduction surfaces static-first Astro pages with focused React interaction islands and DOM-measured responsive relationships;
-- **#148 — ZJU Lab:** publishes a beginner-facing, public-safe compute-environment overview from the dated 2026-08-16 read-only audit while preserving the distinction between visible resources, allocation/authorization, technical capability, and ownership;
+- **#148 — Lab:** publishes a beginner-facing, public-safe compute-environment overview from the dated 2026-08-16 read-only audit while preserving the distinction between visible resources, allocation/authorization, technical capability, and ownership;
 - **#147 — final visual closeout:** fixes the remaining rendered geometry/copy/UI regressions, preserves #148 after semantic synchronization with current `main`, and completes the real Chromium release gate without weakening geometry, overflow, contrast, privacy, or deployment-budget contracts.
 
 The earlier 2026-08-12 integration history remains useful ancestry and rationale, but it is not the complete current-release description anymore.
 
 ## Real Chromium release acceptance
 
-The final #147 exact-head closeout passed the repository Gate/static build and the required real Chromium UI matrix on the combined tree that already contained the ZJU Lab work.
+The final #147 exact-head closeout passed the repository Gate/static build and the required real Chromium UI matrix on the combined tree that already contained the Lab work.
 
 Accepted browser coverage included:
 
@@ -28,7 +28,7 @@ Accepted browser coverage included:
 - reduced-motion behavior;
 - light → dark → light theme switching.
 
-The final combined visual gate reported **14 passed**. The ZJU Lab PR separately closed its focused **12 / 12** Chromium matrix before merge. These are exact-head release acceptance records; future UI changes must run the current task-relevant browser gate again rather than treating these historical passes as proof for a changed head.
+The final combined visual gate reported **14 passed**. The Lab PR separately closed its focused **12 / 12** Chromium matrix before merge. These are exact-head release acceptance records; future UI changes must run the current task-relevant browser gate again rather than treating these historical passes as proof for a changed head.
 
 ## Current architecture authority
 
@@ -63,9 +63,9 @@ The mission hub and child routes own the first-principles reading path. Generic 
 
 The current research site also uses interactive explainers as a primary learning layer where they make system state, data flow, evidence, or authority relationships easier to inspect. Static semantic content remains the baseline; interaction must add understanding rather than hide required meaning behind JavaScript.
 
-## ZJU Lab boundary
+## Lab boundary
 
-`/lab/` and `/en/lab/` currently present a public-safe view of the ZJU GPU environment grounded in the dated **2026-08-16 21:43 Asia/Shanghai** read-only audit.
+`/lab/` and `/en/lab/` currently present a public-safe view of the laboratory GPU environment grounded in the dated **2026-08-16 21:43 Asia/Shanghai** read-only audit.
 
 Preserve these distinctions:
 
@@ -74,7 +74,7 @@ Preserve these distinctions:
 - container root is not proof of physical-host root authority;
 - no detected quota is not evidence of unlimited personal storage;
 - stable machine facts and dated dynamic observations must remain visibly separate;
-- canonical editable machine truth belongs in `mykcs/zju-server`; Base Model is a public presentation layer, not a second server inventory.
+- canonical editable machine truth belongs in the private laboratory infrastructure repository; Base Model is a public presentation layer, not a second server inventory.
 
 Do not publish server addresses, ports, hostnames, MACs, fingerprints, GPU UUIDs, credentials, tokens, environment variables, other-user identities, other-user command lines, or private workspace paths.
 
