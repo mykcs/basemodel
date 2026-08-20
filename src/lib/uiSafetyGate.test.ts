@@ -17,7 +17,7 @@ const geometryPolicy = read('../../docs/agents/current/research-explainer-geomet
 const appLayout = read('../layouts/AppLayout.astro');
 const appStyles = read('../styles/app.css');
 const header = read('../components/Header.astro');
-const visualUpgrade = read('../styles/visual-upgrade.css');
+const headerStyles = read('../styles/components/header.css');
 const visualCloseout = read('../styles/visual-closeout.css');
 const visualRoute = read('../components/visual/VisualRoute.astro');
 const layerMap = read('../components/visual/LayerMap.astro');
@@ -116,23 +116,25 @@ describe('UI visual acceptance gate contract', () => {
     ]) {
       expect(headerBreakpointGate).toContain(term);
     }
-    expect(visualUpgrade).toContain('@media (max-width: 1080px)');
-    expect(visualUpgrade).toContain('.desktop-nav');
-    expect(visualUpgrade).toContain('.menu-toggle');
-    expect(visualUpgrade).toContain('.mobile-menu.is-open');
+    expect(headerStyles).toContain('@media (max-width: 1080px)');
+    expect(headerStyles).toContain('.site-header .mission-nav');
+    expect(headerStyles).toContain('.site-header .menu-toggle');
+    expect(headerStyles).toContain('.site-header .mobile-menu.is-open');
   });
 
-  it('keeps root overflow observable and the refactored mobile menu vertically composed', () => {
+  it('keeps root overflow observable while the canonical Header owner composes the mobile menu', () => {
     expect(visualCloseout).toContain('overflow-x: visible');
     expect(visualCloseout).toContain('Root overflow must stay observable');
-    expect(visualCloseout).toContain('The current Header owns a sectioned mobile navigation');
-    expect(visualCloseout).toContain('body .site-header .mobile-menu .mobile-menu__inner');
-    expect(visualCloseout).toContain('grid-template-columns: none');
+    expect(visualCloseout).not.toContain('.site-header');
+    expect(headerStyles).toContain('.site-header .mobile-menu .mobile-menu__inner');
+    expect(headerStyles).toContain('grid-template-columns: none');
     expect(appLayout).toContain("import '../styles/app.css';");
-    const hardeningImport = appStyles.indexOf("@import './final-hardening.css';");
     const closeoutImport = appStyles.indexOf("@import './visual-closeout.css';");
-    expect(hardeningImport).toBeGreaterThan(-1);
-    expect(closeoutImport).toBeGreaterThan(hardeningImport);
+    const shellOwnerImport = appStyles.indexOf("@import './components/global-shell.css';");
+    const headerOwnerImport = appStyles.indexOf("@import './components/header.css';");
+    expect(closeoutImport).toBeGreaterThan(-1);
+    expect(shellOwnerImport).toBeGreaterThan(closeoutImport);
+    expect(headerOwnerImport).toBeGreaterThan(shellOwnerImport);
   });
 
   it('keeps the two-path header copy accurate and restores focus when More closes', () => {
