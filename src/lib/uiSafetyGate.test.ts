@@ -7,6 +7,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
   scripts?: Record<string, string>;
 };
 const playwrightConfig = read('../../playwright.config.ts');
+const vercelUiGate = read('../../scripts/vercel-ui-gate.mjs');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
@@ -14,6 +15,7 @@ const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spe
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const appLayout = read('../layouts/AppLayout.astro');
+const appStyles = read('../styles/app.css');
 const header = read('../components/Header.astro');
 const visualUpgrade = read('../styles/visual-upgrade.css');
 const visualCloseout = read('../styles/visual-closeout.css');
@@ -36,6 +38,17 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
     }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
+    expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
+  });
+
+  it('keeps the Vercel hosted browser gate Chromium-only and delegates WebKit to supported runners', () => {
+    expect(vercelUiGate).toContain("branch.startsWith('agent/css-')");
+    expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', 'chromium'])");
+    expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
+    expect(vercelUiGate).not.toContain('--project=webkit');
+    expect(policy).toContain('repository-owned Vercel browser gate is **Chromium-only**');
+    expect(policy).toContain('Playwright-supported macOS, Ubuntu, or Debian runner');
+    expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
   it('retains evidence when browser verification fails', () => {
@@ -115,8 +128,9 @@ describe('UI visual acceptance gate contract', () => {
     expect(visualCloseout).toContain('The current Header owns a sectioned mobile navigation');
     expect(visualCloseout).toContain('body .site-header .mobile-menu .mobile-menu__inner');
     expect(visualCloseout).toContain('grid-template-columns: none');
-    const hardeningImport = appLayout.indexOf("import '../styles/final-hardening.css';");
-    const closeoutImport = appLayout.indexOf("import '../styles/visual-closeout.css';");
+    expect(appLayout).toContain("import '../styles/app.css';");
+    const hardeningImport = appStyles.indexOf("@import './final-hardening.css';");
+    const closeoutImport = appStyles.indexOf("@import './visual-closeout.css';");
     expect(hardeningImport).toBeGreaterThan(-1);
     expect(closeoutImport).toBeGreaterThan(hardeningImport);
   });
