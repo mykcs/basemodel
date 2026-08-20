@@ -6,6 +6,8 @@ const navigation = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
 const report = read('src/components/research/OpenEvoWebShopProgramReport.astro');
+const resultsZh = read('src/pages/research/seed-openevo/results.astro');
+const resultsEn = read('src/pages/en/research/seed-openevo/results.astro');
 
 const orderedIds = [
   "id: 'hub'",
@@ -52,5 +54,12 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(report).toContain("aria-label={t('报告目录', 'Report contents')}");
     expect(detail).toContain("content:'本页内容'");
     expect(detail).toContain("content:'On this page'");
+  });
+
+  it('keeps the shared site header visible on both report routes', () => {
+    for (const resultsPage of [resultsZh, resultsEn]) {
+      expect(resultsPage).not.toContain('body:has([data-program-report]) .site-header,');
+      expect(resultsPage).toContain('body:has([data-program-report]) .site-footer,');
+    }
   });
 });

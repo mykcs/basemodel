@@ -14,7 +14,7 @@ const locale = 'en' as const;
 </AppLayout>
 
 <style is:global>
-  body:has([data-program-report]) .site-header,
+  /* Keep the shared global header visible. Paper mode only removes non-navigation chrome. */
   body:has([data-program-report]) .site-footer,
   body:has([data-program-report]) .plain-detail__header,
   body:has([data-program-report]) .plain-detail__tabs,
