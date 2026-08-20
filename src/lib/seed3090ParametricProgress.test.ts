@@ -24,6 +24,9 @@ describe('historical seed3090 parametric evidence', () => {
     expect(component).toContain('Phase H0');
     expect(component).toContain('data-testid="seed3090-parametric-progress"');
     expect(component).not.toContain('client:');
-    for (const route of [zhRoute,enRoute]) expect(route).toContain('<Seed3090ParametricProgress locale={locale} />');
+    for (const route of [zhRoute,enRoute]) {
+      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+    }
   });
 });
