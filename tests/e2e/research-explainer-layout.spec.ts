@@ -371,17 +371,15 @@ test('resource menu keeps utility labels and descriptions from overlapping', asy
   expect(issues, issues.join('\n')).toEqual([]);
 });
 
-test('research mainline stages are direct navigation targets', async ({ page }) => {
+test('simplified information architecture avoids stacking the retired research mainline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 738 });
-  await page.goto('/guide/openevo-webshop-alfworld/', { waitUntil: 'domcontentloaded' });
-  await settle(page);
-  const stages = page.locator('.research-mainline-stages a');
-  await expect(stages).toHaveCount(5);
-  await expect(stages.nth(0)).toHaveAttribute('href', '/guide/');
-  await expect(stages.nth(1)).toHaveAttribute('href', '/workspace/');
-  await expect(stages.nth(2)).toHaveAttribute('href', '/models/');
-  await expect(stages.nth(3)).toHaveAttribute('href', '/research/seed-openevo/');
-  await expect(stages.nth(4)).toHaveAttribute('href', '/research/seed-openevo/results/');
+  for (const path of ['/guide/openevo-webshop-alfworld/', '/research/seed-openevo/webshop/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await settle(page);
+    await expect(page.locator('.research-mainline')).toHaveCount(0);
+    await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(2);
+  }
+  await expect(page.locator('[data-research-navigation]')).toBeVisible();
 });
 
 test('research explainers preserve meaning with reduced motion', async ({ page }) => {
