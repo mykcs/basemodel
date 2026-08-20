@@ -89,9 +89,17 @@ assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>
 const tokens = read('src/styles/tokens.css');
 const hardening = read('src/styles/final-hardening.css');
 const layout = read('src/layouts/AppLayout.astro');
+const appStyles = read('src/styles/app.css');
 assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #8f3d2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens preserve the current Research Editorial × Experimental Workbench identity with dedicated light/dark foreground pairs');
 assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.includes('.workspace-grid') && hardening.includes('.intent-row') && hardening.includes('.guide-chapter') && hardening.includes('.memo-readable'), 'research-critical typography, workbench density, and editorial hierarchy are hardened');
-assert('HARDEN-VISUAL-002', layout.includes("../styles/final-hardening.css") && layout.indexOf("../styles/final-hardening.css") > layout.indexOf("../styles/design-refinement.css"), 'final hardening stylesheet follows design refinement');
+assert(
+  'HARDEN-VISUAL-002',
+  layout.includes("import '../styles/app.css';")
+    && appStyles.includes("@import './design-refinement.css';")
+    && appStyles.includes("@import './final-hardening.css';")
+    && appStyles.indexOf("@import './final-hardening.css';") > appStyles.indexOf("@import './design-refinement.css';"),
+  'canonical app stylesheet keeps final hardening after design refinement',
+);
 assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
 
 const actionableLayer = read('src/components/common/ActionableContentLayer.astro');
@@ -101,7 +109,18 @@ const actionableCss = read('src/styles/actionable-content.css');
 const hardwareCalculator = read('src/components/workspace/task/HardwareCalculator.tsx');
 const taskSummary = read('src/components/workspace/task/TaskSummary.tsx');
 const modelTools = read('src/components/models/detail/ModelDetailTools.tsx');
-assert('HARDEN-ACTION-001', layout.includes('ActionableContentLayer') && layout.includes("../styles/actionable-content.css") && actionableLayer.includes("querySelectorAll?.('pre')") && actionableLayer.includes("querySelectorAll?.('code')") && actionableLayer.includes('MutationObserver') && actionableLayer.includes("closest('astro-island')"), 'static actionable content is enhanced site-wide without mutating React islands');
+assert(
+  'HARDEN-ACTION-001',
+  layout.includes('ActionableContentLayer')
+    && layout.includes("import '../styles/app.css';")
+    && appStyles.includes("@import './actionable-content.css';")
+    && appStyles.indexOf("@import './actionable-content.css';") > appStyles.indexOf("@import './final-hardening.css';")
+    && actionableLayer.includes("querySelectorAll?.('pre')")
+    && actionableLayer.includes("querySelectorAll?.('code')")
+    && actionableLayer.includes('MutationObserver')
+    && actionableLayer.includes("closest('astro-island')"),
+  'static actionable content is enhanced site-wide through the canonical CSS entry without mutating React islands',
+);
 assert('HARDEN-ACTION-002', actionableLayer.includes('aria-live="polite"') && actionableLayer.includes('navigator.clipboard') && actionableLayer.includes('window.isSecureContext') && !actionableLayer.includes('fallbackCopy') && actionableCss.includes('@media(max-width:640px)') && actionableCss.includes('prefers-reduced-motion'), 'copy affordances expose modern clipboard feedback, explicit failure handling, mobile behavior, and reduced-motion handling');
 assert('HARDEN-ACTION-003', copyButton.includes('copyTextToClipboard') && clipboard.includes('navigator.clipboard.writeText') && !clipboard.includes('document.execCommand') && hardwareCalculator.includes('<CopyButton') && taskSummary.includes('<CopyButton') && memo.includes('<CopyButton') && modelTools.includes('<CopyButton'), 'React-owned reusable outputs use the shared modern clipboard primitive without deprecated execCommand');
 assert('HARDEN-ACTION-004', memo.includes('复制这段 Markdown') && modelTools.includes('打开主要来源') && fs.existsSync(path.join(root, 'docs/agents/current/actionable-content-ux.md')), 'generated artifacts have in-place actions and the interaction contract is documented for future agents');

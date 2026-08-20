@@ -14,6 +14,7 @@ const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spe
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const appLayout = read('../layouts/AppLayout.astro');
+const appStyles = read('../styles/app.css');
 const header = read('../components/Header.astro');
 const visualUpgrade = read('../styles/visual-upgrade.css');
 const visualCloseout = read('../styles/visual-closeout.css');
@@ -115,8 +116,9 @@ describe('UI visual acceptance gate contract', () => {
     expect(visualCloseout).toContain('The current Header owns a sectioned mobile navigation');
     expect(visualCloseout).toContain('body .site-header .mobile-menu .mobile-menu__inner');
     expect(visualCloseout).toContain('grid-template-columns: none');
-    const hardeningImport = appLayout.indexOf("import '../styles/final-hardening.css';");
-    const closeoutImport = appLayout.indexOf("import '../styles/visual-closeout.css';");
+    expect(appLayout).toContain("import '../styles/app.css';");
+    const hardeningImport = appStyles.indexOf("@import './final-hardening.css';");
+    const closeoutImport = appStyles.indexOf("@import './visual-closeout.css';");
     expect(hardeningImport).toBeGreaterThan(-1);
     expect(closeoutImport).toBeGreaterThan(hardeningImport);
   });
