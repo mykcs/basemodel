@@ -10,6 +10,10 @@ const shouldRun = branch.startsWith('agent/visual-closeout-')
   || branch.startsWith('agent/responsive-')
   || branch.startsWith('agent/nav-')
   || branch.startsWith('agent/navigation-');
+const shouldRunWebKit = branch.startsWith('agent/css-')
+  || branch.startsWith('agent/theme-')
+  || branch.startsWith('agent/nav-')
+  || branch.startsWith('agent/navigation-');
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -93,4 +97,19 @@ run('npm', ['run', 'test:ui'], {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',
 });
+console.log('[vercel-ui-gate] Chromium PASS');
+
+// The repository's visual-acceptance contract requires the same UI suite in
+// WebKit for global CSS/theme/navigation changes. Run only the WebKit project
+// here so the already-passed Chromium matrix is not duplicated.
+if (shouldRunWebKit) {
+  console.log(`[vercel-ui-gate] running WebKit acceptance for ${branch}`);
+  run('npx', ['playwright', 'install', 'webkit']);
+  run('npm', ['run', 'test:ui:all', '--', '--project=webkit'], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+  console.log('[vercel-ui-gate] WebKit PASS');
+}
+
 console.log('[vercel-ui-gate] PASS');
