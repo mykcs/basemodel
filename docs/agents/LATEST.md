@@ -4,6 +4,12 @@ Last updated: **2026-08-18**
 
 Status: **Current `main` includes the 2026-08-15 semantic release integration (#144), the interactive research-explainer layer (#146), the verified public-safe Lab update (#148), and the final real-browser visual closeout (#147). Vercel is the only ordinary deployment provider: non-main work uses Vercel Preview and `main` uses Vercel Production.**
 
+## Public-release security gate
+
+The 2026-08-20 security closeout records `PUBLIC_RELEASE_GATE=PASS` for its exact audited snapshot: all tracked-tree, collaboration-surface, all-ref/history, and public-intent gates passed with zero unresolved real secrets. The repository remains **private** and no visibility change was made.
+
+The PASS is snapshot-bound. Any later unscanned ref or collaboration-surface change returns the release decision to HOLD until the delta is scanned. The exact evidence and decision rules live in `current/public-release-security-gate.md`.
+
 ## Current release state
 
 The current release line is no longer the 2026-08-12 eight-PR batch alone. The accepted mainline now also contains:
