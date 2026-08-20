@@ -5,9 +5,10 @@ import OpenEvoWebShopProgramReport from '../../../components/research/OpenEvoWeb
 import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × WebShop 完整实验报告" description="从 Phase G 到 H1.38A-C 的双语交互实验报告：区分有效与无效证据，展示冻结面板结果，并把已确认事实、推断建议与未知严格分开。" locale={locale}>
+<AppLayout title="OpenEvo × WebShop 实验报告" description="H1.38A-C 论文式实验报告：主结果、置信区间、证据边界、下一方法对照，以及默认收起的完整实验谱系。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="results">
-    <OpenEvoWebShopProgramReport locale={locale} />
+    <OpenEvoWebShopProgramReport locale={locale}>
+      <Seed3090ParametricProgress slot="historical" locale={locale} />
+    </OpenEvoWebShopProgramReport>
   </SeedOpenEvoResearchPage>
-  <Seed3090ParametricProgress locale={locale} />
 </AppLayout>

@@ -58,7 +58,7 @@ describe('OpenEvo × WebShop frozen program report', () => {
     ]) expect(narrative).not.toContain(forbidden);
 
     expect(component).toContain('固定 16 条成功记录');
-    expect(component).toContain('drawn from 4, 8, or 16 training task identities');
+    expect(component).toContain('draw their records from 4, 8, or 16 training task instances');
     expect(component).toContain('task-cluster 95% CI');
     expect(programTimeline.find((item) => item.id === 'h1-1-4')?.summary.en).toContain('fallback (a substitute action used after parsing failure)');
     expect(programTimeline.find((item) => item.id === 'h1-34')?.boundary.en).toContain('artifact (a frozen saved experiment output)');
@@ -121,9 +121,19 @@ describe('OpenEvo × WebShop frozen program report', () => {
     }
   });
 
-  it('exposes the same direct main-stage report on both locale routes', () => {
-    for (const route of [zhRoute, enRoute]) expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale} />');
-    for (const token of ['data-ui-audit="contrast layout overflow interactive"', 'data-filter-group="stage"', 'data-filter-group="result"', '<dialog', 'aria-live="polite"', '@media(prefers-reduced-motion:reduce)']) expect(component).toContain(token);
+  it('uses a paper-like, static-first main sequence on both locale routes', () => {
+    for (const route of [zhRoute, enRoute]) {
+      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+    }
+    const order = ['id="abstract"', 'id="results"', 'id="interpretation"', 'id="next-experiment"', 'id="methods"', 'id="appendix"']
+      .map((token) => component.indexOf(token));
+    expect(order.every((position) => position >= 0)).toBe(true);
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    for (const token of ['<table>', 'scope="col"', '<figure', '<dl class="interpretation-list"', '<details', 'data-testid="lineage-appendix"', 'data-testid="rtx6-appendix"', '@media print']) expect(component).toContain(token);
+    for (const forbidden of ['data-filter-group', '<dialog', '<script>', '.timeline-card', 'showModal']) expect(component).not.toContain(forbidden);
+    expect(programTimeline).toHaveLength(27);
+    expect(component).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
   });
 
   it('keeps passive explainer synchronization free of document scrolling', () => {
