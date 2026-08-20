@@ -9,6 +9,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
 const playwrightConfig = read('../../playwright.config.ts');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
+const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
 const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
@@ -20,12 +21,15 @@ const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the general, global-header, and research-geometry browser commands wired', () => {
-    expect(packageJson.scripts?.['test:header']).toContain('global-header-visibility.spec.ts');
+  it('keeps the general, global-header, breakpoint-handoff, and research-geometry browser commands wired', () => {
+    for (const script of ['test:header', 'test:header:all'] as const) {
+      expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
+    }
     expect(packageJson.scripts?.['test:header']).toContain('--project=chromium');
-    expect(packageJson.scripts?.['test:header:all']).toContain('global-header-visibility.spec.ts');
     for (const script of ['test:ui', 'test:ui:all'] as const) {
       expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
@@ -80,6 +84,25 @@ describe('UI visual acceptance gate contract', () => {
     expect(headerVisibilityGate).toContain("testInfo.project.name === 'chromium'");
     expect(headerVisibilityGate).toContain('public route must render successfully');
     expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
+  });
+
+  it('covers the 820/960 responsive navigation handoff without a dead zone', () => {
+    for (const term of [
+      "width: 820",
+      "width: 821",
+      "width: 900",
+      "width: 960",
+      "width: 961",
+      "mode: 'mobile'",
+      "mode: 'desktop'",
+      'responsive header breakpoint handoff has no navigation dead zone',
+      'responsive header handoff must not create horizontal overflow',
+    ]) {
+      expect(headerBreakpointGate).toContain(term);
+    }
+    expect(visualCloseout).toContain('@media (max-width: 960px)');
+    expect(visualCloseout).toContain('body .site-header .menu-toggle');
+    expect(visualCloseout).toContain('body .site-header .mobile-menu.is-open');
   });
 
   it('keeps root overflow observable and the refactored mobile menu vertically composed', () => {
