@@ -49,9 +49,12 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
   });
 
-  it('crawls public routes and requires the computed global navigation to stay usable', () => {
+  it('crawls public route classes and requires computed global navigation to stay usable', () => {
     for (const term of [
-      'sitemap.xml',
+      'bilingualStaticPaths',
+      'zhOnlyStaticPaths',
+      'toEnglishPath',
+      'dynamicTemplateRoutes',
       '[data-site-header]',
       "theme: 'light'",
       "theme: 'dark'",
@@ -66,7 +69,8 @@ describe('UI visual acceptance gate contract', () => {
       expect(headerVisibilityGate).toContain(term);
     }
     expect(headerVisibilityGate).toContain("testInfo.project.name === 'chromium'");
-    expect(headerVisibilityGate).toContain('sitemap route must render successfully');
+    expect(headerVisibilityGate).toContain('public route must render successfully');
+    expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
