@@ -78,10 +78,22 @@ test('print mode linearizes the report and exposes provenance', async ({ page })
   await page.goto('/research/seed-openevo/results/');
   await page.emulateMedia({ media: 'print', colorScheme: 'light' });
   const report = page.getByTestId('openevo-webshop-program-report');
+  await expect(page.locator('.site-header')).toBeHidden();
+  await expect(page.locator('.plain-detail__header')).toBeHidden();
+  await expect(page.locator('.plain-detail__tabs')).toBeHidden();
+  await expect(page.locator('.page-outline')).toBeHidden();
+  await expect(page.locator('.actionable-content-status')).toBeHidden();
+  await expect(page.locator('.site-footer')).toBeHidden();
   await expect(report.locator('.paper-nav')).toBeHidden();
   await expect(report.locator('.print-methods')).toBeVisible();
   await expect(report.locator('.print-methods code').first()).toContainText('93a38821c884');
   await expect(report.locator('.print-lineage')).toBeVisible();
   await expect(report.locator('.print-lineage > li')).toHaveCount(27);
   await expect(report.locator('.print-rtx6')).toBeVisible();
+});
+
+test('print cleanup remains scoped to the results report', async ({ page }) => {
+  await page.goto('/research/seed-openevo/webshop/');
+  await page.emulateMedia({ media: 'print', colorScheme: 'light' });
+  await expect(page.locator('.plain-detail__header')).toBeVisible();
 });

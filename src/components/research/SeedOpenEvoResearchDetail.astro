@@ -68,7 +68,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
 
 const current = copy[page];
 ---
-<div class="plain-detail">
+<div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]}>
   <header class="plain-detail__header">
     <div>{current.eyebrow}</div>
     <h1>{current.title}</h1>
@@ -102,4 +102,38 @@ const current = copy[page];
   .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
   .plain-detail-core{width:min(780px,100%);margin-inline:auto}
   @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__tabs{margin-bottom:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}}
+</style>
+
+<style is:global>
+  @media print {
+    body:has(.plain-detail--results) .site-header,
+    body:has(.plain-detail--results) .research-context-bar,
+    body:has(.plain-detail--results) .plain-detail__header,
+    body:has(.plain-detail--results) .plain-detail__tabs,
+    body:has(.plain-detail--results) .page-outline,
+    body:has(.plain-detail--results) .compare-tray,
+    body:has(.plain-detail--results) .global-quick-view,
+    body:has(.plain-detail--results) .actionable-content-status,
+    body:has(.plain-detail--results) .actionable-copy-button,
+    body:has(.plain-detail--results) .actionable-inline-copy-button,
+    body:has(.plain-detail--results) .skip-link,
+    body:has(.plain-detail--results) .site-footer {
+      display: none !important;
+    }
+
+    body:has(.plain-detail--results) .plain-detail,
+    body:has(.plain-detail--results) .plain-detail__interactive {
+      width: 100%;
+      margin: 0;
+    }
+
+    body:has(.plain-detail--results) .actionable-inline-code {
+      cursor: auto;
+      text-decoration: none;
+    }
+
+    body:has(.plain-detail--results) .actionable-inline-code::after {
+      display: none;
+    }
+  }
 </style>
