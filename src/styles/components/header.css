@@ -149,26 +149,26 @@
 }
 
 @media (max-width: 640px) {
-  .site-header {
+  body .site-header {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
-  .site-header .nav-inner {
+  body .site-header .nav-inner {
     min-height: 58px;
     gap: 8px;
     align-items: center;
   }
 
-  .site-header .nav-inner > .theme-toggle {
+  body .site-header .nav-inner > .theme-toggle {
     display: none;
   }
 
-  .site-header .brand {
+  body .site-header .brand {
     gap: 8px;
   }
 
-  .site-header .brand-mark {
+  body .site-header .brand-mark {
     width: 32px;
     height: 32px;
     border-radius: 10px;
@@ -176,52 +176,52 @@
     line-height: 1;
   }
 
-  .site-header .brand strong {
+  body .site-header .brand strong {
     font-size: .9rem;
     line-height: 1.1;
     letter-spacing: -.012em;
   }
 
-  .site-header .command-search-trigger,
-  .site-header .menu-toggle {
+  body .site-header .command-search-trigger,
+  body .site-header .menu-toggle {
     min-width: 42px;
     min-height: 42px;
     border-radius: 11px;
   }
 
-  .site-header .command-search-trigger {
+  body .site-header .command-search-trigger {
     line-height: 1;
   }
 
-  .site-header .menu-toggle {
+  body .site-header .menu-toggle {
     gap: 4px;
   }
 
-  .site-header .menu-toggle span {
+  body .site-header .menu-toggle span {
     width: 15px;
     height: 1.5px;
   }
 
-  .site-header .mobile-menu {
+  body .site-header .mobile-menu {
     padding: 0;
     background: color-mix(in srgb, var(--bg) 96%, transparent);
     box-shadow: 0 14px 32px color-mix(in srgb, var(--ink) 9%, transparent);
   }
 
-  .site-header .mobile-menu .mobile-menu__inner {
+  body .site-header .mobile-menu .mobile-menu__inner {
     display: block;
     grid-template-columns: none;
     padding-block: 12px max(18px, env(safe-area-inset-bottom));
   }
 
-  .site-header .mobile-menu .mobile-menu__section,
-  .site-header .mobile-menu .mobile-menu__controls {
+  body .site-header .mobile-menu .mobile-menu__section,
+  body .site-header .mobile-menu .mobile-menu__controls {
     width: 100%;
     min-width: 0;
   }
 
-  .site-header .mobile-menu a,
-  .site-header .mobile-menu button {
+  body .site-header .mobile-menu a,
+  body .site-header .mobile-menu button {
     display: flex;
     min-width: 0;
     min-height: 50px;
@@ -239,12 +239,12 @@
     letter-spacing: -.006em;
   }
 
-  .site-header .mobile-menu a[aria-current='page'] {
+  body .site-header .mobile-menu a[aria-current='page'] {
     border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
     background: color-mix(in srgb, var(--accent) 7%, var(--surface));
   }
 
-  .site-header .mobile-menu .theme-toggle {
+  body .site-header .mobile-menu .theme-toggle {
     width: 100%;
   }
 }
