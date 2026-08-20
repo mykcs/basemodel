@@ -21,13 +21,13 @@ describe('UI visual acceptance gate contract', () => {
     expect(packageJson.scripts?.['test:header']).toContain('global-header-visibility.spec.ts');
     expect(packageJson.scripts?.['test:header']).toContain('--project=chromium');
     expect(packageJson.scripts?.['test:header:all']).toContain('global-header-visibility.spec.ts');
-    expect(packageJson.scripts?.['test:ui']).toContain('npm run test:header');
-    expect(packageJson.scripts?.['test:ui']).toContain('ui-safety.spec.ts');
-    expect(packageJson.scripts?.['test:ui']).toContain('research-explainer-layout.spec.ts');
+    for (const script of ['test:ui', 'test:ui:all'] as const) {
+      expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
+    }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
-    expect(packageJson.scripts?.['test:ui:all']).toContain('npm run test:header:all');
-    expect(packageJson.scripts?.['test:ui:all']).toContain('ui-safety.spec.ts');
-    expect(packageJson.scripts?.['test:ui:all']).toContain('research-explainer-layout.spec.ts');
   });
 
   it('retains evidence when browser verification fails', () => {
