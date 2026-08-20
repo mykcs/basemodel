@@ -68,8 +68,7 @@ assert(
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
-const seedIndex = home.indexOf('<SeedUseCaseStrip');
-assert('HARDEN-HOME-003', intentIndex >= 0 && seedIndex > intentIndex, 'the SEED practical thread follows the experiment entry choice instead of obscuring the first viewport');
+assert('HARDEN-HOME-003', intentIndex >= 0 && !home.includes('<SeedUseCaseStrip'), 'home keeps the experiment entry choice without repeating the global SEED use-case navigation strip');
 
 const guide = read('src/components/GuideDecisionChapters.astro');
 assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
@@ -100,7 +99,15 @@ assert(
     && appStyles.indexOf("@import './final-hardening.css';") > appStyles.indexOf("@import './design-refinement.css';"),
   'canonical app stylesheet keeps final hardening after design refinement',
 );
-assert('HARDEN-HOME-004', !layout.includes('BeginnerStart') && !layout.includes("area={seedArea} standalone") === false, 'duplicate BeginnerStart onboarding is removed from the layout');
+assert(
+  'HARDEN-HOME-004',
+  !layout.includes('BeginnerStart')
+    && !layout.includes('SeedUseCaseStrip')
+    && !layout.includes('ResearchMainline')
+    && !layout.includes('SiteRoutePrimer')
+    && !layout.includes('SeedOpenEvoMissionRibbon'),
+  'global layout owns one site header instead of stacking duplicate navigation and onboarding ribbons',
+);
 
 const actionableLayer = read('src/components/common/ActionableContentLayer.astro');
 const copyButton = read('src/components/common/CopyButton.tsx');

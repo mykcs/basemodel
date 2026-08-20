@@ -1,9 +1,5 @@
 ---
 import Header from '../components/Header.astro';
-import ResearchMainline from '../components/ResearchMainline.astro';
-import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
-import SiteRoutePrimer from '../components/visual/SiteRoutePrimer.astro';
-import SeedOpenEvoMissionRibbon from '../components/research/SeedOpenEvoMissionRibbon.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
 import PageOutline from '../components/navigation/PageOutline.astro';
@@ -15,7 +11,6 @@ import '../styles/app.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 
 interface Props { title: string; description?: string; locale?: Locale }
-type SeedArea = 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -31,20 +26,8 @@ const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !is
 const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
-const isHomePage = localeNeutralPath === '/';
-const isMissionPage = /^\/research\/seed-openevo(?:\/|$)/.test(localeNeutralPath);
 const isTodayRunbook = /^\/guide\/today\/?$/.test(localeNeutralPath);
 const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
-const seedArea: SeedArea | null = isHomePage || isMissionPage ? null
-  : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
-  : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
-  : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
-  : /^\/papers\/?$/.test(localeNeutralPath) ? 'papers'
-  : /^\/workspace\/?$/.test(localeNeutralPath) ? 'workspace'
-  : /^\/data-status\/?$/.test(localeNeutralPath) ? 'data-status'
-  : /^\/methodology\/?$/.test(localeNeutralPath) ? 'methodology'
-  : /^\/landscape\/?$/.test(localeNeutralPath) ? 'landscape'
-  : null;
 const localePath = (target: Locale) => { const clean = localeNeutralPath.replace(/^\//, ''); return target === 'en' ? `/en/${clean}` : `/${clean}`; };
 const canonicalUrl = new URL(localePath(locale), siteOrigin).href;
 const alternateUrls = locales.map((loc) => ({ loc, href: new URL(localePath(loc), siteOrigin).href }));
@@ -97,11 +80,7 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
     <ResearchContextBar client:load m={m} locale={locale} />
     {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
     <main id="main-content" class="site-main">
-      {!isHomePage && !isMissionPage && <SeedOpenEvoMissionRibbon locale={locale} path={localeNeutralPath} />}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
-      {!isHomePage && !isMissionPage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
-      {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
-      {!isHomePage && !isMissionPage && <SiteRoutePrimer locale={locale} path={localeNeutralPath} />}
       <slot />
     </main>
     <PageOutline locale={locale} />
