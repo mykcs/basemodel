@@ -18,7 +18,7 @@ const explainer = read('src/components/research/InteractiveResearchExplainer.tsx
 
 describe('OpenEvo × WebShop frozen program report', () => {
   it('pins every source link to the immutable OpenEvo delivery commit and known existing paths', () => {
-    expect(openEvoProgramSource.commit).toBe('db91088b97d6d5a7a7804c2360fa4d0b70f65de0');
+    expect(openEvoProgramSource.commit).toBe('e9088e47531ffec03d1450ffd2601862909cf187');
     expect(openEvoProgramSource.branch).toBe('main');
     expect(openEvoProgramSourcePaths.reconciliation).toBe('docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json');
     for (const [key, path] of Object.entries(openEvoProgramSourcePaths)) {

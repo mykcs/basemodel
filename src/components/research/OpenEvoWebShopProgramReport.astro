@@ -21,8 +21,8 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
 
 <article class="paper-report" data-program-report data-ui-audit="contrast layout overflow" data-testid="openevo-webshop-program-report">
   <header class="paper-header" id="abstract">
-    <p class="kicker">OPENEVO × WEBSHOP · H1.40-G2-R2 · {openEvoProgramSource.checkedAt}</p>
-    <h2>{t('第二代参数写入的稳定性门', 'Stability gates for second-generation parameter writing')}</h2>
+    <p class="kicker">OPENEVO × WEBSHOP · H1.40 → H1.41 · {openEvoProgramSource.checkedAt}</p>
+    <h2>{t('从稳定性门到机制诊断', 'From stability gates to mechanism diagnosis')}</h2>
     <p class="abstract"><strong>{t(
       'H1.40 的 E2 经验供给和 G2 结构创建都成立，但 acquisition、retention 与 preservation upstream gates 均未通过。',
       'H1.40 established E2 experience supply and G2 construction, but its acquisition, retention, and preservation upstream gates all failed.'
@@ -31,8 +31,8 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
       'The 256-attempt E2 harvest produced 132 qualified positives across 33 qualifying identities; G2 ended with 16 components and effective rank 64. Because the upstream gates did not pass, the reserved fresh-task T2 panel did not run.'
     )}</p>
     <p class="implication">{t(
-      '研究含义：瓶颈从“能否生成新经验”转向“连续参数写入能否同时保留旧能力并内化新经验”；H1.40-MD 的 magnitude、replay 与 component dynamics 仍是待检验假设。',
-      'Research implication: the bottleneck shifted from generating new experience to integrating it into parameters without losing old capability; H1.40-MD leaves magnitude, replay, and component dynamics as testable hypotheses.'
+      '研究含义：瓶颈从“能否生成新经验”转向“连续参数写入能否同时保留旧能力并内化新经验”；H1.41 的 matched screen 没有建立 magnitude-reset improvement，反而把 measurement validity 保留为下一道边界。',
+      'Research implication: the bottleneck shifted from generating new experience to integrating it into parameters without losing old capability; H1.41 did not establish a magnitude-reset improvement and leaves measurement validity as the next boundary.'
     )}</p>
   </header>
 
@@ -72,6 +72,13 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
       'The 4/4 invalid acquisition cell was a parser-only measurement failure; the remaining valid attempts still did not establish the complete structural gate. Invalid measurement is not automatically model incompetence, and an unrun T2 is not a failed result.'
     )}</p>
 
+    <aside class="validity-note" aria-label={t('H1.41 机制筛选结果', 'H1.41 mechanism-screen result')}>
+      <strong>{t('H1.41：MEASUREMENT_INVALID。', 'H1.41: MEASUREMENT_INVALID.')}</strong> {t(
+        'C0 exact H1.40 updater 与 C1 reset-magnitude 完成 96 cells / 384 formal attempts。C0 acquisition point estimate 为 0；两臂 retention 都是 −0.065625；C1 在 acquisition 与 preservation 各有一个无效 cluster。因此这不是 improvement 或 null 的强结论，也不打开任何 T2。',
+        'C0 exact H1.40 and C1 reset-magnitude completed 96 cells / 384 formal attempts. C0 acquisition was 0-point; both arms had retention −0.065625; C1 had one invalid cluster in acquisition and one in preservation. This is neither a strong improvement nor null claim, and no T2 opens.'
+      )} <a href={openEvoProgramLinks.h141Reconciliation}>{t('查看 reconciliation', 'Read the reconciliation')}</a>
+    </aside>
+
     <div class="causal-flow" aria-label={t('H1.40 研究流程与停止位置', 'H1.40 research flow and stopping point')}>
       <div class="flow-node flow-valid"><span>G0 → G1</span><strong>{t('第一代 fresh transfer', 'first-generation fresh transfer')}</strong><small>✓</small></div>
        <div class="flow-connector" aria-hidden="true"></div>
@@ -104,13 +111,13 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
     <p class="section-number">04</p><h2 id="next-title">{t('下一实验', 'Next experiment')}</h2>
     <p class="recommendation-label">{t('建议 / 设计移交，不是实验结果', 'Recommendation / design handoff, not an experimental result')}</p>
     <p class="section-intro">{t(
-      'H1.41 已冻结同一组 H1.40 E2 records 和 updater schedule；C0 是 exact H1.40 warm-start control，C1 只 reset all magnitudes to coefficient init。primary 先看 acquisition、retention 与 preservation，不打开 T2。',
-      'H1.41 freezes the H1.40 E2 records and updater schedule; C0 is the exact H1.40 warm-start control, while C1 only resets all magnitudes to coefficient init. The primary endpoints are acquisition, retention, and preservation; T2 stays closed.'
+      'H1.41 已完成同一组 H1.40 E2 records 和 updater schedule 的 matched screen。结果 selector 为 MEASUREMENT_INVALID：不要追加 seeds/tasks/retries，也不要把 C1 写成 improvement；下一轮若继续，必须先为 measurement validity 另行冻结 preregistration。',
+      'H1.41 completed the matched screen on the same H1.40 E2 records and updater schedule. Its selector is MEASUREMENT_INVALID: do not add seeds, tasks, or retries, and do not present C1 as an improvement; any successor must preregister a measurement-validity design first.'
     )}</p>
     <ol class="next-steps"><li><span>1</span><div><strong>{nextDecisionNodes[0].title[locale]}</strong><p>{nextDecisionNodes[0].change[locale]}</p></div></li><li><span>2</span><div><strong>{nextDecisionNodes[1].title[locale]}</strong><p>{t('分别报告 acquisition（新学会）、retention（旧能力保留）与 untouched transfer（未见任务迁移）。', 'Report acquisition (new learning), retention (preservation of old capabilities), and untouched transfer (transfer to unseen tasks) separately.')}</p></div></li></ol>
     <p class="handoff-boundary"><strong>H1.41.</strong> {t(
-      '这是 preregistered mechanism screen，不是 improvement claim。只有三个 upstream gates 都可靠通过后，才另行冻结 fresh T2 panel。',
-      'This is a preregistered mechanism screen, not an improvement claim. A fresh T2 panel requires a separate freeze after all three upstream gates pass reliably.'
+      'screen 已收口但 measurement-invalid；只有 future successor 重新建立可靠 upstream gates 后，才另行冻结 fresh T2 panel。',
+      'The screen is closed as measurement-invalid; a fresh T2 panel requires a future successor to re-establish reliable upstream gates and freeze it separately.'
     )}</p>
   </section>
 
@@ -119,7 +126,7 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
     <details><summary>{t('查看有效性、冻结设计与来源', 'View validity, frozen design, and provenance')}</summary><div class="details-body">
       <dl class="method-list"><div><dt>{t('E2 harvest', 'E2 harvest')}</dt><dd>{t('256 次尝试、132 个合格正例、33 个 qualifying identities；选出 16 条 sealed records。', '256 attempts, 132 qualified positives, 33 qualifying identities; 16 sealed records selected.')}</dd></div><div><dt>{t('G2 updater', 'G2 updater')}</dt><dd>{t('8 个 sequential increments；最终 16 components、effective rank 64；H1.40-MD 离线读取现有 states。', 'Eight sequential increments; final 16 components and effective rank 64; H1.40-MD reads existing states offline.')}</dd></div><div><dt>{t('主要终点', 'Primary endpoints')}</dt><dd>{t('acquisition、retention、H1.39 preservation；T2 仅在 upstream gates 通过后另行预注册。', 'Acquisition, retention, and H1.39 preservation; T2 requires a separate preregistration after the upstream gates pass.')}</dd></div><div><dt>{t('有效性', 'Validity')}</dt><dd>{t('acquisition 有 4/4 parser-invalid cell；其余有效尝试仍未通过完整 acquisition gate。', 'One acquisition cell was 4/4 parser-invalid; the remaining valid attempts still did not pass the complete acquisition gate.')}</dd></div><div><dt>{t('快照身份', 'Snapshot identity')}</dt><dd><code>{openEvoProgramSource.branch}@{openEvoProgramSource.commit}</code><br/><code>{openEvoProgramSource.campaign}</code></dd></div></dl>
       <p>{t('实时科学状态不由此静态页面决定。请按实际实验 branch → current-campaign.json → 最新 reconciliation/result 解析。', 'This static page does not own live scientific state. Resolve it from the actual experiment branch → current-campaign.json → latest reconciliation/result.')}</p>
-      <ul class="source-list"><li><a href={openEvoProgramLinks.report}>{t('项目总报告', 'Program report')}</a></li><li><a href={openEvoProgramLinks.ledger}>{t('机器可读账本', 'Machine-readable ledger')}</a></li><li><a href={openEvoProgramLinks.reconciliation}>H1.40 upstream summary</a></li><li><a href={openEvoProgramLinks.campaign}>current-campaign.json</a></li></ul>
+      <ul class="source-list"><li><a href={openEvoProgramLinks.report}>{t('项目总报告', 'Program report')}</a></li><li><a href={openEvoProgramLinks.ledger}>{t('机器可读账本', 'Machine-readable ledger')}</a></li><li><a href={openEvoProgramLinks.reconciliation}>H1.40 upstream summary</a></li><li><a href={openEvoProgramLinks.h141Reconciliation}>H1.41 reconciliation</a></li><li><a href={openEvoProgramLinks.campaign}>current-campaign.json</a></li></ul>
     </div></details>
     <div class="print-only print-methods">
       <h3>{t('冻结设计与来源', 'Frozen design and provenance')}</h3>

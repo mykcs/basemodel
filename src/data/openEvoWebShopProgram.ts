@@ -1,8 +1,8 @@
 export const openEvoProgramSource = {
-  commit: 'db91088b97d6d5a7a7804c2360fa4d0b70f65de0',
+  commit: 'e9088e47531ffec03d1450ffd2601862909cf187',
   checkedAt: '2026-08-21',
   branch: 'main',
-  campaign: '20260820-0140r2-h140-g2-multigeneration',
+  campaign: '20260821-0141-h141-magnitude-screen',
 } as const;
 
 const sourceRoot = `https://github.com/mykcs/openevo-experiment/blob/${openEvoProgramSource.commit}`;
@@ -11,6 +11,7 @@ export const openEvoProgramSourcePaths = {
   ledger: 'docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json',
   report: 'docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-21.md',
   reconciliation: 'docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json',
+  h141Reconciliation: 'docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md',
   campaign: 'configs/experiment/current-campaign.json',
 } as const;
 
@@ -18,6 +19,7 @@ export const openEvoProgramLinks = {
   ledger: `${sourceRoot}/${openEvoProgramSourcePaths.ledger}`,
   report: `${sourceRoot}/${openEvoProgramSourcePaths.report}`,
   reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.reconciliation}`,
+  h141Reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.h141Reconciliation}`,
   campaign: `${sourceRoot}/${openEvoProgramSourcePaths.campaign}`,
 } as const;
 
@@ -238,11 +240,11 @@ export const programTimeline = [
     evidence: `${sourceRoot}/docs/evidence/remote-runs/2026-08-21/h1.40-md/ARTIFACT_AUTOPSY.md`,
   },
   {
-    id: 'h1-41', stage: 'closeout', result: 'design', coverage: ['H1.41'],
-    title: { zh: 'H1.41：冻结 magnitude-policy mechanism screen', en: 'H1.41: frozen magnitude-policy mechanism screen' },
-    summary: { zh: '预注册 C0 exact H1.40 updater 对照 C1 reset-all-to-coefficient-init；只改变 magnitude initialization，先测 acquisition、retention 与 preservation，不打开 T2。', en: 'The preregistered C0 exact H1.40 updater is matched against C1 reset-all-to-coefficient-init; only magnitude initialization changes, with acquisition, retention, and preservation tested before any T2.' },
-    boundary: { zh: '这是机制筛选设计，不是结果；只有所有 upstream gates 通过后才有资格另行预注册 fresh T2。', en: 'This is a mechanism-screen design, not a result; a fresh T2 requires a separate preregistration after all upstream gates pass.' },
-    evidence: openEvoProgramLinks.report,
+    id: 'h1-41', stage: 'closeout', result: 'invalid', coverage: ['H1.41'],
+    title: { zh: 'H1.41：机制筛选完成，但测量门未通过', en: 'H1.41: mechanism screen completed, measurement boundary not cleared' },
+    summary: { zh: 'C0 exact H1.40 updater 与 C1 reset magnitude 完成 96 cells / 384 attempts；C0 acquisition point estimate 为 0，C0/C1 retention 都为 −0.065625，C1 在 acquisition 与 preservation 各有一个无效 cluster，T2 未打开。', en: 'C0 exact H1.40 and C1 reset-magnitude completed 96 cells / 384 attempts; C0 acquisition was 0-point, C0/C1 retention were both −0.065625, C1 had one invalid cluster in acquisition and one in preservation, and T2 remained unopened.' },
+    boundary: { zh: 'selector 是 MEASUREMENT_INVALID；不支持 magnitude-reset improvement、fresh transfer 或 T2，H1.40/H1.41 T2 都保持关闭。', en: 'The selector is MEASUREMENT_INVALID; it supports no magnitude-reset improvement, fresh transfer, or T2 claim. Both H1.40 and H1.41 T2 remain closed.' },
+    evidence: openEvoProgramLinks.h141Reconciliation,
   },
 ] as const;
 
@@ -264,16 +266,16 @@ export const h140Metrics = {
 
 export const claimState = {
   confirmed: {
-    zh: ['H1.40 E2 harvest 有 256 次尝试、132 个合格正例和 33 个 qualifying identities。', 'G2 真实创建到 16 个 components、effective rank 64。', 'acquisition、retention 与 H1.39 preservation upstream gates 未通过，因此 T2 未打开。'],
-    en: ['H1.40 E2 harvest contained 256 attempts, 132 qualified positives, and 33 qualifying identities.', 'G2 was genuinely created with 16 components and effective rank 64.', 'The acquisition, retention, and H1.39 preservation upstream gates did not pass, so T2 remained unopened.'],
+    zh: ['H1.40 E2 harvest 有 256 次尝试、132 个合格正例和 33 个 qualifying identities。', 'G2 真实创建到 16 个 components、effective rank 64。', 'H1.40 upstream gates 未通过，H1.41 的 384 次 formal attempts 已完成但 selector 为 MEASUREMENT_INVALID；T2 未打开。'],
+    en: ['H1.40 E2 harvest contained 256 attempts, 132 qualified positives, and 33 qualifying identities.', 'G2 was genuinely created with 16 components and effective rank 64.', 'H1.40 upstream gates did not pass; H1.41 completed 384 formal attempts but selected MEASUREMENT_INVALID, so T2 remained unopened.'],
   },
   inferred: {
     zh: ['E2 supply 不是当前直接瓶颈；瓶颈转向连续参数写入的 stability–plasticity。', 'H1.40-MD 支持优先检查 magnitude、replay 和 cumulative component interference。'],
     en: ['E2 supply was not the immediate bottleneck; the bottleneck shifted to stability–plasticity during continual parameter writing.', 'H1.40-MD supports prioritizing magnitude, replay, and cumulative-component-interference diagnostics.'],
   },
   unknown: {
-    zh: ['magnitude imbalance 是否是 G2 失败的因果机制仍未知。', 'G2 的 fresh-task transfer 未测量；T2 没有运行。', 'H1.41 C0/C1 哪个 updater 更稳定仍未知。'],
-    en: ['Whether magnitude imbalance is the causal mechanism behind G2 failure remains unknown.', 'G2 fresh-task transfer was not measured; T2 did not run.', 'Which H1.41 updater, C0 or C1, is more stable remains unknown.'],
+    zh: ['magnitude imbalance 是否是 G2 失败的因果机制仍未知。', 'G2 与 H1.41 的 fresh-task transfer 未测量；T2 没有运行。', 'H1.41 的无效 cluster 是否能通过新的 measurement-aware contract 消除仍未知。'],
+    en: ['Whether magnitude imbalance is the causal mechanism behind G2 failure remains unknown.', 'Fresh-task transfer was not measured for G2 or H1.41; T2 did not run.', 'Whether a new measurement-aware contract can remove the H1.41 invalid clusters remains unknown.'],
   },
 } as const;
 
