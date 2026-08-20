@@ -21,6 +21,18 @@ preserve Astro + React + CSS variables
 -> reconsider Tailwind only from new evidence
 ```
 
+## Current phase status
+
+| Phase | Status | Current result |
+| --- | --- | --- |
+| 1 · composition root | complete | `AppLayout.astro -> app.css`, structural audit, exact-head browser acceptance |
+| 2 · global shell ownership | owner cutover | `components/global-shell.css` and `components/header.css` are the final cascade owners; Header rules are removed from `visual-closeout.css` |
+| 3 · responsive ownership | owner cutover | the 1080/1081 navigation handoff and phone menu behavior are explicitly owned by `components/header.css`; remaining duplicate legacy declarations are retirement debt, not owners |
+| 4 · retire patch layers | in progress | first Header debt was physically removed from `visual-closeout.css`; remaining legacy files are frozen and must shrink when touched |
+| 5 · Tailwind evaluation | evaluated: no pilot | current evidence still points to ownership debt, not utility-authoring friction, so no Tailwind dependency or pilot is introduced |
+
+There is no Phase 6 in the current plan. Do not invent one merely to extend the migration. If a new, independently testable architecture problem appears after the remaining Phase 4 debt is retired, define a new phase from evidence at that time.
+
 ## Canonical import graph
 
 All page-wide CSS enters the application through one file:
@@ -38,10 +50,15 @@ AppLayout.astro
    ├─ actionable-content.css
    ├─ knowledge-architecture.css
    ├─ mobile-composition.css
-   └─ visual-closeout.css
+   ├─ visual-closeout.css
+   └─ components/
+      ├─ global-shell.css
+      └─ header.css
 ```
 
 `AppLayout.astro` must not accumulate another list of global stylesheet imports. `app.css` is the only composition root for page-wide CSS.
+
+The semantic shell owners deliberately load after retained compatibility layers during the migration. This makes ownership explicit without requiring an unsafe all-at-once rewrite of every large historical stylesheet. A legacy declaration that is superseded by a semantic owner is deletion debt and must not be extended.
 
 Feature-owned CSS may still be imported by the component that owns the feature. `InteractiveResearchExplainer.tsx` and its explainer stylesheet are the current example: feature code owns feature styling instead of adding another site-wide override file.
 
@@ -57,23 +74,39 @@ Before introducing a repeated literal or a fourth visual scale, decide whether i
 
 `global.css`, `site.css`, `visual-identity.css`, and `editorial-hierarchy.css` own durable site-wide primitives and visual identity.
 
-Examples include the canvas, shared typography, ordinary controls, common shells, durable shape rules, and the Editorial/Workbench visual language.
+Examples include the canvas, shared typography, ordinary controls, durable shape rules, and the Editorial/Workbench visual language. During migration, `site.css` and `visual-identity.css` may still contain the original foundation form of some shell selectors; the final responsive/interaction contract is owned by the semantic component owner.
 
-### 3. Named cross-cutting systems
+### 3. Semantic shell owners
+
+`src/styles/components/global-shell.css` owns shared `.shell` width and Footer geometry that had accumulated later overrides.
+
+`src/styles/components/header.css` owns the final shared Header/Nav behavior that must remain stable across route classes and viewports, including:
+
+- sticky header chrome and final stacking/background treatment;
+- desktop/mobile navigation handoff at `1080/1081px`;
+- command search, language, theme and menu control composition;
+- mobile menu geometry and interaction-visible state;
+- the closed resource popover geometry invariant.
+
+The component's scoped Astro style remains the base styling of its internal structure. The semantic owner exists for page-wide shell behavior that historically leaked into later global files.
+
+### 4. Named cross-cutting systems
 
 Files such as `workspace.css`, `actionable-content.css`, `knowledge-architecture.css`, and `mobile-composition.css` are allowed because they have a named semantic responsibility.
 
+`mobile-composition.css` now owns cross-site mobile reading composition, not the final Header/Nav contract. Any remaining Header declarations in that file are frozen compatibility copies awaiting physical deletion under Phase 4.
+
 A new global stylesheet requires the same standard: it must have a durable owner that can be described without words such as “fix”, “final”, “hardening”, “closeout”, “cleanup”, or “refinement”.
 
-### 4. Feature/component styles
+### 5. Feature/component styles
 
 Prefer feature styling beside or directly imported by the owning component when the rules do not need page-wide reach.
 
 A component should not rely on a later global override merely because it was faster to patch there. When a component is already being changed, migrate relevant overrides back to the component when that can be done without expanding risk unnecessarily.
 
-### 5. Frozen legacy compatibility layers
+### 6. Frozen legacy compatibility layers
 
-These files remain because their cascade order has already been browser-validated:
+These files remain because portions of their cascade have already been browser-validated and still contain required non-shell behavior:
 
 - `v2-closeout.css`
 - `visual-upgrade.css`
@@ -83,70 +116,90 @@ These files remain because their cascade order has already been browser-validate
 
 They are **migration debt, not extension points**.
 
+Header/Nav legacy selector debt is currently frozen to `visual-upgrade.css`, `design-refinement.css`, `final-hardening.css`, and `mobile-composition.css`. `visual-closeout.css` is no longer allowed to contain Header/Nav selectors. Foundation copies in `site.css` and `visual-identity.css` remain valid foundation history, while the semantic owner controls the final responsive result.
+
 Do not create new siblings with patch-oriented names. Do not add a new final override file because an older selector is inconvenient. When a rule in one of these layers must change, first identify its semantic owner. Prefer moving the rule to that owner and deleting the legacy copy.
 
 A temporary edit inside a frozen file is acceptable only when moving ownership in the same change would materially increase regression risk. In that case, keep the patch minimal and leave the file smaller or unchanged in scope; do not broaden it into a new design system.
 
 ## Cascade rules
 
-1. Preserve the validated import order in `app.css` until a migration is separately browser-accepted.
+1. Preserve the validated legacy import order while retirement is in progress; semantic owners load after that debt and are the only permitted final shell owners.
 2. Do not introduce CSS Cascade Layers (`@layer`) merely to reorganize names. Layering changes precedence semantics and therefore requires deliberate visual migration work.
 3. Avoid increasing selector specificity to win a local conflict. Fix ownership first.
-4. Treat `!important` as existing compatibility debt, not a normal authoring tool.
+4. Treat `!important` as existing compatibility debt, not a normal authoring tool. When an existing `!important` moves into an owner, remove it when the legacy source that required it is retired and browser evidence proves the lower-specificity contract.
 5. Never hide root overflow to make a broken child pass. Geometry must remain observable to browser gates.
-6. Responsive rules belong to the component/system whose composition changes, even when the temporary legacy rule still lives in `mobile-composition.css`.
+6. Responsive rules belong to the component/system whose composition changes. A legacy duplicate may remain temporarily only as explicit Phase 4 deletion debt.
 
 ## Migration sequence
 
-This is intentionally gradual so visual output stays stable.
-
 ### Phase 1 — composition root and guardrail
+
+Complete.
 
 - route `AppLayout.astro` through `src/styles/app.css` only;
 - preserve the existing cascade order exactly;
 - add `npm run audit:css`;
 - make the deployment gate reject new patch-style global layers.
 
-Phase 1 is deliberately a **cascade-preserving CSS composition refactor**: it changes the import root, not selectors, declarations, tokens, media queries, typography, responsive behavior, or ownership scope. Its acceptance therefore consists of the structural CSS audit, the full exact-head hosted Chromium matrix, and exact-head Preview review. It does not require forcing Playwright WebKit into Vercel's Amazon Linux build image.
+Phase 1 was deliberately a **cascade-preserving CSS composition refactor**. Its accepted exact-head browser evidence therefore used the structural CSS audit, full hosted Chromium matrix, and Preview review without forcing WebKit into Vercel's Amazon Linux build image.
 
 ### Phase 2 — global shell ownership
 
-When header/navigation/footer work is next touched:
+Current owner cutover:
 
-- move header-specific overrides out of `mobile-composition.css`, `final-hardening.css`, and `visual-closeout.css` into the Header/shared-shell owner;
-- keep global theme/tokens in the foundation;
-- run the full header + UI browser matrix before deleting old rules.
+- `components/global-shell.css` owns shared shell width and Footer geometry;
+- `components/header.css` owns final Header/Nav behavior;
+- Header-specific rules have been removed from `visual-closeout.css`;
+- the structural audit and Vitest ownership gate reject new Header-owner files and prevent `visual-closeout.css` from regaining Header selectors.
 
-Phase 2 changes selector ownership and potentially rendered cascade semantics, so it must run `npm run test:ui:all` on a Playwright-supported macOS/Ubuntu/Debian runner in addition to exact-head Preview review.
+Because this phase changes selector ownership and rendered cascade semantics, acceptance requires the full hosted Chromium matrix plus WebKit on a Playwright-supported runner and exact-head Preview review.
 
 ### Phase 3 — responsive ownership
 
-Move component-specific mobile rules from the broad mobile composition file into their real owners. Keep only true cross-site mobile composition primitives in `mobile-composition.css`.
+The final responsive Header contract is now explicit in `components/header.css`, including the existing `1080px` mobile / `1081px` desktop handoff and the compact phone menu states.
+
+Physical duplicate declarations still present in `mobile-composition.css` are not an alternate owner. They are frozen Phase 4 deletion debt. No new Header/Nav responsive rule may be added there.
 
 ### Phase 4 — retire patch layers
 
-As semantic owners absorb validated rules, shrink the frozen files. Delete a legacy layer once no required rule remains and the exact-head browser matrix passes without it.
+Retirement is incremental and evidence-driven:
 
-### Phase 5 — optional Tailwind evaluation
+1. move the final effective behavior into the semantic owner;
+2. freeze the old file so scope cannot grow;
+3. remove the duplicate from the smallest/lowest-risk legacy file;
+4. run the exact-head browser matrix;
+5. continue to the next legacy source only when the previous deletion preserves behavior.
 
-Reconsider Tailwind only if future evidence shows that utility authoring materially reduces repeated layout code or Agent drift after ownership has already been fixed.
+The first completed deletion is Header/Nav ownership from `visual-closeout.css`. No entire legacy file is deleted yet because each still contains required non-shell behavior. A cleaner folder tree is not sufficient reason to remove a stylesheet.
 
-If a pilot is run:
+### Phase 5 — Tailwind evaluation
 
-- use a new isolated surface first;
-- keep `tokens.css` as the semantic design source;
-- do not translate existing CSS merely for syntax uniformity;
-- compare bundle/build behavior, maintainability, Agent edit quality, and visual regression rate before expanding adoption.
+Evaluation result for 2026-08-20: **do not start a Tailwind pilot**.
+
+Evidence:
+
+- the concrete defects found in Phase 1–4 are ambiguous ownership, late overrides, duplicated responsive contracts, and runner-policy drift;
+- none of those defects is caused by the absence of utility classes;
+- semantic owner files and executable ownership gates directly address the failure mode without adding another build/runtime dependency;
+- translating the existing site would create a new visual-regression surface before legacy debt is retired.
+
+Tailwind may be reconsidered only after Phase 4 debt is materially smaller and a new isolated surface demonstrates, with measured review/build/regression evidence, that utility authoring improves Agent edit quality. `tokens.css` remains canonical even in any future pilot.
 
 ## Automated gate
 
 `npm run audit:css` protects the structural part of this contract. It verifies:
 
 - `AppLayout.astro` imports only the canonical global entry;
-- the validated `app.css` import order remains explicit;
+- the explicit `app.css` import order and semantic-owner tail remain stable;
 - the foundation import chain remains explicit;
 - other layouts do not begin composing their own global CSS stacks;
-- no new patch-style stylesheet family is introduced.
+- no new patch-style stylesheet family is introduced;
+- Header/Nav selectors cannot spread to new global files;
+- `visual-closeout.css` cannot regain Header/Nav ownership;
+- the Header and shared shell owners retain their required breakpoint/geometry invariants.
+
+`src/lib/globalShellOwnership.test.ts` independently enforces page isolation, owner ordering, Header breakpoint ownership, visual-closeout retirement, and the remaining frozen legacy debt set.
 
 The audit does **not** prove visual correctness. Shared/global CSS changes still require the repository UI acceptance policy and real browser coverage for light/dark, Chinese/English pressure, phone/tablet/desktop, overflow, focus/touch, sticky layers, and reduced motion where relevant.
 

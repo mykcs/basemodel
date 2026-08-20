@@ -1,0 +1,37 @@
+/* Canonical owner for the shared page shell and footer geometry.
+ * Values preserve the browser-accepted cascade while legacy copies retire.
+ */
+
+.shell {
+  width: min(var(--content-max), calc(100% - 48px));
+}
+
+.footer-inner {
+  min-height: 64px;
+  justify-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 30px, var(--content-max));
+  }
+}
+
+@media (max-width: 720px) {
+  .shell {
+    width: min(var(--content-max), calc(100% - 28px));
+  }
+}
+
+@media (max-width: 560px) {
+  .footer-inner {
+    display: grid;
+    padding: 18px 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .shell {
+    width: calc(100% - 22px);
+  }
+}
