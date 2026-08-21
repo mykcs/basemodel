@@ -1,5 +1,8 @@
 import { persistentAtom } from '@nanostores/persistent';
 import type { AtlasModel } from '../lib/schemas';
+import { normalizeResearchTask } from '../lib/researchTaskNormalization';
+import { normalizeCandidateIds } from './candidates';
+import { normalizeCompareIds } from './compare';
 import type { ResearchTask } from './researchTask';
 
 export interface DecisionSnapshot {
@@ -20,25 +23,53 @@ export interface SnapshotClaimChange {
 }
 
 export const MAX_SNAPSHOTS = 20;
+
+function normalizeClaimFingerprints(value: unknown): Record<string, string> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>).flatMap(([key, encoded]) => {
+    if (typeof encoded !== 'string') return [];
+    try {
+      const parsed = JSON.parse(encoded) as unknown;
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return [];
+      return [[key, encoded] as const];
+    } catch {
+      return [];
+    }
+  }));
+}
+
+export function normalizeDecisionSnapshot(value: unknown): DecisionSnapshot | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const item = value as Record<string, unknown>;
+  if (typeof item.id !== 'string' || !item.id.trim()) return null;
+  if (typeof item.createdAt !== 'string' || typeof item.memoMarkdown !== 'string') return null;
+  return {
+    id: item.id,
+    createdAt: item.createdAt,
+    task: normalizeResearchTask(item.task),
+    candidateIds: normalizeCandidateIds(item.candidateIds),
+    compareIds: normalizeCompareIds(item.compareIds),
+    claimFingerprints: normalizeClaimFingerprints(item.claimFingerprints),
+    memoMarkdown: item.memoMarkdown,
+  };
+}
+
 export const decisionSnapshots = persistentAtom<DecisionSnapshot[]>('atlas-decision-snapshots', [], {
   encode: (value) => JSON.stringify(value.slice(0, MAX_SNAPSHOTS)),
   decode: (value) => {
     try {
       const parsed = JSON.parse(value) as unknown;
-      return Array.isArray(parsed) ? parsed.filter(isSnapshot).slice(0, MAX_SNAPSHOTS) : [];
+      return Array.isArray(parsed)
+        ? parsed.flatMap((item) => {
+            const snapshot = normalizeDecisionSnapshot(item);
+            return snapshot ? [snapshot] : [];
+          }).slice(0, MAX_SNAPSHOTS)
+        : [];
     } catch {
       return [];
     }
   },
 });
-
-function isSnapshot(value: unknown): value is DecisionSnapshot {
-  if (!value || typeof value !== 'object') return false;
-  const item = value as Partial<DecisionSnapshot>;
-  return typeof item.id === 'string' && typeof item.createdAt === 'string' && typeof item.memoMarkdown === 'string'
-    && Array.isArray(item.candidateIds) && Array.isArray(item.compareIds)
-    && Boolean(item.task) && typeof item.claimFingerprints === 'object';
-}
 
 function claimValue(value: unknown): string {
   return typeof value === 'string' ? value : JSON.stringify(value);
@@ -74,12 +105,18 @@ export function snapshotChanges(snapshot: DecisionSnapshot, current: Record<stri
   return Object.entries(current).flatMap(([key, currentEncoded]) => {
     const previousEncoded = snapshot.claimFingerprints[key];
     if (!previousEncoded || previousEncoded === currentEncoded) return [];
-    const previous = JSON.parse(previousEncoded) as { value?: unknown };
-    const next = JSON.parse(currentEncoded) as { value?: unknown; checkedAt?: string };
-    return [{ key, previousValue: claimValue(previous.value), currentValue: claimValue(next.value), checkedAt: next.checkedAt ?? 'not_verified' }];
+    try {
+      const previous = JSON.parse(previousEncoded) as { value?: unknown };
+      const next = JSON.parse(currentEncoded) as { value?: unknown; checkedAt?: string };
+      return [{ key, previousValue: claimValue(previous.value), currentValue: claimValue(next.value), checkedAt: next.checkedAt ?? 'not_verified' }];
+    } catch {
+      return [];
+    }
   });
 }
 
 export function saveDecisionSnapshot(snapshot: DecisionSnapshot) {
-  decisionSnapshots.set([snapshot, ...decisionSnapshots.get().filter((item) => item.id !== snapshot.id)].slice(0, MAX_SNAPSHOTS));
+  const normalized = normalizeDecisionSnapshot(snapshot);
+  if (!normalized) return;
+  decisionSnapshots.set([normalized, ...decisionSnapshots.get().filter((item) => item.id !== normalized.id)].slice(0, MAX_SNAPSHOTS));
 }

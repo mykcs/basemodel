@@ -1,25 +1,34 @@
 import { persistentAtom } from '@nanostores/persistent';
 import { localePath, type Locale } from '../i18n';
 
-const MAX_COMPARE = 5;
+export const MAX_COMPARE = 5;
 const STORAGE_KEY = 'atlas-compare';
+
+export function normalizeCompareIds(value: unknown): string[] {
+  return Array.isArray(value)
+    ? [...new Set(value.filter((item): item is string => typeof item === 'string').map((item) => item.trim()).filter(Boolean))].slice(0, MAX_COMPARE)
+    : [];
+}
 
 export const compareIds = persistentAtom<string[]>(STORAGE_KEY, [], {
   encode(value) {
-    return JSON.stringify(value);
+    return JSON.stringify(normalizeCompareIds(value));
   },
   decode(str) {
     try {
-      const parsed = JSON.parse(str) as string[];
-      return Array.isArray(parsed) ? parsed.slice(0, MAX_COMPARE) : [];
+      return normalizeCompareIds(JSON.parse(str) as unknown);
     } catch {
       return [];
     }
   },
 });
 
+export function replaceCompare(value: unknown) {
+  compareIds.set(normalizeCompareIds(value));
+}
+
 export function addToCompare(id: string) {
-  compareIds.set([...new Set([...compareIds.get(), id])].slice(0, MAX_COMPARE));
+  replaceCompare([...compareIds.get(), id]);
 }
 
 export function removeFromCompare(id: string) {
