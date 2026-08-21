@@ -39,21 +39,20 @@ async function readThemeSurface(page: Page) {
       'border-color:var(--color-border)',
     ].join(';');
     document.body.appendChild(probe);
-    const probeStyle = getComputedStyle(probe);
-    const expected = {
-      text: probeStyle.color,
-      surface: probeStyle.backgroundColor,
-      border: probeStyle.borderColor,
-    };
+
+    const baseProbe = getComputedStyle(probe);
+    const text = baseProbe.color;
+    const surface = baseProbe.backgroundColor;
+    const border = baseProbe.borderColor;
 
     probe.style.color = 'var(--color-text-muted)';
     probe.style.background = 'var(--color-surface-muted)';
     const mutedProbe = getComputedStyle(probe);
-    expected['muted'] = mutedProbe.color;
-    expected['surfaceMuted'] = mutedProbe.backgroundColor;
+    const muted = mutedProbe.color;
+    const surfaceMuted = mutedProbe.backgroundColor;
 
     probe.style.color = 'var(--color-accent)';
-    expected['accent'] = getComputedStyle(probe).color;
+    const accent = getComputedStyle(probe).color;
     probe.remove();
 
     const noteStyle = getComputedStyle(note);
@@ -62,7 +61,7 @@ async function readThemeSurface(page: Page) {
 
     return {
       theme: document.documentElement.dataset.theme,
-      expected,
+      expected: { text, surface, border, muted, surfaceMuted, accent },
       actual: {
         noteText: noteStyle.color,
         noteSurface: noteStyle.backgroundColor,
