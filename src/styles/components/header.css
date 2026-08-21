@@ -1,0 +1,281 @@
+/* Canonical owner for the shared site header and navigation.
+ *
+ * This file is imported after retained compatibility layers so Header/Nav
+ * behavior has one explicit final owner while legacy copies are retired.
+ * Values intentionally preserve the browser-accepted pre-migration cascade.
+ */
+
+.site-header {
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 55%, transparent);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+}
+
+.site-header .nav-inner {
+  min-height: 68px;
+  gap: 14px;
+}
+
+.site-header .brand {
+  min-width: 188px;
+}
+
+.site-header .brand strong {
+  letter-spacing: -.02em;
+}
+
+.site-header .brand-mark {
+  border-color: var(--accent-fill) !important;
+  border-radius: 12px;
+  background: var(--accent-fill) !important;
+  color: var(--accent-on-fill) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-on-fill) 18%, transparent);
+}
+
+.site-header .desktop-nav {
+  min-width: 0;
+}
+
+.site-header .mission-nav {
+  display: flex;
+}
+
+.site-header .desktop-nav a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  padding-inline: 9px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+
+.site-header .desktop-nav a:hover {
+  background: var(--surface-muted);
+}
+
+.site-header .command-search-trigger {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
+  border-color: var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
+  font-size: .78rem;
+  white-space: nowrap;
+}
+
+.site-header .command-search-trigger:hover {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  background: var(--surface-muted);
+}
+
+.site-header .command-search-trigger kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface-muted);
+  line-height: 1.2;
+}
+
+.site-header .lang-switch {
+  flex: 0 0 auto;
+  min-height: 42px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-header .theme-toggle,
+.site-header .menu-toggle {
+  flex: 0 0 auto;
+  min-height: 42px;
+}
+
+.site-header .menu-toggle,
+.site-header .mobile-menu {
+  display: none;
+}
+
+/* Closed popovers must contribute no off-screen geometry. */
+.site-header .resource-menu:not([open]) .resource-menu__panel {
+  display: none !important;
+}
+
+@media (max-width: 1080px) {
+  .site-header .nav-inner {
+    min-height: 62px;
+    gap: 10px;
+  }
+
+  .site-header .brand {
+    min-width: 0;
+  }
+
+  .site-header .brand small {
+    display: none;
+  }
+
+  .site-header .mission-nav {
+    display: none;
+  }
+
+  .site-header .menu-toggle {
+    display: flex;
+  }
+
+  .site-header .mobile-menu.is-open {
+    display: block;
+  }
+
+  .site-header .command-search-trigger kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .site-header .nav-inner > .lang-switch {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  body .site-header {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  body .site-header .nav-inner {
+    min-height: 58px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  body .site-header .nav-inner > .theme-toggle {
+    display: none;
+  }
+
+  body .site-header .brand {
+    gap: 8px;
+  }
+
+  body .site-header .brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1;
+  }
+
+  body .site-header .brand strong {
+    font-size: .9rem;
+    line-height: 1.1;
+    letter-spacing: -.012em;
+  }
+
+  body .site-header .command-search-trigger,
+  body .site-header .menu-toggle {
+    min-width: 42px;
+    min-height: 42px;
+    border-radius: 11px;
+  }
+
+  body .site-header .command-search-trigger {
+    line-height: 1;
+  }
+
+  body .site-header .menu-toggle {
+    gap: 4px;
+  }
+
+  body .site-header .menu-toggle span {
+    width: 15px;
+    height: 1.5px;
+  }
+
+  body .site-header .mobile-menu {
+    padding: 0;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    box-shadow: 0 14px 32px color-mix(in srgb, var(--ink) 9%, transparent);
+  }
+
+  body .site-header .mobile-menu .mobile-menu__inner {
+    display: block;
+    grid-template-columns: none;
+    padding-block: 12px max(18px, env(safe-area-inset-bottom));
+  }
+
+  body .site-header .mobile-menu .mobile-menu__section,
+  body .site-header .mobile-menu .mobile-menu__controls {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body .site-header .mobile-menu a,
+  body .site-header .mobile-menu button {
+    display: flex;
+    min-width: 0;
+    min-height: 50px;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 11px 12px;
+    border: 1px solid color-mix(in srgb, var(--line) 92%, transparent);
+    border-radius: 11px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: .84rem;
+    font-weight: 650;
+    line-height: 1.28;
+    letter-spacing: -.006em;
+  }
+
+  body .site-header .mobile-menu a[aria-current='page'] {
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  }
+
+  body .site-header .mobile-menu .theme-toggle {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header .brand span:last-child {
+    display: none;
+  }
+
+  .site-header .command-search-trigger {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 410px) {
+  .site-header .command-search-trigger {
+    width: 36px;
+    min-height: 42px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .site-header .command-search-trigger::before {
+    content: '⌕';
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .site-header .menu-toggle {
+    width: 34px;
+  }
+}
