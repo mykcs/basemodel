@@ -1,0 +1,315 @@
+---
+import {
+  h138Metrics,
+  openEvoProgramLinks,
+  openEvoProgramSource,
+  programTimeline,
+  type ProgramLocale,
+} from '../../data/openEvoWebShopProgram';
+
+interface Props { locale?: ProgramLocale }
+const { locale = 'zh' } = Astro.props;
+const isZh = locale === 'zh';
+const t = (zh: string, en: string) => isZh ? zh : en;
+const f = new Intl.NumberFormat(locale === 'zh' ? 'zh-CN' : 'en-US', { maximumFractionDigits: 6 });
+const signed = (value: number) => `${value >= 0 ? '+' : ''}${f.format(value)}`;
+const ciLabel = (ci: readonly [number, number]) => `[${signed(ci[0])}, ${signed(ci[1])}]`;
+const hasHistoricalAppendix = Astro.slots.has('historical');
+
+const sealedSource = {
+  repository: 'mykcs/openevo-experiment',
+  commit: '0b6e7dcc718a85ed967feb85b5c95fd68f92d38e',
+  h138b: 'docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md',
+  h139: 'docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md',
+} as const;
+const sealedRoot = `https://github.com/${sealedSource.repository}/blob/${sealedSource.commit}`;
+const sealedLinks = {
+  h138b: `${sealedRoot}/${sealedSource.h138b}`,
+  h139: `${sealedRoot}/${sealedSource.h139}`,
+  h0Example: `${sealedRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/success-capture/gpu2--webshop_005294-2026081428.json`,
+} as const;
+
+const discovery = {
+  attempts: 704,
+  valid: 668,
+  delta: 0.124,
+  ci: [0.032622222222222226, 0.21935555555555553] as const,
+} as const;
+const replication = {
+  attempts: 768,
+  valid: 740,
+  completeClusters: 58,
+  arms: {
+    base: 0.118790,
+    ordinary: 0.290533,
+    sd: 0.384286,
+  },
+  contrasts: [
+    { id: 'ordinary-base', label: 'ordinary − BASE', delta: 0.163724, itt: 0.157297, ci: [0.078086, 0.251931] as const, p: '0.000800' },
+    { id: 'sd-base', label: 'SD − BASE', delta: 0.248845, itt: 0.263203, ci: [0.164155, 0.336517] as const, p: '<0.0001' },
+    { id: 'sd-ordinary', label: 'SD − ordinary', delta: 0.085121, itt: 0.105906, ci: [0.002845, 0.167966] as const, p: '0.050495' },
+  ],
+} as const;
+const secondGeneration = {
+  harvestAttempts: 256,
+  qualifiedPositives: 132,
+  qualifyingIdentities: 33,
+  selectedRecords: 16,
+  g2Components: 16,
+  g2EffectiveRank: 64,
+  h141Cells: 96,
+  h141Attempts: 384,
+  c0Acquisition: 0,
+  retention: -0.065625,
+} as const;
+
+const plotRows = [
+  { label: t('第一次正结果 · 更新后 − 基础模型', 'Discovery · updated − base'), delta: discovery.delta, ci: discovery.ci },
+  { label: t('独立复现 · 普通更新 − 基础模型', 'Replication · ordinary − base'), delta: replication.contrasts[0].delta, ci: replication.contrasts[0].ci },
+  { label: t('独立复现 · OpenEvo 更新 − 基础模型', 'Replication · OpenEvo update − base'), delta: replication.contrasts[1].delta, ci: replication.contrasts[1].ci },
+  { label: t('独立复现 · 两种更新方式之差', 'Replication · update-rule difference'), delta: replication.contrasts[2].delta, ci: replication.contrasts[2].ci },
+];
+const plotMin = -0.02;
+const plotMax = 0.36;
+const plotLeft = 230;
+const plotWidth = 430;
+const plotX = (value: number) => plotLeft + ((value - plotMin) / (plotMax - plotMin)) * plotWidth;
+const plotTicks = [0, 0.1, 0.2, 0.3];
+---
+
+<article class="paper-report" data-program-report data-ui-audit="contrast layout overflow" data-testid="openevo-webshop-program-report">
+  <header class="paper-header" id="abstract">
+    <p class="kicker">OPENEVO × WEBSHOP · {t('研究笔记', 'RESEARCH NOTE')} · {openEvoProgramSource.checkedAt}</p>
+    <h1>{t('OpenEvo 在 WebShop 上，能不能从自己的经验里变得更好？', 'Can OpenEvo get better on WebShop by learning from its own experience?')}</h1>
+    <p class="dek">{t('这篇文章不是把实验编号从头念一遍，而是把我们真正想回答的问题、证据怎么一步步积累、以及现在还卡在哪里讲清楚。', 'This report does not recite run IDs. It explains the question, how the evidence accumulated, and where the scientific claim still stops.')}</p>
+
+    <div class="opening-prose prose">
+      <p>{t(
+        '最初的问题其实很朴素。一个智能体在网页环境里做任务，会留下成功和失败的交互轨迹。如果我们把这些轨迹重新拿来训练，同一个模型以后遇到没有见过的任务时，会不会真的做得更好？如果会，那么这些交互就不只是日志，而开始变成模型可以保留下来的能力。',
+        'The starting question is simple. An agent leaves successful and failed interaction trajectories while acting in a web environment. If we train on those trajectories, will the same model later perform better on tasks it has never seen? If so, interaction history is becoming retained capability rather than mere logging.'
+      )}</p>
+      <p>{t(
+        '到现在，我们已经有了一个比“训练器能跑”更强的答案：一次从模型自身成功经验出发的参数更新，先在一块新任务面板上得到正向结果；随后我们把训练产物冻结，不再调参，换成 64 个完全不同的 WebShop 任务，又独立复现了相同方向。两种更新方式都高于同一个基础模型。',
+        'The evidence is now stronger than “the trainer runs.” One parameter update learned from the model’s own successful experience first produced a positive result on unseen tasks. We then froze the artifacts, stopped tuning, moved to 64 completely different WebShop tasks, and independently replicated the same direction. Both update routes beat the same base model.'
+      )}</p>
+      <p>{t(
+        '但第二代实验也暴露了新的困难：更新后的模型能够再次产生大量成功经验，第二次参数更新也真的训练出来了，却没有通过“学到新经验、保留旧能力、保住上一轮新任务收益”这三道上游门。之后我们又做了一次更窄的机制筛选，结果因为测量有效性问题收口为 measurement-invalid。因此现在最稳妥的结论不是“已经实现多代自进化”，而是“已经建立一次可复现的跨任务迁移，第二次连续写入仍然没有被证明能继续变强”。',
+        'The second generation exposed a new difficulty. The improved model generated many more successful experiences and a second parameter update was genuinely trained, but it did not clear the three upstream gates: acquire the new experience, retain prior capability, and preserve the previously replicated fresh-task gain. A narrower mechanism screen then closed as measurement-invalid. The defensible conclusion is therefore reproducible one-step cross-task transfer, not established multi-generation self-evolution.'
+      )}</p>
+    </div>
+
+    <aside class="abstract-conclusion" aria-label={t('摘要结论', 'Abstract conclusion')}>
+      <p><strong>{t('我们已经知道：', 'Established: ')}</strong>{t('模型自身成功经验经过一次参数更新后，可以在训练未见任务上带来可复现收益。', 'one parameter update from endogenous successful experience can produce reproducible benefit on tasks excluded from training.')}</p>
+      <p><strong>{t('我们还不知道：', 'Still unknown: ')}</strong>{t('怎样进行第二次连续参数写入，才能同时学到新经验、保留旧能力，并继续向下一批任务迁移。', 'how to perform a second continual parameter write that acquires new experience, preserves old capability, and continues transferring.')}</p>
+    </aside>
+
+    <dl class="paper-meta">
+      <div><dt>{t('主模型', 'Main model')}</dt><dd>Qwen2.5-7B-Instruct</dd></div>
+      <div><dt>{t('环境', 'Environment')}</dt><dd>WebShop</dd></div>
+      <div><dt>{t('当前最强证据', 'Strongest evidence')}</dt><dd>{t('独立新任务复现', 'Independent fresh-task replication')}</dd></div>
+      <div><dt>{t('当前瓶颈', 'Current bottleneck')}</dt><dd>{t('连续写入与测量有效性', 'Continual writing & measurement validity')}</dd></div>
+    </dl>
+  </header>
+
+  <nav class="paper-nav" aria-label={t('文章目录', 'Report contents')}>
+    <a href="#background">{t('先理解任务', 'The task')}</a>
+    <a href="#journey">{t('为什么一直失败', 'Why it was hard')}</a>
+    <a href="#method-control">{t('转折怎么来的', 'The turning point')}</a>
+    <a href="#replication">{t('能不能复现', 'Replication')}</a>
+    <a href="#next-experiment">{t('第二代发生了什么', 'Second generation')}</a>
+    <a href="#interpretation">{t('结论如何推出', 'Inference')}</a>
+    <a href="#methods">{t('方法与来源', 'Methods')}</a>
+  </nav>
+
+  <section class="paper-section" id="background" aria-labelledby="background-title">
+    <p class="section-number">01 · {t('先理解我们到底在测什么', 'WHAT ARE WE TESTING?')}</p>
+    <h2 id="background-title">{t('我们不是在测“会不会训练”，而是在测经验能不能变成下一次任务里的能力', 'We are not testing whether training runs; we are testing whether experience becomes capability')}</h2>
+
+    <div class="prose">
+      <h3>{t('OpenEvo 在这里做什么？', 'What does OpenEvo do here?')}</h3>
+      <p>{t(
+        'OpenEvo 可以更新很多种可积累的信息，例如文本记忆、技能、系统指令，也可以直接改变模型参数。我们这条 WebShop 实验线只把问题收窄到后一种：任务结束以后，把交互经验整理成训练数据，再把学习结果写进一份可以保存、之后重新加载的参数增量。换句话说，我们测的是“模型能不能把自己的经验写回自己”。',
+        'OpenEvo can update several forms of persistent state, including text memory, skills, system instructions, and model parameters. This WebShop line isolates the last case: turn completed interactions into training data and write the learning signal into a parameter increment that can be saved and reloaded. The experiment asks whether the model can write its own experience back into itself.'
+      )}</p>
+
+      <h3>{t('WebShop 又在测什么？', 'What does WebShop measure?')}</h3>
+      <p>{t(
+        'WebShop 不是一道静态问答题。模型拿到一个购物目标以后，会看到当前网页状态，然后一步一步做动作：搜索、点击候选商品、选择规格、继续导航，直到购买结束或失败。环境最后给 task-completion score，而 exact success 还要单独看。于是一个模型即使“大概知道该买什么”，也可能因为点错页面、漏选规格、动作格式非法或长程决策断掉而失败。',
+        'WebShop is not a static question-answer benchmark. The model receives a shopping goal, observes the current page, and acts step by step: search, click a candidate, choose options, and continue until purchase or failure. The environment returns a task-completion score, while exact success is tracked separately. A model may roughly know what it wants and still fail through a wrong click, a missing option, an invalid action, or broken long-horizon planning.'
+      )}</p>
+
+      <figure class="trace-example" aria-labelledby="trace-title trace-caption">
+        <div class="figure-heading"><span class="run-ref">{t('真实历史轨迹例子', 'Real historical trajectory')}</span><h3 id="trace-title">{t('一次 WebShop 任务实际上长什么样', 'What one WebShop task actually looks like')}</h3></div>
+        <p>{t('有一次任务要求模型寻找一个价格低于 60 美元、适合 windshield 场景的 iPhone 配件。模型不是直接回答一个商品名，而是真的在环境里执行：', 'One task asked the model to find an iPhone accessory under $60 for a windshield-style use case. The model did not simply answer with a product name; it actually executed:')}</p>
+        <ol class="trace-steps">
+          <li><span>1</span><code>search[...wireless charging...windshield]</code><p>{t('先发起搜索。', 'Search from the current page state.')}</p></li>
+          <li><span>2</span><code>click[b08qrhvs6n]</code><p>{t('从搜索结果里点进一个候选商品。', 'Open one candidate from the search results.')}</p></li>
+          <li><span>3</span><code>click[buy now]</code><p>{t('进入商品页以后继续购买。', 'Continue the purchase on the product page.')}</p></li>
+        </ol>
+        <p>{t('这条轨迹最后 task score=0.667，但 exact win=false。这个例子很重要，因为它说明“部分完成”“精确成功”和“我们筛出来用于训练的 qualified positive”不是同一个概念。', 'This trajectory ended with task score=0.667 but exact win=false. That matters because partial completion, exact success, and the qualified positives selected for training are not the same concept.')}</p>
+        <figcaption id="trace-caption"><a href={sealedLinks.h0Example}>{t('查看历史证据', 'View historical evidence')}</a></figcaption>
+      </figure>
+
+      <p>{t('后面我们把模型从任务开始一路做到结束的一次尝试叫 rollout，把一个具体购物目标实例叫 task identity。所谓 fresh task，就是这个 task identity 没有进入当前训练记录。只有这样，才比较像是在测“学会了可迁移的东西”，而不是“记住了原题”。', 'We call one complete attempt a rollout and one concrete shopping-goal instance a task identity. A fresh task is an identity excluded from the current training records. That distinction is what makes the evaluation closer to transfer rather than memorization.')}</p>
+
+      <h3>{t('什么才算“自己进化了一次”？', 'What would count as one real self-evolution step?')}</h3>
+      <p>{t('至少要把四件事接起来：模型自己产生可学习的成功经验；这些经验真的触发参数更新；更新后的模型在训练没见过的任务上更好；如果要进一步叫“多代自进化”，还必须让更新后的模型再产生下一批经验、再更新一次，而且上一代已经得到的能力不能被轻易忘掉。', 'At least four links must connect: the model generates learnable successes; those successes trigger a real parameter update; the updated model improves on tasks excluded from training; and multi-generation self-evolution additionally requires the updated model to generate another batch of experience, update again, and preserve prior capability.')}</p>
+    </div>
+
+    <figure class="process-figure" aria-labelledby="process-caption"><ol><li><span>1</span><strong>{t('做任务', 'Act')}</strong><p>{t('在真实 WebShop 中产生交互', 'produce real WebShop interactions')}</p></li><li><span>2</span><strong>{t('留下经验', 'Collect')}</strong><p>{t('保存合格成功轨迹', 'retain qualified successes')}</p></li><li><span>3</span><strong>{t('更新参数', 'Update')}</strong><p>{t('把经验写回可重载参数', 'write experience into reloadable parameters')}</p></li><li><span>4</span><strong>{t('换新任务检验', 'Evaluate')}</strong><p>{t('和同一基础模型配对比较', 'compare against the same base')}</p></li></ol><figcaption id="process-caption">{t('后面的实验史，本质上是在不断定位这条链上到底哪一环没有成立。', 'The experimental history below is largely a search for which link in this chain was failing.')}</figcaption></figure>
+  </section>
+
+  <section class="paper-section" id="journey" aria-labelledby="journey-title">
+    <p class="section-number">02 · {t('为什么很久都没有正结果', 'WHY DID IT TAKE SO LONG?')}</p>
+    <h2 id="journey-title">{t('前面的失败不是“白跑了”，而是在逐步排除错误解释', 'The early failures mattered because they eliminated simpler explanations')}</h2>
+    <p class="section-intro">{t('如果只从最后的正结果讲，很容易像是在“试很多设置，最后挑一个高分”。真正的研究过程更像排查故障：每一步都在缩小“到底哪里出了问题”。', 'If we start from the final positive result, the work can look like trying settings until one scores well. The actual process was closer to diagnosis: each experiment narrowed the location of the bottleneck.')}</p>
+
+    <div class="narrative-block prose">
+      <h3>{t('第一层：模型自己到底有没有值得学习的成功经验？', 'Layer one: does the model generate anything worth learning?')}</h3>
+      <p>{t('最早的闭环里，参数可以更新、训练产物也能保存重载，但 WebShop reward 仍然接近零。这逼着我们先把“训练成功”和“能力提升”分开。随后我们不再急着调训练器，而是在受控 train-only 任务上先找模型自然成功。3B 基础模型 128 次尝试里有 96 次科学有效，最终得到 28 个合格正例。至少从这里开始，“模型完全不会成功，所以没有东西可学”这个解释被排除了。', 'In the earliest closed-loop runs, parameters updated and artifacts could be reloaded, while WebShop reward stayed near zero. That forced a separation between successful training and improved capability. We then stopped tuning the trainer and first searched for endogenous success on controlled train-only tasks. The 3B base made 128 attempts, 96 were scientifically valid, and 28 became qualified positives. The explanation “the model never succeeds, so there is nothing to learn” was no longer sufficient.')}</p>
+      <p class="run-ref">{t('实验记录：机制验证与自然成功搜索', 'Provenance: mechanism validation and endogenous-success search')} · Phase G / H0</p>
+
+      <h3>{t('第二层：是不是解析器、动作格式或运行环境在制造假失败？', 'Layer two: are parser or runtime failures creating fake negatives?')}</h3>
+      <p>{t('WebShop 的动作必须满足严格格式。模型想点击商品，但输出没被正确解析时，系统可能执行 fallback；如果把这种工程失败直接记成模型的 0 分，最后测到的就不是模型能力。于是我们逐步检查动作解析、输出预算、GPU 绑定、JDK/cache、提示格式和评估器一致性，并规定 parser/fallback invalid 不能静默进入科学分母。', 'WebShop actions follow a strict format. If a model intends to click a product but output is not parsed correctly, the runtime may execute a fallback. Counting such an infrastructure failure as a model zero would measure the system rather than the model. We therefore audited parsing, output budgets, GPU binding, JDK/cache state, prompting, and evaluator consistency, and kept parser/fallback invalidity outside the scientific denominator.')}</p>
+      <p class="run-ref">{t('实验记录：解析、运行时与闭环可解释性', 'Provenance: parsing, runtime, and closed-loop validity')} · H1.1–H1.7</p>
+
+      <h3>{t('第三层：loss 会下降，也不代表网页里的决策会变好', 'Layer three: lower loss still does not imply better web decisions')}</h3>
+      <p>{t('我们看到过一些很诱人的局部信号：某些 state-aware 提示能救回单个任务，正例监督比失败监督更容易拟合，action-only target 也能学下去。但这些现象没有稳定变成 fresh-task reward。这里真正得到的是一个分解：有成功样本、loss 下降、参数变化、闭环 reward 提升，是四件不同的事，不能自动连成一条因果链。', 'We saw tempting local signals: state-aware cues could rescue individual tasks, positive supervision fit more easily than failure supervision, and action-only targets could be learned. Yet those signals did not reliably become fresh-task reward. The useful result was a decomposition: successful samples, lower loss, changed parameters, and higher closed-loop reward are four distinct facts, not an automatic causal chain.')}</p>
+      <p class="run-ref">{t('实验记录：局部救援、拟合与迁移分离', 'Provenance: local rescue, fitting, and transfer separation')} · H1.8–H1.13</p>
+
+      <h3>{t('第四层：是不是只差更多步数、更大的模型、teacher 或更多数据？', 'Layer four: are we only missing more steps, a larger model, teacher data, or more data?')}</h3>
+      <p>{t('后面我们把 action horizon 从 15 增到 30，试过不同经验载体、过滤不可执行动作、teacher 轨迹、标签精度与任务复杂度，也把基础模型从 3B 提升到 7B。很多操作会改变局部行为或提高基础能力，却没有自动带来稳定的新任务迁移。7B 上一次更大规模的 fresh-task 评估已经覆盖 64 个全新任务、4 个 rollout seed、共 512 次尝试，仍然没有解析出稳定正向收益，而且统计功效不足。', 'We later increased action horizon from 15 to 30, tested different experience carriers, filtered non-executable actions, used teacher trajectories, varied label precision and task complexity, and upgraded the base from 3B to 7B. Many interventions changed local behavior or base capability, but none automatically created stable fresh-task transfer. A larger 7B evaluation already covered 64 new tasks, four rollout seeds, and 512 attempts, yet still did not resolve a stable positive effect and remained underpowered.')}</p>
+      <p class="run-ref">{t('实验记录：载体、horizon、teacher、任务异质性、3B→7B 与扩大评估', 'Provenance: carrier, horizon, teacher, task heterogeneity, 3B→7B, larger evaluation')} · H1.14–H1.37-R</p>
+    </div>
+
+    <div class="table-region" tabindex="0" role="region" aria-label={t('研究过程摘要，可横向滚动', 'Research-process summary, horizontally scrollable')}><table class="journey-table"><thead><tr><th>{t('当时的问题', 'Question')}</th><th>{t('我们观察到什么', 'Observation')}</th><th>{t('因此排除了什么', 'What it weakened')}</th></tr></thead><tbody><tr><th>{t('训练链路是不是假的？', 'Is the training path fake?')}</th><td>{t('参数确实变化、产物可重载，但闭环仍近零。', 'Parameters change and artifacts reload, while closed-loop reward stays near zero.')}</td><td>{t('“文件生成=能力提升”', '“artifact exists = capability improved”')}</td></tr><tr><th>{t('模型是不是完全没有成功经验？', 'Does the model have no successful experience?')}</th><td>{t('128 次尝试得到 28 个合格自然成功。', '28 qualified endogenous successes from 128 attempts.')}</td><td>{t('“完全无数据可学”', '“there is nothing to learn from”')}</td></tr><tr><th>{t('是不是工程噪声把表现搞坏了？', 'Is infrastructure noise causing the failures?')}</th><td>{t('严格 invalid taxonomy 把 parser/runtime 问题单独分离。', 'Strict invalidity taxonomy separates parser/runtime failures.')}</td><td>{t('“所有 0 分都是系统坏了”', '“all zeros are broken infrastructure”')}</td></tr><tr><th>{t('是不是差一个简单旋钮？', 'Is one simple knob missing?')}</th><td>{t('更长 horizon、更大模型、不同载体、teacher 都没有自动带来迁移。', 'Longer horizon, larger models, carriers, and teacher data do not automatically transfer.')}</td><td>{t('“再多一点资源就自然解决”', '“a little more resource will solve it”')}</td></tr></tbody></table></div>
+  </section>
+
+  <section class="paper-section" id="method-control" aria-labelledby="method-control-title">
+    <p class="section-number">03 · {t('一个真正改变判断的对照', 'THE TURNING POINT')}</p>
+    <h2 id="method-control-title">{t('当训练数据固定以后，问题开始指向“参数到底怎么写进去”', 'Once training data was fixed, the question shifted to how parameters are written')}</h2>
+
+    <div class="prose">
+      <h3>{t('先补一个概念：LoRA 是什么？', 'A short detour: what is LoRA?')}</h3>
+      <p>{t('每来一点新经验都把 7B 模型全部参数重新训练，代价太高，也不适合连续很多次小更新。LoRA 的做法是冻结原模型的大部分权重，只学习一个低秩参数增量。可以把它理解成“原模型旁边的一小块可训练修正”：训练时只改这部分，之后可以单独保存，再加载回同一个基础模型。', 'Retraining every parameter of a 7B model for every small batch of experience would be expensive and awkward for continual updates. LoRA freezes most of the base and learns a low-rank parameter increment—a small trainable correction that can be saved separately and reloaded on the same base.')}</p>
+      <p>{t('我们项目里的 SD-LoRA 是 OpenEvo 当前这条 WebShop 参数更新路径的名字。这里不需要先理解它内部每个矩阵怎么组织；真正关键的是，我们终于可以把它和一个更普通的 sequential LoRA 放在完全相同的数据、顺序、基础模型和训练预算下比较。这样如果 fresh-task 结果不同，怀疑才有资格从“数据不一样”转向“更新规则本身可能有差异”。', 'SD-LoRA is the name of the current OpenEvo WebShop parameter-update route. The matrix bookkeeping is not important yet. What matters is that we can compare it against ordinary sequential LoRA under the same data, order, base model, and training budget. If fresh-task behavior differs under that matched setup, the update rule itself becomes a plausible factor rather than data selection.')}</p>
+
+      <h3>{t('在比较更新方法之前，我们先问了一个更朴素的数据问题', 'Before comparing update rules, we tested a simpler data hypothesis')}</h3>
+      <p>{t('7B 模型重新采到一批自然成功以后，我们固定总训练量为 16 条成功记录，只改变这些记录来自 4、8 还是 16 个不同 training task identity。完整面板 768 次尝试、764 次科学有效。结果没有支持“任务身份越多越好”：三种设置相对基础模型的 95% CI 全部跨 0，效果也不单调。', 'After the 7B model collected a stronger endogenous-success pool, we fixed the training amount at 16 successful records and varied only whether they came from 4, 8, or 16 training task identities. The complete panel had 768 attempts, 764 scientifically valid. It did not support a simple “more identities is better” hypothesis: all three 95% CIs versus base crossed zero and the effects were not monotonic.')}</p>
+      <p class="run-ref">{t('实验记录：固定 16 条成功记录，只改变 training task identity 数', 'Provenance: 16 successful records fixed; vary training task identities')} · H1.38A-C</p>
+    </div>
+
+    <div class="table-region" tabindex="0" role="region" aria-label={t('数据多样性对照，可横向滚动', 'Data-diversity control, horizontally scrollable')}><table><caption>{t('固定训练量，只改变任务身份多样性', 'Training amount fixed; only task-identity diversity changes')}</caption><thead><tr><th>Arm</th><th>valid / attempts</th><th>mean</th><th>Δ vs BASE</th><th>95% CI</th></tr></thead><tbody>{h138Metrics.map((arm) => <tr><th>{arm.label}</th><td>{arm.valid} / {arm.attempts}</td><td>{f.format(arm.mean)}</td><td>{arm.id === 'base' ? '—' : signed(arm.delta)}</td><td>{arm.id === 'base' ? '—' : ciLabel(arm.ci)}</td></tr>)}</tbody></table></div>
+
+    <div class="prose later-prose">
+      <h3>{t('真正的转折：数据不再动，只比较更新方法', 'The turning point: stop changing data and compare update rules')}</h3>
+      <p>{t('于是我们把其中一份训练流完全冻结：16 条成功记录、8 个 task identity、每个 identity 两条独立成功 rollout。然后只保留三个 arm——不训练的基础模型、ordinary sequential LoRA、以及 OpenEvo 当前的 SD-LoRA。fresh panel 也换成此前从未进入训练或评估的新 task identities。', 'We then froze one training stream completely: 16 successful records from eight task identities, with two independent successful rollouts per identity. Only three arms remained: the untrained base, ordinary sequential LoRA, and the current OpenEvo SD-LoRA. The fresh panel used task identities that had not appeared in prior training or evaluation.')}</p>
+      <p>{t(`这一轮 ${discovery.attempts}/${discovery.attempts} 次尝试完成，${discovery.valid} 次科学有效。OpenEvo 更新路线相对同一基础模型的 task-weighted delta=${signed(discovery.delta)}，task-cluster bootstrap 95% CI=${ciLabel(discovery.ci)}。这是我们第一次得到“区间整体位于 0 以上”的 fresh-task 结果。`, `All ${discovery.attempts} attempts completed and ${discovery.valid} were scientifically valid. The OpenEvo update route versus the same base had a task-weighted delta of ${signed(discovery.delta)} with task-cluster bootstrap 95% CI ${ciLabel(discovery.ci)}. This was the first fresh-task result whose interval lay fully above zero.`)}</p>
+      <p>{t('这里仍然不能马上说 SD-LoRA 比 ordinary LoRA 更好，因为第一次对照里的 ordinary−BASE 和 SD−ordinary 直接差异还不够稳定。真正合理的下一步不是继续换超参，而是先问：换一批任务，这个正结果还能不能出现？', 'This still did not establish that SD-LoRA was better than ordinary LoRA because ordinary−BASE and the direct SD−ordinary difference were not yet stable. The right next step was not more tuning, but asking whether the positive result would survive a completely new task panel.')}</p>
+      <p class="run-ref">{t('实验记录：匹配参数更新方法对照', 'Provenance: matched parameter-update method control')} · H1.38B</p>
+      <p class="source-note"><a href={sealedLinks.h138b}>{t('查看第一次正结果的完整 closeout', 'Read the discovery closeout')}</a></p>
+    </div>
+  </section>
+
+  <section class="paper-section" id="replication" aria-labelledby="replication-title">
+    <p class="section-number">04 · {t('换一批任务，再测一次', 'INDEPENDENT REPLICATION')}</p>
+    <h2 id="replication-title">{t('我们冻结训练产物、不再调参，只换 64 个全新的 WebShop 任务', 'We froze the artifacts, stopped tuning, and changed only to 64 new WebShop tasks')}</h2>
+
+    <div class="prose">
+      <p>{t('一次正结果最怕“刚好这批任务适合它”。所以复现实验刻意做得很无聊：上一轮得到的 ordinary 和 SD 训练产物一律冻结，不继续训练；重新抽 64 个与此前 task identity 完全不重合的新任务，每个任务固定 4 个 rollout seed，同时跑基础模型、ordinary、SD 三个 arm。总共 192 个 cell、768 次预注册尝试。', 'A first positive result can always be panel-specific. The replication was deliberately boring: freeze the ordinary and SD artifacts from the prior experiment, perform no additional training, sample 64 task identities disjoint from prior use, fix four rollout seeds per task, and evaluate base, ordinary, and SD. That gives 192 cells and 768 preregistered attempts.')}</p>
+      <p>{t(`最终 ${replication.attempts}/${replication.attempts} 次尝试完成，${replication.valid} 次有效，组成 ${replication.completeClusters} 个 complete-valid 四 seed task cluster。有效均值分别是基础模型 ${f.format(replication.arms.base)}、ordinary-LoRA ${f.format(replication.arms.ordinary)}、SD-LoRA ${f.format(replication.arms.sd)}。两种更新后的模型都高于同一个基础模型。`, `All ${replication.attempts} attempts completed. ${replication.valid} were valid, forming ${replication.completeClusters} complete-valid four-seed task clusters. Valid means were ${f.format(replication.arms.base)} for base, ${f.format(replication.arms.ordinary)} for ordinary-LoRA, and ${f.format(replication.arms.sd)} for SD-LoRA. Both updated models were above the same base.`)}</p>
+      <p class="run-ref">{t('实验记录：独立冻结复现', 'Provenance: independent frozen replication')} · H1.39-MR</p>
+    </div>
+
+    <div class="table-region result-table" tabindex="0" role="region" aria-label={t('独立复现结果，可横向滚动', 'Independent replication results, horizontally scrollable')}><table><thead><tr><th>{t('比较', 'Contrast')}</th><th>valid-task Δ</th><th>ITT Δ</th><th>95% CI</th><th>sign-flip p</th></tr></thead><tbody>{replication.contrasts.map((contrast) => <tr><th>{contrast.label}</th><td>{signed(contrast.delta)}</td><td>{signed(contrast.itt)}</td><td>{ciLabel(contrast.ci)}</td><td>{contrast.p}</td></tr>)}</tbody></table></div>
+
+    <figure class="ci-figure" aria-labelledby="ci-title ci-caption"><div class="figure-heading"><h3 id="ci-title">{t('两轮新任务实验放在一起看', 'The two fresh-task rounds side by side')}</h3><p>{t('点是 task-weighted / valid-task delta，横线是按任务聚类 bootstrap 的 95% CI；竖线代表“没有差异”。', 'Points are task-weighted or valid-task deltas; horizontal lines are task-cluster bootstrap 95% CIs; the vertical line is zero difference.')}</p></div><div class="ci-scroll" tabindex="0" role="region" aria-label={t('置信区间图，可横向滚动', 'Confidence interval plot, horizontally scrollable')}><svg viewBox="0 0 720 260" role="img" aria-labelledby="ci-title ci-caption"><line x1={plotX(0)} x2={plotX(0)} y1="28" y2="216" class="zero-line" />{plotTicks.map((tick) => <g><line x1={plotX(tick)} x2={plotX(tick)} y1="216" y2="222" class="tick-line" /><text x={plotX(tick)} y="242" text-anchor="middle" class="tick-label">{signed(tick)}</text></g>)}{plotRows.map((row, index) => { const y = 55 + index * 45; return <g><text x="8" y={y + 4} class="row-label">{row.label}</text><line x1={plotX(row.ci[0])} x2={plotX(row.ci[1])} y1={y} y2={y} class="ci-line" /><line x1={plotX(row.ci[0])} x2={plotX(row.ci[0])} y1={y - 6} y2={y + 6} class="ci-cap" /><line x1={plotX(row.ci[1])} x2={plotX(row.ci[1])} y1={y - 6} y2={y + 6} class="ci-cap" /><circle cx={plotX(row.delta)} cy={y} r="5" class="ci-point" /></g>; })}<line x1={plotLeft} x2={plotLeft + plotWidth} y1="216" y2="216" class="axis-line" /></svg></div><figcaption id="ci-caption">{t('第一次匹配对照给出发现性正结果；独立新任务面板随后复现了两种更新方式相对基础模型的提升。', 'The matched discovery control produced the first positive result; an independent fresh panel then replicated gains from both update routes over base.')}</figcaption></figure>
+
+    <div class="prose">
+      <p>{t(`独立复现里，ordinary−BASE=${signed(replication.contrasts[0].delta)}，95% CI ${ciLabel(replication.contrasts[0].ci)}；SD−BASE=${signed(replication.contrasts[1].delta)}，95% CI ${ciLabel(replication.contrasts[1].ci)}。两个区间都完整位于 0 以上。`, `In the replication, ordinary−BASE=${signed(replication.contrasts[0].delta)} with 95% CI ${ciLabel(replication.contrasts[0].ci)}; SD−BASE=${signed(replication.contrasts[1].delta)} with 95% CI ${ciLabel(replication.contrasts[1].ci)}. Both intervals lie entirely above zero.`)}</p>
+      <p>{t(`两种更新方法之间也第一次出现正向差异信号：SD−ordinary=${signed(replication.contrasts[2].delta)}，95% CI ${ciLabel(replication.contrasts[2].ci)}，但 sign-flip p=${replication.contrasts[2].p}。它值得继续研究，却还不足以写成“SD-LoRA 普遍优于 ordinary LoRA”。`, `A direct update-rule difference also appeared: SD−ordinary=${signed(replication.contrasts[2].delta)} with 95% CI ${ciLabel(replication.contrasts[2].ci)}, while sign-flip p=${replication.contrasts[2].p}. The signal deserves follow-up, but it is not universal SD-LoRA superiority.`)}</p>
+      <p class="source-note"><a href={sealedLinks.h139}>{t('查看独立复现完整报告', 'Read the full independent replication report')}</a></p>
+    </div>
+  </section>
+
+  <section class="paper-section" id="next-experiment" aria-labelledby="next-title">
+    <p class="section-number">05 · {t('第二代：真正困难的地方出现了', 'SECOND GENERATION')}</p>
+    <h2 id="next-title">{t('模型能再次收集经验、也能再次更新参数，但“继续变好”没有被证明', 'The model can collect experience again and update again, but continued improvement was not established')}</h2>
+    <p class="section-intro">{t('为了少一点内部代号，先用一套简单记号：第一次更新后的模型叫 G1；它重新产生的下一批经验叫 E2；再用 E2 训练出的模型叫 G2。', 'To keep notation minimal: G1 is the first updated model, E2 is the next batch of experience it generates, and G2 is the model trained again on E2.')}</p>
+
+    <div class="prose">
+      <h3>{t('先说成功的部分：第二批经验供给并不缺', 'What worked: the second experience supply was not the bottleneck')}</h3>
+      <p>{t(`G1 按冻结任务清单完成 ${secondGeneration.harvestAttempts} 次 rollout，得到 ${secondGeneration.qualifiedPositives} 个 qualified positives，覆盖 ${secondGeneration.qualifyingIdentities} 个 qualifying task identities；随后按预先定义的、不看 reward 大小的规则选出 ${secondGeneration.selectedRecords} 条训练记录。也就是说，“第一代模型能不能再自己产生值得学的经验”这一步是成立的。`, `G1 completed ${secondGeneration.harvestAttempts} rollouts under the frozen manifest and produced ${secondGeneration.qualifiedPositives} qualified positives across ${secondGeneration.qualifyingIdentities} qualifying task identities. A preregistered reward-blind rule selected ${secondGeneration.selectedRecords} training records. The question “can G1 generate another batch worth learning from?” was answered positively.`)}</p>
+      <p>{t(`第二次参数更新也真的完成了：G2 最终有 ${secondGeneration.g2Components} 个 component、effective rank ${secondGeneration.g2EffectiveRank}。所以问题已经不是“第二代 adapter 能不能造出来”。`, `The second parameter update also completed structurally: G2 ended with ${secondGeneration.g2Components} components and effective rank ${secondGeneration.g2EffectiveRank}. The bottleneck is no longer whether a second-generation adapter can be constructed.`)}</p>
+      <p class="run-ref">{t('实验记录：第二代经验采集与 G2 构建', 'Provenance: second-generation harvest and G2 construction')} · H1.40</p>
+
+      <h3>{t('真正失败的是上游能力门：新东西没可靠学进去，旧东西也没可靠保住', 'What failed: the upstream capability gates')}</h3>
+      <p>{t('接下来我们分别测三件事：G2 有没有真正学到 E2（acquisition）；第二次更新以后第一代已有能力还在不在（retention）；上一轮已经独立复现的新任务收益是否被保住（preservation）。这三道门都没有通过，因此预留的下一批 fresh T2 根本没有打开。', 'We then tested three separate questions: whether G2 actually acquired E2, whether first-generation capability survived the second update, and whether the previously replicated fresh-task gain was preserved. All three upstream gates failed, so the reserved fresh T2 panel never opened.')}</p>
+      <p>{t('这里还有一个很重要的测量边界：acquisition 中有一个 cell 是 4/4 parser-invalid。它告诉我们“这组测量无效”，不能直接翻译成“模型能力为零”；但剩余的有效尝试也仍然没有让完整 acquisition gate 通过。因此当前瓶颈从“有没有新经验”移动到了“连续参数写入能不能把新经验内化，同时不破坏已有能力”。', 'One acquisition cell was 4/4 parser-invalid. That means the measurement was invalid, not automatically that the model had zero capability. But the remaining valid attempts still did not clear the complete acquisition gate. The bottleneck therefore shifted from obtaining new experience to integrating it into parameters without destroying prior capability.')}</p>
+
+      <h3>{t('于是我们做了一个更窄的机制筛选，但它也没有给出可以宣布的方法结论', 'We then ran a narrower mechanism screen, but it did not yield a method winner')}</h3>
+      <p>{t(`下一轮只改一个更小的因素：一边完全复用上一轮 updater，另一边只重置 magnitude initialization。两臂一共完成 ${secondGeneration.h141Cells} cells / ${secondGeneration.h141Attempts} formal attempts。精确复用组的 acquisition point estimate=${secondGeneration.c0Acquisition}；两臂 retention 都是 ${secondGeneration.retention}。更关键的是，reset 组在 acquisition 和 preservation 各有一个无效 cluster。`, `The next screen changed only one narrower factor: one arm exactly reused the prior updater, while the other reset magnitude initialization. The two arms completed ${secondGeneration.h141Cells} cells / ${secondGeneration.h141Attempts} formal attempts. The exact-control acquisition point estimate was ${secondGeneration.c0Acquisition}; both arms had retention ${secondGeneration.retention}. More importantly, the reset arm had one invalid cluster in acquisition and one in preservation.`)}</p>
+      <p>{t('因此这个筛选最终被归类为 MEASUREMENT_INVALID。它既不支持“重置 magnitude 会更好”，也不能被包装成一个干净的 null。更不能因为结果不好就事后加 seed、加 task 或继续 retry。下一步若继续，应该先重新设计一套测量有效性更可靠的冻结协议。', 'The screen therefore closed as MEASUREMENT_INVALID. It supports neither “resetting magnitude is better” nor a clean null. The result also does not justify adding seeds, tasks, or retries after seeing the outcome. Any successor should first preregister a more measurement-valid design.')}</p>
+      <p class="run-ref">{t('实验记录：连续写入机制筛选', 'Provenance: continual-write mechanism screen')} · H1.41</p>
+    </div>
+
+    <div class="second-gen-ledger" aria-label={t('第二代研究状态', 'Second-generation research status')}>
+      <div class="is-pass"><span>{t('经验供给', 'Experience supply')}</span><strong>{secondGeneration.qualifiedPositives} / {secondGeneration.harvestAttempts}</strong><small>{t('合格成功 / rollout', 'qualified successes / rollouts')}</small></div>
+      <div class="is-pass"><span>{t('第二次参数更新', 'Second update')}</span><strong>{secondGeneration.g2Components} components</strong><small>effective rank {secondGeneration.g2EffectiveRank}</small></div>
+      <div class="is-stop"><span>{t('能力门', 'Capability gates')}</span><strong>{t('未通过', 'not cleared')}</strong><small>acquisition · retention · preservation</small></div>
+      <div class="is-stop"><span>{t('后续机制筛选', 'Mechanism screen')}</span><strong>MEASUREMENT_INVALID</strong><small>{secondGeneration.h141Attempts} formal attempts</small></div>
+    </div>
+
+    <p class="source-note"><a href={openEvoProgramLinks.reconciliation}>{t('H1.40 upstream reconciliation', 'H1.40 upstream reconciliation')}</a> · <a href={openEvoProgramLinks.h141Reconciliation}>{t('H1.41 reconciliation', 'H1.41 reconciliation')}</a></p>
+  </section>
+
+  <section class="paper-section" id="interpretation" aria-labelledby="interpretation-title">
+    <p class="section-number">06 · {t('结论、证据和推理', 'CONCLUSION, EVIDENCE, INFERENCE')}</p>
+    <h2 id="interpretation-title">{t('现在能说什么，为什么能这样说，又有哪些话还不能说', 'What can we say now, why, and what remains out of bounds')}</h2>
+    <p class="section-intro">{t('下面把主张和证据拆开，避免“看到一个高分”直接跳成一个过大的结论。', 'Claims are separated from evidence so one high score cannot silently become an oversized conclusion.')}</p>
+
+    <div class="claim-arguments">
+      <article><span>{t('主结论 A', 'Main claim A')}</span><h3>{t('一次参数更新可以把模型自身经验变成新任务收益', 'One parameter update can turn endogenous experience into fresh-task benefit')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t(`第一次匹配对照 delta=${signed(discovery.delta)}，95% CI ${ciLabel(discovery.ci)}；随后冻结训练产物，换 64 个 task-ID-disjoint 新任务，ordinary−BASE 与 SD−BASE 的区间都完整位于 0 以上。`, `The matched discovery control had delta=${signed(discovery.delta)} with 95% CI ${ciLabel(discovery.ci)}; after freezing the artifacts and moving to 64 task-ID-disjoint tasks, both ordinary−BASE and SD−BASE intervals remained entirely above zero.`)}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('第二轮没有继续训练或调参，任务 identity 也完全换新，因此“只是记住训练题”或“第一块面板碰巧有利”已经不足以解释全部结果。', 'The second round did no further training or tuning and used entirely new task identities, so training-task memorization or a lucky first panel is no longer sufficient to explain the whole result.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('这不是所有 WebShop 任务、所有模型或所有更新设置上的 universal transfer。', 'This is not universal transfer across all WebShop tasks, models, or update settings.')}</p></article>
+
+      <article><span>{t('主结论 B', 'Main claim B')}</span><h3>{t('训练任务身份更多，并不是当前唯一或单调的解释', 'More training-task identities are not the sole or monotonic explanation')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t('固定 16 条成功记录时，从 4 个 task identity 增到 8 个、16 个没有得到单调上升，三组相对基础模型的 95% CI 都跨 0。', 'With 16 successful records fixed, expanding their source from 4 to 8 to 16 task identities did not produce monotonic improvement, and all three 95% CIs versus base crossed zero.')}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('后面的正结果不能简单归因于“任务更多”；固定训练流以后，更新规则本身成为更值得检验的因素。', 'The later positive result cannot be reduced to “more task identities.” Once the training stream is fixed, the update rule becomes a more plausible factor.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('这不等于数据多样性没有价值，只是不支持它在当前控制里是一条单调旋钮。', 'This does not mean data diversity is useless; it means it is not supported as a monotonic knob under this control.')}</p></article>
+
+      <article><span>{t('次级信号', 'Secondary signal')}</span><h3>{t('OpenEvo 的 SD 更新可能和 ordinary LoRA 有差异，但现在还不能宣布“方法胜负”', 'The OpenEvo SD update may differ from ordinary LoRA, but it is too early to crown a winner')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t(`独立复现里 SD−ordinary=${signed(replication.contrasts[2].delta)}，95% CI ${ciLabel(replication.contrasts[2].ci)}，但 sign-flip p=${replication.contrasts[2].p}。`, `In the replication, SD−ordinary=${signed(replication.contrasts[2].delta)} with 95% CI ${ciLabel(replication.contrasts[2].ci)}, while sign-flip p=${replication.contrasts[2].p}.`)}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('训练数据和基础模型已经匹配，所以这是值得继续追的机制信号；但独立面板只有一块，随机化检验也在边界附近。', 'Training data and base model are matched, so this is a mechanism signal worth following; however, there is only one independent panel and the randomization test is near the boundary.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('不能写成 SD-LoRA 普遍优于 ordinary LoRA。', 'It does not establish universal SD-LoRA superiority over ordinary LoRA.')}</p></article>
+
+      <article><span>{t('当前负结论', 'Current negative result')}</span><h3>{t('第二次连续参数写入目前没有证明能继续增加能力', 'A second continual parameter write has not been shown to add capability')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t('第二代经验供给和 G2 构建成立，但 acquisition、retention、preservation 三道上游门均未通过，T2 没有打开；后续 matched mechanism screen 又因无效 cluster 收口为 MEASUREMENT_INVALID。', 'Second-generation experience supply and G2 construction succeeded, but acquisition, retention, and preservation all failed to clear their gates, T2 did not open, and the follow-up matched mechanism screen closed as MEASUREMENT_INVALID because of invalid clusters.')}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('问题已经从“有没有新经验”转向“怎样把新经验写进去而不遗忘”，并且下一轮首先需要解决测量有效性，而不是继续扩大样本寻找一个更好看的数字。', 'The bottleneck moved from “is there new experience?” to “how can new experience be written without forgetting?” The next experiment should first repair measurement validity rather than expand the sample to search for a nicer number.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('measurement-invalid 不是“方法永远不行”；同样，T2 没跑也不是“T2 失败”。', 'Measurement-invalid is not “the method can never work,” and an unrun T2 is not a failed T2.')}</p></article>
+    </div>
+
+    <aside class="editorial-summary"><h3>{t('如果只带走一句话', 'If you remember only one sentence')}</h3><p>{t('我们已经从“参数真的会变”走到了“新任务收益可以被独立复现”；但第二次连续写入没有证明能继续累积能力，所以现在真正要研究的是如何同时做到新知识 acquisition、旧能力 retention，以及可信的 measurement。', 'We have moved from “parameters really change” to independently replicated fresh-task benefit; but a second continual write has not been shown to accumulate capability, so the real next problem is jointly achieving new-knowledge acquisition, old-capability retention, and valid measurement.')}</p></aside>
+  </section>
+
+  <section class="paper-section" id="methods" aria-labelledby="methods-title">
+    <p class="section-number">07 · {t('方法与来源', 'METHODS & PROVENANCE')}</p>
+    <h2 id="methods-title">{t('几件不先说明，就很容易把数字理解错的事', 'A few details needed to interpret the numbers correctly')}</h2>
+
+    <details open><summary>{t('paired delta 和 task-cluster bootstrap 是什么意思？', 'What are paired delta and task-cluster bootstrap?')}</summary><div class="details-body prose compact-prose"><p>{t('我们尽量在同一个 task / seed 条件下比较两个 arm，而不是只比较两堆互不相关的平均数。task-cluster bootstrap 以“任务”为重采样单位，避免把同一任务的多个 seed 当成完全独立样本。', 'We compare arms under the same task/seed conditions whenever possible instead of comparing unrelated pools. Task-cluster bootstrap resamples tasks rather than treating multiple seeds from the same task as fully independent observations.')}</p></div></details>
+    <details><summary>{t('为什么 invalid 不能直接算 0 分？', 'Why are invalid attempts not simply zero scores?')}</summary><div class="details-body prose compact-prose"><p>{t('模型真实做错动作拿 0，是科学结果；动作没解析、运行时坏掉或评估路径没有成立，是测量问题。把两者都记成 0，会把工程故障伪装成模型能力。H1.41 被标成 MEASUREMENT_INVALID，正是因为我们拒绝做这种偷换。', 'A real wrong model action scoring zero is a scientific result; failed parsing, broken runtime, or an invalid evaluation path is a measurement problem. Counting both as zero would disguise engineering failure as model capability. H1.41 is labeled MEASUREMENT_INVALID precisely because we refuse that substitution.')}</p></div></details>
+    <details><summary>{t('主要证据入口', 'Primary evidence')}</summary><div class="details-body source-list"><p><a href={sealedLinks.h138b}>{t('第一次匹配方法对照', 'Matched discovery control')}</a> · H1.38B</p><p><a href={sealedLinks.h139}>{t('独立新任务复现', 'Independent fresh-task replication')}</a> · H1.39-MR</p><p><a href={openEvoProgramLinks.reconciliation}>{t('第二代上游门 reconciliation', 'Second-generation upstream reconciliation')}</a> · H1.40</p><p><a href={openEvoProgramLinks.h141Reconciliation}>{t('连续写入机制筛选 reconciliation', 'Continual-write mechanism-screen reconciliation')}</a> · H1.41</p><p><a href={openEvoProgramLinks.report}>{t('当前项目总报告', 'Current program report')}</a></p></div></details>
+
+    <div class="print-only print-methods"><h3>{t('来源快照', 'Source snapshot')}</h3><p><code>{openEvoProgramSource.branch}@{openEvoProgramSource.commit}</code></p><p><code>{openEvoProgramSource.campaign}</code></p></div>
+  </section>
+
+  <section class="paper-section appendix-section" id="appendix" aria-labelledby="appendix-title">
+    <p class="section-number">APPENDIX</p>
+    <h2 id="appendix-title">{t('实验代号、每次运行和历史细节都放到这里', 'Run IDs and detailed experiment history live here')}</h2>
+    <p class="section-intro">{t('主文按研究问题组织；只有需要审计时，才展开完整实验谱系。', 'The main text is organized by research questions; the full run lineage is available for audit.')}</p>
+
+    <details data-testid="lineage-appendix"><summary>{t(`附录 A：完整实验谱系（${programTimeline.length} 个分组节点）`, `Appendix A: complete experiment lineage (${programTimeline.length} grouped milestones)`)}</summary><div class="lineage-body"><ol class="lineage-list">{programTimeline.map((item) => <li><p class="lineage-id">{item.coverage.join(' · ')}</p><h3>{item.title[locale]}</h3><p>{item.summary[locale]}</p><p class="boundary"><strong>{t('边界：', 'Boundary: ')}</strong>{item.boundary[locale]}</p><a href={item.evidence}>{t('证据', 'Evidence')}</a></li>)}</ol></div></details>
+    {hasHistoricalAppendix && <details data-testid="rtx6-appendix"><summary>{t('附录 B：更早的 RTX3090 参数实验', 'Appendix B: earlier RTX3090 parametric experiments')}</summary><div class="historical-slot"><slot name="historical" /></div></details>}
+    <ol class="print-only print-lineage">{programTimeline.map((item) => <li><strong>{item.coverage.join(' · ')} — {item.title[locale]}</strong><p>{item.summary[locale]}</p><p>{item.boundary[locale]}</p></li>)}</ol>
+    <div class="print-only print-rtx6"><slot name="historical" /></div>
+  </section>
+</article>
+
+<style>
+  .paper-report{width:min(1000px,100%);margin:0 auto;padding:0 clamp(.2rem,1.6vw,.8rem);color:var(--ink);font-variant-numeric:tabular-nums}.paper-header{max-width:860px;padding:4.3rem 0 3.4rem;border-top:4px solid var(--ink)}.kicker,.section-number,.lineage-id,.run-ref{margin:0 0 .75rem;color:var(--muted);font:760 .68rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.paper-header h1{max-width:850px;margin:0;font-size:clamp(2.2rem,4.8vw,3.8rem);line-height:1.1;letter-spacing:-.047em}.dek{max-width:770px;margin:1.2rem 0 0;color:var(--muted);font-size:clamp(1.08rem,1.8vw,1.3rem);line-height:1.72}.opening-prose{margin-top:2.5rem}.prose{max-width:770px}.prose h3{margin:2.5rem 0 .85rem;font-size:1.22rem;line-height:1.48;letter-spacing:-.018em}.prose p{margin:0 0 1.18rem;font-size:1rem;line-height:1.93}.opening-prose p{font-size:1.04rem}.compact-prose p{color:var(--muted);font-size:.94rem;line-height:1.8}.abstract-conclusion{max-width:770px;margin:2.1rem 0 0;padding:1.1rem 0;border-block:1px solid var(--line)}.abstract-conclusion p{margin:.45rem 0;line-height:1.75}.abstract-conclusion strong{margin-right:.35rem}.paper-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:2.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.paper-meta>div{min-width:0;padding:0 1rem}.paper-meta>div:first-child{padding-left:0}.paper-meta>div+div{border-left:1px solid var(--line)}.paper-meta dt{color:var(--muted);font-size:.7rem}.paper-meta dd{margin:.35rem 0 0;font-size:.82rem;font-weight:760;overflow-wrap:anywhere}.paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;padding:1rem 0;border-block:1px solid var(--line)}.paper-nav a{color:var(--muted);font-size:.77rem;font-weight:720;text-underline-offset:.2em}.paper-nav a:hover,.paper-nav a:focus-visible{color:var(--ink)}
+  .paper-section{padding:5.6rem 0 6rem;border-bottom:1px solid var(--line)}.paper-section h2{max-width:840px;margin:0;font-size:clamp(1.75rem,3vw,2.55rem);line-height:1.22;letter-spacing:-.032em}.section-intro{max-width:770px;margin:1.3rem 0 2.8rem;color:var(--muted);font-size:1rem;line-height:1.84}.run-ref{display:block;margin-top:1.1rem;font-size:.64rem;letter-spacing:.035em}.trace-example{max-width:800px;margin:2.8rem 0;padding:1.5rem 0;border-block:2px solid var(--ink)}.trace-example h3{margin:.2rem 0 1rem}.trace-example>p{max-width:760px;line-height:1.8}.trace-steps{list-style:none;margin:1.4rem 0;padding:0;border-top:1px solid var(--line)}.trace-steps li{display:grid;grid-template-columns:2.3rem minmax(0,1fr);gap:.35rem 1rem;padding:1rem 0;border-bottom:1px solid var(--line)}.trace-steps span{grid-row:1/3;color:var(--muted);font:760 .7rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.trace-steps code{overflow-wrap:anywhere;font-size:.83rem}.trace-steps p{margin:0;color:var(--muted);line-height:1.6}.trace-example figcaption{margin-top:1rem;font-size:.76rem}.process-figure{margin:3rem 0 0}.process-figure ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:0;padding:0;border-top:2px solid var(--line)}.process-figure li{padding:1.1rem 1rem 0 0}.process-figure li+li{padding-left:1rem;border-left:1px solid var(--line)}.process-figure span{display:block;color:var(--muted);font:740 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.process-figure strong{display:block;margin:.55rem 0 .35rem}.process-figure p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.55}.process-figure figcaption,.ci-figure figcaption{max-width:770px;margin:1.25rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.7}.narrative-block{margin-top:1rem}.later-prose{margin-top:3.5rem}
+  .table-region{max-width:100%;overflow-x:auto;margin:2.8rem 0;border-block:1px solid var(--line)}.table-region:focus-visible,.ci-scroll:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}.table-region table{width:100%;min-width:760px;border-collapse:collapse}.table-region caption{text-align:left;padding:.85rem .75rem;color:var(--muted);font-size:.74rem}.table-region th,.table-region td{text-align:left;vertical-align:top;padding:1rem .78rem;border-top:1px solid var(--line);line-height:1.62}.table-region thead th{border-top:0;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}.table-region tbody th{font-weight:780}.journey-table td:last-child{min-width:290px}.result-table td:not(:first-child){font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem}.ci-figure{margin:3.6rem 0}.figure-heading{max-width:770px}.figure-heading h3{margin:0;font-size:1.2rem}.figure-heading p{margin:.6rem 0 1.25rem;color:var(--muted);line-height:1.7}.ci-scroll{overflow-x:auto}.ci-scroll svg{display:block;width:100%;min-width:720px;height:auto}.zero-line{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4}.axis-line,.tick-line{stroke:var(--line);stroke-width:1}.ci-line,.ci-cap{stroke:var(--ink);stroke-width:2}.ci-point{fill:var(--accent-deep);stroke:var(--surface);stroke-width:2}.row-label,.tick-label{fill:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.row-label{font-size:11px;font-weight:700}.tick-label{font-size:11px}.second-gen-ledger{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:3rem 0;border-block:1px solid var(--line)}.second-gen-ledger>div{min-width:0;padding:1.2rem}.second-gen-ledger>div+div{border-left:1px solid var(--line)}.second-gen-ledger span,.second-gen-ledger small{display:block;color:var(--muted);font-size:.72rem}.second-gen-ledger strong{display:block;margin:.4rem 0;font-size:.95rem;overflow-wrap:anywhere}.second-gen-ledger .is-stop strong{color:var(--warning,var(--ink))}.source-note{max-width:800px;margin:1.4rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}.source-note a{font-weight:700}
+  .claim-arguments{max-width:860px;margin-top:2rem;border-top:1px solid var(--line)}.claim-arguments article{padding:2rem 0;border-bottom:1px solid var(--line)}.claim-arguments article>span{display:block;margin-bottom:.5rem;color:var(--accent-deep);font:760 .67rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase}.claim-arguments h3{max-width:760px;margin:0 0 1rem;font-size:1.2rem;line-height:1.5}.claim-arguments p{max-width:800px;margin:.65rem 0;line-height:1.78}.editorial-summary{max-width:770px;margin:3.2rem 0 0;padding:1.5rem 0;border-block:2px solid var(--ink)}.editorial-summary h3{margin:0 0 .7rem;font-size:1rem}.editorial-summary p{margin:0;font-size:1.08rem;font-weight:650;line-height:1.78}
+  #methods details,.appendix-section details{max-width:900px;margin-top:1.2rem;border-top:1px solid var(--line)}summary{cursor:pointer;padding:1.15rem 0;font-weight:760}.details-body{padding:0 0 1.5rem}.source-list p{max-width:800px;margin:.6rem 0;color:var(--muted);line-height:1.7}.source-list a{overflow-wrap:anywhere}.appendix-section{border-bottom:0}.lineage-body{padding:0 0 2rem}.lineage-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}.lineage-list li{padding:1.4rem 0;border-bottom:1px solid var(--line)}.lineage-list h3{max-width:780px;margin:.2rem 0 .55rem;font-size:1rem;line-height:1.5}.lineage-list p{max-width:800px;margin:.45rem 0;color:var(--muted);line-height:1.68}.lineage-list .boundary{font-size:.86rem}.lineage-list li>a{font-size:.78rem;font-weight:720}.historical-slot{padding:1rem 0 2rem}.print-only{display:none}
+  @media(max-width:760px){.paper-header{padding:2.6rem 0 2.4rem}.paper-header h1{font-size:clamp(2rem,9vw,2.75rem)}.dek{font-size:1.02rem}.opening-prose{margin-top:2rem}.paper-meta{grid-template-columns:1fr 1fr}.paper-meta>div{padding:.8rem}.paper-meta>div:first-child{padding-left:.8rem}.paper-meta>div+div{border-left:0}.paper-meta>div:nth-child(2n){border-left:1px solid var(--line)}.paper-meta>div:nth-child(n+3){border-top:1px solid var(--line)}.paper-section{padding:4rem 0 4.5rem}.section-intro{margin-bottom:2.2rem}.process-figure ol{grid-template-columns:1fr}.process-figure li,.process-figure li+li{padding:1.1rem 0;border-left:0;border-bottom:1px solid var(--line)}.trace-steps li{grid-template-columns:1.8rem minmax(0,1fr)}.second-gen-ledger{grid-template-columns:1fr 1fr}.second-gen-ledger>div:nth-child(odd){border-left:0}.second-gen-ledger>div:nth-child(n+3){border-top:1px solid var(--line)}}@media(max-width:560px){.paper-nav{gap:.55rem 1rem}.prose p{line-height:1.84}.second-gen-ledger{grid-template-columns:1fr}.second-gen-ledger>div,.second-gen-ledger>div:nth-child(odd){border-left:0}.second-gen-ledger>div+div{border-top:1px solid var(--line)}}
+  @media print{.paper-report{width:100%;max-width:none;padding:0;font-size:10.5pt}.paper-header{padding:0 0 1.2rem}.paper-header h1{font-size:25pt}.paper-nav,.ci-scroll,.source-note{display:none}.paper-section{padding:1.2rem 0}.print-only{display:block}.appendix-section>details,.historical-slot{display:none}.table-region{overflow:visible}.table-region table{min-width:0}.process-figure,.trace-example{break-inside:avoid}.lineage-list{display:none}.print-lineage{padding-left:1.3rem}.print-lineage li{break-inside:avoid;margin-bottom:.8rem}.print-lineage p{margin:.2rem 0;color:#333}:global(.site-header),:global(.plain-detail__header),:global(.plain-detail__tabs),:global(.page-outline),:global(.actionable-content-status),:global(.site-footer){display:none!important}}
+</style>
