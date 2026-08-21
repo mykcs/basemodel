@@ -24,6 +24,10 @@ const seedZh = read('src/pages/research/seed-openevo/seed.astro');
 const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
 const evoZh = read('src/pages/research/seed-openevo/openevo.astro');
 const evoEn = read('src/pages/en/research/seed-openevo/openevo.astro');
+const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
+const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
+const alfworldZh = read('src/pages/research/seed-openevo/alfworld.astro');
+const alfworldEn = read('src/pages/en/research/seed-openevo/alfworld.astro');
 const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
 const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
 const labZh = read('src/pages/lab.astro');
@@ -31,18 +35,19 @@ const labEn = read('src/pages/en/lab.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
 
 describe('interactive research explainers', () => {
-  it('mounts the priority bilingual explainers as visible islands', () => {
-    expect(trajectory).toContain('kind="webshop"');
-    expect(trajectory).toContain('kind="alfworld"');
-    expect(trajectory.match(/client:visible/g)?.length).toBe(2);
+  it('mounts each priority bilingual explainer only on its dedicated route', () => {
     for (const [source, kind] of [
       [seedZh, 'seed'], [seedEn, 'seed'], [evoZh, 'openevo'], [evoEn, 'openevo'],
+      [webshopZh, 'webshop'], [webshopEn, 'webshop'], [alfworldZh, 'alfworld'], [alfworldEn, 'alfworld'],
       [loopsZh, 'compare'], [loopsEn, 'compare'], [labZh, 'server'], [labEn, 'server'],
     ] as const) {
       expect(source).toContain('InteractiveResearchExplainer');
       expect(source).toContain(`kind="${kind}"`);
       expect(source).toContain('client:visible');
     }
+    expect(trajectory).toContain('ResearchConceptIndex');
+    expect(trajectory).not.toContain('InteractiveResearchExplainer');
+    expect(guide).not.toContain('InteractiveResearchExplainer');
   });
 
   it('places the progressive explainer before the long technical core through a shared slot', () => {
@@ -60,8 +65,8 @@ describe('interactive research explainers', () => {
     expect(loopsEn).not.toContain('SeedOpenEvoComparisonDiagram');
     expect(labZh).not.toContain('ServerAuthorityDiagram');
     expect(labEn).not.toContain('ServerAuthorityDiagram');
-    expect(guide).toContain('kind="server"');
-    expect(guide).toContain('kind="compare"');
+    expect(guide).not.toContain('kind="server"');
+    expect(guide).not.toContain('kind="compare"');
     expect(guide).not.toContain('ServerAuthorityDiagram');
     expect(guide).not.toContain('SeedOpenEvoComparisonDiagram');
   });
@@ -135,10 +140,7 @@ describe('interactive research explainers', () => {
   });
 
   it('opens as one complete framework figure before tracing local modules', () => {
-    for (const token of [
-      'useState(true)', 'data-overview={overview}', 'irx-paper-figure', 'SYSTEM MAP',
-      'irx-visual-key', 'irx-inspector', 'onOverview={showOverview}',
-    ]) expect(explainer).toContain(token);
+    for (const token of ['useState(true)', 'data-overview={overview}', 'irx-paper-figure', 'SYSTEM MAP', 'irx-visual-key', 'irx-inspector', 'onOverview={showOverview}']) expect(explainer).toContain(token);
     expect(css).toContain('.irx[data-overview=true] .irx-edge-layer g .irx-edge');
     expect(css).toContain('.irx-paper-caption');
     expect(css).not.toContain('.irx-figures{');

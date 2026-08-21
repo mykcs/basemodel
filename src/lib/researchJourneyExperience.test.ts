@@ -1,86 +1,88 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
-const header = read('../components/Header.astro');
-const trajectory = read('../components/research/AgentEnvironmentTrajectory.astro');
-const benchmarkDiagram = read('../components/research/BenchmarkDatasetDiagram.astro');
-const comparison = read('../components/research/SeedOpenEvoComparisonDiagram.astro');
-const gateway = read('../components/research/OpenEvoExperimentGateway.astro');
-const state = read('./openEvoScientificState.ts');
-const benchmarkZh = read('../pages/research/seed-openevo/benchmarks.astro');
-const benchmarkEn = read('../pages/en/research/seed-openevo/benchmarks.astro');
-const webshopZh = read('../pages/research/seed-openevo/webshop.astro');
-const webshopEn = read('../pages/en/research/seed-openevo/webshop.astro');
-const alfworldZh = read('../pages/research/seed-openevo/alfworld.astro');
-const alfworldEn = read('../pages/en/research/seed-openevo/alfworld.astro');
-const experimentZh = read('../pages/research/seed-openevo/experiment.astro');
-const experimentEn = read('../pages/en/research/seed-openevo/experiment.astro');
 
-describe('three-journey research experience', () => {
-  it('keeps the global navigation focused on two research surfaces plus top-level resources', () => {
-    for (const label of ['流程理解图', 'OpenEvo × WebShop 科学研究', "t('资料', 'Resources')"]) expect(header).toContain(label);
-    expect(header).toContain('journey-nav');
-    expect(header).toContain('mobile-journeys');
-    expect(header).toContain('/research/seed-openevo/experiment/');
-    for (const path of ['/models/', '/papers/', '/compare/', '/workspace/', '/data-status/', '/methodology/']) expect(header).toContain(path);
-    for (const path of [
-      '/research/seed-openevo/seed/',
-      '/research/seed-openevo/openevo/',
-      '/research/seed-openevo/benchmarks/',
-      '/research/seed-openevo/webshop/',
-      '/research/seed-openevo/alfworld/',
-    ]) expect(header).not.toContain(`path: '${path}'`);
+const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+
+const header = read('src/components/Header.astro');
+const conceptIndex = read('src/components/research/ResearchConceptIndex.astro');
+const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astro');
+const gateway = read('src/components/research/OpenEvoExperimentGateway.astro');
+const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
+const benchmarkZh = read('src/pages/research/seed-openevo/benchmarks.astro');
+const benchmarkEn = read('src/pages/en/research/seed-openevo/benchmarks.astro');
+const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
+const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
+const alfworldZh = read('src/pages/research/seed-openevo/alfworld.astro');
+const alfworldEn = read('src/pages/en/research/seed-openevo/alfworld.astro');
+const seedZh = read('src/pages/research/seed-openevo/seed.astro');
+const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
+const openevoZh = read('src/pages/research/seed-openevo/openevo.astro');
+const openevoEn = read('src/pages/en/research/seed-openevo/openevo.astro');
+const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
+const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
+const labZh = read('src/pages/lab.astro');
+const labEn = read('src/pages/en/lab.astro');
+
+describe('research journey experience', () => {
+  it('keeps the global navigation focused on the research journey', () => {
+    expect(header).toContain("t('流程理解图', 'Flow map')");
+    expect(header).toContain("t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study')");
   });
 
-  it('keeps both benchmark data flows visible as real architecture diagrams', () => {
-    expect(trajectory).toContain('BenchmarkDatasetDiagram');
-    expect(benchmarkDiagram).toContain('WebShop');
-    expect(benchmarkDiagram).toContain('ALFWorld');
-    expect(benchmarkDiagram).toContain('WebShop 与 ALFWorld 环境模型');
-    expect(benchmarkDiagram).toContain('1.18M');
-    expect(benchmarkDiagram).toContain('valid_seen');
-    expect(benchmarkDiagram).toContain('scene-wires');
-    expect(benchmarkDiagram).toContain('state transition');
-    expect(benchmarkDiagram).toContain('new observation feeds the next step');
-  });
-
-  it('keeps SEED and OpenEvo downstream processing explicit without text-arrow-only diagrams', () => {
-    expect(comparison).toContain('hindsight skill');
-    expect(comparison).toContain('OPD + GRPO');
-    expect(comparison).toContain('sealed evidence');
-    expect(comparison).toContain('successor revision');
-    expect(comparison).toContain('fork-wires');
-    expect(comparison).toContain('marker-end=');
-  });
-
-  it('exposes a bilingual OpenEvo gateway without freezing live state into the static page', () => {
-    expect(experimentZh).toContain('OpenEvoExperimentGateway');
-    expect(experimentEn).toContain('OpenEvoExperimentGateway');
-    expect(gateway).toContain('历史证据 · Phase G');
-    expect(gateway).toContain('Historical evidence · Phase G');
-    expect(gateway).toContain('openEvoScientificState.defaultBranchSnapshot.phase');
-    expect(state).toContain("phase: 'H1.27'");
-    expect(gateway).toContain('current-campaign');
-    expect(gateway).toContain('reconciliation');
-    expect(gateway).toContain('actual branch');
-    expect(state).toContain('active scientific branch may be ahead');
-    expect(gateway).not.toContain('Current experiment allocation: 5× RTX 5090');
-    expect(gateway).not.toContain('当前阶段</small><strong>Phase H0</strong>');
-    expect(benchmarkZh).toContain('AgentEnvironmentTrajectory');
-    expect(benchmarkEn).toContain('AgentEnvironmentTrajectory');
-  });
-  it('keeps dedicated bilingual environment explainers isolated by subject', () => {
-    for (const page of [webshopZh, webshopEn]) {
-      expect(page).toContain('kind="webshop"');
-      expect(page).not.toContain('kind="alfworld"');
+  it('gives every full interactive explainer one canonical bilingual route', () => {
+    for (const [source, kind] of [
+      [seedZh, 'seed'], [seedEn, 'seed'],
+      [openevoZh, 'openevo'], [openevoEn, 'openevo'],
+      [webshopZh, 'webshop'], [webshopEn, 'webshop'],
+      [alfworldZh, 'alfworld'], [alfworldEn, 'alfworld'],
+      [loopsZh, 'compare'], [loopsEn, 'compare'],
+      [labZh, 'server'], [labEn, 'server'],
+    ] as const) {
+      expect(source).toContain('InteractiveResearchExplainer');
+      expect(source).toContain(`kind="${kind}"`);
+      expect(source).toContain('client:visible');
     }
-    for (const page of [alfworldZh, alfworldEn]) {
-      expect(page).toContain('kind="alfworld"');
-      expect(page).not.toContain('kind="webshop"');
+  });
+
+  it('keeps experiment and reproduction pages as reference indexes instead of duplicating full figures', () => {
+    expect(trajectory).toContain('ResearchConceptIndex');
+    expect(trajectory).not.toContain('InteractiveResearchExplainer');
+    expect(trajectory).not.toContain('BenchmarkDatasetDiagram');
+    expect(trajectory).not.toContain('AlfworldTaskFamilies');
+    expect(gateway).toContain('AgentEnvironmentTrajectory');
+    expect(guide).toContain('AgentEnvironmentTrajectory');
+    expect(guide).not.toContain('InteractiveResearchExplainer');
+    for (const route of ['/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/research/seed-openevo/loops/']) {
+      expect(conceptIndex).toContain(route);
     }
-    for (const page of [benchmarkZh, benchmarkEn]) {
-      expect(page).toContain('/research/seed-openevo/webshop/');
-      expect(page).toContain('/research/seed-openevo/alfworld/');
+    expect(conceptIndex).toContain('/lab/');
+  });
+
+  it('keeps the benchmark overview comparative and delegates environment detail', () => {
+    for (const source of [benchmarkZh, benchmarkEn]) {
+      expect(source).toContain('page="benchmarks"');
+      expect(source).not.toContain('AgentEnvironmentTrajectory');
+      expect(source).not.toContain('InteractiveResearchExplainer');
+      expect(source).not.toContain('BenchmarkDatasetDiagram');
     }
+  });
+
+  it('does not cross-mount WebShop and ALFWorld explainers on their dedicated pages', () => {
+    expect(webshopZh).toContain('kind="webshop"');
+    expect(webshopEn).toContain('kind="webshop"');
+    expect(webshopZh).not.toContain('kind="alfworld"');
+    expect(webshopEn).not.toContain('kind="alfworld"');
+    expect(alfworldZh).toContain('kind="alfworld"');
+    expect(alfworldEn).toContain('kind="alfworld"');
+    expect(alfworldZh).not.toContain('kind="webshop"');
+    expect(alfworldEn).not.toContain('kind="webshop"');
+  });
+
+  it('preserves a compact bilingual concept index rather than a second explanatory article', () => {
+    expect(conceptIndex).toContain("t('原理索引', 'Concept index')");
+    expect(conceptIndex).toContain("t('方法与环境参考', 'Method and environment references')");
+    expect(conceptIndex).toContain('完整流程图只保留在各自的专门页面');
+    expect(conceptIndex).toContain('Full process figures live only on their dedicated pages');
+    expect(conceptIndex).not.toContain('client:visible');
   });
 });

@@ -1,0 +1,78 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  context?: 'benchmark' | 'reproduction';
+}
+
+const { locale, context = 'reproduction' } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const groups = [
+  {
+    label: t('方法', 'Methods'),
+    links: [
+      { label: 'SEED', href: p('/research/seed-openevo/seed/') },
+      { label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
+      { label: t('更新机制对比', 'Update-loop comparison'), href: p('/research/seed-openevo/loops/') },
+    ],
+  },
+  {
+    label: t('环境', 'Environments'),
+    links: [
+      { label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
+      { label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
+      { label: t('指标总览', 'Metric overview'), href: p('/research/seed-openevo/benchmarks/') },
+    ],
+  },
+  {
+    label: t('执行', 'Execution'),
+    links: [
+      { label: t('服务器与权限', 'Server and authority'), href: p('/lab/') },
+      { label: t('复现指南', 'Reproduction guide'), href: p('/guide/openevo-webshop-alfworld/') },
+      { label: t('实验结果', 'Experiment results'), href: p('/research/seed-openevo/results/') },
+    ],
+  },
+] as const;
+---
+
+<aside class="concept-index" aria-labelledby={`concept-index-title-${context}`}>
+  <header>
+    <span>{t('原理索引', 'Concept index')}</span>
+    <h2 id={`concept-index-title-${context}`}>{t('方法与环境参考', 'Method and environment references')}</h2>
+    <p>{t('完整流程图只保留在各自的专门页面；这里提供回看入口，让当前页面继续承担实验或复现主线。', 'Full process figures live only on their dedicated pages. These links provide reference access while this page stays focused on the experiment or reproduction path.')}</p>
+  </header>
+  <dl>
+    {groups.map((group) => (
+      <div>
+        <dt>{group.label}</dt>
+        <dd>
+          {group.links.map((link, index) => (
+            <>
+              {index > 0 && <span aria-hidden="true">·</span>}
+              <a href={link.href}>{link.label}</a>
+            </>
+          ))}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</aside>
+
+<style>
+  .concept-index{width:min(1120px,100%);margin:1.15rem auto;padding:.9rem 1rem;border-block:1px solid var(--line);background:color-mix(in srgb,var(--surface-muted) 72%,transparent)}
+  .concept-index header{display:grid;grid-template-columns:minmax(150px,.28fr) minmax(0,.72fr);gap:.35rem 1rem;align-items:start}
+  .concept-index header>span{grid-row:1 / span 2;color:var(--accent-deep);font:800 .62rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}
+  .concept-index h2{margin:0;font-size:.94rem}
+  .concept-index p{max-width:80ch;margin:.28rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.5}
+  .concept-index dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.8rem 0 0}
+  .concept-index dl>div{display:grid;grid-template-columns:auto 1fr;gap:.55rem;padding-top:.55rem;border-top:1px solid var(--line)}
+  .concept-index dt{color:var(--muted);font-size:.62rem;font-weight:760}
+  .concept-index dd{display:flex;gap:.35rem;flex-wrap:wrap;margin:0;font-size:.68rem;line-height:1.45}
+  .concept-index dd span{color:var(--muted)}
+  .concept-index a{color:var(--accent-deep);font-weight:740;text-underline-offset:.18em}
+  @media(max-width:760px){.concept-index{width:min(100% - .5rem,1120px);padding:.8rem}.concept-index header{grid-template-columns:1fr}.concept-index header>span{grid-row:auto}.concept-index dl{grid-template-columns:1fr}.concept-index dl>div{grid-template-columns:5rem 1fr}}
+</style>

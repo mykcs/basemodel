@@ -1,68 +1,60 @@
-# Research journey experience consolidation — 2026-08-12
+# Research journey experience consolidation — current ownership update
 
-## Why this follow-up exists
+Status: **current**  
+Originally consolidated: **2026-08-12**  
+Ownership correction: **2026-08-22**
 
-Several earlier PRs improved copy, visual hierarchy, the SEED/OpenEvo research map, and mobile safety. The remaining gap was structural: the global navigation still exposed the repository's page inventory, while the owner consistently thinks in three durable goals:
+## Why this update exists
 
-1. reproduce SEED;
-2. run OpenEvo on WebShop / ALFWorld;
-3. learn the necessary model, agent, and training foundations.
+The research area accumulated a second structural problem after the original journey work: the same full SEED, OpenEvo, WebShop, ALFWorld, comparison, and server explainers were embedded on multiple routes. That made an overview page compete with the dedicated concept page and made the execution guide read like a second conceptual textbook.
 
-The WebShop / ALFWorld material also explained the environments mostly through prose and tables. A newcomer could read the definitions without seeing the actual turn-by-turn contract among task, observation, model action, environment response, evaluator, and evolution mechanism.
+The durable rule is now:
 
-## Page Expression Brief
+> A full research explainer has one canonical route. Other routes may link to it, summarize the minimum context they need, or compare metrics, but they must not embed a second copy of the same full figure.
 
-- **Reader**: a paper researcher who understands models and training at a basic level but is new to long-horizon agent experiments.
-- **Page role**: orient the reader, make one run legible, then route them to execution or controlled comparison.
-- **Starting state**: the reader sees SEED, OpenEvo, WebShop, ALFWorld, memory, artifact, reward, and revision as many disconnected terms.
-- **Target mental model**: one task is a stateful dialogue; the resulting trajectory can feed different update mechanisms; each evidence gate permits only a bounded claim.
-- **Next action**: open the OpenEvo experiment gateway, inspect one illustrative trajectory, then enter the executable reproduction guide.
-- **Primary path**: three global journeys → OpenEvo experiment gateway → environment dialogue → evidence gates → reproduction guide.
-- **Secondary depth**: benchmark metric definitions, SEED/OpenEvo loop comparison, result/evidence ladder, models, papers, workspace, and comparison tools.
-- **Semantic shape**: native navigation, `details` disclosures, ordered dialogue turns, ordered mechanism flows, definition lists for update boundaries, and explicit evidence gates.
-- **Density plan**: L0 three journeys; L1 one run; L2 mechanism comparison; L3 diagnostics and artifacts.
-- **Acceptance evidence**: bilingual source-level contract tests, mobile touch targets, horizontal pipeline scrolling, explicit illustrative-content label, and one final Vercel Preview build.
+This is an information-architecture rule, not merely a visual cleanup.
 
-## Implemented invariants
+## Canonical explainer ownership
 
-### Global navigation
+| Full explainer | Canonical route | Other routes do |
+| --- | --- | --- |
+| SEED method | `/research/seed-openevo/seed/` | link or give short method context |
+| OpenEvo lifecycle | `/research/seed-openevo/openevo/` | link or give short experiment context |
+| WebShop interaction | `/research/seed-openevo/webshop/` | link; keep score/metric summaries where needed |
+| ALFWorld interaction | `/research/seed-openevo/alfworld/` | link; keep success-rate summaries where needed |
+| SEED vs OpenEvo update comparison | `/research/seed-openevo/loops/` | link; do not embed another comparison figure |
+| server / Docker authority | `/lab/` | link from execution material |
 
-The first-level navigation is organized by user intent rather than page type:
+The dedicated WebShop and ALFWorld pages keep the interactive, scroll-following explainer controls. In particular, the WebShop page remains the canonical place for the persistent previous/next learning interaction the owner selected.
 
-- **Reproduce SEED**
-- **OpenEvo experiments**
-- **Foundations**
+## Route roles after de-duplication
 
-Models, papers, workspace, comparison, and the complete research map remain available from a secondary research-tools menu. Mobile navigation exposes the same structure without hiding entries.
+### Research mission hub
 
-### Agent/environment trajectory lab
+`/research/seed-openevo/` is orientation. It routes readers to methods, environments, experiments, results, and execution without reproducing their full bodies.
 
-The trajectory lab must always:
+### Benchmark overview
 
-- label examples as illustrative rather than measured benchmark results;
-- separate task, environment, agent, and evaluator messages;
-- expose model-action evidence and fallback status as distinct concepts;
-- explain WebShop exact success versus normalized partial score;
-- explain ALFWorld family success rate and unweighted macro-average;
-- show that SEED updates policy parameters inside a training loop;
-- show that OpenEvo creates versioned carriers/revisions across completed sessions;
-- state each activation boundary explicitly.
+`/research/seed-openevo/benchmarks/` compares ALFWorld and WebShop as experimental instruments: metrics, evidence types, and fair-comparison controls. It links to the two environment pages for full interaction teaching.
 
-### Process diagrams
+### Experiment gateway
 
-Process connectors are structural CSS lines and nodes, not text-arrow diagrams. On narrow screens, a horizontal pipeline remains horizontal and becomes touch-scrollable rather than collapsing into an unrelated stack.
+`/research/seed-openevo/experiment/` owns experiment state, study framing, evidence, source references, and live-state resolution. It uses a compact concept index rather than embedding method/environment figures.
 
-### Build-budget discipline
+### Reproduction guide
 
-All files in this follow-up are prepared and source-checked before the branch ref is updated. The GitHub branch is updated once so the Vercel Git integration receives one cohesive preview build rather than one build per edit.
+`/guide/openevo-webshop-alfworld/` stays execution-first: machine/code boundary, numbered gates, commands, expected evidence, and troubleshooting. Conceptual diagrams are references, not repeated content.
 
-## Primary files
+## Implementation invariant
 
-- `src/components/Header.astro`
-- `src/components/research/AgentEnvironmentTrajectory.astro`
-- `src/components/research/OpenEvoExperimentGateway.astro`
-- `src/pages/research/seed-openevo/experiment.astro`
-- `src/pages/en/research/seed-openevo/experiment.astro`
-- `src/pages/research/seed-openevo/benchmarks.astro`
-- `src/pages/en/research/seed-openevo/benchmarks.astro`
-- `src/lib/researchJourneyExperience.test.ts`
+`ResearchConceptIndex.astro` is the compact cross-route reference surface. `AgentEnvironmentTrajectory.astro` remains temporarily as a compatibility shell for existing callers, but it may only render that index; it must not import `InteractiveResearchExplainer`, `BenchmarkDatasetDiagram`, or another full concept figure.
+
+The benchmark route must not mount `AgentEnvironmentTrajectory` at all. The reproduction guide must not directly mount `InteractiveResearchExplainer` for server or comparison content.
+
+## Acceptance invariant
+
+Source-level tests protect these ownership rules so later work cannot reintroduce the same duplication accidentally. UI acceptance still verifies the dedicated interactive pages, especially the WebShop previous/next controls, while overview and execution routes are checked for compact, non-duplicated navigation.
+
+## Stopping rule
+
+Do not remove useful local detail merely because two routes mention the same noun. Duplication means the same explanatory object is competing in multiple places. A short contextual summary, metric table, or link is allowed when it serves the current route's distinct job.
