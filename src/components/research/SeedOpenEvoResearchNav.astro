@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchPage = 'hub' | 'experiment' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
 
 interface Props {
   locale: Locale;
@@ -15,6 +15,7 @@ const p = (path: string) => localePath(locale, path);
 
 const pages = [
   { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
+  { id: 'experiment', label: t('科学研究', 'Scientific study'), href: p('/research/seed-openevo/experiment/') },
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
   { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
