@@ -229,9 +229,129 @@ Do not:
 
 ---
 
-## 10. Ownership and relationship to other contracts
+## 10. Research-results editorial contract
 
-This file owns the durable **expression and information-architecture invariant**.
+This subsection is **mandatory for experiment-result pages, research closeouts, benchmark narratives, scientific-study summaries, and any page that turns internal experiment evidence into an explanation for another researcher.** It is not limited to the current OpenEvo route.
+
+### 10.1 Write for a lab peer who did not run the experiments
+
+The default reader is a technically capable collaborator who knows the shared project area but does **not** know the internal run history.
+
+Therefore:
+
+- do not open with internal run IDs, campaign names, selector labels, artifact names, or unexplained acronyms;
+- do not assume the reader knows what `H1.38B`, `H1.39-MR`, `G2`, `T2`, `SD-LoRA`, `parser-invalid`, or similar local vocabulary means;
+- introduce a technical term only when the argument reaches the point where the term is useful, and define it in ordinary technical language at first use;
+- prefer one concrete environment/trajectory/example before a dense abstraction when that example helps the reader form the correct mental model;
+- keep run IDs, SHAs, campaign names, raw artifact locators, and full experiment lineage as provenance near the relevant claim or in an appendix, not as the article outline.
+
+A reader should be able to understand the research question, the strongest conclusion, and the main uncertainty without knowing any internal experiment code name.
+
+### 10.2 Organize the main text like a research argument, not an experiment dashboard
+
+The primary narrative should normally follow this logic:
+
+```text
+research question / concrete problem
+-> why the question is non-trivial
+-> what the system or environment actually does
+-> the important failed or ambiguous explanations
+-> the experiment that changes the belief state
+-> independent or stronger evidence
+-> conclusion
+-> reasoning from evidence to conclusion
+-> limitations / what cannot be inferred
+-> next scientific question
+```
+
+Chronology is useful only when it explains how the scientific belief changed. Do not mechanically write “Phase 1, Phase 2, Phase 3...” or one card per experiment.
+
+For each major scientific claim, make four things recoverable from the visible main text:
+
+1. **Claim** — what we currently believe.
+2. **Evidence** — the observations, effect estimates, intervals, controls, or failure evidence supporting it.
+3. **Inference** — why that evidence changes the explanation, including which simpler alternatives it weakens or rules out.
+4. **Boundary** — what the evidence does not establish.
+
+If one of these four is missing, the section is not yet a scientific explanation; it is only a result dump.
+
+### 10.3 Preserve negative results as reasoning, not clutter
+
+Failed experiments should stay in the story when they materially narrowed the hypothesis space.
+
+Good negative-result writing answers:
+
+- What explanation were we testing?
+- What did we observe?
+- What interpretation became less plausible?
+- What remained unresolved?
+- Why did that justify the next experiment?
+
+Do not hide negative evidence to make the story look successful. Also do not give every failed run equal visual weight. Compress repeated engineering or null history into the minimum structure needed to explain the next scientific decision, with complete audit detail available underneath.
+
+### 10.4 Keep science and engineering failure semantically separate
+
+A scientific zero, an invalid measurement, an incomplete panel, and a runtime/parser failure are different states.
+
+- Never convert invalid engineering attempts into model-performance evidence merely because `0` is convenient.
+- Never describe an unrun panel as a failed experiment.
+- Never describe a measurement-invalid screen as a clean null.
+- Never promote an observed mechanism signal into a causal method claim without the required control.
+- Never turn a single positive panel into universal superiority.
+
+The prose should explain these distinctions where they affect interpretation, not only in hidden provenance.
+
+### 10.5 Prefer restrained academic prose over generic AI presentation language
+
+The target voice is a strong technical paper or high-quality research blog: problem-first, evidence-dense, explicit about reasoning, and concise where the argument is already clear.
+
+Avoid generic AI-produced presentation habits such as:
+
+- a wall of same-sized rounded cards;
+- repeated “核心结论 / 关键洞察 / 值得注意的是 / 总的来说” labels that add no information;
+- inflated claims such as “重大突破”, “全面验证”, or “显著领先” unless the evidence and statistical contract literally justify them;
+- ornamental section titles that hide the actual research question;
+- excessive emoji, badges, gradients, decorative arrows, or status colors used to manufacture importance;
+- summary sentences that simply restate the heading;
+- uniform bullet lists where connected prose is needed to express causality or inference;
+- first-screen jargon density that forces the reader to decode the project before understanding the question.
+
+Prefer specific nouns, concrete verbs, actual quantities, and explicit causal or epistemic relationships. Vary sentence length naturally. Use tables and figures for aligned evidence, not as decoration.
+
+### 10.6 The web should improve a paper-like argument, not replace it with spectacle
+
+Use HTML advantages to make the research easier to inspect:
+
+- a real comparison table for aligned arms and intervals;
+- a simple confidence-interval figure when it clarifies effect direction and uncertainty;
+- a trajectory excerpt when it makes the environment concrete;
+- progressive disclosure for full run lineage and raw evidence;
+- source links beside the claim they support;
+- print/no-JS behavior that still yields a coherent article.
+
+The static reading order must remain sufficient. Interaction may reveal depth, but it must not be required to reconstruct the scientific argument.
+
+### 10.7 Acceptance test for research-result writing
+
+Before merging a result-page rewrite, explicitly verify:
+
+- the first screen contains the research question and current conclusion before internal run IDs dominate;
+- a lab peer unfamiliar with the run history can explain what was tested and why it matters;
+- the main text contains evidence and reasoning, not only conclusions and numbers;
+- internal experiment IDs function as provenance rather than navigation;
+- negative results are connected to the next hypothesis rather than listed as a changelog;
+- claim boundaries are visible near the claims they constrain;
+- planned, unrun, invalid, incomplete, and completed experiments are linguistically distinct;
+- the full audit trail remains accessible without overwhelming the primary narrative;
+- the page remains useful as plain HTML / print and does not rely on visual effects to carry meaning.
+
+When browser tests can cheaply protect these invariants, add them. For example, assert that reader-oriented question/background copy appears before the first method-specific or run-ID-heavy section.
+
+---
+
+## 11. Ownership and relationship to other contracts
+
+This file owns the durable **expression and information-architecture invariant**, including the reader-first editorial standard for research results.
 
 Related owners:
 
