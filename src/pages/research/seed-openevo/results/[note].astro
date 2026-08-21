@@ -32,16 +32,115 @@ const meta: Record<WebShopTrainingNoteId, { title: string; description: string }
 </AppLayout>
 
 <style is="global">
-  /* WebShopTrainingNote intentionally uses a dark editorial palette. Keep its
-     reading canvas dark in both site themes so all article/code contrast stays
-     deterministic until the component is migrated to shared theme tokens. */
-  .training-note {
-    background:#090f1c;
-    border-radius:18px;
-    color-scheme:dark;
+  /*
+   * The note component was originally authored with a fixed dark palette.
+   * Route-level semantic overrides make the reading surface follow the site's
+   * tested light/dark tokens instead of forcing dark mode inside a light page.
+   */
+  .site-main .training-note.training-note {
+    --ink: var(--color-text);
+    --muted: var(--color-text-muted);
+    --line: var(--color-border);
+    --panel: var(--color-surface-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    color: var(--color-text);
+    color-scheme: inherit;
+  }
+
+  .site-main .training-note .note-topline,
+  .site-main .training-note .scope,
+  .site-main .training-note .dek {
+    color: var(--color-text-muted);
+  }
+
+  .site-main .training-note .note-topline a,
+  .site-main .training-note a {
+    color: var(--color-accent);
+  }
+
+  .site-main .training-note .series-nav a {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .site-main .training-note .series-nav a:hover,
+  .site-main .training-note .series-nav a:focus-visible {
+    background: var(--color-surface-muted);
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .site-main .training-note .series-nav a span {
+    color: var(--color-text-muted);
+  }
+
+  .site-main .training-note .series-nav a.active {
+    background: var(--color-surface-muted);
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .site-main .training-note .note-body h2,
+  .site-main .training-note .note-body p,
+  .site-main .training-note .note-body strong,
+  .site-main .training-note blockquote,
+  .site-main .training-note td,
+  .site-main .training-note .references li,
+  .site-main .training-note .checklist li,
+  .site-main .training-note .note-footer strong {
+    color: var(--color-text);
+  }
+
+  .site-main .training-note code {
+    color: var(--color-accent);
+  }
+
+  .site-main .training-note pre {
+    background: var(--color-surface-muted);
+    border-color: var(--color-border);
+    color: var(--color-text);
+  }
+
+  .site-main .training-note blockquote {
+    border-left-color: var(--color-accent);
+  }
+
+  .site-main .training-note .comparison-list > div {
+    background: var(--color-surface-muted);
+    border-color: var(--color-border);
+  }
+
+  .site-main .training-note .table-wrap {
+    border-color: var(--color-border);
+  }
+
+  .site-main .training-note table {
+    background: var(--color-surface);
+  }
+
+  .site-main .training-note th,
+  .site-main .training-note td {
+    border-bottom-color: var(--color-border);
+  }
+
+  .site-main .training-note th,
+  .site-main .training-note .note-footer {
+    color: var(--color-text-muted);
+  }
+
+  .site-main .training-note .references,
+  .site-main .training-note .note-footer {
+    border-color: var(--color-border);
   }
 
   @media (max-width:720px) {
-    .training-note { border-radius:0; }
+    .site-main .training-note.training-note {
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+    }
   }
 </style>
