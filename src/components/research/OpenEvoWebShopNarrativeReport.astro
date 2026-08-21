@@ -88,12 +88,12 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
         'An agent leaves successful and failed interaction trajectories while acting in a web environment. The question is whether training on those trajectories makes the same model perform better later on tasks it has never seen. If it does, interaction history is becoming retained capability rather than mere logging.'
       )}</p>
       <p>{t(
-        '第一次参数更新使用模型自身的成功经验，在一组训练未见任务上得到正向结果。随后我们冻结训练产物，不再调参，换成 64 个完全不同的 WebShop 任务，结果再次出现同方向的提升；ordinary LoRA 和 SD-LoRA 都高于同一个基础模型。',
-        'The first parameter update used the model’s own successful experience and produced a positive result on tasks excluded from training. We then froze the artifacts, stopped tuning, moved to 64 completely different WebShop tasks, and again observed improvement in the same direction; both ordinary LoRA and SD-LoRA were above the same base model.'
+        '第一次参数更新使用模型自身的成功经验，在一组训练未见任务上得到正向结果。随后我们冻结训练产物，不再调参，换成 64 个完全不同的 WebShop 任务，结果再次出现同方向的提升；两种参数更新路线都高于同一个基础模型。',
+        'The first parameter update used the model’s own successful experience and produced a positive result on tasks excluded from training. We then froze the artifacts, stopped tuning, moved to 64 completely different WebShop tasks, and again observed improvement in the same direction; both update routes were above the same base model.'
       )}</p>
       <p>{t(
-        '第二次连续写入没有延续这个结果。更新后的模型能够再次产生大量成功经验，第二次参数更新也确实完成了，但“学到新经验、保留旧能力、保住上一轮新任务收益”三道上游门都没有通过。后续更窄的机制筛选又因为测量有效性问题收口为 measurement-invalid。现有证据因此支持一次可复现的跨任务迁移，但还不足以支持多代自进化。',
-        'A second continual write did not extend that result. The updated model generated many more successful experiences and the second parameter update genuinely completed, but it failed to clear the three upstream gates: acquire the new experience, retain prior capability, and preserve the previously replicated fresh-task gain. A narrower mechanism screen then closed as measurement-invalid. The evidence therefore supports reproducible one-step cross-task transfer, but not established multi-generation self-evolution.'
+        '第二次连续写入没有延续这个结果。更新后的模型能够再次产生大量成功经验，第二次参数更新也确实完成了，但“学到新经验、保留旧能力、保住上一轮新任务收益”三道上游门都没有通过。后续更窄的机制筛选又因为出现无效测量 cluster，无法形成可解释的方法比较。现有证据因此支持一次可复现的跨任务迁移，但还不足以支持多代自进化。',
+        'A second continual write did not extend that result. The updated model generated many more successful experiences and the second parameter update genuinely completed, but it failed to clear the three upstream gates: acquire the new experience, retain prior capability, and preserve the previously replicated fresh-task gain. A narrower mechanism screen then contained invalid measurement clusters and could not support an interpretable method comparison. The evidence therefore supports reproducible one-step cross-task transfer, but not established multi-generation self-evolution.'
       )}</p>
     </div>
 
