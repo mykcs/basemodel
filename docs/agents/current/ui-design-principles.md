@@ -250,6 +250,29 @@ At minimum inspect:
 
 The owner must not become the first real tester of dark mode, overflow, clipping, or sticky-layer collisions.
 
+### Theme-sensitive change loop — mandatory after every related edit
+
+Any edit that can change foreground color, background/surface color, border color, theme tokens, component-scoped CSS, route-level CSS, or theme switching is **not complete after a final one-time screenshot**. After **every related change**, re-run the affected route in both light and dark themes before continuing or handing off.
+
+The minimum loop is:
+
+1. load the real affected route in **light** theme;
+2. switch to **dark** theme without reloading and verify the same surface again;
+3. switch back to **light** and verify the state returns correctly;
+4. repeat at one desktop and one narrow/mobile viewport when the change can affect layout or wrapping;
+5. inspect computed styles or the compiled CSS when a framework/scoping mechanism is involved — source CSS that looks correct is not proof that the emitted selectors match the real DOM;
+6. add or extend an executable Playwright regression for any bug that reached a Preview or production deployment.
+
+For Astro specifically, global route overrides must use the actual `is:global` directive. `is="global"` is not equivalent: Astro can still scope the emitted selectors, making apparently-correct theme overrides fail to match components rendered with another scope ID.
+
+The WebShop training-note routes are a permanent regression set because this exact failure reached Preview:
+
+- `/research/seed-openevo/results/webshop-training/`;
+- `/research/seed-openevo/results/seed-training/`;
+- `/research/seed-openevo/results/openevo-training/`.
+
+A UI/theme change touching these pages, their layout, shared theme tokens, or their CSS ownership must run `tests/e2e/webshop-training-theme.spec.ts` before it is considered complete.
+
 ## Relationship to other project rules
 
 This file owns the **visual identity and non-drift rules**.
