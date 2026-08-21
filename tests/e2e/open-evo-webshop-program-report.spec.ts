@@ -9,7 +9,7 @@ for (const route of routes) {
     await expect(report).toBeVisible();
     await expect(report.locator('#results table')).toBeVisible();
     await expect(report.locator('#results tbody tr')).toHaveCount(5);
-    await expect(report.getByText(route.startsWith('/en/') ? 'T2 remained unopened' : 'T2 未打开', { exact: false })).toBeVisible();
+    await expect(report.locator('#results > .validity-note').first().locator('strong')).toHaveText(route.startsWith('/en/') ? 'T2 remained unopened.' : 'T2 未打开。');
     await expect(report.locator('#interpretation')).toBeVisible();
     await expect(report.locator('#next-experiment')).toBeVisible();
 
