@@ -68,6 +68,8 @@ read LATEST + operating principles
 
 `docs/agent-context/` contains retained research-workbench context. `docs/agents/history/` contains superseded product, hosting, incident and release evidence. Neither is current policy. In particular, the former PR #64 product-vision document is historical; current authority lives in the current integrity, mission, visual and deployment documents.
 
+For a concrete browser-infrastructure incident showing how to distinguish zero-step hosted-runner failures from real WebKit failures, when a public production black-box fallback is safe, and why that fallback is not exact-head evidence, see `history/2026-08-21-webkit-runner-recovery.md`.
+
 ## Product contract
 
 The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements. Keep Learn / Run / Compare, evidence levels, benchmark metrics and framework update objects distinct.
