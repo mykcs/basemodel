@@ -96,7 +96,6 @@ const expectedHeaderSelectorFiles = [
   'components/header.css',
   'design-refinement.css',
   'final-hardening.css',
-  'mobile-composition.css',
   'site.css',
   'visual-identity.css',
   'visual-upgrade.css',
@@ -130,6 +129,6 @@ if (headerSelector.test(read('src/styles/visual-closeout.css'))) {
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
-console.log('  Header legacy selector debt: frozen to 6 compatibility/foundation files plus the canonical owner');
-console.log('  patch-style layers: frozen; visual-closeout Header debt retired');
+console.log('  Header legacy selector debt: frozen to 5 compatibility/foundation files plus the canonical owner');
+console.log('  patch-style layers: frozen; visual-closeout and mobile-composition Header debt retired');
 console.log('  Tailwind migration: not justified by the current ownership evidence');

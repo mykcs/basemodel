@@ -1,3 +1,7 @@
+# Historical handoff — basemodel explainer × Transformer Explainer style work
+
+> Historical evidence only. This 2026-08-18 handoff described a temporary local worktree and pre-release acceptance state. It no longer defines current workflow, paths, branch policy, test counts, deployment architecture, or release authority. Current instructions live in `/AGENTS.md` and `docs/agents/current/`.
+
 # 交接：basemodel explainer × Transformer Explainer 风格改造
 
 > 写给接手 Agent（2026-08-18）。你是同一台 MacBook 上的另一个 Agent，这份文档把你需要的全部上下文一次给齐。

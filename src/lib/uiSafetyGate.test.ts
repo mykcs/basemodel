@@ -35,14 +35,15 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('compare-tray-on-demand.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
     }
     expect(packageJson.scripts?.['test:ui']).toContain('--project=chromium');
     expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
   });
 
-  it('keeps the Vercel hosted browser gate Chromium-only and delegates WebKit to supported runners', () => {
-    expect(vercelUiGate).toContain("branch.startsWith('agent/css-')");
+  it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary + semantic-release UI branch families', () => {
+    expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');

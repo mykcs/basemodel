@@ -70,9 +70,16 @@ describe('optimization-phase regressions', () => {
     expect(source).toContain('const hasActiveTask = hydrated && hasMeaningfulResearchTask(task)');
   });
 
-  it('defers the global compare tray instead of hydrating it on initial load', () => {
+  it('defers the global compare tray and keeps the full catalog out of every page payload', () => {
     const layout = readSource('../layouts/AppLayout.astro');
-    expect(layout).toContain('<CompareTray client:idle');
+    const tray = readSource('../components/workspace/CompareTray.tsx');
+
+    expect(layout).toContain('<CompareTray client:idle m={m} locale={locale} />');
     expect(layout).not.toContain('<CompareTray client:load');
+    expect(layout).not.toContain("getCollection('models')");
+    expect(layout).not.toContain('modelNames={modelNames}');
+    expect(tray).toContain('/model-data/${encodeURIComponent(id)}.json');
+    expect(tray).toContain('ids.length === 0');
+    expect(tray).not.toContain('modelNames: Record<string, string>;');
   });
 });
