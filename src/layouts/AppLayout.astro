@@ -4,7 +4,6 @@ import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNa
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
 import PageOutline from '../components/navigation/PageOutline.astro';
-import { getCollection } from 'astro:content';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
@@ -16,7 +15,6 @@ type ResearchBridgePage = 'experiment' | 'run';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
-const modelNames = Object.fromEntries((await getCollection('models')).map((entry) => [entry.data.id, entry.data.name]));
 const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
@@ -95,7 +93,7 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
       <slot />
     </main>
     <PageOutline locale={locale} />
-    <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
+    <CompareTray client:idle m={m} locale={locale} />
     <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
     <ActionableContentLayer locale={locale} />
   </body>
