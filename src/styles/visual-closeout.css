@@ -17,30 +17,6 @@ body .site-main a {
   overflow-wrap: anywhere;
 }
 
-/* A closed details popover must contribute no off-screen geometry. Chromium
- * otherwise still counts a long menu link toward documentElement.scrollWidth. */
-.site-header .resource-menu:not([open]) .resource-menu__panel {
-  display: none !important;
-}
-
-/* The current Header owns a sectioned mobile navigation. An older global
- * composition layer still treated every direct child of `.mobile-menu .shell`
- * as a small two-column tile; after the header refactor that meant whole
- * navigation sections could be squeezed side-by-side at phone width. Restore
- * the intended vertical section stack at the final cascade layer. */
-@media (max-width: 640px) {
-  body .site-header .mobile-menu .mobile-menu__inner {
-    display: block;
-    grid-template-columns: none;
-  }
-
-  body .site-header .mobile-menu .mobile-menu__section,
-  body .site-header .mobile-menu .mobile-menu__controls {
-    width: 100%;
-    min-width: 0;
-  }
-}
-
 /* The global research connector layer renders absolute pseudo-elements on
  * mission-chain cards. Establish their intended local containing blocks so
  * connector dots/rails attach to each card instead of the viewport. */

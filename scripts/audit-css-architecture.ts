@@ -20,9 +20,17 @@ const jsCssImports = (source: string) =>
 const cssImports = (source: string) =>
   [...source.matchAll(/@import\s+['"]([^'"]+)['"]\s*;/g)].map((match) => match[1]);
 
+const walk = (directory: string): string[] =>
+  readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory() ? walk(path) : [path];
+  });
+
 const appLayoutPath = 'src/layouts/AppLayout.astro';
 const appEntryPath = 'src/styles/app.css';
 const foundationPath = 'src/styles/global.css';
+const headerOwnerPath = 'src/styles/components/header.css';
+const shellOwnerPath = 'src/styles/components/global-shell.css';
 
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
@@ -36,6 +44,8 @@ const expectedAppImports = [
   './knowledge-architecture.css',
   './mobile-composition.css',
   './visual-closeout.css',
+  './components/global-shell.css',
+  './components/header.css',
 ];
 const expectedFoundationImports = [
   './tokens.css',
@@ -75,7 +85,51 @@ for (const name of readdirSync(stylesRoot)) {
   }
 }
 
+const headerSelector = /\.(?:site-header|nav-inner|brand(?:-mark)?|desktop-nav|mission-nav|journey-nav|journey-link|resource-menu|mobile-menu|mobile-journeys|mobile-utility-links|menu-toggle|theme-toggle|lang-switch|command-search-trigger)\b/;
+const cssWithHeaderSelectors = walk(stylesRoot)
+  .filter((path) => path.endsWith('.css'))
+  .filter((path) => headerSelector.test(readFileSync(path, 'utf8')))
+  .map((path) => relative(stylesRoot, path).replaceAll('\\', '/'))
+  .sort();
+
+const expectedHeaderSelectorFiles = [
+  'components/header.css',
+  'design-refinement.css',
+  'final-hardening.css',
+  'mobile-composition.css',
+  'site.css',
+  'visual-identity.css',
+  'visual-upgrade.css',
+].sort();
+
+equal(
+  cssWithHeaderSelectors,
+  expectedHeaderSelectorFiles,
+  'CSS files allowed to contain shared Header/Nav selectors during migration',
+);
+
+const headerOwner = read(headerOwnerPath);
+for (const invariant of [
+  '.site-header .mission-nav',
+  '.site-header .resource-menu:not([open]) .resource-menu__panel',
+  '@media (max-width: 1080px)',
+  '@media (max-width: 640px)',
+]) {
+  if (!headerOwner.includes(invariant)) fail(`${headerOwnerPath} is missing required ownership invariant: ${invariant}`);
+}
+
+const shellOwner = read(shellOwnerPath);
+for (const invariant of ['.shell', '.footer-inner', '@media (max-width: 390px)']) {
+  if (!shellOwner.includes(invariant)) fail(`${shellOwnerPath} is missing required shell invariant: ${invariant}`);
+}
+
+if (headerSelector.test(read('src/styles/visual-closeout.css'))) {
+  fail('src/styles/visual-closeout.css is geometry debt only and must not regain Header/Nav ownership.');
+}
+
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
-console.log('  legacy patch-style layers: frozen (no new siblings allowed)');
-console.log('  Tailwind migration: not part of the current architecture');
+console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
+console.log('  Header legacy selector debt: frozen to 6 compatibility/foundation files plus the canonical owner');
+console.log('  patch-style layers: frozen; visual-closeout Header debt retired');
+console.log('  Tailwind migration: not justified by the current ownership evidence');
