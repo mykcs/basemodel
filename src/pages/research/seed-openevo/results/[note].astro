@@ -30,3 +30,18 @@ const meta: Record<WebShopTrainingNoteId, { title: string; description: string }
 <AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
   <WebShopTrainingNote note={note} />
 </AppLayout>
+
+<style is="global">
+  /* WebShopTrainingNote intentionally uses a dark editorial palette. Keep its
+     reading canvas dark in both site themes so all article/code contrast stays
+     deterministic until the component is migrated to shared theme tokens. */
+  .training-note {
+    background:#090f1c;
+    border-radius:18px;
+    color-scheme:dark;
+  }
+
+  @media (max-width:720px) {
+    .training-note { border-radius:0; }
+  }
+</style>
