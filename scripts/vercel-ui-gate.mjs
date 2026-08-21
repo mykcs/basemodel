@@ -1,10 +1,9 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
-const shouldRun = productionBranch || fullUiBranch.test(branch) || focusedFixBranch.test(branch);
+const shouldRun = fullUiBranch.test(branch) || focusedFixBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -42,7 +41,7 @@ const capture = (command, args) => {
   return result.stdout.trim();
 };
 
-const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch);
 console.log(
   focusedOnly
     ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`

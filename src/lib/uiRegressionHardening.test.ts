@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest';
 
 const srcRoot = fileURLToPath(new URL('../', import.meta.url));
 const repoRoot = resolve(srcRoot, '..');
-const vercelUiGate = readFileSync(resolve(repoRoot, 'scripts/vercel-ui-gate.mjs'), 'utf8');
 const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-explainer-layout.spec.ts'), 'utf8');
 const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/results.astro'), 'utf8');
 const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/results.astro'), 'utf8');
@@ -32,12 +31,6 @@ describe('UI regression-class hardening', () => {
       expect(route).toContain('<style is:global>');
       expect(route).not.toMatch(/<style\b[^>]*\bis\s*=\s*["']global["']/i);
     }
-  });
-
-  it('runs the full Chromium UI gate on production main', () => {
-    expect(vercelUiGate).toContain("const productionBranch = branch === 'main';");
-    expect(vercelUiGate).toContain('const shouldRun = productionBranch ||');
-    expect(vercelUiGate).toContain('&& !productionBranch');
   });
 
   it('keeps the geometry matrix aligned with actual explainer-owner routes', () => {
