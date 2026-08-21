@@ -312,8 +312,8 @@ for (const viewport of [
   });
 }
 
-test('home catalog stats use a desktop row and mobile column', async ({ page }) => {
-  for (const path of ['/', '/en/'] as const) {
+test('landscape catalog stats use a desktop row and mobile column', async ({ page }) => {
+  for (const path of ['/landscape/', '/en/landscape/'] as const) {
     await test.step(`${path} desktop`, async () => {
       await page.setViewportSize({ width: 1280, height: 900 });
       await page.goto(path, { waitUntil: 'domcontentloaded' });
