@@ -1,15 +1,8 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const shouldRun = branch.startsWith('agent/visual-closeout-')
-  || branch.startsWith('agent/semantic-release-visual-closeout-')
-  || branch.startsWith('agent/css-')
-  || branch.startsWith('agent/ui-')
-  || branch.startsWith('agent/layout-')
-  || branch.startsWith('agent/theme-')
-  || branch.startsWith('agent/responsive-')
-  || branch.startsWith('agent/nav-')
-  || branch.startsWith('agent/navigation-');
+const uiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
+const shouldRun = uiBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
