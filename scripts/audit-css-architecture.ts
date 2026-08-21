@@ -31,6 +31,7 @@ const appEntryPath = 'src/styles/app.css';
 const foundationPath = 'src/styles/global.css';
 const headerOwnerPath = 'src/styles/components/header.css';
 const shellOwnerPath = 'src/styles/components/global-shell.css';
+const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
 
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
@@ -46,6 +47,7 @@ const expectedAppImports = [
   './visual-closeout.css',
   './components/global-shell.css',
   './components/header.css',
+  './components/webshop-training-note.css',
 ];
 const expectedFoundationImports = [
   './tokens.css',
@@ -122,6 +124,16 @@ for (const invariant of ['.shell', '.footer-inner', '@media (max-width: 390px)']
   if (!shellOwner.includes(invariant)) fail(`${shellOwnerPath} is missing required shell invariant: ${invariant}`);
 }
 
+const trainingNoteOwner = read(trainingNoteOwnerPath);
+for (const invariant of [
+  '.site-main .training-note.training-note',
+  'background: var(--color-surface)',
+  'color: var(--color-text)',
+  'color-scheme: inherit',
+]) {
+  if (!trainingNoteOwner.includes(invariant)) fail(`${trainingNoteOwnerPath} is missing required theme invariant: ${invariant}`);
+}
+
 if (headerSelector.test(read('src/styles/visual-closeout.css'))) {
   fail('src/styles/visual-closeout.css is geometry debt only and must not regain Header/Nav ownership.');
 }
@@ -129,6 +141,7 @@ if (headerSelector.test(read('src/styles/visual-closeout.css'))) {
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
+console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
 console.log('  Header legacy selector debt: frozen to 5 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; visual-closeout and mobile-composition Header debt retired');
 console.log('  Tailwind migration: not justified by the current ownership evidence');
