@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { baseUrl, localePath, type Locale } from '../../i18n';
 import type { Messages } from '../../i18n/zh';
 
@@ -14,6 +14,9 @@ interface SearchItem {
   path?: string;
 }
 
+let searchIndexCache: SearchItem[] | null = null;
+let searchIndexRequest: Promise<SearchItem[]> | null = null;
+
 function itemHref(item: SearchItem, locale: Locale): string {
   if (item.path) return localePath(locale, item.path);
   if (item.type === 'model') return localePath(locale, `/models/${item.id}/`);
@@ -21,20 +24,54 @@ function itemHref(item: SearchItem, locale: Locale): string {
   return localePath(locale, '/families/');
 }
 
+function loadSearchIndex(): Promise<SearchItem[]> {
+  if (searchIndexCache) return Promise.resolve(searchIndexCache);
+  if (searchIndexRequest) return searchIndexRequest;
+
+  // The index is deployment-scoped, not locale-scoped. Load it only when the
+  // user actually opens command search instead of paying this request on every
+  // page hydration. A module-level cache also avoids repeat fetches when the
+  // menu is reopened during the same document lifetime.
+  searchIndexRequest = fetch(`${baseUrl()}search-index.json`, { credentials: 'same-origin' })
+    .then((response) => response.ok ? response.json() : Promise.reject(new Error('search index unavailable')))
+    .then((data: SearchItem[]) => {
+      searchIndexCache = data;
+      return data;
+    })
+    .catch(() => {
+      searchIndexCache = [];
+      return [];
+    })
+    .finally(() => {
+      searchIndexRequest = null;
+    });
+
+  return searchIndexRequest;
+}
+
 export function CommandMenu({ locale, m }: { locale: Locale; m: Messages }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
-  const [items, setItems] = useState<SearchItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [items, setItems] = useState<SearchItem[]>(searchIndexCache ?? []);
+  const [loaded, setLoaded] = useState(searchIndexCache !== null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const open = () => {
+  const ensureSearchIndex = useCallback(() => {
+    if (loaded) return;
+    void loadSearchIndex().then((data) => {
+      setItems(data);
+      setLoaded(true);
+    });
+  }, [loaded]);
+
+  const open = useCallback(() => {
+    ensureSearchIndex();
     dialog.current?.showModal();
     setQuery('');
     setActiveIndex(0);
     window.setTimeout(() => input.current?.focus(), 0);
-  };
+  }, [ensureSearchIndex]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -45,18 +82,7 @@ export function CommandMenu({ locale, m }: { locale: Locale; m: Messages }) {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
-
-  useEffect(() => {
-    if (loaded) return;
-    // The search index is deployment-scoped, not locale-scoped. Keep the
-    // Cloudflare root/GitHub Pages base path while avoiding a nonexistent
-    // /en/search-index.json route on English pages.
-    fetch(`${baseUrl()}search-index.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error('search index unavailable')))
-      .then((data: SearchItem[]) => { setItems(data); setLoaded(true); })
-      .catch(() => setLoaded(true));
-  }, [loaded]);
+  }, [open]);
 
   const needle = query.trim().toLowerCase();
   const results = useMemo(() => {
@@ -118,7 +144,8 @@ export function CommandMenu({ locale, m }: { locale: Locale; m: Messages }) {
             <strong>{item.title}</strong>
             <small>{typeLabel(item.type)}{item.subtitle ? ` · ${item.subtitle}` : ''}</small>
           </a>)}
-          {!results.length && <p className="muted">{m.nav.noSearchResults}</p>}
+          {!results.length && loaded && <p className="muted">{m.nav.noSearchResults}</p>}
+          {!results.length && !loaded && <p className="muted" role="status">{m.nav.searchTitle}…</p>}
         </div>}
         <p className="command-hint muted">{m.nav.commandHint}</p>
       </div>
