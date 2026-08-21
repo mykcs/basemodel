@@ -1,0 +1,32 @@
+---
+import AppLayout from '../../../../layouts/AppLayout.astro';
+import WebShopTrainingNote, { type WebShopTrainingNoteId } from '../../../../components/research/WebShopTrainingNote.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { note: 'webshop-training' } },
+    { params: { note: 'seed-training' } },
+    { params: { note: 'openevo-training' } },
+  ];
+}
+
+const note = Astro.params.note as WebShopTrainingNoteId;
+const meta: Record<WebShopTrainingNoteId, { title: string; description: string }> = {
+  'webshop-training': {
+    title: 'WebShop 是什么？大家以前怎么训练它？',
+    description: '从 WebShop 的交互环境开始，解释原始 imitation learning / reinforcement learning，以及现代 LLM agent 的 on-policy multi-turn RL。',
+  },
+  'seed-training': {
+    title: 'SEED 怎么在 WebShop 上训练？',
+    description: '拆解 SEED 的 hindsight-skill SFT、on-policy rollout、OPD 与 RL，并记录论文协议和公开代码默认值之间的复现差异。',
+  },
+  'openevo-training': {
+    title: '我们怎么训练 OpenEvo × WebShop？',
+    description: '解释 OpenEvo × WebShop 的成功经验筛选、SD-LoRA 参数写入、fresh-task evaluation、连续更新门与 SEED-aligned benchmark 边界。',
+  },
+};
+---
+
+<AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
+  <WebShopTrainingNote note={note} />
+</AppLayout>
