@@ -15,6 +15,15 @@ Production                   -> https://basemodel-preview.vercel.app
 
 GitHub Actions and GitHub Pages remain retired for ordinary BaseModel deployment. Cloudflare material remains legacy rollback/provider-specific tooling only. Read `current/hosting-architecture.md` and `current/deployment-policy.md` before release changes.
 
+## Current release state
+
+Historical release milestones remain discoverable because tests and later integration work refer to them as evidence, not because they define the current workflow:
+
+- **#144 — semantic release integration** reconciled the earlier multi-branch product/UI/research release ancestry.
+- **#147 — final visual closeout** closed the then-current exact-head Chromium visual matrix; that historical combined gate reported **14 passed**.
+
+These historical counts do not prove a later head. Current acceptance must use the current repository Gate and task-relevant browser matrix.
+
 ## Current product mission
 
 ```text
@@ -87,18 +96,29 @@ Historical browser passes apply only to the tree they tested. Future UI changes 
 
 A clean merge, READY badge, or historical browser PASS does not prove a changed combined tree is accepted.
 
-## Build budget
+## Vercel build budget
 
 Default target:
 
 ```text
-one coherent release head
+one coherent branch/PR
+-> one atomic multi-file push
 -> one initial exact-head Preview
--> at most one evidence-driven corrective Preview when practical
--> one Production build per accepted release
+-> at most one corrective Preview
+-> one Production build per accepted release batch
 ```
 
-`vercel.json` and the repository build classifier are executable truth for current trigger behavior.
+When using GitHub APIs, prefer one Git data API commit (`blob/tree/commit/ref`) over sequential Contents API writes. `vercel.json` and the repository build classifier are executable truth for current trigger behavior.
+
+## Vercel-first reporting
+
+Ordinary completion reports lead with repository Gate/build, Vercel deployment trigger/status counts when available, exact-head Preview acceptance, merge SHA, and Production verification.
+
+Do not add Cloudflare or another legacy provider to an ordinary report merely because historical fallback material exists.
+
+## Legacy hosting note — conditional only
+
+Cloudflare Pages and Workers helpers are legacy rollback/provider-specific surfaces. Treat them **not as a normal deployment step or completion-report line** unless the task explicitly concerns rollback, retirement, or live legacy-provider behavior.
 
 ## Agent reading order
 
