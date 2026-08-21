@@ -48,8 +48,7 @@ export function CompareTray({ m, locale }: Props) {
     };
   }, [hydrated, ids]);
 
-  const namesReady = ids.every((id) => Boolean(modelNames[id]));
-  if (!hydrated || ids.length === 0 || !namesReady) return null;
+  if (!hydrated || ids.length === 0) return null;
 
   return (
     <div className="compare-tray" role="region" aria-label={m.workspace.compareTray}>
