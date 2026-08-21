@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 const tokensCss = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8');
 const knowledgeCss = readFileSync(new URL('../styles/knowledge-architecture.css', import.meta.url), 'utf8');
+const appCss = readFileSync(new URL('../styles/app.css', import.meta.url), 'utf8');
+const webShopTrainingNoteCss = readFileSync(new URL('../styles/components/webshop-training-note.css', import.meta.url), 'utf8');
 const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
 const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/results/[note].astro', import.meta.url), 'utf8');
 const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/results.astro', import.meta.url), 'utf8');
@@ -84,15 +86,17 @@ describe('theme contrast contract', () => {
     expect(knowledgeCss).toContain('--ka-accent-on: var(--accent-on-fill);');
   });
 
-  it('keeps WebShop training surfaces theme-aware instead of forcing a dark canvas', () => {
+  it('keeps WebShop training surfaces theme-aware instead of relying on a route patch', () => {
     expect(webShopTrainingGuide).toContain('background:var(--color-surface)');
     expect(webShopTrainingGuide).toContain('color:var(--color-text)');
     expect(webShopTrainingGuide).not.toContain('background:#090f1c');
 
-    expect(webShopTrainingNoteRoute).toContain('background: var(--color-surface);');
-    expect(webShopTrainingNoteRoute).toContain('color: var(--color-text);');
-    expect(webShopTrainingNoteRoute).not.toContain('color-scheme:dark');
-    expect(webShopTrainingNoteRoute).not.toContain('background:#090f1c');
+    expect(appCss).toContain("@import './components/webshop-training-note.css';");
+    expect(webShopTrainingNoteCss).toContain('background: var(--color-surface);');
+    expect(webShopTrainingNoteCss).toContain('color: var(--color-text);');
+    expect(webShopTrainingNoteCss).toContain('color-scheme: inherit;');
+    expect(webShopTrainingNoteCss).not.toContain('background:#090f1c');
+    expect(webShopTrainingNoteRoute).not.toContain('<style');
 
     expect(webShopResultsRoute).not.toContain('color-scheme:dark');
     expect(webShopResultsRoute).not.toContain('background:#090f1c');

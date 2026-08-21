@@ -4,22 +4,18 @@ type Theme = 'light' | 'dark';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
 const routes = [
-  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
   { path: '/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
   { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
-  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
   { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
 ] as const;
 
 const matrices = [
