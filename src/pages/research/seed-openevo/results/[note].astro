@@ -31,11 +31,15 @@ const meta: Record<WebShopTrainingNoteId, { title: string; description: string }
   <WebShopTrainingNote note={note} />
 </AppLayout>
 
-<style is="global">
+<style is:global>
   /*
    * The note component was originally authored with a fixed dark palette.
    * Route-level semantic overrides make the reading surface follow the site's
    * tested light/dark tokens instead of forcing dark mode inside a light page.
+   *
+   * IMPORTANT: this must use Astro's `is:global` directive. `is="global"`
+   * still scopes these selectors during compilation, so they never match the
+   * separately-scoped AppLayout/WebShopTrainingNote DOM and light mode breaks.
    */
   .site-main .training-note.training-note {
     --ink: var(--color-text);
