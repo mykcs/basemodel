@@ -65,6 +65,11 @@ describe('global shell ownership', () => {
     expect(headerSelector.test(closeout)).toBe(false);
   });
 
+  it('keeps mobile-composition focused on page composition instead of shared Header ownership', () => {
+    const mobile = withoutComments(read('../styles/mobile-composition.css'));
+    expect(headerSelector.test(mobile)).toBe(false);
+  });
+
   it('freezes the remaining legacy Header selector debt to the known files', () => {
     const debt = files(stylesRoot)
       .filter((path) => path.endsWith('.css'))
@@ -76,7 +81,6 @@ describe('global shell ownership', () => {
       'components/header.css',
       'design-refinement.css',
       'final-hardening.css',
-      'mobile-composition.css',
       'site.css',
       'visual-identity.css',
       'visual-upgrade.css',
