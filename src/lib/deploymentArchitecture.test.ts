@@ -49,9 +49,10 @@ describe('Vercel production deployment architecture', () => {
     expect(buildCloudflare).toContain('Legacy/fallback Cloudflare validation only');
   });
 
-  it('spends automatic Vercel deployments only on production and semantic release branches', () => {
+  it('spends automatic Vercel deployments only on production and semantic release branches, including slash-named branches', () => {
     expect(vercelConfig.git?.deploymentEnabled).toEqual({
       '*': false,
+      '**/*': false,
       main: true,
       'agent/semantic-release-*': true,
     });
