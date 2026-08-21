@@ -3,14 +3,16 @@ import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 import OpenEvoWebShopProgramReport from '../../../components/research/OpenEvoWebShopNarrativeReport.astro';
 import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
+import WebShopTrainingGuide from '../../../components/research/WebShopTrainingGuide.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo 在 WebShop 上能不能从自己的经验里变得更好？"
-  description="面向实验室读者的研究叙事：从 WebShop 与自进化问题开始，解释证据如何从早期负结果推进到独立新任务复现，再到 H1.40/H1.41 暴露的连续参数写入与测量有效性瓶颈。"
+  description="面向实验室读者的研究叙事：先用三篇短文解释 WebShop 怎么训练、SEED 怎么训练、我们怎么训练，再进入独立新任务复现与 H1.40/H1.41 的连续参数写入证据。"
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
+    <WebShopTrainingGuide />
     <OpenEvoWebShopProgramReport locale={locale}>
       <Seed3090ParametricProgress slot="historical" locale={locale} />
     </OpenEvoWebShopProgramReport>
@@ -21,4 +23,13 @@ const locale = 'zh' as const;
   body:has([data-program-report]) .site-footer,
   body:has([data-program-report]) .plain-detail__header,
   body:has([data-program-report]) .plain-detail__tabs { display:none!important; }
+
+  /* The training guide uses an intentionally dark editorial palette. Give the
+     whole section its matching canvas so light-mode users never get light text
+     on the site's light page background. */
+  .training-guide {
+    background:#090f1c;
+    border-radius:16px;
+    color-scheme:dark;
+  }
 </style>

@@ -1,0 +1,62 @@
+---
+const root = '/research/seed-openevo/results';
+const articles = [
+  {
+    index: '01',
+    href: `${root}/webshop-training/`,
+    title: 'WebShop 是什么？大家以前怎么训练它？',
+    body: '从环境、observation/action/reward 讲起，再看原始 WebShop 的 IL + RL，以及后来多轮 on-policy RL 为什么成为主流。',
+    tag: '背景与历史',
+  },
+  {
+    index: '02',
+    href: `${root}/seed-training/`,
+    title: 'SEED 到底怎么在 WebShop 上训练？',
+    body: '拆开 Stage 1 hindsight-skill SFT 与 Stage 2 on-policy OPD + RL，并把论文设定与当前公开代码默认值分开记录。',
+    tag: '强对照复现',
+  },
+  {
+    index: '03',
+    href: `${root}/openevo-training/`,
+    title: '我们自己的 OpenEvo × WebShop 怎么训练？',
+    body: '解释 success harvest、严格 qualification、SD-LoRA parameter write、fresh-task evaluation，以及为什么目前还不能直接和 SEED Table 1 横比。',
+    tag: '我们的协议',
+  },
+] as const;
+---
+
+<section class="training-guide" aria-labelledby="training-guide-title">
+  <div class="guide-heading">
+    <p>WEBSHOP TRAINING NOTES</p>
+    <h2 id="training-guide-title">先把“怎么训练”讲清楚，再看实验结果</h2>
+    <div>
+      <p>当前结果页保留实验结论；背景方法拆成三篇短文。这样 WebShop 是什么、SEED 怎么训、我们怎么训不会混在同一段里。</p>
+      <p>三篇都尽量从真实交互流程和公开代码讲起，不把“WebShop”当成一个模糊的数据集名字。</p>
+    </div>
+  </div>
+
+  <div class="guide-grid">
+    {articles.map((article) => (
+      <a href={article.href} class="guide-card">
+        <div class="card-top"><span>{article.index}</span><small>{article.tag}</small></div>
+        <h3>{article.title}</h3>
+        <p>{article.body}</p>
+        <strong>阅读全文 →</strong>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .training-guide{max-width:1180px;margin:0 auto;padding:28px 24px 64px;border-bottom:1px solid rgba(148,163,184,.16)}
+  .guide-heading{display:grid;grid-template-columns:.65fr 1.35fr 1.2fr;gap:28px;align-items:start;margin-bottom:26px}
+  .guide-heading>p{margin:5px 0 0;color:#64748b;font-size:.75rem;letter-spacing:.13em;font-weight:700}
+  .guide-heading h2{margin:0;color:#f8fafc;font-size:clamp(1.65rem,3vw,2.6rem);line-height:1.12;letter-spacing:-.035em}
+  .guide-heading div p{margin:0 0 10px;color:#9fb0c3;font-size:.94rem;line-height:1.65}
+  .guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .guide-card{display:flex;min-height:238px;flex-direction:column;padding:20px;border:1px solid rgba(148,163,184,.18);border-radius:14px;background:rgba(15,23,42,.34);color:inherit;text-decoration:none;transition:border-color .18s ease,transform .18s ease,background .18s ease}
+  .guide-card:hover{transform:translateY(-2px);border-color:rgba(96,165,250,.48);background:rgba(30,41,59,.5)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.card-top span{color:#64748b;font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.card-top small{padding:4px 8px;border-radius:999px;background:rgba(59,130,246,.1);color:#93c5fd;font-size:.72rem}
+  .guide-card h3{margin:0 0 12px;color:#eff6ff;font-size:1.16rem;line-height:1.35;letter-spacing:-.02em}.guide-card p{margin:0;color:#94a3b8;font-size:.9rem;line-height:1.65}.guide-card strong{margin-top:auto;padding-top:20px;color:#bfdbfe;font-size:.85rem}
+  @media(max-width:860px){.guide-heading{grid-template-columns:1fr}.guide-grid{grid-template-columns:1fr}.guide-card{min-height:auto}}
+</style>
