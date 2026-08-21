@@ -77,6 +77,12 @@ const meta: Record<WebShopTrainingNoteId, { title: string; description: string }
     color: var(--color-text-muted);
   }
 
+  .site-main .training-note .series-nav a:hover span,
+  .site-main .training-note .series-nav a:focus-visible span,
+  .site-main .training-note .series-nav a.active span {
+    color: var(--color-text);
+  }
+
   .site-main .training-note .series-nav a.active {
     background: var(--color-surface-muted);
     border-color: var(--color-accent);
