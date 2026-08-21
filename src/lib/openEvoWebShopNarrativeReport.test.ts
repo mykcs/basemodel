@@ -53,7 +53,7 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
     expect(component).toContain('第二次连续参数写入目前没有证明能继续增加能力');
   });
 
-  it('keeps the sealed positive evidence and current H1.40/H1.41 boundary together', () => {
+  it('keeps the sealed positive evidence and current H1.40-H1.42 boundary together', () => {
     for (const token of [
       '0.124',
       '0.248845',
@@ -64,6 +64,8 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
       '96',
       '384',
       'MEASUREMENT_INVALID',
+      '576',
+      'MVD0 REMEASUREMENT_INVALID',
       '-0.065625',
     ]) expect(component).toContain(token);
     expect(component).toContain('T2 没有打开');
@@ -78,14 +80,14 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
     for (const token of ['class="trace-example"', 'class="journey-table"', 'class="ci-figure"', 'class="claim-arguments"', 'data-testid="lineage-appendix"']) {
       expect(component).toContain(token);
     }
-    expect(programTimeline).toHaveLength(29);
+    expect(programTimeline).toHaveLength(30);
     expect(component).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
   });
 
-  it('uses the current H1.41 source of truth', () => {
+  it('uses the immutable H1.42 measurement-boundary source of truth', () => {
     expect(openEvoProgramSource).toMatchObject({
-      commit: 'e9088e47531ffec03d1450ffd2601862909cf187',
-      campaign: '20260821-0141-h141-magnitude-screen',
+      commit: 'd1f35ecdf84c61b07df7c646e83588d63b9297bd',
+      campaign: '20260821-0142-h142-measurement-validity',
     });
   });
 
