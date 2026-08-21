@@ -81,20 +81,19 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
   <header class="paper-header" id="abstract">
     <p class="kicker">OPENEVO × WEBSHOP · {t('研究笔记', 'RESEARCH NOTE')} · {openEvoProgramSource.checkedAt}</p>
     <h1>{t('OpenEvo 在 WebShop 上，能不能从自己的经验里变得更好？', 'Can OpenEvo get better on WebShop by learning from its own experience?')}</h1>
-    <p class="dek">{t('这篇文章不是把实验编号从头念一遍，而是把我们真正想回答的问题、证据怎么一步步积累、以及现在还卡在哪里讲清楚。', 'This report does not recite run IDs. It explains the question, how the evidence accumulated, and where the scientific claim still stops.')}</p>
 
     <div class="opening-prose prose">
       <p>{t(
-        '最初的问题其实很朴素。一个智能体在网页环境里做任务，会留下成功和失败的交互轨迹。如果我们把这些轨迹重新拿来训练，同一个模型以后遇到没有见过的任务时，会不会真的做得更好？如果会，那么这些交互就不只是日志，而开始变成模型可以保留下来的能力。',
-        'The starting question is simple. An agent leaves successful and failed interaction trajectories while acting in a web environment. If we train on those trajectories, will the same model later perform better on tasks it has never seen? If so, interaction history is becoming retained capability rather than mere logging.'
+        '一个智能体在网页环境里做任务，会留下成功和失败的交互轨迹。问题是：如果把这些轨迹重新拿来训练，同一个模型以后遇到没有见过的任务时，会不会真的做得更好？如果会，那么这些交互就不只是日志，而开始变成模型可以保留下来的能力。',
+        'An agent leaves successful and failed interaction trajectories while acting in a web environment. The question is whether training on those trajectories makes the same model perform better later on tasks it has never seen. If it does, interaction history is becoming retained capability rather than mere logging.'
       )}</p>
       <p>{t(
-        '到现在，我们已经有了一个比“训练器能跑”更强的答案：一次从模型自身成功经验出发的参数更新，先在一块新任务面板上得到正向结果；随后我们把训练产物冻结，不再调参，换成 64 个完全不同的 WebShop 任务，又独立复现了相同方向。两种更新方式都高于同一个基础模型。',
-        'The evidence is now stronger than “the trainer runs.” One parameter update learned from the model’s own successful experience first produced a positive result on unseen tasks. We then froze the artifacts, stopped tuning, moved to 64 completely different WebShop tasks, and independently replicated the same direction. Both update routes beat the same base model.'
+        '第一次参数更新使用模型自身的成功经验，在一组训练未见任务上得到正向结果。随后我们冻结训练产物，不再调参，换成 64 个完全不同的 WebShop 任务，结果再次出现同方向的提升；两种参数更新路线都高于同一个基础模型。',
+        'The first parameter update used the model’s own successful experience and produced a positive result on tasks excluded from training. We then froze the artifacts, stopped tuning, moved to 64 completely different WebShop tasks, and again observed improvement in the same direction; both update routes were above the same base model.'
       )}</p>
       <p>{t(
-        '但第二代实验也暴露了新的困难：更新后的模型能够再次产生大量成功经验，第二次参数更新也真的训练出来了，却没有通过“学到新经验、保留旧能力、保住上一轮新任务收益”这三道上游门。之后我们又做了一次更窄的机制筛选，结果因为测量有效性问题收口为 measurement-invalid。因此现在最稳妥的结论不是“已经实现多代自进化”，而是“已经建立一次可复现的跨任务迁移，第二次连续写入仍然没有被证明能继续变强”。',
-        'The second generation exposed a new difficulty. The improved model generated many more successful experiences and a second parameter update was genuinely trained, but it did not clear the three upstream gates: acquire the new experience, retain prior capability, and preserve the previously replicated fresh-task gain. A narrower mechanism screen then closed as measurement-invalid. The defensible conclusion is therefore reproducible one-step cross-task transfer, not established multi-generation self-evolution.'
+        '第二次连续写入没有延续这个结果。更新后的模型能够再次产生大量成功经验，第二次参数更新也确实完成了，但“学到新经验、保留旧能力、保住上一轮新任务收益”三道上游门都没有通过。后续更窄的机制筛选又因为出现无效测量 cluster，无法形成可解释的方法比较。现有证据因此支持一次可复现的跨任务迁移，但还不足以支持多代自进化。',
+        'A second continual write did not extend that result. The updated model generated many more successful experiences and the second parameter update genuinely completed, but it failed to clear the three upstream gates: acquire the new experience, retain prior capability, and preserve the previously replicated fresh-task gain. A narrower mechanism screen then contained invalid measurement clusters and could not support an interpretable method comparison. The evidence therefore supports reproducible one-step cross-task transfer, but not established multi-generation self-evolution.'
       )}</p>
     </div>
 
@@ -123,7 +122,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
 
   <section class="paper-section" id="background" aria-labelledby="background-title">
     <p class="section-number">01 · {t('先理解我们到底在测什么', 'WHAT ARE WE TESTING?')}</p>
-    <h2 id="background-title">{t('我们不是在测“会不会训练”，而是在测经验能不能变成下一次任务里的能力', 'We are not testing whether training runs; we are testing whether experience becomes capability')}</h2>
+    <h2 id="background-title">{t('真正要测的是：经验能不能变成下一次任务里的能力', 'The test is whether experience becomes capability on the next task')}</h2>
 
     <div class="prose">
       <h3>{t('OpenEvo 在这里做什么？', 'What does OpenEvo do here?')}</h3>
@@ -150,19 +149,19 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
         <figcaption id="trace-caption"><a href={sealedLinks.h0Example}>{t('查看历史证据', 'View historical evidence')}</a></figcaption>
       </figure>
 
-      <p>{t('后面我们把模型从任务开始一路做到结束的一次尝试叫 rollout，把一个具体购物目标实例叫 task identity。所谓 fresh task，就是这个 task identity 没有进入当前训练记录。只有这样，才比较像是在测“学会了可迁移的东西”，而不是“记住了原题”。', 'We call one complete attempt a rollout and one concrete shopping-goal instance a task identity. A fresh task is an identity excluded from the current training records. That distinction is what makes the evaluation closer to transfer rather than memorization.')}</p>
+      <p>{t('我们把模型从任务开始一路做到结束的一次尝试叫 rollout，把一个具体购物目标实例叫 task identity。所谓 fresh task，就是这个 task identity 没有进入当前训练记录。只有这样，才比较像是在测“学会了可迁移的东西”，而不是“记住了原题”。', 'We call one complete attempt a rollout and one concrete shopping-goal instance a task identity. A fresh task is an identity excluded from the current training records. That distinction is what makes the evaluation closer to transfer rather than memorization.')}</p>
 
       <h3>{t('什么才算“自己进化了一次”？', 'What would count as one real self-evolution step?')}</h3>
       <p>{t('至少要把四件事接起来：模型自己产生可学习的成功经验；这些经验真的触发参数更新；更新后的模型在训练没见过的任务上更好；如果要进一步叫“多代自进化”，还必须让更新后的模型再产生下一批经验、再更新一次，而且上一代已经得到的能力不能被轻易忘掉。', 'At least four links must connect: the model generates learnable successes; those successes trigger a real parameter update; the updated model improves on tasks excluded from training; and multi-generation self-evolution additionally requires the updated model to generate another batch of experience, update again, and preserve prior capability.')}</p>
     </div>
 
-    <figure class="process-figure" aria-labelledby="process-caption"><ol><li><span>1</span><strong>{t('做任务', 'Act')}</strong><p>{t('在真实 WebShop 中产生交互', 'produce real WebShop interactions')}</p></li><li><span>2</span><strong>{t('留下经验', 'Collect')}</strong><p>{t('保存合格成功轨迹', 'retain qualified successes')}</p></li><li><span>3</span><strong>{t('更新参数', 'Update')}</strong><p>{t('把经验写回可重载参数', 'write experience into reloadable parameters')}</p></li><li><span>4</span><strong>{t('换新任务检验', 'Evaluate')}</strong><p>{t('和同一基础模型配对比较', 'compare against the same base')}</p></li></ol><figcaption id="process-caption">{t('后面的实验史，本质上是在不断定位这条链上到底哪一环没有成立。', 'The experimental history below is largely a search for which link in this chain was failing.')}</figcaption></figure>
+    <figure class="process-figure" aria-labelledby="process-caption"><ol><li><span>1</span><strong>{t('做任务', 'Act')}</strong><p>{t('在真实 WebShop 中产生交互', 'produce real WebShop interactions')}</p></li><li><span>2</span><strong>{t('留下经验', 'Collect')}</strong><p>{t('保存合格成功轨迹', 'retain qualified successes')}</p></li><li><span>3</span><strong>{t('更新参数', 'Update')}</strong><p>{t('把经验写回可重载参数', 'write experience into reloadable parameters')}</p></li><li><span>4</span><strong>{t('换新任务检验', 'Evaluate')}</strong><p>{t('和同一基础模型配对比较', 'compare against the same base')}</p></li></ol><figcaption id="process-caption">{t('早期实验反复检验的，就是这四个环节中哪一环没有成立。', 'The early experiments repeatedly tested which of these four links was failing.')}</figcaption></figure>
   </section>
 
   <section class="paper-section" id="journey" aria-labelledby="journey-title">
     <p class="section-number">02 · {t('为什么很久都没有正结果', 'WHY DID IT TAKE SO LONG?')}</p>
     <h2 id="journey-title">{t('前面的失败不是“白跑了”，而是在逐步排除错误解释', 'The early failures mattered because they eliminated simpler explanations')}</h2>
-    <p class="section-intro">{t('如果只从最后的正结果讲，很容易像是在“试很多设置，最后挑一个高分”。真正的研究过程更像排查故障：每一步都在缩小“到底哪里出了问题”。', 'If we start from the final positive result, the work can look like trying settings until one scores well. The actual process was closer to diagnosis: each experiment narrowed the location of the bottleneck.')}</p>
+    <p class="section-intro">{t('正结果出现之前，几种更简单的解释需要先被排除：模型没有成功经验、解析器制造了假失败、loss 下降却没有改变闭环行为，以及问题只差更多步数、更大的模型或 teacher 数据。每一轮负结果都进一步缩小了后续实验的变量空间。', 'Before a positive result could mean much, several simpler explanations had to be ruled out: no successful experience, parser-created false negatives, lower loss without changed closed-loop behavior, or a problem solvable by more steps, a larger model, or teacher data. Each negative result narrowed the variable space for the next experiment.')}</p>
 
     <div class="narrative-block prose">
       <h3>{t('第一层：模型自己到底有没有值得学习的成功经验？', 'Layer one: does the model generate anything worth learning?')}</h3>
@@ -190,9 +189,9 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
     <h2 id="method-control-title">{t('当训练数据固定以后，问题开始指向“参数到底怎么写进去”', 'Once training data was fixed, the question shifted to how parameters are written')}</h2>
 
     <div class="prose">
-      <h3>{t('先补一个概念：LoRA 是什么？', 'A short detour: what is LoRA?')}</h3>
+      <h3>{t('这里需要一个概念：LoRA 是什么？', 'One concept matters here: what is LoRA?')}</h3>
       <p>{t('每来一点新经验都把 7B 模型全部参数重新训练，代价太高，也不适合连续很多次小更新。LoRA 的做法是冻结原模型的大部分权重，只学习一个低秩参数增量。可以把它理解成“原模型旁边的一小块可训练修正”：训练时只改这部分，之后可以单独保存，再加载回同一个基础模型。', 'Retraining every parameter of a 7B model for every small batch of experience would be expensive and awkward for continual updates. LoRA freezes most of the base and learns a low-rank parameter increment—a small trainable correction that can be saved separately and reloaded on the same base.')}</p>
-      <p>{t('我们项目里的 SD-LoRA 是 OpenEvo 当前这条 WebShop 参数更新路径的名字。这里不需要先理解它内部每个矩阵怎么组织；真正关键的是，我们终于可以把它和一个更普通的 sequential LoRA 放在完全相同的数据、顺序、基础模型和训练预算下比较。这样如果 fresh-task 结果不同，怀疑才有资格从“数据不一样”转向“更新规则本身可能有差异”。', 'SD-LoRA is the name of the current OpenEvo WebShop parameter-update route. The matrix bookkeeping is not important yet. What matters is that we can compare it against ordinary sequential LoRA under the same data, order, base model, and training budget. If fresh-task behavior differs under that matched setup, the update rule itself becomes a plausible factor rather than data selection.')}</p>
+      <p>{t('SD-LoRA 是 OpenEvo 当前这条 WebShop 参数更新路径的名字。在这里，它和普通 sequential LoRA 使用完全相同的数据、顺序、基础模型和训练预算。这样一来，如果 fresh-task 结果不同，更新规则本身才成为一个可以被单独检验的变量。', 'SD-LoRA is the name of the current OpenEvo WebShop parameter-update route. Here it is compared with ordinary sequential LoRA under the same data, order, base model, and training budget. Under that matched setup, the update rule itself becomes a variable that can be tested independently.')}</p>
 
       <h3>{t('在比较更新方法之前，我们先问了一个更朴素的数据问题', 'Before comparing update rules, we tested a simpler data hypothesis')}</h3>
       <p>{t('7B 模型重新采到一批自然成功以后，我们固定总训练量为 16 条成功记录，只改变这些记录来自 4、8 还是 16 个不同 training task identity。完整面板 768 次尝试、764 次科学有效。结果没有支持“任务身份越多越好”：三种设置相对基础模型的 95% CI 全部跨 0，效果也不单调。', 'After the 7B model collected a stronger endogenous-success pool, we fixed the training amount at 16 successful records and varied only whether they came from 4, 8, or 16 training task identities. The complete panel had 768 attempts, 764 scientifically valid. It did not support a simple “more identities is better” hypothesis: all three 95% CIs versus base crossed zero and the effects were not monotonic.')}</p>
@@ -216,7 +215,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
     <h2 id="replication-title">{t('我们冻结训练产物、不再调参，只换 64 个全新的 WebShop 任务', 'We froze the artifacts, stopped tuning, and changed only to 64 new WebShop tasks')}</h2>
 
     <div class="prose">
-      <p>{t('一次正结果最怕“刚好这批任务适合它”。所以复现实验刻意做得很无聊：上一轮得到的 ordinary 和 SD 训练产物一律冻结，不继续训练；重新抽 64 个与此前 task identity 完全不重合的新任务，每个任务固定 4 个 rollout seed，同时跑基础模型、ordinary、SD 三个 arm。总共 192 个 cell、768 次预注册尝试。', 'A first positive result can always be panel-specific. The replication was deliberately boring: freeze the ordinary and SD artifacts from the prior experiment, perform no additional training, sample 64 task identities disjoint from prior use, fix four rollout seeds per task, and evaluate base, ordinary, and SD. That gives 192 cells and 768 preregistered attempts.')}</p>
+      <p>{t('第一次正结果仍然可能只适用于那一批任务。因此复现实验不再改训练：冻结上一轮得到的 ordinary 和 SD 训练产物，重新抽 64 个与此前 task identity 完全不重合的新任务，每个任务固定 4 个 rollout seed，同时跑基础模型、ordinary、SD 三个 arm。总共 192 个 cell、768 次预注册尝试。', 'The first positive result could still have been specific to its task panel. The replication therefore changed no training: freeze the ordinary and SD artifacts from the prior experiment, sample 64 task identities disjoint from prior use, fix four rollout seeds per task, and evaluate base, ordinary, and SD. That gives 192 cells and 768 preregistered attempts.')}</p>
       <p>{t(`最终 ${replication.attempts}/${replication.attempts} 次尝试完成，${replication.valid} 次有效，组成 ${replication.completeClusters} 个 complete-valid 四 seed task cluster。有效均值分别是基础模型 ${f.format(replication.arms.base)}、ordinary-LoRA ${f.format(replication.arms.ordinary)}、SD-LoRA ${f.format(replication.arms.sd)}。两种更新后的模型都高于同一个基础模型。`, `All ${replication.attempts} attempts completed. ${replication.valid} were valid, forming ${replication.completeClusters} complete-valid four-seed task clusters. Valid means were ${f.format(replication.arms.base)} for base, ${f.format(replication.arms.ordinary)} for ordinary-LoRA, and ${f.format(replication.arms.sd)} for SD-LoRA. Both updated models were above the same base.`)}</p>
       <p class="run-ref">{t('实验记录：独立冻结复现', 'Provenance: independent frozen replication')} · H1.39-MR</p>
     </div>
@@ -235,15 +234,15 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
   <section class="paper-section" id="next-experiment" aria-labelledby="next-title">
     <p class="section-number">05 · {t('第二代：真正困难的地方出现了', 'SECOND GENERATION')}</p>
     <h2 id="next-title">{t('模型能再次收集经验、也能再次更新参数，但“继续变好”没有被证明', 'The model can collect experience again and update again, but continued improvement was not established')}</h2>
-    <p class="section-intro">{t('为了少一点内部代号，先用一套简单记号：第一次更新后的模型叫 G1；它重新产生的下一批经验叫 E2；再用 E2 训练出的模型叫 G2。', 'To keep notation minimal: G1 is the first updated model, E2 is the next batch of experience it generates, and G2 is the model trained again on E2.')}</p>
+    <p class="section-intro">{t('第一次更新后的模型记为 G1；G1 重新产生的下一批经验记为 E2；再用 E2 训练出的模型记为 G2。', 'Let G1 denote the first updated model, E2 the next batch of experience generated by G1, and G2 the model trained again on E2.')}</p>
 
     <div class="prose">
-      <h3>{t('先说成功的部分：第二批经验供给并不缺', 'What worked: the second experience supply was not the bottleneck')}</h3>
+      <h3>{t('第二批经验供给并不缺', 'The second experience supply was not the bottleneck')}</h3>
       <p>{t(`G1 按冻结任务清单完成 ${secondGeneration.harvestAttempts} 次 rollout，得到 ${secondGeneration.qualifiedPositives} 个 qualified positives，覆盖 ${secondGeneration.qualifyingIdentities} 个 qualifying task identities；随后按预先定义的、不看 reward 大小的规则选出 ${secondGeneration.selectedRecords} 条训练记录。也就是说，“第一代模型能不能再自己产生值得学的经验”这一步是成立的。`, `G1 completed ${secondGeneration.harvestAttempts} rollouts under the frozen manifest and produced ${secondGeneration.qualifiedPositives} qualified positives across ${secondGeneration.qualifyingIdentities} qualifying task identities. A preregistered reward-blind rule selected ${secondGeneration.selectedRecords} training records. The question “can G1 generate another batch worth learning from?” was answered positively.`)}</p>
       <p>{t(`第二次参数更新也真的完成了：G2 最终有 ${secondGeneration.g2Components} 个 component、effective rank ${secondGeneration.g2EffectiveRank}。所以问题已经不是“第二代 adapter 能不能造出来”。`, `The second parameter update also completed structurally: G2 ended with ${secondGeneration.g2Components} components and effective rank ${secondGeneration.g2EffectiveRank}. The bottleneck is no longer whether a second-generation adapter can be constructed.`)}</p>
       <p class="run-ref">{t('实验记录：第二代经验采集与 G2 构建', 'Provenance: second-generation harvest and G2 construction')} · H1.40</p>
 
-      <h3>{t('真正失败的是上游能力门：新东西没可靠学进去，旧东西也没可靠保住', 'What failed: the upstream capability gates')}</h3>
+      <h3>{t('问题出在上游能力门：新东西没可靠学进去，旧东西也没可靠保住', 'The problem moved to the upstream capability gates')}</h3>
       <p>{t('接下来我们分别测三件事：G2 有没有真正学到 E2（acquisition）；第二次更新以后第一代已有能力还在不在（retention）；上一轮已经独立复现的新任务收益是否被保住（preservation）。这三道门都没有通过，因此预留的下一批 fresh T2 根本没有打开。', 'We then tested three separate questions: whether G2 actually acquired E2, whether first-generation capability survived the second update, and whether the previously replicated fresh-task gain was preserved. All three upstream gates failed, so the reserved fresh T2 panel never opened.')}</p>
       <p>{t('这里还有一个很重要的测量边界：acquisition 中有一个 cell 是 4/4 parser-invalid。它告诉我们“这组测量无效”，不能直接翻译成“模型能力为零”；但剩余的有效尝试也仍然没有让完整 acquisition gate 通过。因此当前瓶颈从“有没有新经验”移动到了“连续参数写入能不能把新经验内化，同时不破坏已有能力”。', 'One acquisition cell was 4/4 parser-invalid. That means the measurement was invalid, not automatically that the model had zero capability. But the remaining valid attempts still did not clear the complete acquisition gate. The bottleneck therefore shifted from obtaining new experience to integrating it into parameters without destroying prior capability.')}</p>
 
@@ -266,7 +265,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
   <section class="paper-section" id="interpretation" aria-labelledby="interpretation-title">
     <p class="section-number">06 · {t('结论、证据和推理', 'CONCLUSION, EVIDENCE, INFERENCE')}</p>
     <h2 id="interpretation-title">{t('现在能说什么，为什么能这样说，又有哪些话还不能说', 'What can we say now, why, and what remains out of bounds')}</h2>
-    <p class="section-intro">{t('下面把主张和证据拆开，避免“看到一个高分”直接跳成一个过大的结论。', 'Claims are separated from evidence so one high score cannot silently become an oversized conclusion.')}</p>
+    <p class="section-intro">{t('现有证据支持四个层级不同的判断：一次跨任务迁移已经独立复现；训练任务身份数量不是单调解释；两种更新规则之间出现了值得继续检验的差异信号；第二次连续写入仍然没有证明可以继续累积能力。', 'The evidence supports four claims at different levels: one-step cross-task transfer has replicated independently; training-task identity count is not a monotonic explanation; the update rules show a difference signal worth testing further; and a second continual write has not been shown to keep accumulating capability.')}</p>
 
     <div class="claim-arguments">
       <article><span>{t('主结论 A', 'Main claim A')}</span><h3>{t('一次参数更新可以把模型自身经验变成新任务收益', 'One parameter update can turn endogenous experience into fresh-task benefit')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t(`第一次匹配对照 delta=${signed(discovery.delta)}，95% CI ${ciLabel(discovery.ci)}；随后冻结训练产物，换 64 个 task-ID-disjoint 新任务，ordinary−BASE 与 SD−BASE 的区间都完整位于 0 以上。`, `The matched discovery control had delta=${signed(discovery.delta)} with 95% CI ${ciLabel(discovery.ci)}; after freezing the artifacts and moving to 64 task-ID-disjoint tasks, both ordinary−BASE and SD−BASE intervals remained entirely above zero.`)}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('第二轮没有继续训练或调参，任务 identity 也完全换新，因此“只是记住训练题”或“第一块面板碰巧有利”已经不足以解释全部结果。', 'The second round did no further training or tuning and used entirely new task identities, so training-task memorization or a lucky first panel is no longer sufficient to explain the whole result.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('这不是所有 WebShop 任务、所有模型或所有更新设置上的 universal transfer。', 'This is not universal transfer across all WebShop tasks, models, or update settings.')}</p></article>
@@ -278,7 +277,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
       <article><span>{t('当前负结论', 'Current negative result')}</span><h3>{t('第二次连续参数写入目前没有证明能继续增加能力', 'A second continual parameter write has not been shown to add capability')}</h3><p><strong>{t('证据：', 'Evidence: ')}</strong>{t('第二代经验供给和 G2 构建成立，但 acquisition、retention、preservation 三道上游门均未通过，T2 没有打开；后续 matched mechanism screen 又因无效 cluster 收口为 MEASUREMENT_INVALID。', 'Second-generation experience supply and G2 construction succeeded, but acquisition, retention, and preservation all failed to clear their gates, T2 did not open, and the follow-up matched mechanism screen closed as MEASUREMENT_INVALID because of invalid clusters.')}</p><p><strong>{t('为什么这样推：', 'Inference: ')}</strong>{t('问题已经从“有没有新经验”转向“怎样把新经验写进去而不遗忘”，并且下一轮首先需要解决测量有效性，而不是继续扩大样本寻找一个更好看的数字。', 'The bottleneck moved from “is there new experience?” to “how can new experience be written without forgetting?” The next experiment should first repair measurement validity rather than expand the sample to search for a nicer number.')}</p><p><strong>{t('不能外推：', 'Boundary: ')}</strong>{t('measurement-invalid 不是“方法永远不行”；同样，T2 没跑也不是“T2 失败”。', 'Measurement-invalid is not “the method can never work,” and an unrun T2 is not a failed T2.')}</p></article>
     </div>
 
-    <aside class="editorial-summary"><h3>{t('如果只带走一句话', 'If you remember only one sentence')}</h3><p>{t('我们已经从“参数真的会变”走到了“新任务收益可以被独立复现”；但第二次连续写入没有证明能继续累积能力，所以现在真正要研究的是如何同时做到新知识 acquisition、旧能力 retention，以及可信的 measurement。', 'We have moved from “parameters really change” to independently replicated fresh-task benefit; but a second continual write has not been shown to accumulate capability, so the real next problem is jointly achieving new-knowledge acquisition, old-capability retention, and valid measurement.')}</p></aside>
+    <aside class="editorial-summary"><h3>{t('当前结论', 'Current conclusion')}</h3><p>{t('我们已经从“参数真的会变”走到了“新任务收益可以被独立复现”；但第二次连续写入没有证明能继续累积能力，所以现在真正要研究的是如何同时做到新知识 acquisition、旧能力 retention，以及可信的 measurement。', 'We have moved from “parameters really change” to independently replicated fresh-task benefit; but a second continual write has not been shown to accumulate capability, so the real next problem is jointly achieving new-knowledge acquisition, old-capability retention, and valid measurement.')}</p></aside>
   </section>
 
   <section class="paper-section" id="methods" aria-labelledby="methods-title">
@@ -295,7 +294,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
   <section class="paper-section appendix-section" id="appendix" aria-labelledby="appendix-title">
     <p class="section-number">APPENDIX</p>
     <h2 id="appendix-title">{t('实验代号、每次运行和历史细节都放到这里', 'Run IDs and detailed experiment history live here')}</h2>
-    <p class="section-intro">{t('主文按研究问题组织；只有需要审计时，才展开完整实验谱系。', 'The main text is organized by research questions; the full run lineage is available for audit.')}</p>
+    <p class="section-intro">{t('完整实验谱系保留实验代号、运行边界和证据入口，供复核与审计。', 'The complete lineage preserves run IDs, claim boundaries, and evidence links for review and audit.')}</p>
 
     <details data-testid="lineage-appendix"><summary>{t(`附录 A：完整实验谱系（${programTimeline.length} 个分组节点）`, `Appendix A: complete experiment lineage (${programTimeline.length} grouped milestones)`)}</summary><div class="lineage-body"><ol class="lineage-list">{programTimeline.map((item) => <li><p class="lineage-id">{item.coverage.join(' · ')}</p><h3>{item.title[locale]}</h3><p>{item.summary[locale]}</p><p class="boundary"><strong>{t('边界：', 'Boundary: ')}</strong>{item.boundary[locale]}</p><a href={item.evidence}>{t('证据', 'Evidence')}</a></li>)}</ol></div></details>
     {hasHistoricalAppendix && <details data-testid="rtx6-appendix"><summary>{t('附录 B：更早的 RTX3090 参数实验', 'Appendix B: earlier RTX3090 parametric experiments')}</summary><div class="historical-slot"><slot name="historical" /></div></details>}
