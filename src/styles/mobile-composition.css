@@ -1,7 +1,7 @@
 /*
  * Mobile composition is a deliberate reading mode, not a squeezed desktop.
  * This layer owns mobile spacing, typography, card geometry and horizontal
- * learning rails. Keep all values on a small, repeatable rhythm.
+ * learning rails. Shared Header/Nav behavior belongs to components/header.css.
  */
 
 @media (max-width: 1020px) {
@@ -58,95 +58,6 @@
     --mobile-radius-sm: 10px;
     --mobile-radius-md: 14px;
     --mobile-radius-lg: 18px;
-  }
-
-  body .site-header .nav-inner {
-    min-height: 58px;
-    gap: 8px;
-    align-items: center;
-  }
-
-  body .site-header .nav-inner > .theme-toggle {
-    display: none;
-  }
-
-  body .site-header .brand {
-    gap: 8px;
-  }
-
-  body .site-header .brand-mark {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    font-size: .9rem;
-    line-height: 1;
-  }
-
-  body .site-header .brand strong {
-    font-size: .9rem;
-    line-height: 1.1;
-    letter-spacing: -.012em;
-  }
-
-  body .site-header .command-search-trigger,
-  body .site-header .menu-toggle {
-    min-width: 42px;
-    min-height: 42px;
-    border-radius: 11px;
-  }
-
-  body .site-header .command-search-trigger {
-    line-height: 1;
-  }
-
-  body .site-header .menu-toggle {
-    gap: 4px;
-  }
-
-  body .site-header .menu-toggle span {
-    width: 15px;
-    height: 1.5px;
-  }
-
-  body .site-header .mobile-menu {
-    padding: 0;
-    background: color-mix(in srgb, var(--bg) 96%, transparent);
-    box-shadow: 0 14px 32px color-mix(in srgb, var(--ink) 9%, transparent);
-  }
-
-  body .site-header .mobile-menu .shell {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding-block: 12px max(18px, env(safe-area-inset-bottom));
-  }
-
-  body .site-header .mobile-menu a,
-  body .site-header .mobile-menu button {
-    display: flex;
-    min-width: 0;
-    min-height: 50px;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0;
-    padding: 11px 12px;
-    border: 1px solid color-mix(in srgb, var(--line) 92%, transparent);
-    border-radius: 11px;
-    background: var(--surface);
-    color: var(--ink);
-    font-size: .84rem;
-    font-weight: 650;
-    line-height: 1.28;
-    letter-spacing: -.006em;
-  }
-
-  body .site-header .mobile-menu a[aria-current='page'] {
-    border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
-    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
-  }
-
-  body .site-header .mobile-menu .theme-toggle {
-    width: 100%;
   }
 
   body .site-main > .mission-hero {
@@ -636,10 +547,6 @@
 }
 
 @media (max-width: 355px) {
-  body .site-header .mobile-menu .shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   body .site-main .mission-hero__actions {
     grid-template-columns: minmax(0, 1fr);
   }
