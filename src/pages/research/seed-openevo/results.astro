@@ -23,4 +23,13 @@ const locale = 'zh' as const;
   body:has([data-program-report]) .site-footer,
   body:has([data-program-report]) .plain-detail__header,
   body:has([data-program-report]) .plain-detail__tabs { display:none!important; }
+
+  /* The training guide uses an intentionally dark editorial palette. Give the
+     whole section its matching canvas so light-mode users never get light text
+     on the site's light page background. */
+  .training-guide {
+    background:#090f1c;
+    border-radius:16px;
+    color-scheme:dark;
+  }
 </style>
