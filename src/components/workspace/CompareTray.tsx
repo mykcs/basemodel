@@ -2,10 +2,16 @@ import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { compareIds, clearCompare, compareUrl } from '../../stores/compare';
 import { useHydrated } from '../../lib/useHydrated';
-import type { Messages } from '../../i18n/zh';
+
+export interface CompareTrayLabels {
+  compareTray: string;
+  compare: string;
+  openCompare: string;
+  clearCompare: string;
+}
 
 interface Props {
-  m: Messages;
+  labels: CompareTrayLabels;
   locale: 'zh' | 'en';
 }
 
@@ -30,7 +36,7 @@ async function loadModelName(id: string): Promise<string> {
   }
 }
 
-export function CompareTray({ m, locale }: Props) {
+export function CompareTray({ labels, locale }: Props) {
   const hydrated = useHydrated();
   const ids = useStore(compareIds);
   const [modelNames, setModelNames] = useState<Record<string, string>>({});
@@ -51,9 +57,9 @@ export function CompareTray({ m, locale }: Props) {
   if (!hydrated || ids.length === 0) return null;
 
   return (
-    <div className="compare-tray" role="region" aria-label={m.workspace.compareTray}>
+    <div className="compare-tray" role="region" aria-label={labels.compareTray}>
       <div className="shell tray-inner">
-        <span className="tray-label">{m.workspace.compare}</span>
+        <span className="tray-label">{labels.compare}</span>
         <div className="tray-chips">
           {ids.map((id) => (
             <span key={id} className="tray-chip">{modelNames[id] ?? id}</span>
@@ -61,10 +67,10 @@ export function CompareTray({ m, locale }: Props) {
         </div>
         <div className="tray-actions">
           <a className="button button-primary" href={compareUrl(locale)}>
-            {m.workspace.openCompare}
+            {labels.openCompare}
           </a>
           <button type="button" className="button" onClick={() => clearCompare()}>
-            {m.workspace.clearCompare}
+            {labels.clearCompare}
           </button>
         </div>
       </div>

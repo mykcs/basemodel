@@ -15,6 +15,11 @@ const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? As
 const m = getMessages(locale);
 const joiner = locale === 'zh' ? '、' : ', ';
 const modelMap = new Map(models.map((model) => [model.id, model]));
+const paperRoleModelIds = new Set([
+  ...paper.models.map((use) => use.model_id),
+  ...(paper.workflow?.nodes.flatMap((node) => node.model_id ? [node.model_id] : []) ?? []),
+]);
+const paperRoleModels = models.filter((model) => paperRoleModelIds.has(model.id));
 const contextLabel = (model: AtlasModel | undefined) => model ? modelContextLabels(model)[0] : undefined;
 const methodSummary = paper.learning_guide?.key_idea?.[locale] ?? null;
 const hasPaperLink = typeof paper.paper_url === 'string' && paper.paper_url.startsWith('http');
@@ -62,7 +67,7 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
     </section>
 
     <ReproductionSummary paper={paper} locale={locale} m={m} />
-    <PaperRoleDiagram client:load paper={paper} models={models} locale={locale} m={m} />
+    <PaperRoleDiagram client:visible paper={paper} models={paperRoleModels} locale={locale} m={m} />
     <PaperSelectionRationale paper={paper} models={models} locale={locale} />
 
     <section class="detail-section" id="paper-models">

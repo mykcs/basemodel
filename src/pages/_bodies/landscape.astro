@@ -22,5 +22,5 @@ const openWeightCount = models.filter((model) => model.openness.weights_availabl
     <div class="stats overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{locale === 'zh' ? '模型记录' : 'Models'}</span></div><div class="stat"><strong>{familyCount}</strong><span>{locale === 'zh' ? '模型家族' : 'Families'}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{locale === 'zh' ? '开放权重' : 'Open weights'}</span></div></div>
   </section>
 
-  <LandscapePrototype client:load models={models} paperModelIds={paperModelIds} locale={locale} />
+  <LandscapePrototype client:visible models={models} paperModelIds={paperModelIds} locale={locale} />
 </div>

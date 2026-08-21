@@ -1,6 +1,6 @@
 import { persistentAtom } from '@nanostores/persistent';
-import type { AtlasModel } from '../lib/schemas';
 import { decodeResearchTask, replaceResearchTaskSearchParams } from '../lib/researchTaskCodec';
+import { normalizeResearchTask } from '../lib/researchTaskNormalization';
 
 export type ResearchMode = 'strict' | 'method' | 'modern' | 'new';
 export type UpdateMethod = 'none' | 'lora' | 'sft' | 'rl' | 'unsure';
@@ -67,26 +67,13 @@ export const emptyTask: ResearchTask = {
   priorities: [],
 };
 
-function mergeTask(value: Partial<ResearchTask>): ResearchTask {
-  return {
-    ...emptyTask,
-    ...value,
-    schemaVersion: 2,
-    roles: Array.isArray(value.roles) ? value.roles : [],
-    requiredRuntimes: Array.isArray(value.requiredRuntimes) ? value.requiredRuntimes : [],
-    priorities: Array.isArray(value.priorities) ? value.priorities : [],
-    license: { ...emptyTask.license, ...(value.license ?? {}) },
-    reproducibility: { ...emptyTask.reproducibility, ...(value.reproducibility ?? {}) },
-  };
-}
-
 export const researchTask = persistentAtom<ResearchTask>('atlas-research-task', emptyTask, {
   encode(value) {
-    return JSON.stringify(value);
+    return JSON.stringify(normalizeResearchTask(value));
   },
   decode(str) {
     try {
-      return mergeTask(JSON.parse(str) as Partial<ResearchTask>);
+      return normalizeResearchTask(JSON.parse(str) as unknown);
     } catch {
       return emptyTask;
     }
@@ -122,7 +109,7 @@ export function hasMeaningfulResearchTask(task: ResearchTask): boolean {
 }
 
 export function setResearchTask(task: ResearchTask) {
-  const normalized = mergeTask(task);
+  const normalized = normalizeResearchTask(task);
   researchTask.set(normalized);
   if (typeof window !== 'undefined') syncResearchTaskToUrl(normalized);
 }
@@ -146,28 +133,5 @@ function syncResearchTaskToUrl(task: ResearchTask) {
 export function initResearchTaskFromUrl() {
   if (typeof window === 'undefined') return;
   const urlTask = decodeResearchTask(new URLSearchParams(window.location.search));
-  if (urlTask) researchTask.set(urlTask);
-}
-
-/** Compatibility helper retained for existing workspace integrations. */
-export function filterCandidatesByTask(models: AtlasModel[], task: ResearchTask): AtlasModel[] {
-  return models.filter((model) => {
-    if (task.openWeight === true && model.openness.weights_available === false) return false;
-    if (task.update === 'rl' && model.research.suitable_for_rl === false) return false;
-    if (task.update === 'lora' && model.research.suitable_for_lora === false) return false;
-    if (task.update === 'sft' && model.research.suitable_for_sft === false) return false;
-    if (typeof task.contextTarget === 'number' && typeof model.architecture.context_length === 'number' && model.architecture.context_length < task.contextTarget) return false;
-    return true;
-  });
-}
-
-/** Compatibility helper retained for existing workspace integrations. */
-export function taskBlockers(model: AtlasModel, task: ResearchTask): string[] {
-  const list: string[] = [];
-  if (task.openWeight === true && model.openness.weights_available === false) list.push('不开放权重');
-  if (task.update === 'rl' && model.research.suitable_for_rl === false) list.push('不支持 RL');
-  if (task.update === 'lora' && model.research.suitable_for_lora === false) list.push('不支持 LoRA');
-  if (task.update === 'sft' && model.research.suitable_for_sft === false) list.push('不支持 SFT');
-  if (typeof task.contextTarget === 'number' && typeof model.architecture.context_length === 'number' && model.architecture.context_length < task.contextTarget) list.push('上下文长度不足');
-  return list;
+  if (urlTask) researchTask.set(normalizeResearchTask(urlTask));
 }

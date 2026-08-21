@@ -42,6 +42,16 @@ describe('optimization-phase regressions', () => {
     expect(source).not.toContain('<dd>{model.data_status}</dd>');
   });
 
+  it('hydrates lower-priority visual explorers only when they become visible', () => {
+    const landscape = readSource('../pages/_bodies/landscape.astro');
+    const families = readSource('../pages/_bodies/families-index.astro');
+
+    expect(landscape).toContain('<LandscapePrototype client:visible');
+    expect(landscape).not.toContain('<LandscapePrototype client:load');
+    expect(families).toContain('<FamilyTimeline client:visible');
+    expect(families).not.toContain('<FamilyTimeline client:load');
+  });
+
   it('keeps the papers page useful before hydration and avoids a static matrix island', () => {
     const explorer = readSource('../components/papers/PaperExplorer.tsx');
     const page = readSource('../pages/_bodies/papers-index.astro');
@@ -74,12 +84,51 @@ describe('optimization-phase regressions', () => {
     const layout = readSource('../layouts/AppLayout.astro');
     const tray = readSource('../components/workspace/CompareTray.tsx');
 
-    expect(layout).toContain('<CompareTray client:idle m={m} locale={locale} />');
+    expect(layout).toContain('<CompareTray client:idle labels={compareTrayLabels} locale={locale} />');
     expect(layout).not.toContain('<CompareTray client:load');
     expect(layout).not.toContain("getCollection('models')");
     expect(layout).not.toContain('modelNames={modelNames}');
     expect(tray).toContain('/model-data/${encodeURIComponent(id)}.json');
     expect(tray).toContain('ids.length === 0');
     expect(tray).not.toContain('modelNames: Record<string, string>;');
+  });
+
+  it('serializes narrow label slices into global layout islands instead of repeating the full locale tree', () => {
+    const layout = readSource('../layouts/AppLayout.astro');
+    const context = readSource('../components/workspace/ResearchContextBar.tsx');
+    const quickView = readSource('../components/models/GlobalModelQuickView.tsx');
+    const tray = readSource('../components/workspace/CompareTray.tsx');
+
+    expect(layout).not.toContain('client:load m={m}');
+    expect(layout).not.toContain('client:idle m={m}');
+    expect(layout).toContain('labels={researchContextLabels}');
+    expect(layout).toContain('labels={quickViewLabels}');
+    expect(layout).toContain('labels={compareTrayLabels}');
+    expect(context).not.toContain("import type { Messages }");
+    expect(quickView).not.toContain("import type { Messages }");
+    expect(tray).not.toContain("import type { Messages }");
+  });
+
+  it('mounts the global model quick view only on routes that can trigger it', () => {
+    const layout = readSource('../layouts/AppLayout.astro');
+
+    expect(layout).toContain("const globalQuickViewMounted = exactRoute('/families') || /^\\/papers\\/[^/]+\\/?$/.test(localeNeutralPath);");
+    expect(layout).toContain('{globalQuickViewMounted && <GlobalModelQuickView client:idle');
+    expect(layout).not.toContain('{!localQuickViewMounted && <GlobalModelQuickView');
+  });
+
+  it('keeps paper-detail hydration scoped to the paper instead of the full model catalog', () => {
+    const page = readSource('../pages/_bodies/paper-detail.astro');
+
+    expect(page).toContain('const paperRoleModelIds = new Set([');
+    expect(page).toContain('const paperRoleModels = models.filter((model) => paperRoleModelIds.has(model.id));');
+    expect(page).toContain('<PaperRoleDiagram client:visible paper={paper} models={paperRoleModels}');
+    expect(page).not.toContain('<PaperRoleDiagram client:load paper={paper} models={models}');
+  });
+
+  it('does not retain obsolete ResearchTask compatibility helpers with divergent semantics', () => {
+    const source = readSource('../stores/researchTask.ts');
+    expect(source).not.toContain('export function filterCandidatesByTask');
+    expect(source).not.toContain('export function taskBlockers');
   });
 });

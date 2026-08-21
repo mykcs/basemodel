@@ -27,5 +27,5 @@ const familyChanges = familiesData.families
     <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `核验日期下的代际：${family.generation}。API / 托管模型与开放权重模型分开记录。` : `Generation at the recorded check date: ${family.generation}. API/hosted models and open-weight models are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录开放权重旗舰' : 'No open-weight flagship recorded')}</dd></div></dl></div>)}</div>
   </section>
 
-  <FamilyTimeline client:load models={models} papers={papers} locale={locale} />
+  <FamilyTimeline client:visible models={models} papers={papers} locale={locale} />
 </div>
