@@ -3,6 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 const tokensCss = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8');
 const knowledgeCss = readFileSync(new URL('../styles/knowledge-architecture.css', import.meta.url), 'utf8');
+const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
+const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/results/[note].astro', import.meta.url), 'utf8');
+const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/results.astro', import.meta.url), 'utf8');
 
 function cssBlock(selector: RegExp): string {
   const match = tokensCss.match(selector);
@@ -79,5 +82,19 @@ describe('theme contrast contract', () => {
     expect(knowledgeCss).not.toContain('color: #fff');
     expect(knowledgeCss).toContain('--ka-surface: var(--surface);');
     expect(knowledgeCss).toContain('--ka-accent-on: var(--accent-on-fill);');
+  });
+
+  it('keeps WebShop training surfaces theme-aware instead of forcing a dark canvas', () => {
+    expect(webShopTrainingGuide).toContain('background:var(--color-surface)');
+    expect(webShopTrainingGuide).toContain('color:var(--color-text)');
+    expect(webShopTrainingGuide).not.toContain('background:#090f1c');
+
+    expect(webShopTrainingNoteRoute).toContain('background: var(--color-surface);');
+    expect(webShopTrainingNoteRoute).toContain('color: var(--color-text);');
+    expect(webShopTrainingNoteRoute).not.toContain('color-scheme:dark');
+    expect(webShopTrainingNoteRoute).not.toContain('background:#090f1c');
+
+    expect(webShopResultsRoute).not.toContain('color-scheme:dark');
+    expect(webShopResultsRoute).not.toContain('background:#090f1c');
   });
 });
