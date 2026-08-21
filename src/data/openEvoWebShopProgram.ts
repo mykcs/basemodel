@@ -1,8 +1,8 @@
 export const openEvoProgramSource = {
-  commit: 'e9088e47531ffec03d1450ffd2601862909cf187',
+  commit: 'd1f35ecdf84c61b07df7c646e83588d63b9297bd',
   checkedAt: '2026-08-21',
-  branch: 'main',
-  campaign: '20260821-0141-h141-magnitude-screen',
+  branch: 'codex/h142-measurement-validity-20260821',
+  campaign: '20260821-0142-h142-measurement-validity',
 } as const;
 
 const sourceRoot = `https://github.com/mykcs/openevo-experiment/blob/${openEvoProgramSource.commit}`;
@@ -12,6 +12,9 @@ export const openEvoProgramSourcePaths = {
   report: 'docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-21.md',
   reconciliation: 'docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json',
   h141Reconciliation: 'docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md',
+  h142Closeout: 'docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md',
+  h142Reconciliation: 'docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json',
+  h142ResourceAccounting: 'docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-resource-accounting.json',
   campaign: 'configs/experiment/current-campaign.json',
 } as const;
 
@@ -20,6 +23,9 @@ export const openEvoProgramLinks = {
   report: `${sourceRoot}/${openEvoProgramSourcePaths.report}`,
   reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.reconciliation}`,
   h141Reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.h141Reconciliation}`,
+  h142Closeout: `${sourceRoot}/${openEvoProgramSourcePaths.h142Closeout}`,
+  h142Reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.h142Reconciliation}`,
+  h142ResourceAccounting: `${sourceRoot}/${openEvoProgramSourcePaths.h142ResourceAccounting}`,
   campaign: `${sourceRoot}/${openEvoProgramSourcePaths.campaign}`,
 } as const;
 
@@ -246,6 +252,13 @@ export const programTimeline = [
     boundary: { zh: 'selector 是 MEASUREMENT_INVALID；不支持 magnitude-reset improvement、fresh transfer 或 T2，H1.40/H1.41 T2 都保持关闭。', en: 'The selector is MEASUREMENT_INVALID; it supports no magnitude-reset improvement, fresh transfer, or T2 claim. Both H1.40 and H1.41 T2 remain closed.' },
     evidence: openEvoProgramLinks.h141Reconciliation,
   },
+  {
+    id: 'h1-42', stage: 'diagnostic', result: 'invalid', coverage: ['H1.42-MV'],
+    title: { zh: 'H1.42-MV：测量校准仍停在有效性边界', en: 'H1.42-MV: measurement calibration remains at the validity boundary' },
+    summary: { zh: 'Stage A 完成 192 cells / 768 attempts 并通过 MV4；条件 Stage B 完成 144 cells / 576 attempts。修正 arm 与 loader_arm 字段混淆后，C1 在 acquisition 与 preservation 各保留一个 parser/runtime-invalid cluster，selector 为 MVD0。', en: 'Stage A completed 192 cells / 768 attempts and passed MV4; conditional Stage B completed 144 cells / 576 attempts. After fixing the arm-versus-loader_arm validator bug, C1 retained one parser/runtime-invalid cluster in acquisition and one in preservation; the selector was MVD0.' },
+    boundary: { zh: '这是测量边界结果，不支持 magnitude-reset effect、fresh transfer、multi-generation 或 T2；H1.40/H1.41/H1.42 T2 均保持关闭。', en: 'This is a measurement-boundary result, not evidence for a magnitude-reset effect, fresh transfer, multi-generation self-evolution, or T2; all H1.40/H1.41/H1.42 T2 panels remain closed.' },
+    evidence: openEvoProgramLinks.h142Closeout,
+  },
 ] as const;
 
 export const h138Metrics = [
@@ -264,18 +277,25 @@ export const h140Metrics = {
   t2Opened: false,
 } as const;
 
+export const h142Metrics = {
+  stageA: { cells: 192, attempts: 768, gpuHours: 4.161926864215381, selector: 'MV4 MEASUREMENT_VALIDATED' },
+  stageB: { cells: 144, attempts: 576, gpuHours: 2.335990229417965, invalidAcquisition: 'webshop_003560', invalidPreservation: 'webshop_004357', selector: 'MVD0 REMEASUREMENT_INVALID' },
+  totalGpuHours: 6.497917093633346,
+  t2Opened: false,
+} as const;
+
 export const claimState = {
   confirmed: {
-    zh: ['H1.40 E2 harvest 有 256 次尝试、132 个合格正例和 33 个 qualifying identities。', 'G2 真实创建到 16 个 components、effective rank 64。', 'H1.40 upstream gates 未通过，H1.41 的 384 次 formal attempts 已完成但 selector 为 MEASUREMENT_INVALID；T2 未打开。'],
-    en: ['H1.40 E2 harvest contained 256 attempts, 132 qualified positives, and 33 qualifying identities.', 'G2 was genuinely created with 16 components and effective rank 64.', 'H1.40 upstream gates did not pass; H1.41 completed 384 formal attempts but selected MEASUREMENT_INVALID, so T2 remained unopened.'],
+    zh: ['H1.40 E2 harvest 有 256 次尝试、132 个合格正例和 33 个 qualifying identities。', 'G2 真实创建到 16 个 components、effective rank 64。', 'H1.40 upstream gates 未通过；H1.41 与 H1.42 都在 measurement boundary 收口，T2 未打开。'],
+    en: ['H1.40 E2 harvest contained 256 attempts, 132 qualified positives, and 33 qualifying identities.', 'G2 was genuinely created with 16 components and effective rank 64.', 'H1.40 upstream gates did not pass; H1.41 and H1.42 both closed at measurement boundaries, and T2 remained unopened.'],
   },
   inferred: {
     zh: ['E2 supply 不是当前直接瓶颈；瓶颈转向连续参数写入的 stability–plasticity。', 'H1.40-MD 支持优先检查 magnitude、replay 和 cumulative component interference。'],
     en: ['E2 supply was not the immediate bottleneck; the bottleneck shifted to stability–plasticity during continual parameter writing.', 'H1.40-MD supports prioritizing magnitude, replay, and cumulative-component-interference diagnostics.'],
   },
   unknown: {
-    zh: ['magnitude imbalance 是否是 G2 失败的因果机制仍未知。', 'G2 与 H1.41 的 fresh-task transfer 未测量；T2 没有运行。', 'H1.41 的无效 cluster 是否能通过新的 measurement-aware contract 消除仍未知。'],
-    en: ['Whether magnitude imbalance is the causal mechanism behind G2 failure remains unknown.', 'Fresh-task transfer was not measured for G2 or H1.41; T2 did not run.', 'Whether a new measurement-aware contract can remove the H1.41 invalid clusters remains unknown.'],
+    zh: ['magnitude imbalance 是否是 G2 失败的因果机制仍未知。', 'G2、H1.41 与 H1.42 都没有 fresh-task transfer；T2 没有运行。', 'H1.42 修正 validator 后仍有 C1 parser/runtime-invalid cluster；它是否能通过后续测量修复消除仍未知。'],
+    en: ['Whether magnitude imbalance is the causal mechanism behind G2 failure remains unknown.', 'Fresh-task transfer was not measured for G2, H1.41, or H1.42; T2 did not run.', 'H1.42 still had C1 parser/runtime-invalid clusters after the validator fix; whether later measurement repair can remove them remains unknown.'],
   },
 } as const;
 

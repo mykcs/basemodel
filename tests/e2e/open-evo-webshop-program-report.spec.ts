@@ -8,8 +8,8 @@ for (const route of routes) {
     const report = page.getByTestId('openevo-webshop-program-report');
     await expect(report).toBeVisible();
     await expect(report.locator('#results table')).toBeVisible();
-    await expect(report.locator('#results tbody tr')).toHaveCount(5);
-    await expect(report.getByText('T2 remained unopened', { exact: false })).toBeVisible();
+    await expect(report.locator('#results tbody tr')).toHaveCount(6);
+    await expect(report.locator('strong').filter({ hasText: /T2 (remained unopened|未打开)/ }).first()).toBeVisible();
     await expect(report.locator('#interpretation')).toBeVisible();
     await expect(report.locator('#next-experiment')).toBeVisible();
 
@@ -29,7 +29,7 @@ for (const route of routes) {
     await lineage.locator(':scope > summary').focus();
     await page.keyboard.press('Enter');
     await expect(lineage).toHaveAttribute('open', '');
-    await expect(lineage.locator('.lineage-list > li')).toHaveCount(29);
+    await expect(lineage.locator('.lineage-list > li')).toHaveCount(30);
     await expect(rtx6).not.toHaveAttribute('open', '');
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -42,12 +42,12 @@ test('report remains readable without JavaScript', async ({ browser }) => {
   const page = await context.newPage();
   await page.goto('/en/research/seed-openevo/results/');
   const report = page.getByTestId('openevo-webshop-program-report');
-  await expect(report.getByRole('heading', { name: 'Stability gates for second-generation parameter writing' })).toBeVisible();
+  await expect(report.getByRole('heading', { name: 'From stability gates to mechanism diagnosis' })).toBeVisible();
   await expect(report.locator('#results table')).toBeVisible();
   const lineage = report.getByTestId('lineage-appendix');
   await lineage.locator(':scope > summary').click();
   await expect(lineage).toHaveAttribute('open', '');
-  await expect(lineage.locator('.lineage-list > li')).toHaveCount(29);
+  await expect(lineage.locator('.lineage-list > li')).toHaveCount(30);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   await context.close();
 });
@@ -86,9 +86,9 @@ test('print mode linearizes the report and exposes provenance', async ({ page })
   await expect(page.locator('.site-footer')).toBeHidden();
   await expect(report.locator('.paper-nav')).toBeHidden();
   await expect(report.locator('.print-methods')).toBeVisible();
-  await expect(report.locator('.print-methods code').first()).toContainText('db91088b97d6');
+  await expect(report.locator('.print-methods code').first()).toContainText('d1f35ecdf84c');
   await expect(report.locator('.print-lineage')).toBeVisible();
-  await expect(report.locator('.print-lineage > li')).toHaveCount(29);
+  await expect(report.locator('.print-lineage > li')).toHaveCount(30);
   await expect(report.locator('.print-rtx6')).toBeVisible();
 });
 

@@ -41,8 +41,8 @@ export default defineConfig({
     // the exact static output that Vercel just produced so the browser gate
     // validates that tree without paying for a redundant Astro build.
     command: reuseBuiltOutput
-      ? `npm run preview -- --host 127.0.0.1 --port ${previewPort}`
-      : `npm run build && npm run preview -- --host 127.0.0.1 --port ${previewPort}`,
+      ? `node scripts/playwright-preview.mjs ${previewPort}`
+      : `npm run build && node scripts/playwright-preview.mjs ${previewPort}`,
     url: previewURL,
     // Never accept a server started from another worktree. A busy port now
     // fails fast, while PLAYWRIGHT_PORT lets parallel validation use isolation.

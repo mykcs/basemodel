@@ -18,8 +18,8 @@ const explainer = read('src/components/research/InteractiveResearchExplainer.tsx
 
 describe('OpenEvo × WebShop frozen program report', () => {
   it('pins every source link to the immutable OpenEvo delivery commit and known existing paths', () => {
-    expect(openEvoProgramSource.commit).toBe('e9088e47531ffec03d1450ffd2601862909cf187');
-    expect(openEvoProgramSource.branch).toBe('main');
+    expect(openEvoProgramSource.commit).toBe('d1f35ecdf84c61b07df7c646e83588d63b9297bd');
+    expect(openEvoProgramSource.branch).toBe('codex/h142-measurement-validity-20260821');
     expect(openEvoProgramSourcePaths.reconciliation).toBe('docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json');
     for (const [key, path] of Object.entries(openEvoProgramSourcePaths)) {
       expect(path).not.toContain('..');
@@ -38,6 +38,7 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(coverage).toContain('H1.40');
     expect(coverage).toContain('H1.40-MD');
     expect(coverage).toContain('H1.41');
+    expect(coverage).toContain('H1.42-MV');
     expect(programTimeline.find((item) => item.id === 'h0')?.result).toBe('supported');
     expect(programTimeline.find((item) => item.id === 'h1-29')?.result).toBe('negative');
     expect(programTimeline.find((item) => item.id === 'h1-30')?.result).toBe('protocol');
@@ -136,7 +137,7 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(order).toEqual([...order].sort((a, b) => a - b));
     for (const token of ['<table>', 'scope="col"', 'class="causal-flow"', '<dl class="interpretation-list"', '<details', 'data-testid="lineage-appendix"', 'data-testid="rtx6-appendix"', '@media print']) expect(component).toContain(token);
     for (const forbidden of ['data-filter-group', '<dialog', '<script>', '.timeline-card', 'showModal']) expect(component).not.toContain(forbidden);
-    expect(programTimeline).toHaveLength(29);
+    expect(programTimeline).toHaveLength(30);
     expect(component).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
   });
 
