@@ -65,7 +65,7 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
       expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
       expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
       expect(route.indexOf('<OpenEvoWebShopProgramReport locale={locale}>')).toBeLessThan(route.indexOf('<Seed3090ParametricProgress slot="historical" locale={locale} />'));
-      expect(route).toContain('H1.38A-C');
+      expect(route).toContain('H1.40');
       expect(route).not.toContain('5×RTX5090');
       expect(route).not.toContain('Phase H0 Natural Success Search');
     }

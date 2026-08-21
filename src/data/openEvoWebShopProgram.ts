@@ -1,16 +1,17 @@
 export const openEvoProgramSource = {
-  commit: '93a38821c884a633817bf412643b20e0b283a678',
-  checkedAt: '2026-08-20',
+  commit: 'e9088e47531ffec03d1450ffd2601862909cf187',
+  checkedAt: '2026-08-21',
   branch: 'main',
-  campaign: '20260819-0215-h138a-c-frozen-panel-completion',
+  campaign: '20260821-0141-h141-magnitude-screen',
 } as const;
 
 const sourceRoot = `https://github.com/mykcs/openevo-experiment/blob/${openEvoProgramSource.commit}`;
 
 export const openEvoProgramSourcePaths = {
   ledger: 'docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json',
-  report: 'docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-20.md',
-  reconciliation: 'docs/evidence/remote-runs/2026-08-19/h1.38a-c/evidence/h1.38a-c-combined-reconciliation.json',
+  report: 'docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-21.md',
+  reconciliation: 'docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json',
+  h141Reconciliation: 'docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md',
   campaign: 'configs/experiment/current-campaign.json',
 } as const;
 
@@ -18,6 +19,7 @@ export const openEvoProgramLinks = {
   ledger: `${sourceRoot}/${openEvoProgramSourcePaths.ledger}`,
   report: `${sourceRoot}/${openEvoProgramSourcePaths.report}`,
   reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.reconciliation}`,
+  h141Reconciliation: `${sourceRoot}/${openEvoProgramSourcePaths.h141Reconciliation}`,
   campaign: `${sourceRoot}/${openEvoProgramSourcePaths.campaign}`,
 } as const;
 
@@ -224,11 +226,25 @@ export const programTimeline = [
     evidence: openEvoProgramLinks.campaign,
   },
   {
-    id: 'next', stage: 'closeout', result: 'design', coverage: ['Next'],
-    title: { zh: '下一步：方法修改是推断，不是结果', en: 'Next: method changes are inference, not results' },
-    summary: { zh: '优先冻结 H1.38 D8 的同一份数据，比较 ordinary sequential LoRA 与现有 SD-LoRA，并拆开 acquisition（新学会）、retention（旧能力保留）与 untouched transfer（未见任务迁移）。', en: 'First freeze the same H1.38 D8 data, compare ordinary sequential LoRA with the current SD-LoRA, and separate acquisition (new learning), retention (preservation of old capabilities), and untouched transfer (transfer to unseen tasks).' },
-    boundary: { zh: '这是 inference/recommendation，必须经新预注册实验验证。', en: 'This is inference/recommendation and requires a new preregistered experiment.' },
-    evidence: openEvoProgramLinks.report,
+    id: 'h1-40', stage: 'transfer', result: 'negative', coverage: ['H1.40'],
+    title: { zh: 'H1.40：第二代参数写入未过稳定性门', en: 'H1.40: second-generation parameter writing failed stability gates' },
+    summary: { zh: 'E2 harvest 的 256 次尝试产生 132 个合格正例、33 个 qualifying identities；G2 真实创建到 16 个 components，但 acquisition、retention 与 H1.39 preservation upstream gates 均未通过，预留 T2 面板未打开。', en: 'The 256-attempt E2 harvest produced 132 qualified positives across 33 qualifying identities; G2 was genuinely created with 16 components, but acquisition, retention, and H1.39 preservation upstream gates all failed, so the reserved T2 panel remained unopened.' },
+    boundary: { zh: '支持“经验供给不是当前直接瓶颈”，不支持 G2 fresh transfer 或 multi-generation self-evolution；T2 没有运行。', en: 'Supports that experience supply was not the immediate bottleneck, but does not support G2 fresh transfer or multi-generation self-evolution; T2 did not run.' },
+    evidence: `${sourceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md`,
+  },
+  {
+    id: 'h1-40-md', stage: 'diagnostic', result: 'invalid', coverage: ['H1.40-MD'],
+    title: { zh: 'H1.40-MD：现有 artifact 指向 magnitude imbalance 假设', en: 'H1.40-MD: existing artifacts point to a magnitude-imbalance hypothesis' },
+    summary: { zh: '离线尸检显示前 8 个 historical directions 保持不变，但最终 old-component coefficient 均值约 0.691、新 components 约 0.181；replay 也从 62 historical + 2 current 变为 48 historical + 16 current。', en: 'Offline autopsy found the first eight historical directions unchanged, while final old-component coefficients averaged about 0.691 versus 0.181 for new components; replay also shifted from 62 historical plus 2 current records to 48 historical plus 16 current.' },
+    boundary: { zh: '这是支持 magnitude / replay 机制假设的诊断证据，不是已证实的因果原因；无效 acquisition cell 的 4/4 尝试是 parser-invalid。', en: 'This is diagnostic support for magnitude and replay hypotheses, not a confirmed causal mechanism; all four attempts in the invalid acquisition cell were parser-invalid.' },
+    evidence: `${sourceRoot}/docs/evidence/remote-runs/2026-08-21/h1.40-md/ARTIFACT_AUTOPSY.md`,
+  },
+  {
+    id: 'h1-41', stage: 'closeout', result: 'invalid', coverage: ['H1.41'],
+    title: { zh: 'H1.41：机制筛选完成，但测量门未通过', en: 'H1.41: mechanism screen completed, measurement boundary not cleared' },
+    summary: { zh: 'C0 exact H1.40 updater 与 C1 reset magnitude 完成 96 cells / 384 attempts；C0 acquisition point estimate 为 0，C0/C1 retention 都为 −0.065625，C1 在 acquisition 与 preservation 各有一个无效 cluster，T2 未打开。', en: 'C0 exact H1.40 and C1 reset-magnitude completed 96 cells / 384 attempts; C0 acquisition was 0-point, C0/C1 retention were both −0.065625, C1 had one invalid cluster in acquisition and one in preservation, and T2 remained unopened.' },
+    boundary: { zh: 'selector 是 MEASUREMENT_INVALID；不支持 magnitude-reset improvement、fresh transfer 或 T2，H1.40/H1.41 T2 都保持关闭。', en: 'The selector is MEASUREMENT_INVALID; it supports no magnitude-reset improvement, fresh transfer, or T2 claim. Both H1.40 and H1.41 T2 remain closed.' },
+    evidence: openEvoProgramLinks.h141Reconciliation,
   },
 ] as const;
 
@@ -239,33 +255,42 @@ export const h138Metrics = [
   { id: 'd16', label: 'D16', attempts: 192, valid: 192, invalid: 0, mean: 0.201063, delta: 0.055646, ci: [-0.019354, 0.131521], p: 0.1735 },
 ] as const;
 
+export const h140Metrics = {
+  e2Harvest: { attempts: 256, qualified: 132, identities: 33 },
+  g2: { components: 16, effectiveRank: 64 },
+  acquisition: { attempts: 32, valid: 28, invalid: 4, delta: 0 },
+  retention: { delta: -0.1635, ci: [-0.40725, 0.0355] },
+  preservation: { delta: -0.003625, ci: [-0.08012734375, 0.0755015625] },
+  t2Opened: false,
+} as const;
+
 export const claimState = {
   confirmed: {
-    zh: ['完整冻结面板为 768 次尝试、764 次科学有效。', 'D4/D8/D16 相对 base 的 task-cluster 95% CI 均跨 0。', '固定 16 条成功记录时，4/8/16 个 training task identity 的 ordered delta 不单调。'],
-    en: ['The complete frozen panel contains 768 attempts, 764 scientifically valid.', 'The task-cluster 95% CI versus base crosses zero for D4, D8, and D16.', 'With 16 successful records fixed, the ordered deltas for 4/8/16 training task identities are non-monotonic.'],
+    zh: ['H1.40 E2 harvest 有 256 次尝试、132 个合格正例和 33 个 qualifying identities。', 'G2 真实创建到 16 个 components、effective rank 64。', 'H1.40 upstream gates 未通过，H1.41 的 384 次 formal attempts 已完成但 selector 为 MEASUREMENT_INVALID；T2 未打开。'],
+    en: ['H1.40 E2 harvest contained 256 attempts, 132 qualified positives, and 33 qualifying identities.', 'G2 was genuinely created with 16 components and effective rank 64.', 'H1.40 upstream gates did not pass; H1.41 completed 384 formal attempts but selected MEASUREMENT_INVALID, so T2 remained unopened.'],
   },
   inferred: {
-    zh: ['经验质量和信用分配可能比单独增加 task-identity 数量更关键。', '框架应在持久化前加入反事实验证与回滚门控。'],
-    en: ['Experience quality and credit assignment may matter more than task-identity count alone.', 'The framework should add counterfactual validation and rollback gates before persistence.'],
+    zh: ['E2 supply 不是当前直接瓶颈；瓶颈转向连续参数写入的 stability–plasticity。', 'H1.40-MD 支持优先检查 magnitude、replay 和 cumulative component interference。'],
+    en: ['E2 supply was not the immediate bottleneck; the bottleneck shifted to stability–plasticity during continual parameter writing.', 'H1.40-MD supports prioritizing magnitude, replay, and cumulative-component-interference diagnostics.'],
   },
   unknown: {
-    zh: ['带匹配方法对照的 H1.38B 尚未授权或执行。', '这些修改能否跨任务、跨种子稳定改善仍未知。'],
-    en: ['H1.38B with a matched method control is not authorized or executed.', 'Whether these changes improve reliably across tasks and seeds remains unknown.'],
+    zh: ['magnitude imbalance 是否是 G2 失败的因果机制仍未知。', 'G2 与 H1.41 的 fresh-task transfer 未测量；T2 没有运行。', 'H1.41 的无效 cluster 是否能通过新的 measurement-aware contract 消除仍未知。'],
+    en: ['Whether magnitude imbalance is the causal mechanism behind G2 failure remains unknown.', 'Fresh-task transfer was not measured for G2 or H1.41; T2 did not run.', 'Whether a new measurement-aware contract can remove the H1.41 invalid clusters remains unknown.'],
   },
 } as const;
 
 export const nextDecisionNodes = [
   {
-    id: 'method-control', order: '01',
-    title: { zh: '同数据、不同更新方法', en: 'Same data, different update methods' },
-    question: { zh: '瓶颈来自数据还是 update rule？', en: 'Is the bottleneck the data or the update rule?' },
-    change: { zh: '冻结 H1.38 D8 的 16 条记录、8 个 task identity 和原顺序；比较 ordinary sequential LoRA 与现有 SD-LoRA。', en: 'Freeze the 16 H1.38 D8 records, 8 task identities, and original order; compare ordinary sequential LoRA with the current SD-LoRA.' },
+    id: 'magnitude-control', order: '01',
+    title: { zh: '同数据、只改 magnitude policy', en: 'Same data, one magnitude-policy change' },
+    question: { zh: '失败来自 magnitude initialization 吗？', en: 'Does magnitude initialization explain the failure?' },
+    change: { zh: 'C0 保持 H1.40 updater；C1 只把 magnitudes 重置为 coefficient init，其他数据、rank、replay 和 schedule 不变。', en: 'C0 keeps the H1.40 updater; C1 resets magnitudes to coefficient init while holding data, rank, replay, and schedule fixed.' },
   },
   {
-    id: 'three-panels', order: '02',
-    title: { zh: '拆开三类能力', en: 'Separate three capabilities' },
-    question: { zh: '学会、记住、迁移分别怎样？', en: 'What was acquired, retained, and transferred?' },
-    change: { zh: '分别报告 acquisition、retention 与 untouched transfer，避免一个总分掩盖失败位置。', en: 'Report acquisition, retention, and untouched transfer separately so one aggregate score cannot hide where failure occurs.' },
+    id: 'three-gates', order: '02',
+    title: { zh: '先过三个 upstream gates', en: 'Pass three upstream gates first' },
+    question: { zh: '新知识写入后旧能力还在吗？', en: 'Does old capability survive new writing?' },
+    change: { zh: '先分别报告 acquisition、retention 与 H1.39 preservation；T2 只有在三者都可靠通过后才另行预注册。', en: 'Report acquisition, retention, and H1.39 preservation separately; preregister T2 only after all three pass reliably.' },
   },
   {
     id: 'state-schema', order: '03',
