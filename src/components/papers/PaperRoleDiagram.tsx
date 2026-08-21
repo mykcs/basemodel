@@ -10,7 +10,14 @@ export function PaperRoleDiagram({ paper, models, locale, m: _m }: { paper: Atla
     const model = modelMap.get(modelId);
     if (!model) return null;
     return <span className="role-model-actions">
-      <button type="button" className="role-model-quick-view" onClick={() => openQuickView(model.id)}>{locale === 'zh' ? '快速查看' : 'Quick view'}</button>
+      <button
+        type="button"
+        className="role-model-quick-view"
+        data-model-quick-view={model.id}
+        aria-haspopup="dialog"
+        aria-controls="global-model-quick-view"
+        onClick={() => openQuickView(model.id)}
+      >{locale === 'zh' ? '快速查看' : 'Quick view'}</button>
       <a href={localePath(locale, `/models/${model.id}/`)}>{locale === 'zh' ? '详情' : 'Details'}</a>
     </span>;
   };

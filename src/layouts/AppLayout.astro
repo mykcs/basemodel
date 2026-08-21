@@ -4,6 +4,7 @@ import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNa
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
 import PageOutline from '../components/navigation/PageOutline.astro';
+import QuickViewBridge from '../components/models/QuickViewBridge.astro';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
@@ -112,6 +113,7 @@ const compareTrayLabels = {
     <Header locale={locale} />
     <ResearchContextBar client:load labels={researchContextLabels} locale={locale} />
     {globalQuickViewMounted && <GlobalModelQuickView client:idle labels={quickViewLabels} locale={locale} />}
+    {globalQuickViewMounted && <QuickViewBridge />}
     <main id="main-content" class="site-main">
       {researchBridgePage && (
         <div class="research-module-nav-shell">

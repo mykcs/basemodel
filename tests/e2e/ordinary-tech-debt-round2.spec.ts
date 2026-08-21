@@ -28,6 +28,22 @@ test('paper-detail quick view hydrates on visibility and opens the shared dialog
   await expect(page.locator('.global-quick-view')).toBeVisible();
 });
 
+test('paper quick-view first click survives before the visible React island hydrates', async ({ page }) => {
+  await page.route(/\/PaperRoleDiagram\.[^/]+\.js$/, (route) => route.abort());
+  await page.goto('/papers/agentbench/', { waitUntil: 'domcontentloaded' });
+
+  const island = page.locator('astro-island[component-export="PaperRoleDiagram"]');
+  const trigger = page.locator('.role-model-quick-view').first();
+  await trigger.scrollIntoViewIfNeeded();
+  await expect(trigger).toBeVisible();
+  await expect(island).toHaveAttribute('ssr', '');
+
+  await trigger.evaluate((button: HTMLButtonElement) => button.click());
+  const dialog = page.locator('#global-model-quick-view');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute('open', '');
+});
+
 test('Landscape keeps static learning content and hydrates controls when visible', async ({ page }) => {
   await page.goto('/landscape/');
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
