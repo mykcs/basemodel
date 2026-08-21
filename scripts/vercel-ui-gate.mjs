@@ -1,8 +1,9 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const uiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
-const shouldRun = uiBranch.test(branch);
+const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
+const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
+const shouldRun = fullUiBranch.test(branch) || focusedFixBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -40,7 +41,12 @@ const capture = (command, args) => {
   return result.stdout.trim();
 };
 
-console.log(`[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`);
+const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch);
+console.log(
+  focusedOnly
+    ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
+    : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
+);
 
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
 // installer assumes Ubuntu/apt, so install the equivalent AL2023 Chromium
@@ -88,9 +94,23 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
 // any remaining horizontal overflow fails the deployment.
 run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 
-run('npm', ['run', 'test:ui'], {
-  CI: '1',
-  PLAYWRIGHT_REUSE_BUILD: '1',
-});
+if (focusedOnly) {
+  // Fix branches need an exact regression for the bug class they are changing.
+  // Keep this focused so an unrelated stale explainer-ownership assertion cannot
+  // hide the result of the theme regression itself. The same WebShop test is also
+  // part of `test:ui`, so full UI branches continue to run it in the broad matrix.
+  run('npx', [
+    'playwright', 'test', 'tests/e2e/webshop-training-theme.spec.ts',
+    '--project=chromium', '--max-failures=1',
+  ], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+} else {
+  run('npm', ['run', 'test:ui'], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+}
 
 console.log('[vercel-ui-gate] PASS');

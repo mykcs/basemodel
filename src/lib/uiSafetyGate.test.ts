@@ -2,13 +2,13 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
-
 const packageJson = JSON.parse(read('../../package.json')) as {
   scripts?: Record<string, string>;
 };
 const playwrightConfig = read('../../playwright.config.ts');
 const vercelUiGate = read('../../scripts/vercel-ui-gate.mjs');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
+const webShopThemeGate = read('../../tests/e2e/webshop-training-theme.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
 const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
@@ -24,7 +24,7 @@ const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the general, global-header, breakpoint-handoff, and research-geometry browser commands wired', () => {
+  it('keeps the general, global-header, breakpoint-handoff, research-geometry, and WebShop-theme browser commands wired', () => {
     for (const script of ['test:header', 'test:header:all'] as const) {
       expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
@@ -35,6 +35,7 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('webshop-training-theme.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('compare-tray-on-demand.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
     }
@@ -42,8 +43,9 @@ describe('UI visual acceptance gate contract', () => {
     expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
   });
 
-  it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary + semantic-release UI branch families', () => {
+  it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary, semantic-release, and UI fix branch families', () => {
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
+    expect(vercelUiGate).toContain('fix\\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)');
     expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');
@@ -69,6 +71,27 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('audited siblings overlap');
     expect(browserGate).toContain('low contrast');
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
+  });
+
+  it('keeps all WebShop training-note routes under exact computed-theme browser regression', () => {
+    for (const route of [
+      '/research/seed-openevo/results/webshop-training/',
+      '/research/seed-openevo/results/seed-training/',
+      '/research/seed-openevo/results/openevo-training/',
+    ]) {
+      expect(webShopThemeGate).toContain(route);
+    }
+    for (const term of [
+      "['light', 'dark']",
+      "name: 'desktop'",
+      "name: 'mobile'",
+      'noteSurface',
+      'surfaceMuted',
+      "locator('[data-theme-toggle]').first().click()",
+      'updates its reading surface when theme toggles without reload',
+    ]) {
+      expect(webShopThemeGate).toContain(term);
+    }
   });
 
   it('crawls public route classes and requires the computed global shell to stay usable', () => {
