@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const uiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
+const uiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation))/;
 const shouldRun = uiBranch.test(branch);
 
 if (!shouldRun) {
