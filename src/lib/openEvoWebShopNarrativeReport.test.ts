@@ -8,12 +8,24 @@ const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 
 describe('OpenEvo × WebShop reader-first narrative', () => {
-  it('starts from the scientific question rather than run IDs', () => {
+  it('starts from the scientific question rather than run IDs or self-description', () => {
     const rendered = component.slice(component.indexOf('<article'));
     expect(rendered).toContain('OpenEvo 在 WebShop 上，能不能从自己的经验里变得更好？');
+    expect(rendered).toContain('一个智能体在网页环境里做任务，会留下成功和失败的交互轨迹。问题是：');
     expect(rendered).toContain('WebShop 又在测什么？');
     expect(rendered).toContain('一次 WebShop 任务实际上长什么样');
     expect(rendered).toContain('task score=0.667');
+    for (const banned of [
+      '这篇文章不是',
+      '如果只从最后的正结果讲',
+      '下面把主张和证据拆开',
+      '如果只带走一句话',
+      '为了少一点内部代号',
+      'This report does not recite run IDs',
+      'If we start from the final positive result',
+      'If you remember only one sentence',
+      'To keep notation minimal',
+    ]) expect(rendered).not.toContain(banned);
     const firstRunRef = rendered.indexOf('Phase G / H0');
     const question = rendered.indexOf('WebShop 又在测什么？');
     expect(question).toBeGreaterThan(0);
@@ -30,7 +42,7 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
     expect(journey).toBeGreaterThan(background);
     expect(method).toBeGreaterThan(journey);
     expect(firstSd).toBeGreaterThan(method);
-    expect(rendered).toContain('先补一个概念：LoRA 是什么？');
+    expect(rendered).toContain('这里需要一个概念：LoRA 是什么？');
   });
 
   it('makes conclusion, evidence, inference, and claim boundaries explicit', () => {
