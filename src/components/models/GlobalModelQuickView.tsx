@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { candidateIds, addCandidate, removeCandidate } from '../../stores/candidates';
 import { compareIds, addToCompare, removeFromCompare } from '../../stores/compare';
-import { closeQuickView, quickViewId } from '../../stores/ui';
+import { closeQuickView, openQuickView, quickViewId } from '../../stores/ui';
 import { hasMeaningfulResearchTask, researchTask } from '../../stores/researchTask';
 import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../lib/format';
 import { baseUrl, localePath, type Locale } from '../../i18n';
@@ -52,6 +52,24 @@ export function GlobalModelQuickView({ labels, locale }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
+    const root = document.documentElement;
+    const openFromBridge = (id: string) => {
+      delete root.dataset.modelQuickViewPending;
+      openQuickView(id);
+    };
+    const handleBridge = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      const id = (event.detail as { id?: unknown } | null)?.id;
+      if (typeof id === 'string' && id) openFromBridge(id);
+    };
+
+    document.addEventListener('atlas:quick-view', handleBridge);
+    const pending = root.dataset.modelQuickViewPending;
+    if (pending) openFromBridge(pending);
+    return () => document.removeEventListener('atlas:quick-view', handleBridge);
+  }, []);
+
+  useEffect(() => {
     if (!hydrated || !selected) {
       setModel(null);
       setLoading(false);
@@ -94,6 +112,7 @@ export function GlobalModelQuickView({ labels, locale }: Props) {
   const zh = locale === 'zh';
 
   return <dialog
+    id="global-model-quick-view"
     ref={dialogRef}
     className="quick-view-dialog global-quick-view"
     aria-labelledby="global-quick-view-title"
