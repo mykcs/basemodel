@@ -59,7 +59,7 @@ test('reader-first report remains useful without JavaScript', async ({ browser }
   await expect(report.getByRole('heading', { name: 'Can OpenEvo get better on WebShop by learning from its own experience?' })).toBeVisible();
   await expect(report.getByRole('heading', { name: 'What does WebShop measure?' })).toBeVisible();
   await expect(report.getByRole('heading', { name: 'What one WebShop task actually looks like' })).toBeVisible();
-  await expect(report.getByRole('heading', { name: 'A short detour: what is LoRA?' })).toBeVisible();
+  await expect(report.getByRole('heading', { name: 'One concept matters here: what is LoRA?' })).toBeVisible();
   await expect(report.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   await context.close();
