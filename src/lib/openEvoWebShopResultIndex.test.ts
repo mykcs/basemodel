@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
 const resultsPage = read('../pages/research/seed-openevo/results.astro');
+const researchDetail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const resultIndex = read('../components/research/OpenEvoWebShopResultIndex.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
@@ -33,6 +34,9 @@ describe('OpenEvo × WebShop result article index', () => {
     expect(resultsPage).not.toContain('OpenEvoWebShopProgramReport');
     expect(resultsPage).not.toContain('Seed3090ParametricProgress');
     expect(resultsPage).not.toContain('WebShopTrainingGuide');
+    expect(researchDetail).toContain("title: t('OpenEvo × WebShop 实验结果目录', 'OpenEvo × WebShop experiment evidence index')");
+    expect(researchDetail).toContain('WebShop、SEED 与 OpenEvo 的背景和机制由各自的正式页面统一解释');
+    expect(researchDetail).not.toContain('H1.40 established E2 supply and G2 construction');
     expect(resultIndex).toContain('实验结果页只讲实验');
     expect(resultIndex).toContain('/research/seed-openevo/webshop/');
     expect(resultIndex).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
