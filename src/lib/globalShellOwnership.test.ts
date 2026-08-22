@@ -60,14 +60,29 @@ describe('global shell ownership', () => {
     expect(header).toContain('.site-header .mobile-menu .mobile-menu__inner');
   });
 
-  it('keeps visual-closeout focused on page geometry instead of shared Header ownership', () => {
-    const closeout = withoutComments(read('../styles/visual-closeout.css'));
-    expect(headerSelector.test(closeout)).toBe(false);
+  it('keeps the canonical owner values that replace the retired design-refinement Header copy', () => {
+    const header = read('../styles/components/header.css');
+    expect(header).toContain('min-height: 68px;');
+    expect(header).toContain('gap: 14px;');
+    expect(header).toContain('white-space: nowrap;');
+    expect(header).toContain('@media (max-width: 1080px)');
+    expect(header).toContain('min-height: 62px;');
+    expect(header).toContain('.site-header .brand small');
+    expect(header).toContain('@media (max-width: 960px)');
+    expect(header).toContain('.site-header .nav-inner > .lang-switch');
+    expect(header).toContain('@media (max-width: 520px)');
+    expect(header).toContain('max-width: 104px;');
+    expect(header).toContain('text-overflow: ellipsis;');
   });
 
-  it('keeps mobile-composition focused on page composition instead of shared Header ownership', () => {
-    const mobile = withoutComments(read('../styles/mobile-composition.css'));
-    expect(headerSelector.test(mobile)).toBe(false);
+  it('keeps retired compatibility layers out of shared Header ownership', () => {
+    for (const path of [
+      '../styles/design-refinement.css',
+      '../styles/mobile-composition.css',
+      '../styles/visual-closeout.css',
+    ]) {
+      expect(headerSelector.test(withoutComments(read(path))), path).toBe(false);
+    }
   });
 
   it('freezes the remaining legacy Header selector debt to the known files', () => {
@@ -79,7 +94,6 @@ describe('global shell ownership', () => {
 
     expect(debt).toEqual([
       'components/header.css',
-      'design-refinement.css',
       'final-hardening.css',
       'site.css',
       'visual-identity.css',
