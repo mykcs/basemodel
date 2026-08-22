@@ -32,6 +32,7 @@ export const zhOnlyStaticPaths = [
   '/research/seed-openevo/results/first-positive-transfer/',
   '/research/seed-openevo/results/independent-replication/',
   '/research/seed-openevo/results/second-generation/',
+  '/research/seed-openevo/results/measurement-boundary/',
   '/research/seed-openevo/results/current-conclusion/',
 ] as const;
 
