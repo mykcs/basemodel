@@ -69,13 +69,37 @@ const resultArticles = [
     tag: '结论边界',
   },
 ] as const;
+
+const designArticles = [
+  {
+    index: '10',
+    href: `${root}/benchmark-first/`,
+    title: '先跑真正的比赛：为什么 Benchmark 必须回到主线',
+    body: '旧 H1 不是废实验，而是 mechanism studies。主线先回答同一个 Qwen2.5-3B 加入 OpenEvo 后，最终未见任务成绩到底有没有提高。',
+    tag: '研究重分层',
+  },
+  {
+    index: '11',
+    href: `${root}/seed-faithful-benchmark/`,
+    title: '一场公平的 WebShop 比赛应该怎么跑？',
+    body: '把 500–6909 训练池、0–499 test pool、冻结 128 test、Score / Success、19,200-episode Stage-2 budget 与 test-time no-learning rule 一次钉死。',
+    tag: 'Benchmark 协议',
+  },
+  {
+    index: '12',
+    href: `${root}/openevo-benchmark-design/`,
+    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
+    body: '把 carrier 和 feedback density 拆成两个轴；先做 OpenEvo-Native-Sparse 公平比较，再把 Dense feedback 与参数内化作为可解释扩展。',
+    tag: '下一阶段设计',
+  },
+] as const;
 ---
 
 <div class="result-index" data-testid="openevo-webshop-result-index">
   <header class="index-hero">
     <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH INDEX</p>
     <h1>实验结果不再塞进一篇长报告，而是拆成一组研究笔记</h1>
-    <p class="lede">这个页面只负责导航。先读三篇“怎么训练”，再按实验推进顺序读结果；每篇只回答一个问题，正文、数字和证据都放进对应文章。</p>
+    <p class="lede">这个页面只负责导航。先建立 WebShop / SEED / OpenEvo 的共同语言，再读已经完成的实验结果，最后进入下一轮 benchmark 的重新设计。每篇只回答一个问题。</p>
   </header>
 
   <section class="index-section" aria-labelledby="primer-title">
@@ -103,7 +127,7 @@ const resultArticles = [
     <div class="section-heading">
       <p>PART II</p>
       <div>
-        <h2 id="results-title">按证据链读实验结果</h2>
+        <h2 id="results-title">按证据链读已经完成的实验</h2>
         <p>不是按实验编号堆日志，而是按“为什么失败 → 第一次正结果 → 独立复现 → 第二代为什么没过 → 测量边界 → 现在能说什么”组织。</p>
       </div>
     </div>
@@ -111,6 +135,30 @@ const resultArticles = [
     <div class="article-list">
       {resultArticles.map((article) => (
         <a href={article.href} class="result-card">
+          <div class="result-number">{article.index}</div>
+          <div class="result-copy">
+            <div class="result-meta"><small>{article.tag}</small></div>
+            <h3>{article.title}</h3>
+            <p>{article.body}</p>
+          </div>
+          <strong aria-hidden="true">→</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="index-section" aria-labelledby="design-title">
+    <div class="section-heading">
+      <p>PART III</p>
+      <div>
+        <h2 id="design-title">把主问题重新拉回 Benchmark</h2>
+        <p>这三篇不是新的实验结果，而是下一阶段的研究重分层：先跑真正的正式比赛，再用旧 H1 系列解释为什么结果会是这样。</p>
+      </div>
+    </div>
+
+    <div class="article-list">
+      {designArticles.map((article) => (
+        <a href={article.href} class="result-card design-card">
           <div class="result-number">{article.index}</div>
           <div class="result-copy">
             <div class="result-meta"><small>{article.tag}</small></div>
@@ -142,6 +190,7 @@ const resultArticles = [
   .article-card h3,.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.12rem;line-height:1.36;letter-spacing:-.02em}.article-card p,.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.article-card strong{margin-top:auto;padding-top:20px;color:var(--color-accent);font-size:.85rem}
   .article-list{display:grid;gap:10px}
   .result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .design-card{background:var(--color-surface)}
   .result-meta{margin-bottom:10px}.result-card strong{align-self:center;color:var(--color-accent);font-size:1.15rem}.result-card h3{font-size:1.22rem}
   @media(max-width:860px){.section-heading{grid-template-columns:1fr;gap:8px}.primer-grid{grid-template-columns:1fr}.article-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
 </style>
