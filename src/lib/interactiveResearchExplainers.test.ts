@@ -35,15 +35,21 @@ const labEn = read('src/pages/en/lab.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
 
 describe('interactive research explainers', () => {
-  it('mounts each priority bilingual explainer only on its dedicated route', () => {
+  it('mounts each true step-by-step bilingual explainer only on its dedicated route', () => {
     for (const [source, kind] of [
       [seedZh, 'seed'], [seedEn, 'seed'], [evoZh, 'openevo'], [evoEn, 'openevo'],
       [webshopZh, 'webshop'], [webshopEn, 'webshop'], [alfworldZh, 'alfworld'], [alfworldEn, 'alfworld'],
-      [loopsZh, 'compare'], [loopsEn, 'compare'], [labZh, 'server'], [labEn, 'server'],
+      [labZh, 'server'], [labEn, 'server'],
     ] as const) {
       expect(source).toContain('InteractiveResearchExplainer');
       expect(source).toContain(`kind="${kind}"`);
       expect(source).toContain('client:visible');
+    }
+    for (const source of [loopsZh, loopsEn]) {
+      expect(source).toContain('SeedOpenEvoCanonicalFigure');
+      expect(source).not.toContain('InteractiveResearchExplainer');
+      expect(source).not.toContain('kind="compare"');
+      expect(source).not.toContain('client:visible');
     }
     expect(trajectory).toContain('ResearchConceptIndex');
     expect(trajectory).not.toContain('InteractiveResearchExplainer');
@@ -115,11 +121,13 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('${item.id}-validation');
   });
 
-  it('compares SEED and OpenEvo from one shared experience instead of a table', () => {
+  it('retains a compare explainer implementation for reuse without mounting it beside canonical C1', () => {
     for (const term of ['SHARED EXPERIENCE', 'update mechanism', 'task boundary', 'carrier', 'validation', 'what persists', 'activation timing']) expect(explainer).toContain(term);
     expect(explainer).toContain('shared-seed');
     expect(explainer).toContain('shared-evo');
     expect(explainer).toContain('SD-LoRA adapter used in the WebShop experiment is one validated parametric path');
+    expect(loopsZh).not.toContain('kind="compare"');
+    expect(loopsEn).not.toContain('kind="compare"');
   });
 
   it('preserves the server sibling-container and authorization model with measured connectors and public-safe labels', () => {
