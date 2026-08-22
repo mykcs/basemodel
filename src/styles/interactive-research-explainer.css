@@ -52,10 +52,11 @@
 @media(max-width:760px){.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{width:100%;padding:.3rem;gap:.25rem}}
 
 /* Research prose must remain readable even inside dense diagrams. Meta labels
- * can stay compact, but explanatory prose gets a hard minimum size so CJK text
+ * can stay compact, but explanatory prose gets explicit floors so CJK text
  * cannot collapse into 8–9px multi-line columns. */
-.irx :where(p,dd,dt){font-size:max(.74rem,1em);line-height:1.55}
-.irx :where(.irx-node>small,.irx-live,.irx-paper-caption p,.irx-visual-key li){font-size:max(.68rem,1em);line-height:1.5}
+.irx p,.irx dd,.irx dt{font-size:.74rem;line-height:1.55}
+.irx .irx-header p{font-size:.94rem;line-height:1.7}
+.irx .irx-node>small,.irx .irx-live,.irx .irx-paper-caption p,.irx .irx-visual-key li{font-size:.72rem;line-height:1.5}
 
 /* The validated/persistent action keeps the same semantic green but needs a
  * darker solid surface for white normal-size text. #059669 + white is only
