@@ -33,6 +33,33 @@ Load and execute this gate whenever a change touches or implies any of the follo
 
 Do not wait for the owner to ask for dark-mode, mobile, overlap, clipping, or theme-switch verification.
 
+### Pre-provider execution gate
+
+For any UI-affecting change, the first provider-triggering ref update is **after** the repository-owned preflight, not before it.
+
+From the exact candidate worktree/ref, run:
+
+```bash
+npm run preflight:ui:plan
+npm run preflight:ui
+```
+
+`preflight:ui:plan` shows the changed paths, their highest UI blast-radius classification, the escaped-regression registry, and the commands that will run. `preflight:ui` then executes that plan without calling Vercel or another deployment provider.
+
+The classifier includes committed, staged, unstaged, and untracked paths relative to the intended base and classifies upward:
+
+- `none`: no UI-affecting path; browser preflight is not required;
+- `content` / `local`: deterministic Gate → production build → root-overflow preflight → Chromium `test:ui`;
+- `shared` / `global`: deterministic Gate → production build → root-overflow preflight → cross-browser `test:ui:all` on a supported runner.
+
+When a shared/global change requires WebKit, run the preflight on supported macOS, Ubuntu, or Debian. Do not downgrade the candidate to Chromium-only merely because the current execution environment lacks a supported WebKit runtime; keep the cross-browser boundary explicit until a suitable runner is available.
+
+Only after this pre-provider gate passes should an Agent move a ref that can create a Vercel Preview/Production deployment. Vercel remains the exact-head deployment/environment check and final product inspection layer, not the ordinary first place to discover theme, overflow, navigation, hydration, or geometry regressions.
+
+A GitHub/Vercel commit status is not by itself proof that a deployment object was created or a build ran. When deployment usage/quota matters, distinguish the provider status callback from live Vercel deployment records.
+
+When a visual bug escapes to Preview, Production, owner inspection, or external browser QA, add or extend an executable regression for the failure class and keep it wired into the existing gate. Fixing only the visible specimen is not closeout.
+
 ---
 
 ## 2. Future-failure scenarios to assume
@@ -305,6 +332,8 @@ The shared route, layer, and evidence components are the reference implementatio
 
 When uncertain, classify upward. Browser verification is cheaper than making the owner discover a predictable regression.
 
+For normal UI work, `npm run preflight:ui` is the canonical pre-provider wrapper around the deterministic Gate, build, overflow preflight, and the risk-selected browser command above. The table remains the semantic minimum; the wrapper prevents future Agents from silently omitting one of the required layers.
+
 ---
 
 ## 7. Completion-report contract
@@ -312,6 +341,7 @@ When uncertain, classify upward. Browser verification is cheaper than making the
 For UI-affecting work, the Agent must report separately:
 
 ```text
+pre-provider UI preflight
 static Gate
 browser UI safety gate
 exact-head Vercel deployment
@@ -324,6 +354,7 @@ Do not write “UI fixed” based only on source changes, token arithmetic, buil
 A valid report names the matrix actually tested, for example:
 
 ```text
+Pre-provider: risk class + exact candidate/base + PASS/FAIL
 UI safety: Chromium, light/dark, 390/768/1440, Chinese representative routes + English sample routes
 Cross-browser: WebKit included / not included and why
 Artifacts: no failures, or trace/screenshot path for the first failure
@@ -338,6 +369,7 @@ The repository deliberately does not install/run the full cross-browser Playwrig
 
 The compromise is intentional:
 
+- `preflight:ui` is the pre-provider orchestrator for UI-affecting candidate trees;
 - `verify:deploy` always protects the static UI contract through Vitest;
 - the scenario trigger makes `test:ui` mandatory for UI-affecting work;
 - the Vercel hosted UI gate may run the focused Chromium matrix for UI branch families, but must not attempt WebKit on Amazon Linux 2023;
@@ -355,9 +387,11 @@ Do not solve a visual-regression problem by blindly adding an expensive or unsup
 - theme pairs and compatibility aliases: `src/styles/tokens.css`;
 - contrast token regression: `src/lib/themeContrast.test.ts`;
 - browser UI matrix and geometry/contrast audit: `tests/e2e/ui-safety.spec.ts`;
+- pre-provider risk classifier/orchestrator and escaped-regression registry: `scripts/preflight-ui.ts`;
+- pre-provider gate wiring regression: `src/lib/preVercelUiGate.test.ts`;
 - hosted Chromium trigger: `scripts/vercel-ui-gate.mjs`;
 - Playwright failure artifacts: `playwright.config.ts`;
-- commands: `package.json` (`test:ui`, `test:ui:all`);
+- commands: `package.json` (`preflight:ui:plan`, `preflight:ui`, `test:ui`, `test:ui:all`);
 - shared auditable visual primitives: `src/components/visual/*`;
 - trigger/router entry: root `AGENTS.md` and `docs/agents/README.md`;
 - this policy: `docs/agents/current/ui-change-visual-acceptance-gate.md`.

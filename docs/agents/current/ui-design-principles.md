@@ -273,6 +273,24 @@ The WebShop training-note routes are a permanent regression set because this exa
 
 A UI/theme change touching these pages, their layout, shared theme tokens, or their CSS ownership must run `tests/e2e/webshop-training-theme.spec.ts` before it is considered complete.
 
+### Regression-class closure — fix the family, not only the specimen
+
+When a UI bug reaches a Preview or production deployment, the repair is incomplete if it only changes the one selector, route, component, or test that exposed the symptom. The same change must close the **failure class** as far as the repository can reasonably prove it.
+
+Required closure steps:
+
+1. reproduce and name the mechanism, not only the screenshot symptom;
+2. search the repository for sibling uses of the same syntax, ownership pattern, token misuse, route assumption, or test shortcut;
+3. fix every confirmed sibling instance that has the same failure mechanism;
+4. add a **negative executable invariant** that makes the bad pattern itself fail CI when practical, rather than only asserting one known-good example;
+5. if semantic ownership moved, update the browser route matrix in the same change so tests follow the current canonical owner instead of historical pages;
+6. if the bug escaped Preview, verify that the production `main` deployment actually executes the relevant real-browser gate rather than merely containing the test in the repository;
+7. preserve the focused regression as part of the broader UI suite so a later refactor cannot silently drop it.
+
+Examples of valid negative invariants include forbidding a known-wrong framework directive repository-wide, freezing a semantic CSS owner in the architecture audit, or asserting that retired non-owner routes cannot re-enter an explainer geometry matrix.
+
+The stopping condition is not “this page looks fixed.” It is: **the observed bug is fixed, confirmed siblings are fixed, and the repository has become materially less permissive of the mechanism that caused it.**
+
 ## Relationship to other project rules
 
 This file owns the **visual identity and non-drift rules**.
