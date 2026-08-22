@@ -1,0 +1,140 @@
+---
+const root = '/research/seed-openevo/results';
+
+const primerArticles = [
+  {
+    index: '01',
+    href: `${root}/webshop-training/`,
+    title: 'WebShop 是什么？大家以前怎么训练它？',
+    body: '从环境、observation / action / reward 讲起，再看原始 WebShop 的 IL + RL，以及后来多轮 on-policy RL 为什么成为主流。',
+    tag: '背景与历史',
+  },
+  {
+    index: '02',
+    href: `${root}/seed-training/`,
+    title: 'SEED 到底怎么在 WebShop 上训练？',
+    body: '拆开 Stage 1 hindsight-skill SFT 与 Stage 2 on-policy OPD + RL，并把论文设定与当前公开代码默认值分开记录。',
+    tag: '强对照复现',
+  },
+  {
+    index: '03',
+    href: `${root}/openevo-training/`,
+    title: '我们自己的 OpenEvo × WebShop 怎么训练？',
+    body: '解释 success harvest、严格 qualification、SD-LoRA parameter write、fresh-task evaluation，以及为什么目前还不能直接和 SEED Table 1 横比。',
+    tag: '我们的协议',
+  },
+] as const;
+
+const resultArticles = [
+  {
+    index: '04',
+    href: `${root}/why-it-kept-failing/`,
+    title: '为什么我们前面一直没有得到可靠的 fresh-task 提升？',
+    body: '从 3B 到 7B、从 parser / fallback 到冻结配对面板：把一连串“跑通了但不能下结论”的实验放回同一条证据链。',
+    tag: '失败与校准',
+  },
+  {
+    index: '05',
+    href: `${root}/first-positive-transfer/`,
+    title: '第一次正结果：什么时候第一次看到可迁移收益？',
+    body: 'H1.38B continuation 中，SD-LoRA 对 BASE 的 fresh-task delta 为 +0.124，95% CI [0.0326, 0.2194]；这是后续独立复现的起点。',
+    tag: '第一次正结果',
+  },
+  {
+    index: '06',
+    href: `${root}/independent-replication/`,
+    title: '独立复现：换一批全新 WebShop 任务以后，提升还在吗？',
+    body: 'H1.39-MR 冻结训练产物后换到独立新任务面板；ordinary 与 SD 两条更新路线都高于同一个 BASE，其中 SD − BASE 为 +0.248845。',
+    tag: '最强证据',
+  },
+  {
+    index: '07',
+    href: `${root}/second-generation/`,
+    title: '第二次连续写入：为什么还不能说“多代自进化”成立？',
+    body: '第二轮有足够成功经验，也真实完成了 G2 参数写入，但 acquisition、retention 与上一轮收益 preservation 的上游门没有一起通过。',
+    tag: '连续写入',
+  },
+  {
+    index: '08',
+    href: `${root}/current-conclusion/`,
+    title: '现在到底能下什么结论？什么还不能说？',
+    body: '把 supported、negative、invalid 和 still unknown 分开：当前支持一次可复现跨任务迁移，但不支持已经建立多代 self-evolution。',
+    tag: '结论边界',
+  },
+] as const;
+---
+
+<div class="result-index" data-testid="openevo-webshop-result-index">
+  <header class="index-hero">
+    <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH INDEX</p>
+    <h1>实验结果不再塞进一篇长报告，而是拆成一组研究笔记</h1>
+    <p class="lede">这个页面只负责导航。先读三篇“怎么训练”，再按实验推进顺序读结果；每篇只回答一个问题，正文、数字和证据都放进对应文章。</p>
+  </header>
+
+  <section class="index-section" aria-labelledby="primer-title">
+    <div class="section-heading">
+      <p>PART I</p>
+      <div>
+        <h2 id="primer-title">先建立共同语言</h2>
+        <p>WebShop 是什么、SEED 怎么训练、我们怎么训练。没有这三步，后面的实验数字很容易被误读。</p>
+      </div>
+    </div>
+
+    <div class="article-grid primer-grid">
+      {primerArticles.map((article) => (
+        <a href={article.href} class="article-card">
+          <div class="card-top"><span>{article.index}</span><small>{article.tag}</small></div>
+          <h3>{article.title}</h3>
+          <p>{article.body}</p>
+          <strong>阅读全文 →</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="index-section" aria-labelledby="results-title">
+    <div class="section-heading">
+      <p>PART II</p>
+      <div>
+        <h2 id="results-title">按证据链读实验结果</h2>
+        <p>不是按实验编号堆日志，而是按“为什么失败 → 第一次正结果 → 独立复现 → 第二代为什么没过 → 现在能说什么”组织。</p>
+      </div>
+    </div>
+
+    <div class="article-list">
+      {resultArticles.map((article) => (
+        <a href={article.href} class="result-card">
+          <div class="result-number">{article.index}</div>
+          <div class="result-copy">
+            <div class="result-meta"><small>{article.tag}</small></div>
+            <h3>{article.title}</h3>
+            <p>{article.body}</p>
+          </div>
+          <strong aria-hidden="true">→</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+</div>
+
+<style>
+  .result-index{max-width:1180px;margin:0 auto;padding:26px 24px 72px;color:var(--color-text)}
+  .index-hero{max-width:900px;padding:34px 0 52px}
+  .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:700;letter-spacing:.14em}
+  .index-hero h1{margin:0;max-width:860px;font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;color:var(--color-text)}
+  .lede{max-width:760px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.75}
+  .index-section{padding:38px 0 46px;border-top:1px solid var(--color-border)}
+  .section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}
+  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em}
+  .section-heading div>p{margin:0;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
+  .article-grid{display:grid;gap:12px}.primer-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .article-card{display:flex;min-height:245px;flex-direction:column;padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .article-card:hover,.article-card:focus-visible,.result-card:hover,.result-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);background:var(--color-surface)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.card-top span,.result-number{color:var(--color-text-muted);font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.card-top small,.result-meta small{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.72rem}
+  .article-card h3,.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.12rem;line-height:1.36;letter-spacing:-.02em}.article-card p,.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.article-card strong{margin-top:auto;padding-top:20px;color:var(--color-accent);font-size:.85rem}
+  .article-list{display:grid;gap:10px}
+  .result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .result-meta{margin-bottom:10px}.result-card strong{align-self:center;color:var(--color-accent);font-size:1.15rem}.result-card h3{font-size:1.22rem}
+  @media(max-width:860px){.section-heading{grid-template-columns:1fr;gap:8px}.primer-grid{grid-template-columns:1fr}.article-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
+</style>
