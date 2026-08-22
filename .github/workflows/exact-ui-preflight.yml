@@ -13,19 +13,19 @@ permissions:
 
 jobs:
   preflight:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - name: Checkout exact candidate
         uses: actions/checkout@v4
         with:
-          ref: d69a22d29156b6c977a6fbf8665a483f8c089053
+          ref: 8d38ce3196edd25062a04a9204a56ecb2b33903c
           fetch-depth: 0
 
       - name: Verify exact candidate identity
         shell: bash
         run: |
-          test "$(git rev-parse HEAD)" = "d69a22d29156b6c977a6fbf8665a483f8c089053"
+          test "$(git rev-parse HEAD)" = "8d38ce3196edd25062a04a9204a56ecb2b33903c"
           git merge-base --is-ancestor 75a4c999a6c90410285dc34f3152c3f58e6dc5fd HEAD
 
       - name: Set up Node.js
@@ -38,7 +38,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install chromium webkit
 
       - name: Run exact pre-provider UI gate
         env:
@@ -49,7 +49,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: exact-ui-preflight-failure
+          name: exact-ui-preflight-failure-macos
           path: |
             playwright-report
             test-results
