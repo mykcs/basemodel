@@ -8,6 +8,7 @@ const repoRoot = resolve(srcRoot, '..');
 const vercelUiGate = readFileSync(resolve(repoRoot, 'scripts/vercel-ui-gate.mjs'), 'utf8');
 const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-explainer-layout.spec.ts'), 'utf8');
 const visualCloseoutBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/visual-closeout-followup.spec.ts'), 'utf8');
+const canonicalFigureGate = readFileSync(resolve(repoRoot, 'tests/e2e/canonical-research-figures.spec.ts'), 'utf8');
 const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
 const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/results.astro'), 'utf8');
 const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/results.astro'), 'utf8');
@@ -50,26 +51,24 @@ describe('UI regression-class hardening', () => {
     expect(appLayout).toContain("speedInsights.src = '/_vercel/speed-insights/script.js';");
   });
 
-  it('keeps every explainer browser matrix aligned with actual canonical owner routes', () => {
+  it('keeps interactive browser matrices aligned with actual explainer owner routes', () => {
     const ownerMatrix = explainerBrowserGate.match(/const routes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
     const visualOwnerMatrix = visualCloseoutBrowserGate.match(/const explainerRoutes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
     const stepperMatrix = visualCloseoutBrowserGate.match(/const stepperRoutes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
 
-    const bilingualOwners = [
+    const interactiveOwners = [
       '/research/seed-openevo/webshop/',
       '/research/seed-openevo/alfworld/',
       '/research/seed-openevo/seed/',
       '/research/seed-openevo/openevo/',
-      '/research/seed-openevo/loops/',
       '/lab/',
       '/en/research/seed-openevo/webshop/',
       '/en/research/seed-openevo/alfworld/',
       '/en/research/seed-openevo/seed/',
       '/en/research/seed-openevo/openevo/',
-      '/en/research/seed-openevo/loops/',
       '/en/lab/',
     ];
-    for (const path of bilingualOwners) {
+    for (const path of interactiveOwners) {
       expect(ownerMatrix, `research explainer owner matrix missing ${path}`).toContain(path);
       expect(visualOwnerMatrix, `visual closeout owner matrix missing ${path}`).toContain(path);
     }
@@ -79,9 +78,14 @@ describe('UI regression-class hardening', () => {
       '/research/seed-openevo/alfworld/',
       '/research/seed-openevo/seed/',
       '/research/seed-openevo/openevo/',
-      '/research/seed-openevo/loops/',
       '/lab/',
     ]) expect(stepperMatrix, `visual closeout stepper matrix missing ${path}`).toContain(path);
+
+    for (const canonicalOnly of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
+      expect(ownerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
+      expect(visualOwnerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
+      expect(canonicalFigureGate, `${canonicalOnly} missing canonical figure acceptance`).toContain(canonicalOnly);
+    }
 
     for (const retiredOwner of [
       '/research/seed-openevo/benchmarks/',
