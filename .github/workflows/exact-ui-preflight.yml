@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/exact-ui-preflight-d69a22d
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
