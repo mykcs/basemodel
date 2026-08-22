@@ -39,6 +39,18 @@
   line-height: 1.42 !important;
 }
 
+/* On a wide paper-style Stage 1 pipeline, the five nodes are labels in a
+ * figure, not five miniature prose cards. Their explanatory sentences are
+ * intentionally suppressed on wide screens because the full-width
+ * .stage-intuition immediately below owns the explanation. At <=1080px the
+ * pipeline stacks and the node prose returns because each node is wide enough
+ * to read comfortably. */
+@media (min-width: 1081px) {
+  .seed-webshop-figure .stage-one-flow .paper-node > p {
+    display: none !important;
+  }
+}
+
 /* Dense horizontal compositions should collapse before prose becomes a narrow
  * Chinese newspaper column. The component's own mobile breakpoints continue to
  * handle smaller screens; this intermediate breakpoint protects tablets and
