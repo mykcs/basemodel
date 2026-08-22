@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 const srcRoot = fileURLToPath(new URL('../', import.meta.url));
 const repoRoot = resolve(srcRoot, '..');
 const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-explainer-layout.spec.ts'), 'utf8');
+const visualCloseoutBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/visual-closeout-followup.spec.ts'), 'utf8');
 const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
 const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/results.astro'), 'utf8');
 const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/results.astro'), 'utf8');
@@ -42,10 +43,12 @@ describe('UI regression-class hardening', () => {
     expect(appLayout).toContain("speedInsights.src = '/_vercel/speed-insights/script.js';");
   });
 
-  it('keeps the geometry matrix aligned with actual explainer-owner routes', () => {
+  it('keeps every explainer browser matrix aligned with actual canonical owner routes', () => {
     const ownerMatrix = explainerBrowserGate.match(/const routes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
+    const visualOwnerMatrix = visualCloseoutBrowserGate.match(/const explainerRoutes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
+    const stepperMatrix = visualCloseoutBrowserGate.match(/const stepperRoutes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
 
-    for (const path of [
+    const bilingualOwners = [
       '/research/seed-openevo/webshop/',
       '/research/seed-openevo/alfworld/',
       '/research/seed-openevo/seed/',
@@ -58,13 +61,30 @@ describe('UI regression-class hardening', () => {
       '/en/research/seed-openevo/openevo/',
       '/en/research/seed-openevo/loops/',
       '/en/lab/',
-    ]) expect(ownerMatrix).toContain(path);
+    ];
+    for (const path of bilingualOwners) {
+      expect(ownerMatrix, `research explainer owner matrix missing ${path}`).toContain(path);
+      expect(visualOwnerMatrix, `visual closeout owner matrix missing ${path}`).toContain(path);
+    }
+
+    for (const path of [
+      '/research/seed-openevo/webshop/',
+      '/research/seed-openevo/alfworld/',
+      '/research/seed-openevo/seed/',
+      '/research/seed-openevo/openevo/',
+      '/research/seed-openevo/loops/',
+      '/lab/',
+    ]) expect(stepperMatrix, `visual closeout stepper matrix missing ${path}`).toContain(path);
 
     for (const retiredOwner of [
       '/research/seed-openevo/benchmarks/',
       '/guide/openevo-webshop-alfworld/',
       '/en/research/seed-openevo/benchmarks/',
       '/en/guide/openevo-webshop-alfworld/',
-    ]) expect(ownerMatrix).not.toContain(retiredOwner);
+    ]) {
+      expect(ownerMatrix, `research explainer matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);
+      expect(visualOwnerMatrix, `visual closeout matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);
+      expect(stepperMatrix, `stepper matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);
+    }
   });
 });
