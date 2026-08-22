@@ -115,7 +115,12 @@ for (const theme of ['light', 'dark'] as const) {
       for (const route of [indexRoute, ...benchmarkRoutes]) {
         await page.goto(route);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-        await expect(page.locator('main')).toBeVisible();
+        await expect(page.locator('#main-content')).toBeVisible();
+        if (route === indexRoute) {
+          await expect(page.getByTestId('openevo-webshop-result-index')).toBeVisible();
+        } else {
+          await expect(page.locator('.benchmark-note')).toBeVisible();
+        }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       }
     });
