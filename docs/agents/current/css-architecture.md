@@ -2,7 +2,7 @@
 
 Status: **current implementation contract**  
 Decision date: **2026-08-20**  
-Last reviewed: **2026-08-21**
+Last reviewed: **2026-08-22**
 
 ## Decision
 
@@ -29,7 +29,7 @@ Astro + React + CSS variables
 | 1 · composition root | complete | `AppLayout.astro -> app.css`, structural audit, exact-head browser acceptance |
 | 2 · global shell ownership | complete | `components/global-shell.css` and `components/header.css` are final shell owners |
 | 3 · responsive ownership | complete | 1080/1081 navigation handoff and phone menu behavior are owned by `components/header.css` |
-| 4 · retire patch layers | complete for global-shell scope; incremental debt remains | Header/Nav rules are gone from `visual-closeout.css` and `mobile-composition.css`; retained patch files still contain required non-shell behavior |
+| 4 · retire patch layers | complete for global-shell scope; incremental debt remains | Header/Nav rules are gone from `visual-closeout.css`, `mobile-composition.css`, and `design-refinement.css`; retained patch files still contain required non-shell behavior |
 | 5 · Tailwind evaluation | complete: no pilot | evidence still points to ownership debt, not utility-authoring friction |
 
 There is no Phase 6 in the current plan. A new phase should exist only for a new, independently testable architecture problem.
@@ -54,7 +54,8 @@ AppLayout.astro
    ├─ visual-closeout.css
    └─ components/
       ├─ global-shell.css
-      └─ header.css
+      ├─ header.css
+      └─ webshop-training-note.css
 ```
 
 `AppLayout.astro` must not accumulate another list of page-wide stylesheet imports. `app.css` is the only composition root for global CSS.
@@ -85,11 +86,13 @@ Feature-owned CSS may still be imported by its owning component when the rules d
 
 The Header component's scoped Astro style may still own internal structure. The global semantic owner exists for cross-route shell behavior that historically leaked into late global files.
 
+`src/styles/components/webshop-training-note.css` owns the WebShop training-note themed editorial surface that previously escaped through route-scoped styling. Its semantic background/text/color-scheme invariants are part of the CSS architecture audit.
+
 ### Named cross-cutting systems
 
 Files such as `workspace.css`, `actionable-content.css`, `knowledge-architecture.css`, and `mobile-composition.css` are valid because each has a durable named responsibility.
 
-`mobile-composition.css` owns mobile reading composition only. As of 2026-08-21 its old Header/mobile-menu compatibility copy has been removed. It must not regain Header/Nav selectors.
+`mobile-composition.css` owns mobile reading composition only. Its old Header/mobile-menu compatibility copy has been removed. It must not regain Header/Nav selectors.
 
 A new global stylesheet must have a durable semantic responsibility that can be described without words such as “fix”, “final”, “hardening”, “closeout”, “cleanup”, or “refinement”.
 
@@ -112,12 +115,12 @@ They are **migration debt, not extension points**.
 Current Header/Nav selector inventory is intentionally frozen to:
 
 - canonical owner: `components/header.css`;
-- legacy compatibility: `visual-upgrade.css`, `design-refinement.css`, `final-hardening.css`;
+- legacy compatibility: `visual-upgrade.css`, `final-hardening.css`;
 - foundation history: `site.css`, `visual-identity.css`.
 
-`visual-closeout.css` and `mobile-composition.css` are no longer allowed to contain Header/Nav selectors.
+`design-refinement.css`, `visual-closeout.css`, and `mobile-composition.css` are no longer allowed to contain Header/Nav selectors.
 
-Do not delete a whole legacy file merely to make the folder tree cleaner. `design-refinement.css` and `final-hardening.css`, in particular, still contain many required page-level responsive/guide/card rules. Retire them property-owner by property-owner, with browser evidence, until a file is actually empty or semantically redundant.
+Do not delete a whole legacy file merely to make the folder tree cleaner. `design-refinement.css` still contains required editorial/Guide/page behavior even though its Header copy is retired; `final-hardening.css` still contains required page-level responsive/guide/card rules. Retire remaining debt property-owner by property-owner, with browser evidence, until a file is actually empty or semantically redundant.
 
 ## Cascade rules
 
@@ -132,12 +135,13 @@ Do not delete a whole legacy file merely to make the folder tree cleaner. `desig
 
 The current answer remains **no migration and no pilot**.
 
-The 2026-08-21 repository-wide debt review found:
+The repository-wide debt reviews found:
 
-- real debt is stale compatibility copies, stale execution documentation, repeated page payload, and a few historical patch layers;
+- real debt is stale compatibility copies, stale execution documentation, repeated page payload, browser-persistence boundaries, and a few historical patch layers;
 - D3, ECharts and Nanostores are actively used rather than orphan dependencies;
 - the expensive Landscape engines are already lazy-loaded behind the interactive surface;
-- existing semantic owner + audit patterns directly prevent the failure mode that previously produced CSS drift.
+- existing semantic owner + audit patterns directly prevent the failure mode that previously produced CSS drift;
+- current Production Lighthouse lab baselines on the measured home/results surfaces are 99–100, so there is no performance evidence that replacing native CSS would improve the site.
 
 Tailwind may be reconsidered only if a future isolated surface shows measured authoring/review benefits that the current semantic-owner model cannot provide. A future pilot must preserve `tokens.css` as canonical design truth and must compare browser regressions, review complexity, bundle/build cost, and Agent edit quality against the current implementation. Do not start with a site-wide rewrite.
 
@@ -150,8 +154,9 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - other layouts do not compose their own global CSS stacks;
 - no new patch-style stylesheet family appears;
 - Header/Nav selectors cannot spread to new files;
-- `visual-closeout.css` and `mobile-composition.css` cannot regain Header/Nav ownership;
-- required Header/shared-shell invariants remain in their semantic owners.
+- `design-refinement.css`, `visual-closeout.css`, and `mobile-composition.css` cannot regain Header/Nav ownership;
+- required Header/shared-shell invariants remain in their semantic owners;
+- the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants.
 
 `src/lib/globalShellOwnership.test.ts` independently enforces page isolation, owner ordering, breakpoint ownership, retired Header debt, and the frozen remaining selector set.
 
