@@ -9,11 +9,11 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 ---
 
-<section id="fig-seed-openevo-update-target" class="canonical-figure comparison-figure" aria-labelledby="seed-openevo-canonical-title" data-ui-audit="contrast layout overflow">
+<section id="fig-seed-openevo-update-target" class="canonical-figure comparison-figure" aria-labelledby="seed-openevo-canonical-title" data-ui-audit="contrast layout overflow readability">
   <header class="figure-header">
     <div class="figure-label">FIGURE C1 · SEED × OPENEVO</div>
     <h2 id="seed-openevo-canonical-title">{t('同一份任务经验，SEED 和 OpenEvo 到底把什么东西变了？','Given the same task experience, what does SEED change — and what does OpenEvo change?')}</h2>
-    <p>{t('这张图故意抽掉 WebShop、ALFWorld 的任务细节，只保留一个可以跨 benchmark 复用的抽象：Agent 被框架包裹，与环境交互得到 trajectory；随后两种框架在“经验如何保存、何时生效”上分叉。','This figure deliberately removes WebShop- and ALFWorld-specific details. It keeps one reusable abstraction: a framework-wrapped Agent interacts with an environment and produces a trajectory; the two frameworks then diverge in how that experience persists and when it becomes active.')}</p>
+    <p data-ui-prose>{t('这张图只保留一个跨 benchmark 可复用的比较：两边都从已完成的任务经验开始；SEED 把 hindsight 组织成 policy 更新，OpenEvo 把 evidence 交给 evolution method，形成后续任务可加载的 successor state。','This figure keeps one reusable cross-benchmark comparison: both sides begin from completed task experience; SEED turns hindsight into a policy update, while OpenEvo hands evidence to an evolution method that forms successor state for later tasks.')}</p>
     <div class="figure-actions">
       <a href={p('/research/seed-openevo/seed/#fig-seed-webshop')}>{t('SEED × WebShop 具体图 →','SEED × WebShop concrete figure →')}</a>
       <a href={p('/research/seed-openevo/openevo/')}>{t('OpenEvo 完整机制 →','Full OpenEvo mechanism →')}</a>
@@ -23,15 +23,15 @@ const p = (path: string) => localePath(locale, path);
   <figure class="comparison-body">
     <div class="shared-experience" data-ui-audit-item>
       <small>SHARED EXPERIENCE</small>
-      <strong>{t('task + observations + sampled actions + outcome','task + observations + sampled actions + outcome')}</strong>
-      <span>{t('在这里，两边看到的是同一种“做完任务以后留下来的经验”','At this point, both sides start from the same kind of completed-task experience')}</span>
+      <strong>task + observations + sampled actions + outcome</strong>
+      <span data-ui-prose>{t('同一次任务结束后，两种框架都先拿到这份 completed experience。','After the same task ends, both frameworks first receive this completed experience.')}</span>
     </div>
 
     <div class="framework-columns" data-ui-audit="layout">
       <article class="framework-column seed-column" data-ui-audit-item>
         <header class="column-header">
           <span>SEED</span>
-          <strong>{t('把 hindsight 的行为指导写回 policy 参数','Internalize hindsight guidance into policy parameters')}</strong>
+          <strong>{t('把 hindsight 写回 policy','Write hindsight back into the policy')}</strong>
         </header>
 
         <div class="framework-wrapper seed-wrapper">
@@ -40,7 +40,7 @@ const p = (path: string) => localePath(locale, path);
             <span class="paper-symbol" aria-hidden="true">🔥</span>
             <div><small>AGENT / POLICY</small><strong>π<sub>θ</sub></strong></div>
           </div>
-          <p>{t('训练阶段，真正接受 optimizer 更新的是 policy 参数。','During training, policy parameters are the object updated by the optimizer.')}</p>
+          <p data-ui-prose>{t('训练阶段，optimizer 真正更新的是 policy 参数。','During training, the optimizer updates the policy parameters.')}</p>
         </div>
 
         <div class="column-flow">
@@ -56,17 +56,17 @@ const p = (path: string) => localePath(locale, path);
 
         <section class="next-task seed-next">
           <small>NEXT ROUND / INFERENCE</small>
-          <div class="next-agent"><strong>Agent θ′</strong><span>{t('经验已经内化进模型本身','experience is already internalized in the model')}</span></div>
+          <div class="next-agent"><strong>Agent θ′</strong><span data-ui-prose>{t('经验已经内化进模型本身','experience is internalized in the model')}</span></div>
           <i aria-hidden="true">↓</i>
-          <b>{t('new task','new task')}</b>
-          <p>{t('部署时不需要把 hindsight analyzer 或 skill prompt 永久带在旁边。','Deployment does not require permanently carrying the hindsight analyzer or skill prompt alongside the Agent.')}</p>
+          <b>new task</b>
+          <p data-ui-prose>{t('推理时不需要永久携带 hindsight analyzer 或 skill prompt。','Inference does not require permanently carrying the hindsight analyzer or skill prompt.')}</p>
         </section>
       </article>
 
       <article class="framework-column evo-column" data-ui-audit-item>
         <header class="column-header">
           <span>OpenEvo</span>
-          <strong>{t('先把任务经验变成可验证、可继承的 evolution carrier','Turn task experience into a validated, inheritable evolution carrier')}</strong>
+          <strong>{t('把 evidence 变成 successor state','Turn evidence into successor state')}</strong>
         </header>
 
         <div class="framework-wrapper evo-wrapper">
@@ -75,7 +75,7 @@ const p = (path: string) => localePath(locale, path);
             <small>AGENT</small><strong>{t('base / current Agent','base / current Agent')}</strong>
           </div>
           <div class="carrier-slot"><small>EVOLUTION CARRIER</small><span>memory · skill · instructions · adapter</span></div>
-          <p>{t('OpenEvo 的框架本体不规定经验只能存在模型外，也不规定一定更新权重；carrier 类型决定 successor state 的形态。','OpenEvo does not require experience to remain outside the model, nor does it require a weight update; the carrier type determines the form of successor state.')}</p>
+          <p data-ui-prose>{t('OpenEvo 规定任务边界、evidence、evolution 与 successor 的合同；具体 carrier 决定经验最后以什么形式保存。','OpenEvo defines the task-boundary, evidence, evolution, and successor contract; the carrier determines the form in which experience persists.')}</p>
         </div>
 
         <div class="column-flow">
@@ -83,59 +83,30 @@ const p = (path: string) => localePath(locale, path);
           <i aria-hidden="true">↓</i>
           <div class="flow-node experience"><small>EVOLUTION METHOD</small><strong>reflect / extract / parametric update</strong></div>
           <i aria-hidden="true">↓</i>
-          <div class="carrier-fork" data-ui-audit="layout">
-            <article class="carrier-path external" data-ui-audit-item>
-              <div><span class="paper-symbol" aria-hidden="true">❄️</span><small>NON-WEIGHT PATH</small></div>
-              <strong>📄 memory / skill / instructions</strong>
-              <p>{t('这一条路径里 Agent 参数不更新；经验作为显式 artifact 保存。','On this path Agent parameters do not update; experience persists as an explicit artifact.')}</p>
-            </article>
-            <article class="carrier-path parametric" data-ui-audit-item>
-              <div><span class="paper-symbol" aria-hidden="true">🔥</span><small>PARAMETRIC PATH</small></div>
-              <strong>{t('adapter / parameter carrier','adapter / parameter carrier')}</strong>
-              <p>{t('参数化 carrier 可以更新 adapter；我们 WebShop 的 SD-LoRA 属于这类实验路径。','A parametric carrier can update an adapter; the WebShop SD-LoRA experiments are one example of this path.')}</p>
-            </article>
-          </div>
-          <i aria-hidden="true">↓</i>
           <div class="change-node carrier-change">
             <span aria-hidden="true">✓</span>
-            <div><small>WHAT CHANGES?</small><strong>{t('VALIDATED SUCCESSOR STATE','VALIDATED SUCCESSOR STATE')}</strong></div>
+            <div><small>WHAT CHANGES?</small><strong>VALIDATED SUCCESSOR CARRIER / STATE</strong></div>
           </div>
+        </div>
+
+        <div class="carrier-note" data-ui-audit-item>
+          <span data-ui-prose><b aria-hidden="true">❄️</b>{t('non-weight carrier：Agent 参数不更新，经验显式保存。','non-weight carrier: Agent parameters stay unchanged and experience remains explicit.')}</span>
+          <span data-ui-prose><b aria-hidden="true">🔥</b>{t('parametric carrier：可以更新 adapter；SD-LoRA 属于这类实验路径。','parametric carrier: an adapter may update; SD-LoRA is one experimental path of this kind.')}</span>
         </div>
 
         <section class="next-task evo-next">
           <small>NEXT TASK</small>
-          <div class="successor-package">
-            <strong>OpenEvo</strong>
-            <div class="next-agent"><span>Agent</span><b>+</b><span>{t('accepted carrier','accepted carrier')}</span></div>
-          </div>
+          <div class="successor-package"><strong>OpenEvo</strong><div class="next-agent"><span>Agent</span><b>+</b><span>{t('accepted carrier','accepted carrier')}</span></div></div>
           <i aria-hidden="true">↓</i>
-          <b>{t('new task','new task')}</b>
-          <p>{t('accepted carrier 在任务完成、验证并发布 successor revision 以后，才从后续任务开始生效。','An accepted carrier activates only after the producing task has finished and the successor revision has been validated and published.')}</p>
+          <b>new task</b>
+          <p data-ui-prose>{t('只有经过 validation / promotion 的 successor，才从后续任务开始生效。','Only a successor that passes validation / promotion activates on later tasks.')}</p>
         </section>
       </article>
     </div>
 
-    <section class="aligned-comparison" aria-labelledby="what-changes-title">
-      <header>
-        <small>CORE COMPARISON</small>
-        <h3 id="what-changes-title">WHAT ACTUALLY CHANGES?</h3>
-      </header>
-      <div class="comparison-row">
-        <span class="method-label seed">SEED</span>
-        <strong class="target">🔥 MODEL PARAMETERS</strong>
-        <span class="meaning">{t('hindsight → learning signal → θ′','hindsight → learning signal → θ′')}</span>
-      </div>
-      <div class="comparison-row">
-        <span class="method-label evo">OpenEvo</span>
-        <strong class="target">{t('SUCCESSOR CARRIER / STATE','SUCCESSOR CARRIER / STATE')}</strong>
-        <span class="meaning">{t('evidence → evolution method → validated successor','evidence → evolution method → validated successor')}</span>
-      </div>
-      <p>{t('因此，“SEED = 参数、OpenEvo = 外部记忆”只是一个过度简化。更稳定的区别是：SEED 论文把 hindsight supervision 直接组织成 policy optimization；OpenEvo 把已完成任务的 evidence 交给 evolution method，并允许不同 carrier 组成后续 revision。','Therefore, “SEED = parameters, OpenEvo = external memory” is an over-simplification. The more stable distinction is that SEED organizes hindsight supervision directly into policy optimization, while OpenEvo hands completed-task evidence to an evolution method and allows different carriers to compose a later revision.')}</p>
-    </section>
-
-    <figcaption>
-      <strong>{t('Figure C1｜同一份任务经验在 SEED 与 OpenEvo 中的持久化路径。','Figure C1 | How the same task experience persists in SEED and OpenEvo.')}</strong>
-      {t('SEED 在训练中把 completed trajectory 转成 hindsight skill，并通过 OPD 与 outcome-based RL 更新 policy 参数；更新后的 checkpoint 直接进入下一轮或推理。OpenEvo 则在任务边界封存 evidence，运行选定的 evolution method，把结果写入 memory、skill、agent-system instruction 或 parametric adapter 等 carrier，经 validation / promotion 后组成 successor state 并从后续任务生效。图中 ❄️ 在 OpenEvo non-weight path 上表示“这条路径不更新 Agent 参数”，不是声称 OpenEvo 的所有 carrier 都冻结模型；参数化 carrier 仍可以更新 adapter。','SEED converts a completed trajectory into hindsight skills during training and uses OPD plus outcome-based RL to update policy parameters; the updated checkpoint enters the next iteration or inference directly. OpenEvo seals evidence at a task boundary, runs the selected evolution method, writes the result into carriers such as memory, skills, agent-system instructions, or a parametric adapter, then forms successor state after validation / promotion and activates it on a later task. On the OpenEvo non-weight path, ❄️ means that this path does not update Agent parameters; it does not claim every OpenEvo carrier freezes the model, because parametric carriers may update adapters.')}
+    <figcaption data-ui-prose>
+      <strong>{t('Figure C1｜同一份任务经验，两种不同的持久化路径。','Figure C1 | The same task experience, two persistence paths.')}</strong>
+      {t('SEED 把 completed trajectory 转成 hindsight supervision，并通过 OPD 与 outcome-based RL 更新 policy 参数；OpenEvo 在任务边界封存 evidence，再由选定的 evolution method 产生并验证 successor carrier/state。这里不再展开 OpenEvo 的各类 carrier 分支；这些细节留给 OpenEvo 方法页。','SEED converts a completed trajectory into hindsight supervision and updates policy parameters through OPD plus outcome-based RL; OpenEvo seals evidence at the task boundary and uses the selected evolution method to produce and validate successor carrier/state. Carrier subtypes are intentionally not expanded here; those details belong on the OpenEvo method page.')}
     </figcaption>
   </figure>
 
@@ -143,11 +114,16 @@ const p = (path: string) => localePath(locale, path);
 </section>
 
 <style>
-.comparison-figure{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;width:100%;margin:0;padding:clamp(.9rem,2vw,1.35rem);border:1px solid var(--line);border-radius:24px;background:linear-gradient(90deg,color-mix(in srgb,var(--signal) 2.6%,var(--surface)),var(--surface) 48%,color-mix(in srgb,var(--state) 2.6%,var(--surface)));box-shadow:0 22px 70px color-mix(in srgb,#000 7%,transparent)}
-.figure-header{max-width:980px}.figure-label{color:var(--state);font:850 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.figure-header h2{margin:.45rem 0 .55rem;font-size:clamp(1.35rem,2.7vw,2.25rem);letter-spacing:-.035em;line-height:1.1}.figure-header p{max-width:80ch;margin:0;color:var(--muted);font-size:.88rem;line-height:1.65}.figure-actions{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:.75rem}.figure-actions a{padding:.38rem .6rem;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:.64rem;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--state);color:var(--state)}
-.comparison-body{margin:1rem 0 0}.shared-experience{width:min(720px,92%);margin:0 auto .7rem;padding:.65rem .8rem;border:1.5px solid color-mix(in srgb,var(--env) 46%,var(--line));border-top:5px solid var(--env);border-radius:13px;background:color-mix(in srgb,var(--env) 4%,var(--surface));text-align:center}.shared-experience small,.shared-experience strong,.shared-experience span{display:block}.shared-experience small,.column-header span,.flow-node small,.change-node small,.next-task small,.carrier-path small,.aligned-comparison header small{color:var(--muted);font:850 .5rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em}.shared-experience strong{margin:.2rem 0;font-size:.7rem}.shared-experience span{color:var(--muted);font-size:.55rem}.framework-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;position:relative}.framework-columns:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed color-mix(in srgb,var(--muted) 22%,transparent);pointer-events:none}.framework-column{position:relative;z-index:1;padding:.75rem;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 97%,transparent)}.seed-column{box-shadow:inset 0 4px 0 color-mix(in srgb,var(--signal) 75%,transparent)}.evo-column{box-shadow:inset 0 4px 0 color-mix(in srgb,var(--state) 75%,transparent)}.column-header{text-align:center;padding:.2rem .3rem .6rem}.column-header span,.column-header strong{display:block}.column-header span{color:var(--signal);font-size:.65rem}.evo-column .column-header span{color:var(--state)}.column-header strong{margin-top:.23rem;font-size:.66rem;line-height:1.38}.framework-wrapper{position:relative;padding:1.7rem .65rem .65rem;border:2px solid color-mix(in srgb,var(--signal) 46%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--signal) 3%,var(--surface))}.evo-wrapper{border-color:color-mix(in srgb,var(--state) 46%,var(--line));background:color-mix(in srgb,var(--state) 3%,var(--surface))}.wrapper-name{position:absolute;top:.5rem;left:.65rem;color:var(--signal);font:900 .6rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.evo-wrapper .wrapper-name{color:var(--state)}.agent-inner{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.55rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.agent-inner small,.agent-inner strong{display:block}.agent-inner small{color:var(--muted);font:800 .48rem ui-monospace,SFMono-Regular,Menlo,monospace}.agent-inner strong{font-size:.68rem}.paper-symbol{font-size:.88rem}.framework-wrapper>p{margin:.45rem 0 0;color:var(--muted);font-size:.54rem;line-height:1.45}.carrier-slot{margin-top:.38rem;padding:.45rem;border:1px dashed color-mix(in srgb,var(--state) 38%,var(--line));border-radius:8px;text-align:center}.carrier-slot small,.carrier-slot span{display:block}.carrier-slot small{color:var(--muted);font:800 .47rem ui-monospace,SFMono-Regular,Menlo,monospace}.carrier-slot span{margin-top:.15rem;font-size:.54rem}.column-flow{display:grid;justify-items:center;gap:.25rem;margin-top:.55rem}.column-flow>i{color:var(--muted);font-style:normal}.flow-node,.change-node{width:min(340px,92%);padding:.55rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);text-align:center}.flow-node{border-top:4px solid var(--experience)}.flow-node.signal{border-top-color:var(--signal)}.flow-node.experience{border-top-color:var(--experience)}.flow-node small,.flow-node strong{display:block}.flow-node strong{margin-top:.2rem;font-size:.61rem}.change-node{display:flex;align-items:center;justify-content:center;gap:.35rem;border-top:4px solid #f97316}.change-node>span{font-size:.88rem}.change-node small,.change-node strong{display:block}.change-node strong{margin-top:.12rem;font-size:.6rem}.carrier-change{border-top-color:var(--persist)}.carrier-change>span{color:var(--persist)}.carrier-fork{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;width:100%}.carrier-path{padding:.5rem;border:1px solid var(--line);border-top:4px solid #38bdf8;border-radius:10px;background:var(--surface)}.carrier-path.parametric{border-top-color:#f97316}.carrier-path>div{display:flex;align-items:center;gap:.25rem}.carrier-path strong{display:block;margin:.25rem 0 0;font-size:.57rem}.carrier-path p{margin:.3rem 0 0;color:var(--muted);font-size:.5rem;line-height:1.42}.next-task{margin-top:.6rem;padding:.6rem;border:1.5px solid color-mix(in srgb,var(--persist) 45%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--persist) 4%,var(--surface));text-align:center}.next-task>small{display:block}.next-task>i{display:block;margin:.2rem 0;color:var(--persist);font-style:normal}.next-task>b{font-size:.62rem}.next-task>p{margin:.35rem 0 0;color:var(--muted);font-size:.52rem;line-height:1.42}.next-agent{margin:.35rem auto 0;padding:.45rem;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.next-agent strong,.next-agent span{display:block}.next-agent strong{font-size:.64rem}.next-agent span{margin-top:.1rem;color:var(--muted);font-size:.51rem}.successor-package{margin-top:.35rem;padding:.45rem;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.successor-package>strong{font-size:.62rem}.successor-package .next-agent{display:flex;align-items:center;justify-content:center;gap:.35rem;margin-top:.25rem;padding:.3rem}.successor-package .next-agent span{margin:0;color:var(--ink)}
-.aligned-comparison{margin-top:.8rem;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}.aligned-comparison header{padding:.55rem .7rem;border-bottom:1px solid var(--line)}.aligned-comparison header h3{margin:.15rem 0 0;font-size:.73rem;letter-spacing:.02em}.comparison-row{display:grid;grid-template-columns:100px minmax(180px,.8fr) 1.2fr;gap:.55rem;align-items:center;padding:.55rem .7rem;border-bottom:1px solid var(--line)}.method-label{font:900 .6rem ui-monospace,SFMono-Regular,Menlo,monospace}.method-label.seed{color:var(--signal)}.method-label.evo{color:var(--state)}.target{font-size:.62rem}.meaning{color:var(--muted);font-size:.55rem}.aligned-comparison>p{margin:0;padding:.65rem .7rem;color:var(--muted);font-size:.56rem;line-height:1.5}figcaption{margin-top:.75rem;padding-top:.7rem;border-top:1px solid var(--line);color:var(--muted);font-size:.58rem;line-height:1.58}figcaption strong{color:var(--ink)}
-@media(max-width:840px){.framework-columns{grid-template-columns:1fr}.framework-columns:after{display:none}.comparison-row{grid-template-columns:86px 1fr}.comparison-row .meaning{grid-column:2}.carrier-fork{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.comparison-figure{padding:.75rem;border-radius:16px}.carrier-fork{grid-template-columns:1fr}.comparison-row{grid-template-columns:1fr;gap:.22rem}.comparison-row .meaning{grid-column:auto}.figure-actions a{width:100%}.figure-header h2{font-size:1.25rem}}
+.comparison-figure{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;width:100%;margin:0;padding:clamp(1rem,2vw,1.45rem);border:1px solid var(--line);border-radius:24px;background:linear-gradient(90deg,color-mix(in srgb,var(--signal) 2.6%,var(--surface)),var(--surface) 48%,color-mix(in srgb,var(--state) 2.6%,var(--surface)));box-shadow:0 22px 70px color-mix(in srgb,#000 7%,transparent)}
+.figure-header{max-width:980px}.figure-label{color:var(--state);font:850 .72rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.figure-header h2{margin:.45rem 0 .6rem;font-size:clamp(1.45rem,2.7vw,2.3rem);letter-spacing:-.035em;line-height:1.12}.figure-header p{max-width:78ch;margin:0;color:var(--muted);font-size:.92rem;line-height:1.7}.figure-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}.figure-actions a{padding:.45rem .7rem;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:.72rem;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--state);color:var(--state)}
+.comparison-body{margin:1.1rem 0 0}.shared-experience{width:min(760px,94%);margin:0 auto .85rem;padding:.8rem 1rem;border:1.5px solid color-mix(in srgb,var(--env) 46%,var(--line));border-top:5px solid var(--env);border-radius:14px;background:color-mix(in srgb,var(--env) 4%,var(--surface));text-align:center}.shared-experience small,.shared-experience strong,.shared-experience span{display:block}.shared-experience small,.column-header span,.flow-node small,.change-node small,.next-task small{color:var(--muted);font:850 .64rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em}.shared-experience strong{margin:.28rem 0;font-size:.84rem}.shared-experience span{color:var(--muted);font-size:.76rem;line-height:1.5}
+.framework-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.15rem;position:relative}.framework-columns:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed color-mix(in srgb,var(--muted) 22%,transparent);pointer-events:none}.framework-column{position:relative;z-index:1;min-width:0;padding:1rem;border:1px solid var(--line);border-radius:17px;background:color-mix(in srgb,var(--surface) 97%,transparent)}.seed-column{box-shadow:inset 0 4px 0 color-mix(in srgb,var(--signal) 75%,transparent)}.evo-column{box-shadow:inset 0 4px 0 color-mix(in srgb,var(--state) 75%,transparent)}.column-header{text-align:center;padding:.15rem .3rem .75rem}.column-header span,.column-header strong{display:block}.column-header span{color:var(--signal);font-size:.76rem}.evo-column .column-header span{color:var(--state)}.column-header strong{margin-top:.28rem;font-size:.84rem;line-height:1.4}
+.framework-wrapper{position:relative;padding:1.9rem .85rem .8rem;border:2px solid color-mix(in srgb,var(--signal) 46%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--signal) 3%,var(--surface))}.evo-wrapper{border-color:color-mix(in srgb,var(--state) 46%,var(--line));background:color-mix(in srgb,var(--state) 3%,var(--surface))}.wrapper-name{position:absolute;top:.6rem;left:.75rem;color:var(--signal);font:900 .7rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.evo-wrapper .wrapper-name{color:var(--state)}.agent-inner{display:flex;align-items:center;justify-content:center;gap:.45rem;padding:.7rem;border:1px solid var(--line);border-radius:11px;background:var(--surface)}.agent-inner small,.agent-inner strong{display:block}.agent-inner small{color:var(--muted);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.agent-inner strong{font-size:.82rem}.paper-symbol{font-size:1rem}.framework-wrapper>p{margin:.6rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.58}.carrier-slot{margin-top:.48rem;padding:.55rem;border:1px dashed color-mix(in srgb,var(--state) 38%,var(--line));border-radius:9px;text-align:center}.carrier-slot small,.carrier-slot span{display:block}.carrier-slot small{color:var(--muted);font:800 .6rem ui-monospace,SFMono-Regular,Menlo,monospace}.carrier-slot span{margin-top:.2rem;font-size:.72rem;line-height:1.45}
+.column-flow{display:grid;justify-items:center;gap:.32rem;margin-top:.7rem}.column-flow>i{color:var(--muted);font-style:normal}.flow-node,.change-node{width:min(390px,96%);padding:.68rem .8rem;border:1px solid var(--line);border-radius:11px;background:var(--surface);text-align:center}.flow-node{border-top:4px solid var(--experience)}.flow-node.signal{border-top-color:var(--signal)}.flow-node.experience{border-top-color:var(--experience)}.flow-node small,.flow-node strong{display:block}.flow-node strong{margin-top:.24rem;font-size:.78rem;line-height:1.4}.change-node{display:flex;align-items:center;justify-content:center;gap:.45rem;border-top:4px solid #f97316}.change-node>span{font-size:1rem}.change-node small,.change-node strong{display:block}.change-node strong{margin-top:.15rem;font-size:.76rem;line-height:1.42}.carrier-change{border-top-color:var(--persist)}.carrier-change>span{color:var(--persist)}
+.carrier-note{display:grid;gap:.45rem;margin-top:.65rem}.carrier-note span{display:flex;align-items:flex-start;gap:.42rem;padding:.55rem .65rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:.74rem;line-height:1.5}.carrier-note b{flex:0 0 auto;font-size:.88rem}
+.next-task{margin-top:.7rem;padding:.75rem;border:1.5px solid color-mix(in srgb,var(--persist) 45%,var(--line));border-radius:13px;background:color-mix(in srgb,var(--persist) 4%,var(--surface));text-align:center}.next-task>small{display:block}.next-task>i{display:block;margin:.25rem 0;color:var(--persist);font-style:normal}.next-task>b{font-size:.76rem}.next-task>p{margin:.45rem auto 0;max-width:46ch;color:var(--muted);font-size:.74rem;line-height:1.55}.next-agent{margin:.4rem auto 0;padding:.55rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.next-agent strong,.next-agent span{display:block}.next-agent strong{font-size:.8rem}.next-agent span{margin-top:.12rem;color:var(--muted);font-size:.72rem;line-height:1.45}.successor-package{margin-top:.4rem;padding:.55rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.successor-package>strong{font-size:.78rem}.successor-package .next-agent{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.3rem;padding:.38rem}.successor-package .next-agent span{margin:0;color:var(--ink)}
+figcaption{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.65}figcaption strong{color:var(--ink)}
+@media(max-width:1040px){.framework-columns{grid-template-columns:1fr}.framework-columns:after{display:none}.framework-column{padding:.9rem}.flow-node,.change-node{width:min(520px,96%)}}
+@media(max-width:560px){.comparison-figure{padding:.8rem;border-radius:16px}.figure-actions a{width:100%}.figure-header h2{font-size:1.32rem}.shared-experience{width:100%}.framework-column{padding:.72rem}.framework-wrapper{padding-inline:.65rem}.carrier-note span{font-size:.72rem}.next-task>p{font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.comparison-figure *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
