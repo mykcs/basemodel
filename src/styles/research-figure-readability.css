@@ -44,6 +44,7 @@
  * handle smaller screens; this intermediate breakpoint protects tablets and
  * compact desktops as well. */
 @media (max-width: 1080px) {
+  .seed-webshop-figure .seed-usage-grid,
   .seed-webshop-figure .stage-one-flow {
     grid-template-columns: 1fr !important;
   }
