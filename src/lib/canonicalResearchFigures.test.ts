@@ -61,8 +61,10 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(compareFigure).toContain('MODEL PARAMETERS · θ → θ′');
     expect(compareFigure).toContain('memory · skill · instructions · adapter');
     expect(compareFigure).toContain('VALIDATED SUCCESSOR CARRIER / STATE');
-    expect(compareFigure).toContain('non-weight carrier');
-    expect(compareFigure).toContain('parametric carrier');
+    expect(compareFigure).toContain('non-weight');
+    expect(compareFigure).toContain('parametric');
+    expect(compareFigure).toContain('Agent 参数不变');
+    expect(compareFigure).toContain('adapter 可更新');
     expect(compareFigure).toContain('Carrier subtypes are intentionally not expanded here');
     expect(compareFigure).not.toContain('aligned-comparison');
     expect(compareFigure).not.toContain('CORE COMPARISON');
