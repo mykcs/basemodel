@@ -1,27 +1,36 @@
 ---
 const root = '/research/seed-openevo/results';
 
-const primerArticles = [
+const canonicalReferences = [
   {
-    index: '01',
-    href: `${root}/webshop-training/`,
-    title: 'WebShop 是什么？大家以前怎么训练它？',
-    body: '从环境、observation / action / reward 讲起，再看原始 WebShop 的 IL + RL，以及后来多轮 on-policy RL 为什么成为主流。',
-    tag: '背景与历史',
+    href: '/research/seed-openevo/webshop/',
+    label: 'WebShop',
+    title: '任务、交互与评分',
+    body: 'WebShop 自己负责解释 instruction、网页 observation、search / click / option / buy、Score 与 exact Success。',
   },
   {
-    index: '02',
-    href: `${root}/seed-training/`,
-    title: 'SEED 到底怎么在 WebShop 上训练？',
-    body: '拆开 Stage 1 hindsight-skill SFT 与 Stage 2 on-policy OPD + RL，并把论文设定与当前公开代码默认值分开记录。',
-    tag: '强对照复现',
+    href: '/research/seed-openevo/seed/#fig-seed-webshop',
+    label: 'Figure S1',
+    title: 'SEED × WebShop：数据、训练与推理',
+    body: '正式框架图：官方 split、SEED 实际训练 / 评估子集、Stage 1、Stage 2、🔥 / ❄️ / ⊥ 与 inference boundary。',
   },
   {
-    index: '03',
-    href: `${root}/openevo-training/`,
-    title: '我们自己的 OpenEvo × WebShop 怎么训练？',
-    body: '解释 success harvest、严格 qualification、SD-LoRA parameter write、fresh-task evaluation，以及为什么目前还不能直接和 SEED Table 1 横比。',
-    tag: '我们的协议',
+    href: '/research/seed-openevo/openevo/',
+    label: 'OpenEvo',
+    title: '跨任务演化机制',
+    body: 'OpenEvo 自己负责解释 task boundary、sealed evidence、evolution carrier、validation 与 successor revision。',
+  },
+  {
+    href: '/research/seed-openevo/loops/#fig-seed-openevo-update-target',
+    label: 'Figure C1',
+    title: 'SEED 与 OpenEvo：经验最后改了什么',
+    body: '跨 benchmark 可复用的正式比较图：SEED 更新 policy；OpenEvo 通过不同 carrier 形成 validated successor state。',
+  },
+  {
+    href: '/papers/seed/',
+    label: 'Paper',
+    title: 'SEED 论文与来源',
+    body: '需要核对原始方法、实验表格或论文来源时，从论文页进入。',
   },
 ] as const;
 
@@ -97,35 +106,34 @@ const designArticles = [
 
 <div class="result-index" data-testid="openevo-webshop-result-index">
   <header class="index-hero">
-    <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH INDEX</p>
-    <h1>实验结果不再塞进一篇长报告，而是拆成一组研究笔记</h1>
-    <p class="lede">这个页面只负责导航。先建立 WebShop / SEED / OpenEvo 的共同语言，再读已经完成的实验结果，最后进入下一轮 benchmark 的重新设计。每篇只回答一个问题。</p>
+    <p class="eyebrow">OPENEVO × WEBSHOP · EXPERIMENT EVIDENCE</p>
+    <h1>实验结果页只讲实验；方法和环境回到各自的正式页面</h1>
+    <p class="lede">这里不再重复解释 WebShop、SEED 或 OpenEvo。读实验前需要的概念只保留权威入口；随后直接沿证据链阅读已经完成的结果，再进入下一轮 benchmark 设计。</p>
   </header>
 
-  <section class="index-section" aria-labelledby="primer-title">
-    <div class="section-heading">
-      <p>PART I</p>
+  <nav class="reference-index" aria-labelledby="reference-title">
+    <div class="section-heading compact-heading">
+      <p>REFERENCE</p>
       <div>
-        <h2 id="primer-title">先建立共同语言</h2>
-        <p>WebShop 是什么、SEED 怎么训练、我们怎么训练。没有这三步，后面的实验数字很容易被误读。</p>
+        <h2 id="reference-title">阅读实验前，需要时再打开这些正式说明</h2>
+        <p>一个概念只保留一个 canonical explanation；实验文章通过稳定 URL / Figure anchor 引用它，不再复制前景概要。</p>
       </div>
     </div>
-
-    <div class="article-grid primer-grid">
-      {primerArticles.map((article) => (
-        <a href={article.href} class="article-card">
-          <div class="card-top"><span>{article.index}</span><small>{article.tag}</small></div>
-          <h3>{article.title}</h3>
-          <p>{article.body}</p>
-          <strong>阅读全文 →</strong>
+    <div class="reference-grid">
+      {canonicalReferences.map((item) => (
+        <a href={item.href} class="reference-card">
+          <small>{item.label}</small>
+          <strong>{item.title}</strong>
+          <span>{item.body}</span>
+          <b aria-hidden="true">→</b>
         </a>
       ))}
     </div>
-  </section>
+  </nav>
 
   <section class="index-section" aria-labelledby="results-title">
     <div class="section-heading">
-      <p>PART II</p>
+      <p>PART I</p>
       <div>
         <h2 id="results-title">按证据链读已经完成的实验</h2>
         <p>不是按实验编号堆日志，而是按“为什么失败 → 第一次正结果 → 独立复现 → 第二代为什么没过 → 测量边界 → 现在能说什么”组织。</p>
@@ -149,7 +157,7 @@ const designArticles = [
 
   <section class="index-section" aria-labelledby="design-title">
     <div class="section-heading">
-      <p>PART III</p>
+      <p>PART II</p>
       <div>
         <h2 id="design-title">把主问题重新拉回 Benchmark</h2>
         <p>这三篇不是新的实验结果，而是下一阶段的研究重分层：先跑真正的正式比赛，再用旧 H1 系列解释为什么结果会是这样。</p>
@@ -170,27 +178,21 @@ const designArticles = [
       ))}
     </div>
   </section>
+
+  <details class="legacy-primer-links">
+    <summary>旧的三篇前景笔记链接</summary>
+    <p>这些 URL 为了旧引用继续保留，但内容已经迁移到上面的 canonical 页面。</p>
+    <div><a href={`${root}/webshop-training/`}>旧 WebShop 前景笔记</a><a href={`${root}/seed-training/`}>旧 SEED 前景笔记</a><a href={`${root}/openevo-training/`}>旧 OpenEvo 前景笔记</a></div>
+  </details>
 </div>
 
 <style>
   .result-index{max-width:1180px;margin:0 auto;padding:26px 24px 72px;color:var(--color-text)}
-  .index-hero{max-width:900px;padding:34px 0 52px}
-  .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:700;letter-spacing:.14em}
-  .index-hero h1{margin:0;max-width:860px;font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;color:var(--color-text)}
-  .lede{max-width:760px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.75}
-  .index-section{padding:38px 0 46px;border-top:1px solid var(--color-border)}
-  .section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}
-  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
-  .article-grid{display:grid;gap:12px}.primer-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .article-card{display:flex;min-height:245px;flex-direction:column;padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .article-card:hover,.article-card:focus-visible,.result-card:hover,.result-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);background:var(--color-surface)}
-  .card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.card-top span,.result-number{color:var(--color-text-muted);font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.card-top small,.result-meta small{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.72rem}
-  .article-card h3,.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.12rem;line-height:1.36;letter-spacing:-.02em}.article-card p,.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.article-card strong{margin-top:auto;padding-top:20px;color:var(--color-accent);font-size:.85rem}
-  .article-list{display:grid;gap:10px}
-  .result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .design-card{background:var(--color-surface)}
-  .result-meta{margin-bottom:10px}.result-card strong{align-self:center;color:var(--color-accent);font-size:1.15rem}.result-card h3{font-size:1.22rem}
-  @media(max-width:860px){.section-heading{grid-template-columns:1fr;gap:8px}.primer-grid{grid-template-columns:1fr}.article-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
+  .index-hero{max-width:920px;padding:34px 0 44px}.eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:700;letter-spacing:.14em}.index-hero h1{margin:0;max-width:900px;font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;color:var(--color-text)}.lede{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.75}
+  .reference-index,.index-section{padding:34px 0 42px;border-top:1px solid var(--color-border)}.section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px}.compact-heading{margin-bottom:18px}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
+  .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.reference-card{position:relative;display:flex;min-height:190px;flex-direction:column;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease}.reference-card:hover,.reference-card:focus-visible,.result-card:hover,.result-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent)}.reference-card small{color:var(--color-accent);font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.reference-card strong{margin:16px 0 8px;font-size:.96rem;line-height:1.32}.reference-card span{color:var(--color-text-muted);font-size:.79rem;line-height:1.55}.reference-card b{margin-top:auto;padding-top:14px;color:var(--color-accent)}
+  .article-list{display:grid;gap:10px}.result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}.design-card{background:var(--color-surface)}.result-number{color:var(--color-text-muted);font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.result-meta{margin-bottom:10px}.result-meta small{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.72rem}.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.22rem;line-height:1.36;letter-spacing:-.02em}.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.result-card>strong{align-self:center;color:var(--color-accent);font-size:1.15rem}
+  .legacy-primer-links{margin-top:8px;padding:14px 0;border-top:1px solid var(--color-border);color:var(--color-text-muted);font-size:.8rem}.legacy-primer-links summary{cursor:pointer;color:var(--color-text);font-weight:650}.legacy-primer-links p{margin:10px 0 8px}.legacy-primer-links div{display:flex;gap:12px;flex-wrap:wrap}.legacy-primer-links a{color:var(--color-accent)}
+  @media(max-width:1080px){.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:760px){.section-heading{grid-template-columns:1fr;gap:8px}.reference-grid{grid-template-columns:1fr}.reference-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
 </style>
