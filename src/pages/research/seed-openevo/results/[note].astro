@@ -12,6 +12,7 @@ export function getStaticPaths() {
     'first-positive-transfer',
     'independent-replication',
     'second-generation',
+    'measurement-boundary',
     'current-conclusion',
   ].map((note) => ({ params: { note } }));
 }
@@ -48,9 +49,13 @@ const meta: Record<NoteId, { title: string; description: string }> = {
     title: '第二次连续写入：为什么还不能说多代 self-evolution 成立？',
     description: 'H1.40/H1.41 显示第二轮经验供给充足且参数写入真实完成，但 acquisition、retention、preservation 与测量有效性没有同时过门。',
   },
+  'measurement-boundary': {
+    title: 'H1.42：为什么修完测量器以后，机制比较仍然不能下结论？',
+    description: 'H1.42-MV Stage A 通过 calibration，但 Stage B 修正 validator 后仍有两个 parser/runtime-invalid clusters，最终停在 MVD0 measurement boundary。',
+  },
   'current-conclusion': {
     title: 'OpenEvo × WebShop 现在到底能下什么结论？',
-    description: '区分 supported、negative、invalid 与 unknown：当前支持一次可复现跨任务迁移，但不支持已经建立多代 self-evolution。',
+    description: '区分 supported、negative、invalid 与 unknown：当前支持一次可复现跨任务迁移；H1.42 仍停在测量边界，不支持已经建立多代 self-evolution。',
   },
 };
 
