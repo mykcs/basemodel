@@ -89,11 +89,14 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
     });
   });
 
-  it('routes both locales through the new narrative component', () => {
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('OpenEvoWebShopNarrativeReport.astro');
-      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-    }
+  it('keeps the narrative component archived while the Chinese landing route becomes the article index', () => {
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('OpenEvoWebShopNarrativeReport.astro');
+    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+
+    expect(enRoute).toContain('OpenEvoWebShopNarrativeReport.astro');
+    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
   });
 });
