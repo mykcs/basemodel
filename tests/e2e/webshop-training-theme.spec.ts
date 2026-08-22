@@ -19,15 +19,15 @@ async function setTheme(page: Page, theme: Theme) {
 
 async function readThemeSurface(page: Page) {
   return page.evaluate(() => {
-    const note = document.querySelector<HTMLElement>('.training-note');
-    const dek = document.querySelector<HTMLElement>('.training-note .dek');
-    const paragraph = document.querySelector<HTMLElement>('.training-note .note-body p');
-    const strong = document.querySelector<HTMLElement>('.training-note .note-body strong');
-    const pre = document.querySelector<HTMLElement>('.training-note pre');
-    const active = document.querySelector<HTMLElement>('.training-note .series-nav a.active');
-    const link = document.querySelector<HTMLElement>('.training-note .note-topline a');
-    if (!note || !dek || !paragraph || !strong || !pre || !active || !link) {
-      throw new Error('training note theme audit target missing');
+    const root = document.querySelector<HTMLElement>('.moved-primer');
+    const article = document.querySelector<HTMLElement>('.moved-primer article');
+    const heading = document.querySelector<HTMLElement>('.moved-primer h1');
+    const description = document.querySelector<HTMLElement>('.moved-primer article > p:not(.eyebrow)');
+    const primary = document.querySelector<HTMLElement>('.moved-primer .actions .primary');
+    const aside = document.querySelector<HTMLElement>('.moved-primer aside');
+    const back = document.querySelector<HTMLElement>('.moved-primer .back');
+    if (!root || !article || !heading || !description || !primary || !aside || !back) {
+      throw new Error('moved primer theme audit target missing');
     }
 
     const probe = document.createElement('div');
@@ -46,34 +46,29 @@ async function readThemeSurface(page: Page) {
     const border = baseProbe.borderColor;
 
     probe.style.color = 'var(--color-text-muted)';
-    probe.style.background = 'var(--color-surface-muted)';
-    const mutedProbe = getComputedStyle(probe);
-    const muted = mutedProbe.color;
-    const surfaceMuted = mutedProbe.backgroundColor;
-
+    const muted = getComputedStyle(probe).color;
     probe.style.color = 'var(--color-accent)';
-    const accent = getComputedStyle(probe).color;
+    probe.style.background = 'var(--color-accent)';
+    const accentProbe = getComputedStyle(probe);
+    const accent = accentProbe.color;
+    const accentSurface = accentProbe.backgroundColor;
     probe.remove();
 
-    const noteStyle = getComputedStyle(note);
-    const preStyle = getComputedStyle(pre);
-    const activeStyle = getComputedStyle(active);
+    const articleStyle = getComputedStyle(article);
+    const primaryStyle = getComputedStyle(primary);
 
     return {
       theme: document.documentElement.dataset.theme,
-      expected: { text, surface, border, muted, surfaceMuted, accent },
+      expected: { text, surface, border, muted, accent, accentSurface },
       actual: {
-        noteText: noteStyle.color,
-        noteSurface: noteStyle.backgroundColor,
-        noteBorder: noteStyle.borderColor,
-        dek: getComputedStyle(dek).color,
-        paragraph: getComputedStyle(paragraph).color,
-        strong: getComputedStyle(strong).color,
-        preText: preStyle.color,
-        preSurface: preStyle.backgroundColor,
-        activeText: activeStyle.color,
-        activeSurface: activeStyle.backgroundColor,
-        link: getComputedStyle(link).color,
+        articleText: articleStyle.color,
+        articleSurface: articleStyle.backgroundColor,
+        articleBorder: articleStyle.borderColor,
+        heading: getComputedStyle(heading).color,
+        description: getComputedStyle(description).color,
+        primarySurface: primaryStyle.backgroundColor,
+        asideBorder: getComputedStyle(aside).borderLeftColor,
+        back: getComputedStyle(back).color,
       },
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
     };
@@ -82,7 +77,7 @@ async function readThemeSurface(page: Page) {
 
 for (const viewport of viewports) {
   for (const theme of ['light', 'dark'] as const) {
-    test(`${viewport.name} ${theme} keeps all WebShop training notes on semantic theme tokens`, async ({ page }) => {
+    test(`${viewport.name} ${theme} keeps legacy primer migration pages on semantic theme tokens`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await setTheme(page, theme);
 
@@ -90,27 +85,25 @@ for (const viewport of viewports) {
         await test.step(route, async () => {
           await page.goto(route, { waitUntil: 'domcontentloaded' });
           await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+          await expect(page.locator('.moved-primer')).toBeVisible();
           const audit = await readThemeSurface(page);
 
           expect(audit.overflow).toBe(false);
-          expect(audit.actual.noteText).toBe(audit.expected.text);
-          expect(audit.actual.noteSurface).toBe(audit.expected.surface);
-          expect(audit.actual.noteBorder).toBe(audit.expected.border);
-          expect(audit.actual.dek).toBe(audit.expected.muted);
-          expect(audit.actual.paragraph).toBe(audit.expected.text);
-          expect(audit.actual.strong).toBe(audit.expected.text);
-          expect(audit.actual.preText).toBe(audit.expected.text);
-          expect(audit.actual.preSurface).toBe(audit.expected.surfaceMuted);
-          expect(audit.actual.activeText).toBe(audit.expected.text);
-          expect(audit.actual.activeSurface).toBe(audit.expected.surfaceMuted);
-          expect(audit.actual.link).toBe(audit.expected.accent);
+          expect(audit.actual.articleText).toBe(audit.expected.text);
+          expect(audit.actual.articleSurface).toBe(audit.expected.surface);
+          expect(audit.actual.articleBorder).toBe(audit.expected.border);
+          expect(audit.actual.heading).toBe(audit.expected.text);
+          expect(audit.actual.description).toBe(audit.expected.muted);
+          expect(audit.actual.primarySurface).toBe(audit.expected.accentSurface);
+          expect(audit.actual.asideBorder).toBe(audit.expected.accent);
+          expect(audit.actual.back).toBe(audit.expected.muted);
         });
       }
     });
   }
 }
 
-test('WebShop training note updates its reading surface when theme toggles without reload', async ({ page }) => {
+test('legacy primer migration page updates its reading surface when theme toggles without reload', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await setTheme(page, 'light');
   await page.goto(routes[0], { waitUntil: 'domcontentloaded' });
@@ -121,9 +114,8 @@ test('WebShop training note updates its reading surface when theme toggles witho
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const dark = await readThemeSurface(page);
 
-  expect(dark.actual.noteSurface).not.toBe(light.actual.noteSurface);
-  expect(dark.actual.noteText).not.toBe(light.actual.noteText);
-  expect(dark.actual.preSurface).not.toBe(light.actual.preSurface);
-  expect(dark.actual.noteSurface).toBe(dark.expected.surface);
-  expect(dark.actual.noteText).toBe(dark.expected.text);
+  expect(dark.actual.articleSurface).not.toBe(light.actual.articleSurface);
+  expect(dark.actual.articleText).not.toBe(light.actual.articleText);
+  expect(dark.actual.articleSurface).toBe(dark.expected.surface);
+  expect(dark.actual.articleText).toBe(dark.expected.text);
 });
