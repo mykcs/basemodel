@@ -2,6 +2,7 @@
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import WebShopTrainingNote, { type WebShopTrainingNoteId } from '../../../../components/research/WebShopTrainingNote.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
+import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
 
 export function getStaticPaths() {
   return [
@@ -14,11 +15,15 @@ export function getStaticPaths() {
     'second-generation',
     'measurement-boundary',
     'current-conclusion',
+    'benchmark-first',
+    'seed-faithful-benchmark',
+    'openevo-benchmark-design',
   ].map((note) => ({ params: { note } }));
 }
 
 const trainingNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
-type NoteId = WebShopTrainingNoteId | OpenEvoWebShopResultNoteId;
+const benchmarkNotes = ['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design'] as const;
+type NoteId = WebShopTrainingNoteId | OpenEvoWebShopResultNoteId | OpenEvoWebShopBenchmarkNoteId;
 const note = Astro.params.note as NoteId;
 const meta: Record<NoteId, { title: string; description: string }> = {
   'webshop-training': {
@@ -57,14 +62,30 @@ const meta: Record<NoteId, { title: string; description: string }> = {
     title: 'OpenEvo × WebShop 现在到底能下什么结论？',
     description: '区分 supported、negative、invalid 与 unknown：当前支持一次可复现跨任务迁移；H1.42 仍停在测量边界，不支持已经建立多代 self-evolution。',
   },
+  'benchmark-first': {
+    title: '先跑真正的比赛：为什么 Benchmark 必须回到 OpenEvo × WebShop 主线',
+    description: '把项目重新分成 benchmark 与 mechanism 两层：先回答 OpenEvo 最终是否让 Qwen2.5-3B 在未见 WebShop 任务上更强，再用旧 H1 系列解释原因。',
+  },
+  'seed-faithful-benchmark': {
+    title: '一场公平的 WebShop 比赛应该怎么跑？',
+    description: '冻结 SEED-faithful train/test boundary、128 final test tasks、Score/Success、matched interaction budget 与 test-time no-learning rule。',
+  },
+  'openevo-benchmark-design': {
+    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
+    description: '把 carrier 与 feedback density 分成两个轴，定义 OpenEvo-Native-Sparse 主比较、Dense principal ablation、Param variant 与第一阶段 pilot。',
+  },
 };
 
 const isTrainingNote = (value: NoteId): value is WebShopTrainingNoteId =>
   (trainingNotes as readonly string[]).includes(value);
+const isBenchmarkNote = (value: NoteId): value is OpenEvoWebShopBenchmarkNoteId =>
+  (benchmarkNotes as readonly string[]).includes(value);
 ---
 
 <AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
   {isTrainingNote(note)
     ? <WebShopTrainingNote note={note} />
-    : <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}
+    : isBenchmarkNote(note)
+      ? <OpenEvoWebShopBenchmarkNote note={note} />
+      : <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}
 </AppLayout>
