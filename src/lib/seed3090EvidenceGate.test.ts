@@ -31,14 +31,16 @@ describe('seed3090 evidence gate archive', () => {
     );
   });
 
-  it('keeps the old component static but no longer exposes it as the current results snapshot', () => {
+  it('keeps the old component static without forcing archive content onto the Chinese results index', () => {
     expect(component).toContain("import type { Locale } from '../../i18n'");
     expect(component).toContain('data-testid="seed3090-evidence-gate"');
     expect(component).not.toContain('client:');
 
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).not.toContain('Seed3090EvidenceGate');
-      expect(route).toContain('Seed3090ParametricProgress');
-    }
+    expect(zhRoute).not.toContain('Seed3090EvidenceGate');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+
+    expect(enRoute).not.toContain('Seed3090EvidenceGate');
+    expect(enRoute).toContain('Seed3090ParametricProgress');
   });
 });
