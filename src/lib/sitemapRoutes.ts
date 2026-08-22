@@ -34,6 +34,9 @@ export const zhOnlyStaticPaths = [
   '/research/seed-openevo/results/second-generation/',
   '/research/seed-openevo/results/measurement-boundary/',
   '/research/seed-openevo/results/current-conclusion/',
+  '/research/seed-openevo/results/benchmark-first/',
+  '/research/seed-openevo/results/seed-faithful-benchmark/',
+  '/research/seed-openevo/results/openevo-benchmark-design/',
 ] as const;
 
 export function toEnglishPath(path: string): string {
