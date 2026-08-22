@@ -28,7 +28,7 @@ describe('seed3090 paired-run audit archive', () => {
     expect(component).toContain('independent Mac attestation');
   });
 
-  it('preserves the fail-closed promotion decision without presenting it as the current mainline', () => {
+  it('preserves the fail-closed promotion decision without making the Chinese results landing page its archive host', () => {
     expect(component).toContain('GPU_WORKLOAD_LAUNCHED=0');
     expect(component).toContain('8 episodes / 4 pairs');
     expect(component).toContain('PROMOTION_PASS');
@@ -37,9 +37,11 @@ describe('seed3090 paired-run audit archive', () => {
     expect(component).toContain('not an efficacy or significance claim');
     expect(component).toContain('does not show text memory is ineffective');
 
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).not.toContain('Seed3090PairedRunAudit');
-      expect(route).toContain('Seed3090ParametricProgress');
-    }
+    expect(zhRoute).not.toContain('Seed3090PairedRunAudit');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+
+    expect(enRoute).not.toContain('Seed3090PairedRunAudit');
+    expect(enRoute).toContain('Seed3090ParametricProgress');
   });
 });
