@@ -1,0 +1,53 @@
+---
+export type ResearchPrimerMovedId = 'webshop-training' | 'seed-training' | 'openevo-training';
+interface Props { note: ResearchPrimerMovedId }
+const { note } = Astro.props;
+const root = '/research/seed-openevo/results';
+const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: string; description: string; href: string; target: string; secondary?: { href: string; label: string } }> = {
+  'webshop-training': {
+    eyebrow: 'WEBSHOP · CANONICAL PAGE',
+    title: '这篇前景笔记已经并入 WebShop 正式环境页',
+    description: 'WebShop 的任务结构、observation / action / reward、官方数据与评分现在只在一个权威页面维护。实验结果文章不再重复这部分背景。',
+    href: '/research/seed-openevo/webshop/',
+    target: '打开 WebShop 任务与评测 →',
+  },
+  'seed-training': {
+    eyebrow: 'SEED · CANONICAL FIGURE',
+    title: '这篇前景笔记已经并入 SEED 正式方法页',
+    description: 'SEED 在 WebShop 上的数据设置、Stage 1、Stage 2、🔥 / ❄️ / ⊥、训练与推理边界，现在由 Figure S1 和同页的交互式机制图统一解释。',
+    href: '/research/seed-openevo/seed/#fig-seed-webshop',
+    target: '打开 Figure S1 · SEED × WebShop →',
+    secondary: { href: '/papers/seed/', label: '查看 SEED 论文页 →' },
+  },
+  'openevo-training': {
+    eyebrow: 'OPENEVO · CANONICAL PAGE',
+    title: '这篇前景笔记已经并入 OpenEvo 正式机制页',
+    description: 'task boundary、sealed evidence、evolution carrier、validation 与 successor revision 现在统一由 OpenEvo 页面负责；需要和 SEED 并排比较时，进入 Figure C1。',
+    href: '/research/seed-openevo/openevo/',
+    target: '打开 OpenEvo 演化流程 →',
+    secondary: { href: '/research/seed-openevo/loops/#fig-seed-openevo-update-target', label: '查看 Figure C1 · SEED vs OpenEvo →' },
+  },
+};
+const current = destinations[note];
+---
+
+<main class="moved-primer" data-ui-audit="contrast layout overflow">
+  <a class="back" href={`${root}/`}>← 返回实验结果目录</a>
+  <article>
+    <p class="eyebrow">{current.eyebrow}</p>
+    <h1>{current.title}</h1>
+    <p>{current.description}</p>
+    <div class="actions">
+      <a class="primary" href={current.href}>{current.target}</a>
+      {current.secondary && <a href={current.secondary.href}>{current.secondary.label}</a>}
+    </div>
+  </article>
+  <aside>
+    <strong>为什么要这样整理？</strong>
+    <p>一个概念只保留一个 canonical explanation。实验文章只引用正式页面和稳定 Figure anchor，这样方法、环境和实验结论不会在不同网页里逐渐长成互相冲突的版本。</p>
+  </aside>
+</main>
+
+<style>
+.moved-primer{width:min(880px,calc(100% - 2rem));margin:2rem auto 5rem}.back{display:inline-block;margin-bottom:2rem;color:var(--color-text-muted);font-size:.82rem;text-decoration:none}.moved-primer article{padding:clamp(1.2rem,4vw,2.5rem);border:1px solid var(--color-border);border-radius:18px;background:var(--color-surface)}.eyebrow{margin:0 0 .8rem;color:var(--color-accent);font:750 .7rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.moved-primer h1{margin:0;max-width:760px;font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.08;letter-spacing:-.045em}.moved-primer article>p:not(.eyebrow){max-width:720px;margin:1rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.72}.actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}.actions a{padding:.62rem .82rem;border:1px solid var(--color-border);border-radius:9px;color:var(--color-text);font-size:.84rem;text-decoration:none}.actions .primary{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent,#fff)}.moved-primer aside{margin-top:1rem;padding:1rem 1.15rem;border-left:3px solid var(--color-accent);background:var(--color-surface-muted,var(--color-surface))}.moved-primer aside strong{font-size:.82rem}.moved-primer aside p{margin:.35rem 0 0;color:var(--color-text-muted);font-size:.82rem;line-height:1.65}@media(max-width:600px){.moved-primer{width:min(100% - 1rem,880px);margin-top:1rem}.actions a{width:100%}}
+</style>

@@ -1,6 +1,6 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
-import WebShopTrainingNote, { type WebShopTrainingNoteId } from '../../../../components/research/WebShopTrainingNote.astro';
+import ResearchPrimerMoved, { type ResearchPrimerMovedId } from '../../../../components/research/ResearchPrimerMoved.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
 import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
 
@@ -21,22 +21,22 @@ export function getStaticPaths() {
   ].map((note) => ({ params: { note } }));
 }
 
-const trainingNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
+const primerNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
 const benchmarkNotes = ['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design'] as const;
-type NoteId = WebShopTrainingNoteId | OpenEvoWebShopResultNoteId | OpenEvoWebShopBenchmarkNoteId;
+type NoteId = ResearchPrimerMovedId | OpenEvoWebShopResultNoteId | OpenEvoWebShopBenchmarkNoteId;
 const note = Astro.params.note as NoteId;
 const meta: Record<NoteId, { title: string; description: string }> = {
   'webshop-training': {
-    title: 'WebShop 是什么？大家以前怎么训练它？',
-    description: '从 WebShop 的交互环境开始，解释原始 imitation learning / reinforcement learning，以及现代 LLM agent 的 on-policy multi-turn RL。',
+    title: 'WebShop 背景说明已迁移',
+    description: '旧实验前景 URL 保留；WebShop 的任务、交互、数据与评分现在由正式 WebShop 环境页统一维护。',
   },
   'seed-training': {
-    title: 'SEED 怎么在 WebShop 上训练？',
-    description: '拆解 SEED 的 hindsight-skill SFT、on-policy rollout、OPD 与 RL，并记录论文协议和公开代码默认值之间的复现差异。',
+    title: 'SEED 训练说明已迁移',
+    description: '旧实验前景 URL 保留；SEED × WebShop 的数据、训练与推理现在由 SEED 正式方法页和 Figure S1 统一维护。',
   },
   'openevo-training': {
-    title: '我们怎么训练 OpenEvo × WebShop？',
-    description: '解释 OpenEvo × WebShop 的成功经验筛选、SD-LoRA 参数写入、fresh-task evaluation、连续更新门与 SEED-aligned benchmark 边界。',
+    title: 'OpenEvo 训练说明已迁移',
+    description: '旧实验前景 URL 保留；OpenEvo 的 task boundary、carrier、validation 与 successor revision 现在由正式方法页统一维护。',
   },
   'why-it-kept-failing': {
     title: '为什么 OpenEvo × WebShop 前面一直没有得到可靠的 fresh-task 提升？',
@@ -76,15 +76,15 @@ const meta: Record<NoteId, { title: string; description: string }> = {
   },
 };
 
-const isTrainingNote = (value: NoteId): value is WebShopTrainingNoteId =>
-  (trainingNotes as readonly string[]).includes(value);
+const isPrimerNote = (value: NoteId): value is ResearchPrimerMovedId =>
+  (primerNotes as readonly string[]).includes(value);
 const isBenchmarkNote = (value: NoteId): value is OpenEvoWebShopBenchmarkNoteId =>
   (benchmarkNotes as readonly string[]).includes(value);
 ---
 
 <AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
-  {isTrainingNote(note)
-    ? <WebShopTrainingNote note={note} />
+  {isPrimerNote(note)
+    ? <ResearchPrimerMoved note={note} />
     : isBenchmarkNote(note)
       ? <OpenEvoWebShopBenchmarkNote note={note} />
       : <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}

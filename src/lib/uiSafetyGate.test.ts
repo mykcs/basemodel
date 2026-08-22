@@ -73,7 +73,7 @@ describe('UI visual acceptance gate contract', () => {
     expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
   });
 
-  it('keeps all WebShop training-note routes under exact computed-theme browser regression', () => {
+  it('keeps all legacy WebShop primer routes under exact computed-theme browser regression', () => {
     for (const route of [
       '/research/seed-openevo/results/webshop-training/',
       '/research/seed-openevo/results/seed-training/',
@@ -85,10 +85,11 @@ describe('UI visual acceptance gate contract', () => {
       "['light', 'dark']",
       "name: 'desktop'",
       "name: 'mobile'",
-      'noteSurface',
-      'surfaceMuted',
+      '.moved-primer',
+      'articleSurface',
+      'articleBorder',
       "locator('[data-theme-toggle]').first().click()",
-      'updates its reading surface when theme toggles without reload',
+      'migration page updates its reading surface when theme toggles without reload',
     ]) {
       expect(webShopThemeGate).toContain(term);
     }
