@@ -1,0 +1,87 @@
+/*
+ * Canonical research figures are reading surfaces, not dense slide thumbnails.
+ * Geometry-only QA previously allowed legal-but-unreadable layouts: 8–10px
+ * prose and CJK paragraphs squeezed into very narrow columns. These rules are
+ * deliberate readability floors for explanatory copy. Tiny monospace role
+ * labels may remain compact; prose may not.
+ */
+.canonical-figure :where(p, figcaption, [data-ui-prose]) {
+  font-size: max(.74rem, 11.8px) !important;
+  line-height: 1.58 !important;
+}
+
+.canonical-figure .figure-header > p {
+  font-size: .92rem !important;
+  line-height: 1.7 !important;
+}
+
+.seed-webshop-figure :where(
+  .stage-intuition,
+  .dataset-note,
+  .rescore-card > span,
+  .signal-contrast p,
+  .next-agent span,
+  .training-only-note strong
+) {
+  font-size: .74rem !important;
+  line-height: 1.55 !important;
+}
+
+.seed-webshop-figure :where(
+  .paper-node strong,
+  .branch header strong,
+  .task-card strong,
+  .score-card strong,
+  .interaction-loop strong,
+  .update-node strong
+) {
+  font-size: .75rem !important;
+  line-height: 1.42 !important;
+}
+
+/* On a wide paper-style Stage 1 pipeline, the five nodes are labels in a
+ * figure, not five miniature prose cards. Their explanatory sentences are
+ * intentionally suppressed on wide screens because the full-width
+ * .stage-intuition immediately below owns the explanation. At <=1080px the
+ * pipeline stacks and the node prose returns because each node is wide enough
+ * to read comfortably. */
+@media (min-width: 1081px) {
+  .seed-webshop-figure .stage-one-flow .paper-node > p {
+    display: none !important;
+  }
+}
+
+/* Dense horizontal compositions should collapse before prose becomes a narrow
+ * Chinese newspaper column. The component's own mobile breakpoints continue to
+ * handle smaller screens; this intermediate breakpoint protects tablets and
+ * compact desktops as well. */
+@media (max-width: 1080px) {
+  .seed-webshop-figure .seed-usage-grid,
+  .seed-webshop-figure .stage-one-flow {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seed-webshop-figure .stage-one-flow .flow-arrow {
+    min-height: 20px;
+    transform: rotate(90deg);
+  }
+
+  .seed-webshop-figure .actor-row,
+  .seed-webshop-figure .branch-grid,
+  .seed-webshop-figure .rescore-columns,
+  .seed-webshop-figure .signal-contrast,
+  .seed-webshop-figure .inference-flow {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seed-webshop-figure .actor-row .trajectory,
+  .seed-webshop-figure .inference-flow .shopping-chain,
+  .seed-webshop-figure .inference-flow .score-card {
+    grid-column: auto !important;
+  }
+
+  .seed-webshop-figure .compare-mark,
+  .seed-webshop-figure .versus {
+    padding: .15rem;
+  }
+}

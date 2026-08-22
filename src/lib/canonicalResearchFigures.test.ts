@@ -55,26 +55,30 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(seedFigure).toContain('One trajectory leaves more than a score');
   });
 
-  it('keeps the abstract SEED/OpenEvo comparison reusable across benchmarks and avoids the external-memory false dichotomy', () => {
+  it('keeps C1 as one reusable comparison instead of repeating the same conclusion', () => {
     expect(compareFigure).toContain('fig-seed-openevo-update-target');
     expect(compareFigure).toContain('SHARED EXPERIENCE');
     expect(compareFigure).toContain('MODEL PARAMETERS · θ → θ′');
     expect(compareFigure).toContain('memory · skill · instructions · adapter');
-    expect(compareFigure).toContain('NON-WEIGHT PATH');
-    expect(compareFigure).toContain('PARAMETRIC PATH');
-    expect(compareFigure).toContain('SD-LoRA experiments');
-    expect(compareFigure).toContain('SUCCESSOR CARRIER / STATE');
-    expect(compareFigure).toContain('“SEED = parameters, OpenEvo = external memory” is an over-simplification');
+    expect(compareFigure).toContain('VALIDATED SUCCESSOR CARRIER / STATE');
+    expect(compareFigure).toContain('non-weight');
+    expect(compareFigure).toContain('parametric');
+    expect(compareFigure).toContain('Agent 参数不变');
+    expect(compareFigure).toContain('adapter 可更新');
+    expect(compareFigure).toContain('Carrier subtypes are intentionally not expanded here');
+    expect(compareFigure).not.toContain('aligned-comparison');
+    expect(compareFigure).not.toContain('CORE COMPARISON');
   });
 
-  it('mounts each canonical figure before the existing interactive deep-dive in both locales', () => {
+  it('keeps the SEED deep-dive interactive but makes the loops page canonical-only', () => {
     for (const route of [seedZh, seedEn]) {
       expect(route).toContain('SeedWebShopCanonicalFigure');
       expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
     }
     for (const route of [loopsZh, loopsEn]) {
       expect(route).toContain('SeedOpenEvoCanonicalFigure');
-      expect(route.indexOf('<SeedOpenEvoCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+      expect(route).not.toContain('InteractiveResearchExplainer');
+      expect(route).not.toContain('kind="compare"');
     }
   });
 
@@ -87,10 +91,12 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(results).toContain('一个概念只保留一个 canonical explanation');
   });
 
-  it('keeps the canonical figures static-first and responsive', () => {
+  it('keeps the canonical figures static-first, responsive, and readability-audited', () => {
+    expect(seedFigure).toContain('data-ui-audit="contrast layout overflow"');
+    expect(compareFigure).toContain('data-ui-audit="contrast layout overflow readability"');
+    expect(compareFigure).toContain('data-ui-prose');
     for (const figure of [seedFigure, compareFigure]) {
-      expect(figure).toContain('data-ui-audit="contrast layout overflow"');
-      expect(figure).toContain('<figcaption>');
+      expect(figure).toContain('<figcaption');
       expect(figure).toContain('ResearchDiagramLegend');
       expect(figure).toContain('@media(prefers-reduced-motion:reduce)');
       expect(figure).not.toContain('client:');

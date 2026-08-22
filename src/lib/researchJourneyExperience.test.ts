@@ -29,18 +29,26 @@ describe('research journey experience', () => {
     expect(header).toContain("t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study')");
   });
 
-  it('gives every full interactive explainer one canonical bilingual route', () => {
+  it('gives each true step-by-step explainer one canonical bilingual route', () => {
     for (const [source, kind] of [
       [seedZh, 'seed'], [seedEn, 'seed'],
       [openevoZh, 'openevo'], [openevoEn, 'openevo'],
       [webshopZh, 'webshop'], [webshopEn, 'webshop'],
       [alfworldZh, 'alfworld'], [alfworldEn, 'alfworld'],
-      [loopsZh, 'compare'], [loopsEn, 'compare'],
       [labZh, 'server'], [labEn, 'server'],
     ] as const) {
       expect(source).toContain('InteractiveResearchExplainer');
       expect(source).toContain(`kind="${kind}"`);
       expect(source).toContain('client:visible');
+    }
+  });
+
+  it('keeps the loops comparison canonical-only instead of duplicating a second player', () => {
+    for (const source of [loopsZh, loopsEn]) {
+      expect(source).toContain('SeedOpenEvoCanonicalFigure');
+      expect(source).not.toContain('InteractiveResearchExplainer');
+      expect(source).not.toContain('kind="compare"');
+      expect(source).not.toContain('client:visible');
     }
   });
 
