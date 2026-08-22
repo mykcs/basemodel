@@ -14,6 +14,8 @@ const generalRoutes = [
   '/data-status/',
   '/methodology/',
   '/guide/openevo-webshop-alfworld/',
+  '/research/seed-openevo/loops/',
+  '/en/research/seed-openevo/loops/',
   '/lab/',
   '/en/',
   '/en/models/',
@@ -27,13 +29,11 @@ const explainerRoutes = [
   { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
   { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
 ] as const;
 
@@ -42,7 +42,6 @@ const stepperRoutes = [
   { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'] },
   { path: '/research/seed-openevo/seed/', kinds: ['seed'] },
   { path: '/research/seed-openevo/openevo/', kinds: ['openevo'] },
-  { path: '/research/seed-openevo/loops/', kinds: ['compare'] },
   { path: '/lab/', kinds: ['server'] },
 ] as const;
 
@@ -267,7 +266,7 @@ for (const theme of ['light', 'dark'] as const) {
     }
   });
 
-  test(`1280-${theme} keeps all research connectors attached`, async ({ page }) => {
+  test(`1280-${theme} keeps all interactive research connectors attached`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.addInitScript((value: Theme) => localStorage.setItem('atlas-theme', value), theme);
     for (const route of explainerRoutes) {
