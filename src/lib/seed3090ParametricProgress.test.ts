@@ -18,15 +18,18 @@ describe('historical seed3090 parametric evidence', () => {
     expect(component).toContain('OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md');
   });
 
-  it('carries diagnosis forward without calling it the current mainline', () => {
+  it('carries diagnosis forward without requiring the archive on the Chinese index landing page', () => {
     expect(component).toContain('SD-LoRA 是否先拟合训练任务？');
     expect(component).toContain('gen2 回退来自遗忘还是 rollout 方差？');
     expect(component).toContain('Phase H0');
     expect(component).toContain('data-testid="seed3090-parametric-progress"');
     expect(component).not.toContain('client:');
-    for (const route of [zhRoute,enRoute]) {
-      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-    }
+
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+
+    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
   });
 });
