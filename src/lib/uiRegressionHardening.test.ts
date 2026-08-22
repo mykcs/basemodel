@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 const srcRoot = fileURLToPath(new URL('../', import.meta.url));
 const repoRoot = resolve(srcRoot, '..');
 const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-explainer-layout.spec.ts'), 'utf8');
+const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
 const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/results.astro'), 'utf8');
 const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/results.astro'), 'utf8');
 
@@ -31,6 +32,14 @@ describe('UI regression-class hardening', () => {
       expect(route).toContain('<style is:global>');
       expect(route).not.toMatch(/<style\b[^>]*\bis\s*=\s*["']global["']/i);
     }
+  });
+
+  it('keeps provider-only telemetry out of the local browser harness', () => {
+    expect(appLayout).not.toContain('<script defer src="/_vercel/speed-insights/script.js"></script>');
+    expect(appLayout).toContain("host === 'localhost'");
+    expect(appLayout).toContain("host === '127.0.0.1'");
+    expect(appLayout).toContain("host === '::1'");
+    expect(appLayout).toContain("speedInsights.src = '/_vercel/speed-insights/script.js';");
   });
 
   it('keeps the geometry matrix aligned with actual explainer-owner routes', () => {
