@@ -96,7 +96,6 @@ const cssWithHeaderSelectors = walk(stylesRoot)
 
 const expectedHeaderSelectorFiles = [
   'components/header.css',
-  'design-refinement.css',
   'final-hardening.css',
   'site.css',
   'visual-identity.css',
@@ -134,14 +133,20 @@ for (const invariant of [
   if (!trainingNoteOwner.includes(invariant)) fail(`${trainingNoteOwnerPath} is missing required theme invariant: ${invariant}`);
 }
 
-if (headerSelector.test(read('src/styles/visual-closeout.css'))) {
-  fail('src/styles/visual-closeout.css is geometry debt only and must not regain Header/Nav ownership.');
+for (const retiredOwner of [
+  'src/styles/design-refinement.css',
+  'src/styles/mobile-composition.css',
+  'src/styles/visual-closeout.css',
+]) {
+  if (headerSelector.test(read(retiredOwner))) {
+    fail(`${retiredOwner} must not regain Header/Nav ownership.`);
+  }
 }
 
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
-console.log('  Header legacy selector debt: frozen to 5 compatibility/foundation files plus the canonical owner');
-console.log('  patch-style layers: frozen; visual-closeout and mobile-composition Header debt retired');
+console.log('  Header legacy selector debt: frozen to 4 compatibility/foundation files plus the canonical owner');
+console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
 console.log('  Tailwind migration: not justified by the current ownership evidence');
