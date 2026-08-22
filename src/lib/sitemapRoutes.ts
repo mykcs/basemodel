@@ -28,6 +28,11 @@ export const zhOnlyStaticPaths = [
   '/research/seed-openevo/results/webshop-training/',
   '/research/seed-openevo/results/seed-training/',
   '/research/seed-openevo/results/openevo-training/',
+  '/research/seed-openevo/results/why-it-kept-failing/',
+  '/research/seed-openevo/results/first-positive-transfer/',
+  '/research/seed-openevo/results/independent-replication/',
+  '/research/seed-openevo/results/second-generation/',
+  '/research/seed-openevo/results/current-conclusion/',
 ] as const;
 
 export function toEnglishPath(path: string): string {
