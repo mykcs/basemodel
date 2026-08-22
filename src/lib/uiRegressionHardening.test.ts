@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 const srcRoot = fileURLToPath(new URL('../', import.meta.url));
 const repoRoot = resolve(srcRoot, '..');
+const vercelUiGate = readFileSync(resolve(repoRoot, 'scripts/vercel-ui-gate.mjs'), 'utf8');
 const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-explainer-layout.spec.ts'), 'utf8');
 const visualCloseoutBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/visual-closeout-followup.spec.ts'), 'utf8');
 const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
@@ -33,6 +34,12 @@ describe('UI regression-class hardening', () => {
       expect(route).toContain('<style is:global>');
       expect(route).not.toMatch(/<style\b[^>]*\bis\s*=\s*["']global["']/i);
     }
+  });
+
+  it('keeps production main inside the hosted Chromium UI gate', () => {
+    expect(vercelUiGate).toContain("const productionBranch = branch === 'main';");
+    expect(vercelUiGate).toContain('const shouldRun = productionBranch ||');
+    expect(vercelUiGate).toContain('&& !productionBranch');
   });
 
   it('keeps provider-only telemetry out of the local browser harness', () => {
