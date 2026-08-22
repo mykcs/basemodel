@@ -1,0 +1,54 @@
+name: Exact UI preflight
+
+on:
+  push:
+    branches:
+      - agent/exact-ui-preflight-d69a22d
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: d69a22d29156b6c977a6fbf8665a483f8c089053
+          fetch-depth: 0
+
+      - name: Verify exact candidate identity
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "d69a22d29156b6c977a6fbf8665a483f8c089053"
+          git merge-base --is-ancestor 75a4c999a6c90410285dc34f3152c3f58e6dc5fd HEAD
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run exact pre-provider UI gate
+        env:
+          CI: '1'
+        run: npm run preflight:ui -- --base 75a4c999a6c90410285dc34f3152c3f58e6dc5fd
+
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-ui-preflight-failure
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7
