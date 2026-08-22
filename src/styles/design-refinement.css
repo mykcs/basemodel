@@ -121,14 +121,6 @@ h2 { letter-spacing: -.018em; }
 .text-button,
 .card-compare { white-space: normal; }
 
-/* Header: collapse to the mobile navigation before search/language/theme compete. */
-.nav-inner { min-height: 66px; gap: 14px; }
-.command-search-trigger,
-.lang-switch,
-.theme-toggle,
-.menu-toggle { flex: 0 0 auto; }
-.desktop-nav a { white-space: nowrap; }
-
 /* Home onboarding should read as a syllabus, not three marketing cards. */
 .learning-start {
   background: transparent;
@@ -322,18 +314,7 @@ h2 { letter-spacing: -.018em; }
 /* Footer is identity, not a slogan surface. */
 .footer-inner { justify-content: flex-start; min-height: 64px; }
 
-@media (max-width: 1080px) {
-  .nav-inner { gap: 10px; }
-  .brand small { display: none; }
-  .nav-primary, .nav-secondary { gap: 11px; }
-  .nav-secondary { padding-left: 11px; }
-}
-
 @media (max-width: 960px) {
-  .desktop-nav { display: none; }
-  .nav-inner > .lang-switch { display: none; }
-  .menu-toggle { display: flex; }
-  .mobile-menu.is-open { display: block; }
   .guide-learning-page > .page-header { grid-template-columns: 1fr; gap: 18px; }
   .guide-learning-page > .page-header h1 { max-width: 18ch; }
   .candidate-row { grid-template-columns: minmax(0, 1fr); }
@@ -368,14 +349,6 @@ h2 { letter-spacing: -.018em; }
 }
 
 @media (max-width: 520px) {
-  .nav-inner { min-height: 60px; }
-  .brand span:last-child { display: none; }
-  .command-search-trigger {
-    max-width: 104px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .command-search-trigger kbd { display: none; }
   .page-header h1 { max-width: none; }
   .decision-card-actions .button,
   .models-page-quick-entry .button,
