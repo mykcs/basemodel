@@ -43,6 +43,20 @@
 .irx .irx-stepper button,.irx .irx-transport .irx-reset{color:var(--ink)}
 .irx .irx-transport button:disabled{opacity:.65;color:var(--ink)}
 
+/* Interactive transport belongs to the interactive figure, not to the whole
+ * page. The old fixed dock floated over canonical/static figures and made a
+ * non-interactive diagram look like it had playback controls. Keep it sticky
+ * inside the explainer's own control block instead. */
+.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:sticky;left:auto;right:auto;bottom:auto;top:.6rem;z-index:10;width:100%;transform:none;justify-content:flex-start}
+.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport .irx-reset{margin-left:auto}
+@media(max-width:760px){.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{width:100%;padding:.3rem;gap:.25rem}}
+
+/* Research prose must remain readable even inside dense diagrams. Meta labels
+ * can stay compact, but explanatory prose gets a hard minimum size so CJK text
+ * cannot collapse into 8–9px multi-line columns. */
+.irx :where(p,dd,dt){font-size:max(.74rem,1em);line-height:1.55}
+.irx :where(.irx-node>small,.irx-live,.irx-paper-caption p,.irx-visual-key li){font-size:max(.68rem,1em);line-height:1.5}
+
 /* The validated/persistent action keeps the same semantic green but needs a
  * darker solid surface for white normal-size text. #059669 + white is only
  * 3.77:1; mixing 20% black raises the ready-state action above 5:1. */
