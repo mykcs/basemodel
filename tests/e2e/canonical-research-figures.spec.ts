@@ -11,6 +11,8 @@ const matrices = [
   { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
   { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
   { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'compact-desktop-light', theme: 'light' as Theme, viewport: { width: 1024, height: 900 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -48,7 +50,37 @@ async function auditFigure(page: Page, selector: string, viewportWidth: number) 
       }
     });
 
-    return issues;
+    const proseSelector = [
+      'p',
+      'figcaption',
+      '.stage-intuition',
+      '.dataset-note',
+      '.rescore-card > span',
+      '.next-agent span',
+      '.carrier-note span',
+      '[data-ui-prose]',
+    ].join(',');
+
+    figure.querySelectorAll<HTMLElement>(proseSelector).forEach((node) => {
+      if (!visible(node) || node.closest('[aria-hidden="true"], [hidden]')) return;
+      const text = node.innerText.trim();
+      if (text.length < 8) return;
+      const style = getComputedStyle(node);
+      const fontSize = Number.parseFloat(style.fontSize);
+      if (fontSize < 11.4) issues.push(`prose font too small: ${fontSize.toFixed(1)}px (${text.slice(0, 48)})`);
+
+      const cjk = text.match(/[\u3400-\u9fff]/g)?.length ?? 0;
+      if (cjk < 12) return;
+      const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
+      const box = node.getBoundingClientRect();
+      const lines = Math.max(1, Math.round(box.height / lineHeight));
+      const charsPerLine = cjk / lines;
+      if (lines >= 3 && charsPerLine < 7) {
+        issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines (${text.slice(0, 48)})`);
+      }
+    });
+
+    return [...new Set(issues)];
   }, viewportWidth);
 }
 
@@ -71,6 +103,16 @@ for (const matrix of matrices) {
     }
   });
 }
+
+test('loops is one canonical comparison with no duplicate interactive player', async ({ page }) => {
+  for (const path of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#fig-seed-openevo-update-target')).toHaveCount(1);
+    await expect(page.locator('[data-interactive-research-explainer="compare"]')).toHaveCount(0);
+    await expect(page.locator('.irx-transport')).toHaveCount(0);
+    await expect(page.getByText('CORE COMPARISON', { exact: true })).toHaveCount(0);
+  }
+});
 
 test('canonical figures remain complete without JavaScript in Chinese and English', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
