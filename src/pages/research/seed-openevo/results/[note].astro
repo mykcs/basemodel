@@ -1,17 +1,31 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import WebShopTrainingNote, { type WebShopTrainingNoteId } from '../../../../components/research/WebShopTrainingNote.astro';
+import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
+import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
 
 export function getStaticPaths() {
   return [
-    { params: { note: 'webshop-training' } },
-    { params: { note: 'seed-training' } },
-    { params: { note: 'openevo-training' } },
-  ];
+    'webshop-training',
+    'seed-training',
+    'openevo-training',
+    'why-it-kept-failing',
+    'first-positive-transfer',
+    'independent-replication',
+    'second-generation',
+    'measurement-boundary',
+    'current-conclusion',
+    'benchmark-first',
+    'seed-faithful-benchmark',
+    'openevo-benchmark-design',
+  ].map((note) => ({ params: { note } }));
 }
 
-const note = Astro.params.note as WebShopTrainingNoteId;
-const meta: Record<WebShopTrainingNoteId, { title: string; description: string }> = {
+const trainingNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
+const benchmarkNotes = ['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design'] as const;
+type NoteId = WebShopTrainingNoteId | OpenEvoWebShopResultNoteId | OpenEvoWebShopBenchmarkNoteId;
+const note = Astro.params.note as NoteId;
+const meta: Record<NoteId, { title: string; description: string }> = {
   'webshop-training': {
     title: 'WebShop 是什么？大家以前怎么训练它？',
     description: '从 WebShop 的交互环境开始，解释原始 imitation learning / reinforcement learning，以及现代 LLM agent 的 on-policy multi-turn RL。',
@@ -24,9 +38,54 @@ const meta: Record<WebShopTrainingNoteId, { title: string; description: string }
     title: '我们怎么训练 OpenEvo × WebShop？',
     description: '解释 OpenEvo × WebShop 的成功经验筛选、SD-LoRA 参数写入、fresh-task evaluation、连续更新门与 SEED-aligned benchmark 边界。',
   },
+  'why-it-kept-failing': {
+    title: '为什么 OpenEvo × WebShop 前面一直没有得到可靠的 fresh-task 提升？',
+    description: '从 3B、7B、parser/fallback 到冻结配对面板，梳理早期负结果怎样一步步收紧实验契约。',
+  },
+  'first-positive-transfer': {
+    title: '第一次正结果：OpenEvo × WebShop 的 fresh-task transfer 从哪里出现？',
+    description: 'H1.38B continuation 首次给出置信区间完全位于 0 以上的 fresh-task transfer signal。',
+  },
+  'independent-replication': {
+    title: '独立复现：换一批全新 WebShop 任务以后，提升还在吗？',
+    description: 'H1.39-MR 冻结训练产物并更换独立新任务面板，再次观察到更新模型相对 BASE 的正向收益。',
+  },
+  'second-generation': {
+    title: '第二次连续写入：为什么还不能说多代 self-evolution 成立？',
+    description: 'H1.40/H1.41 显示第二轮经验供给充足且参数写入真实完成，但 acquisition、retention、preservation 与测量有效性没有同时过门。',
+  },
+  'measurement-boundary': {
+    title: 'H1.42：为什么修完测量器以后，机制比较仍然不能下结论？',
+    description: 'H1.42-MV Stage A 通过 calibration，但 Stage B 修正 validator 后仍有两个 parser/runtime-invalid clusters，最终停在 MVD0 measurement boundary。',
+  },
+  'current-conclusion': {
+    title: 'OpenEvo × WebShop 现在到底能下什么结论？',
+    description: '区分 supported、negative、invalid 与 unknown：当前支持一次可复现跨任务迁移；H1.42 仍停在测量边界，不支持已经建立多代 self-evolution。',
+  },
+  'benchmark-first': {
+    title: '先跑真正的比赛：为什么 Benchmark 必须回到 OpenEvo × WebShop 主线',
+    description: '把项目重新分成 benchmark 与 mechanism 两层：先回答 OpenEvo 最终是否让 Qwen2.5-3B 在未见 WebShop 任务上更强，再用旧 H1 系列解释原因。',
+  },
+  'seed-faithful-benchmark': {
+    title: '一场公平的 WebShop 比赛应该怎么跑？',
+    description: '冻结 SEED-faithful train/test boundary、128 final test tasks、Score/Success、matched interaction budget 与 test-time no-learning rule。',
+  },
+  'openevo-benchmark-design': {
+    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
+    description: '把 carrier 与 feedback density 分成两个轴，定义 OpenEvo-Native-Sparse 主比较、Dense principal ablation、Param variant 与第一阶段 pilot。',
+  },
 };
+
+const isTrainingNote = (value: NoteId): value is WebShopTrainingNoteId =>
+  (trainingNotes as readonly string[]).includes(value);
+const isBenchmarkNote = (value: NoteId): value is OpenEvoWebShopBenchmarkNoteId =>
+  (benchmarkNotes as readonly string[]).includes(value);
 ---
 
 <AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
-  <WebShopTrainingNote note={note} />
+  {isTrainingNote(note)
+    ? <WebShopTrainingNote note={note} />
+    : isBenchmarkNote(note)
+      ? <OpenEvoWebShopBenchmarkNote note={note} />
+      : <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}
 </AppLayout>

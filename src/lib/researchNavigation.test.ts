@@ -67,10 +67,12 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(detail).toContain("content:'On this page'");
   });
 
-  it('keeps the shared site header visible on both report routes', () => {
+  it('keeps the shared site header visible while Chinese results becomes an index and English retains the report', () => {
     for (const resultsPage of [resultsZh, resultsEn]) {
       expect(resultsPage).not.toContain('body:has([data-program-report]) .site-header,');
-      expect(resultsPage).toContain('body:has([data-program-report]) .site-footer,');
     }
+    expect(resultsZh).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
+    expect(resultsZh).not.toContain('body:has([data-program-report]) .site-footer,');
+    expect(resultsEn).toContain('body:has([data-program-report]) .site-footer,');
   });
 });

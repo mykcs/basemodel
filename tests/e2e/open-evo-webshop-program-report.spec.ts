@@ -1,60 +1,79 @@
 import { expect, test } from '@playwright/test';
 
-const routes = ['/research/seed-openevo/results/', '/en/research/seed-openevo/results/'];
+const reportRoute = '/en/research/seed-openevo/results/';
+const indexRoute = '/research/seed-openevo/results/';
+const benchmarkRoutes = [
+  '/research/seed-openevo/results/benchmark-first/',
+  '/research/seed-openevo/results/seed-faithful-benchmark/',
+  '/research/seed-openevo/results/openevo-benchmark-design/',
+] as const;
 
-for (const route of routes) {
-  test(`reader-first report explains the problem before run IDs and methods: ${route}`, async ({ page }) => {
-    await page.goto(route);
-    const report = page.getByTestId('openevo-webshop-program-report');
-    await expect(report).toBeVisible();
-    await expect(report.locator('.opening-prose')).toBeVisible();
-    await expect(report.locator('.trace-example')).toBeVisible();
-    await expect(report.locator('.journey-table tbody tr')).toHaveCount(4);
-    await expect(report.locator('#method-control')).toBeVisible();
-    await expect(report.locator('#replication')).toBeVisible();
-    await expect(report.locator('#next-experiment')).toBeVisible();
-    await expect(report.locator('#interpretation')).toBeVisible();
-    await expect(report.getByText('0.667', { exact: false }).first()).toBeVisible();
-    await expect(report.getByText('+0.248845', { exact: false }).first()).toBeVisible();
-    await expect(report.getByText('132', { exact: false }).first()).toBeVisible();
-    await expect(report.getByText('384', { exact: false }).first()).toBeVisible();
-    await expect(report.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+test('Chinese results landing is an article index with completed evidence and benchmark redesign separated', async ({ page }) => {
+  await page.goto(indexRoute);
+  const index = page.getByTestId('openevo-webshop-result-index');
+  await expect(index).toBeVisible();
+  await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
+  await expect(index.getByRole('heading', { name: '先建立共同语言' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '按证据链读已经完成的实验' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '把主问题重新拉回 Benchmark' })).toBeVisible();
 
-    const ordered = await report.evaluate((node) => {
-      const ids = ['abstract', 'background', 'journey', 'method-control', 'replication', 'next-experiment', 'interpretation', 'methods', 'appendix'];
-      const sections = ids.map((id) => node.querySelector(`#${id}`));
-      return sections.every((current, index) => {
-        if (!current) return false;
-        if (index === 0) return true;
-        const previous = sections[index - 1];
-        return Boolean(previous && (previous.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_FOLLOWING));
-      });
+  for (const route of benchmarkRoutes) {
+    await expect(index.locator(`a[href="${route}"]`)).toHaveCount(1);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('English archived reader-first report explains the problem before run IDs and methods', async ({ page }) => {
+  await page.goto(reportRoute);
+  const report = page.getByTestId('openevo-webshop-program-report');
+  await expect(report).toBeVisible();
+  await expect(report.locator('.opening-prose')).toBeVisible();
+  await expect(report.locator('.trace-example')).toBeVisible();
+  await expect(report.locator('.journey-table tbody tr')).toHaveCount(4);
+  await expect(report.locator('#method-control')).toBeVisible();
+  await expect(report.locator('#replication')).toBeVisible();
+  await expect(report.locator('#next-experiment')).toBeVisible();
+  await expect(report.locator('#interpretation')).toBeVisible();
+  await expect(report.getByText('0.667', { exact: false }).first()).toBeVisible();
+  await expect(report.getByText('+0.248845', { exact: false }).first()).toBeVisible();
+  await expect(report.getByText('132', { exact: false }).first()).toBeVisible();
+  await expect(report.getByText('384', { exact: false }).first()).toBeVisible();
+  await expect(report.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const ordered = await report.evaluate((node) => {
+    const ids = ['abstract', 'background', 'journey', 'method-control', 'replication', 'next-experiment', 'interpretation', 'methods', 'appendix'];
+    const sections = ids.map((id) => node.querySelector(`#${id}`));
+    return sections.every((current, index) => {
+      if (!current) return false;
+      if (index === 0) return true;
+      const previous = sections[index - 1];
+      return Boolean(previous && (previous.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_FOLLOWING));
     });
-    expect(ordered).toBe(true);
-
-    const methodOwnsFirstSd = await report.evaluate((node) => {
-      const method = node.querySelector('#method-control');
-      const candidates = Array.from(node.querySelectorAll('h1,h2,h3,p,li,summary,figcaption,td,th'));
-      const firstSd = candidates.find((el) => el.textContent?.includes('SD-LoRA'));
-      return Boolean(method && firstSd && (method.compareDocumentPosition(firstSd) & Node.DOCUMENT_POSITION_CONTAINED_BY));
-    });
-    expect(methodOwnsFirstSd).toBe(true);
-
-    const lineage = report.getByTestId('lineage-appendix');
-    const rtx6 = report.getByTestId('rtx6-appendix');
-    await expect(lineage).not.toHaveAttribute('open', '');
-    await expect(rtx6).not.toHaveAttribute('open', '');
-    await lineage.locator(':scope > summary').click();
-    await expect(lineage).toHaveAttribute('open', '');
-    await expect(lineage.locator('.lineage-list > li')).toHaveCount(29);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   });
-}
+  expect(ordered).toBe(true);
 
-test('reader-first report remains useful without JavaScript', async ({ browser }) => {
+  const methodOwnsFirstSd = await report.evaluate((node) => {
+    const method = node.querySelector('#method-control');
+    const candidates = Array.from(node.querySelectorAll('h1,h2,h3,p,li,summary,figcaption,td,th'));
+    const firstSd = candidates.find((el) => el.textContent?.includes('SD-LoRA'));
+    return Boolean(method && firstSd && (method.compareDocumentPosition(firstSd) & Node.DOCUMENT_POSITION_CONTAINED_BY));
+  });
+  expect(methodOwnsFirstSd).toBe(true);
+
+  const lineage = report.getByTestId('lineage-appendix');
+  const rtx6 = report.getByTestId('rtx6-appendix');
+  await expect(lineage).not.toHaveAttribute('open', '');
+  await expect(rtx6).not.toHaveAttribute('open', '');
+  await lineage.locator(':scope > summary').click();
+  await expect(lineage).toHaveAttribute('open', '');
+  await expect(lineage.locator('.lineage-list > li')).toHaveCount(29);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('English archived reader-first report remains useful without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  await page.goto('/en/research/seed-openevo/results/');
+  await page.goto(reportRoute);
   const report = page.getByTestId('openevo-webshop-program-report');
   await expect(report.getByRole('heading', { name: 'Can OpenEvo get better on WebShop by learning from its own experience?' })).toBeVisible();
   await expect(report.getByRole('heading', { name: 'What does WebShop measure?' })).toBeVisible();
@@ -71,23 +90,45 @@ for (const theme of ['light', 'dark'] as const) {
     { width: 768, height: 1024 },
     { width: 1440, height: 1000 },
   ]) {
-    test(`${theme} reader-first report is overflow-safe at ${viewport.width}px`, async ({ page }) => {
+    test(`${theme} archived report is overflow-safe at ${viewport.width}px`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ colorScheme: theme });
-      for (const route of routes) {
+      await page.goto(reportRoute);
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const report = page.getByTestId('openevo-webshop-program-report');
+      await expect(report.locator('.trace-example')).toBeVisible();
+      await expect(report.locator('.second-gen-ledger')).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+    });
+  }
+}
+
+for (const theme of ['light', 'dark'] as const) {
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 1440, height: 1000 },
+  ]) {
+    test(`${theme} Chinese results index and benchmark redesign remain readable at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.emulateMedia({ colorScheme: theme });
+
+      for (const route of [indexRoute, ...benchmarkRoutes]) {
         await page.goto(route);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-        const report = page.getByTestId('openevo-webshop-program-report');
-        await expect(report.locator('.trace-example')).toBeVisible();
-        await expect(report.locator('.second-gen-ledger')).toBeVisible();
+        await expect(page.locator('#main-content')).toBeVisible();
+        if (route === indexRoute) {
+          await expect(page.getByTestId('openevo-webshop-result-index')).toBeVisible();
+        } else {
+          await expect(page.locator('.benchmark-note')).toBeVisible();
+        }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       }
     });
   }
 }
 
-test('print mode linearizes the narrative and exposes current provenance', async ({ page }) => {
-  await page.goto('/research/seed-openevo/results/');
+test('print mode linearizes the archived narrative and exposes current provenance', async ({ page }) => {
+  await page.goto(reportRoute);
   await page.emulateMedia({ media: 'print', colorScheme: 'light' });
   const report = page.getByTestId('openevo-webshop-program-report');
   await expect(page.locator('.site-header')).toBeHidden();
@@ -107,7 +148,7 @@ test('print mode linearizes the narrative and exposes current provenance', async
   await expect(report.locator('.print-rtx6')).toBeVisible();
 });
 
-test('print cleanup remains scoped to the results report', async ({ page }) => {
+test('print cleanup remains scoped to the archived results report', async ({ page }) => {
   await page.goto('/research/seed-openevo/webshop/');
   await page.emulateMedia({ media: 'print', colorScheme: 'light' });
   await expect(page.locator('.plain-detail__header')).toBeVisible();
