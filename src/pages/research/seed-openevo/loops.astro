@@ -2,12 +2,10 @@
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 import SeedOpenEvoCanonicalFigure from '../../../components/research/SeedOpenEvoCanonicalFigure.astro';
-import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
-<AppLayout title="SEED 与 OpenEvo 循环对比" description="用论文式框架图并排比较 SEED 的 policy 参数更新与 OpenEvo 的跨任务 carrier/revision 演化，再用交互图展开经验流向、更新对象和激活边界。" locale={locale}>
+<AppLayout title="SEED 与 OpenEvo 循环对比" description="用一张论文式 canonical framework figure 比较 SEED 的 policy 参数更新与 OpenEvo 的跨任务 carrier/revision 演化，避免在同一页重复呈现两套比较图。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="loops">
     <SeedOpenEvoCanonicalFigure locale={locale} />
-    <InteractiveResearchExplainer locale={locale} kind="compare" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>
