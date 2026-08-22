@@ -60,6 +60,21 @@ describe('global shell ownership', () => {
     expect(header).toContain('.site-header .mobile-menu .mobile-menu__inner');
   });
 
+  it('keeps the canonical owner values that replace the retired design-refinement Header copy', () => {
+    const header = read('../styles/components/header.css');
+    expect(header).toContain('min-height: 68px;');
+    expect(header).toContain('gap: 14px;');
+    expect(header).toContain('white-space: nowrap;');
+    expect(header).toContain('@media (max-width: 1080px)');
+    expect(header).toContain('min-height: 62px;');
+    expect(header).toContain('.site-header .brand small');
+    expect(header).toContain('@media (max-width: 960px)');
+    expect(header).toContain('.site-header .nav-inner > .lang-switch');
+    expect(header).toContain('@media (max-width: 520px)');
+    expect(header).toContain('max-width: 104px;');
+    expect(header).toContain('text-overflow: ellipsis;');
+  });
+
   it('keeps retired compatibility layers out of shared Header ownership', () => {
     for (const path of [
       '../styles/design-refinement.css',
