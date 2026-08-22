@@ -113,8 +113,9 @@
 
 @media (max-width:720px) {
   .site-main .training-note.training-note {
-    border-left: 0;
-    border-right: 0;
+    /* Suppress side geometry without resetting border-color to currentColor. */
+    border-left-width: 0;
+    border-right-width: 0;
     border-radius: 0;
   }
 }
