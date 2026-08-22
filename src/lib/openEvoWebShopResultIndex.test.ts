@@ -8,6 +8,7 @@ const resultIndex = read('../components/research/OpenEvoWebShopResultIndex.astro
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 const resultRoute = read('../pages/research/seed-openevo/results/[note].astro');
+const primerMoved = read('../components/research/ResearchPrimerMoved.astro');
 const sitemap = read('./sitemapRoutes.ts');
 
 const noteSlugs = [
@@ -26,27 +27,36 @@ const noteSlugs = [
 ] as const;
 
 describe('OpenEvo × WebShop result article index', () => {
-  it('keeps the results landing page navigation-only', () => {
+  it('keeps the results landing page focused on experiment evidence and canonical references', () => {
     expect(resultsPage).toContain('OpenEvoWebShopResultIndex');
     expect(resultsPage).not.toContain('OpenEvoWebShopNarrativeReport');
     expect(resultsPage).not.toContain('OpenEvoWebShopProgramReport');
     expect(resultsPage).not.toContain('Seed3090ParametricProgress');
     expect(resultsPage).not.toContain('WebShopTrainingGuide');
-    expect(resultIndex).toContain('这个页面只负责导航');
+    expect(resultIndex).toContain('实验结果页只讲实验');
+    expect(resultIndex).toContain('/research/seed-openevo/webshop/');
+    expect(resultIndex).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
+    expect(resultIndex).toContain('/research/seed-openevo/openevo/');
+    expect(resultIndex).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
+    expect(resultIndex).toContain('/papers/seed/');
   });
 
-  it('indexes and publishes every article in the twelve-note series', () => {
+  it('preserves all twelve historical result-note URLs while moving the first three primers to canonical pages', () => {
     for (const slug of noteSlugs) {
-      expect(resultIndex, `${slug} missing from result index`).toContain(`/${slug}/`);
+      expect(resultIndex, `${slug} missing from result index or legacy links`).toContain(`/${slug}/`);
       expect(resultRoute, `${slug} missing from static routes`).toContain(`'${slug}'`);
       expect(sitemap, `${slug} missing from sitemap`).toContain(`/research/seed-openevo/results/${slug}/`);
     }
+    expect(resultRoute).toContain('ResearchPrimerMoved');
+    expect(primerMoved).toContain('一个概念只保留一个 canonical explanation');
+    expect(primerMoved).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
+    expect(primerMoved).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
   });
 
   it('keeps completed evidence separate from the future benchmark redesign', () => {
-    expect(resultIndex).toContain('PART II');
+    expect(resultIndex).toContain('PART I');
     expect(resultIndex).toContain('按证据链读已经完成的实验');
-    expect(resultIndex).toContain('PART III');
+    expect(resultIndex).toContain('PART II');
     expect(resultIndex).toContain('把主问题重新拉回 Benchmark');
     expect(benchmarkNote).toContain('这是下一阶段的 benchmark 设计与研究重分层，不是已经完成的实验结果');
     expect(benchmarkNote).toContain('Vanilla vs OpenEvo-Native-Sparse');
