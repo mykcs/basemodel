@@ -8,6 +8,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
 const playwrightConfig = read('../../playwright.config.ts');
 const vercelUiGate = read('../../scripts/vercel-ui-gate.mjs');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
+const canonicalFigureGate = read('../../tests/e2e/canonical-research-figures.spec.ts');
 const webShopThemeGate = read('../../tests/e2e/webshop-training-theme.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
@@ -16,6 +17,8 @@ const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const appLayout = read('../layouts/AppLayout.astro');
 const appStyles = read('../styles/app.css');
+const researchReadabilityStyles = read('../styles/research-figure-readability.css');
+const interactiveResearchStyles = read('../styles/interactive-research-explainer.css');
 const header = read('../components/Header.astro');
 const headerStyles = read('../styles/components/header.css');
 const visualCloseout = read('../styles/visual-closeout.css');
@@ -24,7 +27,7 @@ const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the general, global-header, breakpoint-handoff, research-geometry, and WebShop-theme browser commands wired', () => {
+  it('keeps the general, canonical-figure, global-header, breakpoint-handoff, research-geometry, and WebShop-theme browser commands wired', () => {
     for (const script of ['test:header', 'test:header:all'] as const) {
       expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
@@ -34,6 +37,7 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('canonical-research-figures.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('webshop-training-theme.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('compare-tray-on-demand.spec.ts');
@@ -172,11 +176,27 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift', 'startError > 5', 'endError > 5']) {
+    for (const term of ['width: 390', 'width: 768', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift']) {
       expect(researchGeometryGate).toContain(term);
     }
     expect(geometryPolicy).toContain('connector endpoint error must be <= 5px');
     expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
+  });
+
+  it('makes readable research prose and local control ownership hard release conditions', () => {
+    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
+      expect(canonicalFigureGate).toContain(term);
+    }
+    for (const term of ['prose font too small', 'CJK prose is too narrow', "toHaveCSS('position', 'sticky')", 'instead of floating over the page']) {
+      expect(researchGeometryGate).toContain(term);
+    }
+    expect(researchReadabilityStyles).toContain('.canonical-figure');
+    expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
+    expect(interactiveResearchStyles).toContain('position:sticky');
+    expect(interactiveResearchStyles).not.toContain('position:fixed');
+    expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
+    expect(geometryPolicy).toContain('must not be a page-global `position: fixed` dock');
+    expect(geometryPolicy).toContain('canonical-only');
   });
 
   it('keeps shared visual primitives opted into browser auditing', () => {
