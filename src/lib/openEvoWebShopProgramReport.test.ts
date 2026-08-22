@@ -125,11 +125,13 @@ describe('OpenEvo × WebShop frozen program report', () => {
     }
   });
 
-  it('uses a paper-like, static-first main sequence on both locale routes', () => {
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-    }
+  it('keeps the frozen report static-first while the Chinese results route becomes an article index', () => {
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+
     const order = ['id="abstract"', 'id="results"', 'id="interpretation"', 'id="next-experiment"', 'id="methods"', 'id="appendix"']
       .map((token) => component.indexOf(token));
     expect(order.every((position) => position >= 0)).toBe(true);
