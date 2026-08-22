@@ -101,4 +101,10 @@ describe('theme contrast contract', () => {
     expect(webShopResultsRoute).not.toContain('color-scheme:dark');
     expect(webShopResultsRoute).not.toContain('background:#090f1c');
   });
+
+  it('keeps mobile training-note borders on the semantic border token', () => {
+    expect(webShopTrainingNoteCss).toContain('border-left-width: 0;');
+    expect(webShopTrainingNoteCss).toContain('border-right-width: 0;');
+    expect(webShopTrainingNoteCss).not.toMatch(/border-(?:left|right):\s*0\s*;/);
+  });
 });
