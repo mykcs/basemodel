@@ -3,19 +3,20 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import WebShopTrainingNote, { type WebShopTrainingNoteId } from '../../../../components/research/WebShopTrainingNote.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
 
-const trainingNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
-const resultNotes = [
-  'why-it-kept-failing',
-  'first-positive-transfer',
-  'independent-replication',
-  'second-generation',
-  'current-conclusion',
-] as const;
-
 export function getStaticPaths() {
-  return [...trainingNotes, ...resultNotes].map((note) => ({ params: { note } }));
+  return [
+    'webshop-training',
+    'seed-training',
+    'openevo-training',
+    'why-it-kept-failing',
+    'first-positive-transfer',
+    'independent-replication',
+    'second-generation',
+    'current-conclusion',
+  ].map((note) => ({ params: { note } }));
 }
 
+const trainingNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
 type NoteId = WebShopTrainingNoteId | OpenEvoWebShopResultNoteId;
 const note = Astro.params.note as NoteId;
 const meta: Record<NoteId, { title: string; description: string }> = {
