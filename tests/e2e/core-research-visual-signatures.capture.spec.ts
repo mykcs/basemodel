@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { test, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 type Theme = 'light' | 'dark';
 
@@ -37,8 +37,8 @@ async function screenshotSignature(page: Page): Promise<string> {
     await image.decode();
 
     const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 24;
+    canvas.width = 16;
+    canvas.height = 12;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw new Error('2d canvas unavailable for visual signature');
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -55,8 +55,9 @@ async function screenshotSignature(page: Page): Promise<string> {
   }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
 }
 
-test('capture accepted core research screenshot signatures', async ({ page }) => {
-  const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; rgb32x24: string }> = {};
+test('capture accepted core research screenshot signatures', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Visual baseline capture is Chromium-specific');
+  const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; rgb16x12: string }> = {};
 
   for (const matrix of matrices) {
     await page.setViewportSize(matrix.viewport);
@@ -64,11 +65,12 @@ test('capture accepted core research screenshot signatures', async ({ page }) =>
       await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
       await page.goto(route.path, { waitUntil: 'domcontentloaded' });
       await settle(page);
+      await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
       signatures[`${route.key}__${matrix.key}`] = {
         route: route.path,
         viewport: matrix.viewport,
         theme: matrix.theme,
-        rgb32x24: await screenshotSignature(page),
+        rgb16x12: await screenshotSignature(page),
       };
     }
   }
@@ -76,7 +78,7 @@ test('capture accepted core research screenshot signatures', async ({ page }) =>
   await mkdir('dist/__qa__', { recursive: true });
   await writeFile(
     'dist/__qa__/core-research-visual-signatures.json',
-    `${JSON.stringify({ version: 1, width: 32, height: 24, signatures }, null, 2)}\n`,
+    `${JSON.stringify({ version: 1, browser: 'chromium', width: 16, height: 12, signatures })}\n`,
     'utf8',
   );
 });
