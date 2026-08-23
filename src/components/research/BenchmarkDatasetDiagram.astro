@@ -30,14 +30,14 @@ const taskTypes = [
   <article class="benchmark-card webshop-card">
     <header class="benchmark-title"><div><span>WEB INTERACTION</span><h3>WebShop</h3></div><p>{t('自然语言购物要求被变成一个可反复 search / click / option / buy 的网页环境。模型不是“回答商品名”，而是在状态不断变化的网站里做决策。','A natural-language shopping request becomes an interactive website that supports repeated search, click, option, and buy actions. The model is not merely naming a product; it is making decisions in a changing website state.')}</p></header>
 
-    <div class="scene webshop-scene" role="img" aria-label={t('WebShop 从商品语料与用户指令形成 1k 环境、goal，再进入 observation-action-state-transition-reward 循环','WebShop pipeline from product corpus and user instructions into the 1k environment, goals, and the observation-action-state-transition-reward loop')}>
-      <article class="scene-node corpus"><span class="node-role">SOURCE DATA</span><strong>1.18M {t('商品','products')}</strong><small>12,087 {t('众包购物指令','crowd-sourced shopping instructions')}</small></article>
-      <article class="scene-node snapshot"><span class="node-role">FROZEN WORLD</span><strong>1,000 {t('商品快照','product snapshot')}</strong><small>3 JSON files + resources_1k + Lucene indexes_1k</small></article>
+    <div class="scene webshop-scene" role="img" aria-label={t('WebShop 中一个普通 Agent 根据 instruction、当前页面和可用动作完成购物任务','An ordinary Agent completes a WebShop task from an instruction, the current page, and available actions')}>
+      <article class="scene-node corpus"><span class="node-role">SHOPPING TASK</span><strong>{t('购物 instruction','shopping instruction')}</strong><small>{t('商品、属性、预算等约束','product, attribute, and budget constraints')}</small></article>
+      <article class="scene-node snapshot"><span class="node-role">AGENT</span><strong>Agent</strong><small>{t('读取当前页面，选择下一步','reads the current page and chooses the next step')}</small></article>
       <article class="scene-node goal"><span class="node-role">TASK</span><strong>{t('自然语言约束','natural-language constraints')}</strong><small>{t('商品属性、预算、类别等共同定义目标','attributes, budget, category, and other constraints define the goal')}</small></article>
       <article class="scene-node observation"><span class="node-role">OBSERVATION</span><strong>{t('当前文本页面','current text page')}</strong><small>{t('搜索结果、商品页、可点击选项','search results, product page, clickable options')}</small></article>
-      <article class="scene-node policy"><span class="node-role">POLICY</span><strong>Qwen2.5-3B-Instruct</strong><small>{t('根据 goal + 当前页面决定下一步','chooses the next step from the goal + current page')}</small></article>
+      <article class="scene-node policy"><span class="node-role">DECISION</span><strong>{t('选择下一步','choose the next step')}</strong><small>{t('根据 goal + 当前页面决定','from the goal + current page')}</small></article>
       <article class="scene-node action"><span class="node-role">ACTION</span><strong>search / click / option / buy</strong><small>{t('动作改变网页状态','the action changes website state')}</small></article>
-      <article class="scene-node verifier"><span class="node-role">ENVIRONMENT / VERIFIER</span><strong>task_score ∈ [0,1]</strong><small>{t('精确完成时 won=true；SEED 的 RL reward 成功为 10，否则 0','exact completion sets won=true; SEED RL reward is 10 on success, otherwise 0')}</small></article>
+      <article class="scene-node verifier"><span class="node-role">WEBSHOP CHECK</span><strong>Score / Success</strong><small>{t('检查购物要求是否满足','checks whether the shopping requirements are met')}</small></article>
       <svg class="scene-wires" viewBox="0 0 1200 510" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <marker id="web-arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2563eb" /></marker>
@@ -56,14 +56,7 @@ const taskTypes = [
       <span class="flow-label label-feedback">{t('新 observation 进入下一步','new observation feeds the next step')}</span>
     </div>
 
-    <div class="split-model">
-      <article><small>SEED · EVAL</small><strong>goal 0–499</strong><span>{t('评估池','evaluation pool')}</span></article>
-      <article><small>SEED · TRAIN</small><strong>goal 500–end</strong><span>{t('训练池','training pool')}</span></article>
-      <article class="active"><small>OpenEvo · historical Phase G</small><strong>6680 · 2590</strong><span>{t('历史 promotion-dev 消耗','historical promotion-dev consumption')}</span></article>
-      <article class="next"><small>OpenEvo · historical H0</small><strong>new train-only tasks</strong><span>{t('历史自然成功轨迹搜索','historical natural-success search')}</span></article>
-    </div>
-
-    <details class="technical-details"><summary>{t('技术细节：为什么同叫 WebShop，也可能不是同一个实验？','Technical detail: why two “WebShop” experiments may still differ')}</summary><p>{t('商品快照、Lucene index、goal split、environment seed、generation seed、prompt、parser、step budget 与 evaluator 都会改变实际任务合同。因此实验 manifest 会记录这些身份，而不是只写 benchmark 名称；实时 campaign 还要回到实际实验 branch 解析。','Product snapshot, Lucene index, goal split, environment seed, generation seed, prompt, parser, step budget, and evaluator all affect the actual contract. Experiment manifests therefore record these identities instead of relying on the benchmark name alone; resolve the live campaign from the experiment branch actually in use.')}</p></details>
+    <details class="technical-details"><summary>{t('技术细节：为什么 Agent 不能只回答商品名？','Technical detail: why cannot the Agent just name a product?')}</summary><p>{t('WebShop 要求 Agent 处理连续的网页状态：搜索结果、商品页和可选属性会随着动作变化；最终由环境检查购物要求并给出 Score / Success。','WebShop requires the Agent to handle a sequence of webpage states: search results, product pages, and available options change with actions; the environment finally checks the shopping requirement and returns Score / Success.')}</p></details>
   </article>
 
   <article class="benchmark-card alfworld-card">

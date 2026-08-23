@@ -418,6 +418,6 @@ test('research framework opens as a system map and can enter and leave trace mod
   await expect(root.locator('.irx-paper-caption')).toContainText('SYSTEM MAP');
   await root.getByRole('button', { name: '开始追踪' }).click();
   await expect(root).toHaveAttribute('data-overview', 'false');
-  await root.getByRole('button', { name: '总览图' }).click();
+  await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });

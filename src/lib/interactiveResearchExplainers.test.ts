@@ -93,13 +93,10 @@ describe('interactive research explainers', () => {
     expect(css).toContain('.irx-edge-layer{display:none}');
   });
 
-  it('teaches WebShop as a changing website environment with explicit benchmark and historical experiment boundaries', () => {
+  it('teaches WebShop as a changing website environment without borrowing dataset or experiment history', () => {
     for (const term of ['OBSERVATION', 'AVAILABLE ACTIONS', 'AGENT SELECTED', 'ENVIRONMENT TRANSITION', 'REWARD / SCORE', 'search["black sports sweatshirt"]', 'click["Buy Now"]']) expect(explainer).toContain(term);
-    for (const boundary of ['1,000-product', '6680 / 2590', 'goal 0–499', 'goal 500–end']) expect(explainer).toContain(boundary);
-    expect(explainer).toContain('Phase G/H0 are dated historical scientific boundaries');
-    expect(explainer).toContain('experiment branch actually in use');
     expect(explainer).toContain('教学演示');
-    expect(explainer).toContain('not a measured Phase G result');
+    expect(explainer).toContain('not a measured experiment result');
   });
 
   it('makes ALFWorld world state, movement, precondition failure, and splits explicit', () => {

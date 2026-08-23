@@ -1,7 +1,5 @@
 ---
 import { localePath, type Locale } from '../../i18n';
-import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
-
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -9,262 +7,49 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 ---
 
-<section id="fig-seed-webshop" class="canonical-figure seed-webshop-figure" aria-labelledby="seed-webshop-figure-title" data-ui-audit="contrast layout overflow">
+<section id="fig-seed-webshop" class="canonical-figure seed-webshop-setting" aria-labelledby="seed-webshop-setting-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
-    <div class="figure-label">FIGURE S1 · SEED × WEBSHOP</div>
-    <h2 id="seed-webshop-figure-title">{t('SEED 怎样在 WebShop 上训练，又怎样在测试时直接完成购物任务','How SEED trains on WebShop — and then shops directly at test time')}</h2>
-    <p>{t('把论文里的数据设定、两阶段训练和推理边界放在同一张图里。先看“用了哪些 WebShop 数据”，再看“经验如何变成参数更新”，最后看测试时哪些训练模块会消失。','One figure aligns the paper’s data configuration, two-stage training, and inference boundary. Read it from “which WebShop data is used,” to “how experience becomes a parameter update,” to “which training-only modules disappear at test time.”')}</p>
-    <div class="figure-actions">
-      <a href={p('/research/seed-openevo/webshop/')}>{t('WebShop 环境说明 →','WebShop environment →')}</a>
-      <a href={p('/papers/seed/')}>{t('SEED 论文页 →','SEED paper →')}</a>
-    </div>
+    <div class="figure-label">FIGURE S1-C · FAIR WEBSHOP SETTING</div>
+    <h2 id="seed-webshop-setting-title">{t('SEED 论文语境下，公平比较要进入哪个 WebShop 场地？','Which WebShop setting makes a SEED comparison fair?')}</h2>
+    <p>{t('这里固定的是比赛场地，不是学习方法：SEED、OpenEvo 或其他框架都应进入同一个世界、同一批任务和同一种评分。','This fixes the playing field, not the learning method: SEED, OpenEvo, or another framework should enter the same world, task pools, and scoring.')}</p>
+    <div class="figure-actions"><a href={p('/research/seed-openevo/webshop/')}>{t('WebShop 环境说明 →','WebShop environment →')}</a><a href={p('/papers/seed/')}>{t('SEED 论文页 →','SEED paper →')}</a></div>
   </header>
 
-  <figure class="figure-body">
-    <section class="dataset-band" aria-labelledby="seed-webshop-data-title">
-      <div class="band-heading">
-        <span>01 · DATASET SETTING</span>
-        <h3 id="seed-webshop-data-title">{t('先分清 WebShop 官方数据，和 SEED 实际拿来训练 / 测试的子集','Separate the official WebShop split from the subsets SEED actually trains and evaluates on')}</h3>
-      </div>
-
-      <div class="official-dataset" data-ui-audit="layout">
-        <div class="dataset-origin" data-ui-audit-item>
-          <small>ORIGINAL WEBSHOP</small>
-          <strong>12,087</strong>
-          <span>{t('shopping instructions','shopping instructions')}</span>
-        </div>
-        <div class="dataset-splits">
-          <article class="split train" data-ui-audit-item>
-            <small>TRAIN</small><strong>10,587</strong><span>{t('官方训练 split','official training split')}</span>
-          </article>
-          <article class="split dev" data-ui-audit-item>
-            <small>DEV</small><strong>1,000</strong><span>{t('官方开发 split','official development split')}</span>
-          </article>
-          <article class="split test" data-ui-audit-item>
-            <small>TEST</small><strong>500</strong><span>{t('官方测试 split','official test split')}</span>
-          </article>
-        </div>
-      </div>
-
-      <div class="seed-usage-grid" aria-label={t('SEED 在 WebShop 上的数据使用方式','How SEED uses WebShop data')}>
-        <article class="usage-card sft" data-ui-audit-item>
-          <div class="usage-source"><span>TRAIN</span><i aria-hidden="true">↓</i></div>
-          <small>STAGE 1 · SFT</small>
-          <strong>180 tasks × 8 rollouts</strong>
-          <b>= 1,440 trajectories</b>
-          <p>{t('为每条完整 trajectory 生成 hindsight skill，再用 trajectory → skill 做三轮 SFT。','Generate a hindsight skill for each completed trajectory, then run three SFT epochs on trajectory → skill pairs.')}</p>
-        </article>
-        <article class="usage-card rl" data-ui-audit-item>
-          <div class="usage-source"><span>TRAIN</span><i aria-hidden="true">↓</i></div>
-          <small>STAGE 2 · RL</small>
-          <strong>2,400 training instances</strong>
-          <b>150 policy updates · N = 8</b>
-          <p>{t('WebShop batch size 16；每个 interaction 最多 15 steps。','WebShop uses batch size 16; each interaction is capped at 15 steps.')}</p>
-        </article>
-        <article class="usage-card eval" data-ui-audit-item>
-          <div class="usage-source"><span>TEST</span><i aria-hidden="true">↓</i></div>
-          <small>EVALUATION</small>
-          <strong>128 test samples</strong>
-          <b>Score + Success Rate</b>
-          <p>{t('这是 SEED 论文自己的评估设置；不是把官方 500-task test split 全部跑完。','This is SEED’s paper evaluation setting; it is not an evaluation over all 500 tasks in the official test split.')}</p>
-        </article>
-      </div>
-      <p class="dataset-note">{t('图中 DEV 保留为官方 split，但不画用途箭头：这里只可视化论文明确说明的 SFT、RL 与 evaluation 数据配置，不把未明确的用途自行补成事实。','DEV remains visible as an official split but has no usage arrow: the figure only visualizes SFT, RL, and evaluation uses explicitly stated by the paper instead of inventing an unstated role.')}</p>
+  <figure class="setting-map" aria-labelledby="seed-webshop-setting-title">
+    <section class="method-entry" aria-label={t('学习框架进入同一设置','Learning frameworks enter the same setting')}>
+      <article><strong>SEED Agent</strong><span>{t('学习方法可以不同','learning method may differ')}</span></article>
+      <b aria-hidden="true">\</b><div class="same-contract">SAME WEBSHOP SETTING</div><b aria-hidden="true">/</b>
+      <article><strong>OpenEvo Agent</strong><span>{t('学习方法可以不同','learning method may differ')}</span></article>
     </section>
 
-    <section class="training-stage stage-one" aria-labelledby="seed-stage-one-canonical-title">
-      <div class="band-heading">
-        <span>02 · STAGE 1</span>
-        <h3 id="seed-stage-one-canonical-title">{t('先让 policy 学会“看完整条轨迹以后复盘”','First teach the policy to reflect after seeing a complete trajectory')}</h3>
-      </div>
-
-      <div class="stage-one-flow" data-ui-audit="layout">
-        <article class="paper-node frozen" data-ui-audit-item>
-          <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">❄️</span><small>ROLLOUT CHECKPOINT</small></div>
-          <strong>{t('Base Agent 做 WebShop task','Base Agent attempts a WebShop task')}</strong>
-          <p>{t('本次 rollout 内参数不更新。','Parameters do not update inside this rollout.')}</p>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="paper-node environment" data-ui-audit-item>
-          <small>WEBSHOP</small>
-          <strong>{t('instruction → search → product → options → buy','instruction → search → product → options → buy')}</strong>
-          <p>{t('得到完整 interaction 与终局 outcome。','Produces a full interaction and terminal outcome.')}</p>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="paper-node artifact" data-ui-audit-item>
-          <small>📄 TRAJECTORY</small>
-          <strong>instruction + observations + actions + outcome</strong>
-          <p>{t('训练样本首先是一整个 episode，而不是单独一个动作。','The training object is a complete episode, not an isolated action.')}</p>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="paper-node frozen" data-ui-audit-item>
-          <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">❄️</span><small>EXTERNAL ANALYZER</small></div>
-          <strong>GLM-5.2</strong>
-          <p>{t('阅读完整 episode，标注 hindsight skill；它不参与 policy 参数优化。','Reads the complete episode and annotates a hindsight skill; it is not optimized as part of the policy.')}</p>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="paper-node trainable" data-ui-audit-item>
-          <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">🔥</span><small>HINDSIGHT-SKILL SFT</small></div>
-          <strong>{t('Agent 学习 trajectory → skill','Agent learns trajectory → skill')}</strong>
-          <p>SFT × 3 epochs → θ<sub>SFT</sub></p>
-        </article>
-      </div>
-      <p class="stage-intuition">{t('Stage 1 的目的不是直接教模型“正确购物答案”，而是先让同一个 policy checkpoint 具备一种能力：任务做完以后，能总结“如果早知道什么，之前会更容易做对”。','Stage 1 does not directly teach a catalog of “correct shopping answers.” It first gives the policy checkpoint a new capability: after an episode, summarize what hindsight would have made the earlier decisions easier.')}</p>
+    <section class="evidence-grid" aria-label={t('公平比较的证据层','Evidence layers for a fair comparison')}>
+      <article class="evidence-card paper" data-ui-audit-item><small>PAPER EXPLICIT</small><strong>128</strong><p>{t('论文报告的 WebShop test samples','WebShop test samples reported by the paper')}</p></article>
+      <article class="evidence-card code" data-ui-audit-item><small>RELEASED-CODE DEFAULT</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small','small WebShop products; released scripts default to use_small')}</p></article>
+      <article class="evidence-card boundary" data-ui-audit-item><small>PAPER BOUNDARY</small><strong>{t('未明确','Not explicit')}</strong><p>{t('论文未明确说明最终数字使用的 catalog size','The paper does not state the catalog size behind its final numbers')}</p></article>
     </section>
 
-    <section class="training-stage stage-two" aria-labelledby="seed-stage-two-canonical-title">
-      <div class="band-heading">
-        <span>03 · STAGE 2</span>
-        <h3 id="seed-stage-two-canonical-title">{t('同一个 Agent 一边做任务，一边把事后复盘变成更密的训练信号','The same Agent acts, reflects, and converts hindsight into denser training signal')}</h3>
-      </div>
-
-      <div class="seed-wrapper" data-ui-audit="contrast layout">
-        <div class="wrapper-label">SEED</div>
-        <div class="actor-row">
-          <article class="paper-node frozen actor" data-ui-audit-item>
-            <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">❄️</span><small>POLICY SNAPSHOT</small></div>
-            <strong>π<sub>θold</sub> · Agent</strong>
-            <p>{t('本轮冻结：收集 rollout，也作为 hindsight analyzer 来源。','Frozen for this update: collects rollouts and supplies the hindsight analyzer.')}</p>
-          </article>
-          <div class="interaction-loop" data-ui-audit-item>
-            <span>↔</span>
-            <strong>WebShop</strong>
-            <small>observation · sampled actions · reward</small>
-          </div>
-          <article class="paper-node artifact trajectory" data-ui-audit-item>
-            <small>📄 COMPLETED TRAJECTORY τ</small>
-            <strong>{t('同一批 sampled action tokens 已经固定','The sampled action tokens are now fixed')}</strong>
-            <p>{t('后面不会重写一条“知道答案以后”的新轨迹。','Later stages do not rewrite a new “correct-with-hindsight” trajectory.')}</p>
-          </article>
-        </div>
-
-        <div class="branch-grid" data-ui-audit="layout">
-          <section class="branch reward-branch" data-ui-audit-item>
-            <header><small>OUTCOME VIEW</small><strong>{t('最后结果怎么样？','How did the episode end?')}</strong></header>
-            <div class="branch-step"><span>R(τ)</span><i aria-hidden="true">↓</i><b>GRPO</b></div>
-            <p>{t('环境 outcome 提供 trajectory-level 的相对 RL signal。','The environment outcome provides a trajectory-level relative RL signal.')}</p>
-          </section>
-
-          <section class="branch hindsight-branch" data-ui-audit-item>
-            <header><small>HINDSIGHT VIEW</small><strong>{t('事后看，什么经验值得带回来？','In hindsight, what experience is worth bringing back?')}</strong></header>
-            <div class="hindsight-line"><span>π<sub>θold</sub> ❄️</span><i aria-hidden="true">→</i><span>📄 hindsight skill s</span></div>
-            <p>{t('同一冻结 snapshot 看完 trajectory，再生成自然语言 hindsight skill。','The same frozen snapshot reads the completed trajectory and generates a natural-language hindsight skill.')}</p>
-          </section>
-        </div>
-
-        <div class="rescore-panel" data-ui-audit="layout">
-          <div class="same-action-banner"><small>SAME SAMPLED ACTION TOKENS</small><strong>a<sub>1</sub> … a<sub>L</sub></strong></div>
-          <div class="rescore-columns">
-            <article class="rescore-card student" data-ui-audit-item>
-              <small>PLAIN CONTEXT · h</small>
-              <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">🔥</span><strong>π<sub>θ</sub></strong></div>
-              <p>log P<sub>θ</sub>(a | h)</p>
-              <span>{t('梯度从 ordinary branch 更新当前 policy','Gradients update the current policy through the ordinary branch')}</span>
-            </article>
-            <div class="compare-mark" aria-hidden="true">Δ</div>
-            <article class="rescore-card teacher" data-ui-audit-item>
-              <small>+ HINDSIGHT SKILL · H(h,s)</small>
-              <div class="paper-node-top"><span class="paper-symbol" aria-hidden="true">🔥</span><strong>same π<sub>θ</sub></strong></div>
-              <p>log P<sub>θ</sub>(a | H(h,s))</p>
-              <span class="stop-gradient"><b aria-hidden="true">⊥</b> sg · {t('teacher signal detached','teacher signal detached')}</span>
-            </article>
-          </div>
-          <div class="opd-line">
-            <span>{t('skill-induced probability shift','skill-induced probability shift')}</span>
-            <i aria-hidden="true">→</i>
-            <strong>OPD</strong>
-          </div>
-          <p class="rescore-note">{t('这里的 ❄️ 和 ⊥ 是两种不同语义：πθold 是本轮冻结的参数 snapshot；skill-conditioned branch 使用当前 πθ 做 forward，但作为 teacher signal 时 stop-gradient。','❄️ and ⊥ mean different things here: πθold is a parameter snapshot frozen for this update; the skill-conditioned branch still runs the current πθ forward, but its teacher signal is stop-gradient.')}</p>
-        </div>
-
-        <div class="optimizer-row">
-          <div class="signal-pill">GRPO</div>
-          <span aria-hidden="true">+</span>
-          <div class="signal-pill">OPD</div>
-          <span aria-hidden="true">→</span>
-          <article class="update-node trainable" data-ui-audit-item>
-            <span class="paper-symbol" aria-hidden="true">🔥</span>
-            <div><small>JOINT OPTIMIZATION</small><strong>π<sub>θ</sub> → π<sub>θt+1</sub></strong></div>
-          </article>
-          <span class="loop-back" aria-hidden="true">↻</span>
-          <small>{t('下一轮','next update')}</small>
-        </div>
-      </div>
-
-      <aside class="why-inset" aria-labelledby="why-seed-helps-title">
-        <div>
-          <small>MECHANISM INTUITION</small>
-          <h4 id="why-seed-helps-title">{t('为什么这可能比只看终局 reward 学得更充分？','Why can this extract more learning signal than terminal reward alone?')}</h4>
-        </div>
-        <div class="signal-contrast">
-          <article>
-            <small>OUTCOME-ONLY RL</small>
-            <div class="action-chain">a1 → a2 → a3 → a4 → a5 <b>→ R</b></div>
-            <p>{t('整条 trajectory 主要由一个稀疏结果信号指导。','The whole trajectory is guided primarily by a sparse outcome signal.')}</p>
-          </article>
-          <strong class="versus">VS</strong>
-          <article>
-            <small>SEED</small>
-            <div class="action-chain dense">a1 ↑ · a2 ↑↑ · a3 ↑ · a4 ↑↑ · a5 <b>→ R</b></div>
-            <p>{t('hindsight 诱导的 token-level probability shift，再补充一条更细的监督。','Hindsight-induced token-level probability shifts add a finer-grained supervision signal.')}</p>
-          </article>
-        </div>
-        <strong class="intuition-bottom">{t('同一条 trajectory，不只留下一个分数；还可以留下更具体的“复盘课”。','One trajectory leaves more than a score; it can also leave a more specific lesson from hindsight.')}</strong>
-      </aside>
-    </section>
-
-    <section class="inference-stage" aria-labelledby="seed-inference-title">
-      <div class="band-heading">
-        <span>04 · INFERENCE / TEST</span>
-        <h3 id="seed-inference-title">{t('考试时反而很简单：保留训练好的 Agent，训练专用模块退场','Test time is deliberately simple: keep the trained Agent and remove the training-only machinery')}</h3>
-      </div>
-      <div class="inference-flow" data-ui-audit="layout">
-        <article class="framework-wrapper" data-ui-audit-item>
-          <small>SEED-TRAINED</small>
-          <div class="agent-inner"><strong>Agent θ*</strong><span>{t('已更新的 policy 参数','updated policy parameters')}</span></div>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="task-card" data-ui-audit-item>
-          <small>NEW WEBSHOP TASK</small>
-          <strong>{t('新的购物 instruction','new shopping instruction')}</strong>
-        </article>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <div class="shopping-chain" data-ui-audit-item>
-          <span>search</span><i>→</i><span>inspect</span><i>→</i><span>choose</span><i>→</i><span>buy</span>
-        </div>
-        <div class="flow-arrow" aria-hidden="true">→</div>
-        <article class="score-card" data-ui-audit-item>
-          <small>EVALUATION</small><strong>Score + Success Rate</strong>
-        </article>
-      </div>
-      <div class="training-only-note">
-        <small>TRAINING ONLY</small>
-        <span class="retired">analyzer</span><span class="retired">skill branch</span><span class="retired">OPD</span><span class="retired">GRPO update</span>
-        <strong>{t('推理时不需要永久携带 hindsight skill prompt。','No permanent hindsight-skill prompt is required at inference.')}</strong>
+    <section class="contract-world" aria-label={t('同一 WebShop 任务合同','Same WebShop task contract')}>
+      <header><small>RELEASED-CODE TASK SETTING</small><strong>{t('1,000-product small WebShop · 6,910 goals','1,000-product small WebShop · 6,910 goals')}</strong></header>
+      <div class="pools">
+        <article data-ui-audit-item><small>TRAIN CANDIDATE POOL</small><strong>goal 500–6909</strong><span>6,410 {t('goals','goals')}</span><p>{t('公开代码默认从 goal 500 开始取训练候选任务。','Released code defaults to training candidates beginning at goal 500.')}</p></article>
+        <article data-ui-audit-item><small>COMPARISON CONTRACT</small><strong>goal 0–499</strong><span>500 {t('held-out task slots','held-out task slots')}</span><p>{t('本站比较合同把这 500 个 task slots 与从 500 开始的训练候选池分开；exact 128 IDs 仍未公开钉死。','This site’s comparison contract keeps these 500 task slots apart from the training candidates beginning at 500; exact 128 IDs are still not publicly pinned.')}</p></article>
+        <article class="manifest" data-ui-audit-item><small>MANIFEST BOUNDARY</small><strong>128 {t('reported samples','reported samples')}</strong><p>{t('exact 128-goal manifest：尚未在这里钉死。','Exact 128-goal manifest: not yet pinned here.')}</p></article>
       </div>
     </section>
 
-    <figcaption>
-      <strong>{t('Figure S1｜SEED 在 WebShop 上的数据、训练与推理。','Figure S1 | SEED data, training, and inference on WebShop.')}</strong>
-      {t('原始 WebShop 包含 12,087 条 instruction，官方 i.i.d. split 为 10,587 / 1,000 / 500。SEED 的 Stage 1 从训练 split 选择 180 个 task，每个 task 采样 8 条 rollout，得到 1,440 条 trajectory，由外部 GLM-5.2 analyzer 生成 hindsight skill，并进行三轮 SFT。Stage 2 使用 2,400 个 WebShop training instances，进行 150 次 policy update；当前 snapshot 收集 on-policy trajectory 并生成 hindsight skill，当前可训练 policy 对同一批 sampled action tokens 在 plain 与 skill-augmented context 下重打分，skill-conditioned teacher signal stop-gradient，OPD 与 GRPO 联合更新 policy。论文在 128 个 WebShop test samples 上报告 normalized task-completion Score 与 exact Success Rate。🔥 表示本次优化中会更新的参数，❄️ 表示本次操作中参数保持不变，⊥ 表示 stop-gradient / detached signal。','Original WebShop contains 12,087 instructions with an official i.i.d. 10,587 / 1,000 / 500 train/dev/test split. SEED Stage 1 selects 180 training tasks and samples eight rollouts per task, producing 1,440 trajectories; an external GLM-5.2 analyzer generates hindsight skills and the backbone is fine-tuned for three epochs. Stage 2 uses 2,400 WebShop training instances for 150 policy updates. The current snapshot collects on-policy trajectories and generates hindsight skills; the current trainable policy re-scores the same sampled action tokens under plain and skill-augmented contexts, the skill-conditioned teacher signal is stop-gradient, and OPD is optimized jointly with GRPO. The paper evaluates 128 WebShop test samples using normalized task-completion Score and exact Success Rate. 🔥 marks parameters updated in the current optimization, ❄️ marks parameters held fixed in the current operation, and ⊥ marks a stop-gradient / detached signal.')}
-    </figcaption>
+    <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')}>
+      <strong>SAME RULES</strong><span>{t('同一个商品世界','same product world')}</span><span>{t('同一批可学习任务','same learning-task pool')}</span><span>{t('同一批最终考试题','same final test')}</span><span>{t('同一种 Score / Success 评分','same Score / Success scoring')}</span>
+    </section>
+    <figcaption><strong>{t('同一个世界、同一批任务、同一场考试、同一种评分；学习方法可以不同。','Same world, same tasks, same test, same scoring; learning methods may differ.')}</strong> {t('1,000 商品、训练起点和 6,910 goals 来自当前 released code 与 WebShop small environment；“128”来自 SEED 论文报告。图中不把未公布的 exact 128 goal IDs 或论文 catalog size 当作既定事实。','The 1,000 products, training start, and 6,910 goals come from current released code and the WebShop small environment; 128 is paper-reported. This figure does not present unpublished exact 128 goal IDs or a paper catalog size as settled facts.')}</figcaption>
   </figure>
-
-  <ResearchDiagramLegend locale={locale} />
 </section>
 
 <style>
-.seed-webshop-figure{--env:#2563eb;--experience:#d97706;--signal:#dc2626;--state:#7c3aed;--persist:#059669;--paper:#0f766e;width:100%;margin:0;padding:clamp(.9rem,2vw,1.35rem);border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 98%,transparent),color-mix(in srgb,var(--surface-muted) 76%,var(--surface)));box-shadow:0 22px 70px color-mix(in srgb,#000 7%,transparent)}
-.figure-header{max-width:980px}.figure-label{color:var(--signal);font:850 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.figure-header h2{margin:.45rem 0 .55rem;font-size:clamp(1.35rem,2.7vw,2.25rem);letter-spacing:-.035em;line-height:1.1}.figure-header p{max-width:78ch;margin:0;color:var(--muted);font-size:.88rem;line-height:1.65}.figure-actions{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:.75rem}.figure-actions a{padding:.38rem .6rem;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:.64rem;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--signal);color:var(--signal)}
-.figure-body{margin:1rem 0 0}.figure-body>section{padding:1rem 0;border-top:1px solid var(--line)}.band-heading{display:grid;grid-template-columns:150px minmax(0,1fr);gap:.8rem;align-items:start;margin-bottom:.85rem}.band-heading>span{color:var(--muted);font:800 .57rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.band-heading h3{margin:0;font-size:clamp(.92rem,1.7vw,1.2rem);line-height:1.35;letter-spacing:-.018em}
-.official-dataset{display:grid;grid-template-columns:190px 1fr;gap:.65rem}.dataset-origin,.split,.usage-card,.paper-node,.branch,.rescore-card,.task-card,.score-card{border:1px solid var(--line);border-radius:12px;background:var(--surface)}.dataset-origin{display:flex;flex-direction:column;justify-content:center;padding:.75rem;border-top:5px solid var(--env)}.dataset-origin small,.split small,.usage-card small,.paper-node small,.branch small,.rescore-card small,.framework-wrapper small,.task-card small,.score-card small{color:var(--muted);font:800 .5rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em}.dataset-origin strong{font-size:1.35rem}.dataset-origin span,.split span{color:var(--muted);font-size:.58rem}.dataset-splits{display:grid;grid-template-columns:2.4fr .8fr .8fr;gap:.5rem}.split{padding:.68rem;border-top:5px solid var(--env)}.split.dev{border-top-color:var(--muted)}.split.test{border-top-color:var(--persist)}.split strong,.split span{display:block}.split strong{margin:.12rem 0;font-size:1rem}.seed-usage-grid{display:grid;grid-template-columns:1.1fr 1fr .9fr;gap:.55rem;margin-top:.6rem;padding-left:calc(190px + .65rem)}.usage-card{position:relative;padding:.7rem;border-top:5px solid}.usage-card.sft{border-top-color:var(--experience)}.usage-card.rl{border-top-color:var(--signal)}.usage-card.eval{border-top-color:var(--persist)}.usage-source{display:flex;align-items:center;gap:.3rem;margin-bottom:.25rem;color:var(--muted);font:750 .49rem ui-monospace,SFMono-Regular,Menlo,monospace}.usage-source i{font-style:normal}.usage-card strong,.usage-card b{display:block}.usage-card strong{font-size:.69rem}.usage-card b{margin-top:.16rem;color:var(--ink);font-size:.58rem}.usage-card p,.paper-node p,.branch p,.rescore-note{margin:.35rem 0 0;color:var(--muted);font-size:.56rem;line-height:1.45}.dataset-note{margin:.55rem 0 0;padding-left:calc(190px + .65rem);color:var(--muted);font-size:.56rem;line-height:1.5}
-.stage-one-flow{display:grid;grid-template-columns:1fr 26px 1.2fr 26px 1.25fr 26px .82fr 26px 1fr;align-items:stretch;gap:.25rem}.paper-node{padding:.65rem;border-top:5px solid var(--state)}.paper-node.frozen{border-top-color:#38bdf8}.paper-node.environment{border-top-color:var(--env)}.paper-node.artifact{border-top-color:var(--experience)}.paper-node.trainable{border-top-color:#f97316}.paper-node-top{display:flex;align-items:center;gap:.28rem}.paper-symbol{font-size:.83rem;line-height:1}.paper-node strong{display:block;margin:.24rem 0 0;font-size:.63rem;line-height:1.35}.flow-arrow{display:grid;place-items:center;color:var(--muted);font-size:1rem}.stage-intuition{margin:.65rem 0 0;padding:.65rem .75rem;border-left:3px solid var(--experience);background:color-mix(in srgb,var(--experience) 5%,transparent);color:var(--ink);font-size:.63rem;line-height:1.55}
-.seed-wrapper{position:relative;padding:1.9rem .8rem .8rem;border:1.5px solid color-mix(in srgb,var(--signal) 40%,var(--line));border-radius:18px;background:color-mix(in srgb,var(--signal) 2.5%,var(--surface))}.wrapper-label{position:absolute;top:.55rem;left:.75rem;color:var(--signal);font:900 .6rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.actor-row{display:grid;grid-template-columns:1fr .62fr 1.2fr;gap:.55rem;align-items:stretch}.interaction-loop{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem;border:1px dashed color-mix(in srgb,var(--env) 52%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--env) 4%,var(--surface));text-align:center}.interaction-loop>span{color:var(--env);font-size:1.35rem}.interaction-loop strong{font-size:.72rem}.interaction-loop small{margin-top:.1rem;color:var(--muted);font-size:.5rem}.trajectory{border-top-color:var(--experience)}.branch-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:.55rem;margin-top:.55rem}.branch{padding:.65rem}.branch header small,.branch header strong{display:block}.branch header strong{margin-top:.2rem;font-size:.64rem}.reward-branch{border-top:5px solid var(--signal)}.hindsight-branch{border-top:5px solid var(--experience)}.branch-step,.hindsight-line{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:.5rem;padding:.45rem;border-radius:8px;background:var(--surface-muted);font-size:.62rem}.branch-step i,.hindsight-line i{font-style:normal;color:var(--muted)}.branch-step b{color:var(--signal)}.rescore-panel{margin-top:.55rem;padding:.65rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.same-action-banner{text-align:center}.same-action-banner small,.same-action-banner strong{display:block}.same-action-banner small{color:var(--muted);font:800 .5rem ui-monospace,SFMono-Regular,Menlo,monospace}.same-action-banner strong{margin-top:.15rem;font-size:.7rem}.rescore-columns{display:grid;grid-template-columns:1fr 46px 1fr;gap:.45rem;align-items:stretch;margin-top:.5rem}.rescore-card{padding:.65rem;border-top:5px solid var(--env)}.rescore-card.teacher{border-top-color:var(--experience)}.rescore-card p{margin:.3rem 0;font-size:.7rem}.rescore-card>span{display:block;color:var(--muted);font-size:.54rem;line-height:1.4}.compare-mark{display:grid;place-items:center;color:var(--signal);font:900 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}.stop-gradient{margin-top:.42rem;padding:.3rem .4rem;border:1px dashed color-mix(in srgb,var(--signal) 45%,var(--line));border-radius:7px;color:var(--signal)!important}.stop-gradient b{margin-right:.22rem;font-size:.8rem}.opd-line{display:flex;align-items:center;justify-content:center;gap:.55rem;margin-top:.5rem;font-size:.61rem}.opd-line i{font-style:normal}.opd-line strong{padding:.25rem .55rem;border-radius:999px;background:color-mix(in srgb,var(--signal) 9%,var(--surface));color:var(--signal)}.rescore-note{text-align:center}.optimizer-row{display:flex;align-items:center;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-top:.6rem}.signal-pill{padding:.32rem .58rem;border:1px solid color-mix(in srgb,var(--signal) 45%,var(--line));border-radius:999px;color:var(--signal);font:850 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.update-node{display:flex;align-items:center;gap:.45rem;padding:.45rem .6rem;border:1px solid var(--line);border-top:4px solid #f97316;border-radius:10px;background:var(--surface)}.update-node small,.update-node strong{display:block}.update-node small{color:var(--muted);font-size:.48rem}.update-node strong{font-size:.67rem}.loop-back{color:var(--persist);font-size:1.05rem}.optimizer-row>small{color:var(--muted);font-size:.51rem}
-.why-inset{display:grid;grid-template-columns:minmax(170px,.55fr) 1.45fr;gap:.75rem;margin-top:.65rem;padding:.75rem;border:1px solid color-mix(in srgb,var(--paper) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--paper) 4%,var(--surface))}.why-inset>div>small{color:var(--paper);font:850 .5rem ui-monospace,SFMono-Regular,Menlo,monospace}.why-inset h4{margin:.22rem 0 0;font-size:.72rem;line-height:1.35}.signal-contrast{display:grid;grid-template-columns:1fr 34px 1fr;align-items:center;gap:.35rem}.signal-contrast article{padding:.55rem;border-radius:9px;background:var(--surface)}.signal-contrast article small{color:var(--muted);font:800 .49rem ui-monospace,SFMono-Regular,Menlo,monospace}.action-chain{margin:.35rem 0;font:650 .61rem ui-monospace,SFMono-Regular,Menlo,monospace}.action-chain.dense{color:var(--paper)}.signal-contrast p{margin:0;color:var(--muted);font-size:.53rem;line-height:1.4}.versus{text-align:center;color:var(--muted);font-size:.55rem}.intuition-bottom{grid-column:1/-1;text-align:center;font-size:.62rem}
-.inference-flow{display:grid;grid-template-columns:1fr 26px .95fr 26px 1.35fr 26px .85fr;align-items:stretch;gap:.25rem}.framework-wrapper{padding:.58rem;border:2px solid color-mix(in srgb,var(--signal) 45%,var(--line));border-radius:15px;background:color-mix(in srgb,var(--signal) 3%,var(--surface))}.agent-inner{margin-top:.35rem;padding:.55rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);text-align:center}.agent-inner strong,.agent-inner span{display:block}.agent-inner strong{font-size:.72rem}.agent-inner span{margin-top:.12rem;color:var(--muted);font-size:.53rem}.task-card,.score-card{display:flex;flex-direction:column;justify-content:center;padding:.6rem;border-top:5px solid var(--env)}.score-card{border-top-color:var(--persist)}.task-card strong,.score-card strong{margin-top:.2rem;font-size:.62rem}.shopping-chain{display:flex;align-items:center;justify-content:center;gap:.3rem;flex-wrap:wrap;padding:.55rem;border:1px solid var(--line);border-radius:11px;background:var(--surface-muted)}.shopping-chain span{padding:.24rem .38rem;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:.55rem}.shopping-chain i{color:var(--muted);font-style:normal}.training-only-note{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-top:.55rem;padding:.5rem .6rem;border:1px dashed var(--line);border-radius:10px}.training-only-note small{color:var(--muted);font:800 .49rem ui-monospace,SFMono-Regular,Menlo,monospace}.retired{padding:.2rem .38rem;border-radius:999px;background:var(--surface-muted);color:var(--muted);font-size:.51rem;text-decoration:line-through}.training-only-note strong{margin-left:auto;font-size:.55rem}
-figcaption{margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--line);color:var(--muted);font-size:.58rem;line-height:1.58}figcaption strong{color:var(--ink)}
-@media(max-width:1000px){.seed-usage-grid{padding-left:0}.dataset-note{padding-left:0}.stage-one-flow{grid-template-columns:1fr}.stage-one-flow .flow-arrow{transform:rotate(90deg);min-height:20px}.actor-row{grid-template-columns:1fr 1fr}.actor-row .trajectory{grid-column:1/-1}.inference-flow{grid-template-columns:1fr 22px 1fr}.inference-flow .shopping-chain{grid-column:1/-1}.inference-flow .shopping-chain+.flow-arrow{display:none}.inference-flow .score-card{grid-column:1/-1}.why-inset{grid-template-columns:1fr}.signal-contrast{grid-template-columns:1fr 32px 1fr}}
-@media(max-width:720px){.seed-webshop-figure{padding:.75rem;border-radius:16px}.band-heading{grid-template-columns:1fr;gap:.28rem}.official-dataset{grid-template-columns:1fr}.dataset-splits{grid-template-columns:1fr 1fr 1fr}.seed-usage-grid{grid-template-columns:1fr}.branch-grid,.rescore-columns,.signal-contrast{grid-template-columns:1fr}.compare-mark,.versus{padding:.15rem}.actor-row{grid-template-columns:1fr}.actor-row .trajectory{grid-column:auto}.inference-flow{grid-template-columns:1fr}.inference-flow>.flow-arrow{transform:rotate(90deg);min-height:18px}.inference-flow .shopping-chain,.inference-flow .score-card{grid-column:auto}.training-only-note strong{width:100%;margin-left:0}.figure-header h2{font-size:1.25rem}.why-inset{padding:.6rem}}
-@media(max-width:460px){.dataset-splits{grid-template-columns:1fr}.figure-actions a{width:100%}.shopping-chain{gap:.2rem}}
-@media(prefers-reduced-motion:reduce){.seed-webshop-figure *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  .seed-webshop-setting{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:820px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.figure-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.figure-actions a{padding:.45rem .65rem;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-weight:750;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--accent);color:var(--accent)}
+  .setting-map{display:grid;gap:1rem;margin:1.5rem 0 0}.method-entry{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(150px,.75fr) auto minmax(0,1fr);gap:.55rem;align-items:center;padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted);text-align:center}.method-entry article{padding:.72rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.method-entry article strong,.method-entry article span{display:block}.method-entry article span{margin-top:.25rem;color:var(--muted);font-size:.67rem}.method-entry>b{color:var(--accent);font-size:1.6rem}.same-contract{padding:.6rem;border:2px solid var(--accent);border-radius:8px;color:var(--accent);font:800 .63rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+  .evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.evidence-card{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence-card small{display:block;color:var(--muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.evidence-card strong{display:block;margin:.42rem 0;font-size:clamp(1.2rem,2vw,1.8rem);line-height:1.1}.evidence-card p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.48}.evidence-card.paper{border-top:4px solid var(--success)}.evidence-card.code{border-top:4px solid var(--accent)}.evidence-card.boundary{border-top:4px solid var(--warning)}
+  .contract-world{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-muted)}.contract-world>header{padding:1rem;border-bottom:1px solid var(--line);background:var(--surface)}.contract-world>header small,.contract-world>header strong{display:block}.contract-world>header small{color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.contract-world>header strong{margin-top:.35rem;font-size:clamp(1rem,2vw,1.4rem)}.pools{display:grid;grid-template-columns:1fr 1fr .8fr;gap:.7rem;padding:.85rem}.pools article{padding:.8rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.pools small,.pools span{display:block;color:var(--muted);font-size:.62rem;line-height:1.45}.pools strong{display:block;margin:.35rem 0;font-size:1rem}.pools p{margin:.42rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.5}.pools .manifest{border-style:dashed}
+  .same-rules{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;padding:.8rem;border-block:1px solid var(--line)}.same-rules strong{margin-right:.2rem;color:var(--accent);font:800 .63rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.same-rules span{padding:.38rem .5rem;border:1px solid var(--line);border-radius:999px;background:var(--surface-muted);font-size:.68rem}.setting-map figcaption{max-width:90ch;color:var(--muted);font-size:.76rem;line-height:1.6}.setting-map figcaption strong{color:var(--ink)}
+  @media(max-width:860px){.seed-webshop-setting{width:min(100% - 1rem,1120px);padding:1rem}.method-entry{grid-template-columns:1fr}.method-entry>b{display:none}.evidence-grid,.pools{grid-template-columns:1fr}.same-rules{align-items:flex-start;flex-direction:column}.same-rules span{width:100%;border-radius:6px}}
 </style>
