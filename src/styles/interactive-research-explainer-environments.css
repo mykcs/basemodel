@@ -1,9 +1,3 @@
-.irx-linear-map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin:0 0 1rem;padding:0;list-style:none;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--irx-shadow-soft);overflow:hidden}
-.irx-linear-map li{position:relative;display:flex;align-items:center;gap:.42rem;min-width:0;padding:.62rem .55rem;color:var(--muted)}
-.irx-linear-map li+li{border-left:1px solid var(--line)}
-.irx-linear-map li:not(:last-child):after{content:"";position:absolute;right:-8px;top:50%;z-index:2;width:14px;height:14px;border-top:1px solid var(--line);border-right:1px solid var(--line);background:var(--surface);transform:translateY(-50%) rotate(45deg)}
-.irx-linear-map span{font:800 .55rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.irx-linear-map strong{font-size:.65rem;white-space:nowrap}
-.irx-linear-map li[data-active=true]{color:var(--ink);background:color-mix(in srgb,var(--irx-env) 6%,var(--surface))}.irx-linear-map li[data-complete=true]{color:var(--irx-persist-text)}
 .irx-webshop-stage{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.72fr);gap:1rem}
 .irx-browser{overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--surface);min-height:360px;box-shadow:var(--irx-shadow)}
 .irx-browser-bar{display:flex;align-items:center;gap:.32rem;padding:.42rem .55rem;border-bottom:1px solid var(--line);background:var(--surface-muted)}
