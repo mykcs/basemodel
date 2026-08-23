@@ -95,7 +95,6 @@ describe('global shell ownership', () => {
     expect(debt).toEqual([
       'components/header.css',
       'final-hardening.css',
-      'site.css',
       'visual-identity.css',
       'visual-upgrade.css',
     ].sort());
