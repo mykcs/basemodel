@@ -112,7 +112,7 @@ const designArticles = [
   </header>
 
   <nav class="reference-index" aria-labelledby="reference-title">
-    <div class="section-heading compact-heading">
+    <div class="result-section-heading compact-heading">
       <p>REFERENCE</p>
       <div>
         <h2 id="reference-title">先建立共同语言：需要时再打开这些正式说明</h2>
@@ -132,7 +132,7 @@ const designArticles = [
   </nav>
 
   <section class="index-section" aria-labelledby="results-title">
-    <div class="section-heading">
+    <div class="result-section-heading">
       <p>PART I</p>
       <div>
         <h2 id="results-title">按证据链读已经完成的实验</h2>
@@ -156,7 +156,7 @@ const designArticles = [
   </section>
 
   <section class="index-section" aria-labelledby="design-title">
-    <div class="section-heading">
+    <div class="result-section-heading">
       <p>PART II</p>
       <div>
         <h2 id="design-title">把主问题重新拉回 Benchmark</h2>
@@ -189,10 +189,10 @@ const designArticles = [
 <style>
   .result-index{max-width:1180px;margin:0 auto;padding:26px 24px 72px;color:var(--color-text)}
   .index-hero{max-width:920px;padding:34px 0 44px}.eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:700;letter-spacing:.14em}.index-hero h1{margin:0;max-width:900px;font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;color:var(--color-text)}.lede{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.75}
-  .reference-index,.index-section{padding:34px 0 42px;border-top:1px solid var(--color-border)}.section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px}.compact-heading{margin-bottom:18px}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
+  .reference-index,.index-section{padding:34px 0 42px;border-top:1px solid var(--color-border)}.result-section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px;align-items:start;width:100%;min-width:0}.compact-heading{margin-bottom:18px}.result-section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}.result-section-heading>div{min-width:0}.result-section-heading h2{margin:0 0 8px;max-width:22ch;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em;overflow-wrap:normal;word-break:normal}.result-section-heading div>p{margin:0;max-width:62ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
   .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.reference-card{position:relative;display:flex;min-height:190px;flex-direction:column;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease}.reference-card:hover,.reference-card:focus-visible,.result-card:hover,.result-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent)}.reference-card small{color:var(--color-accent);font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.reference-card strong{margin:16px 0 8px;font-size:.96rem;line-height:1.32}.reference-card span{color:var(--color-text-muted);font-size:.79rem;line-height:1.55}.reference-card b{margin-top:auto;padding-top:14px;color:var(--color-accent)}
   .article-list{display:grid;gap:10px}.result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}.design-card{background:var(--color-surface)}.result-number{color:var(--color-text-muted);font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.result-meta{margin-bottom:10px}.result-meta small{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.72rem}.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.22rem;line-height:1.36;letter-spacing:-.02em}.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.result-card>strong{align-self:center;color:var(--color-accent);font-size:1.15rem}
   .legacy-primer-links{margin-top:8px;padding:14px 0;border-top:1px solid var(--color-border);color:var(--color-text-muted);font-size:.8rem}.legacy-primer-links summary{cursor:pointer;color:var(--color-text);font-weight:650}.legacy-primer-links p{margin:10px 0 8px}.legacy-primer-links div{display:flex;gap:12px;flex-wrap:wrap}.legacy-primer-links a{color:var(--color-accent)}
   @media(max-width:1080px){.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media(max-width:760px){.section-heading{grid-template-columns:1fr;gap:8px}.reference-grid{grid-template-columns:1fr}.reference-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
+  @media(max-width:760px){.result-section-heading{grid-template-columns:1fr;gap:8px}.result-section-heading h2{max-width:none}.reference-grid{grid-template-columns:1fr}.reference-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
 </style>
