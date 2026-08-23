@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const ownerRoutes = [
   ['/research/seed-openevo/webshop/', 'webshop'],
@@ -20,7 +20,7 @@ async function settle(page: Page) {
   await page.waitForTimeout(80);
 }
 
-async function activate(root: ReturnType<Page['locator']>) {
+async function activate(root: Locator) {
   await root.scrollIntoViewIfNeeded();
   const island = root.locator('xpath=ancestor::astro-island[1]');
   if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
@@ -31,8 +31,16 @@ async function activate(root: ReturnType<Page['locator']>) {
   return root.locator('.irx-transport');
 }
 
+function expectInsideViewport(rect: { x: number; y: number; width: number; height: number }, width: number, height: number) {
+  expect(rect.x).toBeGreaterThanOrEqual(0);
+  expect(rect.x + rect.width).toBeLessThanOrEqual(width);
+  expect(rect.y).toBeGreaterThanOrEqual(0);
+  expect(rect.y + rect.height).toBeLessThanOrEqual(height);
+}
+
 test('every true step-by-step owner floats Previous / Next after interaction', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+  const viewport = { width: 1440, height: 900 };
+  await page.setViewportSize(viewport);
 
   for (const [path, kind] of ownerRoutes) {
     await test.step(path, async () => {
@@ -45,15 +53,14 @@ test('every true step-by-step owner floats Previous / Next after interaction', a
       expect(await transport.evaluate((node) => Boolean(node.closest('[data-interactive-research-explainer]')))).toBe(true);
       const rect = await transport.boundingBox();
       expect(rect).not.toBeNull();
-      expect(rect!.bottom).toBeLessThanOrEqual(900);
-      expect(rect!.left).toBeGreaterThanOrEqual(0);
-      expect(rect!.right).toBeLessThanOrEqual(1440);
+      expectInsideViewport(rect!, viewport.width, viewport.height);
     });
   }
 });
 
 test('WebShop floating transport also stays inside a mobile viewport', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  const viewport = { width: 390, height: 844 };
+  await page.setViewportSize(viewport);
   await page.goto('/research/seed-openevo/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
@@ -61,9 +68,7 @@ test('WebShop floating transport also stays inside a mobile viewport', async ({ 
   await expect(transport).toHaveCSS('position', 'fixed');
   const rect = await transport.boundingBox();
   expect(rect).not.toBeNull();
-  expect(rect!.left).toBeGreaterThanOrEqual(0);
-  expect(rect!.right).toBeLessThanOrEqual(390);
-  expect(rect!.bottom).toBeLessThanOrEqual(844);
+  expectInsideViewport(rect!, viewport.width, viewport.height);
 });
 
 test('canonical-only comparison routes never expose a floating step transport', async ({ page }) => {
