@@ -50,6 +50,24 @@ async function findSuspiciousLayout(page: Page): Promise<string[]> {
       return `${element.tagName.toLowerCase()}${id}${classes}`;
     };
 
+    // Element height is not a text-line measurement: a <li> can contain
+    // headings, gaps, badges and nested blocks. Use the browser's actual text
+    // fragments and merge fragments that share a visual row. This is the same
+    // level at which a human sees a one-character-wide CJK rail.
+    const renderedTextLineCount = (element: HTMLElement) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const rects = [...range.getClientRects()]
+        .filter((rect) => rect.width > 0.5 && rect.height > 0.5)
+        .sort((left, right) => left.top - right.top || left.left - right.left);
+      const lineTops: number[] = [];
+      for (const rect of rects) {
+        const existing = lineTops.findIndex((top) => Math.abs(top - rect.top) <= 2);
+        if (existing === -1) lineTops.push(rect.top);
+      }
+      return Math.max(1, lineTops.length);
+    };
+
     const textCandidates = document.querySelectorAll<HTMLElement>([
       'h1', 'h2', 'h3',
       'p', 'li', 'dt', 'dd', 'figcaption', 'summary',
@@ -67,15 +85,17 @@ async function findSuspiciousLayout(page: Page): Promise<string[]> {
       if (text.length < 8) return;
 
       const rect = element.getBoundingClientRect();
-      const fontSize = Number.parseFloat(style.fontSize) || 16;
-      const parsedLineHeight = Number.parseFloat(style.lineHeight);
-      const lineHeight = Number.isFinite(parsedLineHeight) ? parsedLineHeight : fontSize * 1.25;
-      const lines = Math.max(1, Math.round(rect.height / Math.max(lineHeight, 1)));
+      const lines = renderedTextLineCount(element);
       const cjk = text.match(/[\u3400-\u9fff]/g)?.length ?? 0;
       const cjkPerLine = cjk / lines;
       const longText = text.length >= 18 || cjk >= 12;
+      const railWidth = desktop ? 180 : 130;
 
-      if (cjk >= 12 && lines >= 4 && cjkPerLine < (desktop ? 6 : 4)) {
+      // Low character density alone is not a rail: a mobile card can be 218px
+      // wide and legitimately contain labels on separate rows. Require the
+      // actual text box itself to be narrow as well. The escaped Results bug was
+      // 82.7px wide on a 2048px desktop, comfortably inside this fail region.
+      if (cjk >= 12 && rect.width < railWidth && lines >= 4 && cjkPerLine < (desktop ? 6 : 4)) {
         issues.push(
           `CJK rail: ${selectorFor(element)} width=${rect.width.toFixed(1)} lines=${lines} cjk/line=${cjkPerLine.toFixed(1)} text=${JSON.stringify(text.slice(0, 54))}`,
         );
