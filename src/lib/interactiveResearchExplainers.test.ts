@@ -147,6 +147,14 @@ describe('interactive research explainers', () => {
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
+  it('floats transport only for a real explainer that the reader is actively stepping through', () => {
+    expect(css).toContain('[data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed');
+    expect(css).toContain('.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:sticky');
+    expect(css).not.toContain('.canonical-figure>.irx-controls');
+    expect(loopsZh).not.toContain('InteractiveResearchExplainer');
+    expect(loopsEn).not.toContain('InteractiveResearchExplainer');
+  });
+
   it('opens as one complete framework figure before tracing local modules', () => {
     for (const token of ['useState(true)', 'data-overview={overview}', 'irx-paper-figure', 'SYSTEM MAP', 'irx-visual-key', 'irx-inspector', 'onOverview={showOverview}']) expect(explainer).toContain(token);
     expect(css).toContain('.irx[data-overview=true] .irx-edge-layer g .irx-edge');
