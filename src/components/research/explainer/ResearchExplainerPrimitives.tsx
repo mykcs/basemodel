@@ -135,12 +135,12 @@ export function StepControls({
   );
 }
 
-export function ExplainerHeader({ locale, title, lede, eyebrow }: { locale: Locale; title: string; lede: string; eyebrow: string }) {
+export function ExplainerHeader({ id, locale, title, lede, eyebrow }: { id: string; locale: Locale; title: string; lede: string; eyebrow: string }) {
   const zh = locale === 'zh';
   return (
     <header className="irx-header">
       <div className="irx-kicker">{eyebrow}</div>
-      <h2>{title}</h2>
+      <h2 id={id}>{title}</h2>
       <p>{lede}</p>
       <ol className="irx-depth" aria-label={zh ? '阅读深度' : 'Reading depth'}>
         <li><b>01</b><span>{zh ? '30 秒直觉' : '30-second intuition'}</span></li>
