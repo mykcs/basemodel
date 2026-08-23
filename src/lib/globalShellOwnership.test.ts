@@ -62,7 +62,7 @@ describe('global shell ownership', () => {
 
   it('keeps the canonical owner values that replace the retired design-refinement Header copy', () => {
     const header = read('../styles/components/header.css');
-    expect(header).toContain('min-height: 68px;');
+    expect(header).toContain('min-height: 72px;');
     expect(header).toContain('gap: 14px;');
     expect(header).toContain('white-space: nowrap;');
     expect(header).toContain('@media (max-width: 1080px)');

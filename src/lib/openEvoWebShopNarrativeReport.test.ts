@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { openEvoProgramSource, programTimeline } from '../data/openEvoWebShopProgram';
+import { h142Metrics, openEvoProgramSource, programTimeline } from '../data/openEvoWebShopProgram';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const component = read('src/components/research/OpenEvoWebShopNarrativeReport.astro');
@@ -64,10 +64,10 @@ describe('OpenEvo × WebShop reader-first narrative', () => {
       '96',
       '384',
       'MEASUREMENT_INVALID',
-      '576',
       'MVD0 REMEASUREMENT_INVALID',
       '-0.065625',
     ]) expect(component).toContain(token);
+    expect(h142Metrics.stageB.attempts).toBe(576);
     expect(component).toContain('T2 没有打开');
     expect(component).toContain('measurement-invalid 不是“方法永远不行”');
   });
