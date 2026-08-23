@@ -77,11 +77,6 @@ body:has([data-interactive-research-explainer]) .site-footer .footer-inner{paddi
  * 3.77:1; mixing 20% black raises the ready-state action above 5:1. */
 .irx .irx-product-detail button[data-ready=true]{border-color:color-mix(in srgb,var(--irx-persist) 80%,#000);background:color-mix(in srgb,var(--irx-persist) 80%,#000);color:#fff}
 
-/* Keep the state-transition arrow inside each audited grid cell. The former
- * right:-8px diamond enlarged the first four items' scrollWidth by 6px even
- * though the relationship was visually correct. */
-.irx-linear-map li:not(:last-child)::after{right:2px;top:50%;width:8px;height:12px;border:0;background:var(--line);clip-path:polygon(0 0,100% 50%,0 100%,26% 50%);transform:translateY(-50%)}
-
 /* Research explainers stay in the full-width reading stage. `irx-split` is a
  * legacy DOM name used by the lab routes; it now stacks the explainer before
  * the article instead of turning it into a narrow sticky rail. */
