@@ -73,15 +73,16 @@ for (const viewport of viewports) {
     expect(metrics.gridWidth, `REFERENCE grid collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
 
     // Preview-only pixel probe. Capture the real 2048px Chromium render, then
-    // resize that captured bitmap in-browser so the QA artifact is small enough
-    // to retrieve and inspect directly without changing the layout under test.
+    // resize that captured bitmap in-browser. The 240px thumbnail is only a
+    // transport artifact for human visual inspection; layout assertions above
+    // still run against the original 2048px render.
     if (process.env.VERCEL_ENV === 'preview' && viewport.name === 'user-screenshot-2048') {
       const jpeg = await root.locator('.reference-index').screenshot({ type: 'jpeg', quality: 46 });
       const thumb = await page.evaluate(async (source) => {
         const image = new Image();
         image.src = source;
         await image.decode();
-        const width = Math.min(640, image.naturalWidth);
+        const width = Math.min(240, image.naturalWidth);
         const scale = width / image.naturalWidth;
         const height = Math.max(1, Math.round(image.naturalHeight * scale));
         const canvas = document.createElement('canvas');
@@ -90,10 +91,10 @@ for (const viewport of viewports) {
         const context = canvas.getContext('2d');
         if (!context) throw new Error('2d canvas unavailable for QA thumbnail');
         context.drawImage(image, 0, 0, width, height);
-        return canvas.toDataURL('image/jpeg', 0.42).split(',')[1];
+        return canvas.toDataURL('image/jpeg', 0.30).split(',')[1];
       }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
       await mkdir('dist/__qa__', { recursive: true });
-      await writeFile('dist/__qa__/results-reference-2048-thumb.b64', thumb, 'utf8');
+      await writeFile('dist/__qa__/results-reference-2048-tiny.b64', thumb, 'utf8');
     }
 
     await expect(heading).toBeVisible();
