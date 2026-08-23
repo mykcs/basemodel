@@ -72,15 +72,30 @@ for (const viewport of viewports) {
     expect(metrics.firstCardWidth, `REFERENCE cards collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(150);
     expect(metrics.gridWidth, `REFERENCE grid collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
 
-    // Preview-only visual probe. It is written after Astro build into dist, so
-    // the exact Preview can expose the JPEG as base64 for a real pixel review.
+    // Preview-only pixel probe. Capture the real 2048px Chromium render, then
+    // resize that captured bitmap in-browser so the QA artifact is small enough
+    // to retrieve and inspect directly without changing the layout under test.
     if (process.env.VERCEL_ENV === 'preview' && viewport.name === 'user-screenshot-2048') {
       const jpeg = await root.locator('.reference-index').screenshot({ type: 'jpeg', quality: 46 });
+      const thumb = await page.evaluate(async (source) => {
+        const image = new Image();
+        image.src = source;
+        await image.decode();
+        const width = Math.min(640, image.naturalWidth);
+        const scale = width / image.naturalWidth;
+        const height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('2d canvas unavailable for QA thumbnail');
+        context.drawImage(image, 0, 0, width, height);
+        return canvas.toDataURL('image/jpeg', 0.42).split(',')[1];
+      }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
       await mkdir('dist/__qa__', { recursive: true });
-      await writeFile('dist/__qa__/results-reference-2048.b64', jpeg.toString('base64'), 'utf8');
+      await writeFile('dist/__qa__/results-reference-2048-thumb.b64', thumb, 'utf8');
     }
 
-    // Keep locators referenced so Playwright reports useful DOM context on failure.
     await expect(heading).toBeVisible();
     await expect(copyColumn).toBeVisible();
   });
