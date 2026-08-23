@@ -46,6 +46,8 @@
   /* Elevation is reserved for genuinely floating layers. */
   --shadow-floating: 0 20px 60px rgba(24, 32, 31, .12);
   --shadow: var(--shadow-floating);
+  --site-header-height: 73px;
+  --compare-tray-height: 0px;
 
   --font-interface: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
   --font-editorial: "Noto Serif SC", "Songti SC", STSong, Georgia, "Times New Roman", serif;
@@ -64,6 +66,9 @@
   --accent-deep: var(--color-accent);
   --accent-fill: var(--color-accent-fill);
   --accent-on-fill: var(--color-accent-on-fill);
+  --accent-fill-hover: color-mix(in srgb, var(--color-accent-fill) 84%, #000);
+  --on-accent: var(--color-accent-on-fill);
+  --focus-ring: var(--color-accent);
   --positive: var(--color-positive);
   --warning: var(--color-warning);
   --danger: var(--color-danger);
@@ -99,4 +104,8 @@
   --color-danger: #f19a8e;
   --color-info: #8ec1bd;
   --shadow-floating: 0 24px 70px rgba(0, 0, 0, .34);
+}
+
+@media (max-width: 560px) {
+  :root { --site-header-height: 65px; }
 }

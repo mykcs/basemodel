@@ -69,6 +69,9 @@ describe('research journey experience', () => {
   it('keeps the benchmark overview comparative and delegates environment detail', () => {
     for (const source of [benchmarkZh, benchmarkEn]) {
       expect(source).toContain('page="benchmarks"');
+      expect(source).toContain('benchmark-route-links');
+      expect(source).toContain('/research/seed-openevo/webshop/');
+      expect(source).toContain('/research/seed-openevo/alfworld/');
       expect(source).not.toContain('AgentEnvironmentTrajectory');
       expect(source).not.toContain('InteractiveResearchExplainer');
       expect(source).not.toContain('BenchmarkDatasetDiagram');

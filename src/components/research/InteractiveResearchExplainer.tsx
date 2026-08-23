@@ -52,9 +52,9 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     seed: {
-      eyebrow: 'SEED',
-      title: zh ? 'SEED 自进化训练机制' : 'SEED self-evolving training mechanism',
-      lede: zh ? 'SEED 不重新生成一条“知道 hindsight 后的正确轨迹”；它固定原来已采样的 action token，在 plain 与 skill context 下重新计算概率，再把差异蒸馏回 policy 参数。' : 'SEED does not generate a new “correct trajectory with hindsight”; it holds the original sampled action tokens fixed, re-scores them under plain and skill contexts, then distills the shift back into policy parameters.',
+      eyebrow: 'FIGURE 04 · SEED × WEBSHOP',
+      title: zh ? 'SEED 如何把一次 WebShop 经验写回 Policy' : 'How SEED writes one WebShop experience back into a policy',
+      lede: zh ? 'Policy 完成一次真实 WebShop rollout；hindsight 只在 episode 结束后改变同一批 action 的重打分，OPD 与 GRPO 一起更新下一版参数。' : 'A policy completes one real WebShop rollout; hindsight re-scores the same actions only after the episode ends, and OPD plus GRPO update the next parameter state.',
       steps: [
         { label: 'rollout', narration: zh ? '当前 policy 做真实 on-policy interaction。' : 'The current policy performs real on-policy interaction.' },
         { label: 'trajectory', narration: zh ? '完整 episode 被封存。' : 'The completed episode is preserved.' },
@@ -65,15 +65,15 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     openevo: {
-      eyebrow: 'OPENEVO',
-      title: zh ? 'OpenEvo 跨任务演化机制' : 'OpenEvo cross-task evolution mechanism',
-      lede: zh ? '先完成 Task N 并封存 evidence，再运行 evolution method；不同 carrier 真正分叉，只有通过 validation gate 的状态才能组成 successor revision，并从 Task N+1 开始生效。' : 'Finish Task N and seal evidence first, then run the evolution method; carriers truly fan out, and only state that passes validation forms a successor revision that activates from Task N+1.',
+      eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP',
+      title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
+      lede: zh ? '先完成 WebShop Task N 并封存 evidence；演化只在 task boundary 之后发生。当前参数化路径把经验写入 SD-LoRA adapter，通过 validation 后才形成 Task N+1 使用的 successor revision。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
       steps: [
         { label: 'Task N', narration: zh ? '当前 Project Head 在环境里完成任务。' : 'The current Project Head completes the task in the environment.' },
         { label: zh ? '封存' : 'Seal', narration: zh ? '任务完成边界把 trajectory/outcome/metadata 封存。' : 'The task-completion boundary seals trajectory/outcome/metadata.' },
         { label: 'Evolve', narration: zh ? 'Evolution method 读取已封存 evidence。' : 'The evolution method reads sealed evidence.' },
-        { label: 'Carrier', narration: zh ? '经验可以写入 memory、agent artifact 或 parametric adapter。' : 'Experience may be written into memory, agent artifacts, or a parametric adapter.' },
-        { label: 'Validate', narration: zh ? 'identity、digest、reload、behavior、scientific contract 都是 gate。' : 'Identity, digest, reload, behavior, and scientific contract are gate conditions.' },
+        { label: 'Adapter', narration: zh ? '当前 WebShop 主路径把经验写入 parametric adapter（SD-LoRA）。' : 'The current WebShop main path writes experience into a parametric adapter (SD-LoRA).' },
+        { label: 'Validate', narration: zh ? '只有通过 validation gate 的 adapter 状态才能进入 successor revision。' : 'Only adapter state that passes the validation gate can enter the successor revision.' },
         { label: 'Revision', narration: zh ? '接受的状态组成 successor revision。' : 'Accepted state forms the successor revision.' },
         { label: 'Task N+1', narration: zh ? '下一任务从 successor revision 开始，并形成下一轮 evidence。' : 'The next task starts from the successor revision and produces the next evidence.' },
       ],
@@ -194,7 +194,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       onKeyDown={onKeyDown}
       aria-label={config.title}
     >
-      <ExplainerHeader locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
+      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
       <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
       <figure className="irx-paper-figure" data-overview={overview}>
         <div className="irx-stage" data-step={step}>

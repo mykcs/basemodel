@@ -1,0 +1,2 @@
+.research-context-bar { border-bottom: 1px solid var(--line); background: var(--surface); padding: 10px 0; font-size: .82rem; }
+.context-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }.context-summary { color: var(--ink); font-weight: 650; }.context-counts { margin-left: auto; color: var(--muted); }.context-link { color: var(--accent-deep); font-weight: 700; text-decoration: none; }.context-clear { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.1rem; }

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { compareIds, clearCompare, compareUrl } from '../../stores/compare';
 import { useHydrated } from '../../lib/useHydrated';
+import './CompareTray.css';
 
 export interface CompareTrayLabels {
   compareTray: string;
@@ -40,6 +41,7 @@ export function CompareTray({ labels, locale }: Props) {
   const hydrated = useHydrated();
   const ids = useStore(compareIds);
   const [modelNames, setModelNames] = useState<Record<string, string>>({});
+  const trayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!hydrated || ids.length === 0) return;
@@ -54,10 +56,24 @@ export function CompareTray({ labels, locale }: Props) {
     };
   }, [hydrated, ids]);
 
+  useEffect(() => {
+    const tray = trayRef.current;
+    if (!tray) return;
+    const root = document.documentElement;
+    const syncHeight = () => root.style.setProperty('--compare-tray-height', `${tray.getBoundingClientRect().height}px`);
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(tray);
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty('--compare-tray-height');
+    };
+  }, [hydrated, ids.length]);
+
   if (!hydrated || ids.length === 0) return null;
 
   return (
-    <div className="compare-tray" role="region" aria-label={labels.compareTray}>
+    <div ref={trayRef} className="compare-tray" role="region" aria-label={labels.compareTray}>
       <div className="shell tray-inner">
         <span className="tray-label">{labels.compare}</span>
         <div className="tray-chips">

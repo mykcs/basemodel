@@ -3,8 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 
-const legend = read('src/components/research/ResearchDiagramLegend.astro');
 const seedFigure = read('src/components/research/SeedWebShopCanonicalFigure.astro');
+const interactionFigure = read('src/components/research/WebShopInteractionCanonicalFigure.astro');
+const datasetFigure = read('src/components/research/WebShopDatasetCanonicalFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
 const seedZh = read('src/pages/research/seed-openevo/seed.astro');
 const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
@@ -13,46 +14,19 @@ const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
 const results = read('src/components/research/OpenEvoWebShopResultIndex.astro');
 
 describe('canonical SEED / OpenEvo research figures', () => {
-  it('uses paper-familiar trainable, frozen, and stop-gradient semantics consistently', () => {
-    expect(legend).toContain('🔥');
-    expect(legend).toContain('❄️');
-    expect(legend).toContain('⊥');
-    expect(legend).toContain('trainable / updated in this optimization');
-    expect(legend).toContain('frozen / no parameter update in this operation');
-    expect(legend).toContain('stop-gradient / detached signal');
-    expect(seedFigure).toContain('π<sub>θold</sub>');
-    expect(seedFigure).toContain('teacher signal detached');
-    expect(seedFigure).toContain('❄️ and ⊥ mean different things here');
+  it('separates the WebShop interaction, original dataset, and fair-comparison setting', () => {
+    for (const term of ['Agent', 'search[…]', 'click[…]', 'Buy', 'Page changes', 'Score / Success']) expect(interactionFigure).toContain(term);
+    for (const forbidden of ['SEED Agent', 'OpenEvo Agent', '1,181,436', '1,000-product']) expect(interactionFigure).not.toContain(forbidden);
+    for (const term of ['1,181,436', '12,087', '10,587', '1,000', '500', 'ORIGINAL PRODUCT WORLD']) expect(datasetFigure).toContain(term);
+    for (const forbidden of ['SEED', 'OpenEvo', 'PPO', 'OPD', 'hindsight']) expect(datasetFigure).not.toContain(forbidden);
+    for (const term of ['SAME WEBSHOP SETTING', 'goal 500–6909', 'goal 0–499', '128', 'RELEASED-CODE DEFAULT', 'PAPER BOUNDARY', 'exact 128-goal manifest']) expect(seedFigure).toContain(term);
+    for (const forbidden of ['180 tasks × 8 rollouts', '1,440 trajectories', '2,400 training instances', '150 policy updates', 'N = 8', 'HINDSIGHT-SKILL SFT', 'GLM-5.2', 'GRPO', 'OPD', 'teacher signal detached', '🔥', '❄️', '⊥']) expect(seedFigure).not.toContain(forbidden);
   });
 
-  it('makes the SEED WebShop paper configuration visible without implying full-dataset evaluation', () => {
-    for (const term of [
-      '12,087',
-      '10,587',
-      '1,000',
-      '500',
-      '180 tasks × 8 rollouts',
-      '= 1,440 trajectories',
-      '2,400 training instances',
-      '150 policy updates · N = 8',
-      '128 test samples',
-      'Score + Success Rate',
-      'SFT × 3 epochs',
-    ]) expect(seedFigure).toContain(term);
-    expect(seedFigure).toContain('not an evaluation over all 500 tasks');
-    expect(seedFigure).toContain('DEV remains visible as an official split but has no usage arrow');
-  });
-
-  it('shows a concrete WebShop task, SEED stage 1, stage 2, and a simpler inference path', () => {
-    expect(seedFigure).toContain('instruction → search → product → options → buy');
-    expect(seedFigure).toContain('HINDSIGHT-SKILL SFT');
-    expect(seedFigure).toContain('SAME SAMPLED ACTION TOKENS');
-    expect(seedFigure).toContain('skill-induced probability shift');
-    expect(seedFigure).toContain('GRPO');
-    expect(seedFigure).toContain('OPD');
-    expect(seedFigure).toContain('TRAINING ONLY');
-    expect(seedFigure).toContain('No permanent hindsight-skill prompt is required at inference.');
-    expect(seedFigure).toContain('One trajectory leaves more than a score');
+  it('keeps Figure S1 evidence boundaries explicit instead of fabricating a complete manifest', () => {
+    expect(seedFigure).toContain('The paper does not state the catalog size');
+    expect(seedFigure).toContain('Exact 128-goal manifest: not yet pinned here.');
+    expect(seedFigure).toContain('Same world, same tasks, same test, same scoring');
   });
 
   it('keeps C1 as one reusable comparison instead of repeating the same conclusion', () => {
@@ -95,10 +69,8 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(seedFigure).toContain('data-ui-audit="contrast layout overflow"');
     expect(compareFigure).toContain('data-ui-audit="contrast layout overflow readability"');
     expect(compareFigure).toContain('data-ui-prose');
-    for (const figure of [seedFigure, compareFigure]) {
+    for (const figure of [seedFigure, interactionFigure, datasetFigure, compareFigure]) {
       expect(figure).toContain('<figcaption');
-      expect(figure).toContain('ResearchDiagramLegend');
-      expect(figure).toContain('@media(prefers-reduced-motion:reduce)');
       expect(figure).not.toContain('client:');
     }
   });

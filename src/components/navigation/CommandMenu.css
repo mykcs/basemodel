@@ -1,0 +1,13 @@
+.command-search-trigger { position: static; z-index: 20; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--text); padding: 7px 10px; font: inherit; font-size: .78rem; cursor: pointer; white-space: nowrap; }
+.command-search-trigger kbd { margin-left: 8px; color: var(--muted); font-size: .7rem; }
+.command-menu { width: min(620px, calc(100% - 28px)); border: 1px solid var(--line); border-radius: 14px; padding: 0; background: var(--surface); color: var(--text); box-shadow: 0 24px 80px rgb(0 0 0 / .24); }
+.command-menu::backdrop { background: rgb(20 25 25 / .42); }
+.command-menu-inner { padding: 18px; }
+.command-menu-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.command-menu-heading h2 { margin: 0; font-size: 1.1rem; }
+.command-menu input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 11px; background: var(--surface-muted); color: var(--text); font: inherit; }
+.command-results { display: grid; gap: 5px; max-height: 360px; margin-top: 12px; overflow: auto; }
+.command-results a { display: grid; gap: 3px; border-radius: 8px; padding: 10px; color: inherit; text-decoration: none; }
+.command-results a:hover, .command-results a.is-active { background: var(--surface-muted); }
+.command-results small, .command-hint { color: var(--muted); font-size: .76rem; }
+.command-hint { margin: 14px 0 0; }

@@ -39,6 +39,7 @@ test('English archived reader-first report explains the problem before run IDs a
   await expect(report.getByText('132', { exact: false }).first()).toBeVisible();
   await expect(report.getByText('384', { exact: false }).first()).toBeVisible();
   await expect(report.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+  await expect(report.getByText('MVD0 REMEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
 
   const ordered = await report.evaluate((node) => {
     const ids = ['abstract', 'background', 'journey', 'method-control', 'replication', 'next-experiment', 'interpretation', 'methods', 'appendix'];
@@ -66,7 +67,7 @@ test('English archived reader-first report explains the problem before run IDs a
   await expect(rtx6).not.toHaveAttribute('open', '');
   await lineage.locator(':scope > summary').click();
   await expect(lineage).toHaveAttribute('open', '');
-  await expect(lineage.locator('.lineage-list > li')).toHaveCount(29);
+  await expect(lineage.locator('.lineage-list > li')).toHaveCount(30);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -141,10 +142,10 @@ test('print mode linearizes the archived narrative and exposes current provenanc
   await expect(report.locator('.print-methods')).toBeVisible();
   const printProvenance = report.locator('.print-methods code');
   await expect(printProvenance).toHaveCount(2);
-  await expect(printProvenance.nth(0)).toContainText('main@e9088e47531f');
-  await expect(printProvenance.nth(1)).toContainText('20260821-0141-h141-magnitude-screen');
+  await expect(printProvenance.nth(0)).toContainText('codex/h142-measurement-validity-20260821@d1f35ecdf84c');
+  await expect(printProvenance.nth(1)).toContainText('20260821-0142-h142-measurement-validity');
   await expect(report.locator('.print-lineage')).toBeVisible();
-  await expect(report.locator('.print-lineage > li')).toHaveCount(29);
+  await expect(report.locator('.print-lineage > li')).toHaveCount(30);
   await expect(report.locator('.print-rtx6')).toBeVisible();
 });
 

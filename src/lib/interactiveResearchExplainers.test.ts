@@ -93,13 +93,10 @@ describe('interactive research explainers', () => {
     expect(css).toContain('.irx-edge-layer{display:none}');
   });
 
-  it('teaches WebShop as a changing website environment with explicit benchmark and historical experiment boundaries', () => {
+  it('teaches WebShop as a changing website environment without borrowing dataset or experiment history', () => {
     for (const term of ['OBSERVATION', 'AVAILABLE ACTIONS', 'AGENT SELECTED', 'ENVIRONMENT TRANSITION', 'REWARD / SCORE', 'search["black sports sweatshirt"]', 'click["Buy Now"]']) expect(explainer).toContain(term);
-    for (const boundary of ['1,000-product', '6680 / 2590', 'goal 0–499', 'goal 500–end']) expect(explainer).toContain(boundary);
-    expect(explainer).toContain('Phase G/H0 are dated historical scientific boundaries');
-    expect(explainer).toContain('experiment branch actually in use');
     expect(explainer).toContain('教学演示');
-    expect(explainer).toContain('not a measured Phase G result');
+    expect(explainer).toContain('not a measured experiment result');
   });
 
   it('makes ALFWorld world state, movement, precondition failure, and splits explicit', () => {
@@ -112,13 +109,17 @@ describe('interactive research explainers', () => {
     for (const term of ['hold the same sampled action tokens fixed', 'P_plain(action)', 'P_skill(action)', 'plain context', 'skill-augmented context', 'OPD', 'GRPO', 'GRPO + OPD', 'policy θt+1', 'next-loop']) expect(explainer).toContain(term);
     expect(explainer).toContain('Illustrative probabilities only');
     expect(explainer).toContain('same checkpoint');
+    expect(explainer).toContain('ParameterUpdateFlame');
+    expect(explainer).toContain('参数更新');
   });
 
-  it('keeps OpenEvo carrier fan-out, validation merge, successor revision, and next-task loop explicit', () => {
+  it('keeps the current WebShop adapter path primary while preserving OpenEvo carrier and validation depth', () => {
     for (const term of ['SEALED EVIDENCE', 'EVOLUTION METHOD', 'MEMORY', 'AGENT ARTIFACT', 'PARAMETRIC ADAPTER', 'VALIDATION GATE', 'fresh reload', 'behavior probe', 'scientific contract', 'SUCCESSOR REVISION', 'TASK N+1']) expect(explainer).toContain(term);
     expect(explainer).toContain('OpenEvo ≠ SD-LoRA');
-    expect(explainer).toContain('method-${item.id}');
-    expect(explainer).toContain('${item.id}-validation');
+    expect(explainer).toContain('method-adapter');
+    expect(explainer).toContain('adapter-validation');
+    expect(explainer).toContain('irx-carrier-details');
+    expect(explainer).toContain('TASK COMPLETION BOUNDARY');
   });
 
   it('retains a compare explainer implementation for reuse without mounting it beside canonical C1', () => {
@@ -144,12 +145,13 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('data-ui-audit="contrast layout"');
     expect(explainer).toContain('data-ui-audit-item');
     expect(explainer).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(explainer).toContain('id={`irx-${kind}-title`}');
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
-  it('floats transport only for a real explainer that the reader is actively stepping through', () => {
-    expect(css).toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed');
-    expect(css).toContain('.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:sticky');
+  it('bottom-docks transport from initial render only for a real explainer', () => {
+    expect(css).toContain('[data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
+    expect(css).not.toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport');
     expect(css).not.toContain('.canonical-figure>.irx-controls');
     expect(loopsZh).not.toContain('InteractiveResearchExplainer');
     expect(loopsEn).not.toContain('InteractiveResearchExplainer');
@@ -162,9 +164,10 @@ describe('interactive research explainers', () => {
     expect(css).not.toContain('.irx-figures{');
   });
 
-  it('keeps the explainer eyebrow descriptive instead of repeating the page title', () => {
-    expect(explainer).toContain("eyebrow: 'WEBSHOP'");
-    expect(explainer).not.toContain('WEBSHOP · INTERACTIVE ENVIRONMENT');
+  it('labels the two formal method figures without adding duplicate diagram mounts', () => {
+    expect(explainer).toContain("eyebrow: 'FIGURE 04 · SEED × WEBSHOP'");
+    expect(explainer).toContain("eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP'");
+    expect(explainer).toContain('irx-inference-strip');
     expect(detailCore).toContain("t('购物任务', 'Shopping task')");
     expect(detailCore).toContain("t('世界状态', 'World state')");
   });

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { baseUrl, localePath, type Locale } from '../../i18n';
 import type { Messages } from '../../i18n/zh';
+import './CommandMenu.css';
 
 type SearchType = 'model' | 'paper' | 'family' | 'guide';
 

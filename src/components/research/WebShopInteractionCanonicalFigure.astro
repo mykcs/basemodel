@@ -1,0 +1,35 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+
+<section id="fig-webshop-interaction" class="canonical-figure webshop-primer" aria-labelledby="webshop-interaction-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">FIGURE S1-A · WEBSHOP</div>
+    <h2 id="webshop-interaction-title">{t('一次普通 Agent 怎样完成 WebShop 购物任务','How an ordinary Agent completes one WebShop task')}</h2>
+    <p>{t('WebShop 让 Agent 在会变化的模拟购物网站里一步一步操作；它不是让模型直接报出商品名称。','WebShop asks an Agent to operate a changing simulated shopping website step by step; it is not a question that can be answered by naming a product.')}</p>
+  </header>
+
+  <figure class="interaction-map" aria-labelledby="webshop-interaction-title">
+    <ol class="interaction-steps" data-ui-audit="layout">
+      <li><span>01</span><strong>{t('购物任务','Shopping instruction')}</strong><p>{t('黑色、M 码、低于 $50 的运动衫','A black, size-M sweatshirt under $50')}</p></li>
+      <li><span>02</span><strong>Agent</strong><p>{t('看见当前 WebShop 页面','Reads the current WebShop page')}</p></li>
+      <li><span>03</span><strong>{t('选择动作','Chooses an action')}</strong><p>search[…] · click[…] · {t('选择 option','choose an option')} · Buy</p></li>
+      <li><span>04</span><strong>{t('页面变化','Page changes')}</strong><p>{t('返回新的 observation','Returns a new observation')}</p></li>
+      <li class="loop"><span>↺</span><strong>{t('继续选择','Choose again')}</strong><p>{t('直到 Buy 或任务结束','Until Buy or the episode ends')}</p></li>
+      <li class="result"><span>05</span><strong>{t('检查购物要求','Checks the shopping requirements')}</strong><p>Score / Success</p></li>
+    </ol>
+    <figcaption>{t('每一次 search、click、选择属性或 Buy 都会改变页面状态；Agent 再根据新的 observation 选择下一步。','Every search, click, option selection, or Buy changes the page state; the Agent then chooses again from the new observation.')}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-primer{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:780px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
+  .interaction-map{margin:1.45rem 0 0}.interaction-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.6rem;margin:0;padding:0;list-style:none}.interaction-steps li{position:relative;min-width:0;padding:.82rem;border:1px solid var(--line);border-top:3px solid color-mix(in srgb,var(--accent) 65%,var(--line));border-radius:10px;background:var(--surface-muted)}.interaction-steps li:not(:last-child)::after{content:"→";position:absolute;right:-.56rem;top:50%;z-index:2;display:grid;place-items:center;width:1.1rem;height:1.1rem;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--accent);transform:translateY(-50%);font-weight:800}.interaction-steps .loop{border-top-color:var(--warning)}.interaction-steps .result{border-top-color:var(--success)}.interaction-steps span,.interaction-steps strong,.interaction-steps p{display:block}.interaction-steps span{color:var(--accent);font:800 .62rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.interaction-steps strong{margin:.42rem 0;font-size:.78rem;line-height:1.32}.interaction-steps p{margin:0;color:var(--muted);font-size:.68rem;line-height:1.48;overflow-wrap:anywhere}.interaction-map figcaption{max-width:76ch;margin-top:.85rem;color:var(--muted);font-size:.78rem;line-height:1.55}
+  @media(max-width:900px){.interaction-steps{grid-template-columns:repeat(3,minmax(0,1fr))}.interaction-steps li::after{display:none}}
+  @media(max-width:560px){.webshop-primer{width:min(100% - 1rem,1120px);padding:1rem}.interaction-steps{grid-template-columns:1fr}.interaction-steps li{padding:.76rem .8rem}.interaction-steps li:not(:last-child)::after{display:grid;right:auto;left:50%;top:auto;bottom:-.56rem;transform:translateX(-50%) rotate(90deg)}}
+</style>

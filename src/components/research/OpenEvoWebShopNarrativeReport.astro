@@ -1,6 +1,7 @@
 ---
 import {
   h138Metrics,
+  h142Metrics,
   openEvoProgramLinks,
   openEvoProgramSource,
   programTimeline,
@@ -250,16 +251,21 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
       <p>{t(`下一轮只改一个更小的因素：一边完全复用上一轮 updater，另一边只重置 magnitude initialization。两臂一共完成 ${secondGeneration.h141Cells} cells / ${secondGeneration.h141Attempts} formal attempts。精确复用组的 acquisition point estimate=${secondGeneration.c0Acquisition}；两臂 retention 都是 ${secondGeneration.retention}。更关键的是，reset 组在 acquisition 和 preservation 各有一个无效 cluster。`, `The next screen changed only one narrower factor: one arm exactly reused the prior updater, while the other reset magnitude initialization. The two arms completed ${secondGeneration.h141Cells} cells / ${secondGeneration.h141Attempts} formal attempts. The exact-control acquisition point estimate was ${secondGeneration.c0Acquisition}; both arms had retention ${secondGeneration.retention}. More importantly, the reset arm had one invalid cluster in acquisition and one in preservation.`)}</p>
       <p>{t('因此这个筛选最终被归类为 MEASUREMENT_INVALID。它既不支持“重置 magnitude 会更好”，也不能被包装成一个干净的 null。更不能因为结果不好就事后加 seed、加 task 或继续 retry。下一步若继续，应该先重新设计一套测量有效性更可靠的冻结协议。', 'The screen therefore closed as MEASUREMENT_INVALID. It supports neither “resetting magnitude is better” nor a clean null. The result also does not justify adding seeds, tasks, or retries after seeing the outcome. Any successor should first preregister a more measurement-valid design.')}</p>
       <p class="run-ref">{t('实验记录：连续写入机制筛选', 'Provenance: continual-write mechanism screen')} · H1.41</p>
+
+      <h3>{t('H1.42 校准了测量链，但仍没有越过机制解释边界', 'H1.42 calibrated the measurement chain but still did not clear the mechanism boundary')}</h3>
+      <p>{t(`Stage A 完成 ${h142Metrics.stageA.cells} cells / ${h142Metrics.stageA.attempts} attempts 并通过 MV4；条件 Stage B 随后完成 ${h142Metrics.stageB.cells} cells / ${h142Metrics.stageB.attempts} attempts。修正 validator 把 treatment arm 和 sd-lora loader 混淆的问题后，C1 的 acquisition task ${h142Metrics.stageB.invalidAcquisition} 与 preservation task ${h142Metrics.stageB.invalidPreservation} 仍为 parser/runtime-invalid。`, `Stage A completed ${h142Metrics.stageA.cells} cells / ${h142Metrics.stageA.attempts} attempts and passed MV4; conditional Stage B then completed ${h142Metrics.stageB.cells} cells / ${h142Metrics.stageB.attempts} attempts. After fixing the validator bug that conflated the treatment arm with the sd-lora loader, C1 still had parser/runtime-invalid acquisition task ${h142Metrics.stageB.invalidAcquisition} and preservation task ${h142Metrics.stageB.invalidPreservation}.`)}</p>
+      <p>{t('因此 selector 仍是 MVD0 REMEASUREMENT_INVALID。C0/C1 的差异不能被解释成 magnitude-reset 机制效应，fresh T2 也继续关闭；后续工作必须先重新冻结 measurement-repair preregistration。', 'The selector therefore remained MVD0 REMEASUREMENT_INVALID. C0/C1 differences cannot be interpreted as a magnitude-reset mechanism effect, fresh T2 remains closed, and any successor must first freeze a measurement-repair preregistration.')}</p>
+      <p class="run-ref">{t('实验记录：测量有效性校准', 'Provenance: measurement-validity calibration')} · H1.42-MV</p>
     </div>
 
     <div class="second-gen-ledger" aria-label={t('第二代研究状态', 'Second-generation research status')}>
       <div class="is-pass"><span>{t('经验供给', 'Experience supply')}</span><strong>{secondGeneration.qualifiedPositives} / {secondGeneration.harvestAttempts}</strong><small>{t('合格成功 / rollout', 'qualified successes / rollouts')}</small></div>
       <div class="is-pass"><span>{t('第二次参数更新', 'Second update')}</span><strong>{secondGeneration.g2Components} components</strong><small>effective rank {secondGeneration.g2EffectiveRank}</small></div>
       <div class="is-stop"><span>{t('能力门', 'Capability gates')}</span><strong>{t('未通过', 'not cleared')}</strong><small>acquisition · retention · preservation</small></div>
-      <div class="is-stop"><span>{t('后续机制筛选', 'Mechanism screen')}</span><strong>MEASUREMENT_INVALID</strong><small>{secondGeneration.h141Attempts} formal attempts</small></div>
+      <div class="is-stop"><span>{t('测量校准', 'Measurement calibration')}</span><strong>MVD0</strong><small>{h142Metrics.stageB.attempts} Stage B attempts</small></div>
     </div>
 
-    <p class="source-note"><a href={openEvoProgramLinks.reconciliation}>{t('H1.40 upstream reconciliation', 'H1.40 upstream reconciliation')}</a> · <a href={openEvoProgramLinks.h141Reconciliation}>{t('H1.41 reconciliation', 'H1.41 reconciliation')}</a></p>
+    <p class="source-note"><a href={openEvoProgramLinks.reconciliation}>{t('H1.40 upstream reconciliation', 'H1.40 upstream reconciliation')}</a> · <a href={openEvoProgramLinks.h141Reconciliation}>{t('H1.41 reconciliation', 'H1.41 reconciliation')}</a> · <a href={openEvoProgramLinks.h142Closeout}>{t('H1.42 closeout', 'H1.42 closeout')}</a></p>
   </section>
 
   <section class="paper-section" id="interpretation" aria-labelledby="interpretation-title">
@@ -286,7 +292,7 @@ const plotTicks = [0, 0.1, 0.2, 0.3];
 
     <details open><summary>{t('paired delta 和 task-cluster bootstrap 是什么意思？', 'What are paired delta and task-cluster bootstrap?')}</summary><div class="details-body prose compact-prose"><p>{t('我们尽量在同一个 task / seed 条件下比较两个 arm，而不是只比较两堆互不相关的平均数。task-cluster bootstrap 以“任务”为重采样单位，避免把同一任务的多个 seed 当成完全独立样本。', 'We compare arms under the same task/seed conditions whenever possible instead of comparing unrelated pools. Task-cluster bootstrap resamples tasks rather than treating multiple seeds from the same task as fully independent observations.')}</p></div></details>
     <details><summary>{t('为什么 invalid 不能直接算 0 分？', 'Why are invalid attempts not simply zero scores?')}</summary><div class="details-body prose compact-prose"><p>{t('模型真实做错动作拿 0，是科学结果；动作没解析、运行时坏掉或评估路径没有成立，是测量问题。把两者都记成 0，会把工程故障伪装成模型能力。H1.41 被标成 MEASUREMENT_INVALID，正是因为我们拒绝做这种偷换。', 'A real wrong model action scoring zero is a scientific result; failed parsing, broken runtime, or an invalid evaluation path is a measurement problem. Counting both as zero would disguise engineering failure as model capability. H1.41 is labeled MEASUREMENT_INVALID precisely because we refuse that substitution.')}</p></div></details>
-    <details><summary>{t('主要证据入口', 'Primary evidence')}</summary><div class="details-body source-list"><p><a href={sealedLinks.h138b}>{t('第一次匹配方法对照', 'Matched discovery control')}</a> · H1.38B</p><p><a href={sealedLinks.h139}>{t('独立新任务复现', 'Independent fresh-task replication')}</a> · H1.39-MR</p><p><a href={openEvoProgramLinks.reconciliation}>{t('第二代上游门 reconciliation', 'Second-generation upstream reconciliation')}</a> · H1.40</p><p><a href={openEvoProgramLinks.h141Reconciliation}>{t('连续写入机制筛选 reconciliation', 'Continual-write mechanism-screen reconciliation')}</a> · H1.41</p><p><a href={openEvoProgramLinks.report}>{t('当前项目总报告', 'Current program report')}</a></p></div></details>
+    <details><summary>{t('主要证据入口', 'Primary evidence')}</summary><div class="details-body source-list"><p><a href={sealedLinks.h138b}>{t('第一次匹配方法对照', 'Matched discovery control')}</a> · H1.38B</p><p><a href={sealedLinks.h139}>{t('独立新任务复现', 'Independent fresh-task replication')}</a> · H1.39-MR</p><p><a href={openEvoProgramLinks.reconciliation}>{t('第二代上游门 reconciliation', 'Second-generation upstream reconciliation')}</a> · H1.40</p><p><a href={openEvoProgramLinks.h141Reconciliation}>{t('连续写入机制筛选 reconciliation', 'Continual-write mechanism-screen reconciliation')}</a> · H1.41</p><p><a href={openEvoProgramLinks.h142Closeout}>{t('测量有效性校准 closeout', 'Measurement-validity calibration closeout')}</a> · H1.42-MV</p><p><a href={openEvoProgramLinks.report}>{t('当前项目总报告', 'Current program report')}</a></p></div></details>
 
     <div class="print-only print-methods"><h3>{t('来源快照', 'Source snapshot')}</h3><p><code>{openEvoProgramSource.branch}@{openEvoProgramSource.commit}</code></p><p><code>{openEvoProgramSource.campaign}</code></p></div>
   </section>
