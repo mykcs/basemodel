@@ -11,7 +11,7 @@ A successful build and a non-overflowing box are not enough. Two separate regres
 1. geometry can be technically valid while connectors drift or nodes overlap;
 2. a layout can have zero overflow and still be unreadable because Chinese prose is squeezed into a narrow column, uses 8–10px text, or repeats the same conceptual figure several times.
 
-The second class was previously invisible to release QA because the browser gate measured geometry, clipping, overlap, and contrast but did not measure readable prose width or line density. The gate also previously encoded a fixed floating transport dock as desired behavior, so it actively preserved an unwanted interaction pattern.
+The second class was previously invisible to release QA because the browser gate measured geometry, clipping, overlap, and contrast but did not measure readable prose width or line density. Interaction ownership also needs an explicit contract: a floating transport is useful while the reader is actually stepping through a long explainer, but the same dock is wrong when it appears over a static canonical figure or a page with no step-by-step interaction.
 
 Acceptance therefore covers **information architecture, readability, geometry, and interaction ownership**.
 
@@ -79,8 +79,11 @@ The browser gate reports failures using strings such as `prose font too small` a
 ## Interaction ownership acceptance
 
 - Previous / Next / Reset exist only inside a true interactive explainer.
-- The transport control belongs to the explainer's own control surface; it may be sticky within that surface but must not be a page-global `position: fixed` dock.
-- A static canonical figure must never appear to have playback controls because a later explainer's transport is floating over it.
+- In system-overview state, the transport stays local to the explainer so a canonical/static figure elsewhere on the same page never appears to own playback.
+- When the reader enters step-by-step interaction — by starting the trace, advancing a step, focusing the explainer controls, or actively hovering the explainer on pointer devices — the transport becomes a bottom `position: fixed` dock so Previous / Next remain reachable while reading a long figure.
+- Returning to the system overview and moving focus/pointer outside the explainer returns the transport to its local state.
+- A static canonical figure must never render transport controls of its own, and canonical-only routes such as `/loops/` must contain no `.irx-transport` at all.
+- The floating dock must remain a descendant of its owning `InteractiveResearchExplainer`; floating changes geometry, not ownership.
 - keyboard ArrowLeft / ArrowRight / Home / End remain functional for true explainers;
 - state changes are visible in the diagram, not only in prose;
 - `prefers-reduced-motion: reduce` disables autoplay/animated transitions without hiding meaning.

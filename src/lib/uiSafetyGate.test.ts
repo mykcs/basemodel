@@ -13,6 +13,7 @@ const webShopThemeGate = read('../../tests/e2e/webshop-training-theme.spec.ts');
 const headerVisibilityGate = read('../../tests/e2e/global-header-visibility.spec.ts');
 const headerBreakpointGate = read('../../tests/e2e/global-header-breakpoints.spec.ts');
 const researchGeometryGate = read('../../tests/e2e/research-explainer-layout.spec.ts');
+const floatingTransportGate = read('../../tests/e2e/floating-step-transport.spec.ts');
 const policy = read('../../docs/agents/current/ui-change-visual-acceptance-gate.md');
 const geometryPolicy = read('../../docs/agents/current/research-explainer-geometry-acceptance.md');
 const appLayout = read('../layouts/AppLayout.astro');
@@ -27,7 +28,7 @@ const layerMap = read('../components/visual/LayerMap.astro');
 const evidenceLadder = read('../components/visual/EvidenceLadder.astro');
 
 describe('UI visual acceptance gate contract', () => {
-  it('keeps the general, canonical-figure, global-header, breakpoint-handoff, research-geometry, and WebShop-theme browser commands wired', () => {
+  it('keeps the general, canonical-figure, global-header, breakpoint-handoff, research-geometry, floating-transport, and WebShop-theme browser commands wired', () => {
     for (const script of ['test:header', 'test:header:all'] as const) {
       expect(packageJson.scripts?.[script]).toContain('global-header-visibility.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('global-header-breakpoints.spec.ts');
@@ -39,6 +40,7 @@ describe('UI visual acceptance gate contract', () => {
       expect(packageJson.scripts?.[script]).toContain('ui-safety.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('canonical-research-figures.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('research-explainer-layout.spec.ts');
+      expect(packageJson.scripts?.[script]).toContain('floating-step-transport.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('webshop-training-theme.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('compare-tray-on-demand.spec.ts');
       expect(packageJson.scripts?.[script]).toContain('--max-failures=1');
@@ -183,19 +185,29 @@ describe('UI visual acceptance gate contract', () => {
     expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
   });
 
-  it('makes readable research prose and local control ownership hard release conditions', () => {
+  it('makes readable research prose and conditional floating control ownership hard release conditions', () => {
     for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
     for (const term of ['prose font too small', 'CJK prose is too narrow', "toHaveCSS('position', 'sticky')", 'instead of floating over the page']) {
       expect(researchGeometryGate).toContain(term);
     }
+    for (const term of [
+      'every true step-by-step owner floats Previous / Next after interaction',
+      "toHaveCSS('position', 'fixed')",
+      'WebShop floating transport also stays inside a mobile viewport',
+      'canonical-only comparison routes never expose a floating step transport',
+      'SEED canonical S1 does not borrow the later explainer transport before interaction',
+    ]) {
+      expect(floatingTransportGate).toContain(term);
+    }
     expect(researchReadabilityStyles).toContain('.canonical-figure');
     expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
     expect(interactiveResearchStyles).toContain('position:sticky');
-    expect(interactiveResearchStyles).not.toContain('position:fixed');
+    expect(interactiveResearchStyles).toContain('position:fixed');
+    expect(interactiveResearchStyles).toContain('[data-overview="false"]');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
-    expect(geometryPolicy).toContain('must not be a page-global `position: fixed` dock');
+    expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');
     expect(geometryPolicy).toContain('canonical-only');
   });
 
