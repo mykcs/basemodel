@@ -3,7 +3,9 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const figureRoutes = [
-  { path: '/research/seed-openevo/seed/', selector: '#fig-seed-webshop', title: 'SEED 怎样在 WebShop 上训练' },
+  { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-interaction', title: '普通 Agent 怎样完成 WebShop' },
+  { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-dataset', title: '原始 WebShop 数据集有多大' },
+  { path: '/research/seed-openevo/seed/', selector: '#fig-seed-webshop', title: '公平比较要进入哪个 WebShop 场地' },
   { path: '/research/seed-openevo/loops/', selector: '#fig-seed-openevo-update-target', title: '同一份任务经验' },
 ] as const;
 
@@ -119,20 +121,26 @@ test('canonical figures remain complete without JavaScript in Chinese and Englis
   const page = await context.newPage();
 
   const routes = [
-    ['/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1'],
-    ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1'],
-    ['/en/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1'],
-    ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1'],
+    ['/research/seed-openevo/seed/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
+    ['/research/seed-openevo/seed/', '#fig-webshop-dataset', 'FIGURE S1-B', false],
+    ['/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
+    ['/en/research/seed-openevo/seed/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
+    ['/en/research/seed-openevo/seed/', '#fig-webshop-dataset', 'FIGURE S1-B', false],
+    ['/en/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
 
-  for (const [path, selector, label] of routes) {
+  for (const [path, selector, label, hasMechanismSymbols] of routes) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     const figure = page.locator(selector);
     await expect(figure).toBeVisible();
     await expect(figure.getByText(label, { exact: false }).first()).toBeVisible();
     await expect(figure.locator('figcaption')).toBeVisible();
-    await expect(figure.getByText('🔥', { exact: true }).first()).toBeVisible();
-    await expect(figure.getByText('❄️', { exact: true }).first()).toBeVisible();
+    if (hasMechanismSymbols) {
+      await expect(figure.getByText('🔥', { exact: true }).first()).toBeVisible();
+      await expect(figure.getByText('❄️', { exact: true }).first()).toBeVisible();
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   }
 

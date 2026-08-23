@@ -107,7 +107,7 @@ export function StepControls({
         <button type="button" onClick={() => onStep(overview ? 0 : step + 1)} disabled={!overview && step === maxStep} aria-label={zh ? '下一步' : 'Next step'}>
           <span>{zh ? '下一步' : 'Next'}</span><span aria-hidden="true">→</span>
         </button>
-        <button type="button" className="irx-reset" onClick={onOverview} disabled={overview}>{zh ? '总览图' : 'System map'}</button>
+        <button type="button" className="irx-reset" onClick={onOverview} disabled={overview}>{zh ? '重置' : 'Reset'}</button>
       </div>
       <div
         className="irx-progress"

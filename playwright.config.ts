@@ -37,12 +37,12 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    // Local/Agent E2E stays self-contained. Release Preview builds may reuse
-    // the exact static output that Vercel just produced so the browser gate
-    // validates that tree without paying for a redundant Astro build.
+    // Astro 7's preview command detaches into a background process, while
+    // Playwright requires the configured server process to stay attached.
+    // This server keeps that process attached and preserves static 404 status.
     command: reuseBuiltOutput
-      ? `npx vite preview --host 127.0.0.1 --port ${previewPort}`
-      : `npm run build && npx vite preview --host 127.0.0.1 --port ${previewPort}`,
+      ? `node scripts/playwright-static-server.mjs`
+      : `npm run build && node scripts/playwright-static-server.mjs`,
     url: previewURL,
     // Never accept a server started from another worktree. A busy port now
     // fails fast, while PLAYWRIGHT_PORT lets parallel validation use isolation.

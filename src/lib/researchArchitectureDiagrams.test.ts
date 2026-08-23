@@ -67,12 +67,11 @@ describe('research architecture diagrams', () => {
   });
 
   it('teaches WebShop and ALFWorld as interactive world models, not dataset names alone', () => {
-    for (const term of ['1.18M', '12,087', '1,000', 'goal 0–499', 'goal 500–end', 'task_score ∈ [0,1]']) expect(benchmarks).toContain(term);
+    for (const term of ['SHOPPING TASK', 'Agent', 'search / click / option / buy', 'Score / Success']) expect(benchmarks).toContain(term);
     for (const term of ['train / valid_seen / valid_unseen', 'AlfredTWEnv', 'Pick & Place', '10 × won']) expect(benchmarks).toContain(term);
     expect(benchmarks).toContain('state transition');
     expect(benchmarks).toContain('new observation feeds the next step');
-    expect(benchmarks).toContain('historical Phase G');
-    expect(benchmarks).toContain('historical H0');
+    for (const term of ['1.18M', '1,000', 'goal 0–499', 'goal 500–end', 'historical Phase G', 'historical H0']) expect(benchmarks).not.toContain(term);
   });
 
   it('makes the SEED core idea visually explicit', () => {
