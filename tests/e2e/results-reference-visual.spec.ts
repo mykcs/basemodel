@@ -73,9 +73,10 @@ for (const viewport of viewports) {
     expect(metrics.gridWidth, `REFERENCE grid collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
 
     // Preview-only pixel probe. Capture the real 2048px Chromium render, then
-    // resize that captured bitmap in-browser. The 240px thumbnail is only a
-    // transport artifact for human visual inspection; layout assertions above
-    // still run against the original 2048px render.
+    // resize that captured bitmap in-browser. The thumbnail is only a transport
+    // artifact for human visual inspection; layout assertions above still run
+    // against the original 2048px render. Fixed-size indexed chunks make the
+    // payload loss-detectable when it crosses tool boundaries.
     if (process.env.VERCEL_ENV === 'preview' && viewport.name === 'user-screenshot-2048') {
       const jpeg = await root.locator('.reference-index').screenshot({ type: 'jpeg', quality: 46 });
       const thumb = await page.evaluate(async (source) => {
@@ -94,7 +95,9 @@ for (const viewport of viewports) {
         return canvas.toDataURL('image/jpeg', 0.30).split(',')[1];
       }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
       await mkdir('dist/__qa__', { recursive: true });
-      await writeFile('dist/__qa__/results-reference-2048-tiny.b64', thumb, 'utf8');
+      const chunks = thumb.match(/.{1,64}/g) ?? [];
+      const payload = chunks.map((chunk, index) => `${String(index).padStart(3, '0')}:${chunk}`).join('\n');
+      await writeFile('dist/__qa__/results-reference-2048-chunks.txt', payload, 'utf8');
     }
 
     await expect(heading).toBeVisible();
