@@ -60,13 +60,16 @@ test('header geometry and controls stay stable across bilingual viewports', asyn
       await expectNoDocumentOverflow(page);
       await expectNoOverlap(page.locator('.nav-inner > *'));
       await expect(page.locator('.command-search-trigger')).toHaveCSS('position', 'static');
-      if (width <= 820) {
+      if (width <= 960) {
         await expect(page.locator('.nav-inner > .lang-switch')).toBeHidden();
+      } else {
+        await expect(page.locator('.nav-inner > .lang-switch')).toBeVisible();
+      }
+      if (width <= 640) {
         await expect(page.locator('.nav-inner > .theme-toggle')).toBeHidden();
         await expect(page.locator('.mobile-menu .lang-switch')).toHaveCount(1);
         await expect(page.locator('.mobile-menu .theme-toggle')).toHaveCount(1);
       } else {
-        await expect(page.locator('.nav-inner > .lang-switch')).toBeVisible();
         await expect(page.locator('.nav-inner > .theme-toggle')).toBeVisible();
       }
       await takeRepresentativeScreenshot(header, `header-${locale.id}`, width);
@@ -93,15 +96,15 @@ test('dense bilingual pages keep facts, workflow connectors, and sticky tables i
       await open(page, `${locale.prefix}papers/seed/`);
       const workflow = page.locator('.workflow-flow');
       await expect(workflow).toBeVisible();
-      const steps = page.locator('.workflow-step');
-      const connectors = page.locator('.workflow-connector');
-      expect(await connectors.count()).toBe((await steps.count()) - 1);
-      for (let index = 0; index < await steps.count() - 1; index += 1) {
-        const connector = await steps.nth(index).locator('.workflow-connector').boundingBox();
-        const nextNode = await steps.nth(index + 1).locator('.workflow-node').boundingBox();
-        expect(connector).not.toBeNull();
+      const nodes = workflow.locator('.workflow-node');
+      const arrows = workflow.locator('.workflow-arrow');
+      expect(await arrows.count()).toBe((await nodes.count()) - 1);
+      for (let index = 0; index < await nodes.count() - 1; index += 1) {
+        const arrow = await nodes.nth(index).locator('.workflow-arrow').boundingBox();
+        const nextNode = await nodes.nth(index + 1).boundingBox();
+        expect(arrow).not.toBeNull();
         expect(nextNode).not.toBeNull();
-        expect(connector!.x + connector!.width).toBeLessThanOrEqual(nextNode!.x + 1);
+        expect(arrow!.x + arrow!.width).toBeLessThanOrEqual(nextNode!.x + 1);
       }
       await takeRepresentativeScreenshot(page.locator('.paper-role-diagram'), `workflow-${locale.id}`, width);
 
@@ -114,7 +117,9 @@ test('dense bilingual pages keep facts, workflow connectors, and sticky tables i
       await takeRepresentativeScreenshot(page.locator('.comparison-shell'), `comparison-${locale.id}`, width);
 
       await open(page, `${locale.prefix}papers/`);
+      await page.locator('.paper-matrix-advanced > summary').click();
       const matrixHead = page.locator('.matrix-table thead th').first();
+      await expect(matrixHead).toBeVisible();
       await expect(matrixHead).toHaveCSS('position', 'sticky');
       const matrixTop = Number.parseFloat(await matrixHead.evaluate((element) => getComputedStyle(element).top));
       expect(matrixTop).toBe(0);

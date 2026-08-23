@@ -6,7 +6,10 @@
  */
 
 .site-header {
+  position: sticky;
+  top: 0;
   z-index: 50;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 55%, transparent);
   backdrop-filter: blur(16px) saturate(1.15);
@@ -14,16 +17,35 @@
 }
 
 .site-header .nav-inner {
-  min-height: 68px;
+  display: flex;
+  align-items: center;
+  min-height: 72px;
   gap: 14px;
 }
 
 .site-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   min-width: 188px;
+  margin-right: auto;
+  text-decoration: none;
+}
+
+.site-header .brand strong,
+.site-header .brand small {
+  display: block;
+  line-height: 1.15;
 }
 
 .site-header .brand strong {
   letter-spacing: -.02em;
+}
+
+.site-header .brand small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .69rem;
 }
 
 .site-header .brand-mark {
@@ -35,7 +57,25 @@
 }
 
 .site-header .desktop-nav {
+  display: flex;
+  align-items: center;
   min-width: 0;
+}
+
+.site-header nav a {
+  color: var(--muted);
+  font-size: .9rem;
+  text-decoration: none;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible,
+.site-header nav a[aria-current='page'] {
+  color: var(--ink);
+}
+
+.site-header nav a[aria-current='page'] {
+  font-weight: 750;
 }
 
 .site-header .mission-nav {
@@ -99,11 +139,51 @@
 .site-header .menu-toggle {
   flex: 0 0 auto;
   min-height: 42px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.site-header .theme-toggle {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.site-header .theme-toggle[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.site-header .menu-toggle {
+  width: 36px;
+  height: 34px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 9px;
+}
+
+.site-header .menu-toggle span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
 }
 
 .site-header .menu-toggle,
 .site-header .mobile-menu {
   display: none;
+}
+
+.site-header .mobile-menu {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
 }
 
 /* Closed popovers must contribute no off-screen geometry. */
