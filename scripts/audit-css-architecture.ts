@@ -143,10 +143,52 @@ for (const retiredOwner of [
   }
 }
 
+// Structural type selectors are uniquely dangerous in the global cascade. A
+// bare `nav { display:flex }` caused a Results-only navigation region to become
+// a horizontal flex row and collapse Chinese copy to one-character columns.
+// Global styles may still set typography/color on semantic elements, but any
+// layout-changing rule for nav/main/section/article/aside/header/footer must be
+// scoped by a class, id, or attribute owner. Astro component-scoped styles are
+// intentionally outside this audit because Astro adds an owner scope for them.
+const structuralTypes = new Set(['nav', 'main', 'section', 'article', 'aside', 'header', 'footer']);
+const structuralLayoutProperty = /(?:^|[;\n\r])\s*(?:display|position|float|clear|flex(?:-[a-z-]+)?|grid(?:-[a-z-]+)?|place-(?:items|content|self)|align-(?:items|content|self)|justify-(?:items|content|self)|gap|row-gap|column-gap|width|min-width|max-width|height|min-height|max-height|overflow(?:-[xy])?|inset|top|right|bottom|left)\s*:/i;
+const stripComments = (source: string) => source.replace(/\/\*[\s\S]*?\*\//g, '');
+const bareStructuralSelector = (selector: string) => {
+  if (/[.#\[]/.test(selector)) return false;
+  const tokens = selector
+    .replace(/::?[a-z-]+(?:\([^)]*\))?/gi, '')
+    .split(/[\s>+~*]+/)
+    .map((token) => token.trim().toLowerCase())
+    .filter(Boolean);
+  return tokens.some((token) => structuralTypes.has(token));
+};
+
+const broadStructuralLayoutRules: string[] = [];
+for (const path of walk(stylesRoot).filter((candidate) => candidate.endsWith('.css'))) {
+  const source = stripComments(readFileSync(path, 'utf8'));
+  const repoPath = relative(root, path).replaceAll('\\', '/');
+  for (const match of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selectorBlock = match[1].trim();
+    const declarations = match[2];
+    if (selectorBlock.startsWith('@') || !structuralLayoutProperty.test(declarations)) continue;
+    for (const selector of selectorBlock.split(',').map((value) => value.trim()).filter(Boolean)) {
+      if (bareStructuralSelector(selector)) {
+        broadStructuralLayoutRules.push(`${repoPath}: ${selector}`);
+      }
+    }
+  }
+}
+if (broadStructuralLayoutRules.length > 0) {
+  fail(
+    `unscoped global structural layout selectors are forbidden because they can mutate unrelated components:\n${broadStructuralLayoutRules.map((rule) => `  - ${rule}`).join('\n')}\nScope each rule with its semantic owner class/id/data attribute instead of adding an override at the victim.`,
+  );
+}
+
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
+console.log('  unscoped structural layout selectors: forbidden in global CSS');
 console.log('  Header legacy selector debt: frozen to 4 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
 console.log('  Tailwind migration: not justified by the current ownership evidence');
