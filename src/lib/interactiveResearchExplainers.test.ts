@@ -112,13 +112,17 @@ describe('interactive research explainers', () => {
     for (const term of ['hold the same sampled action tokens fixed', 'P_plain(action)', 'P_skill(action)', 'plain context', 'skill-augmented context', 'OPD', 'GRPO', 'GRPO + OPD', 'policy θt+1', 'next-loop']) expect(explainer).toContain(term);
     expect(explainer).toContain('Illustrative probabilities only');
     expect(explainer).toContain('same checkpoint');
+    expect(explainer).toContain('ParameterUpdateFlame');
+    expect(explainer).toContain('参数更新');
   });
 
-  it('keeps OpenEvo carrier fan-out, validation merge, successor revision, and next-task loop explicit', () => {
+  it('keeps the current WebShop adapter path primary while preserving OpenEvo carrier and validation depth', () => {
     for (const term of ['SEALED EVIDENCE', 'EVOLUTION METHOD', 'MEMORY', 'AGENT ARTIFACT', 'PARAMETRIC ADAPTER', 'VALIDATION GATE', 'fresh reload', 'behavior probe', 'scientific contract', 'SUCCESSOR REVISION', 'TASK N+1']) expect(explainer).toContain(term);
     expect(explainer).toContain('OpenEvo ≠ SD-LoRA');
-    expect(explainer).toContain('method-${item.id}');
-    expect(explainer).toContain('${item.id}-validation');
+    expect(explainer).toContain('method-adapter');
+    expect(explainer).toContain('adapter-validation');
+    expect(explainer).toContain('irx-carrier-details');
+    expect(explainer).toContain('TASK COMPLETION BOUNDARY');
   });
 
   it('retains a compare explainer implementation for reuse without mounting it beside canonical C1', () => {
@@ -144,6 +148,7 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('data-ui-audit="contrast layout"');
     expect(explainer).toContain('data-ui-audit-item');
     expect(explainer).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(explainer).toContain('id={`irx-${kind}-title`}');
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
@@ -162,9 +167,10 @@ describe('interactive research explainers', () => {
     expect(css).not.toContain('.irx-figures{');
   });
 
-  it('keeps the explainer eyebrow descriptive instead of repeating the page title', () => {
-    expect(explainer).toContain("eyebrow: 'WEBSHOP'");
-    expect(explainer).not.toContain('WEBSHOP · INTERACTIVE ENVIRONMENT');
+  it('labels the two formal method figures without adding duplicate diagram mounts', () => {
+    expect(explainer).toContain("eyebrow: 'FIGURE 04 · SEED × WEBSHOP'");
+    expect(explainer).toContain("eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP'");
+    expect(explainer).toContain('irx-inference-strip');
     expect(detailCore).toContain("t('购物任务', 'Shopping task')");
     expect(detailCore).toContain("t('世界状态', 'World state')");
   });
