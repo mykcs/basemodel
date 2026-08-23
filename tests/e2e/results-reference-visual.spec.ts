@@ -21,7 +21,7 @@ for (const viewport of viewports) {
 
     const root = page.getByTestId('openevo-webshop-result-index');
     const title = page.locator('#reference-title');
-    const heading = title.locator('xpath=ancestor::*[contains(concat(" ", normalize-space(@class), " "), " section-heading ")][1]');
+    const heading = title.locator('xpath=ancestor::*[contains(concat(" ", normalize-space(@class), " "), " result-section-heading ")][1]');
     const copyColumn = title.locator('xpath=parent::*');
     const cards = root.locator('.reference-grid .reference-card');
 
@@ -32,7 +32,7 @@ for (const viewport of viewports) {
     const metrics = await page.evaluate(() => {
       const title = document.querySelector<HTMLElement>('#reference-title');
       const column = title?.parentElement as HTMLElement | null;
-      const heading = title?.closest<HTMLElement>('.section-heading');
+      const heading = title?.closest<HTMLElement>('.result-section-heading');
       const grid = document.querySelector<HTMLElement>('[data-testid="openevo-webshop-result-index"] .reference-grid');
       const cards = [...document.querySelectorAll<HTMLElement>('[data-testid="openevo-webshop-result-index"] .reference-card')];
       if (!title || !column || !heading || !grid || cards.length !== 5) return null;
