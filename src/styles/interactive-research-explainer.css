@@ -53,12 +53,14 @@
  * that do not mount a real InteractiveResearchExplainer.
  */
 .plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:sticky;left:auto;right:auto;bottom:auto;top:.6rem;z-index:10;width:100%;transform:none;justify-content:flex-start}
+.plain-detail__interactive>astro-island>.irx-webshop>.irx-controls>.irx-transport{position:fixed;left:50%;right:auto;bottom:max(.75rem,env(safe-area-inset-bottom,0px));top:auto;z-index:40;width:min(520px,calc(100vw - 1rem));transform:translateX(-50%);justify-content:center;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 20%,transparent)}
 .plain-detail__interactive>astro-island>[data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport,
 .irx-split__rail [data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed;left:50%;right:auto;bottom:max(.75rem,env(safe-area-inset-bottom,0px));top:auto;z-index:40;width:min(520px,calc(100vw - 1rem));transform:translateX(-50%);justify-content:center;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 20%,transparent)}
 [data-interactive-research-explainer]>.irx-controls>.irx-transport .irx-reset{margin-left:auto}
 body:has([data-interactive-research-explainer]) .site-footer .footer-inner{padding-bottom:max(6rem,calc(5rem + env(safe-area-inset-bottom,0px)))}
 @media(max-width:760px){
   .plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{width:100%;padding:.3rem;gap:.25rem}
+  .plain-detail__interactive>astro-island>.irx-webshop>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}
   .plain-detail__interactive>astro-island>[data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport,
   .irx-split__rail [data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}
   .plain-detail__interactive>astro-island>[data-interactive-research-explainer]:is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport button,

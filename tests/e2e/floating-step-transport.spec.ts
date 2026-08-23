@@ -64,7 +64,10 @@ test('WebShop floating transport also stays inside a mobile viewport', async ({ 
   await page.goto('/research/seed-openevo/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
-  const transport = await activate(root);
+  const transport = root.locator('.irx-transport');
+  await expect(transport).toHaveCSS('position', 'fixed');
+  await expect(transport).toBeInViewport();
+  await activate(root);
   await expect(transport).toHaveCSS('position', 'fixed');
   const rect = await transport.boundingBox();
   expect(rect).not.toBeNull();
