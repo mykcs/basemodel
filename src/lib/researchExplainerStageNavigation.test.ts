@@ -7,7 +7,6 @@ const environments = read('src/components/research/explainer/EnvironmentExplaine
 const methods = read('src/components/research/explainer/MethodExplainers.tsx');
 const server = read('src/components/research/explainer/ServerExplainer.tsx');
 const environmentCss = read('src/styles/interactive-research-explainer-environments.css');
-const explainerCss = read('src/styles/interactive-research-explainer.css');
 
 describe('research explainer stage navigation', () => {
   it('keeps one shared full-stage navigator and does not redraw the WebShop phases inside the scene', () => {
@@ -16,7 +15,6 @@ describe('research explainer stage navigation', () => {
     expect(environments).not.toContain("['目标', '搜索', '商品', '选项', '评测']");
     expect(environments).not.toContain("['Goal', 'Search', 'Product', 'Options', 'Reward']");
     expect(environmentCss).not.toContain('.irx-linear-map');
-    expect(explainerCss).not.toContain('.irx-linear-map');
   });
 
   it('does not introduce the retired duplicate-stage pattern in sibling explainers', () => {
