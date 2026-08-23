@@ -97,7 +97,6 @@ const cssWithHeaderSelectors = walk(stylesRoot)
 const expectedHeaderSelectorFiles = [
   'components/header.css',
   'final-hardening.css',
-  'site.css',
   'visual-identity.css',
   'visual-upgrade.css',
 ].sort();
@@ -149,10 +148,9 @@ for (const retiredOwner of [
 // New global layout-changing rules for nav/main/section/article/aside/header/
 // footer are forbidden unless scoped by a class, id, or attribute owner.
 //
-// site.css still contains two historical bare-nav layout rules. They are kept
-// only as exact frozen debt while the Header migration finishes: even changing
-// their declarations fails this audit. This is materially safer than a loose
-// allowlist because a new/edited global nav layout cannot silently land.
+// The Header migration removed the historical bare-nav layout rules from
+// site.css. Keep the expected debt set empty so any new unscoped structural
+// layout selector fails this audit.
 const structuralTypes = new Set(['nav', 'main', 'section', 'article', 'aside', 'header', 'footer']);
 const structuralLayoutProperty = /(?:^|[;\n\r])\s*(?:display|position|float|clear|flex(?:-[a-z-]+)?|grid(?:-[a-z-]+)?|place-(?:items|content|self)|align-(?:items|content|self)|justify-(?:items|content|self)|gap|row-gap|column-gap|width|min-width|max-width|height|min-height|max-height|overflow(?:-[xy])?|inset|top|right|bottom|left)\s*:/i;
 const stripComments = (source: string) => source.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -183,10 +181,7 @@ for (const path of walk(stylesRoot).filter((candidate) => candidate.endsWith('.c
   }
 }
 
-const frozenLegacyStructuralLayoutRules = [
-  'src/styles/site.css: nav => display: flex; gap: 16px; align-items: center;',
-  'src/styles/site.css: nav => gap: 10px;',
-].sort();
+const frozenLegacyStructuralLayoutRules: string[] = [];
 
 equal(
   broadStructuralLayoutRules.sort(),
@@ -198,7 +193,7 @@ console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
-console.log('  unscoped structural layout selectors: new/changed rules forbidden; 2 exact site.css nav rules frozen as legacy debt');
-console.log('  Header legacy selector debt: frozen to 4 compatibility/foundation files plus the canonical owner');
+console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
+console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
 console.log('  Tailwind migration: not justified by the current ownership evidence');
