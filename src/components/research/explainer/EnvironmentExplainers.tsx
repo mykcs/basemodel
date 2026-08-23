@@ -46,16 +46,8 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
     },
   ];
   const current = states[step];
-  const labels = zh ? ['目标', '搜索', '商品', '选项', '评测'] : ['Goal', 'Search', 'Product', 'Options', 'Reward'];
   return (
     <>
-      <ol className="irx-linear-map" aria-label={zh ? 'WebShop 状态转换' : 'WebShop state transitions'} data-ui-audit="contrast layout">
-        {labels.map((label, index) => (
-          <li key={label} data-ui-audit-item data-active={step === index} data-complete={step > index}>
-            <span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong>
-          </li>
-        ))}
-      </ol>
       <div className="irx-webshop-stage" data-ui-audit="contrast layout">
         <section className="irx-browser" aria-label={zh ? '简化 WebShop 页面' : 'Simplified WebShop page'}>
           <div className="irx-browser-bar"><i></i><i></i><i></i><code>webshop.local</code></div>
