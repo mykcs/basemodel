@@ -242,7 +242,7 @@ for (const matrix of matrices) {
   });
 }
 
-test('interactive transport stays local to the explainer instead of floating over the page', async ({ page }) => {
+test('interactive transport stays bottom-docked from the initial render', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const cases = [
     ['/research/seed-openevo/seed/', 'seed'],
@@ -262,9 +262,9 @@ test('interactive transport stays local to the explainer instead of floating ove
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
       await ensureHydrated(root);
       const transport = root.locator('.irx-transport');
-      await expect(transport).toHaveCSS('position', 'sticky');
+      await expect(transport).toHaveCSS('position', 'fixed');
       expect(await transport.evaluate((node) => Boolean(node.closest('.irx-controls')))).toBe(true);
-      expect(await transport.evaluate((node) => getComputedStyle(node).position === 'fixed')).toBe(false);
+      await expect(transport).toBeInViewport();
     });
   }
 });

@@ -147,9 +147,9 @@ describe('interactive research explainers', () => {
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
-  it('floats transport only for a real explainer that the reader is actively stepping through', () => {
-    expect(css).toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed');
-    expect(css).toContain('.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:sticky');
+  it('bottom-docks transport from initial render only for a real explainer', () => {
+    expect(css).toContain('[data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
+    expect(css).not.toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport');
     expect(css).not.toContain('.canonical-figure>.irx-controls');
     expect(loopsZh).not.toContain('InteractiveResearchExplainer');
     expect(loopsEn).not.toContain('InteractiveResearchExplainer');

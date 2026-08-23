@@ -185,27 +185,25 @@ describe('UI visual acceptance gate contract', () => {
     expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
   });
 
-  it('makes readable research prose and conditional floating control ownership hard release conditions', () => {
+  it('makes readable research prose and persistent floating control ownership hard release conditions', () => {
     for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
-    for (const term of ['prose font too small', 'CJK prose is too narrow', "toHaveCSS('position', 'sticky')", 'instead of floating over the page']) {
+    for (const term of ['prose font too small', 'CJK prose is too narrow', "toHaveCSS('position', 'fixed')", 'bottom-docked from the initial render']) {
       expect(researchGeometryGate).toContain(term);
     }
     for (const term of [
-      'every true step-by-step owner floats Previous / Next after interaction',
+      'every true step-by-step owner docks Previous / Next from initial render through interaction',
       "toHaveCSS('position', 'fixed')",
       'WebShop floating transport also stays inside a mobile viewport',
       'canonical-only comparison routes never expose a floating step transport',
-      'SEED canonical S1 does not borrow the later explainer transport before interaction',
+      'SEED transport is bottom-docked before interaction without replacing canonical S1',
     ]) {
       expect(floatingTransportGate).toContain(term);
     }
     expect(researchReadabilityStyles).toContain('.canonical-figure');
     expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
-    expect(interactiveResearchStyles).toContain('position:sticky');
     expect(interactiveResearchStyles).toContain('position:fixed');
-    expect(interactiveResearchStyles).toContain('[data-overview="false"]');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');
     expect(geometryPolicy).toContain('canonical-only');

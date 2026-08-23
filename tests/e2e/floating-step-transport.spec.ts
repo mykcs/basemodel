@@ -38,7 +38,7 @@ function expectInsideViewport(rect: { x: number; y: number; width: number; heigh
   expect(rect.y + rect.height).toBeLessThanOrEqual(height);
 }
 
-test('every true step-by-step owner floats Previous / Next after interaction', async ({ page }) => {
+test('every true step-by-step owner docks Previous / Next from initial render through interaction', async ({ page }) => {
   const viewport = { width: 1440, height: 900 };
   await page.setViewportSize(viewport);
 
@@ -48,7 +48,10 @@ test('every true step-by-step owner floats Previous / Next after interaction', a
       await settle(page);
       await page.mouse.move(4, 4);
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-      const transport = await activate(root);
+      const transport = root.locator('.irx-transport');
+      await expect(transport).toHaveCSS('position', 'fixed');
+      await expect(transport).toBeInViewport();
+      await activate(root);
       await expect(transport).toHaveCSS('position', 'fixed');
       expect(await transport.evaluate((node) => Boolean(node.closest('[data-interactive-research-explainer]')))).toBe(true);
       const rect = await transport.boundingBox();
@@ -84,7 +87,7 @@ test('canonical-only comparison routes never expose a floating step transport', 
   }
 });
 
-test('SEED canonical S1 does not borrow the later explainer transport before interaction', async ({ page }) => {
+test('SEED transport is bottom-docked before interaction without replacing canonical S1', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/research/seed-openevo/seed/', { waitUntil: 'domcontentloaded' });
   await settle(page);
@@ -92,5 +95,6 @@ test('SEED canonical S1 does not borrow the later explainer transport before int
   await expect(page.locator('#fig-seed-webshop')).toBeVisible();
   const root = page.locator('[data-interactive-research-explainer="seed"]').first();
   const transport = root.locator('.irx-transport');
-  await expect(transport).not.toHaveCSS('position', 'fixed');
+  await expect(transport).toHaveCSS('position', 'fixed');
+  await expect(transport).toBeInViewport();
 });
