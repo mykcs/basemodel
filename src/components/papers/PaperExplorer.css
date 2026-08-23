@@ -1,0 +1,11 @@
+.paper-explorer { display: grid; gap: 18px; }
+.paper-explorer-toolbar { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 16px; }
+.paper-filter-groups { display: flex; flex-wrap: wrap; align-items: end; gap: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-muted); padding: 14px 16px; }
+.paper-filter-groups fieldset { display: flex; min-width: 150px; flex-wrap: wrap; gap: 8px 12px; margin: 0; border: 0; padding: 0; }.paper-filter-groups legend { margin-bottom: 5px; color: var(--muted); font-size: .75rem; font-weight: 700; }.paper-filter-groups label { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: .78rem; }
+.paper-explorer-summary { display: flex; align-items: baseline; gap: 10px; }.paper-explorer-summary h2 { margin: 0; font-size: 1.1rem; }
+.paper-case-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.paper-case-card { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 18px; }.paper-case-card h3 { margin: 0; font-size: 1.05rem; line-height: 1.35; }.paper-case-card h3 a { text-decoration: none; }.paper-case-card h3 a:hover { color: var(--accent-deep); }
+.paper-case-meta, .paper-case-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: .76rem; }.paper-case-summary { margin: 0; color: var(--muted); font-size: .84rem; }.paper-case-summary strong { color: var(--ink); }
+.paper-case-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 0; }.paper-case-facts div { border-radius: 8px; background: var(--surface-muted); padding: 8px; }.paper-case-facts dt { color: var(--muted); font-size: .7rem; }.paper-case-facts dd { margin: 3px 0 0; font-size: .78rem; }.paper-case-actions { justify-content: flex-start; }
+@media (max-width: 820px) { .paper-explorer-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }.paper-case-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .paper-explorer-toolbar, .paper-case-facts { grid-template-columns: 1fr; } }

@@ -38,11 +38,12 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
       const line = styles.getPropertyValue('--line').trim() || '#dcd9d1';
       const surface = styles.getPropertyValue('--surface').trim() || '#fffdf9';
       const dimensionLabels = landscapeDimensionLabels(points, locale, dimension);
+      const responsiveAxis = landscapeAxisForWidth(chartRef.current.clientWidth, locale, muted, line);
       const option: EChartsCoreOption = {
         aria: { enabled: true, decal: { show: true } },
         animationDuration: 350,
         color: colorKeys.map((_, index) => colorForKey(colorKeys[index], colorBy, index)),
-        grid: { left: 78, right: 24, top: 44, bottom: 52 },
+        grid: responsiveAxis.grid,
         legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 11 } },
         tooltip: {
           trigger: 'item',
@@ -57,7 +58,7 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
             return `<strong>${escapeHtml(point.name)}</strong><br/>${escapeHtml(point.vendor)} · ${escapeHtml(point.releaseDate)}<br/>${escapeHtml(point.architectureLabel)} · ${escapeHtml(point.hardwareLabel)}<br/>${locale === 'zh' ? '访问' : 'Access'}: ${escapeHtml(point.accessLabel)}<br/>${locale === 'zh' ? '参数' : 'Parameters'}: ${escapeHtml(parameter)}<br/>${locale === 'zh' ? '证据状态' : 'Evidence'}: ${escapeHtml(point.dataStatusLabel)}<br/><span style="color:${muted}">${locale === 'zh' ? '点击打开模型详情' : 'Click to open model details'}</span>`;
           },
         },
-        xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
+        xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, splitNumber: responsiveAxis.splitNumber, axisLabel: responsiveAxis.axisLabel, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
         yAxis: { type: 'category', data: dimensionLabels, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
         series: colorKeys.map((key) => ({
           name: key,
@@ -94,7 +95,13 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
         const point = (params as { data?: { point?: (typeof points)[number] } }).data?.point;
         if (point) window.location.href = localePath(locale, `/models/${point.id}/`);
       });
-      resizeHandler = () => chart?.resize();
+      resizeHandler = () => {
+        chart?.resize();
+        if (!chart || !chartRef.current) return;
+        const current = getComputedStyle(document.documentElement);
+        const next = landscapeAxisForWidth(chartRef.current.clientWidth, locale, current.getPropertyValue('--muted').trim() || muted, current.getPropertyValue('--line').trim() || line);
+        chart.setOption({ grid: next.grid, xAxis: { splitNumber: next.splitNumber, axisLabel: next.axisLabel } });
+      };
       window.addEventListener('resize', resizeHandler);
       observer = new ResizeObserver(resizeHandler);
       observer.observe(chartRef.current);
@@ -115,6 +122,23 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
     <div ref={chartRef} className="landscape-chart" role="img" aria-label={m.landscape.chartAria} />
     <p className="landscape-legend-note">{m.landscape.legendNote}</p>
   </div>;
+}
+
+function landscapeAxisForWidth(width: number, locale: Locale, muted: string, line: string) {
+  const compact = width <= 390;
+  return {
+    grid: { left: compact ? 62 : 78, right: compact ? 12 : 24, top: 44, bottom: 52 },
+    splitNumber: compact ? 2 : width <= 768 ? 4 : 6,
+    axisLabel: {
+      color: muted,
+      hideOverlap: true,
+      margin: compact ? 10 : 8,
+      formatter: compact
+        ? (value: number | string) => new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', { year: 'numeric', timeZone: 'UTC' }).format(new Date(Number(value)))
+        : undefined,
+    },
+    axisLine: { lineStyle: { color: line } },
+  };
 }
 
 function colorKey(point: ReturnType<typeof buildLandscapePoints>[number], colorBy: LandscapeColorBy): string {

@@ -7,6 +7,7 @@ import { localePath, type Locale } from '../../i18n';
 import { accessModeLabel, researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
 import { useHydrated } from '../../lib/useHydrated';
 import { hasMeaningfulResearchTask } from '../../stores/researchTask';
+import './ResearchContextBar.css';
 
 export interface ResearchContextLabels {
   currentTask: string;

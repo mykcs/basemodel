@@ -3,6 +3,7 @@ import type { ResearchFit } from '../../lib/research/types';
 import { architectureLabel, checkpointLabel, parameterSummary, modalityLabel } from '../../lib/format';
 import { localePath, type Locale } from '../../i18n';
 import type { Messages } from '../../i18n/zh';
+import './ModelDecisionCard.css';
 
 interface Props {
   model: AtlasModel;

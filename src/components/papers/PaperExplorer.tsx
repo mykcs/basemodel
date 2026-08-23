@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useHydrated } from '../../lib/useHydrated';
+import './PaperExplorer.css';
 import { categoryLabel, evolutionTargetLabel, roleLabel } from '../../lib/format';
 import { localePath, type Locale } from '../../i18n';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';

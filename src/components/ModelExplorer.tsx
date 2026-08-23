@@ -15,6 +15,7 @@ import { ModelQuickViewDialog } from './models/ModelQuickViewDialog';
 import { openQuickView } from '../stores/ui';
 import { useHydrated } from '../lib/useHydrated';
 import { familyCoverageRecords, isCurrentModel } from '../lib/familyCoverage';
+import './ModelExplorer.css';
 
 type ViewMode = 'decision' | 'data' | 'timeline';
 type BooleanFilterKey = 'openWeights' | 'finetuning' | 'rl' | 'lora' | 'current' | 'baseCheckpoint' | 'singleGpu' | 'toolUse' | 'coding' | 'paperUse';
