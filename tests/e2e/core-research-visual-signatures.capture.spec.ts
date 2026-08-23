@@ -29,35 +29,53 @@ async function settle(page: Page) {
   await page.evaluate(() => scrollTo(0, 0));
 }
 
-async function screenshotSignature(page: Page): Promise<string> {
+async function screenshotSignature(page: Page) {
   const jpeg = await page.screenshot({ type: 'jpeg', quality: 52, fullPage: false, animations: 'disabled' });
   return page.evaluate(async (source) => {
     const image = new Image();
     image.src = source;
     await image.decode();
-
     const canvas = document.createElement('canvas');
-    canvas.width = 16;
-    canvas.height = 12;
+    canvas.width = 9;
+    canvas.height = 8;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw new Error('2d canvas unavailable for visual signature');
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const rgba = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    const rgb = new Uint8Array(canvas.width * canvas.height * 3);
-    for (let input = 0, output = 0; input < rgba.length; input += 4) {
-      rgb[output++] = rgba[input];
-      rgb[output++] = rgba[input + 1];
-      rgb[output++] = rgba[input + 2];
+
+    const gray: number[] = [];
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+    let count = 0;
+    for (let offset = 0; offset < rgba.length; offset += 4) {
+      const r = rgba[offset];
+      const g = rgba[offset + 1];
+      const b = rgba[offset + 2];
+      red += r;
+      green += g;
+      blue += b;
+      count += 1;
+      gray.push(Math.round(r * 0.299 + g * 0.587 + b * 0.114));
     }
-    let binary = '';
-    for (let index = 0; index < rgb.length; index += 1) binary += String.fromCharCode(rgb[index]);
-    return btoa(binary);
+
+    let bits = '';
+    for (let y = 0; y < 8; y += 1) {
+      for (let x = 0; x < 8; x += 1) {
+        bits += gray[y * 9 + x] > gray[y * 9 + x + 1] ? '1' : '0';
+      }
+    }
+
+    return {
+      dhash64: BigInt(`0b${bits}`).toString(16).padStart(16, '0'),
+      avgRgb: [Math.round(red / count), Math.round(green / count), Math.round(blue / count)] as [number, number, number],
+    };
   }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
 }
 
 test('capture accepted core research screenshot signatures', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium', 'Visual baseline capture is Chromium-specific');
-  const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; rgb16x12: string }> = {};
+  const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; dhash64: string; avgRgb: [number, number, number] }> = {};
 
   for (const matrix of matrices) {
     await page.setViewportSize(matrix.viewport);
@@ -70,15 +88,12 @@ test('capture accepted core research screenshot signatures', async ({ page }, te
         route: route.path,
         viewport: matrix.viewport,
         theme: matrix.theme,
-        rgb16x12: await screenshotSignature(page),
+        ...(await screenshotSignature(page)),
       };
     }
   }
 
+  const payload = { version: 2, browser: 'chromium', algorithm: 'dhash64+avgRgb', signatures };
   await mkdir('dist/__qa__', { recursive: true });
-  await writeFile(
-    'dist/__qa__/core-research-visual-signatures.json',
-    `${JSON.stringify({ version: 1, browser: 'chromium', width: 16, height: 12, signatures })}\n`,
-    'utf8',
-  );
+  await writeFile('dist/__qa__/core-research-visual-signatures.json', `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 });

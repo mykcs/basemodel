@@ -3,6 +3,7 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { getCollection } from 'astro:content';
 import { getMessages, localePath } from '../../i18n';
 import AgentToSeedBridge from '../../components/AgentToSeedBridge.astro';
+import SeedOwnedComputePath from '../../components/SeedOwnedComputePath.astro';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
 const m = getMessages('en');
 const guideRecord = (await getCollection('guides'))[0]?.data;
@@ -26,6 +27,8 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
         <a href={localePath('en','/research/seed-openevo/benchmarks/')}><strong>ALFWorld / WebShop</strong><span>Tasks, actions, scoring, and failure evidence</span></a>
       </div>
     </section>
+
+    <SeedOwnedComputePath locale="en" />
 
     <section class="section" aria-labelledby="openevo-guide-title">
       <div class="section-heading"><div><span class="section-kicker">Experiment state</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>

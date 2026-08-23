@@ -8,22 +8,22 @@ const t = (cn: string, en: string) => zh ? cn : en;
 
 <section id="fig-webshop-dataset" class="canonical-figure webshop-dataset" aria-labelledby="webshop-dataset-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
-    <div class="figure-label">FIGURE S1-B · ORIGINAL WEBSHOP DATASET</div>
+    <div class="figure-label">{t('图 S1-B · 原始 WebShop 数据集','FIGURE S1-B · ORIGINAL WEBSHOP DATASET')}</div>
     <h2 id="webshop-dataset-title">{t('原始 WebShop 数据集有多大？','How large is the original WebShop dataset?')}</h2>
-    <p>{t('先只看 WebShop 自己：一个商品世界，以及一组按 Train / Dev / Test 划分的购物任务。','Look only at WebShop itself first: one product world and shopping tasks divided into Train, Dev, and Test.')}</p>
+    <p>{t('先只看 WebShop 自己：一个商品世界，以及一组按训练集、开发集和测试集划分的购物任务。','Look only at WebShop itself first: one product world and shopping tasks divided into Train, Dev, and Test.')}</p>
   </header>
   <figure class="dataset-world" aria-labelledby="webshop-dataset-title">
-    <article class="product-warehouse" data-ui-audit-item><small>ORIGINAL PRODUCT WORLD</small><strong>1,181,436</strong><span>{t('products · 商品','products')}</span></article>
+    <article class="product-warehouse" data-ui-audit-item><small>{t('原始商品世界','ORIGINAL PRODUCT WORLD')}</small><strong>1,181,436</strong><span>{t('商品（products）','products')}</span></article>
     <div class="dataset-arrow" aria-hidden="true">→</div>
     <section class="task-world" aria-label={t('WebShop 任务划分','WebShop task splits')}>
-      <header><small>WEBSHOP TASKS</small><strong>12,087</strong><span>{t('shopping instructions / tasks','shopping instructions / tasks')}</span></header>
+      <header><small>{t('WebShop 任务','WEBSHOP TASKS')}</small><strong>12,087</strong><span>{t('购物指令 / 任务（shopping instructions / tasks）','shopping instructions / tasks')}</span></header>
       <div class="task-splits">
-        <article data-ui-audit-item><small>TRAIN</small><strong>10,587</strong><span>{t('训练题','training tasks')}</span></article>
-        <article data-ui-audit-item><small>DEV</small><strong>1,000</strong><span>{t('开发 / 练习考试','development / practice')}</span></article>
-        <article data-ui-audit-item><small>TEST</small><strong>500</strong><span>{t('最终测试','final test')}</span></article>
+        <article data-ui-audit-item><small>{t('训练集（Train）','TRAIN')}</small><strong>10,587</strong><span>{t('训练题','training tasks')}</span></article>
+        <article data-ui-audit-item><small>{t('开发集（Dev）','DEV')}</small><strong>1,000</strong><span>{t('开发 / 练习考试','development / practice')}</span></article>
+        <article data-ui-audit-item><small>{t('测试集（Test）','TEST')}</small><strong>500</strong><span>{t('最终测试','final test')}</span></article>
       </div>
     </section>
-    <figcaption>{t('这是 Original WebShop 的规模与官方任务划分；它不描述任何一种训练方法。','These are the Original WebShop scale and official task splits; they do not describe any learning method.')}</figcaption>
+    <figcaption>{t('这是原始 WebShop 的规模与官方任务划分；它不描述任何一种训练方法。','These are the Original WebShop scale and official task splits; they do not describe any learning method.')}</figcaption>
   </figure>
 </section>
 
