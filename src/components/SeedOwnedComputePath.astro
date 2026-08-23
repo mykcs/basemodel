@@ -17,9 +17,9 @@ const money = (value: number) => `¥${value.toFixed(1)}`;
 <section id="seed-owned-3090" class="owned-compute" aria-labelledby="seed-owned-3090-title">
   <header class="owned-head">
     <div>
-      <span class="section-kicker">{t('已有算力时的省钱路线', 'Cost-saving path when you already have compute')}</span>
-      <h2 id="seed-owned-3090-title">{t('如果已经能用 4×RTX 3090 24GB：先把能免费的阶段全部做完', 'If you can already use 4×RTX 3090 24GB: finish every stage you can before renting')}</h2>
-      <p>{t('这不是把 4×3090 宣称成论文的 8×A800，也不是假设四张卡等于一张 96GB GPU。它的价值是把环境、数据、SFT、缩小 RL 和真机 profiling 从付费算力上搬走，再决定是否值得购买论文规模的云端时间。', 'This does not turn 4×3090 into the paper’s 8×A800, and four cards are not one pooled 96GB GPU. Their value is to move environment setup, data work, SFT, reduced RL, and real profiling off paid compute before deciding whether paper-scale cloud time is worth buying.')}</p>
+      <span class="section-kicker">{t('算力规划', 'Compute planning')}</span>
+      <h2 id="seed-owned-3090-title">{t('自有 4×RTX 3090 的省钱路线', 'The owned 4×RTX 3090 cost-saving path')}</h2>
+      <p>{t('如果已经能用 4×RTX 3090 24GB，先把能免费完成的阶段全部做完。这不是把 4×3090 宣称成论文的 8×A800，也不是假设四张卡等于一张 96GB GPU。它的价值是把环境、数据、SFT、缩小 RL 和真机 profiling 从付费算力上搬走，再决定是否值得购买论文规模的云端时间。', 'If you can already use 4×RTX 3090 24GB, finish every stage you can before renting. This does not turn 4×3090 into the paper’s 8×A800, and four cards are not one pooled 96GB GPU. Their value is to move environment setup, data work, SFT, reduced RL, and real profiling off paid compute before deciding whether paper-scale cloud time is worth buying.')}</p>
     </div>
     <aside>
       <strong>{t('硬件事实', 'Hardware fact')}</strong>
