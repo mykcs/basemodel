@@ -1,3 +1,4 @@
+import { mkdir, writeFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
 
 const viewports = [
@@ -70,6 +71,14 @@ for (const viewport of viewports) {
     expect(metrics.gridGap, `REFERENCE cards are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
     expect(metrics.firstCardWidth, `REFERENCE cards collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(150);
     expect(metrics.gridWidth, `REFERENCE grid collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
+
+    // Preview-only visual probe. It is written after Astro build into dist, so
+    // the exact Preview can expose the JPEG as base64 for a real pixel review.
+    if (process.env.VERCEL_ENV === 'preview' && viewport.name === 'user-screenshot-2048') {
+      const jpeg = await root.locator('.reference-index').screenshot({ type: 'jpeg', quality: 46 });
+      await mkdir('dist/__qa__', { recursive: true });
+      await writeFile('dist/__qa__/results-reference-2048.b64', jpeg.toString('base64'), 'utf8');
+    }
 
     // Keep locators referenced so Playwright reports useful DOM context on failure.
     await expect(heading).toBeVisible();
