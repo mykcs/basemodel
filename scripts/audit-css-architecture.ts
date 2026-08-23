@@ -162,6 +162,7 @@ const bareStructuralSelector = (selector: string) => {
     .filter(Boolean);
   return tokens.some((token) => structuralTypes.has(token));
 };
+const normalizeDeclarations = (value: string) => value.replace(/\s+/g, ' ').trim();
 
 const broadStructuralLayoutRules: string[] = [];
 for (const path of walk(stylesRoot).filter((candidate) => candidate.endsWith('.css'))) {
@@ -173,7 +174,7 @@ for (const path of walk(stylesRoot).filter((candidate) => candidate.endsWith('.c
     if (selectorBlock.startsWith('@') || !structuralLayoutProperty.test(declarations)) continue;
     for (const selector of selectorBlock.split(',').map((value) => value.trim()).filter(Boolean)) {
       if (bareStructuralSelector(selector)) {
-        broadStructuralLayoutRules.push(`${repoPath}: ${selector}`);
+        broadStructuralLayoutRules.push(`${repoPath}: ${selector} => ${normalizeDeclarations(declarations)}`);
       }
     }
   }
