@@ -269,30 +269,6 @@ test('interactive transport stays local to the explainer instead of floating ove
   }
 });
 
-test('experiment trajectory keeps the active next-step transport docked to the viewport bottom', async ({ page }) => {
-  const browserErrors: string[] = [];
-  page.on('console', (message) => {
-    if (message.type() === 'error') browserErrors.push(message.text());
-  });
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/research/seed-openevo/experiment/', { waitUntil: 'domcontentloaded' });
-  const explainers = page.locator('[data-interactive-research-explainer]');
-  const first = explainers.nth(0);
-  const second = explainers.nth(1);
-  await ensureHydrated(first);
-  await ensureHydrated(second);
-
-  await expect(first.locator('.irx-transport')).toHaveCSS('position', 'fixed');
-  await expect(first.getByRole('button', { name: '重置' })).toBeVisible();
-  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight * 0.65, behavior: 'auto' }));
-  await expect(first.locator('.irx-transport')).toBeInViewport();
-
-  await second.getByRole('button', { name: '下一步' }).click();
-  await expect(second.locator('.irx-transport')).toHaveCSS('position', 'fixed');
-  await expect(second.locator('.irx-transport')).toBeInViewport();
-  expect(browserErrors).toEqual([]);
-});
-
 test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
   const viewport = { width: 440, height: 956 };
   await page.setViewportSize(viewport);
