@@ -107,7 +107,7 @@ export function StepControls({
         <button type="button" onClick={() => onStep(overview ? 0 : step + 1)} disabled={!overview && step === maxStep} aria-label={zh ? '下一步' : 'Next step'}>
           <span>{zh ? '下一步' : 'Next'}</span><span aria-hidden="true">→</span>
         </button>
-        <button type="button" className="irx-reset" onClick={onOverview} disabled={overview}>{zh ? '总览图' : 'System map'}</button>
+        <button type="button" className="irx-reset" onClick={onOverview} disabled={overview}>{zh ? '重置' : 'Reset'}</button>
       </div>
       <div
         className="irx-progress"
@@ -137,10 +137,11 @@ export function StepControls({
 
 export function ExplainerHeader({ locale, title, lede, eyebrow }: { locale: Locale; title: string; lede: string; eyebrow: string }) {
   const zh = locale === 'zh';
+  const headingId = `irx-${eyebrow.toLowerCase()}`;
   return (
     <header className="irx-header">
       <div className="irx-kicker">{eyebrow}</div>
-      <h2>{title}</h2>
+      <h2 id={headingId}>{title}</h2>
       <p>{lede}</p>
       <ol className="irx-depth" aria-label={zh ? '阅读深度' : 'Reading depth'}>
         <li><b>01</b><span>{zh ? '30 秒直觉' : '30-second intuition'}</span></li>

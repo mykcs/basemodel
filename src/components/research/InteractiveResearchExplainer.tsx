@@ -109,6 +109,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   const [overview, setOverview] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [carrier, setCarrier] = useState<Carrier>('adapter');
+  const [docked, setDocked] = useState(compact && kind === 'webshop');
   const reducedMotion = useReducedMotion();
   const maxStep = config.steps.length - 1;
   const rootRef = useRef<HTMLElement>(null);
@@ -168,6 +169,20 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     if (reducedMotion) setPlaying(false);
   }, [reducedMotion]);
 
+  const activateDock = useCallback(() => {
+    if (!compact) return;
+    window.dispatchEvent(new CustomEvent('irx:activate-dock', { detail: { kind } }));
+  }, [compact, kind]);
+
+  useEffect(() => {
+    if (!compact) return;
+    const onActivateDock = (event: Event) => {
+      setDocked((event as CustomEvent<{ kind?: Kind }>).detail?.kind === kind);
+    };
+    window.addEventListener('irx:activate-dock', onActivateDock);
+    return () => window.removeEventListener('irx:activate-dock', onActivateDock);
+  }, [compact, kind]);
+
   const onKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowRight') { event.preventDefault(); go(overview ? 0 : step + 1); }
     if (event.key === 'ArrowLeft' && !overview) { event.preventDefault(); go(step - 1); }
@@ -189,9 +204,12 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       data-overview={overview}
       data-reduced-motion={reducedMotion}
       data-compact={compact}
+      data-docked={docked}
       data-ui-audit="contrast layout"
       tabIndex={0}
       onKeyDown={onKeyDown}
+      onPointerEnter={activateDock}
+      onFocusCapture={activateDock}
       aria-label={config.title}
     >
       <ExplainerHeader locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
