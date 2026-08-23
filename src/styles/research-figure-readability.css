@@ -51,6 +51,23 @@
   }
 }
 
+/* The interactive SEED map used to spend only four of six columns on its first
+ * row: policy and rollout each received a single narrow column while two grid
+ * columns sat empty. Expanded explanatory prose could therefore become a
+ * 130px-wide desktop CJK column. Use the full row and give all three primary
+ * nodes two columns. Mobile/tablet compositions switch the diagram to a
+ * vertical flow, so this rule only owns the wide grid state. */
+@media (min-width: 901px) {
+  .plain-detail__interactive .irx-seed-scene {
+    grid-template-areas:
+      'policy policy rollout rollout trajectory trajectory'
+      '. . hindsight hindsight . .'
+      '. plain plain skill skill .'
+      '. opd opd grpo grpo .'
+      '. . optimizer optimizer next next';
+  }
+}
+
 /* Dense horizontal compositions should collapse before prose becomes a narrow
  * Chinese newspaper column. The component's own mobile breakpoints continue to
  * handle smaller screens; this intermediate breakpoint protects tablets and
