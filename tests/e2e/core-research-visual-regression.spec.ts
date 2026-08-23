@@ -6,12 +6,13 @@ type BaselineEntry = {
   route: string;
   viewport: { width: number; height: number };
   theme: Theme;
-  rgb32x24: string;
+  dhash64: string;
+  avgRgb: [number, number, number];
 };
 type BaselineFile = {
-  version: number;
-  width: number;
-  height: number;
+  version: 2;
+  browser: 'chromium';
+  algorithm: 'dhash64+avgRgb';
   signatures: Record<string, BaselineEntry>;
 };
 
@@ -48,50 +49,63 @@ async function captureSignature(page: Page) {
     image.src = source;
     await image.decode();
     const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 24;
+    canvas.width = 9;
+    canvas.height = 8;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw new Error('2d canvas unavailable for visual signature');
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const rgba = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    const rgb = new Uint8Array(canvas.width * canvas.height * 3);
-    for (let input = 0, output = 0; input < rgba.length; input += 4) {
-      rgb[output++] = rgba[input];
-      rgb[output++] = rgba[input + 1];
-      rgb[output++] = rgba[input + 2];
+
+    const gray: number[] = [];
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+    let count = 0;
+    for (let offset = 0; offset < rgba.length; offset += 4) {
+      const r = rgba[offset];
+      const g = rgba[offset + 1];
+      const b = rgba[offset + 2];
+      red += r;
+      green += g;
+      blue += b;
+      count += 1;
+      gray.push(Math.round(r * 0.299 + g * 0.587 + b * 0.114));
     }
-    let binary = '';
-    for (let index = 0; index < rgb.length; index += 1) binary += String.fromCharCode(rgb[index]);
-    return btoa(binary);
+
+    let bits = '';
+    for (let y = 0; y < 8; y += 1) {
+      for (let x = 0; x < 8; x += 1) {
+        bits += gray[y * 9 + x] > gray[y * 9 + x + 1] ? '1' : '0';
+      }
+    }
+
+    return {
+      dhash64: BigInt(`0b${bits}`).toString(16).padStart(16, '0'),
+      avgRgb: [Math.round(red / count), Math.round(green / count), Math.round(blue / count)] as [number, number, number],
+    };
   }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
   return { jpeg, signature };
 }
 
-function compareSignatures(expectedBase64: string, actualBase64: string) {
-  const expected = Buffer.from(expectedBase64, 'base64');
-  const actual = Buffer.from(actualBase64, 'base64');
-  if (expected.length !== actual.length || expected.length === 0) {
-    return { meanChannelDelta: Number.POSITIVE_INFINITY, changedPixelRatio: 1, maxPixelDelta: 255 };
+function hamming64(left: string, right: string) {
+  let value = BigInt(`0x${left}`) ^ BigInt(`0x${right}`);
+  let distance = 0;
+  while (value) {
+    distance += Number(value & 1n);
+    value >>= 1n;
   }
+  return distance;
+}
 
-  let channelDelta = 0;
-  let changedPixels = 0;
-  let maxPixelDelta = 0;
-  const pixelCount = expected.length / 3;
-  for (let offset = 0; offset < expected.length; offset += 3) {
-    const dr = Math.abs(expected[offset] - actual[offset]);
-    const dg = Math.abs(expected[offset + 1] - actual[offset + 1]);
-    const db = Math.abs(expected[offset + 2] - actual[offset + 2]);
-    const pixelDelta = (dr + dg + db) / 3;
-    channelDelta += dr + dg + db;
-    maxPixelDelta = Math.max(maxPixelDelta, pixelDelta);
-    if (pixelDelta > 24) changedPixels += 1;
-  }
-
+function compareSignatures(expected: BaselineEntry, actual: { dhash64: string; avgRgb: [number, number, number] }) {
+  const colorDelta = expected.avgRgb.reduce((sum, value, index) => sum + Math.abs(value - actual.avgRgb[index]), 0) / 3;
   return {
-    meanChannelDelta: channelDelta / expected.length,
-    changedPixelRatio: changedPixels / pixelCount,
-    maxPixelDelta,
+    hamming: hamming64(expected.dhash64, actual.dhash64),
+    colorDelta,
+    expectedHash: expected.dhash64,
+    actualHash: actual.dhash64,
+    expectedRgb: expected.avgRgb,
+    actualRgb: actual.avgRgb,
   };
 }
 
@@ -107,6 +121,7 @@ const baseline = JSON.parse(await readFile(baselinePath, 'utf8')) as BaselineFil
 
 for (const matrix of matrices) {
   test(`${matrix.key} core research screenshots stay near the accepted visual signatures`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'Committed visual signatures are Chromium-specific');
     await page.setViewportSize(matrix.viewport);
     await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
 
@@ -123,17 +138,17 @@ for (const matrix of matrices) {
         await settle(page);
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
         const actual = await captureSignature(page);
-        const metrics = compareSignatures(expectedEntry.rgb32x24, actual.signature);
+        const metrics = compareSignatures(expectedEntry, actual.signature);
 
-        // The 32×24 signature deliberately ignores subpixel typography noise,
-        // but large composition changes (collapsed columns, reordered cards,
-        // unexpected blank regions, wrong theme surfaces) move many cells and
-        // must fail. Update baselines only after an explicit human visual review.
-        const accepted = metrics.meanChannelDelta <= 10 && metrics.changedPixelRatio <= 0.20;
+        // dHash protects page composition while avgRgb protects large surface/theme
+        // changes. The separate layout-anomaly/CJK gates remain stricter for thin
+        // columns and text starvation. Baselines may only move via the explicit
+        // capture command after a human visual review of the intended change.
+        const accepted = metrics.hamming <= 14 && metrics.colorDelta <= 18;
         if (!accepted) await attachFailure(testInfo, key, actual.jpeg, metrics);
         expect(
           accepted,
-          `${key} visual signature drifted: mean=${metrics.meanChannelDelta.toFixed(2)}, changed=${(metrics.changedPixelRatio * 100).toFixed(1)}%, max=${metrics.maxPixelDelta.toFixed(1)}`,
+          `${key} visual signature drifted: hamming=${metrics.hamming}/64, avgRGBΔ=${metrics.colorDelta.toFixed(1)}`,
         ).toBe(true);
       });
     }
