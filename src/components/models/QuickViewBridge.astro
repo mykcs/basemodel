@@ -1,0 +1,23 @@
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    if (root.dataset.quickViewBridgeBound === 'true') return;
+    root.dataset.quickViewBridgeBound = 'true';
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest('[data-model-quick-view]');
+      if (!trigger) return;
+
+      const island = trigger.closest('astro-island');
+      if (island && !island.hasAttribute('ssr')) return;
+
+      const id = trigger.getAttribute('data-model-quick-view');
+      if (!id) return;
+
+      root.dataset.modelQuickViewPending = id;
+      document.dispatchEvent(new CustomEvent('atlas:quick-view', { detail: { id } }));
+    }, true);
+  })();
+</script>

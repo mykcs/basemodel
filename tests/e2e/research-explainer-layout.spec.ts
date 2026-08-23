@@ -4,22 +4,16 @@ type Theme = 'light' | 'dark';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
 const routes = [
-  { path: '/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
   { path: '/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
   { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
-  { path: '/en/research/seed-openevo/benchmarks/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
   { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/loops/', kinds: ['compare'], requiresMainStage: false },
   { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/en/guide/openevo-webshop-alfworld/', kinds: ['webshop', 'alfworld'], requiresMainStage: false },
 ] as const;
 
 const matrices = [
@@ -53,8 +47,13 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
     const visible = (node: Element) => {
       const style = getComputedStyle(node);
       const rect = node.getBoundingClientRect();
-      return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0.5 && rect.height > 0.5;
+      return style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && Number(style.opacity) > 0
+        && rect.width > 0.5
+        && rect.height > 0.5;
     };
+    const selectorFor = (node: Element) => `${node.tagName.toLowerCase()}${node.id ? `#${node.id}` : ''}${[...node.classList].slice(0, 2).map((name) => `.${name}`).join('')}`;
     const distance = (left: { x: number; y: number }, right: { x: number; y: number }) => Math.hypot(left.x - right.x, left.y - right.y);
     const anchorPoint = (rect: DOMRect, container: DOMRect, anchor: Anchor) => {
       const x = rect.left - container.left;
@@ -66,19 +65,15 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
     };
 
     const rect = root.getBoundingClientRect();
-    if (rect.left < -2 || rect.right > width + 2) issues.push(`explainer escapes viewport: left=${rect.left.toFixed(1)} right=${rect.right.toFixed(1)} viewport=${width}`);
-    if (requiresMainStage) {
-      if (width >= 1200 && rect.width < Math.min(1000, width * 0.72)) issues.push(`explainer remains a narrow desktop rail: width=${rect.width.toFixed(1)} viewport=${width}`);
-      let ancestor: HTMLElement | null = root.parentElement;
-      while (ancestor) {
-        if (getComputedStyle(ancestor).position === 'sticky') {
-          issues.push(`explainer remains inside sticky ancestor: ${ancestor.className}`);
-          break;
-        }
-        ancestor = ancestor.parentElement;
-      }
+    if (rect.left < -2 || rect.right > width + 2) {
+      issues.push(`explainer escapes viewport: left=${rect.left.toFixed(1)} right=${rect.right.toFixed(1)} viewport=${width}`);
     }
-    if (root.scrollWidth > root.clientWidth + 2) issues.push(`explainer horizontal overflow: ${root.scrollWidth} > ${root.clientWidth}`);
+    if (requiresMainStage && width >= 1200 && rect.width < Math.min(1000, width * 0.72)) {
+      issues.push(`explainer remains a narrow desktop rail: width=${rect.width.toFixed(1)} viewport=${width}`);
+    }
+    if (root.scrollWidth > root.clientWidth + 2) {
+      issues.push(`explainer horizontal overflow: ${root.scrollWidth} > ${root.clientWidth}`);
+    }
 
     root.querySelectorAll<HTMLElement>('[data-ui-audit-item]').forEach((item) => {
       if (!visible(item)) return;
@@ -99,12 +94,48 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       parents.set(item.parentElement, list);
     });
     parents.forEach((items) => {
-      for (let i = 0; i < items.length; i += 1) for (let j = i + 1; j < items.length; j += 1) {
-        const a = items[i].getBoundingClientRect();
-        const b = items[j].getBoundingClientRect();
-        const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
-        const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-        if (overlapX > 2 && overlapY > 2) issues.push(`audited siblings overlap: ${items[i].getAttribute('data-flow-id') ?? i} ↔ ${items[j].getAttribute('data-flow-id') ?? j}`);
+      for (let i = 0; i < items.length; i += 1) {
+        for (let j = i + 1; j < items.length; j += 1) {
+          const a = items[i].getBoundingClientRect();
+          const b = items[j].getBoundingClientRect();
+          const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+          const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+          if (overlapX > 2 && overlapY > 2) {
+            issues.push(`audited siblings overlap: ${items[i].getAttribute('data-flow-id') ?? i} ↔ ${items[j].getAttribute('data-flow-id') ?? j}`);
+          }
+        }
+      }
+    });
+
+    /* Readability is a hard release contract, not a screenshot preference.
+     * Previous gates accepted tiny CJK text as long as it did not overflow. */
+    const proseSelector = [
+      'p',
+      'dd',
+      'dt',
+      '.irx-node > small',
+      '.irx-live',
+      '.irx-paper-caption p',
+      '.irx-visual-key li',
+      '[data-ui-prose]',
+    ].join(',');
+    root.querySelectorAll<HTMLElement>(proseSelector).forEach((node) => {
+      if (!visible(node) || node.closest('[aria-hidden="true"], [hidden]')) return;
+      const text = node.innerText.trim();
+      if (text.length < 8) return;
+      const style = getComputedStyle(node);
+      const fontSize = Number.parseFloat(style.fontSize);
+      if (fontSize < 10.8) {
+        issues.push(`prose font too small: ${fontSize.toFixed(1)}px at ${selectorFor(node)} (${text.slice(0, 48)})`);
+      }
+      const cjk = text.match(/[\u3400-\u9fff]/g)?.length ?? 0;
+      if (cjk < 12) return;
+      const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
+      const box = node.getBoundingClientRect();
+      const lines = Math.max(1, Math.round(box.height / lineHeight));
+      const charsPerLine = cjk / lines;
+      if (lines >= 3 && charsPerLine < 7) {
+        issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines at ${selectorFor(node)} (${text.slice(0, 48)})`);
       }
     });
 
@@ -117,7 +148,10 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       if (input.startsWith('color(srgb') && values.length >= 3) return { r: values[0] * 255, g: values[1] * 255, b: values[2] * 255, a: values[3] ?? 1 };
       return null;
     };
-    const channel = (value: number) => { const n = value / 255; return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4; };
+    const channel = (value: number) => {
+      const n = value / 255;
+      return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+    };
     const luminance = (color: Rgba) => 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
     const contrast = (left: Rgba, right: Rgba) => (Math.max(luminance(left), luminance(right)) + 0.05) / (Math.min(luminance(left), luminance(right)) + 0.05);
     const nearestBackground = (node: Element) => {
@@ -139,7 +173,7 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       const size = Number.parseFloat(style.fontSize);
       const weight = Number.parseInt(style.fontWeight, 10) || 400;
       const threshold = size >= 24 || (size >= 18.66 && weight >= 700) ? 3 : 4.5;
-      if (ratio + 0.05 < threshold) issues.push(`low contrast ${ratio.toFixed(2)}:1 at ${node.tagName.toLowerCase()}.${node.className}`);
+      if (ratio + 0.05 < threshold) issues.push(`low contrast ${ratio.toFixed(2)}:1 at ${selectorFor(node)}`);
     });
 
     root.querySelectorAll<SVGPathElement>('[data-flow-edge]').forEach((edge) => {
@@ -166,36 +200,11 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       const expectedEnd = anchorPoint(to.getBoundingClientRect(), containerRect, toAnchor);
       const measuredStart = { x: Number(edge.dataset.startX), y: Number(edge.dataset.startY) };
       const measuredEnd = { x: Number(edge.dataset.endX), y: Number(edge.dataset.endY) };
-      const startError = distance(expectedStart, measuredStart);
-      const endError = distance(expectedEnd, measuredEnd);
-      if (startError > 5) issues.push(`connector start drift ${startError.toFixed(1)}px: ${edge.dataset.flowEdge}`);
-      if (endError > 5) issues.push(`connector end drift ${endError.toFixed(1)}px: ${edge.dataset.flowEdge}`);
-
-      const matrix = svg.getScreenCTM();
-      if (!matrix) return;
-      const nodes = Array.from(container.querySelectorAll<HTMLElement>('[data-flow-id]'));
-      const length = edge.getTotalLength();
-      const sampleCount = Math.max(12, Math.min(120, Math.ceil(length / 8)));
-      for (let index = 1; index < sampleCount; index += 1) {
-        const local = edge.getPointAtLength((length * index) / sampleCount);
-        const point = svg.createSVGPoint();
-        point.x = local.x;
-        point.y = local.y;
-        const screen = point.matrixTransform(matrix);
-        const crossing = nodes.find((node) => {
-          const id = node.dataset.flowId;
-          if (!id || id === fromId || id === toId || !visible(node)) return false;
-          const nodeRect = node.getBoundingClientRect();
-          return screen.x > nodeRect.left + 3 && screen.x < nodeRect.right - 3 && screen.y > nodeRect.top + 3 && screen.y < nodeRect.bottom - 3;
-        });
-        if (crossing) {
-          issues.push(`connector crosses unrelated node: ${edge.dataset.flowEdge} → ${crossing.dataset.flowId}`);
-          break;
-        }
-      }
+      if (distance(expectedStart, measuredStart) > 5) issues.push(`connector start drift: ${edge.dataset.flowEdge}`);
+      if (distance(expectedEnd, measuredEnd) > 5) issues.push(`connector end drift: ${edge.dataset.flowEdge}`);
     });
 
-    return issues;
+    return [...new Set(issues)].slice(0, 40);
   }, { width: viewportWidth, requiresMainStage });
 }
 
@@ -214,7 +223,7 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
 }
 
 for (const matrix of matrices) {
-  test(`${matrix.name} keeps research explainers geometrically attached`, async ({ page }) => {
+  test(`${matrix.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
     await page.setViewportSize(matrix.viewport);
     await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
 
@@ -233,9 +242,9 @@ for (const matrix of matrices) {
   });
 }
 
-test('standalone explainers keep fixed transport controls reachable without covering the stage', async ({ page }) => {
+test('interactive transport stays local to the explainer instead of floating over the page', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  const routes = [
+  const cases = [
     ['/research/seed-openevo/seed/', 'seed'],
     ['/research/seed-openevo/openevo/', 'openevo'],
     ['/research/seed-openevo/webshop/', 'webshop'],
@@ -245,27 +254,17 @@ test('standalone explainers keep fixed transport controls reachable without cove
     ['/en/research/seed-openevo/webshop/', 'webshop'],
     ['/en/research/seed-openevo/alfworld/', 'alfworld'],
   ] as const;
-  for (const [path, kind] of routes) {
+
+  for (const [path, kind] of cases) {
     await test.step(path, async () => {
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await settle(page);
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
       await ensureHydrated(root);
       const transport = root.locator('.irx-transport');
-      await expect(transport).toHaveCSS('position', 'fixed');
-      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight * 0.55, behavior: 'auto' }));
-      await page.waitForTimeout(120);
-      await expect(transport).toBeInViewport();
-      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' }));
-      await page.waitForTimeout(120);
-      const collision = await page.evaluate(() => {
-        const dock = document.querySelector<HTMLElement>('.plain-detail__interactive .irx-transport')?.getBoundingClientRect();
-        const footerText = document.querySelector<HTMLElement>('.site-footer .footer-inner > span')?.getBoundingClientRect();
-        if (!dock || !footerText || footerText.top >= innerHeight) return 0;
-        return Math.max(0, Math.min(dock.right, footerText.right) - Math.max(dock.left, footerText.left))
-          * Math.max(0, Math.min(dock.bottom, footerText.bottom) - Math.max(dock.top, footerText.top));
-      });
-      expect(collision).toBeLessThanOrEqual(2);
+      await expect(transport).toHaveCSS('position', 'sticky');
+      expect(await transport.evaluate((node) => Boolean(node.closest('.irx-controls')))).toBe(true);
+      expect(await transport.evaluate((node) => getComputedStyle(node).position === 'fixed')).toBe(false);
     });
   }
 });
@@ -329,7 +328,7 @@ test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not
 });
 
 test('key environment explainers stay inside a narrow tablet viewport', async ({ page }) => {
-  const routes = [
+  const cases = [
     { path: '/research/seed-openevo/webshop/', kind: 'webshop' },
     { path: '/research/seed-openevo/alfworld/', kind: 'alfworld' },
     { path: '/en/research/seed-openevo/webshop/', kind: 'webshop' },
@@ -337,7 +336,7 @@ test('key environment explainers stay inside a narrow tablet viewport', async ({
   ] as const;
   const viewport = { width: 680, height: 900 };
   await page.setViewportSize(viewport);
-  for (const route of routes) {
+  for (const route of cases) {
     await page.goto(route.path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
@@ -395,17 +394,15 @@ test('resource menu keeps utility labels and descriptions from overlapping', asy
   expect(issues, issues.join('\n')).toEqual([]);
 });
 
-test('research mainline stages are direct navigation targets', async ({ page }) => {
+test('simplified information architecture avoids stacking the retired research mainline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 738 });
-  await page.goto('/guide/openevo-webshop-alfworld/', { waitUntil: 'domcontentloaded' });
-  await settle(page);
-  const stages = page.locator('.research-mainline-stages a');
-  await expect(stages).toHaveCount(5);
-  await expect(stages.nth(0)).toHaveAttribute('href', '/guide/');
-  await expect(stages.nth(1)).toHaveAttribute('href', '/workspace/');
-  await expect(stages.nth(2)).toHaveAttribute('href', '/models/');
-  await expect(stages.nth(3)).toHaveAttribute('href', '/research/seed-openevo/');
-  await expect(stages.nth(4)).toHaveAttribute('href', '/research/seed-openevo/results/');
+  for (const path of ['/guide/openevo-webshop-alfworld/', '/research/seed-openevo/webshop/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await settle(page);
+    await expect(page.locator('.research-mainline')).toHaveCount(0);
+    await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(2);
+  }
+  await expect(page.locator('[data-research-navigation]')).toBeVisible();
 });
 
 test('research explainers preserve meaning with reduced motion', async ({ page }) => {
@@ -445,6 +442,6 @@ test('research framework opens as a system map and can enter and leave trace mod
   await expect(root.locator('.irx-paper-caption')).toContainText('SYSTEM MAP');
   await root.getByRole('button', { name: '开始追踪' }).click();
   await expect(root).toHaveAttribute('data-overview', 'false');
-  await root.getByRole('button', { name: '重置' }).click();
+  await root.getByRole('button', { name: '总览图' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });

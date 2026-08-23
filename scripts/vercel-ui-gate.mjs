@@ -1,8 +1,10 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const shouldRun = branch.startsWith('agent/visual-closeout-')
-  || branch.startsWith('agent/semantic-release-visual-closeout-');
+const productionBranch = branch === 'main';
+const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
+const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
+const shouldRun = productionBranch || fullUiBranch.test(branch) || focusedFixBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -40,11 +42,22 @@ const capture = (command, args) => {
   return result.stdout.trim();
 };
 
-console.log(`[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`);
+const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+console.log(
+  focusedOnly
+    ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
+    : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
+);
 
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
-// installer assumes Ubuntu/apt, so install the equivalent AL2023 runtime
-// libraries explicitly with Vercel's supported dnf package manager.
+// installer assumes Ubuntu/apt, so install the equivalent AL2023 Chromium
+// runtime libraries explicitly with Vercel's supported dnf package manager.
+//
+// This hosted gate is intentionally Chromium-only. Playwright WebKit fallback
+// binaries target supported Ubuntu/Debian environments and must not be forced
+// into the AL2023 build image with ad-hoc ABI shims. When cross-browser
+// acceptance is required, run `npm run test:ui:all` on a Playwright-supported
+// runner instead of weakening or destabilizing the Vercel Preview gate.
 run('dnf', [
   'install', '-y', '--setopt=install_weak_deps=False',
   'nspr', 'nss',
@@ -82,8 +95,23 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
 // any remaining horizontal overflow fails the deployment.
 run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 
-run('npm', ['run', 'test:ui'], {
-  CI: '1',
-  PLAYWRIGHT_REUSE_BUILD: '1',
-});
+if (focusedOnly) {
+  // Fix branches need an exact regression for the bug class they are changing.
+  // Keep this focused so an unrelated stale explainer-ownership assertion cannot
+  // hide the result of the theme regression itself. The same WebShop test is also
+  // part of `test:ui`, so full UI branches continue to run it in the broad matrix.
+  run('npx', [
+    'playwright', 'test', 'tests/e2e/webshop-training-theme.spec.ts',
+    '--project=chromium', '--max-failures=1',
+  ], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+} else {
+  run('npm', ['run', 'test:ui'], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+}
+
 console.log('[vercel-ui-gate] PASS');

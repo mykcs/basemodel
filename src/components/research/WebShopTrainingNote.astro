@@ -1,0 +1,338 @@
+---
+export type WebShopTrainingNoteId = 'webshop-training' | 'seed-training' | 'openevo-training';
+
+interface Props {
+  note: WebShopTrainingNoteId;
+}
+
+const { note } = Astro.props;
+const root = '/research/seed-openevo/results';
+const notes = [
+  {
+    id: 'webshop-training',
+    index: '01',
+    title: 'WebShop 是什么？一个购物网站怎么变成训练场',
+    description: '先不谈 OpenEvo 或 SEED，只回答 WebShop 里模型到底在做什么，以及从 2022 年到现在大家通常怎样训练它。',
+  },
+  {
+    id: 'seed-training',
+    index: '02',
+    title: 'SEED 怎么在 WebShop 上训练？',
+    description: '把 SEED 的两阶段训练拆开：先学会复盘，再做 on-policy rollout、hindsight analysis 和 OPD + RL。',
+  },
+  {
+    id: 'openevo-training',
+    index: '03',
+    title: '我们怎么训练 OpenEvo × WebShop？',
+    description: '解释我们的 success-harvest、参数写入、fresh-task evaluation 与连续更新门，以及它和 SEED 到底哪里相同、哪里不同。',
+  },
+] as const;
+const current = notes.find((item) => item.id === note)!;
+---
+
+<article class="training-note">
+  <header class="note-hero">
+    <div class="note-topline">
+      <a href={`${root}/`}>← 返回实验结果</a>
+      <span>WEBSHOP 训练笔记 · {current.index} / 03</span>
+    </div>
+    <h1>{current.title}</h1>
+    <p class="dek">{current.description}</p>
+    <p class="scope">这组短文只解决一个问题：当我们说“在 WebShop 上训练”，训练数据、环境反馈和参数更新实际上分别是什么。</p>
+  </header>
+
+  <nav class="series-nav" aria-label="WebShop 训练笔记">
+    {notes.map((item) => (
+      <a class:list={[{ active: item.id === note }]} href={`${root}/${item.id}/`}>
+        <span>{item.index}</span>{item.title}
+      </a>
+    ))}
+  </nav>
+
+  {note === 'webshop-training' && (
+    <main class="note-body">
+      <section>
+        <h2>1. WebShop 首先是环境，不是训练算法</h2>
+        <p>WebShop 把“帮用户买到满足条件的商品”变成一个可以重复运行的交互任务。模型会看到自然语言需求和网页状态，然后不断执行 <code>search[...]</code>、<code>click[...]</code> 等动作。只有真正进入环境执行动作以后，下一页、可点击项和最终得分才会出现。</p>
+        <p>所以，一条 WebShop 数据不是普通的问答样本，而更像一段小型程序执行记录：</p>
+        <pre><code>{`用户目标
+  ↓
+当前网页 observation
+  ↓
+模型选择 action
+  ↓
+WebShop 执行动作并返回新页面
+  ↓
+重复若干步
+  ↓
+购买 / 失败 / 超过步数
+  ↓
+terminal reward + task score`}</code></pre>
+        <p>原始 WebShop 在 NeurIPS 2022 提供了真实商品数据、自然语言购物任务和人类交互轨迹。论文报告约 118 万件商品、12,087 个任务，并用 imitation learning、reinforcement learning 等方法训练基线。</p>
+      </section>
+
+      <section>
+        <h2>2. 最早的思路：先模仿人，再让策略在环境里继续学</h2>
+        <p>原始官方代码把搜索和商品选择拆开。Search IL 学人类怎样组织搜索词，Choice IL 学人类在当前页面点击什么，Choice RL 再让选择策略根据环境 reward 更新。</p>
+        <pre><code>{`# 原始 WebShop baseline_models/README.md
+python train_search.py   # Search imitation learning
+python train_choice.py   # Choice imitation learning
+python train_rl.py       # Choice reinforcement learning
+python test.py`}</code></pre>
+        <p>这是 WebShop 最早很典型的范式：<strong>demonstration → imitation → environment reward</strong>。它与今天的大语言模型 agent 不完全一样，但已经包含了“先获得行为先验，再通过真实交互改进”的基本结构。</p>
+      </section>
+
+      <section>
+        <h2>3. LLM agent 时代：训练数据越来越像“当前模型自己刚跑出来的”</h2>
+        <p>近年的 WebShop agent 工作更常见的是 on-policy multi-turn RL：当前模型先在环境里同时跑很多条 trajectory，再按最终任务结果更新当前策略。一个常见做法是对同一个 task 生成一组不同 rollout，让组内结果提供相对优势。</p>
+        <pre><code>{`repeat:
+    sample WebShop tasks
+
+    for each task:
+        rollout current policy N times
+
+    execute all actions in WebShop
+    collect success / task score
+
+    estimate group advantages
+    update policy with GRPO / PPO / GiGPO / ...`}</code></pre>
+        <p><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer">verl-agent</a> 的公开 WebShop GRPO recipe 就采用这种结构：训练 batch 由若干 task identity 组成，同一 task 有多条 rollout，环境最大交互步数固定，再做 group-based policy optimization。</p>
+      </section>
+
+      <section>
+        <h2>4. 后来真正变化的，不是 WebShop，而是“经验怎么回到模型”</h2>
+        <div class="comparison-list">
+          <div><strong>WebShop 2022</strong><p>主要依靠人类 demonstration、IL 和 policy-gradient RL。</p></div>
+          <div><strong>GRPO / GiGPO</strong><p>当前策略在线 rollout；关键问题是 trajectory / step 的 credit assignment。</p></div>
+          <div><strong>SPEAR 一类 self-imitation</strong><p>保存自己历史上更好的 trajectory，再用 replay 反复学习。</p></div>
+          <div><strong>SEED</strong><p>当前策略不仅产生 experience，还自己复盘这段 experience，再把 hindsight 对 action 的影响蒸馏回参数。</p></div>
+          <div><strong>我们的 OpenEvo 路线</strong><p>先把成功经验严格固定下来，再问：不同 parameter-write rule 能不能把这些经验稳定写进参数并迁移到 untouched tasks。</p></div>
+        </div>
+        <p>因此，“大家怎么训练 WebShop”没有唯一答案。真正可比的单位必须至少包含：同一个 WebShop fork、商品 catalog、task split、prompt、最大步数、rollout budget、reward wrapper 和评价指标。</p>
+      </section>
+
+      <section class="references">
+        <h2>原论文和真实代码</h2>
+        <ul>
+          <li><a href="https://proceedings.neurips.cc/paper_files/paper/2022/hash/82ad13ec01f9fe44c01cb91814fd7b8c-Abstract-Conference.html" target="_blank" rel="noreferrer">WebShop: Towards Scalable Real-World Web Interaction with Grounded Language Agents, NeurIPS 2022</a></li>
+          <li><a href="https://github.com/princeton-nlp/WebShop/tree/master/baseline_models" target="_blank" rel="noreferrer">WebShop 官方 baseline_models：Search IL / Choice IL / Choice RL</a></li>
+          <li><a href="https://arxiv.org/abs/2505.10978" target="_blank" rel="noreferrer">GiGPO: Group-in-Group Policy Optimization for LLM Agent Training</a></li>
+          <li><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer">verl-agent：公开的 WebShop 多轮 RL recipes</a></li>
+        </ul>
+      </section>
+    </main>
+  )}
+
+  {note === 'seed-training' && (
+    <main class="note-body">
+      <section>
+        <h2>1. SEED 不是“找成功轨迹做一次 SFT”</h2>
+        <p>如果只看一句话，SEED 很容易被误解成 self-imitation：模型跑 WebShop，找到好轨迹，再把好轨迹训练回去。实际上它更关键的结构是：<strong>先让模型学会复盘完整 trajectory，然后在 on-policy RL 的每一轮里，让当前策略自己产生 hindsight supervision。</strong></p>
+        <p>因此，SEED 有两个阶段，而且第二阶段的监督数据会随着策略一起变化。</p>
+      </section>
+
+      <section>
+        <h2>2. Stage 1：先训练一个“会复盘自己”的初始策略</h2>
+        <p>论文在 WebShop training split 上采样 180 个 task，每个 task 生成 8 条 rollout，总计 1,440 条 trajectory。随后使用外部的 GLM-5.2 阅读完整 episode，并生成 hindsight skill：这条轨迹里哪些 workflow 值得保留、哪里犯了错、下次应注意什么。</p>
+        <p>这些 <code>trajectory → hindsight skill</code> 样本经过格式过滤后，用于 3 epochs SFT。SFT 之后，同一个 checkpoint 有两个角色：既能当 WebShop actor，也能在 episode 结束后当 analyzer。</p>
+        <pre><code>{`180 training tasks
+   × 8 rollouts
+   = 1,440 trajectories
+          ↓
+     GLM-5.2 hindsight analysis
+          ↓
+ trajectory → skill records
+          ↓
+       3-epoch SFT
+          ↓
+ actor + analyzer checkpoint`}</code></pre>
+        <p>公开代码入口是 <a href="https://github.com/jinyangwu/SEED/tree/main/scripts/sft/webshop" target="_blank" rel="noreferrer"><code>scripts/sft/webshop/</code></a>，默认 launcher 会明确设置 180 tasks、8 rollouts、15 max steps、history length 2。</p>
+      </section>
+
+      <section>
+        <h2>3. Stage 2：当前 policy 自己 rollout，也自己分析刚才发生了什么</h2>
+        <p>Stage 2 进入真正的 on-policy self-evolution。论文中的 WebShop 主设置是每次取 16 个 task，每个 task 生成 8 条 rollout，最多交互 15 步。论文写 150 次 policy update。</p>
+        <pre><code>{`policy_t
+  ↓ 16 tasks × 8 rollouts
+WebShop trajectories
+  ↓
+policy_t analyzes its own completed episodes
+  ↓
+hindsight skills
+  ↓
+re-score the SAME sampled actions
+  ↓
+OPD dense signal + outcome RL
+  ↓
+policy_t+1`}</code></pre>
+        <p>这里最关键的是“current policy”。Stage 1 用 GLM-5.2 bootstrap 复盘能力，但 Stage 2 的 supervision 不再永久来自固定外部 teacher，而是由当前策略快照分析自己刚产生的经验。策略变了，下一轮产生的数据和 hindsight 也会一起变。</p>
+      </section>
+
+      <section>
+        <h2>4. OPD 到底在蒸馏什么？</h2>
+        <p>SEED 不要求 analyzer 重新生成另一条“正确轨迹”。它拿<strong>已经真实采样过的同一个 action</strong>，分别在普通上下文和“普通上下文 + hindsight skill”中重新计算 token 概率。</p>
+        <pre><code>{`log p(action | interaction context)
+
+            versus
+
+log p(action | interaction context + hindsight skill)
+
+            ↓
+probability shift on the same action tokens
+            ↓
+gated online policy distillation signal`}</code></pre>
+        <p>如果 hindsight 让模型明显更认可某些 action token，这些 token 就获得额外的 dense supervision。它与最终 success reward 联合训练，而不是把 outcome RL 完全替代掉。</p>
+      </section>
+
+      <section>
+        <h2>5. WebShop 的连续 task score 和 RL reward 在 SEED 代码里是分开的</h2>
+        <p>WebShop 原环境会返回连续 task-completion score；部分满足条件也可能拿到非零分。但 SEED 当前公开 wrapper 会把原始 reward 先保存在 <code>info['task_score']</code>，再把真正给 RL 的 reward 重写为：</p>
+        <pre><code>{`exact win  -> 10
+otherwise  -> 0`}</code></pre>
+        <p>所以 SEED 的 dense token signal 不是 WebShop 自带的 partial reward。它来自 hindsight skill 对同一 action 的重新打分。评价时则仍可以同时报告 task score 与 exact success。</p>
+      </section>
+
+      <section>
+        <h2>6. 我们复现时必须同时记录 paper protocol 和 public-code protocol</h2>
+        <p>这里有两个已经查到的差异，不能用一句“按官方 SEED”带过。</p>
+        <div class="table-wrap" tabindex="0">
+          <table>
+            <thead><tr><th>项目</th><th>论文</th><th>当前公开代码默认</th></tr></thead>
+            <tbody>
+              <tr><td>WebShop policy updates</td><td>150</td><td><code>TOTAL_EPOCHS=160</code></td></tr>
+              <tr><td>Stage-1 hindsight max output</td><td>论文配置记录为 4096</td><td><code>prepare_data.sh</code> 当前默认 1024</td></tr>
+              <tr><td>商品 catalog</td><td>必须随实现一起声明</td><td>内嵌 WebShop 默认指向 <code>*_1000.json</code>；Stage-1 launcher 默认 <code>WEBSHOP_USE_SMALL=1</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>因此我们后续应该把运行身份写成 <strong>SEED-paper-150</strong> 和 <strong>SEED-repo@&lt;commit&gt;</strong>，而不是只写“SEED”。与论文 Table 1 做主比较时优先使用 paper-matched protocol，同时把 repo-default reproduction 留作实现 sanity check。</p>
+      </section>
+
+      <section class="references">
+        <h2>论文和真实代码入口</h2>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">SEED 论文</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED 官方仓库</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/scripts/sft/webshop/prepare_data.sh" target="_blank" rel="noreferrer">Stage-1 WebShop trajectory / skill data preparation</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/run_webshop_sft_glm_self.sh" target="_blank" rel="noreferrer">Stage-2 WebShop SEED launcher</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/_common/webshop.sh" target="_blank" rel="noreferrer">WebShop RL / OPD 具体训练参数</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/agent_system/environments/env_package/webshop/envs.py" target="_blank" rel="noreferrer">WebShop reward wrapper：task_score 与 exact-win reward</a></li>
+        </ul>
+      </section>
+    </main>
+  )}
+
+  {note === 'openevo-training' && (
+    <main class="note-body">
+      <section>
+        <h2>1. 我们当前的问题故意比“最终分数最高吗”更窄</h2>
+        <p>我们目前的 OpenEvo × WebShop 主线首先问：<strong>模型自己已经产生的经验，能不能被写成参数增量，并且迁移到训练时没有见过的 task？</strong></p>
+        <p>这和 SEED 的在线 RL 主问题不同。我们先固定经验，再尽量只改变 parameter-write rule，从而把“经验本身好不好”和“参数更新方法好不好”拆开。</p>
+      </section>
+
+      <section>
+        <h2>2. 当前机制实验的训练流程</h2>
+        <pre><code>{`frozen base policy
+  ↓
+train-only WebShop rollouts
+  ↓
+strict trajectory qualification
+  ↓
+select a sealed set of successful records
+  ↓
+ordinary LoRA / SD-LoRA parameter write
+  ↓
+freeze adapter artifact
+  ↓
+paired evaluation on untouched tasks + frozen seeds
+  ↓
+separate acquisition / retention / preservation / fresh transfer`}</code></pre>
+        <p>这里的几个“严格”不是工程洁癖，而是为了因果解释：parser fallback、runtime failure、task contamination 和训练/评价任务重叠都不能悄悄进入最终均值。一个 measurement-invalid cell 也不能自动算作模型得 0 分。</p>
+      </section>
+
+      <section>
+        <h2>3. 为什么我们先做固定经验，而不是直接照搬 SEED</h2>
+        <p>如果 rollout、teacher、experience selection 和 updater 同时变化，最后分数提高时很难知道到底是谁起作用。我们的 H1.x mechanism lane 先把成功经验冻结，再比较参数写入，因此可以回答一个更干净的问题：</p>
+        <blockquote>同一批模型自己产生的经验，换一种写入参数的方法，fresh-task transfer 会不会变？</blockquote>
+        <p>目前第一代 parameter write 的 fresh-task transfer 已得到独立 replication；第二代连续参数写入则暴露出 acquisition、retention、preservation 无法同时通过的问题。也正因为 upstream gates 没有过，H1.40 的 fresh T2 panel 没有被打开——它不能被写成“G2 fresh transfer 失败”。</p>
+      </section>
+
+      <section>
+        <h2>4. 我们和 SEED 的训练信号并不相同</h2>
+        <div class="table-wrap" tabindex="0">
+          <table>
+            <thead><tr><th></th><th>SEED</th><th>当前 OpenEvo mechanism lane</th></tr></thead>
+            <tbody>
+              <tr><td>经验来源</td><td>每轮当前 policy on-policy rollout</td><td>train-only rollout 后冻结一批合格经验</td></tr>
+              <tr><td>失败轨迹</td><td>可进入 hindsight analysis / RL</td><td>当前 parameter-write 主实验主要依赖 qualified positive records</td></tr>
+              <tr><td>复盘</td><td>当前 policy 生成 hindsight skill</td><td>没有复制 SEED 的在线 hindsight analyzer</td></tr>
+              <tr><td>更新信号</td><td>outcome RL + OPD token signal</td><td>LoRA / SD-LoRA experience write</td></tr>
+              <tr><td>主问题</td><td>在线策略能否持续自我改进</td><td>固定经验能否稳定内化并迁移</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>因此，我们现在的数字有机制意义，但还不能直接写成“OpenEvo 比 SEED 高 / 低多少”。两边没有完全对齐训练 protocol、interaction budget 与 evaluator。</p>
+      </section>
+
+      <section>
+        <h2>5. 真正要和 SEED 正面比较，需要另一条 aligned benchmark lane</h2>
+        <p>现有 mechanism lane 应该保留。另开一条 benchmark lane，专门冻结 SEED-compatible protocol：同一个 Qwen2.5-3B-Instruct、同一个 WebShop fork / catalog / split、同一个 prompt 和 admissible-action interface、15 steps、8 rollouts per task、同一 evaluator，并显式记录 task seed、rollout seed 与 model seed。</p>
+        <p>公平预算也不应该只写“两边都训练 150 次”。SEED 的一次 update 会产生一整组环境交互，而 OpenEvo 会筛选、冻结和复用经验。主预算更适合优先按 <strong>environment interactions / rollout trajectories</strong> 对齐，再同时报告 GPU-hours、optimization tokens 和外部 analyzer 调用量。</p>
+        <div class="comparison-list">
+          <div><strong>Mechanism lane</strong><p>继续回答：为什么某一种 parameter write 能迁移，第二代为什么出现稳定性瓶颈。</p></div>
+          <div><strong>SEED-aligned lane</strong><p>回答：在同一 WebShop protocol 和 interaction budget 下，OpenEvo、GRPO、SEED 最终谁更强、谁更省样本。</p></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. 以后每个 WebShop 实验都应该留下什么</h2>
+        <p>最低限度不再只写“Dataset: WebShop”。每一次正式运行都应该留下：</p>
+        <ul class="checklist">
+          <li>WebShop fork、commit、商品 catalog 与 task-index split</li>
+          <li>backbone checkpoint、adapter identity 与 prompt / parser contract</li>
+          <li>train / eval task IDs，task seed、rollout seed、model seed</li>
+          <li>最大步数、history length、rollouts per task、总 environment interactions</li>
+          <li>task score 与 exact success 分开报告</li>
+          <li>parser-invalid、runtime-invalid 与真实模型失败分开统计</li>
+          <li>wall time、GPU 型号、GPU-hours、训练 token / rollout 数</li>
+        </ul>
+        <p>这样第三篇会随着实验继续更新，但前两篇可以长期保持稳定：第一篇解释 WebShop，第二篇固定 SEED protocol，第三篇只记录我们自己的方法怎样逐步变化。</p>
+      </section>
+
+      <section class="references">
+        <h2>继续看我们的实验</h2>
+        <ul>
+          <li><a href={`${root}/`}>OpenEvo × WebShop 当前结果与 H1.40 / H1.41 证据边界</a></li>
+          <li><a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noreferrer">openevo-experiment：实验 ledger、preregistration、reconciliation 与运行证据</a></li>
+          <li><a href={`${root}/seed-training/`}>上一篇：SEED 怎么在 WebShop 上训练</a></li>
+        </ul>
+      </section>
+    </main>
+  )}
+
+  <footer class="note-footer">
+    <strong>这三篇的分工：</strong>
+    <span>WebShop 负责定义环境；SEED 负责定义我们需要认真复现的强对照；OpenEvo 这篇负责说明我们实际做了什么，以及哪些比较现在还不能说。</span>
+  </footer>
+</article>
+
+<style>
+  .training-note{--ink:#e7edf7;--muted:#9aa9bb;--line:rgba(148,163,184,.2);--panel:rgba(15,23,42,.52);max-width:900px;margin:0 auto;padding:56px 24px 96px;color:var(--ink);line-height:1.78}
+  .note-hero{padding-bottom:28px;border-bottom:1px solid var(--line)}
+  .note-topline{display:flex;justify-content:space-between;gap:16px;align-items:center;color:var(--muted);font-size:.82rem;letter-spacing:.04em;text-transform:uppercase}
+  .note-topline a{color:#bfdbfe;text-transform:none;text-decoration:none}
+  h1{font-size:clamp(2rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.045em;margin:24px 0 16px;max-width:820px}
+  .dek{font-size:1.18rem;color:#cbd5e1;max-width:760px;margin:0}
+  .scope{font-size:.92rem;color:var(--muted);max-width:760px;margin:18px 0 0}
+  .series-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:28px 0 48px}
+  .series-nav a{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;color:#aebdd0;text-decoration:none;background:rgba(15,23,42,.24);font-size:.88rem;line-height:1.4}
+  .series-nav a span{color:#64748b;font-variant-numeric:tabular-nums}.series-nav a.active{border-color:rgba(96,165,250,.55);background:rgba(30,64,175,.12);color:#eff6ff}
+  .note-body section{margin:0 0 56px}.note-body h2{font-size:1.55rem;line-height:1.25;letter-spacing:-.025em;margin:0 0 18px}.note-body p{color:#cbd5e1;margin:0 0 16px}.note-body strong{color:#f8fafc}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;color:#dbeafe}pre{overflow:auto;padding:20px;border:1px solid var(--line);border-radius:12px;background:#090f1c;line-height:1.55;margin:22px 0;color:#dbeafe}
+  a{color:#93c5fd;text-underline-offset:3px}blockquote{margin:24px 0;padding:2px 0 2px 20px;border-left:3px solid #60a5fa;color:#f1f5f9;font-size:1.1rem}
+  .comparison-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}.comparison-list>div{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.comparison-list p{font-size:.94rem;margin:6px 0 0}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin:22px 0}table{width:100%;border-collapse:collapse;min-width:640px;background:rgba(9,15,28,.7)}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:.82rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em}td{color:#cbd5e1}tr:last-child td{border-bottom:0}
+  .references{padding-top:28px;border-top:1px solid var(--line)}.references ul,.checklist{padding-left:1.2rem}.references li,.checklist li{margin:.7rem 0;color:#cbd5e1}
+  .note-footer{display:grid;gap:8px;padding:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}.note-footer strong{color:#dbeafe}
+  @media(max-width:720px){.training-note{padding:36px 18px 72px}.note-topline{align-items:flex-start;flex-direction:column}.series-nav{grid-template-columns:1fr}.comparison-list{grid-template-columns:1fr}}
+</style>

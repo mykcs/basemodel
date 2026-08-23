@@ -2,11 +2,30 @@
 import { getCollection } from 'astro:content';
 import FamilyTimeline from '../../components/FamilyTimeline';
 import { getMessages, isLocale, type Locale } from '../../i18n';
+import familiesData from '../../content/coverage/families.json';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
+const highlightedFamilies = ['kimi', 'qwen', 'llama', 'deepseek'];
+const familyChanges = familiesData.families
+  .filter((family) => highlightedFamilies.includes(family.id))
+  .map((family) => ({
+    name: family.name,
+    generation: family.current_generation,
+    api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id,
+    openWeight: family.current_open_weight_model_id,
+  }));
 ---
-<div class="shell"><header class="page-header"><h1>{m.families.title}</h1><p class="lede">{m.families.lede}</p></header><FamilyTimeline client:load models={models} papers={papers} locale={locale} /></div>
+<div class="shell">
+  <header class="page-header"><h1>{m.families.title}</h1><p class="lede">{m.families.lede}</p></header>
+
+  <section class="section section-first" aria-labelledby="family-snapshot-title">
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '当前目录快照' : 'Current catalog snapshot'}</div><h2 id="family-snapshot-title">{locale === 'zh' ? '常用模型家族的当前记录' : 'Current records for commonly used model families'}</h2><p class="muted">{locale === 'zh' ? '这里承接原首页的模型家族摘要；完整代际与模型关系继续在下方时间线中展开。' : 'This section now holds the family snapshot previously shown on the homepage; the full generation history continues in the timeline below.'}</p></div></div>
+    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `核验日期下的代际：${family.generation}。API / 托管模型与开放权重模型分开记录。` : `Generation at the recorded check date: ${family.generation}. API/hosted models and open-weight models are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录开放权重旗舰' : 'No open-weight flagship recorded')}</dd></div></dl></div>)}</div>
+  </section>
+
+  <FamilyTimeline client:visible models={models} papers={papers} locale={locale} />
+</div>

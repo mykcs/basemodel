@@ -18,9 +18,9 @@ const explainer = read('src/components/research/InteractiveResearchExplainer.tsx
 
 describe('OpenEvo × WebShop frozen program report', () => {
   it('pins every source link to the immutable OpenEvo delivery commit and known existing paths', () => {
-    expect(openEvoProgramSource.commit).toBe('93a38821c884a633817bf412643b20e0b283a678');
+    expect(openEvoProgramSource.commit).toBe('e9088e47531ffec03d1450ffd2601862909cf187');
     expect(openEvoProgramSource.branch).toBe('main');
-    expect(openEvoProgramSourcePaths.reconciliation).toBe('docs/evidence/remote-runs/2026-08-19/h1.38a-c/evidence/h1.38a-c-combined-reconciliation.json');
+    expect(openEvoProgramSourcePaths.reconciliation).toBe('docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json');
     for (const [key, path] of Object.entries(openEvoProgramSourcePaths)) {
       expect(path).not.toContain('..');
       expect(openEvoProgramLinks[key as keyof typeof openEvoProgramLinks]).toBe(
@@ -35,6 +35,9 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(coverage).toContain('H0');
     for (let phase = 1; phase <= 37; phase += 1) expect(coverage).toContain(`H1.${phase}`);
     expect(coverage).toContain('H1.38A-C');
+    expect(coverage).toContain('H1.40');
+    expect(coverage).toContain('H1.40-MD');
+    expect(coverage).toContain('H1.41');
     expect(programTimeline.find((item) => item.id === 'h0')?.result).toBe('supported');
     expect(programTimeline.find((item) => item.id === 'h1-29')?.result).toBe('negative');
     expect(programTimeline.find((item) => item.id === 'h1-30')?.result).toBe('protocol');
@@ -47,6 +50,8 @@ describe('OpenEvo × WebShop frozen program report', () => {
     expect(programTimeline.find((item) => item.id === 'h1-38b')).toMatchObject({ result: 'design' });
     expect(programTimeline.find((item) => item.id === 'h1-38b')?.summary.en).toContain('no accepted preregistration');
     expect(programTimeline.find((item) => item.id === 'h1-38b')?.summary.en).toContain('authorization, execution, or sealed result');
+    expect(programTimeline.find((item) => item.id === 'h1-40')?.boundary.en).toContain('T2 did not run');
+    expect(programTimeline.find((item) => item.id === 'h1-40-md')?.result).toBe('invalid');
   });
 
   it('uses the frozen scientific variables and defines specialized terms at first use', () => {
@@ -57,9 +62,8 @@ describe('OpenEvo × WebShop frozen program report', () => {
       ['protocol', 'draft'].join(' '), ['协议', '草案'].join(''),
     ]) expect(narrative).not.toContain(forbidden);
 
-    expect(component).toContain('固定 16 条成功记录');
-    expect(component).toContain('draw their records from 4, 8, or 16 training task instances');
-    expect(component).toContain('task-cluster 95% CI');
+    expect(component).toContain('H1.40 established E2 experience supply and G2 construction');
+    expect(component).toContain('The 4/4 invalid acquisition cell was a parser-only measurement failure');
     expect(programTimeline.find((item) => item.id === 'h1-1-4')?.summary.en).toContain('fallback (a substitute action used after parsing failure)');
     expect(programTimeline.find((item) => item.id === 'h1-34')?.boundary.en).toContain('artifact (a frozen saved experiment output)');
   });
@@ -91,12 +95,12 @@ describe('OpenEvo × WebShop frozen program report', () => {
   });
 
   it('defines laboratory terms bilingually before asking readers to use them', () => {
-    expect(component).toContain('task identity 指一个具体 WebShop 任务实例');
-    expect(component).toContain('A task identity is one specific WebShop task instance');
+    expect(component).toContain('H1.40-MD 是对已有 artifact 的 CPU-only 尸检');
+    expect(component).toContain('H1.40-MD is a CPU-only autopsy of existing artifacts');
     expect(programTimeline.find((item) => item.id === 'h1-29')?.summary.en).toContain('SD-LoRA (the current sequential-difference LoRA update path)');
-    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('acquisition (new learning)');
-    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('retention (preservation of old capabilities)');
-    expect(programTimeline.find((item) => item.id === 'next')?.summary.en).toContain('untouched transfer (transfer to unseen tasks)');
+    expect(programTimeline.find((item) => item.id === 'h1-41')?.summary.en).toContain('acquisition');
+    expect(programTimeline.find((item) => item.id === 'h1-41')?.summary.en).toContain('retention');
+    expect(programTimeline.find((item) => item.id === 'h1-41')?.summary.en).toContain('T2');
   });
 
   it('freezes exact H1.38A-C denominators and inferential statistics', () => {
@@ -111,9 +115,9 @@ describe('OpenEvo × WebShop frozen program report', () => {
     for (const state of ['confirmed', 'inferred', 'unknown'] as const) {
       expect(claimState[state].zh).toHaveLength(claimState[state].en.length);
     }
-    expect(nextDecisionNodes[0].id).toBe('method-control');
-    expect(nextDecisionNodes[0].change.zh).toContain('H1.38 D8');
-    expect(nextDecisionNodes[0].change.en).toContain('ordinary sequential LoRA');
+    expect(nextDecisionNodes[0].id).toBe('magnitude-control');
+    expect(nextDecisionNodes[0].change.zh).toContain('C1');
+    expect(nextDecisionNodes[0].change.en).toContain('coefficient init');
     for (const item of programTimeline) {
       expect(item.title.zh).toBeTruthy(); expect(item.title.en).toBeTruthy();
       expect(item.summary.zh).toBeTruthy(); expect(item.summary.en).toBeTruthy();
@@ -121,18 +125,20 @@ describe('OpenEvo × WebShop frozen program report', () => {
     }
   });
 
-  it('uses a paper-like, static-first main sequence on both locale routes', () => {
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-    }
+  it('keeps the frozen report static-first while the Chinese results route becomes an article index', () => {
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+
     const order = ['id="abstract"', 'id="results"', 'id="interpretation"', 'id="next-experiment"', 'id="methods"', 'id="appendix"']
       .map((token) => component.indexOf(token));
     expect(order.every((position) => position >= 0)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));
-    for (const token of ['<table>', 'scope="col"', '<figure', '<dl class="interpretation-list"', '<details', 'data-testid="lineage-appendix"', 'data-testid="rtx6-appendix"', '@media print']) expect(component).toContain(token);
+    for (const token of ['<table>', 'scope="col"', 'class="causal-flow"', '<dl class="interpretation-list"', '<details', 'data-testid="lineage-appendix"', 'data-testid="rtx6-appendix"', '@media print']) expect(component).toContain(token);
     for (const forbidden of ['data-filter-group', '<dialog', '<script>', '.timeline-card', 'showModal']) expect(component).not.toContain(forbidden);
-    expect(programTimeline).toHaveLength(27);
+    expect(programTimeline).toHaveLength(29);
     expect(component).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
   });
 

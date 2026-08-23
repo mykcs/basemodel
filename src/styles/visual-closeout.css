@@ -3,15 +3,18 @@
  * containers inside the document viewport. They intentionally fix geometry
  * rather than hiding document overflow at html/body level. */
 
+/* Root overflow must stay observable. An earlier hardening layer used
+ * overflow-x: clip on body, which can make a broken child look acceptable by
+ * cropping it at the viewport edge. This final layer deliberately restores
+ * visible root overflow so browser gates can fail on the real geometry. */
+html,
+body {
+  overflow-x: visible;
+}
+
 body .site-main a {
   min-width: 0;
   overflow-wrap: anywhere;
-}
-
-/* A closed details popover must contribute no off-screen geometry. Chromium
- * otherwise still counts a long menu link toward documentElement.scrollWidth. */
-.site-header .resource-menu:not([open]) .resource-menu__panel {
-  display: none !important;
 }
 
 /* The global research connector layer renders absolute pseudo-elements on

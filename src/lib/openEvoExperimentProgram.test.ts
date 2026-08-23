@@ -56,18 +56,23 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(state).toContain('GPU allocation is not a static-site fact');
   });
 
-  it('keeps W&B observational and routes the complete report before historical evidence', () => {
+  it('keeps W&B observational and preserves the complete report without making it the Chinese landing page', () => {
     expect(component).toContain('W&B 继续承担观测与比较');
     expect(component).toContain('Run Manifest');
     expect(component).toContain('data-testid="openevo-experiment-program"');
     expect(component).not.toContain('client:');
-    for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-      expect(route).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-      expect(route.indexOf('<OpenEvoWebShopProgramReport locale={locale}>')).toBeLessThan(route.indexOf('<Seed3090ParametricProgress slot="historical" locale={locale} />'));
-      expect(route).toContain('H1.38A-C');
-      expect(route).not.toContain('5×RTX5090');
-      expect(route).not.toContain('Phase H0 Natural Success Search');
-    }
+
+    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
+    expect(zhRoute).not.toContain('5×RTX5090');
+    expect(zhRoute).not.toContain('Phase H0 Natural Success Search');
+
+    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
+    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+    expect(enRoute.indexOf('<OpenEvoWebShopProgramReport locale={locale}>')).toBeLessThan(enRoute.indexOf('<Seed3090ParametricProgress slot="historical" locale={locale} />'));
+    expect(enRoute).toContain('H1.40');
+    expect(enRoute).not.toContain('5×RTX5090');
+    expect(enRoute).not.toContain('Phase H0 Natural Success Search');
   });
 });

@@ -2,7 +2,6 @@
 import { localePath, type Locale } from '../i18n';
 import { openEvoScientificState } from '../lib/openEvoScientificState';
 import AgentEnvironmentTrajectory from './research/AgentEnvironmentTrajectory.astro';
-import InteractiveResearchExplainer from './research/InteractiveResearchExplainer.tsx';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -31,8 +30,6 @@ const gates = [
     <nav class="hero-actions" aria-label={t('复现入口','Reproduction entry points')}><a href={p('/research/seed-openevo/results/')}>{t('实验状态与结果 →','Experiment state and results →')}</a><a href="#repro-gates">{t('12 个复现 Gate ↓','12 reproduction gates ↓')}</a><a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default-main current-campaign ↗</a></nav>
   </header>
 
-  <InteractiveResearchExplainer locale={locale} kind="server" client:visible />
-
   <section class="repo-map" aria-labelledby="repo-map-title" data-ui-audit="contrast layout">
     <header><span>{t('代码与机器的关系','Code / machine boundary')}</span><h2 id="repo-map-title">{t('四层仓库结构','Four repository layers')}</h2></header>
     <ol class="repo-flow">
@@ -50,8 +47,6 @@ const gates = [
     <header><span>{t('从空服务器到真实实验','From server to real experiment')}</span><h2 id="gates-title">{t('12 个复现 Gate','12 reproduction gates')}</h2><p>{t('每一步都有进入条件、可执行检查与下一步证据。代码块按内容自然高度显示，不用固定空白撑齐卡片。','Each step has an entry condition, executable check, and evidence for what follows. Code blocks use content-driven height rather than fixed empty space.')}</p></header>
     <ol class="gate-runbook" data-ui-audit="contrast layout">{gates.map((g)=><li data-ui-audit-item><div class="gate-num">{g.n}</div><div class="gate-copy"><h3>{g.title}</h3><p>{g.body}</p><pre><code>{g.code}</code></pre></div></li>)}</ol>
   </section>
-
-  <InteractiveResearchExplainer locale={locale} kind="compare" client:visible />
 
   <aside class="gap"><strong>{t('仍需工程化的缺口','Remaining reproducibility engineering gap')}</strong><p>{t('仓库已经严格验证 indexes_1k，但从公开 1k JSON 一键生成 resources_1k 并构建 Lucene indexes_1k 的完整 build recipe 仍应提升成独立脚本。这里保留缺口，不伪造未经验证的一键命令。','The repository strictly verifies indexes_1k, but the complete one-command recipe that generates resources_1k and builds Lucene indexes_1k from the public 1k JSON files still needs to become a dedicated script. The guide keeps this gap explicit instead of inventing an unverified command.')}</p></aside>
 </section>

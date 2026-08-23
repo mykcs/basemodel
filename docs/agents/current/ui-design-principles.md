@@ -250,6 +250,47 @@ At minimum inspect:
 
 The owner must not become the first real tester of dark mode, overflow, clipping, or sticky-layer collisions.
 
+### Theme-sensitive change loop — mandatory after every related edit
+
+Any edit that can change foreground color, background/surface color, border color, theme tokens, component-scoped CSS, route-level CSS, or theme switching is **not complete after a final one-time screenshot**. After **every related change**, re-run the affected route in both light and dark themes before continuing or handing off.
+
+The minimum loop is:
+
+1. load the real affected route in **light** theme;
+2. switch to **dark** theme without reloading and verify the same surface again;
+3. switch back to **light** and verify the state returns correctly;
+4. repeat at one desktop and one narrow/mobile viewport when the change can affect layout or wrapping;
+5. inspect computed styles or the compiled CSS when a framework/scoping mechanism is involved — source CSS that looks correct is not proof that the emitted selectors match the real DOM;
+6. add or extend an executable Playwright regression for any bug that reached a Preview or production deployment.
+
+For Astro specifically, global route overrides must use the actual `is:global` directive. `is="global"` is not equivalent: Astro can still scope the emitted selectors, making apparently-correct theme overrides fail to match components rendered with another scope ID.
+
+The WebShop training-note routes are a permanent regression set because this exact failure reached Preview:
+
+- `/research/seed-openevo/results/webshop-training/`;
+- `/research/seed-openevo/results/seed-training/`;
+- `/research/seed-openevo/results/openevo-training/`.
+
+A UI/theme change touching these pages, their layout, shared theme tokens, or their CSS ownership must run `tests/e2e/webshop-training-theme.spec.ts` before it is considered complete.
+
+### Regression-class closure — fix the family, not only the specimen
+
+When a UI bug reaches a Preview or production deployment, the repair is incomplete if it only changes the one selector, route, component, or test that exposed the symptom. The same change must close the **failure class** as far as the repository can reasonably prove it.
+
+Required closure steps:
+
+1. reproduce and name the mechanism, not only the screenshot symptom;
+2. search the repository for sibling uses of the same syntax, ownership pattern, token misuse, route assumption, or test shortcut;
+3. fix every confirmed sibling instance that has the same failure mechanism;
+4. add a **negative executable invariant** that makes the bad pattern itself fail CI when practical, rather than only asserting one known-good example;
+5. if semantic ownership moved, update the browser route matrix in the same change so tests follow the current canonical owner instead of historical pages;
+6. if the bug escaped Preview, verify that the production `main` deployment actually executes the relevant real-browser gate rather than merely containing the test in the repository;
+7. preserve the focused regression as part of the broader UI suite so a later refactor cannot silently drop it.
+
+Examples of valid negative invariants include forbidding a known-wrong framework directive repository-wide, freezing a semantic CSS owner in the architecture audit, or asserting that retired non-owner routes cannot re-enter an explainer geometry matrix.
+
+The stopping condition is not “this page looks fixed.” It is: **the observed bug is fixed, confirmed siblings are fixed, and the repository has become materially less permissive of the mechanism that caused it.**
+
 ## Relationship to other project rules
 
 This file owns the **visual identity and non-drift rules**.

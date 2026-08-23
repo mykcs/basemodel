@@ -1,6 +1,7 @@
 ---
-import { localePath, type Locale } from '../../i18n';
+import type { Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
+import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';
 import ExplainerScrollLink from './ExplainerScrollLink.astro';
 
 type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
@@ -8,32 +9,7 @@ interface Props { locale: Locale; page: DetailPage }
 const { locale, page } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const p = (path: string) => localePath(locale, path);
 const hasExplainer = Astro.slots.has('default');
-
-const pages = [
-  { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
-  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
-  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
-  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
-  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
-  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
-  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
-  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
-  { id: 'results', label: t('完整实验报告', 'Full experiment report'), href: p('/research/seed-openevo/results/') },
-] as const;
-
-const byId = Object.fromEntries(pages.map((item) => [item.id, item])) as Record<string, (typeof pages)[number]>;
-const navIds = page === 'seed'
-  ? ['hub', 'seed', 'benchmarks', 'results']
-  : page === 'openevo'
-    ? ['hub', 'openevo', 'benchmarks', 'results']
-    : page === 'loops'
-      ? ['hub', 'seed', 'loops', 'openevo', 'results']
-      : page === 'webshop' || page === 'alfworld'
-        ? ['hub', 'benchmarks', page, 'results']
-        : ['hub', 'base-model', 'seed', 'openevo', 'benchmarks', 'results'];
-const navPages = navIds.map((id) => byId[id]);
 
 const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }> = {
   'base-model': {
@@ -72,28 +48,21 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
     lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
   },
   results: {
-    eyebrow: t('实验', 'Experiment'),
-    title: t('OpenEvo × WebShop 实验报告', 'OpenEvo × WebShop experiment report'),
-    lede: t('H1.38A-C 的完整冻结面板没有显示随训练 task identity 多样性单调增加的收益；下文先给出数据与不确定性，再给出下一方法对照。', 'The complete H1.38A-C frozen panel shows no monotonic benefit from greater training task-identity diversity; the report leads with the data and uncertainty, then the next method control.'),
+    eyebrow: t('实验', 'Experiments'),
+    title: t('OpenEvo × WebShop 实验结果目录', 'OpenEvo × WebShop experiment evidence index'),
+    lede: t('这里汇总已经完成的实验、证据边界与下一阶段 benchmark 设计；WebShop、SEED 与 OpenEvo 的背景和机制由各自的正式页面统一解释。', 'This page indexes completed experiments, evidence boundaries, and the next benchmark design; WebShop, SEED, and OpenEvo background and mechanisms are maintained on their canonical pages.'),
   },
 };
 
 const current = copy[page];
 ---
-<div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]}>
+<div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
   <header class="plain-detail__header">
     <div>{current.eyebrow}</div>
     <h1>{current.title}</h1>
     <p>{current.lede}</p>
   </header>
-  <nav class="plain-detail__tabs" aria-label={t('当前研究路径', 'Current research path')}>
-    {navPages.map((item) => <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>)}
-  </nav>
-  {(page === 'seed' || page === 'openevo') && <nav class="plain-detail__track-switch" aria-label={t('切换独立方法框架', 'Switch independent method framework')}>
-    <span>{t('独立方法框架', 'Independent method frameworks')}</span>
-    <a href={byId.seed.href} aria-current={page === 'seed' ? 'page' : undefined}>SEED</a>
-    <a href={byId.openevo.href} aria-current={page === 'openevo' ? 'page' : undefined}>OpenEvo</a>
-  </nav>}
+  <SeedOpenEvoResearchNav locale={locale} page={page} />
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
   {page !== 'results' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
   {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
@@ -105,16 +74,6 @@ const current = copy[page];
   .plain-detail__header>div{color:var(--accent-deep);font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
   .plain-detail__header h1{margin:.5rem 0 .7rem;letter-spacing:-.035em}
   .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}
-  .plain-detail__tabs{position:sticky;z-index:12;top:.5rem;display:flex;gap:0;overflow-x:auto;margin:.5rem 0 2rem;padding:0;border-block:1px solid var(--line);background:color-mix(in srgb,var(--surface) 96%,transparent);backdrop-filter:blur(14px)}
-  .plain-detail__tabs a{position:relative;flex:0 0 auto;padding:.72rem .78rem;color:var(--muted);font-size:.73rem;font-weight:720;text-decoration:none}
-  .plain-detail__tabs a+a{border-left:1px solid var(--line)}
-  .plain-detail__tabs a:hover,.plain-detail__tabs a:focus-visible{color:var(--ink);background:color-mix(in srgb,var(--accent) 5%,transparent)}
-  .plain-detail__tabs a[aria-current='page']{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}
-  .plain-detail__tabs a[aria-current='page']:after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;background:var(--accent-deep)}
-  .plain-detail__track-switch{display:flex;align-items:center;gap:.45rem;margin:-1.35rem 0 1.4rem;padding:.5rem .65rem;border:1px solid color-mix(in srgb,var(--accent-deep) 22%,var(--line));border-radius:8px;background:color-mix(in srgb,var(--accent) 4%,var(--surface));font-size:.68rem}
-  .plain-detail__track-switch span{margin-right:auto;color:var(--muted);font-weight:700}
-  .plain-detail__track-switch a{padding:.28rem .55rem;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-weight:800;text-decoration:none}
-  .plain-detail__track-switch a[aria-current='page']{border-color:var(--accent-deep);background:var(--accent-deep);color:var(--accent-on-fill)}
   .plain-detail__interactive{margin:0 0 2.6rem}
   .plain-detail__interactive :global(.irx){width:100%;margin:0}
   .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
@@ -122,15 +81,31 @@ const current = copy[page];
   .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
   .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
   .plain-detail-core{width:min(780px,100%);margin-inline:auto}
-  @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__tabs{margin-bottom:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}.plain-detail__track-switch{margin-top:-.65rem}}
+  @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__interactive{margin-bottom:1.6rem}}
 </style>
 
 <style is:global>
+  .plain-detail[data-locale='zh'] .paper-nav::before,
+  .plain-detail[data-locale='en'] .paper-nav::before{
+    flex:0 0 auto;
+    padding-right:.8rem;
+    border-right:1px solid var(--line);
+    color:var(--ink);
+    font:800 .64rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+    letter-spacing:.06em;
+  }
+  .plain-detail[data-locale='zh'] .paper-nav::before{content:'本页内容'}
+  .plain-detail[data-locale='en'] .paper-nav::before{content:'On this page'}
+
+  @media(max-width:720px){
+    .plain-detail[data-locale] .paper-nav::before{width:100%;padding:0 0 .35rem;border-right:0;border-bottom:1px solid var(--line)}
+  }
+
   @media print {
     body:has(.plain-detail--results) .site-header,
     body:has(.plain-detail--results) .research-context-bar,
     body:has(.plain-detail--results) .plain-detail__header,
-    body:has(.plain-detail--results) .plain-detail__tabs,
+    body:has(.plain-detail--results) .research-navigation,
     body:has(.plain-detail--results) .page-outline,
     body:has(.plain-detail--results) .compare-tray,
     body:has(.plain-detail--results) .global-quick-view,

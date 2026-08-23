@@ -1,14 +1,20 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import OpenEvoWebShopProgramReport from '../../../components/research/OpenEvoWebShopProgramReport.astro';
-import Seed3090ParametricProgress from '../../../components/research/Seed3090ParametricProgress.astro';
+import OpenEvoWebShopResultIndex from '../../../components/research/OpenEvoWebShopResultIndex.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × WebShop 实验报告" description="H1.38A-C 论文式实验报告：主结果、置信区间、证据边界、下一方法对照，以及默认收起的完整实验谱系。" locale={locale}>
+<AppLayout
+  title="OpenEvo × WebShop 实验结果目录"
+  description="OpenEvo × WebShop 研究笔记索引：从 WebShop、SEED 与 OpenEvo 的训练方法，到早期负结果、第一次正向迁移、独立复现、第二次连续写入与当前结论边界。"
+  locale={locale}
+>
   <SeedOpenEvoResearchPage locale={locale} page="results">
-    <OpenEvoWebShopProgramReport locale={locale}>
-      <Seed3090ParametricProgress slot="historical" locale={locale} />
-    </OpenEvoWebShopProgramReport>
+    <OpenEvoWebShopResultIndex />
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style is:global>
+  body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header { display:none; }
+  [data-testid='openevo-webshop-result-index'] .reference-index { display:block !important; }
+</style>

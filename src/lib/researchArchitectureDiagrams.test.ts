@@ -10,6 +10,7 @@ const seed = read('src/components/research/SeedFrameworkDiagram.astro');
 const openevo = read('src/components/research/OpenEvoFrameworkDiagram.astro');
 const compare = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
+const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astro');
 const labZh = read('src/pages/lab.astro');
 const labEn = read('src/pages/en/lab.astro');
 const sourceRules = read('src/AGENTS.md');
@@ -26,15 +27,7 @@ describe('research architecture diagrams', () => {
   });
 
   it('uses a shared semantic visual grammar instead of decorative color', () => {
-    for (const term of [
-      'Environment / observation',
-      'Experience / hindsight',
-      'Training signal / loss',
-      'Model / agent state',
-      'Validated persistent state',
-      'data / state flow',
-      'control / authority / reference',
-    ]) expect(legend).toContain(term);
+    for (const term of ['Environment / observation','Experience / hindsight','Training signal / loss','Model / agent state','Validated persistent state','data / state flow','control / authority / reference']) expect(legend).toContain(term);
     for (const source of [server, benchmarks, seed, openevo, compare]) {
       expect(source).toContain('ResearchDiagramLegend');
       expect(source).toContain('--env:#2563eb');
@@ -60,29 +53,17 @@ describe('research architecture diagrams', () => {
     expect(compare).toContain('fork-wires');
   });
 
-  it('explains sibling-container authority without publishing private machine identities', () => {
-    for (const term of [
-      'OpenEvo Server Host',
-      'Docker daemon',
-      'approved control container',
-      'root UID 0',
-      '/var/run/docker.sock',
-      'isolated experiment container',
-      'ordinary UID/GID',
-      'SIBLING USERS',
-      'User A',
-      'User B',
-      'daemon creates sibling container',
-      'container root ≠ physical-host root',
-      'technical capability ≠ authorization scope',
-    ]) expect(server).toContain(term);
+  it('keeps the server authority explainer on the dedicated lab routes', () => {
+    for (const term of ['OpenEvo Server Host','Docker daemon','approved control container','root UID 0','/var/run/docker.sock','isolated experiment container','ordinary UID/GID','SIBLING USERS','User A','User B','daemon creates sibling container','container root ≠ physical-host root','technical capability ≠ authorization scope']) expect(server).toContain(term);
     for (const forbidden of ['dev-wangr', 'wangr-dev', 'dev-guozy', 'dev-huzh', '/data/home/wangr']) expect(server).not.toContain(forbidden);
-    for (const route of [guide, labZh, labEn]) {
+    for (const route of [labZh, labEn]) {
       expect(route).toContain('InteractiveResearchExplainer');
       expect(route).toContain('kind="server"');
       expect(route).toContain('client:visible');
       expect(route).not.toContain('ServerAuthorityDiagram');
     }
+    expect(guide).not.toContain('InteractiveResearchExplainer');
+    expect(trajectory).toContain('ResearchConceptIndex');
   });
 
   it('teaches WebShop and ALFWorld as interactive world models, not dataset names alone', () => {
@@ -95,33 +76,13 @@ describe('research architecture diagrams', () => {
   });
 
   it('makes the SEED core idea visually explicit', () => {
-    for (const term of [
-      'on-policy trajectory',
-      'same sampled action tokens',
-      'plain-context re-score',
-      'skill-context re-score',
-      'log p<sub>plain</sub>',
-      'log p<sub>skill</sub>',
-      'OPD',
-      'GRPO',
-      'policy θ<sub>t+1</sub>',
-      'same checkpoint',
-    ]) expect(seed).toContain(term);
+    for (const term of ['on-policy trajectory','same sampled action tokens','plain-context re-score','skill-context re-score','log p<sub>plain</sub>','log p<sub>skill</sub>','OPD','GRPO','policy θ<sub>t+1</sub>','same checkpoint']) expect(seed).toContain(term);
     expect(seed).toContain('The next round’s actor and analyzer');
     expect(seed).toContain('prefers-reduced-motion:reduce');
   });
 
   it('makes OpenEvo a carrier framework rather than equating it with SD-LoRA', () => {
-    for (const term of [
-      'SEALED EVIDENCE',
-      'EVOLUTION METHOD',
-      'MEMORY',
-      'AGENT ARTIFACT',
-      'PARAMETRIC ADAPTER',
-      'VALIDATION GATE',
-      'SUCCESSOR REVISION',
-      'SD-LoRA parametric path',
-    ]) expect(openevo).toContain(term);
+    for (const term of ['SEALED EVIDENCE','EVOLUTION METHOD','MEMORY','AGENT ARTIFACT','PARAMETRIC ADAPTER','VALIDATION GATE','SUCCESSOR REVISION','SD-LoRA parametric path']) expect(openevo).toContain(term);
     expect(openevo).toContain('only one carrier allowed by OpenEvo');
     expect(openevo).toContain('seal first, evolve second');
   });
@@ -148,9 +109,9 @@ describe('research architecture diagrams', () => {
     expect(sourceRules).toContain('dashed connector');
   });
 
-  it('keeps the reproduction guide executable, public-safe, and content-height-driven', () => {
+  it('keeps the reproduction guide executable without embedding conceptual figures', () => {
     expect(guide).toContain('AgentEnvironmentTrajectory');
-    expect(guide).toContain('InteractiveResearchExplainer');
+    expect(guide).not.toContain('InteractiveResearchExplainer');
     expect(guide).toContain('12 reproduction gates');
     expect(guide).toContain('run_parametric_eval.py');
     expect(guide).toContain('verify_indexes_1k.py');

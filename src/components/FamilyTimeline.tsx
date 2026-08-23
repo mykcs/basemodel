@@ -33,7 +33,14 @@ export default function FamilyTimeline({ models, papers, locale = 'zh' }: { mode
             <div className="tree-generation-heading"><strong>{generation}</strong><span>{checkpoints[0]?.release_date} · {checkpoints.length} {m.familyUnits.checkpoints}</span></div>
             <div className="tree-checkpoints">{checkpoints.map((model) => <div className="tree-checkpoint" key={model.id}>
               <a href={localePath(locale, `/models/${model.id}/`)}><span>{model.name}</span><small>{architectureLabel(model.architecture.type, locale)} · {checkpointLabel(model.checkpoint.type, locale)}{isCurrentModel(model, familyCoverageRecords, models) ? ` · ${m.families.current}` : ''}</small></a>
-              <button type="button" className="tree-quick-view" onClick={() => openQuickView(model.id)}>{locale === 'zh' ? '快速查看' : 'Quick view'}</button>
+              <button
+                type="button"
+                className="tree-quick-view"
+                data-model-quick-view={model.id}
+                aria-haspopup="dialog"
+                aria-controls="global-model-quick-view"
+                onClick={() => openQuickView(model.id)}
+              >{locale === 'zh' ? '快速查看' : 'Quick view'}</button>
             </div>)}</div>
           </div>)}</div>
         </div> : null;

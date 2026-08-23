@@ -1,34 +1,21 @@
 ---
 import Header from '../components/Header.astro';
-import ResearchMainline from '../components/ResearchMainline.astro';
-import SeedUseCaseStrip from '../components/SeedUseCaseStrip.astro';
-import SiteRoutePrimer from '../components/visual/SiteRoutePrimer.astro';
-import SeedOpenEvoMissionRibbon from '../components/research/SeedOpenEvoMissionRibbon.astro';
+import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
 import PageOutline from '../components/navigation/PageOutline.astro';
-import { getCollection } from 'astro:content';
+import QuickViewBridge from '../components/models/QuickViewBridge.astro';
 import { ResearchContextBar } from '../components/workspace/ResearchContextBar.tsx';
 import { CompareTray } from '../components/workspace/CompareTray.tsx';
 import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.tsx';
-import '../styles/global.css';
-import '../styles/workspace.css';
-import '../styles/v2-closeout.css';
-import '../styles/visual-upgrade.css';
-import '../styles/design-refinement.css';
-import '../styles/final-hardening.css';
-import '../styles/actionable-content.css';
-import '../styles/knowledge-architecture.css';
-import '../styles/mobile-composition.css';
-import '../styles/visual-closeout.css';
+import '../styles/app.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 
 interface Props { title: string; description?: string; locale?: Locale }
-type SeedArea = 'models' | 'families' | 'compare' | 'papers' | 'workspace' | 'data-status' | 'methodology' | 'landscape';
+type ResearchBridgePage = 'experiment' | 'run';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
-const modelNames = Object.fromEntries((await getCollection('models')).map((entry) => [entry.data.id, entry.data.name]));
 const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
@@ -40,19 +27,11 @@ const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !is
 const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
-const isHomePage = localeNeutralPath === '/';
-const isMissionPage = /^\/research\/seed-openevo(?:\/|$)/.test(localeNeutralPath);
-const isTodayRunbook = /^\/guide\/today\/?$/.test(localeNeutralPath);
-const localQuickViewMounted = /^\/(models|workspace)\/?$/.test(localeNeutralPath);
-const seedArea: SeedArea | null = isHomePage || isMissionPage ? null
-  : /^\/models\/?$/.test(localeNeutralPath) ? 'models'
-  : /^\/families\/?$/.test(localeNeutralPath) ? 'families'
-  : /^\/compare\/?$/.test(localeNeutralPath) ? 'compare'
-  : /^\/papers\/?$/.test(localeNeutralPath) ? 'papers'
-  : /^\/workspace\/?$/.test(localeNeutralPath) ? 'workspace'
-  : /^\/data-status\/?$/.test(localeNeutralPath) ? 'data-status'
-  : /^\/methodology\/?$/.test(localeNeutralPath) ? 'methodology'
-  : /^\/landscape\/?$/.test(localeNeutralPath) ? 'landscape'
+const exactRoute = (target: string) => localeNeutralPath === target || localeNeutralPath === `${target}/`;
+const isTodayRunbook = exactRoute('/guide/today');
+const globalQuickViewMounted = exactRoute('/families') || /^\/papers\/[^/]+\/?$/.test(localeNeutralPath);
+const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/experiment') ? 'experiment'
+  : exactRoute('/guide/openevo-webshop-alfworld') ? 'run'
   : null;
 const localePath = (target: Locale) => { const clean = localeNeutralPath.replace(/^\//, ''); return target === 'en' ? `/en/${clean}` : `/${clean}`; };
 const canonicalUrl = new URL(localePath(locale), siteOrigin).href;
@@ -61,6 +40,35 @@ const canonicalRoot = new URL('/', siteOrigin).href;
 const ogImage = new URL('/og-cover.png', siteOrigin).href;
 const ogLocaleMap: Record<Locale, string> = { zh: 'zh_CN', en: 'en_US' };
 const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: m.site.fullName, url: canonicalRoot, description: m.site.defaultDescription, inLanguage: ['zh-CN', 'en'] });
+
+// Global islands previously received the entire locale message tree, which
+// duplicated a large serialized payload several times on every static page.
+// Each island now receives only the labels it actually renders.
+const researchContextLabels = {
+  currentTask: m.workspace.currentTask,
+  openWeightLabel: m.workspace.openWeightLabel,
+  candidates: m.workspace.candidates,
+  compare: m.workspace.compare,
+  editConstraints: m.workspace.editConstraints,
+  clearTask: m.workspace.clearTask,
+  role: m.format.role,
+};
+const quickViewLabels = {
+  closeQuickView: m.workspace.closeQuickView,
+  openWeights: m.detail.openWeights,
+  finetuningAllowed: m.detail.finetuningAllowed,
+  license: m.detail.license,
+  inference: m.detail.inference,
+  context: m.detail.context,
+  apiStatus: m.detail.apiStatus,
+  tokensSuffix: m.detail.tokensSuffix,
+};
+const compareTrayLabels = {
+  compareTray: m.workspace.compareTray,
+  compare: m.workspace.compare,
+  openCompare: m.workspace.openCompare,
+  clearCompare: m.workspace.clearCompare,
+};
 ---
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
@@ -103,19 +111,44 @@ const websiteJsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type'
   <body>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
-    <ResearchContextBar client:load m={m} locale={locale} />
-    {!localQuickViewMounted && <GlobalModelQuickView client:idle m={m} locale={locale} />}
+    <ResearchContextBar client:load labels={researchContextLabels} locale={locale} />
+    {globalQuickViewMounted && <GlobalModelQuickView client:idle labels={quickViewLabels} locale={locale} />}
+    {globalQuickViewMounted && <QuickViewBridge />}
     <main id="main-content" class="site-main">
-      {!isHomePage && !isMissionPage && <SeedOpenEvoMissionRibbon locale={locale} path={localeNeutralPath} />}
+      {researchBridgePage && (
+        <div class="research-module-nav-shell">
+          <SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />
+        </div>
+      )}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
-      {!isHomePage && !isMissionPage && <ResearchMainline locale={locale} path={localeNeutralPath} />}
-      {seedArea && <SeedUseCaseStrip locale={locale} area={seedArea} standalone />}
-      {!isHomePage && !isMissionPage && <SiteRoutePrimer locale={locale} path={localeNeutralPath} />}
       <slot />
     </main>
     <PageOutline locale={locale} />
-    <CompareTray client:idle m={m} locale={locale} modelNames={modelNames} />
+    <CompareTray client:idle labels={compareTrayLabels} locale={locale} />
     <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
     <ActionableContentLayer locale={locale} />
+    <script is:inline>
+      window.si = window.si || function (...args) {
+        (window.siq = window.siq || []).push(args);
+      };
+      const host = window.location.hostname;
+      const localPreview = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+      if (!localPreview) {
+        const speedInsights = document.createElement('script');
+        speedInsights.defer = true;
+        speedInsights.src = '/_vercel/speed-insights/script.js';
+        document.head.appendChild(speedInsights);
+      }
+    </script>
   </body>
 </html>
+
+<style>
+  .research-module-nav-shell{
+    width:min(1160px,calc(100% - 2rem));
+    margin-inline:auto;
+  }
+  @media(max-width:720px){
+    .research-module-nav-shell{width:min(100% - 1rem,1160px)}
+  }
+</style>

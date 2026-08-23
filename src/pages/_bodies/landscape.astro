@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import LandscapePrototype from '../../components/landscape/LandscapePrototype';
 import { getMessages, type Locale } from '../../i18n';
+import familiesData from '../../content/coverage/families.json';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? 'zh';
@@ -9,5 +10,17 @@ const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
 const papers = (await getCollection('papers')).map((entry) => entry.data);
 const paperModelIds = [...new Set(papers.flatMap((paper) => paper.models.map((use) => use.model_id)))];
+const totalModels = models.length;
+const familyCount = familiesData.families.length;
+const openWeightCount = models.filter((model) => model.openness.weights_available === true).length;
 ---
-<div class="shell"><header class="page-header"><div class="section-kicker">{m.landscape.kicker}</div><h1>{m.landscape.prototypeTitle}</h1><p class="lede">{m.landscape.prototypeLede}</p></header><LandscapePrototype client:load models={models} paperModelIds={paperModelIds} locale={locale} /></div>
+<div class="shell">
+  <header class="page-header"><div class="section-kicker">{m.landscape.kicker}</div><h1>{m.landscape.prototypeTitle}</h1><p class="lede">{m.landscape.prototypeLede}</p></header>
+
+  <section class="section section-first landscape-overview" aria-labelledby="catalog-overview-title">
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '目录规模' : 'Catalog size'}</div><h2 id="catalog-overview-title">{locale === 'zh' ? '模型目录' : 'Model catalog'}</h2><p class="muted">{locale === 'zh' ? '这里承接原首页的模型目录摘要；下面的 Landscape 使用同一份模型数据进行交互探索。' : 'This section now holds the catalog summary previously shown on the homepage; the Landscape below explores the same model dataset interactively.'}</p></div></div>
+    <div class="stats overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{locale === 'zh' ? '模型记录' : 'Models'}</span></div><div class="stat"><strong>{familyCount}</strong><span>{locale === 'zh' ? '模型家族' : 'Families'}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{locale === 'zh' ? '开放权重' : 'Open weights'}</span></div></div>
+  </section>
+
+  <LandscapePrototype client:visible models={models} paperModelIds={paperModelIds} locale={locale} />
+</div>

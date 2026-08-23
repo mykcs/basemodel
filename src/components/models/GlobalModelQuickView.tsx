@@ -2,16 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { candidateIds, addCandidate, removeCandidate } from '../../stores/candidates';
 import { compareIds, addToCompare, removeFromCompare } from '../../stores/compare';
-import { closeQuickView, quickViewId } from '../../stores/ui';
+import { closeQuickView, openQuickView, quickViewId } from '../../stores/ui';
 import { hasMeaningfulResearchTask, researchTask } from '../../stores/researchTask';
 import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../lib/format';
 import { baseUrl, localePath, type Locale } from '../../i18n';
 import type { AtlasModel } from '../../lib/schemas';
-import type { Messages } from '../../i18n/zh';
 import { useHydrated } from '../../lib/useHydrated';
 
+export interface GlobalModelQuickViewLabels {
+  closeQuickView: string;
+  openWeights: string;
+  finetuningAllowed: string;
+  license: string;
+  inference: string;
+  context: string;
+  apiStatus: string;
+  tokensSuffix: string;
+}
+
 interface Props {
-  m: Messages;
+  labels: GlobalModelQuickViewLabels;
   locale: Locale;
 }
 
@@ -30,7 +40,7 @@ function taskBlockers(model: AtlasModel, task: ReturnType<typeof researchTask.ge
   return blockers;
 }
 
-export function GlobalModelQuickView({ m, locale }: Props) {
+export function GlobalModelQuickView({ labels, locale }: Props) {
   const hydrated = useHydrated();
   const selected = useStore(quickViewId);
   const task = useStore(researchTask);
@@ -40,6 +50,24 @@ export function GlobalModelQuickView({ m, locale }: Props) {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const openFromBridge = (id: string) => {
+      delete root.dataset.modelQuickViewPending;
+      openQuickView(id);
+    };
+    const handleBridge = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      const id = (event.detail as { id?: unknown } | null)?.id;
+      if (typeof id === 'string' && id) openFromBridge(id);
+    };
+
+    document.addEventListener('atlas:quick-view', handleBridge);
+    const pending = root.dataset.modelQuickViewPending;
+    if (pending) openFromBridge(pending);
+    return () => document.removeEventListener('atlas:quick-view', handleBridge);
+  }, []);
 
   useEffect(() => {
     if (!hydrated || !selected) {
@@ -84,6 +112,7 @@ export function GlobalModelQuickView({ m, locale }: Props) {
   const zh = locale === 'zh';
 
   return <dialog
+    id="global-model-quick-view"
     ref={dialogRef}
     className="quick-view-dialog global-quick-view"
     aria-labelledby="global-quick-view-title"
@@ -97,7 +126,7 @@ export function GlobalModelQuickView({ m, locale }: Props) {
           <h2 id="global-quick-view-title">{model?.name ?? (loading ? (zh ? '正在加载…' : 'Loading…') : (zh ? '模型信息' : 'Model information'))}</h2>
           {model && <p className="muted">{model.vendor} · {model.family} · {model.generation}</p>}
         </div>
-        <button type="button" className="button" onClick={close} aria-label={m.workspace.closeQuickView}>×</button>
+        <button type="button" className="button" onClick={close} aria-label={labels.closeQuickView}>×</button>
       </header>
 
       {loadError && <p className="empty-state">{zh ? '快速查看数据加载失败。可直接打开模型详情页。' : 'Quick-view data failed to load. Open the full model page instead.'}</p>}
@@ -110,12 +139,12 @@ export function GlobalModelQuickView({ m, locale }: Props) {
             : <ul>{blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}</ul>}
         </section>}
         <dl className="quick-view-facts">
-          <dt>{m.detail.openWeights}</dt><dd>{displayBoolean(model.openness.weights_available, locale)}</dd>
-          <dt>{m.detail.finetuningAllowed}</dt><dd>{displayBoolean(model.openness.finetuning_allowed, locale)}</dd>
-          <dt>{m.detail.license}</dt><dd>{licenseLabel(model.openness.license_name, locale)}</dd>
-          <dt>{m.detail.inference}</dt><dd>{tierLabel(model.hardware.inference_tier, locale)}</dd>
-          <dt>{m.detail.context}</dt><dd>{displayUnknown(model.architecture.context_length, m.detail.tokensSuffix, locale)}</dd>
-          <dt>{m.detail.apiStatus}</dt><dd>{displayUnknown(model.access?.api_status, '', locale)}</dd>
+          <dt>{labels.openWeights}</dt><dd>{displayBoolean(model.openness.weights_available, locale)}</dd>
+          <dt>{labels.finetuningAllowed}</dt><dd>{displayBoolean(model.openness.finetuning_allowed, locale)}</dd>
+          <dt>{labels.license}</dt><dd>{licenseLabel(model.openness.license_name, locale)}</dd>
+          <dt>{labels.inference}</dt><dd>{tierLabel(model.hardware.inference_tier, locale)}</dd>
+          <dt>{labels.context}</dt><dd>{displayUnknown(model.architecture.context_length, labels.tokensSuffix, locale)}</dd>
+          <dt>{labels.apiStatus}</dt><dd>{displayUnknown(model.access?.api_status, '', locale)}</dd>
         </dl>
         <div className="quick-view-actions">
           <a className="button button-primary" href={localePath(locale, `/models/${model.id}/`)}>{zh ? '打开完整详情' : 'Open full details'}</a>

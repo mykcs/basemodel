@@ -1,14 +1,24 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
-import OpenEvoWebShopProgramReport from '../../../../components/research/OpenEvoWebShopProgramReport.astro';
+import OpenEvoWebShopProgramReport from '../../../../components/research/OpenEvoWebShopNarrativeReport.astro';
 import Seed3090ParametricProgress from '../../../../components/research/Seed3090ParametricProgress.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × WebShop experiment report" description="A paper-like H1.38A-C report with the primary result, confidence intervals, claim boundaries, next method control, and a collapsed complete lineage." locale={locale}>
+<AppLayout
+  title="Can OpenEvo get better on WebShop from its own experience?"
+  description="A reader-first research narrative: what WebShop and self-evolution mean, how negative results narrowed the hypotheses, how fresh-task benefit replicated, and what H1.40/H1.41 reveal about continual parameter writing and measurement validity."
+  locale={locale}
+>
   <SeedOpenEvoResearchPage locale={locale} page="results">
     <OpenEvoWebShopProgramReport locale={locale}>
       <Seed3090ParametricProgress slot="historical" locale={locale} />
     </OpenEvoWebShopProgramReport>
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style is:global>
+  body:has([data-program-report]) .site-footer,
+  body:has([data-program-report]) .plain-detail__header,
+  body:has([data-program-report]) .plain-detail__tabs { display:none!important; }
+</style>

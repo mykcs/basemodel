@@ -5,32 +5,36 @@ const root = process.cwd();
 const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 
 describe('SEED and OpenEvo architecture comparison', () => {
-  const component = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
+  const legacyComponent = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
+  const canonicalComponent = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
   const zhRoute = read('src/pages/research/seed-openevo/loops.astro');
   const enRoute = read('src/pages/en/research/seed-openevo/loops.astro');
 
-  it('keeps both update mechanisms explicit in the static technical reference', () => {
-    expect(component).toContain('SEED');
-    expect(component).toContain('OpenEvo');
-    expect(component).toContain('updated policy checkpoint');
-    expect(component).toContain('memory / artifact / adapter');
-    expect(component).toContain('successor revision');
+  it('keeps both update mechanisms explicit in the retained static technical reference', () => {
+    expect(legacyComponent).toContain('SEED');
+    expect(legacyComponent).toContain('OpenEvo');
+    expect(legacyComponent).toContain('updated policy checkpoint');
+    expect(legacyComponent).toContain('memory / artifact / adapter');
+    expect(legacyComponent).toContain('successor revision');
   });
 
-  it('keeps the legacy technical reference visually testable', () => {
-    expect(component).toContain('SEED 与 OpenEvo 的经验载体');
-    expect(component).toContain('fork-scene');
-    expect(component).toContain('border-top:5px solid');
-    expect(component).toContain('<svg class="fork-wires"');
-    expect(component).toContain('<marker');
-    expect(component).toContain('marker-end=');
+  it('keeps the legacy technical reference available without making it the page owner', () => {
+    expect(legacyComponent).toContain('SEED 与 OpenEvo 的经验载体');
+    expect(legacyComponent).toContain('fork-scene');
+    expect(legacyComponent).toContain('border-top:5px solid');
+    expect(legacyComponent).toContain('<svg class="fork-wires"');
+    expect(legacyComponent).toContain('<marker');
+    expect(legacyComponent).toContain('marker-end=');
   });
 
-  it('mounts the interactive comparison as the primary bilingual loop explainer', () => {
+  it('mounts one canonical comparison as the sole bilingual loop figure', () => {
+    expect(canonicalComponent).toContain('fig-seed-openevo-update-target');
+    expect(canonicalComponent).toContain('SHARED EXPERIENCE');
     for (const route of [zhRoute, enRoute]) {
-      expect(route).toContain('InteractiveResearchExplainer');
-      expect(route).toContain('kind="compare"');
-      expect(route).toContain('client:visible');
+      expect(route).toContain('SeedOpenEvoCanonicalFigure');
+      expect(route).not.toContain('InteractiveResearchExplainer');
+      expect(route).not.toContain('kind="compare"');
+      expect(route).not.toContain('client:visible');
       expect(route).not.toContain('SeedOpenEvoComparisonDiagram');
     }
   });

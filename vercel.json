@@ -5,6 +5,7 @@
   "git": {
     "deploymentEnabled": {
       "*": false,
+      "**/*": false,
       "main": true,
       "agent/semantic-release-*": true
     }

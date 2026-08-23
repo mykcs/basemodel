@@ -48,7 +48,13 @@ for (const name of ['models', 'papers', 'claims', 'benchmarkRuns', 'guides', 'ch
 pass('V2-WORKSPACE-001', read('src/stores/candidates.ts').includes('persistentAtom') && read('src/stores/compare.ts').includes('persistentAtom') && read('src/stores/snapshots.ts').includes('persistentAtom'), 'workspace state uses persistent atoms');
 pass('V2-WORKSPACE-002', existsSync(join(root, 'src/pages/en/workspace/index.astro')) && read('src/pages/en/workspace/index.astro').includes('ResearchWorkspace'), 'English workspace mounts the workbench');
 pass('V2-WORKSPACE-003', read('src/components/workspace/DecisionMemo.tsx').includes('saveDecisionSnapshot') && read('src/components/workspace/DecisionMemo.tsx').includes('snapshotChanges'), 'snapshot controls are mounted');
-pass('V2-NAV-001', read('src/components/Header.astro').includes("path: '/workspace/'") && read('src/components/Header.astro').includes("path: '/guide/'") && !read('src/components/Header.astro').includes("path: '/data-status/'"), 'research-action header is mounted');
+const header = read('src/components/Header.astro');
+pass(
+  'V2-NAV-001',
+  ['/models/', '/papers/', '/compare/', '/workspace/', '/data-status/', '/methodology/'].every((path) => header.includes(`path: '${path}'`))
+    && !['/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/research/seed-openevo/benchmarks/', '/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/'].some((path) => header.includes(`path: '${path}'`)),
+  'global header exposes top-level resources without duplicating research subpages',
+);
 pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.tsx')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.tsx').includes('ArrowDown'), 'search index and keyboard navigation exist');
 pass('V2-COMPARE-001', read('src/components/workspace/CompareTray.tsx').includes('compareUrl(locale)') && read('src/stores/compare.ts').includes("models="), 'compare tray uses canonical URL');
 pass('V2-DATA-002', read('src/pages/guide.astro').includes("getCollection('guides')") && read('src/pages/en/guide.astro').includes("getCollection('guides')"), 'guide page reads the guides collection');
@@ -87,10 +93,16 @@ pass('V2-PRODUCT-002', read('src/components/papers/PaperExplorer.tsx').includes(
 pass('V2-PRODUCT-003', read('src/components/ModelComparison.tsx').includes('copyBibtex') && read('src/components/ModelComparison.tsx').includes("valueMode === 'relative'"), 'compare supports BibTeX and relative baseline mode');
 pass('V2-PRODUCT-004', read('src/components/workspace/task/HardwareCalculator.tsx').includes('optimizerState') && read('src/components/workspace/task/ResourceStep.tsx').includes('HardwareCalculator'), 'resource step mounts transparent VRAM planning calculator');
 pass('V2-PRODUCT-005', read('src/components/landscape/LandscapePrototype.tsx').includes('AccessibleLandscapeTable') && read('src/components/landscape/LandscapeECharts.tsx').includes('AriaComponent'), 'landscape has filtered views and an accessible alternative');
-pass('V2-PRODUCT-005A', read('src/components/landscape/LandscapePrototype.tsx').includes('LearningLandscapeList') && read('src/components/landscape/LandscapePrototype.tsx').includes('LandscapeDimension') && read('src/components/landscape/LandscapeECharts.tsx').includes('colorBy'), 'learning mode reduces encodings and full mode exposes research-meaning switches');
+pass('V2-PRODUCT-005A', read('src/components/landscape/LandscapePrototype.tsx').includes("useState<'learning' | 'full'>('learning')") && read('src/components/landscape/LandscapePrototype.tsx').includes('LandscapeDimension') && read('src/components/landscape/LandscapeECharts.tsx').includes('colorBy'), 'learning mode reduces encodings and full mode exposes research-meaning switches');
 pass('V2-PRODUCT-006', read('src/components/evidence/ClaimHistory.astro').includes('validFrom') && read('src/pages/_bodies/data-status.astro').includes('benchmarkRuns'), 'claim history and benchmark conditions are visible in data status');
 pass('V2-PRODUCT-006A', read('src/components/papers/PaperSelectionRationale.astro').includes('Not recorded') && read('src/components/papers/PaperSelectionRationale.astro').includes('paper.models'), 'paper detail exposes unknown selection rationale instead of hiding absent data');
-pass('V2-PRODUCT-007', read('src/pages/_bodies/home-v2.astro').includes("getCollection('changeEvents')") && !existsSync(join(root, 'src/components/ExperimentSelector.tsx')), 'home consumes change events and unused V1 selector is removed');
+pass(
+  'V2-PRODUCT-007',
+  read('src/pages/_bodies/data-status.astro').includes("getCollection('changeEvents')")
+    && !read('src/pages/_bodies/home-v2.astro').includes("getCollection('changeEvents')")
+    && !existsSync(join(root, 'src/components/ExperimentSelector.tsx')),
+  'data-status owns change events, home stays focused, and the unused V1 selector is removed',
+);
 pass('V2-PRODUCT-008', read('docs/V2_PRODUCT_COMPLETION_MATRIX.md').includes('R-16') && read('docs/V2_PRODUCT_COMPLETION_MATRIX.md').includes('原始目的复核'), 'full red/yellow matrix and purpose review are recorded');
 pass('V2-PRODUCT-009', ['precision', 'batchSize', 'loraRank', 'optimizer', 'kvCacheEnabled'].every((field) => read('src/stores/researchTask.ts').includes(field) && read('src/lib/researchTaskCodec.ts').includes(field)) && read('src/components/workspace/task/ResourceStep.tsx').includes('HardwareCalculator'), 'resource assumptions are part of the task schema, URL state, and mounted calculator');
 pass('V2-PRODUCT-010', ['feasibility', 'researchSuitability', 'comparability', 'reproducibility', 'evidenceQuality'].every((field) => read('src/components/workspace/CandidateBoard.tsx').includes(field)) && read('src/components/workspace/CandidateBoard.tsx').includes('candidate-fit-profile'), 'candidate cards expose the five-dimensional research fit profile');

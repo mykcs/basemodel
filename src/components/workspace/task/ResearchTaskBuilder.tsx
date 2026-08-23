@@ -12,8 +12,8 @@ import { AccessStep } from './AccessStep';
 import { PriorityStep } from './PriorityStep';
 import { TaskSummary } from './TaskSummary';
 import type { TaskStepProps } from './types';
-import { candidateIds } from '../../../stores/candidates';
-import { compareIds } from '../../../stores/compare';
+import { candidateIds, replaceCandidates } from '../../../stores/candidates';
+import { compareIds, replaceCompare } from '../../../stores/compare';
 import { researchProjects, removeResearchProject, saveResearchProject } from '../../../stores/projects';
 
 interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages; locale: Locale }
@@ -57,8 +57,8 @@ export function ResearchTaskBuilder({ models, papers, m, locale }: Props) {
     if (!project) return;
     setDraft(project.task);
     setResearchTask(project.task);
-    candidateIds.set(project.candidateIds);
-    compareIds.set(project.compareIds);
+    replaceCandidates(project.candidateIds);
+    replaceCompare(project.compareIds);
     setProjectName(project.name);
     setProjectNotice(locale === 'zh' ? '项目已恢复' : 'Project restored');
   };

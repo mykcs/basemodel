@@ -3,6 +3,11 @@ import { describe, expect, it } from 'vitest';
 
 const tokensCss = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8');
 const knowledgeCss = readFileSync(new URL('../styles/knowledge-architecture.css', import.meta.url), 'utf8');
+const appCss = readFileSync(new URL('../styles/app.css', import.meta.url), 'utf8');
+const webShopTrainingNoteCss = readFileSync(new URL('../styles/components/webshop-training-note.css', import.meta.url), 'utf8');
+const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
+const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/results/[note].astro', import.meta.url), 'utf8');
+const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/results.astro', import.meta.url), 'utf8');
 
 function cssBlock(selector: RegExp): string {
   const match = tokensCss.match(selector);
@@ -79,5 +84,27 @@ describe('theme contrast contract', () => {
     expect(knowledgeCss).not.toContain('color: #fff');
     expect(knowledgeCss).toContain('--ka-surface: var(--surface);');
     expect(knowledgeCss).toContain('--ka-accent-on: var(--accent-on-fill);');
+  });
+
+  it('keeps WebShop training surfaces theme-aware instead of relying on a route patch', () => {
+    expect(webShopTrainingGuide).toContain('background:var(--color-surface)');
+    expect(webShopTrainingGuide).toContain('color:var(--color-text)');
+    expect(webShopTrainingGuide).not.toContain('background:#090f1c');
+
+    expect(appCss).toContain("@import './components/webshop-training-note.css';");
+    expect(webShopTrainingNoteCss).toContain('background: var(--color-surface);');
+    expect(webShopTrainingNoteCss).toContain('color: var(--color-text);');
+    expect(webShopTrainingNoteCss).toContain('color-scheme: inherit;');
+    expect(webShopTrainingNoteCss).not.toContain('background:#090f1c');
+    expect(webShopTrainingNoteRoute).not.toContain('<style');
+
+    expect(webShopResultsRoute).not.toContain('color-scheme:dark');
+    expect(webShopResultsRoute).not.toContain('background:#090f1c');
+  });
+
+  it('keeps mobile training-note borders on the semantic border token', () => {
+    expect(webShopTrainingNoteCss).toContain('border-left-width: 0;');
+    expect(webShopTrainingNoteCss).toContain('border-right-width: 0;');
+    expect(webShopTrainingNoteCss).not.toMatch(/border-(?:left|right):\s*0\s*;/);
   });
 });

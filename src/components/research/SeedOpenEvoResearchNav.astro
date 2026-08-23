@@ -1,0 +1,127 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+type ResearchPage = 'hub' | 'experiment' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+
+interface Props {
+  locale: Locale;
+  page: ResearchPage;
+}
+
+const { locale, page } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const pages = [
+  { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
+  { id: 'experiment', label: t('科学研究', 'Scientific study'), href: p('/research/seed-openevo/experiment/') },
+  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
+  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
+  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
+  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
+  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
+  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
+  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
+  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
+  { id: 'results', label: t('实验结果', 'Experiment results'), href: p('/research/seed-openevo/results/') },
+] as const;
+---
+<div class="research-navigation" data-research-navigation>
+  <div class="research-navigation__identity">
+    <strong>{t('研究导航', 'Research navigation')}</strong>
+    <span>{t('SEED × OpenEvo 研究模块', 'SEED × OpenEvo research module')}</span>
+  </div>
+  <nav class="research-navigation__links" aria-label={t('SEED 与 OpenEvo 全局研究导航', 'SEED and OpenEvo global research navigation')}>
+    {pages.map((item) => (
+      <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
+    ))}
+  </nav>
+</div>
+
+<style>
+  .research-navigation{
+    position:sticky;
+    z-index:12;
+    top:.5rem;
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr);
+    gap:.55rem;
+    align-items:center;
+    margin:1rem 0 2rem;
+    padding:.45rem;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    backdrop-filter:blur(16px);
+  }
+  .research-navigation__identity{
+    min-width:max-content;
+    padding:.12rem .5rem;
+    border-right:1px solid var(--line);
+  }
+  .research-navigation__identity strong,
+  .research-navigation__identity span{display:block}
+  .research-navigation__identity strong{
+    color:var(--ink);
+    font:800 .66rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;
+    letter-spacing:.05em;
+  }
+  .research-navigation__identity span{
+    margin-top:.08rem;
+    color:var(--muted);
+    font-size:.58rem;
+    line-height:1.35;
+  }
+  .research-navigation__links{
+    display:flex;
+    gap:.28rem;
+    min-width:0;
+    overflow-x:auto;
+    padding:.05rem;
+    scrollbar-width:thin;
+  }
+  .research-navigation__links a{
+    flex:0 0 auto;
+    padding:.58rem .76rem;
+    border-radius:10px;
+    color:var(--muted);
+    font-size:.75rem;
+    font-weight:720;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .research-navigation__links a:hover,
+  .research-navigation__links a:focus-visible{
+    color:var(--ink);
+    background:color-mix(in srgb,var(--accent) 7%,transparent);
+  }
+  .research-navigation__links a:focus-visible{
+    outline:3px solid var(--accent-deep);
+    outline-offset:2px;
+  }
+  .research-navigation__links a[aria-current='page']{
+    color:var(--accent-on-fill);
+    background:var(--accent-deep);
+  }
+  @media(max-width:720px){
+    .research-navigation{
+      grid-template-columns:1fr;
+      gap:.3rem;
+      margin:.6rem 0 1.2rem;
+      padding:.4rem;
+    }
+    .research-navigation__identity{
+      display:flex;
+      align-items:baseline;
+      gap:.45rem;
+      padding:.2rem .4rem .05rem;
+      border-right:0;
+    }
+    .research-navigation__identity span{margin:0}
+    .research-navigation__links a{padding:.54rem .68rem;font-size:.72rem}
+  }
+  @media(max-width:430px){
+    .research-navigation__identity span{display:none}
+  }
+</style>

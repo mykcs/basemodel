@@ -15,6 +15,7 @@
     "audit:vendor-catalogs": "tsx scripts/audit-vendor-catalogs.ts",
     "audit:catalog-diff": "tsx scripts/audit-catalog-diff.ts",
     "audit:hardening": "tsx scripts/audit-final-product-hardening.ts",
+    "audit:css": "tsx scripts/audit-css-architecture.ts",
     "audit:copy": "tsx scripts/audit-audience-copy.ts",
     "audit:copy:strict": "tsx scripts/audit-audience-copy.ts --strict",
     "audit:urls": "tsx scripts/check-source-health.ts",
@@ -23,13 +24,19 @@
     "audit": "npm run audit:full",
     "migrate:source-ids": "tsx scripts/assign-source-ids.ts",
     "test": "vitest run",
+    "ui:overflow-preflight": "node scripts/ui-overflow-preflight.mjs",
+    "preflight:ui": "tsx scripts/preflight-ui.ts",
+    "preflight:ui:plan": "tsx scripts/preflight-ui.ts --plan",
     "test:e2e": "playwright test",
-    "test:ui": "playwright test tests/e2e/ui-safety.spec.ts tests/e2e/research-explainer-layout.spec.ts tests/e2e/visual-closeout-followup.spec.ts tests/e2e/public-reproduction-guide.spec.ts --project=chromium",
-    "test:ui:all": "playwright test tests/e2e/ui-safety.spec.ts tests/e2e/research-explainer-layout.spec.ts tests/e2e/visual-closeout-followup.spec.ts tests/e2e/public-reproduction-guide.spec.ts",
+    "test:header": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts --project=chromium",
+    "test:header:all": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts",
+    "test:visual:capture": "playwright test tests/e2e/core-research-visual-signatures.capture.spec.ts --project=chromium --max-failures=1",
+    "test:ui": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts tests/e2e/ui-safety.spec.ts tests/e2e/layout-anomaly-guard.spec.ts tests/e2e/core-research-visual-signatures.capture.spec.ts tests/e2e/research-explainer-layout.spec.ts tests/e2e/cjk-prose-containment.spec.ts tests/e2e/results-reference-visual.spec.ts tests/e2e/floating-step-transport.spec.ts tests/e2e/visual-closeout-followup.spec.ts tests/e2e/public-reproduction-guide.spec.ts tests/e2e/open-evo-webshop-program-report.spec.ts tests/e2e/webshop-training-theme.spec.ts tests/e2e/canonical-research-figures.spec.ts tests/e2e/compare-tray-on-demand.spec.ts tests/e2e/command-search-on-demand.spec.ts tests/e2e/ordinary-tech-debt-round2.spec.ts --project=chromium --max-failures=1",
+    "test:ui:all": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts tests/e2e/ui-safety.spec.ts tests/e2e/layout-anomaly-guard.spec.ts tests/e2e/research-explainer-layout.spec.ts tests/e2e/cjk-prose-containment.spec.ts tests/e2e/results-reference-visual.spec.ts tests/e2e/floating-step-transport.spec.ts tests/e2e/visual-closeout-followup.spec.ts tests/e2e/public-reproduction-guide.spec.ts tests/e2e/open-evo-webshop-program-report.spec.ts tests/e2e/webshop-training-theme.spec.ts tests/e2e/canonical-research-figures.spec.ts tests/e2e/compare-tray-on-demand.spec.ts tests/e2e/command-search-on-demand.spec.ts tests/e2e/ordinary-tech-debt-round2.spec.ts --max-failures=1",
     "audit:v2": "tsx scripts/audit-v2-completion.ts",
     "audit:v2:adversarial": "tsx scripts/audit-v2-adversarial.ts",
-    "verify:deploy": "npm run check && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening && npm run audit:copy:strict",
-    "verify:v2": "npm run check && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
+    "verify:deploy": "npm run check && npm run audit:css && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening && npm run audit:copy:strict",
+    "verify:v2": "npm run check && npm run audit:css && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
     "build": "astro build",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "build:workers:shadow": "node scripts/build-workers-shadow.mjs",
@@ -61,5 +68,9 @@
   },
   "overrides": {
     "@vitejs/plugin-react": "^6.0.5"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true
   }
 }

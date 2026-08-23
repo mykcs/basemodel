@@ -1,14 +1,14 @@
 # Rendering and performance policy
 
-Last reviewed: 2026-08-09
+Last reviewed: 2026-08-21
 
-This file is the authoritative rendering/performance policy for `mykcs/basemodel`. It complements `deployment-policy.md`; it does not change the settled GitHub -> Cloudflare Pages architecture.
+This file is the authoritative rendering/performance policy for `mykcs/basemodel`. It complements `deployment-policy.md` and the current Vercel Preview + Vercel Production architecture.
 
 ## Core principle
 
 The site is an Astro static knowledge/research site. Public research content should be useful in generated HTML before client JavaScript runs. JavaScript is an enhancement boundary, not a prerequisite for reading the catalog.
 
-Astro framework components render HTML on the server/build by default. Add a `client:*` directive only when the component genuinely needs browser-side interactivity. Current Astro documentation:
+Astro framework components render HTML at build time by default. Add a `client:*` directive only when the component genuinely needs browser-side interactivity. Current Astro documentation:
 
 - <https://docs.astro.build/en/reference/directives-reference/#client-directives>
 - <https://docs.astro.build/en/concepts/islands/>
@@ -22,7 +22,7 @@ Examples include model/paper lists, comparison pickers, family timelines, Landsc
 Rules:
 
 - Generated HTML must contain useful content; do not return `null` solely because hydration has not happened.
-- The server/build render and the first client render must be deterministic and markup-compatible.
+- The build render and the first client render must be deterministic and markup-compatible.
 - If URL or persisted state only exists in the browser, render a safe default state first and restore browser state in `useEffect`, or design an explicit deterministic static fallback.
 - Do not read `window`, `localStorage` or browser-only Nanostore state in a way that makes initial client markup differ from generated HTML.
 - If a component is render-only and has no client interaction, remove `client:*` entirely.
@@ -42,12 +42,13 @@ Rules:
 - It is valid for these components to render nothing until hydration when there is no meaningful deterministic public fallback.
 - Do not fabricate server state merely to avoid a `null` render.
 - Keep these islands out of the critical hydration path when practical. `CompareTray`, for example, uses `client:idle` because it is global but not required for first paint.
+- Do not serialize a large catalog into every page merely to support an adjunct that is usually hidden. Prefer existing static data routes or another on-demand boundary when the adjunct only needs data after browser-local state becomes meaningful.
 
 This distinction is important: **“remove every hydration guard” is not a valid optimization strategy.**
 
 ## Choosing an Astro client directive
 
-Use the least eager directive that still preserves the product behavior:
+Use the least eager directive that still preserves product behavior:
 
 - no `client:*`: static/render-only component;
 - `client:load`: above-the-fold or immediately interactive behavior that must work as soon as the page loads, such as keyboard command UI or primary page controls;
@@ -56,9 +57,9 @@ Use the least eager directive that still preserves the product behavior:
 
 Do not mechanically change directives without checking state initialization and hydration markup.
 
-## URL state and static Pages
+## URL state on static Vercel output
 
-Cloudflare Pages serves this project as a static Astro site. Request query parameters are not available to the build-time render of a prerendered page.
+Vercel serves the current product as static Astro output. Request query parameters are not available to the build-time render of a prerendered page.
 
 For interactive filters/deep links:
 
@@ -66,7 +67,7 @@ For interactive filters/deep links:
 2. after hydration, read `window.location.search` and restore the requested UI state;
 3. keep subsequent state reflected in the URL with `history.replaceState` when shareability matters.
 
-If a future feature requires query-dependent server HTML, that is an architecture change (SSR/Functions/Workers) and must not be introduced implicitly as a hydration workaround.
+If a future feature requires query-dependent server HTML, that is an architecture change (SSR/functions) and must not be introduced implicitly as a hydration workaround.
 
 ## Data and localization are performance-quality concerns too
 
@@ -84,17 +85,29 @@ Prefer architectural wins over speculative micro-optimizations:
 1. avoid unnecessary hydration entirely;
 2. avoid blank-until-JS core content;
 3. defer low-priority islands;
-4. keep heavy libraries behind interaction/visibility boundaries where possible;
-5. then measure real pages with browser performance tooling before making fine-grained bundle or rendering claims.
+4. avoid repeating large serialized props across every static route;
+5. keep heavy libraries behind interaction/visibility boundaries where practical;
+6. then measure real pages with browser performance tooling before making fine-grained bundle or rendering claims.
 
 Do not claim Core Web Vitals improvements without measuring them in an appropriate browser trace or field dataset.
+
+The Landscape implementation is a useful reference: the interactive shell is visibility-gated, and its ECharts/D3 engines are dynamically loaded rather than entering every page's initial bundle.
 
 ## Regression expectations
 
 Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. Browser-only behavior remains Playwright/on-demand unless it becomes important enough to justify the extra deployment cost.
 
-The current regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and evidence contracts introduced during the 2026-08-09 optimization phase.
+The regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and performance contracts.
 
 ## Build-budget rule
 
-Follow the existing Cloudflare steady-state policy: batch related production changes, use `[CF-Pages-Skip]` only for intermediate commits that do not need deployment, and require one meaningful final-head Preview for deployment-sensitive PRs. Documentation-only changes under `docs/*` are excluded by Cloudflare Build Watch and do not require a synthetic Preview.
+Follow the Vercel deployment policy:
+
+- batch related changes into one coherent branch head;
+- prefer one atomic multi-file push before the first Preview;
+- use the repository build classifier to skip documentation-only/non-deploy-relevant changes rather than creating synthetic builds;
+- inspect one meaningful exact-head Preview for deployment-sensitive work;
+- batch evidence-driven fixes before a corrective Preview instead of pushing one build per thought;
+- merge the accepted release once and verify Production separately.
+
+GitHub Actions and GitHub Pages remain retired for ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling are legacy rollback or provider-specific diagnostic surfaces only; they do not define normal rendering, performance, or completion policy.

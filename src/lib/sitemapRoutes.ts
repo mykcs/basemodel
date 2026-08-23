@@ -23,7 +23,21 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/results/',
 ] as const;
 
-export const zhOnlyStaticPaths = ['/guide/today/'] as const;
+export const zhOnlyStaticPaths = [
+  '/guide/today/',
+  '/research/seed-openevo/results/webshop-training/',
+  '/research/seed-openevo/results/seed-training/',
+  '/research/seed-openevo/results/openevo-training/',
+  '/research/seed-openevo/results/why-it-kept-failing/',
+  '/research/seed-openevo/results/first-positive-transfer/',
+  '/research/seed-openevo/results/independent-replication/',
+  '/research/seed-openevo/results/second-generation/',
+  '/research/seed-openevo/results/measurement-boundary/',
+  '/research/seed-openevo/results/current-conclusion/',
+  '/research/seed-openevo/results/benchmark-first/',
+  '/research/seed-openevo/results/seed-faithful-benchmark/',
+  '/research/seed-openevo/results/openevo-benchmark-design/',
+] as const;
 
 export function toEnglishPath(path: string): string {
   return path === '/' ? '/en/' : `/en${path}`;
