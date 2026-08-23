@@ -87,12 +87,12 @@ test('canonical-only comparison routes never expose a floating step transport', 
   }
 });
 
-test('SEED transport is bottom-docked before interaction without replacing canonical S1', async ({ page }) => {
+test('SEED transport is bottom-docked before interaction', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/research/seed-openevo/seed/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   await page.mouse.move(4, 4);
-  await expect(page.locator('#fig-seed-webshop')).toBeVisible();
+  await expect(page.locator('#fig-seed-webshop')).toHaveCount(0);
   const root = page.locator('[data-interactive-research-explainer="seed"]').first();
   const transport = root.locator('.irx-transport');
   await expect(transport).toHaveCSS('position', 'fixed');

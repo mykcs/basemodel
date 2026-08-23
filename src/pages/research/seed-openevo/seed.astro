@@ -1,15 +1,11 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import WebShopInteractionCanonicalFigure from '../../../components/research/WebShopInteractionCanonicalFigure.astro';
-import SeedWebShopCanonicalFigure from '../../../components/research/SeedWebShopCanonicalFigure.astro';
 import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
 <AppLayout title="SEED 框架原理与实验循环" description="解释 SEED 在 WebShop 上的数据设定、hindsight-skill SFT、自进化 on-policy distillation、GRPO、actor/analyzer 同步以及训练与推理边界。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="seed">
-    <WebShopInteractionCanonicalFigure locale={locale} />
-    <SeedWebShopCanonicalFigure locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>

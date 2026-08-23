@@ -39,7 +39,7 @@ describe('OpenEvo × WebShop result article index', () => {
     expect(researchDetail).not.toContain('H1.40 established E2 supply and G2 construction');
     expect(resultIndex).toContain('实验结果页只讲实验');
     expect(resultIndex).toContain('/research/seed-openevo/webshop/');
-    expect(resultIndex).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
+    expect(resultIndex).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(resultIndex).toContain('/research/seed-openevo/openevo/');
     expect(resultIndex).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
     expect(resultIndex).toContain('/papers/seed/');
@@ -53,7 +53,7 @@ describe('OpenEvo × WebShop result article index', () => {
     }
     expect(resultRoute).toContain('ResearchPrimerMoved');
     expect(primerMoved).toContain('一个概念只保留一个 canonical explanation');
-    expect(primerMoved).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
+    expect(primerMoved).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(primerMoved).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
   });
 

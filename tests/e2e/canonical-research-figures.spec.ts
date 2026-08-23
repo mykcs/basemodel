@@ -3,9 +3,9 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const figureRoutes = [
-  { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-interaction', title: '普通 Agent 怎样完成 WebShop' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-interaction', title: '普通 Agent 怎样完成 WebShop' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-dataset', title: '原始 WebShop 数据集有多大' },
-  { path: '/research/seed-openevo/seed/', selector: '#fig-seed-webshop', title: '公平比较要进入哪个 WebShop 场地' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: '公平比较要进入哪个 WebShop 场地' },
   { path: '/research/seed-openevo/loops/', selector: '#fig-seed-openevo-update-target', title: '同一份任务经验' },
 ] as const;
 
@@ -121,13 +121,13 @@ test('canonical figures remain complete without JavaScript in Chinese and Englis
   const page = await context.newPage();
 
   const routes = [
-    ['/research/seed-openevo/seed/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
     ['/research/seed-openevo/webshop/', '#fig-webshop-dataset', '图 S1-B', false],
-    ['/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
     ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
-    ['/en/research/seed-openevo/seed/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-dataset', 'FIGURE S1-B', false],
-    ['/en/research/seed-openevo/seed/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
     ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
 
@@ -154,13 +154,13 @@ test('results index links to canonical figures and the anchors land on the forma
   await expect(index).toBeVisible();
   await expect(index.getByRole('heading', { name: /先建立共同语言/ })).toBeVisible();
 
-  const seedFigureLink = index.locator('a[href="/research/seed-openevo/seed/#fig-seed-webshop"]');
+  const seedFigureLink = index.locator('a[href="/research/seed-openevo/webshop/#fig-seed-webshop"]');
   const compareFigureLink = index.locator('a[href="/research/seed-openevo/loops/#fig-seed-openevo-update-target"]');
   await expect(seedFigureLink).toHaveCount(1);
   await expect(compareFigureLink).toHaveCount(1);
 
   await seedFigureLink.click();
-  await expect(page).toHaveURL(/\/research\/seed-openevo\/seed\/#fig-seed-webshop$/);
+  await expect(page).toHaveURL(/\/research\/seed-openevo\/webshop\/#fig-seed-webshop$/);
   await expect(page.locator('#fig-seed-webshop')).toBeInViewport();
 
   await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
@@ -172,7 +172,7 @@ test('results index links to canonical figures and the anchors land on the forma
 test('legacy primer URLs stay stable but point readers to canonical ownership', async ({ page }) => {
   const cases = [
     ['/research/seed-openevo/results/webshop-training/', '/research/seed-openevo/webshop/'],
-    ['/research/seed-openevo/results/seed-training/', '/research/seed-openevo/seed/#fig-seed-webshop'],
+    ['/research/seed-openevo/results/seed-training/', '/research/seed-openevo/webshop/#fig-seed-webshop'],
     ['/research/seed-openevo/results/openevo-training/', '/research/seed-openevo/openevo/'],
   ] as const;
 
