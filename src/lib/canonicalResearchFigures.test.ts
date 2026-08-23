@@ -47,15 +47,19 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(compareFigure).not.toContain('CORE COMPARISON');
   });
 
-  it('keeps the dataset with WebShop while the SEED deep-dive remains interactive', () => {
+  it('keeps all WebShop context figures with WebShop while the SEED deep-dive remains interactive', () => {
     for (const route of [seedZh, seedEn]) {
-      expect(route).toContain('SeedWebShopCanonicalFigure');
       expect(route).not.toContain('WebShopDatasetCanonicalFigure');
-      expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+      expect(route).not.toContain('WebShopInteractionCanonicalFigure');
+      expect(route).not.toContain('SeedWebShopCanonicalFigure');
     }
     for (const route of [webshopZh, webshopEn]) {
-      expect(route).toContain('WebShopDatasetCanonicalFigure');
-      expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+      for (const figure of ['WebShopDatasetCanonicalFigure', 'WebShopInteractionCanonicalFigure', 'SeedWebShopCanonicalFigure']) {
+        expect(route).toContain(figure);
+        expect(route.indexOf(`<${figure}`)).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+      }
+      expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopInteractionCanonicalFigure'));
+      expect(route.indexOf('<WebShopInteractionCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
     }
     for (const route of [loopsZh, loopsEn]) {
       expect(route).toContain('SeedOpenEvoCanonicalFigure');
@@ -66,7 +70,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
 
   it('lets experiment results cite canonical figures instead of re-owning the background explanation', () => {
     expect(results).toContain('/research/seed-openevo/webshop/');
-    expect(results).toContain('/research/seed-openevo/seed/#fig-seed-webshop');
+    expect(results).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(results).toContain('/research/seed-openevo/openevo/');
     expect(results).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
     expect(results).toContain('/papers/seed/');

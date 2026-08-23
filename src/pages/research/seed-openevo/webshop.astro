@@ -3,11 +3,15 @@ import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 import WebShopDatasetCanonicalFigure from '../../../components/research/WebShopDatasetCanonicalFigure.astro';
+import WebShopInteractionCanonicalFigure from '../../../components/research/WebShopInteractionCanonicalFigure.astro';
+import SeedWebShopCanonicalFigure from '../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout title="WebShop 原理、交互与评测" description="逐步解释 WebShop 的购物目标、文本页面 observation、search/click 动作、页面状态转换、normalized score 与 exact success。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
     <WebShopDatasetCanonicalFigure locale={locale} />
+    <WebShopInteractionCanonicalFigure locale={locale} />
+    <SeedWebShopCanonicalFigure locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>
