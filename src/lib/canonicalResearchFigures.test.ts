@@ -129,7 +129,9 @@ describe('canonical SEED / OpenEvo research figures', () => {
     for (const route of [seedZh, seedEn]) {
       expect(route).not.toContain('WebShopDatasetCanonicalFigure');
       expect(route).not.toContain('SeedWebShopCanonicalFigure');
-      expect(route).toContain('WebShopScaleEcho');
+      expect(route).not.toContain('WebShopScaleEcho');
+      expect(route).toContain('InteractiveResearchExplainer');
+      expect(route).toContain('kind="seed"');
     }
     for (const route of [loopsZh, loopsEn]) {
       expect(route).toContain('SeedOpenEvoCanonicalFigure');
