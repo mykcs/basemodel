@@ -7,7 +7,8 @@
       "*": false,
       "**/*": false,
       "main": true,
-      "agent/semantic-release-*": true
+      "agent/semantic-release-*": true,
+      "research/**": true
     }
   },
   "github": {

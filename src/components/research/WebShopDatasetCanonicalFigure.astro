@@ -8,28 +8,28 @@ const t = (cn: string, en: string) => zh ? cn : en;
 
 <section id="fig-webshop-dataset" class="canonical-figure webshop-dataset" aria-labelledby="webshop-dataset-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
-    <div class="figure-label">{t('图 S1-B · 原始 WebShop 数据集','FIGURE S1-B · ORIGINAL WEBSHOP DATASET')}</div>
-    <h2 id="webshop-dataset-title">{t('原始 WebShop 数据集有多大？','How large is the original WebShop dataset?')}</h2>
-    <p>{t('先只看 WebShop 自己：一个商品世界，以及一组按训练集、开发集和测试集划分的购物任务。','Look only at WebShop itself first: one product world and shopping tasks divided into Train, Dev, and Test.')}</p>
+    <div class="figure-label">{t('第一步 · 原始 WEBSHOP','STEP 1 · ORIGINAL WEBSHOP')}</div>
+    <h2 id="webshop-dataset-title">{t('原始 WebShop：1,181,436 个商品与 12,087 条人工购物指令','Original WebShop: 1,181,436 products and 12,087 human shopping instructions')}</h2>
+    <p>{t('原始 benchmark 同时包含商品目录与人工购物指令。人工指令分为 Train、Dev 和 Test；这里先建立后续 small 环境与 SEED 改动之前的基线。','The original benchmark contains both a product catalog and human shopping instructions. The instructions are split into Train, Dev, and Test; this establishes the baseline before the small environment and SEED-specific wrapper changes.')}</p>
   </header>
   <figure class="dataset-world" aria-labelledby="webshop-dataset-title">
     <article class="product-warehouse" data-ui-audit-item><small>{t('原始商品世界','ORIGINAL PRODUCT WORLD')}</small><strong>1,181,436</strong><span>{t('商品（products）','products')}</span></article>
-    <div class="dataset-arrow" aria-hidden="true">→</div>
-    <section class="task-world" aria-label={t('WebShop 任务划分','WebShop task splits')}>
-      <header><small>{t('WebShop 任务','WEBSHOP TASKS')}</small><strong>12,087</strong><span>{t('购物指令 / 任务（shopping instructions / tasks）','shopping instructions / tasks')}</span></header>
+    <div class="dataset-arrow" aria-hidden="true">＋</div>
+    <section class="task-world" aria-label={t('WebShop 人工任务划分','WebShop human-instruction splits')}>
+      <header><small>{t('人工购物指令','HUMAN SHOPPING INSTRUCTIONS')}</small><strong>12,087</strong><span>{t('crowd-sourced text instructions（众包文本指令）','crowd-sourced text instructions')}</span></header>
       <div class="task-splits">
-        <article data-ui-audit-item><small>{t('训练集（Train）','TRAIN')}</small><strong>10,587</strong><span>{t('训练题','training tasks')}</span></article>
-        <article data-ui-audit-item><small>{t('开发集（Dev）','DEV')}</small><strong>1,000</strong><span>{t('开发 / 练习考试','development / practice')}</span></article>
-        <article data-ui-audit-item><small>{t('测试集（Test）','TEST')}</small><strong>500</strong><span>{t('最终测试','final test')}</span></article>
+        <article data-ui-audit-item><small>{t('训练集（Train）','TRAIN')}</small><strong>10,587</strong><span>{t('训练指令','training instructions')}</span></article>
+        <article data-ui-audit-item><small>{t('开发集（Dev）','DEV')}</small><strong>1,000</strong><span>{t('开发指令','development instructions')}</span></article>
+        <article data-ui-audit-item><small>{t('测试集（Test）','TEST')}</small><strong>500</strong><span>{t('测试指令','test instructions')}</span></article>
       </div>
     </section>
-    <figcaption>{t('这是原始 WebShop 的规模与官方任务划分；它不描述任何一种训练方法。','These are the Original WebShop scale and official task splits; they do not describe any learning method.')}</figcaption>
+    <figcaption>{t('这里的“商品”与“人工购物指令”是原始 WebShop 的两个并列组成部分；加号表示共存，不表示商品经过某个步骤生成了这 12,087 条人工指令。','Products and human shopping instructions are two parallel parts of original WebShop. The plus sign means coexistence, not that the products are transformed into these 12,087 human instructions.')}</figcaption>
   </figure>
 </section>
 
 <style>
   .webshop-dataset{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
-  .figure-header{max-width:780px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
-  .dataset-world{display:grid;grid-template-columns:minmax(210px,.7fr) auto minmax(0,1.3fr);gap:1rem;align-items:center;margin:1.45rem 0 0}.product-warehouse,.task-world{padding:clamp(.9rem,2vw,1.35rem);border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.product-warehouse{border-top:5px solid var(--accent)}.product-warehouse small,.product-warehouse span,.task-world small,.task-world span{display:block;color:var(--muted);font-size:.68rem;line-height:1.45}.product-warehouse strong,.task-world>header strong{display:block;margin:.5rem 0 .18rem;font-size:clamp(2rem,5vw,4rem);line-height:.92;letter-spacing:-.06em}.dataset-arrow{color:var(--accent);font-size:2rem;font-weight:800}.task-world>header{padding-bottom:.95rem;border-bottom:1px solid var(--line)}.task-splits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;padding-top:.8rem}.task-splits article{min-width:0;padding:.65rem;border-left:3px solid var(--line);background:var(--surface)}.task-splits article:first-child{border-color:var(--accent)}.task-splits article:last-child{border-color:var(--success)}.task-splits strong{display:block;margin:.3rem 0;font-size:1.25rem}.dataset-world figcaption{grid-column:1/-1;color:var(--muted);font-size:.78rem;line-height:1.55}
-  @media(max-width:700px){.dataset-world{grid-template-columns:1fr}.dataset-arrow{justify-self:center;transform:rotate(90deg)}.task-splits{grid-template-columns:1fr}.webshop-dataset{width:min(100% - 1rem,1120px);padding:1rem}}
+  .figure-header{max-width:860px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
+  .dataset-world{display:grid;grid-template-columns:minmax(210px,.7fr) auto minmax(0,1.3fr);gap:1rem;align-items:center;margin:1.45rem 0 0}.product-warehouse,.task-world{padding:clamp(.9rem,2vw,1.35rem);border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.product-warehouse{border-top:5px solid var(--accent)}.product-warehouse small,.product-warehouse span,.task-world small,.task-world span{display:block;color:var(--muted);font-size:.68rem;line-height:1.45}.product-warehouse strong,.task-world>header strong{display:block;margin:.5rem 0 .18rem;font-size:clamp(2rem,5vw,4rem);line-height:.92;letter-spacing:-.06em}.dataset-arrow{color:var(--muted);font-size:1.75rem;font-weight:800}.task-world>header{padding-bottom:.95rem;border-bottom:1px solid var(--line)}.task-splits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;padding-top:.8rem}.task-splits article{min-width:0;padding:.65rem;border-left:3px solid var(--line);background:var(--surface)}.task-splits article:first-child{border-color:var(--accent)}.task-splits article:last-child{border-color:var(--success)}.task-splits strong{display:block;margin:.3rem 0;font-size:1.25rem}.dataset-world figcaption{grid-column:1/-1;color:var(--muted);font-size:.78rem;line-height:1.55}
+  @media(max-width:700px){.dataset-world{grid-template-columns:1fr}.dataset-arrow{justify-self:center}.task-splits{grid-template-columns:1fr}.webshop-dataset{width:min(100% - 1rem,1120px);padding:1rem}}
 </style>

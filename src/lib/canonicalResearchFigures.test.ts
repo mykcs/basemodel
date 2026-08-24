@@ -4,10 +4,12 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 
 const seedFigure = read('src/components/research/SeedWebShopCanonicalFigure.astro');
-const interactionFigure = read('src/components/research/WebShopInteractionCanonicalFigure.astro');
 const datasetFigure = read('src/components/research/WebShopDatasetCanonicalFigure.astro');
+const smallWorldFigure = read('src/components/research/WebShopSmallWorldFigure.astro');
+const goalGenerationFigure = read('src/components/research/WebShopGoalGenerationFigure.astro');
+const seedSplitFigure = read('src/components/research/WebShopSeedSplitFigure.astro');
+const evaluationFigure = read('src/components/research/WebShopEvaluationFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
-const scaleEcho = read('src/components/research/WebShopScaleEcho.astro');
 const seedZh = read('src/pages/research/seed-openevo/seed.astro');
 const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
 const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
@@ -15,22 +17,101 @@ const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
 const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
 const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
 const results = read('src/components/research/OpenEvoWebShopResultIndex.astro');
+const explainerStandard = read('docs/agents/current/research-explainer-page-standard.md');
 
 describe('canonical SEED / OpenEvo research figures', () => {
-  it('separates the WebShop interaction, original dataset, and fair-comparison setting', () => {
-    for (const term of ['Agent', 'search[…]', 'click[…]', 'Buy', 'Page changes', 'Score / Success']) expect(interactionFigure).toContain(term);
-    for (const forbidden of ['SEED Agent', 'OpenEvo Agent', '1,181,436', '1,000-product']) expect(interactionFigure).not.toContain(forbidden);
-    for (const term of ['1,181,436', '12,087', '10,587', '1,000', '500', 'ORIGINAL PRODUCT WORLD']) expect(datasetFigure).toContain(term);
-    for (const term of ['购物指令 / 任务（shopping instructions / tasks）', '训练集（Train）', '开发集（Dev）', '测试集（Test）']) expect(datasetFigure).toContain(term);
-    for (const forbidden of ['SEED', 'OpenEvo', 'PPO', 'OPD', 'hindsight']) expect(datasetFigure).not.toContain(forbidden);
-    for (const term of ['SAME WEBSHOP SETTING', 'goal 500–6909', 'goal 0–499', '128', 'RELEASED-CODE DEFAULT', 'PAPER BOUNDARY', 'exact 128-goal manifest']) expect(seedFigure).toContain(term);
-    for (const forbidden of ['180 tasks × 8 rollouts', '1,440 trajectories', '2,400 training instances', '150 policy updates', 'N = 8', 'HINDSIGHT-SKILL SFT', 'GLM-5.2', 'GRPO', 'OPD', 'teacher signal detached', '🔥', '❄️', '⊥']) expect(seedFigure).not.toContain(forbidden);
+  it('keeps the original WebShop benchmark as two parallel object types', () => {
+    for (const term of ['1,181,436', '12,087', '10,587', '1,000', '500', 'crowd-sourced text instructions', '＋']) {
+      expect(datasetFigure).toContain(term);
+    }
+    for (const term of ['Train', 'Dev', 'Test']) expect(datasetFigure).toContain(term);
+    for (const forbidden of ['SEED Agent', 'OpenEvo Agent', 'PPO', 'OPD', 'hindsight']) expect(datasetFigure).not.toContain(forbidden);
+    expect(datasetFigure).not.toContain('原始 WebShop 数据集有多大？');
   });
 
-  it('keeps Figure S1 evidence boundaries explicit instead of fabricating a complete manifest', () => {
-    expect(seedFigure).toContain('The paper does not state the catalog size');
-    expect(seedFigure).toContain('Exact 128-goal manifest: not yet pinned here.');
-    expect(seedFigure).toContain('Same world, same tasks, same test, same scoring');
+  it('explains official small mode as a subset operation', () => {
+    for (const term of ['1,181,436', '1,000', './setup.sh -d small', 'WebShop 官方提供', 'SUBSET ·']) {
+      expect(smallWorldFigure).toContain(term);
+    }
+    expect(smallWorldFigure).not.toContain('完整 WebShop 怎样变成 SEED 使用的小商品世界？');
+  });
+
+  it('keeps product-to-goal generation and the 12,087-vs-6,910 boundary in one section', () => {
+    for (const term of ['1,000', '6,910', 'get_synthetic_goals(...)', 'itertools.product', '12,087', 'synthetic goals', 'UNIT BOUNDARY']) {
+      expect(goalGenerationFigure).toContain(term);
+    }
+    expect(goalGenerationFigure).toContain('不是 6,910 个 synthetic goals 的过滤来源');
+    expect(goalGenerationFigure).not.toContain('÷1.7');
+    expect(goalGenerationFigure).not.toContain('1,000 个商品，为什么最后会有 6,910 个 goals？');
+  });
+
+  it('shows the original three-way goal-index wrapper and SEED active two-way rule without re-teaching the benchmark counts', () => {
+    for (const term of [
+      '三段式 goal-index split',
+      '两段式：non-train / train',
+      '500–1499',
+      'goal 0–499',
+      'goal 500–6909',
+      '6,410 goals',
+      'UNKNOWN / NOT PINNED',
+    ]) expect(seedSplitFigure).toContain(term);
+    expect(seedSplitFigure).toContain('SEED 把 6,910 个 goals 分成两块');
+    expect(seedSplitFigure).not.toContain('SEED released wrapper：三段 goal-index 规则改为两段');
+    expect(seedSplitFigure).not.toContain('原始 WebShop 有 train / eval / test，为什么 SEED 这里只剩两块？');
+  });
+
+  it('teaches WebShop evaluation as inputs -> evaluator -> two complementary outputs', () => {
+    for (const term of ['task_score ∈ [0, 1]', 'EXACT SUCCESS', 'won ∈', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
+      expect(evaluationFigure).toContain(term);
+    }
+    expect(evaluationFigure).toContain('INPUT · GOAL');
+    expect(evaluationFigure).toContain('TERMINAL STATE');
+    expect(evaluationFigure).toContain('EVALUATE');
+  });
+
+  it('keeps the WebShop route as one first-reader sequence without legacy duplicate sections', () => {
+    const ordered = [
+      '<InteractiveResearchExplainer',
+      '<WebShopDatasetCanonicalFigure',
+      '<WebShopSmallWorldFigure',
+      '<WebShopGoalGenerationFigure',
+      '<WebShopSeedSplitFigure',
+      '<WebShopEvaluationFigure',
+      '<SeedWebShopCanonicalFigure',
+    ];
+
+    for (const route of [webshopZh, webshopEn]) {
+      ordered.forEach((component) => expect(route).toContain(component));
+      for (let index = 0; index < ordered.length - 1; index += 1) {
+        expect(route.indexOf(ordered[index])).toBeLessThan(route.indexOf(ordered[index + 1]));
+      }
+      for (const legacyDuplicate of ['WebShopInteractionCanonicalFigure', 'WebShopInstructionGoalSeparationFigure', 'WebShopScaleEcho']) {
+        expect(route).not.toContain(legacyDuplicate);
+      }
+    }
+  });
+
+  it('keeps the fair-comparison anchor stable while using declarative copy', () => {
+    for (const term of ['fig-seed-webshop', 'SAME WEBSHOP SETTING', 'goal 500–6909', 'goal 0–499', '128', 'RELEASED-CODE DEFAULT', 'exact 128-goal manifest']) {
+      expect(seedFigure).toContain(term);
+    }
+    expect(seedFigure).toContain('SEED 与 OpenEvo：进入同一套 WebShop 比较合同');
+    expect(seedFigure).not.toContain('公平比较要进入哪个 WebShop 场地？');
+  });
+
+  it('formalizes the first-time-reader explainer standard as repository policy', () => {
+    for (const term of [
+      'Default reader: first visit',
+      'One major section = one new mental-model step',
+      'Every visual distinction must carry real semantics',
+      'SUBSET / select',
+      'GENERATE',
+      'SPLIT / REASSIGN',
+      'EVALUATE',
+      'COMPARE',
+      'Scoring must be taught as input -> evaluator -> outputs',
+      'WebShop canonical explainer sequence',
+    ]) expect(explainerStandard).toContain(term);
   });
 
   it('keeps C1 as one reusable comparison instead of repeating the same conclusion', () => {
@@ -41,31 +122,14 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(compareFigure).toContain('VALIDATED SUCCESSOR CARRIER / STATE');
     expect(compareFigure).toContain('non-weight');
     expect(compareFigure).toContain('parametric');
-    expect(compareFigure).toContain('Agent 参数不变');
-    expect(compareFigure).toContain('adapter 可更新');
-    expect(compareFigure).toContain('Carrier subtypes are intentionally not expanded here');
-    expect(compareFigure).not.toContain('aligned-comparison');
     expect(compareFigure).not.toContain('CORE COMPARISON');
   });
 
-  it('keeps all WebShop context figures with WebShop while the SEED deep-dive remains interactive', () => {
+  it('keeps WebShop context ownership on WebShop while other canonical routes keep their own figures', () => {
     for (const route of [seedZh, seedEn]) {
       expect(route).not.toContain('WebShopDatasetCanonicalFigure');
-      expect(route).not.toContain('WebShopInteractionCanonicalFigure');
       expect(route).not.toContain('SeedWebShopCanonicalFigure');
-    }
-    for (const route of [webshopZh, webshopEn]) {
-      for (const figure of ['WebShopDatasetCanonicalFigure', 'WebShopInteractionCanonicalFigure', 'SeedWebShopCanonicalFigure', 'WebShopScaleEcho']) {
-        expect(route).toContain(figure);
-      }
-      expect(route.indexOf('<WebShopInteractionCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
-      expect(route.indexOf('<InteractiveResearchExplainer')).toBeLessThan(route.indexOf('<WebShopDatasetCanonicalFigure'));
-      expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
-      expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopScaleEcho'));
-    }
-    for (const route of [seedZh, seedEn]) {
       expect(route).toContain('WebShopScaleEcho');
-      expect(route.indexOf('<WebShopScaleEcho')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
     }
     for (const route of [loopsZh, loopsEn]) {
       expect(route).toContain('SeedOpenEvoCanonicalFigure');
@@ -74,38 +138,18 @@ describe('canonical SEED / OpenEvo research figures', () => {
     }
   });
 
-  it('echoes the original-to-SEED scale shrink across both pages with one shared figure', () => {
-    expect(scaleEcho).toContain('fig-webshop-scale-echo');
-    for (const term of ['1,181,436', '12,087', '6,910', '1,000', '500', '128']) expect(scaleEcho).toContain(term);
-    for (const term of ['÷1,181', '÷1.7', '÷3.9']) expect(scaleEcho).toContain(term);
-    for (const term of ['原始 WEBSHOP', 'SEED 场地', '商品世界', '任务池', '最终考试']) expect(scaleEcho).toContain(term);
-    // The echo must keep the Figure S1 evidence boundary: paper does not pin the exact 128-goal manifest.
-    expect(scaleEcho).toContain('未钉死');
-    expect(scaleEcho).toContain('<figcaption');
-    expect(scaleEcho).toContain('data-ui-audit="contrast layout overflow"');
-    expect(scaleEcho).toContain('data-ui-audit-item');
-    expect(scaleEcho).not.toContain('client:');
-    // Cross-page呼应: webshop side points at the seed mirror; seed side points back at S1-B / S1-C.
-    expect(scaleEcho).toContain('/research/seed-openevo/seed/#fig-webshop-scale-echo');
-    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-webshop-dataset');
-    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
-  });
-
-  it('lets experiment results cite canonical figures instead of re-owning the background explanation', () => {
+  it('lets experiment results cite canonical figures instead of re-owning background explanation', () => {
     expect(results).toContain('/research/seed-openevo/webshop/');
     expect(results).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(results).toContain('/research/seed-openevo/openevo/');
     expect(results).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
     expect(results).toContain('/papers/seed/');
-    expect(results).toContain('一个概念只保留一个 canonical explanation');
   });
 
-  it('keeps the canonical figures static-first, responsive, and readability-audited', () => {
-    expect(seedFigure).toContain('data-ui-audit="contrast layout overflow"');
-    expect(compareFigure).toContain('data-ui-audit="contrast layout overflow readability"');
-    expect(compareFigure).toContain('data-ui-prose');
-    for (const figure of [seedFigure, interactionFigure, datasetFigure, compareFigure]) {
+  it('keeps the canonical static figures responsive and readability-audited', () => {
+    for (const figure of [datasetFigure, smallWorldFigure, goalGenerationFigure, seedSplitFigure, evaluationFigure, seedFigure, compareFigure]) {
       expect(figure).toContain('<figcaption');
+      expect(figure).toContain('data-ui-audit=');
       expect(figure).not.toContain('client:');
     }
   });
