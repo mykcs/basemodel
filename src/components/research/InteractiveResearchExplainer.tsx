@@ -36,7 +36,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     alfworld: {
-      eyebrow: 'ALFWORLD',
+      eyebrow: '',
       title: zh ? 'ALFWorld 环境模型' : 'ALFWorld environment model',
       lede: zh ? '物体位置、容器开关和 heated 状态都会约束下一步动作；一次失败动作不会被“语言合理性”自动纠正。' : 'Object locations, receptacle state, and heated state constrain the next action; a plausible sentence does not bypass world preconditions.',
       steps: [
@@ -91,7 +91,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     server: {
-      eyebrow: 'SERVER',
+      eyebrow: '',
       title: zh ? '实验室服务器权限模型' : 'Laboratory server authority model',
       lede: zh ? '控制容器、科研运行容器与其他用户容器是 host Docker daemon 管理的 sibling containers。技术能力、宿主机所有权和项目授权是三个不同概念。' : 'The control container, scientific runtime, and other users’ containers are siblings managed by the host Docker daemon. Technical capability, host ownership, and project authorization are distinct concepts.',
       steps: [
