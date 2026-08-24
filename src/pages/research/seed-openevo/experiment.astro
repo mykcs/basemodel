@@ -1,8 +1,14 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../components/research/OpenEvoExperimentGateway.astro';
+import OpenEvoNextExperimentProtocol from '../../../components/research/OpenEvoNextExperimentProtocol.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo × WebShop 实验" description="openevo-experiment 是科学 source of truth；本站保留带日期的默认分支快照与历史结果，实时阶段和 GPU 分配从实际工作 branch 的 current-campaign、最新 reconciliation/result 与 preregistration 解析。" locale={locale}>
+<AppLayout
+  title="OpenEvo × WebShop 实验与复现"
+  description="openevo-experiment 是科学 source of truth；本页负责实验状态、代码与复现入口，以及下一阶段 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）协议。"
+  locale={locale}
+>
   <OpenEvoExperimentGateway locale={locale} />
+  <OpenEvoNextExperimentProtocol />
 </AppLayout>
