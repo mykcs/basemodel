@@ -12,17 +12,19 @@ This file is a specialization, not a competing design system.
 - `audience-centered-technical-copy.md` owns project-wide technical copy and heading discipline.
 - `ui-design-principles.md` owns the visual identity, semantic color, card budget, responsive behavior, and non-drift rules.
 - research/data/evidence policies own scientific truth and claim boundaries.
-- this file owns the **first-time-reader narrative shape of research explainer pages**: what each section is allowed to do, how sections advance, how corrective material is placed, and how diagrams encode meaning.
+- this file owns the **first-time-reader narrative shape of research explainer pages**: what each section is allowed to do, how sections advance, how corrective material is placed, how evidence is attached to claims, and how diagrams encode meaning.
 
 When two rules overlap, apply the stricter current rule. Do not duplicate this file into page-local instructions.
 
 ---
 
-## 1. Default reader: first visit, not post-hoc debugging
+## 1. Default reader: a lab colleague who knows the project exists but not the details
 
-Assume the reader may arrive at the page **before reading the paper or source code**. They may not know the project vocabulary and may not yet have formed the questions an expert would ask after inspecting the implementation.
+Assume the reader has heard that the lab is doing this project, but may know almost nothing about the implementation, dataset reconstruction, experiment IDs, or current evidence. They may arrive **before reading the paper or source code** and will naturally keep asking basic questions as they read.
 
-Therefore the primary narrative must **state what happens**, in order, rather than simulate an FAQ.
+The page must therefore supply the missing context at the moment it becomes necessary. Do not write as if the reader attended the previous discussion, remembers earlier drafts, or understands the website's internal information architecture.
+
+On a **mechanism / benchmark explainer**, the primary narrative should normally state what happens in order.
 
 Bad main-section heading:
 
@@ -30,7 +32,7 @@ Bad main-section heading:
 
 Preferred:
 
-> SEED released wrapper：三段 goal-index 规则改为两段
+> SEED 把 6,910 个 goals 分成两块
 
 Bad:
 
@@ -40,21 +42,31 @@ Preferred:
 
 > Small WebShop：1,000 个商品生成 6,910 个可执行 goals
 
-Question headings are allowed only on an actual FAQ, troubleshooting surface, or reader-question index. They are not the default voice of an explainer.
+On a **results / decision page**, genuine reader questions are appropriate and often preferred when they match the questions a first-time lab reader would actually ask, for example:
+
+> OpenEvo 真的发生了学习吗？
+>
+> 学到的经验能迁移到新的任务吗？
+>
+> 最后还缺哪一个关键实验？
+
+The distinction is simple: do not invent rhetorical questions for an operation diagram, but do use real scientific questions to organize results when the page exists to answer them.
 
 ---
 
-## 2. Headings advance the story with declarative subjects
+## 2. Headings reveal the scientific story, not the website's filing system
 
 For H1/H2/H3 on explainer pages:
 
 - name the subject or state the operation directly;
-- prefer short declarative phrases over rhetorical questions;
+- prefer short declarative phrases over rhetorical questions when teaching a mechanism;
+- use genuine scientific questions on results pages when the section directly answers them;
 - do not require the reader to already know the surprising part;
 - do not make a correction, disclaimer, or “why this matters” sentence visually outrank the subject;
-- keep the explanation in the paragraph immediately below the heading.
+- keep the explanation in the paragraph immediately below the heading;
+- never use the heading to tell the reader where content was moved, what this page intentionally omitted, or how the site was reorganized.
 
-A good sequence can be understood by scanning only the headings.
+A good explainer sequence can be understood by scanning only the headings.
 
 Example:
 
@@ -62,9 +74,20 @@ Example:
 原始 WebShop：商品世界与人工任务
 WebShop 官方 small 模式：1,000 个商品
 Small WebShop：商品生成可执行 goals
-SEED released wrapper：两段 goal-index split
+SEED 把 6,910 个 goals 分成两块
 WebShop 最终评分：task score 与 exact success
 SEED × OpenEvo：同一比较合同
+```
+
+A good results sequence can instead read like the lab's scientific conversation:
+
+```text
+OpenEvo 真的发生了学习吗？
+有没有成功经验可以学习？
+学进去以后能迁移到新的任务吗？
+第一代能迁移，是否意味着可以一直越学越好？
+现在真正可以下什么结论？
+最后还缺哪一个关键实验？
 ```
 
 ---
@@ -176,7 +199,7 @@ Never use a transformation arrow when the relationship is actually coexistence. 
 
 ---
 
-## 7. Mainline first; evidence second
+## 7. Mainline first; evidence local to the claim
 
 A first-time reader should be able to understand the full story without opening source-code details.
 
@@ -193,7 +216,43 @@ L3 reproduction detail
   manifests, hashes, scripts, verification, unresolved exact IDs
 ```
 
-`<details>` is appropriate for L2/L3 evidence when the main claim remains visible without opening it.
+The crucial interaction rule is:
+
+> **The claim owns its evidence.**
+
+If a paragraph, question, or figure makes a claim, its L2/L3 evidence should normally be attached immediately beside or below it. `<details>` is preferred when evidence is optional:
+
+```html
+<article>
+  <h3>学到的经验能迁移到新的任务吗？</h3>
+  <p>当前答案……</p>
+  <details>
+    <summary>展开实验依据</summary>
+    <!-- exact manifest / machine result / report / claim boundary -->
+  </details>
+</article>
+```
+
+The intended reading motion is:
+
+```text
+read claim
+-> optionally expand its evidence
+-> optionally inspect source links
+-> collapse
+-> continue to the next claim
+```
+
+Do **not** make the normal evidence interaction:
+
+```text
+read the entire narrative
+-> click “查看证据链”
+-> jump to a distant Evidence Map
+-> reread the same claims in a second traversal
+```
+
+A separate evidence index is justified only when it has a distinct archival/search function that cannot be served locally. It must not duplicate the main narrative just to provide source links.
 
 Evidence status language should remain explicit where relevant:
 
@@ -255,38 +314,68 @@ If a section cannot be assigned a unique arrow, it is probably a duplicate, appe
 
 ---
 
-## 10. First-time-reader copy rules
+## 10. First-time-reader copy: talk about the research, not about page management
 
-On research explainer pages:
+On research pages:
 
 - define project-specific terms at first use;
 - translate necessary English terms immediately when the Chinese page needs them;
 - prefer concrete environment nouns and verbs over generic AI metaphors;
 - avoid conversation-dependent words such as “刚才 / 前面说过 / 这里为什么又 / 这次” unless the visible page supplies the referent;
-- avoid rhetorical “你可能会问”; state the fact first;
+- avoid rhetorical “你可能会问”; either state the fact or ask the real scientific question directly;
 - use source links beside the claim they support;
 - keep the page understandable when read before the source code.
 
+Most importantly, **never expose the author's content-management decisions as reader-facing prose**. The reader should see the research, not instructions about how the website was organized.
+
+Avoid wording such as:
+
+```text
+背景只保留入口，不在实验结果页重新讲一遍
+这页不按 H0/H1 排列
+方法背景不在这里重复
+完整代码继续向下放在 Evidence Map
+这些页面从主报告骨架降为 deep dive
+下一步实验设计从 Results 中移到这里
+一个概念只保留一个 canonical explanation
+```
+
+Prefer the reader's actual question or the scientific fact:
+
+```text
+OpenEvo、WebShop、SEED 和实验记录分别指什么？
+OpenEvo 真的发生了学习吗？
+这些结论具体来自哪些实验？
+哪些实验值得进一步追问？
+下一场真正关键的实验是什么？
+H1.42 发生在 H1.41 之后，因此不能改变 H1.41 时点的结论。
+```
+
+Links to another route are fine, but their copy should answer **what the reader will learn there**, not explain why the author chose to place the content there.
+
 ---
 
-## 11. Acceptance checklist for a research explainer page
+## 11. Acceptance checklist for a research explainer / results page
 
 Before handing a Preview to the owner, verify:
 
-1. A first-time reader can identify the page subject and overall route without prior paper/code reading.
-2. Major headings are declarative subjects/statements rather than invented reader questions.
-3. Scanning the headings alone reveals a coherent sequence.
-4. Every major section adds one unique mental-model step.
+1. A first-time lab reader can identify the subject without prior paper/code reading.
+2. Mechanism/benchmark headings state the operation directly; results headings may use genuine scientific questions.
+3. Scanning the headings alone reveals a coherent scientific sequence.
+4. Every major section adds one unique mental-model step or answers one distinct research question.
 5. Removing any recap-only section would not make the argument less complete; recap-only sections have been removed or merged.
 6. Corrective material sits beside the relationship it protects instead of becoming a second main storyline.
 7. Every color, shade, shape, arrow, width, badge, and animation has a named semantic meaning.
 8. Different operations (subset, generate, split, evaluate, compare) do not share a misleading identical visual grammar.
 9. Previous numbers appear only when needed as inputs/reference, not as another full lesson.
-10. Evidence and unknown boundaries remain available without interrupting the L1 reading path.
-11. Metric figures explain what the outputs mean, not only their field names.
-12. No pedagogical mock value is visually presented as a measured experiment result.
-13. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
-14. The exact-head Vercel Preview is inspected after repository validation.
+10. Optional evidence is attached locally to the claim/question/figure it supports.
+11. A reader does not need a second full-page traversal to inspect evidence for claims already read.
+12. Claim boundaries and unknowns remain visible in the evidence layer.
+13. Metric figures explain what the outputs mean, not only their field names.
+14. No pedagogical mock value is visually presented as a measured experiment result.
+15. Public copy contains no editor-facing “this page omits/moves/organizes content” narration.
+16. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
+17. The exact-head Vercel Preview is inspected after repository validation.
 
 ---
 
@@ -325,16 +414,16 @@ This sequence is a presentation contract, not a substitute for source verificati
 
 ## 13. Change discipline
 
-For a non-trivial explainer-page change:
+For a non-trivial research-page change:
 
 ```text
 inspect whole route
--> identify unique section roles and duplicates
--> form the declarative heading sequence
--> map each section to a real operation
+-> identify unique section roles / reader questions and duplicates
+-> form the scientific heading sequence
+-> map each explainer section to a real operation
+-> attach each result claim to its local evidence and claim boundary
 -> implement semantic HTML/Astro/CSS
--> keep evidence links local to claims
--> run repository validation
+-> run reader-voice + repository validation
 -> inspect exact-head Vercel Preview
 -> revise once as a coherent batch when possible
 ```
