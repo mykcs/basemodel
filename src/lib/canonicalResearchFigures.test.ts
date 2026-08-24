@@ -55,7 +55,8 @@ describe('canonical SEED / OpenEvo research figures', () => {
       '6,410 goals',
       'UNKNOWN / NOT PINNED',
     ]) expect(seedSplitFigure).toContain(term);
-    expect(seedSplitFigure).toContain('SEED released wrapper：三段 goal-index 规则改为两段');
+    expect(seedSplitFigure).toContain('SEED 把 6,910 个 goals 分成两块');
+    expect(seedSplitFigure).not.toContain('SEED released wrapper：三段 goal-index 规则改为两段');
     expect(seedSplitFigure).not.toContain('原始 WebShop 有 train / eval / test，为什么 SEED 这里只剩两块？');
   });
 
