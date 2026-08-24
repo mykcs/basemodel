@@ -168,7 +168,7 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain("eyebrow: 'FIGURE 04 · SEED × WEBSHOP'");
     expect(explainer).toContain("eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP'");
     expect(explainer).toContain('irx-inference-strip');
-    expect(detailCore).toContain("t('购物任务', 'Shopping task')");
+    expect(detailCore).toContain("t('分数与成功边界', 'Score and success boundary')");
     expect(detailCore).toContain("t('世界状态', 'World state')");
   });
 });

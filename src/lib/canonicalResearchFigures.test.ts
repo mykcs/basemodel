@@ -55,14 +55,13 @@ describe('canonical SEED / OpenEvo research figures', () => {
       expect(route).not.toContain('SeedWebShopCanonicalFigure');
     }
     for (const route of [webshopZh, webshopEn]) {
-      for (const figure of ['WebShopDatasetCanonicalFigure', 'WebShopInteractionCanonicalFigure', 'SeedWebShopCanonicalFigure']) {
+      for (const figure of ['WebShopDatasetCanonicalFigure', 'WebShopInteractionCanonicalFigure', 'SeedWebShopCanonicalFigure', 'WebShopScaleEcho']) {
         expect(route).toContain(figure);
-        expect(route.indexOf(`<${figure}`)).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
       }
-      expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopInteractionCanonicalFigure'));
-      expect(route.indexOf('<WebShopInteractionCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
+      expect(route.indexOf('<WebShopInteractionCanonicalFigure')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+      expect(route.indexOf('<InteractiveResearchExplainer')).toBeLessThan(route.indexOf('<WebShopDatasetCanonicalFigure'));
+      expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
       expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopScaleEcho'));
-      expect(route.indexOf('<WebShopScaleEcho')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
     }
     for (const route of [seedZh, seedEn]) {
       expect(route).toContain('WebShopScaleEcho');
