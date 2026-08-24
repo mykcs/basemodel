@@ -90,6 +90,30 @@ describe('audience copy audit', () => {
     expect(checkStrictAudienceCopyInvariants(root)).toEqual([]);
   });
 
+  it('ignores i18n string literals when flagging a Chinese surface English sentence', () => {
+    const file = 'src/components/OpenEvoReproductionResearch.astro';
+    const source = fs.readFileSync(path.join(root, file), 'utf8');
+    const probeFindings = source.matchAll(/[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g);
+    expect(Array.from(probeFindings).length).toBeGreaterThan(0);
+    const findings = scanAudienceCopy(root);
+    const zhEn = findings.filter((finding) => finding.file === file && finding.ruleId === 'COPY-ZH-EN-SENTENCE');
+    expect(zhEn).toEqual([]);
+  });
+
+  it('still flags a bare Chinese surface that exposes an unexplained full English sentence', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'audience-copy-'));
+    try {
+      const sample = path.join(tmpRoot, 'src');
+      fs.mkdirSync(path.join(sample, 'components'), { recursive: true });
+      fs.writeFileSync(path.join(sample, 'components', 'Mixed.astro'), '<p>中文段落 English sentence. Followed by another full sentence.</p>\n');
+      const findings = scanAudienceCopy(tmpRoot);
+      const zhEn = findings.filter((finding) => finding.ruleId === 'COPY-ZH-EN-SENTENCE');
+      expect(zhEn.length).toBeGreaterThan(0);
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+
   it('keeps the owner inventory connected to the scanner and representative routes', () => {
     const audit = fs.readFileSync(path.join(root, 'docs/agents/current/audience-copy-audit-2026-08-12.md'), 'utf8');
     expect(audit).toContain('Source-owner inventory');
