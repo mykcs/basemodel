@@ -164,15 +164,15 @@ Task Score + exact Success`}</code></pre>
         <h2>外层协议应该先固定，任何方法都不能因为自身结构不同而改考试规则。</h2>
         <div class="protocol-table" role="table" aria-label="SEED-faithful WebShop benchmark protocol">
           <div class="row head" role="row"><span>项目</span><span>新的主实验协议</span></div>
-          <div class="row" role="row"><span>Environment</span><strong>SEED public-code WebShop small</strong></div>
-          <div class="row" role="row"><span>Products / goals</span><strong>1000 / 6910</strong></div>
-          <div class="row" role="row"><span>Train pool</span><strong>goal 500–6909</strong></div>
-          <div class="row" role="row"><span>Final test pool</span><strong>goal 0–499</strong></div>
-          <div class="row" role="row"><span>Final test set</span><strong>预先冻结 128 个</strong></div>
-          <div class="row" role="row"><span>Max interaction / history</span><strong>15 steps / history 2</strong></div>
-          <div class="row" role="row"><span>Prompt / parser</span><strong>SEED 原始 WEBSHOP_TEMPLATE 与 &lt;think&gt;/&lt;action&gt; contract</strong></div>
-          <div class="row" role="row"><span>Primary metrics</span><strong>Task Score + Success</strong></div>
-          <div class="row" role="row"><span>Final test learning</span><strong>禁止</strong></div>
+          <div class="row" role="row"><span>环境 (Environment)</span><strong>SEED public-code WebShop small</strong></div>
+          <div class="row" role="row"><span>商品 / 目标 (Products / goals)</span><strong>1000 / 6910</strong></div>
+          <div class="row" role="row"><span>训练数据池 (Train pool)</span><strong>goal 500–6909</strong></div>
+          <div class="row" role="row"><span>最终测试池 (Final test pool)</span><strong>goal 0–499</strong></div>
+          <div class="row" role="row"><span>最终测试集 (Final test set)</span><strong>预先冻结 128 个</strong></div>
+          <div class="row" role="row"><span>单回合步数 / 历史长度 (Max interaction / history)</span><strong>15 steps / history 2</strong></div>
+          <div class="row" role="row"><span>提示与解析器 (Prompt / parser)</span><strong>SEED 原始 WEBSHOP_TEMPLATE 与 &lt;think&gt;/&lt;action&gt; contract</strong></div>
+          <div class="row" role="row"><span>主指标 (Primary metrics)</span><strong>Task Score + Success</strong></div>
+          <div class="row" role="row"><span>最终测试集训练 (Final test learning)</span><strong>禁止</strong></div>
         </div>
         <p>compact prompt、state-aware prompt、product-grounded prompt、tolerant parser repair 都可以继续研究，但它们必须被写成 ablation，不能悄悄混进 headline comparison。</p>
       </section>
