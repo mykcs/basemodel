@@ -1,0 +1,83 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+
+<section id="fig-webshop-small-world" class="canonical-figure webshop-small-world" aria-labelledby="webshop-small-world-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('第一步 · 商品世界缩小','STEP 1 · SHRINK THE PRODUCT WORLD')}</div>
+    <h2 id="webshop-small-world-title">{t('SEED 进入的不是完整 WebShop，而是 WebShop 官方提供的小商店','SEED enters WebShop’s official small world, not the full store')}</h2>
+    <p>{t('这一张图只回答一个问题：商店里到底有多少商品。先不要讨论任务、训练或测试。','This figure answers only one question: how many products are in the store. Ignore tasks, training, and evaluation for now.')}</p>
+  </header>
+
+  <figure class="world-story" aria-labelledby="webshop-small-world-title">
+    <section class="world-panel original" data-ui-audit-item>
+      <div class="panel-kicker">{t('原始 WEBSHOP','ORIGINAL WEBSHOP')}</div>
+      <div class="warehouse" aria-hidden="true">
+        {Array.from({ length: 96 }).map((_, i) => <span class:list={{ faded: i > 47 }}></span>)}
+      </div>
+      <strong>1,181,436</strong>
+      <span>{t('商品（products）','products')}</span>
+      <p>{t('这是完整商品世界。它很大。','This is the full product world. It is huge.')}</p>
+    </section>
+
+    <section class="transform" aria-label={t('WebShop 官方 small 配置','WebShop official small configuration')}>
+      <div class="transform-line" aria-hidden="true"></div>
+      <div class="transform-card">
+        <small>WebShop official</small>
+        <strong>{t('small 配置','small configuration')}</strong>
+        <code>./setup.sh -d small</code>
+        <span>{t('官方脚本直接下载预先准备好的 1,000-product 文件','The official script downloads the prepared 1,000-product files')}</span>
+      </div>
+    </section>
+
+    <section class="world-panel small" data-ui-audit-item>
+      <div class="panel-kicker">{t('SMALL WEBSHOP','SMALL WEBSHOP')}</div>
+      <div class="warehouse compact" aria-hidden="true">
+        {Array.from({ length: 20 }).map(() => <span></span>)}
+      </div>
+      <strong>1,000</strong>
+      <span>{t('商品（products）','products')}</span>
+      <p>{t('SEED released code 默认指向的就是这组 small WebShop 数据文件。','SEED’s released code points to these small WebShop data files by default.')}</p>
+    </section>
+
+    <aside class="takeaway" role="note">
+      <strong>{t('最重要的一句话','The one sentence to remember')}</strong>
+      <p>{t('SEED 不是自己从 118 万商品里重新随机抽 1,000 个；它使用的是 WebShop 官方已经提供好的 small 配置。','SEED did not independently resample 1,000 products from the 1.18M catalog; it uses WebShop’s already-provided official small configuration.')}</p>
+    </aside>
+
+    <details class="evidence">
+      <summary>{t('为什么我们敢这么说？查看代码证据','Why can we say this? Show code evidence')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>WebShop setup.sh</small>
+          <code>Usage: ./setup.sh -d small|all</code>
+          <p>{t('small 模式下载 items_shuffle_1000 与 items_ins_v2_1000。','Small mode downloads items_shuffle_1000 and items_ins_v2_1000.')}</p>
+        </article>
+        <article>
+          <small>SEED WebShop utils.py</small>
+          <code>DEFAULT_FILE_PATH = ...items_shuffle_1000.json</code>
+          <p>{t('SEED 仓库中的 WebShop 默认路径直接指向 1,000-product 文件。','SEED’s bundled WebShop defaults directly to the 1,000-product file.')}</p>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>{t('这一阶段只固定“商品世界”：完整 WebShop → 官方 small WebShop。下一阶段再解释为什么 1,000 个商品会对应 6,910 个 goals。','This stage fixes only the product world: full WebShop → official small WebShop. The next stage will explain why 1,000 products correspond to 6,910 goals.')}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-small-world{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:860px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.6rem,3.7vw,2.9rem);line-height:1.05;letter-spacing:-.045em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
+  .world-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.52fr) minmax(0,1fr);gap:1rem;align-items:stretch;margin:1.5rem 0 0}
+  .world-panel{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.panel-kicker{color:var(--muted);font:800 .6rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.world-panel strong{display:block;margin:.8rem 0 .12rem;font-size:clamp(2.1rem,5vw,4.4rem);line-height:.9;letter-spacing:-.06em}.world-panel>span{display:block;color:var(--muted);font-size:.75rem}.world-panel p{margin:.7rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}.world-panel.original{border-top:5px solid var(--line-strong,var(--line))}.world-panel.small{border-top:5px solid var(--accent)}
+  .warehouse{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:1rem;min-height:110px;align-content:start}.warehouse span{aspect-ratio:1;border-radius:3px;background:var(--ink);opacity:.72}.warehouse span.faded{opacity:.18}.warehouse.compact{grid-template-columns:repeat(5,1fr);max-width:180px;min-height:0}.warehouse.compact span{background:var(--accent);opacity:.85}
+  .transform{position:relative;display:grid;place-items:center;min-height:260px}.transform-line{position:absolute;left:-.25rem;right:-.25rem;top:50%;height:2px;background:var(--accent)}.transform-line::after{content:'';position:absolute;right:-2px;top:50%;border:7px solid transparent;border-left-color:var(--accent);transform:translateY(-50%)}.transform-card{position:relative;z-index:1;width:100%;padding:.9rem;border:1px solid var(--accent);border-radius:12px;background:var(--surface);text-align:center}.transform-card small,.transform-card span{display:block}.transform-card small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.transform-card strong{display:block;margin:.25rem 0 .6rem;font-size:1rem}.transform-card code{display:block;padding:.48rem;border-radius:7px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.transform-card span{margin-top:.55rem;color:var(--muted);font-size:.68rem;line-height:1.45}
+  .takeaway{grid-column:1/-1;padding:1rem 1.1rem;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.takeaway strong{display:block;color:var(--accent);font-size:.78rem}.takeaway p{margin:.35rem 0 0;font-size:clamp(.95rem,1.8vw,1.18rem);line-height:1.55;font-weight:700}
+  .evidence{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.7rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
+  .world-story figcaption{grid-column:1/-1;color:var(--muted);font-size:.76rem;line-height:1.6}
+  @media(max-width:800px){.world-story{grid-template-columns:1fr}.transform{min-height:140px}.transform-line{left:50%;right:auto;top:-.2rem;bottom:-.2rem;width:2px;height:auto;transform:translateX(-50%)}.transform-line::after{right:auto;left:50%;top:auto;bottom:-8px;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--accent)}.evidence-grid{grid-template-columns:1fr}.webshop-small-world{width:min(100% - 1rem,1120px);padding:1rem}}
+</style>
