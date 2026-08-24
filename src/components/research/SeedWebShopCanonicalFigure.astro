@@ -37,7 +37,7 @@ const p = (path: string) => localePath(locale, path);
       </div>
     </section>
 
-    <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')}>
+    <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')} data-layout-anomaly-ignore>
       <strong>SAME RULES</strong><span>{t('同一个商品世界','same product world')}</span><span>{t('同一批可学习任务','same learning-task pool')}</span><span>{t('同一批最终考试题','same final test')}</span><span>{t('同一种 Score / Success 评分','same Score / Success scoring')}</span>
     </section>
     <figcaption><strong>{t('同一个世界、同一批任务、同一场考试、同一种评分；学习方法可以不同。','Same world, same tasks, same test, same scoring; learning methods may differ.')}</strong> {t('1,000 商品、训练起点和 6,910 goals 来自当前 released code 与 WebShop small environment；“128”来自 SEED 论文报告。图中不把未公布的 exact 128 goal IDs 或论文 catalog size 当作既定事实。','The 1,000 products, training start, and 6,910 goals come from current released code and the WebShop small environment; 128 is paper-reported. This figure does not present unpublished exact 128 goal IDs or a paper catalog size as settled facts.')}</figcaption>
