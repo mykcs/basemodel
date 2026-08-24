@@ -1,0 +1,112 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/engine/goal.py';
+---
+
+<section id="fig-webshop-evaluation" class="canonical-figure webshop-evaluation" aria-labelledby="webshop-evaluation-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('第五步 · EVALUATION','STEP 5 · EVALUATION')}</div>
+    <h2 id="webshop-evaluation-title">{t('WebShop 的最终评分：任务完成度与精确成功','WebShop evaluation: task completion and exact success')}</h2>
+    <p>{t('一次购物任务结束后，评估器把 goal 要求与 Agent 的终局购买状态进行比较，输出两个互补结果：连续的 task score 与离散的 exact success。','When a shopping task ends, the evaluator compares the goal requirements with the Agent’s terminal purchase state and produces two complementary outputs: a continuous task score and a discrete exact-success result.')}</p>
+  </header>
+
+  <figure class="evaluation-story" aria-labelledby="webshop-evaluation-title">
+    <section class="eval-flow" aria-label={t('WebShop 评估流程','WebShop evaluation flow')}>
+      <article class="eval-node goal" data-ui-audit-item>
+        <small>INPUT · GOAL</small>
+        <strong>{t('购物要求','Shopping requirements')}</strong>
+        <ul>
+          <li>{t('商品类型','product type')}</li>
+          <li>{t('属性','attributes')}</li>
+          <li>{t('option 选择','option choices')}</li>
+          <li>{t('价格条件','price constraint')}</li>
+        </ul>
+      </article>
+
+      <div class="eval-plus" aria-hidden="true">＋</div>
+
+      <article class="eval-node terminal" data-ui-audit-item>
+        <small>INPUT · TERMINAL STATE</small>
+        <strong>{t('Agent 最终购买状态','Agent terminal purchase state')}</strong>
+        <ul>
+          <li>{t('选中的商品','selected product')}</li>
+          <li>{t('选中的 options','selected options')}</li>
+          <li>{t('最终价格与页面状态','final price and page state')}</li>
+        </ul>
+      </article>
+
+      <div class="eval-arrow" aria-hidden="true">→</div>
+
+      <article class="eval-node evaluator" data-ui-audit-item>
+        <small>EVALUATE · {t('评估','EVALUATE')}</small>
+        <strong>{t('WebShop evaluator','WebShop evaluator')}</strong>
+        <code>get_reward(...)</code>
+        <span>{t('把终局状态与 goal 约束逐项对照','Compare terminal state against goal constraints')}</span>
+        <a href={rewardUrl} target="_blank" rel="noreferrer">{t('查看官方 reward 代码 ↗','View official reward code ↗')}</a>
+      </article>
+
+      <div class="eval-arrow" aria-hidden="true">→</div>
+
+      <section class="eval-output" aria-label={t('WebShop 评估输出','WebShop evaluation outputs')}>
+        <article class="score-output" data-ui-audit-item>
+          <small>NORMALIZED TASK SCORE</small>
+          <strong>task_score ∈ [0, 1]</strong>
+          <div class="score-scale" role="img" aria-label={t('task score 从 0 到 1：0 表示没有满足任务要求，介于 0 和 1 之间表示部分满足，1 表示完全满足','task score ranges from 0 to 1: 0 means the task requirements are not satisfied, intermediate values mean partial completion, and 1 means full completion')}>
+            <div class="score-track"><span></span></div>
+            <div class="score-ticks"><b>0.0</b><b>0.5</b><b>1.0</b></div>
+          </div>
+          <p>{t('回答“这次任务完成了多少”。','Answers: “How much of the task was satisfied?”')}</p>
+        </article>
+
+        <article class="exact-output" data-ui-audit-item>
+          <small>EXACT SUCCESS</small>
+          <strong>won ∈ {`{false, true}`}</strong>
+          <div class="exact-symbols" aria-hidden="true"><span>✕</span><span>✓</span></div>
+          <p>{t('回答“终局是否完整满足任务要求”。','Answers: “Was the terminal task fully satisfied?”')}</p>
+        </article>
+      </section>
+    </section>
+
+    <aside class="metric-meaning" role="note">
+      <div>
+        <small>{t('指标解释','METRIC INTERPRETATION')}</small>
+        <strong>{t('Score 看完成程度；Exact Success 看是否完整成功','Score measures degree of completion; Exact Success measures full completion')}</strong>
+      </div>
+      <p>{t('两者要一起保存。一个中间 task_score 表示任务被部分满足，但它不等于 exact success。这里展示的是指标结构，不是某一次实验 run 的测量结果。','Keep both metrics. An intermediate task_score means the task was partially satisfied, but it is not an exact success. This figure shows the metric schema, not a measured result from any specific experiment run.')}</p>
+    </aside>
+
+    <details class="evidence">
+      <summary>{t('查看评估代码与记录边界','Show evaluation code and recording boundary')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>WebShop goal.py · OFFICIAL</small>
+          <code>get_reward(product, goal, price, options)</code>
+          <p>{t('WebShop 的 reward 逻辑根据商品、goal、价格与 option 状态计算任务满足程度。','WebShop reward logic computes task satisfaction from the product, goal, price, and option state.')}</p>
+          <a href={rewardUrl} target="_blank" rel="noreferrer">{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
+        </article>
+        <article>
+          <small>{t('本站记录合同','SITE RECORDING CONTRACT')}</small>
+          <code>task_score + won</code>
+          <p>{t('站内实验记录把连续任务分数与 exact success 分开保存；不要把二者压成一个布尔值，也不要把教学示意当成真实测量。','The site’s experiment records keep the continuous task score separate from exact success; do not collapse them into one boolean or treat pedagogical examples as measured results.')}</p>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>{t('本节只定义评估输出：终局状态经过 evaluator 后得到 task_score 与 exact success。下一节的公平比较必须让 SEED 与 OpenEvo 使用同一种评分合同。','This section defines the evaluation outputs only: terminal state passes through the evaluator to produce task_score and exact success. A fair SEED/OpenEvo comparison must use the same scoring contract.')}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-evaluation{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:940px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.75rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.evaluation-story{margin:1.5rem 0 0}
+  .eval-flow{display:grid;grid-template-columns:minmax(160px,.8fr) auto minmax(170px,.85fr) auto minmax(180px,.9fr) auto minmax(260px,1.35fr);gap:.6rem;align-items:stretch}.eval-node{display:flex;min-width:0;flex-direction:column;padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.eval-node small,.eval-output small{display:block;color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.eval-node strong{display:block;margin:.35rem 0 .55rem;font-size:.9rem}.eval-node ul{display:grid;gap:.35rem;margin:0;padding:0;list-style:none}.eval-node li{padding:.35rem .45rem;border-top:1px solid var(--line);font-size:.66rem;color:var(--muted)}.eval-node code{display:block;margin:.1rem 0 .45rem;padding:.45rem;border-radius:6px;background:var(--surface);font-size:.64rem;overflow-wrap:anywhere}.eval-node>span{margin-top:.1rem;color:var(--muted);font-size:.67rem;line-height:1.45}.eval-node a{display:inline-block;margin-top:auto;padding-top:.65rem;color:var(--accent);font-size:.65rem;font-weight:800}.goal{border-top:4px solid var(--accent)}.terminal{border-top:4px solid var(--line-strong,var(--line))}.evaluator{border-top:4px solid var(--success)}.eval-plus,.eval-arrow{display:grid;place-items:center;color:var(--muted);font-size:1.3rem;font-weight:900}
+  .eval-output{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;min-width:0}.eval-output article{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:11px;background:var(--surface)}.eval-output article>strong{display:block;margin:.35rem 0 .55rem;font-size:.82rem;overflow-wrap:anywhere}.eval-output p{margin:.55rem 0 0;color:var(--muted);font-size:.67rem;line-height:1.45}.score-output{border-top:4px solid var(--accent)!important}.exact-output{border-top:4px solid var(--success)!important}.score-scale{padding:.4rem 0}.score-track{height:10px;border:1px solid var(--line);border-radius:999px;background:linear-gradient(to right,var(--surface-muted),color-mix(in srgb,var(--accent) 24%,var(--surface)),color-mix(in srgb,var(--success) 30%,var(--surface)));overflow:hidden}.score-track span{display:block;width:100%;height:100%}.score-ticks{display:flex;justify-content:space-between;margin-top:.35rem;color:var(--muted);font:800 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.exact-symbols{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}.exact-symbols span{display:grid;place-items:center;height:40px;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted);font-size:1rem;font-weight:900}.exact-symbols span:last-child{border-color:color-mix(in srgb,var(--success) 45%,var(--line));background:color-mix(in srgb,var(--success) 8%,var(--surface))}
+  .metric-meaning{display:grid;grid-template-columns:minmax(220px,.75fr) minmax(0,1.25fr);gap:1rem;align-items:start;margin-top:1rem;padding:1rem;border-left:4px solid var(--accent);border-radius:0 10px 10px 0;background:color-mix(in srgb,var(--accent) 5%,var(--surface))}.metric-meaning small{display:block;color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.metric-meaning strong{display:block;margin-top:.28rem;font-size:.85rem}.metric-meaning p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.55}
+  .evidence{margin-top:1rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.66rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:var(--accent);font-size:.66rem;font-weight:800}.evaluation-story figcaption{margin-top:.85rem;color:var(--muted);font-size:.76rem;line-height:1.6}
+  @media(max-width:980px){.eval-flow{grid-template-columns:1fr}.eval-plus,.eval-arrow{min-height:30px;transform:rotate(90deg)}.eval-output{grid-template-columns:1fr 1fr}.metric-meaning{grid-template-columns:1fr}}
+  @media(max-width:620px){.webshop-evaluation{width:min(100% - 1rem,1120px);padding:1rem}.eval-output,.evidence-grid{grid-template-columns:1fr}}
+</style>
