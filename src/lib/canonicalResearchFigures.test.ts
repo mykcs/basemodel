@@ -63,7 +63,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
     for (const term of ['task_score ∈ [0, 1]', 'EXACT SUCCESS', 'won ∈', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
       expect(evaluationFigure).toContain(term);
     }
-    expect(evaluationFigure).toContain('Goal');
+    expect(evaluationFigure).toContain('INPUT · GOAL');
     expect(evaluationFigure).toContain('TERMINAL STATE');
     expect(evaluationFigure).toContain('EVALUATE');
   });
