@@ -2,6 +2,7 @@
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 import OpenEvoWebShopResultIndex from '../../../components/research/OpenEvoWebShopResultIndex.astro';
+import OpenEvoResearchEvidenceMap from '../../../components/research/OpenEvoResearchEvidenceMap.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -11,6 +12,7 @@ const locale = 'zh' as const;
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
     <OpenEvoWebShopResultIndex />
+    <OpenEvoResearchEvidenceMap />
   </SeedOpenEvoResearchPage>
 </AppLayout>
 
