@@ -7,6 +7,7 @@ const seedFigure = read('src/components/research/SeedWebShopCanonicalFigure.astr
 const interactionFigure = read('src/components/research/WebShopInteractionCanonicalFigure.astro');
 const datasetFigure = read('src/components/research/WebShopDatasetCanonicalFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
+const scaleEcho = read('src/components/research/WebShopScaleEcho.astro');
 const seedZh = read('src/pages/research/seed-openevo/seed.astro');
 const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
 const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
@@ -60,12 +61,35 @@ describe('canonical SEED / OpenEvo research figures', () => {
       }
       expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopInteractionCanonicalFigure'));
       expect(route.indexOf('<WebShopInteractionCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
+      expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopScaleEcho'));
+      expect(route.indexOf('<WebShopScaleEcho')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
+    }
+    for (const route of [seedZh, seedEn]) {
+      expect(route).toContain('WebShopScaleEcho');
+      expect(route.indexOf('<WebShopScaleEcho')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
     }
     for (const route of [loopsZh, loopsEn]) {
       expect(route).toContain('SeedOpenEvoCanonicalFigure');
       expect(route).not.toContain('InteractiveResearchExplainer');
       expect(route).not.toContain('kind="compare"');
     }
+  });
+
+  it('echoes the original-to-SEED scale shrink across both pages with one shared figure', () => {
+    expect(scaleEcho).toContain('fig-webshop-scale-echo');
+    for (const term of ['1,181,436', '12,087', '6,910', '1,000', '500', '128']) expect(scaleEcho).toContain(term);
+    for (const term of ['÷1,181', '÷1.7', '÷3.9']) expect(scaleEcho).toContain(term);
+    for (const term of ['原始 WEBSHOP', 'SEED 场地', '商品世界', '任务池', '最终考试']) expect(scaleEcho).toContain(term);
+    // The echo must keep the Figure S1 evidence boundary: paper does not pin the exact 128-goal manifest.
+    expect(scaleEcho).toContain('未钉死');
+    expect(scaleEcho).toContain('<figcaption');
+    expect(scaleEcho).toContain('data-ui-audit="contrast layout overflow"');
+    expect(scaleEcho).toContain('data-ui-audit-item');
+    expect(scaleEcho).not.toContain('client:');
+    // Cross-page呼应: webshop side points at the seed mirror; seed side points back at S1-B / S1-C.
+    expect(scaleEcho).toContain('/research/seed-openevo/seed/#fig-webshop-scale-echo');
+    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-webshop-dataset');
+    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
   });
 
   it('lets experiment results cite canonical figures instead of re-owning the background explanation', () => {
