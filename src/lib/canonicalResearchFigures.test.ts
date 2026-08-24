@@ -6,6 +6,9 @@ const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta
 const seedFigure = read('src/components/research/SeedWebShopCanonicalFigure.astro');
 const interactionFigure = read('src/components/research/WebShopInteractionCanonicalFigure.astro');
 const datasetFigure = read('src/components/research/WebShopDatasetCanonicalFigure.astro');
+const smallWorldFigure = read('src/components/research/WebShopSmallWorldFigure.astro');
+const goalGenerationFigure = read('src/components/research/WebShopGoalGenerationFigure.astro');
+const instructionGoalFigure = read('src/components/research/WebShopInstructionGoalSeparationFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
 const scaleEcho = read('src/components/research/WebShopScaleEcho.astro');
 const seedZh = read('src/pages/research/seed-openevo/seed.astro');
@@ -31,6 +34,14 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(seedFigure).toContain('The paper does not state the catalog size');
     expect(seedFigure).toContain('Exact 128-goal manifest: not yet pinned here.');
     expect(seedFigure).toContain('Same world, same tasks, same test, same scoring');
+  });
+
+  it('explains the WebShop small-world and goal-generation chain without inventing a 12,087-to-6,910 filter', () => {
+    for (const term of ['1,181,436', '1,000', './setup.sh -d small', 'WebShop 官方提供']) expect(smallWorldFigure).toContain(term);
+    for (const term of ['1,000', '6,910', 'get_synthetic_goals(...)', 'itertools.product']) expect(goalGenerationFigure).toContain(term);
+    for (const term of ['12,087', '6,910', '不是过滤关系', 'NOT A FILTER', 'get_synthetic_goals(...)']) expect(instructionGoalFigure).toContain(term);
+    expect(instructionGoalFigure).toContain('12,087 ≠ source list → 6,910');
+    expect(instructionGoalFigure).not.toContain('÷1.7');
   });
 
   it('keeps C1 as one reusable comparison instead of repeating the same conclusion', () => {
@@ -63,6 +74,12 @@ describe('canonical SEED / OpenEvo research figures', () => {
       expect(route.indexOf('<WebShopDatasetCanonicalFigure')).toBeLessThan(route.indexOf('<SeedWebShopCanonicalFigure'));
       expect(route.indexOf('<SeedWebShopCanonicalFigure')).toBeLessThan(route.indexOf('<WebShopScaleEcho'));
     }
+    for (const figure of ['WebShopSmallWorldFigure', 'WebShopGoalGenerationFigure', 'WebShopInstructionGoalSeparationFigure']) {
+      expect(webshopZh).toContain(figure);
+    }
+    expect(webshopZh.indexOf('<WebShopSmallWorldFigure')).toBeLessThan(webshopZh.indexOf('<WebShopGoalGenerationFigure'));
+    expect(webshopZh.indexOf('<WebShopGoalGenerationFigure')).toBeLessThan(webshopZh.indexOf('<WebShopInstructionGoalSeparationFigure'));
+    expect(webshopZh.indexOf('<WebShopInstructionGoalSeparationFigure')).toBeLessThan(webshopZh.indexOf('<SeedWebShopCanonicalFigure'));
     for (const route of [seedZh, seedEn]) {
       expect(route).toContain('WebShopScaleEcho');
       expect(route.indexOf('<WebShopScaleEcho')).toBeLessThan(route.indexOf('<InteractiveResearchExplainer'));
@@ -74,21 +91,22 @@ describe('canonical SEED / OpenEvo research figures', () => {
     }
   });
 
-  it('echoes the original-to-SEED scale shrink across both pages with one shared figure', () => {
+  it('maps distinct WebShop relationships instead of treating every number pair as scale shrinkage', () => {
     expect(scaleEcho).toContain('fig-webshop-scale-echo');
     for (const term of ['1,181,436', '12,087', '6,910', '1,000', '500', '128']) expect(scaleEcho).toContain(term);
-    for (const term of ['÷1,181', '÷1.7', '÷3.9']) expect(scaleEcho).toContain(term);
-    for (const term of ['原始 WEBSHOP', 'SEED 场地', '商品世界', '任务池', '最终考试']) expect(scaleEcho).toContain(term);
-    // The echo must keep the Figure S1 evidence boundary: paper does not pin the exact 128-goal manifest.
-    expect(scaleEcho).toContain('未钉死');
+    for (const term of ['SUBSET · 取子集', 'GENERATE · 生成', 'EXACT MAPPING 未钉死']) expect(scaleEcho).toContain(term);
+    for (const term of ['商品世界', '任务生成', '评估边界']) expect(scaleEcho).toContain(term);
+    for (const forbidden of ['÷1,181', '÷1.7', '÷3.9', '缩到 57%']) expect(scaleEcho).not.toContain(forbidden);
+    // The map must keep the Figure S1 evidence boundary: the paper does not pin the exact 128-goal manifest.
+    expect(scaleEcho).toContain('exact 128-goal manifest');
     expect(scaleEcho).toContain('<figcaption');
     expect(scaleEcho).toContain('data-ui-audit="contrast layout overflow"');
     expect(scaleEcho).toContain('data-ui-audit-item');
     expect(scaleEcho).not.toContain('client:');
-    // Cross-page呼应: webshop side points at the seed mirror; seed side points back at S1-B / S1-C.
+    // Cross-page echo: WebShop points to the SEED mirror; SEED points back to the concrete provenance/generation figures.
     expect(scaleEcho).toContain('/research/seed-openevo/seed/#fig-webshop-scale-echo');
-    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-webshop-dataset');
-    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
+    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-webshop-small-world');
+    expect(scaleEcho).toContain('/research/seed-openevo/webshop/#fig-webshop-goal-generation');
   });
 
   it('lets experiment results cite canonical figures instead of re-owning the background explanation', () => {
@@ -104,7 +122,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(seedFigure).toContain('data-ui-audit="contrast layout overflow"');
     expect(compareFigure).toContain('data-ui-audit="contrast layout overflow readability"');
     expect(compareFigure).toContain('data-ui-prose');
-    for (const figure of [seedFigure, interactionFigure, datasetFigure, compareFigure]) {
+    for (const figure of [seedFigure, interactionFigure, datasetFigure, smallWorldFigure, goalGenerationFigure, instructionGoalFigure, compareFigure]) {
       expect(figure).toContain('<figcaption');
       expect(figure).not.toContain('client:');
     }
