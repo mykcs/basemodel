@@ -27,7 +27,7 @@ for (const viewport of viewports) {
 
     await expect(root).toBeVisible();
     await expect(title).toBeVisible();
-    await expect(cards).toHaveCount(5);
+    await expect(cards).toHaveCount(4);
 
     const metrics = await page.evaluate(() => {
       const title = document.querySelector<HTMLElement>('#reference-title');
@@ -35,7 +35,7 @@ for (const viewport of viewports) {
       const heading = title?.closest<HTMLElement>('.result-section-heading');
       const grid = document.querySelector<HTMLElement>('[data-testid="openevo-webshop-result-index"] .reference-grid');
       const cards = [...document.querySelectorAll<HTMLElement>('[data-testid="openevo-webshop-result-index"] .reference-card')];
-      if (!title || !column || !heading || !grid || cards.length !== 5) return null;
+      if (!title || !column || !heading || !grid || cards.length !== 4) return null;
 
       const titleRect = title.getBoundingClientRect();
       const columnRect = column.getBoundingClientRect();
