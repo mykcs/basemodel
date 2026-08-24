@@ -108,18 +108,8 @@ const p = (path: string) => localePath(locale, path);
   </>}
 
   {page === 'webshop' && <>
-    <section class="mission-section" data-explainer-step="0">
-      <div class="mission-section__heading"><span>01</span><div><small>{t('购物任务', 'Shopping task')}</small><h2>{t('目标与网页状态', 'Goal and page state')}</h2></div></div>
-      <p class="section-copy">{t('WebShop 不是让模型直接回答商品名。一个自然语言 goal 先约束品类、属性与预算，Agent 每一步只依据当前文本页面选择可执行 action，环境再返回新的页面 observation。', 'WebShop does not ask the model to name a product directly. A natural-language goal constrains category, attributes, and budget; at each step the agent selects an executable action from the current text page, and the environment returns a new page observation.')}</p>
-    </section>
-
-    <section class="mission-section" data-explainer-step="2">
-      <div class="mission-section__heading"><span>02</span><div><small>{t('动作', 'Actions')}</small><h2>{t('搜索与商品选择', 'Search and product selection')}</h2></div></div>
-      <dl class="term-grid"><div><dt>search</dt><dd>{t('提交 query，进入搜索结果页面。', 'Submit a query and enter a results page.')}</dd></div><div><dt>click</dt><dd>{t('打开商品、选择属性或触发购买。', 'Open a product, select an attribute, or trigger purchase.')}</dd></div><div><dt>observation</dt><dd>{t('保存每一步实际可见的文本页面。', 'Preserve the text page actually visible at each step.')}</dd></div><div><dt>fallback</dt><dd>{t('解析失败时单独记录，不能伪装成模型动作。', 'Record parser fallback separately; it is not a model action.')}</dd></div></dl>
-    </section>
-
     <section class="mission-section" data-explainer-step="4">
-      <div class="mission-section__heading"><span>03</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('分数与成功边界', 'Score and success boundary')}</h2></div></div>
+      <div class="mission-section__heading"><span>01</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('分数与成功边界', 'Score and success boundary')}</h2></div></div>
       <table class="mission-table"><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('记录方式', 'Recording')}</th></tr></thead><tbody><tr><td>task_score</td><td>{t('归一化任务完成度，范围 0–1。', 'Normalized task completion in the range 0–1.')}</td><td>{t('保留连续数值', 'preserve the continuous value')}</td></tr><tr><td>won</td><td>{t('是否精确满足终局约束。', 'Whether terminal constraints are satisfied exactly.')}</td><td>{t('与 score 分开保存', 'store separately from score')}</td></tr><tr><td>DEMO</td><td>{t('交互图中的 1.0 仅为教学示意。', 'The 1.0 shown in the interactive figure is illustrative only.')}</td><td>{t('不并入实验结果', 'exclude from experiment results')}</td></tr></tbody></table>
       <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
     </section>
