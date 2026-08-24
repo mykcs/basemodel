@@ -1,5 +1,4 @@
 ---
-import type { APIRoute } from 'astro';
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
 import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
@@ -16,11 +15,22 @@ const resultNotes = new Set<OpenEvoWebShopResultNoteId>([
 ]);
 const benchmarkNotes = new Set<OpenEvoWebShopBenchmarkNoteId>(['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design']);
 
+// getStaticPaths runs in an isolated build-time scope and cannot see module-scope constants,
+// so the note ids are intentionally inlined here instead of spreading the Sets above.
 export function getStaticPaths() {
   return [
-    ...primerNotes,
-    ...resultNotes,
-    ...benchmarkNotes,
+    'webshop-training',
+    'seed-training',
+    'openevo-training',
+    'why-it-kept-failing',
+    'first-positive-transfer',
+    'independent-replication',
+    'second-generation',
+    'measurement-boundary',
+    'current-conclusion',
+    'benchmark-first',
+    'seed-faithful-benchmark',
+    'openevo-benchmark-design',
   ].map((note) => ({ params: { note } }));
 }
 
