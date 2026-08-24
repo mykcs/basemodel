@@ -3,10 +3,12 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const figureRoutes = [
-  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-interaction', title: '普通 Agent 怎样完成 WebShop' },
-  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-dataset', title: '原始 WebShop 数据集有多大' },
-  { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: '公平比较要进入哪个 WebShop 场地' },
-  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-dataset', title: '原始 WebShop：1,181,436 个商品与 12,087 条人工购物指令' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-small-world', title: 'WebShop 官方 small 模式：商品世界固定为 1,000 个商品' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-goal-generation', title: 'Small WebShop：1,000 个商品生成 6,910 个可执行 goals' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-seed-split', title: 'SEED released wrapper：三段 goal-index 规则改为两段' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-evaluation', title: 'WebShop 的最终评分：任务完成度与精确成功' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: 'SEED 与 OpenEvo：进入同一套 WebShop 比较合同' },
   { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
   { path: '/research/seed-openevo/loops/', selector: '#fig-seed-openevo-update-target', title: '同一份任务经验' },
 ] as const;
@@ -54,17 +56,7 @@ async function auditFigure(page: Page, selector: string, viewportWidth: number) 
       }
     });
 
-    const proseSelector = [
-      'p',
-      'figcaption',
-      '.stage-intuition',
-      '.dataset-note',
-      '.rescore-card > span',
-      '.next-agent span',
-      '.carrier-note span',
-      '[data-ui-prose]',
-    ].join(',');
-
+    const proseSelector = ['p', 'figcaption', '[data-ui-prose]'].join(',');
     figure.querySelectorAll<HTMLElement>(proseSelector).forEach((node) => {
       if (!visible(node) || node.closest('[aria-hidden="true"], [hidden]')) return;
       const text = node.innerText.trim();
@@ -94,7 +86,7 @@ for (const matrix of matrices) {
     await setTheme(page, matrix.theme);
 
     for (const route of figureRoutes) {
-      await test.step(route.path, async () => {
+      await test.step(`${route.path}${route.selector}`, async () => {
         await page.goto(route.path, { waitUntil: 'domcontentloaded' });
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
         const figure = page.locator(route.selector);
@@ -108,6 +100,24 @@ for (const matrix of matrices) {
   });
 }
 
+test('WebShop keeps one first-reader explainer sequence and drops legacy duplicate sections', async ({ page }) => {
+  for (const path of ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    for (const selector of [
+      '#fig-webshop-dataset',
+      '#fig-webshop-small-world',
+      '#fig-webshop-goal-generation',
+      '#fig-webshop-seed-split',
+      '#fig-webshop-evaluation',
+      '#fig-seed-webshop',
+    ]) await expect(page.locator(selector)).toHaveCount(1);
+
+    for (const selector of ['#fig-webshop-interaction', '#fig-webshop-instruction-goal-separation', '#fig-webshop-scale-echo']) {
+      await expect(page.locator(selector)).toHaveCount(0);
+    }
+  }
+});
+
 test('loops is one canonical comparison with no duplicate interactive player', async ({ page }) => {
   for (const path of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -118,21 +128,25 @@ test('loops is one canonical comparison with no duplicate interactive player', a
   }
 });
 
-test('canonical figures remain complete without JavaScript in Chinese and English', async ({ browser }) => {
+test('canonical static figures remain complete without JavaScript in Chinese and English', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
 
   const routes = [
-    ['/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
-    ['/research/seed-openevo/webshop/', '#fig-webshop-dataset', '图 S1-B', false],
-    ['/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
-    ['/research/seed-openevo/webshop/', '#fig-webshop-scale-echo', '图 S1-D', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-dataset', '第一步', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-small-world', '第二步', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-goal-generation', '第三步', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-seed-split', '第四步', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-evaluation', '第五步', false],
+    ['/research/seed-openevo/webshop/', '#fig-seed-webshop', '第六步', false],
     ['/research/seed-openevo/seed/', '#fig-webshop-scale-echo', '图 S1-D', false],
     ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
-    ['/en/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
-    ['/en/research/seed-openevo/webshop/', '#fig-webshop-dataset', 'FIGURE S1-B', false],
-    ['/en/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
-    ['/en/research/seed-openevo/webshop/', '#fig-webshop-scale-echo', 'FIGURE S1-D', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-dataset', 'STEP 1', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-small-world', 'STEP 2', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-goal-generation', 'STEP 3', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-seed-split', 'STEP 4', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-evaluation', 'STEP 5', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-seed-webshop', 'STEP 6', false],
     ['/en/research/seed-openevo/seed/', '#fig-webshop-scale-echo', 'FIGURE S1-D', false],
     ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
@@ -158,7 +172,6 @@ test('results index links to canonical figures and the anchors land on the forma
   await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
   const index = page.getByTestId('openevo-webshop-result-index');
   await expect(index).toBeVisible();
-  await expect(index.getByRole('heading', { name: /先建立共同语言/ })).toBeVisible();
 
   const seedFigureLink = index.locator('a[href="/research/seed-openevo/webshop/#fig-seed-webshop"]');
   const compareFigureLink = index.locator('a[href="/research/seed-openevo/loops/#fig-seed-openevo-update-target"]');

@@ -1,0 +1,177 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const seedEnvUrl = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c/agent_system/environments/env_package/webshop/envs.py';
+const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/baseline_models/env.py';
+---
+
+<section id="fig-webshop-seed-split" class="canonical-figure webshop-seed-split" aria-labelledby="webshop-seed-split-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('第四步 · SEED 分任务','STEP 4 · SEED SPLITS GOALS')}</div>
+    <h2 id="webshop-seed-split-title">{t('SEED 把 6,910 个 goals 分成两块','SEED splits the 6,910 goals into two pools')}</h2>
+    <p>{t('前 500 个 goals 不用于训练；后面的 6,410 个作为训练候选。下面再用代码对照说明，这和原始 WebShop 的三段式规则有什么不同。','The first 500 goals are kept out of training; the remaining 6,410 are training candidates. The code comparison below shows how this differs from the original WebShop three-way rule.')}</p>
+  </header>
+
+  <figure class="split-story" aria-labelledby="webshop-seed-split-title">
+    <aside class="reference-strip" role="note">
+      <div>
+        <small>{t('原始 BENCHMARK','ORIGINAL BENCHMARK')}</small>
+        <strong>{t('human instructions','human instructions')}</strong>
+        <span>Train · Dev · Test</span>
+        <a href="#fig-webshop-dataset">{t('见第一步的原始数据图 ↑','See the original dataset figure ↑')}</a>
+      </div>
+      <b aria-hidden="true">≠</b>
+      <div>
+        <small>{t('本节对象','OBJECT IN THIS SECTION')}</small>
+        <strong>{t('environment goal indices','environment goal indices')}</strong>
+        <span>goal ID 0–6909</span>
+      </div>
+    </aside>
+
+    <section class="before-after" aria-label={t('原始 WebShop 与 SEED wrapper 划分对照','Original WebShop versus SEED wrapper split')}>
+      <article class="wrapper original-wrapper" data-ui-audit-item>
+        <header>
+          <small>{t('原始 WEBSHOP BASELINE WRAPPER','ORIGINAL WEBSHOP BASELINE WRAPPER')}</small>
+          <strong>{t('三段式 goal-index split','Three-way goal-index split')}</strong>
+          <span>{t('原始 baseline env.py 的 full/default 路径（args.num is None）','Full/default path in the original baseline env.py (args.num is None)')}</span>
+        </header>
+        <div class="original-bar" role="img" aria-label={t('原始 wrapper: test 0 到 499, eval 500 到 1499, train 1500 到最后','Original wrapper: test 0–499, eval 500–1499, train 1500 onward')}>
+          <div class="orig-test"><b>TEST</b><span>0–499</span></div>
+          <div class="orig-eval"><b>EVAL</b><span>500–1499</span></div>
+          <div class="orig-train"><b>TRAIN</b><span>1500–…</span></div>
+        </div>
+        <div class="code-lines">
+          <code>test → range(500)</code>
+          <code>eval → range(500, 1500)</code>
+          <code>train → range(1500, len(goals))</code>
+        </div>
+        <a href={originalEnvUrl} target="_blank" rel="noreferrer">{t('查看 WebShop 官方 baseline env.py ↗','View official WebShop baseline env.py ↗')}</a>
+      </article>
+
+      <div class="rewrite" role="note">
+        <span class="rewrite-arrow" aria-hidden="true">→</span>
+        <strong>{t('WRAPPER 规则改变','WRAPPER RULE CHANGES')}</strong>
+        <p>{t('SEED 源文件保留了原三段代码作为注释，真正执行的是右侧两段式 if / else。','The SEED source keeps the original three-way block as comments; the active path is the two-way if / else on the right.')}</p>
+      </div>
+
+      <article class="wrapper seed-wrapper" data-ui-audit-item>
+        <header>
+          <small>{t('SEED RELEASED CODE','SEED RELEASED CODE')}</small>
+          <strong>{t('两段式：non-train / train','Two-way: non-train / train')}</strong>
+          <span>{t('原始 eval bucket 不再单独存在','The original eval bucket is no longer separate')}</span>
+        </header>
+        <div class="seed-bar" role="img" aria-label={t('SEED wrapper: non-train 0 到 499, train 从 500 到最后','SEED wrapper: non-train 0–499, train from 500 onward')}>
+          <div class="seed-heldout"><b>NON-TRAIN</b><span>0–499</span></div>
+          <div class="seed-train"><b>TRAIN</b><span>500–…</span></div>
+        </div>
+        <div class="code-lines">
+          <code>not is_train → range(500)</code>
+          <code>is_train → range(500, len(goals))</code>
+        </div>
+        <div class="eval-change">
+          <span>500–1499</span>
+          <p>{t('原始 wrapper 中的 EVAL 区间，在 SEED active rule 中落入 training candidate pool。','The range that was EVAL in the original wrapper falls inside the training candidate pool under SEED’s active rule.')}</p>
+        </div>
+        <a href={seedEnvUrl} target="_blank" rel="noreferrer">{t('查看 SEED 固定 commit 的 envs.py ↗','View SEED envs.py at the pinned commit ↗')}</a>
+      </article>
+    </section>
+
+    <section class="total" aria-label={t('SEED small WebShop 的全部 goals','All goals in SEED small WebShop')}>
+      <small>{t('应用到 SMALL WEBSHOP','APPLIED TO SMALL WEBSHOP')}</small>
+      <strong>6,910 goals</strong>
+      <span>{t('goal ID 0–6909','goal IDs 0–6909')}</span>
+    </section>
+
+    <div class="ruler-wrap" aria-label={t('SEED goal ID 横向标尺','SEED goal ID ruler')}>
+      <div class="axis-labels" aria-hidden="true">
+        <span class="axis-start">0</span>
+        <span class="axis-boundary"><b>499</b><i></i><b>500</b></span>
+        <span class="axis-end">6909</span>
+      </div>
+
+      <div class="ruler" role="img" aria-label={t('goal 0 到 499 是 500 个 held-out goals；goal 500 到 6909 是 6410 个 training candidate goals','goals 0 through 499 are 500 held-out goals; goals 500 through 6909 are 6,410 training candidate goals')}>
+        <div class="segment heldout"><span>HELD-OUT</span></div>
+        <div class="segment train"><span>TRAIN CANDIDATE POOL</span></div>
+        <div class="boundary-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="boundary-caption">
+        <span></span>
+        <strong>{t('边界 = 500','BOUNDARY = 500')}</strong>
+        <p>{t('goal 0–499 属于 non-train / held-out；goal 500–6909 属于 training candidate pool。','Goals 0–499 are non-train / held-out; goals 500–6909 are the training candidate pool.')}</p>
+      </div>
+    </div>
+
+    <section class="pool-cards" aria-label={t('两个 goal pool','Two goal pools')}>
+      <article class="pool heldout-card" data-ui-audit-item>
+        <small>RELEASED-CODE EXPLICIT</small>
+        <strong>goal 0–499</strong>
+        <span>500 goals</span>
+        <p>{t('is_train = false → range(500)','is_train = false → range(500)')}</p>
+      </article>
+      <article class="pool train-card" data-ui-audit-item>
+        <small>RELEASED-CODE EXPLICIT</small>
+        <strong>goal 500–6909</strong>
+        <span>6,410 goals</span>
+        <p>{t('is_train = true → range(500, len(goals))','is_train = true → range(500, len(goals))')}</p>
+      </article>
+    </section>
+
+    <aside class="paper-boundary" role="note">
+      <div class="note-symbol" aria-hidden="true">!</div>
+      <div>
+        <strong>{t('论文报告的 128 test samples 不进入这条 released-code 标尺','The paper-reported 128 test samples are not placed on this released-code ruler')}</strong>
+        <p>{t('目前没有公开证据把 exact 128 goal IDs 钉死到 0–499 中的具体位置，所以这里保留 UNKNOWN / NOT PINNED，而不画成确定抽样关系。','Public evidence does not currently pin the exact 128 goal IDs to specific positions inside 0–499, so this relationship remains UNKNOWN / NOT PINNED rather than being drawn as a confirmed sampling path.')}</p>
+      </div>
+    </aside>
+
+    <details class="evidence">
+      <summary>{t('查看原始 WebShop 与 SEED 的代码对照','Compare original WebShop and SEED code')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>WebShop baseline env.py · OFFICIAL</small>
+          <pre><code>if split == 'test':
+    goal_idxs = range(500)
+elif split == 'eval':
+    goal_idxs = range(500, 1500)
+elif split == 'train':
+    goal_idxs = range(1500, len(goals))</code></pre>
+          <p>{t('原始三段式逻辑位于 args.num is None 分支。','The original three-way logic lives in the args.num is None branch.')}</p>
+          <a href={originalEnvUrl} target="_blank" rel="noreferrer">{t('打开 WebShop 官方代码 ↗','Open official WebShop code ↗')}</a>
+        </article>
+        <article>
+          <small>SEED envs.py · RELEASED CODE</small>
+          <pre><code># original three-way block is commented out
+if not self.is_train:
+    self.goal_idxs = range(500)
+else:
+    self.goal_idxs = range(500, len(goals))</code></pre>
+          <p>{t('SEED 的两段式代码是实际执行路径。','SEED’s two-way code is the active execution path.')}</p>
+          <a href={seedEnvUrl} target="_blank" rel="noreferrer">{t('打开 SEED 固定 commit ↗','Open pinned SEED commit ↗')}</a>
+        </article>
+        <article>
+          <small>{t('本图的计算','DERIVATION IN THIS FIGURE')}</small>
+          <code>6910 - 500 = 6410</code>
+          <p>{t('6,410 由 active range 与 6,910-goal small 环境直接计算；goal ID 只是列表索引。','6,410 is directly derived from the active range and the 6,910-goal small environment; a goal ID is only a list index.')}</p>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>{t('这一节只处理 goal-index 使用方式：原始 baseline wrapper 是三段，SEED released wrapper 是两段；应用到 6,910-goal small 环境后，边界固定在 goal 500。','This section handles goal-index usage only: the original baseline wrapper is three-way, while the released SEED wrapper is two-way. Applied to the 6,910-goal small environment, the boundary is fixed at goal 500.')}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-seed-split{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:950px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.75rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.split-story{--heldout:7.2359%;margin:1.55rem 0 0}
+  .reference-strip{display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem;align-items:center;padding:.85rem 1rem;border:1px solid var(--line);border-radius:11px;background:var(--surface-muted)}.reference-strip>div{min-width:0}.reference-strip small,.reference-strip strong,.reference-strip span{display:block}.reference-strip small{color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.reference-strip strong{margin-top:.25rem;font-size:.82rem}.reference-strip span{margin-top:.15rem;color:var(--muted);font-size:.68rem}.reference-strip a{display:inline-block;margin-top:.42rem;color:var(--accent);font-size:.64rem;font-weight:800}.reference-strip>b{color:var(--muted);font-size:1.35rem}
+  .before-after{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.42fr) minmax(0,1fr);gap:.75rem;margin-top:.85rem}.wrapper{display:flex;min-width:0;flex-direction:column;padding:1rem;border:1px solid var(--line);border-radius:13px;background:var(--surface-muted)}.wrapper header small{display:block;color:var(--muted);font:800 .57rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.wrapper header strong{display:block;margin:.35rem 0 .15rem;font-size:1rem}.wrapper header span{display:block;color:var(--muted);font-size:.66rem;line-height:1.4}.wrapper>a{display:inline-block;margin-top:auto;padding-top:.7rem;color:var(--accent);font-size:.67rem;font-weight:800}.original-bar,.seed-bar{display:flex;height:68px;margin-top:.85rem;overflow:hidden;border:1px solid var(--line);border-radius:9px}.original-bar>div,.seed-bar>div{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;padding:.4rem;border-right:1px solid var(--line);text-align:center}.original-bar>div:last-child,.seed-bar>div:last-child{border-right:0}.original-bar b,.seed-bar b{font:850 .58rem/1.1 ui-monospace,SFMono-Regular,Menlo,monospace}.original-bar span,.seed-bar span{margin-top:.2rem;color:var(--muted);font-size:.58rem}.orig-test{flex:1;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}.orig-eval{flex:2;background:color-mix(in srgb,var(--ink) 5%,var(--surface))}.orig-train{flex:4;background:color-mix(in srgb,var(--success) 8%,var(--surface))}.seed-heldout{flex:1;background:color-mix(in srgb,var(--accent) 13%,var(--surface))}.seed-train{flex:6;background:color-mix(in srgb,var(--success) 11%,var(--surface))}.code-lines{display:grid;gap:.3rem;margin-top:.7rem}.code-lines code{display:block;padding:.38rem .45rem;border-radius:6px;background:var(--surface);font-size:.61rem;overflow-wrap:anywhere}.rewrite{display:grid;place-items:center;align-content:center;gap:.4rem;padding:.75rem;border:1px dashed var(--line);border-radius:13px;text-align:center}.rewrite-arrow{color:var(--accent);font-size:1.6rem;font-weight:900}.rewrite strong{font:900 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.rewrite p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.45}.eval-change{display:grid;grid-template-columns:auto 1fr;gap:.55rem;align-items:start;margin-top:.65rem;padding:.55rem;border:1px dashed var(--line);border-radius:8px;background:var(--surface)}.eval-change span{padding:.25rem .35rem;border-radius:5px;background:var(--surface-muted);font:800 .61rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.eval-change p{margin:0;color:var(--muted);font-size:.64rem;line-height:1.4}
+  .total{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem;padding:.75rem 0 1rem;border-bottom:1px solid var(--line)}.total small{color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.total strong{font-size:1.35rem;letter-spacing:-.03em}.total span{color:var(--muted);font-size:.72rem}.ruler-wrap{position:relative;margin:2.2rem 0 1rem;padding:1.45rem 0 0}.axis-labels{position:relative;height:1.5rem;color:var(--muted);font:800 .66rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.axis-start{position:absolute;left:0}.axis-end{position:absolute;right:0}.axis-boundary{position:absolute;left:var(--heldout);display:flex;gap:.38rem;align-items:center;transform:translateX(-50%)}.axis-boundary i{width:1px;height:.8rem;background:var(--line)}.ruler{position:relative;display:flex;height:78px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.segment{display:flex;align-items:center;justify-content:center;min-width:0}.segment span{font:850 .62rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;text-align:center}.heldout{width:var(--heldout);background:color-mix(in srgb,var(--accent) 14%,var(--surface))}.heldout span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.55rem}.train{flex:1;background:color-mix(in srgb,var(--success) 12%,var(--surface))}.boundary-line{position:absolute;left:var(--heldout);top:0;bottom:0;width:3px;background:var(--ink);transform:translateX(-1px)}.boundary-caption{position:relative;display:grid;grid-template-columns:var(--heldout) auto 1fr;align-items:start;margin-top:.65rem}.boundary-caption>span{grid-column:1;height:1px}.boundary-caption strong{grid-column:2;padding:.28rem .45rem;border-radius:999px;background:var(--ink);color:var(--surface);font:850 .61rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;transform:translateX(-50%)}.boundary-caption p{grid-column:3;margin:.1rem 0 0 .4rem;color:var(--muted);font-size:.68rem;line-height:1.4}
+  .pool-cards{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:.75rem;margin-top:1rem}.pool{padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.pool small{display:block;color:var(--muted);font:800 .57rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.pool strong{display:block;margin:.45rem 0 .18rem;font-size:1.25rem;letter-spacing:-.025em}.pool span{display:block;font-weight:800}.pool p{margin:.5rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.heldout-card{border-top:4px solid var(--accent)}.train-card{border-top:4px solid var(--success)}
+  .paper-boundary{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:start;margin-top:.8rem;padding:.9rem 1rem;border:1px dashed var(--line);border-radius:11px;background:var(--surface)}.note-symbol{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-weight:900}.paper-boundary strong{display:block;font-size:.78rem}.paper-boundary p{margin:.28rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.evidence{margin-top:.8rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr .8fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .56rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid pre{margin:.45rem 0;padding:.6rem;border-radius:7px;background:var(--surface);overflow:auto}.evidence-grid code{font-size:.65rem}.evidence-grid>article>code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);overflow-wrap:anywhere}.evidence-grid p{margin:.45rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:var(--accent);font-size:.67rem;font-weight:800}.split-story figcaption{margin-top:.85rem;color:var(--muted);font-size:.76rem;line-height:1.6}
+  @media(max-width:900px){.before-after{grid-template-columns:1fr}.rewrite{min-height:130px}.rewrite-arrow{transform:rotate(90deg)}}
+  @media(max-width:820px){.webshop-seed-split{width:min(100% - 1rem,1120px);padding:1rem}.reference-strip{grid-template-columns:1fr}.reference-strip>b{justify-self:center}.ruler-wrap{overflow-x:auto;padding-bottom:.4rem}.axis-labels,.ruler,.boundary-caption{min-width:720px}.pool-cards,.evidence-grid{grid-template-columns:1fr}.heldout span{writing-mode:horizontal-tb;transform:none;font-size:.48rem}.paper-boundary{grid-template-columns:1fr}.note-symbol{display:none}.eval-change{grid-template-columns:1fr}}
+</style>

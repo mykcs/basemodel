@@ -35,7 +35,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   webshop: {
     eyebrow: t('实验环境', 'Experiment environment'),
     title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
-    lede: t('先看一次普通 Agent 怎样走完一次 WebShop 购物任务，再看 WebShop 环境模型与原始数据集规模，最后看 SEED 论文语境下，公平比较要进入哪个 WebShop 场地。', 'Read one ordinary Agent\'s run through a WebShop task, then the WebShop environment model and the original dataset size, and finally the WebShop setting that makes a SEED comparison fair.'),
+    lede: t('本页沿一条连续路径解释 WebShop：Agent 交互 → 原始 benchmark → 官方 small 商品世界 → synthetic goal generation → SEED goal split → 最终评分。', 'This page follows one continuous WebShop path: Agent interaction → original benchmark → official small product world → synthetic goal generation → SEED goal split → final evaluation.'),
   },
   alfworld: {
     eyebrow: t('实验环境', 'Experiment environment'),
@@ -64,7 +64,7 @@ const current = copy[page];
   </header>
   <SeedOpenEvoResearchNav locale={locale} page={page} />
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
-  {page !== 'results' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
+  {page !== 'results' && page !== 'webshop' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
   {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
 </div>
 
