@@ -4,6 +4,7 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/setup.sh';
 ---
 
 <section id="fig-webshop-small-world" class="canonical-figure webshop-small-world" aria-labelledby="webshop-small-world-title" data-ui-audit="contrast layout overflow">
@@ -19,18 +20,31 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <div class="warehouse" aria-hidden="true">
         {Array.from({ length: 96 }).map((_, i) => <span class:list={{ faded: i > 47 }}></span>)}
       </div>
+      <div class="warehouse-legend" aria-label={t('商品方块图例','Product block legend')}>
+        <span><i class="legend-block solid" aria-hidden="true"></i>{t('前景商品块（规模示意）','Foreground product blocks (schematic)')}</span>
+        <span><i class="legend-block faded" aria-hidden="true"></i>{t('其余大量商品（未展开）','Rest of the product world (not expanded)')}</span>
+      </div>
       <strong>1,181,436</strong>
       <span>{t('商品（products）','products')}</span>
-      <p>{t('这是完整商品世界。它很大。','This is the full product world. It is huge.')}</p>
+      <p>{t('这是完整商品世界。每个小方块只是规模示意，不代表 1 个真实商品。','This is the full product world. Each block is schematic, not one literal product.')}</p>
     </section>
 
     <section class="transform" aria-label={t('WebShop 官方 small 配置','WebShop official small configuration')}>
       <div class="transform-line" aria-hidden="true"></div>
       <div class="transform-card">
+        <div class="official-row">
+          <div class="official-badge" title={t('WebShop 官方提供','Provided by WebShop')} aria-label={t('WebShop 官方提供','Provided by WebShop')}>
+            <span class="official-mark" aria-hidden="true">✓</span>
+            <b>{t('WebShop 官方提供','Official WebShop source')}</b>
+          </div>
+        </div>
         <small>WebShop official</small>
         <strong>{t('small 配置','small configuration')}</strong>
         <code>./setup.sh -d small</code>
         <span>{t('官方脚本直接下载预先准备好的 1,000-product 文件','The official script downloads the prepared 1,000-product files')}</span>
+        <a class="official-link" href={officialSetupUrl} target="_blank" rel="noreferrer">
+          {t('查看 WebShop 官方 setup.sh ↗','View WebShop official setup.sh ↗')}
+        </a>
       </div>
     </section>
 
@@ -56,6 +70,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
           <small>WebShop setup.sh</small>
           <code>Usage: ./setup.sh -d small|all</code>
           <p>{t('small 模式下载 items_shuffle_1000 与 items_ins_v2_1000。','Small mode downloads items_shuffle_1000 and items_ins_v2_1000.')}</p>
+          <a href={officialSetupUrl} target="_blank" rel="noreferrer">{t('打开官方代码 ↗','Open official code ↗')}</a>
         </article>
         <article>
           <small>SEED WebShop utils.py</small>
@@ -72,12 +87,14 @@ const t = (cn: string, en: string) => zh ? cn : en;
 <style>
   .webshop-small-world{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
   .figure-header{max-width:860px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.6rem,3.7vw,2.9rem);line-height:1.05;letter-spacing:-.045em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
-  .world-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.52fr) minmax(0,1fr);gap:1rem;align-items:stretch;margin:1.5rem 0 0}
+  .world-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.56fr) minmax(0,1fr);gap:1rem;align-items:stretch;margin:1.5rem 0 0}
   .world-panel{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.panel-kicker{color:var(--muted);font:800 .6rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.world-panel strong{display:block;margin:.8rem 0 .12rem;font-size:clamp(2.1rem,5vw,4.4rem);line-height:.9;letter-spacing:-.06em}.world-panel>span{display:block;color:var(--muted);font-size:.75rem}.world-panel p{margin:.7rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}.world-panel.original{border-top:5px solid var(--line-strong,var(--line))}.world-panel.small{border-top:5px solid var(--accent)}
   .warehouse{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:1rem;min-height:110px;align-content:start}.warehouse span{aspect-ratio:1;border-radius:3px;background:var(--ink);opacity:.72}.warehouse span.faded{opacity:.18}.warehouse.compact{grid-template-columns:repeat(5,1fr);max-width:180px;min-height:0}.warehouse.compact span{background:var(--accent);opacity:.85}
-  .transform{position:relative;display:grid;place-items:center;min-height:260px}.transform-line{position:absolute;left:-.25rem;right:-.25rem;top:50%;height:2px;background:var(--accent)}.transform-line::after{content:'';position:absolute;right:-2px;top:50%;border:7px solid transparent;border-left-color:var(--accent);transform:translateY(-50%)}.transform-card{position:relative;z-index:1;width:100%;padding:.9rem;border:1px solid var(--accent);border-radius:12px;background:var(--surface);text-align:center}.transform-card small,.transform-card span{display:block}.transform-card small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.transform-card strong{display:block;margin:.25rem 0 .6rem;font-size:1rem}.transform-card code{display:block;padding:.48rem;border-radius:7px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.transform-card span{margin-top:.55rem;color:var(--muted);font-size:.68rem;line-height:1.45}
+  .warehouse-legend{display:grid;gap:.35rem;margin-top:.72rem;padding-top:.62rem;border-top:1px solid var(--line)}.warehouse-legend span{display:flex;align-items:center;gap:.45rem;color:var(--muted);font-size:.62rem;line-height:1.35}.legend-block{display:inline-block;width:11px;height:11px;flex:0 0 11px;border-radius:2px;background:var(--ink)}.legend-block.solid{opacity:.72}.legend-block.faded{opacity:.18}
+  .transform{position:relative;display:grid;place-items:center;min-height:280px}.transform-line{position:absolute;left:-.25rem;right:-.25rem;top:50%;height:2px;background:var(--accent)}.transform-line::after{content:'';position:absolute;right:-2px;top:50%;border:7px solid transparent;border-left-color:var(--accent);transform:translateY(-50%)}.transform-card{position:relative;z-index:1;width:100%;padding:.9rem;border:1px solid var(--accent);border-radius:12px;background:var(--surface);text-align:center}.transform-card small,.transform-card>span{display:block}.transform-card small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.transform-card>strong{display:block;margin:.25rem 0 .6rem;font-size:1rem}.transform-card code{display:block;padding:.48rem;border-radius:7px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.transform-card>span{margin-top:.55rem;color:var(--muted);font-size:.68rem;line-height:1.45}
+  .official-row{display:flex;justify-content:center;margin:-1.35rem 0 .75rem}.official-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.27rem .56rem .27rem .32rem;border:1px solid color-mix(in srgb,#1677ff 75%,black);border-radius:999px;background:color-mix(in srgb,#1677ff 10%,var(--surface));box-shadow:0 4px 14px color-mix(in srgb,#1677ff 16%,transparent)}.official-badge b{color:#1467d2;font-size:.62rem;line-height:1.2}.official-mark{display:grid;place-items:center;width:21px;height:21px;clip-path:polygon(50% 0,63% 9%,79% 7%,88% 21%,100% 30%,96% 47%,100% 63%,87% 74%,81% 91%,64% 91%,50% 100%,36% 91%,19% 91%,13% 74%,0 63%,4% 47%,0 30%,12% 21%,21% 7%,37% 9%);background:#1677ff;color:#fff;font:900 .7rem/1 system-ui,sans-serif}.official-link{display:inline-block;margin-top:.7rem;color:#1467d2;font-size:.68rem;font-weight:800;text-underline-offset:3px}.official-link:hover{text-decoration-thickness:2px}
   .takeaway{grid-column:1/-1;padding:1rem 1.1rem;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.takeaway strong{display:block;color:var(--accent);font-size:.78rem}.takeaway p{margin:.35rem 0 0;font-size:clamp(.95rem,1.8vw,1.18rem);line-height:1.55;font-weight:700}
-  .evidence{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.7rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
+  .evidence{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.7rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:#1467d2;font-size:.68rem;font-weight:800}
   .world-story figcaption{grid-column:1/-1;color:var(--muted);font-size:.76rem;line-height:1.6}
-  @media(max-width:800px){.world-story{grid-template-columns:1fr}.transform{min-height:140px}.transform-line{left:50%;right:auto;top:-.2rem;bottom:-.2rem;width:2px;height:auto;transform:translateX(-50%)}.transform-line::after{right:auto;left:50%;top:auto;bottom:-8px;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--accent)}.evidence-grid{grid-template-columns:1fr}.webshop-small-world{width:min(100% - 1rem,1120px);padding:1rem}}
+  @media(max-width:800px){.world-story{grid-template-columns:1fr}.transform{min-height:160px}.transform-line{left:50%;right:auto;top:-.2rem;bottom:-.2rem;width:2px;height:auto;transform:translateX(-50%)}.transform-line::after{right:auto;left:50%;top:auto;bottom:-8px;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--accent)}.evidence-grid{grid-template-columns:1fr}.webshop-small-world{width:min(100% - 1rem,1120px);padding:1rem}.official-row{margin:-1.1rem 0 .65rem}}
 </style>
