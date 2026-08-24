@@ -8,6 +8,7 @@ const conceptIndex = read('src/components/research/ResearchConceptIndex.astro');
 const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astro');
 const gateway = read('src/components/research/OpenEvoExperimentGateway.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
+const detailCore = read('src/components/research/SeedOpenEvoResearchPageCore.astro');
 const benchmarkZh = read('src/pages/research/seed-openevo/benchmarks.astro');
 const benchmarkEn = read('src/pages/en/research/seed-openevo/benchmarks.astro');
 const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
@@ -66,16 +67,17 @@ describe('research journey experience', () => {
     expect(conceptIndex).toContain('/lab/');
   });
 
-  it('keeps the benchmark overview comparative and delegates environment detail', () => {
+  it('keeps the benchmark overview comparative and gives environment links one owner', () => {
     for (const source of [benchmarkZh, benchmarkEn]) {
       expect(source).toContain('page="benchmarks"');
-      expect(source).toContain('benchmark-route-links');
-      expect(source).toContain('/research/seed-openevo/webshop/');
-      expect(source).toContain('/research/seed-openevo/alfworld/');
+      expect(source).not.toContain('benchmark-route-links');
       expect(source).not.toContain('AgentEnvironmentTrajectory');
       expect(source).not.toContain('InteractiveResearchExplainer');
       expect(source).not.toContain('BenchmarkDatasetDiagram');
     }
+    expect(detailCore).toContain('benchmark-detail-links');
+    expect(detailCore).toContain('/research/seed-openevo/webshop/');
+    expect(detailCore).toContain('/research/seed-openevo/alfworld/');
   });
 
   it('does not cross-mount WebShop and ALFWorld explainers on their dedicated pages', () => {
