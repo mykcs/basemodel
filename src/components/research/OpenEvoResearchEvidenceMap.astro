@@ -1,0 +1,136 @@
+---
+const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
+
+const groups = [
+  {
+    id: 'evidence-q1',
+    index: '01',
+    claim: 'OpenEvo 的真实参数更新链路已经建立',
+    boundary: '这里只证明 training / save / reload / adapter identity（训练 / 保存 / 重载 / 适配器身份）真实成立，不等价于任务收益已经提高。',
+    links: [
+      { kind: 'Code', label: 'G2 实际训练 launcher（启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
+      { kind: 'Config', label: 'H1.40 多代更新配置', href: `${evidenceRoot}/configs/experiment/h1.40-g2-multigeneration-v1.json` },
+      { kind: 'Machine result', label: 'G2 training reconciliation（训练对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` },
+      { kind: 'Human report', label: 'G2 training closeout（训练收口报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/G2_TRAINING_REPORT.md` },
+    ],
+  },
+  {
+    id: 'evidence-q2',
+    index: '02',
+    claim: 'Base model（基础模型）能够自然产生成功经验',
+    boundary: 'H0 证明“经验供给不是绝对为零”；它不证明这些成功经验一定能迁移到新的任务。',
+    links: [
+      { kind: 'Code', label: 'H0 natural-success launcher（自然成功启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
+      { kind: 'Config', label: 'H0 natural-success queue（自然成功任务队列）', href: `${evidenceRoot}/configs/experiment/h0-natural-success-queue.json` },
+      { kind: 'Machine result', label: 'H0 final reconciliation（最终实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json` },
+      { kind: 'Human report', label: '2026-08-15 progress report（进展报告）', href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
+    ],
+  },
+  {
+    id: 'evidence-q3',
+    index: '03',
+    claim: '成功监督可以被训练，但 fit（拟合）不等价于 closed-loop gain（闭环任务收益）',
+    boundary: 'H1.11 等实验支持“训练目标可以改变、闭环收益仍未自动建立”；这里不把早期 null result（零/负结果）写成“OpenEvo 永远不能迁移”。',
+    links: [
+      { kind: 'Code', label: 'Tracked closed-loop evaluator（可追踪闭环评估器）', href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
+      { kind: 'Manifest', label: 'H1.11 frozen task manifest（冻结任务清单）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
+      { kind: 'Training evidence', label: 'H1.11 success-training evidence（成功监督训练证据）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/training-success-new.json` },
+      { kind: 'Machine result', label: 'H1.11 reconciliation（实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
+    ],
+  },
+  {
+    id: 'evidence-q4',
+    index: '04',
+    claim: '第一代 internal fresh-task transfer（内部新任务迁移）出现并被独立复现',
+    boundary: 'H1.38B / H1.39 的 evaluation tasks（评估任务）来自 goal_idx ≥ 500，因此这是 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估），不是 SEED official held-out evaluation（SEED 官方保留任务评估）。',
+    links: [
+      { kind: 'Code', label: 'H1.38B method-control launcher（方法对照启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h138b_method_control.sh` },
+      { kind: 'Manifest', label: 'H1.38B frozen eval manifest（冻结评估清单）', href: `${evidenceRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
+      { kind: 'Machine result', label: 'H1.38B reconciliation summary（实验对账摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json` },
+      { kind: 'Human report', label: 'H1.38B sealed report（封存报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md` },
+      { kind: 'Code', label: 'H1.39 independent-replication launcher（独立复现启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h139_mr_independent_replication.sh` },
+      { kind: 'Manifest', label: 'H1.39 independent panel（独立任务组）', href: `${evidenceRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
+      { kind: 'Machine result', label: 'H1.39 reconciliation summary（实验对账摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/reconciliation-summary.json` },
+      { kind: 'Human report', label: 'H1.39 sealed report（封存报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
+    ],
+  },
+  {
+    id: 'evidence-q5',
+    index: '05',
+    claim: '第二代 continual integration（持续整合）尚未稳定建立',
+    boundary: 'H1.40 证明 E2 经验供给充足且 G2 真正创建；但 acquisition（新知识获取）、retention（旧知识保持）、preservation（已有收益保持）没有同时通过，因此 T2 没有打开。',
+    links: [
+      { kind: 'Code', label: 'E2 harvest launcher（第二代经验采集启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_e2_harvest.py` },
+      { kind: 'Code', label: 'G2 training launcher（第二代训练启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
+      { kind: 'Code', label: 'Upstream evaluation launcher（上游门槛评估启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_upstream_evaluation.py` },
+      { kind: 'Machine result', label: 'Formal upstream summary（正式上游评估摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` },
+      { kind: 'Human report', label: 'Formal upstream evaluation report（正式上游评估报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
+    ],
+  },
+  {
+    id: 'evidence-q6',
+    index: '06',
+    claim: '主报告的 supported / negative / invalid / unknown（已支持 / 负结果 / 无效 / 未知）边界有程序级总账',
+    boundary: '这一层不是新的实验，而是把所有实验按证据强度重新分类，防止 diagnostic-only（仅诊断）或 measurement-invalid（测量无效）的实验被误写成主结论。',
+    links: [
+      { kind: 'Ledger', label: 'WebShop program ledger（实验总账）', href: `${evidenceRoot}/docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json` },
+      { kind: 'Program report', label: '2026-08-21 program report（项目总报告）', href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-21.md` },
+      { kind: 'Status', label: 'Current campaign（当前实验批次）', href: `${evidenceRoot}/configs/experiment/current-campaign.json` },
+    ],
+  },
+  {
+    id: 'evidence-q7',
+    index: '07',
+    claim: '真正的 SEED official held-out fair comparison（SEED 官方保留任务公平比较）还没有正式执行',
+    boundary: '这里不存在可以展示的“正式比较结果”，因为 formal evaluation denominator（正式评估分母）就是 0；H1.30 的 route smoke（路线冒烟测试）和 checkpoint validation（检查点验证）只能作为基础设施证据。',
+    links: [
+      { kind: 'Planned config', label: 'H1.30 SEED comparison config（比较配置）', href: `${evidenceRoot}/configs/experiment/h1.30-seed-comparison.json` },
+      { kind: 'Infrastructure code', label: 'H1.30 SEED-route smoke launcher（SEED 路线冒烟测试启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h130_seed_route_smoke.sh` },
+      { kind: 'Status / proof of absence', label: 'H1.30 status：formal denominator = 0（正式评估分母为 0）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md` },
+    ],
+  },
+] as const;
+---
+
+<section class="evidence-map" aria-labelledby="evidence-map-title">
+  <header>
+    <p>EVIDENCE MAP</p>
+    <div>
+      <h2 id="evidence-map-title">每一句主结论，都能向下追到实际代码和结果</h2>
+      <p>这里不是参考文献列表，而是 claim-to-evidence map（结论—证据映射）。优先使用固定 commit 的 GitHub 链接，避免页面更新以后证据漂移。</p>
+    </div>
+  </header>
+
+  <div class="evidence-list">
+    {groups.map((group) => (
+      <article id={group.id} class="evidence-card">
+        <div class="evidence-index">{group.index}</div>
+        <div class="evidence-main">
+          <h3>{group.claim}</h3>
+          <p class="boundary"><strong>Claim boundary（结论边界）：</strong>{group.boundary}</p>
+          <div class="link-grid">
+            {group.links.map((link) => (
+              <a href={link.href} target="_blank" rel="noreferrer">
+                <small>{link.kind}</small>
+                <span>{link.label}</span>
+                <b aria-hidden="true">↗</b>
+              </a>
+            ))}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .evidence-map{max-width:1160px;margin:0 auto;padding:0 24px 72px;color:var(--color-text)}
+  .evidence-map>header{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .evidence-map>header>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .evidence-map h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .evidence-map header div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .evidence-list{display:grid;gap:10px}.evidence-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
+  .evidence-index{color:var(--color-text-muted);font:650 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-main h3{margin:0 0 10px;font-size:1.2rem;line-height:1.4;letter-spacing:-.02em}.boundary{max-width:80ch;margin:0;color:var(--color-text-muted);font-size:.82rem;line-height:1.6}.boundary strong{color:var(--color-text)}
+  .link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:16px}.link-grid a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);text-decoration:none}.link-grid a:hover,.link-grid a:focus-visible{border-color:var(--color-accent)}.link-grid small{grid-column:1;color:var(--color-accent);font:700 .65rem ui-monospace,SFMono-Regular,Menlo,monospace}.link-grid span{grid-column:1;font-size:.76rem;line-height:1.45}.link-grid b{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--color-accent)}
+  @media(max-width:760px){.evidence-map{padding-inline:18px}.evidence-map>header{grid-template-columns:1fr;gap:8px}.evidence-card{grid-template-columns:40px minmax(0,1fr);gap:12px;padding:18px}.link-grid{grid-template-columns:1fr}}
+</style>
