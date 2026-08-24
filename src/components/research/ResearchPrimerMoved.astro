@@ -35,6 +35,7 @@ const current = destinations[note];
   <a class="back" href={`${root}/`}>← 返回研究结果</a>
   <article>
     <p class="eyebrow">{current.eyebrow}</p>
+    <p class="moved-note">这篇前景笔记已经并入当前研究路径；下面的入口会带你到它现在的正式位置。</p>
     <h1>{current.title}</h1>
     <p>{current.description}</p>
     <div class="actions">
@@ -45,5 +46,5 @@ const current = destinations[note];
 </main>
 
 <style>
-.moved-primer{width:min(880px,calc(100% - 2rem));margin:2rem auto 5rem}.back{display:inline-block;margin-bottom:2rem;color:var(--color-text-muted);font-size:.82rem;text-decoration:none}.moved-primer article{padding:clamp(1.2rem,4vw,2.5rem);border:1px solid var(--color-border);border-radius:18px;background:var(--color-surface)}.eyebrow{margin:0 0 .8rem;color:var(--color-accent);font:750 .7rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.moved-primer h1{margin:0;max-width:760px;font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.08;letter-spacing:-.045em}.moved-primer article>p:not(.eyebrow){max-width:720px;margin:1rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.72}.actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}.actions a{padding:.62rem .82rem;border:1px solid var(--color-border);border-radius:9px;color:var(--color-text);font-size:.84rem;text-decoration:none}.actions .primary{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent,#fff)}@media(max-width:600px){.moved-primer{width:min(100% - 1rem,880px);margin-top:1rem}.actions a{width:100%}}
+.moved-primer{width:min(880px,calc(100% - 2rem));margin:2rem auto 5rem}.back{display:inline-block;margin-bottom:2rem;color:var(--color-text-muted);font-size:.82rem;text-decoration:none}.moved-primer article{padding:clamp(1.2rem,4vw,2.5rem);border:1px solid var(--color-border);border-radius:18px;background:var(--color-surface)}.eyebrow{margin:0 0 .8rem;color:var(--color-accent);font:750 .7rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.moved-primer h1{margin:0;max-width:760px;font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.08;letter-spacing:-.045em}.moved-primer article>p:not(.eyebrow){max-width:720px;margin:1rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.72}.moved-note{margin-top:0!important;margin-bottom:1rem!important;padding-bottom:1rem;border-bottom:1px solid var(--color-border)}.actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}.actions a{padding:.62rem .82rem;border:1px solid var(--color-border);border-radius:9px;color:var(--color-text);font-size:.84rem;text-decoration:none}.actions .primary{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent,#fff)}@media(max-width:600px){.moved-primer{width:min(100% - 1rem,880px);margin-top:1rem}.actions a{width:100%}}
 </style>
