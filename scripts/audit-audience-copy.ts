@@ -26,7 +26,7 @@ const candidateRules: Rule[] = [
 
 const productionRoots = ['src', 'public/guides', 'public/og-cover.svg'];
 const eligibleExtensions = new Set(['.astro', '.tsx', '.ts', '.json', '.md', '.mdx', '.sh', '.py', '.svg']);
-const exclusions = [/(?:^|\/)\.omc(?:\/|$)/, /(?:^|\/)__fixtures__(?:\/|$)/, /(?:^|\/)fixtures?(?:\/|$)/, /\.test\.(?:ts|tsx)$/, /\.spec\.(?:ts|tsx)$/];
+const exclusions = [/(?:^|\/)\.omc(?:\/|$)/, /(?:^|\/)__fixtures__(?:\/|$)/, /(?:^|\/)fixtures?(?:\/|$)/, /\.test\.(?:ts|tsx)$/, /\.spec\.(?:ts|tsx)$/, /\/AGENTS\.md$/];
 
 function walk(_root: string, relative: string): string[] {
   if (!fs.existsSync(relative)) return [];
@@ -42,6 +42,49 @@ function walk(_root: string, relative: string): string[] {
 function lineNumber(source: string, offset: number): number { return source.slice(0, offset).split('\n').length; }
 function compact(value: string): string { return value.replace(/\s+/g, ' ').trim().slice(0, 180); }
 
+const I18N_T_RULE_IDS = new Set(['COPY-ZH-EN-SENTENCE']);
+
+function readStringLiteral(source: string, start: number): { end: number; quote: string } | null {
+  const quote = source[start];
+  if (quote !== "'" && quote !== '"' && quote !== '`') return null;
+  let i = start + 1;
+  while (i < source.length) {
+    const ch = source[i];
+    if (ch === '\\') { i += 2; continue; }
+    if (ch === quote) return { end: i + 1, quote };
+    if (quote === '`' && ch === '$' && source[i + 1] === '{') {
+      let depth = 1; i += 2;
+      while (i < source.length && depth > 0) {
+        const c = source[i];
+        if (c === '{') depth++;
+        else if (c === '}') depth--;
+        i++;
+      }
+      continue;
+    }
+    i++;
+  }
+  return null;
+}
+
+function maskAllStringLiterals(source: string): string {
+  const out = source.split('');
+  let i = 0;
+  while (i < source.length) {
+    const ch = source[i];
+    if (ch === '"' || ch === "'" || ch === '`') {
+      const lit = readStringLiteral(source, i);
+      if (lit) {
+        for (let p = i; p < lit.end; p++) if (out[p] !== '\n') out[p] = ' ';
+        i = lit.end;
+        continue;
+      }
+    }
+    i++;
+  }
+  return out.join('');
+}
+
 export function discoverAudienceCopySources(root = process.cwd()): string[] {
   return productionRoots.flatMap((sourceRoot) => walk(root, path.join(root, sourceRoot)))
     .filter((file) => eligibleExtensions.has(path.extname(file)))
@@ -55,9 +98,11 @@ export function scanAudienceCopy(root = process.cwd()): CopyFinding[] {
   for (const file of discoverAudienceCopySources(root)) {
     const source = fs.readFileSync(path.join(root, file), 'utf8');
     for (const rule of candidateRules) {
+      const probe = I18N_T_RULE_IDS.has(rule.id) ? maskAllStringLiterals(source) : source;
       rule.pattern.lastIndex = 0;
-      for (const match of source.matchAll(rule.pattern)) {
-        findings.push({ file, line: lineNumber(source, match.index ?? 0), ruleId: rule.id, snippet: compact(match[0]), reason: rule.reason, strict: false });
+      for (const match of probe.matchAll(rule.pattern)) {
+        const originalOffset = match.index ?? 0;
+        findings.push({ file, line: lineNumber(source, originalOffset), ruleId: rule.id, snippet: compact(match[0]), reason: rule.reason, strict: false });
       }
     }
   }
