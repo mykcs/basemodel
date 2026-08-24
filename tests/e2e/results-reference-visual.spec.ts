@@ -46,14 +46,14 @@ for (const viewport of viewports) {
       const fontSize = Number.parseFloat(style.fontSize);
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.2;
       const lines = Math.max(1, Math.round(titleRect.height / lineHeight));
-      const cjk = title.innerText.match(/[\u3400-\u9fff]/g)?.length ?? 0;
+      const visibleCharacters = Array.from(title.innerText.replace(/\s+/g, '')).length;
 
       return {
         titleWidth: titleRect.width,
         columnWidth: columnRect.width,
         headingWidth: headingRect.width,
         titleLines: lines,
-        cjkPerLine: cjk / lines,
+        charactersPerLine: visibleCharacters / lines,
         gridGap: gridRect.top - headingRect.bottom,
         firstCardWidth: firstCardRect.width,
         gridWidth: gridRect.width,
@@ -67,7 +67,7 @@ for (const viewport of viewports) {
     expect(metrics.columnWidth, `REFERENCE copy column collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(520);
     expect(metrics.headingWidth, `REFERENCE heading row collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(850);
     expect(metrics.titleLines, `REFERENCE title wraps too many times: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(3);
-    expect(metrics.cjkPerLine, `REFERENCE title became a narrow CJK rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(7);
+    expect(metrics.charactersPerLine, `REFERENCE title became a narrow text rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(12);
     expect(metrics.gridGap, `REFERENCE cards are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
     expect(metrics.firstCardWidth, `REFERENCE cards collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(150);
     expect(metrics.gridWidth, `REFERENCE grid collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
