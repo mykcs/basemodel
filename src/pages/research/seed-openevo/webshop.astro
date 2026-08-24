@@ -4,6 +4,7 @@ import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoRes
 import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 import WebShopDatasetCanonicalFigure from '../../../components/research/WebShopDatasetCanonicalFigure.astro';
 import WebShopInteractionCanonicalFigure from '../../../components/research/WebShopInteractionCanonicalFigure.astro';
+import WebShopSmallWorldFigure from '../../../components/research/WebShopSmallWorldFigure.astro';
 import SeedWebShopCanonicalFigure from '../../../components/research/SeedWebShopCanonicalFigure.astro';
 import WebShopScaleEcho from '../../../components/research/WebShopScaleEcho.astro';
 const locale = 'zh' as const;
@@ -13,6 +14,7 @@ const locale = 'zh' as const;
     <WebShopInteractionCanonicalFigure locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
     <WebShopDatasetCanonicalFigure locale={locale} />
+    <WebShopSmallWorldFigure locale={locale} />
     <SeedWebShopCanonicalFigure locale={locale} />
     <WebShopScaleEcho locale={locale} side="webshop" />
   </SeedOpenEvoResearchPage>
