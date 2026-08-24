@@ -1,0 +1,98 @@
+---
+const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
+
+const blocks = [
+  {
+    question: 'Q2 · 成功经验从哪里来？',
+    title: '基础模型并不是“永远做不成题”',
+    metrics: [
+      { value: '128', label: 'H0 attempts（尝试）' },
+      { value: '96', label: 'scientifically valid（科学有效）' },
+      { value: '28', label: 'qualified positives（合格正向经验）' },
+    ],
+    note: '这只回答“有没有可学的成功经验”。它不回答这些经验能否迁移。',
+    href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json`,
+  },
+  {
+    question: 'Q4 · 学到的东西能迁移吗？',
+    title: '第一代内部新任务迁移先出现，再被独立复现',
+    metrics: [
+      { value: '+0.124', label: 'H1.38B · SD-LoRA − BASE' },
+      { value: '[0.0326, 0.2194]', label: 'H1.38B · 95% CI（95% 置信区间）' },
+      { value: '+0.1637', label: 'H1.39 · ordinary-LoRA − BASE' },
+      { value: '+0.2488', label: 'H1.39 · SD-LoRA − BASE' },
+    ],
+    note: 'H1.39 的 95% CI 分别为 [0.0781, 0.2519] 与 [0.1642, 0.3365]。这些 evaluation tasks（评估任务）来自 goal_idx ≥ 500，因此属于 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估），不是 SEED official held-out evaluation（SEED 官方保留任务评估）。',
+    href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md`,
+  },
+  {
+    question: 'Q5 · 能不能继续一代一代变好？',
+    title: '第二代不是“没经验、没训练”，而是持续整合没有过门',
+    metrics: [
+      { value: '256', label: 'E2 harvest attempts（第二代经验采集）' },
+      { value: '132', label: 'qualified positives（合格正向经验）' },
+      { value: '33', label: 'qualifying identities（产生成功的任务身份）' },
+      { value: '16', label: 'selected records / G2 components（入选记录 / G2 组件）' },
+    ],
+    note: 'G2 完成 8 次 sequential increments（顺序参数更新），但 acquisition（新知识获取）、retention（旧知识保持）与 preservation（已有收益保持）没有同时通过，所以 T2 没有打开。',
+    href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md`,
+  },
+  {
+    question: 'Q7 · 最后的正式比赛在哪里？',
+    title: '真正的 SEED 官方保留任务公平比较还没有正式结果',
+    metrics: [
+      { value: '0', label: 'formal evaluation denominator（正式评估分母）' },
+      { value: '0–499', label: 'SEED official held-out pool（SEED 官方保留任务池）' },
+      { value: '500–6909', label: 'train candidate pool（训练候选任务池）' },
+    ],
+    note: 'H1.30 做过 route smoke（路线冒烟测试）、parquet / checkpoint 等基础设施验证，但没有消费正式评估任务，也没有产生可以拿来比较 OpenEvo vs SEED 的正式结果。',
+    href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md`,
+  },
+] as const;
+---
+
+<section class="quantitative-evidence" aria-labelledby="quantitative-evidence-title">
+  <header>
+    <p>KEY NUMBERS</p>
+    <div>
+      <h2 id="quantitative-evidence-title">四组数字先告诉我们，研究已经走到了哪里</h2>
+      <p>它们分别回答四件事：有没有成功经验、第一代迁移是否出现、第二代卡在什么地方，以及真正的 SEED 官方保留任务比较是否已经发生。</p>
+    </div>
+  </header>
+
+  <div class="evidence-blocks">
+    {blocks.map((block) => (
+      <article>
+        <div class="block-heading">
+          <small>{block.question}</small>
+          <h3>{block.title}</h3>
+        </div>
+        <div class="metric-grid">
+          {block.metrics.map((metric) => (
+            <div>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+            </div>
+          ))}
+        </div>
+        <p>{block.note}</p>
+        <a href={block.href} target="_blank" rel="noreferrer">查看对应原始证据 ↗</a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .quantitative-evidence{max-width:1160px;margin:0 auto;padding:0 24px 56px;color:var(--color-text)}
+  .quantitative-evidence>header{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .quantitative-evidence>header>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .quantitative-evidence h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .quantitative-evidence header div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .evidence-blocks{display:grid;gap:10px}.evidence-blocks>article{padding:22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
+  .block-heading small{color:var(--color-accent);font-size:.72rem;font-weight:750}.block-heading h3{margin:8px 0 16px;font-size:1.18rem;line-height:1.4;letter-spacing:-.02em}
+  .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.metric-grid>div{min-height:112px;padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}
+  .metric-grid strong,.metric-grid span{display:block}.metric-grid strong{font-size:clamp(1.25rem,2.5vw,2rem);line-height:1.05;letter-spacing:-.035em}.metric-grid span{margin-top:10px;color:var(--color-text-muted);font-size:.72rem;line-height:1.45}
+  .evidence-blocks article>p{max-width:88ch;margin:16px 0 0;color:var(--color-text-muted);font-size:.82rem;line-height:1.62}.evidence-blocks article>a{display:inline-block;margin-top:12px;color:var(--color-accent);font-size:.76rem;font-weight:750;text-decoration:none}
+  @media(max-width:860px){.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:720px){.quantitative-evidence{padding-inline:18px}.quantitative-evidence>header{grid-template-columns:1fr;gap:8px}.metric-grid{grid-template-columns:1fr}.metric-grid>div{min-height:auto}}
+</style>

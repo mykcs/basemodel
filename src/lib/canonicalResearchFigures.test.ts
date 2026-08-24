@@ -101,7 +101,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
 
   it('formalizes the first-time-reader explainer standard as repository policy', () => {
     for (const term of [
-      'Default reader: first visit',
+      'Default reader: a lab colleague who knows the project exists but not the details',
       'One major section = one new mental-model step',
       'Every visual distinction must carry real semantics',
       'SUBSET / select',
@@ -140,12 +140,13 @@ describe('canonical SEED / OpenEvo research figures', () => {
     }
   });
 
-  it('lets experiment results cite canonical figures instead of re-owning background explanation', () => {
+  it('lets research findings point to canonical background owners instead of re-owning background explanation', () => {
     expect(results).toContain('/research/seed-openevo/webshop/');
-    expect(results).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(results).toContain('/research/seed-openevo/openevo/');
-    expect(results).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
-    expect(results).toContain('/papers/seed/');
+    expect(results).toContain('/research/seed-openevo/seed/');
+    expect(results).toContain('/research/seed-openevo/experiment/');
+    expect(results).not.toContain('WebShopDatasetCanonicalFigure');
+    expect(results).not.toContain('SeedFrameworkDiagram');
   });
 
   it('keeps the canonical static figures responsive and readability-audited', () => {

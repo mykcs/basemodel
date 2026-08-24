@@ -1,0 +1,195 @@
+---
+const transferRows = [
+  {
+    label: 'H1.38B · SD-LoRA − BASE',
+    value: '+0.124',
+    ci: '[0.0326, 0.2194]',
+    left: '20.7%',
+    width: '46.7%',
+    point: '43.5%',
+  },
+  {
+    label: 'H1.39 · ordinary-LoRA − BASE',
+    value: '+0.164',
+    ci: '[0.0781, 0.2519]',
+    left: '32.0%',
+    width: '43.5%',
+    point: '53.4%',
+  },
+  {
+    label: 'H1.39 · SD-LoRA − BASE',
+    value: '+0.249',
+    ci: '[0.1642, 0.3365]',
+    left: '53.6%',
+    width: '43.0%',
+    point: '74.7%',
+  },
+] as const;
+
+const ladder = [
+  {
+    step: '01',
+    title: 'Experience supply（经验供给）',
+    state: '已建立',
+    body: 'Base model（基础模型）能产生成功经验；H1.40 的 E2 也有充足正向经验。',
+    tone: 'supported',
+  },
+  {
+    step: '02',
+    title: 'Parameter learning（参数学习）',
+    state: '已建立',
+    body: '训练、adapter（适配器）写入、保存与 reload（重新加载）链路真实工作。',
+    tone: 'supported',
+  },
+  {
+    step: '03',
+    title: 'First-generation transfer（第一代迁移）',
+    state: '有边界地建立',
+    body: 'H1.38B 出现正向信号，H1.39 在独立内部新任务组上复现。',
+    tone: 'bounded',
+  },
+  {
+    step: '04',
+    title: 'Continual integration（持续整合）',
+    state: '尚未建立',
+    body: '第二代 acquisition / retention / preservation（新知识获取 / 旧知识保持 / 已有收益保持）没有同时过门。',
+    tone: 'unsupported',
+  },
+  {
+    step: '05',
+    title: 'SEED official held-out（SEED 官方保留任务）',
+    state: '尚未测量',
+    body: '正式比较没有启动；formal evaluation denominator（正式评估分母）= 0。',
+    tone: 'unknown',
+  },
+] as const;
+---
+
+<section class="finding-figures" aria-labelledby="finding-figures-title">
+  <header class="section-heading">
+    <p>FIGURES</p>
+    <div>
+      <h2 id="finding-figures-title">三个问题最能看清目前的结果</h2>
+      <p>第一，OpenEvo 的学习链已经走到哪一步；第二，第一代迁移信号有多强；第三，为什么第二代还不能算稳定持续进化。</p>
+    </div>
+  </header>
+
+  <figure class="finding-figure ladder-figure" data-ui-audit="contrast layout overflow">
+    <div class="figure-header">
+      <div>
+        <small>FIGURE R1 · LEARNING LADDER</small>
+        <h3>OpenEvo 的证据已经走到哪一步？</h3>
+      </div>
+      <span>H1.41 evidence cutoff（证据截止）</span>
+    </div>
+    <div class="ladder" role="list">
+      {ladder.map((item, index) => (
+        <div class:list={['ladder-step', `tone-${item.tone}`]} role="listitem">
+          <div class="step-index">{item.step}</div>
+          <div class="step-copy">
+            <div class="step-title-row">
+              <strong>{item.title}</strong>
+              <span>{item.state}</span>
+            </div>
+            <p>{item.body}</p>
+          </div>
+          {index < ladder.length - 1 && <div class="step-arrow" aria-hidden="true">→</div>}
+        </div>
+      ))}
+    </div>
+    <figcaption>前两层说明“有经验、会训练”；第三层说明第一代内部迁移可以出现；第四层仍是当前机制瓶颈；第五层是真正尚未完成的 SEED 官方考试。</figcaption>
+  </figure>
+
+  <figure class="finding-figure transfer-figure" data-ui-audit="contrast layout overflow">
+    <div class="figure-header">
+      <div>
+        <small>FIGURE R2 · INTERNAL TRANSFER</small>
+        <h3>第一代内部新任务迁移：一次发现，一次独立复现</h3>
+      </div>
+      <span>task-weighted Δ score（任务加权分数差）</span>
+    </div>
+
+    <div class="forest" aria-label="H1.38B and H1.39 transfer confidence intervals">
+      <div class="forest-scale" aria-hidden="true">
+        <span class="scale-label scale-min">−0.05</span>
+        <span class="scale-label scale-zero">0</span>
+        <span class="scale-label scale-mid">+0.15</span>
+        <span class="scale-label scale-max">+0.35</span>
+        <i class="zero-line"></i>
+      </div>
+      {transferRows.map((row) => (
+        <div class="forest-row">
+          <div class="forest-label">
+            <strong>{row.label}</strong>
+            <span>Δ {row.value} · 95% CI {row.ci}</span>
+          </div>
+          <div class="forest-track" aria-hidden="true">
+            <i class="zero-line"></i>
+            <span class="ci-line" style={`left:${row.left};width:${row.width}`}></span>
+            <b class="point" style={`left:${row.point}`}></b>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="claim-boundary">
+      <strong>Claim boundary（结论边界）</strong>
+      <p>这三条结果来自 goal_idx ≥ 500 的 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估），不是 0–499 的 SEED official held-out evaluation（SEED 官方保留任务评估）。</p>
+    </div>
+    <figcaption>H1.38B 的正向区间没有跨 0；H1.39 更换独立任务组后，ordinary-LoRA 和 SD-LoRA 相对同一个 BASE 都再次得到正向区间。</figcaption>
+  </figure>
+
+  <figure class="finding-figure gate-figure" data-ui-audit="contrast layout overflow">
+    <div class="figure-header">
+      <div>
+        <small>FIGURE R3 · CONTINUAL INTEGRATION</small>
+        <h3>H1.40：第二代不是没有经验，而是没有同时守住三道门</h3>
+      </div>
+      <span>T2 remained closed（T2 保持关闭）</span>
+    </div>
+
+    <div class="gate-flow">
+      <div class="gate-node pass">
+        <small>E2 SUPPLY</small>
+        <strong>256 attempts</strong>
+        <span>132 qualified positives<br />33 task identities</span>
+        <b>通过</b>
+      </div>
+      <div class="gate-arrow" aria-hidden="true">→</div>
+      <div class="gate-node pass">
+        <small>G2 WRITE</small>
+        <strong>16 records</strong>
+        <span>8 sequential increments<br />16 G2 components</span>
+        <b>通过</b>
+      </div>
+      <div class="gate-arrow" aria-hidden="true">→</div>
+      <div class="gate-stack">
+        <div class="mini-gate"><span>Acquisition（新知识获取）</span><b>未过</b></div>
+        <div class="mini-gate"><span>Retention（旧知识保持）</span><b>未过</b></div>
+        <div class="mini-gate"><span>Preservation（已有收益保持）</span><b>未过</b></div>
+      </div>
+      <div class="gate-arrow" aria-hidden="true">→</div>
+      <div class="gate-node closed">
+        <small>T2</small>
+        <strong>未打开</strong>
+        <span>没有正式 fresh-transfer denominator（新任务迁移评估分母）</span>
+        <b>停止</b>
+      </div>
+    </div>
+    <figcaption>因此 H1.40 支持的是“第二代持续整合尚未建立”，而不是“G2 已经在正式 T2 上证明迁移失败”。</figcaption>
+  </figure>
+</section>
+
+<style>
+  .finding-figures{max-width:1160px;margin:0 auto;padding:0 24px 58px;color:var(--color-text)}
+  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .finding-figure{margin:0 0 12px;padding:22px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-bg)}
+  .figure-header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding-bottom:18px;border-bottom:1px solid var(--color-border)}.figure-header small{color:var(--color-accent);font:750 .69rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.figure-header h3{margin:7px 0 0;font-size:1.25rem;line-height:1.35;letter-spacing:-.025em}.figure-header>span{max-width:240px;color:var(--color-text-muted);font-size:.72rem;line-height:1.45;text-align:right}
+  .ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:18px}.ladder-step{position:relative;min-height:192px;padding:15px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.step-index{color:var(--color-text-muted);font:650 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}.step-title-row{margin-top:20px}.step-title-row strong,.step-title-row span{display:block}.step-title-row strong{font-size:.86rem;line-height:1.4}.step-title-row span{margin-top:8px;color:var(--color-accent);font-size:.7rem;font-weight:750}.step-copy p{margin:12px 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}.step-arrow{position:absolute;z-index:2;top:50%;right:-12px;display:grid;width:17px;height:17px;place-items:center;border:1px solid var(--color-border);border-radius:50%;background:var(--color-bg);color:var(--color-text-muted);font-size:.66rem}.tone-unsupported .step-title-row span,.tone-unknown .step-title-row span{color:var(--color-text-muted)}
+  .forest{margin-top:20px}.forest-scale{position:relative;height:38px;margin-left:min(330px,32%);border-bottom:1px solid var(--color-border)}.scale-label{position:absolute;bottom:8px;color:var(--color-text-muted);font:600 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;transform:translateX(-50%)}.scale-min{left:0;transform:none}.scale-zero{left:12.5%}.scale-mid{left:50%}.scale-max{right:0;transform:none}.zero-line{position:absolute;top:0;bottom:0;left:12.5%;width:1px;background:var(--color-border)}.forest-row{display:grid;grid-template-columns:min(330px,32%) minmax(0,1fr);min-height:76px;border-bottom:1px solid var(--color-border)}.forest-label{padding:14px 18px 14px 0}.forest-label strong,.forest-label span{display:block}.forest-label strong{font-size:.8rem;line-height:1.4}.forest-label span{margin-top:5px;color:var(--color-text-muted);font-size:.68rem}.forest-track{position:relative}.ci-line{position:absolute;top:50%;height:2px;background:var(--color-accent);transform:translateY(-50%)}.point{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--color-accent-deep);transform:translate(-50%,-50%)}.claim-boundary{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:16px;padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.claim-boundary strong{font-size:.75rem}.claim-boundary p{margin:0;color:var(--color-text-muted);font-size:.74rem;line-height:1.58}
+  .gate-flow{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1.35fr) 28px minmax(0,.85fr);gap:6px;align-items:stretch;margin-top:20px}.gate-node,.gate-stack{min-height:174px}.gate-node{display:flex;flex-direction:column;padding:15px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.gate-node small{color:var(--color-text-muted);font:700 .67rem ui-monospace,SFMono-Regular,Menlo,monospace}.gate-node strong{margin-top:18px;font-size:1.12rem}.gate-node span{margin-top:8px;color:var(--color-text-muted);font-size:.72rem;line-height:1.5}.gate-node b{margin-top:auto;color:var(--color-accent);font-size:.72rem}.gate-node.closed b{color:var(--color-text-muted)}.gate-arrow{display:grid;place-items:center;color:var(--color-text-muted)}.gate-stack{display:grid;gap:6px}.mini-gate{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-surface)}.mini-gate span{font-size:.72rem;line-height:1.4}.mini-gate b{color:var(--color-text-muted);font-size:.69rem;white-space:nowrap}
+  figcaption{margin-top:16px;color:var(--color-text-muted);font-size:.72rem;line-height:1.58}
+  @media(max-width:960px){.ladder{grid-template-columns:1fr}.ladder-step{min-height:auto}.step-arrow{top:auto;right:50%;bottom:-13px;transform:rotate(90deg)}.gate-flow{grid-template-columns:1fr}.gate-arrow{min-height:22px;transform:rotate(90deg)}.gate-node,.gate-stack{min-height:auto}}
+  @media(max-width:720px){.finding-figures{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.figure-header{display:block}.figure-header>span{display:block;margin-top:8px;text-align:left}.forest-scale{margin-left:0}.forest-row{grid-template-columns:1fr}.forest-label{padding-right:0}.forest-track{min-height:44px}.claim-boundary{grid-template-columns:1fr;gap:7px}}
+</style>

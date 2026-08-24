@@ -1,0 +1,73 @@
+---
+const root = '/research/seed-openevo/results';
+const deepDives = [
+  {
+    href: `${root}/why-it-kept-failing/`,
+    title: '早期为什么一直没有可靠迁移',
+    body: '继续追 parser（动作解析）、horizon（交互步数）、carrier（经验载体）、标签与执行有效性这些具体诊断。',
+  },
+  {
+    href: `${root}/first-positive-transfer/`,
+    title: 'H1.38B：第一次可靠正向迁移',
+    body: '查看第一次置信区间完全位于 0 以上的 internal fresh-task transfer（内部新任务迁移）结果。',
+  },
+  {
+    href: `${root}/independent-replication/`,
+    title: 'H1.39：独立复现',
+    body: '冻结训练产物、更换新的 task-ID-disjoint panel（任务 ID 不重叠评估组）后再次观察到提升。',
+  },
+  {
+    href: `${root}/second-generation/`,
+    title: 'H1.40 / H1.41：第二代持续整合边界',
+    body: '经验供给与第二代参数写入成立，但稳定 acquisition / retention / preservation（新知识获取 / 旧知识保持 / 已有收益保持）尚未建立。',
+  },
+  {
+    href: `${root}/current-conclusion/`,
+    title: '完整结论边界',
+    body: '逐项核对哪些结论已经 supported（已支持），哪些属于 negative（负结果）、invalid（无效）或 unknown（未知）。',
+  },
+] as const;
+---
+
+<section class="research-appendix" aria-labelledby="research-appendix-title">
+  <header>
+    <p>EVIDENCE NOTES</p>
+    <div>
+      <h2 id="research-appendix-title">哪些实验值得进一步追问？</h2>
+      <p>这些笔记回答更细的问题：某次实验为什么失败、后来改了什么、结果怎样复现，以及结论的边界在哪里。</p>
+    </div>
+  </header>
+  <div class="deep-grid">
+    {deepDives.map((item) => (
+      <a href={item.href} class="deep-card">
+        <strong>{item.title}</strong>
+        <span>{item.body}</span>
+        <b aria-hidden="true">→</b>
+      </a>
+    ))}
+  </div>
+
+  <details class="legacy-links">
+    <summary>较早的实验记录与 H1.42 后续测量</summary>
+    <p>H1.41 的结论只使用截止 H1.41 已经产生的证据；H1.42 属于之后的 measurement-boundary（测量边界）工作。较早的实验记录同时保留，方便追溯研究过程。</p>
+    <div>
+      <a href={`${root}/webshop-training/`}>WebShop 早期说明</a>
+      <a href={`${root}/seed-training/`}>SEED 早期说明</a>
+      <a href={`${root}/openevo-training/`}>OpenEvo 早期说明</a>
+      <a href={`${root}/measurement-boundary/`}>H1.42 后续测量笔记</a>
+      <a href={`${root}/benchmark-first/`}>正式比较设计</a>
+      <a href={`${root}/seed-faithful-benchmark/`}>SEED 公平比较协议</a>
+      <a href={`${root}/openevo-benchmark-design/`}>OpenEvo 方法变体设计</a>
+    </div>
+  </details>
+</section>
+
+<style>
+  .research-appendix{max-width:1160px;margin:0 auto;padding:0 24px 72px;color:var(--color-text)}
+  .research-appendix>header{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .research-appendix>header>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .research-appendix h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.research-appendix header div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .deep-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.deep-card{display:flex;min-height:142px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease}.deep-card:hover,.deep-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent)}.deep-card strong{margin-bottom:10px;font-size:.94rem;line-height:1.4}.deep-card span{color:var(--color-text-muted);font-size:.79rem;line-height:1.58}.deep-card b{margin-top:auto;padding-top:14px;color:var(--color-accent)}
+  .legacy-links{margin-top:12px;padding:16px 0;border-top:1px solid var(--color-border);color:var(--color-text-muted);font-size:.8rem}.legacy-links summary{cursor:pointer;color:var(--color-text);font-weight:650}.legacy-links p{margin:10px 0 8px}.legacy-links div{display:flex;gap:12px;flex-wrap:wrap}.legacy-links a{color:var(--color-accent)}
+  @media(max-width:720px){.research-appendix{padding-inline:18px}.research-appendix>header{grid-template-columns:1fr;gap:8px}.deep-grid{grid-template-columns:1fr}}
+</style>

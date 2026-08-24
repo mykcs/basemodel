@@ -12,20 +12,20 @@ const notes = [
   {
     id: 'benchmark-first',
     index: '10',
-    title: '先跑真正的比赛：为什么 Benchmark 必须回到主线',
-    description: '以前的 H1 系列不是做错了，而是越走越深地研究“发动机零件”。现在要把正式比赛补回来，再让机制实验解释赛车为什么跑成这样。',
+    title: '为什么还需要一场正式的 WebShop 比较？',
+    description: '现有实验已经回答了一部分机制问题，也复现了第一代内部新任务迁移；真正缺失的是 OpenEvo 与 SEED 在同一套官方保留任务条件下的最终比较。',
   },
   {
     id: 'seed-faithful-benchmark',
     index: '11',
-    title: '一场公平的 WebShop 比赛应该怎么跑？',
-    description: '冻结 train/test boundary、128 个最终 test tasks、Score / Success、SEED interaction budget 与 test-time no-learning rule，让比较真正发生在同一套考试规则下。',
+    title: '怎样才算和 SEED 公平比较？',
+    description: '固定同一个 WebShop small world、任务划分、goal ordering、交互规则与评分方式，让方法差异成为主要变量。',
   },
   {
     id: 'openevo-benchmark-design',
     index: '12',
-    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
-    description: '把“进化载体”和“奖励密度”分成两个轴：先用 OpenEvo-Native-Sparse 做公平 benchmark，再把 Dense feedback 与参数内化作为可解释的扩展。',
+    title: 'OpenEvo 的不同进化方式应该怎样比较？',
+    description: '把“经验以什么形式留下来”和“训练时使用什么反馈”拆成两个轴，在正式比较之后逐步做方法消融。',
   },
 ] as const;
 
@@ -35,15 +35,15 @@ const current = notes.find((item) => item.id === note)!;
 <article class="benchmark-note" data-ui-audit="contrast layout overflow">
   <header class="note-hero">
     <div class="note-topline">
-      <a href={`${root}/`}>← 返回实验结果目录</a>
-      <span>OPENEVO × WEBSHOP · 新主线设计 {current.index}</span>
+      <a href={`${root}/`}>← 返回研究结果</a>
+      <span>OPENEVO × WEBSHOP · BENCHMARK DESIGN {current.index}</span>
     </div>
     <h1>{current.title}</h1>
     <p class="dek">{current.description}</p>
-    <p class="status"><strong>状态：</strong>这是下一阶段的 benchmark 设计与研究重分层，不是已经完成的实验结果。</p>
+    <p class="status"><strong>状态：</strong>实验设计中，尚未产生正式比较结果。</p>
   </header>
 
-  <nav class="series-nav" aria-label="OpenEvo WebShop benchmark redesign">
+  <nav class="series-nav" aria-label="OpenEvo WebShop benchmark design">
     {notes.map((item) => (
       <a class:list={[{ active: item.id === note }]} href={`${root}/${item.id}/`}>
         <span>{item.index}</span>{item.title}
@@ -54,88 +54,46 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'benchmark-first' && (
     <main class="note-body">
       <section class="opening-section">
-        <p class="section-kicker">01 · 先把研究重新分层</p>
-        <h2>我们不推翻旧实验。我们只是把“正式比赛”和“发动机零件”放回正确的位置。</h2>
-        <blockquote>
-          <p><strong>以前我们一直在研究发动机零件。</strong></p>
-          <p>现在要补上真正的比赛。</p>
-          <p>最后再用以前的零件实验解释：为什么这辆车跑成这样。</p>
-        </blockquote>
-        <p>这其实是整个 OpenEvo × WebShop 项目现在最需要的重新组织。H1.36、H1.37、H1.38、H1.40、H1.42 都可以继续保留；真正要改变的是它们在论文里的层级。</p>
+        <p class="section-kicker">01 · 已经知道什么</p>
+        <h2>OpenEvo 已经有第一代内部迁移证据，但这还不是 SEED 官方保留任务结果。</h2>
+        <p>H1.38B 首次观察到可靠的 internal fresh-task transfer（内部新任务迁移），H1.39 又在独立 task-ID-disjoint panel（任务 ID 不重叠评估组）上复现。两组正式正向迁移任务都来自 <strong>goal_idx ≥ 500</strong>。</p>
+        <p>因此，这些实验支持“第一代内部新任务迁移可以出现并复现”，但不能回答 OpenEvo 在 SEED official held-out tasks（SEED 官方保留任务）0–499 上是否有效。</p>
       </section>
 
       <section>
-        <p class="section-kicker">02 · 第一层问题只有一个</p>
-        <h2>同一个 Qwen2.5-3B，在同样的 WebShop 规则下，加入 OpenEvo 以后到底会不会更强？</h2>
-        <p>我们的第一层问题不应该是“SD-LoRA 能不能多保留一点效果”，也不应该是“某几个 task 上更新以后涨了多少”。这些都值得研究，但它们应该是第二层。</p>
+        <p class="section-kicker">02 · 缺少什么</p>
+        <h2>正式的 OpenEvo vs SEED 比较目前没有结果。</h2>
         <div class="question-card">
-          <p>真正的 headline question</p>
-          <strong>在与 SEED 对齐的 WebShop 训练和测试协议下，OpenEvo 能否通过训练期的自我进化，提高 Qwen2.5-3B 在未见 WebShop 任务上的最终表现？</strong>
+          <p>H1.30</p>
+          <strong>formal evaluation denominator（正式评估分母）= 0</strong>
         </div>
-        <p>最后必须能回答三个很朴素的问题：原始模型有多强？OpenEvo 训练以后有多强？和 SEED、GRPO 在同一套规则下相比怎么样？</p>
+        <p>H1.30 验证过 SEED route、parquet、trainer / checkpoint 等基础设施，但正式比较没有启动，也没有消费正式评估任务。因此当前不存在一组可以解释为“OpenEvo 相对 SEED 的最终成绩”的旧结果。</p>
       </section>
 
       <section>
-        <p class="section-kicker">03 · 刷题与考试</p>
-        <h2>训练阶段可以疯狂刷题；考试开始以后，不能再学习。</h2>
-        <p>最容易理解 WebShop 新主线的方法，是把它看成“刷题 + 最终考试”。训练区里的任务可以反复做：失败、总结、修改 memory、更新参数、再做下一批题，都属于训练。</p>
-        <div class="two-column">
-          <div>
-            <small>训练题</small>
-            <h3>goal 500–6909</h3>
-            <p>OpenEvo 可以在这里 rollout、反思、积累经验、更新载体和做内部 validation。</p>
-          </div>
-          <div>
-            <small>最终考试</small>
-            <h3>goal 0–499 中预先冻结 128 个</h3>
-            <p>所有训练、candidate selection 与超参数选择结束后才解封；test episode 之间也禁止更新 memory、adapter 或 policy。</p>
-          </div>
-        </div>
-        <p>这条规则的重要性在于：如果做完第一个 test task 后继续进化，第一个 test task 就已经变成了后面任务的训练数据。那就不再是和 SEED 可比的 held-out evaluation。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">04 · 我们以前哪里“偏”了</p>
-        <h2>实验没有做错，只是研究问题一层一层往机制深处走了。</h2>
-        <div class="drift-list">
-          <div><span>最初</span><p>OpenEvo 能不能让 WebShop agent 变强？</p></div>
-          <div><span>后来</span><p>成功轨迹能不能产生 adapter？</p></div>
-          <div><span>再后来</span><p>adapter 能不能迁移、会不会遗忘？</p></div>
-          <div><span>更深</span><p>多代写入、retention、magnitude reset 怎么办？</p></div>
-        </div>
-        <p>这些问题都合理。问题只是：我们想知道赛车到底快不快，却还没有认真跑完正式比赛，就已经花了大量时间研究轮胎温度。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">05 · 两条研究线</p>
-        <h2>主线回答“有没有效果”，支线回答“为什么会这样”。</h2>
+        <p class="section-kicker">03 · 两类问题</p>
+        <h2>最终效果和作用机制需要分别回答。</h2>
         <div class="lane-grid">
           <div class="lane primary">
-            <small>MAINLINE A · BENCHMARK</small>
-            <h3>OpenEvo 到底能不能提高 WebShop 成绩？</h3>
-            <p>Vanilla、GRPO、SEED、OpenEvo 在同一环境、同一 train/test boundary、同一 interaction budget 下，最终 frozen agent 的 Score / Success 是多少。</p>
+            <small>BENCHMARK</small>
+            <h3>在同一套规则下，OpenEvo 最终有没有更强？</h3>
+            <p>比较 frozen agent（冻结后的智能体）在同一批 SEED 官方保留任务上的 Task Score 与 exact Success。</p>
           </div>
           <div class="lane">
-            <small>LINE B · MECHANISM</small>
-            <h3>为什么提高？为什么没有提高？</h3>
-            <p>self-evolution、SD-LoRA、fresh-task transfer、retention、continual learning、multi-generation、magnitude reset 都放在这里。</p>
+            <small>MECHANISM</small>
+            <h3>为什么会提高，或者为什么没有提高？</h3>
+            <p>经验供给、参数写入、fresh-task transfer、retention、continual integration 与 multi-generation 等实验用于解释主结果。</p>
           </div>
         </div>
       </section>
 
       <section>
-        <p class="section-kicker">06 · 旧实验的新位置</p>
-        <h2>主实验告诉我们“有没有效果”；H1 系列告诉我们“效果从哪里来”。</h2>
-        <p>如果正式 OpenEvo-Param 比 Vanilla 差，旧实验可以解释参数内化为什么容易破坏旧能力；如果 OpenEvo-Native 很强、Param 反而下降，retention 与 continual-writing 结果会变成非常直接的 failure analysis。</p>
-        <p>所以旧数据不是废数据。恰恰相反：当 benchmark 主结果存在以后，机制实验终于有了一个清楚的解释对象。</p>
-        <aside class="takeaway">
-          <strong>新的层级关系</strong>
-          <p><b>Benchmark：</b>最后到底强不强？</p>
-          <p><b>Mechanism：</b>为什么强？为什么不强？怎样才能继续进化而不损伤已有能力？</p>
-        </aside>
+        <p class="section-kicker">04 · 下一项正式证据</p>
+        <h2>只需要补一场 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）。</h2>
+        <p>训练任务继续来自 500–6909；正式评估只使用 0–499；OpenEvo 与 SEED 使用相同任务身份、environment seed、交互规则和评分协议。现有 H0–H1.41 机制实验不需要因此全部重跑。</p>
       </section>
 
-      <footer class="next-note"><a href={`${root}/seed-faithful-benchmark/`}>下一篇：把“正式比赛”的规则钉死 →</a></footer>
+      <footer class="next-note"><a href={`${root}/seed-faithful-benchmark/`}>下一问：怎样才算和 SEED 公平比较？ →</a></footer>
     </main>
   )}
 
@@ -143,224 +101,125 @@ const current = notes.find((item) => item.id === note)!;
     <main class="note-body">
       <section class="opening-section">
         <p class="section-kicker">01 · 评价单位</p>
-        <h2>WebShop 的基本实验单位是一整个 shopping episode。</h2>
-        <p>一个 instruction 固定以后，trajectory 是模型在线生成的：搜索什么会改变下一页，点什么会改变后续 observation。最终评价的不是某个 action token，而是 frozen policy 从任务开始一路做到结束的 closed-loop behavior。</p>
+        <h2>WebShop 的基本评价单位是一整个 shopping episode（购物任务回合）。</h2>
+        <p>instruction 固定以后，模型每一步动作都会改变下一步 observation（观察）。最终评价的是 frozen policy（冻结策略）从任务开始到终止的 closed-loop behavior（闭环行为），而不是某一个 action token。</p>
         <pre><code>{`Instruction
    ↓
 Observation → Action
    ↓          ↓
 new page  ← environment
    ↓
-重复若干步
+重复交互
    ↓
 Buy / terminal
    ↓
 Task Score + exact Success`}</code></pre>
-        <p>如果要复习 WebShop 环境和 SEED 训练细节，可以先读 <a href={`${root}/webshop-training/`}>01 · WebShop 是什么</a> 和 <a href={`${root}/seed-training/`}>02 · SEED 怎么训练</a>。这里不再重复背景，只冻结正式比较的规则。</p>
       </section>
 
       <section>
-        <p class="section-kicker">02 · Benchmark manifest</p>
-        <h2>外层协议应该先固定，任何方法都不能因为自身结构不同而改考试规则。</h2>
-        <div class="protocol-table" role="table" aria-label="SEED-faithful WebShop benchmark protocol">
-          <div class="row head" role="row"><span>项目</span><span>新的主实验协议</span></div>
-          <div class="row" role="row"><span>Environment</span><strong>SEED public-code WebShop small</strong></div>
-          <div class="row" role="row"><span>Products / goals</span><strong>1000 / 6910</strong></div>
-          <div class="row" role="row"><span>Train pool</span><strong>goal 500–6909</strong></div>
-          <div class="row" role="row"><span>Final test pool</span><strong>goal 0–499</strong></div>
-          <div class="row" role="row"><span>Final test set</span><strong>预先冻结 128 个</strong></div>
-          <div class="row" role="row"><span>Max interaction / history</span><strong>15 steps / history 2</strong></div>
-          <div class="row" role="row"><span>Prompt / parser</span><strong>SEED 原始 WEBSHOP_TEMPLATE 与 &lt;think&gt;/&lt;action&gt; contract</strong></div>
-          <div class="row" role="row"><span>Primary metrics</span><strong>Task Score + Success</strong></div>
-          <div class="row" role="row"><span>Final test learning</span><strong>禁止</strong></div>
-        </div>
-        <p>compact prompt、state-aware prompt、product-grounded prompt、tolerant parser repair 都可以继续研究，但它们必须被写成 ablation，不能悄悄混进 headline comparison。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">03 · SEED 的训练预算究竟是多少</p>
-        <h2>公平预算更应该按“完成了多少个 WebShop episode”来算，而不是只看 GPU 数。</h2>
-        <p>论文主设置里，Stage 2 是 150 次 policy update，每次 16 个 tasks，每个 task 8 条 rollout：</p>
-        <div class="equation-card">
-          <span>150 updates × 16 tasks × 8 rollouts</span>
-          <strong>19,200 WebShop episodes</strong>
-        </div>
-        <p>Stage 1 另有 180 个 training tasks × 8 rollouts，共 1,440 条 completed trajectories。于是“2400 RL train samples”不能被误读成“2400 个 episode”。</p>
-        <p>因此，如果我们说 OpenEvo 和 SEED 看到了“差不多一样多的环境经验”，主预算单位应该优先是 <strong>completed episodes / environment interactions</strong>。GPU-hours、optimization tokens、外部 analyzer 调用量继续记录，但作为另外的计算成本维度。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">04 · Paper-faithful 与 repo-default</p>
-        <h2>150 和 160 不应该被一句“按官方 SEED”抹平。</h2>
-        <p>SEED 论文主结果写 150 training steps；当前公开 launcher 默认值是 160。正式 benchmark 应该把两种身份分开：</p>
-        <div class="two-column compact">
-          <div><small>PRIMARY</small><h3>SEED-paper-150</h3><p>用于与论文主结果对话的 paper-faithful protocol。</p></div>
-          <div><small>SENSITIVITY</small><h3>SEED-repo@commit-160</h3><p>当前代码默认的实现复现，用于 implementation sanity check。</p></div>
+        <p class="section-kicker">02 · 数据边界</p>
+        <h2>训练区和正式保留任务必须在实验开始前分开。</h2>
+        <div class="two-column">
+          <div>
+            <small>TRAIN CANDIDATE POOL</small>
+            <h3>goal 500–6909</h3>
+            <p>训练、经验采集、内部 validation（验证）与方法选择发生在这个范围。</p>
+          </div>
+          <div>
+            <small>OFFICIAL HELD-OUT POOL</small>
+            <h3>goal 0–499</h3>
+            <p>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</p>
+          </div>
         </div>
       </section>
 
       <section>
-        <p class="section-kicker">05 · 最终考试应该非常“无聊”</p>
-        <h2>所有训练和 candidate selection 全部结束，才第一次解封 128 个 test IDs。</h2>
-        <pre><code>{`Frozen Agent
-   ↓
-Task 1   → episode → score
-Task 2   → episode → score
-...
-Task 128 → episode → score
-   ↓
-mean Task Score
-Success Rate`}</code></pre>
-        <p>test task 之间不更新 memory、不更新 adapter、不更新 policy。所有方法都跑同一组 128 tasks，因此统计也天然应该 paired：报告 mean paired ΔScore、bootstrap 95% CI、paired ΔSuccess；Success 可以配 paired bootstrap / McNemar。正式训练最好最终有至少 3 个独立 training seeds。</p>
+        <p class="section-kicker">03 · Goal ordering</p>
+        <h2>任务编号只有在 environment seed 一致时才真正可比。</h2>
+        <p>WebShop 会在环境初始化时 shuffle goals（打乱任务顺序）。如果目标是与 SEED GRPO 的 exact-ID setting（精确任务编号设定）对齐，应使用 <strong>environment seed = 0</strong>，并保存每个任务的 goal_idx、instruction hash 与数据版本。</p>
       </section>
 
       <section>
-        <p class="section-kicker">06 · 复现边界</p>
-        <h2>我们现有工程基础大部分可以留下，真正需要重写的是 scientific contract。</h2>
-        <p>1000-product WebShop、6910 goals、max 15 steps、history 2、SEED prompt/parser、catalog hashing、manifest、GPU accounting、trajectory capture 都可以继续复用。</p>
-        <p>需要重新冻结的是：<strong>task split、128 final-test IDs、budget semantics、OpenEvo outer loop 和一次性 final evaluation rule</strong>。</p>
-        <aside class="takeaway">
-          <strong>一句话</strong>
-          <p>给 OpenEvo 和 SEED 差不多一样多的完整购物练习；训练结束后，用完全相同的 128 道未见任务做一次不能再学习的考试。</p>
-        </aside>
+        <p class="section-kicker">04 · 评分</p>
+        <h2>连续任务分数、精确成功和训练 reward 不能混成一个指标。</h2>
+        <div class="protocol-table" role="table" aria-label="WebShop evaluation metrics">
+          <div class="row head" role="row"><span>指标</span><span>含义</span></div>
+          <div class="row" role="row"><span>task_score</span><strong>WebShop 原始连续任务分数</strong></div>
+          <div class="row" role="row"><span>exact success</span><strong>原始 reward = 1.0 时的完整成功</strong></div>
+          <div class="row" role="row"><span>SEED training reward</span><strong>成功映射为 10，否则为 0；只用于训练语义</strong></div>
+        </div>
+        <p>正式结果同时报告 raw task_score（原始任务分数）和 exact success（精确成功），这样不同方法的结果可以在同一尺度上核对。</p>
       </section>
 
-      <footer class="next-note"><a href={`${root}/openevo-benchmark-design/`}>下一篇：OpenEvo 本身到底应该怎么进化 →</a></footer>
+      <section>
+        <p class="section-kicker">05 · 测试时行为</p>
+        <h2>正式评估开始以后，模型状态必须保持冻结。</h2>
+        <p>不同 held-out tasks（保留任务）之间不更新 memory、adapter 或 policy。否则前一个测试任务会变成后一个任务的训练信息，最终结果就不再表示同一个 frozen agent 在未见任务上的表现。</p>
+      </section>
+
+      <section>
+        <p class="section-kicker">06 · 可追溯身份</p>
+        <h2>每个正式结果都需要能够还原“谁在什么任务上、用什么数据跑出来”。</h2>
+        <p>至少保存 goal_idx、instruction hash、数据文件 SHA256、environment seed、代码 SHA、模型 / adapter 身份、raw task_score 与 exact success。OpenEvo 和 SEED 的比较任务身份必须逐项匹配。</p>
+      </section>
+
+      <footer class="next-note"><a href={`${root}/openevo-benchmark-design/`}>下一问：OpenEvo 的不同进化方式怎样比较？ →</a></footer>
     </main>
   )}
 
   {note === 'openevo-benchmark-design' && (
     <main class="note-body">
       <section class="opening-section">
-        <p class="section-kicker">01 · 不要再默认 OpenEvo = SD-LoRA</p>
-        <h2>先把“进化什么”和“用什么反馈进化”拆成两个轴。</h2>
-        <p>如果一上来就把 OpenEvo 定义成 SD-LoRA，我们又会回到此前的 parameter-internalization mechanism lane。更干净的 benchmark 应该先允许 OpenEvo 用它最自然的持久状态做进化，再把参数写入作为第二个 variant。</p>
+        <p class="section-kicker">01 · 两个变量</p>
+        <h2>“进化什么”和“用什么反馈进化”是两个不同问题。</h2>
         <div class="axis-grid">
           <div>
             <small>AXIS A · CARRIER</small>
             <h3>Native ↔ Param</h3>
-            <p>经验、strategy、skill、memory 等外部可积累状态，和进一步写进 policy 参数的 adapter 路线分开。</p>
+            <p>experience / strategy / memory（经验 / 策略 / 记忆）等外部持久状态，与进一步写入 policy 参数的 adapter 路线分开比较。</p>
           </div>
           <div>
             <small>AXIS B · FEEDBACK</small>
             <h3>Sparse ↔ Dense</h3>
-            <p>只使用 exact success，还是允许使用 WebShop 连续 partial task score，必须作为独立实验条件。</p>
+            <p>只使用 exact success（精确成功），还是使用 WebShop 连续 partial task score（部分任务分数），作为独立实验条件。</p>
           </div>
         </div>
       </section>
 
       <section>
-        <p class="section-kicker">02 · OpenEvo-Native</p>
-        <h2>最重要的版本，是让 OpenEvo 真正从过去的成功和失败中积累经验。</h2>
-        <p>模型连续完成很多购物任务以后，OpenEvo 可以逐步形成更通用的经验，例如：</p>
-        <ul>
-          <li>搜索时不要把所有属性一次性塞进 query；</li>
-          <li>找到商品以后先确认 variant，再购买；</li>
-          <li>价格上限是硬约束，不能因为其它属性匹配就忽略；</li>
-          <li>某些失败状态需要退回搜索，而不是继续在错误商品页上循环。</li>
-        </ul>
-        <p>这些经验进入下一批 training tasks，形成“刷题 → 总结 → 再刷新题”的真正外层 evolution loop。</p>
+        <p class="section-kicker">02 · Native carrier</p>
+        <h2>外部经验载体能否把过去任务中的规律带到后续任务？</h2>
+        <p>这类状态可以包含搜索策略、variant 检查、价格约束、失败后的回退策略等经验。关键评价不是 memory 是否变长，而是冻结后的策略是否在新的任务上带来更高 Task Score / Success。</p>
       </section>
 
       <section>
-        <p class="section-kicker">03 · OpenEvo-Param</p>
-        <h2>参数内化仍然重要，但它应该是 OpenEvo 的第二个 variant，而不是定义本身。</h2>
-        <p>SD-LoRA 和我们已经完成的大量 parameter-write 实验在这里重新接回来：如果 Native 很强而 Param 下降，retention / continual learning 可以解释参数写入为什么破坏旧能力；如果 Param 进一步提高，旧的 fresh-task transfer 结果就会成为机制支持。</p>
+        <p class="section-kicker">03 · Parametric carrier</p>
+        <h2>把经验继续写进参数以后，迁移收益和旧能力保持会怎样变化？</h2>
+        <p>SD-LoRA 与现有 parameter-write（参数写入）实验提供了直接机制证据。H1.38B/H1.39 说明第一代内部迁移可以出现；H1.40 则说明第二代 acquisition / retention / preservation（新知识获取 / 旧知识保持 / 已有收益保持）还没有同时稳定成立。</p>
       </section>
 
       <section>
-        <p class="section-kicker">04 · Sparse 与 Dense</p>
-        <h2>正式公平比较先用 Sparse；Dense 是一个非常有价值的 principal ablation。</h2>
+        <p class="section-kicker">04 · Feedback density</p>
+        <h2>Sparse 与 Dense feedback 应该作为单独的消融变量。</h2>
         <div class="lane-grid">
           <div class="lane primary">
-            <small>OPENEVO-SPARSE · PRIMARY</small>
+            <small>SPARSE</small>
             <h3>fitness = exact success</h3>
-            <p>只看成功 / 失败，尽量贴近 SEED 的稀疏训练 reward。它承担正式方法比较。</p>
+            <p>只使用成功 / 失败，便于和 SEED 的稀疏训练 reward 语义对齐。</p>
           </div>
           <div class="lane">
-            <small>OPENEVO-DENSE · ABLATION</small>
+            <small>DENSE</small>
             <h3>fitness = partial task score</h3>
-            <p>允许 0.23、0.65、0.91、1.0 等连续反馈，测试 evolutionary formulation 是否能利用更细粒度环境目标。</p>
+            <p>利用连续环境反馈，检验 OpenEvo 是否能从未完全成功的轨迹中获得更细粒度信号。</p>
           </div>
         </div>
-        <p>如果 Dense 显著高于 Sparse，这个结果应解释为“OpenEvo 可以利用 graded environment feedback”，而不能偷换成“在完全相同监督下 OpenEvo intrinsically beats SEED”。</p>
+        <p>如果 Dense 高于 Sparse，结论应是“OpenEvo 能利用 graded environment feedback（分级环境反馈）”，而不是把两种监督条件混成一个方法优越性结论。</p>
       </section>
 
       <section>
-        <p class="section-kicker">05 · Headline arms</p>
-        <h2>正式主表先保持简单，不要再铺十几个 mechanism arms。</h2>
-        <div class="arm-table" role="table" aria-label="planned headline benchmark arms">
-          <div class="row head" role="row"><span>Method</span><span>它回答什么</span></div>
-          <div class="row" role="row"><strong>Vanilla Qwen2.5-3B</strong><span>原始模型到底有多强</span></div>
-          <div class="row" role="row"><strong>GRPO</strong><span>普通 outcome RL 能提高多少</span></div>
-          <div class="row" role="row"><strong>SEED</strong><span>hindsight + OPD 参数内化有多强</span></div>
-          <div class="row" role="row"><strong>OpenEvo-Native-Sparse</strong><span>OpenEvo 原生训练期自我进化，在公平 sparse reward 下有多强</span></div>
-          <div class="row secondary" role="row"><strong>OpenEvo-Native-Dense</strong><span>principal ablation：连续 partial reward 是否带来额外优势</span></div>
-          <div class="row secondary" role="row"><strong>OpenEvo-Param</strong><span>第二 OpenEvo variant：经验进一步写入参数以后会怎样</span></div>
-        </div>
-      </section>
-
-      <section>
-        <p class="section-kicker">06 · Evolution unit</p>
-        <h2>一个 candidate 的 fitness 应来自一批完整 WebShop episodes 的 aggregate performance。</h2>
-        <p>不要再把“某一条 trajectory 成功 → 立刻做 adapter → 几条新任务测 delta”当成 benchmark 外层单位。新的 outer loop 更像：</p>
-        <pre><code>{`OpenEvo candidate θ
-        ↓
-取一批 training WebShop tasks
-        ↓
-每个 task 完整 rollout N 次
-        ↓
-trajectories + terminal outcomes
-        ↓
-aggregate fitness
-        ↓
-selection / reflection / mutation / update
-        ↓
-得到 θ′
-        ↓
-下一轮`}</code></pre>
-        <p>θ 最终可以是 memory、strategy、prompt/policy、parameter adapter 或组合；但无论载体是什么，外层 benchmark 的 train/test boundary 和最终考试规则都不变。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">07 · 第一阶段先别烧两万条</p>
-        <h2>先做 Vanilla vs OpenEvo-Native-Sparse 小规模 pilot，而且不要碰最终 128 test。</h2>
-        <p>pilot 只在 training pool 内部再划一块 validation，确认三件事：</p>
-        <ol>
-          <li><strong>OpenEvo 能正常读到成功和失败。</strong> rollout / reward contract 真的进入 evolution loop。</li>
-          <li><strong>OpenEvo 的持久状态真的在变化。</strong>不是做了上千道题，memory / strategy 实际上一点没变。</li>
-          <li><strong>变化至少有可能改善新的 training-validation tasks。</strong>要看到“刷题 → 总结 → 再刷新题”有稳定信号。</li>
-        </ol>
-        <p>如果三件事情成立，再扩大到与 SEED 对齐的正式 interaction budget；如果这一步都没有信号，就继续研究 OpenEvo 本身，而不是提前烧完整 benchmark。</p>
-      </section>
-
-      <section>
-        <p class="section-kicker">08 · 新路线</p>
-        <h2>整个项目现在可以重新变成一条非常清楚的线。</h2>
-        <pre><code>{`冻结 WebShop benchmark rules
-        ↓
-Vanilla reproduction
-        ↓
-OpenEvo-Native-Sparse pilot
-        ↓
-确认真的会进化
-        ↓
-SEED / GRPO reproduction
-        ↓
-扩大到 matched interaction budget
-        ↓
-冻结最终 agents
-        ↓
-一次性 128 unseen test
-        ↓
-Score / Success + paired statistics
-        ↓
-再用旧 H1 mechanism studies 解释为什么`}</code></pre>
-        <aside class="takeaway">
-          <strong>第一阶段真正要跑的实验</strong>
-          <p><b>Vanilla vs OpenEvo-Native-Sparse，小规模 training-pool pilot。</b></p>
-          <p>先证明 OpenEvo 可以“刷题 → 总结 → 再刷新题 → 成绩提高”，再进入正式大规模比较。</p>
-        </aside>
+        <p class="section-kicker">05 · 实验顺序</p>
+        <h2>先完成官方保留任务公平比较，再扩大方法变体。</h2>
+        <p>第一优先级是建立同一 frozen benchmark contract（冻结比较协议）下的正式 OpenEvo / SEED 结果。Native、Param、Sparse、Dense 等变体随后用于解释主结果，而不是替代这场缺失的正式比较。</p>
       </section>
     </main>
   )}
@@ -370,13 +229,11 @@ Score / Success + paired statistics
   .benchmark-note{--reading:820px;width:min(1180px,calc(100% - 2rem));margin:1rem auto 5rem;color:var(--color-text)}
   .note-hero{max-width:960px;margin:0 auto;padding:54px 0 34px}.note-topline{display:flex;justify-content:space-between;gap:24px;margin-bottom:28px;color:var(--color-text-muted);font:700 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.note-topline a{color:var(--color-accent);text-decoration:none}.note-hero h1{max-width:900px;margin:0;font-size:clamp(2.35rem,5.2vw,5rem);line-height:1.01;letter-spacing:-.055em}.dek{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.08rem;line-height:1.75}.status{max-width:780px;margin:20px 0 0;padding:12px 14px;border-left:3px solid var(--color-accent);background:var(--color-surface-muted);color:var(--color-text-muted);font-size:.88rem;line-height:1.6}.status strong{color:var(--color-text)}
   .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:960px;margin:0 auto 54px;border-block:1px solid var(--color-border)}.series-nav a{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:16px 14px;color:var(--color-text-muted);text-decoration:none;font-size:.82rem;line-height:1.45;border-right:1px solid var(--color-border)}.series-nav a:last-child{border-right:0}.series-nav a span{font:600 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--color-text-muted)}.series-nav a.active{background:var(--color-surface-muted);color:var(--color-text)}
-  .note-body{width:min(var(--reading),100%);margin:0 auto}.note-body section{padding:32px 0 38px;border-top:1px solid var(--color-border)}.opening-section{border-top:0!important;padding-top:0!important}.section-kicker{margin:0 0 10px!important;color:var(--color-accent)!important;font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.08em;text-transform:uppercase}.note-body h2{margin:0 0 18px;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.16;letter-spacing:-.035em}.note-body h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4}.note-body p,.note-body li{color:var(--color-text);font-size:1rem;line-height:1.82}.note-body p{margin:0 0 16px}.note-body ul,.note-body ol{padding-left:1.3rem;margin:0 0 18px}.note-body a{color:var(--color-accent)}
-  blockquote{margin:28px 0;padding:22px 24px;border-left:4px solid var(--color-accent);background:var(--color-surface);border-radius:0 12px 12px 0}blockquote p{margin:0 0 8px!important;font-size:1.12rem!important}blockquote p:last-child{margin-bottom:0!important}
-  .question-card,.equation-card,.takeaway{margin:24px 0;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.question-card p{margin:0 0 8px;color:var(--color-text-muted);font:700 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.06em}.question-card strong{display:block;font-size:1.22rem;line-height:1.55}.equation-card{display:flex;align-items:center;justify-content:space-between;gap:20px}.equation-card span{font:600 .9rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.equation-card strong{font-size:1.15rem;color:var(--color-accent)}
-  .two-column,.lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.two-column>div,.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.two-column small,.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.two-column p,.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}.compact h3{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  .drift-list{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.drift-list div{display:grid;grid-template-columns:90px 1fr;gap:18px;padding:14px 18px;border-bottom:1px solid var(--color-border)}.drift-list div:last-child{border-bottom:0}.drift-list span{color:var(--color-text-muted);font:700 .7rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.drift-list p{margin:0;font-size:.94rem;line-height:1.55}
+  .note-body{width:min(var(--reading),100%);margin:0 auto}.note-body section{padding:32px 0 38px;border-top:1px solid var(--color-border)}.opening-section{border-top:0!important;padding-top:0!important}.section-kicker{margin:0 0 10px!important;color:var(--color-accent)!important;font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.08em;text-transform:uppercase}.note-body h2{margin:0 0 18px;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.16;letter-spacing:-.035em}.note-body h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4}.note-body p,.note-body li{color:var(--color-text);font-size:1rem;line-height:1.82}.note-body p{margin:0 0 16px}.note-body a{color:var(--color-accent)}
+  .question-card{margin:24px 0;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.question-card p{margin:0 0 8px;color:var(--color-text-muted);font:700 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.question-card strong{display:block;font-size:1.22rem;line-height:1.55}
+  .two-column,.lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.two-column>div,.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.two-column small,.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.two-column p,.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}
   pre{overflow:auto;margin:22px 0;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-muted);color:var(--color-text);font-size:.84rem;line-height:1.65}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  .protocol-table,.arm-table{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.protocol-table .row,.arm-table .row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.7fr);gap:18px;padding:13px 16px;border-bottom:1px solid var(--color-border);align-items:start}.protocol-table .row:last-child,.arm-table .row:last-child{border-bottom:0}.protocol-table .row.head,.arm-table .row.head{background:var(--color-surface-muted);color:var(--color-text-muted);font:700 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.protocol-table .row span,.arm-table .row span{font-size:.9rem;line-height:1.55}.protocol-table .row strong,.arm-table .row strong{font-size:.92rem;line-height:1.55}.arm-table .secondary{background:color-mix(in srgb,var(--color-surface-muted) 50%,transparent)}
-  .takeaway strong{display:block;margin-bottom:10px;color:var(--color-accent)}.takeaway p{margin-bottom:7px;color:var(--color-text-muted)}.takeaway p:last-child{margin-bottom:0}.next-note{padding-top:28px;border-top:1px solid var(--color-border)}.next-note a{font-weight:700;text-decoration:none}
-  @media(max-width:760px){.benchmark-note{width:min(100% - 1rem,1180px)}.note-hero{padding-top:30px}.note-topline{flex-direction:column;gap:8px}.series-nav{grid-template-columns:1fr}.series-nav a{border-right:0;border-bottom:1px solid var(--color-border)}.series-nav a:last-child{border-bottom:0}.two-column,.lane-grid,.axis-grid{grid-template-columns:1fr}.equation-card{align-items:flex-start;flex-direction:column}.protocol-table .row,.arm-table .row{grid-template-columns:1fr;gap:4px}.drift-list div{grid-template-columns:68px 1fr}}
+  .protocol-table{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.protocol-table .row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.7fr);gap:18px;padding:13px 16px;border-bottom:1px solid var(--color-border);align-items:start}.protocol-table .row:last-child{border-bottom:0}.protocol-table .row.head{background:var(--color-surface-muted);color:var(--color-text-muted);font:700 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.protocol-table .row span{font-size:.9rem;line-height:1.55}.protocol-table .row strong{font-size:.92rem;line-height:1.55}
+  .next-note{padding-top:28px;border-top:1px solid var(--color-border)}.next-note a{font-weight:700;text-decoration:none}
+  @media(max-width:760px){.benchmark-note{width:min(100% - 1rem,1180px)}.note-hero{padding-top:30px}.note-topline{flex-direction:column;gap:8px}.series-nav{grid-template-columns:1fr}.series-nav a{border-right:0;border-bottom:1px solid var(--color-border)}.series-nav a:last-child{border-bottom:0}.two-column,.lane-grid,.axis-grid{grid-template-columns:1fr}.protocol-table .row{grid-template-columns:1fr;gap:4px}}
 </style>
