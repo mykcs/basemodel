@@ -24,7 +24,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   const zh = locale === 'zh';
   const configs: Record<Kind, { title: string; eyebrow: string; lede: string; steps: StepMeta[] }> = {
     webshop: {
-      eyebrow: 'WEBSHOP',
+      eyebrow: '',
       title: zh ? 'WebShop 环境模型' : 'WebShop environment model',
       lede: zh ? '把一次购物任务按真实 Agent 循环逐步播放：observation → action → 页面状态变化 → 新 observation → score。' : 'Play one shopping task as an agent loop: observation → action → page transition → new observation → score.',
       steps: [
