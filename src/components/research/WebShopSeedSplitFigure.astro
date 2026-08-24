@@ -10,9 +10,9 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
 
 <section id="fig-webshop-seed-split" class="canonical-figure webshop-seed-split" aria-labelledby="webshop-seed-split-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
-    <div class="figure-label">{t('第四步 · SEED GOAL SPLIT','STEP 4 · SEED GOAL SPLIT')}</div>
-    <h2 id="webshop-seed-split-title">{t('SEED released wrapper：三段 goal-index 规则改为两段','SEED released wrapper changes the three-way goal-index rule into two pools')}</h2>
-    <p>{t('原始 WebShop benchmark 的人工指令有 Train / Dev / Test；而这一节讨论的是环境 goal 列表的 index 如何被 wrapper 选择。原始 baseline wrapper 使用 test / eval / train 三段，SEED released code 实际执行 non-train / train 两段。','The original WebShop benchmark has Train / Dev / Test splits for human instructions. This section is about how a wrapper selects indices from the environment goal list: the original baseline wrapper uses test / eval / train, while the released SEED code actively uses non-train / train.')}</p>
+    <div class="figure-label">{t('第四步 · SEED 分任务','STEP 4 · SEED SPLITS GOALS')}</div>
+    <h2 id="webshop-seed-split-title">{t('SEED 把 6,910 个 goals 分成两块','SEED splits the 6,910 goals into two pools')}</h2>
+    <p>{t('前 500 个 goals 不用于训练；后面的 6,410 个作为训练候选。下面再用代码对照说明，这和原始 WebShop 的三段式规则有什么不同。','The first 500 goals are kept out of training; the remaining 6,410 are training candidates. The code comparison below shows how this differs from the original WebShop three-way rule.')}</p>
   </header>
 
   <figure class="split-story" aria-labelledby="webshop-seed-split-title">
