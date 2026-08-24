@@ -139,7 +139,7 @@ export function ExplainerHeader({ id, locale, title, lede, eyebrow }: { id: stri
   const zh = locale === 'zh';
   return (
     <header className="irx-header">
-      <div className="irx-kicker">{eyebrow}</div>
+      {eyebrow && <div className="irx-kicker">{eyebrow}</div>}
       <h2 id={id}>{title}</h2>
       <p>{lede}</p>
       <ol className="irx-depth" aria-label={zh ? '阅读深度' : 'Reading depth'}>

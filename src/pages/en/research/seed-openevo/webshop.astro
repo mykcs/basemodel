@@ -10,10 +10,10 @@ const locale = 'en' as const;
 ---
 <AppLayout title="WebShop principles, interaction, and evaluation" description="Step through WebShop shopping goals, text-page observations, search/click actions, page-state transitions, normalized score, and exact success." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
-    <WebShopDatasetCanonicalFigure locale={locale} />
     <WebShopInteractionCanonicalFigure locale={locale} />
+    <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
+    <WebShopDatasetCanonicalFigure locale={locale} />
     <SeedWebShopCanonicalFigure locale={locale} />
     <WebShopScaleEcho locale={locale} side="webshop" />
-    <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>
