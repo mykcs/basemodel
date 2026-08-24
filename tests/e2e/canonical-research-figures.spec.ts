@@ -9,7 +9,6 @@ const figureRoutes = [
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-seed-split', title: 'SEED 把 6,910 个 goals 分成两块' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-evaluation', title: 'WebShop 的最终评分：任务完成度与精确成功' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: 'SEED 与 OpenEvo：进入同一套 WebShop 比较合同' },
-  { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
   { path: '/research/seed-openevo/loops/', selector: '#fig-seed-openevo-update-target', title: '同一份任务经验' },
 ] as const;
 
@@ -118,6 +117,14 @@ test('WebShop keeps one first-reader explainer sequence and drops legacy duplica
   }
 });
 
+test('SEED leaves WebShop scale ownership on the WebShop page', async ({ page }) => {
+  for (const path of ['/research/seed-openevo/seed/', '/en/research/seed-openevo/seed/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#fig-webshop-scale-echo')).toHaveCount(0);
+    await expect(page.locator('[data-interactive-research-explainer="seed"]')).toHaveCount(1);
+  }
+});
+
 test('loops is one canonical comparison with no duplicate interactive player', async ({ page }) => {
   for (const path of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -139,7 +146,6 @@ test('canonical static figures remain complete without JavaScript in Chinese and
     ['/research/seed-openevo/webshop/', '#fig-webshop-seed-split', '第四步', false],
     ['/research/seed-openevo/webshop/', '#fig-webshop-evaluation', '第五步', false],
     ['/research/seed-openevo/webshop/', '#fig-seed-webshop', '第六步', false],
-    ['/research/seed-openevo/seed/', '#fig-webshop-scale-echo', '图 S1-D', false],
     ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-dataset', 'STEP 1', false],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-small-world', 'STEP 2', false],
@@ -147,7 +153,6 @@ test('canonical static figures remain complete without JavaScript in Chinese and
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-seed-split', 'STEP 4', false],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-evaluation', 'STEP 5', false],
     ['/en/research/seed-openevo/webshop/', '#fig-seed-webshop', 'STEP 6', false],
-    ['/en/research/seed-openevo/seed/', '#fig-webshop-scale-echo', 'FIGURE S1-D', false],
     ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
 
