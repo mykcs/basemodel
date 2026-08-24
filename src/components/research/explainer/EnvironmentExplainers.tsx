@@ -59,7 +59,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           {step === 0 && (
             <div className="irx-shop-welcome">
               <span>GOAL</span><b>{zh ? '黑色 · M 码 · 运动衫 · ≤ $50' : 'Black · M · sweatshirt · ≤ $50'}</b>
-              <p>{zh ? '这里不是问答题。Agent 必须通过一连串页面状态变化完成任务。' : 'This is not a question-answer task. The agent must complete a sequence of page-state transitions.'}</p>
+              <p>{zh ? 'WebShop 不是问答题。Agent 必须通过一连串页面状态变化完成任务。' : 'WebShop is not a question-answer task. The agent must complete a sequence of page-state transitions.'}</p>
             </div>
           )}
           {step >= 1 && step <= 2 && (
@@ -97,7 +97,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           </dl>
         </aside>
       </div>
-      <aside className="irx-boundary-note"><b>{zh ? '教学边界' : 'Teaching boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是测得的实验结果。商品规模、任务划分和具体研究协议由页面前面的静态图分别说明。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured experiment result. Product scale, task splits, and a specific research protocol are explained separately by the static figures earlier on the page.'}</span></aside>
+      <aside className="irx-boundary-note"><b>{zh ? '教学边界' : 'Teaching boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是测得的实验结果。商品规模、任务划分和具体研究协议是独立实验条件，不能从这段交互示例推断。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured experiment result. Product scale, task splits, and the specific research protocol are separate experimental conditions and cannot be inferred from this interaction example.'}</span></aside>
     </>
   );
 }
