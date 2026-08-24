@@ -6,7 +6,7 @@ const figureRoutes = [
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-dataset', title: '原始 WebShop：1,181,436 个商品与 12,087 条人工购物指令' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-small-world', title: 'WebShop 官方 small 模式：商品世界固定为 1,000 个商品' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-goal-generation', title: 'Small WebShop：1,000 个商品生成 6,910 个可执行 goals' },
-  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-seed-split', title: 'SEED released wrapper：三段 goal-index 规则改为两段' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-seed-split', title: 'SEED 把 6,910 个 goals 分成两块' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-evaluation', title: 'WebShop 的最终评分：任务完成度与精确成功' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: 'SEED 与 OpenEvo：进入同一套 WebShop 比较合同' },
   { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
