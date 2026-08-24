@@ -6,6 +6,8 @@ const figureRoutes = [
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-interaction', title: '普通 Agent 怎样完成 WebShop' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-dataset', title: '原始 WebShop 数据集有多大' },
   { path: '/research/seed-openevo/webshop/', selector: '#fig-seed-webshop', title: '公平比较要进入哪个 WebShop 场地' },
+  { path: '/research/seed-openevo/webshop/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
+  { path: '/research/seed-openevo/seed/', selector: '#fig-webshop-scale-echo', title: '规模对照' },
   { path: '/research/seed-openevo/loops/', selector: '#fig-seed-openevo-update-target', title: '同一份任务经验' },
 ] as const;
 
@@ -124,10 +126,14 @@ test('canonical figures remain complete without JavaScript in Chinese and Englis
     ['/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
     ['/research/seed-openevo/webshop/', '#fig-webshop-dataset', '图 S1-B', false],
     ['/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/research/seed-openevo/webshop/', '#fig-webshop-scale-echo', '图 S1-D', false],
+    ['/research/seed-openevo/seed/', '#fig-webshop-scale-echo', '图 S1-D', false],
     ['/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-interaction', 'FIGURE S1-A', false],
     ['/en/research/seed-openevo/webshop/', '#fig-webshop-dataset', 'FIGURE S1-B', false],
     ['/en/research/seed-openevo/webshop/', '#fig-seed-webshop', 'FIGURE S1-C', false],
+    ['/en/research/seed-openevo/webshop/', '#fig-webshop-scale-echo', 'FIGURE S1-D', false],
+    ['/en/research/seed-openevo/seed/', '#fig-webshop-scale-echo', 'FIGURE S1-D', false],
     ['/en/research/seed-openevo/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
 

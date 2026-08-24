@@ -5,6 +5,7 @@ import InteractiveResearchExplainer from '../../../../components/research/Intera
 import WebShopDatasetCanonicalFigure from '../../../../components/research/WebShopDatasetCanonicalFigure.astro';
 import WebShopInteractionCanonicalFigure from '../../../../components/research/WebShopInteractionCanonicalFigure.astro';
 import SeedWebShopCanonicalFigure from '../../../../components/research/SeedWebShopCanonicalFigure.astro';
+import WebShopScaleEcho from '../../../../components/research/WebShopScaleEcho.astro';
 const locale = 'en' as const;
 ---
 <AppLayout title="WebShop principles, interaction, and evaluation" description="Step through WebShop shopping goals, text-page observations, search/click actions, page-state transitions, normalized score, and exact success." locale={locale}>
@@ -12,6 +13,7 @@ const locale = 'en' as const;
     <WebShopDatasetCanonicalFigure locale={locale} />
     <WebShopInteractionCanonicalFigure locale={locale} />
     <SeedWebShopCanonicalFigure locale={locale} />
+    <WebShopScaleEcho locale={locale} side="webshop" />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>

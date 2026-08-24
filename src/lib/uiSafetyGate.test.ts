@@ -197,7 +197,7 @@ describe('UI visual acceptance gate contract', () => {
       "toHaveCSS('position', 'fixed')",
       'WebShop floating transport also stays inside a mobile viewport',
       'canonical-only comparison routes never expose a floating step transport',
-      'SEED transport is bottom-docked before interaction without replacing canonical S1',
+      'SEED transport is bottom-docked before interaction',
     ]) {
       expect(floatingTransportGate).toContain(term);
     }
