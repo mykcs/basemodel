@@ -1,0 +1,107 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const readmeUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/README.md';
+const goalUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/engine/goal.py';
+---
+
+<section id="fig-webshop-instruction-goal-separation" class="canonical-figure instruction-goal-separation" aria-labelledby="instruction-goal-separation-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('第三步 · 拆开两个数字','STEP 3 · SEPARATE TWO COUNTS')}</div>
+    <h2 id="instruction-goal-separation-title">{t('12,087 和 6,910，不是“筛掉一部分以后剩下的”','12,087 and 6,910 are not “before and after filtering”')}</h2>
+    <p>{t('这两个数字数的是不同对象。最重要的是不要画一条从 12,087 指向 6,910 的缩减箭头。','These two numbers count different objects. The key is not to draw a reduction arrow from 12,087 to 6,910.')}</p>
+  </header>
+
+  <figure class="separation-story" aria-labelledby="instruction-goal-separation-title">
+    <section class="two-lanes" aria-label={t('人工指令与 small 环境 goals 的两条来源线','Two provenance lanes for human instructions and small-environment goals')}>
+      <article class="lane human" data-ui-audit-item>
+        <header>
+          <small>{t('原始 WEBSHOP 描述','ORIGINAL WEBSHOP DESCRIPTION')}</small>
+          <strong>12,087</strong>
+          <span>{t('crowd-sourced text instructions（众包文本指令）','crowd-sourced text instructions')}</span>
+        </header>
+        <div class="lane-body">
+          <div class="people" aria-hidden="true">
+            <span>●</span><span>●</span><span>●</span><span>●</span>
+          </div>
+          <p>{t('这是原始 WebShop benchmark 描述里统计的人类文本指令数量。','This is the count of human text instructions reported in the original WebShop benchmark description.')}</p>
+        </div>
+        <a href={readmeUrl} target="_blank" rel="noreferrer">{t('查看官方 README ↗','View official README ↗')}</a>
+      </article>
+
+      <div class="not-arrow" role="note" aria-label={t('不是过滤关系','Not a filtering relationship')}>
+        <div class="cross" aria-hidden="true">×</div>
+        <strong>{t('不是过滤关系','NOT A FILTER')}</strong>
+        <code>12,087 ≠ source list → 6,910</code>
+        <p>{t('这里没有“从 12,087 条里删掉一部分，最后剩 6,910 条”的代码路径。','There is no code path that starts from the 12,087 list, deletes some entries, and leaves 6,910.')}</p>
+      </div>
+
+      <article class="lane synthetic" data-ui-audit-item>
+        <header>
+          <small>{t('SMALL WEBSHOP 环境','SMALL WEBSHOP ENVIRONMENT')}</small>
+          <strong>6,910</strong>
+          <span>{t('synthetic goals（程序生成的购物任务）','synthetic goals')}</span>
+        </header>
+        <div class="lane-body synthetic-path">
+          <div class="path-node"><b>1,000</b><span>{t('商品','products')}</span></div>
+          <div class="path-arrow" aria-hidden="true">→</div>
+          <div class="path-node code"><code>get_synthetic_goals(...)</code><span>{t('组合属性、选项、价格条件','combine attributes, options, price constraints')}</span></div>
+          <div class="path-arrow" aria-hidden="true">→</div>
+          <div class="path-node"><b>6,910</b><span>goals</span></div>
+        </div>
+        <a href={goalUrl} target="_blank" rel="noreferrer">{t('查看官方 goal.py ↗','View official goal.py ↗')}</a>
+      </article>
+    </section>
+
+    <aside class="reading-rule" role="note">
+      <strong>{t('以后看到这两个数字，应该这样读','How to read the two numbers')}</strong>
+      <div class="rule-grid">
+        <div><span>12,087</span><p>{t('原始 benchmark 的人类文本指令统计','human instruction count in the original benchmark')}</p></div>
+        <div class="divider" aria-hidden="true"></div>
+        <div><span>6,910</span><p>{t('1,000-product small 环境运行后得到的可执行 goals','executable goals produced in the 1,000-product small environment')}</p></div>
+      </div>
+    </aside>
+
+    <details class="evidence">
+      <summary>{t('查看代码证据','Show code evidence')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>WebShop README · OFFICIAL</small>
+          <code>1.18 million real-world products and 12,087 crowd-sourced text instructions</code>
+          <p>{t('README 把 12,087 定义为 crowd-sourced text instructions。','The README defines 12,087 as crowd-sourced text instructions.')}</p>
+          <a href={readmeUrl} target="_blank" rel="noreferrer">{t('打开官方 README ↗','Open official README ↗')}</a>
+        </article>
+        <article>
+          <small>goal.py · RELEASED CODE</small>
+          <code>return get_synthetic_goals(all_products, product_prices)</code>
+          <p>{t('默认 synthetic 路径从当前商品记录生成 goals，而不是从 12,087 条人类指令中筛选。','The default synthetic path generates goals from the current product records, rather than filtering the 12,087 human instructions.')}</p>
+          <a href={goalUrl} target="_blank" rel="noreferrer">{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
+        </article>
+        <article>
+          <small>WebShop README · SMALL RUN</small>
+          <code>1000/1000 · Loaded 6910 goals.</code>
+          <p>{t('官方 small 环境示例先加载 1,000 个商品，再打印 6,910 goals。','The official small-environment example loads 1,000 products and then prints 6,910 goals.')}</p>
+          <a href={readmeUrl} target="_blank" rel="noreferrer">{t('打开官方运行示例 ↗','Open official run example ↗')}</a>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>{t('结论：12,087 是原始 WebShop 的人类文本指令统计；6,910 是 1,000-product small 环境里的程序生成 goals。两者不要用“缩减百分比”直接相除。','Conclusion: 12,087 is the original WebShop human-instruction count; 6,910 is the program-generated goal count in the 1,000-product small environment. Do not compare them with a direct reduction percentage.')}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .instruction-goal-separation{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:900px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.75rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
+  .separation-story{margin:1.5rem 0 0}.two-lanes{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.48fr) minmax(0,1fr);gap:.8rem;align-items:stretch}
+  .lane{display:flex;flex-direction:column;min-width:0;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.lane header small{display:block;color:var(--muted);font:800 .58rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.lane header strong{display:block;margin:.45rem 0 .16rem;font-size:clamp(2.1rem,4vw,3.7rem);line-height:.9;letter-spacing:-.055em}.lane header span{display:block;color:var(--muted);font-size:.72rem;line-height:1.4}.lane-body{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--line)}.lane-body p{margin:.55rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.55}.lane>a{display:inline-block;margin-top:auto;padding-top:.8rem;color:var(--accent);font-size:.7rem;font-weight:800;text-underline-offset:3px}.human{border-top:5px solid var(--line-strong,var(--line))}.synthetic{border-top:5px solid var(--accent)}
+  .people{display:flex;gap:.35rem;align-items:end;color:var(--ink);font-size:1.05rem;opacity:.7}.people span:nth-child(2){font-size:.82rem}.people span:nth-child(3){font-size:1.22rem}.people span:nth-child(4){font-size:.92rem}
+  .not-arrow{display:grid;place-items:center;align-content:center;gap:.42rem;text-align:center;padding:.8rem;border:1px dashed var(--line);border-radius:14px;background:var(--surface)}.cross{display:grid;place-items:center;width:44px;height:44px;border:2px solid currentColor;border-radius:50%;color:#b84a4a;font-size:1.7rem;font-weight:900;line-height:1}.not-arrow strong{color:#b84a4a;font:900 .64rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.not-arrow code{padding:.35rem .45rem;border-radius:6px;background:var(--surface-muted);font-size:.64rem;overflow-wrap:anywhere}.not-arrow p{margin:0;color:var(--muted);font-size:.68rem;line-height:1.45}
+  .synthetic-path{display:grid;grid-template-columns:auto 22px minmax(0,1fr) 22px auto;gap:.38rem;align-items:center}.path-node{min-width:0;padding:.6rem;border:1px solid var(--line);border-radius:9px;background:var(--surface);text-align:center}.path-node b{display:block;font-size:1.15rem}.path-node span{display:block;margin-top:.15rem;color:var(--muted);font-size:.6rem;line-height:1.25}.path-node.code code{display:block;font-size:.61rem;overflow-wrap:anywhere}.path-arrow{text-align:center;color:var(--accent);font-weight:900}
+  .reading-rule{margin-top:.8rem;padding:1rem;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 6%,var(--surface))}.reading-rule>strong{display:block;color:var(--accent);font-size:.78rem}.rule-grid{display:grid;grid-template-columns:1fr 1px 1fr;gap:1rem;align-items:stretch;margin-top:.7rem}.rule-grid>div:not(.divider){display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:center}.rule-grid span{font-size:1.55rem;font-weight:850;letter-spacing:-.04em}.rule-grid p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.45}.divider{background:var(--line)}
+  .evidence{margin-top:.8rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .56rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.65rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:var(--accent);font-size:.67rem;font-weight:800}.separation-story figcaption{margin-top:.8rem;color:var(--muted);font-size:.76rem;line-height:1.6}
+  @media(max-width:820px){.two-lanes{grid-template-columns:1fr}.not-arrow{min-height:140px}.synthetic-path{grid-template-columns:1fr}.path-arrow{transform:rotate(90deg)}.rule-grid{grid-template-columns:1fr}.divider{height:1px}.evidence-grid{grid-template-columns:1fr}.instruction-goal-separation{width:min(100% - 1rem,1120px);padding:1rem}}
+</style>
