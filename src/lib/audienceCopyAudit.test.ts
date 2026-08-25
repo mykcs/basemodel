@@ -70,7 +70,7 @@ describe('audience copy audit', () => {
     const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
 
     expect(hero).toContain("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')");
-    expect(hero).toContain("t('实验结果','Experiment results')");
+    expect(hero).toContain("t('研究结果','Research findings')");
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
     expect(standard).toContain('Headings name the subject');
     expect(standard).toContain('标题先命名主题');
