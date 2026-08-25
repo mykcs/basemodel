@@ -16,7 +16,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
   <div class="principles">
     <article><small>{t('谁产生轨迹','Who acts?')}</small><strong>{t('当前 policy 自己 on-policy rollout','the current policy performs its own on-policy rollout')}</strong></article>
     <article><small>{t('谁做 hindsight','Who analyzes?')}</small><strong>{t('同步的同一 policy checkpoint','the synchronized same policy checkpoint')}</strong></article>
-    <article><small>{t('真正留下什么','What persists?')}</small><strong>{t('不是 skill prompt，而是更新后的 policy 参数','not the skill prompt, but the updated policy parameters')}</strong></article>
+    <article><small>{t('真正留下什么','What persists?')}</small><strong>{t('更新后的 policy 参数；skill prompt 只是临时上下文','the updated policy parameters; the skill prompt is only a transient context')}</strong></article>
   </div>
 
   <section class="stage-one" aria-labelledby="seed-stage-one-title">
