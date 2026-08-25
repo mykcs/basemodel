@@ -16,8 +16,8 @@ const gates = [
     title: t('第一道门 · 学会新经验', 'Gate 1 · Learn new experience'),
     question: t('第二次更新以后，模型还能从新任务里学到东西吗？', 'After the second update, can the model still learn from new tasks?'),
     answer: t(
-      '目前没有拿到可信的正向证据，而且关键测量有失效记录。所以只能说“这道门没有通过”，不能说“模型已经失去学习能力”。',
-      'We do not yet have trustworthy positive evidence, and a key measurement was invalid. The correct conclusion is that this gate did not clear, not that the model lost the ability to learn.',
+      '目前没有拿到可信的正向证据，而且关键测量有失效记录。也就是说，我们连“这次没学会”是不是模型本身造成的都还不能完全分清，所以只能说“这道门没有通过”，不能说“模型已经失去学习能力”。',
+      'We do not yet have trustworthy positive evidence, and a key measurement was invalid. That means we cannot fully separate a real learning failure from a measurement failure, so the correct conclusion is that this gate did not clear, not that the model lost the ability to learn.',
     ),
   },
   {
@@ -26,8 +26,8 @@ const gates = [
     title: t('第二道门 · 保住旧能力', 'Gate 2 · Retain prior capability'),
     question: t('学新东西以后，原来会做的任务还能保持吗？', 'After learning something new, does prior capability remain?'),
     answer: t(
-      '这是目前最明显的瓶颈。第二次更新以后，旧任务表现出现下降方向，说明“学新”和“保旧”还没有同时做到。',
-      'This is the clearest current bottleneck. Performance on earlier tasks moved downward after the second update, so learning new material and retaining old capability have not yet been achieved together.',
+      '这是目前证据最一致的瓶颈：H1.40 和 H1.41 两轮里，旧能力保持指标都朝下降方向。因此我们不是凭感觉说“可能忘了”，而是两轮独立检查都没有看到稳定保住旧能力的信号。',
+      'This is the most consistent current bottleneck in the evidence: the prior-capability retention measure moved downward in both H1.40 and H1.41. The forgetting concern is therefore not a guess; two separate checks failed to show stable retention.',
     ),
   },
   {
@@ -36,8 +36,8 @@ const gates = [
     title: t('第三道门 · 保住第一代收益', 'Gate 3 · Preserve the first-generation gain'),
     question: t('第一代已经复现的迁移提升，第二次更新以后还能保住吗？', 'Does the replicated first-generation transfer gain survive the second update?'),
     answer: t(
-      '没有看到它稳定延续。因为前面的三道门没有全部通过，预留给第二代的新任务迁移测试 T2 也没有启动。',
-      'We did not see the gain persist reliably. Because the upstream gates did not all clear, the reserved second-generation fresh-transfer test T2 was never opened.',
+      '用于检查“第一代收益有没有被保住”的指标没有显示明确的正向保持，因此我们没有证据说这部分收益稳定延续。由于前面的能力门没有全部通过，预留给第二代的新任务迁移测试 T2 也没有启动，所以更不能说 G2 已经在 T2 上证明迁移失败。',
+      'The measure used to test whether the first-generation gain was preserved did not show clear positive preservation, so we do not have evidence that the gain persisted reliably. Because the upstream capability gates did not all clear, the reserved second-generation fresh-transfer test T2 was never opened, so G2 did not prove transfer failure on T2.',
     ),
   },
 ] as const;
@@ -49,8 +49,8 @@ const gates = [
     <div>
       <h2 id="g2-ablation-title">{t('第二代为什么还不能说“越学越好”？', 'Why can’t we yet say the second generation keeps improving?')}</h2>
       <p>{t(
-        '第二次更新确实发生了，也有新的成功经验可以学习。问题在于它必须同时做到三件事：学会新的、别忘旧的、还要保住第一代已经得到的提升。现在这三件事没有同时成立。',
-        'The second update genuinely happened, and new successful experience was available. The problem is that three things must hold together: learn the new material, retain the old capability, and preserve the first-generation gain. They did not all hold at once.',
+        '第二次更新确实发生了，也有新的成功经验可以学习。要把它称为“连续进步”，至少要同时做到三件事：学会新的、别忘旧的、还要保住第一代已经得到的提升。后续检查没有同时看到这三件事成立，所以现在只能说第二代持续整合尚未建立。',
+        'The second update genuinely happened, and new successful experience was available. To call this continual improvement, at least three things must hold together: learn the new material, retain prior capability, and preserve the first-generation gain. Follow-up checks did not show all three at once, so second-generation continual integration is not established.',
       )}</p>
     </div>
   </header>

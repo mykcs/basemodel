@@ -1,6 +1,6 @@
 # SEED × OpenEvo Results reader contract
 
-Last reviewed: **2026-08-25**
+Last reviewed: **2026-08-26**
 Status: **current and mandatory for the SEED × OpenEvo Results route**
 Applies to:
 - `src/pages/research/seed-openevo/results.astro`
@@ -64,7 +64,39 @@ Use these defaults:
 
 If removing a number from the mainline does not change the reader's interpretation, move it into `展开实验依据`.
 
-## 5. Results narrative order
+## 5. Minimum reasoning bridge
+
+Plain language must not become unsupported shorthand. A reader should not have to open `<details>` merely to answer “why do you think that?”
+
+For every mainline sentence that makes an inference — especially sentences using ideas such as **therefore**, **this means**, **does not automatically**, **the main bottleneck**, **supports**, **explains**, or **proves** — expose the minimum reasoning bridge in the visible prose:
+
+```text
+what we observed
+-> what that observation supports
+-> what it still does not prove
+```
+
+The mainline does **not** need exact counts or confidence intervals. It does need at least one concrete observation in ordinary language.
+
+Bad:
+
+> 在真实 WebShop 闭环里，收益并不会自动出现。
+
+Better:
+
+> 两次对照都能把训练目标拟合下来，但新任务闭环表现没有稳定改善。因此目前只能说模型学到了训练目标；在这两轮实验里，这种学习还没有转化成稳定的新任务收益。
+
+Bad:
+
+> 这是目前最明显的瓶颈。
+
+Better:
+
+> 旧能力保持指标在 H1.40 和 H1.41 两轮里都朝下降方向，因此“保住旧能力”是目前证据最一致的瓶颈。
+
+Practical check: if a lab PI can point at a sentence and ask “你为什么这样说？”, the immediately preceding or following sentence should already contain the short answer. `<details>` is for “具体是哪一轮、多少次、置信区间和代码在哪里？”, not for the first layer of reasoning.
+
+## 6. Results narrative order
 
 Preserve the seven-question scientific conversation, but make each answer understandable without prior experiment history.
 
@@ -85,7 +117,7 @@ Recommended reading sequence:
 
 Do not organize the main reading path around the website's information architecture, campaign filing system, or experiment chronology alone.
 
-## 6. Latest scientific state to preserve
+## 7. Latest scientific state to preserve
 
 ### H1.38B / H1.39
 
@@ -123,13 +155,13 @@ The 128-task panel is **SEED-compatible**, not the paper's exact reported denomi
 
 WB1 is a separate ongoing train-only SEED-aligned benchmark line. Its train generations may be shown as progress, but they are not a final held-out comparison and must not overwrite the H1.40 parametric G2 conclusion.
 
-## 7. Local evidence interaction
+## 8. Local evidence interaction
 
 Each scientific question keeps this pattern:
 
 ```text
 question
--> short current answer
+-> short current answer with a minimum observation-to-conclusion bridge
 -> optional <details>
    summary: 展开实验依据
    exact counts / confidence intervals / machine result / config / code / claim boundary
@@ -140,7 +172,7 @@ Do not replace `展开实验依据` with an abstract phrase such as `证据链�
 
 Do not send the reader to a distant bottom Evidence Map to understand a claim they just read.
 
-## 8. Before editing this route
+## 9. Before editing this route
 
 Any Agent making a non-trivial change to the Results route must:
 
@@ -150,7 +182,8 @@ Any Agent making a non-trivial change to the Results route must:
 4. write the proposed heading/question sequence before local copy polishing;
 5. check every English technical term on the Chinese route for a first-use Chinese gloss;
 6. check whether exact numbers can move into `展开实验依据`;
-7. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, and ongoing WB1 progress are not conflated;
-8. run the reader-voice/scientific-boundary tests and inspect the exact-head Preview.
+7. for every inferential sentence, verify that the visible prose contains the minimum observation that justifies it;
+8. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, and ongoing WB1 progress are not conflated;
+9. run the reader-voice/scientific-boundary tests and inspect the exact-head Preview.
 
 If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same change.
