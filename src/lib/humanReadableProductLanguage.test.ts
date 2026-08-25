@@ -30,7 +30,7 @@ describe('human-readable product language contract', () => {
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
     expect(missionHero).toContain("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')");
     expect(missionHero).toContain("t('研究总览 →','Research overview →')");
-    expect(missionHero).toContain("t('实验结果','Experiment results')");
+    expect(missionHero).toContain("t('研究结果','Research findings')");
     expect(missionHero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
     expect(missionHero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
   });
