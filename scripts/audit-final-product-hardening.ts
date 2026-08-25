@@ -14,13 +14,13 @@ const assert = (id: string, condition: boolean, detail: string) => {
 
 const families = json<{ families: Array<{ id: string; current_generation: string; current_flagship_model_id?: string; current_open_weight_model_id?: string; current_api_model_ids?: string[] }> }>('src/content/coverage/families.json').families;
 const qwen = families.find((family) => family.id === 'qwen');
-assert('HARDEN-DATA-001', Boolean(qwen && qwen.current_generation === 'Qwen3.8'), 'Qwen current generation is Qwen3.8 (verified 2026-08-25)');
-assert('HARDEN-DATA-002', Boolean(qwen && qwen.current_flagship_model_id === 'qwen3-8-max' && qwen.current_open_weight_model_id === 'qwen3-8-27b'), 'hosted/API and open-weight current Qwen surfaces are distinct');
+assert('HARDEN-DATA-001', Boolean(qwen && qwen.current_generation === 'Qwen3.7'), 'Qwen current generation is Qwen3.7');
+assert('HARDEN-DATA-002', Boolean(qwen && qwen.current_flagship_model_id === 'qwen3-7-max' && qwen.current_open_weight_model_id === 'qwen3-6-35b-a3b'), 'hosted/API and open-weight current Qwen surfaces are distinct');
 
-const qwenMax = modelSchema.parse(json('src/content/models/qwen3-8-max.json'));
+const qwenMax = modelSchema.parse(json('src/content/models/qwen3-7-max.json'));
 const qwenPlus = modelSchema.parse(json('src/content/models/qwen3-7-plus.json'));
-assert('HARDEN-DATA-003', qwenMax.access?.api_status === 'available' && qwenMax.openness.weights_available === true && qwenPlus.access?.api_status === 'available' && qwenPlus.openness.weights_available === 'not_disclosed', 'Qwen3.8 API availability does not coerce unverified weight facts to false');
-assert('HARDEN-DATA-004', qwenMax.openness.finetuning_allowed === 'not_reported' && qwenPlus.openness.finetuning_allowed === 'not_disclosed' && qwenMax.research.suitable_for_lora === 'not_reported' && qwenPlus.research.suitable_for_sft === 'not_disclosed', 'hosted service limitations are not promoted into model-level training-right claims');
+assert('HARDEN-DATA-003', qwenMax.access?.api_status === 'available' && qwenMax.openness.weights_available === 'not_disclosed' && qwenPlus.access?.api_status === 'available' && qwenPlus.openness.weights_available === 'not_disclosed', 'Qwen3.7 API availability does not coerce unverified weight facts to false');
+assert('HARDEN-DATA-004', qwenMax.openness.finetuning_allowed === 'not_disclosed' && qwenPlus.openness.finetuning_allowed === 'not_disclosed' && qwenMax.research.suitable_for_lora === 'not_disclosed' && qwenPlus.research.suitable_for_sft === 'not_disclosed', 'hosted service limitations are not promoted into model-level training-right claims');
 
 const seed = applyPaperCorrection(paperSchema.parse(json('src/content/papers/seed.json')));
 assert('HARDEN-PAPER-001', seed.checkpoint_url === 'https://huggingface.co/Jinyang23/Seed-AlfWorld-3B' && seed.reproducibility?.checkpoint_status === 'available', 'SEED released checkpoint is exposed through the correction layer');

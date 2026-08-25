@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const readJson = <T>(relativePath: string): T =>
   JSON.parse(readFileSync(new URL(relativePath, import.meta.url), 'utf8')) as T;
 
-describe('2026-08-25 official model catalog differential audit', () => {
+describe('2026-08-12 official model catalog differential audit', () => {
   it('records all twelve vendor catalogs as rechecked on the audit date', () => {
     const vendors = readJson<{ vendors: Array<{ id: string; catalog_checked_at: string }> }>(
       '../content/coverage/vendors.json',
@@ -17,7 +17,7 @@ describe('2026-08-25 official model catalog differential audit', () => {
         'moonshot', 'mistral', 'glm', 'lmsys', 'xai', 'minimax',
       ]),
     );
-    expect(vendors.every((vendor) => vendor.catalog_checked_at === '2026-08-25')).toBe(true);
+    expect(vendors.every((vendor) => vendor.catalog_checked_at === '2026-08-12')).toBe(true);
   });
 
   it('keeps every family current-claim surface on the same audit snapshot', () => {
@@ -32,9 +32,9 @@ describe('2026-08-25 official model catalog differential audit', () => {
 
     expect(families).toHaveLength(14);
     for (const family of families) {
-      expect(family.catalog_checked_at, family.id).toBe('2026-08-25');
-      expect(family.as_of, family.id).toBe('2026-08-25');
-      expect(family.current_claim?.checked_at, family.id).toBe('2026-08-25');
+      expect(family.catalog_checked_at, family.id).toBe('2026-08-12');
+      expect(family.as_of, family.id).toBe('2026-08-12');
+      expect(family.current_claim?.checked_at, family.id).toBe('2026-08-12');
     }
   });
 
@@ -49,9 +49,8 @@ describe('2026-08-25 official model catalog differential audit', () => {
       variants: Array<{ id: string; api_aliases?: string[] }>;
     };
 
-    expect(grok.current_flagship_model_id).toBe('grok-4-6');
+    expect(grok.current_flagship_model_id).toBe('grok-4-5');
     expect(grok.current_api_model_ids).toEqual([
-      'grok-4-6',
       'grok-4-5',
       'grok-4-20',
       'grok-4-20-multi-agent',
@@ -64,7 +63,6 @@ describe('2026-08-25 official model catalog differential audit', () => {
     ]);
     expect(grok.variants.map((variant) => variant.id)).toEqual(
       expect.arrayContaining([
-        'grok-4-6',
         'grok-4-5',
         'grok-4-20',
         'grok-4-20-multi-agent',
