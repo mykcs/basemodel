@@ -1,0 +1,112 @@
+{
+  "id": "muse-glimmer-30b",
+  "name": "Muse Glimmer 30B",
+  "official_name": "Muse Glimmer 30B",
+  "vendor": "Meta",
+  "family": "Muse",
+  "generation": "Muse Glimmer",
+  "release_date": "2026-08-10",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "agentic",
+      "local-inference",
+      "tool-use",
+      "function-calling",
+      "coding",
+      "judge"
+    ]
+  },
+  "architecture": {
+    "type": "dense",
+    "total_parameters_b": 29.6,
+    "active_parameters_b": 29.6,
+    "context_length": "not_reported",
+    "expert_count": "not_applicable",
+    "active_experts_per_token": "not_applicable"
+  },
+  "openness": {
+    "weights_available": true,
+    "base_checkpoint_available": "not_reported",
+    "finetuning_allowed": true,
+    "derivative_release_allowed": true,
+    "commercial_use_allowed": true,
+    "license_name": "Apache-2.0",
+    "classification": "open_weight",
+    "commercial_use": "not_disclosed"
+  },
+  "access": {
+    "weights_status": "released",
+    "api_status": "available",
+    "api_model_ids": [
+      "muse-glimmer-30b"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Hugging Face",
+      "Together AI",
+      "Fireworks AI",
+      "OpenRouter",
+      "Ollama",
+      "LM Studio",
+      "llama.cpp",
+      "MLX",
+      "ExecuTorch",
+      "vLLM",
+      "SGLang"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": "not_reported",
+    "suitable_for_sft": "not_reported",
+    "suitable_for_rl": "not_reported",
+    "transformers_support": "not_reported",
+    "vllm_support": "not_reported",
+    "sglang_support": "not_reported",
+    "verl_recipe_available": "not_reported"
+  },
+  "hardware": {
+    "inference_tier": "24gb",
+    "lora_tier": "24gb",
+    "full_sft_tier": "48gb",
+    "rl_tier": "multi_gpu"
+  },
+  "sources": [
+    {
+      "url": "https://ai.meta.com/blog/muse-glimmer-30b/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "Meta Superintelligence Labs' August 10, 2026 release post introduces Muse Glimmer 30B as a 29.6B-parameter dense multimodal agentic model under Apache-2.0, with day-zero support in llama.cpp, MLX, ExecuTorch, vLLM, SGLang, Ollama, LM Studio and hosted endpoints at Together AI, Fireworks AI and OpenRouter. The Apache-2.0 grant is Meta's first fully permissive open-weights license, with no MAU threshold or branding requirement. 4-bit quantized weights fit in roughly 20 GB, so a 24 GB Apple Silicon or single consumer GPU can host the model resident. Source verified unchanged on 2026-08-25.",
+      "supports": [
+        "release_date",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.type",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "openness.classification",
+        "openness.license_name",
+        "openness.derivative_distribution",
+        "openness.commercial_use",
+        "openness.finetuning_allowed",
+        "access.weights_status",
+        "access.api_status",
+        "access.api_model_ids",
+        "access.product_names",
+        "research.suitable_for_inference",
+        "hardware.inference_tier",
+        "hardware.lora_tier"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

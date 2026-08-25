@@ -1,0 +1,96 @@
+{
+  "id": "muse-spark-1-2",
+  "name": "Muse Spark 1.2",
+  "official_name": "Muse Spark 1.2",
+  "vendor": "Meta",
+  "family": "Muse",
+  "generation": "Muse Spark 1.2",
+  "release_date": "2026-08-10",
+  "status": "preview",
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "specializations": [
+      "reasoning",
+      "agentic",
+      "coding",
+      "tool-use",
+      "computer-use",
+      "multimodal",
+      "multi-agent"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": "not_disclosed",
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
+    "commercial_use": "not_disclosed"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "preview",
+    "api_model_ids": [
+      "muse-spark-1-2"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Meta Model API",
+      "meta.ai"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://ai.meta.com/blog/muse-glimmer-30b/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "Meta's August 10, 2026 release of Muse Glimmer 30B is paired with a separate-access Muse Spark 1.2 hosted model, listed alongside the open-weights 30B release without a dedicated launch post. Architecture, context length, and access API IDs are not separately documented, so the model is recorded as proprietary, API-only, and semantically-unknown on the unstated fields until Meta publishes a Spark 1.2 model card. Source verified unchanged on 2026-08-25.",
+      "supports": [
+        "release_date",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "openness.classification",
+        "access.api_status",
+        "access.api_model_ids",
+        "access.product_names",
+        "research.suitable_for_inference",
+        "status"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

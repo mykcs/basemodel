@@ -1,0 +1,91 @@
+{
+  "id": "deepseek-v4-flash-vision-exp",
+  "name": "DeepSeek-V4-Flash-Vision-Exp",
+  "official_name": "DeepSeek-V4-Flash-Vision-Exp",
+  "vendor": "DeepSeek",
+  "family": "DeepSeek",
+  "generation": "DeepSeek-V4",
+  "release_date": "2026-08-21",
+  "status": "preview",
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "vision-understanding",
+      "agent",
+      "reasoning",
+      "multimodal-agent"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": "not_disclosed",
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
+    "commercial_use": "not_disclosed"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "preview",
+    "api_model_ids": [
+      "deepseek-v4-flash-vision-exp"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "DeepSeek API"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_applicable",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": "not_applicable"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://api-docs.deepseek.com/updates",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "DeepSeek's API changelog for August 21, 2026 announces DeepSeek-V4-Flash-Vision-Exp as an experimental multimodal vision-understanding variant of DeepSeek-V4-Flash, accessible by setting model='deepseek-v4-flash-vision-exp'. Pure-text capability is stated as on par with DeepSeek-V4-Flash; multimodal agent benchmarks are reported as comparable to Opus 4.8. Architecture, context length and licensing terms are not separately disclosed, so those fields remain semantic unknowns. Source verified unchanged on 2026-08-25.",
+      "supports": [
+        "release_date",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "openness.classification",
+        "access.api_status",
+        "access.api_model_ids",
+        "access.product_names",
+        "research.suitable_for_inference",
+        "status"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

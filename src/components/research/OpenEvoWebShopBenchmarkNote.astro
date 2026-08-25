@@ -217,9 +217,80 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">05 · 实验顺序</p>
-        <h2>先完成官方保留任务公平比较，再扩大方法变体。</h2>
-        <p>第一优先级是建立同一 frozen benchmark contract（冻结比较协议）下的正式 OpenEvo / SEED 结果。Native、Param、Sparse、Dense 等变体随后用于解释主结果，而不是替代这场缺失的正式比较。</p>
+        <p class="section-kicker">05 · Headline arms</p>
+        <h2>正式主表先保持简单，不要再铺十几个 mechanism arms。</h2>
+        <div class="arm-table" role="table" aria-label="planned headline benchmark arms">
+          <div class="row head" role="row"><span>Method</span><span>它回答什么</span></div>
+          <div class="row" role="row"><strong>Vanilla Qwen2.5-3B</strong><span>原始模型到底有多强</span></div>
+          <div class="row" role="row"><strong>GRPO</strong><span>普通 outcome RL 能提高多少</span></div>
+          <div class="row" role="row"><strong>SEED</strong><span>hindsight + OPD 参数内化有多强</span></div>
+          <div class="row" role="row"><strong>OpenEvo-Native-Sparse</strong><span>OpenEvo 原生训练期自我进化，在公平 sparse reward 下有多强</span></div>
+          <div class="row secondary" role="row"><strong>OpenEvo-Native-Dense</strong><span>principal ablation：连续 partial reward 是否带来额外优势</span></div>
+          <div class="row secondary" role="row"><strong>OpenEvo-Param</strong><span>第二 OpenEvo variant：经验进一步写入参数以后会怎样</span></div>
+        </div>
+      </section>
+
+      <section>
+        <p class="section-kicker">06 · Evolution unit</p>
+        <h2>一个 candidate 的 fitness 应来自一批完整 WebShop episodes 的 aggregate performance。</h2>
+        <p>benchmark 的 outer loop 单位是 OpenEvo candidate 在一批完整 WebShop episodes 上的 aggregate fitness。常见的混淆是把“某一条 trajectory 成功 → 立刻做 adapter → 几条新任务测 delta”当成 outer loop，但那只是 single-trajectory update，不是 benchmark。新的 outer loop 更像：</p>
+        <pre><code>{`OpenEvo candidate θ
+        ↓
+取一批 training WebShop tasks
+        ↓
+每个 task 完整 rollout N 次
+        ↓
+trajectories + terminal outcomes
+        ↓
+aggregate fitness
+        ↓
+selection / reflection / mutation / update
+        ↓
+得到 θ′
+        ↓
+下一轮`}</code></pre>
+        <p>θ 最终可以是 memory、strategy、prompt/policy、parameter adapter 或组合；但无论载体是什么，外层 benchmark 的 train/test boundary 和最终考试规则都不变。</p>
+      </section>
+
+      <section>
+        <p class="section-kicker">07 · 第一阶段先别烧两万条</p>
+        <h2>先做 Vanilla vs OpenEvo-Native-Sparse 小规模 pilot，而且不要碰最终 128 test。</h2>
+        <p>pilot 只在 training pool 内部再划一块 validation，确认三件事：</p>
+        <ol>
+          <li><strong>OpenEvo 能正常读到成功和失败。</strong> rollout / reward contract 真的进入 evolution loop。</li>
+          <li><strong>OpenEvo 的持久状态真的在变化。</strong>可通过同一 candidate 在不同 training subset 上的 repeated runs 检验：若做完上千道题，memory / strategy 仍然毫无变化，pilot 不通过。</li>
+          <li><strong>变化至少有可能改善新的 training-validation tasks。</strong>要看到“刷题 → 总结 → 再刷新题”有稳定信号。</li>
+        </ol>
+        <p>如果三件事情成立，再扩大到与 SEED 对齐的正式 interaction budget；如果这一步都没有信号，就继续研究 OpenEvo 本身，而不是提前烧完整 benchmark。</p>
+      </section>
+
+      <section>
+        <p class="section-kicker">08 · 新路线</p>
+        <h2>整个项目现在可以重新变成一条非常清楚的线。</h2>
+        <pre><code>{`冻结 WebShop benchmark rules
+        ↓
+Vanilla reproduction
+        ↓
+OpenEvo-Native-Sparse pilot
+        ↓
+确认真的会进化
+        ↓
+SEED / GRPO reproduction
+        ↓
+扩大到 matched interaction budget
+        ↓
+冻结最终 agents
+        ↓
+一次性 128 unseen test
+        ↓
+Score / Success + paired statistics
+        ↓
+再用旧 H1 mechanism studies 解释为什么`}</code></pre>
+        <aside class="takeaway">
+          <strong>第一阶段真正要跑的实验</strong>
+          <p><b>Vanilla vs OpenEvo-Native-Sparse，小规模 training-pool pilot。</b></p>
+          <p>先证明 OpenEvo 可以“刷题 → 总结 → 再刷新题 → 成绩提高”，再进入正式大规模比较。</p>
+        </aside>
       </section>
     </main>
   )}

@@ -1,0 +1,97 @@
+{
+  "id": "gemini-omni-flash",
+  "name": "Gemini Omni Flash",
+  "official_name": "Gemini Omni Flash",
+  "vendor": "Google",
+  "family": "Gemini",
+  "generation": "Gemini Omni",
+  "release_date": "2026-08-13",
+  "status": "preview",
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image",
+      "audio",
+      "video"
+    ],
+    "specializations": [
+      "video-generation",
+      "multimodal",
+      "creative",
+      "conversational-editing"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": "not_disclosed",
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": "not_disclosed",
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
+    "commercial_use": "not_disclosed"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "preview",
+    "api_model_ids": [
+      "gemini-omni-flash"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Gemini App",
+      "Google Flow",
+      "Google AI Studio",
+      "Gemini API",
+      "Gemini Enterprise Agent Platform"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_applicable",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": "not_applicable"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://blog.google/technology/google-deepmind/gemini-omni-flash/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "Google's August 13, 2026 Made by Google post introduces Gemini Omni Flash as a public-preview, conversational video-generation model that takes text, image, audio and video as input and produces 3-10 second 720p video clips. Source verified unchanged on 2026-08-25.",
+      "supports": [
+        "release_date",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "openness.classification",
+        "access.api_status",
+        "access.api_model_ids",
+        "access.product_names",
+        "research.suitable_for_inference",
+        "status"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

@@ -12,7 +12,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "openai-model-catalog"
       ]
@@ -31,7 +31,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "qwen-model-catalog",
         "qwen-github-catalog",
@@ -52,7 +52,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "google-gemini-catalog",
         "google-gemma-catalog"
@@ -71,7 +71,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "meta-llama-catalog",
         "meta-muse-catalog"
@@ -88,7 +88,7 @@
       "model_types": [
         "api"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "anthropic-model-catalog"
       ]
@@ -105,7 +105,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "deepseek-model-catalog"
       ]
@@ -123,7 +123,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "moonshot-kimi-catalog"
       ]
@@ -141,7 +141,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "mistral-model-catalog"
       ]
@@ -158,7 +158,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "glm-model-catalog"
       ]
@@ -174,7 +174,7 @@
       "model_types": [
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "lmsys-vicuna-catalog"
       ]
@@ -192,7 +192,7 @@
       "model_types": [
         "api"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "xai-model-catalog"
       ]
@@ -210,7 +210,7 @@
         "api",
         "open-weight"
       ],
-      "catalog_checked_at": "2026-08-12",
+      "catalog_checked_at": "2026-08-25",
       "catalog_source_ids": [
         "minimax-model-catalog"
       ]

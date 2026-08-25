@@ -1,0 +1,91 @@
+{
+  "id": "gpt-5-6-cyber",
+  "name": "GPT-5.6 Cyber",
+  "official_name": "GPT-5.6 Cyber",
+  "vendor": "OpenAI",
+  "family": "GPT",
+  "generation": "GPT-5.6",
+  "release_date": "2026-08-11",
+  "status": "active",
+  "checkpoint": {
+    "type": "instruct",
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "cybersecurity",
+      "reasoning",
+      "tool-use",
+      "agent"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": "not_disclosed",
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": "not_applicable",
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
+    "conditions": [
+      "daybreak_red_access_required"
+    ],
+    "commercial_use": "not_disclosed"
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "gpt-5.6-cyber"
+    ],
+    "product_status": "available",
+    "product_names": [
+      "Daybreak Red"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": "not_applicable",
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": "not_applicable"
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
+  "sources": [
+    {
+      "url": "https://openai.com/index/expanding-daybreak/",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "OpenAI's August 11, 2026 Daybreak expansion post announces GPT-5.6 Cyber as the new Daybreak Red-access model, derived from GPT-5.6 Sol, restricted to vetted security researchers, and not available through ordinary ChatGPT or the public API. Access path is the new Daybreak Red tier; default ChatGPT and ChatGPT Enterprise API IDs do not expose the model. Architecture details and context length are not disclosed in the announcement, so those fields remain semantic unknowns.",
+      "supports": [
+        "release_date",
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "openness.classification",
+        "access.api_status",
+        "access.product_names",
+        "research.suitable_for_inference"
+      ]
+    }
+  ],
+  "data_status": "verified"
+}

@@ -33,7 +33,7 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
     <section class="section" aria-labelledby="openevo-guide-title">
       <div class="section-heading"><div><span class="section-kicker">实验状态</span><h2 id="openevo-guide-title">OpenEvo × WebShop</h2></div></div>
       <p>正式实验由 <code>openevo-experiment</code> 维护。本站在 <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time> 核验默认 <code>main</code> 时，<code>current-campaign.json</code> 记录 <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong> / <code>{openEvoScientificState.defaultBranchSnapshot.status}</code>。这是带日期的默认分支快照，不等于任何可能更靠前的活跃科学分支。</p>
-      <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>。{openEvoScientificState.gpuRule.zh}</p>
+      <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>，仅用于复现规划；任何具体机器上 vLLM / SGLang / transformers 的实测吞吐都应以本机 benchmark 为准。{openEvoScientificState.gpuRule.zh}</p>
       <p>{openEvoScientificState.liveStateRule.zh}</p>
       <div class="guide-cards">
         <a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><strong>复现指南</strong><span>运行拓扑、实验身份、WebShop 合同与状态解析</span></a>

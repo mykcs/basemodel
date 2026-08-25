@@ -7,66 +7,376 @@
       "current_generation": "GPT-5.6",
       "latest_generation_label": "GPT-5.6",
       "current_flagship_model_id": "gpt-5-6-sol",
-      "current_api_model_ids": ["gpt-5-6-sol", "gpt-5-6-terra", "gpt-5-6-luna"],
-      "current_claim": {"text": "GPT-5.6 Sol is the current flagship GPT model, with Terra and Luna as the balanced and cost-optimized variants.", "status": "confirmed", "source_url": "https://developers.openai.com/api/docs/models", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://developers.openai.com/api/docs/models"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "gpt-5-6-sol",
+        "gpt-5-6-terra",
+        "gpt-5-6-luna",
+        "gpt-5-6-cyber"
+      ],
+      "latest_specialized_model_ids": [
+        "gpt-5-6-cyber"
+      ],
+      "current_claim": {
+        "text": "GPT-5.6 Sol remains the current flagship GPT model. GPT-5.6 Cyber (2026-08-11) is a vetted-only Daybreak Red cybersecurity specialization; the Sol/Terra/Luna family line, the 2026-08-21 Sol price cut, and the 2026-07-30 Luna/Terra price cuts are still in effect.",
+        "status": "confirmed",
+        "source_url": "https://developers.openai.com/api/docs/models",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://developers.openai.com/api/docs/models",
+        "https://openai.com/index/expanding-daybreak/"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "gpt-5-6-sol", "role": "flagship", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://developers.openai.com/api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gpt-5-6-terra", "role": "instruct", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://developers.openai.com/api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gpt-5-6-luna", "role": "instruct", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://developers.openai.com/api/docs/models", "checked_at": "2026-08-12"}
+        {
+          "id": "gpt-5-6-sol",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://developers.openai.com/api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gpt-5-6-terra",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://developers.openai.com/api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gpt-5-6-luna",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://developers.openai.com/api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gpt-5-6-cyber",
+          "role": "code",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gpt-5.6-cyber"
+          ],
+          "is_current": true,
+          "source_url": "https://openai.com/index/expanding-daybreak/",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
       "id": "qwen",
       "vendor_id": "qwen",
       "name": "Qwen",
-      "current_generation": "Qwen3.7",
-      "latest_generation_label": "Qwen3.7",
-      "current_flagship_model_id": "qwen3-7-max",
-      "current_open_weight_model_id": "qwen3-6-35b-a3b",
-      "current_api_model_ids": ["qwen3-7-max", "qwen3-7-plus"],
-      "latest_specialized_model_ids": ["qwen3-6-35b-a3b", "qwen3-6-27b"],
-      "current_claim": {"text": "Qwen3.7 is the latest hosted Qwen generation (Max and Plus). The newest first-party open-weight research checkpoints remain Qwen3.6-35B-A3B and Qwen3.6-27B.", "status": "confirmed", "source_url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "https://github.com/QwenLM/Qwen3.6", "https://huggingface.co/Qwen"],
-      "catalog_checked_at": "2026-08-12",
+      "current_generation": "Qwen3.8",
+      "latest_generation_label": "Qwen3.8",
+      "current_flagship_model_id": "qwen3-8-max",
+      "current_open_weight_model_id": "qwen3-8-27b",
+      "current_api_model_ids": [
+        "qwen3-8-max",
+        "qwen3-7-max",
+        "qwen3-7-plus"
+      ],
+      "latest_specialized_model_ids": [
+        "qwen3-6-35b-a3b",
+        "qwen3-6-27b",
+        "qwen3-8-27b"
+      ],
+      "current_claim": {
+        "text": "Qwen3.8-Max is the current hosted Qwen flagship (2026-08-03). Open weights for Qwen3.8-Max and Qwen3.8-27B are published on Hugging Face and ModelScope under Apache-2.0; Qwen3.7 Max/Plus remain hosted-only.",
+        "status": "confirmed",
+        "source_url": "https://qwen.ai/blog?id=qwen3.8",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+        "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max",
+        "https://qwen.ai/blog?id=qwen3.8",
+        "https://github.com/QwenLM/Qwen3.6",
+        "https://huggingface.co/Qwen"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
-      "open_weight_scope": "Qwen3.6-35B-A3B and Qwen3.6-27B are released as Apache-2.0 weights; Qwen3.7 Max/Plus are hosted API models with no public weights verified.",
-      "api_scope": "Alibaba Cloud Model Studio currently exposes Qwen3.7 Max/Plus and still lists Qwen3.6 Plus/Flash/open models separately.",
-      "as_of": "2026-08-12",
+      "open_weight_scope": "Qwen3.8-27B and Qwen3.6-35B-A3B and Qwen3.6-27B are released as Apache-2.0 weights. Qwen3.8-Max open weights were announced for release the week of 2026-08-13 and were confirmed published by 2026-08-25.",
+      "api_scope": "Alibaba Cloud Model Studio currently exposes Qwen3.8-Max and Qwen3.7 Max/Plus; Qwen3.6 Plus/Flash/open models are retained as hosted variants. Qwen3.8-Max ships with native OpenAI Responses API and Anthropic Messages API support.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "qwen3-7-max", "role": "flagship", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.7-max", "qwen3.7-max-2026-05-20", "qwen3.7-max-2026-06-08"], "is_current": true, "source_url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max", "checked_at": "2026-08-12"},
-        {"id": "qwen3-7-plus", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.7-plus", "qwen3.7-plus-2026-05-26"], "is_current": true, "source_url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "checked_at": "2026-08-12"},
-        {"id": "qwen3-6-35b-a3b", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["qwen3.6-35b-a3b"], "is_current": true, "source_url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B", "checked_at": "2026-08-12"},
-        {"id": "qwen3-6-27b", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["qwen3.6-27b"], "is_current": true, "source_url": "https://huggingface.co/Qwen/Qwen3.6-27B", "checked_at": "2026-08-12"},
-        {"id": "qwen3-6-plus", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.6-plus", "qwen3.6-plus-2026-04-02"], "source_url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models", "checked_at": "2026-08-12"},
-        {"id": "qwen3-6-flash", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.6-flash", "qwen3.6-flash-2026-04-16"], "source_url": "https://www.alibabacloud.com/help/en/model-studio/vision-model", "checked_at": "2026-08-12"},
-        {"id": "qwen3-6-max-preview", "role": "thinking", "distribution_surfaces": ["api"], "api_aliases": ["qwen3.6-max-preview"], "source_url": "https://www.alibabacloud.com/help/en/model-studio/deep-thinking", "checked_at": "2026-08-12"}
+        {
+          "id": "qwen3-8-max",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.8-max"
+          ],
+          "is_current": true,
+          "source_url": "https://qwen.ai/blog?id=qwen3.8",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-8-27b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.8-27b"
+          ],
+          "is_current": true,
+          "source_url": "https://qwen.ai/blog?id=qwen3.8",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-7-max",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.7-max",
+            "qwen3.7-max-2026-05-20",
+            "qwen3.7-max-2026-06-08"
+          ],
+          "is_current": false,
+          "source_url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-7-plus",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.7-plus",
+            "qwen3.7-plus-2026-05-26"
+          ],
+          "is_current": false,
+          "source_url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-6-35b-a3b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.6-35b-a3b"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-6-27b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.6-27b"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/Qwen/Qwen3.6-27B",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-6-plus",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.6-plus",
+            "qwen3.6-plus-2026-04-02"
+          ],
+          "source_url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-6-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.6-flash",
+            "qwen3.6-flash-2026-04-16"
+          ],
+          "source_url": "https://www.alibabacloud.com/help/en/model-studio/vision-model",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "qwen3-6-max-preview",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "qwen3.6-max-preview"
+          ],
+          "source_url": "https://www.alibabacloud.com/help/en/model-studio/deep-thinking",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
       "id": "gemini",
       "vendor_id": "google",
       "name": "Gemini",
-      "current_generation": "Gemini 3",
-      "latest_generation_label": "Gemini 3.x",
+      "current_generation": "Gemini 3.7",
+      "latest_generation_label": "Gemini 3.7",
       "current_flagship_model_id": "gemini-3-1-pro",
-      "current_api_model_ids": ["gemini-3-6-flash", "gemini-3-5-flash", "gemini-3-5-flash-lite", "gemini-3-1-flash-lite", "gemini-3-1-pro", "gemini-3-flash"],
-      "current_claim": {"text": "Google's current Gemini 3 catalog includes stable Gemini 3.6 Flash, 3.5 Flash, 3.5 Flash-Lite and 3.1 Flash-Lite, with Gemini 3.1 Pro and Gemini 3 Flash still available as previews.", "status": "confirmed", "source_url": "https://ai.google.dev/gemini-api/docs/models", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://ai.google.dev/gemini-api/docs/models", "https://ai.google.dev/gemini-api/docs/deprecations"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "gemini-3-7-flash",
+        "gemini-3-6-flash",
+        "gemini-3-5-flash",
+        "gemini-3-5-flash-lite",
+        "gemini-3-1-flash-lite",
+        "gemini-3-1-pro",
+        "gemini-3-flash"
+      ],
+      "latest_specialized_model_ids": [
+        "gemini-omni-flash"
+      ],
+      "current_claim": {
+        "text": "Gemini 3.7 Flash (2026-08-13) is the current coding/agent workhorse. Gemini 3.1 Pro remains the stable flagship. Gemini Omni Flash (2026-08-13) is a public-preview conversational video-generation model on a separate scope.",
+        "status": "confirmed",
+        "source_url": "https://ai.google.dev/gemini-api/docs/models",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://ai.google.dev/gemini-api/docs/models",
+        "https://ai.google.dev/gemini-api/docs/deprecations",
+        "https://blog.google/technology/google-deepmind/gemini-3-7-flash/",
+        "https://blog.google/technology/google-deepmind/gemini-omni-flash/"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
-      "api_scope": "Gemini entries track the main general-purpose Gemini 3 text/multimodal API line; image-generation, embedding, robotics and managed-agent products are intentionally separate scopes.",
-      "as_of": "2026-08-12",
+      "api_scope": "Gemini text/multimodal API line; image-generation, embedding, robotics and managed-agent products remain separate scopes. Gemini Omni Flash and Nano Banana image models are explicitly out of the current text/multimodal entry set.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "gemini-3-1-pro", "role": "flagship", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3.1-pro-preview"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gemini-3-6-flash", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3.6-flash"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gemini-3-5-flash", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3.5-flash"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash", "checked_at": "2026-08-12"},
-        {"id": "gemini-3-5-flash-lite", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3.5-flash-lite"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gemini-3-1-flash-lite", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3.1-flash-lite"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/models", "checked_at": "2026-08-12"},
-        {"id": "gemini-3-flash", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["gemini-3-flash-preview"], "is_current": true, "source_url": "https://ai.google.dev/gemini-api/docs/deprecations", "checked_at": "2026-08-12"}
+        {
+          "id": "gemini-3-7-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.7-flash"
+          ],
+          "is_current": true,
+          "source_url": "https://blog.google/technology/google-deepmind/gemini-3-7-flash/",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-1-pro",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.1-pro-preview"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-6-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.6-flash"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-5-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.5-flash"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-5-flash-lite",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.5-flash-lite"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-1-flash-lite",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3.1-flash-lite"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/models",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-3-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-3-flash-preview"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemini-omni-flash",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "gemini-omni-flash"
+          ],
+          "is_current": true,
+          "source_url": "https://blog.google/technology/google-deepmind/gemini-omni-flash/",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -77,18 +387,71 @@
       "latest_generation_label": "Gemma 4",
       "current_flagship_model_id": "gemma-4-31b",
       "current_open_weight_model_id": "gemma-4-31b",
-      "current_claim": {"text": "Gemma 4 is Google's current open model generation and has five first-party sizes: E2B, E4B, 12B, 26B A4B and 31B.", "status": "confirmed", "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://ai.google.dev/gemma/docs/core/model_card_4", "https://huggingface.co/google"],
-      "catalog_checked_at": "2026-08-12",
+      "current_claim": {
+        "text": "Gemma 4 is Google's current open model generation and has five first-party sizes: E2B, E4B, 12B, 26B A4B and 31B.",
+        "status": "confirmed",
+        "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://ai.google.dev/gemma/docs/core/model_card_4",
+        "https://huggingface.co/google"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "Gemma 4 pretrained and instruction-tuned weights are released under Apache-2.0; exact architecture and modality differ by size.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "gemma-4-31b", "role": "flagship", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"},
-        {"id": "gemma-4-26b-a4b", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"},
-        {"id": "gemma-4-12b", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"},
-        {"id": "gemma-4-e4b", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"},
-        {"id": "gemma-4-e2b", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4", "checked_at": "2026-08-12"}
+        {
+          "id": "gemma-4-31b",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemma-4-26b-a4b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemma-4-12b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemma-4-e4b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "gemma-4-e2b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.google.dev/gemma/docs/core/model_card_4",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -99,34 +462,113 @@
       "latest_generation_label": "Llama 4",
       "current_flagship_model_id": "llama-4-maverick-17b-128e",
       "current_open_weight_model_id": "llama-4-maverick-17b-128e",
-      "current_claim": {"text": "Llama 4 remains Meta's current released open-weight Llama generation, with Maverick and Scout as the released variants.", "status": "confirmed", "source_url": "https://www.llama.com/models/", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://www.llama.com/models/", "https://huggingface.co/meta-llama"],
-      "catalog_checked_at": "2026-08-12",
+      "current_claim": {
+        "text": "Llama 4 remains Meta's current released open-weight Llama generation, with Maverick and Scout as the released variants.",
+        "status": "confirmed",
+        "source_url": "https://www.llama.com/models/",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://www.llama.com/models/",
+        "https://huggingface.co/meta-llama"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "Llama 4 Scout and Maverick are released weight models under Meta's custom Llama license.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "llama-4-maverick-17b-128e", "role": "flagship", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://www.llama.com/models/", "checked_at": "2026-08-12"},
-        {"id": "llama-4-scout-17b-16e", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://www.llama.com/models/", "checked_at": "2026-08-12"}
+        {
+          "id": "llama-4-maverick-17b-128e",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://www.llama.com/models/",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "llama-4-scout-17b-16e",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://www.llama.com/models/",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
       "id": "muse",
       "vendor_id": "meta",
       "name": "Muse",
-      "current_generation": "Muse Spark 1.1",
-      "latest_generation_label": "Muse Spark 1.1",
-      "current_flagship_model_id": "muse-spark-1-1",
-      "current_api_model_ids": ["muse-spark-1-1"],
-      "current_claim": {"text": "Muse Spark 1.1 is Meta's latest Muse model, available through the Meta Model API public preview for multimodal agentic work.", "status": "confirmed", "source_url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/", "https://ai.meta.com/llama"],
-      "catalog_checked_at": "2026-08-12",
+      "current_generation": "Muse Glimmer + Spark 1.2",
+      "latest_generation_label": "Muse Glimmer / Spark 1.2 (2026-08-10)",
+      "current_flagship_model_id": "muse-glimmer-30b",
+      "current_open_weight_model_id": "muse-glimmer-30b",
+      "current_api_model_ids": [
+        "muse-glimmer-30b",
+        "muse-spark-1-2",
+        "muse-spark-1-1"
+      ],
+      "current_claim": {
+        "text": "Muse Glimmer 30B (2026-08-10) is Meta's first Apache-2.0 open-weights Muse model, distilled from the closed Muse Spark system. Muse Spark 1.2 (2026-08-10) is the parallel API-only hosted model. Muse Spark 1.1 remains an active Meta Model API public preview.",
+        "status": "confirmed",
+        "source_url": "https://ai.meta.com/blog/muse-glimmer-30b/",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://ai.meta.com/blog/muse-glimmer-30b/",
+        "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
+        "https://ai.meta.com/llama"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
-      "api_scope": "Muse Spark 1.1 is tracked as a public-preview hosted model; no downloadable weights are claimed.",
-      "as_of": "2026-08-12",
+      "open_weight_scope": "Muse Glimmer 30B is the only Muse open-weights model; the Apache-2.0 grant has no MAU threshold or branding requirement, a clean break from the Llama Community License series.",
+      "api_scope": "Muse Spark 1.2 and Muse Spark 1.1 are Meta Model API public-preview hosted models with no downloadable weights.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "muse-spark-1-1", "role": "flagship", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/", "checked_at": "2026-08-12"},
-        {"id": "muse-spark", "role": "instruct", "distribution_surfaces": ["api"], "source_url": "https://ai.meta.com/", "checked_at": "2026-08-12"}
+        {
+          "id": "muse-glimmer-30b",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.meta.com/blog/muse-glimmer-30b/",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "muse-spark-1-2",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.meta.com/blog/muse-glimmer-30b/",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "muse-spark-1-1",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "muse-spark",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "source_url": "https://ai.meta.com/",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -136,21 +578,89 @@
       "current_generation": "Claude 5",
       "latest_generation_label": "Claude 5",
       "current_flagship_model_id": "claude-fable-5",
-      "current_api_model_ids": ["claude-fable-5", "claude-opus-5", "claude-opus-4-8", "claude-sonnet-5", "claude-haiku-4-5"],
-      "latest_specialized_model_ids": ["claude-mythos-5"],
-      "current_claim": {"text": "Claude Fable 5 remains Anthropic's most capable broadly released model; Claude Opus 5 joined the current Claude 5 API lineup on July 24, while Mythos 5 remains limited-access through Project Glasswing.", "status": "confirmed", "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://platform.claude.com/docs/en/about-claude/models/overview", "https://platform.claude.com/docs/en/release-notes/overview"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "claude-fable-5",
+        "claude-opus-5",
+        "claude-opus-4-8",
+        "claude-sonnet-5",
+        "claude-haiku-4-5"
+      ],
+      "latest_specialized_model_ids": [
+        "claude-mythos-5"
+      ],
+      "current_claim": {
+        "text": "Claude Fable 5 remains Anthropic's most capable broadly released model. Claude Sonnet 5's promotional $2/$10 rate reverts to $3/$15 on 2026-09-01; Mythos 5 remains limited-access through Project Glasswing. The 2026-08-20 platform update enabled general-availability Computer Use, the browser-use tool, the Skills API and the Files API.",
+        "status": "confirmed",
+        "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://platform.claude.com/docs/en/about-claude/models/overview",
+        "https://platform.claude.com/docs/en/release-notes/overview"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "api_scope": "Broad API models and limited-access Claude 5 models are distinguished explicitly; Mythos 5 is not presented as generally available.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "claude-fable-5", "role": "flagship", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview", "checked_at": "2026-08-12"},
-        {"id": "claude-opus-5", "role": "thinking", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://platform.claude.com/docs/en/release-notes/overview", "checked_at": "2026-08-12"},
-        {"id": "claude-sonnet-5", "role": "instruct", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview", "checked_at": "2026-08-12"},
-        {"id": "claude-haiku-4-5", "role": "instruct", "distribution_surfaces": ["api"], "is_current": true, "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview", "checked_at": "2026-08-12"},
-        {"id": "claude-opus-4-8", "role": "thinking", "distribution_surfaces": ["api"], "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview", "checked_at": "2026-08-12"},
-        {"id": "claude-mythos-5", "role": "thinking", "distribution_surfaces": ["api"], "source_url": "https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5", "checked_at": "2026-08-12"}
+        {
+          "id": "claude-fable-5",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "claude-opus-5",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://platform.claude.com/docs/en/release-notes/overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "claude-sonnet-5",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "claude-haiku-4-5",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "claude-opus-4-8",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "source_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "claude-mythos-5",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "source_url": "https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -161,19 +671,86 @@
       "latest_generation_label": "V4",
       "current_flagship_model_id": "deepseek-v4-pro",
       "current_open_weight_model_id": "deepseek-v4-pro",
-      "current_api_model_ids": ["deepseek-v4-pro", "deepseek-v4-flash"],
-      "current_claim": {"text": "DeepSeek-V4 is the current DeepSeek generation. Pro, Flash, Pro-Base and Flash-Base are all first-party released weight checkpoints; only the post-trained Pro and Flash models are API endpoints.", "status": "confirmed", "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "https://api-docs.deepseek.com/"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "deepseek-v4-pro",
+        "deepseek-v4-flash",
+        "deepseek-v4-flash-vision-exp"
+      ],
+      "latest_specialized_model_ids": [
+        "deepseek-v4-flash-vision-exp"
+      ],
+      "current_claim": {
+        "text": "DeepSeek-V4 is the current DeepSeek generation. V4-Pro (2026-08-13 GA build 0813) and V4-Flash (2026-07-31 API GA) are current API endpoints; Pro-Base, Flash-Base and Flash-Vision-Exp (2026-08-21 preview) are the supplementary checkpoints. Pro and Flash now expose three thinking-effort levels (low/high/max) and peak/off-peak pricing took effect 2026-08-16.",
+        "status": "confirmed",
+        "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+        "https://api-docs.deepseek.com/",
+        "https://api-docs.deepseek.com/updates"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "DeepSeek V4 Pro/Flash and their Base checkpoints are released as first-party weights under MIT.",
-      "api_scope": "DeepSeek V4 Pro and Flash are current API models; Base checkpoints are download-only research checkpoints.",
-      "as_of": "2026-08-12",
+      "api_scope": "DeepSeek V4 Pro and Flash are current API models with three thinking-effort levels (low/high/max). Flash-Vision-Exp is a multimodal vision-understanding preview. Native OpenAI Responses API compatibility and Codex one-click configuration are now advertised. Peak/off-peak pricing applies since 2026-08-16 16:00 UTC. Base checkpoints remain download-only research checkpoints.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "deepseek-v4-pro", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "is_current": true, "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "checked_at": "2026-08-12"},
-        {"id": "deepseek-v4-flash", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "is_current": true, "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "checked_at": "2026-08-12"},
-        {"id": "deepseek-v4-pro-base", "role": "foundation", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "checked_at": "2026-08-12"},
-        {"id": "deepseek-v4-flash-base", "role": "foundation", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro", "checked_at": "2026-08-12"}
+        {
+          "id": "deepseek-v4-pro",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "deepseek-v4-flash",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "deepseek-v4-pro-base",
+          "role": "foundation",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "deepseek-v4-flash-base",
+          "role": "foundation",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "deepseek-v4-flash-vision-exp",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "deepseek-v4-flash-vision-exp"
+          ],
+          "is_current": true,
+          "source_url": "https://api-docs.deepseek.com/updates",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -184,18 +761,70 @@
       "latest_generation_label": "Medium 3.5",
       "current_flagship_model_id": "mistral-medium-3-5",
       "current_open_weight_model_id": "mistral-medium-3-5",
-      "current_api_model_ids": ["mistral-medium-3-5", "mistral-small-4", "mistral-large-3"],
-      "current_claim": {"text": "Mistral Medium 3.5 is Mistral's current frontier-class flagship and is released both through the API and as open weights under a Modified MIT license; Small 4 is the current efficient open model.", "status": "confirmed", "source_url": "https://docs.mistral.ai/models/overview", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://docs.mistral.ai/models/overview", "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04", "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "mistral-medium-3-5",
+        "mistral-small-4",
+        "mistral-large-3"
+      ],
+      "current_claim": {
+        "text": "Mistral Medium 3.5 is Mistral's current frontier-class flagship and is released both through the API and as open weights under a Modified MIT license; Small 4 is the current efficient open model.",
+        "status": "confirmed",
+        "source_url": "https://docs.mistral.ai/models/overview",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://docs.mistral.ai/models/overview",
+        "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04",
+        "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "Medium 3.5, Small 4 and Large 3 all have official weight releases; Medium 3.5 is not API-only.",
       "api_scope": "Medium 3.5, Small 4 and Large 3 are represented as current API-capable models. Their downloadable weight and license surfaces remain tracked separately.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "mistral-medium-3-5", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["mistral-medium-3-5"], "is_current": true, "source_url": "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04", "checked_at": "2026-08-12"},
-        {"id": "mistral-small-4", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["mistral-small-2603"], "is_current": true, "source_url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03", "checked_at": "2026-08-12"},
-        {"id": "mistral-large-3", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["mistral-large-2512"], "is_current": true, "source_url": "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12", "checked_at": "2026-08-12"}
+        {
+          "id": "mistral-medium-3-5",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "mistral-medium-3-5"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "mistral-small-4",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "mistral-small-2603"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.mistral.ai/models/model-cards/mistral-small-4-0-26-03",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "mistral-large-3",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "mistral-large-2512"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -206,16 +835,36 @@
       "latest_generation_label": "GLM-5.2",
       "current_flagship_model_id": "glm-5-2",
       "current_open_weight_model_id": "glm-5-2",
-      "current_api_model_ids": ["glm-5-2"],
-      "current_claim": {"text": "GLM-5.2 is Z.ai's current flagship for long-horizon tasks, with MIT-licensed first-party weights and API access.", "status": "confirmed", "source_url": "https://huggingface.co/zai-org/GLM-5.2", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://huggingface.co/zai-org/GLM-5.2", "https://z.ai/"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "glm-5-2"
+      ],
+      "current_claim": {
+        "text": "GLM-5.2 is Z.ai's current flagship for long-horizon tasks, with MIT-licensed first-party weights and API access.",
+        "status": "confirmed",
+        "source_url": "https://huggingface.co/zai-org/GLM-5.2",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://huggingface.co/zai-org/GLM-5.2",
+        "https://z.ai/"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "GLM-5.2 weights are released under MIT.",
       "api_scope": "The first-party model card links the Z.ai API platform.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "glm-5-2", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "is_current": true, "source_url": "https://huggingface.co/zai-org/GLM-5.2", "checked_at": "2026-08-12"}
+        {
+          "id": "glm-5-2",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/zai-org/GLM-5.2",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -226,24 +875,132 @@
       "latest_generation_label": "K3",
       "current_flagship_model_id": "kimi-k3",
       "current_open_weight_model_id": "kimi-k3",
-      "current_api_model_ids": ["kimi-k3", "kimi-k2-7-code", "kimi-k2-6", "kimi-k2-5", "kimi-k2-thinking"],
-      "latest_specialized_model_ids": ["kimi-k2-7-code", "kimi-linear-48b-a3b-instruct", "kimi-vl-a3b-thinking-2506", "kimi-audio-7b-instruct", "kimi-dev-72b", "moonlight-16b-a3b-instruct"],
-      "current_claim": {"text": "Kimi K3 is Moonshot's current flagship and open-weight model; Kimi K2.7 Code remains the current specialized coding checkpoint/API model.", "status": "confirmed", "source_url": "https://www.kimi.com/help/agent/agent-overview", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://www.kimi.com/help/agent/agent-overview", "https://huggingface.co/moonshotai", "https://platform.kimi.ai/"],
-      "catalog_checked_at": "2026-08-12",
-      "catalog_source_ids": ["moonshot-kimi-k3-repo", "moonshot-kimi-k3-license", "moonshot-kimi-catalog"],
+      "current_api_model_ids": [
+        "kimi-k3",
+        "kimi-k2-7-code",
+        "kimi-k2-6",
+        "kimi-k2-5",
+        "kimi-k2-thinking"
+      ],
+      "latest_specialized_model_ids": [
+        "kimi-k2-7-code",
+        "kimi-linear-48b-a3b-instruct",
+        "kimi-vl-a3b-thinking-2506",
+        "kimi-audio-7b-instruct",
+        "kimi-dev-72b",
+        "moonlight-16b-a3b-instruct"
+      ],
+      "current_claim": {
+        "text": "Kimi K3 is Moonshot's current flagship and open-weight model. Kimi K2.7 Code remains the current specialized coding checkpoint/API model. Moonshot's published API retirement page lists kimi-k2.5 and moonshot-v1 closing on 2026-08-31; the catalog refreshes the page year-by-year, so the year is treated as not_disclosed and re-verified before the retirement date.",
+        "status": "confirmed",
+        "source_url": "https://www.kimi.com/help/agent/agent-overview",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://www.kimi.com/help/agent/agent-overview",
+        "https://huggingface.co/moonshotai",
+        "https://platform.kimi.ai/"
+      ],
+      "catalog_checked_at": "2026-08-25",
+      "catalog_source_ids": [
+        "moonshot-kimi-k3-repo",
+        "moonshot-kimi-k3-license",
+        "moonshot-kimi-catalog"
+      ],
       "confidence": "official-confirmed",
       "open_weight_scope": "Kimi K3, K2.7 Code, K2.6, K2.5, K2 Thinking, K2 Base and K2 Instruct have first-party weight/model-card records.",
-      "api_scope": "Kimi K3 and K2.7 Code are verified on current first-party or official hosted API surfaces; older K2 API aliases are retained where already documented.",
-      "as_of": "2026-08-12",
+      "api_scope": "Kimi K3 and K2.7 Code are verified on current first-party or official hosted API surfaces; older K2 API aliases are retained where already documented. K2.5 and Moonshot V1 are advertised for retirement on 2026-08-31.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "kimi-k3", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k3"], "is_current": true, "source_url": "https://www.kimi.com/help/agent/agent-overview", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-7-code", "role": "code", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2.7-code"], "is_current": true, "source_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-6", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2.6"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2.6", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-5", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2.5"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2.5", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-thinking", "role": "thinking", "distribution_surfaces": ["open_weight", "api"], "api_aliases": ["kimi-k2-thinking"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-base", "role": "foundation", "distribution_surfaces": ["open_weight"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Base", "checked_at": "2026-08-12"},
-        {"id": "kimi-k2-instruct", "role": "instruct", "distribution_surfaces": ["open_weight"], "api_aliases": ["kimi-k2-instruct", "kimi-k2"], "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct", "checked_at": "2026-08-12"}
+        {
+          "id": "kimi-k3",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "kimi-k3"
+          ],
+          "is_current": true,
+          "source_url": "https://www.kimi.com/help/agent/agent-overview",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-7-code",
+          "role": "code",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "kimi-k2.7-code"
+          ],
+          "is_current": true,
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-6",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "kimi-k2.6"
+          ],
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2.6",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-5",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "kimi-k2.5"
+          ],
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2.5",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-thinking",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "api_aliases": [
+            "kimi-k2-thinking"
+          ],
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Thinking",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-base",
+          "role": "foundation",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Base",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "kimi-k2-instruct",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "api_aliases": [
+            "kimi-k2-instruct",
+            "kimi-k2"
+          ],
+          "source_url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -253,37 +1010,157 @@
       "current_generation": "Vicuna",
       "current_flagship_model_id": "vicuna-13b",
       "current_open_weight_model_id": "vicuna-13b",
-      "current_claim": {"text": "Vicuna is retained as a legacy historical open-weight chat family; no newer Vicuna generation is claimed.", "status": "not_published", "source_url": "https://lmsys.org/", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://lmsys.org/"],
-      "catalog_checked_at": "2026-08-12",
+      "current_claim": {
+        "text": "Vicuna is retained as a legacy historical open-weight chat family; no newer Vicuna generation is claimed.",
+        "status": "not_published",
+        "source_url": "https://lmsys.org/",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://lmsys.org/"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "unverified",
       "open_weight_scope": "Vicuna weights are historical releases rather than a current frontier family.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "vicuna-13b", "role": "instruct", "distribution_surfaces": ["open_weight"], "is_current": true, "source_url": "https://lmsys.org/", "checked_at": "2026-08-12"}
+        {
+          "id": "vicuna-13b",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight"
+          ],
+          "is_current": true,
+          "source_url": "https://lmsys.org/",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
       "id": "grok",
       "vendor_id": "xai",
       "name": "Grok",
-      "current_generation": "Grok 4.5",
-      "latest_generation_label": "Grok 4.5",
-      "current_flagship_model_id": "grok-4-5",
-      "current_api_model_ids": ["grok-4-5", "grok-4-20", "grok-4-20-multi-agent", "grok-4-3", "grok-build-0-1"],
-      "latest_specialized_model_ids": ["grok-4-20-multi-agent", "grok-build-0-1"],
-      "current_claim": {"text": "Grok 4.5 is the current flagship. The active xAI API catalog also includes Grok 4.20 reasoning/non-reasoning, Grok 4.20 Multi-Agent Beta, Grok 4.3, and the Grok Build 0.1 coding model.", "status": "confirmed", "source_url": "https://docs.x.ai/developers/models/grok-4.5", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://docs.x.ai/developers/models/grok-4.5", "https://docs.x.ai/developers/models/grok-4.20", "https://docs.x.ai/developers/models/grok-4.20-non-reasoning", "https://docs.x.ai/developers/models/grok-4.20-multi-agent-0309", "https://docs.x.ai/developers/models/grok-build-0.1", "https://docs.x.ai/developers/rate-limits", "https://docs.x.ai/developers/release-notes", "https://docs.x.ai/developers/migration/may-15-retirement"],
-      "catalog_checked_at": "2026-08-12",
+      "current_generation": "Grok 4.6",
+      "latest_generation_label": "Grok 4.6",
+      "current_flagship_model_id": "grok-4-6",
+      "current_api_model_ids": [
+        "grok-4-6",
+        "grok-4-5",
+        "grok-4-20",
+        "grok-4-20-multi-agent",
+        "grok-4-3",
+        "grok-build-0-1"
+      ],
+      "latest_specialized_model_ids": [
+        "grok-4-20-multi-agent",
+        "grok-build-0-1"
+      ],
+      "current_claim": {
+        "text": "Grok 4.6 (2026-08-12) is the current flagship. Grok 4.5 is the predecessor flagship and remains on the xAI API. The active xAI API catalog also includes Grok 4.20 reasoning/non-reasoning, Grok 4.20 Multi-Agent Beta, Grok 4.3, and the Grok Build 0.1 coding model.",
+        "status": "confirmed",
+        "source_url": "https://x.ai/news/grok-4-6",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://x.ai/news/grok-4-6",
+        "https://docs.x.ai/developers/models/grok-4.5",
+        "https://docs.x.ai/developers/models/grok-4.20",
+        "https://docs.x.ai/developers/models/grok-4.20-non-reasoning",
+        "https://docs.x.ai/developers/models/grok-4.20-multi-agent-0309",
+        "https://docs.x.ai/developers/models/grok-build-0.1",
+        "https://docs.x.ai/developers/rate-limits",
+        "https://docs.x.ai/developers/release-notes",
+        "https://docs.x.ai/developers/migration/may-15-retirement"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
-      "api_scope": "Grok 4.5 remains the flagship. Grok 4.20 has separate reasoning and non-reasoning snapshots, Multi-Agent is a beta specialization, Grok 4.3 remains an active replacement target, and Grok Build 0.1 is the current coding model.",
-      "as_of": "2026-08-12",
+      "api_scope": "Grok 4.6 supersedes Grok 4.5 as the flagship. Grok 4.20 has separate reasoning and non-reasoning snapshots, Multi-Agent is a beta specialization, Grok 4.3 remains an active replacement target, and Grok Build 0.1 is the current coding model. The xAI API and Grok Build host all Grok 4.x models; Grok 4.6 is also surfaced through Cursor, OpenRouter, Vercel and Cloudflare.",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "grok-4-5", "role": "flagship", "distribution_surfaces": ["api"], "api_aliases": ["grok-4.5", "grok-4.5-latest"], "is_current": true, "source_url": "https://docs.x.ai/developers/models/grok-4.5", "checked_at": "2026-08-12"},
-        {"id": "grok-4-20", "role": "thinking", "distribution_surfaces": ["api"], "api_aliases": ["grok-4.20", "grok-4.20-0309-reasoning", "grok-4.20-0309-non-reasoning"], "is_current": true, "source_url": "https://docs.x.ai/developers/models/grok-4.20", "checked_at": "2026-08-12"},
-        {"id": "grok-4-20-multi-agent", "role": "thinking", "distribution_surfaces": ["api"], "api_aliases": ["grok-4.20-multi-agent", "grok-4.20-multi-agent-0309"], "is_current": true, "source_url": "https://docs.x.ai/developers/models/grok-4.20-multi-agent-0309", "checked_at": "2026-08-12"},
-        {"id": "grok-4-3", "role": "instruct", "distribution_surfaces": ["api"], "api_aliases": ["grok-4.3"], "is_current": true, "source_url": "https://docs.x.ai/developers/migration/may-15-retirement", "checked_at": "2026-08-12"},
-        {"id": "grok-build-0-1", "role": "code", "distribution_surfaces": ["api"], "api_aliases": ["grok-build-0.1", "grok-code-fast-1"], "is_current": true, "source_url": "https://docs.x.ai/developers/models/grok-build-0.1", "checked_at": "2026-08-12"}
+        {
+          "id": "grok-4-6",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-4.6",
+            "grok-4-6-fast"
+          ],
+          "is_current": true,
+          "source_url": "https://x.ai/news/grok-4-6",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "grok-4-5",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-4.5",
+            "grok-4.5-latest"
+          ],
+          "is_current": false,
+          "source_url": "https://docs.x.ai/developers/models/grok-4.5",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "grok-4-20",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-4.20",
+            "grok-4.20-0309-reasoning",
+            "grok-4.20-0309-non-reasoning"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.x.ai/developers/models/grok-4.20",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "grok-4-20-multi-agent",
+          "role": "thinking",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-4.20-multi-agent",
+            "grok-4.20-multi-agent-0309"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.x.ai/developers/models/grok-4.20-multi-agent-0309",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "grok-4-3",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-4.3"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "grok-build-0-1",
+          "role": "code",
+          "distribution_surfaces": [
+            "api"
+          ],
+          "api_aliases": [
+            "grok-build-0.1",
+            "grok-code-fast-1"
+          ],
+          "is_current": true,
+          "source_url": "https://docs.x.ai/developers/models/grok-build-0.1",
+          "checked_at": "2026-08-25"
+        }
       ]
     },
     {
@@ -294,17 +1171,47 @@
       "latest_generation_label": "M3",
       "current_flagship_model_id": "minimax-m3",
       "current_open_weight_model_id": "minimax-m3",
-      "current_api_model_ids": ["minimax-m3"],
-      "current_claim": {"text": "MiniMax M3 is MiniMax's current native multimodal flagship, released as downloadable weights and available through MiniMax API.", "status": "confirmed", "source_url": "https://www.minimax.io/models/text/m3", "checked_at": "2026-08-12"},
-      "official_catalog_urls": ["https://www.minimax.io/models/text/m3", "https://www.minimax.io/blog/minimax-m3", "https://huggingface.co/MiniMaxAI/MiniMax-M3"],
-      "catalog_checked_at": "2026-08-12",
+      "current_api_model_ids": [
+        "minimax-m3"
+      ],
+      "current_claim": {
+        "text": "MiniMax M3 is MiniMax's current native multimodal flagship, released as downloadable weights and available through MiniMax API.",
+        "status": "confirmed",
+        "source_url": "https://www.minimax.io/models/text/m3",
+        "checked_at": "2026-08-25"
+      },
+      "official_catalog_urls": [
+        "https://www.minimax.io/models/text/m3",
+        "https://www.minimax.io/blog/minimax-m3",
+        "https://huggingface.co/MiniMaxAI/MiniMax-M3"
+      ],
+      "catalog_checked_at": "2026-08-25",
       "confidence": "official-confirmed",
       "open_weight_scope": "MiniMax M3 and prior M2.x checkpoints have first-party downloadable weight repositories; license terms are tracked separately from weight availability.",
       "api_scope": "MiniMax M3 is available through the MiniMax API as model MiniMax-M3; the same family also has first-party downloadable weights and local deployment guidance.",
-      "as_of": "2026-08-12",
+      "as_of": "2026-08-25",
       "variants": [
-        {"id": "minimax-m3", "role": "flagship", "distribution_surfaces": ["open_weight", "api"], "is_current": true, "source_url": "https://www.minimax.io/models/text/m3", "checked_at": "2026-08-12"},
-        {"id": "minimax-m2-7", "role": "instruct", "distribution_surfaces": ["open_weight", "api"], "source_url": "https://huggingface.co/MiniMaxAI", "checked_at": "2026-08-12"}
+        {
+          "id": "minimax-m3",
+          "role": "flagship",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "is_current": true,
+          "source_url": "https://www.minimax.io/models/text/m3",
+          "checked_at": "2026-08-25"
+        },
+        {
+          "id": "minimax-m2-7",
+          "role": "instruct",
+          "distribution_surfaces": [
+            "open_weight",
+            "api"
+          ],
+          "source_url": "https://huggingface.co/MiniMaxAI",
+          "checked_at": "2026-08-25"
+        }
       ]
     }
   ]
