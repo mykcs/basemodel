@@ -90,6 +90,44 @@ The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so 
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
+Branch/ref deployment eligibility is also policy. When `vercel.json -> git.deploymentEnabled` excludes a ref class, the absence of a Preview deployment is expected and must not be reported as a Vercel outage. Release/debugging Agents must check ref eligibility and live deployment objects before assigning provider blame; the exact closeout procedure is owned by `release-closeout-protocol.md`.
+
+## Node runtime major contract
+
+The repository must declare an intentional Node major for Vercel rather than an open-ended future-major range.
+
+Current contract:
+
+```json
+{
+  "engines": {
+    "node": "24.x"
+  }
+}
+```
+
+Rationale:
+
+- Vercel treats `engines.node` in `package.json` as the repository runtime contract and it can override the project-setting major;
+- a range such as `>=22.12.0` permits automatic adoption of later major releases and causes Vercel to warn that a future major will be selected automatically;
+- when the intended deployed major is Node 24, `24.x` preserves patch/minor movement within that major without silently crossing to Node 25+;
+- any future major upgrade must be an explicit source change accompanied by deterministic repository validation and exact-head Preview/Production evidence.
+
+When investigating a runtime-version warning, inspect together:
+
+```text
+Vercel project runtime major
+package.json engines.node
+package manager / lockfile metadata
+exact build log runtime selection or warning
+```
+
+If the lockfile root package metadata records `engines`, keep it synchronized when regenerating or intentionally changing the lockfile. Contradictory lockfile metadata is not the Vercel runtime authority, but it creates avoidable ambiguity for future Agents and tooling.
+
+The deterministic policy test protecting the current contract is `src/lib/nodeRuntimePolicy.test.ts`.
+
+Historical rationale: `../history/2026-08-26-results-release-node-runtime-retrospective.md`.
+
 ## Production release
 
 After the accepted exact head is current with `main`:

@@ -75,6 +75,8 @@ For a concrete browser-infrastructure incident showing how to distinguish zero-s
 
 For a concrete Vercel UI-gate incident showing how `--max-failures=1` hides later failures, how to distinguish a real product regression from a stale E2E contract or invalid visual metric, and why a formerly-red test turning green is not full-suite completion, see `history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`.
 
+For the Results release closeout that combined a real Production overflow escape, stale test drift, branch-level Vercel deployment eligibility, permanent escaped-regression Gate wiring, subjective Issue #152 closure, and the Node 24 runtime warning fix, see `history/2026-08-26-results-release-node-runtime-retrospective.md`. It is a historical rationale document; current authority remains in the release, deployment, and UI acceptance policies above.
+
 ## Product contract
 
 The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements. Keep Learn / Run / Compare, evidence levels, benchmark metrics and framework update objects distinct.

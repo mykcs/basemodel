@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-08-18**
+Last reviewed: **2026-08-26**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -227,6 +227,57 @@ Do not collapse these stages into “CI green” or “merged successfully.”
 - validating a worker head, then merging a different combined tree;
 - checking Preview but not Production;
 - letting the owner become the first person to discover predictable browser regressions.
+
+## 12. Provider eligibility is part of failure classification
+
+“No Preview exists” is not enough evidence to call the provider unhealthy.
+
+Before diagnosing a Vercel outage or integration failure, inspect:
+
+```text
+is this branch/ref eligible under vercel.json git.deploymentEnabled?
+did Vercel create a deployment object for the exact SHA?
+was the deployment READY / ERROR / CANCELED / ignored?
+is the GitHub status callback describing a real deployment or only provider status state?
+```
+
+A branch intentionally excluded by deployment policy is a **policy outcome**, not a provider outage. If exact-head hosted acceptance is required, use a ref/deployment path allowed by the current repository policy rather than misclassifying the absence of a Preview as flakiness.
+
+## 13. Escaped regressions must be permanently wired, not merely tested once
+
+When a defect escaped to Preview, Production, owner inspection, or external QA, closeout requires more than adding a dedicated spec file.
+
+Verify the full ownership chain:
+
+```text
+regression specimen exists
+-> canonical focused/full commands actually run it
+-> preflight/escaped-regression registry records the failure class when the repository uses one
+-> static wiring coverage prevents silent removal
+-> exact-head and exact-main acceptance both exercise the intended Gate
+```
+
+A test that exists but is absent from the normal owning Gate is historical evidence, not durable protection.
+
+When a later failure appears after the product defect is fixed, classify it independently. A stale assertion caused by an intentional UI/content rewrite is not evidence that the original product bug returned.
+
+## 14. Subjective historical issues require current-Production reproduction
+
+Old screenshots and visual-polish notes become hypotheses after substantial UI or information-architecture changes.
+
+Before changing CSS to close a historical subjective issue, record:
+
+```text
+old claim
+-> current Production route + viewport + theme + locale
+-> still present / resolved / transformed
+-> current product impact
+-> smallest coherent fix, only if still present
+```
+
+It is valid to close a historical umbrella issue as completed when current Production no longer reproduces the candidates and current executable UI contracts remain green. Do not invent speculative CSS merely to create a fresh patch. State any subjective/manual-inspection boundary separately from automated browser evidence.
+
+Historical rationale: `../history/2026-08-26-results-release-node-runtime-retrospective.md`.
 
 ## Ownership
 
