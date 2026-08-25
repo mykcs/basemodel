@@ -101,12 +101,40 @@ export function scanAudienceCopy(root = process.cwd()): CopyFinding[] {
       const probe = I18N_T_RULE_IDS.has(rule.id) ? maskAllStringLiterals(source) : source;
       rule.pattern.lastIndex = 0;
       for (const match of probe.matchAll(rule.pattern)) {
+        if (rule.id === 'COPY-NEGATIVE-HEADING' && isAcceptedNegationPair(probe, match.index ?? 0)) {
+          // Scientific-clarification pair ("X 不是 Y 而是 Z" or "X not Y but Z")
+          // is the normal way to state contrastive findings; flag only true
+          // heading-first negative imperatives, not body-level contrast pairs.
+          continue;
+        }
         const originalOffset = match.index ?? 0;
         findings.push({ file, line: lineNumber(source, originalOffset), ruleId: rule.id, snippet: compact(match[0]), reason: rule.reason, strict: false });
       }
     }
   }
   return findings;
+}
+
+// "X 不是 Y 而是 Z" or "X is not Y, but Z" is contrastive scientific
+// clarification, not a heading-first negative imperative. The original
+// regex only saw the first half of the pair and over-fired on every
+// body-level contrast in research copy.
+const NEGATION_CONTINUATION_ZH = /(?:而是|但|其实|也|就|因此|所以|不)/;
+const NEGATION_CONTINUATION_EN = /,\s*(?:but|yet|instead|so|and)\b/i;
+const HEADING_TAG_RE = /<(?:h[1-6]|li|dt|dd|summary|caption|th)\b/;
+
+function isAcceptedNegationPair(source: string, offset: number): boolean {
+  // Look at the next ~80 chars after the negation to see whether the
+  // sentence continues with a contrastive continuation. If it does, the
+  // negation is a clarification, not an imperative heading.
+  const tail = source.slice(offset, offset + 120);
+  if (NEGATION_CONTINUATION_ZH.test(tail) || NEGATION_CONTINUATION_EN.test(tail)) {
+    return true;
+  }
+  // If the negation sits inside a heading tag, do NOT auto-accept; the
+  // original reason (heading-first negative imperative) still applies.
+  const head = source.slice(Math.max(0, offset - 80), offset);
+  return !HEADING_TAG_RE.test(head);
 }
 
 export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFinding[] {
