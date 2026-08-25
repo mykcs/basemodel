@@ -18,13 +18,13 @@ interface Props {
   onQuickView: () => void;
 }
 
-const levelText = { high: 'high', medium: 'medium', low: 'low', unknown: 'unknown' } as const;
+const _levelText = { high: 'high', medium: 'medium', low: 'low', unknown: 'unknown' } as const;
 
 export function ModelDecisionCard({ model, fit, locale, m, inCandidate, inCompare, paperAdopted, onToggleCandidate, onToggleCompare, onQuickView }: Props) {
   const fitLabel = fit ? ({ high: m.explorer.fitHigh, conditional: m.explorer.fitConditional, explore: m.explorer.fitExplore, blocked: m.explorer.fitBlocked }[fit.overall]) : undefined;
   const dimensions = fit ? [
     [m.explorer.feasibility, fit.feasibility.level], [m.explorer.researchSuitability, fit.researchSuitability.level], [m.explorer.comparability, fit.comparability.level], [m.explorer.reproducibility, fit.reproducibility.level], [m.explorer.evidenceQuality, fit.evidenceQuality.level],
-  ] as Array<[string, keyof typeof levelText]> : [];
+  ] as Array<[string, keyof typeof _levelText]> : [];
   return <article className="model-card decision-card">
     <div className="card-topline"><span className="eyebrow">{model.vendor}</span>{paperAdopted && <span className="paper-adoption-tag">{m.explorer.hasPaper}</span>}</div>
     <h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3>

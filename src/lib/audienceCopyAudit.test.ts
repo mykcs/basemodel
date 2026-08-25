@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { checkStrictAudienceCopyInvariants, discoverAudienceCopySources, scanAudienceCopy } from '../../scripts/audit-audience-copy';
@@ -101,7 +102,7 @@ describe('audience copy audit', () => {
   });
 
   it('still flags a bare Chinese surface that exposes an unexplained full English sentence', () => {
-    const tmpRoot = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'audience-copy-'));
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'audience-copy-'));
     try {
       const sample = path.join(tmpRoot, 'src');
       fs.mkdirSync(path.join(sample, 'components'), { recursive: true });
