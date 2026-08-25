@@ -56,7 +56,7 @@ assert(
     && missionHero.includes('Qwen2.5-3B-Instruct')
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")
-    && missionHero.includes("t('实验结果','Experiment results')")
+    && missionHero.includes("t('研究结果','Research findings')")
     && missionHero.includes('openEvoScientificState.defaultBranchSnapshot.phase')
     && missionHero.includes('actual branch → campaign → reconciliation')
     && missionHero.includes('preregistration + authorized UUIDs')
