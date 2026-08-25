@@ -33,8 +33,8 @@ const questions: Array<{
     status: t('已确认 · 训练链路真实工作', 'Established · training path works'),
     question: t('OpenEvo 真的发生了学习吗？', 'Did OpenEvo actually learn?'),
     conclusion: t(
-      '发生了。训练会真实改变模型参数，更新后的适配器也能保存并重新加载。第二代 G2 更新同样真实发生过。不过，“参数变了”只说明训练链路成立，还不能直接说明 WebShop 做得更好。',
-      'Yes. Training genuinely changes parameters, and the updated adapter can be saved and reloaded. The second-generation G2 update also genuinely occurred. But parameter change alone does not prove better WebShop performance.',
+      '发生了。训练会真实改变模型参数，更新后的适配器也能保存并重新加载，第二代 G2 更新同样真实发生过。我们也已经见过“训练链路完全跑通，但闭环任务表现没有随之改善”的情况，所以“参数变了”只能证明学习机制真的执行了，还不能单独证明 WebShop 做得更好。',
+      'Yes. Training genuinely changes parameters, the updated adapter can be saved and reloaded, and the second-generation G2 update also genuinely occurred. We have also seen runs where the training path completed correctly but closed-loop task performance did not improve, so parameter change proves that learning machinery executed, not by itself that WebShop performance improved.',
     ),
     observations: [
       {
@@ -88,8 +88,8 @@ const questions: Array<{
     status: t('部分确认 · 能学进去但不等于会做', 'Partial · fitting is not behavior'),
     question: t('有成功经验以后，OpenEvo 能把它学进去吗？', 'Given successful experience, can OpenEvo fit it?'),
     conclusion: t(
-      '能把训练目标学进去，但这和真实任务表现是两回事。成功轨迹更容易被模型拟合，只训练动作本身也能学下来；可是在真实 WebShop 闭环里，收益并不会自动出现。',
-      'It can fit the training target, but fitting and real task behavior are different. Successful trajectories are easier to fit, and action-only targets can also be learned, yet closed-loop WebShop gains do not appear automatically.',
+      '能把训练目标学进去，但这不等于真实任务表现会跟着提升。我们做了两次对照：一次看到成功经验更容易被模型拟合，但新任务表现没有改善；另一次只训练动作也能拟合，但仍没有形成稳定的新任务迁移。因此目前只能说，模型学到了训练目标，但这种学习在这两轮实验里还没有转化成稳定的新任务收益。',
+      'It can fit the training target, but that does not mean real task performance rises with it. In two controlled checks, successful experience was easier to fit without improving fresh-task behavior, and action-only targets were also learnable without producing stable fresh-task transfer. The supported conclusion is therefore that the model learned the training target, but in these two runs that learning did not become stable fresh-task gains.',
     ),
     observations: [
       {
@@ -102,8 +102,8 @@ const questions: Array<{
       },
     ],
     boundary: t(
-      '这些结果支持“训练目标可以被改变，但任务收益不会自动出现”；不能外推成“OpenEvo 永远不能迁移”。',
-      'These results support “the training target can change while task gains do not appear automatically”; they cannot be extrapolated into “OpenEvo can never transfer”.',
+      '这些结果支持“训练目标可以被改变，但在 H1.11 / H1.13 这两轮里没有转化成稳定的新任务收益”；不能外推成“OpenEvo 永远不能迁移”，因为后面的 H1.38B / H1.39 确实观察到了可复现的单步迁移。',
+      'These results support “the training target can change without becoming stable fresh-task gains in H1.11 / H1.13”; they cannot be extrapolated into “OpenEvo can never transfer”, because later H1.38B / H1.39 did show reproducible one-step transfer.',
     ),
     links: [
       { kind: 'Code', label: t('可追踪闭环评估器', 'Tracked closed-loop evaluator'), href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
@@ -118,8 +118,8 @@ const questions: Array<{
     status: t('已复现 · 一次更新可以迁移', 'Replicated · one-step transfer'),
     question: t('学到的经验能迁移到新的任务吗？', 'Does the learned experience transfer to new tasks?'),
     conclusion: t(
-      '能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。',
-      'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again.',
+      '能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。两次使用不同的新任务面板仍得到同方向提升，所以这里的“可迁移”不是从单次偶然波动推出来的。',
+      'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again. Because the same direction appeared on two different fresh-task panels, the transfer claim is not inferred from a single fluctuation.',
     ),
     observations: [
       { label: 'H1.38B · 704 attempts / 668 valid', value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]' },
@@ -148,8 +148,8 @@ const questions: Array<{
     status: t('尚未建立 · 多代连续改进', 'Not established · multi-generation improvement'),
     question: t('第一代能迁移，是否意味着可以一直越学越好？', 'If generation one transfers, does improvement keep compounding?'),
     conclusion: t(
-      '目前不能这样说。第二代确实收集到了足够的新经验，也真实写入了 G2；但是“学会新经验”“保住旧能力”“保住第一代已经复现的收益”这三件事没有同时做到，因此第二代持续整合还没有建立。',
-      'Not so far. The second generation collected enough new experience and genuinely wrote G2, but learning the new experience, retaining prior capability, and preserving the replicated first-generation gain did not all succeed together. Continual second-generation integration is therefore not established.',
+      '目前不能这样说。第二代确实收集到了新的成功经验，也真实写入了 G2；但后续检查里，旧能力表现出现下降方向，第一代已经复现的迁移收益也没有被稳定保住，而新经验获取本身还夹杂测量失效。因此这三件事没有同时成立，我们目前只能说“第二代持续整合尚未建立”，不能说 OpenEvo 已经会连续多代越学越好。',
+      'Not so far. The second generation did collect new successful experience and genuinely write G2, but subsequent checks showed a downward direction in prior capability, the replicated first-generation transfer gain was not stably preserved, and acquisition itself included invalid measurement. Those three requirements therefore did not hold together, so second-generation continual integration is not established.',
     ),
     observations: [
       { label: t('第二代经验采集', 'E2 harvest'), value: t('256 attempts → 132 合格正向经验 · 33 qualifying identities · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
@@ -173,8 +173,8 @@ const questions: Array<{
     status: t('可区分 · 工程故障与模型能力', 'Separated · engineering vs model ability'),
     question: t('这些数字会不会只是工程故障的假象？', 'Could these numbers be engineering artifacts?'),
     conclusion: t(
-      '有这个风险，所以每次实验都先判断“模型真的做得差”，还是“测量工具把模型输出读错了”。前面的实验已经逐项隔离了解析器、备用动作、运行环境和评估器等问题；只有测量有效的结果才进入科学结论。',
-      'Yes, that risk is real. Each experiment first separates “the model performed poorly” from “the measurement system misread the model output”. Earlier work isolated parser, fallback-action, runtime, and evaluator failures so that only measurement-valid results enter scientific conclusions.',
+      '有这个风险，而且我们已经实际遇到过：同一类模型输出如果动作格式与解析规则不兼容，会被工具直接读成无效动作，甚至出现看起来像“0 分”的结果。所以每轮实验都先判断“模型真的做得差”，还是“测量工具把输出读错了”；只有通过解析器、运行环境和评估器有效性检查的结果，才进入科学结论。',
+      'Yes, and we have encountered it directly: when the model action format and parsing rule disagree, the tooling can read an otherwise meaningful output as an invalid action and even produce an apparent zero. Each run therefore separates genuine model failure from measurement failure, and only results that pass parser, runtime, and evaluator validity checks enter scientific conclusions.',
     ),
     observations: [
       { label: 'H1.41', value: t('机制结论只使用当时已经通过有效性检查的科学分母。', 'Mechanism conclusions use only the scientifically valid denominator available at that cutoff.') },
