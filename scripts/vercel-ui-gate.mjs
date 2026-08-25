@@ -4,11 +4,11 @@ const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
-const resultsOverflowFixBranch = /^fix\/results-mobile-overflow(?:-|$)/;
+const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
-  || resultsOverflowFixBranch.test(branch);
+  || resultsOverflowValidationBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -47,7 +47,7 @@ const capture = (command, args) => {
 };
 
 const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
-const resultsOverflowOnly = resultsOverflowFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+const resultsOverflowOnly = resultsOverflowValidationBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 console.log(
   focusedOnly || resultsOverflowOnly
     ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
