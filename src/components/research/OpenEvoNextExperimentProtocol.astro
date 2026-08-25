@@ -5,20 +5,20 @@ const items = [
   {
     index: '01',
     href: `${root}/benchmark-first/`,
-    title: '先回答：OpenEvo 最终有没有让 WebShop 表现更强？',
-    body: '把 benchmark（正式比较）与 mechanism study（机制研究）分开：先测最终效果，再用旧 H1 系列解释原因。',
+    title: '先把官方保留任务的主评测修到可解释',
+    body: '2026-08-25 首轮 512 episodes 已经跑完，但 PRIMARY-v1 因动作标签与解析规则不兼容而测量无效；下一步不是换方法，而是修复这条测量链。',
   },
   {
     index: '02',
     href: `${root}/seed-faithful-benchmark/`,
-    title: '怎样才算和 SEED 公平比较？',
-    body: '冻结 train / held-out boundary（训练 / 保留任务边界）、同一任务身份、seed、Score / Success 与 test-time no-learning（测试时禁止继续学习）。',
+    title: '为什么必须在同一批 128 个任务上重跑？',
+    body: '任务、BASE、OpenEvo SD-LoRA 与比较协议都已经冻结。只修 parser 并保持其他变量不动，才能把新旧差异归因到测量兼容性，而不是任务或模型变化。',
   },
   {
     index: '03',
     href: `${root}/openevo-benchmark-design/`,
-    title: '公平比较之后，还要区分哪些 OpenEvo 变体？',
-    body: 'Native、Param、Sparse、Dense 等方法变体用于下一阶段消融，用来解释究竟是哪种更新方式带来差异。',
+    title: '主评测有效以后，再比较哪些 OpenEvo 变体？',
+    body: 'Native、Param、Sparse、Dense 等方法变体用于后续消融；先有可信的主比较，变体差异才有一个可以解释的参照。',
   },
 ] as const;
 ---
@@ -28,7 +28,7 @@ const items = [
     <p>NEXT EXPERIMENT</p>
     <div>
       <h2 id="next-protocol-title">下一场真正关键的实验是什么？</h2>
-      <p>目标很简单：让 OpenEvo 和 SEED 使用同一套 WebShop 任务身份、划分、seed 与评分协议，然后比较最终表现。</p>
+      <p>首轮官方保留任务比较已经完成，但主评测把动作格式读错，因此 0 分不能解释成模型能力。既然故障已经定位到解析兼容性，下一步就保持同一 128-task panel、同一 BASE 与 OpenEvo SD-LoRA，只修 parser 后各重跑 128 次。</p>
     </div>
   </header>
 
@@ -47,7 +47,7 @@ const items = [
 
   <aside>
     <strong>当前最小缺口</strong>
-    <p>不需要重跑 H0–H1.41。真正缺的是一场正式的 SEED official held-out evaluation（SEED 官方保留任务评估）：训练候选池使用 500–6909，正式评估只从 0–499 取任务，并让 OpenEvo / SEED 使用同一套冻结评估身份与协议。</p>
+    <p>2026-08-25 的首轮比较覆盖 128 tasks × 2 arms × 2 contracts = 512 episodes；SEED-strict PRIMARY-v1 被判为测量无效。现在缺的是 parser-compatibility-only（只修解析兼容性）的修复后复测：同一批 128 个任务，2 arms × 128 = 256 episodes。这个 panel 来自 SEED 官方 0–499 保留范围，但仍是 SEED-compatible（与 SEED 评测设置兼容），不是论文公开的确切 128-task 分母；SEED checkpoint 也尚未在本地复现。</p>
   </aside>
 </section>
 

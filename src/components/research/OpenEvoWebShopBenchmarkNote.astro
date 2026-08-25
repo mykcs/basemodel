@@ -12,20 +12,20 @@ const notes = [
   {
     id: 'benchmark-first',
     index: '10',
-    title: '为什么还需要一场正式的 WebShop 比较？',
-    description: '现有实验已经回答了一部分机制问题，也复现了第一代内部新任务迁移；真正缺失的是 OpenEvo 与 SEED 在同一套官方保留任务条件下的最终比较。',
+    title: '官方保留任务首轮已跑，为什么还不能报告正式成绩？',
+    description: '2026-08-25 的首轮比较已经覆盖冻结的 128 个官方保留范围任务，但 PRIMARY-v1 因动作格式与解析规则不兼容而测量无效；下一份关键证据是同一任务面板上的 parser-only 修复后复测。',
   },
   {
     id: 'seed-faithful-benchmark',
     index: '11',
     title: '怎样才算和 SEED 公平比较？',
-    description: '固定同一个 WebShop small world、任务划分、goal ordering、交互规则与评分方式，让方法差异成为主要变量。',
+    description: '固定同一个 WebShop small world、任务划分、goal ordering、交互规则与评分方式，让方法差异成为主要变量；同时保留“SEED-compatible”与“论文确切分母”之间的边界。',
   },
   {
     id: 'openevo-benchmark-design',
     index: '12',
     title: 'OpenEvo 的不同进化方式应该怎样比较？',
-    description: '把“经验以什么形式留下来”和“训练时使用什么反馈”拆成两个轴，在正式比较之后逐步做方法消融。',
+    description: '先得到一个测量有效的主比较，再把“经验以什么形式留下来”和“训练时使用什么反馈”拆成两个轴做方法消融。',
   },
 ] as const;
 
@@ -40,7 +40,7 @@ const current = notes.find((item) => item.id === note)!;
     </div>
     <h1>{current.title}</h1>
     <p class="dek">{current.description}</p>
-    <p class="status"><strong>状态：</strong>实验设计中，尚未产生正式比较结果。</p>
+    <p class="status"><strong>状态：</strong>2026-08-25 首轮已运行；PRIMARY-v1 测量无效；同一 128-task panel 的解析兼容性修复后复测尚未运行。</p>
   </header>
 
   <nav class="series-nav" aria-label="OpenEvo WebShop benchmark design">
@@ -55,42 +55,45 @@ const current = notes.find((item) => item.id === note)!;
     <main class="note-body">
       <section class="opening-section">
         <p class="section-kicker">01 · 已经知道什么</p>
-        <h2>OpenEvo 已经有第一代内部迁移证据，但这还不是 SEED 官方保留任务结果。</h2>
-        <p>H1.38B 首次观察到可靠的 internal fresh-task transfer（内部新任务迁移），H1.39 又在独立 task-ID-disjoint panel（任务 ID 不重叠评估组）上复现。两组正式正向迁移任务都来自 <strong>goal_idx ≥ 500</strong>。</p>
-        <p>因此，这些实验支持“第一代内部新任务迁移可以出现并复现”，但不能回答 OpenEvo 在 SEED official held-out tasks（SEED 官方保留任务）0–499 上是否有效。</p>
+        <h2>第一代内部新任务迁移已经复现，但它回答的不是官方保留任务成绩。</h2>
+        <p>H1.38B 首次观察到可靠的 internal fresh-task transfer（内部新任务迁移），H1.39 又在独立 task-ID-disjoint panel（任务 ID 不重叠评估组）上复现。两组正向迁移任务都来自 <strong>goal_idx ≥ 500</strong>，而 SEED 官方保留范围是 0–499。</p>
+        <p>因此这两轮支持“第一代内部新任务迁移可以出现并复现”；它们不能直接回答 OpenEvo 在 SEED 官方保留任务范围上的表现。</p>
       </section>
 
       <section>
-        <p class="section-kicker">02 · 缺少什么</p>
-        <h2>正式的 OpenEvo vs SEED 比较目前没有结果。</h2>
+        <p class="section-kicker">02 · 2026-08-25 首轮比较</p>
+        <h2>正式比较已经迈出第一步，但主评测仍然不可解释。</h2>
         <div class="question-card">
-          <p>H1.30</p>
-          <strong>formal evaluation denominator（正式评估分母）= 0</strong>
+          <p>FIRST HELD-OUT RUN</p>
+          <strong>128 tasks × 2 arms × 2 contracts = 512 episodes</strong>
         </div>
-        <p>H1.30 验证过 SEED route、parquet、trainer / checkpoint 等基础设施，但正式比较没有启动，也没有消费正式评估任务。因此当前不存在一组可以解释为“OpenEvo 相对 SEED 的最终成绩”的旧结果。</p>
+        <p>BASE 与冻结的 OpenEvo SD-LoRA 都在同一批 128 个任务上运行。SEED-strict PRIMARY-v1 给出 BASE 0.0 / 0.0% 与 SD-LoRA 0.0 / 0.0%，但检查发现动作 wrapper 与 released SEED projection 的解析规则不兼容，模型输出被读成无效动作。因此这两个 0 分被判为 <strong>measurement-invalid（测量无效）</strong>，不能解释成模型能力。</p>
+        <p>同一批任务下的 OpenEvo-native diagnostic（原生诊断）得到 BASE Task Score 14.6 / exact success 2.3%，SD-LoRA 28.3 / 1.6%。它说明模型并非“什么都没做”，也帮助定位 PRIMARY 的测量问题；但它使用的是本地诊断合同，不能冒充正式 SEED 成绩。</p>
+        <p>H1.30 的 <strong>formal evaluation denominator = 0</strong> 仍保留为历史边界：它描述的是当时正式比较尚未启动的状态。2026-08-25 首轮运行已经改变了操作状态，所以不能再把 H1.30 当成“现在仍未运行”的证据。</p>
       </section>
 
       <section>
         <p class="section-kicker">03 · 两类问题</p>
-        <h2>最终效果和作用机制需要分别回答。</h2>
+        <h2>最终效果和作用机制仍然要分别回答。</h2>
         <div class="lane-grid">
           <div class="lane primary">
             <small>BENCHMARK</small>
             <h3>在同一套规则下，OpenEvo 最终有没有更强？</h3>
-            <p>比较 frozen agent（冻结后的智能体）在同一批 SEED 官方保留任务上的 Task Score 与 exact Success。</p>
+            <p>需要一个测量有效的 frozen-agent（冻结智能体）比较，在同一批官方保留范围任务上报告 Task Score 与 exact Success。</p>
           </div>
           <div class="lane">
             <small>MECHANISM</small>
             <h3>为什么会提高，或者为什么没有提高？</h3>
-            <p>经验供给、参数写入、fresh-task transfer、retention、continual integration 与 multi-generation 等实验用于解释主结果。</p>
+            <p>经验供给、参数写入、fresh-task transfer、retention、continual integration 与 multi-generation 等实验用于解释主结果，但不能替代主评测本身。</p>
           </div>
         </div>
       </section>
 
       <section>
         <p class="section-kicker">04 · 下一项正式证据</p>
-        <h2>只需要补一场 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）。</h2>
-        <p>训练任务继续来自 500–6909；正式评估只使用 0–499；OpenEvo 与 SEED 使用相同任务身份、environment seed、交互规则和评分协议。现有 H0–H1.41 机制实验不需要因此全部重跑。</p>
+        <h2>同一 128-task panel 上，只修解析兼容性后重跑 256 episodes。</h2>
+        <p>首轮已经冻结任务、BASE、OpenEvo SD-LoRA 与比较协议，而且故障被定位到 parser 对动作标签格式的兼容性。如果此时再换任务、模型或方法，就会同时引入新的变量，无法判断结果变化究竟来自“测量修好了”还是实验条件变了。因此下一步只修 parser，保持其余身份不变，2 arms × 128 = 256 episodes。</p>
+        <p>即使这轮复测通过，它仍只是一组 <strong>SEED-compatible（与 SEED 评测设置兼容）</strong> 的公平比较：128 个任务来自官方 0–499 保留范围，但不是论文公开的确切 128-task 分母；SEED checkpoint 也尚未在本地复现。这两个边界不会因为 parser 修复而消失。</p>
       </section>
 
       <footer class="next-note"><a href={`${root}/seed-faithful-benchmark/`}>下一问：怎样才算和 SEED 公平比较？ →</a></footer>
@@ -128,15 +131,16 @@ Task Score + exact Success`}</code></pre>
           <div>
             <small>正式保留池 (OFFICIAL HELD-OUT POOL)</small>
             <h3>goal 0–499</h3>
-            <p>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</p>
+            <p>正式比较只从这个范围取任务，而且 OpenEvo 与对照方法必须使用同一批冻结任务身份。</p>
           </div>
         </div>
+        <p>2026-08-25 的首轮比较已经从 0–499 中冻结 128 个任务，因此满足“训练范围与保留范围分离”这一层要求。但公开证据没有给出 SEED 论文当年确切的 128 个 goal ID，所以这组 panel 只能称为 SEED-compatible，不能称为论文 exact denominator。</p>
       </section>
 
       <section>
         <p class="section-kicker">03 · Goal ordering</p>
         <h2>任务编号只有在 environment seed 一致时才真正可比。</h2>
-        <p>WebShop 会在环境初始化时 shuffle goals（打乱任务顺序）。如果目标是与 SEED GRPO 的 exact-ID setting（精确任务编号设定）对齐，应使用 <strong>environment seed = 0</strong>，并保存每个任务的 goal_idx、instruction hash 与数据版本。</p>
+        <p>WebShop 会在环境初始化时 shuffle goals（打乱任务顺序）。如果目标是与 SEED GRPO 的 exact-ID setting（精确任务编号设定）对齐，应固定 environment seed，并保存每个任务的 goal_idx、instruction hash 与数据版本；否则同一个数字 ID 可能不再指向同一个实验身份。</p>
       </section>
 
       <section>
@@ -148,7 +152,7 @@ Task Score + exact Success`}</code></pre>
           <div class="row" role="row"><span>精确成功 (exact success)</span><strong>原始 reward = 1.0 时的完整成功</strong></div>
           <div class="row" role="row"><span>训练 reward (SEED training reward)</span><strong>成功映射为 10，否则为 0；只用于训练语义</strong></div>
         </div>
-        <p>正式结果同时报告 raw task_score（原始任务分数）和 exact success（精确成功），这样不同方法的结果可以在同一尺度上核对。</p>
+        <p>task_score 可以在任务未完整成功时仍给出部分完成度，而 exact success 只回答是否完整完成；训练 reward 又是优化时的映射。因此正式结果必须分别报告这些量，不能压成一个“成功分数”。</p>
       </section>
 
       <section>
@@ -160,7 +164,7 @@ Task Score + exact Success`}</code></pre>
       <section>
         <p class="section-kicker">06 · 可追溯身份</p>
         <h2>每个正式结果都需要能够还原“谁在什么任务上、用什么数据跑出来”。</h2>
-        <p>至少保存 goal_idx、instruction hash、数据文件 SHA256、environment seed、代码 SHA、模型 / adapter 身份、raw task_score 与 exact success。OpenEvo 和 SEED 的比较任务身份必须逐项匹配。</p>
+        <p>如果任务、数据、代码或 adapter 身份无法还原，就无法判断两种方法是否真的在同一条件下比较。因此至少保存 goal_idx、instruction hash、数据文件 SHA256、environment seed、代码 SHA、模型 / adapter 身份、raw task_score 与 exact success。</p>
       </section>
 
       <footer class="next-note"><a href={`${root}/openevo-benchmark-design/`}>下一问：OpenEvo 的不同进化方式怎样比较？ →</a></footer>
@@ -184,6 +188,7 @@ Task Score + exact Success`}</code></pre>
             <p>只使用 exact success（精确成功），还是使用 WebShop 连续 partial task score（部分任务分数），作为独立实验条件。</p>
           </div>
         </div>
+        <p>这两个轴如果同时改变，观察到的差异无法判断究竟来自 carrier 还是 feedback density。因此消融要一次只改变一个主要解释变量。</p>
       </section>
 
       <section>
@@ -195,7 +200,7 @@ Task Score + exact Success`}</code></pre>
       <section>
         <p class="section-kicker">03 · Parametric carrier</p>
         <h2>把经验继续写进参数以后，迁移收益和旧能力保持会怎样变化？</h2>
-        <p>SD-LoRA 与现有 parameter-write（参数写入）实验提供了直接机制证据。H1.38B/H1.39 说明第一代内部迁移可以出现；H1.40 则说明第二代 acquisition / retention / preservation（新知识获取 / 旧知识保持 / 已有收益保持）还没有同时稳定成立。</p>
+        <p>SD-LoRA 与现有 parameter-write（参数写入）实验提供了直接机制证据。H1.38B/H1.39 说明第一代内部迁移可以出现；H1.40/H1.41 则没有同时看到新经验获取、旧能力保持与已有收益保持，因此第二代持续整合尚未建立。</p>
       </section>
 
       <section>
@@ -213,13 +218,13 @@ Task Score + exact Success`}</code></pre>
             <p>利用连续环境反馈，检验 OpenEvo 是否能从未完全成功的轨迹中获得更细粒度信号。</p>
           </div>
         </div>
-        <p>如果 Dense 高于 Sparse，结论应是“OpenEvo 能利用 graded environment feedback（分级环境反馈）”，而不是把两种监督条件混成一个方法优越性结论。</p>
+        <p>如果 Dense 高于 Sparse，且其他条件保持一致，能支持的是“分级环境反馈在这个协议下提供了额外可用信号”；它仍不能自动推出 OpenEvo 在所有任务或所有模型上普遍更优。</p>
       </section>
 
       <section>
         <p class="section-kicker">05 · 实验顺序</p>
-        <h2>先完成官方保留任务公平比较，再扩大方法变体。</h2>
-        <p>第一优先级是建立同一 frozen benchmark contract（冻结比较协议）下的正式 OpenEvo / SEED 结果。Native、Param、Sparse、Dense 等变体随后用于解释主结果，而不是替代这场缺失的正式比较。</p>
+        <h2>先让官方保留任务主评测变得可解释，再扩大方法变体。</h2>
+        <p>2026-08-25 首轮已经运行，但 PRIMARY-v1 测量无效。没有一个可信的主 benchmark 结果时，Native、Param、Sparse、Dense 的差异也缺少稳定参照。因此先完成同一 128-task panel 的 parser-only 修复后复测，再用方法变体解释或扩展主结果，而不是用消融替代这场主比较。</p>
       </section>
     </main>
   )}

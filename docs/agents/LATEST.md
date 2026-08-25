@@ -1,8 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-21**
+Last updated: **2026-08-26**
 
-Status: **Vercel is the ordinary deployment provider. Current work should follow the CSS ownership contract, static-first rendering policy, and the current OpenEvo × WebShop research surfaces on `main`. Historical release batches and handoffs are evidence, not current workflow.**
+Status: **Vercel is the ordinary deployment provider. Current work should follow the CSS ownership contract, static-first rendering policy, and the current OpenEvo × WebShop research surfaces on `main`. Reader-facing research claims now also carry a mandatory minimum reasoning bridge in visible prose. Historical release batches and handoffs are evidence, not current workflow.**
 
 ## Current architecture
 
@@ -14,6 +14,20 @@ Production                   -> https://basemodel-preview.vercel.app
 ```
 
 GitHub Actions and GitHub Pages remain retired for ordinary BaseModel deployment. Cloudflare material remains legacy rollback/provider-specific tooling only. Read `current/hosting-architecture.md` and `current/deployment-policy.md` before release changes.
+
+## Current reader-facing writing invariant
+
+For material research conclusions, comparisons, diagnoses, causal interpretations, validity judgements, and next-experiment decisions, visible prose must carry the first layer of reasoning:
+
+```text
+what was observed
+-> what that observation supports
+-> what it still does not establish
+```
+
+A sentence can sound natural and still be incomplete if a lab reader has to open `<details>` or inspect raw evidence to answer “你为什么这样说？”. Exact counts, confidence intervals, run IDs and code may remain in disclosure; the first-layer reason may not.
+
+Definitions, neutral labels, direct instructions, and simple source facts do not need a forced inference chain. The detailed owner is `current/research-editorial-style.md`; every user-facing page still follows `current/human-thinking-web-expression-contract.md`. The SEED × OpenEvo Results specialization lives in `current/seed-openevo-results-reader-contract.md`.
 
 ## Current release state
 
@@ -83,16 +97,16 @@ Historical browser passes apply only to the tree they tested. Future UI changes 
 
 ## Ordinary workflow
 
-1. read `/AGENTS.md`, this file, and task-relevant current policies;
-2. inspect overlapping branches/PRs before editing;
-3. make the smallest coherent change that closes the actual failure mode;
-4. batch edits before the first provider-triggering push when practical;
-5. inspect the exact-head Vercel Preview and repository Gate/build logs;
-6. run task-relevant browser acceptance;
-7. synchronize with current `main` if it moved materially;
-8. merge the accepted release once with head/base race protection;
-9. verify Production separately;
-10. report executed evidence and any remaining boundary precisely.
+1. read `/AGENTS.md`, this file, and the small core policy set;
+2. use `docs/agents/README.md` to select task-specific owners, then scan the scenario registry;
+3. inspect overlapping branches/PRs before editing;
+4. make the smallest coherent change that closes the actual failure mode;
+5. batch edits before the first provider-triggering push when practical;
+6. inspect the exact-head Vercel Preview and repository Gate/build logs;
+7. run task-relevant browser acceptance;
+8. synchronize with current `main` if it moved materially;
+9. merge the accepted release once with head/base race protection;
+10. verify Production separately and report executed evidence plus remaining boundaries precisely.
 
 A clean merge, READY badge, or historical browser PASS does not prove a changed combined tree is accepted.
 
@@ -120,17 +134,8 @@ Do not add Cloudflare or another legacy provider to an ordinary report merely be
 
 Cloudflare Pages and Workers helpers are legacy rollback/provider-specific surfaces. Treat them **not as a normal deployment step or completion-report line** unless the task explicitly concerns rollback, retirement, or live legacy-provider behavior.
 
-## Agent reading order
+## Reading-order authority
 
-1. `/AGENTS.md`
-2. this file
-3. `current/project-agent-operating-principles.md`
-4. `current/scenario-trigger-registry.md`
-5. `current/product-and-research-integrity.md`
-6. task-relevant UI/research/data policies
-7. `current/hosting-architecture.md`
-8. `current/deployment-policy.md`
-9. `current/repository-map.md`
-10. executable source/config/tests
+Do not maintain another numbered Agent reading list in this handoff. `/AGENTS.md` owns the fast start; `docs/agents/README.md` owns the task router; the scenario registry owns just-in-time triggers. This file owns **current state and recent cross-cutting changes only**.
 
 History is evidence, not current policy. Do not restore an obsolete provider, product hierarchy, visual result, test count, or machine snapshot from an older handoff.
