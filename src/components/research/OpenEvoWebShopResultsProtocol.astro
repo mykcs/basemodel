@@ -1,0 +1,189 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const h0TraceUrl = 'https://github.com/mykcs/openevo-experiment/blob/0b6e7dcc718a85ed967feb85b5c95fd68f92d38e/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/success-capture/gpu2--webshop_005294-2026081428.json';
+
+const protocolCards = [
+  {
+    label: t('基座模型 · BASE MODEL', 'Base model'),
+    value: 'Qwen2.5-7B-Instruct',
+    body: t(
+      '所有正式迁移结论都与同一个冻结 BASE 配对比较。经验供给证据（H0）建立在 3B 上；单步迁移结论（H1.38B 起）建立在 7B 上。',
+      'Every formal transfer claim is paired against the same frozen BASE. The experience-supply evidence (H0) was established on 3B; the single-step transfer claims (from H1.38B) were established on 7B.',
+    ),
+  },
+  {
+    label: t('任务环境 · ENVIRONMENT', 'Environment'),
+    value: t('WebShop · 1,000 商品 / 6,910 goals', 'WebShop · 1,000 products / 6,910 goals'),
+    body: t(
+      '模型在闭环网页中逐步 action，直到购买或终止；环境返回连续 task score，exact success 单独统计。',
+      'The model acts step by step in a closed-loop web environment until purchase or termination; the environment returns a continuous task score, with exact success tracked separately.',
+    ),
+  },
+  {
+    label: t('训练与内部评估 · TRAIN / INTERNAL EVAL', 'Train / internal eval'),
+    value: 'goal_idx ≥ 500',
+    body: t(
+      '经验采集、参数训练与 OpenEvo internal fresh task-ID-disjoint evaluation（内部新任务、任务 ID 不重叠评估）都来自 500–6909；fresh task 指 task identity 未进入当前训练记录。',
+      'Experience collection, parameter training, and the OpenEvo internal fresh task-ID-disjoint evaluation all draw from 500–6909; a fresh task is a task identity absent from the current training records.',
+    ),
+  },
+  {
+    label: t('官方保留池 · OFFICIAL HELD-OUT', 'Official held-out pool'),
+    value: 'goal_idx 0–499',
+    body: t(
+      'SEED official held-out evaluation（SEED 官方保留任务评估）尚未执行：formal evaluation denominator（正式评估分母）= 0。当前不存在 OpenEvo 在 0–499 上的正式结果。',
+      'The SEED official held-out evaluation has not been executed: the formal evaluation denominator is 0. No formal OpenEvo result exists on 0–499 today.',
+    ),
+  },
+] as const;
+
+const metricDefinitions = [
+  {
+    term: 'Task Score',
+    body: t('WebShop 环境返回的连续任务完成度分数；部分完成也有部分分。', 'The continuous task-completion score returned by WebShop; partial completion earns partial credit.'),
+  },
+  {
+    term: 'Exact Success',
+    body: t('reward = 1.0 的完整成功，单独统计，不与 task score 混用。', 'A complete success with reward = 1.0, tracked separately and never blended into task score.'),
+  },
+  {
+    term: 'Qualified Positive',
+    body: t('科学有效、达到收录标准、用于训练的 rollout（完整尝试）；不是“分数还行”的同义词。', 'A scientifically valid rollout that meets the inclusion bar and is used for training; not a synonym for “a decent score”.'),
+  },
+] as const;
+
+const traceSteps = [
+  { code: 'search[...wireless charging...windshield]', note: t('从当前页面状态发起搜索。', 'Search from the current page state.') },
+  { code: 'click[b08qrhvs6n]', note: t('从搜索结果点进一个候选商品。', 'Open one candidate from the search results.') },
+  { code: 'click[buy now]', note: t('进入商品页后继续购买。', 'Continue the purchase on the product page.') },
+] as const;
+---
+
+<section class="results-protocol" id="protocol" aria-labelledby="protocol-title">
+  <header class="section-heading">
+    <p>PROTOCOL</p>
+    <div>
+      <h2 id="protocol-title">{t('实验协议与数据边界', 'Evaluation protocol & measurement boundary')}</h2>
+      <p>{t(
+        '进入七个问题之前，先固定四件事：用什么模型、在什么环境、哪些任务用于训练和内部评估、哪些任务属于官方保留池。七个问题的所有数字都遵守同一套边界。',
+        'Before the seven questions, fix four things: the model, the environment, which tasks feed training and internal evaluation, and which tasks form the official held-out pool. Every number below obeys this single boundary.',
+      )}</p>
+    </div>
+  </header>
+
+  <div class="protocol-grid">
+    {protocolCards.map((card) => (
+      <article class="protocol-card">
+        <small>{card.label}</small>
+        <strong>{card.value}</strong>
+        <p>{card.body}</p>
+      </article>
+    ))}
+  </div>
+
+  <div class="metric-defs">
+    <div class="metric-defs-heading">
+      <h3>{t('三个分数概念不能混用', 'Three scoring concepts stay separate')}</h3>
+      <p>{t(
+        '一次真实 rollout 可以“部分完成”而不“精确成功”，也未必达到训练收录标准。把三者混在一起，是早期读数最常见的误读来源。',
+        'A real rollout can be partially complete without being an exact success, and still miss the training inclusion bar. Conflating the three was the most common misreading in early results.',
+      )}</p>
+    </div>
+    <dl class="metric-def-list">
+      {metricDefinitions.map((item) => (
+        <div class="metric-def">
+          <dt>{item.term}</dt>
+          <dd>{item.body}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <figure class="trace-example" aria-labelledby="trace-title trace-caption">
+      <div class="figure-heading">
+        <span class="run-ref">{t('真实历史轨迹 · H0', 'Real historical trajectory · H0')}</span>
+        <h4 id="trace-title">{t('一次 WebShop 任务实际上长什么样', 'What one WebShop task actually looks like')}</h4>
+      </div>
+      <p>{t(
+        '有一次任务要求模型寻找一个价格低于 60 美元、适合 windshield 场景的 iPhone 配件。模型不是直接回答一个商品名，而是真的在环境里执行：',
+        'One task asked the model to find an iPhone accessory under $60 for a windshield-style use case. The model did not simply answer with a product name; it actually executed:',
+      )}</p>
+      <ol class="trace-steps">
+        {traceSteps.map((step, index) => (
+          <li><span>{index + 1}</span><code>{step.code}</code><p>{step.note}</p></li>
+        ))}
+      </ol>
+      <p>{t(
+        '这条轨迹最后 task score = 0.667，但 exact win = false：部分完成、精确成功与 qualified positive 是三个不同的判定。',
+        'This trajectory ended with task score = 0.667 but exact win = false: partial completion, exact success, and qualified positive are three different judgements.',
+      )}</p>
+      <figcaption id="trace-caption"><a href={h0TraceUrl} target="_blank" rel="noreferrer">{t('查看历史证据', 'View historical evidence')} ↗</a></figcaption>
+    </figure>
+  </div>
+
+  <div class="boundary-strip">
+    <strong>{t('测量边界', 'Measurement boundary')}</strong>
+    <p>{t(
+      'parser 失败、fallback（解析失败时执行的替代动作）等工程问题产生的 invalid attempt 不进入科学分母——工程故障不能伪装成模型能力。隔离与校准的细节见 Q6。',
+      'Attempts invalidated by engineering problems such as parser failures or fallback (a substitute action executed after parsing failure) never enter the scientific denominator — engineering faults must not masquerade as model capability. Q6 covers the isolation and calibration work.',
+    )}</p>
+  </div>
+
+  <div class="canonical-figure-links" aria-label={t('关键对照图', 'Canonical figures')}>
+    <span>{t('关键对照图', 'Canonical figures')}</span>
+    <a href={`${localePath(locale, '/research/seed-openevo/webshop/')}#fig-seed-webshop`}>{t('SEED 的 WebShop 正式设定图 →', 'SEED’s formal WebShop setup figure →')}</a>
+    <a href={`${localePath(locale, '/research/seed-openevo/loops/')}#fig-seed-openevo-update-target`}>{t('SEED × OpenEvo 更新目标对照图 →', 'SEED × OpenEvo update-target comparison →')}</a>
+  </div>
+</section>
+
+<style>
+  .results-protocol{max-width:1160px;margin:0 auto;padding:36px 24px 48px;color:var(--color-text)}
+  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .protocol-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .protocol-card{display:flex;min-height:190px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface)}
+  .protocol-card small{color:var(--color-accent);font:750 .68rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
+  .protocol-card strong{margin:14px 0 8px;font-size:.98rem;line-height:1.4;overflow-wrap:anywhere}
+  .protocol-card p{margin:0;color:var(--color-text-muted);font-size:.79rem;line-height:1.6}
+  .metric-defs{margin-top:12px;padding:22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
+  .metric-defs-heading h3{margin:0;font-size:1.08rem;line-height:1.4;letter-spacing:-.02em}
+  .metric-defs-heading p{margin:8px 0 0;max-width:74ch;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}
+  .metric-def-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:18px 0 0}
+  .metric-def{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}
+  .metric-def dt{font:750 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .metric-def dd{margin:8px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.58}
+  .trace-example{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--color-border)}
+  .run-ref{display:block;margin:0 0 6px;color:var(--color-text-muted);font:760 .66rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+  .figure-heading h4{margin:0 0 10px;font-size:.98rem;line-height:1.4}
+  .trace-example>p{max-width:76ch;margin:0 0 10px;color:var(--color-text-muted);font-size:.84rem;line-height:1.7}
+  .trace-steps{list-style:none;margin:12px 0;padding:0;border-top:1px solid var(--color-border)}
+  .trace-steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.3rem 1rem;padding:10px 0;border-bottom:1px solid var(--color-border)}
+  .trace-steps span{grid-row:1/3;color:var(--color-text-muted);font:760 .7rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .trace-steps code{overflow-wrap:anywhere;font-size:.82rem}
+  .trace-steps p{margin:0;color:var(--color-text-muted);font-size:.76rem;line-height:1.55}
+  .trace-example figcaption{margin-top:10px;font-size:.76rem}
+  .trace-example figcaption a{color:var(--color-accent);font-weight:700;text-decoration:none}
+  .trace-example figcaption a:hover{text-decoration:underline}
+  .boundary-strip{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:12px;padding:14px 16px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}
+  .boundary-strip strong{font-size:.78rem}
+  .boundary-strip p{margin:0;color:var(--color-text-muted);font-size:.78rem;line-height:1.62}
+  .canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}
+  .canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:750;letter-spacing:.08em}
+  .canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}
+  .canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  @media(max-width:960px){.protocol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-def-list{grid-template-columns:1fr}}
+  @media(max-width:720px){
+    .results-protocol{padding-inline:18px}
+    .section-heading{grid-template-columns:1fr;gap:8px}
+    .protocol-grid{grid-template-columns:1fr}
+    .protocol-card{min-height:auto}
+    .boundary-strip{grid-template-columns:1fr;gap:7px}
+  }
+</style>

@@ -4,6 +4,7 @@ const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta
 const component = read('src/components/research/Seed3090ParametricProgress.astro');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('historical seed3090 parametric evidence', () => {
   it('marks RTX6 / 4×RTX3090 as historical instead of the active experiment', () => {
@@ -18,18 +19,18 @@ describe('historical seed3090 parametric evidence', () => {
     expect(component).toContain('OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md');
   });
 
-  it('carries diagnosis forward without requiring the archive on the Chinese index landing page', () => {
+  it('carries diagnosis forward inside the collapsed appendix instead of the results landing body', () => {
     expect(component).toContain('SD-LoRA 是否先拟合训练任务？');
     expect(component).toContain('gen2 回退来自遗忘还是 rollout 方差？');
     expect(component).toContain('Phase H0');
     expect(component).toContain('data-testid="seed3090-parametric-progress"');
     expect(component).not.toContain('client:');
 
-    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
-    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
-
-    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+    for (const route of [zhRoute, enRoute]) {
+      expect(route).not.toContain('Seed3090ParametricProgress');
+      expect(route).toContain('OpenEvoWebShopResultsAppendix');
+    }
+    expect(appendix).toContain('data-testid="rtx6-appendix"');
+    expect(appendix).toContain('<Seed3090ParametricProgress locale={locale} />');
   });
 });

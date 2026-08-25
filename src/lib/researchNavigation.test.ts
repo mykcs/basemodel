@@ -6,7 +6,7 @@ const navigation = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const layout = read('src/layouts/AppLayout.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
-const report = read('src/components/research/OpenEvoWebShopProgramReport.astro');
+const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
 const resultsZh = read('src/pages/research/seed-openevo/results.astro');
 const resultsEn = read('src/pages/en/research/seed-openevo/results.astro');
 
@@ -62,17 +62,18 @@ describe('SEED × OpenEvo research navigation', () => {
   });
 
   it('labels report navigation as local content rather than a second global tab bar', () => {
-    expect(report).toContain("aria-label={t('报告目录', 'Report contents')}");
+    expect(hero).toContain("aria-label={t('报告目录', 'Report contents')}");
     expect(detail).toContain("content:'本页内容'");
     expect(detail).toContain("content:'On this page'");
   });
 
-  it('keeps the shared site header visible while Chinese results becomes an index and English retains the report', () => {
+  it('keeps the shared site header visible while both results routes share the unified modules', () => {
     for (const resultsPage of [resultsZh, resultsEn]) {
       expect(resultsPage).not.toContain('body:has([data-program-report]) .site-header,');
+      expect(resultsPage).not.toContain('body:has([data-program-report]) .site-footer,');
+      expect(resultsPage).not.toContain('data-program-report');
+      expect(resultsPage).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
+      expect(resultsPage).toContain('data-testid="openevo-webshop-result-index"');
     }
-    expect(resultsZh).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
-    expect(resultsZh).not.toContain('body:has([data-program-report]) .site-footer,');
-    expect(resultsEn).toContain('body:has([data-program-report]) .site-footer,');
   });
 });

@@ -38,10 +38,11 @@ describe('seed3090 paired-run audit archive', () => {
     expect(component).toContain('does not show text memory is ineffective');
 
     expect(zhRoute).not.toContain('Seed3090PairedRunAudit');
-    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
-    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('Seed3090EvidenceGate');
+    expect(zhRoute).toContain('SeedOpenEvoResearchPage');
 
     expect(enRoute).not.toContain('Seed3090PairedRunAudit');
-    expect(enRoute).toContain('Seed3090ParametricProgress');
+    expect(enRoute).not.toContain('Seed3090EvidenceGate');
+    expect(enRoute).toContain('SeedOpenEvoResearchPage');
   });
 });

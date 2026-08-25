@@ -16,7 +16,7 @@ const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
 const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
 const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
 const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
-const results = read('src/components/research/OpenEvoWebShopResultIndex.astro');
+const results = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const explainerStandard = read('docs/agents/current/research-explainer-page-standard.md');
 
 describe('canonical SEED / OpenEvo research figures', () => {

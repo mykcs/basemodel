@@ -5,6 +5,7 @@ const component = read('src/components/research/OpenEvoExperimentProgram.astro')
 const state = read('src/lib/openEvoScientificState.ts');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('OpenEvo × WebShop experiment state provenance', () => {
   it('separates retired sources from the scientific source of truth', () => {
@@ -26,9 +27,9 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
   it('keeps completed Phase G measurements as historical evidence', () => {
     expect(component).toContain('历史证据 · Phase G · completed');
     expect(component).toContain('12 个 promotion-dev episodes');
-    expect(component).toContain("{ arm: 'base', score: '0.000'");
-    expect(component).toContain("{ arm: 'adapter1x', score: '0.000'");
-    expect(component).toContain("{ arm: 'cumulative', score: '0.000'");
+    expect(component).toContain("{ arm: 'base', score: '0.000', wins: '0 / 4', steps: '9.50', fallback: '3 / 38' }");
+    expect(component).toContain("{ arm: 'adapter1x', score: '0.000', wins: '0 / 4', steps: '14.25', fallback: '1 / 57' }");
+    expect(component).toContain("{ arm: 'cumulative', score: '0.000', wins: '0 / 4', steps: '6.00', fallback: '3 / 24' }");
     expect(component).not.toContain('formal_task_consumption_allowed = false');
     expect(component).not.toContain('0 consumed');
   });
@@ -56,23 +57,24 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(state).toContain('GPU allocation is not a static-site fact');
   });
 
-  it('keeps W&B observational and preserves the complete report without making it the Chinese landing page', () => {
+  it('keeps W&B observational and mounts the same unified results modules on both locale routes', () => {
     expect(component).toContain('W&B 继续承担观测与比较');
     expect(component).toContain('Run Manifest');
     expect(component).toContain('data-testid="openevo-experiment-program"');
     expect(component).not.toContain('client:');
 
-    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
-    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
-    expect(zhRoute).not.toContain('5×RTX5090');
-    expect(zhRoute).not.toContain('Phase H0 Natural Success Search');
-
-    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
-    expect(enRoute.indexOf('<OpenEvoWebShopProgramReport locale={locale}>')).toBeLessThan(enRoute.indexOf('<Seed3090ParametricProgress slot="historical" locale={locale} />'));
-    expect(enRoute).toContain('H1.40');
-    expect(enRoute).not.toContain('5×RTX5090');
-    expect(enRoute).not.toContain('Phase H0 Natural Success Search');
+    for (const route of [zhRoute, enRoute]) {
+      expect(route).toContain('OpenEvoWebShopResultsHero');
+      expect(route).toContain('OpenEvoWebShopResultsQuestions');
+      expect(route).toContain('OpenEvoWebShopResultsAppendix');
+      expect(route).not.toContain('OpenEvoWebShopResultIndex');
+      expect(route).not.toContain('OpenEvoWebShopNarrativeReport');
+      expect(route).not.toContain('OpenEvoWebShopProgramReport');
+      expect(route).not.toContain('Seed3090ParametricProgress');
+      expect(route).not.toContain('5×RTX5090');
+      expect(route).not.toContain('Phase H0 Natural Success Search');
+    }
+    expect(appendix).toContain('H1.40');
+    expect(appendix).toContain('Seed3090ParametricProgress');
   });
 });

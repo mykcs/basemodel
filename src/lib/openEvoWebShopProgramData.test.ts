@@ -11,12 +11,12 @@ import {
 } from '../data/openEvoWebShopProgram';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
-const component = read('src/components/research/OpenEvoWebShopProgramReport.astro');
+const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 const zhRoute = read('src/pages/research/seed-openevo/results.astro');
 const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 const explainer = read('src/components/research/InteractiveResearchExplainer.tsx');
 
-describe('OpenEvo × WebShop frozen program report', () => {
+describe('OpenEvo × WebShop frozen program data', () => {
   it('pins every source link to the immutable OpenEvo delivery commit and known existing paths', () => {
     expect(openEvoProgramSource.commit).toBe('d1f35ecdf84c61b07df7c646e83588d63b9297bd');
     expect(openEvoProgramSource.branch).toBe('codex/h142-measurement-validity-20260821');
@@ -56,15 +56,13 @@ describe('OpenEvo × WebShop frozen program report', () => {
   });
 
   it('uses the frozen scientific variables and defines specialized terms at first use', () => {
-    const narrative = `${JSON.stringify(programTimeline)}\n${component}`;
+    const narrative = `${JSON.stringify(programTimeline)}\n${appendix}`;
     for (const forbidden of [
       ['deeper', 'training'].join(' '), ['加深', '训练'].join(''), ['training', 'depth'].join(' '), ['训练', '深度'].join(''),
       ['preregistered', 'significance'].join(' '), ['预注册', '显著'].join(''), ['H1.33', 'R'].join(''),
       ['protocol', 'draft'].join(' '), ['协议', '草案'].join(''),
     ]) expect(narrative).not.toContain(forbidden);
 
-    expect(component).toContain('H1.40 established E2 experience supply and G2 construction');
-    expect(component).toContain('The 4/4 invalid acquisition cell was a parser-only measurement failure');
     expect(programTimeline.find((item) => item.id === 'h1-1-4')?.summary.en).toContain('fallback (a substitute action used after parsing failure)');
     expect(programTimeline.find((item) => item.id === 'h1-34')?.boundary.en).toContain('artifact (a frozen saved experiment output)');
   });
@@ -96,8 +94,6 @@ describe('OpenEvo × WebShop frozen program report', () => {
   });
 
   it('defines laboratory terms bilingually before asking readers to use them', () => {
-    expect(component).toContain('H1.40-MD 是对已有 artifact 的 CPU-only 尸检');
-    expect(component).toContain('H1.40-MD is a CPU-only autopsy of existing artifacts');
     expect(programTimeline.find((item) => item.id === 'h1-29')?.summary.en).toContain('SD-LoRA (the current sequential-difference LoRA update path)');
     expect(programTimeline.find((item) => item.id === 'h1-41')?.summary.en).toContain('acquisition');
     expect(programTimeline.find((item) => item.id === 'h1-41')?.summary.en).toContain('retention');
@@ -126,21 +122,27 @@ describe('OpenEvo × WebShop frozen program report', () => {
     }
   });
 
-  it('keeps the frozen report static-first while the Chinese results route becomes an article index', () => {
-    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
-    expect(zhRoute).not.toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
-    expect(enRoute).toContain('<OpenEvoWebShopProgramReport locale={locale}>');
-    expect(enRoute).toContain('<Seed3090ParametricProgress slot="historical" locale={locale} />');
+  it('keeps the unified results surface static-first on both locale routes', () => {
+    for (const route of [zhRoute, enRoute]) {
+      expect(route).toContain('OpenEvoWebShopResultsHero');
+      expect(route).toContain('OpenEvoWebShopResultsProtocol');
+      expect(route).toContain('OpenEvoWebShopResultsQuestions');
+      expect(route).toContain('OpenEvoWebShopG2Ablation');
+      expect(route).toContain('OpenEvoWebShopNextSteps');
+      expect(route).toContain('OpenEvoWebShopResultsAppendix');
+      expect(route).not.toContain('OpenEvoWebShopResultIndex');
+      expect(route).not.toContain('OpenEvoWebShopNarrativeReport');
+      expect(route).not.toContain('OpenEvoWebShopProgramReport');
+      expect(route).not.toContain('Seed3090ParametricProgress');
+    }
 
-    const order = ['id="abstract"', 'id="results"', 'id="interpretation"', 'id="next-experiment"', 'id="methods"', 'id="appendix"']
-      .map((token) => component.indexOf(token));
-    expect(order.every((position) => position >= 0)).toBe(true);
-    expect(order).toEqual([...order].sort((a, b) => a - b));
-    for (const token of ['<table>', 'scope="col"', 'class="causal-flow"', '<dl class="interpretation-list"', '<details', 'data-testid="lineage-appendix"', 'data-testid="rtx6-appendix"', '@media print']) expect(component).toContain(token);
-    for (const forbidden of ['data-filter-group', '<dialog', '<script>', '.timeline-card', 'showModal']) expect(component).not.toContain(forbidden);
+    expect(appendix).toContain('data-testid="lineage-appendix"');
+    expect(appendix).toContain('data-testid="rtx6-appendix"');
+    expect(appendix).toContain('<Seed3090ParametricProgress locale={locale} />');
+    expect(appendix).toContain('@media print');
+    for (const forbidden of ['data-filter-group', '<dialog', '<script>', 'showModal']) expect(appendix).not.toContain(forbidden);
     expect(programTimeline).toHaveLength(30);
-    expect(component).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
+    expect(appendix).not.toMatch(/data-testid="(?:lineage|rtx6)-appendix"\s+open/);
   });
 
   it('keeps passive explainer synchronization free of document scrolling', () => {

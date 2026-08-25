@@ -7,22 +7,21 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 // pages. Anything added here MUST also be added to the `publicCopy` array so
 // that the editorial-tone ban applies to the whole visible research module,
 // not just the few components the author happened to remember.
-const researchIndex = read('../components/research/OpenEvoWebShopResultIndex.astro');
+const resultsHero = read('../components/research/OpenEvoWebShopResultsHero.astro');
+const resultsProtocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
+const resultsQuestions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
+const g2Ablation = read('../components/research/OpenEvoWebShopG2Ablation.astro');
+const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
+const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
 const researchDetail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const researchNav = read('../components/research/SeedOpenEvoResearchNav.astro');
 const researchHub = read('../components/research/SeedOpenEvoResearchHub.astro');
 const researchPageCore = read('../components/research/SeedOpenEvoResearchPageCore.astro');
 const conceptIndex = read('../components/research/ResearchConceptIndex.astro');
 const agentTrajectory = read('../components/research/AgentEnvironmentTrajectory.astro');
-const programReport = read('../components/research/OpenEvoWebShopProgramReport.astro');
-const programReportNarrative = read('../components/research/OpenEvoWebShopNarrativeReport.astro');
 const seed3090Progress = read('../components/research/Seed3090ParametricProgress.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 const primerMoved = read('../components/research/ResearchPrimerMoved.astro');
-const keyEvidence = read('../components/research/OpenEvoResearchKeyEvidence.astro');
-const findingFigures = read('../components/research/OpenEvoResearchFindingFigures.astro');
-const takeaway = read('../components/research/OpenEvoResearchTakeaway.astro');
-const appendix = read('../components/research/OpenEvoResearchAppendixLinks.astro');
 const nextProtocol = read('../components/research/OpenEvoNextExperimentProtocol.astro');
 const evidenceNoteScope = read('../components/research/OpenEvoEvidenceNoteScope.astro');
 const experimentProgram = read('../components/research/OpenEvoExperimentProgram.astro');
@@ -39,22 +38,21 @@ const modelGuide = read('../components/research/OpenEvoModelExperimentGuide.astr
 const webshopTrainingNote = read('../components/research/WebShopTrainingNote.astro');
 
 const publicCopy = [
-  researchIndex,
+  resultsHero,
+  resultsProtocol,
+  resultsQuestions,
+  g2Ablation,
+  nextSteps,
+  resultsAppendix,
   researchDetail,
   researchNav,
   researchHub,
   researchPageCore,
   conceptIndex,
   agentTrajectory,
-  programReport,
-  programReportNarrative,
   seed3090Progress,
   benchmarkNote,
   primerMoved,
-  keyEvidence,
-  findingFigures,
-  takeaway,
-  appendix,
   nextProtocol,
   evidenceNoteScope,
   experimentProgram,
@@ -73,16 +71,16 @@ const publicCopy = [
 
 describe('SEED × OpenEvo reader-voice protection', () => {
   it('keeps Q1–Q7 with inline <details> evidence and forbids the legacy evidence-map jump', () => {
-    expect(researchIndex).toContain('OpenEvo 真的发生了学习吗？');
-    expect(researchIndex).toContain('OpenEvo 有没有成功经验可以学习？');
-    expect(researchIndex).toContain('有成功经验以后，OpenEvo 能把它学进去吗？');
-    expect(researchIndex).toContain('学到的经验能迁移到新的任务吗？');
-    expect(researchIndex).toContain('第一代能迁移，是否意味着可以一直越学越好？');
-    expect(researchIndex).toContain('现在真正可以下什么结论？');
-    expect(researchIndex).toContain('最后还缺哪一个关键实验？');
-    expect(researchIndex).toContain('<summary>展开实验依据</summary>');
-    expect(researchIndex).not.toContain("href: '#evidence-q");
-    expect(researchIndex).not.toContain('查看证据链 →');
+    expect(resultsQuestions).toContain('OpenEvo 真的发生了学习吗？');
+    expect(resultsQuestions).toContain('OpenEvo 有没有成功经验可以学习？');
+    expect(resultsQuestions).toContain('有成功经验以后，OpenEvo 能把它学进去吗？');
+    expect(resultsQuestions).toContain('学到的经验能迁移到新的任务吗？');
+    expect(resultsQuestions).toContain('第一代能迁移，是否意味着可以一直越学越好？');
+    expect(resultsQuestions).toContain('这些数字会不会只是工程故障的假象？');
+    expect(resultsQuestions).toContain('最后还缺哪一个关键实验？');
+    expect(resultsQuestions).toContain('证据链与代码回溯');
+    expect(resultsQuestions).not.toContain("href: '#evidence-q");
+    expect(resultsQuestions).not.toContain('查看证据链 →');
   });
 
   it('keeps the research navigation labelled as Research findings, not Experiment results', () => {
@@ -93,17 +91,17 @@ describe('SEED × OpenEvo reader-voice protection', () => {
   });
 
   it('protects the H1.38B / H1.39 internal fresh-task boundary', () => {
-    expect(researchIndex).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
-    expect(researchIndex).toContain('不是 SEED official held-out evaluation');
-    expect(keyEvidence).toContain('goal_idx ≥ 500');
-    expect(findingFigures).toContain('不是 0–499 的 SEED official held-out evaluation');
+    expect(resultsQuestions).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
+    expect(resultsQuestions).toContain('不是 0–499 的 SEED official held-out evaluation');
+    expect(resultsProtocol).toContain('goal_idx ≥ 500');
+    expect(resultsProtocol).toContain('goal_idx 0–499');
   });
 
   it('protects the H1.40 T2 unopened boundary and the H1.30 formal-denominator-equals-zero boundary', () => {
-    expect(researchIndex).toContain('不能写成');
-    expect(researchIndex).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(keyEvidence).toContain('formal evaluation denominator');
-    expect(findingFigures).toContain('T2 remained closed');
+    expect(resultsQuestions).toContain('不能写成');
+    expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
+    expect(resultsHero).toContain('formal evaluation denominator');
+    expect(resultsQuestions).toContain('T2 remained closed');
   });
 
   it('blocks editorial-tone copy from reappearing anywhere in the public research path', () => {
@@ -190,6 +188,12 @@ describe('SEED × OpenEvo reader-voice protection', () => {
 
   it('keeps the experiment and results pages free of "本站 / 本节 / 这一节" editor voice', () => {
     const sources = {
+      resultsHero,
+      resultsProtocol,
+      resultsQuestions,
+      g2Ablation,
+      nextSteps,
+      resultsAppendix,
       experimentGateway,
       experimentProgram,
       resultNote,
@@ -221,7 +225,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       'seed-faithful-benchmark',
       'openevo-benchmark-design',
     ]) {
-      expect(appendix, `${slug} missing from appendix deep cards or legacy links`).toContain(`/${slug}/`);
+      expect(resultsAppendix, `${slug} missing from appendix deep cards or legacy links`).toContain(`/${slug}/`);
     }
   });
 });

@@ -1,24 +1,31 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
-import OpenEvoWebShopProgramReport from '../../../../components/research/OpenEvoWebShopNarrativeReport.astro';
-import Seed3090ParametricProgress from '../../../../components/research/Seed3090ParametricProgress.astro';
+import OpenEvoWebShopResultsHero from '../../../../components/research/OpenEvoWebShopResultsHero.astro';
+import OpenEvoWebShopResultsProtocol from '../../../../components/research/OpenEvoWebShopResultsProtocol.astro';
+import OpenEvoWebShopResultsQuestions from '../../../../components/research/OpenEvoWebShopResultsQuestions.astro';
+import OpenEvoWebShopG2Ablation from '../../../../components/research/OpenEvoWebShopG2Ablation.astro';
+import OpenEvoWebShopNextSteps from '../../../../components/research/OpenEvoWebShopNextSteps.astro';
+import OpenEvoWebShopResultsAppendix from '../../../../components/research/OpenEvoWebShopResultsAppendix.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="Can OpenEvo get better on WebShop from its own experience?"
-  description="A reader-first research narrative: what WebShop and self-evolution mean, how negative results narrowed the hypotheses, how fresh-task benefit replicated, and what H1.40/H1.41 reveal about continual parameter writing and measurement validity."
+  title="OpenEvo × WebShop research findings"
+  description="OpenEvo × WebShop evidence organized as seven natural questions: one shared evaluation protocol and measurement boundary, per-question status badges with quantitative observations, the G2 three-gate ablation, and the still-missing SEED-compatible fair comparison."
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
-    <OpenEvoWebShopProgramReport locale={locale}>
-      <Seed3090ParametricProgress slot="historical" locale={locale} />
-    </OpenEvoWebShopProgramReport>
+    <div data-testid="openevo-webshop-result-index">
+      <OpenEvoWebShopResultsHero locale={locale} />
+      <OpenEvoWebShopResultsProtocol locale={locale} />
+      <OpenEvoWebShopResultsQuestions locale={locale} />
+      <OpenEvoWebShopG2Ablation locale={locale} />
+      <OpenEvoWebShopNextSteps locale={locale} />
+      <OpenEvoWebShopResultsAppendix locale={locale} />
+    </div>
   </SeedOpenEvoResearchPage>
 </AppLayout>
 
 <style is:global>
-  body:has([data-program-report]) .site-footer,
-  body:has([data-program-report]) .plain-detail__header,
-  body:has([data-program-report]) .plain-detail__tabs { display:none!important; }
+  body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header { display:none; }
 </style>
