@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-12**
+Last reviewed: **2026-08-26**
 
 ## Authority
 
@@ -108,6 +108,33 @@ One accepted release batch should normally create one Production build. Do not a
 Executable truth lives in `package.json`. `npm run verify:deploy` remains provider-neutral and includes the project’s deterministic checks/tests/audits. Do not weaken a valid Gate to get a green deployment.
 
 Full browser suites and third-party/network audits remain on demand when the changed surface requires them.
+
+### Serial browser-gate failures and retry discipline
+
+A hosted browser command that uses `--max-failures=1` exposes only the first currently reachable failure. Output such as `66 passed / 1 failed / 22 did not run` does **not** prove the unexecuted tests are clean.
+
+When a deployment fails in a serial UI gate:
+
+```text
+read the exact first assertion and measured values
+-> classify product regression / stale test contract / invalid metric / harness-provider failure
+-> make the smallest evidence-backed repair
+-> rerun the complete gate
+-> verify the formerly failing test passes
+-> continue until the entire suite executes and passes
+-> confirm authoritative Vercel state
+```
+
+Rules:
+
+1. Do not issue blind no-op retries while Vercel logs contain an actionable application or assertion failure. A generic deployment badge is weaker evidence than the exact failing line and measured values.
+2. A newly green formerly-failing test is only a checkpoint. Completion requires the whole gated suite to finish, plus the deployment reaching its authoritative success state.
+3. If current source and focused product/unit contracts agree but an older E2E still pins retired headings, counts, DOM, or information architecture, update the stale assertion narrowly. Preserve unrelated overflow, geometry, theme, visibility, and interaction checks.
+4. If the measurement itself is invalid for the rendered content, fix the metric rather than contorting the product. For example, a CJK-only density proxy is not appropriate for a deliberately mixed Chinese/English heading unless the English width is also accounted for.
+5. Do not downgrade valid safety thresholds merely to obtain green status. First prove whether the failure is product, contract, or measurement.
+6. Provider messages that explicitly fail open and continue the build, such as an ignore-range lookup failure, and benign environment fallbacks such as locale selection are not application failures by themselves. Classify them by whether execution actually stops.
+
+The historical incident that motivated these rules is [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md).
 
 ## Vercel-first completion report
 

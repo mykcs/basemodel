@@ -397,3 +397,37 @@ Do not solve a visual-regression problem by blindly adding an expensive or unsup
 - this policy: `docs/agents/current/ui-change-visual-acceptance-gate.md`.
 
 When a new recurring visual failure appears, improve the existing policy/test/primitive. Do not create another disconnected checklist or rely on conversational memory.
+
+---
+
+## 10. Browser failure classification: product, contract, or measurement
+
+A browser assertion is evidence, not automatically product truth. Before changing UI to satisfy a failed assertion, classify the failure using the current rendered surface and current product authority.
+
+### Real product regression
+
+Treat the failure as product-owned when the browser evidence shows an actual broken property: overflow, clipping, overlap, unreadably narrow geometry, incorrect theme state, missing required interaction, or a canonical entry point that the current product contract still requires.
+
+Fix the component/layout/state. Preserve the test's meaningful safety boundary.
+
+### Stale test contract
+
+A test can lag an accepted redesign. Warning signs include hard-coded headings, item counts, DOM element types, or route structure that current source and current focused contract tests have deliberately replaced.
+
+Before changing the test, require corroborating evidence from the current component plus its current reader/product/unit contract. If they agree and the E2E is stale, update only the retired assumption and keep unrelated geometry, overflow, theme, visibility, and interaction assertions intact.
+
+Do not resurrect duplicate or superseded UI merely to satisfy an old E2E.
+
+### Invalid measurement proxy
+
+A test can point at the correct surface but measure it incorrectly. Inspect the values, not only the assertion name.
+
+For mixed-language copy, a language-specific density proxy must account for the actual rendered language mix. A CJK-only count can misclassify a wide, readable heading containing substantial English tokens. Prefer direct width/line geometry plus a language-agnostic visible-character measure when the content is intentionally mixed-language.
+
+Do not lower broad readability thresholds to hide a bad proxy; repair the proxy and leave the valid geometry checks in place.
+
+### Serial first-failure gates
+
+When the hosted command uses `--max-failures=1`, a repair that turns the first failing test green only unlocks the rest of the suite. Rerun until all tests execute. `N passed / 1 failed / M did not run` means the last `M` are unknown, not green.
+
+The detailed historical case is [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md).

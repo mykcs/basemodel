@@ -73,6 +73,8 @@ The website engineering standard is intentionally a cross-cutting summary. Detai
 
 For a concrete browser-infrastructure incident showing how to distinguish zero-step hosted-runner failures from real WebKit failures, when a public production black-box fallback is safe, and why that fallback is not exact-head evidence, see `history/2026-08-21-webkit-runner-recovery.md`.
 
+For a concrete Vercel UI-gate incident showing how `--max-failures=1` hides later failures, how to distinguish a real product regression from a stale E2E contract or invalid visual metric, and why a formerly-red test turning green is not full-suite completion, see `history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`.
+
 ## Product contract
 
 The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements. Keep Learn / Run / Compare, evidence levels, benchmark metrics and framework update objects distinct.
