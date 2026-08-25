@@ -85,7 +85,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(readerContract).toContain('First-screen promise');
     expect(readerContract).toContain('Chinese-first technical language');
     expect(readerContract).toContain('Density budget');
-    expect(readerContract).toContain('2026-08-25 SEED official-heldout comparison v1');
+    expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1');
     expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
   });
 
@@ -190,13 +190,17 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     }
   });
 
-  it('keeps the G2 three-gate ablation as the detailed second-generation record', () => {
+  it('keeps the G2 three-gate explanation beginner-readable while preserving exact evidence', () => {
     expect(g2Ablation).toContain('id="g2-ablation"');
-    expect(g2Ablation).toContain('Gate 1 · 新经验获取');
-    expect(g2Ablation).toContain('Gate 2 · 旧能力保留');
-    expect(g2Ablation).toContain('Gate 3 · 迁移延续性');
+    expect(g2Ablation).toContain('第二代为什么还不能说“越学越好”？');
+    expect(g2Ablation).toContain('第一道门 · 学会新经验');
+    expect(g2Ablation).toContain('第二道门 · 保住旧能力');
+    expect(g2Ablation).toContain('第三道门 · 保住第一代收益');
     expect(g2Ablation).toContain('t2Opened = false');
     expect(g2Ablation).toContain('诊断信号，不是因果证明');
+    expect(g2Ablation).toContain('展开实验依据');
+    expect(g2Ablation).not.toContain('证据链与代码回溯');
+    expect(g2Ablation.indexOf('95% CI')).toBeGreaterThan(g2Ablation.indexOf('<details class="evidence-details"'));
     expect(questions).toContain('href="#g2-ablation"');
   });
 
