@@ -3,10 +3,6 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
-// Reader-facing components actually mounted on /research/seed-openevo/* public
-// pages. Anything added here MUST also be added to the `publicCopy` array so
-// that the editorial-tone ban applies to the whole visible research module,
-// not just the few components the author happened to remember.
 const resultsHero = read('../components/research/OpenEvoWebShopResultsHero.astro');
 const resultsProtocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
 const resultsQuestions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
@@ -36,6 +32,8 @@ const webshopEvaluationFigure = read('../components/research/WebShopEvaluationFi
 const seedWebshopCanonicalFigure = read('../components/research/SeedWebShopCanonicalFigure.astro');
 const modelGuide = read('../components/research/OpenEvoModelExperimentGuide.astro');
 const webshopTrainingNote = read('../components/research/WebShopTrainingNote.astro');
+const resultsRoute = read('../pages/research/seed-openevo/results.astro');
+const resultsReaderContract = read('../../docs/agents/current/seed-openevo-results-reader-contract.md');
 
 const publicCopy = [
   resultsHero,
@@ -70,17 +68,45 @@ const publicCopy = [
 ].join('\n');
 
 describe('SEED × OpenEvo reader-voice protection', () => {
-  it('keeps Q1–Q7 with inline <details> evidence and forbids the legacy evidence-map jump', () => {
-    expect(resultsQuestions).toContain('OpenEvo 真的发生了学习吗？');
-    expect(resultsQuestions).toContain('OpenEvo 有没有成功经验可以学习？');
-    expect(resultsQuestions).toContain('有成功经验以后，OpenEvo 能把它学进去吗？');
-    expect(resultsQuestions).toContain('学到的经验能迁移到新的任务吗？');
-    expect(resultsQuestions).toContain('第一代能迁移，是否意味着可以一直越学越好？');
-    expect(resultsQuestions).toContain('这些数字会不会只是工程故障的假象？');
-    expect(resultsQuestions).toContain('最后还缺哪一个关键实验？');
-    expect(resultsQuestions).toContain('证据链与代码回溯');
+  it('keeps Q1–Q7 with local expandable experiment evidence and forbids the legacy evidence-map jump', () => {
+    for (const question of [
+      'OpenEvo 真的发生了学习吗？',
+      'OpenEvo 有没有成功经验可以学习？',
+      '有成功经验以后，OpenEvo 能把它学进去吗？',
+      '学到的经验能迁移到新的任务吗？',
+      '第一代能迁移，是否意味着可以一直越学越好？',
+      '这些数字会不会只是工程故障的假象？',
+      '最后还缺哪一个关键实验？',
+    ]) {
+      expect(resultsQuestions).toContain(question);
+    }
+    expect(resultsQuestions).toContain('<details class="evidence-details"');
+    expect(resultsQuestions).toContain('展开实验依据');
+    expect(resultsQuestions).not.toContain('证据链与代码回溯');
     expect(resultsQuestions).not.toContain("href: '#evidence-q");
     expect(resultsQuestions).not.toContain('查看证据链 →');
+  });
+
+  it('keeps dense observations and confidence intervals behind the evidence disclosure', () => {
+    const details = resultsQuestions.indexOf('<details class="evidence-details"');
+    const observationTable = resultsQuestions.indexOf('<table class="obs-table">');
+    const transferFigure = resultsQuestions.indexOf('<figure class="transfer-figure"');
+    expect(details).toBeGreaterThan(-1);
+    expect(observationTable).toBeGreaterThan(details);
+    expect(transferFigure).toBeGreaterThan(details);
+    expect(resultsHero).not.toContain('95% CI');
+    expect(resultsHero).not.toContain('task-ID-disjoint');
+  });
+
+  it('pins the lab-reader audience and Chinese-first terminology contract at the route', () => {
+    expect(resultsRoute).toContain('seed-openevo-results-reader-contract.md');
+    expect(resultsReaderContract).toContain('lab colleague');
+    expect(resultsReaderContract).toContain('Chinese-first technical language');
+    expect(resultsReaderContract).toContain('Density budget');
+    expect(resultsReaderContract).toContain('展开实验依据');
+    expect(resultsHero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
+    expect(resultsProtocol).toContain('解析器（parser）');
+    expect(resultsQuestions).toContain('与 SEED 评测设置兼容（SEED-compatible）');
   });
 
   it('keeps the research navigation labelled as Research findings, not Experiment results', () => {
@@ -92,21 +118,34 @@ describe('SEED × OpenEvo reader-voice protection', () => {
 
   it('protects the H1.38B / H1.39 internal fresh-task boundary', () => {
     expect(resultsQuestions).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
-    expect(resultsQuestions).toContain('不是 0–499 的 SEED official held-out evaluation');
+    expect(resultsQuestions).toContain('它们不是 0–499 的 SEED 官方保留任务评估');
     expect(resultsProtocol).toContain('goal_idx ≥ 500');
     expect(resultsProtocol).toContain('goal_idx 0–499');
   });
 
-  it('protects the H1.40 T2 unopened boundary and the H1.30 formal-denominator-equals-zero boundary', () => {
-    expect(resultsQuestions).toContain('不能写成');
+  it('protects H1.40 T2, the later H1.42 boundary, and the 2026-08-25 held-out update', () => {
     expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(resultsHero).toContain('formal evaluation denominator');
-    expect(resultsQuestions).toContain('T2 remained closed');
+    expect(resultsQuestions).toContain('T2 没有运行');
+    expect(resultsQuestions).toContain('H1.42 发生在 H1.41 之后');
+    expect(resultsHero).toContain('机制结论截至 H1.41');
+    expect(resultsQuestions).toContain('首轮已跑 · 主评测待修复');
+    expect(resultsQuestions).toContain('512 episodes');
+    expect(resultsQuestions).toContain('测量无效');
+    expect(resultsQuestions).toContain('同一批任务上重跑两种方法各 128 次');
+    expect(resultsQuestions).toContain('不是论文确切的评估分母');
+    expect(resultsQuestions).toContain('OpenEvo 原生诊断');
+  });
+
+  it('does not regress to the stale claim that official held-out evaluation has never run', () => {
+    for (const source of [resultsHero, resultsProtocol, resultsQuestions, nextSteps]) {
+      expect(source).not.toContain('SEED official held-out evaluation（SEED 官方保留任务评估）尚未执行');
+      expect(source).not.toContain('formal evaluation denominator（正式评估分母）= 0');
+      expect(source).not.toContain('冻结权重，执行 SEED 官方 0–499 评估');
+    }
   });
 
   it('blocks editorial-tone copy from reappearing anywhere in the public research path', () => {
     const bannedEditorialPhrases = [
-      // Page-role / IA self-reference
       '完整流程图只保留在各自的专门页面',
       '让当前页面继续承担实验或复现主线',
       '完整谱系和历史平台记录保留用于审计',
@@ -119,7 +158,6 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       '信息架构',
       '为了避免重复',
       '这里不再重复',
-      // "本站 / 本节 / 站内 / 这里" — second-pass leaks
       '本站比较合同',
       '本站记录合同',
       '站内实验记录',
@@ -148,9 +186,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(primerMoved).not.toContain('Compatibility shell');
   });
 
-  it('keeps the WebShop canonical figures free of "本站 / 本节 / 这里" editor voice', () => {
-    // Each of these figures is mounted on /research/seed-openevo/webshop/.
-    // Asserting them individually makes a regression immediately locatable.
+  it('keeps the WebShop canonical figures free of site-management editor voice', () => {
     const figures = {
       webshopDatasetFigure,
       webshopSmallWorldFigure,
@@ -167,26 +203,13 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     }
   });
 
-  it('keeps the WebShopSeedSplitFigure 128-samples / 0–499 boundary in the correct (negative) direction', () => {
-    // The 128 test samples reported by the SEED paper are not pinned to
-    // specific 0–499 positions. The figure must say so in the *negative*
-    // direction (NOT drawn as a confirmed sampling path) in both Chinese
-    // and English. A previous rewrite dropped the Chinese "不" and silently
-    // flipped the meaning to "drawn as a confirmed sampling path". This
-    // assertion pins the polarity so that regression breaks the build.
+  it('keeps the WebShopSeedSplitFigure 128-samples / 0–499 boundary in the correct negative direction', () => {
     expect(webshopSeedSplitFigure).toContain('不画出确定的抽样关系');
     expect(webshopSeedSplitFigure).toContain('not drawn as a confirmed sampling path');
-    // Negative-direction guard: the figure must never claim the 128 goal
-    // IDs are pinned, in either language.
     expect(webshopSeedSplitFigure).not.toContain('画成确定抽样关系');
-    // The English sentence must keep "not drawn" together, not let
-    // "drawn as a confirmed sampling path" appear on its own.
-    const englishBoundary = 'not drawn as a confirmed sampling path';
-    expect(webshopSeedSplitFigure).toContain(englishBoundary);
-    expect(webshopSeedSplitFigure.indexOf(englishBoundary)).toBeGreaterThan(-1);
   });
 
-  it('keeps the experiment and results pages free of "本站 / 本节 / 这一节" editor voice', () => {
+  it('keeps the experiment and results pages free of site-management editor voice', () => {
     const sources = {
       resultsHero,
       resultsProtocol,

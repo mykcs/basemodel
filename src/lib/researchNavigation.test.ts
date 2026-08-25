@@ -61,8 +61,9 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).not.toContain('page ===');
   });
 
-  it('labels report navigation as local content rather than a second global tab bar', () => {
-    expect(hero).toContain("aria-label={t('报告目录', 'Report contents')}");
+  it('labels Results navigation by the research content rather than report filing language', () => {
+    expect(hero).toContain("aria-label={t('研究结果导航', 'Research results navigation')}");
+    expect(hero).not.toContain("aria-label={t('报告目录', 'Report contents')}");
     expect(detail).toContain("content:'本页内容'");
     expect(detail).toContain("content:'On this page'");
   });

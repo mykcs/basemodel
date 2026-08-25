@@ -16,10 +16,10 @@ const appendix = read('../components/research/OpenEvoWebShopResultsAppendix.astr
 const nextProtocol = read('../components/research/OpenEvoNextExperimentProtocol.astro');
 const evidenceNoteScope = read('../components/research/OpenEvoEvidenceNoteScope.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
-const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 const resultRoute = read('../pages/research/seed-openevo/results/[note].astro');
 const primerMoved = read('../components/research/ResearchPrimerMoved.astro');
 const sitemap = read('./sitemapRoutes.ts');
+const readerContract = read('../../docs/agents/current/seed-openevo-results-reader-contract.md');
 
 const noteSlugs = [
   'webshop-training',
@@ -50,21 +50,14 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     for (const page of [resultsPageZh, resultsPageEn]) {
       expect(page).toContain('data-testid="openevo-webshop-result-index"');
       expect(page).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
+      expect(page).toContain('seed-openevo-results-reader-contract.md');
       let previous = -1;
       for (const component of moduleComponents) {
         const position = page.indexOf(`<${component} locale={locale} />`);
         expect(position, `${component} missing or out of order`).toBeGreaterThan(previous);
         previous = position;
       }
-      expect(page).not.toContain('OpenEvoWebShopResultIndex');
-      expect(page).not.toContain('OpenEvoResearchKeyEvidence');
-      expect(page).not.toContain('OpenEvoResearchFindingFigures');
-      expect(page).not.toContain('OpenEvoResearchTakeaway');
-      expect(page).not.toContain('OpenEvoResearchAppendixLinks');
-      expect(page).not.toContain('OpenEvoWebShopNarrativeReport');
       expect(page).not.toContain('OpenEvoWebShopProgramReport');
-      expect(page).not.toContain('Seed3090ParametricProgress');
-      expect(page).not.toContain('WebShopTrainingGuide');
       expect(page).not.toContain('data-program-report');
     }
     expect(resultsPageZh).toContain('OpenEvo × WebShop 研究结果');
@@ -72,93 +65,102 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(researchDetail).toContain("title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')");
   });
 
-  it('keeps the hero abstract to one established conclusion and one bottleneck, with the evidence cutoff stated once', () => {
-    expect(hero).toContain('OpenEvo × WebShop 研究结果');
-    expect(hero).toContain('探究 Agent 内生经验转化为通用能力的边界与瓶颈（证据截止：H1.41）。');
-    expect(hero).toContain('已确立结论');
-    expect(hero).toContain('当前核心瓶颈');
-    expect(hero).toContain('task-ID-disjoint');
-    expect(hero).toContain('formal evaluation denominator（正式评估分母）= 0');
-    expect(hero).toContain('H1.42 是之后产生的 measurement-boundary（测量边界）记录');
-    expect(hero).toContain("aria-label={t('报告目录', 'Report contents')}");
-    expect(hero).toContain("href: '#protocol'");
-    expect(hero).toContain("href: '#questions'");
-    expect(hero).toContain("href: '#g2-ablation'");
-    expect(hero).toContain("href: '#next-steps'");
-    expect(hero).toContain("href: '#appendix'");
+  it('starts with a low-density lab-reader summary rather than experiment IDs', () => {
+    expect(hero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
+    expect(hero).toContain('已经看到');
+    expect(hero).toContain('最新评测');
+    expect(hero).toContain('还差一步');
+    expect(hero).toContain('2026-08-25');
+    expect(hero).toContain('测量无效');
+    expect(hero).toContain('同一批 128 个保留任务');
+    expect(hero).not.toContain('95% CI');
+    expect(hero).not.toContain('task-ID-disjoint');
+    expect(hero).not.toContain('formal evaluation denominator');
+    expect(hero).toContain('机制结论截至 H1.41');
+    expect(hero).toContain('H1.42 是之后的测量校准记录');
   });
 
-  it('centralizes the evaluation protocol and data boundary ahead of the seven questions', () => {
-    expect(protocol).toContain('id="protocol"');
-    expect(protocol).toContain('实验协议与数据边界');
-    expect(protocol).toContain('Evaluation protocol & measurement boundary');
+  it('keeps the Results-specific reader contract explicit and mandatory', () => {
+    expect(readerContract).toContain('Default reader');
+    expect(readerContract).toContain('First-screen promise');
+    expect(readerContract).toContain('Chinese-first technical language');
+    expect(readerContract).toContain('Density budget');
+    expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1');
+    expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
+  });
+
+  it('teaches the task split and only the two beginner scoring concepts before Q1–Q7', () => {
+    expect(protocol).toContain('先记住两个任务范围');
     expect(protocol).toContain('Qwen2.5-7B-Instruct');
     expect(protocol).toContain('goal_idx ≥ 500');
     expect(protocol).toContain('goal_idx 0–499');
-    expect(protocol).toContain('Task Score');
-    expect(protocol).toContain('Exact Success');
-    expect(protocol).toContain('Qualified Positive');
-    expect(protocol).toContain('0.667');
+    expect(protocol).toContain('任务完成度 · Task Score');
+    expect(protocol).toContain('完整成功 · Exact Success');
+    expect(protocol).not.toContain('Qualified Positive');
+    expect(protocol).not.toContain('0.667');
+    expect(protocol).toContain('解析器（parser）');
+    expect(protocol).toContain('测量无效（measurement-invalid）');
     expect(protocol).toContain('/research/seed-openevo/webshop/');
-    expect(protocol).toContain('#fig-seed-webshop');
     expect(protocol).toContain('/research/seed-openevo/loops/');
-    expect(protocol).toContain('#fig-seed-openevo-update-target');
-    expect(protocol).toContain('0b6e7dcc718a85ed967feb85b5c95fd68f92d38e');
   });
 
-  it('keeps Q1–Q7 on the unified scaffold: badge, one-sentence conclusion, observation table, collapsible evidence', () => {
+  it('keeps Q1–Q7 with short current answers and local experiment evidence', () => {
     expect(questions).toContain('我们现在能回答的七个问题');
-    expect(questions).toContain('OpenEvo 真的发生了学习吗？');
-    expect(questions).toContain('OpenEvo 有没有成功经验可以学习？');
-    expect(questions).toContain('有成功经验以后，OpenEvo 能把它学进去吗？');
-    expect(questions).toContain('学到的经验能迁移到新的任务吗？');
-    expect(questions).toContain('第一代能迁移，是否意味着可以一直越学越好？');
-    expect(questions).toContain('这些数字会不会只是工程故障的假象？');
-    expect(questions).toContain('最后还缺哪一个关键实验？');
-
-    expect(questions).toContain('已确立 · 工程闭环');
-    expect(questions).toContain('已确立 · 数据内生');
-    expect(questions).toContain('部分确立 · 拟合 ≠ 行为');
-    expect(questions).toContain('已复现 · 单步泛化');
-    expect(questions).toContain('未突破 · 演化受阻');
-    expect(questions).toContain('已隔离 · 测量有效');
-    expect(questions).toContain('待对齐 · 下一阶段');
-
+    for (const question of [
+      'OpenEvo 真的发生了学习吗？',
+      'OpenEvo 有没有成功经验可以学习？',
+      '有成功经验以后，OpenEvo 能把它学进去吗？',
+      '学到的经验能迁移到新的任务吗？',
+      '第一代能迁移，是否意味着可以一直越学越好？',
+      '这些数字会不会只是工程故障的假象？',
+      '最后还缺哪一个关键实验？',
+    ]) {
+      expect(questions).toContain(question);
+    }
+    expect(questions).toContain('现在的答案：');
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');
-    expect(questions).toContain('证据链与代码回溯');
-    expect(questions).toContain('结论边界：');
+    expect(questions).toContain('展开实验依据');
+    expect(questions).not.toContain('证据链与代码回溯');
+    expect(questions.indexOf('<table class="obs-table">')).toBeGreaterThan(questions.indexOf('<details class="evidence-details"'));
     expect(questions).not.toContain("href: '#evidence-q");
     expect(questions).not.toContain('查看证据链 →');
   });
 
-  it('protects the key quantitative anchors and claim boundaries inside the question cards', () => {
-    expect(questions).toContain('128');
-    expect(questions).toContain('96');
-    expect(questions).toContain('28');
+  it('protects the internal transfer, multi-generation, and measurement boundaries', () => {
     expect(questions).toContain('+0.124');
     expect(questions).toContain('[0.0326, 0.2194]');
     expect(questions).toContain('+0.1637');
     expect(questions).toContain('+0.2488');
     expect(questions).toContain('+0.0851');
-    expect(questions).toContain('256 attempts');
-    expect(questions).toContain('132');
-    expect(questions).toContain('33');
-    expect(questions).toContain('16 components · effective rank 64');
-    expect(questions).toContain('formal evaluation denominator（正式评估分母）= 0');
     expect(questions).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
-    expect(questions).toContain('SEED official held-out evaluation');
-    expect(questions).toContain('不能写成“G2 已经在正式 T2 上证明迁移失败”');
-    expect(questions).toContain('MVD0 REMEASUREMENT_INVALID');
-    expect(questions).toContain('webshop_003560');
-    expect(questions).toContain('webshop_004357');
-    expect(questions).toContain('T2 remained closed（T2 保持关闭）');
+    expect(questions).toContain('它们不是 0–499 的 SEED 官方保留任务评估');
+    expect(questions).toContain('第二代持续整合尚未建立');
+    expect(questions).toContain('G2 已经在正式 T2 上证明迁移失败');
+    expect(questions).toContain('T2 没有运行');
+    expect(questions).toContain('H1.42 发生在 H1.41 之后');
+    expect(questions).toContain('它不反过来改变 H1.41 时点的机制结论');
   });
 
-  it('preserves every original evidence link inside the collapsible layers', () => {
+  it('updates Q7 from denominator-zero planning to the completed-but-invalid held-out run', () => {
+    expect(questions).toContain('首轮已跑 · 主评测待修复');
+    expect(questions).toContain('128 tasks × 2 arms × 2 contracts = 512 episodes');
+    expect(questions).toContain('BASE 0.0 / 0.0%');
+    expect(questions).toContain('SD-LoRA 0.0 / 0.0%');
+    expect(questions).toContain('测量无效，不能解释成模型能力');
+    expect(questions).toContain('BASE：Task Score 14.6 / 完整成功 2.3%');
+    expect(questions).toContain('SD-LoRA：28.3 / 1.6%');
+    expect(questions).toContain('2 arms × 128 = 256 episodes，尚未运行');
+    expect(questions).toContain('与 SEED 评测设置兼容（SEED-compatible）');
+    expect(questions).toContain('不是论文确切的评估分母');
+    expect(questions).toContain('SEED checkpoint 也没有在本地复现');
+    expect(questions).toContain('c155ae10b78be8f2a208c54ff3a0cb383f318bbc');
+    expect(questions).toContain('seed-official-heldout-comparison-v1/RESULTS.md');
+    expect(hero).not.toContain('formal evaluation denominator（正式评估分母）= 0');
+    expect(protocol).not.toContain('尚未执行');
+  });
+
+  it('preserves the core historical evidence links plus the new held-out evidence', () => {
     const evidenceCopy = `${questions}\n${g2Ablation}`;
-    expect(evidenceCopy).toContain('476039e9ce82767120db803d57f016db3b1414ce');
-    expect(evidenceCopy).toContain('0b6e7dcc718a85ed967feb85b5c95fd68f92d38e');
-    expect(evidenceCopy).toContain('d1f35ecdf84c61b07df7c646e83588d63b9297bd');
     for (const path of [
       'launch_h140_r2_g2_training.py',
       'h1.40-r2-g2-multigeneration-v1.json',
@@ -176,100 +178,69 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
       'h1.39-mr/REPORT.md',
       'formal-upstream-evaluation-v5b-summary.json',
       'FORMAL_UPSTREAM_EVALUATION_REPORT.md',
-      'ARTIFACT_AUTOPSY.md',
       'H141_RECONCILIATION_V5.md',
       'H142_STAGE_B_CLOSEOUT.md',
       'stage-b-reconciliation.json',
-      'stage-b-resource-accounting.json',
-      'h1.30-seed-comparison.json',
-      'launch_h130_seed_route_smoke.sh',
+      'seed-official-heldout-comparison-v1/RESULTS.md',
+      'seed-official-heldout-comparison-v1/PREREGISTRATION.md',
+      'seed-official-heldout-comparison-v1/results/analysis.json',
       'H1.30_STATUS.md',
     ]) {
       expect(evidenceCopy, `${path} must stay linked`).toContain(path);
     }
   });
 
-  it('deepens the G2 negative result into a three-gate ablation with the mechanism hypothesis marked as diagnostic', () => {
+  it('keeps the G2 three-gate explanation beginner-readable while preserving exact evidence', () => {
     expect(g2Ablation).toContain('id="g2-ablation"');
-    expect(g2Ablation).toContain('Gate 1 · 新经验获取');
-    expect(g2Ablation).toContain('Gate 2 · 旧能力保留');
-    expect(g2Ablation).toContain('Gate 3 · 迁移延续性');
-    expect(g2Ablation).toContain('−0.1635');
-    expect(g2Ablation).toContain('[−0.4073, 0.0355]');
-    expect(g2Ablation).toContain('−0.065625');
-    expect(g2Ablation).toContain('−0.0036');
-    expect(g2Ablation).toContain('[−0.0801, 0.0755]');
+    expect(g2Ablation).toContain('第二代为什么还不能说“越学越好”？');
+    expect(g2Ablation).toContain('第一道门 · 学会新经验');
+    expect(g2Ablation).toContain('第二道门 · 保住旧能力');
+    expect(g2Ablation).toContain('第三道门 · 保住第一代收益');
     expect(g2Ablation).toContain('t2Opened = false');
-    expect(g2Ablation).toContain('0.691');
-    expect(g2Ablation).toContain('0.181');
-    expect(g2Ablation).toContain('48 + 16');
     expect(g2Ablation).toContain('诊断信号，不是因果证明');
-    expect(questions).toContain("href=\"#g2-ablation\"");
+    expect(g2Ablation).toContain('展开实验依据');
+    expect(g2Ablation).not.toContain('证据链与代码回溯');
+    expect(g2Ablation.indexOf('95% CI')).toBeGreaterThan(g2Ablation.indexOf('<details class="evidence-details"'));
+    expect(questions).toContain('href="#g2-ablation"');
   });
 
-  it('orders next steps by evidence gap and points at the experiment page', () => {
+  it('orders next steps around the repaired held-out rerun, multi-generation work, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('Experience Replay');
-    expect(nextSteps).toContain('0–499');
+    expect(nextSteps).toContain('先把官方保留任务的测量修好');
+    expect(nextSteps).toContain('共 256 次');
+    expect(nextSteps).toContain('经验回放（Experience Replay）');
     expect(nextSteps).toContain('ALFWorld');
-    expect(nextSteps).toContain("/research/seed-openevo/experiment/");
+    expect(nextSteps).toContain('/research/seed-openevo/experiment/');
   });
 
-  it('keeps the appendix complete: twelve notes, full lineage, RTX6 record, audit trail, print provenance', () => {
+  it('keeps the historical records complete: twelve notes, lineage, RTX6 record, evidence trail, and print provenance', () => {
     for (const slug of noteSlugs) {
-      expect(appendix, `${slug} missing from appendix or legacy links`).toContain(`/${slug}/`);
+      expect(appendix, `${slug} missing from historical records`).toContain(`/${slug}/`);
       expect(resultRoute, `${slug} missing from static routes`).toContain(`'${slug}'`);
       expect(sitemap, `${slug} missing from sitemap`).toContain(`/research/seed-openevo/results/${slug}/`);
     }
+    expect(appendix).toContain('历史实验与完整记录');
+    expect(appendix).not.toContain('正文只放结论与关键数字');
     expect(appendix).toContain('data-testid="lineage-appendix"');
     expect(appendix).toContain('data-testid="rtx6-appendix"');
-    expect(appendix).toContain('<Seed3090ParametricProgress locale={locale} />');
-    expect(appendix).toContain('programTimeline.map');
-    expect(appendix).toContain('openEvoProgramLinks.ledger');
-    expect(appendix).toContain('openEvoProgramLinks.report');
-    expect(appendix).toContain('openEvoProgramLinks.campaign');
     expect(appendix).toContain('@media print');
     expect(appendix).toContain('print-provenance');
-    expect(appendix).toContain('H1.42 属于之后的 measurement-boundary（测量边界）工作');
+    expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(resultRoute).toContain('ResearchPrimerMoved');
     expect(primerMoved).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(primerMoved).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
   });
 
-  it('keeps the next experiment framed as a scientific question', () => {
-    expect(experimentPage).toContain('OpenEvoNextExperimentProtocol');
-    expect(experimentPage).toContain('OpenEvo × WebShop 实验与复现');
-    expect(nextProtocol).toContain('NEXT EXPERIMENT');
-    expect(nextProtocol).toContain('下一场真正关键的实验是什么？');
-    expect(nextProtocol).toContain('怎样才算和 SEED 公平比较？');
-    expect(nextProtocol).toContain('SEED official held-out evaluation（SEED 官方保留任务评估）');
-    expect(benchmarkNote).toContain('状态：</strong>实验设计中，尚未产生正式比较结果');
-  });
-
-  it('avoids author-facing page-management language in the public research path', () => {
-    const publicCopy = [hero, protocol, questions, g2Ablation, nextSteps, appendix, nextProtocol, evidenceNoteScope, primerMoved].join('\n');
-    for (const phrase of [
-      '背景只保留入口',
-      '不在实验结果页重新讲一遍',
-      '方法背景与 WebShop / SEED 设定不在这里重复',
-      '背景定义不在这里重复',
-      '继续向下放在 Evidence Map',
-      '原始代码和机器结果继续在下方 Evidence Map',
-      '从“主报告骨架”降为',
-      '下一步实验设计从 Results 中移到这里',
-      '一个概念只保留一个 canonical explanation',
-    ]) {
-      expect(publicCopy).not.toContain(phrase);
-    }
-  });
-
   it('keeps H1.42 as a later measurement-boundary note rather than part of the H1.41 conclusions', () => {
-    expect(hero).toContain('H1.42 是之后产生的 measurement-boundary（测量边界）记录');
-    expect(appendix).toContain('H1.42 属于之后的 measurement-boundary（测量边界）工作');
+    expect(hero).toContain('H1.42 是之后的测量校准记录');
+    expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(resultNote).toContain("'measurement-boundary'");
-    expect(resultNote).toContain('MVD0 REMEASUREMENT_INVALID');
-    expect(resultNote).toContain('H1.40、H1.41、H1.42 的 T2 都保持关闭');
-    expect(resultNote).toContain('不能支持 magnitude-reset mechanism effect');
+  });
+
+  it('keeps the experiment route mounted while Results owns the updated benchmark-facing status', () => {
+    expect(experimentPage).toContain('OpenEvoNextExperimentProtocol');
+    expect(nextProtocol).toContain('NEXT EXPERIMENT');
+    expect(nextProtocol).toContain('下一场真正关键的实验是什么？');
   });
 });

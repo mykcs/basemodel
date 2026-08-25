@@ -10,26 +10,26 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const steps = [
   {
     index: 'N1',
-    title: t('先修测量，再缓解遗忘', 'Fix measurement, then mitigate forgetting'),
+    title: t('先把官方保留任务的测量修好', 'Repair the held-out measurement first'),
     body: t(
-      '在 H1.42 标定的测量链上重跑 acquisition / retention 失效 cell，拿到可信分母后，再用 Experience Replay（经验回放）配比与正则化（如 48 历史 + 16 当前的 replay 方案）缓解灾难性遗忘，并复测三道门。',
-      'Re-run the failed acquisition / retention cells on the H1.42-calibrated measurement chain to restore a trustworthy denominator; then mitigate catastrophic forgetting with Experience Replay mixtures and regularization (e.g. the 48 historical + 16 current replay scheme), and re-test the three gates.',
+      '保持 2026-08-25 已冻结的 128 个任务、BASE 和 OpenEvo SD-LoRA 都不变，只让解析器同时识别两种动作标签格式。然后两种方法各重跑 128 次，共 256 次。这样得到的才是下一份可以判断模型表现的主评测。',
+      'Keep the frozen 128 tasks, BASE, and OpenEvo SD-LoRA unchanged. Repair only the parser so it accepts both action-wrapper formats, then rerun 128 episodes per arm, 256 total. That is the next primary evaluation that can support a model-performance judgement.',
     ),
   },
   {
     index: 'N2',
-    title: t('冻结权重，执行 SEED 官方 0–499 评估', 'Freeze weights, run the SEED official 0–499 evaluation'),
+    title: t('再解决第二代“学新忘旧”', 'Then address second-generation forgetting'),
     body: t(
-      '多代演化稳定后，冻结训练产物，在 goal_idx 0–499 的 SEED official held-out 任务上，以相同任务身份、environment seed 与评分协议执行 OpenEvo vs SEED 的 fair comparison，把 formal evaluation denominator 从 0 变成可报告的数字。',
-      'Once continual evolution stabilizes, freeze the artifacts and run the OpenEvo vs SEED fair comparison on the SEED official held-out goal_idx 0–499 tasks under identical task identities, environment seeds, and scoring protocol — turning the formal evaluation denominator from zero into a reportable number.',
+      '第二代更新的问题不是“没有新经验”，而是新经验、旧能力和第一代已经得到的收益没有一起保住。下一轮要围绕经验回放（Experience Replay）和正则化重新测试这三件事。',
+      'The second-generation problem is not a lack of new experience; the new experience, prior capability, and the replicated first-generation gain were not preserved together. The next mechanism work should retest those three properties with experience replay and regularization.',
     ),
   },
   {
     index: 'N3',
-    title: t('扩展到 ALFWorld 交叉验证', 'Extend to ALFWorld for cross-validation'),
+    title: t('最后用 ALFWorld 检查是否只对 WebShop 有效', 'Use ALFWorld to test WebShop specificity'),
     body: t(
-      '把同一套协议平移到 ALFWorld，检验单步迁移与三道门结论是否只依赖 WebShop 的任务分布，避免把环境特异性误读为通用能力。',
-      'Port the same protocol to ALFWorld to test whether one-step transfer and the three-gate findings depend on WebShop’s task distribution, so environment-specific effects are not misread as general capability.',
+      '如果单步迁移和多代更新在 WebShop 上变得稳定，再把同一套实验问题带到 ALFWorld，检查这些现象是不是只依赖 WebShop 的任务分布。',
+      'If one-step transfer and multi-generation updating become stable on WebShop, carry the same scientific questions to ALFWorld to test whether the findings depend on WebShop-specific task structure.',
     ),
   },
 ] as const;
@@ -39,10 +39,10 @@ const steps = [
   <header class="section-heading">
     <p>NEXT STEPS</p>
     <div>
-      <h2 id="next-steps-title">{t('下一步：按证据缺口排序的三件事', 'Next steps, ordered by evidence gap')}</h2>
+      <h2 id="next-steps-title">{t('接下来最重要的三件事', 'The three most important next steps')}</h2>
       <p>{t(
-        '顺序有讲究：测量不修好，遗忘无法归因；演化不稳定，官方评估没有可比的对手。',
-        'The order matters: without trustworthy measurement, forgetting cannot be attributed; without stable evolution, the official evaluation has no comparable contestant.',
+        '最近的一步已经很具体：先修复首轮官方保留任务评测的解析问题。这个结果出来以后，再继续判断多代更新和跨环境泛化。',
+        'The nearest step is now concrete: first repair the parsing problem in the official held-out evaluation. Once that result is valid, continue with multi-generation updating and cross-environment generalization.',
       )}</p>
     </div>
   </header>
@@ -61,9 +61,9 @@ const steps = [
 
   <aside class="min-gap">
     <p>{t(
-      '最小缺口只有一个：一场测量有效、协议对齐的 SEED 官方 0–499 正式评估。实验协议与冻结配置见实验页。',
-      'The minimal gap is a single experiment: a measurement-valid, protocol-aligned formal evaluation on the SEED official 0–499 tasks. The protocol and frozen configs live on the experiment page.',
-    )} <a href={localePath(locale, '/research/seed-openevo/experiment/')}>{t('查看实验协议 ↗', 'See the experiment protocol ↗')}</a></p>
+      '离一份可报告的 SEED-compatible（与 SEED 评测设置兼容）主结果最近的一步，是同一批 128 个官方保留任务上的 256 次修复后复测。',
+      'The closest step to a reportable SEED-compatible headline result is the repaired 256-episode rerun on the same frozen 128 official held-out tasks.',
+    )} <a href={localePath(locale, '/research/seed-openevo/experiment/')}>{t('查看实验设定 ↗', 'See the experiment setup ↗')}</a></p>
   </aside>
 </section>
 
@@ -77,9 +77,9 @@ const steps = [
   .step-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:22px 24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
   .step-index{color:var(--color-accent);font:700 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
   .step-card h3{margin:0 0 6px;font-size:1.05rem;letter-spacing:-.02em}
-  .step-card p{margin:0;max-width:80ch;color:var(--color-text-muted);font-size:.87rem;line-height:1.66}
+  .step-card p{margin:0;max-width:76ch;color:var(--color-text-muted);font-size:.87rem;line-height:1.68}
   .min-gap{margin-top:12px;padding:18px 22px;border-left:3px solid var(--color-accent);border-radius:0 12px 12px 0;background:var(--color-surface)}
-  .min-gap p{margin:0;max-width:84ch;font-size:.86rem;line-height:1.66}
+  .min-gap p{margin:0;max-width:82ch;font-size:.86rem;line-height:1.66}
   .min-gap a{color:var(--color-accent);font-weight:750;text-decoration:none}
   .min-gap a:hover{text-decoration:underline}
   @media(max-width:720px){
