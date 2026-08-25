@@ -19,9 +19,15 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
   await expect(index.locator('.gate-grid .gate-card')).toHaveCount(3);
-  await expect(index.locator('.forest-row')).toHaveCount(3);
-  await expect(index.getByText('+0.2488', { exact: false }).first()).toBeVisible();
   await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const transferEvidence = index.locator('#evidence-q4');
+  await expect(transferEvidence).not.toHaveAttribute('open', '');
+  await transferEvidence.locator(':scope > summary').click();
+  await expect(transferEvidence).toHaveAttribute('open', '');
+  await expect(transferEvidence.getByText('+0.2488', { exact: false }).first()).toBeVisible();
+  await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
+
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -35,8 +41,12 @@ test('English results landing mounts the same unified findings page in English',
   await expect(index.getByRole('heading', { name: 'The seven questions we can now answer' })).toBeVisible();
   await expect(index.getByRole('heading', { name: 'Why can’t we yet say the second generation keeps improving?' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
-  await expect(index.locator('.forest-row')).toHaveCount(3);
   await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const transferEvidence = index.locator('#evidence-q4');
+  await transferEvidence.locator(':scope > summary').click();
+  await expect(transferEvidence).toHaveAttribute('open', '');
+  await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
 
   const ordered = await index.evaluate((node) => {
     const ids = ['protocol', 'questions', 'g2-ablation', 'next-steps', 'appendix'];
