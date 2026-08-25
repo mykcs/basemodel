@@ -85,6 +85,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(readerContract).toContain('First-screen promise');
     expect(readerContract).toContain('Chinese-first technical language');
     expect(readerContract).toContain('Density budget');
+    expect(readerContract).toContain('Minimum reasoning bridge');
+    expect(readerContract).toContain('你为什么这样说？');
     expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1');
     expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
   });
@@ -118,6 +120,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
       expect(questions).toContain(question);
     }
     expect(questions).toContain('现在的答案：');
+    expect(questions).toContain('我们做了两次对照');
+    expect(questions).toContain('这种学习在这两轮实验里还没有转化成稳定的新任务收益');
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');
     expect(questions).toContain('展开实验依据');
     expect(questions).not.toContain('证据链与代码回溯');
@@ -196,6 +200,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(g2Ablation).toContain('第一道门 · 学会新经验');
     expect(g2Ablation).toContain('第二道门 · 保住旧能力');
     expect(g2Ablation).toContain('第三道门 · 保住第一代收益');
+    expect(g2Ablation).toContain('H1.40 和 H1.41 两轮里');
+    expect(g2Ablation).toContain('不是凭感觉说“可能忘了”');
     expect(g2Ablation).toContain('t2Opened = false');
     expect(g2Ablation).toContain('诊断信号，不是因果证明');
     expect(g2Ablation).toContain('展开实验依据');
