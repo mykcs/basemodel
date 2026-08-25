@@ -4,7 +4,11 @@ const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
-const shouldRun = productionBranch || fullUiBranch.test(branch) || focusedFixBranch.test(branch);
+const resultsOverflowFixBranch = /^fix\/results-mobile-overflow(?:-|$)/;
+const shouldRun = productionBranch
+  || fullUiBranch.test(branch)
+  || focusedFixBranch.test(branch)
+  || resultsOverflowFixBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -43,8 +47,9 @@ const capture = (command, args) => {
 };
 
 const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+const resultsOverflowOnly = resultsOverflowFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 console.log(
-  focusedOnly
+  focusedOnly || resultsOverflowOnly
     ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
     : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
 );
@@ -95,7 +100,15 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
 // any remaining horizontal overflow fails the deployment.
 run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 
-if (focusedOnly) {
+if (resultsOverflowOnly) {
+  run('npx', [
+    'playwright', 'test', 'tests/e2e/results-mobile-overflow.spec.ts',
+    '--project=chromium', '--max-failures=1',
+  ], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+} else if (focusedOnly) {
   // Fix branches need an exact regression for the bug class they are changing.
   // Keep this focused so an unrelated stale explainer-ownership assertion cannot
   // hide the result of the theme regression itself. The same WebShop test is also
