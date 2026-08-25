@@ -48,8 +48,8 @@ const phaseG = [
       <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('默认分支快照', 'default-branch snapshot')} <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time></p>
       <h2 id="program-title">{t('实验历史、默认分支快照与实时状态入口', 'Experiment history, default-branch snapshot, and live-state source')}</h2>
       <p class="lede">{t(
-        `RTX6（4×RTX 3090）和 openevo-webshop 已进入历史档案。Phase D–G 与 H0 是可追溯的历史里程碑。本站在 ${openEvoScientificState.checkedAt} 核验 openevo-experiment/main 时，current-campaign 记录 ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}；活跃科学分支可能更靠前。`,
-        `RTX6 (4×RTX 3090) and openevo-webshop are historical. Phase D–G and H0 are traceable milestones. When this site checked openevo-experiment/main on ${openEvoScientificState.checkedAt}, current-campaign recorded ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}; an active scientific branch may be newer.`,
+        `RTX6（4×RTX 3090）和 openevo-webshop 已进入历史档案。Phase D–G 与 H0 是可追溯的历史里程碑。在 ${openEvoScientificState.checkedAt} 核验 openevo-experiment/main 时，current-campaign 记录 ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}；活跃科学分支可能更靠前。`,
+        `RTX6 (4×RTX 3090) and openevo-webshop are historical. Phase D–G and H0 are traceable milestones. When openevo-experiment/main was checked on ${openEvoScientificState.checkedAt}, current-campaign recorded ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}; an active scientific branch may be newer.`,
       )}</p>
     </div>
     <aside class="program__status" aria-label={t('默认分支科学快照', 'Default-branch scientific snapshot')}>

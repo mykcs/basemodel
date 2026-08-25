@@ -25,7 +25,7 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
       </div>
       <b aria-hidden="true">≠</b>
       <div>
-        <small>{t('本节对象','OBJECT IN THIS SECTION')}</small>
+        <small>{t('讨论对象','OBJECT')}</small>
         <strong>{t('environment goal indices','environment goal indices')}</strong>
         <span>goal ID 0–6909</span>
       </div>
@@ -124,7 +124,7 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
       <div class="note-symbol" aria-hidden="true">!</div>
       <div>
         <strong>{t('论文报告的 128 test samples 不进入这条 released-code 标尺','The paper-reported 128 test samples are not placed on this released-code ruler')}</strong>
-        <p>{t('目前没有公开证据把 exact 128 goal IDs 钉死到 0–499 中的具体位置，所以这里保留 UNKNOWN / NOT PINNED，而不画成确定抽样关系。','Public evidence does not currently pin the exact 128 goal IDs to specific positions inside 0–499, so this relationship remains UNKNOWN / NOT PINNED rather than being drawn as a confirmed sampling path.')}</p>
+        <p>{t('目前没有公开证据把 exact 128 goal IDs 钉死到 0–499 中的具体位置；这条关系保持 UNKNOWN / NOT PINNED，画成确定抽样关系。','Public evidence does not currently pin the exact 128 goal IDs to specific positions inside 0–499; this relationship remains UNKNOWN / NOT PINNED rather than being drawn as a confirmed sampling path.')}</p>
       </div>
     </aside>
 
@@ -160,7 +160,7 @@ else:
       </div>
     </details>
 
-    <figcaption>{t('这一节只处理 goal-index 使用方式：原始 baseline wrapper 是三段，SEED released wrapper 是两段；应用到 6,910-goal small 环境后，边界固定在 goal 500。','This section handles goal-index usage only: the original baseline wrapper is three-way, while the released SEED wrapper is two-way. Applied to the 6,910-goal small environment, the boundary is fixed at goal 500.')}</figcaption>
+    <figcaption>{t('goal-index 的使用方式：原始 baseline wrapper 是三段，SEED released wrapper 是两段；应用到 6,910-goal small 环境后，边界固定在 goal 500。','Goal-index usage: the original baseline wrapper is three-way, while the released SEED wrapper is two-way. Applied to the 6,910-goal small environment, the boundary is fixed at goal 500.')}</figcaption>
   </figure>
 </section>
 
