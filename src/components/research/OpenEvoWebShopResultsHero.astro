@@ -7,11 +7,11 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const navItems = [
-  { href: '#protocol', label: t('实验协议', 'Protocol') },
+  { href: '#protocol', label: t('实验边界', 'Protocol') },
   { href: '#questions', label: t('七个问题', 'Seven questions') },
-  { href: '#g2-ablation', label: t('第二代消融', 'G2 ablation') },
+  { href: '#g2-ablation', label: t('第二代更新', 'G2 ablation') },
   { href: '#next-steps', label: t('下一步', 'Next steps') },
-  { href: '#appendix', label: t('附录', 'Appendix') },
+  { href: '#appendix', label: t('历史记录', 'History') },
 ] as const;
 ---
 
@@ -19,36 +19,43 @@ const navItems = [
   <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH FINDINGS</p>
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '探究 Agent 内生经验转化为通用能力的边界与瓶颈（证据截止：H1.41）。',
-    'Where an agent’s endogenous experience turns into reusable capability — and where it breaks. Evidence cutoff: H1.41.',
+    '如果你已经知道实验室在做 OpenEvo × WebShop，但没有跟进每一轮实验，这一页先回答三件事：我们已经看到了什么、最新一轮评测发生了什么、下一步还缺什么。',
+    'If you know the lab is working on OpenEvo × WebShop but have not followed every run, this page starts with three questions: what we have learned, what happened in the latest evaluation, and what still needs to be done.',
   )}</p>
 
-  <div class="abstract-box" aria-label={t('摘要', 'Abstract')}>
+  <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
     <div class="abstract-row">
-      <span class="abstract-label established">{t('已确立结论', 'Established')}</span>
+      <span class="abstract-label established">{t('已经看到', 'What we know')}</span>
       <p>{t(
-        '模型自身的成功经验经过一次参数更新，可以在训练未见的任务上带来可复现的收益：H1.38B 首次得到 95% CI 完全位于 0 以上的 fresh-task（新任务）迁移，H1.39 又在 64 个 task-ID-disjoint（任务 ID 不重叠）的全新任务上独立复现，ordinary-LoRA 与 SD-LoRA 两种更新路线都高于同一个 BASE。',
-        'One parameter update from the model’s own successful experience produces reproducible benefit on tasks excluded from training: H1.38B gave the first fresh-task transfer whose 95% CI lay entirely above zero, and H1.39 independently replicated it on 64 task-ID-disjoint fresh tasks, with both ordinary-LoRA and SD-LoRA above the same BASE.',
+        '模型用自己产生的成功经验做一次参数更新后，在训练没见过的新任务上出现了可重复的提升。这个结论已经独立复现，但它来自 OpenEvo 的内部新任务评估，还不是 SEED 官方保留任务上的正式成绩。',
+        'After one parameter update using the model’s own successful experience, performance improved reproducibly on unseen internal tasks. The result replicated independently, but it is still an OpenEvo internal fresh-task result rather than a formal SEED held-out score.',
       )}</p>
     </div>
     <div class="abstract-row">
-      <span class="abstract-label bottleneck">{t('当前核心瓶颈', 'Current bottleneck')}</span>
+      <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
       <p>{t(
-        '第二次连续写入（G2）没有同时通过新经验获取、旧能力保留与已复现收益保持三道门，多代演化尚未确立；SEED 官方 held-out（goal_idx 0–499）的同台评测尚未执行，formal evaluation denominator（正式评估分母）= 0。',
-        'The second continual write (G2) did not simultaneously clear new-experience acquisition, prior-capability retention, and preservation of the replicated gain, so multi-generation evolution is not established; the SEED official held-out evaluation (goal_idx 0–499) has not been executed, and the formal evaluation denominator is 0.',
+        '2026-08-25，我们已经在 SEED 官方保留任务范围里完成首轮比较。主评测因为动作标签格式不兼容而把模型输出读错，所以两边的 0 分被判为“测量无效”，不能当作模型能力。',
+        'On 2026-08-25, we completed the first comparison on the SEED official held-out task range. The primary evaluation misread the model output because the action wrappers were incompatible, so the zero scores on both arms were classified as measurement-invalid rather than model ability.',
+      )}</p>
+    </div>
+    <div class="abstract-row">
+      <span class="abstract-label bottleneck">{t('还差一步', 'What remains')}</span>
+      <p>{t(
+        '下一步不换任务、不换模型，只修复解析兼容性，在同一批 128 个保留任务上重新比较 BASE 与 OpenEvo SD-LoRA。与此同时，多代连续改进仍没有被证明。',
+        'Next, keep the same tasks and models, repair only the parser compatibility, and re-run BASE versus OpenEvo SD-LoRA on the same 128 held-out tasks. Stable multi-generation improvement is still not established.',
       )}</p>
     </div>
   </div>
 
   <div class="cutoff-note">
-    <strong>{t('证据截止：H1.41', 'Evidence cutoff: H1.41')}</strong>
+    <strong>{t('机制结论截至 H1.41', 'Mechanism conclusions through H1.41')}</strong>
     <span>{t(
-      'H1.42 是之后产生的 measurement-boundary（测量边界）记录：它校准了测量链，但不反过来改变 H1.41 时点已经成立或尚未成立的结论。',
-      'H1.42 is a measurement-boundary record produced after H1.41: it calibrated the measurement chain, but it does not retroactively change what was or was not established at H1.41.',
+      'H1.42 是之后的测量校准记录；2026-08-25 的 SEED 官方保留任务评测是另一条后续评测记录。它们会单独标注，不与 H1.41 的机制结论混在一起。',
+      'H1.42 is a later measurement-calibration record, while the 2026-08-25 SEED held-out run is a separate later benchmark-facing evaluation. Both are labelled separately from the H1.41 mechanism conclusions.',
     )}</span>
   </div>
 
-  <nav class="paper-nav" aria-label={t('报告目录', 'Report contents')}>
+  <nav class="paper-nav" aria-label={t('研究结果导航', 'Research results navigation')}>
     {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
   </nav>
 </header>
@@ -57,17 +64,18 @@ const navItems = [
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
   .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;letter-spacing:.14em}
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
-  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.05rem;line-height:1.75}
+  .lede{max-width:760px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.02rem;line-height:1.75}
   .abstract-box{max-width:960px;margin-top:30px;border-block:2px solid var(--color-text)}
   .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:16px 0}
   .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
   .abstract-label{font-size:.74rem;font-weight:800;letter-spacing:.04em;line-height:1.7}
   .abstract-label.established{color:var(--color-accent)}
+  .abstract-label.latest{color:var(--color-info)}
   .abstract-label.bottleneck{color:var(--color-text-muted)}
-  .abstract-row p{margin:0;max-width:78ch;font-size:.94rem;line-height:1.78}
-  .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.82rem}
+  .abstract-row p{margin:0;max-width:72ch;font-size:.92rem;line-height:1.72}
+  .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.8rem}
   .cutoff-note strong{color:var(--color-accent)}
-  .cutoff-note span{color:var(--color-text-muted);line-height:1.6}
+  .cutoff-note span{max-width:78ch;color:var(--color-text-muted);line-height:1.6}
   .paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;max-width:960px;margin-top:22px;padding:1rem 0;border-block:1px solid var(--color-border)}
   .paper-nav a{color:var(--color-text-muted);font-size:.78rem;font-weight:720;text-decoration:none;text-underline-offset:.2em}
   .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
