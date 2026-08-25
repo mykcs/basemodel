@@ -37,7 +37,7 @@ for (const viewport of viewports) {
       const titleRect = title.getBoundingClientRect();
       const headingRect = heading.getBoundingClientRect();
       const listRect = list.getBoundingClientRect();
-      const firstCardRect = cards[0].getBoundingClientRect();
+      const firstCardRect = cards[0]!.getBoundingClientRect();
       const style = getComputedStyle(title);
       const fontSize = Number.parseFloat(style.fontSize);
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.2;
@@ -89,7 +89,7 @@ for (const viewport of viewports) {
         return canvas.toDataURL('image/jpeg', 0.30).split(',')[1];
       }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
       await mkdir('dist/__qa__', { recursive: true });
-      const chunks = thumb.match(/.{1,64}/g) ?? [];
+      const chunks = (thumb ?? '').match(/.{1,64}/g) ?? [];
       const payload = chunks.map((chunk, index) => `${String(index).padStart(3, '0')}:${chunk}`).join('\n');
       await writeFile('dist/__qa__/results-questions-2048-chunks.txt', payload, 'utf8');
     }

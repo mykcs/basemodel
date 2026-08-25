@@ -27,9 +27,9 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
   it('keeps completed Phase G measurements as historical evidence', () => {
     expect(component).toContain('历史证据 · Phase G · completed');
     expect(component).toContain('12 个 promotion-dev episodes');
-    expect(component).toContain("{ arm: 'base', score: '0.000'}");
-    expect(component).toContain("{ arm: 'adapter1x', score: '0.000'}");
-    expect(component).toContain("{ arm: 'cumulative', score: '0.000'}");
+    expect(component).toContain("{ arm: 'base', score: '0.000', wins: '0 / 4', steps: '9.50', fallback: '3 / 38' }");
+    expect(component).toContain("{ arm: 'adapter1x', score: '0.000', wins: '0 / 4', steps: '14.25', fallback: '1 / 57' }");
+    expect(component).toContain("{ arm: 'cumulative', score: '0.000', wins: '0 / 4', steps: '6.00', fallback: '3 / 24' }");
     expect(component).not.toContain('formal_task_consumption_allowed = false');
     expect(component).not.toContain('0 consumed');
   });

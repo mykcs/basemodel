@@ -37,10 +37,11 @@ describe('seed3090 evidence gate archive', () => {
     expect(component).not.toContain('client:');
 
     expect(zhRoute).not.toContain('Seed3090EvidenceGate');
-    expect(zhRoute).not.toContain('Seed3090ParametricProgress');
-    expect(zhRoute).toContain('OpenEvoWebShopResultIndex');
+    expect(zhRoute).not.toContain('Seed3090PairedRunAudit');
+    expect(zhRoute).toContain('SeedOpenEvoResearchPage');
 
     expect(enRoute).not.toContain('Seed3090EvidenceGate');
-    expect(enRoute).toContain('Seed3090ParametricProgress');
+    expect(enRoute).not.toContain('Seed3090PairedRunAudit');
+    expect(enRoute).toContain('SeedOpenEvoResearchPage');
   });
 });
