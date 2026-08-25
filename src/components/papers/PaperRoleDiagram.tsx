@@ -35,7 +35,7 @@ export function PaperRoleDiagram({ paper, models, locale, m: _m }: { paper: Atla
           {node.model_id && modelMap.get(node.model_id) && <small>{modelMap.get(node.model_id)?.name}</small>}
           {node.model_id && modelActions(node.model_id)}
           {index < nodes.length - 1 && <span className="workflow-arrow" aria-hidden="true">→</span>}
-          {index < nodes.length - 1 && edges.get(`${node.id}->${nodes[index + 1].id}`)?.label && <small className="workflow-edge-label">{edges.get(`${node.id}->${nodes[index + 1].id}`)?.label}</small>}
+          {index < nodes.length - 1 && edges.get(`${node.id}->${nodes[index + 1]!.id}`)?.label && <small className="workflow-edge-label">{edges.get(`${node.id}->${nodes[index + 1]!.id}`)?.label}</small>}
         </li>)}
       </ol>
       <p className="workflow-source-note">{locale === 'zh' ? '这里的步骤和连接来自论文记录；没有来源的关系保持空白。' : 'The steps and connections shown here come from the paper record; unsupported relations remain blank.'}</p>

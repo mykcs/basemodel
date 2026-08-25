@@ -96,12 +96,12 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
     parents.forEach((items) => {
       for (let i = 0; i < items.length; i += 1) {
         for (let j = i + 1; j < items.length; j += 1) {
-          const a = items[i].getBoundingClientRect();
-          const b = items[j].getBoundingClientRect();
+          const a = items[i]!.getBoundingClientRect();
+          const b = items[j]!.getBoundingClientRect();
           const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
           const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
           if (overlapX > 2 && overlapY > 2) {
-            issues.push(`audited siblings overlap: ${items[i].getAttribute('data-flow-id') ?? i} ↔ ${items[j].getAttribute('data-flow-id') ?? j}`);
+            issues.push(`audited siblings overlap: ${items[i]!.getAttribute('data-flow-id') ?? i} ↔ ${items[j]!.getAttribute('data-flow-id') ?? j}`);
           }
         }
       }
@@ -144,8 +144,8 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       const input = value.trim().toLowerCase();
       if (!input || input === 'transparent') return null;
       const values = input.match(/[\d.]+/g)?.map(Number) ?? [];
-      if (input.startsWith('rgb') && values.length >= 3) return { r: values[0], g: values[1], b: values[2], a: values[3] ?? 1 };
-      if (input.startsWith('color(srgb') && values.length >= 3) return { r: values[0] * 255, g: values[1] * 255, b: values[2] * 255, a: values[3] ?? 1 };
+      if (input.startsWith('rgb') && values.length >= 3) return { r: values[0]!, g: values[1]!, b: values[2]!, a: values[3] ?? 1 };
+      if (input.startsWith('color(srgb') && values.length >= 3) return { r: values[0]! * 255, g: values[1]! * 255, b: values[2]! * 255, a: values[3] ?? 1 };
       return null;
     };
     const channel = (value: number) => {

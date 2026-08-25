@@ -13,7 +13,7 @@ export function PriorityStep({ draft, update, m }: TaskStepProps) {
     const nextIndex = index + direction;
     if (nextIndex < 0 || nextIndex >= selected.length) return;
     const next = [...selected];
-    [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+    [next[index]!, next[nextIndex]!] = [next[nextIndex]!, next[index]!];
     update({ priorities: next });
   };
   return (

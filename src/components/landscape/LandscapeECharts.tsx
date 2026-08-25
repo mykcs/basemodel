@@ -42,7 +42,7 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
       const option: EChartsCoreOption = {
         aria: { enabled: true, decal: { show: true } },
         animationDuration: 350,
-        color: colorKeys.map((_, index) => colorForKey(colorKeys[index], colorBy, index)),
+        color: colorKeys.map((_, index) => colorForKey(colorKeys[index]!, colorBy, index)),
         grid: responsiveAxis.grid,
         legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 11 } },
         tooltip: {
@@ -148,7 +148,7 @@ function colorKey(point: ReturnType<typeof buildLandscapePoints>[number], colorB
 function colorForKey(key: string, colorBy: LandscapeColorBy, index: number): string {
   if (colorBy === 'evidence') return statusColor(key);
   if (colorBy === 'access') return ({ weights: '#2f7d5f', api: '#4776a8', unknown: '#68706d' } as Record<string, string>)[key] ?? '#68706d';
-  return vendorColors[index % vendorColors.length];
+  return vendorColors[index % vendorColors.length]!;
 }
 
 function statusColor(status: string): string {

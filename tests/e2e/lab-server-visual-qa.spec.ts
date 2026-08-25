@@ -157,10 +157,10 @@ async function assertGeometry(root: Locator, viewportWidth: number) {
 async function assertInspectorSynchronization(root: Locator, locale: Locale) {
   const inspectorTitle = root.locator('.irx-authority-inspector > strong');
   for (let index = 0; index < flowIds.length; index += 1) {
-    const node = root.locator(`[data-flow-id="${flowIds[index]}"]`);
+    const node = root.locator(`[data-flow-id="${flowIds[index] ?? ''}"]`);
     await node.click();
     await expect(node).toHaveAttribute('aria-pressed', 'true');
-    await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale][index]);
+    await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale]![index]!);
   }
 }
 
@@ -168,13 +168,13 @@ async function assertKeyboardNavigation(root: Locator, locale: Locale) {
   const inspectorTitle = root.locator('.irx-authority-inspector > strong');
   await root.focus();
   await root.press('Home');
-  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale][0]);
+  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale]![0]!);
   await root.press('ArrowRight');
-  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale][1]);
+  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale]![1]!);
   await root.press('End');
-  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale][5]);
+  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale]![5]!);
   await root.press('ArrowLeft');
-  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale][4]);
+  await expect(inspectorTitle).toHaveText(expectedInspectorTitles[locale]![4]!);
 }
 
 for (const route of routes) {

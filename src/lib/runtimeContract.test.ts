@@ -27,7 +27,7 @@ describe('Node runtime contract', () => {
 
   it('keeps declared @types/node on the pinned runtime major', () => {
     expect(declaredTypesNode, 'package.json must declare @types/node').toBeTruthy();
-    expect(firstNumericMajor(declaredTypesNode)).toBe(runtimeMajor);
+    expect(firstNumericMajor(declaredTypesNode!)).toBe(runtimeMajor);
   });
 
   it('keeps locked @types/node on the pinned runtime major', () => {

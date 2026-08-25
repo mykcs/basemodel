@@ -47,7 +47,7 @@ test('mobile home uses contained study rails instead of a vertical card wall', a
         return {
           documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           heroHeight: hero?.getBoundingClientRect().height ?? Number.POSITIVE_INFINITY,
-          actionsShareRow: actions.length === 2 && Math.abs(actions[0].top - actions[1].top) < 3,
+          actionsShareRow: actions.length === 2 && Math.abs(actions[0]!.top - (actions[1]?.top ?? 0)) < 3,
           topThemeDisplay: topTheme ? getComputedStyle(topTheme).display : 'missing',
           modes: rail('.mission-hero__modes'),
           chain: rail('.mission-chain ol'),

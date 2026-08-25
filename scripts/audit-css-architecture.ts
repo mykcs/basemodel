@@ -15,10 +15,14 @@ const equal = (actual: string[], expected: string[], label: string) => {
 };
 
 const jsCssImports = (source: string) =>
-  [...source.matchAll(/import\s+['"]([^'"]+\.css)['"]\s*;?/g)].map((match) => match[1]);
+  [...source.matchAll(/import\s+['"]([^'"]+\.css)['"]\s*;?/g)]
+    .map((match) => match[1])
+    .filter((value): value is string => typeof value === 'string');
 
 const cssImports = (source: string) =>
-  [...source.matchAll(/@import\s+['"]([^'"]+)['"]\s*;/g)].map((match) => match[1]);
+  [...source.matchAll(/@import\s+['"]([^'"]+)['"]\s*;/g)]
+    .map((match) => match[1])
+    .filter((value): value is string => typeof value === 'string');
 
 const walk = (directory: string): string[] =>
   readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -170,8 +174,8 @@ for (const path of walk(stylesRoot).filter((candidate) => candidate.endsWith('.c
   const source = stripComments(readFileSync(path, 'utf8'));
   const repoPath = relative(root, path).replaceAll('\\', '/');
   for (const match of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    const selectorBlock = match[1].trim();
-    const declarations = match[2];
+    const selectorBlock = match[1]?.trim() ?? '';
+    const declarations = match[2] ?? '';
     if (selectorBlock.startsWith('@') || !structuralLayoutProperty.test(declarations)) continue;
     for (const selector of selectorBlock.split(',').map((value) => value.trim()).filter(Boolean)) {
       if (bareStructuralSelector(selector)) {

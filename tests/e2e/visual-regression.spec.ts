@@ -28,8 +28,8 @@ async function expectNoOverlap(locator: Locator) {
     }));
   for (let index = 0; index < boxes.length; index += 1) {
     for (let other = index + 1; other < boxes.length; other += 1) {
-      const a = boxes[index];
-      const b = boxes[other];
+      const a = boxes[index]!;
+      const b = boxes[other]!;
       const horizontal = Math.min(a.right, b.right) - Math.max(a.left, b.left);
       const vertical = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
       expect(horizontal > 1 && vertical > 1, `overlap between controls ${index} and ${other}`).toBe(false);

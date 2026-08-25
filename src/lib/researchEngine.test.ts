@@ -32,7 +32,7 @@ const baseTask: ResearchTask = { ...emptyTask };
 describe('researchEngine tri-state evaluation', () => {
   it('not_verified does not become false', () => {
     const candidate = model({ id: 'unknown-open', openness: { weights_available: 'not_verified', base_checkpoint_available: true, finetuning_allowed: true, derivative_release_allowed: 'not_verified', commercial_use_allowed: 'not_verified', license_name: 'Apache 2.0' } });
-    const result = scoreModels([candidate], [], { ...baseTask, openWeight: true })[0];
+    const result = scoreModels([candidate], [], { ...baseTask, openWeight: true })[0]!;
     expect(result.eligible).toBe(true);
     expect(result.candidateState).toBe('conditional');
     expect(result.outcomes.find((item) => item.code === 'open_weights')?.state).toBe('unknown');
@@ -40,7 +40,7 @@ describe('researchEngine tri-state evaluation', () => {
 
   it('only an explicit false creates a hard blocker', () => {
     const candidate = model({ id: 'closed', openness: { weights_available: false, base_checkpoint_available: false, finetuning_allowed: false, derivative_release_allowed: 'not_verified', commercial_use_allowed: 'not_verified', license_name: 'Proprietary' } });
-    const result = scoreModels([candidate], [], { ...baseTask, openWeight: true })[0];
+    const result = scoreModels([candidate], [], { ...baseTask, openWeight: true })[0]!;
     expect(result.eligible).toBe(false);
     expect(result.candidateState).toBe('blocked');
     expect(result.fit.blockers.map((item) => item.code)).toContain('open_weights');
@@ -48,15 +48,15 @@ describe('researchEngine tri-state evaluation', () => {
 
   it('unknown RL capability stays conditionally eligible', () => {
     const candidate = model({ id: 'unknown-rl', research: { suitable_for_inference: true, suitable_for_lora: true, suitable_for_sft: true, suitable_for_rl: 'not_verified', transformers_support: true, vllm_support: true, sglang_support: 'not_verified', verl_recipe_available: 'not_verified' } });
-    const result = scoreModels([candidate], [], { ...baseTask, update: 'rl' })[0];
+    const result = scoreModels([candidate], [], { ...baseTask, update: 'rl' })[0]!;
     expect(result.eligible).toBe(true);
     expect(result.outcomes.find((item) => item.code === 'update_capability')?.state).toBe('unknown');
   });
 
   it('role matching requires direct paper evidence, not inferred capability', () => {
     const modelWithRl = model({ id: 'policy-model' });
-    const direct = scoreModels([modelWithRl], [paperFor('policy-model', 'policy')], { ...baseTask, roles: ['policy'] })[0];
-    const inferred = scoreModels([modelWithRl], [], { ...baseTask, roles: ['policy'] })[0];
+    const direct = scoreModels([modelWithRl], [paperFor('policy-model', 'policy')], { ...baseTask, roles: ['policy'] })[0]!;
+    const inferred = scoreModels([modelWithRl], [], { ...baseTask, roles: ['policy'] })[0]!;
     expect(direct.reasons).toContain('role_match');
     expect(inferred.reasons).not.toContain('role_match');
     expect(inferred.outcomes.find((item) => item.code === 'role_evidence')?.state).toBe('unknown');
@@ -81,13 +81,13 @@ describe('researchEngine tri-state evaluation', () => {
 
   it('context and single-GPU insufficiency are explicit hard failures when known', () => {
     const candidate = model({ id: 'too-small', architecture: { type: 'dense', total_parameters_b: 7, active_parameters_b: 7, context_length: 4096, expert_count: 'not_applicable', active_experts_per_token: 'not_applicable' }, hardware: { inference_tier: '80gb', lora_tier: '80gb', full_sft_tier: 'multi_gpu', rl_tier: 'multi_gpu' } });
-    const result = scoreModels([candidate], [], { ...baseTask, contextTarget: 32768, gpuVramGb: 24, gpuCount: 1 })[0];
+    const result = scoreModels([candidate], [], { ...baseTask, contextTarget: 32768, gpuVramGb: 24, gpuCount: 1 })[0]!;
     expect(result.fit.blockers.map((item) => item.code)).toEqual(expect.arrayContaining(['context_length', 'hardware_tier']));
   });
 
   it('verified_only separates unknown records from formal buckets', () => {
     const candidate = model({ id: 'pending', data_status: 'partial' });
-    const result = scoreModels([candidate], [], { ...baseTask, evidencePolicy: 'verified_only' })[0];
+    const result = scoreModels([candidate], [], { ...baseTask, evidencePolicy: 'verified_only' })[0]!;
     expect(result.candidateState).toBe('needs_verification');
     expect(bucketize([result]).modern).toHaveLength(0);
   });

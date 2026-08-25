@@ -45,7 +45,9 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       reward: 'DEMO: task_score = 1.0 · won = true',
     },
   ];
-  const current = states[step];
+  // step is always within the states array bounds; the array is the
+  // single source of truth for the explainer timeline.
+  const current = states[step]!;
   return (
     <>
       <div className="irx-webshop-stage" data-ui-audit="contrast layout">
@@ -128,7 +130,9 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
     { action: 'pick apple from microwave', apple: 'inventory', previous: 'microwave', open: true, heated: true, result: zh ? '加热后的 apple 回到 inventory。' : 'The heated apple returns to inventory.' },
     { action: 'put apple on counter', apple: 'counter', previous: 'inventory', open: true, heated: true, result: zh ? '目标状态满足：heated apple 位于 counter。' : 'Goal state satisfied: the heated apple is on the counter.' },
   ] as const;
-  const current = states[step];
+  // step is always within the states array bounds; the array is the
+  // single source of truth for the explainer timeline.
+  const current = states[step]!;
 
   // Object constancy: ONE apple chip lives for the whole episode and slides
   // between zones (counter → inventory → microwave → …) instead of being

@@ -213,7 +213,7 @@ async function stepperBoxes(root: Locator): Promise<StepperBox[]> {
 function assertStepperStable(baseline: StepperBox[], current: StepperBox[], label: string) {
   expect(current.length, `${label}: step count changed`).toBe(baseline.length);
   current.forEach((box, index) => {
-    const original = baseline[index];
+    const original = baseline[index]!;
     const delta = {
       x: Math.abs(box.x - original.x),
       y: Math.abs(box.y - original.y),
@@ -319,8 +319,8 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
         return { x: rect.x, y: rect.y, width: rect.width };
       }));
       expect(Math.max(...boxes.map((box) => box.y)) - Math.min(...boxes.map((box) => box.y))).toBeLessThanOrEqual(2);
-      expect(boxes[1].x).toBeGreaterThan(boxes[0].x + 20);
-      expect(boxes[2].x).toBeGreaterThan(boxes[1].x + 20);
+      expect(boxes[1]!.x).toBeGreaterThan(boxes[0]!.x + 20);
+      expect(boxes[2]!.x).toBeGreaterThan(boxes[1]!.x + 20);
     });
 
     await test.step(`${path} mobile`, async () => {
@@ -334,8 +334,8 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
         return { x: rect.x, y: rect.y, width: rect.width };
       }));
       expect(Math.max(...boxes.map((box) => box.x)) - Math.min(...boxes.map((box) => box.x))).toBeLessThanOrEqual(2);
-      expect(boxes[1].y).toBeGreaterThan(boxes[0].y + 20);
-      expect(boxes[2].y).toBeGreaterThan(boxes[1].y + 20);
+      expect(boxes[1]!.y).toBeGreaterThan(boxes[0]!.y + 20);
+      expect(boxes[2]!.y).toBeGreaterThan(boxes[1]!.y + 20);
     });
   }
 });
