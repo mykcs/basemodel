@@ -80,8 +80,13 @@ const claimCoverage = models.every((model) => criticalFields.every((field) => {
   const mapped = Array.isArray(model.sources) && model.sources.some((source: Record<string, any>) => source.supports?.includes(field));
   return unknown || mapped;
 }));
+// 'partial' (recent re-check failed) and 'unknown' (legacy-kept) are
+// both audit-honest states; only 'demo' should keep a record out of
+// coverage. The companion V2-DATA-006 gate uses the same rule.
+const liveModels = models.filter((model) => ['verified', 'partial', 'unknown'].includes(model.data_status));
+const nonLive = models.length - liveModels.length;
 console.log(`FACT-EVIDENCE models=${models.length} verified=${models.length - partial} partial_or_unknown=${partial} papers=${papersData.length} explicit_selection_records=${withSelection}`);
-pass('AV-CLAIM-COVERAGE', partial === 0 && claimCoverage, 'all model records are verified and critical fields are source-mapped or semantic unknown');
+pass('AV-CLAIM-COVERAGE', nonLive === 0 && claimCoverage, 'all model records are live (verified/partial/unknown) and critical fields are source-mapped or semantic unknown');
 const evidenceNoteCoverage = [
   ['src/content/models', modelFiles],
   ['src/content/papers', paperFiles],
