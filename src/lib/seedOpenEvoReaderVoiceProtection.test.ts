@@ -169,6 +169,25 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     }
   });
 
+  it('keeps the WebShopSeedSplitFigure 128-samples / 0–499 boundary in the correct (negative) direction', () => {
+    // The 128 test samples reported by the SEED paper are not pinned to
+    // specific 0–499 positions. The figure must say so in the *negative*
+    // direction (NOT drawn as a confirmed sampling path) in both Chinese
+    // and English. A previous rewrite dropped the Chinese "不" and silently
+    // flipped the meaning to "drawn as a confirmed sampling path". This
+    // assertion pins the polarity so that regression breaks the build.
+    expect(webshopSeedSplitFigure).toContain('不画出确定的抽样关系');
+    expect(webshopSeedSplitFigure).toContain('not drawn as a confirmed sampling path');
+    // Negative-direction guard: the figure must never claim the 128 goal
+    // IDs are pinned, in either language.
+    expect(webshopSeedSplitFigure).not.toContain('画成确定抽样关系');
+    // The English sentence must keep "not drawn" together, not let
+    // "drawn as a confirmed sampling path" appear on its own.
+    const englishBoundary = 'not drawn as a confirmed sampling path';
+    expect(webshopSeedSplitFigure).toContain(englishBoundary);
+    expect(webshopSeedSplitFigure.indexOf(englishBoundary)).toBeGreaterThan(-1);
+  });
+
   it('keeps the experiment and results pages free of "本站 / 本节 / 这一节" editor voice', () => {
     const sources = {
       experimentGateway,
