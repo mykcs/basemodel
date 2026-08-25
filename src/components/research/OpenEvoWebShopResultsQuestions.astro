@@ -9,6 +9,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
 const sealedRoot = 'https://github.com/mykcs/openevo-experiment/blob/0b6e7dcc718a85ed967feb85b5c95fd68f92d38e';
 const h142Root = 'https://github.com/mykcs/openevo-experiment/blob/d1f35ecdf84c61b07df7c646e83588d63b9297bd';
+const seedHeldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/c155ae10b78be8f2a208c54ff3a0cb383f318bbc';
 
 type Tone = 'established' | 'partial' | 'blocked' | 'measurement' | 'pending';
 type Observation = { label: string; value: string };
@@ -29,11 +30,11 @@ const questions: Array<{
     id: 'q1',
     index: '01',
     tone: 'established',
-    status: t('已确立 · 工程闭环', 'Established · engineering loop'),
+    status: t('已确认 · 训练链路真实工作', 'Established · training path works'),
     question: t('OpenEvo 真的发生了学习吗？', 'Did OpenEvo actually learn?'),
     conclusion: t(
-      '发生了。训练、参数变化、Adapter（适配器）保存与重新加载链路都真实工作；H1.40 的第二代 G2 也真实创建。但“参数变了”不能直接等价为“WebShop 做得更好”。',
-      'Yes. Training, parameter change, and Adapter save/reload genuinely work, and the second-generation G2 was really constructed in H1.40. But changed parameters do not by themselves mean better WebShop performance.',
+      '发生了。训练会真实改变模型参数，更新后的适配器也能保存并重新加载。第二代 G2 更新同样真实发生过。不过，“参数变了”只说明训练链路成立，还不能直接说明 WebShop 做得更好。',
+      'Yes. Training genuinely changes parameters, and the updated adapter can be saved and reloaded. The second-generation G2 update also genuinely occurred. But parameter change alone does not prove better WebShop performance.',
     ),
     observations: [
       {
@@ -42,179 +43,178 @@ const questions: Array<{
       },
       {
         label: t('闭环任务收益', 'Closed-loop task gain'),
-        value: t('Phase G：12 个 promotion-dev episodes，三个 arm 的 score / win delta 全为 0——工程闭环不等于任务收益。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta — an engineering loop is not a task gain.'),
+        value: t('Phase G：12 个 promotion-dev episodes，三个 arm 的 score / win delta 全为 0。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
       },
     ],
     boundary: t(
-      '这些实验确认 training / save / reload / adapter identity 真实成立，但不能单独证明任务收益提高。',
-      'These runs confirm that training / save / reload / adapter identity genuinely work; they do not by themselves prove improved task outcomes.',
+      '这些实验确认训练、保存、重新加载和适配器身份都真实成立，但不能单独证明任务收益提高。',
+      'These runs confirm training, save/reload, and adapter identity, but do not by themselves prove improved task outcomes.',
     ),
     links: [
-      { kind: 'Code', label: t('G2 实际训练 launcher（启动器）', 'G2 training launcher'), href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
+      { kind: 'Code', label: t('G2 实际训练启动器', 'G2 training launcher'), href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
       { kind: 'Config', label: t('H1.40-R2 多代更新冻结配置', 'H1.40-R2 multi-generation frozen config'), href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
-      { kind: 'Machine result', label: 'G2 training reconciliation（训练对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` },
+      { kind: 'Machine result', label: t('G2 训练对账', 'G2 training reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` },
     ],
   },
   {
     id: 'q2',
     index: '02',
     tone: 'established',
-    status: t('已确立 · 数据内生', 'Established · endogenous data'),
+    status: t('已确认 · 能产生成功经验', 'Established · successful experience exists'),
     question: t('OpenEvo 有没有成功经验可以学习？', 'Does OpenEvo have successful experience to learn from?'),
     conclusion: t(
-      '有。基础模型能自然产生成功轨迹：H0 正式矩阵 128 次尝试、96 次科学有效、28 条 qualified positive（合格正向经验）。',
-      'Yes. The base model naturally produces successful trajectories: the formal H0 matrix had 128 attempts, 96 scientifically valid, and 28 qualified positives.',
+      '有。即使还没有经过 OpenEvo 更新，基础模型也会自然完成一部分 WebShop 任务，因此我们确实能收集到“模型自己做成功”的轨迹作为学习材料。',
+      'Yes. Even before an OpenEvo update, the base model naturally completes some WebShop tasks, so there is real model-generated successful experience available for learning.',
     ),
     observations: [
       { label: 'H0 attempts', value: '128' },
-      { label: t('scientifically valid（科学有效）', 'scientifically valid'), value: '96' },
-      { label: 'qualified positives', value: '28' },
+      { label: t('科学有效', 'Scientifically valid'), value: '96' },
+      { label: t('合格正向经验', 'Qualified positives'), value: '28' },
     ],
     boundary: t(
-      'H0 说明成功经验的供给不是零；但这些成功轨迹本身还不能证明经验会迁移到新的任务。',
-      'H0 shows the supply of successful experience is nonzero; the trajectories alone do not yet prove transfer to new tasks.',
+      'H0 只说明成功经验的供给不是零；它还不能证明这些经验会迁移到新的任务。',
+      'H0 shows that the supply of successful experience is nonzero; it does not yet prove transfer to new tasks.',
     ),
     links: [
-      { kind: 'Code', label: 'H0 natural-success launcher（自然成功启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
-      { kind: 'Machine result', label: 'H0 final reconciliation（最终实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json` },
-      { kind: 'Human report', label: '2026-08-15 progress report（进展报告）', href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
+      { kind: 'Code', label: t('H0 自然成功启动器', 'H0 natural-success launcher'), href: `${evidenceRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
+      { kind: 'Machine result', label: t('H0 最终实验对账', 'H0 final reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json` },
+      { kind: 'Human report', label: t('2026-08-15 进展报告', '2026-08-15 progress report'), href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
     ],
   },
   {
     id: 'q3',
     index: '03',
     tone: 'partial',
-    status: t('部分确立 · 拟合 ≠ 行为', 'Partial · fit ≠ behavior'),
+    status: t('部分确认 · 能学进去但不等于会做', 'Partial · fitting is not behavior'),
     question: t('有成功经验以后，OpenEvo 能把它学进去吗？', 'Given successful experience, can OpenEvo fit it?'),
     conclusion: t(
-      '能拟合，但拟合与闭环行为收益是解耦的。positive supervision 比 failure supervision 更容易拟合（H1.11），action-only targets 也学得下去（H1.13），两者都没有稳定变成 fresh-task reward。',
-      'It can fit, but fitting is decoupled from closed-loop behavioral gain. Positive supervision fit better than failure supervision (H1.11), and action-only targets were also learnable (H1.13); neither reliably became fresh-task reward.',
+      '能把训练目标学进去，但这和真实任务表现是两回事。成功轨迹更容易被模型拟合，只训练动作本身也能学下来；可是在真实 WebShop 闭环里，收益并不会自动出现。',
+      'It can fit the training target, but fitting and real task behavior are different. Successful trajectories are easier to fit, and action-only targets can also be learned, yet closed-loop WebShop gains do not appear automatically.',
     ),
     observations: [
       {
         label: 'H1.11 · 96 attempts',
-        value: t('positive supervision 拟合优于 failure supervision；fresh-task 闭环行为未改善。', 'positive supervision fit better than failure supervision; fresh-task closed-loop behavior did not improve.'),
+        value: t('成功经验监督比失败经验监督更容易拟合；新任务闭环行为未改善。', 'Positive supervision fit better than failure supervision; fresh-task closed-loop behavior did not improve.'),
       },
       {
         label: 'H1.13 · 96 attempts',
-        value: t('action-only targets 可以拟合；未形成 selective closed-loop transfer。', 'action-only targets fit; no selective closed-loop transfer emerged.'),
+        value: t('只训练动作目标也可以拟合；仍未形成稳定的新任务迁移。', 'Action-only targets fit; stable fresh-task transfer did not emerge.'),
       },
     ],
     boundary: t(
-      '这些结果支持“训练目标可以被成功监督改变，而闭环收益不会自动出现”；它们不能被外推成“OpenEvo 永远不能迁移”。',
-      'These results support “supervision can change the training objective while closed-loop gains do not appear automatically”; they cannot be extrapolated into “OpenEvo can never transfer”.',
+      '这些结果支持“训练目标可以被改变，但任务收益不会自动出现”；不能外推成“OpenEvo 永远不能迁移”。',
+      'These results support “the training target can change while task gains do not appear automatically”; they cannot be extrapolated into “OpenEvo can never transfer”.',
     ),
     links: [
-      { kind: 'Code', label: 'Tracked closed-loop evaluator（可追踪闭环评估器）', href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
-      { kind: 'Manifest', label: 'H1.11 frozen task manifest（冻结任务清单）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
-      { kind: 'Machine result', label: 'H1.11 reconciliation（实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
+      { kind: 'Code', label: t('可追踪闭环评估器', 'Tracked closed-loop evaluator'), href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
+      { kind: 'Manifest', label: t('H1.11 冻结任务清单', 'H1.11 frozen task manifest'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
+      { kind: 'Machine result', label: t('H1.11 实验对账', 'H1.11 reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
     ],
   },
   {
     id: 'q4',
     index: '04',
     tone: 'established',
-    status: t('已复现 · 单步泛化', 'Replicated · one-step transfer'),
+    status: t('已复现 · 一次更新可以迁移', 'Replicated · one-step transfer'),
     question: t('学到的经验能迁移到新的任务吗？', 'Does the learned experience transfer to new tasks?'),
     conclusion: t(
-      '能，而且已经独立复现。H1.38B 首次得到 95% CI 完全位于 0 以上的正向迁移；H1.39 冻结训练产物、不再调参，换成 64 个 task-ID-disjoint 全新任务后，ordinary-LoRA 与 SD-LoRA 再次同时高于同一个 BASE。',
-      'Yes — and it has replicated independently. H1.38B produced the first positive transfer whose 95% CI lay entirely above zero; H1.39 froze the artifacts, stopped tuning, and moved to 64 task-ID-disjoint fresh tasks, where both ordinary-LoRA and SD-LoRA again beat the same BASE.',
+      '能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。',
+      'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again.',
     ),
     observations: [
       { label: 'H1.38B · 704 attempts / 668 valid', value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]' },
-      { label: 'H1.39 · 768 attempts / 740 valid', value: 'ordinary − BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 个 complete clusters）' },
+      { label: 'H1.39 · 768 attempts / 740 valid', value: 'ordinary − BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 complete clusters）' },
       {
         label: t('次级信号', 'Secondary signal'),
-        value: t('SD − ordinary = +0.0851 [0.0028, 0.1680]，sign-flip p = 0.0505——值得继续检验，但不足以宣布“SD-LoRA 普遍优于 ordinary LoRA”。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505 — worth further testing, but not enough to declare universal SD-LoRA superiority over ordinary LoRA.'),
+        value: t('SD − ordinary = +0.0851 [0.0028, 0.1680]，sign-flip p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于 ordinary LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'),
       },
     ],
     boundary: t(
-      '两组评估任务都来自 goal_idx ≥ 500，属于 OpenEvo internal fresh task-ID-disjoint evaluation（内部新任务、任务 ID 不重叠评估），不是 0–499 的 SEED official held-out evaluation（SEED 官方保留任务评估）。',
-      'Both evaluation panels draw from goal_idx ≥ 500 and are OpenEvo internal fresh task-ID-disjoint evaluations — not the SEED official held-out evaluation on 0–499.',
+      '这两组评估任务都来自 goal_idx ≥ 500，属于“OpenEvo 内部新任务、任务 ID 不重叠评估（OpenEvo internal fresh task-ID-disjoint evaluation）”。它们不是 0–499 的 SEED 官方保留任务评估。',
+      'Both evaluation panels draw from goal_idx ≥ 500 and are OpenEvo internal fresh task-ID-disjoint evaluations. They are not the SEED official held-out evaluation on 0–499.',
     ),
     links: [
-      { kind: 'Manifest', label: 'H1.38B frozen eval manifest（冻结评估清单）', href: `${evidenceRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
-      { kind: 'Machine result', label: 'H1.38B reconciliation summary（实验对账摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json` },
-      { kind: 'Human report', label: 'H1.38B sealed report（封存报告）', href: `${sealedRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md` },
-      { kind: 'Manifest', label: 'H1.39 independent panel（独立任务组）', href: `${evidenceRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
-      { kind: 'Human report', label: 'H1.39 sealed report（封存报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
+      { kind: 'Manifest', label: t('H1.38B 冻结评估清单', 'H1.38B frozen eval manifest'), href: `${evidenceRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
+      { kind: 'Machine result', label: t('H1.38B 实验对账摘要', 'H1.38B reconciliation summary'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json` },
+      { kind: 'Human report', label: t('H1.38B 封存报告', 'H1.38B sealed report'), href: `${sealedRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md` },
+      { kind: 'Manifest', label: t('H1.39 独立任务组', 'H1.39 independent panel'), href: `${evidenceRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
+      { kind: 'Human report', label: t('H1.39 封存报告', 'H1.39 sealed report'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
     ],
   },
   {
     id: 'q5',
     index: '05',
     tone: 'blocked',
-    status: t('未突破 · 演化受阻', 'Blocked · evolution stalled'),
+    status: t('尚未建立 · 多代连续改进', 'Not established · multi-generation improvement'),
     question: t('第一代能迁移，是否意味着可以一直越学越好？', 'If generation one transfers, does improvement keep compounding?'),
     conclusion: t(
-      '目前不能这样说。第二代经验供给充足、G2 真实写入，但 acquisition（新经验获取）、retention（旧能力保留）、preservation（已复现收益保持）三道能力门没有同时通过，预留的 T2 fresh-transfer 面板没有打开。策略坍塌与遗忘并存，逐门数据见下方 G2 消融。',
-      'Not so far. Second-generation experience supply was ample and G2 was genuinely written, but the acquisition, retention, and preservation gates did not clear together, so the reserved T2 fresh-transfer panel never opened. Policy collapse and forgetting co-occurred; gate-level data sits in the G2 ablation below.',
+      '目前不能这样说。第二代确实收集到了足够的新经验，也真实写入了 G2；但是“学会新经验”“保住旧能力”“保住第一代已经复现的收益”这三件事没有同时做到，因此第二代持续整合还没有建立。',
+      'Not so far. The second generation collected enough new experience and genuinely wrote G2, but learning the new experience, retaining prior capability, and preserving the replicated first-generation gain did not all succeed together. Continual second-generation integration is therefore not established.',
     ),
     observations: [
-      { label: 'E2 harvest', value: t('256 attempts → 132 qualified positives · 33 qualifying identities · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
-      { label: 'G2 write', value: '16 components · effective rank 64 · 8 sequential increments' },
-      { label: t('能力门', 'Capability gates'), value: t('acquisition / retention / preservation 均未通过；T2 remained closed（T2 保持关闭）', 'acquisition / retention / preservation all failed; T2 remained closed') },
+      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 attempts → 132 合格正向经验 · 33 qualifying identities · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
+      { label: t('G2 写入', 'G2 write'), value: '16 components · effective rank 64 · 8 sequential increments' },
+      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；T2 没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.') },
     ],
     boundary: t(
-      'H1.40 支持“第二代持续整合尚未建立”；不能写成“G2 已经在正式 T2 上证明迁移失败”——T2 没有运行。',
-      'H1.40 supports “second-generation continual integration is not established”; it must not be written as “G2 proved transfer failure on a formal T2” — T2 never ran.',
+      'H1.40 支持“第二代持续整合尚未建立”。不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 没有运行。',
+      'H1.40 supports “second-generation continual integration is not established”. It must not be written as “G2 proved transfer failure on formal T2”, because T2 never ran.',
     ),
     links: [
-      { kind: 'Config', label: 'H1.40-R2 frozen protocol（冻结协议）', href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
-      { kind: 'Machine result', label: 'Formal upstream summary（正式上游评估摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` },
-      { kind: 'Human report', label: 'Formal upstream evaluation report（正式上游评估报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
+      { kind: 'Config', label: t('H1.40-R2 冻结协议', 'H1.40-R2 frozen protocol'), href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
+      { kind: 'Machine result', label: t('正式上游评估摘要', 'Formal upstream summary'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` },
+      { kind: 'Human report', label: t('正式上游评估报告', 'Formal upstream evaluation report'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
     ],
   },
   {
     id: 'q6',
     index: '06',
     tone: 'measurement',
-    status: t('已隔离 · 测量有效', 'Isolated · measurement valid'),
+    status: t('可区分 · 工程故障与模型能力', 'Separated · engineering vs model ability'),
     question: t('这些数字会不会只是工程故障的假象？', 'Could these numbers be engineering artifacts?'),
     conclusion: t(
-      '这个风险真实存在，所以工程干扰先被隔离出科学分母。H1.1–H1.7 逐项隔离 parser 失败、fallback、JDK / 缓存、GPU 绑定与评估器一致性；H1.42 进一步校准测量链，修正 validator 语义后 Stage B 仍有两个无效 cluster，机制比较停在 MVD0 REMEASUREMENT_INVALID，而不是被强行解释成方法结论。',
-      'The risk is real, so engineering noise was isolated out of the scientific denominator first. H1.1–H1.7 separated parser failures, fallback, JDK/cache state, GPU binding, and evaluator consistency; H1.42 then calibrated the measurement chain, and after the validator fix Stage B still held two invalid clusters, so the mechanism comparison closed as MVD0 REMEASUREMENT_INVALID rather than being forced into a method conclusion.',
+      '有这个风险，所以每次实验都先判断“模型真的做得差”，还是“测量工具把模型输出读错了”。前面的实验已经逐项隔离了解析器、备用动作、运行环境和评估器等问题；只有测量有效的结果才进入科学结论。',
+      'Yes, that risk is real. Each experiment first separates “the model performed poorly” from “the measurement system misread the model output”. Earlier work isolated parser, fallback-action, runtime, and evaluator failures so that only measurement-valid results enter scientific conclusions.',
     ),
     observations: [
-      { label: 'H1.42 Stage A', value: '192 cells / 768 attempts → MV4 MEASUREMENT_VALIDATED' },
-      { label: 'H1.42 Stage B', value: '144 cells / 576 attempts → MVD0 REMEASUREMENT_INVALID' },
-      { label: t('无效 cluster', 'Invalid clusters'), value: 'C1 acquisition webshop_003560 · preservation webshop_004357（parser/runtime-invalid）' },
-      { label: t('可核算算力', 'Accounted compute'), value: t('6.498 GPU-hours，unknown resource intervals = 0', '6.498 GPU-hours, with zero unknown resource intervals') },
+      { label: 'H1.41', value: t('机制结论只使用当时已经通过有效性检查的科学分母。', 'Mechanism conclusions use only the scientifically valid denominator available at that cutoff.') },
+      { label: t('H1.42 · 后续记录', 'H1.42 · later record'), value: t('之后继续校准测量链，Stage B 仍留下两个无效 cluster，因此没有强行下方法结论。', 'Later measurement calibration still left two invalid clusters in Stage B, so no method conclusion was forced from them.') },
     ],
     boundary: t(
-      'measurement-invalid 不是“方法永远不行”；parser-invalid cell 也不能读作“模型能力为零”。H1.40、H1.41、H1.42 的 T2 都保持关闭。',
-      'Measurement-invalid is not “the method can never work”, and a parser-invalid cell is not “zero model capability”. T2 stayed closed across H1.40, H1.41, and H1.42.',
+      'H1.42 发生在 H1.41 之后，只能作为后续“测量边界”记录；它不反过来改变 H1.41 时点的机制结论。测量无效也不等于模型能力为零。',
+      'H1.42 occurred after H1.41 and is a later measurement-boundary record; it does not retroactively change the H1.41 mechanism conclusions. Measurement-invalid also does not mean zero model ability.',
     ),
     links: [
-      { kind: 'Machine result', label: 'H1.41 reconciliation（机制筛选对账）', href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` },
-      { kind: 'Human report', label: 'H1.42 Stage B closeout（测量校准收口）', href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` },
-      { kind: 'Machine result', label: 'H1.42 Stage B reconciliation JSON', href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` },
-      { kind: 'Machine result', label: 'H1.42 Stage B resource accounting JSON', href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-resource-accounting.json` },
+      { kind: 'Machine result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` },
+      { kind: 'Historical record', label: t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B measurement closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` },
+      { kind: 'Machine result', label: t('H1.42 Stage B 对账', 'H1.42 Stage B reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` },
     ],
   },
   {
     id: 'q7',
     index: '07',
     tone: 'pending',
-    status: t('待对齐 · 下一阶段', 'Pending · next stage'),
+    status: t('首轮已跑 · 主评测待修复', 'First run complete · primary needs repair'),
     question: t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?'),
     conclusion: t(
-      '缺一场 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）：训练仍来自 500–6909，正式评估只使用 0–499，OpenEvo 与 SEED 在相同任务身份、environment seed 与评分协议下比较。它需在多代演化稳定后执行，是当前结论对齐官方基准的唯一缺口。',
-      'A SEED-compatible fair comparison: training still comes from 500–6909, the formal evaluation uses only 0–499, and OpenEvo and SEED run under identical task identities, environment seeds, and scoring protocol. It belongs after continual evolution stabilizes, and it is the only gap between current claims and the official benchmark.',
+      '关键实验已经迈出第一步。2026-08-25，我们在 SEED 官方保留任务范围里冻结 128 个任务，并完成 BASE 与 OpenEvo SD-LoRA 的首轮比较。主评测因为动作标签格式不兼容而读错模型输出，所以两边的 0 分被判为测量无效，不能当作模型能力。下一步只修复解析兼容性，在同一批任务上重跑两种方法各 128 次。',
+      'The key experiment has started. On 2026-08-25, we froze 128 tasks from the SEED official held-out range and completed the first BASE versus OpenEvo SD-LoRA comparison. The primary evaluation misread the model output because the action wrappers were incompatible, so the zero scores on both arms were measurement-invalid rather than model ability. Next, repair only the parser compatibility and rerun 128 tasks per arm on the same panel.',
     ),
     observations: [
-      { label: t('官方保留池', 'Official held-out pool'), value: 'goal_idx 0–499' },
-      { label: t('训练候选池', 'Training candidate pool'), value: 'goal_idx 500–6909' },
-      { label: 'H1.30', value: t('formal evaluation denominator（正式评估分母）= 0', 'formal evaluation denominator = 0') },
+      { label: t('首轮评测规模', 'First-run coverage'), value: t('128 tasks × 2 arms × 2 contracts = 512 episodes（完整任务尝试）', '128 tasks × 2 arms × 2 contracts = 512 episodes') },
+      { label: t('SEED 原始主评测', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — measurement-invalid, not model ability.') },
+      { label: t('OpenEvo 原生诊断', 'OpenEvo-native diagnostic'), value: t('BASE：Task Score 14.6 / 完整成功 2.3%；SD-LoRA：28.3 / 1.6%。部分任务进度更高，但完整购买成功率没有提高。', 'BASE: Task Score 14.6 / exact success 2.3%; SD-LoRA: 28.3 / 1.6%. Partial progress improved, but completed-purchase success did not.') },
+      { label: t('下一步', 'Next run'), value: t('同一 128-task panel，只修复解析兼容性；2 arms × 128 = 256 episodes，尚未运行。', 'Same frozen 128-task panel, parser-compatibility repair only; 2 arms × 128 = 256 episodes, not yet run.') },
     ],
     boundary: t(
-      'H1.30 完成了 route smoke（路线冒烟测试）、parquet / checkpoint 等基础设施验证，但没有消费正式评估任务，因此当前不存在可以报告的 OpenEvo vs SEED 正式比较结果。',
-      'H1.30 completed route smoke tests and parquet/checkpoint infrastructure validation, but consumed no formal evaluation tasks — so no reportable OpenEvo vs SEED comparison exists today.',
+      '这 128 个任务来自 SEED 官方保留范围，但这个 panel 只是“与 SEED 评测设置兼容（SEED-compatible）”，不是论文确切的评估分母。SEED checkpoint 也没有在本地复现。OpenEvo 原生诊断只能作为本地有效诊断，不能冒充正式 SEED 成绩。',
+      'The 128 tasks come from the SEED official held-out range, but the panel is SEED-compatible rather than the paper’s exact denominator. The SEED checkpoint has not been locally reproduced. The OpenEvo-native diagnostic is a valid local diagnostic, not a formal SEED score.',
     ),
     links: [
-      { kind: 'Planned config', label: 'H1.30 SEED comparison config（比较配置）', href: `${evidenceRoot}/configs/experiment/h1.30-seed-comparison.json` },
-      { kind: 'Infrastructure code', label: 'H1.30 SEED-route smoke launcher（路线冒烟测试启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h130_seed_route_smoke.sh` },
-      { kind: 'Status', label: 'H1.30 status：formal denominator = 0', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md` },
+      { kind: 'Human report', label: t('2026-08-25 held-out 比较结果与中文摘要', '2026-08-25 held-out comparison results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
+      { kind: 'Preregistration', label: t('冻结比较协议', 'Frozen comparison preregistration'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/PREREGISTRATION.md` },
+      { kind: 'Machine result', label: t('逐臂与配对分析', 'Per-arm and paired analysis'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/results/analysis.json` },
+      { kind: 'Historical status', label: t('H1.30 当时仍为正式分母 0', 'H1.30 historical denominator = 0'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md` },
     ],
   },
 ];
@@ -232,8 +232,8 @@ const transferRows = [
     <div>
       <h2 id="questions-title">{t('我们现在能回答的七个问题', 'The seven questions we can now answer')}</h2>
       <p>{t(
-        '科学递进：工程可用性 → 内生经验 → 监督拟合 → 单步跨任务迁移 → 多代演化 → 测量有效性 → 评估对齐。每一问给出状态徽章、一句话结论、定性与定量观测对照，证据链与代码回溯收在折叠层里。',
-        'The progression runs from engineering viability to endogenous experience, supervised fitting, one-step cross-task transfer, multi-generation evolution, measurement validity, and benchmark alignment. Each question carries a status badge, a one-sentence conclusion, qualitative and quantitative observations, and a collapsible evidence chain with code provenance.',
+        '先确认训练真的发生，再看有没有成功经验、能不能学进去、能不能迁移、能不能连续多代保持；最后再检查测量是否可信，以及和 SEED 的官方保留任务还差哪一步。',
+        'First confirm that learning really occurred, then ask whether useful experience exists, can be fitted, transfers, and compounds across generations; finally check measurement validity and what still remains for the SEED official held-out comparison.',
       )}</p>
     </div>
   </header>
@@ -245,58 +245,58 @@ const transferRows = [
         <div class="question-copy">
           <div class="question-meta"><span class="status-badge"><i aria-hidden="true"></i>{item.status}</span></div>
           <h3>{item.question}</h3>
-          <p class="conclusion"><strong>{t('核心结论：', 'Conclusion: ')}</strong>{item.conclusion}</p>
-
-          <table class="obs-table">
-            <tbody>
-              {item.observations.map((row) => (
-                <tr>
-                  <th scope="row">{row.label}</th>
-                  <td>{row.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {item.id === 'q4' && (
-            <figure class="transfer-figure" data-ui-audit="contrast layout overflow" aria-label={t('H1.38B 与 H1.39 迁移置信区间', 'H1.38B and H1.39 transfer confidence intervals')}>
-              <div class="forest">
-                <div class="forest-scale" aria-hidden="true">
-                  <span class="scale-label scale-min">−0.05</span>
-                  <span class="scale-label scale-zero">0</span>
-                  <span class="scale-label scale-mid">+0.15</span>
-                  <span class="scale-label scale-max">+0.35</span>
-                  <i class="zero-line"></i>
-                </div>
-                {transferRows.map((row) => (
-                  <div class="forest-row">
-                    <div class="forest-label">
-                      <strong>{row.label}</strong>
-                      <span>Δ {row.value} · 95% CI {row.ci}</span>
-                    </div>
-                    <div class="forest-track" aria-hidden="true">
-                      <i class="zero-line"></i>
-                      <span class="ci-line" style={`left:${row.left};width:${row.width}`}></span>
-                      <b class="point" style={`left:${row.point}`}></b>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <figcaption>{t(
-                '点是 task-weighted delta，横线是按任务聚类 bootstrap 的 95% CI；竖线为“没有差异”。三条区间都完整位于 0 以上。',
-                'Points are task-weighted deltas; horizontal lines are task-cluster bootstrap 95% CIs; the vertical line marks zero difference. All three intervals lie entirely above zero.',
-              )}</figcaption>
-            </figure>
-          )}
+          <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{item.conclusion}</p>
 
           {item.id === 'q5' && (
-            <p class="forward-ref"><a href="#g2-ablation">{t('跳到第二代三道门消融 ↓', 'Jump to the second-generation three-gate ablation ↓')}</a></p>
+            <p class="forward-ref"><a href="#g2-ablation">{t('查看第二代三道能力门 ↓', 'See the second-generation capability gates ↓')}</a></p>
           )}
 
           <details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">
-            <summary>{t('证据链与代码回溯', 'Evidence chain & code provenance')}</summary>
+            <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
             <div class="evidence-detail-body">
-              <p><strong>{t('结论边界：', 'Claim boundary: ')}</strong>{item.boundary}</p>
+              <table class="obs-table">
+                <tbody>
+                  {item.observations.map((row) => (
+                    <tr>
+                      <th scope="row">{row.label}</th>
+                      <td>{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {item.id === 'q4' && (
+                <figure class="transfer-figure" data-ui-audit="contrast layout overflow" aria-label={t('H1.38B 与 H1.39 迁移置信区间', 'H1.38B and H1.39 transfer confidence intervals')}>
+                  <div class="forest">
+                    <div class="forest-scale" aria-hidden="true">
+                      <span class="scale-label scale-min">−0.05</span>
+                      <span class="scale-label scale-zero">0</span>
+                      <span class="scale-label scale-mid">+0.15</span>
+                      <span class="scale-label scale-max">+0.35</span>
+                      <i class="zero-line"></i>
+                    </div>
+                    {transferRows.map((row) => (
+                      <div class="forest-row">
+                        <div class="forest-label">
+                          <strong>{row.label}</strong>
+                          <span>Δ {row.value} · 95% CI {row.ci}</span>
+                        </div>
+                        <div class="forest-track" aria-hidden="true">
+                          <i class="zero-line"></i>
+                          <span class="ci-line" style={`left:${row.left};width:${row.width}`}></span>
+                          <b class="point" style={`left:${row.point}`}></b>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <figcaption>{t(
+                    '点表示平均差异，横线表示 95% 置信区间；竖线表示“没有差异”。三条区间都完整位于 0 以上。',
+                    'Points show the average difference; horizontal lines show 95% confidence intervals; the vertical line marks zero difference. All three intervals lie entirely above zero.',
+                  )}</figcaption>
+                </figure>
+              )}
+
+              <p class="claim-boundary"><strong>{t('结论边界：', 'Claim boundary: ')}</strong>{item.boundary}</p>
               <div class="evidence-link-grid">
                 {item.links.map((link) => (
                   <a href={link.href} target="_blank" rel="noreferrer">
@@ -322,22 +322,22 @@ const transferRows = [
   .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
   .question-list{display:grid;gap:10px}
   .question-card{
-    --tone: var(--color-accent);
+    --tone:var(--color-accent);
     display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:24px;
     border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg);
   }
-  .tone-established{--tone: var(--color-positive)}
-  .tone-partial{--tone: var(--color-warning)}
-  .tone-blocked{--tone: var(--color-danger)}
-  .tone-measurement{--tone: var(--color-info)}
-  .tone-pending{--tone: var(--color-accent)}
+  .tone-established{--tone:var(--color-positive)}
+  .tone-partial{--tone:var(--color-warning)}
+  .tone-blocked{--tone:var(--color-danger)}
+  .tone-measurement{--tone:var(--color-info)}
+  .tone-pending{--tone:var(--color-accent)}
   .question-number{color:var(--color-text-muted);font:650 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
   .status-badge{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border:1px solid var(--color-border);border-radius:999px;color:var(--tone);font-size:.7rem;font-weight:750}
   .status-badge i{width:7px;height:7px;border-radius:50%;background:var(--tone)}
   .question-card h3{margin:10px 0 10px;font-size:1.35rem;line-height:1.34;letter-spacing:-.025em}
-  .conclusion{max-width:78ch;margin:0;color:var(--color-text-muted);font-size:.92rem;line-height:1.68}
+  .conclusion{max-width:72ch;margin:0;color:var(--color-text-muted);font-size:.92rem;line-height:1.72}
   .conclusion strong{color:var(--color-text)}
-  .obs-table{width:100%;margin-top:14px;border-collapse:collapse;border-top:1px solid var(--color-border)}
+  .obs-table{width:100%;border-collapse:collapse;border-top:1px solid var(--color-border)}
   .obs-table th,.obs-table td{padding:10px 12px 10px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--color-border);font-size:.8rem;line-height:1.6}
   .obs-table th{width:220px;padding-right:16px;color:var(--color-text);font-weight:700;overflow-wrap:anywhere}
   .obs-table td{color:var(--color-text-muted);font-variant-numeric:tabular-nums}
@@ -368,8 +368,8 @@ const transferRows = [
   .evidence-details summary::after{content:'＋';font-weight:500}
   .evidence-details[open] summary::after{content:'−'}
   .evidence-detail-body{padding:12px 0 2px}
-  .evidence-detail-body>p{max-width:80ch;margin:0;color:var(--color-text-muted);font-size:.78rem;line-height:1.62}
-  .evidence-detail-body>p strong{color:var(--color-text)}
+  .claim-boundary{max-width:80ch;margin:14px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.62}
+  .claim-boundary strong{color:var(--color-text)}
   .evidence-link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
   .evidence-link-grid a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);text-decoration:none}
   .evidence-link-grid a:hover,.evidence-link-grid a:focus-visible{border-color:var(--color-accent)}
