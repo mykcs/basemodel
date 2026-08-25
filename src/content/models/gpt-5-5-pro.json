@@ -71,7 +71,7 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-5.5-pro",
       "type": "official_api_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "OpenAI's official model page lists GPT-5.5 Pro, its April 23 snapshot, text/image input, 1,050,000-token context, API availability and no fine-tuning. The page exposes an API-only access boundary and no public weights, so the model is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/gpt-5.5-pro HTTP 200, model id found in body",
+      "evidence_note": "OpenAI's official model page lists GPT-5.5 Pro, its April 23 snapshot, text/image input, 1,050,000-token context, API availability and no fine-tuning. The page exposes an API-only access boundary and no public weights, so the model is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/gpt-5.5-pro HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

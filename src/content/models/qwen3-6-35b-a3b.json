@@ -73,7 +73,7 @@
       "url": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "Qwen's first-party card confirms the released Apache-2.0 multimodal MoE checkpoint: 35B total / 3B activated parameters, 256 experts with 8 routed per token, 262,144 native context and Transformers/vLLM/SGLang support. A separate base checkpoint, fine-tuning/RL suitability, recipe support and generic hardware tiers are not reported in the cited first-party sources. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen3.6-35B-A3B HTTP 200, model id found in body",
+      "evidence_note": "Qwen's first-party card confirms the released Apache-2.0 multimodal MoE checkpoint: 35B total / 3B activated parameters, 256 experts with 8 routed per token, 262,144 native context and Transformers/vLLM/SGLang support. A separate base checkpoint, fine-tuning/RL suitability, recipe support and generic hardware tiers are not reported in the cited first-party sources. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen3.6-35B-A3B HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

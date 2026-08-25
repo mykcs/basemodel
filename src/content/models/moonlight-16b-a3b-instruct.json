@@ -80,7 +80,7 @@
         "research.suitable_for_inference",
         "access.api_status"
       ],
-      "evidence_note": "Official README identifies Moonshot AI/Kimi Moonlight as a text MoE model, documents the February 23 release, Instruct checkpoint, 16B total / 3B active parameters, released checkpoints, and MIT licensing. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Moonlight HTTP 200, model id found in body"
+      "evidence_note": "Official README identifies Moonshot AI/Kimi Moonlight as a text MoE model, documents the February 23 release, Instruct checkpoint, 16B total / 3B active parameters, released checkpoints, and MIT licensing. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Moonlight HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"unavailable\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body"
     },
     {
       "id": "moonshot-moonlight-hf",

@@ -74,7 +74,7 @@
       "url": "https://ai.google.dev/gemini-api/docs/deprecations",
       "type": "official_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "Google Gemini API deprecations page lists gemini-2.0-flash released Feb 5, 2025 and shutting down June 1, 2026; replacement is gemini-3.6-flash. Model listing confirms 1M token context window. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://ai.google.dev/gemini-api/docs/deprecations HTTP 200, model id found in body",
+      "evidence_note": "Google Gemini API deprecations page lists gemini-2.0-flash released Feb 5, 2025 and shutting down June 1, 2026; replacement is gemini-3.6-flash. Model listing confirms 1M token context window. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://ai.google.dev/gemini-api/docs/deprecations HTTP 200, model id found in body | Phase B (2026-08-25): vendor access.api_status=\"deprecated\"; vendor has withdrawn the model from the live catalog",
       "supports": [
         "access.api_status",
         "access.api_model_ids",
@@ -91,5 +91,5 @@
       "id": "src_55f1b59a8cad"
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

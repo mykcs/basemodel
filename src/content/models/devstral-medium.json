@@ -82,7 +82,7 @@
         "generation",
         "checkpoint.modalities"
       ],
-      "evidence_note": "Official Mistral blog post dated July 10, 2025 introduces Devstral Medium as an enterprise-grade code model available through the API, scoring 61.6% on SWE-Bench Verified; API alias devstral-medium-2507. | re-check 2026-08-25: URL https://mistral.ai/news/devstral-2507/ HTTP 200, model id found in body",
+      "evidence_note": "Official Mistral blog post dated July 10, 2025 introduces Devstral Medium as an enterprise-grade code model available through the API, scoring 61.6% on SWE-Bench Verified; API alias devstral-medium-2507. | re-check 2026-08-25: URL https://mistral.ai/news/devstral-2507/ HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_reported\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_fabe8f8f1dc3"
     },
     {

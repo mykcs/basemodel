@@ -78,7 +78,7 @@
         "openness.classification",
         "research.suitable_for_inference"
       ],
-      "evidence_note": "OpenAI official API docs list o4-mini default snapshot o4-mini-2025-04-16, 200K context, 100K max output, text+image input, text output, small reasoning model. Source checked 2026-08-06. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/o4-mini HTTP 200, model id found in body",
+      "evidence_note": "OpenAI official API docs list o4-mini default snapshot o4-mini-2025-04-16, 200K context, 100K max output, text+image input, text output, small reasoning model. Source checked 2026-08-06. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/o4-mini HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_4c3fd87c4680"
     }
   ],

@@ -77,7 +77,7 @@
       "url": "https://huggingface.co/Qwen/Qwen2-72B-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "HuggingFace model card confirms 72B dense model (73B safetensors size), 131K context via YaRN, text-only, and Tongyi Qianwen license. Release date is not stated on the card and is derived from the Qwen2 Technical Report citation (2024). Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen2-72B-Instruct HTTP 200, model id found in body",
+      "evidence_note": "HuggingFace model card confirms 72B dense model (73B safetensors size), 131K context via YaRN, text-only, and Tongyi Qianwen license. Release date is not stated on the card and is derived from the Qwen2 Technical Report citation (2024). Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen2-72B-Instruct HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_reported\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",

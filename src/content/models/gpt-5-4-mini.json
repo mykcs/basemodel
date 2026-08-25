@@ -74,7 +74,7 @@
       "url": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
       "type": "official_api_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "OpenAI's official model page lists GPT-5.4 mini for coding, computer use and sub-agent workloads with text/image input, 400,000-token context, the March 17 snapshot and API availability. The page exposes an API-only access boundary and no public weights, so the model is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/gpt-5.4-mini HTTP 200, model id found in body",
+      "evidence_note": "OpenAI's official model page lists GPT-5.4 mini for coding, computer use and sub-agent workloads with text/image input, 400,000-token context, the March 17 snapshot and API availability. The page exposes an API-only access boundary and no public weights, so the model is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/gpt-5.4-mini HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

@@ -72,7 +72,7 @@
       "url": "https://platform.claude.com/docs/en/release-notes/overview",
       "type": "official_announcement",
       "checked_at": "2026-08-25",
-      "evidence_note": "Anthropic's July 24, 2026 platform notes announce Claude Opus 5, API ID claude-opus-5, 1M context and API/partner-cloud availability. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://platform.claude.com/docs/en/release-notes/overview HTTP 200, model id found in body",
+      "evidence_note": "Anthropic's July 24, 2026 platform notes announce Claude Opus 5, API ID claude-opus-5, 1M context and API/partner-cloud availability. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://platform.claude.com/docs/en/release-notes/overview HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

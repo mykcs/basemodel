@@ -58,7 +58,7 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct HTTP 200, model id found in body",
+      "evidence_note": "Official Hugging Face config.json expert top-k field=6 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Official Hugging Face config.json expert-count field=64 Source checked https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct on 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_reported\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_6a555c25eb52",
       "supports": [
         "vendor",

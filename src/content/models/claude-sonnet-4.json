@@ -72,7 +72,7 @@
       "url": "https://docs.anthropic.com/en/docs/about-claude/models",
       "type": "official_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "Anthropic official model catalog lists Claude Sonnet 4 with 1M context window (beta) and retired/deprecated lifecycle status. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://docs.anthropic.com/en/docs/about-claude/models HTTP 200, model id found in body",
+      "evidence_note": "Anthropic official model catalog lists Claude Sonnet 4 with 1M context window (beta) and retired/deprecated lifecycle status. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://docs.anthropic.com/en/docs/about-claude/models HTTP 200, model id found in body | Phase B (2026-08-25): vendor access.api_status=\"deprecated\"; vendor has withdrawn the model from the live catalog",
       "supports": [
         "architecture.context_length",
         "access.api_status",
@@ -100,5 +100,5 @@
       "id": "src_4d9e35312c21"
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

@@ -78,7 +78,7 @@
       "url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
       "type": "official_announcement",
       "checked_at": "2026-08-25",
-      "evidence_note": "Meta's July 9, 2026 announcement calls Muse Spark 1.1 the latest Muse model, a hosted multimodal reasoning model for agentic work with coding, tool/computer use, multi-agent orchestration, 1M context and Meta Model API public-preview access. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/ HTTP 200, model id found in body",
+      "evidence_note": "Meta's July 9, 2026 announcement calls Muse Spark 1.1 the latest Muse model, a hosted multimodal reasoning model for agentic work with coding, tool/computer use, multi-agent orchestration, 1M context and Meta Model API public-preview access. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/ HTTP 200, model id found in body | Phase B (2026-08-25): vendor access.api_status=\"preview\"; body of source URL contains the model id but the model is not yet generally available",
       "supports": [
         "vendor",
         "family",
@@ -94,5 +94,5 @@
       ]
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

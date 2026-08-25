@@ -64,7 +64,7 @@
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "DeepSeek's first-party V4 download table lists DeepSeek-V4-Pro-Base as a released 1.6T MoE base checkpoint with 49B activated parameters, text input, 1M context and MIT licensing. Framework support, fine-tuning/RL recipes and generic hardware requirements are not reported for this Base checkpoint in the cited source. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro HTTP 200, model id found in body",
+      "evidence_note": "DeepSeek's first-party V4 download table lists DeepSeek-V4-Pro-Base as a released 1.6T MoE base checkpoint with 49B activated parameters, text input, 1M context and MIT licensing. Framework support, fine-tuning/RL recipes and generic hardware requirements are not reported for this Base checkpoint in the cited source. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_applicable\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

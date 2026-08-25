@@ -102,7 +102,7 @@
         "research.vllm_support",
         "research.sglang_support"
       ],
-      "evidence_note": "The official model card identifies the Qwen3-1.7B dense post-trained checkpoint, reports 1.7B parameters and a 32,768-token context, publishes weights/config/tokenizer/chat template, and lists Apache-2.0 plus Transformers, vLLM, and SGLang usage. Active parameters equal total parameters because the recorded architecture is dense. The 16GB inference tier is a conservative planning classification, not a benchmark claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen3-1.7B HTTP 200, model id found in body"
+      "evidence_note": "The official model card identifies the Qwen3-1.7B dense post-trained checkpoint, reports 1.7B parameters and a 32,768-token context, publishes weights/config/tokenizer/chat template, and lists Apache-2.0 plus Transformers, vLLM, and SGLang usage. Active parameters equal total parameters because the recorded architecture is dense. The 16GB inference tier is a conservative planning classification, not a benchmark claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen3-1.7B HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_applicable\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body"
     },
     {
       "id": "src_seed_qwen3_17b_20260808",
