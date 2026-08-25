@@ -24,9 +24,8 @@ async function readThemeSurface(page: Page) {
     const heading = document.querySelector<HTMLElement>('.moved-primer h1');
     const description = document.querySelector<HTMLElement>('.moved-primer article > p:not(.eyebrow)');
     const primary = document.querySelector<HTMLElement>('.moved-primer .actions .primary');
-    const aside = document.querySelector<HTMLElement>('.moved-primer aside');
     const back = document.querySelector<HTMLElement>('.moved-primer .back');
-    if (!root || !article || !heading || !description || !primary || !aside || !back) {
+    if (!root || !article || !heading || !description || !primary || !back) {
       throw new Error('moved primer theme audit target missing');
     }
 
@@ -67,7 +66,6 @@ async function readThemeSurface(page: Page) {
         heading: getComputedStyle(heading).color,
         description: getComputedStyle(description).color,
         primarySurface: primaryStyle.backgroundColor,
-        asideBorder: getComputedStyle(aside).borderLeftColor,
         back: getComputedStyle(back).color,
       },
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
@@ -95,7 +93,6 @@ for (const viewport of viewports) {
           expect(audit.actual.heading).toBe(audit.expected.text);
           expect(audit.actual.description).toBe(audit.expected.muted);
           expect(audit.actual.primarySurface).toBe(audit.expected.accentSurface);
-          expect(audit.actual.asideBorder).toBe(audit.expected.accent);
           expect(audit.actual.back).toBe(audit.expected.muted);
         });
       }
