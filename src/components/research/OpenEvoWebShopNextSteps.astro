@@ -1,0 +1,90 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const steps = [
+  {
+    index: 'N1',
+    title: t('先修测量，再缓解遗忘', 'Fix measurement, then mitigate forgetting'),
+    body: t(
+      '在 H1.42 标定的测量链上重跑 acquisition / retention 失效 cell，拿到可信分母后，再用 Experience Replay（经验回放）配比与正则化（如 48 历史 + 16 当前的 replay 方案）缓解灾难性遗忘，并复测三道门。',
+      'Re-run the failed acquisition / retention cells on the H1.42-calibrated measurement chain to restore a trustworthy denominator; then mitigate catastrophic forgetting with Experience Replay mixtures and regularization (e.g. the 48 historical + 16 current replay scheme), and re-test the three gates.',
+    ),
+  },
+  {
+    index: 'N2',
+    title: t('冻结权重，执行 SEED 官方 0–499 评估', 'Freeze weights, run the SEED official 0–499 evaluation'),
+    body: t(
+      '多代演化稳定后，冻结训练产物，在 goal_idx 0–499 的 SEED official held-out 任务上，以相同任务身份、environment seed 与评分协议执行 OpenEvo vs SEED 的 fair comparison，把 formal evaluation denominator 从 0 变成可报告的数字。',
+      'Once continual evolution stabilizes, freeze the artifacts and run the OpenEvo vs SEED fair comparison on the SEED official held-out goal_idx 0–499 tasks under identical task identities, environment seeds, and scoring protocol — turning the formal evaluation denominator from zero into a reportable number.',
+    ),
+  },
+  {
+    index: 'N3',
+    title: t('扩展到 ALFWorld 交叉验证', 'Extend to ALFWorld for cross-validation'),
+    body: t(
+      '把同一套协议平移到 ALFWorld，检验单步迁移与三道门结论是否只依赖 WebShop 的任务分布，避免把环境特异性误读为通用能力。',
+      'Port the same protocol to ALFWorld to test whether one-step transfer and the three-gate findings depend on WebShop’s task distribution, so environment-specific effects are not misread as general capability.',
+    ),
+  },
+] as const;
+---
+
+<section class="next-steps" id="next-steps" aria-labelledby="next-steps-title">
+  <header class="section-heading">
+    <p>NEXT STEPS</p>
+    <div>
+      <h2 id="next-steps-title">{t('下一步：按证据缺口排序的三件事', 'Next steps, ordered by evidence gap')}</h2>
+      <p>{t(
+        '顺序有讲究：测量不修好，遗忘无法归因；演化不稳定，官方评估没有可比的对手。',
+        'The order matters: without trustworthy measurement, forgetting cannot be attributed; without stable evolution, the official evaluation has no comparable contestant.',
+      )}</p>
+    </div>
+  </header>
+
+  <ol class="step-list">
+    {steps.map((step) => (
+      <li class="step-card">
+        <span class="step-index">{step.index}</span>
+        <div>
+          <h3>{step.title}</h3>
+          <p>{step.body}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <aside class="min-gap">
+    <p>{t(
+      '最小缺口只有一个：一场测量有效、协议对齐的 SEED 官方 0–499 正式评估。实验协议与冻结配置见实验页。',
+      'The minimal gap is a single experiment: a measurement-valid, protocol-aligned formal evaluation on the SEED official 0–499 tasks. The protocol and frozen configs live on the experiment page.',
+    )} <a href={localePath(locale, '/research/seed-openevo/experiment/')}>{t('查看实验协议 ↗', 'See the experiment protocol ↗')}</a></p>
+  </aside>
+</section>
+
+<style>
+  .next-steps{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
+  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .step-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .step-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:22px 24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
+  .step-index{color:var(--color-accent);font:700 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .step-card h3{margin:0 0 6px;font-size:1.05rem;letter-spacing:-.02em}
+  .step-card p{margin:0;max-width:80ch;color:var(--color-text-muted);font-size:.87rem;line-height:1.66}
+  .min-gap{margin-top:12px;padding:18px 22px;border-left:3px solid var(--color-accent);border-radius:0 12px 12px 0;background:var(--color-surface)}
+  .min-gap p{margin:0;max-width:84ch;font-size:.86rem;line-height:1.66}
+  .min-gap a{color:var(--color-accent);font-weight:750;text-decoration:none}
+  .min-gap a:hover{text-decoration:underline}
+  @media(max-width:720px){
+    .next-steps{padding-inline:18px}
+    .section-heading{grid-template-columns:1fr;gap:8px}
+    .step-card{grid-template-columns:1fr;gap:8px;padding:18px}
+  }
+</style>
