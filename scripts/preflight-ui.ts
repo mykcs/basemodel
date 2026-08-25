@@ -38,6 +38,12 @@ export const ESCAPED_UI_REGRESSIONS: EscapedUiRegression[] = [
     gate: 'tests/e2e/webshop-training-theme.spec.ts',
   },
   {
+    id: 'results-mobile-status-overflow',
+    failureClass: 'Results status badges widen the 390px viewport instead of shrinking and wrapping',
+    stage: 'browser',
+    gate: 'tests/e2e/results-mobile-overflow.spec.ts',
+  },
+  {
     id: 'astro-global-style-directive',
     failureClass: 'Astro route CSS uses HTML-looking is="global" and remains scoped',
     stage: 'deterministic',
