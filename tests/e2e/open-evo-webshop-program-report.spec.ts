@@ -14,9 +14,9 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '实验协议与数据边界' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '先记住两个任务范围' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '第二代演化为什么受阻：三道门' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
   await expect(index.locator('.gate-grid .gate-card')).toHaveCount(3);
   await expect(index.locator('.trace-example')).toBeVisible();
@@ -32,9 +32,9 @@ test('English results landing mounts the same unified findings page in English',
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop research findings' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Evaluation protocol & measurement boundary' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Two task ranges to keep in mind' })).toBeVisible();
   await expect(index.getByRole('heading', { name: 'The seven questions we can now answer' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Why second-generation evolution stalled: three gates' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Why can’t we yet say the second generation keeps improving?' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
   await expect(index.locator('.forest-row')).toHaveCount(3);
   await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
