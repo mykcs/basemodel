@@ -1,9 +1,22 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
-import ResearchPrimerMoved, { type ResearchPrimerMovedId } from '../../../../components/research/ResearchPrimerMoved.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../components/research/OpenEvoWebShopResultNote.astro';
 import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
+import ResearchPrimerMoved, { type ResearchPrimerMovedId } from '../../../../components/research/ResearchPrimerMoved.astro';
 
+const primerNotes = new Set<ResearchPrimerMovedId>(['webshop-training', 'seed-training', 'openevo-training']);
+const resultNotes = new Set<OpenEvoWebShopResultNoteId>([
+  'why-it-kept-failing',
+  'first-positive-transfer',
+  'independent-replication',
+  'second-generation',
+  'measurement-boundary',
+  'current-conclusion',
+]);
+const benchmarkNotes = new Set<OpenEvoWebShopBenchmarkNoteId>(['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design']);
+
+// getStaticPaths runs in an isolated build-time scope and cannot see module-scope constants,
+// so the note ids are intentionally inlined here instead of spreading the Sets above.
 export function getStaticPaths() {
   return [
     'webshop-training',
@@ -21,71 +34,62 @@ export function getStaticPaths() {
   ].map((note) => ({ params: { note } }));
 }
 
-const primerNotes = ['webshop-training', 'seed-training', 'openevo-training'] as const;
-const benchmarkNotes = ['benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design'] as const;
-type NoteId = ResearchPrimerMovedId | OpenEvoWebShopResultNoteId | OpenEvoWebShopBenchmarkNoteId;
-const note = Astro.params.note as NoteId;
-const meta: Record<NoteId, { title: string; description: string }> = {
+const note = Astro.params.note!;
+const meta: Record<string, { title: string; description: string }> = {
   'webshop-training': {
-    title: 'WebShop 背景说明已迁移',
-    description: '旧实验前景 URL 保留；WebShop 的任务、交互、数据与评分现在由正式 WebShop 环境页统一维护。',
+    title: 'WebShop 的任务与评测规则',
+    description: 'WebShop 的 observation / action / reward、small 商品世界、synthetic goals、SEED goal split 与最终评分。',
   },
   'seed-training': {
-    title: 'SEED 训练说明已迁移',
-    description: '旧实验前景 URL 保留；SEED × WebShop 的数据、训练与推理现在由 SEED 正式方法页和 Figure S1 统一维护。',
+    title: 'SEED 在 WebShop 上怎样训练',
+    description: 'SEED 在 WebShop 上的 hindsight skill、SFT、GRPO，以及训练和推理阶段的边界。',
   },
   'openevo-training': {
-    title: 'OpenEvo 训练说明已迁移',
-    description: '旧实验前景 URL 保留；OpenEvo 的 task boundary、carrier、validation 与 successor revision 现在由正式方法页统一维护。',
+    title: 'OpenEvo 怎样从经验更新自己',
+    description: 'OpenEvo 的 task boundary、experience carrier、validation 与 successor revision。',
   },
   'why-it-kept-failing': {
-    title: '为什么 OpenEvo × WebShop 前面一直没有得到可靠的 fresh-task 提升？',
-    description: '从 3B、7B、parser/fallback 到冻结配对面板，梳理早期负结果怎样一步步收紧实验契约。',
+    title: '为什么早期 transfer 实验长期没有正向信号？',
+    description: '回看 H1.16–H1.29 中 carrier、horizon、action filtering、oracle labels 与 task identity 等机制实验。',
   },
   'first-positive-transfer': {
-    title: '第一次正结果：OpenEvo × WebShop 的 fresh-task transfer 从哪里出现？',
-    description: 'H1.38B continuation 首次给出置信区间完全位于 0 以上的 fresh-task transfer signal。',
+    title: 'H1.38B：第一次可靠的内部新任务迁移',
+    description: 'H1.38B 在 goal_idx ≥ 500 的 task-ID-disjoint panel 上得到第一代正向迁移信号；它不是 SEED 官方保留任务结果。',
   },
   'independent-replication': {
-    title: '独立复现：换一批全新 WebShop 任务以后，提升还在吗？',
-    description: 'H1.39-MR 冻结训练产物并更换独立新任务面板，再次观察到更新模型相对 BASE 的正向收益。',
+    title: 'H1.39：第一代内部迁移的独立复现',
+    description: '在新的 OpenEvo internal task-ID-disjoint panel 上复现 ordinary / SD-LoRA 相对 BASE 的正向迁移。',
   },
   'second-generation': {
-    title: '第二次连续写入：为什么还不能说多代 self-evolution 成立？',
-    description: 'H1.40/H1.41 显示第二轮经验供给充足且参数写入真实完成，但 acquisition、retention、preservation 与测量有效性没有同时过门。',
+    title: 'H1.40：第二代持续整合为什么没有通过门槛？',
+    description: 'E2 经验供给和 G2 adapter 都成立，但 acquisition、retention、preservation 没有一起通过，因此 T2 没有打开。',
   },
   'measurement-boundary': {
-    title: 'H1.42：为什么修完测量器以后，机制比较仍然不能下结论？',
-    description: 'H1.42-MV Stage A 通过 calibration，但 Stage B 修正 validator 后仍有两个 parser/runtime-invalid clusters，最终停在 MVD0 measurement boundary。',
+    title: 'H1.41–H1.42：测量边界与不能下的结论',
+    description: '区分 measurement-invalid 结果、未打开的 T2 与仍然可以保留的上游机制证据。',
   },
   'current-conclusion': {
-    title: 'OpenEvo × WebShop 现在到底能下什么结论？',
-    description: '区分 supported、negative、invalid 与 unknown：当前支持一次可复现跨任务迁移；H1.42 仍停在测量边界，不支持已经建立多代 self-evolution。',
+    title: '截至 H1.41，OpenEvo × WebShop 能下什么结论？',
+    description: '区分已经支持、尚未支持、测量无效和仍待正式比较的结论边界。',
   },
   'benchmark-first': {
-    title: '先跑真正的比赛：为什么 Benchmark 必须回到 OpenEvo × WebShop 主线',
-    description: '把项目重新分成 benchmark 与 mechanism 两层：先回答 OpenEvo 最终是否让 Qwen2.5-3B 在未见 WebShop 任务上更强，再用旧 H1 系列解释原因。',
+    title: '为什么还需要一场正式的 WebShop 比较？',
+    description: '现有实验已经回答一部分机制问题并复现第一代内部迁移；尚缺 OpenEvo 与 SEED 在同一套官方保留任务上的正式比较。',
   },
   'seed-faithful-benchmark': {
-    title: '一场公平的 WebShop 比赛应该怎么跑？',
-    description: '冻结 SEED-faithful train/test boundary、128 final test tasks、Score/Success、matched interaction budget 与 test-time no-learning rule。',
+    title: '怎样才算和 SEED 公平比较？',
+    description: '固定 WebShop small world、任务边界、goal ordering、交互规则、评估任务身份和评分方式。',
   },
   'openevo-benchmark-design': {
-    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
-    description: '把 carrier 与 feedback density 分成两个轴，定义 OpenEvo-Native-Sparse 主比较、Dense principal ablation、Param variant 与第一阶段 pilot。',
+    title: 'OpenEvo 的不同进化方式应该怎样比较？',
+    description: '把经验载体与反馈密度拆成两个实验变量，在公平比较之后检验 Native、Param、Sparse 与 Dense 等变体。',
   },
 };
-
-const isPrimerNote = (value: NoteId): value is ResearchPrimerMovedId =>
-  (primerNotes as readonly string[]).includes(value);
-const isBenchmarkNote = (value: NoteId): value is OpenEvoWebShopBenchmarkNoteId =>
-  (benchmarkNotes as readonly string[]).includes(value);
+const current = meta[note];
+if (!current) throw new Error(`Unknown result note: ${note}`);
 ---
-
-<AppLayout title={meta[note].title} description={meta[note].description} locale="zh">
-  {isPrimerNote(note)
-    ? <ResearchPrimerMoved note={note} />
-    : isBenchmarkNote(note)
-      ? <OpenEvoWebShopBenchmarkNote note={note} />
-      : <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}
+<AppLayout title={current.title} description={current.description} locale="zh">
+  {primerNotes.has(note as ResearchPrimerMovedId) && <ResearchPrimerMoved note={note as ResearchPrimerMovedId} />}
+  {resultNotes.has(note as OpenEvoWebShopResultNoteId) && <OpenEvoWebShopResultNote note={note as OpenEvoWebShopResultNoteId} />}
+  {benchmarkNotes.has(note as OpenEvoWebShopBenchmarkNoteId) && <OpenEvoWebShopBenchmarkNote note={note as OpenEvoWebShopBenchmarkNoteId} />}
 </AppLayout>

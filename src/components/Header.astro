@@ -77,8 +77,8 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
         </summary>
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
-            <small>{t('一级资料区', 'Top-level resources')}</small>
-            <strong>{t('研究子页留在各自模块里，这里只保留全站一级入口', 'Research subpages stay inside their own modules; this menu only contains top-level site areas')}</strong>
+            <small>{t('实验资料', 'Research resources')}</small>
+            <strong>{t('模型、论文、比较工具、实验工作台与证据状态', 'Models, papers, comparison tools, experiment workspace, and evidence status')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -110,7 +110,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
         <nav class="mobile-journeys" aria-label={t('主要操作', 'Main actions')}>
           {journeyLinks.map((link, index) => (
             <a href={link.href} aria-current={link.current ? 'page' : undefined} data-active={link.active ? 'true' : undefined}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
+              <span>{String(index + 1).padStart(2,'0')}</span>
               <div><strong>{link.label}</strong><small>{link.meta}</small></div>
             </a>
           ))}
@@ -120,7 +120,7 @@ const switchHref = switchLocalePath(otherLocale, pathNoBase);
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
           <span id="mobile-tools-title">{t('资料', 'Resources')}</span>
-          <small>{t('这里只列全站一级资料入口', 'Only top-level resource areas are listed here')}</small>
+          <small>{t('模型、论文、比较、实验与证据', 'Models, papers, comparison, experiments, and evidence')}</small>
         </div>
         <nav class="mobile-utility-links" aria-label={t('资料', 'Resources')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}

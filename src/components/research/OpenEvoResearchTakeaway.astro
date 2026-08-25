@@ -1,0 +1,38 @@
+<section class="research-takeaway" aria-labelledby="research-takeaway-title">
+  <header>
+    <p>TAKEAWAY</p>
+    <div>
+      <h2 id="research-takeaway-title">目前最重要的结论是什么？</h2>
+      <p>OpenEvo 会学习，也能在特定条件下把学到的东西用到新的内部任务上；但它还没有证明能够稳定地一代一代持续变好，而且真正的 SEED 官方保留任务公平比较仍未完成。</p>
+    </div>
+  </header>
+
+  <div class="claim-grid">
+    <article>
+      <small>已经支持</small>
+      <strong>第一代内部新任务迁移可以出现，并已独立复现</strong>
+      <p>“新任务”指 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估）。</p>
+    </article>
+    <article>
+      <small>尚未支持</small>
+      <strong>OpenEvo 已经在 SEED 官方保留任务上证明有效</strong>
+      <p>现有 positive transfer（正向迁移）任务来自 goal_idx ≥ 500，不是 0–499 的 SEED official held-out tasks（SEED 官方保留任务）。</p>
+    </article>
+    <article>
+      <small>最小下一步</small>
+      <strong>完成一场 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）</strong>
+      <p>需要冻结正式 train / held-out boundary（训练 / 保留任务边界）与匹配评估协议；现有 H0–H1.41 机制实验不需要因此全部重跑。</p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .research-takeaway{max-width:1160px;margin:0 auto;padding:0 24px 54px;color:var(--color-text)}
+  .research-takeaway>header{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .research-takeaway>header>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .research-takeaway h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .research-takeaway header div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .claim-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.claim-grid article{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.claim-grid small{color:var(--color-accent);font-size:.72rem;font-weight:750}.claim-grid strong{display:block;margin:12px 0 10px;font-size:1rem;line-height:1.4}.claim-grid p{margin:0;color:var(--color-text-muted);font-size:.8rem;line-height:1.58}
+  @media(max-width:960px){.claim-grid{grid-template-columns:1fr}}
+  @media(max-width:720px){.research-takeaway{padding-inline:18px}.research-takeaway>header{grid-template-columns:1fr;gap:8px}}
+</style>

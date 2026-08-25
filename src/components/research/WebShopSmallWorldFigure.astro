@@ -1,0 +1,92 @@
+---
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/setup.sh';
+---
+
+<section id="fig-webshop-small-world" class="canonical-figure webshop-small-world" aria-labelledby="webshop-small-world-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('第二步 · OFFICIAL SMALL MODE','STEP 2 · OFFICIAL SMALL MODE')}</div>
+    <h2 id="webshop-small-world-title">{t('WebShop 官方 small 模式：商品世界固定为 1,000 个商品','WebShop official small mode fixes the product world at 1,000 products')}</h2>
+    <p>{t('WebShop 官方脚本提供 small 配置；SEED released code 默认指向这组 1,000-product 文件。这里发生的是商品世界的 subset（取子集），不是 SEED 自己重新随机制作数据集。','WebShop provides an official small configuration, and SEED’s released code points to these 1,000-product files by default. This operation is a product-world subset, not a new random dataset created by SEED.')}</p>
+  </header>
+
+  <figure class="world-story" aria-labelledby="webshop-small-world-title">
+    <section class="world-panel original" data-ui-audit-item>
+      <div class="panel-kicker">{t('完整 WEBSHOP','FULL WEBSHOP')}</div>
+      <div class="warehouse" aria-hidden="true">
+        {Array.from({ length: 60 }).map(() => <span></span>)}
+      </div>
+      <div class="catalog-continuation" aria-hidden="true">…</div>
+      <strong>1,181,436</strong>
+      <span>{t('商品（products）','products')}</span>
+      <p>{t('方块只表示“商品很多”，不按真实数量逐个绘制，也不代表保留或删除关系。','Blocks only communicate “many products”; they are not one-to-one and do not encode kept/removed items.')}</p>
+    </section>
+
+    <section class="transform" aria-label={t('WebShop 官方 small 配置','WebShop official small configuration')}>
+      <div class="transform-line" aria-hidden="true"></div>
+      <div class="transform-card">
+        <div class="official-row">
+          <div class="official-badge" title={t('WebShop 官方提供','Provided by WebShop')} aria-label={t('WebShop 官方提供','Provided by WebShop')}>
+            <span class="official-mark" aria-hidden="true">✓</span>
+            <b>{t('WebShop 官方提供','Official WebShop source')}</b>
+          </div>
+        </div>
+        <small>SUBSET · {t('取子集','SELECT')}</small>
+        <strong>{t('WebShop small 模式','WebShop small mode')}</strong>
+        <code>./setup.sh -d small</code>
+        <span>{t('官方脚本下载预先准备好的 1,000-product small 数据文件。','The official script downloads the prepared 1,000-product small data files.')}</span>
+        <a class="official-link" href={officialSetupUrl} target="_blank" rel="noreferrer">
+          {t('查看 WebShop 官方 setup.sh ↗','View WebShop official setup.sh ↗')}
+        </a>
+      </div>
+    </section>
+
+    <section class="world-panel small" data-ui-audit-item>
+      <div class="panel-kicker">{t('SMALL WEBSHOP','SMALL WEBSHOP')}</div>
+      <div class="warehouse compact" aria-hidden="true">
+        {Array.from({ length: 20 }).map(() => <span></span>)}
+      </div>
+      <strong>1,000</strong>
+      <span>{t('商品（products）','products')}</span>
+      <p>{t('这是 SEED released code 默认指向的 small WebShop 商品世界。','This is the small WebShop product world targeted by SEED’s released code by default.')}</p>
+    </section>
+
+    <details class="evidence">
+      <summary>{t('查看代码证据','Show code evidence')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>WebShop setup.sh</small>
+          <code>Usage: ./setup.sh -d small|all</code>
+          <p>{t('small 模式下载 items_shuffle_1000 与 items_ins_v2_1000。','Small mode downloads items_shuffle_1000 and items_ins_v2_1000.')}</p>
+          <a href={officialSetupUrl} target="_blank" rel="noreferrer">{t('打开官方代码 ↗','Open official code ↗')}</a>
+        </article>
+        <article>
+          <small>SEED WebShop utils.py</small>
+          <code>DEFAULT_FILE_PATH = ...items_shuffle_1000.json</code>
+          <p>{t('SEED 仓库中的 WebShop 默认路径直接指向 1,000-product 文件。','SEED’s bundled WebShop defaults directly to the 1,000-product file.')}</p>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>
+      {t('RELEASED-CODE DEFAULT：SEED 使用 WebShop 官方已经提供好的 small 配置；这一阶段只改变商品世界的规模与来源，不改变“商品”这个对象类型。','RELEASED-CODE DEFAULT: SEED uses WebShop’s already-provided official small configuration. This stage changes the product-world scale and source, not the object type being counted.')}
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-small-world{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:900px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.6rem,3.7vw,2.9rem);line-height:1.05;letter-spacing:-.045em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
+  .world-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.56fr) minmax(0,1fr);gap:1rem;align-items:stretch;margin:1.5rem 0 0}
+  .world-panel{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.panel-kicker{color:var(--muted);font:800 .6rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.world-panel strong{display:block;margin:.8rem 0 .12rem;font-size:clamp(2.1rem,5vw,4.4rem);line-height:.9;letter-spacing:-.06em}.world-panel>span{display:block;color:var(--muted);font-size:.75rem}.world-panel p{margin:.7rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}.world-panel.original{border-top:5px solid var(--line-strong,var(--line))}.world-panel.small{border-top:5px solid var(--accent)}
+  .warehouse{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:1rem;align-content:start}.warehouse span{aspect-ratio:1;border-radius:3px;background:var(--ink);opacity:.46}.warehouse.compact{grid-template-columns:repeat(5,1fr);max-width:180px}.warehouse.compact span{background:var(--accent);opacity:.85}.catalog-continuation{display:flex;align-items:center;justify-content:center;margin:.55rem 0 .1rem;height:22px;border:1px dashed var(--line);border-radius:999px;color:var(--muted);font:800 .9rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.25em}
+  .transform{position:relative;display:grid;place-items:center;min-height:270px}.transform-line{position:absolute;left:-.25rem;right:-.25rem;top:50%;height:2px;background:var(--accent)}.transform-line::after{content:'';position:absolute;right:-2px;top:50%;border:7px solid transparent;border-left-color:var(--accent);transform:translateY(-50%)}.transform-card{position:relative;z-index:1;width:100%;padding:.9rem;border:1px solid var(--accent);border-radius:12px;background:var(--surface);text-align:center}.transform-card small,.transform-card>span{display:block}.transform-card small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.transform-card>strong{display:block;margin:.25rem 0 .6rem;font-size:1rem}.transform-card code{display:block;padding:.48rem;border-radius:7px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.transform-card>span{margin-top:.55rem;color:var(--muted);font-size:.68rem;line-height:1.45}
+  .official-row{display:flex;justify-content:center;margin:-1.35rem 0 .75rem}.official-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.27rem .56rem .27rem .32rem;border:1px solid color-mix(in srgb,#1677ff 75%,black);border-radius:999px;background:color-mix(in srgb,#1677ff 10%,var(--surface));box-shadow:0 4px 14px color-mix(in srgb,#1677ff 16%,transparent)}.official-badge b{color:#1467d2;font-size:.62rem;line-height:1.2}.official-mark{display:grid;place-items:center;width:21px;height:21px;clip-path:polygon(50% 0,63% 9%,79% 7%,88% 21%,100% 30%,96% 47%,100% 63%,87% 74%,81% 91%,64% 91%,50% 100%,36% 91%,19% 91%,13% 74%,0 63%,4% 47%,0 30%,12% 21%,21% 7%,37% 9%);background:#1677ff;color:#fff;font:900 .7rem/1 system-ui,sans-serif}.official-link{display:inline-block;margin-top:.7rem;color:#1467d2;font-size:.68rem;font-weight:800;text-underline-offset:3px}.official-link:hover{text-decoration-thickness:2px}
+  .evidence{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.7rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:#1467d2;font-size:.68rem;font-weight:800}
+  .world-story figcaption{grid-column:1/-1;margin:0;padding:.85rem 1rem;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 5%,var(--surface));color:var(--muted);font-size:.76rem;line-height:1.6}
+  @media(max-width:800px){.world-story{grid-template-columns:1fr}.transform{min-height:160px}.transform-line{left:50%;right:auto;top:-.2rem;bottom:-.2rem;width:2px;height:auto;transform:translateX(-50%)}.transform-line::after{right:auto;left:50%;top:auto;bottom:-8px;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--accent)}.evidence-grid{grid-template-columns:1fr}.webshop-small-world{width:min(100% - 1rem,1120px);padding:1rem}.official-row{margin:-1.1rem 0 .65rem}}
+</style>

@@ -9,7 +9,7 @@ const p = (path: string) => localePath(locale, path);
 const chain = [
   { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定 checkpoint、精度和运行设置。','Pin checkpoint, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
   { eyebrow:t('方法','Methods'), title:'SEED / OpenEvo', body:t('区分参数更新与跨任务演化。','Separate parameter updates from cross-task evolution.'), href:p('/research/seed-openevo/loops/') },
-  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('先对照任务与评分，再进入各自的交互讲解。','Compare tasks and metrics, then open each dedicated interactive explainer.'), href:p('/research/seed-openevo/benchmarks/') },
+  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('ALFWorld 与 WebShop 的任务结构、交互和评分规则不同。','ALFWorld and WebShop use different task structures, interactions, and scoring rules.'), href:p('/research/seed-openevo/benchmarks/') },
   { eyebrow:t('实验','Experiment'), title:'openevo-experiment', body:t('实时状态由实际 branch 的 campaign 与 reconciliation 决定。','Live state is resolved from the actual branch campaign and reconciliation.'), href:p('/research/seed-openevo/results/') },
 ] as const;
 ---
@@ -30,7 +30,7 @@ const chain = [
   <figure class="mission-chain" aria-labelledby="mission-chain-caption">
     <figcaption id="mission-chain-caption"><span>{t('研究对象','Research objects')}</span><strong>{t('模型、方法、环境与当前实验使用同一套可追溯记录。','Model, method, environment, and current experiments share one traceable record.')}</strong></figcaption>
     <ol>{chain.map((node,index)=><li><a href={node.href}><span>{String(index+1).padStart(2,'0')}</span><small>{node.eyebrow}</small><strong>{node.title}</strong><p>{node.body}</p></a></li>)}</ol>
-    <p class="mission-history">{t('seed3090 与 openevo-webshop 继续作为历史证据与迁移来源。静态网页只保存带日期的默认分支快照；真正的“当前阶段”和 GPU 分配必须回到 openevo-experiment 的实际工作分支与 preregistration 解析。','seed3090 and openevo-webshop remain historical evidence and migration sources. This static site keeps only dated default-branch snapshots; the actual current phase and GPU allocation must be resolved from the openevo-experiment branch in use and its preregistration.')}</p>
+    <p class="mission-history">{t(`seed3090 与 openevo-webshop 是历史证据与迁移来源。默认分支快照核验于 ${openEvoScientificState.checkedAt}；最新实验阶段和 GPU 分配以 openevo-experiment 的实际工作分支与 preregistration 为准。`,`seed3090 and openevo-webshop are historical evidence and migration sources. The default-branch snapshot was checked on ${openEvoScientificState.checkedAt}; the latest experiment phase and GPU allocation are resolved from the openevo-experiment branch in use and its preregistration.`)}</p>
   </figure>
 </section>
 

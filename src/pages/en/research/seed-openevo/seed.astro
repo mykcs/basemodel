@@ -2,12 +2,10 @@
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
-import WebShopScaleEcho from '../../../../components/research/WebShopScaleEcho.astro';
 const locale = 'en' as const;
 ---
 <AppLayout title="SEED framework and experiment loop" description="Explain SEED's WebShop data configuration, hindsight-skill SFT, self-evolving on-policy distillation, GRPO, actor/analyzer synchronization, and the training-to-inference boundary." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="seed">
-    <WebShopScaleEcho locale={locale} side="seed" />
     <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
   </SeedOpenEvoResearchPage>
 </AppLayout>

@@ -8,18 +8,15 @@ const benchmarkRoutes = [
   '/research/seed-openevo/results/openevo-benchmark-design/',
 ] as const;
 
-test('Chinese results landing is an article index with completed evidence and benchmark redesign separated', async ({ page }) => {
+test('Chinese results landing uses the current question-first research index', async ({ page }) => {
   await page.goto(indexRoute);
   const index = page.getByTestId('openevo-webshop-result-index');
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
-  await expect(index.getByRole('heading', { name: '先建立共同语言' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '按证据链读已经完成的实验' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '把主问题重新拉回 Benchmark' })).toBeVisible();
-
-  for (const route of benchmarkRoutes) {
-    await expect(index.locator(`a[href="${route}"]`)).toHaveCount(1);
-  }
+  await expect(index.getByRole('heading', { name: 'OpenEvo、WebShop、SEED 和实验记录分别指什么？' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '把 OpenEvo 放到 SEED 使用的 WebShop setting（SEED WebShop 实验设定）下，它到底会怎样？' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
+  await expect(index.locator('article.question-card')).toHaveCount(7);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 

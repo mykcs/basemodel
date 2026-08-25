@@ -1,126 +1,157 @@
 ---
-const root = '/research/seed-openevo/results';
+const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
 
-const canonicalReferences = [
-  {
-    href: '/research/seed-openevo/webshop/',
-    label: 'WebShop',
-    title: '任务、交互与评分',
-    body: 'WebShop 自己负责解释 instruction、网页 observation、search / click / option / buy、Score 与 exact Success。',
-  },
-  {
-    href: '/research/seed-openevo/webshop/#fig-seed-webshop',
-    label: 'Figure S1',
-    title: 'SEED × WebShop：公平比较使用的环境与任务划分',
-    body: '正式场地图：论文报告、released-code default、训练候选池与 held-out test pool 的证据边界。',
-  },
+const references = [
   {
     href: '/research/seed-openevo/openevo/',
     label: 'OpenEvo',
-    title: '跨任务演化机制',
-    body: 'OpenEvo 自己负责解释 task boundary、sealed evidence、evolution carrier、validation 与 successor revision。',
+    title: 'OpenEvo 是怎么从经验更新自己的？',
+    body: '跨任务演化、experience carrier（经验载体）、参数更新，以及下一代模型如何产生。',
   },
   {
-    href: '/research/seed-openevo/loops/#fig-seed-openevo-update-target',
-    label: 'Figure C1',
-    title: 'SEED 与 OpenEvo：经验最后改了什么',
-    body: '跨 benchmark 可复用的正式比较图：SEED 更新 policy；OpenEvo 通过不同 carrier 形成 validated successor state。',
+    href: '/research/seed-openevo/webshop/',
+    label: 'WebShop',
+    title: '这些实验到底在什么任务环境里运行？',
+    body: '1,000 个商品、6,910 个 goals、0–499 / 500–6909 划分、seed 与评分规则。',
   },
   {
-    href: '/papers/seed/',
-    label: 'Paper',
-    title: 'SEED 论文与来源',
-    body: '需要核对原始方法、实验表格或论文来源时，从论文页进入。',
+    href: '/research/seed-openevo/seed/',
+    label: 'SEED',
+    title: 'SEED 在同一个环境里是怎么训练的？',
+    body: 'SEED 的 hindsight skill、SFT、GRPO，以及训练和推理阶段分别发生什么。',
+  },
+  {
+    href: '/research/seed-openevo/experiment/',
+    label: 'Experiment',
+    title: '这些结论具体来自哪些实验？',
+    body: 'campaign（实验批次）、manifest（任务清单）、运行代码、实验对账和下一轮协议。',
   },
 ] as const;
 
-const resultArticles = [
+const questions = [
   {
+    id: 'q1',
+    index: '01',
+    question: 'OpenEvo 真的发生了学习吗？',
+    answer: '发生了。训练、参数变化、adapter（适配器）保存与重新加载链路都实际工作；但“参数变了”不能直接等价为“WebShop 做得更好”。',
+    status: '已建立',
+    evidence: 'Phase G + H1.40 G2 parameter-update chain（参数更新链）',
+    boundary: '这些实验能够确认 training / save / reload / adapter identity（训练 / 保存 / 重载 / 适配器身份）真实成立，但不能单独证明任务收益提高。',
+    links: [
+      { kind: 'Code', label: 'G2 实际训练 launcher（启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
+      { kind: 'Config', label: 'H1.40-R2 多代更新冻结配置', href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
+      { kind: 'Machine result', label: 'G2 training reconciliation（训练对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` },
+    ],
+  },
+  {
+    id: 'q2',
+    index: '02',
+    question: 'OpenEvo 有没有成功经验可以学习？',
+    answer: '有。Base model（基础模型）能够自然产生成功轨迹；H0 的正式矩阵中有 128 次尝试、96 次科学有效、28 条 qualified positive（合格正向经验）。',
+    status: '已建立',
+    evidence: 'H0 / H0.1 natural-success evidence（自然成功证据）',
+    boundary: 'H0 说明成功经验的供给不是零，但这些成功轨迹本身还不能证明经验会迁移到新的任务。',
+    links: [
+      { kind: 'Code', label: 'H0 natural-success launcher（自然成功启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
+      { kind: 'Machine result', label: 'H0 final reconciliation（最终实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json` },
+      { kind: 'Human report', label: '2026-08-15 progress report（进展报告）', href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
+    ],
+  },
+  {
+    id: 'q3',
+    index: '03',
+    question: '有成功经验以后，OpenEvo 能把它学进去吗？',
+    answer: '能学进去，但训练拟合与闭环任务收益不是同一件事。成功监督可以改变训练目标与模型行为，却不保证新的 WebShop episode（完整任务回合）马上变好。',
+    status: '部分建立',
+    evidence: 'H1.11 / H1.13 fit-versus-behavior（拟合与行为）实验',
+    boundary: '这些结果支持“训练目标可以被成功监督改变，而闭环收益不会自动出现”；它们不能被外推成“OpenEvo 永远不能迁移”。',
+    links: [
+      { kind: 'Code', label: 'Tracked closed-loop evaluator（可追踪闭环评估器）', href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
+      { kind: 'Manifest', label: 'H1.11 frozen task manifest（冻结任务清单）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
+      { kind: 'Machine result', label: 'H1.11 reconciliation（实验对账）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
+    ],
+  },
+  {
+    id: 'q4',
     index: '04',
-    href: `${root}/why-it-kept-failing/`,
-    title: '为什么我们前面一直没有得到可靠的 fresh-task 提升？',
-    body: '从 3B 到 7B、从 parser / fallback 到冻结配对面板：把一连串“跑通了但不能下结论”的实验放回同一条证据链。',
-    tag: '失败与校准',
+    question: '学到的经验能迁移到新的任务吗？',
+    answer: '不是自动发生，但可以发生。H1.38B 首次得到可靠正向信号，H1.39 又在独立任务组上复现。这两个实验属于 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估），不是 SEED official held-out evaluation（SEED 官方保留任务评估）。',
+    status: '可复现，但有边界',
+    evidence: 'H1.38B → H1.39 independent replication（独立复现）',
+    boundary: 'H1.38B / H1.39 的 evaluation tasks（评估任务）来自 goal_idx ≥ 500，因此它们证明的是内部新任务迁移，不是 0–499 的 SEED 官方保留任务表现。',
+    links: [
+      { kind: 'Manifest', label: 'H1.38B frozen eval manifest（冻结评估清单）', href: `${evidenceRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
+      { kind: 'Machine result', label: 'H1.38B reconciliation summary（实验对账摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json` },
+      { kind: 'Manifest', label: 'H1.39 independent panel（独立任务组）', href: `${evidenceRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
+      { kind: 'Human report', label: 'H1.39 sealed report（封存报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
+    ],
   },
   {
+    id: 'q5',
     index: '05',
-    href: `${root}/first-positive-transfer/`,
-    title: '第一次正结果：什么时候第一次看到可迁移收益？',
-    body: 'H1.38B continuation 中，SD-LoRA 对 BASE 的 fresh-task delta 为 +0.124，95% CI [0.0326, 0.2194]；这是后续独立复现的起点。',
-    tag: '第一次正结果',
+    question: '第一代能迁移，是否意味着可以一直越学越好？',
+    answer: '目前不能这样说。H1.40 里新的成功经验充足，G2 adapter（第二代适配器）也真实建立，但 acquisition（新知识获取）、retention（旧知识保持）与 preservation（已有收益保持）没有一起通过，因此 T2 没有打开。',
+    status: '尚未建立',
+    evidence: 'H1.40 continual-integration gates（持续整合门槛）',
+    boundary: 'H1.40 证明 E2 经验供给充足且 G2 真实创建，但 T2 没有打开，所以它支持“第二代持续整合尚未建立”，不能写成“G2 已经在正式 T2 上证明迁移失败”。',
+    links: [
+      { kind: 'Config', label: 'H1.40-R2 frozen protocol（冻结协议）', href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
+      { kind: 'Machine result', label: 'Formal upstream summary（正式上游评估摘要）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` },
+      { kind: 'Human report', label: 'Formal upstream evaluation report（正式上游评估报告）', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
+    ],
   },
   {
+    id: 'q6',
     index: '06',
-    href: `${root}/independent-replication/`,
-    title: '独立复现：换一批全新 WebShop 任务以后，提升还在吗？',
-    body: 'H1.39-MR 冻结训练产物后换到独立新任务面板；ordinary 与 SD 两条更新路线都高于同一个 BASE，其中 SD − BASE 为 +0.248845。',
-    tag: '最强证据',
+    question: '现在真正可以下什么结论？',
+    answer: 'OpenEvo 已经建立“成功经验 → 参数更新 → 特定条件下的第一代新任务迁移”这条链；但稳定多代 self-evolution（自进化）、SEED 官方保留任务结果以及 OpenEvo 优于 SEED，都还不能声称成立。',
+    status: '结论边界',
+    evidence: 'sealed results（封存结果）+ program ledger（实验总账）',
+    boundary: 'program ledger（实验总账）把 sealed-result、diagnostic-only、measurement-invalid 等状态分开，避免把诊断实验或无效测量写成正式结果。',
+    links: [
+      { kind: 'Ledger', label: 'WebShop program ledger（实验总账）', href: `${evidenceRoot}/docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json` },
+      { kind: 'Program report', label: '2026-08-21 program report（项目总报告）', href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-21.md` },
+      { kind: 'Status', label: 'Current campaign（当前实验批次）', href: `${evidenceRoot}/configs/experiment/current-campaign.json` },
+    ],
   },
   {
+    id: 'q7',
     index: '07',
-    href: `${root}/second-generation/`,
-    title: '第二次连续写入：为什么还不能说“多代自进化”成立？',
-    body: '第二轮有足够成功经验，也真实完成了 G2 参数写入，但 acquisition、retention 与上一轮收益 preservation 的上游门没有一起通过。',
-    tag: '连续写入',
-  },
-  {
-    index: '08',
-    href: `${root}/measurement-boundary/`,
-    title: 'H1.42：为什么修完测量器以后，机制比较仍然不能下结论？',
-    body: 'Stage A 通过 measurement calibration；Stage B 修正 validator 语义后仍保留两个 parser/runtime-invalid clusters，selector 最终为 MVD0。',
-    tag: '测量边界',
-  },
-  {
-    index: '09',
-    href: `${root}/current-conclusion/`,
-    title: '现在到底能下什么结论？什么还不能说？',
-    body: '把 supported、negative、invalid 和 still unknown 分开：当前支持一次可复现跨任务迁移，但不支持已经建立多代 self-evolution。',
-    tag: '结论边界',
-  },
-] as const;
-
-const designArticles = [
-  {
-    index: '10',
-    href: `${root}/benchmark-first/`,
-    title: '先跑真正的比赛：为什么 Benchmark 必须回到主线',
-    body: '旧 H1 不是废实验，而是 mechanism studies。主线先回答同一个 Qwen2.5-3B 加入 OpenEvo 后，最终未见任务成绩到底有没有提高。',
-    tag: '研究重分层',
-  },
-  {
-    index: '11',
-    href: `${root}/seed-faithful-benchmark/`,
-    title: '一场公平的 WebShop 比赛应该怎么跑？',
-    body: '把 500–6909 训练池、0–499 test pool、冻结 128 test、Score / Success、19,200-episode Stage-2 budget 与 test-time no-learning rule 一次钉死。',
-    tag: 'Benchmark 协议',
-  },
-  {
-    index: '12',
-    href: `${root}/openevo-benchmark-design/`,
-    title: 'OpenEvo 到底该进化什么？Native、Param、Sparse 与 Dense 怎么分',
-    body: '把 carrier 和 feedback density 拆成两个轴；先做 OpenEvo-Native-Sparse 公平比较，再把 Dense feedback 与参数内化作为可解释扩展。',
-    tag: '下一阶段设计',
+    question: '最后还缺哪一个关键实验？',
+    answer: '缺一场真正的 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）：训练仍来自 500–6909，正式评估只使用 0–499，并让 OpenEvo / SEED 在相同任务身份、seed 与评分协议下比较。',
+    status: '待补',
+    evidence: 'H1.30 正式比较没有启动；formal evaluation denominator（正式评估分母）= 0',
+    boundary: 'H1.30 完成了 route smoke（路线冒烟测试）、parquet / checkpoint 等基础设施验证，但没有消费正式评估任务，因此当前不存在可以报告的 OpenEvo vs SEED 正式比较结果。',
+    links: [
+      { kind: 'Planned config', label: 'H1.30 SEED comparison config（比较配置）', href: `${evidenceRoot}/configs/experiment/h1.30-seed-comparison.json` },
+      { kind: 'Infrastructure code', label: 'H1.30 SEED-route smoke launcher（路线冒烟测试启动器）', href: `${evidenceRoot}/scripts/openevo_webshop/launch_h130_seed_route_smoke.sh` },
+      { kind: 'Status', label: 'H1.30 status：formal denominator = 0', href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md` },
+    ],
   },
 ] as const;
 ---
 
 <div class="result-index" data-testid="openevo-webshop-result-index">
   <header class="index-hero">
-    <p class="eyebrow">OPENEVO × WEBSHOP · EXPERIMENT EVIDENCE</p>
-    <h1>实验结果页只讲实验；方法和环境回到各自的正式页面</h1>
-    <p class="lede">这里不再重复解释 WebShop、SEED 或 OpenEvo。读实验前需要的概念只保留权威入口；随后直接沿证据链阅读已经完成的结果，再进入下一轮 benchmark 设计。</p>
+    <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH FINDINGS</p>
+    <h1>OpenEvo 能不能把自己的经验变成后续任务能力？</h1>
+    <p class="lede">从最基本的问题开始：它有没有真的学到东西？有没有成功经验可学？学到以后能不能迁移到没训练过的任务？这种提升能不能继续到下一代？最后，它能不能在和 SEED 完全相同的测试条件下成立？</p>
+    <div class="cutoff-note">
+      <strong>证据截止：H1.41</strong>
+      <span>H1.42 是之后产生的 measurement-boundary（测量边界）记录，因此不用于判断 H1.41 时点已经成立的结论。</span>
+    </div>
   </header>
 
   <nav class="reference-index" aria-labelledby="reference-title">
     <div class="result-section-heading compact-heading">
-      <p>REFERENCE</p>
+      <p>BACKGROUND</p>
       <div>
-        <h2 id="reference-title">先建立共同语言：需要时再打开这些正式说明</h2>
-        <p>一个概念只保留一个 canonical explanation；实验文章通过稳定 URL / Figure anchor 引用它，不再复制前景概要。</p>
+        <h2 id="reference-title">OpenEvo、WebShop、SEED 和实验记录分别指什么？</h2>
+        <p>四张卡分别对应方法、任务环境、对照方法和实验复现。遇到不熟的名词时，可以直接打开对应说明。</p>
       </div>
     </div>
     <div class="reference-grid">
-      {canonicalReferences.map((item) => (
+      {references.map((item) => (
         <a href={item.href} class="reference-card">
           <small>{item.label}</small>
           <strong>{item.title}</strong>
@@ -129,70 +160,70 @@ const designArticles = [
         </a>
       ))}
     </div>
+    <div class="canonical-figure-links" aria-label="关键对照图">
+      <span>关键对照图</span>
+      <a href="/research/seed-openevo/webshop/#fig-seed-webshop">SEED 的 WebShop 正式设定图 →</a>
+      <a href="/research/seed-openevo/loops/#fig-seed-openevo-update-target">SEED × OpenEvo 更新目标对照图 →</a>
+    </div>
   </nav>
 
-  <section class="index-section" aria-labelledby="results-title">
-    <div class="result-section-heading">
-      <p>PART I</p>
-      <div>
-        <h2 id="results-title">按证据链读已经完成的实验</h2>
-        <p>不是按实验编号堆日志，而是按“为什么失败 → 第一次正结果 → 独立复现 → 第二代为什么没过 → 测量边界 → 现在能说什么”组织。</p>
-      </div>
-    </div>
-
-    <div class="article-list">
-      {resultArticles.map((article) => (
-        <a href={article.href} class="result-card">
-          <div class="result-number">{article.index}</div>
-          <div class="result-copy">
-            <div class="result-meta"><small>{article.tag}</small></div>
-            <h3>{article.title}</h3>
-            <p>{article.body}</p>
-          </div>
-          <strong aria-hidden="true">→</strong>
-        </a>
-      ))}
+  <section class="main-question" aria-labelledby="main-question-title">
+    <p>研究问题</p>
+    <div>
+      <h2 id="main-question-title">把 OpenEvo 放到 SEED 使用的 WebShop setting（SEED WebShop 实验设定）下，它到底会怎样？</h2>
+      <p>更具体地说：OpenEvo 能否从自己完成任务的经验中学习，并把这种学习转化成之后没有训练过的任务表现？</p>
     </div>
   </section>
 
-  <section class="index-section" aria-labelledby="design-title">
+  <section class="question-section" aria-labelledby="question-title">
     <div class="result-section-heading">
-      <p>PART II</p>
+      <p>SEVEN QUESTIONS</p>
       <div>
-        <h2 id="design-title">把主问题重新拉回 Benchmark</h2>
-        <p>这三篇不是新的实验结果，而是下一阶段的研究重分层：先跑真正的正式比赛，再用旧 H1 系列解释为什么结果会是这样。</p>
+        <h2 id="question-title">我们现在能回答的七个问题</h2>
+        <p>从“有没有真的学习”一路问到“能不能和 SEED 公平比较”。每一问先给当前答案；需要核对时，可以展开对应的实验依据、原始文件和结论边界。</p>
       </div>
     </div>
 
-    <div class="article-list">
-      {designArticles.map((article) => (
-        <a href={article.href} class="result-card design-card">
-          <div class="result-number">{article.index}</div>
-          <div class="result-copy">
-            <div class="result-meta"><small>{article.tag}</small></div>
-            <h3>{article.title}</h3>
-            <p>{article.body}</p>
+    <div class="question-list">
+      {questions.map((item) => (
+        <article class="question-card" id={item.id}>
+          <div class="question-number">{item.index}</div>
+          <div class="question-copy">
+            <div class="question-meta"><span>{item.status}</span></div>
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+            <details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">
+              <summary>展开实验依据</summary>
+              <div class="evidence-detail-body">
+                <p><strong>主要证据：</strong>{item.evidence}</p>
+                <p><strong>结论边界：</strong>{item.boundary}</p>
+                <div class="evidence-link-grid">
+                  {item.links.map((link) => (
+                    <a href={link.href} target="_blank" rel="noreferrer">
+                      <small>{link.kind}</small>
+                      <span>{link.label}</span>
+                      <b aria-hidden="true">↗</b>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </details>
           </div>
-          <strong aria-hidden="true">→</strong>
-        </a>
+        </article>
       ))}
     </div>
   </section>
-
-  <details class="legacy-primer-links">
-    <summary>旧的三篇前景笔记链接</summary>
-    <p>这些 URL 为了旧引用继续保留，但内容已经迁移到上面的 canonical 页面。</p>
-    <div><a href={`${root}/webshop-training/`}>旧 WebShop 前景笔记</a><a href={`${root}/seed-training/`}>旧 SEED 前景笔记</a><a href={`${root}/openevo-training/`}>旧 OpenEvo 前景笔记</a></div>
-  </details>
 </div>
 
 <style>
-  .result-index{max-width:1180px;margin:0 auto;padding:26px 24px 72px;color:var(--color-text)}
-  .index-hero{max-width:920px;padding:34px 0 44px}.eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:700;letter-spacing:.14em}.index-hero h1{margin:0;max-width:900px;font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;color:var(--color-text)}.lede{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.75}
-  .reference-index,.index-section{padding:34px 0 42px;border-top:1px solid var(--color-border)}.result-section-heading{display:grid;grid-template-columns:150px minmax(0,720px);gap:28px;margin-bottom:24px;align-items:start;width:100%;min-width:0}.compact-heading{margin-bottom:18px}.result-section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.14em}.result-section-heading>div{min-width:0}.result-section-heading h2{margin:0 0 8px;max-width:22ch;font-size:clamp(1.55rem,3vw,2.45rem);line-height:1.12;letter-spacing:-.035em;overflow-wrap:normal;word-break:normal}.result-section-heading div>p{margin:0;max-width:62ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.65}
-  .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.reference-card{position:relative;display:flex;min-height:190px;flex-direction:column;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease}.reference-card:hover,.reference-card:focus-visible,.result-card:hover,.result-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent)}.reference-card small{color:var(--color-accent);font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.reference-card strong{margin:16px 0 8px;font-size:.96rem;line-height:1.32}.reference-card span{color:var(--color-text-muted);font-size:.79rem;line-height:1.55}.reference-card b{margin-top:auto;padding-top:14px;color:var(--color-accent)}
-  .article-list{display:grid;gap:10px}.result-card{display:grid;grid-template-columns:64px minmax(0,1fr) 28px;gap:20px;align-items:start;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}.design-card{background:var(--color-surface)}.result-number{color:var(--color-text-muted);font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}.result-meta{margin-bottom:10px}.result-meta small{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.72rem}.result-card h3{margin:0 0 12px;color:var(--color-text);font-size:1.22rem;line-height:1.36;letter-spacing:-.02em}.result-card p{margin:0;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}.result-card>strong{align-self:center;color:var(--color-accent);font-size:1.15rem}
-  .legacy-primer-links{margin-top:8px;padding:14px 0;border-top:1px solid var(--color-border);color:var(--color-text-muted);font-size:.8rem}.legacy-primer-links summary{cursor:pointer;color:var(--color-text);font-weight:650}.legacy-primer-links p{margin:10px 0 8px}.legacy-primer-links div{display:flex;gap:12px;flex-wrap:wrap}.legacy-primer-links a{color:var(--color-accent)}
-  @media(max-width:1080px){.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media(max-width:760px){.result-section-heading{grid-template-columns:1fr;gap:8px}.result-section-heading h2{max-width:none}.reference-grid{grid-template-columns:1fr}.reference-card{min-height:auto}.result-card{grid-template-columns:42px minmax(0,1fr) 20px;gap:12px}.result-index{padding-inline:18px}.index-hero{padding-top:20px}}
+  .result-index{max-width:1160px;margin:0 auto;padding:28px 24px 12px;color:var(--color-text)}
+  .index-hero{max-width:960px;padding:36px 0 46px}.eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;letter-spacing:.14em}.index-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.9rem);line-height:1.02;letter-spacing:-.055em}.lede{max-width:800px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.04rem;line-height:1.78}.cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--color-border);font-size:.82rem}.cutoff-note strong{color:var(--color-accent)}.cutoff-note span{color:var(--color-text-muted)}
+  .reference-index,.question-section{padding:36px 0 44px;border-top:1px solid var(--color-border)}.result-section-heading{display:grid;grid-template-columns:145px minmax(0,740px);gap:28px;margin-bottom:24px;align-items:start}.result-section-heading>p,.main-question>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}.result-section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.result-section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .reference-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.reference-card{display:flex;min-height:178px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface);color:var(--color-text);text-decoration:none;transition:transform .18s ease,border-color .18s ease}.reference-card:hover,.reference-card:focus-visible{transform:translateY(-2px);border-color:var(--color-accent)}.reference-card small{color:var(--color-accent);font:750 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.reference-card strong{margin:16px 0 8px;font-size:.96rem;line-height:1.35}.reference-card span{color:var(--color-text-muted);font-size:.79rem;line-height:1.58}.reference-card b{margin-top:auto;padding-top:14px;color:var(--color-accent)}
+  .canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}.canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:750;letter-spacing:.08em}.canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}.canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  .main-question{display:grid;grid-template-columns:145px minmax(0,820px);gap:28px;padding:42px 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.main-question h2{margin:0;font-size:clamp(1.85rem,3.8vw,3.35rem);line-height:1.08;letter-spacing:-.04em}.main-question div>p{max-width:65ch;margin:16px 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.7}
+  .question-list{display:grid;gap:10px}.question-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.question-number{color:var(--color-text-muted);font:650 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}.question-meta span{display:inline-block;padding:4px 8px;border:1px solid var(--color-border);border-radius:999px;color:var(--color-accent);font-size:.7rem;font-weight:700}.question-card h3{margin:10px 0 10px;font-size:1.35rem;line-height:1.34;letter-spacing:-.025em}.question-card p{max-width:76ch;margin:0;color:var(--color-text-muted);font-size:.92rem;line-height:1.68}
+  .evidence-details{margin-top:16px;border-top:1px solid var(--color-border)}.evidence-details summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}.evidence-details summary::-webkit-details-marker{display:none}.evidence-details summary::after{content:'＋';font-weight:500}.evidence-details[open] summary::after{content:'−'}.evidence-detail-body{padding:12px 0 2px}.evidence-detail-body>p{font-size:.78rem}.evidence-detail-body>p+p{margin-top:8px}.evidence-detail-body>p strong{color:var(--color-text)}.evidence-link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}.evidence-link-grid a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);text-decoration:none}.evidence-link-grid a:hover,.evidence-link-grid a:focus-visible{border-color:var(--color-accent)}.evidence-link-grid small{grid-column:1;color:var(--color-accent);font:700 .65rem ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-link-grid span{grid-column:1;font-size:.76rem;line-height:1.45}.evidence-link-grid b{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--color-accent)}
+  @media(max-width:960px){.reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:720px){.result-index{padding-inline:18px}.result-section-heading,.main-question{grid-template-columns:1fr;gap:8px}.reference-grid,.evidence-link-grid{grid-template-columns:1fr}.reference-card{min-height:auto}.question-card{grid-template-columns:40px minmax(0,1fr);gap:12px;padding:18px}.index-hero{padding-top:24px}}
 </style>

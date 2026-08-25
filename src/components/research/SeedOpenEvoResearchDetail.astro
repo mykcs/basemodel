@@ -35,7 +35,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   webshop: {
     eyebrow: t('实验环境', 'Experiment environment'),
     title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
-    lede: t('先看一次普通 Agent 怎样走完一次 WebShop 购物任务，再看 WebShop 环境模型与原始数据集规模，最后看 SEED 论文语境下，公平比较要进入哪个 WebShop 场地。', 'Read one ordinary Agent\'s run through a WebShop task, then the WebShop environment model and the original dataset size, and finally the WebShop setting that makes a SEED comparison fair.'),
+    lede: t('从 Agent 怎么操作商店开始，一路看清原始 benchmark、官方 small 商品世界、synthetic goal generation、SEED goal split 和最终评分。', 'Start from how the Agent operates the shop, then follow the original benchmark, official small product world, synthetic goal generation, SEED goal split, and final evaluation.'),
   },
   alfworld: {
     eyebrow: t('实验环境', 'Experiment environment'),
@@ -48,9 +48,9 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
     lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
   },
   results: {
-    eyebrow: t('实验', 'Experiments'),
-    title: t('OpenEvo × WebShop 实验结果目录', 'OpenEvo × WebShop experiment evidence index'),
-    lede: t('这里汇总已经完成的实验、证据边界与下一阶段 benchmark 设计；WebShop、SEED 与 OpenEvo 的背景和机制由各自的正式页面统一解释。', 'This page indexes completed experiments, evidence boundaries, and the next benchmark design; WebShop, SEED, and OpenEvo background and mechanisms are maintained on their canonical pages.'),
+    eyebrow: t('研究结果', 'Research findings'),
+    title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings'),
+    lede: t('我们从七个最自然的问题开始：OpenEvo 有没有学习、有没有成功经验、能不能迁移、能不能持续变好，以及最后能不能和 SEED 在同一套正式评估下比较。', 'We start from seven natural questions: whether OpenEvo learns, whether it has successful experience to learn from, whether that transfers, whether improvement continues, and whether it can ultimately be compared with SEED under the same formal evaluation.'),
   },
 };
 
@@ -64,7 +64,7 @@ const current = copy[page];
   </header>
   <SeedOpenEvoResearchNav locale={locale} page={page} />
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
-  {page !== 'results' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
+  {page !== 'results' && page !== 'webshop' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
   {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
 </div>
 
