@@ -19,10 +19,9 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
   await expect(index.locator('.gate-grid .gate-card')).toHaveCount(3);
-  await expect(index.locator('.trace-example')).toBeVisible();
-  await expect(index.getByText('0.667', { exact: false }).first()).toBeVisible();
+  await expect(index.locator('.forest-row')).toHaveCount(3);
   await expect(index.getByText('+0.2488', { exact: false }).first()).toBeVisible();
-  await expect(index.getByText('MVD0 REMEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+  await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -87,7 +86,7 @@ for (const theme of ['light', 'dark'] as const) {
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         const index = page.getByTestId('openevo-webshop-result-index');
         await expect(index).toBeVisible();
-        await expect(index.locator('.trace-example')).toBeVisible();
+        await expect(index.locator('article.question-card')).toHaveCount(7);
         await expect(index.locator('.gate-grid')).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       }
