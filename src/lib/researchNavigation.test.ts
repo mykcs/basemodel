@@ -36,7 +36,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("t('SEED 与 OpenEvo 全局研究导航', 'SEED and OpenEvo global research navigation')");
     expect(navigation).toContain("t('科学研究', 'Scientific study')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
-    expect(navigation).toContain("t('实验结果', 'Experiment results')");
+    expect(navigation).toContain("t('研究结果', 'Research findings')");
   });
 
   it('mounts the same canonical nav on research pages and both bridge routes', () => {

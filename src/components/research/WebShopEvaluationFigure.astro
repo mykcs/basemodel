@@ -89,14 +89,14 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
           <a href={rewardUrl} target="_blank" rel="noreferrer">{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
         </article>
         <article>
-          <small>{t('本站记录合同','SITE RECORDING CONTRACT')}</small>
+          <small>{t('实验记录合同','EXPERIMENT RECORDING CONTRACT')}</small>
           <code>task_score + won</code>
-          <p>{t('站内实验记录把连续任务分数与 exact success 分开保存；不要把二者压成一个布尔值，也不要把教学示意当成真实测量。','The site’s experiment records keep the continuous task score separate from exact success; do not collapse them into one boolean or treat pedagogical examples as measured results.')}</p>
+          <p>{t('实验记录同时保存 task_score 与 exact success；二者不能压成同一个布尔值，也不应把教学示意图当成真实测量结果。','Experiment records keep the continuous task score together with exact success; do not collapse them into one boolean or treat pedagogical figures as measured results.')}</p>
         </article>
       </div>
     </details>
 
-    <figcaption>{t('本节只定义评估输出：终局状态经过 evaluator 后得到 task_score 与 exact success。下一节的公平比较必须让 SEED 与 OpenEvo 使用同一种评分合同。','This section defines the evaluation outputs only: terminal state passes through the evaluator to produce task_score and exact success. A fair SEED/OpenEvo comparison must use the same scoring contract.')}</figcaption>
+    <figcaption>{t('终局状态经过 evaluator 后得到 task_score 与 exact success；公平比较要求 SEED 与 OpenEvo 在同一评分合同下报告二者。','Terminal state passes through the evaluator to produce task_score and exact success; a fair SEED vs OpenEvo comparison must report both under the same scoring contract.')}</figcaption>
   </figure>
 </section>
 
