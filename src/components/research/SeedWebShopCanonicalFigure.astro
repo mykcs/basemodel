@@ -32,8 +32,8 @@ const p = (path: string) => localePath(locale, path);
       <header><small>RELEASED-CODE TASK SETTING</small><strong>{t('1,000-product small WebShop · 6,910 goals','1,000-product small WebShop · 6,910 goals')}</strong></header>
       <div class="pools">
         <article data-ui-audit-item><small>TRAIN CANDIDATE POOL</small><strong>goal 500–6909</strong><span>6,410 {t('goals','goals')}</span><p>{t('公开代码默认从 goal 500 开始取训练候选任务。','Released code defaults to training candidates beginning at goal 500.')}</p></article>
-        <article data-ui-audit-item><small>COMPARISON CONTRACT</small><strong>goal 0–499</strong><span>500 {t('held-out task slots','held-out task slots')}</span><p>{t('goal 0–499 构成 held-out candidate pool（保留任务候选池），与 500–6909 的 training candidate pool（训练候选池）分离；exact 128 goal IDs 尚未公开固定。','This site’s comparison contract keeps these 500 task slots apart from the training candidates beginning at 500; exact 128 IDs are still not publicly pinned.')}</p></article>
-        <article class="manifest" data-ui-audit-item><small>MANIFEST BOUNDARY</small><strong>128 {t('reported samples','reported samples')}</strong><p>{t('exact 128-goal manifest 尚未公开固定；SEED 论文只报告“128”这一个总数，没有公开这 128 个 goal ID 落在 0–499 中的具体位置。','The exact 128-goal manifest is not yet publicly pinned; the SEED paper only reports the 128-sample total, not which 128 of the 0–499 slots those samples occupy.')}</p></article>
+        <article data-ui-audit-item><small>COMPARISON CONTRACT</small><strong>goal 0–499</strong><span>500 {t('held-out task slots','held-out task slots')}</span><p>{t('held-out candidate pool（保留任务候选池）与 training candidate pool 分离。','Held-out candidate pool, kept apart from the training candidate pool.')}</p></article>
+        <article class="manifest" data-ui-audit-item><small>MANIFEST BOUNDARY</small><strong>128 {t('reported samples','reported samples')}</strong><p>{t('exact 128-goal manifest 尚未公开固定；SEED 论文只报告“128”这一个总数，没有公开这 128 个 goal ID 落在 0–499 中的具体位置。','SEED paper only reports the 128-sample total; the 128 goal IDs are not public.')}</p></article>
       </div>
     </section>
 
