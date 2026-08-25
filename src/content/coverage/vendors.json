@@ -7,7 +7,7 @@
         "https://developers.openai.com/api/docs/models",
         "https://platform.openai.com/docs/models"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -26,7 +26,7 @@
         "https://github.com/QwenLM",
         "https://huggingface.co/Qwen"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -47,7 +47,7 @@
         "https://ai.google.dev/gemma/docs",
         "https://huggingface.co/google"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -66,7 +66,7 @@
         "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
         "https://huggingface.co/meta-llama"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -84,7 +84,7 @@
         "https://platform.claude.com/docs/en/about-claude/models/overview",
         "https://platform.claude.com/docs/en/release-notes/overview"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api"
       ],
@@ -100,7 +100,7 @@
         "https://huggingface.co/deepseek-ai",
         "https://api-docs.deepseek.com/"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -118,7 +118,7 @@
         "https://huggingface.co/moonshotai",
         "https://platform.kimi.ai/"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -136,7 +136,7 @@
         "https://docs.mistral.ai/models/model-cards/mistral-large-3-25-12",
         "https://huggingface.co/mistralai"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api",
         "open-weight"
@@ -188,7 +188,7 @@
         "https://docs.x.ai/developers/release-notes",
         "https://docs.x.ai/developers/migration/may-15-retirement"
       ],
-      "refresh_days": 14,
+      "refresh_days": 30,
       "model_types": [
         "api"
       ],
