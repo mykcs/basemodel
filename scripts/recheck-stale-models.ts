@@ -31,13 +31,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { modelSchema } from '../src/lib/schemas';
-import {
-  latestCheckedAt,
-  type AtlasModel,
-  type VendorCoverage,
-  type FamilyCoverage,
-} from '../src/lib/dataHealth';
+import { modelSchema, type AtlasModel } from '../src/lib/schemas';
+import { latestCheckedAt } from '../src/lib/dataHealth';
 import type { z } from 'zod';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -75,8 +70,10 @@ const modelFiles = fs
   .filter((f) => f.endsWith('.json'))
   .map((f) => path.join(MODELS_DIR, f));
 
-const vendors = loadJson<{ vendors: VendorCoverage[] }>(VENDORS_PATH).vendors;
-const families = loadJson<{ families: FamilyCoverage[] }>(FAMILIES_PATH).families;
+const vendors = loadJson<{ vendors: unknown[] }>(VENDORS_PATH).vendors;
+const families = loadJson<{ families: unknown[] }>(FAMILIES_PATH).families;
+void vendors;
+void families;
 
 const now = new Date();
 
