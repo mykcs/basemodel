@@ -85,7 +85,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(readerContract).toContain('First-screen promise');
     expect(readerContract).toContain('Chinese-first technical language');
     expect(readerContract).toContain('Density budget');
-    expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1');
+    expect(readerContract).toContain('2026-08-25 SEED official-heldout comparison v1');
     expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
   });
 
@@ -209,17 +209,19 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('/research/seed-openevo/experiment/');
   });
 
-  it('keeps the appendix complete: twelve notes, lineage, RTX6 record, audit trail, and print provenance', () => {
+  it('keeps the historical records complete: twelve notes, lineage, RTX6 record, evidence trail, and print provenance', () => {
     for (const slug of noteSlugs) {
-      expect(appendix, `${slug} missing from appendix or legacy links`).toContain(`/${slug}/`);
+      expect(appendix, `${slug} missing from historical records`).toContain(`/${slug}/`);
       expect(resultRoute, `${slug} missing from static routes`).toContain(`'${slug}'`);
       expect(sitemap, `${slug} missing from sitemap`).toContain(`/research/seed-openevo/results/${slug}/`);
     }
+    expect(appendix).toContain('历史实验与完整记录');
+    expect(appendix).not.toContain('正文只放结论与关键数字');
     expect(appendix).toContain('data-testid="lineage-appendix"');
     expect(appendix).toContain('data-testid="rtx6-appendix"');
     expect(appendix).toContain('@media print');
     expect(appendix).toContain('print-provenance');
-    expect(appendix).toContain('H1.42 属于之后的 measurement-boundary（测量边界）工作');
+    expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(resultRoute).toContain('ResearchPrimerMoved');
     expect(primerMoved).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
     expect(primerMoved).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
@@ -227,7 +229,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
 
   it('keeps H1.42 as a later measurement-boundary note rather than part of the H1.41 conclusions', () => {
     expect(hero).toContain('H1.42 是之后的测量校准记录');
-    expect(appendix).toContain('H1.42 属于之后的 measurement-boundary（测量边界）工作');
+    expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(resultNote).toContain("'measurement-boundary'");
   });
