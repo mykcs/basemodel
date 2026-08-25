@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   isBuildRelevantPath,
+  resolveRange,
   shouldBuildForFiles,
 } from '../../scripts/vercel-ignore-build.mjs';
 
@@ -60,6 +61,26 @@ describe('Vercel build-budget contract', () => {
     expect(shouldBuildForFiles(['README.md', 'src/pages/index.astro'])).toBe(
       true,
     );
+  });
+
+  it('fails open when Vercel cannot identify a previous successful deployment', () => {
+    expect(() =>
+      resolveRange({ VERCEL_GIT_COMMIT_SHA: 'current-head' }),
+    ).toThrow('VERCEL_GIT_PREVIOUS_SHA is unavailable');
+
+    expect(() =>
+      resolveRange({
+        VERCEL_GIT_COMMIT_SHA: 'current-head',
+        VERCEL_GIT_PREVIOUS_SHA: 'current-head',
+      }),
+    ).toThrow('VERCEL_GIT_PREVIOUS_SHA equals the current head');
+
+    expect(
+      resolveRange({
+        VERCEL_GIT_COMMIT_SHA: 'current-head',
+        VERCEL_GIT_PREVIOUS_SHA: 'last-successful-head',
+      }),
+    ).toEqual({ base: 'last-successful-head', head: 'current-head' });
   });
 
   it('keeps the Agent push/build budget discoverable and concrete', () => {

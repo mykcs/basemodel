@@ -33,12 +33,23 @@ function runGit(args) {
   }).trim();
 }
 
-function resolveRange(env) {
+export function resolveRange(env) {
   const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
   const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
 
-  if (previous && previous !== head) return { base: previous, head };
-  return { base: `${head}^`, head };
+  if (!previous) {
+    throw new Error(
+      'VERCEL_GIT_PREVIOUS_SHA is unavailable; cannot prove this deployment is safe to skip',
+    );
+  }
+
+  if (previous === head) {
+    throw new Error(
+      'VERCEL_GIT_PREVIOUS_SHA equals the current head; cannot prove this deployment is safe to skip',
+    );
+  }
+
+  return { base: previous, head };
 }
 
 export function main(env = process.env) {
