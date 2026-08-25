@@ -1,4 +1,6 @@
 ---
+// Agent contract: before editing this route or any mounted Results component,
+// read docs/agents/current/seed-openevo-results-reader-contract.md.
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import OpenEvoWebShopResultsHero from '../../../../components/research/OpenEvoWebShopResultsHero.astro';
@@ -11,7 +13,7 @@ const locale = 'en' as const;
 ---
 <AppLayout
   title="OpenEvo × WebShop research findings"
-  description="OpenEvo × WebShop evidence organized as seven natural questions: one shared evaluation protocol and measurement boundary, per-question status badges with quantitative observations, the G2 three-gate ablation, and the still-missing SEED-compatible fair comparison."
+  description="For lab readers who know the project direction but have not followed every run: seven questions explain what OpenEvo has established, where second-generation updating is blocked, and why the 2026-08-25 SEED official-held-out evaluation needs a repaired rerun."
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
