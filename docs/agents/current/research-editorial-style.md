@@ -80,6 +80,32 @@ For each material scientific conclusion, the reader must be able to locate four 
 
 Do not jump from one high score to a method claim. Do not write “significant improvement” without the comparison, denominator, uncertainty, and protocol context that make the phrase meaningful.
 
+### Minimum reasoning bridge — visible by default
+
+A sentence can be ordinary, fluent human language and still be scientifically under-explained. The practical test is simple:
+
+> If a PI or lab colleague points at this sentence and asks **“你为什么这样说？” / “Why do you say that?”**, can the visible prose immediately give the first-layer answer?
+
+For any material conclusion, comparison, diagnosis, causal interpretation, measurement-validity judgement, or next-experiment decision, expose this minimum bridge in the mainline:
+
+```text
+observation
+-> what the observation supports
+-> what it still does not prove
+```
+
+Examples of incomplete prose:
+
+- “收益并不会自动出现。” — What was observed that supports this?
+- “这是目前最明显的瓶颈。” — Which repeated observations make it the strongest bottleneck?
+- “下一步只需要修 parser。” — Why does the evidence justify changing only the parser rather than the task panel, model, or method?
+
+A stronger version gives the short answer before the reader opens evidence detail. Exact run counts, confidence intervals, manifests, code, and raw output may remain under `展开实验依据` or another disclosure.
+
+Do **not** apply this mechanically to every sentence. Definitions, direct instructions, neutral labels, simple source facts, and literal code behavior do not need an invented “therefore.” The rule targets sentences that ask the reader to accept an inference or scientific decision.
+
+Progressive disclosure is for depth, not for repairing the argument. If removing all collapsed details makes a material claim look unsupported, the visible mainline is incomplete.
+
 ## Negative results are part of the argument
 
 Do not present long runs of null experiments as a changelog. Explain what hypothesis each negative result weakened and how it changed the next experiment.
@@ -118,10 +144,11 @@ For a research-results page, verify all of the following:
 3. Can a lab peer unfamiliar with the run history understand WebShop, the tested update, and what “fresh” means before seeing internal IDs?
 4. Do experiment IDs remain provenance rather than narrative structure?
 5. Does each major positive or negative conclusion have evidence, inference, and a clear boundary?
-6. Are invalid measurements separated from scientific failures?
-7. Does the chronology explain why the next experiment followed from the previous result?
-8. Does the page remain readable as continuous prose rather than an AI-generated dashboard of summaries?
-9. Are detailed evidence and full lineage still available for audit without interrupting the main path?
-10. Have browser, mobile, theme, no-JS/print, and overflow acceptance checks passed where applicable?
+6. For every material judgement, can the visible mainline answer the first-layer question “你为什么这样说？” without requiring a disclosure to be opened?
+7. Are invalid measurements separated from scientific failures?
+8. Does the chronology explain why the next experiment followed from the previous result?
+9. Does the page remain readable as continuous prose rather than an AI-generated dashboard of summaries?
+10. Are detailed evidence and full lineage still available for audit without interrupting the main path?
+11. Have browser, mobile, theme, no-JS/print, and overflow acceptance checks passed where applicable?
 
 When reader feedback identifies a recurring unnatural writing pattern, update this contract and add executable regression coverage where practical. Do not rely on conversational memory alone.

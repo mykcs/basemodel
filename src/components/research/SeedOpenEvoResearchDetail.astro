@@ -15,7 +15,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   'base-model': {
     eyebrow: t('实验模型', 'Experiment model'),
     title: t('Qwen2.5-3B-Instruct 实验设置', 'Qwen2.5-3B-Instruct experiment setup'),
-    lede: t('记录 checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式。', 'Record the checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode.'),
+    lede: t('同一个模型名不能唯一确定实验状态：checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式都会改变实际运行或训练条件，因此这些身份必须一起记录。', 'A model name alone does not uniquely identify an experiment state: checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode can all change the actual runtime or training conditions, so these identities must be recorded together.'),
   },
   seed: {
     eyebrow: t('方法', 'Method'),
@@ -30,7 +30,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   benchmarks: {
     eyebrow: t('实验环境', 'Experiment environments'),
     title: 'ALFWorld 与 WebShop',
-    lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
+    lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，因此结果和失败模式必须分别保存；否则同一个“成功率”或“分数”会混入不同语义。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes must be recorded separately; otherwise a shared label such as “success rate” or “score” would mix different semantics.'),
   },
   webshop: {
     eyebrow: t('实验环境', 'Experiment environment'),
@@ -45,12 +45,12 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   loops: {
     eyebrow: t('比较', 'Comparison'),
     title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
-    lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
+    lede: t('两种方法都可能改变后续行为，但更新对象和生效边界并不相同。因此不能把差异简化成“参数 vs memory”，而要同时比较经验来源、更新对象、生效边界以及下一轮如何继续。', 'Both methods can change later behavior, but their updated objects and activation boundaries differ. The comparison therefore cannot be reduced to “parameters vs memory”; it must also track experience source, updated object, activation boundary, and how the next round proceeds.'),
   },
   results: {
     eyebrow: t('研究结果', 'Research findings'),
     title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings'),
-    lede: t('我们从七个最自然的问题开始：OpenEvo 有没有学习、有没有成功经验、能不能迁移、能不能持续变好，以及最后能不能和 SEED 在同一套正式评估下比较。', 'We start from seven natural questions: whether OpenEvo learns, whether it has successful experience to learn from, whether that transfers, whether improvement continues, and whether it can ultimately be compared with SEED under the same formal evaluation.'),
+    lede: t('七个问题串起当前证据：OpenEvo 有没有学习、有没有成功经验、能不能迁移、能不能持续变好，以及 2026-08-25 的 SEED 官方保留任务首轮评测为什么还需要修复后复测。', 'Seven questions connect the current evidence: whether OpenEvo learns, whether successful experience exists, whether it transfers, whether improvement continues, and why the 2026-08-25 first SEED-held-out run still requires a repaired rerun.'),
   },
 };
 

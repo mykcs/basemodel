@@ -11,29 +11,38 @@ This repository is frequently maintained by coding Agents through GitHub. Keep t
 
 ## Fast start
 
-Before non-trivial work, read in this order:
+Before non-trivial work, read the small core below in this order, then use the task router in `docs/agents/README.md` to load only the specialized policies that match the task:
 
-1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and deployment state.
-2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
-3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
-4. [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) — cross-cutting website engineering defaults: accepted stack, semantic ownership, static-first/hydration discipline, browser runner boundaries, exact-tree release evidence, build-budget discipline, temporary-harness cleanup, and the stopping rule against unrequested optimization churn.
-5. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
-6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
-7. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory for every user-facing page**, section, copy, navigation, comparison, explanation, or feature change.
-8. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) and [`docs/agents/current/sitewide-visual-knowledge-architecture.md`](docs/agents/current/sitewide-visual-knowledge-architecture.md) — learning-first responsive UI and the whole-site knowledge journey.
-9. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
-10. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
-11. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-12. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Preview + Production workflow, build budget, parallel integration, release and Production boundary.
-13. [`docs/agents/current/public-release-security-gate.md`](docs/agents/current/public-release-security-gate.md) — required before any private → public visibility change.
-14. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
-15. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
+1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and provider/release state.
+2. [`docs/agents/README.md`](docs/agents/README.md) — task router, documentation ownership, and precedence.
+3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — autonomous problem solving, clean workflow design, and reusable experience.
+4. [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) — accepted stack, semantic ownership, rendering, browser, exact-tree evidence, and build-budget defaults.
+5. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan against the current task and automatically load the matched guidance.
+6. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory whenever reader-visible website meaning, copy, structure, comparison, explanation, or interaction changes.**
+
+Do not maintain another long universal reading list here. UI, research, deployment, security, model-catalog, lab-compute, and release-specific documents are selected through `docs/agents/README.md` and the scenario registry.
 
 Files under `docs/agents/history/` and `docs/agent-context/` are evidence and rationale, not instructions to restore previous architecture. The older product-vision document from PR #64 is retained under history; current product authority is the executable product plus the current integrity, research-mission, visual and deployment policies.
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
 When a task involves lab connectivity, remote compute, SSH/SFTP/rsync, or hardware disclosure, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). Base Model stores only a generic public topology: never add the owner's personal device inventory, private profile feed, IP/hostname/username, VPN endpoint, access token or other identifying infrastructure detail. Publish only the minimum aggregate hardware facts required for a reproducible experiment.
+
+## Reader-facing reasoning invariant
+
+Natural language is not enough if the reader still has to ask **“你为什么这样说？” / “Why do you say that?”** and the first answer is hidden in an appendix, `<details>`, run log, or source link.
+
+For any material reader-facing **research conclusion, comparison, diagnosis, causal interpretation, validity judgement, or next-step decision**, the visible mainline must expose a minimum reasoning bridge:
+
+```text
+what we observed
+-> what that observation supports
+-> what it still does not establish
+```
+
+Detailed counts, confidence intervals, run IDs, manifests, and code can stay in progressive disclosure. The first-layer reason cannot. Definitions, direct instructions, neutral labels, and simple source facts do not need a forced inference chain.
+
+For research copy, the detailed owner is [`docs/agents/current/research-editorial-style.md`](docs/agents/current/research-editorial-style.md). For the SEED × OpenEvo Results route, also read [`docs/agents/current/seed-openevo-results-reader-contract.md`](docs/agents/current/seed-openevo-results-reader-contract.md). Protect recurring reader-facing boundaries with executable tests when practical.
 
 ## Knowledge precedence
 
@@ -123,7 +132,8 @@ Full browser suites or third-party network/vendor audits remain on demand when t
 ## Ordinary Agent workflow
 
 ```text
-read LATEST + current policy
+read LATEST + core current policy
+-> use docs/agents/README.md task router
 -> scan scenario-trigger-registry and load matched guidance
 -> inspect overlapping PRs and relevant code/data/tests
 -> classify independent, stacked, superseded and semantically conflicting work
