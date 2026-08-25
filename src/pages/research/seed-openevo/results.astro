@@ -1,4 +1,6 @@
 ---
+// Agent contract: before editing this route or any mounted Results component,
+// read docs/agents/current/seed-openevo-results-reader-contract.md.
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 import OpenEvoWebShopResultsHero from '../../../components/research/OpenEvoWebShopResultsHero.astro';
@@ -11,7 +13,7 @@ const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo × WebShop 研究结果"
-  description="按七个自然科学问题组织 OpenEvo × WebShop 的现有证据：统一的实验协议与数据边界、逐问的状态徽章与定量观测、G2 三道门消融，以及最后缺失的 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）。"
+  description="面向了解研究方向但未跟进每轮实验的实验室读者：用七个问题说明 OpenEvo 已经证明了什么、第二代更新卡在哪里，以及 2026-08-25 SEED 官方保留任务首轮评测为何需要修复后复测。"
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
