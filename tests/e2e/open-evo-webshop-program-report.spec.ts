@@ -14,15 +14,26 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '实验协议与数据边界' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '先记住两个任务范围' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '第二代演化为什么受阻：三道门' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
   await expect(index.locator('.gate-grid .gate-card')).toHaveCount(3);
-  await expect(index.locator('.trace-example')).toBeVisible();
-  await expect(index.getByText('0.667', { exact: false }).first()).toBeVisible();
-  await expect(index.getByText('+0.2488', { exact: false }).first()).toBeVisible();
-  await expect(index.getByText('MVD0 REMEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const measurementEvidence = index.locator('#evidence-g2');
+  await expect(measurementEvidence).not.toHaveAttribute('open', '');
+  await expect(measurementEvidence.locator(':scope > summary')).toBeVisible();
+  await measurementEvidence.locator(':scope > summary').click();
+  await expect(measurementEvidence).toHaveAttribute('open', '');
+  await expect(measurementEvidence.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const transferEvidence = index.locator('#evidence-q4');
+  await expect(transferEvidence).not.toHaveAttribute('open', '');
+  await transferEvidence.locator(':scope > summary').click();
+  await expect(transferEvidence).toHaveAttribute('open', '');
+  await expect(transferEvidence.getByText('+0.2488', { exact: false }).first()).toBeVisible();
+  await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
+
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -32,12 +43,22 @@ test('English results landing mounts the same unified findings page in English',
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop research findings' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Evaluation protocol & measurement boundary' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Two task ranges to keep in mind' })).toBeVisible();
   await expect(index.getByRole('heading', { name: 'The seven questions we can now answer' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Why second-generation evolution stalled: three gates' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Why can’t we yet say the second generation keeps improving?' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
-  await expect(index.locator('.forest-row')).toHaveCount(3);
-  await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const measurementEvidence = index.locator('#evidence-g2');
+  await expect(measurementEvidence).not.toHaveAttribute('open', '');
+  await measurementEvidence.locator(':scope > summary').click();
+  await expect(measurementEvidence).toHaveAttribute('open', '');
+  await expect(measurementEvidence.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const transferEvidence = index.locator('#evidence-q4');
+  await expect(transferEvidence).not.toHaveAttribute('open', '');
+  await transferEvidence.locator(':scope > summary').click();
+  await expect(transferEvidence).toHaveAttribute('open', '');
+  await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
 
   const ordered = await index.evaluate((node) => {
     const ids = ['protocol', 'questions', 'g2-ablation', 'next-steps', 'appendix'];
@@ -68,7 +89,14 @@ test('both results routes remain useful without JavaScript', async ({ browser })
   const index = page.getByTestId('openevo-webshop-result-index');
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '这些数字会不会只是工程故障的假象？' })).toBeVisible();
-  await expect(index.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
+  const measurementEvidence = index.locator('#evidence-g2');
+  await expect(measurementEvidence).not.toHaveAttribute('open', '');
+  await expect(measurementEvidence.locator(':scope > summary')).toBeVisible();
+  await measurementEvidence.locator(':scope > summary').click();
+  await expect(measurementEvidence).toHaveAttribute('open', '');
+  await expect(measurementEvidence.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
+
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   await context.close();
 });
@@ -87,7 +115,7 @@ for (const theme of ['light', 'dark'] as const) {
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         const index = page.getByTestId('openevo-webshop-result-index');
         await expect(index).toBeVisible();
-        await expect(index.locator('.trace-example')).toBeVisible();
+        await expect(index.locator('article.question-card')).toHaveCount(7);
         await expect(index.locator('.gate-grid')).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       }
