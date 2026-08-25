@@ -1,28 +1,16 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
-import OpenEvoWebShopResultsHero from '../../../components/research/OpenEvoWebShopResultsHero.astro';
-import OpenEvoWebShopResultsProtocol from '../../../components/research/OpenEvoWebShopResultsProtocol.astro';
-import OpenEvoWebShopResultsQuestions from '../../../components/research/OpenEvoWebShopResultsQuestions.astro';
-import OpenEvoWebShopG2Ablation from '../../../components/research/OpenEvoWebShopG2Ablation.astro';
-import OpenEvoWebShopNextSteps from '../../../components/research/OpenEvoWebShopNextSteps.astro';
-import OpenEvoWebShopResultsAppendix from '../../../components/research/OpenEvoWebShopResultsAppendix.astro';
+import OpenEvoWebShopResultIndex from '../../../components/research/OpenEvoWebShopResultIndex.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo × WebShop 研究结果"
-  description="按七个自然科学问题组织 OpenEvo × WebShop 的现有证据：统一的实验协议与数据边界、逐问的状态徽章与定量观测、G2 三道门消融，以及最后缺失的 SEED-compatible fair comparison（与 SEED 严格兼容的公平比较）。"
+  description="沿实验结果证据链阅读 OpenEvo × WebShop 的完成工作，并将方法、环境与下一阶段 benchmark 设计分别链接到各自的权威说明。"
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
-    <div data-testid="openevo-webshop-result-index">
-      <OpenEvoWebShopResultsHero locale={locale} />
-      <OpenEvoWebShopResultsProtocol locale={locale} />
-      <OpenEvoWebShopResultsQuestions locale={locale} />
-      <OpenEvoWebShopG2Ablation locale={locale} />
-      <OpenEvoWebShopNextSteps locale={locale} />
-      <OpenEvoWebShopResultsAppendix locale={locale} />
-    </div>
+    <OpenEvoWebShopResultIndex />
   </SeedOpenEvoResearchPage>
 </AppLayout>
 
