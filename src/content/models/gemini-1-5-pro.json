@@ -57,8 +57,8 @@
     {
       "url": "https://deepmind.google/technologies/gemini/pro/",
       "type": "official_model_card",
-      "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. | re-check 2026-08-25: URL https://deepmind.google/technologies/gemini/pro/ HTTP 200, model id found in body",
       "id": "src_153d7b5ca2ce",
       "supports": [
         "vendor",

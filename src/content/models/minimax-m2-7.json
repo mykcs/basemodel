@@ -74,8 +74,8 @@
     {
       "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
-      "evidence_note": "HuggingFace model card confirms 230B parameters (same M2 architecture), open weights, and Modified MIT license. Release date and context length are not on the card. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "HuggingFace model card confirms 230B parameters (same M2 architecture), open weights, and Modified MIT license. Release date and context length are not on the card. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/MiniMaxAI/MiniMax-M2.7 HTTP 200, model id found in body",
       "supports": [
         "architecture.total_parameters_b",
         "openness.license_name",

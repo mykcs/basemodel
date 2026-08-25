@@ -73,8 +73,8 @@
     {
       "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
-      "evidence_note": "HuggingFace model card confirms 230B total parameters, 10B activated parameters, and Modified MIT license. Release date and 200K context are not explicitly stated on the card and are recorded as semantic status. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "HuggingFace model card confirms 230B total parameters, 10B activated parameters, and Modified MIT license. Release date and 200K context are not explicitly stated on the card and are recorded as semantic status. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/MiniMaxAI/MiniMax-M2 HTTP 200, model id found in body",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",

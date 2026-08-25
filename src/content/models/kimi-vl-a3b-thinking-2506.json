@@ -68,7 +68,7 @@
       "title": "Kimi-VL official repository",
       "publisher": "Moonshot AI",
       "published_at": "2025-06-10",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "vendor",
         "family",
@@ -85,7 +85,7 @@
         "research.suitable_for_inference",
         "access.api_status"
       ],
-      "evidence_note": "Official README identifies Moonshot AI/Kimi-VL, the Thinking-2506 release, text/image/video understanding, 128K context, and runnable inference guidance."
+      "evidence_note": "Official README identifies Moonshot AI/Kimi-VL, the Thinking-2506 release, text/image/video understanding, 128K context, and runnable inference guidance. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Kimi-VL HTTP 200, model id found in body"
     },
     {
       "id": "moonshot-kimi-vl-hf",

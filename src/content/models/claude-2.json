@@ -68,8 +68,8 @@
     {
       "url": "https://docs.anthropic.com/en/docs/about-claude/models",
       "type": "official_docs",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Anthropic official model catalog lists Claude 2 as retired; no API replacement available. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "Anthropic official model catalog lists Claude 2 as retired; no API replacement available. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://docs.anthropic.com/en/docs/about-claude/models HTTP 200, model id found in body",
       "supports": [
         "access.api_status",
         "access.api_model_ids",

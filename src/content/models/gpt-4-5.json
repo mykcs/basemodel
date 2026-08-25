@@ -62,7 +62,7 @@
     {
       "url": "https://help.openai.com/en/articles/9624314-model-release-notes",
       "type": "official_docs",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "release_date",
         "status",
@@ -75,7 +75,7 @@
         "access.api_model_ids",
         "openness.classification"
       ],
-      "evidence_note": "OpenAI Help Center Model Release Notes state GPT-4.5 was introduced on February 27, 2025 and later deprecated; model page no longer available in API docs. Source checked 2026-08-06. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category.",
+      "evidence_note": "OpenAI Help Center Model Release Notes state GPT-4.5 was introduced on February 27, 2025 and later deprecated; model page no longer available in API docs. Source checked 2026-08-06. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. | re-check 2026-08-25: URL https://help.openai.com/en/articles/9624314-model-release-notes unreachable (403)",
       "id": "src_deb166954d2b"
     },
     {
@@ -90,5 +90,5 @@
       "id": "src_27c596ed892e"
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

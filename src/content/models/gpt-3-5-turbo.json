@@ -54,8 +54,8 @@
     {
       "url": "https://developers.openai.com/api/docs/models/gpt-3.5-turbo",
       "type": "official_docs",
-      "checked_at": "2026-08-05",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://developers.openai.com/api/docs/models/gpt-3.5-turbo HTTP 200, model id found in body",
       "id": "src_585394f822a7",
       "supports": [
         "vendor",

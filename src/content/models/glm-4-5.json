@@ -56,7 +56,7 @@
     {
       "url": "https://z.ai/blog/glm-4.5",
       "type": "official_announcement",
-      "checked_at": "2026-08-08",
+      "checked_at": "2026-08-25",
       "supports": [
         "release_date",
         "vendor",
@@ -66,7 +66,7 @@
         "checkpoint.modalities",
         "research.suitable_for_inference"
       ],
-      "evidence_note": "Official Z.ai GLM-4.5 announcement source for the release date recorded in this model entry. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim.",
+      "evidence_note": "Official Z.ai GLM-4.5 announcement source for the release date recorded in this model entry. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://z.ai/blog/glm-4.5 HTTP 200, model id found in body",
       "id": "src_glm45_release_20260808"
     },
     {

@@ -7,15 +7,98 @@
   "generation": "Claude 5",
   "release_date": "2026-07-24",
   "status": "active",
-  "checkpoint": {"type": "vision", "modalities": ["text", "image"], "specializations": ["reasoning", "coding", "agentic", "enterprise", "long-context"]},
-  "architecture": {"type": "other", "total_parameters_b": "not_disclosed", "active_parameters_b": "not_disclosed", "context_length": 1000000, "expert_count": "not_disclosed", "active_experts_per_token": "not_disclosed"},
-  "openness": {"weights_available": false, "base_checkpoint_available": false, "finetuning_allowed": false, "derivative_release_allowed": false, "commercial_use_allowed": true, "license_name": "not_disclosed", "classification": "proprietary", "custom_license": false, "derivative_distribution": "prohibited", "commercial_use": "not_applicable", "conditions": ["subject_to_api_terms"]},
-  "access": {"weights_status": "unavailable", "api_status": "available", "api_model_ids": ["claude-opus-5"]},
-  "research": {"suitable_for_inference": true, "suitable_for_lora": false, "suitable_for_sft": false, "suitable_for_rl": false, "transformers_support": "not_applicable", "vllm_support": "not_applicable", "sglang_support": "not_applicable", "verl_recipe_available": false},
-  "hardware": {"inference_tier": "api_only", "lora_tier": "api_only", "full_sft_tier": "api_only", "rl_tier": "api_only"},
+  "checkpoint": {
+    "type": "vision",
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "reasoning",
+      "coding",
+      "agentic",
+      "enterprise",
+      "long-context"
+    ]
+  },
+  "architecture": {
+    "type": "other",
+    "total_parameters_b": "not_disclosed",
+    "active_parameters_b": "not_disclosed",
+    "context_length": 1000000,
+    "expert_count": "not_disclosed",
+    "active_experts_per_token": "not_disclosed"
+  },
+  "openness": {
+    "weights_available": false,
+    "base_checkpoint_available": false,
+    "finetuning_allowed": false,
+    "derivative_release_allowed": false,
+    "commercial_use_allowed": true,
+    "license_name": "not_disclosed",
+    "classification": "proprietary",
+    "custom_license": false,
+    "derivative_distribution": "prohibited",
+    "commercial_use": "not_applicable",
+    "conditions": [
+      "subject_to_api_terms"
+    ]
+  },
+  "access": {
+    "weights_status": "unavailable",
+    "api_status": "available",
+    "api_model_ids": [
+      "claude-opus-5"
+    ]
+  },
+  "research": {
+    "suitable_for_inference": true,
+    "suitable_for_lora": false,
+    "suitable_for_sft": false,
+    "suitable_for_rl": false,
+    "transformers_support": "not_applicable",
+    "vllm_support": "not_applicable",
+    "sglang_support": "not_applicable",
+    "verl_recipe_available": false
+  },
+  "hardware": {
+    "inference_tier": "api_only",
+    "lora_tier": "api_only",
+    "full_sft_tier": "api_only",
+    "rl_tier": "api_only"
+  },
   "sources": [
-    {"url": "https://platform.claude.com/docs/en/release-notes/overview", "type": "official_announcement", "checked_at": "2026-08-10", "evidence_note": "Anthropic's July 24, 2026 platform notes announce Claude Opus 5, API ID claude-opus-5, 1M context and API/partner-cloud availability. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted.", "supports": ["vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities", "architecture.context_length", "openness.classification", "access.api_status", "access.api_model_ids", "research.suitable_for_inference", "status"]},
-    {"url": "https://platform.claude.com/docs/en/about-claude/models/overview", "type": "official_docs", "checked_at": "2026-08-10", "evidence_note": "Anthropic's current model comparison lists Claude Opus 5 in the current API lineup for complex agentic coding and enterprise work.", "supports": ["checkpoint.specializations", "access.api_status", "status"]}
+    {
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "type": "official_announcement",
+      "checked_at": "2026-08-25",
+      "evidence_note": "Anthropic's July 24, 2026 platform notes announce Claude Opus 5, API ID claude-opus-5, 1M context and API/partner-cloud availability. No downloadable weights are published, so the access boundary is classified as proprietary while no standalone license name is asserted. | re-check 2026-08-25: URL https://platform.claude.com/docs/en/release-notes/overview HTTP 200, model id found in body",
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.context_length",
+        "openness.classification",
+        "access.api_status",
+        "access.api_model_ids",
+        "research.suitable_for_inference",
+        "status"
+      ]
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "type": "official_docs",
+      "checked_at": "2026-08-10",
+      "evidence_note": "Anthropic's current model comparison lists Claude Opus 5 in the current API lineup for complex agentic coding and enterprise work.",
+      "supports": [
+        "checkpoint.specializations",
+        "access.api_status",
+        "status"
+      ]
+    }
   ],
   "data_status": "verified"
 }

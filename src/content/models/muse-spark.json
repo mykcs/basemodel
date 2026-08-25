@@ -68,7 +68,7 @@
     {
       "url": "https://ai.meta.com/blog/introducing-muse-spark-msl/",
       "type": "official_announcement",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "release_date",
         "checkpoint.type",
@@ -82,7 +82,7 @@
         "family",
         "generation"
       ],
-      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users.",
+      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users. | re-check 2026-08-25: URL https://ai.meta.com/blog/introducing-muse-spark-msl/ HTTP 200, model id found in body",
       "id": "src_17a523d995a6"
     },
     {

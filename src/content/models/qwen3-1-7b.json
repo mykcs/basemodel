@@ -9,8 +9,15 @@
   "status": "active",
   "checkpoint": {
     "type": "thinking",
-    "modalities": ["text"],
-    "specializations": ["reasoning", "tool-use", "agent", "multilingual"]
+    "modalities": [
+      "text"
+    ],
+    "specializations": [
+      "reasoning",
+      "tool-use",
+      "agent",
+      "multilingual"
+    ]
   },
   "architecture": {
     "type": "dense",
@@ -69,16 +76,33 @@
       "title": "Qwen3-1.7B official model card",
       "publisher": "Qwen",
       "type": "official_model_card",
-      "checked_at": "2026-08-08",
+      "checked_at": "2026-08-25",
       "supports": [
-        "vendor", "family", "generation", "release_date", "checkpoint.type", "checkpoint.modalities",
-        "architecture.type", "architecture.total_parameters_b", "architecture.active_parameters_b", "architecture.context_length",
-        "openness.weights_available", "openness.base_checkpoint_available", "openness.finetuning_allowed",
-        "openness.derivative_release_allowed", "openness.commercial_use_allowed", "openness.license_name",
-        "openness.classification", "openness.commercial_use", "access.weights_status",
-        "research.suitable_for_inference", "research.transformers_support", "research.vllm_support", "research.sglang_support"
+        "vendor",
+        "family",
+        "generation",
+        "release_date",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "architecture.type",
+        "architecture.total_parameters_b",
+        "architecture.active_parameters_b",
+        "architecture.context_length",
+        "openness.weights_available",
+        "openness.base_checkpoint_available",
+        "openness.finetuning_allowed",
+        "openness.derivative_release_allowed",
+        "openness.commercial_use_allowed",
+        "openness.license_name",
+        "openness.classification",
+        "openness.commercial_use",
+        "access.weights_status",
+        "research.suitable_for_inference",
+        "research.transformers_support",
+        "research.vllm_support",
+        "research.sglang_support"
       ],
-      "evidence_note": "The official model card identifies the Qwen3-1.7B dense post-trained checkpoint, reports 1.7B parameters and a 32,768-token context, publishes weights/config/tokenizer/chat template, and lists Apache-2.0 plus Transformers, vLLM, and SGLang usage. Active parameters equal total parameters because the recorded architecture is dense. The 16GB inference tier is a conservative planning classification, not a benchmark claim."
+      "evidence_note": "The official model card identifies the Qwen3-1.7B dense post-trained checkpoint, reports 1.7B parameters and a 32,768-token context, publishes weights/config/tokenizer/chat template, and lists Apache-2.0 plus Transformers, vLLM, and SGLang usage. Active parameters equal total parameters because the recorded architecture is dense. The 16GB inference tier is a conservative planning classification, not a benchmark claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen3-1.7B HTTP 200, model id found in body"
     },
     {
       "id": "src_seed_qwen3_17b_20260808",
@@ -88,7 +112,12 @@
       "published_at": "2026-07-16",
       "type": "paper",
       "checked_at": "2026-08-08",
-      "supports": ["research.suitable_for_sft", "research.suitable_for_rl", "research.verl_recipe_available", "hardware.rl_tier"],
+      "supports": [
+        "research.suitable_for_sft",
+        "research.suitable_for_rl",
+        "research.verl_recipe_available",
+        "hardware.rl_tier"
+      ],
       "locator": "Section 4.1 and Appendix B.4",
       "evidence_note": "The SEED paper records Qwen3-1.7B as a backbone trained through hindsight-skill SFT and agentic RL, and reports training on eight A800 80GB GPUs. The official SEED repository provides veRL-based training entrypoints."
     }

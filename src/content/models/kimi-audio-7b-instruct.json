@@ -64,7 +64,7 @@
       "title": "Kimi-Audio official repository",
       "publisher": "Moonshot AI",
       "published_at": "2025-04-25",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "vendor",
         "family",
@@ -80,7 +80,7 @@
         "research.suitable_for_inference",
         "access.api_status"
       ],
-      "evidence_note": "Official README identifies Moonshot AI/Kimi-Audio, the 7B Instruct checkpoint, audio and text usage, the April 25 release, runnable inference examples, and MIT/Apache licensing."
+      "evidence_note": "Official README identifies Moonshot AI/Kimi-Audio, the 7B Instruct checkpoint, audio and text usage, the April 25 release, runnable inference examples, and MIT/Apache licensing. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Kimi-Audio HTTP 200, model id found in body"
     },
     {
       "id": "moonshot-kimi-audio-hf",
