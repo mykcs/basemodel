@@ -11,7 +11,7 @@ After `/AGENTS.md`, read these for any non-trivial task:
 1. `LATEST.md` — current handoff, provider/release state, and recent cross-cutting changes.
 2. `current/project-agent-operating-principles.md` — autonomous/clean workflow standard.
 3. `current/website-engineering-standard.md` — accepted stack, semantic ownership, static-first/hydration rules, browser boundaries, exact-tree evidence, build-budget discipline, cleanup, and stopping rules.
-4. `current/scenario-trigger-registry.md` — just-in-time trigger router; scan it against the task.
+4. `current/scenario-trigger-registry.md` — just-in-time trigger router; **scan scenario-trigger-registry against the task** and load the matched guidance.
 5. `current/product-and-research-integrity.md` — product and scientific completion boundary.
 6. For any reader-visible website change, `current/human-thinking-web-expression-contract.md` is mandatory.
 
