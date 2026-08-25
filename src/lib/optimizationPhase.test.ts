@@ -25,7 +25,12 @@ describe('optimization-phase regressions', () => {
     });
 
     const modelCard = kimi.sources.find((source) => source.type === 'official_model_card');
-    expect(modelCard?.checked_at).toBe('2026-08-09');
+    // Re-checked on 2026-08-25 by scripts/recheck-stale-models.ts; the
+    // first-party source still resolves and the architecture block is
+    // intact, so checked_at is bumped to that date while the supports
+    // list and architecture numbers stay pinned to the original record.
+    expect(modelCard?.checked_at).toBe('2026-08-25');
+    expect(modelCard?.evidence_note).toContain('re-check 2026-08-25');
     expect(modelCard?.supports).toEqual(expect.arrayContaining([
       'architecture.total_parameters_b',
       'architecture.active_parameters_b',

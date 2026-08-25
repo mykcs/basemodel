@@ -77,8 +77,8 @@
     {
       "url": "https://huggingface.co/MiniMaxAI/MiniMax-M1-40k",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
-      "evidence_note": "HuggingFace model card confirms 456B total parameters, 45.9B active parameters per token, Apache 2.0 license, and 1M context window. Also notes 40K and 80K thinking-budget variants. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
+      "checked_at": "2026-08-25",
+      "evidence_note": "HuggingFace model card confirms 456B total parameters, 45.9B active parameters per token, Apache 2.0 license, and 1M context window. Also notes 40K and 80K thinking-budget variants. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/MiniMaxAI/MiniMax-M1-40k HTTP 200, model id found in body",
       "supports": [
         "architecture.total_parameters_b",
         "architecture.active_parameters_b",

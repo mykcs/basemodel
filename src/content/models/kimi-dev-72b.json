@@ -63,7 +63,7 @@
       "title": "Kimi-Dev official repository",
       "publisher": "Moonshot AI",
       "published_at": "2025-06-17",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "vendor",
         "family",
@@ -79,7 +79,7 @@
         "research.suitable_for_inference",
         "access.api_status"
       ],
-      "evidence_note": "Official README identifies Moonshot AI/Kimi-Dev-72B as a text coding model, announces the June 17 release, and documents downloadable weights plus vLLM deployment."
+      "evidence_note": "Official README identifies Moonshot AI/Kimi-Dev-72B as a text coding model, announces the June 17 release, and documents downloadable weights plus vLLM deployment. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Kimi-Dev HTTP 200, model id found in body"
     },
     {
       "id": "moonshot-kimi-dev-hf",

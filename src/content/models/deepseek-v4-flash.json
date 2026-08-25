@@ -68,7 +68,7 @@
     {
       "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "release_date",
         "architecture.total_parameters_b",
@@ -85,7 +85,7 @@
         "research.suitable_for_inference",
         "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card states 284B total parameters, 13B active, 1M context, MoE, MIT license. Source checked 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
+      "evidence_note": "Official Hugging Face model card states 284B total parameters, 13B active, 1M context, MoE, MIT license. Source checked 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash HTTP 200, model id found in body",
       "id": "src_1fcf7628480f"
     },
     {

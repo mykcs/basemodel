@@ -9,8 +9,16 @@
   "status": "legacy",
   "checkpoint": {
     "type": "instruct",
-    "modalities": ["text", "image"],
-    "specializations": ["general", "reasoning", "tool-use", "coding"]
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "specializations": [
+      "general",
+      "reasoning",
+      "tool-use",
+      "coding"
+    ]
   },
   "architecture": {
     "type": "other",
@@ -32,7 +40,9 @@
   "access": {
     "weights_status": "unavailable",
     "api_status": "deprecated",
-    "api_model_ids": ["grok-3"]
+    "api_model_ids": [
+      "grok-3"
+    ]
   },
   "research": {
     "suitable_for_inference": "unavailable",
@@ -54,16 +64,30 @@
     {
       "url": "https://docs.x.ai/developers/migration/may-15-retirement",
       "type": "official_docs",
-      "checked_at": "2026-08-10",
-      "evidence_note": "xAI retired the grok-3 API model on May 15, 2026. Requests that still use the grok-3 slug are now served by grok-4.3, so the original Grok 3 model itself is not an available inference target even though the legacy slug continues to resolve.",
-      "supports": ["status", "access.api_status", "access.api_model_ids", "research.suitable_for_inference"]
+      "checked_at": "2026-08-25",
+      "evidence_note": "xAI retired the grok-3 API model on May 15, 2026. Requests that still use the grok-3 slug are now served by grok-4.3, so the original Grok 3 model itself is not an available inference target even though the legacy slug continues to resolve. | re-check 2026-08-25: URL https://docs.x.ai/developers/migration/may-15-retirement HTTP 200, model id found in body",
+      "supports": [
+        "status",
+        "access.api_status",
+        "access.api_model_ids",
+        "research.suitable_for_inference"
+      ]
     },
     {
       "url": "https://x.ai/news/grok-3",
       "type": "official_announcement",
       "checked_at": "2026-08-10",
       "evidence_note": "xAI's Grok 3 launch announcement records the February 2025 release and historical model capabilities.",
-      "supports": ["vendor", "family", "generation", "checkpoint.type", "checkpoint.modalities", "release_date", "architecture.context_length", "openness.classification"]
+      "supports": [
+        "vendor",
+        "family",
+        "generation",
+        "checkpoint.type",
+        "checkpoint.modalities",
+        "release_date",
+        "architecture.context_length",
+        "openness.classification"
+      ]
     }
   ],
   "data_status": "verified",

@@ -67,7 +67,7 @@
       "title": "Kimi Linear official repository",
       "publisher": "Moonshot AI",
       "published_at": "2025-12-05",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "vendor",
         "family",
@@ -84,7 +84,7 @@
         "research.suitable_for_inference",
         "access.api_status"
       ],
-      "evidence_note": "Official README identifies Moonshot AI/Kimi Linear as a text model, announces the December 5 release, lists 48B total / 3B active parameters, 1M context, Base and Instruct checkpoints, and inference examples."
+      "evidence_note": "Official README identifies Moonshot AI/Kimi Linear as a text model, announces the December 5 release, lists 48B total / 3B active parameters, 1M context, Base and Instruct checkpoints, and inference examples. | re-check 2026-08-25: URL https://github.com/MoonshotAI/Kimi-Linear HTTP 200, model id found in body"
     },
     {
       "id": "moonshot-kimi-linear-hf",

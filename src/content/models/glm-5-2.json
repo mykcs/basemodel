@@ -71,7 +71,7 @@
     {
       "url": "https://huggingface.co/zai-org/GLM-5.2",
       "type": "official_model_card",
-      "checked_at": "2026-08-06",
+      "checked_at": "2026-08-25",
       "supports": [
         "architecture.total_parameters_b",
         "openness.weights_available",
@@ -88,7 +88,7 @@
         "research.suitable_for_inference",
         "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card lists GLM-5.2 model size as 753B params (BF16/F32, Safetensors). Official sources report conflicting total-parameter counts; no single value is selected until the conflict is resolved. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state.",
+      "evidence_note": "Official Hugging Face model card lists GLM-5.2 model size as 753B params (BF16/F32, Safetensors). Official sources report conflicting total-parameter counts; no single value is selected until the conflict is resolved. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/zai-org/GLM-5.2 HTTP 200, model id found in body",
       "id": "src_54a13779046b"
     },
     {
