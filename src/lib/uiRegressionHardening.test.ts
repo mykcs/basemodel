@@ -37,9 +37,12 @@ describe('UI regression-class hardening', () => {
     }
   });
 
-  it('keeps production main inside the hosted Chromium UI gate', () => {
+  it('keeps production main and Results overflow validation inside the hosted Chromium UI gate', () => {
     expect(vercelUiGate).toContain("const productionBranch = branch === 'main';");
-    expect(vercelUiGate).toContain('const shouldRun = productionBranch ||');
+    expect(vercelUiGate).toContain('const shouldRun = productionBranch');
+    expect(vercelUiGate).toContain('resultsOverflowValidationBranch.test(branch)');
+    expect(vercelUiGate).toContain("/^(?:fix|research)\\/results-mobile-overflow(?:-|$)/");
+    expect(vercelUiGate).toContain("'tests/e2e/results-mobile-overflow.spec.ts'");
     expect(vercelUiGate).toContain('&& !productionBranch');
   });
 
