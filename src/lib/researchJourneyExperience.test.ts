@@ -94,8 +94,9 @@ describe('research journey experience', () => {
   it('preserves a compact bilingual concept index rather than a second explanatory article', () => {
     expect(conceptIndex).toContain("t('原理索引', 'Concept index')");
     expect(conceptIndex).toContain("t('方法与环境参考', 'Method and environment references')");
-    expect(conceptIndex).toContain('完整流程图只保留在各自的专门页面');
-    expect(conceptIndex).toContain('Full process figures live only on their dedicated pages');
+    expect(conceptIndex).not.toContain('完整流程图只保留在各自的专门页面');
+    expect(conceptIndex).not.toContain('Full process figures live only on their dedicated pages');
+    expect(conceptIndex).not.toContain('让当前页面继续承担');
     expect(conceptIndex).not.toContain('client:visible');
   });
 });
