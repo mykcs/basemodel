@@ -145,7 +145,7 @@ const hasHistoricalAppendix = Astro.slots.has('historical');
 
   <section class="paper-section appendix" id="appendix" aria-labelledby="appendix-title">
     <p class="section-number">06</p><h2 id="appendix-title">{t('附录', 'Appendix')}</h2>
-    <p class="section-intro">{t('完整谱系和历史平台记录保留用于审计，默认收起，不参与主结论的视觉排序。', 'The complete lineage and historical-platform record remain available for audit, collapsed by default and outside the visual order of the main conclusion.')}</p>
+    <p class="section-intro">{t('附录 A：Phase G–H1.41 完整实验谱系。附录 B：更早的 RTX6 平台参数实验。两个附录都默认收起，按需展开。', 'Appendix A holds the complete Phase G–H1.41 experimental lineage. Appendix B holds the earlier RTX6 platform parametric experiments. Both appendices are collapsed by default.')}</p>
      <details data-testid="lineage-appendix"><summary>{t(`附录 A：Phase G–H1.41 完整实验谱系（${programTimeline.length} 个节点）`, `Appendix A: complete Phase G–H1.41 lineage (${programTimeline.length} nodes)`)}</summary><ol class="lineage-list">
       {programTimeline.map((item) => <li><details><summary><span class="lineage-coverage">{item.coverage.join(' · ')}</span><strong>{item.title[locale]}</strong><small>{programStageLabels[item.stage][locale]} · {programResultLabels[item.result][locale]}</small></summary><div class="lineage-body"><p>{item.summary[locale]}</p><p><strong>{t('结论边界：', 'Claim boundary: ')}</strong>{item.boundary[locale]}</p><a href={item.evidence}>{t('打开冻结证据', 'Open frozen evidence')}</a></div></details></li>)}
     </ol></details>

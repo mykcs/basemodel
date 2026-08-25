@@ -8,7 +8,7 @@ const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
 describe('historical seed3090 parametric evidence', () => {
   it('marks RTX6 / 4×RTX3090 as historical instead of the active experiment', () => {
     expect(component).toContain('RTX6 参数实验记录');
-    expect(component).toContain('RTX6（4×RTX 3090）已经退出当前实验主线');
+    expect(component).toContain('RTX6（4×RTX 3090）已退出当前实验主线');
     expect(component).toContain('RTX6 (4×RTX 3090) is no longer the active experiment platform');
     expect(component).toContain('openevo-experiment');
   });
