@@ -13,7 +13,7 @@ describe('optimization-phase regressions', () => {
         expert_count: number;
         active_experts_per_token: number;
       };
-      sources: Array<{ type: string; checked_at: string; supports?: string[] }>;
+      sources: Array<{ type: string; checked_at: string; supports?: string[]; evidence_note?: string }>;
     };
 
     expect(kimi.architecture).toMatchObject({
