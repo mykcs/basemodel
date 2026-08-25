@@ -121,12 +121,12 @@ Task Score + exact Success`}</code></pre>
         <h2>训练区和正式保留任务必须在实验开始前分开。</h2>
         <div class="two-column">
           <div>
-            <small>TRAIN CANDIDATE POOL</small>
+            <small>训练候选池 (TRAIN CANDIDATE POOL)</small>
             <h3>goal 500–6909</h3>
             <p>训练、经验采集、内部 validation（验证）与方法选择发生在这个范围。</p>
           </div>
           <div>
-            <small>OFFICIAL HELD-OUT POOL</small>
+            <small>正式保留池 (OFFICIAL HELD-OUT POOL)</small>
             <h3>goal 0–499</h3>
             <p>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</p>
           </div>
@@ -144,9 +144,9 @@ Task Score + exact Success`}</code></pre>
         <h2>连续任务分数、精确成功和训练 reward 不能混成一个指标。</h2>
         <div class="protocol-table" role="table" aria-label="WebShop evaluation metrics">
           <div class="row head" role="row"><span>指标</span><span>含义</span></div>
-          <div class="row" role="row"><span>task_score</span><strong>WebShop 原始连续任务分数</strong></div>
-          <div class="row" role="row"><span>exact success</span><strong>原始 reward = 1.0 时的完整成功</strong></div>
-          <div class="row" role="row"><span>SEED training reward</span><strong>成功映射为 10，否则为 0；只用于训练语义</strong></div>
+          <div class="row" role="row"><span>原始任务分数 (task_score)</span><strong>WebShop 原始连续任务分数</strong></div>
+          <div class="row" role="row"><span>精确成功 (exact success)</span><strong>原始 reward = 1.0 时的完整成功</strong></div>
+          <div class="row" role="row"><span>训练 reward (SEED training reward)</span><strong>成功映射为 10，否则为 0；只用于训练语义</strong></div>
         </div>
         <p>正式结果同时报告 raw task_score（原始任务分数）和 exact success（精确成功），这样不同方法的结果可以在同一尺度上核对。</p>
       </section>
