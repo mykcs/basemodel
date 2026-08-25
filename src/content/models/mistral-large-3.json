@@ -89,7 +89,7 @@
       "published_at": "2025-12-02",
       "type": "official_model_card",
       "checked_at": "2026-08-12",
-      "evidence_note": "Mistral's first-party model card documents the December 2, 2025 release, 675B total and 41B active parameters, 256K context, text/image multimodality, API model mistral-large-2512 and the open-weight surface.",
+      "evidence_note": "Mistral's first-party model card documents the December 2, 2025 release, 675B total and 41B active parameters, 256K context, text/image multimodality, API model mistral-large-2512 and the open-weight surface. | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

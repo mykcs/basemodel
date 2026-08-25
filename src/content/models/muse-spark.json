@@ -82,7 +82,7 @@
         "family",
         "generation"
       ],
-      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users. | re-check 2026-08-25: URL https://ai.meta.com/blog/introducing-muse-spark-msl/ HTTP 200, model id found in body",
+      "evidence_note": "Official Meta blog post dated April 8, 2026 introduces Muse Spark as first in Muse family, natively multimodal reasoning model with tool-use, visual chain of thought, and multi-agent orchestration; available at meta.ai and Meta AI app, with private API preview to select users. | re-check 2026-08-25: URL https://ai.meta.com/blog/introducing-muse-spark-msl/ HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_reported\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_17a523d995a6"
     },
     {

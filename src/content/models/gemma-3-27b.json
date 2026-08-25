@@ -57,7 +57,7 @@
       "url": "https://ai.google.dev/gemma/docs/core/model_card_3",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://ai.google.dev/gemma/docs/core/model_card_3 HTTP 200, model id found in body",
+      "evidence_note": "First-party source retained for this record; field-level semantic gaps remain explicit where the source does not report a value. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://ai.google.dev/gemma/docs/core/model_card_3 HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=undefined is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_df14dba6bd3c",
       "supports": [
         "vendor",

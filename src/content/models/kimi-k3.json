@@ -92,7 +92,7 @@
       "url": "https://huggingface.co/moonshotai/Kimi-K3",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image support, and a 1,048,576-token context window. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/moonshotai/Kimi-K3 HTTP 200, model id found in body",
+      "evidence_note": "Moonshot AI official model card states open-weight Kimi K3, 2.8T total, 104B active, 896 experts with 16 selected per token, text/image support, and a 1,048,576-token context window. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/moonshotai/Kimi-K3 HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_7372d8cb937a",
       "supports": [
         "vendor",

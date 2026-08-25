@@ -84,7 +84,7 @@
         "research.suitable_for_inference",
         "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card states 1.6T total parameters, 49B active, 1M context, MoE, MIT license. Expert count and top-k not stated in card. Source checked 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro HTTP 200, model id found in body",
+      "evidence_note": "Official Hugging Face model card states 1.6T total parameters, 49B active, 1M context, MoE, MIT license. Expert count and top-k not stated in card. Source checked 2026-08-06. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_76ae5fab3137"
     },
     {

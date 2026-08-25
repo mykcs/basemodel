@@ -77,7 +77,7 @@
       "publisher": "xAI",
       "type": "official_api_docs",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party model page identifies grok-build-0.1 as xAI's coding model for agentic software-engineering workflows, with text/image input, 256K context and legacy aliases.",
+      "evidence_note": "The first-party model page identifies grok-build-0.1 as xAI's coding model for agentic software-engineering workflows, with text/image input, 256K context and legacy aliases. | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

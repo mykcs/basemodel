@@ -75,7 +75,7 @@
       "url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
       "type": "official_announcement",
       "checked_at": "2026-08-25",
-      "evidence_note": "Alibaba Cloud records Qwen3.6 Flash on April 16, 2026 as a hosted native vision-language model. No public weights are listed, and SFT suitability is not reported in the cited current sources. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/newly-released-models HTTP 200, model id found in body",
+      "evidence_note": "Alibaba Cloud records Qwen3.6 Flash on April 16, 2026 as a hosted native vision-language model. No public weights are listed, and SFT suitability is not reported in the cited current sources. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/newly-released-models HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

@@ -54,7 +54,7 @@
       "url": "https://platform.openai.com/docs/deprecations",
       "type": "official_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "OpenAI's official deprecations page is the surviving first-party source for this legacy API model; a model-specific page is no longer published. | re-check 2026-08-25: URL https://platform.openai.com/docs/deprecations HTTP 200, model id found in body",
+      "evidence_note": "OpenAI's official deprecations page is the surviving first-party source for this legacy API model; a model-specific page is no longer published. | re-check 2026-08-25: URL https://platform.openai.com/docs/deprecations HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=undefined is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_66192c63f72d",
       "supports": [
         "vendor",

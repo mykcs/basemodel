@@ -75,7 +75,7 @@
         "architecture.active_parameters_b",
         "research.suitable_for_inference"
       ],
-      "evidence_note": "Official Qwen model card identifies the instruction-tuned 72B Qwen2.5 checkpoint, reports 72.7B parameters and 32,768-token context, and documents the supported runtime paths. The official Qwen Research License grants use and derivative rights for non-commercial purposes only; commercial use requires a separate license. Active parameters are derived from the official dense architecture: all parameters are active for dense inference. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen2.5-72B-Instruct HTTP 200, model id found in body",
+      "evidence_note": "Official Qwen model card identifies the instruction-tuned 72B Qwen2.5 checkpoint, reports 72.7B parameters and 32,768-token context, and documents the supported runtime paths. The official Qwen Research License grants use and derivative rights for non-commercial purposes only; commercial use requires a separate license. Active parameters are derived from the official dense architecture: all parameters are active for dense inference. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://huggingface.co/Qwen/Qwen2.5-72B-Instruct HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=undefined is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_03b3cb491041"
     },
     {

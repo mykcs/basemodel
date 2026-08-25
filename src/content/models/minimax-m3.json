@@ -92,7 +92,7 @@
       "publisher": "MiniMax",
       "type": "official_model_card",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party model card documents approximately 428B total and 23B active parameters, one-million-token context, native text/image/video multimodality, downloadable weights, MiniMax API access and supported Transformers, vLLM and SGLang deployment paths.",
+      "evidence_note": "The first-party model card documents approximately 428B total and 23B active parameters, one-million-token context, native text/image/video multimodality, downloadable weights, MiniMax API access and supported Transformers, vLLM and SGLang deployment paths. | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

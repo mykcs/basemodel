@@ -68,7 +68,7 @@
       "url": "https://ai.google.dev/gemma/docs/core/model_card_4",
       "type": "official_model_card",
       "checked_at": "2026-08-25",
-      "evidence_note": "Google's Gemma 4 model card lists E2B as a dense model with 5.1B parameters including embeddings, 128K context, text/image/audio support, open pretrained and instruction-tuned weights and Apache-2.0 licensing. Unspecified research/deployment properties are recorded as not_reported rather than inferred. | re-check 2026-08-25: URL https://ai.google.dev/gemma/docs/core/model_card_4 HTTP 200, model id found in body",
+      "evidence_note": "Google's Gemma 4 model card lists E2B as a dense model with 5.1B parameters including embeddings, 128K context, text/image/audio support, open pretrained and instruction-tuned weights and Apache-2.0 licensing. Unspecified research/deployment properties are recorded as not_reported rather than inferred. | re-check 2026-08-25: URL https://ai.google.dev/gemma/docs/core/model_card_4 HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"not_applicable\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

@@ -70,7 +70,7 @@
       "url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max",
       "type": "official_api_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "Alibaba Cloud identifies Qwen3.7 Max as the largest and most capable hosted Qwen3.7 model with 1M context and current API aliases/snapshots. The hosted API does not offer fine-tuning, but that service limitation is not promoted into a model-level license or local-training claim. The reviewed API documentation does not establish a public-weight release, local runtime, derivative-distribution right, or model-license classification, so those fields remain semantic unknowns. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max HTTP 200, model id found in body",
+      "evidence_note": "Alibaba Cloud identifies Qwen3.7 Max as the largest and most capable hosted Qwen3.7 model with 1M context and current API aliases/snapshots. The hosted API does not offer fine-tuning, but that service limitation is not promoted into a model-level license or local-training claim. The reviewed API documentation does not establish a public-weight release, local runtime, derivative-distribution right, or model-license classification, so those fields remain semantic unknowns. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

@@ -70,7 +70,7 @@
       "url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
       "type": "official_announcement",
       "checked_at": "2026-08-25",
-      "evidence_note": "Alibaba Cloud records qwen3.6-max-preview on April 20, 2026 as the largest proprietary Qwen3.6 preview model available through Model Studio. Architecture/context details, fine-tuning and SFT suitability are not disclosed or not reported in the cited current first-party material. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/newly-released-models HTTP 200, model id found in body",
+      "evidence_note": "Alibaba Cloud records qwen3.6-max-preview on April 20, 2026 as the largest proprietary Qwen3.6 preview model available through Model Studio. Architecture/context details, fine-tuning and SFT suitability are not disclosed or not reported in the cited current first-party material. | re-check 2026-08-25: URL https://www.alibabacloud.com/help/en/model-studio/newly-released-models HTTP 200, model id found in body | Phase B (2026-08-25): vendor access.api_status=\"preview\"; body of source URL contains the model id but the model is not yet generally available",
       "supports": [
         "vendor",
         "family",
@@ -86,5 +86,5 @@
       ]
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }

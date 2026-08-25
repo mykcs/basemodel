@@ -72,7 +72,7 @@
       "url": "https://docs.anthropic.com/en/docs/about-claude/models",
       "type": "official_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "Anthropic official model catalog lists Claude Opus 4.7 with 1M context window and active lifecycle status; model ID is dateless pinned snapshot. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://docs.anthropic.com/en/docs/about-claude/models HTTP 200, model id found in body",
+      "evidence_note": "Anthropic official model catalog lists Claude Opus 4.7 with 1M context window and active lifecycle status; model ID is dateless pinned snapshot. Classification is derived from the recorded weight-access boundary: provider-only records are proprietary and released-weight records are open-weight unless a source states a narrower category. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. | re-check 2026-08-25: URL https://docs.anthropic.com/en/docs/about-claude/models HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "architecture.context_length",
         "access.api_status",

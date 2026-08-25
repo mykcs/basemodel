@@ -89,7 +89,7 @@
         "research.suitable_for_inference",
         "openness.commercial_use"
       ],
-      "evidence_note": "Official Hugging Face model card states GLM-5 scales to 744B parameters (40B active) compared to GLM-4.5, integrates DeepSeek Sparse Attention, and is released under MIT license. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/zai-org/GLM-5 HTTP 200, model id found in body",
+      "evidence_note": "Official Hugging Face model card states GLM-5 scales to 744B parameters (40B active) compared to GLM-4.5, integrates DeepSeek Sparse Attention, and is released under MIT license. Inference suitability is an operational derivation from the recorded local-weight or API access path, not a performance claim. Commercial-use classification is derived only where the recorded license explicitly provides the corresponding permission; otherwise it remains a semantic state. | re-check 2026-08-25: URL https://huggingface.co/zai-org/GLM-5 HTTP 200, model id found in body | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "id": "src_c689b3abc395"
     },
     {

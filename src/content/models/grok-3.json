@@ -65,7 +65,7 @@
       "url": "https://docs.x.ai/developers/migration/may-15-retirement",
       "type": "official_docs",
       "checked_at": "2026-08-25",
-      "evidence_note": "xAI retired the grok-3 API model on May 15, 2026. Requests that still use the grok-3 slug are now served by grok-4.3, so the original Grok 3 model itself is not an available inference target even though the legacy slug continues to resolve. | re-check 2026-08-25: URL https://docs.x.ai/developers/migration/may-15-retirement HTTP 200, model id found in body",
+      "evidence_note": "xAI retired the grok-3 API model on May 15, 2026. Requests that still use the grok-3 slug are now served by grok-4.3, so the original Grok 3 model itself is not an available inference target even though the legacy slug continues to resolve. | re-check 2026-08-25: URL https://docs.x.ai/developers/migration/may-15-retirement HTTP 200, model id found in body | Phase B (2026-08-25): vendor access.api_status=\"deprecated\"; vendor has withdrawn the model from the live catalog",
       "supports": [
         "status",
         "access.api_status",
@@ -90,6 +90,6 @@
       ]
     }
   ],
-  "data_status": "verified",
+  "data_status": "partial",
   "notes": "The grok-3 API slug redirects to grok-4.3 after the May 15, 2026 retirement; keeping the old slug in api_model_ids is historical compatibility metadata, not evidence that Grok 3 itself remains callable."
 }

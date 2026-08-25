@@ -77,7 +77,7 @@
       "publisher": "xAI",
       "type": "official_api_docs",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party xAI model page documents the Grok 4.20 reasoning snapshot, text/image input, one-million-token context, API aliases and tool-calling surface. Provider-only distribution is recorded as proprietary; no downloadable weight claim is made.",
+      "evidence_note": "The first-party xAI model page documents the Grok 4.20 reasoning snapshot, text/image input, one-million-token context, API aliases and tool-calling surface. Provider-only distribution is recorded as proprietary; no downloadable weight claim is made. | Phase B (2026-08-25): Phase B review: access.api_status=\"available\" is consistent with a live catalog entry; source URL re-checked 2026-08-25 and the model id was found in the body",
       "supports": [
         "vendor",
         "family",

@@ -73,7 +73,7 @@
       "publisher": "xAI",
       "type": "official_api_docs",
       "checked_at": "2026-08-12",
-      "evidence_note": "The first-party xAI model page describes a beta API model in which multiple agents collaborate in parallel for deep-research tasks, with text/image input and one-million-token context.",
+      "evidence_note": "The first-party xAI model page describes a beta API model in which multiple agents collaborate in parallel for deep-research tasks, with text/image input and one-million-token context. | Phase B (2026-08-25): vendor access.api_status=\"preview\"; body of source URL contains the model id but the model is not yet generally available",
       "supports": [
         "vendor",
         "family",
@@ -102,5 +102,5 @@
       ]
     }
   ],
-  "data_status": "verified"
+  "data_status": "partial"
 }
