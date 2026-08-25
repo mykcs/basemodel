@@ -33,12 +33,12 @@ const isPermissiveLicense = (model: JsonObject): boolean => /apache[- ]?2|^mit$|
 const sourceFor = (model: JsonObject, field: string): JsonObject => {
   const source = model.sources.find((item: JsonObject) => Array.isArray(item.supports) && item.supports.includes(field))
     ?? model.sources.find((item: JsonObject) => item.type.startsWith('official_') || item.type === 'technical_report')
-    ?? model.sources[0];
+    ?? model.sources[0]!;
   return source;
 };
 
 const addSupport = (model: JsonObject, fields: string[], note: string): void => {
-  const source = sourceFor(model, fields[0]);
+  const source = sourceFor(model, fields[0]!);
   source.supports = [...new Set([...(source.supports ?? []), ...fields])];
   if (!source.evidence_note?.includes(note)) source.evidence_note = `${source.evidence_note ?? ''} ${note}`.trim();
 };

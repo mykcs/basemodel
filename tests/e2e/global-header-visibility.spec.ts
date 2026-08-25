@@ -231,9 +231,9 @@ test('responsive navigation controls remain operable instead of merely visible',
     expect(section.width, 'each mobile navigation section should use the full menu reading width').toBeGreaterThan(mobileGeometry.innerWidth * 0.9);
   }
   expect(
-    mobileGeometry.sectionRects[1].top,
+    mobileGeometry.sectionRects[1]!.top,
     'mobile navigation sections must stack vertically rather than squeeze side-by-side',
-  ).toBeGreaterThanOrEqual(mobileGeometry.sectionRects[0].bottom - 1);
+  ).toBeGreaterThanOrEqual(mobileGeometry.sectionRects[0]!.bottom - 1);
   expect(mobileGeometry.controlsRect, 'mobile navigation controls must exist').not.toBeNull();
   if (mobileGeometry.controlsRect) {
     expect(mobileGeometry.controlsRect.width).toBeGreaterThan(mobileGeometry.innerWidth * 0.9);

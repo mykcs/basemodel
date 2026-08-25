@@ -83,7 +83,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
     for (const route of [webshopZh, webshopEn]) {
       ordered.forEach((component) => expect(route).toContain(component));
       for (let index = 0; index < ordered.length - 1; index += 1) {
-        expect(route.indexOf(ordered[index])).toBeLessThan(route.indexOf(ordered[index + 1]));
+        expect(route.indexOf(ordered[index]!)).toBeLessThan(route.indexOf(ordered[index + 1]!));
       }
       for (const legacyDuplicate of ['WebShopInteractionCanonicalFigure', 'WebShopInstructionGoalSeparationFigure', 'WebShopScaleEcho']) {
         expect(route).not.toContain(legacyDuplicate);

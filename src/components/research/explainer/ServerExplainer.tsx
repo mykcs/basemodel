@@ -46,7 +46,7 @@ export function ServerExplainer({ locale, step, onStep }: { locale: Locale; step
         </ul>
         <ConnectorLayer containerRef={sceneRef} edges={edges} ariaLabel={zh ? '开发容器通过 Docker socket 调用 host daemon；daemon 管理 sibling experiment/user containers；长期状态写入持久 workspace' : 'The development container calls the host daemon through the Docker socket; the daemon manages sibling experiment/user containers; durable state is written to persistent workspace'} />
       </figure>
-      <aside className="irx-authority-inspector"><span>AUTHORITY INSPECTOR</span><strong>{details[step].title}</strong><p>{details[step].body}</p><div><b>{zh ? '必须同时记住' : 'Keep both distinctions'}</b><code>container root ≠ physical-host root</code><code>technical capability ≠ authorization scope</code></div></aside>
+      <aside className="irx-authority-inspector"><span>AUTHORITY INSPECTOR</span><strong>{details[step]!.title}</strong><p>{details[step]!.body}</p><div><b>{zh ? '必须同时记住' : 'Keep both distinctions'}</b><code>container root ≠ physical-host root</code><code>technical capability ≠ authorization scope</code></div></aside>
     </div>
   );
 }

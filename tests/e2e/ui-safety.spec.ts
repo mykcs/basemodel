@@ -48,16 +48,16 @@ async function auditUi(page: Page): Promise<string[]> {
       if (input.startsWith('rgb')) {
         const values = input.match(/[\d.]+/g)?.map(Number) ?? [];
         if (values.length < 3) return null;
-        return { r: values[0], g: values[1], b: values[2], a: values[3] ?? 1 };
+        return { r: values[0]!, g: values[1]!, b: values[2]!, a: values[3] ?? 1 };
       }
 
       if (input.startsWith('color(srgb')) {
         const values = input.match(/[\d.]+/g)?.map(Number) ?? [];
         if (values.length < 3) return null;
         return {
-          r: values[0] * 255,
-          g: values[1] * 255,
-          b: values[2] * 255,
+          r: values[0]! * 255,
+          g: values[1]! * 255,
+          b: values[2]! * 255,
           a: values[3] ?? 1,
         };
       }
@@ -237,12 +237,12 @@ async function auditUi(page: Page): Promise<string[]> {
     groups.forEach((items) => {
       for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
         for (let rightIndex = leftIndex + 1; rightIndex < items.length; rightIndex += 1) {
-          const left = items[leftIndex].getBoundingClientRect();
-          const right = items[rightIndex].getBoundingClientRect();
+          const left = items[leftIndex]!.getBoundingClientRect();
+          const right = items[rightIndex]!.getBoundingClientRect();
           const overlapWidth = Math.min(left.right, right.right) - Math.max(left.left, right.left);
           const overlapHeight = Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top);
           if (overlapWidth > 2 && overlapHeight > 2) {
-            issues.push(`audited siblings overlap: ${selectorFor(items[leftIndex])} ↔ ${selectorFor(items[rightIndex])}`);
+            issues.push(`audited siblings overlap: ${selectorFor(items[leftIndex]!)} ↔ ${selectorFor(items[rightIndex]!)}`);
           }
         }
       }

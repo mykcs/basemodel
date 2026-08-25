@@ -29,7 +29,7 @@ export function ModelTaskFit({ model, papers, m }: Props) {
     <div className="section-kicker">{m.explorer.taskFitLabel}</div>
     <h2 id="detail-task-fit-title">{m.explorer.taskFitLabel}: {fitLabel}</h2>
     <p className="muted">{fitHint}</p>
-    <dl className="fit-dimensions">{dimensions.map(([label, level]) => <div key={label}><dt>{label}</dt><dd className={`fit-level-${level}`}>{m.explorer[`level${level[0].toUpperCase()}${level.slice(1)}` as 'levelHigh' | 'levelMedium' | 'levelLow' | 'levelUnknown']}</dd></div>)}</dl>
+    <dl className="fit-dimensions">{dimensions.map(([label, level]) => <div key={label}><dt>{label}</dt><dd className={`fit-level-${level}`}>{m.explorer[`level${level[0]!.toUpperCase()}${level.slice(1)}` as 'levelHigh' | 'levelMedium' | 'levelLow' | 'levelUnknown']}</dd></div>)}</dl>
     {evaluation.fit.blockers.length > 0 && <p className="detail-fit-warning">{m.explorer.fitBlockedHint}</p>}
     {evaluation.hasUnknown && evaluation.fit.blockers.length === 0 && <p className="detail-fit-pending">{m.explorer.fitConditionalHint}</p>}
     <div className="detail-task-actions"><button type="button" className="button button-primary" onClick={() => inCandidate ? removeCandidate(model.id) : addCandidate(model.id)}>{inCandidate ? m.workspace.removeCandidate : m.workspace.addCandidate}</button><button type="button" className="button button-secondary" onClick={() => inCompare ? removeFromCompare(model.id) : addToCompare(model.id)}>{inCompare ? m.workspace.removeFromCompare : m.workspace.addToCompare}</button></div>

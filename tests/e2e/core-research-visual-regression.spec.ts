@@ -62,9 +62,9 @@ async function captureSignature(page: Page) {
     let blue = 0;
     let count = 0;
     for (let offset = 0; offset < rgba.length; offset += 4) {
-      const r = rgba[offset];
-      const g = rgba[offset + 1];
-      const b = rgba[offset + 2];
+      const r = rgba[offset] ?? 0;
+      const g = rgba[offset + 1] ?? 0;
+      const b = rgba[offset + 2] ?? 0;
       red += r;
       green += g;
       blue += b;
@@ -75,7 +75,9 @@ async function captureSignature(page: Page) {
     let bits = '';
     for (let y = 0; y < 8; y += 1) {
       for (let x = 0; x < 8; x += 1) {
-        bits += gray[y * 9 + x] > gray[y * 9 + x + 1] ? '1' : '0';
+        const left = gray[y * 9 + x] ?? 0;
+        const right = gray[y * 9 + x + 1] ?? 0;
+        bits += left > right ? '1' : '0';
       }
     }
 
@@ -98,7 +100,7 @@ function hamming64(left: string, right: string) {
 }
 
 function compareSignatures(expected: BaselineEntry, actual: { dhash64: string; avgRgb: [number, number, number] }) {
-  const colorDelta = expected.avgRgb.reduce((sum, value, index) => sum + Math.abs(value - actual.avgRgb[index]), 0) / 3;
+  const colorDelta = expected.avgRgb.reduce((sum, value, index) => sum + Math.abs(value - (actual.avgRgb[index] ?? 0)), 0) / 3;
   return {
     hamming: hamming64(expected.dhash64, actual.dhash64),
     colorDelta,
@@ -138,7 +140,7 @@ for (const matrix of matrices) {
         await settle(page);
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
         const actual = await captureSignature(page);
-        const metrics = compareSignatures(expectedEntry, actual.signature);
+        const metrics = compareSignatures(expectedEntry!, actual.signature);
 
         // dHash protects page composition while avgRgb protects large surface/theme
         // changes. The separate layout-anomaly/CJK gates remain stricter for thin

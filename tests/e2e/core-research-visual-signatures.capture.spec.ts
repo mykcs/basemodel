@@ -49,9 +49,9 @@ async function screenshotSignature(page: Page) {
     let blue = 0;
     let count = 0;
     for (let offset = 0; offset < rgba.length; offset += 4) {
-      const r = rgba[offset];
-      const g = rgba[offset + 1];
-      const b = rgba[offset + 2];
+      const r = rgba[offset] ?? 0;
+      const g = rgba[offset + 1] ?? 0;
+      const b = rgba[offset + 2] ?? 0;
       red += r;
       green += g;
       blue += b;
@@ -62,7 +62,9 @@ async function screenshotSignature(page: Page) {
     let bits = '';
     for (let y = 0; y < 8; y += 1) {
       for (let x = 0; x < 8; x += 1) {
-        bits += gray[y * 9 + x] > gray[y * 9 + x + 1] ? '1' : '0';
+        const left = gray[y * 9 + x] ?? 0;
+        const right = gray[y * 9 + x + 1] ?? 0;
+        bits += left > right ? '1' : '0';
       }
     }
 

@@ -163,7 +163,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
                 const state = rowState(row);
                 return <tr key={row.label} className={state.differs ? 'comparison-row-diff' : undefined}>
                   <th scope="row">{row.label}{state.differs && <span className="diff-badge">{m.compare.diff}</span>}{state.impact && row.impactCode && <small className="compare-impact">{m.compare.researchImpact}: {impactLabel(row.impactCode)}</small>}</th>
-                  {state.values.map((_cell, index) => <td className={state.differs ? 'is-diff' : undefined} key={active[index].id}>{displayCell(state.values, index)}</td>)}
+                  {state.values.map((_cell, index) => <td className={state.differs ? 'is-diff' : undefined} key={active[index]!.id}>{displayCell(state.values, index)}</td>)}
                 </tr>;
               })}
             </tbody>)}
@@ -178,7 +178,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
               return <article className="comparison-mobile-field" key={row.label}>
                 <h4>{row.label}{state.differs && <span className="diff-badge">{m.compare.diff}</span>}</h4>
                 <div className="comparison-mobile-values">
-                  {state.values.map((_value, index) => <div className="comparison-mobile-value" key={active[index].id}><strong>{active[index].name}</strong><span>{displayCell(state.values, index)}</span></div>)}
+                  {state.values.map((_value, index) => <div className="comparison-mobile-value" key={active[index]!.id}><strong>{active[index]!.name}</strong><span>{displayCell(state.values, index)}</span></div>)}
                 </div>
                 {state.impact && row.impactCode && <p className="comparison-mobile-impact">{m.compare.researchImpact}: {impactLabel(row.impactCode)}</p>}
               </article>;

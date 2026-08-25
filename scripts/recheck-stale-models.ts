@@ -142,7 +142,7 @@ const probe = async (file: string, model: AtlasModel): Promise<ProbeResult> => {
     if (idx >= 0) {
       const tail = stdout.slice(idx + marker.length);
       const codeMatch = /^(\d+)/.exec(tail);
-      http = codeMatch ? Number.parseInt(codeMatch[1], 10) : undefined;
+      http = codeMatch && codeMatch[1] ? Number.parseInt(codeMatch[1], 10) : undefined;
       body = stdout.slice(0, idx);
     } else {
       body = stdout;

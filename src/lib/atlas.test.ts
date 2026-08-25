@@ -29,9 +29,9 @@ describe('atlas rules', () => {
   });
   it('preserves an unverified hardware tier as a semantic gap', () => expect(hardwareFits({ ...baseModel, hardware: { ...baseModel.hardware, inference_tier: 'not_verified' } }, 'inference', '24gb')).toBe('not_verified'));
   it('treats a larger available tier as sufficient', () => expect(hardwareFits(baseModel, 'inference', '24gb')).toBe(true));
-  it('returns a candidate when the rule conditions match', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'chinese', resource: '24gb', goal: 'open_weights' })[0].candidate).toBe(true));
+  it('returns a candidate when the rule conditions match', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'chinese', resource: '24gb', goal: 'open_weights' })[0]!.candidate).toBe(true));
   // 弱证据：模型只有泛化 tool-use 专长时，webshop 方向应命中相近方向（relatedTo 反向映射）
-  it('gives weak evidence for a related general specialty', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'webshop', resource: '24gb', goal: 'current' })[0].evidence).toBe('weak'));
+  it('gives weak evidence for a related general specialty', () => expect(recommendModels([baseModel], { mode: 'inference', task: 'webshop', resource: '24gb', goal: 'current' })[0]!.evidence).toBe('weak'));
   it('resolves papers through model ids', () => expect(papersForModel([paper], 'test-model')).toHaveLength(1));
   it('localizes dynamic enum labels and hides unknown storage values', () => {
     expect(architectureLabel('moe', 'zh')).toBe('混合专家（MoE）');
@@ -103,10 +103,10 @@ describe('atlas rules', () => {
     const unknown = { ...baseModel, id: 'unknown-landscape', architecture: { ...baseModel.architecture, total_parameters_b: 'not_disclosed' as const, active_parameters_b: 'not_verified' as const }, hardware: { ...baseModel.hardware, inference_tier: 'not_reported' as const } };
     expect(parameterForLandscape(unknown)).toEqual({ value: null, source: 'unknown' });
     const [point] = buildLandscapePoints([unknown], 'en');
-    expect(point.parameterB).toBeNull();
-    expect(point.parameterSource).toBe('unknown');
-    expect(point.hardwareIndex).toBe(7);
-    expect(point.dataStatusLabel).toBe('Archived example');
+    expect(point!.parameterB).toBeNull();
+    expect(point!.parameterSource).toBe('unknown');
+    expect(point!.hardwareIndex).toBe(7);
+    expect(point!.dataStatusLabel).toBe('Archived example');
   });
   it('exports only the minimal landscape model fields', () => {
     expect(Object.keys(toLandscapeModelExport(baseModel))).toEqual(['id', 'name', 'vendor', 'family', 'release_date', 'architecture', 'total_parameters_b', 'active_parameters_b', 'inference_tier', 'data_status']);
