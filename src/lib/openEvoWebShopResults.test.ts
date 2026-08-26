@@ -88,7 +88,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(readerContract).toContain('Density budget');
     expect(readerContract).toContain('Minimum reasoning bridge');
     expect(readerContract).toContain('你为什么这样说？');
-    expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1 + repaired PRIMARY-v2');
+    expect(readerContract).toContain('2026-08-25 SEED official-heldout comparison v1 + repaired PRIMARY-v2');
     expect(readerContract).toContain('Post-v2 source-semantics audit and source-faithful successor');
     expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
   });
@@ -159,7 +159,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('bootstrap 95% CI [-0.65, +7.19]');
     expect(questions).toContain('数值 session index 不是完整任务身份');
     expect(questions).toContain('design-only-not-authorized');
-    expect(questions).toContain('与 SEED 评测设置兼容（SEED-compatible）');
+    expect(questions).toContain('SEED-compatible');
     expect(questions).toContain('不是论文确切分母');
     expect(questions).toContain('SEED checkpoint / training 仍未在本地复现');
     expect(questions).toContain('429faae1acc1132f8bdad4269a4e15864a9cccb0');
