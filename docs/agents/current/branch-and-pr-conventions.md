@@ -2,6 +2,8 @@
 
 Status: **current repository policy**
 
+Shared account-level baseline: `mykcs/.agents/docs/agents/BRANCH_AND_PR_CONVENTIONS.md`. This file is the BaseModel application/override: project executable truth and the Vercel-specific exception below take precedence over the shared default.
+
 This document defines how new work branches and PRs should be named in `mykcs/basemodel`. It does not retroactively rename historical or in-flight branches.
 
 ## Core rule
