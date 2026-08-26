@@ -8,7 +8,7 @@ Applies to:
 - every mounted `OpenEvoWebShopResults*` component
 - tests that protect this route's reader voice, scientific boundaries, evidence interaction, or narrative order
 
-This file specializes, and does not replace, `audience-centered-technical-copy.md`, `research-explainer-page-standard.md`, `scientific-state-provenance.md`, and `experiment-result-publication-workflow.md`.
+This file specializes, and does not replace, `experiment-result-publication-workflow.md`, `audience-centered-technical-copy.md`, `research-explainer-page-standard.md`, and `scientific-state-provenance.md`.
 
 ## 1. Default reader
 
@@ -197,15 +197,16 @@ The repaired PRIMARY-v2 is the local **SEED-compatible** headline for that histo
 
 ### Action-wrapper attribution boundary
 
-Keep the following layers separate:
+Keep these evidence layers separate:
 
 - released SEED prompt/parser require `<action>...</action>`;
+- the actual saved BASE prompt also asks for `<action>` and does not ask for `[action]`;
 - saved no-adapter BASE evidence shows Qwen2.5-7B-Instruct can emit `[action]...` even when the prompt requests angle brackets;
 - the inference backend directly decodes generated tokens and does not rewrite `<` into `[`;
 - current H1.36 training-pipeline evidence does not support the claim that malformed parser-invalid wrappers were qualified self-evolution supervision;
 - the experiment-integration failure was that known model-output drift was not preflighted against the formal SEED parser before PRIMARY-v1.
 
-Do not simplify this into “OpenEvo wrote `[action]`”, “SEED parser had a bug”, or a claim about a specific human author. Repository evidence does not identify the upstream Qwen pretraining/SFT example that caused the habit.
+Do not simplify this into “OpenEvo wrote `[action]`”, “SEED parser had a bug”, “SD-LoRA taught `[action]`”, or a claim about a specific human author. Repository evidence does not identify the upstream Qwen pretraining/SFT example that caused the habit, and it does not prove that SD-LoRA could never affect wrapper frequency.
 
 ### Post-v2 source-semantics audit and source-faithful successor
 
@@ -219,15 +220,13 @@ Pinned public-code semantics use:
 
 Because worker seed changes goal ordering, the numeric session index alone is not a complete task identity. The historical panel therefore remains valid as a frozen SEED-compatible local panel, but it must not be relabelled as the source-faithful first-validation semantic panel.
 
-**Current upstream execution state (2026-08-26 snapshot):** the successor campaign `20260826-0630-seed-webshop-public-code-reproduction` on `mykcs/openevo-experiment` branch `seed-webshop-pubcode-repro-v1-prep` has advanced beyond design-only status. Its current-campaign authority records:
+**Current authority after refreshing `mykcs/openevo-experiment/main`:** successor campaign `20260826-0638-webshop-seed-source-faithful-reproduction` is **PREPARED task-construction evidence, not an executed scientific result**. Its 128-slot semantic manifest has been materialized, and two clean rebuild receipts are `PASS` with identical `manifest_content_sha256`, `manifest_file_sha256`, and `selected_panel_digest`. The frozen preregistration still states `formal_task_consumption_allowed=false`.
 
-- `status = executing-formal-run`;
-- execution-readiness release passed 20/20 fail-closed checks;
-- the source-faithful semantic panel was deterministically rebuilt;
-- the parser-compatible contract and comparison identities are frozen;
-- a 256-episode paired formal run was launched.
+The next gate is **server runtime semantic validation 128/128**, followed by a separate activation/release PR before any formal GPU task consumption. BASE / frozen SD-LoRA identities, parser-compatible measurement contract, validation/worker seed schedule, task manifest, and data identity remain frozen.
 
-This is **execution state, not a scientific result**. Do not publish BASE-vs-SD outcome claims until the authoritative reconciliation/analysis/closeout exists. Before using “current”, “running”, “next”, or “completed”, refresh the actual upstream branch/SHA because this state is expected to change.
+An older preparation branch, `seed-webshop-pubcode-repro-v1-prep`, briefly carried an `executing-formal-run` state. Do not infer current execution from that branch unless it again becomes current authority and produces sealed evidence. Before using “current”, “running”, “next”, or “completed”, refresh the actual upstream authority branch/SHA rather than copying a stale current-doc snapshot.
+
+This source-faithful panel represents the task semantics of one specified released-code **first validation**. It still does not recover the paper-final 128 denominator behind 89.7 / 78.1%, because the public paper/code do not uniquely identify the final table's validation ordinal and checkpoint.
 
 ### WB1
 
@@ -244,14 +243,27 @@ question
 -> short current answer with a minimum observation-to-conclusion bridge
 -> optional <details>
    summary: 展开实验依据
-   exact observations / counts / confidence intervals / claim boundary
-   local evidence references mapped to the observations they support
+   exact observation / number
+   -> claim-local primary evidence reference(s)
+   -> question-level evidence package
+   -> claim boundary
 -> next question
 ```
 
-Do not replace `展开实验依据` with an abstract phrase such as `证据链与代码回溯` on the Chinese beginner path.
+The evidence block must answer two different questions without forcing the reader to infer a mapping:
 
-Do not send the reader to a distant bottom Evidence Map to understand a claim they just read.
+- **Observation-level evidence:** “这一行具体从哪来？”
+- **Question-level evidence package:** “这一整个问题还有哪些相关材料？”
+
+It is acceptable for one important source to appear in both places. Do not remove a useful local mapping merely to avoid duplication.
+
+Evidence priority is:
+
+1. **Level A / closest to the fact:** official source code, raw model episode/completion, machine-generated analysis or reconciliation, frozen config/manifest, runtime receipt, immutable artifact or commit;
+2. **Level B / contemporaneous record:** experiment report, closeout, audit, preregistration, dated tracking note;
+3. **Level C / later human synthesis:** Results.md, website explanation, later program summary.
+
+If Level A directly supports a claim, do not use Level C as its only link. Historical scientific evidence links should be immutable (`blob/<commit SHA>/...`) and source-code links should use exact `#Lx-Ly` anchors when a stable line range is available.
 
 For highly specific factual observations, a question-level pile of links is not enough if the reader must guess which source proves which row. Prefer local mapping:
 
@@ -269,7 +281,25 @@ Examples:
 - task identity / sampling claim -> manifest/builder/preregistration;
 - historical engineering discovery -> contemporaneous commit/report.
 
-Keep the page readable: these references belong primarily inside local evidence disclosures, not as a citation wall in the Hero/mainline. Repeating one key source both beside the claim and in a broader evidence grid is acceptable when it improves auditability.
+Use the shared evidence vocabulary consistently:
+
+- Official code / 官方代码
+- Code / 源代码
+- Raw episode / 原始回合
+- Machine result / 机器结果
+- Config / 实验配置
+- Manifest / 任务清单
+- Commit / 提交记录
+- Runtime receipt / 运行凭据
+- Preregistration / 预注册
+- Audit / 审计
+- Human report / 人工报告
+- Design / 实验设计
+- Historical record / 历史记录
+
+Do not replace `展开实验依据` with an abstract phrase such as `证据链与代码回溯` on the Chinese beginner path.
+
+Do not send the reader to a distant bottom Evidence Map to understand a claim they just read. The Hero remains a reading layer, not a bibliography: if it needs provenance, prefer an in-page anchor rather than a row of external GitHub links. Repeating one key source both beside the claim and in a broader evidence grid is acceptable when it improves auditability.
 
 Historical evidence links should be immutable. Use GitHub line anchors only after verifying the actual source lines; do not guess line numbers from memory.
 
@@ -278,8 +308,8 @@ Historical evidence links should be immutable. Use GitHub line anchors only afte
 Any Agent making a non-trivial change to the Results route must:
 
 1. read this file;
-2. read `experiment-result-publication-workflow.md`, `research-explainer-page-standard.md`, and `audience-centered-technical-copy.md`;
-3. resolve the latest scientific state from the actual active `mykcs/openevo-experiment` branch/SHA rather than copying an older page sentence or stale current-doc status;
+2. read `experiment-result-publication-workflow.md`, `research-explainer-page-standard.md`, `audience-centered-technical-copy.md`, and `scientific-state-provenance.md`;
+3. resolve the latest scientific state from the actual active/current-authority `mykcs/openevo-experiment` branch/SHA rather than copying an older page sentence or stale current-doc status;
 4. write the proposed heading/question sequence before local copy polishing when structure changes;
 5. check every English technical term on the Chinese route for a first-use Chinese gloss;
 6. check whether exact numbers can move into `展开实验依据`;
@@ -288,6 +318,8 @@ Any Agent making a non-trivial change to the Results route must:
 9. if adding a deep debugging/attribution narrative, decide explicitly whether it changes the default reader's scientific answer; if not, keep it below the seven-question spine as collapsed technical depth and use chronology + local code/commit/experiment evidence;
 10. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, the current Track A successor, and WB1 Track B progress are not conflated;
 11. for parser/model-output attribution, separately resolve official contract, actual prompt, raw output, backend transformations, training-data path, and harness behavior before assigning responsibility;
-12. run reader-voice/scientific-boundary tests and inspect the exact-head Preview.
+12. sample at least 20 concrete claims and verify that each can reach the closest available primary evidence in one click from its local evidence block;
+13. verify every newly added immutable URL, repository path, and source-code line anchor against the actual file;
+14. run the reader-voice/scientific-boundary tests and inspect the exact-head Preview.
 
 If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same coherent change. If an experiment merely starts running, update only the execution-state wording; do not invent its result.

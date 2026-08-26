@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -10,91 +12,74 @@ const experimentRoot = 'https://github.com/mykcs/openevo-experiment/blob/115062e
 const heldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1acc1132f8bdad4269a4e15864a9cccb0';
 const h136ParserCommit = 'https://github.com/mykcs/openevo-experiment/commit/8e526e42de82e3fb417eb6dc4d892e068d73ef1f';
 const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const rawEpisode = `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json`;
 
-const steps = [
+type Step = { when: string; title: string; body: string; links: EvidenceRef[] };
+const steps: Step[] = [
   {
     when: t('官方合同', 'Released contract'),
     title: t('SEED 明确要求 <action>...</action>', 'SEED explicitly requires <action>...</action>'),
-    body: t(
-      'SEED 公开的 WebShop Prompt 明确写着动作要放进 <action>...</action>；它的 webshop_projection 也只按这对标签抽取动作，找不到时会把输出退化成最后 20 个字符。因此这里不能把问题写成“SEED parser 有 bug”：官方代码是在执行它自己公开的合同。',
-      'The released SEED WebShop prompt explicitly requires actions inside <action>...</action>. Its webshop_projection extracts only that pair of tags and falls back to the final 20 characters when they are absent. This is therefore not a “SEED parser bug” claim; the released code is enforcing its published contract.',
-    ),
+    body: t('SEED 公开的 WebShop Prompt 明确写着动作要放进 <action>...</action>；它的 webshop_projection 也只按这对标签抽取动作，找不到时会把输出退化成最后 20 个字符。因此这里不能把问题写成“SEED parser 有 bug”：官方代码是在执行它自己公开的合同。', 'The released SEED WebShop prompt explicitly requires actions inside <action>...</action>. Its webshop_projection extracts only that pair of tags and falls back to the final 20 characters when they are absent. This is therefore not a “SEED parser bug” claim; the released code is enforcing its published contract.'),
     links: [
-      { label: t('SEED WebShop Prompt', 'SEED WebShop prompt'), href: `${seedRoot}/agent_system/environments/prompts/webshop.py` },
-      { label: t('SEED webshop_projection', 'SEED webshop_projection'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py` },
+      { kind: 'official-code', label: t('SEED WebShop Prompt · 精确行', 'SEED WebShop prompt · exact lines'), href: `${seedRoot}/agent_system/environments/prompts/webshop.py#L25-L27` },
+      { kind: 'official-code', label: t('SEED webshop_projection · 精确行', 'SEED webshop_projection · exact lines'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` },
     ],
   },
   {
     when: t('我们的 Prompt', 'Our prompt'),
     title: t('我们当时也要求模型写 <action>，没有要求 [action]', 'We also asked for <action>; we did not prompt [action]'),
-    body: t(
-      '保存下来的 BASE 原始回合里，实际送给模型的 Prompt 同样要求 “present it within <action> </action> tags”。这一步很关键：它排除了“OpenEvo 代码里有人把 [action] 写进 Prompt”这个解释。',
-      'The saved BASE episode shows that the actual prompt sent to the model also says “present it within <action> </action> tags”. This rules out the explanation that OpenEvo code explicitly instructed the model to use [action].',
-    ),
+    body: t('保存下来的 BASE 原始回合里，实际送给模型的 Prompt 同样要求 “present it within <action> </action> tags”。这一步排除了“OpenEvo 代码里有人把 [action] 写进 Prompt”这个解释。', 'The saved BASE episode shows that the actual prompt sent to the model also says “present it within <action> </action> tags”. This rules out the explanation that OpenEvo code explicitly instructed the model to use [action].'),
     links: [
-      { label: t('BASE 原始 episode（含完整 Prompt）', 'BASE raw episode with full prompt'), href: `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json` },
-      { label: t('OpenEvo WebShop Prompt / action contract', 'OpenEvo WebShop prompt / action contract'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py` },
+      { kind: 'raw-episode', label: t('BASE step 0 Prompt', 'BASE step-0 prompt'), href: `${rawEpisode}#L42-L43` },
+      { kind: 'code', label: t('OpenEvo WebShop Prompt / action contract', 'OpenEvo WebShop prompt / action contract'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L12-L18` },
     ],
   },
   {
     when: t('模型生成', 'Model generation'),
     title: t('BASE 没加载 adapter，也会自己漂到 [action]', 'BASE drifts to [action] even with no adapter loaded'),
-    body: t(
-      '同一个 BASE episode 的 adapter_load_receipt 是 adapter_loaded=false，但 raw_completion 仍出现 [action] search[...]；同一回合后面又能重新写回 <action>...</action>。推理后端在 model.generate 后只是直接 decode 新 token，没有把尖括号改成方括号。现有仓库证据因此最深只能定到：Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下存在 wrapper 格式漂移。',
-      'In that same BASE episode, adapter_load_receipt is adapter_loaded=false, yet raw_completion contains [action] search[...]; later in the episode it returns to <action>...</action>. The inference backend simply decodes generated tokens after model.generate and does not rewrite angle brackets into square brackets. The deepest repository-supported attribution is therefore wrapper drift from Qwen2.5-7B-Instruct under this prompt + chat-template path.',
-    ),
+    body: t('同一个 BASE episode 的 adapter_load_receipt 是 adapter_loaded=false，但 step 0 raw_completion 仍出现 [action] search[...]；下一步又重新写回 <action>...</action>。推理后端在 model.generate 后只是直接 decode 新 token，没有把尖括号改成方括号。现有仓库证据因此最深只能定到：Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下存在 wrapper 格式漂移。', 'In that same BASE episode, adapter_load_receipt is adapter_loaded=false, yet the step-0 raw_completion contains [action] search[...]; the next step returns to <action>...</action>. The inference backend simply decodes generated tokens after model.generate and does not rewrite angle brackets into square brackets. The deepest repository-supported attribution is therefore wrapper drift from Qwen2.5-7B-Instruct under this prompt + chat-template path.'),
     links: [
-      { label: t('BASE 原始 episode', 'BASE raw episode'), href: `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json` },
-      { label: t('Transformers 推理后端', 'Transformers inference backend'), href: `${experimentRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py` },
+      { kind: 'raw-episode', label: t('BASE adapter receipt · adapter_loaded=false', 'BASE adapter receipt · adapter_loaded=false'), href: `${rawEpisode}#L2-L12` },
+      { kind: 'raw-episode', label: t('[action] → <action> 原始输出', '[action] → <action> raw completions'), href: `${rawEpisode}#L42-L53` },
+      { kind: 'code', label: t('Transformers generate → decode → return', 'Transformers generate → decode → return'), href: `${experimentRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py#L227-L232` },
     ],
   },
   {
     when: '2026-08-18 · H1.36',
     title: t('这个问题其实已经被我们发现过', 'We had already discovered this issue'),
-    body: t(
-      'H1.36 时仓库已经记录：7B BASE 会在 [action]cmd、=search[...]、<click[...]> 等写法之间漂移，并把它定性为 harness / measurement mismatch。随后提交 8e526e42 增加了 strict-first 的兼容修复：先尝试严格 <action> 解析，失败后才从 </think> 之后恢复一个完整 search[...] / click[...] command。',
-      'During H1.36 the repository already recorded that the 7B BASE model drifted among forms such as [action]cmd, =search[...], and <click[...]>, and classified this as a harness / measurement mismatch. Commit 8e526e42 then added a strict-first compatibility repair: strict <action> parsing is attempted first, and only on failure is one well-formed search[...] / click[...] command recovered after </think>.',
-    ),
+    body: t('H1.36 时仓库已经记录：7B BASE 会在 [action]cmd、=search[...]、<click[...]> 等写法之间漂移，并把它定性为 harness / measurement mismatch。随后提交 8e526e42 增加 strict-first 兼容修复：先尝试严格 <action> 解析，失败后才从 </think> 之后恢复一个完整 search[...] / click[...] command。', 'During H1.36 the repository already recorded that the 7B BASE model drifted among forms such as [action]cmd, =search[...], and <click[...]>, and classified this as a harness / measurement mismatch. Commit 8e526e42 then added a strict-first compatibility repair: strict <action> parsing is attempted first, and only on failure is one well-formed search[...] / click[...] command recovered after </think>.'),
     links: [
-      { label: t('H1.36 收口报告', 'H1.36 closeout report'), href: `${experimentRoot}/docs/evidence/remote-runs/2026-08-18/h1.36/REPORT.md` },
-      { label: t('commit 8e526e42 · parser compatibility', 'commit 8e526e42 · parser compatibility'), href: h136ParserCommit },
-      { label: t('兼容 parser 实现', 'Compatible parser implementation'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py` },
+      { kind: 'historical-record', label: t('H1.36 同时期收口报告', 'Contemporaneous H1.36 closeout report'), href: `${experimentRoot}/docs/evidence/remote-runs/2026-08-18/h1.36/REPORT.md` },
+      { kind: 'commit', label: t('commit 8e526e42 · parser compatibility', 'commit 8e526e42 · parser compatibility'), href: h136ParserCommit },
+      { kind: 'code', label: t('strict-first action-command 修复', 'strict-first action-command repair'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L69-L112` },
     ],
   },
   {
     when: t('H1.36 训练数据', 'H1.36 training data'),
     title: t('没有证据表明 SD-LoRA 把 [action] 教进模型', 'There is no evidence that SD-LoRA taught the [action] habit'),
-    body: t(
-      'H1.36 的自进化数据构建器只接收 action_valid=true、没有 fallback、没有 parser failure 的成功轨迹；harvest 当时是 adapter=none，默认走 strict-v1 <action> 合同。也就是说，strict parser 读不懂的 malformed wrapper 会在进入训练集之前被排除。SD-LoRA 可能改变某种格式出现的频率，但现有证据不支持“它创造了 [action] 这个习惯”。',
-      'The H1.36 self-evolution dataset builder accepts only successful traces with action_valid=true, no fallback, and no parser failure; harvest used adapter=none and the default strict-v1 <action> contract. Malformed wrappers rejected by the strict parser were therefore filtered before entering training. SD-LoRA could affect the frequency of a format, but the evidence does not support the claim that it created the [action] habit.',
-    ),
+    body: t('H1.36 的自进化数据构建器只接收成功、身份完整、没有 parser/fallback failure 的轨迹；每一步还必须 action_valid=true、used_fallback=false、parser_failure=false。harvest 默认走 strict-v1 <action> 合同。因此 strict parser 读不懂的 malformed wrapper 会在进入训练集之前被排除。SD-LoRA 可能改变某种格式出现的频率，但现有证据不支持“它创造了 [action] 这个习惯”。', 'The H1.36 self-evolution dataset builder accepts only successful identity-complete traces with no parser/fallback failure; every step must also have action_valid=true, used_fallback=false, and parser_failure=false. Harvest defaults to the strict-v1 <action> contract. Malformed wrappers rejected by that strict parser were therefore filtered before entering training. SD-LoRA could affect the frequency of a format, but the evidence does not support the claim that it created the [action] habit.'),
     links: [
-      { label: t('自进化数据构建器', 'Self-evolution dataset builder'), href: `${experimentRoot}/scripts/openevo_webshop/build_self_evolution_dataset.py` },
-      { label: t('H1.36 launcher', 'H1.36 launcher'), href: `${experimentRoot}/scripts/openevo_webshop/launch_h136_qwen7b_self_evolution.sh` },
+      { kind: 'code', label: t('自进化数据筛选条件 · 精确行', 'Self-evolution dataset filters · exact lines'), href: `${experimentRoot}/scripts/openevo_webshop/build_self_evolution_dataset.py#L67-L90` },
+      { kind: 'code', label: t('H1.36 launcher · strict-v1 默认合同', 'H1.36 launcher · strict-v1 default contract'), href: `${experimentRoot}/scripts/openevo_webshop/launch_h136_qwen7b_self_evolution.sh#L53-L69` },
     ],
   },
   {
     when: '2026-08-25 · PRIMARY-v1',
     title: t('真正的实验责任：已知漂移没有在正式 SEED 集成前做兼容性预检', 'Experiment responsibility: known drift was not preflighted before formal SEED integration'),
-    body: t(
-      '第一次 SEED-strict PRIMARY-v1 仍把 SEED 官方 projection 直接接在这类模型输出后面。于是模型内部本来完整的 search[...] / click[...] command，在 wrapper 不匹配时被 projection 读成尾部碎片并送进环境，最终制造出两臂 0 分的测量假象。更准确的定责是：模型产生已知格式漂移；我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移。',
-      'The first SEED-strict PRIMARY-v1 run still placed the released SEED projection directly after this kind of model output. When wrappers did not match, otherwise valid search[...] / click[...] commands were projected into tail fragments and sent to the environment, producing the apparent all-zero result. The precise attribution is: the model produced known formatting drift, and our experiment harness failed to handle that known drift before formal SEED integration.',
-    ),
+    body: t('第一次 SEED-strict PRIMARY-v1 仍把 SEED 官方 projection 直接接在这类模型输出后面。于是模型内部本来完整的 search[...] / click[...] command，在 wrapper 不匹配时被 projection 读成尾部碎片并送进环境，最终制造出两臂 0 分的测量假象。更准确的定责是：模型产生已知格式漂移；我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移。', 'The first SEED-strict PRIMARY-v1 run still placed the released SEED projection directly after this kind of model output. When wrappers did not match, otherwise valid search[...] / click[...] commands were projected into tail fragments and sent to the environment, producing the apparent all-zero result. The precise attribution is: the model produced known formatting drift, and our experiment harness failed to handle that known drift before formal SEED integration.'),
     links: [
-      { label: t('PRIMARY-v1 根因记录', 'PRIMARY-v1 root-cause record'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      { label: t('当时冻结的 BASE episode', 'Frozen BASE episode from the run'), href: `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json` },
+      { kind: 'raw-episode', label: t('当时冻结的 BASE 原始回合', 'Frozen BASE raw episode from the run'), href: `${rawEpisode}#L42-L53` },
+      { kind: 'human-report', label: t('PRIMARY-v1 根因与修复记录', 'PRIMARY-v1 root-cause and repair record'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
     ],
   },
   {
     when: t('PRIMARY-v2 修复', 'PRIMARY-v2 repair'),
-    title: t('后来的正确处理是“同一兼容合同 + 两臂一致”，而不是放宽科学标准', 'The repair used one compatible contract for both arms, not a looser scientific standard'),
-    body: t(
-      '修复后的 PRIMARY-v2 只改变动作 wrapper 的识别方式，并对 BASE 与 SD-LoRA 使用同一合同；这让我们重新得到可解释的分数，同时保留同一个任务面板与比较边界。这个修复解决的是测量接口，不是给某一边额外能力。',
-      'Repaired PRIMARY-v2 changed only action-wrapper recognition and applied the same contract to BASE and SD-LoRA. This restored interpretable scores while preserving the same task panel and comparison boundary. The repair fixes measurement; it does not grant extra capability to one arm.',
-    ),
+    title: t('正确处理是“同一兼容合同 + 两臂一致”，不是放宽科学标准', 'The repair used one compatible contract for both arms, not a looser scientific standard'),
+    body: t('修复后的 PRIMARY-v2 只改变动作 wrapper 的识别方式，并对 BASE 与 SD-LoRA 使用同一合同；这让我们重新得到可解释的分数，同时保留同一个任务面板与比较边界。这个修复解决的是测量接口，不是给某一边额外能力。', 'Repaired PRIMARY-v2 changed only action-wrapper recognition and applied the same contract to BASE and SD-LoRA. This restored interpretable scores while preserving the same task panel and comparison boundary. The repair fixes measurement; it does not grant extra capability to one arm.'),
     links: [
-      { label: t('PRIMARY-v2 修复后结果', 'Repaired PRIMARY-v2 results'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      { label: t('parser compatibility 代码', 'Parser compatibility code'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py` },
+      { kind: 'machine-result', label: t('PRIMARY-v2 配对分析', 'PRIMARY-v2 paired analysis'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
+      { kind: 'machine-result', label: t('PRIMARY-v2 覆盖与身份对账', 'PRIMARY-v2 coverage and identity reconciliation'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
+      { kind: 'code', label: t('parser compatibility 代码', 'Parser compatibility code'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L69-L112` },
     ],
   },
 ];
@@ -102,71 +87,32 @@ const steps = [
 
 <details class="wrapper-attribution" id="action-wrapper-attribution" data-ui-audit="layout overflow contrast">
   <summary>
-    <span>
-      <small>{t('技术回溯 · 默认折叠', 'TECHNICAL TRACE · COLLAPSED BY DEFAULT')}</small>
-      <strong>{t('动作包装格式：官方怎么规定、我们怎么接、问题在哪次实验暴露', 'Action wrapper: released contract, our integration, and where it failed')}</strong>
-    </span>
+    <span><small>{t('技术回溯 · 默认折叠', 'TECHNICAL TRACE · COLLAPSED BY DEFAULT')}</small><strong>{t('动作包装格式：官方怎么规定、模型怎么漂、我们的集成责任在哪里', 'Action wrapper: released contract, model drift, and our integration responsibility')}</strong></span>
     <i aria-hidden="true"></i>
   </summary>
 
   <div class="wrapper-attribution__body">
-    <p class="wrapper-attribution__lead">{t(
-      '这一段只服务于想追代码的人。主结论不变：不能把 [action] 说成 OpenEvo Prompt 规定的格式，也不能把问题归咎于 SEED parser；现有证据支持“模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检”。下面按代码与实验时间把证据串起来。',
-      'This block is only for readers who want the code trail. The main conclusion is unchanged: [action] was not an OpenEvo prompt convention, and this is not attributable to a SEED-parser bug. The evidence supports a known model-side wrapper drift plus a formal integration that failed to preflight compatibility. The code and experiment trail is shown below.',
-    )}</p>
+    <p class="wrapper-attribution__lead">{t('这一段只服务于想追代码的人。主结论不变：不能把 [action] 说成 OpenEvo Prompt 规定的格式，也不能把问题归咎于 SEED parser；现有证据支持“模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检”。每一步下面的链接都尽量直接落到支持该 claim 的原始代码、原始回合或机器结果。', 'This block is for readers who want the code trail. The main conclusion is unchanged: [action] was not an OpenEvo prompt convention, and this is not attributable to a SEED-parser bug. The evidence supports known model-side wrapper drift plus a formal integration that failed to preflight compatibility. Each step links as directly as possible to the primary code, raw episode, commit, or machine result supporting that claim.')}</p>
 
     <div class="wrapper-attribution__timeline">
       {steps.map((step, index) => (
         <article>
           <div class="wrapper-attribution__index"><span>{String(index + 1).padStart(2, '0')}</span><small>{step.when}</small></div>
           <div class="wrapper-attribution__copy">
-            <h4>{step.title}</h4>
-            <p>{step.body}</p>
-            <div class="wrapper-attribution__links">
-              {step.links.map((link) => (
-                <a href={link.href} target="_blank" rel="noreferrer"><span>{link.label}</span><b aria-hidden="true">↗</b></a>
-              ))}
-            </div>
+            <h4>{step.title}</h4><p>{step.body}</p>
+            <OpenEvoEvidenceRefs locale={locale} sources={step.links} compact ariaLabel={t(`“${step.title}”的证据`, `Evidence for ${step.title}`)} />
           </div>
         </article>
       ))}
     </div>
 
-    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t(
-      '仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“H1.36 malformed 训练样本把它教进去”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据。因此这里不再把责任推给某个未知的上游样本或个人。',
-      'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and malformed H1.36 supervision teaching the habit — but cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused it. Attribution therefore stops here rather than naming an unknown upstream sample or person.',
-    )}</p>
+    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t('仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“H1.36 malformed 训练样本把它教进去”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据。因此这里不再把责任推给某个未知的上游样本或个人，也不声称 SD-LoRA 绝不可能改变 wrapper frequency。', 'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and malformed H1.36 supervision teaching the habit — but cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused it. Attribution therefore stops here rather than naming an unknown upstream sample or person, and it does not claim SD-LoRA could never affect wrapper frequency.')}</p>
   </div>
 </details>
 
 <style>
   .wrapper-attribution{max-width:1112px;margin:12px auto 42px;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);color:var(--color-text)}
-  .wrapper-attribution>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;cursor:pointer;padding:18px 0;list-style:none}
-  .wrapper-attribution>summary::-webkit-details-marker{display:none}
-  .wrapper-attribution>summary span{display:grid;gap:5px;min-width:0}
-  .wrapper-attribution>summary small{color:var(--color-text-muted);font-size:.67rem;font-weight:800;letter-spacing:.08em}
-  .wrapper-attribution>summary strong{font-size:.92rem;line-height:1.5;letter-spacing:-.01em}
-  .wrapper-attribution>summary i{position:relative;flex:0 0 18px;width:18px;height:18px}
-  .wrapper-attribution>summary i::before,.wrapper-attribution>summary i::after{content:'';position:absolute;inset:8px 2px auto;height:1px;background:var(--color-accent)}
-  .wrapper-attribution>summary i::after{transform:rotate(90deg)}
-  .wrapper-attribution[open]>summary i::after{transform:rotate(0deg)}
-  .wrapper-attribution__body{padding:4px 0 22px}
-  .wrapper-attribution__lead{max-width:86ch;margin:0 0 18px;color:var(--color-text-muted);font-size:.82rem;line-height:1.7}
-  .wrapper-attribution__timeline{display:grid;gap:0;border-top:1px solid var(--color-border)}
-  .wrapper-attribution__timeline article{display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;padding:18px 0;border-bottom:1px solid var(--color-border);min-width:0}
-  .wrapper-attribution__index{display:grid;align-content:start;gap:5px}
-  .wrapper-attribution__index span{color:var(--color-accent);font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}
-  .wrapper-attribution__index small{color:var(--color-text-muted);font-size:.7rem;font-weight:700;line-height:1.45}
-  .wrapper-attribution__copy{min-width:0}
-  .wrapper-attribution__copy h4{margin:0;font-size:.94rem;line-height:1.45;letter-spacing:-.012em}
-  .wrapper-attribution__copy p{max-width:84ch;margin:7px 0 0;color:var(--color-text-muted);font-size:.79rem;line-height:1.68;overflow-wrap:anywhere}
-  .wrapper-attribution__links{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-  .wrapper-attribution__links a{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:7px 9px;border:1px solid var(--color-border);border-radius:9px;background:var(--color-surface);color:var(--color-text);font-size:.7rem;line-height:1.4;text-decoration:none}
-  .wrapper-attribution__links a:hover,.wrapper-attribution__links a:focus-visible{border-color:var(--color-accent)}
-  .wrapper-attribution__links span{overflow-wrap:anywhere}.wrapper-attribution__links b{color:var(--color-accent)}
-  .wrapper-attribution__boundary{max-width:88ch;margin:16px 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.65}
-  .wrapper-attribution__boundary strong{color:var(--color-text)}
-  @media(max-width:720px){
-    .wrapper-attribution{margin-inline:18px}.wrapper-attribution__timeline article{grid-template-columns:1fr;gap:8px}.wrapper-attribution__index{display:flex;align-items:baseline;gap:9px}.wrapper-attribution__links{display:grid}.wrapper-attribution__links a{width:100%;box-sizing:border-box;justify-content:space-between}
-  }
+  .wrapper-attribution>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;cursor:pointer;padding:18px 0;list-style:none}.wrapper-attribution>summary::-webkit-details-marker{display:none}.wrapper-attribution>summary span{display:grid;gap:5px;min-width:0}.wrapper-attribution>summary small{color:var(--color-text-muted);font-size:.67rem;font-weight:800;letter-spacing:.08em}.wrapper-attribution>summary strong{font-size:.92rem;line-height:1.45}.wrapper-attribution>summary i{position:relative;width:16px;height:16px;flex:0 0 16px}.wrapper-attribution>summary i::before,.wrapper-attribution>summary i::after{content:'';position:absolute;left:2px;right:2px;top:7px;height:1px;background:var(--color-text-muted)}.wrapper-attribution>summary i::after{transform:rotate(90deg);transition:transform .18s ease}.wrapper-attribution[open]>summary i::after{transform:rotate(0)}
+  .wrapper-attribution__body{padding:2px 0 20px}.wrapper-attribution__lead,.wrapper-attribution__boundary{max-width:86ch;margin:0;color:var(--color-text-muted);font-size:.79rem;line-height:1.68}.wrapper-attribution__timeline{margin-top:14px;border-top:1px solid var(--color-border)}.wrapper-attribution__timeline article{display:grid;grid-template-columns:132px minmax(0,1fr);gap:22px;padding:18px 0;border-bottom:1px solid var(--color-border)}.wrapper-attribution__index{display:grid;align-content:start;gap:5px}.wrapper-attribution__index span{color:var(--color-accent);font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.wrapper-attribution__index small{color:var(--color-text-muted);font-size:.67rem;line-height:1.4}.wrapper-attribution__copy h4{margin:0 0 7px;font-size:.9rem;line-height:1.45}.wrapper-attribution__copy>p{margin:0;max-width:83ch;color:var(--color-text-muted);font-size:.78rem;line-height:1.68}.wrapper-attribution__boundary{margin-top:16px}.wrapper-attribution__boundary strong{color:var(--color-text)}
+  @media(max-width:720px){.wrapper-attribution{margin-inline:18px}.wrapper-attribution__timeline article{grid-template-columns:1fr;gap:8px}.wrapper-attribution>summary{align-items:flex-start}}
 </style>

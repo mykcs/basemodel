@@ -1,0 +1,46 @@
+---
+import type { Locale } from '../../i18n';
+import { evidenceKindLabel, type EvidenceRef } from '../../lib/researchEvidence';
+
+interface Props {
+  locale: Locale;
+  sources: EvidenceRef[];
+  compact?: boolean;
+  ariaLabel?: string;
+}
+
+const { locale, sources, compact = false, ariaLabel } = Astro.props;
+const zh = locale === 'zh';
+---
+
+{sources.length > 0 && (
+  <nav
+    class:list={['evidence-refs', { 'evidence-refs--compact': compact }]}
+    aria-label={ariaLabel ?? (zh ? '这条事实的证据' : 'Evidence for this claim')}
+  >
+    {sources.map((source) => (
+      <a href={source.href} target="_blank" rel="noreferrer">
+        <small>{evidenceKindLabel(source.kind, locale)}</small>
+        <span>{source.label}</span>
+        <b aria-hidden="true">↗</b>
+      </a>
+    ))}
+  </nav>
+)}
+
+<style>
+  .evidence-refs{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .evidence-refs a{display:inline-grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 7px;min-width:min(220px,100%);padding:9px 10px;border:1px solid var(--color-border);border-radius:9px;background:var(--color-surface);color:var(--color-text);text-decoration:none}
+  .evidence-refs a:hover,.evidence-refs a:focus-visible{border-color:var(--color-accent);outline:none}
+  .evidence-refs small{grid-column:1;color:var(--color-accent);font:700 .62rem ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.35}
+  .evidence-refs span{grid-column:1;font-size:.72rem;line-height:1.38;overflow-wrap:anywhere}
+  .evidence-refs b{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--color-accent);font-size:.72rem}
+  .evidence-refs--compact{gap:5px;margin-top:7px}
+  .evidence-refs--compact a{display:inline-flex;align-items:center;gap:5px;min-width:0;padding:5px 7px;border-radius:999px;background:transparent}
+  .evidence-refs--compact small{font-size:.6rem}
+  .evidence-refs--compact span{font-size:.65rem;color:var(--color-text-muted)}
+  .evidence-refs--compact b{font-size:.65rem}
+  @media(max-width:520px){
+    .evidence-refs--compact a{max-width:100%;border-radius:8px}.evidence-refs--compact span{overflow-wrap:anywhere}
+  }
+</style>

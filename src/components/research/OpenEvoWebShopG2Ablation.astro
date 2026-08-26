@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -7,40 +9,34 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
+const evidenceSnapshotRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
 const h142Root = 'https://github.com/mykcs/openevo-experiment/blob/d1f35ecdf84c61b07df7c646e83588d63b9297bd';
 
+const h140Upstream: EvidenceRef = { kind: 'machine-result', label: t('H1.40 正式上游评估摘要', 'H1.40 formal upstream summary'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` };
+const h141Reconciliation: EvidenceRef = { kind: 'machine-result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` };
+const h142Reconciliation: EvidenceRef = { kind: 'machine-result', label: t('H1.42 Stage B 机器对账', 'H1.42 Stage B machine reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` };
+const g2Training: EvidenceRef = { kind: 'machine-result', label: t('G2 训练对账', 'G2 training reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` };
+const autopsy: EvidenceRef = { kind: 'audit', label: t('H1.40-MD 参数 artifact autopsy', 'H1.40-MD parameter artifact autopsy'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-21/h1.40-md/ARTIFACT_AUTOPSY.md#L9-L18` };
+
 const gates = [
-  {
-    id: 'gate-1',
-    badge: t('未通过', 'Not cleared'),
-    title: t('第一道门 · 学会新经验', 'Gate 1 · Learn new experience'),
-    question: t('第二次更新以后，模型还能从新任务里学到东西吗？', 'After the second update, can the model still learn from new tasks?'),
-    answer: t(
-      '目前没有拿到可信的正向证据，而且关键测量有失效记录。也就是说，我们连“这次没学会”是不是模型本身造成的都还不能完全分清，所以只能说“这道门没有通过”，不能说“模型已经失去学习能力”。',
-      'We do not yet have trustworthy positive evidence, and a key measurement was invalid. That means we cannot fully separate a real learning failure from a measurement failure, so the correct conclusion is that this gate did not clear, not that the model lost the ability to learn.',
-    ),
-  },
-  {
-    id: 'gate-2',
-    badge: t('未通过', 'Not cleared'),
-    title: t('第二道门 · 保住旧能力', 'Gate 2 · Retain prior capability'),
-    question: t('学新东西以后，原来会做的任务还能保持吗？', 'After learning something new, does prior capability remain?'),
-    answer: t(
-      '这是目前证据最一致的瓶颈：H1.40 和 H1.41 两轮里，旧能力保持指标都朝下降方向。因此我们不是凭感觉说“可能忘了”，而是两轮独立检查都没有看到稳定保住旧能力的信号。',
-      'This is the most consistent current bottleneck in the evidence: the prior-capability retention measure moved downward in both H1.40 and H1.41. The forgetting concern is therefore not a guess; two separate checks failed to show stable retention.',
-    ),
-  },
-  {
-    id: 'gate-3',
-    badge: t('未通过', 'Not cleared'),
-    title: t('第三道门 · 保住第一代收益', 'Gate 3 · Preserve the first-generation gain'),
-    question: t('第一代已经复现的迁移提升，第二次更新以后还能保住吗？', 'Does the replicated first-generation transfer gain survive the second update?'),
-    answer: t(
-      '用于检查“第一代收益有没有被保住”的指标没有显示明确的正向保持，因此我们没有证据说这部分收益稳定延续。由于前面的能力门没有全部通过，预留给第二代的新任务迁移测试 T2 也没有启动，所以更不能说 G2 已经在 T2 上证明迁移失败。',
-      'The measure used to test whether the first-generation gain was preserved did not show clear positive preservation, so we do not have evidence that the gain persisted reliably. Because the upstream capability gates did not all clear, the reserved second-generation fresh-transfer test T2 was never opened, so G2 did not prove transfer failure on T2.',
-    ),
-  },
+  { id: 'gate-1', badge: t('未通过', 'Not cleared'), title: t('第一道门 · 学会新经验', 'Gate 1 · Learn new experience'), question: t('第二次更新以后，模型还能从新任务里学到东西吗？', 'After the second update, can the model still learn from new tasks?'), answer: t('目前没有拿到可信的正向证据，而且关键测量有失效记录。也就是说，我们连“这次没学会”是不是模型本身造成的都还不能完全分清，所以只能说“这道门没有通过”，不能说“模型已经失去学习能力”。', 'We do not yet have trustworthy positive evidence, and a key measurement was invalid. That means we cannot fully separate a real learning failure from a measurement failure, so the correct conclusion is that this gate did not clear, not that the model lost the ability to learn.') },
+  { id: 'gate-2', badge: t('未通过', 'Not cleared'), title: t('第二道门 · 保住旧能力', 'Gate 2 · Retain prior capability'), question: t('学新东西以后，原来会做的任务还能保持吗？', 'After learning something new, does prior capability remain?'), answer: t('这是目前证据最一致的瓶颈：H1.40 和 H1.41 两轮里，旧能力保持指标都朝下降方向。因此我们不是凭感觉说“可能忘了”，而是两轮独立检查都没有看到稳定保住旧能力的信号。', 'This is the most consistent current bottleneck in the evidence: the prior-capability retention measure moved downward in both H1.40 and H1.41. The forgetting concern is therefore not a guess; two separate checks failed to show stable retention.') },
+  { id: 'gate-3', badge: t('未通过', 'Not cleared'), title: t('第三道门 · 保住第一代收益', 'Gate 3 · Preserve the first-generation gain'), question: t('第一代已经复现的迁移提升，第二次更新以后还能保住吗？', 'Does the replicated first-generation transfer gain survive the second update?'), answer: t('用于检查“第一代收益有没有被保住”的指标没有显示明确的正向保持，因此我们没有证据说这部分收益稳定延续。由于前面的能力门没有全部通过，预留给第二代的新任务迁移测试 T2 也没有启动，所以更不能说 G2 已经在 T2 上证明迁移失败。', 'The measure used to test whether the first-generation gain was preserved did not show clear positive preservation, so we do not have evidence that the gain persisted reliably. Because the upstream capability gates did not all clear, the reserved second-generation fresh-transfer test T2 was never opened, so G2 did not prove transfer failure on T2.') },
 ] as const;
+
+type EvidenceClaim = { text: string; sources: EvidenceRef[] };
+const acquisition: EvidenceClaim[] = [
+  { text: t('H1.41 C0 的新经验获取（acquisition）点估计 = 0，但该路径被判为测量无效（MEASUREMENT_INVALID）。', 'H1.41 C0 acquisition point estimate = 0, but the path was classified as MEASUREMENT_INVALID.'), sources: [h141Reconciliation] },
+  { text: t('H1.40：32 次尝试 / 28 次有效；唯一 4/4 的解析失败（parser-invalid）实验单元（cell）属于测量无效，而不是“能力为零”。', 'H1.40: 32 attempts / 28 valid; the single 4/4 parser-invalid cell is measurement-invalid, not zero capability.'), sources: [h140Upstream] },
+];
+const retention: EvidenceClaim[] = [
+  { text: t('H1.40 旧能力保持（retention）Δ = −0.1635，95% CI [−0.4073, 0.0355]。', 'H1.40 retention Δ = −0.1635, 95% CI [−0.4073, 0.0355].'), sources: [h140Upstream] },
+  { text: t('H1.41 校准复测：C0 / C1 的旧能力保持（retention）都是 −0.065625，方向一致为负。', 'H1.41 calibrated re-measurement: retention on both C0 and C1 = −0.065625, consistently negative.'), sources: [h141Reconciliation] },
+];
+const preservation: EvidenceClaim[] = [
+  { text: t('已有收益保持（preservation）Δ = −0.0036，95% CI [−0.0801, 0.0755]，与 0 不可区分。', 'Preservation Δ = −0.0036, 95% CI [−0.0801, 0.0755], indistinguishable from zero.'), sources: [h140Upstream] },
+  { text: t('预留的 T2 新任务迁移面板没有打开（t2Opened = false），因此不能说 G2 已经在 T2 上证明迁移失败。', 'The reserved T2 fresh-transfer panel never opened (t2Opened = false), so G2 did not prove transfer failure on T2.'), sources: [h140Upstream, h141Reconciliation] },
+];
 ---
 
 <section class="g2-ablation" id="g2-ablation" aria-labelledby="g2-ablation-title">
@@ -48,131 +44,47 @@ const gates = [
     <p>{t('第二代更新 · SECOND GENERATION', 'SECOND GENERATION')}</p>
     <div>
       <h2 id="g2-ablation-title">{t('第二代为什么还不能说“越学越好”？', 'Why can’t we yet say the second generation keeps improving?')}</h2>
-      <p class="plain-intro">{t(
-        '第二次更新确实发生了，也有新的成功经验可以学习。要把它称为“连续进步”，至少要同时做到三件事：学会新的、别忘旧的、还要保住第一代已经得到的提升。后续检查没有同时看到这三件事成立，所以现在只能说第二代持续整合尚未建立。',
-        'The second update genuinely happened, and new successful experience was available. To call this continual improvement, at least three things must hold together: learn the new material, retain prior capability, and preserve the first-generation gain. Follow-up checks did not show all three at once, so second-generation continual integration is not established.',
-      )}</p>
-      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        '这三道门分别对应新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）。预留的 T2 新任务迁移测试只有前置能力门通过后才会打开，所以“T2 没有运行”不能被改写成“G2 在 T2 上迁移失败”。',
-        'The three gates correspond to acquisition, retention, and preservation. The reserved T2 fresh-transfer test opens only after the upstream capability gates clear, so “T2 did not run” must not be rewritten as “G2 failed transfer on T2”.',
-      )}</p>
+      <p class="plain-intro">{t('第二次更新确实发生了，也有新的成功经验可以学习。要把它称为“连续进步”，至少要同时做到三件事：学会新的、别忘旧的、还要保住第一代已经得到的提升。后续检查没有同时看到这三件事成立，所以现在只能说第二代持续整合尚未建立。', 'The second update genuinely happened, and new successful experience was available. To call this continual improvement, at least three things must hold together: learn the new material, retain prior capability, and preserve the first-generation gain. Follow-up checks did not show all three at once, so second-generation continual integration is not established.')}</p>
+      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('这三道门分别对应新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）。预留的 T2 新任务迁移测试只有前置能力门通过后才会打开，所以“T2 没有运行”不能被改写成“G2 在 T2 上迁移失败”。', 'The three gates correspond to acquisition, retention, and preservation. The reserved T2 fresh-transfer test opens only after the upstream capability gates clear, so “T2 did not run” must not be rewritten as “G2 failed transfer on T2”.')}</p>
     </div>
   </header>
 
   <div class="gate-grid">
-    {gates.map((gate) => (
-      <article class="gate-card" id={gate.id}>
-        <div class="gate-top">
-          <h3>{gate.title}</h3>
-          <span class="gate-badge">{gate.badge}</span>
-        </div>
-        <p class="gate-question">{gate.question}</p>
-        <p class="gate-answer">{gate.answer}</p>
-      </article>
-    ))}
+    {gates.map((gate) => <article class="gate-card" id={gate.id}><div class="gate-top"><h3>{gate.title}</h3><span class="gate-badge">{gate.badge}</span></div><p class="gate-question">{gate.question}</p><p class="gate-answer">{gate.answer}</p></article>)}
   </div>
 
   <details class="evidence-details" id="evidence-g2" name="research-evidence">
     <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
     <div class="evidence-detail-body">
       <div class="gate-evidence-grid">
-        <section>
-          <h3>{t('第一道门 · 新经验获取', 'Gate 1 · New experience acquisition')}</h3>
-          <ul>
-            <li>{t('H1.41 C0 的新经验获取（acquisition）点估计 = 0，但该路径被判为测量无效（MEASUREMENT_INVALID）。', 'H1.41 C0 acquisition point estimate = 0, but the path was classified as MEASUREMENT_INVALID.')}</li>
-            <li>{t('H1.40：32 次尝试 / 28 次有效；唯一 4/4 的解析失败（parser-invalid）实验单元（cell）属于测量无效，而不是“能力为零”。', 'H1.40: 32 attempts / 28 valid; the single 4/4 parser-invalid cell is measurement-invalid, not zero capability.')}</li>
-          </ul>
-        </section>
-        <section>
-          <h3>{t('第二道门 · 旧能力保留', 'Gate 2 · Prior capability retention')}</h3>
-          <ul>
-            <li>{t('H1.40 旧能力保持（retention）Δ = −0.1635，95% CI [−0.4073, 0.0355]。', 'H1.40 retention Δ = −0.1635, 95% CI [−0.4073, 0.0355].')}</li>
-            <li>{t('H1.41 校准复测：C0 / C1 的旧能力保持（retention）都是 −0.065625，方向一致为负。', 'H1.41 calibrated re-measurement: retention on both C0 and C1 = −0.065625, consistently negative.')}</li>
-          </ul>
-        </section>
-        <section>
-          <h3>{t('第三道门 · 第一代收益保持', 'Gate 3 · Preserve the first-generation gain')}</h3>
-          <ul>
-            <li>{t('已有收益保持（preservation）Δ = −0.0036，95% CI [−0.0801, 0.0755]，与 0 不可区分。', 'Preservation Δ = −0.0036, 95% CI [−0.0801, 0.0755], indistinguishable from zero.')}</li>
-            <li>{t('预留的 T2 新任务迁移面板没有打开（t2Opened = false），因此不能说 G2 已经在 T2 上证明迁移失败。', 'The reserved T2 fresh-transfer panel never opened (t2Opened = false), so G2 did not prove transfer failure on T2.')}</li>
-          </ul>
-        </section>
+        <section><h3>{t('第一道门 · 新经验获取', 'Gate 1 · New experience acquisition')}</h3><ul>{acquisition.map((claim) => <li><span>{claim.text}</span><OpenEvoEvidenceRefs locale={locale} sources={claim.sources} compact /></li>)}</ul></section>
+        <section><h3>{t('第二道门 · 旧能力保留', 'Gate 2 · Prior capability retention')}</h3><ul>{retention.map((claim) => <li><span>{claim.text}</span><OpenEvoEvidenceRefs locale={locale} sources={claim.sources} compact /></li>)}</ul></section>
+        <section><h3>{t('第三道门 · 第一代收益保持', 'Gate 3 · Preserve the first-generation gain')}</h3><ul>{preservation.map((claim) => <li><span>{claim.text}</span><OpenEvoEvidenceRefs locale={locale} sources={claim.sources} compact /></li>)}</ul></section>
       </div>
 
       <aside class="mechanism-note">
         <h3>{t('一个值得继续检查的机制线索', 'A mechanism clue worth testing further')}</h3>
-        <p>{t(
-          'H1.40-MD 对参数的离线分析发现：旧成分系数平均约 0.691，新写入成分约 0.181；同时把经验回放从 62 条历史 + 2 条当前改成 48 + 16 后，遗忘幅度有所收窄。这只是诊断信号，不是因果证明。',
-          'The H1.40-MD offline parameter analysis found old-component coefficients averaging about 0.691 versus about 0.181 for newly written components; changing replay from 62 historical + 2 current examples to 48 + 16 also narrowed forgetting. This is a diagnostic signal, not causal proof.',
-        )}</p>
+        <p>{t('H1.40-MD 对参数的离线分析发现：旧成分系数平均约 0.691，新写入成分约 0.181；最终 replay 由 48 条历史 G1 记录 + 16 条当前 E2 记录组成，E1 记录为 0。这只是诊断信号，不是因果证明：artifact autopsy 本身把“系数幅度失衡”称为领先机制假设，而不是已证明原因。', 'The H1.40-MD offline artifact analysis found old-component coefficients averaging about 0.691 versus about 0.181 for newly written components; the final replay contains 48 historical G1 records + 16 current E2 records, with 0 E1 records. This is a diagnostic signal, not causal proof: the artifact autopsy itself treats coefficient-magnitude imbalance as the leading mechanism hypothesis, not a proven cause.')}</p>
+        <OpenEvoEvidenceRefs locale={locale} sources={[autopsy]} compact />
       </aside>
 
-      <div class="evidence-link-grid">
-        <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json`} target="_blank" rel="noreferrer">
-          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('G2 训练对账', 'G2 training reconciliation')}</span><b aria-hidden="true">↗</b>
-        </a>
-        <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json`} target="_blank" rel="noreferrer">
-          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('正式上游评估摘要', 'Formal upstream summary')}</span><b aria-hidden="true">↗</b>
-        </a>
-        <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md`} target="_blank" rel="noreferrer">
-          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('正式上游评估报告', 'Formal upstream evaluation report')}</span><b aria-hidden="true">↗</b>
-        </a>
-        <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-md/ARTIFACT_AUTOPSY.md`} target="_blank" rel="noreferrer">
-          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('H1.40-MD 参数分析', 'H1.40-MD artifact autopsy')}</span><b aria-hidden="true">↗</b>
-        </a>
-        <a href={`${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md`} target="_blank" rel="noreferrer">
-          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('H1.41 机制筛选对账', 'H1.41 reconciliation')}</span><b aria-hidden="true">↗</b>
-        </a>
-        <a href={`${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md`} target="_blank" rel="noreferrer">
-          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B closeout')}</span><b aria-hidden="true">↗</b>
-        </a>
-      </div>
+      <OpenEvoEvidenceRefs locale={locale} sources={[
+        g2Training,
+        h140Upstream,
+        { kind: 'human-report', label: t('正式上游评估报告', 'Formal upstream evaluation report'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
+        autopsy,
+        h141Reconciliation,
+        h142Reconciliation,
+        { kind: 'historical-record', label: t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B measurement closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` },
+        { kind: 'audit', label: t('H1.40 selector 收口审计', 'H1.40 selector closeout audit'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-21/H140_CLOSEOUT_SELECTOR_AUDIT.md` },
+      ]} ariaLabel={t('G2 完整证据材料', 'Full G2 evidence package')} />
     </div>
   </details>
 </section>
 
 <style>
-  .g2-ablation{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
-  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
-  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;max-width:68ch;font-size:.94rem;line-height:1.68}
-  .plain-intro{color:var(--color-text-muted)}
-  .technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}
-  .technical-intro strong{color:var(--color-text)}
-  .gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-  .gate-card{padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
-  .gate-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-  .gate-card h3{margin:0;font-size:1.02rem;line-height:1.35;letter-spacing:-.02em}
-  .gate-badge{flex-shrink:0;padding:3px 9px;border:1px solid var(--color-danger);border-radius:999px;color:var(--color-danger);font-size:.66rem;font-weight:750}
-  .gate-question{margin:12px 0 0;color:var(--color-text);font-size:.82rem;font-weight:700;line-height:1.55}
-  .gate-answer{margin:8px 0 0;color:var(--color-text-muted);font-size:.8rem;line-height:1.65}
-  .evidence-details{margin-top:14px;border-top:1px solid var(--color-border)}
-  .evidence-details summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}
-  .evidence-details summary::-webkit-details-marker{display:none}
-  .evidence-details summary::after{content:'＋';font-weight:500}
-  .evidence-details[open] summary::after{content:'−'}
-  .evidence-detail-body{padding:12px 0 2px}
-  .gate-evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .gate-evidence-grid section{padding:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}
-  .gate-evidence-grid h3{margin:0;font-size:.82rem;line-height:1.45}
-  .gate-evidence-grid ul{margin:10px 0 0;padding-left:18px;display:grid;gap:7px}
-  .gate-evidence-grid li{color:var(--color-text-muted);font-size:.75rem;line-height:1.58;font-variant-numeric:tabular-nums}
-  .mechanism-note{margin-top:10px;padding:16px;border:1px dashed var(--color-border);border-radius:12px;background:var(--color-surface)}
-  .mechanism-note h3{margin:0 0 6px;font-size:.84rem}
-  .mechanism-note p{margin:0;max-width:82ch;color:var(--color-text-muted);font-size:.77rem;line-height:1.62}
-  .evidence-link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
-  .evidence-link-grid a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);text-decoration:none}
-  .evidence-link-grid a:hover,.evidence-link-grid a:focus-visible{border-color:var(--color-accent)}
-  .evidence-link-grid small{grid-column:1;color:var(--color-accent);font:700 .65rem ui-monospace,SFMono-Regular,Menlo,monospace}
-  .evidence-link-grid span{grid-column:1;font-size:.76rem;line-height:1.45;overflow-wrap:anywhere}
-  .evidence-link-grid b{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--color-accent)}
-  @media(max-width:960px){
-    .gate-grid,.gate-evidence-grid{grid-template-columns:1fr}
-  }
-  @media(max-width:720px){
-    .g2-ablation{padding-inline:18px}
-    .section-heading{grid-template-columns:1fr;gap:8px}
-    .evidence-link-grid{grid-template-columns:1fr}
-  }
+  .g2-ablation{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}.section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:68ch;font-size:.94rem;line-height:1.68}.plain-intro{color:var(--color-text-muted)}.technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}.technical-intro strong{color:var(--color-text)}
+  .gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.gate-card{padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.gate-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.gate-card h3{margin:0;font-size:1.02rem;line-height:1.35;letter-spacing:-.02em}.gate-badge{flex-shrink:0;padding:3px 9px;border:1px solid var(--color-danger);border-radius:999px;color:var(--color-danger);font-size:.66rem;font-weight:750}.gate-question{margin:12px 0 0;color:var(--color-text);font-size:.82rem;font-weight:700;line-height:1.55}.gate-answer{margin:8px 0 0;color:var(--color-text-muted);font-size:.8rem;line-height:1.65}
+  .evidence-details{margin-top:14px;border-top:1px solid var(--color-border)}.evidence-details summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}.evidence-details summary::-webkit-details-marker{display:none}.evidence-details summary::after{content:'＋';font-weight:500}.evidence-details[open] summary::after{content:'−'}.evidence-detail-body{padding:12px 0 2px}.gate-evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.gate-evidence-grid section{padding:15px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.gate-evidence-grid h3,.mechanism-note h3{margin:0 0 8px;font-size:.82rem}.gate-evidence-grid ul{margin:0;padding-left:17px}.gate-evidence-grid li{margin-top:10px;color:var(--color-text-muted);font-size:.76rem;line-height:1.6}.mechanism-note{margin-top:10px;padding:15px;border-left:3px solid var(--color-accent);background:var(--color-surface)}.mechanism-note p{margin:0;max-width:88ch;color:var(--color-text-muted);font-size:.78rem;line-height:1.64}
+  @media(max-width:820px){.gate-grid,.gate-evidence-grid{grid-template-columns:1fr}}@media(max-width:720px){.g2-ablation{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}}
 </style>
