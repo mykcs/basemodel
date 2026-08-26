@@ -104,9 +104,10 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('Chinese-first technical language');
     expect(resultsReaderContract).toContain('Density budget');
     expect(resultsReaderContract).toContain('展开实验依据');
+    expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
     expect(resultsHero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
     expect(resultsProtocol).toContain('解析器（parser）');
-    expect(resultsQuestions).toContain('与 SEED 评测设置兼容（SEED-compatible）');
+    expect(resultsQuestions).toContain('SEED-compatible');
   });
 
   it('keeps the research navigation labelled as Research findings, not Experiment results', () => {
@@ -123,24 +124,30 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('goal_idx 0–499');
   });
 
-  it('protects H1.40 T2, the later H1.42 boundary, and the 2026-08-25 held-out update', () => {
+  it('protects H1.40 T2, later H1.42, repaired-primary v2, and the source-semantics successor', () => {
     expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
     expect(resultsQuestions).toContain('T2 没有运行');
     expect(resultsQuestions).toContain('H1.42 发生在 H1.41 之后');
     expect(resultsHero).toContain('机制结论截至 H1.41');
-    expect(resultsQuestions).toContain('首轮已跑 · 主评测待修复');
-    expect(resultsQuestions).toContain('512 episodes');
+    expect(resultsQuestions).toContain('修复后复测已完成 · 源码语义待验证');
+    expect(resultsQuestions).toContain('768 episodes');
     expect(resultsQuestions).toContain('测量无效');
-    expect(resultsQuestions).toContain('同一批任务上重跑两种方法各 128 次');
-    expect(resultsQuestions).toContain('不是论文确切的评估分母');
-    expect(resultsQuestions).toContain('OpenEvo 原生诊断');
+    expect(resultsQuestions).toContain('BASE：Task Score 4.1 / 完整成功 0.0%');
+    expect(resultsQuestions).toContain('SD-LoRA：7.3 / 2.3%');
+    expect(resultsQuestions).toContain('数值 session index 不是完整任务身份');
+    expect(resultsQuestions).toContain('不是论文确切分母');
+    expect(resultsQuestions).toContain('design-only-not-authorized');
+    expect(nextSteps).toContain('先复现 SEED 公共代码的任务语义');
+    expect(nextSteps).toContain('WB1 属于 Track B');
   });
 
-  it('does not regress to the stale claim that official held-out evaluation has never run', () => {
+  it('does not regress to stale held-out planning states', () => {
     for (const source of [resultsHero, resultsProtocol, resultsQuestions, nextSteps]) {
       expect(source).not.toContain('SEED official held-out evaluation（SEED 官方保留任务评估）尚未执行');
       expect(source).not.toContain('formal evaluation denominator（正式评估分母）= 0');
       expect(source).not.toContain('冻结权重，执行 SEED 官方 0–499 评估');
+      expect(source).not.toContain('2 arms × 128 = 256 episodes，尚未运行');
+      expect(source).not.toContain('先把官方保留任务的测量修好');
     }
   });
 

@@ -45,6 +45,7 @@ Preferred first-use forms:
 - `测量无效（measurement-invalid）`
 - `内部新任务、任务 ID 不重叠评估（OpenEvo internal fresh task-ID-disjoint evaluation）`
 - `与 SEED 评测设置兼容（SEED-compatible）`
+- `源码忠实任务语义（source-faithful task semantics）`
 
 Avoid sentences that require the reader to decode several untranslated English phrases before reaching the verb.
 
@@ -139,21 +140,37 @@ H1.41 is the cutoff for the mechanism conclusions presented as the main historic
 
 H1.42 happened later and is a measurement-boundary / calibration record. It may explain how measurement was checked, but it must not be blended backward into H1.41's mechanism conclusion as though it existed at that cutoff.
 
-### 2026-08-25 SEED official-held-out comparison v1
+### 2026-08-25 SEED official-held-out comparison v1 + repaired PRIMARY-v2
 
-A separate benchmark-facing campaign completed **512 episodes** on a frozen 128-task panel drawn from the SEED official held-out range `goal_idx 0-499`.
+A separate benchmark-facing campaign completed **768 episodes** on one frozen historical 128-task panel drawn from the SEED official held-out range `goal_idx 0-499`: 512 PRIMARY/DIAGNOSTIC episodes plus 256 repaired-PRIMARY episodes.
 
 Its story has three layers:
 
 1. **SEED original parsing path / PRIMARY-v1:** both arms produced 0.0 / 0.0%, but the run is **measurement-invalid** because the model's action wrapper and SEED's released action projection did not agree. The zero must not be described as model ability.
-2. **OpenEvo-native diagnostic:** valid local diagnostic on the same 128 tasks: BASE task score 14.6 / exact success 2.3%; frozen SD-LoRA task score 28.3 / exact success 1.6%. This shows more partial task progress, not more completed purchases. It is not the final SEED-compatible headline result.
-3. **Repaired primary:** still pending. Keep the same frozen 128 tasks and two arms; repair only the parser compatibility and rerun 256 episodes.
+2. **OpenEvo-native diagnostic:** valid local diagnostic on the same 128 tasks: BASE task score 14.6 / exact success 2.3%; frozen SD-LoRA task score 28.3 / exact success 1.6%. This shows more partial task progress, not more completed purchases.
+3. **Repaired PRIMARY-v2:** completed on the same frozen 128-task panel after changing only action-wrapper recognition. BASE task score 4.1 / exact success 0.0%; frozen SD-LoRA task score 7.3 / exact success 2.3%. Paired ITT mean delta is +3.15 score×100 with bootstrap 95% CI [-0.65, +7.19] over 128 paired tasks. This is a positive direction but the interval crosses zero, so it is not evidence of a stable win.
 
-The 128-task panel is **SEED-compatible**, not the paper's exact reported denominator. The SEED checkpoint/training result has not been locally reproduced. SEED's paper-reported 89.7 / 78.1% must remain labelled paper-reported.
+The repaired PRIMARY-v2 is the local **SEED-compatible** headline for that historical frozen panel. It is not the paper's exact reported denominator. The SEED checkpoint/training result has not been locally reproduced. SEED's paper-reported 89.7 / 78.1% must remain labelled paper-reported.
+
+### Post-v2 source-semantics audit and source-faithful successor
+
+The historical 128-task panel matched the `goal_idx 0-499` held-out range, but a later audit against pinned SEED public code found that this is not enough for a source-faithful first-validation reproduction.
+
+Pinned public-code semantics use:
+- validation base seed `1000`;
+- ordered session draw `np.random.RandomState(1000).choice(np.arange(500), size=128, replace=False)`;
+- worker seed `1000 + slot`;
+- worker-specific goal ordering before `reset(session=N)`.
+
+Because worker seed changes goal ordering, the numeric session index alone is not a complete task identity. The historical panel therefore remains valid as a frozen SEED-compatible local panel, but it must not be relabelled as the source-faithful first-validation semantic panel.
+
+The successor design `seed-webshop-public-code-reproduction-v1` is currently **design-only-not-authorized**. Its 128-slot semantic manifest is not yet materialized. CPU-only preparation is allowed; formal GPU task consumption is not. Before execution, two clean-process manifest builds must produce the same canonical hash, and the frozen BASE / SD-LoRA identities, parser-compatible measurement contract, and generation-seed schedule must be hash-bound.
 
 ### WB1
 
-WB1 is a separate ongoing train-only SEED-aligned benchmark line. Its train generations may be shown as progress, but they are not a final held-out comparison and must not overwrite the H1.40 parametric G2 conclusion.
+WB1 is a separate fair matched benchmark line (Track B). Its historical train-only evidence must not be rewritten as source-faithful SEED reproduction evidence.
+
+Track A asks whether public SEED code task semantics can be reproduced faithfully. Track B asks for a fair matched comparison under one frozen world and matched budgets. Their evidence may inform the same program, but their claims are not interchangeable.
 
 ## 8. Local evidence interaction
 
@@ -183,7 +200,7 @@ Any Agent making a non-trivial change to the Results route must:
 5. check every English technical term on the Chinese route for a first-use Chinese gloss;
 6. check whether exact numbers can move into `展开实验依据`;
 7. for every inferential sentence, verify that the visible prose contains the minimum observation that justifies it;
-8. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, and ongoing WB1 progress are not conflated;
+8. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, and WB1 Track B progress are not conflated;
 9. run the reader-voice/scientific-boundary tests and inspect the exact-head Preview.
 
 If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same change.
