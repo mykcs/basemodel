@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import '../../../styles/interactive-research-explainer-server.css';
 import { ConnectorLayer, type EdgeSpec, type Locale, type Tone } from './ResearchExplainerPrimitives';
 
 export function ServerExplainer({ locale, step, onStep }: { locale: Locale; step: number; onStep: (step: number) => void }) {
@@ -16,7 +17,7 @@ export function ServerExplainer({ locale, step, onStep }: { locale: Locale; step
     { id: 'dev-socket', from: 'srv-dev', to: 'srv-socket', tone: 'state', fromAnchor: 'bottom', toAnchor: 'top', dashed: true, active: step >= 1 },
     { id: 'socket-daemon', from: 'srv-socket', to: 'srv-daemon', tone: 'state', fromAnchor: 'left', toAnchor: 'left', dashed: true, shape: 'perimeter-left', active: step >= 2 },
     { id: 'daemon-exp', from: 'srv-daemon', to: 'srv-exp', tone: 'env', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 3 },
-    { id: 'daemon-siblings', from: 'srv-daemon', to: 'srv-siblings', tone: 'neutral', fromAnchor: 'right', toAnchor: 'top', dashed: true, active: step >= 5 },
+    { id: 'daemon-siblings', from: 'srv-daemon', to: 'srv-siblings', tone: 'neutral', fromAnchor: 'right', toAnchor: 'top', dashed: true, shape: 'outside-right-down', active: step >= 5 },
     { id: 'dev-workspace', from: 'srv-dev', to: 'srv-workspace', tone: 'persist', fromAnchor: 'left', toAnchor: 'left', shape: 'perimeter-left', active: step >= 4 },
     { id: 'exp-workspace', from: 'srv-exp', to: 'srv-workspace', tone: 'persist', fromAnchor: 'bottom', toAnchor: 'right', active: step >= 4 },
   ];
