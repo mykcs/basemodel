@@ -1,5 +1,6 @@
 import type { Locale } from '../i18n';
 
+// Historical scientific evidence should use immutable commit-pinned URLs; exact source claims should add verified line anchors when available.
 export type EvidenceKind =
   | 'official-code'
   | 'code'
