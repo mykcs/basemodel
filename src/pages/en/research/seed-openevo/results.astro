@@ -6,6 +6,7 @@ import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvo
 import OpenEvoWebShopResultsHero from '../../../../components/research/OpenEvoWebShopResultsHero.astro';
 import OpenEvoWebShopResultsProtocol from '../../../../components/research/OpenEvoWebShopResultsProtocol.astro';
 import OpenEvoWebShopResultsQuestions from '../../../../components/research/OpenEvoWebShopResultsQuestions.astro';
+import OpenEvoWebShopCurrentQ7 from '../../../../components/research/OpenEvoWebShopCurrentQ7.astro';
 import OpenEvoActionWrapperAttribution from '../../../../components/research/OpenEvoActionWrapperAttribution.astro';
 import OpenEvoWebShopG2Ablation from '../../../../components/research/OpenEvoWebShopG2Ablation.astro';
 import OpenEvoWebShopNextSteps from '../../../../components/research/OpenEvoWebShopNextSteps.astro';
@@ -15,7 +16,7 @@ const locale = 'en' as const;
 ---
 <AppLayout
   title="OpenEvo × WebShop research findings"
-  description="For lab readers who know the project direction but have not followed every run: seven questions explain what OpenEvo has established, where second-generation updating is blocked, and why the next SEED-facing step after the repaired 2026-08-25 rerun is source-faithful public-code task reconstruction."
+  description="For lab readers who know the project direction but have not followed every run: seven questions explain what OpenEvo has established, where second-generation updating is blocked, and why the corrected 2026-08-26 source-faithful 128-task panel must pass 128/128 runtime semantic validation before the next formal comparison."
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
@@ -23,6 +24,7 @@ const locale = 'en' as const;
       <OpenEvoWebShopResultsHero locale={locale} />
       <OpenEvoWebShopResultsProtocol locale={locale} />
       <OpenEvoWebShopResultsQuestions locale={locale} />
+      <OpenEvoWebShopCurrentQ7 locale={locale} />
       <OpenEvoActionWrapperAttribution locale={locale} />
       <OpenEvoWebShopG2Ablation locale={locale} />
       <OpenEvoWebShopNextSteps locale={locale} />
@@ -34,4 +36,5 @@ const locale = 'en' as const;
 
 <style is:global>
   body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header { display:none; }
+  body:has([data-testid='openevo-webshop-result-index']) #q7 { display:none; }
 </style>
