@@ -195,6 +195,7 @@ History is rationale, not current policy. Particularly reusable cases include:
 - [`history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md) — `--max-failures=1`, stale E2E contracts, and why one formerly-red test turning green is not suite completion.
 - [`history/2026-08-26-results-release-node-runtime-retrospective.md`](history/2026-08-26-results-release-node-runtime-retrospective.md) — Results overflow, stale tests, deployment eligibility, and Node runtime closeout.
 - [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) — model-output attribution, parser compatibility, claim-level provenance, current-doc drift, exact-head deployment identity, and write-operation hygiene.
+- [`history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md`](history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md) — source-faithful 128-task identity correction, teacher-facing immutable manifest links, Vercel status disambiguation, test-owner drift, and semantic integration of overlapping Results PRs.
 
 ## Product contract
 

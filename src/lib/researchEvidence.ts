@@ -38,4 +38,42 @@ const labels: Record<EvidenceKind, { zh: string; en: string }> = {
   'historical-record': { zh: '历史记录', en: 'Historical record' },
 };
 
+const sourceFaithfulOldRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
+const sourceFaithfulCorrectedRoot = 'https://github.com/mykcs/openevo-experiment/blob/af89bb5c39aeab8aaa04eed57585c91e5598a968';
+const correctedSourceFaithfulPaths = new Set([
+  '/configs/experiment/webshop-seed-source-faithful-reproduction-v1.json',
+  '/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json',
+  '/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-1.json',
+  '/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-2.json',
+]);
+
+/**
+ * Close known provenance gaps at the final rendering boundary.
+ *
+ * The Results sources predate two source audits: the released SEED exact-line
+ * ranges were verified one line beyond the originally guessed anchors, and the
+ * first source-faithful Track A manifest was superseded by the af89 correction.
+ * Keep unrelated historical evidence pinned to its original immutable commit.
+ */
+export const verifiedEvidenceHref = (href: string) => {
+  let verified = href
+    .replace(
+      '/agent_system/environments/env_package/webshop/projection.py#L32-L40',
+      '/agent_system/environments/env_package/webshop/projection.py#L32-L42',
+    )
+    .replace(
+      '/agent_system/environments/prompts/webshop.py#L25-L27',
+      '/agent_system/environments/prompts/webshop.py#L25-L28',
+    );
+
+  if (verified.startsWith(sourceFaithfulOldRoot)) {
+    const path = verified.slice(sourceFaithfulOldRoot.length);
+    if (correctedSourceFaithfulPaths.has(path)) {
+      verified = `${sourceFaithfulCorrectedRoot}${path}`;
+    }
+  }
+
+  return verified;
+};
+
 export const evidenceKindLabel = (kind: EvidenceKind, locale: Locale) => labels[kind][locale];

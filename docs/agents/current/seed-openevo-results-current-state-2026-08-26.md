@@ -8,7 +8,7 @@ Read it together with `seed-openevo-results-reader-contract.md`. Where the older
 
 The source-faithful SEED WebShop successor has progressed beyond design-only work, but it is **not currently authorized for formal task consumption**.
 
-Latest upstream evidence on `mykcs/openevo-experiment` main, commit `af89bb5c39aeab8aaa04eed57585c91e5598a968`, records a scientific correction to the source-faithful panel builder:
+The latest scientific Track A correction used by Results is immutable commit `af89bb5c39aeab8aaa04eed57585c91e5598a968`. A freshness check of `mykcs/openevo-experiment/main` through `af4b06566b42aefe570cdb04b5ab3114324a1fa9` shows the same PREPARED activation; later commits through that head concern artifact publication/provenance and documentation rather than a new Track A execution state. The `af89...` correction records that:
 
 - pinned SEED `SimServer.__init__` re-seeds Python `random` with `worker_seed` after synthetic-goal construction and before `random.shuffle(self.goals)`;
 - the prior builder omitted this second reseed;
