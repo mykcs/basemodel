@@ -1,0 +1,30 @@
+/*
+ * The server explainer's browser gate switches representation at the viewport
+ * breakpoint, so its node topology must switch at the same boundary. The
+ * generic explainer container query can otherwise stack this one figure on a
+ * narrow reading column while the viewport-level gate is already using SVG.
+ */
+@media (min-width: 761px) {
+  [data-interactive-research-explainer='server'] .irx-host-boundary {
+    display: grid;
+    grid-template-columns: 1fr 1fr .8fr;
+    grid-template-areas:
+      'cap cap cap'
+      'gpu gpu gpu'
+      'daemon daemon daemon'
+      'dev exp siblings'
+      'socket exp siblings'
+      'workspace workspace siblings';
+    gap: 1rem;
+    min-height: 560px;
+    padding: 1.15rem;
+    background-image:
+      linear-gradient(var(--irx-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--irx-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  [data-interactive-research-explainer='server'] .srv-daemon {
+    width: min(56%, 560px);
+  }
+}
