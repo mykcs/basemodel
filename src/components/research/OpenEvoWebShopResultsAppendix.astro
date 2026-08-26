@@ -56,11 +56,11 @@ const legacyLinks = [
 
 <section class="results-appendix" id="appendix" aria-labelledby="appendix-title">
   <header class="section-heading">
-    <p>RESEARCH HISTORY</p>
+    <p>{t('研究历史 · RESEARCH HISTORY', 'RESEARCH HISTORY')}</p>
     <div>
       <h2 id="appendix-title">{t('历史实验与完整记录', 'Research history and full records')}</h2>
       <p>{t(
-        '从早期反复失败，到第一次可靠迁移、独立复现，再到第二代更新和测量校准，这些记录展示了当前结论是怎样一步步形成的。',
+        '从早期反复失败，到第一次可靠迁移、独立复现，再到第二代更新和测量校准，这些记录展示了当前结论是怎样一步步形成的。这里只把历史作为“结论从哪里来”的背景；精确证据仍保留在对应记录里。',
         'From early repeated failures to the first reliable transfer, independent replication, second-generation updating, and measurement calibration, these records show how the current conclusions were built step by step.',
       )}</p>
     </div>
@@ -114,8 +114,8 @@ const legacyLinks = [
   <div class="audit-row">
     <span>{t('研究证据：', 'Research evidence:')}</span>
     <a href={openEvoProgramLinks.ledger} target="_blank" rel="noreferrer">{t('项目总账（ledger）', 'Program ledger')}</a>
-    <a href={openEvoProgramLinks.report} target="_blank" rel="noreferrer">{t('项目报告', 'Program report')}</a>
-    <a href={openEvoProgramLinks.campaign} target="_blank" rel="noreferrer">{t('当前实验配置', 'Current campaign config')}</a>
+    <a href={openEvoProgramLinks.report} target="_blank" rel="noreferrer">{t('项目报告（report）', 'Program report')}</a>
+    <a href={openEvoProgramLinks.campaign} target="_blank" rel="noreferrer">{t('实验配置（campaign）', 'Current campaign config')}</a>
   </div>
 
   <div class="print-provenance" aria-hidden="true">
@@ -128,7 +128,7 @@ const legacyLinks = [
 <style>
   .results-appendix{max-width:1160px;margin:0 auto;padding:0 24px 72px;color:var(--color-text)}
   .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
   .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
   .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
   .deep-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}

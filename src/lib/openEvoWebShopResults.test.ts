@@ -65,17 +65,17 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(researchDetail).toContain("title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')");
   });
 
-  it('starts with a low-density lab-reader summary rather than experiment IDs', () => {
-    expect(hero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
-    expect(hero).toContain('已经看到');
+  it('starts with a plain-language summary followed by a compact professional layer', () => {
+    expect(hero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
+    expect(hero).toContain('已经知道');
     expect(hero).toContain('最新评测');
-    expect(hero).toContain('还差一步');
-    expect(hero).toContain('2026-08-25');
-    expect(hero).toContain('解析兼容修复复测已经完成');
-    expect(hero).toContain('配对不确定区间仍跨过 0');
-    expect(hero).toContain('源码忠实任务语义');
+    expect(hero).toContain('接下来');
+    expect(hero).toContain('模型从自己做成功的任务里学习一次以后');
+    expect(hero).toContain('修复“评分工具读错模型动作”的问题后');
+    expect(hero).toContain('配对置信区间（paired confidence interval）仍包含 0');
+    expect(hero).toContain('源码忠实任务槽位（source-faithful task slots）');
+    expect(hero).toContain('专业解释：');
     expect(hero).not.toContain('95% CI');
-    expect(hero).not.toContain('task-ID-disjoint');
     expect(hero).not.toContain('formal evaluation denominator');
     expect(hero).toContain('机制结论截至 H1.41');
     expect(hero).toContain('H1.42 是之后的测量校准记录');
@@ -94,18 +94,18 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
   });
 
   it('teaches the task split and only the two beginner scoring concepts before Q1–Q7', () => {
-    expect(protocol).toContain('先记住两个任务范围');
+    expect(protocol).toContain('先分清两种“新任务”');
     expect(protocol).toContain('Qwen2.5-7B-Instruct');
     expect(protocol).toContain('goal_idx ≥ 500');
     expect(protocol).toContain('goal_idx 0–499');
-    expect(protocol).toContain('任务完成度 · Task Score');
-    expect(protocol).toContain('完整成功 · Exact Success');
+    expect(protocol).toContain('任务完成度（Task Score）');
+    expect(protocol).toContain('完整成功（Exact Success）');
     expect(protocol).not.toContain('Qualified Positive');
     expect(protocol).not.toContain('0.667');
     expect(protocol).toContain('解析器（parser）');
     expect(protocol).toContain('测量无效（measurement-invalid）');
-    expect(protocol).toContain('范围一致');
-    expect(protocol).toContain('任务语义完全复现');
+    expect(protocol).toContain('编号范围对了');
+    expect(protocol).toContain('实验边界 · PROTOCOL');
     expect(protocol).toContain('/research/seed-openevo/webshop/');
     expect(protocol).toContain('/research/seed-openevo/loops/');
   });
@@ -126,6 +126,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('现在的答案：');
     expect(questions).toContain('我们做了两次对照');
     expect(questions).toContain('这种学习在这两轮实验里还没有转化成稳定的新任务收益');
+    expect(questions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(questions).toContain('机器结果（Machine result）');
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');
     expect(questions).toContain('展开实验依据');
     expect(questions).not.toContain('证据链与代码回溯');
@@ -146,22 +148,22 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('G2 已经在正式 T2 上证明迁移失败');
     expect(questions).toContain('T2 没有运行');
     expect(questions).toContain('H1.42 发生在 H1.41 之后');
-    expect(questions).toContain('它不反过来改变 H1.41 时点的机制结论');
+    expect(questions).toContain('不能反过来改写 H1.41 的机制结论');
   });
 
   it('updates Q7 through repaired primary v2 and the source-semantics audit', () => {
     expect(questions).toContain('修复后复测已完成 · 源码语义待验证');
-    expect(questions).toContain('512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes');
+    expect(questions).toContain('768 个回合');
     expect(questions).toContain('BASE 0.0 / 0.0%');
-    expect(questions).toContain('动作 wrapper 不兼容导致测量无效');
-    expect(questions).toContain('BASE：Task Score 4.1 / 完整成功 0.0%');
+    expect(questions).toContain('动作包装格式（wrapper）不兼容导致测量无效');
+    expect(questions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
     expect(questions).toContain('SD-LoRA：7.3 / 2.3%');
-    expect(questions).toContain('bootstrap 95% CI [-0.65, +7.19]');
+    expect(questions).toContain('自助法（bootstrap）95% CI [-0.65, +7.19]');
     expect(questions).toContain('数值 session index 不是完整任务身份');
     expect(questions).toContain('design-only-not-authorized');
     expect(questions).toContain('SEED-compatible');
-    expect(questions).toContain('不是论文确切分母');
-    expect(questions).toContain('SEED checkpoint / training 仍未在本地复现');
+    expect(questions).toContain('不是论文的确切评测分母');
+    expect(questions).toContain('checkpoint / training）仍未在本地复现');
     expect(questions).toContain('429faae1acc1132f8bdad4269a4e15864a9cccb0');
     expect(questions).toContain('seed-official-heldout-comparison-v1/v2/analysis-v2.json');
     expect(questions).toContain('seed-webshop-public-code-reproduction-v1.json');
@@ -219,12 +221,13 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
 
   it('orders next steps around source-faithful semantics, multi-generation work, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('先复现 SEED 公共代码的任务语义');
-    expect(nextSteps).toContain('两次干净重建得到同一个哈希');
+    expect(nextSteps).toContain('先把 SEED 真正会看到的 128 个任务重建出来');
+    expect(nextSteps).toContain('两次干净构建必须得到相同 canonical hash');
     expect(nextSteps).toContain('BASE 与 OpenEvo SD-LoRA 都保持冻结');
-    expect(nextSteps).toContain('经验回放（Experience Replay）');
+    expect(nextSteps).toContain('经验回放（experience replay）');
     expect(nextSteps).toContain('ALFWorld');
-    expect(nextSteps).toContain('WB1 属于 Track B');
+    expect(nextSteps).toContain('路线 B（Track B，WB1）');
+    expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('/research/seed-openevo/experiment/');
   });
 

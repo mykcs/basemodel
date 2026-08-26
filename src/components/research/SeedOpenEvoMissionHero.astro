@@ -7,30 +7,30 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const chain = [
-  { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定 checkpoint、精度和运行设置。','Pin checkpoint, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
-  { eyebrow:t('方法','Methods'), title:'SEED / OpenEvo', body:t('区分参数更新与跨任务演化。','Separate parameter updates from cross-task evolution.'), href:p('/research/seed-openevo/loops/') },
-  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('ALFWorld 与 WebShop 的任务结构、交互和评分规则不同。','ALFWorld and WebShop use different task structures, interactions, and scoring rules.'), href:p('/research/seed-openevo/benchmarks/') },
-  { eyebrow:t('实验','Experiment'), title:'openevo-experiment', body:t('实时状态由实际 branch 的 campaign 与 reconciliation 决定。','Live state is resolved from the actual branch campaign and reconciliation.'), href:p('/research/seed-openevo/results/') },
+  { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定模型版本（checkpoint）、精度和运行设置。','Pin checkpoint, precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
+  { eyebrow:t('方法','Methods'), title:'SEED / OpenEvo', body:t('比较两种学习与更新方法分别改变什么。','Compare what the two learning and update methods actually change.'), href:p('/research/seed-openevo/loops/') },
+  { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('两个环境的任务结构、交互方式和评分规则不同。','ALFWorld and WebShop use different task structures, interactions, and scoring rules.'), href:p('/research/seed-openevo/benchmarks/') },
+  { eyebrow:t('实验','Experiment'), title:'openevo-experiment', body:t('最新科学状态以实际工作分支、实验配置和实验对账记录为准。','Live scientific state is resolved from the actual working branch, campaign, and reconciliation.'), href:p('/research/seed-openevo/results/') },
 ] as const;
 ---
 <section class:list={['mission-hero',compact&&'mission-hero--compact']} aria-labelledby="mission-title">
   <div class="mission-hero__copy">
     <p class="mission-hero__eyebrow">SEED × OpenEvo</p>
     <h1 id="mission-title">{t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')}</h1>
-    <p class="mission-hero__lede">{t('理解 SEED 与 OpenEvo 的更新机制，在相同模型和评测协议下运行实验，并用轨迹、分数和失败模式设计下一步。','Understand the update mechanisms in SEED and OpenEvo, run experiments under shared model and evaluation protocols, and use trajectories, scores, and failure modes to plan the next step.')}</p>
+    <p class="mission-hero__lede">{t('这组研究想回答一个很直接的问题：在尽量相同的模型、任务和评测条件下，OpenEvo 学到了什么、哪些提升是真的、哪些结果还不能和 SEED 公平比较。下面先讲研究对象，再逐层展开专业细节和实验依据。','This research asks a direct question: under closely matched models, tasks, and evaluation conditions, what does OpenEvo learn, which gains are real, and which results are not yet fairly comparable with SEED. The page starts with the research objects and then layers in technical details and evidence.')}</p>
     <div class="mission-hero__actions"><a class="button button-primary" href={p('/research/seed-openevo/')}>{t('研究总览 →','Research overview →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/results/')}>{t('研究结果','Research findings')}</a></div>
     <dl class="mission-status">
-      <div><dt>{t('科学 source of truth','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
-      <div><dt>{t('默认分支快照','Default-branch snapshot')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.checkedAt}</dd></div>
-      <div><dt>{t('实时状态','Live state')}</dt><dd>{t('实际 branch → campaign → reconciliation','actual branch → campaign → reconciliation')}</dd></div>
-      <div><dt>{t('GPU 使用','GPU use')}</dt><dd>{t('preregistration + 授权 UUID','preregistration + authorized UUIDs')}</dd></div>
+      <div><dt>{t('科学事实来源（source of truth）','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
+      <div><dt>{t('默认分支快照（default-branch snapshot）','Default-branch snapshot')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.checkedAt}</dd></div>
+      <div><dt>{t('实时状态（live state）','Live state')}</dt><dd>{t('实际工作分支 → 实验配置（campaign）→ 实验对账（reconciliation）','actual branch → campaign → reconciliation')}</dd></div>
+      <div><dt>{t('GPU 使用条件','GPU use')}</dt><dd>{t('实验预注册（preregistration）+ 已授权 GPU UUID','preregistration + authorized UUIDs')}</dd></div>
     </dl>
   </div>
 
   <figure class="mission-chain" aria-labelledby="mission-chain-caption">
-    <figcaption id="mission-chain-caption"><span>{t('研究对象','Research objects')}</span><strong>{t('模型、方法、环境与当前实验使用同一套可追溯记录。','Model, method, environment, and current experiments share one traceable record.')}</strong></figcaption>
+    <figcaption id="mission-chain-caption"><span>{t('研究对象','Research objects')}</span><strong>{t('先把模型、方法、环境和实验记录分开看，后面就不容易把“模型变了”“任务变了”和“测量方式变了”混成一件事。','Separating model, method, environment, and experiment records first makes it easier to distinguish model changes, task changes, and measurement changes later.')}</strong></figcaption>
     <ol>{chain.map((node,index)=><li><a href={node.href}><span>{String(index+1).padStart(2,'0')}</span><small>{node.eyebrow}</small><strong>{node.title}</strong><p>{node.body}</p></a></li>)}</ol>
-    <p class="mission-history">{t(`seed3090 与 openevo-webshop 是历史证据与迁移来源。默认分支快照核验于 ${openEvoScientificState.checkedAt}；最新实验阶段和 GPU 分配以 openevo-experiment 的实际工作分支与 preregistration 为准。`,`seed3090 and openevo-webshop are historical evidence and migration sources. The default-branch snapshot was checked on ${openEvoScientificState.checkedAt}; the latest experiment phase and GPU allocation are resolved from the openevo-experiment branch in use and its preregistration.`)}</p>
+    <p class="mission-history">{t(`历史证据主要来自 seed3090 与 openevo-webshop。默认分支快照核验于 ${openEvoScientificState.checkedAt}；真正的最新实验阶段和 GPU 分配，以 openevo-experiment 实际工作分支里的实验配置（campaign）、实验预注册（preregistration）和实验对账（reconciliation）为准。`,`Historical evidence comes mainly from seed3090 and openevo-webshop. The default-branch snapshot was checked on ${openEvoScientificState.checkedAt}; the latest experiment phase and GPU allocation are resolved from the campaign, preregistration, and reconciliation on the openevo-experiment branch actually in use.`)}</p>
   </figure>
 </section>
 

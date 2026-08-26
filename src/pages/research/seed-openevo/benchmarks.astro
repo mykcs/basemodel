@@ -3,6 +3,6 @@ import AppLayout from '../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoResearchPage.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="ALFWorld 与 WebShop 实验协议" description="比较两个 Agent 基准的动作空间、成功标准、归一化任务分数、宏平均、失败模式与受控比较条件。" locale={locale}>
+<AppLayout title="ALFWorld 与 WebShop 实验协议" description="比较 ALFWorld 与 WebShop 两个 Agent 基准：模型能做哪些动作、什么算任务成功、怎样计算归一化任务分数和宏平均，以及公平比较时哪些实验条件必须保持一致。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="benchmarks" />
 </AppLayout>

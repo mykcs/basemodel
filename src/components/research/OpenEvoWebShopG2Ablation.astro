@@ -45,12 +45,16 @@ const gates = [
 
 <section class="g2-ablation" id="g2-ablation" aria-labelledby="g2-ablation-title">
   <header class="section-heading">
-    <p>SECOND GENERATION</p>
+    <p>{t('第二代更新 · SECOND GENERATION', 'SECOND GENERATION')}</p>
     <div>
       <h2 id="g2-ablation-title">{t('第二代为什么还不能说“越学越好”？', 'Why can’t we yet say the second generation keeps improving?')}</h2>
-      <p>{t(
+      <p class="plain-intro">{t(
         '第二次更新确实发生了，也有新的成功经验可以学习。要把它称为“连续进步”，至少要同时做到三件事：学会新的、别忘旧的、还要保住第一代已经得到的提升。后续检查没有同时看到这三件事成立，所以现在只能说第二代持续整合尚未建立。',
         'The second update genuinely happened, and new successful experience was available. To call this continual improvement, at least three things must hold together: learn the new material, retain prior capability, and preserve the first-generation gain. Follow-up checks did not show all three at once, so second-generation continual integration is not established.',
+      )}</p>
+      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+        '这三道门分别对应新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）。预留的 T2 新任务迁移测试只有前置能力门通过后才会打开，所以“T2 没有运行”不能被改写成“G2 在 T2 上迁移失败”。',
+        'The three gates correspond to acquisition, retention, and preservation. The reserved T2 fresh-transfer test opens only after the upstream capability gates clear, so “T2 did not run” must not be rewritten as “G2 failed transfer on T2”.',
       )}</p>
     </div>
   </header>
@@ -75,21 +79,21 @@ const gates = [
         <section>
           <h3>{t('第一道门 · 新经验获取', 'Gate 1 · New experience acquisition')}</h3>
           <ul>
-            <li>{t('H1.41 C0 acquisition（新经验获取）点估计 = 0，但该路径被判为测量无效（MEASUREMENT_INVALID）。', 'H1.41 C0 acquisition point estimate = 0, but the path was classified as MEASUREMENT_INVALID.')}</li>
-            <li>{t('H1.40：32 次尝试 / 28 次有效；唯一 4/4 parser-invalid（解析失败）的 cell 属于测量无效，而不是“能力为零”。', 'H1.40: 32 attempts / 28 valid; the single 4/4 parser-invalid cell is measurement-invalid, not zero capability.')}</li>
+            <li>{t('H1.41 C0 的新经验获取（acquisition）点估计 = 0，但该路径被判为测量无效（MEASUREMENT_INVALID）。', 'H1.41 C0 acquisition point estimate = 0, but the path was classified as MEASUREMENT_INVALID.')}</li>
+            <li>{t('H1.40：32 次尝试 / 28 次有效；唯一 4/4 的解析失败（parser-invalid）实验单元（cell）属于测量无效，而不是“能力为零”。', 'H1.40: 32 attempts / 28 valid; the single 4/4 parser-invalid cell is measurement-invalid, not zero capability.')}</li>
           </ul>
         </section>
         <section>
           <h3>{t('第二道门 · 旧能力保留', 'Gate 2 · Prior capability retention')}</h3>
           <ul>
-            <li>H1.40 retention（旧能力保留）Δ = −0.1635，95% CI [−0.4073, 0.0355]。</li>
-            <li>{t('H1.41 校准复测：C0 / C1 的 retention 都是 −0.065625，方向一致为负。', 'H1.41 calibrated re-measurement: retention on both C0 and C1 = −0.065625, consistently negative.')}</li>
+            <li>{t('H1.40 旧能力保持（retention）Δ = −0.1635，95% CI [−0.4073, 0.0355]。', 'H1.40 retention Δ = −0.1635, 95% CI [−0.4073, 0.0355].')}</li>
+            <li>{t('H1.41 校准复测：C0 / C1 的旧能力保持（retention）都是 −0.065625，方向一致为负。', 'H1.41 calibrated re-measurement: retention on both C0 and C1 = −0.065625, consistently negative.')}</li>
           </ul>
         </section>
         <section>
           <h3>{t('第三道门 · 第一代收益保持', 'Gate 3 · Preserve the first-generation gain')}</h3>
           <ul>
-            <li>preservation（已有收益保持）Δ = −0.0036，95% CI [−0.0801, 0.0755]，与 0 不可区分。</li>
+            <li>{t('已有收益保持（preservation）Δ = −0.0036，95% CI [−0.0801, 0.0755]，与 0 不可区分。', 'Preservation Δ = −0.0036, 95% CI [−0.0801, 0.0755], indistinguishable from zero.')}</li>
             <li>{t('预留的 T2 新任务迁移面板没有打开（t2Opened = false），因此不能说 G2 已经在 T2 上证明迁移失败。', 'The reserved T2 fresh-transfer panel never opened (t2Opened = false), so G2 did not prove transfer failure on T2.')}</li>
           </ul>
         </section>
@@ -105,22 +109,22 @@ const gates = [
 
       <div class="evidence-link-grid">
         <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json`} target="_blank" rel="noreferrer">
-          <small>Machine result</small><span>{t('G2 训练对账', 'G2 training reconciliation')}</span><b aria-hidden="true">↗</b>
+          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('G2 训练对账', 'G2 training reconciliation')}</span><b aria-hidden="true">↗</b>
         </a>
         <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json`} target="_blank" rel="noreferrer">
-          <small>Machine result</small><span>{t('正式上游评估摘要', 'Formal upstream summary')}</span><b aria-hidden="true">↗</b>
+          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('正式上游评估摘要', 'Formal upstream summary')}</span><b aria-hidden="true">↗</b>
         </a>
         <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md`} target="_blank" rel="noreferrer">
-          <small>Human report</small><span>{t('正式上游评估报告', 'Formal upstream evaluation report')}</span><b aria-hidden="true">↗</b>
+          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('正式上游评估报告', 'Formal upstream evaluation report')}</span><b aria-hidden="true">↗</b>
         </a>
         <a href={`${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-md/ARTIFACT_AUTOPSY.md`} target="_blank" rel="noreferrer">
-          <small>Human report</small><span>{t('H1.40-MD 参数分析', 'H1.40-MD artifact autopsy')}</span><b aria-hidden="true">↗</b>
+          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('H1.40-MD 参数分析', 'H1.40-MD artifact autopsy')}</span><b aria-hidden="true">↗</b>
         </a>
         <a href={`${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md`} target="_blank" rel="noreferrer">
-          <small>Machine result</small><span>{t('H1.41 机制筛选对账', 'H1.41 reconciliation')}</span><b aria-hidden="true">↗</b>
+          <small>{t('机器结果（Machine result）', 'Machine result')}</small><span>{t('H1.41 机制筛选对账', 'H1.41 reconciliation')}</span><b aria-hidden="true">↗</b>
         </a>
         <a href={`${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md`} target="_blank" rel="noreferrer">
-          <small>Human report</small><span>{t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B closeout')}</span><b aria-hidden="true">↗</b>
+          <small>{t('人工报告（Human report）', 'Human report')}</small><span>{t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B closeout')}</span><b aria-hidden="true">↗</b>
         </a>
       </div>
     </div>
@@ -130,9 +134,12 @@ const gates = [
 <style>
   .g2-ablation{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
   .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
   .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;max-width:68ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .section-heading div>p{margin:0;max-width:68ch;font-size:.94rem;line-height:1.68}
+  .plain-intro{color:var(--color-text-muted)}
+  .technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}
+  .technical-intro strong{color:var(--color-text)}
   .gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
   .gate-card{padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
   .gate-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}

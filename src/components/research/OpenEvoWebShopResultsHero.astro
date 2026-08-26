@@ -16,42 +16,62 @@ const navItems = [
 ---
 
 <header class="results-hero">
-  <p class="eyebrow">OPENEVO × WEBSHOP · RESEARCH FINDINGS</p>
+  <p class="eyebrow">{t('研究结果 · RESEARCH FINDINGS', 'OPENEVO × WEBSHOP · RESEARCH FINDINGS')}</p>
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '如果你已经知道实验室在做 OpenEvo × WebShop，但没有跟进每一轮实验，这一页先回答三件事：我们已经看到了什么、最新一轮评测发生了什么、下一步还缺什么。',
-    'If you know the lab is working on OpenEvo × WebShop but have not followed every run, this page starts with three questions: what we have learned, what happened in the latest evaluation, and what still needs to be done.',
+    '如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop，但没有跟进每一轮实验，这一页先用普通语言讲清楚我们已经知道什么，再把专业定义、统计结果和机器证据放到对应位置。',
+    'If you know the lab is comparing OpenEvo, SEED, and WebShop but have not followed every run, this page starts in plain language and then layers in technical definitions, statistical results, and machine evidence where they are needed.',
   )}</p>
 
   <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
     <div class="abstract-row">
-      <span class="abstract-label established">{t('已经看到', 'What we know')}</span>
-      <p>{t(
-        '模型用自己产生的成功经验做一次参数更新后，在训练没见过的新任务上出现了可重复的提升。这个结论已经独立复现，但它来自 OpenEvo 的内部新任务评估，还不是 SEED 官方保留任务上的正式成绩。',
-        'After one parameter update using the model’s own successful experience, performance improved reproducibly on unseen internal tasks. The result replicated independently, but it is still an OpenEvo internal fresh-task result rather than a formal SEED held-out score.',
-      )}</p>
+      <span class="abstract-label established">{t('已经知道', 'What we know')}</span>
+      <div class="abstract-copy">
+        <p class="plain">{t(
+          '模型从自己做成功的任务里学习一次以后，面对训练时没见过的新任务，表现确实可以变好；而且这个现象后来又复现了一次。',
+          'After one update from its own successful trajectories, the model can perform better on tasks it did not see during training, and that effect was reproduced independently.',
+        )}</p>
+        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+          'H1.38B 与 H1.39 支持一次参数更新后的内部新任务迁移（internal fresh task-ID-disjoint transfer）。这仍然不是 SEED 官方保留任务（held-out tasks）上的正式复现结果。',
+          'H1.38B and H1.39 support one-step internal fresh task-ID-disjoint transfer after a parameter update. This is still not a formal reproduction result on the SEED official held-out tasks.',
+        )}</p>
+      </div>
     </div>
+
     <div class="abstract-row">
       <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
-      <p>{t(
-        '2026-08-25 的解析兼容修复复测已经完成。OpenEvo 在同一批与 SEED 评测设置兼容的任务上得到更高的平均任务完成度，并出现少量完整成功；但配对不确定区间仍跨过 0，所以这只能算正向信号，还不能说已经稳定胜出。',
-        'The parser-compatible rerun from 2026-08-25 is complete. On the same SEED-compatible task panel, OpenEvo achieved higher average task progress and a small number of exact successes, but the paired uncertainty interval still crosses zero. This is a positive signal, not yet a stable win.',
-      )}</p>
+      <div class="abstract-copy">
+        <p class="plain">{t(
+          '修复“评分工具读错模型动作”的问题后，OpenEvo 看起来比基础模型做得更好一点，但现在还不能确定这个差异不是偶然波动。',
+          'After fixing the action-reading problem in the measurement path, OpenEvo looks somewhat better than the base model, but the current evidence cannot yet rule out chance variation.',
+        )}</p>
+        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+          '2026-08-25 的修复后主评测（repaired PRIMARY-v2）中，OpenEvo 的平均任务完成度更高，并出现少量完整成功（exact success）；但配对置信区间（paired confidence interval）仍包含 0，因此目前只能称为正向信号，不能称为稳定胜出。',
+          'In the repaired PRIMARY-v2 evaluation from 2026-08-25, OpenEvo had higher average task progress and a small number of exact successes, but the paired confidence interval still includes zero. The result is therefore a positive signal, not a stable win.',
+        )}</p>
+      </div>
     </div>
+
     <div class="abstract-row">
-      <span class="abstract-label bottleneck">{t('还差一步', 'What remains')}</span>
-      <p>{t(
-        '随后按 SEED 公开代码重审任务构造时，我们发现“来自 0–499”还不等于完整复现 SEED 的首次验证任务语义。下一步先机械重建 128 个源码忠实任务槽位，再在冻结的 BASE 与 OpenEvo SD-LoRA 上做同一合同的配对评测；多代连续改进仍没有被证明。',
-        'A subsequent audit of the released SEED code showed that “drawn from 0–499” is not enough to reproduce the first-validation task semantics. Next, mechanically rebuild 128 source-faithful task slots and compare the frozen BASE and OpenEvo SD-LoRA under one identical contract. Stable multi-generation improvement is still not established.',
-      )}</p>
+      <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
+      <div class="abstract-copy">
+        <p class="plain">{t(
+          '我们后来发现：选中了 SEED 的正确任务编号范围，还不等于真的生成了 SEED 代码会看到的同一批任务。所以下一步不是重新训练模型，而是先把这批验证任务按公开代码一模一样地重建出来。',
+          'A later audit found that selecting the correct SEED task-number range is not enough to guarantee the same tasks produced by the released SEED code. The next step is therefore not retraining, but rebuilding the validation tasks from the public code semantics.',
+        )}</p>
+        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+          '下一步要机械重建 128 个源码忠实任务槽位（source-faithful task slots），冻结 validation seed、worker seed、实际 instruction 与数据身份，再用同一评测合同比较冻结的 BASE 与 OpenEvo SD-LoRA。多代连续改进仍未建立。',
+          'Next, mechanically rebuild 128 source-faithful task slots, freezing the validation seed, worker seed, resulting instruction, and data identity, then compare the frozen BASE and OpenEvo SD-LoRA under one identical evaluation contract. Stable multi-generation improvement is still not established.',
+        )}</p>
+      </div>
     </div>
   </div>
 
   <div class="cutoff-note">
-    <strong>{t('机制结论截至 H1.41', 'Mechanism conclusions through H1.41')}</strong>
+    <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      'H1.42 是之后的测量校准记录；2026-08-25 的 SEED 保留范围评测现在已经包含修复后的主评测，源码忠实任务语义复现则是另一条尚未授权执行的后续设计。它们都会单独标注，不与 H1.41 的机制结论混在一起。',
-      'H1.42 is a later measurement-calibration record. The 2026-08-25 SEED-range campaign now includes the repaired primary, while source-faithful task-semantic reproduction is a separate successor design that is not yet execution-authorized. None is blended backward into the H1.41 mechanism conclusions.',
+      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和后续源码忠实任务设计属于另外两层证据，不会被倒过来混进 H1.41 的机制结论。',
+      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the later source-faithful task design are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
     )}</span>
   </div>
 
@@ -62,20 +82,24 @@ const navItems = [
 
 <style>
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
-  .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;letter-spacing:.14em}
+  .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;letter-spacing:.12em}
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
-  .lede{max-width:760px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.02rem;line-height:1.75}
+  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.02rem;line-height:1.75}
   .abstract-box{max-width:960px;margin-top:30px;border-block:2px solid var(--color-text)}
-  .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:16px 0}
+  .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}
   .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
   .abstract-label{font-size:.74rem;font-weight:800;letter-spacing:.04em;line-height:1.7}
   .abstract-label.established{color:var(--color-accent)}
   .abstract-label.latest{color:var(--color-info)}
   .abstract-label.bottleneck{color:var(--color-text-muted)}
-  .abstract-row p{margin:0;max-width:72ch;font-size:.92rem;line-height:1.72}
+  .abstract-copy{display:grid;gap:8px}
+  .abstract-copy p{margin:0;max-width:76ch;line-height:1.72}
+  .abstract-copy .plain{font-size:.94rem;color:var(--color-text)}
+  .abstract-copy .technical{padding-top:7px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.8rem}
+  .abstract-copy .technical strong{color:var(--color-text);font-weight:760}
   .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.8rem}
   .cutoff-note strong{color:var(--color-accent)}
-  .cutoff-note span{max-width:78ch;color:var(--color-text-muted);line-height:1.6}
+  .cutoff-note span{max-width:80ch;color:var(--color-text-muted);line-height:1.6}
   .paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;max-width:960px;margin-top:22px;padding:1rem 0;border-block:1px solid var(--color-border)}
   .paper-nav a{color:var(--color-text-muted);font-size:.78rem;font-weight:720;text-decoration:none;text-underline-offset:.2em}
   .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
