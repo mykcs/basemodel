@@ -1,7 +1,10 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const shouldRun = branch === 'main' || branch === 'agent/sync-zju-shell-environment-20260816';
+const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+const shouldRun = branch === 'main'
+  || branch === 'agent/sync-zju-shell-environment-20260816'
+  || resultsReleaseBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-lab-browser-gate] skipped for branch: ${branch || 'unknown'}`);

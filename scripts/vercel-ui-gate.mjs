@@ -5,10 +5,12 @@ const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
+const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
-  || resultsOverflowValidationBranch.test(branch);
+  || resultsOverflowValidationBranch.test(branch)
+  || resultsReleaseBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
