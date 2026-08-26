@@ -40,6 +40,9 @@ const zh = locale === 'zh';
   .evidence-refs--compact small{font-size:.6rem}
   .evidence-refs--compact span{font-size:.65rem;color:var(--color-text-muted)}
   .evidence-refs--compact b{font-size:.65rem}
+  @media(min-width:1024px){
+    .evidence-refs--compact a{min-width:240px}
+  }
   @media(max-width:520px){
     .evidence-refs--compact a{max-width:100%;border-radius:8px}.evidence-refs--compact span{overflow-wrap:anywhere}
   }
