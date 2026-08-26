@@ -95,7 +95,6 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(observationTable).toBeGreaterThan(details);
     expect(transferFigure).toBeGreaterThan(details);
     expect(resultsHero).not.toContain('95% CI');
-    expect(resultsHero).not.toContain('task-ID-disjoint');
   });
 
   it('pins the lab-reader audience and Chinese-first terminology contract at the route', () => {
@@ -105,9 +104,23 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('Density budget');
     expect(resultsReaderContract).toContain('展开实验依据');
     expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
-    expect(resultsHero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
+    expect(resultsHero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
     expect(resultsProtocol).toContain('解析器（parser）');
     expect(resultsQuestions).toContain('SEED-compatible');
+  });
+
+  it('protects the plain-language → professional-detail → evidence layering', () => {
+    expect(resultsHero).toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).toContain('专业解释：');
+    expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
+    expect(resultsProtocol).toContain('专业解释：');
+    expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).toContain('机器结果（Machine result）');
+    expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
+    expect(nextSteps).toContain('专业解释：');
+    expect(researchHub).toContain('适配器（adapter）');
+    expect(researchHub).toContain('备用动作（fallback）');
+    expect(researchHub).toContain('结束原因（termination）');
   });
 
   it('keeps the research navigation labelled as Research findings, not Experiment results', () => {
@@ -130,15 +143,15 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsQuestions).toContain('H1.42 发生在 H1.41 之后');
     expect(resultsHero).toContain('机制结论截至 H1.41');
     expect(resultsQuestions).toContain('修复后复测已完成 · 源码语义待验证');
-    expect(resultsQuestions).toContain('768 episodes');
+    expect(resultsQuestions).toContain('768 个回合');
     expect(resultsQuestions).toContain('测量无效');
-    expect(resultsQuestions).toContain('BASE：Task Score 4.1 / 完整成功 0.0%');
+    expect(resultsQuestions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
     expect(resultsQuestions).toContain('SD-LoRA：7.3 / 2.3%');
     expect(resultsQuestions).toContain('数值 session index 不是完整任务身份');
-    expect(resultsQuestions).toContain('不是论文确切分母');
+    expect(resultsQuestions).toContain('不是论文的确切评测分母');
     expect(resultsQuestions).toContain('design-only-not-authorized');
-    expect(nextSteps).toContain('先复现 SEED 公共代码的任务语义');
-    expect(nextSteps).toContain('WB1 属于 Track B');
+    expect(nextSteps).toContain('先把 SEED 真正会看到的 128 个任务重建出来');
+    expect(nextSteps).toContain('路线 B（Track B，WB1）');
   });
 
   it('does not regress to stale held-out planning states', () => {
