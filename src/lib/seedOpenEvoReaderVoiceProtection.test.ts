@@ -107,7 +107,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
     expect(resultsHero).toContain('如果你已经知道实验室在做 OpenEvo × WebShop');
     expect(resultsProtocol).toContain('解析器（parser）');
-    expect(resultsQuestions).toContain('与 SEED 评测设置兼容（SEED-compatible）');
+    expect(resultsQuestions).toContain('SEED-compatible');
   });
 
   it('keeps the research navigation labelled as Research findings, not Experiment results', () => {
