@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-26**
 
-Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results surface is receiving a claim-level provenance pass on PR #265; upstream Track A is PREPARED task-construction evidence with a materialized source-faithful 128-slot manifest, but formal task consumption is not authorized and no new Track A scientific outcome exists.**
+Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results work is being integrated from the claim-level provenance pass and the corrected Track A state. Upstream Track A is PREPARED corrected task-construction evidence: the earlier manifest was superseded after the pinned SEED SimServer reseed semantic was found, formal task consumption is not authorized, and no new Track A scientific outcome exists.**
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
@@ -46,20 +46,23 @@ Do not collapse token provenance, training causation, parser behavior, and exper
 
 ### Source-faithful Track A successor
 
-After refreshing `mykcs/openevo-experiment/main` at `1971fad6602d23d499a5de8bd4bf718947207d86`, the current authority is campaign:
+Latest authoritative upstream evidence used by Results is `mykcs/openevo-experiment@af89bb5c39aeab8aaa04eed57585c91e5598a968`.
 
-`20260826-0638-webshop-seed-source-faithful-reproduction`
+That commit corrected the task builder to match the pinned SEED runtime semantics: `SimServer.__init__` re-seeds Python `random` with `worker_seed` after synthetic-goal construction and before `random.shuffle(self.goals)`. The earlier builder omitted that second reseed, so its shuffled goal order and instruction identities were not source-faithful. The earlier manifest is superseded.
 
-Its current state is **PREPARED task-construction evidence, not an executed scientific result**:
+Current Track A state:
 
-- the 128-slot source-faithful semantic manifest is materialized;
-- two clean rebuild receipts are `PASS` and agree on `manifest_content_sha256`, `manifest_file_sha256`, and `selected_panel_digest`;
-- the frozen preregistration still states `formal_task_consumption_allowed=false`;
-- BASE / frozen SD-LoRA identities, parser-compatible measurement contract, validation/worker seed schedule, task manifest, and data identity remain frozen.
+- corrected 128-slot source-faithful semantic manifest is rematerialized and immutable at the `af89...` snapshot;
+- corrected deterministic rebuild receipts agree on canonical content;
+- activation is `PREPARED`;
+- `formal_task_consumption_allowed=false`;
+- BASE / frozen SD-LoRA identities and the parser-compatible measurement contract remain frozen;
+- the next fail-closed gate is **authoritative WebshopWorker runtime semantic validation 128/128** on the corrected manifest;
+- only after that gate passes may a separate activation/release authorize formal GPU task consumption.
 
-The next gate is **server runtime semantic validation 128/128**. A separate activation/release PR is required before formal GPU task consumption. Do not publish BASE-vs-SD outcome claims from this PREPARED state.
+This is task-identity / measurement preparation evidence, **not a new BASE-vs-SD scientific result**. The corrected first-validation panel is also not the unrecoverable paper-final exact 128 behind 89.7 / 78.1%.
 
-An older preparation branch, `seed-webshop-pubcode-repro-v1-prep`, briefly carried `executing-formal-run`. That branch is not the current `openevo-experiment/main` authority. Before changing Results copy, refresh the actual upstream authority branch/SHA rather than inheriting a stale execution label.
+An older preparation branch briefly carried `executing-formal-run`; that state was superseded by the later manifest-semantic correction. Before changing Results copy again, refresh actual upstream main/activation/reconciliation rather than inheriting an old branch label.
 
 ### Track B / WB1
 
@@ -67,17 +70,18 @@ WB1 remains a separate fair matched benchmark line. Track A asks whether pinned 
 
 ## Current BaseModel Results state
 
-The current Results route keeps the seven-question reader path and a collapsed technical action-wrapper trace after it. The trace exists for code-level attribution without turning the main narrative into an experiment ledger.
+The Results route keeps the seven-question reader path and a collapsed technical action-wrapper trace after it. Claim-local provenance should point highly specific observations to their closest available primary evidence while preserving the broader evidence package for each question.
 
-PR #265 implements the follow-up evidence-provenance pass: highly specific observations can link directly to their closest available primary evidence while each question still keeps its broader evidence package. The Hero remains a reading layer rather than a citation wall.
+The current integration also exposes a teacher-facing immutable link to the corrected 128-task manifest. Visible copy must say that this is the **current frozen corrected first-validation panel**, pending 128/128 runtime semantic validation; it must not call it the paper-final exact 128.
 
 For any non-trivial Results edit, read:
 
 1. `current/scientific-state-provenance.md`
 2. `current/experiment-result-publication-workflow.md`
 3. `current/seed-openevo-results-reader-contract.md`
-4. `current/research-explainer-page-standard.md`
-5. `current/audience-centered-technical-copy.md`
+4. `current/seed-openevo-results-current-state-2026-08-26.md`
+5. `current/research-explainer-page-standard.md`
+6. `current/audience-centered-technical-copy.md`
 
 Then resolve fresh upstream experiment truth before writing copy.
 
@@ -139,7 +143,7 @@ The task-based bundle map is in [`README.md`](README.md).
 
 Shared repository/provider state is not an Agent scratchpad.
 
-- use read/search/fetch operations for discovery;
+- use fetch/search/read operations for discovery;
 - never create probe files/comments/mutations to test capability;
 - batch intended changes before the first provider-triggering branch update;
 - prefer one atomic multi-file commit when practical;
@@ -147,19 +151,6 @@ Shared repository/provider state is not an Agent scratchpad.
 
 ## Durable case from this work
 
-See:
-
-[`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md)
-
-for the detailed rationale covering:
-
-- model-output attribution;
-- parser compatibility preflight;
-- range-compatible vs source-faithful task identity;
-- website/experiment state drift;
-- claim-level provenance;
-- Vercel exact-head/main-movement friction;
-- Agent-document entry cost;
-- repository-write hygiene.
+See [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) for rationale covering model-output attribution, parser compatibility, range-compatible vs source-faithful task identity, website/experiment state drift, claim-level provenance, Vercel exact-head friction, and repository-write hygiene.
 
 History is evidence, not current policy. Re-run fresh diagnostics when the same symptom appears again.

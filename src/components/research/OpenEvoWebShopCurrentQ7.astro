@@ -1,0 +1,117 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const sourceFaithfulRoot = 'https://github.com/mykcs/openevo-experiment/blob/af89bb5c39aeab8aaa04eed57585c91e5598a968';
+const frozenPanelHref = `${sourceFaithfulRoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`;
+---
+
+<section class="current-q7" aria-labelledby="current-q7-title" data-testid="current-source-faithful-q7">
+  <article class="current-question-card">
+    <div class="question-number">07</div>
+    <div class="question-copy">
+      <div class="question-meta">
+        <span class="status-badge"><i aria-hidden="true"></i>{t('已重建并纠错 · 等待 128/128 运行时验证', 'Rebuilt and corrected · awaiting 128/128 runtime validation')}</span>
+      </div>
+      <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
+      <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
+        '现在不是“还没做出 SEED 的 128 题”，而是已经做出后又发现一个随机顺序细节没有完全照官方代码运行，于是我们把旧版本作废、重新生成了一版。眼下先确认这新版 128 题和真实 SEED 运行路径逐题一致；只有这一步 128/128 通过以后，才允许 BASE 和 OpenEvo 正式再考一次。',
+        'The issue is no longer that the SEED 128-task panel has not been built. We built it, then found one random-ordering detail that did not fully match the released runtime path, so the old manifest was superseded and rebuilt. The immediate task is to verify that the corrected 128 tasks match the authoritative SEED runtime path one by one; only after a 128/128 pass may BASE and OpenEvo take the next formal comparison.',
+      )}</p>
+
+      <div class="manifest-callout" data-testid="frozen-128-task-manifest">
+        <div class="manifest-copy">
+          <strong>{t('当前冻结的 128 题', 'Current frozen 128-task panel')}</strong>
+          <span>{t(
+            '这个 JSON 是本轮 corrected panel 的不可变快照：逐条列出 128 个 slot 的 worker seed、session index、instruction、instruction hash 与数据身份。它是现在最直接的“题卷证据”；但 128/128 runtime semantic validation 仍未完成，因此这里不把它称为论文最终 128 题。',
+            'This JSON is the immutable snapshot of the corrected panel for this round. It enumerates all 128 slots with worker seed, session index, instruction, instruction hash, and data identity. It is the most direct evidence for the current task sheet, but 128/128 runtime semantic validation is still pending, so it is not labeled as the paper-final 128 tasks.',
+          )}</span>
+        </div>
+        <a class="manifest-link" href={frozenPanelHref}>
+          {t('在 GitHub 查看固定的 128 题', 'View the frozen 128 tasks on GitHub')} ↗
+        </a>
+      </div>
+
+      <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+        '旧 builder 在构造 synthetic goals 后直接 shuffle，遗漏了 pinned SEED SimServer 在 shuffle 前再次 random.seed(worker_seed) 的语义，因此旧 panel 的 goal ordering / instruction identity 不具备源码忠实性。2026-08-26 的纠错已重新物化 manifest 并将旧 manifest 标为 superseded；当前 activation 回到 PREPARED，formal_task_consumption_allowed=false。下一道 fail-closed gate 是 corrected manifest 的 authoritative WebshopWorker runtime semantic validation 128/128。这里仍然没有新的 BASE-vs-SD 科学结果。',
+        'The previous builder shuffled immediately after constructing synthetic goals and omitted the pinned SEED SimServer reseed with random.seed(worker_seed) before shuffle. Its goal ordering and instruction identities were therefore not source-faithful. The 2026-08-26 correction rematerialized the manifest and marked the old one superseded; activation returned to PREPARED with formal_task_consumption_allowed=false. The next fail-closed gate is authoritative WebshopWorker runtime semantic validation at 128/128 for the corrected manifest. There is still no new BASE-vs-SD scientific result.',
+      )}</p>
+
+      <details class="evidence-details">
+        <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
+        <div class="evidence-detail-body">
+          <table>
+            <tbody>
+              <tr>
+                <th scope="row">{t('已经完成', 'Completed')}</th>
+                <td>{t('源码忠实 128-task manifest 已重新生成；两次 deterministic rebuild 的 canonical 内容一致。', 'The source-faithful 128-task manifest was rematerialized; two deterministic rebuilds agree on canonical content.')}</td>
+              </tr>
+              <tr>
+                <th scope="row">{t('为什么重做', 'Why rebuilt')}</th>
+                <td>{t('发现旧 builder 漏掉 SimServer 在 goal 构造后、shuffle 前的第二次 worker-seed reseed；旧 manifest 已 superseded。', 'The previous builder omitted SimServer’s second worker-seed reseed after goal construction and before shuffle; the old manifest is superseded.')}</td>
+              </tr>
+              <tr>
+                <th scope="row">{t('当前状态', 'Current state')}</th>
+                <td><code>PREPARED · formal_task_consumption_allowed=false</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('下一道门', 'Next gate')}</th>
+                <td>{t('corrected manifest 对 authoritative WebshopWorker.reset 路径的 128/128 runtime semantic validation。', '128/128 runtime semantic validation of the corrected manifest against the authoritative WebshopWorker.reset path.')}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ul class="evidence-links">
+            <li><a href={`${sourceFaithfulRoot}/configs/experiment/activations/webshop-seed-source-faithful-reproduction-v1-execution-release-v1.json`}>{t('纠错后的 activation / release 状态', 'Corrected activation / release state')} ↗</a></li>
+            <li><a href={frozenPanelHref}>{t('纠错后的 128-task manifest', 'Corrected 128-task manifest')} ↗</a></li>
+            <li><a href={`${sourceFaithfulRoot}/scripts/openevo_webshop/build_seed_source_faithful_panel.py`}>{t('源码忠实 panel builder', 'Source-faithful panel builder')} ↗</a></li>
+            <li><a href={`${sourceFaithfulRoot}/scripts/openevo_webshop/validate_seed_source_faithful_runtime.py`}>{t('运行时语义验证器', 'Runtime semantic validator')} ↗</a></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+</section>
+
+<style>
+  .current-q7{max-width:1160px;margin:-18px auto 0;padding:0 24px 36px;color:var(--color-text)}
+  .current-question-card{display:grid;grid-template-columns:70px minmax(0,1fr);gap:24px;max-width:960px;padding:24px 0 4px;border-top:1px solid var(--color-border)}
+  .question-number{padding-top:4px;color:var(--color-text-muted);font:700 .78rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .question-copy{min-width:0}
+  .question-meta{margin-bottom:9px}
+  .status-badge{display:inline-flex;align-items:center;gap:7px;color:var(--color-text-muted);font-size:.75rem;font-weight:760}
+  .status-badge i{width:7px;height:7px;border-radius:999px;background:var(--color-info)}
+  h3{margin:0 0 12px;font-size:clamp(1.15rem,2.2vw,1.55rem);letter-spacing:-.025em}
+  p{max-width:80ch;line-height:1.72}
+  .conclusion{margin:0;color:var(--color-text);font-size:.94rem}
+  .manifest-callout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;max-width:900px;margin-top:16px;padding:15px 16px;border:1px solid var(--color-border);border-left:3px solid var(--color-accent);border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+  .manifest-copy{display:grid;gap:4px;min-width:0}
+  .manifest-copy strong{font-size:.84rem}
+  .manifest-copy span{max-width:72ch;color:var(--color-text-muted);font-size:.76rem;line-height:1.55}
+  .manifest-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--color-border);border-radius:9px;color:var(--color-accent);font-size:.78rem;font-weight:760;text-decoration:none;white-space:nowrap;background:var(--color-bg)}
+  .manifest-link:hover,.manifest-link:focus-visible{text-decoration:underline}
+  .professional-explanation{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem}
+  .conclusion strong,.professional-explanation strong{color:var(--color-text)}
+  .evidence-details{max-width:900px;margin-top:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}
+  summary{cursor:pointer;padding:13px 15px;font-size:.82rem;font-weight:760}
+  .evidence-detail-body{padding:0 15px 15px;border-top:1px solid var(--color-border)}
+  table{width:100%;border-collapse:collapse;font-size:.78rem}
+  th,td{padding:10px 8px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;line-height:1.55}
+  th{width:150px;color:var(--color-text-muted);font-weight:720}
+  code{white-space:normal;overflow-wrap:anywhere}
+  .evidence-links{display:grid;gap:7px;margin:14px 0 0;padding-left:18px;font-size:.78rem}
+  .evidence-links a{color:var(--color-accent);text-decoration:none}
+  .evidence-links a:hover{text-decoration:underline}
+  @media(max-width:720px){
+    .current-q7{padding-inline:18px;margin-top:-10px}
+    .current-question-card{grid-template-columns:1fr;gap:8px}
+    .manifest-callout{grid-template-columns:1fr}
+    .manifest-link{justify-self:start;white-space:normal}
+    th,td{display:block;width:auto;padding-inline:0}
+    th{padding-bottom:2px;border-bottom:0}
+    td{padding-top:2px}
+  }
+</style>

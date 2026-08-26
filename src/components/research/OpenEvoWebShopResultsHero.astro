@@ -56,12 +56,12 @@ const navItems = [
       <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '我们已经按 SEED 公开代码把“首次验证”对应的 128 个任务槽位重建出来，而且两次干净重建得到完全一致的任务清单。现在还不能直接跑正式比较：下一关是先证明服务器实际运行时看到的就是这 128 个任务，再单独授权正式 GPU 评测。',
-          'We have now rebuilt the 128 task slots corresponding to the released SEED code’s first validation, and two clean rebuilds produced the same manifest. Formal comparison still cannot start directly: the next gate is to prove that the server runtime sees those same 128 tasks, followed by a separate release for formal GPU evaluation.',
+          '我们已经按 SEED 公开代码重新做出一版 128 题，但随后发现其中一个随机顺序细节还没有完全照着官方运行路径来，于是旧版本被作废并重新生成。现在先验证新版 128 题是否和官方运行路径逐题一致；通过以后，才会放行 BASE 与 OpenEvo 的下一次正式比较。',
+          'We already rebuilt a 128-task panel from the released SEED code, then found one random-ordering detail that still did not match the authoritative runtime path. That manifest was superseded and rebuilt. The current step is to verify the corrected 128 tasks against the real runtime path; only after that passes will the next formal BASE-vs-OpenEvo comparison be released.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '128 个源码忠实任务槽位（source-faithful task slots）已经物化并通过双重重建校验；当前状态仍是 PREPARED，formal task consumption 尚未授权。下一步是 128/128 runtime semantic validation，再通过独立 activation/release。BASE 与 OpenEvo SD-LoRA 保持冻结，多代连续改进也仍未建立。',
-          'The 128 source-faithful task slots are materialized and have passed two matching clean rebuilds. The state remains PREPARED and formal task consumption is not authorized. Next comes 128/128 runtime semantic validation, followed by a separate activation/release. BASE and OpenEvo SD-LoRA remain frozen, and stable multi-generation improvement is still not established.',
+          '源码忠实任务槽位（source-faithful task slots）已经重新物化；旧 manifest 因遗漏 SEED SimServer 在 goal 构造后、shuffle 前再次使用 worker seed 的语义而被 supersede。当前 corrected manifest 处于 PREPARED，formal task consumption 仍为 fail-closed，下一道门是 authoritative WebshopWorker runtime semantic validation 128/128。多代连续改进仍未建立。',
+          'The source-faithful task slots have been rematerialized. The previous manifest was superseded because it omitted SEED SimServer reseeding with the worker seed after goal construction and before shuffle. The corrected manifest is currently PREPARED with formal task consumption still fail-closed; the next gate is authoritative WebshopWorker runtime semantic validation at 128/128. Stable multi-generation improvement is still not established.',
         )}</p>
       </div>
     </div>
@@ -70,8 +70,8 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和之后物化的 source-faithful 128-slot 面板属于另外两层证据，不会被倒过来混进 H1.41 的机制结论。',
-      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the later materialized source-faithful 128-slot panel are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
+      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和 2026-08-26 的源码忠实任务重建 / 纠错属于另外的证据层，不会被倒过来混进 H1.41 的机制结论。',
+      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the 2026-08-26 source-faithful panel rebuild/correction are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
     )}</span>
   </div>
 
@@ -86,10 +86,25 @@ const navItems = [
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
   .lede{max-width:800px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.02rem;line-height:1.75}
   .abstract-box{max-width:960px;margin-top:30px;border-block:2px solid var(--color-text)}
-  .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}.abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
-  .abstract-label{font-size:.74rem;font-weight:800;letter-spacing:.04em;line-height:1.7}.abstract-label.established{color:var(--color-accent)}.abstract-label.latest{color:var(--color-info)}.abstract-label.bottleneck{color:var(--color-text-muted)}
-  .abstract-copy{display:grid;gap:8px}.abstract-copy p{margin:0;max-width:76ch;line-height:1.72}.abstract-copy .plain{font-size:.94rem;color:var(--color-text)}.abstract-copy .technical{padding-top:7px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.8rem}.abstract-copy .technical strong{color:var(--color-text);font-weight:760}
-  .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.8rem}.cutoff-note strong{color:var(--color-accent)}.cutoff-note span{max-width:80ch;color:var(--color-text-muted);line-height:1.6}
-  .paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;max-width:960px;margin-top:22px;padding:1rem 0;border-block:1px solid var(--color-border)}.paper-nav a{color:var(--color-text-muted);font-size:.78rem;font-weight:720;text-decoration:none;text-underline-offset:.2em}.paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
-  @media(max-width:720px){.results-hero{padding:24px 18px 8px}.abstract-row{grid-template-columns:1fr;gap:6px}}
+  .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}
+  .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
+  .abstract-label{font-size:.74rem;font-weight:800;letter-spacing:.04em;line-height:1.7}
+  .abstract-label.established{color:var(--color-accent)}
+  .abstract-label.latest{color:var(--color-info)}
+  .abstract-label.bottleneck{color:var(--color-text-muted)}
+  .abstract-copy{display:grid;gap:8px}
+  .abstract-copy p{margin:0;max-width:76ch;line-height:1.72}
+  .abstract-copy .plain{font-size:.94rem;color:var(--color-text)}
+  .abstract-copy .technical{padding-top:7px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.8rem}
+  .abstract-copy .technical strong{color:var(--color-text);font-weight:760}
+  .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.8rem}
+  .cutoff-note strong{color:var(--color-accent)}
+  .cutoff-note span{max-width:80ch;color:var(--color-text-muted);line-height:1.6}
+  .paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;max-width:960px;margin-top:22px;padding:1rem 0;border-block:1px solid var(--color-border)}
+  .paper-nav a{color:var(--color-text-muted);font-size:.78rem;font-weight:720;text-decoration:none;text-underline-offset:.2em}
+  .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
+  @media(max-width:720px){
+    .results-hero{padding:24px 18px 8px}
+    .abstract-row{grid-template-columns:1fr;gap:6px}
+  }
 </style>
