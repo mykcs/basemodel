@@ -1,80 +1,98 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-26**
+Last updated: **2026-08-27**
 
-Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results work is being integrated from the claim-level provenance pass and the corrected Track A state. Upstream Track A is PREPARED corrected task-construction evidence: the earlier manifest was superseded after the pinned SEED SimServer reseed semantic was found, formal task consumption is not authorized, and no new Track A scientific outcome exists.**
+Status: **The SEED × OpenEvo Results release is being refreshed to the completed source-faithful Track A measurement before exact-head Vercel acceptance. Track A is closed as `measurement-not-proven-stable-improvement`, with 128/128 runtime semantic validation PASS and the raw 256-episode evidence package `PUBLISHED_AND_VERIFIED`. The active program router is now WB1 Track B, currently fail-closed at `GEN28_COMPLETE_STATE_BARRIER_MISSING`.**
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
 ## Current architecture
 
 ```text
-GitHub `mykcs/basemodel` = website source of truth
-non-main branch / PR      -> Vercel Preview
-main                      -> Vercel Production
-Production                -> https://basemodel-preview.vercel.app
+GitHub `mykcs/basemodel`          = website source of truth
+deployment-eligible non-main PR  -> Vercel Preview
+main                              -> Vercel Production
+Production                        -> https://basemodel-preview.vercel.app
 
-mykcs/openevo-experiment  = scientific experiment/result authority
+mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-GitHub Actions and GitHub Pages remain retired for ordinary BaseModel deployment. Cloudflare material is legacy rollback/provider-specific tooling only. Read `current/hosting-architecture.md` and `current/deployment-policy.md` before release work.
+Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
 
 ## Current research state
 
-### Historical SEED-compatible 128-task comparison
+### Historical repaired PRIMARY-v2
 
-The 2026-08-25 campaign remains a three-layer historical measurement:
+The 2026-08-25 repaired measurement on the historical frozen SEED-compatible panel remains unchanged:
 
-- SEED-strict PRIMARY-v1: both arms appeared 0.0 / 0.0%, but the run is **measurement-invalid** because model action wrappers and the released SEED projection were incompatible;
-- OpenEvo-native diagnostic: useful local diagnostic on the same historical panel, not the SEED benchmark headline;
-- repaired PRIMARY-v2: BASE 4.1 task score / 0.0% exact success; frozen SD-LoRA 7.3 / 2.3%; paired mean delta +3.15 score×100 with bootstrap 95% CI `[-0.65, +7.19]`, so the direction is positive but not a stable win.
+- BASE: Task Score×100 `4.1`, exact success `0.0%`;
+- frozen OpenEvo SD-LoRA: `7.3`, exact success `2.3%`;
+- paired delta `+3.15`;
+- bootstrap 95% CI `[-0.65,+7.19]`.
 
-The historical panel is **SEED-compatible**, not the paper-final exact 128 and not the source-faithful first-validation semantic panel.
+The CI crosses zero, so this is a positive direction, not a stable win. The panel is SEED-compatible, not the paper-final exact 128 and not the later source-faithful first-validation panel.
 
-### Action-wrapper attribution boundary
+PRIMARY-v1’s 0/0 result remains **measurement-invalid**, caused by the action-wrapper / released-SEED parser incompatibility. Do not reinterpret it as zero capability.
 
-The current repository-supported explanation is:
+### Source-faithful Track A — closed
 
-- released SEED prompt/parser require `<action>...</action>`;
-- the saved BASE prompt also requests `<action>` rather than `[action]`;
-- saved no-adapter Qwen2.5-7B BASE episodes can still emit `[action]...` under that angle-bracket prompt;
-- the inference backend directly decodes generated tokens and does not rewrite angle brackets into square brackets;
-- H1.36 qualified self-evolution data excluded parser-invalid/fallback traces, so current evidence does not support the claim that SD-LoRA created the habit;
-- the experiment-integration failure was that a known model-output drift was not preflighted against the formal SEED parser before PRIMARY-v1.
+The current immutable publication snapshot is `mykcs/openevo-experiment@f80ae1816384bb7e8e82d193b22644e17f561f19`, refreshed against later `main@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d`.
 
-Do not collapse token provenance, training causation, parser behavior, and experiment responsibility into one “OpenEvo wrote `[action]`” statement.
+The first source-faithful reconstruction was superseded after the pinned SEED `SimServer.__init__` second `random.seed(worker_seed)` before goal shuffle was found to be missing from the first builder. The corrected panel was rematerialized and then passed the authoritative runtime semantic gate:
 
-### Source-faithful Track A successor
+- total slots `128`;
+- matches `128`;
+- mismatches `0`;
+- match rate `1.0`.
 
-Latest authoritative upstream evidence used by Results is `mykcs/openevo-experiment@af89bb5c39aeab8aaa04eed57585c91e5598a968`.
+The completed paired measurement on the corrected source-derived first-validation semantic panel is:
 
-That commit corrected the task builder to match the pinned SEED runtime semantics: `SimServer.__init__` re-seeds Python `random` with `worker_seed` after synthetic-goal construction and before `random.shuffle(self.goals)`. The earlier builder omitted that second reseed, so its shuffled goal order and instruction identities were not source-faithful. The earlier manifest is superseded.
+| Metric | BASE | frozen OpenEvo SD-LoRA | Paired contrast |
+|---|---:|---:|---:|
+| Mean Task Score ×100 | 7.17 | 8.74 | +1.57, 95% CI [-3.21,+6.31] |
+| Exact success | 5/128 = 3.9% | 5/128 = 3.9% | 0.0 pp |
 
-Current Track A state:
+Both arms are `128/128` valid, reconciliation is `ok=true`, and parser-invalid count is `0`. The Task Score interval crosses zero, so the supported interpretation is **`measurement-not-proven-stable-improvement`**.
 
-- corrected 128-slot source-faithful semantic manifest is rematerialized and immutable at the `af89...` snapshot;
-- corrected deterministic rebuild receipts agree on canonical content;
-- activation is `PREPARED`;
+The evidence package is `PUBLISHED_AND_VERIFIED`: 256 raw episodes plus reconciliation, analysis, conclusion, release/readiness, GPU, W&B, executed semantic-panel, deterministic-rebuild, and per-cell receipts were transferred byte-for-byte and verified by per-file SHA-256 (`274` files, mismatch `0`, missing `0`).
+
+Preserve the governance exception: the scientific contract was frozen and readiness passed before formal task consumption, but GitHub branch authority and the `main` router did not precede the first formal episode. This is an authorization-ordering deviation, not evidence that the scientific contract changed, and must not be rewritten as prior `main` launch authorization.
+
+This Track A panel still must **not** be called the exact paper-final 128 behind SEED 89.7 / 78.1%, and the SEED paper checkpoint / reported numbers were not locally reproduced.
+
+### Track B / WB1 — current program line
+
+Latest checked program authority is `mykcs/openevo-experiment@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d`.
+
+Current WB1 state:
+
+- campaign: `20260821-2341-wb1-seed-aligned-webshop-benchmark`;
+- classification: `GEN28_COMPLETE_STATE_BARRIER_MISSING`;
+- Gen28 episodes: `128/128` valid, `2` exact successes, mean Task Score×100 `2.8646`;
+- `state-v28` is absent;
+- latest adoptable native state remains `state-v27`;
 - `formal_task_consumption_allowed=false`;
-- BASE / frozen SD-LoRA identities and the parser-compatible measurement contract remain frozen;
-- the next fail-closed gate is **authoritative WebshopWorker runtime semantic validation 128/128** on the corrected manifest;
-- only after that gate passes may a separate activation/release authorize formal GPU task consumption.
+- `gpu_allocation_allowed=false`;
+- final test remains locked and final unlock is not allowed.
 
-This is task-identity / measurement preparation evidence, **not a new BASE-vs-SD scientific result**. The corrected first-validation panel is also not the unrecoverable paper-final exact 128 behind 89.7 / 78.1%.
+Current next gate is a scientific/governance decision on whether the missing state-v28 update should ever be separately authorized, under what frozen inputs, and with what budget accounting. Under current authority, do not backfill state-v28, start Gen29, allocate GPU, or unlock final.
 
-An older preparation branch briefly carried `executing-formal-run`; that state was superseded by the later manifest-semantic correction. Before changing Results copy again, refresh actual upstream main/activation/reconciliation rather than inheriting an old branch label.
-
-### Track B / WB1
-
-WB1 remains a separate fair matched benchmark line. Track A asks whether pinned SEED public-code task semantics can be reproduced faithfully; Track B asks for a matched method comparison under one frozen world and matched budgets. Their evidence is not interchangeable.
+Track A and Track B answer different questions. Track A validates one released-code-recoverable first-validation task semantic panel and measures frozen BASE vs frozen SD-LoRA on it. Track B is the matched method comparison that reruns SEED and OpenEvo under one frozen world and matched budgets.
 
 ## Current BaseModel Results state
 
-The Results route keeps the seven-question reader path and a collapsed technical action-wrapper trace after it. Claim-local provenance should point highly specific observations to their closest available primary evidence while preserving the broader evidence package for each question.
+The Results route keeps the seven-question reader path, claim-local provenance, and the collapsed technical action-wrapper trace. The current publication refresh must visibly reflect:
 
-The current integration also exposes a teacher-facing immutable link to the corrected 128-task manifest. Visible copy must say that this is the **current frozen corrected first-validation panel**, pending 128/128 runtime semantic validation; it must not call it the paper-final exact 128.
+- Track A semantic validation `128/128 PASS`;
+- Track A paired result `7.17` vs `8.74`, both `3.9%` exact success;
+- paired Task Score delta `+1.57`, 95% CI `[-3.21,+6.31]`;
+- no stable win claim;
+- evidence package `PUBLISHED_AND_VERIFIED`;
+- paper-final exact-128 / paper-checkpoint boundary;
+- governance ordering exception in technical provenance;
+- current WB1 `GEN28_COMPLETE_STATE_BARRIER_MISSING` no-execution state.
 
-For any non-trivial Results edit, read:
+For non-trivial Results edits, read:
 
 1. `current/scientific-state-provenance.md`
 2. `current/experiment-result-publication-workflow.md`
@@ -83,11 +101,9 @@ For any non-trivial Results edit, read:
 5. `current/research-explainer-page-standard.md`
 6. `current/audience-centered-technical-copy.md`
 
-Then resolve fresh upstream experiment truth before writing copy.
+Then refresh `mykcs/openevo-experiment` before using words such as current, running, completed, released, next, or authorized.
 
-## Current deployment / acceptance rules
-
-Historical browser passes and old deployment URLs prove only the tree they tested.
+## Current release / acceptance rules
 
 Keep these boundaries separate:
 
@@ -100,57 +116,41 @@ source synchronization
 != Production acceptance
 ```
 
-A Vercel deployment-specific hostname is immutable. When `main` moves during a long task, verify ancestry and provider commit metadata rather than assuming an old READY URL represents the newest main.
-
-For ordinary deployable changes:
+For ordinary deployable changes, the Vercel build command must actually execute:
 
 ```bash
 npm run verify:deploy
 npm run build
+node scripts/vercel-ui-gate.mjs
+node scripts/vercel-lab-browser-gate.mjs
 ```
 
-Required gates must actually execute. `SKIPPED` is not `PASS`.
+`SKIPPED`, ignored, canceled, stale-head, or rate-limited execution is not `PASS`.
 
-For theme/CSS/layout/responsive/navigation/typography/animation/i18n-length/shared visual changes, follow the UI acceptance policy and run the strongest matched browser matrix.
+For the Results release, require exact-head Preview metadata and zh/en browser acceptance on the changed routes before merging. After merge, require a READY Production successor on `main` and verify the public zh/en routes.
 
-Do not weaken a valid Gate merely because an unrelated route blocks release. Classify the failure and fix the real owner.
+## Repository-write hygiene
 
-### Vercel build budget
+Shared GitHub/provider state is not scratch space.
 
-Keep provider-triggering repository writes coherent. When many files belong to one change, prefer a single Git data API commit (`blob/tree/commit/ref`) or another atomic multi-file write rather than a sequence of probe pushes. The objective is to reduce redundant Preview builds without hiding real source changes or required gates.
-
-### Vercel-first reporting
-
-Ordinary deployment completion reports should describe the Vercel Preview/Production lineage that actually serves this repository. Do not add Cloudflare or another legacy provider to an ordinary report unless the task is explicitly about rollback or provider migration.
+- use reads/searches for discovery;
+- never create probe files/comments/commits to test capability;
+- batch intended changes before the first provider-triggering branch update;
+- prefer one atomic blob/tree/commit/ref update for coherent multi-file changes;
+- never create empty/no-op commits solely to wake Vercel;
+- if provider state blocks release, report the blocker instead of manufacturing source changes.
 
 ## Agent reading model
-
-Do not use one giant linear reading list.
 
 ```text
 /AGENTS.md
 -> this handoff
 -> current/project-agent-operating-principles.md
+-> current/branch-and-pr-conventions.md
 -> current/website-engineering-standard.md
 -> current/scenario-trigger-registry.md
 -> one matched task bundle from docs/agents/README.md
 -> executable source/config/tests/live provider or experiment truth
 ```
 
-The task-based bundle map is in [`README.md`](README.md).
-
-## Repository-write hygiene
-
-Shared repository/provider state is not an Agent scratchpad.
-
-- use fetch/search/read operations for discovery;
-- never create probe files/comments/mutations to test capability;
-- batch intended changes before the first provider-triggering branch update;
-- prefer one atomic multi-file commit when practical;
-- if an accidental write occurs, clean it immediately when possible and disclose any residue.
-
-## Durable case from this work
-
-See [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) for rationale covering model-output attribution, parser compatibility, range-compatible vs source-faithful task identity, website/experiment state drift, claim-level provenance, Vercel exact-head friction, and repository-write hygiene.
-
-History is evidence, not current policy. Re-run fresh diagnostics when the same symptom appears again.
+History is evidence, not current authority. The reusable Results/Vercel/source-faithful cases remain under `docs/agents/history/`; always rerun fresh diagnostics before acting on a similar symptom.

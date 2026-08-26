@@ -10,9 +10,10 @@ For any non-trivial task, start with:
 
 1. [`LATEST.md`](LATEST.md) — short current handoff and live/release-state snapshot.
 2. [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) — autonomy, clean workflow, write hygiene, and durable-knowledge rules.
-3. [`current/website-engineering-standard.md`](current/website-engineering-standard.md) — cross-cutting implementation baseline and stopping rules.
-4. [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) — scan the task and load the matched bundle below.
-5. executable source/config/tests/manifests for the surface you will actually change.
+3. [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) — semantic branch/PR naming plus the BaseModel-specific Vercel branch-eligibility exception.
+4. [`current/website-engineering-standard.md`](current/website-engineering-standard.md) — cross-cutting implementation baseline and stopping rules.
+5. [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) — scan the task and load the matched bundle below.
+6. executable source/config/tests/manifests for the surface you will actually change.
 
 `/AGENTS.md` remains the root fast router and non-negotiable invariant layer. This file is the detailed task map.
 
@@ -132,9 +133,11 @@ Historical dialogue may be useful evidence through the private `mykcs/Codex-Dial
 
 ```text
 GitHub source
-├─ non-main -> Vercel Preview
-└─ main     -> Vercel Production -> https://basemodel-preview.vercel.app
+├─ deployment-eligible non-main -> Vercel Preview
+└─ main                         -> Vercel Production -> https://basemodel-preview.vercel.app
 ```
+
+Current branch eligibility is executable policy in `vercel.json`, not a blanket rule for every non-main branch. Read [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) before choosing a branch that must receive an exact-head Preview.
 
 Vercel is the only ordinary deployment authority. Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral, never canonical, and must not be persisted in repository text or GitHub PR/Issue bodies/comments.
 

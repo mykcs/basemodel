@@ -10,8 +10,8 @@ const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
 const currentState = read('../../docs/agents/current/seed-openevo-results-current-state-2026-08-26.md');
 
-describe('SEED × OpenEvo corrected source-faithful current state', () => {
-  it('replaces the visible stale Q7 on both locale routes', () => {
+describe('SEED × OpenEvo current Track A closeout and Track B continuation state', () => {
+  it('keeps the current Q7 override on both locale routes', () => {
     for (const page of [resultsPageZh, resultsPageEn]) {
       expect(page).toContain('OpenEvoWebShopCurrentQ7');
       expect(page).toContain("#q7 { display:none; }");
@@ -19,36 +19,43 @@ describe('SEED × OpenEvo corrected source-faithful current state', () => {
     }
   });
 
-  it('states the corrected fail-closed gate without publishing a new BASE-vs-SD result', () => {
-    expect(currentQ7).toContain('已重建并纠错 · 等待 128/128 运行时验证');
-    expect(currentQ7).toContain('第二次 worker-seed reseed');
-    expect(currentQ7).toContain('PREPARED · formal_task_consumption_allowed=false');
-    expect(currentQ7).toContain('authoritative WebshopWorker runtime semantic validation 128/128');
-    expect(currentQ7).toContain('这里仍然没有新的 BASE-vs-SD 科学结果');
-    expect(currentQ7).toContain('af89bb5c39aeab8aaa04eed57585c91e5598a968');
+  it('publishes the completed source-faithful paired measurement without claiming a stable win', () => {
+    expect(currentQ7).toContain('已完成 · 未证明稳定提升');
+    expect(currentQ7).toContain('128 / 128 PASS');
+    expect(currentQ7).toContain('BASE 7.17 / 3.9%');
+    expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
+    expect(currentQ7).toContain('Δ +1.57');
+    expect(currentQ7).toContain('95% CI [-3.21,+6.31]');
+    expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
+    expect(currentQ7).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
   });
 
-  it('surfaces an immutable teacher-facing link to the corrected 128-task manifest', () => {
-    expect(currentQ7).toContain('当前冻结的 128 题');
+  it('keeps the validated task panel visible without relabeling it as the paper-final 128', () => {
+    expect(currentQ7).toContain('已验证的源码忠实 128 题');
     expect(currentQ7).toContain('在 GitHub 查看固定的 128 题');
     expect(currentQ7).toContain('configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json');
-    expect(currentQ7).toContain('128/128 runtime semantic validation 仍未完成');
-    expect(currentQ7).toContain('不把它称为论文最终 128 题');
+    expect(currentQ7).toContain('运行时语义验证已经 128/128 PASS');
+    expect(currentQ7).toContain('论文 89.7 / 78.1% 背后的最终 128 题');
   });
 
-  it('advances the first-screen and next-step copy from rebuilding to validating', () => {
-    expect(hero).toContain('旧版本被作废并重新生成');
-    expect(hero).toContain('当前 corrected manifest 处于 PREPARED');
-    expect(hero).toContain('authoritative WebshopWorker runtime semantic validation 128/128');
-    expect(nextSteps).toContain('先验证纠错后的 128 题真的和 SEED 官方运行路径一致');
-    expect(nextSteps).toContain('第一版 manifest 因 SimServer reseed 语义遗漏而被 superseded');
-    expect(nextSteps).toContain('当前不能发布新的 BASE-vs-SD 结果');
+  it('advances the Hero and Next Steps to Track A closeout and Track B barrier state', () => {
+    expect(hero).toContain('source-faithful Track A 先通过 authoritative runtime semantic validation 128/128');
+    expect(hero).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(hero).toContain('final_test_status=locked');
+    expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
+    expect(nextSteps).toContain('真正剩下的主问题是 Track B / WB1，但当前不能直接续跑');
+    expect(nextSteps).toContain('latest adoptable native state 仍是 state-v27');
+    expect(nextSteps).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
   });
 
-  it('records that the newer state addendum overrides the older executing-formal-run snapshot', () => {
-    expect(currentState).toContain('this file is newer and wins');
+  it('records the latest upstream authority and the governance exception', () => {
+    expect(currentState).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
+    expect(currentState).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
+    expect(currentState).toContain('measurement-not-proven-stable-improvement');
+    expect(currentState).toContain('PUBLISHED_AND_VERIFIED');
+    expect(currentState).toContain('GitHub branch authority and the `main` router did **not** precede the first formal episode');
+    expect(currentState).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
     expect(currentState).toContain('formal_task_consumption_allowed=false');
-    expect(currentState).toContain('next fail-closed gate is authoritative `WebshopWorker` runtime semantic validation at `128/128`');
-    expect(currentState).toContain('The new Track A work changes the confidence in **task semantics for the next comparison**');
+    expect(currentState).toContain('final_test_status=locked');
   });
 });

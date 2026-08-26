@@ -6,8 +6,9 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
-const sourceFaithfulRoot = 'https://github.com/mykcs/openevo-experiment/blob/af89bb5c39aeab8aaa04eed57585c91e5598a968';
-const frozenPanelHref = `${sourceFaithfulRoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`;
+const trackARoot = 'https://github.com/mykcs/openevo-experiment/blob/f80ae1816384bb7e8e82d193b22644e17f561f19';
+const frozenPanelHref = `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`;
+const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json`;
 ---
 
 <section class="current-q7" aria-labelledby="current-q7-title" data-testid="current-source-faithful-q7">
@@ -15,20 +16,20 @@ const frozenPanelHref = `${sourceFaithfulRoot}/configs/experiment/manifests/webs
     <div class="question-number">07</div>
     <div class="question-copy">
       <div class="question-meta">
-        <span class="status-badge"><i aria-hidden="true"></i>{t('已重建并纠错 · 等待 128/128 运行时验证', 'Rebuilt and corrected · awaiting 128/128 runtime validation')}</span>
+        <span class="status-badge"><i aria-hidden="true"></i>{t('已完成 · 未证明稳定提升', 'Complete · no stable improvement established')}</span>
       </div>
       <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
       <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
-        '现在不是“还没做出 SEED 的 128 题”，而是已经做出后又发现一个随机顺序细节没有完全照官方代码运行，于是我们把旧版本作废、重新生成了一版。眼下先确认这新版 128 题和真实 SEED 运行路径逐题一致；只有这一步 128/128 通过以后，才允许 BASE 和 OpenEvo 正式再考一次。',
-        'The issue is no longer that the SEED 128-task panel has not been built. We built it, then found one random-ordering detail that did not fully match the released runtime path, so the old manifest was superseded and rebuilt. The immediate task is to verify that the corrected 128 tasks match the authoritative SEED runtime path one by one; only after a 128/128 pass may BASE and OpenEvo take the next formal comparison.',
+        '源码忠实的 Track A 已经不再是“待验证”。纠错后的 128 题先通过了真实 SEED 运行路径的 128/128 语义验证，随后 BASE 和冻结的 OpenEvo SD-LoRA 各完成 128 个有效 episode。BASE 的平均 Task Score×100 是 7.17、exact success 3.9%；SD-LoRA 是 8.74、3.9%。配对差 +1.57 的 95% CI 为 [-3.21, +6.31]，跨过 0，所以这次结果是一次有效测量，但仍不能证明 OpenEvo 稳定胜出。真正还缺的是 Track B 那种把方法本身在同一冻结世界和匹配预算下重新比较的证据。',
+        'Source-faithful Track A is no longer awaiting validation. The corrected 128-task panel first passed 128/128 semantic validation against the real SEED runtime path, then BASE and the frozen OpenEvo SD-LoRA each completed 128 valid episodes. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; SD-LoRA reached 8.74 and 3.9%. The paired +1.57 difference has a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEvo win. The major remaining evidence is Track B: rerunning the methods themselves in one frozen world with matched budgets.',
       )}</p>
 
       <div class="manifest-callout" data-testid="frozen-128-task-manifest">
         <div class="manifest-copy">
-          <strong>{t('当前冻结的 128 题', 'Current frozen 128-task panel')}</strong>
+          <strong>{t('已验证的源码忠实 128 题', 'Validated source-faithful 128-task panel')}</strong>
           <span>{t(
-            '这个 JSON 是本轮 corrected panel 的不可变快照：逐条列出 128 个 slot 的 worker seed、session index、instruction、instruction hash 与数据身份。它是现在最直接的“题卷证据”；但 128/128 runtime semantic validation 仍未完成，因此这里不把它称为论文最终 128 题。',
-            'This JSON is the immutable snapshot of the corrected panel for this round. It enumerates all 128 slots with worker seed, session index, instruction, instruction hash, and data identity. It is the most direct evidence for the current task sheet, but 128/128 runtime semantic validation is still pending, so it is not labeled as the paper-final 128 tasks.',
+            '这个 JSON 是 corrected first-validation panel 的不可变快照。运行时语义验证已经 128/128 PASS，执行分支与当前 corrected manifest 的 selected-panel digest 都是 4e7ace92…。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
+            'This JSON is the immutable snapshot of the corrected first-validation panel. Runtime semantic validation is now 128/128 PASS, and the executed branch and corrected mainline manifest share selected-panel digest 4e7ace92…. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
           )}</span>
         </div>
         <a class="manifest-link" href={frozenPanelHref}>
@@ -37,8 +38,8 @@ const frozenPanelHref = `${sourceFaithfulRoot}/configs/experiment/manifests/webs
       </div>
 
       <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        '旧 builder 在构造 synthetic goals 后直接 shuffle，遗漏了 pinned SEED SimServer 在 shuffle 前再次 random.seed(worker_seed) 的语义，因此旧 panel 的 goal ordering / instruction identity 不具备源码忠实性。2026-08-26 的纠错已重新物化 manifest 并将旧 manifest 标为 superseded；当前 activation 回到 PREPARED，formal_task_consumption_allowed=false。下一道 fail-closed gate 是 corrected manifest 的 authoritative WebshopWorker runtime semantic validation 128/128。这里仍然没有新的 BASE-vs-SD 科学结果。',
-        'The previous builder shuffled immediately after constructing synthetic goals and omitted the pinned SEED SimServer reseed with random.seed(worker_seed) before shuffle. Its goal ordering and instruction identities were therefore not source-faithful. The 2026-08-26 correction rematerialized the manifest and marked the old one superseded; activation returned to PREPARED with formal_task_consumption_allowed=false. The next fail-closed gate is authoritative WebshopWorker runtime semantic validation at 128/128 for the corrected manifest. There is still no new BASE-vs-SD scientific result.',
+        'authoritative runtime semantic validation 报告 total_slots=128、matches=128、mismatches=0。随后 source-faithful paired measurement 的 reconciliation 为 ok=true，BASE/SD-LoRA 都是 128/128 valid，parser-invalid=0；Task Score 配对 bootstrap 10,000 次得到 +1.57，95% CI [-3.21,+6.31]。256 个 raw episode、reconciliation、analysis、release receipt 与 GPU/W&B receipts 已 byte-for-byte 入库并通过 per-file SHA-256 验证，artifact_publication_status=PUBLISHED_AND_VERIFIED。仍需保留一个治理例外：科学 contract 与 readiness 在正式消费前已冻结/通过，但 GitHub branch authority 与 main router 的顺序没有先于第一条 formal episode，因此不能倒写成“当时 main 已授权启动”。',
+        'Authoritative runtime semantic validation reports total_slots=128, matches=128, mismatches=0. The later source-faithful paired measurement reconciled with ok=true, 128/128 valid episodes in both BASE and SD-LoRA, and parser-invalid=0; 10,000 paired bootstrap rounds yielded +1.57 Task Score×100 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts were transferred byte-for-byte and verified by per-file SHA-256, so artifact_publication_status is PUBLISHED_AND_VERIFIED. One governance exception remains: the scientific contract was frozen and readiness passed before formal consumption, but GitHub branch authority and the main router did not precede the first formal episode, so the run must not be rewritten as having been launch-authorized by main at that time.',
       )}</p>
 
       <details class="evidence-details">
@@ -47,28 +48,33 @@ const frozenPanelHref = `${sourceFaithfulRoot}/configs/experiment/manifests/webs
           <table>
             <tbody>
               <tr>
-                <th scope="row">{t('已经完成', 'Completed')}</th>
-                <td>{t('源码忠实 128-task manifest 已重新生成；两次 deterministic rebuild 的 canonical 内容一致。', 'The source-faithful 128-task manifest was rematerialized; two deterministic rebuilds agree on canonical content.')}</td>
+                <th scope="row">{t('语义门', 'Semantic gate')}</th>
+                <td><code>128 / 128 PASS · mismatches=0</code></td>
               </tr>
               <tr>
-                <th scope="row">{t('为什么重做', 'Why rebuilt')}</th>
-                <td>{t('发现旧 builder 漏掉 SimServer 在 goal 构造后、shuffle 前的第二次 worker-seed reseed；旧 manifest 已 superseded。', 'The previous builder omitted SimServer’s second worker-seed reseed after goal construction and before shuffle; the old manifest is superseded.')}</td>
+                <th scope="row">{t('正式测量', 'Formal measurement')}</th>
+                <td><code>BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%</code></td>
               </tr>
               <tr>
-                <th scope="row">{t('当前状态', 'Current state')}</th>
-                <td><code>PREPARED · formal_task_consumption_allowed=false</code></td>
+                <th scope="row">{t('配对结论', 'Paired result')}</th>
+                <td><code>Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0</code></td>
               </tr>
               <tr>
-                <th scope="row">{t('下一道门', 'Next gate')}</th>
-                <td>{t('corrected manifest 对 authoritative WebshopWorker.reset 路径的 128/128 runtime semantic validation。', '128/128 runtime semantic validation of the corrected manifest against the authoritative WebshopWorker.reset path.')}</td>
+                <th scope="row">{t('证据发布', 'Evidence publication')}</th>
+                <td><code>PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('结论边界', 'Claim boundary')}</th>
+                <td>{t('没有证明稳定提升；不是论文最终 exact 128；没有复现 SEED 论文 checkpoint / 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</td>
               </tr>
             </tbody>
           </table>
           <ul class="evidence-links">
-            <li><a href={`${sourceFaithfulRoot}/configs/experiment/activations/webshop-seed-source-faithful-reproduction-v1-execution-release-v1.json`}>{t('纠错后的 activation / release 状态', 'Corrected activation / release state')} ↗</a></li>
+            <li><a href={closeoutHref}>{t('Track A 机器可读 closeout', 'Track A machine-readable closeout')} ↗</a></li>
+            <li><a href={`${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`}>{t('128/128 runtime semantic validation receipt', '128/128 runtime semantic validation receipt')} ↗</a></li>
             <li><a href={frozenPanelHref}>{t('纠错后的 128-task manifest', 'Corrected 128-task manifest')} ↗</a></li>
-            <li><a href={`${sourceFaithfulRoot}/scripts/openevo_webshop/build_seed_source_faithful_panel.py`}>{t('源码忠实 panel builder', 'Source-faithful panel builder')} ↗</a></li>
-            <li><a href={`${sourceFaithfulRoot}/scripts/openevo_webshop/validate_seed_source_faithful_runtime.py`}>{t('运行时语义验证器', 'Runtime semantic validator')} ↗</a></li>
+            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json`}>{t('byte-for-byte evidence manifest', 'Byte-for-byte evidence manifest')} ↗</a></li>
+            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json`}>{t('执行授权顺序治理例外', 'Execution-authority ordering exception')} ↗</a></li>
           </ul>
         </div>
       </details>
