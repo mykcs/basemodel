@@ -148,7 +148,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('G2 已经在正式 T2 上证明迁移失败');
     expect(questions).toContain('T2 没有运行');
     expect(questions).toContain('H1.42 发生在 H1.41 之后');
-    expect(questions).toContain('它不反过来改变 H1.41 时点的机制结论');
+    expect(questions).toContain('不能反过来改写 H1.41 的机制结论');
   });
 
   it('updates Q7 through repaired primary v2 and the source-semantics audit', () => {
