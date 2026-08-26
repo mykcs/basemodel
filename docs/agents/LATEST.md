@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-26**
 
-Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results surface has a current action-wrapper attribution/evidence layer on `main`; upstream Track A has advanced to an authorized source-faithful formal run, but no new Track A result should be published until reconciliation/analysis/closeout exists.**
+Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results surface is receiving a claim-level provenance pass on PR #265; upstream Track A is PREPARED task-construction evidence with a materialized source-faithful 128-slot manifest, but formal task consumption is not authorized and no new Track A scientific outcome exists.**
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
@@ -36,7 +36,8 @@ The historical panel is **SEED-compatible**, not the paper-final exact 128 and n
 The current repository-supported explanation is:
 
 - released SEED prompt/parser require `<action>...</action>`;
-- saved no-adapter Qwen2.5-7B BASE episodes can still emit `[action]...` under the same angle-bracket prompt;
+- the saved BASE prompt also requests `<action>` rather than `[action]`;
+- saved no-adapter Qwen2.5-7B BASE episodes can still emit `[action]...` under that angle-bracket prompt;
 - the inference backend directly decodes generated tokens and does not rewrite angle brackets into square brackets;
 - H1.36 qualified self-evolution data excluded parser-invalid/fallback traces, so current evidence does not support the claim that SD-LoRA created the habit;
 - the experiment-integration failure was that a known model-output drift was not preflighted against the formal SEED parser before PRIMARY-v1.
@@ -45,23 +46,20 @@ Do not collapse token provenance, training causation, parser behavior, and exper
 
 ### Source-faithful Track A successor
 
-At this handoff snapshot, the active experiment authority in `mykcs/openevo-experiment` is campaign:
+After refreshing `mykcs/openevo-experiment/main` at `1971fad6602d23d499a5de8bd4bf718947207d86`, the current authority is campaign:
 
-`20260826-0630-seed-webshop-public-code-reproduction`
+`20260826-0638-webshop-seed-source-faithful-reproduction`
 
-on branch:
+Its current state is **PREPARED task-construction evidence, not an executed scientific result**:
 
-`seed-webshop-pubcode-repro-v1-prep`
+- the 128-slot source-faithful semantic manifest is materialized;
+- two clean rebuild receipts are `PASS` and agree on `manifest_content_sha256`, `manifest_file_sha256`, and `selected_panel_digest`;
+- the frozen preregistration still states `formal_task_consumption_allowed=false`;
+- BASE / frozen SD-LoRA identities, parser-compatible measurement contract, validation/worker seed schedule, task manifest, and data identity remain frozen.
 
-The upstream `current-campaign.json` records:
+The next gate is **server runtime semantic validation 128/128**. A separate activation/release PR is required before formal GPU task consumption. Do not publish BASE-vs-SD outcome claims from this PREPARED state.
 
-- `status = executing-formal-run`;
-- execution-readiness release passed **20/20** fail-closed checks;
-- the source-faithful semantic panel was deterministically rebuilt;
-- the same parser-compatible measurement contract is frozen for BASE and SD-LoRA;
-- a 256-episode paired formal run was launched.
-
-This is **execution state, not a result**. Before changing Results copy, refresh the actual upstream branch/SHA and latest reconciliation/result. Do not publish an inferred outcome from launch state.
+An older preparation branch, `seed-webshop-pubcode-repro-v1-prep`, briefly carried `executing-formal-run`. That branch is not the current `openevo-experiment/main` authority. Before changing Results copy, refresh the actual upstream authority branch/SHA rather than inheriting a stale execution label.
 
 ### Track B / WB1
 
@@ -71,7 +69,7 @@ WB1 remains a separate fair matched benchmark line. Track A asks whether pinned 
 
 The current Results route keeps the seven-question reader path and a collapsed technical action-wrapper trace after it. The trace exists for code-level attribution without turning the main narrative into an experiment ledger.
 
-A follow-up evidence-provenance pass may attach primary evidence directly to specific observations (for example, SEED parser behavior -> pinned official code line range; raw `[action]` -> raw BASE episode; numerical result -> machine analysis). Preserve the page’s progressive disclosure while making specific claims locally auditable.
+PR #265 implements the follow-up evidence-provenance pass: highly specific observations can link directly to their closest available primary evidence while each question still keeps its broader evidence package. The Hero remains a reading layer rather than a citation wall.
 
 For any non-trivial Results edit, read:
 
@@ -107,9 +105,19 @@ npm run verify:deploy
 npm run build
 ```
 
+Required gates must actually execute. `SKIPPED` is not `PASS`.
+
 For theme/CSS/layout/responsive/navigation/typography/animation/i18n-length/shared visual changes, follow the UI acceptance policy and run the strongest matched browser matrix.
 
 Do not weaken a valid Gate merely because an unrelated route blocks release. Classify the failure and fix the real owner.
+
+### Vercel build budget
+
+Keep provider-triggering repository writes coherent. When many files belong to one change, prefer a single Git data API commit (`blob/tree/commit/ref`) or another atomic multi-file write rather than a sequence of probe pushes. The objective is to reduce redundant Preview builds without hiding real source changes or required gates.
+
+### Vercel-first reporting
+
+Ordinary deployment completion reports should describe the Vercel Preview/Production lineage that actually serves this repository. Do not add Cloudflare or another legacy provider to an ordinary report unless the task is explicitly about rollback or provider migration.
 
 ## Agent reading model
 
