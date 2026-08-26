@@ -1,8 +1,14 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../components/research/OpenEvoExperimentGateway.astro';
+import OpenEvoFairComparisonExplainer from '../../../../components/research/OpenEvoFairComparisonExplainer.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × WebShop experiment" description="openevo-experiment is the scientific source of truth; this site preserves dated default-branch snapshots and historical results, while the live phase and GPU allocation are resolved from current-campaign, the latest reconciliation/result, and preregistration on the branch actually in use." locale={locale}>
+<AppLayout
+  title="OpenEvo × WebShop experiment"
+  description="Trace the current OpenEvo × WebShop experiment state and understand the frozen SEED-compatible fair-comparison protocol: matched environment experience, native OpenEvo learning, fixed held-out evaluation, parser qualification, checkpoints, and upstream source pinning."
+  locale={locale}
+>
   <OpenEvoExperimentGateway locale={locale} />
+  <OpenEvoFairComparisonExplainer locale={locale} />
 </AppLayout>
