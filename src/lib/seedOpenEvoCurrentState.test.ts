@@ -28,6 +28,14 @@ describe('SEED × OpenEvo corrected source-faithful current state', () => {
     expect(currentQ7).toContain('af89bb5c39aeab8aaa04eed57585c91e5598a968');
   });
 
+  it('surfaces an immutable teacher-facing link to the corrected 128-task manifest', () => {
+    expect(currentQ7).toContain('当前冻结的 128 题');
+    expect(currentQ7).toContain('在 GitHub 查看固定的 128 题');
+    expect(currentQ7).toContain('configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json');
+    expect(currentQ7).toContain('128/128 runtime semantic validation 仍未完成');
+    expect(currentQ7).toContain('不把它称为论文最终 128 题');
+  });
+
   it('advances the first-screen and next-step copy from rebuilding to validating', () => {
     expect(hero).toContain('旧版本被作废并重新生成');
     expect(hero).toContain('当前 corrected manifest 处于 PREPARED');
