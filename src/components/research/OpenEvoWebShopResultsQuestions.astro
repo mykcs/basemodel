@@ -5,6 +5,20 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+const evidenceKind = (kind: string) => {
+  if (!zh) return kind;
+  const labels: Record<string, string> = {
+    Code: '源代码（Code）',
+    Config: '实验配置（Config）',
+    'Machine result': '机器结果（Machine result）',
+    'Human report': '人工报告（Human report）',
+    Manifest: '任务清单（Manifest）',
+    'Historical record': '历史记录（Historical record）',
+    Audit: '审计说明（Audit）',
+    Design: '实验设计（Design）',
+  };
+  return labels[kind] ?? kind;
+};
 
 const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
 const sealedRoot = 'https://github.com/mykcs/openevo-experiment/blob/0b6e7dcc718a85ed967feb85b5c95fd68f92d38e';
@@ -40,11 +54,11 @@ const questions: Array<{
     observations: [
       {
         label: t('参数更新链', 'Parameter-update chain'),
-        value: t('SD-LoRA optimizer steps、Adapter 保存 / reload、G2 写入到 16 components · effective rank 64，均有机器对账。', 'SD-LoRA optimizer steps, Adapter save/reload, and the G2 write to 16 components with effective rank 64 are all machine-reconciled.'),
+        value: t('SD-LoRA 优化器步骤（optimizer steps）、适配器（adapter）保存 / 重新加载，以及 G2 写入 16 个组件（components）、有效秩（effective rank）64，均有机器对账。', 'SD-LoRA optimizer steps, Adapter save/reload, and the G2 write to 16 components with effective rank 64 are all machine-reconciled.'),
       },
       {
         label: t('闭环任务收益', 'Closed-loop task gain'),
-        value: t('Phase G：12 个 promotion-dev episodes，三个 arm 的 score / win delta 全为 0。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
+        value: t('Phase G：12 个开发集晋级回合（promotion-dev episodes），三个实验组（arms）的分数 / 成功差值（score / win delta）全为 0。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
       },
     ],
     boundary: t(
@@ -68,7 +82,7 @@ const questions: Array<{
       'Yes. Even before an OpenEvo update, the base model naturally completes some WebShop tasks, so there is real model-generated successful experience available for learning.',
     ),
     observations: [
-      { label: 'H0 attempts', value: '128' },
+      { label: t('H0 尝试次数（attempts）', 'H0 attempts'), value: '128' },
       { label: t('科学有效', 'Scientifically valid'), value: '96' },
       { label: t('合格正向经验', 'Qualified positives'), value: '28' },
     ],
@@ -94,11 +108,11 @@ const questions: Array<{
     ),
     observations: [
       {
-        label: 'H1.11 · 96 attempts',
+        label: t('H1.11 · 96 次尝试（attempts）', 'H1.11 · 96 attempts'),
         value: t('成功经验监督比失败经验监督更容易拟合；新任务闭环行为未改善。', 'Positive supervision fit better than failure supervision; fresh-task closed-loop behavior did not improve.'),
       },
       {
-        label: 'H1.13 · 96 attempts',
+        label: t('H1.13 · 96 次尝试（attempts）', 'H1.13 · 96 attempts'),
         value: t('只训练动作目标也可以拟合；仍未形成稳定的新任务迁移。', 'Action-only targets fit; stable fresh-task transfer did not emerge.'),
       },
     ],
@@ -123,11 +137,11 @@ const questions: Array<{
       'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again. Because the same direction appeared on two different fresh-task panels, the transfer claim is not inferred from a single fluctuation.',
     ),
     observations: [
-      { label: 'H1.38B · 704 attempts / 668 valid', value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]' },
-      { label: 'H1.39 · 768 attempts / 740 valid', value: 'ordinary − BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 complete clusters）' },
+      { label: t('H1.38B · 704 次尝试 / 668 次有效', 'H1.38B · 704 attempts / 668 valid'), value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]' },
+      { label: t('H1.39 · 768 次尝试 / 740 次有效', 'H1.39 · 768 attempts / 740 valid'), value: t('普通 LoRA（ordinary LoRA）− BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 个完整分组 / complete clusters）', 'ordinary − BASE = +0.1637 [0.0781, 0.2519]; SD − BASE = +0.2488 [0.1642, 0.3365] (58 complete clusters)') },
       {
         label: t('次级信号', 'Secondary signal'),
-        value: t('SD − ordinary = +0.0851 [0.0028, 0.1680]，sign-flip p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于 ordinary LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'),
+        value: t('SD − 普通 LoRA（ordinary LoRA）= +0.0851 [0.0028, 0.1680]，符号翻转检验（sign-flip）p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于普通 LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'),
       },
     ],
     boundary: t(
@@ -153,9 +167,9 @@ const questions: Array<{
       'Not so far. The second generation did collect new successful experience and genuinely write G2, but subsequent checks showed a downward direction in prior capability, the replicated first-generation transfer gain was not stably preserved, and acquisition itself included invalid measurement. Those three requirements therefore did not hold together, so second-generation continual integration is not established.',
     ),
     observations: [
-      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 attempts → 132 合格正向经验 · 33 qualifying identities · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
-      { label: t('G2 写入', 'G2 write'), value: '16 components · effective rank 64 · 8 sequential increments' },
-      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；T2 没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.') },
+      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 次尝试 → 132 条合格正向经验 · 33 个合格任务身份 · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
+      { label: t('G2 写入', 'G2 write'), value: t('16 个组件（components）· 有效秩（effective rank）64 · 8 次顺序增量写入', '16 components · effective rank 64 · 8 sequential increments') },
+      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；预留的 T2 新任务测试没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.') },
     ],
     boundary: t(
       'H1.40 支持“第二代持续整合尚未建立”。不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 没有运行。',
@@ -179,7 +193,7 @@ const questions: Array<{
     ),
     observations: [
       { label: 'H1.41', value: t('机制结论只使用当时已经通过有效性检查的科学分母。', 'Mechanism conclusions use only the scientifically valid denominator available at that cutoff.') },
-      { label: t('H1.42 · 后续记录', 'H1.42 · later record'), value: t('之后继续校准测量链，Stage B 仍留下两个无效 cluster，因此没有强行下方法结论。', 'Later measurement calibration still left two invalid clusters in Stage B, so no method conclusion was forced from them.') },
+      { label: t('H1.42 · 后续记录', 'H1.42 · later record'), value: t('之后继续校准测量链，Stage B 仍留下两个无效分组（clusters），因此没有强行下方法结论。', 'Later measurement calibration still left two invalid clusters in Stage B, so no method conclusion was forced from them.') },
     ],
     boundary: t(
       'H1.42 发生在 H1.41 之后，只能作为后续“测量边界”记录；它不反过来改变 H1.41 时点的机制结论。测量无效也不等于模型能力为零。',
@@ -198,25 +212,25 @@ const questions: Array<{
     status: t('修复后复测已完成 · 源码语义待验证', 'Repaired rerun complete · source-faithful panel pending'),
     question: t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?'),
     conclusion: t(
-      '关键实验又向前推进了一步。解析兼容修复后的 256 次复测已经完成：OpenEvo 的平均任务完成度高于 BASE，并出现少量完整成功；但配对不确定区间仍跨过 0，所以目前只能说有正向信号，不能说已经稳定胜出。随后按固定版本的 SEED 公开代码重新核对任务构造时发现，旧 128-task panel 虽然来自 0–499，却没有完整复现每个 validation worker 的 seed→goal-order→instruction 语义。现在真正缺的是：先机械重建源码忠实的首次验证 128 个任务槽位，再用同一解析兼容合同比较冻结的 BASE 与 SD-LoRA。',
-      'The key benchmark experiment has advanced another step. The 256-episode parser-compatible rerun is complete: OpenEvo has higher average task progress than BASE and a small number of exact successes, but the paired uncertainty interval still crosses zero, so this is a positive signal rather than a stable win. A subsequent audit against the pinned SEED public code found that the old 128-task panel came from 0–499 but did not fully reproduce each validation worker’s seed→goal-order→instruction semantics. The missing experiment is now a mechanically reconstructed source-faithful first-validation 128-slot panel, followed by the same parser-compatible paired comparison of frozen BASE and SD-LoRA.',
+      '还缺一次真正按 SEED 公开代码生成任务的公平复测。修复评分读取问题以后，OpenEvo 在旧的 128 个冻结任务上表现更好一些，但统计不确定性仍然很大；随后我们又发现，这 128 个任务虽然来自正确的 0–499 范围，却不一定等同于 SEED 首次验证代码实际会生成的任务。所以下一步要先把那 128 个任务按源码语义重建出来，再比较同一个冻结 BASE 和 SD-LoRA。',
+      'One critical comparison remains: a fair rerun on tasks generated from the released SEED code semantics. After repairing action parsing, OpenEvo looked better on the historical frozen 128-task panel, but uncertainty remained large. A later audit showed that the panel came from the correct 0–499 range without necessarily reproducing the tasks generated by SEED first-validation code. The next step is therefore to rebuild those 128 task slots source-faithfully and compare the same frozen BASE and SD-LoRA.',
     ),
     observations: [
-      { label: t('完整战役规模', 'Full campaign coverage'), value: t('512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes；六个 cells 均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.') },
-      { label: t('SEED 原始主评测', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作 wrapper 不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.') },
-      { label: t('修复后主评测', 'Repaired PRIMARY-v2'), value: t('BASE：Task Score 4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，bootstrap 95% CI [-0.65, +7.19]；positive / tie / negative = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.') },
-      { label: t('源码语义审计', 'Source-semantics audit'), value: t('SEED validation base seed=1000；session draw=RandomState(1000)；worker seed=1000+slot。worker seed 会改变 goal ordering，因此数值 session index 不是完整任务身份；新的 128-slot semantic manifest 仍待 materialize。', 'SEED validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity; the new 128-slot semantic manifest is not yet materialized.') },
+      { label: t('完整战役规模', 'Full campaign coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元（cells）均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.') },
+      { label: t('SEED 原始主评测（PRIMARY-v1）', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作包装格式（wrapper）不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.') },
+      { label: t('修复后主评测（PRIMARY-v2）', 'Repaired PRIMARY-v2'), value: t('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]；正向 / 持平 / 负向 = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.') },
+      { label: t('源码语义审计', 'Source-semantics audit'), value: t('SEED 验证基础随机种子（validation base seed）=1000；会话抽样（session draw）=RandomState(1000)；工作进程随机种子（worker seed）=1000+slot。worker seed 会改变任务目标顺序（goal ordering），因此数值 session index 不是完整任务身份；新的 128 槽位语义清单（semantic manifest）仍待生成。', 'SEED validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity; the new 128-slot semantic manifest is not yet materialized.') },
     ],
     boundary: t(
-      'repaired-PRIMARY 是旧冻结 panel 上可解释的本地 SEED-compatible 结果，但它不是论文确切分母，也不是源码忠实的 first-validation semantic panel；SEED checkpoint / training 仍未在本地复现。新的 source-faithful successor 目前是 design-only-not-authorized：允许 CPU 准备，不允许正式 GPU task consumption。',
+      '修复后 PRIMARY 是旧冻结面板上可解释的本地“与 SEED 评测设置兼容（SEED-compatible）”结果，但它不是论文的确切评测分母，也不是“源码忠实（source-faithful）”的首次验证语义面板；SEED 的检查点 / 训练结果（checkpoint / training）仍未在本地复现。新的源码忠实后续设计目前只允许准备、不允许正式执行（design-only-not-authorized）：可以做 CPU 准备，但不能正式消耗 GPU 任务。',
       'The repaired PRIMARY is an interpretable local SEED-compatible result on the historical frozen panel, but it is neither the paper’s exact denominator nor a source-faithful first-validation semantic panel; the SEED checkpoint/training result has still not been locally reproduced. The source-faithful successor is currently design-only-not-authorized: CPU preparation is allowed, formal GPU task consumption is not.',
     ),
     links: [
       { kind: 'Human report', label: t('完整三层结果与中文摘要', 'Complete three-layer results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
       { kind: 'Machine result', label: t('修复后主评测配对分析', 'Repaired-primary paired analysis'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
-      { kind: 'Machine result', label: t('六个 cell 身份与覆盖对账', 'Six-cell identity and coverage reconciliation'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
+      { kind: 'Machine result', label: t('六个实验单元身份与覆盖对账', 'Six-cell identity and coverage reconciliation'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
       { kind: 'Audit', label: t('SEED 公共代码任务语义复现说明', 'SEED public-code task-semantics reproduction note'), href: `${seedSemanticsRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` },
-      { kind: 'Design', label: t('源码忠实 successor 机器可读设计', 'Source-faithful successor design'), href: `${seedSemanticsRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
+      { kind: 'Design', label: t('源码忠实后续方案的机器可读设计', 'Source-faithful successor design'), href: `${seedSemanticsRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
     ],
   },
 ];
@@ -230,11 +244,11 @@ const transferRows = [
 
 <section class="results-questions" id="questions" aria-labelledby="questions-title">
   <header class="section-heading">
-    <p>SEVEN QUESTIONS</p>
+    <p>{t('七个问题 · SEVEN QUESTIONS', 'SEVEN QUESTIONS')}</p>
     <div>
       <h2 id="questions-title">{t('我们现在能回答的七个问题', 'The seven questions we can now answer')}</h2>
       <p>{t(
-        '先确认训练真的发生，再看有没有成功经验、能不能学进去、能不能迁移、能不能连续多代保持；最后再检查测量是否可信，以及和 SEED 的官方保留任务还差哪一步。',
+        '顺序很简单：先确认训练真的发生，再看有没有成功经验、能不能学进去、能不能迁移、能不能连续多代保持；最后再检查测量是否可信，以及和 SEED 的官方保留任务还差哪一步。',
         'First confirm that learning really occurred, then ask whether useful experience exists, can be fitted, transfers, and compounds across generations; finally check measurement validity and what still remains for the SEED official held-out comparison.',
       )}</p>
     </div>
@@ -292,7 +306,7 @@ const transferRows = [
                     ))}
                   </div>
                   <figcaption>{t(
-                    '点表示平均差异，横线表示 95% 置信区间；竖线表示“没有差异”。三条区间都完整位于 0 以上。',
+                    '点表示平均差异，横线表示 95% 置信区间（confidence interval）；竖线表示“没有差异”。三条区间都完整位于 0 以上。',
                     'Points show the average difference; horizontal lines show 95% confidence intervals; the vertical line marks zero difference. All three intervals lie entirely above zero.',
                   )}</figcaption>
                 </figure>
@@ -302,7 +316,7 @@ const transferRows = [
               <div class="evidence-link-grid">
                 {item.links.map((link) => (
                   <a href={link.href} target="_blank" rel="noreferrer">
-                    <small>{link.kind}</small>
+                    <small>{evidenceKind(link.kind)}</small>
                     <span>{link.label}</span>
                     <b aria-hidden="true">↗</b>
                   </a>
@@ -319,7 +333,7 @@ const transferRows = [
 <style>
   .results-questions{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
   .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.14em}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
   .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
   .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
   .question-list{display:grid;gap:10px}
