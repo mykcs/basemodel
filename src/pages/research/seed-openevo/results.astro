@@ -6,6 +6,7 @@ import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoRes
 import OpenEvoWebShopResultsHero from '../../../components/research/OpenEvoWebShopResultsHero.astro';
 import OpenEvoWebShopResultsProtocol from '../../../components/research/OpenEvoWebShopResultsProtocol.astro';
 import OpenEvoWebShopResultsQuestions from '../../../components/research/OpenEvoWebShopResultsQuestions.astro';
+import OpenEvoWebShopCurrentQ7 from '../../../components/research/OpenEvoWebShopCurrentQ7.astro';
 import OpenEvoActionWrapperAttribution from '../../../components/research/OpenEvoActionWrapperAttribution.astro';
 import OpenEvoWebShopG2Ablation from '../../../components/research/OpenEvoWebShopG2Ablation.astro';
 import OpenEvoWebShopNextSteps from '../../../components/research/OpenEvoWebShopNextSteps.astro';
@@ -15,7 +16,7 @@ const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo × WebShop 研究结果"
-  description="面向了解研究方向但未跟进每轮实验的实验室读者：用七个问题说明 OpenEvo 已经证明了什么、第二代更新卡在哪里，以及 2026-08-25 SEED 保留范围修复复测之后为什么下一步转向公开代码任务语义复现。"
+  description="面向了解研究方向但未跟进每轮实验的实验室读者：用七个问题说明 OpenEvo 已经证明了什么、第二代更新卡在哪里，以及 2026-08-26 源码忠实 128-task panel 经纠错重建后为什么必须先通过运行时 128/128 语义验证。"
   locale={locale}
 >
   <SeedOpenEvoResearchPage locale={locale} page="results">
@@ -23,6 +24,7 @@ const locale = 'zh' as const;
       <OpenEvoWebShopResultsHero locale={locale} />
       <OpenEvoWebShopResultsProtocol locale={locale} />
       <OpenEvoWebShopResultsQuestions locale={locale} />
+      <OpenEvoWebShopCurrentQ7 locale={locale} />
       <OpenEvoActionWrapperAttribution locale={locale} />
       <OpenEvoWebShopG2Ablation locale={locale} />
       <OpenEvoWebShopNextSteps locale={locale} />
@@ -34,4 +36,5 @@ const locale = 'zh' as const;
 
 <style is:global>
   body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header { display:none; }
+  body:has([data-testid='openevo-webshop-result-index']) #q7 { display:none; }
 </style>
