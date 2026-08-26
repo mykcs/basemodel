@@ -1,55 +1,62 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
-const protocolCards = [
+const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const sourceFaithfulRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
+const sourceFaithfulConfig: EvidenceRef = {
+  kind: 'preregistration',
+  label: t('源码忠实复现冻结配置', 'Source-faithful frozen preregistration'),
+  href: `${sourceFaithfulRoot}/configs/experiment/webshop-seed-source-faithful-reproduction-v1.json`,
+};
+const seedSplitSource: EvidenceRef = {
+  kind: 'official-code',
+  label: t('SEED WebShop train / validation 范围', 'SEED WebShop train / validation ranges'),
+  href: `${seedRoot}/agent_system/environments/env_package/webshop/envs.py#L115-L145`,
+};
+const seedSamplingSource: EvidenceRef = {
+  kind: 'official-code',
+  label: t('SEED worker seed 与 validation 抽样', 'SEED worker seeds and validation sampling'),
+  href: `${seedRoot}/agent_system/environments/env_package/webshop/envs.py#L115-L145`,
+};
+
+type ProtocolCard = { label: string; value: string; body: string; sources: EvidenceRef[] };
+const protocolCards: ProtocolCard[] = [
   {
     label: t('主要比较模型', 'Main comparison model'),
     value: 'Qwen2.5-7B-Instruct',
-    body: t(
-      '单步迁移和 2026-08-25 的保留范围评测都围绕同一个冻结的 7B 基础模型。更早的 H0 用过 3B，只作为历史经验供给证据。',
-      'The one-step transfer results and the 2026-08-25 held-out-range evaluation use the same frozen 7B base model. The earlier H0 experience-supply study used 3B and remains historical evidence.',
-    ),
+    body: t('单步迁移和 2026-08-25 的保留范围评测都围绕同一个冻结的 7B 基础模型。更早的 H0 用过 3B，只作为历史经验供给证据。', 'The one-step transfer results and the 2026-08-25 held-out-range evaluation use the same frozen 7B base model. The earlier H0 experience-supply study used 3B and remains historical evidence.'),
+    sources: [sourceFaithfulConfig],
   },
   {
     label: t('WebShop 任务世界', 'WebShop task world'),
     value: t('1,000 商品 · 6,910 个任务目标', '1,000 products · 6,910 goals'),
-    body: t(
-      '模型像在购物网站里做任务：搜索、点击、选择商品并尝试完成购买。评测会同时记录“完成了多少”和“有没有完整完成”。',
-      'The model searches, clicks, chooses products, and attempts a purchase. Evaluation records both partial task progress and whether the task was completed exactly.',
-    ),
+    body: t('模型像在购物网站里做任务：搜索、点击、选择商品并尝试完成购买。评测会同时记录“完成了多少”和“有没有完整完成”。', 'The model searches, clicks, chooses products, and attempts a purchase. Evaluation records both partial task progress and whether the task was completed exactly.'),
+    sources: [sourceFaithfulConfig],
   },
   {
     label: t('训练与内部新任务', 'Training and internal fresh tasks'),
     value: 'goal_idx ≥ 500',
-    body: t(
-      '训练经验来自 500–6909。H1.38B / H1.39 也从这个范围选新任务，但会排除训练时已经用过的任务身份，所以它们测试的是“学到的东西能不能迁移到没见过的内部任务”。',
-      'Training experience comes from 500–6909. H1.38B / H1.39 also sample fresh tasks from this range while excluding task identities used during training, so they test transfer to unseen internal tasks.',
-    ),
+    body: t('训练经验来自 500–6909。H1.38B / H1.39 也从这个范围选新任务，但会排除训练时已经用过的任务身份，所以它们测试的是“学到的东西能不能迁移到没见过的内部任务”。', 'Training experience comes from 500–6909. H1.38B / H1.39 also sample fresh tasks from this range while excluding task identities used during training, so they test transfer to unseen internal tasks.'),
+    sources: [seedSplitSource],
   },
   {
     label: t('SEED 官方保留范围', 'SEED official held-out range'),
     value: 'goal_idx 0–499',
-    body: t(
-      '历史 128-task 面板确实来自这个范围，但后续源码审计发现：验证 worker 的随机种子会改变目标顺序和实际 instruction。也就是说，“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”。',
-      'The historical 128-task panel does come from this range, but a later source audit showed that validation worker seeds change goal ordering and the resulting instruction. Matching the numeric range is therefore not enough to reproduce the exact task semantics produced by the released SEED code.',
-    ),
+    body: t('历史 128-task 面板确实来自这个范围，但后续源码审计发现：validation worker 的随机种子会改变目标顺序和实际 instruction。也就是说，“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”。', 'The historical 128-task panel does come from this range, but a later source audit showed that validation worker seeds change goal ordering and the resulting instruction. Matching the numeric range is therefore not enough to reproduce the exact task semantics produced by the released SEED code.'),
+    sources: [seedSplitSource, seedSamplingSource, sourceFaithfulConfig],
   },
-] as const;
+];
 
 const metricDefinitions = [
-  {
-    term: t('任务完成度（Task Score）', 'Task Score'),
-    body: t('回答“这项购物任务完成了多少”。即使最后没有完整买对，也可能因为满足了一部分条件而得到部分分。', 'How much of the task was satisfied. Partial progress can receive partial credit even without exact task completion.'),
-  },
-  {
-    term: t('完整成功（Exact Success）', 'Exact Success'),
-    body: t('回答“最后有没有把整个任务完整做对”。它是一个单独的成功 / 不成功判断。', 'Whether the complete task was satisfied. It is a separate yes/no outcome.'),
-  },
+  { term: t('任务完成度（Task Score）', 'Task Score'), body: t('回答“这项购物任务完成了多少”。即使最后没有完整买对，也可能因为满足了一部分条件而得到部分分。', 'How much of the task was satisfied. Partial progress can receive partial credit even without exact task completion.') },
+  { term: t('完整成功（Exact Success）', 'Exact Success'), body: t('回答“最后有没有把整个任务完整做对”。它是一个单独的成功 / 不成功判断。', 'Whether the complete task was satisfied. It is a separate yes/no outcome.') },
 ] as const;
 ---
 
@@ -58,14 +65,8 @@ const metricDefinitions = [
     <p>{t('实验边界 · PROTOCOL', 'PROTOCOL')}</p>
     <div>
       <h2 id="protocol-title">{t('先分清两种“新任务”', 'Two task ranges to keep in mind')}</h2>
-      <p class="plain-intro">{t(
-        '这里最容易误会的一点是：我们已经证明“模型能迁移到训练没见过的新任务”，但那批新任务和 SEED 论文用来做正式验证的保留任务不是同一批。',
-        'The easiest mistake is to treat all unseen tasks as the same benchmark. We have evidence for transfer to unseen internal tasks, but those are not the same as the SEED official held-out tasks.',
-      )}</p>
-      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        'OpenEvo 内部新任务评估使用 goal_idx ≥ 500，并保证任务 ID 与训练集不重叠；SEED 官方保留范围使用 goal_idx 0–499。后续源码审计又增加了一层要求：同一个 numeric range 还必须满足 validation seed、worker seed、goal ordering 与 instruction 的源码语义。',
-        'OpenEvo internal fresh-task evaluation uses goal_idx ≥ 500 with task-ID disjointness from training, while the SEED official held-out range is goal_idx 0–499. The later source audit adds another requirement: matching the numeric range must also preserve validation seed, worker seed, goal ordering, and resulting instruction semantics.',
-      )}</p>
+      <p class="plain-intro">{t('这里最容易误会的一点是：我们已经证明“模型能迁移到训练没见过的新任务”，但那批新任务和 SEED 论文用来做正式验证的保留任务不是同一批。', 'The easiest mistake is to treat all unseen tasks as the same benchmark. We have evidence for transfer to unseen internal tasks, but those are not the same as the SEED official held-out tasks.')}</p>
+      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('OpenEvo 内部新任务评估使用 goal_idx ≥ 500，并保证任务 ID 与训练集不重叠；SEED 官方保留范围使用 goal_idx 0–499。后续源码审计又增加了一层要求：同一个 numeric range 还必须满足 validation seed、worker seed、goal ordering 与 instruction 的源码语义。', 'OpenEvo internal fresh-task evaluation uses goal_idx ≥ 500 with task-ID disjointness from training, while the SEED official held-out range is goal_idx 0–499. The later source audit adds another requirement: matching the numeric range must also preserve validation seed, worker seed, goal ordering, and resulting instruction semantics.')}</p>
     </div>
   </header>
 
@@ -75,39 +76,22 @@ const metricDefinitions = [
         <small>{card.label}</small>
         <strong>{card.value}</strong>
         <p>{card.body}</p>
+        <OpenEvoEvidenceRefs locale={locale} sources={card.sources} compact ariaLabel={t(`“${card.label}”的来源`, `Sources for ${card.label}`)} />
       </article>
     ))}
   </div>
 
   <div class="metric-defs">
-    <div class="metric-defs-heading">
-      <h3>{t('两个分数分别回答两个问题', 'Two scores answer two different questions')}</h3>
-      <p>{t(
-        '“做得更接近目标”不等于“最后完整做对”。所以结果页会把任务完成度和完整成功分开报告。',
-        'More partial progress does not necessarily mean exact task completion, so the page reports task progress and exact success separately.',
-      )}</p>
-    </div>
-    <dl class="metric-def-list">
-      {metricDefinitions.map((item) => (
-        <div class="metric-def">
-          <dt>{item.term}</dt>
-          <dd>{item.body}</dd>
-        </div>
-      ))}
-    </dl>
+    <div class="metric-defs-heading"><h3>{t('两个分数分别回答两个问题', 'Two scores answer two different questions')}</h3><p>{t('“做得更接近目标”不等于“最后完整做对”。所以结果页会把任务完成度和完整成功分开报告。', 'More partial progress does not necessarily mean exact task completion, so the page reports task progress and exact success separately.')}</p></div>
+    <dl class="metric-def-list">{metricDefinitions.map((item) => <div class="metric-def"><dt>{item.term}</dt><dd>{item.body}</dd></div>)}</dl>
   </div>
 
   <div class="boundary-strip">
     <strong>{t('测量是否可信', 'Measurement validity')}</strong>
     <div>
-      <p class="plain-boundary">{t(
-        '第一次主评测出现 0 分，并不是因为我们已经证明模型“完全不会做”，而是评分链路没有正确读懂模型输出的动作格式。修复读取方式以后，才得到可以解释的本地结果。',
-        'The first primary evaluation produced zeros, but those zeros did not prove that the model had zero capability. The measurement path was not reading the model action format correctly. Only after repairing that reading path did we obtain an interpretable local result.',
-      )}</p>
-      <p class="technical-boundary"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        'PRIMARY-v1 因动作包装格式与解析器（parser）的动作投影规则不兼容，被判为测量无效（measurement-invalid）。修复后的 PRIMARY-v2 只改变动作包装识别。之后发现的 worker-seed 问题属于“任务语义是否源码忠实”的另一层问题，不能和 parser 故障混为一谈。',
-        'PRIMARY-v1 was classified as measurement-invalid because the action wrapper and parser projection rules were incompatible. PRIMARY-v2 changed only wrapper recognition. The later worker-seed finding concerns source-faithful task semantics and is a separate issue from the parser failure.',
-      )}</p>
+      <p class="plain-boundary">{t('第一次主评测出现 0 分，并不是因为我们已经证明模型“完全不会做”，而是评分链路没有正确读懂模型输出的动作格式。修复读取方式以后，才得到可以解释的本地结果。', 'The first primary evaluation produced zeros, but those zeros did not prove that the model had zero capability. The measurement path was not reading the model action format correctly. Only after repairing that reading path did we obtain an interpretable local result.')}</p>
+      <p class="technical-boundary"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('PRIMARY-v1 因动作包装格式与解析器（parser）的动作投影规则不兼容，被判为测量无效（measurement-invalid）。修复后的 PRIMARY-v2 只改变动作包装识别。之后发现的 worker-seed 问题属于“任务语义是否源码忠实”的另一层问题，不能和 parser 故障混为一谈。', 'PRIMARY-v1 was classified as measurement-invalid because the action wrapper and parser projection rules were incompatible. PRIMARY-v2 changed only wrapper recognition. The later worker-seed finding concerns source-faithful task semantics and is a separate issue from the parser failure.')}</p>
+      <OpenEvoEvidenceRefs locale={locale} sources={[{ kind: 'official-code', label: t('SEED <action> parser', 'SEED <action> parser'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` }, sourceFaithfulConfig]} compact />
     </div>
   </div>
 
@@ -119,42 +103,9 @@ const metricDefinitions = [
 </section>
 
 <style>
-  .results-protocol{max-width:1160px;margin:0 auto;padding:36px 24px 48px;color:var(--color-text)}
-  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
-  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;max-width:70ch;font-size:.94rem;line-height:1.68}
-  .plain-intro{color:var(--color-text)}
-  .technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}
-  .technical-intro strong{color:var(--color-text)}
-  .protocol-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-  .protocol-card{display:flex;min-height:190px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface)}
-  .protocol-card small{color:var(--color-accent);font-size:.7rem;font-weight:760;line-height:1.5}
-  .protocol-card strong{margin:14px 0 8px;font-size:.98rem;line-height:1.4;overflow-wrap:anywhere}
-  .protocol-card p{margin:0;color:var(--color-text-muted);font-size:.79rem;line-height:1.62}
-  .metric-defs{margin-top:12px;padding:22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
-  .metric-defs-heading h3{margin:0;font-size:1.08rem;line-height:1.4;letter-spacing:-.02em}
-  .metric-defs-heading p{margin:8px 0 0;max-width:72ch;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}
-  .metric-def-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:18px 0 0}
-  .metric-def{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}
-  .metric-def dt{font-size:.82rem;font-weight:760;line-height:1.5}
-  .metric-def dd{margin:8px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.58}
-  .boundary-strip{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:12px;padding:16px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}
-  .boundary-strip>strong{font-size:.78rem}
-  .boundary-strip p{margin:0;max-width:80ch;font-size:.78rem;line-height:1.62}
-  .plain-boundary{color:var(--color-text)}
-  .technical-boundary{margin-top:8px!important;padding-top:8px;border-top:1px dashed var(--color-border);color:var(--color-text-muted)}
-  .technical-boundary strong{color:var(--color-text)}
-  .canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}
-  .canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:750;letter-spacing:.08em}
-  .canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}
-  .canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
-  @media(max-width:960px){.protocol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-def-list{grid-template-columns:1fr}}
-  @media(max-width:720px){
-    .results-protocol{padding-inline:18px}
-    .section-heading{grid-template-columns:1fr;gap:8px}
-    .protocol-grid{grid-template-columns:1fr}
-    .protocol-card{min-height:auto}
-    .boundary-strip{grid-template-columns:1fr;gap:7px}
-  }
+  .results-protocol{max-width:1160px;margin:0 auto;padding:36px 24px 48px;color:var(--color-text)}.section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:70ch;font-size:.94rem;line-height:1.68}.plain-intro{color:var(--color-text)}.technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}.technical-intro strong{color:var(--color-text)}
+  .protocol-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.protocol-card{display:flex;min-height:220px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface)}.protocol-card small{color:var(--color-accent);font-size:.7rem;font-weight:760;line-height:1.5}.protocol-card strong{margin:14px 0 8px;font-size:.98rem;line-height:1.4;overflow-wrap:anywhere}.protocol-card p{margin:0;color:var(--color-text-muted);font-size:.79rem;line-height:1.62}
+  .metric-defs{margin-top:12px;padding:22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.metric-defs-heading h3{margin:0;font-size:1.08rem;line-height:1.4;letter-spacing:-.02em}.metric-defs-heading p{margin:8px 0 0;max-width:72ch;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.metric-def-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:18px 0 0}.metric-def{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.metric-def dt{font-size:.82rem;font-weight:760;line-height:1.5}.metric-def dd{margin:8px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.58}
+  .boundary-strip{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:12px;padding:16px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.boundary-strip>strong{font-size:.78rem}.boundary-strip p{margin:0;max-width:80ch;font-size:.78rem;line-height:1.62}.plain-boundary{color:var(--color-text)}.technical-boundary{margin-top:8px!important;padding-top:8px;border-top:1px dashed var(--color-border);color:var(--color-text-muted)}.technical-boundary strong{color:var(--color-text)}.canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}.canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:750;letter-spacing:.08em}.canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}.canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  @media(max-width:960px){.protocol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-def-list{grid-template-columns:1fr}}@media(max-width:720px){.results-protocol{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.protocol-grid{grid-template-columns:1fr}.protocol-card{min-height:auto}.boundary-strip{grid-template-columns:1fr;gap:7px}}
 </style>

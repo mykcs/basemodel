@@ -1,0 +1,123 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const trackARoot = 'https://github.com/mykcs/openevo-experiment/blob/f80ae1816384bb7e8e82d193b22644e17f561f19';
+const frozenPanelHref = `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`;
+const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json`;
+---
+
+<section class="current-q7" aria-labelledby="current-q7-title" data-testid="current-source-faithful-q7">
+  <article class="current-question-card">
+    <div class="question-number">07</div>
+    <div class="question-copy">
+      <div class="question-meta">
+        <span class="status-badge"><i aria-hidden="true"></i>{t('已完成 · 未证明稳定提升', 'Complete · no stable improvement established')}</span>
+      </div>
+      <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
+      <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
+        '源码忠实的 Track A 已经不再是“待验证”。纠错后的 128 题先通过了真实 SEED 运行路径的 128/128 语义验证，随后 BASE 和冻结的 OpenEvo SD-LoRA 各完成 128 个有效 episode。BASE 的平均 Task Score×100 是 7.17、exact success 3.9%；SD-LoRA 是 8.74、3.9%。配对差 +1.57 的 95% CI 为 [-3.21, +6.31]，跨过 0，所以这次结果是一次有效测量，但仍不能证明 OpenEvo 稳定胜出。真正还缺的是 Track B 那种把方法本身在同一冻结世界和匹配预算下重新比较的证据。',
+        'Source-faithful Track A is no longer awaiting validation. The corrected 128-task panel first passed 128/128 semantic validation against the real SEED runtime path, then BASE and the frozen OpenEvo SD-LoRA each completed 128 valid episodes. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; SD-LoRA reached 8.74 and 3.9%. The paired +1.57 difference has a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEvo win. The major remaining evidence is Track B: rerunning the methods themselves in one frozen world with matched budgets.',
+      )}</p>
+
+      <div class="manifest-callout" data-testid="frozen-128-task-manifest">
+        <div class="manifest-copy">
+          <strong>{t('已验证的源码忠实 128 题', 'Validated source-faithful 128-task panel')}</strong>
+          <span>{t(
+            '这个 JSON 是 corrected first-validation panel 的不可变快照。运行时语义验证已经 128/128 PASS，执行分支与当前 corrected manifest 的 selected-panel digest 都是 4e7ace92…。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
+            'This JSON is the immutable snapshot of the corrected first-validation panel. Runtime semantic validation is now 128/128 PASS, and the executed branch and corrected mainline manifest share selected-panel digest 4e7ace92…. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
+          )}</span>
+        </div>
+        <a class="manifest-link" href={frozenPanelHref}>
+          {t('在 GitHub 查看固定的 128 题', 'View the frozen 128 tasks on GitHub')} ↗
+        </a>
+      </div>
+
+      <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
+        'authoritative runtime semantic validation 报告 total_slots=128、matches=128、mismatches=0。随后 source-faithful paired measurement 的 reconciliation 为 ok=true，BASE/SD-LoRA 都是 128/128 valid，parser-invalid=0；Task Score 配对 bootstrap 10,000 次得到 +1.57，95% CI [-3.21,+6.31]。256 个 raw episode、reconciliation、analysis、release receipt 与 GPU/W&B receipts 已 byte-for-byte 入库并通过 per-file SHA-256 验证，artifact_publication_status=PUBLISHED_AND_VERIFIED。仍需保留一个治理例外：科学 contract 与 readiness 在正式消费前已冻结/通过，但 GitHub branch authority 与 main router 的顺序没有先于第一条 formal episode，因此不能倒写成“当时 main 已授权启动”。',
+        'Authoritative runtime semantic validation reports total_slots=128, matches=128, mismatches=0. The later source-faithful paired measurement reconciled with ok=true, 128/128 valid episodes in both BASE and SD-LoRA, and parser-invalid=0; 10,000 paired bootstrap rounds yielded +1.57 Task Score×100 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts were transferred byte-for-byte and verified by per-file SHA-256, so artifact_publication_status is PUBLISHED_AND_VERIFIED. One governance exception remains: the scientific contract was frozen and readiness passed before formal consumption, but GitHub branch authority and the main router did not precede the first formal episode, so the run must not be rewritten as having been launch-authorized by main at that time.',
+      )}</p>
+
+      <details class="evidence-details">
+        <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
+        <div class="evidence-detail-body">
+          <table>
+            <tbody>
+              <tr>
+                <th scope="row">{t('语义门', 'Semantic gate')}</th>
+                <td><code>128 / 128 PASS · mismatches=0</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('正式测量', 'Formal measurement')}</th>
+                <td><code>BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('配对结论', 'Paired result')}</th>
+                <td><code>Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('证据发布', 'Evidence publication')}</th>
+                <td><code>PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0</code></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('结论边界', 'Claim boundary')}</th>
+                <td>{t('没有证明稳定提升；不是论文最终 exact 128；没有复现 SEED 论文 checkpoint / 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ul class="evidence-links">
+            <li><a href={closeoutHref}>{t('Track A 机器可读 closeout', 'Track A machine-readable closeout')} ↗</a></li>
+            <li><a href={`${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`}>{t('128/128 runtime semantic validation receipt', '128/128 runtime semantic validation receipt')} ↗</a></li>
+            <li><a href={frozenPanelHref}>{t('纠错后的 128-task manifest', 'Corrected 128-task manifest')} ↗</a></li>
+            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json`}>{t('byte-for-byte evidence manifest', 'Byte-for-byte evidence manifest')} ↗</a></li>
+            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json`}>{t('执行授权顺序治理例外', 'Execution-authority ordering exception')} ↗</a></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+</section>
+
+<style>
+  .current-q7{max-width:1160px;margin:-18px auto 0;padding:0 24px 36px;color:var(--color-text)}
+  .current-question-card{display:grid;grid-template-columns:70px minmax(0,1fr);gap:24px;max-width:960px;padding:24px 0 4px;border-top:1px solid var(--color-border)}
+  .question-number{padding-top:4px;color:var(--color-text-muted);font:700 .78rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .question-copy{min-width:0}
+  .question-meta{margin-bottom:9px}
+  .status-badge{display:inline-flex;align-items:center;gap:7px;color:var(--color-text-muted);font-size:.75rem;font-weight:760}
+  .status-badge i{width:7px;height:7px;border-radius:999px;background:var(--color-info)}
+  h3{margin:0 0 12px;font-size:clamp(1.15rem,2.2vw,1.55rem);letter-spacing:-.025em}
+  p{max-width:80ch;line-height:1.72}
+  .conclusion{margin:0;color:var(--color-text);font-size:.94rem}
+  .manifest-callout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;max-width:900px;margin-top:16px;padding:15px 16px;border:1px solid var(--color-border);border-left:3px solid var(--color-accent);border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+  .manifest-copy{display:grid;gap:4px;min-width:0}
+  .manifest-copy strong{font-size:.84rem}
+  .manifest-copy span{max-width:72ch;color:var(--color-text-muted);font-size:.76rem;line-height:1.55}
+  .manifest-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--color-border);border-radius:9px;color:var(--color-accent);font-size:.78rem;font-weight:760;text-decoration:none;white-space:nowrap;background:var(--color-bg)}
+  .manifest-link:hover,.manifest-link:focus-visible{text-decoration:underline}
+  .professional-explanation{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem}
+  .conclusion strong,.professional-explanation strong{color:var(--color-text)}
+  .evidence-details{max-width:900px;margin-top:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}
+  summary{cursor:pointer;padding:13px 15px;font-size:.82rem;font-weight:760}
+  .evidence-detail-body{padding:0 15px 15px;border-top:1px solid var(--color-border)}
+  table{width:100%;border-collapse:collapse;font-size:.78rem}
+  th,td{padding:10px 8px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;line-height:1.55}
+  th{width:150px;color:var(--color-text-muted);font-weight:720}
+  code{white-space:normal;overflow-wrap:anywhere}
+  .evidence-links{display:grid;gap:7px;margin:14px 0 0;padding-left:18px;font-size:.78rem}
+  .evidence-links a{color:var(--color-accent);text-decoration:none}
+  .evidence-links a:hover{text-decoration:underline}
+  @media(max-width:720px){
+    .current-q7{padding-inline:18px;margin-top:-10px}
+    .current-question-card{grid-template-columns:1fr;gap:8px}
+    .manifest-callout{grid-template-columns:1fr}
+    .manifest-link{justify-self:start;white-space:normal}
+    th,td{display:block;width:auto;padding-inline:0}
+    th{padding-bottom:2px;border-bottom:0}
+    td{padding-top:2px}
+  }
+</style>

@@ -32,8 +32,8 @@ const navItems = [
           'After one update from its own successful trajectories, the model can perform better on tasks it did not see during training, and that effect was reproduced independently.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'H1.38B 与 H1.39 支持一次参数更新后的内部新任务迁移（internal fresh task-ID-disjoint transfer）。这仍然不是 SEED 官方保留任务（held-out tasks）上的正式复现结果。',
-          'H1.38B and H1.39 support one-step internal fresh task-ID-disjoint transfer after a parameter update. This is still not a formal reproduction result on the SEED official held-out tasks.',
+          'H1.38B 与 H1.39 支持一次参数更新后的内部新任务迁移（internal fresh task-ID-disjoint transfer）。这仍然不是 SEED 官方最终保留题上的论文复现，也不能证明多代连续改进。',
+          'H1.38B and H1.39 support one-step internal fresh task-ID-disjoint transfer after a parameter update. This is still not a paper reproduction on SEED’s final held-out denominator, and it does not establish stable multi-generation improvement.',
         )}</p>
       </div>
     </div>
@@ -42,12 +42,12 @@ const navItems = [
       <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '修复“评分工具读错模型动作”的问题后，OpenEvo 看起来比基础模型做得更好一点，但现在还不能确定这个差异不是偶然波动。',
-          'After fixing the action-reading problem in the measurement path, OpenEvo looks somewhat better than the base model, but the current evidence cannot yet rule out chance variation.',
+          '现在已经有一轮真正按纠错后的 SEED 公开代码任务语义完成的 128×2 配对评测。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然跨过“没有差异”，所以仍然不能说它稳定更好。',
+          'We now have a completed 128×2 paired evaluation on the corrected task semantics recoverable from released SEED code. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '2026-08-25 的修复后主评测（repaired PRIMARY-v2）中，OpenEvo 的平均任务完成度更高，并出现少量完整成功（exact success）；但配对置信区间（paired confidence interval）仍包含 0，因此目前只能称为正向信号，不能称为稳定胜出。',
-          'In the repaired PRIMARY-v2 evaluation from 2026-08-25, OpenEvo had higher average task progress and a small number of exact successes, but the paired confidence interval still includes zero. The result is therefore a positive signal, not a stable win.',
+          'source-faithful Track A 先通过 authoritative runtime semantic validation 128/128，随后 BASE 与冻结 SD-LoRA 都完成 128/128 个有效回合，parser-invalid=0。SD-LoRA 的平均 Task Score 方向更高，但配对不确定性区间跨过 0；256 个 raw episode 与分析/receipt 已 byte-for-byte 入库并 PUBLISHED_AND_VERIFIED。精确统计量放在下方 Q7 的实验依据里。',
+          'Source-faithful Track A first passed authoritative runtime semantic validation at 128/128. BASE and the frozen SD-LoRA then each completed 128/128 valid episodes with parser-invalid=0. Mean Task Score is directionally higher for SD-LoRA, but the paired uncertainty interval crosses zero; all 256 raw episodes plus analysis and receipts are published and byte-for-byte verified. Exact statistics are kept in Q7’s experiment evidence below.',
         )}</p>
       </div>
     </div>
@@ -56,12 +56,12 @@ const navItems = [
       <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '我们后来发现：选中了 SEED 的正确任务编号范围，还不等于真的生成了 SEED 代码会看到的同一批任务。所以下一步不是重新训练模型，而是先把这批验证任务按公开代码一模一样地重建出来。',
-          'A later audit found that selecting the correct SEED task-number range is not enough to guarantee the same tasks produced by the released SEED code. The next step is therefore not retraining, but rebuilding the validation tasks from the public code semantics.',
+          '最关键的剩余问题已经从“这 128 题到底对不对”变成“如果把 SEED 方法和 OpenEvo 真正在同一个冻结世界、同一套任务和匹配预算下重新训练比较，谁更好”。这就是 Track B / WB1。它目前没有被放行继续消耗任务：Gen28 的 episode 已完成，但对应 state-v28 没有形成，所以要先做一次治理与科学决策，不能直接续跑。',
+          'The key remaining question has moved from “are these 128 tasks correct?” to “if SEED and OpenEvo are rerun as methods in the same frozen world, on the same tasks and matched budgets, which performs better?” That is Track B / WB1. It is not currently authorized to consume more task-bearing work: Gen28 episodes completed, but state-v28 was not created, so a scientific/governance decision must come before any continuation.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '下一步要机械重建 128 个源码忠实任务槽位（source-faithful task slots），冻结 validation seed、worker seed、实际 instruction 与数据身份，再用同一评测合同比较冻结的 BASE 与 OpenEvo SD-LoRA。多代连续改进仍未建立。',
-          'Next, mechanically rebuild 128 source-faithful task slots, freezing the validation seed, worker seed, resulting instruction, and data identity, then compare the frozen BASE and OpenEvo SD-LoRA under one identical evaluation contract. Stable multi-generation improvement is still not established.',
+          'Track A 已以 measurement-not-proven-stable-improvement 关闭，且不能冒充论文 89.7 / 78.1% 的 exact reproduction。当前 WB1 router 状态为 GEN28_COMPLETE_STATE_BARRIER_MISSING；latest adoptable state 是 state-v27，formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final_test_status=locked。下一步不是自动启动 Gen29，而是先决定缺失的 state-v28 update 是否、以及以什么冻结输入和预算规则被单独授权。',
+          'Track A is closed as measurement-not-proven-stable-improvement and must not be presented as an exact reproduction of the paper’s 89.7 / 78.1%. Current WB1 routing is GEN28_COMPLETE_STATE_BARRIER_MISSING; the latest adoptable state is state-v27, formal_task_consumption_allowed=false, gpu_allocation_allowed=false, and final_test_status=locked. The next step is not an automatic Gen29 launch, but a decision on whether the missing state-v28 update should be separately authorized and under which frozen inputs and budget rules.',
         )}</p>
       </div>
     </div>
@@ -70,8 +70,8 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和后续源码忠实任务设计属于另外两层证据，不会被倒过来混进 H1.41 的机制结论。',
-      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the later source-faithful task design are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
+      '机制结论截至 H1.41。H1.42 是之后的测量校准记录；2026-08-25 的 repaired PRIMARY-v2、2026-08-26 的源码忠实任务纠错与随后完成的 Track A 128×2 配对测量，都属于另外的证据层，不会被倒过来混进 H1.41 的机制结论。',
+      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the repaired PRIMARY-v2 on 2026-08-25, the source-faithful task correction on 2026-08-26, and the later completed Track A 128×2 paired measurement are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
     )}</span>
   </div>
 

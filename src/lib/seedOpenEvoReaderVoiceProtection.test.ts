@@ -6,6 +6,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const resultsHero = read('../components/research/OpenEvoWebShopResultsHero.astro');
 const resultsProtocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
 const resultsQuestions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
+const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 const g2Ablation = read('../components/research/OpenEvoWebShopG2Ablation.astro');
 const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
 const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
@@ -32,6 +33,7 @@ const webshopEvaluationFigure = read('../components/research/WebShopEvaluationFi
 const seedWebshopCanonicalFigure = read('../components/research/SeedWebShopCanonicalFigure.astro');
 const modelGuide = read('../components/research/OpenEvoModelExperimentGuide.astro');
 const webshopTrainingNote = read('../components/research/WebShopTrainingNote.astro');
+const wrapperAttribution = read('../components/research/OpenEvoActionWrapperAttribution.astro');
 const resultsRoute = read('../pages/research/seed-openevo/results.astro');
 const resultsReaderContract = read('../../docs/agents/current/seed-openevo-results-reader-contract.md');
 
@@ -39,6 +41,7 @@ const publicCopy = [
   resultsHero,
   resultsProtocol,
   resultsQuestions,
+  currentQ7,
   g2Ablation,
   nextSteps,
   resultsAppendix,
@@ -65,6 +68,7 @@ const publicCopy = [
   seedWebshopCanonicalFigure,
   modelGuide,
   webshopTrainingNote,
+  wrapperAttribution,
 ].join('\n');
 
 describe('SEED × OpenEvo reader-voice protection', () => {
@@ -81,7 +85,9 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       expect(resultsQuestions).toContain(question);
     }
     expect(resultsQuestions).toContain('<details class="evidence-details"');
+    expect(currentQ7).toContain('<details class="evidence-details">');
     expect(resultsQuestions).toContain('展开实验依据');
+    expect(currentQ7).toContain('展开实验依据');
     expect(resultsQuestions).not.toContain('证据链与代码回溯');
     expect(resultsQuestions).not.toContain("href: '#evidence-q");
     expect(resultsQuestions).not.toContain('查看证据链 →');
@@ -95,6 +101,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(observationTable).toBeGreaterThan(details);
     expect(transferFigure).toBeGreaterThan(details);
     expect(resultsHero).not.toContain('95% CI');
+    expect(currentQ7.indexOf('95% CI')).toBeLessThan(currentQ7.indexOf('<details class="evidence-details">'));
   });
 
   it('pins the lab-reader audience and Chinese-first terminology contract at the route', () => {
@@ -115,7 +122,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
     expect(resultsProtocol).toContain('专业解释：');
     expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
-    expect(resultsQuestions).toContain('机器结果（Machine result）');
+    expect(currentQ7).toContain('Track A 机器可读 closeout');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('专业解释：');
     expect(researchHub).toContain('适配器（adapter）');
@@ -137,25 +144,28 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('goal_idx 0–499');
   });
 
-  it('protects H1.40 T2, later H1.42, repaired-primary v2, and the source-semantics successor', () => {
+  it('protects H1.40 T2, later H1.42, repaired-primary v2, and the completed source-faithful successor', () => {
     expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
     expect(resultsQuestions).toContain('T2 没有运行');
-    expect(resultsQuestions).toContain('H1.42 发生在 H1.41 之后');
+    expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(resultsHero).toContain('机制结论截至 H1.41');
-    expect(resultsQuestions).toContain('修复后复测已完成 · 源码语义待验证');
     expect(resultsQuestions).toContain('768 个回合');
     expect(resultsQuestions).toContain('测量无效');
     expect(resultsQuestions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
     expect(resultsQuestions).toContain('SD-LoRA：7.3 / 2.3%');
     expect(resultsQuestions).toContain('数值 session index 不是完整任务身份');
     expect(resultsQuestions).toContain('不是论文的确切评测分母');
-    expect(resultsQuestions).toContain('design-only-not-authorized');
-    expect(nextSteps).toContain('先把 SEED 真正会看到的 128 个任务重建出来');
+    expect(currentQ7).toContain('128 / 128 PASS');
+    expect(currentQ7).toContain('BASE 7.17 / 3.9%');
+    expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
+    expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
+    expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
     expect(nextSteps).toContain('路线 B（Track B，WB1）');
+    expect(nextSteps).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
   });
 
   it('does not regress to stale held-out planning states', () => {
-    for (const source of [resultsHero, resultsProtocol, resultsQuestions, nextSteps]) {
+    for (const source of [resultsHero, resultsProtocol, currentQ7, nextSteps]) {
       expect(source).not.toContain('SEED official held-out evaluation（SEED 官方保留任务评估）尚未执行');
       expect(source).not.toContain('formal evaluation denominator（正式评估分母）= 0');
       expect(source).not.toContain('冻结权重，执行 SEED 官方 0–499 评估');
@@ -207,14 +217,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
   });
 
   it('keeps the WebShop canonical figures free of site-management editor voice', () => {
-    const figures = {
-      webshopDatasetFigure,
-      webshopSmallWorldFigure,
-      webshopGoalFigure,
-      webshopSeedSplitFigure,
-      webshopEvaluationFigure,
-      seedWebshopCanonicalFigure,
-    };
+    const figures = { webshopDatasetFigure, webshopSmallWorldFigure, webshopGoalFigure, webshopSeedSplitFigure, webshopEvaluationFigure, seedWebshopCanonicalFigure };
     for (const [name, source] of Object.entries(figures)) {
       expect(source, `${name}: "本站" must not appear`).not.toMatch(/本站/);
       expect(source, `${name}: "本节" must not appear`).not.toMatch(/本节/);
@@ -230,21 +233,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
   });
 
   it('keeps the experiment and results pages free of site-management editor voice', () => {
-    const sources = {
-      resultsHero,
-      resultsProtocol,
-      resultsQuestions,
-      g2Ablation,
-      nextSteps,
-      resultsAppendix,
-      experimentGateway,
-      experimentProgram,
-      resultNote,
-      benchmarkNote,
-      nextProtocol,
-      loopsFigure,
-      modelGuide,
-    };
+    const sources = { resultsHero, resultsProtocol, resultsQuestions, currentQ7, g2Ablation, nextSteps, resultsAppendix, experimentGateway, experimentProgram, resultNote, benchmarkNote, nextProtocol, loopsFigure, modelGuide };
     for (const [name, source] of Object.entries(sources)) {
       expect(source, `${name}: "本站" must not appear`).not.toMatch(/本站/);
       expect(source, `${name}: "本节" must not appear`).not.toMatch(/本节/);
@@ -255,18 +244,9 @@ describe('SEED × OpenEvo reader-voice protection', () => {
 
   it('preserves all twelve historical result-note URLs and primer migration redirects', () => {
     for (const slug of [
-      'webshop-training',
-      'seed-training',
-      'openevo-training',
-      'why-it-kept-failing',
-      'first-positive-transfer',
-      'independent-replication',
-      'second-generation',
-      'measurement-boundary',
-      'current-conclusion',
-      'benchmark-first',
-      'seed-faithful-benchmark',
-      'openevo-benchmark-design',
+      'webshop-training', 'seed-training', 'openevo-training', 'why-it-kept-failing',
+      'first-positive-transfer', 'independent-replication', 'second-generation', 'measurement-boundary',
+      'current-conclusion', 'benchmark-first', 'seed-faithful-benchmark', 'openevo-benchmark-design',
     ]) {
       expect(resultsAppendix, `${slug} missing from appendix deep cards or legacy links`).toContain(`/${slug}/`);
     }
