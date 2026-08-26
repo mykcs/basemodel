@@ -29,7 +29,7 @@ const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8
     </section>
 
     <section class="evidence-grid" aria-label={t('公平比较的证据层','Evidence layers for a fair comparison')}>
-      <article class="evidence-card paper" data-ui-audit-item><small>CODE + PAPER</small><strong>128</strong><p>{t('公开 WebShop launcher 的 validation batch size 是 128；论文也以 128 个 test samples 报告 WebShop 结果。','The released WebShop launcher uses validation batch size 128, and the paper reports WebShop results over 128 test samples.')}</p></article>
+      <article class="evidence-card paper" data-ui-audit-item><small>CODE + PAPER</small><strong>128</strong><p>{t('公开 WebShop 启动脚本把每次验证固定为 128 个任务；论文也以 128 个测试样本报告 WebShop 结果。','The released WebShop launcher uses validation batch size 128, and the paper reports WebShop results over 128 test samples.')}</p></article>
       <article class="evidence-card code" data-ui-audit-item><small>RELEASED-CODE DEFAULT</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small。','small WebShop products; released scripts default to use_small.')}</p></article>
       <article class="evidence-card boundary" data-ui-audit-item><small>PAPER BOUNDARY</small><strong>{t('具体 128 未知','Exact 128 unknown')}</strong><p>{t('论文没有公开最终 89.7 / 78.1% 对应的 validation 次序、checkpoint 与具体 128 个任务身份。','The paper does not publish the validation ordinal, checkpoint, or exact 128 task identities behind 89.7 / 78.1%.')}</p></article>
     </section>
