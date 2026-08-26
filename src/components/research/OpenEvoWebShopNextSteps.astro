@@ -10,7 +10,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const steps = [
   {
     index: 'N1',
-    title: t('先重建 SEED 公开代码“首次验证”会生成的 128 个任务', 'Reconstruct the 128 tasks from SEED public-code first validation'),
+    title: t('先把 SEED 真正会看到的 128 个任务重建出来——这里特指公开代码“首次验证”，不是论文最终 128 题', 'Reconstruct the 128 tasks SEED would actually see in released-code first validation — not the paper-final 128'),
     plain: t(
       '我们已经选对了 SEED 的任务编号范围，但后来发现“编号一样”还不足以保证实际任务一样。下一步不重新训练模型，而是先让固定版本的公开代码机械地产生一个定义明确的 128 任务验证面板，并确认重复构建两次都会得到同一份任务清单。这里说的是“公开代码的一次指定验证”，不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题。',
       'We selected the correct SEED task-number range, but later found that matching the numbers does not guarantee identical tasks. The next step is not retraining: mechanically rebuild one precisely defined 128-task validation panel from pinned public code and verify that two clean builds produce the same manifest. This means one specified public-code validation call, not a claim that we recovered the 128 tasks behind the paper’s 89.7 / 78.1%.',
