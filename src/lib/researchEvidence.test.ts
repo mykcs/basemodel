@@ -15,6 +15,11 @@ describe('research evidence href verification', () => {
     ).toBe(`${seedRoot}/agent_system/environments/prompts/webshop.py#L25-L28`);
   });
 
+  it('does not rewrite matching source paths outside the pinned SEED snapshot', () => {
+    const unrelated = 'https://github.com/example/repo/blob/main/agent_system/environments/env_package/webshop/projection.py#L32-L40';
+    expect(verifiedEvidenceHref(unrelated)).toBe(unrelated);
+  });
+
   it('pins superseded Track A task-construction evidence to the corrected immutable snapshot', () => {
     for (const path of [
       '/configs/experiment/webshop-seed-source-faithful-reproduction-v1.json',

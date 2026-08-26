@@ -38,6 +38,7 @@ const labels: Record<EvidenceKind, { zh: string; en: string }> = {
   'historical-record': { zh: '历史记录', en: 'Historical record' },
 };
 
+const seedExactRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
 const sourceFaithfulOldRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
 const sourceFaithfulCorrectedRoot = 'https://github.com/mykcs/openevo-experiment/blob/af89bb5c39aeab8aaa04eed57585c91e5598a968';
 const correctedSourceFaithfulPaths = new Set([
@@ -53,18 +54,22 @@ const correctedSourceFaithfulPaths = new Set([
  * The Results sources predate two source audits: the released SEED exact-line
  * ranges were verified one line beyond the originally guessed anchors, and the
  * first source-faithful Track A manifest was superseded by the af89 correction.
- * Keep unrelated historical evidence pinned to its original immutable commit.
+ * Keep unrelated repositories and historical evidence pinned exactly as given.
  */
 export const verifiedEvidenceHref = (href: string) => {
-  let verified = href
-    .replace(
-      '/agent_system/environments/env_package/webshop/projection.py#L32-L40',
-      '/agent_system/environments/env_package/webshop/projection.py#L32-L42',
-    )
-    .replace(
-      '/agent_system/environments/prompts/webshop.py#L25-L27',
-      '/agent_system/environments/prompts/webshop.py#L25-L28',
-    );
+  let verified = href;
+
+  if (verified.startsWith(seedExactRoot)) {
+    verified = verified
+      .replace(
+        '/agent_system/environments/env_package/webshop/projection.py#L32-L40',
+        '/agent_system/environments/env_package/webshop/projection.py#L32-L42',
+      )
+      .replace(
+        '/agent_system/environments/prompts/webshop.py#L25-L27',
+        '/agent_system/environments/prompts/webshop.py#L25-L28',
+      );
+  }
 
   if (verified.startsWith(sourceFaithfulOldRoot)) {
     const path = verified.slice(sourceFaithfulOldRoot.length);
