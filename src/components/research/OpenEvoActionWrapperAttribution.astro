@@ -1,0 +1,148 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const experimentRoot = 'https://github.com/mykcs/openevo-experiment/blob/115062ea0b47ee769a3e1591ffd3d5c89c4a353a';
+const h136ParserCommit = 'https://github.com/mykcs/openevo-experiment/commit/8e526e42de82e3fb417eb6dc4d892e068d73ef1f';
+const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+
+const evidenceLinks = [
+  {
+    label: t('BASE 原始回合：无 adapter 仍生成 [action]', 'BASE raw episode: [action] with no adapter'),
+    href: `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json`,
+  },
+  {
+    label: t('推理后端：模型输出直接 decode', 'Inference backend: direct decode of generated tokens'),
+    href: `${experimentRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py`,
+  },
+  {
+    label: t('自进化数据构建：严格过滤 parser failure', 'Self-evolution dataset builder: strict parser-failure filtering'),
+    href: `${experimentRoot}/scripts/openevo_webshop/build_self_evolution_dataset.py`,
+  },
+  {
+    label: t('H1.36 启动器：harvest 无 adapter、strict-v1 默认合同', 'H1.36 launcher: no-adapter harvest, strict-v1 default contract'),
+    href: `${experimentRoot}/scripts/openevo_webshop/launch_h136_qwen7b_self_evolution.sh`,
+  },
+  {
+    label: t('H1.36 收口报告：8 月 18 日已记录 wrapper 漂移', 'H1.36 closeout: wrapper drift recorded on Aug 18'),
+    href: `${experimentRoot}/docs/evidence/remote-runs/2026-08-18/h1.36/REPORT.md`,
+  },
+  {
+    label: t('8 月 18 日 parser 修复提交', 'Aug 18 parser-fix commit'),
+    href: h136ParserCommit,
+  },
+  {
+    label: t('SEED 官方 WebShop projection', 'Released SEED WebShop projection'),
+    href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py`,
+  },
+];
+---
+
+<section class="wrapper-attribution" id="action-wrapper-attribution" aria-labelledby="action-wrapper-attribution-title" data-ui-audit="layout overflow contrast">
+  <header class="wrapper-attribution__heading">
+    <p>{t('动作接口追责 · ATTRIBUTION', 'ACTION INTERFACE · ATTRIBUTION')}</p>
+    <div>
+      <h2 id="action-wrapper-attribution-title">{t('动作包装格式的责任链', 'Attributing the action-wrapper mismatch')}</h2>
+      <p>{t(
+        '继续往前追以后，能确认的责任链比“OpenEvo 输出了 [action]”更具体：方括号不是 OpenEvo Prompt 规定的格式，也没有证据表明是 SD-LoRA 的训练数据把它教进去；它首先出现在未加载任何 OpenEvo adapter 的 Qwen2.5-7B-Instruct 生成结果里。真正让第一次正式评测失效的是，我们的实验集成没有为这个已知格式漂移做兼容性预检。',
+        'Tracing one layer further gives a more precise account than “OpenEvo emitted [action]”: square brackets were not specified by the OpenEvo prompt, and the evidence does not show that SD-LoRA training taught the model this format. They already appear in Qwen2.5-7B-Instruct generations with no OpenEvo adapter loaded. The first formal evaluation became invalid because our integration did not preflight compatibility for this already-known formatting drift.',
+      )}</p>
+    </div>
+  </header>
+
+  <div class="wrapper-attribution__chain">
+    <article>
+      <span>01</span>
+      <div>
+        <h3>{t('谁真正生成了 [action]？', 'Who actually generated [action]?')}</h3>
+        <p>{t(
+          '保存下来的 BASE 原始回合给出了直接证据：adapter_load_receipt 明确是 adapter_loaded=false，Prompt 明确要求 <action>...</action>，但模型第 0 步的 raw_completion 仍写成了 [action] search[...]。同一个回合里，它有时又能正确写回 <action>...</action>，说明这是生成格式不稳定，而不是 Prompt 把格式定义成了方括号。',
+          'A saved BASE episode provides direct evidence: adapter_load_receipt says adapter_loaded=false, the prompt explicitly requests <action>...</action>, yet the model’s step-0 raw_completion still begins [action] search[...]. In the same episode it sometimes returns to the correct <action>...</action> form, showing unstable generation formatting rather than a prompt convention that specified square brackets.',
+        )}</p>
+        <p>{t(
+          '推理后端也没有做这类字符替换：TransformersBackend 调用 model.generate 后，直接对新生成 token 执行 tokenizer.decode 并返回。因此在现有仓库证据下，最深可以定到的是：Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 推理路径下自己产生了 wrapper 漂移。',
+          'The inference backend does not perform this character substitution either: after model.generate, TransformersBackend directly tokenizer.decode-s the newly generated tokens and returns the text. With the repository evidence available, the deepest supported attribution is therefore that Qwen2.5-7B-Instruct itself exhibits wrapper drift under this prompt + chat-template inference path.',
+        )}</p>
+      </div>
+    </article>
+
+    <article>
+      <span>02</span>
+      <div>
+        <h3>{t('是不是 OpenEvo 训练把这个习惯教进去的？', 'Did OpenEvo training teach this wrapper habit?')}</h3>
+        <p>{t(
+          '现有 H1.36 证据不支持这个说法。自进化数据构建器只接收 action_valid=true、没有 fallback、没有 parser failure 的成功轨迹，并把这些轨迹的 raw_completion 原样作为监督目标。H1.36 harvest 使用 adapter=none，而且没有覆盖 action-contract，因此走的是 strict-v1 <action>...</action> 合同；像 [action] 这种 strict parser 读不懂的样本会在进入训练集之前被排除。',
+          'The H1.36 evidence does not support that claim. The self-evolution dataset builder accepts only successful traces with action_valid=true, no fallback, and no parser failure, then uses those traces’ raw_completion as the supervision target. H1.36 harvest ran with adapter=none and did not override action-contract, so it used the strict-v1 <action>...</action> contract; malformed wrappers such as [action] were filtered out before entering the training set.',
+        )}</p>
+        <p>{t(
+          '这意味着 SD-LoRA 可能影响某种输出格式出现的频率，但我们没有证据说它创造了 [action] 这个习惯。相反，BASE 无 adapter 已经能够复现它。',
+          'SD-LoRA could still change how often a formatting variant appears, but there is no evidence that it created the [action] habit. The no-adapter BASE arm already reproduces it.',
+        )}</p>
+      </div>
+    </article>
+
+    <article>
+      <span>03</span>
+      <div>
+        <h3>{t('实验层真正该承担什么责任？', 'What responsibility belongs to the experiment harness?')}</h3>
+        <p>{t(
+          '这个格式漂移在 2026-08-18 的 H1.36 就已经被记录：7B BASE 会在 [action]cmd、=search[...]、<click[...]> 等写法之间漂移，仓库当时已经把它归为 harness / measurement mismatch，并加入了兼容 parser。到 2026-08-25 做 SEED-strict PRIMARY-v1 时，我们仍然让 SEED 官方 projection 直接面对这种已知漂移，没有先完成 parser compatibility preflight；于是合法的 search[...] / click[...] command 被投影成尾部碎片，驱动了错误的环境轨迹，最终形成两臂 0 分的测量假象。',
+          'This formatting drift had already been recorded in H1.36 on 2026-08-18: the 7B BASE model varied among forms such as [action]cmd, =search[...], and <click[...]>, and the repository already classified this as a harness / measurement mismatch and added a compatible parser. Yet the 2026-08-25 SEED-strict PRIMARY-v1 run still placed the released SEED projection directly in front of that known drift without first completing a parser-compatibility preflight. Valid search[...] / click[...] commands were therefore projected into tail fragments, changing the actions sent to the environment and producing the apparent all-zero measurement.',
+        )}</p>
+        <p class="wrapper-attribution__verdict">{t(
+          '所以更准确的定责是：模型产生已知格式漂移；实验 harness 没有在正式 SEED 集成前处理这个已知漂移。不能写成“OpenEvo 把 action 标签写错了”，也不能写成“SEED parser 有 bug”。',
+          'The precise attribution is therefore: the model produced a known formatting drift, and the experiment harness failed to handle that known drift before the formal SEED integration. It should not be described as “OpenEvo wrote the action tag incorrectly” or as “the SEED parser had a bug.”',
+        )}</p>
+      </div>
+    </article>
+  </div>
+
+  <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t(
+    '仓库证据还能排除 Prompt 规定、推理后端字符重写和 H1.36 malformed 训练样本这三种来源，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据导致了这种习惯。因此这里不能再把责任推给某个人、某个上游训练样本或某一段未知的 Qwen 训练数据。',
+    'Repository evidence can rule out three sources — a prompt convention, inference-backend character rewriting, and malformed H1.36 training samples — but it cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused this behavior. Responsibility therefore cannot be pushed further to a particular person, upstream training sample, or unknown slice of Qwen training data.',
+  )}</p>
+
+  <details class="wrapper-attribution__evidence">
+    <summary>{t('展开责任链证据', 'Expand attribution evidence')}</summary>
+    <div class="wrapper-attribution__links">
+      {evidenceLinks.map((link) => (
+        <a href={link.href} target="_blank" rel="noreferrer">
+          <span>{link.label}</span>
+          <b aria-hidden="true">↗</b>
+        </a>
+      ))}
+    </div>
+  </details>
+</section>
+
+<style>
+  .wrapper-attribution{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
+  .wrapper-attribution__heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .wrapper-attribution__heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
+  .wrapper-attribution__heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .wrapper-attribution__heading div>p{margin:0;max-width:76ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .wrapper-attribution__chain{display:grid;gap:10px}
+  .wrapper-attribution__chain article{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg);min-width:0}
+  .wrapper-attribution__chain article>span{color:var(--color-text-muted);font:650 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .wrapper-attribution__chain article>div{min-width:0}
+  .wrapper-attribution__chain h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4;letter-spacing:-.015em}
+  .wrapper-attribution__chain p{max-width:82ch;margin:8px 0 0;color:var(--color-text-muted);font-size:.86rem;line-height:1.72;overflow-wrap:anywhere}
+  .wrapper-attribution__verdict{padding:11px 13px;border-left:2px solid var(--color-accent);background:var(--color-surface);color:var(--color-text)!important}
+  .wrapper-attribution__boundary{max-width:86ch;margin:16px 0 0;color:var(--color-text-muted);font-size:.79rem;line-height:1.68;overflow-wrap:anywhere}
+  .wrapper-attribution__boundary strong{color:var(--color-text)}
+  .wrapper-attribution__evidence{margin-top:16px;border-top:1px solid var(--color-border)}
+  .wrapper-attribution__evidence summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}
+  .wrapper-attribution__evidence summary::-webkit-details-marker{display:none}
+  .wrapper-attribution__evidence summary::after{content:'＋';font-weight:500}.wrapper-attribution__evidence[open] summary::after{content:'−'}
+  .wrapper-attribution__links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
+  .wrapper-attribution__links a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);font-size:.76rem;line-height:1.48;text-decoration:none;min-width:0}
+  .wrapper-attribution__links a:hover,.wrapper-attribution__links a:focus-visible{border-color:var(--color-accent)}
+  .wrapper-attribution__links span{overflow-wrap:anywhere}.wrapper-attribution__links b{color:var(--color-accent)}
+  @media(max-width:720px){
+    .wrapper-attribution{padding-inline:18px}.wrapper-attribution__heading{grid-template-columns:1fr;gap:8px}.wrapper-attribution__chain article{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:17px}.wrapper-attribution__links{grid-template-columns:1fr}
+  }
+</style>
