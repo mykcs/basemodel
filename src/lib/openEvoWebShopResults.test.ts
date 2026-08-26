@@ -88,7 +88,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(readerContract).toContain('Density budget');
     expect(readerContract).toContain('Minimum reasoning bridge');
     expect(readerContract).toContain('你为什么这样说？');
-    expect(readerContract).toContain('2026-08-25 SEED official-heldout comparison v1 + repaired PRIMARY-v2');
+    expect(readerContract).toContain('2026-08-25 SEED official-held-out comparison v1 + repaired PRIMARY-v2');
     expect(readerContract).toContain('Post-v2 source-semantics audit and source-faithful successor');
     expect(readerContract).toContain('Any Agent making a non-trivial change to the Results route must');
   });
