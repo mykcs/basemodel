@@ -121,6 +121,46 @@ Do not organize the main reading path around the website's information architect
 
 The action-wrapper attribution trace is allowed as a collapsed technical depth layer after the seven-question narrative. It must not displace Q1-Q7 or make first-time readers learn the parser incident before they understand the research question.
 
+### 6.1 Technical-depth placement rule
+
+The amount of detail does **not** determine hierarchy. A long, important, code-backed investigation can still belong below the main reader path.
+
+Use this decision rule:
+
+```text
+does this material change the default reader's scientific answer, comparison, or next decision?
+  yes -> it may deserve visible/mainline placement
+  no  -> keep the answer visible and move the forensic depth into progressive disclosure
+```
+
+For Results, prefer this stack:
+
+```text
+question
+-> visible answer + minimum reasoning bridge
+-> local <details> for exact evidence tied to that answer
+-> optional collapsed technical trace for full chronology / responsibility analysis
+```
+
+A forensic trace should not become a major H2/H3 navigation destination merely because it contains many source links. If it exists to explain **how** one answer was measured, debugged, or attributed, it is usually secondary depth.
+
+When a full responsibility chain is useful, organize it chronologically and attach evidence at each step:
+
+```text
+upstream official contract
+-> our actual runtime prompt
+-> raw model output
+-> backend transformation boundary
+-> contemporaneous commit/report where the issue was known
+-> training-data inclusion/exclusion path
+-> formal experiment where the mismatch mattered
+-> repair and the exact variable changed
+```
+
+For the current action-wrapper case, that means SEED prompt/projection -> our saved prompt/raw BASE episode -> no-adapter wrapper drift -> H1.36 report + parser-compat commit -> H1.36 dataset filtering -> PRIMARY-v1 measurement failure -> PRIMARY-v2 compatibility repair.
+
+Keep this trace default-collapsed. It should be discoverable from the relevant Results context, but it should not compete with the seven-question narrative in the page outline or first-reader flow.
+
 ## 7. Latest scientific state to preserve
 
 ### H1.38B / H1.39
@@ -245,8 +285,9 @@ Any Agent making a non-trivial change to the Results route must:
 6. check whether exact numbers can move into `展开实验依据`;
 7. for every inferential sentence, verify that the visible prose contains the minimum observation that justifies it;
 8. for every highly specific observation, verify that the closest primary evidence is locally discoverable without forcing the reader to guess among unrelated links;
-9. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, the current Track A successor, and WB1 Track B progress are not conflated;
-10. for parser/model-output attribution, separately resolve official contract, actual prompt, raw output, backend transformations, training-data path, and harness behavior before assigning responsibility;
-11. run reader-voice/scientific-boundary tests and inspect the exact-head Preview.
+9. if adding a deep debugging/attribution narrative, decide explicitly whether it changes the default reader's scientific answer; if not, keep it below the seven-question spine as collapsed technical depth and use chronology + local code/commit/experiment evidence;
+10. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, the current Track A successor, and WB1 Track B progress are not conflated;
+11. for parser/model-output attribution, separately resolve official contract, actual prompt, raw output, backend transformations, training-data path, and harness behavior before assigning responsibility;
+12. run reader-voice/scientific-boundary tests and inspect the exact-head Preview.
 
 If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same coherent change. If an experiment merely starts running, update only the execution-state wording; do not invent its result.

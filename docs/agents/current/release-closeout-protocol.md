@@ -7,7 +7,7 @@ Audience: coding Agents, review Agents, integration Agents, release Agents
 
 This protocol owns the final transition from “a branch looked good at some point” to “the exact code that was accepted is the code that was merged and verified in Production.” It complements `deployment-policy.md`, `multi-pr-semantic-integration-playbook.md`, and `ui-change-visual-acceptance-gate.md`; it does not replace their provider, semantic-integration, or UI-specific rules.
 
-The historical case that motivated these rules is `../history/2026-08-17-pr147-pr148-release-closeout.md`.
+The historical cases that motivated these rules include `../history/2026-08-17-pr147-pr148-release-closeout.md` and `../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`.
 
 ## Core rule
 
@@ -141,6 +141,30 @@ provider exact-head state
 
 A READY deployment badge proves provider completion, not product acceptance.
 
+### 6.1 Prove the required Gate actually executed
+
+A successful shell command, build step, or provider deployment is not sufficient evidence that a **conditional** acceptance gate ran. A gate may return success after printing `skipped`, `ignored`, `not eligible`, or an equivalent branch-policy outcome.
+
+For every gate the acceptance contract says **must execute**, verify the execution chain in logs:
+
+```text
+expected gate start marker
+-> current branch/ref matched the execution condition
+-> expected test file(s) / test count actually launched
+-> assertions completed
+-> explicit PASS / zero failures
+```
+
+If the log says the gate was skipped, classify that separately:
+
+- if skip is the current designed cost/policy boundary, record it as **SKIPPED BY POLICY**, not PASS;
+- if the acceptance requirement says the gate must run on this ref (for example, a Production `main` gate), the skip is a release blocker and the branch/allowlist/wiring condition must be fixed;
+- do not change the test threshold merely because the gate was previously unreachable.
+
+The 2026-08-26 Results closeout exposed exactly this failure mode: `vercel-ui-gate` completed 91/91 while `vercel-lab-browser-gate` still printed `skipped for branch: main`. The release was not accepted until the gate condition was corrected and the focused lab suite actually launched and passed.
+
+This is the same ownership principle as escaped-regression wiring: **a test that exists, or a command that exits 0, is not durable protection unless the intended release path executes it.**
+
 ## 7. Race-check immediately before merge
 
 Right before merge, re-read live state and require all applicable conditions to still match the accepted evidence:
@@ -185,7 +209,7 @@ Verify:
 
 - Production built the intended merge/main SHA;
 - normal Production Gate/build succeeded;
-- branch-only expensive browser gates skip on `main` when that is the designed cost boundary;
+- conditional browser gates either execute or skip exactly according to the **current designed boundary**; any gate explicitly required on `main` must actually execute and may not be counted as passed when skipped;
 - representative changed routes return and render successfully;
 - canonical/hreflang/robots/sitemap/discovery are checked when the change can affect them.
 
@@ -206,6 +230,7 @@ semantic overlaps resolved:
 verify:deploy:
 build:
 browser matrix:
+required gates actually executed / policy-skipped:
 retry/flaky count:
 provider exact-head state:
 race check:
@@ -223,6 +248,7 @@ Do not collapse these stages into “CI green” or “merged successfully.”
 - equating `mergeable` with semantically compatible;
 - changing quality thresholds to make CI green;
 - accepting critical UI cases only because retry eventually passed;
+- counting a required gate as PASS when it only skipped/ignored;
 - resolving shared config by whole-file overwrite without identifying the current owner;
 - validating a worker head, then merging a different combined tree;
 - checking Preview but not Production;
@@ -242,6 +268,8 @@ is the GitHub status callback describing a real deployment or only provider stat
 ```
 
 A branch intentionally excluded by deployment policy is a **policy outcome**, not a provider outage. If exact-head hosted acceptance is required, use a ref/deployment path allowed by the current repository policy rather than misclassifying the absence of a Preview as flakiness.
+
+Do not create no-op commits/ref mutations merely to probe whether Git integration will “wake up”. Shared repository state is not a provider-discovery scratchpad; use provider/repository reads first.
 
 ## 13. Escaped regressions must be permanently wired, not merely tested once
 
@@ -285,6 +313,7 @@ Historical rationale: `../history/2026-08-26-results-release-node-runtime-retros
 - multi-PR semantic ownership: `multi-pr-semantic-integration-playbook.md`;
 - UI browser matrix/quality thresholds: `ui-change-visual-acceptance-gate.md` + executable Playwright tests;
 - just-in-time trigger routing: `scenario-trigger-registry.md`;
-- this file: final exact-head acceptance, race-check, merge lock, and Preview -> Production closeout.
+- Results reader hierarchy / technical-depth placement: `seed-openevo-results-reader-contract.md`;
+- this file: final exact-head acceptance, required-gate execution proof, race-check, merge lock, and Preview -> Production closeout.
 
 When another closeout incident reveals a reusable rule, update the best existing owner and keep the incident-specific evidence under `docs/agents/history/`.
