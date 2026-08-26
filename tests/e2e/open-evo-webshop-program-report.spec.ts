@@ -14,7 +14,7 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '先记住两个任务范围' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '先分清两种“新任务”' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(7);
