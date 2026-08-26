@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoRes
 import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
-<AppLayout title="ALFWorld 原理、世界状态与评测" description="逐步解释 ALFWorld 的文本化具身任务、物体与容器状态、动作前置条件、任务家族成功率和数据 split。" locale={locale}>
+<AppLayout title="ALFWorld 原理、世界状态与评测" description="逐步解释 ALFWorld 的文本化具身任务、物体与容器状态、动作前置条件、任务家族成功率，以及训练集 / 验证集划分（data split）。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="alfworld">
     <InteractiveResearchExplainer locale={locale} kind="alfworld" client:visible />
   </SeedOpenEvoResearchPage>
