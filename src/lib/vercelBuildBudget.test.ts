@@ -53,30 +53,25 @@ describe('Vercel build-budget contract', () => {
     ]) {
       expect(isBuildRelevantPath(filePath), filePath).toBe(false);
     }
-
-    expect(
-      shouldBuildForFiles(['README.md', 'docs/agents/current/example.md']),
-    ).toBe(false);
-    expect(shouldBuildForFiles(['README.md', 'src/pages/index.astro'])).toBe(
-      true,
-    );
+    expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md'])).toBe(false);
+    expect(shouldBuildForFiles(['README.md', 'src/pages/index.astro'])).toBe(true);
   });
 
-  it('keeps the Agent push/build budget discoverable and concrete', () => {
+  it('keeps the Agent push/build budget discoverable and concrete in the current policy owner', () => {
     for (const token of [
+      'Vercel build-budget discipline',
       'one coherent branch/PR',
       'one atomic multi-file push',
       'one initial exact-head Preview',
       'at most one corrective Preview',
       'one Production build per accepted release batch',
       'Sequential Contents API writes',
-      'Vercel deployment triggers: total / READY / ERROR / CANCELED',
+      'Git data API multi-file commit',
+      'deployment triggers separately as `READY`, `ERROR`, `CANCELED`',
     ]) {
       expect(deploymentPolicy).toContain(token);
     }
-
-    expect(latest).toContain('Vercel build budget');
-    expect(latest).toContain('Git data API commit (`blob/tree/commit/ref`)');
+    expect(latest).toContain('current/deployment-policy.md');
     expect(vercelWorkflow).toContain('The main saving comes from reducing pushes');
     expect(vercelWorkflow).toContain('VERCEL_GIT_PREVIOUS_SHA');
   });
@@ -84,16 +79,9 @@ describe('Vercel build-budget contract', () => {
   it('makes ordinary deployment reporting Vercel-first', () => {
     expect(root).toContain('Vercel is the only ordinary deployment provider');
     expect(root).toContain('Ordinary completion reports are **Vercel-first**');
-    expect(latest).toContain('Vercel-first reporting');
-    expect(latest).toContain(
-      'Do not add Cloudflare or another legacy provider to an ordinary report',
-    );
+    expect(latest).toContain('Vercel remains the ordinary deployment provider');
     expect(deploymentPolicy).toContain('Vercel-first completion report');
-    expect(deploymentPolicy).toContain(
-      'Do not include Cloudflare in an ordinary completion report',
-    );
-    expect(vercelWorkflow).toContain(
-      'Historical providers are not ordinary report dimensions',
-    );
+    expect(deploymentPolicy).toContain('Do not include Cloudflare in an ordinary completion report');
+    expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 });

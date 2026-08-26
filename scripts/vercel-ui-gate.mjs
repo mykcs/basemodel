@@ -5,10 +5,14 @@ const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
+const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
-  || resultsOverflowValidationBranch.test(branch);
+  || resultsOverflowValidationBranch.test(branch)
+  || resultsReleaseBranch.test(branch)
+  || fairComparisonExplainerBranch.test(branch);
 
 if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
@@ -48,8 +52,9 @@ const capture = (command, args) => {
 
 const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 const resultsOverflowOnly = resultsOverflowValidationBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+const fairComparisonExplainerOnly = fairComparisonExplainerBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 console.log(
-  focusedOnly || resultsOverflowOnly
+  focusedOnly || resultsOverflowOnly || fairComparisonExplainerOnly
     ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
     : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
 );
@@ -103,6 +108,18 @@ run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 if (resultsOverflowOnly) {
   run('npx', [
     'playwright', 'test', 'tests/e2e/results-mobile-overflow.spec.ts',
+    '--project=chromium', '--max-failures=1',
+  ], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+  });
+} else if (fairComparisonExplainerOnly) {
+  // This branch changes a bilingual research explanation, responsive layout,
+  // motion, details disclosure, and checkpoint timeline. Exercise that exact
+  // surface instead of skipping browser acceptance or paying for the unrelated
+  // full-site matrix.
+  run('npx', [
+    'playwright', 'test', 'tests/e2e/fair-comparison-eli5.spec.ts',
     '--project=chromium', '--max-failures=1',
   ], {
     CI: '1',

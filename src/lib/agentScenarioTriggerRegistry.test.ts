@@ -11,11 +11,9 @@ const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
-    for (const file of [root, readme]) {
-      expect(file).toContain('scenario-trigger-registry.md');
-    }
+    for (const file of [root, readme]) expect(file).toContain('scenario-trigger-registry.md');
     expect(root).toContain('scan scenario-trigger-registry');
-    expect(readme).toContain('scan scenario-trigger-registry against the task');
+    expect(readme).toContain('scan the task and load the matched bundle below');
     expect(registry).toContain('Do not wait for the owner to repeat these reminders');
     expect(principles).toContain('Make recurring lessons triggerable');
     expect(principles).toContain('re-scanned when the task changes state');
@@ -66,14 +64,7 @@ describe('Agent scenario-trigger discovery', () => {
   });
 
   it('keeps the offline four-GPU experiment as a real completion path', () => {
-    for (const token of [
-      '4×3090',
-      '8×A800 80GB',
-      '8×A100 80GB',
-      'nvidia-smi topo -m',
-      'SFTP is deployment/transfer, not version control',
-      'method effect is reproduced',
-    ]) expect(registry).toContain(token);
+    for (const token of ['4×3090','8×A800 80GB','8×A100 80GB','nvidia-smi topo -m','SFTP is deployment/transfer, not version control','method effect is reproduced']) expect(registry).toContain(token);
   });
 
   it('requires measured timing and current market evidence before paid-compute claims', () => {
@@ -90,25 +81,11 @@ describe('Agent scenario-trigger discovery', () => {
   });
 
   it('protects secret, hosting-modernization, cutover, and cross-repo boundaries', () => {
-    for (const token of [
-      'Do not commit a live bearer token as plaintext',
-      'Do not assume GitHub Secrets are a readable key-value store',
-      'Do not rewrite Astro/React merely because Vercel is used for Preview',
-      'A working shadow URL is evidence, **not release authorization**',
-      'Preserve acceptable provider-native asymmetry',
-      'Reuse the **decision pattern**, not literal configuration',
-    ]) expect(registry).toContain(token);
+    for (const token of ['Do not commit a live bearer token as plaintext','Do not assume GitHub Secrets are a readable key-value store','Do not rewrite Astro/React merely because Vercel is used for Preview','A working shadow URL is evidence, **not release authorization**','Preserve acceptable provider-native asymmetry','Reuse the **decision pattern**, not literal configuration']) expect(registry).toContain(token);
   });
 
   it('preserves the ML-to-Agent beginner bridge before deeper research taxonomy', () => {
-    for (const token of [
-      'known ML concepts',
-      'Agent runtime loop',
-      'runtime vs training',
-      'minimum RL vocabulary',
-      'map into the real paper/method',
-    ]) expect(registry).toContain(token);
-
+    for (const token of ['known ML concepts','Agent runtime loop','runtime vs training','minimum RL vocabulary','map into the real paper/method']) expect(registry).toContain(token);
     expect(seedWorkflow).toContain('known ML concepts');
     expect(seedWorkflow).toContain('Agent runtime loop');
     expect(seedWorkflow).toContain('runtime vs training');
@@ -125,22 +102,7 @@ describe('Agent scenario-trigger discovery', () => {
   });
 
   it('keeps the historical case reusable without freezing transient state', () => {
-    for (const token of [
-      'Build-budget lesson',
-      'Research-guide lesson',
-      'Offline-server lesson',
-      'Time/cost lesson',
-      'Actionable-content lesson',
-      'Credential lesson',
-      'Provider-ownership lesson',
-      'Workers-shadow lesson',
-      'Cross-repository lesson',
-      'Agent-knowledge lesson',
-      'Workflow-drift lesson',
-      'Exact-head lesson',
-      'Gate-integrity lesson',
-      'Beginner-bridge lesson',
-    ]) expect(history).toContain(token);
+    for (const token of ['Build-budget lesson','Research-guide lesson','Offline-server lesson','Time/cost lesson','Actionable-content lesson','Credential lesson','Provider-ownership lesson','Workers-shadow lesson','Cross-repository lesson','Agent-knowledge lesson','Workflow-drift lesson','Exact-head lesson','Gate-integrity lesson','Beginner-bridge lesson']) expect(history).toContain(token);
     expect(history).toContain('avoids preserving temporary Preview share URLs');
     expect(history).toContain('conversation memory is a hypothesis');
   });

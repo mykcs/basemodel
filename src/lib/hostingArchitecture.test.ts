@@ -30,34 +30,24 @@ describe('hosting architecture ownership', () => {
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
-
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain("['playwright', 'install', 'chromium']");
     expect(vercelUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
-
-    expect(vercelLabBrowserGate).toContain(
-      "branch === 'agent/sync-zju-shell-environment-20260816'",
-    );
+    expect(vercelLabBrowserGate).toContain("branch === 'agent/sync-zju-shell-environment-20260816'");
     expect(vercelLabBrowserGate).toContain("['playwright', 'install', 'chromium']");
     expect(vercelLabBrowserGate).toContain('tests/e2e/lab-playwright.config.ts');
-
     expect(architecture).toContain('Vercel Preview + Vercel Production');
-    expect(architecture).toContain(
-      'Vercel is the only ordinary deployment provider',
-    );
+    expect(architecture).toContain('Vercel is the only ordinary deployment provider');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
+    expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps legacy hosting outside ordinary workflow and reporting', () => {
+  it('keeps legacy hosting outside ordinary workflow and reporting in the current hosting owner', () => {
     expect(architecture).toContain('Legacy hosting — not ordinary workflow');
-    expect(architecture).toContain(
-      'not a quota to include in normal reports',
-    );
-    expect(latest).toContain('Legacy hosting note — conditional only');
-    expect(latest).toContain(
-      'not as a normal deployment step or completion-report line',
-    );
+    expect(architecture).toContain('not a quota to include in normal reports');
+    expect(architecture).toContain('not an ordinary release stage or completion-report item');
+    expect(latest).toContain('Cloudflare material is legacy rollback/provider-specific tooling only');
   });
 
   it('retains a static-only non-production Workers shadow option', () => {
@@ -72,24 +62,16 @@ describe('hosting architecture ownership', () => {
   });
 
   it('builds the dormant Workers shadow against the current Vercel canonical with noindex', () => {
-    expect(packageJson.scripts['build:workers:shadow']).toBe(
-      'node scripts/build-workers-shadow.mjs',
-    );
-    expect(shadowBuild).toContain(
-      `const CURRENT_PRODUCTION_URL = '${productionUrl}'`,
-    );
+    expect(packageJson.scripts['build:workers:shadow']).toBe('node scripts/build-workers-shadow.mjs');
+    expect(shadowBuild).toContain(`const CURRENT_PRODUCTION_URL = '${productionUrl}'`);
     expect(shadowBuild).toContain("PUBLIC_SEARCH_INDEXING: 'disabled'");
     expect(shadowBuild).toContain("run('npm', ['run', 'verify:deploy'])");
     expect(shadowBuild).toContain('robots noindex');
   });
 
   it('preserves security headers on the dormant Workers shadow', () => {
-    expect(staticHeaders).toContain(
-      'https://basemodel-workers-shadow.mykcs01.workers.dev/*',
-    );
+    expect(staticHeaders).toContain('https://basemodel-workers-shadow.mykcs01.workers.dev/*');
     expect(staticHeaders).toContain('X-Content-Type-Options: nosniff');
-    expect(staticHeaders).toContain(
-      'Referrer-Policy: strict-origin-when-cross-origin',
-    );
+    expect(staticHeaders).toContain('Referrer-Policy: strict-origin-when-cross-origin');
   });
 });

@@ -1,50 +1,45 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
-const steps = [
+const trackARoot = 'https://github.com/mykcs/openevo-experiment/blob/f80ae1816384bb7e8e82d193b22644e17f561f19';
+const wb1Root = 'https://github.com/mykcs/openevo-experiment/blob/17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d';
+const trackACloseout: EvidenceRef = { kind: 'machine-result', label: t('Track A 机器可读 closeout', 'Track A machine-readable closeout'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json` };
+const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: t('128/128 运行时语义验证 · PASS', '128/128 runtime semantic validation · PASS'), href: `${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json` };
+const trackAManifest: EvidenceRef = { kind: 'manifest', label: t('纠错后 128-slot 任务清单', 'Corrected 128-slot task manifest'), href: `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json` };
+const trackAEvidenceManifest: EvidenceRef = { kind: 'audit', label: t('256 episode byte-for-byte 证据清单', '256-episode byte-for-byte evidence manifest'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json` };
+const wb1CurrentState: EvidenceRef = { kind: 'machine-result', label: t('WB1 当前 campaign 状态', 'Current WB1 campaign state'), href: `${wb1Root}/configs/experiment/current-campaign.json` };
+
+type Step = { index: string; title: string; plain: string; technical: string; sources?: EvidenceRef[] };
+const steps: Step[] = [
   {
     index: 'N1',
-    title: t('先把 SEED 真正会看到的 128 个任务重建出来——这里特指公开代码“首次验证”，不是论文最终 128 题', 'Reconstruct the 128 tasks SEED would actually see in released-code first validation — not the paper-final 128'),
-    plain: t(
-      '我们已经选对了 SEED 的任务编号范围，但后来发现“编号一样”还不足以保证实际任务一样。下一步不重新训练模型，而是先让固定版本的公开代码机械地产生一个定义明确的 128 任务验证面板，并确认重复构建两次都会得到同一份任务清单。这里说的是“公开代码的一次指定验证”，不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题。',
-      'We selected the correct SEED task-number range, but later found that matching the numbers does not guarantee identical tasks. The next step is not retraining: mechanically rebuild one precisely defined 128-task validation panel from pinned public code and verify that two clean builds produce the same manifest. This means one specified public-code validation call, not a claim that we recovered the 128 tasks behind the paper’s 89.7 / 78.1%.',
-    ),
-    technical: t(
-      '专业解释：冻结验证基础随机种子（validation base seed）、每个工作进程随机种子（worker seed）、有序 session 抽样、最终指令（instruction）和数据身份；两次干净构建必须得到相同 canonical hash，之后才允许正式 GPU 评测。BASE 与 OpenEvo SD-LoRA 都保持冻结。',
-      'Technical detail: freeze the validation base seed, each worker seed, ordered session draw, resulting instruction, and data identity. Two clean builds must produce the same canonical hash before formal GPU evaluation is allowed. BASE and OpenEvo SD-LoRA remain frozen.',
-    ),
+    title: t('Track A 已经闭环：有效测量，但没有稳定胜出', 'Track A is closed: valid measurement, no stable win'),
+    plain: t('我们不再需要等“这 128 题到底是不是按 SEED 公开代码跑出来的”。纠错后的任务语义已经 128/128 验证通过，BASE 和冻结的 OpenEvo SD-LoRA 也都完成了 128 个有效 episode。OpenEvo 的平均 Task Score 更高一点，但 exact success 两边同为 3.9%，而配对置信区间跨 0，所以这一步给出的结论是“测到了一个方向，但没有证明稳定优势”。', 'We no longer need to wait on whether these 128 tasks match the released SEED runtime semantics. The corrected task semantics passed 128/128 validation, and BASE plus the frozen OpenEvo SD-LoRA each completed 128 valid episodes. OpenEvo has a somewhat higher mean Task Score, but exact success is 3.9% in both arms and the paired interval crosses zero. This is a measured direction, not a proven stable advantage.'),
+    technical: t('专业解释：BASE=7.17 / 3.9%，SD-LoRA=8.74 / 3.9%，paired Task Score Δ=+1.57，95% CI [-3.21,+6.31]。256 个 raw episode 与 reconciliation、analysis、release/GPU/W&B receipts 已 byte-for-byte 入库并通过 per-file SHA-256 验证，artifact_publication_status=PUBLISHED_AND_VERIFIED。这个面板对应公开代码“首次验证”，不是论文最终 128 题；这不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题。', 'Technical detail: BASE=7.17 / 3.9%, SD-LoRA=8.74 / 3.9%, paired Task Score Δ=+1.57 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts are committed byte-for-byte and pass per-file SHA-256 verification; artifact_publication_status=PUBLISHED_AND_VERIFIED. This panel is the released-code “first validation”, not the paper-final 128, and it is not a claim that we recovered the exact 128 tasks used for the paper’s 89.7 / 78.1%.') ,
+    sources: [trackACloseout, trackASemanticValidation, trackAManifest, trackAEvidenceManifest],
   },
   {
     index: 'N2',
-    title: t('再解决第二代“学新东西时把旧能力弄丢”', 'Then address second-generation forgetting'),
-    plain: t(
-      '第二次更新不是没有新经验，而是模型在吸收新经验时，没有同时稳定保住原来会做的任务和第一代已经得到的提升。',
-      'The second update did have new experience. The problem is that learning it did not stably preserve both prior capability and the first-generation gain.',
-    ),
-    technical: t(
-      '专业解释：下一轮机制实验会围绕经验回放（experience replay）和正则化（regularization），同时重新测试新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）。',
-      'Technical detail: the next mechanism study should use experience replay and regularization while retesting acquisition, retention, and preservation together.',
-    ),
+    title: t('真正剩下的主问题是 Track B / WB1，但当前不能直接续跑', 'The remaining primary question is Track B / WB1, but it cannot simply resume'),
+    plain: t('Track B 不再问“这套题能不能从官方代码恢复”，而是把 SEED 方法和 OpenEvo 放进同一个冻结世界，用同样的任务与匹配预算重新比较。当前 WB1 已经跑到 Gen28 的 episode 完成，但对应的 state-v28 没有形成，所以现在不是“继续按一下启动键”，而是要先决定这个缺失的状态更新是否还能被合法、可解释地补上。', 'Track B no longer asks whether a task panel can be recovered from released code. It reruns the SEED method and OpenEvo in one frozen world using the same tasks and matched budgets. WB1 has reached a point where Gen28 episodes completed but state-v28 was not created. The next step is therefore not simply pressing run again; it is deciding whether that missing state update can be authorized in a scientifically interpretable way.'),
+    technical: t('专业解释：当前 router 把 WB1 分类为 GEN28_COMPLETE_STATE_BARRIER_MISSING；Gen28 有 128/128 valid episodes、2 个 exact success、mean Task Score×100=2.8646，但 latest adoptable native state 仍是 state-v27。formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final_test_status=locked。当前 authority 明确禁止补 state-v28、启动 Gen29 或解锁 final，直到有新的治理/科学授权。', 'Technical detail: the current router classifies WB1 as GEN28_COMPLETE_STATE_BARRIER_MISSING. Gen28 has 128/128 valid episodes, 2 exact successes, and mean Task Score×100=2.8646, while the latest adoptable native state remains state-v27. formal_task_consumption_allowed=false, gpu_allocation_allowed=false, and final_test_status=locked. Current authority forbids backfilling state-v28, starting Gen29, or unlocking final until a new scientific/governance authorization is issued.'),
+    sources: [wb1CurrentState],
   },
   {
     index: 'N3',
     title: t('最后再去 ALFWorld 看这个现象是不是 WebShop 特有', 'Then test whether the effect is specific to WebShop'),
-    plain: t(
-      '如果 WebShop 上的一次迁移和多次连续更新都变得稳定，再把同样的问题搬到 ALFWorld。这样才能判断我们看到的是通用学习现象，还是只适用于 WebShop 的任务结构。',
-      'If one-step transfer and repeated updating become stable on WebShop, carry the same questions to ALFWorld to test whether the finding generalizes beyond WebShop-specific task structure.',
-    ),
-    technical: t(
-      '专业解释：跨环境复现（cross-environment replication）应该在 WebShop 的关键结论稳定以后进行，否则会把“方法机制不稳定”和“环境差异”两个变量混在一起。',
-      'Technical detail: cross-environment replication should follow stable WebShop mechanism evidence; otherwise method instability and environment differences would be confounded.',
-    ),
+    plain: t('如果 WebShop 上的方法比较和连续更新机制都变得稳定，再把同样的问题搬到 ALFWorld。这样才能判断我们看到的是通用学习现象，还是只适用于 WebShop 的任务结构。', 'If the method comparison and repeated-update mechanism become stable on WebShop, carry the same questions to ALFWorld to test whether the finding generalizes beyond WebShop-specific task structure.'),
+    technical: t('专业解释：跨环境复现（cross-environment replication）应该在 WebShop 的关键结论稳定以后进行，否则会把“方法机制不稳定”和“环境差异”两个变量混在一起。', 'Technical detail: cross-environment replication should follow stable WebShop mechanism evidence; otherwise method instability and environment differences would be confounded.'),
   },
-] as const;
+];
 ---
 
 <section class="next-steps" id="next-steps" aria-labelledby="next-steps-title">
@@ -52,14 +47,8 @@ const steps = [
     <p>{t('下一步实验 · NEXT STEPS', 'NEXT STEPS')}</p>
     <div>
       <h2 id="next-steps-title">{t('下一场真正会改变结论的实验', 'The next experiment that can change the conclusion')}</h2>
-      <p class="plain-intro">{t(
-        '最优先的事情不是继续调模型，而是先确认 BASE 和 OpenEvo 做的是同一套、由 SEED 公开代码规则明确生成的验证任务。任务本身对齐以后，再谈正式比较才有意义。',
-        'The highest-priority step is not more model tuning. First verify that BASE and OpenEvo receive the same validation tasks generated by a precisely defined SEED public-code procedure. Only then does the formal comparison have the intended meaning.',
-      )}</p>
-      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        '目前的历史 128-task panel 可以继续作为冻结的本地 SEED-compatible 面板，但不能重新标成源码忠实（source-faithful）的首次验证面板，更不能标成论文 89.7 / 78.1% 的确切分母。公开代码足以恢复“某个指定 evaluator 的某次 validation”任务语义；公开信息不足以唯一恢复论文最终表格对应的 validation 次序与 checkpoint。',
-        'The historical 128-task panel remains a valid frozen local SEED-compatible panel, but it must not be relabelled as the source-faithful first-validation panel or as the exact denominator behind paper 89.7 / 78.1%. Public code can recover the task semantics of a specified validation call for a specified evaluator; public information does not uniquely recover the validation ordinal and checkpoint behind the final table.',
-      )}</p>
+      <p class="plain-intro">{t('最优先的问题已经从“证明纠错后的 128 题逐题一致”推进到“如何在不破坏预算和状态连续性的前提下继续 Track B / WB1”。Track A 的 source-faithful 128×2 比较已经完成，并且它告诉我们：当前冻结 SD-LoRA 还没有在这套更可信的任务语义上证明稳定优势。', 'The highest-priority question has moved from proving the corrected 128 tasks match one by one to deciding how Track B / WB1 can continue without breaking budget or state continuity. The source-faithful Track A 128×2 comparison is complete, and it tells us that the frozen SD-LoRA has not established a stable advantage on this more trustworthy task semantic panel.')}</p>
+      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('历史 128-task panel 仍可作为冻结的本地 SEED-compatible 面板，但不能重新标成 source-faithful first-validation panel，更不能标成论文 89.7 / 78.1% 的 exact denominator。Track A 的 corrected panel 已通过 128/128 runtime semantic validation 并完成 paired measurement；与此同时，WB1 是独立 Track B，当前因 Gen28 state-v28 barrier 处于 no-execution 状态。', 'The historical 128-task panel remains a valid frozen local SEED-compatible panel, but it must not be relabelled as the source-faithful first-validation panel or as the exact denominator behind paper 89.7 / 78.1%. Track A’s corrected panel has passed 128/128 runtime semantic validation and completed its paired measurement; WB1 is a separate Track B line and is currently in a no-execution state because of the Gen28 state-v28 barrier.')}</p>
     </div>
   </header>
 
@@ -68,47 +57,21 @@ const steps = [
       <li class="step-card">
         <span class="step-index">{step.index}</span>
         <div>
-          <h3>{step.title}</h3>
-          <p class="step-plain">{step.plain}</p>
-          <p class="step-technical">{step.technical}</p>
+          <h3>{step.title}</h3><p class="step-plain">{step.plain}</p><p class="step-technical">{step.technical}</p>
+          {step.sources && <OpenEvoEvidenceRefs locale={locale} sources={step.sources} compact />}
         </div>
       </li>
     ))}
   </ol>
 
   <aside class="min-gap">
-    <strong>{t('两条后续路线回答不同问题', 'Two follow-up tracks answer different questions')}</strong>
-    <p>{t(
-      '路线 A（Track A）问：能不能忠实复现 SEED 公开代码能恢复出来的一次指定验证任务语义？路线 B（Track B，WB1）问：在同一个冻结世界、同一套任务、同一评测程序和匹配预算下，把 SEED 方法本身与 OpenEvo 重新跑一遍，谁表现更好？只有路线 B 才能真正回答 OpenEvo vs SEED，而不是把我们的数字直接和论文 89.7 / 78.1% 相减。',
-      'Track A asks whether task semantics for a specified validation call recoverable from released SEED code can be reproduced faithfully. Track B (WB1) asks which method performs better after rerunning the SEED method itself and OpenEvo under one frozen world, the same tasks, the same evaluator, and matched budgets. Only Track B directly answers OpenEvo vs SEED; it does not subtract our number from the paper’s 89.7 / 78.1%.',
-    )} <a href={localePath(locale, '/research/seed-openevo/experiment/')}>{t('查看实验设定 ↗', 'See the experiment setup ↗')}</a></p>
+    <strong>{t('两条路线回答不同问题', 'The two tracks answer different questions')}</strong>
+    <p>{t('路线 A（Track A）已经回答了：能不能忠实恢复 SEED 公开代码的一次指定 first-validation 任务语义，并在这套语义上做一次配对 BASE-vs-SD 测量？答案是可以恢复，也已经测完，但没有证明稳定提升。路线 B（Track B，WB1）继续回答更重要的问题：在同一个冻结世界、同一套任务、同一评测程序和匹配预算下，把 SEED 方法本身与 OpenEvo 重新跑一遍，谁表现更好？只有路线 B 才能真正回答 OpenEvo vs SEED，而不是把我们的数字和论文 89.7 / 78.1% 直接相减。', 'Track A has now answered whether one specified first-validation task semantics recoverable from released SEED code can be reproduced faithfully and used for a paired BASE-vs-SD measurement: yes, and the measurement is complete, but it does not establish a stable improvement. Track B (WB1) continues the more important question: under one frozen world, the same tasks, the same evaluator, and matched budgets, which method performs better when SEED itself and OpenEvo are rerun? Only Track B can truly answer OpenEvo vs SEED; it does not subtract our number from the paper’s 89.7 / 78.1%.')} <a href={localePath(locale, '/research/seed-openevo/experiment/')}>{t('查看实验设定 ↗', 'See the experiment setup ↗')}</a></p>
   </aside>
 </section>
 
 <style>
-  .next-steps{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
-  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
-  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;max-width:70ch;font-size:.94rem;line-height:1.68}
-  .plain-intro{color:var(--color-text)}
-  .technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}
-  .technical-intro strong{color:var(--color-text)}
-  .step-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-  .step-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:22px 24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
-  .step-index{color:var(--color-accent);font:700 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
-  .step-card h3{margin:0 0 8px;font-size:1.05rem;letter-spacing:-.02em}
-  .step-card p{margin:0;max-width:78ch;line-height:1.68}
-  .step-plain{color:var(--color-text);font-size:.87rem}
-  .step-technical{margin-top:8px!important;padding-top:8px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.78rem}
-  .min-gap{margin-top:12px;padding:18px 22px;border-left:3px solid var(--color-accent);border-radius:0 12px 12px 0;background:var(--color-surface)}
-  .min-gap>strong{display:block;margin-bottom:5px;font-size:.86rem}
-  .min-gap p{margin:0;max-width:84ch;font-size:.84rem;line-height:1.66}
-  .min-gap a{color:var(--color-accent);font-weight:750;text-decoration:none}
-  .min-gap a:hover{text-decoration:underline}
-  @media(max-width:720px){
-    .next-steps{padding-inline:18px}
-    .section-heading{grid-template-columns:1fr;gap:8px}
-    .step-card{grid-template-columns:1fr;gap:8px;padding:18px}
-  }
+  .next-steps{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}.section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:70ch;font-size:.94rem;line-height:1.68}.plain-intro{color:var(--color-text)}.technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}.technical-intro strong{color:var(--color-text)}
+  .step-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}.step-card{display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:22px 24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.step-index{color:var(--color-accent);font:700 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}.step-card h3{margin:0 0 8px;font-size:1.05rem;letter-spacing:-.02em}.step-card p{margin:0;max-width:78ch;line-height:1.68}.step-plain{color:var(--color-text);font-size:.87rem}.step-technical{margin-top:8px!important;padding-top:8px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.78rem}.min-gap{margin-top:12px;padding:18px 22px;border-left:3px solid var(--color-accent);border-radius:0 12px 12px 0;background:var(--color-surface)}.min-gap>strong{display:block;margin-bottom:5px;font-size:.86rem}.min-gap p{margin:0;max-width:84ch;font-size:.84rem;line-height:1.66}.min-gap a{color:var(--color-accent);font-weight:750;text-decoration:none}.min-gap a:hover{text-decoration:underline}
+  @media(max-width:720px){.next-steps{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.step-card{grid-template-columns:1fr;gap:8px;padding:18px}}
 </style>

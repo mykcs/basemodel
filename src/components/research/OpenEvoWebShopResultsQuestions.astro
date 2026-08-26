@@ -1,37 +1,26 @@
 ---
 import type { Locale } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const evidenceKind = (kind: string) => {
-  if (!zh) return kind;
-  const labels: Record<string, string> = {
-    Code: '源代码（Code）',
-    Config: '实验配置（Config）',
-    'Machine result': '机器结果（Machine result）',
-    'Human report': '人工报告（Human report）',
-    Manifest: '任务清单（Manifest）',
-    'Historical record': '历史记录（Historical record）',
-    Audit: '审计说明（Audit）',
-    Design: '实验设计（Design）',
-  };
-  return labels[kind] ?? kind;
-};
 
-const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
+const archiveRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
 const sealedRoot = 'https://github.com/mykcs/openevo-experiment/blob/0b6e7dcc718a85ed967feb85b5c95fd68f92d38e';
 const h142Root = 'https://github.com/mykcs/openevo-experiment/blob/d1f35ecdf84c61b07df7c646e83588d63b9297bd';
 const seedHeldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1acc1132f8bdad4269a4e15864a9cccb0';
-const seedSemanticsRoot = seedHeldoutRoot;
+const evidenceSnapshotRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
+const rawEpisodeRoot = 'https://github.com/mykcs/openevo-experiment/blob/115062ea0b47ee769a3e1591ffd3d5c89c4a353a';
 const seedOfficialRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const rawBaseEpisode = `${rawEpisodeRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json`;
 
 type Tone = 'established' | 'partial' | 'blocked' | 'measurement' | 'pending';
-type Observation = { label: string; value: string };
-type EvidenceLink = { kind: string; label: string; href: string };
+type Observation = { label: string; value: string; sources?: EvidenceRef[] };
 
-const questions: Array<{
+type Question = {
   id: string;
   index: string;
   tone: Tone;
@@ -40,67 +29,122 @@ const questions: Array<{
   conclusion: string;
   observations: Observation[];
   boundary: string;
-  links: EvidenceLink[];
-}> = [
+  links: EvidenceRef[];
+};
+
+const h0Reconciliation: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('H0 最终实验对账', 'H0 final reconciliation'),
+  href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json`,
+};
+const g2TrainingReconciliation: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('G2 训练对账', 'G2 training reconciliation'),
+  href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json`,
+};
+const h138bReconciliation: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('H1.38B 对账摘要', 'H1.38B reconciliation'),
+  href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json`,
+};
+const h139Reconciliation: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('H1.39 对账摘要', 'H1.39 reconciliation'),
+  href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/reconciliation-summary.json`,
+};
+const h140Upstream: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('H1.40 正式上游评估摘要', 'H1.40 formal upstream summary'),
+  href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json`,
+};
+const seedParser: EvidenceRef = {
+  kind: 'official-code',
+  label: t('SEED webshop_projection：标签与 fallback', 'SEED webshop_projection tags and fallback'),
+  href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40`,
+};
+const seedPrompt: EvidenceRef = {
+  kind: 'official-code',
+  label: t('SEED WebShop Prompt：要求 <action>', 'SEED WebShop prompt requires <action>'),
+  href: `${seedOfficialRoot}/agent_system/environments/prompts/webshop.py#L25-L27`,
+};
+const primaryV2Analysis: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('修复后主评测配对分析', 'Repaired-primary paired analysis'),
+  href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json`,
+};
+const primaryV2Reconciliation: EvidenceRef = {
+  kind: 'machine-result',
+  label: t('六个实验单元覆盖对账', 'Six-cell coverage reconciliation'),
+  href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json`,
+};
+const sourceFaithfulConfig: EvidenceRef = {
+  kind: 'preregistration',
+  label: t('源码忠实复现冻结配置 / next gate', 'Source-faithful preregistration / next gate'),
+  href: `${evidenceSnapshotRoot}/configs/experiment/webshop-seed-source-faithful-reproduction-v1.json`,
+};
+const sourceFaithfulManifest: EvidenceRef = {
+  kind: 'manifest',
+  label: t('已物化 128-slot 源码忠实任务清单', 'Materialized 128-slot source-faithful manifest'),
+  href: `${evidenceSnapshotRoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`,
+};
+const sourceFaithfulRebuild1: EvidenceRef = {
+  kind: 'runtime-receipt',
+  label: t('干净重建 #1 · PASS', 'Clean rebuild #1 · PASS'),
+  href: `${evidenceSnapshotRoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-1.json`,
+};
+const sourceFaithfulRebuild2: EvidenceRef = {
+  kind: 'runtime-receipt',
+  label: t('干净重建 #2 · PASS', 'Clean rebuild #2 · PASS'),
+  href: `${evidenceSnapshotRoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-2.json`,
+};
+
+const questions: Question[] = [
   {
-    id: 'q1',
-    index: '01',
-    tone: 'established',
+    id: 'q1', index: '01', tone: 'established',
     status: t('已确认 · 训练链路真实工作', 'Established · training path works'),
     question: t('OpenEvo 真的发生了学习吗？', 'Did OpenEvo actually learn?'),
     conclusion: t(
       '发生了。训练会真实改变模型参数，更新后的适配器也能保存并重新加载，第二代 G2 更新同样真实发生过。我们也已经见过“训练链路完全跑通，但闭环任务表现没有随之改善”的情况，所以“参数变了”只能证明学习机制真的执行了，还不能单独证明 WebShop 做得更好。',
-      'Yes. Training genuinely changes parameters, the updated adapter can be saved and reloaded, and the second-generation G2 update also genuinely occurred. We have also seen runs where the training path completed correctly but closed-loop task performance did not improve, so parameter change proves that learning machinery executed, not by itself that WebShop performance improved.',
+      'Yes. Training genuinely changes parameters, the updated adapter can be saved and reloaded, and the second-generation G2 update genuinely occurred. We have also seen runs where the training path completed correctly but closed-loop task performance did not improve, so parameter change proves that learning machinery executed, not by itself that WebShop performance improved.',
     ),
     observations: [
       {
         label: t('参数更新链', 'Parameter-update chain'),
-        value: t('SD-LoRA 优化器步骤（optimizer steps）、适配器（adapter）保存 / 重新加载，以及 G2 写入 16 个组件（components）、有效秩（effective rank）64，均有机器对账。', 'SD-LoRA optimizer steps, Adapter save/reload, and the G2 write to 16 components with effective rank 64 are all machine-reconciled.'),
+        value: t('SD-LoRA 优化器步骤（optimizer steps）、适配器（adapter）保存 / 重新加载，以及 G2 写入 16 个组件（components）、有效秩（effective rank）64，均有机器对账。', 'SD-LoRA optimizer steps, adapter save/reload, and the G2 write to 16 components with effective rank 64 are machine-reconciled.'),
+        sources: [g2TrainingReconciliation],
       },
       {
         label: t('闭环任务收益', 'Closed-loop task gain'),
         value: t('Phase G：12 个开发集晋级回合（promotion-dev episodes），三个实验组（arms）的分数 / 成功差值（score / win delta）全为 0。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
+        sources: [{ kind: 'historical-record', label: t('WebShop 项目总账中的 Phase G 记录', 'Phase G entry in the WebShop program ledger'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json` }],
       },
     ],
-    boundary: t(
-      '这些实验确认训练、保存、重新加载和适配器身份都真实成立，但不能单独证明任务收益提高。',
-      'These runs confirm training, save/reload, and adapter identity, but do not by themselves prove improved task outcomes.',
-    ),
+    boundary: t('这些实验确认训练、保存、重新加载和适配器身份都真实成立，但不能单独证明任务收益提高。', 'These runs confirm training, save/reload, and adapter identity, but do not by themselves prove improved task outcomes.'),
     links: [
-      { kind: 'Code', label: t('G2 实际训练启动器', 'G2 training launcher'), href: `${evidenceRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
-      { kind: 'Config', label: t('H1.40-R2 多代更新冻结配置', 'H1.40-R2 multi-generation frozen config'), href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
-      { kind: 'Machine result', label: t('G2 训练对账', 'G2 training reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/g2-training-reconciliation-v1.json` },
+      { kind: 'code', label: t('G2 实际训练启动器', 'G2 training launcher'), href: `${archiveRoot}/scripts/openevo_webshop/launch_h140_r2_g2_training.py` },
+      { kind: 'config', label: t('H1.40-R2 多代更新冻结配置', 'H1.40-R2 multi-generation frozen config'), href: `${archiveRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
+      g2TrainingReconciliation,
     ],
   },
   {
-    id: 'q2',
-    index: '02',
-    tone: 'established',
+    id: 'q2', index: '02', tone: 'established',
     status: t('已确认 · 能产生成功经验', 'Established · successful experience exists'),
     question: t('OpenEvo 有没有成功经验可以学习？', 'Does OpenEvo have successful experience to learn from?'),
-    conclusion: t(
-      '有。即使还没有经过 OpenEvo 更新，基础模型也会自然完成一部分 WebShop 任务，因此我们确实能收集到“模型自己做成功”的轨迹作为学习材料。',
-      'Yes. Even before an OpenEvo update, the base model naturally completes some WebShop tasks, so there is real model-generated successful experience available for learning.',
-    ),
+    conclusion: t('有。即使还没有经过 OpenEvo 更新，基础模型也会自然完成一部分 WebShop 任务，因此我们确实能收集到“模型自己做成功”的轨迹作为学习材料。', 'Yes. Even before an OpenEvo update, the base model naturally completes some WebShop tasks, so there is real model-generated successful experience available for learning.'),
     observations: [
-      { label: t('H0 尝试次数（attempts）', 'H0 attempts'), value: '128' },
-      { label: t('科学有效', 'Scientifically valid'), value: '96' },
-      { label: t('合格正向经验', 'Qualified positives'), value: '28' },
+      { label: t('H0 尝试次数（attempts）', 'H0 attempts'), value: '128', sources: [h0Reconciliation] },
+      { label: t('科学有效', 'Scientifically valid'), value: '96', sources: [h0Reconciliation] },
+      { label: t('合格正向经验', 'Qualified positives'), value: '28', sources: [h0Reconciliation] },
     ],
-    boundary: t(
-      'H0 只说明成功经验的供给不是零；它还不能证明这些经验会迁移到新的任务。',
-      'H0 shows that the supply of successful experience is nonzero; it does not yet prove transfer to new tasks.',
-    ),
+    boundary: t('H0 只说明成功经验的供给不是零；它还不能证明这些经验会迁移到新的任务。', 'H0 shows that the supply of successful experience is nonzero; it does not yet prove transfer to new tasks.'),
     links: [
-      { kind: 'Code', label: t('H0 自然成功启动器', 'H0 natural-success launcher'), href: `${evidenceRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
-      { kind: 'Machine result', label: t('H0 最终实验对账', 'H0 final reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h0-final/evidence/h0-final-reconciliation.json` },
-      { kind: 'Human report', label: t('2026-08-15 进展报告', '2026-08-15 progress report'), href: `${evidenceRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
+      { kind: 'code', label: t('H0 自然成功启动器', 'H0 natural-success launcher'), href: `${archiveRoot}/scripts/openevo_webshop/launch_h0_success_discovery.sh` },
+      h0Reconciliation,
+      { kind: 'human-report', label: t('2026-08-15 进展报告', '2026-08-15 progress report'), href: `${archiveRoot}/docs/reports/OPEN_EVO_WEBSHOP_PROGRESS_REPORT_2026-08-15.md` },
     ],
   },
   {
-    id: 'q3',
-    index: '03',
-    tone: 'partial',
+    id: 'q3', index: '03', tone: 'partial',
     status: t('部分确认 · 能学进去但不等于会做', 'Partial · fitting is not behavior'),
     question: t('有成功经验以后，OpenEvo 能把它学进去吗？', 'Given successful experience, can OpenEvo fit it?'),
     conclusion: t(
@@ -111,135 +155,112 @@ const questions: Array<{
       {
         label: t('H1.11 · 96 次尝试（attempts）', 'H1.11 · 96 attempts'),
         value: t('成功经验监督比失败经验监督更容易拟合；新任务闭环行为未改善。', 'Positive supervision fit better than failure supervision; fresh-task closed-loop behavior did not improve.'),
+        sources: [{ kind: 'machine-result', label: t('H1.11 实验对账', 'H1.11 reconciliation'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` }],
       },
       {
         label: t('H1.13 · 96 次尝试（attempts）', 'H1.13 · 96 attempts'),
         value: t('只训练动作目标也可以拟合；仍未形成稳定的新任务迁移。', 'Action-only targets fit; stable fresh-task transfer did not emerge.'),
+        sources: [{ kind: 'machine-result', label: t('H1.13 实验对账', 'H1.13 reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-15/h1.13/evidence/h1.13-reconciliation-v1.json#L1-L5` }],
       },
     ],
-    boundary: t(
-      '这些结果支持“训练目标可以被改变，但在 H1.11 / H1.13 这两轮里没有转化成稳定的新任务收益”；不能外推成“OpenEvo 永远不能迁移”，因为后面的 H1.38B / H1.39 确实观察到了可复现的单步迁移。',
-      'These results support “the training target can change without becoming stable fresh-task gains in H1.11 / H1.13”; they cannot be extrapolated into “OpenEvo can never transfer”, because later H1.38B / H1.39 did show reproducible one-step transfer.',
-    ),
+    boundary: t('这些结果支持“训练目标可以被改变，但在 H1.11 / H1.13 这两轮里没有转化成稳定的新任务收益”；不能外推成“OpenEvo 永远不能迁移”，因为后面的 H1.38B / H1.39 确实观察到了可复现的单步迁移。', 'These results support “the training target can change without becoming stable fresh-task gains in H1.11 / H1.13”; they cannot be extrapolated into “OpenEvo can never transfer”, because later H1.38B / H1.39 did show reproducible one-step transfer.'),
     links: [
-      { kind: 'Code', label: t('可追踪闭环评估器', 'Tracked closed-loop evaluator'), href: `${evidenceRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
-      { kind: 'Manifest', label: t('H1.11 冻结任务清单', 'H1.11 frozen task manifest'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
-      { kind: 'Machine result', label: t('H1.11 实验对账', 'H1.11 reconciliation'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
+      { kind: 'code', label: t('可追踪闭环评估器', 'Tracked closed-loop evaluator'), href: `${archiveRoot}/scripts/openevo_webshop/h1_closed_loop_tracked.py` },
+      { kind: 'manifest', label: t('H1.11 冻结任务清单', 'H1.11 frozen task manifest'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/task-manifest.json` },
+      { kind: 'machine-result', label: t('H1.11 实验对账', 'H1.11 reconciliation'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` },
+      { kind: 'machine-result', label: t('H1.13 实验对账', 'H1.13 reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-15/h1.13/evidence/h1.13-reconciliation-v1.json` },
     ],
   },
   {
-    id: 'q4',
-    index: '04',
-    tone: 'established',
+    id: 'q4', index: '04', tone: 'established',
     status: t('已复现 · 一次更新可以迁移', 'Replicated · one-step transfer'),
     question: t('学到的经验能迁移到新的任务吗？', 'Does the learned experience transfer to new tasks?'),
-    conclusion: t(
-      '能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。两次使用不同的新任务面板仍得到同方向提升，所以这里的“可迁移”不是从单次偶然波动推出来的。',
-      'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again. Because the same direction appeared on two different fresh-task panels, the transfer claim is not inferred from a single fluctuation.',
-    ),
+    conclusion: t('能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。两次使用不同的新任务面板仍得到同方向提升，所以这里的“可迁移”不是从单次偶然波动推出来的。', 'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again. Because the same direction appeared on two different fresh-task panels, the transfer claim is not inferred from a single fluctuation.'),
     observations: [
-      { label: t('H1.38B · 704 次尝试 / 668 次有效', 'H1.38B · 704 attempts / 668 valid'), value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]' },
-      { label: t('H1.39 · 768 次尝试 / 740 次有效', 'H1.39 · 768 attempts / 740 valid'), value: t('普通 LoRA（ordinary LoRA）− BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 个完整分组 / complete clusters）', 'ordinary − BASE = +0.1637 [0.0781, 0.2519]; SD − BASE = +0.2488 [0.1642, 0.3365] (58 complete clusters)') },
-      {
-        label: t('次级信号', 'Secondary signal'),
-        value: t('SD − 普通 LoRA（ordinary LoRA）= +0.0851 [0.0028, 0.1680]，符号翻转检验（sign-flip）p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于普通 LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'),
-      },
+      { label: t('H1.38B · 704 次尝试 / 668 次有效', 'H1.38B · 704 attempts / 668 valid'), value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]', sources: [h138bReconciliation] },
+      { label: t('H1.39 · 768 次尝试 / 740 次有效', 'H1.39 · 768 attempts / 740 valid'), value: t('普通 LoRA（ordinary LoRA）− BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 个完整分组 / complete clusters）', 'ordinary − BASE = +0.1637 [0.0781, 0.2519]; SD − BASE = +0.2488 [0.1642, 0.3365] (58 complete clusters)'), sources: [h139Reconciliation] },
+      { label: t('次级信号', 'Secondary signal'), value: t('SD − 普通 LoRA（ordinary LoRA）= +0.0851 [0.0028, 0.1680]，符号翻转检验（sign-flip）p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于普通 LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'), sources: [h139Reconciliation] },
     ],
-    boundary: t(
-      '这两组评估任务都来自 goal_idx ≥ 500，属于“OpenEvo 内部新任务、任务 ID 不重叠评估（OpenEvo internal fresh task-ID-disjoint evaluation）”。它们不是 0–499 的 SEED 官方保留任务评估。',
-      'Both evaluation panels draw from goal_idx ≥ 500 and are OpenEvo internal fresh task-ID-disjoint evaluations. They are not the SEED official held-out evaluation on 0–499.',
-    ),
+    boundary: t('这两组评估任务都来自 goal_idx ≥ 500，属于“OpenEvo 内部新任务、任务 ID 不重叠评估（OpenEvo internal fresh task-ID-disjoint evaluation）”。它们不是 0–499 的 SEED 官方保留任务评估。', 'Both evaluation panels draw from goal_idx ≥ 500 and are OpenEvo internal fresh task-ID-disjoint evaluations. They are not the SEED official held-out evaluation on 0–499.'),
     links: [
-      { kind: 'Manifest', label: t('H1.38B 冻结评估清单', 'H1.38B frozen eval manifest'), href: `${evidenceRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
-      { kind: 'Machine result', label: t('H1.38B 实验对账摘要', 'H1.38B reconciliation summary'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/reconciliation-summary.json` },
-      { kind: 'Human report', label: t('H1.38B 封存报告', 'H1.38B sealed report'), href: `${sealedRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md` },
-      { kind: 'Manifest', label: t('H1.39 独立任务组', 'H1.39 independent panel'), href: `${evidenceRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
-      { kind: 'Human report', label: t('H1.39 封存报告', 'H1.39 sealed report'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
+      { kind: 'manifest', label: t('H1.38B 冻结评估清单', 'H1.38B frozen eval manifest'), href: `${archiveRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` },
+      h138bReconciliation,
+      { kind: 'human-report', label: t('H1.38B 封存报告', 'H1.38B sealed report'), href: `${sealedRoot}/docs/evidence/remote-runs/2026-08-20/h1.38b-correction-02/REPORT.md` },
+      { kind: 'manifest', label: t('H1.39 独立任务组', 'H1.39 independent panel'), href: `${archiveRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` },
+      h139Reconciliation,
+      { kind: 'human-report', label: t('H1.39 封存报告', 'H1.39 sealed report'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md` },
     ],
   },
   {
-    id: 'q5',
-    index: '05',
-    tone: 'blocked',
+    id: 'q5', index: '05', tone: 'blocked',
     status: t('尚未建立 · 多代连续改进', 'Not established · multi-generation improvement'),
     question: t('第一代能迁移，是否意味着可以一直越学越好？', 'If generation one transfers, does improvement keep compounding?'),
-    conclusion: t(
-      '目前不能这样说。第二代确实收集到了新的成功经验，也真实写入了 G2；但后续检查里，旧能力表现出现下降方向，第一代已经复现的迁移收益也没有被稳定保住，而新经验获取本身还夹杂测量失效。因此这三件事没有同时成立，我们目前只能说“第二代持续整合尚未建立”，不能说 OpenEvo 已经会连续多代越学越好。',
-      'Not so far. The second generation did collect new successful experience and genuinely write G2, but subsequent checks showed a downward direction in prior capability, the replicated first-generation transfer gain was not stably preserved, and acquisition itself included invalid measurement. Those three requirements therefore did not hold together, so second-generation continual integration is not established.',
-    ),
+    conclusion: t('目前不能这样说。第二代确实收集到了新的成功经验，也真实写入了 G2；但后续检查里，旧能力表现出现下降方向，第一代已经复现的迁移收益也没有被稳定保住，而新经验获取本身还夹杂测量失效。因此这三件事没有同时成立，我们目前只能说“第二代持续整合尚未建立”，不能说 OpenEvo 已经会连续多代越学越好。', 'Not so far. The second generation did collect new successful experience and genuinely write G2, but subsequent checks showed a downward direction in prior capability, the replicated first-generation transfer gain was not stably preserved, and acquisition itself included invalid measurement. Those three requirements therefore did not hold together, so second-generation continual integration is not established.'),
     observations: [
-      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 次尝试 → 132 条合格正向经验 · 33 个合格任务身份 · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records') },
-      { label: t('G2 写入', 'G2 write'), value: t('16 个组件（components）· 有效秩（effective rank）64 · 8 次顺序增量写入', '16 components · effective rank 64 · 8 sequential increments') },
-      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；预留的 T2 新任务测试没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.') },
+      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 次尝试 → 132 条合格正向经验 · 33 个合格任务身份 · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records'), sources: [{ kind: 'machine-result', label: t('E2 harvest 对账', 'E2 harvest reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/e2-harvest-reconciliation-v1.json` }] },
+      { label: t('G2 写入', 'G2 write'), value: t('16 个组件（components）· 有效秩（effective rank）64 · 8 次顺序增量写入', '16 components · effective rank 64 · 8 sequential increments'), sources: [g2TrainingReconciliation] },
+      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；预留的 T2 新任务测试没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.'), sources: [h140Upstream] },
     ],
-    boundary: t(
-      'H1.40 支持“第二代持续整合尚未建立”。不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 没有运行。',
-      'H1.40 supports “second-generation continual integration is not established”. It must not be written as “G2 proved transfer failure on formal T2”, because T2 never ran.',
-    ),
+    boundary: t('H1.40 支持“第二代持续整合尚未建立”。不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 没有运行。', 'H1.40 supports “second-generation continual integration is not established”. It must not be written as “G2 proved transfer failure on formal T2”, because T2 never ran.'),
     links: [
-      { kind: 'Config', label: t('H1.40-R2 冻结协议', 'H1.40-R2 frozen protocol'), href: `${evidenceRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
-      { kind: 'Machine result', label: t('正式上游评估摘要', 'Formal upstream summary'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/formal-upstream-evaluation-v5b-summary.json` },
-      { kind: 'Human report', label: t('正式上游评估报告', 'Formal upstream evaluation report'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
+      { kind: 'config', label: t('H1.40-R2 冻结协议', 'H1.40-R2 frozen protocol'), href: `${archiveRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
+      { kind: 'machine-result', label: t('E2 harvest 对账', 'E2 harvest reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/e2-harvest-reconciliation-v1.json` },
+      g2TrainingReconciliation,
+      h140Upstream,
+      { kind: 'human-report', label: t('正式上游评估报告', 'Formal upstream evaluation report'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/FORMAL_UPSTREAM_EVALUATION_REPORT.md` },
     ],
   },
   {
-    id: 'q6',
-    index: '06',
-    tone: 'measurement',
+    id: 'q6', index: '06', tone: 'measurement',
     status: t('可区分 · 工程故障与模型能力', 'Separated · engineering vs model ability'),
     question: t('这些数字会不会只是工程故障的假象？', 'Could these numbers be engineering artifacts?'),
-    conclusion: t(
-      '会，所以这里我们专门花时间把“模型不会做”和“测量工具读错了”拆开。第一版正式评测里，模型其实生成了合法的 WebShop search[...] / click[...] 动作，但 OpenEvo 的动作包装格式与 SEED 官方解析接口不一致，导致有效动作被读成碎片并送进环境，最后出现两边都像是 0 分的假象。这个 0 不能解释成模型能力为 0。',
-      'Yes, which is why we spent time separating model failure from measurement failure. In the first formal evaluation, the model did produce valid WebShop search[...] / click[...] commands, but the OpenEvo action wrapper did not match the released SEED parsing interface. Valid commands were projected into fragments and sent to the environment, making both arms appear to score zero. That zero is not zero model capability.',
-    ),
+    conclusion: t('会，所以这里我们专门花时间把“模型不会做”和“测量工具读错了”拆开。第一版正式评测里，模型其实生成了合法的 WebShop search[...] / click[...] 动作，但模型输出的动作包装格式与 SEED 官方解析接口不一致，导致有效动作被读成碎片并送进环境，最后出现两边都像是 0 分的假象。这个 0 不能解释成模型能力为 0。', 'Yes, which is why we separate model failure from measurement failure. In the first formal evaluation, the model did produce valid WebShop search[...] / click[...] commands, but its action wrapper did not match the released SEED parsing interface. Valid commands were projected into fragments and sent to the environment, making both arms appear to score zero. That zero is not zero model capability.'),
     observations: [
-      { label: t('SEED 官方解析规则', 'Released SEED parser'), value: t('webshop_projection 只识别 <action>...</action>；找不到时退化成输出最后 20 个字符。', 'webshop_projection recognises only <action>...</action>; when missing, it falls back to the last 20 characters of the completion.') },
-      { label: t('冻结 OpenEvo policy 输出', 'Frozen OpenEvo policy output'), value: t('原始 episode 中实际出现 [action]...[/action]；模型给出的 search[...] / click[...] 本身可以是合法动作，但 wrapper 不兼容。', 'Raw episodes contain [action]...[/action]; the underlying search[...] / click[...] command can be valid while the wrapper is incompatible.') },
-      { label: t('修复后复测', 'Parser-compatible rerun'), value: t('只修复动作 wrapper 识别并对 BASE / SD-LoRA 使用同一合同后，BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%；配对区间仍跨 0。', 'After changing only wrapper recognition under the same contract for BASE / SD-LoRA, BASE = 4.1 / 0.0% and SD-LoRA = 7.3 / 2.3%; the paired interval still crosses zero.') },
-      { label: 'H1.41', value: t('机制结论只使用当时已经通过有效性检查的科学分母。', 'Mechanism conclusions use only the scientifically valid denominator available at that cutoff.') },
-      { label: t('H1.42 · 后续记录', 'H1.42 · later record'), value: t('之后继续校准测量链，Stage B 仍留下两个无效分组（clusters），因此没有强行下方法结论。', 'Later measurement calibration still left two invalid clusters in Stage B, so no method conclusion was forced from them.') },
+      { label: t('SEED 官方解析规则', 'Released SEED parser'), value: t('webshop_projection 只识别 <action>...</action>；找不到时退化成输出最后 20 个字符。', 'webshop_projection recognises only <action>...</action>; when missing, it falls back to the last 20 characters of the completion.'), sources: [seedParser] },
+      { label: t('SEED 官方 Prompt', 'Released SEED prompt'), value: t('官方 WebShop Prompt 明确要求动作放在 <action> </action> tags 内。', 'The released WebShop prompt explicitly requires the action inside <action> </action> tags.'), sources: [seedPrompt] },
+      { label: t('当时实际送给 BASE 的 Prompt', 'Prompt actually sent to BASE'), value: t('保存下来的原始回合同样要求 <action>，没有要求 [action]。', 'The saved raw episode likewise asks for <action>; it does not ask for [action].'), sources: [{ kind: 'raw-episode', label: t('BASE 原始回合 · step 0 Prompt', 'BASE raw episode · step-0 prompt'), href: `${rawBaseEpisode}#L42-L43` }] },
+      { label: t('BASE 无 adapter 的原始输出', 'Raw BASE output with no adapter'), value: t('adapter_loaded=false，但 step 0 raw_completion 仍出现 [action] search[...]；下一步又能写回 <action>...</action>。', 'adapter_loaded=false, yet step-0 raw_completion contains [action] search[...]; the next step returns to <action>...</action>.'), sources: [{ kind: 'raw-episode', label: t('adapter receipt', 'adapter receipt'), href: `${rawBaseEpisode}#L2-L12` }, { kind: 'raw-episode', label: t('step 0–1 raw completions', 'step 0–1 raw completions'), href: `${rawBaseEpisode}#L42-L53` }] },
+      { label: t('推理后端', 'Inference backend'), value: t('Transformers backend 在 model.generate 后只切新 token、tokenizer decode 并直接返回，没有 < → [ 的 bracket rewrite。', 'After model.generate the Transformers backend slices generated tokens, decodes them, and returns the text; there is no < → [ bracket rewrite.'), sources: [{ kind: 'code', label: t('generate → decode → return', 'generate → decode → return'), href: `${rawEpisodeRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py#L227-L232` }] },
+      { label: t('修复后复测', 'Parser-compatible rerun'), value: t('只修复动作 wrapper 识别并对 BASE / SD-LoRA 使用同一合同后，BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%；配对区间仍跨 0。', 'After changing only wrapper recognition under the same contract for BASE / SD-LoRA, BASE = 4.1 / 0.0% and SD-LoRA = 7.3 / 2.3%; the paired interval still crosses zero.'), sources: [primaryV2Analysis, primaryV2Reconciliation] },
+      { label: 'H1.41 / H1.42', value: t('机制结论只使用 H1.41 时已经通过有效性检查的科学分母；H1.42 是之后的测量校准记录，不能反过来改写 H1.41 的机制结论。', 'Mechanism conclusions use the scientifically valid denominator available at H1.41; H1.42 is a later measurement-calibration record and cannot be blended backward.'), sources: [{ kind: 'machine-result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` }, { kind: 'historical-record', label: t('H1.42 Stage B 收口', 'H1.42 Stage B closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` } ] },
     ],
-    boundary: t(
-      '专业上，这次问题属于我们的实验集成 / 测量接口没有提前完成兼容性预检：SEED 官方 parser 在执行它自己的 <action>...</action> 合同，冻结 OpenEvo policy 使用另一种 [action]...[/action] wrapper。不能说“SEED parser 有 bug”，也不能说“OpenEvo 不会做 WebShop”。H1.42 发生在 H1.41 之后，只能作为后续测量边界记录，不能反过来改写 H1.41 的机制结论。',
-      'Professionally, this was an integration/measurement-interface failure in our experiment: compatibility between the released SEED <action>...</action> contract and the frozen OpenEvo [action]...[/action] wrapper was not preflighted before formal evaluation. It is neither a SEED-parser bug claim nor evidence that OpenEvo cannot do WebShop. H1.42 occurred after H1.41 and remains a later measurement-boundary record.',
-    ),
+    boundary: t('专业上，这次问题属于我们的实验集成 / 测量接口没有提前完成兼容性预检：SEED 官方 parser 在执行它自己的 <action>...</action> 合同，Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下会发生 wrapper 漂移。不能说“SEED parser 有 bug”，也不能说“OpenEvo Prompt 要求 [action]”，更不能把 PRIMARY-v1 的 0 写成模型能力为 0。更深的责任边界见紧随其后的技术回溯。', 'Professionally, this was an integration/measurement-interface failure in our experiment: the released SEED parser enforced its <action>...</action> contract while Qwen2.5-7B-Instruct drifted in wrapper format under this prompt + chat-template path, and compatibility was not preflighted before formal evaluation. This is not a SEED-parser bug, an OpenEvo prompt convention, or evidence of zero capability.'),
     links: [
-      { kind: 'Code', label: t('SEED 官方 WebShop 动作解析器', 'Released SEED WebShop action parser'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/projection.py` },
-      { kind: 'Human report', label: t('PRIMARY-v1 根因与修复后结果', 'PRIMARY-v1 root cause and repaired result'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      { kind: 'Machine result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` },
-      { kind: 'Historical record', label: t('H1.42 Stage B 测量校准收口', 'H1.42 Stage B measurement closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` },
-      { kind: 'Machine result', label: t('H1.42 Stage B 对账', 'H1.42 Stage B reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` },
+      seedParser,
+      seedPrompt,
+      { kind: 'raw-episode', label: t('BASE 原始回合', 'BASE raw episode'), href: `${rawBaseEpisode}#L2-L53` },
+      { kind: 'code', label: t('Transformers 推理后端', 'Transformers inference backend'), href: `${rawEpisodeRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py#L227-L232` },
+      { kind: 'human-report', label: t('PRIMARY-v1 根因与修复后结果', 'PRIMARY-v1 root cause and repaired result'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
+      primaryV2Analysis,
+      { kind: 'machine-result', label: t('H1.42 Stage B 对账', 'H1.42 Stage B reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` },
     ],
   },
   {
-    id: 'q7',
-    index: '07',
-    tone: 'pending',
-    status: t('修复后复测已完成 · 源码语义待验证', 'Repaired rerun complete · source-faithful panel pending'),
+    id: 'q7', index: '07', tone: 'pending',
+    status: t('源码忠实 128 已物化 · 正式执行未授权', 'Source-faithful 128 materialized · formal execution not authorized'),
     question: t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?'),
-    conclusion: t(
-      '还缺一次定义严格的公平复测。修复动作解析接口以后，OpenEvo 在旧的 128 个冻结任务上表现更好一些，但统计不确定性仍然很大；随后我们又发现，这 128 个任务虽然来自正确的 0–499 范围，却不一定等同于 SEED 公开代码某个指定 validation 实际会生成的任务。更重要的是，公开信息也不足以知道论文 89.7 / 78.1% 最终究竟对应哪一次 128 题验证。所以下一步先重建“固定版本公开代码的首次验证”这套定义明确的 128 题，再比较同一个冻结 BASE 和 SD-LoRA；它不能被冒充成论文最终那 128 题。',
-      'One rigorously defined comparison remains. After repairing the action-parsing interface, OpenEvo looked better on the historical frozen 128-task panel, but uncertainty remained large. A later audit showed that the panel came from the correct 0–499 range without necessarily reproducing a specified validation call from released SEED code. More importantly, public information does not reveal which 128-task validation produced the paper’s final 89.7 / 78.1%. The next step is therefore to rebuild the precisely defined first-validation panel from pinned public code and compare the same frozen BASE and SD-LoRA; it must not be relabelled as the paper’s final 128 tasks.',
-    ),
+    conclusion: t('还缺源码忠实面板上的正式 BASE vs SD-LoRA 比较，但“把 128 个任务定义清楚并重建出来”这一步已经完成。历史修复后 PRIMARY-v2 在旧冻结面板上给出正向但不稳定的信号；随后源码审计证明 numeric session index 不是完整任务身份。现在 128-slot source-faithful manifest 已经物化，两次干净重建得到一致 hash，但预注册仍明确禁止正式任务消费。下一关是先在服务器上做 128/128 runtime semantic validation，再通过单独 activation/release 才能启动正式 GPU 评测。', 'The formal BASE-vs-SD-LoRA comparison on the source-faithful panel is still missing, but task construction itself is no longer pending. Historical repaired PRIMARY-v2 produced a positive but uncertain signal on the old frozen panel; the later source audit showed that numeric session index is not a complete task identity. The 128-slot source-faithful manifest is now materialized and two clean rebuilds match, while the preregistration still forbids formal task consumption. The next gate is 128/128 server runtime semantic validation followed by a separate activation/release before formal GPU evaluation.'),
     observations: [
-      { label: t('完整战役规模', 'Full campaign coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元（cells）均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.') },
-      { label: t('SEED 原始主评测（PRIMARY-v1）', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作包装格式（wrapper）不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.') },
-      { label: t('修复后主评测（PRIMARY-v2）', 'Repaired PRIMARY-v2'), value: t('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]；正向 / 持平 / 负向 = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.') },
-      { label: t('公开代码能确定的 128', 'Public-code-recoverable 128'), value: t('全新 evaluator 的第一次 validation 可以机械推导：validation base seed=1000；session draw=RandomState(1000)；worker seed=1000+slot。worker seed 会改变 goal ordering，因此数值 session index 不是完整任务身份。', 'The first validation of a fresh evaluator is mechanically recoverable: validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity.') },
-      { label: t('论文最终 128 的边界', 'Paper-final 128 boundary'), value: t('公开材料没有把 89.7 / 78.1% 绑定到“第几次 validation + 哪个 checkpoint + 当时的具体任务身份”，所以论文最终 exact 128 不能由公开信息唯一恢复。', 'Public materials do not bind 89.7 / 78.1% to a validation ordinal, checkpoint, and concrete task identities, so the paper-final exact 128 is not uniquely recoverable from public information.') },
+      { label: t('完整历史战役规模', 'Historical campaign coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元（cells）均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.'), sources: [primaryV2Reconciliation] },
+      { label: t('SEED 原始主评测（PRIMARY-v1）', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作包装格式（wrapper）不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.'), sources: [{ kind: 'human-report', label: t('PRIMARY-v1 根因记录', 'PRIMARY-v1 root-cause record'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` }, { kind: 'raw-episode', label: t('BASE 原始回合', 'BASE raw episode'), href: `${rawBaseEpisode}#L42-L53` }] },
+      { label: t('修复后主评测（PRIMARY-v2）', 'Repaired PRIMARY-v2'), value: t('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]；正向 / 持平 / 负向 = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.'), sources: [primaryV2Analysis] },
+      { label: t('公开代码能确定的 128', 'Public-code-recoverable 128'), value: t('全新 evaluator 的第一次 validation 可以机械推导：validation base seed=1000；session draw=RandomState(1000)；worker seed=1000+slot。worker seed 会改变 goal ordering，因此数值 session index 不是完整任务身份。', 'The first validation of a fresh evaluator is mechanically recoverable: validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity.'), sources: [sourceFaithfulConfig, { kind: 'official-code', label: t('SEED validation 抽样与 worker seed', 'SEED validation sampling and worker seed'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/envs.py` }] },
+      { label: t('源码忠实面板状态', 'Source-faithful panel state'), value: t('128-slot manifest 已物化；两次 clean rebuild 都为 PASS，manifest_content_sha256 与 manifest_file_sha256 完全一致；当前仍是 PREPARED，formal_task_consumption_allowed=false。', 'The 128-slot manifest is materialized; both clean rebuilds PASS with identical manifest_content_sha256 and manifest_file_sha256; the current preregistered state remains PREPARED with formal_task_consumption_allowed=false.'), sources: [sourceFaithfulManifest, sourceFaithfulRebuild1, sourceFaithfulRebuild2, sourceFaithfulConfig] },
+      { label: t('论文最终 128 的边界', 'Paper-final 128 boundary'), value: t('公开材料没有把 89.7 / 78.1% 绑定到“第几次 validation + 哪个 checkpoint + 当时的具体任务身份”，所以论文最终 exact 128 不能由公开信息唯一恢复。', 'Public materials do not bind 89.7 / 78.1% to a validation ordinal, checkpoint, and concrete task identities, so the paper-final exact 128 is not uniquely recoverable from public information.'), sources: [{ kind: 'audit', label: t('公开代码任务语义复现说明', 'Public-code task-semantics reproduction note'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` }] },
     ],
-    boundary: t(
-      '专业上要分三种 claim：①公开代码规定每次 validation 是 128 个任务；②固定代码、数据、seed 和某个 validation 次序后，可以机械重建那一次 128 个语义任务；③论文 89.7 / 78.1% 究竟是哪一次 validation / checkpoint，目前公开信息不能唯一确定。因此修复后 PRIMARY 是旧冻结面板上可解释的本地“与 SEED 评测设置兼容（SEED-compatible）”结果，但它不是论文的确切评测分母，也不是“源码忠实（source-faithful）”的首次验证语义面板；SEED 的检查点 / 训练结果（checkpoint / training）仍未在本地复现。新的源码忠实后续设计目前只允许准备、不允许正式执行（design-only-not-authorized）。',
-      'Professionally, three claims must remain separate: (1) released code fixes validation size at 128 tasks; (2) with code, data, seeds, and a validation ordinal fixed, that validation’s 128 semantic tasks can be mechanically rebuilt; (3) public information does not uniquely identify which validation/checkpoint produced paper 89.7 / 78.1%. The repaired PRIMARY is therefore an interpretable local SEED-compatible result on the historical frozen panel, but it is neither the paper’s exact denominator nor a source-faithful first-validation semantic panel; the SEED checkpoint/training result has still not been locally reproduced. The source-faithful successor remains design-only-not-authorized.',
-    ),
+    boundary: t('专业上要分三种 claim：①公开代码规定每次 validation 是 128 个任务；②固定代码、数据、seed 和某个 validation 次序后，可以机械重建那一次 128 个语义任务，而且这一步现在已经完成并通过双重重建校验；③论文 89.7 / 78.1% 究竟是哪一次 validation / checkpoint，目前公开信息不能唯一确定。历史 repaired PRIMARY 仍只是旧冻结面板上可解释的本地 SEED-compatible 结果，不是论文的确切评测分母；SEED 的 checkpoint / training）仍未在本地复现。Track A 当前是 PREPARED 而不是科学结果：正式任务消费仍未授权。', 'Three claims remain distinct: (1) released code fixes validation at 128 tasks; (2) with code, data, seeds, and validation ordinal fixed, that validation’s 128 semantic tasks can be mechanically rebuilt — and this construction now exists with matching rebuild receipts; (3) public information still does not uniquely identify which validation/checkpoint produced paper 89.7 / 78.1%. Historical repaired PRIMARY remains a local SEED-compatible result on the old frozen panel, not the paper’s exact denominator. The SEED checkpoint/training result is not locally reproduced. Track A is PREPARED task-construction evidence, not a scientific outcome; formal task consumption remains unauthorized.'),
     links: [
-      { kind: 'Human report', label: t('完整三层结果与中文摘要', 'Complete three-layer results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      { kind: 'Machine result', label: t('修复后主评测配对分析', 'Repaired-primary paired analysis'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
-      { kind: 'Machine result', label: t('六个实验单元身份与覆盖对账', 'Six-cell identity and coverage reconciliation'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
-      { kind: 'Code', label: t('SEED 官方 WebShop launcher：VAL_DATA_SIZE=128', 'Released SEED WebShop launcher: VAL_DATA_SIZE=128'), href: `${seedOfficialRoot}/examples/seed_trainer/_common/webshop.sh` },
-      { kind: 'Code', label: t('SEED 官方 WebShop validation 抽样逻辑', 'Released SEED WebShop validation sampling'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/envs.py` },
-      { kind: 'Audit', label: t('SEED 公共代码任务语义复现说明', 'SEED public-code task-semantics reproduction note'), href: `${seedSemanticsRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` },
-      { kind: 'Design', label: t('源码忠实后续方案的机器可读设计', 'Source-faithful successor design'), href: `${seedSemanticsRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
+      { kind: 'human-report', label: t('完整三层历史结果', 'Complete historical three-layer results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
+      primaryV2Analysis,
+      primaryV2Reconciliation,
+      { kind: 'official-code', label: t('SEED WebShop launcher：VAL_DATA_SIZE=128', 'SEED WebShop launcher: VAL_DATA_SIZE=128'), href: `${seedOfficialRoot}/examples/seed_trainer/_common/webshop.sh` },
+      { kind: 'official-code', label: t('SEED WebShop validation 抽样逻辑', 'SEED WebShop validation sampling'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/envs.py` },
+      { kind: 'audit', label: t('SEED 公共代码任务语义复现说明', 'SEED public-code task-semantics reproduction note'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` },
+      sourceFaithfulConfig,
+      sourceFaithfulManifest,
+      sourceFaithfulRebuild1,
+      sourceFaithfulRebuild2,
+      { kind: 'design', label: t('早期源码忠实后续设计（历史）', 'Earlier source-faithful successor design (historical)'), href: `${seedHeldoutRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
     ],
   },
 ];
@@ -256,10 +277,7 @@ const transferRows = [
     <p>{t('七个问题 · SEVEN QUESTIONS', 'SEVEN QUESTIONS')}</p>
     <div>
       <h2 id="questions-title">{t('我们现在能回答的七个问题', 'The seven questions we can now answer')}</h2>
-      <p>{t(
-        '顺序很简单：先确认训练真的发生，再看有没有成功经验、能不能学进去、能不能迁移、能不能连续多代保持；最后再检查测量是否可信，以及和 SEED 的官方保留任务还差哪一步。',
-        'First confirm that learning really occurred, then ask whether useful experience exists, can be fitted, transfers, and compounds across generations; finally check measurement validity and what still remains for the SEED official held-out comparison.',
-      )}</p>
+      <p>{t('顺序很简单：先确认训练真的发生，再看有没有成功经验、能不能学进去、能不能迁移、能不能连续多代保持；最后再检查测量是否可信，以及和 SEED 的官方保留任务还差哪一步。', 'First confirm that learning really occurred, then ask whether useful experience exists, can be fitted, transfers, and compounds across generations; finally check measurement validity and what still remains for the SEED official held-out comparison.')}</p>
     </div>
   </header>
 
@@ -267,17 +285,11 @@ const transferRows = [
     <div class="audit-time__intro">
       <small>{t('为什么这里花了时间 · WHY THIS TOOK TIME', 'WHY THIS TOOK TIME')}</small>
       <h3 id="audit-time-title">{t('我们不是在追一个漂亮数字，而是在确认“考试本身有没有量对”', 'We were checking whether the exam itself was measuring the intended thing')}</h3>
-      <p>{t('这一段时间主要拆开了两个会把结论带偏的问题。任何一个没弄清楚，都可能让我们把工程接口或任务身份的差异误写成方法能力差异。', 'Most of this time went into separating two issues that could otherwise be mistaken for method differences: the measurement interface and the identity of the evaluation tasks.')}</p>
+      <p>{t('这一段时间主要拆开了两个会把结论带偏的问题：动作接口是否被正确读取，以及 128 个任务的语义身份是否真的与公开代码一致。', 'Most of this time went into separating two issues that could otherwise be mistaken for method differences: the action interface and the semantic identity of the 128 evaluation tasks.')}</p>
     </div>
     <div class="audit-time__grid">
-      <article>
-        <strong>{t('① 动作接口：模型做了动作，评测器有没有读对？', '① Action interface: did the evaluator read the model correctly?')}</strong>
-        <p>{t('SEED 官方 parser 期待 <action>...</action>，冻结 OpenEvo policy 实际输出 [action]...[/action]。第一版集成没有提前做兼容性预检，合法 search/click 被读成尾部碎片，形成“0 分”假象；所以必须先修测量，再谈模型能力。', 'The released SEED parser expects <action>...</action>, while the frozen OpenEvo policy emits [action]...[/action]. The first integration did not preflight that compatibility, so valid search/click commands became tail fragments and produced an apparent zero. Measurement had to be repaired before interpreting policy ability.')}</p>
-      </article>
-      <article>
-        <strong>{t('② 128 题身份：我们和论文说的是同一场考试吗？', '② 128-task identity: are we talking about the same exam as the paper?')}</strong>
-        <p>{t('公开代码明确“每次 validation = 128”，也能在代码、数据、seed 和 validation 次序固定后重建某一次 128 题；但论文没有公开 89.7 / 78.1% 对应的 validation 次序与 checkpoint。因此我们的可复现 128 题可以做内部公平比较，却不能与论文数字做 1:1 相减。', 'Released code fixes each validation at 128 tasks and allows one specified validation call to be rebuilt once code, data, seeds, and validation ordinal are fixed. But the paper does not publish the validation ordinal/checkpoint behind 89.7 / 78.1%. Our reproducible 128-task panel supports an internally fair comparison, not a 1:1 subtraction from the paper number.')}</p>
-      </article>
+      <article><strong>{t('① 动作接口：模型做了动作，评测器有没有读对？', '① Action interface: did the evaluator read the model correctly?')}</strong><p>{t('SEED 官方 parser 期待 <action>...</action>，而 BASE 原始输出已经证明模型会漂到 [action]...。第一版正式集成没有提前做 compatibility preflight，所以先修测量，再谈模型能力。', 'The released SEED parser expects <action>...</action>, while the raw BASE episode proves the model can drift to [action].... Formal integration did not preflight that compatibility, so measurement had to be repaired before interpreting policy ability.')}</p></article>
+      <article><strong>{t('② 128 题身份：我们和论文说的是同一场考试吗？', '② 128-task identity: are we talking about the same exam as the paper?')}</strong><p>{t('公开代码能定义并重建某一次 128 题验证；我们现在已经把 first-validation 的 source-faithful 128-slot manifest 物化。但论文没有公开 89.7 / 78.1% 对应的 validation 次序与 checkpoint，因此仍不能把这批题冒充成论文最终 128。', 'Released code can define and rebuild one specified 128-task validation, and the first-validation source-faithful 128-slot manifest is now materialized. The paper does not publish the validation ordinal/checkpoint behind 89.7 / 78.1%, so this panel still cannot be relabelled as the paper-final 128.')}</p></article>
     </div>
   </aside>
 
@@ -291,9 +303,7 @@ const transferRows = [
           <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{item.conclusion}</p>
           <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{item.boundary}</p>
 
-          {item.id === 'q5' && (
-            <p class="forward-ref"><a href="#g2-ablation">{t('查看第二代三道能力门 ↓', 'See the second-generation capability gates ↓')}</a></p>
-          )}
+          {item.id === 'q5' && <p class="forward-ref"><a href="#g2-ablation">{t('查看第二代三道能力门 ↓', 'See the second-generation capability gates ↓')}</a></p>}
 
           <details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">
             <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
@@ -303,7 +313,10 @@ const transferRows = [
                   {item.observations.map((row) => (
                     <tr>
                       <th scope="row">{row.label}</th>
-                      <td>{row.value}</td>
+                      <td>
+                        <span>{row.value}</span>
+                        <OpenEvoEvidenceRefs locale={locale} sources={row.sources ?? []} compact />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -312,44 +325,20 @@ const transferRows = [
               {item.id === 'q4' && (
                 <figure class="transfer-figure" data-ui-audit="contrast layout overflow" aria-label={t('H1.38B 与 H1.39 迁移置信区间', 'H1.38B and H1.39 transfer confidence intervals')}>
                   <div class="forest">
-                    <div class="forest-scale" aria-hidden="true">
-                      <span class="scale-label scale-min">−0.05</span>
-                      <span class="scale-label scale-zero">0</span>
-                      <span class="scale-label scale-mid">+0.15</span>
-                      <span class="scale-label scale-max">+0.35</span>
-                      <i class="zero-line"></i>
-                    </div>
+                    <div class="forest-scale" aria-hidden="true"><span class="scale-label scale-min">−0.05</span><span class="scale-label scale-zero">0</span><span class="scale-label scale-mid">+0.15</span><span class="scale-label scale-max">+0.35</span><i class="zero-line"></i></div>
                     {transferRows.map((row) => (
                       <div class="forest-row">
-                        <div class="forest-label">
-                          <strong>{row.label}</strong>
-                          <span>Δ {row.value} · 95% CI {row.ci}</span>
-                        </div>
-                        <div class="forest-track" aria-hidden="true">
-                          <i class="zero-line"></i>
-                          <span class="ci-line" style={`left:${row.left};width:${row.width}`}></span>
-                          <b class="point" style={`left:${row.point}`}></b>
-                        </div>
+                        <div class="forest-label"><strong>{row.label}</strong><span>Δ {row.value} · 95% CI {row.ci}</span></div>
+                        <div class="forest-track" aria-hidden="true"><i class="zero-line"></i><span class="ci-line" style={`left:${row.left};width:${row.width}`}></span><b class="point" style={`left:${row.point}`}></b></div>
                       </div>
                     ))}
                   </div>
-                  <figcaption>{t(
-                    '点表示平均差异，横线表示 95% 置信区间（confidence interval）；竖线表示“没有差异”。三条区间都完整位于 0 以上。',
-                    'Points show the average difference; horizontal lines show 95% confidence intervals; the vertical line marks zero difference. All three intervals lie entirely above zero.',
-                  )}</figcaption>
+                  <figcaption>{t('点表示平均差异，横线表示 95% 置信区间（confidence interval）；竖线表示“没有差异”。三条区间都完整位于 0 以上。', 'Points show the average difference; horizontal lines show 95% confidence intervals; the vertical line marks zero difference. All three intervals lie entirely above zero.')}</figcaption>
                 </figure>
               )}
 
               <p class="claim-boundary"><strong>{t('证据层边界：', 'Evidence-layer boundary: ')}</strong>{item.boundary}</p>
-              <div class="evidence-link-grid">
-                {item.links.map((link) => (
-                  <a href={link.href} target="_blank" rel="noreferrer">
-                    <small>{evidenceKind(link.kind)}</small>
-                    <span>{link.label}</span>
-                    <b aria-hidden="true">↗</b>
-                  </a>
-                ))}
-              </div>
+              <OpenEvoEvidenceRefs locale={locale} sources={item.links} ariaLabel={t('这一问题的完整证据材料', 'Full evidence package for this question')} />
             </div>
           </details>
         </div>
@@ -361,54 +350,11 @@ const transferRows = [
 <style>
   .results-questions{max-width:1160px;margin:0 auto;padding:0 24px 52px;color:var(--color-text)}
   .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
-  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}
-  .section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
-  .section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
-  .audit-time{margin:0 0 18px;padding:20px 22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-surface)}
-  .audit-time__intro{max-width:80ch}.audit-time__intro small{color:var(--color-accent);font-size:.68rem;font-weight:800;letter-spacing:.08em}.audit-time__intro h3{margin:7px 0 7px;font-size:1.12rem;letter-spacing:-.02em}.audit-time__intro p{margin:0;color:var(--color-text-muted);font-size:.84rem;line-height:1.62}
-  .audit-time__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}.audit-time__grid article{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-bg)}.audit-time__grid strong{display:block;font-size:.8rem;line-height:1.5}.audit-time__grid p{margin:7px 0 0;color:var(--color-text-muted);font-size:.76rem;line-height:1.62}
-  .question-list{display:grid;gap:10px}
-  .question-card{--tone:var(--color-accent);display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}
-  .tone-established{--tone:var(--color-positive)}
-  .tone-partial{--tone:var(--color-warning)}
-  .tone-blocked{--tone:var(--color-danger)}
-  .tone-measurement{--tone:var(--color-info)}
-  .tone-pending{--tone:var(--color-accent)}
-  .question-number{color:var(--color-text-muted);font:650 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}
-  .status-badge{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border:1px solid var(--color-border);border-radius:999px;color:var(--tone);font-size:.7rem;font-weight:750}
-  .status-badge i{width:7px;height:7px;border-radius:50%;background:var(--tone)}
-  .question-card h3{margin:10px 0 10px;font-size:1.35rem;line-height:1.34;letter-spacing:-.025em}
-  .conclusion{max-width:76ch;margin:0;color:var(--color-text-muted);font-size:.92rem;line-height:1.72}
-  .conclusion strong{color:var(--color-text)}
-  .professional-explanation{max-width:80ch;margin:10px 0 0;padding:10px 12px;border-left:2px solid var(--color-border);background:var(--color-surface);color:var(--color-text-muted);font-size:.79rem;line-height:1.64}
-  .professional-explanation strong{color:var(--color-text)}
-  .obs-table{width:100%;border-collapse:collapse;border-top:1px solid var(--color-border)}
-  .obs-table th,.obs-table td{padding:10px 12px 10px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--color-border);font-size:.8rem;line-height:1.6}
-  .obs-table th{width:220px;padding-right:16px;color:var(--color-text);font-weight:700;overflow-wrap:anywhere}
-  .obs-table td{color:var(--color-text-muted);font-variant-numeric:tabular-nums}
-  .forward-ref{margin:12px 0 0;font-size:.8rem}
-  .forward-ref a{color:var(--color-accent);font-weight:750;text-decoration:none}
-  .forward-ref a:hover{text-decoration:underline}
-  .transfer-figure{margin:16px 0 0;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}
-  .forest{margin-top:4px}
-  .forest-scale{position:relative;height:34px;margin-left:min(300px,30%);border-bottom:1px solid var(--color-border)}
-  .scale-label{position:absolute;bottom:8px;color:var(--color-text-muted);font:600 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;transform:translateX(-50%)}
-  .scale-min{left:0;transform:none}.scale-zero{left:12.5%}.scale-mid{left:50%}.scale-max{right:0;transform:none}
-  .zero-line{position:absolute;top:0;bottom:0;left:12.5%;width:1px;background:var(--color-border)}
-  .forest-row{display:grid;grid-template-columns:min(300px,30%) minmax(0,1fr);min-height:64px;border-bottom:1px solid var(--color-border)}
-  .forest-label{padding:12px 16px 12px 0}.forest-label strong,.forest-label span{display:block}.forest-label strong{font-size:.78rem;line-height:1.4}.forest-label span{margin-top:4px;color:var(--color-text-muted);font-size:.68rem}
-  .forest-track{position:relative}.ci-line{position:absolute;top:50%;height:2px;background:var(--color-accent);transform:translateY(-50%)}.point{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--color-accent);transform:translate(-50%,-50%)}
-  .transfer-figure figcaption{margin-top:12px;color:var(--color-text-muted);font-size:.72rem;line-height:1.58}
-  .evidence-details{margin-top:16px;border-top:1px solid var(--color-border)}
-  .evidence-details summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}
-  .evidence-details summary::-webkit-details-marker{display:none}.evidence-details summary::after{content:'＋';font-weight:500}.evidence-details[open] summary::after{content:'−'}
-  .evidence-detail-body{padding:12px 0 2px}
-  .claim-boundary{max-width:80ch;margin:14px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.62}.claim-boundary strong{color:var(--color-text)}
-  .evidence-link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
-  .evidence-link-grid a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:12px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface);color:var(--color-text);text-decoration:none}
-  .evidence-link-grid a:hover,.evidence-link-grid a:focus-visible{border-color:var(--color-accent)}
-  .evidence-link-grid small{grid-column:1;color:var(--color-accent);font:700 .65rem ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-link-grid span{grid-column:1;font-size:.76rem;line-height:1.45;overflow-wrap:anywhere}.evidence-link-grid b{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--color-accent)}
-  @media(max-width:720px){
-    .results-questions{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.audit-time__grid{grid-template-columns:1fr}.question-card{grid-template-columns:40px minmax(0,1fr);gap:12px;padding:18px}.obs-table th{width:auto;display:block;padding-bottom:2px;border-bottom:0}.obs-table td{display:block;padding-top:0}.forest-scale{margin-left:0}.forest-row{grid-template-columns:1fr}.forest-label{padding-right:0}.forest-track{min-height:40px}.evidence-link-grid{grid-template-columns:1fr}
-  }
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:66ch;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .audit-time{margin:0 0 18px;padding:20px 22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-surface)}.audit-time__intro{max-width:80ch}.audit-time__intro small{color:var(--color-accent);font-size:.68rem;font-weight:800;letter-spacing:.08em}.audit-time__intro h3{margin:7px 0 7px;font-size:1.12rem;letter-spacing:-.02em}.audit-time__intro p{margin:0;color:var(--color-text-muted);font-size:.84rem;line-height:1.62}.audit-time__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}.audit-time__grid article{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-bg)}.audit-time__grid strong{display:block;font-size:.8rem;line-height:1.5}.audit-time__grid p{margin:7px 0 0;color:var(--color-text-muted);font-size:.76rem;line-height:1.62}
+  .question-list{display:grid;gap:10px}.question-card{--tone:var(--color-accent);display:grid;grid-template-columns:62px minmax(0,1fr);gap:20px;padding:24px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.tone-established{--tone:var(--color-positive)}.tone-partial{--tone:var(--color-warning)}.tone-blocked{--tone:var(--color-danger)}.tone-measurement{--tone:var(--color-info)}.tone-pending{--tone:var(--color-accent)}.question-number{color:var(--color-text-muted);font:650 .82rem ui-monospace,SFMono-Regular,Menlo,monospace}.status-badge{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border:1px solid var(--color-border);border-radius:999px;color:var(--tone);font-size:.7rem;font-weight:750}.status-badge i{width:7px;height:7px;border-radius:50%;background:var(--tone)}.question-card h3{margin:10px 0 10px;font-size:1.35rem;line-height:1.34;letter-spacing:-.025em}.conclusion{max-width:76ch;margin:0;color:var(--color-text-muted);font-size:.92rem;line-height:1.72}.conclusion strong{color:var(--color-text)}.professional-explanation{max-width:80ch;margin:10px 0 0;padding:10px 12px;border-left:2px solid var(--color-border);background:var(--color-surface);color:var(--color-text-muted);font-size:.79rem;line-height:1.64}.professional-explanation strong{color:var(--color-text)}
+  .obs-table{width:100%;border-collapse:collapse;border-top:1px solid var(--color-border)}.obs-table th,.obs-table td{padding:10px 12px 10px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--color-border);font-size:.8rem;line-height:1.6}.obs-table th{width:220px;padding-right:16px;color:var(--color-text);font-weight:700;overflow-wrap:anywhere}.obs-table td{color:var(--color-text-muted);font-variant-numeric:tabular-nums}.forward-ref{margin:12px 0 0;font-size:.8rem}.forward-ref a{color:var(--color-accent);font-weight:750;text-decoration:none}.forward-ref a:hover{text-decoration:underline}
+  .transfer-figure{margin:16px 0 0;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.forest{margin-top:4px}.forest-scale{position:relative;height:34px;margin-left:min(300px,30%);border-bottom:1px solid var(--color-border)}.scale-label{position:absolute;bottom:8px;color:var(--color-text-muted);font:600 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;transform:translateX(-50%)}.scale-min{left:0;transform:none}.scale-zero{left:12.5%}.scale-mid{left:50%}.scale-max{right:0;transform:none}.zero-line{position:absolute;top:0;bottom:0;left:12.5%;width:1px;background:var(--color-border)}.forest-row{display:grid;grid-template-columns:min(300px,30%) minmax(0,1fr);min-height:64px;border-bottom:1px solid var(--color-border)}.forest-label{padding:12px 16px 12px 0}.forest-label strong,.forest-label span{display:block}.forest-label strong{font-size:.78rem;line-height:1.4}.forest-label span{margin-top:4px;color:var(--color-text-muted);font-size:.68rem}.forest-track{position:relative}.ci-line{position:absolute;top:50%;height:2px;background:var(--color-accent);transform:translateY(-50%)}.point{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--color-accent);transform:translate(-50%,-50%)}.transfer-figure figcaption{margin-top:12px;color:var(--color-text-muted);font-size:.72rem;line-height:1.58}
+  .evidence-details{margin-top:16px;border-top:1px solid var(--color-border)}.evidence-details summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 0 2px;color:var(--color-accent);font-size:.78rem;font-weight:750;list-style:none}.evidence-details summary::-webkit-details-marker{display:none}.evidence-details summary::after{content:'＋';font-weight:500}.evidence-details[open] summary::after{content:'−'}.evidence-detail-body{padding:12px 0 2px}.claim-boundary{max-width:80ch;margin:14px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.62}.claim-boundary strong{color:var(--color-text)}
+  @media(max-width:720px){.results-questions{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.audit-time__grid{grid-template-columns:1fr}.question-card{grid-template-columns:40px minmax(0,1fr);gap:12px;padding:18px}.obs-table th{width:auto;display:block;padding-bottom:2px;border-bottom:0}.obs-table td{display:block;padding-top:0}.forest-scale{margin-left:0}.forest-row{grid-template-columns:1fr}.forest-label{padding-right:0}.forest-track{min-height:40px}}
 </style>
