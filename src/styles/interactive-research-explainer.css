@@ -90,3 +90,17 @@ body:has([data-interactive-research-explainer]) .site-footer .footer-inner{paddi
 .irx-split{display:block}
 .irx-split__rail{position:static;max-height:none;overflow:visible}
 .irx-split__rail .irx{width:min(1180px,calc(100% - 2rem));margin:2.2rem auto 3.4rem}
+
+/* The server explainer switches representation at the same 760px breakpoint
+ * used by its geometry gate: mobile reads a textual relationship fallback,
+ * while tablet/desktop uses the measured SVG connector layer. Keep the host
+ * figure as the positioning context so measured connector bounds stay local. */
+[data-interactive-research-explainer='server'] .irx-host-boundary{position:relative}
+@media(max-width:760px){
+  [data-interactive-research-explainer='server'] .irx-mobile-relations{display:grid}
+  [data-interactive-research-explainer='server'] .irx-edge-layer{display:none}
+}
+@media(min-width:761px){
+  [data-interactive-research-explainer='server'] .irx-mobile-relations{display:none}
+  [data-interactive-research-explainer='server'] .irx-edge-layer{display:block}
+}
