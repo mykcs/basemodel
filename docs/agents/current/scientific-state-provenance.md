@@ -1,11 +1,13 @@
 # Scientific-state provenance for public research pages
 
-Last reviewed: **2026-08-18**
+Last reviewed: **2026-08-26**
 
 Status: **current**
 Audience: research, content, UI, review, and release Agents
 
 This contract prevents a fast-moving experiment from being frozen into `basemodel` as an undated “current phase”, “current allocation”, or “current result”. The public site is a presentation layer; it is not a second experiment-state database.
+
+For the end-to-end cross-repository handoff from experiment evidence to public website release, follow [`experiment-result-publication-workflow.md`](experiment-result-publication-workflow.md). Its experiment-side counterpart is [`mykcs/openevo-experiment/docs/experiment-tracking/RESULT_PUBLICATION_HANDOFF.md`](https://github.com/mykcs/openevo-experiment/blob/main/docs/experiment-tracking/RESULT_PUBLICATION_HANDOFF.md). This file remains the authority for scientific-state ownership and freshness; the workflow document owns the transport/intake/release procedure.
 
 ## Source of truth
 
