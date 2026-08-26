@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoRes
 import SeedOpenEvoCanonicalFigure from '../../../components/research/SeedOpenEvoCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="SEED 与 OpenEvo 循环对比" description="比较 SEED 的 policy 参数更新与 OpenEvo 的跨任务 carrier / successor revision 演化：两种方法从已完成任务经验出发，但把经验持久化到不同的更新对象。" locale={locale}>
+<AppLayout title="SEED 与 OpenEvo 循环对比" description="比较 SEED 的策略参数更新（policy update）与 OpenEvo 的跨任务经验载体（carrier）/ 后继版本（successor revision）演化：两种方法都从已完成任务经验出发，但把经验保存到不同的更新对象。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="loops">
     <SeedOpenEvoCanonicalFigure locale={locale} />
   </SeedOpenEvoResearchPage>
