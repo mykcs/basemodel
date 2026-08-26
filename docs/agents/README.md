@@ -2,26 +2,131 @@
 
 Stable Agent entrypoint for `mykcs/basemodel`.
 
-## Start here
+The goal of this directory is **progressive disclosure**: give every Agent a small common bootstrap, then load only the current documents that match the task. Do not treat the repository as requiring one giant linear reading list.
 
-1. `LATEST.md` — live handoff and provider/release state.
-2. `current/project-agent-operating-principles.md` — autonomous/clean workflow standard.
-3. `current/website-engineering-standard.md` — cross-cutting website engineering baseline: accepted stack, semantic ownership, static-first/hydration rules, browser runner boundaries, exact-tree release evidence, build-budget discipline, temporary-harness cleanup, and the stopping rule against unrequested optimization churn.
-4. `current/scenario-trigger-registry.md` — just-in-time trigger router; scan it automatically against the task.
-5. `current/product-and-research-integrity.md` — product and scientific completion boundary.
-6. `current/human-thinking-web-expression-contract.md` — mandatory expression/density/semantic-HTML contract for every user-facing change.
-7. `current/ui-design-principles.md`, `current/css-architecture.md`, `current/sitewide-visual-knowledge-architecture.md`, `current/theme-contrast-contract.md`, and `current/ui-change-visual-acceptance-gate.md` — UI system, CSS ownership, and browser acceptance.
-8. `current/seed-openevo-research-mission-first-principles.md`, `current/reproduction-guide-design-principles.md`, `current/openevo-reproduction-research-page.md`, `current/audience-centered-technical-copy.md`, `current/research-explainer-page-standard.md`, `current/scientific-state-provenance.md`, and `current/experiment-result-publication-workflow.md` — current research mission, reproduction, copy, first-time-reader explainer structure, live scientific-state ownership, and the cross-repository experiment → website publication bridge. **Any non-trivial edit to the SEED × OpenEvo Results route must also read `current/seed-openevo-results-reader-contract.md` before changing copy or structure.**
-9. `current/hosting-architecture.md` — current Vercel Preview + Production ownership.
-10. `current/deployment-policy.md` — Vercel build budget, parallel/stacked PR integration, release and Production boundary.
-11. `current/public-release-security-gate.md` — fail-closed tracked-tree, collaboration-surface, all-ref/history and public-intent gate before repository visibility changes.
-12. `current/multi-pr-semantic-integration-playbook.md` — exact procedure for many-PR semantic conflict resolution, ancestry, combined Preview, worker-PR disposition and post-release audit.
-13. `current/release-closeout-protocol.md` — final exact-head acceptance, stale-evidence invalidation, failure classification, retry/flaky handling, pre-merge race check, expected-head merge locking, and Preview → Production closeout.
-14. `current/repository-map.md` — ownership/change-to-check map.
-15. `current/model-catalog-verification-policy.md` and `current/model-catalog-audit-2026-08-12.md` — current official-source model-catalog rules and latest full-provider differential baseline.
-16. Task-relevant model/data policies plus executable source, config and tests.
+## Core bootstrap
 
-The `/lab/` routes are governed by `current/personal-compute-profile-consumer.md`, which now defines a generic public lab topology privacy boundary. Personal device inventories and private infrastructure profiles must stay outside this public repository.
+For any non-trivial task, start with:
+
+1. [`LATEST.md`](LATEST.md) — short current handoff and live/release-state snapshot.
+2. [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) — autonomy, clean workflow, write hygiene, and durable-knowledge rules.
+3. [`current/website-engineering-standard.md`](current/website-engineering-standard.md) — cross-cutting implementation baseline and stopping rules.
+4. [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) — scan the task and load the matched bundle below.
+5. executable source/config/tests/manifests for the surface you will actually change.
+
+`/AGENTS.md` remains the root fast router and non-negotiable invariant layer. This file is the detailed task map.
+
+## Task bundles
+
+### User-facing page, copy, navigation, explanation, or feature work
+
+Read:
+
+- [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md)
+- [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md)
+- [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md)
+- [`current/sitewide-visual-knowledge-architecture.md`](current/sitewide-visual-knowledge-architecture.md)
+- task-specific research/reproduction contract
+
+For UI/layout/theme/CSS changes also read:
+
+- [`current/ui-design-principles.md`](current/ui-design-principles.md)
+- [`current/css-architecture.md`](current/css-architecture.md)
+- [`current/theme-contrast-contract.md`](current/theme-contrast-contract.md)
+- [`current/ui-change-visual-acceptance-gate.md`](current/ui-change-visual-acceptance-gate.md)
+
+### SEED × OpenEvo research publication / Results route
+
+Read this bundle before any non-trivial Results change:
+
+- [`current/seed-openevo-research-mission-first-principles.md`](current/seed-openevo-research-mission-first-principles.md)
+- [`current/scientific-state-provenance.md`](current/scientific-state-provenance.md)
+- [`current/experiment-result-publication-workflow.md`](current/experiment-result-publication-workflow.md)
+- [`current/seed-openevo-results-reader-contract.md`](current/seed-openevo-results-reader-contract.md)
+- [`current/research-explainer-page-standard.md`](current/research-explainer-page-standard.md)
+- [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md)
+
+Then resolve the live scientific source in `mykcs/openevo-experiment` before editing website copy. Never start from an old page sentence, chat recap, or stale current-doc status when upstream executable evidence has moved.
+
+For parser/model-output attribution, benchmark-interface compatibility, or claim-level evidence questions, also read the historical case [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) after the current policies. It is rationale/evidence only; current policy still wins.
+
+### Reproduction workflow / experiment design
+
+Read:
+
+- [`current/seed-openevo-research-mission-first-principles.md`](current/seed-openevo-research-mission-first-principles.md)
+- [`current/reproduction-guide-design-principles.md`](current/reproduction-guide-design-principles.md)
+- [`current/openevo-reproduction-research-page.md`](current/openevo-reproduction-research-page.md)
+- [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md)
+- current experiment-side authority in `mykcs/openevo-experiment`
+
+Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence, benchmark-facing evidence, and paper-reported results separate.
+
+### Release / Preview / Production / overlapping PRs
+
+Read:
+
+- [`current/hosting-architecture.md`](current/hosting-architecture.md)
+- [`current/deployment-policy.md`](current/deployment-policy.md)
+- [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)
+- [`current/multi-pr-semantic-integration-playbook.md`](current/multi-pr-semantic-integration-playbook.md) when several PRs overlap or ship together
+
+Use exact-head evidence. A clean merge, a READY badge, and an earlier Preview do not prove the later intended tree.
+
+### Model catalog / current-provider claims
+
+Read:
+
+- [`current/model-catalog-verification-policy.md`](current/model-catalog-verification-policy.md)
+- the latest applicable model-catalog audit
+- current first-party provider/source evidence
+
+Current/latest/full-family claims must be re-verified rather than copied from older snapshots.
+
+### `/lab/`, remote compute, SSH/SFTP/rsync, or hardware disclosure
+
+Read:
+
+- [`current/personal-compute-profile-consumer.md`](current/personal-compute-profile-consumer.md)
+- matched scenario-trigger guidance
+
+Keep personal device inventories, private profile feeds, hostnames, usernames, VPN endpoints, tokens, and other identifying infrastructure out of the public repository. Publish only the minimum reproducibility-relevant aggregate facts.
+
+### Private → public visibility change
+
+Read and execute:
+
+- [`current/public-release-security-gate.md`](current/public-release-security-gate.md)
+
+The gate is fail-closed and covers tracked tree, collaboration surfaces, refs/history, and public intent.
+
+## Document roles
+
+Keep these ownership boundaries clear:
+
+| Location | Role | What not to do |
+|---|---|---|
+| `/AGENTS.md` | fast router + non-negotiable invariants | do not duplicate every detailed policy here |
+| `docs/agents/LATEST.md` | short-lived current handoff/state snapshot | do not turn it into a permanent architecture encyclopedia |
+| `docs/agents/README.md` | task-based reading map and precedence | do not duplicate owner-policy contents |
+| `docs/agents/current/*` | authoritative current policy/runbooks/maps | do not leave known-stale operational/scientific state here |
+| `docs/agents/history/*` | incident, migration, retrospective, superseded-state evidence | do not treat history as current instruction |
+| `docs/agent-context/*` | retained historical research-workbench context | do not use it to override current executable truth |
+
+If two current documents disagree, resolve the disagreement against executable/live truth and update the stale owner. Do not add another policy layer merely to reconcile the contradiction.
+
+## Knowledge precedence
+
+```text
+current user instruction
+> live provider state for provider-side claims
+> executable repository / experiment truth
+> docs/agents/current/*
+> docs/agents/LATEST.md
+> history / archive / docs/agent-context
+```
+
+Historical dialogue may be useful evidence through the private `mykcs/Codex-Dialogue` archive, but it never overrides current task instructions, executable repository truth, or live provider state.
 
 ## Current deployment authority
 
@@ -33,50 +138,66 @@ GitHub source
 
 Vercel is the only ordinary deployment authority. Vercel Preview must be `noindex`; Production must be indexable and canonical to the Vercel Production identity. A temporary Preview share URL is ephemeral, never canonical, and must not be persisted in repository text or GitHub PR/Issue bodies/comments.
 
-Historical Cloudflare files, Direct Upload runbooks, snapshots and Workers-shadow configuration are conditional legacy evidence/fallbacks. They do not override current Vercel authority and do not belong in ordinary completion reporting unless the legacy surface is explicitly involved or unexpectedly activates.
+Historical Cloudflare files, Direct Upload runbooks, snapshots, and Workers-shadow configuration are conditional legacy evidence/fallbacks. They do not belong in ordinary completion reporting unless the legacy surface is explicitly involved or unexpectedly activates.
 
 ## Parallel release batches
 
-When the owner asks to ship several open PRs together, load `current/multi-pr-semantic-integration-playbook.md` and follow this release shape:
+When the owner asks to ship several open PRs together, load `current/multi-pr-semantic-integration-playbook.md` and follow:
 
 ```text
-refresh main and every candidate head
+refresh main and candidate heads
 -> classify independent / stacked / superseded / conflicting intent
 -> create one explicit integration/release head
 -> resolve the final tree by current product and executable truth
 -> run one combined exact-head Gate/build and Preview
 -> merge main once
 -> verify one Vercel Production release
--> record every worker PR disposition
--> audit post-release discovery surfaces such as sitemap/robots/canonical/navigation
+-> record worker-PR disposition
+-> audit post-release discovery surfaces
 ```
 
-A clean textual merge is not semantic acceptance. Preserve ancestry and attribution, but do not let old deployment, UI or research semantics overwrite newer current authority.
-
-When the work reaches final merge authorization, switch from integration logic to `current/release-closeout-protocol.md`: acceptance belongs to an exact head/base pair, stale green reports must be invalidated, the final combined tree must be tested, and the merge should be locked to the accepted head when the tool supports it.
+A clean textual merge is not semantic acceptance. Preserve ancestry and attribution, but do not let older deployment, UI, or research semantics overwrite newer current authority.
 
 ## Scenario triggers and durable knowledge
 
 At the start of non-trivial work:
 
 ```text
-read LATEST + operating principles + website engineering standard
--> scan scenario-trigger-registry against the task
--> load only matched current docs/tests/provider evidence
+read core bootstrap
+-> scan scenario-trigger-registry
+-> load one matched task bundle
+-> inspect executable/live truth
 -> execute
--> encode only genuinely reusable lessons in the best existing owner
+-> deposit only genuinely reusable lessons in the existing owner
 ```
 
-The website engineering standard is intentionally a cross-cutting summary. Detailed CSS, rendering/performance, browser, deployment, release, and product rules remain authoritative in their existing owner documents; do not create a second checklist when one of those owners should be updated instead.
+Re-scan triggers when the task changes state: a blocker appears, an overlapping PR is discovered, a provider boundary is crossed, `main` moves, a Gate exposes an invariant, or the work reveals a reusable failure mode.
 
-`docs/agent-context/` contains retained research-workbench context. `docs/agents/history/` contains superseded product, hosting, incident and release evidence. Neither is current policy. In particular, the former PR #64 product-vision document is historical; current authority lives in the current integrity, mission, visual and deployment documents.
+Do not create a memory/case/ADR/handoff file after every task. Persistence should be earned by future utility.
 
-For a concrete browser-infrastructure incident showing how to distinguish zero-step hosted-runner failures from real WebKit failures, when a public production black-box fallback is safe, and why that fallback is not exact-head evidence, see `history/2026-08-21-webkit-runner-recovery.md`.
+## Repository-write hygiene
 
-For a concrete Vercel UI-gate incident showing how `--max-failures=1` hides later failures, how to distinguish a real product regression from a stale E2E contract or invalid visual metric, and why a formerly-red test turning green is not full-suite completion, see `history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`.
+Shared GitHub state is not a scratchpad.
 
-For the Results release closeout that combined a real Production overflow escape, stale test drift, branch-level Vercel deployment eligibility, permanent escaped-regression Gate wiring, subjective Issue #152 closure, and the Node 24 runtime warning fix, see `history/2026-08-26-results-release-node-runtime-retrospective.md`. It is a historical rationale document; current authority remains in the release, deployment, and UI acceptance policies above.
+- use fetch/search/read operations for discovery;
+- never create probe files, comments, branches, or provider mutations just to see whether a tool works;
+- know the intended path/content before invoking a write;
+- prefer one atomic multi-file commit over sequential Contents-API writes when practical;
+- if an accidental write happens, stop, classify, clean it when possible, and report residue rather than hiding it.
+
+The detailed project-wide rule lives in `current/project-agent-operating-principles.md`.
+
+## Useful historical cases
+
+History is rationale, not current policy. Particularly reusable cases include:
+
+- [`history/2026-08-21-webkit-runner-recovery.md`](history/2026-08-21-webkit-runner-recovery.md) — hosted-runner failure vs real browser failure and black-box fallback boundaries.
+- [`history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md) — `--max-failures=1`, stale E2E contracts, and why one formerly-red test turning green is not suite completion.
+- [`history/2026-08-26-results-release-node-runtime-retrospective.md`](history/2026-08-26-results-release-node-runtime-retrospective.md) — Results overflow, stale tests, deployment eligibility, and Node runtime closeout.
+- [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) — model-output attribution, parser compatibility, claim-level provenance, current-doc drift, exact-head deployment identity, and write-operation hygiene.
 
 ## Product contract
 
-The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements. Keep Learn / Run / Compare, evidence levels, benchmark metrics and framework update objects distinct.
+The current mission is to evaluate OpenEvo on the ALFWorld and WebShop settings used by SEED, understand benchmark-specific behavior and failures, and turn the evidence into defensible OpenEvo improvements.
+
+Preserve Learn / Run / Compare as distinct entry modes. Keep ALFWorld success-rate semantics separate from WebShop normalized score/exact success. Keep environment readiness, real model action, real evolution, comparable results, and causal improvement as different evidence levels.

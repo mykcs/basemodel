@@ -1,136 +1,157 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-21**
+Last updated: **2026-08-26**
 
-Status: **Vercel is the ordinary deployment provider. Current work should follow the CSS ownership contract, static-first rendering policy, and the current OpenEvo × WebShop research surfaces on `main`. Historical release batches and handoffs are evidence, not current workflow.**
+Status: **Vercel remains the ordinary deployment provider. The SEED × OpenEvo Results surface has a current action-wrapper attribution/evidence layer on `main`; upstream Track A has advanced to an authorized source-faithful formal run, but no new Track A result should be published until reconciliation/analysis/closeout exists.**
+
+This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
 ## Current architecture
 
 ```text
-GitHub `mykcs/basemodel` = source of truth
-non-main release branch / PR -> Vercel Preview
-main                         -> Vercel Production
-Production                   -> https://basemodel-preview.vercel.app
+GitHub `mykcs/basemodel` = website source of truth
+non-main branch / PR      -> Vercel Preview
+main                      -> Vercel Production
+Production                -> https://basemodel-preview.vercel.app
+
+mykcs/openevo-experiment  = scientific experiment/result authority
 ```
 
-GitHub Actions and GitHub Pages remain retired for ordinary BaseModel deployment. Cloudflare material remains legacy rollback/provider-specific tooling only. Read `current/hosting-architecture.md` and `current/deployment-policy.md` before release changes.
+GitHub Actions and GitHub Pages remain retired for ordinary BaseModel deployment. Cloudflare material is legacy rollback/provider-specific tooling only. Read `current/hosting-architecture.md` and `current/deployment-policy.md` before release work.
 
-## Current release state
+## Current research state
 
-Historical release milestones remain discoverable because tests and later integration work refer to them as evidence, not because they define the current workflow:
+### Historical SEED-compatible 128-task comparison
 
-- **#144 — semantic release integration** reconciled the earlier multi-branch product/UI/research release ancestry.
-- **#147 — final visual closeout** closed the then-current exact-head Chromium visual matrix; that historical combined gate reported **14 passed**.
+The 2026-08-25 campaign remains a three-layer historical measurement:
 
-These historical counts do not prove a later head. Current acceptance must use the current repository Gate and task-relevant browser matrix.
+- SEED-strict PRIMARY-v1: both arms appeared 0.0 / 0.0%, but the run is **measurement-invalid** because model action wrappers and the released SEED projection were incompatible;
+- OpenEvo-native diagnostic: useful local diagnostic on the same historical panel, not the SEED benchmark headline;
+- repaired PRIMARY-v2: BASE 4.1 task score / 0.0% exact success; frozen SD-LoRA 7.3 / 2.3%; paired mean delta +3.15 score×100 with bootstrap 95% CI `[-0.65, +7.19]`, so the direction is positive but not a stable win.
 
-## Current product mission
+The historical panel is **SEED-compatible**, not the paper-final exact 128 and not the source-faithful first-validation semantic panel.
+
+### Action-wrapper attribution boundary
+
+The current repository-supported explanation is:
+
+- released SEED prompt/parser require `<action>...</action>`;
+- saved no-adapter Qwen2.5-7B BASE episodes can still emit `[action]...` under the same angle-bracket prompt;
+- the inference backend directly decodes generated tokens and does not rewrite angle brackets into square brackets;
+- H1.36 qualified self-evolution data excluded parser-invalid/fallback traces, so current evidence does not support the claim that SD-LoRA created the habit;
+- the experiment-integration failure was that a known model-output drift was not preflighted against the formal SEED parser before PRIMARY-v1.
+
+Do not collapse token provenance, training causation, parser behavior, and experiment responsibility into one “OpenEvo wrote `[action]`” statement.
+
+### Source-faithful Track A successor
+
+At this handoff snapshot, the active experiment authority in `mykcs/openevo-experiment` is campaign:
+
+`20260826-0630-seed-webshop-public-code-reproduction`
+
+on branch:
+
+`seed-webshop-pubcode-repro-v1-prep`
+
+The upstream `current-campaign.json` records:
+
+- `status = executing-formal-run`;
+- execution-readiness release passed **20/20** fail-closed checks;
+- the source-faithful semantic panel was deterministically rebuilt;
+- the same parser-compatible measurement contract is frozen for BASE and SD-LoRA;
+- a 256-episode paired formal run was launched.
+
+This is **execution state, not a result**. Before changing Results copy, refresh the actual upstream branch/SHA and latest reconciliation/result. Do not publish an inferred outcome from launch state.
+
+### Track B / WB1
+
+WB1 remains a separate fair matched benchmark line. Track A asks whether pinned SEED public-code task semantics can be reproduced faithfully; Track B asks for a matched method comparison under one frozen world and matched budgets. Their evidence is not interchangeable.
+
+## Current BaseModel Results state
+
+The current Results route keeps the seven-question reader path and a collapsed technical action-wrapper trace after it. The trace exists for code-level attribution without turning the main narrative into an experiment ledger.
+
+A follow-up evidence-provenance pass may attach primary evidence directly to specific observations (for example, SEED parser behavior -> pinned official code line range; raw `[action]` -> raw BASE episode; numerical result -> machine analysis). Preserve the page’s progressive disclosure while making specific claims locally auditable.
+
+For any non-trivial Results edit, read:
+
+1. `current/scientific-state-provenance.md`
+2. `current/experiment-result-publication-workflow.md`
+3. `current/seed-openevo-results-reader-contract.md`
+4. `current/research-explainer-page-standard.md`
+5. `current/audience-centered-technical-copy.md`
+
+Then resolve fresh upstream experiment truth before writing copy.
+
+## Current deployment / acceptance rules
+
+Historical browser passes and old deployment URLs prove only the tree they tested.
+
+Keep these boundaries separate:
 
 ```text
-Base Model
--> SEED / OpenEvo
--> ALFWorld / WebShop
--> trajectories, scores and failures
--> defensible OpenEvo improvements
+source synchronization
+!= repository Gate/build success
+!= exact-head Preview READY
+!= changed-route browser acceptance
+!= merge
+!= Production acceptance
 ```
 
-The site is a research decision and explanation system, not a generic model leaderboard. User-visible experiment prose and tests must follow current experiment semantics rather than preserving obsolete titles, counts, or stage assumptions.
+A Vercel deployment-specific hostname is immutable. When `main` moves during a long task, verify ancestry and provider commit metadata rather than assuming an old READY URL represents the newest main.
 
-## CSS and UI architecture
+For ordinary deployable changes:
 
-The global-shell CSS convergence is closed:
+```bash
+npm run verify:deploy
+npm run build
+```
 
-- `src/styles/app.css` is the page-wide composition root;
-- `src/styles/components/global-shell.css` owns final shared shell/Footer geometry;
-- `src/styles/components/header.css` owns final Header/Nav responsive behavior;
-- historical patch files are frozen migration debt and should shrink when touched;
-- `visual-closeout.css` and `mobile-composition.css` no longer own Header/Nav behavior;
-- **do not start a site-wide Tailwind migration without new measured evidence.** The current debt is ownership/cascade debt, not a missing utility framework.
+For theme/CSS/layout/responsive/navigation/typography/animation/i18n-length/shared visual changes, follow the UI acceptance policy and run the strongest matched browser matrix.
 
-See `current/css-architecture.md`.
+Do not weaken a valid Gate merely because an unrelated route blocks release. Classify the failure and fix the real owner.
 
-## Rendering and performance
+## Agent reading model
 
-The site remains static-first Astro with focused React islands.
-
-- Public/core research content should remain useful before JavaScript where practical.
-- Browser-local adjuncts may wait for hydration when there is no truthful static state.
-- Use the least eager `client:*` directive that preserves behavior.
-- Avoid repeating large serialized catalogs across every route for usually-hidden global adjuncts; prefer existing static data routes or another on-demand boundary.
-- D3 and ECharts remain active dependencies and are intentionally lazy-loaded for the Landscape interactive surface.
-
-See `current/rendering-and-performance-policy.md`.
-
-## Ordinary technical-debt review
-
-The 2026-08-21 whole-repository review is closing high-confidence debt without a broad rewrite:
-
-- unreachable root-level Playwright code outside the configured `tests/e2e` directory;
-- a stale root handoff with obsolete local worktree/release instructions, archived under `docs/agents/history/`;
-- rendering/performance documentation that still described the old host as current;
-- duplicated Header/mobile-menu compatibility declarations in `mobile-composition.css` after canonical Header ownership was established;
-- global CompareTray serialization of the full model-name catalog into every static page even though browser-local compare state contains at most five model IDs.
-
-The review intentionally does **not** delete `design-refinement.css`, `final-hardening.css`, D3, ECharts, Nanostores, or legacy rollback helpers merely because they are old. Each still has a demonstrated current role. See `history/2026-08-21-ordinary-tech-debt-audit.md` on the accepted cleanup release.
-
-## Browser acceptance
-
-Historical browser passes apply only to the tree they tested. Future UI changes need fresh task-relevant acceptance.
-
-- Vercel-hosted UI gates run Chromium on the supported Vercel environment.
-- CSS/theme/layout/browser-semantic changes also need WebKit on a Playwright-supported Ubuntu/Debian/macOS runner.
-- Never report a browser as passing unless that browser actually launched and the relevant assertions completed.
-
-## Ordinary workflow
-
-1. read `/AGENTS.md`, this file, and task-relevant current policies;
-2. inspect overlapping branches/PRs before editing;
-3. make the smallest coherent change that closes the actual failure mode;
-4. batch edits before the first provider-triggering push when practical;
-5. inspect the exact-head Vercel Preview and repository Gate/build logs;
-6. run task-relevant browser acceptance;
-7. synchronize with current `main` if it moved materially;
-8. merge the accepted release once with head/base race protection;
-9. verify Production separately;
-10. report executed evidence and any remaining boundary precisely.
-
-A clean merge, READY badge, or historical browser PASS does not prove a changed combined tree is accepted.
-
-## Vercel build budget
-
-Default target:
+Do not use one giant linear reading list.
 
 ```text
-one coherent branch/PR
--> one atomic multi-file push
--> one initial exact-head Preview
--> at most one corrective Preview
--> one Production build per accepted release batch
+/AGENTS.md
+-> this handoff
+-> current/project-agent-operating-principles.md
+-> current/website-engineering-standard.md
+-> current/scenario-trigger-registry.md
+-> one matched task bundle from docs/agents/README.md
+-> executable source/config/tests/live provider or experiment truth
 ```
 
-When using GitHub APIs, prefer one Git data API commit (`blob/tree/commit/ref`) over sequential Contents API writes. `vercel.json` and the repository build classifier are executable truth for current trigger behavior.
+The task-based bundle map is in [`README.md`](README.md).
 
-## Vercel-first reporting
+## Repository-write hygiene
 
-Ordinary completion reports lead with repository Gate/build, Vercel deployment trigger/status counts when available, exact-head Preview acceptance, merge SHA, and Production verification.
+Shared repository/provider state is not an Agent scratchpad.
 
-Do not add Cloudflare or another legacy provider to an ordinary report merely because historical fallback material exists.
+- use read/search/fetch operations for discovery;
+- never create probe files/comments/mutations to test capability;
+- batch intended changes before the first provider-triggering branch update;
+- prefer one atomic multi-file commit when practical;
+- if an accidental write occurs, clean it immediately when possible and disclose any residue.
 
-## Legacy hosting note — conditional only
+## Durable case from this work
 
-Cloudflare Pages and Workers helpers are legacy rollback/provider-specific surfaces. Treat them **not as a normal deployment step or completion-report line** unless the task explicitly concerns rollback, retirement, or live legacy-provider behavior.
+See:
 
-## Agent reading order
+[`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md)
 
-1. `/AGENTS.md`
-2. this file
-3. `current/project-agent-operating-principles.md`
-4. `current/scenario-trigger-registry.md`
-5. `current/product-and-research-integrity.md`
-6. task-relevant UI/research/data policies
-7. `current/hosting-architecture.md`
-8. `current/deployment-policy.md`
-9. `current/repository-map.md`
-10. executable source/config/tests
+for the detailed rationale covering:
 
-History is evidence, not current policy. Do not restore an obsolete provider, product hierarchy, visual result, test count, or machine snapshot from an older handoff.
+- model-output attribution;
+- parser compatibility preflight;
+- range-compatible vs source-faithful task identity;
+- website/experiment state drift;
+- claim-level provenance;
+- Vercel exact-head/main-movement friction;
+- Agent-document entry cost;
+- repository-write hygiene.
+
+History is evidence, not current policy. Re-run fresh diagnostics when the same symptom appears again.

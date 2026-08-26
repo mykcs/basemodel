@@ -6,9 +6,9 @@ Applies to:
 - `src/pages/research/seed-openevo/results.astro`
 - `src/pages/en/research/seed-openevo/results.astro`
 - every mounted `OpenEvoWebShopResults*` component
-- tests that protect this route's reader voice, scientific boundaries, or narrative order
+- tests that protect this route's reader voice, scientific boundaries, evidence interaction, or narrative order
 
-This file specializes, and does not replace, `audience-centered-technical-copy.md`, `research-explainer-page-standard.md`, and `scientific-state-provenance.md`.
+This file specializes, and does not replace, `audience-centered-technical-copy.md`, `research-explainer-page-standard.md`, `scientific-state-provenance.md`, and `experiment-result-publication-workflow.md`.
 
 ## 1. Default reader
 
@@ -28,7 +28,7 @@ The first screen must answer three questions in plain language before showing de
 
 1. **What have we already learned?**
 2. **What happened in the latest benchmark-facing evaluation?**
-3. **What is the next experiment that actually changes the answer?**
+3. **What is the next/current experiment that actually changes the answer?**
 
 A reader should understand those three answers without opening any `<details>` element.
 
@@ -60,7 +60,7 @@ Use these defaults:
 - one mainline sentence should normally introduce no more than one new project-specific term;
 - keep long experiment IDs and exact attempt counts out of the first screen unless they are necessary to distinguish two claims;
 - do not stack several confidence intervals or machine statuses in a beginner paragraph;
-- put exact attempt counts, confidence intervals, manifests, hashes, machine reconciliation, and code links inside the local `<details>` evidence block;
+- put exact attempt counts, confidence intervals, manifests, hashes, machine reconciliation, and most code links inside the local `<details>` evidence block;
 - a visible table is justified only when the table itself is the scientific comparison the reader needs at that moment.
 
 If removing a number from the mainline does not change the reader's interpretation, move it into `展开实验依据`.
@@ -112,11 +112,14 @@ Recommended reading sequence:
 -> Q4: did one update transfer to unseen internal tasks?
 -> Q5: did that become stable multi-generation improvement?
 -> Q6: could engineering/measurement failures be separated from model ability?
--> Q7: what benchmark-facing experiment is still missing or still needs repair?
+-> Q7: what benchmark-facing experiment is still missing / running / awaiting closeout?
+-> optional deep technical attribution trace
 -> next action
 ```
 
 Do not organize the main reading path around the website's information architecture, campaign filing system, or experiment chronology alone.
+
+The action-wrapper attribution trace is allowed as a collapsed technical depth layer after the seven-question narrative. It must not displace Q1-Q7 or make first-time readers learn the parser incident before they understand the research question.
 
 ## 7. Latest scientific state to preserve
 
@@ -148,9 +151,21 @@ Its story has three layers:
 
 1. **SEED original parsing path / PRIMARY-v1:** both arms produced 0.0 / 0.0%, but the run is **measurement-invalid** because the model's action wrapper and SEED's released action projection did not agree. The zero must not be described as model ability.
 2. **OpenEvo-native diagnostic:** valid local diagnostic on the same 128 tasks: BASE task score 14.6 / exact success 2.3%; frozen SD-LoRA task score 28.3 / exact success 1.6%. This shows more partial task progress, not more completed purchases.
-3. **Repaired PRIMARY-v2:** completed on the same frozen 128-task panel after changing only action-wrapper recognition. BASE task score 4.1 / exact success 0.0%; frozen SD-LoRA task score 7.3 / exact success 2.3%. Paired ITT mean delta is +3.15 score×100 with bootstrap 95% CI [-0.65, +7.19] over 128 paired tasks. This is a positive direction but the interval crosses zero, so it is not evidence of a stable win.
+3. **Repaired PRIMARY-v2:** completed on the same frozen 128-task panel after changing only action-wrapper recognition. BASE task score 4.1 / exact success 0.0%; frozen SD-LoRA task score 7.3 / exact success 2.3%. Paired ITT mean delta is +3.15 score×100 with bootstrap 95% CI `[-0.65, +7.19]` over 128 paired tasks. This is a positive direction but the interval crosses zero, so it is not evidence of a stable win.
 
 The repaired PRIMARY-v2 is the local **SEED-compatible** headline for that historical frozen panel. It is not the paper's exact reported denominator. The SEED checkpoint/training result has not been locally reproduced. SEED's paper-reported 89.7 / 78.1% must remain labelled paper-reported.
+
+### Action-wrapper attribution boundary
+
+Keep the following layers separate:
+
+- released SEED prompt/parser require `<action>...</action>`;
+- saved no-adapter BASE evidence shows Qwen2.5-7B-Instruct can emit `[action]...` even when the prompt requests angle brackets;
+- the inference backend directly decodes generated tokens and does not rewrite `<` into `[`;
+- current H1.36 training-pipeline evidence does not support the claim that malformed parser-invalid wrappers were qualified self-evolution supervision;
+- the experiment-integration failure was that known model-output drift was not preflighted against the formal SEED parser before PRIMARY-v1.
+
+Do not simplify this into “OpenEvo wrote `[action]`”, “SEED parser had a bug”, or a claim about a specific human author. Repository evidence does not identify the upstream Qwen pretraining/SFT example that caused the habit.
 
 ### Post-v2 source-semantics audit and source-faithful successor
 
@@ -164,7 +179,15 @@ Pinned public-code semantics use:
 
 Because worker seed changes goal ordering, the numeric session index alone is not a complete task identity. The historical panel therefore remains valid as a frozen SEED-compatible local panel, but it must not be relabelled as the source-faithful first-validation semantic panel.
 
-The successor design `seed-webshop-public-code-reproduction-v1` is currently **design-only-not-authorized**. Its 128-slot semantic manifest is not yet materialized. CPU-only preparation is allowed; formal GPU task consumption is not. Before execution, two clean-process manifest builds must produce the same canonical hash, and the frozen BASE / SD-LoRA identities, parser-compatible measurement contract, and generation-seed schedule must be hash-bound.
+**Current upstream execution state (2026-08-26 snapshot):** the successor campaign `20260826-0630-seed-webshop-public-code-reproduction` on `mykcs/openevo-experiment` branch `seed-webshop-pubcode-repro-v1-prep` has advanced beyond design-only status. Its current-campaign authority records:
+
+- `status = executing-formal-run`;
+- execution-readiness release passed 20/20 fail-closed checks;
+- the source-faithful semantic panel was deterministically rebuilt;
+- the parser-compatible contract and comparison identities are frozen;
+- a 256-episode paired formal run was launched.
+
+This is **execution state, not a scientific result**. Do not publish BASE-vs-SD outcome claims until the authoritative reconciliation/analysis/closeout exists. Before using “current”, “running”, “next”, or “completed”, refresh the actual upstream branch/SHA because this state is expected to change.
 
 ### WB1
 
@@ -172,7 +195,7 @@ WB1 is a separate fair matched benchmark line (Track B). Its historical train-on
 
 Track A asks whether public SEED code task semantics can be reproduced faithfully. Track B asks for a fair matched comparison under one frozen world and matched budgets. Their evidence may inform the same program, but their claims are not interchangeable.
 
-## 8. Local evidence interaction
+## 8. Local evidence interaction and claim-level provenance
 
 Each scientific question keeps this pattern:
 
@@ -181,7 +204,8 @@ question
 -> short current answer with a minimum observation-to-conclusion bridge
 -> optional <details>
    summary: 展开实验依据
-   exact counts / confidence intervals / machine result / config / code / claim boundary
+   exact observations / counts / confidence intervals / claim boundary
+   local evidence references mapped to the observations they support
 -> next question
 ```
 
@@ -189,18 +213,40 @@ Do not replace `展开实验依据` with an abstract phrase such as `证据链�
 
 Do not send the reader to a distant bottom Evidence Map to understand a claim they just read.
 
+For highly specific factual observations, a question-level pile of links is not enough if the reader must guess which source proves which row. Prefer local mapping:
+
+```text
+specific observation
+-> closest primary evidence
+```
+
+Examples:
+
+- released parser behavior -> pinned official SEED source lines;
+- actual prompt / literal `[action]` output -> raw episode;
+- inference transformation claim -> backend source;
+- numeric result / uncertainty -> machine analysis/reconciliation;
+- task identity / sampling claim -> manifest/builder/preregistration;
+- historical engineering discovery -> contemporaneous commit/report.
+
+Keep the page readable: these references belong primarily inside local evidence disclosures, not as a citation wall in the Hero/mainline. Repeating one key source both beside the claim and in a broader evidence grid is acceptable when it improves auditability.
+
+Historical evidence links should be immutable. Use GitHub line anchors only after verifying the actual source lines; do not guess line numbers from memory.
+
 ## 9. Before editing this route
 
 Any Agent making a non-trivial change to the Results route must:
 
 1. read this file;
-2. read `research-explainer-page-standard.md` and `audience-centered-technical-copy.md`;
-3. resolve the latest scientific state from `mykcs/openevo-experiment` rather than copying an older page sentence;
-4. write the proposed heading/question sequence before local copy polishing;
+2. read `experiment-result-publication-workflow.md`, `research-explainer-page-standard.md`, and `audience-centered-technical-copy.md`;
+3. resolve the latest scientific state from the actual active `mykcs/openevo-experiment` branch/SHA rather than copying an older page sentence or stale current-doc status;
+4. write the proposed heading/question sequence before local copy polishing when structure changes;
 5. check every English technical term on the Chinese route for a first-use Chinese gloss;
 6. check whether exact numbers can move into `展开实验依据`;
 7. for every inferential sentence, verify that the visible prose contains the minimum observation that justifies it;
-8. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, and WB1 Track B progress are not conflated;
-9. run the reader-voice/scientific-boundary tests and inspect the exact-head Preview.
+8. for every highly specific observation, verify that the closest primary evidence is locally discoverable without forcing the reader to guess among unrelated links;
+9. verify that H1.41 mechanism conclusions, later H1.42 measurement work, the 2026-08-25 held-out comparison, its post-v2 source-semantics audit, the current Track A successor, and WB1 Track B progress are not conflated;
+10. for parser/model-output attribution, separately resolve official contract, actual prompt, raw output, backend transformations, training-data path, and harness behavior before assigning responsibility;
+11. run reader-voice/scientific-boundary tests and inspect the exact-head Preview.
 
-If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same change.
+If new experiment evidence changes the answer to Q7, update the answer and this file's latest-state section in the same coherent change. If an experiment merely starts running, update only the execution-state wording; do not invent its result.

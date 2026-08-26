@@ -13,7 +13,7 @@ It specializes, and does not replace:
 - `scientific-state-provenance.md` for scientific-source ownership and freshness;
 - `seed-openevo-results-reader-contract.md` for the Results route's reader voice and claim boundaries;
 - `human-thinking-web-expression-contract.md` and `audience-centered-technical-copy.md` for user-facing expression;
-- `deployment-policy.md` and `release-closeout-protocol.md` for Preview → Production release.
+- `deployment-policy.md` and `release-closeout-protocol.md` for Preview -> Production release.
 
 ## Ownership boundary
 
@@ -39,7 +39,7 @@ mykcs/basemodel
 
 `openevo-experiment` owns whether a scientific claim is valid. `basemodel` owns how that valid claim is explained, navigated, tested, and released.
 
-A website edit must never upgrade an upstream “signal” into a “win”, turn a measurement-invalid run into a valid negative result, merge two benchmark protocols into one claim, or use a deployment status as scientific evidence.
+A website edit must never upgrade an upstream “signal” into a “win”, turn a measurement-invalid run into a valid negative result, merge two benchmark protocols into one claim, or use deployment status as scientific evidence.
 
 ## Intake rule: resolve science before writing copy
 
@@ -88,23 +88,105 @@ On the Chinese Results route:
 - do not lead the first screen with campaign IDs, hashes, or dense statistical notation;
 - preserve the seven-question scientific conversation and the current Results reader contract.
 
-## Evidence-link contract
+## Evidence hierarchy and claim-level provenance
 
-For historical numerical claims, prefer links pinned to the exact `openevo-experiment` commit that supported the website snapshot.
+The publication target is not merely “the page has evidence links”. A specific factual claim should be locally connected to the closest primary evidence that supports it.
 
-Preferred evidence shape:
+Use this evidence priority:
+
+### Primary / closest-to-fact evidence
+
+Prefer, where applicable:
+
+- pinned official upstream source code;
+- raw episode / raw completion / actual runtime prompt;
+- machine-generated analysis or reconciliation;
+- frozen config / manifest / preregistration;
+- runtime receipt / adapter identity receipt;
+- contemporaneous commit diff or implementation source.
+
+### Contemporaneous explanatory evidence
+
+Use for interpretation and historical context:
+
+- closeout report;
+- experiment report;
+- audit note;
+- contemporaneous design/handoff document.
+
+### Later summaries
+
+Use for convenience, not as a substitute for existing primary evidence:
+
+- later `RESULTS.md` summary;
+- website prose;
+- later retrospective/program report.
+
+The preferred shape is:
 
 ```text
-claim on page
--> local “展开实验依据”
--> exact metric / uncertainty / validity note
--> pinned GitHub link to result or reconciliation
--> pinned config / code / manifest link when needed to understand semantics
+specific claim on page
+-> local evidence reference attached to that claim/observation
+-> closest primary source
+-> immutable revision
+-> exact line range when practical
+-> optional broader report for interpretation
 ```
 
-Mutable `main` links are appropriate for live-state routers such as `current-campaign.json`; they are weaker provenance for historical measurements because `main` can advance.
+A question-level evidence grid may still provide the complete material package, but it should not force a reader to guess which source supports a highly specific row.
 
-Do not copy large raw artifacts, private traces, credentials, server-private paths, or private infrastructure details into this repository merely to make evidence “local”. Point to the public-safe immutable evidence instead.
+For historical numerical/scientific claims, prefer links pinned to the exact `openevo-experiment` commit that supported the website snapshot. For official-code claims, pin the upstream revision as well. Add GitHub `#Lx-Ly` anchors only after verifying the actual lines; never invent a line range from memory.
+
+Mutable `main` links are appropriate for explicit live-state routers such as `current-campaign.json`. They are weaker provenance for historical measurements because `main` can advance.
+
+Do not copy large raw artifacts, private traces, credentials, server-private paths, or private infrastructure details into this repository merely to make evidence “local”. Point to public-safe immutable evidence instead.
+
+## Attribution workflow for model-output / parser / harness mismatches
+
+When a benchmark failure involves output formatting, parsing, projection, or action validity, do not assign responsibility from the first visible symptom.
+
+Resolve the layers in this order:
+
+1. **released benchmark contract** — upstream prompt/parser/projection requirements;
+2. **actual runtime prompt** — the exact text the model received;
+3. **raw generated output** — literal completion tokens before projection;
+4. **backend transformations** — decode/postprocessing that may rewrite text;
+5. **training-data path** — whether the behavior could have entered supervision;
+6. **measurement harness** — how model text became an environment action;
+7. **prior known state** — whether the mismatch was already identified before the formal run.
+
+Then separate the resulting claims:
+
+```text
+literal token provenance
+!= training causation
+!= parser behavior
+!= integration responsibility
+!= human authorship
+```
+
+For the 2026-08-25/26 WebShop case, the current supported boundary is documented in `../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`: Qwen2.5-7B-Instruct exhibited wrapper drift under the prompt/chat-template path, while the formal experiment integration failed to preflight a known compatibility boundary. That historical attribution must not be generalized to a future model/run without fresh raw evidence.
+
+## Benchmark-interface preflight before formal held-out consumption
+
+If formal evaluation depends on a structured action/output contract, validate the real end-to-end interface before consuming the scientific denominator:
+
+```text
+freeze model + prompt + chat template
+-> obtain a non-formal canary from BOTH arms
+-> retain raw_completion
+-> run the exact formal parser/projection
+-> record detected wrapper + projected action + validity reason
+-> compare against admissible environment actions
+-> fail closed on unknown format
+-> only then authorize formal held-out consumption
+```
+
+A parser unit test alone does not prove the frozen model’s real completions are compatible with the parser. The canary should exercise the actual model -> decode -> projection path.
+
+Formal traces should retain enough evidence to distinguish model failure from measurement failure. At minimum, preserve raw completion, parser/projection identity, projected action, validity reason, fallback usage, adapter identity, and task identity when the experiment design permits it.
+
+Unknown parser/wrapper outcomes must remain visible invalid measurements. Never silently drop them or transform them into apparently normal scores.
 
 ## What must stay separate
 
@@ -120,7 +202,7 @@ A local diagnostic may explain behavior and still not be the benchmark headline.
 
 ### Range alignment vs source-faithful task semantics
 
-A task panel that lies inside SEED's held-out `goal_idx 0-499` range is not automatically a source-faithful reproduction of SEED public-code worker-seed → goal-order → instruction semantics. Preserve “SEED-compatible historical panel” and “source-faithful public-code reproduction” as different claims when upstream evidence distinguishes them.
+A task panel that lies inside SEED's held-out `goal_idx 0-499` range is not automatically a source-faithful reproduction of SEED public-code worker-seed -> goal-order -> instruction semantics. Preserve “SEED-compatible historical panel” and “source-faithful public-code reproduction” as different claims when upstream evidence distinguishes them.
 
 ### Track A vs Track B
 
@@ -154,7 +236,7 @@ For SEED × OpenEvo Results work, the ordinary change set may include:
 
 ```text
 Results page/component copy
--> local evidence links
+-> local claim-level evidence links
 -> seed-openevo-results-reader-contract.md latest-state section when Q7/current answer changes
 -> semantic/reader-boundary tests
 ```
@@ -172,7 +254,8 @@ Good examples:
 - Track A and Track B remain distinct;
 - a confidence interval crossing zero cannot be described as a stable win;
 - current-facing evidence resolves to the intended upstream source;
-- Chinese first-use terminology and local evidence interaction remain understandable.
+- Chinese first-use terminology and local evidence interaction remain understandable;
+- parser-invalid/fallback outcomes cannot silently disappear from a formal scientific denominator when the protocol requires fail-closed behavior.
 
 A stale test that requires an old phrase or old “next step” should be updated rather than forcing the page back to stale science.
 
@@ -197,17 +280,24 @@ A compile pass is not page acceptance. A previously red test turning green is no
 
 After exact-head acceptance, merge the coherent release once and verify `https://basemodel-preview.vercel.app` independently. Production success proves release/rendering; it does not alter the scientific classification inherited from `openevo-experiment`.
 
+If `main` moves during acceptance, verify ancestry and the provider commit metadata. A deployment-specific Vercel hostname is immutable and cannot be treated as a moving alias for newest `main`.
+
 ## Lessons from the 2026-08-25/26 Results refresh
 
 The recent SEED held-out update exposed several reusable workflow lessons:
 
-- **Resolve upstream state before editing.** The website still said “fix the parser and rerun 256 episodes” after repaired PRIMARY-v2 had already completed. The stale copy existed because publication began from the page's previous state rather than from the newest experiment reconciliation.
-- **A newer audit can narrow an older claim without deleting the old evidence.** After repaired PRIMARY-v2, the source-semantics audit showed that the historical 128-task panel matched the held-out range but not the full public-code task semantics. The correct website response was to preserve the historical panel and narrow its label, not erase it.
-- **Measurement failures need their own narrative layer.** PRIMARY-v1's zero was useful evidence about a parser/projection incompatibility but invalid as a model-capability result. Publishing that distinction is more informative than hiding the failed measurement.
-- **Public prose should match uncertainty.** A positive paired delta whose interval crosses zero is a positive signal, not a stable win. The reader-facing sentence and the statistical evidence must say the same thing.
-- **Tests can become stale scientific contracts.** A reader-boundary test that required one old fixed phrase was corrected to protect the actual semantic boundary instead of forcing the new page back to old wording.
-- **Keep visual language stable when only the science changed.** Updating an experiment result usually does not justify a new card system, CSS language, or information architecture. Reuse the surrounding components unless the new evidence creates a real new reader need.
-- **Do not make the owner act as a data courier.** When connected repository/provider tools can inspect experiment evidence, source code, Preview, and Production directly, the Agent should perform that bridge itself.
+- **Resolve upstream state before editing.** Website/current-doc text can become stale while the experiment branch advances. Refresh the active scientific branch rather than beginning from the old page.
+- **A newer audit can narrow an older claim without deleting the old evidence.** The historical 128-task panel remained useful after the source-semantics audit, but its label had to narrow from “potential reproduction denominator” to “frozen local SEED-compatible panel”.
+- **Measurement failures need their own narrative layer.** PRIMARY-v1's zero was useful evidence about a parser/projection incompatibility but invalid as a model-capability result.
+- **Attribution must be layered.** Prompt convention, raw model tokens, backend transformations, training causation, parser behavior, and experiment responsibility are different claims.
+- **Known interface drift belongs in a preflight gate.** Once a model-output/parser mismatch is known, do not rely on human memory before the next formal run; exercise the real frozen interface and fail closed.
+- **Evidence should be local to the claim.** A page-level evidence collection is not enough when the reader must guess which source supports a specific observation.
+- **Public prose should match uncertainty.** A positive paired delta whose interval crosses zero is a positive signal, not a stable win.
+- **Tests can become stale scientific contracts.** Protect the semantic boundary, not one frozen phrase.
+- **Keep visual language stable when only the science changed.** Reuse the surrounding components unless new evidence creates a real new reader need.
+- **Do not make the owner act as a data courier.** Connected repository/provider tools should bridge experiment evidence, source code, Preview, and Production directly when possible.
+
+The detailed historical case is [`../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md).
 
 ## Anti-friction stopping rules
 
@@ -217,6 +307,7 @@ The recent SEED held-out update exposed several reusable workflow lessons:
 - Do not update the public page for a transient W&B blip, incomplete run, or unreviewed intermediate file.
 - Do not let a website deploy failure block already-authorized future scientific work in `openevo-experiment`.
 - Do not let a website success badge upgrade weak or invalid scientific evidence.
+- Do not use repository writes as tool-discovery probes; shared state is not Agent scratch space.
 
 ## Two-way maintenance rule
 
@@ -224,4 +315,4 @@ This document owns the **website-side intake and publication workflow**. The exp
 
 - [Experiment-side result publication handoff](https://github.com/mykcs/openevo-experiment/blob/main/docs/experiment-tracking/RESULT_PUBLICATION_HANDOFF.md)
 
-When this cross-repository workflow changes materially, update both documents in the same work session so an Agent entering from either repository can discover the other owner and reconstruct the complete experiment → evidence → website → Production path.
+When this cross-repository workflow changes materially, update both documents in the same work session when practical so an Agent entering from either repository can discover the other owner and reconstruct the complete experiment -> evidence -> website -> Production path.

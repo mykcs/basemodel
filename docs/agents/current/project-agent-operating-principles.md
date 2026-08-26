@@ -14,7 +14,7 @@ Before escalating:
 2. reproduce or narrow the failure when practical;
 3. expand the solution space: try another tool, entrypoint, implementation strategy, or low-risk experiment;
 4. prefer current official documentation for platform/runtime behavior;
-5. when the problem depends on fast-moving technology, models, Agent/harness behavior, framework/runtime changes, or an approach that may already be obsolete, proactively search the web for current first-party guidance and recent primary research, then map that evidence back to this repository;
+5. when the problem depends on fast-moving technology, models, Agent/harness behavior, framework/runtime changes, or an approach that may already be obsolete, proactively search current first-party guidance and recent primary research when available, then map that evidence back to this repository;
 6. continue autonomously when a safe reversible path remains.
 
 Ask for human intervention only at a real human boundary: authorization/login/2FA/CAPTCHA, unavailable credentials, an irreversible or high-risk decision, physical-device-only action, or an explicitly subjective product choice that cannot be inferred safely.
@@ -39,6 +39,21 @@ Default preferences:
 - remove stale compatibility layers only after callers/ownership are understood.
 
 Do not modernize for appearance alone. Avoid duplicate abstractions, cosmetic orchestration layers, and churn that has no measurable benefit.
+
+### Read before write; shared state is not a probe surface
+
+Repository/provider writes are user-visible shared state, not a scratchpad.
+
+Before any GitHub/provider mutation:
+
+1. use read/search/fetch operations to discover current state and the available capability;
+2. know the exact intended target, content, and rollback/cleanup path;
+3. do not create probe files, comments, branches, deployments, or other mutations merely to test whether a tool works;
+4. when several files form one coherent change, prepare them before the first provider-triggering update and prefer one atomic multi-file commit when practical;
+5. after a write, verify the returned target/branch/SHA instead of assuming the intended mutation happened;
+6. if an accidental write occurs, stop, classify it, clean or neutralize it immediately when possible, and disclose any residue in closeout rather than hiding it.
+
+Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention.
 
 ### User-facing work must externalize human thinking
 
@@ -107,10 +122,11 @@ A reusable lesson is incomplete if future Agents cannot recognize **when** it sh
 When a lesson is valuable only in a recognizable situation:
 
 1. describe the trigger using observable cues rather than a vague “remember this later” note;
-2. add or refine a concise route in [`scenario-trigger-registry.md`](./scenario-trigger-registry.md);
-3. keep detailed truth in the existing owning policy/runbook/test/history case rather than copying it into the registry;
-4. include the automatic response and a refresh cue when the knowledge is time-sensitive;
-5. prefer executable protection when a machine-checkable invariant exists.
+2. add or refine a concise route in [`scenario-trigger-registry.md`](./scenario-trigger-registry.md) when the lesson is broad enough to deserve a global trigger;
+3. otherwise route it through the task-specific index/runbook that a future Agent will naturally load;
+4. keep detailed truth in the existing owning policy/runbook/test/history case rather than copying it into every router;
+5. include the automatic response and a refresh cue when the knowledge is time-sensitive;
+6. prefer executable protection when a machine-checkable invariant exists.
 
 The registry should be scanned at task start **and re-scanned when the task changes state**: a new blocker appears, an overlapping PR is discovered, a provider/deployment boundary is crossed, `main` moves before final acceptance, a deterministic Gate reveals a hidden invariant, a current/latest claim becomes material, or the finished task appears to have produced a reusable lesson.
 
