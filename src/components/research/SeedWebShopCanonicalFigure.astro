@@ -5,14 +5,20 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
 ---
 
 <section id="fig-seed-webshop" class="canonical-figure seed-webshop-setting" aria-labelledby="seed-webshop-setting-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
     <div class="figure-label">{t('第六步 · FAIR COMPARISON','STEP 6 · FAIR COMPARISON')}</div>
     <h2 id="seed-webshop-setting-title">{t('SEED 与 OpenEvo：进入同一套 WebShop 比较合同','SEED and OpenEvo enter the same WebShop comparison contract')}</h2>
-    <p>{t('公平比较固定的是比赛场地，不是学习方法：SEED、OpenEvo 或其他框架都应进入同一个商品世界、同一批任务池与同一种评分。','A fair comparison fixes the playing field, not the learning method: SEED, OpenEvo, or another framework should enter the same product world, task pools, and scoring contract.')}</p>
-    <div class="figure-actions"><a href={p('/research/seed-openevo/webshop/')}>{t('WebShop 环境说明 →','WebShop environment →')}</a><a href={p('/papers/seed/')}>{t('SEED 论文页 →','SEED paper →')}</a></div>
+    <p>{t('公平比较固定的是比赛场地，不是学习方法：SEED、OpenEvo 或其他框架都应进入同一个商品世界、同一批任务池与同一种评分。这里还要额外分清一件事：公开代码能告诉我们“怎样生成一次 128 题验证”，但不能告诉我们论文最终 89.7 / 78.1% 究竟来自哪一次 128 题验证。','A fair comparison fixes the playing field, not the learning method: SEED, OpenEvo, or another framework should enter the same product world, task pools, and scoring contract. One extra distinction matters: released code tells us how to generate a 128-task validation call, but not which validation call produced the paper’s final 89.7 / 78.1%.')}</p>
+    <div class="figure-actions">
+      <a href={p('/research/seed-openevo/webshop/')}>{t('WebShop 环境说明 →','WebShop environment →')}</a>
+      <a href={p('/papers/seed/')}>{t('SEED 论文页 →','SEED paper →')}</a>
+      <a href={`${seedRoot}/examples/seed_trainer/_common/webshop.sh`} target="_blank" rel="noreferrer">{t('SEED 官方 WebShop launcher ↗','SEED WebShop launcher ↗')}</a>
+      <a href={`${seedRoot}/agent_system/environments/env_package/webshop/envs.py`} target="_blank" rel="noreferrer">{t('SEED 官方任务抽样代码 ↗','SEED task-sampling code ↗')}</a>
+    </div>
   </header>
 
   <figure class="setting-map" aria-labelledby="seed-webshop-setting-title">
@@ -23,33 +29,61 @@ const p = (path: string) => localePath(locale, path);
     </section>
 
     <section class="evidence-grid" aria-label={t('公平比较的证据层','Evidence layers for a fair comparison')}>
-      <article class="evidence-card paper" data-ui-audit-item><small>PAPER EXPLICIT</small><strong>128</strong><p>{t('论文报告的 WebShop test samples','WebShop test samples reported by the paper')}</p></article>
-      <article class="evidence-card code" data-ui-audit-item><small>RELEASED-CODE DEFAULT</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small','small WebShop products; released scripts default to use_small')}</p></article>
-      <article class="evidence-card boundary" data-ui-audit-item><small>PAPER BOUNDARY</small><strong>{t('未明确','Not explicit')}</strong><p>{t('论文未明确说明最终数字使用的 catalog size','The paper does not state the catalog size behind its final numbers')}</p></article>
+      <article class="evidence-card paper" data-ui-audit-item><small>CODE + PAPER</small><strong>128</strong><p>{t('公开 WebShop launcher 的 validation batch size 是 128；论文也以 128 个 test samples 报告 WebShop 结果。','The released WebShop launcher uses validation batch size 128, and the paper reports WebShop results over 128 test samples.')}</p></article>
+      <article class="evidence-card code" data-ui-audit-item><small>RELEASED-CODE DEFAULT</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small。','small WebShop products; released scripts default to use_small.')}</p></article>
+      <article class="evidence-card boundary" data-ui-audit-item><small>PAPER BOUNDARY</small><strong>{t('具体 128 未知','Exact 128 unknown')}</strong><p>{t('论文没有公开最终 89.7 / 78.1% 对应的 validation 次序、checkpoint 与具体 128 个任务身份。','The paper does not publish the validation ordinal, checkpoint, or exact 128 task identities behind 89.7 / 78.1%.')}</p></article>
     </section>
 
     <section class="contract-world" aria-label={t('同一 WebShop 任务合同','Same WebShop task contract')}>
       <header><small>RELEASED-CODE TASK SETTING</small><strong>{t('1,000-product small WebShop · 6,910 goals','1,000-product small WebShop · 6,910 goals')}</strong></header>
       <div class="pools">
         <article data-ui-audit-item><small>TRAIN CANDIDATE POOL</small><strong>goal 500–6909</strong><span>6,410 {t('goals','goals')}</span><p>{t('公开代码默认从 goal 500 开始取训练候选任务。','Released code defaults to training candidates beginning at goal 500.')}</p></article>
-        <article data-ui-audit-item><small>COMPARISON CONTRACT</small><strong>goal 0–499</strong><span>500 {t('held-out task slots','held-out task slots')}</span><p>{t('held-out candidate pool（保留任务候选池）与 training candidate pool 分离。','Held-out candidate pool, kept apart from the training candidate pool.')}</p></article>
-        <article class="manifest" data-ui-audit-item><small>MANIFEST BOUNDARY</small><strong>128 {t('reported samples','reported samples')}</strong><p>{t('exact 128-goal manifest 尚未公开固定；SEED 论文只报告“128”这一个总数，没有公开这 128 个 goal ID 落在 0–499 中的具体位置。','SEED paper only reports the 128-sample total; the 128 goal IDs are not public.')}</p></article>
+        <article data-ui-audit-item><small>HELD-OUT CANDIDATE POOL</small><strong>goal 0–499</strong><span>500 {t('保留候选槽位','held-out candidate slots')}</span><p>{t('验证时从 0–499 抽任务，与训练候选池分离；但“来自正确范围”不等于“已经知道论文最终那 128 题”。','Validation draws from 0–499, separate from the training candidate pool; being in the correct range does not identify the paper’s final 128 tasks.')}</p></article>
+        <article class="manifest" data-ui-audit-item><small>EXACT 128-GOAL MANIFEST</small><strong>{t('论文未公开','Not published')}</strong><p>{t('公开材料没有把最终表格结果绑定到某一次 validation + checkpoint，因此论文最终数字的 exact 128-goal manifest 不能由公开信息唯一恢复。','Public materials do not bind the final table result to one validation call + checkpoint, so the paper’s exact 128-goal manifest is not uniquely recoverable.')}</p></article>
       </div>
     </section>
+
+    <section class="knowledge-boundary" aria-labelledby="knowledge-boundary-title">
+      <header>
+        <small>WHAT CAN WE KNOW?</small>
+        <h3 id="knowledge-boundary-title">{t('关于“128 个任务”，公开信息能确定到哪一层？','How much can public information tell us about the 128 tasks?')}</h3>
+      </header>
+      <div class="knowledge-rows">
+        <article data-ui-audit-item>
+          <strong>{t('能确定：每次验证是 128 个任务','Known: each validation uses 128 tasks')}</strong>
+          <p>{t('官方 launcher 默认 VAL_DATA_SIZE=128，并把它作为 validation batch size。','The official launcher defaults VAL_DATA_SIZE=128 and uses it as the validation batch size.')}</p>
+        </article>
+        <article data-ui-audit-item>
+          <strong>{t('能机械推导：一个指定 evaluator 的某一次验证','Derivable: a specified validation call of a specified evaluator')}</strong>
+          <p>{t('代码、数据和 seed 固定以后，可以重建例如“全新 evaluator 的第一次 validation”：候选 session 是 0–499，随机数状态决定有序抽样；各 worker 的 seed 还会影响实际 goal 排列。下一次 reset() 会继续推进同一个 RNG，所以后续 validation 的 128 个编号会变化。','With code, data, and seeds fixed, a call such as “the first validation of a fresh evaluator” can be rebuilt: candidate sessions are 0–499, RNG state determines the ordered draw, and each worker seed also affects the concrete goal ordering. A later reset advances the same RNG, so later validations draw a different set of 128 indices.')}</p>
+        </article>
+        <article class="unknown" data-ui-audit-item>
+          <strong>{t('不能唯一确定：论文 89.7 / 78.1% 背后的具体 128 题','Not uniquely recoverable: the exact 128 tasks behind paper 89.7 / 78.1%')}</strong>
+          <p>{t('公开材料没有给出“第几次 validation + 哪个 checkpoint + 当时任务身份”的绑定。因此我们能复现公开代码定义的一次评测过程，却不能把它冒充成论文最终那一次。','Public materials do not bind the table entry to a validation ordinal, checkpoint, and task identities. We can reproduce a validation process defined by released code, but cannot relabel it as the paper’s final evaluation.')}</p>
+        </article>
+      </div>
+    </section>
+
+    <aside class="comparison-consequence">
+      <strong>{t('这对公平比较意味着什么？','What does this mean for a fair comparison?')}</strong>
+      <p>{t('我们可以把 BASE 与 OpenEvo 放在同一套、由公开 SEED 代码规则生成并冻结的 128 个任务上，严格回答“OpenEvo 相对 BASE 有没有提升”。但不能把这个数字直接减去论文的 89.7 / 78.1%，解释成 OpenEvo 与 SEED 的方法差异。若要回答“OpenEvo vs SEED 谁更强”，最干净的做法是把 SEED 方法本身也重新放到同一套冻结任务、同一评测程序和匹配预算下运行。','We can place BASE and OpenEvo on the same frozen 128 tasks generated from the released SEED rules and strictly answer whether OpenEvo improves over BASE. We cannot subtract that number from the paper’s 89.7 / 78.1% and interpret the difference as a method effect. To answer “OpenEvo vs SEED”, the clean approach is to rerun the SEED method itself on the same frozen tasks, evaluator, and matched budget.')}</p>
+    </aside>
 
     <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')} data-layout-anomaly-ignore>
       <strong>SAME RULES</strong><span>{t('同一个商品世界','same product world')}</span><span>{t('同一批可学习任务','same learning-task pool')}</span><span>{t('同一批最终考试题','same final test')}</span><span>{t('同一种 Score / Success 评分','same Score / Success scoring')}</span>
     </section>
-    <figcaption><strong>{t('同一个世界、同一批任务、同一场考试、同一种评分；学习方法可以不同。','Same world, same tasks, same test, same scoring; learning methods may differ.')}</strong> {t('1,000 商品、训练起点和 6,910 goals 来自当前 released code 与 WebShop small environment；“128”来自 SEED 论文报告。图中不把未公布的 exact 128 goal IDs 或论文 catalog size 当作既定事实。','The 1,000 products, training start, and 6,910 goals come from current released code and the WebShop small environment; 128 is paper-reported. This figure does not present unpublished exact 128 goal IDs or a paper catalog size as settled facts.')}</figcaption>
+    <figcaption><strong>{t('同一个世界、同一批任务、同一场考试、同一种评分；学习方法可以不同。','Same world, same tasks, same test, same scoring; learning methods may differ.')}</strong> {t('1,000 商品、训练起点和 6,910 goals 来自当前 released code 与 WebShop small environment；“每次 validation 128 个任务”也可由公开 launcher 恢复。真正未知的是论文最终 89.7 / 78.1% 对应的具体 validation realization 与 checkpoint，因此这里不把任何可重建的 128 任务集合冒充成论文最终分母。','The 1,000 products, training start, and 6,910 goals come from the released code and WebShop small environment; the 128-task validation size is also recoverable from the public launcher. What remains unknown is the concrete validation realization and checkpoint behind the paper’s final 89.7 / 78.1%, so no reconstructable 128-task set is presented here as the paper’s final denominator.')}</figcaption>
   </figure>
 </section>
 
 <style>
   .seed-webshop-setting{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
-  .figure-header{max-width:860px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.figure-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.figure-actions a{padding:.45rem .65rem;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-weight:750;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--accent);color:var(--accent)}
+  .figure-header{max-width:900px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.figure-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.figure-actions a{padding:.45rem .65rem;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-weight:750;text-decoration:none}.figure-actions a:hover,.figure-actions a:focus-visible{border-color:var(--accent);color:var(--accent)}
   .setting-map{display:grid;gap:1rem;margin:1.5rem 0 0}.method-entry{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(150px,.75fr) auto minmax(0,1fr);gap:.55rem;align-items:center;padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted);text-align:center}.method-entry article{padding:.72rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.method-entry article strong,.method-entry article span{display:block}.method-entry article span{margin-top:.25rem;color:var(--muted);font-size:.67rem}.method-entry>b{color:var(--accent);font-size:1.6rem}.same-contract{padding:.6rem;border:2px solid var(--accent);border-radius:8px;color:var(--accent);font:800 .63rem/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
   .evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.evidence-card{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence-card small{display:block;color:var(--muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.evidence-card strong{display:block;margin:.42rem 0;font-size:clamp(1.2rem,2vw,1.8rem);line-height:1.1}.evidence-card p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.48}.evidence-card.paper{border-top:4px solid var(--success)}.evidence-card.code{border-top:4px solid var(--accent)}.evidence-card.boundary{border-top:4px solid var(--warning)}
   .contract-world{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-muted)}.contract-world>header{padding:1rem;border-bottom:1px solid var(--line);background:var(--surface)}.contract-world>header small,.contract-world>header strong{display:block}.contract-world>header small{color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.contract-world>header strong{margin-top:.35rem;font-size:clamp(1rem,2vw,1.4rem)}.pools{display:grid;grid-template-columns:1fr 1fr .8fr;gap:.7rem;padding:.85rem}.pools article{padding:.8rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.pools small,.pools span{display:block;color:var(--muted);font-size:.62rem;line-height:1.45}.pools strong{display:block;margin:.35rem 0;font-size:1rem}.pools p{margin:.42rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.5}.pools .manifest{border-style:dashed}
-  .same-rules{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;padding:.8rem;border-block:1px solid var(--line)}.same-rules strong{margin-right:.2rem;color:var(--accent);font:800 .63rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.same-rules span{padding:.38rem .5rem;border:1px solid var(--line);border-radius:999px;background:var(--surface-muted);font-size:.68rem}.setting-map figcaption{max-width:90ch;color:var(--muted);font-size:.76rem;line-height:1.6}.setting-map figcaption strong{color:var(--ink)}
-  @media(max-width:860px){.seed-webshop-setting{width:min(100% - 1rem,1120px);padding:1rem}.method-entry{grid-template-columns:1fr}.method-entry>b{display:none}.evidence-grid,.pools{grid-template-columns:1fr}.same-rules{align-items:flex-start;flex-direction:column}.same-rules span{width:100%;border-radius:6px}}
+  .knowledge-boundary{padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.knowledge-boundary>header small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.knowledge-boundary h3{margin:.35rem 0 1rem;font-size:1.08rem;letter-spacing:-.02em}.knowledge-rows{display:grid;gap:.55rem}.knowledge-rows article{display:grid;grid-template-columns:minmax(200px,.85fr) minmax(0,1.65fr);gap:1rem;padding:.8rem;border-top:1px solid var(--line)}.knowledge-rows article:first-child{border-top:0}.knowledge-rows strong{font-size:.78rem;line-height:1.45}.knowledge-rows p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.58}.knowledge-rows .unknown{border-left:3px solid var(--warning);padding-left:1rem}
+  .comparison-consequence{padding:1rem 1.1rem;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;background:var(--surface-muted)}.comparison-consequence strong{display:block;font-size:.82rem}.comparison-consequence p{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.62}
+  .same-rules{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;padding:.8rem;border-block:1px solid var(--line)}.same-rules strong{margin-right:.2rem;color:var(--accent);font:800 .63rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.same-rules span{padding:.38rem .5rem;border:1px solid var(--line);border-radius:999px;background:var(--surface-muted);font-size:.68rem}.setting-map figcaption{max-width:94ch;color:var(--muted);font-size:.76rem;line-height:1.6}.setting-map figcaption strong{color:var(--ink)}
+  @media(max-width:860px){.seed-webshop-setting{width:min(100% - 1rem,1120px);padding:1rem}.method-entry{grid-template-columns:1fr}.method-entry>b{display:none}.evidence-grid,.pools{grid-template-columns:1fr}.knowledge-rows article{grid-template-columns:1fr;gap:.35rem}.same-rules{align-items:flex-start;flex-direction:column}.same-rules span{width:100%;border-radius:6px}}
 </style>
