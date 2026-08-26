@@ -9,7 +9,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const evidenceRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
 const sealedRoot = 'https://github.com/mykcs/openevo-experiment/blob/0b6e7dcc718a85ed967feb85b5c95fd68f92d38e';
 const h142Root = 'https://github.com/mykcs/openevo-experiment/blob/d1f35ecdf84c61b07df7c646e83588d63b9297bd';
-const seedHeldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/c155ae10b78be8f2a208c54ff3a0cb383f318bbc';
+const seedHeldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1acc1132f8bdad4269a4e15864a9cccb0';
+const seedSemanticsRoot = seedHeldoutRoot;
 
 type Tone = 'established' | 'partial' | 'blocked' | 'measurement' | 'pending';
 type Observation = { label: string; value: string };
@@ -194,27 +195,28 @@ const questions: Array<{
     id: 'q7',
     index: '07',
     tone: 'pending',
-    status: t('首轮已跑 · 主评测待修复', 'First run complete · primary needs repair'),
+    status: t('修复后复测已完成 · 源码语义待验证', 'Repaired rerun complete · source-faithful panel pending'),
     question: t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?'),
     conclusion: t(
-      '关键实验已经迈出第一步。2026-08-25，我们在 SEED 官方保留任务范围里冻结 128 个任务，并完成 BASE 与 OpenEvo SD-LoRA 的首轮比较。主评测因为动作标签格式不兼容而读错模型输出，所以两边的 0 分被判为测量无效，不能当作模型能力。下一步只修复解析兼容性，在同一批任务上重跑两种方法各 128 次。',
-      'The key experiment has started. On 2026-08-25, we froze 128 tasks from the SEED official held-out range and completed the first BASE versus OpenEvo SD-LoRA comparison. The primary evaluation misread the model output because the action wrappers were incompatible, so the zero scores on both arms were measurement-invalid rather than model ability. Next, repair only the parser compatibility and rerun 128 tasks per arm on the same panel.',
+      '关键实验又向前推进了一步。解析兼容修复后的 256 次复测已经完成：OpenEvo 的平均任务完成度高于 BASE，并出现少量完整成功；但配对不确定区间仍跨过 0，所以目前只能说有正向信号，不能说已经稳定胜出。随后按固定版本的 SEED 公开代码重新核对任务构造时发现，旧 128-task panel 虽然来自 0–499，却没有完整复现每个 validation worker 的 seed→goal-order→instruction 语义。现在真正缺的是：先机械重建源码忠实的首次验证 128 个任务槽位，再用同一解析兼容合同比较冻结的 BASE 与 SD-LoRA。',
+      'The key benchmark experiment has advanced another step. The 256-episode parser-compatible rerun is complete: OpenEvo has higher average task progress than BASE and a small number of exact successes, but the paired uncertainty interval still crosses zero, so this is a positive signal rather than a stable win. A subsequent audit against the pinned SEED public code found that the old 128-task panel came from 0–499 but did not fully reproduce each validation worker’s seed→goal-order→instruction semantics. The missing experiment is now a mechanically reconstructed source-faithful first-validation 128-slot panel, followed by the same parser-compatible paired comparison of frozen BASE and SD-LoRA.',
     ),
     observations: [
-      { label: t('首轮评测规模', 'First-run coverage'), value: t('128 tasks × 2 arms × 2 contracts = 512 episodes（完整任务尝试）', '128 tasks × 2 arms × 2 contracts = 512 episodes') },
-      { label: t('SEED 原始主评测', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — measurement-invalid, not model ability.') },
-      { label: t('OpenEvo 原生诊断', 'OpenEvo-native diagnostic'), value: t('BASE：Task Score 14.6 / 完整成功 2.3%；SD-LoRA：28.3 / 1.6%。部分任务进度更高，但完整购买成功率没有提高。', 'BASE: Task Score 14.6 / exact success 2.3%; SD-LoRA: 28.3 / 1.6%. Partial progress improved, but completed-purchase success did not.') },
-      { label: t('下一步', 'Next run'), value: t('同一 128-task panel，只修复解析兼容性；2 arms × 128 = 256 episodes，尚未运行。', 'Same frozen 128-task panel, parser-compatibility repair only; 2 arms × 128 = 256 episodes, not yet run.') },
+      { label: t('完整战役规模', 'Full campaign coverage'), value: t('512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes；六个 cells 均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.') },
+      { label: t('SEED 原始主评测', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作 wrapper 不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.') },
+      { label: t('修复后主评测', 'Repaired PRIMARY-v2'), value: t('BASE：Task Score 4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，bootstrap 95% CI [-0.65, +7.19]；positive / tie / negative = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.') },
+      { label: t('源码语义审计', 'Source-semantics audit'), value: t('SEED validation base seed=1000；session draw=RandomState(1000)；worker seed=1000+slot。worker seed 会改变 goal ordering，因此数值 session index 不是完整任务身份；新的 128-slot semantic manifest 仍待 materialize。', 'SEED validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity; the new 128-slot semantic manifest is not yet materialized.') },
     ],
     boundary: t(
-      '这 128 个任务来自 SEED 官方保留范围，但这个 panel 只是“与 SEED 评测设置兼容（SEED-compatible）”，不是论文确切的评估分母。SEED checkpoint 也没有在本地复现。OpenEvo 原生诊断只能作为本地有效诊断，不能冒充正式 SEED 成绩。',
-      'The 128 tasks come from the SEED official held-out range, but the panel is SEED-compatible rather than the paper’s exact denominator. The SEED checkpoint has not been locally reproduced. The OpenEvo-native diagnostic is a valid local diagnostic, not a formal SEED score.',
+      'repaired-PRIMARY 是旧冻结 panel 上可解释的本地 SEED-compatible 结果，但它不是论文确切分母，也不是源码忠实的 first-validation semantic panel；SEED checkpoint / training 仍未在本地复现。新的 source-faithful successor 目前是 design-only-not-authorized：允许 CPU 准备，不允许正式 GPU task consumption。',
+      'The repaired PRIMARY is an interpretable local SEED-compatible result on the historical frozen panel, but it is neither the paper’s exact denominator nor a source-faithful first-validation semantic panel; the SEED checkpoint/training result has still not been locally reproduced. The source-faithful successor is currently design-only-not-authorized: CPU preparation is allowed, formal GPU task consumption is not.',
     ),
     links: [
-      { kind: 'Human report', label: t('2026-08-25 held-out 比较结果与中文摘要', '2026-08-25 held-out comparison results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      { kind: 'Preregistration', label: t('冻结比较协议', 'Frozen comparison preregistration'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/PREREGISTRATION.md` },
-      { kind: 'Machine result', label: t('逐臂与配对分析', 'Per-arm and paired analysis'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/results/analysis.json` },
-      { kind: 'Historical status', label: t('H1.30 当时仍为正式分母 0', 'H1.30 historical denominator = 0'), href: `${evidenceRoot}/docs/evidence/remote-runs/2026-08-17/h1.30/H1.30_STATUS.md` },
+      { kind: 'Human report', label: t('完整三层结果与中文摘要', 'Complete three-layer results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
+      { kind: 'Machine result', label: t('修复后主评测配对分析', 'Repaired-primary paired analysis'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
+      { kind: 'Machine result', label: t('六个 cell 身份与覆盖对账', 'Six-cell identity and coverage reconciliation'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
+      { kind: 'Audit', label: t('SEED 公共代码任务语义复现说明', 'SEED public-code task-semantics reproduction note'), href: `${seedSemanticsRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` },
+      { kind: 'Design', label: t('源码忠实 successor 机器可读设计', 'Source-faithful successor design'), href: `${seedSemanticsRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
     ],
   },
 ];
