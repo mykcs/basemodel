@@ -12,4 +12,23 @@
       overflow-wrap: anywhere;
     }
   }
+
+  @media (min-width: 721px) {
+    [data-testid='openevo-webshop-result-index'] .results-questions {
+      display: grid;
+    }
+
+    [data-testid='openevo-webshop-result-index'] .results-questions > .section-heading {
+      grid-row: 1;
+    }
+
+    [data-testid='openevo-webshop-result-index'] .results-questions > .question-list {
+      grid-row: 2;
+    }
+
+    [data-testid='openevo-webshop-result-index'] .results-questions > .audit-time {
+      grid-row: 3;
+      margin: 18px 0 0;
+    }
+  }
 </style>
