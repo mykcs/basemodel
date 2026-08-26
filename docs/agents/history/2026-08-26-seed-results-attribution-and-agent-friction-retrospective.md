@@ -12,9 +12,11 @@ This closeout covers the 2026-08-25/26 SEED × OpenEvo Results work that combine
 - the website explanation of model-side format drift versus experiment-integration responsibility;
 - the follow-up plan to make Results evidence claim-level and directly auditable;
 - repeated Preview/Production/main-movement friction during release verification;
+- the final Results information-hierarchy correction that moved code-level attribution out of the major-section path and into collapsed technical depth after the seven-question narrative;
+- serial UI-gate closeout across the Results and `/lab/` surfaces, including a gate that exited successfully while silently skipping on `main`;
 - Agent-documentation drift and repository-write hygiene issues discovered during closeout.
 
-The purpose is not to preserve every transient SHA or deployment state. It is to preserve the reusable failure modes, diagnostic order, and boundaries future Agents should apply automatically.
+The purpose is not to preserve every transient SHA or deployment state. It is to preserve the reusable failure modes, diagnostic order, successful recovery sequence, and boundaries future Agents should apply automatically.
 
 ## What actually happened
 
@@ -222,6 +224,170 @@ During closeout, a tool-routing mistake created temporary probe writes/comments.
 
 Shared repository surfaces are user-visible state, not a scratchpad.
 
+## Friction 9 — deep technical attribution was initially given too much page hierarchy
+
+The action-wrapper investigation was valuable, but its first publication shape promoted it to a major Results section. That made a forensic implementation detail compete with the page’s actual job: answer the seven research questions and explain what the experiment has established.
+
+The correction in PR #261 moved the material after the seven-question narrative and made it default-collapsed. The durable placement rule is:
+
+```text
+reader question
+-> visible answer + minimum reasoning bridge
+-> local “展开实验依据” for exact numbers/code tied to that answer
+-> optional collapsed forensic trace for readers who want the full chronology
+```
+
+A technical trace should **not** become a top-level section merely because it contains a lot of evidence. Promote it only when it changes the scientific answer, comparison, or next decision for the default reader.
+
+For code-level responsibility chains, use chronology rather than abstract blame labels:
+
+```text
+upstream official contract
+-> our actual runtime prompt
+-> raw model output
+-> backend transformation boundary
+-> contemporaneous commit where the issue was known
+-> training-data inclusion/exclusion path
+-> formal experiment where the mismatch became consequential
+-> repair and what exactly changed
+```
+
+The final Results action-wrapper trace follows this order: SEED prompt/projection -> our saved prompt/raw BASE episode -> no-adapter wrapper drift -> H1.36 report and commit `8e526e42` -> H1.36 data filtering -> PRIMARY-v1 failure -> PRIMARY-v2 compatibility repair.
+
+Progressive disclosure is not hiding evidence. It is assigning detail to the correct reader depth.
+
+## Friction 10 — a serial browser gate can reveal several independent defects one after another
+
+The closeout from PR #254 onward demonstrated why “the test that was red is green now” is not completion.
+
+The sequence was:
+
+1. **PR #254** introduced the layered Results explanation and changed page density/structure while preserving scientific boundaries.
+2. **PR #255** repaired the SEED 128-task mobile readability failure without weakening the CJK threshold. The canonical 390px issue passed, but full Production continued into later gates.
+3. Production then exposed a separate **Results desktop heading/card proximity** regression. **PR #256** fixed layout order only; it did not rewrite science or loosen the existing geometry test.
+4. Full `vercel-ui-gate` then passed **91/91**, but `vercel-lab-browser-gate` printed `skipped for branch: main`. The command path had not failed, yet the required gate had not executed. **PR #257** fixed the branch condition so the gate genuinely ran on `main`.
+5. Once the lab gate actually ran, it exposed real `/lab/` responsive connector issues. **PR #258** restored the intended mobile/text vs tablet-desktop/SVG split; **PR #260** aligned the server topology with the measured viewport contract and rerouted the connector around unrelated nodes.
+6. **PR #259** added the action-wrapper attribution evidence; subsequent owner feedback showed the scientific content was useful but its page hierarchy was too high.
+7. **PR #261** preserved the evidence while folding it into a collapsed post-seven-question technical trace.
+8. **PR #262** consolidated the reusable attribution/provenance and Agent-workflow lessons into the current documentation system.
+
+The reusable interpretation is:
+
+```text
+first failure fixed
+!= remaining suite exercised
+!= next gate executed
+!= full release accepted
+```
+
+A hosted gate with `--max-failures=1` is a serial diagnostic queue. Every newly exposed failure must be classified independently as product, stale contract, invalid metric, harness/environment, or policy/wiring. Do not infer that later tests are clean just because they were not reached.
+
+## Friction 11 — “exit 0” and “PASS” can still be semantically different
+
+The lab-gate skip on `main` is a particularly important release lesson.
+
+For every acceptance gate that the release contract requires, verify evidence of **execution**, not just process success:
+
+```text
+expected gate start marker
+-> expected branch/ref eligibility
+-> expected test file(s) or test count actually launched
+-> assertions completed
+-> explicit PASS / zero failures
+```
+
+If logs say `skipped`, `ignored`, or `not eligible`, that can be a correct policy outcome, but it cannot satisfy an acceptance requirement that says the gate must actually run.
+
+This distinction applies equally to branch-only Previews, expensive browser subsets, conditional tests, and provider ignore rules.
+
+## Successful patterns that worked in this round
+
+Several recovery choices repeatedly reduced risk and should be reused.
+
+### 1. Freeze the scientific boundary while fixing presentation or harness defects
+
+For #255, #256, #258, #260, and #261, keep the research claim stable and change only the owning layer: wording/layout/connector geometry/information hierarchy. This prevents a UI failure from silently becoming a scientific rewrite.
+
+### 2. Fix the smallest owning layer; do not weaken the detector
+
+When a valid threshold exposed a real problem, repair the product. When a stale assertion encoded retired information architecture, update that assertion narrowly while retaining unrelated overflow/geometry/theme protection. When a gate was skipped, fix the execution condition rather than marking the skip as acceptable.
+
+### 3. Treat Production as an evidence-producing environment, not a green badge
+
+The useful signal came from reading exact failing assertions, measured widths/geometry, gate markers, and test counts. Provider state was necessary but weaker than the executable line that explained what happened.
+
+### 4. Use exact-head identity and expected-head merge locking
+
+Before each merge, tie acceptance to the actual head SHA and merge with `expected_head_sha` when available. This prevents a late branch mutation from slipping into an already-approved release.
+
+### 5. Keep the main reader path stable and move detail downward
+
+The seven-question Results narrative remained the semantic spine. Extra evidence was made locally discoverable and the full forensic chain became optional depth. This preserved auditability without forcing every reader through the debugging chronology.
+
+### 6. Link evidence at the level where the claim is made
+
+Official behavior links to official code; our runtime behavior links to saved prompts/raw episodes; historical knowledge links to the contemporaneous commit/report; metric claims link to machine analysis/reconciliation. This made responsibility language much less ambiguous.
+
+### 7. Deposit lessons only after the failure class is understood
+
+The durable docs were written after the product/test/provider distinctions were clear. This avoids freezing a first guess as policy.
+
+## Reusable end-to-end SOP distilled from this case
+
+For a future research-page change that touches scientific copy, evidence, layout, and release:
+
+```text
+1. resolve current scientific authority
+   branch/SHA -> campaign -> reconciliation/result -> claim boundary
+
+2. write the reader-path map before implementation
+   first-screen answer -> major questions -> local evidence -> optional deep trace
+
+3. pin evidence locally
+   official code / raw episode / config / machine result / contemporaneous commit
+
+4. identify existing semantic and visual contracts
+   reader tests + overflow + geometry + theme + browser gates
+
+5. make one coherent change without widening the scientific claim
+
+6. run deterministic Gate/build and focused browser checks
+
+7. obtain exact-head hosted acceptance when the ref is eligible
+   verify deployment metadata, not only branch name
+
+8. if a gate fails, classify the first failure and fix its owner
+   product / stale contract / invalid metric / harness / environment / policy wiring
+
+9. rerun until the whole required suite executes
+   a formerly-red test passing is only a checkpoint
+
+10. race-check head/base/provider state and merge the accepted exact head
+
+11. verify Production separately
+   exact main SHA + required gates actually executed + affected route + metadata
+
+12. after closeout, deposit only reusable lessons
+   executable invariant first, current SOP second, historical case for detailed rationale
+```
+
+If a Preview is absent, first check `vercel.json` ref eligibility and whether Vercel created a deployment object for the exact SHA. Do not generate no-op writes merely to “wake up” an integration, and do not call policy-driven absence a provider outage.
+
+## Failed approaches / anti-patterns to avoid repeating
+
+- promoting a detailed forensic chain to major page hierarchy because it is long or technically interesting;
+- using a page-level evidence pile where a specific claim has no obvious supporting source;
+- assigning blame before separating official contract, runtime prompt, raw output, backend, training path, and harness;
+- treating a known model/parser mismatch as something human memory will catch next time instead of adding a real canary/preflight;
+- assuming a fixed numeric task range uniquely identifies source-faithful task semantics;
+- starting a website update from stale website prose instead of the active experiment state;
+- calling an absent Preview a Vercel outage before checking ref eligibility/deployment objects;
+- treating `skipped` as `passed` when the release contract requires execution;
+- accepting a serial gate because the first formerly-red test turned green;
+- weakening a quality threshold to force green instead of classifying the failure;
+- creating repository/provider writes as tool-discovery probes;
+- persisting transient deployment IDs/URLs as timeless current truth.
+
 ## Claim-level provenance contract
 
 For a specific factual row, observation, or number, ask:
@@ -256,7 +422,9 @@ This historical case should remain detailed evidence. Reusable rules belong in t
 
 - `project-agent-operating-principles.md` — read-before-write and repository-write hygiene;
 - `experiment-result-publication-workflow.md` — upstream-state refresh, evidence hierarchy, claim-level provenance, and attribution workflow;
-- `seed-openevo-results-reader-contract.md` — Results-specific local evidence interaction and current scientific-state boundary;
+- `seed-openevo-results-reader-contract.md` — Results-specific reader hierarchy, local evidence interaction, and current scientific-state boundary;
+- `release-closeout-protocol.md` — exact-head identity, required-gate execution proof, merge race-check, and Preview -> Production closeout;
+- `deployment-policy.md` — serial browser-gate failure classification and provider/build-budget rules;
 - `docs/agents/README.md` — task-based Agent reading map;
 - `docs/agents/LATEST.md` — short current handoff.
 
