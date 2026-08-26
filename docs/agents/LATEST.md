@@ -17,7 +17,9 @@ Production                        -> https://basemodel-preview.vercel.app
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
+Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Vercel remains the ordinary deployment provider. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
+
+The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Cloudflare material is legacy rollback/provider-specific tooling only and stays outside ordinary deployment reporting.
 
 ## Current research state
 

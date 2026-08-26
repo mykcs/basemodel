@@ -46,8 +46,8 @@ const navItems = [
           'We now have a completed 128×2 paired evaluation on the corrected task semantics recoverable from released SEED code. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'source-faithful Track A 先通过 authoritative runtime semantic validation 128/128；随后 BASE=7.17 Task Score×100 / 3.9% exact success，冻结 SD-LoRA=8.74 / 3.9%。配对差 +1.57，bootstrap 95% CI [-3.21,+6.31]。两边均为 128/128 valid、parser-invalid=0，256 个 raw episode 与分析/receipt 已 byte-for-byte 入库并 PUBLISHED_AND_VERIFIED。',
-          'Source-faithful Track A first passed authoritative runtime semantic validation at 128/128. The paired run then measured BASE at 7.17 Task Score×100 / 3.9% exact success and frozen SD-LoRA at 8.74 / 3.9%. The paired difference is +1.57 with bootstrap 95% CI [-3.21,+6.31]. Both arms are 128/128 valid with parser-invalid=0, and all 256 raw episodes plus analysis and receipts are published and byte-for-byte verified.',
+          'source-faithful Track A 先通过 authoritative runtime semantic validation 128/128，随后 BASE 与冻结 SD-LoRA 都完成 128/128 个有效回合，parser-invalid=0。SD-LoRA 的平均 Task Score 方向更高，但配对不确定性区间跨过 0；256 个 raw episode 与分析/receipt 已 byte-for-byte 入库并 PUBLISHED_AND_VERIFIED。精确统计量放在下方 Q7 的实验依据里。',
+          'Source-faithful Track A first passed authoritative runtime semantic validation at 128/128. BASE and the frozen SD-LoRA then each completed 128/128 valid episodes with parser-invalid=0. Mean Task Score is directionally higher for SD-LoRA, but the paired uncertainty interval crosses zero; all 256 raw episodes plus analysis and receipts are published and byte-for-byte verified. Exact statistics are kept in Q7’s experiment evidence below.',
         )}</p>
       </div>
     </div>

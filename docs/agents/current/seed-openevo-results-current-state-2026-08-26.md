@@ -10,7 +10,7 @@ Source-faithful Track A is now scientifically closed as a **valid paired measure
 
 The latest immutable closeout snapshot used by Results is `mykcs/openevo-experiment@f80ae1816384bb7e8e82d193b22644e17f561f19`. A freshness check through `mykcs/openevo-experiment/main@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d` shows later work has moved program routing to WB1 Track B; it does not supersede the Track A closeout numbers below.
 
-The corrected source-faithful panel lineage is:
+**128/128 runtime semantic validation PASS.** The corrected source-faithful panel lineage is:
 
 - the first reconstruction was superseded because the builder omitted pinned SEED `SimServer.__init__` re-seeding Python `random` with `worker_seed` after synthetic-goal construction and before `random.shuffle(self.goals)`;
 - the corrected panel was rematerialized;
