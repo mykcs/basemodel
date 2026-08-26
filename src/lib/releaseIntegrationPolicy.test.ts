@@ -17,11 +17,13 @@ describe('semantic release integration policy', () => {
     expect(agents).toContain('parallel/stacked integration policy');
   });
 
-  it('keeps the current release and historical candidate dispositions discoverable', () => {
-    expect(latest).toContain('## Current release state');
-    expect(latest).toContain('#144 — semantic release integration');
-    expect(latest).toContain('#147 — final visual closeout');
-    expect(latest).toContain('14 passed');
+  it('keeps current release policy and historical candidate dispositions discoverable in their owners', () => {
+    expect(latest).toContain('current/deployment-policy.md');
+    expect(deploymentPolicy).toContain('multi-pr-semantic-integration-playbook.md');
+    expect(deploymentPolicy).toContain('../history/2026-08-12-open-pr-semantic-integration.md');
+    expect(integrationRecord).toContain('## Actual release chain');
+    expect(integrationRecord).toContain('Integration PR: [#131]');
+    expect(integrationRecord).toContain('The integration release passed the repository Gate and built 411 pages');
     for (const pr of ['#64', '#69', '#116', '#119', '#121', '#125', '#128', '#129']) {
       expect(integrationRecord).toContain(pr);
     }
