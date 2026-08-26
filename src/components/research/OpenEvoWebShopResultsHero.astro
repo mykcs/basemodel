@@ -53,15 +53,15 @@ const navItems = [
     </div>
 
     <div class="abstract-row">
-      <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
+      <span class="abstract-label bottleneck">{t('现在进行到', 'Current stage')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '我们后来发现：选中了 SEED 的正确任务编号范围，还不等于真的生成了 SEED 代码会看到的同一批任务。所以下一步不是重新训练模型，而是先把这批验证任务按公开代码一模一样地重建出来。',
-          'A later audit found that selecting the correct SEED task-number range is not enough to guarantee the same tasks produced by the released SEED code. The next step is therefore not retraining, but rebuilding the validation tasks from the public code semantics.',
+          '我们已经按 SEED 公开代码重新做出一版 128 题，但随后发现其中一个随机顺序细节还没有完全照着官方运行路径来，于是旧版本被作废并重新生成。现在先验证新版 128 题是否和官方运行路径逐题一致；通过以后，才会放行 BASE 与 OpenEvo 的下一次正式比较。',
+          'We already rebuilt a 128-task panel from the released SEED code, then found one random-ordering detail that still did not match the authoritative runtime path. That manifest was superseded and rebuilt. The current step is to verify the corrected 128 tasks against the real runtime path; only after that passes will the next formal BASE-vs-OpenEvo comparison be released.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '下一步要机械重建 128 个源码忠实任务槽位（source-faithful task slots），冻结 validation seed、worker seed、实际 instruction 与数据身份，再用同一评测合同比较冻结的 BASE 与 OpenEvo SD-LoRA。多代连续改进仍未建立。',
-          'Next, mechanically rebuild 128 source-faithful task slots, freezing the validation seed, worker seed, resulting instruction, and data identity, then compare the frozen BASE and OpenEvo SD-LoRA under one identical evaluation contract. Stable multi-generation improvement is still not established.',
+          '源码忠实任务槽位（source-faithful task slots）已经重新物化；旧 manifest 因遗漏 SEED SimServer 在 goal 构造后、shuffle 前再次使用 worker seed 的语义而被 supersede。当前 corrected manifest 处于 PREPARED，formal task consumption 仍为 fail-closed，下一道门是 authoritative WebshopWorker runtime semantic validation 128/128。多代连续改进仍未建立。',
+          'The source-faithful task slots have been rematerialized. The previous manifest was superseded because it omitted SEED SimServer reseeding with the worker seed after goal construction and before shuffle. The corrected manifest is currently PREPARED with formal task consumption still fail-closed; the next gate is authoritative WebshopWorker runtime semantic validation at 128/128. Stable multi-generation improvement is still not established.',
         )}</p>
       </div>
     </div>
@@ -70,8 +70,8 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和后续源码忠实任务设计属于另外两层证据，不会被倒过来混进 H1.41 的机制结论。',
-      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the later source-faithful task design are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
+      '机制结论截至 H1.41。H1.42 是之后的测量校准记录（measurement calibration）；2026-08-25 的 SEED 保留范围复测和 2026-08-26 的源码忠实任务重建 / 纠错属于另外的证据层，不会被倒过来混进 H1.41 的机制结论。',
+      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the 2026-08-25 SEED-range rerun and the 2026-08-26 source-faithful panel rebuild/correction are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
     )}</span>
   </div>
 
