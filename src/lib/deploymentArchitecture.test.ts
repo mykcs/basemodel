@@ -42,6 +42,16 @@ describe('Vercel production deployment architecture', () => {
     }
   });
 
+  it('keeps ordinary search available while opting out named AI training crawlers', () => {
+    expect(robots).toContain("'GPTBot'");
+    expect(robots).toContain("'ClaudeBot'");
+    expect(robots).toContain("'Google-Extended'");
+    expect(robots).toContain("'User-agent: OAI-SearchBot");
+    expect(robots).toContain("'User-agent: ChatGPT-User");
+    expect(robots).toContain('User-agent: *');
+    expect(robots).toContain('Allow: /');
+  });
+
   it('keeps deterministic checks provider-neutral and preserves Cloudflare fallback validation', () => {
     expect(packageJson.scripts['verify:deploy']).toContain('npm run check');
     expect(packageJson.scripts['verify:deploy']).toContain('npm test');

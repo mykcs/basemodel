@@ -73,6 +73,18 @@ The planner contract is protected by `src/lib/vercelHostedUiGate.test.ts`; exact
 
 Historical rationale for the Lab race, browser-cache change and worker benchmark: [`../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md).
 
+### Cost guardrails
+
+The 2026-08-27 billing audit showed that BaseModel Build CPU, not public traffic, dominated variable Vercel usage. Keep these safeguards together:
+
+- Vercel project build-machine selection is intentionally **fixed Standard**. Do not restore elastic auto-upsizing without a measured same-workload cost reason; the previous elastic policy had promoted this project to a larger class because of long builds.
+- Speed Insights is disabled for the project, and the public shell does not inject the Speed Insights client. Re-enable it only when the performance data is actively needed and the event cost is accepted.
+- `robots.txt` keeps ordinary search and user-requested AI retrieval available while opting out named training crawlers. This is a cooperative, zero-request-analysis guard; do not add BotID deep analysis or paid firewall rate limiting merely to reduce cost unless traffic evidence shows those products would save more than they consume.
+- `scripts/vercel-lab-browser-gate.mjs` resolves the Vercel Git range and skips its dedicated 12-case Lab matrix when a proven `main` diff cannot affect Lab/server UI. Unknown ranges fail closed.
+- Bounded WebShop/ALFWorld, SEED/OpenEvo, and Server explainer implementation owners may use the focused hosted geometry/readability owner plus exact changed-route smoke. Unmapped shared/global changes still fail closed to the full browser matrix.
+
+These controls reduce future consumption only; they do not erase Build CPU already accumulated in the billing period.
+
 ## Vercel build-budget discipline
 
 Vercel deployments/builds are finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.

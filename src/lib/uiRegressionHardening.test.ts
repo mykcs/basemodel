@@ -46,12 +46,10 @@ describe('UI regression-class hardening', () => {
     expect(vercelUiGate).toContain('&& !productionBranch');
   });
 
-  it('keeps provider-only telemetry out of the local browser harness', () => {
-    expect(appLayout).not.toContain('<script defer src="/_vercel/speed-insights/script.js"></script>');
-    expect(appLayout).toContain("host === 'localhost'");
-    expect(appLayout).toContain("host === '127.0.0.1'");
-    expect(appLayout).toContain("host === '::1'");
-    expect(appLayout).toContain("speedInsights.src = '/_vercel/speed-insights/script.js';");
+  it('keeps disabled Speed Insights telemetry out of the public shell', () => {
+    expect(appLayout).not.toContain('/_vercel/speed-insights/');
+    expect(appLayout).not.toContain('window.si =');
+    expect(appLayout).not.toContain('window.siq =');
   });
 
   it('keeps interactive browser matrices aligned with actual explainer owner routes', () => {

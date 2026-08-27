@@ -1,13 +1,57 @@
-import { spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const resultsReleaseBranch = /^research\/results-(?:.+)$/;
-const shouldRun = branch === 'main'
-  || branch === 'agent/sync-zju-shell-environment-20260816'
-  || resultsReleaseBranch.test(branch);
+const gateOwner = 'scripts/vercel-lab-browser-gate.mjs';
+
+function git(args) {
+  return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+}
+
+function changedFilesForVercel(env = process.env) {
+  const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
+  const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
+  const base = previous && previous !== head ? previous : `${head}^`;
+  git(['cat-file', '-e', `${base}^{commit}`]);
+  git(['cat-file', '-e', `${head}^{commit}`]);
+  const output = git(['diff', '--name-only', '--no-renames', base, head]);
+  return output ? output.split(/\r?\n/).filter(Boolean) : [];
+}
+
+function isLabRelevant(file) {
+  return /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
+    || file.startsWith('src/layouts/')
+    || file.startsWith('src/styles/')
+    || file === 'src/components/research/InteractiveResearchExplainer.tsx'
+    || file === 'src/components/research/explainer/ResearchExplainerPrimitives.tsx'
+    || file === 'src/components/research/explainer/ServerExplainer.tsx'
+    || file.startsWith('public/')
+    || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
+    || /^(?:package|package-lock)\.json$/.test(file)
+    || file === gateOwner
+    || /^tests\/e2e\/lab-/.test(file)
+    || file === 'tests/e2e/lab-playwright.config.ts';
+}
+
+let changedFiles = [];
+let rangeProven = false;
+try {
+  changedFiles = changedFilesForVercel();
+  rangeProven = true;
+} catch (error) {
+  console.warn(`[vercel-lab-browser-gate] could not prove Vercel Git range; fail closed where this gate is release-eligible (${error})`);
+}
+
+const labRelevant = rangeProven && changedFiles.some(isLabRelevant);
+const explicitBranch = branch === 'agent/sync-zju-shell-environment-20260816' || resultsReleaseBranch.test(branch);
+const shouldRun = branch === 'main' || explicitBranch || labRelevant;
 
 if (!shouldRun) {
-  console.log(`[vercel-lab-browser-gate] skipped for branch: ${branch || 'unknown'}`);
+  console.log(`[vercel-lab-browser-gate] skipped for branch: ${branch || 'unknown'}; no Lab-relevant diff`);
+  process.exit(0);
+}
+if (branch === 'main' && rangeProven && !labRelevant) {
+  console.log('[vercel-lab-browser-gate] skipped on main: proven diff cannot affect Lab/server UI');
   process.exit(0);
 }
 
