@@ -31,8 +31,8 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(wrapperAttribution).toContain('wrapper-attribution__incident');
     expect(wrapperAttribution).toContain('wrapper-attribution__facts');
     expect(wrapperAttribution).toContain('128 × 2 = 256');
-    expect(wrapperAttribution).toContain('16 条成功 rollout');
-    expect(wrapperAttribution).toContain('8 个任务 × 每个任务 2 条独立成功轨迹');
+    expect(wrapperAttribution).toContain('<strong>16</strong>');
+    expect(wrapperAttribution).toContain('条成功 rollout，覆盖 8 个任务 × 每个任务 2 条独立成功轨迹');
     expect(wrapperAttribution).toContain('每个增量最多 16 个 optimizer steps');
     expect(wrapperAttribution).toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
     expect(wrapperAttribution).toContain('raw_completion 仍然出现 [action] search[...]');
