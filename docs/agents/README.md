@@ -76,6 +76,8 @@ Read:
 
 Use exact-head evidence. A clean merge, a READY badge, and an earlier Preview do not prove the later intended tree.
 
+For flaky Playwright geometry, hosted Chromium caching, Vercel build-machine variability, or browser-worker tuning, also read [`history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md) after the current policies.
+
 ### Model catalog / current-provider claims
 
 Read:
@@ -203,6 +205,7 @@ History is rationale, not current policy. Particularly reusable cases include:
 - [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) — model-output attribution, parser compatibility, claim-level provenance, current-doc drift, exact-head deployment identity, and write-operation hygiene.
 - [`history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md`](history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md) — source-faithful 128-task identity correction, teacher-facing immutable manifest links, Vercel status disambiguation, test-owner drift, and semantic integration of overlapping Results PRs.
 - [`history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md`](history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md) — zero-context Results narration, experiment-scale context before attribution, exact artifact lineage, scientific regression locks, and why cloud-side repository work should not escalate to Remote Desktop merely for convenience.
+- [`history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md) — Lab hydration/geometry race, zero-retry validation, Chromium shell caching, 4/6/8 worker evidence, provider-machine variability, exact-head closeout, and provider-write friction.
 
 ## Product contract
 

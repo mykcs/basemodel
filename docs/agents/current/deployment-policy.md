@@ -51,9 +51,27 @@ Dynamic routes or local source files that cannot be mapped to one concrete route
 
 This provider-side scoping does **not** weaken the pre-provider UI policy. Before the first provider-triggering ref update, Agents still run the strongest browser matrix required by `ui-change-visual-acceptance-gate.md` and `scripts/preflight-ui.ts`. Vercel's focused Production gate is the exact deployed-tree confirmation layer, not a substitute for the required preflight.
 
-Keep the full hosted matrix serial unless fresh provider evidence justifies a different worker count. A 2026-08-27 live experiment on the Hobby 2-core / 8 GB build machine showed that two Playwright workers roughly doubled several CPU-heavy test durations and did not materially shorten the critical path; avoiding unrelated tests is the accepted optimization instead.
+Hosted Playwright concurrency is evidence-bounded rather than mapped directly to the provider's advertised machine size. Current executable policy uses:
+
+```text
+workers = max(1, min(4, floor(visible CPUs / 2)))
+```
+
+A 2026-08-27 live experiment on the ordinary Pro 8-core / 16 GB Preview class showed that 6 workers completed the 91-test Chromium matrix in 137.8 seconds and 8 workers in 141.7 seconds, both around 2.3 minutes and slower than the prior 4-worker baseline of roughly 1.6 minutes. A later 30-core / 60 GB Turbo build still used the 4-worker cap and completed the same 91-test matrix in about 1.3 minutes. Do not raise the cap above 4 without fresh same-source, same-matrix, provider-side benchmark evidence that total wall time improves rather than only worker count increasing.
+
+Both hosted browser gates intentionally keep the Chromium headless shell in a cacheable hermetic location:
+
+```text
+PLAYWRIGHT_BROWSERS_PATH=0
+playwright install --only-shell chromium
+node_modules/playwright-core/.local-browsers/
+```
+
+This does **not** mean a cold build never downloads a browser. The correct expectation is: cold cache downloads the required headless shell once; a compatible warm Vercel build cache can restore and reuse it. Keep the `ldd` preflight because cache presence is not proof that the runtime's shared-library dependencies resolve.
 
 The planner contract is protected by `src/lib/vercelHostedUiGate.test.ts`; exact changed routes are exercised by `tests/e2e/vercel-changed-route-smoke.spec.ts`.
+
+Historical rationale for the Lab race, browser-cache change and worker benchmark: [`../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md).
 
 ## Vercel build-budget discipline
 
@@ -201,8 +219,10 @@ Rules:
 4. If the measurement itself is invalid for the rendered content, fix the metric rather than contorting the product. For example, a CJK-only density proxy is not appropriate for a deliberately mixed Chinese/English heading unless the English width is also accounted for.
 5. Do not downgrade valid safety thresholds merely to obtain green status. First prove whether the failure is product, contract, or measurement.
 6. Provider messages that explicitly fail open and continue the build, such as an ignore-range lookup failure, and benign environment fallbacks such as locale selection are not application failures by themselves. Classify them by whether execution actually stops.
+7. For asynchronously measured UI, hydration completion is not automatically geometry readiness. If SVG connectors, ResizeObserver work, font loading, requestAnimationFrame measurement, virtualized layout or another derived visual state is part of the acceptance contract, wait for that final observable state rather than treating removal of a hydration marker or a fixed sleep as proof of readiness.
+8. Retries may help diagnose a race, but a retry-only PASS is not stability evidence. After the real synchronization boundary is repaired, validate the regression with retries disabled when practical so the harness cannot hide the same race.
 
-The historical incident that motivated these rules is [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md).
+The historical incidents that motivated these rules are [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md) and [`../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md).
 
 ## Vercel-first completion report
 
