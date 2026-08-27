@@ -5,7 +5,10 @@ export default defineConfig({
   testMatch: 'lab-server-visual-qa.spec.ts',
   fullyParallel: false,
   forbidOnly: true,
-  retries: 1,
+  // The Lab gate must prove a clean first attempt. Its former retry masked a
+  // hydration/connector scheduling race instead of fixing the synchronization
+  // boundary, so keep retries disabled now that the test waits for readiness.
+  retries: 0,
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {

@@ -11,6 +11,11 @@ if (!shouldRun) {
   process.exit(0);
 }
 
+// Keep the browser inside node_modules so Vercel's restored build cache can
+// reuse it across deployments. PLAYWRIGHT_BROWSERS_PATH=0 is Playwright's
+// hermetic/local-browser mode; it also keeps this gate independent of $HOME.
+process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
+
 const run = (command, args, extraEnv = {}) => {
   console.log(`[vercel-lab-browser-gate] ${command} ${args.join(' ')}`);
   const result = spawnSync(command, args, {
@@ -49,11 +54,14 @@ run('dnf', [
   'dbus-libs', 'cairo',
 ]);
 
-run('npx', ['playwright', 'install', 'chromium']);
+// Headless CI uses Chromium's headless shell; do not download the additional
+// full Chrome-for-Testing binary. If the hermetic shell came back with the
+// Vercel build cache this command is a fast no-op.
+run('npx', ['playwright', 'install', '--only-shell', 'chromium']);
 
 const browser = capture('bash', [
   '-lc',
-  'find /vercel/.cache/ms-playwright -type f -name chrome-headless-shell | head -n 1',
+  'find node_modules/playwright-core/.local-browsers -type f -name chrome-headless-shell | head -n 1',
 ]);
 if (!browser) {
   console.error('[vercel-lab-browser-gate] Playwright headless-shell binary not found');

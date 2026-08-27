@@ -20,6 +20,11 @@ if (!shouldRun) {
   process.exit(0);
 }
 
+// Put Playwright's browser inside node_modules so Vercel's restored build cache
+// can retain it between deployments. This also makes the browser path explicit
+// instead of depending on the ephemeral /vercel/.cache home directory.
+process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
+
 const run = (command, args, extraEnv = {}) => {
   console.log(`[vercel-ui-gate] ${command} ${args.join(' ')}`);
   const result = spawnSync(command, args, {
@@ -114,6 +119,11 @@ console.log(
 );
 
 const visibleCpus = availableParallelism();
+// Provider evidence on the ordinary 8-core Pro Preview builder showed 4 workers
+// is the throughput sweet spot for this browser-heavy suite: 4 workers completed
+// the 91-test matrix in ~1.6m, while 6 and 8 workers slowed it to ~2.3m because
+// individual browser cases became CPU-contention bound. Keep the half-CPU rule
+// and cap at 4; a 2-core Hobby runner therefore remains serial.
 const automaticWorkers = Math.max(1, Math.min(4, Math.floor(visibleCpus / 2)));
 const hostedPlaywrightEnv = {
   CI: '1',
@@ -141,14 +151,17 @@ run('dnf', [
   'dbus-libs', 'cairo',
 ]);
 
-run('npx', ['playwright', 'install', 'chromium']);
+// Headless CI only needs Chromium's headless shell. Hermetic install mode puts
+// it under node_modules, which Vercel restores with the build cache. On a warm
+// cache this becomes a no-op; on a cold cache it avoids the extra full browser.
+run('npx', ['playwright', 'install', '--only-shell', 'chromium']);
 
 // Fail before Playwright starts if the downloaded browser still has any
 // unresolved shared-library dependency. This keeps environment failures
 // distinct from actual geometry/rendering regressions.
 const browser = capture('bash', [
   '-lc',
-  'find /vercel/.cache/ms-playwright -type f -name chrome-headless-shell | head -n 1',
+  'find node_modules/playwright-core/.local-browsers -type f -name chrome-headless-shell | head -n 1',
 ]);
 if (!browser) {
   console.error('[vercel-ui-gate] Playwright headless-shell binary not found');
@@ -208,9 +221,6 @@ if (productionFocused) {
     '--project=chromium', '--max-failures=1',
   ], hostedPlaywrightEnv);
 } else {
-  // Keep every existing hosted regression in the full matrix. Parallelism is
-  // bounded to half the visible CPUs (max 4), so a 2-core Hobby runner remains
-  // serial while larger Pro builders can use their extra capacity.
   run('npm', ['run', 'test:ui'], hostedPlaywrightEnv);
 }
 

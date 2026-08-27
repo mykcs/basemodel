@@ -31,10 +31,12 @@ describe('hosting architecture ownership', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
-    expect(vercelUiGate).toContain("['playwright', 'install', 'chromium']");
+    expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
+    expect(vercelUiGate).toContain("['playwright', 'install', '--only-shell', 'chromium']");
     expect(vercelUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(vercelLabBrowserGate).toContain("branch === 'agent/sync-zju-shell-environment-20260816'");
-    expect(vercelLabBrowserGate).toContain("['playwright', 'install', 'chromium']");
+    expect(vercelLabBrowserGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
+    expect(vercelLabBrowserGate).toContain("['playwright', 'install', '--only-shell', 'chromium']");
     expect(vercelLabBrowserGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(architecture).toContain('Vercel Preview + Vercel Production');
     expect(architecture).toContain('Vercel is the only ordinary deployment provider');
