@@ -28,6 +28,9 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(wrapperAttribution).toContain('我们在用 WebShop 检验 OpenEvo 的参数更新能否让 Qwen2.5-7B-Instruct');
     expect(wrapperAttribution).toContain('PRIMARY-v1 是这条流程的一次正式评测，不是一次新的训练');
     expect(wrapperAttribution).toContain('但有些输出把外层 <action>...</action> 写成了 [action]...');
+    expect(wrapperAttribution).toContain('责任在我们的实验集成层');
+    expect(wrapperAttribution).toContain('H1.36 已经见过，也修过一次');
+    expect(wrapperAttribution).toContain('模型触发了问题，但把已知问题带进正式评测，是我们的责任');
     expect(wrapperAttribution).toContain('wrapper-attribution__incident');
     expect(wrapperAttribution).toContain('wrapper-attribution__facts');
     expect(wrapperAttribution).toContain('128 × 2 = 256');
@@ -37,9 +40,14 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(wrapperAttribution).toContain('累计 optimizer-step 上限是 ≤128');
     expect(wrapperAttribution).toContain('我们一步都没训练，BASE 就已经写出了 [action]');
     expect(wrapperAttribution).not.toContain('0 个 OpenEvo adapter 训练步即可看到');
-    expect(wrapperAttribution).toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
+    expect(wrapperAttribution).not.toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
     expect(wrapperAttribution).toContain('raw_completion 仍然出现 [action] search[...]');
-    expect(wrapperAttribution).toContain('我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移');
+    expect(wrapperAttribution).toContain('这次事故留下的经验');
+    expect(wrapperAttribution).toContain('对模型训练');
+    expect(wrapperAttribution).toContain('任务分数、command 是否合法、wrapper 是否合规分开记录');
+    expect(wrapperAttribution).toContain('对下一步实验');
+    expect(wrapperAttribution).toContain('模型输出 → parser → 环境动作');
+    expect(wrapperAttribution).toContain('parser 如果改动，要把它当成执行语义变化并重跑相关评测');
   });
 
   it('keeps the three distinct 128-task claims separate', () => {
