@@ -2,6 +2,7 @@
 import { localePath, type Locale } from '../../i18n';
 
 type ResearchPage = 'hub' | 'experiment' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchTrack = 'flow' | 'study';
 
 interface Props {
   locale: Locale;
@@ -13,9 +14,11 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
-const pages = [
-  { id: 'hub', label: t('实验总览', 'Experiment overview'), href: p('/research/seed-openevo/') },
-  { id: 'experiment', label: t('科学研究', 'Scientific study'), href: p('/research/seed-openevo/experiment/') },
+// The site header defines two primary journeys. This local navigation is the
+// child navigation for whichever journey the reader is currently inside; it
+// should never flatten both journeys back into one unrelated row.
+const flowPages = [
+  { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/') },
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
   { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
@@ -23,16 +26,40 @@ const pages = [
   { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
   { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
-  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
-  { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/results/') },
 ] as const;
+
+const studyPages = [
+  { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/experiment/') },
+  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
+  { id: 'results', label: t('实验结果', 'Experiment results'), href: p('/research/seed-openevo/results/') },
+] as const;
+
+const studyPageIds: ResearchPage[] = ['experiment', 'run', 'results'];
+const currentTrack: ResearchTrack = studyPageIds.includes(page) ? 'study' : 'flow';
+const pages = currentTrack === 'flow' ? flowPages : studyPages;
+const identity = currentTrack === 'flow'
+  ? {
+      index: '01',
+      label: t('流程理解图', 'Flow map'),
+      meta: t('模型 · 方法 · 环境 · 更新机制', 'model · methods · environments · update loop'),
+      aria: t('流程理解图子导航', 'Flow map subnavigation'),
+    }
+  : {
+      index: '02',
+      label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study'),
+      meta: t('实验流程 · 运行 · 实验结果', 'workflow · execution · results'),
+      aria: t('OpenEvo × WebShop 科学研究子导航', 'OpenEvo × WebShop study subnavigation'),
+    };
 ---
-<div class="research-navigation" data-research-navigation>
+<div class="research-navigation" data-research-navigation data-research-track={currentTrack}>
   <div class="research-navigation__identity">
-    <strong>{t('研究导航', 'Research navigation')}</strong>
-    <span>{t('SEED × OpenEvo 研究模块', 'SEED × OpenEvo research module')}</span>
+    <span class="research-navigation__index" aria-hidden="true">{identity.index}</span>
+    <div>
+      <strong>{identity.label}</strong>
+      <span>{identity.meta}</span>
+    </div>
   </div>
-  <nav class="research-navigation__links" aria-label={t('SEED 与 OpenEvo 全局研究导航', 'SEED and OpenEvo global research navigation')}>
+  <nav class="research-navigation__links" aria-label={identity.aria}>
     {pages.map((item) => (
       <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
     ))}
@@ -56,18 +83,30 @@ const pages = [
     backdrop-filter:blur(16px);
   }
   .research-navigation__identity{
+    display:flex;
     min-width:max-content;
-    padding:.12rem .5rem;
+    align-items:center;
+    gap:.5rem;
+    padding:.12rem .65rem .12rem .5rem;
     border-right:1px solid var(--line);
   }
-  .research-navigation__identity strong,
-  .research-navigation__identity span{display:block}
-  .research-navigation__identity strong{
-    color:var(--ink);
-    font:800 .66rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;
-    letter-spacing:.05em;
+  .research-navigation__index{
+    color:var(--accent-deep);
+    font:800 .58rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;
   }
-  .research-navigation__identity span{
+  .research-navigation__identity strong,
+  .research-navigation__identity div>span{display:block}
+  .research-navigation__identity strong{
+    max-width:18rem;
+    overflow:hidden;
+    color:var(--ink);
+    font-size:.68rem;
+    font-weight:800;
+    line-height:1.3;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .research-navigation__identity div>span{
     margin-top:.08rem;
     color:var(--muted);
     font-size:.58rem;
@@ -112,16 +151,14 @@ const pages = [
       padding:.4rem;
     }
     .research-navigation__identity{
-      display:flex;
-      align-items:baseline;
-      gap:.45rem;
+      gap:.4rem;
       padding:.2rem .4rem .05rem;
       border-right:0;
     }
-    .research-navigation__identity span{margin:0}
+    .research-navigation__identity div>span{margin-top:0}
     .research-navigation__links a{padding:.54rem .68rem;font-size:.72rem}
   }
   @media(max-width:430px){
-    .research-navigation__identity span{display:none}
+    .research-navigation__identity div>span{display:none}
   }
 </style>
