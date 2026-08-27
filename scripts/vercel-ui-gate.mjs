@@ -50,13 +50,66 @@ const capture = (command, args) => {
   return result.stdout.trim();
 };
 
+const fullFallbackPlan = (reason) => ({
+  mode: 'full',
+  risk: 'global',
+  changedFiles: [],
+  routes: [],
+  specs: [],
+  reason,
+});
+
+const productionPlan = (() => {
+  if (!productionBranch) return undefined;
+
+  const result = spawnSync('npx', ['tsx', 'scripts/vercel-ui-plan.ts', '--json'], {
+    encoding: 'utf8',
+    env: process.env,
+  });
+  if (result.error || result.status !== 0) {
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    return fullFallbackPlan('The Production UI planner could not run; fail closed to the complete hosted matrix.');
+  }
+
+  try {
+    const plan = JSON.parse(result.stdout);
+    if (
+      !['skip', 'focused', 'full'].includes(plan.mode)
+      || !Array.isArray(plan.changedFiles)
+      || !Array.isArray(plan.routes)
+      || !Array.isArray(plan.specs)
+    ) {
+      return fullFallbackPlan('The Production UI planner returned an invalid shape; fail closed to the complete hosted matrix.');
+    }
+    return plan;
+  } catch (error) {
+    return fullFallbackPlan(`The Production UI planner returned invalid JSON (${error}); fail closed to the complete hosted matrix.`);
+  }
+})();
+
+if (productionPlan) {
+  console.log(`[vercel-ui-gate] Production plan: ${productionPlan.mode} (${productionPlan.risk})`);
+  console.log(`[vercel-ui-gate] ${productionPlan.reason}`);
+  if (productionPlan.changedFiles.length > 0) {
+    console.log('[vercel-ui-gate] Production changed files:');
+    for (const file of productionPlan.changedFiles) console.log(`- ${file}`);
+  }
+
+  if (productionPlan.mode === 'skip') {
+    console.log('[vercel-ui-gate] browser layer skipped; verify:deploy and the static production build already passed');
+    process.exit(0);
+  }
+}
+
 const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 const resultsOverflowOnly = resultsOverflowValidationBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
 const fairComparisonExplainerOnly = fairComparisonExplainerBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
+const productionFocused = productionPlan?.mode === 'focused';
 console.log(
-  focusedOnly || resultsOverflowOnly || fairComparisonExplainerOnly
-    ? `[vercel-ui-gate] running focused exact-preview Chromium acceptance for ${branch}`
-    : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
+  focusedOnly || resultsOverflowOnly || fairComparisonExplainerOnly || productionFocused
+    ? `[vercel-ui-gate] running focused exact-${productionBranch ? 'Production' : 'Preview'} Chromium acceptance for ${branch}`
+    : `[vercel-ui-gate] running exact-${productionBranch ? 'Production' : 'Preview'} Chromium acceptance for ${branch}`,
 );
 
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
@@ -105,7 +158,24 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
 // any remaining horizontal overflow fails the deployment.
 run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 
-if (resultsOverflowOnly) {
+if (productionFocused) {
+  const specs = [...productionPlan.specs];
+  if (productionPlan.routes.length > 0) specs.push('tests/e2e/vercel-changed-route-smoke.spec.ts');
+
+  if (specs.length === 0) {
+    console.error('[vercel-ui-gate] focused Production plan had no browser targets; fail closed');
+    process.exit(1);
+  }
+
+  run('npx', [
+    'playwright', 'test', ...specs,
+    '--project=chromium', '--max-failures=1',
+  ], {
+    CI: '1',
+    PLAYWRIGHT_REUSE_BUILD: '1',
+    VERCEL_CHANGED_ROUTES: productionPlan.routes.join(','),
+  });
+} else if (resultsOverflowOnly) {
   run('npx', [
     'playwright', 'test', 'tests/e2e/results-mobile-overflow.spec.ts',
     '--project=chromium', '--max-failures=1',
@@ -138,13 +208,12 @@ if (resultsOverflowOnly) {
     PLAYWRIGHT_REUSE_BUILD: '1',
   });
 } else {
-  // Vercel's current Hobby build machine exposes 2 CPU cores / 8 GB. The
-  // repository config intentionally defaults CI to one Playwright worker for
-  // conservative local/release runs, but serializing the entire hosted matrix
-  // leaves one core idle and made the 91-test gate take about ten minutes.
-  // Override only this hosted full-matrix invocation to two workers; focused
-  // branch gates keep their existing single-worker behavior.
-  run('npm', ['run', 'test:ui', '--', '--workers=2'], {
+  // Keep the complete hosted matrix conservative and serial. A live 2-worker
+  // experiment on the current 2-core Hobby machine increased individual browser
+  // test durations enough that the critical path did not materially improve.
+  // The durable speedup comes from not running unrelated specs for low-blast-
+  // radius Production changes, while shared/global changes still fail closed here.
+  run('npm', ['run', 'test:ui'], {
     CI: '1',
     PLAYWRIGHT_REUSE_BUILD: '1',
   });
