@@ -8,7 +8,6 @@ const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|n
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
 const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
-const workerBenchmarkBranch = branch === 'research/results-release-vercel-performance-closeout-20260827';
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
@@ -120,6 +119,11 @@ console.log(
 );
 
 const visibleCpus = availableParallelism();
+// Provider evidence on the ordinary 8-core Pro Preview builder showed 4 workers
+// is the throughput sweet spot for this browser-heavy suite: 4 workers completed
+// the 91-test matrix in ~1.6m, while 6 and 8 workers slowed it to ~2.3m because
+// individual browser cases became CPU-contention bound. Keep the half-CPU rule
+// and cap at 4; a 2-core Hobby runner therefore remains serial.
 const automaticWorkers = Math.max(1, Math.min(4, Math.floor(visibleCpus / 2)));
 const hostedPlaywrightEnv = {
   CI: '1',
@@ -216,24 +220,7 @@ if (productionFocused) {
     'playwright', 'test', 'tests/e2e/webshop-training-theme.spec.ts',
     '--project=chromium', '--max-failures=1',
   ], hostedPlaywrightEnv);
-} else if (workerBenchmarkBranch) {
-  // One exact-head Preview benchmarks 6 and 8 workers on the same Vercel machine
-  // and source tree. The temporary branch-only loop is removed after collecting
-  // evidence, so main keeps one acceptance pass rather than benchmarking forever.
-  for (const workers of [6, 8]) {
-    const startedAt = Date.now();
-    console.log(`[vercel-ui-gate] WORKER BENCHMARK START: ${workers}`);
-    run('npm', ['run', 'test:ui'], {
-      ...hostedPlaywrightEnv,
-      PLAYWRIGHT_WORKERS: String(workers),
-    });
-    const elapsedSeconds = ((Date.now() - startedAt) / 1000).toFixed(1);
-    console.log(`[vercel-ui-gate] WORKER BENCHMARK PASS: ${workers} workers in ${elapsedSeconds}s`);
-  }
 } else {
-  // Keep every existing hosted regression in the full matrix. Parallelism is
-  // bounded to half the visible CPUs (max 4), so a 2-core Hobby runner remains
-  // serial while larger Pro builders can use their extra capacity.
   run('npm', ['run', 'test:ui'], hostedPlaywrightEnv);
 }
 
