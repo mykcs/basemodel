@@ -87,12 +87,12 @@ const steps: Step[] = [
 
 <details class="wrapper-attribution" id="action-wrapper-attribution" data-ui-audit="layout overflow contrast">
   <summary>
-    <span><small>{t('技术回溯 · 默认折叠', 'TECHNICAL TRACE · COLLAPSED BY DEFAULT')}</small><strong>{t('动作包装格式：官方怎么规定、模型怎么漂、我们的集成责任在哪里', 'Action wrapper: released contract, model drift, and our integration responsibility')}</strong></span>
+    <span><small>{t('一次实验格式错误 · 默认折叠', 'FORMAT-ERROR INCIDENT · COLLAPSED BY DEFAULT')}</small><strong>{t('实验里出现了一次动作格式错误：发生了什么，为什么会发生，我们怎么修复', 'A formatting error occurred in the experiment: what happened, why it happened, and how we fixed it')}</strong></span>
     <i aria-hidden="true"></i>
   </summary>
 
   <div class="wrapper-attribution__body">
-    <p class="wrapper-attribution__lead">{t('先把两个东西分开：search[...] / click[...] 是 WebShop 真正要执行的动作命令；<action>...</action> 或 [action]... 是包住命令、让解析器定位动作的外层标签（wrapper）。这次事故发生在外层标签，不是动作命令本身。下面按“官方规则 → 我们的 Prompt → BASE 原始输出 → 已知问题 → 训练数据 → PRIMARY-v1 → PRIMARY-v2”追下去。主结论不变：[action] 不是 OpenEvo Prompt 规定的格式，SEED parser 也不是在违反自己的合同。用技术术语概括就是：模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检。', 'First separate two things: search[...] / click[...] are the action commands WebShop actually executes; <action>...</action> or [action]... are outer wrapper labels that let the parser locate the command. This incident happened at the wrapper layer, not in the command itself. The trace below follows the chain from released rule → our prompt → raw BASE output → known issue → training data → PRIMARY-v1 → PRIMARY-v2. The conclusion is unchanged: [action] was not an OpenEvo prompt convention, the SEED parser was enforcing its own contract, and the experiment responsibility is known model-side wrapper drift that was not preflighted before formal integration.')}</p>
+    <p class="wrapper-attribution__lead">{t('这段从一件具体的事开始：PRIMARY-v1 正式评测里，模型本来生成了合法的 search[...] / click[...] 命令，但有些输出把外层 <action>...</action> 写成了 [action]...，SEED 的解析器因此没有读到完整动作。下面我们依次分析：正确格式是什么、错误实际长什么样、它在哪里产生、我们为什么没有在正式评测前拦住、它有没有进入训练数据，以及后来怎样修复。', 'This section starts from one concrete incident: during the formal PRIMARY-v1 evaluation, the model generated valid search[...] / click[...] commands, but some outputs used [action]... instead of the expected outer <action>...</action> tags, so the SEED parser did not recover the complete action. The analysis below asks, in order: what the correct format was, what the error looked like, where it came from, why we did not catch it before formal evaluation, whether it entered training data, and how it was repaired.')}</p>
 
     <div class="wrapper-attribution__timeline">
       {steps.map((step, index) => (
