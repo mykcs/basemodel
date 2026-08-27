@@ -29,6 +29,7 @@ export function pageFileToRoute(file: string): string | undefined {
 
   const page = match[1]!;
   if (page.includes('[') || page.includes(']')) return undefined;
+  if (page.split('/').some((segment) => segment.startsWith('_'))) return undefined;
 
   const routePath = page === 'index' ? '' : page.replace(/\/index$/, '');
   return routePath ? `/${routePath}/` : '/';
