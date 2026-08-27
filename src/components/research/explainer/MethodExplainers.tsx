@@ -17,6 +17,8 @@ function ParameterUpdateFlame({ label }: { label: string }) {
   );
 }
 
+const GLM_OFFICIAL_LOGO = 'https://raw.githubusercontent.com/zai-org/GLM-5/414ad9eb891b05b5d7d51d573939bfe9ce538223/resources/logo.svg';
+
 export function SeedExplainer({ locale, step }: { locale: Locale; step: number }) {
   const zh = locale === 'zh';
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ export function SeedExplainer({ locale, step }: { locale: Locale; step: number }
         </header>
         <ol aria-label={zh ? 'SEED Stage 1 bootstrap 流程' : 'SEED Stage 1 bootstrap flow'}>
           <li data-ui-audit-item><small>WEBSHOP TRAJECTORIES</small><b>180 tasks × 8 rollouts</b><span>{zh ? '= 1,440 条完整轨迹' : '= 1,440 completed trajectories'}</span></li>
-          <li className="irx-glm-model" data-ui-audit-item><span className="irx-glm-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 3.5 19 11l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z"/><circle cx="25.5" cy="6.5" r="2.2"/><circle cx="6.5" cy="25" r="1.7"/></svg></span><div><small>EXTERNAL TEACHER</small><b>GLM-5.2</b><span>{zh ? '读完整 episode → 生成 hindsight skill' : 'read episode → generate hindsight skill'}</span></div></li>
+          <li className="irx-glm-model" data-ui-audit-item><span className="irx-glm-icon" aria-hidden="true"><img src={GLM_OFFICIAL_LOGO} alt="" width="30" height="30" /></span><div><small>EXTERNAL TEACHER</small><b>GLM-5.2</b><span>{zh ? '读完整 episode → 生成 hindsight skill' : 'read episode → generate hindsight skill'}</span></div></li>
           <li data-ui-audit-item><small>ANNOTATION</small><b>trajectory → skill</b><span>{zh ? '保留可用于监督学习的事后复盘' : 'retain hindsight records for supervision'}</span></li>
           <li data-ui-audit-item><small>SUPERVISED UPDATE</small><b>3-epoch SFT</b><span>{zh ? '把复盘能力写进初始 checkpoint' : 'write analysis ability into the initial checkpoint'}</span></li>
           <li data-ui-audit-item><small>BOOTSTRAPPED POLICY</small><b>policy θ0</b><span>{zh ? '之后既能 acting，也能 analyzing' : 'now capable of acting and analyzing'}</span></li>
