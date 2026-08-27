@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   isBuildRelevantPath,
+  mustRunAcceptanceBuild,
   shouldBuildForFiles,
 } from '../../scripts/vercel-ignore-build.mjs';
 
@@ -43,7 +44,19 @@ describe('Vercel build-budget contract', () => {
     }
   });
 
-  it('skips repository governance and prose-only changes', () => {
+  it('never skips PR, main, or production acceptance surfaces', () => {
+    expect(mustRunAcceptanceBuild({ VERCEL_GIT_PULL_REQUEST_ID: '275', VERCEL_ENV: 'preview' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_GIT_COMMIT_REF: 'main', VERCEL_ENV: 'preview' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(true);
+    expect(
+      mustRunAcceptanceBuild({
+        VERCEL_ENV: 'preview',
+        VERCEL_GIT_COMMIT_REF: 'docs/non-release-note',
+      }),
+    ).toBe(false);
+  });
+
+  it('may skip prose-only changes only on non-acceptance previews', () => {
     for (const filePath of [
       'AGENTS.md',
       'README.md',
