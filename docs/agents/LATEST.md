@@ -21,7 +21,7 @@ Current branch eligibility is executable policy in `vercel.json`; `research/**` 
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Cloudflare material is legacy rollback/provider-specific tooling only and stays outside ordinary deployment reporting.
 
-The hosted Vercel Chromium layer is now **risk-aware on Production**: shared/global UI or uncertain Git-range changes fail closed to the complete matrix, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. The full hosted matrix remains serial; a live two-worker trial on the current 2-core Hobby machine did not materially shorten the critical path.
+The hosted Vercel Chromium layer is now **risk-aware on Production**: shared/global UI or uncertain Git-range changes fail closed to the complete matrix, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. Hosted Playwright parallelism is bounded by the actual Vercel build CPU count: the gate uses half of the visible CPUs, capped at four workers, so a 2-core Hobby runner stays serial while larger Pro builders can use their extra capacity.
 
 ## Current research state
 
@@ -134,6 +134,22 @@ node scripts/vercel-lab-browser-gate.mjs
 For the Results release, require exact-head Preview metadata and zh/en browser acceptance on the changed routes before merging. After merge, require a READY Production successor on `main` and verify the public zh/en routes.
 
 For Production browser scope, read `current/deployment-policy.md` and `scripts/vercel-ui-plan.ts`; never infer that a focused or skipped hosted browser layer weakens the pre-provider acceptance requirement. Uncertain scope must fail closed to the complete hosted matrix.
+
+## Provider wait discipline
+
+Provider latency is not productive Agent work. Do not spend minutes in repeated `sleep -> poll Vercel -> sleep -> poll logs` loops when a deployment is visibly progressing and there is no actionable failure.
+
+Default behavior after a provider-triggering ref update:
+
+1. Record the exact head SHA and deployment ID/URL.
+2. Do one immediate provider-state read and, when useful, one short tail/error log read to prove that the build started and is not already failing.
+3. If the deployment is still `BUILDING` with active progress and no actionable failure, make at most one short recheck after roughly 30–60 seconds. Do **not** schedule multi-minute conversational sleeps merely to wait for Vercel.
+4. While the provider runs, continue only independent work that cannot retrigger or invalidate the same deployment. Do not manufacture source changes just to stay busy.
+5. If no independent work remains, stop active polling and return a compact resume checkpoint: exact SHA, deployment ID/URL, current phase, last meaningful log timestamp, and the next acceptance action once the deployment becomes terminal.
+6. On the next user turn or explicit monitoring run, resume from that checkpoint. Query the deployment object first; read only `errorsOnly` or the log tail needed for the current phase instead of rescanning full build logs.
+7. Repeated fast polling is justified only when the provider is already near a terminal transition, when an actionable failure is suspected, or when the owner explicitly asks to wait synchronously.
+
+The goal is to separate **provider completion latency** from **Agent reasoning time**. A long Vercel build may still be correct for a high-risk change, but the Agent should not occupy the whole build duration babysitting it.
 
 ## Repository-write hygiene
 
