@@ -70,6 +70,7 @@ Useful historical cases, after current policy:
 
 - [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md)
 - [`history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md`](history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md)
+- [`history/2026-08-27-results-model-identity-and-checkpoint-lineage-retrospective.md`](history/2026-08-27-results-model-identity-and-checkpoint-lineage-retrospective.md) — `BASE` vs vendor Base checkpoint, `frozen` vs provenance, 3B/7B ambiguity, pinned adapter checkpoints, runtime-image naming traps, and concurrent-main release closeout.
 
 ### Reproduction workflow / experiment design
 
