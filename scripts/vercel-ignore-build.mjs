@@ -26,6 +26,17 @@ export function shouldBuildForFiles(filePaths) {
   return filePaths.some(isBuildRelevantPath);
 }
 
+export function mustRunAcceptanceBuild(env = process.env) {
+  const deploymentEnv = env.VERCEL_ENV?.trim();
+  const pullRequestId = env.VERCEL_GIT_PULL_REQUEST_ID?.trim();
+  const gitRef = env.VERCEL_GIT_COMMIT_REF?.trim();
+
+  // PR previews and Production are acceptance surfaces, not build-budget hints.
+  // VERCEL_GIT_PREVIOUS_SHA may point at a failed predecessor, so a prose-only
+  // follow-up must not skip the first READY artifact for the current source.
+  return deploymentEnv === 'production' || Boolean(pullRequestId) || gitRef === 'main';
+}
+
 function runGit(args) {
   return execFileSync('git', args, {
     encoding: 'utf8',
@@ -43,6 +54,12 @@ function resolveRange(env) {
 
 export function main(env = process.env) {
   try {
+    if (mustRunAcceptanceBuild(env)) {
+      console.log('[vercel-ignore-build] Acceptance surface detected (PR/main/production); running the build fail-closed.');
+      process.exitCode = 1;
+      return;
+    }
+
     const { base, head } = resolveRange(env);
     runGit(['cat-file', '-e', `${base}^{commit}`]);
     runGit(['cat-file', '-e', `${head}^{commit}`]);
@@ -53,7 +70,7 @@ export function main(env = process.env) {
 
     if (relevantFiles.length === 0) {
       console.log(
-        '[vercel-ignore-build] No deploy-relevant changes since the previous successful deployment; skip this build.',
+        '[vercel-ignore-build] Non-acceptance preview has no deploy-relevant changes in the proven Git range; skip this build.',
       );
       process.exitCode = 0;
       return;

@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-27**
 
-Status: **The SEED × OpenEvo Results release is being refreshed to the completed source-faithful Track A measurement before exact-head Vercel acceptance. Track A is closed as `measurement-not-proven-stable-improvement`, with 128/128 runtime semantic validation PASS and the raw 256-episode evidence package `PUBLISHED_AND_VERIFIED`. The active program router is now WB1 Track B, currently fail-closed at `GEN28_COMPLETE_STATE_BARRIER_MISSING`.**
+Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
@@ -66,20 +66,22 @@ This Track A panel still must **not** be called the exact paper-final 128 behind
 
 ### Track B / WB1 — current program line
 
-Latest checked program authority is `mykcs/openevo-experiment@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d`.
+Immutable adoption authority: `mykcs/openevo-experiment@c2791000a3af97190c264ba5ea39f0c4e5f65823`.
 
 Current WB1 state:
 
 - campaign: `20260821-2341-wb1-seed-aligned-webshop-benchmark`;
-- classification: `GEN28_COMPLETE_STATE_BARRIER_MISSING`;
+- classification: `GEN28_STATE_V28_BARRIER_PASS_ADOPTED`;
 - Gen28 episodes: `128/128` valid, `2` exact successes, mean Task Score×100 `2.8646`;
-- `state-v28` is absent;
-- latest adoptable native state remains `state-v27`;
+- latest native state: `state-v28`;
+- counted matched experience: `3,584 / 20,640`; remaining: `17,056`;
+- Amendment 006 repair is complete and exactly-once consumed;
 - `formal_task_consumption_allowed=false`;
 - `gpu_allocation_allowed=false`;
-- final test remains locked and final unlock is not allowed.
+- Gen29 is not authorized;
+- final test remains locked.
 
-Current next gate is a scientific/governance decision on whether the missing state-v28 update should ever be separately authorized, under what frozen inputs, and with what budget accounting. Under current authority, do not backfill state-v28, start Gen29, allocate GPU, or unlock final.
+The next gate is a separate Gen29 execution-readiness / resumption decision under the frozen Track B contract. Do not rerun the Gen28 repair, start Gen29, allocate GPU, consume new tasks, or unlock final under current authority.
 
 Track A and Track B answer different questions. Track A validates one released-code-recoverable first-validation task semantic panel and measures frozen BASE vs frozen SD-LoRA on it. Track B is the matched method comparison that reruns SEED and OpenEvo under one frozen world and matched budgets.
 
@@ -94,7 +96,7 @@ The Results route keeps the seven-question reader path, claim-local provenance, 
 - evidence package `PUBLISHED_AND_VERIFIED`;
 - paper-final exact-128 / paper-checkpoint boundary;
 - governance ordering exception in technical provenance;
-- current WB1 `GEN28_COMPLETE_STATE_BARRIER_MISSING` no-execution state.
+- current WB1 `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` state-v28 boundary, with Gen29 still no-execution.
 
 For non-trivial Results edits, read:
 

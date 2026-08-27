@@ -87,23 +87,24 @@ Track A is a newer and more source-faithful task-semantic measurement, not a rew
 
 ## Current Track B / WB1 state
 
-The latest program router at `mykcs/openevo-experiment@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d` is now WB1 Track B.
+The immutable state-v28 adoption point is `mykcs/openevo-experiment@c2791000a3af97190c264ba5ea39f0c4e5f65823`.
 
 Current authority reports:
 
 - campaign `20260821-2341-wb1-seed-aligned-webshop-benchmark`;
 - track `Track B - Fair Matched Benchmark`;
-- classification `GEN28_COMPLETE_STATE_BARRIER_MISSING`;
+- classification `GEN28_STATE_V28_BARRIER_PASS_ADOPTED`;
 - Gen28 episode completion `128/128-valid-exit-0`;
 - Gen28 exact successes `2`;
 - Gen28 mean Task Score×100 `2.8646`;
-- `state-v28` does not exist;
-- latest adoptable native state remains `state-v27`;
+- latest native state is `state-v28`;
+- counted matched experience is `3,584 / 20,640` with `17,056` remaining;
+- Amendment 006 repair is consumed exactly once and may not be rerun;
 - `formal_task_consumption_allowed=false`;
 - `gpu_allocation_allowed=false`;
 - `final_test_status=locked` and final unlock is not allowed.
 
-Current `next_gate` is a scientific/governance decision on whether the missing state-v28 update should ever be separately authorized, and under what frozen inputs and accounting. Under current authority, do **not** backfill state-v28, start Gen29, allocate GPU, or unlock final.
+Current `next_gate` is a separate Gen29 execution-readiness / resumption decision under the frozen Track B contract. State-v28 adoption does **not** authorize Gen29, new WebShop task consumption, GPU allocation, or final unlock.
 
 This Track B state answers a different question from Track A and must not be conflated with the completed source-faithful paired measurement.
 
@@ -118,6 +119,6 @@ Use immutable links at `f80ae1816384bb7e8e82d193b22644e17f561f19` for the closed
 - `configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`
 - `configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`
 
-Use immutable `17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d/configs/experiment/current-campaign.json` for the publication-time WB1 current state.
+Use immutable `c2791000a3af97190c264ba5ea39f0c4e5f65823` for the adopted Gen28 continuation boundary: `configs/experiment/current-campaign.json` plus `docs/evidence/wb1/phase-2/amendment006-gen28-state-v28/RECONCILIATION.json`.
 
 Before using words such as `current`, `running`, `released`, `completed`, `next`, or `authorized` in a later edit, refresh upstream again because WB1 state can move independently of this publication snapshot.

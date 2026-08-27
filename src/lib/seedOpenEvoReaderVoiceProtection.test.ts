@@ -161,7 +161,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
     expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
     expect(nextSteps).toContain('路线 B（Track B，WB1）');
-    expect(nextSteps).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });
 
   it('does not regress to stale held-out planning states', () => {

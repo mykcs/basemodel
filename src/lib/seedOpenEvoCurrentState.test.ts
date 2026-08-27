@@ -40,21 +40,21 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
 
   it('advances the Hero and Next Steps to Track A closeout and Track B barrier state', () => {
     expect(hero).toContain('source-faithful Track A 先通过 authoritative runtime semantic validation 128/128');
-    expect(hero).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).toContain('final_test_status=locked');
     expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
-    expect(nextSteps).toContain('真正剩下的主问题是 Track B / WB1，但当前不能直接续跑');
-    expect(nextSteps).toContain('latest adoptable native state 仍是 state-v27');
-    expect(nextSteps).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
+    expect(nextSteps).toContain('Gen28 状态断点已修复；Track B / WB1 等待 Gen29 放行');
+    expect(nextSteps).toContain('latest native state=state-v28');
+    expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
   });
 
   it('records the latest upstream authority and the governance exception', () => {
     expect(currentState).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
-    expect(currentState).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
+    expect(currentState).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
     expect(currentState).toContain('measurement-not-proven-stable-improvement');
     expect(currentState).toContain('PUBLISHED_AND_VERIFIED');
     expect(currentState).toContain('GitHub branch authority and the `main` router did **not** precede the first formal episode');
-    expect(currentState).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(currentState).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(currentState).toContain('formal_task_consumption_allowed=false');
     expect(currentState).toContain('final_test_status=locked');
   });

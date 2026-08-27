@@ -10,6 +10,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 
 const experimentRoot = 'https://github.com/mykcs/openevo-experiment/blob/115062ea0b47ee769a3e1591ffd3d5c89c4a353a';
 const heldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1acc1132f8bdad4269a4e15864a9cccb0';
+const wrapperAuditRoot = 'https://github.com/mykcs/openevo-experiment/blob/e1229db492504bc9f7b795ca0a5184d5e1cadf1a';
 const h136ParserCommit = 'https://github.com/mykcs/openevo-experiment/commit/8e526e42de82e3fb417eb6dc4d892e068d73ef1f';
 const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
 const rawEpisode = `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json`;
@@ -84,6 +85,16 @@ const steps: Step[] = [
       { kind: 'machine-result', label: t('PRIMARY-v2 配对分析', 'PRIMARY-v2 paired analysis'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
       { kind: 'machine-result', label: t('PRIMARY-v2 覆盖与身份对账', 'PRIMARY-v2 coverage and identity reconciliation'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
       { kind: 'code', label: t('parser compatibility 代码', 'Parser compatibility code'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L69-L112` },
+    ],
+  },
+  {
+    when: t('Track A 正式审计', 'Formal Track A audit'),
+    title: t('完整正式运行里，wrapper 仍会漂，但测量没有再次失效', 'Wrapper drift persists in the formal run without invalidating the measurement'),
+    body: t('这次不再靠几个样例判断。对 Track A 已发布的 256 个 raw episode、共 3,672 个模型动作步骤做可重复审计：300 步严格 <action> 直接通过，3,253 步由两臂共用的冻结 v3 compatibility projection 恢复，119 步仍无法恢复并作为 environment-invalid action fail closed（BASE 77、SD-LoRA 42）。这 119 步与保存的 invalid_action_steps / environment-invalid 计数逐项对齐，没有被偷偷换成合法动作；同时 256/256 formal episodes 仍有效、parser-invalid=0。所以“模型 wrapper 漂移”“一次 agent 动作失败”和“整条 measurement invalid”是三个不同层级。', 'This is no longer inferred from a few examples. A reproducible audit over all 256 published Track A raw episodes and 3,672 model-action steps finds 300 strict <action> parses, 3,253 recoveries through the frozen v3 compatibility projection shared by both arms, and 119 still-unrecoverable steps that fail closed as environment-invalid actions (BASE 77, SD-LoRA 42). Those 119 align exactly with saved invalid_action_steps / environment-invalid counts and were never silently replaced by a legal action; all 256 formal episodes remain valid and parser-invalid=0. Model wrapper drift, one fail-closed agent action, and a measurement-invalid episode are therefore three different levels.'),
+    links: [
+      { kind: 'audit', label: t('Track A wrapper 审计 · 机器可读', 'Track A wrapper audit · machine-readable'), href: `${wrapperAuditRoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.json` },
+      { kind: 'human-report', label: t('Track A wrapper 审计 · 解释', 'Track A wrapper audit · interpretation'), href: `${wrapperAuditRoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.md` },
+      { kind: 'code', label: t('可重复审计器', 'Reproducible auditor'), href: `${wrapperAuditRoot}/scripts/openevo_webshop/audit_seedcmp_wrapper_drift.py` },
     ],
   },
 ];

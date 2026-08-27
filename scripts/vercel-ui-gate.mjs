@@ -6,7 +6,7 @@ const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
-const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
