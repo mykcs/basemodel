@@ -21,6 +21,8 @@ Current branch eligibility is executable policy in `vercel.json`; `research/**` 
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Cloudflare material is legacy rollback/provider-specific tooling only and stays outside ordinary deployment reporting.
 
+The hosted Vercel Chromium layer is now **risk-aware on Production**: shared/global UI or uncertain Git-range changes fail closed to the complete matrix, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. The full hosted matrix remains serial; a live two-worker trial on the current 2-core Hobby machine did not materially shorten the critical path.
+
 ## Current research state
 
 ### Historical repaired PRIMARY-v2
@@ -130,6 +132,8 @@ node scripts/vercel-lab-browser-gate.mjs
 `SKIPPED`, ignored, canceled, stale-head, or rate-limited execution is not `PASS`.
 
 For the Results release, require exact-head Preview metadata and zh/en browser acceptance on the changed routes before merging. After merge, require a READY Production successor on `main` and verify the public zh/en routes.
+
+For Production browser scope, read `current/deployment-policy.md` and `scripts/vercel-ui-plan.ts`; never infer that a focused or skipped hosted browser layer weakens the pre-provider acceptance requirement. Uncertain scope must fail closed to the complete hosted matrix.
 
 ## Repository-write hygiene
 
