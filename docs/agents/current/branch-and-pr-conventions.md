@@ -55,14 +55,15 @@ agent/semantic-release-*
 research/**
 ```
 
-and disables other branch patterns by default.
+and disables other branch patterns by default. This is **eligibility only**: on Vercel Preview, `scripts/vercel-ignore-build.mjs` still requires `[vercel-preview]` in the exact-head commit message before the expensive site build is allowed to run. Eligible intermediate pushes without the token are intentionally ignored. `main` Production does not require the token.
 
 Therefore:
 
-1. If a non-main change **requires exact-head Vercel Preview acceptance**, use `research/**` unless it is specifically the `agent/semantic-release-*` flow.
+1. If a non-main change **requires exact-head Vercel Preview acceptance**, use `research/**` unless it is specifically the `agent/semantic-release-*` flow, finish the coherent local batch first, and add `[vercel-preview]` only to the exact head that should consume the hosted Preview.
 2. `docs/**`, `fix/**`, `ci/**`, and other ordinary prefixes are currently **not Vercel-deployment-eligible** by name. Use them only when Preview is not required, or deliberately change the executable deployment policy as part of the work.
 3. Do not label a branch `docs/**` solely because all changed files are Markdown if the release contract requires a Preview.
-4. If documentation and `vercel.json` disagree, executable configuration wins and this document must be corrected.
+4. Do not add `[vercel-preview]` to intermediate commits merely because their branch is eligible; the token is an explicit spend decision for hosted acceptance.
+5. If documentation and `vercel.json` / `scripts/vercel-ignore-build.mjs` disagree, executable configuration wins and this document must be corrected.
 
 This exception explains why two branches containing substantially the same documentation change can behave differently when one is `docs/...` and the other is `research/...`.
 

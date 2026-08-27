@@ -14,6 +14,12 @@ const BUILD_RELEVANT_CONFIG = [
   /^tsconfig(?:\.[^/]+)?\.json$/,
 ];
 
+export const PREVIEW_OPT_IN_TOKEN = '[vercel-preview]';
+
+export function previewBuildOptedIn(env, commitMessage) {
+  return env.VERCEL_ENV !== 'preview' || commitMessage.includes(PREVIEW_OPT_IN_TOKEN);
+}
+
 export function isBuildRelevantPath(filePath) {
   return (
     BUILD_RELEVANT_PREFIXES.some((prefix) => filePath.startsWith(prefix)) ||
@@ -41,11 +47,29 @@ function resolveRange(env) {
   return { base: `${head}^`, head };
 }
 
+function commitMessageForHead(env, head) {
+  const fromVercel = env.VERCEL_GIT_COMMIT_MESSAGE?.trim();
+  if (fromVercel) return fromVercel;
+  return runGit(['log', '-1', '--format=%B', head]);
+}
+
 export function main(env = process.env) {
   try {
     const { base, head } = resolveRange(env);
     runGit(['cat-file', '-e', `${base}^{commit}`]);
     runGit(['cat-file', '-e', `${head}^{commit}`]);
+
+    if (env.VERCEL_ENV === 'preview') {
+      const commitMessage = commitMessageForHead(env, head);
+      if (!previewBuildOptedIn(env, commitMessage)) {
+        console.log(
+          `[vercel-ignore-build] Preview build skipped by default. Add ${PREVIEW_OPT_IN_TOKEN} to the exact head commit message when hosted Preview acceptance is intentionally required.`,
+        );
+        process.exitCode = 0;
+        return;
+      }
+      console.log(`[vercel-ignore-build] Preview opt-in token accepted: ${PREVIEW_OPT_IN_TOKEN}`);
+    }
 
     const output = runGit(['diff', '--name-only', '--no-renames', base, head]);
     const changedFiles = output ? output.split('\n').filter(Boolean) : [];

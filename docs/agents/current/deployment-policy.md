@@ -6,7 +6,8 @@ Last reviewed: **2026-08-27**
 
 ```text
 GitHub = canonical source
-non-main branches / PRs = Vercel Preview
+deployment-eligible non-main / PR + exact-head `[vercel-preview]` = Vercel Preview build
+deployment-eligible non-main / PR without the token = trigger is ignored before the site build
 main = Vercel Production
 Production identity = https://basemodel-preview.vercel.app
 ```
@@ -24,6 +25,8 @@ Project `basemodel-preview` owns both deployment environments. Every deployable 
 Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
+
+Preview branch eligibility is only the first filter; it is **not permission to spend build compute on every intermediate push**. `scripts/vercel-ignore-build.mjs` requires the exact-head commit message to contain `[vercel-preview]` when `VERCEL_ENV=preview`. Without that token, an eligible Preview trigger exits through the ignored-build path before `verify:deploy`, the static build, or hosted Playwright runs. Production is never gated by this token. A tokenized Preview can still be ignored when the proven Git range is docs/governance-only. Preview `robots.txt` also uses `Disallow: /` for cooperative crawlers.
 
 ### Risk-aware hosted browser gate
 
@@ -102,15 +105,16 @@ one coherent branch/PR
 Rules:
 
 1. Finish the coherent code/content batch and run the strongest available local/Agent checks before the first push. Do not push every typo, intermediate experiment or file write.
-2. Reuse the existing branch/PR. Do not create a duplicate PR to repair the same deployment or migration unless the old branch is genuinely unsafe to continue.
-3. When a GitHub connector would otherwise write files one by one, prefer a checked-out worktree or one Git data API multi-file commit (`blob -> tree -> commit -> ref`). Sequential Contents API writes can create one Vercel deployment per ref update.
-4. Keep stacked PRs only for real, reviewable dependencies. Stabilize the parent before repeatedly pushing the child, and do not mirror the same fix across multiple branches.
-5. When several already-accepted PRs belong to one release window, one explicit integration/release head plus one merge to `main` may be used if authorship, review, rollback and ownership remain clear. Do not combine unrelated or unaccepted work only to reduce build count.
-6. Batch evidence-driven Preview fixes. The normal budget is one initial Preview plus at most one corrective Preview; more pushes require a concrete reason such as a newly discovered Gate failure, exact-head synchronization conflict or real browser finding.
-7. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
-8. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them on PR, `main` and Production as well as ordinary branch Previews. The Vercel environment/ref class does not override a proven docs-only diff. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
-9. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
-10. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
+2. **Opt in only the exact head that needs hosted review.** Put `[vercel-preview]` in that commit message; ordinary intermediate pushes on deployment-eligible Preview branches should omit it and be ignored before the expensive build.
+3. Reuse the existing branch/PR. Do not create a duplicate PR to repair the same deployment or migration unless the old branch is genuinely unsafe to continue.
+4. When a GitHub connector would otherwise write files one by one, prefer a checked-out worktree or one Git data API multi-file commit (`blob -> tree -> commit -> ref`). Sequential Contents API writes can create one Vercel deployment per ref update.
+5. Keep stacked PRs only for real, reviewable dependencies. Stabilize the parent before repeatedly pushing the child, and do not mirror the same fix across multiple branches.
+6. When several already-accepted PRs belong to one release window, one explicit integration/release head plus one merge to `main` may be used if authorship, review, rollback and ownership remain clear. Do not combine unrelated or unaccepted work only to reduce build count.
+7. Batch evidence-driven Preview fixes. The normal budget is one initial Preview plus at most one corrective Preview; more pushes require a concrete reason such as a newly discovered Gate failure, exact-head synchronization conflict or real browser finding.
+8. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
+9. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them on PR, `main` and Production as well as ordinary branch Previews. The Vercel environment/ref class does not override a proven docs-only diff. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
+10. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
+11. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
 
 ## Parallel Agent and stacked-PR integration
 

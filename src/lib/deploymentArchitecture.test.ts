@@ -42,6 +42,10 @@ describe('Vercel production deployment architecture', () => {
     }
   });
 
+  it('keeps Preview deployments out of cooperative crawler indexes', () => {
+    expect(robots).toContain("return new Response('User-agent: *\\nDisallow: /\\n'");
+  });
+
   it('keeps ordinary search available while opting out named AI training crawlers', () => {
     expect(robots).toContain("'GPTBot'");
     expect(robots).toContain("'ClaudeBot'");

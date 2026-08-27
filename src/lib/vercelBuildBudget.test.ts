@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  PREVIEW_OPT_IN_TOKEN,
   isBuildRelevantPath,
+  previewBuildOptedIn,
   shouldBuildForFiles,
 } from '../../scripts/vercel-ignore-build.mjs';
 
@@ -22,6 +24,13 @@ describe('Vercel build-budget contract', () => {
   it('keeps automatic cancellation and the repository-owned ignored-build step enabled', () => {
     expect(vercel.github?.autoJobCancelation).toBe(true);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
+  });
+
+  it('requires an explicit exact-head opt-in before spending on Preview builds', () => {
+    expect(PREVIEW_OPT_IN_TOKEN).toBe('[vercel-preview]');
+    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: intermediate change')).toBe(false);
+    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: ready for review [vercel-preview]')).toBe(true);
+    expect(previewBuildOptedIn({ VERCEL_ENV: 'production' }, 'fix: release')).toBe(true);
   });
 
   it('builds for deploy-relevant source, tests and configuration', () => {
@@ -90,7 +99,8 @@ describe('Vercel build-budget contract', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
     expect(ignoreBuildScript).not.toContain('mustRunAcceptanceBuild');
     expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
-    expect(ignoreBuildScript).not.toContain('VERCEL_ENV');
+    expect(ignoreBuildScript).toContain('VERCEL_ENV');
+    expect(ignoreBuildScript).toContain(PREVIEW_OPT_IN_TOKEN);
     expect(deploymentPolicy).toContain('PR, `main` and Production');
     expect(deploymentPolicy).toContain('does not override a proven docs-only diff');
   });
