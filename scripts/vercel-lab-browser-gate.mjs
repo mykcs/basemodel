@@ -1,7 +1,10 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+// Results release branches must always exercise the real /lab/ browser gate.
+// A narrow name allowlist previously let otherwise-valid Results PRs reach a
+// READY preview with this gate skipped, which is not release acceptance.
+const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const shouldRun = branch === 'main'
   || branch === 'agent/sync-zju-shell-environment-20260816'
   || resultsReleaseBranch.test(branch);
