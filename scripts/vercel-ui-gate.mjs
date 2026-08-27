@@ -5,7 +5,10 @@ const productionBranch = branch === 'main';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
-const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+// Every research/results-* branch is a Results release/acceptance surface. Keep
+// this broad on purpose: semantic, evidence, metadata and layout changes can all
+// alter what readers see, and a skipped hosted browser gate is never release PASS.
+const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
