@@ -24,9 +24,11 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(questions).toContain('不是 SEED parser 有 bug，也不是 OpenEvo Prompt 要求 [action]');
     expect(questions).toContain('这个 0 说明测量接口失效，不能解释成模型能力为 0');
     expect(questions).toContain('128 题身份：我们和论文说的是同一场考试吗？');
+    expect(wrapperAttribution).toContain('实验里出现了一次动作格式错误：发生了什么，为什么会发生，我们怎么修复');
+    expect(wrapperAttribution).toContain('PRIMARY-v1 正式评测里，模型本来生成了合法的 search[...] / click[...] 命令');
     expect(wrapperAttribution).toContain('偏差出现在 BASE 原始生成里，不是 adapter 或 backend 改写');
     expect(wrapperAttribution).toContain('raw_completion 仍然出现 [action] search[...]');
-    expect(wrapperAttribution).toContain('模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检');
+    expect(wrapperAttribution).toContain('我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移');
   });
 
   it('keeps the three distinct 128-task claims separate', () => {
