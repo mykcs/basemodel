@@ -106,7 +106,7 @@ describe('interactive research explainers', () => {
   });
 
   it('makes both SEED stages, the GLM-5.2 bootstrap, and Stage-2 learning branches explicit', () => {
-    for (const term of ['STAGE 1 · HINDSIGHT-SKILL SFT', 'EXTERNAL TEACHER', 'GLM-5.2', '180 tasks × 8 rollouts', '1,440 completed trajectories', '3-epoch SFT', 'not the WebShop reward scorer', 'STAGE 2 · SELF-EVOLVING OPD + GRPO']) expect(explainer).toContain(term);
+    for (const term of ['STAGE 1 · HINDSIGHT-SKILL SFT', 'POLICY MODEL', 'Qwen2.5-3B-Instruct', 'SEED / verl-agent HARNESS', 'PRINCETON WEBSHOP ENVIRONMENT', 'WebAgentTextEnv', "gym.make('WebAgentTextEnv-v0')", '&lt;think&gt;', '&lt;action&gt;', 'webshop_projection', '180 tasks × 8 rollouts', '1,440 completed trajectories', 'EXTERNAL OFFLINE ANALYZER', 'GLM-5.2', 'neither collects trajectories nor scores WebShop reward', '3-epoch SFT', 'STAGE 2 · SELF-EVOLVING OPD + GRPO', 'FIXED BENCHMARK INTERACTION CONTRACT']) expect(explainer).toContain(term);
     for (const term of ['hold the same sampled action tokens fixed', 'P_plain(action)', 'P_skill(action)', 'plain context', 'skill-augmented context', 'OPD', 'GRPO', 'GRPO + OPD', 'policy θt+1', 'next-loop']) expect(explainer).toContain(term);
     expect(explainer).toContain('Illustrative probabilities only');
     expect(explainer).toContain('raw.githubusercontent.com/zai-org/GLM-5/414ad9eb891b05b5d7d51d573939bfe9ce538223/resources/logo.svg');
@@ -115,9 +115,12 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('same checkpoint');
     expect(explainer).toContain('ParameterUpdateFlame');
     expect(explainer).toContain('参数更新');
-    expect(detailCore).toContain('GLM-5.2 → Hindsight-skill SFT');
-    expect(detailCore).toContain('GLM-5.2 读取完整 episode');
-    expect(detailCore).toContain('不是 WebShop 的 reward scorer');
+    expect(detailCore).toContain('Qwen → SEED harness ↔ WebShop → GLM-5.2 → SFT');
+    expect(detail).toContain('Stage 1 先由 Qwen policy 通过 SEED / verl-agent 的交互 harness 驱动 Princeton WebShop 环境完成 rollout');
+    expect(detailCore).toContain('WebAgentTextEnv');
+    expect(detailCore).toContain('它不采轨迹，也不计算 WebShop reward');
+    expect(explainer).toContain('Harness、Princeton WebShop 环境和已经完成的 trajectory 都不会在这个 optimizer step 里被改写');
+    expect(explainer).toContain('GLM-5.2 与 hindsight skill 不进入部署路径');
   });
 
   it('keeps the current WebShop adapter path primary while preserving OpenEvo carrier and validation depth', () => {

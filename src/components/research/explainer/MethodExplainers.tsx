@@ -19,80 +19,749 @@ function ParameterUpdateFlame({ label }: { label: string }) {
 
 const GLM_OFFICIAL_LOGO = 'https://raw.githubusercontent.com/zai-org/GLM-5/414ad9eb891b05b5d7d51d573939bfe9ce538223/resources/logo.svg';
 
-export function SeedExplainer({ locale, step }: { locale: Locale; step: number }) {
-  const zh = locale === 'zh';
+export function SeedExplainer({
+  locale,
+  step,
+}: {
+  locale: Locale;
+  step: number;
+}) {
+  const zh = locale === "zh";
   const sceneRef = useRef<HTMLDivElement>(null);
-  const moreLabel = zh ? '展开细节' : 'Expand detail';
+  const moreLabel = zh ? "展开细节" : "Expand detail";
   const sameAction = 'click["Black"]';
-  // The sampled action tokens are ONE visual object: the same chip sequence is
-  // rendered inside the sealed trajectory and inside both re-scoring contexts.
-  const actionTokens = ['click', '[', '"Black"', ']'];
-  const schematic = zh ? '参数网格为示意，非真实权重' : 'parameter grid is schematic, not real weights';
+  const actionTokens = ["click", "[", '"Black"', "]"];
+  const schematic = zh
+    ? "参数网格为示意，非真实权重"
+    : "parameter grid is schematic, not real weights";
   const edges: EdgeSpec[] = [
-    { id: 'policy-rollout', from: 'seed-policy', to: 'seed-rollout', tone: 'state', fromAnchor: 'right', toAnchor: 'left', active: step >= 0 },
-    { id: 'rollout-trajectory', from: 'seed-rollout', to: 'seed-trajectory', tone: 'env', fromAnchor: 'right', toAnchor: 'left', active: step >= 1 },
-    { id: 'trajectory-hindsight', from: 'seed-trajectory', to: 'seed-hindsight', tone: 'experience', fromAnchor: 'bottom', toAnchor: 'top', active: step >= 2 },
-    { id: 'policy-analyzer', from: 'seed-policy', to: 'seed-hindsight', tone: 'state', fromAnchor: 'bottom', toAnchor: 'left', shape: 'smooth', dashed: true, label: zh ? 'same checkpoint' : 'same checkpoint', active: step >= 2 },
-    { id: 'trajectory-plain', from: 'seed-trajectory', to: 'seed-plain', tone: 'env', fromAnchor: 'left', toAnchor: 'top', shape: 'outside-left-down', active: step >= 3 },
-    { id: 'trajectory-skill', from: 'seed-trajectory', to: 'seed-skill', tone: 'env', fromAnchor: 'right', toAnchor: 'top', shape: 'outside-right-down', active: step >= 3 },
-    { id: 'hindsight-skill', from: 'seed-hindsight', to: 'seed-skill', tone: 'experience', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 3 },
-    { id: 'plain-opd', from: 'seed-plain', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4 },
-    { id: 'skill-opd', from: 'seed-skill', to: 'seed-opd', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'top', shape: 'between-y', active: step >= 4 },
-    { id: 'trajectory-grpo', from: 'seed-trajectory', to: 'seed-grpo', tone: 'env', fromAnchor: 'right', toAnchor: 'right', shape: 'loop-right', active: step >= 4 },
-    { id: 'opd-optimizer', from: 'seed-opd', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'left', active: step >= 4, weight: 'strong' },
-    { id: 'grpo-optimizer', from: 'seed-grpo', to: 'seed-optimizer', tone: 'signal', fromAnchor: 'bottom', toAnchor: 'right', active: step >= 4, weight: 'strong' },
-    { id: 'optimizer-next', from: 'seed-optimizer', to: 'seed-next', tone: 'persist', fromAnchor: 'right', toAnchor: 'left', active: step >= 5 },
-    { id: 'next-loop', from: 'seed-next', to: 'seed-policy', tone: 'persist', fromAnchor: 'right', toAnchor: 'top', shape: 'loop-top', label: zh ? 'next rollout' : 'next rollout', active: step >= 5 },
+    {
+      id: "policy-harness",
+      from: "seed-policy",
+      to: "seed-harness",
+      tone: "state",
+      fromAnchor: "right",
+      toAnchor: "left",
+      active: step >= 0,
+      label: zh ? "raw model completion" : "raw model completion",
+    },
+    {
+      id: "environment-trajectory",
+      from: "seed-environment",
+      to: "seed-trajectory",
+      tone: "experience",
+      fromAnchor: "right",
+      toAnchor: "left",
+      active: step >= 1,
+      label: zh ? "episode evidence" : "episode evidence",
+    },
+    {
+      id: "trajectory-hindsight",
+      from: "seed-trajectory",
+      to: "seed-hindsight",
+      tone: "experience",
+      fromAnchor: "bottom",
+      toAnchor: "top",
+      active: step >= 2,
+    },
+    {
+      id: "policy-analyzer",
+      from: "seed-policy",
+      to: "seed-hindsight",
+      tone: "state",
+      fromAnchor: "bottom",
+      toAnchor: "left",
+      shape: "smooth",
+      dashed: true,
+      label: "same checkpoint",
+      active: step >= 2,
+    },
+    {
+      id: "trajectory-plain",
+      from: "seed-trajectory",
+      to: "seed-plain",
+      tone: "env",
+      fromAnchor: "left",
+      toAnchor: "top",
+      shape: "outside-left-down",
+      active: step >= 3,
+    },
+    {
+      id: "trajectory-skill",
+      from: "seed-trajectory",
+      to: "seed-skill",
+      tone: "env",
+      fromAnchor: "right",
+      toAnchor: "top",
+      shape: "outside-right-down",
+      active: step >= 3,
+    },
+    {
+      id: "hindsight-skill",
+      from: "seed-hindsight",
+      to: "seed-skill",
+      tone: "experience",
+      fromAnchor: "bottom",
+      toAnchor: "left",
+      active: step >= 3,
+    },
+    {
+      id: "plain-opd",
+      from: "seed-plain",
+      to: "seed-opd",
+      tone: "signal",
+      fromAnchor: "bottom",
+      toAnchor: "left",
+      active: step >= 4,
+    },
+    {
+      id: "skill-opd",
+      from: "seed-skill",
+      to: "seed-opd",
+      tone: "signal",
+      fromAnchor: "bottom",
+      toAnchor: "top",
+      shape: "between-y",
+      active: step >= 4,
+    },
+    {
+      id: "trajectory-grpo",
+      from: "seed-trajectory",
+      to: "seed-grpo",
+      tone: "env",
+      fromAnchor: "right",
+      toAnchor: "right",
+      shape: "loop-right",
+      active: step >= 4,
+      label: zh ? "environment outcome" : "environment outcome",
+    },
+    {
+      id: "opd-optimizer",
+      from: "seed-opd",
+      to: "seed-optimizer",
+      tone: "signal",
+      fromAnchor: "bottom",
+      toAnchor: "left",
+      active: step >= 4,
+      weight: "strong",
+    },
+    {
+      id: "grpo-optimizer",
+      from: "seed-grpo",
+      to: "seed-optimizer",
+      tone: "signal",
+      fromAnchor: "bottom",
+      toAnchor: "right",
+      active: step >= 4,
+      weight: "strong",
+    },
+    {
+      id: "optimizer-next",
+      from: "seed-optimizer",
+      to: "seed-next",
+      tone: "persist",
+      fromAnchor: "right",
+      toAnchor: "left",
+      active: step >= 5,
+    },
+    {
+      id: "next-loop",
+      from: "seed-next",
+      to: "seed-policy",
+      tone: "persist",
+      fromAnchor: "right",
+      toAnchor: "top",
+      shape: "loop-top",
+      label: zh ? "next rollout" : "next rollout",
+      active: step >= 5,
+    },
   ];
   return (
     <>
-      <section className="irx-seed-stage irx-seed-bootstrap" data-ui-audit="contrast layout" aria-labelledby="seed-stage1-title">
+      <section
+        className="irx-seed-stage irx-seed-bootstrap"
+        data-ui-audit="contrast layout"
+        aria-labelledby="seed-stage1-title"
+      >
         <header className="irx-seed-stage__head">
-          <div><span>STAGE 1 · HINDSIGHT-SKILL SFT</span><strong id="seed-stage1-title">{zh ? '外部 GLM-5.2 先把“做完一题”变成“会复盘一题”' : 'External GLM-5.2 first turns completed episodes into learnable hindsight'}</strong></div>
-          <p>{zh ? 'GLM-5.2 读取完整 episode 并生成 hindsight-skill 标注；它不是 WebShop 的 reward scorer。' : 'GLM-5.2 reads completed episodes and generates hindsight-skill annotations; it is not the WebShop reward scorer.'}</p>
+          <div>
+            <span>STAGE 1 · HINDSIGHT-SKILL SFT</span>
+            <strong id="seed-stage1-title">
+              {zh
+                ? "先用 SEED 的交互层驱动 Qwen 做题，再让 GLM-5.2 离线复盘"
+                : "SEED first drives Qwen through its interaction layer; GLM-5.2 analyzes only after the episode"}
+            </strong>
+          </div>
+          <div className="irx-seed-stage__boundary-copy">
+            <p>
+              {zh
+                ? "模型侧由 SEED / verl-agent harness 负责 prompt、history 与 action projection。"
+                : "SEED / verl-agent owns the model-facing prompt, history, and action projection."}
+            </p>
+            <p>
+              {zh
+                ? "底层由 Princeton WebShop 的 WebAgentTextEnv 执行 search[] / click[]，返回 observation 与 score。"
+                : "Princeton WebShop’s WebAgentTextEnv executes search[] / click[] and returns observations and score."}
+            </p>
+          </div>
         </header>
-        <ol aria-label={zh ? 'SEED Stage 1 bootstrap 流程' : 'SEED Stage 1 bootstrap flow'}>
-          <li data-ui-audit-item><small>WEBSHOP TRAJECTORIES</small><b>180 tasks × 8 rollouts</b><span>{zh ? '= 1,440 条完整轨迹' : '= 1,440 completed trajectories'}</span></li>
-          <li className="irx-glm-model" data-ui-audit-item><span className="irx-glm-icon" aria-hidden="true"><img src={GLM_OFFICIAL_LOGO} alt="" width="30" height="30" /></span><div><small>EXTERNAL TEACHER</small><b>GLM-5.2</b><span>{zh ? '读完整 episode → 生成 hindsight skill' : 'read episode → generate hindsight skill'}</span></div></li>
-          <li data-ui-audit-item><small>ANNOTATION</small><b>trajectory → skill</b><span>{zh ? '保留可用于监督学习的事后复盘' : 'retain hindsight records for supervision'}</span></li>
-          <li data-ui-audit-item><small>SUPERVISED UPDATE</small><b>3-epoch SFT</b><span>{zh ? '把复盘能力写进初始 checkpoint' : 'write analysis ability into the initial checkpoint'}</span></li>
-          <li data-ui-audit-item><small>BOOTSTRAPPED POLICY</small><b>policy θ0</b><span>{zh ? '之后既能 acting，也能 analyzing' : 'now capable of acting and analyzing'}</span></li>
+
+        <div
+          className="irx-stage1-collection"
+          aria-label={
+            zh
+              ? "Stage 1 WebShop 轨迹采集责任链"
+              : "Stage 1 WebShop rollout responsibility chain"
+          }
+        >
+          <section
+            className="irx-seed-runtime-boundary"
+            data-ui-audit="contrast layout"
+          >
+            <header>
+              <small>AGENT RUNTIME</small>
+              <strong>SEED / verl-agent</strong>
+              <span>
+                {zh ? "模型侧交互合同" : "model-facing interaction contract"}
+              </span>
+            </header>
+            <article
+              className="irx-seed-role irx-seed-role-model"
+              data-ui-audit-item
+            >
+              <small>POLICY MODEL</small>
+              <strong>Qwen2.5-3B-Instruct</strong>
+              <span>
+                {zh
+                  ? "根据当前 prompt 产生原始 completion"
+                  : "produces the raw completion from the current prompt"}
+              </span>
+            </article>
+            <div className="irx-seed-runtime-arrow" aria-hidden="true">
+              <span>raw completion</span>
+              <i />
+            </div>
+            <article
+              className="irx-seed-role irx-seed-role-harness"
+              data-ui-audit-item
+            >
+              <small>SEED / verl-agent HARNESS</small>
+              <strong>
+                {zh
+                  ? "组装 observation → 解析 action"
+                  : "build observation → project action"}
+              </strong>
+              <ul aria-label={zh ? "Harness 责任" : "Harness responsibilities"}>
+                <li>prompt + history</li>
+                <li>available actions</li>
+                <li>&lt;think&gt; / &lt;action&gt;</li>
+                <li>webshop_projection</li>
+              </ul>
+            </article>
+          </section>
+
+          <div
+            className="irx-seed-exchange"
+            aria-label={
+              zh
+                ? "Harness 与环境之间的双向通道"
+                : "Two-way channel between harness and environment"
+            }
+          >
+            <span className="irx-seed-exchange-action">
+              {zh ? "执行动作" : "executed action"} <b>search[] / click[]</b>
+              <i aria-hidden="true">→</i>
+            </span>
+            <span className="irx-seed-exchange-return">
+              <i aria-hidden="true">←</i>
+              <b>observation · available actions · score</b>
+            </span>
+          </div>
+
+          <section className="irx-seed-benchmark" data-ui-audit-item>
+            <small>PRINCETON WEBSHOP ENVIRONMENT</small>
+            <strong>WebAgentTextEnv</strong>
+            <span>
+              {zh
+                ? "商品 / goal / 页面状态 / 环境转移 / WebShop score"
+                : "products / goals / page state / transitions / WebShop score"}
+            </span>
+            <code>gym.make('WebAgentTextEnv-v0')</code>
+          </section>
+        </div>
+
+        <div className="irx-stage1-output">
+          <span>
+            {zh
+              ? "重复交互，最多 15 steps / episode"
+              : "repeat interaction, up to 15 steps / episode"}
+          </span>
+          <b aria-hidden="true">↓</b>
+        </div>
+
+        <ol
+          className="irx-seed-offline-pipeline"
+          aria-label={
+            zh
+              ? "Stage 1 离线后见监督流程"
+              : "Stage 1 offline hindsight-supervision flow"
+          }
+        >
+          <li className="irx-seed-trajectory-source" data-ui-audit-item>
+            <small>COMPLETED EPISODES</small>
+            <b>180 tasks × 8 rollouts</b>
+            <span>
+              {zh
+                ? "= 1,440 条完整 trajectory + outcome"
+                : "= 1,440 completed trajectories + outcomes"}
+            </span>
+          </li>
+          <li className="irx-glm-model" data-ui-audit-item>
+            <span className="irx-glm-icon" aria-hidden="true">
+              <img src={GLM_OFFICIAL_LOGO} alt="" width="30" height="30" />
+            </span>
+            <div>
+              <small>EXTERNAL OFFLINE ANALYZER</small>
+              <b>GLM-5.2</b>
+              <span>
+                {zh
+                  ? "只读已完成 episode；不负责轨迹采集，也不是 reward scorer"
+                  : "reads completed episodes only; it neither collects trajectories nor scores WebShop reward"}
+              </span>
+            </div>
+          </li>
+          <li data-ui-audit-item>
+            <small>ANNOTATION</small>
+            <b>trajectory → hindsight skill</b>
+            <span>
+              {zh
+                ? "把完整经历转成可监督的复盘样本"
+                : "turn completed experience into supervised hindsight records"}
+            </span>
+          </li>
+          <li data-ui-audit-item>
+            <small>SUPERVISED UPDATE</small>
+            <b>3-epoch SFT</b>
+            <span>
+              {zh
+                ? "把 analyzer 能力写入 checkpoint"
+                : "write analyzer capability into the checkpoint"}
+            </span>
+          </li>
+          <li data-ui-audit-item>
+            <small>STAGE-2 INITIAL STATE</small>
+            <b>policy θ0</b>
+            <span>
+              {zh
+                ? "同一 checkpoint 之后既 acting，也 analyzing"
+                : "the same checkpoint can now act and analyze"}
+            </span>
+          </li>
         </ol>
       </section>
-      <div className="irx-seed-stage-divider" data-ui-audit="contrast layout"><div><span>STAGE 2 · SELF-EVOLVING OPD + GRPO</span><strong>{zh ? '外部 GLM 离开训练回路；当前 policy 自己行动、自己复盘' : 'The external GLM leaves the loop; the current policy acts and analyzes its own episodes'}</strong></div><small>{zh ? '下面的逐步播放只追踪 Stage 2。' : 'The step-by-step playback below traces Stage 2 only.'}</small></div>
-      <div className="irx-diagram irx-seed-scene" ref={sceneRef} data-ui-audit="contrast layout">
-        <FlowNode id="seed-policy" role="CURRENT POLICY" title="policy θt" detail={zh ? '这一轮的 actor；同一 checkpoint 也提供 hindsight analyzer 能力' : 'actor for this round; the same checkpoint also supplies hindsight analyzer capability'} moreLabel={moreLabel} more={zh ? 'θt 指 Stage 2 当前训练轮次的 checkpoint；rollout 与 hindsight 分析共用同一份权重，所以这一阶段不会再调用 Stage 1 的外部 GLM-5.2。' : 'θt is the current Stage-2 checkpoint; rollout and hindsight analysis share the same weights, so this stage no longer calls the external GLM-5.2 used in Stage 1.'} tone="state" active={step === 0} complete={step > 0} className="seed-policy">
-          <ParamGrid label={`θt · ${schematic}`} cells={THETA_T} tone="state" className="seed-theta" />
-        </FlowNode>
-        <FlowNode id="seed-rollout" role="ON-POLICY INTERACTION" title={zh ? '真实环境 rollout' : 'real environment rollout'} detail="observation · sampled actions · outcome" moreLabel={moreLabel} more={zh ? 'on-policy 意味着动作来自当前 policy 本身，而不是旧数据或 teacher 演示。' : 'on-policy means actions come from the current policy itself, not stale data or teacher demonstrations.'} tone="env" active={step === 0} complete={step > 0} className="seed-rollout" />
-        <FlowNode id="seed-trajectory" role="SEALED EPISODE" title={zh ? '完整 trajectory' : 'completed trajectory'} detail={zh ? '动作已经采样完成；后面只重打分，不重新生成“正确轨迹”' : 'actions are already sampled; later stages re-score them rather than generate a new “correct trajectory”'} moreLabel={moreLabel} more={zh ? '封存表示轨迹不再被改写；后续所有学习信号都指向这批已固定的 action token。' : 'Sealed means the trajectory is never rewritten; every later learning signal refers to these fixed action tokens.'} tone="experience" active={step === 1} complete={step > 1} className="seed-trajectory">
-          <ChipSequence label={sameAction} tone="experience" tokens={actionTokens} className="seed-action-chips" />
-        </FlowNode>
-        <FlowNode id="seed-hindsight" role="HINDSIGHT ANALYZER" title="hindsight skill" detail={zh ? '同一 checkpoint 看完 episode 后提取“早知道什么会更好”' : 'the same checkpoint extracts what hindsight would have helped after seeing the whole episode'} moreLabel={moreLabel} more={zh ? 'Stage 2 的 skill 是当前 policy 自己生成的文本经验总结，只出现在重打分 context 中；Stage 1 的同类 skill 则由外部 GLM-5.2 生成，用于 SFT。两者都不改写原轨迹。' : 'In Stage 2, the skill is a textual experience summary generated by the current policy and used only in the re-scoring context; Stage-1 skills of the same form are generated by external GLM-5.2 for SFT. Neither rewrites the trajectory.'} tone="experience" active={step === 2} complete={step > 2} className="seed-hindsight" />
-        <FlowNode id="seed-plain" role="CONTEXT A" title="plain context" detail={`${sameAction} · P_plain`} moreLabel={moreLabel} more={zh ? 'P_plain 是 policy 在原始 observation 下对同一 action 给出的概率。' : 'P_plain is the probability the policy assigns to the same action under the raw observation.'} tone="env" active={step === 3} complete={step > 3} className="seed-plain">
-          <ChipSequence label={sameAction} tone="env" tokens={actionTokens} className="seed-action-chips" />
-        </FlowNode>
-        <FlowNode id="seed-skill" role="CONTEXT B" title="skill-augmented context" detail={`${sameAction} · P_skill`} moreLabel={moreLabel} more={zh ? 'P_skill 是加入 hindsight skill 后对同一 action 的概率；两个概率的差异就是 OPD 的信号来源。' : 'P_skill is the probability once the hindsight skill is added; the gap between the two probabilities drives the OPD signal.'} tone="experience" active={step === 3} complete={step > 3} className="seed-skill">
-          <ChipSequence label={sameAction} tone="experience" tokens={actionTokens} className="seed-action-chips" />
-        </FlowNode>
-        <FlowNode id="seed-opd" role="DENSE LEARNING SIGNAL" title="OPD" detail={zh ? '同一 action 在两个 context 下的概率变化' : 'probability shift of the same action under two contexts'} moreLabel={moreLabel} more={zh ? 'OPD 把“早知道这个 skill 会怎样做得更好”蒸馏成 token 级稠密监督，而不是等终局奖励。' : 'OPD distills “what hindsight would have improved” into dense token-level supervision instead of waiting for a terminal reward.'} tone="signal" active={step === 4} complete={step > 4} className="seed-opd" />
-        <FlowNode id="seed-grpo" role="OUTCOME RL SIGNAL" title="GRPO" detail={zh ? '来自 environment reward / relative outcome' : 'from environment reward / relative outcome'} moreLabel={moreLabel} more={zh ? 'GRPO 使用组内相对 outcome 优势，不依赖额外 value network。' : 'GRPO uses group-relative outcome advantages and does not require an extra value network.'} tone="signal" active={step === 4} complete={step > 4} className="seed-grpo" />
-        <FlowNode id="seed-optimizer" role="OPTIMIZER" title="GRPO + OPD" detail={zh ? '稀疏结果信号与稠密 hindsight 信号合并更新 policy' : 'sparse outcome signal and dense hindsight signal merge to update the policy'} moreLabel={moreLabel} more={zh ? '两支信号在同一个 optimizer step 合流，一次性写回参数。' : 'Both signals merge inside a single optimizer step and are written back into the parameters.'} tone="signal" active={step === 4} complete={step > 4} className="seed-optimizer" />
-        <FlowNode id="seed-next" role="NEXT POLICY" title="policy θt+1" detail={zh ? '真正保留下来的，是更新后的参数；下一轮直接加载新 checkpoint' : 'what persists is the updated parameter state; the next rollout loads the new checkpoint'} moreLabel={moreLabel} more={zh ? 'θt+1 是下一轮唯一需要加载的状态；部署时不需要永久携带额外 skill prompt。' : 'θt+1 is the only state the next round must load; no permanent skill prompt is carried at deployment.'} tone="persist" active={step === 5} className="seed-next">
-          <div className="irx-parameter-result"><ParameterUpdateFlame label={zh ? '参数更新' : 'parameter update'} /><ParamGrid label={`θt+1 · ${schematic}`} cells={THETA_NEXT} changed={step >= 5 ? THETA_CHANGED : []} tone="persist" className="seed-theta" /></div>
-        </FlowNode>
-        <ConnectorLayer containerRef={sceneRef} edges={edges} ariaLabel={zh ? 'SEED 双上下文重打分、OPD 与 GRPO 合流、参数更新与下一轮回环' : 'SEED dual-context re-scoring, OPD/GRPO merge, parameter update, and next-round feedback loop'} />
+
+      <div className="irx-seed-stage-divider" data-ui-audit="contrast layout">
+        <div>
+          <span>STAGE 2 · SELF-EVOLVING OPD + GRPO</span>
+          <strong>
+            {zh
+              ? "交互合同不换：当前 policy 仍经同一 harness 进入 Princeton WebShop；变化的是 analyzer 来源与被更新的参数"
+              : "The interaction contract stays fixed: the current policy still reaches Princeton WebShop through the same harness; what changes is the analyzer source and the learned parameter state"}
+          </strong>
+        </div>
+        <small>
+          {zh
+            ? "外部 GLM-5.2 已退出；下面逐步追踪一次 Stage 2。"
+            : "External GLM-5.2 is gone; the trace below follows one Stage-2 iteration."}
+        </small>
       </div>
-      <div className="irx-probability-panel" data-active={step === 3} data-ui-audit="contrast layout">
-        <div className="irx-same-action"><span>{zh ? '固定同一批 sampled action tokens' : 'hold the same sampled action tokens fixed'}</span><ChipSequence label={sameAction} tone="signal" tokens={actionTokens} /></div>
-        <ProbBar label="P_plain(action)" value={0.28} display="0.28" tone="env" />
-        <ProbBar label="P_skill(action)" value={0.62} display="0.62" tone="experience" delta="Δ +0.34 → OPD" />
-        <ProbBar label="GRPO advantage" value={0.74} display="0.74" tone="signal" />
-        <small>{zh ? '教学示例概率，只用于解释“同一动作、两个 context、概率变化”；不是论文或本项目实测值。' : 'Illustrative probabilities only, used to explain “same action, two contexts, probability shift”; these are not measured paper/project values.'}</small>
+
+      <div
+        className="irx-seed-responsibility-key"
+        aria-label={
+          zh ? "SEED 责任边界图例" : "SEED responsibility-boundary key"
+        }
+      >
+        <span data-kind="model">
+          <b>MODEL</b>
+          {zh
+            ? "产生 completion / 被训练"
+            : "generates completion / is trained"}
+        </span>
+        <span data-kind="harness">
+          <b>HARNESS</b>
+          {zh ? "组装上下文 / 解析动作" : "builds context / projects action"}
+        </span>
+        <span data-kind="environment">
+          <b>ENVIRONMENT</b>
+          {zh
+            ? "执行动作 / 返回 observation 与 score"
+            : "executes actions / returns observation and score"}
+        </span>
+        <span data-kind="evidence">
+          <b>EVIDENCE</b>
+          {zh ? "episode 完成后固定" : "fixed after episode completion"}
+        </span>
       </div>
+
+      <div
+        className="irx-diagram irx-seed-scene"
+        ref={sceneRef}
+        data-ui-audit="contrast layout"
+      >
+        <FlowNode
+          id="seed-policy"
+          role="CURRENT POLICY · MODEL"
+          title="policy θt"
+          detail={
+            zh
+              ? "这一轮真正产生 completion、也会被 optimizer 更新的 Qwen checkpoint"
+              : "the Qwen checkpoint that generates completions this round and is later updated by the optimizer"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "θt 是 Stage 2 当前 checkpoint。它提供 actor 与 hindsight analyzer 两种能力，但 benchmark interaction contract 本身不属于模型参数。"
+              : "θt is the current Stage-2 checkpoint. It provides both actor and hindsight-analyzer capability, while the benchmark interaction contract itself is not part of the learned model parameters."
+          }
+          tone="state"
+          active={step === 0}
+          complete={step > 0}
+          className="seed-policy"
+        >
+          <ParamGrid
+            label={`θt · ${schematic}`}
+            cells={THETA_T}
+            tone="state"
+            className="seed-theta"
+          />
+        </FlowNode>
+
+        <section
+          className="irx-seed-interaction-contract"
+          data-ui-audit="contrast layout"
+          aria-label={
+            zh
+              ? "Stage 2 WebShop 交互边界"
+              : "Stage 2 WebShop interaction boundary"
+          }
+        >
+          <header>
+            <span>FIXED BENCHMARK INTERACTION CONTRACT</span>
+            <strong>
+              {zh
+                ? "SEED / verl-agent harness ↔ Princeton WebShop"
+                : "SEED / verl-agent harness ↔ Princeton WebShop"}
+            </strong>
+          </header>
+          <div className="irx-seed-interaction-body">
+            <article
+              className="irx-seed-role irx-seed-role-harness"
+              data-flow-id="seed-harness"
+              data-ui-audit-item
+              data-active={step === 0}
+              data-complete={step > 0}
+            >
+              <small>AGENT HARNESS</small>
+              <strong>SEED / verl-agent</strong>
+              <span>
+                prompt · history · available actions · &lt;action&gt; projection
+              </span>
+            </article>
+            <div
+              className="irx-seed-exchange"
+              aria-label={
+                zh
+                  ? "动作与环境反馈通道"
+                  : "Action and environment-feedback channel"
+              }
+            >
+              <span className="irx-seed-exchange-action">
+                <b>search[] / click[]</b>
+                <i aria-hidden="true">→</i>
+              </span>
+              <span className="irx-seed-exchange-return">
+                <i aria-hidden="true">←</i>
+                <b>observation · score</b>
+              </span>
+            </div>
+            <article
+              className="irx-seed-role irx-seed-role-environment"
+              data-flow-id="seed-environment"
+              data-ui-audit-item
+              data-active={step === 0}
+              data-complete={step > 0}
+            >
+              <small>BENCHMARK ENVIRONMENT</small>
+              <strong>Princeton WebShop · WebAgentTextEnv</strong>
+              <span>
+                {zh
+                  ? "执行合法环境动作并改变页面状态"
+                  : "executes environment actions and changes page state"}
+              </span>
+            </article>
+          </div>
+        </section>
+
+        <FlowNode
+          id="seed-trajectory"
+          role="SEALED EPISODE · EVIDENCE"
+          title={
+            zh ? "完整 on-policy trajectory" : "completed on-policy trajectory"
+          }
+          detail={
+            zh
+              ? "observation + executed actions + outcome；动作已经固定"
+              : "observation + executed actions + outcome; sampled actions are now fixed"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "后面的 analyzer、OPD 和 GRPO 都读取这份已经完成的 episode；它们不会回头替换已经执行过的 WebShop action。"
+              : "The analyzer, OPD, and GRPO branches all read this completed episode; none rewrites the WebShop actions that were already executed."
+          }
+          tone="experience"
+          active={step === 1}
+          complete={step > 1}
+          className="seed-trajectory"
+        >
+          <ChipSequence
+            label={sameAction}
+            tone="experience"
+            tokens={actionTokens}
+            className="seed-action-chips"
+          />
+        </FlowNode>
+
+        <FlowNode
+          id="seed-hindsight"
+          role="ANALYZER · SAME MODEL"
+          title="hindsight skill"
+          detail={
+            zh
+              ? "Stage 2 由同一 θt checkpoint 看完整 episode 后自己复盘"
+              : "in Stage 2 the same θt checkpoint analyzes the completed episode itself"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "这里与 Stage 1 的关键差别是 analyzer 来源：外部 GLM-5.2 已经离开；但 analyzer 仍不负责 WebShop 环境转移或 reward 计算。"
+              : "The key change from Stage 1 is analyzer ownership: external GLM-5.2 has left the loop. The analyzer still does not own WebShop transitions or reward calculation."
+          }
+          tone="experience"
+          active={step === 2}
+          complete={step > 2}
+          className="seed-hindsight"
+        />
+        <FlowNode
+          id="seed-plain"
+          role="RE-SCORE · CONTEXT A"
+          title="plain context"
+          detail={`${sameAction} · P_plain`}
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "P_plain 是当前 policy 在普通历史下，对已采样同一 action token 的概率。"
+              : "P_plain is the current policy probability of the already-sampled action tokens under the ordinary history."
+          }
+          tone="env"
+          active={step === 3}
+          complete={step > 3}
+          className="seed-plain"
+        >
+          <ChipSequence
+            label={sameAction}
+            tone="env"
+            tokens={actionTokens}
+            className="seed-action-chips"
+          />
+        </FlowNode>
+        <FlowNode
+          id="seed-skill"
+          role="RE-SCORE · CONTEXT B"
+          title="skill-augmented context"
+          detail={`${sameAction} · P_skill`}
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "只是在 context 中加入 hindsight skill，再给同一 action token 重打分；不是生成一条 teacher 轨迹。"
+              : "The hindsight skill is added only to the context and the same action tokens are re-scored; no teacher trajectory is generated."
+          }
+          tone="experience"
+          active={step === 3}
+          complete={step > 3}
+          className="seed-skill"
+        >
+          <ChipSequence
+            label={sameAction}
+            tone="experience"
+            tokens={actionTokens}
+            className="seed-action-chips"
+          />
+        </FlowNode>
+        <FlowNode
+          id="seed-opd"
+          role="DENSE LEARNING SIGNAL"
+          title="OPD"
+          detail={
+            zh
+              ? "P_skill − P_plain 的行为偏移 → token-level distillation signal"
+              : "P_skill − P_plain behavioral shift → token-level distillation signal"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "OPD 属于训练信号层，不是环境 reward，也不是额外记忆。"
+              : "OPD belongs to the learning-signal layer; it is neither environment reward nor external memory."
+          }
+          tone="signal"
+          active={step === 4}
+          complete={step > 4}
+          className="seed-opd"
+        />
+        <FlowNode
+          id="seed-grpo"
+          role="OUTCOME RL SIGNAL"
+          title="GRPO"
+          detail={
+            zh
+              ? "读取同一 episode 的 environment outcome / group-relative advantage"
+              : "uses the same episode’s environment outcome / group-relative advantage"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "WebShop score 来自 benchmark environment；GRPO 把 outcome 变成 RL 优势信号。两者不是同一个职责层。"
+              : "The WebShop score comes from the benchmark environment; GRPO converts outcome into an RL advantage signal. They are distinct responsibility layers."
+          }
+          tone="signal"
+          active={step === 4}
+          complete={step > 4}
+          className="seed-grpo"
+        />
+        <FlowNode
+          id="seed-optimizer"
+          role="TRAINING UPDATE"
+          title="GRPO + OPD"
+          detail={
+            zh
+              ? "两支训练信号合流，更新的对象是 policy 参数"
+              : "the two learning signals merge; the object being updated is the policy parameter state"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "Harness、Princeton WebShop 环境和已经完成的 trajectory 都不会在这个 optimizer step 里被改写。"
+              : "The harness, Princeton WebShop environment, and completed trajectory are not rewritten by this optimizer step."
+          }
+          tone="signal"
+          active={step === 4}
+          complete={step > 4}
+          className="seed-optimizer"
+        />
+        <FlowNode
+          id="seed-next"
+          role="PERSISTED MODEL STATE"
+          title="policy θt+1"
+          detail={
+            zh
+              ? "真正跨轮保留的是更新后的 checkpoint；下一轮继续通过同一 interaction contract 做题"
+              : "what persists across rounds is the updated checkpoint; the next round uses the same interaction contract"
+          }
+          moreLabel={moreLabel}
+          more={
+            zh
+              ? "部署时只需要更新后的 policy 配合 benchmark / serving harness；不需要 GLM-5.2、hindsight analyzer prompt 或持久 skill bank。"
+              : "Deployment uses the updated policy with the benchmark/serving harness; it does not need GLM-5.2, the hindsight-analyzer prompt, or a persistent skill bank."
+          }
+          tone="persist"
+          active={step === 5}
+          className="seed-next"
+        >
+          <div className="irx-parameter-result">
+            <ParameterUpdateFlame
+              label={zh ? "参数更新" : "parameter update"}
+            />
+            <ParamGrid
+              label={`θt+1 · ${schematic}`}
+              cells={THETA_NEXT}
+              changed={step >= 5 ? THETA_CHANGED : []}
+              tone="persist"
+              className="seed-theta"
+            />
+          </div>
+        </FlowNode>
+        <ConnectorLayer
+          containerRef={sceneRef}
+          edges={edges}
+          ariaLabel={
+            zh
+              ? "SEED：policy 经 harness 与 Princeton WebShop 交互，episode 再进入 hindsight、OPD、GRPO 与参数更新"
+              : "SEED: the policy interacts with Princeton WebShop through the harness; the completed episode then feeds hindsight, OPD, GRPO, and the parameter update"
+          }
+        />
+      </div>
+
+      <div
+        className="irx-probability-panel"
+        data-active={step === 3}
+        data-ui-audit="contrast layout"
+      >
+        <div className="irx-same-action">
+          <span>
+            {zh
+              ? "固定同一批 sampled action tokens"
+              : "hold the same sampled action tokens fixed"}
+          </span>
+          <ChipSequence
+            label={sameAction}
+            tone="signal"
+            tokens={actionTokens}
+          />
+        </div>
+        <ProbBar
+          label="P_plain(action)"
+          value={0.28}
+          display="0.28"
+          tone="env"
+        />
+        <ProbBar
+          label="P_skill(action)"
+          value={0.62}
+          display="0.62"
+          tone="experience"
+          delta="Δ +0.34 → OPD"
+        />
+        <ProbBar
+          label="GRPO advantage"
+          value={0.74}
+          display="0.74"
+          tone="signal"
+        />
+        <small>
+          {zh
+            ? "教学示例概率，只用于解释“同一动作、两个 context、概率变化”；不是论文或本项目实测值。"
+            : "Illustrative probabilities only, used to explain “same action, two contexts, probability shift”; these are not measured paper/project values."}
+        </small>
+      </div>
+
       <aside className="irx-inference-strip" data-ui-audit="contrast layout">
-        <div><small>TRAINING</small><strong>{zh ? 'Stage 1：GLM-5.2 → hindsight SFT；Stage 2：self-hindsight + OPD + GRPO → 更新 policy' : 'Stage 1: GLM-5.2 → hindsight SFT; Stage 2: self-hindsight + OPD + GRPO → update policy'}</strong></div>
-        <div><small>TEST / INFERENCE</small><strong>{zh ? '更新后的 policy → WebShop' : 'updated policy → WebShop'}</strong></div>
+        <div>
+          <small>TRAINING</small>
+          <strong>
+            {zh
+              ? "Stage 1：Qwen → SEED/verl-agent harness ↔ Princeton WebShop → trajectory → GLM-5.2 → SFT；Stage 2：θt → 同一 harness ↔ WebShop → self-hindsight + OPD + GRPO → θt+1"
+              : "Stage 1: Qwen → SEED/verl-agent harness ↔ Princeton WebShop → trajectory → GLM-5.2 → SFT; Stage 2: θt → same harness ↔ WebShop → self-hindsight + OPD + GRPO → θt+1"}
+          </strong>
+        </div>
+        <div>
+          <small>TEST / INFERENCE</small>
+          <strong>
+            {zh
+              ? "更新后的 policy → serving / benchmark harness → WebShop；GLM-5.2 与 hindsight skill 不进入部署路径"
+              : "updated policy → serving / benchmark harness → WebShop; GLM-5.2 and hindsight skills are absent from deployment"}
+          </strong>
+        </div>
       </aside>
     </>
   );
