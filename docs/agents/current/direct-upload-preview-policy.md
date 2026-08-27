@@ -1,6 +1,6 @@
 # Cloudflare Direct Upload preview policy — fallback / Cloudflare-specific path
 
-Last reviewed: **2026-08-12 16:44 +08:00**
+Last reviewed: **2026-08-27**
 Status: **Supported fallback only. Vercel owns ordinary Preview and Production.**
 
 ## Authority
@@ -12,7 +12,7 @@ Cloudflare Pages -> frozen legacy rollback
 Cloudflare Direct Upload -> fallback / Cloudflare-specific Preview
 ```
 
-For normal deployment behavior read `../LATEST.md`, `hosting-architecture.md`, `vercel-preview-migration-plan.md`, and `deployment-policy.md` first.
+For normal deployment behavior read `../LATEST.md`, `hosting-architecture.md`, `deployment-policy.md`, and `release-closeout-protocol.md`. The old Vercel pilot/migration documents are historical adoption evidence, not current operating policy.
 
 ## When to use Direct Upload
 

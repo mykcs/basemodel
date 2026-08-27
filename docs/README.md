@@ -20,19 +20,21 @@ docs/
 ├─ agents/
 │  ├─ README.md                      task router and precedence
 │  ├─ LATEST.md                      current handoff
-│  ├─ current/                       authoritative current policies/runbooks/maps
-│  └─ history/                       reusable incidents, migrations and retrospectives
+│  ├─ current/                       authoritative current owners + explicit compatibility shims
+│  └─ history/                       incidents, completed audits/pilots/migrations/closeouts
 ├─ agent-context/                    compatibility entrypoint for older links
-└─ archive/                          superseded product snapshots and pre-current context
+└─ archive/                          superseded pre-current product/context snapshots
 ```
 
 ### `agents/current/`
 
-Put a document here only when it is an authoritative rule, runbook, map, or state owner that a new Agent should act on today. If an owner already exists, update it instead of creating another overlapping policy.
+Put a document here only when it is an authoritative rule, runbook, map, maintained current inventory/state owner, or an explicitly documented fixed-path compatibility shim required by executable repository consumers. If an owner already exists, update it instead of creating another overlapping policy.
+
+A date in a filename does not by itself make a file historical. Ask whether the file owns behavior today and whether source/tests actively consume it.
 
 ### `agents/history/`
 
-Use for a dated incident, migration, retrospective, or superseded Agent-facing case whose rationale is still likely to help future work. History explains **why**; it does not override current policy.
+Use for a dated incident, completed audit, pilot, migration/adoption record, retrospective, or superseded Agent-facing state whose rationale is still likely to help future work. History explains **why**; it does not override current policy.
 
 ### `archive/`
 
@@ -40,11 +42,19 @@ Use for old product milestones, one-off plans, and context from before the curre
 
 `agent-context/` remains only as a compatibility entrypoint so older repository links do not send readers directly into stale instructions.
 
-### Root V2 matrix compatibility file
+## Fixed-path compatibility exceptions
 
-`V2_PRODUCT_COMPLETION_MATRIX.md` is an intentional fixed-path compatibility mirror of [`archive/V2_PRODUCT_COMPLETION_MATRIX.md`](archive/V2_PRODUCT_COMPLETION_MATRIX.md). The repository's executable `scripts/audit-v2-completion.ts` still reads the root path, so deleting or moving that copy would break `verify:deploy`.
+Compatibility files are allowed only when moving the path would otherwise break executable repository behavior. They must say plainly that they are not the current semantic owner.
 
-Treat the matrix as a historical V2 acceptance artifact, **not** as current product/deployment authority. Keep the two copies byte-identical for as long as the executable audit retains the legacy path; if that audit is deliberately migrated later, remove the compatibility copy in the same change.
+### V2 matrix
+
+`V2_PRODUCT_COMPLETION_MATRIX.md` mirrors [`archive/V2_PRODUCT_COMPLETION_MATRIX.md`](archive/V2_PRODUCT_COMPLETION_MATRIX.md) because `scripts/audit-v2-completion.ts` still reads the root path. Treat it as a historical V2 acceptance artifact. Keep the two copies byte-identical until that executable consumer is deliberately migrated; then remove the compatibility copy in the same change.
+
+### Vercel migration-plan path
+
+`agents/current/vercel-preview-migration-plan.md` is a small compatibility shim because current tests still read that historical filename for a few deployment/security invariant strings. The completed Vercel adoption record lives at [`agents/history/2026-08-12-vercel-preview-production-adoption.md`](agents/history/2026-08-12-vercel-preview-production-adoption.md).
+
+The shim is **not** deployment authority. Current behavior is owned by [`agents/current/hosting-architecture.md`](agents/current/hosting-architecture.md), [`agents/current/deployment-policy.md`](agents/current/deployment-policy.md), and executable provider configuration/tests. If the tests are deliberately migrated away from the old path later, delete the shim in the same change.
 
 ## Documentation lifecycle
 
@@ -52,11 +62,11 @@ When work produces reusable knowledge:
 
 - current cross-task rule → update the existing owner in `agents/current/`;
 - short-lived live status → update `agents/LATEST.md` in place;
-- reusable failure/recovery case → `agents/history/`;
-- superseded milestone/plan/context snapshot → `archive/`;
+- reusable failure/recovery case or completed Agent-facing audit/migration → `agents/history/`;
+- superseded pre-current milestone/plan/context snapshot → `archive/`;
 - task-local scratch notes → do not commit them as durable documentation.
 
-Do not create a second current document merely to reconcile disagreement. Resolve the disagreement against executable/live truth, then update the stale owner.
+Do not create a second current document merely to reconcile disagreement. Resolve the disagreement against executable/live truth, then update or demote the stale owner.
 
 ## Authority
 
@@ -64,8 +74,9 @@ Do not create a second current document merely to reconcile disagreement. Resolv
 current user instruction
 > live provider state for provider-side claims
 > executable repository / experiment truth
-> docs/agents/current/*
+> docs/agents/current/* semantic owners
 > docs/agents/LATEST.md
+> compatibility shims (only for their fixed-path contract)
 > docs/agents/history/* and docs/archive/*
 ```
 
