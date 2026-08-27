@@ -51,4 +51,40 @@ const scenarioCards = [
     <p class="muted">{m.v2.home.scenariosNote}</p>
     <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
   </details>
+
+  <nav class="home-maintenance-shortcuts" aria-label={locale === 'zh' ? '站点维护入口' : 'Site maintenance'}>
+    <span>{locale === 'zh' ? '维护' : 'Maintenance'}</span>
+    <a href="https://github.com/mykcs/basemodel" target="_blank" rel="noreferrer">{locale === 'zh' ? 'GitHub 仓库' : 'GitHub repository'} ↗</a>
+    <span aria-hidden="true">·</span>
+    <a href="https://vercel.com/wangrui92-team/basemodel-preview/settings" target="_blank" rel="noreferrer">{locale === 'zh' ? 'Vercel 设置' : 'Vercel settings'} ↗</a>
+  </nav>
 </div>
+
+<style>
+  .home-maintenance-shortcuts {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin: 2.5rem 0 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .home-maintenance-shortcuts span {
+    opacity: 0.42;
+  }
+
+  .home-maintenance-shortcuts a {
+    color: inherit;
+    opacity: 0.5;
+    padding: 0.35rem 0.45rem;
+    text-underline-offset: 0.2em;
+    transition: opacity 140ms ease;
+  }
+
+  .home-maintenance-shortcuts a:hover,
+  .home-maintenance-shortcuts a:focus-visible {
+    opacity: 1;
+  }
+</style>
