@@ -59,6 +59,17 @@ console.log(
     : `[vercel-ui-gate] running exact-preview Chromium acceptance for ${branch}`,
 );
 
+// Vercel's current Hobby build machine exposes 2 CPU cores. The suite is
+// fully parallel-safe at the Playwright level, so use at most those 2 workers
+// instead of forcing the hosted run through the generic CI default of 1.
+// PLAYWRIGHT_WORKERS remains an escape hatch for provider/runtime changes.
+const hostedPlaywrightEnv = {
+  CI: '1',
+  PLAYWRIGHT_REUSE_BUILD: '1',
+  PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? '2',
+};
+console.log(`[vercel-ui-gate] Playwright workers: ${hostedPlaywrightEnv.PLAYWRIGHT_WORKERS}`);
+
 // Vercel's build image is Amazon Linux 2023. Playwright's Linux dependency
 // installer assumes Ubuntu/apt, so install the equivalent AL2023 Chromium
 // runtime libraries explicitly with Vercel's supported dnf package manager.
@@ -109,10 +120,7 @@ if (resultsOverflowOnly) {
   run('npx', [
     'playwright', 'test', 'tests/e2e/results-mobile-overflow.spec.ts',
     '--project=chromium', '--max-failures=1',
-  ], {
-    CI: '1',
-    PLAYWRIGHT_REUSE_BUILD: '1',
-  });
+  ], hostedPlaywrightEnv);
 } else if (fairComparisonExplainerOnly) {
   // This branch changes a bilingual research explanation, responsive layout,
   // motion, details disclosure, and checkpoint timeline. Exercise that exact
@@ -121,10 +129,7 @@ if (resultsOverflowOnly) {
   run('npx', [
     'playwright', 'test', 'tests/e2e/fair-comparison-eli5.spec.ts',
     '--project=chromium', '--max-failures=1',
-  ], {
-    CI: '1',
-    PLAYWRIGHT_REUSE_BUILD: '1',
-  });
+  ], hostedPlaywrightEnv);
 } else if (focusedOnly) {
   // Fix branches need an exact regression for the bug class they are changing.
   // Keep this focused so an unrelated stale explainer-ownership assertion cannot
@@ -133,15 +138,9 @@ if (resultsOverflowOnly) {
   run('npx', [
     'playwright', 'test', 'tests/e2e/webshop-training-theme.spec.ts',
     '--project=chromium', '--max-failures=1',
-  ], {
-    CI: '1',
-    PLAYWRIGHT_REUSE_BUILD: '1',
-  });
+  ], hostedPlaywrightEnv);
 } else {
-  run('npm', ['run', 'test:ui'], {
-    CI: '1',
-    PLAYWRIGHT_REUSE_BUILD: '1',
-  });
+  run('npm', ['run', 'test:ui'], hostedPlaywrightEnv);
 }
 
 console.log('[vercel-ui-gate] PASS');
