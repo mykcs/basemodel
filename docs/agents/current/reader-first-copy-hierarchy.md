@@ -58,6 +58,8 @@ A heuristic or prior expectation may motivate a hypothesis. Direct evidence stil
 
 Prefer natural human wording when the number is only encoding an ordinary state. In Chinese reader-facing prose, say `我们一步都没训练，BASE 就已经……` rather than `0 个 OpenEvo adapter 训练步即可看到……`. Keep the exact `0`, raw field such as `adapter_loaded=false`, or other machine-style quantity in the evidence/technical layer when it matters for audit. Do not make readers translate database-like counts back into normal language themselves.
 
+When responsibility is established, **name the responsible layer directly before discussing excluded alternatives**. Prefer `责任在我们的实验集成层：……` over opening with `不能归给 SD-LoRA……` when the reader has not yet been given a reason to care about SD-LoRA. A reader should not have to infer ownership by watching the article clear a series of suspects. Explain the trigger separately from the responsibility: a model may trigger an interface edge case while the experiment harness is responsible for letting a known edge case invalidate formal measurement.
+
 ## 4. Visual weight must match semantic importance
 
 Use the normal/high-contrast text color for the main scientific statement and conclusion.
@@ -115,10 +117,11 @@ Before merging visible copy, verify:
 1. Does the first sentence enter the subject rather than describe the page?
 2. Does each heading name a concrete subject, comparison, result, or anomaly?
 3. Are the key conclusion and decision-relevant numbers visible before the long explanation?
-4. Is a decisive causal sentence normal/high contrast or intentionally emphasized rather than gray?
-5. Is muted text limited to genuinely secondary information?
-6. Are `先 / 再 / 最后` used for real sequence rather than editorial choreography?
-7. Could a reader ignore run IDs and still understand the scientific argument?
-8. Are direct evidence and exact artifact lineage stronger than heuristics or narrative convenience?
-9. Are Chinese and English equivalent in meaning and information hierarchy?
-10. Do the copy regression tests and deploy verification pass?
+4. If responsibility is known, does the copy name the responsible layer directly rather than begin by clearing unfamiliar alternatives?
+5. Is a decisive causal sentence normal/high contrast or intentionally emphasized rather than gray?
+6. Is muted text limited to genuinely secondary information?
+7. Are `先 / 再 / 最后` used for real sequence rather than editorial choreography?
+8. Could a reader ignore run IDs and still understand the scientific argument?
+9. Are direct evidence and exact artifact lineage stronger than heuristics or narrative convenience?
+10. Are Chinese and English equivalent in meaning and information hierarchy?
+11. Do the copy regression tests and deploy verification pass?
