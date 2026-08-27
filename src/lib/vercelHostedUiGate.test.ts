@@ -8,6 +8,7 @@ describe('Vercel hosted UI gate planner', () => {
     expect(pageFileToRoute('src/pages/research/seed-openevo/results.astro')).toBe('/research/seed-openevo/results/');
     expect(pageFileToRoute('src/pages/en/research/seed-openevo/results.astro')).toBe('/en/research/seed-openevo/results/');
     expect(pageFileToRoute('src/pages/models/[slug].astro')).toBeUndefined();
+    expect(pageFileToRoute('src/pages/_bodies/home-v2.astro')).toBeUndefined();
   });
 
   it('keeps a metadata-only Results release on exact changed-route coverage', () => {
@@ -37,6 +38,13 @@ describe('Vercel hosted UI gate planner', () => {
     const plan = planHostedUi(['src/lib/some-local-helper.ts']);
     expect(plan.risk).toBe('local');
     expect(plan.mode).toBe('full');
+  });
+
+  it('fails closed instead of inventing a public route for an internal page module', () => {
+    const plan = planHostedUi(['src/pages/_bodies/home-v2.astro']);
+    expect(plan.risk).toBe('local');
+    expect(plan.mode).toBe('full');
+    expect(plan.routes).toEqual([]);
   });
 
   it('uses representative safety coverage for content-only changes', () => {
