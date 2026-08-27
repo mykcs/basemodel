@@ -96,7 +96,7 @@ Rules:
 5. When several already-accepted PRs belong to one release window, one explicit integration/release head plus one merge to `main` may be used if authorship, review, rollback and ownership remain clear. Do not combine unrelated or unaccepted work only to reduce build count.
 6. Batch evidence-driven Preview fixes. The normal budget is one initial Preview plus at most one corrective Preview; more pushes require a concrete reason such as a newly discovered Gate failure, exact-head synchronization conflict or real browser finding.
 7. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
-8. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
+8. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them on PR, `main` and Production as well as ordinary branch Previews. The Vercel environment/ref class does not override a proven docs-only diff. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
 9. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
 10. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
 
@@ -134,7 +134,7 @@ latest intended base
 - `github.autoJobCancelation: true` keeps the newest same-branch job authoritative;
 - `ignoreCommand: node scripts/vercel-ignore-build.mjs` decides whether a build is needed.
 
-The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so multi-commit pushes and accumulated docs-only changes are classified against the previous successful deployment, rather than only looking at `HEAD^..HEAD`. It skips only when no deploy-relevant path changed. Missing Git history, an invalid range, or any uncertainty **fails open** and runs the build.
+The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so multi-commit pushes and accumulated docs-only changes are classified against the previous successful deployment, rather than only looking at `HEAD^..HEAD`. The same path decision applies to ordinary branch Previews, PRs, `main` and Production: when the proven range contains no deploy-relevant path, the command exits `0` and Vercel ignores the build. Missing Git history, an invalid range, or any uncertainty **fails open** and runs the build. An ignored trigger may still appear as an ignored/skipped deployment record; the guarantee here is that Vercel does not execute the site build for a proven docs/Agent-only range.
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
