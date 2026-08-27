@@ -57,10 +57,11 @@ Completed Vercel pilot/adoption records live under `docs/agents/history/`; they 
 1. Read `deployment-policy.md` and separate **subscription invoice**, **included credit**, **usage meters**, **provider payment state**, and **bank/card final settlement**. Never collapse them into one `$20`-style story.
 2. Use current first-party Vercel documentation plus live provider state. A still-working site can coexist with payment retry/grace; it does not prove the invoice is paid or suspension is impossible.
 3. Attribute usage by **project and service** with explicit date ranges before changing architecture. Treat usage/effective-cost output as attribution evidence, not automatically as the invoice amount due.
-4. Inspect representative deployment logs and project resource configuration. Build spend should be traced to build count, machine selection, and expensive phases; traffic spend should be traced to requests/transfer/functions before blaming bots.
-5. Do not infer invoice settlement from a small/pending bank authorization. If duplicate payment is suspected, compare the provider receipt/invoice with the bank's final posted/reversed state. Never persist card digits, bank messages, payment URLs, or tokens.
-6. Optimize the measured cost center first and prefer reversible/free controls. Keep scope uncertainty fail-closed; do not delete quality gates or enable paid bot analysis merely because it sounds protective.
-7. After mutations, read provider state back and verify the real Production artifact. Re-measure a later representative window because the migration release itself may be expensive.
+4. Before the first provider-triggering write, refresh `main` and inspect recent/open PRs that touch the same provider/config/gate surface. If another Agent already shipped part of the optimization, preserve it and add only the missing delta instead of paying for a duplicate Preview.
+5. Inspect representative deployment logs and project resource configuration. Build spend should be traced to build count, machine selection, and expensive phases; traffic spend should be traced to requests/transfer/functions before blaming bots.
+6. Do not infer invoice settlement from a small/pending bank authorization. If duplicate payment is suspected, compare the provider receipt/invoice with the bank's final posted/reversed state. Never persist card digits, bank messages, payment URLs, or tokens.
+7. Optimize the measured cost center first and prefer reversible/free controls. Keep scope uncertainty fail-closed; do not delete quality gates or enable paid bot analysis merely because it sounds protective.
+8. After mutations, read provider state back and verify the real Production artifact. Re-measure a later representative window because the migration release itself may be expensive.
 
 Historical case and friction record: [`../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md).
 

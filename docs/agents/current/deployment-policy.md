@@ -88,6 +88,8 @@ The 2026-08-27 billing audit showed that BaseModel Build CPU, not public traffic
 
 These controls reduce future consumption only; they do not erase Build CPU already accumulated in the billing period.
 
+Historical diagnosis, parallel-Agent friction, Preview-auth verification, shell/editing noise, and migration-build evidence are recorded in [`../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). Use that file for rationale; this document remains the current behavior owner.
+
 ## Vercel build-budget discipline
 
 Vercel deployments/builds are finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.
