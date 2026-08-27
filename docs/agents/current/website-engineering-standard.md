@@ -75,6 +75,19 @@ Additional rules:
 - Keep D3/ECharts or other heavy engines behind visibility/interaction boundaries when practical.
 - Do not introduce SSR/functions merely to solve browser URL/local-state behavior unless that is an explicit architecture decision.
 
+### User-provided and brand assets are implementation inputs, not automatic generation requests
+
+When a user supplies a screenshot, logo, icon, or visual reference and asks to use that identity in the website, treat it first as **repository/UI asset work**, not as an instruction to synthesize new media.
+
+- Do not generate, redraw, or restyle the visual unless the user explicitly asks to create or edit media.
+- Distinguish **exact supplied pixels** from **recognizable brand/entity identity**. If exact pixels matter, use the supplied binary through a binary-safe path and verify file type, dimensions, and hash when identity matters.
+- For a named model/provider/brand, prefer a first-party official asset over an invented pictogram when one exists. Pin immutable upstream content or vendor the asset according to current repository policy.
+- Do not move binary UI assets through ad-hoc hand-assembled base64/shell text paths when a binary-safe repository/file route exists.
+- Verify the actual rendered mark in the real component and representative themes/viewports. An “official” filename or upstream source is provenance evidence, not visual acceptance by itself.
+- If a supplied reference and the available first-party asset differ materially, surface that discrepancy rather than silently choosing one.
+
+Historical case: [`../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md).
+
 ## 4. SSR-visible controls must preserve the user's first interaction
 
 Visibility and hydration are different states. An Astro/React control can be visible in SSR HTML while its client handler is not attached yet.
