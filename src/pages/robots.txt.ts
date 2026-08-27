@@ -12,7 +12,7 @@ export const GET: APIRoute = ({ site }) => {
   const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
 
   if (shouldNoIndex) {
-    return new Response('User-agent: *\nAllow: /\n', {
+    return new Response('User-agent: *\nDisallow: /\n', {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }

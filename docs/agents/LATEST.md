@@ -10,18 +10,18 @@ This file is a short current-state router. Detailed policy belongs under `docs/a
 
 ```text
 GitHub `mykcs/basemodel`          = website source of truth
-deployment-eligible non-main PR  -> Vercel Preview
+deployment-eligible non-main PR + exact-head `[vercel-preview]` -> Vercel Preview build
 main                              -> Vercel Production
 Production                        -> https://basemodel-preview.vercel.app
 
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Vercel remains the ordinary deployment provider. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
+Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Preview build spend is a second explicit gate: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the exact-head Preview commit message, so eligible intermediate pushes are ignored before the site build; `main` Production is unaffected. Vercel remains the ordinary deployment provider. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Cloudflare material is legacy rollback/provider-specific tooling only and stays outside ordinary deployment reporting.
 
-The hosted Vercel Chromium layer is now **risk-aware on Production**: shared/global UI or uncertain Git-range changes fail closed to the complete matrix, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. Hosted Playwright parallelism is bounded by the actual Vercel build CPU count: the gate uses half of the visible CPUs, capped at four workers, so a 2-core Hobby runner stays serial while larger Pro builders can use their extra capacity.
+The hosted Vercel Chromium layer is now **risk-aware on Production**: unknown shared/global UI or uncertain Git-range changes fail closed to the complete matrix, the known SEED/OpenEvo explainer ownership runs its dedicated responsive/geometry/theme/safety regressions, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. Hosted Playwright parallelism is bounded by the actual Vercel build CPU count: the gate uses half of the visible CPUs, capped at four workers, so a 2-core Hobby runner stays serial while larger Pro builders can use their extra capacity.
 
 ## Current research state
 

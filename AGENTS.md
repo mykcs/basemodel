@@ -67,7 +67,7 @@ Preserve Learn / Run / Compare as distinct entry modes. Keep ALFWorld success-ra
 ```text
 GitHub = source of truth
 
-non-main branch / PR
+deployment-eligible non-main branch / PR + exact-head `[vercel-preview]`
   -> Vercel project `basemodel-preview`
   -> npm run verify:deploy
   -> npm run build
@@ -81,6 +81,8 @@ main
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
 GitHub Actions and GitHub Pages remain intentionally retired. Astro/React remain the application stack; do not rewrite them merely because deployment ownership changed.
+
+Eligible Preview branches are **opt-in at the exact head**: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the Preview commit message before provider build compute is spent. Omit the token on intermediate pushes. Production on `main` remains automatic and does not require the token.
 
 ## Repository map
 
@@ -129,7 +131,8 @@ read LATEST + current policy
 -> classify independent, stacked, superseded and semantically conflicting work
 -> finish one coherent change or one explicit integration/release head before the first provider-triggering push
 -> publish one atomic multi-file branch update when possible
--> let Vercel create the exact-head non-main Preview
+-> add `[vercel-preview]` only to the exact head that intentionally needs hosted acceptance
+-> let Vercel create that exact-head non-main Preview
 -> verify build logs and inspect real Preview route(s)
 -> batch evidence-driven fixes into at most one normal corrective push
 -> synchronize with current main only when materially required
@@ -157,6 +160,7 @@ one branch / integration PR
 ```
 
 Do not push every typo, file write, speculative experiment or intermediate thought. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes.
+On deployment-eligible Preview branches, omit `[vercel-preview]` from intermediate commits and add it only when the exact head is ready for hosted acceptance; the ignored-build step then prevents those intermediate triggers from entering `verify:deploy`, build, and Playwright.
 
 Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
 
