@@ -41,7 +41,8 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(wrapperAttribution).toContain('我们一步都没训练，BASE 就已经写出了 [action]');
     expect(wrapperAttribution).not.toContain('0 个 OpenEvo adapter 训练步即可看到');
     expect(wrapperAttribution).not.toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
-    expect(wrapperAttribution).toContain('raw_completion 仍然出现 [action] search[...]');
+    expect(wrapperAttribution).toContain('adapter_loaded=false');
+    expect(wrapperAttribution).toContain('step 0 写出 [action] search[...]');
     expect(wrapperAttribution).toContain('这次事故留下的经验');
     expect(wrapperAttribution).toContain('对模型训练');
     expect(wrapperAttribution).toContain('任务分数、command 是否合法、wrapper 是否合规分开记录');
