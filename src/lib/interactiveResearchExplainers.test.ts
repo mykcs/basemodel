@@ -109,6 +109,9 @@ describe('interactive research explainers', () => {
     for (const term of ['STAGE 1 · HINDSIGHT-SKILL SFT', 'EXTERNAL TEACHER', 'GLM-5.2', '180 tasks × 8 rollouts', '1,440 completed trajectories', '3-epoch SFT', 'not the WebShop reward scorer', 'STAGE 2 · SELF-EVOLVING OPD + GRPO']) expect(explainer).toContain(term);
     for (const term of ['hold the same sampled action tokens fixed', 'P_plain(action)', 'P_skill(action)', 'plain context', 'skill-augmented context', 'OPD', 'GRPO', 'GRPO + OPD', 'policy θt+1', 'next-loop']) expect(explainer).toContain(term);
     expect(explainer).toContain('Illustrative probabilities only');
+    expect(explainer).toContain('raw.githubusercontent.com/zai-org/GLM-5/414ad9eb891b05b5d7d51d573939bfe9ce538223/resources/logo.svg');
+    expect(explainer).not.toContain('/assets/research/glm-5.2-z-icon.png');
+    expect(explainer).not.toContain('<svg viewBox=\"0 0 32 32\"');
     expect(explainer).toContain('same checkpoint');
     expect(explainer).toContain('ParameterUpdateFlame');
     expect(explainer).toContain('参数更新');
