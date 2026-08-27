@@ -8,7 +8,7 @@ Read it together with `seed-openevo-results-reader-contract.md`. Where the older
 
 Source-faithful Track A is now scientifically closed as a **valid paired measurement that does not establish a stable improvement**.
 
-The latest immutable closeout snapshot used by Results is `mykcs/openevo-experiment@f80ae1816384bb7e8e82d193b22644e17f561f19`. A freshness check through `mykcs/openevo-experiment/main@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d` shows later work has moved program routing to WB1 Track B; it does not supersede the Track A closeout numbers below.
+The immutable scientific closeout snapshot is `mykcs/openevo-experiment@f80ae1816384bb7e8e82d193b22644e17f561f19`. A later read-only wrapper audit landed at `mykcs/openevo-experiment@e1229db492504bc9f7b795ca0a5184d5e1cadf1a`; it adds parser-attribution evidence without changing any Track A score.
 
 **128/128 runtime semantic validation PASS.** The corrected source-faithful panel lineage is:
 
@@ -33,9 +33,37 @@ The Task Score interval crosses zero. Therefore the correct interpretation is:
 
 Do not promote this to a stable OpenEvo win.
 
+## Formal Track A wrapper audit
+
+The completed Track A raw evidence now has a deterministic wrapper audit over all **256 episodes / 3,672 model-action steps**:
+
+- strict `<action>` parse: **300** steps;
+- recovered through the identical frozen v3 action-command compatibility projection: **3,253** steps;
+- unrecoverable and therefore fail-closed as invalid environment actions: **119** steps;
+- BASE unrecoverable fail-closed steps: **77**;
+- SD-LoRA unrecoverable fail-closed steps: **42**;
+- those 119 steps exactly equal the saved `invalid_action_steps` and environment-invalid-step totals;
+- unknown / `other_repairable_surface` wrapper category: **0**;
+- formal invalid episodes: **0/256**;
+- Track A closeout `parser_invalid_total=0`.
+
+The correct interpretation is:
+
+> **wrapper drift persisted; fail-closed agent action failure and measurement invalidity are distinct events.**
+
+Do not say every malformed wrapper was repaired. Some completions remained unrecoverable and were correctly left as invalid agent actions. What the audit establishes is that they were **not silently substituted with a legal shopping action** and did not turn the formal 256-episode measurement into parser-invalid evidence.
+
+The machine-readable authority is:
+
+- `docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.json`
+- `docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.md`
+- `scripts/openevo_webshop/audit_seedcmp_wrapper_drift.py`
+
+at immutable `mykcs/openevo-experiment@e1229db492504bc9f7b795ca0a5184d5e1cadf1a`.
+
 ## Artifact publication and provenance
 
-Track A artifact publication is now `PUBLISHED_AND_VERIFIED`.
+Track A artifact publication is `PUBLISHED_AND_VERIFIED`.
 
 The closeout records:
 
@@ -57,9 +85,9 @@ Allowed visible summary:
 
 > The corrected source-faithful 128-task panel passed 128/128 runtime semantic validation and the paired BASE-vs-frozen-SD measurement is complete. BASE scored 7.17 / 3.9% exact success; SD-LoRA scored 8.74 / 3.9%. The paired Task Score difference is +1.57 with 95% CI [-3.21,+6.31], so the result does not establish a stable improvement.
 
-Allowed technical summary:
+Allowed technical wrapper summary:
 
-> Track A: semantic validation 128/128 PASS; 256/256 valid paired episodes; parser-invalid=0; artifact evidence PUBLISHED_AND_VERIFIED; interpretation=measurement-not-proven-stable-improvement; governance ordering exception preserved.
+> Track A raw audit: 3,672 model-action steps = 300 strict + 3,253 recovered + 119 unrecoverable fail-closed; the 119 align exactly with recorded invalid-action/environment-invalid steps; formal invalid episodes=0/256 and closeout parser-invalid=0.
 
 ## What Results must not say
 
@@ -71,6 +99,8 @@ Do not say:
 - the source-faithful first-validation 128 tasks are the paper-final exact 128 behind 89.7 / 78.1%;
 - the SEED paper checkpoint or paper-reported 89.7 / 78.1 numbers were locally reproduced;
 - GitHub `main` had launch authority before the first Track A formal episode;
+- every malformed wrapper was repaired;
+- the model has stopped producing wrapper drift;
 - the historical repaired PRIMARY-v2 result has changed.
 
 ## Historical repaired PRIMARY-v2 remains unchanged
@@ -87,29 +117,43 @@ Track A is a newer and more source-faithful task-semantic measurement, not a rew
 
 ## Current Track B / WB1 state
 
-The latest program router at `mykcs/openevo-experiment@17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d` is now WB1 Track B.
+The latest publication authority is `mykcs/openevo-experiment@b892d8123cdb4737d7971f84db6e7c1bcc77c6ab`.
+
+The prior read-only reconciliation classification was `GEN28_COMPLETE_STATE_BARRIER_MISSING`. Amendment 006 has now moved the router to:
+
+> **`GEN28_STATE_REPAIR_AUTHORIZED_INPUT_SEAL_PENDING`**
 
 Current authority reports:
 
 - campaign `20260821-2341-wb1-seed-aligned-webshop-benchmark`;
 - track `Track B - Fair Matched Benchmark`;
-- classification `GEN28_COMPLETE_STATE_BARRIER_MISSING`;
 - Gen28 episode completion `128/128-valid-exit-0`;
 - Gen28 exact successes `2`;
 - Gen28 mean Task Score×100 `2.8646`;
-- `state-v28` does not exist;
+- `state-v28` still does **not** exist;
 - latest adoptable native state remains `state-v27`;
+- counted experience remains **3,456 / 20,640**;
+- Gen28 budget credit remains **0** until a state-v28 repair barrier is published and adopted;
 - `formal_task_consumption_allowed=false`;
+- `task_bearing_train_dev_allowed=false`;
 - `gpu_allocation_allowed=false`;
 - `final_test_status=locked` and final unlock is not allowed.
 
-Current `next_gate` is a scientific/governance decision on whether the missing state-v28 update should ever be separately authorized, and under what frozen inputs and accounting. Under current authority, do **not** backfill state-v28, start Gen29, allocate GPU, or unlock final.
+Amendment 006 authorizes exactly one narrow repair sequence:
 
-This Track B state answers a different question from Track A and must not be conflated with the completed source-faithful paired measurement.
+1. **read-only input seal** over the reconciled Gen28 `attempt-01`, exact `state-v27`, task stream, manifest/config/summary, and pinned identities;
+2. if and only if that seal passes, **exactly one CPU-only deferred native `text_memory_memevolve` update** using the historical Gen28 execution implementation and pinned OpenEvo method;
+3. **read-only state-v28 barrier reconciliation**.
+
+It does **not** authorize re-running the 128 WebShop episodes, replacement episodes, new task consumption, GPU allocation, Gen29, H1.42/H1.43, or final unlock.
+
+Because the historical native update includes `gpt-5.5` / Codex-driven MemEvolve reflection and candidate selection, this operation is explicitly **not claimed to be a byte-deterministic replay**. The frozen objects are the historical inputs, method identity, sparse-feedback contract, and exactly-one-update boundary. A newly produced state hash becomes authoritative only after its repair receipt and barrier are published and reconciled.
+
+If the repair barrier passes and is published, Gen28 may then receive **128** experience-budget credit, moving the counter to **3,584 / 20,640** with **17,056** remaining. Until then, `state-v27` and `3,456 / 20,640` remain authoritative.
 
 ## Primary upstream references
 
-Use immutable links at `f80ae1816384bb7e8e82d193b22644e17f561f19` for the closed Track A state:
+Use immutable links at `f80ae1816384bb7e8e82d193b22644e17f561f19` for the closed Track A scientific measurement:
 
 - `docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json`
 - `docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.md`
@@ -118,6 +162,12 @@ Use immutable links at `f80ae1816384bb7e8e82d193b22644e17f561f19` for the closed
 - `configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`
 - `configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`
 
-Use immutable `17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d/configs/experiment/current-campaign.json` for the publication-time WB1 current state.
+Use immutable `e1229db492504bc9f7b795ca0a5184d5e1cadf1a` for the later read-only wrapper audit.
+
+Use immutable `b892d8123cdb4737d7971f84db6e7c1bcc77c6ab` for current WB1 Amendment-006 repair authority:
+
+- `configs/experiment/current-campaign.json`
+- `docs/experiment-tracking/WB1_AMENDMENT_006_GEN28_DEFERRED_NATIVE_STATE_UPDATE_2026-08-27.md`
+- `scripts/openevo_webshop/wb1_gen28_state_repair.py`
 
 Before using words such as `current`, `running`, `released`, `completed`, `next`, or `authorized` in a later edit, refresh upstream again because WB1 state can move independently of this publication snapshot.
