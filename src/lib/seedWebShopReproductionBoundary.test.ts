@@ -19,14 +19,14 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
   it('explains why parser and task-identity audits consumed time without duplicating the technical wrapper trace', () => {
     expect(questions).toContain('为什么这里花了时间');
     expect(questions).toContain('模型做了动作，评测器有没有读对');
-    expect(questions).toContain('SEED 官方 parser 期待 <action>...</action>');
-    expect(questions).toContain('我们的实验集成 / 测量接口没有提前完成兼容性预检');
-    expect(questions).toContain('不能说“SEED parser 有 bug”');
-    expect(questions).toContain('这个 0 不能解释成模型能力为 0');
+    expect(questions).toContain('SEED 给动作规定了外层标签 <action>...</action>');
+    expect(questions).toContain('兼容性预检（compatibility preflight）');
+    expect(questions).toContain('不是 SEED parser 有 bug，也不是 OpenEvo Prompt 要求 [action]');
+    expect(questions).toContain('这个 0 说明测量接口失效，不能解释成模型能力为 0');
     expect(questions).toContain('128 题身份：我们和论文说的是同一场考试吗？');
-    expect(wrapperAttribution).toContain('BASE 没加载 adapter，也会自己漂到 [action]');
-    expect(wrapperAttribution).toContain('raw_completion 仍出现 [action] search[...]');
-    expect(wrapperAttribution).toContain('我们的正式集成没有提前做兼容性预检');
+    expect(wrapperAttribution).toContain('偏差出现在 BASE 原始生成里，不是 adapter 或 backend 改写');
+    expect(wrapperAttribution).toContain('raw_completion 仍然出现 [action] search[...]');
+    expect(wrapperAttribution).toContain('模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检');
   });
 
   it('keeps the three distinct 128-task claims separate', () => {
