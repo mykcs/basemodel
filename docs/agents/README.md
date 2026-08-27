@@ -72,6 +72,7 @@ Useful historical cases, after current policy:
 - [`history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md`](history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md)
 - [`history/2026-08-27-results-model-identity-and-checkpoint-lineage-retrospective.md`](history/2026-08-27-results-model-identity-and-checkpoint-lineage-retrospective.md) — `BASE` vs vendor Base checkpoint, `frozen` vs provenance, 3B/7B ambiguity, pinned adapter checkpoints, runtime-image naming traps, and concurrent-main release closeout.
 - [`history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md) — missing Stage-1 GLM bootstrap, GLM-vs-GRPO-vs-OPD signal separation, user-supplied icon references, official brand-asset provenance, binary-transfer friction, flaky browser-gate classification, and concurrent-main supersession.
+- [`history/2026-08-28-webshop-explainer-and-results-reader-workflow-retrospective.md`](history/2026-08-28-webshop-explainer-and-results-reader-workflow-retrospective.md) — WebShop semantic-object traps (`12,087` vs `6,910`, split identity, unknown `128` mapping), semantic visual grammar, local evidence accordions, editor-facing copy removal, stale tests, responsive-gate fixes, Vercel exact-head verification, and contaminated-PR clean integration.
 
 ### Reproduction workflow / experiment design
 
