@@ -6,7 +6,7 @@ const items = [
     index: '01',
     href: `${root}/benchmark-first/`,
     title: '先回答：OpenEvo 最终有没有让 WebShop 表现更强？',
-    body: '把 benchmark（正式比较）与 mechanism study（机制研究）分开：先测最终效果，再用旧 H1 系列解释原因。',
+    body: '把 benchmark（正式比较）与 mechanism study（机制研究）分开：保留已完成的 Track A 证据，再补完整预算主比较，之后用旧 H1 系列解释原因。',
   },
   {
     index: '02',
@@ -28,7 +28,7 @@ const items = [
     <p>NEXT EXPERIMENT</p>
     <div>
       <h2 id="next-protocol-title">下一场真正关键的实验是什么？</h2>
-      <p>目标很简单：让 OpenEvo 和 SEED 使用同一套 WebShop 任务身份、划分、seed 与评分协议，然后比较最终表现。</p>
+      <p>目标很简单：让 OpenEvo 和 SEED 使用同一套 WebShop 任务身份、划分、seed 与评分协议，并在完整训练预算边界上比较最终表现。</p>
     </div>
   </header>
 
@@ -47,7 +47,7 @@ const items = [
 
   <aside>
     <strong>当前最小缺口</strong>
-    <p>不需要重跑 H0–H1.41。真正缺的是一场正式的 SEED official held-out evaluation（SEED 官方保留任务评估）：训练候选池使用 500–6909，正式评估只从 0–499 取任务，并让 OpenEvo / SEED 使用同一套冻结评估身份与协议。</p>
+    <p>已完成的 source-faithful Track A 128-task 测量保留不变，不需要重跑 H0–H1.41。下一项缺失的正式证据，是从同一 Qwen 起点出发、完整匹配 SEED 名义 21,920 environment rollouts 的 SEED-vs-OpenEvo 主比较；最终仍使用同一份冻结的 128-task manifest。它补充 Track A，而不是推翻或重命名 Track A，也不等于已经复现 SEED paper-final checkpoint。</p>
   </aside>
 </section>
 

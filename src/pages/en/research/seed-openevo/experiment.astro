@@ -1,8 +1,26 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../components/research/OpenEvoExperimentGateway.astro';
+import OpenEvoFairComparisonExplainer from '../../../../components/research/OpenEvoFairComparisonExplainer.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo × WebShop experiment" description="openevo-experiment is the scientific source of truth; this site preserves dated default-branch snapshots and historical results, while the live phase and GPU allocation are resolved from current-campaign, the latest reconciliation/result, and preregistration on the branch actually in use." locale={locale}>
+<AppLayout
+  title="OpenEvo × WebShop experiment"
+  description="Trace the current OpenEvo × WebShop experiment state and understand the frozen SEED-compatible fair-comparison protocol: matched environment experience, native OpenEvo learning, fixed held-out evaluation, parser qualification, checkpoints, and upstream source pinning."
+  locale={locale}
+>
   <OpenEvoExperimentGateway locale={locale} />
+  <section class="comparison-scope" data-fair-comparison-scope aria-label="Boundary between completed evidence and the next experiment">
+    <strong>Keep the two evidence layers separate</strong>
+    <p><b>Completed:</b> source-faithful Track A already measured BASE vs frozen OpenEvo on the fixed 128-task manifest; that result and its interpretation remain unchanged.</p>
+    <p><b>Next experiment:</b> this page defines a long-horizon fair comparison that starts from the same Qwen checkpoint and matches SEED's nominal 21,920 environment rollouts. It does not rerun Track A and does not claim that the SEED paper-final checkpoint or paper-reported numbers have already been reproduced.</p>
+  </section>
+  <OpenEvoFairComparisonExplainer locale={locale} />
 </AppLayout>
+
+<style>
+  .comparison-scope{width:min(1120px,calc(100% - 2rem));margin:2rem auto 0;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}
+  .comparison-scope strong{display:block;color:var(--accent-deep);font-size:.78rem}
+  .comparison-scope p{margin:.45rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}
+  .comparison-scope b{color:inherit}
+</style>

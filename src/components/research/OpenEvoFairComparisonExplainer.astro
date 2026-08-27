@@ -1,0 +1,312 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const root = locale === 'zh' ? '/research/seed-openevo' : '/en/research/seed-openevo';
+
+const budgetRules = [
+  { k: '01', title: t('同一起点', 'Same starting point'), body: 'Qwen2.5-7B-Instruct' },
+  { k: '02', title: t('同样的 WebShop 练习机会', 'Same WebShop practice opportunities'), body: '21,920 rollouts' },
+  { k: '03', title: t('每次最多 15 步', 'At most 15 actions per rollout'), body: 'max 15 environment steps' },
+  { k: '04', title: t('同一份锁死的考试卷', 'The same locked exam'), body: '128 held-out tasks' },
+] as const;
+
+const checkpoints = [
+  ['1,440', t('Stage 1 边界', 'Stage 1 boundary')],
+  ['2,720', t('研究里程碑 01', 'research milestone 01')],
+  ['4,000', t('研究里程碑 02', 'research milestone 02')],
+  ['…', t('每 +1,280 rollout', 'every +1,280 rollouts')],
+  ['21,920', t('正式最终 checkpoint', 'formal final checkpoint')],
+] as const;
+---
+
+<section class="eli5-lab" aria-labelledby="eli5-lab-title">
+  <header class="eli5-hero">
+    <div class="eyebrow">FAIR COMPARISON · ELI5</div>
+    <div class="hero-copy">
+      <h2 id="eli5-lab-title">{t('先别问“训练了多少步”，先问：两边到底拿到了多少次练习机会？', 'Do not start with “how many training steps?” Start with: how many practice opportunities did each method get?')}</h2>
+      <p>{t('这页把我们最容易混在一起的概念拆开：rollout、optimizer step、外部老师、测试集、parser 和 checkpoint。动画只是在强化顺序；即使关闭动画，整条逻辑仍然完整。', 'This explainer separates the concepts that are easiest to conflate: rollouts, optimizer steps, external teachers, the test set, parser behavior, and checkpoints. Motion only reinforces the order; the full argument remains readable without it.')}</p>
+    </div>
+    <div class="hero-route" aria-label={t('主阅读路径', 'Primary reading path')}>
+      <span>{t('同一起点', 'same start')}</span><i>→</i><span>{t('同等练习预算', 'matched practice budget')}</span><i>→</i><span>{t('各自学习', 'native learning')}</span><i>→</i><span>{t('同一场考试', 'same exam')}</span>
+    </div>
+  </header>
+
+  <section class="eli5-block" aria-labelledby="eli5-budget-title">
+    <div class="section-index">01</div>
+    <div class="section-main">
+      <p class="section-kicker">{t('公平的核心', 'The core fairness rule')}</p>
+      <h3 id="eli5-budget-title">{t('把 WebShop rollout 想成“练习券”', 'Think of a WebShop rollout as a practice ticket')}</h3>
+      <p class="lede">{t('每用一张券，模型可以进入 WebShop 做一次完整尝试；成功、失败都算。内部怎么复习、怎么 replay、怎么做 optimizer update，是各自算法自己的事。', 'Each ticket lets the model enter WebShop for one complete attempt. Successes and failures both count. How each method replays experience or performs optimizer updates is part of its own algorithm.')}</p>
+
+      <figure class="ticket-figure">
+        <figcaption>{t('我们第一轮主比较冻结四件事', 'The first main comparison freezes four things')}</figcaption>
+        <div class="rule-grid">
+          {budgetRules.map((rule, index) => (
+            <article class="rule-card" style={`--delay:${index * 0.8}s`}>
+              <span>{rule.k}</span>
+              <div><strong>{rule.title}</strong><code>{rule.body}</code></div>
+            </article>
+          ))}
+        </div>
+        <div class="ticket-strip" aria-hidden="true">
+          {Array.from({ length: 12 }).map((_, index) => <i style={`--delay:${index * 0.12}s`}></i>)}
+        </div>
+      </figure>
+
+      <div class="plain-rule">
+        <strong>{t('一句话', 'One sentence')}</strong>
+        <span>{t('两边获得同样数量的 WebShop 练习券；一张券最多走 15 步；用掉就算预算。', 'Both methods receive the same number of WebShop practice tickets; each ticket allows at most 15 environment actions; once used, it counts against the budget.')}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-seed-title">
+    <div class="section-index">02</div>
+    <div class="section-main">
+      <p class="section-kicker">SEED</p>
+      <h3 id="eli5-seed-title">{t('SEED 不是“训练 160 步”这么简单', 'SEED is not simply “160 training steps”')}</h3>
+      <p class="lede">{t('从原始 Qwen 到最终 SEED checkpoint，中间有两个学习阶段。把两段都算上，SEED 名义上拿到了 21,920 次 WebShop rollout。', 'From the original Qwen checkpoint to the final SEED checkpoint there are two learning stages. Counting both, SEED receives 21,920 nominal WebShop rollouts.')}</p>
+
+      <figure class="seed-pipeline">
+        <div class="phase-card stage-one">
+          <span>STAGE 1</span>
+          <strong>180 × 8 = 1,440</strong>
+          <p>{t('先做 1,440 次 WebShop，再让外部 analyzer / teacher 阅读轨迹、写 hindsight skill，最后做 3 epochs SFT。', 'Run 1,440 WebShop attempts, let an external analyzer / teacher read the trajectories and write hindsight skills, then run 3 epochs of SFT.')}</p>
+          <div class="mini-flow" aria-hidden="true"><i></i><b>→</b><i></i><b>→</b><i></i></div>
+        </div>
+        <div class="phase-join" aria-hidden="true">+</div>
+        <div class="phase-card stage-two">
+          <span>STAGE 2</span>
+          <strong>160 × 16 × 8 = 20,480</strong>
+          <p>{t('进入 self-evolving RL：每轮 16 个环境槽位，每个 task 做 8 个 rollout，共 160 轮。任务身份由环境按冻结 RNG 过程采样。', 'Enter self-evolving RL: 16 environment slots per round, 8 rollouts per task, for 160 rounds. Task identities are sampled by the environment under the frozen RNG process.')}</p>
+          <div class="round-grid" aria-hidden="true">{Array.from({ length: 16 }).map((_, index) => <i style={`--delay:${index * 0.08}s`}></i>)}</div>
+        </div>
+        <div class="total-card">
+          <span>{t('总练习券', 'TOTAL PRACTICE TICKETS')}</span>
+          <strong>21,920</strong>
+          <small>1,440 + 20,480</small>
+        </div>
+      </figure>
+
+      <details>
+        <summary>{t('为什么外部 teacher 不能偷偷忽略？', 'Why can’t the external teacher be silently ignored?')}</summary>
+        <p>{t('因为 SEED 的前 1,440 条轨迹不仅是环境经验，还附带了外部模型生成的 hindsight supervision。我们把 21,920 作为 environment-interaction matched 预算，但不会假装两边获得的总信息量完全相同。teacher 调用必须单独记账。', 'Because SEED’s first 1,440 trajectories carry not only environment experience but also hindsight supervision generated by an external model. We use 21,920 as an environment-interaction-matched budget, but we do not pretend the total information received is identical. Teacher usage is recorded separately.')}</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-step-title">
+    <div class="section-index">03</div>
+    <div class="section-main">
+      <p class="section-kicker">{t('最容易混淆的单位', 'The easiest units to confuse')}</p>
+      <h3 id="eli5-step-title">{t('optimizer step 不是 rollout；160 也不是 128 的“同类数字”', 'An optimizer step is not a rollout; 160 and 128 are not the same kind of number')}</h3>
+      <div class="unit-compare">
+        <article>
+          <span>{t('环境单位', 'Environment unit')}</span>
+          <strong>rollout</strong>
+          <p>{t('一次完整做题经历：观察 → search/click → 反馈 → 终止。它表示模型从 WebShop 世界里拿到多少新经验。', 'One complete attempt: observe → search/click → feedback → terminate. It measures how much new experience the model receives from WebShop.')}</p>
+        </article>
+        <div class="not-equal" aria-label={t('不等于', 'not equal to')}>≠</div>
+        <article>
+          <span>{t('算法内部单位', 'Internal algorithm unit')}</span>
+          <strong>optimizer step</strong>
+          <p>{t('拿已有数据更新一次参数。不同算法的一次 update 可能吃完全不同的数据量，所以不能机械对齐。', 'One parameter update using existing data. A single update can consume very different amounts of data in different algorithms, so raw counts should not be mechanically matched.')}</p>
+        </article>
+      </div>
+      <div class="meter-note">
+        <b>{t('主预算', 'Primary budget')}</b><span>rollout attempts</span>
+        <b>{t('同时记账', 'Also log')}</b><span>environment actions · optimizer updates · replay exposures · GPU-hours · tokens</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-native-title">
+    <div class="section-index">04</div>
+    <div class="section-main">
+      <p class="section-kicker">OPENEVO NATIVE</p>
+      <h3 id="eli5-native-title">{t('第一轮先不请老师：先看 OpenEvo 能不能自己“做题 → 找成功经验 → 学会”', 'First run without a teacher: can OpenEvo “try → find useful endogenous experience → learn” on its own?')}</h3>
+      <figure class="native-loop">
+        <div class="loop-row">
+          <article><span>1</span><strong>{t('自己 rollout', 'Self rollout')}</strong><small>{t('成功和失败都算预算', 'success and failure both count')}</small></article>
+          <i aria-hidden="true">→</i>
+          <article><span>2</span><strong>{t('筛自产经验', 'Select endogenous experience')}</strong><small>{t('不能用外部 GPT / GLM 补答案', 'no GPT / GLM answers')}</small></article>
+          <i aria-hidden="true">→</i>
+          <article><span>3</span><strong>SD-LoRA</strong><small>{t('按冻结规则更新', 'update under frozen rules')}</small></article>
+          <i aria-hidden="true">→</i>
+          <article><span>4</span><strong>{t('下一块继续', 'Continue to next block')}</strong><small>{t('直到完整预算结束', 'until the full budget ends')}</small></article>
+        </div>
+        <div class="loop-return" aria-hidden="true"></div>
+      </figure>
+
+      <div class="decision-tree">
+        <div class="decision-root"><strong>{t('先跑 OpenEvo-native', 'Run OpenEvo-native first')}</strong><span>{t('teacher = 0', 'teacher = 0')}</span></div>
+        <div class="decision-branches">
+          <article><b>{t('如果自己能持续产出并提升', 'If endogenous learning keeps working')}</b><p>{t('外部老师不是必要条件；之后再测 teacher 是否还能额外加分。', 'An external teacher is not necessary; test later whether it adds extra benefit.')}</p></article>
+          <article><b>{t('如果卡在经验获取或抽象', 'If learning stalls at acquisition or abstraction')}</b><p>{t('再开独立的 +GLM / +GPT / hindsight teacher 实验。不要把老师偷偷混进 OpenEvo-native 主结果。', 'Then open a separate +GLM / +GPT / hindsight-teacher arm. Do not silently mix a teacher into the OpenEvo-native headline result.')}</p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-test-title">
+    <div class="section-index">05</div>
+    <div class="section-main">
+      <p class="section-kicker">TEST LAST</p>
+      <h3 id="eli5-test-title">{t('128 个测试任务像“密封试卷”：训练期间不能拿它挑 checkpoint', 'The 128 test tasks are a sealed exam: they cannot be used to choose checkpoints during training')}</h3>
+      <figure class="split-figure">
+        <div class="train-pool">
+          <span>{t('训练世界', 'TRAIN WORLD')}</span>
+          <strong>goal_idx ≥ 500</strong>
+          <p>{t('只在训练池里 rollout、选经验、更新参数。', 'Roll out, select experience, and update parameters only inside the training pool.')}</p>
+          <div class="pool-blocks" aria-hidden="true">{Array.from({ length: 18 }).map(() => <i></i>)}</div>
+        </div>
+        <div class="wall" aria-hidden="true"><span>NO LEAKAGE</span></div>
+        <div class="test-vault">
+          <div class="lock" aria-hidden="true">⌁</div>
+          <span>{t('固定考试', 'LOCKED EXAM')}</span>
+          <strong>128 tasks</strong>
+          <p>{t('每次正式评测都使用同一份写死 manifest；不重新抽、不替换、不因为某题失败就换题。', 'Every formal evaluation uses the same frozen manifest: no redraw, no substitution, no swapping out tasks because one fails.')}</p>
+        </div>
+      </figure>
+      <p class="boundary-note">{t('主结果机械选择完整 21,920 rollout 预算结束时的 final checkpoint。不能先测试十几个 checkpoint，再从 128 题里挑最高的一个。', 'The headline result mechanically uses the final checkpoint at the end of the full 21,920-rollout budget. We cannot test many checkpoints on the 128 tasks and then choose the best one.')}</p>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-parser-title">
+    <div class="section-index">06</div>
+    <div class="section-main">
+      <p class="section-kicker">MEASUREMENT GATE</p>
+      <h3 id="eli5-parser-title">{t('模型答错，和“仪器读错模型答案”，不是一回事', 'A wrong model action is not the same as an evaluator misreading the model’s action')}</h3>
+      <figure class="parser-figure">
+        <div class="raw-action"><span>{t('原始输出', 'RAW OUTPUT')}</span><code>[action] search[blue shoes] [/action]</code></div>
+        <i aria-hidden="true">→</i>
+        <div class="parser-box"><span>PARSER</span><strong>{t('先确认语义动作有没有被正确读出来', 'First verify that the semantic action is read correctly')}</strong></div>
+        <i aria-hidden="true">→</i>
+        <div class="semantic-action"><span>{t('环境真正需要', 'ENVIRONMENT NEEDS')}</span><code>search[blue shoes]</code></div>
+      </figure>
+      <div class="measurement-grid">
+        <article><strong>{t('模型真的输出非法动作', 'The model truly emits an invalid action')}</strong><p>{t('这是模型 / policy 行为证据。', 'This is model / policy behavior evidence.')}</p></article>
+        <article><strong>{t('合法 search/click 被 wrapper/parser 错读', 'A valid search/click is misread by the wrapper/parser')}</strong><p>{t('这是 measurement-interface failure，不能直接算成“模型 0 分”。', 'This is a measurement-interface failure; it cannot be directly interpreted as “the model scored zero.”')}</p></article>
+      </div>
+      <details>
+        <summary>{t('为什么我们曾经会被尖括号 / 方括号骗到？', 'Why did angle brackets vs square brackets mislead us before?')}</summary>
+        <p>{t('OpenEvo policy 曾生成 `[action]…[/action]`，而 released SEED projection 只识别 `<action>…</action>`。如果 parser 把本来合法的 `search[...]` / `click[...]` 丢掉，得到的 0 分属于测量失效，不是干净的 policy result。以后正式运行前先冻结并验证 action/parser contract。', 'The OpenEvo policy previously emitted `[action]…[/action]` while the released SEED projection recognized only `<action>…</action>`. If the parser discards an otherwise valid `search[...]` / `click[...]`, the resulting zero is measurement-invalid rather than a clean policy result. Formal runs therefore preflight and freeze the action/parser contract.')}</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-ckpt-title">
+    <div class="section-index">07</div>
+    <div class="section-main">
+      <p class="section-kicker">CHECKPOINTS</p>
+      <h3 id="eli5-ckpt-title">{t('checkpoint 不只是“一个权重文件”，而是一张可以回到当时状态的时间胶囊', 'A checkpoint is not just a weight file; it is a time capsule that lets us reconstruct the training state')}</h3>
+      <div class="checkpoint-lanes">
+        <div class="lane recovery">
+          <span>{t('恢复用', 'RECOVERY')}</span>
+          <strong>{t('每个 256-rollout block 边界', 'every 256-rollout block boundary')}</strong>
+          <p>{t('尽量保存 adapter、optimizer、replay、RNG、cursor、selected-record ledger；用于 exact resume。', 'Preserve adapter, optimizer, replay, RNG, cursor, and selected-record ledger where practical for exact resume.')}</p>
+        </div>
+        <div class="lane research">
+          <span>{t('研究里程碑', 'RESEARCH MILESTONE')}</span>
+          <strong>{t('每 +1,280 Stage-2 rollouts', 'every +1,280 Stage-2 rollouts')}</strong>
+          <p>{t('与 SEED 的 save_freq=10 时间尺度对齐，便于以后画 learning curve。', 'Aligns with the time scale implied by SEED save_freq=10 and supports later learning-curve analysis.')}</p>
+        </div>
+        <div class="lane final">
+          <span>{t('正式最终', 'FORMAL FINAL')}</span>
+          <strong>21,920 rollouts</strong>
+          <p>{t('只有这个 checkpoint 机械进入固定 128-task headline evaluation。', 'Only this mechanically selected checkpoint enters the fixed 128-task headline evaluation.')}</p>
+        </div>
+      </div>
+
+      <div class="checkpoint-track" aria-label={t('checkpoint 时间轴', 'checkpoint timeline')}>
+        {checkpoints.map(([value, label], index) => (
+          <div class="checkpoint-node" style={`--delay:${index * 0.6}s`}><b>{value}</b><span>{label}</span></div>
+        ))}
+      </div>
+
+      <div class="hf-card">
+        <div><span>HUGGING FACE · PUBLIC</span><strong>{t('公开保存 OpenEvo adapter / SD-LoRA state，不重复上传原始 Qwen base weights', 'Publish OpenEvo adapter / SD-LoRA state without duplicating the unchanged Qwen base weights')}</strong></div>
+        <p>{t('每个公开 checkpoint 都应带 machine-readable provenance：rollout count、block、generation、update/no-update、selected task / record hashes、OpenEvo SHA、base model digest、parser/evaluator digest、component count、rank、optimizer steps、GPU-hours、parent checkpoint、resume level 与 payload SHA256。model card 要让“完全忘记这次对话的人”仍能知道它是谁、从哪来、怎么重建。', 'Each public checkpoint should carry machine-readable provenance: rollout count, block, generation, update/no-update, selected task / record hashes, OpenEvo SHA, base-model digest, parser/evaluator digest, component count, rank, optimizer steps, GPU-hours, parent checkpoint, resume level, and payload SHA256. The model card should let a future reader who remembers none of this conversation understand what the checkpoint is, where it came from, and how to reconstruct it.')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="eli5-block" aria-labelledby="eli5-upstream-title">
+    <div class="section-index">08</div>
+    <div class="section-main">
+      <p class="section-kicker">UPSTREAM GATE</p>
+      <h3 id="eli5-upstream-title">{t('“官方 PR 有更新”不等于“我们应该升级 OpenEvo”', '“An upstream PR moved” does not mean “we should upgrade OpenEvo”')}</h3>
+      <div class="git-branches">
+        <article class="stable"><span>official/stable</span><strong>796e6248…</strong><b>{t('本轮继续使用', 'used for this run')}</b></article>
+        <article><span>PR #297 head</span><strong>6cc22c3…</strong><b>{t('研究 PR，不是 stable', 'research PR, not stable')}</b></article>
+        <article><span>PR #303 head</span><strong>048681d…</strong><b>{t('研究 PR，不是 stable', 'research PR, not stable')}</b></article>
+      </div>
+      <p class="boundary-note">{t('截至 2026-08-27 01:01（UTC+8）的只读 upstream gate：official stable 没有前进，所以本轮不升级、不因 PR head 移动重新 qualification。以后只有 stable SHA 改变，或 #297 等价修正正式进入 stable，才触发 diff → qualification → 新实验版本。', 'Read-only upstream gate as of 2026-08-27 01:01 (UTC+8): official stable had not advanced, so this run does not upgrade and does not re-qualify merely because PR heads moved. A future stable-SHA change, or an equivalent long-horizon fix formally entering stable, triggers diff → qualification → a new experiment version.')}</p>
+      <details>
+        <summary>{t('为什么 #297 仍然值得我们盯着？', 'Why is #297 still worth watching?')}</summary>
+        <p>{t('它直接研究 long-horizon SD-LoRA 的 continual-learning protocol 和 rank growth / rank reduction。这与我们完整 21,920 rollout、多代更新时“adapter 会不会越长越大”的问题高度相关。但因为它没有进入 stable，本轮只能把它作为未来实验线索，不能偷偷 cherry-pick 后仍声称使用官方 stable。', 'It directly studies the continual-learning protocol for long-horizon SD-LoRA and rank growth / rank reduction. That is closely related to whether adapters keep expanding during our full 21,920-rollout multi-generation run. Because it had not entered stable, it remains a future-experiment lead rather than something we can silently cherry-pick while claiming to use official stable.')}</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="eli5-conclusion" aria-labelledby="eli5-conclusion-title">
+    <div>
+      <p class="section-kicker">{t('这场基础实验真正回答什么？', 'What does this baseline experiment actually answer?')}</p>
+      <h3 id="eli5-conclusion-title">{t('同一个 Qwen 起点、同样多的 WebShop 练习机会，OpenEvo-native 最后在同一份 128 题考试上能拿多少分？', 'Starting from the same Qwen checkpoint and the same number of WebShop practice opportunities, how well does OpenEvo-native score on the same frozen 128-task exam?')}</h3>
+      <p>{t('它不会证明所有资源完全相同，也不会证明 teacher 一定没用。它会先给我们一个最干净的 OpenEvo-native 结果，再决定下一步是否需要 +GLM / +GPT、rank-reduction 或其它机制实验。', 'It does not prove that every resource is identical, nor that a teacher can never help. It first gives us the cleanest OpenEvo-native result, after which we can decide whether +GLM / +GPT, rank reduction, or another mechanism study is justified.')}</p>
+    </div>
+    <nav aria-label={t('继续阅读', 'Continue reading')}>
+      <a href={`${root}/results/`}>{t('看已有实验结果 →', 'Read existing results →')}</a>
+      <a href={`${root}/seed/`}>{t('回到 SEED 方法 →', 'Back to SEED method →')}</a>
+    </nav>
+  </section>
+</section>
+
+<style>
+  .eli5-lab{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto 5rem;color:inherit}
+  .eli5-hero{display:grid;grid-template-columns:150px minmax(0,1fr);gap:28px;padding:2rem 0 2.3rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .eyebrow,.section-kicker{margin:0;color:var(--accent-deep);font:800 .68rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em}
+  .hero-copy h2{margin:0;font-size:clamp(1.8rem,4.4vw,3.6rem);line-height:1.04;letter-spacing:-.055em;max-width:920px}
+  .hero-copy p{max-width:820px;margin:1rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.75}
+  .hero-route{grid-column:2;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.2rem;color:var(--muted);font-size:.74rem}.hero-route span{padding:.45rem .65rem;border:1px solid var(--line);border-radius:999px;background:var(--surface)}.hero-route i{font-style:normal;color:var(--accent-deep)}
+
+  .eli5-block{display:grid;grid-template-columns:150px minmax(0,1fr);gap:28px;padding:3.2rem 0;border-bottom:1px solid var(--line)}
+  .section-index{color:var(--muted);font:800 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;padding-top:.35rem}
+  .section-main h3,.eli5-conclusion h3{margin:.35rem 0 .8rem;max-width:900px;font-size:clamp(1.45rem,3vw,2.35rem);line-height:1.12;letter-spacing:-.04em}
+  .lede,.boundary-note{max-width:850px;color:var(--muted);font-size:.86rem;line-height:1.72}
+  details{margin-top:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}details summary{cursor:pointer;padding:.85rem 1rem;font-size:.78rem;font-weight:800}details p{margin:0;padding:0 1rem 1rem;color:var(--muted);font-size:.77rem;line-height:1.68}
+
+  .ticket-figure,.seed-pipeline,.native-loop,.split-figure,.parser-figure{margin:1.35rem 0 0}.ticket-figure figcaption{margin-bottom:.65rem;color:var(--muted);font-size:.72rem}
+  .rule-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}.rule-card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.65rem;min-height:108px;padding:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);animation:softPulse 6s var(--delay) infinite}.rule-card>span{color:var(--accent-deep);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.rule-card strong{display:block;font-size:.78rem;line-height:1.4}.rule-card code{display:block;margin-top:.45rem;color:var(--muted);font-size:.67rem;white-space:normal;overflow-wrap:anywhere}
+  .ticket-strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:.6rem}.ticket-strip i{height:8px;border-radius:2px;background:var(--line);animation:ticketRun 1.8s var(--delay) infinite}.plain-rule{display:grid;grid-template-columns:90px 1fr;gap:.8rem;margin-top:.75rem;padding:.85rem 1rem;background:var(--surface-muted);border-radius:12px;font-size:.77rem;line-height:1.55}.plain-rule strong{color:var(--accent-deep)}
+
+  .seed-pipeline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.2fr) minmax(150px,.5fr);gap:.6rem;align-items:stretch}.phase-card,.total-card{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.phase-card>span,.total-card>span{display:block;color:var(--accent-deep);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.phase-card>strong{display:block;margin:.5rem 0;font-size:1.05rem}.phase-card p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.55}.phase-join{align-self:center;color:var(--accent-deep);font-size:1.3rem}.mini-flow{display:flex;align-items:center;gap:.3rem;margin-top:.85rem}.mini-flow i{width:22px;height:22px;border:1px solid var(--line);border-radius:5px;background:var(--surface-muted);animation:softPulse 3s infinite}.mini-flow b{color:var(--muted)}.round-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:.85rem}.round-grid i{height:16px;border:1px solid var(--line);border-radius:3px;background:var(--surface-muted);animation:ticketRun 2.4s var(--delay) infinite}.total-card{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--surface-muted)}.total-card strong{font-size:2rem;letter-spacing:-.05em}.total-card small{color:var(--muted);font-size:.68rem}
+
+  .unit-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:.7rem;align-items:stretch;margin-top:1.2rem}.unit-compare article{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.unit-compare span{color:var(--muted);font-size:.68rem}.unit-compare strong{display:block;margin:.35rem 0;font-size:1.2rem}.unit-compare p{margin:0;color:var(--muted);font-size:.75rem;line-height:1.6}.not-equal{align-self:center;color:var(--accent-deep);font-size:1.5rem;font-weight:800}.meter-note{display:grid;grid-template-columns:auto 1fr;gap:.45rem .8rem;margin-top:.7rem;padding:.8rem 1rem;border-radius:12px;background:var(--surface-muted);font-size:.72rem}.meter-note b{color:var(--accent-deep)}.meter-note span{overflow-wrap:anywhere}
+
+  .native-loop{position:relative;padding-bottom:1.35rem}.loop-row{display:grid;grid-template-columns:repeat(7,auto);align-items:center;gap:.45rem}.loop-row article{min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);animation:softPulse 6s infinite}.loop-row article span{display:block;color:var(--accent-deep);font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace}.loop-row article strong{display:block;margin:.25rem 0;font-size:.76rem}.loop-row article small{display:block;color:var(--muted);font-size:.65rem;line-height:1.45}.loop-row>i{color:var(--accent-deep);font-style:normal}.loop-return{position:absolute;left:7%;right:7%;bottom:.15rem;height:14px;border-right:1px solid var(--accent-deep);border-bottom:1px solid var(--accent-deep);border-left:1px solid var(--accent-deep);border-radius:0 0 12px 12px}.decision-tree{margin-top:.8rem}.decision-root{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.decision-root strong{font-size:.78rem}.decision-root span{color:var(--accent-deep);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.decision-branches{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.6rem}.decision-branches article{padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.decision-branches b{font-size:.76rem}.decision-branches p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.55}
+
+  .split-figure{display:grid;grid-template-columns:1.2fr 80px .8fr;gap:.7rem;align-items:stretch}.train-pool,.test-vault{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.train-pool>span,.test-vault>span{display:block;color:var(--accent-deep);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.train-pool>strong,.test-vault>strong{display:block;margin:.4rem 0;font-size:1rem}.train-pool p,.test-vault p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.55}.pool-blocks{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:.9rem}.pool-blocks i{height:14px;border-radius:3px;background:var(--surface-muted);border:1px solid var(--line)}.wall{display:flex;align-items:center;justify-content:center;border-left:1px dashed var(--line);border-right:1px dashed var(--line)}.wall span{writing-mode:vertical-rl;color:var(--muted);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.test-vault{position:relative;background:var(--surface-muted)}.lock{position:absolute;top:.7rem;right:.8rem;color:var(--accent-deep);font-size:1.2rem;animation:lockPulse 4s infinite}
+
+  .parser-figure{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(160px,.75fr) auto minmax(0,1fr);gap:.55rem;align-items:center}.raw-action,.parser-box,.semantic-action{padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.parser-figure>i{font-style:normal;color:var(--accent-deep)}.parser-figure span{display:block;color:var(--muted);font:800 .61rem ui-monospace,SFMono-Regular,Menlo,monospace}.parser-figure code{display:block;margin-top:.4rem;font-size:.72rem;white-space:normal;overflow-wrap:anywhere}.parser-box strong{display:block;margin-top:.35rem;font-size:.72rem;line-height:1.45}.measurement-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.65rem}.measurement-grid article{padding:.85rem;border-radius:12px;background:var(--surface-muted)}.measurement-grid strong{font-size:.74rem}.measurement-grid p{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.5}
+
+  .checkpoint-lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1.1rem}.lane{padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.lane>span{display:block;color:var(--accent-deep);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.lane strong{display:block;margin:.35rem 0;font-size:.76rem}.lane p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5}.checkpoint-track{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;margin:1rem 0;padding-top:1rem}.checkpoint-track::before{content:"";position:absolute;left:3%;right:3%;top:.35rem;height:2px;background:var(--line)}.checkpoint-node{position:relative;text-align:center}.checkpoint-node::before{content:"";position:absolute;left:50%;top:-.95rem;width:9px;height:9px;border-radius:50%;transform:translateX(-50%);background:var(--accent-deep);animation:checkpointPulse 3s var(--delay) infinite}.checkpoint-node b{display:block;font-size:.72rem}.checkpoint-node span{display:block;margin-top:.2rem;color:var(--muted);font-size:.62rem;line-height:1.35}.hf-card{display:grid;grid-template-columns:.85fr 1.15fr;gap:1rem;margin-top:.8rem;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.hf-card span{display:block;color:var(--accent-deep);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.hf-card strong{display:block;margin-top:.35rem;font-size:.8rem;line-height:1.45}.hf-card p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.58}
+
+  .git-branches{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-top:1rem}.git-branches article{padding:.9rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.git-branches article.stable{background:var(--surface-muted)}.git-branches span{display:block;color:var(--muted);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.git-branches strong{display:block;margin:.35rem 0;font-size:.82rem;overflow-wrap:anywhere}.git-branches b{font-size:.68rem;color:var(--accent-deep)}
+
+  .eli5-conclusion{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:2rem;padding:3rem 0 1rem}.eli5-conclusion p:not(.section-kicker){max-width:820px;margin:.6rem 0 0;color:var(--muted);font-size:.84rem;line-height:1.7}.eli5-conclusion nav{display:flex;flex-direction:column;gap:.5rem;align-self:end}.eli5-conclusion a{padding:.7rem .8rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:inherit;text-decoration:none;font-size:.72rem;font-weight:800}.eli5-conclusion a:hover,.eli5-conclusion a:focus-visible{border-color:var(--accent-deep);color:var(--accent-deep)}
+
+  @keyframes softPulse{0%,75%,100%{border-color:var(--line);transform:translateY(0)}12%{border-color:var(--accent-deep);transform:translateY(-2px)}}
+  @keyframes ticketRun{0%,65%,100%{background:var(--line)}20%,45%{background:var(--accent-deep)}}
+  @keyframes checkpointPulse{0%,70%,100%{box-shadow:0 0 0 0 transparent}20%{box-shadow:0 0 0 6px var(--surface-muted)}}
+  @keyframes lockPulse{0%,100%{transform:scale(1);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+
+  @media(max-width:920px){.rule-grid{grid-template-columns:1fr 1fr}.seed-pipeline{grid-template-columns:1fr 1fr}.phase-join{display:none}.total-card{grid-column:1/-1}.loop-row{grid-template-columns:1fr}.loop-row>i{transform:rotate(90deg);justify-self:center}.loop-return{display:none}.parser-figure{grid-template-columns:1fr}.parser-figure>i{transform:rotate(90deg);justify-self:center}.hf-card{grid-template-columns:1fr}}
+  @media(max-width:720px){.eli5-hero,.eli5-block{grid-template-columns:1fr;gap:.6rem}.hero-route{grid-column:1}.section-index{padding-top:0}.rule-grid,.unit-compare,.decision-branches,.split-figure,.checkpoint-lanes,.git-branches,.eli5-conclusion{grid-template-columns:1fr}.not-equal{justify-self:center;transform:rotate(90deg)}.wall{min-height:44px;border:0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}.wall span{writing-mode:horizontal-tb}.checkpoint-track{grid-template-columns:1fr;gap:.8rem;padding:0 0 0 1rem}.checkpoint-track::before{left:.25rem;right:auto;top:4%;bottom:4%;width:2px;height:auto}.checkpoint-node{text-align:left;padding-left:.45rem}.checkpoint-node::before{left:-.75rem;top:.25rem}.eli5-conclusion nav{align-self:auto}.seed-pipeline{grid-template-columns:1fr}.measurement-grid{grid-template-columns:1fr}}
+  @media(max-width:460px){.eli5-lab{width:min(100% - 1.1rem,1120px)}.hero-copy h2{font-size:1.75rem}.rule-grid{grid-template-columns:1fr}.hero-route i{display:none}.hero-route span{width:100%}.ticket-strip{grid-template-columns:repeat(6,1fr)}}
+  @media(prefers-reduced-motion:reduce){.rule-card,.ticket-strip i,.mini-flow i,.round-grid i,.loop-row article,.lock,.checkpoint-node::before{animation:none!important}.loop-return{opacity:.7}}
+</style>
