@@ -9,7 +9,7 @@ The goal of this directory is **progressive disclosure**: give every Agent a sma
 For any non-trivial task, start with:
 
 1. [`LATEST.md`](LATEST.md) — short current handoff and live/release-state snapshot.
-2. [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) — autonomy, clean workflow, write hygiene, and durable-knowledge rules.
+2. [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) — autonomy, clean workflow, write hygiene, tool-surface boundaries, and durable-knowledge rules.
 3. [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) — semantic branch/PR naming plus the BaseModel-specific Vercel branch-eligibility exception.
 4. [`current/website-engineering-standard.md`](current/website-engineering-standard.md) — cross-cutting implementation baseline and stopping rules.
 5. [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) — scan the task and load the matched bundle below.
@@ -50,6 +50,8 @@ Read this bundle before any non-trivial Results change:
 Then resolve the live scientific source in `mykcs/openevo-experiment` before editing website copy. Never start from an old page sentence, chat recap, or stale current-doc status when upstream executable evidence has moved.
 
 For parser/model-output attribution, benchmark-interface compatibility, or claim-level evidence questions, also read the historical case [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) after the current policies. It is rationale/evidence only; current policy still wins.
+
+For first-reader/zero-context rewrites, experiment-scale context before causal attribution, exact artifact-lineage questions, or deciding whether a local/remote-device tool is actually necessary for a Results edit, also read [`history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md`](history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md).
 
 ### Reproduction workflow / experiment design
 
@@ -186,6 +188,7 @@ Shared GitHub state is not a scratchpad.
 - never create probe files, comments, branches, or provider mutations just to see whether a tool works;
 - know the intended path/content before invoking a write;
 - prefer one atomic multi-file commit over sequential Contents-API writes when practical;
+- use the narrowest execution surface: GitHub for GitHub-owned state, Vercel for Vercel-owned state, and a user device only when the task materially depends on local-only state;
 - if an accidental write happens, stop, classify, clean it when possible, and report residue rather than hiding it.
 
 The detailed project-wide rule lives in `current/project-agent-operating-principles.md`.
@@ -199,6 +202,7 @@ History is rationale, not current policy. Particularly reusable cases include:
 - [`history/2026-08-26-results-release-node-runtime-retrospective.md`](history/2026-08-26-results-release-node-runtime-retrospective.md) — Results overflow, stale tests, deployment eligibility, and Node runtime closeout.
 - [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md) — model-output attribution, parser compatibility, claim-level provenance, current-doc drift, exact-head deployment identity, and write-operation hygiene.
 - [`history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md`](history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md) — source-faithful 128-task identity correction, teacher-facing immutable manifest links, Vercel status disambiguation, test-owner drift, and semantic integration of overlapping Results PRs.
+- [`history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md`](history/2026-08-27-results-zero-context-and-tool-boundary-retrospective.md) — zero-context Results narration, experiment-scale context before attribution, exact artifact lineage, scientific regression locks, and why cloud-side repository work should not escalate to Remote Desktop merely for convenience.
 
 ## Product contract
 

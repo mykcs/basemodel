@@ -55,6 +55,29 @@ Before any GitHub/provider mutation:
 
 Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention.
 
+### Use the narrowest execution surface
+
+A connected user device, remote desktop, SSH target, or local checkout is a stronger execution boundary than a repository/provider connector. Do not cross that boundary merely because local shell tools or a familiar Git workflow are more convenient.
+
+For repository and hosted-site work, default to the narrowest surface that can complete the task:
+
+```text
+GitHub repository state -> GitHub connector
+Vercel deployment state -> Vercel connector
+user device / uncommitted local state -> remote desktop or local-machine tool only when actually required
+```
+
+In particular:
+
+- if GitHub read/write/PR operations can complete the requested repository change, stay on GitHub;
+- if Vercel can verify Preview/Production state, stay on Vercel;
+- do not invoke Remote Desktop Commander, SSH, or another user-device path only to make patching easier, run redundant local checks, or work around API ergonomics;
+- use a user-device tool when the task materially depends on local-only state: uncommitted files, a local-only binary/build environment, a device service, a reproduction that exists only on that machine, or an explicit user request to operate there;
+- if the owner explicitly frames the task as “网页端 / GitHub 里完成”, treat that as an execution-scope constraint unless the task becomes impossible without a stronger surface; if escalation becomes necessary, explain why before crossing the boundary when practical;
+- minimize local reads/writes to the exact state needed for the task, and do not inspect unrelated files or device state.
+
+Tool convenience is not sufficient justification for broader access. The default is **cloud-side for cloud-owned state, device-side only for device-owned state**.
+
 ### User-facing work must externalize human thinking
 
 Any change to visible website content, page structure, interaction, copy, navigation, comparison, explanation, or feature automatically loads [`human-thinking-web-expression-contract.md`](./human-thinking-web-expression-contract.md).
