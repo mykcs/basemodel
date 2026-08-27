@@ -18,8 +18,8 @@ type Step = { when: string; title: string; body: string; links: EvidenceRef[] };
 const steps: Step[] = [
   {
     when: t('官方合同', 'Released contract'),
-    title: t('SEED 明确要求 <action>...</action>', 'SEED explicitly requires <action>...</action>'),
-    body: t('SEED 公开的 WebShop Prompt 明确写着动作要放进 <action>...</action>；它的 webshop_projection 也只按这对标签抽取动作，找不到时会把输出退化成最后 20 个字符。因此这里不能把问题写成“SEED parser 有 bug”：官方代码是在执行它自己公开的合同。', 'The released SEED WebShop prompt explicitly requires actions inside <action>...</action>. Its webshop_projection extracts only that pair of tags and falls back to the final 20 characters when they are absent. This is therefore not a “SEED parser bug” claim; the released code is enforcing its published contract.'),
+    title: t('先看规则：SEED 要求 <action>...</action>', 'Start with the rule: SEED requires <action>...</action>'),
+    body: t('SEED 公开的 WebShop Prompt 明确要求动作放进 <action>...</action>。它的解析器（webshop_projection）也只按这对标签抽取里面的动作；找不到时，会退化成输出最后 20 个字符。因此这里不能写成“SEED parser 有 bug”：官方代码是在执行它自己公开的接口合同。', 'The released SEED WebShop prompt explicitly requires actions inside <action>...</action>. Its parser (webshop_projection) extracts actions only from that tag pair; when the pair is absent, it falls back to the final 20 characters. This is therefore not a SEED-parser bug: the released code is enforcing its published interface contract.'),
     links: [
       { kind: 'official-code', label: t('SEED WebShop Prompt · 精确行', 'SEED WebShop prompt · exact lines'), href: `${seedRoot}/agent_system/environments/prompts/webshop.py#L25-L27` },
       { kind: 'official-code', label: t('SEED webshop_projection · 精确行', 'SEED webshop_projection · exact lines'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` },
@@ -27,8 +27,8 @@ const steps: Step[] = [
   },
   {
     when: t('我们的 Prompt', 'Our prompt'),
-    title: t('我们当时也要求模型写 <action>，没有要求 [action]', 'We also asked for <action>; we did not prompt [action]'),
-    body: t('保存下来的 BASE 原始回合里，实际送给模型的 Prompt 同样要求 “present it within <action> </action> tags”。这一步排除了“OpenEvo 代码里有人把 [action] 写进 Prompt”这个解释。', 'The saved BASE episode shows that the actual prompt sent to the model also says “present it within <action> </action> tags”. This rules out the explanation that OpenEvo code explicitly instructed the model to use [action].'),
+    title: t('我们的 Prompt 也要求 <action>，没有要求 [action]', 'Our prompt also asks for <action>, not [action]'),
+    body: t('保存下来的 BASE 原始回合里，实际送给模型的 Prompt 同样写着 “present it within <action> </action> tags”。所以 [action] 不是 OpenEvo 在 Prompt 里规定给模型的动作格式。', 'The saved BASE episode shows that the actual prompt sent to the model likewise says “present it within <action> </action> tags”. So [action] was not an action format that OpenEvo instructed the model to use in the prompt.'),
     links: [
       { kind: 'raw-episode', label: t('BASE step 0 Prompt', 'BASE step-0 prompt'), href: `${rawEpisode}#L42-L43` },
       { kind: 'code', label: t('OpenEvo WebShop Prompt / action contract', 'OpenEvo WebShop prompt / action contract'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L12-L18` },
@@ -36,8 +36,8 @@ const steps: Step[] = [
   },
   {
     when: t('模型生成', 'Model generation'),
-    title: t('BASE 没加载 adapter，也会自己漂到 [action]', 'BASE drifts to [action] even with no adapter loaded'),
-    body: t('同一个 BASE episode 的 adapter_load_receipt 是 adapter_loaded=false，但 step 0 raw_completion 仍出现 [action] search[...]；下一步又重新写回 <action>...</action>。推理后端在 model.generate 后只是直接 decode 新 token，没有把尖括号改成方括号。现有仓库证据因此最深只能定到：Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下存在 wrapper 格式漂移。', 'In that same BASE episode, adapter_load_receipt is adapter_loaded=false, yet the step-0 raw_completion contains [action] search[...]; the next step returns to <action>...</action>. The inference backend simply decodes generated tokens after model.generate and does not rewrite angle brackets into square brackets. The deepest repository-supported attribution is therefore wrapper drift from Qwen2.5-7B-Instruct under this prompt + chat-template path.'),
+    title: t('偏差出现在 BASE 原始生成里，不是 adapter 或 backend 改写', 'The drift appears in raw BASE generation, not an adapter or backend rewrite'),
+    body: t('同一个 BASE episode 明确记录 adapter_loaded=false，但 step 0 的 raw_completion 仍然出现 [action] search[...]；下一步又自己写回 <action>...</action>。推理后端在 model.generate 之后只是 decode 新 token 并直接返回，没有把尖括号改成方括号。现有仓库证据因此最多只能定到：Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下会发生外层动作标签（wrapper）漂移。', 'That same BASE episode records adapter_loaded=false, yet its step-0 raw_completion still contains [action] search[...]; on the next step it returns to <action>...</action>. After model.generate, the inference backend only decodes the new tokens and returns them; it does not rewrite angle brackets into square brackets. The deepest repository-supported attribution is therefore wrapper drift from Qwen2.5-7B-Instruct under this prompt + chat-template path.'),
     links: [
       { kind: 'raw-episode', label: t('BASE adapter receipt · adapter_loaded=false', 'BASE adapter receipt · adapter_loaded=false'), href: `${rawEpisode}#L2-L12` },
       { kind: 'raw-episode', label: t('[action] → <action> 原始输出', '[action] → <action> raw completions'), href: `${rawEpisode}#L42-L53` },
@@ -46,8 +46,8 @@ const steps: Step[] = [
   },
   {
     when: '2026-08-18 · H1.36',
-    title: t('这个问题其实已经被我们发现过', 'We had already discovered this issue'),
-    body: t('H1.36 时仓库已经记录：7B BASE 会在 [action]cmd、=search[...]、<click[...]> 等写法之间漂移，并把它定性为 harness / measurement mismatch。随后提交 8e526e42 增加 strict-first 兼容修复：先尝试严格 <action> 解析，失败后才从 </think> 之后恢复一个完整 search[...] / click[...] command。', 'During H1.36 the repository already recorded that the 7B BASE model drifted among forms such as [action]cmd, =search[...], and <click[...]>, and classified this as a harness / measurement mismatch. Commit 8e526e42 then added a strict-first compatibility repair: strict <action> parsing is attempted first, and only on failure is one well-formed search[...] / click[...] command recovered after </think>.'),
+    title: t('到 H1.36，我们已经知道这种格式会漂', 'By H1.36, this formatting drift was already known'),
+    body: t('H1.36 时仓库已经记录：7B BASE 会在 [action]cmd、=search[...]、<click[...]> 等外层写法之间漂移，并把它定性为 harness / measurement mismatch。随后提交 8e526e42 做了 strict-first 修复：先按严格 <action> 合同解析；只有失败时，才从 </think> 之后恢复一个完整的 search[...] / click[...] command。', 'During H1.36 the repository already recorded that the 7B BASE model drifted among wrapper forms such as [action]cmd, =search[...], and <click[...]>, and classified this as a harness / measurement mismatch. Commit 8e526e42 then added a strict-first repair: try the strict <action> contract first, and only on failure recover one complete search[...] / click[...] command after </think>.'),
     links: [
       { kind: 'historical-record', label: t('H1.36 同时期收口报告', 'Contemporaneous H1.36 closeout report'), href: `${experimentRoot}/docs/evidence/remote-runs/2026-08-18/h1.36/REPORT.md` },
       { kind: 'commit', label: t('commit 8e526e42 · parser compatibility', 'commit 8e526e42 · parser compatibility'), href: h136ParserCommit },
@@ -56,8 +56,8 @@ const steps: Step[] = [
   },
   {
     when: t('H1.36 训练数据', 'H1.36 training data'),
-    title: t('没有证据表明 SD-LoRA 把 [action] 教进模型', 'There is no evidence that SD-LoRA taught the [action] habit'),
-    body: t('H1.36 的自进化数据构建器只接收成功、身份完整、没有 parser/fallback failure 的轨迹；每一步还必须 action_valid=true、used_fallback=false、parser_failure=false。harvest 默认走 strict-v1 <action> 合同。因此 strict parser 读不懂的 malformed wrapper 会在进入训练集之前被排除。SD-LoRA 可能改变某种格式出现的频率，但现有证据不支持“它创造了 [action] 这个习惯”。', 'The H1.36 self-evolution dataset builder accepts only successful identity-complete traces with no parser/fallback failure; every step must also have action_valid=true, used_fallback=false, and parser_failure=false. Harvest defaults to the strict-v1 <action> contract. Malformed wrappers rejected by that strict parser were therefore filtered before entering training. SD-LoRA could affect the frequency of a format, but the evidence does not support the claim that it created the [action] habit.'),
+    title: t('训练数据没有把这类解析失败轨迹当成监督', 'Parser-failed traces were not admitted as self-evolution supervision'),
+    body: t('H1.36 的自进化数据构建器只接收成功、身份完整、没有 parser/fallback failure 的轨迹；每一步还必须 action_valid=true、used_fallback=false、parser_failure=false。harvest 默认使用 strict-v1 <action> 合同。也就是说，strict parser 读不懂的 malformed wrapper 会在进入训练集之前被排除。SD-LoRA 可能改变某种格式出现的频率，但现有证据不支持“它创造了 [action] 这个习惯”。', 'The H1.36 self-evolution dataset builder accepts only successful, identity-complete traces with no parser/fallback failure; every step must also have action_valid=true, used_fallback=false, and parser_failure=false. Harvest defaults to the strict-v1 <action> contract. In other words, malformed wrappers rejected by that strict parser are filtered before entering training. SD-LoRA could affect how often a format appears, but the evidence does not support the claim that it created the [action] habit.'),
     links: [
       { kind: 'code', label: t('自进化数据筛选条件 · 精确行', 'Self-evolution dataset filters · exact lines'), href: `${experimentRoot}/scripts/openevo_webshop/build_self_evolution_dataset.py#L67-L90` },
       { kind: 'code', label: t('H1.36 launcher · strict-v1 默认合同', 'H1.36 launcher · strict-v1 default contract'), href: `${experimentRoot}/scripts/openevo_webshop/launch_h136_qwen7b_self_evolution.sh#L53-L69` },
@@ -65,8 +65,8 @@ const steps: Step[] = [
   },
   {
     when: '2026-08-25 · PRIMARY-v1',
-    title: t('真正的实验责任：已知漂移没有在正式 SEED 集成前做兼容性预检', 'Experiment responsibility: known drift was not preflighted before formal SEED integration'),
-    body: t('第一次 SEED-strict PRIMARY-v1 仍把 SEED 官方 projection 直接接在这类模型输出后面。于是模型内部本来完整的 search[...] / click[...] command，在 wrapper 不匹配时被 projection 读成尾部碎片并送进环境，最终制造出两臂 0 分的测量假象。更准确的定责是：模型产生已知格式漂移；我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移。', 'The first SEED-strict PRIMARY-v1 run still placed the released SEED projection directly after this kind of model output. When wrappers did not match, otherwise valid search[...] / click[...] commands were projected into tail fragments and sent to the environment, producing the apparent all-zero result. The precise attribution is: the model produced known formatting drift, and our experiment harness failed to handle that known drift before formal SEED integration.'),
+    title: t('真正漏掉的是正式评测前的兼容性预检', 'What was missing was a compatibility preflight before formal evaluation'),
+    body: t('第一次 SEED-strict PRIMARY-v1 仍把 SEED 官方 projection 直接接在这类模型输出后面，却没有先拿真实模型输出验证“projection 能不能稳定读出完整 command”。于是 wrapper 不匹配时，本来完整的 search[...] / click[...] command 被读成尾部碎片并送进环境，最终制造出两臂 0 分的测量假象。更准确的定责是：模型产生了已知格式漂移；我们的实验 harness 没有在正式 SEED 集成前处理这个已知漂移。', 'The first SEED-strict PRIMARY-v1 run still placed the released SEED projection directly after this kind of model output without first checking, on real model outputs, that the projection could reliably recover the complete command. When wrappers did not match, otherwise complete search[...] / click[...] commands were projected into tail fragments and sent to the environment, producing the apparent all-zero result. The precise attribution is: the model produced known formatting drift, and our experiment harness did not handle that known drift before formal SEED integration.'),
     links: [
       { kind: 'raw-episode', label: t('当时冻结的 BASE 原始回合', 'Frozen BASE raw episode from the run'), href: `${rawEpisode}#L42-L53` },
       { kind: 'human-report', label: t('PRIMARY-v1 根因与修复记录', 'PRIMARY-v1 root-cause and repair record'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
@@ -74,8 +74,8 @@ const steps: Step[] = [
   },
   {
     when: t('PRIMARY-v2 修复', 'PRIMARY-v2 repair'),
-    title: t('正确处理是“同一兼容合同 + 两臂一致”，不是放宽科学标准', 'The repair used one compatible contract for both arms, not a looser scientific standard'),
-    body: t('修复后的 PRIMARY-v2 只改变动作 wrapper 的识别方式，并对 BASE 与 SD-LoRA 使用同一合同；这让我们重新得到可解释的分数，同时保留同一个任务面板与比较边界。这个修复解决的是测量接口，不是给某一边额外能力。', 'Repaired PRIMARY-v2 changed only action-wrapper recognition and applied the same contract to BASE and SD-LoRA. This restored interpretable scores while preserving the same task panel and comparison boundary. The repair fixes measurement; it does not grant extra capability to one arm.'),
+    title: t('PRIMARY-v2 修的是测量接口，而且两边用同一规则', 'PRIMARY-v2 repaired measurement and used the same rule for both arms'),
+    body: t('修复后的 PRIMARY-v2 只改变动作 wrapper 的识别方式，并对 BASE 与 SD-LoRA 使用同一合同；任务面板和比较边界保持不变。这个修复解决的是“评测器能不能读懂动作”，不是给 OpenEvo 一边额外能力。', 'Repaired PRIMARY-v2 changed only action-wrapper recognition and applied the same contract to BASE and SD-LoRA; the task panel and comparison boundary stayed the same. The repair addresses whether the evaluator can read the action, not whether one arm gets extra capability.'),
     links: [
       { kind: 'machine-result', label: t('PRIMARY-v2 配对分析', 'PRIMARY-v2 paired analysis'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` },
       { kind: 'machine-result', label: t('PRIMARY-v2 覆盖与身份对账', 'PRIMARY-v2 coverage and identity reconciliation'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json` },
@@ -92,7 +92,7 @@ const steps: Step[] = [
   </summary>
 
   <div class="wrapper-attribution__body">
-    <p class="wrapper-attribution__lead">{t('这一段只服务于想追代码的人。主结论不变：不能把 [action] 说成 OpenEvo Prompt 规定的格式，也不能把问题归咎于 SEED parser；现有证据支持“模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检”。每一步下面的链接都尽量直接落到支持该 claim 的原始代码、原始回合或机器结果。', 'This block is for readers who want the code trail. The main conclusion is unchanged: [action] was not an OpenEvo prompt convention, and this is not attributable to a SEED-parser bug. The evidence supports known model-side wrapper drift plus a formal integration that failed to preflight compatibility. Each step links as directly as possible to the primary code, raw episode, commit, or machine result supporting that claim.')}</p>
+    <p class="wrapper-attribution__lead">{t('先把两个东西分开：search[...] / click[...] 是 WebShop 真正要执行的动作命令；<action>...</action> 或 [action]... 是包住命令、让解析器定位动作的外层标签（wrapper）。这次事故发生在外层标签，不是动作命令本身。下面按“官方规则 → 我们的 Prompt → BASE 原始输出 → 已知问题 → 训练数据 → PRIMARY-v1 → PRIMARY-v2”追下去。主结论不变：[action] 不是 OpenEvo Prompt 规定的格式，SEED parser 也不是在违反自己的合同。用技术术语概括就是：模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检。', 'First separate two things: search[...] / click[...] are the action commands WebShop actually executes; <action>...</action> or [action]... are outer wrapper labels that let the parser locate the command. This incident happened at the wrapper layer, not in the command itself. The trace below follows the chain from released rule → our prompt → raw BASE output → known issue → training data → PRIMARY-v1 → PRIMARY-v2. The conclusion is unchanged: [action] was not an OpenEvo prompt convention, the SEED parser was enforcing its own contract, and the experiment responsibility is known model-side wrapper drift that was not preflighted before formal integration.')}</p>
 
     <div class="wrapper-attribution__timeline">
       {steps.map((step, index) => (
