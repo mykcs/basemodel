@@ -5,6 +5,16 @@ const reuseBuiltOutput = process.env.PLAYWRIGHT_REUSE_BUILD === '1';
 const previewPort = process.env.PLAYWRIGHT_PORT ?? '4327';
 const previewURL = `http://127.0.0.1:${previewPort}/`;
 
+const requestedCiWorkers = process.env.PLAYWRIGHT_WORKERS;
+let ciWorkers = 1;
+if (requestedCiWorkers !== undefined) {
+  const parsed = Number.parseInt(requestedCiWorkers, 10);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`PLAYWRIGHT_WORKERS must be a positive integer, got: ${requestedCiWorkers}`);
+  }
+  ciWorkers = parsed;
+}
+
 export default defineConfig({
   testDir: './tests/e2e',
   // The focused research-geometry cases intentionally walk every bilingual
@@ -16,9 +26,11 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   // Release acceptance is fail-closed: a flaky retry must not turn a failed
-  // exact-head browser run into accepted evidence.
+  // exact-head browser run into accepted evidence. Generic CI remains serial
+  // by default for deterministic failure evidence, while a known runner may
+  // opt into bounded parallelism with PLAYWRIGHT_WORKERS.
   retries: 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? ciWorkers : undefined,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: previewURL,
