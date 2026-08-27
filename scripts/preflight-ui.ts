@@ -123,7 +123,7 @@ export function classifyUiFile(file: string): UiRisk {
     /^src\/components\/.*(?:Nav|Navigation|Theme|Shell|PageOutline|CompareTray|CommandSearch|GlobalModelQuickView)/.test(path) ||
     /^src\/lib\/(?:i18n|sitemapRoutes)/.test(path) ||
     /^(?:astro\.config\.[cm]?[jt]s|playwright\.config\.ts|vercel\.json|package(?:-lock)?\.json)$/.test(path) ||
-    /^scripts\/(?:audit-css-architecture|vercel-ui-gate|ui-overflow-preflight|preflight-ui)\./.test(path) ||
+    /^scripts\/(?:audit-css-architecture|vercel-ui-(?:gate|plan)|ui-overflow-preflight|preflight-ui)\./.test(path) ||
     /^tests\/e2e\/(?:global-header-|ui-safety|research-explainer-layout|webshop-training-theme)/.test(path)
   ) {
     return 'global';

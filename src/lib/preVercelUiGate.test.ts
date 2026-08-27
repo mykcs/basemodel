@@ -24,6 +24,7 @@ describe('pre-Vercel UI regression gate', () => {
     expect(classifyUiFile('src/components/research/Example.astro')).toBe('shared');
     expect(classifyUiFile('src/styles/tokens.css')).toBe('global');
     expect(classifyUiFile('src/components/Header.astro')).toBe('global');
+    expect(classifyUiFile('scripts/vercel-ui-plan.ts')).toBe('global');
 
     expect(classifyUiRisk([
       'src/pages/research/example.astro',

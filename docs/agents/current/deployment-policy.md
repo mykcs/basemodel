@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-26**
+Last reviewed: **2026-08-27**
 
 ## Authority
 
@@ -24,6 +24,36 @@ Project `basemodel-preview` owns both deployment environments. Every deployable 
 Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
+
+### Risk-aware hosted browser gate
+
+The deterministic repository Gate and static build remain mandatory for every deployable Vercel build. The **hosted Chromium layer is risk-aware** so Production does not spend roughly ten minutes rerunning unrelated browser cases after a low-blast-radius page edit that already passed the required pre-provider checks.
+
+`scripts/vercel-ui-plan.ts` compares the current Vercel commit with `VERCEL_GIT_PREVIOUS_SHA` and classifies the changed surface with the repository's UI-risk model. `scripts/vercel-ui-gate.mjs` then applies this fail-closed policy:
+
+```text
+shared/global UI change or planner uncertainty
+-> complete hosted Chromium matrix
+
+concrete local Astro page-only change
+-> exact changed-route mobile/desktop + light/dark smoke
+-> plus mapped regression-owner specs when one exists
+
+content-only UI change
+-> representative hosted UI safety coverage
+-> plus mapped research regression owners when applicable
+
+non-UI change
+-> browser layer may skip after verify:deploy + build already passed
+```
+
+Dynamic routes or local source files that cannot be mapped to one concrete route fall back to the complete matrix. More than eight changed concrete routes also fall back to the complete matrix. A failure to resolve the previous/current Git range, a malformed planner result, or a change to the hosted planner itself must **fail closed to full browser coverage**, never silently skip.
+
+This provider-side scoping does **not** weaken the pre-provider UI policy. Before the first provider-triggering ref update, Agents still run the strongest browser matrix required by `ui-change-visual-acceptance-gate.md` and `scripts/preflight-ui.ts`. Vercel's focused Production gate is the exact deployed-tree confirmation layer, not a substitute for the required preflight.
+
+Keep the full hosted matrix serial unless fresh provider evidence justifies a different worker count. A 2026-08-27 live experiment on the Hobby 2-core / 8 GB build machine showed that two Playwright workers roughly doubled several CPU-heavy test durations and did not materially shorten the critical path; avoiding unrelated tests is the accepted optimization instead.
+
+The planner contract is protected by `src/lib/vercelHostedUiGate.test.ts`; exact changed routes are exercised by `tests/e2e/vercel-changed-route-smoke.spec.ts`.
 
 ## Vercel build-budget discipline
 
