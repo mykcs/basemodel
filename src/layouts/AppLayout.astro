@@ -127,19 +127,6 @@ const compareTrayLabels = {
     <CompareTray client:idle labels={compareTrayLabels} locale={locale} />
     <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
     <ActionableContentLayer locale={locale} />
-    <script is:inline>
-      window.si = window.si || function (...args) {
-        (window.siq = window.siq || []).push(args);
-      };
-      const host = window.location.hostname;
-      const localPreview = host === 'localhost' || host === '127.0.0.1' || host === '::1';
-      if (!localPreview) {
-        const speedInsights = document.createElement('script');
-        speedInsights.defer = true;
-        speedInsights.src = '/_vercel/speed-insights/script.js';
-        document.head.appendChild(speedInsights);
-      }
-    </script>
   </body>
 </html>
 

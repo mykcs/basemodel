@@ -18,6 +18,19 @@ const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/results(?:\/|$)/;
 const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNER = 'scripts/vercel-ui-plan.ts';
 
+const SCOPED_EXPLAINER_ROUTES = new Map<string, string[]>([
+  ['src/components/research/explainer/EnvironmentExplainers.tsx', ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/en/research/seed-openevo/alfworld/']],
+  ['src/styles/interactive-research-explainer-environments.css', ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/en/research/seed-openevo/alfworld/']],
+  ['src/components/research/explainer/MethodExplainers.tsx', ['/research/seed-openevo/seed/', '/en/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/en/research/seed-openevo/openevo/']],
+  ['src/styles/interactive-research-explainer-methods.css', ['/research/seed-openevo/seed/', '/en/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/en/research/seed-openevo/openevo/', '/lab/', '/en/lab/']],
+  ['src/components/research/explainer/ServerExplainer.tsx', ['/lab/', '/en/lab/']],
+  ['src/styles/interactive-research-explainer-server.css', ['/lab/', '/en/lab/']],
+]);
+const SCOPED_EXPLAINER_COMPANIONS = new Set([
+  'src/lib/interactiveResearchExplainers.test.ts',
+  'tests/e2e/research-explainer-layout.spec.ts',
+]);
+
 function normalizePath(file: string): string {
   return file.replaceAll('\\', '/').replace(/^\.\//, '');
 }
@@ -56,6 +69,29 @@ function contentSpecs(files: string[]): string[] {
   return [...specs];
 }
 
+function scopedExplainerPlan(changedFiles: string[], risk: UiRisk): HostedUiPlan | undefined {
+  const routes = new Set<string>();
+  let ownedChange = false;
+
+  for (const file of changedFiles) {
+    const ownedRoutes = SCOPED_EXPLAINER_ROUTES.get(file);
+    if (ownedRoutes) {
+      ownedChange = true;
+      for (const route of ownedRoutes) routes.add(route);
+      continue;
+    }
+    if (SCOPED_EXPLAINER_COMPANIONS.has(file) || file.startsWith('docs/')) continue;
+    return undefined;
+  }
+
+  if (!ownedChange || routes.size === 0 || routes.size > MAX_CHANGED_ROUTE_SMOKE) return undefined;
+  return {
+    mode: 'focused', risk, changedFiles, routes: [...routes].sort(),
+    specs: ['tests/e2e/research-explainer-layout.spec.ts'],
+    reason: 'Bounded explainer implementation changes use exact owned routes plus the geometry/readability regression owner instead of unrelated browser suites.',
+  };
+}
+
 export function planHostedUi(files: string[]): HostedUiPlan {
   const changedFiles = [...new Set(files.filter(Boolean).map(normalizePath))].sort();
 
@@ -73,6 +109,8 @@ export function planHostedUi(files: string[]): HostedUiPlan {
   }
 
   const assessment = classifyUiRisk(changedFiles);
+  const scopedExplainer = scopedExplainerPlan(changedFiles, assessment.risk);
+  if (scopedExplainer) return scopedExplainer;
 
   if (assessment.risk === 'none') {
     return {

@@ -28,6 +28,22 @@ describe('Vercel hosted UI gate planner', () => {
     expect(plan.specs).toContain('tests/e2e/open-evo-webshop-program-report.spec.ts');
   });
 
+  it('focuses bounded explainer owners on only their real routes', () => {
+    const method = planHostedUi(['src/components/research/explainer/MethodExplainers.tsx']);
+    expect(method.mode).toBe('focused');
+    expect(method.specs).toEqual(['tests/e2e/research-explainer-layout.spec.ts']);
+    expect(method.routes).toEqual([
+      '/en/research/seed-openevo/openevo/', '/en/research/seed-openevo/seed/',
+      '/research/seed-openevo/openevo/', '/research/seed-openevo/seed/',
+    ]);
+
+    const methodCss = planHostedUi(['src/styles/interactive-research-explainer-methods.css']);
+    expect(methodCss.mode).toBe('focused');
+    expect(methodCss.routes).toContain('/lab/');
+    expect(methodCss.routes).toContain('/en/lab/');
+    expect(planHostedUi(['src/components/research/explainer/MethodExplainers.tsx', 'src/styles/tokens.css']).mode).toBe('full');
+  });
+
   it('fails closed to the complete matrix for shared or global UI changes', () => {
     expect(planHostedUi(['src/components/research/Example.astro']).mode).toBe('full');
     expect(planHostedUi(['src/styles/tokens.css']).mode).toBe('full');

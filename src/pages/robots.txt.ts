@@ -21,7 +21,16 @@ export const GET: APIRoute = ({ site }) => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const sitemap = `${origin}${base}/sitemap.xml`;
 
-  return new Response(`User-agent: *\nAllow: /\n\nSitemap: ${sitemap}\n`, {
+  const trainingCrawlers = ['GPTBot', 'ClaudeBot', 'anthropic-ai', 'CCBot', 'Google-Extended', 'Bytespider'];
+  const trainingPolicy = trainingCrawlers
+    .map((agent) => `User-agent: ${agent}\nDisallow: /`)
+    .join('\n\n');
+  const aiRetrievalPolicy = [
+    'User-agent: OAI-SearchBot\nAllow: /',
+    'User-agent: ChatGPT-User\nAllow: /',
+  ].join('\n\n');
+
+  return new Response(`${aiRetrievalPolicy}\n\n${trainingPolicy}\n\nUser-agent: *\nAllow: /\n\nSitemap: ${sitemap}\n`, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });
 };
