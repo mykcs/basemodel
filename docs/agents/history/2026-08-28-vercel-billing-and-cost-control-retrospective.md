@@ -219,6 +219,86 @@ A green PR or successful local build alone would not have proved the provider-si
 
 The site remains searchable and usable by user-requested AI retrieval while opting out named training crawlers. This avoids solving a hypothetical cost problem by making the research site undiscoverable.
 
+## Conversation-specific friction and successful recovery patterns
+
+The cost investigation above also exposed several workflow frictions that are easy to lose if only the final architecture is recorded. These are worth preserving because they affect how future Agents should execute the same class of task, not only what Vercel settings should exist.
+
+### Parallel cost work was discovered after a first implementation had already been pushed
+
+While one cost-control branch was being prepared, another Agent independently completed BaseModel PR #301 with overlapping goals: fixed Standard build machines, Speed Insights removal, diff-aware Lab gating, and scoped explainer browser coverage. The overlap was discovered from fresh Vercel deployment metadata and GitHub PR state only after the first branch had already triggered a Preview.
+
+The successful recovery was to stop treating the first branch as authoritative, fetch current `main`, inspect #301's exact diff, and classify the overlap file by file. The duplicate planner/robots implementation was discarded; only the still-missing controls were rebuilt on top of merged #301 as PR #303. The superseded remote branch was then deleted after the intended history was safely merged.
+
+Reusable rule: before the first provider-triggering write on a broad infrastructure/cost task, refresh `main` and inspect recent/open PRs touching the same provider, scripts, config, or policy. A duplicate Preview is already consumed once it starts; discovering overlap early is cheaper than reconciling after deployment.
+
+### `main` moved repeatedly during a long provider task
+
+The local branch fell behind `main` by five commits while diagnostics and local validation were running. Later, another docs PR landed after the exact-head Preview was created. Neither movement automatically invalidated the work: the important question was whether the intervening files overlapped the cost-control surface.
+
+The successful pattern was:
+
+```text
+refresh origin/main
+-> list intervening commits and changed paths
+-> classify overlap / no-overlap
+-> synchronize only when required
+-> do not manufacture a second Preview for unrelated docs
+```
+
+This avoided both stale-tree merging and unnecessary provider reruns.
+
+### Local shell/editing ergonomics created noise that should not be mistaken for product failure
+
+Several local editing attempts failed for purely tooling reasons: a Bash-style heredoc was rejected by the default `fish` shell; a generated Python/base64 edit command had a syntax error; and one regression assertion confused literal `\n` source text with actual newline characters. None of these failures said anything about the Astro site or Vercel behavior.
+
+The recovery pattern was to switch to a known execution surface (`python3 -i` / direct file tools), make surgical edits, run syntax/targeted tests first, and only then spend time on the full repository Gate. Reusable rule: classify shell dialect, quoting/escaping, and local editor mistakes separately from application/provider failures. Do not trigger a Preview merely to learn whether a local edit is syntactically valid.
+
+### Protected Preview access was not the only way to verify the artifact
+
+The exact-head Vercel Preview was protected by Vercel authentication. Direct fetches of `/robots.txt` returned an SSO redirect, so the Preview URL itself could not be used as a simple anonymous content oracle.
+
+The successful verification combined three different proofs instead of weakening Preview protection:
+
+- Vercel build logs proved the exact SHA, Standard 4-core/8-GB machine, accepted `[vercel-preview]` token, and which hosted gates ran or skipped;
+- a local build with `VERCEL_ENV=preview` proved the emitted Preview `robots.txt` was exactly `User-agent: *` plus `Disallow: /`;
+- the final public Production fetch proved ordinary search and user-requested AI retrieval stayed allowed while named training crawlers were disallowed.
+
+Reusable rule: when one verification surface is auth-protected, use another authoritative layer rather than disabling protection or persisting temporary share credentials.
+
+### Cost-reduction releases can themselves be expensive one time
+
+The exact-head #303 Preview was a good steady-state sample: on the fixed Standard builder it completed in about 56 seconds, and both the hosted UI gate and Lab gate skipped because the branch/diff did not require them.
+
+The merge-to-Production build was different. `robots.txt.ts` and deployment-control changes were not safely mappable to one ordinary UI route, so the fail-closed planner expanded to the full 91-case Chromium matrix. That Production build took about eight minutes; the Lab gate still correctly skipped because the diff could not affect Lab/server UI. Production then reached READY.
+
+This is expected safety behavior, not evidence that the optimization failed. Judge the optimization on subsequent representative builds, not solely on the migration release that changes the optimizer itself.
+
+### Partial provider evidence was useful for diagnosis but never treated as completion
+
+During the Production run, logs were read incrementally while the 91-case matrix was still progressing. Those tails helped confirm that the build was alive, using the expected worker count, and not failing early, but they were never promoted to final PASS. Completion was declared only after the deployment object reached READY and the public Production artifact was fetched.
+
+This preserved the distinction:
+
+```text
+progress evidence != terminal provider state != public artifact acceptance
+```
+
+### The strongest success pattern was evidence-first narrowing
+
+The investigation did not start by deleting tests or blocking all bots. It successively ruled out expensive hypotheses: runtime logs showed no meaningful Serverless/Edge activity, static assets were tiny, the Astro compile itself was only seconds, while deployment logs exposed minutes of browser work and provider build-machine behavior. That narrowed the optimization target to build frequency, machine selection, and hosted browser scope.
+
+The durable pattern is:
+
+```text
+measure the cost surface
+-> identify the dominant meter
+-> inspect the code/provider mechanism that produces it
+-> make the smallest reversible change
+-> protect it with executable tests/policy
+-> verify exact source + provider + artifact
+-> re-measure later
+```
+
 ## Durable artifacts created by the work
 
 The implementation was spread across the two active website projects:
