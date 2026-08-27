@@ -84,7 +84,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(hero).toContain('统计区间仍然跨过“没有差异”');
     expect(hero).toContain('authoritative runtime semantic validation 128/128');
     expect(hero).toContain('measurement-not-proven-stable-improvement');
-    expect(hero).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).toContain('专业解释：');
     expect(hero).not.toContain('95% CI');
     expect(hero).not.toContain('formal evaluation denominator');
@@ -107,7 +107,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(currentState).toContain('128/128 runtime semantic validation PASS');
     expect(currentState).toContain('measurement-not-proven-stable-improvement');
     expect(currentState).toContain('PUBLISHED_AND_VERIFIED');
-    expect(currentState).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(currentState).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });
 
   it('teaches the task split and only the two beginner scoring concepts before Q1–Q7', () => {
@@ -205,7 +205,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(wrapperAttribution).toContain('build_self_evolution_dataset.py#L67-L90');
     expect(wrapperAttribution).toContain('launch_h136_qwen7b_self_evolution.sh#L53-L69');
     expect(wrapperAttribution).toContain('8e526e42de82e3fb417eb6dc4d892e068d73ef1f');
-    expect(wrapperAttribution).toContain('模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检');
+    expect(wrapperAttribution).toContain('责任在我们的实验集成层。');
     expect(wrapperAttribution).toContain('不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据');
     expect(wrapperAttribution).toContain('不声称 SD-LoRA 绝不可能改变 wrapper frequency');
   });
@@ -295,9 +295,9 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('PUBLISHED_AND_VERIFIED');
     expect(nextSteps).toContain('公开代码“首次验证”，不是论文最终 128 题');
     expect(nextSteps).toContain('不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题');
-    expect(nextSteps).toContain('真正剩下的主问题是 Track B / WB1，但当前不能直接续跑');
-    expect(nextSteps).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
-    expect(nextSteps).toContain('latest adoptable native state 仍是 state-v27');
+    expect(nextSteps).toContain('Gen28 状态断点已修复；Track B / WB1 等待 Gen29 放行');
+    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(nextSteps).toContain('latest native state=state-v28');
     expect(nextSteps).toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
     expect(nextSteps).toContain('路线 B（Track B，WB1）');

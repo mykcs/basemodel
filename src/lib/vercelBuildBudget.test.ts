@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   isBuildRelevantPath,
   shouldBuildForFiles,
+  mustRunAcceptanceBuild,
 } from '../../scripts/vercel-ignore-build.mjs';
 
 const read = (path: string) =>
@@ -83,5 +84,12 @@ describe('Vercel build-budget contract', () => {
     expect(deploymentPolicy).toContain('Vercel-first completion report');
     expect(deploymentPolicy).toContain('Do not include Cloudflare in an ordinary completion report');
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
+  });
+
+  it('forces PR/main/production acceptance builds even when the diff looks prose-only', () => {
+    expect(mustRunAcceptanceBuild({ VERCEL_GIT_PULL_REQUEST_ID: '288' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_GIT_COMMIT_REF: 'main' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_GIT_COMMIT_REF: 'research/scratch' })).toBe(false);
   });
 });

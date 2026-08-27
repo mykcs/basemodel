@@ -57,12 +57,12 @@ const navItems = [
       <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '最关键的剩余问题已经从“这 128 题到底对不对”变成“如果把 SEED 方法和 OpenEvo 真正在同一个冻结世界、同一套任务和匹配预算下重新训练比较，谁更好”。这就是 Track B / WB1。它目前没有被放行继续消耗任务：Gen28 的 episode 已完成，但对应 state-v28 没有形成，所以要先做一次治理与科学决策，不能直接续跑。',
-          'The key remaining question has moved from “are these 128 tasks correct?” to “if SEED and OpenEvo are rerun as methods in the same frozen world, on the same tasks and matched budgets, which performs better?” That is Track B / WB1. It is not currently authorized to consume more task-bearing work: Gen28 episodes completed, but state-v28 was not created, so a scientific/governance decision must come before any continuation.',
+          '最关键的剩余问题已经从“Gen28 的状态能不能补回来”推进到“是否正式恢复 Track B / WB1 并进入 Gen29”。Gen28 的 128 个 episode 已完成，对应的 state-v28 也已经通过封存输入上的 deferred native update 与 barrier reconciliation 被采用；但这不自动授权下一代训练，所以现在仍不能直接续跑。',
+          'The key remaining question has moved from repairing Gen28 continuity to deciding whether Track B / WB1 should formally resume into Gen29. Gen28’s 128 episodes are complete and state-v28 has now been adopted after the sealed-input deferred native update and barrier reconciliation; that adoption does not automatically authorize another generation, so task-bearing continuation remains blocked.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'Track A 已以 measurement-not-proven-stable-improvement 关闭，且不能冒充论文 89.7 / 78.1% 的 exact reproduction。当前 WB1 router 状态为 GEN28_COMPLETE_STATE_BARRIER_MISSING；latest adoptable state 是 state-v27，formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final_test_status=locked。下一步不是自动启动 Gen29，而是先决定缺失的 state-v28 update 是否、以及以什么冻结输入和预算规则被单独授权。',
-          'Track A is closed as measurement-not-proven-stable-improvement and must not be presented as an exact reproduction of the paper’s 89.7 / 78.1%. Current WB1 routing is GEN28_COMPLETE_STATE_BARRIER_MISSING; the latest adoptable state is state-v27, formal_task_consumption_allowed=false, gpu_allocation_allowed=false, and final_test_status=locked. The next step is not an automatic Gen29 launch, but a decision on whether the missing state-v28 update should be separately authorized and under which frozen inputs and budget rules.',
+          'Track A 已以 measurement-not-proven-stable-improvement 关闭，且不能冒充论文 89.7 / 78.1% 的 exact reproduction。当前 WB1 classification 是 GEN28_STATE_V28_BARRIER_PASS_ADOPTED；latest native state 是 state-v28，matched experience budget 已记到 3,584/20,640，剩余 17,056。formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final_test_status=locked；下一步是单独的 Gen29 execution-readiness / resumption decision。',
+          'Track A is closed as measurement-not-proven-stable-improvement and must not be presented as an exact reproduction of the paper’s 89.7 / 78.1%. Current WB1 classification is GEN28_STATE_V28_BARRIER_PASS_ADOPTED; the latest native state is state-v28, matched experience accounting is 3,584/20,640 with 17,056 remaining, and formal_task_consumption_allowed=false, gpu_allocation_allowed=false, final_test_status=locked. The next gate is a separate Gen29 execution-readiness / resumption decision.',
         )}</p>
       </div>
     </div>

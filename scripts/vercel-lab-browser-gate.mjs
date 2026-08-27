@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
-const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
+const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const shouldRun = branch === 'main'
   || branch === 'agent/sync-zju-shell-environment-20260816'
   || resultsReleaseBranch.test(branch);
