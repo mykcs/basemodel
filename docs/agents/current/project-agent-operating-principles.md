@@ -78,6 +78,20 @@ In particular:
 
 Tool convenience is not sufficient justification for broader access. The default is **cloud-side for cloud-owned state, device-side only for device-owned state**.
 
+### Respect concurrent local execution and separate monitoring from execution
+
+When local execution is genuinely required, assume the user device may already be running other Agents, builds, browsers, training clients, or tests.
+
+- Before starting an expensive browser/build matrix, inspect relevant running processes and resource contention when practical.
+- Prefer an isolated worktree plus unique local ports for concurrent repository work.
+- Do not kill, pause, or rewrite an unrelated task merely because it slows the current task. Only terminate processes that clearly belong to the current work or that the owner explicitly authorized you to stop.
+- If contention is real, reduce worker count or otherwise lower pressure rather than treating slowness as a product regression.
+- A remote-tool timeout, vanished terminal session, or stale monitoring stream is **not** evidence that the underlying command failed. Confirm the child PID/process state, exit status, or a durable runner artifact before declaring PASS/FAIL/stuck.
+- Distinguish local environment pathologies from product failures. For example, a dev server that rejects dependencies because a symlinked `node_modules` escapes its allowed root is an environment/layout problem until the production tree proves otherwise.
+- Clean up only the worktrees, ports, browser sessions, and processes owned by the current task.
+
+Historical case: [`../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md).
+
 ### User-facing work must externalize human thinking
 
 Any change to visible website content, page structure, interaction, copy, navigation, comparison, explanation, or feature automatically loads [`human-thinking-web-expression-contract.md`](./human-thinking-web-expression-contract.md).
