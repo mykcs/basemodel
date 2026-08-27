@@ -29,7 +29,8 @@ const legacyPages = [
   'src/pages/guide/openevo-webshop-alfworld.astro',
 ];
 
-const redirectMap = new Map((vercel.redirects ?? []).map((item) => [item.source, item]));
+const redirects = vercel.redirects ?? [];
+const redirectMap = new Map(redirects.map((item) => [item.source, item]));
 
 describe('research URL hierarchy', () => {
   it('makes flow and study first-class path parents', () => {
@@ -59,6 +60,15 @@ describe('research URL hierarchy', () => {
     for (const [source, destination] of expected) {
       expect(redirectMap.get(source)?.destination, source).toBe(destination);
       expect(redirectMap.get(source)?.permanent, source).toBe(true);
+    }
+  });
+
+  it('preserves the historical trailing-slash URLs too', () => {
+    for (const item of redirects) {
+      if (item.source.includes(':path*') || item.source.endsWith('/')) continue;
+      const slashVariant = redirectMap.get(`${item.source}/`);
+      expect(slashVariant?.destination, `${item.source}/`).toBe(item.destination);
+      expect(slashVariant?.permanent, `${item.source}/`).toBe(true);
     }
   });
 
