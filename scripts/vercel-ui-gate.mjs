@@ -138,7 +138,13 @@ if (resultsOverflowOnly) {
     PLAYWRIGHT_REUSE_BUILD: '1',
   });
 } else {
-  run('npm', ['run', 'test:ui'], {
+  // Vercel's current Hobby build machine exposes 2 CPU cores / 8 GB. The
+  // repository config intentionally defaults CI to one Playwright worker for
+  // conservative local/release runs, but serializing the entire hosted matrix
+  // leaves one core idle and made the 91-test gate take about ten minutes.
+  // Override only this hosted full-matrix invocation to two workers; focused
+  // branch gates keep their existing single-worker behavior.
+  run('npm', ['run', 'test:ui', '--', '--workers=2'], {
     CI: '1',
     PLAYWRIGHT_REUSE_BUILD: '1',
   });
