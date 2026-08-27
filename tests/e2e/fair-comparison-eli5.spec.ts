@@ -29,6 +29,11 @@ for (const matrix of matrices) {
         await page.goto(path, { waitUntil: 'domcontentloaded' });
         await settle(page);
 
+        const scope = page.locator('[data-fair-comparison-scope]');
+        await expect(scope).toBeVisible();
+        await expect(scope).toContainText('Track A');
+        await expect(scope).toContainText('21,920');
+
         const root = page.locator('.eli5-lab');
         await expect(root).toBeVisible();
         await expect(root.locator('.eli5-block')).toHaveCount(8);
