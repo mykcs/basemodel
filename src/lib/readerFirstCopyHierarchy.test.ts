@@ -58,7 +58,8 @@ describe('reader-first public copy hierarchy', () => {
     expect(incident).toContain('<strong>16</strong>');
     expect(incident).toContain('条成功 rollout，覆盖 8 个任务 × 每个任务 2 条独立成功轨迹');
     expect(incident).toContain('累计 optimizer-step 上限是 ≤128');
-    expect(incident).toContain('0 个 OpenEvo adapter 训练步即可看到');
+    expect(incident).toContain('我们一步都没训练，BASE 就已经写出了 [action]');
+    expect(incident).not.toContain('0 个 OpenEvo adapter 训练步即可看到');
     expect(incident).toContain('adapter_loaded=false');
     expect(incident).toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
     expect(incident).toContain('wrapper-attribution__incident strong{color:var(--color-danger);font-weight:820}');
