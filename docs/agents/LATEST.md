@@ -135,6 +135,22 @@ For the Results release, require exact-head Preview metadata and zh/en browser a
 
 For Production browser scope, read `current/deployment-policy.md` and `scripts/vercel-ui-plan.ts`; never infer that a focused or skipped hosted browser layer weakens the pre-provider acceptance requirement. Uncertain scope must fail closed to the complete hosted matrix.
 
+## Provider wait discipline
+
+Provider latency is not productive Agent work. The conversation must not spend minutes in repeated `sleep -> poll Vercel -> sleep -> poll logs` loops when a deployment is visibly progressing and there is no actionable failure.
+
+Default behavior after a provider-triggering ref update:
+
+1. Record the exact head SHA and deployment ID/URL.
+2. Do one immediate provider-state read and, when useful, one short tail/error log read to confirm that the build actually started and is not already failing.
+3. If the deployment is still `BUILDING` with active progress and no actionable failure, make at most one short recheck after roughly 30–60 seconds. Do **not** schedule multi-minute conversational sleeps merely to wait for Vercel.
+4. While the provider runs, continue only independent work that cannot retrigger or invalidate the same deployment. Do not manufacture source changes just to stay busy.
+5. If no independent work remains, stop active polling and emit a compact resume checkpoint: exact SHA, deployment ID/URL, current phase, last meaningful log timestamp, and the next acceptance action once the deployment becomes terminal.
+6. On the next user turn or explicit monitoring run, resume from that checkpoint. Query the deployment object first; read only `errorsOnly` or the log tail needed for the current phase instead of rescanning full build logs.
+7. Repeated fast polling is justified only when the provider is already near a terminal transition, when an actionable failure is suspected, or when the owner explicitly asks to wait synchronously.
+
+The goal is to separate **provider completion latency** from **Agent reasoning time**. A twelve-minute Vercel build may still exist for a high-risk change, but the Agent should not occupy twelve minutes of conversation babysitting it.
+
 ## Repository-write hygiene
 
 Shared GitHub/provider state is not scratch space.
