@@ -1,33 +1,61 @@
-# Repository map for agents
+# Repository map for Agents
 
-Last reviewed: **2026-08-20**
+Last reviewed: **2026-08-27**
 
 ## 60-second start
 
-Read `AGENTS.md` -> `docs/agents/LATEST.md` -> operating principles -> scenario triggers -> hosting/deployment policy -> task-relevant product/UI docs -> executable config/source/tests.
+```text
+/AGENTS.md
+-> docs/README.md
+-> docs/agents/LATEST.md
+-> docs/agents/README.md
+-> matched docs/agents/current owner
+-> executable source/config/tests + live provider/experiment truth
+```
 
-## Ownership map
+`docs/README.md` explains lifecycle. `docs/agents/README.md` selects task owners. Do not treat every Markdown file as equal authority.
+
+## Documentation ownership map
 
 ```text
-AGENTS.md                         fast Agent router/invariants
-docs/agents/LATEST.md            live handoff
-docs/agents/current/             authoritative current policies/runbooks
-docs/agents/current/css-architecture.md
-                                  CSS composition/ownership/migration contract
-docs/agents/history/             historical evidence, not current instructions
-src/                              production application/content/domain logic
-src/styles/app.css               only page-wide CSS composition root
-src/styles/tokens.css            canonical shared design tokens
-public/                           production static assets
-scripts/                          build, validation and audit helpers
-scripts/audit-css-architecture.ts CSS ownership/cascade structural gate
-tests/ + src/lib/*.test.ts        executable regression/invariant checks
-scripts/audit-audience-copy.ts    public-copy candidate scan + strict invariants
-docs/agents/current/audience-*    copy contract + source-owner audit inventory
-vercel.json                       active Preview + Production build contract
-wrangler.jsonc                    dormant Workers shadow option
-package.json                      executable task/Gate surface
+AGENTS.md                              fast Agent router + invariants
+docs/README.md                        docs lifecycle + compatibility exceptions
+docs/agents/LATEST.md                 short-lived live/current handoff
+docs/agents/README.md                 task router + precedence
+docs/agents/current/                  authoritative current policies/runbooks/maps
+docs/agents/history/                  incidents, completed audits/pilots/migrations/closeouts
+docs/archive/                         superseded pre-current product/context snapshots
+docs/agent-context/                   compatibility entrypoint for old historical links
+docs/V2_PRODUCT_COMPLETION_MATRIX.md  fixed-path legacy audit compatibility mirror
 ```
+
+Two explicit fixed-path compatibility exceptions currently exist: the root V2 matrix and `current/vercel-preview-migration-plan.md`. The latter is a short test-consumer shim, **not** a deployment policy owner; current Vercel behavior lives in `hosting-architecture.md` and `deployment-policy.md`.
+
+A date does not decide lifecycle. `seed-openevo-results-current-state-2026-08-26.md` remains current because it is actively refreshed/consumed. Completed Vercel pilots, migration/adoption records, one-time catalog audits, and the 2026-08-10 product closeout belong in history.
+
+## Current implementation ownership
+
+```text
+src/                                  production application/content/domain logic
+src/styles/app.css                    only page-wide CSS composition root
+src/styles/tokens.css                 canonical shared design tokens
+public/                               production static assets
+scripts/                              build, validation and audit helpers
+tests/ + src/lib/*.test.ts            executable regression/invariant checks
+vercel.json                           active Preview + Production build contract
+package.json                          executable task/Gate surface
+wrangler.jsonc                        dormant/legacy provider-specific helper, not normal release authority
+```
+
+Important current owners include:
+
+- `current/css-architecture.md` — CSS composition/ownership/migration debt;
+- `current/hosting-architecture.md` + `current/deployment-policy.md` — Vercel release authority;
+- `current/product-and-research-integrity.md` — product/research false-complete rules;
+- `current/audience-centered-technical-copy.md` plus the writing stack in `docs/agents/README.md` — public/research language;
+- `current/research-journey-experience.md` — canonical research route roles and explainer deduplication;
+- `current/model-catalog-verification-policy.md` — current model/provider claims;
+- `current/scientific-state-provenance.md` + experiment-side authority — moving scientific state.
 
 ## CSS ownership map
 
@@ -35,37 +63,34 @@ package.json                      executable task/Gate surface
 AppLayout.astro
 └─ styles/app.css
    ├─ foundation: global.css -> tokens.css + site.css + visual-identity.css
-   ├─ named global systems: workspace / actionable-content / knowledge-architecture / mobile-composition
-   └─ frozen compatibility debt: v2-closeout / visual-upgrade / design-refinement / final-hardening / visual-closeout
-
-feature component
-└─ feature-owned stylesheet when page-wide reach is not required
+   ├─ named global systems
+   ├─ frozen compatibility debt: v2-closeout / visual-upgrade / design-refinement / final-hardening / visual-closeout
+   └─ semantic component owners loaded last
 ```
 
-Do not create another global `*-hardening.css`, `*-closeout.css`, `*-refinement.css`, or `*-upgrade.css` layer. Existing files with those names are frozen migration debt. Follow `current/css-architecture.md` and move touched rules back toward their semantic owner while preserving browser-validated behavior.
+The historical-looking CSS filenames are **live migration debt**, not documentation clutter. Do not delete them for cosmetic consistency. Follow `current/css-architecture.md` and retire declarations property-owner by property-owner with browser evidence until a legacy layer is actually redundant.
 
 ## Deployment map
 
 ```text
-Ordinary Preview surface — Vercel
-Vercel project `basemodel-preview`
-non-main -> Vercel Preview
-main     -> Vercel Production -> https://basemodel-preview.vercel.app
-Pages    -> frozen legacy rollback; normal builds = 0
+GitHub non-main deployment-eligible ref -> Vercel Preview
+GitHub main                             -> Vercel Production
+Production identity                    -> https://basemodel-preview.vercel.app
+Cloudflare Pages/Direct Upload/Workers  -> rollback or provider-specific fallback only
 ```
 
-`vercel.json` must not disable `main`. Preview noindex is protected in source using `VERCEL_ENV=preview`. The repository Gate remains `npm run verify:deploy`; `npm run build` produces the static artifact.
-
-Cloudflare Direct Upload remains a supported fallback for Cloudflare-specific validation. Other Cloudflare helper scripts and the Workers shadow stay available only for rollback/provider-specific diagnostics. `npm run build:cloudflare` is no longer the formal release command.
+Vercel is the only ordinary deployment authority. GitHub Actions and GitHub Pages remain retired. Cloudflare-specific current runbooks remain only where executable fallback behavior still exists; completed migration/pilot rationale is history.
 
 ## Change-to-check guidance
 
-- docs/Agent-only: inspect precedence/links; no hosted deployment unless executable semantics changed.
-- data/schema/domain: `npm run verify:deploy`; Preview if rendered behavior changes.
-- CSS architecture/global style ownership: `npm run audit:css` + Gate + exact-head Vercel Preview + strongest task-relevant UI browser matrix.
-- UI/routing/i18n/SEO: Gate + exact-head Vercel Preview + real route/metadata/interaction inspection; Playwright when relevant.
-- public copy/onboarding/status: read the audience-copy contract and inventory, run `npm run audit:copy`, resolve candidates contextually, then run `npm run audit:copy:strict` (also included in `verify:deploy`).
-- deployment architecture: update current docs + machine invariant + provider validation together.
-- Production release: verify the real Vercel Production deployment separately from Preview/merge.
+- docs/Agent-only: verify lifecycle, precedence, links, and executable consumers; no hosted deployment unless executable semantics changed;
+- data/schema/domain: run the repository Gate and task-specific tests; Preview when rendered behavior changes;
+- CSS/global visual ownership: `npm run audit:css` + Gate + required real-browser matrix + exact-head Preview;
+- UI/routing/i18n/SEO: Gate + exact-head Preview + real route/metadata/interaction acceptance;
+- public copy/onboarding/status: load the writing stack, run contextual/strict copy audits, review both locales and affected route owners;
+- deployment architecture: current docs + executable provider config/tests + live provider validation must change together;
+- Production release: verify the actual Vercel Production deployment separately from merge/Preview.
 
-GitHub Actions and GitHub Pages remain retired. Do not create duplicate Agent knowledge trees; route reusable situations through the existing trigger/current-policy system.
+## Lifecycle stopping rule
+
+Do not create a new current document just to preserve a task recap. Update the existing owner. Put a completed audit/migration/closeout in `history/` when its main value becomes rationale/evidence. Put old pre-current milestone/context snapshots in `archive/`. Leave scratch notes uncommitted.
