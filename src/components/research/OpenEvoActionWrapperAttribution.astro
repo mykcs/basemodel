@@ -109,8 +109,8 @@ const steps: Step[] = [
 
     <dl class="wrapper-attribution__facts" aria-label={t('判断原因前需要先知道的实验规模', 'Experiment scale needed for attribution')}>
       <div><dt>{t('正式评测', 'Formal evaluation')}</dt><dd><strong>128 × 2 = 256</strong> {t('个 episode；两边都是冻结模型，现场没有重新训练。', 'episodes; both arms were frozen and no retraining happened during evaluation.')}</dd></div>
-      <div><dt>{t('adapter 训练规模', 'Adapter training scale')}</dt><dd><strong>16</strong> {t('条成功 rollout，覆盖 8 个任务 × 每个任务 2 条独立成功轨迹；8 次连续增量，1 epoch，每个增量最多 16 个 optimizer steps，final effective rank 32。', 'successful rollouts across 8 tasks × 2 independent successes per task; 8 sequential increments, 1 epoch, at most 16 optimizer steps per increment, final effective rank 32.')}</dd></div>
-      <div><dt>{t('直接归因证据', 'Direct attribution evidence')}</dt><dd><strong>adapter_loaded=false</strong>{t(' 的 BASE 仍然写出了 [action] search[...]；因此“SD-LoRA 训练创造了这个格式”不是现有证据支持的解释。', ' BASE still emitted [action] search[...]; current evidence therefore does not support “SD-LoRA training created this format” as the origin explanation.')}</dd></div>
+      <div><dt>{t('adapter 训练规模', 'Adapter training scale')}</dt><dd><strong>16</strong> {t('条成功 rollout，覆盖 8 个任务 × 每个任务 2 条独立成功轨迹；8 次连续增量，1 epoch，每个增量最多 16 个 optimizer steps，因此累计 optimizer-step 上限是 ≤128；final effective rank 32。', 'successful rollouts across 8 tasks × 2 independent successes per task; 8 sequential increments, 1 epoch, at most 16 optimizer steps per increment, so the cumulative optimizer-step upper bound is ≤128; final effective rank 32.')}</dd></div>
+      <div><dt>{t('错误何时已存在', 'When the error already exists')}</dt><dd><strong>{t('0 个 OpenEvo adapter 训练步即可看到', 'Visible with 0 OpenEvo adapter training steps')}</strong>{t('：adapter_loaded=false 的 BASE 已经写出了 [action] search[...]。所以不能把它的起源解释成“SD-LoRA 训练到第 N 步才把格式教坏”。', ': BASE with adapter_loaded=false already emitted [action] search[...]. Its origin therefore cannot be explained as “SD-LoRA training reached step N and taught the bad format.”')}</dd></div>
     </dl>
 
     <div class="wrapper-attribution__timeline">
