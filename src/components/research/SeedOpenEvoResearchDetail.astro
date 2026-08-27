@@ -20,7 +20,7 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
   seed: {
     eyebrow: t('方法', 'Method'),
     title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
-    lede: t('SEED 从完整轨迹生成 hindsight skill，并通过 OPD 与 RL 把学习信号写回 policy 参数。', 'SEED generates hindsight skills from completed trajectories and writes the learning signal back into policy parameters through OPD and RL.'),
+    lede: t('SEED 先用外部 GLM-5.2 从完整轨迹生成 hindsight skill 并做 SFT；进入 Stage 2 后，当前 policy 自己 rollout、自己分析，再通过 OPD 与 GRPO 更新参数。', 'SEED first uses external GLM-5.2 to generate hindsight skills from completed trajectories for SFT; in Stage 2, the current policy rolls out and analyzes its own episodes before OPD and GRPO update its parameters.'),
   },
   openevo: {
     eyebrow: t('方法', 'Method'),

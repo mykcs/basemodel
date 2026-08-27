@@ -44,15 +44,29 @@ export function SeedExplainer({ locale, step }: { locale: Locale; step: number }
   ];
   return (
     <>
+      <section className="irx-seed-stage irx-seed-bootstrap" data-ui-audit="contrast layout" aria-labelledby="seed-stage1-title">
+        <header className="irx-seed-stage__head">
+          <div><span>STAGE 1 · HINDSIGHT-SKILL SFT</span><strong id="seed-stage1-title">{zh ? '外部 GLM-5.2 先把“做完一题”变成“会复盘一题”' : 'External GLM-5.2 first turns completed episodes into learnable hindsight'}</strong></div>
+          <p>{zh ? 'GLM-5.2 读取完整 episode 并生成 hindsight-skill 标注；它不是 WebShop 的 reward scorer。' : 'GLM-5.2 reads completed episodes and generates hindsight-skill annotations; it is not the WebShop reward scorer.'}</p>
+        </header>
+        <ol aria-label={zh ? 'SEED Stage 1 bootstrap 流程' : 'SEED Stage 1 bootstrap flow'}>
+          <li data-ui-audit-item><small>WEBSHOP TRAJECTORIES</small><b>180 tasks × 8 rollouts</b><span>{zh ? '= 1,440 条完整轨迹' : '= 1,440 completed trajectories'}</span></li>
+          <li className="irx-glm-model" data-ui-audit-item><span className="irx-glm-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 3.5 19 11l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z"/><circle cx="25.5" cy="6.5" r="2.2"/><circle cx="6.5" cy="25" r="1.7"/></svg></span><div><small>EXTERNAL TEACHER</small><b>GLM-5.2</b><span>{zh ? '读完整 episode → 生成 hindsight skill' : 'read episode → generate hindsight skill'}</span></div></li>
+          <li data-ui-audit-item><small>ANNOTATION</small><b>trajectory → skill</b><span>{zh ? '保留可用于监督学习的事后复盘' : 'retain hindsight records for supervision'}</span></li>
+          <li data-ui-audit-item><small>SUPERVISED UPDATE</small><b>3-epoch SFT</b><span>{zh ? '把复盘能力写进初始 checkpoint' : 'write analysis ability into the initial checkpoint'}</span></li>
+          <li data-ui-audit-item><small>BOOTSTRAPPED POLICY</small><b>policy θ0</b><span>{zh ? '之后既能 acting，也能 analyzing' : 'now capable of acting and analyzing'}</span></li>
+        </ol>
+      </section>
+      <div className="irx-seed-stage-divider" data-ui-audit="contrast layout"><div><span>STAGE 2 · SELF-EVOLVING OPD + GRPO</span><strong>{zh ? '外部 GLM 离开训练回路；当前 policy 自己行动、自己复盘' : 'The external GLM leaves the loop; the current policy acts and analyzes its own episodes'}</strong></div><small>{zh ? '下面的逐步播放只追踪 Stage 2。' : 'The step-by-step playback below traces Stage 2 only.'}</small></div>
       <div className="irx-diagram irx-seed-scene" ref={sceneRef} data-ui-audit="contrast layout">
-        <FlowNode id="seed-policy" role="CURRENT POLICY" title="policy θt" detail={zh ? '这一轮的 actor；同一 checkpoint 也提供 hindsight analyzer 能力' : 'actor for this round; the same checkpoint also supplies hindsight analyzer capability'} moreLabel={moreLabel} more={zh ? 'θt 指当前训练轮次的 checkpoint；rollout 与 hindsight 分析共用同一份权重，因此“回看”不会引入另一个模型。' : 'θt is the checkpoint for this training round; rollout and hindsight analysis share the same weights, so the review never involves a second model.'} tone="state" active={step === 0} complete={step > 0} className="seed-policy">
+        <FlowNode id="seed-policy" role="CURRENT POLICY" title="policy θt" detail={zh ? '这一轮的 actor；同一 checkpoint 也提供 hindsight analyzer 能力' : 'actor for this round; the same checkpoint also supplies hindsight analyzer capability'} moreLabel={moreLabel} more={zh ? 'θt 指 Stage 2 当前训练轮次的 checkpoint；rollout 与 hindsight 分析共用同一份权重，所以这一阶段不会再调用 Stage 1 的外部 GLM-5.2。' : 'θt is the current Stage-2 checkpoint; rollout and hindsight analysis share the same weights, so this stage no longer calls the external GLM-5.2 used in Stage 1.'} tone="state" active={step === 0} complete={step > 0} className="seed-policy">
           <ParamGrid label={`θt · ${schematic}`} cells={THETA_T} tone="state" className="seed-theta" />
         </FlowNode>
         <FlowNode id="seed-rollout" role="ON-POLICY INTERACTION" title={zh ? '真实环境 rollout' : 'real environment rollout'} detail="observation · sampled actions · outcome" moreLabel={moreLabel} more={zh ? 'on-policy 意味着动作来自当前 policy 本身，而不是旧数据或 teacher 演示。' : 'on-policy means actions come from the current policy itself, not stale data or teacher demonstrations.'} tone="env" active={step === 0} complete={step > 0} className="seed-rollout" />
         <FlowNode id="seed-trajectory" role="SEALED EPISODE" title={zh ? '完整 trajectory' : 'completed trajectory'} detail={zh ? '动作已经采样完成；后面只重打分，不重新生成“正确轨迹”' : 'actions are already sampled; later stages re-score them rather than generate a new “correct trajectory”'} moreLabel={moreLabel} more={zh ? '封存表示轨迹不再被改写；后续所有学习信号都指向这批已固定的 action token。' : 'Sealed means the trajectory is never rewritten; every later learning signal refers to these fixed action tokens.'} tone="experience" active={step === 1} complete={step > 1} className="seed-trajectory">
           <ChipSequence label={sameAction} tone="experience" tokens={actionTokens} className="seed-action-chips" />
         </FlowNode>
-        <FlowNode id="seed-hindsight" role="HINDSIGHT ANALYZER" title="hindsight skill" detail={zh ? '同一 checkpoint 看完 episode 后提取“早知道什么会更好”' : 'the same checkpoint extracts what hindsight would have helped after seeing the whole episode'} moreLabel={moreLabel} more={zh ? 'skill 是文本形式的经验总结，只出现在重打分 context 中，不改写原轨迹。' : 'A skill is a textual experience summary used only inside the re-scoring context; it never rewrites the trajectory.'} tone="experience" active={step === 2} complete={step > 2} className="seed-hindsight" />
+        <FlowNode id="seed-hindsight" role="HINDSIGHT ANALYZER" title="hindsight skill" detail={zh ? '同一 checkpoint 看完 episode 后提取“早知道什么会更好”' : 'the same checkpoint extracts what hindsight would have helped after seeing the whole episode'} moreLabel={moreLabel} more={zh ? 'Stage 2 的 skill 是当前 policy 自己生成的文本经验总结，只出现在重打分 context 中；Stage 1 的同类 skill 则由外部 GLM-5.2 生成，用于 SFT。两者都不改写原轨迹。' : 'In Stage 2, the skill is a textual experience summary generated by the current policy and used only in the re-scoring context; Stage-1 skills of the same form are generated by external GLM-5.2 for SFT. Neither rewrites the trajectory.'} tone="experience" active={step === 2} complete={step > 2} className="seed-hindsight" />
         <FlowNode id="seed-plain" role="CONTEXT A" title="plain context" detail={`${sameAction} · P_plain`} moreLabel={moreLabel} more={zh ? 'P_plain 是 policy 在原始 observation 下对同一 action 给出的概率。' : 'P_plain is the probability the policy assigns to the same action under the raw observation.'} tone="env" active={step === 3} complete={step > 3} className="seed-plain">
           <ChipSequence label={sameAction} tone="env" tokens={actionTokens} className="seed-action-chips" />
         </FlowNode>
@@ -75,7 +89,7 @@ export function SeedExplainer({ locale, step }: { locale: Locale; step: number }
         <small>{zh ? '教学示例概率，只用于解释“同一动作、两个 context、概率变化”；不是论文或本项目实测值。' : 'Illustrative probabilities only, used to explain “same action, two contexts, probability shift”; these are not measured paper/project values.'}</small>
       </div>
       <aside className="irx-inference-strip" data-ui-audit="contrast layout">
-        <div><small>TRAINING</small><strong>{zh ? 'hindsight / OPD / GRPO → 更新 policy 参数' : 'hindsight / OPD / GRPO → update policy parameters'}</strong></div>
+        <div><small>TRAINING</small><strong>{zh ? 'Stage 1：GLM-5.2 → hindsight SFT；Stage 2：self-hindsight + OPD + GRPO → 更新 policy' : 'Stage 1: GLM-5.2 → hindsight SFT; Stage 2: self-hindsight + OPD + GRPO → update policy'}</strong></div>
         <div><small>TEST / INFERENCE</small><strong>{zh ? '更新后的 policy → WebShop' : 'updated policy → WebShop'}</strong></div>
       </aside>
     </>

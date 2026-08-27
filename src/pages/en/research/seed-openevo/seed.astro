@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvo
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
-<AppLayout title="SEED framework and experiment loop" description="Explain SEED's WebShop data configuration, hindsight-skill SFT, self-evolving on-policy distillation, GRPO, actor/analyzer synchronization, and the training-to-inference boundary." locale={locale}>
+<AppLayout title="SEED framework and experiment loop" description="Explain how SEED uses external GLM-5.2 for Stage-1 hindsight-skill SFT, then switches to current-policy self-analysis with OPD and GRPO in Stage 2, including the training-to-inference boundary." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="seed">
     <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
   </SeedOpenEvoResearchPage>

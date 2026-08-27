@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../components/research/SeedOpenEvoRes
 import InteractiveResearchExplainer from '../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
-<AppLayout title="SEED 框架原理与实验循环" description="解释 SEED 在 WebShop 上怎样把事后经验整理成技能（hindsight skill），再通过监督微调（SFT）、在线策略蒸馏（on-policy distillation）与 GRPO 更新模型，以及训练与推理阶段的边界。" locale={locale}>
+<AppLayout title="SEED 框架原理与实验循环" description="解释 SEED 怎样在 Stage 1 用外部 GLM-5.2 生成 hindsight skill 并做 SFT，再在 Stage 2 由当前 policy 自分析，通过 OPD 与 GRPO 更新模型，以及训练与推理阶段的边界。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="seed">
     <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
   </SeedOpenEvoResearchPage>
