@@ -86,7 +86,7 @@ Historical case and friction record: [`../history/2026-08-28-vercel-billing-and-
 
 **Cues:** a copy/docs-like change fails a semantic/evidence/hardening audit; the easiest path to green is to remove an assertion.
 
-**Automatic response:** read the failing invariant, decide whether it remains valid using current truth, fix the implementation/content if it does, and change the Gate only when evidence proves the Gate itself is stale. Encode recurring boundaries in the existing owner/test rather than weakening research or release safety.
+**Automatic response:** read the failing invariant, decide whether it remains valid using current truth, fix the implementation/content if it does, and change the Gate only when evidence proves the Gate itself is stale. Encode recurring boundaries in the existing owner/test rather than weakening research or release safety. If a broad browser/full-suite failure appears outside the changed surface, reproduce the exact failing test on the candidate **and the intended base/current `main` under the same runner/config** before expanding scope. The same failure on base is evidence of a pre-existing blocker, not permission to call the full gate green; still prove the changed surface with focused acceptance and report the base-existing failure separately. If the change touched a shared primitive that plausibly affects the failing surface, continue investigating even when base also fails. See `ui-change-visual-acceptance-gate.md` Section 10 and the 2026-08-28 SEED responsibility-topology retrospective.
 
 ---
 
@@ -102,8 +102,11 @@ Historical case and friction record: [`../history/2026-08-28-vercel-billing-and-
 4. Preserve task/model/checkpoint/data/evaluation identity and observable provenance.
 5. Prefer already-authorized hardware when it answers the scientific question; paper hardware is not automatically a universal prerequisite.
 6. Never silently substitute a newer model/checkpoint or a nearby historical experiment for the exact artifact named by the current protocol.
+7. When teaching or auditing an agent-loop diagram, trace responsibility from executable code rather than forcing a false binary owner: **model -> model-facing harness <-> benchmark environment -> completed evidence -> analyzer/reward/learning update -> persisted state**. In SEED WebShop specifically, distinguish the SEED/verl-agent prompt/history/action-projection harness from Princeton WebShop's `WebAgentTextEnv`. Read `research-explainer-page-standard.md` and, when this ambiguity appears, the 2026-08-28 responsibility-topology retrospective.
 
 For SEED WebShop environment identity specifically, load `seed-webshop-environment-audit.md` before claiming source-faithful equivalence.
+
+Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md`](../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md).
 
 ---
 
@@ -136,9 +139,10 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 3. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
 4. For Chinese technical explainers add `layered-technical-explainer-copy.md`.
 5. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners.
-6. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim → evidence → inference → boundary intact.
+6. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
 7. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
 8. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
+9. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
 
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
 
@@ -186,7 +190,7 @@ When source-owner coverage/exemptions change, update the maintained `audience-co
 
 ## TRIGGER: reusable lesson discovered
 
-Persist only when the lesson is likely to recur or expensive to forget. Current cross-task rule → update its existing `current/` owner; short-lived live state → `LATEST.md`; reusable incident/migration rationale → `history/`; pre-current superseded milestone/context → `archive/`; task-local scratch → do not persist.
+Persist only when the lesson is likely to recur or expensive to forget. Current cross-task rule -> update its existing `current/` owner; short-lived live state -> `LATEST.md`; reusable incident/migration rationale -> `history/`; pre-current superseded milestone/context -> `archive/`; task-local scratch -> do not persist.
 
 ## Trigger maintenance
 
