@@ -111,7 +111,7 @@ const steps: Step[] = [
       ))}
     </div>
 
-    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t('仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“必须由 SD-LoRA 训练才会出现 [action]”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据，也不能仅凭这里的样本断言训练绝不会改变 wrapper frequency。因此这里不再把责任推给某个未知的上游样本或个人。', 'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and the idea that [action] requires SD-LoRA training to appear — but it cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused the behavior, nor can this evidence alone prove that training could never change wrapper frequency. Attribution therefore stops here rather than naming an unknown upstream sample or person.')}</p>
+    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t('仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“必须由 SD-LoRA 训练才会出现 [action]”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据。因此这里不再把责任推给某个未知的上游样本或个人，也不声称 SD-LoRA 绝不可能改变 wrapper frequency。', 'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and the idea that [action] requires SD-LoRA training to appear — but it cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused the behavior. Attribution therefore stops here rather than naming an unknown upstream sample or person, and it does not claim SD-LoRA could never affect wrapper frequency.')}</p>
   </div>
 </details>
 
