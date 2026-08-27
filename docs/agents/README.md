@@ -95,7 +95,7 @@ Read:
 
 Vercel owns ordinary Preview and Production. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks, not normal release authority.
 
-For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy.
+For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 
 ### Model catalog / current-provider claims
 
