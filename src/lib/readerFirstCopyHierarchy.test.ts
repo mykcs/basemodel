@@ -48,11 +48,14 @@ describe('reader-first public copy hierarchy', () => {
     expect(hero).not.toContain("<p class=\"lede\">{t(\n    '如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop");
   });
 
-  it('makes the action-wrapper incident concrete, prominent, and conclusion-first', () => {
+  it('makes the action-wrapper incident concrete, responsibility-first, and useful for the next experiment', () => {
     const incident = readFileSync(join(srcRoot, 'components/research/OpenEvoActionWrapperAttribution.astro'), 'utf8');
     expect(incident).toContain('动作格式错误：<action>...</action> 被写成 [action]...');
     expect(incident).toContain('wrapper-attribution__incident');
     expect(incident).toContain('但有些输出把外层 <action>...</action> 写成了 [action]...');
+    expect(incident).toContain('责任在我们的实验集成层');
+    expect(incident).toContain('模型触发了问题，但把已知问题带进正式评测，是我们的责任');
+    expect(incident).not.toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
     expect(incident).toContain('wrapper-attribution__facts');
     expect(incident).toContain('128 × 2 = 256');
     expect(incident).toContain('<strong>16</strong>');
@@ -61,7 +64,12 @@ describe('reader-first public copy hierarchy', () => {
     expect(incident).toContain('我们一步都没训练，BASE 就已经写出了 [action]');
     expect(incident).not.toContain('0 个 OpenEvo adapter 训练步即可看到');
     expect(incident).toContain('adapter_loaded=false');
-    expect(incident).toContain('结论先行：这次 [action] 的起源不能归给 SD-LoRA 训练');
+    expect(incident).toContain('这次事故留下的经验');
+    expect(incident).toContain('对模型训练');
+    expect(incident).toContain('任务分数、command 是否合法、wrapper 是否合规分开记录');
+    expect(incident).toContain('对下一步实验');
+    expect(incident).toContain('模型输出 → parser → 环境动作');
+    expect(incident).toContain('invalid action 一旦异常升高就应该立刻停');
     expect(incident).toContain('wrapper-attribution__incident strong{color:var(--color-danger);font-weight:820}');
   });
 });
