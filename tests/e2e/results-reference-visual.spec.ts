@@ -16,7 +16,7 @@ async function settle(page: Page) {
 for (const viewport of viewports) {
   test(`${viewport.name} keeps the results question cards as readable blocks`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    await page.goto('/research/seed-openevo/results/');
+    await page.goto('/research/seed-openevo/study/results/');
     await settle(page);
 
     const root = page.getByTestId('openevo-webshop-result-index');

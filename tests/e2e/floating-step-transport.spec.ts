@@ -1,15 +1,15 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const ownerRoutes = [
-  ['/research/seed-openevo/webshop/', 'webshop'],
-  ['/research/seed-openevo/alfworld/', 'alfworld'],
-  ['/research/seed-openevo/seed/', 'seed'],
-  ['/research/seed-openevo/openevo/', 'openevo'],
+  ['/research/seed-openevo/flow/webshop/', 'webshop'],
+  ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
+  ['/research/seed-openevo/flow/seed/', 'seed'],
+  ['/research/seed-openevo/flow/openevo/', 'openevo'],
   ['/lab/', 'server'],
-  ['/en/research/seed-openevo/webshop/', 'webshop'],
-  ['/en/research/seed-openevo/alfworld/', 'alfworld'],
-  ['/en/research/seed-openevo/seed/', 'seed'],
-  ['/en/research/seed-openevo/openevo/', 'openevo'],
+  ['/en/research/seed-openevo/flow/webshop/', 'webshop'],
+  ['/en/research/seed-openevo/flow/alfworld/', 'alfworld'],
+  ['/en/research/seed-openevo/flow/seed/', 'seed'],
+  ['/en/research/seed-openevo/flow/openevo/', 'openevo'],
   ['/en/lab/', 'server'],
 ] as const;
 
@@ -64,7 +64,7 @@ test('every true step-by-step owner docks Previous / Next from initial render th
 test('WebShop floating transport also stays inside a mobile viewport', async ({ page }) => {
   const viewport = { width: 390, height: 844 };
   await page.setViewportSize(viewport);
-  await page.goto('/research/seed-openevo/webshop/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
   const transport = root.locator('.irx-transport');
@@ -78,7 +78,7 @@ test('WebShop floating transport also stays inside a mobile viewport', async ({ 
 });
 
 test('canonical-only comparison routes never expose a floating step transport', async ({ page }) => {
-  for (const path of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
+  for (const path of ['/research/seed-openevo/flow/loops/', '/en/research/seed-openevo/flow/loops/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     await expect(page.locator('#fig-seed-openevo-update-target')).toBeVisible();
@@ -89,7 +89,7 @@ test('canonical-only comparison routes never expose a floating step transport', 
 
 test('SEED transport is bottom-docked before interaction', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/research/seed-openevo/seed/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   await page.mouse.move(4, 4);
   await expect(page.locator('#fig-seed-webshop')).toHaveCount(0);

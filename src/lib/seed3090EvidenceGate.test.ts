@@ -5,8 +5,8 @@ const read = (path: string) =>
   readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 
 const component = read('src/components/research/Seed3090EvidenceGate.astro');
-const zhRoute = read('src/pages/research/seed-openevo/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
+const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
 
 describe('seed3090 evidence gate archive', () => {
   it('keeps the August 12 mechanism, attribution, and efficacy methodology intact', () => {

@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const routes = [
-  '/research/seed-openevo/experiment/',
-  '/en/research/seed-openevo/experiment/',
+  '/research/seed-openevo/study/',
+  '/en/research/seed-openevo/study/',
 ] as const;
 
 const matrices = [
@@ -78,7 +78,7 @@ for (const matrix of matrices) {
 
 test('reduced motion leaves the explainer fully understandable without active animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/research/seed-openevo/experiment/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
   await settle(page);
 
   const root = page.locator('.eli5-lab');

@@ -9,18 +9,18 @@ const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astr
 const gateway = read('src/components/research/OpenEvoExperimentGateway.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
 const detailCore = read('src/components/research/SeedOpenEvoResearchPageCore.astro');
-const benchmarkZh = read('src/pages/research/seed-openevo/benchmarks.astro');
-const benchmarkEn = read('src/pages/en/research/seed-openevo/benchmarks.astro');
-const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
-const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
-const alfworldZh = read('src/pages/research/seed-openevo/alfworld.astro');
-const alfworldEn = read('src/pages/en/research/seed-openevo/alfworld.astro');
-const seedZh = read('src/pages/research/seed-openevo/seed.astro');
-const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
-const openevoZh = read('src/pages/research/seed-openevo/openevo.astro');
-const openevoEn = read('src/pages/en/research/seed-openevo/openevo.astro');
-const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
-const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
+const benchmarkZh = read('src/pages/research/seed-openevo/flow/benchmarks.astro');
+const benchmarkEn = read('src/pages/en/research/seed-openevo/flow/benchmarks.astro');
+const webshopZh = read('src/pages/research/seed-openevo/flow/webshop.astro');
+const webshopEn = read('src/pages/en/research/seed-openevo/flow/webshop.astro');
+const alfworldZh = read('src/pages/research/seed-openevo/flow/alfworld.astro');
+const alfworldEn = read('src/pages/en/research/seed-openevo/flow/alfworld.astro');
+const seedZh = read('src/pages/research/seed-openevo/flow/seed.astro');
+const seedEn = read('src/pages/en/research/seed-openevo/flow/seed.astro');
+const openevoZh = read('src/pages/research/seed-openevo/flow/openevo.astro');
+const openevoEn = read('src/pages/en/research/seed-openevo/flow/openevo.astro');
+const loopsZh = read('src/pages/research/seed-openevo/flow/loops.astro');
+const loopsEn = read('src/pages/en/research/seed-openevo/flow/loops.astro');
 const labZh = read('src/pages/lab.astro');
 const labEn = read('src/pages/en/lab.astro');
 
@@ -61,7 +61,7 @@ describe('research journey experience', () => {
     expect(gateway).toContain('AgentEnvironmentTrajectory');
     expect(guide).toContain('AgentEnvironmentTrajectory');
     expect(guide).not.toContain('InteractiveResearchExplainer');
-    for (const route of ['/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/research/seed-openevo/loops/']) {
+    for (const route of ['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/research/seed-openevo/flow/loops/']) {
       expect(conceptIndex).toContain(route);
     }
     expect(conceptIndex).toContain('/lab/');
@@ -76,8 +76,8 @@ describe('research journey experience', () => {
       expect(source).not.toContain('BenchmarkDatasetDiagram');
     }
     expect(detailCore).toContain('benchmark-detail-links');
-    expect(detailCore).toContain('/research/seed-openevo/webshop/');
-    expect(detailCore).toContain('/research/seed-openevo/alfworld/');
+    expect(detailCore).toContain('/research/seed-openevo/flow/webshop/');
+    expect(detailCore).toContain('/research/seed-openevo/flow/alfworld/');
   });
 
   it('does not cross-mount WebShop and ALFWorld explainers on their dedicated pages', () => {

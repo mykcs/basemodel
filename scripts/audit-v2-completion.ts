@@ -52,7 +52,7 @@ const header = read('src/components/Header.astro');
 pass(
   'V2-NAV-001',
   ['/models/', '/papers/', '/compare/', '/workspace/', '/data-status/', '/methodology/'].every((path) => header.includes(`path: '${path}'`))
-    && !['/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/research/seed-openevo/benchmarks/', '/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/'].some((path) => header.includes(`path: '${path}'`)),
+    && !['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/benchmarks/', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/'].some((path) => header.includes(`path: '${path}'`)),
   'global header exposes top-level resources without duplicating research subpages',
 );
 pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.tsx')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.tsx').includes('ArrowDown'), 'search index and keyboard navigation exist');

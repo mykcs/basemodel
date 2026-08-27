@@ -4,14 +4,14 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const routes = [
-  { key: 'overview-zh', path: '/research/seed-openevo/' },
-  { key: 'webshop-zh', path: '/research/seed-openevo/webshop/' },
-  { key: 'alfworld-zh', path: '/research/seed-openevo/alfworld/' },
-  { key: 'seed-zh', path: '/research/seed-openevo/seed/' },
-  { key: 'openevo-zh', path: '/research/seed-openevo/openevo/' },
-  { key: 'loops-zh', path: '/research/seed-openevo/loops/' },
-  { key: 'results-zh', path: '/research/seed-openevo/results/' },
-  { key: 'results-en', path: '/en/research/seed-openevo/results/' },
+  { key: 'overview-zh', path: '/research/seed-openevo/flow/' },
+  { key: 'webshop-zh', path: '/research/seed-openevo/flow/webshop/' },
+  { key: 'alfworld-zh', path: '/research/seed-openevo/flow/alfworld/' },
+  { key: 'seed-zh', path: '/research/seed-openevo/flow/seed/' },
+  { key: 'openevo-zh', path: '/research/seed-openevo/flow/openevo/' },
+  { key: 'loops-zh', path: '/research/seed-openevo/flow/loops/' },
+  { key: 'results-zh', path: '/research/seed-openevo/study/results/' },
+  { key: 'results-en', path: '/en/research/seed-openevo/study/results/' },
 ] as const;
 
 const matrices = [

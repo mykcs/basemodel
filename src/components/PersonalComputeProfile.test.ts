@@ -20,8 +20,8 @@ describe('public lab topology privacy boundary', () => {
     expect(enPage).toContain('Experiment devices and servers');
     expect(zhPage).not.toContain('<PersonalComputeProfile locale="zh" />');
     expect(enPage).not.toContain('<PersonalComputeProfile locale="en" />');
-    expect(zhPage).toContain('/research/seed-openevo/results/');
-    expect(enPage).toContain('/research/seed-openevo/results/');
+    expect(zhPage).toContain('/research/seed-openevo/study/results/');
+    expect(enPage).toContain('/research/seed-openevo/study/results/');
   });
 
   it('does not reconnect the former personal device profile', () => {

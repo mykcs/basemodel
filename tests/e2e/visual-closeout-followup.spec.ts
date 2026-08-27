@@ -13,9 +13,9 @@ const generalRoutes = [
   '/workspace/',
   '/data-status/',
   '/methodology/',
-  '/guide/openevo-webshop-alfworld/',
-  '/research/seed-openevo/loops/',
-  '/en/research/seed-openevo/loops/',
+  '/research/seed-openevo/study/run/',
+  '/research/seed-openevo/flow/loops/',
+  '/en/research/seed-openevo/flow/loops/',
   '/lab/',
   '/en/',
   '/en/models/',
@@ -25,23 +25,23 @@ const generalRoutes = [
 ] as const;
 
 const explainerRoutes = [
-  { path: '/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
-  { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
-  { path: '/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
-  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/research/seed-openevo/flow/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/research/seed-openevo/flow/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/en/research/seed-openevo/webshop/', kinds: ['webshop'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/seed/', kinds: ['seed'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/openevo/', kinds: ['openevo'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/flow/webshop/', kinds: ['webshop'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/flow/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
+  { path: '/en/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
 ] as const;
 
 const stepperRoutes = [
-  { path: '/research/seed-openevo/webshop/', kinds: ['webshop'] },
-  { path: '/research/seed-openevo/alfworld/', kinds: ['alfworld'] },
-  { path: '/research/seed-openevo/seed/', kinds: ['seed'] },
-  { path: '/research/seed-openevo/openevo/', kinds: ['openevo'] },
+  { path: '/research/seed-openevo/flow/webshop/', kinds: ['webshop'] },
+  { path: '/research/seed-openevo/flow/alfworld/', kinds: ['alfworld'] },
+  { path: '/research/seed-openevo/flow/seed/', kinds: ['seed'] },
+  { path: '/research/seed-openevo/flow/openevo/', kinds: ['openevo'] },
   { path: '/lab/', kinds: ['server'] },
 ] as const;
 

@@ -3,8 +3,8 @@
 Last reviewed: **2026-08-26**
 Status: **current and mandatory for the SEED × OpenEvo Results route**
 Applies to:
-- `src/pages/research/seed-openevo/results.astro`
-- `src/pages/en/research/seed-openevo/results.astro`
+- `src/pages/research/seed-openevo/study/results.astro`
+- `src/pages/en/research/seed-openevo/study/results.astro`
 - every mounted `OpenEvoWebShopResults*` component
 - tests that protect this route's reader voice, scientific boundaries, evidence interaction, or narrative order
 

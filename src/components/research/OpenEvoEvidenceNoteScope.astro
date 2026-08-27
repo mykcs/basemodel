@@ -8,7 +8,7 @@ const { internalTransfer = false, measurementBoundary = false } = Astro.props;
 
 <aside class="evidence-note-scope">
   <strong>Evidence note（证据笔记）</strong>
-  <span>这篇笔记记录某一次具体实验。截止 H1.41 时能够支持的整体结论，可以在 <a href="/research/seed-openevo/results/">研究结果</a> 中查看。</span>
+  <span>这篇笔记记录某一次具体实验。截止 H1.41 时能够支持的整体结论，可以在 <a href="/research/seed-openevo/study/results/">研究结果</a> 中查看。</span>
   {internalTransfer && <span class="scope-warning">该实验中的 fresh task（新任务）属于 OpenEvo internal fresh task-ID-disjoint evaluation（OpenEvo 内部新任务、任务 ID 不重叠评估），任务来自 goal_idx ≥ 500；不是 SEED official held-out evaluation（SEED 官方保留任务评估）。</span>}
   {measurementBoundary && <span class="scope-warning">H1.42 发生在 H1.41 之后，因此它能说明后续 measurement-boundary（测量边界）问题，但不能反过来改变 H1.41 时点已经成立或尚未成立的结论。</span>}
 </aside>

@@ -17,12 +17,12 @@ const currentFacing = [
   'src/pages/guide.astro',
   'src/pages/en/guide.astro',
   'src/pages/guide/today.astro',
-  'src/pages/guide/openevo-webshop-alfworld.astro',
-  'src/pages/en/guide/openevo-webshop-alfworld.astro',
-  'src/pages/research/seed-openevo/experiment.astro',
-  'src/pages/en/research/seed-openevo/experiment.astro',
-  'src/pages/research/seed-openevo/results.astro',
-  'src/pages/en/research/seed-openevo/results.astro',
+  'src/pages/research/seed-openevo/study/run.astro',
+  'src/pages/en/research/seed-openevo/study/run.astro',
+  'src/pages/research/seed-openevo/study/index.astro',
+  'src/pages/en/research/seed-openevo/study/index.astro',
+  'src/pages/research/seed-openevo/study/results.astro',
+  'src/pages/en/research/seed-openevo/study/results.astro',
 ].map((path) => ({ path, source: read(path) }));
 const joined = currentFacing.map(({ source }) => source).join('\n');
 

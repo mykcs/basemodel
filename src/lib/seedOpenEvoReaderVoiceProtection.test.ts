@@ -34,7 +34,7 @@ const seedWebshopCanonicalFigure = read('../components/research/SeedWebShopCanon
 const modelGuide = read('../components/research/OpenEvoModelExperimentGuide.astro');
 const webshopTrainingNote = read('../components/research/WebShopTrainingNote.astro');
 const wrapperAttribution = read('../components/research/OpenEvoActionWrapperAttribution.astro');
-const resultsRoute = read('../pages/research/seed-openevo/results.astro');
+const resultsRoute = read('../pages/research/seed-openevo/study/results.astro');
 const resultsReaderContract = read('../../docs/agents/current/seed-openevo-results-reader-contract.md');
 
 const publicCopy = [

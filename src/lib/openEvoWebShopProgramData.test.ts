@@ -12,8 +12,8 @@ import {
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
-const zhRoute = read('src/pages/research/seed-openevo/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
+const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
 const explainer = read('src/components/research/InteractiveResearchExplainer.tsx');
 
 describe('OpenEvo × WebShop frozen program data', () => {

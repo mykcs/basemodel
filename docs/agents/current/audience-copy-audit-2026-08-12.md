@@ -90,11 +90,11 @@ These are **EXEMPT** from negative-word cleanup because each protects a named re
 
 Chinese source/render coverage:
 
-`/`, `/guide/`, `/guide/openevo-webshop-alfworld/`, `/research/seed-openevo/`, `/research/seed-openevo/base-model/`, `/research/seed-openevo/seed/`, `/research/seed-openevo/openevo/`, `/research/seed-openevo/benchmarks/`, `/research/seed-openevo/loops/`, `/research/seed-openevo/results/`, `/models/`, `/models/qwen2-5-3b-instruct/`, `/papers/`, `/papers/seed/`, `/workspace/`, `/compare/`, `/data-status/`, `/methodology/`.
+`/`, `/guide/`, `/research/seed-openevo/study/run/`, `/research/seed-openevo/flow/`, `/research/seed-openevo/flow/base-model/`, `/research/seed-openevo/flow/seed/`, `/research/seed-openevo/flow/openevo/`, `/research/seed-openevo/flow/benchmarks/`, `/research/seed-openevo/flow/loops/`, `/research/seed-openevo/study/results/`, `/models/`, `/models/qwen2-5-3b-instruct/`, `/papers/`, `/papers/seed/`, `/workspace/`, `/compare/`, `/data-status/`, `/methodology/`.
 
 English source/render coverage:
 
-`/en/`, `/en/guide/`, `/en/guide/openevo-webshop-alfworld/`, `/en/research/seed-openevo/`, `/en/research/seed-openevo/loops/`, `/en/models/qwen2-5-3b-instruct/`, `/en/papers/seed/`.
+`/en/`, `/en/guide/`, `/en/research/seed-openevo/study/run/`, `/en/research/seed-openevo/flow/`, `/en/research/seed-openevo/flow/loops/`, `/en/models/qwen2-5-3b-instruct/`, `/en/papers/seed/`.
 
 The build and browser UI matrix verify generation, responsive layout, overflow, details controls, and theme/locale behavior. Exact-head Preview inspection remains a release-stage responsibility after the final synchronized push.
 

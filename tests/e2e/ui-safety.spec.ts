@@ -12,7 +12,7 @@ const routes = [
   { label: 'workspace', path: '/workspace/' },
   { label: 'data-status', path: '/data-status/' },
   { label: 'methodology', path: '/methodology/' },
-  { label: 'openevo-guide', path: '/guide/openevo-webshop-alfworld/' },
+  { label: 'openevo-guide', path: '/research/seed-openevo/study/run/' },
   { label: 'english-home', path: '/en/' },
   { label: 'english-models', path: '/en/models/' },
   { label: 'english-paper-detail', path: '/en/papers/seed/' },
@@ -271,7 +271,7 @@ for (const matrix of matrices) {
 
 test('theme switching updates page and surface colors without a reload', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  const transitionRoutes = ['/', '/workspace/', '/guide/openevo-webshop-alfworld/'];
+  const transitionRoutes = ['/', '/workspace/', '/research/seed-openevo/study/run/'];
 
   for (const path of transitionRoutes) {
     await test.step(path, async () => {

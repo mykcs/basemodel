@@ -45,9 +45,9 @@ assert(
   'HARDEN-HOME-001',
   home.includes('SeedOpenEvoMissionHero')
     && home.includes('primaryIntents')
-    && home.includes("'/research/seed-openevo/'")
-    && home.includes("'/guide/openevo-webshop-alfworld/'")
-    && home.includes("'/research/seed-openevo/results/'"),
+    && home.includes("'/research/seed-openevo/flow/'")
+    && home.includes("'/research/seed-openevo/study/run/'")
+    && home.includes("'/research/seed-openevo/study/results/'"),
   'home starts from the explicit SEED × OpenEvo experiment and offers overview / experiment-state / reproduction entry paths',
 );
 assert(

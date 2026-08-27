@@ -14,9 +14,9 @@ function workspaceHref(task: Partial<ResearchTask>): string {
 }
 
 const primaryIntents = [
-  { label: locale === 'zh' ? 'SEED 原实验' : 'Original SEED experiment', lede: locale === 'zh' ? 'Qwen2.5-3B-Instruct、ALFWorld、WebShop、训练步骤和论文结果。' : 'Qwen2.5-3B-Instruct, ALFWorld, WebShop, training steps, and paper results.', href: localePath(locale, '/research/seed-openevo/') },
-  { label: locale === 'zh' ? 'OpenEvo × WebShop' : 'OpenEvo × WebShop', lede: locale === 'zh' ? '历史阶段结果、带日期的默认分支快照，以及如何从实际实验 branch 的 campaign / reconciliation 解析实时状态。' : 'Historical phase results, dated default-branch snapshots, and how to resolve live state from the campaign/reconciliation on the experiment branch actually in use.', href: localePath(locale, '/research/seed-openevo/results/') },
-  { label: locale === 'zh' ? '复现实验' : 'Reproduction guide', lede: locale === 'zh' ? '环境、代码、任务合同、运行记录与历史迁移来源。' : 'Environment, code, task contract, run records, and historical migration sources.', href: localePath(locale, '/guide/openevo-webshop-alfworld/') },
+  { label: locale === 'zh' ? 'SEED 原实验' : 'Original SEED experiment', lede: locale === 'zh' ? 'Qwen2.5-3B-Instruct、ALFWorld、WebShop、训练步骤和论文结果。' : 'Qwen2.5-3B-Instruct, ALFWorld, WebShop, training steps, and paper results.', href: localePath(locale, '/research/seed-openevo/flow/') },
+  { label: locale === 'zh' ? 'OpenEvo × WebShop' : 'OpenEvo × WebShop', lede: locale === 'zh' ? '历史阶段结果、带日期的默认分支快照，以及如何从实际实验 branch 的 campaign / reconciliation 解析实时状态。' : 'Historical phase results, dated default-branch snapshots, and how to resolve live state from the campaign/reconciliation on the experiment branch actually in use.', href: localePath(locale, '/research/seed-openevo/study/results/') },
+  { label: locale === 'zh' ? '复现实验' : 'Reproduction guide', lede: locale === 'zh' ? '环境、代码、任务合同、运行记录与历史迁移来源。' : 'Environment, code, task contract, run records, and historical migration sources.', href: localePath(locale, '/research/seed-openevo/study/run/') },
 ];
 const researchPaths = [
   { title: m.v2.home.pathStrict, body: m.v2.home.pathStrictBody, tag: m.v2.home.pathStrictTag },

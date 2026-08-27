@@ -2,20 +2,20 @@
 export type ResearchPrimerMovedId = 'webshop-training' | 'seed-training' | 'openevo-training';
 interface Props { note: ResearchPrimerMovedId }
 const { note } = Astro.props;
-const root = '/research/seed-openevo/results';
+const root = '/research/seed-openevo/study/results';
 const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: string; description: string; href: string; target: string; secondary?: { href: string; label: string } }> = {
   'webshop-training': {
     eyebrow: 'WEBSHOP · ENVIRONMENT',
     title: '想确认 WebShop 的任务与评测规则？',
     description: '任务结构包括 observation / action / reward、官方数据、small 配置、goal 生成、任务划分与最终评分。',
-    href: '/research/seed-openevo/webshop/',
+    href: '/research/seed-openevo/flow/webshop/',
     target: '打开 WebShop 任务与评测 →',
   },
   'seed-training': {
     eyebrow: 'SEED · WEBSHOP',
     title: '想确认 SEED 在 WebShop 上到底用了哪套场地？',
     description: 'SEED 使用 WebShop small 环境和特定 goal 划分；公平比较需要匹配同一任务边界。SEED 自身的训练与推理机制见论文页。',
-    href: '/research/seed-openevo/webshop/#fig-seed-webshop',
+    href: '/research/seed-openevo/flow/webshop/#fig-seed-webshop',
     target: '打开 Figure S1 · SEED × WebShop →',
     secondary: { href: '/papers/seed/', label: '查看 SEED 论文页 →' },
   },
@@ -23,9 +23,9 @@ const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: stri
     eyebrow: 'OPENEVO · MECHANISM',
     title: '想确认 OpenEvo 是怎么从经验更新自己的？',
     description: 'OpenEvo 的更新链包括 task boundary、sealed evidence、evolution carrier、validation 与 successor revision；Figure C1 给出与 SEED 的并排比较。',
-    href: '/research/seed-openevo/openevo/',
+    href: '/research/seed-openevo/flow/openevo/',
     target: '打开 OpenEvo 演化流程 →',
-    secondary: { href: '/research/seed-openevo/loops/#fig-seed-openevo-update-target', label: '查看 Figure C1 · SEED vs OpenEvo →' },
+    secondary: { href: '/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target', label: '查看 Figure C1 · SEED vs OpenEvo →' },
   },
 };
 const current = destinations[note];

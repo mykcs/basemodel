@@ -6,8 +6,8 @@ const knowledgeCss = readFileSync(new URL('../styles/knowledge-architecture.css'
 const appCss = readFileSync(new URL('../styles/app.css', import.meta.url), 'utf8');
 const webShopTrainingNoteCss = readFileSync(new URL('../styles/components/webshop-training-note.css', import.meta.url), 'utf8');
 const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
-const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/results/[note].astro', import.meta.url), 'utf8');
-const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/results.astro', import.meta.url), 'utf8');
+const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/study/results/[note].astro', import.meta.url), 'utf8');
+const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
 
 function cssBlock(selector: RegExp): string {
   const match = tokensCss.match(selector);

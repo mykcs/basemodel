@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const routes = ['/guide/openevo-webshop-alfworld/', '/en/guide/openevo-webshop-alfworld/'] as const;
+const routes = ['/research/seed-openevo/study/run/', '/en/research/seed-openevo/study/run/'] as const;
 const viewports = [
   { name: 'desktop', width: 1280, height: 900 },
   { name: 'mobile', width: 390, height: 844 },

@@ -119,7 +119,7 @@ describe('audience copy audit', () => {
     const audit = fs.readFileSync(path.join(root, 'docs/agents/current/audience-copy-audit-2026-08-12.md'), 'utf8');
     expect(audit).toContain('Source-owner inventory');
     expect(audit).toContain('scripts/audit-audience-copy.ts');
-    expect(audit).toContain('/guide/openevo-webshop-alfworld/');
+    expect(audit).toContain('/research/seed-openevo/study/run/');
     expect(audit).toContain('src/layouts/AppLayout.astro');
     expect(audit).toContain('src/content/benchmarkRuns/**');
     expect(audit).toContain('src/content/claims/**');

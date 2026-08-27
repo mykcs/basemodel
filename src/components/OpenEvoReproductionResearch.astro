@@ -5,7 +5,7 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const isZh = locale === 'zh';
 const t = (zh: string, en: string) => isZh ? zh : en;
-const missionHref = localePath(locale, '/research/seed-openevo/');
+const missionHref = localePath(locale, '/research/seed-openevo/flow/');
 
 const bootstrap = `gh api 'repos/mykcs/seed3090/contents/scripts/openevo_webshop/api_bootstrap.sh?ref=main' --jq .content \\
   | python3 -c 'import base64,sys; sys.stdout.buffer.write(base64.b64decode(sys.stdin.read()))' \\

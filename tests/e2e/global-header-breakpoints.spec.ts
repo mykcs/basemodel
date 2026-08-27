@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const route = '/research/seed-openevo/results/';
+const route = '/research/seed-openevo/study/results/';
 const handoffCases = [
   { width: 820, mode: 'mobile' },
   { width: 821, mode: 'mobile' },

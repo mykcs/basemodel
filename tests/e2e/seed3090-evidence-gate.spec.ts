@@ -15,7 +15,7 @@ test('seed3090 results show the current parametric OpenEvo × WebShop evidence i
     /seed3090\/blob\/main\/docs\/project\/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13\.md$/,
   );
 
-  await page.goto('en/research/seed-openevo/results/');
+  await page.goto('en/research/seed-openevo/study/results/');
 
   const enProgress = page.getByTestId('seed3090-parametric-progress');
   await expect(enProgress).toBeVisible();

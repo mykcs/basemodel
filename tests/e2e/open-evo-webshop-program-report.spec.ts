@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-const zhRoute = '/research/seed-openevo/results/';
-const enRoute = '/en/research/seed-openevo/results/';
+const zhRoute = '/research/seed-openevo/study/results/';
+const enRoute = '/en/research/seed-openevo/study/results/';
 const benchmarkRoutes = [
-  '/research/seed-openevo/results/benchmark-first/',
-  '/research/seed-openevo/results/seed-faithful-benchmark/',
-  '/research/seed-openevo/results/openevo-benchmark-design/',
+  '/research/seed-openevo/study/results/benchmark-first/',
+  '/research/seed-openevo/study/results/seed-faithful-benchmark/',
+  '/research/seed-openevo/study/results/openevo-benchmark-design/',
 ] as const;
 
 test('Chinese results landing mounts the unified six-module findings page', async ({ page }) => {
@@ -164,7 +164,7 @@ test('print mode exposes the current provenance codes on both results routes', a
 });
 
 test('print cleanup remains scoped away from the webshop explainer page', async ({ page }) => {
-  await page.goto('/research/seed-openevo/webshop/');
+  await page.goto('/research/seed-openevo/flow/webshop/');
   await page.emulateMedia({ media: 'print', colorScheme: 'light' });
   await expect(page.locator('.plain-detail__header')).toBeVisible();
 });

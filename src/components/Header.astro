@@ -17,17 +17,17 @@ const starts = (path: string) => pathNoBase === path || pathNoBase.startsWith(pa
 const journeyLinks = [
   {
     id: 'flow',
-    path: '/research/seed-openevo/',
+    path: '/research/seed-openevo/flow/',
     label: t('流程理解图', 'Flow map'),
     meta: 'OpenEvo · SEED · ALFWorld · WebShop',
-    active: starts('/research/seed-openevo/') && !starts('/research/seed-openevo/experiment/') && !starts('/research/seed-openevo/results/'),
+    active: starts('/research/seed-openevo/flow/'),
   },
   {
     id: 'study',
-    path: '/research/seed-openevo/experiment/',
+    path: '/research/seed-openevo/study/',
     label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study'),
     meta: t('实验 · 复现 · 结论 · 下一步', 'experiments · reproduce · findings · next'),
-    active: starts('/research/seed-openevo/experiment/') || starts('/research/seed-openevo/results/') || starts('/guide/openevo-webshop-alfworld/'),
+    active: starts('/research/seed-openevo/study/'),
   },
 ].map((link) => ({
   ...link,

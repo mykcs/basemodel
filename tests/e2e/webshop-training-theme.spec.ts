@@ -3,9 +3,9 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const routes = [
-  '/research/seed-openevo/results/webshop-training/',
-  '/research/seed-openevo/results/seed-training/',
-  '/research/seed-openevo/results/openevo-training/',
+  '/research/seed-openevo/study/results/webshop-training/',
+  '/research/seed-openevo/study/results/seed-training/',
+  '/research/seed-openevo/study/results/openevo-training/',
 ] as const;
 
 const viewports = [

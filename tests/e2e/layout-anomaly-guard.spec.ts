@@ -3,15 +3,15 @@ import { expect, test, type Page } from '@playwright/test';
 type Theme = 'light' | 'dark';
 
 const routes = [
-  '/research/seed-openevo/',
-  '/research/seed-openevo/webshop/',
-  '/research/seed-openevo/alfworld/',
-  '/research/seed-openevo/seed/',
-  '/research/seed-openevo/openevo/',
-  '/research/seed-openevo/loops/',
-  '/research/seed-openevo/results/',
-  '/en/research/seed-openevo/webshop/',
-  '/en/research/seed-openevo/results/',
+  '/research/seed-openevo/flow/',
+  '/research/seed-openevo/flow/webshop/',
+  '/research/seed-openevo/flow/alfworld/',
+  '/research/seed-openevo/flow/seed/',
+  '/research/seed-openevo/flow/openevo/',
+  '/research/seed-openevo/flow/loops/',
+  '/research/seed-openevo/study/results/',
+  '/en/research/seed-openevo/flow/webshop/',
+  '/en/research/seed-openevo/study/results/',
 ] as const;
 
 const matrices = [

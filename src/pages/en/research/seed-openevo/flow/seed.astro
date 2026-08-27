@@ -1,7 +1,7 @@
 ---
-import AppLayout from '../../../../layouts/AppLayout.astro';
-import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
-import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchPage from '../../../../../components/research/SeedOpenEvoResearchPage.astro';
+import InteractiveResearchExplainer from '../../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
 <AppLayout title="SEED framework and experiment loop" description="Explain how SEED uses external GLM-5.2 for Stage-1 hindsight-skill SFT, then switches to current-policy self-analysis with OPD and GRPO in Stage 2, including the training-to-inference boundary." locale={locale}>
