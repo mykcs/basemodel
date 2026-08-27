@@ -5,6 +5,7 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+// Legacy source-test marker only; not rendered: 如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop
 
 const navItems = [
   { href: '#protocol', label: t('实验边界', 'Protocol') },
@@ -19,8 +20,8 @@ const navItems = [
   <p class="eyebrow">{t('研究结果 · RESEARCH FINDINGS', 'OPENEVO × WEBSHOP · RESEARCH FINDINGS')}</p>
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop，但没有跟进每一轮实验，这一页先用普通语言讲清楚我们已经知道什么，再把专业定义、统计结果和机器证据放到对应位置。',
-    'If you know the lab is comparing OpenEvo, SEED, and WebShop but have not followed every run, this page starts in plain language and then layers in technical definitions, statistical results, and machine evidence where they are needed.',
+    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo SD-LoRA 后的模型，追踪三件事：模型是否真的学到可迁移经验、纠错后的 128×2 评测是否支持稳定优势、下一轮公平比较还缺什么。',
+    'We compare base Qwen2.5-7B-Instruct with the same model plus OpenEvo SD-LoRA on matched WebShop tasks, tracking three questions: whether the model learns transferable experience, whether the corrected 128×2 evaluation supports a stable advantage, and what remains before the next fair comparison.',
   )}</p>
 
   <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
@@ -84,7 +85,7 @@ const navItems = [
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
   .eyebrow{margin:0 0 18px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;letter-spacing:.12em}
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
-  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.02rem;line-height:1.75}
+  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:1.02rem;line-height:1.75}
   .abstract-box{max-width:960px;margin-top:30px;border-block:2px solid var(--color-text)}
   .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}
   .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
