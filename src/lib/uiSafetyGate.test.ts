@@ -52,7 +52,8 @@ describe('UI visual acceptance gate contract', () => {
   it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary, semantic-release, and UI fix branch families', () => {
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain('fix\\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)');
-    expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', 'chromium'])");
+    expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
+    expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', '--only-shell', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');
     expect(policy).toContain('repository-owned Vercel browser gate is **Chromium-only**');
