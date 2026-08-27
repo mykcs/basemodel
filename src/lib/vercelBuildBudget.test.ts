@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   isBuildRelevantPath,
   shouldBuildForFiles,
-  mustRunAcceptanceBuild,
 } from '../../scripts/vercel-ignore-build.mjs';
 
 const read = (path: string) =>
@@ -17,6 +16,7 @@ const root = read('AGENTS.md');
 const latest = read('docs/agents/LATEST.md');
 const deploymentPolicy = read('docs/agents/current/deployment-policy.md');
 const vercelWorkflow = read('docs/agents/current/vercel-preview-migration-plan.md');
+const ignoreBuildScript = read('scripts/vercel-ignore-build.mjs');
 
 describe('Vercel build-budget contract', () => {
   it('keeps automatic cancellation and the repository-owned ignored-build step enabled', () => {
@@ -86,10 +86,12 @@ describe('Vercel build-budget contract', () => {
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 
-  it('forces PR/main/production acceptance builds even when the diff looks prose-only', () => {
-    expect(mustRunAcceptanceBuild({ VERCEL_GIT_PULL_REQUEST_ID: '288' })).toBe(true);
-    expect(mustRunAcceptanceBuild({ VERCEL_GIT_COMMIT_REF: 'main' })).toBe(true);
-    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(true);
-    expect(mustRunAcceptanceBuild({ VERCEL_GIT_COMMIT_REF: 'research/scratch' })).toBe(false);
+  it('does not override proven docs-only diffs for PR, main or Production', () => {
+    expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
+    expect(ignoreBuildScript).not.toContain('mustRunAcceptanceBuild');
+    expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
+    expect(ignoreBuildScript).not.toContain('VERCEL_ENV');
+    expect(deploymentPolicy).toContain('PR, `main` and Production');
+    expect(deploymentPolicy).toContain('does not override a proven docs-only diff');
   });
 });

@@ -13,91 +13,104 @@ describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
     for (const file of [root, readme]) expect(file).toContain('scenario-trigger-registry.md');
     expect(root).toContain('scan scenario-trigger-registry');
-    expect(readme).toContain('scan the task and load the matched bundle below');
-    expect(registry).toContain('Do not wait for the owner to repeat these reminders');
+    expect(readme).toContain('load the matched bundle below');
+    expect(registry).toContain('just-in-time attention router');
+    expect(registry).toContain('Re-scan when the task changes state');
     expect(principles).toContain('Make recurring lessons triggerable');
     expect(principles).toContain('re-scanned when the task changes state');
   });
 
   it('protects the recurring high-cost situations from this project', () => {
     for (const trigger of [
-      'TRIGGER: previous plan / handoff / current doc may be stale',
-      'TRIGGER: deployment-budget / Preview / Cloudflare',
-      'TRIGGER: exact-head Preview / `main` moved / provider says READY',
-      'TRIGGER: deterministic Gate fails / weakening the check looks tempting',
-      'TRIGGER: SEED / ALFWorld / WebShop / reproduction / GPU choice',
-      'TRIGGER: offline lab server / SFTP / no outbound internet',
-      'TRIGGER: time estimate / GPU rental cost / current compute catalog',
-      'TRIGGER: beginner-facing technical writing / broad UI rewrite',
-      'TRIGGER: actionable content / code blocks / generated artifacts',
-      'TRIGGER: blocked Agent / unavailable tool / failed approach',
-      'TRIGGER: credential / token / secret injection / private repository',
-      'TRIGGER: hosting/platform modernization / “should we change stack?”',
-      'TRIGGER: Workers shadow complete / Production cutover / provider behavior differences',
-      'TRIGGER: cross-repository architecture reuse',
+      'TRIGGER: remembered plan or current doc may be stale',
+      'TRIGGER: Preview, Production, release, hosting, or Cloudflare',
+      'TRIGGER: exact-head acceptance / `main` moved / provider says READY',
+      'TRIGGER: deterministic Gate fails and weakening it looks tempting',
+      'TRIGGER: SEED / OpenEvo / ALFWorld / WebShop / reproduction / GPU choice',
+      'TRIGGER: offline lab server / SSH / SFTP / rsync / no outbound internet',
+      'TRIGGER: time estimate, GPU rental cost, or current compute catalog',
+      'TRIGGER: user-visible copy, beginner explanation, research narrative, or broad UI rewrite',
+      'TRIGGER: actionable content / commands / generated artifacts',
+      'TRIGGER: blocked tool, unavailable connector, credentials, or secret injection',
+      'TRIGGER: hosting/platform modernization or legacy-provider reactivation',
       'TRIGGER: overlapping PRs / large cross-site change',
       'TRIGGER: reusable lesson discovered',
     ]) expect(registry).toContain(trigger);
   });
 
-  it('keeps Cloudflare build budget as a hard pre-authorization boundary', () => {
-    expect(registry).toContain('Do not intentionally trigger one unless the owner has explicitly authorized');
-    expect(registry).toContain('Never silently fall back');
-    expect(registry).toContain('Never claim an exact remaining Cloudflare build counter');
+  it('keeps provider build-budget boundaries explicit', () => {
+    expect(registry).toContain('Do not intentionally trigger a Cloudflare Pages Git build');
+    expect(registry).toContain('never silently substitute a Git-connected Pages build');
+    expect(registry).toContain('Do not quote exact provider quota/price counters without authoritative current evidence');
+    expect(registry).toContain('Treat Vercel as the only ordinary Preview + Production authority');
   });
 
   it('requires stale remembered plans to refresh against current truth', () => {
-    expect(registry).toContain('Treat remembered/conversational state as a hypothesis, not authority');
-    expect(registry).toContain('If executable/live truth contradicts a `current/` document, update or demote the stale document');
+    expect(registry).toContain('Treat remembered/chat state as a hypothesis');
+    expect(registry).toContain('If live/executable truth contradicts a `current/` doc, update or demote that doc');
   });
 
   it('protects exact-head validation and honest Preview evidence', () => {
-    expect(registry).toContain('Compare the PR branch against current `main` before final acceptance');
-    expect(registry).toContain('Re-run the deterministic Gate and build for the **new exact head**');
-    expect(registry).toContain('a READY badge alone is not visual/product acceptance');
-    expect(registry).toContain('Do not cite an earlier Preview as proof for a later synchronized head');
+    expect(registry).toContain('Compare the candidate head with current intended `main`');
+    expect(registry).toContain('new exact head for deploy-relevant work');
+    expect(registry).toContain('A READY badge is not visual/product acceptance');
+    expect(registry).toContain('a prior Preview is not evidence for a later synchronized tree');
   });
 
   it('keeps valid Gates stronger than convenience', () => {
-    expect(registry).toContain('If valid, fix the implementation/content so the protected meaning stays explicit');
-    expect(registry).toContain('Do not trade research integrity or deployment safety for a green badge');
+    expect(registry).toContain('fix the implementation/content if it does');
+    expect(registry).toContain('change the Gate only when evidence proves the Gate itself is stale');
+    expect(registry).toContain('rather than weakening research or release safety');
   });
 
-  it('keeps the offline four-GPU experiment as a real completion path', () => {
-    for (const token of ['4×3090','8×A800 80GB','8×A100 80GB','nvidia-smi topo -m','SFTP is deployment/transfer, not version control','method effect is reproduced']) expect(registry).toContain(token);
+  it('keeps offline execution and hardware substitution evidence-bounded', () => {
+    expect(registry).toContain('SFTP is transport, not version control');
+    expect(registry).toContain('Prefer already-authorized hardware when it answers the scientific question');
+    expect(registry).toContain('method effect measured');
+    expect(seedWorkflow).toContain('A successful smaller-hardware method reproduction is not automatically paper-hardware reproduction');
   });
 
   it('requires measured timing and current market evidence before paid-compute claims', () => {
     expect(registry).toContain('public catalog');
-    expect(registry).toContain('real-time inventory');
-    expect(registry).toContain('median(stable update time)');
-    expect(registry).toContain('Never present a planning range as a measured benchmark');
+    expect(registry).toContain('logged-in inventory');
+    expect(registry).toContain('do not call a planning range a measurement');
+    expect(registry).toContain('replace priors with measured throughput');
   });
 
   it('preserves actionable-content and holistic-writing lessons', () => {
-    expect(registry).toContain('If the user needs this exact thing in the next terminal');
-    expect(registry).toContain('Rewrite the **whole affected journey**');
-    expect(registry).toContain('what observable evidence counts as PASS');
+    expect(registry).toContain('ask what the user needs to click at the content location');
+    expect(registry).toContain('Review the whole affected reading journey');
+    expect(seedWorkflow).toContain('what observable evidence counts as PASS');
   });
 
-  it('protects secret, hosting-modernization, cutover, and cross-repo boundaries', () => {
-    for (const token of ['Do not commit a live bearer token as plaintext','Do not assume GitHub Secrets are a readable key-value store','Do not rewrite Astro/React merely because Vercel is used for Preview','A working shadow URL is evidence, **not release authorization**','Preserve acceptable provider-native asymmetry','Reuse the **decision pattern**, not literal configuration']) expect(registry).toContain(token);
+  it('protects secret and hosting-modernization boundaries', () => {
+    for (const token of [
+      'Never commit a live bearer token as ordinary Git content',
+      'Do not assume GitHub secret APIs return decrypted values',
+      'Do not rewrite Astro/React merely because deployment ownership changes',
+      'A historical Cloudflare/Workers shadow or pilot is evidence, not a pending migration step',
+      'Reactivating legacy Production is a new architecture/release decision',
+    ]) expect(registry).toContain(token);
   });
 
-  it('preserves the ML-to-Agent beginner bridge before deeper research taxonomy', () => {
-    for (const token of ['known ML concepts','Agent runtime loop','runtime vs training','minimum RL vocabulary','map into the real paper/method']) expect(registry).toContain(token);
-    expect(seedWorkflow).toContain('known ML concepts');
-    expect(seedWorkflow).toContain('Agent runtime loop');
-    expect(seedWorkflow).toContain('runtime vs training');
-    expect(seedWorkflow).toContain('minimum RL vocabulary');
-    expect(seedWorkflow).toContain('PR #104 is the active implementation path');
-    expect(seedWorkflow).toContain('It is not current Production merely because its Preview passed');
+  it('preserves the ML-to-Agent beginner bridge in its current teaching owner', () => {
+    for (const token of [
+      'known ML concepts',
+      'Agent runtime loop',
+      'runtime vs training',
+      'minimum RL vocabulary',
+      'map those concepts into SEED',
+    ]) expect(seedWorkflow).toContain(token);
+    expect(seedWorkflow).not.toContain('PR #104 is the active implementation path');
+    expect(seedWorkflow).toContain('Current ordinary architecture is Vercel Preview + Vercel Production');
   });
 
   it('does not silently restore Direct Upload as the ordinary Preview default', () => {
-    expect(repositoryMap).toContain('Ordinary Preview surface — Vercel');
-    expect(repositoryMap).toContain('Vercel project `basemodel-preview`');
-    expect(repositoryMap).toContain('Cloudflare Direct Upload remains a supported fallback');
+    expect(repositoryMap).toContain('GitHub non-main deployment-eligible ref -> Vercel Preview');
+    expect(repositoryMap).toContain('GitHub main                             -> Vercel Production');
+    expect(repositoryMap).toContain('Production identity                    -> https://basemodel-preview.vercel.app');
+    expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/Workers  -> rollback or provider-specific fallback only');
+    expect(repositoryMap).toContain('Vercel is the only ordinary deployment authority');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
   });
 

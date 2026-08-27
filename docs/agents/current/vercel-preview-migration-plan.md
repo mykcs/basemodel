@@ -18,7 +18,7 @@ This path remains only because `src/lib/vercelBuildBudget.test.ts` and `src/lib/
 
 ## Compatibility assertions retained for the existing tests
 
-The main saving comes from reducing pushes, not from assuming canceled jobs are free. The current ignored-build implementation reasons from `VERCEL_GIT_PREVIOUS_SHA`, while the full build-budget policy is owned by `deployment-policy.md`.
+The main saving comes from reducing pushes, not from assuming canceled jobs are free. The current ignored-build implementation reasons from `VERCEL_GIT_PREVIOUS_SHA` and applies the same proven-path decision to branch Preview, PR, `main` and Production triggers; docs/Agent-only ranges are ignored rather than built. The full build-budget policy is owned by `deployment-policy.md`.
 
 Historical providers are not ordinary report dimensions. Ordinary completion reporting is Vercel-first unless a legacy provider is explicitly part of the task or unexpectedly activates.
 
