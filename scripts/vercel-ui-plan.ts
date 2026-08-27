@@ -16,6 +16,7 @@ export interface HostedUiPlan {
 
 const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/results(?:\/|$)/;
 const MAX_CHANGED_ROUTE_SMOKE = 8;
+const HOSTED_GATE_OWNER = 'scripts/vercel-ui-plan.ts';
 
 function normalizePath(file: string): string {
   return file.replaceAll('\\', '/').replace(/^\.\//, '');
@@ -56,6 +57,20 @@ function contentSpecs(files: string[]): string[] {
 
 export function planHostedUi(files: string[]): HostedUiPlan {
   const changedFiles = [...new Set(files.filter(Boolean).map(normalizePath))].sort();
+
+  // This planner owns the provider-side test selection itself. A change to its
+  // source must never be allowed to classify its own blast radius as harmless.
+  if (changedFiles.includes(HOSTED_GATE_OWNER)) {
+    return {
+      mode: 'full',
+      risk: 'global',
+      changedFiles,
+      routes: [],
+      specs: [],
+      reason: 'The hosted UI planner changed; fail closed to the complete hosted Chromium regression matrix.',
+    };
+  }
+
   const assessment = classifyUiRisk(changedFiles);
 
   if (assessment.risk === 'none') {
