@@ -1,6 +1,6 @@
 # Audience-centered technical copy standard
 
-Last reviewed: **2026-08-18**
+Last reviewed: **2026-08-27**
 Status: current design and writing contract
 Audience: product, design, content, research, and implementation Agents
 Applies to: Basemodel public pages, SEED/OpenEvo research pages, reproduction guides, callouts, troubleshooting, and status language
@@ -104,6 +104,36 @@ Before using a project-specific machine, service, script, phase, or artifact, ex
 
 After first-use explanation, use the precise technical term consistently instead of replacing it with vague prose.
 
+### Zero-context incident entry and causal context
+
+A technically clear paragraph can still fail if it assumes the reader already knows the project. For research incidents, parser failures, attribution, or responsibility analysis, assume a first-time reader knows **none** of the phase names, model arms, artifact names, or experiment shorthand.
+
+Use this order:
+
+```text
+what experiment are we running and why
+-> what model/task/intervention/comparison does the reader need to know
+-> what concrete incident happened
+-> what alternative explanations are plausible
+-> what evidence rules each explanation in or out
+-> only then name the technical mechanism and responsibility boundary
+```
+
+Before attributing an error to model capability, training, adapter behavior, or the harness, provide enough setup for the reader to judge those hypotheses. When relevant, include:
+
+- model family and scale;
+- whether the observed example loaded an adapter;
+- which exact frozen adapter/artifact was used in the formal comparison;
+- training-data scale: records, task identities, and independent rollouts;
+- update scale: increments/generations, epochs, and optimizer-step limits;
+- evaluation scale: tasks, arms, seeds/rollouts, and total episodes.
+
+Do not present these numbers as decoration. Their job is to let the reader evaluate natural hypotheses such as “the model is too small,” “training was too weak,” or “training caused the formatting error.” Label those as hypotheses until the evidence supports them.
+
+For lineage-sensitive claims, resolve the exact artifact before writing. A nearby historical run may explain prior knowledge without being the artifact used in the later formal evaluation. Keep `origin`, `frequency/effect`, `historical knowledge`, and `formal integration responsibility` as separate claims.
+
+When the user’s wording points to the right narrative but names the wrong experimental stage, preserve the narrative intent while choosing the scientifically correct stage label. Explain the distinction in the technical layer rather than forcing the reader through it at the top.
+
 ## 5. Current scientific claims must be delegated, not copied
 
 For OpenEvo × WebShop, the public site is a presentation layer. It does not own live experiment state.
@@ -170,6 +200,9 @@ Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragra
 9. If a default-branch snapshot is shown, are branch and checked date visible?
 10. Are Chinese and English versions equivalent in meaning and hierarchy?
 11. Could a reader understand the page without the originating chat?
+12. If the section explains an incident, could a reader first state the experiment in one sentence before encountering the incident name?
+13. Before causal attribution, have you supplied the model/training/evaluation context needed to judge the obvious alternatives?
+14. Did you resolve the exact artifact lineage rather than borrow settings from a nearby historical experiment?
 
 Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 
