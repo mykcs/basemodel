@@ -10,9 +10,8 @@ const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
 const resultsZh = read('src/pages/research/seed-openevo/results.astro');
 const resultsEn = read('src/pages/en/research/seed-openevo/results.astro');
 
-const orderedIds = [
+const flowIds = [
   "id: 'hub'",
-  "id: 'experiment'",
   "id: 'base-model'",
   "id: 'seed'",
   "id: 'openevo'",
@@ -20,23 +19,39 @@ const orderedIds = [
   "id: 'webshop'",
   "id: 'alfworld'",
   "id: 'loops'",
+];
+
+const studyIds = [
+  "id: 'experiment'",
   "id: 'run'",
   "id: 'results'",
 ];
 
 describe('SEED × OpenEvo research navigation', () => {
-  it('defines one complete global information architecture in one shared component', () => {
-    let previous = -1;
-    for (const token of orderedIds) {
+  it('splits the local navigation into the same two journeys as the site header', () => {
+    let previous = navigation.indexOf('const flowPages = [');
+    for (const token of flowIds) {
       const position = navigation.indexOf(token);
       expect(position).toBeGreaterThan(previous);
       previous = position;
     }
-    expect(navigation).toContain("t('研究导航', 'Research navigation')");
-    expect(navigation).toContain("t('SEED 与 OpenEvo 全局研究导航', 'SEED and OpenEvo global research navigation')");
-    expect(navigation).toContain("t('科学研究', 'Scientific study')");
+
+    previous = navigation.indexOf('const studyPages = [');
+    for (const token of studyIds) {
+      const position = navigation.indexOf(token);
+      expect(position).toBeGreaterThan(previous);
+      previous = position;
+    }
+
+    expect(navigation).toContain("const pages = currentTrack === 'flow' ? flowPages : studyPages;");
+    expect(navigation).toContain('data-research-track={currentTrack}');
+    expect(navigation).toContain("label: t('流程理解图', 'Flow map')");
+    expect(navigation).toContain("label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study')");
+    expect(navigation).toContain("t('实验流程', 'Experiment workflow')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
-    expect(navigation).toContain("t('研究结果', 'Research findings')");
+    expect(navigation).toContain("t('实验结果', 'Experiment results')");
+    expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
+    expect(navigation).not.toContain('const pages = [');
   });
 
   it('mounts the same canonical nav on research pages and both bridge routes', () => {
@@ -54,7 +69,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(detail).not.toContain('独立方法框架');
   });
 
-  it('keeps active state and responsive behavior identical instead of deleting entries', () => {
+  it('keeps active state and responsive behavior while changing only the contextual child set', () => {
     expect(navigation).toContain("aria-current={item.id === page ? 'page' : undefined}");
     expect(navigation).toContain('overflow-x:auto');
     expect(navigation).toContain('@media(max-width:720px)');
