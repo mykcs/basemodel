@@ -38,23 +38,26 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
     expect(currentQ7).toContain('论文 89.7 / 78.1% 背后的最终 128 题');
   });
 
-  it('advances the Hero and Next Steps to Track A closeout and Track B barrier state', () => {
+  it('advances the Hero and Next Steps to Track A closeout and Amendment-006 WB1 repair authority', () => {
     expect(hero).toContain('source-faithful Track A 先通过 authoritative runtime semantic validation 128/128');
     expect(hero).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
     expect(hero).toContain('final_test_status=locked');
     expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
     expect(nextSteps).toContain('真正剩下的主问题是 Track B / WB1，但当前不能直接续跑');
     expect(nextSteps).toContain('latest adoptable native state 仍是 state-v27');
-    expect(nextSteps).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
+    expect(nextSteps).toContain('GEN28_STATE_REPAIR_AUTHORIZED_INPUT_SEAL_PENDING');
+    expect(nextSteps).toContain('b892d8123cdb4737d7971f84db6e7c1bcc77c6ab');
   });
 
   it('records the latest upstream authority and the governance exception', () => {
     expect(currentState).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
-    expect(currentState).toContain('17e3ca9dde62d0c6d08c5c9f644c8c6de36fc46d');
+    expect(currentState).toContain('e1229db492504bc9f7b795ca0a5184d5e1cadf1a');
+    expect(currentState).toContain('b892d8123cdb4737d7971f84db6e7c1bcc77c6ab');
     expect(currentState).toContain('measurement-not-proven-stable-improvement');
     expect(currentState).toContain('PUBLISHED_AND_VERIFIED');
     expect(currentState).toContain('GitHub branch authority and the `main` router did **not** precede the first formal episode');
     expect(currentState).toContain('GEN28_COMPLETE_STATE_BARRIER_MISSING');
+    expect(currentState).toContain('GEN28_STATE_REPAIR_AUTHORIZED_INPUT_SEAL_PENDING');
     expect(currentState).toContain('formal_task_consumption_allowed=false');
     expect(currentState).toContain('final_test_status=locked');
   });
