@@ -31,7 +31,7 @@ const flowPages = [
 const studyPages = [
   { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/experiment/') },
   { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
-  { id: 'results', label: t('实验结果', 'Experiment results'), href: p('/research/seed-openevo/results/') },
+  { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/results/') },
 ] as const;
 
 const studyPageIds: ResearchPage[] = ['experiment', 'run', 'results'];
@@ -47,7 +47,7 @@ const identity = currentTrack === 'flow'
   : {
       index: '02',
       label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study'),
-      meta: t('实验流程 · 运行 · 实验结果', 'workflow · execution · results'),
+      meta: t('实验流程 · 运行 · 研究结果', 'workflow · execution · findings'),
       aria: t('OpenEvo × WebShop 科学研究子导航', 'OpenEvo × WebShop study subnavigation'),
     };
 ---
