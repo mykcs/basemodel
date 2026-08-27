@@ -5,6 +5,7 @@ const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta
 const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const header = read('src/components/Header.astro');
 const sitemap = read('src/lib/sitemapRoutes.ts');
+const fairComparison = read('src/components/research/OpenEvoFairComparisonExplainer.astro');
 const vercel = JSON.parse(read('vercel.json')) as { redirects?: Array<{ source: string; destination: string; permanent?: boolean }> };
 
 const canonicalPages = [
@@ -70,6 +71,13 @@ describe('research URL hierarchy', () => {
       expect(slashVariant?.destination, `${item.source}/`).toBe(item.destination);
       expect(slashVariant?.permanent, `${item.source}/`).toBe(true);
     }
+  });
+
+  it('keeps generated research CTA links on canonical grouped routes', () => {
+    expect(fairComparison).toContain('`${root}/study/results/`');
+    expect(fairComparison).toContain('`${root}/flow/seed/`');
+    expect(fairComparison).not.toContain('`${root}/results/`');
+    expect(fairComparison).not.toContain('`${root}/seed/`');
   });
 
   it('publishes only canonical grouped URLs in the sitemap', () => {
