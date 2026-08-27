@@ -13,6 +13,7 @@ const heldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1ac
 const h136ParserCommit = 'https://github.com/mykcs/openevo-experiment/commit/8e526e42de82e3fb417eb6dc4d892e068d73ef1f';
 const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
 const rawEpisode = `${experimentRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json`;
+const wrapperAuditRoot = 'https://github.com/mykcs/openevo-experiment/blob/e1229db492504bc9f7b795ca0a5184d5e1cadf1a';
 
 type Step = { when: string; title: string; body: string; links: EvidenceRef[] };
 const steps: Step[] = [
@@ -82,6 +83,16 @@ const steps: Step[] = [
       { kind: 'code', label: t('parser compatibility 代码', 'Parser compatibility code'), href: `${experimentRoot}/scripts/openevo_webshop/webshop_comparison_contract.py#L69-L112` },
     ],
   },
+  {
+    when: t('Track A 正式审计', 'Formal Track A audit'),
+    title: t('真实正式运行再次证明：模型还会漂，但测量没有再次被污染', 'The formal run confirms drift persisted without re-polluting the measurement'),
+    body: t('我们现在不再只靠几个样例说这件事。对 Track A 已发布的 256 个 raw episode、共 3,672 个模型动作步骤做了可重复审计：300 步严格 <action> 直接通过，3,253 步由两臂共用的冻结 v3 compatibility projection 恢复，119 步仍无法恢复并作为 environment-invalid action fail closed（BASE 77、SD-LoRA 42）。这 119 步与保存的 invalid_action_steps 和 environment-invalid 计数逐项对齐，没有被偷偷换成一个合法动作；同时 256/256 formal episodes 仍然有效、parser-invalid=0。也就是说，“模型 wrapper 漂移”“一次 agent 动作失败”和“整条测量失效”确实是三件不同的事。', 'This is no longer based on a few examples. A reproducible audit over all 256 published Track A raw episodes and 3,672 model-action steps finds 300 strict <action> parses, 3,253 recoveries through the frozen v3 compatibility projection shared by both arms, and 119 still-unrecoverable steps that fail closed as environment-invalid actions (BASE 77, SD-LoRA 42). Those 119 exactly match the saved invalid_action_steps and environment-invalid counts; none were silently substituted with a legal action. At the same time, all 256 formal episodes remain valid and parser-invalid=0. Model wrapper drift, one fail-closed agent action, and a measurement-invalid episode are therefore distinct events.'),
+    links: [
+      { kind: 'audit', label: t('Track A wrapper 审计 · 机器可读', 'Track A wrapper audit · machine-readable'), href: `${wrapperAuditRoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.json` },
+      { kind: 'human-report', label: t('Track A wrapper 审计 · 解释', 'Track A wrapper audit · interpretation'), href: `${wrapperAuditRoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/WRAPPER_AUDIT.md` },
+      { kind: 'code', label: t('可重复审计器', 'Reproducible auditor'), href: `${wrapperAuditRoot}/scripts/openevo_webshop/audit_seedcmp_wrapper_drift.py` },
+    ],
+  },
 ];
 ---
 
@@ -92,7 +103,7 @@ const steps: Step[] = [
   </summary>
 
   <div class="wrapper-attribution__body">
-    <p class="wrapper-attribution__lead">{t('先把两个东西分开：search[...] / click[...] 是 WebShop 真正要执行的动作命令；<action>...</action> 或 [action]... 是包住命令、让解析器定位动作的外层标签（wrapper）。这次事故发生在外层标签，不是动作命令本身。下面按“官方规则 → 我们的 Prompt → BASE 原始输出 → 已知问题 → 训练数据 → PRIMARY-v1 → PRIMARY-v2”追下去。主结论不变：[action] 不是 OpenEvo Prompt 规定的格式，SEED parser 也不是在违反自己的合同。用技术术语概括就是：模型自身有已知 wrapper 漂移，而我们的正式集成没有提前做兼容性预检。', 'First separate two things: search[...] / click[...] are the action commands WebShop actually executes; <action>...</action> or [action]... are outer wrapper labels that let the parser locate the command. This incident happened at the wrapper layer, not in the command itself. The trace below follows the chain from released rule → our prompt → raw BASE output → known issue → training data → PRIMARY-v1 → PRIMARY-v2. The conclusion is unchanged: [action] was not an OpenEvo prompt convention, the SEED parser was enforcing its own contract, and the experiment responsibility is known model-side wrapper drift that was not preflighted before formal integration.')}</p>
+    <p class="wrapper-attribution__lead">{t('先把两个东西分开：search[...] / click[...] 是 WebShop 真正要执行的动作命令；<action>...</action> 或 [action]... 是包住命令、让解析器定位动作的外层标签（wrapper）。这次事故发生在外层标签，不是动作命令本身。下面按“官方规则 → 我们的 Prompt → BASE 原始输出 → 已知问题 → 训练数据 → PRIMARY-v1 → PRIMARY-v2 → Track A 正式审计”追下去。主结论不变：[action] 不是 OpenEvo Prompt 规定的格式，SEED parser 也不是在违反自己的合同。正式审计进一步证明：模型仍会 wrapper 漂移，但 repaired harness 能把可恢复命令与 fail-closed agent action failure 分开，且没有把这两类现象重新变成 parser-invalid measurement。', 'First separate two things: search[...] / click[...] are the action commands WebShop actually executes; <action>...</action> or [action]... are outer wrapper labels that let the parser locate the command. This incident happened at the wrapper layer, not in the command itself. The trace below follows the chain from released rule → our prompt → raw BASE output → known issue → training data → PRIMARY-v1 → PRIMARY-v2 → formal Track A audit. The conclusion is unchanged: [action] was not an OpenEvo prompt convention and the SEED parser was enforcing its own contract. The formal audit adds a stronger result: wrapper drift still occurs, while the repaired harness separates recoverable commands from fail-closed agent-action failures without turning either category back into parser-invalid measurement.')}</p>
 
     <div class="wrapper-attribution__timeline">
       {steps.map((step, index) => (
@@ -106,7 +117,7 @@ const steps: Step[] = [
       ))}
     </div>
 
-    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t('仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“H1.36 malformed 训练样本把它教进去”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据。因此这里不再把责任推给某个未知的上游样本或个人，也不声称 SD-LoRA 绝不可能改变 wrapper frequency。', 'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and malformed H1.36 supervision teaching the habit — but cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused it. Attribution therefore stops here rather than naming an unknown upstream sample or person, and it does not claim SD-LoRA could never affect wrapper frequency.')}</p>
+    <p class="wrapper-attribution__boundary"><strong>{t('证据边界：', 'Evidence boundary: ')}</strong>{t('仓库证据可以排除“Prompt 明确要求 [action]”“推理后端把尖括号改成方括号”“H1.36 malformed 训练样本把它教进去”这三种解释，但不能继续定位到 Qwen2.5-7B-Instruct 的哪一条预训练 / SFT 数据。因此这里不再把责任推给某个未知的上游样本或个人，也不声称 SD-LoRA 绝不可能改变 wrapper frequency。Track A 的 3,672-step 审计只证明当前冻结合同下没有 measurement pollution；它不等于模型从此不会生成坏格式。', 'Repository evidence rules out three explanations — a prompt explicitly requesting [action], inference-backend bracket rewriting, and malformed H1.36 supervision teaching the habit — but cannot identify which Qwen2.5-7B-Instruct pretraining/SFT example caused it. Attribution therefore stops here rather than naming an unknown upstream sample or person, and it does not claim SD-LoRA could never affect wrapper frequency. The 3,672-step Track A audit establishes no measurement pollution under this frozen contract; it does not mean the model will never emit malformed formatting again.')}</p>
   </div>
 </details>
 
