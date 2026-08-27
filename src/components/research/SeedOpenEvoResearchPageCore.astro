@@ -49,15 +49,15 @@ const p = (path: string) => localePath(locale, path);
   {page === 'seed' && <>
     <section class="mission-section" data-explainer-step="2">
       <div class="mission-section__heading"><span>01</span><div><small>{t('学习信号', 'Learning signal')}</small><h2>{t('奖励与 hindsight skill', 'Reward and hindsight skill')}</h2></div></div>
-      <p class="section-copy">{t('Agent 任务常只有稀疏终局奖励。SEED 用完整轨迹生成 hindsight skill，再把 skill 导致的动作概率变化转成更密集的 token 级学习信号。', 'Agent tasks often provide sparse terminal rewards. SEED generates hindsight skills from completed trajectories, then converts skill-induced action-probability changes into denser token-level learning signals.')}</p>
-      <div class="flow"><div><b>{t('完整轨迹', 'Completed trajectory')}</b></div><i>→</i><div><b>hindsight skill</b></div><i>→</i><div><b>OPD signal</b></div></div>
+      <p class="section-copy">{t('SEED 里有三种容易混在一起的信号来源。Stage 1 的外部 GLM-5.2 读取完整 episode 并生成 hindsight-skill 标注；它本身不是 WebShop 的 reward scorer。Stage 2 中，环境 outcome 进入 GRPO，而同一 sampled action 在 plain / skill 两个 context 下的概率变化形成 OPD。', 'SEED has three signal sources that are easy to conflate. In Stage 1, external GLM-5.2 reads completed episodes and generates hindsight-skill annotations; it is not the WebShop reward scorer. In Stage 2, environment outcomes feed GRPO, while the probability shift of the same sampled action under plain / skill contexts forms OPD.')}</p>
+      <div class="flow"><div><b>{t('完整轨迹', 'Completed trajectory')}</b></div><i>→</i><div><b>hindsight skill</b></div><i>→</i><div><b>{t('双上下文重打分', 'Dual-context re-scoring')}</b></div><i>→</i><div><b>OPD signal</b></div></div>
     </section>
 
     <section class="mission-section" data-explainer-step="4">
       <div class="mission-section__heading"><span>02</span><div><small>{t('训练', 'Training')}</small><h2>{t('SEED 训练阶段', 'SEED training stages')}</h2></div></div>
       <div class="two-grid">
-        <article><span>Stage 1</span><h3>Hindsight-skill SFT</h3><ol><li>{t('收集离线轨迹', 'Collect offline trajectories')}</li><li>{t('外部 analyzer 生成 hindsight skill', 'External analyzer generates hindsight skills')}</li><li>{t('模型学习轨迹分析能力', 'The model learns trajectory analysis')}</li></ol></article>
-        <article><span>Stage 2</span><h3>Self-evolving OPD + RL</h3><ol><li>{t('当前 policy 收集 on-policy 轨迹', 'Current policy collects on-policy trajectories')}</li><li>{t('同一 checkpoint 生成 skill', 'The same checkpoint generates skills')}</li><li>{t('固定原动作进行双上下文重打分', 'Re-score the same sampled actions under two contexts')}</li><li>{t('联合优化 RL 与 OPD', 'Jointly optimize RL and OPD')}</li></ol></article>
+        <article><span>Stage 1</span><h3>GLM-5.2 → Hindsight-skill SFT</h3><ol><li>{t('WebShop training split：180 tasks × 8 rollouts = 1,440 条完整轨迹', 'WebShop training split: 180 tasks × 8 rollouts = 1,440 completed trajectories')}</li><li>{t('外部 GLM-5.2 阅读每个完整 episode，生成 hindsight skill', 'External GLM-5.2 reads each completed episode and generates a hindsight skill')}</li><li>{t('trajectory → skill 记录过滤后做 3 epochs SFT', 'Filtered trajectory → skill records train the model for 3 SFT epochs')}</li><li>{t('得到同时具备 acting 与 trajectory analysis 能力的初始 checkpoint', 'Produce an initial checkpoint capable of both acting and trajectory analysis')}</li></ol></article>
+        <article><span>Stage 2</span><h3>Self-evolving OPD + RL</h3><ol><li>{t('当前 policy 收集 on-policy 轨迹', 'Current policy collects on-policy trajectories')}</li><li>{t('同一 checkpoint 自己生成 hindsight skill；不再持续调用外部 GLM-5.2', 'The same checkpoint generates its own hindsight skills; external GLM-5.2 is no longer called continuously')}</li><li>{t('固定原 action，在 plain / skill 两个 context 下重新算概率；概率变化进入 OPD', 'Hold each sampled action fixed and re-score it under plain / skill contexts; the probability shift feeds OPD')}</li><li>{t('环境 outcome 进入 GRPO；GRPO 与 OPD 联合更新 policy', 'Environment outcome feeds GRPO; GRPO and OPD jointly update the policy')}</li></ol></article>
       </div>
     </section>
 

@@ -105,12 +105,16 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('movementEdges');
   });
 
-  it('makes SEED same-action dual-context re-scoring and both learning branches explicit', () => {
+  it('makes both SEED stages, the GLM-5.2 bootstrap, and Stage-2 learning branches explicit', () => {
+    for (const term of ['STAGE 1 · HINDSIGHT-SKILL SFT', 'EXTERNAL TEACHER', 'GLM-5.2', '180 tasks × 8 rollouts', '1,440 completed trajectories', '3-epoch SFT', 'not the WebShop reward scorer', 'STAGE 2 · SELF-EVOLVING OPD + GRPO']) expect(explainer).toContain(term);
     for (const term of ['hold the same sampled action tokens fixed', 'P_plain(action)', 'P_skill(action)', 'plain context', 'skill-augmented context', 'OPD', 'GRPO', 'GRPO + OPD', 'policy θt+1', 'next-loop']) expect(explainer).toContain(term);
     expect(explainer).toContain('Illustrative probabilities only');
     expect(explainer).toContain('same checkpoint');
     expect(explainer).toContain('ParameterUpdateFlame');
     expect(explainer).toContain('参数更新');
+    expect(detailCore).toContain('GLM-5.2 → Hindsight-skill SFT');
+    expect(detailCore).toContain('GLM-5.2 读取完整 episode');
+    expect(detailCore).toContain('不是 WebShop 的 reward scorer');
   });
 
   it('keeps the current WebShop adapter path primary while preserving OpenEvo carrier and validation depth', () => {

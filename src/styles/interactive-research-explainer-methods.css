@@ -158,3 +158,26 @@
 .irx-gpu-chip{display:grid;place-items:center;width:46px;height:30px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--muted);font:800 .52rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:inset 0 -7px 0 var(--surface-muted)}
 .irx-gpu-chip[data-assigned=true]{border-color:var(--irx-env);background:color-mix(in srgb,var(--irx-env) 10%,var(--surface));color:var(--irx-env-text);box-shadow:inset 0 -7px 0 color-mix(in srgb,var(--irx-env) 24%,var(--surface))}
 .irx-gpu-row small{color:var(--muted);font-size:.52rem}
+
+/* SEED has two scientifically distinct stages. Keep Stage 1 visible above the
+ * existing Stage-2 self-evolving loop so the external GLM teacher cannot be
+ * mistaken for either the WebShop evaluator or the Stage-2 analyzer. */
+.irx-seed-stage{margin:0 0 .85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--irx-shadow-soft);overflow:hidden}
+.irx-seed-stage__head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:1rem;align-items:end;padding:.8rem .9rem;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--irx-experience) 5%,var(--surface))}
+.irx-seed-stage__head span,.irx-seed-stage__head strong{display:block}.irx-seed-stage__head span{color:var(--irx-experience-text);font:900 .52rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.irx-seed-stage__head strong{margin-top:.28rem;font-size:.72rem;line-height:1.45}.irx-seed-stage__head p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.5}
+.irx-seed-bootstrap ol{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7rem;margin:0;padding:.8rem .9rem;list-style:none}.irx-seed-bootstrap li{position:relative;min-width:0;padding:.62rem .66rem;border:1px solid var(--line);border-radius:9px;background:var(--surface-muted)}
+.irx-seed-bootstrap li:not(:last-child)::after{content:"";position:absolute;right:.18rem;top:50%;width:.28rem;height:.48rem;transform:translateY(-50%);background:var(--irx-experience);clip-path:polygon(0 0,100% 50%,0 100%)}
+.irx-seed-bootstrap li small,.irx-seed-bootstrap li b,.irx-seed-bootstrap li span{display:block}.irx-seed-bootstrap li small{color:var(--irx-experience-text);font:850 .45rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.035em}.irx-seed-bootstrap li b{margin:.28rem 0 .24rem;font-size:.62rem;line-height:1.35}.irx-seed-bootstrap li>span{color:var(--ink);font-size:.56rem;line-height:1.42}
+.irx-glm-model{display:flex;align-items:center;gap:.55rem;border-color:color-mix(in srgb,var(--irx-experience) 60%,var(--line))!important;background:color-mix(in srgb,var(--irx-experience) 7%,var(--surface))!important}.irx-glm-model>div{min-width:0}.irx-glm-icon{display:grid!important;place-items:center;flex:0 0 auto;width:36px;height:36px;border:1px solid color-mix(in srgb,var(--irx-experience) 55%,var(--line));border-radius:10px;background:var(--surface);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--irx-experience) 12%,transparent)}.irx-glm-icon svg{width:24px;height:24px;fill:color-mix(in srgb,var(--irx-experience) 78%,var(--ink))}
+.irx-seed-stage-divider{display:flex;justify-content:space-between;gap:1rem;align-items:end;margin:.95rem 0 .7rem;padding:.62rem .15rem .55rem;border-bottom:1px solid var(--line)}.irx-seed-stage-divider span,.irx-seed-stage-divider strong{display:block}.irx-seed-stage-divider span{color:var(--irx-state-text);font:900 .52rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.irx-seed-stage-divider strong{margin-top:.24rem;font-size:.68rem;line-height:1.45}.irx-seed-stage-divider small{max-width:260px;color:var(--ink);font-size:.56rem;line-height:1.42;text-align:right}
+@container irx (max-width:900px){
+  .irx-seed-stage__head{grid-template-columns:1fr;align-items:start}
+  .irx-seed-bootstrap ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .irx-seed-bootstrap li::after{display:none}
+  .irx-seed-stage-divider{align-items:flex-start}
+}
+@container irx (max-width:600px){
+  .irx-seed-bootstrap ol{grid-template-columns:1fr}
+  .irx-seed-stage-divider{display:grid;grid-template-columns:1fr}
+  .irx-seed-stage-divider small{max-width:none;text-align:left}
+}
