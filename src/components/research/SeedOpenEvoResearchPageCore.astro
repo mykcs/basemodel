@@ -91,8 +91,8 @@ const p = (path: string) => localePath(locale, path);
       <div class="mission-section__heading"><span>01</span><div><small>{t('环境', 'Environments')}</small><h2>{t('交互与评测', 'Interaction and evaluation')}</h2></div></div>
       <div class="two-grid"><article><h3>ALFWorld</h3><p>{t('文本化具身任务。核心结果是各任务家族 success rate 与不加权 macro-average；循环、无效动作和状态遗漏单独记录。', 'Text-based embodied tasks. Core outcomes are per-family success rates and an unweighted macro-average; loops, invalid actions, and missed state remain separate diagnostics.')}</p></article><article><h3>WebShop</h3><p>{t('网页购物导航任务。同时报告 normalized task-completion score 与 exact success；query、点击、属性选择和 fallback 单独记录。', 'Web-shopping navigation. Report normalized task-completion score and exact success together; preserve queries, clicks, attribute choices, and fallbacks separately.')}</p></article></div>
       <nav class="benchmark-detail-links" aria-label={t('打开独立环境讲解', 'Open dedicated environment explainers')}>
-        <a href={p('/research/seed-openevo/webshop/')}><strong>WebShop</strong><span>{t('打开购物网页交互与评分讲解', 'Open the shopping interaction and scoring explainer')}</span></a>
-        <a href={p('/research/seed-openevo/alfworld/')}><strong>ALFWorld</strong><span>{t('打开物体状态与前置条件讲解', 'Open the object-state and precondition explainer')}</span></a>
+        <a href={p('/research/seed-openevo/flow/webshop/')}><strong>WebShop</strong><span>{t('打开购物网页交互与评分讲解', 'Open the shopping interaction and scoring explainer')}</span></a>
+        <a href={p('/research/seed-openevo/flow/alfworld/')}><strong>ALFWorld</strong><span>{t('打开物体状态与前置条件讲解', 'Open the object-state and precondition explainer')}</span></a>
       </nav>
     </section>
 
@@ -111,7 +111,7 @@ const p = (path: string) => localePath(locale, path);
     <section class="mission-section" data-explainer-step="4">
       <div class="mission-section__heading"><span>01</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('分数与成功边界', 'Score and success boundary')}</h2></div></div>
       <table class="mission-table"><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('记录方式', 'Recording')}</th></tr></thead><tbody><tr><td>task_score</td><td>{t('归一化任务完成度，范围 0–1。', 'Normalized task completion in the range 0–1.')}</td><td>{t('保留连续数值', 'preserve the continuous value')}</td></tr><tr><td>won</td><td>{t('是否精确满足终局约束。', 'Whether terminal constraints are satisfied exactly.')}</td><td>{t('与 score 分开保存', 'store separately from score')}</td></tr><tr><td>DEMO</td><td>{t('交互图中的 1.0 仅为教学示意。', 'The 1.0 shown in the interactive figure is illustrative only.')}</td><td>{t('不并入实验结果', 'exclude from experiment results')}</td></tr></tbody></table>
-      <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
+      <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/run/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
     </section>
   </>}
 
@@ -130,7 +130,7 @@ const p = (path: string) => localePath(locale, path);
     <section class="mission-section" data-explainer-step="8">
       <div class="mission-section__heading"><span>03</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('成功率与数据 split', 'Success rate and data splits')}</h2></div></div>
       <table class="mission-table"><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('边界', 'Boundary')}</th></tr></thead><tbody><tr><td>success</td><td>{t('终局目标是否满足。', 'Whether the terminal goal is satisfied.')}</td><td>{t('二元任务结果', 'binary task outcome')}</td></tr><tr><td>task-family rate</td><td>{t('每个家务任务家族的成功率。', 'Success rate for each household task family.')}</td><td>{t('按家族分别报告', 'report by family')}</td></tr><tr><td>macro-average</td><td>{t('各任务家族成功率的不加权平均。', 'Unweighted average of task-family success rates.')}</td><td>{t('不能与 WebShop normalized score 混用', 'do not mix with WebShop normalized score')}</td></tr><tr><td>split</td><td>train / valid_seen / valid_unseen</td><td>{t('保存原始环境 split 与上层抽样', 'preserve the environment split and upper-level sampling')}</td></tr></tbody></table>
-      <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/guide/openevo-webshop-alfworld/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
+      <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/run/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
     </section>
   </>}
 

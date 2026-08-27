@@ -7,16 +7,17 @@ import {
 } from './sitemapRoutes';
 
 const missionPaths = [
-  '/research/seed-openevo/',
-  '/research/seed-openevo/base-model/',
-  '/research/seed-openevo/seed/',
-  '/research/seed-openevo/openevo/',
-  '/research/seed-openevo/experiment/',
-  '/research/seed-openevo/benchmarks/',
-  '/research/seed-openevo/webshop/',
-  '/research/seed-openevo/alfworld/',
-  '/research/seed-openevo/loops/',
-  '/research/seed-openevo/results/',
+  '/research/seed-openevo/flow/',
+  '/research/seed-openevo/flow/base-model/',
+  '/research/seed-openevo/flow/seed/',
+  '/research/seed-openevo/flow/openevo/',
+  '/research/seed-openevo/study/',
+  '/research/seed-openevo/study/run/',
+  '/research/seed-openevo/flow/benchmarks/',
+  '/research/seed-openevo/flow/webshop/',
+  '/research/seed-openevo/flow/alfworld/',
+  '/research/seed-openevo/flow/loops/',
+  '/research/seed-openevo/study/results/',
 ];
 
 const missionRouteFiles = (directory: string) =>
@@ -24,19 +25,23 @@ const missionRouteFiles = (directory: string) =>
     .filter((name) => name.endsWith('.astro'))
     .sort();
 
-const missionRoutePaths = missionRouteFiles('../pages/research/seed-openevo/').map((name) =>
-  name === 'index.astro'
-    ? '/research/seed-openevo/'
-    : `/research/seed-openevo/${name.replace(/\.astro$/, '')}/`,
-);
+const trackRoutePaths = (directory: string, prefix: string) =>
+  missionRouteFiles(directory).map((name) =>
+    name === 'index.astro' ? `${prefix}/` : `${prefix}/${name.replace(/\.astro$/, '')}/`,
+  );
 
-const englishMissionRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/');
+const missionRoutePaths = [
+  ...trackRoutePaths('../pages/research/seed-openevo/flow/', '/research/seed-openevo/flow'),
+  ...trackRoutePaths('../pages/research/seed-openevo/study/', '/research/seed-openevo/study'),
+];
+
+const englishFlowRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/flow/');
+const englishStudyRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/study/');
 
 describe('sitemap route coverage', () => {
   it('covers the released bilingual product and research routes', () => {
     for (const path of [
       '/lab/',
-      '/guide/openevo-webshop-alfworld/',
       ...missionPaths,
     ]) {
       expect(bilingualStaticPaths).toContain(path);
@@ -45,8 +50,11 @@ describe('sitemap route coverage', () => {
 
   it('keeps every mission route in the sitemap and preserves bilingual route parity', () => {
     expect(new Set(missionPaths)).toEqual(new Set(missionRoutePaths));
-    expect(englishMissionRouteFiles).toEqual(
-      missionRouteFiles('../pages/research/seed-openevo/'),
+    expect(englishFlowRouteFiles).toEqual(
+      missionRouteFiles('../pages/research/seed-openevo/flow/'),
+    );
+    expect(englishStudyRouteFiles).toEqual(
+      missionRouteFiles('../pages/research/seed-openevo/study/'),
     );
     for (const path of missionRoutePaths) {
       expect(bilingualStaticPaths, `${path} is missing from the sitemap`).toContain(path);

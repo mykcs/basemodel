@@ -1,10 +1,10 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const routes = [
-  ['/research/seed-openevo/webshop/', 'webshop'],
-  ['/research/seed-openevo/alfworld/', 'alfworld'],
-  ['/research/seed-openevo/seed/', 'seed'],
-  ['/research/seed-openevo/openevo/', 'openevo'],
+  ['/research/seed-openevo/flow/webshop/', 'webshop'],
+  ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
+  ['/research/seed-openevo/flow/seed/', 'seed'],
+  ['/research/seed-openevo/flow/openevo/', 'openevo'],
   ['/lab/', 'server'],
 ] as const;
 
@@ -107,7 +107,7 @@ test('Chinese research prose stays inside its owning card line-by-line', async (
 
 test('WebShop mobile research boundary uses a full-width prose row', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/research/seed-openevo/webshop/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   const note = page.locator('[data-interactive-research-explainer="webshop"] .irx-boundary-note').first();
   await expect(note).toBeVisible();

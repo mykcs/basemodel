@@ -30,8 +30,8 @@ const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const exactRoute = (target: string) => localeNeutralPath === target || localeNeutralPath === `${target}/`;
 const isTodayRunbook = exactRoute('/guide/today');
 const globalQuickViewMounted = exactRoute('/families') || /^\/papers\/[^/]+\/?$/.test(localeNeutralPath);
-const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/experiment') ? 'experiment'
-  : exactRoute('/guide/openevo-webshop-alfworld') ? 'run'
+const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/study') ? 'experiment'
+  : exactRoute('/research/seed-openevo/study/run') ? 'run'
   : null;
 const localePath = (target: Locale) => { const clean = localeNeutralPath.replace(/^\//, ''); return target === 'en' ? `/en/${clean}` : `/${clean}`; };
 const canonicalUrl = new URL(localePath(locale), siteOrigin).href;

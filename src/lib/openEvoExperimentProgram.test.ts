@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const component = read('src/components/research/OpenEvoExperimentProgram.astro');
 const state = read('src/lib/openEvoScientificState.ts');
-const zhRoute = read('src/pages/research/seed-openevo/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
+const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('OpenEvo × WebShop experiment state provenance', () => {

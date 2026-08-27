@@ -49,11 +49,11 @@ const webkitRepresentativeRoutes = [
   '/models/qwen2-5-3b-instruct/',
   '/papers/seed/',
   '/workspace/',
-  '/research/seed-openevo/',
-  '/research/seed-openevo/experiment/',
-  '/research/seed-openevo/results/',
+  '/research/seed-openevo/flow/',
+  '/research/seed-openevo/study/',
+  '/research/seed-openevo/study/results/',
   '/en/',
-  '/en/research/seed-openevo/results/',
+  '/en/research/seed-openevo/study/results/',
 ] as const;
 
 const fallbackRoute = '/__header-gate-404__/';
@@ -193,7 +193,7 @@ test('global shell and navigation survive computed CSS across every public route
 test('responsive navigation controls remain operable instead of merely visible', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
 
   const toggle = page.locator('[data-menu-toggle]');
   const mobileMenu = page.locator('[data-mobile-menu]');
@@ -202,7 +202,7 @@ test('responsive navigation controls remain operable instead of merely visible',
   await expect(mobileMenu).toHaveAttribute('aria-hidden', 'false');
   await expect(mobileMenu).toBeVisible();
   await expect(mobileMenu.locator('.mobile-journeys a').first()).toBeVisible();
-  await expect(mobileMenu.locator('.lang-switch')).toHaveAttribute('href', '/en/research/seed-openevo/results/');
+  await expect(mobileMenu.locator('.lang-switch')).toHaveAttribute('href', '/en/research/seed-openevo/study/results/');
 
   const mobileGeometry = await mobileMenu.locator('.mobile-menu__inner').evaluate((inner) => {
     const sections = [...inner.querySelectorAll<HTMLElement>('.mobile-menu__section')];
@@ -249,7 +249,7 @@ test('responsive navigation controls remain operable instead of merely visible',
   await expect(toggle).toBeFocused();
 
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/research/seed-openevo/results/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
   const resourceMenu = page.locator('[data-resource-menu]');
   const resourceSummary = resourceMenu.locator('summary');
   await resourceSummary.click();

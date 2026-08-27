@@ -10,11 +10,11 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const objects = [
-  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验使用的模型版本（revision）、数值精度和运行设置。','Experiment model revision, numerical precision, and runtime settings.'), href:p('/research/seed-openevo/base-model/') },
-  { index:'02', title:'SEED', body:t('SEED 怎样把事后成功经验整理成技能，并通过 OPD / GRPO 更新模型参数。','How SEED turns hindsight experience into skills and updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/seed/') },
-  { index:'03', title:'OpenEvo', body:t('OpenEvo 怎样封存任务，把学习产物保存成适配器（adapter）或演化产物（artifact），再交给下一版本继续使用。','How OpenEvo seals tasks, stores learned outputs as adapters or artifacts, and passes them to successor revisions.'), href:p('/research/seed-openevo/openevo/') },
-  { index:'04', title:'ALFWorld', body:t('文本形式的具身任务：模型读环境状态、执行动作，并按任务家族统计成功率。','Text-based embodied tasks where the model reads world state, takes actions, and is evaluated by task-family success rates.'), href:p('/research/seed-openevo/alfworld/') },
-  { index:'05', title:'WebShop', body:t('网页购物任务：既看任务完成度（normalized score），也看是否完整成功（exact success）。','Web-shopping tasks evaluated with both normalized task progress and exact success.'), href:p('/research/seed-openevo/webshop/') },
+  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验使用的模型版本（revision）、数值精度和运行设置。','Experiment model revision, numerical precision, and runtime settings.'), href:p('/research/seed-openevo/flow/base-model/') },
+  { index:'02', title:'SEED', body:t('SEED 怎样把事后成功经验整理成技能，并通过 OPD / GRPO 更新模型参数。','How SEED turns hindsight experience into skills and updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/flow/seed/') },
+  { index:'03', title:'OpenEvo', body:t('OpenEvo 怎样封存任务，把学习产物保存成适配器（adapter）或演化产物（artifact），再交给下一版本继续使用。','How OpenEvo seals tasks, stores learned outputs as adapters or artifacts, and passes them to successor revisions.'), href:p('/research/seed-openevo/flow/openevo/') },
+  { index:'04', title:'ALFWorld', body:t('文本形式的具身任务：模型读环境状态、执行动作，并按任务家族统计成功率。','Text-based embodied tasks where the model reads world state, takes actions, and is evaluated by task-family success rates.'), href:p('/research/seed-openevo/flow/alfworld/') },
+  { index:'05', title:'WebShop', body:t('网页购物任务：既看任务完成度（normalized score），也看是否完整成功（exact success）。','Web-shopping tasks evaluated with both normalized task progress and exact success.'), href:p('/research/seed-openevo/flow/webshop/') },
 ];
 ---
 <div class="mission-page plain-mission-hub">
@@ -30,9 +30,9 @@ const objects = [
   <section class="mission-section" id="site-map">
     <div class="mission-section__heading"><span>02</span><div><small>{t('流程', 'Workflow')}</small><h2>{t('实验路线', 'Experiment route')}</h2></div></div>
     <ol class="run-step-grid">
-      <li><span>1</span><h3>{t('先对齐 SEED 的实验条件', 'Reproduce SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
-      <li><span>2</span><h3>{t('再运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/guide/openevo-webshop-alfworld/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('最后比较结果并找原因', 'Compare and diagnose')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查模型适配器状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and adapter state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/results/')}>{t('研究结果','Research findings')} →</a></li>
+      <li><span>1</span><h3>{t('先对齐 SEED 的实验条件', 'Reproduce SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
+      <li><span>2</span><h3>{t('再运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
+      <li><span>3</span><h3>{t('最后比较结果并找原因', 'Compare and diagnose')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查模型适配器状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and adapter state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
     </ol>
   </section>
 

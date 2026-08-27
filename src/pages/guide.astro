@@ -23,8 +23,8 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
       <p>SEED 论文主线使用 Qwen2.5-3B-Instruct、ALFWorld 与 WebShop，并包含 hindsight-skill SFT、on-policy rollout、GRPO 与 OPD。严格复现时应优先固定论文模型、任务协议和训练定义。</p>
       <div class="guide-cards">
         <a href={localePath('zh','/papers/seed/')}><strong>SEED 论文页</strong><span>论文条件、模型角色、训练阶段和复现材料</span></a>
-        <a href={localePath('zh','/research/seed-openevo/seed/')}><strong>SEED 方法</strong><span>hindsight skill、OPD、GRPO 与参数更新</span></a>
-        <a href={localePath('zh','/research/seed-openevo/benchmarks/')}><strong>ALFWorld / WebShop</strong><span>任务、动作、评分与失败证据</span></a>
+        <a href={localePath('zh','/research/seed-openevo/flow/seed/')}><strong>SEED 方法</strong><span>hindsight skill、OPD、GRPO 与参数更新</span></a>
+        <a href={localePath('zh','/research/seed-openevo/flow/benchmarks/')}><strong>ALFWorld / WebShop</strong><span>任务、动作、评分与失败证据</span></a>
       </div>
     </section>
 
@@ -36,9 +36,9 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
       <p class="hardware-truth">模型目录里的硬件档位只是粗粒度分类；工作台显存计算器给出的是<strong>启发式规划估算</strong>，<strong>不是硬件实测</strong>，仅用于复现规划；任何具体机器上 vLLM / SGLang / transformers 的实测吞吐都应以本机 benchmark 为准。{openEvoScientificState.gpuRule.zh}</p>
       <p>{openEvoScientificState.liveStateRule.zh}</p>
       <div class="guide-cards">
-        <a href={localePath('zh','/guide/openevo-webshop-alfworld/')}><strong>复现指南</strong><span>运行拓扑、实验身份、WebShop 合同与状态解析</span></a>
-        <a href={localePath('zh','/research/seed-openevo/experiment/')}><strong>实验入口</strong><span>WebShop 数据流、历史里程碑和实时状态来源</span></a>
-        <a href={localePath('zh','/research/seed-openevo/results/')}><strong>实验结果</strong><span>Phase D–G 历史证据、默认分支快照与实时 claim 路由</span></a>
+        <a href={localePath('zh','/research/seed-openevo/study/run/')}><strong>复现指南</strong><span>运行拓扑、实验身份、WebShop 合同与状态解析</span></a>
+        <a href={localePath('zh','/research/seed-openevo/study/')}><strong>实验入口</strong><span>WebShop 数据流、历史里程碑和实时状态来源</span></a>
+        <a href={localePath('zh','/research/seed-openevo/study/results/')}><strong>实验结果</strong><span>Phase D–G 历史证据、默认分支快照与实时 claim 路由</span></a>
       </div>
     </section>
 

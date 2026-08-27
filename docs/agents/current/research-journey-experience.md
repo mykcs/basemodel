@@ -18,32 +18,32 @@ This is an information-architecture rule, not merely a visual cleanup.
 
 | Full explainer | Canonical route | Other routes do |
 | --- | --- | --- |
-| SEED method | `/research/seed-openevo/seed/` | link or give short method context |
-| OpenEvo lifecycle | `/research/seed-openevo/openevo/` | link or give short experiment context |
-| WebShop interaction | `/research/seed-openevo/webshop/` | link; keep score/metric summaries where needed |
-| ALFWorld interaction | `/research/seed-openevo/alfworld/` | link; keep success-rate summaries where needed |
-| SEED vs OpenEvo update comparison | `/research/seed-openevo/loops/` | link; do not embed another comparison figure |
+| SEED method | `/research/seed-openevo/flow/seed/` | link or give short method context |
+| OpenEvo lifecycle | `/research/seed-openevo/flow/openevo/` | link or give short experiment context |
+| WebShop interaction | `/research/seed-openevo/flow/webshop/` | link; keep score/metric summaries where needed |
+| ALFWorld interaction | `/research/seed-openevo/flow/alfworld/` | link; keep success-rate summaries where needed |
+| SEED vs OpenEvo update comparison | `/research/seed-openevo/flow/loops/` | link; do not embed another comparison figure |
 | server / Docker authority | `/lab/` | link from execution material |
 
 The dedicated WebShop and ALFWorld pages keep the interactive, scroll-following explainer controls. In particular, the WebShop page remains the canonical place for the persistent previous/next learning interaction the owner selected.
 
 ## Route roles after de-duplication
 
-### Research mission hub
+### Flow overview
 
-`/research/seed-openevo/` is orientation. It routes readers to methods, environments, experiments, results, and execution without reproducing their full bodies.
+`/research/seed-openevo/flow/` is the concept-learning orientation route. It routes readers to model, method, environment, and update-mechanism explainers without mixing experiment execution or findings into the same child hierarchy.
 
 ### Benchmark overview
 
-`/research/seed-openevo/benchmarks/` compares ALFWorld and WebShop as experimental instruments: metrics, evidence types, and fair-comparison controls. It links to the two environment pages for full interaction teaching.
+`/research/seed-openevo/flow/benchmarks/` compares ALFWorld and WebShop as experimental instruments: metrics, evidence types, and fair-comparison controls. It links to the two environment pages for full interaction teaching.
 
 ### Experiment gateway
 
-`/research/seed-openevo/experiment/` owns experiment state, study framing, evidence, source references, and live-state resolution. It uses a compact concept index rather than embedding method/environment figures.
+`/research/seed-openevo/study/` owns experiment state, study framing, evidence, source references, and live-state resolution. It uses a compact concept index rather than embedding method/environment figures.
 
 ### Reproduction guide
 
-`/guide/openevo-webshop-alfworld/` stays execution-first: machine/code boundary, numbered gates, commands, expected evidence, and troubleshooting. Conceptual diagrams are references, not repeated content.
+`/research/seed-openevo/study/run/` stays execution-first: machine/code boundary, numbered gates, commands, expected evidence, and troubleshooting. Conceptual diagrams are references, not repeated content.
 
 ## Contextual subnavigation invariant
 
@@ -58,7 +58,7 @@ The two tracks are:
 
 `SeedOpenEvoResearchNav.astro` must choose exactly one of these child sets from the current page ID. Do not restore the old flat row containing both conceptual-learning routes and experiment/result routes together. The old flat row duplicated the top-level journey switch and made the two navigation bars feel unrelated.
 
-Keep route URLs stable when changing this structure. The fix is navigation ownership, not a route migration.
+Route ownership is now encoded in the URL hierarchy as well as the navigation. Canonical concept routes live under `/research/seed-openevo/flow/`; canonical experiment, execution, and findings routes live under `/research/seed-openevo/study/`. The old flat URLs remain compatibility entry points only and must permanently redirect to their canonical grouped routes. Internal links, sitemap entries, canonical URLs, and hreflang targets must use the grouped routes directly rather than relying on redirects.
 
 The local navigation should expose its resolved track (`flow` or `study`) in a machine-readable way so source/UI acceptance can verify track membership, active state, and accidental cross-track leakage.
 

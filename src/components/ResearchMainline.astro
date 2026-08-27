@@ -19,8 +19,8 @@ const stageTargets: Record<Stage, string> = {
   question: '/guide/',
   constraints: '/workspace/',
   candidates: '/models/',
-  evidence: '/research/seed-openevo/',
-  decision: '/research/seed-openevo/results/',
+  evidence: '/research/seed-openevo/flow/',
+  decision: '/research/seed-openevo/study/results/',
 };
 const localized = (target: string) => locale === 'en' ? `/en${target}` : target;
 const exact = (v: string) => path === v || path === `${v}/`;

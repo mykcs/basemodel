@@ -5,8 +5,8 @@ const read = (path: string) =>
   readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 
 const component = read('src/components/research/Seed3090PairedRunAudit.astro');
-const zhRoute = read('src/pages/research/seed-openevo/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/results.astro');
+const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
+const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
 
 describe('seed3090 paired-run audit archive', () => {
   it('preserves external memory as the sole treatment in the historical shared-runner contract', () => {

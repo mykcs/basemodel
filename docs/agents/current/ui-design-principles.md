@@ -267,9 +267,9 @@ For Astro specifically, global route overrides must use the actual `is:global` d
 
 The WebShop training-note routes are a permanent regression set because this exact failure reached Preview:
 
-- `/research/seed-openevo/results/webshop-training/`;
-- `/research/seed-openevo/results/seed-training/`;
-- `/research/seed-openevo/results/openevo-training/`.
+- `/research/seed-openevo/study/results/webshop-training/`;
+- `/research/seed-openevo/study/results/seed-training/`;
+- `/research/seed-openevo/study/results/openevo-training/`.
 
 A UI/theme change touching these pages, their layout, shared theme tokens, or their CSS ownership must run `tests/e2e/webshop-training-theme.spec.ts` before it is considered complete.
 

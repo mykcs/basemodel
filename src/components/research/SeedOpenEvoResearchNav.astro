@@ -18,20 +18,20 @@ const p = (path: string) => localePath(locale, path);
 // child navigation for whichever journey the reader is currently inside; it
 // should never flatten both journeys back into one unrelated row.
 const flowPages = [
-  { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/') },
-  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/base-model/') },
-  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/seed/') },
-  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/openevo/') },
-  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/benchmarks/') },
-  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/webshop/') },
-  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/alfworld/') },
-  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/loops/') },
+  { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/flow/') },
+  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/flow/base-model/') },
+  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
+  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/flow/openevo/') },
+  { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/flow/benchmarks/') },
+  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/flow/webshop/') },
+  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/flow/alfworld/') },
+  { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/flow/loops/') },
 ] as const;
 
 const studyPages = [
-  { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/experiment/') },
-  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/guide/openevo-webshop-alfworld/') },
-  { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/results/') },
+  { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/study/') },
+  { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/research/seed-openevo/study/run/') },
+  { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/study/results/') },
 ] as const;
 
 const studyPageIds: ResearchPage[] = ['experiment', 'run', 'results'];

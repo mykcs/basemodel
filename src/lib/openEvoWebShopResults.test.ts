@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
-const resultsPageZh = read('../pages/research/seed-openevo/results.astro');
-const resultsPageEn = read('../pages/en/research/seed-openevo/results.astro');
-const experimentPage = read('../pages/research/seed-openevo/experiment.astro');
+const resultsPageZh = read('../pages/research/seed-openevo/study/results.astro');
+const resultsPageEn = read('../pages/en/research/seed-openevo/study/results.astro');
+const experimentPage = read('../pages/research/seed-openevo/study/index.astro');
 const researchDetail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const hero = read('../components/research/OpenEvoWebShopResultsHero.astro');
 const protocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
@@ -20,7 +20,7 @@ const appendix = read('../components/research/OpenEvoWebShopResultsAppendix.astr
 const nextProtocol = read('../components/research/OpenEvoNextExperimentProtocol.astro');
 const evidenceNoteScope = read('../components/research/OpenEvoEvidenceNoteScope.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
-const resultRoute = read('../pages/research/seed-openevo/results/[note].astro');
+const resultRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
 const primerMoved = read('../components/research/ResearchPrimerMoved.astro');
 const sitemap = read('./sitemapRoutes.ts');
 const readerContract = read('../../docs/agents/current/seed-openevo-results-reader-contract.md');
@@ -125,8 +125,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(protocol).toContain('实验边界 · PROTOCOL');
     expect(protocol).toContain('OpenEvoEvidenceRefs');
     expect(protocol).toContain('envs.py#L115-L145');
-    expect(protocol).toContain('/research/seed-openevo/webshop/');
-    expect(protocol).toContain('/research/seed-openevo/loops/');
+    expect(protocol).toContain('/research/seed-openevo/flow/webshop/');
+    expect(protocol).toContain('/research/seed-openevo/flow/loops/');
   });
 
   it('keeps Q1–Q7 with short current answers and claim-local experiment evidence', () => {
@@ -303,14 +303,14 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('路线 B（Track B，WB1）');
     expect(nextSteps).toContain('只有路线 B 才能真正回答 OpenEvo vs SEED');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
-    expect(nextSteps).toContain('/research/seed-openevo/experiment/');
+    expect(nextSteps).toContain('/research/seed-openevo/study/');
   });
 
   it('keeps the historical records complete: twelve notes, lineage, RTX6 record, evidence trail, and print provenance', () => {
     for (const slug of noteSlugs) {
       expect(appendix, `${slug} missing from historical records`).toContain(`/${slug}/`);
       expect(resultRoute, `${slug} missing from static routes`).toContain(`'${slug}'`);
-      expect(sitemap, `${slug} missing from sitemap`).toContain(`/research/seed-openevo/results/${slug}/`);
+      expect(sitemap, `${slug} missing from sitemap`).toContain(`/research/seed-openevo/study/results/${slug}/`);
     }
     expect(appendix).toContain('历史实验与完整记录');
     expect(appendix).not.toContain('正文只放结论与关键数字');
@@ -320,8 +320,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(appendix).toContain('print-provenance');
     expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(resultRoute).toContain('ResearchPrimerMoved');
-    expect(primerMoved).toContain('/research/seed-openevo/webshop/#fig-seed-webshop');
-    expect(primerMoved).toContain('/research/seed-openevo/loops/#fig-seed-openevo-update-target');
+    expect(primerMoved).toContain('/research/seed-openevo/flow/webshop/#fig-seed-webshop');
+    expect(primerMoved).toContain('/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target');
   });
 
   it('keeps H1.42 as a later measurement-boundary note rather than part of the H1.41 conclusions', () => {

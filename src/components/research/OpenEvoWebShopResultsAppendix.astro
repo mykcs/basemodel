@@ -17,40 +17,40 @@ const p = (path: string) => localePath(locale, path);
 
 const deepDives = [
   {
-    href: p('/research/seed-openevo/results/why-it-kept-failing/'),
+    href: p('/research/seed-openevo/study/results/why-it-kept-failing/'),
     title: t('早期为什么一直没有可靠迁移', 'Why early runs never produced reliable transfer'),
     body: t('回看动作解析、交互步数、经验载体和实验有效性等问题，理解早期结果为什么反复失效。', 'Trace action parsing, interaction horizon, experience carrier, and run validity to understand why early results repeatedly failed.'),
   },
   {
-    href: p('/research/seed-openevo/results/first-positive-transfer/'),
+    href: p('/research/seed-openevo/study/results/first-positive-transfer/'),
     title: t('H1.38B：第一次可靠正向迁移', 'H1.38B: the first reliable positive transfer'),
     body: t('第一次在内部新任务上得到置信区间完全高于 0 的迁移结果。', 'The first internal fresh-task transfer whose confidence interval lay entirely above zero.'),
   },
   {
-    href: p('/research/seed-openevo/results/independent-replication/'),
+    href: p('/research/seed-openevo/study/results/independent-replication/'),
     title: t('H1.39：独立复现', 'H1.39: independent replication'),
     body: t('冻结训练产物并换一批任务 ID 不重叠的新任务后，再次观察到同方向提升。', 'Frozen artifacts, a new task-ID-disjoint panel, and the same-direction improvement observed again.'),
   },
   {
-    href: p('/research/seed-openevo/results/second-generation/'),
+    href: p('/research/seed-openevo/study/results/second-generation/'),
     title: t('H1.40 / H1.41：第二代持续整合的边界', 'H1.40 / H1.41: the second-generation integration boundary'),
     body: t('第二代有新经验、也真实写入了参数，但新知识获取、旧能力保持和已有收益保持没有同时成立。', 'Second-generation experience and a real parameter write existed, but acquisition, retention, and preservation did not all hold together.'),
   },
   {
-    href: p('/research/seed-openevo/results/current-conclusion/'),
+    href: p('/research/seed-openevo/study/results/current-conclusion/'),
     title: t('当前结论能说到哪里', 'The current claim boundary'),
     body: t('逐项区分已经有证据支持的结论、负结果、无效测量和仍然未知的问题。', 'Separate supported claims, negative results, invalid measurements, and questions that remain unknown.'),
   },
 ] as const;
 
 const legacyLinks = [
-  { href: p('/research/seed-openevo/results/webshop-training/'), label: t('WebShop 早期说明', 'Early WebShop note') },
-  { href: p('/research/seed-openevo/results/seed-training/'), label: t('SEED 早期说明', 'Early SEED note') },
-  { href: p('/research/seed-openevo/results/openevo-training/'), label: t('OpenEvo 早期说明', 'Early OpenEvo note') },
-  { href: p('/research/seed-openevo/results/measurement-boundary/'), label: t('H1.42 后续测量笔记', 'H1.42 follow-up measurement note') },
-  { href: p('/research/seed-openevo/results/benchmark-first/'), label: t('正式比较设计', 'Formal comparison design') },
-  { href: p('/research/seed-openevo/results/seed-faithful-benchmark/'), label: t('SEED 公平比较协议', 'SEED-faithful comparison protocol') },
-  { href: p('/research/seed-openevo/results/openevo-benchmark-design/'), label: t('OpenEvo 方法变体设计', 'OpenEvo method-variant design') },
+  { href: p('/research/seed-openevo/study/results/webshop-training/'), label: t('WebShop 早期说明', 'Early WebShop note') },
+  { href: p('/research/seed-openevo/study/results/seed-training/'), label: t('SEED 早期说明', 'Early SEED note') },
+  { href: p('/research/seed-openevo/study/results/openevo-training/'), label: t('OpenEvo 早期说明', 'Early OpenEvo note') },
+  { href: p('/research/seed-openevo/study/results/measurement-boundary/'), label: t('H1.42 后续测量笔记', 'H1.42 follow-up measurement note') },
+  { href: p('/research/seed-openevo/study/results/benchmark-first/'), label: t('正式比较设计', 'Formal comparison design') },
+  { href: p('/research/seed-openevo/study/results/seed-faithful-benchmark/'), label: t('SEED 公平比较协议', 'SEED-faithful comparison protocol') },
+  { href: p('/research/seed-openevo/study/results/openevo-benchmark-design/'), label: t('OpenEvo 方法变体设计', 'OpenEvo method-variant design') },
 ] as const;
 ---
 

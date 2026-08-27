@@ -23,8 +23,8 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
       <p>The SEED paper uses Qwen2.5-3B-Instruct, ALFWorld, and WebShop, with hindsight-skill SFT, on-policy rollout, GRPO, and OPD. Strict reproduction should pin the paper model, task protocol, and training definition first.</p>
       <div class="guide-cards">
         <a href={localePath('en','/papers/seed/')}><strong>SEED paper</strong><span>Paper conditions, model roles, training stages, and reproduction material</span></a>
-        <a href={localePath('en','/research/seed-openevo/seed/')}><strong>SEED method</strong><span>Hindsight skills, OPD, GRPO, and parameter updates</span></a>
-        <a href={localePath('en','/research/seed-openevo/benchmarks/')}><strong>ALFWorld / WebShop</strong><span>Tasks, actions, scoring, and failure evidence</span></a>
+        <a href={localePath('en','/research/seed-openevo/flow/seed/')}><strong>SEED method</strong><span>Hindsight skills, OPD, GRPO, and parameter updates</span></a>
+        <a href={localePath('en','/research/seed-openevo/flow/benchmarks/')}><strong>ALFWorld / WebShop</strong><span>Tasks, actions, scoring, and failure evidence</span></a>
       </div>
     </section>
 
@@ -36,9 +36,9 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
       <p class="hardware-truth">Hardware tiers in the model catalog are coarse categories; the workspace VRAM calculator is a <strong>heuristic planning estimate</strong>, <strong>not a measured hardware result</strong>. {openEvoScientificState.gpuRule.en}</p>
       <p>{openEvoScientificState.liveStateRule.en}</p>
       <div class="guide-cards">
-        <a href={localePath('en','/guide/openevo-webshop-alfworld/')}><strong>Reproduction guide</strong><span>Runtime topology, experiment identity, WebShop contract, and state resolution</span></a>
-        <a href={localePath('en','/research/seed-openevo/experiment/')}><strong>Experiment entry</strong><span>WebShop data flow, historical milestones, and live-state source</span></a>
-        <a href={localePath('en','/research/seed-openevo/results/')}><strong>Experiment results</strong><span>Phase D–G historical evidence, default-branch snapshot, and live claim routing</span></a>
+        <a href={localePath('en','/research/seed-openevo/study/run/')}><strong>Reproduction guide</strong><span>Runtime topology, experiment identity, WebShop contract, and state resolution</span></a>
+        <a href={localePath('en','/research/seed-openevo/study/')}><strong>Experiment entry</strong><span>WebShop data flow, historical milestones, and live-state source</span></a>
+        <a href={localePath('en','/research/seed-openevo/study/results/')}><strong>Experiment results</strong><span>Phase D–G historical evidence, default-branch snapshot, and live claim routing</span></a>
       </div>
     </section>
 

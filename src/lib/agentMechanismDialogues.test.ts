@@ -7,8 +7,8 @@ const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 describe('SEED and OpenEvo architecture comparison', () => {
   const legacyComponent = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
   const canonicalComponent = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
-  const zhRoute = read('src/pages/research/seed-openevo/loops.astro');
-  const enRoute = read('src/pages/en/research/seed-openevo/loops.astro');
+  const zhRoute = read('src/pages/research/seed-openevo/flow/loops.astro');
+  const enRoute = read('src/pages/en/research/seed-openevo/flow/loops.astro');
 
   it('keeps both update mechanisms explicit in the retained static technical reference', () => {
     expect(legacyComponent).toContain('SEED');

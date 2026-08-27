@@ -10,12 +10,12 @@ const goalGenerationFigure = read('src/components/research/WebShopGoalGeneration
 const seedSplitFigure = read('src/components/research/WebShopSeedSplitFigure.astro');
 const evaluationFigure = read('src/components/research/WebShopEvaluationFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
-const seedZh = read('src/pages/research/seed-openevo/seed.astro');
-const seedEn = read('src/pages/en/research/seed-openevo/seed.astro');
-const webshopZh = read('src/pages/research/seed-openevo/webshop.astro');
-const webshopEn = read('src/pages/en/research/seed-openevo/webshop.astro');
-const loopsZh = read('src/pages/research/seed-openevo/loops.astro');
-const loopsEn = read('src/pages/en/research/seed-openevo/loops.astro');
+const seedZh = read('src/pages/research/seed-openevo/flow/seed.astro');
+const seedEn = read('src/pages/en/research/seed-openevo/flow/seed.astro');
+const webshopZh = read('src/pages/research/seed-openevo/flow/webshop.astro');
+const webshopEn = read('src/pages/en/research/seed-openevo/flow/webshop.astro');
+const loopsZh = read('src/pages/research/seed-openevo/flow/loops.astro');
+const loopsEn = read('src/pages/en/research/seed-openevo/flow/loops.astro');
 const results = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const explainerStandard = read('docs/agents/current/research-explainer-page-standard.md');
 
@@ -141,10 +141,10 @@ describe('canonical SEED / OpenEvo research figures', () => {
   });
 
   it('lets research findings point to canonical background owners instead of re-owning background explanation', () => {
-    expect(results).toContain('/research/seed-openevo/webshop/');
-    expect(results).toContain('/research/seed-openevo/openevo/');
-    expect(results).toContain('/research/seed-openevo/seed/');
-    expect(results).toContain('/research/seed-openevo/experiment/');
+    expect(results).toContain('/research/seed-openevo/flow/webshop/');
+    expect(results).toContain('/research/seed-openevo/flow/openevo/');
+    expect(results).toContain('/research/seed-openevo/flow/seed/');
+    expect(results).toContain('/research/seed-openevo/study/');
     expect(results).not.toContain('WebShopDatasetCanonicalFigure');
     expect(results).not.toContain('SeedFrameworkDiagram');
   });

@@ -1,7 +1,7 @@
 # OpenEvo × WebShop / ALFWorld reproduction guide
 
 Status: current product/content ownership
-Routes: `/guide/openevo-webshop-alfworld/`, `/en/guide/openevo-webshop-alfworld/`
+Routes: `/research/seed-openevo/study/run/`, `/en/research/seed-openevo/study/run/`
 Primary page shell: `src/components/OpenEvoSeedBenchmarksGuide.astro`
 Execution manual body: `src/components/OpenEvoReproductionResearch.astro`
 Entry: `src/components/GuideDecisionChapters.astro` → paper-comparability chapter → **SEED 相关基准 · OpenEvo**.

@@ -82,9 +82,9 @@ describe('UI visual acceptance gate contract', () => {
 
   it('keeps all legacy WebShop primer routes under exact computed-theme browser regression', () => {
     for (const route of [
-      '/research/seed-openevo/results/webshop-training/',
-      '/research/seed-openevo/results/seed-training/',
-      '/research/seed-openevo/results/openevo-training/',
+      '/research/seed-openevo/study/results/webshop-training/',
+      '/research/seed-openevo/study/results/seed-training/',
+      '/research/seed-openevo/study/results/openevo-training/',
     ]) {
       expect(webShopThemeGate).toContain(route);
     }

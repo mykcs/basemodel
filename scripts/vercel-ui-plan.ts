@@ -14,15 +14,15 @@ export interface HostedUiPlan {
   reason: string;
 }
 
-const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/results(?:\/|$)/;
+const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/study\/results(?:\/|$)/;
 const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNER = 'scripts/vercel-ui-plan.ts';
 
 const SCOPED_EXPLAINER_ROUTES = new Map<string, string[]>([
-  ['src/components/research/explainer/EnvironmentExplainers.tsx', ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/en/research/seed-openevo/alfworld/']],
-  ['src/styles/interactive-research-explainer-environments.css', ['/research/seed-openevo/webshop/', '/en/research/seed-openevo/webshop/', '/research/seed-openevo/alfworld/', '/en/research/seed-openevo/alfworld/']],
-  ['src/components/research/explainer/MethodExplainers.tsx', ['/research/seed-openevo/seed/', '/en/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/en/research/seed-openevo/openevo/']],
-  ['src/styles/interactive-research-explainer-methods.css', ['/research/seed-openevo/seed/', '/en/research/seed-openevo/seed/', '/research/seed-openevo/openevo/', '/en/research/seed-openevo/openevo/', '/lab/', '/en/lab/']],
+  ['src/components/research/explainer/EnvironmentExplainers.tsx', ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/']],
+  ['src/styles/interactive-research-explainer-environments.css', ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/']],
+  ['src/components/research/explainer/MethodExplainers.tsx', ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/']],
+  ['src/styles/interactive-research-explainer-methods.css', ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/', '/lab/', '/en/lab/']],
   ['src/components/research/explainer/ServerExplainer.tsx', ['/lab/', '/en/lab/']],
   ['src/styles/interactive-research-explainer-server.css', ['/lab/', '/en/lab/']],
 ]);

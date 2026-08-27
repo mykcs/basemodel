@@ -123,8 +123,8 @@ The worked example should connect the real product surfaces instead of inventing
 - Compare — expose substitution differences/experimental impact;
 - Decision Memo/snapshots — preserve the decision and evidence trail;
 - Data Status / Methodology — inspect source quality, unknowns, and conflicts;
-- `/research/seed-openevo/` — current SEED × OpenEvo research journey and results;
-- `/guide/openevo-webshop-alfworld/` — execution-first reproduction guidance.
+- `/research/seed-openevo/flow/` — current SEED × OpenEvo research journey and results;
+- `/research/seed-openevo/study/run/` — execution-first reproduction guidance.
 
 Route-role and explainer deduplication are owned by `research-journey-experience.md`; do not copy full SEED/OpenEvo/WebShop explainers into every route.
 

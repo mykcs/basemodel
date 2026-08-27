@@ -10,8 +10,8 @@ const explainerBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/research-
 const visualCloseoutBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/visual-closeout-followup.spec.ts'), 'utf8');
 const canonicalFigureGate = readFileSync(resolve(repoRoot, 'tests/e2e/canonical-research-figures.spec.ts'), 'utf8');
 const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
-const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/results.astro'), 'utf8');
-const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/results.astro'), 'utf8');
+const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/study/results.astro'), 'utf8');
+const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/study/results.astro'), 'utf8');
 
 function collectAstroFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -58,15 +58,15 @@ describe('UI regression-class hardening', () => {
     const stepperMatrix = visualCloseoutBrowserGate.match(/const stepperRoutes = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
 
     const interactiveOwners = [
-      '/research/seed-openevo/webshop/',
-      '/research/seed-openevo/alfworld/',
-      '/research/seed-openevo/seed/',
-      '/research/seed-openevo/openevo/',
+      '/research/seed-openevo/flow/webshop/',
+      '/research/seed-openevo/flow/alfworld/',
+      '/research/seed-openevo/flow/seed/',
+      '/research/seed-openevo/flow/openevo/',
       '/lab/',
-      '/en/research/seed-openevo/webshop/',
-      '/en/research/seed-openevo/alfworld/',
-      '/en/research/seed-openevo/seed/',
-      '/en/research/seed-openevo/openevo/',
+      '/en/research/seed-openevo/flow/webshop/',
+      '/en/research/seed-openevo/flow/alfworld/',
+      '/en/research/seed-openevo/flow/seed/',
+      '/en/research/seed-openevo/flow/openevo/',
       '/en/lab/',
     ];
     for (const path of interactiveOwners) {
@@ -75,24 +75,24 @@ describe('UI regression-class hardening', () => {
     }
 
     for (const path of [
-      '/research/seed-openevo/webshop/',
-      '/research/seed-openevo/alfworld/',
-      '/research/seed-openevo/seed/',
-      '/research/seed-openevo/openevo/',
+      '/research/seed-openevo/flow/webshop/',
+      '/research/seed-openevo/flow/alfworld/',
+      '/research/seed-openevo/flow/seed/',
+      '/research/seed-openevo/flow/openevo/',
       '/lab/',
     ]) expect(stepperMatrix, `visual closeout stepper matrix missing ${path}`).toContain(path);
 
-    for (const canonicalOnly of ['/research/seed-openevo/loops/', '/en/research/seed-openevo/loops/']) {
+    for (const canonicalOnly of ['/research/seed-openevo/flow/loops/', '/en/research/seed-openevo/flow/loops/']) {
       expect(ownerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
       expect(visualOwnerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
       expect(canonicalFigureGate, `${canonicalOnly} missing canonical figure acceptance`).toContain(canonicalOnly);
     }
 
     for (const retiredOwner of [
-      '/research/seed-openevo/benchmarks/',
-      '/guide/openevo-webshop-alfworld/',
-      '/en/research/seed-openevo/benchmarks/',
-      '/en/guide/openevo-webshop-alfworld/',
+      '/research/seed-openevo/flow/benchmarks/',
+      '/research/seed-openevo/study/run/',
+      '/en/research/seed-openevo/flow/benchmarks/',
+      '/en/research/seed-openevo/study/run/',
     ]) {
       expect(ownerMatrix, `research explainer matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);
       expect(visualOwnerMatrix, `visual closeout matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);

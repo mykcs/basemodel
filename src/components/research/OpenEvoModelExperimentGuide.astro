@@ -41,7 +41,7 @@ const beginner = [
     <div class="oe-heading"><span>05</span><div><small>{t('入门','Primer')}</small><h2 id="beginner-title">{t('自进化智能体入门','Self-evolving agent primer')}</h2></div></div>
     <div class="question-grid">{beginner.map(([q,a],i)=><details open={i===0}><summary><span>{String(i+1).padStart(2,'0')}</span><strong>{q}</strong></summary><p>{a}</p></details>)}</div>
     <div class="reading"><span>{t('阅读方法','Reading method')}</span><h3>{t('四步阅读法','Four-step reading method')}</h3><ol><li><b>{t('更新对象','Updated object')}</b><span>memory / code / adapter / parameters?</span></li><li><b>{t('循环边界','Loop boundary')}</b><span>{t('变化何时进入下一轮？','When does the change enter the next round?')}</span></li><li><b>artifact</b><span>{t('变化是否真实存在？','Does the change actually exist?')}</span></li><li><b>{t('配对实验','Paired experiment')}</b><span>B₀ ↔ O₁</span></li></ol></div>
-    <div class="actions"><a class="button button-primary" href={p('/research/seed-openevo/loops/')}>{t('更新机制 →','Update mechanisms →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/results/')}>{t('实验状态与结果','Experiment state and results')}</a></div>
+    <div class="actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/loops/')}>{t('更新机制 →','Update mechanisms →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/results/')}>{t('实验状态与结果','Experiment state and results')}</a></div>
   </section>
 </div>
 

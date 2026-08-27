@@ -5,23 +5,23 @@ describe('Vercel hosted UI gate planner', () => {
   it('maps concrete Astro page files to their deployed routes', () => {
     expect(pageFileToRoute('src/pages/index.astro')).toBe('/');
     expect(pageFileToRoute('src/pages/en/index.astro')).toBe('/en/');
-    expect(pageFileToRoute('src/pages/research/seed-openevo/results.astro')).toBe('/research/seed-openevo/results/');
-    expect(pageFileToRoute('src/pages/en/research/seed-openevo/results.astro')).toBe('/en/research/seed-openevo/results/');
+    expect(pageFileToRoute('src/pages/research/seed-openevo/study/results.astro')).toBe('/research/seed-openevo/study/results/');
+    expect(pageFileToRoute('src/pages/en/research/seed-openevo/study/results.astro')).toBe('/en/research/seed-openevo/study/results/');
     expect(pageFileToRoute('src/pages/models/[slug].astro')).toBeUndefined();
     expect(pageFileToRoute('src/pages/_bodies/home-v2.astro')).toBeUndefined();
   });
 
   it('keeps a metadata-only Results release on exact changed-route coverage', () => {
     const plan = planHostedUi([
-      'src/pages/research/seed-openevo/results.astro',
-      'src/pages/en/research/seed-openevo/results.astro',
+      'src/pages/research/seed-openevo/study/results.astro',
+      'src/pages/en/research/seed-openevo/study/results.astro',
     ]);
 
     expect(plan.mode).toBe('focused');
     expect(plan.risk).toBe('local');
     expect(plan.routes).toEqual([
-      '/en/research/seed-openevo/results/',
-      '/research/seed-openevo/results/',
+      '/en/research/seed-openevo/study/results/',
+      '/research/seed-openevo/study/results/',
     ]);
     expect(plan.specs).toContain('tests/e2e/results-mobile-overflow.spec.ts');
     expect(plan.specs).toContain('tests/e2e/results-reference-visual.spec.ts');
@@ -33,8 +33,8 @@ describe('Vercel hosted UI gate planner', () => {
     expect(method.mode).toBe('focused');
     expect(method.specs).toEqual(['tests/e2e/research-explainer-layout.spec.ts']);
     expect(method.routes).toEqual([
-      '/en/research/seed-openevo/openevo/', '/en/research/seed-openevo/seed/',
-      '/research/seed-openevo/openevo/', '/research/seed-openevo/seed/',
+      '/en/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/seed/',
+      '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/seed/',
     ]);
 
     const methodCss = planHostedUi(['src/styles/interactive-research-explainer-methods.css']);

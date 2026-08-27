@@ -147,8 +147,8 @@ These are not three unrelated products. They are three views of the same researc
 
 Route:
 
-- `/research/seed-openevo/`
-- `/en/research/seed-openevo/`
+- `/research/seed-openevo/flow/`
+- `/en/research/seed-openevo/flow/`
 
 Role: answer, in one screen, what the site is for, what is being compared, which two benchmarks are involved, and where the reader should start.
 
@@ -164,7 +164,7 @@ Required visuals:
 
 Route:
 
-- `/research/seed-openevo/base-model/`
+- `/research/seed-openevo/flow/base-model/`
 
 Role: decode the model/checkpoint fields needed for this experiment. It must stay connected to Qwen2.5-3B-Instruct and the real hardware/runtime constraints rather than becoming a generic glossary.
 
@@ -172,7 +172,7 @@ Role: decode the model/checkpoint fields needed for this experiment. It must sta
 
 Route:
 
-- `/research/seed-openevo/seed/`
+- `/research/seed-openevo/flow/seed/`
 
 Role: explain the paper’s two stages, inner interaction loop, outer training loop, actor/analyzer synchronization, hindsight skills, OPD, GRPO, and inference-time boundary.
 
@@ -182,7 +182,7 @@ Authoritative external source: the SEED paper and official code repository. Seco
 
 Route:
 
-- `/research/seed-openevo/openevo/`
+- `/research/seed-openevo/flow/openevo/`
 
 Role: explain OpenEvo’s cross-session lifecycle, evolution targets, methods, artifacts, revision activation, and the benchmark adapter boundary. Do not conflate the Desktop product lifecycle with the standalone benchmark package; explain their shared Core concepts and their different execution surfaces.
 
@@ -190,7 +190,7 @@ Role: explain OpenEvo’s cross-session lifecycle, evolution targets, methods, a
 
 Route:
 
-- `/research/seed-openevo/benchmarks/`
+- `/research/seed-openevo/flow/benchmarks/`
 
 Role: explain ALFWorld and WebShop as experimental instruments.
 
@@ -210,7 +210,7 @@ Higher is better, but partial score, exact success, step count, loops, fallback 
 
 Route:
 
-- `/research/seed-openevo/loops/`
+- `/research/seed-openevo/flow/loops/`
 
 Role: show SEED and OpenEvo side by side without forcing false equivalence.
 
@@ -225,7 +225,7 @@ The comparison should show shared inputs/outputs and different update objects.
 
 Existing route:
 
-- `/guide/openevo-webshop-alfworld/`
+- `/research/seed-openevo/study/run/`
 
 Role: execution-first manual. It is not the place for the full conceptual history.
 
@@ -233,7 +233,7 @@ Role: execution-first manual. It is not the place for the full conceptual histor
 
 Route:
 
-- `/research/seed-openevo/results/`
+- `/research/seed-openevo/study/results/`
 
 Role: show current experiment status and artifacts without overclaiming.
 

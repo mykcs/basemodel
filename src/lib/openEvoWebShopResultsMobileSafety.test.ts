@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const safety = read('../components/research/OpenEvoWebShopResultsMobileSafety.astro');
-const resultsPageZh = read('../pages/research/seed-openevo/results.astro');
-const resultsPageEn = read('../pages/en/research/seed-openevo/results.astro');
+const resultsPageZh = read('../pages/research/seed-openevo/study/results.astro');
+const resultsPageEn = read('../pages/en/research/seed-openevo/study/results.astro');
 
 describe('Results mobile overflow safety', () => {
   it('keeps long status badges shrinkable and wrappable without hiding overflow', () => {

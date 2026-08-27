@@ -15,7 +15,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 
 const exact = (target: string) => path === target || path === `${target}/`;
 const relevant = exact('/guide')
-  || exact('/guide/openevo-webshop-alfworld')
+  || exact('/research/seed-openevo/study/run')
   || exact('/models')
   || exact('/models/qwen2-5-3b-instruct')
   || exact('/papers/seed')
@@ -24,7 +24,7 @@ const relevant = exact('/guide')
 
 const page: ResearchPage = exact('/models') || exact('/models/qwen2-5-3b-instruct') ? 'base-model'
   : exact('/papers/seed') ? 'seed'
-  : exact('/guide/openevo-webshop-alfworld') ? 'run'
+  : exact('/research/seed-openevo/study/run') ? 'run'
   : exact('/workspace') || exact('/compare') ? 'results'
   : 'hub';
 ---

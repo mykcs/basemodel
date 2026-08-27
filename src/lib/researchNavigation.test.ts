@@ -7,8 +7,8 @@ const layout = read('src/layouts/AppLayout.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
 const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
-const resultsZh = read('src/pages/research/seed-openevo/results.astro');
-const resultsEn = read('src/pages/en/research/seed-openevo/results.astro');
+const resultsZh = read('src/pages/research/seed-openevo/study/results.astro');
+const resultsEn = read('src/pages/en/research/seed-openevo/study/results.astro');
 
 const flowIds = [
   "id: 'hub'",
@@ -58,8 +58,8 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(hub).toContain('<SeedOpenEvoResearchNav locale={locale} page="hub" />');
     expect(detail).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
-    expect(layout).toContain("exactRoute('/research/seed-openevo/experiment') ? 'experiment'");
-    expect(layout).toContain("exactRoute('/guide/openevo-webshop-alfworld') ? 'run'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");
     expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
     expect(layout).toContain("pathNoBase.replace(/^\\/en(\\/|$)/, '/')");
     expect(hub).not.toContain('const pages = [');

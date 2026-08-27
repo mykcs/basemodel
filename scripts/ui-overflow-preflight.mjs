@@ -56,7 +56,7 @@ try {
   ]) {
     const page = await browser.newPage({ viewport });
     await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
-    for (const path of ['/', '/research/seed-openevo/benchmarks/']) {
+    for (const path of ['/', '/research/seed-openevo/flow/benchmarks/']) {
       await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
       await page.evaluate(async () => {
         if ('fonts' in document) await document.fonts.ready;
