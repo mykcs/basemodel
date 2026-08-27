@@ -56,6 +56,8 @@ Do not bury the numbers that determine the reader's judgment inside a long parag
 
 A heuristic or prior expectation may motivate a hypothesis. Direct evidence still outranks the heuristic. For example, a belief about how many training steps should improve output legality can motivate checking training scale; a no-adapter raw completion that already exhibits the same malformed wrapper is stronger evidence about the wrapper's origin.
 
+Prefer natural human wording when the number is only encoding an ordinary state. In Chinese reader-facing prose, say `我们一步都没训练，BASE 就已经……` rather than `0 个 OpenEvo adapter 训练步即可看到……`. Keep the exact `0`, raw field such as `adapter_loaded=false`, or other machine-style quantity in the evidence/technical layer when it matters for audit. Do not make readers translate database-like counts back into normal language themselves.
+
 ## 4. Visual weight must match semantic importance
 
 Use the normal/high-contrast text color for the main scientific statement and conclusion.
