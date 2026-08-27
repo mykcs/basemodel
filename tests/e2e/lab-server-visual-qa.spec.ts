@@ -24,6 +24,7 @@ const expectedInspectorTitles: Record<Locale, string[]> = {
   en: ['Host Docker daemon', 'current development container', '/var/run/docker.sock', 'isolated experiment container', 'persistent experiment state', 'other users’ sibling containers'],
 };
 const forbiddenRenderedStrings = ['dev-wangr', 'wangr-dev', 'dev-guozy', 'dev-huzh', '/data/home/wangr'];
+const expectedDesktopConnectorCount = 6;
 
 async function settle(page: Page) {
   await page.evaluate(async () => {
@@ -32,12 +33,23 @@ async function settle(page: Page) {
   await page.waitForTimeout(100);
 }
 
-async function ensureHydrated(root: Locator) {
+async function ensureHydrated(root: Locator, viewportWidth: number) {
   await root.scrollIntoViewIfNeeded();
   await expect(root).toBeVisible();
   await expect(root.locator('.irx-transport')).toBeVisible();
   const island = root.locator('xpath=ancestor::astro-island[1]');
   if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
+
+  // ConnectorLayer measures its SVG geometry on requestAnimationFrame after the
+  // React island hydrates. The old gate sampled immediately after `ssr` was
+  // removed, so a fast run could observe the legal one-frame state where the
+  // transport existed but the connector SVG had not been measured yet. Wait on
+  // the actual rendered contract instead of sleeping/retrying the whole test.
+  if (viewportWidth > 760) {
+    const edgeLayer = root.locator('.irx-edge-layer');
+    await expect(edgeLayer).toBeVisible();
+    await expect(edgeLayer.locator('[data-flow-edge]')).toHaveCount(expectedDesktopConnectorCount);
+  }
 }
 
 async function auditGeometry(root: Locator, viewportWidth: number) {
@@ -150,8 +162,14 @@ async function auditGeometry(root: Locator, viewportWidth: number) {
 }
 
 async function assertGeometry(root: Locator, viewportWidth: number) {
-  const issues = await auditGeometry(root, viewportWidth);
-  expect(issues, issues.join('\n')).toEqual([]);
+  // ResizeObserver updates connector coordinates on the next animation frame.
+  // Poll the actual geometry contract so viewport transitions cannot be sampled
+  // between the resize and that measurement frame. Persistent regressions still
+  // fail with their exact measured issue text.
+  await expect.poll(
+    async () => (await auditGeometry(root, viewportWidth)).join('\n'),
+    { timeout: 5_000, intervals: [50, 100, 250, 500] },
+  ).toBe('');
 }
 
 async function assertInspectorSynchronization(root: Locator, locale: Locale) {
@@ -196,7 +214,7 @@ for (const route of routes) {
       await settle(page);
 
       const root = page.locator('[data-interactive-research-explainer="server"]').first();
-      await ensureHydrated(root);
+      await ensureHydrated(root, matrix.viewport.width);
       await assertGeometry(root, matrix.viewport.width);
       await assertInspectorSynchronization(root, route.locale);
       await assertKeyboardNavigation(root, route.locale);

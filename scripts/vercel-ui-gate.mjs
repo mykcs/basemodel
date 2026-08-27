@@ -8,6 +8,7 @@ const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|n
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
 const resultsReleaseBranch = /^research\/results-(?:integrated|release)(?:-|$)/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
+const workerBenchmarkBranch = branch === 'research/results-release-vercel-performance-closeout-20260827';
 const shouldRun = productionBranch
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
@@ -19,6 +20,11 @@ if (!shouldRun) {
   console.log(`[vercel-ui-gate] skipped for branch: ${branch || 'unknown'}`);
   process.exit(0);
 }
+
+// Put Playwright's browser inside node_modules so Vercel's restored build cache
+// can retain it between deployments. This also makes the browser path explicit
+// instead of depending on the ephemeral /vercel/.cache home directory.
+process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
 
 const run = (command, args, extraEnv = {}) => {
   console.log(`[vercel-ui-gate] ${command} ${args.join(' ')}`);
@@ -141,14 +147,17 @@ run('dnf', [
   'dbus-libs', 'cairo',
 ]);
 
-run('npx', ['playwright', 'install', 'chromium']);
+// Headless CI only needs Chromium's headless shell. Hermetic install mode puts
+// it under node_modules, which Vercel restores with the build cache. On a warm
+// cache this becomes a no-op; on a cold cache it avoids the extra full browser.
+run('npx', ['playwright', 'install', '--only-shell', 'chromium']);
 
 // Fail before Playwright starts if the downloaded browser still has any
 // unresolved shared-library dependency. This keeps environment failures
 // distinct from actual geometry/rendering regressions.
 const browser = capture('bash', [
   '-lc',
-  'find /vercel/.cache/ms-playwright -type f -name chrome-headless-shell | head -n 1',
+  'find node_modules/playwright-core/.local-browsers -type f -name chrome-headless-shell | head -n 1',
 ]);
 if (!browser) {
   console.error('[vercel-ui-gate] Playwright headless-shell binary not found');
@@ -207,6 +216,20 @@ if (productionFocused) {
     'playwright', 'test', 'tests/e2e/webshop-training-theme.spec.ts',
     '--project=chromium', '--max-failures=1',
   ], hostedPlaywrightEnv);
+} else if (workerBenchmarkBranch) {
+  // One exact-head Preview benchmarks 6 and 8 workers on the same Vercel machine
+  // and source tree. The temporary branch-only loop is removed after collecting
+  // evidence, so main keeps one acceptance pass rather than benchmarking forever.
+  for (const workers of [6, 8]) {
+    const startedAt = Date.now();
+    console.log(`[vercel-ui-gate] WORKER BENCHMARK START: ${workers}`);
+    run('npm', ['run', 'test:ui'], {
+      ...hostedPlaywrightEnv,
+      PLAYWRIGHT_WORKERS: String(workers),
+    });
+    const elapsedSeconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+    console.log(`[vercel-ui-gate] WORKER BENCHMARK PASS: ${workers} workers in ${elapsedSeconds}s`);
+  }
 } else {
   // Keep every existing hosted regression in the full matrix. Parallelism is
   // bounded to half the visible CPUs (max 4), so a 2-core Hobby runner remains
