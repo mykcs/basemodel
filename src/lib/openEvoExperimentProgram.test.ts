@@ -8,25 +8,25 @@ const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('OpenEvo × WebShop experiment state provenance', () => {
-  it('separates retired sources from the scientific source of truth', () => {
+  it('separates historical repositories from the current scientific source of truth', () => {
     for (const repo of ['seed3090', 'openevo-webshop', 'openevo-experiment']) expect(component).toContain(repo);
-    expect(component).toContain("state: t('历史', 'Historical')");
-    expect(component).toContain("state: t('当前 source of truth', 'Current source of truth')");
+    expect(component).toContain("state: t('历史档案', 'Historical archive')");
+    expect(component).toContain("state: t('当前科学总账', 'Current scientific source of truth')");
     expect(component).toContain('RTX6 / 4×RTX 3090');
-    expect(component).toContain('actual branch');
+    expect(component + state).toContain('working branch');
   });
 
   it('keeps Phase D–F mechanism evidence distinct from task efficacy', () => {
     expect(component).toContain('SD-LoRA optimizer steps');
     expect(component).toContain('2 components · effective rank 8');
     expect(component).toContain('nonzero logit delta');
-    expect(component).toContain('这些是机制证据，不是 WebShop 效果结论');
+    expect(component).toContain('这些只能证明“训练机制工作了”，不能证明“WebShop 分数提高了”');
     expect(component).toContain('RTX5090_PHASE_D_F_2026-08-14.md');
   });
 
   it('keeps completed Phase G measurements as historical evidence', () => {
-    expect(component).toContain('历史证据 · Phase G · completed');
-    expect(component).toContain('12 个 promotion-dev episodes');
+    expect(component).toContain('历史证据 · Phase G · 已完成');
+    expect(component).toContain('共跑了 12 次开发集评测（promotion-dev episodes）');
     expect(component).toContain("{ arm: 'base', score: '0.000', wins: '0 / 4', steps: '9.50', fallback: '3 / 38' }");
     expect(component).toContain("{ arm: 'adapter1x', score: '0.000', wins: '0 / 4', steps: '14.25', fallback: '1 / 57' }");
     expect(component).toContain("{ arm: 'cumulative', score: '0.000', wins: '0 / 4', steps: '6.00', fallback: '3 / 24' }");
@@ -34,23 +34,24 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
     expect(component).not.toContain('0 consumed');
   });
 
-  it('shows a dated default-main H1.27 snapshot without pretending it is live state', () => {
-    expect(state).toContain("checkedAt: '2026-08-18'");
-    expect(state).toContain("phase: 'H1.27'");
-    expect(state).toContain("status: 'completed-descriptive-only'");
-    expect(state).toContain("classification: 'scale-only-not-supported-or-task-local'");
-    expect(state).toContain('observedAttempts: 64');
-    expect(state).toContain('scientificValidAttempts: 48');
-    expect(state).toContain('parserOrFallbackInvalidAttempts: 16');
-    expect(component).toContain('默认 main 快照');
-    expect(component).toContain('default-branch snapshot');
-    expect(component).toContain('openEvoScientificState.defaultBranchSnapshot.phase');
-    expect(component).not.toContain('当前阶段</span>\n      <strong>Phase H0</strong>');
-    expect(component).not.toContain('Current experiment allocation: 5× RTX 5090');
+  it('shows the dated 2026-08-28 WB1 Track B Gen28 snapshot from default main', () => {
+    expect(state).toContain("checkedAt: '2026-08-28'");
+    expect(state).toContain("checkedSourceCommit: '04c0faf02af6f0fcb0724aff3c5697b0c858e9e4'");
+    expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
+    expect(state).toContain("status: 'trackb-gen28-state-v28-adopted-final-locked-no-training'");
+    expect(state).toContain('validCompletedTrainingEpisodes: 3584');
+    expect(state).toContain('targetTrainingEpisodes: 20640');
+    expect(state).toContain('remainingTrainingEpisodes: 17056');
+    expect(state).toContain('latestCompletedGeneration: 28');
+    expect(state).toContain('latestNativeStateVersion: 28');
+    expect(state).toContain('gpuAllocationAllowed: false');
+    expect(component).toContain('Gen {snapshot.latestCompletedGeneration} · state-v{snapshot.latestNativeStateVersion}');
+    expect(component).toContain('未授权');
+    expect(component).toContain('训练 / GPU / 最终测试');
   });
 
-  it('routes live state through branch, campaign, reconciliation/result, and preregistered GPU authority', () => {
-    for (const token of ['current-campaign.json', 'actual branch', 'reconciliation / result', 'preregistration', 'authorized UUIDs']) {
+  it('routes live state through branch, campaign, reconciliation/result, preregistration, and explicit GPU authority', () => {
+    for (const token of ['current-campaign.json', 'working branch', 'reconciliation / result', 'preregistration', 'authorized UUIDs']) {
       expect(component + state).toContain(token);
     }
     expect(state).toContain('active scientific branch may be ahead');
@@ -58,7 +59,7 @@ describe('OpenEvo × WebShop experiment state provenance', () => {
   });
 
   it('keeps W&B observational and mounts the same unified results modules on both locale routes', () => {
-    expect(component).toContain('W&B 继续承担观测与比较');
+    expect(component).toContain('W&B 是实验观察面板');
     expect(component).toContain('Run Manifest');
     expect(component).toContain('data-testid="openevo-experiment-program"');
     expect(component).not.toContain('client:');

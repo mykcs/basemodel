@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import FamilyTimeline from '../../components/FamilyTimeline';
+import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 import { getMessages, isLocale, type Locale } from '../../i18n';
 import familiesData from '../../content/coverage/families.json';
 
@@ -15,6 +16,7 @@ const familyChanges = familiesData.families
   .map((family) => ({
     name: family.name,
     generation: family.current_generation,
+    checkedAt: family.catalog_checked_at ?? family.as_of ?? '—',
     api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id,
     openWeight: family.current_open_weight_model_id,
   }));
@@ -22,9 +24,11 @@ const familyChanges = familiesData.families
 <div class="shell">
   <header class="page-header"><h1>{m.families.title}</h1><p class="lede">{m.families.lede}</p></header>
 
+  <CatalogFreshnessNotice locale={locale} compact={true} />
+
   <section class="section section-first" aria-labelledby="family-snapshot-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '当前目录快照' : 'Current catalog snapshot'}</div><h2 id="family-snapshot-title">{locale === 'zh' ? '常用模型家族的当前记录' : 'Current records for commonly used model families'}</h2><p class="muted">{locale === 'zh' ? '这里承接原首页的模型家族摘要；完整代际与模型关系继续在下方时间线中展开。' : 'This section now holds the family snapshot previously shown on the homepage; the full generation history continues in the timeline below.'}</p></div></div>
-    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `核验日期下的代际：${family.generation}。API / 托管模型与开放权重模型分开记录。` : `Generation at the recorded check date: ${family.generation}. API/hosted models and open-weight models are tracked separately.`}</p></div><dl><div><dt>API</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '开放权重' : 'Open weight'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录开放权重旗舰' : 'No open-weight flagship recorded')}</dd></div></dl></div>)}</div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '最近一次完整核验' : 'Last full catalog check'}</div><h2 id="family-snapshot-title">{locale === 'zh' ? '常用模型家族的已核验记录' : 'Last fully checked records for commonly used model families'}</h2><p class="muted">{locale === 'zh' ? '同一家族里，厂商托管接口（API）和可以下载权重的模型（open weight）可能不是同一代，所以分开记录。时间线只展开站内已有证据的模型关系。' : 'Within one family, hosted API models and downloadable-weight models can belong to different generations, so they are tracked separately. The timeline expands only relationships backed by records in this catalog.'}</p></div></div>
+    <div class="family-current-list">{familyChanges.map((family) => <div class="family-current-row"><div><h3>{family.name}</h3><p>{locale === 'zh' ? `最近一次完整核验是 ${family.checkedAt}，当时记录的代际为 ${family.generation}。这个日期之后出现的新证据不会被偷偷算进这条旧快照。` : `The last full check was ${family.checkedAt}; the recorded generation at that time was ${family.generation}. Evidence appearing after that date is not silently folded into this older snapshot.`}</p></div><dl><div><dt>{locale === 'zh' ? '厂商托管（API）' : 'Hosted API'}</dt><dd>{family.api ?? '—'}</dd></div><div><dt>{locale === 'zh' ? '可下载权重（open weight）' : 'Downloadable weights (open weight)'}</dt><dd>{family.openWeight ?? (locale === 'zh' ? '未记录开放权重旗舰' : 'No open-weight flagship recorded')}</dd></div></dl></div>)}</div>
   </section>
 
   <FamilyTimeline client:visible models={models} papers={papers} locale={locale} />

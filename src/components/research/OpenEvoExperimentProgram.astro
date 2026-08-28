@@ -10,27 +10,28 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const seedRoot = 'https://github.com/mykcs/seed3090/blob/main';
 const bridgeRoot = 'https://github.com/mykcs/openevo-webshop/blob/main';
 const activeRoot = 'https://github.com/mykcs/openevo-experiment/blob/main';
+const snapshot = openEvoScientificState.defaultBranchSnapshot;
 
 const repos = [
   {
     name: 'seed3090',
-    state: t('历史', 'Historical'),
-    role: t('RTX6 / 4×RTX 3090 实验与调试档案', 'RTX6 / 4×RTX 3090 experiment and debugging archive'),
-    note: t('保留 WebShop、ALFWorld、失败轨迹、RTX6 工程经验和早期参数进化证据；不再启动新实验。', 'Preserves WebShop, ALFWorld, failure traces, RTX6 engineering, and early parametric-evolution evidence; no new experiments start here.'),
+    state: t('历史档案', 'Historical archive'),
+    role: t('RTX6 / 4×RTX 3090 实验与调试记录', 'RTX6 / 4×RTX 3090 experiment and debugging record'),
+    note: t('保存早期 WebShop、ALFWorld、失败轨迹和参数更新实验；不再作为新实验的起点。', 'Preserves early WebShop, ALFWorld, failure traces, and parameter-update experiments; it is no longer the starting point for new experiments.'),
     href: `${seedRoot}/README.md`,
   },
   {
     name: 'openevo-webshop',
-    state: t('历史', 'Historical'),
-    role: t('WebShop × SD-LoRA 迁移桥梁', 'WebShop × SD-LoRA migration bridge'),
-    note: t('沉淀 WebShop runner、dataset adapter、SD-LoRA 路径和成功经验不足的诊断；有效内容已迁入正式仓库。', 'Curated the WebShop runner, dataset adapter, SD-LoRA path, and the sparse-success diagnosis; useful work was migrated forward.'),
+    state: t('历史档案', 'Historical archive'),
+    role: t('WebShop 与 SD-LoRA 的迁移记录', 'WebShop and SD-LoRA migration record'),
+    note: t('保存 WebShop 运行器、数据适配和早期 SD-LoRA 经验；有效内容已经迁入正式实验仓库。', 'Preserves the WebShop runner, data adaptation, and early SD-LoRA work; useful material has been migrated into the formal experiment repository.'),
     href: `${bridgeRoot}/README.md`,
   },
   {
     name: 'openevo-experiment',
-    state: t('当前 source of truth', 'Current source of truth'),
-    role: t('正式实验与科学状态路由', 'Formal experiments and scientific-state routing'),
-    note: t('实时 campaign、Run Manifest、WebShop 协议、W&B 记录和科学结论都要从实际工作 branch 继续解析。', 'Resolve live campaigns, Run Manifests, the WebShop contract, W&B tracking, and scientific claims from the branch actually in use.'),
+    state: t('当前科学总账', 'Current scientific source of truth'),
+    role: t('正式实验、预算、权限与结果来源', 'Formal experiment, budget, authorization, and result source'),
+    note: t('当前实验状态必须从真正使用的工作分支继续读取，而不是从旧仓库或静态网页猜。', 'Resolve current experiment state from the working branch actually in use, rather than guessing from an older repository or static page.'),
     href: `${activeRoot}/configs/experiment/current-campaign.json`,
   },
 ] as const;
@@ -45,23 +46,23 @@ const phaseG = [
 <section id="openevo-experiment-program" class="program" aria-labelledby="program-title" data-testid="openevo-experiment-program">
   <header class="program__header">
     <div>
-      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('默认分支快照', 'default-branch snapshot')} <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time></p>
-      <h2 id="program-title">{t('实验历史、默认分支快照与实时状态入口', 'Experiment history, default-branch snapshot, and live-state source')}</h2>
+      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('已核验 main', 'checked main')} <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time></p>
+      <h2 id="program-title">{t('现在这条实验线进行到哪里', 'Where this experiment line stands now')}</h2>
       <p class="lede">{t(
-        `RTX6（4×RTX 3090）和 openevo-webshop 已进入历史档案。Phase D–G 与 H0 是可追溯的历史里程碑。在 ${openEvoScientificState.checkedAt} 核验 openevo-experiment/main 时，current-campaign 记录 ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}；活跃科学分支可能更靠前。`,
-        `RTX6 (4×RTX 3090) and openevo-webshop are historical. Phase D–G and H0 are traceable milestones. When openevo-experiment/main was checked on ${openEvoScientificState.checkedAt}, current-campaign recorded ${openEvoScientificState.defaultBranchSnapshot.phase} / ${openEvoScientificState.defaultBranchSnapshot.status}; an active scientific branch may be newer.`,
+        `截至 ${openEvoScientificState.checkedAt}，openevo-experiment/main 的实验总表（current-campaign）记录：Track B 已完成 Gen28，state-v28 已通过实验对账并被采纳；累计 ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} 个有效训练回合已计入固定预算。当前训练、GPU 和最终测试都没有授权。`,
+        `As of ${openEvoScientificState.checkedAt}, the experiment ledger (current-campaign) on openevo-experiment/main records Track B through Gen28 with state-v28 reconciled and adopted. ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} valid training episodes count toward the fixed budget. Training, GPU allocation, and final testing are not authorized now.`,
       )}</p>
     </div>
-    <aside class="program__status" aria-label={t('默认分支科学快照', 'Default-branch scientific snapshot')}>
-      <span>{t('默认 main 快照', 'Default main snapshot')}</span>
-      <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong>
-      <p><code>{openEvoScientificState.defaultBranchSnapshot.status}</code></p>
-      <small>{t(`核验于 ${openEvoScientificState.checkedAt}。实时阶段和 GPU 分配必须从实际工作 branch 与 preregistration 解析。`,`Checked ${openEvoScientificState.checkedAt}. Resolve the live phase and GPU allocation from the actual working branch and preregistration.`)}</small>
+    <aside class="program__status" aria-label={t('默认 main 的已核验状态', 'Checked default-main status')}>
+      <span>{t('最近完成', 'Latest completed')}</span>
+      <strong>Gen {snapshot.latestCompletedGeneration} · state-v{snapshot.latestNativeStateVersion}</strong>
+      <p>{snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / {snapshot.targetTrainingEpisodes.toLocaleString('en-US')} {t('有效训练回合', 'valid training episodes')}</p>
+      <small>{zh ? openEvoScientificState.nextGate.zh : openEvoScientificState.nextGate.en}</small>
     </aside>
   </header>
 
   <section class="program__section" aria-labelledby="lineage-title">
-    <div class="section-heading"><span>01</span><div><small>{t('来源', 'Sources')}</small><h3 id="lineage-title">{t('仓库迁移', 'Repository lineage')}</h3></div></div>
+    <div class="section-heading"><span>01</span><div><small>{t('证据从哪里来', 'Where the evidence lives')}</small><h3 id="lineage-title">{t('三个仓库不是同一种角色', 'The three repositories have different roles')}</h3></div></div>
     <ol class="repo-grid">
       {repos.map((repo) => <li>
         <div><span>{repo.state}</span><code>{repo.name}</code></div>
@@ -73,49 +74,49 @@ const phaseG = [
   </section>
 
   <section class="program__section" aria-labelledby="mechanism-title">
-    <div class="section-heading"><span>02</span><div><small>{t('历史证据 · Phase D–F', 'Historical evidence · Phase D–F')}</small><h3 id="mechanism-title">{t('参数更新与重新加载', 'Parameter update and reload')}</h3></div></div>
+    <div class="section-heading"><span>02</span><div><small>{t('历史证据 · Phase D–F', 'Historical evidence · Phase D–F')}</small><h3 id="mechanism-title">{t('训练链路确实改动过模型状态', 'The training path really changed model state')}</h3></div></div>
     <div class="fact-grid">
-      <article><span>{t('模型', 'Model')}</span><strong>Qwen2.5-3B-Instruct</strong><p>{t('真实 BF16 CUDA generation，模型 revision 固定。', 'Real BF16 CUDA generation with a pinned model revision.')}</p></article>
-      <article><span>{t('训练', 'Training')}</span><strong>SD-LoRA optimizer steps</strong><p>{t('forward、backward、optimizer.step 与 trainable-state digest 变化均有证据。', 'forward, backward, optimizer.step, and changed trainable-state digests are evidenced.')}</p></article>
-      <article><span>{t('累计状态', 'Cumulative state')}</span><strong>2 components · effective rank 8</strong><p>{t('prior component 被保留，累计 adapter 可以 fresh reload。', 'The prior component is preserved and the cumulative adapter fresh-reloads successfully.')}</p></article>
-      <article><span>{t('行为探针', 'Behavior probe')}</span><strong>nonzero logit delta</strong><p>{t('adapter 加载后出现非零 logit 差异，并至少改变过一次 deterministic generation。', 'Adapter loading produced nonzero logit deltas and changed at least one deterministic generation.')}</p></article>
+      <article><span>{t('同一份 3B 模型', 'Same 3B model')}</span><strong>Qwen2.5-3B-Instruct</strong><p>{t('使用 BF16（16 位浮点数格式）在 CUDA GPU 上生成，并固定模型版本（revision）。', 'Generation used BF16, a 16-bit floating-point format, on CUDA GPUs with a pinned model revision.')}</p></article>
+      <article><span>{t('训练参数真的被改过', 'Trainable parameters really changed')}</span><strong>SD-LoRA optimizer steps</strong><p>{t('一次 optimizer step 就是根据训练误差更新一次可训练参数；forward、backward、optimizer.step 和参数摘要变化都有记录。', 'An optimizer step updates trainable parameters from training error; forward, backward, optimizer.step, and changed parameter digests are all recorded.')}</p></article>
+      <article><span>{t('两次更新可以叠加', 'Updates can accumulate')}</span><strong>2 components · effective rank 8</strong><p>{t('旧的 LoRA 适配器（adapter）没有被覆盖，累计适配器还能从空白进程重新加载。', 'The earlier LoRA adapter was not overwritten, and the cumulative adapter can be freshly reloaded in a new process.')}</p></article>
+      <article><span>{t('模型输出真的受影响', 'Model outputs really changed')}</span><strong>nonzero logit delta</strong><p>{t('logit 是模型选择下一个 token 前的内部打分；加载适配器后这些分数出现非零差异，并至少改变过一次确定性生成。', 'A logit is the model’s internal score before choosing the next token. Loading the adapter changed those scores and changed at least one deterministic generation.')}</p></article>
     </div>
-    <p class="section-note">{t('这些是机制证据，不是 WebShop 效果结论。', 'These are mechanism results, not a WebShop efficacy claim.')}</p>
+    <p class="section-note">{t('这些只能证明“训练机制工作了”，不能证明“WebShop 分数提高了”。', 'These facts establish that the training mechanism worked; they do not establish a WebShop score improvement.')}</p>
   </section>
 
   <section class="program__section" aria-labelledby="phaseg-title">
-    <div class="section-heading"><span>03</span><div><small>{t('历史证据 · Phase G · completed', 'Historical evidence · Phase G · completed')}</small><h3 id="phaseg-title">{t('Base / Adapter WebShop 对比', 'Base / Adapter WebShop comparison')}</h3></div></div>
-    <p class="section-intro">{t('固定 2 个 goals、2 个 generation seeds 和 3 个模型状态，共完成 12 个 promotion-dev episodes。', 'The frozen matrix used 2 goals, 2 generation seeds, and 3 model states, completing 12 promotion-dev episodes.')}</p>
+    <div class="section-heading"><span>03</span><div><small>{t('历史证据 · Phase G · 已完成', 'Historical evidence · Phase G · completed')}</small><h3 id="phaseg-title">{t('一个很小的 WebShop 对照实验', 'A small controlled WebShop comparison')}</h3></div></div>
+    <p class="section-intro">{t('固定 2 道 WebShop 任务（goals）、2 组随机种子（generation seeds）和 3 个实验组（arms），共跑了 12 次开发集评测（promotion-dev episodes）。', 'The test fixed 2 WebShop tasks (goals), 2 random seeds (generation seeds), and 3 experiment arms, for 12 development-set evaluations (promotion-dev episodes) in total.')}</p>
     <div class="result-table-wrap"><table>
-      <thead><tr><th>{t('模型状态', 'Arm')}</th><th>{t('平均分', 'Mean score')}</th><th>{t('成功', 'Wins')}</th><th>{t('平均步数', 'Mean steps')}</th><th>{t('Parser fallback', 'Parser fallback')}</th></tr></thead>
+      <thead><tr><th>{t('实验组（arm）', 'Experiment arm')}</th><th>{t('平均分', 'Mean score')}</th><th>{t('成功', 'Wins')}</th><th>{t('平均步数', 'Mean steps')}</th><th>{t('解析失败后的替代动作（parser fallback）', 'Parser fallback')}</th></tr></thead>
       <tbody>{phaseG.map((row) => <tr><th scope="row"><code>{row.arm}</code></th><td>{row.score}</td><td>{row.wins}</td><td>{row.steps}</td><td>{row.fallback}</td></tr>)}</tbody>
     </table></div>
-    <aside class="interpretation"><strong>{t('这次测得的结果', 'Measured result')}</strong><p>{t('这个小矩阵中，三组的 score 与 win delta 都为 0。它说明该 bounded evaluation 没测到任务收益差异；它不否定 Phase D–F 已经观察到的真实参数与模型行为变化。', 'In this bounded matrix, all score and win deltas are zero. That evaluation did not measure a task-outcome advantage, but this does not negate the real parameter and behavioral changes already established in Phase D–F.')}</p></aside>
+    <aside class="interpretation"><strong>{t('这次真正测到的结果', 'What this test actually measured')}</strong><p>{t('这个只有 12 次评测的小测试（bounded evaluation）里，三个实验组的分数和成功数差异都是 0。它没有测到任务收益，但也不会推翻 Phase D–F 已经证明的“参数和输出确实发生变化”。', 'In this 12-evaluation bounded test, score and win differences were zero across all three arms. It did not measure a task benefit, but it also does not erase the parameter and output changes established in Phase D–F.')}</p></aside>
   </section>
 
   <section class="program__section" aria-labelledby="snapshot-title">
-    <div class="section-heading"><span>04</span><div><small>{t(`默认 main 快照 · ${openEvoScientificState.checkedAt}`, `Default main snapshot · ${openEvoScientificState.checkedAt}`)}</small><h3 id="snapshot-title">{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.defaultBranchSnapshot.title}</h3></div></div>
+    <div class="section-heading"><span>04</span><div><small>{t(`最近核验的 main · ${openEvoScientificState.checkedAt}`, `Last checked main · ${openEvoScientificState.checkedAt}`)}</small><h3 id="snapshot-title">WB1 Track B · Gen{snapshot.latestCompletedGeneration} {t('已完成并采纳 state-v28', 'completed with state-v28 adopted')}</h3></div></div>
     <div class="next-grid">
-      <article><strong>{openEvoScientificState.defaultBranchSnapshot.observedAttempts}</strong><span>{t('observed attempts', 'observed attempts')}</span></article>
-      <article><strong>{openEvoScientificState.defaultBranchSnapshot.scientificValidAttempts}</strong><span>{t('scientific-valid attempts', 'scientific-valid attempts')}</span></article>
-      <article><strong>{openEvoScientificState.defaultBranchSnapshot.parserOrFallbackInvalidAttempts}</strong><span>{t('parser / fallback invalid', 'parser / fallback invalid')}</span></article>
-      <article><strong>{openEvoScientificState.defaultBranchSnapshot.measuredGpuHours.toFixed(3)} h</strong><span>{t('记录的 GPU 时间', 'measured GPU time')}</span></article>
+      <article><strong>{snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / {snapshot.targetTrainingEpisodes.toLocaleString('en-US')}</strong><span>{t('已计入的有效训练回合 / 固定预算（episode budget）', 'counted valid training episodes / fixed episode budget')}</span></article>
+      <article><strong>Gen {snapshot.latestCompletedGeneration}</strong><span>{t('最近完成的一轮（generation）', 'latest completed generation')}</span></article>
+      <article><strong>state-v{snapshot.latestNativeStateVersion}</strong><span>{t('已采纳的 OpenEvo 可复用状态（native state）', 'adopted reusable OpenEvo state (native state)')}</span></article>
+      <article><strong>{t('未授权', 'Not authorized')}</strong><span>{t('训练 / GPU / 最终测试', 'training / GPU / final test')}</span></article>
     </div>
-    <aside class="interpretation"><strong>{t('默认分支分类', 'Default-branch classification')}</strong><p><code>{openEvoScientificState.defaultBranchSnapshot.classification}</code></p></aside>
-    <p class="section-note">{t('这是带日期的默认分支快照，不声称覆盖更靠前的活跃科学分支。', 'This is a dated default-branch snapshot and does not claim to cover a newer active scientific branch.')}</p>
+    <aside class="interpretation"><strong>{t('下一道门', 'Next gate')}</strong><p>{zh ? openEvoScientificState.nextGate.zh : openEvoScientificState.nextGate.en}</p></aside>
+    <details class="machine-state"><summary>{t('机器可读状态（machine state）', 'Machine-readable state')}</summary><p><code>{snapshot.status}</code> · <code>{snapshot.classification}</code> · final=<code>{snapshot.finalTestStatus}</code></p></details>
+    <p class="section-note">{t('这是带日期的默认 main 快照。实际工作分支如果更靠前，必须重新按下面的状态链解析。', 'This is a dated default-main snapshot. If the actual working branch is ahead, resolve the state again through the chain below.')}</p>
   </section>
 
   <section class="program__section" aria-labelledby="tracking-title">
-    <div class="section-heading"><span>05</span><div><small>{t('实时状态合同', 'Live-state contract')}</small><h3 id="tracking-title">{t('实际 branch → campaign → reconciliation/result', 'Actual branch → campaign → reconciliation/result')}</h3></div></div>
+    <div class="section-heading"><span>05</span><div><small>{t('怎么确认“现在”', 'How “now” is resolved')}</small><h3 id="tracking-title">{t('工作分支 → 实验总表（campaign）→ 实验对账（reconciliation）', 'Working branch → experiment ledger (campaign) → reconciliation')}</h3></div></div>
     <div class="tracking-grid">
-      <div><span>branch / SHA</span><strong>{t('确认真正运行实验的 checkout', 'identify the checkout actually running the experiment')}</strong></div>
-      <div><span>current-campaign.json</span><strong>{t('读取该 branch 的 campaign router', 'read the campaign router on that branch')}</strong></div>
-      <div><span>reconciliation / result</span><strong>{t('用最新有效结果决定科学 claim', 'use the latest valid result to determine the scientific claim')}</strong></div>
+      <div><span>branch / SHA</span><strong>{t('确认真正运行实验的代码分支和提交版本', 'Identify the code branch and commit actually running the experiment')}</strong></div>
+      <div><span>current-campaign.json</span><strong>{t('实验总表：记录当前实验、预算、权限和下一道门', 'Experiment ledger: records the current campaign, budget, permissions, and next gate')}</strong></div>
+      <div><span>reconciliation / result</span><strong>{t('实验对账：确认产物是否完整，以及哪些结果可以作为科学结论', 'Reconciliation: confirms whether outputs are complete and which results can support scientific claims')}</strong></div>
     </div>
     <p class="section-note">{zh ? openEvoScientificState.liveStateRule.zh : openEvoScientificState.liveStateRule.en}</p>
-    <p class="section-note">{t('实时状态的起点是实际使用的 branch。', 'The live-state source is the actual branch in use.')}</p>
     <p class="section-note">{zh ? openEvoScientificState.gpuRule.zh : openEvoScientificState.gpuRule.en}</p>
-    <p class="section-note">{t('W&B 继续承担观测与比较，不定义科学变量；Run Manifest 与本地 JSON/evidence 决定可追溯实验身份和结果。', 'W&B remains observability/comparison rather than scientific-variable definition; Run Manifests and local JSON/evidence determine traceable experiment identity and results.')}</p>
+    <p class="section-note">{t('W&B 是实验观察面板，用来画曲线和比较运行；真正定义实验身份的是运行清单（Run Manifest）和仓库里的 JSON / evidence 记录。', 'W&B is an observability dashboard for plots and run comparisons. The experiment identity itself is defined by the Run Manifest and repository JSON/evidence records.')}</p>
   </section>
 
   <footer class="sources">
@@ -128,10 +129,10 @@ const phaseG = [
 
 <style>
   .program{width:min(1120px,calc(100% - 2rem));margin:3rem auto 5rem;padding:clamp(1rem,3vw,1.8rem);border:1px solid var(--line);border-radius:22px;background:var(--surface)}
-  .program__header{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr);gap:1.25rem;align-items:start}.eyebrow{margin:0;color:var(--accent-deep);font-size:.74rem;font-weight:800}.program__header h2{margin:.45rem 0 .7rem}.lede{max-width:72ch;margin:0;color:var(--muted);line-height:1.7}.program__status{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.program__status span,.program__status strong,.program__status small{display:block}.program__status span{color:var(--muted);font-size:.68rem}.program__status strong{margin:.35rem 0;font-size:1.5rem}.program__status p{margin:.35rem 0;font-size:.82rem}.program__status small{color:var(--muted);line-height:1.45}
-  .program__section{padding:1.6rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;align-items:start;margin-bottom:1rem}.section-heading>span{color:var(--accent-deep);font:800 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.68rem}.section-heading h3{margin:.2rem 0 0}
-  .repo-grid,.fact-grid,.next-grid{display:grid;gap:.65rem;margin:0;padding:0;list-style:none}.repo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.repo-grid li,.fact-grid article,.next-grid article{padding:.9rem;border:1px solid var(--line);border-radius:13px}.repo-grid li>div{display:flex;justify-content:space-between;gap:.5rem;align-items:center}.repo-grid li>div span{color:var(--muted);font-size:.68rem}.repo-grid strong{display:block;margin-top:.65rem;font-size:.86rem}.repo-grid p,.fact-grid p{margin:.45rem 0;color:var(--muted);font-size:.76rem;line-height:1.5}.repo-grid a{font-size:.72rem;font-weight:750}.fact-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.fact-grid span,.fact-grid strong{display:block}.fact-grid span{color:var(--muted);font-size:.68rem}.fact-grid strong{margin-top:.35rem;font-size:.88rem}.section-note,.section-intro{max-width:78ch;color:var(--muted);font-size:.8rem;line-height:1.6}.section-note{margin:.8rem 0 0}.section-intro{margin:0 0 .8rem}
-  .result-table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.78rem}th,td{padding:.7rem;text-align:left;border-bottom:1px solid var(--line)}thead th{color:var(--muted);font-size:.68rem}.interpretation{margin-top:.8rem;padding:.85rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.interpretation strong{font-size:.78rem}.interpretation p{margin:.3rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.55}.next-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.next-grid strong,.next-grid span{display:block}.next-grid strong{color:var(--accent-deep);font-size:1.2rem}.next-grid span{margin-top:.35rem;color:var(--muted);font-size:.72rem;line-height:1.5}.tracking-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.tracking-grid>div{padding:.8rem;border:1px solid var(--line);border-radius:12px}.tracking-grid span,.tracking-grid code,.tracking-grid strong{display:block}.tracking-grid span{color:var(--muted);font-size:.66rem}.tracking-grid code,.tracking-grid strong{margin-top:.3rem;font-size:.75rem;overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:.45rem;padding-top:1rem;border-top:1px solid var(--line)}.sources a{padding:.45rem .6rem;border:1px solid var(--line);border-radius:9px;color:inherit;font-size:.7rem;text-decoration:none}
+  .program__header{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr);gap:1.25rem;align-items:start}.eyebrow{margin:0;color:var(--accent-deep);font-size:.76rem;font-weight:800}.program__header h2{margin:.45rem 0 .7rem}.lede{max-width:72ch;margin:0;color:var(--muted);line-height:1.7}.program__status{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.program__status span,.program__status strong,.program__status small{display:block}.program__status span{color:var(--muted);font-size:.72rem}.program__status strong{margin:.35rem 0;font-size:1.35rem;line-height:1.25}.program__status p{margin:.45rem 0;font-size:.82rem}.program__status small{color:var(--muted);font-size:.77rem;line-height:1.5}
+  .program__section{padding:1.6rem 0;border-top:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;align-items:start;margin-bottom:1rem}.section-heading>span{color:var(--accent-deep);font:800 .74rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.section-heading small{display:block;color:var(--muted);font-size:.72rem}.section-heading h3{margin:.2rem 0 0}
+  .repo-grid,.fact-grid,.next-grid{display:grid;gap:.65rem;margin:0;padding:0;list-style:none}.repo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.repo-grid li,.fact-grid article,.next-grid article{padding:.9rem;border:1px solid var(--line);border-radius:13px}.repo-grid li>div{display:flex;justify-content:space-between;gap:.5rem;align-items:center}.repo-grid li>div span{color:var(--muted);font-size:.72rem}.repo-grid strong{display:block;margin-top:.65rem;font-size:.88rem}.repo-grid p,.fact-grid p{margin:.45rem 0;color:var(--muted);font-size:.79rem;line-height:1.55}.repo-grid a{font-size:.76rem;font-weight:750}.fact-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.fact-grid span,.fact-grid strong{display:block}.fact-grid span{color:var(--muted);font-size:.72rem;line-height:1.4}.fact-grid strong{margin-top:.35rem;font-size:.88rem}.section-note,.section-intro{max-width:82ch;color:var(--muted);font-size:.82rem;line-height:1.65}.section-note{margin:.8rem 0 0}.section-intro{margin:0 0 .8rem}
+  .result-table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.8rem}th,td{padding:.7rem;text-align:left;border-bottom:1px solid var(--line)}thead th{color:var(--muted);font-size:.74rem;line-height:1.35}.interpretation{margin-top:.8rem;padding:.9rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.interpretation strong{font-size:.82rem}.interpretation p{margin:.3rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.6}.next-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.next-grid strong,.next-grid span{display:block}.next-grid strong{color:var(--accent-deep);font-size:1.15rem;line-height:1.25}.next-grid span{margin-top:.35rem;color:var(--muted);font-size:.76rem;line-height:1.5}.tracking-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.tracking-grid>div{padding:.85rem;border:1px solid var(--line);border-radius:12px}.tracking-grid span,.tracking-grid code,.tracking-grid strong{display:block}.tracking-grid span{color:var(--muted);font-size:.72rem}.tracking-grid code,.tracking-grid strong{margin-top:.3rem;font-size:.78rem;line-height:1.5;overflow-wrap:anywhere}.machine-state{margin-top:.85rem}.machine-state summary{cursor:pointer;font-size:.78rem;font-weight:750}.machine-state p{margin:.45rem 0 0;color:var(--muted);font-size:.75rem;overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:.45rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.75rem}.sources a{padding:.45rem .6rem;border:1px solid var(--line);border-radius:9px;color:inherit;font-size:.75rem;text-decoration:none}
   @media(max-width:900px){.program__header{grid-template-columns:1fr}.repo-grid,.fact-grid,.next-grid,.tracking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:620px){.program{width:min(100% - 1rem,1120px)}.repo-grid,.fact-grid,.next-grid,.tracking-grid{grid-template-columns:1fr}}
 </style>

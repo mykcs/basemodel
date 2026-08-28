@@ -8,6 +8,7 @@ import familiesFile from '../../content/coverage/families.json';
 import ClaimHistory from '../../components/evidence/ClaimHistory.astro';
 import SemanticStatus from '../../components/common/SemanticStatus.astro';
 import SemanticStatusLegend from '../../components/common/SemanticStatusLegend.astro';
+import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
@@ -37,6 +38,7 @@ const recentEvents = [
 ---
 <div class="shell">
   <header class="page-header"><h1>{m.dataStatus.pageTitle}</h1><p class="lede">{m.dataStatus.lede}</p></header>
+  <CatalogFreshnessNotice locale={locale} showSignals={true} />
   <section class="stats" aria-label={m.dataStatus.pageTitle}>
     <div class="stat"><strong>{health.totalModels}</strong><span>{m.dataStatus.models}</span></div>
     <div class="stat"><strong>{health.recentModels}</strong><span>{m.dataStatus.recent}</span></div>
@@ -62,13 +64,14 @@ const recentEvents = [
   </section>
 
   <section class="section" aria-labelledby="generation-title">
-    <div class="section-heading"><div><h2 id="generation-title">{m.dataStatus.currentGeneration}</h2><p class="muted">{locale === 'zh' ? '托管/API 当前模型与开放权重当前模型分开记录。它们可能属于不同代，也服务于不同研究任务。' : 'Current hosted/API models and current open-weight models are tracked separately. They may belong to different generations and serve different research tasks.'}</p></div></div>
+    <div class="section-heading"><div><h2 id="generation-title">{locale === 'zh' ? '最近一次完整核验的家族记录' : 'Last fully checked family records'}</h2><p class="muted">{locale === 'zh' ? '表里的“托管 / API”和“开放权重”只代表各家族在核验日期当时的记录。超过厂商刷新周期后，数据健康检查会把这一行标成“来源过期”；它不会继续冒充今天的实时目录。' : 'Hosted/API and open-weight entries below describe each family at its recorded check date. Once that date exceeds the vendor refresh window, data health marks the family as a stale source instead of treating it as a live catalog.'}</p></div></div>
     <div class="comparison-table-wrap"><table>
-      <thead><tr><th>{m.dataStatus.vendor}</th><th>{m.dataStatus.currentGeneration}</th><th>{locale === 'zh' ? '托管 / API 当前模型' : 'Current hosted / API model'}</th><th>{locale === 'zh' ? '开放权重当前模型' : 'Current open-weight model'}</th><th>{m.dataStatus.catalogChecked}</th><th>{m.dataStatus.unresolved}</th><th>{m.dataStatus.catalogSource}</th></tr></thead>
+      <thead><tr><th>{m.dataStatus.vendor}</th><th>{locale === 'zh' ? '核验时的代际' : 'Generation at check date'}</th><th>{locale === 'zh' ? '核验时的托管 / API 模型' : 'Hosted / API at check date'}</th><th>{locale === 'zh' ? '核验时的开放权重模型' : 'Open weight at check date'}</th><th>{m.dataStatus.catalogChecked}</th><th>{m.dataStatus.unresolved}</th><th>{m.dataStatus.catalogSource}</th></tr></thead>
       <tbody>{health.familyCoverage.map(({ family, modelCount, openWeightPresent, unresolvedCount, catalogSourceUrl }) => {
         const apiCurrent = family.current_api_model_ids?.[0] ?? family.current_flagship_model_id;
         const apiPresent = apiCurrent ? models.some((model) => model.id === apiCurrent) : false;
-        return <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}</td><td><code>{apiCurrent ?? '—'}</code>{apiCurrent ? ` · ${apiPresent ? m.dataStatus.present : m.dataStatus.missing}` : ''}</td><td>{family.current_open_weight_model_id ? <><code>{family.current_open_weight_model_id}</code>{` · ${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing}`}</> : '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer">{m.dataStatus.source} ↗</a> : '—'}</td></tr>;
+        const familyStale = health.issues.some((issue) => issue.recordType === 'family' && issue.modelId === family.id && issue.reason === 'stale-source');
+        return <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}{familyStale ? <small class="muted"> · {locale === 'zh' ? '过期快照' : 'stale snapshot'}</small> : null}</td><td><code>{apiCurrent ?? '—'}</code>{apiCurrent ? ` · ${apiPresent ? m.dataStatus.present : m.dataStatus.missing}` : ''}</td><td>{family.current_open_weight_model_id ? <><code>{family.current_open_weight_model_id}</code>{` · ${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing}`}</> : '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer">{m.dataStatus.source} ↗</a> : '—'}</td></tr>;
       })}</tbody>
     </table></div>
   </section>
