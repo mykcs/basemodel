@@ -18,7 +18,7 @@ describe('SEED × OpenEvo training design lab', () => {
       'GLM / Kimi / MiniMax',
       'episode 完成后读取一次',
       'one post-hoc analyzer generation',
-      'teacher ≠ actor',
+      'the teacher must never become the WebShop actor',
     ]) expect(lab).toContain(term);
     expect(lab).toContain('5–15 calls / episode');
     expect(lab).toContain('1,440 个 primary analyzer jobs');
