@@ -9,6 +9,39 @@ The first sitewide visual-knowledge Preview exposed a real theme bug: new cards 
 
 The lesson is broader than one missing variable: **a two-theme product must treat color pairing as a semantic system, not as isolated CSS declarations.**
 
+## 0. Theme-state ownership and first-visit default
+
+The site owns its theme state; the operating system does not silently choose the initial site theme.
+
+Current behavior is:
+
+```text
+saved atlas-theme=dark
+-> dark
+
+saved atlas-theme=light
+-> light
+
+no saved atlas-theme
+-> light
+
+storage unavailable / unreadable
+-> light
+```
+
+`prefers-color-scheme` may still be used for media-query behavior, browser/OS simulation, screenshots, or other platform-level presentation. It is **not** a substitute for an explicit saved site preference.
+
+Therefore tests that need the site itself to render dark must model the real owner by writing `localStorage['atlas-theme'] = 'dark'` before page initialization. A test that only sets the browser/OS `colorScheme: 'dark'` must still expect the site to initialize light when no saved site preference exists.
+
+The durable precedence is:
+
+```text
+explicit saved site choice
+> product default light
+```
+
+The dated failure that established this boundary is recorded in [`../history/2026-08-28-pr-closeout-vercel-cost-and-light-theme-retrospective.md`](../history/2026-08-28-pr-closeout-vercel-cost-and-light-theme-retrospective.md). The historical case is rationale only; this section owns the current theme-state rule.
+
 ## 1. Use semantic theme pairs
 
 Use the tokens defined in `src/styles/tokens.css`:
@@ -126,10 +159,12 @@ Flow animation may reinforce direction, but the static route, numbering, arrows,
 
 ## 8. Current implementation ownership
 
+- theme bootstrap/default and persistence: `src/layouts/AppLayout.astro`;
 - theme tokens: `src/styles/tokens.css`;
 - sitewide visual grammar: `src/styles/knowledge-architecture.css`;
 - sitewide primer: `src/components/visual/SiteRoutePrimer.astro`;
 - OpenEvo visual primer: `src/components/OpenEvoSeedBenchmarksGuide.astro`;
+- default-theme regression: `src/lib/defaultTheme.test.ts`;
 - token regression test: `src/lib/themeContrast.test.ts`;
 - browser theme/layout regression: `tests/e2e/ui-safety.spec.ts`;
 - UI scenario policy: `docs/agents/current/ui-change-visual-acceptance-gate.md`.
