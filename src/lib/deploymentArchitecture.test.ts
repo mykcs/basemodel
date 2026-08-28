@@ -6,6 +6,9 @@ const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePat
 
 describe('Vercel production deployment architecture', () => {
   const workflowsDir = new URL('../../.github/workflows/', import.meta.url);
+  const selfHostedWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
+  const runnerDockerfile = readText('../../.github/runner/Dockerfile');
+  const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
   const astroConfig = readText('../../astro.config.mjs');
   const appLayout = readText('../../src/layouts/AppLayout.astro');
   const robots = readText('../../src/pages/robots.txt.ts');
@@ -16,13 +19,35 @@ describe('Vercel production deployment architecture', () => {
   const ogCover = readText('../../public/og-cover.svg');
   const packageJson = readJson<{ scripts: Record<string, string> }>('../../package.json');
   const vercelConfig = readJson<{
+    buildCommand?: string;
     git?: { deploymentEnabled?: Record<string, boolean> };
     github?: { autoJobCancelation?: boolean };
   }>('../../vercel.json');
 
-  it('keeps GitHub Actions retired', () => {
+  it('uses GitHub Actions only as a self-hosted CI control plane', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
-    expect(workflowFiles).toEqual([]);
+    expect(workflowFiles).toEqual(['self-hosted-ci.yml']);
+    expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
+    expect(selfHostedWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
+    expect(selfHostedWorkflow).toContain('persist-credentials: false');
+    expect(selfHostedWorkflow).toContain('needs_validation=true');
+    expect(selfHostedWorkflow).toContain('runner/');
+    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
+    expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
+    expect(runnerStart).toContain("grep -q 'AC Power'");
+    expect(runnerStart).toContain('--cpus 4');
+    expect(runnerStart).toContain('--memory 8g');
+    expect(runnerStart).not.toContain('/var/run/docker.sock');
+    expect(runnerStart).not.toMatch(/(?:^|\s)(?:-v|--volume)(?:\s|=)/m);
+  });
+
+  it('keeps browser regression out of the Vercel Production build command', () => {
+    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build');
+    expect(vercelConfig.buildCommand).not.toContain('vercel-ui-gate');
+    expect(vercelConfig.buildCommand).not.toContain('vercel-lab-browser-gate');
+    expect(readText('../../scripts/ci-ui-gate.mjs')).toContain('const ciInfrastructureChanged');
+    expect(readText('../../scripts/ci-ui-gate.mjs')).toContain("file.startsWith('.github/runner/')");
   });
 
   it('uses the stable Vercel project domain as Production identity at the origin root', () => {

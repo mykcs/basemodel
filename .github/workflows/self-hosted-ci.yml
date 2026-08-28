@@ -1,0 +1,88 @@
+name: Self-hosted CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basemodel-self-hosted-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: basemodel-self-hosted
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.repo.full_name == github.repository && github.actor == 'mykcs')
+    runs-on: [self-hosted, basemodel-ci]
+    timeout-minutes: 45
+    env:
+      CI: '1'
+      PLAYWRIGHT_WORKERS: '1'
+    steps:
+      - name: Checkout tested merge candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve test range
+        id: range
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            git fetch origin main --no-tags
+            base="$(git merge-base origin/main HEAD)"
+          fi
+          head="$(git rev-parse HEAD)"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "head=$head" >> "$GITHUB_OUTPUT"
+
+      - name: Classify CI relevance
+        id: relevance
+        shell: bash
+        env:
+          VERCEL_ENV: production
+          VERCEL_GIT_PREVIOUS_SHA: ${{ steps.range.outputs.base }}
+          VERCEL_GIT_COMMIT_SHA: ${{ steps.range.outputs.head }}
+        run: |
+          changed="$(git diff --name-only --no-renames "${{ steps.range.outputs.base }}" "${{ steps.range.outputs.head }}")"
+          if printf '%s\n' "$changed" | grep -Eq '^\.github/(workflows/self-hosted-ci\.yml$|runner/)'; then
+            echo "needs_validation=true" >> "$GITHUB_OUTPUT"
+          elif node scripts/vercel-ignore-build.mjs; then
+            echo "needs_validation=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_validation=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node 24
+        if: steps.relevance.outputs.needs_validation == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.relevance.outputs.needs_validation == 'true'
+        run: npm ci
+
+      - name: Deterministic verification
+        if: steps.relevance.outputs.needs_validation == 'true'
+        run: npm run verify:deploy
+
+      - name: Build static production artifact
+        if: steps.relevance.outputs.needs_validation == 'true'
+        run: npm run build
+
+      - name: Risk-based browser acceptance
+        if: steps.relevance.outputs.needs_validation == 'true'
+        env:
+          CI_BASE_SHA: ${{ steps.range.outputs.base }}
+          CI_HEAD_SHA: ${{ steps.range.outputs.head }}
+        run: node scripts/ci-ui-gate.mjs

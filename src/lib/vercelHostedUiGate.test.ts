@@ -48,6 +48,9 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['src/components/research/Example.astro']).mode).toBe('full');
     expect(planHostedUi(['src/styles/tokens.css']).mode).toBe('full');
     expect(planHostedUi(['scripts/vercel-ui-plan.ts']).mode).toBe('full');
+    expect(planHostedUi(['scripts/ci-ui-gate.mjs']).mode).toBe('full');
+    expect(planHostedUi(['.github/workflows/self-hosted-ci.yml']).mode).toBe('full');
+    expect(planHostedUi(['.github/runner/Dockerfile']).mode).toBe('full');
   });
 
   it('fails closed when a local source file cannot be mapped to one concrete route', () => {

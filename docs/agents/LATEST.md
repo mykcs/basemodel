@@ -1,6 +1,6 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-27**
+Last updated: **2026-08-28**
 
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
@@ -17,11 +17,11 @@ Production                        -> https://basemodel-preview.vercel.app
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Preview build spend is a second explicit gate: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the exact-head Preview commit message, so eligible intermediate pushes are ignored before the site build; `main` Production is unaffected. Vercel remains the ordinary deployment provider. Vercel is the only ordinary deployment authority. GitHub Actions / Pages are not ordinary deployment proof, and a skipped or ignored provider build is not a PASS.
+Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Preview build spend is a second explicit gate: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the exact-head Preview commit message, so eligible intermediate pushes are ignored before the site build; `main` Production is unaffected. Vercel remains the ordinary deployment provider and the only ordinary deployment authority. GitHub Actions is active only as a repository-scoped **self-hosted CI control plane**; GitHub-hosted runners and GitHub Pages are not part of this architecture.
 
-The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Cloudflare material is legacy rollback/provider-specific tooling only and stays outside ordinary deployment reporting.
+The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
 
-The hosted Vercel Chromium layer is now **risk-aware on Production**: unknown shared/global UI or uncertain Git-range changes fail closed to the complete matrix, the known SEED/OpenEvo explainer ownership runs its dedicated responsive/geometry/theme/safety regressions, concrete local Astro pages get exact changed-route browser smoke plus mapped regression owners, content-only changes get representative safety coverage, and non-UI changes may skip only the browser layer after `verify:deploy` and the static build pass. This does not weaken the mandatory pre-provider UI policy in `current/ui-change-visual-acceptance-gate.md`. Hosted Playwright parallelism is bounded by the actual Vercel build CPU count: the gate uses half of the visible CPUs, capped at four workers, so a 2-core Hobby runner stays serial while larger Pro builders can use their extra capacity.
+Browser-heavy acceptance now runs **before merge on the repository-scoped self-hosted runner**. `scripts/ci-ui-gate.mjs` reuses the existing `vercel-ui-plan.ts` skip/focused/full policy, keeps Playwright at one worker by default, adds the 12-case Lab gate only for Lab/server-relevant diffs, and leaves Vercel Production with `verify:deploy + astro build` only. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
 
 ## Current research state
 

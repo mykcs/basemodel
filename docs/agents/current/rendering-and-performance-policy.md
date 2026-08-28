@@ -95,7 +95,7 @@ The Landscape implementation is a useful reference: the interactive shell is vis
 
 ## Regression expectations
 
-Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. Browser-only behavior remains Playwright/on-demand unless it becomes important enough to justify the extra deployment cost.
+Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. Browser-only behavior remains Playwright/on-demand on the repository-scoped self-hosted runner, so it can remain a quality gate without adding browser execution to Vercel Production.
 
 The regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and performance contracts.
 
@@ -110,4 +110,4 @@ Follow the Vercel deployment policy:
 - batch evidence-driven fixes before a corrective Preview instead of pushing one build per thought;
 - merge the accepted release once and verify Production separately.
 
-GitHub Actions and GitHub Pages remain retired for ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling are legacy rollback or provider-specific diagnostic surfaces only; they do not define normal rendering, performance, or completion policy.
+GitHub Actions is active only as the repository-scoped self-hosted CI control plane; GitHub-hosted runners and GitHub Pages remain outside ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling remain legacy rollback/provider-specific surfaces, while `cloudflare/production-smoke/` is the active monitoring-only exception and does not build or publish the site.

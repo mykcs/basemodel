@@ -1,23 +1,26 @@
-# Hosting architecture — Vercel Preview + Vercel Production
+# Hosting architecture — self-hosted CI + Vercel + Cloudflare smoke
 
-Last reviewed: **2026-08-14**
+Last reviewed: **2026-08-28**
 
-Status: **current release authority. Vercel is the only ordinary deployment provider for Preview and Production.**
+Status: **current release architecture. Vercel remains the only ordinary deployment provider; GitHub self-hosted Actions supplies pre-merge CI and Cloudflare supplies post-deploy smoke only.**
 
 ## Current decision
 
 ```text
 GitHub = source of truth
 
-non-main branch / PR
-  -> Vercel project `basemodel-preview`
+PR / release candidate
+  -> repository-scoped self-hosted CI
+  -> deterministic checks + risk-based Playwright
+
+Vercel Preview / main Production
   -> npm run verify:deploy
   -> npm run build
-  -> protected Preview
+  -> deploy static artifact
 
-main
-  -> Vercel Production
-  -> https://basemodel-preview.vercel.app
+Cloudflare production-smoke Worker
+  -> https://basemodel-production-smoke.mykcs01.workers.dev/healthz
+  -> scheduled HTTP / canonical / robots / sitemap / redirect checks every 30 minutes
 ```
 
 Astro, React and GitHub do not change. This is provider-ownership consolidation, not an application-stack rewrite.
@@ -41,11 +44,11 @@ The ordinary lifecycle is:
 ```text
 one coherent branch/PR
 -> one atomic multi-file push
--> exact-head Vercel Preview
--> at most one batched corrective Preview
+-> self-hosted risk-based CI
+-> optional exact-head Vercel Preview
 -> merge accepted release to main
--> one Vercel Production build
--> public Production verification
+-> one lightweight Vercel Production build
+-> Cloudflare/public Production smoke
 ```
 
 The provider-trigger count is part of acceptance evidence. Completion reports should distinguish total triggers, `READY`, `ERROR`, `CANCELED`, ignored/skipped, exact-head Preview acceptance and Production acceptance.
@@ -60,12 +63,12 @@ When a custom domain is adopted, update `PUBLIC_SITE_URL`/Astro canonical identi
 
 ```text
 repository contract updated
--> exact-head Vercel Preview Gate/build
--> inspect Preview metadata/routes
+-> self-hosted CI passes the required risk plan
+-> optional exact-head Vercel Preview build / route inspection
 -> merge accepted release to main
--> Vercel Production build
+-> lightweight Vercel Production build
 -> verify Production HTTP/routes/canonical/hreflang/robots/sitemap
--> report Vercel trigger counts and statuses
+-> Cloudflare scheduled smoke continues independent observation
 ```
 
 A READY Preview is not Production evidence.
@@ -76,7 +79,7 @@ Provider authentication, bearer tokens, share/access query parameters, account I
 
 ## Legacy hosting — not ordinary workflow
 
-Historical Cloudflare snapshots, Wrangler/Workers helpers or an external legacy Git integration may still exist as migration residue. They are not ordinary deployment authority, not a quota to include in normal reports, and not a reason to load Cloudflare context on every task.
+Historical Cloudflare deployment snapshots, Pages helpers and Workers shadow-build paths remain migration/fallback residue and are not ordinary deployment authority. The one active exception is `cloudflare/production-smoke/`, which monitors the Vercel Production origin and never publishes the site itself.
 
 Only load or mention legacy hosting when:
 

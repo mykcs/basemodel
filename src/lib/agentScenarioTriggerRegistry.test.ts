@@ -102,15 +102,17 @@ describe('Agent scenario-trigger discovery', () => {
       'map those concepts into SEED',
     ]) expect(seedWorkflow).toContain(token);
     expect(seedWorkflow).not.toContain('PR #104 is the active implementation path');
-    expect(seedWorkflow).toContain('Current ordinary architecture is Vercel Preview + Vercel Production');
+    expect(seedWorkflow).toContain('Current ordinary architecture is self-hosted risk-based CI + optional Vercel Preview + Vercel Production');
   });
 
   it('does not silently restore Direct Upload as the ordinary Preview default', () => {
-    expect(repositoryMap).toContain('GitHub non-main deployment-eligible ref -> Vercel Preview');
-    expect(repositoryMap).toContain('GitHub main                             -> Vercel Production');
-    expect(repositoryMap).toContain('Production identity                    -> https://basemodel-preview.vercel.app');
-    expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/Workers  -> rollback or provider-specific fallback only');
-    expect(repositoryMap).toContain('Vercel is the only ordinary deployment authority');
+    expect(repositoryMap).toContain('GitHub PR / release candidate          -> repository-scoped self-hosted CI');
+    expect(repositoryMap).toContain('GitHub non-main deployment-eligible ref  -> optional Vercel Preview');
+    expect(repositoryMap).toContain('GitHub main                              -> Vercel Production');
+    expect(repositoryMap).toContain('Production identity                     -> https://basemodel-preview.vercel.app');
+    expect(repositoryMap).toContain('Cloudflare production-smoke Worker       -> post-deploy monitoring only');
+    expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
+    expect(repositoryMap).toContain('Vercel remains the only ordinary deployment authority');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
   });
 

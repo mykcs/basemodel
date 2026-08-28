@@ -16,7 +16,11 @@ export interface HostedUiPlan {
 
 const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/study\/results(?:\/|$)/;
 const MAX_CHANGED_ROUTE_SMOKE = 8;
-const HOSTED_GATE_OWNER = 'scripts/vercel-ui-plan.ts';
+const HOSTED_GATE_OWNERS = new Set([
+  'scripts/vercel-ui-plan.ts',
+  'scripts/ci-ui-gate.mjs',
+  '.github/workflows/self-hosted-ci.yml',
+]);
 
 const SCOPED_EXPLAINER_ROUTES = new Map<string, string[]>([
   ['src/components/research/explainer/EnvironmentExplainers.tsx', ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/']],
@@ -97,14 +101,14 @@ export function planHostedUi(files: string[]): HostedUiPlan {
 
   // This planner owns the provider-side test selection itself. A change to its
   // source must never be allowed to classify its own blast radius as harmless.
-  if (changedFiles.includes(HOSTED_GATE_OWNER)) {
+  if (changedFiles.some((file) => HOSTED_GATE_OWNERS.has(file) || file.startsWith('.github/runner/'))) {
     return {
       mode: 'full',
       risk: 'global',
       changedFiles,
       routes: [],
       specs: [],
-      reason: 'The hosted UI planner changed; fail closed to the complete hosted Chromium regression matrix.',
+      reason: 'The CI/browser gate or its runner environment changed; fail closed to the complete Chromium regression matrix.',
     };
   }
 
