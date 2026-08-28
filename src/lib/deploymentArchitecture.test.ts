@@ -39,6 +39,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerStart).toContain("grep -q 'AC Power'");
     expect(runnerStart).toContain('--cpus 4');
     expect(runnerStart).toContain('--memory 8g');
+    expect(runnerStart).toContain('docker top "$container" -eo pid,args');
+    expect(runnerStart).not.toContain('docker exec "$container" bash -lc "ps -ef');
     expect(runnerStart).not.toContain('/var/run/docker.sock');
     expect(runnerStart).not.toMatch(/(?:^|\s)(?:-v|--volume)(?:\s|=)/m);
   });

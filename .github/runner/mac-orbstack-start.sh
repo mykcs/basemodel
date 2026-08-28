@@ -39,7 +39,7 @@ if ! docker exec "$container" test -f /home/runner/actions-runner/.runner; then
   unset token
 fi
 
-if ! docker exec "$container" bash -lc "ps -ef | grep -q '[R]unner.Listener'"; then
+if ! docker top "$container" -eo pid,args 2>/dev/null | grep -q '[R]unner.Listener'; then
   docker exec "$container" bash -lc \
     'cd /home/runner/actions-runner && nohup ./run.sh >>runner.log 2>&1 </dev/null >/dev/null 2>&1 &'
 fi
