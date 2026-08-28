@@ -60,6 +60,8 @@ The current runner image is arm64 Linux on Apple Silicon. This is acceptable for
 
 The container is persistent between manual start/stop cycles, so npm and Playwright caches stay local to the isolated runner. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
 
+`main` branch protection requires the `basemodel-self-hosted` status check with strict up-to-date semantics. Force-push and branch deletion are disabled. Administrator enforcement is intentionally left off as the emergency recovery path if the on-demand runner itself becomes unavailable. A docs/governance-only PR still needs the runner online long enough to classify the diff, but exits before Node/npm installation or browser work.
+
 ### Cloudflare post-deploy smoke
 
 Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`. `/healthz` only proves the Worker is alive; `/check` is intentionally locked unless `SMOKE_TOKEN` is configured as a Cloudflare secret. The scheduled smoke does not require that secret.
