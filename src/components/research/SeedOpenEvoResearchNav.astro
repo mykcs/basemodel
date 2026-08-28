@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'experiment' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchPage = 'hub' | 'experiment' | 'design' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
 type ResearchTrack = 'flow' | 'study';
 
 interface Props {
@@ -30,11 +30,12 @@ const flowPages = [
 
 const studyPages = [
   { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/study/') },
+  { id: 'design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/study/design/') },
   { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/research/seed-openevo/study/run/') },
   { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/study/results/') },
 ] as const;
 
-const studyPageIds: ResearchPage[] = ['experiment', 'run', 'results'];
+const studyPageIds: ResearchPage[] = ['experiment', 'design', 'run', 'results'];
 const currentTrack: ResearchTrack = studyPageIds.includes(page) ? 'study' : 'flow';
 const pages = currentTrack === 'flow' ? flowPages : studyPages;
 const identity = currentTrack === 'flow'
@@ -47,7 +48,7 @@ const identity = currentTrack === 'flow'
   : {
       index: '02',
       label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study'),
-      meta: t('实验流程 · 运行 · 研究结果', 'workflow · execution · findings'),
+      meta: t('实验流程 · 训练设计 · 运行 · 研究结果', 'workflow · training design · execution · findings'),
       aria: t('OpenEvo × WebShop 科学研究子导航', 'OpenEvo × WebShop study subnavigation'),
     };
 ---
