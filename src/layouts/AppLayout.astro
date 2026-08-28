@@ -78,8 +78,7 @@ const compareTrayLabels = {
     <script is:inline>
       try {
         const storedTheme = localStorage.getItem('atlas-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.dataset.theme = storedTheme ?? (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
       } catch {
         document.documentElement.dataset.theme = 'light';
       }

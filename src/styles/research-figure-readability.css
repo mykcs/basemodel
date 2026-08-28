@@ -51,20 +51,20 @@
   }
 }
 
-/* The interactive SEED map used to spend only four of six columns on its first
- * row: policy and rollout each received a single narrow column while two grid
- * columns sat empty. Expanded explanatory prose could therefore become a
- * 130px-wide desktop CJK column. Use the full row and give all three primary
- * nodes two columns. Mobile/tablet compositions switch the diagram to a
- * vertical flow, so this rule only owns the wide grid state. */
+/* The interactive SEED map reserves one wide responsibility band for the
+ * model-facing harness plus Princeton WebShop environment. Keep this canonical
+ * readability owner aligned with the component's eight-column topology; an old
+ * six-column override would create implicit tracks and collapse every prose
+ * node into a narrow CJK rail. Mobile/tablet compositions switch the diagram to
+ * a vertical flow, so this rule only owns the wide grid state. */
 @media (min-width: 901px) {
   .plain-detail__interactive .irx-seed-scene {
     grid-template-areas:
-      'policy policy rollout rollout trajectory trajectory'
-      '. . hindsight hindsight . .'
-      '. plain plain skill skill .'
-      '. opd opd grpo grpo .'
-      '. . optimizer optimizer next next';
+      'policy policy interaction interaction interaction interaction trajectory trajectory'
+      '. . . hindsight hindsight . . .'
+      '. plain plain plain skill skill skill .'
+      '. opd opd opd grpo grpo grpo .'
+      '. . . optimizer optimizer . next next';
   }
 }
 
