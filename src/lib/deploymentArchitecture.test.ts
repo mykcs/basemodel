@@ -31,6 +31,8 @@ describe('Vercel production deployment architecture', () => {
     expect(selfHostedWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
     expect(selfHostedWorkflow).toContain('persist-credentials: false');
     expect(selfHostedWorkflow).toContain('needs_validation=true');
+    expect(selfHostedWorkflow).toContain("grep -Ev '^(docs/|AGENTS\\.md$|README\\.md$|\\.github/)'");
+    expect(selfHostedWorkflow).not.toContain('node scripts/vercel-ignore-build.mjs');
     expect(selfHostedWorkflow).toContain('runner/');
     expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(selfHostedWorkflow).not.toContain('cache: npm');
