@@ -15,6 +15,10 @@ const uiAcceptancePolicy = readFileSync(
   resolve(process.cwd(), 'docs/agents/current/ui-change-visual-acceptance-gate.md'),
   'utf8',
 );
+const uiOverflowPreflight = readFileSync(
+  resolve(process.cwd(), 'scripts/ui-overflow-preflight.mjs'),
+  'utf8',
+);
 
 describe('pre-Vercel UI regression gate', () => {
   it('classifies UI changes upward by blast radius', () => {
@@ -56,6 +60,9 @@ describe('pre-Vercel UI regression gate', () => {
     expect(packageJson.scripts['preflight:ui:plan']).toBe('tsx scripts/preflight-ui.ts --plan');
     expect(packageJson.scripts['ui:overflow-preflight']).toContain('scripts/ui-overflow-preflight.mjs');
     expect(packageJson.scripts['verify:deploy']).toContain('npm test');
+    expect(uiOverflowPreflight).toContain("'scripts/playwright-static-server.mjs'");
+    expect(uiOverflowPreflight).toContain('AbortSignal.timeout(1_500)');
+    expect(uiOverflowPreflight).not.toContain("['run', 'preview'");
 
     expect(uiAcceptancePolicy).toContain('npm run preflight:ui:plan');
     expect(uiAcceptancePolicy).toContain('npm run preflight:ui');
