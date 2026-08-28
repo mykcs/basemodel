@@ -110,6 +110,7 @@ for (const theme of ['light', 'dark'] as const) {
     test(`${theme} unified results page is overflow-safe at ${viewport.width}px`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ colorScheme: theme });
+      await page.addInitScript((selectedTheme) => localStorage.setItem('atlas-theme', selectedTheme), theme);
       for (const route of [zhRoute, enRoute]) {
         await page.goto(route);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
@@ -131,6 +132,7 @@ for (const theme of ['light', 'dark'] as const) {
     test(`${theme} results index and benchmark notes remain readable at ${viewport.width}px`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ colorScheme: theme });
+      await page.addInitScript((selectedTheme) => localStorage.setItem('atlas-theme', selectedTheme), theme);
 
       for (const route of [zhRoute, ...benchmarkRoutes]) {
         await page.goto(route);
