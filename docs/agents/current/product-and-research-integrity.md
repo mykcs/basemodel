@@ -350,7 +350,7 @@ Important invariant coverage includes:
 - source identity stays deterministic;
 - completion checklists cannot be satisfied by dead/unwired components.
 
-Full Playwright remains on-demand because Cloudflare build budget/reliability policy intentionally keeps browser downloads out of every deployment. Deterministic source/data/unit/V2 audits remain appropriate deployment blockers.
+Full Playwright remains on-demand on the repository-scoped self-hosted runner so browser downloads and execution stay out of Vercel Production. Deterministic source/data/unit/V2 audits remain appropriate deployment blockers; Cloudflare production-smoke only observes the deployed Vercel origin.
 
 ## How future agents should continue
 
@@ -362,8 +362,8 @@ Before proposing a broad redesign:
 4. Preserve evidence/unknown semantics and stable IDs.
 5. Prefer changing the smallest coherent product slice that closes a real research workflow.
 6. Add a regression that proves the behavior is wired into the real path.
-7. Use branch -> PR -> exact-head Cloudflare Preview -> merge for deployment-sensitive work.
-8. Never restore GitHub Actions/GitHub Pages because historical notes mention them.
+7. Use branch -> PR -> self-hosted risk-based CI -> optional exact-head Vercel Preview -> merge for deployment-sensitive work.
+8. Keep GitHub Actions limited to the repository-scoped self-hosted CI control plane; do not reintroduce GitHub-hosted runners or GitHub Pages.
 9. Do not ask the owner to relay logs/content between tools when connected tools can retrieve them.
 10. Keep external-service and unavailable-fact boundaries explicit rather than faking completion.
 

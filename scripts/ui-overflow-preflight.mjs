@@ -4,9 +4,13 @@ import { chromium } from '@playwright/test';
 const host = '127.0.0.1';
 const port = 4328;
 const baseURL = `http://${host}:${port}`;
-const server = spawn('npm', ['run', 'preview', '--', '--host', host, '--port', String(port)], {
+const server = spawn(process.execPath, ['scripts/playwright-static-server.mjs'], {
   stdio: ['ignore', 'pipe', 'pipe'],
-  env: process.env,
+  env: {
+    ...process.env,
+    PLAYWRIGHT_HOST: host,
+    PLAYWRIGHT_PORT: String(port),
+  },
 });
 
 let serverOutput = '';
@@ -17,15 +21,20 @@ async function waitForServer() {
   const deadline = Date.now() + 30_000;
   while (Date.now() < deadline) {
     if (server.exitCode !== null) {
-      throw new Error(`Astro preview exited early (${server.exitCode})\n${serverOutput}`);
+      throw new Error(`Playwright static server exited early (${server.exitCode})\n${serverOutput}`);
     }
     try {
-      const response = await fetch(baseURL, { redirect: 'manual' });
-      if (response.status < 500) return;
+      const response = await fetch(baseURL, {
+        redirect: 'manual',
+        signal: AbortSignal.timeout(1_500),
+      });
+      const ready = response.status < 500;
+      await response.body?.cancel().catch(() => {});
+      if (ready) return;
     } catch {}
     await new Promise((resolve) => setTimeout(resolve, 150));
   }
-  throw new Error(`Timed out waiting for Astro preview\n${serverOutput}`);
+  throw new Error(`Timed out waiting for Playwright static server\n${serverOutput}`);
 }
 
 function describeDiagnostics(payload) {
@@ -45,10 +54,11 @@ function describeDiagnostics(payload) {
   }).join('\n');
 }
 
-await waitForServer();
-const browser = await chromium.launch();
+let browser;
 let failed = false;
 try {
+  await waitForServer();
+  browser = await chromium.launch();
   for (const viewport of [
     { width: 390, height: 844 },
     { width: 768, height: 1024 },
@@ -156,8 +166,8 @@ try {
     await page.close();
   }
 } finally {
-  await browser.close();
-  server.kill('SIGTERM');
+  if (browser) await browser.close();
+  if (server.exitCode === null) server.kill('SIGTERM');
 }
 
 if (failed) {

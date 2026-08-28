@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-27**
+Last reviewed: **2026-08-28**
 
 ## Authority
 
@@ -14,7 +14,7 @@ Production identity = https://basemodel-preview.vercel.app
 
 **Vercel is the only ordinary deployment authority.** Historical provider files, snapshots or fallback scripts are not normal Preview, release, Production verification, quota-reporting or completion-report surfaces.
 
-GitHub Actions and GitHub Pages remain retired.
+GitHub Actions is re-enabled only as a **self-hosted CI control plane**. Heavy jobs run on the repository-scoped `basemodel-ci` runner, never on GitHub-hosted runners. GitHub Pages remains retired.
 
 ## Vercel responsibilities
 
@@ -28,53 +28,43 @@ Preview acceptance requires exact-head provider success plus real route/metadata
 
 Preview branch eligibility is only the first filter; it is **not permission to spend build compute on every intermediate push**. `scripts/vercel-ignore-build.mjs` requires the exact-head commit message to contain `[vercel-preview]` when `VERCEL_ENV=preview`. Without that token, an eligible Preview trigger exits through the ignored-build path before `verify:deploy`, the static build, or hosted Playwright runs. Production is never gated by this token. A tokenized Preview can still be ignored when the proven Git range is docs/governance-only. Preview `robots.txt` also uses `Disallow: /` for cooperative crawlers.
 
-### Risk-aware hosted browser gate
+### Risk-aware self-hosted browser gate
 
-The deterministic repository Gate and static build remain mandatory for every deployable Vercel build. The **hosted Chromium layer is risk-aware** so Production does not spend roughly ten minutes rerunning unrelated browser cases after a low-blast-radius page edit that already passed the required pre-provider checks.
-
-`scripts/vercel-ui-plan.ts` compares the current Vercel commit with `VERCEL_GIT_PREVIOUS_SHA` and classifies the changed surface with the repository's UI-risk model. `scripts/vercel-ui-gate.mjs` then applies this fail-closed policy:
+Browser regression no longer runs inside the ordinary Vercel Production build. The repository-owned `.github/workflows/self-hosted-ci.yml` uses the existing `scripts/vercel-ui-plan.ts` policy on a repository-scoped self-hosted runner. The runner is the execution environment; GitHub Actions is only the scheduler/control plane.
 
 ```text
-shared/global UI change or planner uncertainty
--> complete hosted Chromium matrix
+non-UI / governance-only diff
+-> skip before npm install
 
-concrete local Astro page-only change
--> exact changed-route mobile/desktop + light/dark smoke
--> plus mapped regression-owner specs when one exists
+content/local UI diff
+-> verify:deploy + build
+-> focused mapped Chromium specs / changed-route smoke
 
-content-only UI change
--> representative hosted UI safety coverage
--> plus mapped research regression owners when applicable
+shared/global UI diff
+-> verify:deploy + build
+-> complete Chromium UI matrix
 
-non-UI change
--> browser layer may skip after verify:deploy + build already passed
+Lab/server-relevant diff
+-> additionally run the dedicated 12-case Lab gate
 ```
 
-Dynamic routes or local source files that cannot be mapped to one concrete route fall back to the complete matrix. More than eight changed concrete routes also fall back to the complete matrix. A failure to resolve the previous/current Git range, a malformed planner result, or a change to the hosted planner itself must **fail closed to full browser coverage**, never silently skip.
+`scripts/ci-ui-gate.mjs` deliberately reuses `vercel-ui-plan.ts`; it does not maintain a second provider-specific risk taxonomy. Playwright is limited to one worker by default, and the workflow uses one concurrency group per PR/ref. The workflow has `contents: read` only, disables persisted checkout credentials, and only accepts same-repository work from the owner account.
 
-This provider-side scoping does **not** weaken the pre-provider UI policy. Before the first provider-triggering ref update, Agents still run the strongest browser matrix required by `ui-change-visual-acceptance-gate.md` and `scripts/preflight-ui.ts`. Vercel's focused Production gate is the exact deployed-tree confirmation layer, not a substitute for the required preflight.
+The old `scripts/vercel-ui-gate.mjs` and `scripts/vercel-lab-browser-gate.mjs` remain as rollback/reference implementations, but `vercel.json` must not call them in the ordinary Production build. If the new CI path proves unreliable, rollback is to restore those two commands before weakening browser acceptance.
 
-Hosted Playwright concurrency is evidence-bounded rather than mapped directly to the provider's advertised machine size. Current executable policy uses:
+### Mac runner lifecycle
 
-```text
-workers = max(1, min(4, floor(visible CPUs / 2)))
-```
+The zero-extra-cost runner is packaged under `.github/runner/` and runs inside OrbStack's Docker engine rather than directly in the daily macOS user session. The container has **no host mounts and no Docker socket**, is capped at 4 CPU / 8 GB RAM / 1 GB shared memory, and the GitHub workflow itself keeps Playwright at one worker. `.github/runner/mac-orbstack-start.sh` refuses to start while the Mac is on battery power; `.github/runner/mac-orbstack-stop.sh` takes the runner offline when CI is not needed.
 
-A 2026-08-27 live experiment on the ordinary Pro 8-core / 16 GB Preview class showed that 6 workers completed the 91-test Chromium matrix in 137.8 seconds and 8 workers in 141.7 seconds, both around 2.3 minutes and slower than the prior 4-worker baseline of roughly 1.6 minutes. A later 30-core / 60 GB Turbo build still used the 4-worker cap and completed the same 91-test matrix in about 1.3 minutes. Do not raise the cap above 4 without fresh same-source, same-matrix, provider-side benchmark evidence that total wall time improves rather than only worker count increasing.
+The current runner image is arm64 Linux on Apple Silicon. This is acceptable for the present suite because the Chromium screenshot-signature case captures a signature into the build artifact rather than comparing against a committed x86 pixel baseline. If future tests introduce platform-pinned pixel baselines, keep those tests on one declared baseline platform instead of silently mixing architectures.
 
-Both hosted browser gates intentionally keep the Chromium headless shell in a cacheable hermetic location:
+The container is persistent between manual start/stop cycles, so npm and Playwright caches stay local to the isolated runner. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
 
-```text
-PLAYWRIGHT_BROWSERS_PATH=0
-playwright install --only-shell chromium
-node_modules/playwright-core/.local-browsers/
-```
+### Cloudflare post-deploy smoke
 
-This does **not** mean a cold build never downloads a browser. The correct expectation is: cold cache downloads the required headless shell once; a compatible warm Vercel build cache can restore and reuse it. Keep the `ldd` preflight because cache presence is not proof that the runtime's shared-library dependencies resolve.
+Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`. `/healthz` only proves the Worker is alive; `/check` is intentionally locked unless `SMOKE_TOKEN` is configured as a Cloudflare secret. The scheduled smoke does not require that secret.
 
-The planner contract is protected by `src/lib/vercelHostedUiGate.test.ts`; exact changed routes are exercised by `tests/e2e/vercel-changed-route-smoke.spec.ts`.
-
-Historical rationale for the Lab race, browser-cache change and worker benchmark: [`../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md`](../history/2026-08-27-vercel-browser-gate-performance-and-lab-flaky-retrospective.md).
+Do not move repository compilation, npm installation, Vitest, the full Playwright matrix, or screenshot baselines into this Worker. Its job is post-deploy observation, not CI replacement.
 
 ### Cost guardrails
 
@@ -83,8 +73,9 @@ The 2026-08-27 billing audit showed that BaseModel Build CPU, not public traffic
 - Vercel project build-machine selection is intentionally **fixed Standard**. Do not restore elastic auto-upsizing without a measured same-workload cost reason; the previous elastic policy had promoted this project to a larger class because of long builds.
 - Speed Insights is disabled for the project, and the public shell does not inject the Speed Insights client. Re-enable it only when the performance data is actively needed and the event cost is accepted.
 - `robots.txt` keeps ordinary search and user-requested AI retrieval available while opting out named training crawlers. This is a cooperative, zero-request-analysis guard; do not add BotID deep analysis or paid firewall rate limiting merely to reduce cost unless traffic evidence shows those products would save more than they consume.
-- `scripts/vercel-lab-browser-gate.mjs` resolves the Vercel Git range and skips its dedicated 12-case Lab matrix when a proven `main` diff cannot affect Lab/server UI. Unknown ranges fail closed.
-- Bounded WebShop/ALFWorld, SEED/OpenEvo, and Server explainer implementation owners may use the focused hosted geometry/readability owner plus exact changed-route smoke. Unmapped shared/global changes still fail closed to the full browser matrix.
+- Heavy Chromium and Lab execution belongs to the self-hosted CI runner; Vercel Production must not install Chromium or provider-specific `dnf` browser libraries.
+- `scripts/ci-ui-gate.mjs` keeps Lab selection diff-aware and reuses the same focused/full UI planner used by the historical Vercel gate.
+- Cloudflare production smoke is deliberately tiny and independent; failures there are post-deploy health evidence, not permission to weaken pre-merge CI.
 
 These controls reduce future consumption only; they do not erase Build CPU already accumulated in the billing period.
 

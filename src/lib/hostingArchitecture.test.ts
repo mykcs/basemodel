@@ -14,8 +14,12 @@ const packageJson = JSON.parse(read('package.json')) as {
 };
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const vercelIgnoreBuild = read('scripts/vercel-ignore-build.mjs');
-const vercelUiGate = read('scripts/vercel-ui-gate.mjs');
-const vercelLabBrowserGate = read('scripts/vercel-lab-browser-gate.mjs');
+const ciUiGate = read('scripts/ci-ui-gate.mjs');
+const selfHostedWorkflow = read('.github/workflows/self-hosted-ci.yml');
+const productionSmoke = read('cloudflare/production-smoke/src/index.js');
+const productionSmokeConfig = JSON.parse(read('cloudflare/production-smoke/wrangler.jsonc')) as {
+  name?: string; triggers?: { crons?: string[] };
+};
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 const latest = read('docs/agents/LATEST.md');
@@ -23,33 +27,39 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('uses Vercel for both Preview and Production with repository-owned browser gates', () => {
-    expect(vercel.buildCommand).toBe(
-      'npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs',
-    );
+  it('keeps Vercel lightweight and moves browser acceptance to self-hosted CI', () => {
+    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
-    expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
-    expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
-    expect(vercelUiGate).toContain("['playwright', 'install', '--only-shell', 'chromium']");
-    expect(vercelUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
-    expect(vercelLabBrowserGate).toContain("branch === 'agent/sync-zju-shell-environment-20260816'");
-    expect(vercelLabBrowserGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
-    expect(vercelLabBrowserGate).toContain("['playwright', 'install', '--only-shell', 'chromium']");
-    expect(vercelLabBrowserGate).toContain('tests/e2e/lab-playwright.config.ts');
-    expect(architecture).toContain('Vercel Preview + Vercel Production');
-    expect(architecture).toContain('Vercel is the only ordinary deployment provider');
+    expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
+    expect(selfHostedWorkflow).toContain('persist-credentials: false');
+    expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
+    expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
+    expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
+    expect(architecture).toContain('self-hosted CI + Vercel + Cloudflare smoke');
+    expect(architecture).toContain('Vercel remains the only ordinary deployment provider');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
     expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps legacy hosting outside ordinary workflow and reporting in the current hosting owner', () => {
+  it('keeps Cloudflare deployment fallback separate from active smoke monitoring', () => {
     expect(architecture).toContain('Legacy hosting — not ordinary workflow');
-    expect(architecture).toContain('not a quota to include in normal reports');
-    expect(architecture).toContain('not an ordinary release stage or completion-report item');
-    expect(latest).toContain('Cloudflare material is legacy rollback/provider-specific tooling only');
+    expect(architecture).toContain('production-smoke');
+    expect(latest).toContain('Cloudflare production-smoke');
+    expect(latest).toContain('Vercel remains the ordinary deployment provider');
+  });
+
+  it('uses a tiny scheduled Cloudflare Worker for real Production smoke only', () => {
+    expect(productionSmokeConfig.name).toBe('basemodel-production-smoke');
+    expect(productionSmokeConfig.triggers?.crons).toEqual(['*/30 * * * *']);
+    expect(productionSmoke).toContain(`const ORIGIN = '${productionUrl}'`);
+    expect(productionSmoke).toContain("'/robots.txt'");
+    expect(productionSmoke).toContain("'/sitemap.xml'");
+    expect(productionSmoke).toContain("url.pathname !== '/check'");
+    expect(productionSmoke).not.toContain('playwright');
+    expect(productionSmoke).not.toContain('npm run');
   });
 
   it('retains a static-only non-production Workers shadow option', () => {

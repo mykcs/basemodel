@@ -73,13 +73,15 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 ## Deployment map
 
 ```text
-GitHub non-main deployment-eligible ref -> Vercel Preview
-GitHub main                             -> Vercel Production
-Production identity                    -> https://basemodel-preview.vercel.app
-Cloudflare Pages/Direct Upload/Workers  -> rollback or provider-specific fallback only
+GitHub PR / release candidate          -> repository-scoped self-hosted CI
+GitHub non-main deployment-eligible ref  -> optional Vercel Preview
+GitHub main                              -> Vercel Production
+Production identity                     -> https://basemodel-preview.vercel.app
+Cloudflare production-smoke Worker       -> post-deploy monitoring only
+Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
 ```
 
-Vercel is the only ordinary deployment authority. GitHub Actions and GitHub Pages remain retired. Cloudflare-specific current runbooks remain only where executable fallback behavior still exists; completed migration/pilot rationale is history.
+Vercel remains the only ordinary deployment authority. GitHub Actions is active only as the self-hosted CI control plane; GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
 
 ## Change-to-check guidance
 
