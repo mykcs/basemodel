@@ -1,6 +1,6 @@
 # Model catalog verification policy
 
-Last reviewed: **2026-08-10**
+Last reviewed: **2026-08-28**
 
 This document is the durable Agent contract for maintaining the model catalog in `mykcs/basemodel`. It preserves the reusable conclusions from the 2026-08-10 full-catalog audit without turning a dated snapshot into permanent truth.
 
@@ -62,7 +62,11 @@ Prefer official sources in roughly this order:
 
 Use third-party sources only when first-party evidence is unavailable, and label the evidence quality accordingly.
 
+Match each source to the claim it can actually support. An official SDK changelog or first-party code repository can strongly confirm that a model ID exists or that a capability is supported, but it does not by itself prove flagship rank, complete family membership, or lifecycle state. Third-party aggregators, provider integrations and search results are discovery surfaces: use them to improve recall, then follow the lead to first-party evidence before changing production facts.
+
 For vendors that have both hosted and downloadable models, verify both surfaces. A Hugging Face organization page alone is not enough to determine the newest hosted API model; an API pricing/catalog page alone is not enough to determine the newest downloadable base checkpoint.
+
+A previous `catalog_checked_at` value or configured `refresh_days` is never a freshness guarantee. When the user asks for “today”, “latest” or “current”, or when first-party evidence newer than the baseline indicates movement, re-check the affected provider even if the nominal refresh interval has not elapsed. A broad audit can become stale the next day.
 
 ### 3. Verify the family, then individual checkpoints
 
@@ -187,23 +191,20 @@ Evidence boundary: the tools available in that session proved the exact-head Pre
 
 ## Validation contract for model-catalog changes
 
-For normal data/schema/domain changes, the deployment gate remains:
+For normal data/schema/domain changes, the repository Gates remain:
 
 ```text
 npm run verify:deploy
-```
-
-Cloudflare uses:
-
-```text
-npm run build:cloudflare
+npm run build
 ```
 
 The deployment gate includes schema/relation checks plus semantic, claims, freshness, unit and V2/adversarial audits. Do not bypass a failing audit by deleting the check or downgrading the policy just to get a deployment.
 
-External catalog/source probes remain on-demand because they involve network cost/reliability. Use them when doing a real current-world catalog audit, but do not automatically move them into every Cloudflare build.
+Hosted Preview/Production acceptance follows [`deployment-policy.md`](deployment-policy.md) and [`release-closeout-protocol.md`](release-closeout-protocol.md). Vercel is the ordinary current deployment authority. The Cloudflare receipt in the 2026-08-10 baseline above remains valid historical evidence, but it is not the current provider workflow.
 
-## Cloudflare build-budget rule for catalog work
+External catalog/source probes remain on-demand because they involve network cost/reliability. Use them when doing a real current-world catalog audit, but do not automatically move them into every Vercel build.
+
+## Hosted build-budget rule for catalog work
 
 A model audit can touch many records. Avoid one push per tiny correction.
 
@@ -214,13 +215,13 @@ inventory + evidence gathering
 -> batch model/family/vendor edits
 -> deterministic local/static reasoning where possible
 -> one meaningful final PR head
--> one Cloudflare Preview
+-> one exact-head Vercel Preview when current policy requires hosted acceptance
 -> fix only concrete failures
 -> exact-head Preview success
 -> merge
 ```
 
-The 2026-08-10 audit demonstrated why this matters: intermediate commits consumed Preview builds and surfaced a semantic-Gate failure. Later fixes were batched into Git trees so the final state could be tested without manufacturing many more deployment attempts.
+The 2026-08-10 audit demonstrated why this matters even though it used the then-current Cloudflare provider: intermediate commits consumed Preview builds and surfaced a semantic-Gate failure. Later fixes were batched into Git trees so the final state could be tested without manufacturing many more deployment attempts. Preserve that batching lesson while following today's Vercel authority.
 
 ## What future Agents must not assume
 
@@ -248,7 +249,7 @@ A broad model-data audit is complete only when:
 6. family current pointers use internal model IDs correctly;
 7. concrete critical fields have field-level evidence or precise semantic unknowns;
 8. deterministic deployment Gates pass;
-9. the exact final PR head receives a successful Cloudflare Preview for deployment-sensitive work;
+9. when deployment-sensitive work requires hosted acceptance under current repository policy, the exact final PR head receives a successful Vercel Preview; docs/governance-only work may be legitimately skipped by the current build-scope rules;
 10. the PR is merged without weakening the research-integrity contract.
 
 “Added a few recent model names” is not a full-catalog audit.

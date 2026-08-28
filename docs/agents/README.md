@@ -110,6 +110,8 @@ Read:
 
 The 2026-08-12 differential audit is retained at [`history/2026-08-12-model-catalog-differential-audit.md`](history/2026-08-12-model-catalog-differential-audit.md) as a point-in-time baseline only. Do not treat it as a current catalog. Current/latest/full-family claims must be re-verified.
 
+For the concrete failure mode where a recent broad audit became stale within days, and for the evidence-boundary lessons around official SDK/code evidence versus provider catalogs, read [`history/2026-08-28-model-catalog-freshness-and-evidence-boundary-retrospective.md`](history/2026-08-28-model-catalog-freshness-and-evidence-boundary-retrospective.md) after the current policy.
+
 ### `/lab/`, remote compute, SSH/SFTP/rsync, or hardware disclosure
 
 Read [`current/personal-compute-profile-consumer.md`](current/personal-compute-profile-consumer.md) plus the matched scenario trigger. Keep personal device inventories, private profile feeds, hostnames, usernames, VPN endpoints, tokens, and other identifying infrastructure out of the public repository. Publish only minimum reproducibility-relevant aggregate facts.
