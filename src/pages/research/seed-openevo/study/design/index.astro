@@ -1,0 +1,15 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenEvoResearchNav.astro';
+import SeedOpenEvoTrainingDecisionLab from '../../../../../components/research/SeedOpenEvoTrainingDecisionLab.astro';
+const locale = 'zh' as const;
+---
+
+<AppLayout
+  title="WebShop 训练设计实验室 · SEED × OpenEvo"
+  description="把 SEED × OpenEvo 的 WebShop 训练问题拆成责任边界、实验路线、参数协议、教师角色、API 层级和可支持的科学结论。"
+  locale={locale}
+>
+  <SeedOpenEvoResearchNav locale={locale} page="design" />
+  <SeedOpenEvoTrainingDecisionLab locale={locale} />
+</AppLayout>

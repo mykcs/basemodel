@@ -3,6 +3,7 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../components/research/OpenEvoExperimentGateway.astro';
 import OpenEvoNextExperimentProtocol from '../../../../components/research/OpenEvoNextExperimentProtocol.astro';
 import OpenEvoFairComparisonExplainer from '../../../../components/research/OpenEvoFairComparisonExplainer.astro';
+import SeedOpenEvoTrainingDecisionLab from '../../../../components/research/SeedOpenEvoTrainingDecisionLab.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -16,6 +17,7 @@ const locale = 'zh' as const;
     <p><b>已完成：</b>source-faithful Track A 已在固定 128-task manifest 上完成 BASE vs frozen OpenEvo 测量；这组结果和结论保持不变。</p>
     <p><b>下一场：</b>这里定义的是从同一 Qwen 起点开始、完整匹配 SEED 名义 21,920 个 environment rollouts 的 long-horizon fair comparison。它不是重跑 Track A，也不声称已经复现 SEED paper-final checkpoint 或论文报告数字。</p>
   </section>
+  <SeedOpenEvoTrainingDecisionLab locale={locale} />
   <OpenEvoFairComparisonExplainer locale={locale} />
   <OpenEvoNextExperimentProtocol />
 </AppLayout>

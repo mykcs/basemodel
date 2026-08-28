@@ -392,6 +392,50 @@ test('simplified information architecture avoids stacking the retired research m
   await expect(page.locator('[data-research-navigation]')).toBeVisible();
 });
 
+test('SEED visibly separates policy, harness, benchmark environment, and sealed evidence', async ({ page }) => {
+  test.skip(!routeInScope('/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
+    const root = page.locator('[data-interactive-research-explainer="seed"]');
+    await ensureHydrated(root);
+
+    const stage1Model = root.locator('.irx-seed-runtime-boundary .irx-seed-role-model');
+    const stage1Harness = root.locator('.irx-seed-runtime-boundary .irx-seed-role-harness');
+    const stage1Environment = root.locator('.irx-seed-benchmark');
+    await expect(stage1Model).toContainText('Qwen2.5-3B-Instruct');
+    await expect(stage1Harness).toContainText('SEED / verl-agent HARNESS');
+    await expect(stage1Environment).toContainText('WebAgentTextEnv');
+    await expect(root.locator('.irx-seed-offline-pipeline')).toContainText('GLM-5.2');
+
+    const stage2Contract = root.locator('.irx-seed-interaction-contract');
+    const stage2Harness = stage2Contract.locator('[data-flow-id="seed-harness"]');
+    const stage2Environment = stage2Contract.locator('[data-flow-id="seed-environment"]');
+    await expect(stage2Contract).toContainText('FIXED BENCHMARK INTERACTION CONTRACT');
+    await expect(stage2Harness).toContainText('SEED / verl-agent');
+    await expect(stage2Environment).toContainText('Princeton WebShop');
+    await expect(root.locator('[data-flow-id="seed-trajectory"]')).toContainText(/SEALED EPISODE|完整 on-policy trajectory/);
+
+    const [modelBox, harnessBox, environmentBox, stage2PolicyBox, stage2ContractBox, trajectoryBox] = await Promise.all([
+      stage1Model.boundingBox(), stage1Harness.boundingBox(), stage1Environment.boundingBox(),
+      root.locator('[data-flow-id="seed-policy"]').boundingBox(), stage2Contract.boundingBox(), root.locator('[data-flow-id="seed-trajectory"]').boundingBox(),
+    ]);
+    expect(modelBox && harnessBox && environmentBox && stage2PolicyBox && stage2ContractBox && trajectoryBox).toBeTruthy();
+    if (!modelBox || !harnessBox || !environmentBox || !stage2PolicyBox || !stage2ContractBox || !trajectoryBox) continue;
+    if (viewport.width >= 1024) {
+      expect(modelBox.x + modelBox.width).toBeLessThan(harnessBox.x);
+      expect(harnessBox.x + harnessBox.width).toBeLessThan(environmentBox.x);
+      expect(stage2PolicyBox.x + stage2PolicyBox.width).toBeLessThan(stage2ContractBox.x);
+      expect(stage2ContractBox.x + stage2ContractBox.width).toBeLessThan(trajectoryBox.x);
+    } else {
+      expect(modelBox.y + modelBox.height).toBeLessThan(harnessBox.y);
+      expect(harnessBox.y + harnessBox.height).toBeLessThan(environmentBox.y);
+      expect(stage2PolicyBox.y + stage2PolicyBox.height).toBeLessThan(stage2ContractBox.y);
+      expect(stage2ContractBox.y + stage2ContractBox.height).toBeLessThan(trajectoryBox.y);
+    }
+  }
+});
+
 test('research explainers preserve meaning with reduced motion', async ({ page }) => {
   test.skip(!routeInScope('/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
