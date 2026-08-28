@@ -55,10 +55,12 @@ jobs:
           changed="$(git diff --name-only --no-renames "${{ steps.range.outputs.base }}" "${{ steps.range.outputs.head }}")"
           if printf '%s\n' "$changed" | grep -Eq '^\.github/(workflows/self-hosted-ci\.yml$|runner/)'; then
             echo "needs_validation=true" >> "$GITHUB_OUTPUT"
-          elif node scripts/vercel-ignore-build.mjs; then
+          elif [[ -z "$changed" ]]; then
             echo "needs_validation=false" >> "$GITHUB_OUTPUT"
-          else
+          elif printf '%s\n' "$changed" | grep -Ev '^(docs/|AGENTS\.md$|README\.md$|\.github/)' | grep -q .; then
             echo "needs_validation=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_validation=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup Node 24
