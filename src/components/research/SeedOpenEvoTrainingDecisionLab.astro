@@ -306,7 +306,7 @@ const history = [
   const roots = document.querySelectorAll('[data-training-decision-lab]');
   roots.forEach((root) => {
     const buttons = Array.from(root.querySelectorAll('[data-claim]'));
-    const panels = Array.from(root.querySelectorAll('[data-claim-panel]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-claim-panel]'));
     buttons.forEach((button) => button.addEventListener('click', () => {
       const claim = button.getAttribute('data-claim');
       buttons.forEach((candidate) => candidate.setAttribute('aria-selected', String(candidate === button)));
