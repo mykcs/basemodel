@@ -101,12 +101,7 @@ export function scanAudienceCopy(root = process.cwd()): CopyFinding[] {
       const probe = I18N_T_RULE_IDS.has(rule.id) ? maskAllStringLiterals(source) : source;
       rule.pattern.lastIndex = 0;
       for (const match of probe.matchAll(rule.pattern)) {
-        if (rule.id === 'COPY-NEGATIVE-HEADING' && isAcceptedNegationPair(probe, match.index ?? 0)) {
-          // Scientific-clarification pair ("X 不是 Y 而是 Z" or "X not Y but Z")
-          // is the normal way to state contrastive findings; flag only true
-          // heading-first negative imperatives, not body-level contrast pairs.
-          continue;
-        }
+        if (rule.id === 'COPY-NEGATIVE-HEADING' && isAcceptedNegationPair(probe, match.index ?? 0)) continue;
         const originalOffset = match.index ?? 0;
         findings.push({ file, line: lineNumber(source, originalOffset), ruleId: rule.id, snippet: compact(match[0]), reason: rule.reason, strict: false });
       }
@@ -115,24 +110,13 @@ export function scanAudienceCopy(root = process.cwd()): CopyFinding[] {
   return findings;
 }
 
-// "X 不是 Y 而是 Z" or "X is not Y, but Z" is contrastive scientific
-// clarification, not a heading-first negative imperative. The original
-// regex only saw the first half of the pair and over-fired on every
-// body-level contrast in research copy.
 const NEGATION_CONTINUATION_ZH = /(?:而是|但|其实|也|就|因此|所以|不)/;
 const NEGATION_CONTINUATION_EN = /,\s*(?:but|yet|instead|so|and)\b/i;
 const HEADING_TAG_RE = /<(?:h[1-6]|li|dt|dd|summary|caption|th)\b/;
 
 function isAcceptedNegationPair(source: string, offset: number): boolean {
-  // Look at the next ~80 chars after the negation to see whether the
-  // sentence continues with a contrastive continuation. If it does, the
-  // negation is a clarification, not an imperative heading.
   const tail = source.slice(offset, offset + 120);
-  if (NEGATION_CONTINUATION_ZH.test(tail) || NEGATION_CONTINUATION_EN.test(tail)) {
-    return true;
-  }
-  // If the negation sits inside a heading tag, do NOT auto-accept; the
-  // original reason (heading-first negative imperative) still applies.
+  if (NEGATION_CONTINUATION_ZH.test(tail) || NEGATION_CONTINUATION_EN.test(tail)) return true;
   const head = source.slice(Math.max(0, offset - 80), offset);
   return !HEADING_TAG_RE.test(head);
 }
@@ -186,16 +170,16 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   const hero = 'src/components/research/SeedOpenEvoMissionHero.astro';
   requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.phase', 'The research hero must expose a dated default-branch snapshot instead of freezing one live phase.');
-  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'actual branch → campaign → reconciliation', 'The research hero must route readers to branch-aware live state.');
-  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'preregistration + authorized UUIDs', 'The research hero must separate GPU use from static inventory/allocation copy.');
+  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'working branch → experiment ledger (campaign) → reconciliation', 'The research hero must route readers to branch-aware live state in plain language with technical terms attached.');
+  requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.gpuAllocationAllowed', 'The research hero must delegate GPU permission to the dated scientific-state owner rather than static inventory copy.');
   ban(hero, 'COPY-STATE-PROVENANCE-002', '当前实验分配', 'The research hero must not hard-code a moving GPU allocation as live truth.');
   ban(hero, 'COPY-STATE-PROVENANCE-002', 'Current allocation', 'The research hero must not hard-code a moving GPU allocation as live truth.');
 
   const state = 'src/lib/openEvoScientificState.ts';
-  for (const required of ["checkedAt: '2026-08-18'", "phase: 'H1.27'", "status: 'completed-descriptive-only'", 'active scientific branch may be ahead']) requireText(state, 'COPY-STATE-PROVENANCE-005', required, 'The dated default-main snapshot must remain explicit in the dedicated state owner.');
+  for (const required of ["checkedAt: '2026-08-28'", "phase: 'WB1-TRACKB-CONTINUATION'", "status: 'trackb-gen28-state-v28-adopted-final-locked-no-training'", 'gpuAllocationAllowed: false', 'active scientific branch may be ahead']) requireText(state, 'COPY-STATE-PROVENANCE-005', required, 'The latest dated default-main snapshot and its authorization boundary must remain explicit in the dedicated state owner.');
 
   const program = 'src/components/research/OpenEvoExperimentProgram.astro';
-  for (const required of ['历史证据 · Phase G · completed', '默认 main 快照', 'openEvoScientificState.defaultBranchSnapshot.phase', 'current-campaign.json', 'actual branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
+  for (const required of ['历史证据 · Phase G · 已完成', 'const snapshot = openEvoScientificState.defaultBranchSnapshot', 'current-campaign.json', 'working branch', 'reconciliation / result']) requireText(program, 'COPY-STATUS-002', required, 'Experiment pages must preserve history while routing live scientific state through provenance.');
   ban(program, 'COPY-STATUS-003', 'formal_task_consumption_allowed = false', 'The old pre-Phase-G state must not return as current status.');
   ban(program, 'COPY-STATE-PROVENANCE-003', '当前实验分配：5× RTX 5090', 'A historical allocation must not return as undated live state.');
   ban(program, 'COPY-STATE-PROVENANCE-003', 'Current experiment allocation: 5× RTX 5090', 'A historical allocation must not return as undated live state.');

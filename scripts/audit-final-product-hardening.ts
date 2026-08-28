@@ -14,8 +14,8 @@ const assert = (id: string, condition: boolean, detail: string) => {
 
 const families = json<{ families: Array<{ id: string; current_generation: string; current_flagship_model_id?: string; current_open_weight_model_id?: string; current_api_model_ids?: string[] }> }>('src/content/coverage/families.json').families;
 const qwen = families.find((family) => family.id === 'qwen');
-assert('HARDEN-DATA-001', Boolean(qwen && qwen.current_generation === 'Qwen3.7'), 'Qwen current generation is Qwen3.7');
-assert('HARDEN-DATA-002', Boolean(qwen && qwen.current_flagship_model_id === 'qwen3-7-max' && qwen.current_open_weight_model_id === 'qwen3-6-35b-a3b'), 'hosted/API and open-weight current Qwen surfaces are distinct');
+assert('HARDEN-DATA-001', Boolean(qwen && qwen.current_generation === 'Qwen3.7'), 'the last fully checked Qwen family snapshot remains Qwen3.7 until a full family refresh');
+assert('HARDEN-DATA-002', Boolean(qwen && qwen.current_flagship_model_id === 'qwen3-7-max' && qwen.current_open_weight_model_id === 'qwen3-6-35b-a3b'), 'the checked hosted/API and open-weight Qwen surfaces remain distinct');
 
 const qwenMax = modelSchema.parse(json('src/content/models/qwen3-7-max.json'));
 const qwenPlus = modelSchema.parse(json('src/content/models/qwen3-7-plus.json'));
@@ -58,13 +58,14 @@ assert(
     && missionHero.includes("title:'ALFWorld / WebShop'")
     && missionHero.includes("t('研究结果','Research findings')")
     && missionHero.includes('openEvoScientificState.defaultBranchSnapshot.phase')
-    && missionHero.includes('actual branch → campaign → reconciliation')
-    && missionHero.includes('preregistration + authorized UUIDs')
-    && scienceState.includes("phase: 'H1.27'")
-    && scienceState.includes("checkedAt: '2026-08-18'")
+    && missionHero.includes('working branch → experiment ledger (campaign) → reconciliation')
+    && missionHero.includes('openEvoScientificState.defaultBranchSnapshot.gpuAllocationAllowed')
+    && scienceState.includes("phase: 'WB1-TRACKB-CONTINUATION'")
+    && scienceState.includes("checkedAt: '2026-08-28'")
+    && scienceState.includes('gpuAllocationAllowed: false')
     && !missionHero.includes('当前实验分配')
     && !missionHero.includes('Current allocation'),
-  'the first screen names the research subject and routes moving scientific state through dated provenance instead of freezing one phase/allocation',
+  'the first screen names the research subject and routes moving scientific state through the latest dated provenance instead of freezing one phase/allocation',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const intentIndex = home.indexOf('intent-grid');
@@ -80,7 +81,10 @@ const memo = read('src/components/workspace/DecisionMemo.tsx');
 assert('HARDEN-MEMO-001', memo.includes('memo-readable') && memo.includes('memo-source-preview') && memo.includes('View exported Markdown source'), 'Decision Memo renders a human-readable primary view and keeps Markdown secondary');
 
 const dataStatus = read('src/pages/_bodies/data-status.astro');
-assert('HARDEN-DATA-STATUS-001', dataStatus.includes('托管 / API 当前模型') && dataStatus.includes('开放权重当前模型') && dataStatus.includes('const apiPresent = apiCurrent ? models.some'), 'Data Status separates current surfaces and verifies the displayed API model directly');
+assert('HARDEN-DATA-STATUS-001', dataStatus.includes('核验时的托管 / API 模型') && dataStatus.includes('核验时的开放权重模型') && dataStatus.includes('const apiPresent = apiCurrent ? models.some') && dataStatus.includes('familyStale'), 'Data Status treats family rows as dated checked snapshots and marks stale records instead of presenting them as live current state');
+
+const catalogFreshness = read('src/components/catalog/CatalogFreshnessNotice.astro');
+assert('HARDEN-FRESHNESS-002', catalogFreshness.includes('Qwen 3.8 Max') && catalogFreshness.includes('Gemini 3.7 Flash') && catalogFreshness.includes('Grok 4.6') && catalogFreshness.includes('不是模型发布日期') && catalogFreshness.includes('does not by itself establish'), 'post-snapshot first-party model evidence is visible with explicit claim boundaries and no invented release dates/flagship state');
 
 const landscape = read('src/components/landscape/LandscapePrototype.tsx');
 assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>('learning')") && landscape.includes('仅显示论文采用模型') && landscape.includes('AccessibleLandscapeTable'), 'Landscape defaults to a low-cognitive-load learning view with paper filtering and an accessible table');

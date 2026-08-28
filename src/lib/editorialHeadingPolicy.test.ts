@@ -61,12 +61,12 @@ describe('sitewide editorial heading policy', () => {
   });
 
   it('makes historical hardware, live lab visibility, and branch-aware experiment state explicit', () => {
-    expect(joined).toContain('RTX6（4×RTX 3090）');
+    expect(joined).toContain('RTX6（4×RTX3090）');
     expect(joined).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(joined).toContain('历史记录：5×RTX5090 allocation');
     expect(joined).toContain('Phase G');
-    expect(state).toContain("phase: 'H1.27'");
-    expect(state).toContain("checkedAt: '2026-08-18'");
+    expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
+    expect(state).toContain("checkedAt: '2026-08-28'");
     expect(joined).toContain('current-campaign');
     expect(joined).toContain('reconciliation');
     expect(joined).not.toContain('formal_task_consumption_allowed = false');

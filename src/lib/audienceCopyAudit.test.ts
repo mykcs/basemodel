@@ -58,7 +58,8 @@ describe('audience copy audit', () => {
     expect(enGuide).toContain('current-campaign.json');
     expect(zhGuide).toContain('默认分支快照');
     expect(enGuide).toContain('default-branch snapshot');
-    expect(state).toContain("phase: 'H1.27'");
+    expect(state).toContain("checkedAt: '2026-08-28'");
+    expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
     expect(state).toContain('active scientific branch may be ahead');
     expect(zhGuide).not.toContain('当前实验分配为 <strong>5×RTX5090</strong>');
     expect(enGuide).not.toContain('current allocation of <strong>5×RTX5090</strong>');
