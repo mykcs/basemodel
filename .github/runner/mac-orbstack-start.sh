@@ -13,11 +13,13 @@ fi
 
 orbctl start >/dev/null
 
-docker build \
-  --build-arg RUNNER_VERSION=2.337.0 \
-  -t "$image" \
-  -f "$repo_root/.github/runner/Dockerfile" \
-  "$repo_root/.github/runner"
+if ! docker image inspect "$image" >/dev/null 2>&1; then
+  docker build \
+    --build-arg RUNNER_VERSION=2.337.0 \
+    -t "$image" \
+    -f "$repo_root/.github/runner/Dockerfile" \
+    "$repo_root/.github/runner"
+fi
 
 if ! docker container inspect "$container" >/dev/null 2>&1; then
   docker create \
