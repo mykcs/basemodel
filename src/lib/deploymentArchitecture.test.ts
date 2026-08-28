@@ -33,6 +33,7 @@ describe('Vercel production deployment architecture', () => {
     expect(selfHostedWorkflow).toContain('needs_validation=true');
     expect(selfHostedWorkflow).toContain('runner/');
     expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(selfHostedWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
     expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
     expect(runnerStart).toContain("grep -q 'AC Power'");

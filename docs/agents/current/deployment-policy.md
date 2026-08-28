@@ -58,6 +58,8 @@ The zero-extra-cost runner is packaged under `.github/runner/` and runs inside O
 
 The current runner image is arm64 Linux on Apple Silicon. This is acceptable for the present suite because the Chromium screenshot-signature case captures a signature into the build artifact rather than comparing against a committed x86 pixel baseline. If future tests introduce platform-pinned pixel baselines, keep those tests on one declared baseline platform instead of silently mixing architectures.
 
+The container is persistent between manual start/stop cycles, so npm and Playwright caches stay local to the isolated runner. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
+
 ### Cloudflare post-deploy smoke
 
 Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`. `/healthz` only proves the Worker is alive; `/check` is intentionally locked unless `SMOKE_TOKEN` is configured as a Cloudflare secret. The scheduled smoke does not require that secret.
