@@ -1,7 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
-const BUILD_RELEVANT_PREFIXES = ['src/', 'public/', 'scripts/', 'tests/'];
+const BUILD_RELEVANT_PREFIXES = ['src/', 'public/', 'scripts/'];
+const NON_DEPLOY_TEST_FILE = /(?:^|\/)[^/]+\.(?:test|spec)\.[cm]?[jt]sx?$/;
 const BUILD_RELEVANT_FILES = new Set([
   '.node-version',
   'package-lock.json',
@@ -21,6 +22,7 @@ export function previewBuildOptedIn(env, commitMessage) {
 }
 
 export function isBuildRelevantPath(filePath) {
+  if (filePath.startsWith('tests/') || NON_DEPLOY_TEST_FILE.test(filePath)) return false;
   return (
     BUILD_RELEVANT_PREFIXES.some((prefix) => filePath.startsWith(prefix)) ||
     BUILD_RELEVANT_FILES.has(filePath) ||

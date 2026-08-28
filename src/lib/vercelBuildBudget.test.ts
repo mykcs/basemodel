@@ -33,12 +33,11 @@ describe('Vercel build-budget contract', () => {
     expect(previewBuildOptedIn({ VERCEL_ENV: 'production' }, 'fix: release')).toBe(true);
   });
 
-  it('builds for deploy-relevant source, tests and configuration', () => {
+  it('builds for deploy-relevant source and configuration', () => {
     for (const filePath of [
       'src/pages/index.astro',
       'public/favicon.svg',
       'scripts/audit.ts',
-      'tests/e2e/home.spec.ts',
       'package.json',
       'package-lock.json',
       'astro.config.mjs',
@@ -64,6 +63,10 @@ describe('Vercel build-budget contract', () => {
       expect(isBuildRelevantPath(filePath), filePath).toBe(false);
     }
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md'])).toBe(false);
+    expect(isBuildRelevantPath('src/lib/deploymentArchitecture.test.ts')).toBe(false);
+    expect(isBuildRelevantPath('src/components/example.spec.tsx')).toBe(false);
+    expect(isBuildRelevantPath('tests/e2e/home.spec.ts')).toBe(false);
+    expect(shouldBuildForFiles(['.github/runner/Dockerfile', 'src/lib/deploymentArchitecture.test.ts'])).toBe(false);
     expect(shouldBuildForFiles(['README.md', 'src/pages/index.astro'])).toBe(true);
   });
 
