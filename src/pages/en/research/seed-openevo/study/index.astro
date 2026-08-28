@@ -2,6 +2,7 @@
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentGateway from '../../../../../components/research/OpenEvoExperimentGateway.astro';
 import OpenEvoFairComparisonExplainer from '../../../../../components/research/OpenEvoFairComparisonExplainer.astro';
+import SeedOpenEvoTrainingDecisionLab from '../../../../../components/research/SeedOpenEvoTrainingDecisionLab.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
@@ -15,10 +16,7 @@ const locale = 'en' as const;
     <p><b>Completed:</b> source-faithful Track A already measured BASE vs frozen OpenEvo on the fixed 128-task manifest; that result and its interpretation remain unchanged.</p>
     <p><b>Next experiment:</b> this page defines a long-horizon fair comparison that starts from the same Qwen checkpoint and matches SEED's nominal 21,920 environment rollouts. It does not rerun Track A and does not claim that the SEED paper-final checkpoint or paper-reported numbers have already been reproduced.</p>
   </section>
-  <aside class="design-bridge" aria-labelledby="design-bridge-title">
-    <div><span>TRAINING DESIGN</span><h2 id="design-bridge-title">Choose the claim before choosing Stage 1</h2><p>Harnesses, temperature, external trajectory analyzers, OPSD, bootstrap, and rollout budgets answer different scientific questions. The training design lab puts these branches and failure lessons into one inspectable research map.</p></div>
-    <a class="button button-secondary" href="/en/research/seed-openevo/study/design/">Open training design lab →</a>
-  </aside>
+  <SeedOpenEvoTrainingDecisionLab locale={locale} />
   <OpenEvoFairComparisonExplainer locale={locale} />
 </AppLayout>
 
@@ -27,10 +25,4 @@ const locale = 'en' as const;
   .comparison-scope strong{display:block;color:var(--accent-deep);font-size:.78rem}
   .comparison-scope p{margin:.45rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}
   .comparison-scope b{color:inherit}
-  .design-bridge{display:flex;width:min(1120px,calc(100% - 2rem));margin:1rem auto 0;padding:1rem 1.1rem;align-items:center;justify-content:space-between;gap:1rem;border-block:1px solid var(--line)}
-  .design-bridge span{color:var(--accent-deep);font:800 .62rem/1.2 var(--font-mono)}
-  .design-bridge h2{margin:.2rem 0 .35rem;font-size:1rem}
-  .design-bridge p{max-width:72ch;margin:0;color:var(--muted);font-size:.74rem;line-height:1.55}
-  .design-bridge>a{flex:0 0 auto}
-  @media(max-width:720px){.design-bridge{align-items:flex-start;flex-direction:column}.design-bridge>a{width:100%;text-align:center}}
 </style>

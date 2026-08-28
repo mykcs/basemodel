@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const routes = [
+  '/research/seed-openevo/study/',
   '/research/seed-openevo/study/design/',
+  '/en/research/seed-openevo/study/',
   '/en/research/seed-openevo/study/design/',
 ] as const;
 
@@ -58,7 +60,7 @@ for (const route of routes) {
 }
 
 test('training design lab remains legible in dark theme and reduced motion', async ({ page }) => {
-  const route = '/research/seed-openevo/study/design/';
+  const route = '/research/seed-openevo/study/';
   test.skip(!routeInScope(route), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -75,4 +77,16 @@ test('training design lab remains legible in dark theme and reduced motion', asy
   });
   expect(colors.color).not.toBe('rgb(24, 32, 31)');
   expect(colors.background).not.toBe('rgb(247, 243, 235)');
+});
+
+test('first visit defaults to light even when the operating system prefers dark', async ({ page }) => {
+  const route = '/research/seed-openevo/study/';
+  test.skip(!routeInScope(route), 'outside hosted focused route scope');
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
+
+  await page.evaluate(() => localStorage.setItem('atlas-theme', 'dark'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
 });
