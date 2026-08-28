@@ -13,6 +13,7 @@ import type { AtlasModel, AtlasPaper } from '../../lib/types';
 import ModelDetailTools from '../../components/models/detail/ModelDetailTools';
 import ModelAlternatives from '../../components/models/detail/ModelAlternatives.astro';
 import SemanticStatusLegend from '../../components/common/SemanticStatusLegend.astro';
+import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 
 interface Props { model: AtlasModel; models?: AtlasModel[]; papers: AtlasPaper[]; locale?: Locale }
 const { model, models = [model], papers } = Astro.props;
@@ -54,6 +55,7 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
     <p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
     <ModelDetailTools client:load model={model} locale={locale} />
     <ModelDetailNav locale={locale} />
+    <CatalogFreshnessNotice locale={locale} compact={true} />
 
     <div id="research-summary">
       <ModelResearchSummary model={model} papers={papers} locale={locale} />

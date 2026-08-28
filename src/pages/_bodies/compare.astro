@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ModelComparison from '../../components/ModelComparison';
+import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 import { licenseLabel } from '../../lib/format';
 import { getMessages, isLocale, type Locale } from '../../i18n';
 
@@ -14,4 +15,8 @@ const displayModels = models.map((model) => ({
   openness: { ...model.openness, license_name: licenseLabel(model.openness.license_name, locale) },
 }));
 ---
-<div class="shell"><header class="page-header"><h1>{m.compare.title}</h1><p class="lede">{m.compare.lede}</p></header><ModelComparison client:load models={displayModels} papers={papers} locale={locale} /></div>
+<div class="shell">
+  <header class="page-header"><h1>{m.compare.title}</h1><p class="lede">{m.compare.lede}</p></header>
+  <CatalogFreshnessNotice locale={locale} compact={true} />
+  <ModelComparison client:load models={displayModels} papers={papers} locale={locale} />
+</div>

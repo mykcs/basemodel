@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import LandscapePrototype from '../../components/landscape/LandscapePrototype';
+import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 import { getMessages, type Locale } from '../../i18n';
 import familiesData from '../../content/coverage/families.json';
 
@@ -17,8 +18,10 @@ const openWeightCount = models.filter((model) => model.openness.weights_availabl
 <div class="shell">
   <header class="page-header"><div class="section-kicker">{m.landscape.kicker}</div><h1>{m.landscape.prototypeTitle}</h1><p class="lede">{m.landscape.prototypeLede}</p></header>
 
+  <CatalogFreshnessNotice locale={locale} compact={true} />
+
   <section class="section section-first landscape-overview" aria-labelledby="catalog-overview-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '目录规模' : 'Catalog size'}</div><h2 id="catalog-overview-title">{locale === 'zh' ? '模型目录' : 'Model catalog'}</h2><p class="muted">{locale === 'zh' ? '这里承接原首页的模型目录摘要；下面的 Landscape 使用同一份模型数据进行交互探索。' : 'This section now holds the catalog summary previously shown on the homepage; the Landscape below explores the same model dataset interactively.'}</p></div></div>
+    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '目录规模' : 'Catalog size'}</div><h2 id="catalog-overview-title">{locale === 'zh' ? '模型目录' : 'Model catalog'}</h2><p class="muted">{locale === 'zh' ? '同一份站内模型数据按家族、发布时间、开放权重和论文使用情况聚合。下面的数字只表示这个目录收录了多少记录，不代表厂商实时市场份额或今天的完整模型总数。' : 'The same catalog data is grouped by family, release date, open-weight status, and paper usage. These counts describe records in this site; they are not live market share or a complete count of every model available today.'}</p></div></div>
     <div class="stats overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{locale === 'zh' ? '模型记录' : 'Models'}</span></div><div class="stat"><strong>{familyCount}</strong><span>{locale === 'zh' ? '模型家族' : 'Families'}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{locale === 'zh' ? '开放权重' : 'Open weights'}</span></div></div>
   </section>
 

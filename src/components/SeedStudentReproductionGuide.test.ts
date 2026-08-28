@@ -27,11 +27,12 @@ describe('SEED student reproduction mainline', () => {
     for (const token of ['Agent 运行与训练','Agent 运行循环','Agent 训练循环','Policy','Action','Trajectory','Reward','Advantage','GRPO','hindsight skill','OPD']) expect(bridge).toContain(token);
   });
 
-  it('keeps RTX6 historical and routes moving experiment state through dated provenance', () => {
+  it('keeps RTX6 historical and routes moving experiment state through the latest dated provenance', () => {
     for (const token of ['openevo-experiment','RTX6（4×RTX3090）','current-campaign.json','默认分支快照']) expect(zhPage).toContain(token);
     for (const token of ['openevo-experiment','RTX6 (4×RTX3090)','current-campaign.json','default-branch snapshot']) expect(enPage).toContain(token);
-    expect(state).toContain("phase: 'H1.27'");
-    expect(state).toContain("checkedAt: '2026-08-18'");
+    expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
+    expect(state).toContain("checkedAt: '2026-08-28'");
+    expect(state).toContain('latestCompletedGeneration: 28');
     expect(state).toContain('active scientific branch may be ahead');
     expect(zhPage).not.toContain('当前实验分配为 <strong>5×RTX5090</strong>');
     expect(enPage).not.toContain('current allocation of <strong>5×RTX5090</strong>');

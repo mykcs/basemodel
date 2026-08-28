@@ -27,13 +27,16 @@ const currentFacing = [
 const joined = currentFacing.map(({ source }) => source).join('\n');
 
 describe('OpenEvo scientific-state provenance', () => {
-  it('pins a dated default-main snapshot to the source commit that was actually checked', () => {
-    expect(state).toContain("checkedAt: '2026-08-18'");
-    expect(state).toContain("checkedSourceCommit: 'f3124a16160f767e32e8663b099a102104b975f8'");
+  it('pins the current dated default-main snapshot to the source commit that was actually checked', () => {
+    expect(state).toContain("checkedAt: '2026-08-28'");
+    expect(state).toContain("checkedSourceCommit: '04c0faf02af6f0fcb0724aff3c5697b0c858e9e4'");
     expect(state).toContain("branch: 'main'");
-    expect(state).toContain("phase: 'H1.27'");
-    expect(state).toContain("status: 'completed-descriptive-only'");
-    expect(state).toContain("classification: 'scale-only-not-supported-or-task-local'");
+    expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
+    expect(state).toContain("status: 'trackb-gen28-state-v28-adopted-final-locked-no-training'");
+    expect(state).toContain("classification: 'GEN28_STATE_V28_BARRIER_PASS_ADOPTED'");
+    expect(state).toContain('validCompletedTrainingEpisodes: 3584');
+    expect(state).toContain('latestCompletedGeneration: 28');
+    expect(state).toContain('latestNativeStateVersion: 28');
   });
 
   it('requires branch-aware campaign and reconciliation routing for live claims', () => {
@@ -42,7 +45,7 @@ describe('OpenEvo scientific-state provenance', () => {
     expect(state).toContain('reconciliation/result');
     expect(joined).toContain('current-campaign');
     expect(joined).toContain('reconciliation');
-    expect(joined).toContain('actual branch');
+    expect(joined).toContain('working branch');
   });
 
   it('does not let current-facing or reusable surfaces freeze the old H0 / 5-GPU state as live truth', () => {
@@ -65,8 +68,9 @@ describe('OpenEvo scientific-state provenance', () => {
   it('keeps GPU inventory, allocation, authorization, and idle capacity separate', () => {
     expect(state).toContain('GPU allocation is not a static-site fact');
     expect(state).toContain('preregistration');
-    expect(state).toContain('explicitly authorized UUIDs');
-    expect(state).toContain('live-idle checks');
+    expect(state).toContain('authorized GPU UUIDs');
+    expect(state).toContain('live-idle check');
+    expect(state).toContain('gpuAllocationAllowed: false');
     const lab = read('src/pages/lab.astro');
     expect(lab).toContain('8×RTX5090 visible · allocation policy unknown');
     expect(lab).toContain('历史记录：5×RTX5090 allocation');

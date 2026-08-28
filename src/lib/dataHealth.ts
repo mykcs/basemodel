@@ -133,6 +133,19 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
   const familyCoverage = families.map((family) => {
     const owned = models.filter((model) => vendorIdFor(model) === family.vendor_id && model.family.toLowerCase() === family.name.toLowerCase());
     const modelIds = owned.map((model) => model.id);
+    const vendor = byVendor.get(family.vendor_id);
+    const familyCheckedAt = family.catalog_checked_at ?? family.current_claim?.checked_at ?? family.as_of;
+    if (familyCheckedAt && ageDays(familyCheckedAt, now) > (vendor?.refresh_days ?? 30)) {
+      issues.push({
+        modelId: family.id,
+        recordType: 'family',
+        severity: 'warning',
+        reason: 'stale-source',
+        field: 'current_claim',
+        sourceUrl: family.current_claim?.source_url ?? family.official_catalog_urls?.[0],
+        checkedAt: familyCheckedAt,
+      });
+    }
     const flagshipPresent = Boolean(family.current_flagship_model_id && models.some((model) => model.id === family.current_flagship_model_id && vendorIdFor(model) === family.vendor_id));
     const openWeightPresent = Boolean(family.current_open_weight_model_id && models.some((model) => model.id === family.current_open_weight_model_id && vendorIdFor(model) === family.vendor_id));
     if (!family.current_flagship_model_id) issues.push({ modelId: family.id, recordType: 'family', severity: 'warning', reason: 'unverified-current-flagship', field: 'current_flagship_model_id' });
@@ -152,7 +165,7 @@ export function buildDataHealth(models: AtlasModel[], vendors: VendorCoverage[],
   return {
     totalModels: models.length,
     recentModels: models.filter((model) => { const checked = latestCheckedAt(model); return checked ? ageDays(checked, now) <= 30 : false; }).length,
-    staleModels: new Set(issues.filter((issue) => issue.reason === 'stale-source').map((issue) => issue.modelId)).size,
+    staleModels: new Set(issues.filter((issue) => issue.reason === 'stale-source' && issue.recordType !== 'family').map((issue) => issue.modelId)).size,
     partialOrUnknown: models.filter((model) => model.data_status === 'partial' || model.data_status === 'unknown').length,
     verified: models.filter((model) => model.data_status === 'verified').length,
     semanticGaps,
