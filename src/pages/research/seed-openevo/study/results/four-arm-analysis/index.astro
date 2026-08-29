@@ -1,7 +1,9 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoExperimentResultsScaffold from '../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="3B / 7B × self / MiniMax 四组联合分析方案" description="基于服务器实际状态比较 Qwen2.5 3B/7B self arms 与 MiniMax post-hoc-analyzer treatments，规划 treatment boundary、模型规模、Stage-2 gate、机制链和 SEED 对照边界。" locale="zh">
+<AppLayout title="3B / 7B × self / MiniMax 四组联合结果与分析" description="提前固定四组结果矩阵、六个组间比较、paired-task 回填规则与机制链；未完成结果保持 Pending，并保留原联合分析方案作为深度层。" locale="zh">
+  <OpenEvoExperimentResultsScaffold locale="zh" mode="cross-arm" />
   <OpenEvoExperimentAnalysisPlan locale="zh" mode="four-arm" />
 </AppLayout>

@@ -1,7 +1,9 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoExperimentResultsScaffold from '../../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="3B / 7B × self / MiniMax four-arm analysis plan" description="A server-grounded comparison plan for Qwen2.5 3B/7B self arms and MiniMax post-hoc-analyzer treatments, with treatment-boundary, scale, gate, mechanism, and SEED comparison rules." locale="en">
+<AppLayout title="3B / 7B × self / MiniMax four-arm results and analysis" description="Pre-builds the four-arm result matrix, six cross-arm comparisons, paired-task fill-in rules, and mechanism chain; unfinished values remain Pending while the original joint analysis plan stays as a deeper layer." locale="en">
+  <OpenEvoExperimentResultsScaffold locale="en" mode="cross-arm" />
   <OpenEvoExperimentAnalysisPlan locale="en" mode="four-arm" />
 </AppLayout>
