@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-29**
+Last reviewed: **2026-08-30**
 
 ## Authority
 
@@ -54,11 +54,17 @@ The old `scripts/vercel-ui-gate.mjs` and `scripts/vercel-lab-browser-gate.mjs` r
 
 ### Mac runner lifecycle
 
-The zero-extra-cost runner is packaged under `.github/runner/` and runs inside OrbStack's Docker engine rather than directly in the daily macOS user session. The container has **no host mounts and no Docker socket**, is capped at 4 CPU / 8 GB RAM / 1 GB shared memory, and the GitHub workflow itself keeps Playwright at one worker. `.github/runner/mac-orbstack-start.sh` refuses to start while the Mac is on battery power; `.github/runner/mac-orbstack-stop.sh` takes the runner offline when CI is not needed.
+The zero-extra-cost runner is packaged under `.github/runner/` and runs inside OrbStack's Docker engine rather than directly in the daily macOS user session. The container has **no host mounts, no Docker socket, no published ports and no Linux capabilities**. It is capped at 4 CPU / 4 GB RAM / 4 GB additional swap / 1 GB shared memory / 1,024 processes, uses `no-new-privileges`, and limits Docker logs to five 20 MB files. The GitHub workflow itself keeps Playwright at one worker.
+
+A user-level LaunchAgent installed by `.github/runner/mac-orbstack-install-launch-agent.sh` is the only automatic lifecycle owner; Docker restart policy remains `no`. It checks once per minute, starts or repairs the runner only on AC power, stops it within a bounded grace period when AC power is unavailable, and backs off for 15 minutes after a failed repair to avoid retry churn. It writes events to the macOS unified log instead of unbounded files and only warns on low disk space; it never prunes Docker globally or changes `pmset` preferences. Manual stop persists a disabled state until the start script is run explicitly.
+
+Runner replacement is fail-closed: GitHub availability and `busy=false` must be proven before a container is stopped, image and runtime-contract drift are reconciled, and failed candidates are renamed for inspection rather than deleted. Initial migration uses a separate `basemodel-macbook-container-v2` registration, so the stopped legacy container remains a real rollback path. Keep the old container, image and registration for at least 72 hours and three successful full CI canaries; removal is a separate irreversible maintenance decision.
 
 The current runner image is arm64 Linux on Apple Silicon. This is acceptable for the present suite because the Chromium screenshot-signature case captures a signature into the build artifact rather than comparing against a committed x86 pixel baseline. If future tests introduce platform-pinned pixel baselines, keep those tests on one declared baseline platform instead of silently mixing architectures.
 
-The container is persistent between manual start/stop cycles, so npm and Playwright caches stay local to the isolated runner. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
+The container is persistent between start/stop cycles, so npm and Playwright caches stay local to the isolated runner. A bounded hook cleans only the repository workspace before and after each job; it preserves those dependency/browser caches and refuses paths outside the runner work root. Cleaning on both boundaries also covers residue from a prior abrupt interruption. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
+
+The Docker base image, downloaded GitHub runner archive and every GitHub-authored workflow action are pinned to immutable digests. Manual `workflow_dispatch` always runs the full deterministic/build/browser path and is the supported canary mechanism. Use `.github/runner/mac-orbstack-doctor.sh` to inspect power, disk, container isolation/limits, memory peak/OOM events, GitHub online/busy state, installed runner version and LaunchAgent state.
 
 `main` branch protection requires the `basemodel-self-hosted` status check with strict up-to-date semantics. Force-push and branch deletion are disabled. Administrator enforcement is intentionally left off as the emergency recovery path if the on-demand runner itself becomes unavailable. A docs/governance-only PR still needs the runner online long enough to classify the diff, but exits before Node/npm installation or browser work.
 

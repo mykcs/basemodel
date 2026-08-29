@@ -1,6 +1,6 @@
 # Hosting architecture — self-hosted CI + Vercel + Cloudflare smoke
 
-Last reviewed: **2026-08-28**
+Last reviewed: **2026-08-30**
 
 Status: **current release architecture. Vercel remains the only ordinary deployment provider; GitHub self-hosted Actions supplies pre-merge CI and Cloudflare supplies post-deploy smoke only.**
 
@@ -24,6 +24,8 @@ Cloudflare production-smoke Worker
 ```
 
 Astro, React and GitHub do not change. This is provider-ownership consolidation, not an application-stack rewrite.
+
+The self-hosted executor is the repository-scoped `basemodel-ci` runner inside a no-mount/no-socket OrbStack container on the Mac. A user LaunchAgent owns AC-only lifecycle reconciliation; GitHub `busy=false` gates replacement, and the previous runner remains stopped but recoverable through the 72-hour/three-canary observation window. The executable safety contract is owned by `.github/runner/`, `.github/workflows/self-hosted-ci.yml` and `current/deployment-policy.md`.
 
 ## Vercel contract
 
