@@ -1,4 +1,6 @@
 ---
+import ResearchTechnicalDisclosure from './ResearchTechnicalDisclosure.astro';
+
 export type WebShopTrainingNoteId = 'webshop-training' | 'seed-training' | 'openevo-training';
 
 interface Props {
@@ -74,11 +76,17 @@ terminal reward + task score`}</code></pre>
       <section>
         <h2>2. 最早的思路：先模仿人，再让策略在环境里继续学</h2>
         <p>原始官方代码把搜索和商品选择拆开。Search IL 学人类怎样组织搜索词，Choice IL 学人类在当前页面点击什么，Choice RL 再让选择策略根据环境 reward 更新。</p>
-        <pre><code>{`# 原始 WebShop baseline_models/README.md
+        <ResearchTechnicalDisclosure
+          eyebrow="REPRODUCTION · ORIGINAL BASELINE"
+          summary="复现细节：原始 WebShop baseline 的训练命令"
+          description="这组命令用于照着原始仓库运行；理解 IL → RL 的科学脉络不需要先执行它们。"
+        >
+          <pre><code>{`# 原始 WebShop baseline_models/README.md
 python train_search.py   # Search imitation learning
 python train_choice.py   # Choice imitation learning
 python train_rl.py       # Choice reinforcement learning
 python test.py`}</code></pre>
+        </ResearchTechnicalDisclosure>
         <p>这是 WebShop 最早很典型的范式：<strong>demonstration → imitation → environment reward</strong>。它与今天的大语言模型 agent 不完全一样，但已经包含了“先获得行为先验，再通过真实交互改进”的基本结构。</p>
       </section>
 

@@ -4,9 +4,10 @@ For any user-facing research result, experiment narrative, benchmark interpretat
 
 - `../../../docs/agents/current/reader-first-copy-hierarchy.md`
 - `../../../docs/agents/current/research-editorial-style.md`
+- `../../../docs/agents/current/research-site-presentation-contract.md`
 - `../../../docs/agents/current/human-thinking-web-expression-contract.md`
 
-The reader-first hierarchy and research editorial style are mandatory.
+The reader-first hierarchy, research editorial style, and research-site presentation contract are mandatory.
 
 For visible research copy:
 
