@@ -356,6 +356,7 @@ This file owns the durable **expression and information-architecture invariant**
 Related owners:
 
 - `sitewide-visual-knowledge-architecture.md` — current whole-site route and page-density design;
+- `research-site-presentation-contract.md` — research-publication purpose, reader-facing depth, and the code/operations progressive-disclosure rule;
 - `reproduction-guide-design-principles.md` — execution-first reproduction-page specialization;
 - `actionable-content-ux.md` — local copy/open/download/share actions;
 - `theme-contrast-contract.md` — semantic light/dark color pairs;
