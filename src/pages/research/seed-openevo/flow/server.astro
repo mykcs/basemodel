@@ -1,0 +1,17 @@
+---
+import AppLayout from '../../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchNav from '../../../../components/research/SeedOpenEvoResearchNav.astro';
+import Lyg2171ServerOverview from '../../../../components/research/Lyg2171ServerOverview.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="LYG.2171 服务器：硬件能力与当前资源压力" description="介绍 LYG.2171 实验服务器的 CPU、内存、8×RTX 5090、GPU 代际与 CUDA 核，以及当前主文件系统容量、我们的占用、匿名汇总的其他人占用和剩余空间。" locale={locale}>
+  <div class="server-route">
+    <SeedOpenEvoResearchNav locale={locale} page="server" />
+    <Lyg2171ServerOverview locale={locale} />
+  </div>
+</AppLayout>
+
+<style>
+  .server-route{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  @media(max-width:720px){.server-route{width:min(100% - 1rem,1160px);margin-top:.6rem}}
+</style>
