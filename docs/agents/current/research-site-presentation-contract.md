@@ -108,6 +108,7 @@ For any API credential or secret workflow:
 - verify shape/permissions without printing secret contents;
 - do not recommend `cat` on a secret file as a verification step;
 - keep endpoint/model/config facts separate from the secret itself.
+- keep public examples non-identifying: use `$HOME` or another generic local variable instead of a real username, home path, hostname, or private account identifier.
 
 A public page may explain **how** a secret is provisioned while the secret value remains absent from the page, repository, logs, and chat.
 
@@ -258,3 +259,5 @@ It complements rather than replaces:
 - `ui-change-visual-acceptance-gate.md` — browser-level acceptance.
 
 When this contract conflicts with executable scientific truth or a more specific current evidence policy, preserve the scientific truth and update the stale presentation rule rather than hiding or rewriting the evidence.
+
+Historical implementation case: [`../history/2026-08-30-research-publication-depth-and-secret-disclosure-retrospective.md`](../history/2026-08-30-research-publication-depth-and-secret-disclosure-retrospective.md) records the MiniMax secret-disclosure rollout, sitewide command-depth audit, exact-head release workflow, protected-Preview boundary, Production smoke-test failure, and reusable Agent friction that led to this contract. It is evidence and rationale, not current authority.

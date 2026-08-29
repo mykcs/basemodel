@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 const route = '/research/seed-openevo/study/minimax-teacher/';
 const summaryText = '复现细节：把 MiniMax API key 安全写入实验服务器';
-const secretPath = '/data/home/wangr/.secrets/openevo/minimax-teacher.env';
+const secretPath = '$HOME/.secrets/openevo/minimax-teacher.env';
 
 async function setTheme(page: Page, theme: 'light' | 'dark') {
   await page.addInitScript((value: 'light' | 'dark') => localStorage.setItem('atlas-theme', value), theme);
@@ -36,9 +36,12 @@ for (const viewport of [
       await expect(command).toBeVisible();
       await expect(details).toContainText(secretPath);
       await expect(details).toContainText('OPENAI_API_KEY=');
-      await expect(details).toContainText('600 wangr:wangr');
+      await expect(details).toContainText('600');
+      await expect(details).toContainText('当前实验账户所有');
       await expect(details).toContainText('不用 cat');
       await expect(details.getByRole('button', { name: '复制这段内容: cat' })).toHaveCount(0);
+      await expect(details).not.toContainText('/data/home/wangr');
+      await expect(details).not.toContainText('wangr:wangr');
 
       const audit = await page.evaluate(() => ({
         pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,

@@ -259,21 +259,18 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
       >
         <div class="repro-copy">
           <p>
-            实验只需要一个本地 secret 文件：
-            <code>/data/home/wangr/.secrets/openevo/minimax-teacher.env</code>。
-            文件内容只有 <code>OPENAI_API_KEY=...</code>；真实值通过隐藏输入写入，不直接出现在 shell history。
+            以下命令应在<strong>实际运行实验的 Unix 账户</strong>下执行；用 <code>$HOME</code> 表示该账户自己的 home，避免把服务器用户名写进公开文档。
+            secret 文件放在 <code>$HOME/.secrets/openevo/minimax-teacher.env</code>，内容只有 <code>OPENAI_API_KEY=...</code>；真实值通过隐藏输入写入，不直接出现在 shell history。
           </p>
-          <pre><code>{`install -d -m 700 -o wangr -g wangr /data/home/wangr/.secrets/openevo
+          <pre><code>{`install -d -m 700 "$HOME/.secrets/openevo"
 
-python3 -c 'import getpass,pathlib,os; p=pathlib.Path("/data/home/wangr/.secrets/openevo/minimax-teacher.env"); k=getpass.getpass("Paste MiniMax API key (hidden): "); (not k) and (_ for _ in ()).throw(SystemExit("Empty key; nothing written")); p.write_text("OPENAI_API_KEY="+k+"\n", encoding="utf-8"); os.chmod(p,0o600); print("Secret saved safely:", p)'
+python3 -c 'import getpass,pathlib,os; p=pathlib.Path.home()/".secrets/openevo/minimax-teacher.env"; k=getpass.getpass("Paste MiniMax API key (hidden): "); (not k) and (_ for _ in ()).throw(SystemExit("Empty key; nothing written")); p.write_text("OPENAI_API_KEY="+k+"\n", encoding="utf-8"); os.chmod(p,0o600); print("Secret saved safely:", p)'
 
-chown wangr:wangr /data/home/wangr/.secrets/openevo/minimax-teacher.env
-chmod 600 /data/home/wangr/.secrets/openevo/minimax-teacher.env
-
-stat -c '%a %U:%G %n' /data/home/wangr/.secrets/openevo/minimax-teacher.env
-wc -l /data/home/wangr/.secrets/openevo/minimax-teacher.env`}</code></pre>
+chmod 600 "$HOME/.secrets/openevo/minimax-teacher.env"
+stat -c '%a %U:%G %n' "$HOME/.secrets/openevo/minimax-teacher.env"
+wc -l "$HOME/.secrets/openevo/minimax-teacher.env"`}</code></pre>
           <div class="repro-checks">
-            <div><strong>正确权限</strong><span><code>600 wangr:wangr</code></span></div>
+            <div><strong>正确权限</strong><span><code>600</code> · 当前实验账户所有</span></div>
             <div><strong>正确形状</strong><span>secret 文件应为 1 行</span></div>
             <div><strong>不要打印 key</strong><span>验证权限和行数即可，不用 cat</span></div>
           </div>

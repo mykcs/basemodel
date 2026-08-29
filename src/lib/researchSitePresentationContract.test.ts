@@ -63,7 +63,7 @@ describe('research-site presentation contract', () => {
     const page = readFileSync(join(srcRoot, 'pages/research/seed-openevo/study/minimax-teacher/index.astro'), 'utf8');
     const disclosureStart = page.indexOf('<ResearchTechnicalDisclosure');
     const disclosureEnd = page.indexOf('</ResearchTechnicalDisclosure>', disclosureStart);
-    const secretPath = '/data/home/wangr/.secrets/openevo/minimax-teacher.env';
+    const secretPath = '$HOME/.secrets/openevo/minimax-teacher.env';
 
     expect(disclosureStart).toBeGreaterThan(-1);
     expect(disclosureEnd).toBeGreaterThan(disclosureStart);
@@ -73,6 +73,8 @@ describe('research-site presentation contract', () => {
     expect(page.slice(disclosureStart, disclosureEnd)).toContain('chmod 600');
     expect(page.slice(disclosureStart, disclosureEnd)).toContain('wc -l');
     expect(page).not.toContain(`cat ${secretPath}`);
+    expect(page).not.toMatch(/\/(?:data\/home|home)\/[A-Za-z0-9._-]+\/\.secrets\/openevo/);
+    expect(page).not.toContain('wangr:wangr');
   });
 
   it('keeps scientific notation visible while moving literal execution commands into depth', () => {
