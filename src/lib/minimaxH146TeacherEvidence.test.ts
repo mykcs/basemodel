@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
@@ -9,6 +10,11 @@ const analysis = read('docs/agents/current/minimax-h146-teacher-intelligence-cos
 const page = read('src/pages/research/seed-openevo/study/minimax-teacher/index.astro');
 
 describe('H1.46 MiniMax teacher evidence boundary', () => {
+  it('pins the frozen fact record byte-for-byte', () => {
+    const digest = createHash('sha256').update(facts).digest('hex');
+    expect(digest).toBe('94f90d73e77919e26214b241ba1b291c650078018b47c68242ab1220dc5dd720');
+  });
+
   it('keeps the dated fact record explicitly immutable in place', () => {
     expect(facts).toContain('FROZEN FACT RECORD / DO NOT EDIT IN PLACE');
     expect(facts).toContain('Future Agents MUST NOT rewrite');
