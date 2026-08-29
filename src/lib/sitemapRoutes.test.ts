@@ -8,6 +8,7 @@ import {
 
 const missionPaths = [
   '/research/seed-openevo/flow/',
+  '/research/seed-openevo/flow/server/',
   '/research/seed-openevo/flow/base-model/',
   '/research/seed-openevo/flow/seed/',
   '/research/seed-openevo/flow/openevo/',

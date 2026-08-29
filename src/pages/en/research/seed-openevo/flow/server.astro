@@ -1,0 +1,17 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenEvoResearchNav.astro';
+import Lyg2171ServerOverview from '../../../../../components/research/Lyg2171ServerOverview.astro';
+const locale = 'en' as const;
+---
+<AppLayout title="LYG.2171 server: hardware capacity and current resource pressure" description="A practical overview of the LYG.2171 experiment server: CPU, memory, 8×RTX 5090 GPUs, GPU generation and CUDA cores, plus current filesystem capacity, our usage, privacy-preserving aggregate other-user usage, and remaining space." locale={locale}>
+  <div class="server-route">
+    <SeedOpenEvoResearchNav locale={locale} page="server" />
+    <Lyg2171ServerOverview locale={locale} />
+  </div>
+</AppLayout>
+
+<style>
+  .server-route{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  @media(max-width:720px){.server-route{width:min(100% - 1rem,1160px);margin-top:.6rem}}
+</style>
