@@ -1,0 +1,107 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+type Mode = '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
+interface Props { locale: Locale; mode: Mode }
+const { locale, mode } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const isJoint = mode === 'cross-arm';
+const is7B = mode.startsWith('7b');
+const isMiniMax = mode.endsWith('minimax');
+const currentModel = is7B ? '7b' : '3b';
+const currentTeacher = isMiniMax ? 'minimax' : 'self';
+const armPath = (model: '3b' | '7b', teacher: 'self' | 'minimax') =>
+  `/research/seed-openevo/study/results/${model}-${teacher}-analysis/`;
+const selectedArm = isJoint ? null : `${is7B ? '7B' : '3B'} / ${isMiniMax ? 'MiniMax' : 'self'}`;
+const matrix = [
+  { model:'3b', teacher:'self', label:'3B / self' },
+  { model:'3b', teacher:'minimax', label:'3B / MiniMax' },
+  { model:'7b', teacher:'self', label:'7B / self' },
+  { model:'7b', teacher:'minimax', label:'7B / MiniMax' },
+] as const;
+---
+
+<nav class="experiment-selector" aria-label={t('实验结构选择器', 'Experiment design selector')} data-testid="experiment-design-selector">
+  <div class="experiment-selector__heading">
+    <div>
+      <p>{t('实验结构选择器', 'EXPERIMENT DESIGN SELECTOR')}</p>
+      <h2>{t('一个 OpenEVO，两处可选，组成四个实验', 'One OpenEVO, two choices, four experiment arms')}</h2>
+    </div>
+    <a class:list={['experiment-selector__joint', {active:isJoint}]} href={p('/research/seed-openevo/study/results/four-arm-analysis/')} aria-current={isJoint ? 'page' : undefined}>
+      <span>2 × 2</span>
+      <strong>{t('四组联合分析', 'Four-arm joint analysis')}</strong>
+      <small>{t('比较四格，而不是第五个实验 →', 'Compare all four cells — not a fifth arm →')}</small>
+    </a>
+  </div>
+
+  <div class="experiment-selector__flow" aria-label={t('从模型与教师选项得到一个实验 arm', 'Choose model and teacher to obtain one experiment arm')}>
+    <section class="experiment-selector__openevo">
+      <div class="experiment-selector__brand"><span></span>OpenEVO</div>
+      <div class="experiment-selector__node-label"><span>01</span><strong>{t('里面的 Actor 模型', 'Actor model inside')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
+      <div class="experiment-selector__choices">
+        <a class:list={{active:!isJoint && currentModel === '3b'}} href={p(armPath('3b', currentTeacher))} aria-current={!isJoint && currentModel === '3b' ? 'page' : undefined}><i></i>3B</a>
+        <a class:list={{active:!isJoint && currentModel === '7b'}} href={p(armPath('7b', currentTeacher))} aria-current={!isJoint && currentModel === '7b' ? 'page' : undefined}><i></i>7B</a>
+      </div>
+      <p>{t('OpenEVO 外壳保持不变；这里只替换实际做 WebShop 的模型规模。', 'The OpenEVO wrapper stays fixed; only the WebShop actor size changes here.')}</p>
+    </section>
+
+    <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
+
+    <section class="experiment-selector__stage">
+      <div class="experiment-selector__node-label"><span>02</span><strong>Stage 1</strong></div>
+      <b>{t('轨迹采集', 'Trajectory collection')}</b>
+      <p>rollout → trajectory → {t('经验', 'experience')}</p>
+    </section>
+
+    <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
+
+    <section class="experiment-selector__teacher">
+      <div class="experiment-selector__node-label"><span>03</span><strong>{t('外部教师 / hindsight', 'External hindsight')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
+      <div class="experiment-selector__choices experiment-selector__choices--teacher">
+        <a class:list={{active:!isJoint && currentTeacher === 'self'}} href={p(armPath(currentModel, 'self'))} aria-current={!isJoint && currentTeacher === 'self' ? 'page' : undefined}><i></i>{t('无教师', 'None / self')}</a>
+        <a class:list={{active:!isJoint && currentTeacher === 'minimax'}} href={p(armPath(currentModel, 'minimax'))} aria-current={!isJoint && currentTeacher === 'minimax' ? 'page' : undefined}><i></i>MiniMax</a>
+      </div>
+      <p>{t('MiniMax 在 episode 结束后分析轨迹，不替 Actor 点击或搜索。', 'MiniMax analyzes a finished episode; it does not click or search for the actor.')}</p>
+    </section>
+
+    <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
+
+    <div class:list={['experiment-selector__result', {joint:isJoint}]}>
+      <span>04 · {t('当前页面', 'CURRENT PAGE')}</span>
+      <strong>{isJoint ? t('四组联合', 'Four-arm joint') : selectedArm}</strong>
+      <small>{isJoint ? t('同时看下面四格', 'Read all four cells together') : t('这一组的结果与分析', 'Results and analysis for this arm')}</small>
+    </div>
+  </div>
+
+  <div class="experiment-selector__matrix-wrap">
+    <div class="experiment-selector__matrix-copy">
+      <span>{t('为什么刚好是四组？', 'WHY EXACTLY FOUR ARMS?')}</span>
+      <strong>{t('两个二选一开关 = 2 × 2', 'Two binary choices = 2 × 2')}</strong>
+      <p>{t('模型规模决定纵轴，外部 hindsight 决定横轴。点任意格子进入单实验；点“四组联合分析”比较整张矩阵。', 'Model size defines the rows; external hindsight defines the columns. Open any cell for one arm, or use the joint analysis to compare the whole matrix.')}</p>
+    </div>
+    <div class:list={['experiment-selector__matrix', {'joint-active':isJoint}]} role="group" aria-label={t('四组实验矩阵', 'Four-arm experiment matrix')}>
+      <div class="experiment-selector__corner">OpenEVO</div>
+      <div class="experiment-selector__colhead">{t('无教师', 'self')}</div>
+      <div class="experiment-selector__colhead">MiniMax</div>
+      <div class="experiment-selector__rowhead">3B</div>
+      {matrix.slice(0,2).map((cell) => <a class:list={{active:mode === `${cell.model}-${cell.teacher}`}} href={p(armPath(cell.model, cell.teacher))} aria-current={mode === `${cell.model}-${cell.teacher}` ? 'page' : undefined}><span>{cell.label}</span><small>{cell.teacher === 'self' ? t('自己学习', 'self learning') : t('外部 hindsight', 'external hindsight')}</small></a>)}
+      <div class="experiment-selector__rowhead">7B</div>
+      {matrix.slice(2,4).map((cell) => <a class:list={{active:mode === `${cell.model}-${cell.teacher}`}} href={p(armPath(cell.model, cell.teacher))} aria-current={mode === `${cell.model}-${cell.teacher}` ? 'page' : undefined}><span>{cell.label}</span><small>{cell.teacher === 'self' ? t('自己学习', 'self learning') : t('外部 hindsight', 'external hindsight')}</small></a>)}
+    </div>
+  </div>
+</nav>
+
+<style>
+.experiment-selector{margin:0 0 22px;padding:1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent)}
+.experiment-selector__heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:.15rem .15rem 1rem}.experiment-selector__heading p{margin:0 0 .28rem;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.experiment-selector__heading h2{margin:0!important;max-width:none!important;font-size:clamp(1rem,2vw,1.35rem)!important;letter-spacing:-.025em!important}.experiment-selector__joint{display:flex;flex-direction:column;gap:.16rem;min-width:220px;padding:.7rem .85rem;border:1px solid var(--color-border);border-radius:11px;text-decoration:none;color:var(--color-text);transition:border-color .15s ease,background .15s ease}.experiment-selector__joint>span{color:var(--color-accent);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.experiment-selector__joint strong{font-size:.78rem}.experiment-selector__joint small{color:var(--color-text-muted);font-size:.65rem}.experiment-selector__joint:hover,.experiment-selector__joint.active{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 7%,transparent)}
+.experiment-selector__flow{display:grid;grid-template-columns:minmax(230px,1.25fr) 34px minmax(150px,.75fr) 34px minmax(240px,1.15fr) 34px minmax(145px,.7fr);align-items:stretch}.experiment-selector__openevo,.experiment-selector__stage,.experiment-selector__teacher,.experiment-selector__result{min-width:0;border:1px solid var(--color-border);border-radius:13px;background:color-mix(in srgb,var(--color-text) 2.4%,transparent)}.experiment-selector__openevo{position:relative;padding:2.2rem .9rem .8rem;border-width:2px}.experiment-selector__brand{position:absolute;inset:.55rem auto auto .7rem;display:flex;align-items:center;gap:.35rem;font:850 .66rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.experiment-selector__brand span{width:.48rem;height:.48rem;border-radius:50%;background:var(--color-accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--color-accent) 12%,transparent)}
+.experiment-selector__stage,.experiment-selector__teacher,.experiment-selector__result{display:flex;flex-direction:column;justify-content:center;padding:.8rem}.experiment-selector__stage b{margin-top:.7rem;font-size:.92rem}.experiment-selector__stage p,.experiment-selector__openevo>p,.experiment-selector__teacher>p{margin:.4rem 0 0;color:var(--color-text-muted);font-size:.66rem;line-height:1.45}.experiment-selector__node-label{display:flex;align-items:center;gap:.42rem}.experiment-selector__node-label>span{color:var(--color-accent);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.experiment-selector__node-label>strong{font-size:.68rem}.experiment-selector__node-label>em{margin-left:auto;padding:.18rem .32rem;border-radius:5px;background:color-mix(in srgb,var(--color-text) 5%,transparent);color:var(--color-text-muted);font:700 .54rem ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal;letter-spacing:.05em}
+.experiment-selector__choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.42rem;margin-top:.62rem}.experiment-selector__choices a{display:flex;align-items:center;gap:.42rem;padding:.62rem .7rem;border:1px solid var(--color-border);border-radius:9px;color:var(--color-text);font-size:.78rem;font-weight:780;text-decoration:none}.experiment-selector__choices a i{width:.45rem;height:.45rem;border:1.5px solid currentColor;border-radius:50%}.experiment-selector__choices a:hover,.experiment-selector__choices a.active{border-color:var(--color-accent);color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,transparent)}.experiment-selector__choices a.active i{background:currentColor;box-shadow:inset 0 0 0 1.5px var(--color-bg)}.experiment-selector__choices--teacher a{font-size:.72rem}
+.experiment-selector__arrow{display:flex;align-items:center;justify-content:center;color:var(--color-text-muted)}.experiment-selector__arrow span{font:700 1rem ui-monospace,SFMono-Regular,Menlo,monospace}.experiment-selector__result{border-style:dashed}.experiment-selector__result>span{color:var(--color-accent);font:800 .56rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.experiment-selector__result strong{margin:.38rem 0 .16rem;font-size:.86rem}.experiment-selector__result small{color:var(--color-text-muted);font-size:.63rem;line-height:1.4}.experiment-selector__result.joint{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 7%,transparent)}
+.experiment-selector__matrix-wrap{display:grid;grid-template-columns:minmax(180px,.72fr) minmax(0,1.7fr);gap:1rem;align-items:stretch;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--color-border)}.experiment-selector__matrix-copy{align-self:center}.experiment-selector__matrix-copy>span{color:var(--color-text-muted);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.experiment-selector__matrix-copy strong{display:block;margin:.3rem 0;font-size:.85rem}.experiment-selector__matrix-copy p{margin:0;color:var(--color-text-muted);font-size:.68rem;line-height:1.5}.experiment-selector__matrix{display:grid;grid-template-columns:64px repeat(2,minmax(0,1fr));gap:5px}.experiment-selector__matrix>div,.experiment-selector__matrix>a{min-width:0;padding:.5rem .62rem;border-radius:7px}.experiment-selector__corner,.experiment-selector__colhead,.experiment-selector__rowhead{display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font:750 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.experiment-selector__corner{border:1px dashed var(--color-border)}.experiment-selector__colhead,.experiment-selector__rowhead{background:color-mix(in srgb,var(--color-text) 4%,transparent)}.experiment-selector__matrix>a{display:flex;align-items:center;justify-content:space-between;gap:.4rem;border:1px solid var(--color-border);color:var(--color-text);text-decoration:none}.experiment-selector__matrix>a span{font-size:.7rem;font-weight:760}.experiment-selector__matrix>a small{color:var(--color-text-muted);font-size:.56rem}.experiment-selector__matrix>a:hover,.experiment-selector__matrix>a.active{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,transparent)}.experiment-selector__matrix>a.active span{color:var(--color-accent)}.experiment-selector__matrix.joint-active>a{border-style:dashed}
+@media(max-width:980px){.experiment-selector__flow{grid-template-columns:1fr 26px 1fr 26px}.experiment-selector__teacher{grid-column:1/2;margin-top:.6rem}.experiment-selector__teacher+.experiment-selector__arrow{grid-column:2/3;grid-row:2}.experiment-selector__result{grid-column:3/4;margin-top:.6rem}.experiment-selector__flow>.experiment-selector__arrow:nth-of-type(2){display:none}.experiment-selector__matrix-wrap{grid-template-columns:1fr}}
+@media(max-width:700px){.experiment-selector{padding:.8rem}.experiment-selector__heading{flex-direction:column}.experiment-selector__joint{width:100%;min-width:0}.experiment-selector__flow{grid-template-columns:1fr}.experiment-selector__arrow{height:28px}.experiment-selector__arrow span{transform:rotate(90deg)}.experiment-selector__teacher,.experiment-selector__result{grid-column:auto;margin-top:0}.experiment-selector__teacher+.experiment-selector__arrow{grid-column:auto;grid-row:auto}.experiment-selector__flow>.experiment-selector__arrow:nth-of-type(2){display:flex}.experiment-selector__matrix{grid-template-columns:48px repeat(2,minmax(0,1fr))}.experiment-selector__matrix>a{align-items:flex-start;flex-direction:column}.experiment-selector__matrix>a small{display:none}}
+</style>

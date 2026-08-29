@@ -1,0 +1,111 @@
+---
+import type { Locale } from '../../i18n';
+
+type Row = { label: string; loss: string; score: string };
+interface Props { locale: Locale; rows: Row[] }
+const { locale, rows } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const width = 960;
+const xStart = 90;
+const xStep = 100;
+const x = (i: number) => xStart + i * xStep;
+const lossTop = 56;
+const lossBottom = 170;
+const lossY = (v: number) => lossTop + ((0.50 - v) / (0.50 - 0.05)) * (lossBottom - lossTop);
+const scoreTop = 246;
+const scoreBottom = 390;
+const scoreY = (v: number) => scoreBottom - ((v - 10) / (26 - 10)) * (scoreBottom - scoreTop);
+const lossPoints = rows.slice(1).map((row, i) => `${x(i + 1)},${lossY(Number(row.loss)).toFixed(1)}`).join(' ');
+const scorePoints = rows.map((row, i) => `${x(i)},${scoreY(Number(row.score)).toFixed(1)}`).join(' ');
+const lossRows = rows.slice(1);
+const regressionPairs = [[2,3],[6,7]] as const;
+const regressionSegments = regressionPairs.map(([a,b]) => ({
+  a, b, x1:x(a), x2:x(b),
+  y1:scoreY(Number(rows[a]?.score ?? 0)),
+  y2:scoreY(Number(rows[b]?.score ?? 0)),
+}));
+const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace('increment-', 'inc-');
+---
+
+<div class="checkpoint-viz" data-testid="checkpoint-loss-capability-chart">
+  <div class="checkpoint-viz__summary">
+    <div><span>{t('训练 loss', 'Training loss')}</span><strong>0.479 → 0.055</strong><small>{t('每次更新都下降', 'falls at every update')}</small></div>
+    <div><span>WebShop Task Score</span><strong>13.33 → 25.66</strong><small>{t('总体更高，但中间两次明显回落', 'higher overall, with two clear regressions')}</small></div>
+  </div>
+
+  <div class="checkpoint-viz__canvas" tabindex="0" aria-label={t('7B self 训练 loss 与 WebShop Task Score 的 checkpoint 曲线', '7B self checkpoint curves for training loss and WebShop Task Score')}>
+    <svg viewBox={`0 0 ${width} 455`} role="img" aria-labelledby="checkpoint-chart-title checkpoint-chart-desc">
+      <title id="checkpoint-chart-title">{t('Loss 一直下降，但 WebShop 能力不是一直上升', 'Loss keeps falling, but WebShop capability does not keep rising')}</title>
+      <desc id="checkpoint-chart-desc">{t('上方折线显示 increment-00 到 increment-07 的 training loss 单调下降；下方折线显示同一批 checkpoint 的 Task Score 多次上下波动，其中 increment-01 到 02、increment-05 到 06 出现能力下降。', 'The upper line shows training loss decreasing monotonically from increment-00 to increment-07. The lower line shows Task Score fluctuating, with regressions from increment-01 to 02 and increment-05 to 06.')}</desc>
+
+      <rect class="checkpoint-viz__panel" x="62" y="34" width="860" height="154" rx="10" />
+      <rect class="checkpoint-viz__panel" x="62" y="222" width="860" height="188" rx="10" />
+
+      <text class="checkpoint-viz__panel-title" x="82" y="56">{t('TRAINING LOSS · 越低越好', 'TRAINING LOSS · LOWER IS BETTER')}</text>
+      <text class="checkpoint-viz__panel-title" x="82" y="246">WEBSHOP TASK SCORE ×100 · {t('越高越好', 'HIGHER IS BETTER')}</text>
+
+      {[0.50,0.25,0.05].map((tick) => <g>
+        <line class="checkpoint-viz__grid" x1="82" x2="908" y1={lossY(tick)} y2={lossY(tick)} />
+        <text class="checkpoint-viz__axis" x="74" y={lossY(tick)+4} text-anchor="end">{tick.toFixed(2)}</text>
+      </g>)}
+      {[10,18,26].map((tick) => <g>
+        <line class="checkpoint-viz__grid" x1="82" x2="908" y1={scoreY(tick)} y2={scoreY(tick)} />
+        <text class="checkpoint-viz__axis" x="74" y={scoreY(tick)+4} text-anchor="end">{tick}</text>
+      </g>)}
+
+      {regressionPairs.map(([a,b]) => <rect class="checkpoint-viz__regression-band" x={x(a)-18} y="222" width={x(b)-x(a)+36} height="188" rx="8" />)}
+
+      <polyline class="checkpoint-viz__loss-line" points={lossPoints} />
+      {lossRows.map((row, i) => <g>
+        <circle class="checkpoint-viz__loss-dot" cx={x(i+1)} cy={lossY(Number(row.loss))} r="4.5" />
+        <text class="checkpoint-viz__value checkpoint-viz__value--loss" x={x(i+1)} y={lossY(Number(row.loss))-9} text-anchor="middle">{row.loss}</text>
+      </g>)}
+
+      <polyline class="checkpoint-viz__score-line" points={scorePoints} />
+      {rows.map((row, i) => <g>
+        <circle class:list={['checkpoint-viz__score-dot', {final:i === rows.length-1}]} cx={x(i)} cy={scoreY(Number(row.score))} r={i === rows.length-1 ? 6 : 4.5} />
+        <text class:list={['checkpoint-viz__value', {'checkpoint-viz__value--final':i === rows.length-1}]} x={x(i)} y={scoreY(Number(row.score))-10} text-anchor="middle">{row.score}</text>
+      </g>)}
+
+      {regressionSegments.map((segment) => <line class="checkpoint-viz__regression-line" x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} />)}
+      <text class="checkpoint-viz__regression-label" x={(x(2)+x(3))/2} y={scoreY(13.67)+22} text-anchor="middle">{t('能力 ↓ 4.74', 'score ↓ 4.74')}</text>
+      <text class="checkpoint-viz__regression-label" x={(x(6)+x(7))/2} y={scoreY(20.72)+22} text-anchor="middle">{t('能力 ↓ 1.29', 'score ↓ 1.29')}</text>
+
+      {rows.map((row, i) => <g>
+        <line class="checkpoint-viz__tick" x1={x(i)} x2={x(i)} y1="410" y2="416" />
+        <text class="checkpoint-viz__xlabel" x={x(i)} y="434" text-anchor="middle">{shortLabel(row.label)}</text>
+      </g>)}
+      <text class="checkpoint-viz__axis-title" x="902" y="452" text-anchor="end">{t('Stage-1 checkpoint →', 'Stage-1 checkpoint →')}</text>
+    </svg>
+  </div>
+
+  <div class="checkpoint-viz__reading">
+    <article>
+      <span>01 → 02</span>
+      <strong>loss 0.301 → 0.196 ↓</strong>
+      <b>Task Score 18.41 → 13.67 ↓</b>
+      <p>{t('loss 变好，但真实 WebShop 表现反而掉了 4.74 分。', 'Loss improves while actual WebShop performance drops by 4.74 points.')}</p>
+    </article>
+    <article>
+      <span>05 → 06</span>
+      <strong>loss 0.070 → 0.066 ↓</strong>
+      <b>Task Score 22.01 → 20.72 ↓</b>
+      <p>{t('第二次出现同样现象：优化目标继续下降，能力却短暂回退。', 'The same pattern appears again: the optimization target falls while capability briefly regresses.')}</p>
+    </article>
+    <article class="checkpoint-viz__reading-final">
+      <span>{t('最终', 'FINAL')}</span>
+      <strong>increment-07 · 0.055 loss</strong>
+      <b>Task Score 25.66 · {t('全程最高', 'sweep best')}</b>
+      <p>{t('所以结论不是“训练没用”，而是“loss 不能当能力的单调仪表盘”。', 'So the conclusion is not that training failed; it is that loss is not a monotonic capability gauge.')}</p>
+    </article>
+  </div>
+</div>
+
+<style>
+.checkpoint-viz{margin-top:1.25rem}.checkpoint-viz__summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-bottom:.75rem}.checkpoint-viz__summary>div{display:grid;grid-template-columns:auto 1fr;gap:.18rem .7rem;align-items:baseline;padding:.8rem .9rem;border:1px solid var(--color-border);border-radius:11px}.checkpoint-viz__summary span{color:var(--color-text-muted);font:800 .61rem ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.06em}.checkpoint-viz__summary strong{justify-self:end;font:800 .9rem ui-monospace,SFMono-Regular,Menlo,monospace}.checkpoint-viz__summary small{grid-column:1/-1;color:var(--color-text-muted);font-size:.67rem}
+.checkpoint-viz__canvas{overflow-x:auto;border:1px solid var(--color-border);border-radius:14px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent);outline:none}.checkpoint-viz__canvas:focus-visible{box-shadow:0 0 0 2px var(--color-accent)}.checkpoint-viz svg{display:block;min-width:820px;width:100%;height:auto}.checkpoint-viz__panel{fill:color-mix(in srgb,var(--color-text) 2%,transparent);stroke:var(--color-border);stroke-width:1}.checkpoint-viz__panel-title{fill:var(--color-text-muted);font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.checkpoint-viz__grid{stroke:var(--color-border);stroke-width:1;stroke-dasharray:3 5}.checkpoint-viz__axis,.checkpoint-viz__xlabel,.checkpoint-viz__axis-title{fill:var(--color-text-muted);font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace}.checkpoint-viz__axis-title{font-weight:800}.checkpoint-viz__tick{stroke:var(--color-border);stroke-width:1.2}
+.checkpoint-viz__loss-line,.checkpoint-viz__score-line,.checkpoint-viz__regression-line{fill:none;stroke-linecap:round;stroke-linejoin:round}.checkpoint-viz__loss-line{stroke:var(--color-text-muted);stroke-width:2.4}.checkpoint-viz__loss-dot{fill:var(--color-bg);stroke:var(--color-text-muted);stroke-width:2}.checkpoint-viz__score-line{stroke:var(--color-accent);stroke-width:3}.checkpoint-viz__score-dot{fill:var(--color-bg);stroke:var(--color-accent);stroke-width:2.4}.checkpoint-viz__score-dot.final{fill:var(--color-accent);stroke:var(--color-accent)}.checkpoint-viz__value{fill:var(--color-text);font:750 9px ui-monospace,SFMono-Regular,Menlo,monospace}.checkpoint-viz__value--loss{fill:var(--color-text-muted)}.checkpoint-viz__value--final{fill:var(--color-accent);font-weight:900}.checkpoint-viz__regression-band{fill:color-mix(in srgb,var(--color-accent) 5%,transparent);stroke:color-mix(in srgb,var(--color-accent) 28%,var(--color-border));stroke-width:1;stroke-dasharray:4 5}.checkpoint-viz__regression-line{stroke:var(--color-text);stroke-width:4}.checkpoint-viz__regression-label{fill:var(--color-text);font:850 10px ui-monospace,SFMono-Regular,Menlo,monospace}
+.checkpoint-viz__reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.75rem}.checkpoint-viz__reading article{padding:.85rem .9rem;border:1px solid var(--color-border);border-radius:11px}.checkpoint-viz__reading article>span{display:block;color:var(--color-accent);font:850 .6rem ui-monospace,SFMono-Regular,Menlo,monospace}.checkpoint-viz__reading strong,.checkpoint-viz__reading b{display:block;margin-top:.42rem;font:760 .73rem/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}.checkpoint-viz__reading b{margin-top:.18rem;color:var(--color-text)}.checkpoint-viz__reading p{margin:.48rem 0 0;color:var(--color-text-muted);font-size:.68rem;line-height:1.5}.checkpoint-viz__reading-final{background:color-mix(in srgb,var(--color-accent) 6%,transparent)}
+@media(max-width:760px){.checkpoint-viz__summary,.checkpoint-viz__reading{grid-template-columns:1fr}.checkpoint-viz__summary strong{justify-self:start}.checkpoint-viz__canvas{margin-inline:-2px}.checkpoint-viz svg{min-width:760px}}
+</style>
