@@ -88,6 +88,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerInstall).toContain('label="com.mykcs.basemodel-ci-runner"');
     expect(runnerInstall).toContain("plutil -insert 'ProgramArguments.0' -string");
     expect(runnerInstall).not.toContain('plutil -insert ProgramArguments -append');
+    expect(runnerInstall).toContain('$label.pending.XXXXXX")');
+    expect(runnerInstall).not.toContain('$label.pending.XXXXXX.plist")');
     expect(runnerInstall).toContain('plutil -insert StartInterval -integer 60');
     expect(runnerInstall).not.toContain('sudo');
     expect(runnerReconcile).toContain("grep -q 'AC Power'");

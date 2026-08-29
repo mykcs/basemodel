@@ -44,7 +44,7 @@ for script in "$candidate_dir"/*.sh; do
   bash -n "$script"
 done
 
-pending_plist="$(mktemp "$state_dir/$label.pending.XXXXXX.plist")"
+pending_plist="$(mktemp "$state_dir/$label.pending.XXXXXX")"
 plutil -create xml1 "$pending_plist"
 plutil -insert Label -string "$label" "$pending_plist"
 plutil -insert ProgramArguments -array "$pending_plist"
