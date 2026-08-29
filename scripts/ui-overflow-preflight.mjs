@@ -2,7 +2,9 @@ import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 
 const host = '127.0.0.1';
-const port = 4328;
+const requestedPort = process.env.UI_OVERFLOW_PORT ?? '4328';
+const port = Number.parseInt(requestedPort, 10);
+if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error(`UI_OVERFLOW_PORT must be a valid TCP port, got: ${requestedPort}`);
 const baseURL = `http://${host}:${port}`;
 const server = spawn(process.execPath, ['scripts/playwright-static-server.mjs'], {
   stdio: ['ignore', 'pipe', 'pipe'],

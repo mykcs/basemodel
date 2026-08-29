@@ -9,17 +9,14 @@
 @import './global.css';
 
 /* Product systems and retained compatibility debt, in validated order. */
-@import './workspace.css';
 @import './v2-closeout.css';
 @import './visual-upgrade.css';
 @import './design-refinement.css';
 @import './final-hardening.css';
 @import './actionable-content.css';
-@import './knowledge-architecture.css';
 @import './mobile-composition.css';
 @import './visual-closeout.css';
 
 /* Canonical owners load last while the legacy copies above are retired. */
 @import './components/global-shell.css';
 @import './components/header.css';
-@import './components/webshop-training-note.css';

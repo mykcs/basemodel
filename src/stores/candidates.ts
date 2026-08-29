@@ -21,6 +21,7 @@ export const candidateIds = persistentAtom<string[]>('atlas-candidates', [], {
 
 export function replaceCandidates(value: unknown) {
   candidateIds.set(normalizeCandidateIds(value));
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('atlas:research-context-change'));
 }
 
 export function addCandidate(id: string) {
@@ -29,10 +30,12 @@ export function addCandidate(id: string) {
 
 export function removeCandidate(id: string) {
   candidateIds.set(candidateIds.get().filter((x) => x !== id));
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('atlas:research-context-change'));
 }
 
 export function clearCandidates() {
   candidateIds.set([]);
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('atlas:research-context-change'));
 }
 
 export function isCandidate(id: string) {

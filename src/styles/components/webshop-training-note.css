@@ -3,8 +3,8 @@
  *
  * The underlying editorial component predates the site theme tokens and still
  * carries a fixed dark fallback palette. Keep the semantic override here, in
- * AppLayout's global CSS composition root, so every current or future route
- * that renders `.training-note` gets the same tested light/dark behavior.
+ * the owning Astro component, so routes that render `.training-note` receive
+ * the same tested light/dark behavior without adding it to the global payload.
  */
 .site-main .training-note.training-note {
   --ink: var(--color-text);

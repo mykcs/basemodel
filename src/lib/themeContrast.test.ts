@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const tokensCss = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8');
-const knowledgeCss = readFileSync(new URL('../styles/knowledge-architecture.css', import.meta.url), 'utf8');
 const appCss = readFileSync(new URL('../styles/app.css', import.meta.url), 'utf8');
 const webShopTrainingNoteCss = readFileSync(new URL('../styles/components/webshop-training-note.css', import.meta.url), 'utf8');
+const webShopTrainingNoteComponent = readFileSync(new URL('../components/research/WebShopTrainingNote.astro', import.meta.url), 'utf8');
 const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
 const webShopTrainingNoteRoute = readFileSync(new URL('../pages/research/seed-openevo/study/results/[note].astro', import.meta.url), 'utf8');
 const webShopResultsRoute = readFileSync(new URL('../pages/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
@@ -45,6 +45,12 @@ function contrast(left: string, right: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function mix(left: string, right: string, leftWeight: number): string {
+  const channelAt = (hex: string, start: number) => Number.parseInt(hex.slice(start, start + 2), 16);
+  const values = [1, 3, 5].map((start) => Math.round(channelAt(left, start) * leftWeight + channelAt(right, start) * (1 - leftWeight)));
+  return `#${values.map((value) => value.toString(16).padStart(2, '0')).join('')}`;
+}
+
 const light = cssBlock(/:root\s*\{([\s\S]*?)\n\}/);
 const dark = cssBlock(/:root\[data-theme='dark'\]\s*\{([\s\S]*?)\n\}/);
 
@@ -72,6 +78,13 @@ describe('theme contrast contract', () => {
       const onFill = hexToken(theme.block, '--color-accent-on-fill');
       expect(contrast(onFill, fill)).toBeGreaterThanOrEqual(4.5);
     });
+
+    it(`${theme.name} theme keeps required copy readable on an accent tint`, () => {
+      const text = hexToken(theme.block, '--color-text-on-tint');
+      const accent = hexToken(theme.block, '--color-accent');
+      const background = hexToken(theme.block, '--color-bg');
+      expect(contrast(text, mix(accent, background, 0.05))).toBeGreaterThanOrEqual(4.5);
+    });
   }
 
   it('defines the legacy visual surface alias instead of falling back to white', () => {
@@ -79,19 +92,13 @@ describe('theme contrast contract', () => {
     expect(tokensCss).toContain('--foreground: var(--color-text);');
   });
 
-  it('keeps the sitewide visual layer on semantic theme tokens', () => {
-    expect(knowledgeCss).not.toContain('var(--background,#fff)');
-    expect(knowledgeCss).not.toContain('color: #fff');
-    expect(knowledgeCss).toContain('--ka-surface: var(--surface);');
-    expect(knowledgeCss).toContain('--ka-accent-on: var(--accent-on-fill);');
-  });
-
   it('keeps WebShop training surfaces theme-aware instead of relying on a route patch', () => {
     expect(webShopTrainingGuide).toContain('background:var(--color-surface)');
     expect(webShopTrainingGuide).toContain('color:var(--color-text)');
     expect(webShopTrainingGuide).not.toContain('background:#090f1c');
 
-    expect(appCss).toContain("@import './components/webshop-training-note.css';");
+    expect(appCss).not.toContain("@import './components/webshop-training-note.css';");
+    expect(webShopTrainingNoteComponent).toContain("import '../../styles/components/webshop-training-note.css';");
     expect(webShopTrainingNoteCss).toContain('background: var(--color-surface);');
     expect(webShopTrainingNoteCss).toContain('color: var(--color-text);');
     expect(webShopTrainingNoteCss).toContain('color-scheme: inherit;');
@@ -106,5 +113,13 @@ describe('theme contrast contract', () => {
     expect(webShopTrainingNoteCss).toContain('border-left-width: 0;');
     expect(webShopTrainingNoteCss).toContain('border-right-width: 0;');
     expect(webShopTrainingNoteCss).not.toMatch(/border-(?:left|right):\s*0\s*;/);
+  });
+
+  it('uses semantic text tokens instead of opacity for required homepage and manifest copy', () => {
+    const home = readFileSync(new URL('../pages/_bodies/home-v2.astro', import.meta.url), 'utf8');
+    const q7 = readFileSync(new URL('../components/research/OpenEvoWebShopCurrentQ7.astro', import.meta.url), 'utf8');
+    expect(home).not.toContain('vercel.com/wangrui92-team');
+    expect(home).not.toMatch(/home-maintenance-shortcuts[\s\S]*?opacity:/);
+    expect(q7).toContain('.manifest-copy span{max-width:72ch;color:var(--color-text-on-tint)');
   });
 });

@@ -1,14 +1,12 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
 import { ResearchWorkspace } from '../../components/workspace/ResearchWorkspace.tsx';
-import { getMessages, isLocale, type Locale } from '../../i18n';
-import { getCollection } from 'astro:content';
-
-const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh';
-const m = getMessages(locale);
-const models = (await getCollection('models')).map((entry) => entry.data);
-const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
 <AppLayout title="实验工作台" description="填写模型、GPU、网络、权重和训练条件，筛掉跑不起来的方案，并保存候选、来源和比较结果。" locale="zh">
-  <ResearchWorkspace client:load models={models} papers={papers} m={m} locale="zh" />
+  <section class="shell page-header" data-workspace-static-fallback>
+    <h1>实验工作台</h1>
+    <p class="lede">从当前任务入口设定模型角色、GPU、网络、权重和训练条件；交互工作台会保存候选、比较与证据。</p>
+    <p><a class="button button-primary" href="?v=2&mode=modern">从全新实验任务开始</a></p>
+  </section>
+  <ResearchWorkspace client:load locale="zh" />
 </AppLayout>

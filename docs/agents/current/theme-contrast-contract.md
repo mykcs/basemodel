@@ -161,8 +161,7 @@ Flow animation may reinforce direction, but the static route, numbering, arrows,
 
 - theme bootstrap/default and persistence: `src/layouts/AppLayout.astro`;
 - theme tokens: `src/styles/tokens.css`;
-- sitewide visual grammar: `src/styles/knowledge-architecture.css`;
-- sitewide primer: `src/components/visual/SiteRoutePrimer.astro`;
+- sitewide visual grammar: the live visual components and their scoped styles;
 - OpenEvo visual primer: `src/components/OpenEvoSeedBenchmarksGuide.astro`;
 - default-theme regression: `src/lib/defaultTheme.test.ts`;
 - token regression test: `src/lib/themeContrast.test.ts`;

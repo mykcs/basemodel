@@ -1,0 +1,100 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import './ResearchContextBar.css';
+
+interface ResearchContextLabels {
+  currentTask: string;
+  openWeightLabel: string;
+  candidates: string;
+  compare: string;
+  editConstraints: string;
+  clearTask: string;
+  role: Record<string, string>;
+  mode: Record<string, string>;
+  update: Record<string, string>;
+  access: Record<string, string>;
+}
+interface Props { labels: ResearchContextLabels; locale: Locale }
+const { labels, locale } = Astro.props;
+---
+<div
+  class="research-context-bar"
+  role="status"
+  aria-live="polite"
+  data-research-context
+  data-locale={locale}
+  data-labels={JSON.stringify(labels)}
+  hidden
+>
+  <div class="shell context-inner">
+    <span class="context-summary" data-context-summary>{labels.currentTask}</span>
+    <span class="context-counts" data-context-counts>{labels.candidates} 0 · {labels.compare} 0</span>
+    <a class="context-link" href={localePath(locale, '/workspace/')}>{labels.editConstraints}</a>
+    <button type="button" class="context-clear" data-context-clear aria-label={labels.clearTask}>×</button>
+  </div>
+</div>
+<script>
+  import { normalizeResearchTask } from '../../lib/researchTaskNormalization';
+  import { decodeResearchTask, replaceResearchTaskSearchParams } from '../../lib/researchTaskCodec';
+
+  const bar = document.querySelector<HTMLElement>('[data-research-context]');
+  const list = (key: string, max: number) => {
+    try {
+      const value: unknown = JSON.parse(localStorage.getItem(key) || '[]');
+      return Array.isArray(value)
+        ? [...new Set(value.filter((item): item is string => typeof item === 'string').map((item) => item.trim()).filter(Boolean))].slice(0, max)
+        : [];
+    } catch { return []; }
+  };
+  const readTask = () => {
+    const urlTask = decodeResearchTask(new URLSearchParams(window.location.search));
+    if (urlTask) {
+      const normalized = normalizeResearchTask(urlTask);
+      localStorage.setItem('atlas-research-task', JSON.stringify(normalized));
+      return normalized;
+    }
+    try { return normalizeResearchTask(JSON.parse(localStorage.getItem('atlas-research-task') || '{}')); }
+    catch { return normalizeResearchTask({}); }
+  };
+  const meaningful = (task: ReturnType<typeof normalizeResearchTask>) => Boolean(
+    task.mode !== 'new' || task.reference?.paperId || task.reference?.modelId || task.reference?.role || task.roles.length
+    || task.update !== 'none' || task.accessMode !== 'either' || typeof task.gpuVramGb === 'number'
+    || typeof task.gpuCount === 'number' || typeof task.quantizationAllowed === 'boolean' || task.precision
+    || typeof task.batchSize === 'number' || typeof task.loraRank === 'number' || task.optimizer
+    || typeof task.kvCacheEnabled === 'boolean' || typeof task.contextTarget === 'number'
+    || typeof task.openWeight === 'boolean' || typeof task.requireBaseCheckpoint === 'boolean'
+    || task.requiredRuntimes.length || Object.values(task.license).some(Boolean)
+    || Object.values(task.reproducibility).some(Boolean) || task.evidencePolicy !== 'verified_preferred' || task.priorities.length
+  );
+  const render = () => {
+    if (!bar) return;
+    const labels = JSON.parse(bar.dataset.labels || '{}') as Record<string, any>;
+    const task = readTask();
+    bar.hidden = !meaningful(task);
+    if (bar.hidden) return;
+    const parts = [labels.currentTask, labels.mode?.[task.mode] ?? task.mode];
+    if (task.roles.length) parts.push(task.roles.map((role) => labels.role?.[role] ?? role).join(bar.dataset.locale === 'zh' ? '、' : ', '));
+    if (task.update !== 'none') parts.push(labels.update?.[task.update] ?? task.update);
+    if (typeof task.gpuVramGb === 'number') parts.push(`${task.gpuVramGb}GB`);
+    if (task.openWeight) parts.push(labels.openWeightLabel);
+    if (typeof task.contextTarget === 'number') parts.push(`${task.contextTarget} tokens`);
+    if (task.accessMode !== 'either') parts.push(labels.access?.[task.accessMode] ?? task.accessMode);
+    const summary = bar.querySelector<HTMLElement>('[data-context-summary]');
+    const counts = bar.querySelector<HTMLElement>('[data-context-counts]');
+    if (summary) summary.textContent = parts.join(' · ');
+    if (counts) counts.textContent = `${labels.candidates} ${list('atlas-candidates', 12).length} · ${labels.compare} ${list('atlas-compare', 5).length}`;
+  };
+  bar?.querySelector('[data-context-clear]')?.addEventListener('click', () => {
+    localStorage.setItem('atlas-research-task', JSON.stringify(normalizeResearchTask({})));
+    const url = new URL(window.location.href);
+    url.search = replaceResearchTaskSearchParams(url.searchParams, null).toString();
+    window.history.replaceState(null, '', url);
+    window.dispatchEvent(new Event('atlas:research-context-change'));
+  });
+  window.addEventListener('atlas:research-context-change', render);
+  window.addEventListener('atlas:compare-change', render);
+  window.addEventListener('storage', (event) => {
+    if (['atlas-research-task', 'atlas-candidates', 'atlas-compare'].includes(event.key ?? '')) render();
+  });
+  render();
+</script>

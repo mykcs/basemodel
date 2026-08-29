@@ -201,7 +201,9 @@ function git(args: string[]): string {
   }).trim();
 }
 
-export function changedFilesForVercel(env: NodeJS.ProcessEnv = process.env): string[] {
+type ProcessEnvironment = Record<string, string | undefined>;
+
+export function changedFilesForVercel(env: ProcessEnvironment = process.env): string[] {
   const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
   const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
   const base = previous && previous !== head ? previous : `${head}^`;
@@ -212,7 +214,7 @@ export function changedFilesForVercel(env: NodeJS.ProcessEnv = process.env): str
   return output ? output.split(/\r?\n/).map(normalizePath).filter(Boolean) : [];
 }
 
-export function planCurrentVercelDeployment(env: NodeJS.ProcessEnv = process.env): HostedUiPlan {
+export function planCurrentVercelDeployment(env: ProcessEnvironment = process.env): HostedUiPlan {
   try {
     return planHostedUi(changedFilesForVercel(env));
   } catch (error) {

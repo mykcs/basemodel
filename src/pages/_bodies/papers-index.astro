@@ -21,4 +21,11 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
     <div class="section-heading"><div><h2>{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</h2></div></div>
     <PaperModelMatrix papers={matrixPapers} models={models} locale={locale} />
   </details>
+  <noscript>
+    <section class="paper-matrix-noscript" aria-labelledby="paper-matrix-noscript-title">
+      <h2 id="paper-matrix-noscript-title">{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</h2>
+      <p class="muted">{locale === 'zh' ? 'JavaScript 已关闭，因此直接显示论文与模型角色矩阵。' : 'JavaScript is disabled, so the paper–model role matrix is shown directly.'}</p>
+      <PaperModelMatrix papers={matrixPapers} models={models} locale={locale} />
+    </section>
+  </noscript>
 </div>

@@ -2,17 +2,13 @@
 import { getCollection } from 'astro:content';
 import ModelExplorer from '../../components/ModelExplorer';
 import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
-import { modelIdsUsedByPapers } from '../../lib/modelRelations';
 import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
 const modelEntries = await getCollection('models');
-const paperEntries = await getCollection('papers');
 const models = modelEntries.map((entry) => entry.data);
-const papers = paperEntries.map((entry) => entry.data);
-const paperModelIds = [...modelIdsUsedByPapers(papers)];
 const baseCheckpointHref = `${Astro.url.pathname}?baseCheckpoint=true`;
 ---
 <div class="shell">
@@ -27,5 +23,12 @@ const baseCheckpointHref = `${Astro.url.pathname}?baseCheckpoint=true`;
     </div>
   </header>
   <CatalogFreshnessNotice locale={locale} showSignals={true} />
-  <ModelExplorer client:load models={models} papers={papers} paperModelIds={paperModelIds} locale={locale} />
+  <section class="static-model-catalog" aria-labelledby="static-model-catalog-title" data-model-static-fallback>
+    <h2 id="static-model-catalog-title">{locale === 'zh' ? '模型目录' : 'Model catalog'}</h2>
+    <p>{locale === 'zh' ? '以下目录可在没有 JavaScript 时阅读；启用 JavaScript 后可使用完整筛选、搜索和任务匹配。' : 'This catalog remains readable without JavaScript; enable JavaScript for full filtering, search, and task matching.'}</p>
+    <div class="model-grid">
+      {models.map((model) => <article class="model-card"><h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3><p>{model.vendor} · {model.family} · {model.release_date}</p></article>)}
+    </div>
+  </section>
+  <ModelExplorer client:load locale={locale} />
 </div>

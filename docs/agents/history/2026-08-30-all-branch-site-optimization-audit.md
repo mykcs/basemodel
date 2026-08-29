@@ -270,6 +270,43 @@ Do not proceed to payload refactoring until these correctness Gates are green.
 - open or update one integration PR, record accepted head/base SHAs, and stop before merge so an independent Codex verifier can accept or reject it;
 - this workstream does not authorize remote-branch deletion, any change or merge to PR #335, merge to `main`, or Production deployment; each requires a separate explicit user request in a separate workstream.
 
+### Phase 3 reachability manifest (2026-08-30 implementation evidence)
+
+Search scope: production source imports and dynamic references, tests, scripts, current docs, and history. Historical references remain evidence rather than runtime reachability.
+
+| Candidate | Classification | Non-production references at audit time | Action |
+| --- | --- | --- | --- |
+| AgentPrimer | dead | test/current-doc/history | implementation deleted |
+| GuideContent | dead | test/current-doc/history | implementation and owner-only test deleted |
+| GuideDecisionChapters | dead | test/script/current-doc/history | implementation deleted; stale gates/docs updated |
+| OpenEvoReproductionResearch | dead | test/current-doc/history | implementation deleted; stale test/doc updated |
+| PersonalComputeProfile | dead | test/history | implementation deleted; privacy test retained against live surfaces |
+| AgentMechanismDialogues | dead | history only | implementation deleted |
+| OpenEvoSeedMechanismAnimation | dead | history only | implementation deleted |
+| SeedOpenEvoMissionRibbon | dead | script/history | implementation deleted; negative layout assertion retained |
+| ResearchMainline | dead | script/current-doc/history | implementation deleted; negative layout assertion retained |
+| SeedUseCaseStrip | dead | script/current-doc/history | implementation deleted; negative route assertions retained |
+| SiteRoutePrimer | dead | script/current-doc/history | implementation and now-unreachable CSS deleted |
+| ConstraintPanel | dead | history only | implementation deleted |
+
+Production-live: none. Test/doc-only: none (a production implementation referenced only by tests/docs is classified dead). Dead: all 12.
+
+### Phase 3 corrective implementation evidence (2026-08-30)
+
+- Vitest now has explicit structural and behavior commands; `npm test` runs both, and a filesystem-backed taxonomy regression proves every `*.test.ts/tsx` belongs to exactly one category. Playwright remains a separate browser suite.
+- Global Research Task context is a native Astro adjunct on every prior route including `/`; it normalizes the existing research-task/candidate/compare storage, reacts to same-document events, and preserves clear/update behavior without homepage React.
+- Native CompareTray clear writes `atlas-compare` and dispatches the shared compare event; the mounted compare nanostore consumes that event without redispatch, so native and React consumers converge.
+- The payload verifier counts executable inline scripts plus reachable external/imported JavaScript once and follows built homepage stylesheets. Fixed ceilings remain unchanged; workbench-only CSS moved to `workspace.css`, and CSS proven unreachable after the Phase 3 component retirements was removed.
+- `@types/node` remains unchanged: the local offline cache and lockfile contain no Node 24 package, and this workstream forbids network access. No dependency or lockfile state was fabricated; Node-type alignment remains bounded by a future authorized online install.
+
+### Phase 4 base and concurrency reconciliation (2026-08-30)
+
+- Final implementation rebase base: `origin/main@42ef063f6c45a57b0df56c4a0a9689f65110a4b8`; the implementation branch is two local commits ahead of that base before the final Preview-marked amend/push.
+- PR #335 moved after the dated audit: GitHub now reports it merged at `432e3e7d8e68db8b132e4a1c0dbeeec3a89f4704`. The optimization work did not edit, merge, or delete its branch; its already-landed mainline state was inherited only through the required rebase.
+- Live open PRs at the final-base check were #341 (reader-facing experiment-gate explanations) and #345 (website-copy preference documentation). #347 merged into main as `42ef063` during implementation and was inherited only through the second required rebase. None of the still-open PRs was cherry-picked into this branch. #341 overlaps nearby research-result surfaces and remains a separate semantic integration concern for later review.
+- The rebase had one content conflict in `WebShopTrainingNote.astro`: upstream added `ResearchTechnicalDisclosure`; this branch added the feature-owned WebShop stylesheet import. Resolution preserved both without changing the research copy or moving the feature stylesheet back into the global bundle.
+- No remote branch was deleted and no Production merge/deployment was performed.
+
 ## 7. Delivery and acceptance contract
 
 The implementation is not complete until all applicable items below have evidence tied to the exact PR head.

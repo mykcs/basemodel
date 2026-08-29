@@ -67,7 +67,9 @@ export const emptyTask: ResearchTask = {
   priorities: [],
 };
 
-export const researchTask = persistentAtom<ResearchTask>('atlas-research-task', emptyTask, {
+const RESEARCH_TASK_STORAGE_KEY = 'atlas-research-task';
+
+export const researchTask = persistentAtom<ResearchTask>(RESEARCH_TASK_STORAGE_KEY, emptyTask, {
   encode(value) {
     return JSON.stringify(normalizeResearchTask(value));
   },
@@ -79,6 +81,17 @@ export const researchTask = persistentAtom<ResearchTask>('atlas-research-task', 
     }
   },
 });
+
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('atlas:research-context-change', () => {
+    try {
+      researchTask.set(normalizeResearchTask(JSON.parse(localStorage.getItem(RESEARCH_TASK_STORAGE_KEY) || '{}') as unknown));
+    } catch {
+      researchTask.set(emptyTask);
+    }
+  });
+}
 
 export function hasMeaningfulResearchTask(task: ResearchTask): boolean {
   return Boolean(
@@ -112,6 +125,7 @@ export function setResearchTask(task: ResearchTask) {
   const normalized = normalizeResearchTask(task);
   researchTask.set(normalized);
   if (typeof window !== 'undefined') syncResearchTaskToUrl(normalized);
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('atlas:research-context-change'));
 }
 
 export function clearResearchTask() {
@@ -120,6 +134,7 @@ export function clearResearchTask() {
     const url = new URL(window.location.href);
     url.search = replaceResearchTaskSearchParams(url.searchParams, null).toString();
     window.history.replaceState(null, '', url.toString());
+    window.dispatchEvent(new Event('atlas:research-context-change'));
   }
 }
 
@@ -133,5 +148,8 @@ function syncResearchTaskToUrl(task: ResearchTask) {
 export function initResearchTaskFromUrl() {
   if (typeof window === 'undefined') return;
   const urlTask = decodeResearchTask(new URLSearchParams(window.location.search));
-  if (urlTask) researchTask.set(normalizeResearchTask(urlTask));
+  if (urlTask) {
+    researchTask.set(normalizeResearchTask(urlTask));
+    window.dispatchEvent(new Event('atlas:research-context-change'));
+  }
 }

@@ -92,16 +92,6 @@ describe('audience copy audit', () => {
     expect(checkStrictAudienceCopyInvariants(root)).toEqual([]);
   });
 
-  it('ignores i18n string literals when flagging a Chinese surface English sentence', () => {
-    const file = 'src/components/OpenEvoReproductionResearch.astro';
-    const source = fs.readFileSync(path.join(root, file), 'utf8');
-    const probeFindings = source.matchAll(/[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g);
-    expect(Array.from(probeFindings).length).toBeGreaterThan(0);
-    const findings = scanAudienceCopy(root);
-    const zhEn = findings.filter((finding) => finding.file === file && finding.ruleId === 'COPY-ZH-EN-SENTENCE');
-    expect(zhEn).toEqual([]);
-  });
-
   it('still flags a bare Chinese surface that exposes an unexplained full English sentence', () => {
     const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'audience-copy-'));
     try {

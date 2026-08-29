@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { filterModels, parseOptionalBooleanParam, sortModels, type ModelFilters } from '../lib/modelFilters';
 import { architectureLabel, checkpointLabel, displayBoolean, parameterSummary, specializationLabel } from '../lib/format';
-import { getMessages, localePath, type Locale } from '../i18n';
+import { baseUrl, getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel } from '../lib/types';
 import type { AtlasPaper } from '../lib/schemas';
 import { hasMeaningfulResearchTask, researchTask } from '../stores/researchTask';
@@ -27,7 +27,37 @@ type DecisionSection = {
   models: AtlasModel[];
 };
 
-export default function ModelExplorer({ models, papers, paperModelIds, locale = 'zh' }: { models: AtlasModel[]; papers: AtlasPaper[]; paperModelIds: string[]; locale?: Locale }) {
+interface CatalogPayload { models: AtlasModel[]; papers: AtlasPaper[]; paperModelIds: string[] }
+
+let catalogRequest: Promise<CatalogPayload> | null = null;
+
+function loadCatalog() {
+  catalogRequest ??= fetch(`${baseUrl()}model-data/catalog.json`, { credentials: 'same-origin' }).then((response) => {
+    if (!response.ok) throw new Error('model catalog unavailable');
+    return response.json() as Promise<CatalogPayload>;
+  });
+  return catalogRequest;
+}
+
+export default function ModelExplorer({ locale = 'zh' }: { locale?: Locale }) {
+  const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const m = getMessages(locale);
+
+  useEffect(() => {
+    let active = true;
+    void loadCatalog().then((payload) => {
+      if (!active) return;
+      setCatalog(payload);
+      document.querySelector<HTMLElement>('[data-model-static-fallback]')?.setAttribute('hidden', '');
+    });
+    return () => { active = false; };
+  }, []);
+
+  if (!catalog) return <p className="muted" role="status">{m.explorer.showing}…</p>;
+  return <LoadedModelExplorer {...catalog} locale={locale} />;
+}
+
+function LoadedModelExplorer({ models, papers, paperModelIds, locale }: CatalogPayload & { locale: Locale }) {
   const hydrated = useHydrated();
   const m = getMessages(locale);
   const task = useStore(researchTask);

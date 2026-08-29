@@ -1,7 +1,10 @@
-import { readdirSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   bilingualStaticPaths,
+  availableLocalesForRoute,
+  localizedRoute,
+  sitemapStaticPaths,
   toEnglishPath,
   zhOnlyStaticPaths,
 } from './sitemapRoutes';
@@ -79,5 +82,29 @@ describe('sitemap route coverage', () => {
   it('does not contain duplicate static paths', () => {
     const allPaths = [...bilingualStaticPaths, ...zhOnlyStaticPaths];
     expect(new Set(allPaths).size).toBe(allPaths.length);
+  });
+
+  it('derives reciprocal locale targets and excludes unavailable translations', () => {
+    for (const path of bilingualStaticPaths) {
+      expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+      expect(localizedRoute(path, 'zh')).toBe(path);
+      expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
+    }
+    for (const path of zhOnlyStaticPaths) {
+      expect(availableLocalesForRoute(path)).toEqual(['zh']);
+      expect(localizedRoute(path, 'en')).toBeNull();
+    }
+  });
+
+  it('maps every declared static locale URL to a real Astro page owner', () => {
+    const pageExists = (route: string) => {
+      const relative = route === '/' ? 'index' : route.replace(/^\//, '').replace(/\/$/, '');
+      return existsSync(new URL(`../pages/${relative}.astro`, import.meta.url))
+        || existsSync(new URL(`../pages/${relative}/index.astro`, import.meta.url))
+        || (!relative.startsWith('en/')
+          && relative.startsWith('research/seed-openevo/study/results/')
+          && existsSync(new URL('../pages/research/seed-openevo/study/results/[note].astro', import.meta.url)));
+    };
+    for (const path of sitemapStaticPaths()) expect(pageExists(path), `missing page for ${path}`).toBe(true);
   });
 });

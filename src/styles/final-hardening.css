@@ -15,22 +15,13 @@
 }
 
 /* Research-critical explanations must read like body copy, not metadata. */
-.reason-line,
-.risk-line,
-.bucket-hint,
-.task-step-hint,
-.task-inline-note,
-.evidence-inspector,
 .paper-case-summary,
 .paper-case-scope,
 .paper-case-facts,
-.memo-readable,
 .snapshot-change-notice {
   font-size: .86rem;
   line-height: 1.58;
 }
-.reason-chip,
-.risk-chip,
 .provenance-badge,
 .fit-dimensions dt,
 .fit-dimensions dd,
@@ -39,23 +30,7 @@
 .status-caption {
   font-size: .78rem;
 }
-.candidate-info > span,
-.candidate-meta,
 .source-meta { font-size: .8rem; }
-
-/* Give the analytical workbench enough room without making mobile a squeezed desktop. */
-.workspace .shell { width: min(1360px, calc(100% - 32px)); }
-.workspace-grid {
-  grid-template-columns: minmax(300px, .9fr) minmax(0, 1.8fr) minmax(360px, 1fr);
-  gap: 20px;
-}
-.constraint-panel,
-.candidate-board,
-.evidence-inspector {
-  border-radius: 14px;
-  box-shadow: none;
-}
-.candidate-row { border-radius: 9px; }
 
 /* Decision view is editorially grouped rather than one undifferentiated card catalog. */
 .decision-sections { display: grid; gap: 44px; }
@@ -145,78 +120,13 @@
 .paper-case-facts dd { line-height: 1.5; }
 .paper-case-card { box-shadow: none !important; border-radius: 10px !important; }
 
-/* Four-chapter guide: one decision model instead of another wall of concept cards. */
-.guide-decision-chapters { margin: 48px 0 70px; }
-.guide-decision-intro { max-width: 780px; margin-bottom: 24px; }
-.guide-decision-intro p { color: var(--muted); }
-.guide-chapter-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 48px;
-}
-.guide-chapter-nav a { padding: 15px 12px 15px 0; text-decoration: none; color: var(--ink); font-weight: 700; }
-.guide-chapter-nav a + a { border-left: 1px solid var(--line); padding-left: 12px; }
-.guide-chapter-nav span { color: var(--accent-deep); margin-right: 7px; font-variant-numeric: tabular-nums; }
-.guide-chapters { display: grid; gap: 58px; }
-.guide-chapter > header { max-width: 800px; margin-bottom: 18px; }
-.guide-chapter-number { color: var(--accent-deep); font-weight: 800; font-size: .78rem; letter-spacing: .08em; }
-.guide-chapter > header h3 { font-size: 1.6rem; margin: 5px 0 8px; }
-.guide-chapter > header p { color: var(--muted); }
-.guide-concept-list { border-top: 1px solid var(--line); }
-.guide-concept-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, .6fr);
-  gap: 28px;
-  padding: 21px 0;
-  border-bottom: 1px solid var(--line);
-}
-.guide-concept-row h4 { font-size: 1rem; margin: 0 0 7px; }
-.guide-concept-row p { margin: 0; color: var(--muted); }
-.guide-concept-actions { display: grid; align-content: start; gap: 13px; }
-.guide-concept-actions .concept-model-links { display: flex; flex-wrap: wrap; gap: 7px; }
-.guide-concept-actions .concept-model-links > span { flex-basis: 100%; color: var(--muted); font-size: .8rem; }
-.guide-concept-actions .concept-model-links a { font-size: .84rem; text-decoration: none; color: var(--accent-deep); }
-
-/* Human-readable memo first; raw Markdown remains an export detail. */
-.memo-header { align-items: flex-start; gap: 18px; }
-.memo-header h2 { margin-bottom: 3px; }
-.memo-revision { margin: 0; font-size: .8rem; }
-.memo-actions { flex-wrap: wrap; justify-content: flex-end; }
-.memo-readable { display: grid; gap: 30px; }
-.memo-readable > section { border-top: 1px solid var(--line); padding-top: 19px; }
-.memo-readable > section:first-child { border-top: 0; padding-top: 0; }
-.memo-readable h3 { font-size: 1rem; margin-bottom: 12px; }
-.memo-readable ul { margin: 0; padding-left: 20px; }
-.memo-candidate-list { display: grid; gap: 16px; }
-.memo-candidate-list article { border-left: 3px solid var(--line); padding-left: 14px; }
-.memo-candidate-list h4 { margin: 0 0 2px; font-size: .96rem; }
-.memo-model-meta { color: var(--muted); font-size: .8rem; margin-bottom: 9px; }
-.memo-candidate-list p { margin-bottom: 7px; }
-.memo-risk { color: var(--danger); }
-.memo-unverified { background: color-mix(in srgb, var(--warning) 7%, transparent); padding: 16px !important; border: 1px solid color-mix(in srgb, var(--warning) 25%, var(--line)) !important; border-radius: 10px; }
-.memo-evidence-list { display: grid; gap: 7px; }
-.memo-evidence-list li { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
-.memo-evidence-list span { color: var(--muted); font-size: .8rem; }
-.memo-preview { margin-top: 12px; }
-
 /* Landscape learning mode is the default low-cognitive-load path. */
 .landscape-learning-card { box-shadow: none !important; border-radius: 10px !important; }
 .accessible-landscape { margin-top: 20px; }
 
-@media (max-width: 1180px) {
-  .workspace-grid { grid-template-columns: minmax(280px, .85fr) minmax(0, 1.6fr) minmax(320px, .95fr); gap: 16px; }
-  .guide-chapter-nav { grid-template-columns: repeat(2, 1fr); }
-  .guide-chapter-nav a:nth-child(3) { border-left: 0; }
-}
-
 @media (max-width: 980px) {
-  .workspace .shell { width: min(100% - 24px, 760px); }
-  .workspace-grid { grid-template-columns: 1fr; }
   .decision-section-heading,
-  .family-current-row,
-  .guide-concept-row { grid-template-columns: 1fr; gap: 11px; }
+  .family-current-row { grid-template-columns: 1fr; gap: 11px; }
   .research-path-list { grid-template-columns: 1fr; }
   .research-path-row { padding: 17px 0; }
   .research-path-row + .research-path-row { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
@@ -225,11 +135,6 @@
 @media (max-width: 640px) {
   .intent-row { grid-template-columns: 1fr auto; gap: 12px; }
   .family-current-row dl div { grid-template-columns: 86px 1fr; }
-  .guide-chapter-nav { grid-template-columns: 1fr; }
-  .guide-chapter-nav a + a { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
-  .memo-header { display: grid; }
-  .memo-actions { justify-content: flex-start; }
-  .memo-evidence-list li { grid-template-columns: 1fr; gap: 2px; }
 }
 
 /* Responsive learning UI — desktop clarity, mobile-first study ergonomics. */
@@ -291,7 +196,6 @@ summary:focus-visible {
   background: radial-gradient(circle, color-mix(in srgb, var(--blue) 7%, transparent), transparent 67%);
 }
 .site-main > .hero .shell { width: min(var(--study-max), calc(100% - 48px)); }
-.site-main > .hero .hero-grid { grid-template-columns: minmax(0, 1.12fr) minmax(360px, .78fr); gap: clamp(40px, 6vw, 86px); }
 .site-main > .hero h1 {
   max-width: 760px;
   font-size: clamp(3rem, 5.1vw, 4.9rem);
@@ -301,26 +205,6 @@ summary:focus-visible {
 .site-main > .hero .lede { max-width: 62ch; font-size: clamp(1rem, 1.5vw, 1.14rem); line-height: 1.72; }
 .site-main > .hero .hero-actions { margin-top: 28px; }
 .site-main > .hero .button-primary { min-height: 48px; padding: 12px 18px; border-radius: 12px; font-weight: 780; }
-.site-main > .hero .example-card {
-  position: relative;
-  z-index: 1;
-  padding: clamp(22px, 3vw, 32px);
-  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--line));
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  box-shadow: var(--study-shadow);
-}
-.site-main > .hero .example-card-title { font-size: clamp(1.35rem, 2.2vw, 1.9rem); line-height: 1.12; }
-.site-main > .hero .example-card > p { line-height: 1.68; }
-.site-main > .hero .example-stats { gap: 8px; margin-top: 22px; }
-.site-main > .hero .example-stat {
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface-muted);
-}
-.site-main > .hero .example-stat strong { font-size: 1rem; }
-.site-main > .hero .example-stat span { line-height: 1.35; }
 
 /* Home choices: on desktop they read as a three-step decision board. */
 .intent-grid {
@@ -361,19 +245,6 @@ summary:focus-visible {
   border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
   box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 7%, transparent);
 }
-
-/* The concrete SEED strip should feel like the primary course module. */
-.seed-use-case {
-  margin-block: 42px 18px !important;
-  border-radius: 22px !important;
-  overflow: hidden;
-  box-shadow: 0 16px 42px color-mix(in srgb, var(--ink) 5%, transparent);
-}
-.seed-use-case .head { gap: 24px; }
-.seed-use-case .head h2 { max-width: 720px; font-size: clamp(1.55rem, 3vw, 2.2rem); }
-.seed-use-case .head .button { min-height: 46px; }
-.seed-use-case ol li { min-width: 0; }
-.seed-use-case ol small { line-height: 1.42; }
 
 /* Supporting home sections: keep information scannable rather than dense. */
 .research-path-list { gap: 14px; border: 0; }
@@ -423,12 +294,6 @@ summary:focus-visible {
 }
 .guide-learning-page .agent-bridge { box-shadow: 0 18px 52px color-mix(in srgb, var(--ink) 5%, transparent); }
 .guide-learning-page .agent-bridge-head { gap: 34px; }
-.guide-learning-page .bridge-check { border-radius: 12px; }
-.guide-learning-page .known-to-agent article { min-width: 0; }
-.guide-learning-page .agent-loop { border-radius: 14px; }
-.guide-learning-page .loop-cards article,
-.guide-learning-page .seed-steps li { border-radius: 13px; }
-.guide-learning-page .bridge-handoff { border-radius: 14px; }
 
 .guide-learning-page .seed-guide { margin-top: 34px; }
 .guide-learning-page .guide-hero > p { max-width: var(--study-reading); line-height: 1.7; }
@@ -483,7 +348,6 @@ pre { max-width: 100%; }
 @media (max-width: 1080px) {
   .nav-inner { min-height: 62px; }
   .brand { min-width: 0; }
-  .site-main > .hero .hero-grid { grid-template-columns: 1fr minmax(320px, .78fr); gap: 34px; }
   .site-main > .hero h1 { font-size: clamp(2.8rem, 6.4vw, 4.2rem); }
   .intent-row { min-height: 196px; }
   .guide-learning-page .route { top: 64px; }
@@ -493,24 +357,13 @@ pre { max-width: 100%; }
   html { scroll-padding-top: 70px; }
   .site-main > .hero .shell,
   .guide-learning-page { width: min(100% - 32px, 760px); }
-  .site-main > .hero .hero-grid { grid-template-columns: 1fr; gap: 30px; }
   .site-main > .hero h1 { max-width: 690px; }
-  .site-main > .hero .example-card { max-width: 680px; }
   .intent-grid { grid-template-columns: 1fr; gap: 10px; }
   .intent-row { min-height: 0; }
   .research-path-list { grid-template-columns: 1fr; }
   .family-current-row { grid-template-columns: 1fr; gap: 12px; }
 
   .guide-learning-page .agent-bridge-head { grid-template-columns: 1fr; }
-  .guide-learning-page .known-to-agent { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .guide-learning-page .known-to-agent article:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
-  .guide-learning-page .known-to-agent article:nth-child(4) { border-top: 1px solid var(--line); }
-  .guide-learning-page .agent-loop {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .guide-learning-page .agent-loop > i { transform: rotate(90deg); min-height: 22px; display: grid; place-items: center; }
-  .guide-learning-page .agent-loop > i:nth-of-type(4) { transform: none; }
   .guide-learning-page .route {
     position: static;
     display: flex;
@@ -550,18 +403,11 @@ pre { max-width: 100%; }
   .site-main > .hero .hero-actions { margin-top: 22px; }
   .site-main > .hero .hero-actions .button { width: 100%; justify-content: center; }
   .site-main > .hero .novice-entry { font-size: .88rem; line-height: 1.55; }
-  .site-main > .hero .example-card { padding: 19px; border-radius: 17px; }
-  .site-main > .hero .example-stats { grid-template-columns: 1fr; }
 
   .section { padding-block: 30px; }
   .section-heading h2 { font-size: clamp(1.45rem, 7vw, 1.8rem); }
   .intent-row { padding: 18px; border-radius: 14px; }
   .intent-row h3 { margin-top: 10px; }
-  .seed-use-case { margin-block: 28px 12px !important; border-radius: 16px !important; }
-  .seed-use-case .head { display: grid; }
-  .seed-use-case .head .button { width: 100%; justify-content: center; }
-  .seed-use-case ol { grid-template-columns: 1fr !important; }
-  .seed-use-case aside { margin-top: 12px; }
   .research-path-row { padding: 18px !important; }
   .family-current-row { padding: 17px; }
   .family-current-row dl div { grid-template-columns: 80px minmax(0, 1fr); }
@@ -575,15 +421,6 @@ pre { max-width: 100%; }
   .guide-learning-page .hardware-note { margin-top: 18px; padding: 13px 14px; }
   .guide-learning-page .agent-bridge { margin-top: 14px; padding: 18px !important; border-radius: 16px; }
   .guide-learning-page .agent-bridge-head h2 { font-size: clamp(1.45rem, 7vw, 1.85rem); }
-  .guide-learning-page .known-to-agent { grid-template-columns: 1fr; margin-block: 22px 30px; }
-  .guide-learning-page .known-to-agent article + article { border-left: 0; border-top: 1px solid var(--line); }
-  .guide-learning-page .bridge-title-row { grid-template-columns: 30px minmax(0, 1fr); }
-  .guide-learning-page .bridge-title-row h3 { font-size: 1.18rem; }
-  .guide-learning-page .loop-cards { grid-template-columns: 1fr; }
-  .guide-learning-page .term-strip { grid-template-columns: 1fr; }
-  .guide-learning-page .seed-steps li { grid-template-columns: 1fr; }
-  .guide-learning-page .bridge-handoff { display: grid; gap: 14px; }
-  .guide-learning-page .bridge-handoff a { min-height: 46px; display: flex; align-items: center; }
   .guide-learning-page .seed-guide { margin-top: 24px; }
   .guide-learning-page .route { margin-inline: -2px; padding: 6px; }
   .guide-learning-page .success-map { padding: 18px !important; }

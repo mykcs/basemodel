@@ -2,7 +2,7 @@
 
 Status: **current implementation contract**  
 Decision date: **2026-08-20**  
-Last reviewed: **2026-08-22**
+Last reviewed: **2026-08-30**
 
 ## Decision
 
@@ -46,16 +46,13 @@ AppLayout.astro
    │  ├─ site.css
    │  └─ visual-identity.css
    │     └─ editorial-hierarchy.css
-   ├─ workspace.css
    ├─ frozen legacy compatibility layers
    ├─ actionable-content.css
-   ├─ knowledge-architecture.css
    ├─ mobile-composition.css
    ├─ visual-closeout.css
    └─ components/
       ├─ global-shell.css
       ├─ header.css
-      └─ webshop-training-note.css
 ```
 
 `AppLayout.astro` must not accumulate another list of page-wide stylesheet imports. `app.css` is the only composition root for global CSS.
@@ -90,9 +87,11 @@ The Header component's scoped Astro style may still own internal structure. The 
 
 ### Named cross-cutting systems
 
-Files such as `workspace.css`, `actionable-content.css`, `knowledge-architecture.css`, and `mobile-composition.css` are valid because each has a durable named responsibility.
+Files such as `actionable-content.css` and `mobile-composition.css` are valid because each has a durable named responsibility. `workspace.css` is feature-owned and imported by `ResearchWorkspace` rather than the global composition root.
 
 `mobile-composition.css` owns mobile reading composition only. Its old Header/mobile-menu compatibility copy has been removed. It must not regain Header/Nav selectors.
+
+`workspace.css` also owns workbench-only hardening and memo rules. Those selectors must not return to the universal compatibility payload; confirmed selectors left behind by retired components may be removed only after production-source reachability checks.
 
 A new global stylesheet must have a durable semantic responsibility that can be described without words such as “fix”, “final”, “hardening”, “closeout”, “cleanup”, or “refinement”.
 

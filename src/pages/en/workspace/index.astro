@@ -1,13 +1,12 @@
 ---
 import AppLayout from '../../../layouts/AppLayout.astro';
 import { ResearchWorkspace } from '../../../components/workspace/ResearchWorkspace.tsx';
-import { getMessages } from '../../../i18n';
-import { getCollection } from 'astro:content';
-
-const m = getMessages('en');
-const models = (await getCollection('models')).map((entry) => entry.data);
-const papers = (await getCollection('papers')).map((entry) => entry.data);
 ---
 <AppLayout title="Experiment workspace" description="Enter the model, GPU, network, weight-access, and training conditions, remove infeasible plans, and keep candidates, sources, and comparisons together." locale="en">
-  <ResearchWorkspace client:load models={models} papers={papers} m={m} locale="en" />
+  <section class="shell page-header" data-workspace-static-fallback>
+    <h1>Experiment workspace</h1>
+    <p class="lede">Start with the current task: set model roles, GPU, network, weight access, and training conditions. The interactive workspace keeps candidates, comparisons, and evidence together.</p>
+    <p><a class="button button-primary" href="?v=2&mode=modern">Start a new experiment task</a></p>
+  </section>
+  <ResearchWorkspace client:load locale="en" />
 </AppLayout>

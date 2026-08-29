@@ -23,6 +23,12 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/flow/alfworld/',
   '/research/seed-openevo/flow/loops/',
   '/research/seed-openevo/study/results/',
+  '/research/seed-openevo/study/capability-exploration/',
+  '/research/seed-openevo/study/results/3b-self-analysis/',
+  '/research/seed-openevo/study/results/7b-self-analysis/',
+  '/research/seed-openevo/study/results/3b-minimax-analysis/',
+  '/research/seed-openevo/study/results/7b-minimax-analysis/',
+  '/research/seed-openevo/study/results/four-arm-analysis/',
 ] as const;
 
 export const zhOnlyStaticPaths = [
@@ -39,8 +45,42 @@ export const zhOnlyStaticPaths = [
   '/research/seed-openevo/study/results/benchmark-first/',
   '/research/seed-openevo/study/results/seed-faithful-benchmark/',
   '/research/seed-openevo/study/results/openevo-benchmark-design/',
+  '/research/seed-openevo/study/minimax-teacher/',
 ] as const;
 
 export function toEnglishPath(path: string): string {
   return path === '/' ? '/en/' : `/en${path}`;
+}
+
+export type RouteLocale = 'zh' | 'en';
+
+const bilingualRoutes = new Set<string>(bilingualStaticPaths);
+const zhOnlyRoutes = new Set<string>(zhOnlyStaticPaths);
+const bilingualDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
+
+export function normalizeLocaleRoute(pathname: string): string {
+  const withoutQuery = pathname.split(/[?#]/, 1)[0] || '/';
+  const neutral = withoutQuery.replace(/^\/en(?=\/|$)/, '') || '/';
+  return neutral === '/' ? '/' : `/${neutral.replace(/^\/+|\/+$/g, '')}/`;
+}
+
+export function availableLocalesForRoute(pathname: string): readonly RouteLocale[] {
+  const route = normalizeLocaleRoute(pathname);
+  if (bilingualRoutes.has(route) || bilingualDynamicRoute.test(route)) return ['zh', 'en'];
+  if (zhOnlyRoutes.has(route)) return ['zh'];
+  return [];
+}
+
+export function isLocaleRouteAvailable(pathname: string, locale: RouteLocale): boolean {
+  return availableLocalesForRoute(pathname).includes(locale);
+}
+
+export function localizedRoute(pathname: string, locale: RouteLocale): string | null {
+  const route = normalizeLocaleRoute(pathname);
+  if (!isLocaleRouteAvailable(route, locale)) return null;
+  return locale === 'en' ? toEnglishPath(route) : route;
+}
+
+export function sitemapStaticPaths(): string[] {
+  return [...bilingualStaticPaths, ...zhOnlyStaticPaths, ...bilingualStaticPaths.map(toEnglishPath)];
 }

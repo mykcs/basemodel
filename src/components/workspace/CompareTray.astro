@@ -1,0 +1,19 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import './CompareTray.css';
+interface CompareTrayLabels { compareTray: string; compare: string; openCompare: string; clearCompare: string }
+interface Props { labels: CompareTrayLabels; locale: Locale }
+const { labels, locale } = Astro.props;
+---
+<div class="compare-tray" role="region" aria-label={labels.compareTray} data-compare-tray hidden data-compare-base={localePath(locale, '/compare/')}>
+  <div class="shell tray-inner"><span class="tray-label">{labels.compare}</span><div class="tray-chips" data-compare-chips></div><div class="tray-actions"><a class="button button-primary" href={localePath(locale, '/compare/')} data-compare-open>{labels.openCompare}</a><button type="button" class="button" data-compare-clear>{labels.clearCompare}</button></div></div>
+</div>
+<script>
+  const tray = document.querySelector<HTMLElement>('[data-compare-tray]');
+  const normalize = (value: unknown) => Array.isArray(value) ? [...new Set(value.filter((v): v is string => typeof v === 'string').map((v) => v.trim()).filter(Boolean))].slice(0,5) : [];
+  const read = () => { try { return normalize(JSON.parse(localStorage.getItem('atlas-compare') || '[]')); } catch { return []; } };
+  let renderVersion = 0;
+  const render = async () => { const version=++renderVersion; const ids=read(); if (!tray) return; tray.hidden=!ids.length; if (!ids.length) { tray.querySelector('[data-compare-chips]')?.replaceChildren(); document.documentElement.style.removeProperty('--compare-tray-height'); return; } const chips=tray.querySelector('[data-compare-chips]')!; chips.replaceChildren(); const names=await Promise.all(ids.map(async(id)=>{try{const r=await fetch(`/model-data/${encodeURIComponent(id)}.json`);if(!r.ok)throw new Error();const d=await r.json();return typeof d.name==='string'&&d.name.trim()?d.name:id}catch{return id}})); if(version!==renderVersion||ids.join()!==read().join())return; names.forEach((name)=>{const chip=document.createElement('span');chip.className='tray-chip';chip.textContent=name;chips.append(chip)}); const link=tray.querySelector<HTMLAnchorElement>('[data-compare-open]')!; link.href=`${tray.dataset.compareBase}?models=${encodeURIComponent(ids.join(','))}`; document.documentElement.style.setProperty('--compare-tray-height',`${tray.getBoundingClientRect().height}px`); };
+  tray?.querySelector('[data-compare-clear]')?.addEventListener('click',()=>{localStorage.setItem('atlas-compare','[]');window.dispatchEvent(new Event('atlas:compare-change'));});
+  window.addEventListener('atlas:compare-change',render); window.addEventListener('storage',(e)=>{if(e.key==='atlas-compare')render()}); void render();
+</script>

@@ -11,6 +11,7 @@
   --color-surface-muted: #ebe8df;
   --color-text: #18201f;
   --color-text-muted: #65706c;
+  --color-text-on-tint: #18201f;
   --color-border: #d9d4c9;
   --color-accent: #8f3d2a;
   --color-accent-soft: #c97858;
@@ -94,6 +95,7 @@
   --color-surface-muted: #27302f;
   --color-text: #edf0e8;
   --color-text-muted: #a6b0a9;
+  --color-text-on-tint: #edf0e8;
   --color-border: #394542;
   --color-accent: #ffb08d;
   --color-accent-soft: #f18b61;

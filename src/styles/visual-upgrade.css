@@ -274,120 +274,6 @@ pre {
   line-height: 1.35;
 }
 
-/* Beginner runway shown only on the home route. */
-.learning-start {
-  border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
-  background:
-    linear-gradient(120deg, color-mix(in srgb, var(--accent) 9%, var(--surface)) 0%, var(--surface) 46%, color-mix(in srgb, var(--blue) 6%, var(--surface)) 100%);
-}
-
-.learning-start-inner {
-  display: grid;
-  grid-template-columns: minmax(250px, .72fr) minmax(0, 1.28fr);
-  gap: clamp(28px, 4vw, 52px);
-  align-items: center;
-  padding: 28px 0 30px;
-}
-
-.learning-start-copy {
-  max-width: 430px;
-}
-
-.learning-start-kicker {
-  display: inline-flex;
-  margin-bottom: 8px;
-  color: var(--accent-deep);
-  font-size: .72rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.learning-start-copy h2 {
-  margin-bottom: 10px;
-  font-size: clamp(1.4rem, 2.3vw, 2rem);
-  line-height: 1.08;
-}
-
-.learning-start-copy p {
-  margin: 0;
-  color: var(--muted);
-  font-size: .88rem;
-  line-height: 1.62;
-}
-
-.learning-start-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.learning-start-steps li {
-  min-width: 0;
-}
-
-.learning-start-steps a {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
-  height: 100%;
-  min-height: 128px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  color: inherit;
-  text-decoration: none;
-}
-
-.learning-start-steps a:hover,
-.learning-start-steps a:focus-visible {
-  border-color: var(--accent);
-  background: var(--surface);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--ink) 7%, transparent);
-}
-
-.learning-step-number {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--surface-muted);
-  color: var(--accent-deep);
-  font-size: .72rem;
-  font-weight: 850;
-  font-variant-numeric: tabular-nums;
-}
-
-.learning-step-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.learning-step-copy strong {
-  font-size: .86rem;
-  line-height: 1.35;
-}
-
-.learning-step-copy small {
-  color: var(--muted);
-  font-size: .72rem;
-  line-height: 1.5;
-}
-
-.learning-step-action {
-  margin-top: auto;
-  color: var(--accent-deep);
-  font-size: .72rem;
-  font-weight: 750;
-}
-
 /* Guide and learning surfaces: make progression visible. */
 .guide-seed-tour {
   scroll-margin-top: 92px;
@@ -496,14 +382,6 @@ table {
     display: none;
   }
 
-  .learning-start-inner {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .learning-start-copy {
-    max-width: 720px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -520,13 +398,6 @@ table {
     flex-direction: column;
   }
 
-  .learning-start-steps {
-    grid-template-columns: 1fr;
-  }
-
-  .learning-start-steps a {
-    min-height: 0;
-  }
 
   .compare-tray {
     padding: 9px 0 max(9px, env(safe-area-inset-bottom));
