@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-28**
+Last reviewed: **2026-08-29**
 
 ## Authority
 
@@ -82,6 +82,43 @@ The 2026-08-27 billing audit showed that BaseModel Build CPU, not public traffic
 These controls reduce future consumption only; they do not erase Build CPU already accumulated in the billing period.
 
 Historical diagnosis, parallel-Agent friction, Preview-auth verification, shell/editing noise, and migration-build evidence are recorded in [`../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). Use that file for rationale; this document remains the current behavior owner.
+
+## 2026-08-29 decision rationale — keep the current architecture
+
+The current architecture is an accepted decision, not an open migration project. Future Agents may improve implementation details or documentation, but should **not** reopen provider selection merely because another execution surface exists. Revisit the architecture only when new evidence changes one of the constraints below.
+
+The migration was driven by measured bottlenecks rather than provider preference. A representative pre-migration Production build spent roughly `4.8m` in the 92-case Chromium matrix plus about `33s` in the 12-case Lab gate, while `verify:deploy` was roughly `40s` and the Astro build itself roughly `6–7s`. After browser acceptance moved off Vercel, an actual Production build completed in about `47s`. That evidence is why the first optimization target was browser execution, not an immediate rewrite of every deterministic audit or a micro-optimization of repeated package installation.
+
+Keep these concepts separate:
+
+```text
+CI relevance != Vercel deploy relevance
+
+docs/governance-only
+-> self-hosted classifier may finish immediately
+-> Vercel ignored-build path
+
+test / workflow / runner-only
+-> self-hosted CI must still validate
+-> Vercel should not build the website
+
+product / runtime / deploy-relevant
+-> self-hosted validation as required by risk
+-> Vercel build/deploy as required by deploy relevance
+```
+
+This separation is intentional. Do not reuse the Vercel ignored-build classifier as the sole CI relevance classifier: a test-only change is not a reason to rebuild Production, but it is still something CI must validate.
+
+## Deferred ideas, not current work
+
+Several technically valid alternatives were discussed and intentionally left as future options rather than changes to the accepted design:
+
+- **Content/tree identity for test-proof reuse.** Commit SHA alone is too strict because a PR head and its merge commit can differ even when their Git tree is identical. Tree/build-input identity is useful evidence when proving that the tested source equals the released source. Do not add a Vercel-side GitHub-token lookup or proof registry merely for architectural neatness; the current required-check + protected-main model is simpler.
+- **Build once, test once, promote the same immutable deployment.** A future release model could build a Vercel candidate once, test that exact deployment, then promote it instead of rebuilding on `main`. This is stronger artifact identity than correlating two builds, but it would change the current Git-integration release model and is therefore deferred.
+- **Different heavy runner hardware.** The Mac/OrbStack runner is accepted now because it adds no recurring service fee and measured idle cost is tiny. If runner availability starts blocking merges, platform-pinned visual baselines appear, or CI volume grows materially, re-evaluate an ephemeral/dedicated x86 Linux runner. Do not move CI onto the research/GPU server.
+- **Cloudflare Browser Rendering.** If current Cloudflare capability and quota are re-verified, a very small number of real-browser Production probes could complement the HTTP smoke. It should remain a post-deploy probe layer, not a destination for the 92-case UI matrix, Lab matrix, repository compilation, npm installation, or screenshot-baseline ownership.
+
+Re-open the architecture only for evidence such as repeated merge blocking because the local runner is unavailable, a new need for one canonical x86 visual-baseline platform, materially higher CI volume, Vercel cost remaining high after browser offload, or a deliberate move to build-once promotion. Provider pricing, quotas and product capabilities are time-sensitive; re-check them at that time rather than treating this 2026-08-29 discussion as permanent market truth.
 
 ## Vercel build-budget discipline
 
