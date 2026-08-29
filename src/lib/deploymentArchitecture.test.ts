@@ -90,6 +90,9 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerInstall).not.toContain('plutil -insert ProgramArguments -append');
     expect(runnerInstall).toContain('$label.pending.XXXXXX")');
     expect(runnerInstall).not.toContain('$label.pending.XXXXXX.plist")');
+    expect(runnerInstall).toContain('plutil -insert EnvironmentVariables -dictionary');
+    expect(runnerInstall).toContain('EnvironmentVariables.PATH');
+    expect(runnerInstall).toContain('/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin');
     expect(runnerInstall).toContain('plutil -insert StartInterval -integer 60');
     expect(runnerInstall).not.toContain('sudo');
     expect(runnerReconcile).toContain("grep -q 'AC Power'");
