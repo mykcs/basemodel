@@ -6,16 +6,22 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const pages = [
+  { n:'01', title:t('7B / self：主实验已完成，GPU 分析待回填','7B / self: main run closed, GPU analysis pending'), text:t('保留已经完成的 Stage-1 / Stage-2 / final 分析，同时提前搭好 checkpoint→能力曲线、最佳 checkpoint 和最终机制解释的空位。','Keep the completed Stage-1 / Stage-2 / final evidence and pre-build empty slots for the checkpoint-to-capability curve, best checkpoint, and final mechanism interpretation.'), href:'/research/seed-openevo/study/results/7b-self-analysis/' },
+  { n:'02', title:t('3B / self：无外部教师','3B / self: no external teacher'), text:t('先固定 3B 自举困难、Stage-2、final、动作合法性和失败类型的结果位置；实验没封口的数字一律保持 Pending。','Pre-build result slots for 3B bootstrap difficulty, Stage 2, final evaluation, action validity, and failure taxonomy; unfinished numbers remain Pending.'), href:'/research/seed-openevo/study/results/3b-self-analysis/' },
+  { n:'03', title:t('3B / MiniMax：有老师（episode 后分析）','3B / MiniMax: teacher shorthand, post-episode analysis'), text:t('这里的 MiniMax 是 episode 结束后的 hindsight analyzer，不替模型做 WebShop。页面提前准备 bootstrap、Stage-2 coverage 与 final 的证据槽位。','MiniMax is a post-episode hindsight analyzer rather than the WebShop actor. The page pre-builds evidence slots for bootstrap, Stage-2 coverage, and the final result.'), href:'/research/seed-openevo/study/results/3b-minimax-analysis/' },
+  { n:'04', title:t('7B / MiniMax：有老师（episode 后分析）','7B / MiniMax: teacher shorthand, post-episode analysis'), text:t('7B 本来就能 self-bootstrap，因此重点预留“外部 hindsight 到底改变了后续探索还是最终能力”的位置。','Because 7B can already self-bootstrap, the page reserves the key comparison: whether external hindsight changes later exploration or final capability.'), href:'/research/seed-openevo/study/results/7b-minimax-analysis/' },
+  { n:'05', title:t('四组联合：组间实验','Four-arm joint: cross-arm experiments'), text:t('先把 3B/7B × self/MiniMax 的六个比较问题、结果矩阵和回填规则固定下来；四组没齐之前不计算漂亮但不可靠的差值。','Freeze six cross-arm questions, the result matrix, and fill-in rules for 3B/7B × self/MiniMax; do not compute attractive but unreliable contrasts before all arms are ready.'), href:'/research/seed-openevo/study/results/four-arm-analysis/' },
+];
 ---
 <section class="analysis-plan-index" aria-labelledby="analysis-plan-index-title">
-  <p class="analysis-plan-index__eyebrow">{t('新完成实验 · 分析方案', 'NEWLY COMPLETED EXPERIMENT · ANALYSIS PLANS')}</p>
+  <p class="analysis-plan-index__eyebrow">{t('进行中的实验 · 结果页面已先搭好', 'RUNNING EXPERIMENTS · RESULT PAGES PRE-BUILT')}</p>
   <div class="analysis-plan-index__intro">
-    <h2 id="analysis-plan-index-title">{t('从最终分数继续追问：为什么会得到这个结果？', 'Go beyond the final score: why did this result happen?')}</h2>
-    <p>{t('先把 7B/self 这一次 run 的内部机制吃透，再把 3B / 7B × self / MiniMax 四组放在同一张比较地图里。MiniMax 是 episode 结束后的外部 analyzer，不是 WebShop actor；两页都只列分析方案和资源预算，不会自动启动新的 GPU 训练。','First explain the internal mechanics of the 7B/self run, then place 3B / 7B × self / MiniMax on one comparison map. MiniMax is a post-episode external analyzer, not the WebShop actor. Both pages are analysis plans and resource budgets only; they do not start new GPU training.')}</p>
+    <h2 id="analysis-plan-index-title">{t('先固定我们要回答什么，再等服务器把数字送回来', 'Freeze the questions first; let server evidence fill the numbers later')}</h2>
+    <p>{t('四个单实验页面和一个组间页面现在共用同一规则：已有结果正常展示；未完成的数字明确写 Pending；MiniMax 精确表述为 episode 后外部 analyzer；只有 sealed artifact / closeout 才能把空位替换成 final。','Four single-arm pages and one cross-arm page now share one rule: show existing results, mark unfinished numbers as Pending, describe MiniMax precisely as a post-episode external analyzer, and replace empty slots only with sealed artifacts or closeout finals.')}</p>
   </div>
   <ol>
-    <li><span>01</span><div><h3>{t('7B / self 单实验分析', '7B / self single-run analysis')}</h3><p>{t('Stage-1 checkpoint、loss、Stage-2 gate、逐题收益、格式与任务能力，以及什么时候才值得继续训练。','Stage-1 checkpoints, loss, the Stage-2 gate, per-task gains, action validity versus task capability, and when more training is actually justified.')}</p><a href={p('/research/seed-openevo/study/results/7b-self-analysis/')}>{t('打开分析方案 →','Open analysis plan →')}</a></div></li>
-    <li><span>02</span><div><h3>{t('四组联合分析', 'Four-arm joint analysis')}</h3><p>{t('比较 self 与 MiniMax treatment bundle、模型规模和两者 interaction，并追踪差异究竟发生在 bootstrap、Stage-2 gate、参数更新还是最终评测；不把 bundle 差异误写成纯 MiniMax 因果效应。','Compare self versus MiniMax treatment bundles, model scale, and their interaction, then trace differences through bootstrap, Stage-2 admission, parameter updates, and final evaluation without mislabeling the bundle contrast as a pure MiniMax causal effect.')}</p><a href={p('/research/seed-openevo/study/results/four-arm-analysis/')}>{t('打开四组方案 →','Open four-arm plan →')}</a></div></li>
+    {pages.map((item) => <li><span>{item.n}</span><div><h3>{item.title}</h3><p>{item.text}</p><a href={p(item.href)}>{t('打开结果页 →','Open result page →')}</a></div></li>)}
   </ol>
 </section>
 <style>

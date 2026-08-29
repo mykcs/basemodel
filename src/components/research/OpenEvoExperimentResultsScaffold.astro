@@ -1,0 +1,254 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+type Mode = '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
+interface Props { locale: Locale; mode: Mode }
+const { locale, mode } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const PENDING = t('等待服务器产物', 'Pending server artifact');
+
+const armLinks = [
+  { mode:'3b-self', label:'3B / self', href:'/research/seed-openevo/study/results/3b-self-analysis/' },
+  { mode:'7b-self', label:'7B / self', href:'/research/seed-openevo/study/results/7b-self-analysis/' },
+  { mode:'3b-minimax', label:'3B / MiniMax', href:'/research/seed-openevo/study/results/3b-minimax-analysis/' },
+  { mode:'7b-minimax', label:'7B / MiniMax', href:'/research/seed-openevo/study/results/7b-minimax-analysis/' },
+  { mode:'cross-arm', label:t('四组联合', 'Four-arm joint'), href:'/research/seed-openevo/study/results/four-arm-analysis/' },
+];
+
+const armMeta = {
+  '3b-self': {
+    title:t('3B · 无外部教师（self）', '3B · self only'),
+    eyebrow:t('单实验结果页 · 预留回填位', 'SINGLE-ARM RESULT · PRE-BUILT SLOTS'),
+    status:t('实验尚未完整收尾', 'Experiment not fully closed'),
+    question:t('3B 只靠自己产生经验时，能不能跨过“先产生足够好经验，才能继续学”的门槛？', 'Can 3B, using only its own experience, cross the threshold required to keep learning?'),
+    known:[
+      t('Stage 1 已经说明：3B/self 很难凑出可重复的 clean-success identity；已有记录是 4 条 qualified positive、1 个 qualifying identity，因此没有形成 bootstrap adapter。', 'Stage 1 already shows that 3B/self struggles to form repeatable clean-success identities: the current record has 4 qualified positives and 1 qualifying identity, so no bootstrap adapter was formed.'),
+      t('这能说明“经验供给很弱”，但还不能在 final 没完成前下结论说 3B 最终一定学不会。', 'This supports weak experience supply, but it does not justify declaring the final 3B outcome before the run closes.'),
+    ],
+    next:t('等本 arm 的 Stage 2 与 final 评测封口后，再补最终 Task Score、exact success、动作合法性和失败类型分解。', 'After Stage 2 and the final evaluation close, fill in Task Score, exact success, action validity, and failure taxonomy.'),
+  },
+  '7b-self': {
+    title:t('7B · 无外部教师（self）', '7B · self only'),
+    eyebrow:t('单实验结果页 · GPU 分析缺口已预留', 'SINGLE-ARM RESULT · GPU GAP PRE-BUILT'),
+    status:t('主实验已完成 · GPU checkpoint 分析待回填', 'Main run complete · GPU checkpoint analysis pending'),
+    question:t('7B/self 已经变好了，但它到底学到了“更会做题”，还是主要学到了“更会输出可执行动作”？', '7B/self improved, but did it learn to solve tasks better, or mostly to emit executable actions?'),
+    known:[
+      t('Stage 1 完成 8 次参数更新，training loss 从 0.479 降到 0.055。', 'Stage 1 completed 8 parameter updates and training loss fell from 0.479 to 0.055.'),
+      t('Stage 2 写出了 20,480 条 rollout 和 797 条 qualified-positive trajectory，但 80/80 个 block 都没有参数更新；单个 block 的 qualifying identity 最大只有 7，而 gate 需要 8。', 'Stage 2 produced 20,480 rollouts and 797 qualified-positive trajectories, but all 80/80 blocks had no parameter update; the maximum qualifying identities in one block was 7 while the gate requires 8.'),
+      t('现有 128-task final：Task Score 13.33 → 25.66；valid episode 109 → 122；parser/action failure 19 → 6；exact success 3 → 4。它支持“可执行性和部分任务进展明显改善”，但 exact success 的变化很小。', 'On the current 128-task final panel, Task Score moved 13.33 → 25.66, valid episodes 109 → 122, parser/action failures 19 → 6, and exact success 3 → 4. This supports a clear gain in executability and partial task progress, while exact-success change is small.'),
+    ],
+    next:t('服务器正在补的关键缺口是：把 Stage-1 中间 checkpoint 放到同一诊断 panel 上，建立“loss 下降 → WebShop 能力变化”的曲线。这个结果出来前，不把“继续多训几步一定更好”写成结论。', 'The key missing analysis is to evaluate intermediate Stage-1 checkpoints on the same diagnostic panel and build the curve from lower loss to WebShop capability. Until that exists, the page must not claim that more fitting would necessarily help.'),
+  },
+  '3b-minimax': {
+    title:t('3B · MiniMax 后验分析（有老师）', '3B · MiniMax hindsight analysis'),
+    eyebrow:t('单实验结果页 · 预留回填位', 'SINGLE-ARM RESULT · PRE-BUILT SLOTS'),
+    status:t('实验尚未完整收尾', 'Experiment not fully closed'),
+    question:t('当 3B 自己几乎无法 bootstrap 时，episode 结束后的外部 hindsight supervision 能不能把它拉进“可继续学习”的区域？', 'When 3B can barely bootstrap itself, can post-episode hindsight supervision move it into a learnable regime?'),
+    known:[
+      t('这里口头说“有老师”，更精确地说是：MiniMax 在 episode 结束后分析轨迹；它不替 3B 在 WebShop 里点击或搜索。', '“With a teacher” is shorthand here: MiniMax analyzes the trajectory after the episode; it does not click or search inside WebShop for the 3B actor.'),
+      t('现有记录显示正式 MiniMax bootstrap 已完成 8 次更新；这说明外部 hindsight bundle 至少能提供一条 3B/self 没有形成的 bootstrap 路径。', 'The current record shows 8 formal MiniMax-bootstrap updates, so the external hindsight bundle at least provides a bootstrap path that 3B/self did not form.'),
+    ],
+    next:t('等 final 完成后，重点回填：它是否真的提高 Stage-2 clean-success coverage、最终 Task Score、exact success，以及这种改善发生在哪一段。', 'After the final run closes, fill in whether it actually improves Stage-2 clean-success coverage, final Task Score, exact success, and where along the mechanism chain that change appears.'),
+  },
+  '7b-minimax': {
+    title:t('7B · MiniMax 后验分析（有老师）', '7B · MiniMax hindsight analysis'),
+    eyebrow:t('单实验结果页 · 预留回填位', 'SINGLE-ARM RESULT · PRE-BUILT SLOTS'),
+    status:t('实验尚未完整收尾', 'Experiment not fully closed'),
+    question:t('7B 本来已经能靠自己 bootstrap；再加 MiniMax hindsight 后，真正改变的是学习起点、Stage-2 探索覆盖，还是最终能力？', '7B can already bootstrap itself; with MiniMax hindsight added, does the change appear in the starting point, Stage-2 exploration coverage, or final capability?'),
+    known:[
+      t('这里的 MiniMax 同样是 episode 结束后的 analyzer，不是 WebShop actor。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
+      t('现有记录显示该 arm 的正式 bootstrap 完成 8 次更新；因此它与 7B/self 的关键问题不再是“有没有 bootstrap”，而是“bootstrap 的内容是否改变了后续探索和 final”。', 'The current record shows 8 formal bootstrap updates. The key comparison with 7B/self is therefore not whether bootstrap exists, but whether its content changes later exploration and the final result.'),
+    ],
+    next:t('等 final 完成后，用和 7B/self 相同的 128-task panel 做 paired 对照，并比较相同 Stage-2 block 前缀下的 clean-positive、identity 和 parser 状态。', 'After final completion, run a paired comparison against 7B/self on the same 128-task panel and compare clean positives, identities, and parser states over matched Stage-2 prefixes.'),
+  },
+} as const;
+
+const current = mode === 'cross-arm' ? null : armMeta[mode];
+
+const individualMetrics = [
+  {
+    metric:t('最终 Task Score', 'Final Task Score'),
+    value:mode === '7b-self' ? t('25.66；base 13.33', '25.66; base 13.33') : PENDING,
+    note:mode === '7b-self' ? t('已有 128-task final', 'Existing 128-task final') : t('等本 arm final 封口', 'Wait for this arm final'),
+  },
+  {
+    metric:t('Exact success', 'Exact success'),
+    value:mode === '7b-self' ? '4 / 128 (base 3 / 128)' : PENDING,
+    note:t('和 Task Score 分开解释', 'Interpret separately from Task Score'),
+  },
+  {
+    metric:t('动作可执行性 / valid episode', 'Executability / valid episodes'),
+    value:mode === '7b-self' ? '122 / 128 (base 109 / 128)' : PENDING,
+    note:t('用于区分“更会说合法动作”和“更会完成任务”', 'Separates valid action production from task completion'),
+  },
+  {
+    metric:t('Stage-2 最终参数更新数', 'Final Stage-2 optimizer updates'),
+    value:mode === '7b-self' ? '0' : PENDING,
+    note:mode === '7b-self' ? t('80 / 80 block 已封口', '80 / 80 blocks closed') : t('实验未封口前不写死', 'Do not freeze before closeout'),
+  },
+  {
+    metric:t('Checkpoint → 能力曲线', 'Checkpoint → capability curve'),
+    value:PENDING,
+    note:mode === '7b-self' ? t('GPU 分析完成后回填', 'Fill after GPU analysis') : t('等 checkpoint / final 可用后回填', 'Fill when checkpoints / final are available'),
+  },
+  {
+    metric:t('单实验最终解释', 'Final single-arm interpretation'),
+    value:PENDING,
+    note:t('必须同时看 Task Score、exact success、validity 和机制证据', 'Requires Task Score, exact success, validity, and mechanism evidence together'),
+  },
+];
+
+const matrixRows = [
+  { label:t('Stage-1 bootstrap', 'Stage-1 bootstrap'), a:t('0 update / 无 adapter', '0 updates / no adapter'), b:'8 updates', c:'8 updates', d:'8 updates' },
+  { label:t('最终 Task Score', 'Final Task Score'), a:PENDING, b:'25.66', c:PENDING, d:PENDING },
+  { label:t('Exact success', 'Exact success'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
+  { label:t('Stage-2 最终 update', 'Final Stage-2 updates'), a:PENDING, b:'0', c:PENDING, d:PENDING },
+  { label:t('Checkpoint 能力曲线', 'Checkpoint capability curve'), a:PENDING, b:PENDING, c:PENDING, d:PENDING },
+];
+
+const contrasts = [
+  { id:'C1', title:t('3B：有老师 vs 没老师', '3B: MiniMax vs self'), formula:'3B/MiniMax − 3B/self', answer:PENDING, need:t('两组 final + paired 128-task 结果', 'Both finals + paired 128-task results') },
+  { id:'C2', title:t('7B：有老师 vs 没老师', '7B: MiniMax vs self'), formula:'7B/MiniMax − 7B/self', answer:PENDING, need:t('7B/MiniMax final；7B/self 已有基线', '7B/MiniMax final; 7B/self baseline already exists') },
+  { id:'C3', title:t('没老师：7B vs 3B', 'Self only: 7B vs 3B'), formula:'7B/self − 3B/self', answer:PENDING, need:t('3B/self final', '3B/self final') },
+  { id:'C4', title:t('有老师：7B vs 3B', 'MiniMax: 7B vs 3B'), formula:'7B/MiniMax − 3B/MiniMax', answer:PENDING, need:t('两组 MiniMax final', 'Both MiniMax finals') },
+  { id:'C5', title:t('模型大小 × 外部 hindsight 是否有 interaction？', 'Is there a model-size × external-hindsight interaction?'), formula:'(7B/MiniMax−7B/self) − (3B/MiniMax−3B/self)', answer:PENDING, need:t('四组全部 final；先看 paired task，再下机制结论', 'All four finals; inspect paired tasks before mechanism claims') },
+  { id:'C6', title:t('差异发生在机制链哪一段？', 'Where does the difference arise in the mechanism chain?'), formula:'bootstrap → Stage-2 coverage → update → final', answer:PENDING, need:t('matched-prefix coverage + update ledger + final 分解', 'Matched-prefix coverage + update ledger + final decomposition') },
+];
+---
+
+<main class="exp-scaffold" data-testid={`experiment-results-scaffold-${mode}`}>
+  <header class="exp-scaffold__hero">
+    <div class="exp-scaffold__hero-copy">
+      <p class="exp-scaffold__eyebrow">{mode === 'cross-arm' ? t('组间实验 · 结果框架已搭好', 'CROSS-ARM ANALYSIS · RESULT FRAMEWORK READY') : current?.eyebrow}</p>
+      <h1>{mode === 'cross-arm' ? t('四组实验：先把所有比较问题摆好，再等数字回来', 'Four arms: pre-build every comparison, then fill the evidence') : current?.title}</h1>
+      <p class="exp-scaffold__lead">{mode === 'cross-arm'
+        ? t('四个 arm 是 3B/self、7B/self、3B/MiniMax、7B/MiniMax。现在先固定“以后要比较什么、用什么证据、哪些格子还不能填”，避免实验跑完后再临时挑指标。', 'The four arms are 3B/self, 7B/self, 3B/MiniMax, and 7B/MiniMax. We fix the comparisons, evidence, and still-empty cells now so metrics are not chosen opportunistically after the runs finish.')
+        : current?.question}</p>
+    </div>
+    <div class="exp-scaffold__status" aria-label={t('当前状态', 'Current status')}>
+      <span>{t('当前状态', 'STATUS')}</span>
+      <strong>{mode === 'cross-arm' ? t('等待四组结果齐全', 'Waiting for all four arms') : current?.status}</strong>
+      <small>{t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
+    </div>
+  </header>
+
+  <nav class="exp-scaffold__arm-nav" aria-label={t('实验结果页', 'Experiment result pages')}>
+    {armLinks.map((item) => <a class:list={{active:item.mode === mode}} href={p(item.href)}>{item.label}</a>)}
+  </nav>
+
+  {mode !== 'cross-arm' && current && (
+    <>
+      <section class="exp-scaffold__section exp-scaffold__two-col" aria-labelledby="known-title">
+        <div>
+          <p class="exp-scaffold__section-kicker">{t('先说已经知道的', 'WHAT WE ALREADY KNOW')}</p>
+          <h2 id="known-title">{t('已有证据', 'Existing evidence')}</h2>
+          <div class="exp-scaffold__known">
+            {current.known.map((item, i) => <article><span>{String(i + 1).padStart(2,'0')}</span><p>{item}</p></article>)}
+          </div>
+        </div>
+        <aside class="exp-scaffold__pending-callout">
+          <span>{t('还不能回答', 'STILL UNKNOWN')}</span>
+          <h3>{t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
+          <p>{current.next}</p>
+          <div class="exp-scaffold__pending-chip">{t('结论：等待证据', 'Conclusion: pending evidence')}</div>
+        </aside>
+      </section>
+
+      <section class="exp-scaffold__section" aria-labelledby="slots-title">
+        <p class="exp-scaffold__section-kicker">{t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN ARTIFACTS LAND')}</p>
+        <h2 id="slots-title">{t('结果槽位', 'Result slots')}</h2>
+        <div class="exp-scaffold__table-wrap">
+          <table>
+            <thead><tr><th>{t('指标 / 问题', 'Metric / question')}</th><th>{t('当前值', 'Current value')}</th><th>{t('解释边界', 'Interpretation boundary')}</th></tr></thead>
+            <tbody>
+              {individualMetrics.map((row) => <tr><th scope="row">{row.metric}</th><td class:list={{pending:row.value === PENDING}}>{row.value}</td><td>{row.note}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exp-scaffold__section" aria-labelledby="pipeline-title">
+        <p class="exp-scaffold__section-kicker">{t('不要把不同阶段混成一个分数', 'KEEP STAGES SEPARATE')}</p>
+        <h2 id="pipeline-title">{t('这页最后要解释的机制链', 'Mechanism chain this page must explain')}</h2>
+        <ol class="exp-scaffold__pipeline">
+          <li><span>01</span><strong>Stage 1 / bootstrap</strong><p>{t('有没有形成可训练数据？真正发生了多少次参数更新？', 'Did trainable experience form, and how many parameter updates actually happened?')}</p></li>
+          <li><span>02</span><strong>Stage 2 / self-exploration</strong><p>{t('模型后续自己探索时，clean-positive 与 identity coverage 是否足以通过 gate？', 'During later self-exploration, were clean positives and identity coverage sufficient to pass the gate?')}</p></li>
+          <li><span>03</span><strong>{t('最终评测', 'Final evaluation')}</strong><p>{t('Task Score、exact success、validity 必须分开看，不能只报一个 headline。', 'Task Score, exact success, and validity must be read separately rather than collapsed into one headline.')}</p></li>
+          <li><span>04</span><strong>{t('Checkpoint 分析', 'Checkpoint analysis')}</strong><p>{t('loss 下降是否真的对应 held-out WebShop 能力上升？', 'Does lower loss actually correspond to better held-out WebShop capability?')}</p></li>
+          <li><span>05</span><strong>{t('最终解释', 'Final interpretation')}</strong><p>{t('只有前四步证据齐全后，才回答“为什么变好 / 为什么没继续学 / 下一步改哪里”。', 'Only after the first four steps are grounded do we answer why it improved, why learning stalled, and what should change next.')}</p></li>
+        </ol>
+      </section>
+    </>
+  )}
+
+  {mode === 'cross-arm' && (
+    <>
+      <section class="exp-scaffold__section" aria-labelledby="matrix-title">
+        <p class="exp-scaffold__section-kicker">{t('同一张表，不偷换口径', 'ONE TABLE, ONE MEASUREMENT CONTRACT')}</p>
+        <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
+        <p class="exp-scaffold__section-intro">{t('只有已经封口的 7B/self 填真实数字；其他格子故意保持 Pending。后续回填必须来自同一正式 panel 或清楚标注为不同诊断。', 'Only the closed 7B/self arm carries real final numbers today; other cells intentionally remain Pending. Future fills must come from the same formal panel or be clearly labeled as a different diagnostic.')}</p>
+        <div class="exp-scaffold__table-wrap">
+          <table>
+            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
+            <tbody>
+              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exp-scaffold__section" aria-labelledby="contrast-title">
+        <p class="exp-scaffold__section-kicker">{t('组间实验已经预注册成问题', 'CROSS-ARM QUESTIONS ARE PRE-SPECIFIED')}</p>
+        <h2 id="contrast-title">{t('六个组间比较槽位', 'Six cross-arm comparison slots')}</h2>
+        <div class="exp-scaffold__contrast-grid">
+          {contrasts.map((row) => <article>
+            <div class="exp-scaffold__contrast-head"><span>{row.id}</span><h3>{row.title}</h3></div>
+            <code>{row.formula}</code>
+            <dl><div><dt>{t('答案', 'Answer')}</dt><dd class="pending">{row.answer}</dd></div><div><dt>{t('还缺什么', 'Missing evidence')}</dt><dd>{row.need}</dd></div></dl>
+          </article>)}
+        </div>
+      </section>
+
+      <section class="exp-scaffold__section exp-scaffold__guardrail" aria-labelledby="guardrail-title">
+        <p class="exp-scaffold__section-kicker">{t('回填规则', 'FILL-IN RULES')}</p>
+        <h2 id="guardrail-title">{t('服务器跑完后，也不能直接把四个 headline 分数相减', 'Even after completion, do not just subtract four headline scores')}</h2>
+        <ul>
+          <li>{t('同一模型规模内比较 MiniMax vs self，才回答“外部 hindsight bundle 是否有帮助”。', 'Compare MiniMax vs self within the same model size to ask whether the external-hindsight bundle helps.')}</li>
+          <li>{t('同一 treatment 内比较 7B vs 3B，才回答“模型规模是否改变可学习性”。', 'Compare 7B vs 3B within the same treatment to ask whether scale changes learnability.')}</li>
+          <li>{t('MiniMax treatment 不只是“老师名字不同”：它改变了 bootstrap supervision 路径，因此不能把差值简化成纯 teacher 因果效应。', 'The MiniMax treatment changes the bootstrap supervision path, not merely a teacher name, so the contrast must not be called a pure teacher causal effect.')}</li>
+          <li>{t('优先做 paired task 分解，再看均值；Task Score、exact success、validity 和 Stage-2 gate 必须同时报告。', 'Prefer paired-task decomposition before mean-only summaries; report Task Score, exact success, validity, and the Stage-2 gate together.')}</li>
+          <li>{t('任何 Pending 都只能被 sealed artifact / closeout 中的真实结果替换；不得用 ETA、训练中快照或估算数字冒充 final。', 'A Pending cell may only be replaced by a real result from sealed artifacts or closeout; ETAs, in-flight snapshots, and estimates must never be presented as finals.')}</li>
+        </ul>
+      </section>
+    </>
+  )}
+
+  <footer class="exp-scaffold__footer">
+    <a href={p('/research/seed-openevo/study/results/')}>← {t('返回研究结果总页', 'Back to Results')}</a>
+    <span>{t('原则：先固定问题与空位，后填真实结果。', 'Rule: freeze the questions and slots first; fill real evidence later.')}</span>
+  </footer>
+</main>
+
+<style>
+.exp-scaffold{max-width:1180px;margin:0 auto;padding:56px 24px 72px;color:var(--color-text)}
+.exp-scaffold__hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.65fr);gap:2.4rem;align-items:end;padding:28px 0 34px;border-bottom:1px solid var(--color-border)}
+.exp-scaffold__eyebrow,.exp-scaffold__section-kicker{margin:0 0 .55rem;color:var(--color-accent);font:800 .68rem/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em;text-transform:uppercase}
+.exp-scaffold h1{max-width:18ch;margin:0;font-size:clamp(2.1rem,5.8vw,4.8rem);line-height:.98;letter-spacing:-.055em}
+.exp-scaffold__lead{max-width:72ch;margin:1rem 0 0;color:var(--color-text-muted);font-size:clamp(1rem,1.8vw,1.18rem);line-height:1.7}
+.exp-scaffold__status{display:flex;flex-direction:column;gap:.4rem;padding:1rem 1.1rem;border:1px solid var(--color-border);border-radius:14px;background:color-mix(in srgb,var(--color-accent) 5%,transparent)}
+.exp-scaffold__status>span{font:800 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}
+.exp-scaffold__status strong{font-size:.95rem;line-height:1.45}.exp-scaffold__status small{color:var(--color-text-muted);font-size:.72rem}
+.exp-scaffold__arm-nav{display:flex;gap:.5rem;overflow:auto;padding:14px 0 0;scrollbar-width:thin}.exp-scaffold__arm-nav a{flex:0 0 auto;padding:.5rem .72rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;text-decoration:none}.exp-scaffold__arm-nav a:hover,.exp-scaffold__arm-nav a.active{border-color:var(--color-accent);color:var(--color-accent)}
+.exp-scaffold__section{padding:42px 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__section h2{max-width:28ch;margin:0;font-size:clamp(1.45rem,3.2vw,2.45rem);letter-spacing:-.035em}.exp-scaffold__section-intro{max-width:78ch;color:var(--color-text-muted);line-height:1.7}
+.exp-scaffold__two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem}.exp-scaffold__known{margin-top:1.2rem;border-top:1px solid var(--color-border)}.exp-scaffold__known article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__known article>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__known p{margin:0;line-height:1.72}
+.exp-scaffold__pending-callout{align-self:start;padding:1.1rem;border:1px dashed var(--color-border);border-radius:14px}.exp-scaffold__pending-callout>span{font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}.exp-scaffold__pending-callout h3{margin:.45rem 0 .6rem;font-size:1rem}.exp-scaffold__pending-callout p{margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.exp-scaffold__pending-chip{display:inline-block;margin-top:.9rem;padding:.35rem .55rem;border-radius:7px;background:color-mix(in srgb,var(--color-accent) 10%,transparent);color:var(--color-accent);font:750 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}
+.exp-scaffold__table-wrap{margin-top:1.2rem;overflow:auto;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px}.exp-scaffold th,.exp-scaffold td{padding:.8rem .9rem;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.78rem;line-height:1.55}.exp-scaffold thead th{background:color-mix(in srgb,var(--color-text) 3%,transparent);color:var(--color-text-muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}.exp-scaffold tbody th{width:23%;font-weight:760}.exp-scaffold tr:last-child th,.exp-scaffold tr:last-child td{border-bottom:0}.exp-scaffold .pending{color:var(--color-accent);font-style:normal;font-weight:760}
+.exp-scaffold__pipeline{list-style:none;margin:1.3rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--color-border);border-radius:12px;overflow:hidden}.exp-scaffold__pipeline li{min-width:0;padding:1rem;border-right:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-right:0}.exp-scaffold__pipeline span{display:block;margin-bottom:.8rem;color:var(--color-accent);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__pipeline strong{font-size:.82rem}.exp-scaffold__pipeline p{margin:.45rem 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
+.exp-scaffold__contrast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1.3rem}.exp-scaffold__contrast-grid article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold__contrast-head{display:grid;grid-template-columns:36px minmax(0,1fr);gap:.6rem}.exp-scaffold__contrast-head>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__contrast-grid h3{margin:0;font-size:.92rem}.exp-scaffold__contrast-grid code{display:block;margin:.8rem 0;padding:.55rem .65rem;border-radius:7px;background:color-mix(in srgb,var(--color-text) 4%,transparent);font-size:.72rem;white-space:normal}.exp-scaffold__contrast-grid dl{margin:0}.exp-scaffold__contrast-grid dl>div{display:grid;grid-template-columns:80px minmax(0,1fr);gap:.6rem;padding:.45rem 0;border-top:1px solid var(--color-border)}.exp-scaffold__contrast-grid dt{color:var(--color-text-muted);font-size:.7rem}.exp-scaffold__contrast-grid dd{margin:0;font-size:.75rem;line-height:1.5}
+.exp-scaffold__guardrail ul{max-width:84ch;margin:1rem 0 0;padding-left:1.15rem}.exp-scaffold__guardrail li{margin:.55rem 0;color:var(--color-text-muted);line-height:1.65}.exp-scaffold__footer{display:flex;justify-content:space-between;gap:1rem;padding-top:24px;color:var(--color-text-muted);font-size:.75rem}.exp-scaffold__footer a{color:var(--color-accent);font-weight:760;text-decoration:none}.exp-scaffold__footer a:hover{text-decoration:underline}
+@media(max-width:860px){.exp-scaffold__hero,.exp-scaffold__two-col{grid-template-columns:1fr}.exp-scaffold__hero{gap:1.2rem}.exp-scaffold h1{max-width:22ch}.exp-scaffold__pipeline{grid-template-columns:1fr}.exp-scaffold__pipeline li{border-right:0;border-bottom:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-bottom:0}}
+@media(max-width:640px){.exp-scaffold{padding:36px 18px 56px}.exp-scaffold__contrast-grid{grid-template-columns:1fr}.exp-scaffold__footer{flex-direction:column}.exp-scaffold__section{padding:34px 0}.exp-scaffold__table-wrap{margin-inline:-2px}}
+</style>
