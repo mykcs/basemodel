@@ -3,7 +3,7 @@ import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentResultsScaffold from '../../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="7B self experiment: results and pending GPU analysis" description="Shows the closed Stage-1, Stage-2, and final evidence for 7B/self and pre-builds explicit result slots for the pending checkpoint GPU capability sweep." locale="en">
+<AppLayout title="7B self experiment: complete results and checkpoint curve" description="Shows the completed Stage-1, Stage-2, 128-task final, and full checkpoint GPU capability curve for 7B/self, with the boundary between loss, executability, and exact completion." locale="en">
   <OpenEvoExperimentResultsScaffold locale="en" mode="7b-self" />
   <OpenEvoExperimentAnalysisPlan locale="en" mode="7b-self" />
 </AppLayout>
