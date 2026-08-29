@@ -1,6 +1,8 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
+import OpenEvoExperimentSelector from './OpenEvoExperimentSelector.astro';
+import OpenEvoCheckpointCurve from './OpenEvoCheckpointCurve.astro';
 
 type Mode = '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
 interface Props { locale: Locale; mode: Mode }
@@ -9,14 +11,6 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const PENDING = t('等待服务器产物', 'Pending server artifact');
-
-const armLinks = [
-  { mode:'3b-self', label:'3B / self', href:'/research/seed-openevo/study/results/3b-self-analysis/' },
-  { mode:'7b-self', label:'7B / self', href:'/research/seed-openevo/study/results/7b-self-analysis/' },
-  { mode:'3b-minimax', label:'3B / MiniMax', href:'/research/seed-openevo/study/results/3b-minimax-analysis/' },
-  { mode:'7b-minimax', label:'7B / MiniMax', href:'/research/seed-openevo/study/results/7b-minimax-analysis/' },
-  { mode:'cross-arm', label:t('四组联合', 'Four-arm joint'), href:'/research/seed-openevo/study/results/four-arm-analysis/' },
-];
 
 const armMeta = {
   '3b-self': {
@@ -133,6 +127,8 @@ const contrasts = [
 ---
 
 <main class="exp-scaffold" data-testid={`experiment-results-scaffold-${mode}`}>
+  <OpenEvoExperimentSelector locale={locale} mode={mode} />
+
   <header class="exp-scaffold__hero">
     <div class="exp-scaffold__hero-copy">
       <p class="exp-scaffold__eyebrow">{mode === 'cross-arm' ? t('组间实验 · 结果框架已搭好', 'CROSS-ARM ANALYSIS · RESULT FRAMEWORK READY') : current?.eyebrow}</p>
@@ -147,10 +143,6 @@ const contrasts = [
       <small>{mode === '7b-self' ? t('checkpoint sweep 完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
     </div>
   </header>
-
-  <nav class="exp-scaffold__arm-nav" aria-label={t('实验结果页', 'Experiment result pages')}>
-    {armLinks.map((item) => <a class:list={{active:item.mode === mode}} href={p(item.href)}>{item.label}</a>)}
-  </nav>
 
   {mode !== 'cross-arm' && current && (
     <>
@@ -188,6 +180,7 @@ const contrasts = [
           <p class="exp-scaffold__section-kicker">{t('GPU checkpoint sweep · COMPLETE', 'GPU CHECKPOINT SWEEP · COMPLETE')}</p>
           <h2 id="checkpoint-curve-title">{t('8 次 Stage-1 更新期间，能力不是直线上升', 'Capability did not rise in a straight line across the eight Stage-1 updates')}</h2>
           <p class="exp-scaffold__section-intro">{t('7 个中间 checkpoint 与已有 base / final 端点使用同一个 sealed 128-task WebShop panel、temperature=0、15 步上限与同一 prompt/action contract。loss 从 0.479 连续降到 0.055，但 Task Score 中间多次回落；increment-07 的 25.66 是 9 个点里的最高值。', 'The seven intermediate checkpoints and the existing base/final endpoints use the same sealed 128-task WebShop panel, temperature=0, 15-step limit, and the same prompt/action contracts. Loss falls continuously from 0.479 to 0.055, yet Task Score regresses several times; increment-07 at 25.66 is the best of all nine points.')}</p>
+          <OpenEvoCheckpointCurve locale={locale} rows={sevenBSelfCheckpointCurve} />
           <div class="exp-scaffold__table-wrap">
             <table class="checkpoint-table">
               <thead><tr><th>Checkpoint</th><th>{t('训练 loss', 'Training loss')}</th><th>{t('有效 rank', 'Effective rank')}</th><th>Task Score ×100</th><th>Exact success</th><th>{t('Valid episode', 'Valid episodes')}</th><th>{t('Parser/action failure', 'Parser/action failures')}</th></tr></thead>
@@ -274,7 +267,6 @@ const contrasts = [
 .exp-scaffold__status{display:flex;flex-direction:column;gap:.4rem;padding:1rem 1.1rem;border:1px solid var(--color-border);border-radius:14px;background:color-mix(in srgb,var(--color-accent) 5%,transparent)}
 .exp-scaffold__status>span{font:800 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}
 .exp-scaffold__status strong{font-size:.95rem;line-height:1.45}.exp-scaffold__status small{color:var(--color-text-muted);font-size:.72rem}
-.exp-scaffold__arm-nav{display:flex;gap:.5rem;overflow:auto;padding:14px 0 0;scrollbar-width:thin}.exp-scaffold__arm-nav a{flex:0 0 auto;padding:.5rem .72rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font-size:.75rem;font-weight:750;text-decoration:none}.exp-scaffold__arm-nav a:hover,.exp-scaffold__arm-nav a.active{border-color:var(--color-accent);color:var(--color-accent)}
 .exp-scaffold__section{padding:42px 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__section h2{max-width:28ch;margin:0;font-size:clamp(1.45rem,3.2vw,2.45rem);letter-spacing:-.035em}.exp-scaffold__section-intro{max-width:78ch;color:var(--color-text-muted);line-height:1.7}
 .exp-scaffold__two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem}.exp-scaffold__known{margin-top:1.2rem;border-top:1px solid var(--color-border)}.exp-scaffold__known article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__known article>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__known p{margin:0;line-height:1.72}
 .exp-scaffold__pending-callout{align-self:start;padding:1.1rem;border:1px dashed var(--color-border);border-radius:14px}.exp-scaffold__pending-callout>span{font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}.exp-scaffold__pending-callout h3{margin:.45rem 0 .6rem;font-size:1rem}.exp-scaffold__pending-callout p{margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.exp-scaffold__pending-chip{display:inline-block;margin-top:.9rem;padding:.35rem .55rem;border-radius:7px;background:color-mix(in srgb,var(--color-accent) 10%,transparent);color:var(--color-accent);font:750 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}
