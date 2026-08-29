@@ -8,6 +8,7 @@ const facts = read('docs/agents/current/minimax-h146-frozen-facts-2026-08-30.md'
 const localAgents = read('docs/agents/current/AGENTS.md');
 const analysis = read('docs/agents/current/minimax-h146-teacher-intelligence-cost-analysis.md');
 const page = read('src/pages/research/seed-openevo/study/minimax-teacher/index.astro');
+const selector = read('src/components/research/OpenEvoExperimentSelector.astro');
 
 describe('H1.46 MiniMax teacher evidence boundary', () => {
   it('pins the frozen fact record byte-for-byte', () => {
@@ -56,6 +57,11 @@ describe('H1.46 MiniMax teacher evidence boundary', () => {
     expect(page).toContain('待同轨迹 WHTB 实测');
     expect(page).toContain('14.01M');
     expect(page).toContain('≤ ¥37.98 ≈ $5.65');
+  });
+
+  it('links the MiniMax branch of the experiment selector to the audit page', () => {
+    expect(selector).toContain('/research/seed-openevo/study/minimax-teacher/');
+    expect(selector).toContain('教师能力、Token 与 API 成本');
   });
 
   it('does not fabricate a current cross-provider intelligence ranking', () => {
