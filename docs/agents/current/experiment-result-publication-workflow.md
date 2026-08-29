@@ -1,6 +1,6 @@
 # Experiment result publication workflow
 
-Last reviewed: **2026-08-29**
+Last reviewed: **2026-08-30**
 Status: **current**  
 Audience: research, content, UI, review, and release Agents
 
@@ -254,7 +254,26 @@ completion marker
 -> claim boundary
 ```
 
-Historical case: [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md).
+Historical cases:
+
+- [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md) — Pending scaffold and checkpoint fill-in;
+- [`../history/2026-08-30-openevo-capability-exploration-series-retrospective.md`](../history/2026-08-30-openevo-capability-exploration-series-retrospective.md) — series naming/navigation, 2×2 experiment selector, native checkpoint visualization, and end-to-end friction.
+
+## Experiment-series information architecture and scientific visualization
+
+When several result pages are instances of one experimental design, expose the design as a stable parent concept instead of presenting only a flat list of routes. Prefer a parent landing page plus a selector/matrix that shows the actual experimental factors. Preserve already-useful deep URLs unless their semantics are wrong. A joint/cross-arm analysis should be shown as an analysis over the arms, not as an extra arm.
+
+For source-backed scientific trends, prefer inspectable native HTML/SVG plus an exact-value table when practical. The visual should make the scientific relationship legible without changing metric semantics:
+
+```text
+shared experimental x-axis
+-> separate scales/panels for incompatible units
+-> highlight the scientifically relevant reversals/intervals
+-> keep exact values available in the DOM/table
+-> test accessibility and mobile overflow
+```
+
+Do not generate a decorative static image when the reader needs to inspect exact checkpoint values or when the chart will be updated as new sealed results arrive. Do not combine unrelated units onto an unlabeled common y-axis merely to create a dramatic crossing.
 
 ## Publication workflow
 
