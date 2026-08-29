@@ -124,7 +124,10 @@ Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibi
 6. If a post-hoc sweep reused the formal panel, record that the panel has now been inspected for model/checkpoint selection purposes and must not silently remain “fully unseen”.
 7. Validate source and Production separately. A skipped/ignored Preview or a GitHub provider `success` context is not proof that exact-head Preview acceptance executed.
 
-Historical end-to-end case: [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md).
+Historical cases:
+
+- [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md) — Pending scaffold and checkpoint fill-in;
+- [`../history/2026-08-30-openevo-capability-exploration-series-retrospective.md`](../history/2026-08-30-openevo-capability-exploration-series-retrospective.md) — continuation through native visualization, factor-selector UX, series naming/navigation, and final release friction.
 
 ---
 
