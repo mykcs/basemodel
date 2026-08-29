@@ -1,7 +1,9 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoExperimentResultsScaffold from '../../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="7B self-only experiment analysis plan" description="A server-grounded post-experiment plan covering Stage-1 checkpoints, the Stage-2 admission gate, loss, per-task gains, action validity, and GPU follow-up budget." locale="en">
+<AppLayout title="7B self experiment: results and pending GPU analysis" description="Shows the closed Stage-1, Stage-2, and final evidence for 7B/self and pre-builds explicit result slots for the pending checkpoint GPU capability sweep." locale="en">
+  <OpenEvoExperimentResultsScaffold locale="en" mode="7b-self" />
   <OpenEvoExperimentAnalysisPlan locale="en" mode="7b-self" />
 </AppLayout>
