@@ -2,12 +2,13 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 
-type Mode = '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
+type Mode = 'group' | '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
 interface Props { locale: Locale; mode: Mode }
 const { locale, mode } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const isGroup = mode === 'group';
 const isJoint = mode === 'cross-arm';
 const is7B = mode.startsWith('7b');
 const isMiniMax = mode.endsWith('minimax');
@@ -15,7 +16,7 @@ const currentModel = is7B ? '7b' : '3b';
 const currentTeacher = isMiniMax ? 'minimax' : 'self';
 const armPath = (model: '3b' | '7b', teacher: 'self' | 'minimax') =>
   `/research/seed-openevo/study/results/${model}-${teacher}-analysis/`;
-const selectedArm = isJoint ? null : `${is7B ? '7B' : '3B'} / ${isMiniMax ? 'MiniMax' : 'self'}`;
+const selectedArm = isJoint || isGroup ? null : `${is7B ? '7B' : '3B'} / ${isMiniMax ? 'MiniMax' : 'self'}`;
 const matrix = [
   { model:'3b', teacher:'self', label:'3B / self' },
   { model:'3b', teacher:'minimax', label:'3B / MiniMax' },
@@ -27,7 +28,7 @@ const matrix = [
 <nav class="experiment-selector" aria-label={t('实验结构选择器', 'Experiment design selector')} data-testid="experiment-design-selector">
   <div class="experiment-selector__heading">
     <div>
-      <p>{t('实验结构选择器', 'EXPERIMENT DESIGN SELECTOR')}</p>
+      <p>{t('OpenEvo 基础能力探索实验', 'OPENEVO CAPABILITY EXPLORATION')}</p>
       <h2>{t('一个 OpenEVO，两处可选，组成四个实验', 'One OpenEVO, two choices, four experiment arms')}</h2>
     </div>
     <a class:list={['experiment-selector__joint', {active:isJoint}]} href={p('/research/seed-openevo/study/results/four-arm-analysis/')} aria-current={isJoint ? 'page' : undefined}>
@@ -42,8 +43,8 @@ const matrix = [
       <div class="experiment-selector__brand"><span></span>OpenEVO</div>
       <div class="experiment-selector__node-label"><span>01</span><strong>{t('里面的 Actor 模型', 'Actor model inside')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
       <div class="experiment-selector__choices">
-        <a class:list={{active:!isJoint && currentModel === '3b'}} href={p(armPath('3b', currentTeacher))} aria-current={!isJoint && currentModel === '3b' ? 'page' : undefined}><i></i>3B</a>
-        <a class:list={{active:!isJoint && currentModel === '7b'}} href={p(armPath('7b', currentTeacher))} aria-current={!isJoint && currentModel === '7b' ? 'page' : undefined}><i></i>7B</a>
+        <a class:list={{active:!isJoint && !isGroup && currentModel === '3b'}} href={p(armPath('3b', currentTeacher))} aria-current={!isJoint && !isGroup && currentModel === '3b' ? 'page' : undefined}><i></i>3B</a>
+        <a class:list={{active:!isJoint && !isGroup && currentModel === '7b'}} href={p(armPath('7b', currentTeacher))} aria-current={!isJoint && !isGroup && currentModel === '7b' ? 'page' : undefined}><i></i>7B</a>
       </div>
       <p>{t('OpenEVO 外壳保持不变；这里只替换实际做 WebShop 的模型规模。', 'The OpenEVO wrapper stays fixed; only the WebShop actor size changes here.')}</p>
     </section>
@@ -61,8 +62,8 @@ const matrix = [
     <section class="experiment-selector__teacher">
       <div class="experiment-selector__node-label"><span>03</span><strong>{t('外部教师 / hindsight', 'External hindsight')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
       <div class="experiment-selector__choices experiment-selector__choices--teacher">
-        <a class:list={{active:!isJoint && currentTeacher === 'self'}} href={p(armPath(currentModel, 'self'))} aria-current={!isJoint && currentTeacher === 'self' ? 'page' : undefined}><i></i>{t('无教师', 'None / self')}</a>
-        <a class:list={{active:!isJoint && currentTeacher === 'minimax'}} href={p(armPath(currentModel, 'minimax'))} aria-current={!isJoint && currentTeacher === 'minimax' ? 'page' : undefined}><i></i>MiniMax</a>
+        <a class:list={{active:!isJoint && !isGroup && currentTeacher === 'self'}} href={p(armPath(currentModel, 'self'))} aria-current={!isJoint && !isGroup && currentTeacher === 'self' ? 'page' : undefined}><i></i>{t('无教师', 'None / self')}</a>
+        <a class:list={{active:!isJoint && !isGroup && currentTeacher === 'minimax'}} href={p(armPath(currentModel, 'minimax'))} aria-current={!isJoint && !isGroup && currentTeacher === 'minimax' ? 'page' : undefined}><i></i>MiniMax</a>
       </div>
       <p>{t('MiniMax 在 episode 结束后分析轨迹，不替 Actor 点击或搜索。', 'MiniMax analyzes a finished episode; it does not click or search for the actor.')}</p>
     </section>
@@ -71,8 +72,8 @@ const matrix = [
 
     <div class:list={['experiment-selector__result', {joint:isJoint}]}>
       <span>04 · {t('当前页面', 'CURRENT PAGE')}</span>
-      <strong>{isJoint ? t('四组联合', 'Four-arm joint') : selectedArm}</strong>
-      <small>{isJoint ? t('同时看下面四格', 'Read all four cells together') : t('这一组的结果与分析', 'Results and analysis for this arm')}</small>
+      <strong>{isGroup ? t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration') : isJoint ? t('四组联合', 'Four-arm joint') : selectedArm}</strong>
+      <small>{isGroup ? t('先选模型规模与外部教师，再进入具体实验', 'Choose model size and external hindsight to enter one arm') : isJoint ? t('同时看下面四格', 'Read all four cells together') : t('这一组的结果与分析', 'Results and analysis for this arm')}</small>
     </div>
   </div>
 
