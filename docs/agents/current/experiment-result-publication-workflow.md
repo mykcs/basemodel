@@ -1,6 +1,6 @@
 # Experiment result publication workflow
 
-Last reviewed: **2026-08-26**  
+Last reviewed: **2026-08-29**
 Status: **current**  
 Audience: research, content, UI, review, and release Agents
 
@@ -215,6 +215,46 @@ A positive paired mean is not automatically a stable win. If the relevant uncert
 ### Paper-reported vs locally reproduced
 
 Paper numbers must remain labelled paper-reported unless the corresponding checkpoint/training/evaluation result has actually been reproduced locally under the relevant protocol.
+
+## Pre-built result scaffolds and later fill-in
+
+A Results page may be created before an experiment or diagnostic closes. In that case, the page is a **question scaffold**, not evidence that the answer already exists.
+
+Use this pattern:
+
+```text
+freeze the scientific question
+-> freeze the metric/comparison slot
+-> mark the value Pending
+-> wait for sealed upstream evidence
+-> fill only the fields that evidence actually closes
+```
+
+Rules:
+
+- `Pending` is a meaningful state; never replace it with `0`, an ETA, an in-flight counter, or a best guess;
+- pre-specify cross-arm contrasts before all finals are visible when practical, so the website does not choose metrics opportunistically after seeing outcomes;
+- distinguish run completion, final-evaluation completion, post-hoc diagnostic completion, and cross-arm-comparison completion;
+- when one arm closes, leave unrelated unfinished arms Pending;
+- search the repository for the old experiment status/Pending wording and update all derived owners together: detail page, result index, joint matrix, deeper analysis text, tests, and bilingual metadata as applicable;
+- preserve an existing deeper analysis layer when the new result scaffold answers a different reader need.
+
+When the question concerns checkpoint progression, inspect and publish the **full comparable curve**, not only base/final endpoints. Training loss, graded Task Score, action validity, and exact success are different signals and must not be collapsed into one “got better” claim.
+
+For a post-hoc checkpoint sweep on a panel already used for final evaluation, state the epistemic consequence explicitly: once intermediate checkpoints have been inspected on that panel, it is no longer fully unseen for future checkpoint/model selection. A later formal experiment should use an independent diagnostic/selection panel or freeze its selection rule before observing the formal panel.
+
+Before replacing Pending, confirm upstream completion with machine evidence rather than timestamps alone:
+
+```text
+completion marker
+-> machine-readable result status
+-> expected checkpoint/task cardinality
+-> model + panel + protocol identity
+-> metrics
+-> claim boundary
+```
+
+Historical case: [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md).
 
 ## Publication workflow
 
