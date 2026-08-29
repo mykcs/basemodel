@@ -63,6 +63,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerStart).toContain('com.mykcs.basemodel.runner-runtime-contract');
     expect(runnerStart).toContain('docker rename "$container" "$backup_container"');
     expect(runnerStart).toContain('restored independently registered legacy container');
+    expect(runnerStart).toContain('docker exec -d -u runner "$legacy_container"');
+    expect(runnerStart).toContain('docker update --cpus 4 --memory 4g --memory-swap 8g --pids-limit 1024');
     expect(runnerStart).toContain('runner_is_busy');
     expect(runnerStart).not.toMatch(/docker\s+(?:container\s+)?rm\b/);
   });

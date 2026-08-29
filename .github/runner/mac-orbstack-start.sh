@@ -36,9 +36,46 @@ require_runner_idle() {
   fi
 }
 
+legacy_listener_running() {
+  docker exec "$legacy_container" sh -lc '
+    for cmdline_file in /proc/[0-9]*/cmdline; do
+      command_line="$(tr "\000" " " < "$cmdline_file" 2>/dev/null || true)"
+      case "$command_line" in
+        *Runner.Listener*" run"*) exit 0 ;;
+      esac
+    done
+    exit 1
+  '
+}
+
+start_legacy_runner() {
+  docker update --cpus 4 --memory 4g --memory-swap 8g --pids-limit 1024 \
+    "$legacy_container" >/dev/null
+  docker start "$legacy_container" >/dev/null
+  if ! legacy_listener_running; then
+    docker exec -d -u runner "$legacy_container" bash -lc \
+      'cd /home/runner/actions-runner && exec ./run.sh'
+  fi
+}
+
+wait_runner_online() {
+  local name="$1"
+  local status
+  for _ in $(seq 1 30); do
+    status="$(gh api repos/mykcs/basemodel/actions/runners \
+      --jq ".runners[] | select(.name == \"$name\") | .status" 2>/dev/null || true)"
+    if [[ "$status" == 'online' ]]; then
+      return 0
+    fi
+    sleep 2
+  done
+  return 1
+}
+
 restore_previous_container() {
   local exit_status=$?
   local failed_container
+  local restored=false
   trap - ERR
 
   if docker container inspect "$container" >/dev/null 2>&1; then
@@ -48,12 +85,25 @@ restore_previous_container() {
   fi
 
   if docker container inspect "$legacy_container" >/dev/null 2>&1; then
-    docker start "$legacy_container" >/dev/null
-    echo "Runner change failed; restored independently registered legacy container $legacy_container." >&2
-  elif [[ -n "$backup_container" ]] && docker container inspect "$backup_container" >/dev/null 2>&1; then
+    if start_legacy_runner && wait_runner_online "$legacy_runner_name"; then
+      restored=true
+      echo "Runner change failed; restored independently registered legacy container $legacy_container." >&2
+    fi
+  fi
+
+  if [[ "$restored" != true ]] && [[ -n "$backup_container" ]] \
+    && docker container inspect "$backup_container" >/dev/null 2>&1; then
+    docker stop --time 30 "$legacy_container" >/dev/null 2>&1 || true
     docker rename "$backup_container" "$container"
     docker start "$container" >/dev/null
-    echo "Runner update failed; restored previous container as $container." >&2
+    if wait_runner_online "$runner_name"; then
+      restored=true
+      echo "Runner update failed; restored previous container as $container." >&2
+    fi
+  fi
+
+  if [[ "$restored" != true ]]; then
+    echo 'Runner change failed and no rollback target became online.' >&2
   fi
 
   exit "$exit_status"
