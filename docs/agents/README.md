@@ -24,23 +24,28 @@ For any non-trivial task:
 Always load the relevant combination of:
 
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;
+- [`current/website-design-spec.md`](current/website-design-spec.md) — canonical website-level design/copy preference: what “说人话 / 去 AI 味” means, information order, heading voice, and conflict resolution;
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
 - [`current/sitewide-visual-knowledge-architecture.md`](current/sitewide-visual-knowledge-architecture.md) — whole-site knowledge journey and route roles.
 
 #### Writing stack: load by responsibility
 
-These files are complementary, not five competing style guides:
+These files are complementary owners, not competing style guides:
 
 | Owner | Load when | Owns |
 |---|---|---|
+| [`website-design-spec.md`](current/website-design-spec.md) | every public page/copy task | canonical user preference for natural human wording, anti-AI rhetorical patterns, heading/lede/CTA defaults, and rule precedence |
 | [`audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) | any public technical copy | headings name subjects, concrete language, context, terminology, audience baseline |
 | [`reader-first-copy-hierarchy.md`](current/reader-first-copy-hierarchy.md) | public explanation/result/incident copy | facts before stage directions, conclusion/numbers before long explanation, visual weight follows semantic weight |
 | [`layered-technical-explainer-copy.md`](current/layered-technical-explainer-copy.md) | Chinese technical/research explainers | L1 plain meaning → L2 mechanism → L3 evidence; Chinese-first terminology and scientific boundaries |
 | [`research-editorial-style.md`](current/research-editorial-style.md) | research results, benchmark reports, scientific interpretation | research narrative, claim → evidence → inference → boundary, run IDs as provenance |
+| [`research-site-presentation-contract.md`](current/research-site-presentation-contract.md) | research publication/result routes | result-first publication order, visible scientific caveats, and progressive disclosure for commands/configs/logs |
 | [`seed-student-reproduction-writing.md`](current/seed-student-reproduction-writing.md) | SEED student/onboarding execution guidance | lab-mentor sequencing, observable PASS criteria, hardware/evidence language |
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
+
+If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, also read [`current/website-copy-cases.md`](current/website-copy-cases.md). The case library is the interpretation evidence for that instruction; do not reduce it to a word blacklist.
 
 For UI/layout/theme/CSS work also read:
 
@@ -62,6 +67,7 @@ Before a non-trivial Results change, read:
 - [`current/research-explainer-page-standard.md`](current/research-explainer-page-standard.md)
 - [`current/reader-first-copy-hierarchy.md`](current/reader-first-copy-hierarchy.md)
 - [`current/research-editorial-style.md`](current/research-editorial-style.md)
+- [`current/research-site-presentation-contract.md`](current/research-site-presentation-contract.md)
 - [`current/layered-technical-explainer-copy.md`](current/layered-technical-explainer-copy.md) for Chinese explainers
 
 Then resolve the live scientific authority in `mykcs/openevo-experiment`. An old website sentence, chat recap, dated snapshot, or `current/` filename is not evidence that upstream state has not moved.
