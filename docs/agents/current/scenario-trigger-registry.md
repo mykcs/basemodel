@@ -110,6 +110,24 @@ Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibi
 
 ---
 
+## TRIGGER: a previously Pending experiment/result slot has completed
+
+**Cues:** the server run says COMPLETE; a final evaluation/checkpoint sweep just finished; the user asks to fill a pre-built Results page; an individual arm closes while other arms are still running.
+
+**Automatic response:**
+
+1. Read `experiment-result-publication-workflow.md` and resolve the exact upstream completion marker, machine-readable result status, expected row/checkpoint count, model identity, panel/protocol identity, and claim boundary before editing the site.
+2. Treat the old website Pending state as a slot to fill, not as scientific authority. Never turn an in-flight snapshot, ETA, missing update, or absent artifact into final `0`.
+3. If the question is about progression across checkpoints, inspect the whole comparable curve; do not infer monotonic capability from base/final endpoints or monotonic training loss.
+4. Keep Task Score, exact success, action validity, rollout volume, admitted data, and optimizer updates distinct.
+5. Search all derived website surfaces for the old state and update the detail page, result index, joint matrix, deeper analysis, tests, and bilingual metadata together when they are owners of the same fact. Leave unfinished arms Pending.
+6. If a post-hoc sweep reused the formal panel, record that the panel has now been inspected for model/checkpoint selection purposes and must not silently remain “fully unseen”.
+7. Validate source and Production separately. A skipped/ignored Preview or a GitHub provider `success` context is not proof that exact-head Preview acceptance executed.
+
+Historical end-to-end case: [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md).
+
+---
+
 ## TRIGGER: offline lab server / SSH / SFTP / rsync / no outbound internet
 
 **Cues:** online workstation prepares code/data; GPU server is isolated; artifacts cross a private transfer boundary.
