@@ -10,7 +10,7 @@ const { locale, mode } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-const PENDING = t('等待服务器产物', 'Pending server artifact');
+const PENDING = t('尚无最终结果（对应实验仍未封口）', 'No final result yet (the corresponding run is not closed)');
 
 const armMeta = {
   '3b-self': {
@@ -19,89 +19,136 @@ const armMeta = {
     status:t('实验尚未完整收尾', 'Experiment not fully closed'),
     question:t('3B 只靠自己产生经验时，能不能跨过“先产生足够好经验，才能继续学”的门槛？', 'Can 3B, using only its own experience, cross the threshold required to keep learning?'),
     known:[
-      t('Stage 1 已经说明：3B/self 很难凑出可重复的 clean-success identity；已有记录是 4 条 qualified positive、1 个 qualifying identity，因此没有形成 bootstrap adapter。', 'Stage 1 already shows that 3B/self struggles to form repeatable clean-success identities: the current record has 4 qualified positives and 1 qualifying identity, so no bootstrap adapter was formed.'),
-      t('这能说明“经验供给很弱”，但还不能在 final 没完成前下结论说 3B 最终一定学不会。', 'This supports weak experience supply, but it does not justify declaring the final 3B outcome before the run closes.'),
+      t('Stage 1 共找到 4 条可用于训练的完整成功轨迹，但它们只来自 1 个能够重复成功的任务；启动训练要求至少 8 个这样的不同任务。因此 3B/self 没达到启动门槛，没有创建新的学习适配器（adapter），Stage 1 的模型参数保持初始基础模型（base）状态。', 'Stage 1 found four trainable exact-success trajectories, but they came from only one task that succeeded repeatedly; bootstrap requires at least eight such distinct tasks. 3B/self therefore did not reach the start threshold, created no learned adapter, and kept the base model parameters unchanged.'),
+      t('这能说明“经验供给很弱”，但在最终评测完成前，还不能据此断言 3B 最终一定学不会。', 'This supports weak experience supply, but it does not justify declaring the final 3B outcome before the run closes.'),
     ],
-    next:t('等本 arm 的 Stage 2 与 final 评测封口后，再补最终 Task Score、exact success、动作合法性和失败类型分解。', 'After Stage 2 and the final evaluation close, fill in Task Score, exact success, action validity, and failure taxonomy.'),
+    next:t('等这一组的 Stage 2 和最终评测都完成后，再补平均任务得分、完整成功数、技术有效轨迹数和失败类型分解。', 'After this arm completes Stage 2 and final evaluation, add mean task score, exact-success count, technically valid episodes, and failure-type decomposition.'),
   },
   '7b-self': {
     title:t('7B · 无外部教师（self）', '7B · self only'),
-    eyebrow:t('单实验结果页 · checkpoint 补测已完成', 'SINGLE-ARM RESULT · CHECKPOINT SWEEP COMPLETE'),
-    status:t('主实验 + GPU checkpoint 分析已完成', 'Main run + GPU checkpoint analysis complete'),
+    eyebrow:t('单实验结果页 · 训练保存点补测已完成', 'SINGLE-ARM RESULT · CHECKPOINT SWEEP COMPLETE'),
+    status:t('主实验 + GPU 训练保存点分析已完成', 'Main run + GPU checkpoint analysis complete'),
     question:t('7B/self 已经变好了，但它到底学到了“更会做题”，还是主要学到了“更会输出可执行动作”？', '7B/self improved, but did it learn to solve tasks better, or mostly to emit executable actions?'),
     known:[
-      t('Stage 1 完成 8 次参数更新，training loss 从 0.479 降到 0.055。', 'Stage 1 completed 8 parameter updates and training loss fell from 0.479 to 0.055.'),
-      t('Stage 2 写出了 20,480 条 rollout 和 797 条 qualified-positive trajectory，但 80/80 个 block 都没有参数更新；单个 block 的 qualifying identity 最大只有 7，而 gate 需要 8。', 'Stage 2 produced 20,480 rollouts and 797 qualified-positive trajectories, but all 80/80 blocks had no parameter update; the maximum qualifying identities in one block was 7 while the gate requires 8.'),
-      t('现有 128-task final：Task Score 13.33 → 25.66；valid episode 109 → 122；parser/action failure 19 → 6；exact success 3 → 4。它支持“可执行性和部分任务进展明显改善”，但 exact success 的变化很小。', 'On the current 128-task final panel, Task Score moved 13.33 → 25.66, valid episodes 109 → 122, parser/action failures 19 → 6, and exact success 3 → 4. This supports a clear gain in executability and partial task progress, while exact-success change is small.'),
-      t('GPU checkpoint sweep 已完成：base → increment-00…07 的 Task Score 为 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66。loss 持续下降，但 held-out score 明显非单调；最终 increment-07 是全程最高点。', 'The GPU checkpoint sweep is complete: Task Score over base → increment-00…07 is 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66. Loss fell continuously, but held-out score was clearly non-monotonic; the final increment-07 checkpoint is the best point in the sweep.'),
+      t('Stage 1 达到了启动门槛，并完成 8 次 SD-LoRA 参数更新。训练目标误差（loss）从 0.479 降到 0.055；它表示模型更贴合这批训练记录，但不能单独说明 WebShop 做题能力一定同步上升。', 'Stage 1 reached the bootstrap threshold and completed eight SD-LoRA parameter updates. Training loss fell from 0.479 to 0.055; this means better fit to the training records, not guaranteed step-by-step improvement on WebShop tasks.'),
+      t('Stage 2 共完成 20,480 次任务尝试，其中 797 条是可用于训练的完整成功轨迹。训练规则不是“成功轨迹够多就更新”，而是每 256 次尝试单独检查：同一数据块里必须至少有 8 个不同任务各自重复完整成功，才允许更新参数。实际最好的一块只有 7 个，离门槛差 1 个，因此 80 个数据块全部完成了经验采集，却没有任何一块触发 Stage-2 参数更新。', 'Stage 2 completed 20,480 task attempts, including 797 trainable exact-success trajectories. The rule is not “enough successful trajectories means update”: every 256-attempt block is checked separately, and at least eight distinct tasks must each achieve repeated exact success before parameters may update. The best block reached only seven, one short of the threshold, so all 80 blocks collected experience but none triggered a Stage-2 parameter update.'),
+      t('在固定的 128 个评测任务上，平均 WebShop 任务得分（Task Score ×100）从 13.33 升到 25.66；技术有效的完整轨迹从 109/128 增到 122/128，动作格式或解析失败从 19 次降到 6 次；真正完整完成任务则只从 3/128 增到 4/128。也就是说，可执行性和部分任务进展明显改善，但完整做成任务只多了 1 个。', 'On the fixed 128-task evaluation panel, mean WebShop Task Score ×100 rose from 13.33 to 25.66; technically valid episodes increased from 109/128 to 122/128 and parser/action-format failures fell from 19 to 6; fully completed tasks rose only from 3/128 to 4/128. Executability and partial progress improved clearly, while full task completion increased by only one task.'),
+      t('我们把 Stage 1 每次参数更新后的模型保存点（checkpoint）都放到同一套固定 128 任务上补测。从初始基础模型（base）到第 8 次更新后的平均任务得分（Task Score ×100）依次为 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66。训练 loss 一直下降，但评测分数中间两次回落；第 8 次更新后的保存点（increment-07）是最高点。', 'We re-evaluated every Stage-1 model checkpoint on the same fixed 128-task panel. Task Score from base through the eighth update was 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66. Training loss fell continuously, but evaluation score regressed twice; the checkpoint after the eighth update (increment-07) is the best point.'),
     ],
-    next:t('checkpoint 补测现在回答了关键缺口：后期 checkpoint 总体更强，最终点最好，但能力曲线会回落，因此 training loss 不能当成单调的 WebShop 能力代理。结合 exact success 只从 3/128 到 4/128，更稳妥的解释仍是：训练明显改善了动作可执行性与部分任务进展，但完整任务成功只小幅增加。', 'The checkpoint sweep now closes the key gap: later checkpoints are stronger overall and the final point is best, but capability can regress between updates, so training loss is not a monotonic proxy for WebShop capability. With exact success only moving from 3/128 to 4/128, the supported interpretation remains that training clearly improves executability and partial task progress while full task completion changes only slightly.'),
+    next:t('逐个训练保存点的补测已经回答了关键缺口：后期模型总体更强，最后一个保存点最好，但固定 128 任务上的能力会在某些更新后回落，因此训练 loss 不能当成“每降一点，WebShop 能力就一定升一点”的仪表。完整成功也只从 3/128 增到 4/128，所以更稳妥的解释仍是：训练明显改善了动作可执行性与部分任务进展，完整做成任务只小幅增加。', 'The checkpoint sweep closes the key gap: later models are stronger overall and the final checkpoint is best, but capability on the fixed 128 tasks regresses after some updates. Training loss therefore cannot be treated as a gauge where every decrease guarantees a WebShop capability increase. Exact success rises only from 3/128 to 4/128, so the supported interpretation remains improved executability and partial progress with only a small increase in full task completion.'),
   },
   '3b-minimax': {
-    title:t('3B · MiniMax 后验分析（有老师）', '3B · MiniMax hindsight analysis'),
+    title:t('3B · MiniMax 任务后回看监督（有老师）', '3B · MiniMax hindsight analysis'),
     eyebrow:t('单实验结果页 · 预留回填位', 'SINGLE-ARM RESULT · PRE-BUILT SLOTS'),
     status:t('实验尚未完整收尾', 'Experiment not fully closed'),
-    question:t('当 3B 自己几乎无法 bootstrap 时，episode 结束后的外部 hindsight supervision 能不能把它拉进“可继续学习”的区域？', 'When 3B can barely bootstrap itself, can post-episode hindsight supervision move it into a learnable regime?'),
+    question:t('当 3B 靠自己几乎达不到启动训练门槛时，MiniMax 在一次任务结束后提供的回看监督，能不能让它真正开始参数学习？', 'When 3B can barely bootstrap itself, can post-episode hindsight supervision move it into a learnable regime?'),
     known:[
       t('这里口头说“有老师”，更精确地说是：MiniMax 在 episode 结束后分析轨迹；它不替 3B 在 WebShop 里点击或搜索。', '“With a teacher” is shorthand here: MiniMax analyzes the trajectory after the episode; it does not click or search inside WebShop for the 3B actor.'),
-      t('现有记录显示正式 MiniMax bootstrap 已完成 8 次更新；这说明外部 hindsight bundle 至少能提供一条 3B/self 没有形成的 bootstrap 路径。', 'The current record shows 8 formal MiniMax-bootstrap updates, so the external hindsight bundle at least provides a bootstrap path that 3B/self did not form.'),
+      t('现有记录显示：使用 MiniMax 任务后回看监督后，启动阶段完成了 8 次参数更新；而 3B/self 的启动阶段是 0 次更新。这说明这套外部回看监督至少让 3B 获得了一条原本没有形成的启动学习路径。', 'The current record shows 8 formal MiniMax-bootstrap updates, so the external hindsight bundle at least provides a bootstrap path that 3B/self did not form.'),
     ],
-    next:t('等 final 完成后，重点回填：它是否真的提高 Stage-2 clean-success coverage、最终 Task Score、exact success，以及这种改善发生在哪一段。', 'After the final run closes, fill in whether it actually improves Stage-2 clean-success coverage, final Task Score, exact success, and where along the mechanism chain that change appears.'),
+    next:t('等最终评测完成后，重点比较：Stage 2 中有多少不同任务能够重复完整成功、最终平均任务得分和完整成功数是否提高，以及改善究竟出现在启动训练、后续探索还是最终做题阶段。', 'After final evaluation completes, compare how many distinct Stage-2 tasks achieve repeated exact success, whether final mean task score and exact-success count improve, and whether the change arises during bootstrap, later exploration, or final task solving.'),
   },
   '7b-minimax': {
-    title:t('7B · MiniMax 后验分析（有老师）', '7B · MiniMax hindsight analysis'),
+    title:t('7B · MiniMax 任务后回看监督（有老师）', '7B · MiniMax hindsight analysis'),
     eyebrow:t('单实验结果页 · 预留回填位', 'SINGLE-ARM RESULT · PRE-BUILT SLOTS'),
     status:t('实验尚未完整收尾', 'Experiment not fully closed'),
-    question:t('7B 本来已经能靠自己 bootstrap；再加 MiniMax hindsight 后，真正改变的是学习起点、Stage-2 探索覆盖，还是最终能力？', '7B can already bootstrap itself; with MiniMax hindsight added, does the change appear in the starting point, Stage-2 exploration coverage, or final capability?'),
+    question:t('7B 不靠外部老师本来就能启动参数学习；加入 MiniMax 任务后回看监督以后，真正改变的是启动阶段学到的内容、Stage 2 的成功任务覆盖，还是最终做题能力？', '7B can already bootstrap itself; with MiniMax hindsight added, does the change appear in the starting point, Stage-2 exploration coverage, or final capability?'),
     known:[
-      t('这里的 MiniMax 同样是 episode 结束后的 analyzer，不是 WebShop actor。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
-      t('现有记录显示该 arm 的正式 bootstrap 完成 8 次更新；因此它与 7B/self 的关键问题不再是“有没有 bootstrap”，而是“bootstrap 的内容是否改变了后续探索和 final”。', 'The current record shows 8 formal bootstrap updates. The key comparison with 7B/self is therefore not whether bootstrap exists, but whether its content changes later exploration and the final result.'),
+      t('这里的 MiniMax 同样只在一次任务结束后回看并分析轨迹，不会替学生模型在 WebShop 里搜索或点击。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
+      t('现有记录显示 7B+MiniMax 的启动阶段完成了 8 次参数更新；因此它与 7B/self 的关键问题不再是“能不能开始学习”，而是“启动阶段学到的内容是否改变了后续自主探索和最终评测结果”。', 'The current record shows 8 formal bootstrap updates. The key comparison with 7B/self is therefore not whether bootstrap exists, but whether its content changes later exploration and the final result.'),
     ],
-    next:t('等 final 完成后，用和 7B/self 相同的 128-task panel 做 paired 对照，并比较相同 Stage-2 block 前缀下的 clean-positive、identity 和 parser 状态。', 'After final completion, run a paired comparison against 7B/self on the same 128-task panel and compare clean positives, identities, and parser states over matched Stage-2 prefixes.'),
+    next:t('等最终 128 任务评测完成后，与 7B/self 在同一批任务上逐题配对比较；Stage 2 也只比较两组都已经完成的相同数据块范围，分别看合格成功轨迹、达标任务身份和动作解析状态。', 'After the final 128-task evaluation completes, compare the same tasks pair by pair against 7B/self. For Stage 2, compare only the matched prefix of blocks completed by both arms, tracking qualifying successes, qualifying task identities, and action-parser state.'),
   },
 } as const;
 
 const current = mode === 'cross-arm' ? null : armMeta[mode];
 
-const individualMetrics = [
+const experimentTerms = [
   {
-    metric:t('最终 Task Score', 'Final Task Score'),
-    value:mode === '7b-self' ? t('25.66；base 13.33', '25.66; base 13.33') : PENDING,
-    note:mode === '7b-self' ? t('已有 128-task final', 'Existing 128-task final') : t('等本 arm final 封口', 'Wait for this arm final'),
+    term:t('Stage 1：启动学习阶段', 'Stage 1: bootstrap-learning phase'),
+    meaning:t('先用 1,440 次任务尝试建立第一批学习数据，再尝试让基础模型发生最初的参数更新。self 组从模型自己的完整成功轨迹里学习；MiniMax 组则对同一批学生轨迹增加任务后回看监督。是否真的更新参数，取决于这一阶段有没有满足启动门槛。', 'Stage 1 uses 1,440 task attempts to form the first learning set and then tries to produce the initial parameter updates from the base model. Self arms learn from the model’s own exact-success trajectories; MiniMax arms add post-task hindsight supervision over the same student trajectories. Parameter updates occur only if the bootstrap requirement is satisfied.'),
   },
   {
-    metric:t('Exact success', 'Exact success'),
+    term:t('Stage 2：模型自主探索阶段', 'Stage 2: model self-exploration phase'),
+    meaning:t('从 Stage 1 结束时的模型继续做题，但不再由 MiniMax 提供老师监督。计划共 80 个数据块、每块 256 次任务尝试；每个数据块都独立判断一次是否有资格进行新的参数更新。', 'The model continues attempting tasks from its post-Stage-1 state, without MiniMax teacher supervision. The plan uses 80 blocks of 256 attempts; each block independently determines whether a new parameter update is allowed.'),
+  },
+  {
+    term:t('一次任务尝试（rollout）', 'One task attempt (rollout)'),
+    meaning:t('模型从拿到一个 WebShop 任务开始，连续搜索、点击，直到成功、失败或达到 15 步上限。这是一整次做题，不是一次参数训练，也不是单个动作。', 'One complete WebShop attempt from receiving the task through search/click actions until success, failure, or the 15-step limit. It is not a parameter update and not a single action.'),
+  },
+  {
+    term:t('可用于训练的完整成功轨迹（qualified positive）', 'Trainable exact-success trajectory (qualified positive)'),
+    meaning:t('一次任务尝试（rollout）只有在任务完全成功、轨迹完整、任务身份核对正确，而且没有动作解析失败，也没有由系统兜底逻辑替代模型动作时才算。797 说的是这种成功轨迹的条数。', 'A rollout counts only when the task is fully won, the trace is complete, task identity matches, and there is no parser failure and no system-generated substitute action. The number 797 counts trajectories that pass all of these checks.'),
+  },
+  {
+    term:t('达标任务身份（qualifying identity）', 'Qualifying task identity'),
+    meaning:t('这里数的不是轨迹条数，而是“不同的任务”。同一个 256 次任务尝试的数据块里，一个任务至少要独立完整成功 2 次，才算 1 个达标任务身份；同一任务成功很多次仍只算 1 个身份。', 'This counts distinct tasks, not trajectories. Within one 256-rollout block, a task must achieve at least two independent exact successes to count as one qualifying identity; many successes on the same task still count as one identity.'),
+  },
+  {
+    term:t('Stage 2 参数更新门槛（gate）', 'Stage-2 parameter-update gate'),
+    meaning:t('Stage 2 每收集 256 次任务尝试就检查一次。只有这一块里至少有 8 个达标任务身份，才允许开始参数更新；不足 8 个时，256 次尝试仍然有效计入实验，只是模型权重保持不变，而且成功不能跨不同数据块累积来凑 8。', 'Stage 2 checks after every 256 rollouts. Parameter updates are allowed only if that block contains at least eight qualifying task identities. If it has fewer than eight, all 256 attempts still count as experiment data, but model weights stay unchanged; successes cannot be pooled across blocks to reach eight.'),
+  },
+  {
+    term:t('启动训练（bootstrap）', 'Bootstrap training'),
+    meaning:t('Stage 1 先让基础模型自己做题并收集经验；当成功经验达到门槛后，才进行本实验的第一轮参数学习。页面里的 bootstrap 指“从基础模型进入已学习状态”的首次启动更新，不是重新下载或重新初始化模型。', 'Stage 1 first lets the base model attempt tasks and collect experience. Only after enough successful experience is available does the experiment perform its first parameter learning. Here, bootstrap means the initial transition from the base model to a learned state, not redownloading or reinitializing the model.'),
+  },
+  {
+    term:t('参数更新与学习适配器（adapter）', 'Parameter update and learned adapter'),
+    meaning:t('真正“学了一次”意味着 SD-LoRA 的附加参数被优化并保存成新的 adapter。页面写“0 次 Stage-2 参数更新”时，意思是 Stage 2 做了探索和数据采集，但没有改动 Stage 1 留下的模型参数；不等于实验没跑，也不等于没有成功数据。', 'A real learning update means SD-LoRA auxiliary parameters were optimized and saved into a new adapter. “0 Stage-2 parameter updates” means Stage 2 collected experience without changing the Stage-1 model parameters; it does not mean the experiment failed to run or produced no successful data.'),
+  },
+  {
+    term:t('Task Score、完整成功与技术有效性', 'Task Score, exact success, and technical validity'),
+    meaning:t('Task Score ×100 是 128 个任务的平均 WebShop 得分，可包含部分任务进展；完整成功（Exact Success）只数真正完成整个任务；技术有效轨迹（Valid Episode）只说明输出能被环境正确执行，不保证任务成功。三者必须分开看。', 'Task Score ×100 is the mean WebShop score over 128 tasks and can include partial progress; Exact Success counts only fully completed tasks; a Valid Episode means the output could be executed correctly by the environment, not that the task was solved. These three must be interpreted separately.'),
+  },
+];
+
+const sevenBStage2Flow = [
+  { n:'20,480', title:t('次 Stage-2 任务尝试', 'Stage-2 task attempts'), text:t('80 个数据块 × 每块 256 次任务尝试。这里是经验采集量，不是 20,480 次训练。', '80 blocks × 256 rollouts. This is experience-collection volume, not 20,480 training updates.') },
+  { n:'797', title:t('条合格成功轨迹', 'trainable exact-success trajectories'), text:t('它们都满足完整成功和技术有效条件；但轨迹多，不代表覆盖了足够多的不同任务。', 'They all pass exact-success and technical-validity checks, but many trajectories do not necessarily cover enough distinct tasks.') },
+  { n:'8', title:t('个达标任务身份才允许更新', 'qualifying task identities required'), text:t('同一个 256 次任务尝试的数据块内，每个身份还必须至少独立成功 2 次。这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹。', 'Within the same 256-rollout block, each identity must also succeed independently at least twice. The 8 is a threshold on distinct tasks, not a score of 8 and not eight trajectories.') },
+  { n:'7', title:t('是实际单块最高值', 'was the best block observed'), text:t('最好的一块也只覆盖 7 个达标任务身份，离门槛差 1 个；其余数据块更低。', 'Even the best block covered only seven qualifying task identities, one short of the threshold; every other block was lower.') },
+  { n:'0', title:t('次 Stage-2 参数更新', 'Stage-2 parameter updates'), text:t('80 个数据块都完成了经验采集，但没有任何一块达到 8，所以 Stage 2 从未改动模型参数；最终评测继续使用 Stage 1 最后保存的学习适配器（adapter）。', 'All 80 blocks completed experience collection, but none reached eight, so Stage 2 never changed the model parameters; final evaluation continued to use the final Stage-1 adapter.') },
+];
+
+const individualMetrics = [
+  {
+    metric:t('最终平均任务得分（Task Score ×100）', 'Final mean Task Score ×100'),
+    value:mode === '7b-self' ? t('25.66；base 13.33', '25.66; base 13.33') : PENDING,
+    note:mode === '7b-self' ? t('已有固定 128 任务的最终评测', 'Final evaluation on the fixed 128-task panel is available') : t('等待这一组的最终评测完成并封存', 'Wait for this arm’s final evaluation to complete and be sealed'),
+  },
+  {
+    metric:t('完整成功（Exact Success）', 'Exact Success (full task completion)'),
     value:mode === '7b-self' ? '4 / 128 (base 3 / 128)' : PENDING,
     note:t('和 Task Score 分开解释', 'Interpret separately from Task Score'),
   },
   {
-    metric:t('动作可执行性 / valid episode', 'Executability / valid episodes'),
+    metric:t('技术有效轨迹（Valid Episode）', 'Technically valid episodes'),
     value:mode === '7b-self' ? '122 / 128 (base 109 / 128)' : PENDING,
     note:t('用于区分“更会说合法动作”和“更会完成任务”', 'Separates valid action production from task completion'),
   },
   {
     metric:t('Stage-2 最终参数更新数', 'Final Stage-2 optimizer updates'),
     value:mode === '7b-self' ? '0' : PENDING,
-    note:mode === '7b-self' ? t('80 / 80 block 已封口', '80 / 80 blocks closed') : t('实验未封口前不写死', 'Do not freeze before closeout'),
+    note:mode === '7b-self' ? t('80 个数据块均完成；全部低于“8 个达标任务身份”门槛，因此 Stage 2 没有修改参数', 'All 80 blocks completed; every block stayed below the eight-identity threshold, so Stage 2 did not change model parameters') : t('实验未封口前不写死', 'Do not freeze before closeout'),
   },
   {
-    metric:t('Checkpoint → 能力曲线', 'Checkpoint → capability curve'),
+    metric:t('每次 Stage-1 参数更新后的能力', 'Capability after each Stage-1 parameter update'),
     value:mode === '7b-self' ? t('13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66', '13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66') : PENDING,
-    note:mode === '7b-self' ? t('同一 sealed 128-task panel；非单调，increment-07 为最高点', 'Same sealed 128-task panel; non-monotonic, with increment-07 best') : t('等 checkpoint / final 可用后回填', 'Fill when checkpoints / final are available'),
+    note:mode === '7b-self' ? t('同一套固定 128 任务；中间会回落，第 8 次更新后的保存点最高', 'Same fixed 128 tasks; performance regresses between some updates, and the checkpoint after update eight is best') : t('等训练保存点和最终评测结果可用后回填', 'Fill when training checkpoints and final evaluation are available'),
   },
   {
     metric:t('单实验最终解释', 'Final single-arm interpretation'),
-    value:mode === '7b-self' ? t('loss 下降不等于能力逐步上升；收益主要落在可执行性与部分任务进展，exact success 仅 +1', 'Lower loss did not mean step-by-step capability gains; most improvement is in executability and partial progress, while exact success is only +1') : PENDING,
+    value:mode === '7b-self' ? t('训练 loss 下降不等于做题能力逐步上升；收益主要落在可执行性与部分任务进展，完整成功只增加 1 个任务', 'Lower training loss did not mean step-by-step capability gains; most improvement is in executability and partial progress, while exact success increased by only one task') : PENDING,
     note:t('必须同时看 Task Score、exact success、validity 和机制证据', 'Requires Task Score, exact success, validity, and mechanism evidence together'),
   },
 ];
 
 const matrixRows = [
-  { label:t('Stage-1 bootstrap', 'Stage-1 bootstrap'), a:t('0 update / 无 adapter', '0 updates / no adapter'), b:'8 updates', c:'8 updates', d:'8 updates' },
+  { label:t('Stage 1 启动训练', 'Stage-1 bootstrap'), a:t('0 次参数更新；未创建学习适配器（启动门槛未达到）', '0 parameter updates; no learned adapter was created because the bootstrap threshold was not reached'), b:t('8 次参数更新', '8 parameter updates'), c:t('8 次参数更新', '8 parameter updates'), d:t('8 次参数更新', '8 parameter updates') },
   { label:t('最终 Task Score', 'Final Task Score'), a:PENDING, b:'25.66', c:PENDING, d:PENDING },
-  { label:t('Exact success', 'Exact success'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
-  { label:t('Stage-2 最终 update', 'Final Stage-2 updates'), a:PENDING, b:'0', c:PENDING, d:PENDING },
-  { label:t('Checkpoint 能力曲线', 'Checkpoint capability curve'), a:PENDING, b:t('已完成 · 非单调 · final 25.66 最佳', 'Complete · non-monotonic · final 25.66 best'), c:PENDING, d:PENDING },
+  { label:t('完整成功（Exact Success）', 'Exact Success (full task completion)'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
+  { label:t('Stage 2 实际参数更新次数', 'Actual Stage-2 parameter updates'), a:PENDING, b:t('0（80 个数据块均未达到更新门槛）', '0 (none of the 80 blocks reached the update threshold)'), c:PENDING, d:PENDING },
+  { label:t('各训练保存点的评测能力', 'Evaluation capability at each training checkpoint'), a:PENDING, b:t('已完成；中间有回落；最后一个保存点 25.66 最高', 'Complete; performance regresses between some updates; final checkpoint is best at 25.66'), c:PENDING, d:PENDING },
 ];
 
 const sevenBSelfCheckpointCurve = [
@@ -117,12 +164,12 @@ const sevenBSelfCheckpointCurve = [
 ];
 
 const contrasts = [
-  { id:'C1', title:t('3B：有老师 vs 没老师', '3B: MiniMax vs self'), formula:'3B/MiniMax − 3B/self', answer:PENDING, need:t('两组 final + paired 128-task 结果', 'Both finals + paired 128-task results') },
-  { id:'C2', title:t('7B：有老师 vs 没老师', '7B: MiniMax vs self'), formula:'7B/MiniMax − 7B/self', answer:PENDING, need:t('7B/MiniMax final；7B/self 已有基线', '7B/MiniMax final; 7B/self baseline already exists') },
-  { id:'C3', title:t('没老师：7B vs 3B', 'Self only: 7B vs 3B'), formula:'7B/self − 3B/self', answer:PENDING, need:t('3B/self final', '3B/self final') },
-  { id:'C4', title:t('有老师：7B vs 3B', 'MiniMax: 7B vs 3B'), formula:'7B/MiniMax − 3B/MiniMax', answer:PENDING, need:t('两组 MiniMax final', 'Both MiniMax finals') },
-  { id:'C5', title:t('模型大小 × 外部 hindsight 是否有 interaction？', 'Is there a model-size × external-hindsight interaction?'), formula:'(7B/MiniMax−7B/self) − (3B/MiniMax−3B/self)', answer:PENDING, need:t('四组全部 final；先看 paired task，再下机制结论', 'All four finals; inspect paired tasks before mechanism claims') },
-  { id:'C6', title:t('差异发生在机制链哪一段？', 'Where does the difference arise in the mechanism chain?'), formula:'bootstrap → Stage-2 coverage → update → final', answer:PENDING, need:t('matched-prefix coverage + update ledger + final 分解', 'Matched-prefix coverage + update ledger + final decomposition') },
+  { id:'C1', title:t('3B：有老师 vs 没老师', '3B: MiniMax vs self'), formula:'3B/MiniMax − 3B/self', answer:PENDING, need:t('两组最终评测 + 同一批 128 个任务的逐题配对结果', 'Both final evaluations plus pairwise results on the same 128 tasks') },
+  { id:'C2', title:t('7B：有老师 vs 没老师', '7B: MiniMax vs self'), formula:'7B/MiniMax − 7B/self', answer:PENDING, need:t('7B/MiniMax 最终评测；7B/self 已有可比基线', '7B/MiniMax final evaluation; 7B/self baseline already exists') },
+  { id:'C3', title:t('没老师：7B vs 3B', 'Self only: 7B vs 3B'), formula:'7B/self − 3B/self', answer:PENDING, need:t('3B/self 最终评测', '3B/self final evaluation') },
+  { id:'C4', title:t('有老师：7B vs 3B', 'MiniMax: 7B vs 3B'), formula:'7B/MiniMax − 3B/MiniMax', answer:PENDING, need:t('两组 MiniMax 实验的最终评测', 'Both MiniMax final evaluations') },
+  { id:'C5', title:t('模型大小会不会改变 MiniMax 回看监督的收益幅度？', 'Does model size change the size of the MiniMax-hindsight benefit?'), formula:'(7B/MiniMax−7B/self) − (3B/MiniMax−3B/self)', answer:PENDING, need:t('四组最终评测全部完成；先逐题配对比较，再讨论机制', 'All four final evaluations; inspect matched tasks before mechanism claims') },
+  { id:'C6', title:t('差异发生在机制链哪一段？', 'Where does the difference arise in the mechanism chain?'), formula:t('启动训练 → Stage 2 成功任务覆盖 → 参数更新 → 最终评测', 'bootstrap → Stage-2 successful-task coverage → parameter update → final evaluation'), answer:PENDING, need:t('相同进度的数据块覆盖率 + 参数更新记录 + 最终评测分解', 'Matched-progress coverage + parameter-update ledger + final decomposition') },
 ];
 ---
 
@@ -140,9 +187,32 @@ const contrasts = [
     <div class="exp-scaffold__status" aria-label={t('当前状态', 'Current status')}>
       <span>{t('当前状态', 'STATUS')}</span>
       <strong>{mode === 'cross-arm' ? t('等待四组结果齐全', 'Waiting for all four arms') : current?.status}</strong>
-      <small>{mode === '7b-self' ? t('checkpoint sweep 完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
+      <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
     </div>
   </header>
+
+  <section class="exp-scaffold__section exp-scaffold__counting" aria-labelledby="counting-title">
+    <p class="exp-scaffold__section-kicker">{t('实验计数规则', 'EXPERIMENT COUNTING RULES')}</p>
+    <h2 id="counting-title">{t('Stage 2 参数更新门槛', 'Stage-2 parameter-update rule')}</h2>
+    <p class="exp-scaffold__section-intro">{t('这里最容易误读的地方是："跑了多少次任务"、"收集到多少条成功轨迹"和"模型真的更新了多少次参数"是三件不同的事。下面这些定义就是本组结果页后续数字的统一口径。', 'The key distinction is that task attempts, successful trajectories, and actual model-parameter updates are three different quantities. These definitions are the common counting contract for the result pages in this series.')}</p>
+    <dl class="exp-scaffold__term-list">
+      {experimentTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}
+    </dl>
+
+    {mode === '7b-self' && (
+      <figure class="exp-scaffold__gate-figure" aria-labelledby="gate-flow-title">
+        <figcaption id="gate-flow-title">{t('7B/self 的 Stage 2：为什么 20,480 次尝试最后仍是 0 次参数更新', '7B/self Stage 2: why 20,480 attempts still led to zero parameter updates')}</figcaption>
+        <ol class="exp-scaffold__gate-flow">
+          {sevenBStage2Flow.map((step) => <li>
+            <span class="exp-scaffold__gate-number">{step.n}</span>
+            <strong>{step.title}</strong>
+            <p>{step.text}</p>
+          </li>)}
+        </ol>
+        <p class="exp-scaffold__gate-conclusion">{t('所以这里的 "7" 和 "8" 都不是模型分数：它们数的是同一个 256 次尝试数据块里，有多少个不同任务能够各自重复完整成功。7 表示最好的一块仍差 1 个任务身份才允许训练；"0 次更新"则表示 Stage 2 没有改变模型参数，而不是 Stage 2 没有运行。', 'The “7” and “8” are not model scores. They count how many distinct tasks, within one 256-attempt block, each achieved repeated exact success. Seven means the best block was one qualifying task short of the update threshold; “zero updates” means Stage 2 did not change model parameters, not that Stage 2 failed to run.')}</p>
+      </figure>
+    )}
+  </section>
 
   {mode !== 'cross-arm' && current && (
     <>
@@ -158,12 +228,12 @@ const contrasts = [
           <span>{mode === '7b-self' ? t('GPU 缺口已经补齐', 'GPU GAP CLOSED') : t('还不能回答', 'STILL UNKNOWN')}</span>
           <h3>{mode === '7b-self' ? t('现在可以给出单实验解释', 'A single-arm interpretation is now supported') : t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
           <p>{current.next}</p>
-          <div class="exp-scaffold__pending-chip">{mode === '7b-self' ? t('checkpoint 分析：完成', 'Checkpoint analysis: complete') : t('结论：等待证据', 'Conclusion: pending evidence')}</div>
+          <div class="exp-scaffold__pending-chip">{mode === '7b-self' ? t('训练保存点分析：完成', 'Checkpoint analysis: complete') : t('结论：等待证据', 'Conclusion: pending evidence')}</div>
         </aside>
       </section>
 
       <section class="exp-scaffold__section" aria-labelledby="slots-title">
-        <p class="exp-scaffold__section-kicker">{mode === '7b-self' ? t('sealed 结果已经回填', 'SEALED RESULTS FILLED') : t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN ARTIFACTS LAND')}</p>
+        <p class="exp-scaffold__section-kicker">{mode === '7b-self' ? t('已封存的正式结果已经回填', 'SEALED RESULTS FILLED') : t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN EVIDENCE FILES ARRIVE')}</p>
         <h2 id="slots-title">{t('结果槽位', 'Result slots')}</h2>
         <div class="exp-scaffold__table-wrap">
           <table>
@@ -178,21 +248,21 @@ const contrasts = [
       {mode === '7b-self' && (
         <section class="exp-scaffold__section" aria-labelledby="checkpoint-curve-title">
           <p class="exp-scaffold__section-kicker">{t('GPU checkpoint sweep · COMPLETE', 'GPU CHECKPOINT SWEEP · COMPLETE')}</p>
-          <h2 id="checkpoint-curve-title">{t('8 次 Stage-1 更新期间，能力不是直线上升', 'Capability did not rise in a straight line across the eight Stage-1 updates')}</h2>
-          <p class="exp-scaffold__section-intro">{t('7 个中间 checkpoint 与已有 base / final 端点使用同一个 sealed 128-task WebShop panel、temperature=0、15 步上限与同一 prompt/action contract。loss 从 0.479 连续降到 0.055，但 Task Score 中间多次回落；increment-07 的 25.66 是 9 个点里的最高值。', 'The seven intermediate checkpoints and the existing base/final endpoints use the same sealed 128-task WebShop panel, temperature=0, 15-step limit, and the same prompt/action contracts. Loss falls continuously from 0.479 to 0.055, yet Task Score regresses several times; increment-07 at 25.66 is the best of all nine points.')}</p>
+          <h2 id="checkpoint-curve-title">{t('Stage 1 的 8 次参数更新期间，做题能力不是直线上升', 'Capability did not rise in a straight line across the eight Stage-1 updates')}</h2>
+          <p class="exp-scaffold__section-intro">{t('7 个中间训练保存点，加上初始基础模型和最后一个训练保存点，都使用同一套已封存的 128 个 WebShop 任务进行评测；采样温度（temperature）固定为 0、每题最多 15 步，提示词和动作格式规则也完全相同。训练 loss 从 0.479 连续降到 0.055，但平均任务得分中间多次回落；第 8 次更新后的保存点（increment-07）得分 25.66，是 9 个评测点里的最高值。', 'The seven intermediate checkpoints and the existing base/final endpoints use the same sealed 128-task WebShop panel, temperature=0, 15-step limit, and the same prompt/action contracts. Loss falls continuously from 0.479 to 0.055, yet Task Score regresses several times; increment-07 at 25.66 is the best of all nine points.')}</p>
           <OpenEvoCheckpointCurve locale={locale} rows={sevenBSelfCheckpointCurve} />
           <div class="exp-scaffold__table-wrap">
             <table class="checkpoint-table">
-              <thead><tr><th>Checkpoint</th><th>{t('训练 loss', 'Training loss')}</th><th>{t('有效 rank', 'Effective rank')}</th><th>Task Score ×100</th><th>Exact success</th><th>{t('Valid episode', 'Valid episodes')}</th><th>{t('Parser/action failure', 'Parser/action failures')}</th></tr></thead>
+              <thead><tr><th>{t('训练保存点', 'Training checkpoint')}</th><th>{t('训练目标误差（loss）', 'Training loss')}</th><th>{t('SD-LoRA 有效 rank（技术参数）', 'SD-LoRA effective rank')}</th><th>{t('任务得分（Task Score ×100）', 'Task Score ×100')}</th><th>{t('完整成功', 'Exact success')}</th><th>{t('技术有效轨迹', 'Valid episodes')}</th><th>{t('动作格式 / 解析失败', 'Parser / action failures')}</th></tr></thead>
               <tbody>{sevenBSelfCheckpointCurve.map((row) => <tr class:list={{best:row.label === 'increment-07'}}><th scope="row">{row.label}</th><td>{row.loss}</td><td>{row.rank}</td><td><strong>{row.score}</strong></td><td>{row.exact}</td><td>{row.valid}</td><td>{row.failures}</td></tr>)}</tbody>
             </table>
           </div>
           <div class="exp-scaffold__checkpoint-reading">
-            <article><span>01</span><strong>{t('loss 是训练信号，不是能力仪表盘', 'Loss is a training signal, not a capability gauge')}</strong><p>{t('increment-01 → 02 时 Task Score 18.41 → 13.67；increment-05 → 06 时 22.01 → 20.72。两段里 loss 都继续下降。', 'Task Score falls 18.41 → 13.67 from increment-01 → 02 and 22.01 → 20.72 from increment-05 → 06 even while loss keeps falling.')}</p></article>
-            <article><span>02</span><strong>{t('后期训练总体仍然有收益', 'Later training still helps overall')}</strong><p>{t('final increment-07 达到全程最高 25.66，并把 valid episode 提到 122/128、parser/action failure 降到 6。', 'Final increment-07 reaches the sweep high of 25.66, with 122/128 valid episodes and only 6 parser/action failures.')}</p></article>
-            <article><span>03</span><strong>{t('完整成功仍是薄弱环节', 'Exact completion remains the weak point')}</strong><p>{t('Exact success 从 base 的 3/128 只到 final 的 4/128，中间也在 1–4 之间波动；因此不能把 Task Score 翻倍等同于完整做题能力翻倍。', 'Exact success moves only from 3/128 at base to 4/128 at final and fluctuates between 1 and 4 in between, so the near-doubling of Task Score must not be read as a doubling of full task completion.')}</p></article>
+            <article><span>01</span><strong>{t('loss 是训练信号，不是能力仪表盘', 'Loss is a training signal, not a capability gauge')}</strong><p>{t('第 2 次更新后的保存点（increment-01）到第 3 次（increment-02）时，平均任务得分从 18.41 降到 13.67；第 6 次（increment-05）到第 7 次（increment-06）时又从 22.01 降到 20.72。这两段里训练 loss 都继续下降。', 'Task Score falls 18.41 → 13.67 from increment-01 → 02 and 22.01 → 20.72 from increment-05 → 06 even while loss keeps falling.')}</p></article>
+            <article><span>02</span><strong>{t('后期训练总体仍然有收益', 'Later training still helps overall')}</strong><p>{t('第 8 次更新后的最后一个保存点（increment-07）达到全程最高 25.66；128 个任务里技术有效轨迹增至 122 个，动作格式或解析失败降到 6 次。', 'Final increment-07 reaches the sweep high of 25.66, with 122/128 valid episodes and only 6 parser/action failures.')}</p></article>
+            <article><span>03</span><strong>{t('完整成功仍是薄弱环节', 'Exact completion remains the weak point')}</strong><p>{t('完整成功（Exact Success）从初始基础模型的 3/128 只增加到最后保存点的 4/128，中间各保存点也只在 1–4 个之间波动；因此不能把平均任务得分接近翻倍理解成“完整做成任务的能力也翻倍”。', 'Exact success moves only from 3/128 at base to 4/128 at final and fluctuates between 1 and 4 in between, so the near-doubling of Task Score must not be read as a doubling of full task completion.')}</p></article>
           </div>
-          <p class="exp-scaffold__provenance-note">{t('证据状态：checkpoint sweep COMPLETE；新增 7 个中间 checkpoint，复用已有 base 与 increment-07 endpoint。总 wall time 4,813.6 秒（约 80.2 分钟）。这是 post-hoc diagnostic；由于同一个 128-task panel 已被用于观察中间 checkpoint，未来若据此做模型选择，应换独立 diagnostic panel 或提前冻结选择规则。', 'Evidence status: checkpoint sweep COMPLETE; seven intermediate checkpoints were added while reusing the existing base and increment-07 endpoints. Total wall time was 4,813.6 seconds (~80.2 minutes). This is a post-hoc diagnostic; because the same 128-task panel has now been inspected across intermediate checkpoints, future model selection should use a separate diagnostic panel or freeze selection rules in advance.')}</p>
+          <p class="exp-scaffold__provenance-note">{t('证据状态：训练保存点补测已完成。我们新增评测了 7 个中间保存点，并复用已有的初始基础模型与第 8 次更新后的保存点，共得到 9 个可比点；实际总运行时间为 4,813.6 秒（约 80.2 分钟）。这属于事后诊断（post-hoc diagnostic）：因为同一套 128 个任务已经被用来观察中间保存点，后续若要据此挑选模型，应改用另一套独立诊断任务，或在看结果前先固定选择规则。', 'Evidence status: checkpoint sweep COMPLETE; seven intermediate checkpoints were added while reusing the existing base and increment-07 endpoints. Total wall time was 4,813.6 seconds (~80.2 minutes). This is a post-hoc diagnostic; because the same 128-task panel has now been inspected across intermediate checkpoints, future model selection should use a separate diagnostic panel or freeze selection rules in advance.')}</p>
         </section>
       )}
 
@@ -200,10 +270,10 @@ const contrasts = [
         <p class="exp-scaffold__section-kicker">{t('不要把不同阶段混成一个分数', 'KEEP STAGES SEPARATE')}</p>
         <h2 id="pipeline-title">{t('这页最后要解释的机制链', 'Mechanism chain this page must explain')}</h2>
         <ol class="exp-scaffold__pipeline">
-          <li><span>01</span><strong>Stage 1 / bootstrap</strong><p>{t('有没有形成可训练数据？真正发生了多少次参数更新？', 'Did trainable experience form, and how many parameter updates actually happened?')}</p></li>
-          <li><span>02</span><strong>Stage 2 / self-exploration</strong><p>{t('模型后续自己探索时，clean-positive 与 identity coverage 是否足以通过 gate？', 'During later self-exploration, were clean positives and identity coverage sufficient to pass the gate?')}</p></li>
-          <li><span>03</span><strong>{t('最终评测', 'Final evaluation')}</strong><p>{t('Task Score、exact success、validity 必须分开看，不能只报一个 headline。', 'Task Score, exact success, and validity must be read separately rather than collapsed into one headline.')}</p></li>
-          <li><span>04</span><strong>{t('Checkpoint 分析', 'Checkpoint analysis')}</strong><p>{mode === '7b-self' ? t('已完成：loss 持续下降，但 held-out score 非单调；final checkpoint 最佳。', 'Complete: loss fell continuously while held-out score was non-monotonic; the final checkpoint is best.') : t('loss 下降是否真的对应 held-out WebShop 能力上升？', 'Does lower loss actually correspond to better held-out WebShop capability?')}</p></li>
+          <li><span>01</span><strong>{t('Stage 1 / 启动训练', 'Stage 1 / bootstrap')}</strong><p>{t('有没有形成可训练数据？真正发生了多少次参数更新？', 'Did trainable experience form, and how many parameter updates actually happened?')}</p></li>
+          <li><span>02</span><strong>{t('Stage 2 / 模型自主探索', 'Stage 2 / self-exploration')}</strong><p>{t('模型自己探索时，每 256 次尝试里是否出现至少 8 个能够各自重复完整成功的不同任务，从而允许下一次参数更新？', 'During self-exploration, does each 256-attempt block contain at least eight distinct tasks with repeated exact success, allowing the next parameter update?')}</p></li>
+          <li><span>03</span><strong>{t('最终评测', 'Final evaluation')}</strong><p>{t('平均任务得分、完整成功数和技术有效轨迹数必须分开看，不能把它们压成一个总分。', 'Mean task score, exact-success count, and technically valid episode count must be interpreted separately rather than collapsed into one headline number.')}</p></li>
+          <li><span>04</span><strong>{t('训练保存点分析', 'Checkpoint analysis')}</strong><p>{mode === '7b-self' ? t('已完成：训练 loss 持续下降，但固定 128 任务上的得分会中途回落；最后一个保存点最好。', 'Complete: training loss fell continuously, but score on the fixed 128 tasks regressed between some updates; the final checkpoint is best.') : t('训练 loss 下降是否真的对应固定 WebShop 评测任务上的能力上升？', 'Does lower training loss actually correspond to stronger capability on the fixed WebShop evaluation tasks?')}</p></li>
           <li><span>05</span><strong>{t('最终解释', 'Final interpretation')}</strong><p>{t('只有前四步证据齐全后，才回答“为什么变好 / 为什么没继续学 / 下一步改哪里”。', 'Only after the first four steps are grounded do we answer why it improved, why learning stalled, and what should change next.')}</p></li>
         </ol>
       </section>
@@ -215,7 +285,7 @@ const contrasts = [
       <section class="exp-scaffold__section" aria-labelledby="matrix-title">
         <p class="exp-scaffold__section-kicker">{t('同一张表，不偷换口径', 'ONE TABLE, ONE MEASUREMENT CONTRACT')}</p>
         <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
-        <p class="exp-scaffold__section-intro">{t('只有已经封口的 7B/self 填真实数字；其他格子故意保持 Pending。后续回填必须来自同一正式 panel 或清楚标注为不同诊断。', 'Only the closed 7B/self arm carries real final numbers today; other cells intentionally remain Pending. Future fills must come from the same formal panel or be clearly labeled as a different diagnostic.')}</p>
+        <p class="exp-scaffold__section-intro">{t('只有已经完成并封存的 7B/self 填入真实最终数字；其他尚未完成的格子明确写成“尚无最终结果”。后续回填必须来自同一套正式 128 任务评测，或者清楚标注为另一套诊断性评测。', 'Only the closed 7B/self arm carries real final numbers today; other cells intentionally remain Pending. Future fills must come from the same formal panel or be clearly labeled as a different diagnostic.')}</p>
         <div class="exp-scaffold__table-wrap">
           <table>
             <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
@@ -240,13 +310,13 @@ const contrasts = [
 
       <section class="exp-scaffold__section exp-scaffold__guardrail" aria-labelledby="guardrail-title">
         <p class="exp-scaffold__section-kicker">{t('回填规则', 'FILL-IN RULES')}</p>
-        <h2 id="guardrail-title">{t('服务器跑完后，也不能直接把四个 headline 分数相减', 'Even after completion, do not just subtract four headline scores')}</h2>
+        <h2 id="guardrail-title">{t('服务器跑完后，也不能直接把四组最终分数做简单减法', 'Even after completion, do not just subtract four headline scores')}</h2>
         <ul>
-          <li>{t('同一模型规模内比较 MiniMax vs self，才回答“外部 hindsight bundle 是否有帮助”。', 'Compare MiniMax vs self within the same model size to ask whether the external-hindsight bundle helps.')}</li>
-          <li>{t('同一 treatment 内比较 7B vs 3B，才回答“模型规模是否改变可学习性”。', 'Compare 7B vs 3B within the same treatment to ask whether scale changes learnability.')}</li>
-          <li>{t('MiniMax treatment 不只是“老师名字不同”：它改变了 bootstrap supervision 路径，因此不能把差值简化成纯 teacher 因果效应。', 'The MiniMax treatment changes the bootstrap supervision path, not merely a teacher name, so the contrast must not be called a pure teacher causal effect.')}</li>
-          <li>{t('优先做 paired task 分解，再看均值；Task Score、exact success、validity 和 Stage-2 gate 必须同时报告。', 'Prefer paired-task decomposition before mean-only summaries; report Task Score, exact success, validity, and the Stage-2 gate together.')}</li>
-          <li>{t('任何 Pending 都只能被 sealed artifact / closeout 中的真实结果替换；不得用 ETA、训练中快照或估算数字冒充 final。', 'A Pending cell may only be replaced by a real result from sealed artifacts or closeout; ETAs, in-flight snapshots, and estimates must never be presented as finals.')}</li>
+          <li>{t('同一模型规模内比较 MiniMax 与 self，才回答“MiniMax 的任务后回看监督 + 启动训练这一整套处理是否有帮助”。', 'Compare MiniMax vs self within the same model size to ask whether the external-hindsight bundle helps.')}</li>
+          <li>{t('在相同实验处理方式下比较 7B 与 3B，才回答“模型规模是否改变可学习性”。', 'Compare 7B vs 3B within the same treatment to ask whether scale changes learnability.')}</li>
+          <li>{t('MiniMax 这一实验处理不只是“老师名字不同”：它改变了启动训练阶段使用的监督内容和样本选择方式，因此不能把最终差值简单解释成“只因为老师换成了 MiniMax”。', 'The MiniMax treatment changes the bootstrap supervision path, not merely a teacher name, so the contrast must not be called a pure teacher causal effect.')}</li>
+          <li>{t('优先逐题比较同一个任务在两组里的变化，再看总体均值；平均任务得分、完整成功、技术有效性和 Stage 2 参数更新门槛必须同时报告。', 'Prefer same-task paired decomposition before mean-only summaries; report mean task score, exact success, technical validity, and the Stage-2 parameter-update threshold together.')}</li>
+          <li>{t('任何“尚无最终结果”的格子，都只能用已经封存的实验产物或正式收尾记录里的真实结果替换；不得用预计完成时间、训练中快照或估算数字冒充最终结果。', 'A not-yet-final cell may only be replaced by a real result from sealed experiment outputs or formal closeout records; estimated completion times, in-flight snapshots, and estimates must never be presented as final results.')}</li>
         </ul>
       </section>
     </>
@@ -268,12 +338,14 @@ const contrasts = [
 .exp-scaffold__status>span{font:800 .65rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}
 .exp-scaffold__status strong{font-size:.95rem;line-height:1.45}.exp-scaffold__status small{color:var(--color-text-muted);font-size:.72rem}
 .exp-scaffold__section{padding:42px 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__section h2{max-width:28ch;margin:0;font-size:clamp(1.45rem,3.2vw,2.45rem);letter-spacing:-.035em}.exp-scaffold__section-intro{max-width:78ch;color:var(--color-text-muted);line-height:1.7}
+.exp-scaffold__counting{padding-top:36px}.exp-scaffold__term-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:1.2rem 0 0;border-top:1px solid var(--color-border)}.exp-scaffold__term-list>div{display:grid;grid-template-columns:minmax(150px,.65fr) minmax(0,1.35fr);gap:.8rem;padding:.95rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__term-list>div:nth-child(odd){padding-right:1rem}.exp-scaffold__term-list>div:nth-child(even){padding-left:1rem;border-left:1px solid var(--color-border)}.exp-scaffold__term-list dt{font-weight:800;font-size:.78rem;line-height:1.45}.exp-scaffold__term-list dd{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.62}
+.exp-scaffold__gate-figure{margin:1.4rem 0 0;padding:1.1rem;border:1px solid var(--color-border);border-radius:14px;background:color-mix(in srgb,var(--color-accent) 3.5%,transparent)}.exp-scaffold__gate-figure figcaption{font-weight:850;font-size:.9rem}.exp-scaffold__gate-flow{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.05rem;margin:1rem 0 0;padding:0}.exp-scaffold__gate-flow li{position:relative;min-width:0;padding:.9rem;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}.exp-scaffold__gate-flow li:not(:last-child)::after{content:'';position:absolute;z-index:2;top:50%;right:-1.05rem;width:1.05rem;border-top:2px solid var(--color-accent)}.exp-scaffold__gate-flow li:not(:last-child)::before{content:'';position:absolute;z-index:3;top:calc(50% - 4px);right:-1.08rem;border-left:7px solid var(--color-accent);border-top:4px solid transparent;border-bottom:4px solid transparent}.exp-scaffold__gate-number{display:block;color:var(--color-accent);font:900 1.25rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__gate-flow strong{display:block;margin-top:.45rem;font-size:.76rem;line-height:1.45}.exp-scaffold__gate-flow p{margin:.4rem 0 0;color:var(--color-text-muted);font-size:.7rem;line-height:1.55}.exp-scaffold__gate-conclusion{margin:1rem 0 0;padding-top:.9rem;border-top:1px dashed var(--color-border);font-size:.8rem;font-weight:650;line-height:1.65}
 .exp-scaffold__two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem}.exp-scaffold__known{margin-top:1.2rem;border-top:1px solid var(--color-border)}.exp-scaffold__known article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__known article>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__known p{margin:0;line-height:1.72}
 .exp-scaffold__pending-callout{align-self:start;padding:1.1rem;border:1px dashed var(--color-border);border-radius:14px}.exp-scaffold__pending-callout>span{font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}.exp-scaffold__pending-callout h3{margin:.45rem 0 .6rem;font-size:1rem}.exp-scaffold__pending-callout p{margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.exp-scaffold__pending-chip{display:inline-block;margin-top:.9rem;padding:.35rem .55rem;border-radius:7px;background:color-mix(in srgb,var(--color-accent) 10%,transparent);color:var(--color-accent);font:750 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}
 .exp-scaffold__table-wrap{margin-top:1.2rem;overflow:auto;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px}.checkpoint-table tbody tr.best{background:color-mix(in srgb,var(--color-accent) 7%,transparent)}.exp-scaffold__checkpoint-reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.exp-scaffold__checkpoint-reading article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold__checkpoint-reading article>span{display:block;color:var(--color-accent);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__checkpoint-reading strong{display:block;margin:.5rem 0 .35rem;font-size:.84rem}.exp-scaffold__checkpoint-reading p,.exp-scaffold__provenance-note{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.exp-scaffold__provenance-note{margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--color-border)}.exp-scaffold th,.exp-scaffold td{padding:.8rem .9rem;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.78rem;line-height:1.55}.exp-scaffold thead th{background:color-mix(in srgb,var(--color-text) 3%,transparent);color:var(--color-text-muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}.exp-scaffold tbody th{width:23%;font-weight:760}.exp-scaffold tr:last-child th,.exp-scaffold tr:last-child td{border-bottom:0}.exp-scaffold .pending{color:var(--color-accent);font-style:normal;font-weight:760}
 .exp-scaffold__pipeline{list-style:none;margin:1.3rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--color-border);border-radius:12px;overflow:hidden}.exp-scaffold__pipeline li{min-width:0;padding:1rem;border-right:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-right:0}.exp-scaffold__pipeline span{display:block;margin-bottom:.8rem;color:var(--color-accent);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__pipeline strong{font-size:.82rem}.exp-scaffold__pipeline p{margin:.45rem 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
 .exp-scaffold__contrast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1.3rem}.exp-scaffold__contrast-grid article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold__contrast-head{display:grid;grid-template-columns:36px minmax(0,1fr);gap:.6rem}.exp-scaffold__contrast-head>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__contrast-grid h3{margin:0;font-size:.92rem}.exp-scaffold__contrast-grid code{display:block;margin:.8rem 0;padding:.55rem .65rem;border-radius:7px;background:color-mix(in srgb,var(--color-text) 4%,transparent);font-size:.72rem;white-space:normal}.exp-scaffold__contrast-grid dl{margin:0}.exp-scaffold__contrast-grid dl>div{display:grid;grid-template-columns:80px minmax(0,1fr);gap:.6rem;padding:.45rem 0;border-top:1px solid var(--color-border)}.exp-scaffold__contrast-grid dt{color:var(--color-text-muted);font-size:.7rem}.exp-scaffold__contrast-grid dd{margin:0;font-size:.75rem;line-height:1.5}
 .exp-scaffold__guardrail ul{max-width:84ch;margin:1rem 0 0;padding-left:1.15rem}.exp-scaffold__guardrail li{margin:.55rem 0;color:var(--color-text-muted);line-height:1.65}.exp-scaffold__footer{display:flex;justify-content:space-between;gap:1rem;padding-top:24px;color:var(--color-text-muted);font-size:.75rem}.exp-scaffold__footer a{color:var(--color-accent);font-weight:760;text-decoration:none}.exp-scaffold__footer a:hover{text-decoration:underline}
-@media(max-width:860px){.exp-scaffold__hero,.exp-scaffold__two-col{grid-template-columns:1fr}.exp-scaffold__checkpoint-reading{grid-template-columns:1fr}.exp-scaffold__hero{gap:1.2rem}.exp-scaffold h1{max-width:22ch}.exp-scaffold__pipeline{grid-template-columns:1fr}.exp-scaffold__pipeline li{border-right:0;border-bottom:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-bottom:0}}
+@media(max-width:860px){.exp-scaffold__hero,.exp-scaffold__two-col{grid-template-columns:1fr}.exp-scaffold__term-list{grid-template-columns:1fr}.exp-scaffold__term-list>div:nth-child(odd),.exp-scaffold__term-list>div:nth-child(even){padding-left:0;padding-right:0;border-left:0}.exp-scaffold__gate-flow{grid-template-columns:1fr;gap:.75rem}.exp-scaffold__gate-flow li:not(:last-child)::after{top:auto;right:auto;left:1.35rem;bottom:-.75rem;width:0;height:.75rem;border-top:0;border-left:2px solid var(--color-accent)}.exp-scaffold__gate-flow li:not(:last-child)::before{top:auto;right:auto;left:calc(1.35rem - 4px);bottom:-.79rem;border-left:4px solid transparent;border-right:4px solid transparent;border-top:7px solid var(--color-accent);border-bottom:0}.exp-scaffold__checkpoint-reading{grid-template-columns:1fr}.exp-scaffold__hero{gap:1.2rem}.exp-scaffold h1{max-width:22ch}.exp-scaffold__pipeline{grid-template-columns:1fr}.exp-scaffold__pipeline li{border-right:0;border-bottom:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-bottom:0}}
 @media(max-width:640px){.exp-scaffold{padding:36px 18px 56px}.exp-scaffold__contrast-grid{grid-template-columns:1fr}.exp-scaffold__footer{flex-direction:column}.exp-scaffold__section{padding:34px 0}.exp-scaffold__table-wrap{margin-inline:-2px}}
 </style>
