@@ -111,8 +111,8 @@ describe('Vercel production deployment architecture', () => {
     const cleanupUrl = new URL('../../.github/runner/job-completed.sh', import.meta.url);
     expect(existsSync(cleanupUrl)).toBe(true);
     const cleanup = existsSync(cleanupUrl) ? readFileSync(cleanupUrl, 'utf8') : '';
-    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed');
-    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed');
+    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed.sh');
+    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed.sh');
     expect(cleanup).toContain("workspace_root='/home/runner/actions-runner/_work'");
     expect(cleanup).toContain('realpath');
     expect(cleanup).toContain('GITHUB_WORKSPACE');
