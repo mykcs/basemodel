@@ -32,15 +32,16 @@ const armMeta = {
   },
   '7b-self': {
     title:t('7B · 无外部教师（self）', '7B · self only'),
-    eyebrow:t('单实验结果页 · GPU 分析缺口已预留', 'SINGLE-ARM RESULT · GPU GAP PRE-BUILT'),
-    status:t('主实验已完成 · GPU checkpoint 分析待回填', 'Main run complete · GPU checkpoint analysis pending'),
+    eyebrow:t('单实验结果页 · checkpoint 补测已完成', 'SINGLE-ARM RESULT · CHECKPOINT SWEEP COMPLETE'),
+    status:t('主实验 + GPU checkpoint 分析已完成', 'Main run + GPU checkpoint analysis complete'),
     question:t('7B/self 已经变好了，但它到底学到了“更会做题”，还是主要学到了“更会输出可执行动作”？', '7B/self improved, but did it learn to solve tasks better, or mostly to emit executable actions?'),
     known:[
       t('Stage 1 完成 8 次参数更新，training loss 从 0.479 降到 0.055。', 'Stage 1 completed 8 parameter updates and training loss fell from 0.479 to 0.055.'),
       t('Stage 2 写出了 20,480 条 rollout 和 797 条 qualified-positive trajectory，但 80/80 个 block 都没有参数更新；单个 block 的 qualifying identity 最大只有 7，而 gate 需要 8。', 'Stage 2 produced 20,480 rollouts and 797 qualified-positive trajectories, but all 80/80 blocks had no parameter update; the maximum qualifying identities in one block was 7 while the gate requires 8.'),
       t('现有 128-task final：Task Score 13.33 → 25.66；valid episode 109 → 122；parser/action failure 19 → 6；exact success 3 → 4。它支持“可执行性和部分任务进展明显改善”，但 exact success 的变化很小。', 'On the current 128-task final panel, Task Score moved 13.33 → 25.66, valid episodes 109 → 122, parser/action failures 19 → 6, and exact success 3 → 4. This supports a clear gain in executability and partial task progress, while exact-success change is small.'),
+      t('GPU checkpoint sweep 已完成：base → increment-00…07 的 Task Score 为 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66。loss 持续下降，但 held-out score 明显非单调；最终 increment-07 是全程最高点。', 'The GPU checkpoint sweep is complete: Task Score over base → increment-00…07 is 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66. Loss fell continuously, but held-out score was clearly non-monotonic; the final increment-07 checkpoint is the best point in the sweep.'),
     ],
-    next:t('服务器正在补的关键缺口是：把 Stage-1 中间 checkpoint 放到同一诊断 panel 上，建立“loss 下降 → WebShop 能力变化”的曲线。这个结果出来前，不把“继续多训几步一定更好”写成结论。', 'The key missing analysis is to evaluate intermediate Stage-1 checkpoints on the same diagnostic panel and build the curve from lower loss to WebShop capability. Until that exists, the page must not claim that more fitting would necessarily help.'),
+    next:t('checkpoint 补测现在回答了关键缺口：后期 checkpoint 总体更强，最终点最好，但能力曲线会回落，因此 training loss 不能当成单调的 WebShop 能力代理。结合 exact success 只从 3/128 到 4/128，更稳妥的解释仍是：训练明显改善了动作可执行性与部分任务进展，但完整任务成功只小幅增加。', 'The checkpoint sweep now closes the key gap: later checkpoints are stronger overall and the final point is best, but capability can regress between updates, so training loss is not a monotonic proxy for WebShop capability. With exact success only moving from 3/128 to 4/128, the supported interpretation remains that training clearly improves executability and partial task progress while full task completion changes only slightly.'),
   },
   '3b-minimax': {
     title:t('3B · MiniMax 后验分析（有老师）', '3B · MiniMax hindsight analysis'),
@@ -91,12 +92,12 @@ const individualMetrics = [
   },
   {
     metric:t('Checkpoint → 能力曲线', 'Checkpoint → capability curve'),
-    value:PENDING,
-    note:mode === '7b-self' ? t('GPU 分析完成后回填', 'Fill after GPU analysis') : t('等 checkpoint / final 可用后回填', 'Fill when checkpoints / final are available'),
+    value:mode === '7b-self' ? t('13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66', '13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66') : PENDING,
+    note:mode === '7b-self' ? t('同一 sealed 128-task panel；非单调，increment-07 为最高点', 'Same sealed 128-task panel; non-monotonic, with increment-07 best') : t('等 checkpoint / final 可用后回填', 'Fill when checkpoints / final are available'),
   },
   {
     metric:t('单实验最终解释', 'Final single-arm interpretation'),
-    value:PENDING,
+    value:mode === '7b-self' ? t('loss 下降不等于能力逐步上升；收益主要落在可执行性与部分任务进展，exact success 仅 +1', 'Lower loss did not mean step-by-step capability gains; most improvement is in executability and partial progress, while exact success is only +1') : PENDING,
     note:t('必须同时看 Task Score、exact success、validity 和机制证据', 'Requires Task Score, exact success, validity, and mechanism evidence together'),
   },
 ];
@@ -106,7 +107,19 @@ const matrixRows = [
   { label:t('最终 Task Score', 'Final Task Score'), a:PENDING, b:'25.66', c:PENDING, d:PENDING },
   { label:t('Exact success', 'Exact success'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
   { label:t('Stage-2 最终 update', 'Final Stage-2 updates'), a:PENDING, b:'0', c:PENDING, d:PENDING },
-  { label:t('Checkpoint 能力曲线', 'Checkpoint capability curve'), a:PENDING, b:PENDING, c:PENDING, d:PENDING },
+  { label:t('Checkpoint 能力曲线', 'Checkpoint capability curve'), a:PENDING, b:t('已完成 · 非单调 · final 25.66 最佳', 'Complete · non-monotonic · final 25.66 best'), c:PENDING, d:PENDING },
+];
+
+const sevenBSelfCheckpointCurve = [
+  { label:'base', loss:'—', rank:'0', score:'13.33', exact:'3 / 128', valid:'109 / 128', failures:'19' },
+  { label:'increment-00', loss:'0.479', rank:'4', score:'17.13', exact:'3 / 128', valid:'114 / 128', failures:'14' },
+  { label:'increment-01', loss:'0.301', rank:'8', score:'18.41', exact:'1 / 128', valid:'117 / 128', failures:'11' },
+  { label:'increment-02', loss:'0.196', rank:'12', score:'13.67', exact:'3 / 128', valid:'116 / 128', failures:'12' },
+  { label:'increment-03', loss:'0.179', rank:'16', score:'17.63', exact:'3 / 128', valid:'115 / 128', failures:'13' },
+  { label:'increment-04', loss:'0.129', rank:'20', score:'16.51', exact:'3 / 128', valid:'119 / 128', failures:'9' },
+  { label:'increment-05', loss:'0.070', rank:'24', score:'22.01', exact:'4 / 128', valid:'114 / 128', failures:'14' },
+  { label:'increment-06', loss:'0.066', rank:'28', score:'20.72', exact:'3 / 128', valid:'118 / 128', failures:'10' },
+  { label:'increment-07', loss:'0.055', rank:'32', score:'25.66', exact:'4 / 128', valid:'122 / 128', failures:'6' },
 ];
 
 const contrasts = [
@@ -131,7 +144,7 @@ const contrasts = [
     <div class="exp-scaffold__status" aria-label={t('当前状态', 'Current status')}>
       <span>{t('当前状态', 'STATUS')}</span>
       <strong>{mode === 'cross-arm' ? t('等待四组结果齐全', 'Waiting for all four arms') : current?.status}</strong>
-      <small>{t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
+      <small>{mode === '7b-self' ? t('checkpoint sweep 完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
     </div>
   </header>
 
@@ -150,15 +163,15 @@ const contrasts = [
           </div>
         </div>
         <aside class="exp-scaffold__pending-callout">
-          <span>{t('还不能回答', 'STILL UNKNOWN')}</span>
-          <h3>{t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
+          <span>{mode === '7b-self' ? t('GPU 缺口已经补齐', 'GPU GAP CLOSED') : t('还不能回答', 'STILL UNKNOWN')}</span>
+          <h3>{mode === '7b-self' ? t('现在可以给出单实验解释', 'A single-arm interpretation is now supported') : t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
           <p>{current.next}</p>
-          <div class="exp-scaffold__pending-chip">{t('结论：等待证据', 'Conclusion: pending evidence')}</div>
+          <div class="exp-scaffold__pending-chip">{mode === '7b-self' ? t('checkpoint 分析：完成', 'Checkpoint analysis: complete') : t('结论：等待证据', 'Conclusion: pending evidence')}</div>
         </aside>
       </section>
 
       <section class="exp-scaffold__section" aria-labelledby="slots-title">
-        <p class="exp-scaffold__section-kicker">{t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN ARTIFACTS LAND')}</p>
+        <p class="exp-scaffold__section-kicker">{mode === '7b-self' ? t('sealed 结果已经回填', 'SEALED RESULTS FILLED') : t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN ARTIFACTS LAND')}</p>
         <h2 id="slots-title">{t('结果槽位', 'Result slots')}</h2>
         <div class="exp-scaffold__table-wrap">
           <table>
@@ -170,6 +183,26 @@ const contrasts = [
         </div>
       </section>
 
+      {mode === '7b-self' && (
+        <section class="exp-scaffold__section" aria-labelledby="checkpoint-curve-title">
+          <p class="exp-scaffold__section-kicker">{t('GPU checkpoint sweep · COMPLETE', 'GPU CHECKPOINT SWEEP · COMPLETE')}</p>
+          <h2 id="checkpoint-curve-title">{t('8 次 Stage-1 更新期间，能力不是直线上升', 'Capability did not rise in a straight line across the eight Stage-1 updates')}</h2>
+          <p class="exp-scaffold__section-intro">{t('7 个中间 checkpoint 与已有 base / final 端点使用同一个 sealed 128-task WebShop panel、temperature=0、15 步上限与同一 prompt/action contract。loss 从 0.479 连续降到 0.055，但 Task Score 中间多次回落；increment-07 的 25.66 是 9 个点里的最高值。', 'The seven intermediate checkpoints and the existing base/final endpoints use the same sealed 128-task WebShop panel, temperature=0, 15-step limit, and the same prompt/action contracts. Loss falls continuously from 0.479 to 0.055, yet Task Score regresses several times; increment-07 at 25.66 is the best of all nine points.')}</p>
+          <div class="exp-scaffold__table-wrap">
+            <table class="checkpoint-table">
+              <thead><tr><th>Checkpoint</th><th>{t('训练 loss', 'Training loss')}</th><th>{t('有效 rank', 'Effective rank')}</th><th>Task Score ×100</th><th>Exact success</th><th>{t('Valid episode', 'Valid episodes')}</th><th>{t('Parser/action failure', 'Parser/action failures')}</th></tr></thead>
+              <tbody>{sevenBSelfCheckpointCurve.map((row) => <tr class:list={{best:row.label === 'increment-07'}}><th scope="row">{row.label}</th><td>{row.loss}</td><td>{row.rank}</td><td><strong>{row.score}</strong></td><td>{row.exact}</td><td>{row.valid}</td><td>{row.failures}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <div class="exp-scaffold__checkpoint-reading">
+            <article><span>01</span><strong>{t('loss 是训练信号，不是能力仪表盘', 'Loss is a training signal, not a capability gauge')}</strong><p>{t('increment-01 → 02 时 Task Score 18.41 → 13.67；increment-05 → 06 时 22.01 → 20.72。两段里 loss 都继续下降。', 'Task Score falls 18.41 → 13.67 from increment-01 → 02 and 22.01 → 20.72 from increment-05 → 06 even while loss keeps falling.')}</p></article>
+            <article><span>02</span><strong>{t('后期训练总体仍然有收益', 'Later training still helps overall')}</strong><p>{t('final increment-07 达到全程最高 25.66，并把 valid episode 提到 122/128、parser/action failure 降到 6。', 'Final increment-07 reaches the sweep high of 25.66, with 122/128 valid episodes and only 6 parser/action failures.')}</p></article>
+            <article><span>03</span><strong>{t('完整成功仍是薄弱环节', 'Exact completion remains the weak point')}</strong><p>{t('Exact success 从 base 的 3/128 只到 final 的 4/128，中间也在 1–4 之间波动；因此不能把 Task Score 翻倍等同于完整做题能力翻倍。', 'Exact success moves only from 3/128 at base to 4/128 at final and fluctuates between 1 and 4 in between, so the near-doubling of Task Score must not be read as a doubling of full task completion.')}</p></article>
+          </div>
+          <p class="exp-scaffold__provenance-note">{t('证据状态：checkpoint sweep COMPLETE；新增 7 个中间 checkpoint，复用已有 base 与 increment-07 endpoint。总 wall time 4,813.6 秒（约 80.2 分钟）。这是 post-hoc diagnostic；由于同一个 128-task panel 已被用于观察中间 checkpoint，未来若据此做模型选择，应换独立 diagnostic panel 或提前冻结选择规则。', 'Evidence status: checkpoint sweep COMPLETE; seven intermediate checkpoints were added while reusing the existing base and increment-07 endpoints. Total wall time was 4,813.6 seconds (~80.2 minutes). This is a post-hoc diagnostic; because the same 128-task panel has now been inspected across intermediate checkpoints, future model selection should use a separate diagnostic panel or freeze selection rules in advance.')}</p>
+        </section>
+      )}
+
       <section class="exp-scaffold__section" aria-labelledby="pipeline-title">
         <p class="exp-scaffold__section-kicker">{t('不要把不同阶段混成一个分数', 'KEEP STAGES SEPARATE')}</p>
         <h2 id="pipeline-title">{t('这页最后要解释的机制链', 'Mechanism chain this page must explain')}</h2>
@@ -177,7 +210,7 @@ const contrasts = [
           <li><span>01</span><strong>Stage 1 / bootstrap</strong><p>{t('有没有形成可训练数据？真正发生了多少次参数更新？', 'Did trainable experience form, and how many parameter updates actually happened?')}</p></li>
           <li><span>02</span><strong>Stage 2 / self-exploration</strong><p>{t('模型后续自己探索时，clean-positive 与 identity coverage 是否足以通过 gate？', 'During later self-exploration, were clean positives and identity coverage sufficient to pass the gate?')}</p></li>
           <li><span>03</span><strong>{t('最终评测', 'Final evaluation')}</strong><p>{t('Task Score、exact success、validity 必须分开看，不能只报一个 headline。', 'Task Score, exact success, and validity must be read separately rather than collapsed into one headline.')}</p></li>
-          <li><span>04</span><strong>{t('Checkpoint 分析', 'Checkpoint analysis')}</strong><p>{t('loss 下降是否真的对应 held-out WebShop 能力上升？', 'Does lower loss actually correspond to better held-out WebShop capability?')}</p></li>
+          <li><span>04</span><strong>{t('Checkpoint 分析', 'Checkpoint analysis')}</strong><p>{mode === '7b-self' ? t('已完成：loss 持续下降，但 held-out score 非单调；final checkpoint 最佳。', 'Complete: loss fell continuously while held-out score was non-monotonic; the final checkpoint is best.') : t('loss 下降是否真的对应 held-out WebShop 能力上升？', 'Does lower loss actually correspond to better held-out WebShop capability?')}</p></li>
           <li><span>05</span><strong>{t('最终解释', 'Final interpretation')}</strong><p>{t('只有前四步证据齐全后，才回答“为什么变好 / 为什么没继续学 / 下一步改哪里”。', 'Only after the first four steps are grounded do we answer why it improved, why learning stalled, and what should change next.')}</p></li>
         </ol>
       </section>
@@ -245,10 +278,10 @@ const contrasts = [
 .exp-scaffold__section{padding:42px 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__section h2{max-width:28ch;margin:0;font-size:clamp(1.45rem,3.2vw,2.45rem);letter-spacing:-.035em}.exp-scaffold__section-intro{max-width:78ch;color:var(--color-text-muted);line-height:1.7}
 .exp-scaffold__two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem}.exp-scaffold__known{margin-top:1.2rem;border-top:1px solid var(--color-border)}.exp-scaffold__known article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__known article>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__known p{margin:0;line-height:1.72}
 .exp-scaffold__pending-callout{align-self:start;padding:1.1rem;border:1px dashed var(--color-border);border-radius:14px}.exp-scaffold__pending-callout>span{font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--color-text-muted)}.exp-scaffold__pending-callout h3{margin:.45rem 0 .6rem;font-size:1rem}.exp-scaffold__pending-callout p{margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.exp-scaffold__pending-chip{display:inline-block;margin-top:.9rem;padding:.35rem .55rem;border-radius:7px;background:color-mix(in srgb,var(--color-accent) 10%,transparent);color:var(--color-accent);font:750 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}
-.exp-scaffold__table-wrap{margin-top:1.2rem;overflow:auto;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px}.exp-scaffold th,.exp-scaffold td{padding:.8rem .9rem;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.78rem;line-height:1.55}.exp-scaffold thead th{background:color-mix(in srgb,var(--color-text) 3%,transparent);color:var(--color-text-muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}.exp-scaffold tbody th{width:23%;font-weight:760}.exp-scaffold tr:last-child th,.exp-scaffold tr:last-child td{border-bottom:0}.exp-scaffold .pending{color:var(--color-accent);font-style:normal;font-weight:760}
+.exp-scaffold__table-wrap{margin-top:1.2rem;overflow:auto;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px}.checkpoint-table tbody tr.best{background:color-mix(in srgb,var(--color-accent) 7%,transparent)}.exp-scaffold__checkpoint-reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.exp-scaffold__checkpoint-reading article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold__checkpoint-reading article>span{display:block;color:var(--color-accent);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__checkpoint-reading strong{display:block;margin:.5rem 0 .35rem;font-size:.84rem}.exp-scaffold__checkpoint-reading p,.exp-scaffold__provenance-note{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.exp-scaffold__provenance-note{margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--color-border)}.exp-scaffold th,.exp-scaffold td{padding:.8rem .9rem;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.78rem;line-height:1.55}.exp-scaffold thead th{background:color-mix(in srgb,var(--color-text) 3%,transparent);color:var(--color-text-muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}.exp-scaffold tbody th{width:23%;font-weight:760}.exp-scaffold tr:last-child th,.exp-scaffold tr:last-child td{border-bottom:0}.exp-scaffold .pending{color:var(--color-accent);font-style:normal;font-weight:760}
 .exp-scaffold__pipeline{list-style:none;margin:1.3rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--color-border);border-radius:12px;overflow:hidden}.exp-scaffold__pipeline li{min-width:0;padding:1rem;border-right:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-right:0}.exp-scaffold__pipeline span{display:block;margin-bottom:.8rem;color:var(--color-accent);font:800 .66rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__pipeline strong{font-size:.82rem}.exp-scaffold__pipeline p{margin:.45rem 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
 .exp-scaffold__contrast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1.3rem}.exp-scaffold__contrast-grid article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.exp-scaffold__contrast-head{display:grid;grid-template-columns:36px minmax(0,1fr);gap:.6rem}.exp-scaffold__contrast-head>span{color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}.exp-scaffold__contrast-grid h3{margin:0;font-size:.92rem}.exp-scaffold__contrast-grid code{display:block;margin:.8rem 0;padding:.55rem .65rem;border-radius:7px;background:color-mix(in srgb,var(--color-text) 4%,transparent);font-size:.72rem;white-space:normal}.exp-scaffold__contrast-grid dl{margin:0}.exp-scaffold__contrast-grid dl>div{display:grid;grid-template-columns:80px minmax(0,1fr);gap:.6rem;padding:.45rem 0;border-top:1px solid var(--color-border)}.exp-scaffold__contrast-grid dt{color:var(--color-text-muted);font-size:.7rem}.exp-scaffold__contrast-grid dd{margin:0;font-size:.75rem;line-height:1.5}
 .exp-scaffold__guardrail ul{max-width:84ch;margin:1rem 0 0;padding-left:1.15rem}.exp-scaffold__guardrail li{margin:.55rem 0;color:var(--color-text-muted);line-height:1.65}.exp-scaffold__footer{display:flex;justify-content:space-between;gap:1rem;padding-top:24px;color:var(--color-text-muted);font-size:.75rem}.exp-scaffold__footer a{color:var(--color-accent);font-weight:760;text-decoration:none}.exp-scaffold__footer a:hover{text-decoration:underline}
-@media(max-width:860px){.exp-scaffold__hero,.exp-scaffold__two-col{grid-template-columns:1fr}.exp-scaffold__hero{gap:1.2rem}.exp-scaffold h1{max-width:22ch}.exp-scaffold__pipeline{grid-template-columns:1fr}.exp-scaffold__pipeline li{border-right:0;border-bottom:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-bottom:0}}
+@media(max-width:860px){.exp-scaffold__hero,.exp-scaffold__two-col{grid-template-columns:1fr}.exp-scaffold__checkpoint-reading{grid-template-columns:1fr}.exp-scaffold__hero{gap:1.2rem}.exp-scaffold h1{max-width:22ch}.exp-scaffold__pipeline{grid-template-columns:1fr}.exp-scaffold__pipeline li{border-right:0;border-bottom:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-bottom:0}}
 @media(max-width:640px){.exp-scaffold{padding:36px 18px 56px}.exp-scaffold__contrast-grid{grid-template-columns:1fr}.exp-scaffold__footer{flex-direction:column}.exp-scaffold__section{padding:34px 0}.exp-scaffold__table-wrap{margin-inline:-2px}}
 </style>

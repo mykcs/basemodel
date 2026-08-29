@@ -3,7 +3,7 @@ import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentResultsScaffold from '../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="7B 无外部教师实验：结果与待完成 GPU 分析" description="展示 7B/self 已完成的 Stage-1、Stage-2 与 final 证据，并为正在补做的 checkpoint GPU 能力曲线预留明确结果槽位。" locale="zh">
+<AppLayout title="7B 无外部教师实验：完整结果与 checkpoint 曲线" description="展示 7B/self 已完成的 Stage-1、Stage-2、128-task final 与完整 checkpoint GPU 能力曲线，并解释 loss、可执行性和完整成功之间的关系。" locale="zh">
   <OpenEvoExperimentResultsScaffold locale="zh" mode="7b-self" />
   <OpenEvoExperimentAnalysisPlan locale="zh" mode="7b-self" />
 </AppLayout>
