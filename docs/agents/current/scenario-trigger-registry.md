@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-08-29**
+Last reviewed: **2026-08-30**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -107,6 +107,27 @@ Historical case and friction record: [`../history/2026-08-28-vercel-billing-and-
 For SEED WebShop environment identity specifically, load `seed-webshop-environment-audit.md` before claiming source-faithful equivalence.
 
 Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md`](../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md).
+
+---
+
+## TRIGGER: external hindsight teacher / API cost / MiniMax–GLM–Kimi–GPT comparison
+
+**Cues:** “MiniMax 当外部教师”、SEED GLM-5.2 teacher、Kimi/GPT teacher comparison、teacher intelligence、hindsight quality、API/token cost、same-token fairness、Token Plan、console usage does not match experiment totals.
+
+**Automatic response:**
+
+1. Resolve the model's **actual experimental role** before choosing a benchmark. In H1.46 MiniMax-M3 is a post-episode trajectory analyzer, not the WebShop actor.
+2. Read `minimax-h146-frozen-facts-2026-08-30.md` first and do not edit it in place; corrections require a new dated superseding fact record.
+3. Read `minimax-h146-teacher-intelligence-cost-analysis.md` for the current WHTB / quality-cost comparison design.
+4. Prefer experiment-side per-request/per-arm receipts over screenshots or account totals; use provider account exports as reconciliation evidence, not as automatic treatment attribution.
+5. Keep `primary scientific treatment`, `account-window activity`, `public pay-as-you-go equivalent`, `incremental prepaid charge`, and `Token Plan amortized economics` separate. Never infer the last item without the plan purchase/allowance evidence.
+6. For cross-provider fairness, prefer **same semantic workload** plus **same-dollar budget**. Raw token equality is not a clean control across tokenizers, reasoning-token policies, and cache accounting.
+7. Re-verify current exact model IDs, prices, lifecycle, and public benchmark claims from first-party sources before filling Kimi/GLM/GPT cells. If current verification is unavailable, leave them pending.
+8. Do not rerun a historical API analysis merely to recover a quantity already frozen in receipts; a rerun changes cache/provider/time conditions and cannot recreate historical billing exactly.
+9. If the question is “which teacher is smarter for this experiment?”, use the role-matched WHTB idea: same frozen WebShop trajectories + same pinned SEED prompt/parser/schema + blind teacher-quality scoring + downstream student utility. Generic GPQA/AIME/SWE-bench scores are only background.
+10. When publishing, keep measured quality, tokens, dollars, latency, and downstream utility on separate axes; “cheaper” is not “smarter”.
+
+Historical friction record: [`../history/2026-08-30-minimax-hindsight-teacher-intelligence-cost-retrospective.md`](../history/2026-08-30-minimax-hindsight-teacher-intelligence-cost-retrospective.md). It includes the 14.01M-vs-27.66M reconciliation, OpenAI-compatible-vs-provider confusion, cache attribution limits, exact-head Preview churn, moving-`main` recovery, and the discovered English-route/hreflang gap.
 
 ---
 
