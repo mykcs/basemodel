@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-08-28**
+Last reviewed: **2026-08-29**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -44,7 +44,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 6. Keep source state, deterministic Gate/build, provider READY, real-route acceptance, and Production acceptance separate in reports.
 7. Do not quote exact provider quota/price counters without authoritative current evidence.
 
-Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior.
+Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts and CI-vs-deploy relevance mistakes, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
 
 ---
 

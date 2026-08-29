@@ -102,6 +102,8 @@ Vercel owns ordinary Preview and Production. Historical Vercel pilot/adoption re
 
 For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For Vercel billing, `Overdue`, unexplained Build CPU, or spend-reduction work, read [`history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 
+For CI-provider responsibility, zero-extra-cost self-hosted runner setup, Vercel browser offload, Cloudflare Production smoke, CI-vs-deploy relevance, or runner/bootstrap failures, read [`history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md) after the current deployment owners.
+
 ### Model catalog / current-provider claims
 
 Read:
