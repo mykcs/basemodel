@@ -23,11 +23,11 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale}>
   <header class="server-hero">
-    <div class="server-hero__eyebrow">{t('实验基础设施 · LYG.2171', 'Experiment infrastructure · LYG.2171')}</div>
-    <h1>{t('这台服务器能做什么，以及哪里最容易先用满', 'What this server can do — and what is most likely to fill first')}</h1>
-    <p>{t('把它想成一张给科学训练用的大工作台：CPU 和内存很宽裕，GPU 是 8 张 RTX 5090；目前真正需要盯紧的是主文件系统，只剩约 55 G 可写空间。', 'Think of it as a large workbench for scientific training: CPU and RAM are generous, and there are eight RTX 5090 GPUs. The resource that currently needs the closest attention is the main filesystem, with only about 55 G writable space left.')}</p>
+    <div class="server-hero__eyebrow">{t('实验服务器 · lyg2171', 'Experiment server · lyg2171')}</div>
+    <h1>{t('lyg2171 服务器简介', 'lyg2171 server overview')}</h1>
+    <p>{t('lyg2171 是当前 OpenEvo / WebShop 实验使用的主要训练服务器。配置为 2 × Intel Xeon Platinum 8380、1.0 TiB 内存和 8 × RTX 5090；当前主文件系统剩余约 55 G。', 'lyg2171 is the main training server used for the current OpenEvo / WebShop experiments. It has 2 × Intel Xeon Platinum 8380 CPUs, 1.0 TiB RAM, and 8 × RTX 5090 GPUs; the main filesystem currently has about 55 G free.')}</p>
     <div class="snapshot-note">
-      <strong>{t('快照时间', 'Snapshot')}</strong>
+      <strong>{t('数据时间', 'Data timestamp')}</strong>
       <span>2026-08-30 00:12 (UTC+8)</span>
       <span>{t('静态快照，不是实时监控面板', 'Static snapshot, not a live monitoring dashboard')}</span>
     </div>
@@ -35,7 +35,7 @@ const gpuFacts = [
 
   <section class="priority-grid" aria-label={t('关键资源', 'Key resources')}>
     <article class="priority-card priority-card--attention">
-      <span>{t('最需要注意', 'Watch this first')}</span>
+      <span>{t('磁盘剩余', 'Disk free')}</span>
       <strong>55 G</strong>
       <h2>{t('主文件系统可用空间', 'Main filesystem available')}</h2>
       <p>{t('df 当前报告 87% 已使用。大 checkpoint、Docker/容器层或重复实验副本都可能很快把它推满。', 'df currently reports 87% used. Large checkpoints, container layers, or duplicate experiment copies can fill it quickly.')}</p>
@@ -65,10 +65,10 @@ const gpuFacts = [
       <span>01</span>
       <div>
         <small>{t('存储', 'Storage')}</small>
-        <h2>{t('我们现在最容易撞到的上限', 'The limit we are most likely to hit first')}</h2>
+        <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('当前实验文件真正落到、也最需要我们监控的主文件系统是 437 G；底层块设备约 447.1 G。这里不把“块设备标称容量”和“文件系统可用容量”混成一个数字。', 'The main filesystem where our experiment files actually land — and the one we need to monitor — is 437 G, backed by an approximately 447.1 G block device. We keep raw device size and usable filesystem size separate.')}</p>
+    <p class="section-lede">{t('实验文件主要写入 437 G 的主文件系统，底层块设备约 447.1 G。下表按文件系统口径报告已用和可用空间。', 'Experiment files are mainly written to a 437 G filesystem backed by an approximately 447.1 G block device. The table below reports used and available space at the filesystem level.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
@@ -89,10 +89,10 @@ const gpuFacts = [
         <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>55 G</strong></div>
         <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>≈ 22 G</strong></div>
       </div>
-      <p class="fine-print">* {t('“其他人占用”按隐私规则只做汇总：360 G 已用减去我们能确认的 53 G。这个剩余量里可能同时包含系统、共享容器层等公共开销，因此它是安全的聚合口径，不是对某个具体用户的精确计费。', '“Other-user usage” is privacy-preserving aggregation only: 360 G used minus the 53 G we can confidently attribute to our own directories. The remainder can also include system or shared container-layer overhead, so it is a safe aggregate, not precise accounting for any individual.')}</p>
+      <p class="fine-print">* {t('“其他人占用”只做汇总：360 G 已用减去我们确认的 53 G。剩余量可能包含系统和共享容器层开销，因此只用于估算整体空间分布，不代表任何个人的精确占用。', '“Other-user usage” is an aggregate only: 360 G used minus the 53 G attributed to our directories. The remainder may include system and shared container-layer overhead, so it is used only to estimate overall space distribution and does not represent any individual’s exact usage.')}</p>
       <div class="why-87">
-        <strong>{t('为什么 360 / 437 看起来不像 87%？', 'Why does 360 / 437 not look like 87%?')}</strong>
-        <p>{t('因为 ext4 会保留一部分空间，df 的 Use% 更接近“已用 ÷（已用 + 普通用户可用）”。对我们真正重要的是：普通写入现在只剩约 55 G。', 'Because ext4 reserves part of the filesystem, df Use% is closer to “used ÷ (used + normally available)”. Operationally, the important number is that ordinary writes have only about 55 G left.')}</p>
+        <strong>{t('df 显示 87% 的原因', 'Why df reports 87%')}</strong>
+        <p>{t('ext4 会保留一部分空间，因此 df 的 Use% 更接近“已用 ÷（已用 + 普通用户可用）”。普通写入当前可用约 55 G。', 'ext4 reserves part of the filesystem, so df Use% is closer to “used ÷ (used + normally available)”. About 55 G is currently available for ordinary writes.')}</p>
       </div>
     </div>
   </section>
@@ -102,7 +102,7 @@ const gpuFacts = [
       <span>02</span>
       <div>
         <small>{t('我们的空间', 'Our storage')}</small>
-        <h2>{t('53 G 主要花在哪里', 'Where our 53 G goes')}</h2>
+        <h2>{t('我们的磁盘占用', 'Our disk usage')}</h2>
       </div>
     </div>
     <div class="own-storage-list">
@@ -113,7 +113,7 @@ const gpuFacts = [
         </article>
       ))}
     </div>
-    <p class="section-callout">{t('现在如果要释放空间，最值得先检查的是 45 G 的主要实验工作区，而不是去碰别人的容器或目录。', 'If we need to reclaim space, the 45 G primary experiment workspace is the first place worth auditing — not other users’ containers or directories.')}</p>
+    <p class="section-callout">{t('需要释放空间时，先检查 45 G 的主要实验工作区；不处理其他人的容器或目录。', 'When reclaiming space, start with the 45 G primary experiment workspace; do not modify other users’ containers or directories.')}</p>
   </section>
 
   <section class="server-section">
@@ -121,15 +121,15 @@ const gpuFacts = [
       <span>03</span>
       <div>
         <small>GPU</small>
-        <h2>{t('“第几代”和“多少核”怎么读', 'How to read “generation” and “core count”')}</h2>
+        <h2>{t('GPU 规格', 'GPU specifications')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('最不容易混淆的说法是：这是 GeForce RTX 50 系列，采用 Blackwell 架构。不要把它只说成“第 5 代 GPU”，因为“代”可能指产品系列、Tensor Core 世代或别的口径。', 'The least ambiguous description is: GeForce RTX 50 series, based on the Blackwell architecture. Avoid calling it simply a “5th-generation GPU”, because “generation” may refer to product family, Tensor Core generation, or another convention.')}</p>
+    <p class="section-lede">{t('RTX 5090 属于 GeForce RTX 50 系列，采用 Blackwell 架构。单卡 21,760 个 CUDA 核，显存 32,607 MiB，Compute Capability 为 12.0。', 'RTX 5090 belongs to the GeForce RTX 50 series and uses the Blackwell architecture. Each GPU has 21,760 CUDA cores, 32,607 MiB VRAM, and Compute Capability 12.0.')}</p>
     <dl class="gpu-facts">
       {gpuFacts.map((item) => <div><dt>{item.k}</dt><dd>{item.v}</dd></div>)}
     </dl>
     <div class="gpu-note">
-      <strong>{t('一个常见误解', 'A common misconception')}</strong>
+      <strong>{t('多卡性能说明', 'Multi-GPU performance note')}</strong>
       <p>{t('8 张卡 × 21,760 CUDA 核可以得到整机 174,080 CUDA 核这个“规格总和”，但训练速度不会简单变成单卡的 8 倍。数据并行、模型并行、通信和显存分配都会决定实际收益。', 'Eight cards × 21,760 CUDA cores gives a hardware-spec total of 174,080 CUDA cores, but training does not automatically become eight times faster. Data/model parallelism, communication, and memory placement determine the real gain.')}</p>
     </div>
   </section>
@@ -139,23 +139,23 @@ const gpuFacts = [
       <span>04</span>
       <div>
         <small>{t('隐私边界', 'Privacy boundary')}</small>
-        <h2>{t('网页只看资源，不识别别人', 'The page tracks resources, not people')}</h2>
+        <h2>{t('资源归属与隐私', 'Usage attribution and privacy')}</h2>
       </div>
     </div>
     <div class="privacy-grid">
       <div>
-        <strong>{t('网页可以展示', 'Safe to show')}</strong>
+        <strong>{t('公开展示', 'Shown publicly')}</strong>
         <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及匿名聚合后的“其他人占用”。', 'Total capacity, total usage, free space, GPU model/count, and privacy-preserving aggregate “other-user usage”.')}</p>
       </div>
       <div>
-        <strong>{t('网页不会展示', 'Not shown')}</strong>
+        <strong>{t('不公开', 'Not shown')}</strong>
         <p>{t('其他人的用户名、容器名、容器 ID、GPU 进程命令、GPU UUID、IP、SSH 别名或任何可反查身份的信息。', 'Other users’ names, container names/IDs, GPU process commands, GPU UUIDs, IPs, SSH aliases, or other identity-revealing details.')}</p>
       </div>
     </div>
   </section>
 
   <details class="measurement-notes">
-    <summary>{t('这些数字是怎么测出来的？', 'How were these numbers measured?')}</summary>
+    <summary>{t('数据来源', 'Data sources')}</summary>
     <p>{t('CPU 来自 lscpu；内存来自 free -h；主文件系统来自 df -hT；我们的目录大小来自 du；GPU 型号、显存、驱动与 Compute Capability 来自 nvidia-smi。页面只保存整理后的硬件与聚合数字，不保存 SSH 地址、GPU UUID 或其他人的容器信息。', 'CPU data comes from lscpu; memory from free -h; the main filesystem from df -hT; our directory size from du; GPU model, VRAM, driver, and Compute Capability from nvidia-smi. The page stores only curated hardware and aggregate numbers — not SSH endpoints, GPU UUIDs, or other users’ container information.')}</p>
   </details>
 </main>
