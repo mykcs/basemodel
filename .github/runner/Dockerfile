@@ -8,8 +8,8 @@ LABEL com.mykcs.basemodel.runner-config-sha256="$RUNNER_CONFIG_SHA256" \
       com.mykcs.basemodel.runner-version="$RUNNER_VERSION"
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/runner/.cache/ms-playwright \
-    ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed \
-    ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed \
+    ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed.sh \
+    ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed.sh \
     RUNNER_MANUALLY_TRAP_SIG=1 \
     ACTIONS_RUNNER_PRINT_LOG_TO_STDOUT=1
 
@@ -40,8 +40,8 @@ RUN case "$TARGETARCH" in \
     && chown -R runner:runner /home/runner/actions-runner
 
 COPY --chown=runner:runner entrypoint.sh /usr/local/bin/runner-entrypoint
-COPY --chown=runner:runner job-completed.sh /usr/local/bin/runner-job-completed
-RUN chmod 0755 /usr/local/bin/runner-entrypoint /usr/local/bin/runner-job-completed
+COPY --chown=runner:runner job-completed.sh /usr/local/bin/runner-job-completed.sh
+RUN chmod 0755 /usr/local/bin/runner-entrypoint /usr/local/bin/runner-job-completed.sh
 
 USER runner
 ENV HOME=/home/runner
