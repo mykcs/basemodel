@@ -24,6 +24,7 @@ const flowIds = [
 const studyIds = [
   "id: 'experiment'",
   "id: 'run'",
+  "id: 'capability'",
   "id: 'results'",
 ];
 
@@ -49,6 +50,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("label: t('OpenEvo × WebShop 科学研究', 'OpenEvo × WebShop study')");
     expect(navigation).toContain("t('实验流程', 'Experiment workflow')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
+    expect(navigation).toContain("t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration')");
     expect(navigation).toContain("t('研究结果', 'Research findings')");
     expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
     expect(navigation).not.toContain('const pages = [');
@@ -60,6 +62,8 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/capability-exploration')");
+    expect(layout).toContain("isCapabilityExplorationPage ? 'capability'");
     expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
     expect(layout).toContain("pathNoBase.replace(/^\\/en(\\/|$)/, '/')");
     expect(hub).not.toContain('const pages = [');

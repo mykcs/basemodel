@@ -131,7 +131,7 @@ const contrasts = [
 
   <header class="exp-scaffold__hero">
     <div class="exp-scaffold__hero-copy">
-      <p class="exp-scaffold__eyebrow">{mode === 'cross-arm' ? t('组间实验 · 结果框架已搭好', 'CROSS-ARM ANALYSIS · RESULT FRAMEWORK READY') : current?.eyebrow}</p>
+      <p class="exp-scaffold__eyebrow">{t('OpenEvo 基础能力探索实验', 'OPENEVO CAPABILITY EXPLORATION')} · {mode === 'cross-arm' ? t('组间实验', 'CROSS-ARM ANALYSIS') : current?.eyebrow}</p>
       <h1>{mode === 'cross-arm' ? t('四组实验：先把所有比较问题摆好，再等数字回来', 'Four arms: pre-build every comparison, then fill the evidence') : current?.title}</h1>
       <p class="exp-scaffold__lead">{mode === 'cross-arm'
         ? t('四个 arm 是 3B/self、7B/self、3B/MiniMax、7B/MiniMax。现在先固定“以后要比较什么、用什么证据、哪些格子还不能填”，避免实验跑完后再临时挑指标。', 'The four arms are 3B/self, 7B/self, 3B/MiniMax, and 7B/MiniMax. We fix the comparisons, evidence, and still-empty cells now so metrics are not chosen opportunistically after the runs finish.')
