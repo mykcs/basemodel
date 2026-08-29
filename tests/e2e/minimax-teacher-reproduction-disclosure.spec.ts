@@ -38,6 +38,7 @@ for (const viewport of [
       await expect(details).toContainText('OPENAI_API_KEY=');
       await expect(details).toContainText('600 wangr:wangr');
       await expect(details).toContainText('不用 cat');
+      await expect(details.getByRole('button', { name: '复制这段内容: cat' })).toHaveCount(0);
 
       const audit = await page.evaluate(() => ({
         pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
