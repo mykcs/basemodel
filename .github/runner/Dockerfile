@@ -31,7 +31,8 @@ RUN case "$TARGETARCH" in \
       amd64) runner_arch=x64; runner_sha256=70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613 ;; \
       *) echo "unsupported Docker architecture: $TARGETARCH" >&2; exit 1 ;; \
     esac \
-    && curl -fsSL -o /tmp/actions-runner.tar.gz \
+    && curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 \
+      --connect-timeout 20 --max-time 300 -o /tmp/actions-runner.tar.gz \
       "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${runner_arch}-${RUNNER_VERSION}.tar.gz" \
     && echo "${runner_sha256}  /tmp/actions-runner.tar.gz" | sha256sum -c - \
     && tar -xzf /tmp/actions-runner.tar.gz \

@@ -84,6 +84,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerInstall).toContain('Library/LaunchAgents');
     expect(runnerInstall).toContain('Library/Application Support/BasemodelCI');
     expect(runnerInstall).toContain('label="com.mykcs.basemodel-ci-runner"');
+    expect(runnerInstall).toContain("plutil -insert 'ProgramArguments.0' -string");
+    expect(runnerInstall).not.toContain('plutil -insert ProgramArguments -append');
     expect(runnerInstall).toContain('plutil -insert StartInterval -integer 60');
     expect(runnerInstall).not.toContain('sudo');
     expect(runnerReconcile).toContain("grep -q 'AC Power'");
@@ -113,11 +115,18 @@ describe('Vercel production deployment architecture', () => {
     const cleanup = existsSync(cleanupUrl) ? readFileSync(cleanupUrl, 'utf8') : '';
     expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed.sh');
     expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed.sh');
+    expect(runnerDockerfile).not.toMatch(/ACTIONS_RUNNER_HOOK_JOB_(?:STARTED|COMPLETED)=\S+(?<!\.sh)$/m);
     expect(cleanup).toContain("workspace_root='/home/runner/actions-runner/_work'");
     expect(cleanup).toContain('realpath');
     expect(cleanup).toContain('GITHUB_WORKSPACE');
     expect(cleanup).not.toContain('/home/runner/.npm');
     expect(cleanup).not.toContain('/home/runner/.cache/ms-playwright');
+  });
+
+  it('retries transient runner downloads without weakening checksum verification', () => {
+    expect(runnerDockerfile).toContain('--retry 5 --retry-all-errors --retry-delay 2');
+    expect(runnerDockerfile).toContain('--connect-timeout 20 --max-time 300');
+    expect(runnerDockerfile).toContain('sha256sum -c -');
   });
 
   it('keeps browser regression out of the Vercel Production build command', () => {
