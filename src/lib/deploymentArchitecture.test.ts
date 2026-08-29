@@ -9,6 +9,8 @@ describe('Vercel production deployment architecture', () => {
   const selfHostedWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
   const runnerDockerfile = readText('../../.github/runner/Dockerfile');
   const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
+  const runnerReconcile = readText('../../.github/runner/mac-orbstack-reconcile.sh');
+  const runnerInstall = readText('../../.github/runner/mac-orbstack-install-launch-agent.sh');
   const astroConfig = readText('../../astro.config.mjs');
   const appLayout = readText('../../src/layouts/AppLayout.astro');
   const robots = readText('../../src/pages/robots.txt.ts');
@@ -40,12 +42,82 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
     expect(runnerStart).toContain("grep -q 'AC Power'");
     expect(runnerStart).toContain('--cpus 4');
-    expect(runnerStart).toContain('--memory 8g');
-    expect(runnerStart).toContain('docker image inspect "$image"');
-    expect(runnerStart).toContain('docker top "$container" -eo pid,args');
+    expect(runnerStart).toContain('--memory 4g');
+    expect(runnerStart).toContain('--memory-swap 8g');
+    expect(runnerStart).toContain('--cap-drop ALL');
+    expect(runnerStart).toContain('--log-opt max-size=20m');
+    expect(runnerStart).toContain('--log-opt max-file=5');
+    expect(runnerStart).toContain('--restart no');
+    expect(runnerStart).toContain('docker image inspect --format');
+    expect(runnerStart).toContain(".State.Health.Status");
     expect(runnerStart).not.toContain('docker exec "$container" bash -lc "ps -ef');
     expect(runnerStart).not.toContain('/var/run/docker.sock');
     expect(runnerStart).not.toMatch(/(?:^|\s)(?:-v|--volume)(?:\s|=)/m);
+  });
+
+  it('reconciles runner image drift without deleting the previous container', () => {
+    expect(runnerStart).toContain(`docker image inspect --format '{{.Id}}' "$image"`);
+    expect(runnerStart).toContain(`docker container inspect --format '{{.Image}}' "$container"`);
+    expect(runnerStart).toContain('RUNNER_CONFIG_SHA256');
+    expect(runnerStart).toContain('com.mykcs.basemodel.runner-config-sha256');
+    expect(runnerStart).toContain('com.mykcs.basemodel.runner-runtime-contract');
+    expect(runnerStart).toContain('docker rename "$container" "$backup_container"');
+    expect(runnerStart).toContain('restored independently registered legacy container');
+    expect(runnerStart).toContain('runner_is_busy');
+    expect(runnerStart).not.toMatch(/docker\s+(?:container\s+)?rm\b/);
+  });
+
+  it('runs the listener under the container init process and exposes a healthcheck', () => {
+    const entrypointUrl = new URL('../../.github/runner/entrypoint.sh', import.meta.url);
+    expect(existsSync(entrypointUrl)).toBe(true);
+    const entrypoint = existsSync(entrypointUrl) ? readFileSync(entrypointUrl, 'utf8') : '';
+    expect(runnerDockerfile).toContain('ENTRYPOINT ["/usr/local/bin/runner-entrypoint"]');
+    expect(runnerDockerfile).toContain('HEALTHCHECK');
+    expect(runnerDockerfile).not.toContain('CMD ["sleep", "infinity"]');
+    expect(entrypoint).toContain('exec ./run.sh');
+    expect(runnerStart).not.toContain('nohup ./run.sh');
+    expect(runnerDockerfile).toContain('RUNNER_MANUALLY_TRAP_SIG=1');
+    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_PRINT_LOG_TO_STDOUT=1');
+  });
+
+  it('uses a user LaunchAgent as the only automatic lifecycle owner', () => {
+    expect(runnerInstall).toContain('Library/LaunchAgents');
+    expect(runnerInstall).toContain('Library/Application Support/BasemodelCI');
+    expect(runnerInstall).toContain('label="com.mykcs.basemodel-ci-runner"');
+    expect(runnerInstall).toContain('plutil -insert StartInterval -integer 60');
+    expect(runnerInstall).not.toContain('sudo');
+    expect(runnerReconcile).toContain("grep -q 'AC Power'");
+    expect(runnerReconcile).toContain('docker stop --time 30');
+    expect(runnerReconcile).toContain('legacy_container="basemodel-ci-runner"');
+    expect(runnerReconcile).toContain('/usr/bin/logger');
+    expect(runnerReconcile).toContain('backoff_seconds=900');
+    expect(runnerReconcile).toContain('disk_warning_interval=21600');
+    expect(runnerReconcile).not.toContain('docker system prune');
+    expect(runnerReconcile).not.toContain('pmset -a');
+  });
+
+  it('pins every GitHub-authored action to an immutable commit', () => {
+    expect(selfHostedWorkflow).toContain('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1');
+    expect(selfHostedWorkflow).toContain('actions/setup-node@820762786026740c76f36085b0efc47a31fe5020');
+    expect(selfHostedWorkflow).not.toMatch(/uses:\s+actions\/[^@\s]+@v\d+/);
+  });
+
+  it('runs the full validation path for manual canary checks', () => {
+    expect(selfHostedWorkflow).toContain('if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]');
+    expect(selfHostedWorkflow).toContain('echo "needs_validation=true" >> "$GITHUB_OUTPUT"');
+  });
+
+  it('cleans only the completed job workspace while preserving dependency caches', () => {
+    const cleanupUrl = new URL('../../.github/runner/job-completed.sh', import.meta.url);
+    expect(existsSync(cleanupUrl)).toBe(true);
+    const cleanup = existsSync(cleanupUrl) ? readFileSync(cleanupUrl, 'utf8') : '';
+    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_STARTED=/usr/local/bin/runner-job-completed');
+    expect(runnerDockerfile).toContain('ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/usr/local/bin/runner-job-completed');
+    expect(cleanup).toContain("workspace_root='/home/runner/actions-runner/_work'");
+    expect(cleanup).toContain('realpath');
+    expect(cleanup).toContain('GITHUB_WORKSPACE');
+    expect(cleanup).not.toContain('/home/runner/.npm');
+    expect(cleanup).not.toContain('/home/runner/.cache/ms-playwright');
   });
 
   it('keeps browser regression out of the Vercel Production build command', () => {
