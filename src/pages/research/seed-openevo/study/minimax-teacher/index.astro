@@ -1,0 +1,282 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+const locale = 'zh' as const;
+const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a1a46eee2a69505ce4f0f56c';
+---
+
+<AppLayout
+  title="MiniMax 外部教师：能力怎么比，成本到底多少？"
+  description="基于 H1.46 冻结轨迹与 MiniMax-M3 真实 API 记录，先回答外部 hindsight 教师该怎样和 GLM-5.2、Kimi K3、GPT 公平比较，再拆解 3B/7B 的 Token、时间与按量价格等价成本。"
+  locale={locale}
+>
+  <main class="teacher-audit" data-testid="minimax-teacher-intelligence-cost">
+    <nav class="backline" aria-label="返回实验系列">
+      <a href="/research/seed-openevo/study/capability-exploration/">← OpenEvo 基础能力探索实验</a>
+      <span>FROZEN FACTS · LIVING ANALYSIS</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">MINIMAX-M3 × SEED-STYLE HINDSIGHT · H1.46</p>
+      <h1>MiniMax 当外部教师，<br />到底够不够聪明？又花了多少？</h1>
+      <div class="hero-answer">
+        <strong>先回答最重要的科学问题：</strong>
+        <p>
+          现在还不能只看公开排行榜，就说 MiniMax-M3 比 SEED 使用的 GLM-5.2、Kimi K3 或 GPT 更聪明。
+          对这项实验，最合适的 benchmark 是让它们<strong>读同一批冻结 WebShop 轨迹、用同一套 SEED hindsight prompt、输出同一 schema</strong>，
+          再比较诊断质量、可复用 skill，以及最终能不能让学生模型真的学得更好。
+        </p>
+      </div>
+    </header>
+
+    <section class="answer-grid" aria-labelledby="benchmark-answer-title">
+      <article class="answer-main">
+        <span class="section-no">01 · WHAT TO BENCHMARK</span>
+        <h2 id="benchmark-answer-title">最适合这里的 benchmark，不是 GPQA，也不是 SWE-bench</h2>
+        <p>
+          MiniMax 在 H1.46 里<strong>不负责点击商品、不负责搜索</strong>。它的工作发生在 episode 已经结束以后：读完整轨迹，判断哪里做对、哪里做错，
+          再提炼成可以给学生学习的 episode-level hindsight。于是，评价“教师智能”必须直接测这件事。
+        </p>
+        <div class="benchmark-callout">
+          <div>
+            <small>PRIMARY BENCHMARK</small>
+            <strong>WHTB · WebShop Hindsight Teacher Bench</strong>
+          </div>
+          <ol>
+            <li><b>同一条轨迹</b><span>冻结 input，避免模型看到不同题</span></li>
+            <li><b>同一 SEED prompt</b><span>固定 teacher 的工作说明</span></li>
+            <li><b>同一输出合同</b><span>`episode_summary` + `episode_skill`</span></li>
+            <li><b>盲评 + 下游验证</b><span>不仅“说得像”，还要看学生是否真的受益</span></li>
+          </ol>
+        </div>
+      </article>
+
+      <aside class="fit-chart" aria-label="不同 benchmark 对本问题的匹配度">
+        <div class="fit-head">
+          <span>对这个问题的匹配度</span>
+          <small>方法判断，不是模型分数</small>
+        </div>
+        <div class="fit-row">
+          <div><b>WHTB</b><span>同轨迹 hindsight</span></div>
+          <div class="fit-bar"><i style="width:100%"></i></div>
+          <strong>直接</strong>
+        </div>
+        <div class="fit-row">
+          <div><b>WebShop actor</b><span>直接做题</span></div>
+          <div class="fit-bar"><i style="width:45%"></i></div>
+          <strong>角色不同</strong>
+        </div>
+        <div class="fit-row">
+          <div><b>GPQA / AIME</b><span>通用推理</span></div>
+          <div class="fit-bar"><i style="width:34%"></i></div>
+          <strong>间接</strong>
+        </div>
+        <div class="fit-row">
+          <div><b>SWE-bench</b><span>代码 Agent</span></div>
+          <div class="fit-bar"><i style="width:20%"></i></div>
+          <strong>很远</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="comparison" aria-labelledby="comparison-title">
+      <div class="section-heading">
+        <span class="section-no">02 · GLM / MINIMAX / KIMI / GPT</span>
+        <div>
+          <h2 id="comparison-title">先把“谁更聪明”改成一个可以真正测出来的问题</h2>
+          <p>公开 benchmark 只能做背景；这一页不从记忆或营销图表里填一个看似精确的排名。</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>候选教师</th>
+              <th>为什么在这张表里</th>
+              <th>我们现在知道什么</th>
+              <th>还差什么才可以排名</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><span class="model-dot reference"></span>GLM-5.2</th>
+              <td>SEED Stage 1 的外部 hindsight 参考教师</td>
+              <td><b>Reference</b><br /><small>这个项目已经把它固定为 SEED 教师角色</small></td>
+              <td><span class="pending">待同轨迹 WHTB 实测</span></td>
+            </tr>
+            <tr class="measured">
+              <th scope="row"><span class="model-dot measured-dot"></span>MiniMax-M3</th>
+              <td>H1.46 实际使用的外部 trajectory analyzer</td>
+              <td><b>14.01M tokens · ~2:02 wall</b><br /><small>资源、原始输出、每条 latency 都已记录</small></td>
+              <td><span class="pending">待盲评 teacher quality</span></td>
+            </tr>
+            <tr>
+              <th scope="row"><span class="model-dot pending-dot"></span>Kimi K3</th>
+              <td>“同样预算也许能买到更强 hindsight”的候选</td>
+              <td><span class="unknown">本页不填未经当前一手来源固定的分数/价格</span></td>
+              <td><span class="pending">固定 exact model + price → WHTB</span></td>
+            </tr>
+            <tr>
+              <th scope="row"><span class="model-dot pending-dot"></span>GPT</th>
+              <td>前沿参考；可选一个旗舰，再加一个更便宜档位</td>
+              <td><span class="unknown">Exact model ID 与当前价格尚未固定</span></td>
+              <td><span class="pending">source freeze → WHTB</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="boundary">
+        这里故意保留“待实测”。当前会话没有启用实时网页检索，所以没有把 2026-08-30 的 Kimi / GLM / GPT 价格或厂商 benchmark 从记忆里硬填进去。
+        这不是缺数据的装饰，而是科学证据边界。
+      </p>
+    </section>
+
+    <section class="same-budget" aria-labelledby="same-budget-title">
+      <span class="section-no">03 · SAME TOKENS?</span>
+      <h2 id="same-budget-title">“同样 Token 数，Kimi 会不会更聪明？”——这个问题要换一种控制方式</h2>
+      <div class="budget-flow">
+        <article>
+          <small>不要只固定</small>
+          <strong>14.01M raw tokens</strong>
+          <p>不同厂商 tokenizer、reasoning token、cache 记账都可能不同。数字相同，不代表读了同样多的信息。</p>
+        </article>
+        <span aria-hidden="true">→</span>
+        <article class="preferred">
+          <small>优先固定</small>
+          <strong>同一 semantic workload</strong>
+          <p>同一 trajectory bytes + 同一 SEED prompt + 同一输出字段，再记录每个模型实际花了多少 tokens / $ / 秒。</p>
+        </article>
+        <span aria-hidden="true">+</span>
+        <article>
+          <small>再补一个</small>
+          <strong>同样 $5 / $10</strong>
+          <p>看固定预算可以买多少条高质量 hindsight。这样才能回答“每一美元买到多少教师能力”。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="resources" aria-labelledby="resource-title">
+      <div class="section-heading">
+        <span class="section-no">04 · WHAT WE ACTUALLY SPENT</span>
+        <div>
+          <h2 id="resource-title">MiniMax-M3 最终 primary pass：3B 和 7B 已经可以完全拆开</h2>
+          <p>以下来自 H1.46 最终 `thinking=adaptive` 两个 summary，不是从控制台总数反推。</p>
+        </div>
+      </div>
+
+      <div class="resource-cards">
+        <article>
+          <header><span>3B / MiniMax</span><b>1,440 trajectories</b></header>
+          <strong class="big">7.60M</strong><small>total tokens</small>
+          <dl>
+            <div><dt>输入 / prompt</dt><dd>6.93M</dd></div>
+            <div><dt>输出 / completion</dt><dd>0.67M</dd></div>
+            <div><dt>wall time</dt><dd>≈ 2:02:13</dd></div>
+            <div><dt>按量价上限</dt><dd>≤ ¥20.18 ≈ $3.00</dd></div>
+          </dl>
+          <div class="token-bar"><i style="width:100%"></i></div>
+        </article>
+
+        <article>
+          <header><span>7B / MiniMax</span><b>1,440 trajectories</b></header>
+          <strong class="big">6.41M</strong><small>total tokens</small>
+          <dl>
+            <div><dt>输入 / prompt</dt><dd>5.72M</dd></div>
+            <div><dt>输出 / completion</dt><dd>0.69M</dd></div>
+            <div><dt>wall time</dt><dd>≈ 1:56:06</dd></div>
+            <div><dt>按量价上限</dt><dd>≤ ¥17.79 ≈ $2.64</dd></div>
+          </dl>
+          <div class="token-bar"><i style="width:84.3%"></i></div>
+        </article>
+
+        <article class="combined">
+          <header><span>两组 primary 合计</span><b>2,880 trajectories</b></header>
+          <strong class="big">14.01M</strong><small>total tokens</small>
+          <dl>
+            <div><dt>输入 / prompt</dt><dd>12.66M</dd></div>
+            <div><dt>输出 / completion</dt><dd>1.36M</dd></div>
+            <div><dt>并行 wall time</dt><dd>≈ 2:02</dd></div>
+            <div><dt>按量价上限</dt><dd>≤ ¥37.98 ≈ $5.65</dd></div>
+          </dl>
+          <p>≈ <b>¥13.19 / $1.96</b> 每 1,000 条 trajectory（同样 token mix、未计 cache 优惠）。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="account-window" aria-labelledby="account-title">
+      <div class="account-copy">
+        <span class="section-no">05 · WHY THE CONSOLE SAID 27.66M</span>
+        <h2 id="account-title">控制台没有错：当天其实还跑过一次完整的更早分析</h2>
+        <p>
+          最终科学 treatment 只应该报告 14.01M。MiniMax 账户窗口则还包含更早的一次 13.17M full pass、qualification / pairing / retry 等活动。
+          所以“实验 primary 成本”和“当天账户总消耗”必须分开。
+        </p>
+      </div>
+      <div class="reconcile" role="figure" aria-label="MiniMax 账户总用量与两次完整分析的关系">
+        <div class="reconcile-row"><span>earlier full pass</span><b>13.17M</b><i style="width:47.6%"></i></div>
+        <div class="reconcile-row primary"><span>final primary pass</span><b>14.01M</b><i style="width:50.7%"></i></div>
+        <div class="reconcile-row residual"><span>qualification / other residual</span><b>0.48M</b><i style="width:1.7%"></i></div>
+        <footer><span>MiniMax console / export window</span><strong>27.66M tokens</strong></footer>
+      </div>
+      <div class="bill-strip">
+        <div><span>ordinary input</span><b>24.35M</b><small>≈ ¥51.13</small></div>
+        <div><span>output</span><b>1.92M</b><small>≈ ¥16.11</small></div>
+        <div><span>cache read</span><b>1.40M</b><small>≈ ¥0.59</small></div>
+        <div class="total"><span>public-price equivalent</span><b>≈ ¥67.83</b><small>≈ $10.08</small></div>
+      </div>
+      <p class="boundary">
+        实际调用由个人购买的 MiniMax Token Plan 覆盖，因此“按量价等价 ≈ ¥67.83”不是实际追加扣款，也不是 Token Plan 的摊销成本。
+      </p>
+    </section>
+
+    <section class="next-test" aria-labelledby="next-title">
+      <span class="section-no">06 · NEXT SCIENTIFIC MOVE</span>
+      <h2 id="next-title">下一笔 Token，应该花在 128 条同轨迹 head-to-head，而不是重跑 MiniMax 2,880 条</h2>
+      <ol class="protocol">
+        <li><b>冻结 128 条 trajectory</b><span>64 条来自 3B、64 条来自 7B；预注册 success/failure 与长度分层。</span></li>
+        <li><b>四类候选读完全相同的输入</b><span>MiniMax-M3 / GLM-5.2 / Kimi K3 / exact GPT model。</span></li>
+        <li><b>盲评 teacher quality</b><span>诊断、credit assignment、skill 可复用性；模型名隐藏。</span></li>
+        <li><b>成本与质量分两条轴</b><span>不把便宜直接算成“更聪明”；另外报告 quality/$ 与 wall time。</span></li>
+        <li><b>只有前两名做下游训练验证</b><span>固定 bootstrap/update recipe，看 held-out WebShop 是否真的改善。</span></li>
+      </ol>
+      <div class="frontier">
+        <div class="axis-y">teacher quality ↑</div>
+        <div class="axis-x">cost / fixed workload →</div>
+        <span class="point minimax" style="left:36%;bottom:28%"><i></i><b>MiniMax-M3</b><small>cost measured · quality pending</small></span>
+        <span class="point glm" style="left:55%;bottom:58%"><i></i><b>GLM-5.2</b><small>SEED reference · pending WHTB</small></span>
+        <span class="point kimi" style="left:72%;bottom:66%"><i></i><b>Kimi K3</b><small>pending source + WHTB</small></span>
+        <span class="point gpt" style="left:78%;bottom:78%"><i></i><b>GPT</b><small>pending exact model + WHTB</small></span>
+        <p>虚线点只表示“待测候选”，纵向位置不是能力排名。</p>
+      </div>
+    </section>
+
+    <section class="provenance" aria-labelledby="provenance-title">
+      <h2 id="provenance-title">证据与计价口径</h2>
+      <div>
+        <a href={`${repo}/configs/experiment/h1.46-two-arm-minimax-m3-v1.json`} target="_blank" rel="noreferrer">H1.46 analyzer contract ↗</a>
+        <a href={`${repo}/scripts/openevo_webshop/h146_analyze_trajectories.py`} target="_blank" rel="noreferrer">actual API adapter / usage logging ↗</a>
+        <a href={`${repo}/configs/experiment/h1.46-external-analyzer-bootstrap-v1.json`} target="_blank" rel="noreferrer">downstream 16-record bootstrap contract ↗</a>
+        <a href="https://platform.minimaxi.com/docs/guides/pricing-paygo" target="_blank" rel="noreferrer">MiniMax official pay-as-you-go pricing ↗</a>
+      </div>
+      <p>
+        RMB→USD 使用实验日期 2026-08-28 的历史换算 `1 CNY = 0.14866 USD`。最终 primary 的 per-arm cache-read 没有独立冻结，因此 ¥37.98 / $5.65 使用“所有 prompt 均按普通输入计价”的保守上限。
+      </p>
+    </section>
+  </main>
+</AppLayout>
+
+<style>
+.teacher-audit{width:min(1180px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink,var(--color-text))}
+.backline{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 0 .6rem;border-bottom:1px solid var(--color-border,#ded8ce);font-size:.76rem}.backline a{color:var(--color-accent,var(--accent-deep));text-decoration:none;font-weight:760}.backline span{color:var(--muted,var(--color-text-muted));font:700 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:2rem;align-items:end;padding:3.4rem 0 2.5rem}.eyebrow,.section-no{margin:0;color:var(--color-accent,var(--accent-deep));font:800 .64rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.hero .eyebrow{grid-column:1/-1}.hero h1{margin:0;font-size:clamp(2.4rem,6vw,5.7rem);line-height:.96;letter-spacing:-.055em}.hero-answer{padding:1.1rem 1.2rem;border-left:3px solid var(--color-accent,var(--accent-deep));background:color-mix(in srgb,var(--color-accent,var(--accent-deep)) 7%,transparent)}.hero-answer strong{display:block;margin-bottom:.45rem;font-size:.9rem}.hero-answer p{margin:0;color:var(--muted,var(--color-text-muted));font-size:.88rem;line-height:1.72}.hero-answer p strong{display:inline;color:var(--ink,var(--color-text));font-size:inherit}
+.answer-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);gap:1rem;padding:1.2rem 0 2.7rem}.answer-main,.fit-chart{border:1px solid var(--color-border,#ded8ce);border-radius:18px}.answer-main{padding:1.35rem}.answer-main h2,.section-heading h2,.same-budget h2,.account-copy h2,.next-test h2{margin:.45rem 0 .7rem;font-size:clamp(1.35rem,3vw,2.25rem);line-height:1.08;letter-spacing:-.035em}.answer-main>p,.section-heading p,.account-copy p{margin:0;color:var(--muted,var(--color-text-muted));line-height:1.7;font-size:.88rem}.benchmark-callout{display:grid;grid-template-columns:.72fr 1.28fr;gap:1rem;margin-top:1.25rem;padding:1rem;border-radius:13px;background:color-mix(in srgb,var(--color-text,currentColor) 3%,transparent)}.benchmark-callout>div small{display:block;color:var(--color-accent,var(--accent-deep));font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.benchmark-callout>div strong{display:block;margin-top:.35rem;font-size:1.05rem}.benchmark-callout ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}.benchmark-callout li{padding:.6rem;border:1px solid var(--color-border,#ded8ce);border-radius:9px}.benchmark-callout li b,.benchmark-callout li span{display:block}.benchmark-callout li b{font-size:.76rem}.benchmark-callout li span{margin-top:.18rem;color:var(--muted,var(--color-text-muted));font-size:.66rem;line-height:1.4}
+.fit-chart{padding:1rem}.fit-head{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;padding:.15rem 0 .8rem}.fit-head span{font-weight:800;font-size:.82rem}.fit-head small{color:var(--muted,var(--color-text-muted));font-size:.6rem}.fit-row{display:grid;grid-template-columns:94px 1fr 64px;gap:.55rem;align-items:center;padding:.62rem 0;border-top:1px solid var(--color-border,#ded8ce)}.fit-row>div:first-child b,.fit-row>div:first-child span{display:block}.fit-row>div:first-child b{font-size:.72rem}.fit-row>div:first-child span{color:var(--muted,var(--color-text-muted));font-size:.58rem}.fit-row>strong{text-align:right;color:var(--muted,var(--color-text-muted));font-size:.6rem}.fit-bar{height:8px;border-radius:999px;background:color-mix(in srgb,var(--color-text,currentColor) 8%,transparent);overflow:hidden}.fit-bar i{display:block;height:100%;border-radius:inherit;background:var(--color-accent,var(--accent-deep))}
+.comparison,.resources,.account-window,.next-test{padding:2.6rem 0;border-top:1px solid var(--color-border,#ded8ce)}.section-heading{display:grid;grid-template-columns:minmax(160px,.45fr) minmax(0,1.55fr);gap:1rem;align-items:start;margin-bottom:1.2rem}.section-heading h2{margin-top:0}.table-wrap{overflow-x:auto;border:1px solid var(--color-border,#ded8ce);border-radius:14px}.comparison table{width:100%;min-width:860px;border-collapse:collapse}.comparison th,.comparison td{padding:.9rem 1rem;border-bottom:1px solid var(--color-border,#ded8ce);vertical-align:top;text-align:left;font-size:.78rem;line-height:1.5}.comparison thead th{background:color-mix(in srgb,var(--color-text,currentColor) 4%,transparent);color:var(--muted,var(--color-text-muted));font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}.comparison tbody tr:last-child th,.comparison tbody tr:last-child td{border-bottom:0}.comparison tbody th{white-space:nowrap;font-size:.82rem}.comparison tr.measured{background:color-mix(in srgb,var(--color-accent,var(--accent-deep)) 5%,transparent)}.model-dot{display:inline-block;width:.5rem;height:.5rem;margin-right:.45rem;border-radius:50%;vertical-align:middle;border:1px solid currentColor}.reference{background:transparent}.measured-dot{background:var(--color-accent,var(--accent-deep));color:var(--color-accent,var(--accent-deep))}.pending-dot{border-style:dashed;color:var(--muted,var(--color-text-muted))}.comparison small,.unknown{color:var(--muted,var(--color-text-muted))}.pending{display:inline-block;padding:.22rem .42rem;border:1px dashed var(--color-border,#ded8ce);border-radius:6px;color:var(--muted,var(--color-text-muted));font-size:.66rem}.boundary{margin:1rem 0 0;padding:.8rem 1rem;border-left:2px solid var(--color-border,#ded8ce);color:var(--muted,var(--color-text-muted));font-size:.72rem;line-height:1.65}
+.same-budget{padding:2.6rem 0;border-top:1px solid var(--color-border,#ded8ce)}.same-budget>h2{max-width:850px}.budget-flow{display:grid;grid-template-columns:1fr 28px 1.15fr 28px 1fr;gap:.35rem;align-items:stretch;margin-top:1.2rem}.budget-flow>article{padding:1rem;border:1px solid var(--color-border,#ded8ce);border-radius:13px}.budget-flow>article.preferred{border-color:var(--color-accent,var(--accent-deep));background:color-mix(in srgb,var(--color-accent,var(--accent-deep)) 6%,transparent)}.budget-flow>span{display:flex;align-items:center;justify-content:center;color:var(--muted,var(--color-text-muted));font-weight:800}.budget-flow small,.budget-flow strong{display:block}.budget-flow small{color:var(--muted,var(--color-text-muted));font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.budget-flow strong{margin:.35rem 0;font-size:1rem}.budget-flow p{margin:0;color:var(--muted,var(--color-text-muted));font-size:.72rem;line-height:1.55}
+.resource-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.resource-cards article{padding:1rem;border:1px solid var(--color-border,#ded8ce);border-radius:14px}.resource-cards header{display:flex;justify-content:space-between;gap:.7rem;align-items:center}.resource-cards header span{font-weight:850}.resource-cards header b{color:var(--muted,var(--color-text-muted));font:700 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.resource-cards .big{display:inline-block;margin-top:.9rem;font-size:clamp(2rem,5vw,3.7rem);line-height:1;letter-spacing:-.05em}.resource-cards .big+small{margin-left:.45rem;color:var(--muted,var(--color-text-muted));font-size:.65rem}.resource-cards dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin:1rem 0 0}.resource-cards dl div{display:flex;justify-content:space-between;gap:.5rem;padding:.55rem .6rem;border-radius:8px;background:color-mix(in srgb,var(--color-text,currentColor) 3%,transparent)}.resource-cards dt,.resource-cards dd{font-size:.68rem}.resource-cards dt{color:var(--muted,var(--color-text-muted))}.resource-cards dd{margin:0;font-weight:760}.token-bar{height:7px;margin-top:.9rem;border-radius:999px;background:color-mix(in srgb,var(--color-text,currentColor) 8%,transparent);overflow:hidden}.token-bar i{display:block;height:100%;background:var(--color-accent,var(--accent-deep));border-radius:inherit}.resource-cards article.combined{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.1fr;gap:.8rem 1.2rem;border-color:var(--color-accent,var(--accent-deep));background:color-mix(in srgb,var(--color-accent,var(--accent-deep)) 6%,transparent)}.resource-cards article.combined header{grid-column:1/-1}.resource-cards article.combined dl{margin:.65rem 0 0}.resource-cards article.combined>p{align-self:end;margin:0;color:var(--muted,var(--color-text-muted));font-size:.75rem;line-height:1.6}
+.account-window{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:1rem 1.4rem}.account-copy{align-self:start}.reconcile{padding:1rem;border:1px solid var(--color-border,#ded8ce);border-radius:14px}.reconcile-row{position:relative;display:grid;grid-template-columns:1fr 70px;gap:.5rem;align-items:center;padding:.55rem 0}.reconcile-row span{font-size:.7rem}.reconcile-row b{text-align:right;font:800 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.reconcile-row i{grid-column:1/-1;display:block;height:8px;min-width:4px;border-radius:999px;background:color-mix(in srgb,var(--color-text,currentColor) 23%,transparent)}.reconcile-row.primary i{background:var(--color-accent,var(--accent-deep))}.reconcile-row.residual i{background:color-mix(in srgb,var(--color-accent,var(--accent-deep)) 40%,transparent)}.reconcile footer{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-top:.6rem;padding-top:.75rem;border-top:1px solid var(--color-border,#ded8ce)}.reconcile footer span{color:var(--muted,var(--color-text-muted));font-size:.65rem}.reconcile footer strong{font-size:1.1rem}.bill-strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}.bill-strip>div{padding:.75rem;border:1px solid var(--color-border,#ded8ce);border-radius:10px}.bill-strip span,.bill-strip b,.bill-strip small{display:block}.bill-strip span{color:var(--muted,var(--color-text-muted));font-size:.62rem}.bill-strip b{margin:.22rem 0;font-size:.88rem}.bill-strip small{font-size:.62rem}.bill-strip .total{border-color:var(--color-accent,var(--accent-deep))}.account-window>.boundary{grid-column:1/-1;margin-top:0}
+.next-test h2{max-width:900px}.protocol{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem;margin:1rem 0 1.2rem;padding:0;list-style:none;counter-reset:protocol}.protocol li{counter-increment:protocol;padding:.8rem;border:1px solid var(--color-border,#ded8ce);border-radius:10px}.protocol li::before{content:"0" counter(protocol);display:block;margin-bottom:.5rem;color:var(--color-accent,var(--accent-deep));font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.protocol b,.protocol span{display:block}.protocol b{font-size:.72rem}.protocol span{margin-top:.25rem;color:var(--muted,var(--color-text-muted));font-size:.64rem;line-height:1.5}.frontier{position:relative;min-height:360px;border-left:1px solid var(--color-border,#ded8ce);border-bottom:1px solid var(--color-border,#ded8ce);background-image:linear-gradient(to right,color-mix(in srgb,var(--color-border,#ded8ce) 35%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in srgb,var(--color-border,#ded8ce) 35%,transparent) 1px,transparent 1px);background-size:25% 25%;margin:2rem 1.2rem 0 2.2rem}.axis-y,.axis-x{position:absolute;color:var(--muted,var(--color-text-muted));font:700 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.axis-y{left:-2rem;top:0;writing-mode:vertical-rl;transform:rotate(180deg)}.axis-x{right:0;bottom:-1.45rem}.point{position:absolute;display:flex;flex-direction:column;gap:.1rem;padding:.42rem .52rem .42rem 1.05rem;border:1px dashed var(--color-border,#ded8ce);border-radius:8px;background:var(--color-bg,#fff);transform:translate(-.3rem,.3rem)}.point i{position:absolute;left:-.36rem;top:50%;width:.65rem;height:.65rem;border:2px solid currentColor;border-radius:50%;background:var(--color-bg,#fff);transform:translateY(-50%)}.point b{font-size:.68rem}.point small{color:var(--muted,var(--color-text-muted));font-size:.55rem}.point.minimax{border-style:solid;border-color:var(--color-accent,var(--accent-deep));color:var(--color-accent,var(--accent-deep))}.frontier>p{position:absolute;right:.4rem;bottom:.4rem;margin:0;color:var(--muted,var(--color-text-muted));font-size:.58rem}
+.provenance{padding:2rem 0;border-top:1px solid var(--color-border,#ded8ce)}.provenance h2{margin:0 0 .8rem;font-size:1rem}.provenance>div{display:flex;flex-wrap:wrap;gap:.45rem}.provenance a{padding:.45rem .6rem;border:1px solid var(--color-border,#ded8ce);border-radius:8px;color:var(--color-accent,var(--accent-deep));font-size:.66rem;text-decoration:none}.provenance p{max-width:900px;margin:.8rem 0 0;color:var(--muted,var(--color-text-muted));font-size:.68rem;line-height:1.6}
+@media(max-width:900px){.hero,.answer-grid,.account-window{grid-template-columns:1fr}.hero .eyebrow{grid-column:auto}.section-heading{grid-template-columns:1fr}.budget-flow{grid-template-columns:1fr}.budget-flow>span{padding:.1rem}.protocol{grid-template-columns:repeat(2,minmax(0,1fr))}.account-window>.boundary,.bill-strip{grid-column:auto}.bill-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.resource-cards article.combined{grid-template-columns:1fr}.resource-cards article.combined header{grid-column:auto}.frontier{min-height:320px}}
+@media(max-width:640px){.teacher-audit{width:min(100% - 1rem,1180px)}.backline{align-items:flex-start}.hero{padding:2.4rem 0 1.7rem}.hero h1{font-size:clamp(2.2rem,13vw,4rem)}.benchmark-callout{grid-template-columns:1fr}.benchmark-callout ol{grid-template-columns:1fr}.resource-cards{grid-template-columns:1fr}.resource-cards article.combined{grid-column:auto}.resource-cards dl{grid-template-columns:1fr}.bill-strip{grid-template-columns:1fr}.protocol{grid-template-columns:1fr}.fit-row{grid-template-columns:82px 1fr 58px}.frontier{min-height:410px;margin-left:1.5rem}.point{max-width:150px}.point.kimi{left:58%!important}.point.gpt{left:63%!important;bottom:80%!important}}
+</style>
