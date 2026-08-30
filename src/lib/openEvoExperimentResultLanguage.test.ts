@@ -19,11 +19,17 @@ const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 const resultFamilyCopy = `${scaffold}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
-  it('explains the 7-versus-8 Stage-2 update rule in reader terms', () => {
+  it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {
     expect(scaffold).toContain('这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹');
     expect(scaffold).toContain('7 表示最好的一块仍差 1 个任务身份才允许训练');
-    expect(scaffold).toContain('成功不能跨不同数据块累积来凑 8');
-    expect(scaffold).toContain('"0 次更新"则表示 Stage 2 没有改变模型参数，而不是 Stage 2 没有运行');
+    expect(scaffold).toContain('这是当时预先采用的方法控制规则');
+    expect(scaffold).toContain('不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件');
+    expect(scaffold).toContain('不代表模型没有产生可学习数据');
+    expect(scaffold).toContain('不是合理 Stage 2 训练后的能力上限');
+    expect(analysis).toContain('7 < 8 是本次程序零更新的直接原因');
+    expect(analysis).toContain('797 条成功轨迹说明不能把它解释成“没有可学习数据”');
+    expect(analysis).toContain('旧 7/8 配置保留为历史 method-control 对照');
+    expect(scaffold).not.toContain('成功不能跨不同数据块累积来凑 8');
   });
 
   it('separates attempts, successful trajectories, task identities, and parameter updates', () => {
