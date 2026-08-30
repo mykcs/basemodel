@@ -20,7 +20,7 @@ const navItems = [
   <p class="eyebrow">{t('研究结果 · RESEARCH FINDINGS', 'OPENEVO × WEBSHOP · RESEARCH FINDINGS')}</p>
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo SD-LoRA 后的模型，追踪三件事：模型是否真的学到可迁移经验、纠错后的 128×2 评测是否支持稳定优势、下一轮公平比较还缺什么。',
+    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo SD-LoRA 后的模型，追踪三件事：模型是否真的学到可迁移经验、纠错后“同一 128 个任务 × 两个模型组（共 256 个任务回合）”的配对评测是否支持稳定优势、下一轮公平比较还缺什么。',
     'We compare base Qwen2.5-7B-Instruct with the same model plus OpenEvo SD-LoRA on matched WebShop tasks, tracking three questions: whether the model learns transferable experience, whether the corrected 128×2 evaluation supports a stable advantage, and what remains before the next fair comparison.',
   )}</p>
 
@@ -43,11 +43,11 @@ const navItems = [
       <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '现在已经有一轮真正按纠错后的 SEED 公开代码任务语义完成的 128×2 配对评测。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然跨过“没有差异”，所以仍然不能说它稳定更好。',
+          '现在已经有一轮真正按纠错后的 SEED 公开代码任务语义完成的配对评测：同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然包含“没有差异”，所以仍然不能说它稳定更好。',
           'We now have a completed 128×2 paired evaluation on the corrected task semantics recoverable from released SEED code. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'source-faithful Track A 先通过 authoritative runtime semantic validation 128/128，随后 BASE 与冻结 SD-LoRA 都完成 128/128 个有效回合，parser-invalid=0。SD-LoRA 的平均 Task Score 方向更高，但配对不确定性区间跨过 0；256 个 raw episode 与分析/receipt 已 byte-for-byte 入库并 PUBLISHED_AND_VERIFIED。精确统计量放在下方 Q7 的实验依据里。',
+          '“源码忠实任务测量路线”（Track A）先逐题核对 SEED 公开代码真正生成的任务语义：128/128 表示计划的 128 个任务槽位全部核对通过。随后基础模型（BASE）和冻结的 SD-LoRA 适配器模型各完成同一 128 个任务，两个模型组都是 128/128 个回合有效，动作解析无效回合为 0。SD-LoRA 的平均任务完成度方向更高，但配对不确定性区间仍包含 0；全部 256 个原始任务回合和对应分析、运行凭据都已逐文件核对并发布。精确统计量放在下方 Q7 的实验依据里。',
           'Source-faithful Track A first passed authoritative runtime semantic validation at 128/128. BASE and the frozen SD-LoRA then each completed 128/128 valid episodes with parser-invalid=0. Mean Task Score is directionally higher for SD-LoRA, but the paired uncertainty interval crosses zero; all 256 raw episodes plus analysis and receipts are published and byte-for-byte verified. Exact statistics are kept in Q7’s experiment evidence below.',
         )}</p>
       </div>
@@ -57,11 +57,11 @@ const navItems = [
       <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '最关键的剩余问题已经从“Gen28 的状态能不能补回来”推进到“是否正式恢复 Track B / WB1 并进入 Gen29”。Gen28 的 128 个 episode 已完成，对应的 state-v28 也已经通过封存输入上的 deferred native update 与 barrier reconciliation 被采用；但这不自动授权下一代训练，所以现在仍不能直接续跑。',
+          '最关键的剩余问题已经从“第 28 代结束后应保存的模型演化状态能不能补回来”推进到“是否正式恢复方法对方法的公平比较路线（Track B / WB1），进入第 29 代”。第 28 代（Gen28）的 128 个任务回合已经完成，缺失的第 28 代状态（state-v28）也已经用封存输入补做一次原本延后的本地状态更新，并通过状态完整性对账；但“状态补齐”不等于“下一代训练已获授权”，所以现在仍不能直接续跑。',
           'The key remaining question has moved from repairing Gen28 continuity to deciding whether Track B / WB1 should formally resume into Gen29. Gen28’s 128 episodes are complete and state-v28 has now been adopted after the sealed-input deferred native update and barrier reconciliation; that adoption does not automatically authorize another generation, so task-bearing continuation remains blocked.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'Track A 已以 measurement-not-proven-stable-improvement 关闭，且不能冒充论文 89.7 / 78.1% 的 exact reproduction。当前 WB1 classification 是 GEN28_STATE_V28_BARRIER_PASS_ADOPTED；latest native state 是 state-v28，matched experience budget 已记到 3,584/20,640，剩余 17,056。formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final_test_status=locked；下一步是单独的 Gen29 execution-readiness / resumption decision。',
+          '路线 A 已收口，结论是“完成了有效测量，但没有证明稳定提升”（机器状态：measurement-not-proven-stable-improvement），而且它不能冒充论文 89.7 / 78.1% 的精确复现。路线 B / WB1 当前机器状态 GEN28_STATE_V28_BARRIER_PASS_ADOPTED 的含义是：第 28 代缺失的 state-v28 已补齐、通过状态门并被正式采用。匹配经验预算已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056。formal_task_consumption_allowed=false 表示“不允许继续消耗正式任务”，gpu_allocation_allowed=false 表示“当前不授权为这一步分配 GPU”，final_test_status=locked 表示“最终测试仍锁定”。因此下一步不是直接训练，而是单独决定第 29 代是否达到恢复执行条件。',
           'Track A is closed as measurement-not-proven-stable-improvement and must not be presented as an exact reproduction of the paper’s 89.7 / 78.1%. Current WB1 classification is GEN28_STATE_V28_BARRIER_PASS_ADOPTED; the latest native state is state-v28, matched experience accounting is 3,584/20,640 with 17,056 remaining, and formal_task_consumption_allowed=false, gpu_allocation_allowed=false, final_test_status=locked. The next gate is a separate Gen29 execution-readiness / resumption decision.',
         )}</p>
       </div>
@@ -71,7 +71,7 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论截至 H1.41。H1.42 是之后的测量校准记录；2026-08-25 的 repaired PRIMARY-v2、2026-08-26 的源码忠实任务纠错与随后完成的 Track A 128×2 配对测量，都属于另外的证据层，不会被倒过来混进 H1.41 的机制结论。',
+      '机制结论以实验编号 H1.41 为时间截点。H1.42 是之后的测量校准记录；2026-08-25 的修复后主评测（PRIMARY-v2）、2026-08-26 的源码忠实任务纠错，以及随后完成的路线 A“同一 128 任务 × 两个模型组”配对测量，都属于更晚的证据层，不会被倒过来混进 H1.41 的机制结论。',
       'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the repaired PRIMARY-v2 on 2026-08-25, the source-faithful task correction on 2026-08-26, and the later completed Track A 128×2 paired measurement are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
     )}</span>
   </div>

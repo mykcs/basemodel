@@ -122,7 +122,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
     expect(resultsProtocol).toContain('专业解释：');
     expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
-    expect(currentQ7).toContain('Track A 机器可读 closeout');
+    expect(currentQ7).toContain('路线 A 机器可读收尾记录');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('专业解释：');
     expect(researchHub).toContain('适配器（adapter）');
@@ -146,9 +146,9 @@ describe('SEED × OpenEvo reader-voice protection', () => {
 
   it('protects H1.40 T2, later H1.42, repaired-primary v2, and the completed source-faithful successor', () => {
     expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(resultsQuestions).toContain('T2 没有运行');
+    expect(resultsQuestions).toContain('T2 根本没有运行');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
-    expect(resultsHero).toContain('机制结论截至 H1.41');
+    expect(resultsHero).toContain('机制结论以实验编号 H1.41 为时间截点');
     expect(resultsQuestions).toContain('768 个回合');
     expect(resultsQuestions).toContain('测量无效');
     expect(resultsQuestions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
@@ -159,7 +159,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
-    expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
+    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
     expect(nextSteps).toContain('路线 B（Track B，WB1）');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });

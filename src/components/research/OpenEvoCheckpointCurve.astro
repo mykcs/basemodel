@@ -30,7 +30,7 @@ const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace(
 
 <div class="checkpoint-viz" data-testid="checkpoint-loss-capability-chart">
   <div class="checkpoint-viz__summary">
-    <div><span>{t('训练 loss', 'Training loss')}</span><strong>0.479 → 0.055</strong><small>{t('每次更新都下降', 'falls at every update')}</small></div>
+    <div><span>{t('训练目标误差（loss）', 'Training loss')}</span><strong>0.479 → 0.055</strong><small>{t('越低表示越贴合训练记录；不等于任务能力一定更强', 'lower means a better fit to training records, not necessarily stronger task capability')}</small></div>
     <div><span>WebShop Task Score</span><strong>13.33 → 25.66</strong><small>{t('总体更高，但中间两次明显回落', 'higher overall, with two clear regressions')}</small></div>
   </div>
 
@@ -42,7 +42,7 @@ const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace(
       <rect class="checkpoint-viz__panel" x="62" y="34" width="860" height="154" rx="10" />
       <rect class="checkpoint-viz__panel" x="62" y="222" width="860" height="188" rx="10" />
 
-      <text class="checkpoint-viz__panel-title" x="82" y="56">{t('TRAINING LOSS · 越低越好', 'TRAINING LOSS · LOWER IS BETTER')}</text>
+      <text class="checkpoint-viz__panel-title" x="82" y="56">{t('训练目标误差（LOSS）· 越低 = 越贴合训练记录', 'TRAINING LOSS · LOWER = BETTER FIT TO TRAINING RECORDS')}</text>
       <text class="checkpoint-viz__panel-title" x="82" y="246">WEBSHOP TASK SCORE ×100 · {t('越高越好', 'HIGHER IS BETTER')}</text>
 
       {[0.50,0.25,0.05].map((tick) => <g>
@@ -76,7 +76,7 @@ const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace(
         <line class="checkpoint-viz__tick" x1={x(i)} x2={x(i)} y1="410" y2="416" />
         <text class="checkpoint-viz__xlabel" x={x(i)} y="434" text-anchor="middle">{shortLabel(row.label)}</text>
       </g>)}
-      <text class="checkpoint-viz__axis-title" x="902" y="452" text-anchor="end">{t('Stage-1 checkpoint →', 'Stage-1 checkpoint →')}</text>
+      <text class="checkpoint-viz__axis-title" x="902" y="452" text-anchor="end">{t('Stage 1 每次参数更新后的保存点', 'Checkpoint after each Stage-1 parameter update')}</text>
     </svg>
   </div>
 
@@ -85,13 +85,13 @@ const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace(
       <span>01 → 02</span>
       <strong>loss 0.301 → 0.196 ↓</strong>
       <b>Task Score 18.41 → 13.67 ↓</b>
-      <p>{t('loss 变好，但真实 WebShop 表现反而掉了 4.74 分。', 'Loss improves while actual WebShop performance drops by 4.74 points.')}</p>
+      <p>{t('训练数据拟合继续变好，但固定 128 任务上的 WebShop 得分反而下降 4.74 分。', 'Fit to the training records improves while WebShop score on the fixed 128-task panel drops by 4.74 points.')}</p>
     </article>
     <article>
       <span>05 → 06</span>
       <strong>loss 0.070 → 0.066 ↓</strong>
       <b>Task Score 22.01 → 20.72 ↓</b>
-      <p>{t('第二次出现同样现象：优化目标继续下降，能力却短暂回退。', 'The same pattern appears again: the optimization target falls while capability briefly regresses.')}</p>
+      <p>{t('第二次出现同样现象：训练目标误差继续下降，固定任务评测能力却短暂回退。', 'The same pattern appears again: training loss keeps falling while capability on the fixed evaluation tasks briefly regresses.')}</p>
     </article>
     <article class="checkpoint-viz__reading-final">
       <span>{t('最终', 'FINAL')}</span>

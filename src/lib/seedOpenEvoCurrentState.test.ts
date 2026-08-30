@@ -34,17 +34,17 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
     expect(currentQ7).toContain('已验证的源码忠实 128 题');
     expect(currentQ7).toContain('在 GitHub 查看固定的 128 题');
     expect(currentQ7).toContain('configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json');
-    expect(currentQ7).toContain('运行时语义验证已经 128/128 PASS');
+    expect(currentQ7).toContain('128/128 表示全部 128 个任务槽位都通过运行时语义核对');
     expect(currentQ7).toContain('论文 89.7 / 78.1% 背后的最终 128 题');
   });
 
   it('advances the Hero and Next Steps to Track A closeout and Track B barrier state', () => {
-    expect(hero).toContain('source-faithful Track A 先通过 authoritative runtime semantic validation 128/128');
+    expect(hero).toContain('128/128 表示计划的 128 个任务槽位全部核对通过');
     expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).toContain('final_test_status=locked');
-    expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
-    expect(nextSteps).toContain('Gen28 状态断点已修复；Track B / WB1 等待 Gen29 放行');
-    expect(nextSteps).toContain('latest native state=state-v28');
+    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
+    expect(nextSteps).toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
+    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
   });
 

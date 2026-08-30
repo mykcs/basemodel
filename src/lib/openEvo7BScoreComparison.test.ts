@@ -39,7 +39,7 @@ describe('7B WebShop score comparison', () => {
   });
 
   it('keeps the paper score and local OpenEVO score in separate claim domains', () => {
-    expect(analysisPlan).toContain('不代表它们已经是同一批 128 题、同一 checkpoint 或可以直接相减的方法效果');
+    expect(analysisPlan).toContain('不代表它们已经是同一批 128 题、同一模型保存点（checkpoint）或可以直接相减的方法效果');
     expect(analysisPlan).toContain('does not mean they already share the same exact 128 tasks/checkpoint or can be directly subtracted as a method effect');
   });
 });

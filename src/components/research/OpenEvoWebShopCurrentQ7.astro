@@ -20,7 +20,7 @@ const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-repro
       </div>
       <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
       <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
-        '源码忠实的 Track A 已经不再是“待验证”。纠错后的 128 题先通过了真实 SEED 运行路径的 128/128 语义验证，随后 BASE 和冻结的 OpenEvo SD-LoRA 各完成 128 个有效 episode。BASE 的平均 Task Score×100 是 7.17、exact success 3.9%；SD-LoRA 是 8.74、3.9%。配对差 +1.57 的 95% CI 为 [-3.21, +6.31]，跨过 0，所以这次结果是一次有效测量，但仍不能证明 OpenEvo 稳定胜出。真正还缺的是 Track B 那种把方法本身在同一冻结世界和匹配预算下重新比较的证据。',
+        '源码忠实任务测量路线（Track A）已经完成，不再是“待验证”。纠错后的 128 个任务槽位先逐题通过真实 SEED 运行路径的语义核对；随后基础模型（BASE）和加载冻结 OpenEvo SD-LoRA 适配器后的模型，各完成同一 128 个任务回合，而且全部有效。基础模型的平均任务完成度（Task Score×100）为 7.17、完整成功率 3.9%；SD-LoRA 为 8.74、3.9%。同任务配对后的平均差是 +1.57，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这是一轮有效测量，却仍不能证明 OpenEvo 稳定胜出。真正还缺的是方法对方法的公平比较路线（Track B）：在同一冻结环境、同一任务、同一评测器和匹配预算下重新运行 SEED 与 OpenEvo。',
         'Source-faithful Track A is no longer awaiting validation. The corrected 128-task panel first passed 128/128 semantic validation against the real SEED runtime path, then BASE and the frozen OpenEvo SD-LoRA each completed 128 valid episodes. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; SD-LoRA reached 8.74 and 3.9%. The paired +1.57 difference has a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEvo win. The major remaining evidence is Track B: rerunning the methods themselves in one frozen world with matched budgets.',
       )}</p>
 
@@ -28,7 +28,7 @@ const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-repro
         <div class="manifest-copy">
           <strong>{t('已验证的源码忠实 128 题', 'Validated source-faithful 128-task panel')}</strong>
           <span>{t(
-            '这个 JSON 是 corrected first-validation panel 的不可变快照。运行时语义验证已经 128/128 PASS，执行分支与当前 corrected manifest 的 selected-panel digest 都是 4e7ace92…。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
+            '这个 JSON 是纠错后“公开代码第一次验证”任务面板的不可变快照。128/128 表示全部 128 个任务槽位都通过运行时语义核对；执行分支与当前纠错后任务清单的“所选面板内容摘要”（selected-panel digest）都是 4e7ace92…，说明两边引用的是同一份任务内容。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
             'This JSON is the immutable snapshot of the corrected first-validation panel. Runtime semantic validation is now 128/128 PASS, and the executed branch and corrected mainline manifest share selected-panel digest 4e7ace92…. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
           )}</span>
         </div>
@@ -38,7 +38,7 @@ const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-repro
       </div>
 
       <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        'authoritative runtime semantic validation 报告 total_slots=128、matches=128、mismatches=0。随后 source-faithful paired measurement 的 reconciliation 为 ok=true，BASE/SD-LoRA 都是 128/128 valid，parser-invalid=0；Task Score 配对 bootstrap 10,000 次得到 +1.57，95% CI [-3.21,+6.31]。256 个 raw episode、reconciliation、analysis、release receipt 与 GPU/W&B receipts 已 byte-for-byte 入库并通过 per-file SHA-256 验证，artifact_publication_status=PUBLISHED_AND_VERIFIED。仍需保留一个治理例外：科学 contract 与 readiness 在正式消费前已冻结/通过，但 GitHub branch authority 与 main router 的顺序没有先于第一条 formal episode，因此不能倒写成“当时 main 已授权启动”。',
+        '权威运行时语义核对的机器字段为 total_slots=128、matches=128、mismatches=0，分别表示“计划 128 个任务槽位、128 个全部匹配、0 个语义不匹配”。随后源码忠实配对测量的对账状态 ok=true，表示整套对账检查通过；基础模型和 SD-LoRA 都是 128/128 个任务回合有效，动作解析无效回合为 0。对任务完成度做 10,000 次配对自助重采样后，平均差为 +1.57，95% 置信区间 [-3.21,+6.31]。全部 256 个原始任务回合，以及对账、分析、发布、GPU 和 W&B 运行凭据，都已逐文件原样入库并通过 SHA-256 校验；机器状态 artifact_publication_status=PUBLISHED_AND_VERIFIED 表示“实验产物已发布且校验通过”。仍需保留一个治理例外：科学实验合同和运行准备状态在正式任务开始前已经冻结 / 通过，但 GitHub 分支授权和 main 路由记录的顺序没有先于第一个正式任务回合，所以不能倒写成“当时 main 已授权启动”。',
         'Authoritative runtime semantic validation reports total_slots=128, matches=128, mismatches=0. The later source-faithful paired measurement reconciled with ok=true, 128/128 valid episodes in both BASE and SD-LoRA, and parser-invalid=0; 10,000 paired bootstrap rounds yielded +1.57 Task Score×100 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts were transferred byte-for-byte and verified by per-file SHA-256, so artifact_publication_status is PUBLISHED_AND_VERIFIED. One governance exception remains: the scientific contract was frozen and readiness passed before formal consumption, but GitHub branch authority and the main router did not precede the first formal episode, so the run must not be rewritten as having been launch-authorized by main at that time.',
       )}</p>
 
@@ -48,32 +48,32 @@ const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-repro
           <table>
             <tbody>
               <tr>
-                <th scope="row">{t('语义门', 'Semantic gate')}</th>
-                <td><code>128 / 128 PASS · mismatches=0</code></td>
+                <th scope="row">{t('任务语义核对', 'Semantic gate')}</th>
+                <td>{t('128 / 128 个任务槽位全部通过 · 语义不匹配 0 个', '128 / 128 PASS · mismatches=0')}</td>
               </tr>
               <tr>
-                <th scope="row">{t('正式测量', 'Formal measurement')}</th>
-                <td><code>BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%</code></td>
+                <th scope="row">{t('正式测量（任务完成度 / 完整成功率）', 'Formal measurement')}</th>
+                <td>{t('基础模型 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%', 'BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%')}</td>
               </tr>
               <tr>
                 <th scope="row">{t('配对结论', 'Paired result')}</th>
-                <td><code>Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0</code></td>
+                <td>{t('同任务配对平均差 +1.57 · 95% 置信区间 [-3.21,+6.31] · 包含 0，因此未证明稳定差异', 'Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0')}</td>
               </tr>
               <tr>
                 <th scope="row">{t('证据发布', 'Evidence publication')}</th>
-                <td><code>PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0</code></td>
+                <td>{t('已发布且校验通过 · 256 个原始任务回合 · 文件不一致 0 / 缺失 0', 'PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0')}</td>
               </tr>
               <tr>
                 <th scope="row">{t('结论边界', 'Claim boundary')}</th>
-                <td>{t('没有证明稳定提升；不是论文最终 exact 128；没有复现 SEED 论文 checkpoint / 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</td>
+                <td>{t('没有证明稳定提升；不是论文当年最终使用的确切 128 题；也没有复现 SEED 论文模型保存点对应的 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</td>
               </tr>
             </tbody>
           </table>
           <ul class="evidence-links">
-            <li><a href={closeoutHref}>{t('Track A 机器可读 closeout', 'Track A machine-readable closeout')} ↗</a></li>
-            <li><a href={`${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`}>{t('128/128 runtime semantic validation receipt', '128/128 runtime semantic validation receipt')} ↗</a></li>
-            <li><a href={frozenPanelHref}>{t('纠错后的 128-task manifest', 'Corrected 128-task manifest')} ↗</a></li>
-            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json`}>{t('byte-for-byte evidence manifest', 'Byte-for-byte evidence manifest')} ↗</a></li>
+            <li><a href={closeoutHref}>{t('路线 A 机器可读收尾记录', 'Track A machine-readable closeout')} ↗</a></li>
+            <li><a href={`${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`}>{t('128/128 任务语义核对运行凭据', '128/128 runtime semantic validation receipt')} ↗</a></li>
+            <li><a href={frozenPanelHref}>{t('纠错后的 128 个任务清单', 'Corrected 128-task manifest')} ↗</a></li>
+            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json`}>{t('逐文件原样核对的证据清单', 'Byte-for-byte evidence manifest')} ↗</a></li>
             <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json`}>{t('执行授权顺序治理例外', 'Execution-authority ordering exception')} ↗</a></li>
           </ul>
         </div>
