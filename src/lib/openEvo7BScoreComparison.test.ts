@@ -15,13 +15,27 @@ describe('7B WebShop score comparison', () => {
     expect(analysisPlan).toContain('SEED Table 1 ↗');
   });
 
-  it('shows OpenEVO 7B without a teacher and reserves the MiniMax row without inventing a score', () => {
+  it('shows both completed OpenEVO 7B finals', () => {
     expect(analysisPlan).toContain('OpenEVO · 7B / self');
     expect(analysisPlan).toContain("t('无外部教师','No external teacher')");
     expect(analysisPlan).toContain('<strong>25.66</strong>');
     expect(analysisPlan).toContain('<strong>3.1%</strong><small>3/128 → 4/128</small>');
     expect(analysisPlan).toContain('OpenEVO · 7B + MiniMax');
-    expect(analysisPlan).toContain("t('等待 primary final','primary final pending')");
+    expect(analysisPlan).not.toContain("t('等待 primary final','primary final pending')");
+    expect(analysisPlan).toContain('<strong>16.94</strong>');
+    expect(analysisPlan).toContain('<strong>0.0%</strong>');
+  });
+
+  it('documents the historical MiniMax 16-of-1440 bootstrap branch as an incomplete design', () => {
+    expect(analysisPlan).toContain('data-testid="stage1-choice-map"');
+    expect(analysisPlan).toContain('MiniMax-M3');
+    expect(analysisPlan).toContain('1,440 / 1,440');
+    expect(analysisPlan).toContain('16 / 1,440');
+    expect(analysisPlan).toContain('task000:0 · task000:1');
+    expect(analysisPlan).toContain('same_16_records_reused_in_each_increment=true');
+    expect(analysisPlan).toContain('Stage-2 updates');
+    expect(analysisPlan).toContain('<strong>16.94</strong>');
+    expect(analysisPlan).toContain('不能据此判断 SD-LoRA 本身无效');
   });
 
   it('keeps the paper score and local OpenEVO score in separate claim domains', () => {
