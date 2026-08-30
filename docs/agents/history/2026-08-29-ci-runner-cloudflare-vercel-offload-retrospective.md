@@ -2,7 +2,7 @@
 
 Status: **historical case record**. Current behavior is owned by `docs/agents/current/deployment-policy.md`, `docs/agents/current/hosting-architecture.md`, `.github/workflows/self-hosted-ci.yml`, `scripts/ci-ui-gate.mjs`, `scripts/vercel-ignore-build.mjs`, `vercel.json`, and live provider state.
 
-This record captures the engineering and reasoning friction from the end-to-end CI redesign discussion and implementation on 2026-08-28/29. It is deliberately not a new architecture proposal. The accepted steady-state decision already exists in current policy; this file explains how that decision was reached, what went wrong during implementation, which intuitions were corrected by evidence, and what future Agents should avoid rediscovering.
+This record captures the engineering and reasoning friction from the end-to-end CI redesign discussion and implementation on 2026-08-28/29, plus the Doctor-led safety and disk-maintenance follow-up on 2026-08-30. It is deliberately not a new architecture proposal. The accepted steady-state decision already exists in current policy; this file explains how that decision was reached, what went wrong during implementation, which intuitions were corrected by evidence, and what future Agents should avoid rediscovering.
 
 ## Starting problem
 
@@ -337,6 +337,102 @@ The current decision remains simpler: protected `main` + required exact-head che
 
 A still stronger future model would be **build once -> test that immutable deployed candidate -> promote the same deployment**. That removes rebuild/source-correlation ambiguity, but it changes the present Vercel Git-integration release model and was intentionally deferred.
 
+## Friction 19: disk pressure needed a health baseline before cleanup
+
+The later maintenance conversation began with a broad request to optimize the Mac-hosted CI safely. The useful first action was not deletion; it was the installed `mac-orbstack-doctor.sh`. The baseline showed:
+
+```text
+AC power
+Data volume: 79 GiB available / 92% used
+OrbStack: running
+v2 runner container: running + healthy
+runtime boundary: 4 CPU / 4 GiB RAM + 4 GiB swap / no mounts / no ports
+memory peak: about 2.22 GiB / OOM kills: 0
+GitHub runner: online / busy=false
+LaunchAgent: loaded
+```
+
+This separated host storage pressure from runner failure. It also prevented cleanup while a GitHub job was active. The long `Runner.Listener --version` diagnostic block was not an error: the command still printed `2.337.0`, matched the latest release, and exited successfully. With the runner's current diagnostic environment, the version check can also append a small `_diag/Runner_*.log`; treat that as a bounded diagnostic side effect, not as proof that Doctor is byte-for-byte read-only. Verbose output must not be reclassified as failure without the exit status and final values.
+
+On APFS, `df /` can describe the sealed system volume and look deceptively comfortable while user data lives on `/System/Volumes/Data`. Capacity decisions must use the volume that backs the target path; the Doctor's home-volume reading correctly exposed the 92% condition.
+
+Reusable lesson: **establish power, correct-volume disk, runner busy state, isolation, memory/OOM, version, and lifecycle health before changing local CI storage.** A healthy listener plus low free space is a maintenance problem, not an excuse to rebuild the runner.
+
+## Friction 20: “reclaimable” did not mean “safe to delete”
+
+The first Docker inventory exposed roughly 10 GiB across **unused images, stopped containers, and BuildKit cache**. That Docker-reclaimable subtotal mixed very different ownership classes:
+
+- older, proven-disposable BuildKit cache;
+- unused but intentionally prepared OpenEvo/Node images;
+- stopped v2 backup containers;
+- the 1.94 GiB legacy runner kept for the bounded rollback window.
+
+The active runner's warm Playwright, tool, npm, and workspace data appeared in the broader inventory, but was **not** part of Docker's reclaimable subtotal. It was retained as live writable state with known next-run value.
+
+Likewise, large host directories were not uniformly disposable. `~/.npm` was about 20 GiB but was also a Git repository with a roughly 989 MiB `.git`; deleting the directory would have destroyed source history. `~/.cache` contained a Git repository, worktrees, model data, and credentials-adjacent Hugging Face state. OrbStack's own group-container directory was about 18 GiB, but its internal files are implementation state and must be managed through Docker/OrbStack commands rather than manual filesystem deletion. Xcode DeviceSupport and simulators, Playwright browser versions, registered worktrees, and the runner's active writable layer all had real reuse or recovery value.
+
+The safe classification was therefore:
+
+```text
+tool-owned, reproducible cache
+-> eligible for the tool's cleanup command
+
+recent build cache / warm CI cache
+-> retain unless disk pressure requires the rebuild cost
+
+image / stopped container / worktree / provider state
+-> preserve until ownership and rollback value are proven absent
+
+opaque application internals or mixed-purpose directories
+-> never bulk-delete
+```
+
+Reusable lesson: `docker system df` and `du` find size, not ownership. **Classify rebuild cost, rollback value, active-job state, and secret/source boundaries before turning a byte count into a deletion target.**
+
+## Friction 21: supposedly diagnostic commands can mutate cache state
+
+The initial whole-home `du -xhd 1` scan was too broad and exceeded the first 30-second observation window. Targeted scans of known roots produced actionable results faster: `~/Library/Caches` 27 GiB, `~/Library/Developer` 27 GiB, `~/.npm` 20 GiB, and `~/.cache` 17 GiB, followed by one-level breakdowns inside each root.
+
+Because the v2 runner has zero host mounts, those host npm/pip/uv/pnpm caches are **not runner-owned cache and are not visible inside CI**. Their cleanup was separately authorized machine-wide developer-cache maintenance to recover space on the shared APFS Data volume. It did not make CI faster and can make the next host-side development command redownload dependencies. Authorization to maintain only the runner would not have authorized this host-cache scope.
+
+A more subtle mistake was treating `npm cache verify` as purely read-only. It verified content **and garbage-collected about 7.9 GB** of unreferenced entries. That behavior was safe here, but it means the command belongs to the cleanup phase, not a strict no-write inventory phase. Future maintenance should use `npm cache verify` only after cache cleanup has been authorized, and should record its reclaimed bytes separately from later `npm cache clean --force` output.
+
+The following commands are an **authorized 2026-08-30 execution record, not a standing copy/paste runbook**. That run first proved the GitHub runner idle, checked that no host `npm`, `npx`, `pip`, `uv`, `pnpm`, Docker build, or Buildx process was active, resolved the actual cache roots, and kept containers/images/worktrees out of scope:
+
+```bash
+npm cache clean --force
+python3 -m pip cache purge
+uv cache clean
+pnpm store prune
+docker builder prune -af --filter 'until=24h'
+```
+
+The OrbStack BuildKit builder is a host-wide shared cache, not a repository-private directory. In this one run, the 24-hour filter retained the freshly built runner layers while removing about 2.09 GB of older data; that timing is historical evidence, **not** a universal safety guarantee. A future run must repeat Doctor/process/cache-root/ownership checks and confirm that its current task authorizes each mutating scope before using any cleanup command. No container, image, Playwright installation, Xcode data, worktree, OrbStack internal file, user document, or repository was removed. The remaining `~/.npm/_npx` cache and Docker image/container candidates were deliberately retained because clearing them would require a more destructive ownership decision than the available evidence justified.
+
+Reusable lesson: prefer official cache commands over recursive filesystem deletion, check for active package-manager processes first, and know whether a command named `verify`, `doctor`, or `prune` is observational or mutating before placing it in a read-only phase.
+
+## Friction 22: cleanup completion required measured deltas and a second Doctor pass
+
+Summing every tool's reported deletion would have overstated confidence because cache sizes overlap in time, npm verification had already garbage-collected data, and APFS accounting is not a simple sum of directory reports. The authoritative outcome was the before/after filesystem measurement:
+
+```text
+before: 79 GiB available / 92% used
+after:  102 GiB available / 89% used
+measured gain: about 23 GiB
+```
+
+The second Doctor pass then re-established the operational contract: AC power, OrbStack running, v2 container healthy, unchanged isolation/limits, memory peak about 2.22 GiB, zero OOM kills, GitHub `online` and `busy=false`, runner `2.337.0`, and LaunchAgent loaded. Cache cleanup was therefore accepted only after proving it had not changed the runner identity, container boundary, or lifecycle state.
+
+This was a successful **bounded cache pass**, not proof that disk pressure was fully resolved. At 89% used, only about 11% remained free, still below the LaunchAgent reconcile policy's 15% free-space warning threshold. The correct stopping decision was to preserve the remaining images, rollback containers, warm browser/runtime caches, Xcode data, and registered worktrees because their ownership/recovery value was not disproven. Continued warning is expected until a later, separately evidenced cleanup or normal data movement raises free space above the threshold.
+
+Reusable lesson: report **measured free-space delta**, not a theoretical sum, and close maintenance with the same health probe used at the start. Disk space recovered without post-cleanup CI health evidence is an incomplete result.
+
+The maintenance priority is deliberately ordered:
+
+- **P0 — protect the machine and active work:** confirm AC power, the correct data volume, `busy=false`, healthy isolation, and no active host package-manager or Docker/Buildx build process; do not touch containers, images, worktrees, mixed-purpose directories, or application internals without separate ownership evidence.
+- **P1 — reclaim only explicitly scoped, reproducible cache:** distinguish host developer caches from the zero-mount runner; use npm/pip/uv/pnpm commands only when machine-wide cache cleanup is authorized, and use an age-filtered BuildKit prune only after resolving the shared builder; accept the next-run download/rebuild cost explicitly.
+- **P2 — prove the outcome:** measure the filesystem delta, rerun the Doctor, and require the same runner identity, online/idle state, isolation, zero OOM kills, version, and LaunchAgent health.
+
 ## Reasoning correction: not every plausible duplicate was an actual current duplicate
 
 During architecture discussion it was easy to say “Preview runs full browser acceptance and Production runs it again.” Repository/live evidence showed that was not always the current behavior. For example, the observed PR #316 Preview skipped the browser gates while Production later ran them.
@@ -490,6 +586,9 @@ Treat these PR numbers and timings as historical evidence, not current state. Fu
 10. Prove cost optimizations in the real provider: inspect ignored/canceled Vercel records, not only local classifier tests.
 11. Preserve source/test/release identity. Use exact-head checks and, when useful, compare tree identity; do not invent a proof service unless the simpler model stops being sufficient.
 12. Re-measure after changes. The migration run, cold-cache run, or runner bootstrap is not necessarily the steady-state cost.
+13. For Mac runner disk pressure, run the installed Doctor before and after cleanup; use the data volume that backs the home directory rather than assuming `df /` represents user storage.
+14. Inventory targeted cache roots, classify ownership, and use package-manager/Docker cleanup commands only within the separately authorized scope. Never bulk-delete `~/.npm`, `~/.cache`, OrbStack internals, runner writable state, or registered worktrees from size alone.
+15. Preserve active and rollback containers/images unless their recovery value has expired; a proven-idle age-filtered BuildKit prune narrows scope but does not make host-wide pruning intrinsically safe.
 
 ## When to reopen the architecture
 
