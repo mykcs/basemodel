@@ -85,7 +85,7 @@ const experimentTerms = [
     meaning:t('这里数的不是轨迹条数，而是“不同的任务”。同一个 256 次任务尝试的数据块里，一个任务至少要独立完整成功 2 次，才算 1 个达标任务身份；同一任务成功很多次仍只算 1 个身份。', 'This counts distinct tasks, not trajectories. Within one 256-rollout block, a task must achieve at least two independent exact successes to count as one qualifying identity; many successes on the same task still count as one identity.'),
   },
   {
-    term:t('Stage 2 参数更新门槛（gate）', 'Stage-2 parameter-update gate'),
+    term:t('本次历史 Stage 2 的参数更新门槛（gate）', 'Historical Stage-2 parameter-update gate'),
     meaning:t('本次历史运行每收集 256 次任务尝试就检查一次：只有这一块里至少有 8 个达标任务身份才允许更新；不足 8 个时模型权重保持不变，且程序不跨块累计。这是当时预先采用的方法控制规则。它可以解释本次运行的 0 次更新，但不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件。', 'This historical run checked after every 256 rollouts: updates were allowed only when that block contained at least eight qualifying task identities, and the program did not pool successes across blocks. This was the preregistered method-control rule for that run. It explains the observed zero updates but must not be generalized into a necessary reset rule for long-term OpenEVO Stage 2.'),
   },
   {
@@ -129,7 +129,7 @@ const individualMetrics = [
   {
     metric:t('Stage-2 最终参数更新数', 'Final Stage-2 optimizer updates'),
     value:mode === '7b-self' ? '0' : PENDING,
-    note:mode === '7b-self' ? t('80 个数据块均完成；全部低于“8 个达标任务身份”门槛，因此 Stage 2 没有修改参数', 'All 80 blocks completed; every block stayed below the eight-identity threshold, so Stage 2 did not change model parameters') : t('实验未封口前不写死', 'Do not freeze before closeout'),
+    note:mode === '7b-self' ? t('历史运行的 80 个数据块均完成；按当时逐块 8 任务规则均未放行，因此参数没有修改', 'All 80 historical blocks completed; none was admitted under that run's per-block eight-task rule, so parameters did not change') : t('实验未封口前不写死', 'Do not freeze before closeout'),
   },
   {
     metric:t('每次 Stage-1 参数更新后的能力', 'Capability after each Stage-1 parameter update'),
@@ -147,7 +147,7 @@ const matrixRows = [
   { label:t('Stage 1 启动训练', 'Stage-1 bootstrap'), a:t('0 次参数更新；未创建学习适配器（启动门槛未达到）', '0 parameter updates; no learned adapter was created because the bootstrap threshold was not reached'), b:t('8 次参数更新', '8 parameter updates'), c:t('8 次参数更新', '8 parameter updates'), d:t('8 次参数更新', '8 parameter updates') },
   { label:t('最终 Task Score', 'Final Task Score'), a:PENDING, b:'25.66', c:PENDING, d:PENDING },
   { label:t('完整成功（Exact Success）', 'Exact Success (full task completion)'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
-  { label:t('Stage 2 实际参数更新次数', 'Actual Stage-2 parameter updates'), a:PENDING, b:t('0（80 个数据块均未达到更新门槛）', '0 (none of the 80 blocks reached the update threshold)'), c:PENDING, d:PENDING },
+  { label:t('Stage 2 实际参数更新次数', 'Actual Stage-2 parameter updates'), a:PENDING, b:t('0（历史逐块 method-control 未放行任何数据块）', '0 (the historical per-block method-control admitted none of the 80 blocks)'), c:PENDING, d:PENDING },
   { label:t('各训练保存点的评测能力', 'Evaluation capability at each training checkpoint'), a:PENDING, b:t('已完成；中间有回落；最后一个保存点 25.66 最高', 'Complete; performance regresses between some updates; final checkpoint is best at 25.66'), c:PENDING, d:PENDING },
 ];
 
@@ -193,7 +193,7 @@ const contrasts = [
 
   <section class="exp-scaffold__section exp-scaffold__counting" aria-labelledby="counting-title">
     <p class="exp-scaffold__section-kicker">{t('实验计数规则', 'EXPERIMENT COUNTING RULES')}</p>
-    <h2 id="counting-title">{t('Stage 2 参数更新门槛', 'Stage-2 parameter-update rule')}</h2>
+    <h2 id="counting-title">{t('本次历史 Stage 2 的 7/8 method-control', 'Historical Stage-2 7/8 method-control')}</h2>
     <p class="exp-scaffold__section-intro">{t('这里最容易误读的地方是："跑了多少次任务"、"收集到多少条成功轨迹"和"模型真的更新了多少次参数"是三件不同的事。下面这些定义就是本组结果页后续数字的统一口径。', 'The key distinction is that task attempts, successful trajectories, and actual model-parameter updates are three different quantities. These definitions are the common counting contract for the result pages in this series.')}</p>
     <dl class="exp-scaffold__term-list">
       {experimentTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}
@@ -201,7 +201,7 @@ const contrasts = [
 
     {mode === '7b-self' && (
       <figure class="exp-scaffold__gate-figure" aria-labelledby="gate-flow-title">
-        <figcaption id="gate-flow-title">{t('7B/self 的 Stage 2：为什么 20,480 次尝试最后仍是 0 次参数更新', '7B/self Stage 2: why 20,480 attempts still led to zero parameter updates')}</figcaption>
+        <figcaption id="gate-flow-title">{t('7B/self 历史运行：为什么当时的 20,480 次尝试是 0 次参数更新', 'Historical 7B/self run: why its 20,480 attempts led to zero parameter updates')}</figcaption>
         <ol class="exp-scaffold__gate-flow">
           {sevenBStage2Flow.map((step) => <li>
             <span class="exp-scaffold__gate-number">{step.n}</span>
@@ -209,7 +209,7 @@ const contrasts = [
             <p>{step.text}</p>
           </li>)}
         </ol>
-        <p class="exp-scaffold__gate-conclusion">{t('所以这里的 "7" 和 "8" 都不是模型分数：它们数的是同一个 256 次尝试数据块里，有多少个不同任务能够各自重复完整成功。7 表示最好的一块仍差 1 个任务身份才允许训练；"0 次更新"则表示 Stage 2 没有改变模型参数，而不是 Stage 2 没有运行。', 'The “7” and “8” are not model scores. They count how many distinct tasks, within one 256-attempt block, each achieved repeated exact success. Seven means the best block was one qualifying task short of the update threshold; “zero updates” means Stage 2 did not change model parameters, not that Stage 2 failed to run.')}</p>
+        <p class="exp-scaffold__gate-conclusion">{t('所以这里的 "7" 和 "8" 都不是模型分数：它们数的是这次历史 method-control 在同一个 256 次尝试数据块里看到的重复成功任务数。7 < 8 准确解释了当时程序为什么没有更新；它不能证明长期 Stage 2 应该逐块清零，也不能把 797 条合格成功轨迹说成没有可学习数据。', 'The “7” and “8” are not model scores. They are counts used by this historical method-control inside one 256-attempt block. 7 < 8 accurately explains why that program did not update; it does not prove that long-term Stage 2 should reset every block or that 797 qualifying trajectories were not learnable data.')}</p>
       </figure>
     )}
   </section>
