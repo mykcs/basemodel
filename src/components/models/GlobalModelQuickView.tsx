@@ -95,10 +95,10 @@ export function GlobalModelQuickView({ labels, locale }: Props) {
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!hydrated || !dialog) return;
     if (selected && !dialog.open) dialog.showModal();
     if (!selected && dialog.open) dialog.close();
-  }, [selected]);
+  }, [hydrated, selected]);
 
   if (!hydrated) return null;
 

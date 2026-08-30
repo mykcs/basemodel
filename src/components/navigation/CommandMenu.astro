@@ -1,0 +1,53 @@
+---
+import { baseUrl, type Locale } from '../../i18n';
+import './CommandMenu.css';
+interface CommandMenuLabels {
+  search: string; searchTitle: string; closeSearch: string; searchPlaceholder: string;
+  noSearchResults: string; commandHint: string; searchModel: string; searchPaper: string;
+  searchFamily: string; searchGuide: string;
+}
+interface Props { locale: Locale; labels: CommandMenuLabels }
+const { locale, labels } = Astro.props;
+---
+<button type="button" class="command-search-trigger" aria-label={labels.search} data-command-trigger>{labels.search}<kbd>⌘ K</kbd></button>
+<dialog class="command-menu" aria-labelledby="command-menu-title" data-command-dialog data-locale={locale} data-index={`${baseUrl()}search-index.json`}>
+  <div class="command-menu-inner"><div class="command-menu-heading"><h2 id="command-menu-title">{labels.searchTitle}</h2><button type="button" class="icon-button" aria-label={labels.closeSearch} data-command-close>×</button></div>
+  <input type="search" placeholder={labels.searchPlaceholder} aria-label={labels.searchPlaceholder} aria-controls="command-results" data-command-input />
+  <div id="command-results" class="command-results" role="listbox" aria-label={labels.searchTitle} data-command-results hidden></div>
+  <p class="command-hint muted">{labels.commandHint}</p></div>
+</dialog>
+<script is:inline define:vars={{ labels, localePathBase: locale === 'en' ? '/en' : '' }}>
+  const trigger = document.querySelector('[data-command-trigger]');
+  const dialog = document.querySelector('[data-command-dialog]');
+  const input = dialog?.querySelector('[data-command-input]');
+  const results = dialog?.querySelector('[data-command-results]');
+  let items;
+  let activeIndex = 0;
+  let rendered = [];
+  const href = (item) => item.path ? `${localePathBase}${item.path}` : `${localePathBase}/${item.type === 'paper' ? 'papers' : item.type === 'model' ? 'models' : 'families'}/${item.id ? `${item.id}/` : ''}`;
+  const load = () => items ??= fetch(dialog.dataset.index).then((r) => r.ok ? r.json() : []).catch(() => []);
+  const setActive = (next) => {
+    const options = [...results.querySelectorAll('[role="option"]')];
+    activeIndex = options.length ? (next + options.length) % options.length : 0;
+    options.forEach((option, index) => { option.classList.toggle('is-active', index === activeIndex); option.setAttribute('aria-selected', String(index === activeIndex)); });
+    const active = options[activeIndex];
+    if (active) input.setAttribute('aria-activedescendant', active.id); else input.removeAttribute('aria-activedescendant');
+  };
+  const open = () => { if (!dialog.open) dialog.showModal(); input.value = ''; results.hidden = true; rendered = []; setActive(0); load(); setTimeout(() => input.focus()); };
+  trigger?.addEventListener('click', open);
+  dialog?.querySelector('[data-command-close]')?.addEventListener('click', () => dialog.close());
+  document.addEventListener('keydown', (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); open(); } });
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') { event.preventDefault(); setActive(activeIndex + 1); }
+    if (event.key === 'ArrowUp') { event.preventDefault(); setActive(activeIndex - 1); }
+    if (event.key === 'Enter' && rendered[activeIndex]) { event.preventDefault(); location.href = href(rendered[activeIndex]); }
+    if (event.key === 'Escape') dialog.close();
+  });
+  input?.addEventListener('input', async () => {
+    const needle = input.value.trim().toLowerCase(); results.replaceChildren(); results.hidden = !needle; if (!needle) return;
+    rendered = (await load()).filter((item) => [item.title,item.subtitle,...(item.aliases||[]),...(item.category||[])].some((v) => v?.toLowerCase().includes(needle))).slice(0,12);
+    for (const item of rendered) { const a=document.createElement('a'); a.id=`search-result-${item.type}-${item.id}`; a.href=href(item); a.setAttribute('role','option'); a.addEventListener('mouseenter',()=>setActive(rendered.indexOf(item))); a.addEventListener('click',()=>dialog.close()); const strong=document.createElement('strong'); strong.textContent=item.title; const small=document.createElement('small'); small.textContent=({model:labels.searchModel,paper:labels.searchPaper,family:labels.searchFamily,guide:labels.searchGuide}[item.type]||'')+(item.subtitle?` · ${item.subtitle}`:''); a.append(strong,small); results.append(a); }
+    if (!rendered.length) { const p=document.createElement('p'); p.className='muted'; p.textContent=labels.noSearchResults; results.append(p); }
+    setActive(0);
+  });
+</script>

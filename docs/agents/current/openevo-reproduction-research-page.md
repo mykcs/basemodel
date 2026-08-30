@@ -3,8 +3,9 @@
 Status: current product/content ownership
 Routes: `/research/seed-openevo/study/run/`, `/en/research/seed-openevo/study/run/`
 Primary page shell: `src/components/OpenEvoSeedBenchmarksGuide.astro`
-Execution manual body: `src/components/OpenEvoReproductionResearch.astro`
-Entry: `src/components/GuideDecisionChapters.astro` → paper-comparability chapter → **SEED 相关基准 · OpenEvo**.
+Archived implementation note: the former `OpenEvoReproductionResearch.astro` and
+`GuideDecisionChapters.astro` owners were production-dead and retired in Phase 3.
+The current execution path is owned by the live Guide and SEED × OpenEvo study routes.
 General reproduction-page design contract: `docs/agents/current/reproduction-guide-design-principles.md`.
 
 ## Naming / information-architecture correction

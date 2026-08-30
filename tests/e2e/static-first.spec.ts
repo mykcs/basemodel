@@ -5,21 +5,26 @@ test.describe('static-first core research pages', () => {
 
   test('model catalog remains readable without JavaScript', async ({ page }) => {
     await page.goto('/models/');
-    await expect(page.locator('.explorer-shell')).toBeVisible();
-    await expect(page.locator('.model-grid')).toBeVisible();
-    expect(await page.locator('.model-grid a[href*="/models/"]').count()).toBeGreaterThan(0);
+    await expect(page.getByRole('main')).toBeVisible();
+    const catalog = page.locator('[data-model-static-fallback]');
+    await expect(catalog.getByRole('heading', { level: 2 })).toBeVisible();
+    const modelLinks = catalog.getByRole('link');
+    expect(await modelLinks.count()).toBeGreaterThan(0);
+    await expect(modelLinks.first()).toHaveAttribute('href', /\/models\/[^/]+\//);
   });
 
   test('paper catalog and matrix remain readable without JavaScript', async ({ page }) => {
     await page.goto('/papers/');
-    await expect(page.locator('.paper-explorer')).toBeVisible();
-    expect(await page.locator('.paper-case-card').count()).toBeGreaterThan(0);
-    await expect(page.locator('.matrix-table')).toBeVisible();
+    await expect(page.getByRole('main')).toBeVisible();
+    expect(await page.getByRole('article').count()).toBeGreaterThan(0);
+    const disclosure = page.getByRole('button', { name: /矩阵|matrix/i }).first();
+    if (await disclosure.count()) await disclosure.click();
+    await expect(page.getByRole('table').first()).toBeVisible();
   });
 
   test('comparison picker remains readable without JavaScript', async ({ page }) => {
     await page.goto('/compare/');
-    await expect(page.locator('.comparison-picker')).toBeVisible();
-    expect(await page.locator('.picker-item').count()).toBeGreaterThan(0);
+    await expect(page.getByRole('main')).toBeVisible();
+    expect(await page.getByRole('checkbox').count()).toBeGreaterThan(0);
   });
 });

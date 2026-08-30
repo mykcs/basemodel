@@ -1,6 +1,6 @@
 # Rendering and performance policy
 
-Last reviewed: 2026-08-21
+Last reviewed: 2026-08-30
 
 This file is the authoritative rendering/performance policy for `mykcs/basemodel`. It complements `deployment-policy.md` and the current Vercel Preview + Vercel Production architecture.
 
@@ -35,13 +35,14 @@ Current examples:
 
 ### B. User-local state adjuncts
 
-Examples include `ResearchContextBar`, `CompareTray` and `ModelTaskFit`. Their content can depend entirely on browser-local Research Task, candidate or compare state that the static build cannot know.
+Examples include the native Astro `ResearchContextBar` / `CompareTray` adjuncts and React-owned `ModelTaskFit`. Their content can depend entirely on browser-local Research Task, candidate or compare state that the static build cannot know.
 
 Rules:
 
-- It is valid for these components to render nothing until hydration when there is no meaningful deterministic public fallback.
+- Native global adjuncts must emit meaningful hidden/static markup and progressively reveal normalized browser-local state; they must not require a React island merely to read persistence.
+- It remains valid for a framework component to render nothing until hydration when there is no meaningful deterministic public fallback.
 - Do not fabricate server state merely to avoid a `null` render.
-- Keep these islands out of the critical hydration path when practical. `CompareTray`, for example, uses `client:idle` because it is global but not required for first paint.
+- Keep adjunct JavaScript small and out of the critical path. The native bars use narrow labels, exact existing localStorage keys, safe normalization, and same-document custom events; they do not serialize the catalog or hydrate React globally.
 - Do not serialize a large catalog into every page merely to support an adjunct that is usually hidden. Prefer existing static data routes or another on-demand boundary when the adjunct only needs data after browser-local state becomes meaningful.
 
 This distinction is important: **“remove every hydration guard” is not a valid optimization strategy.**
@@ -95,7 +96,7 @@ The Landscape implementation is a useful reference: the interactive shell is vis
 
 ## Regression expectations
 
-Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. Browser-only behavior remains Playwright/on-demand on the repository-scoped self-hosted runner, so it can remain a quality gate without adding browser execution to Vercel Production.
+Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. `npm test` reports the explicit `test:structural` and `test:behavior` categories; `src/lib/testTaxonomy.test.ts` fails if any `*.test.ts/tsx` file is omitted. Browser-only behavior remains Playwright/on-demand on the repository-scoped self-hosted runner and is never classified as Vitest.
 
 The regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and performance contracts.
 

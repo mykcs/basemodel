@@ -71,9 +71,6 @@ assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.include
 const intentIndex = home.indexOf('intent-grid');
 assert('HARDEN-HOME-003', intentIndex >= 0 && !home.includes('<SeedUseCaseStrip'), 'home keeps the experiment entry choice without repeating the global SEED use-case navigation strip');
 
-const guide = read('src/components/GuideDecisionChapters.astro');
-assert('HARDEN-GUIDE-001', ['identity', 'access', 'training', 'reproduction'].every((id) => guide.includes(`id: '${id}'`)), 'Guide concepts are organized into four decision chapters');
-
 const paperIndex = read('src/pages/_bodies/papers-index.astro');
 assert('HARDEN-PAPERS-INDEX', paperIndex.includes('paper-matrix-advanced') && paperIndex.includes('<details'), 'paper-model relation matrix is an advanced secondary view');
 
@@ -91,10 +88,11 @@ assert('HARDEN-LANDSCAPE-001', landscape.includes("useState<'learning' | 'full'>
 
 const tokens = read('src/styles/tokens.css');
 const hardening = read('src/styles/final-hardening.css');
+const workspaceStyles = read('src/styles/workspace.css');
 const layout = read('src/layouts/AppLayout.astro');
 const appStyles = read('src/styles/app.css');
 assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #8f3d2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens preserve the current Research Editorial × Experimental Workbench identity with dedicated light/dark foreground pairs');
-assert('HARDEN-VISUAL-001', hardening.includes('.reason-line') && hardening.includes('.workspace-grid') && hardening.includes('.intent-row') && hardening.includes('.guide-chapter') && hardening.includes('.memo-readable'), 'research-critical typography, workbench density, and editorial hierarchy are hardened');
+assert('HARDEN-VISUAL-001', workspaceStyles.includes('.reason-line') && workspaceStyles.includes('.workspace-grid') && workspaceStyles.includes('.memo-readable') && hardening.includes('.intent-row') && hardening.includes('.paper-case-summary'), 'research-critical typography, workbench density, and editorial hierarchy are hardened in their live semantic owners');
 assert(
   'HARDEN-VISUAL-002',
   layout.includes("import '../styles/app.css';")

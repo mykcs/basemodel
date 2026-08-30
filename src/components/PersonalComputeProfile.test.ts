@@ -1,20 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const component = readFileSync(new URL('./PersonalComputeProfile.astro', import.meta.url), 'utf8');
 const zhPage = readFileSync(new URL('../pages/lab.astro', import.meta.url), 'utf8');
 const enPage = readFileSync(new URL('../pages/en/lab.astro', import.meta.url), 'utf8');
 const policy = readFileSync(new URL('../../docs/agents/current/personal-compute-profile-consumer.md', import.meta.url), 'utf8');
 const agents = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
-const publicSurface = [component, zhPage, enPage, policy, agents].join('\n');
+const publicSurface = [zhPage, enPage, policy, agents].join('\n');
 
 describe('public lab topology privacy boundary', () => {
-  it('keeps the generic public topology bilingual and available as a reusable component', () => {
-    expect(component).toContain('data-public-lab-topology');
-    expect(component).toContain('Public boundary');
-    expect(component).toContain('公开边界');
-  });
-
   it('keeps the current lab routes server-first and does not mount the personal profile', () => {
     expect(zhPage).toContain('实验设备与服务器');
     expect(enPage).toContain('Experiment devices and servers');

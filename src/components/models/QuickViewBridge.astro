@@ -10,13 +10,19 @@
       const trigger = target.closest('[data-model-quick-view]');
       if (!trigger) return;
 
-      const island = trigger.closest('astro-island');
-      if (island && !island.hasAttribute('ssr')) return;
-
+      // Always bridge the click, even during the tiny interval where Astro has
+      // removed the SSR marker but React has not attached the island handler yet.
+      // If React is already live, both paths set the same id and remain idempotent.
       const id = trigger.getAttribute('data-model-quick-view');
       if (!id) return;
 
       root.dataset.modelQuickViewPending = id;
+
+      const dialog = document.getElementById('global-model-quick-view');
+      if (dialog instanceof HTMLDialogElement && !dialog.open && dialog.isConnected) {
+        dialog.showModal();
+      }
+
       document.dispatchEvent(new CustomEvent('atlas:quick-view', { detail: { id } }));
     }, true);
   })();

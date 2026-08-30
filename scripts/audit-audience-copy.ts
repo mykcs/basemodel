@@ -148,7 +148,6 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const exactBanned = [
-    ['src/components/GuideDecisionChapters.astro', '不要背术语'],
     ['src/pages/guide.astro', '明天就按这三步做'],
     ['src/pages/_bodies/home-v2.astro', '学习、执行、比较，不再是三套互不相干的网站'],
     ['src/pages/_bodies/home-v2.astro', 'note: event.note ?? event.eventType'],

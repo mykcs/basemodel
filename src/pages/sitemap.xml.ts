@@ -1,10 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import {
-  bilingualStaticPaths,
-  toEnglishPath,
-  zhOnlyStaticPaths,
-} from '../lib/sitemapRoutes';
+import { sitemapStaticPaths } from '../lib/sitemapRoutes';
 
 // Static bilingual sitemap. Preview surfaces stay non-indexable; Vercel Production uses Astro.site.
 export const GET: APIRoute = async ({ site }) => {
@@ -32,18 +28,16 @@ export const GET: APIRoute = async ({ site }) => {
   const models = await getCollection('models');
   const papers = await getCollection('papers');
 
+  const staticUrls = sitemapStaticPaths().map((path) => `${prefix}${path}`);
   const zhUrls = [
-    ...bilingualStaticPaths.map((path) => `${prefix}${path}`),
-    ...zhOnlyStaticPaths.map((path) => `${prefix}${path}`),
     ...models.map((entry) => `${prefix}/models/${entry.data.id}/`),
     ...papers.map((entry) => `${prefix}/papers/${entry.data.id}/`),
   ];
   const enUrls = [
-    ...bilingualStaticPaths.map((path) => `${prefix}${toEnglishPath(path)}`),
     ...models.map((entry) => `${prefix}/en/models/${entry.data.id}/`),
     ...papers.map((entry) => `${prefix}/en/papers/${entry.data.id}/`),
   ];
-  const urls = [...zhUrls, ...enUrls];
+  const urls = [...staticUrls, ...zhUrls, ...enUrls];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
     .map((url) => `  <url><loc>${url}</loc></url>`)

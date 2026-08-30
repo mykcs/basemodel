@@ -55,8 +55,6 @@ const scenarioCards = [
   <nav class="home-maintenance-shortcuts" aria-label={locale === 'zh' ? '站点维护入口' : 'Site maintenance'}>
     <span>{locale === 'zh' ? '维护' : 'Maintenance'}</span>
     <a href="https://github.com/mykcs/basemodel" target="_blank" rel="noreferrer">{locale === 'zh' ? 'GitHub 仓库' : 'GitHub repository'} ↗</a>
-    <span aria-hidden="true">·</span>
-    <a href="https://vercel.com/wangrui92-team/basemodel-preview/settings" target="_blank" rel="noreferrer">{locale === 'zh' ? 'Vercel 设置' : 'Vercel settings'} ↗</a>
   </nav>
 </div>
 
@@ -72,19 +70,18 @@ const scenarioCards = [
   }
 
   .home-maintenance-shortcuts span {
-    opacity: 0.42;
+    color: var(--muted);
   }
 
   .home-maintenance-shortcuts a {
-    color: inherit;
-    opacity: 0.5;
+    color: var(--accent-deep);
     padding: 0.35rem 0.45rem;
     text-underline-offset: 0.2em;
-    transition: opacity 140ms ease;
+    transition: color 140ms ease;
   }
 
   .home-maintenance-shortcuts a:hover,
   .home-maintenance-shortcuts a:focus-visible {
-    opacity: 1;
+    color: var(--ink);
   }
 </style>

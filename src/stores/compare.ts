@@ -3,6 +3,11 @@ import { localePath, type Locale } from '../i18n';
 
 export const MAX_COMPARE = 5;
 const STORAGE_KEY = 'atlas-compare';
+export const COMPARE_CHANGE_EVENT = 'atlas:compare-change';
+
+function notifyCompareChange() {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(COMPARE_CHANGE_EVENT));
+}
 
 export function normalizeCompareIds(value: unknown): string[] {
   return Array.isArray(value)
@@ -25,6 +30,7 @@ export const compareIds = persistentAtom<string[]>(STORAGE_KEY, [], {
 
 export function replaceCompare(value: unknown) {
   compareIds.set(normalizeCompareIds(value));
+  notifyCompareChange();
 }
 
 export function addToCompare(id: string) {
@@ -33,6 +39,7 @@ export function addToCompare(id: string) {
 
 export function removeFromCompare(id: string) {
   compareIds.set(compareIds.get().filter((x) => x !== id));
+  notifyCompareChange();
 }
 
 export function toggleCompare(id: string) {
@@ -45,6 +52,17 @@ export function toggleCompare(id: string) {
 
 export function clearCompare() {
   compareIds.set([]);
+  notifyCompareChange();
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener(COMPARE_CHANGE_EVENT, () => {
+    try {
+      compareIds.set(normalizeCompareIds(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')));
+    } catch {
+      compareIds.set([]);
+    }
+  });
 }
 
 export function compareUrl(locale: Locale): string {

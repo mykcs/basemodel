@@ -12,7 +12,7 @@ const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro')
 const header = read('src/components/Header.astro');
 const methodology = read('src/pages/methodology.astro');
 const paperDetail = read('src/pages/_bodies/paper-detail.astro');
-const workspace = read('src/components/workspace/ResearchWorkspace.tsx');
+const workspacePage = read('src/pages/workspace/index.astro');
 const audit = read('scripts/audit-audience-copy.ts');
 
 describe('human-readable product language contract', () => {
@@ -50,8 +50,8 @@ describe('human-readable product language contract', () => {
     for (const title of ['方法摘要', '复现方式', '模型角色']) expect(paperDetail).toContain(title);
     expect(methodology).not.toContain('这些数字从哪里来，缺数据时怎么看');
     expect(paperDetail).not.toContain('这些模型在论文里分别负责什么');
-    expect(workspace).toContain("'实验工作台'");
-    expect(workspace).toContain('填写模型、GPU、网络、权重和训练条件');
+    expect(workspacePage).toContain('<h1>实验工作台</h1>');
+    expect(workspacePage).toContain('模型、GPU、网络、权重和训练条件');
   });
 
   it('keeps the durable standard and scanner aligned with the subject-heading rule', () => {

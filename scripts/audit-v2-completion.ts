@@ -55,8 +55,8 @@ pass(
     && !['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/benchmarks/', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/'].some((path) => header.includes(`path: '${path}'`)),
   'global header exposes top-level resources without duplicating research subpages',
 );
-pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.tsx')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.tsx').includes('ArrowDown'), 'search index and keyboard navigation exist');
-pass('V2-COMPARE-001', read('src/components/workspace/CompareTray.tsx').includes('compareUrl(locale)') && read('src/stores/compare.ts').includes("models="), 'compare tray uses canonical URL');
+pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.astro')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.astro').includes('ArrowDown'), 'search index and keyboard navigation exist');
+pass('V2-COMPARE-001', read('src/components/workspace/CompareTray.astro').includes('data-compare-base') && read('src/components/workspace/CompareTray.astro').includes('?models='), 'compare tray uses canonical URL');
 pass('V2-DATA-002', read('src/pages/guide.astro').includes("getCollection('guides')") && read('src/pages/en/guide.astro').includes("getCollection('guides')"), 'guide page reads the guides collection');
 pass('V2-DATA-003', read('src/lib/schemas.ts').includes('not_verified') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'semantic unknown states are explicit');
 pass('V2-DATA-004', read('src/lib/research/evaluateModel.ts').includes('evidenceQuality') && read('src/lib/research/evaluateModel.ts').includes('license'), 'evidence quality and license constraints are in the engine');

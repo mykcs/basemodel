@@ -65,6 +65,8 @@ describe('optimization-phase regressions', () => {
     expect(explorer).toContain('useState<FilterState>(emptyFilters)');
     expect(page).not.toContain('<PaperModelMatrix client:load');
     expect(page).toContain('<PaperModelMatrix papers={matrixPapers}');
+    expect(page).toContain('<noscript>');
+    expect(page).toContain('paper-matrix-noscript');
   });
 
   it('renders the comparison picker as static HTML before client state restoration', () => {
@@ -77,41 +79,70 @@ describe('optimization-phase regressions', () => {
 
   it('renders the model catalog deterministically before restoring browser state', () => {
     const source = readSource('../components/ModelExplorer.tsx');
+    const page = readSource('../pages/_bodies/models-index.astro');
     expect(source).not.toContain('if (!hydrated) return null');
     expect(source).not.toContain("new URLSearchParams(typeof window === 'undefined'");
     expect(source).toContain('useState<ModelFilters>({})');
     expect(source).toContain('if (!urlStateReady) return;');
     expect(source).toContain('const activeCandidates = hydrated ? selectedCandidates : []');
     expect(source).toContain('const hasActiveTask = hydrated && hasMeaningfulResearchTask(task)');
+    expect(source).toContain('model-data/catalog.json');
+    expect(page).toContain('data-model-static-fallback');
+    expect(page).toContain('<ModelExplorer client:load locale={locale} />');
+    expect(page).not.toContain('models={models} papers={papers}');
+  });
+
+  it('keeps workspace fallback meaningful and fetches the catalog outside island props', () => {
+    const workspace = readSource('../components/workspace/ResearchWorkspace.tsx');
+    const page = readSource('../pages/workspace/index.astro');
+    expect(workspace).toContain('model-data/catalog.json');
+    expect(workspace).toContain('initResearchTaskFromUrl()');
+    expect(page).toContain('data-workspace-static-fallback');
+    expect(page).toContain('<ResearchWorkspace client:load locale="zh" />');
+    expect(workspace).not.toContain("setAttribute('hidden'");
+    expect(workspace).not.toContain('<h1>');
+    expect(page).not.toContain('models={models}');
+    expect(page).not.toContain('m={m}');
   });
 
   it('defers the global compare tray and keeps the full catalog out of every page payload', () => {
     const layout = readSource('../layouts/AppLayout.astro');
-    const tray = readSource('../components/workspace/CompareTray.tsx');
+    const tray = readSource('../components/workspace/CompareTray.astro');
 
-    expect(layout).toContain('<CompareTray client:idle labels={compareTrayLabels} locale={locale} />');
+    expect(layout).toContain('<CompareTray labels={compareTrayLabels} locale={locale} />');
     expect(layout).not.toContain('<CompareTray client:load');
     expect(layout).not.toContain("getCollection('models')");
     expect(layout).not.toContain('modelNames={modelNames}');
     expect(tray).toContain('/model-data/${encodeURIComponent(id)}.json');
-    expect(tray).toContain('ids.length === 0');
+    expect(tray).toContain('tray.hidden=!ids.length');
     expect(tray).not.toContain('modelNames: Record<string, string>;');
   });
 
   it('serializes narrow label slices into global layout islands instead of repeating the full locale tree', () => {
     const layout = readSource('../layouts/AppLayout.astro');
-    const context = readSource('../components/workspace/ResearchContextBar.tsx');
+    const context = readSource('../components/workspace/ResearchContextBar.astro');
     const quickView = readSource('../components/models/GlobalModelQuickView.tsx');
-    const tray = readSource('../components/workspace/CompareTray.tsx');
+    const tray = readSource('../components/workspace/CompareTray.astro');
 
     expect(layout).not.toContain('client:load m={m}');
     expect(layout).not.toContain('client:idle m={m}');
-    expect(layout).toContain('labels={researchContextLabels}');
+    expect(layout).toContain('<ResearchContextBar labels={researchContextLabels}');
     expect(layout).toContain('labels={quickViewLabels}');
     expect(layout).toContain('labels={compareTrayLabels}');
     expect(context).not.toContain("import type { Messages }");
     expect(quickView).not.toContain("import type { Messages }");
     expect(tray).not.toContain("import type { Messages }");
+  });
+
+  it('keeps homepage utilities framework-free while preserving global task context', () => {
+    const header = readSource('../components/Header.astro');
+    const layout = readSource('../layouts/AppLayout.astro');
+    expect(header).toContain("import CommandMenu from './navigation/CommandMenu.astro'");
+    expect(header).not.toContain('<CommandMenu client:');
+    expect(layout).toContain('<ResearchContextBar labels={researchContextLabels} locale={locale} />');
+    expect(layout).not.toContain('<ResearchContextBar client:');
+    expect(layout).toContain('import CompareTray from');
+    expect(layout).not.toContain('<CompareTray client:');
   });
 
   it('mounts the global model quick view only on routes that can trigger it', () => {
@@ -120,6 +151,16 @@ describe('optimization-phase regressions', () => {
     expect(layout).toContain("const globalQuickViewMounted = exactRoute('/families') || /^\\/papers\\/[^/]+\\/?$/.test(localeNeutralPath);");
     expect(layout).toContain('{globalQuickViewMounted && <GlobalModelQuickView client:idle');
     expect(layout).not.toContain('{!localQuickViewMounted && <GlobalModelQuickView');
+  });
+
+  it('keeps the quick-view capture bridge live across the Astro hydration handoff', () => {
+    const bridge = readSource('../components/models/QuickViewBridge.astro');
+    expect(bridge).toContain("root.dataset.modelQuickViewPending = id");
+    expect(bridge).toContain("dialog.showModal()");
+    expect(bridge).toContain("document.dispatchEvent(new CustomEvent('atlas:quick-view'");
+    expect(bridge).not.toContain("!island.hasAttribute('ssr')");
+    const quickView = readSource('../components/models/GlobalModelQuickView.tsx');
+    expect(quickView).toContain('}, [hydrated, selected]);');
   });
 
   it('keeps paper-detail hydration scoped to the paper instead of the full model catalog', () => {

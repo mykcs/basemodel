@@ -40,7 +40,7 @@ test('workspace scores candidates into three buckets and renders reasons, risks,
   await expect(page.locator('.substitute-lab')).toBeVisible();
   await page.locator('#substitute-base').selectOption({ index: 1 });
   await expect(page.locator('.substitute-card').first()).toBeVisible();
-  await expect(page.locator('.substitute-card').first().locator('thead')).toContainText('影响');
+  await expect(page.locator('.substitute-card').first().getByRole('columnheader', { name: /变化|Change/i })).toBeVisible();
 
   // 离开工作台后，模型浏览器仍读取同一研究任务，并显示任务匹配状态。
   await page.goto('models/');

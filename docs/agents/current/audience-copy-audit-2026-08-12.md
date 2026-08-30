@@ -32,11 +32,7 @@ Strict mode is intentionally narrow. It blocks the incorrect `复现 C` / `Repro
 |---|---|---|---|---|
 | `src/components/OpenEvoSeedBenchmarksGuide.astro` | OpenEvo reproduction guide | zh/en | FIXED | General online-workstation → internal-GPU topology precedes Lab Mac → RTX6; four failure layers and full P0 evidence sentences added. |
 | `src/pages/guide.astro` + `src/pages/en/guide.astro` | `/guide/`, `/en/guide/` | zh/en | FIXED | Both locales lead with the transferable online-workstation → internal-GPU-server topology, label 4×3090 as this project's example, and require profiling on the reader's actual hardware; the Chinese dedicated old-Mac case remains behind `<details>`. |
-| `src/components/ResearchMainline.astro` | shared route context | zh/en | FIXED | Page role appears first; 4×24GB is a project example; positive return-to-mainline guidance. |
-| `src/components/SeedUseCaseStrip.astro` | home/models/families/compare/papers/workspace/data/methodology/landscape | zh/en | FIXED | Explains why the strip exists and labels 4×3090 as this project’s example. |
-| `src/components/GuideDecisionChapters.astro` | Guide decision chapters | zh/en | FIXED | Four decisions stated positively; OpenEvo entry leads with execution and keeps diagnostics secondary. |
-| `src/components/GuideContent.astro` | structured Guide walkthrough | zh/en | FIXED | Positive decision headings, traceable unknown semantics, and current Vercel architecture wording. |
-| `src/components/AgentPrimer.astro` + `AgentToSeedBridge.astro` | Agent primer / Guide bridge | zh/en | FIXED | Explicit ML-literate reader bridge; runtime/training split; paper → checkpoint → workspace next action. |
+| `src/components/AgentToSeedBridge.astro` | live Guide bridge | zh/en | FIXED | Runtime/training split and paper → checkpoint → workspace next action. Former dead Guide owners are archived in history. |
 | `src/components/SeedStudentReproductionGuide.astro` | SEED execution manual | zh/en | FIXED | Starts from a reusable online-workstation + internal-GPU pattern, then names the 4×3090 project instance. |
 | `src/components/SeedComputeTimeBudget.astro` | Guide compute budget | zh/en | FIXED | Replaced colloquial headings while preserving planning-vs-measurement and monthly-billing warnings. |
 | `src/components/ModelExplorer.tsx` + explorer i18n | `/models/` decisions, filters, empty states | zh/en | FIXED | API/hosted vs open-weight grouping now explains service/weight consequences; existing empty/filter states remain actionable. |

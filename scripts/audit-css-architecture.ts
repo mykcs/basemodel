@@ -40,18 +40,15 @@ const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
   './global.css',
-  './workspace.css',
   './v2-closeout.css',
   './visual-upgrade.css',
   './design-refinement.css',
   './final-hardening.css',
   './actionable-content.css',
-  './knowledge-architecture.css',
   './mobile-composition.css',
   './visual-closeout.css',
   './components/global-shell.css',
   './components/header.css',
-  './components/webshop-training-note.css',
 ];
 const expectedFoundationImports = [
   './tokens.css',
