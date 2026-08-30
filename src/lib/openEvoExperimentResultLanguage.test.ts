@@ -21,7 +21,7 @@ const resultFamilyCopy = `${scaffold}\n${analysis}\n${legacyResultNote}\n${moved
 describe('OpenEvo capability-exploration result language', () => {
   it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {
     expect(scaffold).toContain('这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹');
-    expect(scaffold).toContain('7 表示最好的一块仍差 1 个任务身份才允许训练');
+    expect(scaffold).toContain('7 < 8 准确解释了当时程序为什么没有更新');
     expect(scaffold).toContain('这是当时预先采用的方法控制规则');
     expect(scaffold).toContain('不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件');
     expect(scaffold).toContain('不代表模型没有产生可学习数据');
@@ -38,7 +38,7 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(scaffold).toContain('一次任务尝试（rollout）');
     expect(scaffold).toContain('可用于训练的完整成功轨迹（qualified positive）');
     expect(scaffold).toContain('达标任务身份（qualifying identity）');
-    expect(scaffold).toContain('Stage 2 参数更新门槛（gate）');
+    expect(scaffold).toContain('本次历史 Stage 2 的参数更新门槛（gate）');
     expect(scaffold).toContain('参数更新与学习适配器（adapter）');
     expect(scaffold).toContain('启动训练（bootstrap）');
   });
