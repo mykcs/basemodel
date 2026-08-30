@@ -37,6 +37,20 @@ const fourRows = [
   { id:'B8', q:t('一次四组 run 能不能证明一般规律？','Can one four-arm run establish a general rule?'), contrast:t('task-level 不确定性 ≠ training-seed 不确定性','task-level uncertainty ≠ training-seed uncertainty'), method:t('128 个 paired task 可以给这一次 run 的 task-level bootstrap CI；若要声称 treatment / scale 效应稳健，再做独立 training seeds。','The 128 paired tasks can yield task-level bootstrap CIs for this run; robust treatment/scale claims require independent training seeds.'), gpu:t('首轮不需要；多 seed 才需要','No initially; GPUs for multi-seed'), time:t('首轮 20–30 分钟；多 seed 属于多日预算','20–30 min initially; multi-seed is a multi-day budget') },
 ];
 
+const seed7BWebShopRows = [
+  { method: 'Vanilla', score: '5.9', success: '1.6' },
+  { method: 'Skill-Prompt*', score: '1.7', success: '0.8' },
+  { method: 'OPSD', score: '4.5', success: '2.3' },
+  { method: 'GRPO', score: '80.9', success: '72.6' },
+  { method: 'Skill-GRPO', score: '80.4', success: '71.9' },
+  { method: 'Skill-GRPO*', score: '87.0', success: '81.2', successRank: 'second' },
+  { method: 'GRPO+OPSD', score: '86.8', success: '76.5' },
+  { method: 'Skill-SD', score: '86.1', success: '76.5' },
+  { method: 'RLSD', score: '87.4', success: '77.3' },
+  { method: 'SDAR', score: '89.4', success: '82.8', scoreRank: 'second', successRank: 'best' },
+  { method: 'SEED (Ours)', score: '89.7', success: '78.1', scoreRank: 'best' },
+];
+
 const isSeven = mode === '7b-self';
 const rows = isSeven ? sevenBRows : fourRows;
 ---
@@ -56,9 +70,47 @@ const rows = isSeven ? sevenBRows : fourRows;
         <div class="section-kicker">{t('服务器事实快照', 'SERVER FACT SNAPSHOT')}</div>
         <h2 id="snapshot-title">{t('先把“跑了很多 rollout”和“真的更新了参数”分开','Separate rollout volume from actual parameter updates')}</h2>
         <p>{t('北京时间 2026-08-29 19:35 对正式 7B/self 目录的只读审计显示：最终评测加载的 adapter 就是 Stage-1 increment-07；Stage 2 虽然完整跑完 20,480 条 rollout，但没有产生新的 adapter。','A read-only audit of the formal 7B/self directory at 2026-08-29 19:35 UTC+8 shows that final evaluation loaded the Stage-1 increment-07 adapter; Stage 2 completed all 20,480 rollouts but produced no new adapter.')}</p>
+        <div class="score-comparison" data-testid="webshop-7b-score-comparison">
+          <div class="score-comparison__heading">
+            <div>
+              <span>{t('论文 Table 1 · WebShop', 'PAPER TABLE 1 · WEBSHOP')}</span>
+              <h3>Qwen2.5-7B-Instruct</h3>
+            </div>
+            <p>{t('把截图里的 7B WebShop 两列直接写成 HTML，并在表尾加入我们的 OpenEVO 结果；MiniMax 版本先保留空行，等 final seal 后再填。','The 7B WebShop columns from the paper are transcribed into HTML, followed by our OpenEVO result. The MiniMax row is intentionally left pending until its final seal closes.')}</p>
+          </div>
+          <div class="score-comparison__wrap">
+            <table class="score-comparison__table">
+              <caption>{t('SEED Table 1 的 Qwen2.5-7B-Instruct / WebShop 子表，加上 OpenEVO 7B 两个实验位。','The Qwen2.5-7B-Instruct / WebShop slice of SEED Table 1, plus two OpenEVO 7B experiment slots.')}</caption>
+              <thead><tr><th>{t('方法','Method')}</th><th>{t('教师 / analyzer','Teacher / analyzer')}</th><th>WebShop Score</th><th>Succ.</th></tr></thead>
+              <tbody>
+                <tr class="score-comparison__group"><th colspan="4">{t('SEED 论文报告 · Qwen2.5-7B-Instruct','SEED paper-reported · Qwen2.5-7B-Instruct')}</th></tr>
+                {seed7BWebShopRows.map((row) => (
+                  <tr class="score-comparison__paper-row">
+                    <th scope="row">{row.method}</th>
+                    <td class="score-comparison__muted">—</td>
+                    <td class:list={[row.scoreRank === 'best' && 'is-best', row.scoreRank === 'second' && 'is-second']}>{row.score}</td>
+                    <td class:list={[row.successRank === 'best' && 'is-best', row.successRank === 'second' && 'is-second']}>{row.success}</td>
+                  </tr>
+                ))}
+                <tr class="score-comparison__group score-comparison__group--openevo"><th colspan="4">OpenEVO · Qwen2.5-7B-Instruct</th></tr>
+                <tr class="score-comparison__ours">
+                  <th scope="row">OpenEVO · 7B / self</th>
+                  <td>{t('无外部教师','No external teacher')}</td>
+                  <td><strong>25.66</strong><small>{t('同一 local panel：base 13.33 → final 25.66','same local panel: base 13.33 → final 25.66')}</small></td>
+                  <td><strong>3.1%</strong><small>3/128 → 4/128</small></td>
+                </tr>
+                <tr class="score-comparison__pending">
+                  <th scope="row">OpenEVO · 7B + MiniMax</th>
+                  <td>MiniMax <small>{t('episode 后 hindsight analyzer','post-episode hindsight analyzer')}</small></td>
+                  <td>—<small>{t('等待 primary final','primary final pending')}</small></td>
+                  <td>—<small>{t('等待 primary final','primary final pending')}</small></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="score-comparison__note"><strong>{t('读表边界：','Reading boundary: ')}</strong>{t('论文 89.7 / 78.1 与 OpenEVO 25.66 / 3.1% 放在同一张表里是为了让读者看懂数字来自哪里，不代表它们已经是同一批 128 题、同一 checkpoint 或可以直接相减的方法效果。星号（*）沿用论文含义：with skills validation。','Paper 89.7 / 78.1 and OpenEVO 25.66 / 3.1% are shown together so readers can see where each number comes from; this does not mean they already share the same exact 128 tasks/checkpoint or can be directly subtracted as a method effect. The asterisk (*) keeps the paper definition: validation with skills.')} <a href="https://arxiv.org/html/2607.14777v1" target="_blank" rel="noreferrer">SEED Table 1 ↗</a></p>
+        </div>
         <dl class="fact-line">
-          <div><dt>{t('最终 Task Score ×100','Final Task Score ×100')}</dt><dd>13.33 → <strong>25.66</strong></dd></div>
-          <div><dt>{t('完整成功','Exact success')}</dt><dd>3/128 → <strong>4/128</strong></dd></div>
           <div><dt>Stage 1</dt><dd><strong>8</strong> {t('次参数更新','parameter updates')}</dd></div>
           <div><dt>Stage 2</dt><dd><strong>0</strong> {t('次参数更新','parameter updates')}</dd></div>
           <div><dt>{t('Stage-2 clean positive','Stage-2 clean positives')}</dt><dd><strong>797</strong> / 20,480</dd></div>
@@ -133,11 +185,11 @@ const rows = isSeven ? sevenBRows : fourRows;
 <style>
 .analysis-plan{width:min(1160px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
 .analysis-hero{max-width:900px;padding:clamp(1.5rem,4vw,3rem) 0 1.6rem}.eyebrow,.section-kicker{margin:0;color:var(--color-accent);font:800 .68rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.analysis-hero h1{margin:.55rem 0 .9rem;font-size:clamp(2rem,5vw,4rem);line-height:1.02;letter-spacing:-.045em}.lede{max-width:76ch;margin:0;font-size:1rem;line-height:1.72}.hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.1rem}.hero-actions a,.plan-footer a{color:var(--color-accent);font-weight:760;text-decoration:none}.hero-actions a:hover,.plan-footer a:hover{text-decoration:underline}
-.snapshot,.per-arm-section,.plan-section,.decision-section{padding:2rem 0;border-top:1px solid var(--color-border)}.snapshot h2,.per-arm-section h2,.plan-section h2,.decision-section h2{max-width:860px;margin:.35rem 0 .7rem;font-size:clamp(1.45rem,3vw,2.35rem);letter-spacing:-.03em}.snapshot>p{max-width:78ch;margin:0 0 1rem;color:var(--color-text-muted);line-height:1.7}.fact-line{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.2rem 0 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.fact-line>div{padding:1rem .8rem}.fact-line>div+div{border-left:1px solid var(--color-border)}.fact-line dt{color:var(--color-text-muted);font-size:.72rem}.fact-line dd{margin:.3rem 0 0;font-size:.95rem}.fact-line strong{font-size:1.18rem}
+.snapshot,.per-arm-section,.plan-section,.decision-section{padding:2rem 0;border-top:1px solid var(--color-border)}.snapshot h2,.per-arm-section h2,.plan-section h2,.decision-section h2{max-width:860px;margin:.35rem 0 .7rem;font-size:clamp(1.45rem,3vw,2.35rem);letter-spacing:-.03em}.snapshot>p{max-width:78ch;margin:0 0 1rem;color:var(--color-text-muted);line-height:1.7}.score-comparison{margin:1.4rem 0 1.8rem;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.score-comparison__heading{display:grid;grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr);gap:1.5rem;padding:1rem .2rem}.score-comparison__heading span{color:var(--color-accent);font:800 .66rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.score-comparison__heading h3{margin:.25rem 0 0;font-size:1.12rem}.score-comparison__heading p{margin:0;color:var(--color-text-muted);font-size:.82rem;line-height:1.6}.score-comparison__wrap{max-width:100%;overflow-x:auto}.score-comparison__table{width:100%;min-width:680px;border-collapse:collapse;font-variant-numeric:tabular-nums}.score-comparison__table caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.score-comparison__table th,.score-comparison__table td{padding:.62rem .72rem;border-top:1px solid var(--color-border);text-align:left;vertical-align:middle}.score-comparison__table thead th{color:var(--color-text-muted);font-size:.68rem;letter-spacing:.04em}.score-comparison__table tbody th{font-size:.79rem}.score-comparison__table tbody td{font-size:.78rem}.score-comparison__table td:nth-child(3),.score-comparison__table td:nth-child(4),.score-comparison__table thead th:nth-child(3),.score-comparison__table thead th:nth-child(4){text-align:right}.score-comparison__group th{padding:.48rem .72rem;background:color-mix(in srgb,var(--color-surface) 88%,var(--color-border));color:var(--color-text-muted);font:800 .65rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.score-comparison__group--openevo th{color:var(--color-accent)}.score-comparison__muted{color:var(--color-text-muted)}.score-comparison__table .is-best{font-weight:900;background:color-mix(in srgb,var(--color-accent) 12%,transparent)}.score-comparison__table .is-second{font-weight:800;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.18em}.score-comparison__ours{background:color-mix(in srgb,var(--color-accent) 7%,transparent)}.score-comparison__ours th{color:var(--color-accent)}.score-comparison__table small{display:block;margin-top:.16rem;color:var(--color-text-muted);font-size:.64rem;font-weight:500;line-height:1.35}.score-comparison__pending{color:var(--color-text-muted)}.score-comparison__note{margin:.85rem .2rem 1rem!important;max-width:90ch!important;font-size:.74rem!important;line-height:1.6!important}.score-comparison__note a{color:var(--color-accent);font-weight:750;text-decoration:none}.score-comparison__note a:hover{text-decoration:underline}.fact-line{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:1.2rem 0 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.fact-line>div{padding:1rem .8rem}.fact-line>div+div{border-left:1px solid var(--color-border)}.fact-line dt{color:var(--color-text-muted);font-size:.72rem}.fact-line dd{margin:.3rem 0 0;font-size:.95rem}.fact-line strong{font-size:1.18rem}
 .reasoning-line{margin:0 0 2rem;padding:1.2rem 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.reasoning-line figcaption{margin-bottom:.8rem;font-weight:800}.reasoning-line ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;margin:0;padding:0}.reasoning-line li{position:relative;padding:.9rem 1rem .9rem 2.5rem;min-height:86px;border-left:1px solid var(--color-border);font-size:.8rem;line-height:1.5}.reasoning-line li span{position:absolute;left:.7rem;top:.95rem;color:var(--color-accent);font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace}
 .per-arm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:1rem;border-top:1px solid var(--color-border)}.per-arm-grid article{display:flex;flex-direction:column;gap:.65rem;padding:1.1rem;border-bottom:1px solid var(--color-border)}.per-arm-grid article:nth-child(even){border-left:1px solid var(--color-border)}.per-arm-grid header h3{margin:0;font-size:1rem}.per-arm-grid header span{display:block;margin-top:.25rem;color:var(--color-text-muted);font:700 .68rem/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}.per-arm-grid p{margin:0;font-size:.8rem;line-height:1.55}.per-arm-grid .arm-work{padding-top:.6rem;border-top:1px dashed var(--color-border);color:var(--color-text-muted)}.per-arm-grid footer{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:auto;color:var(--color-text-muted);font-size:.68rem}
 .matrix-wrap,.plan-table-wrap{max-width:100%;overflow-x:auto}.factor-matrix,.plan-table{width:100%;border-collapse:collapse;text-align:left}.factor-matrix th,.factor-matrix td,.plan-table th,.plan-table td{padding:.85rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}.factor-matrix thead th,.plan-table thead th{color:var(--color-text-muted);font-size:.7rem;letter-spacing:.04em}.factor-matrix td{min-width:220px}.factor-matrix small{display:block;margin-top:.3rem;color:var(--color-text-muted);font-size:.68rem}.plan-table{min-width:880px}.plan-table tbody td{font-size:.76rem;line-height:1.5}.plan-table tbody td:first-child{width:56px;color:var(--color-accent)}.plan-table tbody td:nth-child(2){min-width:240px}.plan-table td b,.plan-table td span{display:block}.plan-table td span{margin-top:.35rem;color:var(--color-text-muted)}.plan-table td .output{color:var(--color-text);font-weight:650}.plan-table code{white-space:normal;color:var(--color-text);font-size:.72rem}
 .decision-list{max-width:900px;margin:1rem 0 0}.decision-list>div{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(0,1.5fr);gap:1rem;padding:.9rem 0;border-top:1px solid var(--color-border)}.decision-list dt{font-weight:800}.decision-list dd{margin:0;color:var(--color-text-muted);line-height:1.6}.provenance{max-width:900px;margin-top:1rem;padding:1rem 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.provenance summary{cursor:pointer;font-weight:750}.provenance p{max-width:78ch;margin:.8rem 0 0;color:var(--color-text-muted);font-size:.8rem;line-height:1.65}.plan-footer{display:flex;gap:1rem;flex-wrap:wrap;padding:1.2rem 0}.plan-footer a[aria-current='page']{color:var(--color-text);text-decoration:underline;text-underline-offset:.25em}
-@media(max-width:760px){.analysis-plan{width:min(100% - 1rem,1160px)}.analysis-hero h1{font-size:clamp(2rem,12vw,3rem)}.fact-line{grid-template-columns:1fr}.fact-line>div+div{border-left:0;border-top:1px solid var(--color-border)}.reasoning-line ol{grid-template-columns:1fr}.reasoning-line li{border-left:0;border-top:1px solid var(--color-border)}.decision-list>div{grid-template-columns:1fr;gap:.35rem}.per-arm-grid{grid-template-columns:1fr}.per-arm-grid article:nth-child(even){border-left:0}}
+@media(max-width:760px){.analysis-plan{width:min(100% - 1rem,1160px)}.analysis-hero h1{font-size:clamp(2rem,12vw,3rem)}.score-comparison__heading{grid-template-columns:1fr;gap:.5rem}.fact-line{grid-template-columns:1fr}.fact-line>div+div{border-left:0;border-top:1px solid var(--color-border)}.reasoning-line ol{grid-template-columns:1fr}.reasoning-line li{border-left:0;border-top:1px solid var(--color-border)}.decision-list>div{grid-template-columns:1fr;gap:.35rem}.per-arm-grid{grid-template-columns:1fr}.per-arm-grid article:nth-child(even){border-left:0}}
 @media print{.hero-actions,.plan-footer{display:none}.analysis-plan{width:100%;margin:0}.plan-table-wrap,.matrix-wrap{overflow:visible}.plan-table{min-width:0;font-size:8pt}}
 </style>
