@@ -78,8 +78,12 @@ describe('OpenEvo capability-exploration result language', () => {
   it('spells out incomplete and zero-update states instead of making zero mean failure', () => {
     expect(scaffold).toContain('尚无最终结果（对应实验仍未封口）');
     expect(analysis).toContain('未达到启动门槛，因此 0 次参数更新');
-    expect(analysis).toContain('最终 128 任务评测尚未完成');
-    expect(analysis).toContain('Stage 2 虽然做了大量任务尝试，却没有发生参数训练');
+    expect(analysis).toContain('最终 128 任务评测没有形成已封存结果');
+    expect(analysis).toContain('不再继续该旧方法的最终评测');
+    expect(analysis).toContain('旧 Stage 2：80/80 个 256-rollout 数据块全部完成');
+    expect(analysis).toContain('59/80 个完整 block + 第 60 个 block 的 171 条 partial rollout 后由用户明确停止并 supersede');
+    expect(analysis).toContain('历史 128 任务最终 Task Score ×100 = 16.94');
+    expect(analysis).toContain('Stage-2 参数更新仍为 0');
   });
 
   it('explains legacy result counts and negative states instead of exposing log shorthand', () => {
