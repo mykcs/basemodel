@@ -210,19 +210,20 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 
 ## TRIGGER: user-visible copy, beginner explanation, research narrative, or broad UI rewrite
 
-**Cues:** heading/introduction/callout/status copy, “make this easier to understand”, technical explainer, research result story, onboarding, bilingual rewrite, process/evidence visual.
+**Cues:** heading/introduction/callout/status copy, `说人话`, `不要 AI 味`, `自然一点`, “make this easier to understand”, technical explainer, research result story, onboarding, bilingual rewrite, process/evidence visual.
 
 **Automatic response:**
 
 1. Load the writing stack from `docs/agents/README.md` by responsibility, not by filename count.
-2. For any public technical copy read `audience-centered-technical-copy.md`.
-3. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
-4. For Chinese technical explainers add `layered-technical-explainer-copy.md`.
-5. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners.
-6. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
-7. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
-8. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
-9. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
+2. Read `website-design-spec.md` for the canonical website voice, information order, and current “说人话 / 去 AI 味” preference. If the owner explicitly asks for human/natural/non-AI wording, also read `website-copy-cases.md` and match the closest historical pattern instead of applying a word blacklist.
+3. For any public technical copy read `audience-centered-technical-copy.md`.
+4. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
+5. For Chinese technical explainers add `layered-technical-explainer-copy.md`.
+6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners.
+7. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
+8. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
+9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
+10. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
 
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
 

@@ -1,0 +1,603 @@
+# Basemodel 「说人话 / 去 AI 味」文案案例库
+
+状态：**CURRENT COMPANION**
+主规范：[`website-design-spec.md`](website-design-spec.md)
+历史审计基线：`origin/main@e11d443`，2026-08-30。
+
+## 1. 这份案例库怎么来的
+
+本轮从建站首个 commit `dd9b04b`（2026-08-05）开始，检查到 `e11d443`：
+
+- 主线 commits：901；
+- 已合并 PR：274；
+- GitHub 可见 PR 全量元数据：349（编号已到 #350，历史编号并不连续）；
+- 以 copy / reader / editorial / human / wording / i18n / title / label / explain 等关键词扩展出的历史 commit 候选：116；另外经 PR body / diff 捕获 3 个主题未命中该过滤器、但实际改变公开表达边界的混合变更（#342、#349、#350），一并进入历史台账；
+- 另外检查了没有这些关键词、但 PR body 或 diff 明确包含读者文案重构的混合型变更。
+
+案例分两种证据：
+
+- **PREFERENCE**：明确由用户反馈、全站 copy audit 或已固化的写作 contract 推动，可用于解释当前偏好。
+- **EVOLUTION**：历史中间稿、功能 PR 中的文案变化或测试保护，用来理解偏好怎样演进；不能单独覆盖更新的 PREFERENCE 案例。
+
+不是每个新增字符串都能证明偏好。功能新增时自然产生的文案不因为“后来被 merge”就自动成为写作范式。
+
+案例中的“前 / 后”会为可读性省略无关 JSX 或上下文，但不改变原句的语义；commit / PR 链接是精确来源。
+
+## 2. 快速索引
+
+| 类别 | 最稳定的偏好 | 代表案例 |
+|---|---|---|
+| 重复标签 | 一个意思不要用 kicker + H2 + body 再说三遍 | CASE-001–006 |
+| 抽象包装 | 先命名具体对象/操作，不让“研究主线/证据链”承担全部意义 | CASE-007–012 |
+| 编辑口吻 | 不讲网页怎样组织、文章怎样阅读、内容怎样迁移 | CASE-013–024 |
+| 技术解释 | 零上下文先给对象和机制，再给术语与内部代号 | CASE-025–035 |
+| 责任与结论 | 结论、责任层和结果先出现，证据随后展开 | CASE-029–038 |
+| 科学精度 | 自然语言不能升级 claim、补 unknown 或丢失否定 | CASE-031–040 |
+| 标题与解释腔 | 主题名替代“怎么读/常见误解/能做什么”式主持人口吻 | CASE-041–047 |
+| 结果页深度与交互语义 | 科学结果留在主线；命令/配置后置；控件不能诱导被警告的动作 | CASE-048–049 |
+| 公开示例隐私 | 用通用路径表达复现要求，不把真实账号/主机身份写进页面 | CASE-050 |
+
+## 3. 重复标签与重复动作
+
+<a id="case-001-删除重复-evidence-标签"></a>
+### CASE-001 — 删除重复 Evidence 标签
+**PREFERENCE · 2026-08-05 · commit [`2365f12`](https://github.com/mykcs/basemodel/commit/2365f12)**
+前：`Evidence` kicker / `论文证据` / `证据链` 与真正的证据列表叠在一起。
+后：删除这些重复包装，直接展示证据列表或保留唯一主题标题。
+规律：**视觉层级不能靠重复同一个名词制造。**
+
+<a id="case-002-模型名里已有供应商就不再重复"></a>
+### CASE-002 — 模型名里已有供应商就不再重复
+**PREFERENCE · 2026-08-05 · commits `2254b4e`, `ac3615c`**
+前：provider label 与模型标题里的供应商名称重复出现。
+后：标题已经包含供应商时隐藏额外 provider label。
+规律：**身份信息出现一次就够；重复不是“更清楚”。**
+
+<a id="case-003-详情页身份信息不重复"></a>
+### CASE-003 — 详情页身份信息不重复
+**PREFERENCE · 2026-08-05 · commit `f4d399f`**
+前：详情页标题、aside、note 重复同一模型/论文身份。
+后：每个区域只保留它真正新增的信息。
+规律：**一个区域存在的理由应该是增加信息，不是复述上一区域。**
+
+<a id="case-004-删除重复-section-label"></a>
+### CASE-004 — 删除重复 section label
+**PREFERENCE · 2026-08-06 · commit [`b6c88ce`](https://github.com/mykcs/basemodel/commit/b6c88ce)**
+前：`模型供应层`、`家族层`、`决策面`、`研究采用层`、`论文 × 模型`、`数据治理` 等 eyebrow 叠在已经明确的 H1/H2 上。
+后：删除冗余 eyebrow / section kicker，保留实际页面标题。
+规律：**“给这一层取个抽象名字”不是必要的 UI 设计。**
+<a id="case-005-kicker-与-h2-相同就删-kicker"></a>
+### CASE-005 — kicker 与 H2 相同就删 kicker
+**PREFERENCE · 2026-08-10 · PR [#76](https://github.com/mykcs/basemodel/pull/76)**
+前：`研究摘要` 等 section kicker 与紧接着的标题表达同一件事。
+后：删除 kicker，让 H2 独立承担导航语义。
+规律：**设计装饰不能要求额外造一层文案。**
+
+<a id="case-006-一个动作只保留一个主要入口"></a>
+### CASE-006 — 一个动作只保留一个主要入口
+**PREFERENCE · 2026-08-10 · PR [#76](https://github.com/mykcs/basemodel/pull/76)**
+前：同一候选卡片里同时存在两个 `加入对比` 入口。
+后：只保留一个明确操作。
+规律：**重复 CTA 会制造噪声，不会增加可用性。**
+
+## 4. 抽象包装改成具体对象和动作
+
+<a id="case-007-研究总览改成实验总览"></a>
+### CASE-007 — `研究总览` → `实验总览`
+**PREFERENCE · 2026-08-12 · commit [`c9ee929`](https://github.com/mykcs/basemodel/commit/c9ee929)**
+前：`研究总览` / `Research map`。
+后：`实验总览` / `Experiment overview`。
+规律：**能说实际对象，就不要先说抽象研究包装。**
+
+<a id="case-008-研究工具改成更多工具"></a>
+### CASE-008 — `研究工具` → `更多工具`
+**PREFERENCE · 2026-08-12 · commit `c9ee929`**
+前：`研究工具`、`辅助页面`、`需要证据、筛选或比较时再进入`。
+后：`更多工具`、`按需查看`，并直接列出模型、论文、实验配置和比较结果。
+规律：**菜单名要帮助找到东西，不要给产品内部信息架构命名。**
+<a id="case-009-形成可保存的研究任务改成保存实验条件"></a>
+### CASE-009 — `形成可保存的研究任务` → 直接说保存什么
+**PREFERENCE · 2026-08-12 · commit `c9ee929`**
+前：工作台说明 `形成可保存的研究任务`。
+后：`保存模型、GPU、网络和训练条件`。
+规律：**不要让读者猜“研究任务”这个抽象对象里到底装了什么。**
+
+<a id="case-010-从抽象研究标签改到具体操作"></a>
+### CASE-010 — 流程标签从抽象研究阶段改到实际动作
+**PREFERENCE · 2026-08-12 · commit [`2d1e20f`](https://github.com/mykcs/basemodel/commit/2d1e20f), PR [#136](https://github.com/mykcs/basemodel/pull/136)**
+前：`先定实验 / 确认限制 / 选择方案 / 核对证据 / 记录结论`。
+后：`确认实验 / 检查资源 / 选择模型 / 运行并记录 / 比较结果`。
+规律：**操作路径可以用动词，但动词必须指向真实对象和结果。**
+
+<a id="case-011-本页提供研究任务中的证据对象改成这页提供模型数据运行信息"></a>
+### CASE-011 — 页面角色不写成产品架构术语
+**PREFERENCE · 2026-08-12 · commit `2d1e20f`**
+前：`本页提供研究任务中的一个证据或决策对象。`
+后：`这页提供完成实验所需的模型、数据或运行信息。`
+规律：**解释页面价值时，说读者拿到什么，不说系统把页面归成什么对象。**
+
+<a id="case-012-研究主线改成实验步骤"></a>
+### CASE-012 — `研究主线` → `实验步骤`
+**PREFERENCE · 2026-08-12 · commit `2d1e20f`**
+前：`SEED × OpenEvo 研究主线`。
+后：`实验步骤`。
+规律：**当内容实际是一串可执行步骤时，直接叫步骤。**
+## 5. 删掉编辑者、网页和文章自己的声音
+
+<a id="case-013-这篇文章不是开头被删除"></a>
+### CASE-013 — 不用 `这篇文章不是……` 开场
+**PREFERENCE · 2026-08-21 · PR [#179](https://github.com/mykcs/basemodel/pull/179), contract `research-editorial-style.md`**
+前：文章先解释“这篇文章不是……”“如果只从最后的正结果讲……”。
+后：直接进入实验现象、背景和科学问题。
+规律：**读者来理解研究，不是来理解作者怎样设计文章。**
+
+<a id="case-014-下面我们会被删除"></a>
+### CASE-014 — 删除 `下面我们会……`
+**PREFERENCE · 2026-08-21 · PR [#179](https://github.com/mykcs/basemodel/pull/179)**
+前：`下面把主张和证据拆开……`、`下面我们会……`。
+后：下一段直接给主张、证据或主题标题。
+规律：**段落顺序已经由页面结构表达，不需要旁白再播报一次。**
+
+<a id="case-015-如果只带走一句话被删除"></a>
+### CASE-015 — 删除 `如果只带走一句话……`
+**PREFERENCE · 2026-08-21 · PR [#179](https://github.com/mykcs/basemodel/pull/179)**
+前：作者替读者宣布“如果只带走一句话”。
+后：把真正的结论直接放在视觉和语义上的第一层。
+规律：**重要性靠信息层级表达，不靠主持人口吻宣布。**
+
+<a id="case-016-为了避免-ai-味不能写进页面"></a>
+### CASE-016 — 不在页面里讨论“为什么这样写”
+**PREFERENCE · 2026-08-21 · commit [`62ce244`](https://github.com/mykcs/basemodel/commit/62ce244)**
+前类模式：`为了少一点内部代号……`、`为了避免 AI 味……`。
+后：直接采用自然命名和结构，不解释编辑动机。
+规律：**“去 AI 味”的过程本身也不能变成新的 AI 元叙事。**
+<a id="case-017-完整谱系保留用于审计改成附录是什么"></a>
+### CASE-017 — 不说“为什么把它放在这里”，直接说附录是什么
+**PREFERENCE · 2026-08-25 · PR [#218](https://github.com/mykcs/basemodel/pull/218)**
+前：`完整谱系和历史平台记录保留用于审计，默认收起，不参与主结论的视觉排序。`
+后：`附录 A：Phase G–H1.41 完整实验谱系。附录 B：更早的 RTX6 平台参数实验。两个附录都默认收起，按需展开。`
+规律：**写内容身份和状态，不写编辑者的视觉排序理由。**
+
+<a id="case-018-完整流程图只保留在专门页面被删除"></a>
+### CASE-018 — 删除“完整流程图只保留在专门页面”
+**PREFERENCE · 2026-08-25 · PR [#218](https://github.com/mykcs/basemodel/pull/218)**
+前：`完整流程图只保留在各自的专门页面；这里提供回看入口，让当前页面继续承担实验或复现主线。`
+后：整段删除，保留真实导航入口本身。
+规律：**不要把信息架构决策写给读者。**
+
+<a id="case-019-删除已并入的编辑说明"></a>
+### CASE-019 — 删除 `这篇前景笔记已经并入当前研究路径`
+**PREFERENCE · 2026-08-25 · PR [#219](https://github.com/mykcs/basemodel/pull/219), commit [`498e381`](https://github.com/mykcs/basemodel/commit/498e381)**
+前：`这篇前景笔记已经并入当前研究路径；下面的入口会带你到它现在的正式位置。`
+后：删除该 aside，只保留入口。
+规律：**内容搬家是网站维护历史，不是研究内容。用户反馈的核心是：“这不是读者关心的事”。**
+
+<a id="case-020-这一节只保留历史诊断价值改成直接状态"></a>
+### CASE-020 — `这一节只保留历史诊断价值` → 直接写平台状态
+**PREFERENCE · 2026-08-25 · PR [#218](https://github.com/mykcs/basemodel/pull/218)**
+前：`这一节只保留历史诊断价值。RTX6……已经退出当前实验主线……`
+后：`RTX6（4×RTX 3090）已退出当前实验主线。当前 WebShop 的科学结论以……为准。`
+规律：**状态本身已经足够，不需要“这一节的职责”作前缀。**
+<a id="case-021-本站记录合同改成实验记录合同"></a>
+### CASE-021 — `本站记录合同` → `实验记录合同`
+**PREFERENCE · 2026-08-25 · PR [#224](https://github.com/mykcs/basemodel/pull/224), commit [`50ce9e0`](https://github.com/mykcs/basemodel/commit/50ce9e0)**
+前：`本站记录合同`、`站内实验记录`。
+后：`实验记录合同`、`实验记录同时保存 task_score 与 exact success`。
+规律：**命名科学对象，不命名“本站怎样处理它”。**
+
+<a id="case-022-本节只定义改成直接评估事实"></a>
+### CASE-022 — `本节只定义评估输出` → 直接写评估输出
+**PREFERENCE · 2026-08-25 · PR [#224](https://github.com/mykcs/basemodel/pull/224)**
+前：`本节只定义评估输出：终局状态经过 evaluator 后得到……下一节……`
+后：`终局状态经过 evaluator 后得到 task_score 与 exact success；公平比较要求 SEED 与 OpenEvo 在同一评分合同下报告二者。`
+规律：**事实和约束比“这一节负责什么”更重要。**
+
+<a id="case-023-本节对象改成讨论对象"></a>
+### CASE-023 — `本节对象` → `讨论对象`
+**PREFERENCE · 2026-08-25 · PR [#224](https://github.com/mykcs/basemodel/pull/224)**
+前：`本节对象`。
+后：`讨论对象`。
+规律：**把 UI 指向实际对象，而不是文章章节自身。**
+
+<a id="case-024-本节只建立改成直接陈述关系"></a>
+### CASE-024 — `本节只建立一条关系` → 直接陈述关系
+**PREFERENCE · 2026-08-25 · PR [#224](https://github.com/mykcs/basemodel/pull/224)**
+前：`本节只建立一条关系：1,000 个商品……；下一节再处理……`
+后：`1,000 个商品通过 WebShop 的 synthetic goal generation 产生 6,910 个可执行 goals；goal 的 index split 见 SEED wrapper 划分图。`
+规律：**关系本身就是最好的过渡；不需要章节舞台提示。**
+## 6. 技术解释：先给上下文，再给术语和机器细节
+
+<a id="case-025-先解释-webshop-任务再讲内部对象"></a>
+### CASE-025 — 先让第一次来的读者知道 WebShop 在做什么
+**PREFERENCE · 2026-08-24 · PR [#215](https://github.com/mykcs/basemodel/pull/215)**
+前：页面更快进入 split、goal ID、wrapper 等内部结构。
+后：先解释一个购物任务如何从自然语言要求变成搜索、点击、选项和评分，再进入数据集切分。
+规律：**first-reader 不是“降低智力”，而是补齐项目上下文。**
+
+<a id="case-026-先给一句话含义再给专业解释和证据"></a>
+### CASE-026 — L1 → L2 → L3 分层，而不是把所有细节平铺
+**PREFERENCE · 2026-08-26 · PR [#254](https://github.com/mykcs/basemodel/pull/254)**
+后形成固定三层：`一句话看懂` → 中文优先的专业机制 → `展开实验依据`。
+规律：**读者先拿到解释，再决定是否需要精确 counts / manifests / configs。**
+
+<a id="case-027-中文含义先于项目英文标签"></a>
+### CASE-027 — 中文含义先于项目英文标签
+**PREFERENCE · 2026-08-26 · PR [#254](https://github.com/mykcs/basemodel/pull/254)**
+前：`TRAIN CANDIDATE POOL`、`task_score` 等标签可能先于解释出现。
+后：`训练候选池 (TRAIN CANDIDATE POOL)`、`原始任务分数 (task_score)`；术语第一次出现时给中文含义。
+规律：**英文检索名可以保留，但不能成为中文读者理解概念的前置条件。**
+
+<a id="case-028-技术定义先回答它在系统里干什么"></a>
+### CASE-028 — 定义术语时先说它做什么
+**PREFERENCE · 2026-08-12 至 08-26 · layered explainer 系列**
+例：`Reward` 不只翻译为“奖励”，而是解释为“把一次任务做得怎么样变成训练可用的结果信号”。
+规律：**术语的功能性含义比词典式同义词更有用。**
+<a id="case-029-结论先于实验账本"></a>
+### CASE-029 — 结论先于实验账本
+**PREFERENCE · 2026-08-26 · PR [#245](https://github.com/mykcs/basemodel/pull/245)**
+前：Results 容易先暴露内部 run / phase / evidence 结构。
+后：第一屏先放“现在知道什么、最新评测、还缺什么”，精确 counts、CI、manifest 和 provenance 放在 `展开实验依据`。
+规律：**run ID 是 provenance，不是读者理解结果的第一层目录。**
+
+<a id="case-030-可见推理桥而不是只给标签"></a>
+### CASE-030 — `观察 → 支持 → 还不能证明` 的可见推理桥
+**PREFERENCE · 2026-08-26 · PR [#247](https://github.com/mykcs/basemodel/pull/247)**
+后：每个重要结果都让读者看见“观察到什么 → 这个观察支持什么 → 还不能证明什么”。
+规律：**说人话不是删掉推理，而是把推理从内部标签翻译成可检查的逻辑。**
+
+<a id="case-031-一个不字也属于科学正确性"></a>
+### CASE-031 — 一个 `不` 字也属于科学正确性
+**PREFERENCE · 2026-08-25 · PR [#230](https://github.com/mykcs/basemodel/pull/230)**
+历史修复：缺失的否定词会把研究结论极性翻转，必须恢复并用测试保护。
+规律：**“更顺口”不能以牺牲 claim polarity 为代价。**
+
+<a id="case-032-否定句不是一刀切禁用"></a>
+### CASE-032 — 否定句不是一刀切禁用
+**PREFERENCE · 2026-08-25 · PR [#231](https://github.com/mykcs/basemodel/pull/231)**
+前：copy audit 对正文 `X 不是 Y，而是 Z` 也可能报 negative-heading。
+后：收窄规则，只把没有上下文的 negative-first heading 当候选；科学澄清和边界对照可以保留。
+规律：**问题是信息顺序，不是汉字 `不` 本身。**
+<a id="case-033-frozen-改成评测期间参数不更新"></a>
+### CASE-033 — `frozen model` → 直接说“评测期间参数不更新”
+**PREFERENCE · 2026-08-27 · PR [#290](https://github.com/mykcs/basemodel/pull/290)**
+前：`两臂都是 frozen models` 容易和 vendor Base checkpoint / 模型来源混淆。
+后：明确写“评测期间参数不再更新”，并单独说明 checkpoint 身份。
+规律：**同一个词有两种技术含义时，不要靠读者猜这里是哪一种。**
+
+<a id="case-034-命令与-wrapper-先于-parser-术语"></a>
+### CASE-034 — 命令与 wrapper 先于 parser 术语
+**PREFERENCE · 2026-08-27 · PR [#274](https://github.com/mykcs/basemodel/pull/274), commits `6cfee32`, `c859678`**
+前：直接讨论 parser、projection、wrapper drift、compatibility preflight。
+后：先解释 `search[...] / click[...]` 是实际动作命令，`<action>...</action>` 是让解析器定位命令的外层标签；再解释标签漂移怎样让合法命令被读错。
+规律：**先给对象和故障机制，再给内部术语。**
+
+<a id="case-035-机器计数改成人类句子"></a>
+### CASE-035 — `0 个训练步` → `我们一步都没训练`
+**PREFERENCE · 2026-08-27 · PR [#287](https://github.com/mykcs/basemodel/pull/287), commits [`6027674`](https://github.com/mykcs/basemodel/commit/6027674), [`6766154`](https://github.com/mykcs/basemodel/commit/6766154)**
+前：`0 个 OpenEvo adapter 训练步即可看到 [action]`。
+后：`我们一步都没训练，BASE 就已经写出了 [action]`。
+规律：**正文用人类自然状态；精确 0 和 raw field 留在证据层。**
+
+<a id="case-036-责任先直接点名负责层"></a>
+### CASE-036 — 责任先直接点名负责层
+**PREFERENCE · 2026-08-27 · commit [`33d4ca6`](https://github.com/mykcs/basemodel/commit/33d4ca6), PR [#309](https://github.com/mykcs/basemodel/pull/309)**
+前：先写 `不能归给 SD-LoRA……`、`不是 SEED parser bug……`，读者要看完排除法才知道责任在哪。
+后：先写 `责任在我们的实验集成层` / `真正漏掉的是正式评测前的兼容性预检`，再解释模型漂移和 parser 合同。
+规律：**责任已知就直接说；不要用“清嫌疑人”来制造推理感。**
+<a id="case-037-事故标题先说发生了什么"></a>
+### CASE-037 — 事故标题先说发生了什么
+**PREFERENCE · 2026-08-27 · PR [#278](https://github.com/mykcs/basemodel/pull/278)**
+前：标题偏向内部 forensic trace / parser 归因。
+后：标题先描述模型动作格式与评测接口发生了什么，再在正文追代码责任。
+规律：**事故页面先让读者看懂事件，不要把取证术语当新闻标题。**
+
+<a id="case-038-归因前先补实验设置"></a>
+### CASE-038 — 归因前先补零上下文实验设置
+**PREFERENCE · 2026-08-27 · PR [#280](https://github.com/mykcs/basemodel/pull/280)**
+前：读者可能在不知道 BASE / SD-LoRA、训练与评测关系时进入责任分析。
+后：先交代比较对象、训练发生在哪、评测怎样读动作，再列替代解释并逐项核对证据。
+规律：**先给最小必要上下文，不能要求读者从结论反推实验结构。**
+
+<a id="case-039-pre-specification-不能升级成-preregistration"></a>
+### CASE-039 — `pre-specification` 不能升级成 `preregistration`
+**PREFERENCE · 2026-08-29 · PR [#331](https://github.com/mykcs/basemodel/pull/331), commit [`afc7633`](https://github.com/mykcs/basemodel/commit/afc7633)**
+前：历史文字把提前固定的比较问题写成更强的 `preregistration`。
+后：收窄为 `pre-specification`，只声称证据真正支持的“提前固定”。
+规律：**专业词不能为了显得更正式而升级 claim。**
+
+<a id="case-040-unknown-保持-unknown"></a>
+### CASE-040 — unknown 保持 unknown，不补一个“看起来合理”的答案
+**PREFERENCE · 2026-08-12 至 08-28 · copy / evidence contracts，PR [#314](https://github.com/mykcs/basemodel/pull/314)**
+前风险：把未报告、未核验、来源冲突等状态压成 `false / 0 / no`。
+后：区分 `not_disclosed / not_reported / not_verified / conflicting_evidence`，正文用正常语言解释，底层状态仍可追溯。
+规律：**人话负责解释未知，不能负责把未知填掉。**
+
+## 7. 2026-08-30 `lyg2171`：标题与解释腔的去 AI 味判例
+
+<a id="case-041-服务器标题直接命名对象"></a>
+### CASE-041 — 服务器标题直接命名对象
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336), commit [`c312949`](https://github.com/mykcs/basemodel/commit/c312949)**
+前：`这台服务器能做什么，以及哪里最容易先用满`。
+后：`lyg2171 服务器简介`。
+规律：**普通 H1 先告诉读者页面是什么，不需要先制造一个“阅读问题”。**
+
+<a id="case-042-能直说就不强行比喻"></a>
+### CASE-042 — 能直说就不强行比喻
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：`把它想成一张给科学训练用的大工作台：CPU 和内存很宽裕……`
+后：`lyg2171 是当前 OpenEvo / WebShop 实验使用的主要训练服务器。配置为 2 × Intel Xeon Platinum 8380、1.0 TiB 内存和 8 × RTX 5090；当前主文件系统剩余约 55 G。`
+规律：**字面事实已经简单时，比喻只会增加“解释型 AI”口吻。**
+
+<a id="case-043-怎么读改成-gpu-规格"></a>
+### CASE-043 — `“第几代”和“多少核”怎么读` → `GPU 规格`
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：标题规定读者怎样理解两个概念。
+后：标题只命名 `GPU 规格`；正文直接写 RTX 50 系列、Blackwell、21,760 CUDA cores、显存和 Compute Capability。
+规律：**“怎么读”属于作者动作；规格属于页面主题。**
+
+<a id="case-044-常见误解改成事实栏目"></a>
+### CASE-044 — `一个常见误解` → `多卡性能说明`
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：`一个常见误解`。
+后：`多卡性能说明`。
+规律：**不要先宣布“有人会误解”；直接说这一段提供什么事实。**
+
+<a id="case-045-最容易撞到的上限改成磁盘使用情况"></a>
+### CASE-045 — `我们现在最容易撞到的上限` → `磁盘使用情况`
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：作者先判断“最容易撞到”。
+后：`磁盘使用情况`，并直接列 437 G / 360 G / 55 G / 87%。
+规律：**事实表已经会让风险自己显现，不必每个栏目都加戏。**
+
+<a id="case-046-为什么看起来不像改成原因"></a>
+### CASE-046 — `为什么 360 / 437 看起来不像 87%？` → `df 显示 87% 的原因`
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：模拟读者提问。
+后：直接命名需要解释的现象和原因。
+规律：**问句不是天然更亲切；如果答案是稳定知识点，陈述式标题更自然。**
+
+<a id="case-047-这些数字怎么测出来改成数据来源"></a>
+### CASE-047 — `这些数字是怎么测出来的？` → `数据来源`
+**PREFERENCE · 2026-08-30 · PR [#336](https://github.com/mykcs/basemodel/pull/336)**
+前：`这些数字是怎么测出来的？`
+后：`数据来源`，正文直接列 `lscpu / free -h / df -hT / du / nvidia-smi`。
+规律：**稳定、可扫描的名词标题优先于教程式问句。**
+
+## 8. 2026-08-30：结果页深度与交互语义
+
+<a id="case-048-结果页不是命令手册"></a>
+### CASE-048 — 结果页不是命令手册
+**PREFERENCE · 2026-08-30 · PR [#342](https://github.com/mykcs/basemodel/pull/342), commit [`08cfa76`](https://github.com/mykcs/basemodel/commit/08cfa76)**
+前：研究页面仍有 shell command、secret provisioning、完整脚本/config/log 等实现细节混在科学主阅读路径里；读者可能要先理解“怎么跑”，再理解“实验发现了什么”。
+后：科学问题、直接结果、决定性数字、解释和证据边界保持可见；copy/paste commands、密钥配置、长脚本/config/log 和排障步骤进入有具体名称的 progressive disclosure。
+规律：**“说人话”也包括页面深度：公开主线先服务理解科学结果，复现机械细节仍可审计，但不抢第一阅读层。**
+
+<a id="case-049-不要-cat-就不能提供复制-cat"></a>
+### CASE-049 — 写“不要 `cat`”，界面就不能同时提供“复制 cat”
+**PREFERENCE · 2026-08-30 · PR [#344](https://github.com/mykcs/basemodel/pull/344), commit [`dae2a32`](https://github.com/mykcs/basemodel/commit/dae2a32)**
+前：安全提示写“不用 `cat`”，但 inline `<code>` 被全站 copy enhancer 自动增强成 `复制这段内容: cat` 按钮。
+后：`cat` 保持普通警告文本，并用浏览器回归测试保证不会生成复制按钮。
+规律：**文案语义和交互 affordance 必须一致；不能一边劝阻一个动作，一边把那个动作做成最醒目的 CTA。**
+
+
+<a id="case-050-公开示例使用通用路径而不暴露账号身份"></a>
+### CASE-050 — 公开示例使用通用路径，而不是公开真实账号身份
+**PREFERENCE · 2026-08-30 · PR [#349](https://github.com/mykcs/basemodel/pull/349), commit [`3e5e7b0`](https://github.com/mykcs/basemodel/commit/3e5e7b0b3b1420c0d944fa9a937665b195d2f3b2)**
+前：公开复现命令里仍出现某个真实 Unix 用户的 `/data/home/<user>/...` 一类路径与硬编码 ownership。
+后：改成 `$HOME/.secrets/...`，由当前实验 Unix 账号自然解析；源代码和浏览器回归同时禁止旧的可识别路径重新出现。
+规律：**公开文案只写复现需要知道的路径语义，不把实验室账号身份当成“具体一点”的例子。**
+
+## 9. 这些判例不能被误读成什么
+
+- 不是“永远不用问句”：真实用户决策可以问，例如模型是否符合已经填写的实验条件。
+- 不是“永远不用否定句”：科学澄清、安全边界和责任对照可以直接否定。
+- 不是“永远不用比喻”：复杂机制且类比确实建立正确模型时可以用。
+- 不是“越短越好”：必要的上下文、因果和证据边界不能被压掉。
+- 不是“把所有技术词翻成口语”：专业词保留，但第一次出现要让读者知道它在这里做什么。
+- 不是“让页面像聊天”：自然、克制、直接，比口语化表演更接近本项目偏好。
+
+## 10. 建站以来的文案相关历史台账
+
+下面是本轮确认的 **119 个高信号历史候选 commit**：116 个来自标题关键词扩展，另加 3 个由 PR body / diff 捕获的混合型公开表达变更（#342、#349、#350）。`COPY CHANGE` 表示 commit 本身以语言/标题/解释为主要变化；`SUPPORT` 多为测试、merge、CI 或保护性提交；`CONTEXT` 是对文案规范有背景价值但不单独证明偏好的文档。这个表用于防漏，不代表每一行都是最终偏好证据；最终偏好以前面的 CASE 判例为准。
+
+| 日期 | Commit | 角色 | Subject |
+|---|---|---|---|
+| 2026-08-30 | [`d4f86e0`](https://github.com/mykcs/basemodel/commit/d4f86e0208440b684faaae146baa3ac18c2d8047) | EVOLUTION | refactor: implement site optimization audit [vercel-preview] (#350) |
+| 2026-08-30 | [`3e5e7b0`](https://github.com/mykcs/basemodel/commit/3e5e7b0b3b1420c0d944fa9a937665b195d2f3b2) | COPY / PRIVACY | research: preserve publication lessons and redact account path [vercel-preview] (#349) |
+| 2026-08-30 | [`dae2a32`](https://github.com/mykcs/basemodel/commit/dae2a32) | COPY CHANGE | fix(research): do not offer cat copy action [vercel-preview] (#344) |
+| 2026-08-30 | [`08cfa76`](https://github.com/mykcs/basemodel/commit/08cfa76) | COPY / DESIGN | research: codify result-first publication depth [vercel-preview] (#342) |
+| 2026-08-30 | [`c312949`](https://github.com/mykcs/basemodel/commit/c312949) | COPY CHANGE | Refine lyg2171 server page copy |
+| 2026-08-29 | [`afc7633`](https://github.com/mykcs/basemodel/commit/afc7633) | COPY CHANGE | docs: narrow four-arm retrospective wording (#331) |
+| 2026-08-28 | [`799a411`](https://github.com/mykcs/basemodel/commit/799a411) | COPY CHANGE | research: complete site fact, copy, and visual audit (#314) |
+| 2026-08-28 | [`2e69190`](https://github.com/mykcs/basemodel/commit/2e69190) | COPY CHANGE | Align training design invariant with page copy |
+| 2026-08-28 | [`4115ac0`](https://github.com/mykcs/basemodel/commit/4115ac0) | CONTEXT | docs: record WebShop explainer and Results workflow retrospective |
+| 2026-08-27 | [`77b7c17`](https://github.com/mykcs/basemodel/commit/77b7c17) | COPY CHANGE | Align journey test with research findings wording |
+| 2026-08-27 | [`78b88da`](https://github.com/mykcs/basemodel/commit/78b88da) | COPY CHANGE | Keep research findings wording in study nav |
+| 2026-08-27 | [`c0e1dcf`](https://github.com/mykcs/basemodel/commit/c0e1dcf) | CONTEXT | docs(agents): record SEED GLM explainer and asset lessons |
+| 2026-08-27 | [`0d69951`](https://github.com/mykcs/basemodel/commit/0d69951) | SUPPORT | Merge pull request #290 from mykcs/research/clarify-frozen-model-identity-20260827 |
+| 2026-08-27 | [`3ac64ac`](https://github.com/mykcs/basemodel/commit/3ac64ac) | SUPPORT | test(results): assert raw wrapper evidence instead of legacy wording |
+| 2026-08-27 | [`33d4ca6`](https://github.com/mykcs/basemodel/commit/33d4ca6) | COPY CHANGE | docs(agents): require direct responsibility language |
+| 2026-08-27 | [`6766154`](https://github.com/mykcs/basemodel/commit/6766154) | COPY CHANGE | docs(agents): prefer natural human wording over machine counts |
+| 2026-08-27 | [`0ef6942`](https://github.com/mykcs/basemodel/commit/0ef6942) | SUPPORT | test(results): require natural pre-training wording |
+| 2026-08-27 | [`6027674`](https://github.com/mykcs/basemodel/commit/6027674) | SUPPORT | test(copy): protect natural zero-step wording |
+| 2026-08-27 | [`8fed7e4`](https://github.com/mykcs/basemodel/commit/8fed7e4) | SUPPORT | Merge pull request #285 from mykcs/research/reader-first-copy-hierarchy-20260827 |
+| 2026-08-27 | [`8f2a3a7`](https://github.com/mykcs/basemodel/commit/8f2a3a7) | COPY CHANGE | docs(results): enforce reader-first copy hierarchy |
+| 2026-08-27 | [`c0c611c`](https://github.com/mykcs/basemodel/commit/c0c611c) | SUPPORT | Merge pull request #274 from mykcs/research/eli5-action-wrapper-20260827 |
+| 2026-08-27 | [`4247ea2`](https://github.com/mykcs/basemodel/commit/4247ea2) | SUPPORT | test(results): protect ELI5 wrapper explanation |
+| 2026-08-27 | [`2fbefb8`](https://github.com/mykcs/basemodel/commit/2fbefb8) | SUPPORT | test(results): preserve attribution boundary wording |
+| 2026-08-27 | [`6cfee32`](https://github.com/mykcs/basemodel/commit/6cfee32) | CONTEXT | docs(results): explain wrapper failure before parser jargon |
+| 2026-08-27 | [`c859678`](https://github.com/mykcs/basemodel/commit/c859678) | COPY CHANGE | docs(results): make action-wrapper trace reader-first |
+| 2026-08-27 | [`cc6efe0`](https://github.com/mykcs/basemodel/commit/cc6efe0) | SUPPORT | Merge pull request #270 from mykcs/research/eli5-fair-comparison-20260827 |
+| 2026-08-27 | [`a54a341`](https://github.com/mykcs/basemodel/commit/a54a341) | COPY CHANGE | research: clarify Track A versus full-budget comparison |
+| 2026-08-27 | [`a9e64a3`](https://github.com/mykcs/basemodel/commit/a9e64a3) | COPY CHANGE | research: stack ELI5 explainer on current Results integration |
+| 2026-08-27 | [`72f59e0`](https://github.com/mykcs/basemodel/commit/72f59e0) | COPY CHANGE | research: add ELI5 fair-comparison explainer |
+| 2026-08-27 | [`9d0fa8e`](https://github.com/mykcs/basemodel/commit/9d0fa8e) | SUPPORT | test(results): assert measurement boundary at its current wording |
+| 2026-08-27 | [`809e69c`](https://github.com/mykcs/basemodel/commit/809e69c) | COPY CHANGE | fix(results): align current Track A state with reader contracts |
+| 2026-08-26 | [`71bfae1`](https://github.com/mykcs/basemodel/commit/71bfae1) | SUPPORT | test: preserve Results summary label contract |
+| 2026-08-26 | [`c011881`](https://github.com/mykcs/basemodel/commit/c011881) | COPY CHANGE | fix: keep desktop results questions attached to heading |
+| 2026-08-26 | [`6db3d9a`](https://github.com/mykcs/basemodel/commit/6db3d9a) | COPY CHANGE | refactor(results): make every conclusion show its evidence logic (#247) |
+| 2026-08-26 | [`0e4851e`](https://github.com/mykcs/basemodel/commit/0e4851e) | COPY CHANGE | refactor(research): make SEED × OpenEvo Results lab-reader friendly (#245) |
+| 2026-08-26 | [`80e3dab`](https://github.com/mykcs/basemodel/commit/80e3dab) | CONTEXT | docs(research): clarify SEED/OpenEvo evidence boundaries (#244) |
+| 2026-08-25 | [`a178f5e`](https://github.com/mykcs/basemodel/commit/a178f5e) | COPY CHANGE | fix(audit): suppress 'X 不是 Y 而是 Z' false positives in COPY-NEGATIVE-HEADING (#231) |
+| 2026-08-25 | [`70b6460`](https://github.com/mykcs/basemodel/commit/70b6460) | COPY CHANGE | fix(home): sync HARDEN-HOME-005 with restored 研究结果 / Research findings hero label (#229) |
+| 2026-08-25 | [`50ce9e0`](https://github.com/mykcs/basemodel/commit/50ce9e0) | COPY CHANGE | fix(research): drop residual '本站 / 本节 / 这里' editor voice in WebShop figures (#224) |
+| 2026-08-25 | [`498e381`](https://github.com/mykcs/basemodel/commit/498e381) | COPY CHANGE | fix(research): drop '已并入' editorial aside on ResearchPrimerMoved (#219) |
+| 2026-08-25 | [`ba55be8`](https://github.com/mykcs/basemodel/commit/ba55be8) | COPY CHANGE | fix(research): drop editor-tone copy in SEED × OpenEvo reader-facing path (#218) |
+| 2026-08-25 | [`385bbd5`](https://github.com/mykcs/basemodel/commit/385bbd5) | COPY CHANGE | fix(copy): bilingual benchmark section labels + mask i18n string literals (#217) |
+| 2026-08-24 | [`b5b1788`](https://github.com/mykcs/basemodel/commit/b5b1788) | SUPPORT | test(research): measure mixed-language heading density correctly |
+| 2026-08-24 | [`8b802e3`](https://github.com/mykcs/basemodel/commit/8b802e3) | SUPPORT | chore: restore trailing newline in heading policy test |
+| 2026-08-24 | [`62b6a9f`](https://github.com/mykcs/basemodel/commit/62b6a9f) | COPY CHANGE | refine WebShop interaction teaching copy |
+| 2026-08-24 | [`c37c47b`](https://github.com/mykcs/basemodel/commit/c37c47b) | SUPPORT | test(research): align heading policy with findings page |
+| 2026-08-24 | [`4e50935`](https://github.com/mykcs/basemodel/commit/4e50935) | COPY CHANGE | refine navigation resource copy |
+| 2026-08-24 | [`2d26318`](https://github.com/mykcs/basemodel/commit/2d26318) | COPY CHANGE | docs(research): align production explainer reader contract |
+| 2026-08-24 | [`4ec8228`](https://github.com/mykcs/basemodel/commit/4ec8228) | SUPPORT | test(research): align SEED split browser heading |
+| 2026-08-24 | [`e39c5ab`](https://github.com/mykcs/basemodel/commit/e39c5ab) | COPY CHANGE | fix(research): simplify mobile goal-boundary copy |
+| 2026-08-24 | [`9ae9a45`](https://github.com/mykcs/basemodel/commit/9ae9a45) | COPY CHANGE | Research: finalize first-reader WebShop explainer (#215) |
+| 2026-08-24 | [`3a8f3e4`](https://github.com/mykcs/basemodel/commit/3a8f3e4) | COPY CHANGE | feat(research): finalize first-reader WebShop explainer |
+| 2026-08-24 | [`22a68af`](https://github.com/mykcs/basemodel/commit/22a68af) | COPY CHANGE | refactor(research): drop redundant WEBSHOP eyebrow above IRX title |
+| 2026-08-23 | [`0b16bc0`](https://github.com/mykcs/basemodel/commit/0b16bc0) | COPY CHANGE | refactor(research): clarify SEED and OpenEvo method figures |
+| 2026-08-23 | [`9ca6df1`](https://github.com/mykcs/basemodel/commit/9ca6df1) | COPY CHANGE | fix(research): dock explainer controls from page load |
+| 2026-08-23 | [`9c6b7d7`](https://github.com/mykcs/basemodel/commit/9c6b7d7) | SUPPORT | test(ui): distinguish prose from diagram micro-labels |
+| 2026-08-23 | [`30b3f4e`](https://github.com/mykcs/basemodel/commit/30b3f4e) | COPY CHANGE | fix(ui): give SEED desktop explainer nodes readable width |
+| 2026-08-23 | [`61646cf`](https://github.com/mykcs/basemodel/commit/61646cf) | COPY CHANGE | fix(results): stop REFERENCE heading collapsing into a CJK rail (#206) |
+| 2026-08-23 | [`74618cc`](https://github.com/mykcs/basemodel/commit/74618cc) | COPY CHANGE | fix(research): contain Chinese explainer prose per line (#204) |
+| 2026-08-23 | [`efa3f14`](https://github.com/mykcs/basemodel/commit/efa3f14) | COPY CHANGE | fix(research): keep one stage navigator in WebShop explainer (#205) |
+| 2026-08-23 | [`14e974f`](https://github.com/mykcs/basemodel/commit/14e974f) | COPY CHANGE | fix(research): float controls for active step explainers (#203) |
+| 2026-08-22 | [`228eeec`](https://github.com/mykcs/basemodel/commit/228eeec) | SUPPORT | ci: retrigger production deployment for research explainer dedupe |
+| 2026-08-22 | [`f194211`](https://github.com/mykcs/basemodel/commit/f194211) | COPY CHANGE | fix(research): de-duplicate canonical explainers |
+| 2026-08-21 | [`e941339`](https://github.com/mykcs/basemodel/commit/e941339) | COPY CHANGE | docs(agents): scope editorial contract to English research routes |
+| 2026-08-21 | [`45ecf1b`](https://github.com/mykcs/basemodel/commit/45ecf1b) | COPY CHANGE | docs(agents): scope research editorial contract to routes |
+| 2026-08-21 | [`ce86f94`](https://github.com/mykcs/basemodel/commit/ce86f94) | COPY CHANGE | docs(agents): scope research editorial contract to components |
+| 2026-08-21 | [`62ce244`](https://github.com/mykcs/basemodel/commit/62ce244) | COPY CHANGE | docs(agents): codify natural research editorial style |
+| 2026-08-21 | [`4290681`](https://github.com/mykcs/basemodel/commit/4290681) | SUPPORT | Merge pull request #177 from mykcs/agent/ui-openevo-reader-report-20260821 |
+| 2026-08-21 | [`8397815`](https://github.com/mykcs/basemodel/commit/8397815) | COPY CHANGE | docs(agents): codify reader-first research result writing |
+| 2026-08-21 | [`314ef6c`](https://github.com/mykcs/basemodel/commit/314ef6c) | COPY CHANGE | feat(results): publish reader-first OpenEvo research report |
+| 2026-08-21 | [`4493ab6`](https://github.com/mykcs/basemodel/commit/4493ab6) | SUPPORT | test(results): respect localized T2 boundary copy |
+| 2026-08-20 | [`f4d2dc4`](https://github.com/mykcs/basemodel/commit/f4d2dc4) | COPY CHANGE | feat(research): refocus OpenEvo results on scientific conclusions |
+| 2026-08-20 | [`a561a43`](https://github.com/mykcs/basemodel/commit/a561a43) | COPY CHANGE | fix(research): close explainer interaction and privacy gaps (#162) |
+| 2026-08-20 | [`d9cc432`](https://github.com/mykcs/basemodel/commit/d9cc432) | COPY CHANGE | fix(research): close explainer interaction and privacy gaps |
+| 2026-08-18 | [`f2af78c`](https://github.com/mykcs/basemodel/commit/f2af78c) | SUPPORT | Merge pull request #156 from mykcs/agent/explainer-te-style-20260818 |
+| 2026-08-18 | [`7bab50e`](https://github.com/mykcs/basemodel/commit/7bab50e) | SUPPORT | Merge remote-tracking branch 'origin/main' into agent/explainer-te-style-20260818 |
+| 2026-08-18 | [`727c4ef`](https://github.com/mykcs/basemodel/commit/727c4ef) | COPY CHANGE | feat(research): make explainer maps and page copy precise [BATCH MODE] |
+| 2026-08-16 | [`5793703`](https://github.com/mykcs/basemodel/commit/5793703) | COPY CHANGE | fix(lab): remove remaining server identity label |
+| 2026-08-15 | [`2689195`](https://github.com/mykcs/basemodel/commit/2689195) | COPY CHANGE | fix(ui): remove duplicate outline label overflow |
+| 2026-08-15 | [`0203df6`](https://github.com/mykcs/basemodel/commit/0203df6) | COPY CHANGE | feat(research): add interactive research explainer layer (#146) |
+| 2026-08-15 | [`97038bf`](https://github.com/mykcs/basemodel/commit/97038bf) | COPY CHANGE | fix(research): route connectors around explainer nodes |
+| 2026-08-15 | [`846ba30`](https://github.com/mykcs/basemodel/commit/846ba30) | SUPPORT | test(research): align gates with interactive explainer architecture |
+| 2026-08-15 | [`d899ba8`](https://github.com/mykcs/basemodel/commit/d899ba8) | COPY CHANGE | refactor(research): rebuild explainer geometry and visual hierarchy |
+| 2026-08-15 | [`176b2c5`](https://github.com/mykcs/basemodel/commit/176b2c5) | COPY CHANGE | feat(research): add interactive explainer layer |
+| 2026-08-14 | [`17713e1`](https://github.com/mykcs/basemodel/commit/17713e1) | SUPPORT | test(hardening): align home contract with editorial hierarchy |
+| 2026-08-14 | [`4ccf35a`](https://github.com/mykcs/basemodel/commit/4ccf35a) | COPY CHANGE | fix(editorial): finish route and shared-heading audit |
+| 2026-08-14 | [`9f07cd4`](https://github.com/mykcs/basemodel/commit/9f07cd4) | SUPPORT | test(copy): align gates with editorial hierarchy |
+| 2026-08-14 | [`e38a342`](https://github.com/mykcs/basemodel/commit/e38a342) | COPY CHANGE | fix(editorial): normalize headings and current OpenEvo status |
+| 2026-08-12 | [`0528cae`](https://github.com/mykcs/basemodel/commit/0528cae) | SUPPORT | test(copy): align paper-summary regression with human-readable copy |
+| 2026-08-12 | [`c9ee929`](https://github.com/mykcs/basemodel/commit/c9ee929) | COPY CHANGE | refactor(copy): remove remaining abstract labels from high-traffic pages |
+| 2026-08-12 | [`1239ece`](https://github.com/mykcs/basemodel/commit/1239ece) | COPY CHANGE | [CF-Pages-Skip] feat(research): integrate human copy, mobile UI, outline, and seed3090 audit |
+| 2026-08-12 | [`d6be29d`](https://github.com/mykcs/basemodel/commit/d6be29d) | COPY CHANGE | [CF-Pages-Skip] fix(openevo): remove mistaken OpenSeed explainer |
+| 2026-08-12 | [`2d1e20f`](https://github.com/mykcs/basemodel/commit/2d1e20f) | COPY CHANGE | refactor(copy): make site entries concrete and actionable [BATCH MODE] |
+| 2026-08-12 | [`3b72f17`](https://github.com/mykcs/basemodel/commit/3b72f17) | COPY CHANGE | [CF-Pages-Skip] feat(research): explain SEED and OpenEvo as semantic dialogues |
+| 2026-08-12 | [`593e4e7`](https://github.com/mykcs/basemodel/commit/593e4e7) | SUPPORT | test(research): align journey contract with rendered copy |
+| 2026-08-12 | [`de677bd`](https://github.com/mykcs/basemodel/commit/de677bd) | COPY CHANGE | feat(copy): complete audience-centered site audit [BATCH MODE] |
+| 2026-08-12 | [`6a321b5`](https://github.com/mykcs/basemodel/commit/6a321b5) | COPY CHANGE | [CF-Pages-Skip] fix(test): assert the recorded integration wording |
+| 2026-08-12 | [`d293f6a`](https://github.com/mykcs/basemodel/commit/d293f6a) | COPY CHANGE | docs: record sitewide audience-copy audit baseline |
+| 2026-08-12 | [`879ddd6`](https://github.com/mykcs/basemodel/commit/879ddd6) | COPY CHANGE | Make human-thinking web expression a durable Agent invariant |
+| 2026-08-12 | [`cda340f`](https://github.com/mykcs/basemodel/commit/cda340f) | COPY CHANGE | docs: define audience-centered technical copy standard |
+| 2026-08-12 | [`488e752`](https://github.com/mykcs/basemodel/commit/488e752) | COPY CHANGE | refactor: rewrite OpenEvo guide for first-time readers |
+| 2026-08-12 | [`a4735ba`](https://github.com/mykcs/basemodel/commit/a4735ba) | COPY CHANGE | fix: remove reproduction C label from OpenEvo entry |
+| 2026-08-12 | [`db57632`](https://github.com/mykcs/basemodel/commit/db57632) | COPY CHANGE | Clarify GDKVM-style reproduction guide ownership |
+| 2026-08-11 | [`6fefd7f`](https://github.com/mykcs/basemodel/commit/6fefd7f) | COPY CHANGE | [CF-Pages-Skip] refactor(models): unify copy actions on latest guide head |
+| 2026-08-11 | [`b1bd079`](https://github.com/mykcs/basemodel/commit/b1bd079) | COPY CHANGE | [CF-Pages-Skip] feat(ux): restore shared CopyButton |
+| 2026-08-10 | [`f768ee2`](https://github.com/mykcs/basemodel/commit/f768ee2) | COPY CHANGE | fix(ui): visual polish — dedupe labels, style concept map, fix squeezes (#76) |
+| 2026-08-08 | [`5ff4d34`](https://github.com/mykcs/basemodel/commit/5ff4d34) | COPY CHANGE | feat(seo+a11y): fix sitemap routes, og image, heading order, links, i18n |
+| 2026-08-06 | [`4ef65ca`](https://github.com/mykcs/basemodel/commit/4ef65ca) | COPY CHANGE | fix(e2e): 首页断言改用真实 V2 标题文案 (#7) |
+| 2026-08-06 | [`ddc2b42`](https://github.com/mykcs/basemodel/commit/ddc2b42) | COPY CHANGE | fix(i18n): remove redundant English from Chinese pages |
+| 2026-08-06 | [`b6c88ce`](https://github.com/mykcs/basemodel/commit/b6c88ce) | COPY CHANGE | fix(i18n): remove redundant section labels |
+| 2026-08-06 | [`5c90628`](https://github.com/mykcs/basemodel/commit/5c90628) | COPY CHANGE | fix(i18n): translate generic license status labels |
+| 2026-08-06 | [`c345f72`](https://github.com/mykcs/basemodel/commit/c345f72) | COPY CHANGE | fix(i18n): sanitize comparison license props |
+| 2026-08-06 | [`57941ae`](https://github.com/mykcs/basemodel/commit/57941ae) | COPY CHANGE | fix(i18n): localize unresolved license placeholders |
+| 2026-08-05 | [`ac3615c`](https://github.com/mykcs/basemodel/commit/ac3615c) | COPY CHANGE | fix(i18n): suppress provider names embedded in model titles |
+| 2026-08-05 | [`2254b4e`](https://github.com/mykcs/basemodel/commit/2254b4e) | COPY CHANGE | fix(i18n): hide provider labels repeated in model titles |
+| 2026-08-05 | [`f4d399f`](https://github.com/mykcs/basemodel/commit/f4d399f) | COPY CHANGE | fix(i18n): deduplicate model detail identities and paper notes |
+| 2026-08-05 | [`667b5dd`](https://github.com/mykcs/basemodel/commit/667b5dd) | COPY CHANGE | fix(i18n): localize dynamic enum labels |
+| 2026-08-05 | [`2365f12`](https://github.com/mykcs/basemodel/commit/2365f12) | COPY CHANGE | refactor(i18n): remove redundant evidence labels [BATCH MODE] (done) |
+| 2026-08-05 | [`5163155`](https://github.com/mykcs/basemodel/commit/5163155) | COPY CHANGE | feat(i18n): 全站中英切换 — zh 留根 + en /en/ 前缀 + 字典驱动文案 |
+
+## 11. 使用案例库时的优先级
+
+1. 当前用户明确指出某种写法不自然时，以该反馈为最高权重。
+2. 同类场景优先采用更晚的 PREFERENCE 判例；例如普通主题标题优先参考 CASE-041–047，而不是把 2026-08-12 的动作标题规则机械放大；Results 的公开深度再参考 CASE-048–049。
+3. PREFERENCE 判例优先于 EVOLUTION / SUPPORT 台账。
+4. 科学事实、证据边界和安全要求永远不会因为口吻偏好而被覆盖。
+5. 没有相似案例时，回到主规范的默认顺序：对象/事实 → 结论 → 机制 → 证据。
+
+## 12. PR 级审计索引
+
+下面列出本轮实际展开 PR body / diff 的主要已合并 review units。它补充上面的 commit 台账：PR 可以说明“为什么改”，commit 更适合定位“具体改了什么”。
+
+| PR | 证据角色 | 与文案偏好的关系 |
+|---|---|---|
+| [#7](https://github.com/mykcs/basemodel/pull/7) | EVOLUTION | 首页测试必须跟真实公开标题走，不能让测试反过来固定旧文案 |
+| [#74](https://github.com/mykcs/basemodel/pull/74) | EVOLUTION | beginner learning flow 与视觉层级开始成为显式设计目标 |
+| [#76](https://github.com/mykcs/basemodel/pull/76) | PREFERENCE | 去重复 label / CTA，语义层级不靠重复文字制造 |
+| [#78](https://github.com/mykcs/basemodel/pull/78) | EVOLUTION | 先补 Agent 基础上下文，再进入模型选择 |
+| [#85](https://github.com/mykcs/basemodel/pull/85) | EVOLUTION | 用一条可理解的 SEED reproduction 主线替代散点入口 |
+| [#104](https://github.com/mykcs/basemodel/pull/104) | EVOLUTION | 从 Agent 基础概念桥接到一个具体复现实验 |
+| [#115](https://github.com/mykcs/basemodel/pull/115) | EVOLUTION | beginner guide 必须可执行，而不是只讲概念 |
+| [#119](https://github.com/mykcs/basemodel/pull/119) | EVOLUTION | lab runbook 强调真实步骤和 PASS 结果 |
+| [#121](https://github.com/mykcs/basemodel/pull/121) | EVOLUTION | 复杂流程开始用视觉结构而不是长 prose 承担 |
+| [#136](https://github.com/mykcs/basemodel/pull/136) | PREFERENCE | 首次全站 human-readable copy audit；concrete action/object 优先于抽象包装 |
+| [#138](https://github.com/mykcs/basemodel/pull/138) | EVOLUTION | first-time reader 需要模型选择理由和上下文 |
+| [#156](https://github.com/mykcs/basemodel/pull/156) | PREFERENCE | explainer map 与正文必须精确对应真实机制 |
+| [#160](https://github.com/mykcs/basemodel/pull/160) | EVOLUTION | program report 建立研究报告式信息层级 |
+| [#161](https://github.com/mykcs/basemodel/pull/161) | EVOLUTION | 结果页向 paper-like 叙事演进 |
+| [#163](https://github.com/mykcs/basemodel/pull/163) | EVOLUTION | 进一步压低 dashboard 感、提高论文式连续阅读 |
+| [#177](https://github.com/mykcs/basemodel/pull/177) | PREFERENCE | reader-first Results：科学问题和结论先于内部实验账本 |
+| [#179](https://github.com/mykcs/basemodel/pull/179) | PREFERENCE | 删除“这篇文章不是/下面我们会/只记一句话”等 meta-narration |
+| [#183](https://github.com/mykcs/basemodel/pull/183) | PREFERENCE | 长背景拆成短、各自有明确对象的研究说明 |
+| [#215](https://github.com/mykcs/basemodel/pull/215) | PREFERENCE | WebShop first-reader explainer：先懂任务，再懂 split / wrapper / score |
+| [#217](https://github.com/mykcs/basemodel/pull/217) | PREFERENCE | 中英文 benchmark label 与代码字符串边界分开 |
+| [#218](https://github.com/mykcs/basemodel/pull/218) | PREFERENCE | 删除“本页职责/视觉排序/让当前页承担……”等编辑者口吻 |
+| [#219](https://github.com/mykcs/basemodel/pull/219) | PREFERENCE | “已并入当前研究路径”整段删除：内容迁移不是读者关心的事 |
+| [#224](https://github.com/mykcs/basemodel/pull/224) | PREFERENCE | 二次清理 `本站 / 本节 / 这里 / 站内 / 这一节` |
+| [#225](https://github.com/mykcs/basemodel/pull/225) | EVOLUTION | 统一 `研究结果 / Research findings`，稳定命名比局部新词重要 |
+| [#230](https://github.com/mykcs/basemodel/pull/230) | PREFERENCE | 恢复丢失的“不”，把 copy polarity 当科学正确性保护 |
+| [#231](https://github.com/mykcs/basemodel/pull/231) | PREFERENCE | negative wording 不是禁词；audit 不能误伤 `X 不是 Y，而是 Z` |
+| [#241](https://github.com/mykcs/basemodel/pull/241) | EVOLUTION | Results 向统一 publication-grade 页面收敛 |
+| [#244](https://github.com/mykcs/basemodel/pull/244) | PREFERENCE | SEED/OpenEvo evidence boundary 必须在自然文案里保持精确 |
+| [#245](https://github.com/mykcs/basemodel/pull/245) | PREFERENCE | 第一屏先给“知道什么/最新结果/还缺什么”，证据细节后置 |
+| [#247](https://github.com/mykcs/basemodel/pull/247) | PREFERENCE | 每个结论显示观察→支持→不能证明的推理桥 |
+| [#254](https://github.com/mykcs/basemodel/pull/254) | PREFERENCE | 中文优先 L1→L2→L3；英文术语保留但不抢第一理解层 |
+| [#259](https://github.com/mykcs/basemodel/pull/259) | EVOLUTION | action-wrapper 责任链开始显式化 |
+| [#261](https://github.com/mykcs/basemodel/pull/261) | EVOLUTION | 技术归因并入 Results 证据，不另起平行叙事 |
+| [#270](https://github.com/mykcs/basemodel/pull/270) | EVOLUTION | 公平比较增加低上下文解释层 |
+| [#274](https://github.com/mykcs/basemodel/pull/274) | PREFERENCE | wrapper 事故先解释 command vs outer label，再说 parser jargon |
+| [#278](https://github.com/mykcs/basemodel/pull/278) | PREFERENCE | 事故标题先说发生了什么，不用 forensic trace 当主标题 |
+| [#280](https://github.com/mykcs/basemodel/pull/280) | PREFERENCE | 责任归因前先补最小实验设置 |
+| [#285](https://github.com/mykcs/basemodel/pull/285) | PREFERENCE | 事实先于读法，结论先于解释，视觉权重服从语义权重 |
+| [#287](https://github.com/mykcs/basemodel/pull/287) | PREFERENCE | `0 个训练步` 演进为 `一步都没训练` 的自然状态表达 |
+| [#290](https://github.com/mykcs/basemodel/pull/290) | PREFERENCE | `frozen` 等歧义术语改成字面机制 + 精确 checkpoint 身份 |
+| [#296](https://github.com/mykcs/basemodel/pull/296) | EVOLUTION | 缺失训练阶段需要补真实流程，不靠结果页暗示 |
+| [#309](https://github.com/mykcs/basemodel/pull/309) | PREFERENCE | 责任 topology 要明确负责层、触发层和测量边界 |
+| [#314](https://github.com/mykcs/basemodel/pull/314) | PREFERENCE | 全站 facts → reader-first copy → visual language 三遍审计 |
+| [#326](https://github.com/mykcs/basemodel/pull/326) | PREFERENCE | Pending 与预先固定的比较槽位不能伪装成已有结果 |
+| [#328](https://github.com/mykcs/basemodel/pull/328) | EVOLUTION | checkpoint 结果填入时保持 loss 与 capability 非单调事实 |
+| [#331](https://github.com/mykcs/basemodel/pull/331) | PREFERENCE | `preregistration` 收窄为证据支持的 `pre-specification` |
+| [#332](https://github.com/mykcs/basemodel/pull/332) | EVOLUTION | 模型选择与 checkpoint 行为用真实数据图表达 |
+| [#333](https://github.com/mykcs/basemodel/pull/333) | PREFERENCE | 系列名称统一，避免同一实验被多套临时标签描述 |
+| [#334](https://github.com/mykcs/basemodel/pull/334) | EVOLUTION | lyg2171 初版建立硬件/存储/隐私事实层 |
+| [#336](https://github.com/mykcs/basemodel/pull/336) | PREFERENCE | `服务器简介 / GPU 规格 / 数据来源` 取代主持人式标题 |
+| [#338](https://github.com/mykcs/basemodel/pull/338) | EVOLUTION | 固化 capability-exploration 的 publication/visualization 经验，不改变公开实验事实 |
+| [#339](https://github.com/mykcs/basemodel/pull/339) | EVOLUTION | 固化 MiniMax teacher 审计与证据/成本表达经验 |
+| [#341](https://github.com/mykcs/basemodel/pull/341) | PREFERENCE | 将 Stage 2 的计数、门槛与 0 update 改成 first-reader 可追踪的因果链；该表达已进入 `main` |
+| [#342](https://github.com/mykcs/basemodel/pull/342) | PREFERENCE | 结果页主线保留科学问题/结果/解释/边界；commands/configs/logs 进入可选复现深度 |
+| [#344](https://github.com/mykcs/basemodel/pull/344) | PREFERENCE | “不要 cat”的警告不能被 UI 增强成“复制 cat”动作 |
+| [#349](https://github.com/mykcs/basemodel/pull/349) | PREFERENCE | 公开复现路径去掉真实 Unix 账号/home 身份，使用 `$HOME/...` 通用表达 |
+| [#350](https://github.com/mykcs/basemodel/pull/350) | EVOLUTION | 大规模站点优化同时删除/收敛一批旧公开 copy owner；只把经过独立反馈支持的变化提升为偏好 |
+
+## 13. 未合并的相关文案工作不作为既定偏好
+
+全量 PR 检索也会命中尚未合并的公开文案工作。它们可以帮助发现问题，但在 owner 尚未接受、`main` 尚未采用前，不进入 PREFERENCE 判例。
+
+- [#345](https://github.com/mykcs/basemodel/pull/345) — 本规范与案例库自身的交付 PR；它不是用来证明自身正确性的历史偏好来源。
+
+以后新增 OPEN / DRAFT PR 也按同一规则处理：可以进入审计备注，但不能仅凭“有人开了 PR”反推成用户偏好。
