@@ -1,12 +1,12 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
-import OpenEvoExperimentSelector from '../../../../../components/research/OpenEvoExperimentSelector.astro';
+import OpenEvoStage2StrategyChooser from '../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo 基础能力探索实验"
-  description="OpenEvo 基础能力探索实验：用 3B/7B × 无教师/MiniMax 四组实验，拆开观察模型规模、bootstrap、动作可执行性、WebShop Task Score 与后续 self-exploration。"
+  description="OpenEvo × WebShop 能力探索：先区分已取代的 256-window Stage 2 方法控制实验与当前 OpenEVO-Ceiling-1.0 主线，再进入对应实验和证据。"
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -14,11 +14,11 @@ const locale = 'zh' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo 基础能力探索实验</h1>
       <div>
-        <strong>这一组实验先回答“OpenEvo 包着不同基础模型时，最基本的学习能力会怎样变化”。</strong>
-        <span>固定 OpenEvo 与 WebShop 主框架，只切换 Actor 规模（3B / 7B）和 episode 后外部 hindsight（无教师 / MiniMax），形成四个单实验，再做一组联合比较。</span>
+        <strong>2026-08-30 最重要的修正：旧 Stage 2 结果要保留，但不能再被读成当前 OpenEVO 的长期学习算法。</strong>
+        <span>先选择 Stage 2 的方法版本。旧路线保存 3B/7B × self/MiniMax 四臂的真实历史结果；新路线记录 OpenEVO-Ceiling-1.0 已冻结的能力上限设计与 activation 状态。</span>
       </div>
     </header>
-    <OpenEvoExperimentSelector locale={locale} mode="group" />
+    <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
   </section>
 </AppLayout>

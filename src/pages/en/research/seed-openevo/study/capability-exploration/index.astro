@@ -1,12 +1,12 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
-import OpenEvoExperimentSelector from '../../../../../../components/research/OpenEvoExperimentSelector.astro';
+import OpenEvoStage2StrategyChooser from '../../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
   title="OpenEvo capability exploration experiments"
-  description="OpenEvo capability exploration: a 3B/7B × self/MiniMax four-arm series separating model scale, bootstrap, action executability, WebShop Task Score, and later self-exploration."
+  description="OpenEvo × WebShop capability exploration: distinguish the superseded 256-window Stage-2 method-control runs from the current OpenEVO-Ceiling-1.0 mainline before reading results."
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -14,11 +14,11 @@ const locale = 'en' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo capability exploration experiments</h1>
       <div>
-        <strong>This series asks how basic learning behavior changes when OpenEvo wraps different foundation-model conditions.</strong>
-        <span>Keep the OpenEvo and WebShop framework fixed, switch actor scale (3B / 7B) and post-episode external hindsight (none / MiniMax), then compare the four arms jointly.</span>
+        <strong>The key correction: old Stage-2 results remain evidence, but they are no longer the current long-horizon OpenEVO learning algorithm.</strong>
+        <span>Choose the Stage-2 method version first. The historical branch preserves the 3B/7B × self/MiniMax arms; the current branch records the frozen OpenEVO-Ceiling-1.0 capability-ceiling design and activation status.</span>
       </div>
     </header>
-    <OpenEvoExperimentSelector locale={locale} mode="group" />
+    <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
   </section>
 </AppLayout>
