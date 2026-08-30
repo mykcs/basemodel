@@ -4,8 +4,19 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const scaffold = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astro');
+const legacyResultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
+const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
+const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
+const program = read('../data/openEvoWebShopProgram.ts');
+const hero = read('../components/research/OpenEvoWebShopResultsHero.astro');
+const protocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
+const planIndex = read('../components/research/OpenEvoExperimentAnalysisPlanIndex.astro');
+const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
+const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
+const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
+const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${analysis}`;
+const resultFamilyCopy = `${scaffold}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('explains the 7-versus-8 Stage-2 update rule in reader terms', () => {
@@ -47,4 +58,87 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(analysis).toContain('最终 128 任务评测尚未完成');
     expect(analysis).toContain('Stage 2 虽然做了大量任务尝试，却没有发生参数训练');
   });
+
+  it('explains legacy result counts and negative states instead of exposing log shorthand', () => {
+    expect(legacyResultNote).toContain('这组页面先统一 7 个词');
+    expect(legacyResultNote).toContain('cell 数不能直接当任务成功数');
+    expect(legacyResultNote).toContain('“未通过”表示实验有效运行但目标门槛没有达到');
+    expect(legacyResultNote).toContain('“测量无效”表示当前数据不足以可靠比较');
+    expect(legacyResultNote).toContain('不能写成“T2 评测失败”');
+    expect(legacyResultNote).toContain('这些成功来自 33 个不同任务，而不是 132 个不同任务');
+    expect(legacyResultNote).toContain('这表示当前比较不能支持机制结论，不表示实验没有运行');
+
+    expect(program).toContain('这里的“0”是有效负结果，不是实验没运行');
+    expect(program).toContain('不能当成模型得分为 0');
+    expect(program).toContain('T2 根本没有运行，因此不能把它描述成 T2 评测失败');
+    expect(movedPrimer).toContain('任务从哪里开始和结束');
+    expect(movedPrimer).toContain('哪些证据被正式封存');
+    expect(resultsAppendix).toContain('历史时间线读数说明');
+  });
+
+  it('keeps old author-only result shorthand out of public result copy', () => {
+    for (const opaque of [
+      '132 个 qualified positives',
+      '33 个 qualifying identities',
+      'upstream gates 没有过',
+      'T2 fresh-transfer panel',
+      '完成 96 cells / 384 attempts',
+      'selector 是 MEASUREMENT_INVALID',
+      '正式 evaluation denominator 为 0',
+      'parameter-write 主实验主要依赖 qualified positive records',
+      'task boundary、sealed evidence、evolution carrier、validation 与 successor revision',
+      'fresh-task transfer 已得到独立 replication',
+    ]) {
+      expect(resultFamilyCopy, `legacy opaque result shorthand "${opaque}" should not reappear`).not.toContain(opaque);
+    }
+  });
+
+
+  it('translates homepage project codes and status values before using them as evidence', () => {
+    expect(protocol).toContain('先把数字、单位和项目内部编号翻译成人话');
+    expect(protocol).toContain('它不是一次参数训练，也不是一个单独动作');
+    expect(protocol).toContain('cell 数不能直接当成成功任务数');
+    expect(protocol).toContain('数字本身不是模型分数，也不是训练步数');
+    expect(protocol).toContain('不是 256 个不同任务');
+    expect(protocol).toContain('false 通常表示当前没有权限做某一步');
+    expect(protocol).toContain('locked 表示正式测试仍被锁住');
+    expect(protocol).toContain('Pending 表示还没有最终结果');
+
+    expect(hero).toContain('同一 128 个任务 × 两个模型组（共 256 个任务回合）');
+    expect(hero).toContain('formal_task_consumption_allowed=false 表示“不允许继续消耗正式任务”');
+    expect(hero).toContain('gpu_allocation_allowed=false 表示“当前不授权为这一步分配 GPU”');
+    expect(hero).toContain('final_test_status=locked 表示“最终测试仍锁定”');
+  });
+
+  it('explains homepage counts, zeroes, pending results, and formal-denominator zero', () => {
+    expect(questions).toContain('H0 完整任务尝试次数');
+    expect(questions).toContain('其中科学有效的任务尝试');
+    expect(questions).toContain('其中可用于训练的完整成功轨迹');
+    expect(questions).toContain('这些成功来自 33 个不同任务');
+    expect(questions).toContain('这是有效运行后得到的负结果');
+    expect(questions).toContain('T2 根本没有启动');
+
+    expect(benchmarkNote).toContain('没有任何样本满足进入正式比较的完整条件');
+    expect(benchmarkNote).toContain('不是“模型得 0 分”');
+    expect(planIndex).toContain('尚无最终结果（Pending）”，不能用 0 代替');
+    expect(nextSteps).toContain('当前已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056');
+    expect(currentQ7).toContain('total_slots=128、matches=128、mismatches=0，分别表示');
+    expect(currentQ7).toContain('包含 0，因此未证明稳定差异');
+  });
+
+  it('does not regress the homepage to raw project-state shorthand', () => {
+    for (const opaque of [
+      'source-faithful Track A 先通过 authoritative runtime semantic validation 128/128',
+      'Gen28 的 128 个 episode 已完成',
+      'formal_task_consumption_allowed=false、gpu_allocation_allowed=false、final 继续 locked',
+      'H0 尝试次数（attempts）',
+      '256 次尝试 → 132 条合格正向经验',
+      'Track A 机器可读 closeout',
+      '正式 evaluation denominator（正式评估分母）= 0',
+      'task boundary、sealed evidence、evolution carrier、validation 与 successor revision',
+    ]) {
+      expect(resultFamilyCopy, `raw homepage shorthand "${opaque}" should not reappear`).not.toContain(opaque);
+    }
+  });
+
 });

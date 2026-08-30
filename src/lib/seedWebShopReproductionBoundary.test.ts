@@ -71,8 +71,8 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(seedFigure).toContain('不能由公开信息唯一恢复');
     expect(questions).toContain('公开代码规定每次 validation 是 128 个任务');
     expect(questions).toContain('公开信息不能唯一确定');
-    expect(nextSteps).toContain('公开代码“首次验证”，不是论文最终 128 题');
-    expect(nextSteps).toContain('不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题');
+    expect(nextSteps).toContain('公开代码能重建的“第一次验证”，不是论文最终 128 题');
+    expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
   });
 
   it('points readers to the pinned released SEED code for both boundaries', () => {

@@ -22,13 +22,13 @@ describe('current Track A wrapper audit and adopted WB1 state', () => {
 
   it('publishes state-v28 adoption without unlocking Gen29', () => {
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(nextSteps).toContain('latest native state=state-v28');
+    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('3,584/20,640');
     expect(nextSteps).toContain('17,056');
     expect(nextSteps).toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('gpu_allocation_allowed=false');
-    expect(nextSteps).toContain('final 继续 locked');
-    expect(nextSteps).toContain('Gen29 仍需要单独 execution-readiness / resumption release');
+    expect(nextSteps).toContain('final locked 表示最终测试仍锁定');
+    expect(nextSteps).toContain('第 29 代仍需要一次独立的“可以恢复执行”授权');
     expect(nextSteps).toContain('RECONCILIATION.json');
   });
 });

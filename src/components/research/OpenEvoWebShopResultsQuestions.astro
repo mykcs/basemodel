@@ -110,12 +110,12 @@ const questions: Question[] = [
     observations: [
       {
         label: t('参数更新链', 'Parameter-update chain'),
-        value: t('SD-LoRA 优化器步骤（optimizer steps）、适配器（adapter）保存 / 重新加载，以及 G2 写入 16 个组件（components）、有效秩（effective rank）64，均有机器对账。', 'SD-LoRA optimizer steps, adapter save/reload, and the G2 write to 16 components with effective rank 64 are machine-reconciled.'),
+        value: t('SD-LoRA 的参数优化步骤、学习适配器（adapter）保存 / 重新加载，以及第二代 G2 真实写入 16 个低秩参数组成项、最终有效秩为 64，都有机器对账记录。这里“16”和“64”描述参数写入结构，不是任务得分。', 'SD-LoRA optimizer steps, adapter save/reload, and the G2 write to 16 components with effective rank 64 are machine-reconciled.'),
         sources: [g2TrainingReconciliation],
       },
       {
         label: t('闭环任务收益', 'Closed-loop task gain'),
-        value: t('Phase G：12 个开发集晋级回合（promotion-dev episodes），三个实验组（arms）的分数 / 成功差值（score / win delta）全为 0。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
+        value: t('Phase G：共 12 个仅用于内部晋级筛选的开发任务回合。三个实验组之间的任务分数差和完整成功差都为 0；这是有效运行后得到的负结果，表示没有观察到组间收益，不是“实验没跑”。', 'Phase G: across 12 promotion-dev episodes, all three arms had zero score/win delta.'),
         sources: [{ kind: 'historical-record', label: t('WebShop 项目总账中的 Phase G 记录', 'Phase G entry in the WebShop program ledger'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/WEBSHOP_PROGRAM_LEDGER.v1.json` }],
       },
     ],
@@ -132,9 +132,9 @@ const questions: Question[] = [
     question: t('OpenEvo 有没有成功经验可以学习？', 'Does OpenEvo have successful experience to learn from?'),
     conclusion: t('有。即使还没有经过 OpenEvo 更新，基础模型也会自然完成一部分 WebShop 任务，因此我们确实能收集到“模型自己做成功”的轨迹作为学习材料。', 'Yes. Even before an OpenEvo update, the base model naturally completes some WebShop tasks, so there is real model-generated successful experience available for learning.'),
     observations: [
-      { label: t('H0 尝试次数（attempts）', 'H0 attempts'), value: '128', sources: [h0Reconciliation] },
-      { label: t('科学有效', 'Scientifically valid'), value: '96', sources: [h0Reconciliation] },
-      { label: t('合格正向经验', 'Qualified positives'), value: '28', sources: [h0Reconciliation] },
+      { label: t('H0 完整任务尝试次数', 'H0 attempts'), value: '128', sources: [h0Reconciliation] },
+      { label: t('其中科学有效的任务尝试', 'Scientifically valid'), value: '96', sources: [h0Reconciliation] },
+      { label: t('其中可用于训练的完整成功轨迹', 'Qualified positives'), value: '28', sources: [h0Reconciliation] },
     ],
     boundary: t('H0 只说明成功经验的供给不是零；它还不能证明这些经验会迁移到新的任务。', 'H0 shows that the supply of successful experience is nonzero; it does not yet prove transfer to new tasks.'),
     links: [
@@ -153,12 +153,12 @@ const questions: Question[] = [
     ),
     observations: [
       {
-        label: t('H1.11 · 96 次尝试（attempts）', 'H1.11 · 96 attempts'),
+        label: t('H1.11 · 96 次完整任务尝试', 'H1.11 · 96 attempts'),
         value: t('成功经验监督比失败经验监督更容易拟合；新任务闭环行为未改善。', 'Positive supervision fit better than failure supervision; fresh-task closed-loop behavior did not improve.'),
         sources: [{ kind: 'machine-result', label: t('H1.11 实验对账', 'H1.11 reconciliation'), href: `${archiveRoot}/docs/evidence/remote-runs/2026-08-15/h1.11/evidence/h1.11-reconciliation-v1.json` }],
       },
       {
-        label: t('H1.13 · 96 次尝试（attempts）', 'H1.13 · 96 attempts'),
+        label: t('H1.13 · 96 次完整任务尝试', 'H1.13 · 96 attempts'),
         value: t('只训练动作目标也可以拟合；仍未形成稳定的新任务迁移。', 'Action-only targets fit; stable fresh-task transfer did not emerge.'),
         sources: [{ kind: 'machine-result', label: t('H1.13 实验对账', 'H1.13 reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-15/h1.13/evidence/h1.13-reconciliation-v1.json#L1-L5` }],
       },
@@ -177,9 +177,9 @@ const questions: Question[] = [
     question: t('学到的经验能迁移到新的任务吗？', 'Does the learned experience transfer to new tasks?'),
     conclusion: t('能，而且已经独立复现。H1.38B 第一次在训练没见过的新任务上看到明确提升；H1.39 冻结训练产物、不再调参，再换一批全新任务后仍然得到同方向结果。两次使用不同的新任务面板仍得到同方向提升，所以这里的“可迁移”不是从单次偶然波动推出来的。', 'Yes, and it replicated independently. H1.38B first showed a clear gain on tasks unseen during training; H1.39 froze the artifacts, stopped tuning, moved to a new task set, and found the same direction again. Because the same direction appeared on two different fresh-task panels, the transfer claim is not inferred from a single fluctuation.'),
     observations: [
-      { label: t('H1.38B · 704 次尝试 / 668 次有效', 'H1.38B · 704 attempts / 668 valid'), value: 'SD-LoRA − BASE = +0.124，95% CI [0.0326, 0.2194]', sources: [h138bReconciliation] },
-      { label: t('H1.39 · 768 次尝试 / 740 次有效', 'H1.39 · 768 attempts / 740 valid'), value: t('普通 LoRA（ordinary LoRA）− BASE = +0.1637 [0.0781, 0.2519]；SD − BASE = +0.2488 [0.1642, 0.3365]（58 个完整分组 / complete clusters）', 'ordinary − BASE = +0.1637 [0.0781, 0.2519]; SD − BASE = +0.2488 [0.1642, 0.3365] (58 complete clusters)'), sources: [h139Reconciliation] },
-      { label: t('次级信号', 'Secondary signal'), value: t('SD − 普通 LoRA（ordinary LoRA）= +0.0851 [0.0028, 0.1680]，符号翻转检验（sign-flip）p = 0.0505。值得继续检验，但不足以宣布 SD-LoRA 普遍优于普通 LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'), sources: [h139Reconciliation] },
+      { label: t('H1.38B · 704 次完整任务尝试 / 668 次科学有效', 'H1.38B · 704 attempts / 668 valid'), value: 'SD-LoRA − 基础模型 = +0.124，95% 置信区间 [0.0326, 0.2194]', sources: [h138bReconciliation] },
+      { label: t('H1.39 · 768 次完整任务尝试 / 740 次科学有效', 'H1.39 · 768 attempts / 740 valid'), value: t('普通 LoRA − 基础模型 = +0.1637，95% 置信区间 [0.0781, 0.2519]；SD-LoRA − 基础模型 = +0.2488，95% 置信区间 [0.1642, 0.3365]。统计分母包含 58 个数据完整、可进入配对统计的任务簇。', 'ordinary − BASE = +0.1637 [0.0781, 0.2519]; SD − BASE = +0.2488 [0.1642, 0.3365] (58 complete clusters)'), sources: [h139Reconciliation] },
+      { label: t('次级信号', 'Secondary signal'), value: t('SD-LoRA − 普通 LoRA = +0.0851，95% 区间 [0.0028, 0.1680]；符号翻转检验 p = 0.0505。它值得继续检验，但不足以宣布 SD-LoRA 普遍优于普通 LoRA。', 'SD − ordinary = +0.0851 [0.0028, 0.1680], sign-flip p = 0.0505. It is worth further testing but does not establish universal SD-LoRA superiority over ordinary LoRA.'), sources: [h139Reconciliation] },
     ],
     boundary: t('这两组评估任务都来自 goal_idx ≥ 500，属于“OpenEvo 内部新任务、任务 ID 不重叠评估（OpenEvo internal fresh task-ID-disjoint evaluation）”。它们不是 0–499 的 SEED 官方保留任务评估。', 'Both evaluation panels draw from goal_idx ≥ 500 and are OpenEvo internal fresh task-ID-disjoint evaluations. They are not the SEED official held-out evaluation on 0–499.'),
     links: [
@@ -197,11 +197,11 @@ const questions: Question[] = [
     question: t('第一代能迁移，是否意味着可以一直越学越好？', 'If generation one transfers, does improvement keep compounding?'),
     conclusion: t('目前不能这样说。第二代确实收集到了新的成功经验，也真实写入了 G2；但后续检查里，旧能力表现出现下降方向，第一代已经复现的迁移收益也没有被稳定保住，而新经验获取本身还夹杂测量失效。因此这三件事没有同时成立，我们目前只能说“第二代持续整合尚未建立”，不能说 OpenEvo 已经会连续多代越学越好。', 'Not so far. The second generation did collect new successful experience and genuinely write G2, but subsequent checks showed a downward direction in prior capability, the replicated first-generation transfer gain was not stably preserved, and acquisition itself included invalid measurement. Those three requirements therefore did not hold together, so second-generation continual integration is not established.'),
     observations: [
-      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 次尝试 → 132 条合格正向经验 · 33 个合格任务身份 · 16 条入选记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records'), sources: [{ kind: 'machine-result', label: t('E2 harvest 对账', 'E2 harvest reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/e2-harvest-reconciliation-v1.json` }] },
-      { label: t('G2 写入', 'G2 write'), value: t('16 个组件（components）· 有效秩（effective rank）64 · 8 次顺序增量写入', '16 components · effective rank 64 · 8 sequential increments'), sources: [g2TrainingReconciliation] },
-      { label: t('三道能力门', 'Capability gates'), value: t('新经验获取 / 旧能力保留 / 已复现收益保持没有同时通过；预留的 T2 新任务测试没有打开。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.'), sources: [h140Upstream] },
+      { label: t('第二代经验采集', 'E2 harvest'), value: t('256 次完整任务尝试 → 132 条可用于训练的完整成功轨迹 → 这些成功来自 33 个不同任务 → 最终入选 16 条训练记录', '256 attempts → 132 qualified positives · 33 qualifying identities · 16 selected records'), sources: [{ kind: 'machine-result', label: t('E2 harvest 对账', 'E2 harvest reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/e2-harvest-reconciliation-v1.json` }] },
+      { label: t('G2 写入', 'G2 write'), value: t('真实写入 16 个低秩参数组成项；有效秩 64 表示最终 SD-LoRA 的低秩参数容量；整个写入分成 8 个顺序增量批次', '16 components · effective rank 64 · 8 sequential increments'), sources: [g2TrainingReconciliation] },
+      { label: t('三道能力门', 'Capability gates'), value: t('“新知识获取、旧能力保持、第一代已复现收益保持”三项没有同时通过；因此预留的第二代新任务迁移评测 T2 根本没有启动。', 'Acquisition / retention / preservation did not clear together; T2 remained closed.'), sources: [h140Upstream] },
     ],
-    boundary: t('H1.40 支持“第二代持续整合尚未建立”。不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 没有运行。', 'H1.40 supports “second-generation continual integration is not established”. It must not be written as “G2 proved transfer failure on formal T2”, because T2 never ran.'),
+    boundary: t('实验编号 H1.40 支持“第二代持续整合尚未建立”。这里的否定结论只表示三项前置条件没有同时满足；不能写成“G2 已经在正式 T2 上证明迁移失败”，因为 T2 根本没有运行。', 'H1.40 supports “second-generation continual integration is not established”. It must not be written as “G2 proved transfer failure on formal T2”, because T2 never ran.'),
     links: [
       { kind: 'config', label: t('H1.40-R2 冻结协议', 'H1.40-R2 frozen protocol'), href: `${archiveRoot}/configs/experiment/h1.40-r2-g2-multigeneration-v1.json` },
       { kind: 'machine-result', label: t('E2 harvest 对账', 'E2 harvest reconciliation'), href: `${evidenceSnapshotRoot}/docs/evidence/remote-runs/2026-08-20/h1.40-g2-r2/e2-harvest-reconciliation-v1.json` },

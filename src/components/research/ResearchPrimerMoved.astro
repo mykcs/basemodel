@@ -7,25 +7,25 @@ const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: stri
   'webshop-training': {
     eyebrow: 'WEBSHOP · ENVIRONMENT',
     title: '想确认 WebShop 的任务与评测规则？',
-    description: '任务结构包括 observation / action / reward、官方数据、small 配置、goal 生成、任务划分与最终评分。',
+    description: '任务结构包括页面观察（observation）、模型动作（action）、环境奖励（reward）、官方数据、小型商品配置（small）、任务目标生成、任务划分与最终评分。',
     href: '/research/seed-openevo/flow/webshop/',
     target: '打开 WebShop 任务与评测 →',
   },
   'seed-training': {
     eyebrow: 'SEED · WEBSHOP',
     title: '想确认 SEED 在 WebShop 上到底用了哪套场地？',
-    description: 'SEED 使用 WebShop small 环境和特定 goal 划分；公平比较需要匹配同一任务边界。SEED 自身的训练与推理机制见论文页。',
+    description: 'SEED 使用 WebShop 的小型商品环境（small）和特定任务目标划分；公平比较需要使用相同的任务范围。SEED 自身的训练与推理机制见论文页。',
     href: '/research/seed-openevo/flow/webshop/#fig-seed-webshop',
-    target: '打开 Figure S1 · SEED × WebShop →',
+    target: '打开图 S1 · SEED × WebShop →',
     secondary: { href: '/papers/seed/', label: '查看 SEED 论文页 →' },
   },
   'openevo-training': {
     eyebrow: 'OPENEVO · MECHANISM',
     title: '想确认 OpenEvo 是怎么从经验更新自己的？',
-    description: 'OpenEvo 的更新链包括 task boundary、sealed evidence、evolution carrier、validation 与 successor revision；Figure C1 给出与 SEED 的并排比较。',
+    description: 'OpenEvo 的更新链包括任务从哪里开始和结束、哪些证据被正式封存、经验怎样被带到下一版模型、怎样验证更新是否有效，以及更新后的后继模型版本。图 C1 给出与 SEED 的并排比较。',
     href: '/research/seed-openevo/flow/openevo/',
     target: '打开 OpenEvo 演化流程 →',
-    secondary: { href: '/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target', label: '查看 Figure C1 · SEED vs OpenEvo →' },
+    secondary: { href: '/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target', label: '查看图 C1 · SEED vs OpenEvo →' },
   },
 };
 const current = destinations[note];

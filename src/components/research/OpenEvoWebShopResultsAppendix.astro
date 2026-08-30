@@ -93,6 +93,15 @@ const legacyLinks = [
       '每条记录都标出它属于“已有可用证据”“预期未得到支持”“无效或仅诊断”“仅协议”还是“目标 / 设计移交”，并链接到对应的机器结果或人工报告。',
       'Each entry is labelled as usable evidence, expected effect not supported, invalid or diagnostic-only, protocol only, or goal/design handoff, with links to the corresponding machine result or human report.',
     )}</p>
+    <div class="lineage-glossary" aria-label={t('历史时间线读数说明', 'Timeline reading guide')}>
+      <div><strong>{t('任务尝试（attempt）', 'Task attempt')}</strong><span>{t('一次完整做题过程；不是一次参数更新。', 'One complete task episode; not a parameter update.')}</span></div>
+      <div><strong>{t('评测单元（cell）', 'Evaluation cell')}</strong><span>{t('一个固定“实验组 × 任务 × 随机种子”等组合；多个任务尝试可以属于同一评测单元。', 'One fixed arm × task × seed-style evaluation unit; several attempts can belong to one cell.')}</span></div>
+      <div><strong>{t('可用于训练的完整成功轨迹', 'Trainable exact-success trajectory')}</strong><span>{t('任务完整成功且技术有效的轨迹；旧记录中的 qualified positive。', 'A fully successful, technically valid trajectory; called a qualified positive in older logs.')}</span></div>
+      <div><strong>{t('达标任务身份', 'Qualifying task identity')}</strong><span>{t('数的是不同任务，不是轨迹条数；旧记录中的 qualifying identity。', 'Counts distinct tasks, not trajectories; called a qualifying identity in older logs.')}</span></div>
+      <div><strong>{t('未支持预期', 'Expected effect not supported')}</strong><span>{t('实验有效运行，但预先关心的改善没有得到证据支持；不等于实验没跑。', 'The run was valid, but the expected improvement was not supported; it does not mean the run did not execute.')}</span></div>
+      <div><strong>{t('测量无效', 'Measurement invalid')}</strong><span>{t('当前数据不能可靠支持该比较；不能把无效格子自动当成 0 分。', 'The data cannot support the comparison reliably; invalid cells must not be converted into zero scores.')}</span></div>
+      <div><strong>T2</strong><span>{t('预留的第二代新任务迁移评测；只有上游门槛通过才会启动，“未打开”表示没有进行正式 T2 评测。', 'Reserved second-generation fresh-task evaluation; “not opened” means the formal T2 evaluation was not run.')}</span></div>
+    </div>
     <ol class="lineage-list">
       {programTimeline.map((item) => (
         <li>
@@ -142,6 +151,7 @@ const legacyLinks = [
   .legacy-links p,.lineage-appendix p{margin:10px 0 8px;line-height:1.6}
   .legacy-links div{display:flex;gap:12px;flex-wrap:wrap}
   .legacy-links a{color:var(--color-accent)}
+  .lineage-glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin:12px 0 16px;padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-bg)}.lineage-glossary div{display:grid;gap:4px}.lineage-glossary strong{font-size:.73rem;color:var(--color-text)}.lineage-glossary span{font-size:.7rem;line-height:1.5}
   .lineage-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
   .lineage-list li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 14px;padding:12px 14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-bg)}
   .lin-cov{grid-row:1 / span 3;color:var(--color-accent);font:700 .68rem ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5}
@@ -166,6 +176,7 @@ const legacyLinks = [
     .print-provenance code{display:block;margin-top:4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
   }
   @media(max-width:720px){
+    .lineage-glossary{grid-template-columns:1fr}
     .results-appendix{padding-inline:18px}
     .section-heading{grid-template-columns:1fr;gap:8px}
     .deep-grid{grid-template-columns:1fr}

@@ -80,16 +80,16 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(hero).toContain('最新评测');
     expect(hero).toContain('接下来');
     expect(hero).toContain('模型从自己做成功的任务里学习一次以后');
-    expect(hero).toContain('纠错后的 SEED 公开代码任务语义完成的 128×2 配对评测');
-    expect(hero).toContain('统计区间仍然跨过“没有差异”');
-    expect(hero).toContain('authoritative runtime semantic validation 128/128');
+    expect(hero).toContain('同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合');
+    expect(hero).toContain('统计区间仍然包含“没有差异”');
+    expect(hero).toContain('128/128 表示计划的 128 个任务槽位全部核对通过');
     expect(hero).toContain('measurement-not-proven-stable-improvement');
     expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).toContain('专业解释：');
     expect(hero).not.toContain('95% CI');
     expect(hero).not.toContain('formal evaluation denominator');
     expect(hero).not.toContain('github.com/');
-    expect(hero).toContain('机制结论截至 H1.41');
+    expect(hero).toContain('机制结论以实验编号 H1.41 为时间截点');
     expect(hero).toContain('H1.42 是之后的测量校准记录');
   });
 
@@ -167,7 +167,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('它们不是 0–499 的 SEED 官方保留任务评估');
     expect(questions).toContain('第二代持续整合尚未建立');
     expect(questions).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(questions).toContain('T2 没有运行');
+    expect(questions).toContain('T2 根本没有运行');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(questions).toContain('不能反过来改写 H1.41 的机制结论');
   });
@@ -290,14 +290,14 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
 
   it('orders next steps around closed Track A, the WB1 state barrier, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('Track A 已经闭环：有效测量，但没有稳定胜出');
-    expect(nextSteps).toContain('128/128 验证通过');
+    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
+    expect(nextSteps).toContain('128/128 任务语义核对通过');
     expect(nextSteps).toContain('PUBLISHED_AND_VERIFIED');
-    expect(nextSteps).toContain('公开代码“首次验证”，不是论文最终 128 题');
-    expect(nextSteps).toContain('不是声称找回了论文 89.7 / 78.1% 当年使用的那 128 题');
-    expect(nextSteps).toContain('Gen28 状态断点已修复；Track B / WB1 等待 Gen29 放行');
+    expect(nextSteps).toContain('公开代码能重建的“第一次验证”，不是论文最终 128 题');
+    expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
+    expect(nextSteps).toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(nextSteps).toContain('latest native state=state-v28');
+    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
     expect(nextSteps).toContain('路线 B（Track B，WB1）');
