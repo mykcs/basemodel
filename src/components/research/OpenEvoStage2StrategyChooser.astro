@@ -1,0 +1,34 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+interface Props { locale: Locale; active?: 'legacy' | 'ceiling' | 'index' }
+const { locale, active = 'index' } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const p = (path:string) => localePath(locale,path);
+---
+<section class="s2-choice" data-testid="stage2-strategy-selector" aria-labelledby="s2-choice-title">
+  <div class="s2-choice__head">
+    <p>STAGE 2 · METHOD VERSION</p>
+    <h2 id="s2-choice-title">{t('先选 Stage 2 的方法版本，再看实验结果', 'Choose the Stage-2 method version before reading results')}</h2>
+    <span>{t('2026-08-30 的关键修正不是“把 7 改成 8”，而是承认旧的 256-window hard gate 不应该被当成长程学习算法。旧结果保留为方法控制证据；新主线由 Ceiling-1.0 接管。','The correction is not “change 7 to 8”. The old 256-window hard gate should not have been promoted into a long-horizon learning algorithm. Its results remain as method-control evidence; Ceiling-1.0 is the new mainline.')}</span>
+  </div>
+  <div class="s2-choice__grid">
+    <a class:list={['s2-choice__card','legacy',{active:active==='legacy'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')} aria-current={active==='legacy'?'page':undefined}>
+      <div><span>01 · {t('历史 / 已取代','HISTORICAL / SUPERSEDED')}</span><b>{t('旧 Stage 2：256 窗口硬门槛','Old Stage 2: 256-window hard gate')}</b></div>
+      <p>{t('每 256 条 rollout 独立要求至少 8 个不同 task 各自重复成功；窗口之间不能累计。稀疏成功因此被窗口边界反复清零，80 个 block 可以积累很多成功轨迹，却仍然 0 次更新。','Each 256-rollout block independently required at least eight distinct tasks with repeated success; evidence could not accumulate across windows. Sparse success was repeatedly discarded at boundaries, so many useful successes could coexist with zero updates.')}</p>
+      <strong>{t('查看旧四臂、进度、checkpoint 与归档 →','Open the four historical arms, checkpoints, and archive →')}</strong>
+    </a>
+    <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
+      <div><span>02 · {t('当前主线 / 设计冻结','CURRENT MAINLINE / DESIGN FROZEN')}</span><b>OpenEVO-Ceiling-1.0</b></div>
+      <p>{t('把 128 条 rollout 的自然 round 当作 evolution dataset boundary，而不是成功门槛。每个 task 最多取 1 条最早 clean exact success；0 条才 no-op，≥1 条即可产生一次 native SD-LoRA generation，同时 Text Memory 独立看 grounded evidence。','Treat the natural 128-rollout round as an evolution dataset boundary, not a success threshold. At most one earliest clean exact success is selected per task; zero means no-op, while one or more can produce one native SD-LoRA generation, with Text Memory evolving independently from grounded evidence.')}</p>
+      <strong>{t('查看 Ceiling-1.0 完整策略 →','Open the full Ceiling-1.0 strategy →')}</strong>
+    </a>
+  </div>
+</section>
+<style>
+.s2-choice{margin:1rem 0 1.4rem;padding:1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent)}
+.s2-choice__head{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1fr);gap:.65rem 1.2rem;padding:.15rem .15rem 1rem;border-bottom:1px solid var(--color-border)}.s2-choice__head>p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.s2-choice__head h2{margin:0;font-size:clamp(1.15rem,2.6vw,1.7rem);letter-spacing:-.035em}.s2-choice__head>span{color:var(--color-text-muted);font-size:.78rem;line-height:1.65}
+.s2-choice__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.s2-choice__card{display:flex;min-width:0;flex-direction:column;gap:.7rem;padding:1rem;border:1px solid var(--color-border);border-radius:13px;color:var(--color-text);text-decoration:none;background:var(--color-bg);transition:border-color .15s ease,transform .15s ease}.s2-choice__card:hover,.s2-choice__card.active{border-color:var(--color-accent);transform:translateY(-1px)}.s2-choice__card div{display:flex;flex-direction:column;gap:.25rem}.s2-choice__card span{font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:var(--color-text-muted)}.s2-choice__card b{font-size:1rem}.s2-choice__card p{margin:0;color:var(--color-text-muted);font-size:.76rem;line-height:1.62}.s2-choice__card>strong{margin-top:auto;color:var(--color-accent);font-size:.72rem}.s2-choice__card.legacy{border-style:dashed}.s2-choice__card.legacy.active{background:color-mix(in srgb,#b7791f 5%,var(--color-bg))}.s2-choice__card.ceiling.active{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+@media(max-width:760px){.s2-choice__head,.s2-choice__grid{grid-template-columns:1fr}.s2-choice__head>p{grid-column:auto}}
+</style>

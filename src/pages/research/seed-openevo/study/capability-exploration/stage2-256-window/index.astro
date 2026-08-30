@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoLegacyStage2Archive from '../../../../../../components/research/OpenEvoLegacyStage2Archive.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="旧 Stage 2：256 窗口硬门槛" description="已取代的 256-window Stage 2 方法控制实验：3B/7B × self/MiniMax 的真实结果、checkpoint 与归档。" locale={locale}>
+  <OpenEvoLegacyStage2Archive locale={locale} />
+</AppLayout>
