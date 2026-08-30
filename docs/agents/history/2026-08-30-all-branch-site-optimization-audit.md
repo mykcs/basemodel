@@ -10,6 +10,8 @@ Production checked: <https://basemodel-preview.vercel.app>
 
 Lifecycle: historical evidence and execution brief; it does not override `docs/agents/current/*`, executable code/tests, or live provider state.
 
+Final implementation/release closeout: [`2026-08-30-site-optimization-implementation-and-release-retrospective.md`](2026-08-30-site-optimization-implementation-and-release-retrospective.md). That retrospective records PR #350, the browser regressions found during implementation, exact-tree acceptance, merge, and Production `READY`.
+
 ## 1. Purpose and decision summary
 
 This audit answers two questions:

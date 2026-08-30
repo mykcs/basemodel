@@ -251,6 +251,8 @@ Do not claim Core Web Vitals or network improvements without measurement.
 
 Once the requested problem is fixed, relevant gates are green and release is verified, **stop**. Further cleanup requires a new explicit request or new measured evidence.
 
+Historical end-to-end case: [`../history/2026-08-30-site-optimization-implementation-and-release-retrospective.md`](../history/2026-08-30-site-optimization-implementation-and-release-retrospective.md) records the 95-branch audit → fail-closed Gate repair → payload/hydration reduction → no-JS/WebKit regressions → exact-tree Preview/CI → expected-head merge → Production `READY` sequence that motivated several rules above.
+
 ## 12. Durable knowledge belongs in the best existing owner
 
 Conversation is not the project database.

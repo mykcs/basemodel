@@ -67,6 +67,26 @@ Historical case and friction record: [`../history/2026-08-28-vercel-billing-and-
 
 ---
 
+## TRIGGER: whole-site performance / hydration / payload / dead-code optimization
+
+**Cues:** full-site optimization, HTML/JS/CSS payload reduction, hydration cleanup, large serialized props, dead components, static-first/no-JS regressions, CommandMenu/global-island cost, or a request to optimize many pages without redesigning the product.
+
+**Automatic response:**
+
+1. Read `website-engineering-standard.md`, `rendering-and-performance-policy.md`, `css-architecture.md`, and the UI acceptance owners before editing.
+2. Reconfirm current `main`, open PRs and provider/build policy first; a broad audit snapshot ages quickly.
+3. Make correctness Gates fail closed before measuring optimization success. Add negative self-tests when verifier truthfulness changes.
+4. Prefer architectural wins in this order: remove unnecessary hydration, keep truthful static HTML, narrow serialized props, route-scope/defer islands, move feature CSS out of global reach, then delete only reachability-proven dead code.
+5. Preserve browser-local state, URL/share semantics, first-click behavior and evidence/unknown boundaries. Smaller payload after losing product behavior is a regression.
+6. Use focused browser reproduction for each new failure, instrument timing/state when the cause is ambiguous, then rerun the full owning Chromium/WebKit matrix on the exact tree.
+7. Before an expensive final matrix, checkpoint the implementation and reconcile material `main` movement. After acceptance starts, do not automatically throw away expensive evidence for proven-independent `main` commits; record the base/overlap boundary and apply the current exact-head closeout protocol.
+8. If protected Preview automation stops at Vercel Authentication, classify that as an access/provider boundary. Do not treat SSO headers as application headers or weaken protection merely to manufacture PASS.
+9. Stop once the requested measurable problem is fixed, relevant Gates are green, exact-head evidence is recorded and Production closeout is complete.
+
+Historical end-to-end case: [`../history/2026-08-30-site-optimization-implementation-and-release-retrospective.md`](../history/2026-08-30-site-optimization-implementation-and-release-retrospective.md).
+
+---
+
 ## TRIGGER: exact-head acceptance / `main` moved / provider says READY
 
 **Cues:** a validated branch is behind `main`; another PR merged during a long task; Preview succeeded on an older head; provider status is green but the user asked to verify the real site.
