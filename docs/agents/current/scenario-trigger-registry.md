@@ -44,7 +44,25 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 6. Keep source state, deterministic Gate/build, provider READY, real-route acceptance, and Production acceptance separate in reports.
 7. Do not quote exact provider quota/price counters without authoritative current evidence.
 
-Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts and CI-vs-deploy relevance mistakes, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
+Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts, CI-vs-deploy relevance mistakes, and the later Doctor-led safe disk/cache maintenance pass, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
+
+---
+
+## TRIGGER: Mac self-hosted runner health, disk pressure, or cache maintenance
+
+**Cues:** MacBook CI, OrbStack runner, runner Doctor, disk full/low space, Docker cache, npm/pip/uv/pnpm cache, runner cleanup, machine-wide cache cleanup, LaunchAgent warning.
+
+**Automatic response:**
+
+1. Read `deployment-policy.md` § Mac runner lifecycle and inspect the executable `.github/runner/` scripts before acting.
+2. Run the installed Doctor first; require the correct home/data-volume capacity, container isolation/health, GitHub `busy=false`, OOM/version state, and LaunchAgent state.
+3. Inventory targeted roots and classify tool-owned cache versus active/warm state, rollback image/container, worktree, mixed-purpose directory, credentials-adjacent state, and OrbStack internals.
+4. Separate runner state from machine-wide state. With zero host mounts, host npm/pip/uv/pnpm caches do not optimize CI; clear them only when the current task also authorizes host developer-cache maintenance and accept the next local cold download.
+5. Before a mutating cache command, prove no relevant host package-manager or Docker/Buildx build process is active, resolve the real cache root, and confirm the current task authorizes that scope.
+6. Prefer tool-owned cache cleanup; never bulk-delete `~/.npm`, `~/.cache`, OrbStack internals, runner writable state, images/containers, or registered worktrees from size output alone.
+7. Measure the real free-space delta and rerun Doctor. Below 15% free remains a warning condition even when a bounded cleanup succeeded; stop rather than widening deletion scope without ownership evidence.
+
+Historical evidence, command side effects, retained boundaries, and the 2026-08-30 79→102 GiB result: [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
 
 ---
 

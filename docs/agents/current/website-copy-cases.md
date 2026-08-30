@@ -588,6 +588,7 @@
 | [#336](https://github.com/mykcs/basemodel/pull/336) | PREFERENCE | `服务器简介 / GPU 规格 / 数据来源` 取代主持人式标题 |
 | [#338](https://github.com/mykcs/basemodel/pull/338) | EVOLUTION | 固化 capability-exploration 的 publication/visualization 经验，不改变公开实验事实 |
 | [#339](https://github.com/mykcs/basemodel/pull/339) | EVOLUTION | 固化 MiniMax teacher 审计与证据/成本表达经验 |
+| [#341](https://github.com/mykcs/basemodel/pull/341) | PREFERENCE | 将 Stage 2 的计数、门槛与 0 update 改成 first-reader 可追踪的因果链；该表达已进入 `main` |
 | [#342](https://github.com/mykcs/basemodel/pull/342) | PREFERENCE | 结果页主线保留科学问题/结果/解释/边界；commands/configs/logs 进入可选复现深度 |
 | [#344](https://github.com/mykcs/basemodel/pull/344) | PREFERENCE | “不要 cat”的警告不能被 UI 增强成“复制 cat”动作 |
 | [#349](https://github.com/mykcs/basemodel/pull/349) | PREFERENCE | 公开复现路径去掉真实 Unix 账号/home 身份，使用 `$HOME/...` 通用表达 |
@@ -597,7 +598,6 @@
 
 全量 PR 检索也会命中尚未合并的公开文案工作。它们可以帮助发现问题，但在 owner 尚未接受、`main` 尚未采用前，不进入 PREFERENCE 判例。
 
-- [#341](https://github.com/mykcs/basemodel/pull/341) — 正在把 `20,480 → 797 → threshold 8 → observed max 7 → 0 update` 这类作者 shorthand 改成 first-reader 因果链。方向与 CASE-035 / CASE-038 一致，但目前仍是 OPEN，因此这里只记录为**待验收证据**。
 - [#345](https://github.com/mykcs/basemodel/pull/345) — 本规范与案例库自身的交付 PR；它不是用来证明自身正确性的历史偏好来源。
 
 以后新增 OPEN / DRAFT PR 也按同一规则处理：可以进入审计备注，但不能仅凭“有人开了 PR”反推成用户偏好。
