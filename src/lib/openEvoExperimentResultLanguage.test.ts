@@ -94,6 +94,17 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
 
+  it('explains the MiniMax 16-of-1440 historical branch without turning counts into unexplained shorthand', () => {
+    expect(analysis).toContain('这里的 16 / 1,440 数的是“真正进入参数训练的讲评记录”，不是模型分数，也不是 MiniMax 只分析了 16 条');
+    expect(analysis).toContain('真正进入启动参数训练');
+    expect(analysis).toContain('Stage 2 参数更新次数');
+    expect(analysis).toContain('MiniMax 的 0.0% 明确表示这次 128 个有效评测任务里完整成功 0 个，不是“结果缺失”');
+    expect(analysis).toContain('发生在不同环节，不是同一个问题');
+    expect(analysis).toContain('预先冻结的实验方案（preregistration）');
+    expect(analysis).not.toContain("t('真正进入 bootstrap','Entered bootstrap')");
+    expect(analysis).not.toContain("t('Stage-2 updates','Stage-2 updates')");
+  });
+
   it('translates homepage project codes and status values before using them as evidence', () => {
     expect(protocol).toContain('先把数字、单位和项目内部编号翻译成人话');
     expect(protocol).toContain('它不是一次参数训练，也不是一个单独动作');
