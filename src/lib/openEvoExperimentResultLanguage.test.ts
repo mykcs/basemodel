@@ -33,11 +33,20 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(ceilingStage2).toContain('Stage 2 正式 task consumption：尚未开始');
   });
 
-  it('explains the 7-versus-8 Stage-2 update rule in reader terms', () => {
+  it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {
     expect(scaffold).toContain('这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹');
-    expect(scaffold).toContain('7 表示最好的一块仍差 1 个任务身份才允许训练');
-    expect(scaffold).toContain('成功不能跨不同数据块累积来凑 8');
-    expect(scaffold).toContain('"0 次更新"则表示 Stage 2 没有改变模型参数，而不是 Stage 2 没有运行');
+    expect(scaffold).toContain('7 < 8 准确解释了当时程序为什么没有更新');
+    expect(scaffold).toContain('这是当时预先采用的方法控制规则');
+    expect(scaffold).toContain('不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件');
+    expect(scaffold).toContain('不代表模型没有产生可学习数据');
+    expect(scaffold).toContain('不是合理 Stage 2 训练后的能力上限');
+    expect(analysis).toContain('7 < 8 是本次程序零更新的直接原因');
+    expect(analysis).toContain('797 条成功轨迹说明不能把它解释成“没有可学习数据”');
+    expect(analysis).toContain('旧 7/8 配置保留为历史 method-control 对照');
+    expect(analysis).toContain('0/80 达到旧门槛；合并到 512 次是 4/40，1,024 次是 12/20，2,048 次是 10/10');
+    expect(analysis).toContain('不能单凭事后合并确定新的长期算法');
+    expect(analysis).toContain('预先固定一个新的累计—更新—清空合同');
+    expect(scaffold).not.toContain('成功不能跨不同数据块累积来凑 8');
   });
 
   it('separates attempts, successful trajectories, task identities, and parameter updates', () => {
@@ -46,7 +55,7 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(scaffold).toContain('一次任务尝试（rollout）');
     expect(scaffold).toContain('可用于训练的完整成功轨迹（qualified positive）');
     expect(scaffold).toContain('达标任务身份（qualifying identity）');
-    expect(scaffold).toContain('Stage 2 参数更新门槛（gate）');
+    expect(scaffold).toContain('本次历史 Stage 2 的参数更新门槛（gate）');
     expect(scaffold).toContain('参数更新与学习适配器（adapter）');
     expect(scaffold).toContain('启动训练（bootstrap）');
   });
