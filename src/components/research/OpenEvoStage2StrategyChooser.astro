@@ -32,9 +32,9 @@ const p = (path:string) => localePath(locale,path);
       <strong>{t('查看第二版为什么 3B 仍然不行 →','Open why 3B still failed in the second design →')}</strong>
     </a>
     <a class:list={['s2-choice__card','openevo2',{active:active==='openevo2'}]} href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')} aria-current={active==='openevo2'?'page':undefined}>
-      <div><span>03 · {t('Harness 2.0 · 正式实验前检查','HARNESS 2.0 · PREFORMAL CHECK')}</span><b>{t('先修动作接口，再启动新的 Stage 2','Fix the action interface before launching a new Stage 2')}</b></div>
-      <p>{t('Stage 1 数据全部复用。历史经验改成“当前页面优先、三份经验分工、每步只放有限相关内容”，并先跑两个各 128 次的小实验：一组不放历史经验，一组只放接口安全的经验。通过后才允许重新花 20,480 次正式任务预算。','All Stage-1 data is reused. Historical experience is rewritten so the live page has priority, the three sources have separate roles, and only limited relevant context enters each step. Two fixed 128-attempt checks—no historical experience versus interface-safe experience—must pass before another 20,480 formal attempts are allowed.')}</p>
-      <strong>{t('查看 Harness 2.0 的设计与资格检查 →','Open Harness 2.0 design and qualification →')}</strong>
+      <div><span>03 · {t('第三版 · 第一次小实验已完成','THIRD DESIGN · FIRST MINI STUDY COMPLETE')}</span><b>OpenEVO 2.0</b></div>
+      <p>{t('Stage 1 不重做。Harness 2.0 已经用同一个 3B 起点做完两组各 128 次的配对检查：机械接口门过线，但带 Harness 的那组更容易因为非法输出提前结束，所以新的正式 Stage 2 先不启动。下一步只小修 2.0.1，再换一批没有看过结果的旧训练任务重测。','Stage 1 is reused. Harness 2.0 completed two paired 128-attempt checks from the same 3B state. The mechanical interface gate passed, but the Harness cell terminated more often on invalid output, so the new formal Stage 2 remains on hold. Next comes a small 2.0.1 repair followed by requalification on a disjoint already-consumed training window.')}</p>
+      <strong>{t('查看 OpenEVO 2.0 与 Harness 2.0 迷你实验 →','Open OpenEVO 2.0 and the Harness 2.0 mini study →')}</strong>
     </a>
   </div>
 </section>
