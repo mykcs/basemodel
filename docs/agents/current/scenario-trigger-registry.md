@@ -161,8 +161,12 @@ Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibi
 5. When the scientific role is the same but the realization differs, use `protocol-equivalent / realization-different / runtime-corrected` when those labels are supported by evidence.
 6. Keep the current version primary for future experiments/reporting, but preserve valid historical data as reusable evidence. Link canonical artifacts at immutable HF/GitHub revisions and state private/public access honestly.
 7. On the website, explain both the numeric difference **and what it means**. Do not imply the current version is guaranteed to score higher merely because extra decoding filters were disabled.
+8. If the superseded stage made zero parameter updates, point to the unchanged entry state rather than inventing a new checkpoint. Distinguish measured zero, `not run`, `Pending`, invalid, and N/A.
+9. Separate immutable archive bytes from mutable explanatory README/head state. Require restore/hash verification for archive claims, but do not treat remote verification as local deletion authority.
+10. Preserve a bounded local engineering-smoke bundle when fast adapter/runtime recovery remains useful; deletion of raw run roots requires a separate explicit authorization.
+11. For a still-running replacement experiment, separate frozen protocol from time-bounded live progress; publish the latter only as a dated receipt-backed snapshot.
 
-Historical end-to-end case: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md).
+Historical cases: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md) and [`../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md`](../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md).
 
 ---
 
