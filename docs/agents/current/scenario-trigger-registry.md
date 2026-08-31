@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-08-30**
+Last reviewed: **2026-08-31**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -145,6 +145,24 @@ Historical end-to-end case: [`../history/2026-08-30-site-optimization-implementa
 For SEED WebShop environment identity specifically, load `seed-webshop-environment-audit.md` before claiming source-faithful equivalence.
 
 Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md`](../history/2026-08-28-seed-responsibility-topology-and-visual-acceptance-retrospective.md).
+
+---
+
+## TRIGGER: old/new experiment version, superseded downstream stage, or reusable historical artifacts
+
+**Cues:** “旧版还能不能用”, “新旧是不是完全一样”, historical replicate, fresh replicate, a later Stage 2 was wrong/superseded, reuse old trajectories/adapters/analyzer outputs, or publish old experiment artifacts.
+
+**Automatic response:**
+
+1. Resolve the exact scientific layer that changed. A downstream method being superseded does not automatically invalidate upstream evidence produced before it.
+2. Classify each relevant artifact/run as `current`, `valid historical`, `superseded as current method`, or `invalid for a specific reason`; do not use “old” as a validity label.
+3. Compare old/new protocol identity separately from stochastic realization: task schedule, model revision, prompt/harness, parser, temperature, horizon, update timing, and actual consumed rows/seeds.
+4. Trace config into the real runtime call. A deliberate new seed is a new replicate; a parameter that was configured but never forwarded is a runtime-implementation correction. Do not collapse the two.
+5. When the scientific role is the same but the realization differs, use `protocol-equivalent / realization-different / runtime-corrected` when those labels are supported by evidence.
+6. Keep the current version primary for future experiments/reporting, but preserve valid historical data as reusable evidence. Link canonical artifacts at immutable HF/GitHub revisions and state private/public access honestly.
+7. On the website, explain both the numeric difference **and what it means**. Do not imply the current version is guaranteed to score higher merely because extra decoding filters were disabled.
+
+Historical end-to-end case: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md).
 
 ---
 
