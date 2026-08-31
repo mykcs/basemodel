@@ -62,7 +62,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");
-    expect(layout).toContain("exactRoute('/research/seed-openevo/study/capability-exploration')");
+    expect(layout).toContain("/^\\/research\\/seed-openevo\\/study\\/capability-exploration(?:\\/|$)/.test(localeNeutralPath)");
     expect(layout).toContain("isCapabilityExplorationPage ? 'capability'");
     expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
     expect(layout).toContain("pathNoBase.replace(/^\\/en(\\/|$)/, '/')");

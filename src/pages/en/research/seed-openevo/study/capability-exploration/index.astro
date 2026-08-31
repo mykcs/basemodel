@@ -7,7 +7,7 @@ const locale = 'en' as const;
 ---
 <AppLayout
   title="OpenEvo capability exploration experiments"
-  description="OpenEvo × WebShop capability exploration: compare current and historical Stage-1 trajectory collection, then distinguish the superseded 256-window Stage-2 method-control from the current OpenEVO-Ceiling-1.0 mainline."
+  description="OpenEvo × WebShop capability exploration: retain the historical Stage 2 and the running Ceiling-1.0 lineage, while adding an OpenEVO 2.0 successor that reuses the current corrected Stage 1 and redesigns state construction and the Stage-2 harness."
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -15,8 +15,8 @@ const locale = 'en' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo capability exploration experiments</h1>
       <div>
-        <strong>The current and historical Stage 1 are the same kind of experiment: the same tasks, models, and OpenEVO / WebShop trajectory-collection workflow. The old version was not wrong and remains usable.</strong>
-        <span>The current version only makes a small finalization of the same scientific setup: it uses an independent seed and formally fixes top_p / top_k / repetition penalty so the runtime actually executes the declared decoding contract. Future experiments, headline results, and reports use the current version; the old version remains a retained historical replicate with reusable artifacts. The later Stage-2 design error is a separate downstream issue.</span>
+        <strong>The current corrected Stage 1 remains the shared starting point; Ceiling-1.0 keeps running while OpenEVO 2.0 forks at state construction and the Stage-2 harness.</strong>
+        <span>OpenEVO 2.0 does not recollect the current 1,440 Stage-1 trajectories per model or add teacher budget. It keeps the evidence root and redesigns the Context Governor, Memory / Skill / Agent responsibilities, Telemetry, and preformal Harness Qualification. Once Ceiling-1.0 actually stops, its stop round, successful trajectories, checkpoints, and archive links can be filled into that branch.</span>
       </div>
     </header>
     <OpenEvoStage1VersionComparison locale={locale} />

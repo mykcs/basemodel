@@ -1,0 +1,104 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import { openEvo2TransitionSnapshot as snap } from '../../data/openEvo2TransitionSnapshot';
+import OpenEvoStage2StrategyChooser from './OpenEvoStage2StrategyChooser.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const p = (path:string) => localePath(locale,path);
+const ceilingHref = p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/');
+const currentCampaignHref = `https://github.com/mykcs/openevo-experiment/blob/${snap.scienceBranch}/configs/experiment/current-campaign.json`;
+const changes = [
+  { n:'01', title:'Context Governor', body:t('先保住当前任务、当前页面和 Allowed Actions，再按固定预算放入历史经验。过去的笔记不能把眼前的环境事实挤出去。','Protect the live task, observation, and Allowed Actions first, then admit historical context under a fixed budget. Past notes cannot crowd out current environment truth.') },
+  { n:'02', title:t('三种经验载体（carrier）职责分离','Separate carrier responsibilities'), body:t('Text Memory 只保存可复用知识，Skill 只描述“什么情况下用什么策略”，Agent System 只负责全局原则与冲突优先级；不再让三份文本重复讲同一套按钮攻略。','Text Memory stores reusable knowledge, Skill describes when a strategy applies, and Agent System owns global policy and conflict precedence; the three documents should not repeat the same UI advice.') },
+  { n:'03', title:'Telemetry v2', body:t('把“格式写错”“命令语义不完整”“当前页面没有这个动作”“环境真正拒绝”分开记录。以后第一轮就能知道到底是哪一层坏了。','Record malformed format, invalid command semantics, state-inadmissible actions, and environment rejection separately so the failing layer is visible from the first round.') },
+  { n:'04', title:'Preformal Harness Qualification', body:t('正式烧 20,480 次任务尝试之前，先在与 final panel 隔离的小型资格集上检查：新 harness 有没有显著提高非法动作率、carrier 是否压过当前页面、上下文是否超预算。','Before spending the 20,480 formal attempts, use a small panel isolated from the final panel to check whether the harness inflates inadmissible actions, overwhelms live state, or exceeds its context budget.') },
+] as const;
+---
+<main class="evo2" data-testid="openevo-2-strategy">
+  <OpenEvoStage2StrategyChooser locale={locale} active="openevo2" />
+
+  <header class="evo2__hero">
+    <div>
+      <p>OPENEVO 2.0 · DESIGN DRAFT</p>
+      <h1>OpenEVO 2.0</h1>
+      <span>{t('Stage 1 的轨迹采集不重做。2.0 从已经完成并封存（后续不再改写）的 Stage-1 轨迹与老师证据继续，但重新设计“这些经验怎样变成 Text Memory / Skill / Agent System，以及它们怎样进入下一轮 WebShop prompt”。', 'Stage-1 trajectory collection is not rerun. OpenEVO 2.0 continues from the sealed Stage-1 trajectories and teacher evidence, while redesigning how those experiences become Text Memory / Skill / Agent System state and how that state enters the next WebShop round.')}</span>
+    </div>
+    <aside>
+      <span>{t('当前状态','CURRENT STATUS')}</span>
+      <strong>{t('设计中，还没有正式启动','Designing; not formally launched')}</strong>
+      <small>{t(`截至 ${snap.observedAt}，Ceiling-1.0 仍在运行；OpenEVO 2.0 的 formal task consumption = 0，final panel access = 0。`,`As of ${snap.observedAt}, Ceiling-1.0 is still running; OpenEVO 2.0 formal task consumption = 0 and final-panel access = 0.`)}</small>
+    </aside>
+  </header>
+
+  <section class="evo2__section" aria-labelledby="evo2-lineage-title">
+    <p class="kicker">EXPERIMENT LINEAGE</p>
+    <h2 id="evo2-lineage-title">{t('共同 Stage 1，从状态构建与 Stage 2 harness 开始分叉','Shared Stage 1; the fork starts at state construction and the Stage-2 harness')}</h2>
+    <p>{t('Ceiling-1.0 与 OpenEVO 2.0 共用当前 corrected Stage 1：每个模型 1,440 条轨迹，以及已经完成并封存（后续不再改写）的 1,440 条任务后老师分析。2.0 不增加老师预算；需要重做的是非参数 carrier 的整理/呈现方式和正式 Stage-2 harness。', 'Ceiling-1.0 and OpenEVO 2.0 share the current corrected Stage 1: 1,440 trajectories per model and 1,440 sealed post-episode teacher analyses. Version 2.0 adds no teacher budget; the redesign targets non-parametric carrier construction/rendering and the formal Stage-2 harness.')}</p>
+
+    <figure class="lineage" role="img" aria-label={t('当前 corrected Stage 1 先进入同一个证据池，再分成 Ceiling-1.0 与 OpenEVO 2.0 两条分支','The current corrected Stage 1 enters one evidence pool, then forks into Ceiling-1.0 and OpenEVO 2.0')}>
+      <svg viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
+        <defs><marker id="evo2-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" /></marker></defs>
+        <path d="M255 210 C330 210 350 210 430 210" />
+        <path d="M720 210 C800 210 815 105 900 105" />
+        <path d="M720 210 C800 210 815 315 900 315" />
+      </svg>
+      <article class="lineage__node lineage__stage1"><span>01 · SHARED</span><strong>Stage 1</strong><small>1,440 trajectories / arm</small><p>{t('轨迹采集保持不变；这是两条新主线共同的起点。','Trajectory collection stays unchanged; this is the shared starting point for both newer branches.')}</p></article>
+      <article class="lineage__node lineage__state"><span>02 · FORK BOUNDARY</span><strong>{t('老师证据与状态构建','Teacher evidence & state construction')}</strong><small>1,440 sealed analyses / arm</small><p>{t('OPSD 的既有语义保持；Text Memory、Skill、Agent 的组织与 runtime bridge 从这里开始重新审视。','Existing OPSD semantics stay fixed; Text Memory, Skill, Agent organization and their runtime bridge are reconsidered from here.')}</p></article>
+      <article class="lineage__node lineage__ceiling"><span>03A · RUNNING</span><strong>OpenEVO-Ceiling-1.0</strong><p>{t('原始 multi-carrier bridge：三类文本状态都会进入下一轮。运行证据完整保留；目前不把它提前写成“已暂停”。','Raw multi-carrier bridge: all three text states enter later rounds. Its run evidence is retained, and this page does not prematurely label it paused.')}</p><a href={ceilingHref}>{t('查看当前分支 →','Open current branch →')}</a></article>
+      <article class="lineage__node lineage__next"><span>03B · DESIGNING</span><strong>OpenEVO 2.0</strong><p>{t('经验仍然存在，但 harness 更薄：当前页面拥有动作权威，carrier 分工、按预算提供相关经验，并在正式运行前先做接口健康检查。','Experience still persists, but the harness becomes thinner: live state owns action authority, carriers are separated and budgeted, and interface health is qualified before formal execution.')}</p></article>
+      <figcaption>{t('分叉不是重做 Stage 1，而是从“如何把已经获得的经验变成下一轮可用状态”开始重新设计。','The fork does not rerun Stage 1; it begins with how already-collected experience becomes usable state for later rounds.')}</figcaption>
+    </figure>
+  </section>
+
+  <section class="evo2__section" aria-labelledby="evo2-why-title">
+    <p class="kicker">WHY REDESIGN</p>
+    <h2 id="evo2-why-title">{t('Ceiling-1.0 暴露的是 harness 风险，不是“OpenEVO 没用”','Ceiling-1.0 exposed a harness risk, not evidence that OpenEVO is useless')}</h2>
+    <div class="evo2__evidence">
+      <article><span>3B</span><strong>{snap.ceiling1.threeB.acceptedRollouts.toLocaleString()} accepted</strong><p>{t(`截至快照已封口 ${snap.ceiling1.threeB.sealedRounds} 轮，但 SD-LoRA component 仍为 ${snap.ceiling1.threeB.sdComponents}。2026-08-31 的轨迹诊断还发现大量“格式正确、但当前页面没有这个动作”的失败，因此正在复核 carrier 是否压过了实时 Allowed Actions。`,`At the snapshot, ${snap.ceiling1.threeB.sealedRounds} rounds were sealed, while SD-LoRA component count remained ${snap.ceiling1.threeB.sdComponents}. Trajectory diagnostics also found many actions that were syntactically valid but unavailable in the live page, motivating a review of whether carrier text overwhelms current Allowed Actions.`)}</p></article>
+      <article><span>7B</span><strong>{snap.ceiling1.sevenB.acceptedRollouts.toLocaleString()} accepted</strong><p>{t(`7B 已封口 ${snap.ceiling1.sevenB.sealedRounds} 轮并形成 ${snap.ceiling1.sevenB.sdComponents} 个 SD-LoRA component。它说明这套旧 bridge 并非完全不能学习；更可能的问题是它对较小模型的上下文整合要求过重。`,`7B had sealed ${snap.ceiling1.sevenB.sealedRounds} rounds and formed ${snap.ceiling1.sevenB.sdComponents} SD-LoRA components. This shows the old bridge can learn; the concern is that its context-integration burden may be too heavy for smaller models.`)}</p></article>
+    </div>
+    <p class="evo2__boundary">{t(`这是 ${snap.observedAt} 的带时间快照，不是最终结果。Ceiling-1.0 还在运行；真正的暂停 round、最终成功轨迹数和 checkpoint 只能在停止后从不可改写的运行记录（immutable receipts）再发布。`,`This is a time-bounded snapshot from ${snap.observedAt}, not a final result. Ceiling-1.0 is still running; stop round, final success counts, and checkpoints can only be published from immutable receipts after a real stop.`)}</p>
+  </section>
+
+  <section class="evo2__section" aria-labelledby="evo2-changes-title">
+    <p class="kicker">2.0 SCOPE</p>
+    <h2 id="evo2-changes-title">{t('OpenEVO 2.0 第一版只做四件事','OpenEVO 2.0 v1 does four things')}</h2>
+    <div class="evo2__changes">{changes.map((item) => <article><span>{item.n}</span><strong>{item.title}</strong><p>{item.body}</p></article>)}</div>
+    <div class="evo2__not-now"><strong>{t('这版暂时不做','NOT IN THIS FIRST VERSION')}</strong><p>{t('不做 Strategy IR；不因为 3B 现在表现差就先改 temperature；不把动作改成 constrained decoding；不让 3B / 7B 使用不同的 headline 规则。先把已经有直接证据的 harness 问题修干净。','No Strategy IR yet; no temperature change simply because 3B currently performs poorly; no constrained action decoding; and no different headline rules for 3B versus 7B. The first goal is to fix harness problems already supported by direct evidence.')}</p></div>
+  </section>
+
+  <section class="evo2__section" aria-labelledby="evo2-transition-title">
+    <p class="kicker">TRANSITION CONTRACT</p>
+    <h2 id="evo2-transition-title">{t('旧分支不删除，新分支不改写历史','The old branch stays intact; the new branch does not rewrite history')}</h2>
+    <div class="evo2__transition">
+      <article><span>NOW</span><strong>{t('Ceiling-1.0 继续运行 / 观察','Continue and observe Ceiling-1.0')}</strong><p>{t('7B 继续形成完整学习曲线；3B 的当前 lineage 也继续保留。直到真正出现停止 authority，网站不会把这条线写成“已暂停”。','7B continues to form a full learning curve, while the current 3B lineage is preserved. The site will not label this branch paused until an actual stop authority exists.')}</p></article>
+      <article><span>WHEN STOPPED</span><strong>{t('补齐停止快照与全部证据','Publish the stop snapshot and evidence')}</strong><p>{t('固定停止时间、最后完整封口的 round、accepted / partial、成功轨迹、SD-LoRA 更新、Memory / Skill / Agent 状态，以及 checkpoint、trajectory、receipt、GitHub / Hugging Face 产物链接。','Record stop time, last sealed round, accepted/partial counts, successful trajectories, SD-LoRA updates, Memory/Skill/Agent state, plus checkpoint, trajectory, receipt, GitHub, and Hugging Face artifacts.')}</p></article>
+      <article><span>NEXT</span><strong>{t('OpenEVO 2.0 通过资格检查后再启动','Launch OpenEVO 2.0 only after qualification')}</strong><p>{t('复用同一个 Stage-1 证据根，先在非 final 的资格集验证 harness 没把动作接口搞坏，再冻结新 activation，从 Stage2 round 0 开始新的 append-only lineage。','Reuse the same Stage-1 evidence root, qualify interface health on a non-final panel, then freeze a new activation and start a new append-only lineage from Stage-2 round 0.')}</p></article>
+    </div>
+
+    <details class="evo2__artifacts">
+      <summary>{t('Ceiling-1.0 停止后要补齐的产物槽位','Evidence slots to fill after Ceiling-1.0 stops')}</summary>
+      <div><span>{t('停止边界','Stop boundary')}</span><b>{t('尚未发生','Not stopped yet')}</b></div>
+      <div><span>3B / 7B accepted + partial</span><b>{t('停止后从 receipts 固定','Freeze from receipts after stop')}</b></div>
+      <div><span>{t('成功轨迹 / 参数更新','Success trajectories / parameter updates')}</span><b>{t('停止后固定','Freeze after stop')}</b></div>
+      <div><span>checkpoint / trajectories / receipts</span><b>{t('等待最终归档链接','Await final archive links')}</b></div>
+      <div><span>GitHub / Hugging Face</span><b>{t('等待发布确认','Await publication confirmation')}</b></div>
+    </details>
+    <p class="evo2__source">{t('科学实时状态仍以 openevo-experiment 的实际运行 branch → current-campaign.json → 最新有效运行记录 / result 为准。', 'Live scientific state still resolves from the actual openevo-experiment branch → current-campaign.json → latest valid receipt/result.')}&nbsp;<a href={currentCampaignHref} target="_blank" rel="noreferrer">current-campaign ↗</a></p>
+  </section>
+</main>
+
+<style>
+.evo2{width:min(1180px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--color-text)}
+.evo2__hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:2rem;align-items:end;padding:2rem 0;border-bottom:1px solid var(--color-border)}
+.evo2__hero>div>p,.kicker{margin:0 0 .55rem;color:var(--color-accent);font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.evo2__hero h1,.evo2__section h2{margin:0;letter-spacing:-.04em}.evo2__hero h1{font-size:clamp(2.4rem,6vw,5rem)}.evo2__hero>div>span{display:block;margin-top:.8rem;max-width:72ch;color:var(--color-text-muted);line-height:1.7}.evo2__hero aside{display:flex;flex-direction:column;gap:.35rem;padding:1rem;border:1px solid var(--color-border);border-radius:12px;background:color-mix(in srgb,var(--color-accent) 4%,var(--color-bg))}.evo2__hero aside span{color:var(--color-text-muted);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace}.evo2__hero aside strong{font-size:.86rem}.evo2__hero aside small{color:var(--color-text-muted);line-height:1.55}
+.evo2__section{padding:2.2rem 0;border-bottom:1px solid var(--color-border)}.evo2__section h2{font-size:clamp(1.45rem,3vw,2.35rem)}.evo2__section>p{max-width:82ch;color:var(--color-text-muted);line-height:1.68}
+.lineage{position:relative;display:grid;grid-template-columns:.82fr 1fr 1.08fr;grid-template-rows:1fr 1fr;gap:1rem 2.6rem;min-height:420px;margin:1.2rem 0 0;padding:1.1rem;border:1px solid var(--color-border);border-radius:16px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent)}.lineage>svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none}.lineage>svg path{fill:none;stroke:color-mix(in srgb,var(--color-accent) 58%,var(--color-border));stroke-width:2.5;marker-end:url(#evo2-arrow)}.lineage>svg marker path{fill:var(--color-accent);stroke:none}.lineage__node{position:relative;z-index:1;align-self:center;padding:1rem;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}.lineage__node>span{color:var(--color-accent);font:800 .56rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.lineage__node strong,.lineage__node small{display:block}.lineage__node strong{margin:.35rem 0;font-size:.92rem}.lineage__node small{color:var(--color-text-muted);font:750 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.lineage__node p{margin:.55rem 0 0;color:var(--color-text-muted);font-size:.72rem;line-height:1.55}.lineage__node a{display:inline-block;margin-top:.55rem;color:var(--color-accent);font-size:.7rem;font-weight:760}.lineage__stage1{grid-column:1;grid-row:1/3}.lineage__state{grid-column:2;grid-row:1/3}.lineage__ceiling{grid-column:3;grid-row:1;border-style:dashed}.lineage__next{grid-column:3;grid-row:2;border-width:2px;border-color:var(--color-accent)}.lineage figcaption{grid-column:1/-1;align-self:end;color:var(--color-text-muted);font-size:.68rem;line-height:1.5}
+.evo2__evidence,.evo2__changes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.evo2__evidence article,.evo2__changes article,.evo2__transition article{padding:1rem;border:1px solid var(--color-border);border-radius:12px}.evo2__evidence span,.evo2__changes span,.evo2__transition span{color:var(--color-accent);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.evo2__evidence strong,.evo2__changes strong,.evo2__transition strong{display:block;margin:.4rem 0;font-size:.86rem}.evo2__evidence p,.evo2__changes p,.evo2__transition p{margin:0;color:var(--color-text-muted);font-size:.73rem;line-height:1.58}.evo2__boundary{margin-top:1rem;font-size:.72rem}.evo2__not-now{margin-top:1rem;padding:1rem;border:1px dashed var(--color-border);border-radius:12px}.evo2__not-now strong{font-size:.72rem}.evo2__not-now p{margin:.4rem 0 0;color:var(--color-text-muted);font-size:.73rem;line-height:1.6}.evo2__transition{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem}.evo2__transition article:nth-child(2){border-style:dashed}.evo2__transition article:last-child{border-width:2px;border-color:var(--color-accent)}.evo2__artifacts{margin-top:1rem;border:1px solid var(--color-border);border-radius:12px;overflow:hidden}.evo2__artifacts summary{cursor:pointer;padding:.85rem 1rem;font-size:.78rem;font-weight:800}.evo2__artifacts>div{display:grid;grid-template-columns:minmax(150px,.6fr) minmax(0,1fr);gap:.7rem;padding:.7rem 1rem;border-top:1px solid var(--color-border)}.evo2__artifacts span{color:var(--color-text-muted);font-size:.68rem}.evo2__artifacts b{font-size:.7rem}.evo2__source{font-size:.68rem!important}.evo2__source a{color:var(--color-accent)}
+@media(max-width:800px){.evo2__hero,.evo2__evidence,.evo2__changes,.evo2__transition{grid-template-columns:1fr}.lineage{grid-template-columns:1fr;grid-template-rows:auto;min-height:0;gap:.7rem}.lineage>svg{display:none}.lineage__stage1,.lineage__state,.lineage__ceiling,.lineage__next{grid-column:auto;grid-row:auto}.lineage__node{align-self:stretch}.lineage__node+ .lineage__node{margin-top:1rem}.lineage__node+ .lineage__node::before{content:'';position:absolute;left:1.35rem;top:-1.05rem;width:2px;height:1.05rem;background:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}}
+@media(max-width:520px){.evo2{width:min(100% - 1rem,1180px)}.evo2__artifacts>div{grid-template-columns:1fr}}
+</style>

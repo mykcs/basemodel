@@ -12,6 +12,7 @@ const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Arch
 const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
 const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
+const openEvo2 = read('../components/research/OpenEvo2Strategy.astro');
 const legacyResultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
@@ -24,7 +25,7 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Data}\n${ceilingStage2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Data}\n${ceilingStage2}\n${openEvo2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
@@ -44,9 +45,9 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('keeps old Stage 1 usable and links its retained artifacts', () => {
-    expect(capabilityIndex).toContain('新版和旧版 Stage 1 本质上是同一类实验');
-    expect(capabilityIndex).toContain('旧版没有做错，也仍然可以使用');
-    expect(capabilityIndex).toContain('今后的新实验、主结果和报告以新版为准');
+    expect(capabilityIndex).toContain('当前 corrected Stage 1 仍是共同起点');
+    expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
+    expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');
     expect(stage1Versions).toContain('打开旧版 trajectory / adapter / HF / GitHub 产物');
     expect(legacyStage1Archive).toContain('性质一样，参数有小幅定稿；旧版能用，新实验以新版为准');
@@ -59,8 +60,8 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {
-    expect(stage2Chooser).toContain('历史 / 设计错误 / 已取代');
-    expect(stage2Chooser).toContain('当前主线 / 已进入 Stage 2');
+    expect(stage2Chooser).toContain('旧门槛已取代，数据仍保留');
+    expect(stage2Chooser).toContain('正在运行 / harness 风险复核中');
     expect(legacyStage2Archive).toContain('SUPERSEDED METHOD-CONTROL');
     expect(legacyStage2Archive).toContain('data-model-choice="3b"');
     expect(legacyStage2Archive).toContain('data-teacher-choice="minimax"');
@@ -69,18 +70,32 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(legacyStage2Data).toContain("taskScoreX100: 16.94");
     expect(ceilingStage2).toContain('128 是共同 evidence boundary');
     expect(ceilingStage2).toContain('旧 7-vs-8 gate 明确禁止');
-    expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 1_152');
+    expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 3_968');
+    expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 2_304');
     expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
     expect(ceilingStage2).not.toContain('Stage 2 正式 task consumption：尚未开始');
   });
 
+  it('adds OpenEVO 2.0 as a successor without pretending Ceiling-1.0 already stopped', () => {
+    expect(stage2Chooser).toContain('OpenEVO 2.0');
+    expect(stage2Chooser).toContain('Stage 1 分析 / 状态构建');
+    expect(stage2Chooser).toContain('/openevo-2-0/');
+    expect(openEvo2).toContain('Context Governor');
+    expect(openEvo2).toContain('三种经验载体（carrier）职责分离');
+    expect(openEvo2).toContain('Telemetry v2');
+    expect(openEvo2).toContain('Preformal Harness Qualification');
+    expect(openEvo2).toContain('尚未发生');
+    expect(openEvo2).toContain('Ceiling-1.0 还在运行');
+    expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
+  });
+
   it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {
-    expect(scaffold).toContain('这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹');
-    expect(scaffold).toContain('7 < 8 准确解释了当时程序为什么没有更新');
-    expect(scaffold).toContain('这是当时预先采用的方法控制规则');
-    expect(scaffold).toContain('不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件');
-    expect(scaffold).toContain('不代表模型没有产生可学习数据');
-    expect(scaffold).toContain('不是合理 Stage 2 训练后的能力上限');
+    expect(scaffold).toContain('这里的 8 不是分数，也不是 8 条轨迹');
+    expect(scaffold).toContain('旧规则要求至少 8 个，实际最高只有 7 个');
+    expect(scaffold).toContain('这个事实只能解释旧实验为什么没有继续训练');
+    expect(scaffold).toContain('它不能证明长期 Stage 2 应该继续使用同样的逐批清零规则');
+    expect(scaffold).toContain('模型并不是“没有成功经验”');
+    expect(scaffold).toContain('这个结果只说明旧方法控制规则怎样阻断了学习，不代表当前 OpenEVO Stage 2');
     expect(analysis).toContain('7 < 8 是本次程序零更新的直接原因');
     expect(analysis).toContain('797 条成功轨迹说明不能把它解释成“没有可学习数据”');
     expect(analysis).toContain('旧 7/8 配置保留为历史 method-control 对照');
@@ -91,14 +106,14 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('separates attempts, successful trajectories, task identities, and parameter updates', () => {
-    expect(scaffold).toContain('Stage 1：启动学习阶段');
-    expect(scaffold).toContain('历史 Stage 2：旧 256-window 方法控制');
-    expect(scaffold).toContain('一次任务尝试（rollout）');
-    expect(scaffold).toContain('可用于训练的完整成功轨迹（qualified positive）');
-    expect(scaffold).toContain('达标任务身份（qualifying identity）');
-    expect(scaffold).toContain('本次历史 Stage 2 的参数更新门槛（gate）');
-    expect(scaffold).toContain('参数更新与学习适配器（adapter）');
-    expect(scaffold).toContain('启动训练（bootstrap）');
+    expect(scaffold).toContain('Stage 1：第一次让模型真正学习');
+    expect(scaffold).toContain('旧 Stage 2：继续自己做题');
+    expect(scaffold).toContain('一次完整任务尝试（rollout）');
+    expect(scaffold).toContain('一条可用于训练的完整成功轨迹');
+    expect(scaffold).toContain('一个“重复成功的不同任务”');
+    expect(scaffold).toContain('旧实验允许参数更新的条件');
+    expect(scaffold).toContain("term:t('参数更新', 'Parameter update')");
+    expect(scaffold).toContain('Stage 1 启动训练');
   });
 
   it('does not regress to author-only shorthand for negative result states', () => {
