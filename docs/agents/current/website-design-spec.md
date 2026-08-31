@@ -3,6 +3,7 @@
 状态：**CURRENT / CANONICAL**
 适用范围：`basemodel` 的所有公开页面、导航、标题、说明文字、按钮、图表注释、状态提示和中英文文案。
 案例库：[`website-copy-cases.md`](website-copy-cases.md)
+实现与推理复盘：[`../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md`](../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md)
 历史审计基线：`origin/main@e11d443`，2026-08-30；从首个 commit `dd9b04b` 起对 901 个主线 commits 做全量历史检索，并交叉检索 274 个已合并 PR 与 349 个可见 PR 的元数据（当前最大 PR 编号为 #350）。
 
 这份文档回答一个过去经常被误解的问题：
