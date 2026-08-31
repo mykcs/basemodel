@@ -16,6 +16,8 @@ const candidateRules: Rule[] = [
   { id: 'COPY-NEGATIVE-HEADING', pattern: /(?:^|[>"'`])\s*(?:不要|不是|当前不再|不再)[^\n<]{0,100}/g, reason: 'Negative-first copy may need reader context before the warning.' },
   { id: 'COPY-RELATIVE-TIME', pattern: /今天|明天|昨天|之前|这次|刚刚/g, reason: 'Relative time needs a visible date, release, or experiment reference.' },
   { id: 'COPY-PROJECT-TERM', pattern: /RTX6|\bP[0-3]\b|wheelhouse|artifact|API snapshot|successor revision|fallback/gi, reason: 'Project terminology should be explained at first use.' },
+  { id: 'COPY-PROJECT-STATUS-SHORTHAND', pattern: /\b(?:BLOCKED|NOOP|Pending|sealed|superseded|fail-closed|MEASUREMENT_INVALID|REMEASUREMENT_INVALID)\b/g, reason: 'Project status codes must be translated into a human state before or alongside the audit label.' },
+  { id: 'COPY-RESULT-SHORTHAND', pattern: /(?:\b\d+\s*\/\s*\d+\b[^\n<]{0,45}(?:gate|identity|block)|(?:gate|identity|block)[^\n<]{0,45}\b\d+\s*\/\s*\d+\b)/gi, reason: 'Ratios tied to project gates/blocks/identities need the counted object and consequence explained.' },
   { id: 'COPY-SHARED-HARDWARE', pattern: /(?:4\s*[×x]\s*(?:RTX\s*)?3090|5\s*[×x]\s*(?:RTX\s*)?5090|8\s*[×x]\s*(?:RTX\s*)?5090|4\s*[×x]\s*24GB)/gi, reason: 'Explicit project hardware must say whether it is historical, inventory, allocation, authorization context, or a reader example.' },
   { id: 'COPY-CHAT-TONE', pattern: /我们刚才|又失败|正确修法|这就是我们踩过的坑/g, reason: 'Chat or incident-history language should not lead the public path.' },
   { id: 'COPY-LEGACY-POSITIONING', pattern: /智能体基础模型选择地图|Agent Foundation Model Atlas|通用模型选择与论文采用地图/g, reason: 'Legacy product positioning may conflict with the SEED × OpenEvo research mission.' },

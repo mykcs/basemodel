@@ -10,7 +10,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
   <header class="diagram-head">
     <span>OPENEVO · CORE PRINCIPLE</span>
     <h2 id="openevo-framework-title">{t('OpenEvo 跨任务演化机制','OpenEvo cross-task evolution mechanism')}</h2>
-    <p>{t('OpenEvo 最核心的不是某一个 optimizer。它定义的是一个跨任务演化边界：任务先完整结束并封存证据，之后再运行 evolution method；产物可以是 memory、agent-system artifact，也可以是 adapter。验证通过的产物被组装进 successor revision，并从下一任务开始生效。','OpenEvo’s core idea is not a particular optimizer. It defines a cross-task evolution boundary: finish the task and seal evidence first, then run an evolution method. The carrier may be memory, an agent-system artifact, or an adapter. Validated carriers are assembled into a successor revision that activates on the next task.')}</p>
+    <p>{t('OpenEvo 的核心顺序是：先完整结束当前任务并固定证据，再根据这些证据更新下一任务可以继承的状态。这个状态可以是外部记忆、Agent 系统文件或参数适配器（这些都统称为 carrier）；验证通过后再合并成下一版 agent 状态（successor revision），从下一任务开始生效。','OpenEvo follows one core order: finish the current task and freeze its evidence, then use that evidence to update state that the next task can inherit. That state may be external memory, an agent-system artifact, or a parametric adapter (collectively, carriers); validated state is then assembled into the next agent version (the successor revision) and activates on the following task.')}</p>
   </header>
 
   <div class="principles">

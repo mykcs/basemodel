@@ -67,15 +67,15 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     openevo: {
       eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP',
       title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
-      lede: zh ? '先完成 WebShop Task N 并封存 evidence；演化只在 task boundary 之后发生。当前参数化路径把经验写入 SD-LoRA adapter，通过 validation 后才形成 Task N+1 使用的 successor revision。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
+      lede: zh ? '先完成当前 WebShop 任务并固定这次任务的轨迹、结果和元数据；只有任务结束后才允许演化。当前参数化路径把经验写入 SD-LoRA 适配器，验证通过后才合并成下一任务使用的新 Agent 状态（successor revision）。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
       steps: [
         { label: 'Task N', narration: zh ? '当前 Project Head 在环境里完成任务。' : 'The current Project Head completes the task in the environment.' },
         { label: zh ? '封存' : 'Seal', narration: zh ? '任务完成边界把 trajectory/outcome/metadata 封存。' : 'The task-completion boundary seals trajectory/outcome/metadata.' },
-        { label: 'Evolve', narration: zh ? 'Evolution method 读取已封存 evidence。' : 'The evolution method reads sealed evidence.' },
+        { label: 'Evolve', narration: zh ? '演化方法读取任务结束后已经固定的证据。' : 'The evolution method reads sealed evidence.' },
         { label: 'Adapter', narration: zh ? '当前 WebShop 主路径把经验写入 parametric adapter（SD-LoRA）。' : 'The current WebShop main path writes experience into a parametric adapter (SD-LoRA).' },
-        { label: 'Validate', narration: zh ? '只有通过 validation gate 的 adapter 状态才能进入 successor revision。' : 'Only adapter state that passes the validation gate can enter the successor revision.' },
-        { label: 'Revision', narration: zh ? '接受的状态组成 successor revision。' : 'Accepted state forms the successor revision.' },
-        { label: 'Task N+1', narration: zh ? '下一任务从 successor revision 开始，并形成下一轮 evidence。' : 'The next task starts from the successor revision and produces the next evidence.' },
+        { label: 'Validate', narration: zh ? '只有通过验证的适配器状态，才能进入下一版 Agent 状态。' : 'Only adapter state that passes the validation gate can enter the successor revision.' },
+        { label: 'Revision', narration: zh ? '通过验证的状态合并成下一版 Agent 状态（successor revision）。' : 'Accepted state forms the successor revision.' },
+        { label: 'Task N+1', narration: zh ? '下一任务从这版新状态开始，并产生下一轮可以继续使用的证据。' : 'The next task starts from the successor revision and produces the next evidence.' },
       ],
     },
     compare: {

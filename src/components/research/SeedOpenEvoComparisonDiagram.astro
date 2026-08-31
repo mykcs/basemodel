@@ -10,7 +10,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
   <header class="diagram-head">
     <span>SEED × OPENEVO · MENTAL MODEL</span>
     <h2 id="method-comparison-title">{t('SEED 与 OpenEvo 的经验载体','SEED and OpenEvo experience carriers')}</h2>
-    <p>{t('先不要从公式区分两者。先抓住一个最稳定的心智模型：两者都从真实任务轨迹出发；SEED 的主目标是把 hindsight 诱导的更好行为内化进 policy 参数，OpenEvo 的主框架则先把经验转成可验证的 evolution carrier，再组成下一版 agent revision。','Do not start with equations. Start with one stable mental model: both begin from real task trajectories. SEED primarily internalizes hindsight-induced better behavior into policy parameters; OpenEvo first turns experience into a validated evolution carrier and then assembles the next agent revision.')}</p>
+    <p>{t('两者都从真实任务轨迹出发。SEED 主要把任务后复盘得到的改进写回策略参数；OpenEvo 则先把经验整理成可验证、可带到下一任务的状态（carrier），再合并成下一版 agent 状态（successor revision）。','Both begin from real task trajectories. SEED primarily writes improvements from hindsight back into policy parameters; OpenEvo first turns experience into a validated state that can persist into the next task (a carrier), then assembles the next agent state (the successor revision).')}</p>
   </header>
 
   <div class="shared-start">
@@ -19,13 +19,13 @@ const t = (cn:string,en:string) => zh ? cn : en;
 
   <figure class="fork-scene" role="img" aria-label={t('同一任务经验向左进入 SEED：hindsight、OPD+GRPO、policy parameter update；向右进入 OpenEvo：sealed evidence、evolution method、memory/artifact/adapter、successor revision','The same task experience forks left into SEED through hindsight, OPD+GRPO, and policy parameter update, and right into OpenEvo through sealed evidence, evolution method, memory/artifact/adapter, and successor revision')}>
     <article class="method-head seed-head"><span>SEED</span><strong>{t('把更好的决策倾向写进 policy 参数','write better decision tendencies into policy parameters')}</strong></article>
-    <article class="method-head evo-head"><span>OpenEvo</span><strong>{t('把经验变成可继承 carrier，再组装 successor revision','turn experience into an inheritable carrier, then assemble the successor revision')}</strong></article>
+    <article class="method-head evo-head"><span>OpenEvo</span><strong>{t('把经验变成可带到下一任务的状态，再合并成下一版 agent','turn experience into state that persists to the next task, then assemble the next agent version')}</strong></article>
 
     <article class="node seed-hindsight"><span class="node-role">HINDSIGHT</span><strong>hindsight skill</strong><small>{t('同一 policy 回看完整 trajectory','the same policy reviews the completed trajectory')}</small></article>
     <article class="node seed-signal"><span class="node-role">TRAINING SIGNAL</span><strong>OPD + GRPO</strong><small>{t('稠密概率变化 + outcome RL','dense probability shift + outcome RL')}</small></article>
     <article class="node seed-state"><span class="node-role">PERSISTENT CHANGE</span><strong>policy θ<sub>t+1</sub></strong><small>{t('经验主要内化进模型参数','experience is primarily internalized into model parameters')}</small></article>
 
-    <article class="node evo-evidence"><span class="node-role">BOUNDARY</span><strong>sealed evidence</strong><small>{t('任务先完整结束，再演化','finish the task first, evolve second')}</small></article>
+    <article class="node evo-evidence"><span class="node-role">任务结束后的证据</span><strong>{t('已固定、不会再被改写的任务记录（sealed evidence）','Task record frozen after completion (sealed evidence)')}</strong><small>{t('任务先完整结束，再演化','finish the task first, evolve second')}</small></article>
     <article class="node evo-method"><span class="node-role">EVOLUTION METHOD</span><strong>reflection / extraction / parametric update</strong><small>{t('方法决定经验如何被编码','the method determines how experience is encoded')}</small></article>
     <article class="node evo-carrier"><span class="node-role">PERSISTENT CHANGE</span><strong>memory / artifact / adapter</strong><small>{t('可在模型外，也可以参数化','may be external to the model or parametric')}</small></article>
 

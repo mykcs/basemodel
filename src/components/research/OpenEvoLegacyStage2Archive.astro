@@ -22,12 +22,12 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   <header class="legacy__hero">
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
-      <h1>{t('历史 Stage 2：窗口化硬门槛（设计错误 / 已取代）', 'Historical Stage 2: window-local hard gate (design error / superseded)')}</h1>
+      <h1>{t('历史 Stage 2：逐块硬门槛已取代，运行数据仍保留', 'Historical Stage 2: the per-block hard gate is superseded; run data is retained')}</h1>
       <span>{t('这不是“OpenEVO 做不到学习”的结论。我们把一次方法控制实验里的局部成功门槛错误提升成了长期学习规则；历史结果必须保留，但不能再代表当前 OpenEVO 的 Stage 2。', 'This is not evidence that OpenEVO cannot learn. A local success threshold from a method-control study was mistakenly promoted into a long-horizon learning rule. The historical result must be preserved, but it no longer represents current OpenEVO Stage 2.')}</span>
     </div>
     <aside>
-      <b>{t('错误究竟是什么', 'WHAT WAS WRONG')}</b>
-      <p>{t('256 不是问题本身。真正的问题是：每 256 条 rollout 都重新要求“至少 8 个不同任务、每个任务至少 2 次 clean exact success”，并把达不到这条局部门槛直接等同于“不允许学习”。', 'The number 256 itself was not the core problem. Every 256-rollout window re-imposed “at least eight distinct tasks with two clean exact successes each”, turning a local control threshold into permission to learn.')}</p>
+      <b>{t('被取代的是哪条规则', 'WHICH RULE WAS SUPERSEDED')}</b>
+      <p>{t('旧程序每 256 次完整任务尝试就重新检查一次：同一块里至少要有 8 个不同任务各自完整成功至少 2 次，才允许更新参数。问题在于它把这条局部方法控制门槛当成了长期学习规则；历史任务尝试、成功轨迹和模型保存点仍是有效运行证据。', 'The old program rechecked every 256 complete task attempts and allowed a parameter update only if at least eight distinct tasks each achieved two exact successes within that block. The problem was promoting this local method-control threshold into a long-horizon learning rule; the historical attempts, successful trajectories, and model states remain valid run evidence.')}</p>
     </aside>
   </header>
   <section class="legacy__section" aria-labelledby="legacy-arm-title">
@@ -59,10 +59,10 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
             <em>{arm.finalEvaluation.status === 'sealed' ? t('128 任务最终评测：已封存', '128-task final evaluation: sealed') : t('最终评测：未运行', 'Final evaluation: not run')}</em>
           </header>
           <dl class="legacy__metrics">
-            <div><dt>blocks</dt><dd>{arm.blocks}</dd></div>
-            <div><dt>rollouts</dt><dd>{arm.rollouts}</dd></div>
-            <div><dt>{t('合格成功轨迹', 'qualified positives')}</dt><dd>{arm.qualifiedPositives}</dd></div>
-            <div><dt>{t('单窗口最好重复成功任务数', 'best qualifying identities')}</dt><dd>{arm.bestIdentity}</dd></div>
+            <div><dt>{t('256 次任务尝试的数据块', '256-attempt blocks')}</dt><dd>{arm.blocks}</dd></div>
+            <div><dt>{t('完整任务尝试', 'complete task attempts')}</dt><dd>{arm.rollouts}</dd></div>
+            <div><dt>{t('可用于训练的完整成功轨迹', 'trainable exact-success trajectories')}</dt><dd>{arm.qualifiedPositives}</dd></div>
+            <div><dt>{t('单个数据块里最多有多少个任务重复成功', 'most repeatedly-successful distinct tasks in one block')}</dt><dd>{arm.bestIdentity}</dd></div>
             <div><dt>{t('Stage-2 参数更新', 'Stage-2 parameter updates')}</dt><dd>{arm.stage2Updates}</dd></div>
             <div><dt>{t('进入 Stage 2 的参数状态', 'Stage-2 entry state')}</dt><dd>{arm.entryState}</dd></div>
           </dl>
@@ -83,7 +83,8 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
         </article>
       ))}
     </div>
-    <p class="legacy__note">* {t('3B/MiniMax 的 38 只统计 59 个完整 block；第 60 个 block 停止时已有 171 条 partial rollout，它们被原样保留，但不混进完整 block 的统计。', 'For 3B/MiniMax, 38 covers only the 59 complete blocks. The 60th block retained 171 partial rollouts at stop time; they are preserved but not mixed into complete-block statistics.')}</p>
+    <p class="legacy__note">{t('表里的 2 / 8、7 / 8 等写法表示：一个 256 次任务尝试的数据块里，实际有多少个不同任务达到了“各自至少完整成功 2 次”的旧条件；分母 8 是当时允许参数更新的任务数门槛，不是模型分数。', 'Values such as 2 / 8 or 7 / 8 mean how many distinct tasks in one 256-attempt block met the old requirement of at least two exact successes each; the denominator 8 is the old task-count threshold for permitting a parameter update, not a model score.')}</p>
+    <p class="legacy__note">* {t('3B/MiniMax 的 38 只统计已经完整跑完的 59 个数据块；第 60 个数据块停止时已完成 171 次任务尝试，这 171 次被原样保留，但不混进完整数据块的统计。', 'For 3B/MiniMax, 38 covers only the 59 complete blocks. The 60th block retained 171 task attempts at stop time; they are preserved but not mixed into complete-block statistics.')}</p>
   </section>
   <section class="legacy__section legacy__why">
     <div><p class="kicker">{t('从数据看错误在哪里', 'WHAT THE DATA EXPOSE')}</p><h2>{t('有成功数据，却被局部门槛挡住了学习', 'Learnable successes existed, but the local gate blocked learning')}</h2></div>

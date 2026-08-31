@@ -59,7 +59,7 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {
-    expect(stage2Chooser).toContain('历史 / 设计错误 / 已取代');
+    expect(stage2Chooser).toContain('旧门槛已取代，数据仍保留');
     expect(stage2Chooser).toContain('当前主线 / 已进入 Stage 2');
     expect(legacyStage2Archive).toContain('SUPERSEDED METHOD-CONTROL');
     expect(legacyStage2Archive).toContain('data-model-choice="3b"');
@@ -67,8 +67,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(legacyStage2Data).toContain("qualifiedPositives: '797'");
     expect(legacyStage2Data).toContain("taskScoreX100: 1.71");
     expect(legacyStage2Data).toContain("taskScoreX100: 16.94");
-    expect(ceilingStage2).toContain('128 是共同 evidence boundary');
-    expect(ceilingStage2).toContain('旧 7-vs-8 gate 明确禁止');
+    expect(ceilingStage2).toContain('每 128 次任务尝试形成一轮共同证据，不是成功门槛');
+    expect(ceilingStage2).toContain('旧的 7 / 8 逐块任务数门槛不再使用');
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 1_152');
     expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
     expect(ceilingStage2).not.toContain('Stage 2 正式 task consumption：尚未开始');
@@ -99,6 +99,14 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(scaffold).toContain('本次历史 Stage 2 的参数更新门槛（gate）');
     expect(scaffold).toContain('参数更新与学习适配器（adapter）');
     expect(scaffold).toContain('启动训练（bootstrap）');
+  });
+
+  it('keeps first-time-reader meanings attached to project status and Stage-2 vocabulary', () => {
+    expect(stage2Chooser).toContain('旧门槛已取代，数据仍保留');
+    expect(stage2Chooser).toContain('证据不足时保持原状态（NOOP）');
+    expect(ceilingStage2).toContain('carrier（可带到下一轮的状态）');
+    expect(ceilingStage2).toContain('内部状态：NOOP / fail-closed');
+    expect(ceilingStage2).toContain('下一轮状态');
   });
 
   it('does not regress to author-only shorthand for negative result states', () => {
