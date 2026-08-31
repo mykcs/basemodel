@@ -28,17 +28,17 @@ const armMeta = {
     next:t('不恢复这条旧 Stage 2。保留其完整 rollout、selection、execution-state 与 base-pointer 语义，用于解释为什么旧硬门槛会阻断学习。', 'Do not resume this old Stage 2. Preserve its rollouts, selections, execution state, and base-pointer semantics to explain why the brittle gate blocked learning.'),
   },
   '7b-self': {
-    title:t('7B · 无外部教师（self）', '7B · self only'),
-    eyebrow:t('历史单实验 · checkpoint sweep 已完成', 'HISTORICAL ARM · CHECKPOINT SWEEP COMPLETE'),
-    status:t('旧方法控制完成；Stage 2 = 0 次更新', 'Old method-control complete; Stage 2 = 0 updates'),
-    question:t('7B/self 已经变好了，但它到底学到了“更会做题”，还是主要学到了“更会输出可执行动作”？', '7B/self improved, but did it learn to solve tasks better, or mostly to emit executable actions?'),
+    title:t('7B / self：Stage 1 提升明显，旧 Stage 2 没有继续更新', '7B / self: Stage 1 improved, while the old Stage 2 made no further update'),
+    eyebrow:t('历史实验 · 无外部教师', 'HISTORICAL RUN · NO EXTERNAL TEACHER'),
+    status:t('Stage 1 更新 8 次；旧 Stage 2 更新 0 次', '8 Stage-1 updates; 0 updates in the old Stage 2'),
+    question:t('结论先看：固定 128 个任务上的平均得分从 13.33 升到 25.66，但完整成功只从 3 个增到 4 个；旧 Stage 2 后来收集了大量成功轨迹，却没有再改动模型参数。', 'Bottom line: mean score on the fixed 128 tasks rose from 13.33 to 25.66, while exact success moved only from 3 to 4; the old Stage 2 later collected many successful traces but never changed the model parameters again.'),
     known:[
-      t('Stage 1 达到了启动门槛，并完成 8 次 SD-LoRA 参数更新。训练目标误差（loss）从 0.479 降到 0.055；它表示模型更贴合这批训练记录，但不能单独说明 WebShop 做题能力一定同步上升。', 'Stage 1 reached the bootstrap threshold and completed eight SD-LoRA parameter updates. Training loss fell from 0.479 to 0.055; this means better fit to the training records, not guaranteed step-by-step improvement on WebShop tasks.'),
-      t('Stage 2 共完成 20,480 次任务尝试，其中 797 条是可用于训练的完整成功轨迹。这次历史运行采用了一条 method-control（方法控制）规则：每 256 次尝试单独检查，同一数据块里必须至少有 8 个不同任务各自重复完整成功，才允许更新参数。实际最好的一块只有 7 个，因此按照这次运行的程序，80 个数据块都没有触发 Stage-2 参数更新。这准确解释了本次运行为什么是 0 次更新，但不代表 OpenEVO 的长期 Stage 2 必须使用这条规则，也不代表模型没有产生可学习数据。', 'Stage 2 completed 20,480 task attempts, including 797 trainable exact-success trajectories. This historical run used a method-control rule: every 256-attempt block was checked separately, and at least eight distinct tasks had to achieve repeated exact success before parameters could update. The best block reached seven, so under that run’s program none of the 80 blocks triggered a Stage-2 update. This accurately explains why this run recorded zero updates; it does not establish that long-term OpenEVO Stage 2 must use this rule or that the model produced no learnable data.'),
-      t('在固定的 128 个评测任务上，平均 WebShop 任务得分（Task Score ×100）从 13.33 升到 25.66；技术有效的完整轨迹从 109/128 增到 122/128，动作格式或解析失败从 19 次降到 6 次；真正完整完成任务则只从 3/128 增到 4/128。也就是说，可执行性和部分任务进展明显改善，但完整做成任务只多了 1 个。', 'On the fixed 128-task evaluation panel, mean WebShop Task Score ×100 rose from 13.33 to 25.66; technically valid episodes increased from 109/128 to 122/128 and parser/action-format failures fell from 19 to 6; fully completed tasks rose only from 3/128 to 4/128. Executability and partial progress improved clearly, while full task completion increased by only one task.'),
-      t('我们把 Stage 1 每次参数更新后的模型保存点（checkpoint）都放到同一套固定 128 任务上补测。从初始基础模型（base）到第 8 次更新后的平均任务得分（Task Score ×100）依次为 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66。训练 loss 一直下降，但评测分数中间两次回落；第 8 次更新后的保存点（increment-07）是最高点。', 'We re-evaluated every Stage-1 model checkpoint on the same fixed 128-task panel. Task Score from base through the eighth update was 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66. Training loss fell continuously, but evaluation score regressed twice; the checkpoint after the eighth update (increment-07) is the best point.'),
+      t('Stage 1 先用 1,440 次 WebShop 任务尝试收集经验。成功经验达到了当时的启动条件，因此模型真正进行了 8 次 SD-LoRA 参数更新。训练 loss 从 0.479 降到 0.055，说明它越来越贴合这批训练记录；但 loss 只是训练信号，不能直接当成“做题能力提高了多少”。', 'Stage 1 first collected experience from 1,440 WebShop task attempts. Enough successful experience met the historical start condition, so the model actually made eight SD-LoRA parameter updates. Training loss fell from 0.479 to 0.055, showing better fit to the training records; loss alone does not measure how much task-solving ability improved.'),
+      t('旧 Stage 2 又让模型做了 20,480 次任务，其中 797 次完整成功，而且轨迹质量足以用于训练。问题出在当时的更新规则：每 256 次尝试被切成一批，只有同一批里至少有 8 个不同任务都能各自完整成功 2 次，才允许改一次参数。实际最好的一批只有 7 个这样的任务，所以 80 批数据都没有进入参数更新。也就是说，模型并不是“没有成功经验”，而是这些经验被旧规则挡在了训练之前。', 'The old Stage 2 added 20,480 task attempts, including 797 exact successes with traces clean enough for training. The problem was the historical update rule: every 256 attempts formed one batch, and a parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch. The best batch reached seven, so none of the 80 batches entered parameter training. The model did produce successful experience; the old rule blocked that experience before training.'),
+      t('最终评测使用固定的 128 个 WebShop 任务。平均任务得分从 13.33 升到 25.66，能被环境正常执行的完整轨迹从 109 个增到 122 个，动作格式或解析失败从 19 次降到 6 次；但真正把整个任务完整做成的数量只从 3 个增到 4 个。最稳妥的结论是：模型更会输出可执行动作，也更常取得部分进展，但完整完成任务的能力只小幅增加。', 'Final evaluation used the same fixed 128 WebShop tasks. Mean score rose from 13.33 to 25.66, executable episodes increased from 109 to 122, and parser/action-format failures fell from 19 to 6; fully completed tasks rose only from 3 to 4. The safest conclusion is improved executability and partial progress, with only a small gain in full task completion.'),
+      t('为了确认“训练更多次是不是每次都会更强”，我们把初始模型和 Stage 1 的 8 个训练保存点全部放回同一套 128 个任务评测。平均得分依次是 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66。最后一次更新后的模型最好，但中间出现过两次明显回落，所以不能把训练 loss 持续下降理解成做题能力会同步、平滑地上升。', 'To test whether every additional training update made the model stronger, we evaluated the base model and all eight Stage-1 checkpoints on the same 128 tasks. Mean scores were 13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66. The final checkpoint is best, but two clear regressions show that falling training loss does not imply smooth, monotonic task improvement.'),
     ],
-    next:t('逐个训练保存点的补测已经回答了关键缺口：后期模型总体更强，最后一个保存点最好，但固定 128 任务上的能力会在某些更新后回落，因此训练 loss 不能当成“每降一点，WebShop 能力就一定升一点”的仪表。完整成功也只从 3/128 增到 4/128，所以更稳妥的解释仍是：训练明显改善了动作可执行性与部分任务进展，完整做成任务只小幅增加。', 'The checkpoint sweep closes the key gap: later models are stronger overall and the final checkpoint is best, but capability on the fixed 128 tasks regresses after some updates. Training loss therefore cannot be treated as a gauge where every decrease guarantees a WebShop capability increase. Exact success rises only from 3/128 to 4/128, so the supported interpretation remains improved executability and partial progress with only a small increase in full task completion.'),
+    next:t('这组历史实验已经可以收尾：Stage 1 确实把平均得分提高了，但收益主要来自更稳定的可执行动作和更多部分任务进展；完整成功只多了 1 个任务。旧 Stage 2 没有继续学习的原因也已定位到当时的逐批更新规则，因此不再恢复这条旧训练路径。', 'This historical arm can now be closed: Stage 1 clearly improved mean score, mainly through more reliable executable actions and partial progress, while exact completion increased by only one task. The reason the old Stage 2 did not continue learning has been traced to its batch-local update rule, so that obsolete training path will not be resumed.'),
   },
   '3b-minimax': {
     title:t('3B · MiniMax 任务后回看监督（有老师）', '3B · MiniMax hindsight analysis'),
@@ -73,74 +73,70 @@ const NOT_RUN_3B_MINIMAX = t('未运行（旧方法在 74.58% 时停止）', 'No
 
 const experimentTerms = [
   {
-    term:t('Stage 1：启动学习阶段', 'Stage 1: bootstrap-learning phase'),
-    meaning:t('先用 1,440 次任务尝试建立第一批学习数据，再尝试让基础模型发生最初的参数更新。self 组从模型自己的完整成功轨迹里学习；MiniMax 组则对同一批学生轨迹增加任务后回看监督。是否真的更新参数，取决于这一阶段有没有满足启动门槛。', 'Stage 1 uses 1,440 task attempts to form the first learning set and then tries to produce the initial parameter updates from the base model. Self arms learn from the model’s own exact-success trajectories; MiniMax arms add post-task hindsight supervision over the same student trajectories. Parameter updates occur only if the bootstrap requirement is satisfied.'),
+    term:t('Stage 1：第一次让模型真正学习', 'Stage 1: the first real learning phase'),
+    meaning:t('模型先做 1,440 次 WebShop 任务来收集经验。成功经验达到当时的启动条件后，才开始更新参数；7B/self 在这里实际更新了 8 次。', 'The model first makes 1,440 WebShop attempts to collect experience. Parameter training begins only after enough successful experience meets the historical start condition; 7B/self made eight real updates here.'),
   },
   {
-    term:t('历史 Stage 2：旧 256-window 方法控制', 'Historical Stage 2: old 256-window method-control'),
-    meaning:t('从 Stage 1 结束时的模型继续做题，但不再由 MiniMax 提供老师监督。本次历史运行计划了 80 个数据块、每块 256 次任务尝试，并用逐块 8 任务门槛决定是否更新。这里描述的是这次实验采用的 method-control 配置，不是对 OpenEVO 长期 Stage 2 算法的通用定义。', 'The model continues attempting tasks from its post-Stage-1 state without MiniMax supervision. This historical run used 80 blocks of 256 attempts and a per-block eight-task gate. That is the method-control configuration of this run, not a general definition of the long-term OpenEVO Stage-2 algorithm.'),
+    term:t('旧 Stage 2：继续自己做题', 'Old Stage 2: continued self-exploration'),
+    meaning:t('Stage 1 结束后，模型继续自己做 WebShop。历史实验一共安排 80 批、每批 256 次任务尝试；每一批都独立决定是否允许下一次参数更新。', 'After Stage 1, the model continued solving WebShop tasks on its own. The historical run used 80 batches of 256 attempts, with each batch independently deciding whether another parameter update was allowed.'),
   },
   {
-    term:t('一次任务尝试（rollout）', 'One task attempt (rollout)'),
-    meaning:t('模型从拿到一个 WebShop 任务开始，连续搜索、点击，直到成功、失败或达到 15 步上限。这是一整次做题，不是一次参数训练，也不是单个动作。', 'One complete WebShop attempt from receiving the task through search/click actions until success, failure, or the 15-step limit. It is not a parameter update and not a single action.'),
+    term:t('一次完整任务尝试（rollout）', 'One complete task attempt (rollout)'),
+    meaning:t('模型拿到一个 WebShop 任务后连续搜索、点击，直到成功、失败或达到 15 步上限。它是一整次做题，不是一个动作，也不是一次训练更新。', 'The model receives one WebShop task and searches/clicks until success, failure, or the 15-step limit. This is one whole attempt, not one action and not one training update.'),
   },
   {
-    term:t('可用于训练的完整成功轨迹（qualified positive）', 'Trainable exact-success trajectory (qualified positive)'),
-    meaning:t('一次任务尝试（rollout）只有在任务完全成功、轨迹完整、任务身份核对正确，而且没有动作解析失败，也没有由系统兜底逻辑替代模型动作时才算。797 说的是这种成功轨迹的条数。', 'A rollout counts only when the task is fully won, the trace is complete, task identity matches, and there is no parser failure and no system-generated substitute action. The number 797 counts trajectories that pass all of these checks.'),
+    term:t('一条可用于训练的完整成功轨迹', 'One trainable exact-success trajectory'),
+    meaning:t('只有任务真正完成、整条操作记录完整、任务身份核对正确，而且没有动作解析失败或系统替模型补动作时，才计入这一类。7B/self 的旧 Stage 2 一共得到 797 条。', 'A trace counts only when the task is fully completed, the record is complete, task identity matches, and there is no parser failure or system-substituted action. The old 7B/self Stage 2 produced 797 such traces.'),
   },
   {
-    term:t('达标任务身份（qualifying identity）', 'Qualifying task identity'),
-    meaning:t('这里数的不是轨迹条数，而是“不同的任务”。同一个 256 次任务尝试的数据块里，一个任务至少要独立完整成功 2 次，才算 1 个达标任务身份；同一任务成功很多次仍只算 1 个身份。', 'This counts distinct tasks, not trajectories. Within one 256-rollout block, a task must achieve at least two independent exact successes to count as one qualifying identity; many successes on the same task still count as one identity.'),
+    term:t('一个“重复成功的不同任务”', 'One distinct task with repeated success'),
+    meaning:t('旧规则不是直接数成功轨迹，而是数不同任务。同一批 256 次尝试里，一个任务至少要完整成功 2 次，才算 1 个；同一个任务成功更多次仍然只算 1 个不同任务。', 'The old rule did not count successful traces directly; it counted distinct tasks. Inside one 256-attempt batch, a task had to achieve at least two exact successes to count once, and additional successes on the same task did not increase the distinct-task count.'),
   },
   {
-    term:t('本次历史 Stage 2 的参数更新门槛（gate）', 'Historical Stage-2 parameter-update gate'),
-    meaning:t('本次历史运行每收集 256 次任务尝试就检查一次：只有这一块里至少有 8 个达标任务身份才允许更新；不足 8 个时模型权重保持不变，且程序不跨块累计。这是当时预先采用的方法控制规则。它可以解释本次运行的 0 次更新，但不能被推广成 OpenEVO 长期 Stage 2 的必然清空条件。', 'This historical run checked after every 256 rollouts: updates were allowed only when that block contained at least eight qualifying task identities, and the program did not pool successes across blocks. This was the preregistered method-control rule for that run. It explains the observed zero updates but must not be generalized into a necessary reset rule for long-term OpenEVO Stage 2.'),
+    term:t('旧实验允许参数更新的条件', 'Historical condition for allowing an update'),
+    meaning:t('每批 256 次尝试结束后，至少要出现 8 个“重复成功的不同任务”，程序才允许更新参数。少于 8 个时参数保持不变，而且成功记录不会带到下一批继续累计。这个条件只属于这次历史实验，已经不再用于当前 Stage 2。', 'After each 256-attempt batch, at least eight distinct tasks with repeated success were required before parameters could update. Below eight, parameters stayed unchanged and successes were not carried into the next batch. This condition belonged only to the historical run and is no longer used by the current Stage 2.'),
   },
   {
-    term:t('启动训练（bootstrap）', 'Bootstrap training'),
-    meaning:t('Stage 1 先让基础模型自己做题并收集经验；当成功经验达到门槛后，才进行本实验的第一轮参数学习。页面里的 bootstrap 指“从基础模型进入已学习状态”的首次启动更新，不是重新下载或重新初始化模型。', 'Stage 1 first lets the base model attempt tasks and collect experience. Only after enough successful experience is available does the experiment perform its first parameter learning. Here, bootstrap means the initial transition from the base model to a learned state, not redownloading or reinitializing the model.'),
+    term:t('参数更新', 'Parameter update'),
+    meaning:t('只有模型的 SD-LoRA 参数真的被优化并保存，才算“学了一次”。因此“旧 Stage 2 更新 0 次”表示任务和数据采集都运行了，但 Stage 1 之后的模型参数没有再改变。', 'A learning update counts only when SD-LoRA parameters are actually optimized and saved. So “0 updates in the old Stage 2” means task execution and data collection ran, but model parameters never changed after Stage 1.'),
   },
   {
-    term:t('参数更新与学习适配器（adapter）', 'Parameter update and learned adapter'),
-    meaning:t('真正“学了一次”意味着 SD-LoRA 的附加参数被优化并保存成新的 adapter。页面写“0 次 Stage-2 参数更新”时，意思是 Stage 2 做了探索和数据采集，但没有改动 Stage 1 留下的模型参数；不等于实验没跑，也不等于没有成功数据。', 'A real learning update means SD-LoRA auxiliary parameters were optimized and saved into a new adapter. “0 Stage-2 parameter updates” means Stage 2 collected experience without changing the Stage-1 model parameters; it does not mean the experiment failed to run or produced no successful data.'),
-  },
-  {
-    term:t('Task Score、完整成功与技术有效性', 'Task Score, exact success, and technical validity'),
-    meaning:t('Task Score ×100 是 128 个任务的平均 WebShop 得分，可包含部分任务进展；完整成功（Exact Success）只数真正完成整个任务；技术有效轨迹（Valid Episode）只说明输出能被环境正确执行，不保证任务成功。三者必须分开看。', 'Task Score ×100 is the mean WebShop score over 128 tasks and can include partial progress; Exact Success counts only fully completed tasks; a Valid Episode means the output could be executed correctly by the environment, not that the task was solved. These three must be interpreted separately.'),
+    term:t('平均任务得分、完整成功、技术有效', 'Mean task score, exact completion, and technical validity'),
+    meaning:t('平均任务得分可以包含只完成一部分目标获得的分数；完整成功只数整个任务真正做成；技术有效只表示动作格式能被环境正常执行。三者回答不同问题，所以不能互相替代。', 'Mean task score can include partial progress; exact completion counts only fully solved tasks; technical validity only means the action sequence can be executed by the environment. They answer different questions and must not be substituted for one another.'),
   },
 ];
 
 const sevenBStage2Flow = [
-  { n:'20,480', title:t('次 Stage-2 任务尝试', 'Stage-2 task attempts'), text:t('80 个数据块 × 每块 256 次任务尝试。这里是经验采集量，不是 20,480 次训练。', '80 blocks × 256 rollouts. This is experience-collection volume, not 20,480 training updates.') },
-  { n:'797', title:t('条合格成功轨迹', 'trainable exact-success trajectories'), text:t('它们都满足完整成功和技术有效条件。它们证明这次运行产生了可学习数据；是否以及怎样跨窗口使用这些数据，是尚未解决的算法设计问题。', 'They all pass exact-success and technical-validity checks and show that this run produced learnable data. Whether and how to use it across windows remains an unresolved algorithm-design question.') },
-  { n:'8', title:t('个达标任务身份才允许更新', 'qualifying task identities required'), text:t('同一个 256 次任务尝试的数据块内，每个身份还必须至少独立成功 2 次。这个 8 是“不同任务数门槛”，不是 8 分，也不是要 8 条轨迹。', 'Within the same 256-rollout block, each identity must also succeed independently at least twice. The 8 is a threshold on distinct tasks, not a score of 8 and not eight trajectories.') },
-  { n:'7', title:t('是实际单块最高值', 'was the best block observed'), text:t('最好的一块也只覆盖 7 个达标任务身份，离门槛差 1 个；其余数据块更低。', 'Even the best block covered only seven qualifying task identities, one short of the threshold; every other block was lower.') },
-  { n:'0', title:t('次 Stage-2 参数更新', 'Stage-2 parameter updates'), text:t('按这次历史 method-control 规则，80 个数据块都没有达到单块 8 任务门槛，因此程序从未改动参数；最终评测继续使用 Stage 1 的适配器。这是旧配置的运行结果，不是合理 Stage 2 训练后的能力上限。', 'Under this historical method-control rule, none of the 80 blocks reached the per-block threshold, so parameters never changed and final evaluation used the Stage-1 adapter. This is the outcome of the old configuration, not a capability ceiling after a well-designed Stage 2.') },
+  { n:'20,480', title:t('次任务尝试', 'task attempts'), text:t('旧 Stage 2 一共分成 80 批，每批 256 次。这是模型做题和收集经验的次数，不是训练次数。', 'The old Stage 2 used 80 batches of 256 attempts. This counts task-solving and experience collection, not training updates.') },
+  { n:'797', title:t('条可用于训练的完整成功轨迹', 'trainable exact-success traces'), text:t('这些任务都真正完成，而且整条操作记录通过了训练数据检查，所以不能把这次运行理解成“没有成功经验”。', 'These tasks were fully completed and their traces passed the training-data checks, so this run cannot be described as having no successful experience.') },
+  { n:'8', title:t('个不同任务是旧规则要求的最低数', 'distinct tasks required by the old rule'), text:t('同一批里，一个任务必须至少完整成功 2 次，才计入这 8 个不同任务。这里的 8 不是分数，也不是 8 条轨迹。', 'Within one batch, a task had to achieve at least two exact successes before it counted toward these eight distinct tasks. The number eight is neither a score nor eight traces.') },
+  { n:'7', title:t('个不同任务是实际最高值', 'distinct tasks was the observed maximum'), text:t('表现最好的一批也只有 7 个任务达到“至少成功 2 次”的条件，比旧规则少 1 个；其他批次更少。', 'Even the strongest batch had only seven tasks meeting the “at least two exact successes” condition, one short of the historical rule; other batches had fewer.') },
+  { n:'0', title:t('次参数更新', 'parameter updates'), text:t('因为 80 批都没有达到旧规则要求，Stage 2 从未再改动模型参数。最终评测因此仍然是在评 Stage 1 第 8 次更新后的模型。', 'Because none of the 80 batches met the historical rule, Stage 2 never changed model parameters again. Final evaluation therefore still measured the model after the eighth Stage-1 update.') },
 ];
 
 const individualMetrics = [
   {
     metric:t('最终平均任务得分（Task Score ×100）', 'Final mean Task Score ×100'),
     value:sealedFinal ? sealedFinal.taskScoreX100!.toFixed(2) : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
-    note:sealedFinal ? t('来自同一套封存 128 任务 final eval；这是历史旧方法结果', 'From the same sealed 128-task final evaluation; this is a historical old-method result') : t('旧方法被停止后没有封存 final eval，不能把缺失写成 0 分', 'No sealed final evaluation exists after the old method was stopped; absence must not be reported as zero'),
+    note:sealedFinal ? t('来自固定的 128 个 WebShop 任务；这个平均值可以包含只完成部分目标得到的分数', 'From the fixed 128 WebShop tasks; this mean can include partial progress') : t('旧实验停止后没有最终评测结果，因此不能把缺失写成 0 分', 'The old run stopped without a final evaluation, so missing evidence must not be reported as zero'),
   },
   {
     metric:t('完整成功（Exact Success）', 'Exact Success (full task completion)'),
     value:sealedFinal ? sealedFinal.exactSuccess! : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
-    note:t('和 Task Score 分开解释', 'Interpret separately from Task Score'),
+    note:t('只数整个任务真正完成的次数，不包含只取得部分进展的任务', 'Counts only fully completed tasks and excludes partial progress'),
   },
   {
     metric:t('技术有效轨迹（Valid Episode）', 'Technically valid episodes'),
     value:sealedFinal ? sealedFinal.validEpisodes! : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
-    note:t('用于区分“更会说合法动作”和“更会完成任务”', 'Separates valid action production from task completion'),
+    note:t('表示模型输出的动作能被环境正常执行；技术有效不等于任务已经完成', 'Shows that the model actions can be executed by the environment; technical validity does not mean the task was solved'),
   },
   {
-    metric:t('Stage-2 最终参数更新数', 'Final Stage-2 optimizer updates'),
+    metric:t('旧 Stage 2 实际参数更新次数', 'Actual parameter updates in the old Stage 2'),
     value:archiveArm ? String(archiveArm.stage2Updates) : PENDING,
-    note:archiveArm ? (mode === '3b-minimax' ? t('截至 74.58% 主动停止时仍为 0；这是历史 stop state，不伪装成完整 80-block 结果', 'Still zero when explicitly stopped at 74.58%; this is a historical stop state, not a fabricated 80-block completion') : t('该历史臂已经封口；Stage 2 没有产生新 adapter bytes', 'This historical arm is closed; Stage 2 created no new adapter bytes')) : PENDING,
+    note:archiveArm ? (mode === '3b-minimax' ? t('旧实验运行到 74.58% 时主动停止；停止前没有发生 Stage-2 参数更新', 'The historical run stopped at 74.58% without any Stage-2 parameter update') : t('这一阶段虽然完成了任务探索和数据采集，但没有再改变 Stage 1 结束时的模型参数', 'This stage completed task exploration and data collection without changing the model parameters left by Stage 1')) : PENDING,
   },
   {
-    metric:t('每次 Stage-1 参数更新后的能力', 'Capability after each Stage-1 parameter update'),
+    metric:t('初始模型与 8 次 Stage-1 更新后的平均任务得分', 'Mean task score from base through eight Stage-1 updates'),
     value:mode === '7b-self'
       ? t('13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66', '13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66')
       : mode === '3b-self'
@@ -197,8 +193,8 @@ const contrasts = [
 <main class="exp-scaffold" data-testid={`experiment-results-scaffold-${mode}`}>
   <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
-    <strong>{t('历史方法控制 · 已取代', 'HISTORICAL METHOD CONTROL · SUPERSEDED')}</strong>
-    <p>{t('这里保留旧实验的真实结果与模型保存点诊断。那次实验每收集 256 次任务尝试，就要求至少 8 个不同任务各自完整成功 2 次，才允许更新参数。这条历史规则不再代表当前 OpenEVO Stage 2；当前主线请看 OpenEVO-Ceiling-1.0。', 'This section preserves the real results and checkpoint diagnostics from the old experiment. That run checked every 256 task attempts and allowed a parameter update only when at least eight distinct tasks had each achieved exact success twice. This historical rule no longer represents the current OpenEVO Stage 2; see OpenEVO-Ceiling-1.0 for the current mainline.')}</p>
+    <strong>{t('旧 Stage 2 规则 · 已取代', 'OLD STAGE-2 RULE · SUPERSEDED')}</strong>
+    <p>{t('本页记录的是已经完成的历史实验。旧 Stage 2 每 256 次任务尝试重新判断一次，只有这一批里至少 8 个不同任务都能各自完整成功 2 次才允许更新参数。这个规则后来被确认不适合作为长期学习算法；当前实验已经转到 OpenEVO-Ceiling-1.0。', 'This page documents a completed historical run. The old Stage 2 reset its decision every 256 task attempts and allowed an update only when at least eight distinct tasks each achieved two exact successes inside that batch. That rule was later judged unsuitable as a long-horizon learning algorithm; the current experiment has moved to OpenEVO-Ceiling-1.0.')}</p>
   </aside>
   <OpenEvoExperimentSelector locale={locale} mode={mode} />
 
@@ -220,9 +216,9 @@ const contrasts = [
   {mode === '7b-self' && (
     <section class="exp-scaffold__resource-summary" aria-labelledby="resource-summary-title">
       <div class="exp-scaffold__resource-heading">
-        <p class="exp-scaffold__section-kicker">{t('实验资源与耗时', 'RESOURCE FOOTPRINT')}</p>
-        <h2 id="resource-summary-title">{t('这次 7B/self 跑了多久？', 'How long did this 7B/self run take?')}</h2>
-        <p>{t('正式主实验始终使用两张 RTX 5090 并行。下面先报真实墙钟时间，再给出等价 GPU·小时；两张卡同时跑 1 小时，墙钟时间仍然只算 1 小时。', 'The formal main run used two RTX 5090 GPUs in parallel throughout. We report real wall-clock time first, then equivalent GPU-hours; when two GPUs run together for one hour, wall time is still one hour.')}</p>
+        <p class="exp-scaffold__section-kicker">{t('计算资源', 'COMPUTE')}</p>
+        <h2 id="resource-summary-title">{t('计算资源与实际耗时', 'Compute and observed runtime')}</h2>
+        <p>{t('这组历史实验全程使用 2 张 RTX 5090 并行。Stage 1 约 7 小时 24 分，旧 Stage 2 约 29 小时 19 分，两阶段连续运行约 36 小时 44 分，相当于约 73.5 GPU·小时。', 'This historical run used two RTX 5090 GPUs in parallel. Stage 1 took about 7 h 24 min and the old Stage 2 about 29 h 19 min, for roughly 36 h 44 min of continuous wall time or about 73.5 GPU-hours.')}</p>
       </div>
       <dl class="exp-scaffold__resource-grid">
         <div>
@@ -233,12 +229,12 @@ const contrasts = [
         <div>
           <dt>{t('Stage 1', 'Stage 1')}</dt>
           <dd>{t('约 7 小时 24 分', '~7 h 24 min')}</dd>
-          <small>{t('1,440 次 rollout + 8 次参数更新', '1,440 rollouts + 8 parameter updates')}</small>
+          <small>{t('1,440 次任务尝试 + 8 次参数更新', '1,440 task attempts + 8 parameter updates')}</small>
         </div>
         <div>
           <dt>{t('Stage 2', 'Stage 2')}</dt>
           <dd>{t('约 29 小时 19 分', '~29 h 19 min')}</dd>
-          <small>{t('80 × 256 = 20,480 次 rollout', '80 × 256 = 20,480 rollouts')}</small>
+          <small>{t('80 批 × 每批 256 次 = 20,480 次任务尝试', '80 batches × 256 = 20,480 task attempts')}</small>
         </div>
         <div class="exp-scaffold__resource-total">
           <dt>{t('主实验合计', 'Main-run total')}</dt>
@@ -246,21 +242,21 @@ const contrasts = [
           <small>{t('≈ 73.5 GPU·小时', '≈ 73.5 GPU-hours')}</small>
         </div>
       </dl>
-      <p class="exp-scaffold__resource-note">{t('口径：按正式运行产物时间戳计算，Stage 1 为约 7:24，Stage 2 为约 29:19，两阶段首尾连续约 36:44。这里不包含之后的固定 128 任务最终评测，也不包含单独进行的 checkpoint sweep（该补测约 80.2 分钟）。', 'Measurement: derived from timestamps of the sealed formal-run artifacts. Stage 1 is ~7:24, Stage 2 is ~29:19, and the two stages span ~36:44 continuously. This excludes the later fixed-128 final evaluation and the separate checkpoint sweep (~80.2 minutes).')}</p>
+      <p class="exp-scaffold__resource-note">{t('这些时间来自已保存实验产物的时间戳，只计算 Stage 1 和旧 Stage 2 主实验本身。之后的固定 128 任务最终评测不在这 36 小时 44 分里；单独补测 8 个训练保存点另外用了约 80.2 分钟。', 'These times come from timestamps in the saved experiment artifacts and cover only Stage 1 plus the old Stage 2 main run. The later fixed-128 final evaluation is excluded; the separate checkpoint evaluation took about 80.2 additional minutes.')}</p>
     </section>
   )}
 
   <section class="exp-scaffold__section exp-scaffold__counting" aria-labelledby="counting-title">
-    <p class="exp-scaffold__section-kicker">{t('实验计数规则', 'EXPERIMENT COUNTING RULES')}</p>
-    <h2 id="counting-title">{t('旧 Stage 2 参数更新门槛（已取代）', 'Old Stage-2 parameter-update rule (superseded)')}</h2>
-    <p class="exp-scaffold__section-intro">{t('这里最容易误读的地方是："跑了多少次任务"、"收集到多少条成功轨迹"和"模型真的更新了多少次参数"是三件不同的事。下面这些定义就是本组结果页后续数字的统一口径。', 'The key distinction is that task attempts, successful trajectories, and actual model-parameter updates are three different quantities. These definitions are the common counting contract for the result pages in this series.')}</p>
+    <p class="exp-scaffold__section-kicker">{t('旧 Stage 2 的更新规则', 'HISTORICAL STAGE-2 UPDATE RULE')}</p>
+    <h2 id="counting-title">{t('20,480 次任务尝试为什么没有带来参数更新', 'Why 20,480 task attempts produced no parameter update')}</h2>
+    <p class="exp-scaffold__section-intro">{t('这个结果需要把三件事分开：模型做了多少次任务、其中有多少次完整成功并且可以用于训练、程序最后有没有真的改动模型参数。旧 Stage 2 前两件事都发生了，第三件事没有发生。', 'Three quantities must be separated: how many tasks the model attempted, how many attempts were exact successes clean enough for training, and whether the program actually changed model parameters. The old Stage 2 produced the first two, but not the third.')}</p>
     <dl class="exp-scaffold__term-list">
       {experimentTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}
     </dl>
 
     {mode === '7b-self' && (
       <figure class="exp-scaffold__gate-figure" aria-labelledby="gate-flow-title">
-        <figcaption id="gate-flow-title">{t('7B/self 历史运行：为什么当时的 20,480 次尝试是 0 次参数更新', 'Historical 7B/self run: why its 20,480 attempts led to zero parameter updates')}</figcaption>
+        <figcaption id="gate-flow-title">{t('旧规则的完整因果链：任务尝试 → 成功轨迹 → 每批判定 → 0 次参数更新', 'Historical causal chain: attempts → successful traces → batch rule → zero parameter updates')}</figcaption>
         <ol class="exp-scaffold__gate-flow">
           {sevenBStage2Flow.map((step) => <li>
             <span class="exp-scaffold__gate-number">{step.n}</span>
@@ -268,7 +264,7 @@ const contrasts = [
             <p>{step.text}</p>
           </li>)}
         </ol>
-        <p class="exp-scaffold__gate-conclusion">{t('所以这里的 "7" 和 "8" 都不是模型分数：它们数的是这次历史 method-control 在同一个 256 次尝试数据块里看到的重复成功任务数。7 < 8 准确解释了当时程序为什么没有更新；它不能证明长期 Stage 2 应该逐块清零，也不能把 797 条合格成功轨迹说成没有可学习数据。', 'The “7” and “8” are not model scores. They are counts used by this historical method-control inside one 256-attempt block. 7 < 8 accurately explains why that program did not update; it does not prove that long-term Stage 2 should reset every block or that 797 qualifying trajectories were not learnable data.')}</p>
+        <p class="exp-scaffold__gate-conclusion">{t('这里的 7 和 8 都是在数“同一批里有多少个不同任务能够各自完整成功至少 2 次”，不是模型分数。旧规则要求至少 8 个，实际最高只有 7 个，所以当时的程序从未进入参数更新。这个事实只能解释旧实验为什么没有继续训练；它不能证明长期 Stage 2 应该继续使用同样的逐批清零规则。', 'The numbers 7 and 8 count distinct tasks that each achieved at least two exact successes within the same batch; they are not model scores. The historical rule required eight and the best batch reached seven, so that program never entered parameter updating. This explains why the old run stopped learning, but does not justify the same batch-reset rule for long-term Stage 2.')}</p>
       </figure>
     )}
   </section>
@@ -277,26 +273,26 @@ const contrasts = [
     <>
       <section class="exp-scaffold__section exp-scaffold__two-col" aria-labelledby="known-title">
         <div>
-          <p class="exp-scaffold__section-kicker">{t('先说已经知道的', 'WHAT WE ALREADY KNOW')}</p>
-          <h2 id="known-title">{t('已有证据', 'Existing evidence')}</h2>
+          <p class="exp-scaffold__section-kicker">{t('实验结果', 'RESULTS')}</p>
+          <h2 id="known-title">{t('这组实验已经确认的四件事', 'Four findings supported by this run')}</h2>
           <div class="exp-scaffold__known">
             {current.known.map((item, i) => <article><span>{String(i + 1).padStart(2,'0')}</span><p>{item}</p></article>)}
           </div>
         </div>
         <aside class="exp-scaffold__pending-callout">
-          <span>{mode === '7b-self' ? t('GPU 缺口已经补齐', 'GPU GAP CLOSED') : t('还不能回答', 'STILL UNKNOWN')}</span>
-          <h3>{mode === '7b-self' ? t('现在可以给出单实验解释', 'A single-arm interpretation is now supported') : t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
+          <span>{mode === '7b-self' ? t('最终结论', 'FINAL INTERPRETATION') : t('还不能回答', 'STILL UNKNOWN')}</span>
+          <h3>{mode === '7b-self' ? t('平均得分提高了，但完整成功只小幅增加', 'Mean score improved, while exact completion changed only slightly') : t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
           <p>{current.next}</p>
           <div class="exp-scaffold__pending-chip">{mode === '7b-self' ? t('训练保存点分析：完成', 'Checkpoint analysis: complete') : t('结论：等待证据', 'Conclusion: pending evidence')}</div>
         </aside>
       </section>
 
       <section class="exp-scaffold__section" aria-labelledby="slots-title">
-        <p class="exp-scaffold__section-kicker">{mode === '7b-self' ? t('已封存的正式结果已经回填', 'SEALED RESULTS FILLED') : t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN EVIDENCE FILES ARRIVE')}</p>
-        <h2 id="slots-title">{t('结果槽位', 'Result slots')}</h2>
+        <p class="exp-scaffold__section-kicker">{mode === '7b-self' ? t('核心数字', 'KEY METRICS') : t('服务器跑完后直接填这里', 'FILL THESE SLOTS WHEN EVIDENCE FILES ARRIVE')}</p>
+        <h2 id="slots-title">{mode === '7b-self' ? t('最终评测与训练结果', 'Final evaluation and training results') : t('结果槽位', 'Result slots')}</h2>
         <div class="exp-scaffold__table-wrap">
           <table>
-            <thead><tr><th>{t('指标 / 问题', 'Metric / question')}</th><th>{t('当前值', 'Current value')}</th><th>{t('解释边界', 'Interpretation boundary')}</th></tr></thead>
+            <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('结果', 'Result')}</th><th>{t('这个数字说明什么', 'What this result means')}</th></tr></thead>
             <tbody>
               {individualMetrics.map((row) => <tr><th scope="row">{row.metric}</th><td class:list={{pending:row.value === PENDING}}>{row.value}</td><td>{row.note}</td></tr>)}
             </tbody>
@@ -306,9 +302,9 @@ const contrasts = [
 
       {mode === '7b-self' && (
         <section class="exp-scaffold__section" aria-labelledby="checkpoint-curve-title">
-          <p class="exp-scaffold__section-kicker">{t('GPU checkpoint sweep · COMPLETE', 'GPU CHECKPOINT SWEEP · COMPLETE')}</p>
-          <h2 id="checkpoint-curve-title">{t('Stage 1 的 8 次参数更新期间，做题能力不是直线上升', 'Capability did not rise in a straight line across the eight Stage-1 updates')}</h2>
-          <p class="exp-scaffold__section-intro">{t('7 个中间训练保存点，加上初始基础模型和最后一个训练保存点，都使用同一套已封存的 128 个 WebShop 任务进行评测；采样温度（temperature）固定为 0、每题最多 15 步，提示词和动作格式规则也完全相同。训练 loss 从 0.479 连续降到 0.055，但平均任务得分中间多次回落；第 8 次更新后的保存点（increment-07）得分 25.66，是 9 个评测点里的最高值。', 'The seven intermediate checkpoints and the existing base/final endpoints use the same sealed 128-task WebShop panel, temperature=0, 15-step limit, and the same prompt/action contracts. Loss falls continuously from 0.479 to 0.055, yet Task Score regresses several times; increment-07 at 25.66 is the best of all nine points.')}</p>
+          <p class="exp-scaffold__section-kicker">{t('训练保存点补测', 'CHECKPOINT EVALUATION')}</p>
+          <h2 id="checkpoint-curve-title">{t('8 次参数更新总体变好，但中间两次出现回落', 'Eight updates improved the final model, with two regressions along the way')}</h2>
+          <p class="exp-scaffold__section-intro">{t('我们把初始模型和 8 次参数更新后的模型都放到完全相同的 128 个 WebShop 任务上评测：采样温度固定为 0，每题最多 15 步，提示词和动作格式规则不变。训练 loss 从 0.479 一路降到 0.055，但任务得分并没有每次都上涨；最后一次更新后的模型得分 25.66，是 9 个评测点里最高的。', 'We evaluated the base model and all eight post-update checkpoints on exactly the same 128 WebShop tasks, with temperature fixed at 0, a 15-step limit, and unchanged prompt/action rules. Training loss fell from 0.479 to 0.055, but task score did not improve after every update; the final checkpoint scored 25.66, the best of all nine evaluation points.')}</p>
           <OpenEvoCheckpointCurve locale={locale} rows={sevenBSelfCheckpointCurve} />
           <div class="exp-scaffold__table-wrap">
             <table class="checkpoint-table">
@@ -326,14 +322,14 @@ const contrasts = [
       )}
 
       <section class="exp-scaffold__section" aria-labelledby="pipeline-title">
-        <p class="exp-scaffold__section-kicker">{t('不要把不同阶段混成一个分数', 'KEEP STAGES SEPARATE')}</p>
-        <h2 id="pipeline-title">{t('这页最后要解释的机制链', 'Mechanism chain this page must explain')}</h2>
+        <p class="exp-scaffold__section-kicker">{t('从训练到最终结果', 'FROM TRAINING TO FINAL RESULT')}</p>
+        <h2 id="pipeline-title">{t('这组实验真正发生了什么', 'What actually happened in this run')}</h2>
         <ol class="exp-scaffold__pipeline">
-          <li><span>01</span><strong>{t('Stage 1 / 启动训练', 'Stage 1 / bootstrap')}</strong><p>{t('有没有形成可训练数据？真正发生了多少次参数更新？', 'Did trainable experience form, and how many parameter updates actually happened?')}</p></li>
-          <li><span>02</span><strong>{t('Stage 2 / 模型自主探索', 'Stage 2 / self-exploration')}</strong><p>{t('模型自己探索时，每 256 次尝试里是否出现至少 8 个能够各自重复完整成功的不同任务，从而允许下一次参数更新？', 'During self-exploration, does each 256-attempt block contain at least eight distinct tasks with repeated exact success, allowing the next parameter update?')}</p></li>
-          <li><span>03</span><strong>{t('最终评测', 'Final evaluation')}</strong><p>{t('平均任务得分、完整成功数和技术有效轨迹数必须分开看，不能把它们压成一个总分。', 'Mean task score, exact-success count, and technically valid episode count must be interpreted separately rather than collapsed into one headline number.')}</p></li>
-          <li><span>04</span><strong>{t('训练保存点分析', 'Checkpoint analysis')}</strong><p>{mode === '7b-self' ? t('已完成：训练 loss 持续下降，但固定 128 任务上的得分会中途回落；最后一个保存点最好。', 'Complete: training loss fell continuously, but score on the fixed 128 tasks regressed between some updates; the final checkpoint is best.') : t('训练 loss 下降是否真的对应固定 WebShop 评测任务上的能力上升？', 'Does lower training loss actually correspond to stronger capability on the fixed WebShop evaluation tasks?')}</p></li>
-          <li><span>05</span><strong>{t('最终解释', 'Final interpretation')}</strong><p>{t('只有前四步证据齐全后，才回答“为什么变好 / 为什么没继续学 / 下一步改哪里”。', 'Only after the first four steps are grounded do we answer why it improved, why learning stalled, and what should change next.')}</p></li>
+          <li><span>01</span><strong>{t('Stage 1：真正发生了学习', 'Stage 1: real learning occurred')}</strong><p>{mode === '7b-self' ? t('1,440 次任务尝试后，模型进行了 8 次参数更新。', 'After 1,440 task attempts, the model made eight parameter updates.') : t('先确认这一阶段是否真的形成可训练数据和参数更新。', 'Establish whether this stage actually produced trainable data and parameter updates.')}</p></li>
+          <li><span>02</span><strong>{t('旧 Stage 2：收集到成功经验，但没有继续训练', 'Old Stage 2: successful experience without further training')}</strong><p>{mode === '7b-self' ? t('20,480 次任务尝试里有 797 条可训练成功轨迹，但旧的逐批门槛让 80 批数据都没有进入参数更新。', 'Among 20,480 attempts, 797 traces were trainable exact successes, but the old batch-local threshold kept all 80 batches from entering parameter updating.') : t('把探索数据与真正发生的参数更新分开记录。', 'Keep exploration data separate from actual parameter updates.')}</p></li>
+          <li><span>03</span><strong>{t('最终评测：平均得分提高，完整成功变化很小', 'Final evaluation: mean score improved, exact completion changed little')}</strong><p>{mode === '7b-self' ? t('平均得分 13.33 → 25.66；完整成功 3/128 → 4/128；技术有效轨迹 109/128 → 122/128。', 'Mean score 13.33 → 25.66; exact success 3/128 → 4/128; technically valid episodes 109/128 → 122/128.') : t('平均得分、完整成功和技术有效性分别报告。', 'Report mean score, exact completion, and technical validity separately.')}</p></li>
+          <li><span>04</span><strong>{t('训练过程：最后一个保存点最好，但不是每一步都更强', 'Training path: the final checkpoint is best, but not every update helps')}</strong><p>{mode === '7b-self' ? t('loss 持续下降，固定 128 任务上的得分却出现两次回落。', 'Loss kept falling while score on the fixed 128 tasks regressed twice.') : t('用中间保存点区分训练信号和真实任务能力。', 'Use intermediate checkpoints to separate training signal from task capability.')}</p></li>
+          <li><span>05</span><strong>{t('结论：旧 Stage 2 规则已被取代', 'Conclusion: the old Stage-2 rule is superseded')}</strong><p>{mode === '7b-self' ? t('这组实验保留为历史证据；当前 Stage 2 改用 Ceiling-1.0，不再沿用旧的逐批 7 对 8 门槛。', 'This run remains historical evidence; the current Stage 2 uses Ceiling-1.0 instead of the old batch-local 7-versus-8 threshold.') : t('根据实际证据决定后续实验，而不是把历史配置当成长期算法。', 'Use observed evidence to design the next experiment rather than treating a historical configuration as the long-term algorithm.')}</p></li>
         </ol>
       </section>
     </>
@@ -383,7 +379,7 @@ const contrasts = [
 
   <footer class="exp-scaffold__footer">
     <a href={p('/research/seed-openevo/study/results/')}>← {t('返回研究结果总页', 'Back to Results')}</a>
-    <span>{t('原则：先固定问题与空位，后填真实结果。', 'Rule: freeze the questions and slots first; fill real evidence later.')}</span>
+    <span>{mode === '7b-self' ? t('这组历史实验已封存；当前 Stage 2 主线为 OpenEVO-Ceiling-1.0。', 'This historical run is sealed; the current Stage-2 mainline is OpenEVO-Ceiling-1.0.') : t('所有结果以已封存实验产物为准。', 'All results are grounded in sealed experiment artifacts.')}</span>
   </footer>
 </main>
 

@@ -1,9 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentResultsScaffold from '../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
-import OpenEvoExperimentAnalysisPlan from '../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="OpenEvo 基础能力探索实验 · 7B / self" description="展示 7B/self 已完成的 Stage-1、Stage-2、128-task final 与完整 checkpoint GPU 能力曲线，并解释 loss、可执行性和完整成功之间的关系。" locale="zh">
+<AppLayout title="7B / self 实验结果：Stage 1 提升明显，旧 Stage 2 没有继续更新" description="完整解释 7B/self 实验：Stage 1 进行了 8 次参数更新，固定 128 任务平均得分从 13.33 升到 25.66；旧 Stage 2 虽完成 20,480 次任务尝试并收集 797 条可训练成功轨迹，却因历史逐批门槛没有发生参数更新。" locale="zh">
   <OpenEvoExperimentResultsScaffold locale="zh" mode="7b-self" />
-  <OpenEvoExperimentAnalysisPlan locale="zh" mode="7b-self" />
 </AppLayout>
