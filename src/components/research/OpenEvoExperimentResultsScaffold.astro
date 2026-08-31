@@ -22,7 +22,7 @@ const armMeta = {
     question:t('3B 只靠自己产生经验时，能不能跨过“先产生足够好经验，才能继续学”的门槛？', 'Can 3B, using only its own experience, cross the threshold required to keep learning?'),
     known:[
       t('Stage 1 共找到 4 条可用于训练的完整成功轨迹，但它们只来自 1 个能够重复成功的任务；启动训练要求至少 8 个这样的不同任务。因此 3B/self 没达到启动门槛，没有创建新的学习适配器（adapter），Stage 1 的模型参数保持初始基础模型（base）状态。', 'Stage 1 found four trainable exact-success trajectories, but they came from only one task that succeeded repeatedly; bootstrap requires at least eight such distinct tasks. 3B/self therefore did not reach the start threshold, created no learned adapter, and kept the base model parameters unchanged.'),
-      t('旧 Stage 2 完成 80/80 个 256-rollout block（20,480 次尝试），得到 138 条 qualified positive；单块最多只有 2/8 个 qualifying identity，80 个 block 全部 0 次参数更新。这个结果现在只作为旧 gate 的方法控制证据，不再代表当前 OpenEVO Stage 2。', 'The old Stage 2 completed 80/80 256-rollout blocks (20,480 attempts) with 138 qualified positives. The best block reached only 2/8 qualifying identities, so all 80 blocks produced zero parameter updates. This is now method-control evidence for the old gate, not the current OpenEVO Stage 2.'),
+      t('旧 Stage 2 完成了 20,480 次任务尝试，按每 256 次尝试分成 80 批。138 次尝试是完整成功、且轨迹质量足以进入训练候选池；但最好的一批里也只有 2 个不同任务能够各自重复完整成功，而当时的规则要求至少 8 个才允许更新参数。因此 80 批数据都没有触发参数更新。这个结果只说明旧方法控制规则怎样阻断了学习，不代表当前 OpenEVO Stage 2。', 'The old Stage 2 completed 20,480 task attempts, grouped into 80 batches of 256. Of those attempts, 138 were exact successes with traces clean enough to enter the training candidate pool. Even the best batch contained only two distinct tasks that each succeeded repeatedly, while the historical rule required at least eight before a parameter update was allowed. None of the 80 batches therefore triggered an update. This documents how the old method-control blocked learning; it does not define the current OpenEVO Stage 2.'),
       t('封存的 128 任务最终评测已经存在：平均 Task Score ×100 = 1.71，完整成功 1/128，技术有效轨迹 121/128。因为这条 arm 从 Stage 1 到旧 Stage 2 都没有产生 adapter，两个 final-eval cell 与 3B base 逐项一致；这是“参数没变”的真实负结果，不是评测缺失。', 'A sealed 128-task final evaluation exists: mean Task Score ×100 = 1.71, exact success = 1/128, and valid episodes = 121/128. Because this arm created no adapter in either Stage 1 or old Stage 2, both final-evaluation cells match 3B base exactly. This is a real unchanged-parameter result, not missing evaluation.'),
     ],
     next:t('不恢复这条旧 Stage 2。保留其完整 rollout、selection、execution-state 与 base-pointer 语义，用于解释为什么旧硬门槛会阻断学习。', 'Do not resume this old Stage 2. Preserve its rollouts, selections, execution state, and base-pointer semantics to explain why the brittle gate blocked learning.'),
@@ -43,11 +43,11 @@ const armMeta = {
   '3b-minimax': {
     title:t('3B · MiniMax 任务后回看监督（有老师）', '3B · MiniMax hindsight analysis'),
     eyebrow:t('历史单实验 · 74.58% 时主动停止', 'HISTORICAL ARM · STOPPED AT 74.58%'),
-    status:t('已 supersede；59 个完整 block + 171 条 partial rollout', 'Superseded; 59 complete blocks + 171 partial rollouts'),
-    question:t('旧 256-window gate 下，MiniMax bootstrap 后的 3B 是否真的能在 Stage 2 继续更新参数？', 'Under the old 256-window gate, could the MiniMax-bootstrapped 3B actually keep updating parameters in Stage 2?'),
+    status:t('旧方法已停止；完成 59 批数据，第 60 批保留 171 次尚未计入完整批次的任务尝试', 'Old method stopped; 59 complete batches plus 171 attempts preserved from batch 60'),
+    question:t('按旧规则每 256 次尝试单独判断时，MiniMax 启动训练后的 3B 能不能继续更新参数？', 'Could the MiniMax-bootstrapped 3B keep updating when the old rule judged each 256 attempts separately?'),
     known:[
       t('这里口头说“有老师”，更精确地说是：MiniMax 在 episode 结束后分析轨迹；它不替 3B 在 WebShop 里点击或搜索。', '“With a teacher” is shorthand here: MiniMax analyzes the trajectory after the episode; it does not click or search inside WebShop for the 3B actor.'),
-      t('MiniMax bootstrap 确实完成 8 次参数更新；但进入旧 Stage 2 后，59 个完整 block 共 15,104 次尝试只得到 38 条 qualified positive，单块最好 1/8 qualifying identity，参数更新仍为 0。第 60 个 block 在停止时保留 171 条 partial rollout。', 'MiniMax bootstrap did complete eight parameter updates. But under the old Stage 2, 59 complete blocks (15,104 attempts) produced only 38 qualified positives, the best block reached 1/8 qualifying identity, and parameter updates remained zero. The 60th block retained 171 partial rollouts when stopped.'),
+      t('MiniMax 启动训练确实完成了 8 次参数更新；进入旧 Stage 2 后，前 59 批共 15,104 次任务尝试里只有 38 次是可用于训练的完整成功轨迹。最好的一批也只有 1 个不同任务能够重复完整成功，而当时要求至少 8 个才允许更新，因此 Stage 2 仍没有参数更新。停止时，第 60 批已产生的 171 次尝试原样保留，但不混入 59 批完整统计。', 'MiniMax bootstrap did complete eight parameter updates. In the old Stage 2, the first 59 complete batches contained 15,104 task attempts, of which only 38 were exact-success traces clean enough to enter training. Even the best batch had just one distinct task that succeeded repeatedly, while the historical rule required at least eight before an update was allowed. Stage 2 therefore still made no parameter update. The 171 attempts already produced in batch 60 were preserved when the run stopped, but are not mixed into the 59 complete-batch statistics.'),
       t('这条旧方法在 74.58% 时被主动停止；服务器历史归档中没有任何封存的 3B/MiniMax final-eval 产物。因此页面明确写“未运行”，不能把没有结果伪装成 0 分。', 'This old-method run was explicitly stopped at 74.58%, and the historical archive contains no sealed 3B/MiniMax final-evaluation artifact. The page therefore says “Not run”; absence of a result must not be fabricated as a score of zero.'),
     ],
     next:t('这条 run 已由用户明确停止并标记 superseded，不建议恢复。保留 74.58% 的真实产物作为旧方法控制证据与工程 smoke 资产。', 'The owner explicitly stopped and superseded this run. Resumption is not recommended; preserve the real 74.58% artifact set as old-method evidence and engineering-smoke material.'),
@@ -55,14 +55,14 @@ const armMeta = {
   '7b-minimax': {
     title:t('7B · MiniMax 任务后回看监督（有老师）', '7B · MiniMax hindsight analysis'),
     eyebrow:t('历史单实验 · 旧 Stage 2 已完成', 'HISTORICAL ARM · OLD STAGE-2 COMPLETE'),
-    status:t('80/80 block 完成；Stage 2 = 0 次更新', '80/80 blocks complete; Stage 2 = 0 updates'),
-    question:t('MiniMax bootstrap 后的 7B 在旧 256-window gate 下，能不能继续产生 Stage-2 参数更新？', 'Could the MiniMax-bootstrapped 7B keep producing Stage-2 parameter updates under the old 256-window gate?'),
+    status:t('80 批任务尝试全部完成；Stage 2 没有触发参数更新', 'All 80 attempt batches completed; Stage 2 triggered no parameter update'),
+    question:t('MiniMax 启动训练后的 7B，在旧的逐批判断规则下能不能继续更新参数？', 'Could the MiniMax-bootstrapped 7B keep updating under the old batch-by-batch rule?'),
     known:[
       t('这里的 MiniMax 同样只在一次任务结束后回看并分析轨迹，不会替学生模型在 WebShop 里搜索或点击。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
-      t('7B+MiniMax bootstrap 完成 8 次参数更新；旧 Stage 2 随后完成 80/80 个 block（20,480 次尝试），得到 592 条 qualified positive，单块最好 7/8 qualifying identity，但仍没有任何 block 触发参数更新。', '7B+MiniMax bootstrap completed eight parameter updates. The old Stage 2 then completed 80/80 blocks (20,480 attempts) with 592 qualified positives; the best block reached 7/8 qualifying identities, yet no block triggered a parameter update.'),
+      t('7B+MiniMax 启动训练完成了 8 次参数更新。旧 Stage 2 随后完成 20,480 次任务尝试，其中 592 次是可用于训练的完整成功轨迹。按当时规则，每 256 次尝试里至少要有 8 个不同任务各自重复完整成功才允许更新；实际最好的一批只有 7 个，所以 80 批数据都没有触发参数更新。', '7B+MiniMax bootstrap completed eight parameter updates. The old Stage 2 then completed 20,480 task attempts, including 592 exact-success traces clean enough to enter training. Under the historical rule, every 256 attempts needed at least eight distinct tasks that each succeeded repeatedly before an update was allowed. The best batch reached only seven, so none of the 80 batches triggered a parameter update.'),
       t('封存的 128 任务最终评测为 Task Score ×100 = 16.94、完整成功 0/128、技术有效轨迹 116/128。由于旧 Stage 2 从未更新参数，这个 final eval 实际评的是 MiniMax bootstrap increment-07，而不是一个不存在的“Stage-2 checkpoint”。', 'The sealed 128-task final evaluation reports Task Score ×100 = 16.94, exact success = 0/128, and valid episodes = 116/128. Because old Stage 2 never updated parameters, this final evaluation measures the MiniMax-bootstrap increment-07 state rather than a nonexistent “Stage-2 checkpoint”.'),
     ],
-    next:t('旧 Stage 2 已完整证明该 hard gate 对这条 arm 仍然是 0 update；后续不再用这套 gate 继续扩展结论，转入 Ceiling-1.0 新策略。', 'The completed old Stage 2 already shows zero updates under this hard gate; do not extend the conclusion by continuing the same gate, and move the mainline to Ceiling-1.0.'),
+    next:t('旧 Stage 2 已经完整显示：在这条“每批至少 8 个重复成功任务”的历史规则下，这组实验始终没有进入参数更新。后续不再沿用这条规则扩展结论，转入 Ceiling-1.0 新策略。', 'The completed old Stage 2 shows that this arm never entered parameter updating under the historical rule requiring at least eight repeatedly successful tasks in each batch. Do not extend conclusions by continuing that rule; move the mainline to Ceiling-1.0.'),
   },
 } as const;
 
@@ -198,7 +198,7 @@ const contrasts = [
   <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
     <strong>{t('历史方法控制 · 已取代', 'HISTORICAL METHOD CONTROL · SUPERSEDED')}</strong>
-    <p>{t('本页保留旧 256-window / 8-identities × 2-successes gate 下的真实实验与 checkpoint 诊断。它不再代表当前 OpenEVO Stage 2；当前主线请看 OpenEVO-Ceiling-1.0。', 'This page preserves real experiments and checkpoint diagnostics under the old 256-window / 8-identities × 2-successes gate. It no longer represents the current OpenEVO Stage 2; the current mainline is OpenEVO-Ceiling-1.0.')}</p>
+    <p>{t('这里保留旧实验的真实结果与模型保存点诊断。那次实验每收集 256 次任务尝试，就要求至少 8 个不同任务各自完整成功 2 次，才允许更新参数。这条历史规则不再代表当前 OpenEVO Stage 2；当前主线请看 OpenEVO-Ceiling-1.0。', 'This section preserves the real results and checkpoint diagnostics from the old experiment. That run checked every 256 task attempts and allowed a parameter update only when at least eight distinct tasks had each achieved exact success twice. This historical rule no longer represents the current OpenEVO Stage 2; see OpenEVO-Ceiling-1.0 for the current mainline.')}</p>
   </aside>
   <OpenEvoExperimentSelector locale={locale} mode={mode} />
 
