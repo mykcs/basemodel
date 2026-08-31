@@ -29,19 +29,19 @@ const matrix = [
   <div class="experiment-selector__heading">
     <div>
       <p>{t('OpenEvo 基础能力探索实验', 'OPENEVO CAPABILITY EXPLORATION')}</p>
-      <h2>{t('一个 OpenEVO，两处可选，组成四个实验', 'One OpenEVO, two choices, four experiment arms')}</h2>
+      <h2>{t('四组实验由两个选择组成：模型大小 × 是否使用 MiniMax 回看分析', 'Four experiments come from two choices: model size × MiniMax hindsight analysis')}</h2>
     </div>
     <a class:list={['experiment-selector__joint', {active:isJoint}]} href={p('/research/seed-openevo/study/results/four-arm-analysis/')} aria-current={isJoint ? 'page' : undefined}>
       <span>2 × 2</span>
       <strong>{t('四组联合分析', 'Four-arm joint analysis')}</strong>
-      <small>{t('比较四格，而不是第五个实验 →', 'Compare all four cells — not a fifth arm →')}</small>
+      <small>{t('同时比较四组结果 →', 'Compare all four results →')}</small>
     </a>
   </div>
 
   <div class="experiment-selector__flow" aria-label={t('从模型与教师选项得到一个实验 arm', 'Choose model and teacher to obtain one experiment arm')}>
     <section class="experiment-selector__openevo">
       <div class="experiment-selector__brand"><span></span>OpenEVO</div>
-      <div class="experiment-selector__node-label"><span>01</span><strong>{t('里面的 Actor 模型', 'Actor model inside')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
+      <div class="experiment-selector__node-label"><span>01</span><strong>{t('做 WebShop 的模型', 'WebShop actor model')}</strong><em>{t('模型大小', 'MODEL SIZE')}⌄</em></div>
       <div class="experiment-selector__choices">
         <a class:list={{active:!isJoint && !isGroup && currentModel === '3b'}} href={p(armPath('3b', currentTeacher))} aria-current={!isJoint && !isGroup && currentModel === '3b' ? 'page' : undefined}><i></i>3B</a>
         <a class:list={{active:!isJoint && !isGroup && currentModel === '7b'}} href={p(armPath('7b', currentTeacher))} aria-current={!isJoint && !isGroup && currentModel === '7b' ? 'page' : undefined}><i></i>7B</a>
@@ -52,22 +52,22 @@ const matrix = [
     <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
 
     <section class="experiment-selector__stage">
-      <div class="experiment-selector__node-label"><span>02</span><strong>Stage 1</strong><em>{t('新旧两版','2 VERSIONS')}</em></div>
-      <b>{t('轨迹采集 · 新版优先', 'Trajectory collection · current first')}</b>
-      <p>{t('同一批 180×8 任务；新版是 corrected independent replicate，旧版保留为历史对照。','Same 180×8 task schedule; the corrected independent replicate is current, while the old run remains historical evidence.')}</p>
-      <a class="experiment-selector__stage-link" href={p('/research/seed-openevo/study/capability-exploration/#stage1-version-comparison')}>{t('查看 Stage 1 新旧参数与含义 →','Compare Stage-1 versions and meaning →')}</a>
+      <div class="experiment-selector__node-label"><span>02</span><strong>Stage 1</strong><em>{t('轨迹版本','TRAJECTORY VERSION')}</em></div>
+      <b>{t('当前使用修正后的独立复现实验', 'Current: corrected independent replicate')}</b>
+      <p>{t('两版都安排 180 个任务、每个任务尝试 8 次。当前版本修正了旧实验的问题；旧版本仍保留，专门用于解释历史结果。','Both versions use 180 tasks with eight attempts per task. The current version fixes problems in the historical run; the old version remains only to explain historical results.')}</p>
+      <a class="experiment-selector__stage-link" href={p('/research/seed-openevo/study/capability-exploration/#stage1-version-comparison')}>{t('查看 Stage 1 两个版本 →','Compare the two Stage-1 versions →')}</a>
     </section>
 
     <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
 
     <section class="experiment-selector__teacher">
-      <div class="experiment-selector__node-label"><span>03</span><strong>{t('外部教师 / hindsight', 'External hindsight')}</strong><em>{t('可选', 'CHOICE')}⌄</em></div>
+      <div class="experiment-selector__node-label"><span>03</span><strong>{t('任务结束后的回看分析', 'Post-task hindsight analysis')}</strong><em>{t('是否使用 MiniMax', 'MINIMAX')}⌄</em></div>
       <div class="experiment-selector__choices experiment-selector__choices--teacher">
         <a class:list={{active:!isJoint && !isGroup && currentTeacher === 'self'}} href={p(armPath(currentModel, 'self'))} aria-current={!isJoint && !isGroup && currentTeacher === 'self' ? 'page' : undefined}><i></i>{t('无教师', 'None / self')}</a>
         <a class:list={{active:!isJoint && !isGroup && currentTeacher === 'minimax'}} href={p(armPath(currentModel, 'minimax'))} aria-current={!isJoint && !isGroup && currentTeacher === 'minimax' ? 'page' : undefined}><i></i>MiniMax</a>
       </div>
-      <p>{t('MiniMax 在 episode 结束后分析轨迹，不替 Actor 点击或搜索。', 'MiniMax analyzes a finished episode; it does not click or search for the actor.')}</p>
-      {zh && <a class="experiment-selector__teacher-audit" href="/research/seed-openevo/study/minimax-teacher/">教师能力、Token 与 API 成本 →</a>}
+      <p>{t('选择 MiniMax 时，它只在一次 WebShop 任务结束后分析完整轨迹；实际搜索和点击始终由 3B 或 7B 学生模型完成。', 'With MiniMax enabled, it analyzes the completed trajectory only after a WebShop task ends; the 3B or 7B student model still performs every search and click.')}</p>
+      {zh && <a class="experiment-selector__teacher-audit" href="/research/seed-openevo/study/minimax-teacher/">MiniMax 的能力、Token 与 API 成本 →</a>}
     </section>
 
     <div class="experiment-selector__arrow" aria-hidden="true"><span>→</span></div>
@@ -75,15 +75,15 @@ const matrix = [
     <div class:list={['experiment-selector__result', {joint:isJoint}]}>
       <span>04 · {t('当前页面', 'CURRENT PAGE')}</span>
       <strong>{isGroup ? t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration') : isJoint ? t('四组联合', 'Four-arm joint') : selectedArm}</strong>
-      <small>{isGroup ? t('先选模型规模与外部教师，再进入具体实验', 'Choose model size and external hindsight to enter one arm') : isJoint ? t('同时看下面四格', 'Read all four cells together') : t('这一组的结果与分析', 'Results and analysis for this arm')}</small>
+      <small>{isGroup ? t('模型大小与 MiniMax 回看分析共同决定具体实验组', 'Model size and MiniMax hindsight together determine the experiment arm') : isJoint ? t('同时比较四组结果', 'Compare all four results') : t('本页展示这一组的完整结果与解释', 'This page shows the complete result and interpretation for this arm')}</small>
     </div>
   </div>
 
   <div class="experiment-selector__matrix-wrap">
     <div class="experiment-selector__matrix-copy">
-      <span>{t('为什么刚好是四组？', 'WHY EXACTLY FOUR ARMS?')}</span>
-      <strong>{t('两个二选一开关 = 2 × 2', 'Two binary choices = 2 × 2')}</strong>
-      <p>{t('模型规模决定纵轴，外部 hindsight 决定横轴。点任意格子进入单实验；点“四组联合分析”比较整张矩阵。', 'Model size defines the rows; external hindsight defines the columns. Open any cell for one arm, or use the joint analysis to compare the whole matrix.')}</p>
+      <span>{t('四组实验结构', 'FOUR-ARM STRUCTURE')}</span>
+      <strong>{t('模型大小 × MiniMax 回看分析 = 2 × 2', 'Model size × MiniMax hindsight = 2 × 2')}</strong>
+      <p>{t('行表示 3B 或 7B，列表示是否使用 MiniMax 做任务结束后的回看分析。点击任意格子查看那一组，或打开“四组联合分析”直接比较四组。', 'Rows are 3B versus 7B; columns indicate whether MiniMax performs post-task hindsight analysis. Open any cell for one arm, or use the joint view to compare all four.')}</p>
     </div>
     <div class:list={['experiment-selector__matrix', {'joint-active':isJoint}]} role="group" aria-label={t('四组实验矩阵', 'Four-arm experiment matrix')}>
       <div class="experiment-selector__corner">OpenEVO</div>

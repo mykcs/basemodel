@@ -10,18 +10,18 @@ const p = (path:string) => localePath(locale,path);
 <section class="s2-choice" data-testid="stage2-strategy-selector" aria-labelledby="s2-choice-title">
   <div class="s2-choice__head">
     <p>STAGE 2 · METHOD VERSION</p>
-    <h2 id="s2-choice-title">{t('先选 Stage 2 的方法版本，再看实验结果', 'Choose the Stage-2 method version before reading results')}</h2>
-    <span>{t('2026-08-30 的关键修正不是“把 7 改成 8”，而是承认旧的 256-window hard gate 不应该被当成长程学习算法。旧结果保留为方法控制证据；新主线由 Ceiling-1.0 接管。','The correction is not “change 7 to 8”. The old 256-window hard gate should not have been promoted into a long-horizon learning algorithm. Its results remain as method-control evidence; Ceiling-1.0 is the new mainline.')}</span>
+    <h2 id="s2-choice-title">{t('Stage 2 有两个版本：旧实验规则与当前 Ceiling-1.0', 'Two Stage-2 versions: the historical rule and the current Ceiling-1.0')}</h2>
+    <span>{t('旧实验把每 256 次任务尝试单独判断，只有这一批里至少 8 个不同任务都能重复完整成功才允许更新参数。这个规则后来被确认不适合作为长期学习算法，因此旧结果只保留为历史证据；当前实验改用 OpenEVO-Ceiling-1.0。','The historical run judged every 256 task attempts separately and allowed an update only when at least eight distinct tasks repeatedly succeeded within that batch. That rule was later judged unsuitable as a long-horizon learning algorithm, so the old results remain historical evidence while the current experiment uses OpenEVO-Ceiling-1.0.')}</span>
   </div>
   <div class="s2-choice__grid">
     <a class:list={['s2-choice__card','legacy',{active:active==='legacy'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')} aria-current={active==='legacy'?'page':undefined}>
-      <div><span>01 · {t('历史 / 设计错误 / 已取代','HISTORICAL / DESIGN ERROR / SUPERSEDED')}</span><b>{t('历史 Stage 2：窗口化硬门槛','Historical Stage 2: window-local hard gate')}</b></div>
-      <p>{t('每 256 条 rollout 独立要求至少 8 个不同 task 各自重复成功；窗口之间不能累计。稀疏成功因此被窗口边界反复清零，80 个 block 可以积累很多成功轨迹，却仍然 0 次更新。','Each 256-rollout block independently required at least eight distinct tasks with repeated success; evidence could not accumulate across windows. Sparse success was repeatedly discarded at boundaries, so many useful successes could coexist with zero updates.')}</p>
-      <strong>{t('查看旧四臂、进度、checkpoint 与归档 →','Open the four historical arms, checkpoints, and archive →')}</strong>
+      <div><span>01 · {t('历史实验 · 已取代','HISTORICAL · SUPERSEDED')}</span><b>{t('旧版本：每 256 次尝试重新判断一次','Historical version: reset the decision every 256 attempts')}</b></div>
+      <p>{t('每 256 次 WebShop 任务尝试被当成一批。只有这一批里至少有 8 个不同任务都能各自完整成功 2 次，模型才允许更新一次参数；不同批之间的成功记录不能累计。因此即使整段实验收集到很多成功轨迹，也可能一次参数更新都没有发生。','Every 256 WebShop attempts formed one batch. A parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch; successes could not accumulate across batches. The run could therefore collect many successful traces while still making zero parameter updates.')}</p>
+      <strong>{t('查看旧实验结果与归档 →','Open historical results and archive →')}</strong>
     </a>
     <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
-      <div><span>02 · {t('当前主线 / 已进入 Stage 2','CURRENT MAINLINE / STAGE 2 ACTIVE')}</span><b>OpenEVO-Ceiling-1.0</b></div>
-      <p>{t('当前冻结协议把 128 条 rollout 的自然 round 当作共同 evidence boundary，并明确禁用旧 7-vs-8 gate。Text Memory、SD-LoRA、Skill Bundle 与 Agent System 分别做有界更新或 NOOP；同轮最后只 compose 一次。','The frozen protocol uses the natural 128-rollout round as a shared evidence boundary and explicitly disables the old 7-vs-8 gate. Text Memory, SD-LoRA, Skill Bundle, and Agent System each make a bounded update or NOOP, then compose once at the end of the round.')}</p>
+      <div><span>02 · {t('当前实验','CURRENT')}</span><b>OpenEVO-Ceiling-1.0</b></div>
+      <p>{t('当前版本不再使用旧的 7 对 8 门槛。每 128 次任务尝试形成一轮共同证据，Text Memory、SD-LoRA、Skill Bundle 和 Agent System 分别判断这一轮是否有值得保留的更新；没有合适更新时就保持不变，最后再把同一轮的结果组合一次。','The current version no longer uses the old 7-versus-8 threshold. Every 128 task attempts form one shared evidence round. Text Memory, SD-LoRA, Skill Bundle, and Agent System each decide whether that round supports an update; otherwise they remain unchanged, and the round is composed once at the end.')}</p>
       <strong>{t('查看 Ceiling-1.0 完整策略 →','Open the full Ceiling-1.0 strategy →')}</strong>
     </a>
   </div>
