@@ -165,8 +165,9 @@ Historical responsibility-topology case: [`../history/2026-08-28-seed-responsibi
 9. Separate immutable archive bytes from mutable explanatory README/head state. Require restore/hash verification for archive claims, but do not treat remote verification as local deletion authority.
 10. Preserve a bounded local engineering-smoke bundle when fast adapter/runtime recovery remains useful; deletion of raw run roots requires a separate explicit authorization.
 11. For a still-running replacement experiment, separate frozen protocol from time-bounded live progress; publish the latter only as a dated receipt-backed snapshot.
+12. If the same multi-carrier harness makes 3B/7B diverge sharply in action validity, do not label the smaller model weak or the parser broken from aggregate score alone. Compare matched task/schedule prefixes, split format errors from state-inadmissible actions, trace each carrier from upstream artifact to the concrete WebShop runtime bridge, and treat any changed consumption contract as an explicit successor/amendment rather than an in-place hotfix. Load the OpenEVO 2.0 harness-redesign retrospective for the worked case.
 
-Historical cases: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md) and [`../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md`](../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md).
+Historical cases: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md), [`../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md`](../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md), and [`../history/2026-08-31-openevo2-harness-redesign-and-lineage-publication-retrospective.md`](../history/2026-08-31-openevo2-harness-redesign-and-lineage-publication-retrospective.md).
 
 ---
 
