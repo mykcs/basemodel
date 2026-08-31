@@ -1,0 +1,148 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const p = (path:string) => localePath(locale,path);
+
+const links = {
+  oldStage1: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'),
+  stage1Compare: '#stage1-version-comparison',
+  fourArm: p('/research/seed-openevo/study/results/four-arm-analysis/'),
+  minimax: p('/research/seed-openevo/study/minimax-teacher/'),
+  legacyStage2: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'),
+  ceiling: p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/'),
+  evo2: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  harness2: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'),
+};
+---
+<section class="exp-tree" data-testid="openevo-capability-experiment-tree" aria-labelledby="exp-tree-title">
+  <header class="exp-tree__head">
+    <p>EXPERIMENT MAP</p>
+    <h2 id="exp-tree-title">{t('从 Stage 1 到 Stage 2：这组实验到底分成了哪些路','From Stage 1 to Stage 2: the experiment branches')}</h2>
+    <span>{t('先选“哪次 Stage 1”，再看“经验怎么分析和变成状态”，最后才进入不同版本的 Stage 2。下面每个有边框的节点都可以继续点进去。','Choose the Stage-1 collection first, then how experience is analyzed and turned into state, and only then the Stage-2 design. Every framed node below is a route you can open.')}</span>
+  </header>
+
+  <div class="exp-tree__stage-labels" aria-hidden="true">
+    <span>01 · Stage 1 {t('轨迹采集','collection')}</span>
+    <span>02 · {t('分析 / 状态构建','analysis / state')}</span>
+    <span>03 · Stage 2 {t('设计','design')}</span>
+    <span>04 · {t('结果 / 研究','result / study')}</span>
+  </div>
+  <figure class="exp-tree__map">
+    <svg viewBox="0 0 1200 690" preserveAspectRatio="none" aria-hidden="true">
+      <defs><marker id="tree-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+      <path class="old" d="M260 140 H382 M574 140 H695 M888 140 H1008" />
+      <path class="current" d="M260 405 H382 M574 405 H650 C680 405 680 335 710 335 M574 405 H650 C680 405 680 525 710 525" />
+      <path class="current" d="M888 335 H1008 M888 525 H1008" />
+    </svg>
+
+    <a class="node node--old node--s1-old" href={links.oldStage1}>
+      <span>{t('历史 Stage 1','HISTORICAL STAGE 1')}</span>
+      <strong>{t('旧版 1,440 条轨迹','Previous 1,440 trajectories')}</strong>
+      <small>{t('同样是 180 × 8，但 seed 与实际 sampling 参数和当前主线不同。','Still 180 × 8, but the seed and runtime sampling differ from the current line.')}</small>
+    </a>
+
+    <a class="node node--old node--analysis-old" href={links.fourArm}>
+      <span>{t('历史分析分叉','HISTORICAL ANALYSIS')}</span>
+      <strong>3B / 7B × self / MiniMax</strong>
+      <small>{t('这里比较“自己总结”与 episode 后 MiniMax hindsight，形成历史四臂。','This branch compares self analysis with post-episode MiniMax hindsight, forming the historical four arms.')}</small>
+    </a>
+
+    <a class="node node--old node--s2-old" href={links.legacyStage2}>
+      <span>{t('Stage 2 · 第一版','STAGE 2 · VERSION 1')}</span>
+      <strong>{t('历史 256-window 硬门槛','Historical 256-window gate')}</strong>
+      <small>{t('成功不能跨窗口累计，旧 7-vs-8 规则最终阻断了参数更新。','Success could not accumulate across windows; the old 7-vs-8 rule blocked parameter updates.')}</small>
+    </a>
+
+    <a class="node node--old node--result-old" href={links.fourArm}>
+      <span>{t('历史结果','HISTORICAL RESULTS')}</span>
+      <strong>{t('四臂结果与旧 checkpoint','Four-arm results and old checkpoints')}</strong>
+      <small>{t('保留为历史方法证据，不再当当前 Stage 2 算法。','Retained as historical method evidence, not the current Stage-2 algorithm.')}</small>
+    </a>
+    <a class="node node--current node--s1-current" href={links.stage1Compare}>
+      <span>{t('当前 Stage 1','CURRENT STAGE 1')}</span>
+      <strong>{t('fresh corrected 1,440 条轨迹','Fresh corrected 1,440 trajectories')}</strong>
+      <small>{t('当前 Ceiling-1.0 与 OpenEVO 2.0 共用的起点；sampling 配置已真正传入 runtime。','Shared starting point for Ceiling-1.0 and OpenEVO 2.0; the sampling contract is actually applied at runtime.')}</small>
+    </a>
+
+    <a class="node node--current node--analysis-current" href={links.minimax}>
+      <span>{t('当前分析 / 状态构建','CURRENT ANALYSIS / STATE')}</span>
+      <strong>{t('1,440 条 MiniMax 分析 → 四种可继承状态','1,440 MiniMax analyses → four inheritable states')}</strong>
+      <small>OPSD · Text Memory · Skill Bundle · Agent System</small>
+      <em>{t('老师预算在这里封口；Stage 2 不再调用外部老师。','Teacher budget seals here; Stage 2 makes no further external-teacher calls.')}</em>
+    </a>
+
+    <a class="node node--ceiling node--s2-ceiling" href={links.ceiling}>
+      <span>{t('Stage 2 · 第二版','STAGE 2 · VERSION 2')}</span>
+      <strong>OpenEVO-Ceiling-1.0</strong>
+      <small>{t('每 128 条形成一轮共同证据；四种 carrier 分别决定 UPDATE / NOOP，再 compose。','Every 128 attempts form one evidence round; four carriers decide UPDATE / NOOP independently, then compose.')}</small>
+    </a>
+
+    <a class="node node--ceiling node--result-ceiling" href={links.ceiling}>
+      <span>{t('当前运行线','CURRENT RUN LINE')}</span>
+      <strong>{t('Ceiling-1.0 进度与运行快照','Ceiling-1.0 progress and run snapshot')}</strong>
+      <small>{t('3B / 7B 分别推进；正式 final panel 仍受 Stage-2 seal 保护。','3B and 7B advance independently; the formal final panel remains locked until Stage-2 seal.')}</small>
+    </a>
+
+    <a class="node node--evo2 node--s2-evo2" href={links.evo2}>
+      <span>{t('Stage 2 · 第三版','STAGE 2 · VERSION 3')}</span>
+      <strong>OpenEVO 2.0</strong>
+      <small>{t('不重采 Stage 1；重做经验怎样被整理、挑选并交给模型。','Stage 1 is reused; the redesign targets how experience is organized, selected, and delivered to the model.')}</small>
+    </a>
+
+    <a class="node node--evo2 node--result-evo2" href={links.harness2}>
+      <span>MINI STUDY 01</span>
+      <strong>Harness 2.0 · 128 + 128</strong>
+      <small>{t('第一次资格实验已完成：机械 PASS，但 formal activation HOLD，下一步是 2.0.1。','First qualification is complete: mechanical PASS, formal activation HOLD, followed by 2.0.1.')}</small>
+    </a>
+    <figcaption>
+      {t('读法：上面是历史路线；下面两条共享同一个 fresh corrected Stage 1 和 sealed teacher evidence，然后分别走向 Ceiling-1.0 与 OpenEVO 2.0。','How to read it: the top lane is historical. The two lower lanes share the same fresh corrected Stage 1 and sealed teacher evidence, then fork into Ceiling-1.0 and OpenEVO 2.0.')}
+    </figcaption>
+  </figure>
+
+  <div class="exp-tree__legend">
+    <span><i class="old"></i>{t('历史证据','Historical evidence')}</span>
+    <span><i class="current"></i>{t('当前主线 / successor','Current line / successor')}</span>
+    <b>{t('树下面继续保留详细的 Stage 1 数值对比、Stage 2 三代设计说明和各子页入口。','Detailed Stage-1 comparisons, three Stage-2 designs, and all deep links remain below this map.')}</b>
+  </div>
+</section>
+
+<style>
+.exp-tree{margin:0 0 1.4rem;padding:1.1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.4%,transparent)}
+.exp-tree__head{display:grid;grid-template-columns:minmax(190px,.52fr) minmax(0,1fr);gap:.55rem 1.2rem;padding:.15rem .15rem 1rem;border-bottom:1px solid var(--color-border)}
+.exp-tree__head>p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}
+.exp-tree__head h2{margin:0;font-size:clamp(1.25rem,2.7vw,1.85rem);letter-spacing:-.035em}
+.exp-tree__head>span{color:var(--color-text-muted);font-size:.8rem;line-height:1.65}
+.exp-tree__stage-labels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.6rem;margin:1rem 0 .55rem;padding:0 .5rem}
+.exp-tree__stage-labels span{color:var(--color-text-muted);font:800 .58rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.exp-tree__map{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:210px 210px 210px auto;gap:0 2.6rem;margin:0;padding:.5rem;min-height:690px}
+.exp-tree__map>svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.exp-tree__map>svg path{fill:none;stroke-width:2.2;marker-end:url(#tree-arrow)}
+.exp-tree__map>svg path.old{stroke:color-mix(in srgb,#b7791f 62%,var(--color-border))}
+.exp-tree__map>svg path.current{stroke:color-mix(in srgb,var(--color-accent) 68%,var(--color-border))}
+.exp-tree__map>svg marker path{fill:var(--color-accent);stroke:none}
+.node{position:relative;z-index:1;align-self:center;display:flex;min-width:0;flex-direction:column;gap:.35rem;padding:.9rem;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg);color:var(--color-text);text-decoration:none;box-shadow:0 8px 28px color-mix(in srgb,var(--color-text) 4%,transparent);transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.node:hover,.node:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);outline:none}
+.node>span{font:800 .55rem/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:var(--color-text-muted)}
+.node>strong{font-size:.88rem;line-height:1.35}.node>small,.node>em{color:var(--color-text-muted);font-size:.68rem;line-height:1.5;font-style:normal}.node>em{margin-top:.12rem;padding-top:.42rem;border-top:1px dashed var(--color-border)}
+.node--old{border-style:dashed}.node--current{border-width:2px;border-color:color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}.node--ceiling{border-color:color-mix(in srgb,var(--color-accent) 68%,var(--color-border))}.node--evo2{border-width:2px;border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 4%,var(--color-bg))}
+.node--s1-old{grid-column:1;grid-row:1}.node--analysis-old{grid-column:2;grid-row:1}.node--s2-old{grid-column:3;grid-row:1}.node--result-old{grid-column:4;grid-row:1}
+.node--s1-current{grid-column:1;grid-row:2/4}.node--analysis-current{grid-column:2;grid-row:2/4}.node--s2-ceiling{grid-column:3;grid-row:2}.node--result-ceiling{grid-column:4;grid-row:2}.node--s2-evo2{grid-column:3;grid-row:3}.node--result-evo2{grid-column:4;grid-row:3}
+.exp-tree__map figcaption{grid-column:1/-1;grid-row:4;align-self:end;z-index:1;margin:0;padding:.55rem .2rem 0;color:var(--color-text-muted);font-size:.66rem;line-height:1.5}
+.exp-tree__legend{display:flex;align-items:center;gap:.8rem 1rem;flex-wrap:wrap;padding:.75rem .2rem 0;border-top:1px solid var(--color-border)}
+.exp-tree__legend span{display:inline-flex;align-items:center;gap:.35rem;color:var(--color-text-muted);font-size:.66rem}.exp-tree__legend i{width:.65rem;height:.18rem;border-radius:99px}.exp-tree__legend i.old{background:#b7791f}.exp-tree__legend i.current{background:var(--color-accent)}.exp-tree__legend b{margin-left:auto;max-width:58ch;color:var(--color-text-muted);font-size:.66rem;font-weight:650;line-height:1.45}
+@media(max-width:900px){
+  .exp-tree__head{grid-template-columns:1fr}.exp-tree__head>p{grid-column:auto}.exp-tree__stage-labels{display:none}
+  .exp-tree__map{grid-template-columns:1fr;grid-template-rows:auto;gap:.75rem;min-height:0;padding:.8rem .2rem}.exp-tree__map>svg{display:none}
+  .node--s1-old,.node--analysis-old,.node--s2-old,.node--result-old,.node--s1-current,.node--analysis-current,.node--s2-ceiling,.node--result-ceiling,.node--s2-evo2,.node--result-evo2{grid-column:auto;grid-row:auto;align-self:stretch}
+  .node{margin-left:1rem}.node::before{content:'';position:absolute;left:-1rem;top:-.78rem;width:2px;height:.78rem;background:color-mix(in srgb,var(--color-accent) 48%,var(--color-border))}
+  .node--s1-old,.node--s1-current{margin-left:0}.node--s1-old::before,.node--s1-current::before{display:none}
+  .node--s1-current{margin-top:1rem;border-top-width:3px}.node--s2-ceiling,.node--s2-evo2{margin-left:2rem}
+  .exp-tree__map figcaption{grid-column:auto;grid-row:auto;margin-top:.2rem}.exp-tree__legend b{margin-left:0;max-width:none}
+}
+@media(max-width:520px){.exp-tree{padding:.8rem}.exp-tree__head h2{font-size:1.22rem}.node{padding:.8rem}.node--s2-ceiling,.node--s2-evo2{margin-left:1.2rem}}
+</style>

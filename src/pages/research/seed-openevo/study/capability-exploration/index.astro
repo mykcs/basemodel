@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import OpenEvoStage1VersionComparison from '../../../../../components/research/OpenEvoStage1VersionComparison.astro';
+import OpenEvoCapabilityExperimentTree from '../../../../../components/research/OpenEvoCapabilityExperimentTree.astro';
 import OpenEvoStage2StrategyChooser from '../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'zh' as const;
@@ -19,6 +20,7 @@ const locale = 'zh' as const;
         <span>第一次 128+128 迷你实验使用同一个 3B Stage-1 / OPSD 起点和已经消费过的训练窗口，formal task consumption = 0、final panel access = 0。预注册接口门虽然 PASS，但 Harness2-only invalid 更多，因此 2.0.1 只修 English-only contract、Context Governor 厚度和 action-like abstraction vocabulary，然后在互不重叠的新窗口重新验证。</span>
       </div>
     </header>
+    <OpenEvoCapabilityExperimentTree locale={locale} />
     <OpenEvoStage1VersionComparison locale={locale} />
     <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
