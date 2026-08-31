@@ -258,6 +258,7 @@ Historical cases:
 
 - [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md) — Pending scaffold and checkpoint fill-in;
 - [`../history/2026-08-30-openevo-capability-exploration-series-retrospective.md`](../history/2026-08-30-openevo-capability-exploration-series-retrospective.md) — series naming/navigation, 2×2 experiment selector, native checkpoint visualization, and end-to-end friction.
+- [`../history/2026-08-31-7b-webshop-score-table-and-live-final-freshness-retrospective.md`](../history/2026-08-31-7b-webshop-score-table-and-live-final-freshness-retrospective.md) — stale Pending publication corrected by fresh MiniMax final evidence, plus paper-vs-local table semantics and release/test friction.
 
 ## Experiment-series information architecture and scientific visualization
 
