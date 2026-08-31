@@ -5,6 +5,8 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const scaffold = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astro');
 const stage1Versions = read('../components/research/OpenEvoStage1VersionComparison.astro');
+const legacyStage1Archive = read('../components/research/OpenEvoLegacyStage1Archive.astro');
+const capabilityIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
 const stage2Chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Archive.astro');
 const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
@@ -39,6 +41,21 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage1Versions).toContain('1 / 0 / 1 的意义是“关闭额外旋钮”，不是“保证更高分”');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('不能把两批 1,440 条当成同一批 trajectory');
+  });
+
+  it('keeps old Stage 1 usable and links its retained artifacts', () => {
+    expect(capabilityIndex).toContain('新版和旧版 Stage 1 本质上是同一类实验');
+    expect(capabilityIndex).toContain('旧版没有做错，也仍然可以使用');
+    expect(capabilityIndex).toContain('今后的新实验、主结果和报告以新版为准');
+    expect(stage1Versions).toContain('/stage1-previous/');
+    expect(stage1Versions).toContain('打开旧版 trajectory / adapter / HF / GitHub 产物');
+    expect(legacyStage1Archive).toContain('性质一样，参数有小幅定稿；旧版能用，新实验以新版为准');
+    expect(legacyStage1Archive).toContain('openevo-webshop-h145-h146-trajectories');
+    expect(legacyStage1Archive).toContain('9bdca2fcb80d3272b5c9c9a32fdc2f3873f03bbc');
+    expect(legacyStage1Archive).toContain('openevo-webshop-h145-h146-adapters');
+    expect(legacyStage1Archive).toContain('cc64938ac0bbef573b631d2742e3b9f477aff36b');
+    expect(legacyStage1Archive).toContain('superseded-stage2-publication-closeout.json');
+    expect(legacyStage1Archive).toContain('CASE-HUGGINGFACE-ASSET-GOVERNANCE-20260829.md');
   });
 
   it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {

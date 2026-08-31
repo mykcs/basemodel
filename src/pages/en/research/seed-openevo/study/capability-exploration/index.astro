@@ -15,8 +15,8 @@ const locale = 'en' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo capability exploration experiments</h1>
       <div>
-        <strong>Separate Stage 1 from Stage 2: Stage 1 has two sampling realizations, while the old window-local Stage-2 hard gate is now classified as a superseded design error.</strong>
-        <span>The new Stage 1 is the current Ceiling mainline. The old Stage 1 remains valid historical evidence, but its seed and effective decoding differ, so it is not an identical corpus. Stage 2 then separates the archived four historical arms from current Ceiling-1.0, whose strategy is frozen while execution progress is explicitly shown as a receipt-bounded snapshot.</span>
+        <strong>The current and historical Stage 1 are the same kind of experiment: the same tasks, models, and OpenEVO / WebShop trajectory-collection workflow. The old version was not wrong and remains usable.</strong>
+        <span>The current version only makes a small finalization of the same scientific setup: it uses an independent seed and formally fixes top_p / top_k / repetition penalty so the runtime actually executes the declared decoding contract. Future experiments, headline results, and reports use the current version; the old version remains a retained historical replicate with reusable artifacts. The later Stage-2 design error is a separate downstream issue.</span>
       </div>
     </header>
     <OpenEvoStage1VersionComparison locale={locale} />
