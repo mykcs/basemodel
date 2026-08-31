@@ -115,8 +115,6 @@ For CI-provider responsibility, zero-extra-cost self-hosted runner setup, Vercel
 
 For the cross-repository BaseModel + OpenEvo CI/PR cleanup case — especially red-check classification, exact-head evidence, stale-but-mergeable PRs, disposable-worktree dependency friction, PR reopen/moving-head concurrency, and expected-head guarded merge closeout — read [`history/2026-08-31-ci-pr-stability-and-moving-head-retrospective.md`](history/2026-08-31-ci-pr-stability-and-moving-head-retrospective.md).
 
-For the cross-repository BaseModel + OpenEvo CI/PR cleanup case — especially red-check classification, exact-head evidence, stale-but-mergeable PRs, disposable-worktree dependency friction, PR reopen/moving-head concurrency, and expected-head guarded merge closeout — read [`history/2026-08-31-ci-pr-stability-and-moving-head-retrospective.md`](history/2026-08-31-ci-pr-stability-and-moving-head-retrospective.md).
-
 For whole-site performance/hydration/payload cleanup that must preserve static-first behavior while `main` keeps moving, read [`history/2026-08-30-site-optimization-implementation-and-release-retrospective.md`](history/2026-08-30-site-optimization-implementation-and-release-retrospective.md). It covers fail-closed Gate repair, no-JS regressions, dead-code reachability, port/worktree collisions, a WebKit hydration race, exact-tree stopping rules, protected-Preview HTTP boundaries, expected-head merge locking, and Production closeout.
 
 ### Model catalog / current-provider claims
