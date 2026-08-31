@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const scaffold = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astro');
+const stage1Versions = read('../components/research/OpenEvoStage1VersionComparison.astro');
 const stage2Chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Archive.astro');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
@@ -19,9 +20,25 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage2Chooser}\n${legacyStage2Archive}\n${ceilingStage2}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${ceilingStage2}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
+  it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
+    expect(stage1Versions).toContain('新版：fresh corrected Stage 1');
+    expect(stage1Versions).toContain('旧版：previous Stage 1 replicate');
+    expect(stage1Versions).toContain('180 × 8 = 1,440');
+    expect(stage1Versions).toContain('145000000');
+    expect(stage1Versions).toContain('148000000');
+    expect(stage1Versions).toContain("old:'0.8'");
+    expect(stage1Versions).toContain("fresh:'1.0'");
+    expect(stage1Versions).toContain("old:'20'");
+    expect(stage1Versions).toContain("fresh:'0'");
+    expect(stage1Versions).toContain("old:'1.05'");
+    expect(stage1Versions).toContain('1 / 0 / 1 的意义是“关闭额外旋钮”，不是“保证更高分”');
+    expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
+    expect(stage1Versions).toContain('不能把两批 1,440 条当成同一批 trajectory');
+  });
+
   it('separates the superseded 256-window method-control from the Ceiling-1.0 mainline', () => {
     expect(stage2Chooser).toContain('历史 / 已取代');
     expect(stage2Chooser).toContain('OpenEVO-Ceiling-1.0');

@@ -1,12 +1,13 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoStage1VersionComparison from '../../../../../../components/research/OpenEvoStage1VersionComparison.astro';
 import OpenEvoStage2StrategyChooser from '../../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
   title="OpenEvo capability exploration experiments"
-  description="OpenEvo × WebShop capability exploration: distinguish the superseded 256-window Stage-2 method-control runs from the current OpenEVO-Ceiling-1.0 mainline before reading results."
+  description="OpenEvo × WebShop capability exploration: compare current and historical Stage-1 trajectory collection, then distinguish the superseded 256-window Stage-2 method-control from the current OpenEVO-Ceiling-1.0 mainline."
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -14,10 +15,11 @@ const locale = 'en' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo capability exploration experiments</h1>
       <div>
-        <strong>The key correction: old Stage-2 results remain evidence, but they are no longer the current long-horizon OpenEVO learning algorithm.</strong>
-        <span>Choose the Stage-2 method version first. The historical branch preserves the 3B/7B × self/MiniMax arms; the current branch records the frozen OpenEVO-Ceiling-1.0 capability-ceiling design and activation status.</span>
+        <strong>Separate Stage 1 from Stage 2: Stage 1 has two sampling realizations; the later design mistake belongs to Stage 2.</strong>
+        <span>The new Stage 1 is the current Ceiling mainline. The old Stage 1 remains valid historical evidence, but its seed and effective decoding differ, so it is not an identical corpus. Stage 2 is compared separately below.</span>
       </div>
     </header>
+    <OpenEvoStage1VersionComparison locale={locale} />
     <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
   </section>
