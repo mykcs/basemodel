@@ -187,6 +187,7 @@ Historical cases:
 
 - [`../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md`](../history/2026-08-29-four-arm-result-scaffold-and-7b-self-checkpoint-publication-retrospective.md) — Pending scaffold and checkpoint fill-in;
 - [`../history/2026-08-30-openevo-capability-exploration-series-retrospective.md`](../history/2026-08-30-openevo-capability-exploration-series-retrospective.md) — continuation through native visualization, factor-selector UX, series naming/navigation, and final release friction.
+- [`../history/2026-08-31-7b-webshop-score-table-and-live-final-freshness-retrospective.md`](../history/2026-08-31-7b-webshop-score-table-and-live-final-freshness-retrospective.md) — a Results table re-published stale Pending state until a fresh upstream audit proved the MiniMax final had already closed; includes real-zero-vs-missing, stale-test, mobile-table, and release-gate recovery lessons.
 
 ---
 
