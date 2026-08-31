@@ -12,10 +12,10 @@ const p = (path:string) => localePath(locale,path);
 const ceilingHref = p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/');
 const currentCampaignHref = `https://github.com/mykcs/openevo-experiment/blob/${snap.scienceBranch}/configs/experiment/current-campaign.json`;
 const changes = [
-  { n:'01', title:'Context Governor', body:t('先保住当前任务、当前页面和 Allowed Actions，再按固定预算放入历史经验。过去的笔记不能把眼前的环境事实挤出去。','Protect the live task, observation, and Allowed Actions first, then admit historical context under a fixed budget. Past notes cannot crowd out current environment truth.') },
-  { n:'02', title:t('三种经验载体（carrier）职责分离','Separate carrier responsibilities'), body:t('Text Memory 只保存可复用知识，Skill 只描述“什么情况下用什么策略”，Agent System 只负责全局原则与冲突优先级；不再让三份文本重复讲同一套按钮攻略。','Text Memory stores reusable knowledge, Skill describes when a strategy applies, and Agent System owns global policy and conflict precedence; the three documents should not repeat the same UI advice.') },
-  { n:'03', title:'Telemetry v2', body:t('把“格式写错”“命令语义不完整”“当前页面没有这个动作”“环境真正拒绝”分开记录。以后第一轮就能知道到底是哪一层坏了。','Record malformed format, invalid command semantics, state-inadmissible actions, and environment rejection separately so the failing layer is visible from the first round.') },
-  { n:'04', title:'Preformal Harness Qualification', body:t('正式烧 20,480 次任务尝试之前，先在与 final panel 隔离的小型资格集上检查：新 harness 有没有显著提高非法动作率、carrier 是否压过当前页面、上下文是否超预算。','Before spending the 20,480 formal attempts, use a small panel isolated from the final panel to check whether the harness inflates inadmissible actions, overwhelms live state, or exceeds its context budget.') },
+  { n:'01', title:t('当前页面永远比历史经验优先','The live page always outranks historical experience'), body:t('模型每一步先看当前任务、当前页面和当前允许动作，再从历史经验里补少量真正相关的信息。过去某一页能点什么，不能压过眼前这一步实际能点什么。','At every step the model first sees the current task, page, and allowed actions, then receives only a small amount of relevant historical experience. What was clickable on an old page cannot override what is actually clickable now.') },
+  { n:'02', title:t('三份历史经验不再重复写同一套按钮攻略','The three experience sources stop repeating the same UI instructions'), body:t('Text Memory 只记可复用事实和经验，Skill 只写“什么情况下用什么策略”，Agent System 只保留全局原则和冲突时谁优先。三份内容各管一件事，避免 3B 同时收到三套相似但过于具体的历史动作建议。','Text Memory keeps reusable facts, Skill says when a strategy applies, and Agent System keeps only global principles and conflict priority. Each source has one job so 3B no longer receives three overlapping sets of overly specific historical action advice.') },
+  { n:'03', title:t('把不同类型的失败分开记','Record different failures separately'), body:t('以后不再把所有失败都叫“invalid”。我们会区分：输出格式写错、动作命令本身不完整、动作格式正确但当前页面根本没有这个选项、以及环境最后真正拒绝。这样第一轮就能看出问题发生在哪一层。','Failures are no longer collapsed into one invalid bucket. We distinguish malformed output, incomplete command semantics, syntactically valid actions unavailable on the current page, and final environment rejection, making the failing layer visible from the first round.') },
+  { n:'04', title:t('正式重跑前，先做两个各 128 次的小检查','Run two fixed 128-attempt checks before formal Stage 2'), body:t('正式再花 20,480 次任务预算之前，先用与最终评测完全隔离的旧任务检查动作接口。一组不放历史经验，另一组只放经过新规则整理的经验；任务、模型参数、随机种子、采样温度和解析器保持相同。','Before spending another 20,480 formal attempts, use old tasks isolated from final evaluation to check the action interface. One cell receives no historical experience and the other receives experience rewritten under the new rules; tasks, model parameters, seeds, temperature, and parser remain identical.') },
 ] as const;
 ---
 <main class="evo2" data-testid="openevo-2-strategy">
@@ -23,21 +23,21 @@ const changes = [
 
   <header class="evo2__hero">
     <div>
-      <p>OPENEVO 2.0 · DESIGN DRAFT</p>
-      <h1>OpenEVO 2.0</h1>
-      <span>{t('Stage 1 的轨迹采集不重做。2.0 从已经完成并封存（后续不再改写）的 Stage-1 轨迹与老师证据继续，但重新设计“这些经验怎样变成 Text Memory / Skill / Agent System，以及它们怎样进入下一轮 WebShop prompt”。', 'Stage-1 trajectory collection is not rerun. OpenEVO 2.0 continues from the sealed Stage-1 trajectories and teacher evidence, while redesigning how those experiences become Text Memory / Skill / Agent System state and how that state enters the next WebShop round.')}</span>
+      <p>HARNESS 2.0 · {t('正式 Stage 2 前的接口修复', 'INTERFACE REDESIGN BEFORE FORMAL STAGE 2')}</p>
+      <h1>{t('Harness 2.0：修复模型和 WebShop 的动作接口，再重跑 20,480 次任务', 'Harness 2.0: fix the model–WebShop action interface before rerunning 20,480 formal attempts')}</h1>
+      <span>{t('Stage 1 不重做，已经收集的 1,440 条学生轨迹和 1,440 条老师分析全部复用。我们现在怀疑的不是“经验有没有用”，而是经验被写得太像具体按钮攻略、又同时从三份文件塞进每一步提示词，可能把 3B 从当前页面真正允许的动作上带偏。Harness 2.0 因此只改经验如何组织、筛选和进入下一步提示词。', 'Stage 1 is not rerun; all 1,440 student trajectories and 1,440 teacher analyses are reused. The concern is no longer whether experience is useful, but whether overly specific UI advice from three simultaneous text sources steers 3B away from the actions actually available on the current page. Harness 2.0 therefore changes only how experience is organized, selected, and delivered into the next prompt.')}</span>
     </div>
     <aside>
-      <span>{t('当前状态','CURRENT STATUS')}</span>
-      <strong>{t('设计中，还没有正式启动','Designing; not formally launched')}</strong>
-      <small>{t(`截至 ${snap.observedAt}，Ceiling-1.0 仍在运行；OpenEVO 2.0 的 formal task consumption = 0，final panel access = 0。`,`As of ${snap.observedAt}, Ceiling-1.0 is still running; OpenEVO 2.0 formal task consumption = 0 and final-panel access = 0.`)}</small>
+      <span>{t('这条新实验线的状态','STATUS')}</span>
+      <strong>{t('先做 128 + 128 的正式实验前检查；通过后才允许启动新的 Stage 2','Run the fixed 128 + 128 preformal check before any new Stage 2')}</strong>
+      <small>{t(`记录快照 ${snap.observedAt} 时，新 Stage 2 还没有消耗任何正式任务，最终 128 题也一次都没有打开。`, `At the ${snap.observedAt} snapshot, the successor Stage 2 had consumed zero formal tasks and had never opened the final 128-task panel.`)}</small>
     </aside>
   </header>
 
   <section class="evo2__section" aria-labelledby="evo2-lineage-title">
-    <p class="kicker">EXPERIMENT LINEAGE</p>
-    <h2 id="evo2-lineage-title">{t('共同 Stage 1，从状态构建与 Stage 2 harness 开始分叉','Shared Stage 1; the fork starts at state construction and the Stage-2 harness')}</h2>
-    <p>{t('Ceiling-1.0 与 OpenEVO 2.0 共用当前 corrected Stage 1：每个模型 1,440 条轨迹，以及已经完成并封存（后续不再改写）的 1,440 条任务后老师分析。2.0 不增加老师预算；需要重做的是非参数 carrier 的整理/呈现方式和正式 Stage-2 harness。', 'Ceiling-1.0 and OpenEVO 2.0 share the current corrected Stage 1: 1,440 trajectories per model and 1,440 sealed post-episode teacher analyses. Version 2.0 adds no teacher budget; the redesign targets non-parametric carrier construction/rendering and the formal Stage-2 harness.')}</p>
+    <p class="kicker">{t('哪些东西不重做', 'WHAT STAYS THE SAME')}</p>
+    <h2 id="evo2-lineage-title">{t('Stage 1 的数据完全复用；真正重做的是“经验怎样进入下一步”', 'Stage-1 data is fully reused; the redesign starts with how experience enters the next step')}</h2>
+    <p>{t('Ceiling-1.0 和 Harness 2.0 共用同一份 Stage 1：每个模型已经有 1,440 次学生做题，以及 1,440 条任务结束后的老师分析。Harness 2.0 不再花老师预算，也不重新采这批任务。它从这里开始分叉：重新整理 Text Memory、Skill、Agent System 的职责，并改变它们怎样被放进 WebShop 的下一步提示词。', 'Ceiling-1.0 and Harness 2.0 share the same Stage 1: 1,440 student attempts and 1,440 post-task teacher analyses per model. Harness 2.0 spends no extra teacher budget and does not recollect those tasks. The fork begins here by reorganizing Text Memory, Skill, and Agent System responsibilities and changing how they enter the next WebShop prompt.')}</p>
 
     <figure class="lineage" role="img" aria-label={t('当前 corrected Stage 1 先进入同一个证据池，再分成 Ceiling-1.0 与 OpenEVO 2.0 两条分支','The current corrected Stage 1 enters one evidence pool, then forks into Ceiling-1.0 and OpenEVO 2.0')}>
       <svg viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
@@ -46,49 +46,49 @@ const changes = [
         <path d="M720 210 C800 210 815 105 900 105" />
         <path d="M720 210 C800 210 815 315 900 315" />
       </svg>
-      <article class="lineage__node lineage__stage1"><span>01 · SHARED</span><strong>Stage 1</strong><small>1,440 trajectories / arm</small><p>{t('轨迹采集保持不变；这是两条新主线共同的起点。','Trajectory collection stays unchanged; this is the shared starting point for both newer branches.')}</p></article>
-      <article class="lineage__node lineage__state"><span>02 · FORK BOUNDARY</span><strong>{t('老师证据与状态构建','Teacher evidence & state construction')}</strong><small>1,440 sealed analyses / arm</small><p>{t('OPSD 的既有语义保持；Text Memory、Skill、Agent 的组织与 runtime bridge 从这里开始重新审视。','Existing OPSD semantics stay fixed; Text Memory, Skill, Agent organization and their runtime bridge are reconsidered from here.')}</p></article>
-      <article class="lineage__node lineage__ceiling"><span>03A · RUNNING</span><strong>OpenEVO-Ceiling-1.0</strong><p>{t('原始 multi-carrier bridge：三类文本状态都会进入下一轮。运行证据完整保留；目前不把它提前写成“已暂停”。','Raw multi-carrier bridge: all three text states enter later rounds. Its run evidence is retained, and this page does not prematurely label it paused.')}</p><a href={ceilingHref}>{t('查看当前分支 →','Open current branch →')}</a></article>
-      <article class="lineage__node lineage__next"><span>03B · DESIGNING</span><strong>OpenEVO 2.0</strong><p>{t('经验仍然存在，但 harness 更薄：当前页面拥有动作权威，carrier 分工、按预算提供相关经验，并在正式运行前先做接口健康检查。','Experience still persists, but the harness becomes thinner: live state owns action authority, carriers are separated and budgeted, and interface health is qualified before formal execution.')}</p></article>
-      <figcaption>{t('分叉不是重做 Stage 1，而是从“如何把已经获得的经验变成下一轮可用状态”开始重新设计。','The fork does not rerun Stage 1; it begins with how already-collected experience becomes usable state for later rounds.')}</figcaption>
+      <article class="lineage__node lineage__stage1"><span>01 · {t('共同数据','SHARED DATA')}</span><strong>Stage 1</strong><small>{t('每个模型 1,440 次任务尝试','1,440 task attempts per model')}</small><p>{t('这部分已经完成，Harness 2.0 不重跑。','This part is already complete and is not rerun for Harness 2.0.')}</p></article>
+      <article class="lineage__node lineage__state"><span>02 · {t('从这里开始改','REDESIGN STARTS HERE')}</span><strong>{t('把老师分析整理成下一轮可用经验','Turn teacher analysis into usable next-round experience')}</strong><small>{t('每个模型 1,440 条已封存分析','1,440 sealed analyses per model')}</small><p>{t('参数初始化保持原来的科学含义；重新检查的是 Text Memory、Skill、Agent System 各自应该写什么，以及怎样送进下一步。','Parameter initialization keeps its existing scientific meaning; the redesign targets what Text Memory, Skill, and Agent System should contain and how they reach the next step.')}</p></article>
+      <article class="lineage__node lineage__ceiling"><span>03A · {t('已经跑过','EXISTING RUN')}</span><strong>OpenEVO-Ceiling-1.0</strong><p>{t('三份文字经验都会直接进入后续提示词。7B 能继续学习，但 3B 暴露出大量“当前页面没有这个动作”的失败。历史结果全部保留。','All three textual experience sources enter later prompts. 7B continued learning, while 3B showed many failures where the chosen action was unavailable on the current page. All historical evidence is retained.')}</p><a href={ceilingHref}>{t('查看 Ceiling-1.0 →','Open Ceiling-1.0 →')}</a></article>
+      <article class="lineage__node lineage__next"><span>03B · HARNESS 2.0</span><strong>{t('先让当前页面拥有最高优先级','Give the live page highest priority')}</strong><p>{t('历史经验变薄、分工、按预算选择；正式启动前先用 128 + 128 次固定小实验确认动作接口正常。','Historical experience becomes thinner, role-separated, and budgeted; a fixed 128 + 128 check verifies the action interface before formal launch.')}</p></article>
+      <figcaption>{t('所以 Harness 2.0 不是“全部重来”，而是保留已经付过成本的数据，只重做最可能出问题的经验注入接口。','Harness 2.0 is not a full restart. It preserves already-paid-for data and redesigns only the experience-injection interface most likely to be causing the problem.')}</figcaption>
     </figure>
   </section>
 
   <section class="evo2__section" aria-labelledby="evo2-why-title">
-    <p class="kicker">WHY REDESIGN</p>
-    <h2 id="evo2-why-title">{t('Ceiling-1.0 暴露的是 harness 风险，不是“OpenEVO 没用”','Ceiling-1.0 exposed a harness risk, not evidence that OpenEVO is useless')}</h2>
+    <p class="kicker">{t('为什么要做 Harness 2.0', 'WHY HARNESS 2.0')}</p>
+    <h2 id="evo2-why-title">{t('同一套 Ceiling-1.0，7B 还能继续学，3B 却很快掉到“完全没有成功种子”', 'Under the same Ceiling-1.0 design, 7B kept learning while 3B fell to zero success seeds')}</h2>
     <div class="evo2__evidence">
-      <article><span>3B</span><strong>{snap.ceiling1.threeB.acceptedRollouts.toLocaleString()} accepted</strong><p>{t(`截至快照已封口 ${snap.ceiling1.threeB.sealedRounds} 轮，但 SD-LoRA component 仍为 ${snap.ceiling1.threeB.sdComponents}。2026-08-31 的轨迹诊断还发现大量“格式正确、但当前页面没有这个动作”的失败，因此正在复核 carrier 是否压过了实时 Allowed Actions。`,`At the snapshot, ${snap.ceiling1.threeB.sealedRounds} rounds were sealed, while SD-LoRA component count remained ${snap.ceiling1.threeB.sdComponents}. Trajectory diagnostics also found many actions that were syntactically valid but unavailable in the live page, motivating a review of whether carrier text overwhelms current Allowed Actions.`)}</p></article>
-      <article><span>7B</span><strong>{snap.ceiling1.sevenB.acceptedRollouts.toLocaleString()} accepted</strong><p>{t(`7B 已封口 ${snap.ceiling1.sevenB.sealedRounds} 轮并形成 ${snap.ceiling1.sevenB.sdComponents} 个 SD-LoRA component。它说明这套旧 bridge 并非完全不能学习；更可能的问题是它对较小模型的上下文整合要求过重。`,`7B had sealed ${snap.ceiling1.sevenB.sealedRounds} rounds and formed ${snap.ceiling1.sevenB.sdComponents} SD-LoRA components. This shows the old bridge can learn; the concern is that its context-integration burden may be too heavy for smaller models.`)}</p></article>
+      <article><span>3B</span><strong>{t(`${snap.ceiling1.threeB.sealedRounds} 轮 / ${snap.ceiling1.threeB.acceptedRollouts.toLocaleString()} 次任务 / 0 个新参数组件`, `${snap.ceiling1.threeB.sealedRounds} rounds / ${snap.ceiling1.threeB.acceptedRollouts.toLocaleString()} attempts / 0 new parameter components`)}</strong><p>{t('复核轨迹后发现，很多失败并不是“模型连动作格式都不会写”，而是动作格式看起来正常，但当前页面根本没有那个按钮或选项。这个现象让我们把注意力转向历史经验怎样进入提示词。','Trajectory review showed that many failures were not malformed actions. The actions looked syntactically valid but referred to buttons or options that did not exist on the current page, shifting attention to how historical experience enters the prompt.')}</p></article>
+      <article><span>7B</span><strong>{t(`${snap.ceiling1.sevenB.sealedRounds} 轮 / ${snap.ceiling1.sevenB.acceptedRollouts.toLocaleString()} 次任务 / ${snap.ceiling1.sevenB.sdComponents} 个新参数组件`, `${snap.ceiling1.sevenB.sealedRounds} rounds / ${snap.ceiling1.sevenB.acceptedRollouts.toLocaleString()} attempts / ${snap.ceiling1.sevenB.sdComponents} new parameter components`)}</strong><p>{t('7B 在同一套方案下仍然能产生成功经验和新的参数组件。这说明 Ceiling-1.0 并不是“所有模型都完全不能学”，更像是同样的历史上下文对小模型负担更重。','7B still produced successful experience and new parameter components under the same design. This means Ceiling-1.0 was not universally unable to learn; the same historical context appears more burdensome for the smaller model.')}</p></article>
     </div>
-    <p class="evo2__boundary">{t(`这是 ${snap.observedAt} 的带时间快照，不是最终结果。Ceiling-1.0 还在运行；真正的暂停 round、最终成功轨迹数和 checkpoint 只能在停止后从不可改写的运行记录（immutable receipts）再发布。`,`This is a time-bounded snapshot from ${snap.observedAt}, not a final result. Ceiling-1.0 is still running; stop round, final success counts, and checkpoints can only be published from immutable receipts after a real stop.`)}</p>
+    <p class="evo2__boundary">{t(`这些数字来自 ${snap.observedAt} 的历史快照，不是现在的实时进度，也不是最终能力结论。它们只解释我们为什么把下一步研究重点放到 Harness 2.0。`, `These values come from a historical snapshot at ${snap.observedAt}; they are not live progress or a final capability conclusion. They explain why the next investigation focuses on Harness 2.0.`)}</p>
   </section>
 
   <section class="evo2__section" aria-labelledby="evo2-changes-title">
-    <p class="kicker">2.0 SCOPE</p>
-    <h2 id="evo2-changes-title">{t('OpenEVO 2.0 第一版只做四件事','OpenEVO 2.0 v1 does four things')}</h2>
+    <p class="kicker">{t('这次具体改什么', 'WHAT CHANGES')}</p>
+    <h2 id="evo2-changes-title">{t('Harness 2.0 第一版只改四件已经有直接证据的问题', 'Harness 2.0 changes only four problems already supported by evidence')}</h2>
     <div class="evo2__changes">{changes.map((item) => <article><span>{item.n}</span><strong>{item.title}</strong><p>{item.body}</p></article>)}</div>
-    <div class="evo2__not-now"><strong>{t('这版暂时不做','NOT IN THIS FIRST VERSION')}</strong><p>{t('不做 Strategy IR；不因为 3B 现在表现差就先改 temperature；不把动作改成 constrained decoding；不让 3B / 7B 使用不同的 headline 规则。先把已经有直接证据的 harness 问题修干净。','No Strategy IR yet; no temperature change simply because 3B currently performs poorly; no constrained action decoding; and no different headline rules for 3B versus 7B. The first goal is to fix harness problems already supported by direct evidence.')}</p></div>
+    <div class="evo2__not-now"><strong>{t('其他变量先不动','WHAT STAYS FIXED')}</strong><p>{t('3B 现在表现差，也不因此临时改采样温度；不改成强制枚举动作；3B 和 7B 仍使用同一套正式规则。先只修已经看到直接证据的“历史经验压过当前页面”问题，避免一次改太多东西后又不知道到底什么起作用。','Poor 3B performance does not justify changing temperature midstream, switching to forced action enumeration, or giving 3B and 7B different formal rules. The first version fixes only the directly observed problem of historical experience overwhelming the live page, so later results remain interpretable.')}</p></div>
   </section>
 
   <section class="evo2__section" aria-labelledby="evo2-transition-title">
-    <p class="kicker">TRANSITION CONTRACT</p>
-    <h2 id="evo2-transition-title">{t('旧分支不删除，新分支不改写历史','The old branch stays intact; the new branch does not rewrite history')}</h2>
+    <p class="kicker">{t('怎样从旧实验切到 Harness 2.0', 'HOW THE TRANSITION WORKS')}</p>
+    <h2 id="evo2-transition-title">{t('旧实验的结果原样保留；Harness 2.0 从同一份 Stage 1 数据另开一条新实验线', 'Preserve the old results exactly and start Harness 2.0 as a separate line from the same Stage-1 data')}</h2>
     <div class="evo2__transition">
-      <article><span>NOW</span><strong>{t('Ceiling-1.0 继续运行 / 观察','Continue and observe Ceiling-1.0')}</strong><p>{t('7B 继续形成完整学习曲线；3B 的当前 lineage 也继续保留。直到真正出现停止 authority，网站不会把这条线写成“已暂停”。','7B continues to form a full learning curve, while the current 3B lineage is preserved. The site will not label this branch paused until an actual stop authority exists.')}</p></article>
-      <article><span>WHEN STOPPED</span><strong>{t('补齐停止快照与全部证据','Publish the stop snapshot and evidence')}</strong><p>{t('固定停止时间、最后完整封口的 round、accepted / partial、成功轨迹、SD-LoRA 更新、Memory / Skill / Agent 状态，以及 checkpoint、trajectory、receipt、GitHub / Hugging Face 产物链接。','Record stop time, last sealed round, accepted/partial counts, successful trajectories, SD-LoRA updates, Memory/Skill/Agent state, plus checkpoint, trajectory, receipt, GitHub, and Hugging Face artifacts.')}</p></article>
-      <article><span>NEXT</span><strong>{t('OpenEVO 2.0 通过资格检查后再启动','Launch OpenEVO 2.0 only after qualification')}</strong><p>{t('复用同一个 Stage-1 证据根，先在非 final 的资格集验证 harness 没把动作接口搞坏，再冻结新 activation，从 Stage2 round 0 开始新的 append-only lineage。','Reuse the same Stage-1 evidence root, qualify interface health on a non-final panel, then freeze a new activation and start a new append-only lineage from Stage-2 round 0.')}</p></article>
+      <article><span>01</span><strong>{t('Ceiling-1.0 已经产生的结果不改写','Do not rewrite Ceiling-1.0 history')}</strong><p>{t('7B 和 3B 已经跑过的任务、成功轨迹和参数状态继续保留。发现 Harness 问题不等于把旧结果删掉或改名。','Tasks, successful traces, and parameter states already produced by 7B and 3B remain preserved. Discovering a harness problem does not delete or rename the old evidence.')}</p></article>
+      <article><span>02</span><strong>{t('先完成两个各 128 次的接口检查','Complete the two fixed 128-attempt interface checks')}</strong><p>{t('这两个小实验只用已经做过的旧任务，不碰最终 128 题，也不消耗新的正式 Stage-2 任务预算。它们只负责证明新经验提示没有把动作接口弄坏。','These small checks use already-consumed historical tasks, never touch the final 128 tasks, and consume no new formal Stage-2 budget. Their job is only to verify that the redesigned experience prompt does not break the action interface.')}</p></article>
+      <article><span>03</span><strong>{t('检查通过后，才从 Stage 2 第 0 轮启动新的正式实验','Only after qualification does the new formal Stage 2 start from round 0')}</strong><p>{t('正式启动时会冻结新的实验配置，并从第 0 轮开始独立记录。新实验不会接着修改 Ceiling-1.0 已经跑出来的历史，也不会偷用最终评测来决定是否启动。','At formal launch, a new experiment configuration is frozen and recorded independently from round 0. The successor does not mutate Ceiling-1.0 history and does not use final evaluation to decide whether to launch.')}</p></article>
     </div>
 
     <details class="evo2__artifacts">
-      <summary>{t('Ceiling-1.0 停止后要补齐的产物槽位','Evidence slots to fill after Ceiling-1.0 stops')}</summary>
-      <div><span>{t('停止边界','Stop boundary')}</span><b>{t('尚未发生','Not stopped yet')}</b></div>
-      <div><span>3B / 7B accepted + partial</span><b>{t('停止后从 receipts 固定','Freeze from receipts after stop')}</b></div>
-      <div><span>{t('成功轨迹 / 参数更新','Success trajectories / parameter updates')}</span><b>{t('停止后固定','Freeze after stop')}</b></div>
-      <div><span>checkpoint / trajectories / receipts</span><b>{t('等待最终归档链接','Await final archive links')}</b></div>
+      <summary>{t('实验记录与归档状态','Experiment records and archive status')}</summary>
+      <div><span>{t('Ceiling-1.0 是否已经正式停止','Whether Ceiling-1.0 has a formal stop')}</span><b>{t('这个历史快照里还没有','Not in this historical snapshot')}</b></div>
+      <div><span>{t('3B / 7B 已完成与未完成任务数','3B / 7B completed and partial task counts')}</span><b>{t('停止后从不可改写的运行记录确认','Confirm from immutable run records after stop')}</b></div>
+      <div><span>{t('成功轨迹与参数更新','Successful traces and parameter updates')}</span><b>{t('停止后固定最终数字','Freeze final counts after stop')}</b></div>
+      <div><span>{t('模型、轨迹与运行记录链接','Model, trajectory, and run-record links')}</span><b>{t('等待最终归档','Await final archive')}</b></div>
       <div><span>GitHub / Hugging Face</span><b>{t('等待发布确认','Await publication confirmation')}</b></div>
     </details>
-    <p class="evo2__source">{t('科学实时状态仍以 openevo-experiment 的实际运行 branch → current-campaign.json → 最新有效运行记录 / result 为准。', 'Live scientific state still resolves from the actual openevo-experiment branch → current-campaign.json → latest valid receipt/result.')}&nbsp;<a href={currentCampaignHref} target="_blank" rel="noreferrer">current-campaign ↗</a></p>
+    <p class="evo2__source">{t('这里展示的是研究说明，不是实时控制台。后续真实运行状态以 openevo-experiment 当前实验配置和最新不可改写运行记录为准。', 'This page is research documentation, not a live control console. Later execution state is determined by the current openevo-experiment configuration and the latest immutable run records.')}&nbsp;<a href={currentCampaignHref} target="_blank" rel="noreferrer">current-campaign ↗</a></p>
   </section>
 </main>
 

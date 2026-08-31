@@ -23,19 +23,19 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   <header class="legacy__hero">
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
-      <h1>{t('历史 Stage 2：窗口化硬门槛（设计错误 / 已取代）', 'Historical Stage 2: window-local hard gate (design error / superseded)')}</h1>
-      <span>{t('这不是“OpenEVO 做不到学习”的结论。我们把一次方法控制实验里的局部成功门槛错误提升成了长期学习规则；历史结果必须保留，但不能再代表当前 OpenEVO 的 Stage 2。', 'This is not evidence that OpenEVO cannot learn. A local success threshold from a method-control study was mistakenly promoted into a long-horizon learning rule. The historical result must be preserved, but it no longer represents current OpenEVO Stage 2.')}</span>
+      <h1>{t('第一次 Stage 2 为什么白跑：有成功经验，但旧规则不让模型继续学', 'Why the first Stage 2 stalled: successful experience existed, but the old rule blocked learning')}</h1>
+      <span>{t('这一版 Stage 2 一共让模型继续做了 20,480 次 WebShop 任务。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是“没有成功数据”，而是当时把每 256 次尝试单独检查，必须同一批里至少有 8 个不同任务各自成功 2 次，才允许学习；最好的一批只有 7 个。', 'This Stage 2 let the model continue for 20,480 WebShop attempts. 7B/self collected 797 trainable exact-success traces and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The problem was not a lack of successful data: every 256 attempts were judged separately, and learning was allowed only if at least eight distinct tasks each succeeded twice inside the same batch; the best batch reached seven.')}</span>
     </div>
     <aside>
-      <b>{t('错误究竟是什么', 'WHAT WAS WRONG')}</b>
-      <p>{t('256 不是问题本身。真正的问题是：每 256 条 rollout 都重新要求“至少 8 个不同任务、每个任务至少 2 次 clean exact success”，并把达不到这条局部门槛直接等同于“不允许学习”。', 'The number 256 itself was not the core problem. Every 256-rollout window re-imposed “at least eight distinct tasks with two clean exact successes each”, turning a local control threshold into permission to learn.')}</p>
+      <b>{t('设计错在哪里', 'WHAT WAS WRONG')}</b>
+      <p>{t('问题不是数字 256 本身，而是“每 256 次任务尝试就把前面的成功清零，再重新判断一次”。同一批里凑不到 8 个重复成功的不同任务，模型就完全不更新参数。这样一条原本适合小实验的数据选择规则，被误当成了长期训练必须反复通过的门。', 'The problem was not the number 256 itself. The program reset the decision every 256 task attempts and discarded earlier success for the next decision. If one batch did not contain eight distinct repeatedly successful tasks, parameters did not update at all. A rule suited to a bounded study was mistakenly turned into a gate that long-running training had to pass repeatedly.')}</p>
     </aside>
   </header>
   <OpenEvoLegacyStage2ResearchJourney locale={locale} />
   <section class="legacy__section" aria-labelledby="legacy-arm-title">
-    <p class="kicker">{t('选择一个历史实验', 'CHOOSE A HISTORICAL ARM')}</p>
-    <h2 id="legacy-arm-title">{t('先选模型，再选有没有 MiniMax 任务后回看老师', 'Choose the model, then whether MiniMax hindsight analysis was used')}</h2>
-    <p class="legacy__intro">{t('这里的“有老师”只表示 MiniMax 在一次 WebShop 任务结束后分析学生轨迹；MiniMax 从不替 Qwen 搜索或点击。没有 JavaScript 时，四个实验会全部顺序展示。', '“With a teacher” means MiniMax analyzes the student trajectory after a WebShop episode; it never searches or clicks for Qwen. Without JavaScript, all four arms remain visible in sequence.')}</p>
+    <p class="kicker">{t('四组历史结果', 'FOUR HISTORICAL RESULTS')}</p>
+    <h2 id="legacy-arm-title">{t('3B / 7B × 无外部老师 / MiniMax：四组都发生了什么', 'What happened across 3B / 7B × self / MiniMax')}</h2>
+    <p class="legacy__intro">{t('MiniMax 只在一次 WebShop 任务结束后回看并分析学生轨迹，实际搜索和点击始终由 Qwen 完成。下面可以切换四组实验；每组先给做了多少次任务、收集到多少成功经验、有没有真的更新参数，再给最终评测。', 'MiniMax only reviews the student trajectory after a WebShop task ends; Qwen still performs every search and click. Switch among the four runs below; each one first shows task attempts, successful experience, whether parameters actually changed, and then final evaluation.')}</p>
     <div class="legacy__selector" data-legacy-stage2-selector>
       <fieldset>
         <legend>{t('模型大小', 'Model size')}</legend>
@@ -61,12 +61,12 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
             <em>{arm.finalEvaluation.status === 'sealed' ? t('128 任务最终评测：已封存', '128-task final evaluation: sealed') : t('最终评测：未运行', 'Final evaluation: not run')}</em>
           </header>
           <dl class="legacy__metrics">
-            <div><dt>blocks</dt><dd>{arm.blocks}</dd></div>
-            <div><dt>rollouts</dt><dd>{arm.rollouts}</dd></div>
-            <div><dt>{t('合格成功轨迹', 'qualified positives')}</dt><dd>{arm.qualifiedPositives}</dd></div>
-            <div><dt>{t('单窗口最好重复成功任务数', 'best qualifying identities')}</dt><dd>{arm.bestIdentity}</dd></div>
-            <div><dt>{t('Stage-2 参数更新', 'Stage-2 parameter updates')}</dt><dd>{arm.stage2Updates}</dd></div>
-            <div><dt>{t('进入 Stage 2 的参数状态', 'Stage-2 entry state')}</dt><dd>{arm.entryState}</dd></div>
+            <div><dt>{t('完整批次', 'complete batches')}</dt><dd>{arm.blocks}</dd></div>
+            <div><dt>{t('任务尝试', 'task attempts')}</dt><dd>{arm.rollouts}</dd></div>
+            <div><dt>{t('可用于训练的完整成功轨迹', 'trainable exact-success traces')}</dt><dd>{arm.qualifiedPositives}</dd></div>
+            <div><dt>{t('单批最多有多少个任务重复成功', 'best repeated-success task count in one batch')}</dt><dd>{arm.bestIdentity}</dd></div>
+            <div><dt>{t('Stage 2 实际参数更新', 'actual Stage-2 parameter updates')}</dt><dd>{arm.stage2Updates}</dd></div>
+            <div><dt>{t('Stage 2 开始时使用的模型参数', 'model state entering Stage 2')}</dt><dd>{arm.entryState}</dd></div>
           </dl>
           {arm.finalEvaluation.status === 'sealed' ? (
             <div class="legacy__final">
@@ -88,18 +88,18 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <p class="legacy__note">* {t('3B/MiniMax 的 38 只统计 59 个完整 block；第 60 个 block 停止时已有 171 条 partial rollout，它们被原样保留，但不混进完整 block 的统计。', 'For 3B/MiniMax, 38 covers only the 59 complete blocks. The 60th block retained 171 partial rollouts at stop time; they are preserved but not mixed into complete-block statistics.')}</p>
   </section>
   <section class="legacy__section legacy__why">
-    <div><p class="kicker">{t('从数据看错误在哪里', 'WHAT THE DATA EXPOSE')}</p><h2>{t('有成功数据，却被局部门槛挡住了学习', 'Learnable successes existed, but the local gate blocked learning')}</h2></div>
+    <div><p class="kicker">{t('为什么会 0 次更新', 'WHY ZERO UPDATES')}</p><h2>{t('模型不是没成功，而是成功经验没被允许进入训练', 'The model did succeed; the successful experience was blocked from training')}</h2></div>
     <ol>
-      <li><b>01</b><strong>{t('窗口各算各的', 'Each window stood alone')}</strong><p>{t('每 256 条重新计算；前一窗口的稀疏成功不能改变下一窗口的更新资格。', 'The gate reset every 256 rollouts; sparse success from an earlier window could not change the next window’s eligibility.')}</p></li>
-      <li><b>02</b><strong>{t('局部重复成功要求太强', 'Local repeated-success requirement')}</strong><p>{t('至少 8 个不同任务都要在同一窗口里各自完整成功至少 2 次。7B 两条历史臂最好都只到 7 / 8。', 'At least eight distinct tasks each had to achieve two exact successes in the same window. Both historical 7B arms peaked at only 7 / 8.')}</p></li>
-      <li><b>03</b><strong>{t('成功轨迹与参数更新被错误地绑死', 'Success evidence and parameter updates were over-coupled')}</strong><p>{t('7B/self 累计 797 条、7B/MiniMax 累计 592 条合格成功轨迹，但 Stage 2 参数更新仍都是 0。这个现象证明旧 gate 很苛刻，不证明 OpenEVO 本身没有可学习数据。', '7B/self accumulated 797 and 7B/MiniMax 592 qualified positives, yet both recorded zero Stage-2 parameter updates. This demonstrates how restrictive the old gate was; it does not show that OpenEVO had no learnable evidence.')}</p></li>
+      <li><b>01</b><strong>{t('每 256 次重新清零判断', 'The decision reset every 256 attempts')}</strong><p>{t('上一批已经积累的成功不会带到下一批继续用。模型必须在单独一批里重新证明自己。', 'Successes from the previous batch could not carry forward. The model had to re-qualify from scratch inside every batch.')}</p></li>
+      <li><b>02</b><strong>{t('同一批必须同时凑齐 8 个任务', 'One batch had to contain all eight tasks')}</strong><p>{t('每个任务还要至少完整成功 2 次。7B 两组表现最好的一批都只有 7 个这样的任务，因此永远差 1 个，参数也就永远不更新。', 'Each task also had to succeed at least twice. The best batch in both 7B runs reached only seven such tasks, always one short, so parameters never updated.')}</p></li>
+      <li><b>03</b><strong>{t('整段实验有很多成功，却一次都没学', 'Many successes accumulated, but the model never learned from them')}</strong><p>{t('7B/self 最终有 797 条可训练成功轨迹，7B/MiniMax 有 592 条，但 Stage 2 参数更新仍然都是 0。这正是我们后来判定旧设计不合理的核心证据。', '7B/self ended with 797 trainable exact-success traces and 7B/MiniMax with 592, yet both still recorded zero Stage-2 updates. This mismatch is the core evidence that led us to reject the old design.')}</p></li>
     </ol>
   </section>
 
   <section class="legacy__section">
-    <p class="kicker">CHECKPOINT SEMANTICS</p>
-    <h2>{t('0 次 Stage-2 更新，就不能伪造一个“Stage-2 checkpoint”', 'Zero Stage-2 updates means there is no fabricated “Stage-2 checkpoint”')}</h2>
-    <p class="legacy__intro">{t('四个历史 headline arm 的 Stage 2 都没有产生新 adapter bytes。因此链接的是“真正进入旧 Stage 2 的参数状态”：3B/self 是 base/no-update pointer，其余三条是 Stage-1 或 MiniMax bootstrap 的 increment-07 adapter。', 'None of the four historical headline arms created new adapter bytes in Stage 2. Links therefore point to the real parameter state that entered old Stage 2: a base/no-update pointer for 3B/self and the Stage-1 or MiniMax-bootstrap increment-07 adapters for the other three arms.')}</p>
+    <p class="kicker">{t('模型保存点', 'MODEL CHECKPOINTS')}</p>
+    <h2>{t('Stage 2 没改参数，所以最终模型仍然是进入 Stage 2 时的那个模型', 'Stage 2 never changed parameters, so the final model is the same model that entered Stage 2')}</h2>
+    <p class="legacy__intro">{t('四组历史实验在 Stage 2 都没有产生新的模型参数。因此这里链接的不是一个虚构的“Stage-2 最终模型”，而是每组真正进入 Stage 2 时使用的参数：3B/self 仍是基础模型，其余三组使用 Stage 1 结束时或 MiniMax 启动训练结束时的第 8 个保存点。', 'None of the four historical runs produced new model parameters in Stage 2. These links therefore point to the real state that entered Stage 2 rather than a fictional Stage-2 checkpoint: 3B/self remained at base, while the other three used the final Stage-1 or MiniMax-bootstrap checkpoint.')}</p>
     <div class="legacy__checkpoint-links">
       {legacyStage2Arms.map((arm) => (
         <a href={checkpointHref(arm)}><span>{arm.label}</span><strong>{arm.entryState}</strong><small>{t('固定 HF revision 打开 →', 'Open pinned HF revision →')}</small></a>
@@ -108,8 +108,8 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <p class="legacy__note">{t(`Stage-1 / bootstrap adapter 固定 revision：${adapterRevision}。`, `Pinned Stage-1/bootstrap adapter revision: ${adapterRevision}.`)}</p>
   </section>
   <section class="legacy__section">
-    <p class="kicker">ARTIFACT ARCHIVE</p>
-    <h2>{t('完整远端归档 + 永久本地 smoke kit；上传成功也不自动删除', 'Exact remote archive + permanent local smoke kit; upload success never auto-deletes')}</h2>
+    <p class="kicker">{t('历史产物', 'HISTORICAL ARTIFACTS')}</p>
+    <h2>{t('旧实验的轨迹、模型和运行环境都已经保留，方便以后复核', 'The old trajectories, model states, and runtime environment are preserved for later verification')}</h2>
     <div class="legacy__archive-facts">
       <div><b>184,168</b><span>{t('个源文件进入 SHA-256 清单', 'source files covered by SHA-256 manifest')}</span></div>
       <div><b>11.64 GB</b><span>{t('压缩前历史源文件', 'historical source bytes before compression')}</span></div>

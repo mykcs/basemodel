@@ -3,6 +3,6 @@ import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoLegacyStage2Archive from '../../../../../../components/research/OpenEvoLegacyStage2Archive.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="历史 Stage 2：窗口化硬门槛（设计错误 / 已取代）" description="已取代的窗口化硬门槛 Stage 2：3B/7B × self/MiniMax 的真实结果、final eval、checkpoint 与完整归档。" locale={locale}>
+<AppLayout title="第一次 Stage 2 为什么白跑：有成功经验，但旧规则不让模型继续学" description="解释最早的 Stage 2 为什么完成大量 WebShop 任务、收集到数百条可训练成功轨迹，却仍然一次参数更新都没有：程序把每 256 次任务单独判断，必须同一批里至少 8 个不同任务各自成功 2 次，最好一批只有 7 个。" locale={locale}>
   <OpenEvoLegacyStage2Archive locale={locale} />
 </AppLayout>

@@ -3,6 +3,6 @@ import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvo2Strategy from '../../../../../../components/research/OpenEvo2Strategy.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEVO 2.0" description="OpenEVO 2.0 的设计分支：复用当前 corrected Stage 1 轨迹与封存老师证据，从 carrier 状态构建和 Stage-2 harness 开始重新设计 Context Governor、carrier 职责、Telemetry 与正式运行前资格检查。" locale={locale}>
+<AppLayout title="Harness 2.0：先修好模型和 WebShop 的动作接口，再重跑 Stage 2" description="Ceiling-1.0 中 3B 跑了 18 轮仍没有产生新参数组件，而且大量失败来自选择当前页面不存在的动作。Harness 2.0 不重做 Stage 1，而是减少并重新分工历史经验提示，并用两个固定 128 次的小实验先验证动作接口是否恢复正常。" locale={locale}>
   <OpenEvo2Strategy locale={locale} />
 </AppLayout>
