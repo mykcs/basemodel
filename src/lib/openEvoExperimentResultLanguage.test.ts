@@ -9,6 +9,7 @@ const legacyStage1Archive = read('../components/research/OpenEvoLegacyStage1Arch
 const capabilityIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
 const stage2Chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Archive.astro');
+const legacyStage2Journey = read('../components/research/OpenEvoLegacyStage2ResearchJourney.astro');
 const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
 const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
@@ -25,7 +26,7 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Data}\n${ceilingStage2}\n${openEvo2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${openEvo2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
@@ -74,6 +75,25 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 2_304');
     expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
     expect(ceilingStage2).not.toContain('Stage 2 正式 task consumption：尚未开始');
+  });
+
+  it('explains how the old 8×2×256 rule grew from bounded experiments and how it was diagnosed later', () => {
+    expect(legacyStage2Archive).toContain('OpenEvoLegacyStage2ResearchJourney');
+    expect(legacyStage2Journey).toContain('H1.38A-C');
+    expect(legacyStage2Journey).toContain('148 次尝试得到 50 条合格成功');
+    expect(legacyStage2Journey).toContain('8 个不同任务，每个任务恰好 2 条独立成功');
+    expect(legacyStage2Journey).toContain('64 个任务 × 4 个 seed = 最多 256 次尝试');
+    expect(legacyStage2Journey).toContain('两个“256”不是一回事');
+    expect(legacyStage2Journey).toContain('max_records=256');
+    expect(legacyStage2Journey).toContain("oldInvalid:'130 / 1,280 · 10.2%'");
+    expect(legacyStage2Journey).toContain("nextInvalid:'481 / 1,280 · 37.6%'");
+    expect(legacyStage2Journey).toContain("oldInvalid:'171 / 1,280 · 13.4%'");
+    expect(legacyStage2Journey).toContain("nextInvalid:'322 / 1,280 · 25.2%'");
+    expect(legacyStage2Journey).toContain('H1.20');
+    expect(legacyStage2Journey).toContain('128/480');
+    expect(legacyStage2Journey).toContain('164/960');
+    expect(legacyStage2Journey).toContain('HARNESS 2.0 PREFORMAL · 128 + 128');
+    expect(legacyStage2Journey).toContain('reward / success 只做诊断');
   });
 
   it('adds OpenEVO 2.0 as a successor without pretending Ceiling-1.0 already stopped', () => {

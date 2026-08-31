@@ -3,6 +3,7 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { legacyStage2Archive, legacyStage2Arms } from '../../data/openEvoLegacyStage2Archive';
 import OpenEvoStage2StrategyChooser from './OpenEvoStage2StrategyChooser.astro';
+import OpenEvoLegacyStage2ResearchJourney from './OpenEvoLegacyStage2ResearchJourney.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -30,6 +31,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
       <p>{t('256 不是问题本身。真正的问题是：每 256 条 rollout 都重新要求“至少 8 个不同任务、每个任务至少 2 次 clean exact success”，并把达不到这条局部门槛直接等同于“不允许学习”。', 'The number 256 itself was not the core problem. Every 256-rollout window re-imposed “at least eight distinct tasks with two clean exact successes each”, turning a local control threshold into permission to learn.')}</p>
     </aside>
   </header>
+  <OpenEvoLegacyStage2ResearchJourney locale={locale} />
   <section class="legacy__section" aria-labelledby="legacy-arm-title">
     <p class="kicker">{t('选择一个历史实验', 'CHOOSE A HISTORICAL ARM')}</p>
     <h2 id="legacy-arm-title">{t('先选模型，再选有没有 MiniMax 任务后回看老师', 'Choose the model, then whether MiniMax hindsight analysis was used')}</h2>
