@@ -7,9 +7,17 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const ownStorage = [
-  { label: t('主要实验工作区', 'Primary experiment workspace'), value: '45 G', detail: t('训练产出、checkpoint、运行目录等主要都在这里。', 'Most training outputs, checkpoints, and run directories live here.'), pct: 84.9 },
-  { label: 'openevo-workspace', value: '6.9 G', detail: t('OpenEvo 相关独立工作区。', 'Dedicated OpenEvo workspace.'), pct: 13.0 },
-  { label: t('其余我们的文件', 'Other files we own'), value: '≈ 1.1 G', detail: t('缓存、工具、配置等小项合计。', 'Caches, tools, configuration, and other small items combined.'), pct: 2.1 },
+  { label: t('主要实验工作区', 'Primary experiment workspace'), value: '79.0 GiB', detail: t('训练产出、checkpoint、运行目录等主要都在这里。', 'Most training outputs, checkpoints, and run directories live here.'), pct: 91.4 },
+  { label: 'openevo-workspace', value: '6.84 GiB', detail: t('OpenEvo 相关独立工作区。', 'Dedicated OpenEvo workspace.'), pct: 7.9 },
+  { label: t('其余我们的文件', 'Other files we own'), value: '0.62 GiB', detail: t('缓存、工具、配置等小项合计。', 'Caches, tools, configuration, and other small items combined.'), pct: 0.7 },
+];
+
+const anonymousUserStorage = [
+  { label: t('用户 1', 'User 1'), value: '88.2 GiB', pct: 20.2, cls: 'storage-bar__user-1' },
+  { label: t('用户 2', 'User 2'), value: '14.2 GiB', pct: 3.2, cls: 'storage-bar__user-2' },
+  { label: t('用户 3', 'User 3'), value: '13.6 GiB', pct: 3.1, cls: 'storage-bar__user-3' },
+  { label: t('用户 4', 'User 4'), value: '4.14 GiB', pct: 1.0, cls: 'storage-bar__user-4' },
+  { label: t('用户 5', 'User 5'), value: '1.88 GiB', pct: 0.4, cls: 'storage-bar__user-5' },
 ];
 
 const gpuFacts = [
@@ -25,10 +33,10 @@ const gpuFacts = [
   <header class="server-hero">
     <div class="server-hero__eyebrow">{t('实验服务器 · lyg2171', 'Experiment server · lyg2171')}</div>
     <h1>{t('lyg2171 服务器简介', 'lyg2171 server overview')}</h1>
-    <p>{t('lyg2171 是当前 OpenEvo / WebShop 实验使用的主要训练服务器。配置为 2 × Intel Xeon Platinum 8380、1.0 TiB 内存和 8 × RTX 5090；当前主文件系统剩余约 55 G。', 'lyg2171 is the main training server used for the current OpenEvo / WebShop experiments. It has 2 × Intel Xeon Platinum 8380 CPUs, 1.0 TiB RAM, and 8 × RTX 5090 GPUs; the main filesystem currently has about 55 G free.')}</p>
+    <p>{t('lyg2171 是当前 OpenEvo / WebShop 实验使用的主要训练服务器。配置为 2 × Intel Xeon Platinum 8380、1.0 TiB 内存和 8 × RTX 5090；当前主文件系统仅剩约 25.7 GiB。', 'lyg2171 is the main training server used for the current OpenEvo / WebShop experiments. It has 2 × Intel Xeon Platinum 8380 CPUs, 1.0 TiB RAM, and 8 × RTX 5090 GPUs; the main filesystem currently has only about 25.7 GiB free.')}</p>
     <div class="snapshot-note">
       <strong>{t('数据时间', 'Data timestamp')}</strong>
-      <span>2026-08-30 00:12 (UTC+8)</span>
+      <span>2026-08-31 11:03 (UTC+8)</span>
       <span>{t('静态快照，不是实时监控面板', 'Static snapshot, not a live monitoring dashboard')}</span>
     </div>
   </header>
@@ -36,9 +44,9 @@ const gpuFacts = [
   <section class="priority-grid" aria-label={t('关键资源', 'Key resources')}>
     <article class="priority-card priority-card--attention">
       <span>{t('磁盘剩余', 'Disk free')}</span>
-      <strong>55 G</strong>
+      <strong>25.7 GiB</strong>
       <h2>{t('主文件系统可用空间', 'Main filesystem available')}</h2>
-      <p>{t('df 当前报告 87% 已使用。大 checkpoint、Docker/容器层或重复实验副本都可能很快把它推满。', 'df currently reports 87% used. Large checkpoints, container layers, or duplicate experiment copies can fill it quickly.')}</p>
+      <p>{t('df 当前报告 94% 已使用。大 checkpoint、Docker/容器层或重复实验副本都可能很快把它推满。', 'df currently reports 94% used. Large checkpoints, container layers, or duplicate experiment copies can fill it quickly.')}</p>
     </article>
     <article class="priority-card">
       <span>GPU</span>
@@ -56,7 +64,7 @@ const gpuFacts = [
       <span>RAM</span>
       <strong>1.0 TiB</strong>
       <h2>{t('内存容量', 'System memory')}</h2>
-      <p>{t('快照时约 64 GiB 正在使用，Linux 报告约 937 GiB available；这里比磁盘宽裕得多。', 'At the snapshot, about 64 GiB was in use and Linux reported about 937 GiB available; RAM is far less constrained than disk.')}</p>
+      <p>{t('快照时约 61 GiB 正在使用，Linux 报告约 940 GiB available；这里比磁盘宽裕得多。', 'At the snapshot, about 61 GiB was in use and Linux reported about 940 GiB available; RAM is far less constrained than disk.')}</p>
     </article>
   </section>
 
@@ -68,31 +76,35 @@ const gpuFacts = [
         <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('实验文件主要写入 437 G 的主文件系统，底层块设备约 447.1 G。下表按文件系统口径报告已用和可用空间。', 'Experiment files are mainly written to a 437 G filesystem backed by an approximately 447.1 G block device. The table below reports used and available space at the filesystem level.')}</p>
+    <p class="section-lede">{t('实验文件主要写入约 436.0 GiB 的主文件系统（df -h 显示为 437 G）。下面把可以可靠归属的主目录按匿名用户拆开；共享镜像、容器写层和系统开销保留为单独一项，不强行算到任何个人头上。', 'Experiment files are mainly written to an approximately 436.0 GiB main filesystem (shown as 437 G by df -h). Reliably attributable home directories are split by anonymous user below; shared images, container writable layers, and system overhead remain separate instead of being forced onto an individual.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
-        <div><span>{t('文件系统', 'Filesystem')}</span><strong>437 G</strong></div>
-        <div><span>{t('已用', 'Used')}</span><strong>360 G</strong></div>
-        <div><span>{t('可用', 'Available')}</span><strong>55 G</strong></div>
-        <div><span>df Use%</span><strong>87%</strong></div>
+        <div><span>{t('文件系统', 'Filesystem')}</span><strong>436.0 GiB</strong></div>
+        <div><span>{t('已用', 'Used')}</span><strong>388.1 GiB</strong></div>
+        <div><span>{t('可用', 'Available')}</span><strong>25.7 GiB</strong></div>
+        <div><span>df Use%</span><strong>94%</strong></div>
       </div>
-      <div class="storage-bar" role="img" aria-label={t('437 G 主文件系统：我们的目录约 53 G，其他人占用汇总约 307 G，可用约 55 G，文件系统保留与舍入约 22 G。', '437 G main filesystem: about 53 G in our directories, about 307 G aggregated as other-user usage, about 55 G available, and about 22 G reserved/rounding.') }>
-        <span class="storage-bar__ours" style="width:12.1%"></span>
-        <span class="storage-bar__others" style="width:70.3%"></span>
-        <span class="storage-bar__free" style="width:12.6%"></span>
-        <span class="storage-bar__reserved" style="width:5%"></span>
+      <div class="storage-bar" role="img" aria-label={t('436.0 GiB 主文件系统：我们的主目录 86.5 GiB；匿名用户 1 到 5 分别为 88.2、14.2、13.6、4.14、1.88 GiB；未按用户归属的占用 179.7 GiB；可用 25.7 GiB；文件系统保留与舍入 22.2 GiB。', '436.0 GiB main filesystem: our home directory is 86.5 GiB; anonymous Users 1 through 5 use 88.2, 14.2, 13.6, 4.14, and 1.88 GiB; 179.7 GiB is not attributed to an individual user; 25.7 GiB is available; 22.2 GiB is filesystem reserve/rounding.') }>
+        <span class="storage-bar__ours" style="width:19.8%"></span>
+        {anonymousUserStorage.map((item) => <span class={item.cls} style={`width:${item.pct}%`}></span>)}
+        <span class="storage-bar__unattributed" style="width:41.2%"></span>
+        <span class="storage-bar__free" style="width:5.9%"></span>
+        <span class="storage-bar__reserved" style="width:5.1%"></span>
       </div>
       <div class="storage-legend">
-        <div><i class="legend-swatch legend-swatch--ours"></i><span>{t('我们的目录', 'Our directories')}</span><strong>53 G</strong></div>
-        <div><i class="legend-swatch legend-swatch--others"></i><span>{t('其他人占用（汇总）', 'Other-user usage (aggregate)')}</span><strong>≈ 307 G*</strong></div>
-        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>55 G</strong></div>
-        <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>≈ 22 G</strong></div>
+        <div><i class="legend-swatch legend-swatch--ours"></i><span>{t('我们的主目录', 'Our home directory')}</span><strong>86.5 GiB · 19.8%</strong></div>
+        {anonymousUserStorage.map((item) => (
+          <div><i class={`legend-swatch ${item.cls.replace('storage-bar', 'legend-swatch')}`}></i><span>{item.label}</span><strong>{item.value} · {item.pct.toFixed(1)}%</strong></div>
+        ))}
+        <div><i class="legend-swatch legend-swatch--unattributed"></i><span>{t('未按用户归属', 'Not user-attributed')}</span><strong>179.7 GiB · 41.2%</strong></div>
+        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>25.7 GiB · 5.9%</strong></div>
+        <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
       </div>
-      <p class="fine-print">* {t('“其他人占用”只做汇总：360 G 已用减去我们确认的 53 G。剩余量可能包含系统和共享容器层开销，因此只用于估算整体空间分布，不代表任何个人的精确占用。', '“Other-user usage” is an aggregate only: 360 G used minus the 53 G attributed to our directories. The remainder may include system and shared container-layer overhead, so it is used only to estimate overall space distribution and does not represent any individual’s exact usage.')}</p>
-      <div class="why-87">
-        <strong>{t('df 显示 87% 的原因', 'Why df reports 87%')}</strong>
-        <p>{t('ext4 会保留一部分空间，因此 df 的 Use% 更接近“已用 ÷（已用 + 普通用户可用）”。普通写入当前可用约 55 G。', 'ext4 reserves part of the filesystem, so df Use% is closer to “used ÷ (used + normally available)”. About 55 G is currently available for ordinary writes.')}</p>
+      <p class="fine-print">{t('用户 1–5 是按本次快照主目录占用从大到小排序的匿名标签，不是公开身份，也不是永久编号。百分比均以 436.0 GiB 文件系统总容量为分母。“未按用户归属”由 df 已用空间减去六个可识别主目录得到，可能包含共享 Docker 镜像、容器写层、构建缓存和系统文件。', 'Users 1–5 are anonymous labels sorted by home-directory usage in this snapshot; they are neither public identities nor permanent IDs. Percentages use the 436.0 GiB filesystem capacity as the denominator. “Not user-attributed” is the df-used remainder after subtracting the six identifiable home directories and may include shared Docker images, container writable layers, build cache, and system files.')}</p>
+      <div class="why-df">
+        <strong>{t('为什么 df 显示 94%', 'Why df reports 94%')}</strong>
+        <p>{t('df 的 94% 不是简单的 388.1 ÷ 436.0，因为文件系统会保留一部分空间；普通写入当前只剩约 25.7 GiB。', 'The 94% shown by df is not simply 388.1 ÷ 436.0 because the filesystem reserves part of its capacity; only about 25.7 GiB is currently available for ordinary writes.')}</p>
       </div>
     </div>
   </section>
@@ -113,7 +125,7 @@ const gpuFacts = [
         </article>
       ))}
     </div>
-    <p class="section-callout">{t('需要释放空间时，先检查 45 G 的主要实验工作区；不处理其他人的容器或目录。', 'When reclaiming space, start with the 45 G primary experiment workspace; do not modify other users’ containers or directories.')}</p>
+    <p class="section-callout">{t('我们的主目录当前约 86.5 GiB，其中主要实验工作区约 79.0 GiB。需要释放空间时先检查我们自己的实验产物；不处理其他用户的容器或目录。', 'Our home directory currently uses about 86.5 GiB, including about 79.0 GiB in the primary experiment workspace. When reclaiming space, start with our own experiment artifacts; do not modify other users’ containers or directories.')}</p>
   </section>
 
   <section class="server-section">
@@ -145,7 +157,7 @@ const gpuFacts = [
     <div class="privacy-grid">
       <div>
         <strong>{t('公开展示', 'Shown publicly')}</strong>
-        <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及匿名聚合后的“其他人占用”。', 'Total capacity, total usage, free space, GPU model/count, and privacy-preserving aggregate “other-user usage”.')}</p>
+        <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及按主目录占用排序的匿名“用户 1–5”。匿名编号只对应这次快照的排序。', 'Total capacity, total usage, free space, GPU model/count, plus anonymous “Users 1–5” ranked by home-directory usage. The anonymous numbers apply only to this snapshot ranking.')}</p>
       </div>
       <div>
         <strong>{t('不公开', 'Not shown')}</strong>
@@ -156,7 +168,7 @@ const gpuFacts = [
 
   <details class="measurement-notes">
     <summary>{t('数据来源', 'Data sources')}</summary>
-    <p>{t('CPU 来自 lscpu；内存来自 free -h；主文件系统来自 df -hT；我们的目录大小来自 du；GPU 型号、显存、驱动与 Compute Capability 来自 nvidia-smi。页面只保存整理后的硬件与聚合数字，不保存 SSH 地址、GPU UUID 或其他人的容器信息。', 'CPU data comes from lscpu; memory from free -h; the main filesystem from df -hT; our directory size from du; GPU model, VRAM, driver, and Compute Capability from nvidia-smi. The page stores only curated hardware and aggregate numbers — not SSH endpoints, GPU UUIDs, or other users’ container information.')}</p>
+    <p>{t('CPU 来自 lscpu；内存来自 free -h；主文件系统来自 df -B1 /；六个可识别用户主目录来自只读 du；GPU 型号、显存、驱动与 Compute Capability 来自 nvidia-smi。“未按用户归属”是 df 已用减去这些主目录后的差额。页面只保存匿名后的容量数字，不保存其他人的用户名、SSH 地址、GPU UUID 或容器身份信息。', 'CPU data comes from lscpu; memory from free -h; the main filesystem from df -B1 /; the six identifiable user home directories come from read-only du measurements; GPU model, VRAM, driver, and Compute Capability come from nvidia-smi. “Not user-attributed” is the remainder after subtracting those home directories from df-used space. The page stores only anonymized capacity numbers, not other users’ names, SSH endpoints, GPU UUIDs, or container identity information.')}</p>
   </details>
 </main>
 
@@ -194,22 +206,27 @@ const gpuFacts = [
   .storage-bar{display:flex;height:30px;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--ink) 3%,transparent)}
   .storage-bar span{display:block;height:100%}
   .storage-bar__ours{background:var(--accent-deep)}
-  .storage-bar__others{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
+  .storage-bar__user-1,.legend-swatch__user-1{background:color-mix(in srgb,var(--accent-deep) 76%,var(--surface))}
+  .storage-bar__user-2,.legend-swatch__user-2{background:color-mix(in srgb,var(--accent-deep) 62%,var(--surface))}
+  .storage-bar__user-3,.legend-swatch__user-3{background:color-mix(in srgb,var(--accent-deep) 50%,var(--surface))}
+  .storage-bar__user-4,.legend-swatch__user-4{background:color-mix(in srgb,var(--accent-deep) 38%,var(--surface))}
+  .storage-bar__user-5,.legend-swatch__user-5{background:color-mix(in srgb,var(--accent-deep) 26%,var(--surface))}
+  .storage-bar__unattributed{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
   .storage-bar__free{background:color-mix(in srgb,var(--accent) 18%,var(--surface))}
   .storage-bar__reserved{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink) 15%,var(--surface)) 0 4px,transparent 4px 8px)}
-  .storage-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;margin-top:.75rem}
+  .storage-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.75rem}
   .storage-legend>div{display:grid;grid-template-columns:auto 1fr;gap:.08rem .45rem;align-items:center;padding:.62rem .7rem;border:1px solid var(--line);border-radius:10px}
   .storage-legend span{color:var(--muted);font-size:.68rem}
   .storage-legend strong{grid-column:2;font-size:.82rem}
   .legend-swatch{grid-row:1/3;width:9px;height:9px;border-radius:50%}
   .legend-swatch--ours{background:var(--accent-deep)}
-  .legend-swatch--others{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
+  .legend-swatch--unattributed{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
   .legend-swatch--free{background:color-mix(in srgb,var(--accent) 38%,var(--surface))}
   .legend-swatch--reserved{border:1px solid var(--muted);background:transparent}
   .fine-print{margin:.85rem 0 0;color:var(--muted);font-size:.68rem;line-height:1.6}
-  .why-87{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--accent) 6%,transparent)}
-  .why-87 strong{font-size:.8rem}
-  .why-87 p{margin:.25rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}
+  .why-df{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .why-df strong{font-size:.8rem}
+  .why-df p{margin:.25rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}
 
   .own-storage-list{display:grid;gap:.65rem}
   .own-storage-list article{padding:.9rem 1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
