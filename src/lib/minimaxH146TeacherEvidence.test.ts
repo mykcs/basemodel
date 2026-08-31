@@ -61,7 +61,7 @@ describe('H1.46 MiniMax teacher evidence boundary', () => {
 
   it('links the MiniMax branch of the experiment selector to the audit page', () => {
     expect(selector).toContain('/research/seed-openevo/study/minimax-teacher/');
-    expect(selector).toContain('教师能力、Token 与 API 成本');
+    expect(selector).toContain('MiniMax 的能力、Token 与 API 成本');
   });
 
   it('does not fabricate a current cross-provider intelligence ranking', () => {
