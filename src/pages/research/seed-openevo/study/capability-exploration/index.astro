@@ -15,8 +15,8 @@ const locale = 'zh' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo 基础能力探索实验</h1>
       <div>
-        <strong>先把 Stage 1 和 Stage 2 分开看：Stage 1 有新旧两次采样，Stage 2 才是后来真正设计错的地方。</strong>
-        <span>新版 Stage 1 是当前 Ceiling 主线；旧版 Stage 1 仍是有效历史数据，但 seed 与真实 decoding 不同，不能当成 identical corpus。再往下才选择旧 256-window Stage 2 或新的 Ceiling-1.0。</span>
+        <strong>先把 Stage 1 和 Stage 2 分开看：Stage 1 有新旧两次采样；Stage 2 的旧窗口化硬门槛已经判定为设计错误并被取代。</strong>
+        <span>新版 Stage 1 是当前 Ceiling 主线；旧版 Stage 1 仍是有效历史数据，但 seed 与真实 decoding 不同，不能当成 identical corpus。下面的 Stage 2 再分成历史四臂档案与当前 Ceiling-1.0：后者展示冻结策略，并把运行进度明确写成带 receipt 时间边界的快照。</span>
       </div>
     </header>
     <OpenEvoStage1VersionComparison locale={locale} />

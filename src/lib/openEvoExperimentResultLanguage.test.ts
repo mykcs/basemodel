@@ -7,6 +7,8 @@ const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astr
 const stage1Versions = read('../components/research/OpenEvoStage1VersionComparison.astro');
 const stage2Chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Archive.astro');
+const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
+const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
 const legacyResultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
@@ -20,7 +22,7 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${ceilingStage2}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Data}\n${ceilingStage2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
@@ -39,15 +41,20 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage1Versions).toContain('不能把两批 1,440 条当成同一批 trajectory');
   });
 
-  it('separates the superseded 256-window method-control from the Ceiling-1.0 mainline', () => {
-    expect(stage2Chooser).toContain('历史 / 已取代');
-    expect(stage2Chooser).toContain('OpenEVO-Ceiling-1.0');
+  it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {
+    expect(stage2Chooser).toContain('历史 / 设计错误 / 已取代');
+    expect(stage2Chooser).toContain('当前主线 / 已进入 Stage 2');
     expect(legacyStage2Archive).toContain('SUPERSEDED METHOD-CONTROL');
-    expect(legacyStage2Archive).toContain('7B/self 有 797 条 qualified positive');
-    expect(legacyStage2Archive).toContain('59 / 80 + block-59 partial');
-    expect(ceilingStage2).toContain('128 是 dataset boundary');
-    expect(ceilingStage2).toContain('0 success 才 no-op；≥1 就可参数进化');
-    expect(ceilingStage2).toContain('Stage 2 正式 task consumption：尚未开始');
+    expect(legacyStage2Archive).toContain('data-model-choice="3b"');
+    expect(legacyStage2Archive).toContain('data-teacher-choice="minimax"');
+    expect(legacyStage2Data).toContain("qualifiedPositives: '797'");
+    expect(legacyStage2Data).toContain("taskScoreX100: 1.71");
+    expect(legacyStage2Data).toContain("taskScoreX100: 16.94");
+    expect(ceilingStage2).toContain('128 是共同 evidence boundary');
+    expect(ceilingStage2).toContain('旧 7-vs-8 gate 明确禁止');
+    expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 1_152');
+    expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
+    expect(ceilingStage2).not.toContain('Stage 2 正式 task consumption：尚未开始');
   });
 
   it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {

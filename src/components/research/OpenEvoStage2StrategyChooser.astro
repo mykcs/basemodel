@@ -15,13 +15,13 @@ const p = (path:string) => localePath(locale,path);
   </div>
   <div class="s2-choice__grid">
     <a class:list={['s2-choice__card','legacy',{active:active==='legacy'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')} aria-current={active==='legacy'?'page':undefined}>
-      <div><span>01 · {t('历史 / 已取代','HISTORICAL / SUPERSEDED')}</span><b>{t('旧 Stage 2：256 窗口硬门槛','Old Stage 2: 256-window hard gate')}</b></div>
+      <div><span>01 · {t('历史 / 设计错误 / 已取代','HISTORICAL / DESIGN ERROR / SUPERSEDED')}</span><b>{t('历史 Stage 2：窗口化硬门槛','Historical Stage 2: window-local hard gate')}</b></div>
       <p>{t('每 256 条 rollout 独立要求至少 8 个不同 task 各自重复成功；窗口之间不能累计。稀疏成功因此被窗口边界反复清零，80 个 block 可以积累很多成功轨迹，却仍然 0 次更新。','Each 256-rollout block independently required at least eight distinct tasks with repeated success; evidence could not accumulate across windows. Sparse success was repeatedly discarded at boundaries, so many useful successes could coexist with zero updates.')}</p>
       <strong>{t('查看旧四臂、进度、checkpoint 与归档 →','Open the four historical arms, checkpoints, and archive →')}</strong>
     </a>
     <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
-      <div><span>02 · {t('当前主线 / 设计冻结','CURRENT MAINLINE / DESIGN FROZEN')}</span><b>OpenEVO-Ceiling-1.0</b></div>
-      <p>{t('把 128 条 rollout 的自然 round 当作 evolution dataset boundary，而不是成功门槛。每个 task 最多取 1 条最早 clean exact success；0 条才 no-op，≥1 条即可产生一次 native SD-LoRA generation，同时 Text Memory 独立看 grounded evidence。','Treat the natural 128-rollout round as an evolution dataset boundary, not a success threshold. At most one earliest clean exact success is selected per task; zero means no-op, while one or more can produce one native SD-LoRA generation, with Text Memory evolving independently from grounded evidence.')}</p>
+      <div><span>02 · {t('当前主线 / 已进入 Stage 2','CURRENT MAINLINE / STAGE 2 ACTIVE')}</span><b>OpenEVO-Ceiling-1.0</b></div>
+      <p>{t('当前冻结协议把 128 条 rollout 的自然 round 当作共同 evidence boundary，并明确禁用旧 7-vs-8 gate。Text Memory、SD-LoRA、Skill Bundle 与 Agent System 分别做有界更新或 NOOP；同轮最后只 compose 一次。','The frozen protocol uses the natural 128-rollout round as a shared evidence boundary and explicitly disables the old 7-vs-8 gate. Text Memory, SD-LoRA, Skill Bundle, and Agent System each make a bounded update or NOOP, then compose once at the end of the round.')}</p>
       <strong>{t('查看 Ceiling-1.0 完整策略 →','Open the full Ceiling-1.0 strategy →')}</strong>
     </a>
   </div>
