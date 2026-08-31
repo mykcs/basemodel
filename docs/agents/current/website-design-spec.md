@@ -144,6 +144,26 @@
 
 同理，`80/80 block 没有参数更新`、`identity 最大 7，gate 需要 8` 这类状态如果公开给不了解实验的人，必须先解释 block、identity、gate 分别代表什么，以及 7 < 8 为什么导致没有更新；不能只把内部计数原样搬上网页。
 
+### 7.1 内部计数、阈值和阶段名不能裸奔
+
+面向不了解实验历史的读者，`Stage 2 / block / identity / gate / no-update / qualified positive` 这类词不能靠并排数字让读者自己推断含义。第一次出现时，必须在同一句或紧邻一句回答三件事：
+
+1. **它数的是什么现实对象。** 例如 `identity` 在这次实验里数的是“能够各自重复完整成功的不同任务”，不是轨迹条数，也不是模型分数。
+2. **这个数字为什么影响结果。** 例如历史规则要求每 256 次任务尝试里至少出现 8 个这样的不同任务，才允许做一次参数更新。
+3. **这是运行事实还是长期算法。** 历史 method-control 能解释这一次为什么没有更新，不能自动升级成 OpenEVO 长期 Stage 2 的定义。
+
+**反面案例：**
+
+> Stage 2 写出了 20,480 条 rollout 和 797 条 qualified-positive trajectory，但 80/80 个 block 都没有参数更新；单个 block 的 qualifying identity 最大只有 7，而 gate 需要 8。
+
+这句话数字准确，但要求读者同时知道五个内部术语，还把 `7 < 8` 当成自解释因果。
+
+**认可案例：**
+
+> Stage 2 完成了 20,480 次 WebShop 任务尝试，其中 797 次是完整成功、且轨迹质量足以进入训练候选池。这个历史实验把每 256 次尝试单独检查：只有同一批里至少有 8 个不同任务都能重复完整成功，才允许更新参数。实际最好的一批只有 7 个，因此这次运行的 80 批数据都没有触发参数更新。这里的 8 是当时实验采用的方法控制门槛，不是 OpenEVO 长期 Stage 2 的固定规则。
+
+规则不是“所有术语都删掉”，而是**先给人类含义，再保留术语作精确索引**。详细正反面对照见 [CASE-051](website-copy-cases.md#case-051-内部计数不能代替解释)、[CASE-052](website-copy-cases.md#case-052-数字因果链要把规则说完整) 与 [CASE-053](website-copy-cases.md#case-053-历史规则不能伪装成长期算法)。
+
 ## 8. 比喻：只在它真的减少理解成本时使用
 
 “说人话”不等于“每段都加一个比喻”。如果字面事实已经简单，比喻反而像 AI 在表演解释。
@@ -306,6 +326,7 @@
 | 第一屏先给结论和决定性数字，run ID 后置 | [CASE-029](website-copy-cases.md#case-029-结论先于实验账本) |
 | 推理要可见，但写成“观察→支持→边界”，不是内部标签 | [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签) |
 | 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子) |
+| `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](website-copy-cases.md#case-051-内部计数不能代替解释) |
 | 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
 | 责任已知时直接点名负责层，不先清嫌疑人 | [CASE-036](website-copy-cases.md#case-036-责任先直接点名负责层) |
 | 否定句可以用；不要把 negative-first 当机械禁词 | [CASE-031–032](website-copy-cases.md#case-031-一个不字也属于科学正确性) |
