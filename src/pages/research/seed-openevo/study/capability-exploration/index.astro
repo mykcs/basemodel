@@ -1,12 +1,13 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
+import OpenEvoStage1VersionComparison from '../../../../../components/research/OpenEvoStage1VersionComparison.astro';
 import OpenEvoStage2StrategyChooser from '../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo 基础能力探索实验"
-  description="OpenEvo × WebShop 能力探索：先区分已取代的 256-window Stage 2 方法控制实验与当前 OpenEVO-Ceiling-1.0 主线，再进入对应实验和证据。"
+  description="OpenEvo × WebShop 能力探索：先区分新版与旧版 Stage 1 trajectory collection，再区分已取代的 256-window Stage 2 方法控制与当前 OpenEVO-Ceiling-1.0 主线。"
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -14,10 +15,11 @@ const locale = 'zh' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo 基础能力探索实验</h1>
       <div>
-        <strong>2026-08-30 最重要的修正：旧 Stage 2 结果要保留，但不能再被读成当前 OpenEVO 的长期学习算法。</strong>
-        <span>先选择 Stage 2 的方法版本。旧路线保存 3B/7B × self/MiniMax 四臂的真实历史结果；新路线记录 OpenEVO-Ceiling-1.0 已冻结的能力上限设计与 activation 状态。</span>
+        <strong>先把 Stage 1 和 Stage 2 分开看：Stage 1 有新旧两次采样，Stage 2 才是后来真正设计错的地方。</strong>
+        <span>新版 Stage 1 是当前 Ceiling 主线；旧版 Stage 1 仍是有效历史数据，但 seed 与真实 decoding 不同，不能当成 identical corpus。再往下才选择旧 256-window Stage 2 或新的 Ceiling-1.0。</span>
       </div>
     </header>
+    <OpenEvoStage1VersionComparison locale={locale} />
     <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
   </section>

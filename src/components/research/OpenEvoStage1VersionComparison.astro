@@ -1,0 +1,69 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const scheduleSha = '1b3ac4252cda4d25d9542713e68e2fa4aacd90ceb377e5c03c8c1ad7c6878428';
+const rows = [
+  {item:t('任务预算','Task budget'), old:'180 × 8 = 1,440', fresh:'180 × 8 = 1,440', meaning:t('完全相同：两版都让同一模型规模做 1,440 次 WebShop rollout。','Same: both versions run 1,440 WebShop rollouts per model size.'), same:true},
+  {item:t('任务表','Task schedule'), old:`SHA ${scheduleSha.slice(0,8)}…`, fresh:`SHA ${scheduleSha.slice(0,8)}…`, meaning:t('完全相同：没有重新抽任务；比较的是同一批 180 个 semantic task。','Same: tasks were not redrawn; both use the same 180 semantic tasks.'), same:true},
+  {item:t('模型 / Prompt / action contract','Model / prompt / action contract'), old:t('同一 3B / 7B revision；同一 WebShop harness','Same 3B / 7B revisions; same WebShop harness'), fresh:t('同一 3B / 7B revision；同一 WebShop harness','Same 3B / 7B revisions; same WebShop harness'), meaning:t('完全相同：模型身份、可见 admissible actions、<think>/<action> 与 fail-closed parser 没有因新版被优化。','Same: model identity, visible admissible actions, <think>/<action>, and fail-closed parsing were not optimized for the new version.'), same:true},
+  {item:'temperature', old:'0.4', fresh:'0.4', meaning:t('完全相同：主要的随机探索强度没有改变。','Same: the primary sampling-temperature knob did not change.'), same:true},
+  {item:t('长度上限','Length limits'), old:'15 steps / 512 tokens', fresh:'15 steps / 512 tokens', meaning:t('完全相同：单条轨迹的交互 horizon 与生成上限一致。','Same: trajectory horizon and generation cap match.'), same:true},
+  {item:'generation seed base', old:'145000000', fresh:'148000000', meaning:t('不同：新版是预注册的独立随机采样，所以不是旧 1,440 条轨迹的逐条复刻。','Different: the new run is a preregistered independent draw, not a row-for-row replay of the old 1,440 trajectories.'), same:false},
+  {item:'top_p · runtime', old:'0.8', fresh:'1.0', meaning:t('旧版实际只保留累计概率约 80% 的候选；新版关闭这层 nucleus 截断。','Old runtime kept roughly the top 80% cumulative probability mass; the new runtime disables this nucleus truncation.'), same:false},
+  {item:'top_k · runtime', old:'20', fresh:'0', meaning:t('旧版实际只让概率最高的 20 个 token 进入抽样；新版关闭 top-k 过滤。','Old runtime sampled only among the top 20 tokens; the new runtime disables top-k filtering.'), same:false},
+  {item:'repetition penalty · runtime', old:'1.05', fresh:'1.0', meaning:t('旧版会轻微压低已经出现过的 token；新版不额外惩罚重复。','Old runtime mildly penalized repeated tokens; the new runtime applies no extra repetition penalty.'), same:false},
+  {item:t('配置是否等于真实运行','Config equals runtime'), old:t('否：配置写 1 / 0 / 1，但 runner 漏传','No: config said 1 / 0 / 1, runner omitted them'), fresh:t('是：1 / 0 / 1 被显式传给 Transformers','Yes: 1 / 0 / 1 are explicitly forwarded'), meaning:t('这是实现修复，不是为了追高分临时调参：新版让冻结配置与真实 decoding 一致。','This is an implementation repair, not score-chasing: the frozen config now matches actual decoding.'), same:false},
+] as const;
+---
+<section id="stage1-version-comparison" class="s1-version" data-testid="stage1-version-comparison" aria-labelledby="stage1-version-title">
+  <header class="s1-version__head">
+    <p>STAGE 1 · TRAJECTORY COLLECTION VERSION</p>
+    <h2 id="stage1-version-title">{t('同一批题，两次 Stage 1：新版是当前主线，旧版保留作历史对照','Same tasks, two Stage-1 realizations: new is current, old remains historical')}</h2>
+    <span>{t('Stage 2 后来设计错了，不代表旧 Stage 1 作废。旧版仍是有效的历史 trajectory corpus；但它和当前 Ceiling-1.0 不是“完全相同的 1,440 条”，因为随机 seed 与真实 decoding 行为不同。','The later Stage-2 design error does not invalidate old Stage 1. It remains a valid historical trajectory corpus, but it is not the identical set of 1,440 trajectories used by current Ceiling-1.0 because the seed and effective decoding differ.')}</span>
+  </header>
+
+  <div class="s1-version__versions" aria-label={t('Stage 1 新旧版本','New and old Stage-1 versions')}>
+    <article class="s1-version__card s1-version__card--current">
+      <span>{t('01 · 当前主线 / 优先展示','01 · CURRENT / PRIMARY')}</span>
+      <h3>{t('新版：fresh corrected Stage 1','New: fresh corrected Stage 1')}</h3>
+      <dl><div><dt>rollouts</dt><dd>180 × 8 = 1,440</dd></div><div><dt>seed base</dt><dd>148000000</dd></div><div><dt>runtime decoding</dt><dd>0.4 · 1.0 · 0 · 1.0</dd></div></dl>
+      <p>{t('这是 OpenEVO-Ceiling-1.0 当前采用的 Stage 1：独立重新采样，并把冻结的 top_p / top_k / repetition penalty 真正传进 Transformers。','This is the current OpenEVO-Ceiling-1.0 Stage 1: an independent resample with the frozen top_p / top_k / repetition penalty actually forwarded into Transformers.')}</p>
+    </article>
+    <article class="s1-version__card s1-version__card--legacy">
+      <span>{t('02 · 历史对照 / 不删除','02 · HISTORICAL / RETAINED')}</span>
+      <h3>{t('旧版：previous Stage 1 replicate','Old: previous Stage-1 replicate')}</h3>
+      <dl><div><dt>rollouts</dt><dd>180 × 8 = 1,440</dd></div><div><dt>seed base</dt><dd>145000000</dd></div><div><dt>runtime decoding</dt><dd>0.4 · 0.8 · 20 · 1.05</dd></div></dl>
+      <p>{t('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”；它的问题不是 Stage 1 无效，而是 runtime 没有执行配置文件声称的 1 / 0 / 1。','The old version still records what that Qwen + WebShop harness produced. Its Stage 1 is not invalid; the implementation simply did not execute the configured 1 / 0 / 1 decoding values.')}</p>
+    </article>
+  </div>
+
+  <div class="s1-version__table-wrap" data-ui-audit="contrast layout">
+    <table>
+      <caption>{t('旧 Stage 1 与当前 Stage 1：数值差异与科学含义','Old versus current Stage 1: values and scientific meaning')}</caption>
+      <thead><tr><th>{t('比较项','Dimension')}</th><th>{t('旧版实际值','Old runtime')}</th><th>{t('新版实际值','New runtime')}</th><th>{t('这意味着什么','What it means')}</th></tr></thead>
+      <tbody>{rows.map((row) => <tr data-ui-audit-item><th scope="row"><span class:list={['s1-version__state',{same:row.same}]}>{row.same ? t('相同','SAME') : t('变化','CHANGED')}</span>{row.item}</th><td><code>{row.old}</code></td><td><code>{row.fresh}</code></td><td>{row.meaning}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <div class="s1-version__meaning">
+    <div><span>01</span><strong>{t('旧 Stage 1 没有因为旧 Stage 2 错误而作废','Old Stage 1 is not invalidated by the Stage-2 mistake')}</strong><p>{t('Stage 2 的 256-window hard gate 是后续学习算法的问题；它不会反向改变已经采集好的 Stage 1 trajectory。旧 corpus 继续保留为历史 replicate。','The 256-window hard gate was a later learning-algorithm problem; it cannot retroactively change already-collected Stage-1 trajectories. The old corpus remains a historical replicate.')}</p></div>
+    <div><span>02</span><strong>{t('但新旧不是 identical corpus','But the two corpora are not identical')}</strong><p>{t('同一批任务与同一模型，并不等于逐条轨迹相同。seed 从 145M 换到 148M，加上 decoding 行为纠正，意味着模型会探索到不同 action path。','Same tasks and model do not imply identical trajectories. Moving from the 145M to 148M seed plus corrected decoding changes which action paths can be sampled.')}</p></div>
+    <div><span>03</span><strong>{t('1 / 0 / 1 的意义是“关闭额外旋钮”，不是“保证更高分”','1 / 0 / 1 disables extra knobs; it does not guarantee a higher score')}</strong><p>{t('top_p=1 不做 nucleus 截断，top_k=0 不做 top-k 过滤，repetition_penalty=1 不额外惩罚重复。于是 Stage 1 的随机探索主要由 temperature=0.4 决定。分数可能升也可能降；科学价值是配置与真实运行终于一致。','top_p=1 disables nucleus truncation, top_k=0 disables top-k filtering, and repetition_penalty=1 removes extra repetition penalty. Temperature=0.4 becomes the main sampling knob. Scores may rise or fall; the scientific value is config/runtime alignment.')}</p></div>
+  </div>
+
+  <p class="s1-version__boundary"><strong>{t('读法：','How to read this:')}</strong> {t('旧版 = 有效历史 Stage 1；新版 = 当前 Ceiling 主线的 corrected independent replicate。可以比较两者的 success rate / mean score 来观察随机采样与 decoding 修复带来的波动，但不能把两批 1,440 条当成同一批 trajectory。','old = valid historical Stage 1; new = corrected independent replicate for the Ceiling mainline. Comparing success rate / mean score can reveal variation from resampling and decoding repair, but the two 1,440-trajectory corpora must not be treated as identical.')}</p>
+</section>
+
+<style>
+.s1-version{margin:1rem 0 1.4rem;padding:1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent)}
+.s1-version__head{display:grid;grid-template-columns:minmax(180px,.46fr) minmax(0,1fr);gap:.65rem 1.2rem;padding:.15rem .15rem 1rem;border-bottom:1px solid var(--color-border)}
+.s1-version__head>p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.s1-version__head h2{margin:0;font-size:clamp(1.2rem,2.8vw,1.85rem);letter-spacing:-.035em}.s1-version__head>span{color:var(--color-text-muted);font-size:.8rem;line-height:1.65}
+.s1-version__versions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.s1-version__card{min-width:0;padding:1rem;border:1px solid var(--color-border);border-radius:13px;background:var(--color-bg)}.s1-version__card--current{border-width:2px;border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}.s1-version__card--legacy{border-style:dashed}.s1-version__card>span{color:var(--color-text-muted);font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.s1-version__card h3{margin:.32rem 0 .75rem;font-size:1.05rem}.s1-version__card dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;margin:0}.s1-version__card dl>div{min-width:0;padding:.5rem;border-radius:8px;background:color-mix(in srgb,var(--color-text) 3.5%,transparent)}.s1-version__card dt{color:var(--color-text-muted);font-size:.56rem}.s1-version__card dd{margin:.2rem 0 0;font:750 .68rem ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.s1-version__card p{margin:.75rem 0 0;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}
+.s1-version__table-wrap{margin-top:1rem;overflow-x:auto;border:1px solid var(--color-border);border-radius:11px}.s1-version table{width:100%;min-width:850px;border-collapse:collapse;background:var(--color-bg)}.s1-version caption{padding:.8rem;text-align:left;color:var(--color-text);font-size:.82rem;font-weight:800}.s1-version th,.s1-version td{padding:.7rem;border-top:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.7rem;line-height:1.55}.s1-version thead th{color:var(--color-text-muted);font-size:.62rem}.s1-version tbody th{width:19%;font-weight:760}.s1-version td:nth-child(2),.s1-version td:nth-child(3){width:18%}.s1-version td:last-child{width:45%;color:var(--color-text-muted)}.s1-version code{white-space:normal;overflow-wrap:anywhere}.s1-version__state{display:inline-flex;margin-right:.45rem;padding:.12rem .28rem;border:1px solid var(--color-border);border-radius:4px;color:var(--color-text-muted);font:800 .5rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.s1-version__state.same{color:var(--color-accent);border-color:color-mix(in srgb,var(--color-accent) 45%,var(--color-border))}
+.s1-version__meaning{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:1rem;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.s1-version__meaning>div{display:grid;grid-template-columns:30px minmax(0,1fr);gap:.35rem .55rem;padding:.9rem}.s1-version__meaning>div+div{border-left:1px solid var(--color-border)}.s1-version__meaning span{grid-row:1/3;color:var(--color-accent);font:800 .6rem ui-monospace,SFMono-Regular,Menlo,monospace}.s1-version__meaning strong{font-size:.76rem}.s1-version__meaning p{margin:0;color:var(--color-text-muted);font-size:.7rem;line-height:1.55}.s1-version__boundary{margin:.9rem .1rem .1rem;color:var(--color-text-muted);font-size:.74rem;line-height:1.62}.s1-version__boundary strong{color:var(--color-text)}
+@media(max-width:800px){.s1-version__head,.s1-version__versions,.s1-version__meaning{grid-template-columns:1fr}.s1-version__head>p{grid-column:auto}.s1-version__meaning>div+div{border-left:0;border-top:1px solid var(--color-border)}}
+@media(max-width:520px){.s1-version{padding:.78rem}.s1-version__card dl{grid-template-columns:1fr}.s1-version__meaning>div{grid-template-columns:26px minmax(0,1fr);padding:.8rem .35rem}}
+</style>
