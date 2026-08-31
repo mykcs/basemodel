@@ -9,32 +9,32 @@ const p = (path:string) => localePath(locale,path);
 ---
 <section class="s2-choice" data-testid="stage2-strategy-selector" aria-labelledby="s2-choice-title">
   <div class="s2-choice__head">
-    <p>OPENEVO · EXPERIMENT LINEAGE</p>
-    <h2 id="s2-choice-title">{t('Stage 2 经历三次设计；OpenEVO 2.0 不重采当前 Stage 1','Three Stage-2 designs; OpenEVO 2.0 does not recollect the current Stage 1')}</h2>
-    <span>{t('历史 256-window 方法保留为旧方法证据。Ceiling-1.0 修掉了“7 / 8 才准学”的硬门槛并正在运行；OpenEVO 2.0 则从当前 corrected Stage-1 证据继续，在经验如何组织、选择和进入 WebShop prompt 这一层重新设计。','The historical 256-window method remains as old-method evidence. Ceiling-1.0 removed the brittle 7/8 permission-to-learn gate and is running; OpenEVO 2.0 reuses the current corrected Stage-1 evidence and redesigns how experience is organized, selected, and delivered into the WebShop prompt.')}</span>
+    <p>{t('Stage 2 的三次尝试', 'THREE STAGE-2 DESIGNS')}</p>
+    <h2 id="s2-choice-title">{t('我们连续修了两个不同问题：先是“成功经验进不了训练”，后来是“历史经验把动作接口带偏”', 'We encountered two different problems in sequence: successful experience was first blocked from training, then historical experience began disrupting the action interface')}</h2>
+    <span>{t('第一版把每 256 次任务单独设门槛，导致有成功经验也不更新；第二版 Ceiling-1.0 删掉这道门，7B 能继续学习，但 3B 跑了 18 轮仍没有新参数组件，而且大量失败是选择当前页面不存在的动作；Harness 2.0 因此不再重做 Stage 1，而是专门重写历史经验怎样进入下一步。', 'The first design judged every 256 attempts separately, so successful experience could still fail to reach training. Ceiling-1.0 removed that gate and 7B continued learning, but 3B still had zero new parameter components after 18 rounds and frequently chose actions unavailable on the current page. Harness 2.0 therefore reuses Stage 1 and redesigns only how historical experience enters the next step.')}</span>
   </div>
 
-  <div class="s2-choice__shared" aria-label={t('Ceiling-1.0 与 OpenEVO 2.0 的共同起点','Shared starting point for Ceiling-1.0 and OpenEVO 2.0')}>
-    <div><span>SHARED INPUT</span><strong>{t('当前 corrected Stage 1','Current corrected Stage 1')}</strong><small>1,440 trajectories / arm</small></div>
+  <div class="s2-choice__shared" aria-label={t('Ceiling-1.0 与 Harness 2.0 共用同一份 Stage 1 数据','Ceiling-1.0 and Harness 2.0 reuse the same Stage-1 data')}>
+    <div><span>{t('共同数据','SHARED DATA')}</span><strong>{t('Stage 1 已经完成','Stage 1 is already complete')}</strong><small>{t('每个模型 1,440 次学生任务 + 1,440 条老师分析','1,440 student attempts + 1,440 teacher analyses per model')}</small></div>
     <svg viewBox="0 0 90 24" aria-hidden="true"><defs><marker id="s2-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" /></marker></defs><path d="M2 12 H84" /></svg>
-    <div><span>FORK BOUNDARY</span><strong>{t('Stage 1 分析 / 状态构建','Stage-1 analysis / state construction')}</strong><small>{t('Ceiling-1.0 与 2.0 从这里分叉','Ceiling-1.0 and 2.0 fork here')}</small></div>
+    <div><span>{t('从这里开始不同','REDESIGN STARTS HERE')}</span><strong>{t('经验怎样整理并进入下一步','How experience is organized and delivered')}</strong><small>{t('Ceiling-1.0 与 Harness 2.0 在这里分开','Ceiling-1.0 and Harness 2.0 diverge here')}</small></div>
   </div>
 
   <div class="s2-choice__grid">
     <a class:list={['s2-choice__card','legacy',{active:active==='legacy'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')} aria-current={active==='legacy'?'page':undefined}>
-      <div><span>01 · {t('历史方法 · 旧门槛已取代，数据仍保留','HISTORICAL · GATE SUPERSEDED, DATA RETAINED')}</span><b>{t('历史 Stage 2：每 256 次任务尝试单独检查的硬门槛','Historical Stage 2: a hard gate checked every 256 attempts')}</b></div>
-      <p>{t('每 256 次 WebShop 任务尝试被当成一批。只有这一批里至少有 8 个不同任务都能各自完整成功 2 次，模型才允许更新一次参数；不同批之间的成功记录不能累计。这个局部门槛已经被取代，但历史 rollout、成功轨迹和 checkpoint 仍完整保留。','Every 256 WebShop attempts formed one batch. A parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch; successes could not accumulate across batches. That local gate is superseded, while its rollouts, successes, and checkpoints remain retained evidence.')}</p>
-      <strong>{t('查看历史四臂与归档 →','Open historical arms and archive →')}</strong>
+      <div><span>01 · {t('第一版 · 已取代','FIRST DESIGN · SUPERSEDED')}</span><b>{t('有成功经验，但每 256 次重新过门槛，最后一次都没学', 'Successful experience existed, but every 256 attempts re-applied a gate and no update ever happened')}</b></div>
+      <p>{t('每 256 次任务是一批；同一批必须有 8 个不同任务各自成功 2 次才允许更新。不同批之间不能累计成功，所以 7B/self 即使最终有 797 条可训练成功轨迹，Stage 2 仍是 0 次参数更新。', 'Every 256 attempts formed one batch, and at least eight distinct tasks each had to succeed twice before parameters could update. Success could not carry across batches, so even 797 trainable exact-success traces in 7B/self still resulted in zero Stage-2 updates.')}</p>
+      <strong>{t('查看第一版为什么设计错 →','Open why the first design failed →')}</strong>
     </a>
     <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
-      <div><span>02 · {t('正在运行 / harness 风险复核中','RUNNING / HARNESS UNDER REVIEW')}</span><b>OpenEVO-Ceiling-1.0</b></div>
-      <p>{t('每 128 次完整任务尝试形成一轮共同证据，四种可继承状态分别决定是否更新；证据不足时保持原状态（NOOP）。它已经真实产生参数更新，但 3B 暴露出“历史经验文本可能压过当前 Allowed Actions”的接口风险；这条运行线继续保留，不提前改写成暂停。','Every 128 complete attempts form one shared evidence set and four inheritable states decide independently whether to update; insufficient evidence leaves a state unchanged (NOOP). The run has produced real parameter updates, while 3B exposed a risk that historical carrier text can overwhelm live Allowed Actions. This lineage remains intact and is not prematurely labeled paused.')}</p>
-      <strong>{t('查看 Ceiling-1.0 当前策略与运行快照 →','Open Ceiling-1.0 strategy and snapshot →')}</strong>
+      <div><span>02 · {t('第二版 · 3B 问题暴露','SECOND DESIGN · 3B PROBLEM EXPOSED')}</span><b>OpenEVO-Ceiling-1.0</b></div>
+      <p>{t('旧门槛删掉后，每 128 次任务形成一轮证据。7B 能继续产生参数更新，但 3B 跑了 18 轮仍是 0 个新参数组件，而且大量失败是选择当前页面不存在的动作，于是问题转向经验文本怎样影响动作接口。','After removing the old gate, every 128 attempts form one evidence round. 7B continued producing parameter updates, while 3B still had zero new parameter components after 18 rounds and frequently chose actions unavailable on the current page, shifting attention to the experience/action interface.')}</p>
+      <strong>{t('查看第二版为什么 3B 仍然不行 →','Open why 3B still failed in the second design →')}</strong>
     </a>
     <a class:list={['s2-choice__card','openevo2',{active:active==='openevo2'}]} href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')} aria-current={active==='openevo2'?'page':undefined}>
-      <div><span>03 · {t('设计中 / 尚未正式启动','DESIGNING / NOT FORMALLY LAUNCHED')}</span><b>OpenEVO 2.0</b></div>
-      <p>{t('复用当前 corrected Stage-1 轨迹与封存老师证据，不重采 1,440 条轨迹。第一版聚焦 Context Governor、Memory / Skill / Agent 职责分离、Telemetry v2 和正式运行前 Harness Qualification。','Reuse the current corrected Stage-1 trajectories and sealed teacher evidence without recollecting the 1,440 trajectories. The first version focuses on a Context Governor, Memory/Skill/Agent separation, Telemetry v2, and preformal Harness Qualification.')}</p>
-      <strong>{t('查看 OpenEVO 2.0 设计与迁移边界 →','Open the OpenEVO 2.0 design and transition boundary →')}</strong>
+      <div><span>03 · {t('Harness 2.0 · 正式实验前检查','HARNESS 2.0 · PREFORMAL CHECK')}</span><b>{t('先修动作接口，再启动新的 Stage 2','Fix the action interface before launching a new Stage 2')}</b></div>
+      <p>{t('Stage 1 数据全部复用。历史经验改成“当前页面优先、三份经验分工、每步只放有限相关内容”，并先跑两个各 128 次的小实验：一组不放历史经验，一组只放接口安全的经验。通过后才允许重新花 20,480 次正式任务预算。','All Stage-1 data is reused. Historical experience is rewritten so the live page has priority, the three sources have separate roles, and only limited relevant context enters each step. Two fixed 128-attempt checks—no historical experience versus interface-safe experience—must pass before another 20,480 formal attempts are allowed.')}</p>
+      <strong>{t('查看 Harness 2.0 的设计与资格检查 →','Open Harness 2.0 design and qualification →')}</strong>
     </a>
   </div>
 </section>

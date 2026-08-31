@@ -11,31 +11,31 @@ const repo='https://github.com/mykcs/openevo-experiment/blob';
 
 const genealogy=[
   {
-    n:'01', tag:'DIVERSITY', id:'H1.38A-C',
-    title:t('成功经验里的任务种类是否重要？','Does task diversity inside successful experience matter?'),
-    body:t('我们先收集自然成功：148 次尝试得到 50 条合格成功、18 个成功任务，其中 14 个任务至少成功两次。随后固定 16 条训练记录，只改变它们来自 4、8 还是 16 个任务。','We first harvested natural successes: 148 attempts yielded 50 qualified successes across 18 successful tasks, 14 of which succeeded at least twice. We then froze 16 training records and varied only whether they came from 4, 8, or 16 task identities.'),
-    result:t('D4 / D8 / D16 的 task-weighted Δ 分别为 +0.0117 / −0.0058 / +0.0556，三组区间都跨 0，也不单调。结论是“任务数本身不是一个已经证明越多越好的旋钮”。','Task-weighted Δ for D4 / D8 / D16 was +0.0117 / −0.0058 / +0.0556. All intervals crossed zero and the trend was non-monotonic. Identity count alone was not proven to be a monotonic quality knob.'),
+    n:'01', tag:'任务种类', id:'H1.38A-C',
+    title:t('成功经验来自多少种不同任务，会影响训练效果吗？','Does the number of distinct successful tasks affect training?'),
+    body:t('我们先让模型自然做题：148 次尝试里得到 50 条可以用于训练的完整成功轨迹，来自 18 个不同任务，其中 14 个任务至少成功过两次。随后把训练数据固定为 16 条，只改变这 16 条来自 4、8 还是 16 个不同任务。','We first let the model solve tasks naturally: 148 attempts produced 50 trainable exact-success traces from 18 distinct tasks, and 14 tasks succeeded at least twice. We then fixed the training set at 16 records and changed only whether those records came from 4, 8, or 16 distinct tasks.'),
+    result:t('结果没有显示“任务种类越多就一定越好”。三种设置的提升幅度不单调，而且统计区间都跨过 0，所以这里最多只能说：8 个任务是一种方便的小样本结构，不是已经证明的最佳门槛。','The result did not show that more task diversity was always better. The three settings were non-monotonic and all intervals crossed zero, so eight tasks was at most a convenient small-sample structure, not a proven optimal threshold.'),
     href:`${repo}/${experimentRevision}/docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-20.md`,
   },
   {
-    n:'02', tag:'METHOD CONTROL', id:'H1.38B',
-    title:t('同一份 16 条成功数据：普通 LoRA 与 SD-LoRA','The same 16 successful records: ordinary LoRA vs SD-LoRA'),
-    body:t('为了让两种训练方法吃完全一样的数据，我们封存了 16 条纯学生成功轨迹：8 个不同任务，每个任务恰好 2 条独立成功。这是一个干净的 method-control 数据集。','To make both training methods consume exactly the same evidence, we sealed 16 endogenous successful trajectories: eight distinct tasks with exactly two independent successes each. This was a clean method-control dataset.'),
-    result:t('“8 个任务 × 每个 2 条成功”从这里变成了一个方便、可审计的小样本形状；它原本不是长期训练的准入门槛。','“8 tasks × 2 successes each” became a convenient, auditable small-sample shape here; it was not originally a lifelong admission gate.'),
+    n:'02', tag:'训练方法对照', id:'H1.38B',
+    title:t('比较普通 LoRA 和 SD-LoRA 时，我们故意让两边吃同一份 16 条成功数据','For the LoRA vs SD-LoRA comparison, both methods deliberately used the same 16 successful records'),
+    body:t('为了只比较训练方法，我们固定了 16 条学生自己产生的成功轨迹：8 个不同任务，每个任务各有 2 条独立成功。这样两种方法看到的数据完全相同，比较才干净。','To isolate the training method, we fixed 16 student-generated successful traces: eight distinct tasks with two independent successes each. Both methods therefore saw exactly the same data.'),
+    result:t('这里的“8 个任务 × 每个 2 条成功”只是为了构造一份方便比较的 16 条训练集，并不是说以后每次训练都必须先满足这个条件。','The “8 tasks × 2 successes” structure existed only to make a clean 16-record comparison set. It did not mean every future training update had to satisfy the same condition.'),
     href:`${repo}/${experimentRevision}/configs/experiment/h1.38b-method-control-v1.json`,
   },
   {
-    n:'03', tag:'BOUNDED HARVEST', id:'H1.40',
-    title:t('第二代模型能否自己采出下一份训练集？','Can the next generation harvest its next training set?'),
-    body:t('H1.40 给 G1 一个有限的采集机会：64 个任务 × 4 个 seed = 最多 256 次尝试。只有采到至少 8 个任务、每个任务至少 2 条合格成功，才创建 G2；否则这次小实验就停止。','H1.40 gave G1 a bounded harvest: 64 tasks × 4 seeds = at most 256 attempts. G2 was created only if at least eight tasks each produced two qualified successes; otherwise this bounded experiment stopped.'),
-    result:t('这里的 256 是“这次小实验最多采多少次”，8×2 是“能不能构造下一份 16 条训练集”。它们仍然是一个有限实验的停止条件。','Here 256 meant “how many attempts this bounded harvest may spend,” while 8×2 meant “can we construct the next 16-record training set?” They were still stop conditions for one bounded experiment.'),
+    n:'03', tag:'一次性采样实验', id:'H1.40',
+    title:t('下一代模型能不能在有限预算里自己攒出一份新训练集？','Can the next generation build a new training set within a bounded budget?'),
+    body:t('这个小实验最多允许 256 次任务尝试。只有当至少 8 个不同任务都各自得到 2 条可训练成功轨迹时，我们才有足够材料拼出下一份 16 条训练集；否则这次小实验就在这里结束。','This small study allowed at most 256 task attempts. We could build the next 16-record training set only if at least eight distinct tasks each produced two trainable successes; otherwise the bounded study ended there.'),
+    result:t('因此这里的 256 是一次小实验的预算上限，8×2 是“够不够凑出 16 条训练数据”的判断。它仍然不是长期 Stage 2 的更新规则。','Here 256 was only the budget cap for one bounded study, while 8×2 asked whether 16 training records could be assembled. It was still not a long-running Stage-2 update rule.'),
     href:`${repo}/${experimentRevision}/configs/experiment/h1.40-g2-multigeneration-v1.json`,
   },
   {
-    n:'04', tag:'OVER-GENERALIZED', id:'H1.45 / H1.46',
-    title:t('局部实验条件被误用成长期 Stage 2 门槛','A bounded-study condition was misused as a long-running Stage-2 gate'),
-    body:t('后来的长预算实验把 20,480 次 Stage-2 尝试切成 80 个 256-window，并在每个 window 里重新要求“8 个任务 × 每个 2 条成功”。不够 8 就不更新，而且成功不能带到下一块。','The later full-budget run split 20,480 Stage-2 attempts into eighty 256-attempt windows and reapplied the “8 tasks × 2 successes each” condition inside every window. Below eight meant no update, and successes did not carry into the next window.'),
-    result:t('这就是设计错误：不是 8、2、256 这些数字本身荒唐，而是把原本用于方法控制和一次性 harvest 的条件，推广成了长期学习必须反复通过的门。','That was the design error. The numbers 8, 2, and 256 were not inherently absurd; a control/one-shot-harvest condition was promoted into a recurring gate that long-horizon learning had to pass over and over.'),
+    n:'04', tag:'错误推广到长期训练', id:'H1.45 / H1.46',
+    title:t('真正出错的是这一步：把小实验的停止条件搬进了长期 Stage 2','The actual mistake: a bounded-study stopping rule was carried into long-running Stage 2'),
+    body:t('长预算实验把 20,480 次任务切成 80 批，每批 256 次；每一批都重新要求“8 个不同任务 × 每个成功 2 次”。这一批不够 8 个就完全不训练，而且上一批的成功也不能带过来。','The long-budget run split 20,480 attempts into 80 batches of 256 and re-applied “8 distinct tasks × 2 successes each” inside every batch. A batch below eight received no training update, and successes from the previous batch could not carry over.'),
+    result:t('所以设计错误不是“8、2、256 这些数字看起来太大或太小”，而是把本来只服务于一次小实验的条件，变成长期训练每一批都必须重新通过的门。','The design error was not that 8, 2, or 256 were inherently too large or too small. The mistake was turning a condition meant for one bounded study into a gate that every batch of long-running training had to pass again.'),
     href:p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'),
   },
 ];
@@ -47,35 +47,35 @@ const prefixRows=[
 
 const diagnostics=[
   {
-    tag:'ACTION ADMISSIBILITY · H1.20',
-    question:t('是不是历史 memory 里的旧动作本身害了模型？','Are stale actions inside memory the main problem?'),
-    change:t('BASE / 原始 Text Memory / admissible-only Text Memory 三组只改一个变量：如果 retrieved action 不在当前 Allowed Actions，就隐藏那个动作；绝不替模型选另一个动作。','BASE / raw Text Memory / admissible-only Text Memory changed one variable only: hide a retrieved action when its exact string is absent from current Allowed Actions; never substitute another action.'),
-    observation:t('96/96 次尝试有效；过滤确实隐藏了 128/480 个不可执行 retrieved action，但三组平均得分仍为 0，0 条 qualified positive。','All 96 attempts were valid. Filtering really hid 128/480 inadmissible retrieved actions, but every arm still had mean score 0 and zero qualified positives.'),
-    meaning:t('所以“简单把旧动作藏掉”并没有在这个小面板上恢复能力。它证明过滤机制有效，不证明过滤一定提高分数。','So simply hiding stale actions did not restore capability on this small panel. The mechanism worked, but score improvement was not established.'),
+    tag:'旧动作过滤 · H1.20',
+    question:t('是不是历史经验里写着“现在不能点的按钮”，把模型带偏了？','Were stale UI actions inside memory steering the model wrong?'),
+    change:t('我们比较基础模型、原始 Text Memory、以及“只保留当前页面确实允许的动作”的 Text Memory。唯一改变的是：历史经验里如果出现当前页面不能执行的动作，就把那条动作隐藏；不会替模型偷偷选另一个动作。','We compared base, raw Text Memory, and a version that hides historical actions unavailable on the current page. The only change was removing those stale actions; the system never substituted a different action for the model.'),
+    observation:t('96 次任务都正常跑完。过滤确实挡掉了 480 条历史动作里的 128 条不可执行建议，但三组平均得分仍然都是 0，也没有产生可以用于训练的完整成功轨迹。','All 96 attempts completed normally. Filtering removed 128 of 480 historical action suggestions that were unavailable in the current page, but all three groups still had mean score 0 and produced no trainable exact-success traces.'),
+    meaning:t('所以“只把旧按钮建议藏掉”还不够。这个实验说明过滤动作本身确实生效，但没有证明它能恢复做题能力。','So merely hiding stale button suggestions was not enough. The filter worked mechanically, but it did not restore task performance.') ,
     href:`${repo}/${experimentRevision}/configs/experiment/h1.20-action-admissibility-diagnostic.json`,
   },
   {
-    tag:'HORIZON CHECK · H1.21',
-    question:t('H1.20 会不会只是 15 步太短，还没来得及买？','Was H1.20 merely too short at a 15-step horizon?'),
-    change:t('保持同样的 BASE / raw / admissible-only 比较，只把最大步数对齐到 30。','Keep the same BASE / raw / admissible-only comparison and extend only the horizon to 30 steps.'),
-    observation:t('过滤又隐藏了 164/960 个不可执行动作，但三组仍然 0 buy、0 qualified positive、平均得分 0。','Filtering hid another 164/960 inadmissible actions, yet all three arms still produced zero buys, zero qualified positives, and mean score 0.'),
-    meaning:t('因此“只要多给一点步数就会好”也没有得到支持。','The explanation “just give it more steps” was not supported either.'),
+    tag:'步数上限 · H1.21',
+    question:t('会不会只是每题最多 15 步太短，模型还没来得及买到东西？','Was the 15-step limit simply too short?'),
+    change:t('保持上一组实验完全相同，只把每题最多 15 步提高到 30 步。这样可以单独检查“多给时间”能不能解决问题。','We kept the previous comparison unchanged and only raised the per-task limit from 15 to 30 steps, isolating whether more interaction time would help.'),
+    observation:t('历史动作过滤又挡掉了 960 条建议里的 164 条不可执行动作，但三组仍然没有一次完整购买，也没有可用于训练的完整成功轨迹，平均得分仍为 0。','The filter removed 164 of 960 unavailable historical action suggestions, but all three groups still produced zero complete purchases, zero trainable exact-success traces, and mean score 0.'),
+    meaning:t('所以问题也不能简单归因于“步数太短”。', 'So the failure could not be explained simply by the task horizon being too short.'),
     href:`${repo}/${experimentRevision}/configs/experiment/h1.21-horizon-matched-action-admissibility-diagnostic.json`,
   },
   {
-    tag:'MATCHED PREFIX · 2026-08-31',
-    question:t('旧 Stage2 和 Ceiling-1.0 的差别，是否只是碰巧抽到了不同题？','Could the old-vs-Ceiling gap be explained by simply seeing different tasks?'),
-    change:t('不再烧 GPU。直接从已经存在的轨迹里取相同 schedule 位置的前 1,280 条，分别比较 3B 和 7B；同时复核 parser/action contract。','No extra GPU run. Re-read the first 1,280 trajectories at the same schedule positions for 3B and 7B, and audit the parser/action contract.'),
-    observation:t('3B 从 7 次完整成功、10.2% invalid 变成 0 次完整成功、37.6% invalid；7B 从 68 次完整成功、13.4% invalid 变成 17 次完整成功、25.2% invalid。','3B moved from 7 exact successes and 10.2% invalid to 0 exact successes and 37.6% invalid; 7B moved from 68 exact successes and 13.4% invalid to 17 exact successes and 25.2% invalid.'),
-    meaning:t('两种模型都在新 harness 的早期变差，因此不是“3B 天生不会做这批题”；但 7B 仍保留了一些成功种子，可以继续产生真实参数更新，3B 更容易掉进无法自举的状态。','Both model sizes degraded early under the new harness, so this was not simply “3B cannot solve these tasks.” 7B still retained success seeds that could support real parameter updates, while 3B was more vulnerable to a bootstrap cliff.'),
+    tag:'相同任务位置对比 · 2026-08-31',
+    question:t('Ceiling-1.0 变差，会不会只是因为碰巧遇到了更难的任务？','Could Ceiling-1.0 look worse simply because it happened to see harder tasks?'),
+    change:t('不再额外跑 GPU。我们直接从已有轨迹里取相同训练顺序位置的前 1,280 次任务，分别比较 3B 和 7B 在旧版本与 Ceiling-1.0 下的表现，并确认动作解析规则没有换。','We used no extra GPU run. Instead, we compared the same first 1,280 schedule positions from existing trajectories for both 3B and 7B, while confirming that the action parser contract had not changed.'),
+    observation:t('3B 的完整成功从 7 次降到 0 次，因非法动作提前结束的比例从 10.2% 升到 37.6%；7B 的完整成功从 68 次降到 17 次，非法动作比例从 13.4% 升到 25.2%。','3B dropped from seven exact successes to zero while invalid-action terminations rose from 10.2% to 37.6%; 7B dropped from 68 exact successes to 17 while invalid-action terminations rose from 13.4% to 25.2%.'),
+    meaning:t('所以不能简单说“3B 本来就做不了这些题”。换到新的经验注入方式后，两个模型都更容易在动作接口上出问题；只是 7B 还保留了一些成功，3B 更容易直接跌到完全没有成功种子的状态。','So this cannot be explained as “3B simply cannot solve these tasks.” Both model sizes became more fragile at the action interface under the newer experience-injection path; 7B still retained some successes, while 3B was more likely to fall all the way to zero success seeds.'),
     href:p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
   },
   {
-    tag:'HARNESS 2.0 PREFORMAL · 128 + 128',
-    question:t('如果把 carrier 变薄、职责分开，动作接口会不会先恢复健康？','If carriers are thinner and role-separated, does interface health recover?'),
-    change:t('正式新 Stage2 前，用已经被旧 3B 消费过的 16 个任务做两个 128-rollout cell：同一个 Stage1 参数状态，一组完全不注入 carrier，另一组注入 interface-safe carrier；temperature、任务、seed 和 parser 保持不变。','Before any formal successor Stage2, use 16 already-consumed 3B tasks for two 128-rollout cells: same Stage1 parametric state, one with no carriers and one with interface-safe carriers; temperature, tasks, seeds, and parser stay fixed.'),
-    observation:t('资格实验只检查 carrier lint、职责结构、context budget、格式和 state-admissibility 回归、runtime readback；reward / success 只做诊断，不作为“挑哪个 harness”的门。每组固定 128 条，不扩样、不按中间结果改阈值；正式 successor task consumption 在 activation 前保持 0。','Qualification checks carrier lint, role structure, context budget, format/state-admissibility regressions, and runtime readback. Reward/success are diagnostic only, not a harness-selection gate. Each cell is fixed at 128 rollouts with no extension or threshold changes from intermediate results; formal successor task consumption remains 0 before activation.'),
-    meaning:t('这一步的目的不是用 128 条挑一个分数最好看的版本，而是在重新烧 20,480 条以前证明 harness 没把动作接口搞坏。','The goal is not to pick the highest-scoring harness from 128 samples. It is to prove the harness does not break the action interface before spending another 20,480 formal attempts.'),
+    tag:'Harness 2.0 正式实验前检查 · 128 + 128',
+    question:t('把经验提示变薄、分清职责以后，3B 的动作接口能不能先恢复正常？','If experience prompts become thinner and role-separated, can 3B recover a healthy action interface?'),
+    change:t('正式重跑 Stage 2 之前，先复用 3B 已经做过的 16 个任务，跑两个各 128 次的小测试。两组使用完全相同的 Stage 1 参数、任务、随机种子、采样温度和动作解析规则；唯一差别是一组完全不放历史经验提示，另一组只放经过接口安全约束的历史经验。','Before rerunning formal Stage 2, reuse 16 tasks that 3B has already seen and run two fixed 128-attempt cells. Both use the same Stage-1 parameters, tasks, seeds, temperature, and parser; the only difference is no historical carrier text versus an interface-safe carrier.') ,
+    observation:t('这一步首先检查的不是分数高低，而是更基础的事情：经验文本有没有越权告诉模型具体按钮、上下文有没有塞爆、输出格式是否稳定、模型有没有继续大量选择当前页面根本不存在的动作、运行时是否真的读到了我们以为注入的内容。两组各固定 128 次，不因为中间分数好看或难看临时扩样。','The primary checks are not headline scores. They ask whether experience text over-specifies UI actions, whether context overflows, whether formatting stays stable, whether the model still chooses actions unavailable on the current page, and whether runtime readback proves the intended context was actually injected. Each cell stays fixed at 128 attempts regardless of intermediate scores.') ,
+    meaning:t('目的很简单：在再花 20,480 次正式任务预算之前，先证明新的 Harness 2.0 至少没有把“模型怎么和 WebShop 说话”这件事弄坏。分数和成功数只作为诊断，不拿来事后挑规则。','The goal is simple: before spending another 20,480 formal attempts, prove that Harness 2.0 does not break how the model talks to WebShop. Reward and success counts are diagnostic only and are not used to choose rules after the fact.'),
     href:`${repo}/${harness2Revision}/configs/experiment/designs/openevo-ceiling-1.0-harness2-preformal-v1.json`,
   },
 ];
@@ -83,9 +83,9 @@ const diagnostics=[
 
 <section class="legacy-journey" data-testid="legacy-stage2-research-journey">
   <header class="legacy-journey__intro">
-    <p>{t('DESIGN GENEALOGY','DESIGN GENEALOGY')}</p>
-    <h2>{t('旧 Stage 2 的规则从哪里来','Where the old Stage-2 rule came from')}</h2>
-    <span>{t('“8 个任务、每个成功 2 次、最多看 256 次”并不是一开始就被写成长期算法。它先后在几个小实验里承担过不同职责，最后才被错误地合并成每 256 次都要重新通过的训练门槛。','“Eight tasks, two successes each, at most 256 attempts” was not originally a long-running algorithm. Those numbers served different roles in several small studies before being incorrectly combined into a gate that had to be passed again every 256 attempts.')}</span>
+    <p>{t('规则是怎么一步步走偏的','HOW THE RULE DRIFTED')}</p>
+    <h2>{t('“8 个任务 × 每个成功 2 次 × 256 次尝试”原本不是长期训练规则','“8 tasks × 2 successes × 256 attempts” was not originally a long-running training rule')}</h2>
+    <span>{t('这三个数字最早分别服务于小规模对照实验和一次性采样：我们想固定一份 16 条训练数据，或者限定一次最多采多少经验。后来我们把这些局部条件拼在一起，错误地要求长期 Stage 2 每做 256 次任务就重新满足一次，于是成功经验不断被批次边界切断。', 'These numbers originally served bounded comparisons and one-shot harvesting: fixing a 16-record training set or limiting how much one small study could collect. Later they were combined into a recurring Stage-2 requirement, so successful experience kept being cut off by batch boundaries.')}</span>
   </header>
 
   <div class="legacy-journey__timeline">
@@ -101,15 +101,15 @@ const diagnostics=[
   </div>
 
   <aside class="legacy-journey__number-note">
-    <strong>{t('两个“256”不是一回事','The two “256” values are not the same thing')}</strong>
-    <p>{t('pinned OpenEVO 的 SD-LoRA 配置里也有 max_records=256；它限制的是一次训练最多保留多少 training records。旧 Stage2 的“每 256 次 rollout 清零并重新检查 8×2”是我们自己的 WebShop 长期调度规则。相同数字不代表相同算法语义。','Pinned OpenEVO SD-LoRA also has max_records=256, but that caps retained training records. The old Stage2 rule that reset every 256 rollouts and rechecked 8×2 was our WebShop long-horizon scheduling rule. The same number does not imply the same algorithmic meaning.')}</p>
+    <strong>{t('这里还出现过另一个“256”，但它和这次错误不是一回事','Another “256” exists here, but it means something different')}</strong>
+    <p>{t('OpenEVO 自己的 SD-LoRA 配置里也有 max_records=256，它只表示“一次训练最多保留 256 条训练记录”。我们出错的规则则是“每做 256 次 WebShop 任务，就把是否允许学习重新判断一次”。两个地方恰好用了同一个数字，但含义完全不同。', 'OpenEVO SD-LoRA also has max_records=256, which only caps how many training records one generation retains. Our mistaken rule instead re-decided permission to learn after every 256 WebShop attempts. The number is the same; the meaning is not.')}</p>
   </aside>
 
   <section class="legacy-journey__compare" aria-labelledby="legacy-prefix-title">
     <div>
-      <p>{t('3B / 7B MATCHED PREFIX','3B / 7B MATCHED PREFIX')}</p>
-      <h2 id="legacy-prefix-title">{t('同一批题的前 1,280 次：两个模型都在新 harness 早期变差','Same first 1,280 attempts: both scales degraded early under the newer harness')}</h2>
-      <span>{t('这是 2026-08-31 的事后诊断，不是原始 H1.45/H1.46 预注册对比。我们取相同训练 schedule 位置，旧线用前 5 个 256-block，新线用前 10 个 128-round；每行都恰好 1,280 条。','This is a 2026-08-31 post-hoc diagnostic, not a preregistered H1.45/H1.46 contrast. We aligned the same training-schedule positions: five 256-blocks from the old lineage and ten 128-rounds from the newer lineage, exactly 1,280 attempts per row.')}</span>
+      <p>{t('同一批任务的早期对比','EARLY MATCHED COMPARISON')}</p>
+      <h2 id="legacy-prefix-title">{t('换到后来的 Ceiling-1.0 后，3B 和 7B 在前 1,280 次任务里都明显变差', 'After moving to Ceiling-1.0, both 3B and 7B degraded over the first 1,280 matched attempts')}</h2>
+      <span>{t('为了排除“只是碰巧抽到了更难的题”，我们事后拿相同训练顺序位置的前 1,280 次任务做对照：旧版本取前 5 批 × 256 次，Ceiling-1.0 取前 10 轮 × 128 次。这个对比不是原先预先登记的正式因果实验，只用来判断早期退化是不是也出现在相同任务位置上。', 'To rule out the simple explanation that the newer run merely saw harder tasks, we later compared the same first 1,280 schedule positions: five 256-attempt batches from the old run and ten 128-attempt rounds from Ceiling-1.0. This was not a preregistered causal experiment; it only checks whether early degradation also appears at matched task positions.')}</span>
     </div>
     <div class="legacy-journey__table-wrap" tabindex="0" aria-label={t('3B 和 7B 的前 1280 条轨迹对比','3B and 7B first-1280 trajectory comparison')}>
       <table>
@@ -117,11 +117,11 @@ const diagnostics=[
         <tbody>{prefixRows.map((row)=><tr><th>{row.model}</th><td>{row.oldExact}</td><td>{row.oldInvalid}</td><td>{row.oldScore}</td><td>{row.nextExact}</td><td>{row.nextInvalid}</td><td>{row.nextScore}</td></tr>)}</tbody>
       </table>
     </div>
-    <p class="legacy-journey__boundary">{t('这张表不能被解释成“只改了一个变量”的算法因果实验：旧线与 Ceiling-1.0 同时改变了 temperature、Stage1 OPSD、multi-carrier 状态和更新逻辑。它能支持的是更窄的判断——3B 的 0 success 不是因为这 1,280 个 schedule 位置本来就完全无解，而且早期行为退化也出现在 7B。parser / action contract 仍是同一 v3 路径。','This table is not a one-variable causal algorithm experiment: old vs Ceiling-1.0 jointly changed temperature, Stage1 OPSD, multi-carrier state, and update logic. It supports a narrower claim: 3B’s zero-success prefix was not because these 1,280 schedule positions were inherently unsolvable, and early degradation also appeared in 7B. The parser/action contract remained on the same v3 path.')}</p>
+    <p class="legacy-journey__boundary">{t('这不是“只改一个变量”的严格因果实验，因为旧版本和 Ceiling-1.0 同时改了采样温度、Stage 1 参数初始化、经验文本注入方式和更新逻辑。它只能支持一个更窄的结论：这 1,280 个任务位置并不是 3B 天生完全做不了，而且换到新方案后，7B 的早期表现也一起下降。真正的问题更可能出在新的上下文 / 动作接口，而不是任务本身突然变难。', 'This is not a strict one-variable causal experiment because the old run and Ceiling-1.0 changed temperature, Stage-1 initialization, experience injection, and update logic together. It supports a narrower conclusion: the matched task positions were not inherently impossible for 3B, and 7B also degraded after the switch. The newer context/action interface is therefore a more plausible concern than the tasks suddenly becoming harder.')}</p>
   </section>
 
   <section class="legacy-journey__diagnostics" aria-labelledby="legacy-diag-title">
-    <header><p>{t('BOUNDED DIAGNOSTICS','BOUNDED DIAGNOSTICS')}</p><h2 id="legacy-diag-title">{t('几个小实验分别排查了什么','What the small diagnostics actually tested')}</h2><span>{t('这些实验处在不同时间点。H1.20/H1.21 是更早的接口诊断；H1.38/H1.40 形成了后来被误推广的数字结构；2026-08-31 的 matched-prefix 与 128+128 qualification 是看到 Ceiling-1.0 新问题以后才做的回看与 successor 体检。','These studies happened at different times. H1.20/H1.21 were earlier interface diagnostics; H1.38/H1.40 produced the numeric structure later over-generalized; the 2026-08-31 matched-prefix and 128+128 qualification came only after Ceiling-1.0 exposed a newer harness problem.')}</span></header>
+    <header><p>{t('后来怎么排查','FOLLOW-UP DIAGNOSTICS')}</p><h2 id="legacy-diag-title">{t('看到旧 Stage 2 和 Ceiling-1.0 都有问题后，我们分别排查了哪些可能原因','What we tested after both the old Stage 2 and Ceiling-1.0 showed problems')}</h2><span>{t('这些小实验不是同时做的。较早的实验检查“历史经验里的旧动作”和“步数太短”是不是问题；后来看到 Ceiling-1.0 的 3B 表现明显恶化后，我们又比较了同一批任务的早期表现，并设计 Harness 2.0 的 128+128 正式实验前资格检查。', 'These diagnostics were not run at the same time. Earlier studies tested whether stale actions or a short horizon caused failures. After Ceiling-1.0 showed much worse 3B behavior, we compared matched early tasks and designed the 128+128 Harness 2.0 preformal qualification.')}</span></header>
     <div class="legacy-journey__diag-grid">
       {diagnostics.map((d)=><article>
         <small>{d.tag}</small>
