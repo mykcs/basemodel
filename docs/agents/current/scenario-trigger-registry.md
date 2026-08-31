@@ -247,8 +247,11 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 8. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
 9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
 10. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
+11. If one member of a repeated experiment/report family changes presentation grammar, identify sibling routes and the shared semantic owner before patching. Propagate through the shared component/primitive when the semantic object is the same, add structural coverage that discovers future siblings, and preserve intentional visual differences where the semantic object genuinely differs.
 
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
+
+Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md`](../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md) records the 7B paper-table refinement that became a shared capability-exploration report contract, including mobile local-scroll semantics, moving-main synchronization, stale-test repair, protected-Preview authentication friction, and exact-head release closeout.
 
 ---
 
