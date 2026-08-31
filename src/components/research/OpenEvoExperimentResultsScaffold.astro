@@ -4,6 +4,7 @@ import { localePath } from '../../i18n';
 import OpenEvoExperimentSelector from './OpenEvoExperimentSelector.astro';
 import OpenEvoStage2StrategyChooser from './OpenEvoStage2StrategyChooser.astro';
 import OpenEvoCheckpointCurve from './OpenEvoCheckpointCurve.astro';
+import { legacyStage2Arms } from '../../data/openEvoLegacyStage2Archive';
 
 type Mode = '3b-self' | '7b-self' | '3b-minimax' | '7b-minimax' | 'cross-arm';
 interface Props { locale: Locale; mode: Mode }
@@ -22,6 +23,7 @@ const armMeta = {
     known:[
       t('Stage 1 共找到 4 条可用于训练的完整成功轨迹，但它们只来自 1 个能够重复成功的任务；启动训练要求至少 8 个这样的不同任务。因此 3B/self 没达到启动门槛，没有创建新的学习适配器（adapter），Stage 1 的模型参数保持初始基础模型（base）状态。', 'Stage 1 found four trainable exact-success trajectories, but they came from only one task that succeeded repeatedly; bootstrap requires at least eight such distinct tasks. 3B/self therefore did not reach the start threshold, created no learned adapter, and kept the base model parameters unchanged.'),
       t('旧 Stage 2 完成 80/80 个 256-rollout block（20,480 次尝试），得到 138 条 qualified positive；单块最多只有 2/8 个 qualifying identity，80 个 block 全部 0 次参数更新。这个结果现在只作为旧 gate 的方法控制证据，不再代表当前 OpenEVO Stage 2。', 'The old Stage 2 completed 80/80 256-rollout blocks (20,480 attempts) with 138 qualified positives. The best block reached only 2/8 qualifying identities, so all 80 blocks produced zero parameter updates. This is now method-control evidence for the old gate, not the current OpenEVO Stage 2.'),
+      t('封存的 128 任务最终评测已经存在：平均 Task Score ×100 = 1.71，完整成功 1/128，技术有效轨迹 121/128。因为这条 arm 从 Stage 1 到旧 Stage 2 都没有产生 adapter，两个 final-eval cell 与 3B base 逐项一致；这是“参数没变”的真实负结果，不是评测缺失。', 'A sealed 128-task final evaluation exists: mean Task Score ×100 = 1.71, exact success = 1/128, and valid episodes = 121/128. Because this arm created no adapter in either Stage 1 or old Stage 2, both final-evaluation cells match 3B base exactly. This is a real unchanged-parameter result, not missing evaluation.'),
     ],
     next:t('不恢复这条旧 Stage 2。保留其完整 rollout、selection、execution-state 与 base-pointer 语义，用于解释为什么旧硬门槛会阻断学习。', 'Do not resume this old Stage 2. Preserve its rollouts, selections, execution state, and base-pointer semantics to explain why the brittle gate blocked learning.'),
   },
@@ -46,6 +48,7 @@ const armMeta = {
     known:[
       t('这里口头说“有老师”，更精确地说是：MiniMax 在 episode 结束后分析轨迹；它不替 3B 在 WebShop 里点击或搜索。', '“With a teacher” is shorthand here: MiniMax analyzes the trajectory after the episode; it does not click or search inside WebShop for the 3B actor.'),
       t('MiniMax bootstrap 确实完成 8 次参数更新；但进入旧 Stage 2 后，59 个完整 block 共 15,104 次尝试只得到 38 条 qualified positive，单块最好 1/8 qualifying identity，参数更新仍为 0。第 60 个 block 在停止时保留 171 条 partial rollout。', 'MiniMax bootstrap did complete eight parameter updates. But under the old Stage 2, 59 complete blocks (15,104 attempts) produced only 38 qualified positives, the best block reached 1/8 qualifying identity, and parameter updates remained zero. The 60th block retained 171 partial rollouts when stopped.'),
+      t('这条旧方法在 74.58% 时被主动停止；服务器历史归档中没有任何封存的 3B/MiniMax final-eval 产物。因此页面明确写“未运行”，不能把没有结果伪装成 0 分。', 'This old-method run was explicitly stopped at 74.58%, and the historical archive contains no sealed 3B/MiniMax final-evaluation artifact. The page therefore says “Not run”; absence of a result must not be fabricated as a score of zero.'),
     ],
     next:t('这条 run 已由用户明确停止并标记 superseded，不建议恢复。保留 74.58% 的真实产物作为旧方法控制证据与工程 smoke 资产。', 'The owner explicitly stopped and superseded this run. Resumption is not recommended; preserve the real 74.58% artifact set as old-method evidence and engineering-smoke material.'),
   },
@@ -57,12 +60,16 @@ const armMeta = {
     known:[
       t('这里的 MiniMax 同样只在一次任务结束后回看并分析轨迹，不会替学生模型在 WebShop 里搜索或点击。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
       t('7B+MiniMax bootstrap 完成 8 次参数更新；旧 Stage 2 随后完成 80/80 个 block（20,480 次尝试），得到 592 条 qualified positive，单块最好 7/8 qualifying identity，但仍没有任何 block 触发参数更新。', '7B+MiniMax bootstrap completed eight parameter updates. The old Stage 2 then completed 80/80 blocks (20,480 attempts) with 592 qualified positives; the best block reached 7/8 qualifying identities, yet no block triggered a parameter update.'),
+      t('封存的 128 任务最终评测为 Task Score ×100 = 16.94、完整成功 0/128、技术有效轨迹 116/128。由于旧 Stage 2 从未更新参数，这个 final eval 实际评的是 MiniMax bootstrap increment-07，而不是一个不存在的“Stage-2 checkpoint”。', 'The sealed 128-task final evaluation reports Task Score ×100 = 16.94, exact success = 0/128, and valid episodes = 116/128. Because old Stage 2 never updated parameters, this final evaluation measures the MiniMax-bootstrap increment-07 state rather than a nonexistent “Stage-2 checkpoint”.'),
     ],
     next:t('旧 Stage 2 已完整证明该 hard gate 对这条 arm 仍然是 0 update；后续不再用这套 gate 继续扩展结论，转入 Ceiling-1.0 新策略。', 'The completed old Stage 2 already shows zero updates under this hard gate; do not extend the conclusion by continuing the same gate, and move the mainline to Ceiling-1.0.'),
   },
 } as const;
 
 const current = mode === 'cross-arm' ? null : armMeta[mode];
+const archiveArm = mode === 'cross-arm' ? null : legacyStage2Arms.find((arm) => arm.id === mode);
+const sealedFinal = archiveArm?.finalEvaluation.status === 'sealed' ? archiveArm.finalEvaluation : null;
+const NOT_RUN_3B_MINIMAX = t('未运行（旧方法在 74.58% 时停止）', 'Not run (old method stopped at 74.58%)');
 
 const experimentTerms = [
   {
@@ -114,42 +121,55 @@ const sevenBStage2Flow = [
 const individualMetrics = [
   {
     metric:t('最终平均任务得分（Task Score ×100）', 'Final mean Task Score ×100'),
-    value:mode === '7b-self' ? t('25.66；base 13.33', '25.66; base 13.33') : PENDING,
-    note:mode === '7b-self' ? t('已有固定 128 任务的最终评测', 'Final evaluation on the fixed 128-task panel is available') : t('等待这一组的最终评测完成并封存', 'Wait for this arm’s final evaluation to complete and be sealed'),
+    value:sealedFinal ? sealedFinal.taskScoreX100!.toFixed(2) : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
+    note:sealedFinal ? t('来自同一套封存 128 任务 final eval；这是历史旧方法结果', 'From the same sealed 128-task final evaluation; this is a historical old-method result') : t('旧方法被停止后没有封存 final eval，不能把缺失写成 0 分', 'No sealed final evaluation exists after the old method was stopped; absence must not be reported as zero'),
   },
   {
     metric:t('完整成功（Exact Success）', 'Exact Success (full task completion)'),
-    value:mode === '7b-self' ? '4 / 128 (base 3 / 128)' : PENDING,
+    value:sealedFinal ? sealedFinal.exactSuccess! : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
     note:t('和 Task Score 分开解释', 'Interpret separately from Task Score'),
   },
   {
     metric:t('技术有效轨迹（Valid Episode）', 'Technically valid episodes'),
-    value:mode === '7b-self' ? '122 / 128 (base 109 / 128)' : PENDING,
+    value:sealedFinal ? sealedFinal.validEpisodes! : (mode === '3b-minimax' ? NOT_RUN_3B_MINIMAX : PENDING),
     note:t('用于区分“更会说合法动作”和“更会完成任务”', 'Separates valid action production from task completion'),
   },
   {
     metric:t('Stage-2 最终参数更新数', 'Final Stage-2 optimizer updates'),
-    value:mode === '7b-self' ? '0' : PENDING,
-    note:mode === '7b-self' ? t('历史运行的 80 个数据块均完成；按当时逐块 8 任务规则均未放行，因此参数没有修改', 'All 80 historical blocks completed; none was admitted under that run’s per-block eight-task rule, so parameters did not change') : t('实验未封口前不写死', 'Do not freeze before closeout'),
+    value:archiveArm ? String(archiveArm.stage2Updates) : PENDING,
+    note:archiveArm ? (mode === '3b-minimax' ? t('截至 74.58% 主动停止时仍为 0；这是历史 stop state，不伪装成完整 80-block 结果', 'Still zero when explicitly stopped at 74.58%; this is a historical stop state, not a fabricated 80-block completion') : t('该历史臂已经封口；Stage 2 没有产生新 adapter bytes', 'This historical arm is closed; Stage 2 created no new adapter bytes')) : PENDING,
   },
   {
     metric:t('每次 Stage-1 参数更新后的能力', 'Capability after each Stage-1 parameter update'),
-    value:mode === '7b-self' ? t('13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66', '13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66') : PENDING,
-    note:mode === '7b-self' ? t('同一套固定 128 任务；中间会回落，第 8 次更新后的保存点最高', 'Same fixed 128 tasks; performance regresses between some updates, and the checkpoint after update eight is best') : t('等训练保存点和最终评测结果可用后回填', 'Fill when training checkpoints and final evaluation are available'),
+    value:mode === '7b-self'
+      ? t('13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66', '13.33 → 17.13 → 18.41 → 13.67 → 17.63 → 16.51 → 22.01 → 20.72 → 25.66')
+      : mode === '3b-self'
+        ? t('不适用：Stage 1 没有参数更新，模型保持 base', 'Not applicable: Stage 1 made no parameter update and the model stayed at base')
+        : mode === '7b-minimax'
+          ? t('未做完整 checkpoint sweep；已封存最终点 16.94', 'No full checkpoint sweep; sealed final endpoint is 16.94')
+          : t('未做完整 sweep；旧方法在 74.58% 时停止', 'No full sweep; old method stopped at 74.58%'),
+    note:mode === '7b-self' ? t('同一套固定 128 任务；中间会回落，第 8 次更新后的保存点最高', 'Same fixed 128 tasks; performance regresses between some updates, and the checkpoint after update eight is best') : t('不把未执行的诊断继续写成 Pending 承诺', 'Do not turn an unperformed historical diagnostic into an open-ended Pending promise'),
   },
   {
     metric:t('单实验最终解释', 'Final single-arm interpretation'),
-    value:mode === '7b-self' ? t('训练 loss 下降不等于做题能力逐步上升；收益主要落在可执行性与部分任务进展，完整成功只增加 1 个任务', 'Lower training loss did not mean step-by-step capability gains; most improvement is in executability and partial progress, while exact success increased by only one task') : PENDING,
+    value:mode === '7b-self'
+      ? t('训练 loss 下降不等于做题能力逐步上升；收益主要落在可执行性与部分任务进展，完整成功只增加 1 个任务', 'Lower training loss did not mean step-by-step capability gains; most improvement is in executability and partial progress, while exact success increased by only one task')
+      : mode === '3b-self'
+        ? t('最终评测与 3B base 一致：这条历史路径没有发生参数学习', 'Final evaluation matches 3B base: this historical path made no parameter-learning change')
+        : mode === '7b-minimax'
+          ? t('最终 16.94 / 0 个完整成功；旧 Stage 2 没有再改参数，所以它评的是 MiniMax bootstrap adapter，而不是 Stage-2 学习后的模型', 'Final score is 16.94 with zero exact successes; old Stage 2 made no further parameter change, so this evaluates the MiniMax-bootstrap adapter rather than a model learned in Stage 2')
+          : t('没有 final eval：旧方法在 74.58% 时停止，不能给最终分数', 'No final evaluation: the old method stopped at 74.58%, so no final score can be reported'),
     note:t('必须同时看 Task Score、exact success、validity 和机制证据', 'Requires Task Score, exact success, validity, and mechanism evidence together'),
   },
 ];
 
 const matrixRows = [
   { label:t('Stage 1 启动训练', 'Stage-1 bootstrap'), a:t('0 次参数更新；未创建学习适配器（启动门槛未达到）', '0 parameter updates; no learned adapter was created because the bootstrap threshold was not reached'), b:t('8 次参数更新', '8 parameter updates'), c:t('8 次参数更新', '8 parameter updates'), d:t('8 次参数更新', '8 parameter updates') },
-  { label:t('最终 Task Score', 'Final Task Score'), a:PENDING, b:'25.66', c:PENDING, d:PENDING },
-  { label:t('完整成功（Exact Success）', 'Exact Success (full task completion)'), a:PENDING, b:'4 / 128', c:PENDING, d:PENDING },
+  { label:t('最终 Task Score', 'Final Task Score'), a:'1.71', b:'25.66', c:NOT_RUN_3B_MINIMAX, d:'16.94' },
+  { label:t('完整成功（Exact Success）', 'Exact Success (full task completion)'), a:'1 / 128', b:'4 / 128', c:NOT_RUN_3B_MINIMAX, d:'0 / 128' },
   { label:t('旧 Stage 2 实际参数更新次数', 'Actual old Stage-2 parameter updates'), a:t('0（80/80 block）','0 (80/80 blocks)'), b:t('0（80/80 block）', '0 (80/80 blocks)'), c:t('0（59 个完整 block；随后停止）','0 (59 complete blocks; then stopped)'), d:t('0（80/80 block）','0 (80/80 blocks)') },
-  { label:t('各训练保存点的评测能力', 'Evaluation capability at each training checkpoint'), a:PENDING, b:t('已完成；中间有回落；最后一个保存点 25.66 最高', 'Complete; performance regresses between some updates; final checkpoint is best at 25.66'), c:PENDING, d:PENDING },
+  { label:t('技术有效轨迹（Valid Episode）', 'Technically valid episodes'), a:'121 / 128', b:'122 / 128', c:NOT_RUN_3B_MINIMAX, d:'116 / 128' },
+  { label:t('各训练保存点的评测能力', 'Evaluation capability at each training checkpoint'), a:t('最终参数仍是 base；final eval 与 3B base 一致', 'Final parameters remain base; final evaluation matches 3B base'), b:t('已完成；中间有回落；最后一个保存点 25.66 最高', 'Complete; performance regresses between some updates; final checkpoint is best at 25.66'), c:NOT_RUN_3B_MINIMAX, d:t('最终评测已封存；未做完整 checkpoint sweep', 'Final evaluation sealed; no full checkpoint sweep') },
 ];
 
 const sevenBSelfCheckpointCurve = [
@@ -165,12 +185,12 @@ const sevenBSelfCheckpointCurve = [
 ];
 
 const contrasts = [
-  { id:'C1', title:t('3B：有老师 vs 没老师', '3B: MiniMax vs self'), formula:'3B/MiniMax − 3B/self', answer:PENDING, need:t('两组最终评测 + 同一批 128 个任务的逐题配对结果', 'Both final evaluations plus pairwise results on the same 128 tasks') },
-  { id:'C2', title:t('7B：有老师 vs 没老师', '7B: MiniMax vs self'), formula:'7B/MiniMax − 7B/self', answer:PENDING, need:t('7B/MiniMax 最终评测；7B/self 已有可比基线', '7B/MiniMax final evaluation; 7B/self baseline already exists') },
-  { id:'C3', title:t('没老师：7B vs 3B', 'Self only: 7B vs 3B'), formula:'7B/self − 3B/self', answer:PENDING, need:t('3B/self 最终评测', '3B/self final evaluation') },
-  { id:'C4', title:t('有老师：7B vs 3B', 'MiniMax: 7B vs 3B'), formula:'7B/MiniMax − 3B/MiniMax', answer:PENDING, need:t('两组 MiniMax 实验的最终评测', 'Both MiniMax final evaluations') },
-  { id:'C5', title:t('模型大小会不会改变 MiniMax 回看监督的收益幅度？', 'Does model size change the size of the MiniMax-hindsight benefit?'), formula:'(7B/MiniMax−7B/self) − (3B/MiniMax−3B/self)', answer:PENDING, need:t('四组最终评测全部完成；先逐题配对比较，再讨论机制', 'All four final evaluations; inspect matched tasks before mechanism claims') },
-  { id:'C6', title:t('差异发生在机制链哪一段？', 'Where does the difference arise in the mechanism chain?'), formula:t('启动训练 → Stage 2 成功任务覆盖 → 参数更新 → 最终评测', 'bootstrap → Stage-2 successful-task coverage → parameter update → final evaluation'), answer:PENDING, need:t('相同进度的数据块覆盖率 + 参数更新记录 + 最终评测分解', 'Matched-progress coverage + parameter-update ledger + final decomposition') },
+  { id:'C1', title:t('3B：有老师 vs 没老师', '3B: MiniMax vs self'), formula:'3B/MiniMax − 3B/self', answer:t('这条历史四臂实验不能给完整最终差：3B/MiniMax 在 74.58% 时停止且没有 final eval。我们不会为了补表而恢复已经被判定设计错误的 Stage 2。', 'This historical four-arm study cannot provide a complete final difference: 3B/MiniMax stopped at 74.58% and has no final evaluation. We will not resume the superseded Stage-2 design merely to fill the table.'), need:t('若未来仍要回答，需要单独 preregister 新实验；不能事后补跑旧错误算法', 'A future answer requires a separately preregistered study; the superseded algorithm must not be backfilled post hoc') },
+  { id:'C2', title:t('7B：有老师 vs 没老师', '7B: MiniMax vs self'), formula:'7B/MiniMax − 7B/self', answer:t('同一封存 128 任务上，Task Score ×100 为 16.94 vs 25.66，均值差 −8.72；完整成功 0/128 vs 4/128。这里只是历史两臂结果差，不把它直接写成 MiniMax 的因果效应。', 'On the same sealed 128 tasks, Task Score ×100 is 16.94 vs 25.66, a mean difference of −8.72; exact success is 0/128 vs 4/128. This is a difference between two historical arms, not a direct causal estimate of MiniMax.'), need:t('如要做机制归因，仍需逐题配对和训练路径分解', 'Mechanism attribution still requires per-task pairing and training-path decomposition') },
+  { id:'C3', title:t('没老师：7B vs 3B', 'Self only: 7B vs 3B'), formula:'7B/self − 3B/self', answer:t('同一封存 128 任务上，Task Score ×100 为 25.66 vs 1.71，均值差 +23.95；但模型大小与 Stage-1 是否形成 adapter 同时变化，不能把差值当作纯规模效应。', 'On the same sealed 128 tasks, Task Score ×100 is 25.66 vs 1.71, a mean difference of +23.95; model size and whether Stage 1 created an adapter change together, so this is not a pure scaling effect.'), need:t('机制归因仍需控制 Stage-1 学习状态与逐题差异', 'Mechanism attribution still requires controlling Stage-1 learning state and per-task differences') },
+  { id:'C4', title:t('有老师：7B vs 3B', 'MiniMax: 7B vs 3B'), formula:'7B/MiniMax − 3B/MiniMax', answer:t('7B/MiniMax 有封存 final eval，但 3B/MiniMax 没有，因此历史旧方法不能形成完整模型大小比较。', '7B/MiniMax has a sealed final evaluation but 3B/MiniMax does not, so the historical old-method study cannot form a complete model-size comparison.'), need:t('需要新的预注册实验，而不是恢复 superseded Stage 2', 'Requires a new preregistered study rather than resuming superseded Stage 2') },
+  { id:'C5', title:t('模型大小会不会改变 MiniMax 回看监督的收益幅度？', 'Does model size change the size of the MiniMax-hindsight benefit?'), formula:'(7B/MiniMax−7B/self) − (3B/MiniMax−3B/self)', answer:t('当前历史数据不能计算这个四臂交互项，因为 3B/MiniMax 没有 final eval。把缺失填成 0 会制造假结论。', 'The historical data cannot compute this four-arm interaction because 3B/MiniMax has no final evaluation. Treating the missing endpoint as zero would fabricate a conclusion.'), need:t('需要四臂都完整的新预注册设计', 'Requires a new preregistered design with all four endpoints') },
+  { id:'C6', title:t('差异发生在机制链哪一段？', 'Where does the difference arise in the mechanism chain?'), formula:t('启动训练 → Stage 2 成功任务覆盖 → 参数更新 → 最终评测', 'bootstrap → Stage-2 successful-task coverage → parameter update → final evaluation'), answer:t('历史过程证据可做 matched-prefix 诊断，但由于 3B/MiniMax 提前停止，只能支持过程分析，不能补成完整四臂最终因果链。', 'Historical process evidence can support matched-prefix diagnostics, but because 3B/MiniMax stopped early it cannot be promoted into a complete four-arm final causal chain.'), need:t('把过程诊断与新 Ceiling 主实验分开报告', 'Report process diagnostics separately from the new Ceiling mainline') },
 ];
 ---
 
@@ -324,7 +344,7 @@ const contrasts = [
       <section class="exp-scaffold__section" aria-labelledby="matrix-title">
         <p class="exp-scaffold__section-kicker">{t('同一张表，不偷换口径', 'ONE TABLE, ONE MEASUREMENT CONTRACT')}</p>
         <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
-        <p class="exp-scaffold__section-intro">{t('只有已经完成并封存的 7B/self 填入真实最终数字；其他尚未完成的格子明确写成“尚无最终结果”。后续回填必须来自同一套正式 128 任务评测，或者清楚标注为另一套诊断性评测。', 'Only the closed 7B/self arm carries real final numbers today; other cells intentionally remain Pending. Future fills must come from the same formal panel or be clearly labeled as a different diagnostic.')}</p>
+        <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
         <div class="exp-scaffold__table-wrap">
           <table>
             <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>

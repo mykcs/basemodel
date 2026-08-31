@@ -1,0 +1,28 @@
+export const openEvoCeilingStage2Snapshot = {
+  observedAt: '2026-08-31T12:45:50+08:00',
+  configSha256: '328713d810744c50eca090648c2317be46ed1fd61f303727acf68687bc8eafe4',
+  activationSourceSha: '4b7844b429ae7f0d09dd7de6af6157ed2808a723',
+  totalRounds: 160,
+  totalRollouts: 20_480,
+  roundRollouts: 128,
+  tasksPerRound: 16,
+  rolloutsPerTask: 8,
+  finalPanelSize: 128,
+  carriers: ['Text Memory', 'parametric SD-LoRA', 'Skill Bundle', 'Agent System'],
+  forbidden: ['old 7-vs-8 gate', '16-success gate', '256-rollout parametric cadence', 'Stage-2 MiniMax', 'Stage-2 OPSD', 'final panel before Stage-2 seal'],
+  sevenB: {
+    status: 'RUNNING',
+    roundsComplete: 9,
+    completedRange: '0–8',
+    nextRound: 9,
+    rolloutsConsumed: 1_152,
+    sdGenerations: 8,
+    sdComponents: 8,
+    externalTeacherCalls: 0,
+    finalPanelAccessCount: 0,
+  },
+  threeB: {
+    status: 'ACTIVATION_BLOCKED',
+    reason: 'A1 full-20 primary and exact-same-20 one-repair both saturated; the standing contract forbids shrinking the 20-record unit or increasing the 2048-token cap.',
+  },
+} as const;
