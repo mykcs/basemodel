@@ -186,6 +186,7 @@ For quantitative scientific relationships, prefer real web-native structure over
 
 - HTML/SVG/data-driven plots for curves, bars, state transitions, and comparisons;
 - real tables when row/column alignment carries meaning;
+- within one experiment-report series, use one consistent paper-like table grammar for benchmark/result tables: serif editorial typography, compact rows, restrained `booktabs`-style horizontal rules, aligned numeric columns, and theme-safe emphasis; sibling reports should not alternate between dashboard-card tables and paper tables unless the semantic object genuinely differs;
 - labeled axes, units, sample counts, uncertainty, and evidence provenance when they affect interpretation;
 - generated or illustrative images only when they explain a visual concept that is not better represented by actual data geometry.
 
