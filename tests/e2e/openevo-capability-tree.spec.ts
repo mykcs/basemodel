@@ -21,7 +21,10 @@ for (const path of routes) {
 }
 
 for (const viewport of [
-  { name: 'mobile', width: 390, height: 844 },
+  { name: 'iphone-375', width: 375, height: 812 },
+  { name: 'iphone-390', width: 390, height: 844 },
+  { name: 'iphone-402', width: 402, height: 874 },
+  { name: 'iphone-430', width: 430, height: 932 },
   { name: 'tablet', width: 768, height: 1024 },
   { name: 'desktop', width: 1440, height: 1000 },
 ] as const) {
@@ -38,8 +41,22 @@ for (const viewport of [
       }));
       expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
       const labels = tree.locator('.exp-tree__stage-labels');
-      if (viewport.width <= 900) await expect(labels).toBeHidden();
-      else await expect(labels).toBeVisible();
+      if (viewport.width <= 900) {
+        await expect(labels).toBeHidden();
+        const mobileRoutes = tree.locator('.mobile-route');
+        await expect(mobileRoutes).toHaveCount(4);
+        await expect(mobileRoutes.first()).toBeVisible();
+        const cardMetrics = await tree.locator('.node').first().evaluate((el) => {
+          const style = getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+          return { width: rect.width, minHeight: rect.height, fontSize: parseFloat(style.fontSize) };
+        });
+        expect(cardMetrics.width).toBeGreaterThan(viewport.width * 0.78);
+        expect(cardMetrics.minHeight).toBeGreaterThanOrEqual(44);
+      } else {
+        await expect(labels).toBeVisible();
+        await expect(tree.locator('.mobile-route').first()).toBeHidden();
+      }
     });
   }
 }

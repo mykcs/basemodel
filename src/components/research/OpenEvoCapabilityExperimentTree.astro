@@ -33,6 +33,7 @@ const links = {
     <span>04 · {t('结果 / 研究','result / study')}</span>
   </div>
   <figure class="exp-tree__map">
+    <div class="mobile-route mobile-route--old"><span>01</span><div><strong>{t('历史路线','Historical line')}</strong><small>{t('旧 Stage 1 → 历史分析 → 旧 Stage 2 → 历史结果','Previous Stage 1 → historical analysis → old Stage 2 → historical results')}</small></div></div>
     <svg viewBox="0 0 1200 690" preserveAspectRatio="none" aria-hidden="true">
       <defs><marker id="tree-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
       <path class="old" d="M260 140 H382 M574 140 H695 M888 140 H1008" />
@@ -63,6 +64,7 @@ const links = {
       <strong>{t('四臂结果与旧 checkpoint','Four-arm results and old checkpoints')}</strong>
       <small>{t('保留为历史方法证据，不再当当前 Stage 2 算法。','Retained as historical method evidence, not the current Stage-2 algorithm.')}</small>
     </a>
+    <div class="mobile-route mobile-route--current"><span>02</span><div><strong>{t('当前共同起点','Current shared starting point')}</strong><small>{t('fresh corrected Stage 1 与 sealed teacher evidence','Fresh corrected Stage 1 with sealed teacher evidence')}</small></div></div>
     <a class="node node--current node--s1-current" href={links.stage1Compare}>
       <span>{t('当前 Stage 1','CURRENT STAGE 1')}</span>
       <strong>{t('fresh corrected 1,440 条轨迹','Fresh corrected 1,440 trajectories')}</strong>
@@ -76,6 +78,7 @@ const links = {
       <em>{t('老师预算在这里封口；Stage 2 不再调用外部老师。','Teacher budget seals here; Stage 2 makes no further external-teacher calls.')}</em>
     </a>
 
+    <div class="mobile-route mobile-route--ceiling"><span>03A</span><div><strong>Ceiling-1.0</strong><small>{t('当前运行中的 Stage 2 路线','Current running Stage-2 line')}</small></div></div>
     <a class="node node--ceiling node--s2-ceiling" href={links.ceiling}>
       <span>{t('Stage 2 · 第二版','STAGE 2 · VERSION 2')}</span>
       <strong>OpenEVO-Ceiling-1.0</strong>
@@ -88,6 +91,7 @@ const links = {
       <small>{t('3B / 7B 分别推进；正式 final panel 仍受 Stage-2 seal 保护。','3B and 7B advance independently; the formal final panel remains locked until Stage-2 seal.')}</small>
     </a>
 
+    <div class="mobile-route mobile-route--evo2"><span>03B</span><div><strong>OpenEVO 2.0</strong><small>{t('新的 harness / qualification 研究路线','New harness / qualification research line')}</small></div></div>
     <a class="node node--evo2 node--s2-evo2" href={links.evo2}>
       <span>{t('Stage 2 · 第三版','STAGE 2 · VERSION 3')}</span>
       <strong>OpenEVO 2.0</strong>
@@ -125,6 +129,7 @@ const links = {
 .exp-tree__map>svg path.old{stroke:color-mix(in srgb,#b7791f 62%,var(--color-border))}
 .exp-tree__map>svg path.current{stroke:color-mix(in srgb,var(--color-accent) 68%,var(--color-border))}
 .exp-tree__map>svg marker path{fill:var(--color-accent);stroke:none}
+.mobile-route{display:none}
 .node{position:relative;z-index:1;align-self:center;display:flex;min-width:0;flex-direction:column;gap:.35rem;padding:.9rem;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg);color:var(--color-text);text-decoration:none;box-shadow:0 8px 28px color-mix(in srgb,var(--color-text) 4%,transparent);transition:transform .15s ease,border-color .15s ease,background .15s ease}
 .node:hover,.node:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);outline:none}
 .node>span{font:800 .55rem/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:var(--color-text-muted)}
@@ -137,12 +142,26 @@ const links = {
 .exp-tree__legend span{display:inline-flex;align-items:center;gap:.35rem;color:var(--color-text-muted);font-size:.66rem}.exp-tree__legend i{width:.65rem;height:.18rem;border-radius:99px}.exp-tree__legend i.old{background:#b7791f}.exp-tree__legend i.current{background:var(--color-accent)}.exp-tree__legend b{margin-left:auto;max-width:58ch;color:var(--color-text-muted);font-size:.66rem;font-weight:650;line-height:1.45}
 @media(max-width:900px){
   .exp-tree__head{grid-template-columns:1fr}.exp-tree__head>p{grid-column:auto}.exp-tree__stage-labels{display:none}
-  .exp-tree__map{grid-template-columns:1fr;grid-template-rows:auto;gap:.75rem;min-height:0;padding:.8rem .2rem}.exp-tree__map>svg{display:none}
+  .exp-tree__map{grid-template-columns:1fr;grid-template-rows:auto;gap:.62rem;min-height:0;padding:.8rem .1rem .2rem .95rem}.exp-tree__map>svg{display:none}
   .node--s1-old,.node--analysis-old,.node--s2-old,.node--result-old,.node--s1-current,.node--analysis-current,.node--s2-ceiling,.node--result-ceiling,.node--s2-evo2,.node--result-evo2{grid-column:auto;grid-row:auto;align-self:stretch}
-  .node{margin-left:1rem}.node::before{content:'';position:absolute;left:-1rem;top:-.78rem;width:2px;height:.78rem;background:color-mix(in srgb,var(--color-accent) 48%,var(--color-border))}
-  .node--s1-old,.node--s1-current{margin-left:0}.node--s1-old::before,.node--s1-current::before{display:none}
-  .node--s1-current{margin-top:1rem;border-top-width:3px}.node--s2-ceiling,.node--s2-evo2{margin-left:2rem}
+  .mobile-route{position:relative;display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.55rem;align-items:center;margin:.48rem 0 .08rem -.82rem;color:var(--color-text)}
+  .mobile-route>span{display:grid;place-items:center;min-width:2rem;height:2rem;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);font:800 .58rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.03em;z-index:2}
+  .mobile-route>div{display:flex;min-width:0;flex-direction:column;gap:.06rem}.mobile-route strong{font-size:.78rem;line-height:1.2}.mobile-route small{color:var(--color-text-muted);font-size:.68rem;line-height:1.35}
+  .mobile-route::after{content:'';position:absolute;left:.98rem;top:2rem;bottom:-.7rem;width:2px;background:color-mix(in srgb,var(--color-accent) 42%,var(--color-border));z-index:0}
+  .mobile-route--old::after{background:color-mix(in srgb,#b7791f 45%,var(--color-border))}.mobile-route--evo2::after{display:none}
+  .node{margin-left:0;min-height:44px;padding:.86rem 2.2rem .86rem .9rem;border-radius:14px;box-shadow:none}
+  .node::before{content:'';position:absolute;left:-.95rem;top:1.28rem;width:.72rem;height:2px;background:color-mix(in srgb,var(--color-accent) 44%,var(--color-border))}
+  .node::after{content:'›';position:absolute;right:.82rem;top:50%;translate:0 -50%;color:var(--color-text-muted);font-size:1.15rem;line-height:1}
+  .node--old::before{background:color-mix(in srgb,#b7791f 48%,var(--color-border))}
+  .node--s1-current{margin-top:0;border-top-width:2px}.node--s2-ceiling,.node--s2-evo2{margin-left:0}
+  .node>strong{font-size:.95rem}.node>small,.node>em{font-size:.76rem;line-height:1.5}.node>span{font-size:.6rem}
   .exp-tree__map figcaption{grid-column:auto;grid-row:auto;margin-top:.2rem}.exp-tree__legend b{margin-left:0;max-width:none}
 }
-@media(max-width:520px){.exp-tree{padding:.8rem}.exp-tree__head h2{font-size:1.22rem}.node{padding:.8rem}.node--s2-ceiling,.node--s2-evo2{margin-left:1.2rem}}
+@media(max-width:520px){
+  .exp-tree{margin-inline:-.15rem;padding:.68rem;border-radius:16px}
+  .exp-tree__head{gap:.38rem;padding:.05rem .05rem .72rem}.exp-tree__head h2{font-size:1.16rem;line-height:1.16}.exp-tree__head>span{font-size:.76rem;line-height:1.5}
+  .exp-tree__map{gap:.55rem;padding:.72rem .02rem .1rem .9rem}.node{padding:.8rem 2rem .8rem .82rem}.node>strong{font-size:.92rem}.node>small,.node>em{font-size:.76rem}
+  .mobile-route{margin-top:.38rem}.mobile-route small{font-size:.65rem}
+  .exp-tree__map figcaption,.exp-tree__legend{display:none}
+}
 </style>
