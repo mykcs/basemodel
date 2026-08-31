@@ -1,6 +1,6 @@
 # Experiment result publication workflow
 
-Last reviewed: **2026-08-30**
+Last reviewed: **2026-08-31**
 Status: **current**  
 Audience: research, content, UI, review, and release Agents
 
@@ -215,6 +215,22 @@ A positive paired mean is not automatically a stable win. If the relevant uncert
 ### Paper-reported vs locally reproduced
 
 Paper numbers must remain labelled paper-reported unless the corresponding checkpoint/training/evaluation result has actually been reproduced locally under the relevant protocol.
+
+### Upstream evidence after a downstream method is superseded
+
+Superseding a downstream learning/evaluation method does **not** automatically invalidate upstream data that was validly produced before that method ran. Classify each layer separately: `current`, `valid historical`, `superseded as current method`, or `invalid for a specific reason`.
+
+When an old and new upstream collection share the same scientific role but are not identical realizations, compare the actual protocol and runtime before writing copy. For Stage-1-style stochastic collections, keep these distinctions explicit:
+
+```text
+protocol-equivalent
+realization-different
+runtime-corrected
+```
+
+A deliberate new seed family is a new stochastic replicate, not a bug fix. A config/runtime mismatch that is later repaired is an implementation correction, not evidence that every historical upstream artifact was scientifically invalid. Publish the current version as authoritative going forward while retaining valid historical trajectories/adapters/analyzer outputs with pinned artifact/provenance links.
+
+Historical case: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md).
 
 ## Pre-built result scaffolds and later fill-in
 
