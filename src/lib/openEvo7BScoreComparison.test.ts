@@ -1,10 +1,20 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const analysisPlan = readFileSync(
   new URL('../components/research/OpenEvoExperimentAnalysisPlan.astro', import.meta.url),
   'utf8',
 );
+
+const resultsScaffold = readFileSync(
+  new URL('../components/research/OpenEvoExperimentResultsScaffold.astro', import.meta.url),
+  'utf8',
+);
+
+const capabilityResultsRoot = new URL('../pages/research/seed-openevo/study/results/', import.meta.url);
+const capabilityReportPages = readdirSync(capabilityResultsRoot, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory() && entry.name.endsWith('-analysis'))
+  .map((entry) => readFileSync(new URL(`${entry.name}/index.astro`, capabilityResultsRoot), 'utf8'));
 
 describe('7B WebShop score comparison', () => {
   it('transcribes the Qwen2.5-7B WebShop slice of SEED Table 1 into HTML', () => {
@@ -36,6 +46,17 @@ describe('7B WebShop score comparison', () => {
     expect(analysisPlan).toContain('Stage-2 updates');
     expect(analysisPlan).toContain('<strong>16.94</strong>');
     expect(analysisPlan).toContain('不能据此判断 SD-LoRA 本身无效');
+  });
+
+  it('shares the LaTeX-like table contract across every capability-exploration report page', () => {
+    expect(resultsScaffold).toContain('font-family:"Times New Roman",Times,"Songti SC"');
+    expect(resultsScaffold).toContain('border-top:1.5px solid var(--color-text)');
+    expect(resultsScaffold).toContain('font-variant-numeric:tabular-nums lining-nums');
+    expect(analysisPlan).toContain('.matrix-wrap,.plan-table-wrap');
+    expect(analysisPlan).toContain('font-family:"Times New Roman",Times,"Songti SC"');
+    for (const page of capabilityReportPages) {
+      expect(page).toContain('OpenEvoExperimentResultsScaffold');
+    }
   });
 
   it('keeps the paper score and local OpenEVO score in separate claim domains', () => {
