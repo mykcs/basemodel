@@ -7,7 +7,7 @@ const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo 基础能力探索实验"
-  description="OpenEvo × WebShop 能力探索：先区分新版与旧版 Stage 1 trajectory collection，再区分已取代的 256-window Stage 2 方法控制与当前 OpenEVO-Ceiling-1.0 主线。"
+  description="OpenEvo × WebShop 能力探索：保留历史 Stage 2、运行中的 Ceiling-1.0，并增加 OpenEVO 2.0 successor。OpenEVO 2.0 复用当前 corrected Stage 1，从经验状态构建与 Stage-2 harness 开始重新设计。"
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -15,8 +15,8 @@ const locale = 'zh' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo 基础能力探索实验</h1>
       <div>
-        <strong>新版和旧版 Stage 1 本质上是同一类实验：同样的任务、模型和 OpenEVO / WebShop 轨迹采集流程；旧版没有做错，也仍然可以使用。</strong>
-        <span>新版只是在同一性质的实验上做了一次小幅定稿：结合实际运行，使用独立 seed，并把 top_p / top_k / repetition penalty 等 decoding 参数正式固定并真正传进 runtime。今后的新实验、主结果和报告以新版为准；旧版继续作为历史 replicate 与可复用产物保留。Stage 2 的历史设计错误是后续另一件事。</span>
+        <strong>当前 corrected Stage 1 仍是共同起点；Ceiling-1.0 继续运行，OpenEVO 2.0 从状态构建与 Stage-2 harness 处另开 successor。</strong>
+        <span>OpenEVO 2.0 不重采当前每个模型 1,440 条 Stage-1 轨迹，也不重新增加老师预算。它保留现有证据根，重点重做 Context Governor、Memory / Skill / Agent 职责分离、Telemetry 与正式运行前 Harness Qualification。Ceiling-1.0 真正暂停后，再把停止 round、成功轨迹、checkpoint 和归档链接补回对应分支。</span>
       </div>
     </header>
     <OpenEvoStage1VersionComparison locale={locale} />

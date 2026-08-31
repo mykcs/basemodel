@@ -1,7 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
-interface Props { locale: Locale; active?: 'legacy' | 'ceiling' | 'index' }
+interface Props { locale: Locale; active?: 'legacy' | 'ceiling' | 'openevo2' | 'index' }
 const { locale, active = 'index' } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn:string,en:string) => zh ? cn : en;
@@ -9,26 +9,40 @@ const p = (path:string) => localePath(locale,path);
 ---
 <section class="s2-choice" data-testid="stage2-strategy-selector" aria-labelledby="s2-choice-title">
   <div class="s2-choice__head">
-    <p>STAGE 2 · METHOD VERSION</p>
-    <h2 id="s2-choice-title">{t('Stage 2 有两个版本：旧实验规则与当前 Ceiling-1.0', 'Two Stage-2 versions: the historical rule and the current Ceiling-1.0')}</h2>
-    <span>{t('旧实验把每 256 次任务尝试单独判断，只有这一批里至少 8 个不同任务都能重复完整成功才允许更新参数。这个规则后来被确认不适合作为长期学习算法，因此旧结果只保留为历史证据；当前实验改用 OpenEVO-Ceiling-1.0。','The historical run judged every 256 task attempts separately and allowed an update only when at least eight distinct tasks repeatedly succeeded within that batch. That rule was later judged unsuitable as a long-horizon learning algorithm, so the old results remain historical evidence while the current experiment uses OpenEVO-Ceiling-1.0.')}</span>
+    <p>OPENEVO · EXPERIMENT LINEAGE</p>
+    <h2 id="s2-choice-title">{t('Stage 2 经历三次设计；OpenEVO 2.0 不重采当前 Stage 1','Three Stage-2 designs; OpenEVO 2.0 does not recollect the current Stage 1')}</h2>
+    <span>{t('历史 256-window 方法保留为旧方法证据。Ceiling-1.0 修掉了“7 / 8 才准学”的硬门槛并正在运行；OpenEVO 2.0 则从当前 corrected Stage-1 证据继续，在经验如何组织、选择和进入 WebShop prompt 这一层重新设计。','The historical 256-window method remains as old-method evidence. Ceiling-1.0 removed the brittle 7/8 permission-to-learn gate and is running; OpenEVO 2.0 reuses the current corrected Stage-1 evidence and redesigns how experience is organized, selected, and delivered into the WebShop prompt.')}</span>
   </div>
+
+  <div class="s2-choice__shared" aria-label={t('Ceiling-1.0 与 OpenEVO 2.0 的共同起点','Shared starting point for Ceiling-1.0 and OpenEVO 2.0')}>
+    <div><span>SHARED INPUT</span><strong>{t('当前 corrected Stage 1','Current corrected Stage 1')}</strong><small>1,440 trajectories / arm</small></div>
+    <svg viewBox="0 0 90 24" aria-hidden="true"><defs><marker id="s2-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" /></marker></defs><path d="M2 12 H84" /></svg>
+    <div><span>FORK BOUNDARY</span><strong>{t('Stage 1 分析 / 状态构建','Stage-1 analysis / state construction')}</strong><small>{t('Ceiling-1.0 与 2.0 从这里分叉','Ceiling-1.0 and 2.0 fork here')}</small></div>
+  </div>
+
   <div class="s2-choice__grid">
     <a class:list={['s2-choice__card','legacy',{active:active==='legacy'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')} aria-current={active==='legacy'?'page':undefined}>
-      <div><span>01 · {t('历史实验 · 已取代','HISTORICAL · SUPERSEDED')}</span><b>{t('旧版本：每 256 次尝试重新判断一次','Historical version: reset the decision every 256 attempts')}</b></div>
-      <p>{t('每 256 次 WebShop 任务尝试被当成一批。只有这一批里至少有 8 个不同任务都能各自完整成功 2 次，模型才允许更新一次参数；不同批之间的成功记录不能累计。因此即使整段实验收集到很多成功轨迹，也可能一次参数更新都没有发生。','Every 256 WebShop attempts formed one batch. A parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch; successes could not accumulate across batches. The run could therefore collect many successful traces while still making zero parameter updates.')}</p>
-      <strong>{t('查看旧实验结果与归档 →','Open historical results and archive →')}</strong>
+      <div><span>01 · {t('历史方法 · 旧门槛已取代，数据仍保留','HISTORICAL · GATE SUPERSEDED, DATA RETAINED')}</span><b>{t('历史 Stage 2：每 256 次任务尝试单独检查的硬门槛','Historical Stage 2: a hard gate checked every 256 attempts')}</b></div>
+      <p>{t('每 256 次 WebShop 任务尝试被当成一批。只有这一批里至少有 8 个不同任务都能各自完整成功 2 次，模型才允许更新一次参数；不同批之间的成功记录不能累计。这个局部门槛已经被取代，但历史 rollout、成功轨迹和 checkpoint 仍完整保留。','Every 256 WebShop attempts formed one batch. A parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch; successes could not accumulate across batches. That local gate is superseded, while its rollouts, successes, and checkpoints remain retained evidence.')}</p>
+      <strong>{t('查看历史四臂与归档 →','Open historical arms and archive →')}</strong>
     </a>
     <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
-      <div><span>02 · {t('当前实验','CURRENT')}</span><b>OpenEVO-Ceiling-1.0</b></div>
-      <p>{t('当前版本不再使用旧的 7 对 8 门槛。每 128 次任务尝试形成一轮共同证据，Text Memory、SD-LoRA、Skill Bundle 和 Agent System 分别判断这一轮是否有值得保留的更新；没有合适更新时就保持不变，最后再把同一轮的结果组合一次。','The current version no longer uses the old 7-versus-8 threshold. Every 128 task attempts form one shared evidence round. Text Memory, SD-LoRA, Skill Bundle, and Agent System each decide whether that round supports an update; otherwise they remain unchanged, and the round is composed once at the end.')}</p>
-      <strong>{t('查看 Ceiling-1.0 完整策略 →','Open the full Ceiling-1.0 strategy →')}</strong>
+      <div><span>02 · {t('正在运行 / harness 风险复核中','RUNNING / HARNESS UNDER REVIEW')}</span><b>OpenEVO-Ceiling-1.0</b></div>
+      <p>{t('每 128 次完整任务尝试形成一轮共同证据，四种可继承状态分别决定是否更新；证据不足时保持原状态（NOOP）。它已经真实产生参数更新，但 3B 暴露出“历史经验文本可能压过当前 Allowed Actions”的接口风险；这条运行线继续保留，不提前改写成暂停。','Every 128 complete attempts form one shared evidence set and four inheritable states decide independently whether to update; insufficient evidence leaves a state unchanged (NOOP). The run has produced real parameter updates, while 3B exposed a risk that historical carrier text can overwhelm live Allowed Actions. This lineage remains intact and is not prematurely labeled paused.')}</p>
+      <strong>{t('查看 Ceiling-1.0 当前策略与运行快照 →','Open Ceiling-1.0 strategy and snapshot →')}</strong>
+    </a>
+    <a class:list={['s2-choice__card','openevo2',{active:active==='openevo2'}]} href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')} aria-current={active==='openevo2'?'page':undefined}>
+      <div><span>03 · {t('设计中 / 尚未正式启动','DESIGNING / NOT FORMALLY LAUNCHED')}</span><b>OpenEVO 2.0</b></div>
+      <p>{t('复用当前 corrected Stage-1 轨迹与封存老师证据，不重采 1,440 条轨迹。第一版聚焦 Context Governor、Memory / Skill / Agent 职责分离、Telemetry v2 和正式运行前 Harness Qualification。','Reuse the current corrected Stage-1 trajectories and sealed teacher evidence without recollecting the 1,440 trajectories. The first version focuses on a Context Governor, Memory/Skill/Agent separation, Telemetry v2, and preformal Harness Qualification.')}</p>
+      <strong>{t('查看 OpenEVO 2.0 设计与迁移边界 →','Open the OpenEVO 2.0 design and transition boundary →')}</strong>
     </a>
   </div>
 </section>
 <style>
 .s2-choice{margin:1rem 0 1.4rem;padding:1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.5%,transparent)}
 .s2-choice__head{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1fr);gap:.65rem 1.2rem;padding:.15rem .15rem 1rem;border-bottom:1px solid var(--color-border)}.s2-choice__head>p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.s2-choice__head h2{margin:0;font-size:clamp(1.15rem,2.6vw,1.7rem);letter-spacing:-.035em}.s2-choice__head>span{color:var(--color-text-muted);font-size:.78rem;line-height:1.65}
-.s2-choice__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.s2-choice__card{display:flex;min-width:0;flex-direction:column;gap:.7rem;padding:1rem;border:1px solid var(--color-border);border-radius:13px;color:var(--color-text);text-decoration:none;background:var(--color-bg);transition:border-color .15s ease,transform .15s ease}.s2-choice__card:hover,.s2-choice__card.active{border-color:var(--color-accent);transform:translateY(-1px)}.s2-choice__card div{display:flex;flex-direction:column;gap:.25rem}.s2-choice__card span{font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:var(--color-text-muted)}.s2-choice__card b{font-size:1rem}.s2-choice__card p{margin:0;color:var(--color-text-muted);font-size:.76rem;line-height:1.62}.s2-choice__card>strong{margin-top:auto;color:var(--color-accent);font-size:.72rem}.s2-choice__card.legacy{border-style:dashed}.s2-choice__card.legacy.active{background:color-mix(in srgb,#b7791f 5%,var(--color-bg))}.s2-choice__card.ceiling.active{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
-@media(max-width:760px){.s2-choice__head,.s2-choice__grid{grid-template-columns:1fr}.s2-choice__head>p{grid-column:auto}}
+.s2-choice__shared{display:grid;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);gap:.65rem;align-items:center;margin-top:1rem;padding:.8rem;border:1px solid var(--color-border);border-radius:11px;background:color-mix(in srgb,var(--color-accent) 3%,var(--color-bg))}.s2-choice__shared>div{min-width:0}.s2-choice__shared span,.s2-choice__shared strong,.s2-choice__shared small{display:block}.s2-choice__shared span{color:var(--color-accent);font:800 .54rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.s2-choice__shared strong{margin:.24rem 0;font-size:.78rem}.s2-choice__shared small{color:var(--color-text-muted);font-size:.64rem}.s2-choice__shared svg{width:100%;height:24px}.s2-choice__shared svg path{fill:none;stroke:var(--color-accent);stroke-width:1.7;marker-end:url(#s2-arrow)}.s2-choice__shared svg marker path{fill:var(--color-accent);stroke:none}
+.s2-choice__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.s2-choice__card{display:flex;min-width:0;flex-direction:column;gap:.7rem;padding:1rem;border:1px solid var(--color-border);border-radius:13px;color:var(--color-text);text-decoration:none;background:var(--color-bg);transition:border-color .15s ease,transform .15s ease}.s2-choice__card:hover,.s2-choice__card.active{border-color:var(--color-accent);transform:translateY(-1px)}.s2-choice__card div{display:flex;flex-direction:column;gap:.25rem}.s2-choice__card span{font:800 .58rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:var(--color-text-muted)}.s2-choice__card b{font-size:1rem}.s2-choice__card p{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.62}.s2-choice__card>strong{margin-top:auto;color:var(--color-accent);font-size:.71rem}.s2-choice__card.legacy{border-style:dashed}.s2-choice__card.legacy.active{background:color-mix(in srgb,#b7791f 5%,var(--color-bg))}.s2-choice__card.ceiling.active{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}.s2-choice__card.openevo2{border-width:2px}.s2-choice__card.openevo2.active{background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+@media(max-width:900px){.s2-choice__grid{grid-template-columns:1fr 1fr}.s2-choice__card.openevo2{grid-column:1/-1}}
+@media(max-width:760px){.s2-choice__head,.s2-choice__grid,.s2-choice__shared{grid-template-columns:1fr}.s2-choice__head>p{grid-column:auto}.s2-choice__shared svg{width:30px;transform:rotate(90deg);justify-self:center}.s2-choice__card.openevo2{grid-column:auto}}
 </style>

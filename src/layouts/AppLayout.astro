@@ -31,7 +31,7 @@ const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const exactRoute = (target: string) => localeNeutralPath === target || localeNeutralPath === `${target}/`;
 const isTodayRunbook = exactRoute('/guide/today');
 const globalQuickViewMounted = exactRoute('/families') || /^\/papers\/[^/]+\/?$/.test(localeNeutralPath);
-const isCapabilityExplorationPage = exactRoute('/research/seed-openevo/study/capability-exploration')
+const isCapabilityExplorationPage = /^\/research\/seed-openevo\/study\/capability-exploration(?:\/|$)/.test(localeNeutralPath)
   || /^\/research\/seed-openevo\/study\/results\/(?:3b-self-analysis|7b-self-analysis|3b-minimax-analysis|7b-minimax-analysis|four-arm-analysis)\/?$/.test(localeNeutralPath);
 const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/study') ? 'experiment'
   : exactRoute('/research/seed-openevo/study/run') ? 'run'

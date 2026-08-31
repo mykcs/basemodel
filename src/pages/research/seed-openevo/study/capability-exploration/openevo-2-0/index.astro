@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvo2Strategy from '../../../../../../components/research/OpenEvo2Strategy.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="OpenEVO 2.0" description="OpenEVO 2.0 的设计分支：复用当前 corrected Stage 1 轨迹与封存老师证据，从 carrier 状态构建和 Stage-2 harness 开始重新设计 Context Governor、carrier 职责、Telemetry 与正式运行前资格检查。" locale={locale}>
+  <OpenEvo2Strategy locale={locale} />
+</AppLayout>
