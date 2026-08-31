@@ -232,6 +232,19 @@ A deliberate new seed family is a new stochastic replicate, not a bug fix. A con
 
 Historical case: [`../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md`](../history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md).
 
+### Superseded-run artifact publication and retention
+
+When the superseded layer itself produced historically useful run artifacts, preserve **scientific state identity**, **remote archive identity**, **reader explanation**, and **local retention authorization** as separate facts.
+
+- If a stage produced zero parameter updates, publish the unchanged entry state / no-update pointer; do not manufacture new checkpoint bytes merely for naming symmetry.
+- A final evaluation that never ran is `not run`, not measured zero and not ordinary `Pending`; a measured `0/N` remains a real result when the denominator exists.
+- Pin the exact artifact bytes to an immutable HF/GitHub/model/runtime revision. A repository README may later gain a stronger superseded warning without changing the historical artifact identity.
+- Remote upload/restore/hash verification does **not** authorize deletion of the source run roots. Keep deletion authorization explicit and separately recorded. When fast engineering recovery remains valuable, retain a bounded local smoke kit even after cold archival.
+- Preserve exact runtime identity by immutable image/tag digest in its owning registry when practical; reproducibility does not require duplicating every OCI layer into the dataset archive.
+- When the replacement experiment is still running, publish stable protocol separately from mutable progress. Any live progress belongs in a dated, receipt-backed snapshot and must not be treated as timeless current state.
+
+Historical case: [`../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md`](../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md).
+
 ## Pre-built result scaffolds and later fill-in
 
 A Results page may be created before an experiment or diagnostic closes. In that case, the page is a **question scaffold**, not evidence that the answer already exists.
