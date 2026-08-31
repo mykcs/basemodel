@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoLegacyStage1Archive from '../../../../../../../components/research/OpenEvoLegacyStage1Archive.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="Old Stage 1: historical trajectories and artifacts"
+  description="Reusable historical OpenEvo Stage-1 trajectories, MiniMax analyzer outputs, adapters, pinned Hugging Face revisions, and GitHub audit evidence."
+  locale={locale}
+>
+  <OpenEvoLegacyStage1Archive locale={locale} />
+</AppLayout>
