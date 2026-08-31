@@ -49,6 +49,7 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(enRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(parent).toContain('/openevo-2-0/harness-2-0/');
     expect(parent).toContain('MINI STUDY 01 · 128 + 128');
-    expect(chooser).toContain('资格实验已闭合 / 正式激活 HOLD');
+    expect(chooser).toContain('第三版 · 第一次小实验已完成');
+    expect(chooser).toContain('新的正式 Stage 2 先不启动');
   });
 });
