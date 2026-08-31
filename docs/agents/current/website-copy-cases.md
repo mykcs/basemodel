@@ -594,10 +594,12 @@
 | [#349](https://github.com/mykcs/basemodel/pull/349) | PREFERENCE | 公开复现路径去掉真实 Unix 账号/home 身份，使用 `$HOME/...` 通用表达 |
 | [#350](https://github.com/mykcs/basemodel/pull/350) | EVOLUTION | 大规模站点优化同时删除/收敛一批旧公开 copy owner；只把经过独立反馈支持的变化提升为偏好 |
 
-## 13. 未合并的相关文案工作不作为既定偏好
+## 13. PR 状态与自证边界
 
 全量 PR 检索也会命中尚未合并的公开文案工作。它们可以帮助发现问题，但在 owner 尚未接受、`main` 尚未采用前，不进入 PREFERENCE 判例。
 
-- [#345](https://github.com/mykcs/basemodel/pull/345) — 本规范与案例库自身的交付 PR；它不是用来证明自身正确性的历史偏好来源。
+另一个边界是**交付这套规范的 PR 不能反过来证明规范本身正确**：
 
-以后新增 OPEN / DRAFT PR 也按同一规则处理：可以进入审计备注，但不能仅凭“有人开了 PR”反推成用户偏好。
+- [#345](https://github.com/mykcs/basemodel/pull/345) 已于 2026-08-30 合并；它负责交付本规范与案例库，但不作为“本规范正确”的历史偏好证据。
+
+以后新增 OPEN / DRAFT PR 也按同一规则处理：可以进入审计备注，但不能仅凭“有人开了 PR”反推成用户偏好；规范自身的交付 PR 也不参与自证。
