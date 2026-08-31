@@ -1,0 +1,151 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+interface Props { locale?: Locale; }
+const { locale='zh' } = Astro.props;
+const t=(zh:string,en:string)=>locale==='zh'?zh:en;
+const p=(path:string)=>localePath(locale,path);
+const experimentRevision='e9b734c64f663d8577d3d89a42851657691e021e';
+const harness2Revision='787b862e7957af80e7b1890616a7dc5757ac0316';
+const repo='https://github.com/mykcs/openevo-experiment/blob';
+
+const genealogy=[
+  {
+    n:'01', tag:'DIVERSITY', id:'H1.38A-C',
+    title:t('成功经验里的任务种类是否重要？','Does task diversity inside successful experience matter?'),
+    body:t('我们先收集自然成功：148 次尝试得到 50 条合格成功、18 个成功任务，其中 14 个任务至少成功两次。随后固定 16 条训练记录，只改变它们来自 4、8 还是 16 个任务。','We first harvested natural successes: 148 attempts yielded 50 qualified successes across 18 successful tasks, 14 of which succeeded at least twice. We then froze 16 training records and varied only whether they came from 4, 8, or 16 task identities.'),
+    result:t('D4 / D8 / D16 的 task-weighted Δ 分别为 +0.0117 / −0.0058 / +0.0556，三组区间都跨 0，也不单调。结论是“任务数本身不是一个已经证明越多越好的旋钮”。','Task-weighted Δ for D4 / D8 / D16 was +0.0117 / −0.0058 / +0.0556. All intervals crossed zero and the trend was non-monotonic. Identity count alone was not proven to be a monotonic quality knob.'),
+    href:`${repo}/${experimentRevision}/docs/reports/OPEN_EVO_WEBSHOP_PROGRAM_REPORT_2026-08-20.md`,
+  },
+  {
+    n:'02', tag:'METHOD CONTROL', id:'H1.38B',
+    title:t('同一份 16 条成功数据：普通 LoRA 与 SD-LoRA','The same 16 successful records: ordinary LoRA vs SD-LoRA'),
+    body:t('为了让两种训练方法吃完全一样的数据，我们封存了 16 条纯学生成功轨迹：8 个不同任务，每个任务恰好 2 条独立成功。这是一个干净的 method-control 数据集。','To make both training methods consume exactly the same evidence, we sealed 16 endogenous successful trajectories: eight distinct tasks with exactly two independent successes each. This was a clean method-control dataset.'),
+    result:t('“8 个任务 × 每个 2 条成功”从这里变成了一个方便、可审计的小样本形状；它原本不是长期训练的准入门槛。','“8 tasks × 2 successes each” became a convenient, auditable small-sample shape here; it was not originally a lifelong admission gate.'),
+    href:`${repo}/${experimentRevision}/configs/experiment/h1.38b-method-control-v1.json`,
+  },
+  {
+    n:'03', tag:'BOUNDED HARVEST', id:'H1.40',
+    title:t('第二代模型能否自己采出下一份训练集？','Can the next generation harvest its next training set?'),
+    body:t('H1.40 给 G1 一个有限的采集机会：64 个任务 × 4 个 seed = 最多 256 次尝试。只有采到至少 8 个任务、每个任务至少 2 条合格成功，才创建 G2；否则这次小实验就停止。','H1.40 gave G1 a bounded harvest: 64 tasks × 4 seeds = at most 256 attempts. G2 was created only if at least eight tasks each produced two qualified successes; otherwise this bounded experiment stopped.'),
+    result:t('这里的 256 是“这次小实验最多采多少次”，8×2 是“能不能构造下一份 16 条训练集”。它们仍然是一个有限实验的停止条件。','Here 256 meant “how many attempts this bounded harvest may spend,” while 8×2 meant “can we construct the next 16-record training set?” They were still stop conditions for one bounded experiment.'),
+    href:`${repo}/${experimentRevision}/configs/experiment/h1.40-g2-multigeneration-v1.json`,
+  },
+  {
+    n:'04', tag:'OVER-GENERALIZED', id:'H1.45 / H1.46',
+    title:t('局部实验条件被误用成长期 Stage 2 门槛','A bounded-study condition was misused as a long-running Stage-2 gate'),
+    body:t('后来的长预算实验把 20,480 次 Stage-2 尝试切成 80 个 256-window，并在每个 window 里重新要求“8 个任务 × 每个 2 条成功”。不够 8 就不更新，而且成功不能带到下一块。','The later full-budget run split 20,480 Stage-2 attempts into eighty 256-attempt windows and reapplied the “8 tasks × 2 successes each” condition inside every window. Below eight meant no update, and successes did not carry into the next window.'),
+    result:t('这就是设计错误：不是 8、2、256 这些数字本身荒唐，而是把原本用于方法控制和一次性 harvest 的条件，推广成了长期学习必须反复通过的门。','That was the design error. The numbers 8, 2, and 256 were not inherently absurd; a control/one-shot-harvest condition was promoted into a recurring gate that long-horizon learning had to pass over and over.'),
+    href:p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'),
+  },
+];
+
+const prefixRows=[
+  { model:'3B', oldExact:'7', oldInvalid:'130 / 1,280 · 10.2%', oldScore:'0.0149', nextExact:'0', nextInvalid:'481 / 1,280 · 37.6%', nextScore:'0.00145' },
+  { model:'7B', oldExact:'68', oldInvalid:'171 / 1,280 · 13.4%', oldScore:'0.2918', nextExact:'17', nextInvalid:'322 / 1,280 · 25.2%', nextScore:'0.0974' },
+];
+
+const diagnostics=[
+  {
+    tag:'ACTION ADMISSIBILITY · H1.20',
+    question:t('是不是历史 memory 里的旧动作本身害了模型？','Are stale actions inside memory the main problem?'),
+    change:t('BASE / 原始 Text Memory / admissible-only Text Memory 三组只改一个变量：如果 retrieved action 不在当前 Allowed Actions，就隐藏那个动作；绝不替模型选另一个动作。','BASE / raw Text Memory / admissible-only Text Memory changed one variable only: hide a retrieved action when its exact string is absent from current Allowed Actions; never substitute another action.'),
+    observation:t('96/96 次尝试有效；过滤确实隐藏了 128/480 个不可执行 retrieved action，但三组平均得分仍为 0，0 条 qualified positive。','All 96 attempts were valid. Filtering really hid 128/480 inadmissible retrieved actions, but every arm still had mean score 0 and zero qualified positives.'),
+    meaning:t('所以“简单把旧动作藏掉”并没有在这个小面板上恢复能力。它证明过滤机制有效，不证明过滤一定提高分数。','So simply hiding stale actions did not restore capability on this small panel. The mechanism worked, but score improvement was not established.'),
+    href:`${repo}/${experimentRevision}/configs/experiment/h1.20-action-admissibility-diagnostic.json`,
+  },
+  {
+    tag:'HORIZON CHECK · H1.21',
+    question:t('H1.20 会不会只是 15 步太短，还没来得及买？','Was H1.20 merely too short at a 15-step horizon?'),
+    change:t('保持同样的 BASE / raw / admissible-only 比较，只把最大步数对齐到 30。','Keep the same BASE / raw / admissible-only comparison and extend only the horizon to 30 steps.'),
+    observation:t('过滤又隐藏了 164/960 个不可执行动作，但三组仍然 0 buy、0 qualified positive、平均得分 0。','Filtering hid another 164/960 inadmissible actions, yet all three arms still produced zero buys, zero qualified positives, and mean score 0.'),
+    meaning:t('因此“只要多给一点步数就会好”也没有得到支持。','The explanation “just give it more steps” was not supported either.'),
+    href:`${repo}/${experimentRevision}/configs/experiment/h1.21-horizon-matched-action-admissibility-diagnostic.json`,
+  },
+  {
+    tag:'MATCHED PREFIX · 2026-08-31',
+    question:t('旧 Stage2 和 Ceiling-1.0 的差别，是否只是碰巧抽到了不同题？','Could the old-vs-Ceiling gap be explained by simply seeing different tasks?'),
+    change:t('不再烧 GPU。直接从已经存在的轨迹里取相同 schedule 位置的前 1,280 条，分别比较 3B 和 7B；同时复核 parser/action contract。','No extra GPU run. Re-read the first 1,280 trajectories at the same schedule positions for 3B and 7B, and audit the parser/action contract.'),
+    observation:t('3B 从 7 次完整成功、10.2% invalid 变成 0 次完整成功、37.6% invalid；7B 从 68 次完整成功、13.4% invalid 变成 17 次完整成功、25.2% invalid。','3B moved from 7 exact successes and 10.2% invalid to 0 exact successes and 37.6% invalid; 7B moved from 68 exact successes and 13.4% invalid to 17 exact successes and 25.2% invalid.'),
+    meaning:t('两种模型都在新 harness 的早期变差，因此不是“3B 天生不会做这批题”；但 7B 仍保留了一些成功种子，可以继续产生真实参数更新，3B 更容易掉进无法自举的状态。','Both model sizes degraded early under the new harness, so this was not simply “3B cannot solve these tasks.” 7B still retained success seeds that could support real parameter updates, while 3B was more vulnerable to a bootstrap cliff.'),
+    href:p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  },
+  {
+    tag:'HARNESS 2.0 PREFORMAL · 128 + 128',
+    question:t('如果把 carrier 变薄、职责分开，动作接口会不会先恢复健康？','If carriers are thinner and role-separated, does interface health recover?'),
+    change:t('正式新 Stage2 前，用已经被旧 3B 消费过的 16 个任务做两个 128-rollout cell：同一个 Stage1 参数状态，一组完全不注入 carrier，另一组注入 interface-safe carrier；temperature、任务、seed 和 parser 保持不变。','Before any formal successor Stage2, use 16 already-consumed 3B tasks for two 128-rollout cells: same Stage1 parametric state, one with no carriers and one with interface-safe carriers; temperature, tasks, seeds, and parser stay fixed.'),
+    observation:t('资格实验只检查 carrier lint、职责结构、context budget、格式和 state-admissibility 回归、runtime readback；reward / success 只做诊断，不作为“挑哪个 harness”的门。每组固定 128 条，不扩样、不按中间结果改阈值；正式 successor task consumption 在 activation 前保持 0。','Qualification checks carrier lint, role structure, context budget, format/state-admissibility regressions, and runtime readback. Reward/success are diagnostic only, not a harness-selection gate. Each cell is fixed at 128 rollouts with no extension or threshold changes from intermediate results; formal successor task consumption remains 0 before activation.'),
+    meaning:t('这一步的目的不是用 128 条挑一个分数最好看的版本，而是在重新烧 20,480 条以前证明 harness 没把动作接口搞坏。','The goal is not to pick the highest-scoring harness from 128 samples. It is to prove the harness does not break the action interface before spending another 20,480 formal attempts.'),
+    href:`${repo}/${harness2Revision}/configs/experiment/designs/openevo-ceiling-1.0-harness2-preformal-v1.json`,
+  },
+];
+---
+
+<section class="legacy-journey" data-testid="legacy-stage2-research-journey">
+  <header class="legacy-journey__intro">
+    <p>{t('DESIGN GENEALOGY','DESIGN GENEALOGY')}</p>
+    <h2>{t('旧 Stage 2 的规则从哪里来','Where the old Stage-2 rule came from')}</h2>
+    <span>{t('“8 个任务、每个成功 2 次、最多看 256 次”并不是一开始就被写成长期算法。它先后在几个小实验里承担过不同职责，最后才被错误地合并成每 256 次都要重新通过的训练门槛。','“Eight tasks, two successes each, at most 256 attempts” was not originally a long-running algorithm. Those numbers served different roles in several small studies before being incorrectly combined into a gate that had to be passed again every 256 attempts.')}</span>
+  </header>
+
+  <div class="legacy-journey__timeline">
+    {genealogy.map((item)=><article>
+      <div class="legacy-journey__index"><span>{item.n}</span><small>{item.tag}</small></div>
+      <div class="legacy-journey__copy">
+        <h3>{item.title}</h3>
+        <p>{item.body}</p>
+        <strong>{item.result}</strong>
+        <a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel={item.href.startsWith('http')?'noreferrer':undefined}>{item.id} · {t('查看原始依据 →','source evidence →')}</a>
+      </div>
+    </article>)}
+  </div>
+
+  <aside class="legacy-journey__number-note">
+    <strong>{t('两个“256”不是一回事','The two “256” values are not the same thing')}</strong>
+    <p>{t('pinned OpenEVO 的 SD-LoRA 配置里也有 max_records=256；它限制的是一次训练最多保留多少 training records。旧 Stage2 的“每 256 次 rollout 清零并重新检查 8×2”是我们自己的 WebShop 长期调度规则。相同数字不代表相同算法语义。','Pinned OpenEVO SD-LoRA also has max_records=256, but that caps retained training records. The old Stage2 rule that reset every 256 rollouts and rechecked 8×2 was our WebShop long-horizon scheduling rule. The same number does not imply the same algorithmic meaning.')}</p>
+  </aside>
+
+  <section class="legacy-journey__compare" aria-labelledby="legacy-prefix-title">
+    <div>
+      <p>{t('3B / 7B MATCHED PREFIX','3B / 7B MATCHED PREFIX')}</p>
+      <h2 id="legacy-prefix-title">{t('同一批题的前 1,280 次：两个模型都在新 harness 早期变差','Same first 1,280 attempts: both scales degraded early under the newer harness')}</h2>
+      <span>{t('这是 2026-08-31 的事后诊断，不是原始 H1.45/H1.46 预注册对比。我们取相同训练 schedule 位置，旧线用前 5 个 256-block，新线用前 10 个 128-round；每行都恰好 1,280 条。','This is a 2026-08-31 post-hoc diagnostic, not a preregistered H1.45/H1.46 contrast. We aligned the same training-schedule positions: five 256-blocks from the old lineage and ten 128-rounds from the newer lineage, exactly 1,280 attempts per row.')}</span>
+    </div>
+    <div class="legacy-journey__table-wrap" tabindex="0" aria-label={t('3B 和 7B 的前 1280 条轨迹对比','3B and 7B first-1280 trajectory comparison')}>
+      <table>
+        <thead><tr><th rowspan="2">{t('模型','Model')}</th><th colspan="3">{t('旧 256-window Stage 2','Old 256-window Stage 2')}</th><th colspan="3">Ceiling-1.0</th></tr><tr><th>{t('完整成功','Exact')}</th><th>{t('非法动作提前结束','Invalid action')}</th><th>{t('平均得分','Mean score')}</th><th>{t('完整成功','Exact')}</th><th>{t('非法动作提前结束','Invalid action')}</th><th>{t('平均得分','Mean score')}</th></tr></thead>
+        <tbody>{prefixRows.map((row)=><tr><th>{row.model}</th><td>{row.oldExact}</td><td>{row.oldInvalid}</td><td>{row.oldScore}</td><td>{row.nextExact}</td><td>{row.nextInvalid}</td><td>{row.nextScore}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <p class="legacy-journey__boundary">{t('这张表不能被解释成“只改了一个变量”的算法因果实验：旧线与 Ceiling-1.0 同时改变了 temperature、Stage1 OPSD、multi-carrier 状态和更新逻辑。它能支持的是更窄的判断——3B 的 0 success 不是因为这 1,280 个 schedule 位置本来就完全无解，而且早期行为退化也出现在 7B。parser / action contract 仍是同一 v3 路径。','This table is not a one-variable causal algorithm experiment: old vs Ceiling-1.0 jointly changed temperature, Stage1 OPSD, multi-carrier state, and update logic. It supports a narrower claim: 3B’s zero-success prefix was not because these 1,280 schedule positions were inherently unsolvable, and early degradation also appeared in 7B. The parser/action contract remained on the same v3 path.')}</p>
+  </section>
+
+  <section class="legacy-journey__diagnostics" aria-labelledby="legacy-diag-title">
+    <header><p>{t('BOUNDED DIAGNOSTICS','BOUNDED DIAGNOSTICS')}</p><h2 id="legacy-diag-title">{t('几个小实验分别排查了什么','What the small diagnostics actually tested')}</h2><span>{t('这些实验处在不同时间点。H1.20/H1.21 是更早的接口诊断；H1.38/H1.40 形成了后来被误推广的数字结构；2026-08-31 的 matched-prefix 与 128+128 qualification 是看到 Ceiling-1.0 新问题以后才做的回看与 successor 体检。','These studies happened at different times. H1.20/H1.21 were earlier interface diagnostics; H1.38/H1.40 produced the numeric structure later over-generalized; the 2026-08-31 matched-prefix and 128+128 qualification came only after Ceiling-1.0 exposed a newer harness problem.')}</span></header>
+    <div class="legacy-journey__diag-grid">
+      {diagnostics.map((d)=><article>
+        <small>{d.tag}</small>
+        <h3>{d.question}</h3>
+        <dl><div><dt>{t('只改什么','Intervention')}</dt><dd>{d.change}</dd></div><div><dt>{t('看到什么','Observation')}</dt><dd>{d.observation}</dd></div><div><dt>{t('说明什么','Meaning')}</dt><dd>{d.meaning}</dd></div></dl>
+        <a href={d.href} target={d.href.startsWith('http')?'_blank':undefined} rel={d.href.startsWith('http')?'noreferrer':undefined}>{t('查看依据 →','source →')}</a>
+      </article>)}
+    </div>
+  </section>
+
+  <footer class="legacy-journey__next">
+    <div><small>{t('后来的改法','WHAT CHANGED NEXT')}</small><strong>{t('Ceiling-1.0 去掉旧 7/8 门槛；OpenEVO 2.0 再处理 multi-carrier harness。','Ceiling-1.0 removed the old 7/8 gate; OpenEVO 2.0 then addresses the multi-carrier harness.')}</strong></div>
+    <nav><a href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')}>{t('Ceiling-1.0 →','Ceiling-1.0 →')}</a><a href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')}>OpenEVO 2.0 →</a></nav>
+  </footer>
+</section>
+
+<style>
+.legacy-journey{display:grid;gap:1.25rem;margin:1.2rem 0 1.4rem}.legacy-journey__intro,.legacy-journey__compare,.legacy-journey__diagnostics{padding:1.05rem;border:1px solid var(--color-border);border-radius:16px;background:color-mix(in srgb,var(--color-text) 1.8%,transparent)}
+.legacy-journey__intro>p,.legacy-journey__compare>div:first-child>p,.legacy-journey__diagnostics>header>p{margin:0 0 .35rem;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.legacy-journey h2{margin:0;font-size:clamp(1.15rem,2vw,1.55rem);letter-spacing:-.025em}.legacy-journey__intro>span,.legacy-journey__compare>div:first-child>span,.legacy-journey__diagnostics>header>span{display:block;margin-top:.5rem;max-width:900px;color:var(--color-text-muted);font-size:.82rem;line-height:1.65}
+.legacy-journey__timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.legacy-journey__timeline article{position:relative;min-width:0;padding:.9rem;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg)}.legacy-journey__timeline article:not(:last-child)::after{content:'→';position:absolute;top:1rem;right:-.53rem;z-index:2;color:var(--color-accent);font-weight:850;background:var(--color-bg)}.legacy-journey__index{display:flex;justify-content:space-between;gap:.5rem;align-items:center}.legacy-journey__index span{color:var(--color-accent);font:850 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.legacy-journey__index small{color:var(--color-text-muted);font:750 .55rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.legacy-journey__copy h3{margin:.65rem 0 .4rem;font-size:.9rem;line-height:1.35}.legacy-journey__copy p{margin:0;color:var(--color-text-muted);font-size:.72rem;line-height:1.58}.legacy-journey__copy strong{display:block;margin-top:.65rem;font-size:.72rem;line-height:1.58}.legacy-journey__copy a,.legacy-journey__diag-grid a{display:inline-block;margin-top:.65rem;color:var(--color-accent);font-size:.62rem;font-weight:760;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--color-accent) 35%,transparent)}
+.legacy-journey__number-note{display:grid;grid-template-columns:minmax(180px,.55fr) minmax(0,1.8fr);gap:1rem;padding:.85rem 1rem;border-left:3px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,transparent)}.legacy-journey__number-note strong{font-size:.82rem}.legacy-journey__number-note p{margin:0;color:var(--color-text-muted);font-size:.74rem;line-height:1.6}
+.legacy-journey__compare{display:grid;gap:.85rem}.legacy-journey__table-wrap{overflow:auto;max-width:100%;border:1px solid var(--color-border);border-radius:10px}.legacy-journey table{width:100%;min-width:760px;border-collapse:collapse;font-variant-numeric:tabular-nums}.legacy-journey th,.legacy-journey td{padding:.58rem .65rem;border-bottom:1px solid var(--color-border);text-align:right;font-size:.69rem}.legacy-journey thead th{background:color-mix(in srgb,var(--color-text) 4%,transparent);color:var(--color-text-muted);font-size:.6rem;text-transform:none}.legacy-journey th:first-child{text-align:left}.legacy-journey tbody tr:last-child th,.legacy-journey tbody tr:last-child td{border-bottom:0}.legacy-journey__boundary{margin:0;padding:.72rem .8rem;border-radius:9px;background:color-mix(in srgb,var(--color-text) 3%,transparent);color:var(--color-text-muted);font-size:.71rem;line-height:1.58}
+.legacy-journey__diagnostics{display:grid;gap:.9rem}.legacy-journey__diag-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.legacy-journey__diag-grid article{padding:.85rem;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}.legacy-journey__diag-grid>article>small{color:var(--color-accent);font:800 .56rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}.legacy-journey__diag-grid h3{margin:.45rem 0 .65rem;font-size:.88rem}.legacy-journey__diag-grid dl{display:grid;gap:.55rem;margin:0}.legacy-journey__diag-grid dl>div{display:grid;grid-template-columns:74px 1fr;gap:.55rem;padding-top:.5rem;border-top:1px solid var(--color-border)}.legacy-journey__diag-grid dt{color:var(--color-text-muted);font-size:.59rem;font-weight:800}.legacy-journey__diag-grid dd{margin:0;font-size:.69rem;line-height:1.55}
+.legacy-journey__next{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1rem;border:1px solid var(--color-border);border-radius:13px}.legacy-journey__next small{display:block;color:var(--color-text-muted);font:800 .56rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.legacy-journey__next strong{display:block;margin-top:.25rem;font-size:.78rem}.legacy-journey__next nav{display:flex;gap:.45rem;flex-wrap:wrap}.legacy-journey__next a{padding:.45rem .6rem;border:1px solid var(--color-border);border-radius:8px;color:var(--color-text);font-size:.66rem;font-weight:750;text-decoration:none}.legacy-journey__next a:hover{border-color:var(--color-accent);color:var(--color-accent)}
+@media(max-width:1000px){.legacy-journey__timeline{grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline article::after{display:none}}
+@media(max-width:700px){.legacy-journey__intro,.legacy-journey__compare,.legacy-journey__diagnostics{padding:.85rem}.legacy-journey__timeline,.legacy-journey__diag-grid{grid-template-columns:1fr}.legacy-journey__number-note{grid-template-columns:1fr;gap:.35rem}.legacy-journey__diag-grid dl>div{grid-template-columns:1fr;gap:.2rem}.legacy-journey__next{align-items:flex-start;flex-direction:column}.legacy-journey__next nav{width:100%}.legacy-journey__next a{flex:1;text-align:center}}
+</style>
