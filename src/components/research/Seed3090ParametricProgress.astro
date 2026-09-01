@@ -5,7 +5,7 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const sourceRoot = 'https://github.com/mykcs/seed3090/blob/main';
+const archiveRoot = 'https://github.com/mykcs/seed3090/blob/6b3285e7ac021f1b69d12223f229d8c9b9a1ed3a';
 
 const runs = [
   {
@@ -67,8 +67,8 @@ const runs = [
   </section>
 
   <footer class="sources">
-    <a href={`${sourceRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('历史阶段报告', 'Historical stage report')} ↗</a>
-    <a href={`${sourceRoot}/README.md`} target="_blank" rel="noreferrer">seed3090 README ↗</a>
+    <a href={`${archiveRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('历史阶段报告', 'Historical stage report')} ↗</a>
+    <a href={`${archiveRoot}/README.md`} target="_blank" rel="noreferrer">seed3090 README ↗</a>
   </footer>
 </section>
 
