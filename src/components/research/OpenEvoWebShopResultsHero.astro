@@ -43,8 +43,8 @@ const navItems = [
       <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '现在已经有一轮真正按纠错后的 SEED 公开代码任务语义完成的配对评测：同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然包含“没有差异”，所以仍然不能说它稳定更好。',
-          'We now have a completed 128×2 paired evaluation on the corrected task semantics recoverable from released SEED code. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
+          '按照纠错后的 SEED 公开代码任务语义，我们已经完成一轮配对评测：同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然包含“没有差异”，所以仍然不能说它稳定更好。',
+          'Using the corrected task semantics recoverable from released SEED code, we completed a 128×2 paired evaluation. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
         )}</p>
         <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
           '“源码忠实任务测量路线”（Track A）先逐题核对 SEED 公开代码真正生成的任务语义：128/128 表示计划的 128 个任务槽位全部核对通过。随后基础模型（BASE）和冻结的 SD-LoRA 适配器模型各完成同一 128 个任务，两个模型组都是 128/128 个回合有效，动作解析无效回合为 0。SD-LoRA 的平均任务完成度方向更高，但配对不确定性区间仍包含 0；全部 256 个原始任务回合和对应分析、运行凭据都已逐文件核对并发布。精确统计量放在下方 Q7 的实验依据里。',

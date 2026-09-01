@@ -131,9 +131,9 @@ OPENAI_MODEL=glm-5.2`;
         <h4 id="why-a100-title">{t('A100 替代方案尽量减少关键条件变化', 'An A100 substitute minimizes changes to critical conditions')}</h4>
       </div>
       <ul>
-        <li>{t('仍然是 8 张 GPU：不先把论文的并行规模改掉。', 'Still eight GPUs: preserve the paper’s parallel scale first.')}</li>
-        <li>{t('仍然是每卡 80GB：避免 40GB / 24GB 迫使你修改切分、batch 或 rollout 结构。', 'Still 80GB per GPU: avoid 40GB / 24GB forcing changes to sharding, batch, or rollout structure.')}</li>
-        <li>{t('仍然是 Ampere 数据中心卡，并且智星云这个八卡 SKU 明确标注 NVLINK。', 'Still an Ampere data-center GPU, and this AI Galaxy eight-GPU SKU explicitly lists NVLINK.')}</li>
+        <li>{t('并行规模保持 8 张 GPU：先不改论文里的并行规模。', 'Keep the parallel scale at eight GPUs rather than changing the paper’s setup first.')}</li>
+        <li>{t('单卡显存保持 80GB：避免 40GB / 24GB 迫使你修改切分、batch 或 rollout 结构。', 'Keep 80GB per GPU so 40GB / 24GB constraints do not force changes to sharding, batch, or rollout structure.')}</li>
+        <li>{t('GPU 类型保持 Ampere 数据中心卡；智星云这个八卡 SKU 也明确标注 NVLINK。', 'Keep the GPU class at Ampere data-center cards; this AI Galaxy eight-GPU SKU also explicitly lists NVLINK.')}</li>
         <li>{t('但型号不同，所以训练吞吐、通信和时间成本可能变化；这一差异必须写进报告。', 'The model is still different, so throughput, communication behavior, and wall-clock cost can change; report that difference explicitly.')}</li>
       </ul>
     </section>

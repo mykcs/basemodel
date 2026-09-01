@@ -24,7 +24,7 @@ const rows = [
   <header class="s1-version__head">
     <p>STAGE 1 · TRAJECTORY COLLECTION VERSION</p>
     <h2 id="stage1-version-title">{t('同一批题，两次 Stage 1：新版是当前主线，旧版保留作历史对照','Same tasks, two Stage-1 realizations: new is current, old remains historical')}</h2>
-    <span>{t('Stage 2 后来设计错了，不代表旧 Stage 1 作废。旧版仍是有效的历史 trajectory corpus；但它和当前 Ceiling-1.0 不是“完全相同的 1,440 条”，因为随机 seed 与真实 decoding 行为不同。','The later Stage-2 design error does not invalidate old Stage 1. It remains a valid historical trajectory corpus, but it is not the identical set of 1,440 trajectories used by current Ceiling-1.0 because the seed and effective decoding differ.')}</span>
+    <span>{t('Stage 2 后来设计错了，不代表旧 Stage 1 作废。旧版 Stage 1 仍是有效的历史 trajectory corpus；但它和 Ceiling-1.0 使用的 corrected Stage 1 不是“完全相同的 1,440 条”，因为随机 seed 与真实 decoding 行为不同。','The later Stage-2 design error does not invalidate old Stage 1. The old Stage 1 remains a valid historical trajectory corpus, but it is not the identical set of 1,440 trajectories used by the corrected Stage 1 in Ceiling-1.0 because the seed and effective decoding differ.')}</span>
   </header>
 
   <div class="s1-version__versions" aria-label={t('Stage 1 新旧版本','New and old Stage-1 versions')}>
