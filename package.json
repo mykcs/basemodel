@@ -43,7 +43,7 @@
     "audit:v2:adversarial": "tsx scripts/audit-v2-adversarial.ts",
     "verify:deploy": "npm run lint && npm run verify:gates:negative && npm run check && npm run audit:css && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening && npm run audit:copy:strict",
     "verify:v2": "npm run check && npm run audit:css && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
-    "build": "astro build",
+    "build": "astro build && npm run audit:headings",
     "verify:payload": "node scripts/assert-payload-budget.mjs",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "build:workers:shadow": "node scripts/build-workers-shadow.mjs",
@@ -56,7 +56,8 @@
     "verify:gates:negative": "npm run selftest:lint-negative && npm run selftest:ui-negative",
     "assert:provider-headers": "node scripts/assert-provider-headers.mjs",
     "test:build:locales": "node --experimental-strip-types scripts/assert-locale-build.mjs",
-    "verify:provider-headers": "node scripts/assert-provider-headers.mjs"
+    "verify:provider-headers": "node scripts/assert-provider-headers.mjs",
+    "audit:headings": "node scripts/audit-static-headings.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

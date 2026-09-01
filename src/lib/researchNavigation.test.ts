@@ -92,7 +92,7 @@ describe('SEED × OpenEvo research navigation', () => {
       expect(resultsPage).not.toContain('body:has([data-program-report]) .site-header,');
       expect(resultsPage).not.toContain('body:has([data-program-report]) .site-footer,');
       expect(resultsPage).not.toContain('data-program-report');
-      expect(resultsPage).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
+      expect(resultsPage).not.toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
       expect(resultsPage).toContain('data-testid="openevo-webshop-result-index"');
     }
   });

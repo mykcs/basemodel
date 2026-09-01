@@ -82,9 +82,9 @@ describe('SEED × OpenEvo training design lab', () => {
     expect(nav).toContain("'design'");
     expect(nav).toContain("'/research/seed-openevo/study/design/'");
     expect(zhStudy).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(zhStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} />');
+    expect(zhStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />');
     expect(enStudy).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(enStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} />');
+    expect(enStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />');
   });
 
   it('keeps interaction optional and reduced-motion readable', () => {
