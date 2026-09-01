@@ -15,6 +15,7 @@ const packageJson = JSON.parse(read('package.json')) as {
 const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const vercelIgnoreBuild = read('scripts/vercel-ignore-build.mjs');
 const ciUiGate = read('scripts/ci-ui-gate.mjs');
+const labPlaywrightConfig = read('tests/e2e/lab-playwright.config.ts');
 const selfHostedWorkflow = read('.github/workflows/self-hosted-ci.yml');
 const productionSmoke = read('cloudflare/production-smoke/src/index.js');
 const productionSmokeConfig = JSON.parse(read('cloudflare/production-smoke/wrangler.jsonc')) as {
@@ -36,7 +37,12 @@ describe('hosting architecture ownership', () => {
     expect(selfHostedWorkflow).toContain('persist-credentials: false');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
+    expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');
+    expect(ciUiGate).toContain('basemodel-playwright-transform-');
+    expect(ciUiGate).toContain('rmSync(transformCacheDir, { recursive: true, force: true })');
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
+    expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
+    expect(labPlaywrightConfig).toContain('url: baseURL');
     expect(architecture).toContain('self-hosted CI + Vercel + Cloudflare smoke');
     expect(architecture).toContain('Vercel remains the only ordinary deployment provider');
     expect(architecture).toContain(productionUrl);

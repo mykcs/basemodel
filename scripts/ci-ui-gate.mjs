@@ -1,4 +1,7 @@
 import { spawnSync } from 'node:child_process';
+import { rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const base = process.env.CI_BASE_SHA?.trim();
 const head = process.env.CI_HEAD_SHA?.trim() || 'HEAD';
@@ -62,10 +65,15 @@ if (plan.mode === 'skip') {
   process.exit(0);
 }
 
+const transformCacheDir = join(tmpdir(), `basemodel-playwright-transform-${head.replace(/[^A-Za-z0-9._-]/g, '_')}`);
+rmSync(transformCacheDir, { recursive: true, force: true });
+console.log(`[ci-ui-gate] fresh Playwright transform cache: ${transformCacheDir}`);
+
 const browserEnv = {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',
   PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? '1',
+  PWTEST_CACHE_DIR: transformCacheDir,
 };
 
 // The self-hosted runner owns its browser runtime. Keep provider-specific

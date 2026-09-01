@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 4327);
+const baseURL = `http://127.0.0.1:${port}/`;
+
 export default defineConfig({
   testDir: '.',
   testMatch: 'lab-server-visual-qa.spec.ts',
@@ -12,7 +15,7 @@ export default defineConfig({
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://127.0.0.1:4327/',
+    baseURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -24,8 +27,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4327',
-    url: 'http://127.0.0.1:4327/',
+    command: `npm run preview -- --host 127.0.0.1 --port ${port}`,
+    url: baseURL,
     reuseExistingServer: false,
     timeout: 120_000,
   },
