@@ -38,9 +38,26 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(tree).toContain('data-current-outcome-slot="ceiling"');
     expect(tree).toContain('data-current-outcome-slot="evo2"');
     expect(tree).toContain('各自进入不同的后续节点');
-    expect(tree).toContain('只属于 Ceiling-1.0 这条路线');
+    expect(tree).toContain('data-ceiling-lineage');
     expect(tree).toContain('data-current-route="ceiling"');
     expect(tree).toContain('data-current-route="evo2"');
+  });
+
+  it('renders the Ceiling-1.0 pilot with semantic node hierarchy', () => {
+    expect(tree).toContain('data-ceiling-lineage');
+    expect(tree).toContain('data-node-type="scientific-amendment"');
+    expect(tree).toContain('取消独立 64-component 停止线');
+    expect(tree).toContain('effective rank ≤ 4096；replay_capacity=64 不变');
+    expect(tree).toContain('7B capacity-amended run');
+    expect(tree).toContain('data-node-type="engineering-fix"');
+    for (const fix of ['trainer 来源', '重启校验', '谱系记录', 'HF 冷归档']) {
+      expect(tree).toContain(fix);
+    }
+    expect(tree).toContain('data-node-state="future"');
+    expect(tree).toContain('Rank reduction / compression');
+    expect(tree).toContain('尚未激活；需要单独 scientific amendment');
+    expect(tree).toContain('current-route-row--ceiling');
+    expect(tree).toContain('ceiling-lineage__spine');
   });
 
   it('marks Harness 2.0.1 mechanically complete and moves the lock to readiness', () => {
