@@ -17,6 +17,8 @@ describe('historical seed3090 parametric evidence', () => {
   it('preserves the real SD-LoRA mechanism and key historical score sequence', () => {
     for (const token of ['causal-LM loss','optimizer.step','LoRA / PARAMETRIC_MEMORY','0.0 → 0.0','0 → 0.429','0 → 0.429 → 0','continual LoRA-SFT','OPD + GRPO']) expect(component).toContain(token);
     expect(component).toContain('OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md');
+    expect(component).toContain('6b3285e7ac021f1b69d12223f229d8c9b9a1ed3a');
+    expect(component).not.toContain('seed3090/blob/main');
   });
 
   it('carries diagnosis forward inside the collapsed appendix instead of the results landing body', () => {
