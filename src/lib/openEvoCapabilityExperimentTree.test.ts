@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const tree = read('../components/research/OpenEvoCapabilityExperimentTree.astro');
+const treeMarkup = tree.slice(0, tree.indexOf('<script>'));
 const zhIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
 const enIndex = read('../pages/en/research/seed-openevo/study/capability-exploration/index.astro');
 
@@ -72,6 +73,20 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(tree).toContain('rank reduction / compression · future scientific amendment');
     expect(tree).toContain('current-route-row--ceiling');
     expect(tree).toContain('ceiling-lineage__spine');
+  });
+
+  it('separates visible route previews from truly hidden content', () => {
+    expect(tree).toContain('data-preview-state="preview"');
+    expect(tree).toContain('const setPreviewState = (el: HTMLElement, preview: boolean)');
+    expect(tree).toContain("button.setAttribute('aria-disabled', 'true')");
+    expect(tree).toContain('button.tabIndex = -1');
+    const previewTags = [...treeMarkup.matchAll(/<[^>]*data-route-preview[^>]*>/g)].map((match) => match[0]);
+    expect(previewTags.length).toBeGreaterThan(0);
+    expect(previewTags.some((tag) => /\shidden(?:\s|>)/.test(tag))).toBe(false);
+    expect(tree).toContain('data-floor="stage2" hidden');
+    expect(tree).toContain('data-lineage-detail-layer hidden');
+    expect(tree).toContain('data-story={story.id} hidden');
+    expect(tree).not.toContain('!important');
   });
 
   it('marks Harness 2.0.1 mechanically complete and moves the lock to readiness', () => {

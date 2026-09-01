@@ -92,9 +92,9 @@ const stories = [
           <button class="rogue-node rogue-node--current" type="button" data-stage1="current" aria-pressed="false"><i>◇</i><b>{t('corrected Stage 1','Corrected Stage 1')}</b><small>{t('Ceiling / OpenEVO 2.0 的新起点','New starting point for Ceiling / OpenEVO 2.0')}</small></button>
         </div>
         <div class="map-connector" aria-hidden="true">→</div>
-        <div class="map-column" data-step="analysis" hidden data-route-preview>
+        <div class="map-column" data-step="analysis" data-route-preview data-preview-state="preview">
           <span class="map-column__label">02 · {t('经验分析','ANALYSIS')}</span>
-          <div data-analysis-branch="old" hidden data-route-preview-branch>
+          <div data-analysis-branch="old" data-route-preview-branch data-preview-state="preview">
             <div class="node-stack node-stack--grid">
               <button class="rogue-node" type="button" data-analysis="old-3b-self" aria-pressed="false"><i>◇</i><b>3B / self</b><small>{t('自己总结','Self analysis')}</small></button>
               <button class="rogue-node" type="button" data-analysis="old-7b-self" aria-pressed="false"><i>◇</i><b>7B / self</b><small>{t('自己总结','Self analysis')}</small></button>
@@ -102,12 +102,12 @@ const stories = [
               <button class="rogue-node" type="button" data-analysis="old-7b-minimax" aria-pressed="false"><i>◇</i><b>7B / MiniMax</b><small>{t('任务后分析','Post-episode analysis')}</small></button>
             </div>
           </div>
-          <div data-analysis-branch="current" hidden data-route-preview-branch>
+          <div data-analysis-branch="current" data-route-preview-branch data-preview-state="preview">
             <button class="rogue-node rogue-node--current" type="button" data-analysis="current-state" aria-pressed="false"><i>◇</i><b>{t('1,440 条 MiniMax 分析','1,440 MiniMax analyses')}</b><small>OPSD · Text Memory · Skill Bundle · Agent System</small></button>
           </div>
         </div>
         <div class="map-connector" aria-hidden="true">→</div>
-        <div class="map-column map-column--exit" data-step="floor-exit" hidden data-route-preview>
+        <div class="map-column map-column--exit" data-step="floor-exit" data-route-preview data-preview-state="preview">
           <span class="map-column__label">03 · {t('出口','EXIT')}</span>
           <button class="rogue-node rogue-node--exit" type="button" data-enter-stage2><i>↓</i><b>{t('进入第 2 层 · Stage 2','Enter Floor 2 · Stage 2')}</b><small>{t('换地图','Change map')}</small></button>
         </div>
@@ -124,14 +124,14 @@ const stories = [
           <span class="map-column__label">01 · Stage 2 v1</span>
           <button class="rogue-node" type="button" data-stage2="legacy" aria-pressed="false"><i>◇</i><b>{t('历史 256-window','Historical 256-window')}</b><small>{t('每 256 条独立判断旧门槛','Gate reset every 256 attempts')}</small></button>
         </div>
-        <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
-        <div class="map-column" data-bug-branch="old" hidden data-route-preview>
+        <div class="map-connector" data-old-map-arrow data-old-route-preview data-route-preview-arrow data-preview-state="preview" aria-hidden="true">→</div>
+        <div class="map-column" data-bug-branch="old" data-old-route-preview data-route-preview data-preview-state="preview">
           <span class="map-column__label map-column__label--bug">02 · {t('历史结局 · 被自己的门槛卡住','HISTORICAL OUTCOME · BLOCKED BY OUR OWN GATE')}</span>
           <button class="rogue-node rogue-node--bug" type="button" data-bug="legacy-gate" aria-pressed="false"><i>!</i><b>{t('我们要求至少 8 个重复成功任务；四条历史路线里最好一块也只有 7 个','We required at least 8 repeatedly successful tasks; across the four historical routes the best block still had only 7')}</b><small>{t('每个 256 次任务尝试的数据块都重新统计；7 < 8 时，这一块就不允许更新参数。','Each 256-attempt block was counted from scratch; when 7 < 8, that block was not allowed to update parameters.')}</small><em>{t('结果：旧 Stage 2 没有任何完整数据块触发参数更新','Outcome: no complete block in the old Stage 2 triggered a parameter update')}</em></button>
           <button class="rogue-node rogue-node--ending" type="button" data-ending-from-old><i>◎</i><b>{t('查看这条 arm 的 Stage-2 0-update 结局','Open this arm’s Stage-2 zero-update outcome')}</b><small>{t('下面展开 3B / 7B、self / MiniMax 的具体成功数、7/8（或更低）与 0 次更新','Expand the exact 3B / 7B, self / MiniMax counts, 7/8 (or lower), and zero updates below')}</small></button>
         </div>
-        <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
-        <div class="map-column" data-old-successor hidden data-route-preview>
+        <div class="map-connector" data-old-map-arrow data-old-route-preview data-route-preview-arrow data-preview-state="preview" aria-hidden="true">→</div>
+        <div class="map-column" data-old-successor data-old-route-preview data-route-preview data-preview-state="preview">
           <span class="map-column__label">03 · {t('要继续，必须先改规则','TO CONTINUE, REPAIR THE RULE')}</span>
           <button class="rogue-node rogue-node--repair" type="button" data-repair="legacy-gate"><i>✓</i><b>{t('修正学习合同，只解锁新的 successor 路线','Repair the learning contract to unlock a new successor line')}</b><small>{t('旧 run 的 0-update 结局原样保留；Ceiling-1.0 / OpenEVO 2.0 是从 corrected Stage 1 重新分出的新路线，不是旧 run 自动接着跑。','The old zero-update outcome stays intact; Ceiling-1.0 / OpenEVO 2.0 fork again from corrected Stage 1 rather than automatically continuing this old run.')}</small></button>
         </div>
@@ -143,8 +143,8 @@ const stories = [
           </div>
           <div class="current-route-row current-route-row--ceiling" data-current-route="ceiling">
             <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false" data-node-type="mainline" data-node-state="current"><i>◇</i><b>Ceiling-1.0</b><small>{t('每 128 次任务整理一轮经验','One learning round per 128 task attempts')}</small></button>
-            <span class="map-connector current-route-arrow" data-current-map-arrow="ceiling" hidden data-route-preview-arrow aria-hidden="true">→</span>
-            <div class="current-route-outcome current-route-outcome--ceiling" data-current-outcome-slot="ceiling" hidden data-route-preview-outcome>
+            <span class="map-connector current-route-arrow" data-current-map-arrow="ceiling" data-route-preview-arrow data-preview-state="preview" aria-hidden="true">→</span>
+            <div class="current-route-outcome current-route-outcome--ceiling" data-current-outcome-slot="ceiling" data-route-preview-outcome data-preview-state="preview">
               <div class="ceiling-lineage" data-ceiling-lineage>
                 <div class="ceiling-lineage__spine" aria-label={t('Ceiling-1.0 当前主线','Current Ceiling-1.0 mainline')}>
                   <div class="lineage-node lineage-node--amendment" data-node-type="scientific-amendment" data-node-state="current">
@@ -216,8 +216,8 @@ const stories = [
           </div>
           <div class="current-route-row" data-current-route="evo2">
             <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
-            <span class="map-connector current-route-arrow" data-current-map-arrow="evo2" hidden data-route-preview-arrow aria-hidden="true">→</span>
-            <div class="current-route-outcome" data-current-outcome-slot="evo2" data-evo2-gate hidden data-route-preview-outcome>
+            <span class="map-connector current-route-arrow" data-current-map-arrow="evo2" data-route-preview-arrow data-preview-state="preview" aria-hidden="true">→</span>
+            <div class="current-route-outcome" data-current-outcome-slot="evo2" data-evo2-gate data-route-preview-outcome data-preview-state="preview">
               <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：v1 接口问题','Harness 2.0 Mini Study: v1 interface issue')}</b><small>{t('v1 Mechanical PASS，但 formal activation HOLD','v1 Mechanical PASS, but formal activation HOLD')}</small><em>{t('v1 在这里停下；Harness 2.0.1 已完成机械资格','v1 stops here; Harness 2.0.1 has completed mechanical qualification')}</em></button>
               <div class="rogue-node rogue-node--repair rogue-node--resolved" data-harness201-status><i>✓</i><b>Harness 2.0.1 · Mechanical PASS</b><small>{t('Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT','Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT')}</small></div>
               <button class="rogue-node rogue-node--locked" type="button" data-readiness-gate disabled><i>🔒</i><b>{t('Stage2 readiness audit + dress rehearsal','Stage2 readiness audit + dress rehearsal')}</b><small>{t('formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS','formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS')}</small></button>
@@ -254,6 +254,20 @@ const stories = [
     const one = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector);
     const all = <T extends HTMLElement>(selector: string) => [...root.querySelectorAll<T>(selector)];
     const pressed = (selector: string, active: HTMLElement | null) => all<HTMLElement>(selector).forEach((el) => el.setAttribute('aria-pressed', el === active ? 'true' : 'false'));
+    const setPreviewState = (el: HTMLElement, preview: boolean) => {
+      el.dataset.previewState = preview ? 'preview' : 'active';
+      el.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+        if (preview) {
+          button.setAttribute('aria-disabled', 'true');
+          button.tabIndex = -1;
+        } else {
+          button.removeAttribute('aria-disabled');
+          button.removeAttribute('tabindex');
+        }
+      });
+    };
+    const previewDisabled = (button: HTMLButtonElement) => button.getAttribute('aria-disabled') === 'true';
+    all<HTMLElement>('[data-preview-state="preview"]').forEach((el) => setPreviewState(el, true));
     const hideStories = () => {
       all<HTMLElement>('[data-story]').forEach((panel) => panel.hidden = true);
       const placeholder = one<HTMLElement>('[data-story-placeholder]');
@@ -322,28 +336,31 @@ const stories = [
       closeLineageDetail(false);
       state.stage2 = ''; state.bugResolved = false;
       pressed('[data-stage2]', null); pressed('[data-bug]', null);
-      all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome-slot],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
+      all<HTMLElement>('[data-old-route-preview],[data-current-outcome-slot],[data-current-map-arrow]').forEach((el) => setPreviewState(el, true));
       all<HTMLElement>('[data-repair="legacy-gate"]').forEach((el) => el.classList.remove('rogue-node--resolved'));
       hideStories(); updatePath();
     };
 
     all<HTMLButtonElement>('[data-stage1]').forEach((button) => button.addEventListener('click', () => {
+      if (previewDisabled(button)) return;
       state.stage1 = button.dataset.stage1 || ''; state.analysis = '';
       pressed('[data-stage1]', button); pressed('[data-analysis]', null);
-      const analysis = one<HTMLElement>('[data-step="analysis"]'); if (analysis) analysis.hidden = false;
-      all<HTMLElement>('[data-analysis-branch]').forEach((branch) => branch.hidden = branch.dataset.analysisBranch !== state.stage1);
-      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) exit.hidden = true;
+      const analysis = one<HTMLElement>('[data-step="analysis"]'); if (analysis) setPreviewState(analysis, false);
+      all<HTMLElement>('[data-analysis-branch]').forEach((branch) => setPreviewState(branch, branch.dataset.analysisBranch !== state.stage1));
+      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) setPreviewState(exit, true);
       resetStage2Map(); updatePath();
     }));
 
     all<HTMLButtonElement>('[data-analysis]').forEach((button) => button.addEventListener('click', () => {
+      if (previewDisabled(button)) return;
       state.analysis = button.dataset.analysis || ''; pressed('[data-analysis]', button);
-      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) exit.hidden = false;
+      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) setPreviewState(exit, false);
       hideStories(); updatePath();
     }));
 
-    one<HTMLButtonElement>('[data-enter-stage2]')?.addEventListener('click', () => {
-      if (!state.stage1 || !state.analysis) return;
+    one<HTMLButtonElement>('[data-enter-stage2]')?.addEventListener('click', (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      if (previewDisabled(button) || !state.stage1 || !state.analysis) return;
       const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
       if (floor1) { floor1.hidden = true; floor1.classList.remove('floor--active'); }
       if (floor2) { floor2.hidden = false; floor2.classList.add('floor--active'); floor2.dataset.route = state.stage1; }
@@ -353,19 +370,23 @@ const stories = [
     });
 
     all<HTMLButtonElement>('[data-stage2]').forEach((button) => button.addEventListener('click', () => {
+      if (previewDisabled(button)) return;
       state.stage2 = button.dataset.stage2 || ''; pressed('[data-stage2]', button); hideStories(); updatePath();
       if (state.stage2 === 'legacy') {
-        all<HTMLElement>('[data-old-map-arrow]').forEach((el) => el.hidden = false);
-        const bug = one<HTMLElement>('[data-bug-branch="old"]'); if (bug) bug.hidden = false;
-        const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = true;
+        all<HTMLElement>('[data-old-map-arrow]').forEach((el) => setPreviewState(el, false));
+        const bug = one<HTMLElement>('[data-bug-branch="old"]'); if (bug) setPreviewState(bug, false);
+        const successor = one<HTMLElement>('[data-old-successor]'); if (successor) setPreviewState(successor, true);
       } else {
-        all<HTMLElement>('[data-current-map-arrow],[data-current-outcome-slot]').forEach((el) => el.hidden = true);
-        const arrow = one<HTMLElement>(`[data-current-map-arrow="${state.stage2}"]`); if (arrow) arrow.hidden = false;
-        const outcome = one<HTMLElement>(`[data-current-outcome-slot="${state.stage2}"]`); if (outcome) outcome.hidden = false;
+        all<HTMLElement>('[data-current-map-arrow],[data-current-outcome-slot]').forEach((el) => setPreviewState(el, true));
+        const arrow = one<HTMLElement>(`[data-current-map-arrow="${state.stage2}"]`); if (arrow) setPreviewState(arrow, false);
+        const outcome = one<HTMLElement>(`[data-current-outcome-slot="${state.stage2}"]`); if (outcome) setPreviewState(outcome, false);
       }
     }));
 
-    all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.addEventListener('click', (event) => { event.stopPropagation(); openLineageDetail(button); }));
+    all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.addEventListener('click', (event) => {
+      if (previewDisabled(button)) return;
+      event.stopPropagation(); openLineageDetail(button);
+    }));
     all<HTMLButtonElement>('[data-lineage-detail-close]').forEach((button) => button.addEventListener('click', () => closeLineageDetail()));
     lineageContent?.addEventListener('click', (event) => {
       if ((event.target as HTMLElement).closest('[data-open-ceiling-story]')) { closeLineageDetail(false); showStory('ceiling'); }
@@ -374,16 +395,27 @@ const stories = [
     window.addEventListener('resize', () => { if (activeLineageTrigger && lineageLayer && !lineageLayer.hidden) positionLineageDetail(activeLineageTrigger); });
 
     one<HTMLButtonElement>('[data-bug="legacy-gate"]')?.addEventListener('click', (event) => {
-      state.bugResolved = false; pressed('[data-bug]', event.currentTarget as HTMLElement);
-      const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = false;
+      const button = event.currentTarget as HTMLButtonElement;
+      if (previewDisabled(button)) return;
+      state.bugResolved = false; pressed('[data-bug]', button);
+      const successor = one<HTMLElement>('[data-old-successor]'); if (successor) setPreviewState(successor, false);
     });
 
     one<HTMLButtonElement>('[data-repair="legacy-gate"]')?.addEventListener('click', (event) => {
-      state.bugResolved = true; (event.currentTarget as HTMLElement).classList.add('rogue-node--resolved');
+      const button = event.currentTarget as HTMLButtonElement;
+      if (previewDisabled(button)) return;
+      state.bugResolved = true; button.classList.add('rogue-node--resolved');
     });
 
-    one<HTMLButtonElement>('[data-ending-from-old]')?.addEventListener('click', () => { if (state.analysis) showStory(state.analysis); });
-    all<HTMLButtonElement>('[data-ending]').forEach((button) => button.addEventListener('click', () => { const id = button.dataset.ending || ''; if (id) showStory(id); }));
+    one<HTMLButtonElement>('[data-ending-from-old]')?.addEventListener('click', (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      if (previewDisabled(button)) return;
+      if (state.analysis) showStory(state.analysis);
+    });
+    all<HTMLButtonElement>('[data-ending]').forEach((button) => button.addEventListener('click', () => {
+      if (previewDisabled(button)) return;
+      const id = button.dataset.ending || ''; if (id) showStory(id);
+    }));
 
     one<HTMLButtonElement>('[data-back-stage1]')?.addEventListener('click', () => {
       const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
@@ -459,14 +491,15 @@ const stories = [
 }
 @media(prefers-reduced-motion:reduce){.choice-grid button,.ending-stack button{transition:none}}
 
-.exp-tree [hidden]{display:none!important}
-/* Roguelike route preview: future nodes remain visible as non-interactive silhouettes. */
-.floor[data-floor="stage1"] [data-route-preview][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.floor[data-floor="stage1"] [data-route-preview-branch][hidden]{display:block!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.floor[data-floor="stage2"][data-route="old"] [data-old-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
-.floor[data-floor="stage2"][data-route="old"] [data-bug-branch="old"][hidden],.floor[data-floor="stage2"][data-route="old"] [data-old-successor][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][hidden]{display:grid!important;opacity:.22;pointer-events:none}
-.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.exp-tree [hidden]{display:none}
+/* Roguelike route preview: visible but not-yet-actionable nodes use an explicit preview state, not HTML hidden. */
+.floor[data-floor="stage1"] [data-route-preview][data-preview-state="preview"]{opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage1"] [data-route-preview-branch][data-preview-state="preview"]{opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="current"] [data-old-route-preview]{display:none}
+.floor[data-floor="stage2"][data-route="old"] [data-old-map-arrow][data-preview-state="preview"]{opacity:.28;pointer-events:none}
+.floor[data-floor="stage2"][data-route="old"] [data-bug-branch="old"][data-preview-state="preview"],.floor[data-floor="stage2"][data-route="old"] [data-old-successor][data-preview-state="preview"]{opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][data-preview-state="preview"]{opacity:.22;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot][data-preview-state="preview"]{display:block;opacity:.28;pointer-events:none;filter:saturate(.4)}
 .rogue-run{padding:.95rem 0 .85rem}
 .floor{padding:.9rem;border:1px solid var(--color-border);border-radius:var(--radius-feature);background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 2.5%,var(--color-bg)),var(--color-bg))}
 .floor--active{box-shadow:0 14px 36px color-mix(in srgb,var(--color-text) 5%,transparent)}
@@ -498,7 +531,7 @@ const stories = [
 .lineage-detail__card{position:absolute;width:280px;min-height:220px;max-height:300px;overflow:auto;padding:.85rem;border:1px solid color-mix(in srgb,var(--color-accent) 45%,var(--color-border));border-radius:var(--radius-panel);background:var(--color-bg);color:var(--color-text);box-shadow:0 16px 38px color-mix(in srgb,var(--color-text) 18%,transparent);pointer-events:auto}.lineage-detail__card:focus{outline:none}
 .lineage-detail__close{position:absolute;top:.48rem;right:.48rem;display:grid;place-items:center;width:1.8rem;height:1.8rem;padding:0;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text);font-size:1rem;cursor:pointer}.lineage-detail__close:hover,.lineage-detail__close:focus-visible{border-color:var(--color-accent);outline:none}
 .lineage-detail__card>p{margin:0 2.2rem .28rem 0;color:var(--color-text-muted);font:800 .5rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.lineage-detail__card h3{margin:0 2rem .6rem 0;font-size:1rem;line-height:1.2}.lineage-detail__content{display:grid;gap:.58rem}.lineage-detail__content p{margin:0;font-size:.7rem;line-height:1.55}.lineage-detail__content dl{display:grid;gap:.4rem;margin:0}.lineage-detail__content dl>div{display:grid;gap:.08rem;padding-top:.38rem;border-top:1px solid var(--color-border)}.lineage-detail__content dt{font-size:.59rem;font-weight:800}.lineage-detail__content dd{margin:0;color:var(--color-text-muted);font-size:.62rem;line-height:1.45}.lineage-detail__content ul{display:grid;gap:.42rem;margin:0;padding:0;list-style:none}.lineage-detail__content li{display:grid;gap:.08rem;padding-top:.4rem;border-top:1px solid var(--color-border)}.lineage-detail__content li b{font-size:.62rem}.lineage-detail__content li span{color:var(--color-text-muted);font-size:.6rem;line-height:1.42}.lineage-detail__content>small{color:var(--color-text-muted);font-size:.55rem;line-height:1.42}.lineage-detail__action{min-height:38px;padding:.48rem .58rem;border:1px solid var(--color-border);border-radius:var(--radius-control);background:transparent;color:var(--color-text);font-size:.62rem;font-weight:760;text-align:left;cursor:pointer}.lineage-detail__action:hover,.lineage-detail__action:focus-visible{border-color:var(--color-accent);outline:none}
-.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot="ceiling"][hidden]{opacity:.42;filter:saturate(.55)}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot="ceiling"][data-preview-state="preview"]{opacity:.42;filter:saturate(.55)}
 .map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:var(--color-danger)}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
 .rogue-node>i{position:absolute;left:.78rem;top:.82rem;display:grid;place-items:center;width:1.28rem;height:1.28rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal}.rogue-node b,.rogue-node small,.rogue-node em{display:block}.rogue-node b{font-size:.79rem;line-height:1.35}.rogue-node small{margin-top:.16rem;color:var(--color-text-muted);font-size:.67rem;line-height:1.42}.rogue-node em{margin-top:.36rem;color:var(--color-danger);font-size:.62rem;font-style:normal;font-weight:760}
@@ -515,7 +548,7 @@ const stories = [
 @media(max-width:700px){
   .lineage-detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:180;pointer-events:auto}
   .lineage-detail__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 28%,transparent);cursor:pointer}
-  .lineage-detail__card{position:relative!important;left:auto!important;top:auto!important;width:min(88vw,330px);min-height:0;max-height:min(72vh,560px);padding:1rem;border-radius:var(--radius-panel);box-shadow:0 22px 54px color-mix(in srgb,var(--color-text) 28%,transparent)}
+  .lineage-detail__card{position:relative;left:auto;top:auto;width:min(88vw,330px);min-height:0;max-height:min(72vh,560px);padding:1rem;border-radius:var(--radius-panel);box-shadow:0 22px 54px color-mix(in srgb,var(--color-text) 28%,transparent)}
   .lineage-detail__card h3{font-size:1.08rem}.lineage-detail__content p{font-size:.76rem}.lineage-detail__content dd{font-size:.69rem}.lineage-detail__content li b{font-size:.69rem}.lineage-detail__content li span{font-size:.67rem}.lineage-detail__action{font-size:.69rem}
 }
 @media(max-width:520px){
