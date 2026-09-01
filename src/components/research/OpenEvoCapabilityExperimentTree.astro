@@ -148,40 +148,69 @@ const stories = [
               <div class="ceiling-lineage" data-ceiling-lineage>
                 <div class="ceiling-lineage__spine" aria-label={t('Ceiling-1.0 当前主线','Current Ceiling-1.0 mainline')}>
                   <div class="lineage-node lineage-node--amendment" data-node-type="scientific-amendment" data-node-state="current">
-                    <span class="lineage-node__badge">Scientific amendment</span>
-                    <strong>{t('取消独立 64-component 停止线','Remove the independent 64-component stop')}</strong>
-                    <small>{t('effective rank ≤ 4096；replay_capacity=64 不变','effective rank ≤ 4096; replay_capacity=64 stays unchanged')}</small>
+                    <strong>{t('放宽 64 限制','Relax the 64 limit')}</strong>
+                    <small>{t('改了容量规则','Capacity rule changed')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="amendment" aria-expanded="false" aria-label={t('了解“放宽 64 限制”','Learn about relaxing the 64 limit')}>+</button>
                   </div>
                   <span class="lineage-spine" aria-hidden="true"></span>
                   <div class="ceiling-lineage__run-stack">
                     <div class="lineage-node lineage-node--mainline" data-node-type="mainline" data-node-state="current">
-                      <span class="lineage-node__badge">Mainline</span>
-                      <strong>{t('7B capacity-amended run','7B capacity-amended run')}</strong>
-                      <small>{t('同一 20,480 rollout 预算继续运行','Continues under the same 20,480-rollout budget')}</small>
+                      <strong>{t('7B 继续跑','7B keeps running')}</strong>
+                      <small>{t('同一实验继续','Same experiment continues')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="run" aria-expanded="false" aria-label={t('了解“7B 继续跑”','Learn about the continuing 7B run')}>+</button>
                     </div>
-                    <div class="ceiling-lineage__patches" aria-label={t('已解决的工程修复','Resolved engineering fixes')}>
-                      <span class="ceiling-lineage__patch-label">{t('工程修复','Engineering fixes')}</span>
-                      <div class="ceiling-lineage__patch-list">
-                        <span class="lineage-fix" data-node-type="engineering-fix" data-node-state="resolved"><i>✓</i>{t('trainer 来源','trainer source')}</span>
-                        <span class="lineage-fix" data-node-type="engineering-fix" data-node-state="resolved"><i>✓</i>{t('重启校验','restart check')}</span>
-                        <span class="lineage-fix" data-node-type="engineering-fix" data-node-state="resolved"><i>✓</i>{t('谱系记录','provenance')}</span>
-                        <span class="lineage-fix" data-node-type="engineering-fix" data-node-state="resolved"><i>✓</i>{t('HF 冷归档','HF archive')}</span>
-                      </div>
+                    <div class="lineage-node lineage-node--fix" data-node-type="engineering-fix" data-node-state="resolved">
+                      <strong>{t('工程修复','Small fixes')}</strong>
+                      <small>{t('修小问题，不改实验','Fix small problems without changing the experiment')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="fixes" aria-expanded="false" aria-label={t('了解“工程修复”','Learn about the engineering fixes')}>+</button>
                     </div>
                   </div>
                   <span class="lineage-spine" aria-hidden="true"></span>
-                  <button class="lineage-node lineage-node--result" type="button" data-ending="ceiling" data-node-type="mainline" data-node-state="current">
-                    <span class="lineage-node__badge">Current</span>
-                    <strong>{t('当前运行与结果','Current run and results')}</strong>
-                    <small>{t('在下方展开这条线的状态与证据','Expand this lineage status and evidence below')}</small>
-                  </button>
+                  <div class="lineage-node lineage-node--result" data-node-type="mainline" data-node-state="current">
+                    <strong>{t('当前结果','Current result')}</strong>
+                    <small>{t('看现在走到哪','See where the run is now')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="result" aria-expanded="false" aria-label={t('了解“当前结果”','Learn about the current result')}>+</button>
+                  </div>
                   <span class="lineage-spine lineage-spine--future" aria-hidden="true"></span>
-                  <div class="lineage-node lineage-node--future" data-node-type="scientific-amendment" data-node-state="future" aria-disabled="true">
-                    <span class="lineage-node__badge">Future · locked</span>
-                    <strong>{t('Rank reduction / compression','Rank reduction / compression')}</strong>
-                    <small>{t('尚未激活；需要单独 scientific amendment','Not active; requires a separate scientific amendment')}</small>
+                  <div class="lineage-node lineage-node--future" data-node-type="scientific-amendment" data-node-state="future">
+                    <strong>{t('以后可能压缩','Compression may come later')}</strong>
+                    <small>{t('还没启用','Not active yet')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="future" aria-expanded="false" aria-label={t('了解“以后可能压缩”','Learn about possible future compression')}>+</button>
                   </div>
                 </div>
+
+                <div class="lineage-detail-layer" data-lineage-detail-layer hidden>
+                  <button class="lineage-detail__backdrop" type="button" data-lineage-detail-close aria-label={t('关闭关卡说明','Close stage details')}></button>
+                  <aside class="lineage-detail__card" data-lineage-detail-card role="dialog" aria-modal="false" aria-labelledby="ceiling-lineage-detail-title" tabindex="-1">
+                    <button class="lineage-detail__close" type="button" data-lineage-detail-close aria-label={t('关闭','Close')}>×</button>
+                    <p>{t('关卡说明','STAGE NOTES')}</p>
+                    <h3 id="ceiling-lineage-detail-title" data-lineage-detail-title></h3>
+                    <div class="lineage-detail__content" data-lineage-detail-content></div>
+                  </aside>
+                </div>
+
+                <template data-lineage-detail-template="amendment">
+                  <p>{t('OpenEvo 原来会在 SD-LoRA 累积到 64 个组件时停下。7B 跑到这里时还没有碰到真正的容量上限，所以我们把这个“到 64 就停”的规则拿掉了。','OpenEvo originally stopped when SD-LoRA reached 64 components. The 7B run reached that point without hitting the real capacity boundary, so we removed the separate “stop at 64” rule.')}</p>
+                  <dl><div><dt>{t('改变了什么','Changed')}</dt><dd>{t('组件数量不再单独决定停止。','Component count no longer stops learning by itself.')}</dd></div><div><dt>{t('没有改变','Unchanged')}</dt><dd>{t('effective rank 仍不超过 4096；replay_capacity 仍是 64；总 rollout 预算、rank=8、任务与评测规则不变。','Effective rank still stays at or below 4096; replay_capacity remains 64; the rollout budget, rank=8, tasks, and evaluation rules stay unchanged.')}</dd></div></dl>
+                  <small>{t('技术记录：Scientific amendment · independent component stop removed.','Technical record: Scientific amendment · independent component stop removed.')}</small>
+                </template>
+                <template data-lineage-detail-template="run">
+                  <p>{t('这是同一条 Ceiling-1.0 7B 实验线继续往前跑，不是重新开一个实验。放宽 64 限制以后，已经产生的轨迹和 checkpoint 都继续留在同一条 lineage 里。','This is the same Ceiling-1.0 7B lineage continuing forward, not a new experiment. After the 64-limit amendment, the existing trajectories and checkpoints remain in the same lineage.')}</p>
+                  <dl><div><dt>{t('继续什么','Continues')}</dt><dd>{t('同一个 20,480 次 Stage 2 任务预算。','The same 20,480-attempt Stage-2 budget.')}</dd></div><div><dt>{t('怎么保护','Guardrails')}</dt><dd>{t('effective rank、显存、磁盘和产物增长仍会在训练前检查。','Effective rank, VRAM, disk, and artifact growth are still checked before training.')}</dd></div></dl>
+                </template>
+                <template data-lineage-detail-template="fixes">
+                  <p>{t('这些不是新的实验阶段。它们只是让已经确定的实验路线能正确继续，并保证以后还能查清每一步从哪里来。','These are not new experiment stages. They keep the already-defined route running correctly and preserve enough history to audit what happened later.')}</p>
+                  <ul><li><b>{t('用对训练代码','Use the right training code')}</b><span>{t('内层训练进程一度读到了旧版代码；现在固定到正确版本。','The inner trainer once loaded an older code path; it is now pinned to the intended version.')}</span></li><li><b>{t('中断后还能接着跑','Resume after an interruption')}</b><span>{t('恢复检查不再只认某一个旧轮次。','Recovery checks no longer assume one hard-coded old round.')}</span></li><li><b>{t('把来历记完整','Keep the lineage complete')}</b><span>{t('旧执行版本也会进入最终记录，不会跑到最后才发现缺一段。','Earlier execution versions are included in the final provenance instead of failing only at the end.')}</span></li><li><b>{t('归档以后仍然认得','Recognize archived checkpoints')}</b><span>{t('已经安全搬到 Hugging Face 的旧 checkpoint，不会被误判成“文件丢了”。','Older checkpoints safely moved to Hugging Face are no longer mistaken for missing files.')}</span></li></ul>
+                  <small>{t('技术记录：trainer source · restart validator · execution provenance · HF cold archive。','Technical record: trainer source · restart validator · execution provenance · HF cold archive.')}</small>
+                </template>
+                <template data-lineage-detail-template="result">
+                  <p>{t('这个节点表示这条 7B 路线仍在继续，并且已经跨过 64-component 的旧停止线。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','This node means the 7B route is still moving and has already crossed the old 64-component stop. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
+                  <button class="lineage-detail__action" type="button" data-open-ceiling-story>{t('在下面看这条线的结果与证据 →','Open this lineage result and evidence below →')}</button>
+                </template>
+                <template data-lineage-detail-template="future">
+                  <p>{t('以后可以研究把累积的低秩组件压得更紧，但这一步现在没有启用。它如果真的加入，会再次改变参数容量合同，所以必须单独讨论、单独验证。','A later study may compress accumulated low-rank components, but that is not active now. If introduced, it would change the parameter-capacity contract again and therefore needs its own discussion and qualification.')}</p>
+                  <small>{t('技术记录：rank reduction / compression · future scientific amendment。','Technical record: rank reduction / compression · future scientific amendment.')}</small>
+                </template>
               </div>
             </div>
           </div>
@@ -245,7 +274,52 @@ const stories = [
       const target = one<HTMLElement>('[data-selected-path-text]');
       if (target) target.textContent = parts.join(' → ') || root.dataset.emptyPath || '';
     };
+    let activeLineageTrigger: HTMLButtonElement | null = null;
+    let bodyOverflowBeforeDialog = '';
+    const lineageLayer = one<HTMLElement>('[data-lineage-detail-layer]');
+    const lineageCard = one<HTMLElement>('[data-lineage-detail-card]');
+    const lineageTitle = one<HTMLElement>('[data-lineage-detail-title]');
+    const lineageContent = one<HTMLElement>('[data-lineage-detail-content]');
+    const lineageIsMobile = () => window.matchMedia('(max-width: 700px)').matches;
+    const closeLineageDetail = (restoreFocus = true) => {
+      if (!lineageLayer || lineageLayer.hidden) return;
+      lineageLayer.hidden = true;
+      all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.setAttribute('aria-expanded','false'));
+      if (lineageCard) { lineageCard.style.removeProperty('left'); lineageCard.style.removeProperty('top'); lineageCard.setAttribute('aria-modal','false'); }
+      document.body.style.overflow = bodyOverflowBeforeDialog;
+      const trigger = activeLineageTrigger; activeLineageTrigger = null;
+      if (restoreFocus) trigger?.focus();
+    };
+    const positionLineageDetail = (trigger: HTMLButtonElement) => {
+      if (!lineageLayer || !lineageCard) return;
+      if (lineageIsMobile()) {
+        lineageCard.style.removeProperty('left'); lineageCard.style.removeProperty('top');
+        lineageCard.setAttribute('aria-modal','true');
+        return;
+      }
+      lineageCard.setAttribute('aria-modal','false');
+      const lineage = one<HTMLElement>('[data-ceiling-lineage]');
+      const node = trigger.closest<HTMLElement>('.lineage-node');
+      if (!lineage || !node) return;
+      const parent = lineage.getBoundingClientRect(); const anchor = node.getBoundingClientRect(); const card = lineageCard.getBoundingClientRect();
+      const gap = 12; let left = anchor.right - parent.left + gap;
+      if (left + card.width > parent.width) left = Math.max(0, anchor.left - parent.left - card.width - gap);
+      const top = Math.max(0, anchor.top - parent.top + anchor.height / 2 - card.height / 2);
+      lineageCard.style.left = `${left}px`; lineageCard.style.top = `${top}px`;
+    };
+    const openLineageDetail = (trigger: HTMLButtonElement) => {
+      if (!lineageLayer || !lineageCard || !lineageTitle || !lineageContent) return;
+      const key = trigger.dataset.lineageDetail || ''; const template = one<HTMLTemplateElement>(`[data-lineage-detail-template="${key}"]`);
+      const node = trigger.closest<HTMLElement>('.lineage-node'); const title = node?.querySelector('strong')?.textContent?.trim() || '';
+      if (!template) return;
+      if (!lineageLayer.hidden && activeLineageTrigger === trigger) { closeLineageDetail(); return; }
+      all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.setAttribute('aria-expanded', button === trigger ? 'true' : 'false'));
+      activeLineageTrigger = trigger; lineageTitle.textContent = title; lineageContent.replaceChildren(template.content.cloneNode(true)); lineageLayer.hidden = false;
+      if (lineageIsMobile()) { bodyOverflowBeforeDialog = document.body.style.overflow; document.body.style.overflow = 'hidden'; }
+      requestAnimationFrame(() => { positionLineageDetail(trigger); lineageCard.focus(); });
+    };
     const resetStage2Map = () => {
+      closeLineageDetail(false);
       state.stage2 = ''; state.bugResolved = false;
       pressed('[data-stage2]', null); pressed('[data-bug]', null);
       all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome-slot],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
@@ -290,6 +364,14 @@ const stories = [
         const outcome = one<HTMLElement>(`[data-current-outcome-slot="${state.stage2}"]`); if (outcome) outcome.hidden = false;
       }
     }));
+
+    all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.addEventListener('click', (event) => { event.stopPropagation(); openLineageDetail(button); }));
+    all<HTMLButtonElement>('[data-lineage-detail-close]').forEach((button) => button.addEventListener('click', () => closeLineageDetail()));
+    lineageContent?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('[data-open-ceiling-story]')) { closeLineageDetail(false); showStory('ceiling'); }
+    });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && lineageLayer && !lineageLayer.hidden) { event.preventDefault(); closeLineageDetail(); } });
+    window.addEventListener('resize', () => { if (activeLineageTrigger && lineageLayer && !lineageLayer.hidden) positionLineageDetail(activeLineageTrigger); });
 
     one<HTMLButtonElement>('[data-bug="legacy-gate"]')?.addEventListener('click', (event) => {
       state.bugResolved = false; pressed('[data-bug]', event.currentTarget as HTMLElement);
@@ -399,21 +481,23 @@ const stories = [
 .current-route-arrow{min-height:64px}.current-route-outcome{display:grid;gap:.46rem;min-width:0}
 .current-route-row--ceiling{grid-template-columns:minmax(160px,.58fr) 34px minmax(0,2.42fr)}
 .current-route-outcome--ceiling{min-width:0}
-.ceiling-lineage{display:grid;gap:.52rem;min-width:0}
+.ceiling-lineage{position:relative;display:grid;gap:.52rem;min-width:0;overflow:visible}
 .ceiling-lineage__spine{display:grid;grid-template-columns:minmax(132px,1fr) 22px minmax(132px,1fr) 22px minmax(132px,1fr) 22px minmax(132px,1fr);align-items:start;min-width:0}
 .lineage-spine{align-self:start;margin-top:27px;height:0;border-top:2px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}
 .lineage-spine--future{border-top-width:1px;border-top-style:dashed;opacity:.58}
-.lineage-node{position:relative;display:flex;min-width:0;min-height:54px;flex-direction:column;justify-content:center;gap:.16rem;padding:.55rem .62rem;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);color:var(--color-text);text-align:left}
-.lineage-node__badge{color:var(--color-text-muted);font:800 .5rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em;text-transform:uppercase}
-.lineage-node strong{font-size:.71rem;line-height:1.3}.lineage-node small{color:var(--color-text-muted);font-size:.6rem;line-height:1.36}
+.lineage-node{position:relative;display:flex;min-width:0;min-height:54px;flex-direction:column;justify-content:center;gap:.12rem;padding:.55rem 2.05rem .55rem .62rem;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);color:var(--color-text);text-align:left}
+.lineage-node strong{font-size:.72rem;line-height:1.3}.lineage-node small{color:var(--color-text-muted);font-size:.59rem;line-height:1.34}
 .lineage-node--amendment{border-left:3px double color-mix(in srgb,var(--color-accent) 72%,var(--color-border))}
 .lineage-node--mainline{border-color:color-mix(in srgb,var(--color-accent) 46%,var(--color-border))}
-button.lineage-node{cursor:pointer;transition:border-color .15s ease,background .15s ease}button.lineage-node:hover,button.lineage-node:focus-visible{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));outline:none}
+.lineage-node--fix{min-height:40px;margin-left:.55rem;padding:.42rem 2rem .42rem .5rem;border-radius:6px;border-color:color-mix(in srgb,#3f8f68 46%,var(--color-border));background:color-mix(in srgb,#3f8f68 4%,var(--color-bg))}.lineage-node--fix strong{font-size:.64rem}.lineage-node--fix small{font-size:.54rem}
 .lineage-node--future{border-style:dashed;opacity:.42;background:color-mix(in srgb,var(--color-text) 1%,var(--color-bg))}
-.ceiling-lineage__run-stack{display:grid;gap:.34rem;min-width:0}.ceiling-lineage__patches{position:relative;padding:.12rem 0 .02rem .55rem;border-left:1px solid color-mix(in srgb,var(--color-text-muted) 42%,var(--color-border))}
-.ceiling-lineage__patch-label{display:block;margin-bottom:.25rem;color:var(--color-text-muted);font:800 .49rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em;text-transform:uppercase}
-.ceiling-lineage__patch-list{display:flex;flex-wrap:wrap;gap:.28rem}
-.lineage-fix{display:inline-flex;min-height:30px;align-items:center;gap:.28rem;padding:.28rem .42rem;border:1px solid color-mix(in srgb,#3f8f68 42%,var(--color-border));border-radius:6px;background:color-mix(in srgb,#3f8f68 4%,var(--color-bg));color:var(--color-text-muted);font-size:.57rem;line-height:1.25}.lineage-fix i{color:#3f8f68;font-style:normal;font-weight:800}
+.lineage-node__expand{position:absolute;top:.36rem;right:.36rem;display:grid;place-items:center;width:1.45rem;height:1.45rem;padding:0;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text-muted);font:700 .82rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}.lineage-node__expand:hover,.lineage-node__expand:focus-visible,.lineage-node__expand[aria-expanded="true"]{border-color:var(--color-accent);color:var(--color-accent);outline:none;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+.ceiling-lineage__run-stack{display:grid;gap:.3rem;min-width:0}
+.lineage-detail-layer{position:absolute;inset:0;z-index:30;pointer-events:none}
+.lineage-detail__backdrop{display:none}
+.lineage-detail__card{position:absolute;width:280px;min-height:220px;max-height:300px;overflow:auto;padding:.85rem;border:1px solid color-mix(in srgb,var(--color-accent) 45%,var(--color-border));border-radius:10px;background:var(--color-bg);color:var(--color-text);box-shadow:0 16px 38px color-mix(in srgb,var(--color-text) 18%,transparent);pointer-events:auto}.lineage-detail__card:focus{outline:none}
+.lineage-detail__close{position:absolute;top:.48rem;right:.48rem;display:grid;place-items:center;width:1.8rem;height:1.8rem;padding:0;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text);font-size:1rem;cursor:pointer}.lineage-detail__close:hover,.lineage-detail__close:focus-visible{border-color:var(--color-accent);outline:none}
+.lineage-detail__card>p{margin:0 2.2rem .28rem 0;color:var(--color-text-muted);font:800 .5rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.lineage-detail__card h3{margin:0 2rem .6rem 0;font-size:1rem;line-height:1.2}.lineage-detail__content{display:grid;gap:.58rem}.lineage-detail__content p{margin:0;font-size:.7rem;line-height:1.55}.lineage-detail__content dl{display:grid;gap:.4rem;margin:0}.lineage-detail__content dl>div{display:grid;gap:.08rem;padding-top:.38rem;border-top:1px solid var(--color-border)}.lineage-detail__content dt{font-size:.59rem;font-weight:800}.lineage-detail__content dd{margin:0;color:var(--color-text-muted);font-size:.62rem;line-height:1.45}.lineage-detail__content ul{display:grid;gap:.42rem;margin:0;padding:0;list-style:none}.lineage-detail__content li{display:grid;gap:.08rem;padding-top:.4rem;border-top:1px solid var(--color-border)}.lineage-detail__content li b{font-size:.62rem}.lineage-detail__content li span{color:var(--color-text-muted);font-size:.6rem;line-height:1.42}.lineage-detail__content>small{color:var(--color-text-muted);font-size:.55rem;line-height:1.42}.lineage-detail__action{min-height:38px;padding:.48rem .58rem;border:1px solid var(--color-border);border-radius:6px;background:transparent;color:var(--color-text);font-size:.62rem;font-weight:760;text-align:left;cursor:pointer}.lineage-detail__action:hover,.lineage-detail__action:focus-visible{border-color:var(--color-accent);outline:none}
 .floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot="ceiling"][hidden]{opacity:.42;filter:saturate(.55)}
 .map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:#c34a4a}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:13px;background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
@@ -426,7 +510,13 @@ button.lineage-node{cursor:pointer;transition:border-color .15s ease,background 
 @media(max-width:900px){
   .floor__header{grid-template-columns:1fr}.floor__map,.floor__map--stage2{grid-template-columns:1fr;gap:.55rem;min-height:0}.map-connector{height:1.1rem;rotate:90deg}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .current-route-head{display:none}.current-route-row,.current-route-row--ceiling{grid-template-columns:1fr;gap:.42rem;padding:.55rem 0;border-top:1px solid var(--color-border)}.current-route-row:first-of-type{border-top:0;padding-top:0}.current-route-arrow{min-height:.9rem;height:.9rem}
-  .ceiling-lineage__spine{grid-template-columns:1fr;gap:.3rem}.lineage-spine{width:1px;height:.68rem;margin-top:0;justify-self:center;border-top:0;border-left:2px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}.lineage-spine--future{border-left-width:1px;border-left-style:dashed}.ceiling-lineage__patches{margin-left:.7rem;padding-left:.58rem}.lineage-node{min-height:48px}.lineage-node--future{opacity:.44}
+  .ceiling-lineage__spine{grid-template-columns:1fr;gap:.3rem}.lineage-spine{width:1px;height:.68rem;margin-top:0;justify-self:center;border-top:0;border-left:2px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}.lineage-spine--future{border-left-width:1px;border-left-style:dashed}.lineage-node{min-height:48px}.lineage-node--fix{width:min(78%,240px);margin-left:.7rem}.lineage-node--future{opacity:.44}
+}
+@media(max-width:700px){
+  .lineage-detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:180;pointer-events:auto}
+  .lineage-detail__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 28%,transparent);cursor:pointer}
+  .lineage-detail__card{position:relative!important;left:auto!important;top:auto!important;width:min(88vw,330px);min-height:0;max-height:min(72vh,560px);padding:1rem;border-radius:12px;box-shadow:0 22px 54px color-mix(in srgb,var(--color-text) 28%,transparent)}
+  .lineage-detail__card h3{font-size:1.08rem}.lineage-detail__content p{font-size:.76rem}.lineage-detail__content dd{font-size:.69rem}.lineage-detail__content li b{font-size:.69rem}.lineage-detail__content li span{font-size:.67rem}.lineage-detail__action{font-size:.69rem}
 }
 @media(max-width:520px){
   .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:14px}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid{grid-template-columns:1fr}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}
