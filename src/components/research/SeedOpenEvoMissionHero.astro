@@ -51,5 +51,14 @@ const chain = [
     .mission-chain li:not(:last-child)::after{top:50%;right:2px;bottom:auto;width:.65rem;height:2px;transform:translateY(-50%)}
     .mission-chain li:not(:last-child)>a::after{right:8px}
   }
-  @media(max-width:640px){.mission-chain ol{grid-auto-columns:minmax(218px,82vw)}}
+  @media(max-width:640px){
+    .mission-chain{padding:14px 0 12px;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);border-radius:var(--mobile-radius-lg);background:color-mix(in srgb,var(--surface) 76%,transparent)}
+    .mission-chain figcaption{padding:2px 16px 12px}
+    .mission-chain figcaption span{margin-bottom:4px;line-height:1.2;letter-spacing:.035em}
+    .mission-chain figcaption strong{max-width:32em;letter-spacing:-.006em}
+    .mission-chain li small{margin-bottom:3px;line-height:1.25;letter-spacing:.025em}
+    .mission-chain li strong{line-height:1.28;letter-spacing:-.01em}
+    .mission-chain ol{grid-auto-columns:minmax(218px,82vw)}
+    .mission-chain figcaption .mission-chain__swipe-hint{margin-bottom:0;line-height:1.4;letter-spacing:normal}
+  }
 </style>
