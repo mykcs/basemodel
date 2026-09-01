@@ -99,6 +99,8 @@ A new global stylesheet must have a durable semantic responsibility that can be 
 
 Prefer feature styling beside or directly imported by the owning component when rules do not need page-wide reach. A component should not depend on a later global override merely because it is faster to patch there.
 
+Ordinary corner radii follow the shared 6 / 10 / 16px system in `tokens.css`. Existing one-off pixel radii are migration debt, not a palette to copy. Clean/new components should use `--radius-control`, `--radius-panel`, or `--radius-feature`; pills and circles keep their separate fully rounded semantics. The CSS audit freezes remaining legacy per-file/per-value debt so it can decrease but cannot grow.
+
 ### Frozen legacy compatibility layers
 
 These files remain because portions of their cascade still contain required behavior:
@@ -155,7 +157,8 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - Header/Nav selectors cannot spread to new files;
 - `design-refinement.css`, `visual-closeout.css`, and `mobile-composition.css` cannot regain Header/Nav ownership;
 - required Header/shared-shell invariants remain in their semantic owners;
-- the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants.
+- the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants;
+- the canonical 6 / 10 / 16px radius tokens remain defined, and frozen non-canonical single-pixel radius debt cannot spread to a new file/value or increase in count.
 
 `src/lib/globalShellOwnership.test.ts` independently enforces page isolation, owner ordering, breakpoint ownership, retired Header debt, and the frozen remaining selector set.
 

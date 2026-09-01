@@ -36,6 +36,8 @@ const foundationPath = 'src/styles/global.css';
 const headerOwnerPath = 'src/styles/components/header.css';
 const shellOwnerPath = 'src/styles/components/global-shell.css';
 const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
+const radiusTokensPath = 'src/styles/tokens.css';
+const radiusDebtBaselinePath = 'scripts/css-radius-debt-baseline.json';
 
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
@@ -123,6 +125,60 @@ for (const invariant of ['.shell', '.footer-inner', '@media (max-width: 390px)']
   if (!shellOwner.includes(invariant)) fail(`${shellOwnerPath} is missing required shell invariant: ${invariant}`);
 }
 
+const radiusTokens = read(radiusTokensPath);
+for (const invariant of [
+  '--radius-control: 6px;',
+  '--radius-panel: 10px;',
+  '--radius-feature: 16px;',
+]) {
+  if (!radiusTokens.includes(invariant)) fail(`${radiusTokensPath} is missing canonical radius token: ${invariant}`);
+}
+
+type RadiusDebtBaseline = {
+  schema: string;
+  allowed_single_pixel_values: string[];
+  baseline_total: number;
+  debt: Record<string, Record<string, number>>;
+};
+const radiusBaseline = JSON.parse(read(radiusDebtBaselinePath)) as RadiusDebtBaseline;
+if (radiusBaseline.schema !== 'basemodel.css-radius-debt.v1') fail(`${radiusDebtBaselinePath} has an unsupported schema`);
+const allowedRadiusValues = new Set(radiusBaseline.allowed_single_pixel_values);
+const radiusSourceRoots = ['src'];
+const radiusSourceExtensions = new Set(['.astro', '.css', '.tsx', '.ts']);
+const singlePixelRadius = /border-radius\s*:\s*([0-9]+(?:\.[0-9]+)?)px\s*(?=[;}])/g;
+const observedRadiusDebt: Record<string, Record<string, number>> = {};
+for (const sourceRoot of radiusSourceRoots) {
+  for (const path of walk(join(root, sourceRoot))) {
+    const extension = path.slice(path.lastIndexOf('.'));
+    if (!radiusSourceExtensions.has(extension)) continue;
+    const repoPath = relative(root, path).replaceAll('\\', '/');
+    const source = readFileSync(path, 'utf8');
+    for (const match of source.matchAll(singlePixelRadius)) {
+      const value = match[1];
+      if (!value || allowedRadiusValues.has(value)) continue;
+      observedRadiusDebt[repoPath] ??= {};
+      observedRadiusDebt[repoPath][value] = (observedRadiusDebt[repoPath][value] ?? 0) + 1;
+    }
+  }
+}
+let observedRadiusDebtTotal = 0;
+for (const [repoPath, values] of Object.entries(observedRadiusDebt)) {
+  for (const [value, count] of Object.entries(values)) {
+    observedRadiusDebtTotal += count;
+    const baselineCount = radiusBaseline.debt[repoPath]?.[value];
+    if (baselineCount === undefined) {
+      fail(`${repoPath} introduces non-canonical border-radius ${value}px. Use var(--radius-control), var(--radius-panel), var(--radius-feature), or a documented pill/circle shape.`);
+    }
+    const frozenCount = baselineCount ?? -1;
+    if (count > frozenCount) {
+      fail(`${repoPath} increases frozen ${value}px radius debt from ${frozenCount} to ${count}. Legacy debt may only decrease.`);
+    }
+  }
+}
+if (observedRadiusDebtTotal > radiusBaseline.baseline_total) {
+  fail(`non-canonical radius debt increased from ${radiusBaseline.baseline_total} to ${observedRadiusDebtTotal}`);
+}
+
 const trainingNoteOwner = read(trainingNoteOwnerPath);
 for (const invariant of [
   '.site-main .training-note.training-note',
@@ -197,4 +253,5 @@ console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
 console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
+console.log(`  radius system: 6/10/16px tokens; legacy non-canonical debt ${observedRadiusDebtTotal}/${radiusBaseline.baseline_total} and may only decrease`);
 console.log('  Tailwind migration: not justified by the current ownership evidence');
