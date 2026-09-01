@@ -46,9 +46,15 @@ describe('OpenEvo roguelike experiment tree', () => {
   it('renders the Ceiling-1.0 pilot with ELI5 map labels and progressive disclosure', () => {
     expect(tree).toContain('data-ceiling-lineage');
     expect(tree).toContain('data-node-type="scientific-amendment"');
-    for (const label of ['放宽 64 限制', '7B 继续跑', '工程修复', '当前结果', '以后可能压缩']) {
+    for (const label of ['放宽参数更新次数', '继续 7B 训练', '修复训练运行问题', '7B 当前进度', '以后可能压缩已积累的参数更新']) {
       expect(tree).toContain(label);
     }
+    for (const vagueLabel of ['放宽 64 限制', '7B 继续跑', '>工程修复<', '>当前结果<', '>以后可能压缩<']) {
+      expect(tree).not.toContain(vagueLabel);
+    }
+    expect(tree).toContain('每 128 次任务整理一轮经验');
+    expect(tree).toContain('不再固定最多 64 次');
+    expect(tree).toContain('训练仍在继续');
     for (const key of ['amendment', 'run', 'fixes', 'result', 'future']) {
       expect(tree).toContain(`data-lineage-detail="${key}"`);
       expect(tree).toContain(`data-lineage-detail-template="${key}"`);

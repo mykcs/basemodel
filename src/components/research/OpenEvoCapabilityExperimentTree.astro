@@ -142,40 +142,40 @@ const stories = [
             <span class="map-column__label">02 · {t('各自进入不同的后续节点','EACH ROUTE HAS ITS OWN NEXT NODE')}</span>
           </div>
           <div class="current-route-row current-route-row--ceiling" data-current-route="ceiling">
-            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false" data-node-type="mainline" data-node-state="current"><i>◇</i><b>Ceiling-1.0</b><small>{t('128 条一轮，共同证据','128 attempts per evidence round')}</small></button>
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false" data-node-type="mainline" data-node-state="current"><i>◇</i><b>Ceiling-1.0</b><small>{t('每 128 次任务整理一轮经验','One learning round per 128 task attempts')}</small></button>
             <span class="map-connector current-route-arrow" data-current-map-arrow="ceiling" hidden data-route-preview-arrow aria-hidden="true">→</span>
             <div class="current-route-outcome current-route-outcome--ceiling" data-current-outcome-slot="ceiling" hidden data-route-preview-outcome>
               <div class="ceiling-lineage" data-ceiling-lineage>
                 <div class="ceiling-lineage__spine" aria-label={t('Ceiling-1.0 当前主线','Current Ceiling-1.0 mainline')}>
                   <div class="lineage-node lineage-node--amendment" data-node-type="scientific-amendment" data-node-state="current">
-                    <strong>{t('放宽 64 限制','Relax the 64 limit')}</strong>
-                    <small>{t('改了容量规则','Capacity rule changed')}</small>
-                    <button class="lineage-node__expand" type="button" data-lineage-detail="amendment" aria-expanded="false" aria-label={t('了解“放宽 64 限制”','Learn about relaxing the 64 limit')}>+</button>
+                    <strong>{t('放宽参数更新次数','Allow more parameter updates')}</strong>
+                    <small>{t('不再固定最多 64 次','No longer capped at 64 updates')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="amendment" aria-expanded="false" aria-label={t('了解“放宽参数更新次数”','Learn about allowing more parameter updates')}>+</button>
                   </div>
                   <span class="lineage-spine" aria-hidden="true"></span>
                   <div class="ceiling-lineage__run-stack">
                     <div class="lineage-node lineage-node--mainline" data-node-type="mainline" data-node-state="current">
-                      <strong>{t('7B 继续跑','7B keeps running')}</strong>
-                      <small>{t('同一实验继续','Same experiment continues')}</small>
-                      <button class="lineage-node__expand" type="button" data-lineage-detail="run" aria-expanded="false" aria-label={t('了解“7B 继续跑”','Learn about the continuing 7B run')}>+</button>
+                      <strong>{t('继续 7B 训练','Continue 7B training')}</strong>
+                      <small>{t('沿用同一实验和预算','Same experiment and budget continue')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="run" aria-expanded="false" aria-label={t('了解“继续 7B 训练”','Learn about continuing 7B training')}>+</button>
                     </div>
                     <div class="lineage-node lineage-node--fix" data-node-type="engineering-fix" data-node-state="resolved">
-                      <strong>{t('工程修复','Small fixes')}</strong>
-                      <small>{t('修小问题，不改实验','Fix small problems without changing the experiment')}</small>
-                      <button class="lineage-node__expand" type="button" data-lineage-detail="fixes" aria-expanded="false" aria-label={t('了解“工程修复”','Learn about the engineering fixes')}>+</button>
+                      <strong>{t('修复训练运行问题','Fix training-run issues')}</strong>
+                      <small>{t('修运行问题，不改实验规则','Fix runtime issues without changing experiment rules')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="fixes" aria-expanded="false" aria-label={t('了解“修复训练运行问题”','Learn about the training-run fixes')}>+</button>
                     </div>
                   </div>
                   <span class="lineage-spine" aria-hidden="true"></span>
                   <div class="lineage-node lineage-node--result" data-node-type="mainline" data-node-state="current">
-                    <strong>{t('当前结果','Current result')}</strong>
-                    <small>{t('看现在走到哪','See where the run is now')}</small>
-                    <button class="lineage-node__expand" type="button" data-lineage-detail="result" aria-expanded="false" aria-label={t('了解“当前结果”','Learn about the current result')}>+</button>
+                    <strong>{t('7B 当前进度','Current 7B progress')}</strong>
+                    <small>{t('训练仍在继续','Training is still continuing')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="result" aria-expanded="false" aria-label={t('了解“7B 当前进度”','Learn about current 7B progress')}>+</button>
                   </div>
                   <span class="lineage-spine lineage-spine--future" aria-hidden="true"></span>
                   <div class="lineage-node lineage-node--future" data-node-type="scientific-amendment" data-node-state="future">
-                    <strong>{t('以后可能压缩','Compression may come later')}</strong>
-                    <small>{t('还没启用','Not active yet')}</small>
-                    <button class="lineage-node__expand" type="button" data-lineage-detail="future" aria-expanded="false" aria-label={t('了解“以后可能压缩”','Learn about possible future compression')}>+</button>
+                    <strong>{t('以后可能压缩已积累的参数更新','Accumulated parameter updates may be compressed later')}</strong>
+                    <small>{t('目前没有启用','Not active now')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="future" aria-expanded="false" aria-label={t('了解“以后可能压缩已积累的参数更新”','Learn about possible future compression of accumulated parameter updates')}>+</button>
                   </div>
                 </div>
 
@@ -190,12 +190,12 @@ const stories = [
                 </div>
 
                 <template data-lineage-detail-template="amendment">
-                  <p>{t('OpenEvo 原来会在 SD-LoRA 累积到 64 个组件时停下。7B 跑到这里时还没有碰到真正的容量上限，所以我们把这个“到 64 就停”的规则拿掉了。','OpenEvo originally stopped when SD-LoRA reached 64 components. The 7B run reached that point without hitting the real capacity boundary, so we removed the separate “stop at 64” rule.')}</p>
-                  <dl><div><dt>{t('改变了什么','Changed')}</dt><dd>{t('组件数量不再单独决定停止。','Component count no longer stops learning by itself.')}</dd></div><div><dt>{t('没有改变','Unchanged')}</dt><dd>{t('effective rank 仍不超过 4096；replay_capacity 仍是 64；总 rollout 预算、rank=8、任务与评测规则不变。','Effective rank still stays at or below 4096; replay_capacity remains 64; the rollout budget, rank=8, tasks, and evaluation rules stay unchanged.')}</dd></div></dl>
+                  <p>{t('OpenEvo 原来最多允许这条 SD-LoRA 连续训练发生 64 次新的参数更新；每次更新都会新增一个 component。7B 完成第 64 次更新后仍有剩余训练预算，所以我们取消了这条独立的“最多 64 次”停止规则。','OpenEvo originally allowed at most 64 new SD-LoRA parameter updates in this continual stream; each formal update adds one component. The 7B run completed the 64th update with training budget still remaining, so we removed that independent “at most 64 updates” stop.')}</p>
+                  <dl><div><dt>{t('改变了什么','Changed')}</dt><dd>{t('参数更新不再固定最多 64 次；是否还能继续由总容量保护决定。','Parameter updates are no longer fixed at a maximum of 64; the remaining capacity guards decide whether another update is allowed.')}</dd></div><div><dt>{t('没有改变','Unchanged')}</dt><dd>{t('effective rank 仍不超过 4096；replay_capacity 仍是 64；总 rollout 预算、rank=8、任务与评测规则不变。','Effective rank still stays at or below 4096; replay_capacity remains 64; the rollout budget, rank=8, tasks, and evaluation rules stay unchanged.')}</dd></div></dl>
                   <small>{t('技术记录：Scientific amendment · independent component stop removed.','Technical record: Scientific amendment · independent component stop removed.')}</small>
                 </template>
                 <template data-lineage-detail-template="run">
-                  <p>{t('这是同一条 Ceiling-1.0 7B 实验线继续往前跑，不是重新开一个实验。放宽 64 限制以后，已经产生的轨迹和 checkpoint 都继续留在同一条 lineage 里。','This is the same Ceiling-1.0 7B lineage continuing forward, not a new experiment. After the 64-limit amendment, the existing trajectories and checkpoints remain in the same lineage.')}</p>
+                  <p>{t('这是同一条 Ceiling-1.0 7B 实验线继续训练，不是重新开一个实验。放宽参数更新次数以后，已经产生的轨迹和 checkpoint 都继续留在同一条 lineage 里。','This is the same Ceiling-1.0 7B lineage continuing forward, not a new experiment. After relaxing the parameter-update count limit, the existing trajectories and checkpoints remain in the same lineage.')}</p>
                   <dl><div><dt>{t('继续什么','Continues')}</dt><dd>{t('同一个 20,480 次 Stage 2 任务预算。','The same 20,480-attempt Stage-2 budget.')}</dd></div><div><dt>{t('怎么保护','Guardrails')}</dt><dd>{t('effective rank、显存、磁盘和产物增长仍会在训练前检查。','Effective rank, VRAM, disk, and artifact growth are still checked before training.')}</dd></div></dl>
                 </template>
                 <template data-lineage-detail-template="fixes">
@@ -204,7 +204,7 @@ const stories = [
                   <small>{t('技术记录：trainer source · restart validator · execution provenance · HF cold archive。','Technical record: trainer source · restart validator · execution provenance · HF cold archive.')}</small>
                 </template>
                 <template data-lineage-detail-template="result">
-                  <p>{t('这个节点表示这条 7B 路线仍在继续，并且已经跨过 64-component 的旧停止线。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','This node means the 7B route is still moving and has already crossed the old 64-component stop. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
+                  <p>{t('这个节点表示 7B 训练仍在继续，而且已经成功完成第 65 次这种参数更新，跨过了原来“最多 64 次”的停止线。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','This node means 7B training is still continuing and has already completed the 65th such parameter update, crossing the old 64-update stop. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
                   <button class="lineage-detail__action" type="button" data-open-ceiling-story>{t('在下面看这条线的结果与证据 →','Open this lineage result and evidence below →')}</button>
                 </template>
                 <template data-lineage-detail-template="future">
