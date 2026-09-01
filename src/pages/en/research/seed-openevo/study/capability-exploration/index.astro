@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoStage1VersionComparison from '../../../../../../components/research/OpenEvoStage1VersionComparison.astro';
+import OpenEvoCapabilityExperimentTree from '../../../../../../components/research/OpenEvoCapabilityExperimentTree.astro';
 import OpenEvoStage2StrategyChooser from '../../../../../../components/research/OpenEvoStage2StrategyChooser.astro';
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 const locale = 'en' as const;
@@ -15,10 +16,11 @@ const locale = 'en' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo capability exploration experiments</h1>
       <div>
-        <strong>The current corrected Stage 1 remains the shared starting point; Ceiling-1.0 keeps running while OpenEVO 2.0 forks at state construction and the Stage-2 harness.</strong>
-        <span>OpenEVO 2.0 does not recollect the current 1,440 Stage-1 trajectories per model or add teacher budget. It keeps the evidence root and redesigns the Context Governor, Memory / Skill / Agent responsibilities, Telemetry, and preformal Harness Qualification. Once Ceiling-1.0 actually stops, its stop round, successful trajectories, checkpoints, and archive links can be filled into that branch.</span>
+        <strong>The current corrected Stage 1 remains the shared starting point. Harness 2.0 has completed its first paired 128+128 preformal qualification: the mechanical interface gate passed, formal activation is on hold, and OpenEVO 2.0 moves to a small 2.0.1 repair before requalification.</strong>
+        <span>The first paired 128+128 mini study used the same 3B Stage-1 / OPSD starting point and an already-consumed training window, with formal task consumption = 0 and final-panel access = 0. The preregistered interface gate passed, but Harness2-only invalid terminations were more frequent, so 2.0.1 will align the English-only contract, thin the Context Governor, and remove action-like abstraction vocabulary before a disjoint requalification.</span>
       </div>
     </header>
+    <OpenEvoCapabilityExperimentTree locale={locale} />
     <OpenEvoStage1VersionComparison locale={locale} />
     <OpenEvoStage2StrategyChooser locale={locale} active="index" />
     <OpenEvoExperimentAnalysisPlanIndex locale={locale} />
@@ -34,5 +36,5 @@ const locale = 'en' as const;
 .capability-series__header strong{color:var(--ink);font-size:1rem}
 .capability-series__header span{font-size:.88rem}
 .capability-series :global(.analysis-plan-index){max-width:none;padding-inline:0}
-@media(max-width:760px){.capability-series{width:min(100% - 1rem,1180px)}.capability-series__header{grid-template-columns:1fr;gap:.8rem}.capability-series__header>p{grid-column:auto}.capability-series__header div{font-size:.86rem}}
+@media(max-width:760px){.capability-series{width:min(100% - .75rem,1180px)}.capability-series__header{grid-template-columns:1fr;gap:.55rem;padding:1rem 0 .75rem}.capability-series__header>p{grid-column:auto}.capability-series__header h1{font-size:clamp(2rem,11vw,3rem);line-height:1.02}.capability-series__header div{font-size:.86rem;line-height:1.5}.capability-series__header strong{font-size:.92rem;line-height:1.45}.capability-series__header span{display:none}}
 </style>

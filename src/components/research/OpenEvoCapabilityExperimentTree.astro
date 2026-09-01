@@ -1,0 +1,375 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn:string,en:string) => zh ? cn : en;
+const p = (path:string) => localePath(locale,path);
+
+const links = {
+  oldStage1: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'),
+  stage1Compare: '#stage1-version-comparison',
+  old3bSelf: p('/research/seed-openevo/study/results/3b-self-analysis/'),
+  old7bSelf: p('/research/seed-openevo/study/results/7b-self-analysis/'),
+  old3bMinimax: p('/research/seed-openevo/study/results/3b-minimax-analysis/'),
+  old7bMinimax: p('/research/seed-openevo/study/results/7b-minimax-analysis/'),
+  minimax: p('/research/seed-openevo/study/minimax-teacher/'),
+  legacyStage2: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'),
+  ceiling: p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/'),
+  evo2: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  harness2: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'),
+};
+const stories = [
+  {
+    id: 'old-3b-self',
+    eyebrow: t('历史结局 · 3B / self','HISTORICAL OUTCOME · 3B / SELF'),
+    title: t('3B 只靠自己：旧 Stage 2 完成了，但没有继续更新参数','3B on self experience: old Stage 2 completed without further parameter updates'),
+    summary: t('Stage 1 没跨过当时的启动条件；旧 Stage 2 后来虽然出现成功轨迹，逐个 256 窗口判断仍然让更新次数保持为 0。','Stage 1 did not cross the historical start gate. Old Stage 2 later produced successful trajectories, but per-window gating still kept parameter updates at zero.'),
+    facts: [t('Stage 1：4 条可训练成功轨迹，只来自 1 个重复成功任务','Stage 1: 4 trainable successes from only 1 repeatedly successful task'), t('旧 Stage 2：20,480 次尝试，138 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 138 trainable exact successes, 0 updates'), t('最终 128 题：Task Score ×100 = 1.71；完整成功 1/128','Final 128 tasks: Task Score ×100 = 1.71; exact success 1/128')],
+    href: links.old3bSelf,
+  },
+  {
+    id: 'old-7b-self',
+    eyebrow: t('历史结局 · 7B / self','HISTORICAL OUTCOME · 7B / SELF'),
+    title: t('7B 只靠自己：Stage 1 学到了东西，旧 Stage 2 却停在原地','7B on self experience: Stage 1 learned, while old Stage 2 stayed frozen'),
+    summary: t('Stage 1 实际做了 8 次 SD-LoRA 更新；旧 Stage 2 又收集了大量成功轨迹，但 256-window 门槛让后续参数更新仍然为 0。','Stage 1 made eight real SD-LoRA updates. Old Stage 2 then collected many successful trajectories, but the 256-window rule still yielded zero further parameter updates.'),
+    facts: [t('Stage 1：8 次参数更新','Stage 1: 8 parameter updates'), t('旧 Stage 2：20,480 次尝试，797 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 797 trainable exact successes, 0 updates'), t('固定 128 题平均分：13.33 → 25.66；完整成功 3 → 4','Fixed 128-task mean score: 13.33 → 25.66; exact success 3 → 4')],
+    href: links.old7bSelf,
+  },
+  {
+    id: 'old-3b-minimax',
+    eyebrow: t('历史结局 · 3B / MiniMax','HISTORICAL OUTCOME · 3B / MINIMAX'),
+    title: t('3B + MiniMax：启动训练做了 8 次更新，但旧 Stage 2 在 74.58% 时停止','3B + MiniMax: eight bootstrap updates, then the old Stage 2 stopped at 74.58%'),
+    summary: t('MiniMax 的任务后分析帮助 3B 完成了启动训练；进入旧 Stage 2 后仍然难以在单个 256 窗口里凑齐旧门槛，实验后来主动停止。','Post-episode MiniMax analysis helped 3B complete bootstrap training. In the old Stage 2, the model still rarely met the historical per-window gate, and the run was explicitly stopped.'),
+    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：59 个完整批次 + 第 60 批 171 条 partial；74.58% 时停止','Old Stage 2: 59 complete batches + 171 partial attempts in batch 60; stopped at 74.58%'), t('没有封存 final eval，不能把“未运行”写成 0 分','No sealed final evaluation; “not run” must not be reported as zero')],
+    href: links.old3bMinimax,
+  },
+  {
+    id: 'old-7b-minimax',
+    eyebrow: t('历史结局 · 7B / MiniMax','HISTORICAL OUTCOME · 7B / MINIMAX'),
+    title: t('7B + MiniMax：启动训练完成 8 次更新，旧 Stage 2 仍然 0 次更新','7B + MiniMax: eight bootstrap updates, but zero updates in the old Stage 2'),
+    summary: t('旧 Stage 2 完整跑完 80 个批次；成功轨迹存在，但旧的逐批门槛始终没有让模型继续更新。','The old Stage 2 completed all 80 batches. Successful trajectories existed, but the historical per-batch gate never allowed another update.'),
+    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：20,480 次尝试，592 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 592 trainable exact successes, 0 updates'), t('最终 128 题：Task Score ×100 = 16.94；完整成功 0/128','Final 128 tasks: Task Score ×100 = 16.94; exact success 0/128')],
+    href: links.old7bMinimax,
+  },
+  {
+    id: 'ceiling',
+    eyebrow: t('当前结局 · Ceiling-1.0','CURRENT OUTCOME · CEILING-1.0'),
+    title: t('Ceiling-1.0：保留 corrected Stage 1，把 Stage 2 改成按轮更新','Ceiling-1.0: keep corrected Stage 1 and redesign Stage 2 around round-level evidence'),
+    summary: t('当前路线把同一轮 128 条证据交给 SD-LoRA、Text Memory、Skill Bundle、Agent System 分别做有界决定，再合并成下一轮状态。','The current line gives the same sealed 128-rollout evidence to SD-LoRA, Text Memory, Skill Bundle, and Agent System for bounded decisions before composing the next-round state.'),
+    facts: [t('Stage 1：fresh corrected 1,440 条轨迹','Stage 1: fresh corrected 1,440 trajectories'), t('分析：1,440 条 MiniMax 任务后分析；外部老师预算在这里封口','Analysis: 1,440 post-episode MiniMax analyses; external-teacher budget seals here'), t('Stage 2：128 rollouts / round；3B 与 7B 独立推进','Stage 2: 128 rollouts per round; 3B and 7B advance independently')],
+    href: links.ceiling,
+  },
+  {
+    id: 'evo2',
+    eyebrow: t('当前结局 · OpenEVO 2.0','CURRENT OUTCOME · OPENEVO 2.0'),
+    title: t('OpenEVO 2.0：第一次 Harness 2.0 迷你实验做完，结论是先小修再继续','OpenEVO 2.0: the first Harness 2.0 mini study is complete, with a repair-before-activation decision'),
+    summary: t('它不重采 Stage 1，而是重新设计经验怎么进入模型。第一次 128+128 qualification 的机械门通过，但行为上 Harness2-only invalid 更多，因此正式激活 HOLD。','It reuses Stage 1 and redesigns how experience reaches the model. The first paired 128+128 qualification passed the mechanical gate, but Harness2-only invalid terminations were more frequent, so formal activation remains on hold.'),
+    facts: [t('Control：128/128；Harness 2.0：128/128','Control: 128/128; Harness 2.0: 128/128'), t('非法终止 episode：31.25% → 42.19%','Invalid-terminated episodes: 31.25% → 42.19%'), t('正式结论：Mechanical PASS；Scientific activation HOLD；下一步 2.0.1','Formal conclusion: Mechanical PASS; scientific activation HOLD; next step 2.0.1')],
+    href: links.harness2,
+  },
+] as const;
+---
+<section class="exp-tree" data-testid="openevo-capability-experiment-tree" data-experiment-tree data-empty-path={t('先从 Stage 1 开始。','Start with Stage 1.')} aria-labelledby="exp-tree-title">
+  <header class="exp-tree__head">
+    <p>EXPERIMENT TREE</p>
+    <h2 id="exp-tree-title">{t('先走一条实验路线，再看它走到了什么结局','Choose an experiment path first, then reveal where it ended')}</h2>
+    <span>{t('这里不跳转页面。你先选 Stage 1、分析方式和 Stage 2；走到最后以后，再点“查看这个结局”，完整故事会直接在天赋树下面展开。','Nothing here navigates away. Choose Stage 1, the analysis path, and Stage 2 first. At the end, open the outcome and the full story expands directly below the tree.')}</span>
+  </header>
+
+  <div class="rogue-run" aria-label={t('OpenEvo 肉鸽式实验路线选择器','OpenEvo roguelike experiment route chooser')}>
+    <section class="floor floor--active" data-floor="stage1">
+      <header class="floor__header">
+        <div><span>{t('第 1 层','FLOOR 1')}</span><strong>Stage 1</strong></div>
+        <p>{t('先决定从哪次轨迹采集出发，再选择这批经验怎么被分析。走到出口后，才会进入 Stage 2 地图。','Choose the trajectory collection, then how that experience is analyzed. Only after reaching the exit does the Stage-2 map open.')}</p>
+      </header>
+      <div class="floor__map floor__map--stage1">
+        <div class="map-column">
+          <span class="map-column__label">01 · {t('轨迹采集','COLLECTION')}</span>
+          <button class="rogue-node" type="button" data-stage1="old" aria-pressed="false"><i>◇</i><b>{t('历史 Stage 1','Historical Stage 1')}</b><small>{t('旧版 1,440 条轨迹','Previous 1,440 trajectories')}</small></button>
+          <button class="rogue-node rogue-node--current" type="button" data-stage1="current" aria-pressed="false"><i>◇</i><b>{t('corrected Stage 1','Corrected Stage 1')}</b><small>{t('Ceiling / OpenEVO 2.0 的新起点','New starting point for Ceiling / OpenEVO 2.0')}</small></button>
+        </div>
+        <div class="map-connector" aria-hidden="true">→</div>
+        <div class="map-column" data-step="analysis" hidden data-route-preview>
+          <span class="map-column__label">02 · {t('经验分析','ANALYSIS')}</span>
+          <div data-analysis-branch="old" hidden data-route-preview-branch>
+            <div class="node-stack node-stack--grid">
+              <button class="rogue-node" type="button" data-analysis="old-3b-self" aria-pressed="false"><i>◇</i><b>3B / self</b><small>{t('自己总结','Self analysis')}</small></button>
+              <button class="rogue-node" type="button" data-analysis="old-7b-self" aria-pressed="false"><i>◇</i><b>7B / self</b><small>{t('自己总结','Self analysis')}</small></button>
+              <button class="rogue-node" type="button" data-analysis="old-3b-minimax" aria-pressed="false"><i>◇</i><b>3B / MiniMax</b><small>{t('任务后分析','Post-episode analysis')}</small></button>
+              <button class="rogue-node" type="button" data-analysis="old-7b-minimax" aria-pressed="false"><i>◇</i><b>7B / MiniMax</b><small>{t('任务后分析','Post-episode analysis')}</small></button>
+            </div>
+          </div>
+          <div data-analysis-branch="current" hidden data-route-preview-branch>
+            <button class="rogue-node rogue-node--current" type="button" data-analysis="current-state" aria-pressed="false"><i>◇</i><b>{t('1,440 条 MiniMax 分析','1,440 MiniMax analyses')}</b><small>OPSD · Text Memory · Skill Bundle · Agent System</small></button>
+          </div>
+        </div>
+        <div class="map-connector" aria-hidden="true">→</div>
+        <div class="map-column map-column--exit" data-step="floor-exit" hidden data-route-preview>
+          <span class="map-column__label">03 · {t('出口','EXIT')}</span>
+          <button class="rogue-node rogue-node--exit" type="button" data-enter-stage2><i>↓</i><b>{t('进入第 2 层 · Stage 2','Enter Floor 2 · Stage 2')}</b><small>{t('换地图','Change map')}</small></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="floor" data-floor="stage2" hidden>
+      <header class="floor__header">
+        <div><span>{t('第 2 层','FLOOR 2')}</span><strong>Stage 2</strong></div>
+        <p>{t('这里展示训练设计如何演进。红色 Bug 节点不是旁支：它会封路，只有解决以后，后面的 successor 才能解锁。','This map shows how the training design evolved. Red Bug nodes are not optional side quests: they block the route until resolved.')}</p>
+      </header>
+      <div class="floor__map floor__map--stage2">
+        <div class="map-column" data-stage2-branch="old" hidden>
+          <span class="map-column__label">01 · Stage 2 v1</span>
+          <button class="rogue-node" type="button" data-stage2="legacy" aria-pressed="false"><i>◇</i><b>{t('历史 256-window','Historical 256-window')}</b><small>{t('每 256 条独立判断旧门槛','Gate reset every 256 attempts')}</small></button>
+        </div>
+        <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
+        <div class="map-column" data-bug-branch="old" hidden data-route-preview>
+          <span class="map-column__label map-column__label--bug">BUG GATE</span>
+          <button class="rogue-node rogue-node--bug" type="button" data-bug="legacy-gate" aria-pressed="false"><i>!</i><b>{t('发现 Stage 2 设计错误','Stage-2 design bug found')}</b><small>{t('256-window + 旧 gate 被错误当成长期学习规则','256-window + old gate was incorrectly promoted into a long-term learning rule')}</small><em>{t('必须处理才能继续','Must resolve to continue')}</em></button>
+        </div>
+        <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
+        <div class="map-column" data-old-successor hidden data-route-preview>
+          <span class="map-column__label">{t('修复后解锁','UNLOCKED AFTER FIX')}</span>
+          <button class="rogue-node rogue-node--repair" type="button" data-repair="legacy-gate"><i>✓</i><b>{t('修正学习合同','Repair the learning contract')}</b><small>{t('封存旧 run；successor 使用新的 corrected Stage 1','Seal the old run; successors use the new corrected Stage 1')}</small></button>
+          <button class="rogue-node rogue-node--ending" type="button" data-ending-from-old hidden data-route-preview-leaf><i>◎</i><b>{t('查看这条历史线的结局','Open this historical outcome')}</b><small>{t('不跳页，在下面展开','Expands below without navigation')}</small></button>
+        </div>
+
+        <div class="map-column" data-stage2-branch="current" hidden>
+          <span class="map-column__label">01 · {t('选择 Stage 2','CHOOSE STAGE 2')}</span>
+          <div class="node-stack">
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false"><i>◇</i><b>Ceiling-1.0</b><small>{t('128 条一轮，共同证据','128 attempts per evidence round')}</small></button>
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
+          </div>
+        </div>
+        <div class="map-connector" data-current-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
+        <div class="map-column" data-current-outcome hidden data-route-preview-outcome>
+          <span class="map-column__label">02 · {t('当前节点','CURRENT NODE')}</span>
+          <button class="rogue-node rogue-node--ending" type="button" data-ending="ceiling" hidden data-route-preview-leaf><i>◎</i><b>{t('Ceiling-1.0 当前运行线','Ceiling-1.0 current run')}</b><small>{t('查看当前结局','Open current outcome')}</small></button>
+          <div data-evo2-gate hidden data-route-preview-branch>
+            <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：发现新的接口问题','Harness 2.0 Mini Study: a new interface problem was found')}</b><small>{t('Mechanical PASS，但行为回退；formal activation HOLD','Mechanical PASS, but behavioral regression; formal activation HOLD')}</small><em>{t('当前就停在这个 Bug Gate','The current route stops at this Bug Gate')}</em></button>
+            <button class="rogue-node rogue-node--locked" type="button" disabled><i>🔒</i><b>Harness 2.0.1</b><small>{t('修复完成并重新 qualification 后解锁','Unlocks after repair and requalification')}</small></button>
+          </div>
+        </div>
+      </div>
+      <button class="floor-back" type="button" data-back-stage1>← {t('返回第 1 层重新选路线','Return to Floor 1 and choose another route')}</button>
+    </section>
+  </div>
+
+  <div class="selected-path" data-selected-path aria-live="polite">
+    <span>{t('你的路线','Your route')}</span>
+    <b data-selected-path-text>{t('还没有选择。先从 Stage 1 开始。','No route selected yet. Start with Stage 1.')}</b>
+  </div>
+
+  <section class="story-zone" data-story-zone aria-live="polite">
+    <div class="story-placeholder" data-story-placeholder>
+      <strong>{t('完整故事会出现在这里','The full story will appear here')}</strong>
+      <span>{t('上面选完路线并打开结局后，这里会按 Stage 1 → 分析 → Stage 2 → 结果的顺序讲清楚，不需要离开这个首页。','Finish a route above and open its outcome. This area will explain Stage 1 → analysis → Stage 2 → result without leaving this page.')}</span>
+    </div>
+    {stories.map((story) => (
+      <article class="story-panel" data-story={story.id} hidden tabindex="-1">
+        <header><p>{story.eyebrow}</p><h3>{story.title}</h3><span>{story.summary}</span></header>
+        <div class="story-panel__facts">{story.facts.map((fact, index) => <div><b>0{index + 1}</b><span>{fact}</span></div>)}</div>
+        <a href={story.href}>{t('继续看这条线的完整实验页与证据 →','Open the full experiment page and evidence →')}</a>
+      </article>
+    ))}
+  </section>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-experiment-tree]').forEach((root) => {
+    const state = { stage1: '', analysis: '', stage2: '', bugResolved: false };
+    const one = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector);
+    const all = <T extends HTMLElement>(selector: string) => [...root.querySelectorAll<T>(selector)];
+    const pressed = (selector: string, active: HTMLElement | null) => all<HTMLElement>(selector).forEach((el) => el.setAttribute('aria-pressed', el === active ? 'true' : 'false'));
+    const hideStories = () => {
+      all<HTMLElement>('[data-story]').forEach((panel) => panel.hidden = true);
+      const placeholder = one<HTMLElement>('[data-story-placeholder]');
+      if (placeholder) placeholder.hidden = false;
+    };
+    const showStory = (id: string) => {
+      const placeholder = one<HTMLElement>('[data-story-placeholder]');
+      if (placeholder) placeholder.hidden = true;
+      all<HTMLElement>('[data-story]').forEach((panel) => panel.hidden = panel.dataset.story !== id);
+      one<HTMLElement>(`[data-story="${id}"]`)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    };
+    const label = (selector: string, value: string, attr: string) => one<HTMLElement>(`${selector}[${attr}="${value}"] b`)?.textContent?.trim() || '';
+    const updatePath = () => {
+      const parts: string[] = [];
+      if (state.stage1) parts.push(label('[data-stage1]', state.stage1, 'data-stage1'));
+      if (state.analysis) parts.push(label('[data-analysis]', state.analysis, 'data-analysis'));
+      if (state.stage2) parts.push(label('[data-stage2]', state.stage2, 'data-stage2'));
+      const target = one<HTMLElement>('[data-selected-path-text]');
+      if (target) target.textContent = parts.join(' → ') || root.dataset.emptyPath || '';
+    };
+    const resetStage2Map = () => {
+      state.stage2 = ''; state.bugResolved = false;
+      pressed('[data-stage2]', null); pressed('[data-bug]', null);
+      all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
+      const oldEnding = one<HTMLButtonElement>('[data-ending-from-old]'); if (oldEnding) oldEnding.hidden = true;
+      const ceiling = one<HTMLButtonElement>('[data-ending="ceiling"]'); if (ceiling) ceiling.hidden = true;
+      const evo = one<HTMLElement>('[data-evo2-gate]'); if (evo) evo.hidden = true;
+      hideStories(); updatePath();
+    };
+
+    all<HTMLButtonElement>('[data-stage1]').forEach((button) => button.addEventListener('click', () => {
+      state.stage1 = button.dataset.stage1 || ''; state.analysis = '';
+      pressed('[data-stage1]', button); pressed('[data-analysis]', null);
+      const analysis = one<HTMLElement>('[data-step="analysis"]'); if (analysis) analysis.hidden = false;
+      all<HTMLElement>('[data-analysis-branch]').forEach((branch) => branch.hidden = branch.dataset.analysisBranch !== state.stage1);
+      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) exit.hidden = true;
+      resetStage2Map(); updatePath();
+    }));
+
+    all<HTMLButtonElement>('[data-analysis]').forEach((button) => button.addEventListener('click', () => {
+      state.analysis = button.dataset.analysis || ''; pressed('[data-analysis]', button);
+      const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) exit.hidden = false;
+      hideStories(); updatePath();
+    }));
+
+    one<HTMLButtonElement>('[data-enter-stage2]')?.addEventListener('click', () => {
+      if (!state.stage1 || !state.analysis) return;
+      const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
+      if (floor1) { floor1.hidden = true; floor1.classList.remove('floor--active'); }
+      if (floor2) { floor2.hidden = false; floor2.classList.add('floor--active'); floor2.dataset.route = state.stage1; }
+      all<HTMLElement>('[data-stage2-branch]').forEach((branch) => branch.hidden = branch.dataset.stage2Branch !== state.stage1);
+      resetStage2Map();
+      floor2?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    });
+
+    all<HTMLButtonElement>('[data-stage2]').forEach((button) => button.addEventListener('click', () => {
+      state.stage2 = button.dataset.stage2 || ''; pressed('[data-stage2]', button); hideStories(); updatePath();
+      if (state.stage2 === 'legacy') {
+        all<HTMLElement>('[data-old-map-arrow]').forEach((el) => el.hidden = false);
+        const bug = one<HTMLElement>('[data-bug-branch="old"]'); if (bug) bug.hidden = false;
+        const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = true;
+      } else {
+        const arrow = one<HTMLElement>('[data-current-map-arrow]'); if (arrow) arrow.hidden = false;
+        const outcome = one<HTMLElement>('[data-current-outcome]'); if (outcome) outcome.hidden = false;
+        const ceiling = one<HTMLButtonElement>('[data-ending="ceiling"]'); if (ceiling) ceiling.hidden = state.stage2 !== 'ceiling';
+        const evo = one<HTMLElement>('[data-evo2-gate]'); if (evo) evo.hidden = state.stage2 !== 'evo2';
+      }
+    }));
+
+    one<HTMLButtonElement>('[data-bug="legacy-gate"]')?.addEventListener('click', (event) => {
+      state.bugResolved = false; pressed('[data-bug]', event.currentTarget as HTMLElement);
+      const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = false;
+      const ending = one<HTMLButtonElement>('[data-ending-from-old]'); if (ending) ending.hidden = true;
+    });
+
+    one<HTMLButtonElement>('[data-repair="legacy-gate"]')?.addEventListener('click', (event) => {
+      state.bugResolved = true; (event.currentTarget as HTMLElement).classList.add('rogue-node--resolved');
+      const ending = one<HTMLButtonElement>('[data-ending-from-old]'); if (ending) ending.hidden = false;
+    });
+
+    one<HTMLButtonElement>('[data-ending-from-old]')?.addEventListener('click', () => { if (state.bugResolved && state.analysis) showStory(state.analysis); });
+    all<HTMLButtonElement>('[data-ending]').forEach((button) => button.addEventListener('click', () => { const id = button.dataset.ending || ''; if (id) showStory(id); }));
+
+    one<HTMLButtonElement>('[data-back-stage1]')?.addEventListener('click', () => {
+      const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
+      if (floor2) { floor2.hidden = true; floor2.classList.remove('floor--active'); delete floor2.dataset.route; }
+      if (floor1) { floor1.hidden = false; floor1.classList.add('floor--active'); floor1.scrollIntoView({ behavior: 'auto', block: 'start' }); }
+      resetStage2Map();
+    });
+  });
+</script>
+
+<style>
+.exp-tree{margin:0 0 1.4rem;padding:1.1rem;border:1px solid var(--color-border);border-radius:18px;background:color-mix(in srgb,var(--color-text) 1.4%,transparent)}
+.exp-tree__head{display:grid;grid-template-columns:minmax(190px,.52fr) minmax(0,1fr);gap:.55rem 1.2rem;padding:.15rem .15rem 1rem;border-bottom:1px solid var(--color-border)}
+.exp-tree__head>p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .62rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}
+.exp-tree__head h2{margin:0;font-size:clamp(1.25rem,2.7vw,1.85rem);letter-spacing:-.035em}
+.exp-tree__head>span{color:var(--color-text-muted);font-size:.8rem;line-height:1.65}
+.tree-builder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;padding:1rem 0 .85rem}
+.choice-step{position:relative;min-width:0;padding:.8rem;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg)}
+.choice-step:not(:first-child)::before{content:'→';position:absolute;left:-.72rem;top:50%;translate:-50% -50%;display:grid;place-items:center;width:1.35rem;height:1.35rem;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text-muted);font-size:.7rem;z-index:2}
+.choice-step__title{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.55rem;align-items:center;margin-bottom:.7rem}
+.choice-step__title>span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:999px;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));color:var(--color-accent);font:800 .62rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.choice-step__title>div{display:flex;min-width:0;flex-direction:column;gap:.08rem}.choice-step__title strong{font-size:.82rem}.choice-step__title small{color:var(--color-text-muted);font-size:.67rem;line-height:1.35}
+.choice-grid{display:grid;gap:.45rem}.choice-grid--two{grid-template-columns:repeat(2,minmax(0,1fr))}.choice-grid--arms{grid-template-columns:repeat(2,minmax(0,1fr))}
+.choice-grid button,.ending-stack button{width:100%;min-height:52px;padding:.68rem;border:1px solid var(--color-border);border-radius:11px;background:color-mix(in srgb,var(--color-text) 1.5%,var(--color-bg));color:var(--color-text);text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease,transform .15s ease}
+.choice-grid button:hover,.choice-grid button:focus-visible,.ending-stack button:hover,.ending-stack button:focus-visible{border-color:var(--color-accent);outline:none;transform:translateY(-1px)}
+.choice-grid button[aria-pressed="true"],.ending-stack button[aria-pressed="true"]{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 9%,var(--color-bg));box-shadow:inset 0 0 0 1px var(--color-accent)}
+.choice-grid b,.choice-grid small,.ending-stack b,.ending-stack small,.ending-stack span{display:block}.choice-grid b{font-size:.76rem;line-height:1.35}.choice-grid small{margin-top:.16rem;color:var(--color-text-muted);font-size:.65rem;line-height:1.35}
+.choice-step--ending{border-color:color-mix(in srgb,var(--color-accent) 58%,var(--color-border));background:color-mix(in srgb,var(--color-accent) 3.5%,var(--color-bg))}
+.ending-stack button span{color:var(--color-accent);font:800 .55rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.ending-stack button b{margin-top:.28rem;font-size:.76rem;line-height:1.4}.ending-stack button small{margin-top:.35rem;color:var(--color-text-muted);font-size:.64rem}
+.selected-path{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:center;padding:.65rem .75rem;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}
+.selected-path>span{color:var(--color-text-muted);font:800 .57rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.selected-path>b{font-size:.72rem;line-height:1.45}
+.story-zone{padding-top:.85rem}.story-placeholder{display:flex;flex-direction:column;gap:.22rem;padding:1rem;border:1px dashed var(--color-border);border-radius:14px;color:var(--color-text-muted)}.story-placeholder strong{color:var(--color-text);font-size:.85rem}.story-placeholder span{font-size:.72rem;line-height:1.55}
+.story-panel{padding:1rem;border:1px solid color-mix(in srgb,var(--color-accent) 55%,var(--color-border));border-radius:16px;background:color-mix(in srgb,var(--color-accent) 3%,var(--color-bg))}.story-panel header{display:grid;grid-template-columns:minmax(170px,.42fr) minmax(0,1fr);gap:.4rem 1rem;align-items:start}.story-panel header p{grid-column:1/-1;margin:0;color:var(--color-accent);font:800 .58rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.story-panel h3{margin:0;font-size:clamp(1.1rem,2.2vw,1.55rem);line-height:1.15;letter-spacing:-.03em}.story-panel header>span{color:var(--color-text-muted);font-size:.78rem;line-height:1.6}
+.story-panel__facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin-top:.9rem}
+.story-panel__facts>div{display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:.45rem;padding:.7rem;border-top:1px solid var(--color-border)}
+.story-panel__facts b{color:var(--color-accent);font:800 .58rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace}
+.story-panel__facts span{font-size:.72rem;line-height:1.5}
+.story-panel>a{display:inline-flex;margin-top:.85rem;min-height:44px;align-items:center;padding:.62rem .78rem;border:1px solid var(--color-border);border-radius:10px;color:var(--color-text);font-size:.72rem;font-weight:760;text-decoration:none}
+.story-panel>a:hover,.story-panel>a:focus-visible{border-color:var(--color-accent);outline:none}
+@media(max-width:980px){
+  .tree-builder{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .choice-step:not(:first-child)::before{display:none}
+}
+@media(max-width:700px){
+  .exp-tree{padding:.78rem;border-radius:16px}
+  .exp-tree__head{grid-template-columns:1fr;gap:.38rem;padding:.05rem .05rem .72rem}
+  .exp-tree__head>p{grid-column:auto}
+  .exp-tree__head h2{font-size:1.18rem;line-height:1.16}
+  .exp-tree__head>span{font-size:.77rem;line-height:1.52}
+  .tree-builder{grid-template-columns:1fr;gap:.62rem;padding:.75rem 0}
+  .choice-step{padding:.72rem;border-radius:13px}
+  .choice-step__title{margin-bottom:.58rem}
+  .choice-step__title strong{font-size:.86rem}.choice-step__title small{font-size:.7rem}
+  .choice-grid--two,.choice-grid--arms{grid-template-columns:1fr}
+  .choice-grid button,.ending-stack button{min-height:56px;padding:.72rem .78rem}
+  .choice-grid b,.ending-stack button b{font-size:.82rem}.choice-grid small,.ending-stack button small{font-size:.71rem}
+  .selected-path{grid-template-columns:1fr;gap:.18rem;padding:.62rem .12rem}
+  .selected-path>b{font-size:.76rem}
+  .story-zone{padding-top:.7rem}.story-panel{padding:.82rem}
+  .story-panel header{grid-template-columns:1fr;gap:.38rem}.story-panel header p{grid-column:auto}
+  .story-panel h3{font-size:1.14rem}.story-panel header>span{font-size:.78rem}
+  .story-panel__facts{grid-template-columns:1fr;gap:.22rem;margin-top:.72rem}
+  .story-panel__facts>div{padding:.58rem .1rem}
+  .story-panel>a{width:100%;justify-content:center;text-align:center}
+}
+@media(max-width:430px){
+  .exp-tree{margin-inline:-.18rem;padding:.66rem}
+  .exp-tree__head>span{font-size:.75rem}
+  .choice-step{padding:.65rem}
+  .choice-step__title{grid-template-columns:1.85rem minmax(0,1fr);gap:.48rem}
+  .choice-step__title>span{width:1.85rem;height:1.85rem}
+  .story-placeholder{padding:.82rem}.story-placeholder span{font-size:.74rem}
+}
+@media(prefers-reduced-motion:reduce){.choice-grid button,.ending-stack button{transition:none}}
+
+.exp-tree [hidden]{display:none!important}
+/* Roguelike route preview: future nodes remain visible as non-interactive silhouettes. */
+.floor[data-floor="stage1"] [data-route-preview][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage1"] [data-route-preview-branch][hidden]{display:block!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="old"] [data-old-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
+.floor[data-floor="stage2"][data-route="old"] [data-bug-branch="old"][hidden],.floor[data-floor="stage2"][data-route="old"] [data-old-successor][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="old"] [data-ending-from-old][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome][hidden]{display:flex!important;opacity:1;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-evo2-gate][hidden],.floor[data-floor="stage2"][data-route="current"] [data-ending="ceiling"][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.rogue-run{padding:.95rem 0 .85rem}
+.floor{padding:.9rem;border:1px solid var(--color-border);border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 2.5%,var(--color-bg)),var(--color-bg))}
+.floor--active{box-shadow:0 14px 36px color-mix(in srgb,var(--color-text) 5%,transparent)}
+.floor__header{display:grid;grid-template-columns:minmax(150px,.36fr) minmax(0,1fr);gap:.65rem 1rem;align-items:end;padding:0 .1rem .8rem;border-bottom:1px solid var(--color-border)}
+.floor__header>div{display:flex;align-items:baseline;gap:.55rem}.floor__header>div span{color:var(--color-accent);font:800 .6rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.floor__header>div strong{font-size:1.2rem}
+.floor__header p{margin:0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
+.floor__map{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1.2fr) 34px minmax(0,.82fr);gap:.65rem;align-items:center;padding:1rem .15rem .2rem;min-height:250px}
+.floor__map--stage2{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr) 34px minmax(0,1.05fr)}
+.map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:#c34a4a}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:13px;background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
+.rogue-node>i{position:absolute;left:.78rem;top:.82rem;display:grid;place-items:center;width:1.28rem;height:1.28rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal}.rogue-node b,.rogue-node small,.rogue-node em{display:block}.rogue-node b{font-size:.79rem;line-height:1.35}.rogue-node small{margin-top:.16rem;color:var(--color-text-muted);font-size:.67rem;line-height:1.42}.rogue-node em{margin-top:.36rem;color:#c34a4a;font-size:.62rem;font-style:normal;font-weight:760}
+.rogue-node[aria-pressed="false"]{opacity:.7}.rogue-node:hover,.rogue-node:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);outline:none}.rogue-node[aria-pressed="true"]{opacity:1;border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));box-shadow:inset 0 0 0 1px var(--color-accent)}
+.rogue-node--current{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}.rogue-node--exit,.rogue-node--ending{border-width:2px;border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}.rogue-node--bug{border:2px solid color-mix(in srgb,#d54b4b 76%,var(--color-border));background:color-mix(in srgb,#d54b4b 5%,var(--color-bg))}.rogue-node--bug>i{border-color:#c34a4a;color:#c34a4a}.rogue-node--repair{border-color:color-mix(in srgb,#3f8f68 68%,var(--color-border))}.rogue-node--resolved{background:color-mix(in srgb,#3f8f68 8%,var(--color-bg));box-shadow:inset 0 0 0 1px #3f8f68}.rogue-node--locked{opacity:.5;cursor:not-allowed;border-style:dashed}.rogue-node--locked:hover{transform:none;border-color:var(--color-border)}
+.floor-back{margin-top:.85rem;min-height:42px;padding:.55rem .72rem;border:1px solid var(--color-border);border-radius:10px;background:transparent;color:var(--color-text-muted);font-size:.69rem;cursor:pointer}.floor-back:hover,.floor-back:focus-visible{border-color:var(--color-accent);color:var(--color-text);outline:none}
+
+
+@media(max-width:900px){
+  .floor__header{grid-template-columns:1fr}.floor__map,.floor__map--stage2{grid-template-columns:1fr;gap:.55rem;min-height:0}.map-connector{height:1.1rem;rotate:90deg}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:14px}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid{grid-template-columns:1fr}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}
+}
+
+</style>

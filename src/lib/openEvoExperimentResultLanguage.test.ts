@@ -97,16 +97,15 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('adds OpenEVO 2.0 as a successor without pretending Ceiling-1.0 already stopped', () => {
-    expect(stage2Chooser).toContain('Harness 2.0 · 正式实验前检查');
+    expect(stage2Chooser).toContain('OpenEVO 2.0');
     expect(stage2Chooser).toContain('经验怎样整理并进入下一步');
     expect(stage2Chooser).toContain('/openevo-2-0/');
     expect(openEvo2).toContain('当前页面永远比历史经验优先');
     expect(openEvo2).toContain('三份历史经验不再重复写同一套按钮攻略');
     expect(openEvo2).toContain('把不同类型的失败分开记');
-    expect(openEvo2).toContain('正式重跑前，先做两个各 128 次的小检查');
-    expect(openEvo2).toContain('新 Stage 2 还没有消耗任何正式任务');
-    expect(openEvo2).toContain('Ceiling-1.0 是否已经正式停止');
-    expect(openEvo2).toContain('这个历史快照里还没有');
+    expect(openEvo2).toContain('正式重跑前，先用两组各 128 次的小实验验接口');
+    expect(openEvo2).toContain('128 + 128 已跑完：机械检查 PASS，但正式激活 HOLD');
+    expect(openEvo2).toContain('Ceiling-1.0 已经产生的结果不改写');
     expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
   });
 
