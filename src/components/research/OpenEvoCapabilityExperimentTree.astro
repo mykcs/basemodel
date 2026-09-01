@@ -58,7 +58,7 @@ const stories = [
     id: 'ceiling',
     eyebrow: t('当前结局 · Ceiling-1.0','CURRENT OUTCOME · CEILING-1.0'),
     title: t('Ceiling-1.0：保留 corrected Stage 1，把 Stage 2 改成按轮更新','Ceiling-1.0: keep corrected Stage 1 and redesign Stage 2 around round-level evidence'),
-    summary: t('当前路线把同一轮 128 条证据交给 SD-LoRA、Text Memory、Skill Bundle、Agent System 分别做有界决定，再合并成下一轮状态。','The current line gives the same sealed 128-rollout evidence to SD-LoRA, Text Memory, Skill Bundle, and Agent System for bounded decisions before composing the next-round state.'),
+    summary: t('Ceiling-1.0 每轮把同一批 128 次任务记录交给 SD-LoRA、Text Memory、Skill Bundle、Agent System 分别判断是否更新，再合并成下一轮状态。','Each Ceiling-1.0 round gives the same 128 task records to SD-LoRA, Text Memory, Skill Bundle, and Agent System so each can decide whether to update before the next-round state is composed.'),
     facts: [t('Stage 1：fresh corrected 1,440 条轨迹','Stage 1: fresh corrected 1,440 trajectories'), t('分析：1,440 条 MiniMax 任务后分析；外部老师预算在这里封口','Analysis: 1,440 post-episode MiniMax analyses; external-teacher budget seals here'), t('Stage 2：128 rollouts / round；3B 与 7B 独立推进','Stage 2: 128 rollouts per round; 3B and 7B advance independently')],
     href: links.ceiling,
   },
@@ -66,7 +66,7 @@ const stories = [
     id: 'evo2',
     eyebrow: t('当前结局 · OpenEVO 2.0','CURRENT OUTCOME · OPENEVO 2.0'),
     title: t('OpenEVO 2.0：Harness 2.0.1 机械资格已通过，正式 Stage 2 仍等待 readiness audit','OpenEVO 2.0: Harness 2.0.1 mechanical qualification passed, while formal Stage 2 still awaits the readiness audit'),
-    summary: t('它不重采 Stage 1。第一次 Harness 2.0 的 128+128 结果原样保留；后续 Harness 2.0.1 mechanical qualification 已 PASS，但 scientific closeout 为 HOLD_FOR_STAGE2_READINESS_AUDIT，因此正式 3B Stage 2 仍未授权。','It reuses Stage 1. The first paired 128+128 Harness 2.0 result remains unchanged; the later Harness 2.0.1 mechanical qualification is PASS, but scientific closeout is HOLD_FOR_STAGE2_READINESS_AUDIT, so formal 3B Stage 2 remains unauthorized.'),
+    summary: t('OpenEVO 2.0 复用 Stage 1，不重新采集。第一次 Harness 2.0 的 128+128 结果原样保留；Harness 2.0.1 mechanical qualification 已 PASS，但 scientific closeout 为 HOLD_FOR_STAGE2_READINESS_AUDIT，因此正式 3B Stage 2 尚未授权。','OpenEVO 2.0 reuses Stage 1 rather than collecting it again. The first paired 128+128 Harness 2.0 result remains unchanged; Harness 2.0.1 mechanical qualification is PASS, but scientific closeout is HOLD_FOR_STAGE2_READINESS_AUDIT, so formal 3B Stage 2 remains unauthorized.'),
     facts: [t('Harness 2.0 v1：Control 128/128；candidate 128/128','Harness 2.0 v1: Control 128/128; candidate 128/128'), t('v1 非法终止 episode：31.25% → 42.19%','v1 invalid-terminated episodes: 31.25% → 42.19%'), t('Harness 2.0.1：Mechanical PASS；Scientific closeout HOLD_FOR_STAGE2_READINESS_AUDIT；formal Stage2 未授权','Harness 2.0.1: Mechanical PASS; scientific closeout HOLD_FOR_STAGE2_READINESS_AUDIT; formal Stage 2 unauthorized')],
     href: links.harness2,
   },
@@ -204,7 +204,7 @@ const stories = [
                   <small>{t('技术记录：trainer source · restart validator · execution provenance · HF cold archive。','Technical record: trainer source · restart validator · execution provenance · HF cold archive.')}</small>
                 </template>
                 <template data-lineage-detail-template="result">
-                  <p>{t('这个节点表示 7B 训练仍在继续，而且已经成功完成第 65 次这种参数更新，跨过了原来“最多 64 次”的停止线。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','This node means 7B training is still continuing and has already completed the 65th such parameter update, crossing the old 64-update stop. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
+                  <p>{t('7B 训练已经成功完成第 65 次这种参数更新，跨过原来“最多 64 次”的停止线，并继续向后运行。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','7B training has completed the 65th such parameter update, crossed the old 64-update stop, and continues forward. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
                   <button class="lineage-detail__action" type="button" data-open-ceiling-story>{t('在下面看这条线的结果与证据 →','Open this lineage result and evidence below →')}</button>
                 </template>
                 <template data-lineage-detail-template="future">
@@ -218,7 +218,7 @@ const stories = [
             <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
             <span class="map-connector current-route-arrow" data-current-map-arrow="evo2" hidden data-route-preview-arrow aria-hidden="true">→</span>
             <div class="current-route-outcome" data-current-outcome-slot="evo2" data-evo2-gate hidden data-route-preview-outcome>
-              <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：v1 接口问题','Harness 2.0 Mini Study: v1 interface issue')}</b><small>{t('v1 Mechanical PASS，但 formal activation HOLD','v1 Mechanical PASS, but formal activation HOLD')}</small><em>{t('这是 v1 的历史停点；后续 2.0.1 已完成机械资格','This is the historical v1 stop; 2.0.1 later completed mechanical qualification')}</em></button>
+              <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：v1 接口问题','Harness 2.0 Mini Study: v1 interface issue')}</b><small>{t('v1 Mechanical PASS，但 formal activation HOLD','v1 Mechanical PASS, but formal activation HOLD')}</small><em>{t('v1 在这里停下；Harness 2.0.1 已完成机械资格','v1 stops here; Harness 2.0.1 has completed mechanical qualification')}</em></button>
               <div class="rogue-node rogue-node--repair rogue-node--resolved" data-harness201-status><i>✓</i><b>Harness 2.0.1 · Mechanical PASS</b><small>{t('Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT','Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT')}</small></div>
               <button class="rogue-node rogue-node--locked" type="button" data-readiness-gate disabled><i>🔒</i><b>{t('Stage2 readiness audit + dress rehearsal','Stage2 readiness audit + dress rehearsal')}</b><small>{t('formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS','formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS')}</small></button>
             </div>

@@ -31,7 +31,7 @@ const repos = [
     name: 'openevo-experiment',
     state: t('当前科学总账', 'Current scientific source of truth'),
     role: t('正式实验、预算、权限与结果来源', 'Formal experiment, budget, authorization, and result source'),
-    note: t('当前实验状态必须从真正使用的工作分支继续读取，而不是从旧仓库或静态网页猜。', 'Resolve current experiment state from the working branch actually in use, rather than guessing from an older repository or static page.'),
+    note: t('实验 live state 要从真正使用的工作分支读取，而不是从旧仓库或静态网页猜。', 'Resolve experiment live state from the working branch actually in use rather than guessing from an older repository or static page.'),
     href: `${activeRoot}/configs/experiment/current-campaign.json`,
   },
 ] as const;

@@ -42,9 +42,10 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).toContain('共享 prompt 明确 English-only');
     expect(component).toContain('v1 closeout 当时计划：换一个全新的资格窗口');
     expect(component).toContain('pagination / return-to-search');
-    expect(component).toContain('2.0.1 mechanical qualification = PASS');
-    expect(component).toContain('HOLD_FOR_STAGE2_READINESS_AUDIT');
-    expect(component).toContain('STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
+    expect(component).toContain('Mini Study 01 的 v1 结果保持原样');
+    expect(component).toContain('mechanical qualification = PASS');
+    expect(component).toContain('scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT');
+    expect(component).toContain('下一阶段 = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
   });
 
   it('wires the study into the bilingual OpenEVO 2.0 research path', () => {

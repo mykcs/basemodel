@@ -139,7 +139,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
         <li data-ui-audit-item><span>04</span><strong>磁盘还剩多少？</strong><p><code>df -hT</code>。先确认 mount 是否共享，再谈“我还有多少空间”。</p></li>
         <li data-ui-audit-item><span>05</span><strong>数据会不会随容器消失？</strong><p><code>findmnt</code>。把 overlay 和 persistent bind 分清，再决定模型、数据和 run 输出放哪里。</p></li>
       </ol>
-      <aside class="lab-warning"><strong>当前仍需管理员确认：</strong>8 张 GPU 的正式分配/调度、个人 quota、备份/快照/保留政策、canonical workspace、长期任务运行方式，以及 physical-host root 权限边界。</aside>
+      <aside class="lab-warning"><strong>以下事项需要管理员确认：</strong>8 张 GPU 的正式分配/调度、个人 quota、备份/快照/保留政策、canonical workspace、长期任务运行方式，以及 physical-host root 权限边界。</aside>
     </section>
 
     <section class="lab-section" aria-labelledby="agent-audit-title" data-explainer-step="1">

@@ -8,7 +8,7 @@ const locale = 'zh' as const;
 ---
 <AppLayout
   title="OpenEvo 基础能力探索实验"
-  description="OpenEvo × WebShop 能力探索：保留历史 Stage 2 与 Ceiling-1.0 证据；当前 7B Ceiling Stage2 仍 active，3B 则处于 BLOCKED_HARNESS_READINESS。OpenEVO 2.0 的 Harness 2.0.1 mechanical qualification 已 PASS，但 formal 3B Stage2 尚未授权。"
+  description="OpenEvo × WebShop 能力探索把训练分成 Stage 1 经验准备和 Stage 2 继续训练两部分。历史 Stage 2 与 Ceiling-1.0 证据都保留；7B Ceiling Stage2 仍在运行，3B 处于 BLOCKED_HARNESS_READINESS。OpenEVO 2.0 的 Harness 2.0.1 mechanical qualification 已 PASS，但 formal 3B Stage2 尚未授权。"
   locale={locale}
 >
   <section class="capability-series" data-testid="openevo-capability-exploration-series">
@@ -16,8 +16,8 @@ const locale = 'zh' as const;
       <p>OPENEVO × WEBSHOP · CAPABILITY EXPLORATION</p>
       <h1>OpenEvo 基础能力探索实验</h1>
       <div>
-        <strong>当前 corrected Stage 1 仍是共同起点。第一次 Harness 2.0 128+128 qualification 已完成；后续 Harness 2.0.1 的 mechanical qualification 也已 PASS，但 scientific closeout 仍是 HOLD_FOR_STAGE2_READINESS_AUDIT，正式 3B Stage 2 尚未授权。</strong>
-        <span>Harness 2.0.1 的 mechanical PASS 不等于 formal activation：当前记录明确为 formal_stage2_authorized=false、final_panel_access_authorized=false。下一阶段已经从“做 2.0.1”推进到 STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL；只有显式 readiness release 才能重新授权 3B Stage 2。</span>
+        <strong>接下来的训练分成两个阶段：Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练。Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1，因此从这里分成两条 Stage-2 路线。第一次 Harness 2.0 128+128 qualification 已完成；Harness 2.0.1 的 mechanical qualification 也已 PASS，但 scientific closeout 是 HOLD_FOR_STAGE2_READINESS_AUDIT，正式 3B Stage 2 尚未授权。</strong>
+        <span>Harness 2.0.1 的 mechanical PASS 只说明机械接口资格已经通过，不代表正式 Stage 2 可以启动。因此当前记录仍是 formal_stage2_authorized=false、final_panel_access_authorized=false；下一步是 STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL，只有显式 readiness release 才能重新授权 3B Stage 2。</span>
       </div>
     </header>
     <OpenEvoCapabilityExperimentTree locale={locale} />

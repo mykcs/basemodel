@@ -14,7 +14,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
   </header>
 
   <div class="principles">
-    <article><small>{t('谁产生轨迹','Who acts?')}</small><strong>{t('当前 policy 自己 on-policy rollout','the current policy performs its own on-policy rollout')}</strong></article>
+    <article><small>{t('谁产生轨迹','Who acts?')}</small><strong>{t('policy 自己做 on-policy rollout','the policy performs its own on-policy rollout')}</strong></article>
     <article><small>{t('谁做 hindsight','Who analyzes?')}</small><strong>{t('同步的同一 policy checkpoint','the synchronized same policy checkpoint')}</strong></article>
     <article><small>{t('真正留下什么','What persists?')}</small><strong>{t('更新后的 policy 参数；skill prompt 只是临时上下文','the updated policy parameters; the skill prompt is only a transient context')}</strong></article>
   </div>

@@ -46,7 +46,9 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('keeps old Stage 1 usable and links its retained artifacts', () => {
-    expect(capabilityIndex).toContain('当前 corrected Stage 1 仍是共同起点');
+    expect(capabilityIndex).not.toContain('当前 corrected Stage 1 仍是共同起点');
+    expect(capabilityIndex).toContain('接下来的训练分成两个阶段：Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练。');
+    expect(capabilityIndex).toContain('Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');

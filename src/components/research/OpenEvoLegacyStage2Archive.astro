@@ -24,7 +24,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
       <h1>{t('第一次 Stage 2 为什么白跑：有成功经验，但旧规则不让模型继续学', 'Why the first Stage 2 stalled: successful experience existed, but the old rule blocked learning')}</h1>
-      <span>{t('这一版 Stage 2 一共让模型继续做了 20,480 次 WebShop 任务。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是“没有成功数据”，而是当时把每 256 次尝试单独检查，必须同一批里至少有 8 个不同任务各自成功 2 次，才允许学习；最好的一批只有 7 个。', 'This Stage 2 let the model continue for 20,480 WebShop attempts. 7B/self collected 797 trainable exact-success traces and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The problem was not a lack of successful data: every 256 attempts were judged separately, and learning was allowed only if at least eight distinct tasks each succeeded twice inside the same batch; the best batch reached seven.')}</span>
+      <span>{t('历史 Stage 2 一共让模型继续做了 20,480 次 WebShop 任务。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是“没有成功数据”，而是当时把每 256 次尝试单独检查，必须同一批里至少有 8 个不同任务各自成功 2 次，才允许学习；最好的一批只有 7 个。', 'The historical Stage 2 let the model continue for 20,480 WebShop attempts. 7B/self collected 797 trainable exact-success traces and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The problem was not a lack of successful data: every 256 attempts were judged separately, and learning was allowed only if at least eight distinct tasks each succeeded twice inside the same batch; the best batch reached seven.')}</span>
     </div>
     <aside>
       <b>{t('设计错在哪里', 'WHAT WAS WRONG')}</b>

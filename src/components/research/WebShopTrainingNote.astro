@@ -109,12 +109,12 @@ python test.py`}</code></pre>
       </section>
 
       <section>
-        <h2>4. 后来真正变化的，不是 WebShop，而是“经验怎么回到模型”</h2>
+        <h2>4. 训练方法的差别：经验怎样回到模型</h2>
         <div class="comparison-list">
           <div><strong>WebShop 2022</strong><p>主要依靠人类 demonstration、IL 和 policy-gradient RL。</p></div>
-          <div><strong>GRPO / GiGPO</strong><p>当前策略在线 rollout；关键问题是 trajectory / step 的 credit assignment。</p></div>
+          <div><strong>GRPO / GiGPO</strong><p>GRPO / GiGPO 让正在训练的策略在线 rollout；关键问题是 trajectory / step 的 credit assignment。</p></div>
           <div><strong>SPEAR 一类 self-imitation</strong><p>保存自己历史上更好的 trajectory，再用 replay 反复学习。</p></div>
-          <div><strong>SEED</strong><p>当前策略不仅产生 experience，还自己复盘这段 experience，再把 hindsight 对 action 的影响蒸馏回参数。</p></div>
+          <div><strong>SEED</strong><p>SEED 让正在训练的 policy 既产生 experience，也复盘这段 experience，再把 hindsight 对 action 的影响蒸馏回参数。</p></div>
           <div><strong>我们的 OpenEvo 路线</strong><p>先把成功经验严格固定下来，再问：不同 parameter-write rule 能不能把这些经验稳定写进参数并迁移到 untouched tasks。</p></div>
         </div>
         <p>因此，“大家怎么训练 WebShop”没有唯一答案。真正可比的单位必须至少包含：同一个 WebShop fork、商品 catalog、task split、prompt、最大步数、rollout budget、reward wrapper 和评价指标。</p>
@@ -270,11 +270,11 @@ separate acquisition / retention / preservation / fresh transfer`}</code></pre>
         <h2>4. 我们和 SEED 的训练信号并不相同</h2>
         <div class="table-wrap" tabindex="0">
           <table>
-            <thead><tr><th></th><th>SEED</th><th>当前 OpenEvo mechanism lane</th></tr></thead>
+            <thead><tr><th></th><th>SEED</th><th>OpenEvo parameter-write 主线</th></tr></thead>
             <tbody>
-              <tr><td>经验来源</td><td>每轮当前 policy on-policy rollout</td><td>train-only rollout 后冻结一批合格经验</td></tr>
-              <tr><td>失败轨迹</td><td>可进入 hindsight analysis / RL</td><td>当前 parameter-write 主实验主要依赖 qualified positive records</td></tr>
-              <tr><td>复盘</td><td>当前 policy 生成 hindsight skill</td><td>没有复制 SEED 的在线 hindsight analyzer</td></tr>
+              <tr><td>经验来源</td><td>每轮由正在训练的 policy on-policy rollout</td><td>train-only rollout 后冻结一批合格经验</td></tr>
+              <tr><td>失败轨迹</td><td>可进入 hindsight analysis / RL</td><td>OpenEvo parameter-write 主实验主要依赖 qualified positive records</td></tr>
+              <tr><td>复盘</td><td>SEED 由正在训练的 policy 生成 hindsight skill</td><td>没有复制 SEED 的在线 hindsight analyzer</td></tr>
               <tr><td>更新信号</td><td>outcome RL + OPD token signal</td><td>LoRA / SD-LoRA experience write</td></tr>
               <tr><td>主问题</td><td>在线策略能否持续自我改进</td><td>固定经验能否稳定内化并迁移</td></tr>
             </tbody>

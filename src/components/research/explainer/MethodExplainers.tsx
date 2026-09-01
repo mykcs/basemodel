@@ -365,7 +365,7 @@ export function SeedExplainer({
           <span>STAGE 2 · SELF-EVOLVING OPD + GRPO</span>
           <strong>
             {zh
-              ? "交互合同不换：当前 policy 仍经同一 harness 进入 Princeton WebShop；变化的是 analyzer 来源与被更新的参数"
+              ? "交互合同保持不变：Stage 2 的 policy 仍通过同一套 harness 进入 Princeton WebShop；变化的是 analyzer 来源与被更新的参数"
               : "The interaction contract stays fixed: the current policy still reaches Princeton WebShop through the same harness; what changes is the analyzer source and the learned parameter state"}
           </strong>
         </div>
