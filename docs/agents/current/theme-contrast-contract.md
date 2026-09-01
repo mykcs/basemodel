@@ -56,6 +56,8 @@ Use the tokens defined in `src/styles/tokens.css`:
 
 Do not invent a foreground or background color in a component when an existing semantic pair expresses the same role.
 
+For state UI, use `--color-positive`, `--color-warning`, `--color-danger`, `--color-info`, or the muted/surface pair for unknown state. A selector whose name already encodes a state (`verified`, `pending`, `bug`, `blocked`, `unknown`, and similar) must not hard-code a red/green/amber/gray hex. This keeps the same semantic state theme-aware and visually consistent across components. Intentional chart/figure palettes are a separate concern and are not automatically state colors.
+
 ## 2. Never use an undefined variable with a light-only fallback
 
 Forbidden pattern:

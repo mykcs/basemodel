@@ -101,6 +101,8 @@ Prefer feature styling beside or directly imported by the owning component when 
 
 Ordinary corner radii follow the shared 6 / 10 / 16px system in `tokens.css`. Existing one-off pixel radii are migration debt, not a palette to copy. Clean/new components should use `--radius-control`, `--radius-panel`, or `--radius-feature`; pills and circles keep their separate fully rounded semantics. The CSS audit freezes remaining legacy per-file/per-value debt so it can decrease but cannot grow.
 
+State colors follow the semantic tokens in `tokens.css`: positive, warning, danger, info, and muted/unknown roles must not pick raw hex colors inside state selectors. This applies to status/verification/bug/blocker/pending/fit-state UI, not to intentional chart or figure palettes. If two states have different meanings (for example `medium` versus `unknown`), do not merge them under one color rule merely because an old stylesheet did so.
+
 ### Frozen legacy compatibility layers
 
 These files remain because portions of their cascade still contain required behavior:
@@ -159,6 +161,7 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - required Header/shared-shell invariants remain in their semantic owners;
 - the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants;
 - the canonical 6 / 10 / 16px radius tokens remain defined, and frozen non-canonical single-pixel radius debt cannot spread to a new file/value or increase in count.
+- selectors that explicitly encode product state contain no raw hex colors; they must use theme-aware semantic tokens instead.
 
 `src/lib/globalShellOwnership.test.ts` independently enforces page isolation, owner ordering, breakpoint ownership, retired Header debt, and the frozen remaining selector set.
 

@@ -179,6 +179,33 @@ if (observedRadiusDebtTotal > radiusBaseline.baseline_total) {
   fail(`non-canonical radius debt increased from ${radiusBaseline.baseline_total} to ${observedRadiusDebtTotal}`);
 }
 
+// State colors are semantic product language, not a per-component palette. Raw
+// hex values inside state selectors bypass light/dark theme pairing and let
+// visually equivalent states drift into unrelated reds, ambers, and greens.
+// Keep chart/figure palettes outside this rule; this gate targets selectors
+// that explicitly declare state meaning.
+const explicitStateSelector = /(?<![a-z0-9])(?:status|demo|warn(?:ing)?|pass|success|positive|verified|supported|resolved|repair|pending|partial|conditional|hold|legacy|danger|error|invalid|bug|block(?:ed|er)?|fail(?:ed|ure)?|conflict|destructive|unknown|unavailable|unverified|missing|info)(?![a-z0-9])/i;
+const structuredStateSelector = /(?:check-chip|ladder-(?:yes|no|unknown)|semantic-status\.is-(?:true|false|unknown)|(?:task-fit|fit-level)-(?:high|medium|low|unknown|conditional|explore|blocked))/i;
+const rawHexColor = /#[0-9a-f]{3,8}\b/ig;
+const stateSelectorRawColors: string[] = [];
+for (const path of walk(join(root, 'src'))) {
+  if (!path.endsWith('.css') && !path.endsWith('.astro')) continue;
+  const source = readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const repoPath = relative(root, path).replaceAll('\\', '/');
+  for (const match of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selector = match[1]?.trim() ?? '';
+    const declarations = match[2] ?? '';
+    if (!explicitStateSelector.test(selector) && !structuredStateSelector.test(selector)) continue;
+    const colors = [...declarations.matchAll(rawHexColor)].map((color) => color[0]);
+    if (colors.length > 0) {
+      stateSelectorRawColors.push(`${repoPath}: ${selector.replace(/\s+/g, ' ')} => ${colors.join(', ')}`);
+    }
+  }
+}
+if (stateSelectorRawColors.length > 0) {
+  fail(`state selectors must use semantic theme tokens instead of raw hex colors:\n${stateSelectorRawColors.map((item) => `  - ${item}`).join('\n')}`);
+}
+
 const trainingNoteOwner = read(trainingNoteOwnerPath);
 for (const invariant of [
   '.site-main .training-note.training-note',
@@ -254,4 +281,5 @@ console.log('  unscoped structural layout selectors: forbidden; no legacy debt r
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
 console.log(`  radius system: 6/10/16px tokens; legacy non-canonical debt ${observedRadiusDebtTotal}/${radiusBaseline.baseline_total} and may only decrease`);
+console.log('  state colors: semantic selectors contain zero raw hex colors');
 console.log('  Tailwind migration: not justified by the current ownership evidence');
