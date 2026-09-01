@@ -40,6 +40,13 @@ describe('global shell ownership', () => {
     ).toEqual([]);
   });
 
+  it('does not use Header.astro as a global feature-style injection point', () => {
+    const header = read('../components/Header.astro');
+    expect(header).not.toContain('<style is:global>');
+    expect(header).not.toContain('mission-chain');
+    expect(header).not.toContain('intent-row');
+  });
+
   it('loads semantic shell owners after every retained compatibility layer', () => {
     const app = read('../styles/app.css');
     const closeout = app.indexOf("@import './visual-closeout.css';");

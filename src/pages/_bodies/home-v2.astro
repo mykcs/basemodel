@@ -84,4 +84,42 @@ const scenarioCards = [
   .home-maintenance-shortcuts a:focus-visible {
     color: var(--ink);
   }
+
+
+  .intent-row > span[aria-hidden='true'] {
+    position: relative;
+    display: block;
+    width: 28px;
+    height: 14px;
+    overflow: hidden;
+    color: transparent;
+    font-size: 0;
+  }
+  .intent-row > span[aria-hidden='true']::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 22px;
+    height: 1.5px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 58%, var(--line));
+    transform: translateY(-50%);
+  }
+  .intent-row > span[aria-hidden='true']::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 6px;
+    height: 6px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    background: var(--surface);
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 640px) {
+    .intent-row > span[aria-hidden='true'] { font-size: 1.08rem; }
+  }
 </style>
