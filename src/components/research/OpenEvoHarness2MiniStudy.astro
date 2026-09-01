@@ -95,7 +95,7 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
 
   <section class="h2study__section" aria-labelledby="mechanism-title">
     <p class="kicker">MECHANISM EVIDENCE</p>
-    <h2 id="mechanism-title">{t('三个问题一起出现','Three problems appeared together')}</h2>
+    <h2 id="mechanism-title">{t('三组诊断信号','Three diagnostic signals appeared together')}</h2>
     <div class="h2study__mechanisms">
       <article>
         <span>01</span><strong>{t('Prompt 与 parser 的语言规则没对齐','Prompt/parser language contract mismatch')}</strong>
@@ -103,12 +103,12 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
       </article>
       <article>
         <span>02</span><strong>{t('抽象动作词又被 3B 当成按钮','Abstract action words became pseudo-buttons')}</strong>
-        <p>{t('我们删除了历史按钮字面量，但保留了 pagination、return-to-search 这类动作名。3B 又把这些概念重新翻译成 click[...]，说明“换成抽象动作名”仍然太像按钮。','Historical button literals were removed, but action-like nouns such as pagination and return-to-search remained. 3B reified those concepts into click[...] commands, showing that action nouns are still too button-shaped.')}</p>
+        <p>{t('我们删除了历史按钮字面量，但保留了 pagination、return-to-search 这类动作名；轨迹里随后出现 click[pagination] 等伪动作。这与“抽象动作词可能被模型重新当成可点击目标”的解释一致，但这里没有单独做词汇消融，所以不能把它写成已经证实的因果原因。','Historical button literals were removed, but action-like nouns such as pagination and return-to-search remained; the traces then included pseudo-actions such as click[pagination]. That is consistent with the hypothesis that action-like abstractions can be reinterpreted as clickable targets, but vocabulary was not isolated in its own ablation, so this is not a proven causal explanation.')}</p>
         <code>{q.mechanisms.pseudoActions.slice(0,2).join(' · ')}</code>
       </article>
       <article>
-        <span>03</span><strong>{t('Context Governor 仍然太厚','The Context Governor was still too heavy')}</strong>
-        <p>{t(`同一个 step 0，Control 平均 ${q.control.step0MeanInputTokens.toFixed(2)} tokens，Harness2 平均 ${q.candidate.step0MeanInputTokens.toFixed(2)} tokens，固定多 ${q.mechanisms.step0TokenDelta} tokens。更关键的是，Harness2 的 1,479 个 step 每一步都同时注入 Memory + Skill + Agent，实际没有真正“薄”下来。`,`On the same step 0, Control averaged ${q.control.step0MeanInputTokens.toFixed(2)} tokens while Harness2 averaged ${q.candidate.step0MeanInputTokens.toFixed(2)}, a fixed +${q.mechanisms.step0TokenDelta}-token delta. More importantly, every one of Harness2's 1,479 steps still injected Memory + Skill + Agent together, so the runtime never became genuinely thin.`)}</p>
+        <span>03</span><strong>{t('Context Governor 没有达到预定的 selective / thin 设计','The Context Governor did not meet the intended selective/thin design')}</strong>
+        <p>{t(`同一个 step 0，Control 平均 ${q.control.step0MeanInputTokens.toFixed(2)} tokens，Harness2 平均 ${q.candidate.step0MeanInputTokens.toFixed(2)} tokens，固定多 ${q.mechanisms.step0TokenDelta} tokens；Harness2 的 1,479 个 step 每一步都同时注入 Memory + Skill + Agent。因此它没有实现预定的 selective / thin 输入策略。这个 token 差异能证明设计没有按目标变薄，但不能单独证明它造成了非法动作增加。`,`On the same step 0, Control averaged ${q.control.step0MeanInputTokens.toFixed(2)} tokens while Harness2 averaged ${q.candidate.step0MeanInputTokens.toFixed(2)}, a fixed +${q.mechanisms.step0TokenDelta}-token delta; every one of Harness2's 1,479 steps still injected Memory + Skill + Agent together. This shows that the implementation did not meet the intended selective/thin design, but token inflation alone does not prove that it caused the higher invalid-termination rate.`)}</p>
       </article>
     </div>
   </section>
@@ -120,7 +120,7 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
       <article class="pass"><span>MECHANICAL</span><strong>PASS</strong><p>{t('128+128 完整、工程无效为 0、carrier lint / role separation / budget / readback 与预注册接口容忍线都通过。','128+128 completed with zero engineering-invalid rows; carrier lint, role separation, budget, readback, and preregistered interface tolerances all passed.')}</p></article>
       <article class="hold"><span>SCIENTIFIC</span><strong>HOLD</strong><p>{t('行为没有改善，而且 candidate-only invalid 明显更多；因此不创建 formal activation，也不把这次 PASS 写成“可以开始正式 Stage2”。','Behavior did not improve and candidate-only invalid terminations were clearly more frequent; therefore no formal activation is created, and PASS is not treated as permission to begin formal Stage 2.')}</p></article>
     </div>
-    <p>{t('同时，Control 自己已经有 31.25% 非法终止、0/128 完整成功。这说明旧 carrier 污染不是 3B 的唯一瓶颈：3B 本身在语言 contract、长结果页下的 tagged action 输出，以及“高层意图 → 当前可执行命令”的映射上也不稳定。','At the same time, Control itself has 31.25% invalid termination and 0/128 exact success. Historical carrier contamination is therefore not the only 3B bottleneck: 3B also struggles with the language contract, tagged action generation under long result pages, and mapping high-level intent to an exact currently admissible command.')}</p>
+    <p>{t('同时，Control 自己已经有 31.25% 非法终止、0/128 完整成功。因此“所有问题都由 carrier 内容单独造成”这个解释不成立。剩余失败仍可能来自共享 prompt / parser / action contract、基础 policy，或这些因素之间的交互；这组 128 次 control 不能继续把责任归到“3B 本身”。','At the same time, Control itself has 31.25% invalid termination and 0/128 exact success. That rules out the explanation that carrier content alone accounts for every failure. The remaining errors could still arise from the shared prompt/parser/action contract, the base policy, or interactions among them; this 128-attempt control does not isolate responsibility to “3B itself”.')}</p>
   </section>
 
   <section class="h2study__section" aria-labelledby="next-title">

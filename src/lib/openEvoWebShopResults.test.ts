@@ -276,7 +276,9 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(g2Ablation).toContain('第二道门 · 保住旧能力');
     expect(g2Ablation).toContain('第三道门 · 保住第一代收益');
     expect(g2Ablation).toContain('H1.40 和 H1.41 两轮里');
-    expect(g2Ablation).toContain('不是凭感觉说“可能忘了”');
+    expect(g2Ablation).toContain('这是目前最一致的风险信号');
+    expect(g2Ablation).toContain('不能证明 retention 就是阻止第二代持续改进的唯一或主要因果瓶颈');
+    expect(g2Ablation).not.toContain('这是目前证据最一致的瓶颈');
     expect(g2Ablation).toContain('t2Opened = false');
     expect(g2Ablation).toContain('诊断信号，不是因果证明');
     expect(g2Ablation).toContain('OpenEvoEvidenceRefs');
@@ -286,6 +288,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(g2Ablation.indexOf('{retention.map')).toBeGreaterThan(g2Ablation.indexOf('<details class="evidence-details"'));
     expect(g2Ablation.indexOf('{preservation.map')).toBeGreaterThan(g2Ablation.indexOf('<details class="evidence-details"'));
     expect(questions).toContain('href="#g2-ablation"');
+    expect(resultNote).toContain('经验供给已经证明不是零，但这不等于供给一定充足');
+    expect(resultNote).not.toContain('经验供给不是当前直接瓶颈');
   });
 
   it('orders next steps around closed Track A, the WB1 state barrier, and ALFWorld', () => {

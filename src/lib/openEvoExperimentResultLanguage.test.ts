@@ -115,6 +115,15 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(openEvo2).toContain('formal_stage2_authorized=false');
     expect(openEvo2).toContain('Ceiling-1.0 已经产生的结果不改写');
     expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
+    expect(openEvo2).toContain('不能把分化直接归因成“小模型更怕上下文”');
+    expect(openEvo2).toContain('候选机制');
+    expect(openEvo2).not.toContain('同样的历史上下文对小模型负担更重');
+    expect(openEvo2).not.toContain('最可能出问题的经验注入接口');
+    expect(legacyStage2Journey).toContain('不能在其余变量中继续排名谁最可能是根因');
+    expect(legacyStage2Journey).not.toContain('真正的问题更可能出在新的上下文 / 动作接口');
+    expect(analysis).toContain('训练 loss 不是任务得分的单调代理指标');
+    expect(analysis).toContain('剩余差距没有被这组数据进一步定位');
+    expect(analysis).not.toContain('说明优化目标和真正任务能力脱节');
   });
 
   it('preserves the historical 7-versus-8 run fact without promoting it into the long-term algorithm', () => {

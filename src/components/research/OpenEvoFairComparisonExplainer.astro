@@ -257,7 +257,7 @@ const checkpoints = [
     <div>
       <p class="section-kicker">{t('这场基础实验真正回答什么？', 'What does this baseline experiment actually answer?')}</p>
       <h3 id="eli5-conclusion-title">{t('同一个 Qwen 起点、同样多的 WebShop 练习机会，OpenEvo-native 最后在同一份 128 题考试上能拿多少分？', 'Starting from the same Qwen checkpoint and the same number of WebShop practice opportunities, how well does OpenEvo-native score on the same frozen 128-task exam?')}</h3>
-      <p>{t('它不会证明所有资源完全相同，也不会证明 teacher 一定没用。它会先给我们一个最干净的 OpenEvo-native 结果，再决定下一步是否需要 +GLM / +GPT、rank-reduction 或其它机制实验。', 'It does not prove that every resource is identical, nor that a teacher can never help. It first gives us the cleanest OpenEvo-native result, after which we can decide whether +GLM / +GPT, rank reduction, or another mechanism study is justified.')}</p>
+      <p>{t('它不会证明所有资源完全相同，也不会证明 teacher 一定没用。它会先给出这场 campaign 预先定义、provenance 明确的 OpenEvo-native 结果；后续是否增加 +GLM / +GPT、rank-reduction 或其它机制，需要另开实验问题，而不是从这一结果自动推出。', 'It does not prove that every resource is identical, nor that a teacher can never help. It first yields the predefined, provenance-bounded OpenEvo-native result for this campaign; whether +GLM / +GPT, rank reduction, or another mechanism deserves a separate experiment is a new question rather than an automatic implication of that result.')}</p>
     </div>
     <nav aria-label={t('继续阅读', 'Continue reading')}>
       <a href={`${root}/study/results/`}>{t('看已有实验结果 →', 'Read existing results →')}</a>

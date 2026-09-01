@@ -85,6 +85,8 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
   it('keeps matched comparison separate from paper-number subtraction', () => {
     expect(seedFigure).toContain('不能把这个数字直接减去论文的 89.7 / 78.1%');
     expect(seedFigure).toContain('把 SEED 方法本身也重新放到同一套冻结任务');
+    expect(seedFigure).toContain('才能把方法差异与评测口径差异分开');
+    expect(seedFigure).not.toContain('最干净的做法');
     expect(nextSteps).toContain('只有路线 B 才能真正回答 OpenEvo vs SEED');
   });
 });
