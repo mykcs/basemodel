@@ -61,16 +61,16 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {
-    expect(stage2Chooser).toContain('旧门槛已取代，数据仍保留');
-    expect(stage2Chooser).toContain('正在运行 / harness 风险复核中');
+    expect(stage2Chooser).toContain('第一版 · 已取代');
+    expect(stage2Chooser).toContain('第二版 · 3B 问题暴露');
     expect(legacyStage2Archive).toContain('SUPERSEDED METHOD-CONTROL');
     expect(legacyStage2Archive).toContain('data-model-choice="3b"');
     expect(legacyStage2Archive).toContain('data-teacher-choice="minimax"');
     expect(legacyStage2Data).toContain("qualifiedPositives: '797'");
     expect(legacyStage2Data).toContain("taskScoreX100: 1.71");
     expect(legacyStage2Data).toContain("taskScoreX100: 16.94");
-    expect(ceilingStage2).toContain('128 是共同 evidence boundary');
-    expect(ceilingStage2).toContain('旧 7-vs-8 gate 明确禁止');
+    expect(ceilingStage2).toContain('每 128 次任务形成一轮共同证据');
+    expect(ceilingStage2).toContain('不再使用旧的 7 对 8 门槛');
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 3_968');
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 2_304');
     expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
@@ -80,32 +80,33 @@ describe('OpenEvo capability-exploration result language', () => {
   it('explains how the old 8×2×256 rule grew from bounded experiments and how it was diagnosed later', () => {
     expect(legacyStage2Archive).toContain('OpenEvoLegacyStage2ResearchJourney');
     expect(legacyStage2Journey).toContain('H1.38A-C');
-    expect(legacyStage2Journey).toContain('148 次尝试得到 50 条合格成功');
-    expect(legacyStage2Journey).toContain('8 个不同任务，每个任务恰好 2 条独立成功');
-    expect(legacyStage2Journey).toContain('64 个任务 × 4 个 seed = 最多 256 次尝试');
-    expect(legacyStage2Journey).toContain('两个“256”不是一回事');
+    expect(legacyStage2Journey).toContain('148 次尝试里得到 50 条可以用于训练的完整成功轨迹');
+    expect(legacyStage2Journey).toContain('8 个不同任务，每个任务各有 2 条独立成功');
+    expect(legacyStage2Journey).toContain('最多允许 256 次任务尝试');
+    expect(legacyStage2Journey).toContain('这里还出现过另一个“256”，但它和这次错误不是一回事');
     expect(legacyStage2Journey).toContain('max_records=256');
     expect(legacyStage2Journey).toContain("oldInvalid:'130 / 1,280 · 10.2%'");
     expect(legacyStage2Journey).toContain("nextInvalid:'481 / 1,280 · 37.6%'");
     expect(legacyStage2Journey).toContain("oldInvalid:'171 / 1,280 · 13.4%'");
     expect(legacyStage2Journey).toContain("nextInvalid:'322 / 1,280 · 25.2%'");
     expect(legacyStage2Journey).toContain('H1.20');
-    expect(legacyStage2Journey).toContain('128/480');
-    expect(legacyStage2Journey).toContain('164/960');
-    expect(legacyStage2Journey).toContain('HARNESS 2.0 PREFORMAL · 128 + 128');
-    expect(legacyStage2Journey).toContain('reward / success 只做诊断');
+    expect(legacyStage2Journey).toContain('480 条历史动作里的 128 条不可执行建议');
+    expect(legacyStage2Journey).toContain('960 条建议里的 164 条不可执行动作');
+    expect(legacyStage2Journey).toContain('Harness 2.0 正式实验前检查 · 128 + 128');
+    expect(legacyStage2Journey).toContain('分数和成功数只作为诊断');
   });
 
   it('adds OpenEVO 2.0 as a successor without pretending Ceiling-1.0 already stopped', () => {
-    expect(stage2Chooser).toContain('OpenEVO 2.0');
-    expect(stage2Chooser).toContain('Stage 1 分析 / 状态构建');
+    expect(stage2Chooser).toContain('Harness 2.0 · 正式实验前检查');
+    expect(stage2Chooser).toContain('经验怎样整理并进入下一步');
     expect(stage2Chooser).toContain('/openevo-2-0/');
-    expect(openEvo2).toContain('Context Governor');
-    expect(openEvo2).toContain('三种经验载体（carrier）职责分离');
-    expect(openEvo2).toContain('Telemetry v2');
-    expect(openEvo2).toContain('Preformal Harness Qualification');
-    expect(openEvo2).toContain('尚未发生');
-    expect(openEvo2).toContain('Ceiling-1.0 还在运行');
+    expect(openEvo2).toContain('当前页面永远比历史经验优先');
+    expect(openEvo2).toContain('三份历史经验不再重复写同一套按钮攻略');
+    expect(openEvo2).toContain('把不同类型的失败分开记');
+    expect(openEvo2).toContain('正式重跑前，先做两个各 128 次的小检查');
+    expect(openEvo2).toContain('新 Stage 2 还没有消耗任何正式任务');
+    expect(openEvo2).toContain('Ceiling-1.0 是否已经正式停止');
+    expect(openEvo2).toContain('这个历史快照里还没有');
     expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
   });
 
