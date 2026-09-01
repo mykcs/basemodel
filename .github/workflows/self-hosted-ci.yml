@@ -27,7 +27,10 @@ jobs:
       - name: Checkout tested merge candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          # pull_request checks out GitHub's merge candidate, so depth 2 keeps the
+          # merge commit plus its parents. workflow_dispatch keeps full history
+          # because its merge-base with main may be arbitrarily deep.
+          fetch-depth: ${{ github.event_name == 'pull_request' && '2' || '0' }}
           persist-credentials: false
 
       - name: Resolve test range
@@ -36,6 +39,10 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             base="${{ github.event.pull_request.base.sha }}"
+            if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+              echo "::error::PR base commit $base is unavailable in the shallow checkout."
+              exit 1
+            fi
           else
             git fetch origin main --no-tags
             base="$(git merge-base origin/main HEAD)"
