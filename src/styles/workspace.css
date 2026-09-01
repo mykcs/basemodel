@@ -201,8 +201,9 @@
 .candidate-fit-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 8px 0 0; }
 .candidate-fit-grid dt { color: var(--muted); font-size: .64rem; line-height: 1.25; }
 .candidate-fit-grid dd { margin: 2px 0 0; font-size: .7rem; font-weight: 750; }
-.candidate-fit-grid .fit-level-high { color: var(--positive, #245f56); }
-.candidate-fit-grid .fit-level-medium, .candidate-fit-grid .fit-level-unknown { color: var(--warning, #805e2d); }
+.candidate-fit-grid .fit-level-high { color: var(--color-positive); }
+.candidate-fit-grid .fit-level-medium { color: var(--color-warning); }
+.candidate-fit-grid .fit-level-unknown { color: var(--color-text-muted); }
 .candidate-fit-grid .fit-level-low { color: var(--accent-deep); }
 
 .workspace-lower {
