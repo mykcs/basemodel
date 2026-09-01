@@ -231,7 +231,7 @@ const stories = [
       if (!state.stage1 || !state.analysis) return;
       const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
       if (floor1) { floor1.hidden = true; floor1.classList.remove('floor--active'); }
-      if (floor2) { floor2.hidden = false; floor2.classList.add('floor--active'); }
+      if (floor2) { floor2.hidden = false; floor2.classList.add('floor--active'); floor2.dataset.route = state.stage1; }
       all<HTMLElement>('[data-stage2-branch]').forEach((branch) => branch.hidden = branch.dataset.stage2Branch !== state.stage1);
       resetStage2Map();
       floor2?.scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -267,7 +267,7 @@ const stories = [
 
     one<HTMLButtonElement>('[data-back-stage1]')?.addEventListener('click', () => {
       const floor1 = one<HTMLElement>('[data-floor="stage1"]'); const floor2 = one<HTMLElement>('[data-floor="stage2"]');
-      if (floor2) { floor2.hidden = true; floor2.classList.remove('floor--active'); }
+      if (floor2) { floor2.hidden = true; floor2.classList.remove('floor--active'); delete floor2.dataset.route; }
       if (floor1) { floor1.hidden = false; floor1.classList.add('floor--active'); floor1.scrollIntoView({ behavior: 'auto', block: 'start' }); }
       resetStage2Map();
     });
@@ -341,11 +341,14 @@ const stories = [
 
 .exp-tree [hidden]{display:none!important}
 /* Roguelike route preview: future nodes remain visible as non-interactive silhouettes. */
-.exp-tree [data-route-preview][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.exp-tree [data-route-preview-outcome][hidden]{display:flex!important;opacity:1;pointer-events:none}
-.exp-tree [data-route-preview-branch][hidden]{display:block!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.exp-tree [data-route-preview-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
-.exp-tree [data-route-preview-leaf][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.floor[data-floor="stage1"] [data-route-preview][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage1"] [data-route-preview-branch][hidden]{display:block!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="old"] [data-old-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
+.floor[data-floor="stage2"][data-route="old"] [data-bug-branch="old"][hidden],.floor[data-floor="stage2"][data-route="old"] [data-old-successor][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
+.floor[data-floor="stage2"][data-route="old"] [data-ending-from-old][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome][hidden]{display:flex!important;opacity:1;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-evo2-gate][hidden],.floor[data-floor="stage2"][data-route="current"] [data-ending="ceiling"][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
 .rogue-run{padding:.95rem 0 .85rem}
 .floor{padding:.9rem;border:1px solid var(--color-border);border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 2.5%,var(--color-bg)),var(--color-bg))}
 .floor--active{box-shadow:0 14px 36px color-mix(in srgb,var(--color-text) 5%,transparent)}
