@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { evidenceKindLabel, verifiedEvidenceHref, type EvidenceRef } from '../../lib/researchEvidence';
 
@@ -21,7 +22,7 @@ const zh = locale === 'zh';
     {sources.map((source) => (
       <a href={verifiedEvidenceHref(source.href)} target="_blank" rel="noreferrer">
         <small>{evidenceKindLabel(source.kind, locale)}</small>
-        <span>{source.label}</span>
+        <span><ExternalBrandMark href={verifiedEvidenceHref(source.href)} />{source.label}</span>
         <b aria-hidden="true">↗</b>
       </a>
     ))}

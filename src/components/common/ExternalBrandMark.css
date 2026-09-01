@@ -1,0 +1,17 @@
+.external-brand-mark {
+  display: inline-grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  flex: none;
+  margin-inline-end: .42em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  vertical-align: -.27rem;
+}
+
+.external-brand-mark img { display: block; width: .875rem; height: .875rem; }
+.external-brand-mark--huggingface img { width: .95rem; height: .95rem; }
+[data-theme='dark'] .external-brand-mark--github img { filter: invert(1); }
+a:is(:hover, :focus-visible) .external-brand-mark { border-color: var(--accent); }

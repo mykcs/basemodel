@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
 
@@ -68,7 +69,7 @@ const phaseG = [
         <div><span>{repo.state}</span><code>{repo.name}</code></div>
         <strong>{repo.role}</strong>
         <p>{repo.note}</p>
-        <a href={repo.href} target="_blank" rel="noreferrer">{t('查看仓库证据', 'Open repository evidence')} ↗</a>
+        <a href={repo.href} target="_blank" rel="noreferrer"><ExternalBrandMark href={repo.href} />{t('查看仓库证据', 'Open repository evidence')} ↗</a>
       </li>)}
     </ol>
   </section>
@@ -120,9 +121,9 @@ const phaseG = [
   </section>
 
   <footer class="sources">
-    <a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default main current-campaign ↗</a>
-    <a href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} target="_blank" rel="noreferrer">Phase G result ↗</a>
-    <a href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} target="_blank" rel="noreferrer">Phase D–F evidence ↗</a>
+    <a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoScientificState.currentCampaignUrl} />default main current-campaign ↗</a>
+    <a href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${activeRoot}/docs/evidence/PHASE_G_G2_G3_RESULT_2026-08-14.md`} />Phase G result ↗</a>
+    <a href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${activeRoot}/docs/evidence/RTX5090_PHASE_D_F_2026-08-14.md`} />Phase D–F evidence ↗</a>
     <span>{t('服务器执行策略 · 实验室私有来源', 'Server execution policy · private lab source')}</span>
   </footer>
 </section>

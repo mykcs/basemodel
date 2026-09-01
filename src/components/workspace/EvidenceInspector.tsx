@@ -4,6 +4,7 @@ import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../l
 import type { AtlasModel } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
 import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 
 interface Props {
   models: AtlasModel[];
@@ -56,7 +57,7 @@ export function EvidenceInspector({ models, m, locale = 'zh' }: Props) {
       </div>
       <div className="inspector-section">
         <h3>{m.workspace.sources}</h3>
-        {model.sources.length === 0 ? <p>{m.workspace.noSource}</p> : <ul className="inspector-sources">{model.sources.map((source, index) => <li key={source.id ?? `${source.url}-${index}`}><a href={source.url} target="_blank" rel="noopener noreferrer" className="external-link">{source.title ?? source.publisher ?? m.workspace.sources} ↗</a><span className="source-meta">{source.checked_at}</span></li>)}</ul>}
+        {model.sources.length === 0 ? <p>{m.workspace.noSource}</p> : <ul className="inspector-sources">{model.sources.map((source, index) => <li key={source.id ?? `${source.url}-${index}`}><a href={source.url} target="_blank" rel="noopener noreferrer" className="external-link"><ExternalBrandMark href={source.url} />{source.title ?? source.publisher ?? m.workspace.sources} ↗</a><span className="source-meta">{source.checked_at}</span></li>)}</ul>}
       </div>
     </aside>
   );

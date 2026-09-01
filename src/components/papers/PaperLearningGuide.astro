@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { AtlasPaper } from '../../lib/schemas';
 import SeedReproductionPath from '../SeedReproductionPath.astro';
 
@@ -38,7 +39,7 @@ function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): stri
   <p class="learning-guide-note">{text(guide.novice_note)}</p>
 
   <div class="learning-guide-facts" aria-label={isZh ? '复现事实' : 'Reproduction facts'}>
-    {guide.facts.map((fact) => <article><span>{text(fact.label)}</span><strong>{text(fact.value)}</strong><a href={fact.source_url}>{text(fact.source_label)} ↗</a></article>)}
+    {guide.facts.map((fact) => <article><span>{text(fact.label)}</span><strong>{text(fact.value)}</strong><a href={fact.source_url}><ExternalBrandMark href={fact.source_url} />{text(fact.source_label)} ↗</a></article>)}
   </div>
 
   {paper.id === 'seed' && <SeedReproductionPath locale={locale} compact />}
@@ -54,7 +55,7 @@ function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): stri
         <header><div><span class="section-kicker">{text(track.eyebrow)}</span><h3>{text(track.title)}</h3></div>{track.recommended && <span class="status-badge">{isZh ? '推荐' : 'Recommended'}</span>}</header>
         <p>{text(track.goal)}</p>
         <ol class="learning-step-list">
-          {track.steps.map((step, index) => <li><span class="learning-step-number" aria-hidden="true">{index + 1}</span><div><h4>{text(step.title)}</h4><p>{text(step.body)}</p><p class="learning-done"><strong>{isZh ? '完成标志：' : 'Done when: '}</strong>{text(step.done_when)}</p><a class="learning-source" href={step.source_url}>{text(step.source_label)} ↗</a></div></li>)}
+          {track.steps.map((step, index) => <li><span class="learning-step-number" aria-hidden="true">{index + 1}</span><div><h4>{text(step.title)}</h4><p>{text(step.body)}</p><p class="learning-done"><strong>{isZh ? '完成标志：' : 'Done when: '}</strong>{text(step.done_when)}</p><a class="learning-source" href={step.source_url}><ExternalBrandMark href={step.source_url} />{text(step.source_label)} ↗</a></div></li>)}
         </ol>
         {workbench && <a class="button button-primary" href={workbench}>{track.id === 'strict' ? (isZh ? '打开严格复现工作台' : 'Open strict reproduction workbench') : (isZh ? '打开方法复现工作台' : 'Open method reproduction workbench')}</a>}
       </article>;

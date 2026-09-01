@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import ResearchTechnicalDisclosure from '../../../../../components/research/ResearchTechnicalDisclosure.astro';
 const locale = 'zh' as const;
@@ -284,9 +285,9 @@ wc -l "$HOME/.secrets/openevo/minimax-teacher.env"`}</code></pre>
     <section class="provenance" aria-labelledby="provenance-title">
       <h2 id="provenance-title">证据与计价口径</h2>
       <div>
-        <a href={`${repo}/configs/experiment/h1.46-two-arm-minimax-m3-v1.json`} target="_blank" rel="noreferrer">H1.46 analyzer contract ↗</a>
-        <a href={`${repo}/scripts/openevo_webshop/h146_analyze_trajectories.py`} target="_blank" rel="noreferrer">actual API adapter / usage logging ↗</a>
-        <a href={`${repo}/configs/experiment/h1.46-external-analyzer-bootstrap-v1.json`} target="_blank" rel="noreferrer">downstream 16-record bootstrap contract ↗</a>
+        <a href={`${repo}/configs/experiment/h1.46-two-arm-minimax-m3-v1.json`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${repo}/configs/experiment/h1.46-two-arm-minimax-m3-v1.json`} />H1.46 analyzer contract ↗</a>
+        <a href={`${repo}/scripts/openevo_webshop/h146_analyze_trajectories.py`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${repo}/scripts/openevo_webshop/h146_analyze_trajectories.py`} />actual API adapter / usage logging ↗</a>
+        <a href={`${repo}/configs/experiment/h1.46-external-analyzer-bootstrap-v1.json`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${repo}/configs/experiment/h1.46-external-analyzer-bootstrap-v1.json`} />downstream 16-record bootstrap contract ↗</a>
         <a href="https://platform.minimaxi.com/docs/guides/pricing-paygo" target="_blank" rel="noreferrer">MiniMax official pay-as-you-go pricing ↗</a>
       </div>
       <p>

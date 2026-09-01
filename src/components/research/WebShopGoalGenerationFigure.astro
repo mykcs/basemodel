@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -31,7 +32,7 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
           <strong>{t('合成购物任务生成','Synthetic goal generation')}</strong>
           <code>get_synthetic_goals(...)</code>
           <span>{t('对商品的 option 组合使用 itertools.product(...)','Enumerates option combinations with itertools.product(...)')}</span>
-          <a href={goalCodeUrl} target="_blank" rel="noreferrer">{t('查看官方 goal.py ↗','View official goal.py ↗')}</a>
+          <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('查看官方 goal.py ↗','View official goal.py ↗')}</a>
         </div>
       </section>
 
@@ -98,19 +99,19 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
           <small>goal.py · RELEASED CODE</small>
           <code>combinations = list(itertools.product(...))</code>
           <p>{t('WebShop 会枚举一个商品不同 option 的组合，并为组合构造 goal。','WebShop enumerates a product’s option combinations and constructs goals from those combinations.')}</p>
-          <a href={goalCodeUrl} target="_blank" rel="noreferrer">{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
+          <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
         </article>
         <article>
           <small>web_agent_text_env.py · RELEASED CODE</small>
           <code>human_goals=0 → get_goals(...)</code>
           <p>{t('默认 SimServer 使用 synthetic goals；随后固定 seed 233 打乱 goal 顺序。','The default SimServer uses synthetic goals, then shuffles goal order with fixed seed 233.')}</p>
-          <a href={envCodeUrl} target="_blank" rel="noreferrer">{t('打开官方环境代码 ↗','Open official environment code ↗')}</a>
+          <a href={envCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={envCodeUrl} />{t('打开官方环境代码 ↗','Open official environment code ↗')}</a>
         </article>
         <article>
           <small>WebShop README · OFFICIAL RUN OUTPUT</small>
           <code>Loaded 6910 goals.</code>
           <p>{t('官方 README 的 small WebShop 示例运行输出明确打印 6,910 goals。','The official README’s small-WebShop example run explicitly prints 6,910 loaded goals.')}</p>
-          <a href={readmeUrl} target="_blank" rel="noreferrer">{t('打开官方 README ↗','Open official README ↗')}</a>
+          <a href={readmeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={readmeUrl} />{t('打开官方 README ↗','Open official README ↗')}</a>
         </article>
       </div>
     </details>

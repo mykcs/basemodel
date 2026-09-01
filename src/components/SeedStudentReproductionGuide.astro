@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from './common/ExternalBrandMark';
 import type { Locale } from '../i18n';
 
 interface Props { locale: Locale }
@@ -281,7 +282,7 @@ const route = [
   <footer class="sources">
     <strong>{t('代码与标准来自：', 'Code and criteria use:')}</strong>
     {t('当前 SEED 官方仓库/论文，以及官方 ALFWorld 和 WebShop 仓库。SEED README 当前给出 Stage 1 180 tasks × 8 rollouts、SFT 3 epochs；论文报告 150 policy updates 和 8×NVIDIA A800 80GB。', 'The current official SEED repository/paper plus official ALFWorld and WebShop repositories. The current SEED README gives Stage 1 as 180 tasks × 8 rollouts and SFT as 3 epochs; the paper reports 150 policy updates and 8×NVIDIA A800 80GB.')}
-    {' '}<a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED ↗</a> · <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">paper ↗</a> · <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer">ALFWorld ↗</a> · <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer">WebShop ↗</a>
+    {' '}<a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />SEED ↗</a> · <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">paper ↗</a> · <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/alfworld/alfworld" />ALFWorld ↗</a> · <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/princeton-nlp/WebShop" />WebShop ↗</a>
   </footer>
 </section>
 

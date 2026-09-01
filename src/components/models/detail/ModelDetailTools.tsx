@@ -1,5 +1,6 @@
 import type { AtlasModel } from '../../../lib/types';
 import { CopyButton } from '../../common/CopyButton';
+import ExternalBrandMark from '../../common/ExternalBrandMark';
 
 const MODEL_REVISION_FIELD = 'reproducibility.model_revision';
 
@@ -36,7 +37,7 @@ export default function ModelDetailTools({ model, locale }: { model: AtlasModel;
     <CopyButton value={revision ?? ''} disabled={!revision} label={zh ? '复制固定版本' : 'Copy pinned revision'} copiedLabel={zh ? '固定版本已复制' : 'Pinned revision copied'} />
     {!revision && <span className="muted">{zh ? '模型版本尚未固定' : 'Model revision is not pinned'}</span>}
     {sourceBibtex && <CopyButton value={sourceBibtex} label={zh ? '复制来源 BibTeX' : 'Copy source BibTeX'} copiedLabel={zh ? '来源 BibTeX 已复制' : 'Source BibTeX copied'} />}
-    {model.sources[0]?.url && <a className="button button-secondary" href={model.sources[0].url} target="_blank" rel="noreferrer">{zh ? '打开主要来源 ↗' : 'Open primary source ↗'}</a>}
+    {model.sources[0]?.url && <a className="button button-secondary" href={model.sources[0].url} target="_blank" rel="noreferrer"><ExternalBrandMark href={model.sources[0].url} />{zh ? '打开主要来源 ↗' : 'Open primary source ↗'}</a>}
     <button type="button" className="button button-secondary" onClick={reportDataIssue}>{zh ? '报告数据问题' : 'Report data issue'}</button>
   </div>;
 }

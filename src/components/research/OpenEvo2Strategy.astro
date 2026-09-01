@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { openEvo2TransitionSnapshot as snap } from '../../data/openEvo2TransitionSnapshot';
@@ -73,7 +74,7 @@ const changes = [
     <aside class="evo2__method-boundary">
       <strong>{t('这条 Harness 分支在方法空间里的位置','Where this Harness branch sits methodologically')}</strong>
       <p>{t('Harness 2.x 检验的是“历史经验怎样作为外部上下文进入下一步”。它不是 SEED 的推理期实现：SEED 官方机制把 hindsight skill 用在训练期，并把影响蒸馏回 policy；部署时只用学到的 policy，不需要 analyzer、skill bank、retrieval module 或 skill-augmented prompt。因此这里不能把 Harness 2.x 写成“更接近 SEED”的必然下一步，也不能因为其它 agent-memory 工作支持 selective context，就把它当成我们 WebShop 里的已证实因果机制。','Harness 2.x tests how historical experience enters the next step as external context. It is not SEED’s inference-time design: official SEED uses hindsight skills during training and distills their effect back into the policy; deployment uses only the learned policy, without an analyzer, skill bank, retrieval module, or skill-augmented prompt. This branch therefore must not be presented as an inevitable move toward SEED, and evidence from other agent-memory systems can motivate selective context without proving the causal mechanism in our WebShop setting.')}</p>
-      <div><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">{t('SEED 官方实现 ↗','Official SEED implementation ↗')}</a><a href="https://huggingface.co/blog/ibm-research/altk-evolve-hmm" target="_blank" rel="noreferrer">{t('外部 memory dosage 研究 ↗','External memory-dosage study ↗')}</a></div>
+      <div><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />{t('SEED 官方实现 ↗','Official SEED implementation ↗')}</a><a href="https://huggingface.co/blog/ibm-research/altk-evolve-hmm" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://huggingface.co/blog/ibm-research/altk-evolve-hmm" />{t('外部 memory dosage 研究 ↗','External memory-dosage study ↗')}</a></div>
     </aside>
     <a class="evo2__mini-study" href={harnessStudyHref}>
       <span>MINI STUDY 01 · 128 + 128</span>
@@ -100,7 +101,7 @@ const changes = [
       <div><span>{t('模型、轨迹与运行记录链接','Model, trajectory, and run-record links')}</span><b>{t('等待最终归档','Await final archive')}</b></div>
       <div><span>GitHub / Hugging Face</span><b>{t('等待发布确认','Await publication confirmation')}</b></div>
     </details>
-    <p class="evo2__source">{t('这份页面是研究说明，不是实时控制台。真实运行状态以 openevo-experiment 的当前实验配置和最新不可改写运行记录为准。', 'This page is research documentation, not a live control console. Execution state is determined by the current openevo-experiment configuration and the latest immutable run records.')}&nbsp;<a href={currentCampaignHref} target="_blank" rel="noreferrer">current-campaign ↗</a></p>
+    <p class="evo2__source">{t('这份页面是研究说明，不是实时控制台。真实运行状态以 openevo-experiment 的当前实验配置和最新不可改写运行记录为准。', 'This page is research documentation, not a live control console. Execution state is determined by the current openevo-experiment configuration and the latest immutable run records.')}&nbsp;<a href={currentCampaignHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={currentCampaignHref} />current-campaign ↗</a></p>
   </section>
 </main>
 

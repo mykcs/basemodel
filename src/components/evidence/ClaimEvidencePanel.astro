@@ -2,6 +2,7 @@
 import type { AtlasModel } from '../../lib/types';
 import StatusBadge from '../StatusBadge.astro';
 import SemanticStatus from '../common/SemanticStatus.astro';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { buildClaimViews, type EvidenceLevel } from '../../lib/evidence/buildClaimViews';
 import { sourceTypeLabel } from '../../lib/format';
 import { getMessages, isLocale, type Locale } from '../../i18n';
@@ -23,7 +24,7 @@ const levelLabel = (level: EvidenceLevel) => m.evidence[`level${level.charAt(0).
       <div class="claim-sources">
         <span class="muted">{m.evidence.claimEvidence}</span>
         {claim.sources.map((source) => <a class="claim-source" href={source.url} target="_blank" rel="noreferrer">
-          <span><strong>{source.title ?? sourceTypeLabel(source.type, locale)}</strong>{source.publisher && <small> · {source.publisher}</small>}<br /><small>{source.checked_at}{source.locator ? ` · ${m.evidence.locator}: ${source.locator}` : ''}</small></span>
+          <span><ExternalBrandMark href={source.url} /><strong>{source.title ?? sourceTypeLabel(source.type, locale)}</strong>{source.publisher && <small> · {source.publisher}</small>}<br /><small>{source.checked_at}{source.locator ? ` · ${m.evidence.locator}: ${source.locator}` : ''}</small></span>
           <span class="external-link">{m.evidence.open}</span>
         </a>)}
       </div>

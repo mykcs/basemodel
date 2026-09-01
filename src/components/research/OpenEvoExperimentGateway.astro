@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { localePath, type Locale } from '../../i18n';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
 import AgentEnvironmentTrajectory from './AgentEnvironmentTrajectory.astro';
@@ -29,7 +30,7 @@ const route = [
     </aside>
   </header>
 
-  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}><span>{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
+  <nav class="gateway__route" aria-label={t('实验状态','Experiment status')}>{route.map((item)=><a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}><span class="gateway__route-index"><ExternalBrandMark href={item.href} />{item.index}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></a>)}</nav>
 
   <AgentEnvironmentTrajectory locale={locale} context="reproduction" />
 
@@ -47,9 +48,9 @@ const route = [
     <header><span>{t('一手来源', 'Primary sources')}</span><h2 id="source-flow-title">{t('ALFWorld 与 WebShop 的官方流程资料', 'Official flow references for ALFWorld and WebShop')}</h2></header>
     <div class="source-grid">
       <a href="https://arxiv.org/abs/2010.03768" target="_blank" rel="noreferrer"><strong>ALFWorld paper</strong><span>{t('TextWorld 抽象策略与 ALFRED 视觉环境的对齐', 'Alignment between TextWorld abstract policies and the ALFRED visual environment')}</span></a>
-      <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer"><strong>ALFWorld repository</strong><span>{t('安装、TextWorld / THOR 运行和环境 API', 'Installation, TextWorld / THOR runs, and environment API')}</span></a>
+      <a href="https://github.com/alfworld/alfworld" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/alfworld/alfworld" /><strong>ALFWorld repository</strong><span>{t('安装、TextWorld / THOR 运行和环境 API', 'Installation, TextWorld / THOR runs, and environment API')}</span></a>
       <a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noreferrer"><strong>WebShop paper</strong><span>{t('goal → search / click → 商品属性 → purchase → score', 'goal → search / click → product attributes → purchase → score')}</span></a>
-      <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer"><strong>WebShop repository</strong><span>{t('环境启动、text / HTML mode 与 trajectory log', 'Environment setup, text / HTML modes, and trajectory logs')}</span></a>
+      <a href="https://github.com/princeton-nlp/WebShop" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/princeton-nlp/WebShop" /><strong>WebShop repository</strong><span>{t('环境启动、text / HTML mode 与 trajectory log', 'Environment setup, text / HTML modes, and trajectory logs')}</span></a>
     </div>
   </section>
 
@@ -65,7 +66,7 @@ const route = [
     <p>{zh ? openEvoScientificState.liveStateRule.zh : openEvoScientificState.liveStateRule.en}</p>
   </section>
 
-  <footer class="gateway__next"><div><span>{t('默认分支快照','Default-branch snapshot')}</span><h2>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.defaultBranchSnapshot.status}</h2><p>{t(`这是 ${openEvoScientificState.checkedAt} 对 main 的带日期核验，不声称覆盖更靠前的活跃科学分支。`,`This is a dated ${openEvoScientificState.checkedAt} check of main and does not claim to cover a newer active scientific branch.`)}</p></div><a class="button button-primary" href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">current-campaign ↗</a></footer>
+  <footer class="gateway__next"><div><span>{t('默认分支快照','Default-branch snapshot')}</span><h2>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.defaultBranchSnapshot.status}</h2><p>{t(`这是 ${openEvoScientificState.checkedAt} 对 main 的带日期核验，不声称覆盖更靠前的活跃科学分支。`,`This is a dated ${openEvoScientificState.checkedAt} check of main and does not claim to cover a newer active scientific branch.`)}</p></div><a class="button button-primary" href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoScientificState.currentCampaignUrl} />current-campaign ↗</a></footer>
 </div>
 
 <style>

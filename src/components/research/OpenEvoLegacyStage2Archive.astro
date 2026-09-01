@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { legacyStage2Archive, legacyStage2Arms } from '../../data/openEvoLegacyStage2Archive';
@@ -80,7 +81,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
           <p>{arm.finalEvaluation.note[locale]}</p>
           <div class="legacy__actions">
             <a href={p(`/research/seed-openevo/study/results/${arm.resultPath}/`)}>{t('打开这一臂的完整历史结果 →', 'Open the full historical result →')}</a>
-            <a href={checkpointHref(arm)}>{t('打开实际模型状态 / checkpoint pointer →', 'Open actual model state / checkpoint pointer →')}</a>
+            <a href={checkpointHref(arm)}><ExternalBrandMark href={checkpointHref(arm)} />{t('打开实际模型状态 / checkpoint pointer →', 'Open actual model state / checkpoint pointer →')}</a>
           </div>
         </article>
       ))}
@@ -102,7 +103,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <p class="legacy__intro">{t('四组历史实验在 Stage 2 都没有产生新的模型参数。因此这里链接的不是一个虚构的“Stage-2 最终模型”，而是每组真正进入 Stage 2 时使用的参数：3B/self 仍是基础模型，其余三组使用 Stage 1 结束时或 MiniMax 启动训练结束时的第 8 个保存点。', 'None of the four historical runs produced new model parameters in Stage 2. These links therefore point to the real state that entered Stage 2 rather than a fictional Stage-2 checkpoint: 3B/self remained at base, while the other three used the final Stage-1 or MiniMax-bootstrap checkpoint.')}</p>
     <div class="legacy__checkpoint-links">
       {legacyStage2Arms.map((arm) => (
-        <a href={checkpointHref(arm)}><span>{arm.label}</span><strong>{arm.entryState}</strong><small>{t('固定 HF revision 打开 →', 'Open pinned HF revision →')}</small></a>
+        <a href={checkpointHref(arm)}><ExternalBrandMark href={checkpointHref(arm)} /><span>{arm.label}</span><strong>{arm.entryState}</strong><small>{t('固定 HF revision 打开 →', 'Open pinned HF revision →')}</small></a>
       ))}
     </div>
     <p class="legacy__note">{t(`Stage-1 / bootstrap adapter 固定 revision：${adapterRevision}。`, `Pinned Stage-1/bootstrap adapter revision: ${adapterRevision}.`)}</p>
@@ -117,10 +118,10 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
       <div><b>213 MiB</b><span>{t('永久服务器 engineering smoke kit', 'permanent server engineering smoke kit')}</span></div>
     </div>
     <div class="legacy__links">
-      <a href={hfArchive}><span>HF · immutable archive revision</span><strong>superseded-stage2-archive ↗</strong><small>{archiveRevision}</small></a>
-      <a href={hfArchiveHead}><span>HF · reader warning / current README</span><strong>{t('查看“已取代实验”说明 ↗', 'Read the superseded-experiment warning ↗')}</strong><small>{t('README 可更新；历史二进制仍由固定 revision 锚定', 'README may evolve; historical bytes stay pinned by revision')}</small></a>
-      <a href={hfAdapters}><span>HF · historical model states</span><strong>Stage-1 / bootstrap adapters ↗</strong><small>{adapterRevision}</small></a>
-      <a href={ghcr}><span>GHCR · exact runtime</span><strong>h144-runtime-live-d0f879601089 ↗</strong><small>sha256:d0f879…88e2850</small></a>
+      <a href={hfArchive}><ExternalBrandMark href={hfArchive} /><span>HF · immutable archive revision</span><strong>superseded-stage2-archive ↗</strong><small>{archiveRevision}</small></a>
+      <a href={hfArchiveHead}><ExternalBrandMark href={hfArchiveHead} /><span>HF · reader warning / current README</span><strong>{t('查看“已取代实验”说明 ↗', 'Read the superseded-experiment warning ↗')}</strong><small>{t('README 可更新；历史二进制仍由固定 revision 锚定', 'README may evolve; historical bytes stay pinned by revision')}</small></a>
+      <a href={hfAdapters}><ExternalBrandMark href={hfAdapters} /><span>HF · historical model states</span><strong>Stage-1 / bootstrap adapters ↗</strong><small>{adapterRevision}</small></a>
+      <a href={ghcr}><ExternalBrandMark href={ghcr} /><span>GHCR · exact runtime</span><strong>h144-runtime-live-d0f879601089 ↗</strong><small>sha256:d0f879…88e2850</small></a>
     </div>
     <p class="legacy__note">{t('服务器两个核心 H1.45/H1.46 原始 run root 继续保留，delete_authorized=false。永久 smoke kit 共 63 个文件、约 222.8 MB，63/63 SHA-256 校验通过，包含 3 个可加载 adapter、四臂真实样例、selection / summary / execution-state、历史 receipt 与 exact runtime retention tag。', 'The two core H1.45/H1.46 raw run roots remain on the server with delete_authorized=false. The permanent smoke kit contains 63 files (~222.8 MB), passes 63/63 SHA-256 checks, and keeps three loadable adapters, grounded examples from all four arms, selection/summary/execution-state files, historical receipts, and the exact-runtime retention tag.')}</p>
   </section>

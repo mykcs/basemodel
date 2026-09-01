@@ -8,6 +8,7 @@ import familiesFile from '../../content/coverage/families.json';
 import ClaimHistory from '../../components/evidence/ClaimHistory.astro';
 import SemanticStatus from '../../components/common/SemanticStatus.astro';
 import SemanticStatusLegend from '../../components/common/SemanticStatusLegend.astro';
+import ExternalBrandMark from '../../components/common/ExternalBrandMark';
 import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 
 interface Props { locale?: Locale }
@@ -71,14 +72,14 @@ const recentEvents = [
         const apiCurrent = family.current_api_model_ids?.[0] ?? family.current_flagship_model_id;
         const apiPresent = apiCurrent ? models.some((model) => model.id === apiCurrent) : false;
         const familyStale = health.issues.some((issue) => issue.recordType === 'family' && issue.modelId === family.id && issue.reason === 'stale-source');
-        return <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}{familyStale ? <small class="muted"> · {locale === 'zh' ? '过期快照' : 'stale snapshot'}</small> : null}</td><td><code>{apiCurrent ?? '—'}</code>{apiCurrent ? ` · ${apiPresent ? m.dataStatus.present : m.dataStatus.missing}` : ''}</td><td>{family.current_open_weight_model_id ? <><code>{family.current_open_weight_model_id}</code>{` · ${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing}`}</> : '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer">{m.dataStatus.source} ↗</a> : '—'}</td></tr>;
+        return <tr><th scope="row">{family.name}<small class="muted"> · {modelCount} {m.dataStatus.models}</small></th><td>{family.latest_generation_label ?? family.current_generation}{familyStale ? <small class="muted"> · {locale === 'zh' ? '过期快照' : 'stale snapshot'}</small> : null}</td><td><code>{apiCurrent ?? '—'}</code>{apiCurrent ? ` · ${apiPresent ? m.dataStatus.present : m.dataStatus.missing}` : ''}</td><td>{family.current_open_weight_model_id ? <><code>{family.current_open_weight_model_id}</code>{` · ${openWeightPresent ? m.dataStatus.present : m.dataStatus.missing}`}</> : '—'}</td><td>{family.catalog_checked_at ?? family.as_of ?? '—'}</td><td>{unresolvedCount}</td><td>{catalogSourceUrl ? <a href={catalogSourceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={catalogSourceUrl} />{m.dataStatus.source} ↗</a> : '—'}</td></tr>;
       })}</tbody>
     </table></div>
   </section>
 
   <section class="section" aria-labelledby="issues-title">
     <div class="section-heading"><div><h2 id="issues-title">{m.dataStatus.issues}</h2></div></div>
-    {health.issues.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.severity}</th><th>{m.dataStatus.record}</th><th>{m.dataStatus.field}</th><th>{m.dataStatus.issueKind}</th><th>{m.dataStatus.source}</th></tr></thead><tbody>{health.issues.map((issue) => <tr><td>{severityLabel(issue.severity)}</td><th scope="row"><code>{issue.modelId}</code></th><td>{issue.field ?? '—'}</td><td>{reasonLabel(issue.reason)}{issue.claimStatus ? ` · ${semanticLabel(issue.claimStatus)}` : ''}</td><td>{issue.sourceUrl ? <a href={issue.sourceUrl} target="_blank" rel="noreferrer">{issue.checkedAt ?? m.dataStatus.source}</a> : '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{m.dataStatus.noIssues}</p>}
+    {health.issues.length ? <div class="comparison-table-wrap"><table><thead><tr><th>{m.dataStatus.severity}</th><th>{m.dataStatus.record}</th><th>{m.dataStatus.field}</th><th>{m.dataStatus.issueKind}</th><th>{m.dataStatus.source}</th></tr></thead><tbody>{health.issues.map((issue) => <tr><td>{severityLabel(issue.severity)}</td><th scope="row"><code>{issue.modelId}</code></th><td>{issue.field ?? '—'}</td><td>{reasonLabel(issue.reason)}{issue.claimStatus ? ` · ${semanticLabel(issue.claimStatus)}` : ''}</td><td>{issue.sourceUrl ? <a href={issue.sourceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={issue.sourceUrl} />{issue.checkedAt ?? m.dataStatus.source}</a> : '—'}</td></tr>)}</tbody></table></div> : <p class="muted">{m.dataStatus.noIssues}</p>}
   </section>
 
   <ClaimHistory claims={claims} locale={locale} />
