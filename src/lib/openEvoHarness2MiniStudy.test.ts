@@ -35,13 +35,16 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).not.toContain('formal activation = PASS');
   });
 
-  it('explains the three observed mechanisms and the bounded 2.0.1 response', () => {
+  it('preserves the v1 repair plan and records the later 2.0.1 status', () => {
     expect(component).toContain('Prompt 与 parser 的语言规则没对齐');
     expect(component).toContain('抽象动作词又被 3B 当成按钮');
     expect(component).toContain('Context Governor 仍然太厚');
     expect(component).toContain('共享 prompt 明确 English-only');
-    expect(component).toContain('换一个全新的资格窗口');
+    expect(component).toContain('v1 closeout 当时计划：换一个全新的资格窗口');
     expect(component).toContain('pagination / return-to-search');
+    expect(component).toContain('2.0.1 mechanical qualification = PASS');
+    expect(component).toContain('HOLD_FOR_STAGE2_READINESS_AUDIT');
+    expect(component).toContain('STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
   });
 
   it('wires the study into the bilingual OpenEVO 2.0 research path', () => {
@@ -49,7 +52,8 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(enRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(parent).toContain('/openevo-2-0/harness-2-0/');
     expect(parent).toContain('MINI STUDY 01 · 128 + 128');
-    expect(chooser).toContain('第三版 · 第一次小实验已完成');
-    expect(chooser).toContain('新的正式 Stage 2 先不启动');
+    expect(chooser).toContain('第三版 · 2.0.1 机械资格已完成');
+    expect(chooser).toContain('HOLD_FOR_STAGE2_READINESS_AUDIT');
+    expect(chooser).toContain('formal_stage2_authorized=false');
   });
 });

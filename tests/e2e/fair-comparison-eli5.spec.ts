@@ -33,12 +33,16 @@ for (const matrix of matrices) {
         await expect(scope).toBeVisible();
         await expect(scope).toContainText('Track A');
         await expect(scope).toContainText('21,920');
+        await expect(scope).toContainText('20,640');
 
         const root = page.locator('.eli5-lab');
         await expect(root).toBeVisible();
         await expect(root.locator('.eli5-block')).toHaveCount(8);
         await expect(root.locator('.checkpoint-track')).toBeVisible();
         await expect(root.locator('.test-vault')).toContainText('128');
+        await expect(root).toContainText('20,640');
+        await expect(root).toContainText('150');
+        await expect(root).toContainText('160');
 
         const issues = await root.evaluate((node, viewportWidth) => {
           const root = node as HTMLElement;

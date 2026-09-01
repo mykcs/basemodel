@@ -124,16 +124,25 @@ test('Ceiling-1.0 and OpenEVO 2.0 use separate arrows and separate next nodes', 
   await expect(evo2Arrow).not.toHaveAttribute('hidden', '');
   await expect(ceilingOutcome).toHaveAttribute('hidden', '');
   await expect(evo2Outcome).not.toHaveAttribute('hidden', '');
-  await expect(evo2Outcome).toContainText('没有进入 Ceiling-1.0 的结局');
+  await expect(evo2Outcome).toContainText('Harness 2.0.1 · Mechanical PASS');
+  await expect(evo2Outcome).not.toContainText('Ceiling-1.0 当前运行线');
 });
 
-test('OpenEVO 2.0 stops at a current bug gate and keeps 2.0.1 locked', async ({ page }) => {
+test('OpenEVO 2.0 shows Harness 2.0.1 mechanical PASS and locks readiness instead', async ({ page }) => {
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   const original = page.url();
   const tree = await enterCurrentStage2(page);
   await tree.locator('[data-stage2="evo2"]').click();
   await expect(tree.locator('[data-evo2-gate]')).toBeVisible();
-  await expect(tree.locator('.rogue-node--locked')).toBeDisabled();
+  const harness201 = tree.locator('[data-harness201-status]');
+  await expect(harness201).toBeVisible();
+  await expect(harness201).toContainText('Harness 2.0.1 · Mechanical PASS');
+  await expect(harness201).toContainText('HOLD_FOR_STAGE2_READINESS_AUDIT');
+  const readiness = tree.locator('[data-readiness-gate]');
+  await expect(readiness).toBeVisible();
+  await expect(readiness).toBeDisabled();
+  await expect(readiness).toContainText('readiness audit');
+  await expect(readiness).toContainText('BLOCKED_HARNESS_READINESS');
   await tree.locator('[data-ending="evo2"]').click();
   await expect(tree.locator('[data-story="evo2"]')).toBeVisible();
   expect(page.url()).toBe(original);

@@ -33,10 +33,14 @@ describe('SEED × OpenEvo training design lab', () => {
       '15 / 512',
       'history length',
       'malformed regeneration',
-      'Stage 2 actor temperature', '0.7',
-      '256 rollouts',
+      'Historical Stage 2 actor temperature', '0.7',
+      'Historical Stage 2 update window', '256 rollouts',
+      'superseded OpenEvo-native v1',
+      '128-attempt evidence rounds',
       'T=0 · 1024 tokens',
     ]) expect(lab).toContain(term);
+    expect(lab).toContain('campaign 21,920');
+    expect(lab).toContain('1,440 + 19,200 = 20,640');
   });
 
   it('preserves distinct scientific claims instead of flattening all comparisons', () => {

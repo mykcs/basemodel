@@ -3,7 +3,7 @@ import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoExperimentResultsScaffold from '../../../../../../../components/research/OpenEvoExperimentResultsScaffold.astro';
 import OpenEvoExperimentAnalysisPlan from '../../../../../../../components/research/OpenEvoExperimentAnalysisPlan.astro';
 ---
-<AppLayout title="OpenEvo capability exploration · four-arm analysis" description="Pre-builds the four-arm result matrix, six cross-arm comparisons, paired-task fill-in rules, and mechanism chain; unfinished values remain Pending while the original joint analysis plan stays as a deeper layer." locale="en">
+<AppLayout title="OpenEvo capability exploration · four-arm analysis" description="Final four-arm evidence boundary: 3B/self, 7B/self, and 7B/MiniMax have sealed finals; 3B/MiniMax stopped at 74.58% and its final was not run; cross-arm comparisons follow that boundary." locale="en">
   <OpenEvoExperimentResultsScaffold locale="en" mode="cross-arm" />
   <OpenEvoExperimentAnalysisPlan locale="en" mode="four-arm" />
 </AppLayout>

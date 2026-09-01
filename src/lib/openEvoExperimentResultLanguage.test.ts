@@ -71,6 +71,10 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(legacyStage2Data).toContain("taskScoreX100: 16.94");
     expect(ceilingStage2).toContain('每 128 次任务形成一轮共同证据');
     expect(ceilingStage2).toContain('不再使用旧的 7 对 8 门槛');
+    expect(ceilingStage2).toContain('64-component guard 现在只保留为 upstream provenance');
+    expect(ceilingStage2).toContain('effective rank ≤ 4096');
+    expect(ceilingStage2).toContain('这个 amendment 只授权 7B，不自动授权 3B');
+    expect(ceilingStage2).not.toContain('SD-LoRA 最多保留 64 个组件');
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 3_968');
     expect(ceilingStage2Snapshot).toContain('rolloutsConsumed: 2_304');
     expect(ceilingStage2Snapshot).toContain('finalPanelAccessCount: 0');
@@ -104,7 +108,9 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(openEvo2).toContain('三份历史经验不再重复写同一套按钮攻略');
     expect(openEvo2).toContain('把不同类型的失败分开记');
     expect(openEvo2).toContain('正式重跑前，先用两组各 128 次的小实验验接口');
-    expect(openEvo2).toContain('128 + 128 已跑完：机械检查 PASS，但正式激活 HOLD');
+    expect(openEvo2).toContain('2.0.1 Mechanical PASS；Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT');
+    expect(openEvo2).toContain('STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
+    expect(openEvo2).toContain('formal_stage2_authorized=false');
     expect(openEvo2).toContain('Ceiling-1.0 已经产生的结果不改写');
     expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
   });
@@ -154,7 +160,7 @@ describe('OpenEvo capability-exploration result language', () => {
   it('spells out incomplete and zero-update states instead of making zero mean failure', () => {
     expect(scaffold).toContain('尚无最终结果（对应实验仍未封口）');
     expect(analysis).toContain('未达到启动门槛，因此 0 次参数更新');
-    expect(analysis).toContain('最终 128 任务评测没有形成已封存结果');
+    expect(analysis).toContain('封存的最终 128 任务评测为 Task Score ×100 = 1.71、完整成功 1/128、技术有效 121/128');
     expect(analysis).toContain('不再继续最终评测');
     expect(analysis).toContain('旧 Stage 2：20,480 次任务尝试全部完成');
     expect(analysis).toContain('旧 Stage 2 完成 59 批完整数据');
@@ -235,7 +241,8 @@ describe('OpenEvo capability-exploration result language', () => {
 
     expect(benchmarkNote).toContain('没有任何样本满足进入正式比较的完整条件');
     expect(benchmarkNote).toContain('不是“模型得 0 分”');
-    expect(planIndex).toContain('尚无最终结果（Pending）”，不能用 0 代替');
+    expect(planIndex).toContain('3B/self、7B/self、7B/MiniMax 的 final 已封存');
+    expect(planIndex).toContain('3B/MiniMax 的 final 明确未运行');
     expect(nextSteps).toContain('当前已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056');
     expect(currentQ7).toContain('total_slots=128、matches=128、mismatches=0，分别表示');
     expect(currentQ7).toContain('包含 0，因此未证明稳定差异');

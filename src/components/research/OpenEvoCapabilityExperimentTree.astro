@@ -65,9 +65,9 @@ const stories = [
   {
     id: 'evo2',
     eyebrow: t('当前结局 · OpenEVO 2.0','CURRENT OUTCOME · OPENEVO 2.0'),
-    title: t('OpenEVO 2.0：第一次 Harness 2.0 迷你实验做完，结论是先小修再继续','OpenEVO 2.0: the first Harness 2.0 mini study is complete, with a repair-before-activation decision'),
-    summary: t('它不重采 Stage 1，而是重新设计经验怎么进入模型。第一次 128+128 qualification 的机械门通过，但行为上 Harness2-only invalid 更多，因此正式激活 HOLD。','It reuses Stage 1 and redesigns how experience reaches the model. The first paired 128+128 qualification passed the mechanical gate, but Harness2-only invalid terminations were more frequent, so formal activation remains on hold.'),
-    facts: [t('Control：128/128；Harness 2.0：128/128','Control: 128/128; Harness 2.0: 128/128'), t('非法终止 episode：31.25% → 42.19%','Invalid-terminated episodes: 31.25% → 42.19%'), t('正式结论：Mechanical PASS；Scientific activation HOLD；下一步 2.0.1','Formal conclusion: Mechanical PASS; scientific activation HOLD; next step 2.0.1')],
+    title: t('OpenEVO 2.0：Harness 2.0.1 机械资格已通过，正式 Stage 2 仍等待 readiness audit','OpenEVO 2.0: Harness 2.0.1 mechanical qualification passed, while formal Stage 2 still awaits the readiness audit'),
+    summary: t('它不重采 Stage 1。第一次 Harness 2.0 的 128+128 结果原样保留；后续 Harness 2.0.1 mechanical qualification 已 PASS，但 scientific closeout 为 HOLD_FOR_STAGE2_READINESS_AUDIT，因此正式 3B Stage 2 仍未授权。','It reuses Stage 1. The first paired 128+128 Harness 2.0 result remains unchanged; the later Harness 2.0.1 mechanical qualification is PASS, but scientific closeout is HOLD_FOR_STAGE2_READINESS_AUDIT, so formal 3B Stage 2 remains unauthorized.'),
+    facts: [t('Harness 2.0 v1：Control 128/128；candidate 128/128','Harness 2.0 v1: Control 128/128; candidate 128/128'), t('v1 非法终止 episode：31.25% → 42.19%','v1 invalid-terminated episodes: 31.25% → 42.19%'), t('Harness 2.0.1：Mechanical PASS；Scientific closeout HOLD_FOR_STAGE2_READINESS_AUDIT；formal Stage2 未授权','Harness 2.0.1: Mechanical PASS; scientific closeout HOLD_FOR_STAGE2_READINESS_AUDIT; formal Stage 2 unauthorized')],
     href: links.harness2,
   },
 ] as const;
@@ -152,8 +152,9 @@ const stories = [
             <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
             <span class="map-connector current-route-arrow" data-current-map-arrow="evo2" hidden data-route-preview-arrow aria-hidden="true">→</span>
             <div class="current-route-outcome" data-current-outcome-slot="evo2" data-evo2-gate hidden data-route-preview-outcome>
-              <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：发现新的接口问题','Harness 2.0 Mini Study: a new interface problem was found')}</b><small>{t('Mechanical PASS，但行为回退；formal activation HOLD','Mechanical PASS, but behavioral regression; formal activation HOLD')}</small><em>{t('OpenEVO 2.0 只走到这里，没有进入 Ceiling-1.0 的结局','OpenEVO 2.0 stops here; it does not enter the Ceiling-1.0 outcome')}</em></button>
-              <button class="rogue-node rogue-node--locked" type="button" disabled><i>🔒</i><b>Harness 2.0.1</b><small>{t('修复完成并重新 qualification 后解锁','Unlocks after repair and requalification')}</small></button>
+              <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：v1 接口问题','Harness 2.0 Mini Study: v1 interface issue')}</b><small>{t('v1 Mechanical PASS，但 formal activation HOLD','v1 Mechanical PASS, but formal activation HOLD')}</small><em>{t('这是 v1 的历史停点；后续 2.0.1 已完成机械资格','This is the historical v1 stop; 2.0.1 later completed mechanical qualification')}</em></button>
+              <div class="rogue-node rogue-node--repair rogue-node--resolved" data-harness201-status><i>✓</i><b>Harness 2.0.1 · Mechanical PASS</b><small>{t('Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT','Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT')}</small></div>
+              <button class="rogue-node rogue-node--locked" type="button" data-readiness-gate disabled><i>🔒</i><b>{t('Stage2 readiness audit + dress rehearsal','Stage2 readiness audit + dress rehearsal')}</b><small>{t('formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS','formal_stage2_authorized=false · final_panel_access_authorized=false · 3B BLOCKED_HARNESS_READINESS')}</small></button>
             </div>
           </div>
         </div>

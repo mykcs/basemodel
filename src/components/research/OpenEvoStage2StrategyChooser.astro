@@ -11,7 +11,7 @@ const p = (path:string) => localePath(locale,path);
   <div class="s2-choice__head">
     <p>{t('Stage 2 的三次尝试', 'THREE STAGE-2 DESIGNS')}</p>
     <h2 id="s2-choice-title">{t('我们连续修了两个不同问题：先是“成功经验进不了训练”，后来是“历史经验把动作接口带偏”', 'We encountered two different problems in sequence: successful experience was first blocked from training, then historical experience began disrupting the action interface')}</h2>
-    <span>{t('第一版把每 256 次任务单独设门槛，导致有成功经验也不更新；第二版 Ceiling-1.0 删掉这道门，7B 能继续学习，但 3B 跑了 18 轮仍没有新参数组件，而且大量失败是选择当前页面不存在的动作；Harness 2.0 因此不再重做 Stage 1，而是专门重写历史经验怎样进入下一步。', 'The first design judged every 256 attempts separately, so successful experience could still fail to reach training. Ceiling-1.0 removed that gate and 7B continued learning, but 3B still had zero new parameter components after 18 rounds and frequently chose actions unavailable on the current page. Harness 2.0 therefore reuses Stage 1 and redesigns only how historical experience enters the next step.')}</span>
+    <span>{t('第一版把每 256 次任务单独设门槛，导致有成功经验也不更新；第二版 Ceiling-1.0 删掉这道门。在当时用于分叉判断的运行快照里，7B 能继续学习，而 3B 完成 18 轮仍没有新参数组件，并出现大量“当前页面不存在这个动作”的失败；后续 OpenEVO 2.0 从这里另开 harness 研究线。', 'The first design judged every 256 attempts separately, so successful experience could still fail to reach training. Ceiling-1.0 removed that gate. In the historical run snapshot used to motivate the fork, 7B continued learning while 3B completed 18 rounds with zero new parameter components and many actions unavailable on the live page; OpenEVO 2.0 later forked from this snapshot into a separate harness study.')}</span>
   </div>
 
   <div class="s2-choice__shared" aria-label={t('Ceiling-1.0 与 Harness 2.0 共用同一份 Stage 1 数据','Ceiling-1.0 and Harness 2.0 reuse the same Stage-1 data')}>
@@ -28,12 +28,12 @@ const p = (path:string) => localePath(locale,path);
     </a>
     <a class:list={['s2-choice__card','ceiling',{active:active==='ceiling'}]} href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')} aria-current={active==='ceiling'?'page':undefined}>
       <div><span>02 · {t('第二版 · 3B 问题暴露','SECOND DESIGN · 3B PROBLEM EXPOSED')}</span><b>OpenEVO-Ceiling-1.0</b></div>
-      <p>{t('旧门槛删掉后，每 128 次任务形成一轮证据。7B 能继续产生参数更新，但 3B 跑了 18 轮仍是 0 个新参数组件，而且大量失败是选择当前页面不存在的动作，于是问题转向经验文本怎样影响动作接口。','After removing the old gate, every 128 attempts form one evidence round. 7B continued producing parameter updates, while 3B still had zero new parameter components after 18 rounds and frequently chose actions unavailable on the current page, shifting attention to the experience/action interface.')}</p>
+      <p>{t('旧门槛删掉后，每 128 次任务形成一轮证据。当时的诊断快照记录：7B 继续产生参数更新，3B 完成 18 轮时仍是 0 个新参数组件，并频繁选择当前页面不存在的动作。18 轮是这个历史快照，不是当前 3B live 状态。','After removing the old gate, every 128 attempts form one evidence round. The historical diagnostic snapshot recorded continued 7B parameter updates and zero new 3B parameter components after 18 completed rounds, with frequent actions unavailable on the current page. The 18-round figure is that snapshot, not current live 3B state.')}</p>
       <strong>{t('查看第二版为什么 3B 仍然不行 →','Open why 3B still failed in the second design →')}</strong>
     </a>
     <a class:list={['s2-choice__card','openevo2',{active:active==='openevo2'}]} href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')} aria-current={active==='openevo2'?'page':undefined}>
-      <div><span>03 · {t('第三版 · 第一次小实验已完成','THIRD DESIGN · FIRST MINI STUDY COMPLETE')}</span><b>OpenEVO 2.0</b></div>
-      <p>{t('Stage 1 不重做。Harness 2.0 已经用同一个 3B 起点做完两组各 128 次的配对检查：机械接口门过线，但带 Harness 的那组更容易因为非法输出提前结束，所以新的正式 Stage 2 先不启动。下一步只小修 2.0.1，再换一批没有看过结果的旧训练任务重测。','Stage 1 is reused. Harness 2.0 completed two paired 128-attempt checks from the same 3B state. The mechanical interface gate passed, but the Harness cell terminated more often on invalid output, so the new formal Stage 2 remains on hold. Next comes a small 2.0.1 repair followed by requalification on a disjoint already-consumed training window.')}</p>
+      <div><span>03 · {t('第三版 · 2.0.1 机械资格已完成','THIRD DESIGN · 2.0.1 MECHANICAL QUALIFICATION COMPLETE')}</span><b>OpenEVO 2.0</b></div>
+      <p>{t('Stage 1 不重做。第一次 Harness 2.0 的 128+128 配对检查原样保留；后续 Harness 2.0.1 mechanical qualification 已 PASS。当前 scientific closeout 仍是 HOLD_FOR_STAGE2_READINESS_AUDIT，formal_stage2_authorized=false、final_panel_access_authorized=false；下一阶段是 Stage2 readiness audit 与 dress rehearsal。','Stage 1 is reused. The first paired 128+128 Harness 2.0 study remains unchanged, and the later Harness 2.0.1 mechanical qualification is PASS. Scientific closeout remains HOLD_FOR_STAGE2_READINESS_AUDIT with formal_stage2_authorized=false and final_panel_access_authorized=false; the next phase is the Stage2 readiness audit and dress rehearsal.')}</p>
       <strong>{t('查看 OpenEVO 2.0 与 Harness 2.0 迷你实验 →','Open OpenEVO 2.0 and the Harness 2.0 mini study →')}</strong>
     </a>
   </div>

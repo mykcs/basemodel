@@ -39,14 +39,18 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(tree).toContain('data-current-outcome-slot="evo2"');
     expect(tree).toContain('各自进入不同的后续节点');
     expect(tree).toContain('只属于 Ceiling-1.0 这条路线');
-    expect(tree).toContain('没有进入 Ceiling-1.0 的结局');
+    expect(tree).toContain('data-current-route="ceiling"');
+    expect(tree).toContain('data-current-route="evo2"');
   });
 
-  it('keeps Harness 2.0.1 locked because that repair is not closed yet', () => {
-    expect(tree).toContain('Harness 2.0 Mini Study：发现新的接口问题');
-    expect(tree).toContain('Harness 2.0.1');
-    expect(tree).toContain('data-evo2-gate hidden');
-    expect(tree).toContain('rogue-node--locked');
+  it('marks Harness 2.0.1 mechanically complete and moves the lock to readiness', () => {
+    expect(tree).toContain('Harness 2.0 Mini Study：v1 接口问题');
+    expect(tree).toContain('Harness 2.0.1 · Mechanical PASS');
+    expect(tree).toContain('data-harness201-status');
+    expect(tree).toContain('HOLD_FOR_STAGE2_READINESS_AUDIT');
+    expect(tree).toContain('data-readiness-gate disabled');
+    expect(tree).toContain('BLOCKED_HARNESS_READINESS');
+    expect(tree).not.toContain("修复完成并重新 qualification 后解锁");
   });
 
   it('keeps detailed experiment pages secondary to the inline outcome', () => {

@@ -32,9 +32,12 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
       <span>QUALIFICATION</span>
       <strong>{q.mechanicalStatus}</strong>
       <small>{t('预注册的接口健康检查全部过线','All preregistered interface-health checks passed')}</small>
-      <span>FORMAL ACTIVATION</span>
+      <span>V1 FORMAL ACTIVATION</span>
       <strong>HOLD</strong>
-      <small>{t('先做 2.0.1 小修，再用新窗口重新资格验证','Make a small 2.0.1 repair, then requalify on a new window')}</small>
+      <small>{t('这是 Mini Study 01 当时的 v1 closeout；后续 2.0.1 mechanical qualification 已经 PASS。','This is the v1 closeout from Mini Study 01; the later 2.0.1 mechanical qualification has since passed.')}</small>
+      <span>2.0.1 FOLLOW-UP</span>
+      <strong>MECHANICAL PASS</strong>
+      <small>{t('Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；formal_stage2_authorized=false。','Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; formal_stage2_authorized=false.')}</small>
     </aside>
   </header>
 
@@ -121,13 +124,14 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
   </section>
 
   <section class="h2study__section" aria-labelledby="next-title">
-    <p class="kicker">HARNESS 2.0.1</p>
-    <h2 id="next-title">{t('下一次只做四个小修','The next revision makes only four small repairs')}</h2>
+    <p class="kicker">HARNESS 2.0.1 · FOLLOW-UP</p>
+    <h2 id="next-title">{t('这四项是 v1 closeout 当时冻结的 2.0.1 计划；后续机械资格已经 PASS','These four items were the frozen 2.0.1 plan from the v1 closeout; the later mechanical qualification is now PASS')}</h2>
+    <p>{t('本页主体仍记录 Mini Study 01 的 v1 结果，不把后来的 2.0.1 paired metrics 倒写进旧实验。当前只同步后续状态：2.0.1 mechanical qualification = PASS；scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；下一阶段 = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL。','This page remains the Mini Study 01 v1 record and does not backfill later 2.0.1 paired metrics into the old study. It only synchronizes the follow-up state: 2.0.1 mechanical qualification = PASS; scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; next phase = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL.')}</p>
     <ol class="h2study__next">
       <li><span>01</span><div><strong>{t('共享 prompt 明确 English-only','Make the shared prompt explicitly English-only')}</strong><p>{t('Control 与 Harness2 一起改；parser 不放宽。','Change both Control and Harness2; do not relax the parser.')}</p></div></li>
       <li><span>02</span><div><strong>{t('Context Governor 真正变薄','Make the Context Governor genuinely thin')}</strong><p>{t('不再每一步同时注入 Memory + Skill + Agent；保留小型全局 authority，只提供当前最相关的非全局经验。','Stop injecting Memory + Skill + Agent on every step; keep a tiny global authority policy and only the minimal relevant non-global context.')}</p></div></li>
       <li><span>03</span><div><strong>{t('禁止 action-like abstraction vocabulary','Remove action-like abstraction vocabulary')}</strong><p>{t('不仅禁具体按钮，也不直接暴露 pagination / return-to-search 这类容易被 3B 当作按钮名的词。','Ban not only literal buttons but also pseudo-action nouns such as pagination and return-to-search that 3B may reinterpret as button names.')}</p></div></li>
-      <li><span>04</span><div><strong>{t('换一个全新的资格窗口','Use a fresh qualification window')}</strong><p>{t(`位置 ${q.window} 已经被我们看过结果，不能再拿来选择 2.0.1。下一次必须预注册一个互不重叠、已经被正式训练消费过的 training window。`,`Positions ${q.window} have now been inspected and cannot select 2.0.1. The next qualification must preregister a disjoint training window that has already been consumed by formal training.`)}</p></div></li>
+      <li><span>04</span><div><strong>{t('v1 closeout 当时计划：换一个全新的资格窗口','v1 closeout plan: use a fresh qualification window')}</strong><p>{t(`v1 closeout 当时规定：位置 ${q.window} 已经看过结果，不能再拿来选择 2.0.1；后续 qualification 必须预注册互不重叠、已经被正式训练消费过的 training window。`,`The v1 closeout specified that positions ${q.window} had already been inspected and could not select 2.0.1; the follow-up qualification had to preregister a disjoint training window already consumed by formal training.`)}</p></div></li>
     </ol>
   </section>
 
