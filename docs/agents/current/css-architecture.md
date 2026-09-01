@@ -99,6 +99,8 @@ A new global stylesheet must have a durable semantic responsibility that can be 
 
 Prefer feature styling beside or directly imported by the owning component when rules do not need page-wide reach. A component should not depend on a later global override merely because it is faster to patch there.
 
+`SeedOpenEvoMissionHero.astro` owns the complete `.mission-chain` visual system, including its narrow-screen horizontal rail. `mobile-composition.css` no longer carries a compatibility copy of those selectors. A named cross-cutting mobile layer may provide shared tokens/composition primitives, but it must not become a second owner for a feature that can own its own responsive behavior.
+
 Ordinary corner radii follow the shared 6 / 10 / 16px system in `tokens.css`. Existing one-off pixel radii are migration debt, not a palette to copy. Clean/new components should use `--radius-control`, `--radius-panel`, or `--radius-feature`; pills and circles keep their separate fully rounded semantics. The CSS audit freezes remaining legacy per-file/per-value debt so it can decrease but cannot grow.
 
 State colors follow the semantic tokens in `tokens.css`: positive, warning, danger, info, and muted/unknown roles must not pick raw hex colors inside state selectors. This applies to status/verification/bug/blocker/pending/fit-state UI, not to intentional chart or figure palettes. If two states have different meanings (for example `medium` versus `unknown`), do not merge them under one color rule merely because an old stylesheet did so.
@@ -160,6 +162,7 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - no new patch-style stylesheet family appears;
 - Header/Nav selectors cannot spread to new files;
 - `Header.astro` cannot regain a global style block or feature selectors such as `mission-chain` / `intent-row`;
+- `.mission-chain` CSS selectors have exactly one production owner: `SeedOpenEvoMissionHero.astro`;
 - `design-refinement.css`, `visual-closeout.css`, and `mobile-composition.css` cannot regain Header/Nav ownership;
 - required Header/shared-shell invariants remain in their semantic owners;
 - the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants;

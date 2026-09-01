@@ -37,6 +37,7 @@ const headerOwnerPath = 'src/styles/components/header.css';
 const headerComponentPath = 'src/components/Header.astro';
 const shellOwnerPath = 'src/styles/components/global-shell.css';
 const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
+const missionChainOwnerPath = 'src/components/research/SeedOpenEvoMissionHero.astro';
 const radiusTokensPath = 'src/styles/tokens.css';
 const radiusDebtBaselinePath = 'scripts/css-radius-debt-baseline.json';
 const importantDebtBaselinePath = 'scripts/css-important-debt-baseline.json';
@@ -131,6 +132,13 @@ for (const invariant of [
 ]) {
   if (!headerOwner.includes(invariant)) fail(`${headerOwnerPath} is missing required ownership invariant: ${invariant}`);
 }
+
+const missionChainSelectorFiles = walk(join(root, 'src'))
+  .filter((path) => path.endsWith('.css') || path.endsWith('.astro'))
+  .filter((path) => /\.mission-chain\b/.test(readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')))
+  .map((path) => relative(root, path).replaceAll('\\', '/'))
+  .sort();
+equal(missionChainSelectorFiles, [missionChainOwnerPath], 'mission-chain CSS selector ownership');
 
 const shellOwner = read(shellOwnerPath);
 for (const invariant of ['.shell', '.footer-inner', '@media (max-width: 390px)']) {
@@ -321,6 +329,7 @@ console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
 console.log('  Header component: scoped internals only; no global feature-style injection');
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
+console.log(`  mission-chain visual owner: ${missionChainOwnerPath}`);
 console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');

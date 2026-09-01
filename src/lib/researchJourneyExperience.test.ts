@@ -9,6 +9,8 @@ const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astr
 const gateway = read('src/components/research/OpenEvoExperimentGateway.astro');
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
 const detailCore = read('src/components/research/SeedOpenEvoResearchPageCore.astro');
+const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
+const mobileComposition = read('src/styles/mobile-composition.css');
 const benchmarkZh = read('src/pages/research/seed-openevo/flow/benchmarks.astro');
 const benchmarkEn = read('src/pages/en/research/seed-openevo/flow/benchmarks.astro');
 const webshopZh = read('src/pages/research/seed-openevo/flow/webshop.astro');
@@ -65,6 +67,13 @@ describe('research journey experience', () => {
       expect(conceptIndex).toContain(route);
     }
     expect(conceptIndex).toContain('/lab/');
+  });
+
+  it('keeps the mission-chain visual system with its component owner', () => {
+    expect(missionHero).toContain('.mission-chain ol');
+    expect(missionHero).toContain('.mission-chain figcaption');
+    expect(missionHero).toContain('@media(max-width:640px)');
+    expect(mobileComposition).not.toContain('.mission-chain');
   });
 
   it('keeps the benchmark overview comparative and gives environment links one owner', () => {
