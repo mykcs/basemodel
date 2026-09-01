@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { localePath } from '../../i18n';
 import Seed3090ParametricProgress from './Seed3090ParametricProgress.astro';
 import {
@@ -109,7 +110,7 @@ const legacyLinks = [
           <strong>{item.title[locale]}</strong>
           <span class="lin-summary">{item.summary[locale]}</span>
           <span class:list={['lin-result', `res-${item.result}`]}>{programResultLabels[item.result][locale]}</span>
-          <a href={item.evidence} target="_blank" rel="noreferrer">{t('证据 ↗', 'Evidence ↗')}</a>
+          <a href={item.evidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={item.evidence} />{t('证据 ↗', 'Evidence ↗')}</a>
         </li>
       ))}
     </ol>
@@ -122,9 +123,9 @@ const legacyLinks = [
 
   <div class="audit-row">
     <span>{t('研究证据：', 'Research evidence:')}</span>
-    <a href={openEvoProgramLinks.ledger} target="_blank" rel="noreferrer">{t('项目总账（ledger）', 'Program ledger')}</a>
-    <a href={openEvoProgramLinks.report} target="_blank" rel="noreferrer">{t('项目报告（report）', 'Program report')}</a>
-    <a href={openEvoProgramLinks.campaign} target="_blank" rel="noreferrer">{t('H1.42 历史 campaign 快照', 'Historical H1.42 campaign snapshot')}</a>
+    <a href={openEvoProgramLinks.ledger} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoProgramLinks.ledger} />{t('项目总账（ledger）', 'Program ledger')}</a>
+    <a href={openEvoProgramLinks.report} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoProgramLinks.report} />{t('项目报告（report）', 'Program report')}</a>
+    <a href={openEvoProgramLinks.campaign} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoProgramLinks.campaign} />{t('H1.42 历史 campaign 快照', 'Historical H1.42 campaign snapshot')}</a>
   </div>
 
   <div class="print-provenance" aria-hidden="true">

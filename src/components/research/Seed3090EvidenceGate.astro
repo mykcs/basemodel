@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 
 interface Props {
@@ -294,15 +295,15 @@ const unlocks = [
       <p>{t('网站只做结构化导读；状态、协议和限制以 seed3090 仓库为准。', 'The site provides a structured reading path; the seed3090 repository remains authoritative for status, protocol, and limitations.')}</p>
     </div>
     <nav aria-label={t('seed3090 证据来源', 'seed3090 evidence sources')}>
-      <a href={`${sourceRoot}/docs/project/CURRENT_STATUS.md`}>
+      <a href={`${sourceRoot}/docs/project/CURRENT_STATUS.md`}><ExternalBrandMark href={`${sourceRoot}/docs/project/CURRENT_STATUS.md`} />
         {t('当前状态', 'Current status')}
         <span aria-hidden="true">↗</span>
       </a>
-      <a href={`${sourceRoot}/docs/project/EXPERIMENT_PLAN.md`}>
+      <a href={`${sourceRoot}/docs/project/EXPERIMENT_PLAN.md`}><ExternalBrandMark href={`${sourceRoot}/docs/project/EXPERIMENT_PLAN.md`} />
         {t('实验计划', 'Experiment plan')}
         <span aria-hidden="true">↗</span>
       </a>
-      <a href={`${sourceRoot}/docs/agent-handoffs/OPENEVO-SEED-WEBSHOP-COMPARISON-GATE-20260812.md`}>
+      <a href={`${sourceRoot}/docs/agent-handoffs/OPENEVO-SEED-WEBSHOP-COMPARISON-GATE-20260812.md`}><ExternalBrandMark href={`${sourceRoot}/docs/agent-handoffs/OPENEVO-SEED-WEBSHOP-COMPARISON-GATE-20260812.md`} />
         {t('比较门槛', 'Comparison gate')}
         <span aria-hidden="true">↗</span>
       </a>

@@ -401,3 +401,21 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 8. **技术图仍然要允许逐层深入。** 主图先让人看懂对象和关系，精确实现细节放正文或 `<details>`；不要让截图或 raster 图代替主要语义内容。
 
 详细实现分别由 [`human-thinking-web-expression-contract.md`](human-thinking-web-expression-contract.md)、[`ui-design-principles.md`](ui-design-principles.md)、[`sitewide-visual-knowledge-architecture.md`](sitewide-visual-knowledge-architecture.md)、[`theme-contrast-contract.md`](theme-contrast-contract.md) 和 [`ui-change-visual-acceptance-gate.md`](ui-change-visual-acceptance-gate.md) 负责。本规范只决定这些 owner 之间共同的页面表达方向。
+## 21. 品牌外链：品牌保持官方，外围视觉保持本站统一
+
+GitHub、Hugging Face 这类读者一眼就能识别的平台链接，不应只靠 `↗` 或让读者先读完整 URL 才知道会去哪里。默认同时保留**平台文字语义 + 第一方官方品牌 mark**；图标用于加快识别，不替代链接名称。
+
+执行规则：
+
+1. **只用第一方官方资产。** GitHub 使用 GitHub / Primer 官方发布的 GitHub mark；Hugging Face 使用 `huggingface/brand-assets` 的官方 mark。不要自己描一个“像 GitHub / Hugging Face”的图，也不要用通用代码、仓库、机器人图标冒充品牌。
+2. **品牌本身不做本站化改造。** 不把 Hugging Face 的黄橙 mark 改成本站 accent；GitHub mark 只在其官方允许的黑 / 白高对比表现之间切换。不得拉伸、旋转、加渐变、描边或重新组合官方图形。
+3. **统一的是容器，不是 logo。** 普通正文和按钮里的品牌 mark 使用同一视觉占位（当前为约 `20px × 20px`）、控制级圆角、本站 surface / border token 和一致的文字间距。这样不同品牌属于同一套界面语言，但仍然保留各自身份。
+4. **官方资产必须 vendored + pinned。** 不在页面运行时请求第三方 favicon / logo CDN。把已审核的官方资产固定到仓库，并记录 immutable upstream revision 与 SHA-256；上游以后换 logo 时，要通过明确的资产更新 PR，而不是静默漂移。
+5. **按真实 hostname 判断，不按字符串猜。** `github.com` / `*.github.com` 和 `huggingface.co` / `*.huggingface.co` 可以识别；`github.com.example.org` 之类的 lookalike 绝不能得到官方品牌标识。
+6. **图标是装饰，链接文字承担可访问语义。** mark 用 `aria-hidden` / 空 `alt`，不能让 screen reader 重复朗读“GitHub GitHub”。如果页面只有一个无文字图标按钮，必须另行提供明确的 accessible name；不能套用本条“装饰 mark”规则。
+7. **不能为了加图标改变原来的布局语义。** 如果 `<a>` 本身是 grid / flex card，优先把 mark 放进原有文字 / metadata cell，而不是粗暴增加一个 direct child，避免无意多出一列或一行。
+8. **验收必须覆盖 light / dark、desktop / narrow、hover / keyboard focus。** GitHub mark 在暗色背景要保持足够对比；Hugging Face mark 的官方颜色也必须在本站 surface 上清楚。移动端不能因为图标造成标题竖排、截断或横向溢出。
+
+反例包括：所有外链统一画一个 `↗` 就算“有图标”；给 GitHub / Hugging Face 各画一个风格相似但非官方的线框 icon；为了视觉整齐把所有品牌强行染成同一种蓝色；从第三方 favicon 服务实时拉图；在一个三列 evidence grid 里直接塞第四个 icon 节点导致布局变化。
+
+当前共享实现由 `src/components/common/ExternalBrandMark.tsx`、`src/lib/externalLinkBrand.ts` 与 `public/brands/` 负责。新增品牌平台时，先核对品牌方官方资产与使用约束，再扩展这一层；不要在各页面复制 SVG。

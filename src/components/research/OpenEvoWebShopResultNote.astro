@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { openEvoProgramLinks } from '../../data/openEvoWebShopProgram';
 
 export type OpenEvoWebShopResultNoteId =
@@ -119,7 +120,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>本阶段真正建立的，是一套比“OpenEvo 有效 / 无效”更细的证据规则：未参与训练的新任务、严格匹配的实验组、完整统计分母、动作可解析性、冻结代码和按任务簇统计的不确定性必须同时满足；任一条件不满足，结果都不进入 OpenEvo / BASE 的对比。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.ledger}>查看程序级实验总账 →</a></p>
+      <p class="evidence-line"><a href={evidence.ledger}><ExternalBrandMark href={evidence.ledger} />查看程序级实验总账 →</a></p>
     </main>
   )}
 
@@ -146,7 +147,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>第一次参数写入出现了“未参与训练的新任务”正向迁移信号；下一步必须冻结产物并更换独立任务面板复现。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.h138b}>查看 H1.38B 封存报告 →</a></p>
+      <p class="evidence-line"><a href={evidence.h138b}><ExternalBrandMark href={evidence.h138b} />查看 H1.38B 封存报告 →</a></p>
     </main>
   )}
 
@@ -173,7 +174,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>模型自身成功经验经过一次参数更新后，可以在训练未见任务上产生可复现收益。它支持“单次参数写入后可以迁移到新任务”，但还没有回答连续写第二次、第三次是否仍然成立。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.h139}>查看 H1.39-MR 封存报告 →</a></p>
+      <p class="evidence-line"><a href={evidence.h139}><ExternalBrandMark href={evidence.h139} />查看 H1.39-MR 封存报告 →</a></p>
     </main>
   )}
 
@@ -201,7 +202,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>经验供给已经证明不是零，但这不等于供给一定充足，也不能据此排除它仍是限制因素。连续参数写入还没有同时建立“学到新东西、保住旧能力、保住已有收益”这三件事；H1.41 还说明机制比较必须先满足测量有效性。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.h140}>查看 H1.40 对账报告 →</a> · <a href={evidence.h141}>查看 H1.41 对账报告 →</a></p>
+      <p class="evidence-line"><a href={evidence.h140}><ExternalBrandMark href={evidence.h140} />查看 H1.40 对账报告 →</a> · <a href={evidence.h141}><ExternalBrandMark href={evidence.h141} />查看 H1.41 对账报告 →</a></p>
     </main>
   )}
 
@@ -241,7 +242,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>修复测量代码以后必须重新按预先固定的规则判断数据是否有效，而不是因为已经花了算力就强行解释实验组差异。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.h142}>查看 H1.42 收尾报告 →</a> · <a href={evidence.h142Reconciliation}>对账记录 →</a> · <a href={evidence.h142Resources}>资源核算 →</a></p>
+      <p class="evidence-line"><a href={evidence.h142}><ExternalBrandMark href={evidence.h142} />查看 H1.42 收尾报告 →</a> · <a href={evidence.h142Reconciliation}><ExternalBrandMark href={evidence.h142Reconciliation} />对账记录 →</a> · <a href={evidence.h142Resources}><ExternalBrandMark href={evidence.h142Resources} />资源核算 →</a></p>
     </main>
   )}
 
@@ -272,7 +273,7 @@ const current = notes.find((item) => item.id === note)!;
         <p>现在不再是“参数写入到底有没有可能产生跨任务迁移”，而是“怎样让第二次连续写入既获得新能力，又不破坏已有能力，并且能够被可靠测量”。</p>
       </aside>
 
-      <p class="evidence-line"><a href={evidence.ledger}>查看完整实验总账 →</a> · <a href={evidence.h142}>查看最新 H1.42 收尾报告 →</a></p>
+      <p class="evidence-line"><a href={evidence.ledger}><ExternalBrandMark href={evidence.ledger} />查看完整实验总账 →</a> · <a href={evidence.h142}><ExternalBrandMark href={evidence.h142} />查看最新 H1.42 收尾报告 →</a></p>
     </main>
   )}
 </article>

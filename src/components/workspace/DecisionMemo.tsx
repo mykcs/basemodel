@@ -12,6 +12,7 @@ import { researchModeLabel, updateMethodLabel } from '../../lib/researchLabels';
 import { buildDecisionRecord, decisionRecordToJson } from '../../lib/decisionRecord';
 import { collectClaimFingerprints, decisionSnapshots, saveDecisionSnapshot, snapshotChanges } from '../../stores/snapshots';
 import { CopyButton } from '../common/CopyButton';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 
 interface Props { models: AtlasModel[]; papers: AtlasPaper[]; m: Messages; locale?: Locale }
 
@@ -135,7 +136,7 @@ export function DecisionMemo({ models, papers, m, locale = 'zh' }: Props) {
       <section><h3>{m.research.memo.sectionCandidates}</h3>{displayedCandidates.length ? <div className="memo-candidate-list">{displayedCandidates.map((entry) => <article key={entry.model.id}><h4>{entry.model.name}</h4><div className="memo-model-meta">{entry.model.vendor} · {entry.model.family}</div>{entry.reasons.length > 0 && <p><strong>{m.research.whyRecommended}:</strong> {entry.reasons.map((reason) => m.research.reasons[reason] ?? reason).join(joiner)}</p>}{entry.risks.length > 0 && <p className="memo-risk"><strong>{m.research.mainRisks}:</strong> {entry.risks.map((risk) => m.research.risks[risk] ?? risk).join(joiner)}</p>}</article>)}</div> : <p>{m.workspace.emptyCandidates}</p>}</section>
       {compareModels.length > 0 && <section><h3>{m.research.memo.sectionCompare}</h3><ul>{compareModels.map((model) => <li key={model.id}>{model.name} · {model.vendor} · {model.family}</li>)}</ul></section>}
       {notSelected.length > 0 && <section><h3>{m.research.memo.sectionNotSelected}</h3><ul>{notSelected.map((entry) => <li key={entry.model.id}><strong>{entry.model.name}:</strong> {entry.candidateState === 'blocked' ? m.research.excludedBlocked : entry.candidateState === 'needs_verification' ? m.research.excludedPending : entry.risks.map((risk) => m.research.risks[risk] ?? risk).join(joiner) || m.research.memo.unverified}</li>)}</ul></section>}
-      {evidenceSources.length > 0 && <section><h3>{m.research.memo.sectionEvidence}</h3><ul className="memo-evidence-list">{evidenceSources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title ?? source.type}</a><span>{source.checked_at}</span></li>)}</ul></section>}
+      {evidenceSources.length > 0 && <section><h3>{m.research.memo.sectionEvidence}</h3><ul className="memo-evidence-list">{evidenceSources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer"><ExternalBrandMark href={source.url} />{source.title ?? source.type}</a><span>{source.checked_at}</span></li>)}</ul></section>}
       {unresolved.length > 0 && <section className="memo-unverified"><h3>{m.research.memo.unverified}</h3><p>{locale === 'zh' ? '这些字段没有足够证据。它们不会被自动当成 false，也不应被写成确定结论。' : 'These fields do not have sufficient evidence. They are not coerced to false and should not be written as certain conclusions.'}</p><ul>{unresolved.slice(0, 20).map((field) => <li key={field}><code>{field}</code></li>)}</ul></section>}
     </div>
 

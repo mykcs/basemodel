@@ -8,6 +8,7 @@ import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
 import type { AtlasModel, AtlasPaper } from '../../lib/types';
 import PaperSelectionRationale from '../../components/papers/PaperSelectionRationale.astro';
 import PaperLearningGuide from '../../components/papers/PaperLearningGuide.astro';
+import ExternalBrandMark from '../../components/common/ExternalBrandMark';
 
 interface Props { paper: AtlasPaper; models: AtlasModel[]; locale?: Locale }
 const { paper, models } = Astro.props;
@@ -50,9 +51,9 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
         <div class="fact"><dt>{locale === 'zh' ? '论文中使用的模型' : 'Models used in the paper'}</dt><dd>{paper.models.length}{m.paperDetail.relationsUnit ? ` ${m.paperDetail.relationsUnit}` : ''}</dd></div>
       </div>
       <div class="tag-row">
-        <a class="button button-secondary" href={hasPaperLink ? paper.paper_url : undefined} aria-disabled={!hasPaperLink}>{m.paperDetail.paperLink}</a>
-        <a class="button button-secondary" href={hasCodeLink ? paper.code_url : undefined} aria-disabled={!hasCodeLink}>{m.paperDetail.codeLink}</a>
-        {hasCheckpointLink && <a class="button button-secondary" href={paper.checkpoint_url} target="_blank" rel="noreferrer">{locale === 'zh' ? '打开 Checkpoint ↗' : 'Open checkpoint ↗'}</a>}
+        <a class="button button-secondary" href={hasPaperLink ? paper.paper_url : undefined} aria-disabled={!hasPaperLink}><ExternalBrandMark href={hasPaperLink ? paper.paper_url : undefined} />{m.paperDetail.paperLink}</a>
+        <a class="button button-secondary" href={hasCodeLink ? paper.code_url : undefined} aria-disabled={!hasCodeLink}><ExternalBrandMark href={hasCodeLink ? paper.code_url : undefined} />{m.paperDetail.codeLink}</a>
+        {hasCheckpointLink && <a class="button button-secondary" href={paper.checkpoint_url} target="_blank" rel="noreferrer"><ExternalBrandMark href={paper.checkpoint_url} />{locale === 'zh' ? '打开 Checkpoint ↗' : 'Open checkpoint ↗'}</a>}
       </div>
     </section>
 

@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { localePath, type Locale } from '../../i18n';
 
 interface Props { locale?: Locale; }
@@ -95,7 +96,7 @@ const diagnostics=[
         <h3>{item.title}</h3>
         <p>{item.body}</p>
         <strong>{item.result}</strong>
-        <a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel={item.href.startsWith('http')?'noreferrer':undefined}>{item.id} · {t('查看原始依据 →','source evidence →')}</a>
+        <a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel={item.href.startsWith('http')?'noreferrer':undefined}><ExternalBrandMark href={item.href} />{item.id} · {t('查看原始依据 →','source evidence →')}</a>
       </div>
     </article>)}
   </div>
@@ -127,7 +128,7 @@ const diagnostics=[
         <small>{d.tag}</small>
         <h3>{d.question}</h3>
         <dl><div><dt>{t('只改什么','Intervention')}</dt><dd>{d.change}</dd></div><div><dt>{t('看到什么','Observation')}</dt><dd>{d.observation}</dd></div><div><dt>{t('说明什么','Meaning')}</dt><dd>{d.meaning}</dd></div></dl>
-        <a href={d.href} target={d.href.startsWith('http')?'_blank':undefined} rel={d.href.startsWith('http')?'noreferrer':undefined}>{t('查看依据 →','source →')}</a>
+        <a href={d.href} target={d.href.startsWith('http')?'_blank':undefined} rel={d.href.startsWith('http')?'noreferrer':undefined}><ExternalBrandMark href={d.href} />{t('查看依据 →','source →')}</a>
       </article>)}
     </div>
   </section>

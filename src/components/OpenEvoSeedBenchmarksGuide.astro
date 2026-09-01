@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from './common/ExternalBrandMark';
 import { localePath, type Locale } from '../i18n';
 import { openEvoScientificState } from '../lib/openEvoScientificState';
 import AgentEnvironmentTrajectory from './research/AgentEnvironmentTrajectory.astro';
@@ -27,7 +28,7 @@ const gates = [
     <span>OpenEvo · WebShop / ALFWorld</span>
     <h1 id="repro-title">{t('OpenEvo 实验复现指南','OpenEvo experiment reproduction guide')}</h1>
     <p>{t('从权限边界、持久工作区和代码身份开始，再进入 WebShop / ALFWorld 环境、任务合同、GPU evaluator 与实验凭据。公开页面只给可迁移的角色与占位路径；真实服务器身份和路径回实验室私有运行文档解析。','Start from authority boundaries, persistent workspace, and code identity, then move into WebShop / ALFWorld environments, task contracts, the GPU evaluator, and experimental evidence. Public pages expose portable roles and placeholder paths only; resolve real server identities and paths from the private laboratory runbook.')}</p>
-    <nav class="hero-actions" aria-label={t('复现入口','Reproduction entry points')}><a href={p('/research/seed-openevo/study/results/')}>{t('实验状态与结果 →','Experiment state and results →')}</a><a href="#repro-gates">{t('12 个复现 Gate ↓','12 reproduction gates ↓')}</a><a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default-main current-campaign ↗</a></nav>
+    <nav class="hero-actions" aria-label={t('复现入口','Reproduction entry points')}><a href={p('/research/seed-openevo/study/results/')}>{t('实验状态与结果 →','Experiment state and results →')}</a><a href="#repro-gates">{t('12 个复现 Gate ↓','12 reproduction gates ↓')}</a><a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoScientificState.currentCampaignUrl} />default-main current-campaign ↗</a></nav>
   </header>
 
   <section class="repo-map" aria-labelledby="repo-map-title" data-ui-audit="contrast layout">

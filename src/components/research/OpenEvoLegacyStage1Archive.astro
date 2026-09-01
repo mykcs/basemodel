@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 interface Props { locale: Locale }
@@ -35,15 +36,15 @@ const artifacts = [
     <h2 id="legacy-s1-assets-title">{t('优先打开 canonical Hugging Face 归档；GitHub 保留审计证据','Open canonical Hugging Face artifacts first; use GitHub for audit provenance')}</h2>
     <p class="legacy-s1__intro">{t('这些 HF 仓库目前是 private research assets；网站仍给出固定 revision，避免“链接还在但内容后来变了”。GitHub 证据页记录这些 revision 如何验证、为什么旧 Stage 1 仍可复用。','These HF repositories are currently private research assets. The site links pinned revisions so later edits cannot silently change the cited artifact. GitHub evidence records how those revisions were verified and why old Stage 1 remains reusable.')}</p>
     <div class="legacy-s1__artifacts">
-      {artifacts.map((item) => <a href={item.href}><span>{item.kind}</span><strong>{item.title}</strong><small>{item.note}</small><code>{item.rev.slice(0,12)}…</code></a>)}
+      {artifacts.map((item) => <a href={item.href}><ExternalBrandMark href={item.href} /><span>{item.kind}</span><strong>{item.title}</strong><small>{item.note}</small><code>{item.rev.slice(0,12)}…</code></a>)}
     </div>
   </section>
   <section class="legacy-s1__section legacy-s1__audit" aria-labelledby="legacy-s1-audit-title">
     <div><p class="kicker">GITHUB PROVENANCE</p><h2 id="legacy-s1-audit-title">{t('为什么我们敢说“旧版还能用”','Why we can say the old version is still usable')}</h2></div>
     <div class="legacy-s1__audit-links">
-      <a href={`${githubBase}/docs/evidence/server-audits/2026-08-31/superseded-stage2-publication-closeout.json`}><strong>{t('publication closeout','Publication closeout')}</strong><span>{t('固定 HF revisions、fresh remote-byte verification、runtime digest 与 retention 状态。','Pinned HF revisions, fresh remote-byte verification, runtime digest, and retention state.')}</span></a>
-      <a href={`${githubBase}/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md`}><strong>{t('Stage-1 新旧科学边界','Stage-1 old/new scientific boundary')}</strong><span>{t('明确记录 protocol-equivalent / realization-different / runtime-corrected 三个标签。','Records the protocol-equivalent / realization-different / runtime-corrected distinction.')}</span></a>
-      <a href={`${githubBase}/docs/troubleshooting/publication/CASE-HUGGINGFACE-ASSET-GOVERNANCE-20260829.md`}><strong>{t('HF 资产治理证据','HF asset-governance evidence')}</strong><span>{t('证明 canonical 与 compatibility copy 的 LFS 内容关系，而不是只凭文件大小猜重复。','Proves canonical/compatibility relationships using remote LFS hashes rather than file-size guesses.')}</span></a>
+      <a href={`${githubBase}/docs/evidence/server-audits/2026-08-31/superseded-stage2-publication-closeout.json`}><ExternalBrandMark href={`${githubBase}/docs/evidence/server-audits/2026-08-31/superseded-stage2-publication-closeout.json`} /><strong>{t('publication closeout','Publication closeout')}</strong><span>{t('固定 HF revisions、fresh remote-byte verification、runtime digest 与 retention 状态。','Pinned HF revisions, fresh remote-byte verification, runtime digest, and retention state.')}</span></a>
+      <a href={`${githubBase}/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md`}><ExternalBrandMark href={`${githubBase}/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md`} /><strong>{t('Stage-1 新旧科学边界','Stage-1 old/new scientific boundary')}</strong><span>{t('明确记录 protocol-equivalent / realization-different / runtime-corrected 三个标签。','Records the protocol-equivalent / realization-different / runtime-corrected distinction.')}</span></a>
+      <a href={`${githubBase}/docs/troubleshooting/publication/CASE-HUGGINGFACE-ASSET-GOVERNANCE-20260829.md`}><ExternalBrandMark href={`${githubBase}/docs/troubleshooting/publication/CASE-HUGGINGFACE-ASSET-GOVERNANCE-20260829.md`} /><strong>{t('HF 资产治理证据','HF asset-governance evidence')}</strong><span>{t('证明 canonical 与 compatibility copy 的 LFS 内容关系，而不是只凭文件大小猜重复。','Proves canonical/compatibility relationships using remote LFS hashes rather than file-size guesses.')}</span></a>
     </div>
   </section>
 

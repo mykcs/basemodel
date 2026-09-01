@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -46,7 +47,7 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
         <strong>{t('WebShop evaluator','WebShop evaluator')}</strong>
         <code>get_reward(...)</code>
         <span>{t('把终局状态与 goal 约束逐项对照','Compare terminal state against goal constraints')}</span>
-        <a href={rewardUrl} target="_blank" rel="noreferrer">{t('查看官方 reward 代码 ↗','View official reward code ↗')}</a>
+        <a href={rewardUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={rewardUrl} />{t('查看官方 reward 代码 ↗','View official reward code ↗')}</a>
       </article>
 
       <div class="eval-arrow" aria-hidden="true">→</div>
@@ -86,7 +87,7 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
           <small>WebShop goal.py · OFFICIAL</small>
           <code>get_reward(product, goal, price, options)</code>
           <p>{t('WebShop 的 reward 逻辑根据商品、goal、价格与 option 状态计算任务满足程度。','WebShop reward logic computes task satisfaction from the product, goal, price, and option state.')}</p>
-          <a href={rewardUrl} target="_blank" rel="noreferrer">{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
+          <a href={rewardUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={rewardUrl} />{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
         </article>
         <article>
           <small>{t('实验记录合同','EXPERIMENT RECORDING CONTRACT')}</small>

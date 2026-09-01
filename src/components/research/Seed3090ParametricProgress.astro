@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 
 interface Props { locale: Locale }
@@ -67,8 +68,8 @@ const runs = [
   </section>
 
   <footer class="sources">
-    <a href={`${archiveRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer">{t('历史阶段报告', 'Historical stage report')} ↗</a>
-    <a href={`${archiveRoot}/README.md`} target="_blank" rel="noreferrer">seed3090 README ↗</a>
+    <a href={`${archiveRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${archiveRoot}/docs/project/OPENEVO_WEBSHOP_STAGE_REPORT_2026-08-13.md`} />{t('历史阶段报告', 'Historical stage report')} ↗</a>
+    <a href={`${archiveRoot}/README.md`} target="_blank" rel="noreferrer"><ExternalBrandMark href={`${archiveRoot}/README.md`} />seed3090 README ↗</a>
   </footer>
 </section>
 

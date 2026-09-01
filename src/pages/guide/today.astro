@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../../components/common/ExternalBrandMark';
 import AppLayout from '../../layouts/AppLayout.astro';
 import { localePath } from '../../i18n';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
@@ -16,14 +17,14 @@ const currentRepo = 'https://github.com/mykcs/openevo-experiment';
     <section class="section" aria-labelledby="historical-platform-title">
       <div class="section-heading"><div><span class="section-kicker">历史平台</span><h2 id="historical-platform-title">RTX6 · 4×RTX3090</h2></div></div>
       <dl class="runbook-facts"><div><dt>用途</dt><dd>WebShop / ALFWorld bring-up、离线依赖、早期参数实验</dd></div><div><dt>仓库</dt><dd><code>seed3090</code></dd></div><div><dt>保留证据</dt><dd>日志、失败轨迹、preflight、Stage-1 检查器</dd></div><div><dt>状态</dt><dd>历史，不再启动新实验</dd></div></dl>
-      <div class="links"><a class="button button-secondary" href={seedRepo} target="_blank" rel="noreferrer">seed3090 ↗</a><a class="button button-secondary" href="/guides/seed-4x3090-preflight.sh">历史 preflight</a><a class="button button-secondary" href="/guides/seed-stage1-check.py">Stage-1 检查器</a></div>
+      <div class="links"><a class="button button-secondary" href={seedRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedRepo} />seed3090 ↗</a><a class="button button-secondary" href="/guides/seed-4x3090-preflight.sh">历史 preflight</a><a class="button button-secondary" href="/guides/seed-stage1-check.py">Stage-1 检查器</a></div>
     </section>
 
     <section class="section" aria-labelledby="current-platform-title">
       <div class="section-heading"><div><span class="section-kicker">实时状态入口</span><h2 id="current-platform-title">openevo-experiment · branch-aware</h2></div></div>
       <p>新的代码、Run Manifest、campaign 和科学结论只在 <code>openevo-experiment</code> 继续。本站在 <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time> 核验默认 <code>main</code>：<code>current-campaign.json</code> 记录的是 <strong>{openEvoScientificState.defaultBranchSnapshot.phase}</strong>，状态 <code>{openEvoScientificState.defaultBranchSnapshot.status}</code>。这只是带日期的默认分支快照；活跃科学分支可能更靠前。</p>
       <p>{openEvoScientificState.liveStateRule.zh} {openEvoScientificState.gpuRule.zh}</p>
-      <div class="links"><a class="button button-secondary" href={currentRepo} target="_blank" rel="noreferrer">openevo-experiment ↗</a><a class="button button-secondary" href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer">default main current-campaign ↗</a><a class="button button-primary" href={localePath('zh','/research/seed-openevo/study/run/')}>当前复现指南 →</a><a class="button button-secondary" href={localePath('zh','/research/seed-openevo/study/results/')}>实验状态与历史结果</a></div>
+      <div class="links"><a class="button button-secondary" href={currentRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={currentRepo} />openevo-experiment ↗</a><a class="button button-secondary" href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoScientificState.currentCampaignUrl} />default main current-campaign ↗</a><a class="button button-primary" href={localePath('zh','/research/seed-openevo/study/run/')}>当前复现指南 →</a><a class="button button-secondary" href={localePath('zh','/research/seed-openevo/study/results/')}>实验状态与历史结果</a></div>
     </section>
 
     <section class="section" aria-labelledby="migration-title">

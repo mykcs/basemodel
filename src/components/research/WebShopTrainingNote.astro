@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import ResearchTechnicalDisclosure from './ResearchTechnicalDisclosure.astro';
 import '../../styles/components/webshop-training-note.css';
 
@@ -105,7 +106,7 @@ python test.py`}</code></pre>
 
     estimate group advantages
     update policy with GRPO / PPO / GiGPO / ...`}</code></pre>
-        <p><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer">verl-agent</a> 的公开 WebShop GRPO recipe 就采用这种结构：训练 batch 由若干 task identity 组成，同一 task 有多条 rollout，环境最大交互步数固定，再做 group-based policy optimization。</p>
+        <p><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/langfengQ/verl-agent" />verl-agent</a> 的公开 WebShop GRPO recipe 就采用这种结构：训练 batch 由若干 task identity 组成，同一 task 有多条 rollout，环境最大交互步数固定，再做 group-based policy optimization。</p>
       </section>
 
       <section>
@@ -124,9 +125,9 @@ python test.py`}</code></pre>
         <h2>原论文和真实代码</h2>
         <ul>
           <li><a href="https://proceedings.neurips.cc/paper_files/paper/2022/hash/82ad13ec01f9fe44c01cb91814fd7b8c-Abstract-Conference.html" target="_blank" rel="noreferrer">WebShop: Towards Scalable Real-World Web Interaction with Grounded Language Agents, NeurIPS 2022</a></li>
-          <li><a href="https://github.com/princeton-nlp/WebShop/tree/master/baseline_models" target="_blank" rel="noreferrer">WebShop 官方 baseline_models：Search IL / Choice IL / Choice RL</a></li>
+          <li><a href="https://github.com/princeton-nlp/WebShop/tree/master/baseline_models" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/princeton-nlp/WebShop/tree/master/baseline_models" />WebShop 官方 baseline_models：Search IL / Choice IL / Choice RL</a></li>
           <li><a href="https://arxiv.org/abs/2505.10978" target="_blank" rel="noreferrer">GiGPO: Group-in-Group Policy Optimization for LLM Agent Training</a></li>
-          <li><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer">verl-agent：公开的 WebShop 多轮 RL recipes</a></li>
+          <li><a href="https://github.com/langfengQ/verl-agent" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/langfengQ/verl-agent" />verl-agent：公开的 WebShop 多轮 RL recipes</a></li>
         </ul>
       </section>
     </main>
@@ -155,7 +156,7 @@ python test.py`}</code></pre>
        3-epoch SFT
           ↓
  actor + analyzer checkpoint`}</code></pre>
-        <p>公开代码入口是 <a href="https://github.com/jinyangwu/SEED/tree/main/scripts/sft/webshop" target="_blank" rel="noreferrer"><code>scripts/sft/webshop/</code></a>，默认 launcher 会明确设置 180 tasks、8 rollouts、15 max steps、history length 2。</p>
+        <p>公开代码入口是 <a href="https://github.com/jinyangwu/SEED/tree/main/scripts/sft/webshop" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED/tree/main/scripts/sft/webshop" /><code>scripts/sft/webshop/</code></a>，默认 launcher 会明确设置 180 tasks、8 rollouts、15 max steps、history length 2。</p>
       </section>
 
       <section>
@@ -221,11 +222,11 @@ otherwise  -> 0`}</code></pre>
         <h2>论文和真实代码入口</h2>
         <ul>
           <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noreferrer">SEED 论文</a></li>
-          <li><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer">SEED 官方仓库</a></li>
-          <li><a href="https://github.com/jinyangwu/SEED/blob/main/scripts/sft/webshop/prepare_data.sh" target="_blank" rel="noreferrer">Stage-1 WebShop trajectory / skill data preparation</a></li>
-          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/run_webshop_sft_glm_self.sh" target="_blank" rel="noreferrer">Stage-2 WebShop SEED launcher</a></li>
-          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/_common/webshop.sh" target="_blank" rel="noreferrer">WebShop RL / OPD 具体训练参数</a></li>
-          <li><a href="https://github.com/jinyangwu/SEED/blob/main/agent_system/environments/env_package/webshop/envs.py" target="_blank" rel="noreferrer">WebShop reward wrapper：task_score 与 exact-win reward</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />SEED 官方仓库</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/scripts/sft/webshop/prepare_data.sh" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED/blob/main/scripts/sft/webshop/prepare_data.sh" />Stage-1 WebShop trajectory / skill data preparation</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/run_webshop_sft_glm_self.sh" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/run_webshop_sft_glm_self.sh" />Stage-2 WebShop SEED launcher</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/_common/webshop.sh" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED/blob/main/examples/seed_trainer/_common/webshop.sh" />WebShop RL / OPD 具体训练参数</a></li>
+          <li><a href="https://github.com/jinyangwu/SEED/blob/main/agent_system/environments/env_package/webshop/envs.py" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED/blob/main/agent_system/environments/env_package/webshop/envs.py" />WebShop reward wrapper：task_score 与 exact-win reward</a></li>
         </ul>
       </section>
     </main>
@@ -312,7 +313,7 @@ separate acquisition / retention / preservation / fresh transfer`}</code></pre>
         <h2>继续看我们的实验</h2>
         <ul>
           <li><a href={`${root}/`}>OpenEvo × WebShop 当前结果与 H1.40 / H1.41 证据边界</a></li>
-          <li><a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noreferrer">openevo-experiment：实验 ledger、preregistration、reconciliation 与运行证据</a></li>
+          <li><a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />openevo-experiment：实验 ledger、preregistration、reconciliation 与运行证据</a></li>
           <li><a href={`${root}/seed-training/`}>上一篇：SEED 怎么在 WebShop 上训练</a></li>
         </ul>
       </section>

@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { localePath } from '../../i18n';
 import { openEvoHarness2Qualification as q } from '../../data/openEvoHarness2Qualification';
 
@@ -138,9 +139,9 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
   <details class="h2study__evidence">
     <summary>{t('证据与复现边界','Evidence and reproduction boundary')}</summary>
     <div class="h2study__evidence-grid">
-      <div><span>{t('正式 receipt','Canonical receipt')}</span><a href={q.evidence.receipt} target="_blank" rel="noreferrer">qualification-receipt.json ↗</a></div>
-      <div><span>{t('研究 closeout','Research closeout')}</span><a href={q.evidence.closeout} target="_blank" rel="noreferrer">Harness 2.0 preformal closeout ↗</a></div>
-      <div><span>{t('实验代码快照','Experiment code snapshot')}</span><a href={q.evidence.commit} target="_blank" rel="noreferrer">openevo-experiment@{q.evidenceCommit.slice(0,8)} ↗</a></div>
+      <div><span>{t('正式 receipt','Canonical receipt')}</span><a href={q.evidence.receipt} target="_blank" rel="noreferrer"><ExternalBrandMark href={q.evidence.receipt} />qualification-receipt.json ↗</a></div>
+      <div><span>{t('研究 closeout','Research closeout')}</span><a href={q.evidence.closeout} target="_blank" rel="noreferrer"><ExternalBrandMark href={q.evidence.closeout} />Harness 2.0 preformal closeout ↗</a></div>
+      <div><span>{t('实验代码快照','Experiment code snapshot')}</span><a href={q.evidence.commit} target="_blank" rel="noreferrer"><ExternalBrandMark href={q.evidence.commit} />openevo-experiment@{q.evidenceCommit.slice(0,8)} ↗</a></div>
       <div><span>Receipt SHA256</span><code>{q.receiptSha256}</code></div>
       <div><span>{t('分析代码 SHA','Analysis code SHA')}</span><code>{q.analysisGitSha}</code></div>
       <div><span>{t('选择边界','Selection boundary')}</span><strong>{t('reward / success 不参与机械 PASS/FAIL；final panel 未访问','reward / success did not select mechanical PASS/FAIL; final panel stayed locked')}</strong></div>

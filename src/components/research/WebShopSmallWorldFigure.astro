@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -39,7 +40,7 @@ const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/s
         <strong>{t('WebShop small 模式','WebShop small mode')}</strong>
         <span class="mode-label">{t('选择官方 small 配置','Select official small mode')}</span>
         <span>{t('官方脚本下载预先准备好的 1,000-product small 数据文件。','The official script downloads the prepared 1,000-product small data files.')}</span>
-        <a class="official-link" href={officialSetupUrl} target="_blank" rel="noreferrer">
+        <a class="official-link" href={officialSetupUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={officialSetupUrl} />
           {t('查看 WebShop 官方 setup.sh ↗','View WebShop official setup.sh ↗')}
         </a>
       </div>
@@ -62,7 +63,7 @@ const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/s
           <small>WebShop setup.sh</small>
           <code>Usage: ./setup.sh -d small|all</code>
           <p>{t('small 模式下载 items_shuffle_1000 与 items_ins_v2_1000。','Small mode downloads items_shuffle_1000 and items_ins_v2_1000.')}</p>
-          <a href={officialSetupUrl} target="_blank" rel="noreferrer">{t('打开官方代码 ↗','Open official code ↗')}</a>
+          <a href={officialSetupUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={officialSetupUrl} />{t('打开官方代码 ↗','Open official code ↗')}</a>
         </article>
         <article>
           <small>SEED WebShop utils.py</small>

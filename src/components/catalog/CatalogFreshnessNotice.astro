@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 
 interface Props {
@@ -74,7 +75,7 @@ const signals = [
       {signals.map((signal) => <li>
         <div class="catalog-freshness__signal-head"><strong>{signal.title}</strong><time datetime={signal.evidenceDate}>{signal.evidenceDate}</time></div>
         <p>{signal.body}</p>
-        <div class="catalog-freshness__sources">{signal.sources.map((source) => <a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a>)}</div>
+        <div class="catalog-freshness__sources">{signal.sources.map((source) => <a href={source.href} target="_blank" rel="noreferrer"><ExternalBrandMark href={source.href} />{source.label} ↗</a>)}</div>
       </li>)}
     </ol>
   </div>}

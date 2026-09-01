@@ -1,4 +1,5 @@
 ---
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
 import type { EvidenceRef } from '../../lib/researchEvidence';
@@ -40,7 +41,7 @@ const frozenPanelHref = trackAManifest.href;
             'This JSON is the immutable snapshot of the corrected first-validation panel. Runtime semantic validation is now 128/128 PASS, and the executed branch and corrected mainline manifest share selected-panel digest 4e7ace92…. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
           )}</span>
         </div>
-        <a class="manifest-link" href={frozenPanelHref}>
+        <a class="manifest-link" href={frozenPanelHref}><ExternalBrandMark href={frozenPanelHref} />
           {t('在 GitHub 查看固定的 128 题', 'View the frozen 128 tasks on GitHub')} ↗
         </a>
       </div>
@@ -82,13 +83,13 @@ const frozenPanelHref = trackAManifest.href;
             </tbody>
           </table>
           <ul class="evidence-links">
-            <li><a href={trackACloseout.href}>{trackACloseout.label} ↗</a></li>
-            <li><a href={trackAAnalysis.href}>{trackAAnalysis.label} ↗</a></li>
-            <li><a href={trackAReconciliation.href}>{trackAReconciliation.label} ↗</a></li>
-            <li><a href={trackASemanticValidation.href}>{trackASemanticValidation.label} ↗</a></li>
-            <li><a href={trackAManifest.href}>{trackAManifest.label} ↗</a></li>
-            <li><a href={trackAEvidenceManifest.href}>{trackAEvidenceManifest.label} ↗</a></li>
-            <li><a href={trackAGovernance.href}>{trackAGovernance.label} ↗</a></li>
+            <li><a href={trackACloseout.href}><ExternalBrandMark href={trackACloseout.href} />{trackACloseout.label} ↗</a></li>
+            <li><a href={trackAAnalysis.href}><ExternalBrandMark href={trackAAnalysis.href} />{trackAAnalysis.label} ↗</a></li>
+            <li><a href={trackAReconciliation.href}><ExternalBrandMark href={trackAReconciliation.href} />{trackAReconciliation.label} ↗</a></li>
+            <li><a href={trackASemanticValidation.href}><ExternalBrandMark href={trackASemanticValidation.href} />{trackASemanticValidation.label} ↗</a></li>
+            <li><a href={trackAManifest.href}><ExternalBrandMark href={trackAManifest.href} />{trackAManifest.label} ↗</a></li>
+            <li><a href={trackAEvidenceManifest.href}><ExternalBrandMark href={trackAEvidenceManifest.href} />{trackAEvidenceManifest.label} ↗</a></li>
+            <li><a href={trackAGovernance.href}><ExternalBrandMark href={trackAGovernance.href} />{trackAGovernance.label} ↗</a></li>
           </ul>
         </div>
       </details>
