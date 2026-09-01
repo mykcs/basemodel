@@ -352,6 +352,7 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 | 推理要可见，但写成“观察→支持→边界”，不是内部标签 | [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签) |
 | 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子) |
 | `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](website-copy-cases.md#case-051-内部计数不能代替解释) |
+| ELI5 保留“对象 + 发生了什么”；不能删到只剩数字、限制或空泛动词 | [CASE-059](website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词) |
 | 连续几版实验都出问题时，分别写清每一版“现实里坏了什么”，不要统一叫“Stage 2 失败” | [CASE-054–056](website-copy-cases.md#case-054-阶段二失败不能写成一个标签) |
 | “没运行”与“结果为 0”严格分开；页面脱离聊天仍能自解释 | [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差) |
 | 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
