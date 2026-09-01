@@ -11,6 +11,7 @@ This file is a specialization, not a competing design system.
 - `human-thinking-web-expression-contract.md` owns the general rule that web structure should externalize human thought structure.
 - `audience-centered-technical-copy.md` owns project-wide technical copy and heading discipline.
 - `ui-design-principles.md` owns the visual identity, semantic color, card budget, responsive behavior, and non-drift rules.
+- `experiment-lineage-map-visual-standard.md` owns node/edge hierarchy for experiment-lineage and roguelike research maps: mainline, branch, scientific amendment, engineering fix, evidence, blocker state, and future preview semantics.
 - research/data/evidence policies own scientific truth and claim boundaries.
 - this file owns the **first-time-reader narrative shape of research explainer pages**: what each section is allowed to do, how sections advance, how corrective material is placed, how evidence is attached to claims, and how diagrams encode meaning.
 

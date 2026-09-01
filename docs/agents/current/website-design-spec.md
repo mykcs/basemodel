@@ -3,6 +3,7 @@
 状态：**CURRENT / CANONICAL**
 适用范围：`basemodel` 的所有公开页面、导航、标题、说明文字、按钮、图表注释、状态提示和中英文文案。
 案例库：[`website-copy-cases.md`](website-copy-cases.md)
+实验谱系 / 肉鸽地图视觉语义：[`experiment-lineage-map-visual-standard.md`](experiment-lineage-map-visual-standard.md)
 实现与推理复盘：[`../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md`](../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md)
 历史审计基线：`origin/main@e11d443`，2026-08-30；从首个 commit `dd9b04b` 起对 901 个主线 commits 做全量历史检索，并交叉检索 274 个已合并 PR 与 349 个可见 PR 的元数据（当前最大 PR 编号为 #350）。
 
@@ -34,7 +35,23 @@
 
 研究结果也一样：先说观察和结论，再解释实验机制，最后让读者展开证据。见 [CASE-029](website-copy-cases.md#case-029-结论先于实验账本) 与 [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签)。
 
-### 2.1 “AI 味”在本项目里通常是哪几种结构
+### 2.1 关系性结论需要先给最小参照物
+
+`共同 / 继续 / 仍然 / 后续 / 第二版 / 同一个` 这类词本身没有完整意义：读者必须先知道“和谁共同、从哪里继续、相对什么仍然、接着哪一步后续”。
+
+因此“结论先于解释”不能机械理解成“任何状态句都塞到第一句”。如果结论依赖一个尚未交代的实验结构，先用一两句给出最小结构，再说关系状态。
+
+例如不要先写：
+
+> 当前 corrected Stage 1 仍是共同起点。
+
+应该先写：
+
+> 接下来的训练分成 Stage 1 和 Stage 2。Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练；Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1，因此从这里分成两条 Stage-2 路线。
+
+同样，`仍然是 8 张 GPU` 应写成 `并行规模保持 8 张 GPU`：把参照对象直接写进句子，不要求读者回忆上一段。详见 [CASE-060](website-copy-cases.md#case-060-关系状态前先给参照物)。
+
+### 2.2 “AI 味”在本项目里通常是哪几种结构
 
 1. **编辑者自述**：`本页 / 本节 / 本站 / 这里` 先解释内容怎样被组织。
 2. **阅读舞台提示**：`下面我们会 / 如果第一次看 / 如果只记住一句话`。
@@ -164,7 +181,25 @@
 
 规则不是“所有术语都删掉”，而是**先给人类含义，再保留术语作精确索引**。详细正反面对照见 [CASE-051](website-copy-cases.md#case-051-内部计数不能代替解释)、[CASE-052](website-copy-cases.md#case-052-数字因果链要把规则说完整) 与 [CASE-053](website-copy-cases.md#case-053-历史规则不能伪装成长期算法)。
 
-### 7.2 没发生不等于失败；页面必须能脱离聊天独立成立
+### 7.2 ELI5 不是“删掉术语”，而是“翻译成现实对象”
+
+ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短，把内部术语删掉以后只剩一个数字、一个“限制”、一个“继续跑”或一个“结果”，让读者反而不知道在说什么。
+
+例如 `64-component cap` 的实现含义是：这条 SD-LoRA 连续训练原本最多允许发生 64 次新的参数更新；每次正式更新都会新增一个 component。对第一次来的读者，第一层应该写：
+
+> 放宽参数更新次数
+
+而不是：
+
+> 放宽 64 限制
+
+后者虽然更短，却丢掉了 `64` 数的是什么。技术层再补 `component_count`、`generation`、`effective rank`，并明确一次参数更新内部仍包含多个 optimizer steps。
+
+同样，`7B 继续跑 / 工程修复 / 当前结果 / 以后可能压缩` 这类短句如果脱离作者上下文仍需猜对象，也应改成 `继续 7B 训练 / 修复训练运行问题 / 7B 当前进度 / 以后可能压缩已积累的参数更新` 这类保留现实对象的写法。
+
+规则：**ELI5 优先减少“解码项目术语”的成本，不以最短字数为目标。** 详见 [CASE-059](website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词)。
+
+### 7.3 没发生不等于失败；页面必须能脱离聊天独立成立
 
 公开结果页要严格区分：**没有运行、运行后得 0、运行后没有参数更新、测量无效**。它们不是同一种“失败”，也不能都压成 `0 / failed / pending`。
 
@@ -333,8 +368,10 @@
 | 推理要可见，但写成“观察→支持→边界”，不是内部标签 | [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签) |
 | 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子) |
 | `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](website-copy-cases.md#case-051-内部计数不能代替解释) |
+| ELI5 保留“对象 + 发生了什么”；不能删到只剩数字、限制或空泛动词 | [CASE-059](website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词) |
 | 连续几版实验都出问题时，分别写清每一版“现实里坏了什么”，不要统一叫“Stage 2 失败” | [CASE-054–056](website-copy-cases.md#case-054-阶段二失败不能写成一个标签) |
 | “没运行”与“结果为 0”严格分开；页面脱离聊天仍能自解释 | [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差) |
+| `共同 / 继续 / 仍然 / 后续` 先给关系两端和最小结构，再写状态 | [CASE-060](website-copy-cases.md#case-060-关系状态前先给参照物) |
 | 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
 | 责任已知时直接点名负责层，不先清嫌疑人 | [CASE-036](website-copy-cases.md#case-036-责任先直接点名负责层) |
 | 否定句可以用；不要把 negative-first 当机械禁词 | [CASE-031–032](website-copy-cases.md#case-031-一个不字也属于科学正确性) |
