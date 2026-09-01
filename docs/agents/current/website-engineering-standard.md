@@ -49,6 +49,7 @@ Detailed owners: `css-architecture.md`, `rendering-and-performance-policy.md`.
 - Shared tokens belong in `src/styles/tokens.css`.
 - Shared Header/shell behavior belongs to established semantic owners under `src/styles/components/`.
 - Feature styles stay with their feature unless global reach is genuinely required.
+- Heading ownership follows component ownership: the page root owns the single `<h1>`; embeddable components use lower ranks or an explicit heading-level prop. `npm run build` audits generated static HTML so duplicate page-level headings fail before deployment.
 - Do not add new global files whose purpose is effectively “fix”, “final”, “hardening”, “closeout” or “refinement”.
 - Do not increase specificity or add `!important` as the default cascade strategy; repair ownership first.
 - Do not mass-delete old CSS because it is old. Retire compatibility copies property-by-property after the canonical owner is browser-proven.

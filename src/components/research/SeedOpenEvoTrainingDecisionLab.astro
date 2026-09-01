@@ -1,8 +1,8 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; headingLevel?: 1 | 2 }
+const { locale, headingLevel = 1 } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
@@ -136,7 +136,9 @@ const history = [
 <article class="design-lab" data-training-decision-lab>
   <header class="design-hero">
     <div class="hero-kicker">SEED × OPENEVO · WEBSHOP</div>
-    <h1>{t('WebShop 训练设计实验室', 'WebShop training design lab')}</h1>
+    {headingLevel === 1
+      ? <h1 class="design-hero__title">{t('WebShop 训练设计实验室', 'WebShop training design lab')}</h1>
+      : <h2 class="design-hero__title">{t('WebShop 训练设计实验室', 'WebShop training design lab')}</h2>}
     <p class="hero-dek">{t('这不是一份运行日志，而是一张“我们怎样把问题问清楚”的研究地图：谁真正做题、谁只复盘、哪些参数属于公平协议、哪些属于 OpenEvo 方法，以及每条实验分支究竟能支持什么结论。', 'This is not a run log. It is a research map of how the question was clarified: who actually acts, who only analyzes, which parameters belong to the fairness protocol, which belong to OpenEvo, and what each experimental branch can legitimately support.')}</p>
     <nav class="chapter-nav" aria-label={t('本页章节', 'Page chapters')}>
       <a href="#responsibility">{t('责任边界', 'Responsibility')}</a>
@@ -319,7 +321,7 @@ const history = [
   .design-lab{--env:var(--blue);--experience:var(--warning);--signal:var(--danger);--state:var(--accent-deep);--persist:var(--positive);width:min(var(--editorial-max),calc(100% - 2rem));margin:1rem auto 5rem;color:var(--ink)}
   .design-hero{padding:2.2rem 0 1.4rem;border-bottom:1px solid var(--line)}
   .hero-kicker{color:var(--accent-deep);font:800 .68rem/1.2 var(--font-mono);letter-spacing:.08em}
-  .design-hero h1{max-width:16ch;margin:.5rem 0 .75rem;font-family:var(--font-editorial);font-size:clamp(2rem,5vw,4.2rem);line-height:1.05;letter-spacing:-.03em}
+  .design-hero__title{max-width:16ch;margin:.5rem 0 .75rem;font-family:var(--font-editorial);font-size:clamp(2rem,5vw,4.2rem);line-height:1.05;letter-spacing:-.03em}
   .hero-dek{max-width:76ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.75}
   .chapter-nav{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.2rem}
   .chapter-nav a{padding:.45rem .65rem;border-bottom:1px solid var(--line);color:var(--muted);font-size:.75rem;font-weight:750;text-decoration:none}.chapter-nav a:hover,.chapter-nav a:focus-visible{color:var(--ink);border-color:var(--accent-deep)}

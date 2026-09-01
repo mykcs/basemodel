@@ -54,7 +54,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
   it('mounts the same six modules in the same order on both locale routes and keeps wrapper trace between questions and G2', () => {
     for (const page of [resultsPageZh, resultsPageEn]) {
       expect(page).toContain('data-testid="openevo-webshop-result-index"');
-      expect(page).toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
+      expect(page).not.toContain("body:has([data-testid='openevo-webshop-result-index']) .plain-detail__header");
       expect(page).toContain('seed-openevo-results-reader-contract.md');
       let previous = -1;
       for (const component of moduleComponents) {

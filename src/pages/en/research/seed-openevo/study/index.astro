@@ -16,7 +16,7 @@ const locale = 'en' as const;
     <p><b>Completed:</b> source-faithful Track A already measured BASE vs frozen OpenEvo on the fixed 128-task manifest; that result and its interpretation remain unchanged.</p>
     <p><b>Next experiment:</b> the previously frozen long-horizon campaign uses 21,920 environment rollouts. That is a public-launcher-derived campaign budget from the current 160-epoch WebShop path, not the 150 policy updates stated in the SEED paper. The paper specifies 1,440 Stage-1 trajectories plus 150 × 16 × 8 = 19,200 RL trajectories, or 20,640 environment trajectories if the two stages are summed. It does not rerun Track A and does not claim that the SEED paper-final checkpoint or paper-reported numbers have already been reproduced.</p>
   </section>
-  <SeedOpenEvoTrainingDecisionLab locale={locale} />
+  <SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />
   <OpenEvoFairComparisonExplainer locale={locale} />
 </AppLayout>
 

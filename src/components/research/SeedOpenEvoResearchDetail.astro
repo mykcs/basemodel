@@ -57,11 +57,13 @@ const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }>
 const current = copy[page];
 ---
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
-  <header class="plain-detail__header">
-    <div>{current.eyebrow}</div>
-    <h1>{current.title}</h1>
-    <p>{current.lede}</p>
-  </header>
+  {page !== 'results' && (
+    <header class="plain-detail__header">
+      <div>{current.eyebrow}</div>
+      <h1>{current.title}</h1>
+      <p>{current.lede}</p>
+    </header>
+  )}
   <SeedOpenEvoResearchNav locale={locale} page={page} />
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
   {page !== 'results' && page !== 'webshop' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
