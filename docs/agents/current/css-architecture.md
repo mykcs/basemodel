@@ -103,6 +103,8 @@ Ordinary corner radii follow the shared 6 / 10 / 16px system in `tokens.css`. Ex
 
 State colors follow the semantic tokens in `tokens.css`: positive, warning, danger, info, and muted/unknown roles must not pick raw hex colors inside state selectors. This applies to status/verification/bug/blocker/pending/fit-state UI, not to intentional chart or figure palettes. If two states have different meanings (for example `medium` versus `unknown`), do not merge them under one color rule merely because an old stylesheet did so.
 
+`!important` is also frozen compatibility debt. The current baseline records the remaining declaration count per production CSS/Astro file; a clean/new owner must not introduce it, and an existing file must not increase its frozen count. When a real ownership cleanup removes declarations, lower the baseline with that cleanup instead of treating the old number as a reusable allowance.
+
 ### Frozen legacy compatibility layers
 
 These files remain because portions of their cascade still contain required behavior:
@@ -130,7 +132,7 @@ Do not delete a whole legacy file merely to make the folder tree cleaner. `desig
 1. Preserve validated import order while retirement is in progress; semantic owners load after compatibility debt and are the only permitted final shell owners.
 2. Do not introduce CSS Cascade Layers (`@layer`) merely to reorganize names. Layering changes precedence semantics and is a visual migration.
 3. Avoid increasing specificity to win a local conflict. Fix ownership first. During a compatibility cutover, matching an existing selector's specificity is acceptable if it lets the later semantic owner win without adding `!important`; then delete the old copy when proven safe.
-4. Treat `!important` as compatibility debt, not a normal authoring tool.
+4. Treat `!important` as compatibility debt, not a normal authoring tool. Fix semantic/state/selector ownership first; the audit freezes the remaining per-file debt so it cannot spread.
 5. Never hide root overflow to make a broken child pass.
 6. Responsive rules belong to the component/system whose composition changes.
 
@@ -162,6 +164,7 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants;
 - the canonical 6 / 10 / 16px radius tokens remain defined, and frozen non-canonical single-pixel radius debt cannot spread to a new file/value or increase in count.
 - selectors that explicitly encode product state contain no raw hex colors; they must use theme-aware semantic tokens instead.
+- production `.css` / `.astro` `!important` compatibility debt cannot appear in a new file or increase above the frozen per-file baseline.
 
 `src/lib/globalShellOwnership.test.ts` independently enforces page isolation, owner ordering, breakpoint ownership, retired Header debt, and the frozen remaining selector set.
 

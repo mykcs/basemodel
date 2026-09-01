@@ -52,6 +52,7 @@ Detailed owners: `css-architecture.md`, `rendering-and-performance-policy.md`.
 - Heading ownership follows component ownership: the page root owns the single `<h1>`; embeddable components use lower ranks or an explicit heading-level prop. `npm run build` audits generated static HTML so duplicate page-level headings fail before deployment.
 - Do not add new global files whose purpose is effectively “fix”, “final”, “hardening”, “closeout” or “refinement”.
 - Do not increase specificity or add `!important` as the default cascade strategy; repair ownership first.
+- Do not use HTML `hidden` as an implementation flag for content that is still intentionally visible. A visible preview/locked state needs its own state attribute/class plus keyboard/ARIA behavior; reserve `hidden` for content that should not be presented.
 - Do not mass-delete old CSS because it is old. Retire compatibility copies property-by-property after the canonical owner is browser-proven.
 - Delete duplicate helpers/formatters/state decoders only after repository evidence proves a canonical replacement exists.
 

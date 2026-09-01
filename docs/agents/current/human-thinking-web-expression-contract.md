@@ -186,6 +186,7 @@ The visual hierarchy must match the conceptual hierarchy.
 - Preserve semantic reading order in the DOM.
 - Use headings as a real outline, not as font-size controls.
 - **One rendered page owns one main heading.** The route or page-root component should own the single `<h1>`. A reusable component that can be embedded inside another page must not unconditionally render another `<h1>`; either use the appropriate lower heading rank or expose an explicit heading-level contract. Hiding a duplicate heading with CSS does not repair the semantic outline.
+- **`hidden` means “do not present this content now,” not “show a faded preview.”** A future/locked route that remains visible must use an explicit preview/disabled state. Do not put `hidden` on it and then use CSS (especially `!important`) to force it back onto the screen. Visible-but-unavailable controls must also be removed from ordinary keyboard activation and expose the unavailable state semantically.
 - Tables must remain tables when row/column alignment is essential.
 - Long Chinese and English strings, paths, SHAs, model names, and URLs must wrap or scroll locally.
 - All user-facing changes also trigger `ui-change-visual-acceptance-gate.md` for theme, viewport, overlap, clipping, and interaction verification.

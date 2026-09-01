@@ -38,6 +38,7 @@ const shellOwnerPath = 'src/styles/components/global-shell.css';
 const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
 const radiusTokensPath = 'src/styles/tokens.css';
 const radiusDebtBaselinePath = 'scripts/css-radius-debt-baseline.json';
+const importantDebtBaselinePath = 'scripts/css-important-debt-baseline.json';
 
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
@@ -179,6 +180,37 @@ if (observedRadiusDebtTotal > radiusBaseline.baseline_total) {
   fail(`non-canonical radius debt increased from ${radiusBaseline.baseline_total} to ${observedRadiusDebtTotal}`);
 }
 
+type ImportantDebtBaseline = {
+  schema: string;
+  baseline_total: number;
+  debt: Record<string, number>;
+};
+const importantBaseline = JSON.parse(read(importantDebtBaselinePath)) as ImportantDebtBaseline;
+if (importantBaseline.schema !== 'basemodel.css-important-debt.v1') fail(`${importantDebtBaselinePath} has an unsupported schema`);
+const importantPattern = /!\s*important\b/gi;
+const stripImportantComments = (source: string) => source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
+const observedImportantDebt: Record<string, number> = {};
+for (const path of walk(join(root, 'src'))) {
+  if (!path.endsWith('.css') && !path.endsWith('.astro')) continue;
+  const source = stripImportantComments(readFileSync(path, 'utf8'));
+  const count = [...source.matchAll(importantPattern)].length;
+  if (count === 0) continue;
+  const repoPath = relative(root, path).replaceAll('\\', '/');
+  const baselineCount = importantBaseline.debt[repoPath];
+  if (baselineCount === undefined) {
+    fail(`${repoPath} introduces !important outside the frozen compatibility-debt baseline. Fix selector/state ownership instead.`);
+  }
+  const frozenCount = baselineCount ?? -1;
+  if (count > frozenCount) {
+    fail(`${repoPath} increases frozen !important debt from ${frozenCount} to ${count}. Compatibility debt may only decrease.`);
+  }
+  observedImportantDebt[repoPath] = count;
+}
+const observedImportantDebtTotal = Object.values(observedImportantDebt).reduce((sum, count) => sum + count, 0);
+if (observedImportantDebtTotal > importantBaseline.baseline_total) {
+  fail(`!important compatibility debt increased from ${importantBaseline.baseline_total} to ${observedImportantDebtTotal}`);
+}
+
 // State colors are semantic product language, not a per-component palette. Raw
 // hex values inside state selectors bypass light/dark theme pairing and let
 // visually equivalent states drift into unrelated reds, ambers, and greens.
@@ -282,4 +314,5 @@ console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
 console.log(`  radius system: 6/10/16px tokens; legacy non-canonical debt ${observedRadiusDebtTotal}/${radiusBaseline.baseline_total} and may only decrease`);
 console.log('  state colors: semantic selectors contain zero raw hex colors');
+console.log(`  !important compatibility debt: ${observedImportantDebtTotal}/${importantBaseline.baseline_total} and may only decrease`);
 console.log('  Tailwind migration: not justified by the current ownership evidence');
