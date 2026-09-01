@@ -27,7 +27,7 @@ const stories = [
     eyebrow: t('历史结局 · 3B / self','HISTORICAL OUTCOME · 3B / SELF'),
     title: t('3B 只靠自己：旧 Stage 2 完成了，但没有继续更新参数','3B on self experience: old Stage 2 completed without further parameter updates'),
     summary: t('Stage 1 没跨过当时的启动条件；旧 Stage 2 后来虽然出现成功轨迹，逐个 256 窗口判断仍然让更新次数保持为 0。','Stage 1 did not cross the historical start gate. Old Stage 2 later produced successful trajectories, but per-window gating still kept parameter updates at zero.'),
-    facts: [t('Stage 1：4 条可训练成功轨迹，只来自 1 个重复成功任务','Stage 1: 4 trainable successes from only 1 repeatedly successful task'), t('旧 Stage 2：20,480 次尝试，138 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 138 trainable exact successes, 0 updates'), t('最终 128 题：Task Score ×100 = 1.71；完整成功 1/128','Final 128 tasks: Task Score ×100 = 1.71; exact success 1/128')],
+    facts: [t('Stage 1：4 条可训练成功轨迹，只来自 1 个重复成功任务','Stage 1: 4 trainable successes from only 1 repeatedly successful task'), t('旧 Stage 2：最好一批只有 2 / 8 个重复成功任务；20,480 次尝试、138 条可训练完整成功，仍是 0 次更新','Old Stage 2: the best batch reached only 2 / 8 repeatedly successful tasks; 20,480 attempts and 138 trainable exact successes still produced 0 updates'), t('最终 128 题：Task Score ×100 = 1.71；完整成功 1/128','Final 128 tasks: Task Score ×100 = 1.71; exact success 1/128')],
     href: links.old3bSelf,
   },
   {
@@ -35,7 +35,7 @@ const stories = [
     eyebrow: t('历史结局 · 7B / self','HISTORICAL OUTCOME · 7B / SELF'),
     title: t('7B 只靠自己：Stage 1 学到了东西，旧 Stage 2 却停在原地','7B on self experience: Stage 1 learned, while old Stage 2 stayed frozen'),
     summary: t('Stage 1 实际做了 8 次 SD-LoRA 更新；旧 Stage 2 又收集了大量成功轨迹，但 256-window 门槛让后续参数更新仍然为 0。','Stage 1 made eight real SD-LoRA updates. Old Stage 2 then collected many successful trajectories, but the 256-window rule still yielded zero further parameter updates.'),
-    facts: [t('Stage 1：8 次参数更新','Stage 1: 8 parameter updates'), t('旧 Stage 2：20,480 次尝试，797 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 797 trainable exact successes, 0 updates'), t('固定 128 题平均分：13.33 → 25.66；完整成功 3 → 4','Fixed 128-task mean score: 13.33 → 25.66; exact success 3 → 4')],
+    facts: [t('Stage 1：8 次参数更新','Stage 1: 8 parameter updates'), t('旧 Stage 2：最好一批只有 7 / 8 个重复成功任务；20,480 次尝试、797 条可训练完整成功，仍是 0 次更新','Old Stage 2: the best batch reached only 7 / 8 repeatedly successful tasks; 20,480 attempts and 797 trainable exact successes still produced 0 updates'), t('固定 128 题平均分：13.33 → 25.66；完整成功 3 → 4','Fixed 128-task mean score: 13.33 → 25.66; exact success 3 → 4')],
     href: links.old7bSelf,
   },
   {
@@ -43,7 +43,7 @@ const stories = [
     eyebrow: t('历史结局 · 3B / MiniMax','HISTORICAL OUTCOME · 3B / MINIMAX'),
     title: t('3B + MiniMax：启动训练做了 8 次更新，但旧 Stage 2 在 74.58% 时停止','3B + MiniMax: eight bootstrap updates, then the old Stage 2 stopped at 74.58%'),
     summary: t('MiniMax 的任务后分析帮助 3B 完成了启动训练；进入旧 Stage 2 后仍然难以在单个 256 窗口里凑齐旧门槛，实验后来主动停止。','Post-episode MiniMax analysis helped 3B complete bootstrap training. In the old Stage 2, the model still rarely met the historical per-window gate, and the run was explicitly stopped.'),
-    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：59 个完整批次 + 第 60 批 171 条 partial；74.58% 时停止','Old Stage 2: 59 complete batches + 171 partial attempts in batch 60; stopped at 74.58%'), t('没有封存 final eval，不能把“未运行”写成 0 分','No sealed final evaluation; “not run” must not be reported as zero')],
+    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：最好一批只有 1 / 8 个重复成功任务；59 个完整批次全部 0 次更新，第 60 批跑到 171 条时停止','Old Stage 2: the best batch reached only 1 / 8 repeatedly successful tasks; all 59 complete batches had 0 updates, and batch 60 stopped after 171 attempts'), t('没有封存 final eval，不能把“未运行”写成 0 分','No sealed final evaluation; “not run” must not be reported as zero')],
     href: links.old3bMinimax,
   },
   {
@@ -51,7 +51,7 @@ const stories = [
     eyebrow: t('历史结局 · 7B / MiniMax','HISTORICAL OUTCOME · 7B / MINIMAX'),
     title: t('7B + MiniMax：启动训练完成 8 次更新，旧 Stage 2 仍然 0 次更新','7B + MiniMax: eight bootstrap updates, but zero updates in the old Stage 2'),
     summary: t('旧 Stage 2 完整跑完 80 个批次；成功轨迹存在，但旧的逐批门槛始终没有让模型继续更新。','The old Stage 2 completed all 80 batches. Successful trajectories existed, but the historical per-batch gate never allowed another update.'),
-    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：20,480 次尝试，592 条可训练完整成功，0 次更新','Old Stage 2: 20,480 attempts, 592 trainable exact successes, 0 updates'), t('最终 128 题：Task Score ×100 = 16.94；完整成功 0/128','Final 128 tasks: Task Score ×100 = 16.94; exact success 0/128')],
+    facts: [t('启动训练：8 次参数更新','Bootstrap training: 8 parameter updates'), t('旧 Stage 2：最好一批只有 7 / 8 个重复成功任务；20,480 次尝试、592 条可训练完整成功，仍是 0 次更新','Old Stage 2: the best batch reached only 7 / 8 repeatedly successful tasks; 20,480 attempts and 592 trainable exact successes still produced 0 updates'), t('最终 128 题：Task Score ×100 = 16.94；完整成功 0/128','Final 128 tasks: Task Score ×100 = 16.94; exact success 0/128')],
     href: links.old7bMinimax,
   },
   {
@@ -126,30 +126,35 @@ const stories = [
         </div>
         <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
         <div class="map-column" data-bug-branch="old" hidden data-route-preview>
-          <span class="map-column__label map-column__label--bug">BUG GATE</span>
-          <button class="rogue-node rogue-node--bug" type="button" data-bug="legacy-gate" aria-pressed="false"><i>!</i><b>{t('发现 Stage 2 设计错误','Stage-2 design bug found')}</b><small>{t('256-window + 旧 gate 被错误当成长期学习规则','256-window + old gate was incorrectly promoted into a long-term learning rule')}</small><em>{t('必须处理才能继续','Must resolve to continue')}</em></button>
+          <span class="map-column__label map-column__label--bug">02 · {t('历史结局 · 被自己的门槛卡住','HISTORICAL OUTCOME · BLOCKED BY OUR OWN GATE')}</span>
+          <button class="rogue-node rogue-node--bug" type="button" data-bug="legacy-gate" aria-pressed="false"><i>!</i><b>{t('我们要求至少 8 个重复成功任务；四条历史路线里最好一块也只有 7 个','We required at least 8 repeatedly successful tasks; across the four historical routes the best block still had only 7')}</b><small>{t('每个 256 次任务尝试的数据块都重新统计；7 < 8 时，这一块就不允许更新参数。','Each 256-attempt block was counted from scratch; when 7 < 8, that block was not allowed to update parameters.')}</small><em>{t('结果：旧 Stage 2 没有任何完整数据块触发参数更新','Outcome: no complete block in the old Stage 2 triggered a parameter update')}</em></button>
+          <button class="rogue-node rogue-node--ending" type="button" data-ending-from-old><i>◎</i><b>{t('查看这条 arm 的 Stage-2 0-update 结局','Open this arm’s Stage-2 zero-update outcome')}</b><small>{t('下面展开 3B / 7B、self / MiniMax 的具体成功数、7/8（或更低）与 0 次更新','Expand the exact 3B / 7B, self / MiniMax counts, 7/8 (or lower), and zero updates below')}</small></button>
         </div>
         <div class="map-connector" data-old-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
         <div class="map-column" data-old-successor hidden data-route-preview>
-          <span class="map-column__label">{t('修复后解锁','UNLOCKED AFTER FIX')}</span>
-          <button class="rogue-node rogue-node--repair" type="button" data-repair="legacy-gate"><i>✓</i><b>{t('修正学习合同','Repair the learning contract')}</b><small>{t('封存旧 run；successor 使用新的 corrected Stage 1','Seal the old run; successors use the new corrected Stage 1')}</small></button>
-          <button class="rogue-node rogue-node--ending" type="button" data-ending-from-old hidden data-route-preview-leaf><i>◎</i><b>{t('查看这条历史线的结局','Open this historical outcome')}</b><small>{t('不跳页，在下面展开','Expands below without navigation')}</small></button>
+          <span class="map-column__label">03 · {t('要继续，必须先改规则','TO CONTINUE, REPAIR THE RULE')}</span>
+          <button class="rogue-node rogue-node--repair" type="button" data-repair="legacy-gate"><i>✓</i><b>{t('修正学习合同，只解锁新的 successor 路线','Repair the learning contract to unlock a new successor line')}</b><small>{t('旧 run 的 0-update 结局原样保留；Ceiling-1.0 / OpenEVO 2.0 是从 corrected Stage 1 重新分出的新路线，不是旧 run 自动接着跑。','The old zero-update outcome stays intact; Ceiling-1.0 / OpenEVO 2.0 fork again from corrected Stage 1 rather than automatically continuing this old run.')}</small></button>
         </div>
 
-        <div class="map-column" data-stage2-branch="current" hidden>
-          <span class="map-column__label">01 · {t('选择 Stage 2','CHOOSE STAGE 2')}</span>
-          <div class="node-stack">
-            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false"><i>◇</i><b>Ceiling-1.0</b><small>{t('128 条一轮，共同证据','128 attempts per evidence round')}</small></button>
-            <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
+        <div class="current-route-board" data-stage2-branch="current" hidden>
+          <div class="current-route-head" aria-hidden="true">
+            <span class="map-column__label">01 · {t('选择 Stage 2','CHOOSE STAGE 2')}</span>
+            <span class="map-column__label">02 · {t('各自进入不同的后续节点','EACH ROUTE HAS ITS OWN NEXT NODE')}</span>
           </div>
-        </div>
-        <div class="map-connector" data-current-map-arrow hidden data-route-preview-arrow aria-hidden="true">→</div>
-        <div class="map-column" data-current-outcome hidden data-route-preview-outcome>
-          <span class="map-column__label">02 · {t('当前节点','CURRENT NODE')}</span>
-          <button class="rogue-node rogue-node--ending" type="button" data-ending="ceiling" hidden data-route-preview-leaf><i>◎</i><b>{t('Ceiling-1.0 当前运行线','Ceiling-1.0 current run')}</b><small>{t('查看当前结局','Open current outcome')}</small></button>
-          <div data-evo2-gate hidden data-route-preview-branch>
-            <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：发现新的接口问题','Harness 2.0 Mini Study: a new interface problem was found')}</b><small>{t('Mechanical PASS，但行为回退；formal activation HOLD','Mechanical PASS, but behavioral regression; formal activation HOLD')}</small><em>{t('当前就停在这个 Bug Gate','The current route stops at this Bug Gate')}</em></button>
-            <button class="rogue-node rogue-node--locked" type="button" disabled><i>🔒</i><b>Harness 2.0.1</b><small>{t('修复完成并重新 qualification 后解锁','Unlocks after repair and requalification')}</small></button>
+          <div class="current-route-row" data-current-route="ceiling">
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false"><i>◇</i><b>Ceiling-1.0</b><small>{t('128 条一轮，共同证据','128 attempts per evidence round')}</small></button>
+            <span class="map-connector current-route-arrow" data-current-map-arrow="ceiling" hidden data-route-preview-arrow aria-hidden="true">→</span>
+            <div class="current-route-outcome" data-current-outcome-slot="ceiling" hidden data-route-preview-outcome>
+              <button class="rogue-node rogue-node--ending" type="button" data-ending="ceiling"><i>◎</i><b>{t('Ceiling-1.0 当前运行线','Ceiling-1.0 current run')}</b><small>{t('只属于 Ceiling-1.0 这条路线','Belongs only to the Ceiling-1.0 route')}</small></button>
+            </div>
+          </div>
+          <div class="current-route-row" data-current-route="evo2">
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="evo2" aria-pressed="false"><i>◇</i><b>OpenEVO 2.0</b><small>{t('重做 experience harness','Redesign the experience harness')}</small></button>
+            <span class="map-connector current-route-arrow" data-current-map-arrow="evo2" hidden data-route-preview-arrow aria-hidden="true">→</span>
+            <div class="current-route-outcome" data-current-outcome-slot="evo2" data-evo2-gate hidden data-route-preview-outcome>
+              <button class="rogue-node rogue-node--bug rogue-node--bug-open" type="button" data-ending="evo2"><i>!</i><b>{t('Harness 2.0 Mini Study：发现新的接口问题','Harness 2.0 Mini Study: a new interface problem was found')}</b><small>{t('Mechanical PASS，但行为回退；formal activation HOLD','Mechanical PASS, but behavioral regression; formal activation HOLD')}</small><em>{t('OpenEVO 2.0 只走到这里，没有进入 Ceiling-1.0 的结局','OpenEVO 2.0 stops here; it does not enter the Ceiling-1.0 outcome')}</em></button>
+              <button class="rogue-node rogue-node--locked" type="button" disabled><i>🔒</i><b>Harness 2.0.1</b><small>{t('修复完成并重新 qualification 后解锁','Unlocks after repair and requalification')}</small></button>
+            </div>
           </div>
         </div>
       </div>
@@ -205,10 +210,8 @@ const stories = [
     const resetStage2Map = () => {
       state.stage2 = ''; state.bugResolved = false;
       pressed('[data-stage2]', null); pressed('[data-bug]', null);
-      all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
-      const oldEnding = one<HTMLButtonElement>('[data-ending-from-old]'); if (oldEnding) oldEnding.hidden = true;
-      const ceiling = one<HTMLButtonElement>('[data-ending="ceiling"]'); if (ceiling) ceiling.hidden = true;
-      const evo = one<HTMLElement>('[data-evo2-gate]'); if (evo) evo.hidden = true;
+      all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome-slot],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
+      all<HTMLElement>('[data-repair="legacy-gate"]').forEach((el) => el.classList.remove('rogue-node--resolved'));
       hideStories(); updatePath();
     };
 
@@ -244,25 +247,22 @@ const stories = [
         const bug = one<HTMLElement>('[data-bug-branch="old"]'); if (bug) bug.hidden = false;
         const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = true;
       } else {
-        const arrow = one<HTMLElement>('[data-current-map-arrow]'); if (arrow) arrow.hidden = false;
-        const outcome = one<HTMLElement>('[data-current-outcome]'); if (outcome) outcome.hidden = false;
-        const ceiling = one<HTMLButtonElement>('[data-ending="ceiling"]'); if (ceiling) ceiling.hidden = state.stage2 !== 'ceiling';
-        const evo = one<HTMLElement>('[data-evo2-gate]'); if (evo) evo.hidden = state.stage2 !== 'evo2';
+        all<HTMLElement>('[data-current-map-arrow],[data-current-outcome-slot]').forEach((el) => el.hidden = true);
+        const arrow = one<HTMLElement>(`[data-current-map-arrow="${state.stage2}"]`); if (arrow) arrow.hidden = false;
+        const outcome = one<HTMLElement>(`[data-current-outcome-slot="${state.stage2}"]`); if (outcome) outcome.hidden = false;
       }
     }));
 
     one<HTMLButtonElement>('[data-bug="legacy-gate"]')?.addEventListener('click', (event) => {
       state.bugResolved = false; pressed('[data-bug]', event.currentTarget as HTMLElement);
       const successor = one<HTMLElement>('[data-old-successor]'); if (successor) successor.hidden = false;
-      const ending = one<HTMLButtonElement>('[data-ending-from-old]'); if (ending) ending.hidden = true;
     });
 
     one<HTMLButtonElement>('[data-repair="legacy-gate"]')?.addEventListener('click', (event) => {
       state.bugResolved = true; (event.currentTarget as HTMLElement).classList.add('rogue-node--resolved');
-      const ending = one<HTMLButtonElement>('[data-ending-from-old]'); if (ending) ending.hidden = false;
     });
 
-    one<HTMLButtonElement>('[data-ending-from-old]')?.addEventListener('click', () => { if (state.bugResolved && state.analysis) showStory(state.analysis); });
+    one<HTMLButtonElement>('[data-ending-from-old]')?.addEventListener('click', () => { if (state.analysis) showStory(state.analysis); });
     all<HTMLButtonElement>('[data-ending]').forEach((button) => button.addEventListener('click', () => { const id = button.dataset.ending || ''; if (id) showStory(id); }));
 
     one<HTMLButtonElement>('[data-back-stage1]')?.addEventListener('click', () => {
@@ -345,10 +345,8 @@ const stories = [
 .floor[data-floor="stage1"] [data-route-preview-branch][hidden]{display:block!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
 .floor[data-floor="stage2"][data-route="old"] [data-old-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
 .floor[data-floor="stage2"][data-route="old"] [data-bug-branch="old"][hidden],.floor[data-floor="stage2"][data-route="old"] [data-old-successor][hidden]{display:flex!important;opacity:.32;pointer-events:none;filter:saturate(.45)}
-.floor[data-floor="stage2"][data-route="old"] [data-ending-from-old][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
-.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][hidden]{display:grid!important;opacity:.28;pointer-events:none}
-.floor[data-floor="stage2"][data-route="current"] [data-current-outcome][hidden]{display:flex!important;opacity:1;pointer-events:none}
-.floor[data-floor="stage2"][data-route="current"] [data-evo2-gate][hidden],.floor[data-floor="stage2"][data-route="current"] [data-ending="ceiling"][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
+.floor[data-floor="stage2"][data-route="current"] [data-current-map-arrow][hidden]{display:grid!important;opacity:.22;pointer-events:none}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot][hidden]{display:block!important;opacity:.28;pointer-events:none;filter:saturate(.4)}
 .rogue-run{padding:.95rem 0 .85rem}
 .floor{padding:.9rem;border:1px solid var(--color-border);border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 2.5%,var(--color-bg)),var(--color-bg))}
 .floor--active{box-shadow:0 14px 36px color-mix(in srgb,var(--color-text) 5%,transparent)}
@@ -357,6 +355,10 @@ const stories = [
 .floor__header p{margin:0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
 .floor__map{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1.2fr) 34px minmax(0,.82fr);gap:.65rem;align-items:center;padding:1rem .15rem .2rem;min-height:250px}
 .floor__map--stage2{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr) 34px minmax(0,1.05fr)}
+.current-route-board{grid-column:1/-1;display:grid;gap:.62rem;min-width:0;width:100%}
+.current-route-head,.current-route-row{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1.25fr);gap:.65rem;align-items:center;min-width:0}
+.current-route-head{align-items:end}.current-route-head>span:first-child{grid-column:1}.current-route-head>span:last-child{grid-column:3}
+.current-route-arrow{min-height:64px}.current-route-outcome{display:grid;gap:.46rem;min-width:0}
 .map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:#c34a4a}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:13px;background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
 .rogue-node>i{position:absolute;left:.78rem;top:.82rem;display:grid;place-items:center;width:1.28rem;height:1.28rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal}.rogue-node b,.rogue-node small,.rogue-node em{display:block}.rogue-node b{font-size:.79rem;line-height:1.35}.rogue-node small{margin-top:.16rem;color:var(--color-text-muted);font-size:.67rem;line-height:1.42}.rogue-node em{margin-top:.36rem;color:#c34a4a;font-size:.62rem;font-style:normal;font-weight:760}
@@ -367,6 +369,7 @@ const stories = [
 
 @media(max-width:900px){
   .floor__header{grid-template-columns:1fr}.floor__map,.floor__map--stage2{grid-template-columns:1fr;gap:.55rem;min-height:0}.map-connector{height:1.1rem;rotate:90deg}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .current-route-head{display:none}.current-route-row{grid-template-columns:1fr;gap:.42rem;padding:.55rem 0;border-top:1px solid var(--color-border)}.current-route-row:first-of-type{border-top:0;padding-top:0}.current-route-arrow{min-height:.9rem;height:.9rem}
 }
 @media(max-width:520px){
   .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:14px}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid{grid-template-columns:1fr}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}

@@ -45,29 +45,86 @@ test('Stage 1 is floor one and entering Stage 2 changes the map', async ({ page 
   await expect(tree.locator('[data-floor="stage2"]')).toBeHidden();
   await enterCurrentStage2(page);
 });
-test('historical Stage 2 cannot reach its ending before the bug gate is repaired', async ({ page }) => {
+test('historical Stage 2 shows its zero-update outcome before the repair gate', async ({ page }) => {
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   const original = page.url();
   const tree = page.getByTestId('openevo-capability-experiment-tree');
   await tree.locator('[data-stage1="old"]').click();
-  await tree.locator('[data-analysis="old-3b-self"]').click();
+  await tree.locator('[data-analysis="old-7b-self"]').click();
   await tree.locator('[data-enter-stage2]').click();
   await tree.locator('[data-stage2="legacy"]').click();
-  await expect(tree.locator('[data-bug="legacy-gate"]')).toBeVisible();
-  await expect(tree.locator('[data-ending-from-old]')).toBeVisible();
-  await expect(tree.locator('[data-ending-from-old]')).toHaveAttribute('hidden', '');
-  expect(Number(await tree.locator('[data-ending-from-old]').evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(0.5);
-  await tree.locator('[data-bug="legacy-gate"]').click();
-  await expect(tree.locator('[data-repair="legacy-gate"]')).toBeVisible();
-  await expect(tree.locator('[data-ending-from-old]')).toBeVisible();
-  await expect(tree.locator('[data-ending-from-old]')).toHaveAttribute('hidden', '');
-  await tree.locator('[data-repair="legacy-gate"]').click();
-  await expect(tree.locator('[data-ending-from-old]')).toBeVisible();
-  await expect(tree.locator('[data-ending-from-old]')).not.toHaveAttribute('hidden', '');
-  await expect(tree.locator('[data-ending-from-old]')).toHaveCSS('opacity', '1');
-  await tree.locator('[data-ending-from-old]').click();
-  await expect(tree.locator('[data-story="old-3b-self"]')).toBeVisible();
+
+  const bug = tree.locator('[data-bug="legacy-gate"]');
+  const outcome = tree.locator('[data-ending-from-old]');
+  const repairColumn = tree.locator('[data-old-successor]');
+  await expect(bug).toBeVisible();
+  await expect(bug).toContainText('至少 8 个重复成功任务');
+  await expect(bug).toContainText('7 < 8');
+  await expect(bug).toContainText('没有任何完整数据块触发参数更新');
+  await expect(outcome).toBeVisible();
+  await expect(outcome).not.toHaveAttribute('hidden', '');
+  await expect(repairColumn).toHaveAttribute('hidden', '');
+
+  // The historical result belongs to the failed run itself; it does not require repairing the rule first.
+  await outcome.click();
+  const story = tree.locator('[data-story="old-7b-self"]');
+  await expect(story).toBeVisible();
+  await expect(story).toContainText('7 / 8');
+  await expect(story).toContainText('797');
+  await expect(story).toContainText('0 次更新');
   expect(page.url()).toBe(original);
+
+  // Repairing the bug is a separate continuation action for successor designs.
+  await bug.click();
+  await expect(repairColumn).not.toHaveAttribute('hidden', '');
+  const repair = tree.locator('[data-repair="legacy-gate"]');
+  await repair.click();
+  await expect(repair).toHaveClass(/rogue-node--resolved/);
+});
+
+test('Ceiling-1.0 and OpenEVO 2.0 use separate arrows and separate next nodes', async ({ page }) => {
+  await page.goto(path, { waitUntil: 'domcontentloaded' });
+  const tree = await enterCurrentStage2(page);
+  const ceilingArrow = tree.locator('[data-current-map-arrow="ceiling"]');
+  const evo2Arrow = tree.locator('[data-current-map-arrow="evo2"]');
+  const ceilingOutcome = tree.locator('[data-current-outcome-slot="ceiling"]');
+  const evo2Outcome = tree.locator('[data-current-outcome-slot="evo2"]');
+
+  await expect(ceilingArrow).toHaveAttribute('hidden', '');
+  await expect(evo2Arrow).toHaveAttribute('hidden', '');
+  await expect(ceilingOutcome).toHaveAttribute('hidden', '');
+  await expect(evo2Outcome).toHaveAttribute('hidden', '');
+
+  const rowCenters = await tree.locator('[data-stage2-branch="current"]').evaluate((board) => {
+    const center = (el: Element | null) => {
+      if (!el) return Number.NaN;
+      const rect = el.getBoundingClientRect();
+      return rect.top + rect.height / 2;
+    };
+    return {
+      ceilingNode: center(board.querySelector('[data-stage2="ceiling"]')),
+      ceilingArrow: center(board.querySelector('[data-current-map-arrow="ceiling"]')),
+      evo2Node: center(board.querySelector('[data-stage2="evo2"]')),
+      evo2Arrow: center(board.querySelector('[data-current-map-arrow="evo2"]')),
+    };
+  });
+  expect(Math.abs(rowCenters.ceilingNode - rowCenters.ceilingArrow)).toBeLessThan(3);
+  expect(Math.abs(rowCenters.evo2Node - rowCenters.evo2Arrow)).toBeLessThan(3);
+  expect(Math.abs(rowCenters.ceilingArrow - rowCenters.evo2Arrow)).toBeGreaterThan(70);
+
+  await tree.locator('[data-stage2="ceiling"]').click();
+  await expect(ceilingArrow).not.toHaveAttribute('hidden', '');
+  await expect(evo2Arrow).toHaveAttribute('hidden', '');
+  await expect(ceilingOutcome).not.toHaveAttribute('hidden', '');
+  await expect(evo2Outcome).toHaveAttribute('hidden', '');
+  await expect(ceilingOutcome).toContainText('只属于 Ceiling-1.0 这条路线');
+
+  await tree.locator('[data-stage2="evo2"]').click();
+  await expect(ceilingArrow).toHaveAttribute('hidden', '');
+  await expect(evo2Arrow).not.toHaveAttribute('hidden', '');
+  await expect(ceilingOutcome).toHaveAttribute('hidden', '');
+  await expect(evo2Outcome).not.toHaveAttribute('hidden', '');
+  await expect(evo2Outcome).toContainText('没有进入 Ceiling-1.0 的结局');
 });
 
 test('OpenEVO 2.0 stops at a current bug gate and keeps 2.0.1 locked', async ({ page }) => {
