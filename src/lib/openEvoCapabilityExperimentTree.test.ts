@@ -21,11 +21,25 @@ describe('OpenEvo roguelike experiment tree', () => {
       expect(tree).toContain(`data-analysis="${arm}"`);
     }
   });
-  it('represents the historical Stage-2 design bug as a mandatory gate', () => {
+  it('shows the historical zero-update ending before the repair action', () => {
     expect(tree).toContain('data-bug="legacy-gate"');
-    expect(tree).toContain('必须处理才能继续');
-    expect(tree).toContain('data-repair="legacy-gate"');
-    expect(tree).toContain('data-ending-from-old hidden');
+    expect(tree).toContain('我们要求至少 8 个重复成功任务；四条历史路线里最好一块也只有 7 个');
+    expect(tree).toContain('7 < 8');
+    expect(tree).toContain('没有任何完整数据块触发参数更新');
+    expect(tree).toContain('data-ending-from-old');
+    expect(tree).not.toContain('data-ending-from-old hidden');
+    expect(tree.indexOf('data-ending-from-old')).toBeLessThan(tree.indexOf('data-repair="legacy-gate"'));
+    expect(tree).toContain('旧 run 的 0-update 结局原样保留');
+  });
+
+  it('gives Ceiling-1.0 and OpenEVO 2.0 separate arrows and destinations', () => {
+    expect(tree).toContain('data-current-map-arrow="ceiling"');
+    expect(tree).toContain('data-current-map-arrow="evo2"');
+    expect(tree).toContain('data-current-outcome-slot="ceiling"');
+    expect(tree).toContain('data-current-outcome-slot="evo2"');
+    expect(tree).toContain('各自进入不同的后续节点');
+    expect(tree).toContain('只属于 Ceiling-1.0 这条路线');
+    expect(tree).toContain('没有进入 Ceiling-1.0 的结局');
   });
 
   it('keeps Harness 2.0.1 locked because that repair is not closed yet', () => {
