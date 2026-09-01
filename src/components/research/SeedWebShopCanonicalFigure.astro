@@ -66,7 +66,7 @@ const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8
 
     <aside class="comparison-consequence">
       <strong>{t('这对公平比较意味着什么？','What does this mean for a fair comparison?')}</strong>
-      <p>{t('我们可以把 BASE 与 OpenEvo 放在同一套、由公开 SEED 代码规则生成并冻结的 128 个任务上，严格回答“OpenEvo 相对 BASE 有没有提升”。但不能把这个数字直接减去论文的 89.7 / 78.1%，解释成 OpenEvo 与 SEED 的方法差异。若要回答“OpenEvo vs SEED 谁更强”，最干净的做法是把 SEED 方法本身也重新放到同一套冻结任务、同一评测程序和匹配预算下运行。','We can place BASE and OpenEvo on the same frozen 128 tasks generated from the released SEED rules and strictly answer whether OpenEvo improves over BASE. We cannot subtract that number from the paper’s 89.7 / 78.1% and interpret the difference as a method effect. To answer “OpenEvo vs SEED”, the clean approach is to rerun the SEED method itself on the same frozen tasks, evaluator, and matched budget.')}</p>
+      <p>{t('我们可以把 BASE 与 OpenEvo 放在同一套、由公开 SEED 代码规则生成并冻结的 128 个任务上，严格回答“OpenEvo 相对 BASE 有没有提升”。但不能把这个数字直接减去论文的 89.7 / 78.1%，解释成 OpenEvo 与 SEED 的方法差异。若要回答“OpenEvo vs SEED 谁更强”，需要把 SEED 方法本身也重新放到同一套冻结任务、同一评测程序和匹配预算下运行，才能把方法差异与评测口径差异分开。','We can place BASE and OpenEvo on the same frozen 128 tasks generated from the released SEED rules and strictly answer whether OpenEvo improves over BASE. We cannot subtract that number from the paper’s 89.7 / 78.1% and interpret the difference as a method effect. To answer “OpenEvo vs SEED”, the SEED method itself needs to be rerun on the same frozen tasks, evaluator, and matched budget so method differences are not conflated with evaluation-protocol differences.')}</p>
     </aside>
 
     <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')} data-layout-anomaly-ignore>

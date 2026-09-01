@@ -12,10 +12,11 @@ for (const path of routes) {
 
     const root = page.getByTestId('openevo-2-strategy');
     await expect(root).toBeVisible();
-    await expect(root.getByRole('heading', { name: 'OpenEVO 2.0', exact: true })).toBeVisible();
+    await expect(root.locator('h1')).toContainText(/Harness 2\.0\.1/);
     await expect(page.getByTestId('stage2-strategy-selector')).toBeVisible();
-    await expect(root).toContainText('Context Governor');
-    await expect(root).toContainText('Telemetry v2');
+    await expect(root).toContainText(/候选机制|candidate mechanism/);
+    await expect(root).toContainText(/不同类型的失败|different failures/);
+    await expect(root.locator('a[href="https://github.com/jinyangwu/SEED"]')).toBeVisible();
     await expect(root).not.toContainText('Ceiling-1.0 已暂停');
   });
 }
