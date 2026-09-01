@@ -141,11 +141,77 @@ const stories = [
             <span class="map-column__label">01 · {t('选择 Stage 2','CHOOSE STAGE 2')}</span>
             <span class="map-column__label">02 · {t('各自进入不同的后续节点','EACH ROUTE HAS ITS OWN NEXT NODE')}</span>
           </div>
-          <div class="current-route-row" data-current-route="ceiling">
-            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false"><i>◇</i><b>Ceiling-1.0</b><small>{t('128 条一轮，共同证据','128 attempts per evidence round')}</small></button>
+          <div class="current-route-row current-route-row--ceiling" data-current-route="ceiling">
+            <button class="rogue-node rogue-node--current" type="button" data-stage2="ceiling" aria-pressed="false" data-node-type="mainline" data-node-state="current"><i>◇</i><b>Ceiling-1.0</b><small>{t('每 128 次任务整理一轮经验','One learning round per 128 task attempts')}</small></button>
             <span class="map-connector current-route-arrow" data-current-map-arrow="ceiling" hidden data-route-preview-arrow aria-hidden="true">→</span>
-            <div class="current-route-outcome" data-current-outcome-slot="ceiling" hidden data-route-preview-outcome>
-              <button class="rogue-node rogue-node--ending" type="button" data-ending="ceiling"><i>◎</i><b>{t('Ceiling-1.0 当前运行线','Ceiling-1.0 current run')}</b><small>{t('只属于 Ceiling-1.0 这条路线','Belongs only to the Ceiling-1.0 route')}</small></button>
+            <div class="current-route-outcome current-route-outcome--ceiling" data-current-outcome-slot="ceiling" hidden data-route-preview-outcome>
+              <div class="ceiling-lineage" data-ceiling-lineage>
+                <div class="ceiling-lineage__spine" aria-label={t('Ceiling-1.0 当前主线','Current Ceiling-1.0 mainline')}>
+                  <div class="lineage-node lineage-node--amendment" data-node-type="scientific-amendment" data-node-state="current">
+                    <strong>{t('放宽参数更新次数','Allow more parameter updates')}</strong>
+                    <small>{t('不再固定最多 64 次','No longer capped at 64 updates')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="amendment" aria-expanded="false" aria-label={t('了解“放宽参数更新次数”','Learn about allowing more parameter updates')}>+</button>
+                  </div>
+                  <span class="lineage-spine" aria-hidden="true"></span>
+                  <div class="ceiling-lineage__run-stack">
+                    <div class="lineage-node lineage-node--mainline" data-node-type="mainline" data-node-state="current">
+                      <strong>{t('继续 7B 训练','Continue 7B training')}</strong>
+                      <small>{t('沿用同一实验和预算','Same experiment and budget continue')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="run" aria-expanded="false" aria-label={t('了解“继续 7B 训练”','Learn about continuing 7B training')}>+</button>
+                    </div>
+                    <div class="lineage-node lineage-node--fix" data-node-type="engineering-fix" data-node-state="resolved">
+                      <strong>{t('修复训练运行问题','Fix training-run issues')}</strong>
+                      <small>{t('修运行问题，不改实验规则','Fix runtime issues without changing experiment rules')}</small>
+                      <button class="lineage-node__expand" type="button" data-lineage-detail="fixes" aria-expanded="false" aria-label={t('了解“修复训练运行问题”','Learn about the training-run fixes')}>+</button>
+                    </div>
+                  </div>
+                  <span class="lineage-spine" aria-hidden="true"></span>
+                  <div class="lineage-node lineage-node--result" data-node-type="mainline" data-node-state="current">
+                    <strong>{t('7B 当前进度','Current 7B progress')}</strong>
+                    <small>{t('训练仍在继续','Training is still continuing')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="result" aria-expanded="false" aria-label={t('了解“7B 当前进度”','Learn about current 7B progress')}>+</button>
+                  </div>
+                  <span class="lineage-spine lineage-spine--future" aria-hidden="true"></span>
+                  <div class="lineage-node lineage-node--future" data-node-type="scientific-amendment" data-node-state="future">
+                    <strong>{t('以后可能压缩已积累的参数更新','Accumulated parameter updates may be compressed later')}</strong>
+                    <small>{t('目前没有启用','Not active now')}</small>
+                    <button class="lineage-node__expand" type="button" data-lineage-detail="future" aria-expanded="false" aria-label={t('了解“以后可能压缩已积累的参数更新”','Learn about possible future compression of accumulated parameter updates')}>+</button>
+                  </div>
+                </div>
+
+                <div class="lineage-detail-layer" data-lineage-detail-layer hidden>
+                  <button class="lineage-detail__backdrop" type="button" data-lineage-detail-close aria-label={t('关闭关卡说明','Close stage details')}></button>
+                  <aside class="lineage-detail__card" data-lineage-detail-card role="dialog" aria-modal="false" aria-labelledby="ceiling-lineage-detail-title" tabindex="-1">
+                    <button class="lineage-detail__close" type="button" data-lineage-detail-close aria-label={t('关闭','Close')}>×</button>
+                    <p>{t('关卡说明','STAGE NOTES')}</p>
+                    <h3 id="ceiling-lineage-detail-title" data-lineage-detail-title></h3>
+                    <div class="lineage-detail__content" data-lineage-detail-content></div>
+                  </aside>
+                </div>
+
+                <template data-lineage-detail-template="amendment">
+                  <p>{t('OpenEvo 原来最多允许这条 SD-LoRA 连续训练发生 64 次新的参数更新；每次更新都会新增一个 component。7B 完成第 64 次更新后仍有剩余训练预算，所以我们取消了这条独立的“最多 64 次”停止规则。','OpenEvo originally allowed at most 64 new SD-LoRA parameter updates in this continual stream; each formal update adds one component. The 7B run completed the 64th update with training budget still remaining, so we removed that independent “at most 64 updates” stop.')}</p>
+                  <dl><div><dt>{t('改变了什么','Changed')}</dt><dd>{t('参数更新不再固定最多 64 次；是否还能继续由总容量保护决定。','Parameter updates are no longer fixed at a maximum of 64; the remaining capacity guards decide whether another update is allowed.')}</dd></div><div><dt>{t('没有改变','Unchanged')}</dt><dd>{t('effective rank 仍不超过 4096；replay_capacity 仍是 64；总 rollout 预算、rank=8、任务与评测规则不变。','Effective rank still stays at or below 4096; replay_capacity remains 64; the rollout budget, rank=8, tasks, and evaluation rules stay unchanged.')}</dd></div></dl>
+                  <small>{t('技术记录：Scientific amendment · independent component stop removed.','Technical record: Scientific amendment · independent component stop removed.')}</small>
+                </template>
+                <template data-lineage-detail-template="run">
+                  <p>{t('这是同一条 Ceiling-1.0 7B 实验线继续训练，不是重新开一个实验。放宽参数更新次数以后，已经产生的轨迹和 checkpoint 都继续留在同一条 lineage 里。','This is the same Ceiling-1.0 7B lineage continuing forward, not a new experiment. After relaxing the parameter-update count limit, the existing trajectories and checkpoints remain in the same lineage.')}</p>
+                  <dl><div><dt>{t('继续什么','Continues')}</dt><dd>{t('同一个 20,480 次 Stage 2 任务预算。','The same 20,480-attempt Stage-2 budget.')}</dd></div><div><dt>{t('怎么保护','Guardrails')}</dt><dd>{t('effective rank、显存、磁盘和产物增长仍会在训练前检查。','Effective rank, VRAM, disk, and artifact growth are still checked before training.')}</dd></div></dl>
+                </template>
+                <template data-lineage-detail-template="fixes">
+                  <p>{t('这些不是新的实验阶段。它们只是让已经确定的实验路线能正确继续，并保证以后还能查清每一步从哪里来。','These are not new experiment stages. They keep the already-defined route running correctly and preserve enough history to audit what happened later.')}</p>
+                  <ul><li><b>{t('用对训练代码','Use the right training code')}</b><span>{t('内层训练进程一度读到了旧版代码；现在固定到正确版本。','The inner trainer once loaded an older code path; it is now pinned to the intended version.')}</span></li><li><b>{t('中断后还能接着跑','Resume after an interruption')}</b><span>{t('恢复检查不再只认某一个旧轮次。','Recovery checks no longer assume one hard-coded old round.')}</span></li><li><b>{t('把来历记完整','Keep the lineage complete')}</b><span>{t('旧执行版本也会进入最终记录，不会跑到最后才发现缺一段。','Earlier execution versions are included in the final provenance instead of failing only at the end.')}</span></li><li><b>{t('归档以后仍然认得','Recognize archived checkpoints')}</b><span>{t('已经安全搬到 Hugging Face 的旧 checkpoint，不会被误判成“文件丢了”。','Older checkpoints safely moved to Hugging Face are no longer mistaken for missing files.')}</span></li></ul>
+                  <small>{t('技术记录：trainer source · restart validator · execution provenance · HF cold archive。','Technical record: trainer source · restart validator · execution provenance · HF cold archive.')}</small>
+                </template>
+                <template data-lineage-detail-template="result">
+                  <p>{t('这个节点表示 7B 训练仍在继续，而且已经成功完成第 65 次这种参数更新，跨过了原来“最多 64 次”的停止线。地图不冻结实时轮次和分数，避免过几小时就变成旧数据。','This node means 7B training is still continuing and has already completed the 65th such parameter update, crossing the old 64-update stop. The map does not freeze live round counts or scores that would become stale within hours.')}</p>
+                  <button class="lineage-detail__action" type="button" data-open-ceiling-story>{t('在下面看这条线的结果与证据 →','Open this lineage result and evidence below →')}</button>
+                </template>
+                <template data-lineage-detail-template="future">
+                  <p>{t('以后可以研究把累积的低秩组件压得更紧，但这一步现在没有启用。它如果真的加入，会再次改变参数容量合同，所以必须单独讨论、单独验证。','A later study may compress accumulated low-rank components, but that is not active now. If introduced, it would change the parameter-capacity contract again and therefore needs its own discussion and qualification.')}</p>
+                  <small>{t('技术记录：rank reduction / compression · future scientific amendment。','Technical record: rank reduction / compression · future scientific amendment.')}</small>
+                </template>
+              </div>
             </div>
           </div>
           <div class="current-route-row" data-current-route="evo2">
@@ -208,7 +274,52 @@ const stories = [
       const target = one<HTMLElement>('[data-selected-path-text]');
       if (target) target.textContent = parts.join(' → ') || root.dataset.emptyPath || '';
     };
+    let activeLineageTrigger: HTMLButtonElement | null = null;
+    let bodyOverflowBeforeDialog = '';
+    const lineageLayer = one<HTMLElement>('[data-lineage-detail-layer]');
+    const lineageCard = one<HTMLElement>('[data-lineage-detail-card]');
+    const lineageTitle = one<HTMLElement>('[data-lineage-detail-title]');
+    const lineageContent = one<HTMLElement>('[data-lineage-detail-content]');
+    const lineageIsMobile = () => window.matchMedia('(max-width: 700px)').matches;
+    const closeLineageDetail = (restoreFocus = true) => {
+      if (!lineageLayer || lineageLayer.hidden) return;
+      lineageLayer.hidden = true;
+      all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.setAttribute('aria-expanded','false'));
+      if (lineageCard) { lineageCard.style.removeProperty('left'); lineageCard.style.removeProperty('top'); lineageCard.setAttribute('aria-modal','false'); }
+      document.body.style.overflow = bodyOverflowBeforeDialog;
+      const trigger = activeLineageTrigger; activeLineageTrigger = null;
+      if (restoreFocus) trigger?.focus();
+    };
+    const positionLineageDetail = (trigger: HTMLButtonElement) => {
+      if (!lineageLayer || !lineageCard) return;
+      if (lineageIsMobile()) {
+        lineageCard.style.removeProperty('left'); lineageCard.style.removeProperty('top');
+        lineageCard.setAttribute('aria-modal','true');
+        return;
+      }
+      lineageCard.setAttribute('aria-modal','false');
+      const lineage = one<HTMLElement>('[data-ceiling-lineage]');
+      const node = trigger.closest<HTMLElement>('.lineage-node');
+      if (!lineage || !node) return;
+      const parent = lineage.getBoundingClientRect(); const anchor = node.getBoundingClientRect(); const card = lineageCard.getBoundingClientRect();
+      const gap = 12; let left = anchor.right - parent.left + gap;
+      if (left + card.width > parent.width) left = Math.max(0, anchor.left - parent.left - card.width - gap);
+      const top = Math.max(0, anchor.top - parent.top + anchor.height / 2 - card.height / 2);
+      lineageCard.style.left = `${left}px`; lineageCard.style.top = `${top}px`;
+    };
+    const openLineageDetail = (trigger: HTMLButtonElement) => {
+      if (!lineageLayer || !lineageCard || !lineageTitle || !lineageContent) return;
+      const key = trigger.dataset.lineageDetail || ''; const template = one<HTMLTemplateElement>(`[data-lineage-detail-template="${key}"]`);
+      const node = trigger.closest<HTMLElement>('.lineage-node'); const title = node?.querySelector('strong')?.textContent?.trim() || '';
+      if (!template) return;
+      if (!lineageLayer.hidden && activeLineageTrigger === trigger) { closeLineageDetail(); return; }
+      all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.setAttribute('aria-expanded', button === trigger ? 'true' : 'false'));
+      activeLineageTrigger = trigger; lineageTitle.textContent = title; lineageContent.replaceChildren(template.content.cloneNode(true)); lineageLayer.hidden = false;
+      if (lineageIsMobile()) { bodyOverflowBeforeDialog = document.body.style.overflow; document.body.style.overflow = 'hidden'; }
+      requestAnimationFrame(() => { positionLineageDetail(trigger); lineageCard.focus(); });
+    };
     const resetStage2Map = () => {
+      closeLineageDetail(false);
       state.stage2 = ''; state.bugResolved = false;
       pressed('[data-stage2]', null); pressed('[data-bug]', null);
       all<HTMLElement>('[data-bug-branch],[data-old-successor],[data-current-outcome-slot],[data-current-map-arrow],[data-old-map-arrow]').forEach((el) => el.hidden = true);
@@ -253,6 +364,14 @@ const stories = [
         const outcome = one<HTMLElement>(`[data-current-outcome-slot="${state.stage2}"]`); if (outcome) outcome.hidden = false;
       }
     }));
+
+    all<HTMLButtonElement>('[data-lineage-detail]').forEach((button) => button.addEventListener('click', (event) => { event.stopPropagation(); openLineageDetail(button); }));
+    all<HTMLButtonElement>('[data-lineage-detail-close]').forEach((button) => button.addEventListener('click', () => closeLineageDetail()));
+    lineageContent?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('[data-open-ceiling-story]')) { closeLineageDetail(false); showStory('ceiling'); }
+    });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && lineageLayer && !lineageLayer.hidden) { event.preventDefault(); closeLineageDetail(); } });
+    window.addEventListener('resize', () => { if (activeLineageTrigger && lineageLayer && !lineageLayer.hidden) positionLineageDetail(activeLineageTrigger); });
 
     one<HTMLButtonElement>('[data-bug="legacy-gate"]')?.addEventListener('click', (event) => {
       state.bugResolved = false; pressed('[data-bug]', event.currentTarget as HTMLElement);
@@ -360,6 +479,26 @@ const stories = [
 .current-route-head,.current-route-row{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1.25fr);gap:.65rem;align-items:center;min-width:0}
 .current-route-head{align-items:end}.current-route-head>span:first-child{grid-column:1}.current-route-head>span:last-child{grid-column:3}
 .current-route-arrow{min-height:64px}.current-route-outcome{display:grid;gap:.46rem;min-width:0}
+.current-route-row--ceiling{grid-template-columns:minmax(160px,.58fr) 34px minmax(0,2.42fr)}
+.current-route-outcome--ceiling{min-width:0}
+.ceiling-lineage{position:relative;display:grid;gap:.52rem;min-width:0;overflow:visible}
+.ceiling-lineage__spine{display:grid;grid-template-columns:minmax(132px,1fr) 22px minmax(132px,1fr) 22px minmax(132px,1fr) 22px minmax(132px,1fr);align-items:start;min-width:0}
+.lineage-spine{align-self:start;margin-top:27px;height:0;border-top:2px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}
+.lineage-spine--future{border-top-width:1px;border-top-style:dashed;opacity:.58}
+.lineage-node{position:relative;display:flex;min-width:0;min-height:54px;flex-direction:column;justify-content:center;gap:.12rem;padding:.55rem 2.05rem .55rem .62rem;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);color:var(--color-text);text-align:left}
+.lineage-node strong{font-size:.72rem;line-height:1.3}.lineage-node small{color:var(--color-text-muted);font-size:.59rem;line-height:1.34}
+.lineage-node--amendment{border-left:3px double color-mix(in srgb,var(--color-accent) 72%,var(--color-border))}
+.lineage-node--mainline{border-color:color-mix(in srgb,var(--color-accent) 46%,var(--color-border))}
+.lineage-node--fix{min-height:40px;margin-left:.55rem;padding:.42rem 2rem .42rem .5rem;border-radius:6px;border-color:color-mix(in srgb,#3f8f68 46%,var(--color-border));background:color-mix(in srgb,#3f8f68 4%,var(--color-bg))}.lineage-node--fix strong{font-size:.64rem}.lineage-node--fix small{font-size:.54rem}
+.lineage-node--future{border-style:dashed;opacity:.42;background:color-mix(in srgb,var(--color-text) 1%,var(--color-bg))}
+.lineage-node__expand{position:absolute;top:.36rem;right:.36rem;display:grid;place-items:center;width:1.45rem;height:1.45rem;padding:0;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text-muted);font:700 .82rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}.lineage-node__expand:hover,.lineage-node__expand:focus-visible,.lineage-node__expand[aria-expanded="true"]{border-color:var(--color-accent);color:var(--color-accent);outline:none;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+.ceiling-lineage__run-stack{display:grid;gap:.3rem;min-width:0}
+.lineage-detail-layer{position:absolute;inset:0;z-index:30;pointer-events:none}
+.lineage-detail__backdrop{display:none}
+.lineage-detail__card{position:absolute;width:280px;min-height:220px;max-height:300px;overflow:auto;padding:.85rem;border:1px solid color-mix(in srgb,var(--color-accent) 45%,var(--color-border));border-radius:10px;background:var(--color-bg);color:var(--color-text);box-shadow:0 16px 38px color-mix(in srgb,var(--color-text) 18%,transparent);pointer-events:auto}.lineage-detail__card:focus{outline:none}
+.lineage-detail__close{position:absolute;top:.48rem;right:.48rem;display:grid;place-items:center;width:1.8rem;height:1.8rem;padding:0;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text);font-size:1rem;cursor:pointer}.lineage-detail__close:hover,.lineage-detail__close:focus-visible{border-color:var(--color-accent);outline:none}
+.lineage-detail__card>p{margin:0 2.2rem .28rem 0;color:var(--color-text-muted);font:800 .5rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.lineage-detail__card h3{margin:0 2rem .6rem 0;font-size:1rem;line-height:1.2}.lineage-detail__content{display:grid;gap:.58rem}.lineage-detail__content p{margin:0;font-size:.7rem;line-height:1.55}.lineage-detail__content dl{display:grid;gap:.4rem;margin:0}.lineage-detail__content dl>div{display:grid;gap:.08rem;padding-top:.38rem;border-top:1px solid var(--color-border)}.lineage-detail__content dt{font-size:.59rem;font-weight:800}.lineage-detail__content dd{margin:0;color:var(--color-text-muted);font-size:.62rem;line-height:1.45}.lineage-detail__content ul{display:grid;gap:.42rem;margin:0;padding:0;list-style:none}.lineage-detail__content li{display:grid;gap:.08rem;padding-top:.4rem;border-top:1px solid var(--color-border)}.lineage-detail__content li b{font-size:.62rem}.lineage-detail__content li span{color:var(--color-text-muted);font-size:.6rem;line-height:1.42}.lineage-detail__content>small{color:var(--color-text-muted);font-size:.55rem;line-height:1.42}.lineage-detail__action{min-height:38px;padding:.48rem .58rem;border:1px solid var(--color-border);border-radius:6px;background:transparent;color:var(--color-text);font-size:.62rem;font-weight:760;text-align:left;cursor:pointer}.lineage-detail__action:hover,.lineage-detail__action:focus-visible{border-color:var(--color-accent);outline:none}
+.floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot="ceiling"][hidden]{opacity:.42;filter:saturate(.55)}
 .map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:#c34a4a}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:13px;background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
 .rogue-node>i{position:absolute;left:.78rem;top:.82rem;display:grid;place-items:center;width:1.28rem;height:1.28rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal}.rogue-node b,.rogue-node small,.rogue-node em{display:block}.rogue-node b{font-size:.79rem;line-height:1.35}.rogue-node small{margin-top:.16rem;color:var(--color-text-muted);font-size:.67rem;line-height:1.42}.rogue-node em{margin-top:.36rem;color:#c34a4a;font-size:.62rem;font-style:normal;font-weight:760}
@@ -370,7 +509,14 @@ const stories = [
 
 @media(max-width:900px){
   .floor__header{grid-template-columns:1fr}.floor__map,.floor__map--stage2{grid-template-columns:1fr;gap:.55rem;min-height:0}.map-connector{height:1.1rem;rotate:90deg}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .current-route-head{display:none}.current-route-row{grid-template-columns:1fr;gap:.42rem;padding:.55rem 0;border-top:1px solid var(--color-border)}.current-route-row:first-of-type{border-top:0;padding-top:0}.current-route-arrow{min-height:.9rem;height:.9rem}
+  .current-route-head{display:none}.current-route-row,.current-route-row--ceiling{grid-template-columns:1fr;gap:.42rem;padding:.55rem 0;border-top:1px solid var(--color-border)}.current-route-row:first-of-type{border-top:0;padding-top:0}.current-route-arrow{min-height:.9rem;height:.9rem}
+  .ceiling-lineage__spine{grid-template-columns:1fr;gap:.3rem}.lineage-spine{width:1px;height:.68rem;margin-top:0;justify-self:center;border-top:0;border-left:2px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))}.lineage-spine--future{border-left-width:1px;border-left-style:dashed}.lineage-node{min-height:48px}.lineage-node--fix{width:min(78%,240px);margin-left:.7rem}.lineage-node--future{opacity:.44}
+}
+@media(max-width:700px){
+  .lineage-detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:180;pointer-events:auto}
+  .lineage-detail__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 28%,transparent);cursor:pointer}
+  .lineage-detail__card{position:relative!important;left:auto!important;top:auto!important;width:min(88vw,330px);min-height:0;max-height:min(72vh,560px);padding:1rem;border-radius:12px;box-shadow:0 22px 54px color-mix(in srgb,var(--color-text) 28%,transparent)}
+  .lineage-detail__card h3{font-size:1.08rem}.lineage-detail__content p{font-size:.76rem}.lineage-detail__content dd{font-size:.69rem}.lineage-detail__content li b{font-size:.69rem}.lineage-detail__content li span{font-size:.67rem}.lineage-detail__action{font-size:.69rem}
 }
 @media(max-width:520px){
   .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:14px}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid{grid-template-columns:1fr}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}

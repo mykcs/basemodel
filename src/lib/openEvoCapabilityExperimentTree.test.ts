@@ -38,9 +38,40 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(tree).toContain('data-current-outcome-slot="ceiling"');
     expect(tree).toContain('data-current-outcome-slot="evo2"');
     expect(tree).toContain('各自进入不同的后续节点');
-    expect(tree).toContain('只属于 Ceiling-1.0 这条路线');
+    expect(tree).toContain('data-ceiling-lineage');
     expect(tree).toContain('data-current-route="ceiling"');
     expect(tree).toContain('data-current-route="evo2"');
+  });
+
+  it('renders the Ceiling-1.0 pilot with ELI5 map labels and progressive disclosure', () => {
+    expect(tree).toContain('data-ceiling-lineage');
+    expect(tree).toContain('data-node-type="scientific-amendment"');
+    for (const label of ['放宽参数更新次数', '继续 7B 训练', '修复训练运行问题', '7B 当前进度', '以后可能压缩已积累的参数更新']) {
+      expect(tree).toContain(label);
+    }
+    for (const vagueLabel of ['放宽 64 限制', '7B 继续跑', '>工程修复<', '>当前结果<', '>以后可能压缩<']) {
+      expect(tree).not.toContain(vagueLabel);
+    }
+    expect(tree).toContain('每 128 次任务整理一轮经验');
+    expect(tree).toContain('不再固定最多 64 次');
+    expect(tree).toContain('训练仍在继续');
+    for (const key of ['amendment', 'run', 'fixes', 'result', 'future']) {
+      expect(tree).toContain(`data-lineage-detail="${key}"`);
+      expect(tree).toContain(`data-lineage-detail-template="${key}"`);
+    }
+    expect(tree).toContain('data-lineage-detail-layer');
+    expect(tree).toContain('data-lineage-detail-close');
+    expect(tree).toContain('role="dialog"');
+    expect(tree).toContain('data-node-type="engineering-fix"');
+    expect(tree).toContain('用对训练代码');
+    expect(tree).toContain('中断后还能接着跑');
+    expect(tree).toContain('把来历记完整');
+    expect(tree).toContain('归档以后仍然认得');
+    expect(tree).toContain('技术记录：trainer source · restart validator · execution provenance · HF cold archive。');
+    expect(tree).toContain('data-node-state="future"');
+    expect(tree).toContain('rank reduction / compression · future scientific amendment');
+    expect(tree).toContain('current-route-row--ceiling');
+    expect(tree).toContain('ceiling-lineage__spine');
   });
 
   it('marks Harness 2.0.1 mechanically complete and moves the lock to readiness', () => {
