@@ -34,6 +34,7 @@ const appLayoutPath = 'src/layouts/AppLayout.astro';
 const appEntryPath = 'src/styles/app.css';
 const foundationPath = 'src/styles/global.css';
 const headerOwnerPath = 'src/styles/components/header.css';
+const headerComponentPath = 'src/components/Header.astro';
 const shellOwnerPath = 'src/styles/components/global-shell.css';
 const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
 const radiusTokensPath = 'src/styles/tokens.css';
@@ -110,6 +111,16 @@ equal(
   expectedHeaderSelectorFiles,
   'CSS files allowed to contain shared Header/Nav selectors during migration',
 );
+
+const headerComponent = read(headerComponentPath);
+if (headerComponent.includes('<style is:global>')) {
+  fail(`${headerComponentPath} must not act as a global feature-style injection point. Keep Header internals scoped and move feature styles to their real owner.`);
+}
+for (const leakedFeatureSelector of ['mission-chain', 'intent-row']) {
+  if (headerComponent.includes(leakedFeatureSelector)) {
+    fail(`${headerComponentPath} leaks feature selector '${leakedFeatureSelector}'. Header may own navigation internals, not research/home feature CSS.`);
+  }
+}
 
 const headerOwner = read(headerOwnerPath);
 for (const invariant of [
@@ -308,6 +319,7 @@ equal(
 console.log('[audit-css-architecture] PASS');
 console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
+console.log('  Header component: scoped internals only; no global feature-style injection');
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
 console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');

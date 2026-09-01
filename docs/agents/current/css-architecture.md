@@ -81,7 +81,7 @@ Feature-owned CSS may still be imported by its owning component when the rules d
 - mobile menu geometry and interaction-visible state;
 - the closed resource popover geometry invariant.
 
-The Header component's scoped Astro style may still own internal structure. The global semantic owner exists for cross-route shell behavior that historically leaked into late global files.
+The Header component's scoped Astro style may still own internal structure. It must not become a convenient global feature-style injection point: research diagrams, homepage cards, and other route content stay with their owning component/page even when Header happens to render on every route. `Header.astro` therefore contains no `<style is:global>` block. The global semantic owner exists only for cross-route shell behavior that historically leaked into late global files.
 
 `src/styles/components/webshop-training-note.css` owns the WebShop training-note themed editorial surface that previously escaped through route-scoped styling. Its semantic background/text/color-scheme invariants are part of the CSS architecture audit.
 
@@ -159,6 +159,7 @@ Tailwind may be reconsidered only if a future isolated surface shows measured au
 - other layouts do not compose their own global CSS stacks;
 - no new patch-style stylesheet family appears;
 - Header/Nav selectors cannot spread to new files;
+- `Header.astro` cannot regain a global style block or feature selectors such as `mission-chain` / `intent-row`;
 - `design-refinement.css`, `visual-closeout.css`, and `mobile-composition.css` cannot regain Header/Nav ownership;
 - required Header/shared-shell invariants remain in their semantic owners;
 - the WebShop training-note theme owner remains wired with semantic surface/text/color-scheme invariants;
