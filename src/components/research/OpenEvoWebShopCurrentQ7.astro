@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
+import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
+import type { EvidenceRef } from '../../lib/researchEvidence';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -7,11 +9,17 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const trackARoot = 'https://github.com/mykcs/openevo-experiment/blob/f80ae1816384bb7e8e82d193b22644e17f561f19';
-const frozenPanelHref = `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`;
-const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json`;
+const trackAManifest: EvidenceRef = { kind: 'manifest', label: t('纠错后的 128 题任务清单', 'Corrected 128-task manifest'), href: `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json` };
+const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: t('128/128 运行时语义核对', '128/128 runtime semantic validation'), href: `${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json` };
+const trackAAnalysis: EvidenceRef = { kind: 'machine-result', label: t('正式配对统计 · analysis.json', 'Formal paired statistics · analysis.json'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/server/evidence/analysis.json` };
+const trackAReconciliation: EvidenceRef = { kind: 'machine-result', label: t('两臂 128/128 完整性对账', '128/128 per-arm reconciliation'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/server/evidence/reconciliation.json` };
+const trackACloseout: EvidenceRef = { kind: 'machine-result', label: t('路线 A 机器可读收尾', 'Track A machine-readable closeout'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json` };
+const trackAEvidenceManifest: EvidenceRef = { kind: 'audit', label: t('逐文件 SHA-256 证据清单', 'Per-file SHA-256 evidence manifest'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json` };
+const trackAGovernance: EvidenceRef = { kind: 'audit', label: t('执行授权顺序治理例外', 'Execution-authority ordering exception'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json` };
+const frozenPanelHref = trackAManifest.href;
 ---
 
-<section class="current-q7" aria-labelledby="current-q7-title" data-testid="current-source-faithful-q7">
+<section class="current-q7" id="q7" aria-labelledby="current-q7-title" data-testid="current-source-faithful-q7">
   <article class="current-question-card">
     <div class="question-number">07</div>
     <div class="question-copy">
@@ -42,39 +50,45 @@ const closeoutHref = `${trackARoot}/docs/evidence/seed-webshop-public-code-repro
         'Authoritative runtime semantic validation reports total_slots=128, matches=128, mismatches=0. The later source-faithful paired measurement reconciled with ok=true, 128/128 valid episodes in both BASE and SD-LoRA, and parser-invalid=0; 10,000 paired bootstrap rounds yielded +1.57 Task Score×100 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts were transferred byte-for-byte and verified by per-file SHA-256, so artifact_publication_status is PUBLISHED_AND_VERIFIED. One governance exception remains: the scientific contract was frozen and readiness passed before formal consumption, but GitHub branch authority and the main router did not precede the first formal episode, so the run must not be rewritten as having been launch-authorized by main at that time.',
       )}</p>
 
-      <details class="evidence-details">
+      <details class="evidence-details" id="evidence-q7">
         <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
         <div class="evidence-detail-body">
           <table>
             <tbody>
               <tr>
                 <th scope="row">{t('任务语义核对', 'Semantic gate')}</th>
-                <td>{t('128 / 128 个任务槽位全部通过 · 语义不匹配 0 个', '128 / 128 PASS · mismatches=0')}</td>
+                <td><span>{t('128 / 128 个任务槽位全部通过 · 语义不匹配 0 个', '128 / 128 PASS · mismatches=0')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackASemanticValidation]} compact /></td>
               </tr>
               <tr>
                 <th scope="row">{t('正式测量（任务完成度 / 完整成功率）', 'Formal measurement')}</th>
-                <td>{t('基础模型 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%', 'BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%')}</td>
+                <td><span>{t('基础模型 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%', 'BASE 7.17 / 3.9% · SD-LoRA 8.74 / 3.9%')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackAAnalysis, trackAReconciliation]} compact /></td>
               </tr>
               <tr>
                 <th scope="row">{t('配对结论', 'Paired result')}</th>
-                <td>{t('同任务配对平均差 +1.57 · 95% 置信区间 [-3.21,+6.31] · 包含 0，因此未证明稳定差异', 'Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0')}</td>
+                <td><span>{t('同任务配对平均差 +1.57 · 95% 置信区间 [-3.21,+6.31] · 包含 0，因此未证明稳定差异', 'Δ +1.57 · 95% CI [-3.21,+6.31] · crosses 0')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackAAnalysis]} compact /></td>
               </tr>
               <tr>
                 <th scope="row">{t('证据发布', 'Evidence publication')}</th>
-                <td>{t('已发布且校验通过 · 256 个原始任务回合 · 文件不一致 0 / 缺失 0', 'PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0')}</td>
+                <td><span>{t('已发布且校验通过 · 256 个原始任务回合 · 文件不一致 0 / 缺失 0', 'PUBLISHED_AND_VERIFIED · 256 raw episodes · mismatch 0 / missing 0')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackACloseout, trackAEvidenceManifest]} compact /></td>
               </tr>
               <tr>
                 <th scope="row">{t('结论边界', 'Claim boundary')}</th>
-                <td>{t('没有证明稳定提升；不是论文当年最终使用的确切 128 题；也没有复现 SEED 论文模型保存点对应的 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</td>
+                <td><span>{t('没有证明稳定提升；不是论文当年最终使用的确切 128 题；也没有复现 SEED 论文模型保存点对应的 89.7 / 78.1%。', 'No stable improvement is established; this is not the paper-final exact 128, and the SEED paper checkpoint / 89.7 / 78.1% have not been reproduced.')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackACloseout]} compact /></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('治理边界', 'Governance boundary')}</th>
+                <td><span>{t('科学合同与运行准备先冻结，但 main / 分支授权顺序没有先于第一个正式回合；历史不能倒写。', 'The scientific contract/readiness was frozen first, but main/branch authority did not precede the first formal episode; history is not rewritten.')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackAGovernance]} compact /></td>
               </tr>
             </tbody>
           </table>
           <ul class="evidence-links">
-            <li><a href={closeoutHref}>{t('路线 A 机器可读收尾记录', 'Track A machine-readable closeout')} ↗</a></li>
-            <li><a href={`${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json`}>{t('128/128 任务语义核对运行凭据', '128/128 runtime semantic validation receipt')} ↗</a></li>
-            <li><a href={frozenPanelHref}>{t('纠错后的 128 个任务清单', 'Corrected 128-task manifest')} ↗</a></li>
-            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json`}>{t('逐文件原样核对的证据清单', 'Byte-for-byte evidence manifest')} ↗</a></li>
-            <li><a href={`${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json`}>{t('执行授权顺序治理例外', 'Execution-authority ordering exception')} ↗</a></li>
+            <li><a href={trackACloseout.href}>{trackACloseout.label} ↗</a></li>
+            <li><a href={trackAAnalysis.href}>{trackAAnalysis.label} ↗</a></li>
+            <li><a href={trackAReconciliation.href}>{trackAReconciliation.label} ↗</a></li>
+            <li><a href={trackASemanticValidation.href}>{trackASemanticValidation.label} ↗</a></li>
+            <li><a href={trackAManifest.href}>{trackAManifest.label} ↗</a></li>
+            <li><a href={trackAEvidenceManifest.href}>{trackAEvidenceManifest.label} ↗</a></li>
+            <li><a href={trackAGovernance.href}>{trackAGovernance.label} ↗</a></li>
           </ul>
         </div>
       </details>

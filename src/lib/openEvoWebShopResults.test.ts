@@ -65,7 +65,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
       expect(page.indexOf('<OpenEvoActionWrapperAttribution locale={locale} />')).toBeGreaterThan(page.indexOf('<OpenEvoWebShopResultsQuestions locale={locale} />'));
       expect(page.indexOf('<OpenEvoActionWrapperAttribution locale={locale} />')).toBeLessThan(page.indexOf('<OpenEvoWebShopG2Ablation locale={locale} />'));
       expect(page).toContain('<OpenEvoWebShopCurrentQ7 locale={locale} />');
-      expect(page).toContain("#q7 { display:none; }");
+      expect(page).not.toContain("#q7 { display:none; }");
       expect(page).not.toContain('OpenEvoWebShopProgramReport');
       expect(page).not.toContain('data-program-report');
     }
@@ -89,6 +89,9 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(hero).not.toContain('95% CI');
     expect(hero).not.toContain('formal evaluation denominator');
     expect(hero).not.toContain('github.com/');
+    expect(hero).toContain('href="#evidence-q4"');
+    expect(hero).toContain('href="#evidence-q7"');
+    expect(hero).toContain('href="#next-n2"');
     expect(hero).toContain('机制结论以实验编号 H1.41 为时间截点');
     expect(hero).toContain('H1.42 是之后的测量校准记录');
   });
@@ -125,6 +128,12 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(protocol).toContain('实验边界 · PROTOCOL');
     expect(protocol).toContain('OpenEvoEvidenceRefs');
     expect(protocol).toContain('envs.py#L115-L145');
+    expect(protocol).toContain('h1.38b-method-control-eval-v1.json');
+    expect(protocol).toContain('h1.39-mr-independent-panel-v1.json');
+    expect(protocol).toContain('SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md');
+    expect(protocol).toContain('webshop-seed-source-faithful-reproduction-v1-semantic-validation.json');
+    expect(protocol).toContain('webshop_seed0_goal00395-2026082586.json#L42-L53');
+    expect(protocol).toContain('seed-official-heldout-comparison-v1/v2/analysis-v2.json');
     expect(protocol).toContain('/research/seed-openevo/flow/webshop/');
     expect(protocol).toContain('/research/seed-openevo/flow/loops/');
   });
@@ -138,10 +147,14 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
       '学到的经验能迁移到新的任务吗？',
       '第一代能迁移，是否意味着可以一直越学越好？',
       '这些数字会不会只是工程故障的假象？',
-      '最后还缺哪一个关键实验？',
     ]) {
       expect(questions).toContain(question);
     }
+    expect(questions).not.toContain("id: 'q7'");
+    expect(questions).not.toContain('Track A 当前是 PREPARED');
+    expect(questions).not.toContain('formal execution not authorized');
+    expect(currentQ7).toContain('id="q7"');
+    expect(currentQ7).toContain('最后还缺哪一个关键实验？');
     expect(currentQ7).toContain('已完成 · 未证明稳定提升');
     expect(questions).toContain('现在的答案：');
     expect(questions).toContain('我们做了两次对照');
@@ -174,14 +187,13 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
 
   it('keeps historical repaired-primary evidence while current Q7 owns completed Track A', () => {
     expect(questions).toContain('768 个回合');
-    expect(questions).toContain('BASE 0.0 / 0.0%');
-    expect(questions).toContain('动作包装格式（wrapper）不兼容导致测量无效');
-    expect(questions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
-    expect(questions).toContain('SD-LoRA：7.3 / 2.3%');
+    expect(questions).toContain('两边都出现 0 分');
+    expect(questions).toContain('这个 0 说明测量接口失效，不能解释成模型能力为 0');
+    expect(questions).toContain('BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%');
     expect(questions).toContain('自助法（bootstrap）95% CI [-0.65, +7.19]');
-    expect(questions).toContain('数值 session index 不是完整任务身份');
-    expect(questions).toContain('SEED-compatible');
-    expect(questions).toContain('不是论文的确切评测分母');
+    expect(protocol).toContain('“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”');
+    expect(currentQ7).toContain('不是论文当年最终使用的确切 128 题');
+    expect(currentQ7).toContain('也没有复现 SEED 论文模型保存点对应的 89.7 / 78.1%');
     expect(currentQ7).toContain('128 / 128 PASS');
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
@@ -190,6 +202,12 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
     expect(currentQ7).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
     expect(currentQ7).toContain('webshop-seed-source-faithful-reproduction-v1-panel-v1.json');
+    expect(currentQ7).toContain('server/evidence/analysis.json');
+    expect(currentQ7).toContain('server/evidence/reconciliation.json');
+    expect(currentQ7).toContain('id="evidence-q7"');
+    expect(currentQ7).toContain('sources={[trackAAnalysis, trackAReconciliation]}');
+    expect(currentQ7).toContain('sources={[trackASemanticValidation]}');
+    expect(currentQ7).toContain('sources={[trackACloseout, trackAEvidenceManifest]}');
     expect(hero).not.toContain('formal evaluation denominator（正式评估分母）= 0');
     expect(protocol).not.toContain('尚未执行');
   });
@@ -226,17 +244,22 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(evidenceRefs).toContain('overflow-wrap:anywhere');
   });
 
-  it('keeps new historical scientific evidence immutable rather than floating on main', () => {
-    for (const source of [protocol, questions, wrapperAttribution, g2Ablation, nextSteps]) {
+  it('keeps historical evidence immutable while making the one live WB1 router explicit', () => {
+    for (const source of [protocol, questions, wrapperAttribution, g2Ablation]) {
       expect(source).not.toContain('/blob/main/');
     }
     expect(questions).toContain('2cf2fadca3c5aba28da68e8e1405182ba8d90e6c');
     expect(questions).toContain('1971fad6602d23d499a5de8bd4bf718947207d86');
     expect(currentQ7).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
+    expect(nextSteps).toContain('https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json');
+    expect(nextSteps).toContain('2026-09-01');
+    expect(nextSteps).toContain('d471341e518ed4568fc84f4f732784d091613b03');
+    expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
+    expect(nextSteps).toContain('state-v28 采纳时的不可变 campaign 快照');
   });
 
   it('preserves the core historical evidence links plus repaired-primary and source-faithful evidence', () => {
-    const evidenceCopy = `${questions}\n${g2Ablation}\n${currentQ7}`;
+    const evidenceCopy = `${protocol}\n${questions}\n${g2Ablation}\n${currentQ7}`;
     for (const path of [
       'launch_h140_r2_g2_training.py',
       'h1.40-r2-g2-multigeneration-v1.json',
@@ -262,7 +285,6 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
       'seed-official-heldout-comparison-v1/v2/analysis-v2.json',
       'seed-official-heldout-comparison-v1/v2/reconciliation-v2.json',
       'SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md',
-      'seed-webshop-public-code-reproduction-v1.json',
       'webshop-seed-source-faithful-reproduction-v1-panel-v1.json',
     ]) {
       expect(evidenceCopy, `${path} must stay linked`).toContain(path);
@@ -301,6 +323,9 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
     expect(nextSteps).toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(nextSteps).toContain('WB1 live router · main');
+    expect(nextSteps).toContain('真正恢复执行前仍必须重新读取 live router');
+    expect(nextSteps).toContain('id={`next-${step.index.toLowerCase()}`}');
     expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
@@ -323,6 +348,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(appendix).toContain('@media print');
     expect(appendix).toContain('print-provenance');
     expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
+    expect(appendix).toContain('H1.42 历史 campaign 快照');
+    expect(appendix).not.toContain('Current campaign config');
     expect(resultRoute).toContain('ResearchPrimerMoved');
     expect(primerMoved).toContain('/research/seed-openevo/flow/webshop/#fig-seed-webshop');
     expect(primerMoved).toContain('/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target');

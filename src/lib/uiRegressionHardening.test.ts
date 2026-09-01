@@ -30,10 +30,10 @@ describe('UI regression-class hardening', () => {
     expect(offenders, 'Use Astro <style is:global>; is="global" is still scoped.').toEqual([]);
   });
 
-  it('keeps the results shell overrides on the real Astro global directive', () => {
+  it('does not require Results routes to retain a global-style patch after its owner is removed', () => {
     for (const route of [resultsZh, resultsEn]) {
-      expect(route).toContain('<style is:global>');
       expect(route).not.toMatch(/<style\b[^>]*\bis\s*=\s*["']global["']/i);
+      expect(route).not.toContain("#q7 { display:none; }");
     }
   });
 

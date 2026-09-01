@@ -14,12 +14,13 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
   it('keeps the current Q7 override on both locale routes', () => {
     for (const page of [resultsPageZh, resultsPageEn]) {
       expect(page).toContain('OpenEvoWebShopCurrentQ7');
-      expect(page).toContain("#q7 { display:none; }");
+      expect(page).not.toContain("#q7 { display:none; }");
       expect(page).toContain('seed-openevo-results-current-state-2026-08-26.md');
     }
   });
 
   it('publishes the completed source-faithful paired measurement without claiming a stable win', () => {
+    expect(currentQ7).toContain('id="q7"');
     expect(currentQ7).toContain('已完成 · 未证明稳定提升');
     expect(currentQ7).toContain('128 / 128 PASS');
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');

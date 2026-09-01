@@ -15,7 +15,10 @@ const trackACloseout: EvidenceRef = { kind: 'machine-result', label: t('路线 A
 const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: t('128/128 任务语义核对通过', '128/128 runtime semantic validation · PASS'), href: `${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json` };
 const trackAManifest: EvidenceRef = { kind: 'manifest', label: t('纠错后 128 个任务槽位清单', 'Corrected 128-slot task manifest'), href: `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json` };
 const trackAEvidenceManifest: EvidenceRef = { kind: 'audit', label: t('256 个任务回合逐文件核对证据清单', '256-episode byte-for-byte evidence manifest'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json` };
-const wb1CurrentState: EvidenceRef = { kind: 'machine-result', label: t('路线 B / WB1 当前实验战役状态', 'Current WB1 campaign state'), href: `${wb1Root}/configs/experiment/current-campaign.json` };
+const wb1LiveCheckedAt = '2026-09-01';
+const wb1LiveCheckedSha = 'd471341e518ed4568fc84f4f732784d091613b03';
+const wb1LiveCampaign: EvidenceRef = { kind: 'config', label: t(`WB1 live router · main（${wb1LiveCheckedAt} 核验 · ${wb1LiveCheckedSha.slice(0, 8)}…）`, `WB1 live router · main (checked ${wb1LiveCheckedAt} · ${wb1LiveCheckedSha.slice(0, 8)}…)`), href: 'https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json' };
+const wb1AdoptedStateSnapshot: EvidenceRef = { kind: 'machine-result', label: t('state-v28 采纳时的不可变 campaign 快照', 'Immutable campaign snapshot at state-v28 adoption'), href: `${wb1Root}/configs/experiment/current-campaign.json` };
 const wb1StateV28Reconciliation: EvidenceRef = { kind: 'audit', label: t('第 28 代 state-v28 状态门对账 · 通过', 'Gen28 state-v28 barrier reconciliation · PASS'), href: `${wb1Root}/docs/evidence/wb1/phase-2/amendment006-gen28-state-v28/RECONCILIATION.json` };
 
 type Step = { index: string; title: string; plain: string; technical: string; sources?: EvidenceRef[] };
@@ -31,8 +34,8 @@ const steps: Step[] = [
     index: 'N2',
     title: t('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权', 'Gen28 continuity is repaired; Track B / WB1 awaits Gen29 authorization'),
     plain: t('路线 B / WB1 把 SEED 方法和 OpenEvo 放进同一个冻结环境，用同样的任务、同一评测器和匹配预算重新比较。第 28 代（Gen28）的 128 个任务回合已经完成；缺失的第 28 代保留状态（state-v28）也已经在不重跑 WebShop、不使用 GPU 的前提下补齐，并通过状态完整性对账。现在真正剩下的是：是否按预先固定的路线 B 实验合同授权进入第 29 代，而不是继续修第 28 代。', 'Track B reruns SEED and OpenEvo as methods in one frozen world using the same tasks and matched budgets. Gen28’s 128 episodes are complete, and the missing state-v28 has now been produced without rerunning WebShop or using GPU and has passed barrier reconciliation. The remaining question is whether the frozen Track B contract should formally resume into Gen29, not how to repair Gen28 again.'),
-    technical: t('专业解释：修订项 Amendment 006 规定的一次性“补做原本延后的本地状态更新”已经执行并通过对账。机器状态 GEN28_STATE_V28_BARRIER_PASS_ADOPTED 表示“第 28 代的 state-v28 已补齐、通过状态门并被正式采用”。第 28 代的 128 个有效任务回合按“只要信息进入保留状态，就只计一次”的规则计入匹配预算；当前已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056。formal_task_consumption_allowed=false 表示暂不允许继续消耗正式任务，gpu_allocation_allowed=false 表示当前不授权这一步使用 GPU，final locked 表示最终测试仍锁定；第 29 代仍需要一次独立的“可以恢复执行”授权。', 'Technical detail: Amendment 006’s exactly-once deferred native update has been consumed and reconciled. Current classification is GEN28_STATE_V28_BARRIER_PASS_ADOPTED and the latest native state is state-v28. Because Gen28 information is now retained, its 128 valid episodes count exactly once toward the matched budget: 3,584/20,640, with 17,056 remaining. formal_task_consumption_allowed=false, gpu_allocation_allowed=false, and final remains locked; Gen29 still requires a separate execution-readiness / resumption release.'),
-    sources: [wb1CurrentState, wb1StateV28Reconciliation],
+    technical: t('专业解释：修订项 Amendment 006 规定的一次性“补做原本延后的本地状态更新”已经执行并通过对账。机器状态 GEN28_STATE_V28_BARRIER_PASS_ADOPTED 表示“第 28 代的 state-v28 已补齐、通过状态门并被正式采用”。第 28 代的 128 个有效任务回合按“只要信息进入保留状态，就只计一次”的规则计入匹配预算；当前已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056。formal_task_consumption_allowed=false 表示暂不允许继续消耗正式任务，gpu_allocation_allowed=false 表示当前不授权这一步使用 GPU，final locked 表示最终测试仍锁定；第 29 代仍需要一次独立的“可以恢复执行”授权。本页最后一次核对 live current-campaign 是 2026-09-01 的 main@d471341e…；真正恢复执行前仍必须重新读取 live router。', 'Technical detail: Amendment 006’s exactly-once deferred native update has been consumed and reconciled. Current classification is GEN28_STATE_V28_BARRIER_PASS_ADOPTED and the latest native state is state-v28. Because Gen28 information is now retained, its 128 valid episodes count exactly once toward the matched budget: 3,584/20,640, with 17,056 remaining. formal_task_consumption_allowed=false, gpu_allocation_allowed=false, and final remains locked; Gen29 still requires a separate execution-readiness / resumption release. This page last checked the live current-campaign on 2026-09-01 at main@d471341e…; execution must re-read the live router before resuming.'),
+    sources: [wb1LiveCampaign, wb1AdoptedStateSnapshot, wb1StateV28Reconciliation],
   },
   {
     index: 'N3',
@@ -55,7 +58,7 @@ const steps: Step[] = [
 
   <ol class="step-list">
     {steps.map((step) => (
-      <li class="step-card">
+      <li class="step-card" id={`next-${step.index.toLowerCase()}`}>
         <span class="step-index">{step.index}</span>
         <div>
           <h3>{step.title}</h3><p class="step-plain">{step.plain}</p><p class="step-technical">{step.technical}</p>
