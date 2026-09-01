@@ -164,6 +164,12 @@
 
 规则不是“所有术语都删掉”，而是**先给人类含义，再保留术语作精确索引**。详细正反面对照见 [CASE-051](website-copy-cases.md#case-051-内部计数不能代替解释)、[CASE-052](website-copy-cases.md#case-052-数字因果链要把规则说完整) 与 [CASE-053](website-copy-cases.md#case-053-历史规则不能伪装成长期算法)。
 
+### 7.2 没发生不等于失败；页面必须能脱离聊天独立成立
+
+公开结果页要严格区分：**没有运行、运行后得 0、运行后没有参数更新、测量无效**。它们不是同一种“失败”，也不能都压成 `0 / failed / pending`。
+
+同时做一次 first-time-reader completeness 检查：假设读者懂机器学习，但没有看过项目聊天、运行日志和内部编号。仅靠当前页面，他仍应能回答“发生了什么、数字数什么、为什么这样、能推出什么、不能推出什么”。详见 [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差)。
+
 ## 8. 比喻：只在它真的减少理解成本时使用
 
 “说人话”不等于“每段都加一个比喻”。如果字面事实已经简单，比喻反而像 AI 在表演解释。
@@ -328,6 +334,7 @@
 | 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子) |
 | `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](website-copy-cases.md#case-051-内部计数不能代替解释) |
 | 连续几版实验都出问题时，分别写清每一版“现实里坏了什么”，不要统一叫“Stage 2 失败” | [CASE-054–056](website-copy-cases.md#case-054-阶段二失败不能写成一个标签) |
+| “没运行”与“结果为 0”严格分开；页面脱离聊天仍能自解释 | [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差) |
 | 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
 | 责任已知时直接点名负责层，不先清嫌疑人 | [CASE-036](website-copy-cases.md#case-036-责任先直接点名负责层) |
 | 否定句可以用；不要把 negative-first 当机械禁词 | [CASE-031–032](website-copy-cases.md#case-031-一个不字也属于科学正确性) |
