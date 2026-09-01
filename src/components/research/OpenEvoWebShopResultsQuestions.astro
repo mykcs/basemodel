@@ -77,27 +77,6 @@ const primaryV2Reconciliation: EvidenceRef = {
   label: t('六个实验单元覆盖对账', 'Six-cell coverage reconciliation'),
   href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/reconciliation-v2.json`,
 };
-const sourceFaithfulConfig: EvidenceRef = {
-  kind: 'preregistration',
-  label: t('源码忠实复现冻结配置 / next gate', 'Source-faithful preregistration / next gate'),
-  href: `${evidenceSnapshotRoot}/configs/experiment/webshop-seed-source-faithful-reproduction-v1.json`,
-};
-const sourceFaithfulManifest: EvidenceRef = {
-  kind: 'manifest',
-  label: t('已物化 128-slot 源码忠实任务清单', 'Materialized 128-slot source-faithful manifest'),
-  href: `${evidenceSnapshotRoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json`,
-};
-const sourceFaithfulRebuild1: EvidenceRef = {
-  kind: 'runtime-receipt',
-  label: t('干净重建 #1 · PASS', 'Clean rebuild #1 · PASS'),
-  href: `${evidenceSnapshotRoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-1.json`,
-};
-const sourceFaithfulRebuild2: EvidenceRef = {
-  kind: 'runtime-receipt',
-  label: t('干净重建 #2 · PASS', 'Clean rebuild #2 · PASS'),
-  href: `${evidenceSnapshotRoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-rebuild-2.json`,
-};
-
 const questions: Question[] = [
   {
     id: 'q1', index: '01', tone: 'established',
@@ -221,7 +200,8 @@ const questions: Question[] = [
       { label: t('当时实际送给 BASE 的 Prompt', 'Prompt actually sent to BASE'), value: t('保存下来的原始回合同样要求 <action>，没有要求 [action]。', 'The saved raw episode likewise asks for <action>; it does not ask for [action].'), sources: [{ kind: 'raw-episode', label: t('BASE 原始回合 · step 0 Prompt', 'BASE raw episode · step-0 prompt'), href: `${rawBaseEpisode}#L42-L43` }] },
       { label: t('BASE 无 adapter 的原始输出', 'Raw BASE output with no adapter'), value: t('adapter_loaded=false，但 step 0 raw_completion 仍出现 [action] search[...]；下一步又能写回 <action>...</action>。', 'adapter_loaded=false, yet step-0 raw_completion contains [action] search[...]; the next step returns to <action>...</action>.'), sources: [{ kind: 'raw-episode', label: t('adapter receipt', 'adapter receipt'), href: `${rawBaseEpisode}#L2-L12` }, { kind: 'raw-episode', label: t('step 0–1 raw completions', 'step 0–1 raw completions'), href: `${rawBaseEpisode}#L42-L53` }] },
       { label: t('推理后端', 'Inference backend'), value: t('Transformers backend 在 model.generate 后只切新 token、tokenizer decode 并直接返回，没有 < → [ 的 bracket rewrite。', 'After model.generate the Transformers backend slices generated tokens, decodes them, and returns the text; there is no < → [ bracket rewrite.'), sources: [{ kind: 'code', label: t('generate → decode → return', 'generate → decode → return'), href: `${rawEpisodeRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py#L227-L232` }] },
-      { label: t('统一兼容后复测', 'Same-contract compatibility rerun'), value: t('只修复动作 wrapper 识别并对 BASE / SD-LoRA 使用同一合同后，BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%；配对区间仍跨 0。', 'After changing only wrapper recognition under the same contract for BASE / SD-LoRA, BASE = 4.1 / 0.0% and SD-LoRA = 7.3 / 2.3%; the paired interval still crosses zero.'), sources: [primaryV2Analysis, primaryV2Reconciliation] },
+      { label: t('历史测量战役覆盖', 'Historical measurement coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.'), sources: [primaryV2Reconciliation] },
+      { label: t('统一兼容后复测', 'Same-contract compatibility rerun'), value: t('只修复动作 wrapper 识别并对 BASE / SD-LoRA 使用同一合同后，BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%；配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]，区间仍跨 0。', 'After changing only wrapper recognition under the same contract for BASE / SD-LoRA, BASE = 4.1 / 0.0% and SD-LoRA = 7.3 / 2.3%; paired mean delta = +3.15 with bootstrap 95% CI [-0.65, +7.19], which still crosses zero.'), sources: [primaryV2Analysis, primaryV2Reconciliation] },
       { label: 'H1.41 / H1.42', value: t('机制结论只使用 H1.41 时已经通过有效性检查的科学分母；H1.42 是之后的测量校准记录，不能反过来改写 H1.41 的机制结论。', 'Mechanism conclusions use the scientifically valid denominator available at H1.41; H1.42 is a later measurement-calibration record and cannot be blended backward.'), sources: [{ kind: 'machine-result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` }, { kind: 'historical-record', label: t('H1.42 Stage B 收口', 'H1.42 Stage B closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` } ] },
     ],
     boundary: t('专业上，这不是 SEED parser 有 bug，也不是 OpenEvo Prompt 要求 [action]。SEED parser 在执行自己的 <action>...</action> 合同；Qwen2.5-7B-Instruct 在这套 Prompt + chat-template 路径下会发生 wrapper 漂移。真正的实验集成责任是：我们已经知道这种漂移，却没有在 PRIMARY-v1 前拿真实模型输出通过 parser / projection 做兼容性预检。更深的责任边界见紧随其后的技术回溯。', 'Technically, this was neither a SEED-parser bug nor an OpenEvo prompt convention. The SEED parser was enforcing its <action>...</action> contract, while Qwen2.5-7B-Instruct could drift in wrapper format under this prompt + chat-template path. The experiment-integration responsibility is that this drift was already known, but real model outputs were not preflighted through the parser/projection before PRIMARY-v1. The technical trace below carries the deeper attribution boundary.'),
@@ -235,34 +215,7 @@ const questions: Question[] = [
       { kind: 'machine-result', label: t('H1.42 Stage B 对账', 'H1.42 Stage B reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/stage-b-reconciliation.json` },
     ],
   },
-  {
-    id: 'q7', index: '07', tone: 'pending',
-    status: t('源码忠实 128 已物化 · 正式执行未授权', 'Source-faithful 128 materialized · formal execution not authorized'),
-    question: t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?'),
-    conclusion: t('还缺源码忠实面板上的正式 BASE vs SD-LoRA 比较，但“把 128 个任务定义清楚并重建出来”这一步已经完成。历史修复后 PRIMARY-v2 在旧冻结面板上给出正向但不稳定的信号；随后源码审计证明 numeric session index 不是完整任务身份。现在 128-slot source-faithful manifest 已经物化，两次干净重建得到一致 hash，但预注册仍明确禁止正式任务消费。下一关是先在服务器上做 128/128 runtime semantic validation，再通过单独 activation/release 才能启动正式 GPU 评测。', 'The formal BASE-vs-SD-LoRA comparison on the source-faithful panel is still missing, but task construction itself is no longer pending. Historical repaired PRIMARY-v2 produced a positive but uncertain signal on the old frozen panel; the later source audit showed that numeric session index is not a complete task identity. The 128-slot source-faithful manifest is now materialized and two clean rebuilds match, while the preregistration still forbids formal task consumption. The next gate is 128/128 server runtime semantic validation followed by a separate activation/release before formal GPU evaluation.'),
-    observations: [
-      { label: t('完整历史战役规模', 'Historical campaign coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元（cells）均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.'), sources: [primaryV2Reconciliation] },
-      { label: t('SEED 原始主评测（PRIMARY-v1）', 'SEED-strict PRIMARY-v1'), value: t('BASE 0.0 / 0.0%；SD-LoRA 0.0 / 0.0%——动作包装格式（wrapper）不兼容导致测量无效，不能解释成模型能力。', 'BASE 0.0 / 0.0%; SD-LoRA 0.0 / 0.0% — action-wrapper incompatibility made the measurement invalid, not a statement of model ability.'), sources: [{ kind: 'human-report', label: t('PRIMARY-v1 根因记录', 'PRIMARY-v1 root-cause record'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` }, { kind: 'raw-episode', label: t('BASE 原始回合', 'BASE raw episode'), href: `${rawBaseEpisode}#L42-L53` }] },
-      { label: t('修复后主评测（PRIMARY-v2）', 'Repaired PRIMARY-v2'), value: t('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%；SD-LoRA：7.3 / 2.3%。配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]；正向 / 持平 / 负向 = 11 / 114 / 3。', 'BASE: Task Score 4.1 / exact success 0.0%; SD-LoRA: 7.3 / 2.3%. Paired mean delta +3.15, bootstrap 95% CI [-0.65, +7.19]; positive / tie / negative = 11 / 114 / 3.'), sources: [primaryV2Analysis] },
-      { label: t('公开代码能确定的 128', 'Public-code-recoverable 128'), value: t('全新 evaluator 的第一次 validation 可以机械推导：validation base seed=1000；session draw=RandomState(1000)；worker seed=1000+slot。worker seed 会改变 goal ordering，因此数值 session index 不是完整任务身份。', 'The first validation of a fresh evaluator is mechanically recoverable: validation base seed=1000; session draw=RandomState(1000); worker seed=1000+slot. Worker seeds change goal ordering, so numeric session index is not a complete task identity.'), sources: [sourceFaithfulConfig, { kind: 'official-code', label: t('SEED validation 抽样与 worker seed', 'SEED validation sampling and worker seed'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/envs.py` }] },
-      { label: t('源码忠实面板状态', 'Source-faithful panel state'), value: t('128-slot manifest 已物化；两次 clean rebuild 都为 PASS，manifest_content_sha256 与 manifest_file_sha256 完全一致；当前仍是 PREPARED，formal_task_consumption_allowed=false。', 'The 128-slot manifest is materialized; both clean rebuilds PASS with identical manifest_content_sha256 and manifest_file_sha256; the current preregistered state remains PREPARED with formal_task_consumption_allowed=false.'), sources: [sourceFaithfulManifest, sourceFaithfulRebuild1, sourceFaithfulRebuild2, sourceFaithfulConfig] },
-      { label: t('论文最终 128 的边界', 'Paper-final 128 boundary'), value: t('公开材料没有把 89.7 / 78.1% 绑定到“第几次 validation + 哪个 checkpoint + 当时的具体任务身份”，所以论文最终 exact 128 不能由公开信息唯一恢复。', 'Public materials do not bind 89.7 / 78.1% to a validation ordinal, checkpoint, and concrete task identities, so the paper-final exact 128 is not uniquely recoverable from public information.'), sources: [{ kind: 'audit', label: t('公开代码任务语义复现说明', 'Public-code task-semantics reproduction note'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` }] },
-    ],
-    boundary: t('专业上要分三种 claim：①公开代码规定每次 validation 是 128 个任务；②固定代码、数据、seed 和某个 validation 次序后，可以机械重建那一次 128 个语义任务，而且这一步现在已经完成并通过双重重建校验；③论文 89.7 / 78.1% 究竟是哪一次 validation / checkpoint，目前公开信息不能唯一确定。历史 repaired PRIMARY 仍只是旧冻结面板上可解释的本地 SEED-compatible 结果，不是论文的确切评测分母；SEED 的 checkpoint / training）仍未在本地复现。Track A 当前是 PREPARED 而不是科学结果：正式任务消费仍未授权。', 'Three claims remain distinct: (1) released code fixes validation at 128 tasks; (2) with code, data, seeds, and validation ordinal fixed, that validation’s 128 semantic tasks can be mechanically rebuilt — and this construction now exists with matching rebuild receipts; (3) public information still does not uniquely identify which validation/checkpoint produced paper 89.7 / 78.1%. Historical repaired PRIMARY remains a local SEED-compatible result on the old frozen panel, not the paper’s exact denominator. The SEED checkpoint/training result is not locally reproduced. Track A is PREPARED task-construction evidence, not a scientific outcome; formal task consumption remains unauthorized.'),
-    links: [
-      { kind: 'human-report', label: t('完整三层历史结果', 'Complete historical three-layer results'), href: `${seedHeldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/RESULTS.md` },
-      primaryV2Analysis,
-      primaryV2Reconciliation,
-      { kind: 'official-code', label: t('SEED WebShop launcher：VAL_DATA_SIZE=128', 'SEED WebShop launcher: VAL_DATA_SIZE=128'), href: `${seedOfficialRoot}/examples/seed_trainer/_common/webshop.sh` },
-      { kind: 'official-code', label: t('SEED WebShop validation 抽样逻辑', 'SEED WebShop validation sampling'), href: `${seedOfficialRoot}/agent_system/environments/env_package/webshop/envs.py` },
-      { kind: 'audit', label: t('SEED 公共代码任务语义复现说明', 'SEED public-code task-semantics reproduction note'), href: `${evidenceSnapshotRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` },
-      sourceFaithfulConfig,
-      sourceFaithfulManifest,
-      sourceFaithfulRebuild1,
-      sourceFaithfulRebuild2,
-      { kind: 'design', label: t('早期源码忠实后续设计（历史）', 'Earlier source-faithful successor design (historical)'), href: `${seedHeldoutRoot}/configs/experiment/designs/seed-webshop-public-code-reproduction-v1.json` },
-    ],
-  },
+
 ];
 
 const transferRows = [

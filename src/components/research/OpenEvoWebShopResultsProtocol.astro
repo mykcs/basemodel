@@ -9,7 +9,11 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const archiveRoot = 'https://github.com/mykcs/openevo-experiment/blob/476039e9ce82767120db803d57f016db3b1414ce';
+const heldoutRoot = 'https://github.com/mykcs/openevo-experiment/blob/429faae1acc1132f8bdad4269a4e15864a9cccb0';
 const sourceFaithfulRoot = 'https://github.com/mykcs/openevo-experiment/blob/1971fad6602d23d499a5de8bd4bf718947207d86';
+const trackARoot = 'https://github.com/mykcs/openevo-experiment/blob/f80ae1816384bb7e8e82d193b22644e17f561f19';
+const rawEpisodeRoot = 'https://github.com/mykcs/openevo-experiment/blob/115062ea0b47ee769a3e1591ffd3d5c89c4a353a';
 const sourceFaithfulConfig: EvidenceRef = {
   kind: 'preregistration',
   label: t('源码忠实复现冻结配置', 'Source-faithful frozen preregistration'),
@@ -20,11 +24,23 @@ const seedSplitSource: EvidenceRef = {
   label: t('SEED WebShop train / validation 范围', 'SEED WebShop train / validation ranges'),
   href: `${seedRoot}/agent_system/environments/env_package/webshop/envs.py#L115-L145`,
 };
+const seedValidationSizeSource: EvidenceRef = {
+  kind: 'official-code',
+  label: t('SEED WebShop launcher：VAL_DATA_SIZE=128', 'SEED WebShop launcher: VAL_DATA_SIZE=128'),
+  href: `${seedRoot}/examples/seed_trainer/_common/webshop.sh`,
+};
 const seedSamplingSource: EvidenceRef = {
   kind: 'official-code',
   label: t('SEED worker seed 与 validation 抽样', 'SEED worker seeds and validation sampling'),
   href: `${seedRoot}/agent_system/environments/env_package/webshop/envs.py#L115-L145`,
 };
+const h138bConfig: EvidenceRef = { kind: 'config', label: t('H1.38B 冻结训练配置', 'H1.38B frozen training config'), href: `${heldoutRoot}/configs/experiment/h1.38b-method-control-v1.json` };
+const h138bEvalManifest: EvidenceRef = { kind: 'manifest', label: t('H1.38B 冻结评估任务', 'H1.38B frozen evaluation manifest'), href: `${archiveRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` };
+const h139EvalManifest: EvidenceRef = { kind: 'manifest', label: t('H1.39 独立新任务组', 'H1.39 independent fresh-task panel'), href: `${archiveRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` };
+const sourceFaithfulAudit: EvidenceRef = { kind: 'audit', label: t('SEED 公共代码任务语义审计', 'SEED public-code task-semantics audit'), href: `${sourceFaithfulRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` };
+const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: t('纠错后 128/128 运行时语义核对', 'Corrected 128/128 runtime semantic validation'), href: `${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json` };
+const primaryV1RawEpisode: EvidenceRef = { kind: 'raw-episode', label: t('PRIMARY-v1 BASE 原始回合', 'PRIMARY-v1 BASE raw episode'), href: `${rawEpisodeRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json#L42-L53` };
+const primaryV2Analysis: EvidenceRef = { kind: 'machine-result', label: t('修复后 PRIMARY-v2 配对分析', 'Repaired PRIMARY-v2 paired analysis'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` };
 
 type ProtocolCard = { label: string; value: string; body: string; sources: EvidenceRef[] };
 const protocolCards: ProtocolCard[] = [
@@ -32,7 +48,7 @@ const protocolCards: ProtocolCard[] = [
     label: t('主要比较模型', 'Main comparison model'),
     value: 'Qwen2.5-7B-Instruct',
     body: t('单步迁移和 2026-08-25 的保留范围评测都围绕同一个冻结的 7B 基础模型。更早的 H0 用过 3B，只作为历史经验供给证据。', 'The one-step transfer results and the 2026-08-25 held-out-range evaluation use the same frozen 7B base model. The earlier H0 experience-supply study used 3B and remains historical evidence.'),
-    sources: [sourceFaithfulConfig],
+    sources: [h138bConfig, sourceFaithfulConfig],
   },
   {
     label: t('WebShop 任务世界', 'WebShop task world'),
@@ -44,13 +60,13 @@ const protocolCards: ProtocolCard[] = [
     label: t('训练与内部新任务', 'Training and internal fresh tasks'),
     value: 'goal_idx ≥ 500',
     body: t('训练经验来自 500–6909。H1.38B / H1.39 也从这个范围选新任务，但会排除训练时已经用过的任务身份，所以它们测试的是“学到的东西能不能迁移到没见过的内部任务”。', 'Training experience comes from 500–6909. H1.38B / H1.39 also sample fresh tasks from this range while excluding task identities used during training, so they test transfer to unseen internal tasks.'),
-    sources: [seedSplitSource],
+    sources: [seedSplitSource, h138bEvalManifest, h139EvalManifest],
   },
   {
     label: t('SEED 官方保留范围', 'SEED official held-out range'),
     value: 'goal_idx 0–499',
     body: t('历史 128-task 面板确实来自这个范围，但后续源码审计发现：validation worker 的随机种子会改变目标顺序和实际 instruction。也就是说，“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”。', 'The historical 128-task panel does come from this range, but a later source audit showed that validation worker seeds change goal ordering and the resulting instruction. Matching the numeric range is therefore not enough to reproduce the exact task semantics produced by the released SEED code.'),
-    sources: [seedSplitSource, seedSamplingSource, sourceFaithfulConfig],
+    sources: [seedValidationSizeSource, seedSplitSource, seedSamplingSource, sourceFaithfulAudit, trackASemanticValidation],
   },
 ];
 
@@ -113,7 +129,7 @@ const projectTerms = [
     <div>
       <p class="plain-boundary">{t('第一次主评测出现 0 分，并不是因为我们已经证明模型“完全不会做”，而是评分链路没有正确读懂模型输出的动作格式。修复读取方式以后，才得到可以解释的本地结果。', 'The first primary evaluation produced zeros, but those zeros did not prove that the model had zero capability. The measurement path was not reading the model action format correctly. Only after repairing that reading path did we obtain an interpretable local result.')}</p>
       <p class="technical-boundary"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('PRIMARY-v1 因动作包装格式与解析器（parser）的动作投影规则不兼容，被判为测量无效（measurement-invalid）。修复后的 PRIMARY-v2 只改变动作包装识别。之后发现的 worker-seed 问题属于“任务语义是否源码忠实”的另一层问题，不能和 parser 故障混为一谈。', 'PRIMARY-v1 was classified as measurement-invalid because the action wrapper and parser projection rules were incompatible. PRIMARY-v2 changed only wrapper recognition. The later worker-seed finding concerns source-faithful task semantics and is a separate issue from the parser failure.')}</p>
-      <OpenEvoEvidenceRefs locale={locale} sources={[{ kind: 'official-code', label: t('SEED <action> parser', 'SEED <action> parser'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` }, sourceFaithfulConfig]} compact />
+      <OpenEvoEvidenceRefs locale={locale} sources={[{ kind: 'official-code', label: t('SEED <action> parser', 'SEED <action> parser'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` }, primaryV1RawEpisode, primaryV2Analysis, sourceFaithfulAudit]} compact />
     </div>
   </div>
 

@@ -80,12 +80,14 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       '学到的经验能迁移到新的任务吗？',
       '第一代能迁移，是否意味着可以一直越学越好？',
       '这些数字会不会只是工程故障的假象？',
-      '最后还缺哪一个关键实验？',
     ]) {
       expect(resultsQuestions).toContain(question);
     }
+    expect(resultsQuestions).not.toContain("id: 'q7'");
+    expect(currentQ7).toContain('最后还缺哪一个关键实验？');
+    expect(currentQ7).toContain('id="q7"');
     expect(resultsQuestions).toContain('<details class="evidence-details"');
-    expect(currentQ7).toContain('<details class="evidence-details">');
+    expect(currentQ7).toContain('<details class="evidence-details" id="evidence-q7">');
     expect(resultsQuestions).toContain('展开实验依据');
     expect(currentQ7).toContain('展开实验依据');
     expect(resultsQuestions).not.toContain('证据链与代码回溯');
@@ -101,7 +103,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(observationTable).toBeGreaterThan(details);
     expect(transferFigure).toBeGreaterThan(details);
     expect(resultsHero).not.toContain('95% CI');
-    expect(currentQ7.indexOf('95% CI')).toBeLessThan(currentQ7.indexOf('<details class="evidence-details">'));
+    expect(currentQ7.indexOf('95% CI')).toBeLessThan(currentQ7.indexOf('<details class="evidence-details" id="evidence-q7">'));
   });
 
   it('pins the lab-reader audience and Chinese-first terminology contract at the route', () => {
@@ -113,7 +115,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
     expect(resultsHero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
     expect(resultsProtocol).toContain('解析器（parser）');
-    expect(resultsQuestions).toContain('SEED-compatible');
+    expect(resultsProtocol).toContain('source-faithful task semantics');
   });
 
   it('protects the plain-language → professional-detail → evidence layering', () => {
@@ -122,7 +124,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
     expect(resultsProtocol).toContain('专业解释：');
     expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
-    expect(currentQ7).toContain('路线 A 机器可读收尾记录');
+    expect(currentQ7).toContain('路线 A 机器可读收尾');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('专业解释：');
     expect(researchHub).toContain('适配器（adapter）');
@@ -150,11 +152,12 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(resultsHero).toContain('机制结论以实验编号 H1.41 为时间截点');
     expect(resultsQuestions).toContain('768 个回合');
-    expect(resultsQuestions).toContain('测量无效');
-    expect(resultsQuestions).toContain('BASE：任务完成度（Task Score）4.1 / 完整成功 0.0%');
-    expect(resultsQuestions).toContain('SD-LoRA：7.3 / 2.3%');
-    expect(resultsQuestions).toContain('数值 session index 不是完整任务身份');
-    expect(resultsQuestions).toContain('不是论文的确切评测分母');
+    expect(resultsQuestions).toContain('测量接口失效');
+    expect(resultsProtocol).toContain('测量无效（measurement-invalid）');
+    expect(resultsQuestions).toContain('BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%');
+    expect(resultsQuestions).toContain('自助法（bootstrap）95% CI [-0.65, +7.19]');
+    expect(resultsProtocol).toContain('worker 的随机种子会改变目标顺序和实际 instruction');
+    expect(currentQ7).toContain('不是论文当年最终使用的确切 128 题');
     expect(currentQ7).toContain('128 / 128 PASS');
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');

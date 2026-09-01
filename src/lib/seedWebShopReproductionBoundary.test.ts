@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
+const protocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
+const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 const wrapperAttribution = read('../components/research/OpenEvoActionWrapperAttribution.astro');
 const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
 const seedFigure = read('../components/research/SeedWebShopCanonicalFigure.astro');
@@ -69,8 +71,9 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(seedFigure).toContain('全新 evaluator 的第一次 validation');
     expect(seedFigure).toContain('论文 89.7 / 78.1% 背后的具体 128 题');
     expect(seedFigure).toContain('不能由公开信息唯一恢复');
-    expect(questions).toContain('公开代码规定每次 validation 是 128 个任务');
-    expect(questions).toContain('公开信息不能唯一确定');
+    expect(protocol).toContain('VAL_DATA_SIZE=128');
+    expect(protocol).toContain('SEED 公共代码任务语义审计');
+    expect(currentQ7).toContain('公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题');
     expect(nextSteps).toContain('公开代码能重建的“第一次验证”，不是论文最终 128 题');
     expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
   });
