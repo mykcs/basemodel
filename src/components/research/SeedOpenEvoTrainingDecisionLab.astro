@@ -54,8 +54,8 @@ const parameterRows = [
   ['history length', '2', t('交互协议', 'interaction protocol'), t('与 SEED 公共 WebShop Stage 1 设定对齐。', 'Aligned with the public SEED WebShop Stage-1 setting.')],
   ['rollout seeds', t('8 个不同且冻结', '8 distinct and frozen'), t('可复现探索', 'reproducible exploration'), t('3B/7B 使用同一 seed schedule；“随机”不等于“不可复现”。', '3B/7B share the same seed schedule; random does not mean irreproducible.')],
   ['malformed regeneration', '0', t('公平预算', 'fairness budget'), t('格式错不再给模型第二张彩票；API transport failure 与模型 malformed 必须分开。', 'Malformed output does not get a second lottery ticket; API transport failure and model malformation are separate states.')],
-  ['Stage 2 actor temperature', '0.7', t('OpenEvo-native 设计', 'OpenEvo-native design'), t('不是 SEED 的 WebShop 官方值；它来自 OpenEvo-side on-policy prior，并与 SEED public veRL ~1.0 明确区分。', 'Not a SEED WebShop official value; it is an OpenEvo-side on-policy prior and is explicitly distinct from the public SEED/veRL ~1.0 path.')],
-  ['Stage 2 update window', '256 rollouts', t('OpenEvo-native 设计', 'OpenEvo-native design'), t('当前 primary 的固定窗口；OpenEvo SD-LoRA 的 max_records=256 只说明训练记录规模，不等于官方规定“每 256 个 WebShop rollout 更新”。', 'Current fixed primary window; SD-LoRA max_records=256 describes training-record scale, not an official rule to update every 256 WebShop rollouts.')],
+  ['Historical Stage 2 actor temperature', '0.7', t('已取代的 OpenEvo-native v1', 'superseded OpenEvo-native v1'), t('这是 2026-08-28 冻结的旧 Stage-2 treatment 记录，不是当前 Ceiling-1.0 / OpenEVO 2.0 的 Stage-2 配置。', 'This records the superseded Stage-2 treatment frozen on 2026-08-28; it is not the current Ceiling-1.0 / OpenEVO 2.0 Stage-2 configuration.')],
+  ['Historical Stage 2 update window', '256 rollouts', t('已取代的 OpenEvo-native v1', 'superseded OpenEvo-native v1'), t('256-window 属于已经封存的历史 Stage-2 v1；当前 Ceiling-1.0 改成每 128 次任务形成一轮共同证据。SD-LoRA max_records=256 本身也不等于“每 256 个 WebShop rollout 必须更新”。', 'The 256-window belongs to the sealed historical Stage-2 v1; current Ceiling-1.0 instead forms one shared evidence round every 128 attempts. SD-LoRA max_records=256 itself also does not mean “update every 256 WebShop rollouts.”')],
   ['Trajectory analyzer', 'T=0 · 1024 tokens', t('离线分析协议', 'offline analysis protocol'), t('一条 completed trajectory ≈ 一次 primary analyzer job；bounded transport / parse retry 单独记账。', 'One completed trajectory ≈ one primary analyzer job; bounded transport/parse retries are logged separately.')],
 ] as const;
 
@@ -217,7 +217,7 @@ const history = [
     </details>
     <details class="deep-detail">
       <summary>{t('为什么 256 不是“SEED 官方更新频率”？', 'Why is 256 not an official SEED update cadence?')}</summary>
-      <p>{t('OpenEvo 官方 SD-LoRA 的 max_records=256 说明一次参数写入最多吃多少训练记录；它不等价于“WebShop 每收 256 条 rollout 就必须更新一次”。当前 256-window 是 OpenEvo-native treatment，需要和 128/256 adaptive 方案分开报告。', 'OpenEvo SD-LoRA max_records=256 limits training records for one parameter-write step; it does not mean WebShop must update every 256 rollouts. The current 256-window is an OpenEvo-native treatment and should be reported separately from a future adaptive 128/256 design.')}</p>
+      <p>{t('OpenEvo SD-LoRA 的 max_records=256 说明一次参数写入最多吃多少训练记录；它不等价于“WebShop 每收 256 条 rollout 就必须更新一次”。256-window 是已经封存的历史 OpenEvo-native v1 treatment；后来的 Ceiling-1.0 使用 128-attempt evidence round，因此这里不能再把 256 写成“当前 primary”。', 'OpenEvo SD-LoRA max_records=256 limits training records for one parameter-write step; it does not mean WebShop must update every 256 rollouts. The 256-window is the sealed historical OpenEvo-native v1 treatment; later Ceiling-1.0 uses 128-attempt evidence rounds, so 256 must not be labeled the current primary here.')}</p>
     </details>
   </section>
 
@@ -270,11 +270,11 @@ const history = [
   <section class="lab-section" id="fairness" aria-labelledby="fairness-title">
     <div class="section-heading"><span>06</span><div><small>{t('同样的练习券，不等于同样的信息量', 'Same practice tickets do not mean same information')}</small><h2 id="fairness-title">{t('公平预算', 'Fairness ledger')}</h2></div></div>
     <div class="budget-lanes">
-      <article><span>{t('环境预算', 'Environment')}</span><strong>21,920 rollouts</strong><p>1,440 Stage 1 + 20,480 Stage 2</p></article>
+      <article><span>{t('环境预算', 'Environment')}</span><strong>{t('campaign 21,920', 'campaign 21,920')}</strong><p>{t('此前冻结的 public-code-derived campaign；SEED 论文口径为 1,440 + 19,200 = 20,640', 'Previously frozen public-code-derived campaign; the SEED paper specifies 1,440 + 19,200 = 20,640')}</p></article>
       <article><span>{t('教师预算', 'Teacher / API')}</span><strong>{t('单独记账', 'Log separately')}</strong><p>jobs · prompt/completion tokens · retries · latency</p></article>
       <article><span>{t('训练预算', 'Optimization')}</span><strong>{t('单独记账', 'Log separately')}</strong><p>optimizer steps · replay exposures · GPU-hours</p></article>
     </div>
-    <p class="section-lede compact">{t('“双方都是 21,920 rollouts”只能证明 environment-interaction budget 对齐，不能证明 teacher 信息量、训练 FLOPs、token 数或更新次数相同。把三个账本同时报告，结论才不会偷偷跨层。', '“Both sides use 21,920 rollouts” establishes only matched environment interaction. It does not imply equal teacher information, training FLOPs, tokens, or update count. Report all three ledgers so claims do not silently cross layers.')}</p>
+    <p class="section-lede compact">{t('如果沿用此前冻结的 21,920 campaign，那么“双方都是 21,920”只表示这场 campaign 的 environment-interaction budget 对齐；它不是 SEED 论文 150-update 的 paper-exact 预算。teacher 信息量、训练 FLOPs、token 数和更新次数仍需单独记账。', 'If the previously frozen 21,920 campaign is retained, “both sides use 21,920” means only that this campaign matches environment interaction under its own public-code-derived budget; it is not the SEED paper-exact 150-update budget. Teacher information, training FLOPs, tokens, and update counts still require separate ledgers.')}</p>
   </section>
 
   <section class="lab-section decision-section" id="decision" aria-labelledby="decision-title">
