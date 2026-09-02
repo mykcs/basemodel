@@ -1,13 +1,13 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-08-26**
+Last reviewed: **2026-09-02**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
 
 This protocol owns the final transition from “a branch looked good at some point” to “the exact code that was accepted is the code that was merged and verified in Production.” It complements `deployment-policy.md`, `multi-pr-semantic-integration-playbook.md`, and `ui-change-visual-acceptance-gate.md`; it does not replace their provider, semantic-integration, or UI-specific rules.
 
-The historical cases that motivated these rules include `../history/2026-08-17-pr147-pr148-release-closeout.md` and `../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`.
+The historical cases that motivated these rules include `../history/2026-08-17-pr147-pr148-release-closeout.md`, `../history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`, and `../history/2026-09-02-official-external-brand-links-retrospective.md`.
 
 ## Core rule
 
@@ -50,8 +50,32 @@ A red build/test can represent different failure classes:
 | test-harness failure | valid case exceeds an unrealistically small execution timeout | fix harness budget without changing quality threshold |
 | environment failure | browser binary has missing shared libraries | repair/preflight environment, then rerun the same product checks |
 | stale test/policy | executable/current truth proves the check itself is obsolete | update the owning contract with evidence |
+| inherited base debt | candidate and exact base fail the same budget/check with the same relevant measurement | record base debt; do not blame/revert the candidate without a differential |
 
 Do not treat every red result as permission to weaken the test.
+
+### 2.1 Causal attribution requires an exact-base differential
+
+When a surprising budget, performance, geometry, static-audit, or deterministic-test failure is not clearly owned by the changed diff, reproduce the **same check on the exact intended base SHA** before claiming the candidate caused it.
+
+Use:
+
+```text
+candidate head + measurement/failure
+vs
+exact intended base + same measurement/failure
+```
+
+Interpretation:
+
+- candidate fails, base passes -> candidate regression is plausible and must be investigated;
+- candidate and base fail in the same relevant way/value -> inherited base debt until a candidate delta is demonstrated;
+- both fail but candidate is measurably worse -> separate inherited debt from candidate regression;
+- environmental conditions differ -> the A/B is not valid yet; normalize the environment first.
+
+Do not raise a threshold or remove unrelated candidate work merely because the first observed red result happened on the branch. A failing state is not yet a causal attribution.
+
+Historical example: during the 2026-09-02 official external-brand-link work, a CSS payload budget looked like a feature regression until the same exact-base check reproduced the same value on `main`.
 
 ## 3. Execution budget is not acceptance tolerance
 
@@ -111,6 +135,30 @@ Typical shared surfaces include:
 - generated/discovery surfaces.
 
 Build the final combined tree first, then validate **that tree**. A clean textual merge is not combined-product acceptance.
+
+### 5.1 Research/provenance overlaps: newest authority first, feature contribution second
+
+A UI-only or infrastructure branch can still contain stale copies of research text. When a conflict touches experiment status, artifact roots, checkpoint identity, provenance labels, result interpretation, or other scientific publication facts, treat conflict resolution as a publication-integrity boundary.
+
+Default order:
+
+```text
+current user instruction
+> current scientific authority / executable evidence
+> newest main/current publication truth
+> this PR's intended UI/engineering contribution
+> historical branch wording
+```
+
+Operationally:
+
+1. start from the newest authoritative semantic content rather than the feature branch's older whole-file copy;
+2. transplant only the intended UI/engineering behavior around that content;
+3. do not resurrect stale labels, artifact paths, experiment states, or interpretations merely because they coexist with correct feature code;
+4. after resolving conflicts, review the semantic diff against current `main`/authority before expensive acceptance;
+5. if the task itself intends to change scientific narrative, require fresh scientific authority rather than treating the merge conflict as permission to do so.
+
+This rule is stronger than “the file merged cleanly.” A compile-green tree can still publish stale science.
 
 ## 6. Validate the final combined head
 
@@ -247,9 +295,11 @@ Do not collapse these stages into “CI green” or “merged successfully.”
 - authorizing a new head with an old green report;
 - equating `mergeable` with semantically compatible;
 - changing quality thresholds to make CI green;
+- blaming a candidate for a red budget/test without checking the exact base when inherited debt is plausible;
 - accepting critical UI cases only because retry eventually passed;
 - counting a required gate as PASS when it only skipped/ignored;
 - resolving shared config by whole-file overwrite without identifying the current owner;
+- resolving research/provenance conflicts by restoring an older branch's whole-file narrative around correct UI code;
 - validating a worker head, then merging a different combined tree;
 - checking Preview but not Production;
 - letting the owner become the first person to discover predictable browser regressions.
@@ -314,6 +364,6 @@ Historical rationale: `../history/2026-08-26-results-release-node-runtime-retros
 - UI browser matrix/quality thresholds: `ui-change-visual-acceptance-gate.md` + executable Playwright tests;
 - just-in-time trigger routing: `scenario-trigger-registry.md`;
 - Results reader hierarchy / technical-depth placement: `seed-openevo-results-reader-contract.md`;
-- this file: final exact-head acceptance, required-gate execution proof, race-check, merge lock, and Preview -> Production closeout.
+- this file: final exact-head acceptance, base-vs-candidate attribution at closeout, research/provenance conflict preservation, required-gate execution proof, race-check, merge lock, and Preview -> Production closeout.
 
 When another closeout incident reveals a reusable rule, update the best existing owner and keep the incident-specific evidence under `docs/agents/history/`.

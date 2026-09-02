@@ -148,12 +148,17 @@ harness failure
 environment/runner failure
 stale test/policy
 provider quota/rate-limit failure
+inherited base debt
 ```
 
 - Do not weaken a valid threshold to get green.
 - Retries are diagnostic, not proof of stability.
 - A stale test should be updated to the current product contract, not satisfied by restoring retired UI.
 - An unsupported browser runner or missing library is environment evidence, not a browser-product failure.
+- Before attributing a surprising budget, performance, geometry, or deterministic-test failure to the candidate branch, reproduce the **same command in the same relevant environment on the exact intended base/current `main`** when the failure could plausibly pre-exist. Compare measured values and failure mode, not only PASS/FAIL.
+- `branch FAIL + base FAIL with the same relevant value/failure` is inherited base debt until evidence shows a candidate delta. Report it separately; do not raise the threshold, revert unrelated feature work, or claim a regression merely because the candidate is the tree on which the red result was first noticed.
+
+Historical differential-attribution case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md).
 
 ## 7. Chromium and WebKit have different execution boundaries
 
@@ -264,6 +269,31 @@ Conversation is not the project database.
 - Keep incident SHAs/logs/timelines under history when useful.
 - Do not preserve temporary share URLs or transient deployment states as current truth.
 - Current user instruction and executable/live truth outrank this document.
+
+## 13. Site-wide promises need site-wide proofs
+
+Words such as `all`, `every`, `site-wide`, `wherever`, `全部`, `所有`, and `凡是` create a **set-level acceptance contract**. A handful of representative routes can prove visual quality for samples; they cannot prove completeness of the set.
+
+For a cheap machine-checkable site-wide invariant:
+
+```text
+define the semantic population
+-> centralize the classifier / rendering owner
+-> build or enumerate the complete product surface
+-> assert every matching member satisfies the invariant (or is an explicit exemption)
+-> use browser sampling for appearance/interaction
+```
+
+Rules:
+
+- Prefer one shared semantic classifier/primitive over repeated per-page conditionals.
+- When the invariant concerns generated Astro HTML, a build-time `dist/**/*.html` audit is often a better completeness boundary than a Playwright crawler.
+- Source grep is not a complete rendered-site proof when links/content come from shared components, data-driven renderers, localized variants, or generated routes.
+- Browser tests remain required where the promise includes geometry, theme, focus, hover, responsive behavior, accessibility state, or interaction; they complement rather than replace the static set-level audit.
+- If a rule depends on a URL/provider identity, parse URL/protocol/hostname semantics rather than using loose substring matching; include lookalike-host regression cases.
+- Do not claim “site-wide complete” until the complete inventory/audit is green or every exemption is named and justified.
+
+Historical case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md). The brand-link feature initially passed representative visual checks while many dynamic/shared-renderer links remained unwired; a generated-output audit exposed the gap and then became executable protection.
 
 ## Definition of done
 

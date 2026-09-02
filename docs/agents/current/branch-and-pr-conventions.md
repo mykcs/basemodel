@@ -82,6 +82,23 @@ refactor: ...
 
 Choose the PR title for the semantic change. Do not assume the PR title changes Vercel eligibility; the **branch name** is what `vercel.json -> git.deploymentEnabled` evaluates.
 
+## Local Git authentication: separate account authorization from credential-helper wiring
+
+Use local Git only when the task genuinely needs a local checkout/worktree. When local `git fetch/push` authentication behaves differently from GitHub connector or GitHub CLI access, do not immediately change repository permissions, remotes, tokens, or SSH keys.
+
+Diagnose in this order:
+
+1. inspect the configured remote transport (`https://...` vs `git@github.com:...`);
+2. verify account authorization separately (`gh auth status` when GitHub CLI is the approved local credential source);
+3. if HTTPS Git is intended and `gh` is authenticated, ensure Git's credential helper is actually wired to that credential; `gh auth setup-git` is the normal GitHub CLI bridge;
+4. retry a **read-only fetch** before attempting a write;
+5. treat an SSH `Permission denied (publickey)` result as evidence about the SSH key path, not automatic proof that repository authorization is missing;
+6. never paste a PAT into the remote URL or commit credential material as the default workaround.
+
+A successful GitHub login and a functioning local Git credential helper are distinct layers. Classify the layer before mutating shared repository state.
+
+Historical case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md).
+
 ## Lifecycle and cleanup
 
 - Do not rename historical or active branches merely to satisfy this convention.
@@ -92,7 +109,7 @@ Choose the PR title for the semantic change. Do not assume the PR title changes 
 
 ## Authority
 
-This document governs naming conventions. It does not override:
+This document governs naming conventions and the BaseModel-specific local Git/PR workflow boundary. It does not override:
 
 - `vercel.json` deployment eligibility;
 - current deployment/release policy;
