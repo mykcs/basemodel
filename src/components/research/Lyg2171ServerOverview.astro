@@ -7,9 +7,9 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const userStorage = [
-  { label: t('用户一', 'User 1'), home: '97.1 GiB', docker: '10.7 GiB', total: '107.8 GiB', share: '24.7%' },
-  { label: t('用户二', 'User 2'), home: '59.0 GiB', docker: '6.81 GiB', total: '65.8 GiB', share: '15.1%' },
-  { label: t('用户三', 'User 3'), home: '17.1 GiB', docker: '5.13 GiB', total: '22.2 GiB', share: '5.1%' },
+  { label: t('用户一', 'User 1'), home: '97.1 GiB', docker: '10.9 GiB', total: '108.0 GiB', share: '24.8%' },
+  { label: t('用户二', 'User 2'), home: '60.4 GiB', docker: '6.88 GiB', total: '67.3 GiB', share: '15.4%' },
+  { label: t('用户三', 'User 3'), home: '17.1 GiB', docker: '6.75 GiB', total: '23.9 GiB', share: '5.5%' },
   { label: t('用户四', 'User 4'), home: '13.6 GiB', docker: '1.69 GiB', total: '15.3 GiB', share: '3.5%' },
   { label: t('用户五', 'User 5'), home: '4.42 GiB', docker: '3.39 GiB', total: '7.81 GiB', share: '1.8%' },
   { label: t('用户六', 'User 6'), home: '2.85 GiB', docker: '0.29 GiB', total: '3.14 GiB', share: '0.7%' },
@@ -68,10 +68,10 @@ const gpuFacts = [
   <header class="server-hero">
     <div class="server-hero__eyebrow">{t('OpenEvo / WebShop · 实验服务器', 'OpenEvo / WebShop · experiment server')}</div>
     <h1>{t('实验服务器简介', 'Experiment server overview')}</h1>
-    <p>{t('2026-09-03 的服务器库存快照显示，这台机器有 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。同期存储快照中，主文件系统约有 25.1 GiB 可用；磁盘空间仍是当前最紧张的资源。', 'The 2026-09-03 server inventory snapshot shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The storage snapshot from the same check shows about 25.1 GiB free on the main filesystem, so disk capacity remains the tightest resource.')}</p>
+    <p>{t('2026-09-03 的服务器库存快照显示，这台机器有 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。同期存储快照中，主文件系统约有 29.1 GiB 可用；磁盘空间仍是当前最紧张的资源。', 'The 2026-09-03 server inventory snapshot shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The storage snapshot from the same check shows about 29.1 GiB free on the main filesystem, so disk capacity remains the tightest resource.')}</p>
     <div class="snapshot-note">
       <strong>{t('数据时间', 'Data timestamp')}</strong>
-      <span>2026-09-03 01:11 (UTC+8)</span>
+      <span>2026-09-03 02:09 (UTC+8)</span>
       <span>{t('静态快照，不是实时监控面板', 'Static snapshot, not a live monitoring dashboard')}</span>
     </div>
   </header>
@@ -79,9 +79,9 @@ const gpuFacts = [
   <section class="priority-grid" aria-label={t('关键资源', 'Key resources')}>
     <article class="priority-card priority-card--attention">
       <span>{t('磁盘剩余', 'Disk free')}</span>
-      <strong>25.1 GiB</strong>
+      <strong>29.1 GiB</strong>
       <h2>{t('主文件系统可用空间', 'Main filesystem available')}</h2>
-      <p>{t('本次存储快照中，df 报告 94% 已使用。大 checkpoint、共享 Docker/容器层或重复实验副本仍可能很快把它推满。', 'In this storage snapshot, df reports 94% used. Large checkpoints, shared Docker/container layers, or duplicate experiment copies can still fill it quickly.')}</p>
+      <p>{t('本次存储快照中，df 报告 93% 已使用。大 checkpoint、共享 Docker/容器层或重复实验副本仍可能很快把它推满。', 'In this storage snapshot, df reports 93% used. Large checkpoints, shared Docker/container layers, or duplicate experiment copies can still fill it quickly.')}</p>
     </article>
     <article class="priority-card">
       <span>GPU</span>
@@ -99,7 +99,7 @@ const gpuFacts = [
       <span>RAM</span>
       <strong>1.0 TiB</strong>
       <h2>{t('内存容量', 'System memory')}</h2>
-      <p>{t('快照时约 65.8 GiB 正在使用，Linux 报告约 926.5 GiB available；RAM 远比磁盘宽裕。', 'At the snapshot, about 65.8 GiB was in use and Linux reported about 926.5 GiB available; RAM is far less constrained than disk.')}</p>
+      <p>{t('快照时约 64.1 GiB 正在使用，Linux 报告约 928.1 GiB available；RAM 远比磁盘宽裕。', 'At the snapshot, about 64.1 GiB was in use and Linux reported about 928.1 GiB available; RAM is far less constrained than disk.')}</p>
     </article>
   </section>
 
@@ -111,33 +111,33 @@ const gpuFacts = [
         <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。本次快照已用 388.7 GiB，df 报 94% 使用率，普通写入约剩 25.1 GiB。能按账户可靠归属的部分单独计算；共享 Docker 镜像和系统占用不强行分摊给任何个人。', 'The main filesystem has about 436.0 GiB of total capacity. This snapshot shows 388.7 GiB used, df at 94%, and about 25.1 GiB available for ordinary writes. Usage that can be reliably tied to an account is counted separately; shared Docker images and system usage are not forced onto an individual.')}</p>
+    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。本次快照已用 384.7 GiB，df 报 93% 使用率，普通写入约剩 29.1 GiB。能按账户可靠归属的部分单独计算；共享 Docker 镜像和系统占用不强行分摊给任何个人。', 'The main filesystem has about 436.0 GiB of total capacity. This snapshot shows 384.7 GiB used, df at 93%, and about 29.1 GiB available for ordinary writes. Usage that can be reliably tied to an account is counted separately; shared Docker images and system usage are not forced onto an individual.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
         <div><span>{t('文件系统', 'Filesystem')}</span><strong>436.0 GiB</strong></div>
-        <div><span>{t('已用', 'Used')}</span><strong>388.7 GiB</strong></div>
-        <div><span>{t('可用', 'Available')}</span><strong>25.1 GiB</strong></div>
-        <div><span>df Use%</span><strong>94%</strong></div>
+        <div><span>{t('已用', 'Used')}</span><strong>384.7 GiB</strong></div>
+        <div><span>{t('可用', 'Available')}</span><strong>29.1 GiB</strong></div>
+        <div><span>df Use%</span><strong>93%</strong></div>
       </div>
-      <div class="storage-bar" role="img" aria-label={t('436.0 GiB 主文件系统：可按账户归属的主目录与 Docker 写入层合计 222.0 GiB；无法归属到具体账户的 Docker 写入层 19.0 GiB；其余共享与系统占用 147.7 GiB；可用 25.1 GiB；文件系统保留与舍入 22.2 GiB。', '436.0 GiB main filesystem: 222.0 GiB is attributable to accounts through home directories plus Docker writable layers; 19.0 GiB is Docker writable-layer usage not attributable to a specific account; 147.7 GiB is other shared/system usage; 25.1 GiB is available; 22.2 GiB is filesystem reserve/rounding.') }>
-        <span class="storage-bar__users" style="width:50.9%"></span>
-        <span class="storage-bar__docker" style="width:4.4%"></span>
-        <span class="storage-bar__shared" style="width:33.9%"></span>
-        <span class="storage-bar__free" style="width:5.7%"></span>
+      <div class="storage-bar" role="img" aria-label={t('436.0 GiB 主文件系统：可按账户归属的主目录与 Docker 写入层合计 225.5 GiB；无法归属到具体账户的 Docker 写入层 12.15 GiB；其余共享与系统占用 147.1 GiB；可用 29.1 GiB；文件系统保留与舍入 22.2 GiB。', '436.0 GiB main filesystem: 225.5 GiB is attributable to accounts through home directories plus Docker writable layers; 12.15 GiB is Docker writable-layer usage not attributable to a specific account; 147.1 GiB is other shared/system usage; 29.1 GiB is available; 22.2 GiB is filesystem reserve/rounding.') }>
+        <span class="storage-bar__users" style="width:51.7%"></span>
+        <span class="storage-bar__docker" style="width:2.8%"></span>
+        <span class="storage-bar__shared" style="width:33.7%"></span>
+        <span class="storage-bar__free" style="width:6.7%"></span>
         <span class="storage-bar__reserved" style="width:5.1%"></span>
       </div>
       <div class="storage-legend">
-        <div><i class="legend-swatch legend-swatch--users"></i><span>{t('可按账户归属', 'Account-attributed')}</span><strong>222.0 GiB · 50.9%</strong></div>
-        <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker 写入层', 'Unattributed Docker writable layers')}</span><strong>19.0 GiB · 4.4%</strong></div>
-        <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统占用', 'Shared / system usage')}</span><strong>147.7 GiB · 33.9%</strong></div>
-        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>25.1 GiB · 5.7%</strong></div>
+        <div><i class="legend-swatch legend-swatch--users"></i><span>{t('可按账户归属', 'Account-attributed')}</span><strong>225.5 GiB · 51.7%</strong></div>
+        <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker 写入层', 'Unattributed Docker writable layers')}</span><strong>12.15 GiB · 2.8%</strong></div>
+        <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统占用', 'Shared / system usage')}</span><strong>147.1 GiB · 33.7%</strong></div>
+        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>29.1 GiB · 6.7%</strong></div>
         <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
       </div>
       <p class="fine-print">{t('“可按账户归属”只把主目录和能够通过容器 home 挂载明确关联到该账户的 Docker 写入层相加。共享 Docker 镜像、构建缓存和系统文件不会因为方便统计就分摊给某个用户。所有百分比均以 436.0 GiB 总容量为分母。', '“Account-attributed” adds only home-directory usage and Docker writable layers that can be tied to an account through its home mount. Shared Docker images, build cache, and system files are not assigned to a user just to make the totals look complete. All percentages use 436.0 GiB total capacity as the denominator.')}</p>
       <div class="why-df">
-        <strong>{t('为什么 df 显示 94%', 'Why df reports 94%')}</strong>
-        <p>{t('df 的 94% 不是简单的 388.7 ÷ 436.0，因为文件系统会保留一部分空间；普通写入当前约有 25.1 GiB。', 'The 94% shown by df is not simply 388.7 ÷ 436.0 because the filesystem reserves part of its capacity; about 25.1 GiB is currently available for ordinary writes.')}</p>
+        <strong>{t('为什么 df 显示 93%', 'Why df reports 93%')}</strong>
+        <p>{t('df 的 93% 不是简单的 384.7 ÷ 436.0，因为文件系统会保留一部分空间；普通写入当前约有 29.1 GiB。', 'The 93% shown by df is not simply 384.7 ÷ 436.0 because the filesystem reserves part of its capacity; about 29.1 GiB is currently available for ordinary writes.')}</p>
       </div>
       <div class="why-df">
         <strong>{t('共享 Docker 不能按名字分摊', 'Shared Docker is not assigned by name')}</strong>
@@ -179,7 +179,7 @@ const gpuFacts = [
         </tbody>
       </table>
     </div>
-    <p class="fine-print">{t('用户一到七是 2026-09-03 01:11（UTC+8）快照中按“可归属合计”从大到小重新生成的临时匿名标签，不是公开身份，也不会跨快照保持同一个编号。网页不保存真实账户与匿名编号之间的对应关系。', 'Users 1–7 are temporary anonymous labels regenerated from attributable-total ranking in the 2026-09-03 01:11 (UTC+8) snapshot. They are not public identities and the numbering does not persist across snapshots. The page does not store the mapping between real accounts and anonymous labels.')}</p>
+    <p class="fine-print">{t('用户一到七是 2026-09-03 02:09（UTC+8）快照中按“可归属合计”从大到小重新生成的临时匿名标签，不是公开身份，也不会跨快照保持同一个编号。网页不保存真实账户与匿名编号之间的对应关系。', 'Users 1–7 are temporary anonymous labels regenerated from attributable-total ranking in the 2026-09-03 02:09 (UTC+8) snapshot. They are not public identities and the numbering does not persist across snapshots. The page does not store the mapping between real accounts and anonymous labels.')}</p>
   </section>
 
   <section class="server-section">
@@ -225,7 +225,7 @@ const gpuFacts = [
     <div class="privacy-grid">
       <div>
         <strong>{t('公开展示', 'Shown publicly')}</strong>
-        <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及按可归属总量排序的匿名“用户一、用户二……”、主目录与 Docker 写入层大小。匿名编号只对应 2026-09-03 01:11（UTC+8）这次快照，不保存身份映射。', 'Total capacity, total usage, free space, GPU model/count, anonymous users ranked by attributable total, and the home-directory/Docker writable-layer split. Anonymous numbering applies only to the 2026-09-03 01:11 (UTC+8) snapshot, and no identity mapping is stored.')}</p>
+        <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及按可归属总量排序的匿名“用户一、用户二……”、主目录与 Docker 写入层大小。匿名编号只对应 2026-09-03 02:09（UTC+8）这次快照，不保存身份映射。', 'Total capacity, total usage, free space, GPU model/count, anonymous users ranked by attributable total, and the home-directory/Docker writable-layer split. Anonymous numbering applies only to the 2026-09-03 02:09 (UTC+8) snapshot, and no identity mapping is stored.')}</p>
       </div>
       <div>
         <strong>{t('不公开', 'Not shown')}</strong>
@@ -236,7 +236,7 @@ const gpuFacts = [
 
   <details class="measurement-notes">
     <summary>{t('数据来源', 'Data sources')}</summary>
-    <p>{t('主文件系统来自 df -B1 /；可识别账户的主目录来自只读 du；Docker 写入层来自容器 size 信息，并通过容器挂载到的 home 目录做匿名归属；无法可靠归属的容器写入层保留为单独一项。Docker system df 只用于汇总共享镜像、容器、卷和 build cache，不把共享镜像强行分摊给个人。CPU / GPU 规格沿用已核验的硬件配置。页面只保存匿名后的容量数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The main filesystem comes from df -B1 /; home-directory sizes for identifiable accounts come from read-only du measurements; Docker writable-layer sizes come from container size data and are anonymized by the home directory mounted into each container. Writable layers that cannot be reliably tied to an account remain separate. Docker system df is used only for shared image/container/volume/build-cache totals; shared images are not forced onto individual users. CPU/GPU specifications remain the previously verified hardware configuration. The page stores only anonymized capacity figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or the anonymous-label mapping.')}</p>
+    <p>{t('主文件系统来自 df -B1 /；可识别账户的主目录来自只读 du；Docker 写入层来自容器 size 信息，并通过容器挂载到的 home 目录做匿名归属；无法可靠归属的容器写入层保留为单独一项。本次审计尝试读取 Docker system df，但共享 daemon 的一个历史 snapshot 不一致使 daemon-wide 汇总不可用，因此页面不把该汇总当成本次事实；共享镜像也不会被强行分摊给个人。CPU / GPU 规格已在本次快照重新核验。页面只保存匿名后的容量数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The main filesystem comes from df -B1 /; home-directory sizes for identifiable accounts come from read-only du measurements; Docker writable-layer sizes come from container size data and are anonymized by the home directory mounted into each container. Writable layers that cannot be reliably tied to an account remain separate. This audit attempted Docker system df, but a historical snapshot inconsistency in the shared daemon made the daemon-wide summary unavailable, so the page does not use that summary as a current fact; shared images are still not forced onto individual users. CPU/GPU specifications were rechecked in this snapshot. The page stores only anonymized capacity figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or the anonymous-label mapping.')}</p>
   </details>
 </main>
 

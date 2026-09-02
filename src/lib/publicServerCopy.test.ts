@@ -36,10 +36,10 @@ describe('public server copy', () => {
 
   it('keeps the public storage snapshot anonymous, dated, and separate from shared Docker attribution', () => {
     for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六', '用户七']) expect(serverOverview).toContain(label);
-    for (const value of ['107.8 GiB', '65.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
-    expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
-    expect(serverOverview).toContain('19.0 GiB');
-    expect(serverOverview).toContain('147.7 GiB');
+    for (const value of ['108.0 GiB', '67.3 GiB', '23.9 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
+    expect(serverOverview).toContain('2026-09-03 02:09 (UTC+8)');
+    expect(serverOverview).toContain('12.15 GiB');
+    expect(serverOverview).toContain('147.1 GiB');
     expect(serverOverview).toContain('共享 Docker');
     expect(serverOverview).toContain('shared Docker');
     expect(serverOverview).not.toContain('我们的账户');
