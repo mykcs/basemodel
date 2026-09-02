@@ -3,6 +3,8 @@ name: Self-hosted CI
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -16,7 +18,7 @@ jobs:
   validate:
     name: basemodel-self-hosted
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.event_name != 'pull_request' ||
       (github.event.pull_request.head.repo.full_name == github.repository && github.actor == 'mykcs')
     runs-on: [self-hosted, basemodel-ci]
     timeout-minutes: 45
@@ -27,72 +29,84 @@ jobs:
       - name: Checkout tested merge candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # pull_request checks out GitHub's merge candidate, so depth 2 keeps the
-          # merge commit plus its parents. workflow_dispatch keeps full history
-          # because its merge-base with main may be arbitrarily deep.
-          fetch-depth: ${{ github.event_name == 'pull_request' && '2' || '0' }}
+          fetch-depth: ${{ (github.event_name == 'pull_request' || github.event_name == 'push') && '2' || '0' }}
           persist-credentials: false
 
-      - name: Resolve test range
-        id: range
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            base="${{ github.event.pull_request.base.sha }}"
-            if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
-              echo "::error::PR base commit $base is unavailable in the shallow checkout."
-              exit 1
-            fi
-          else
-            git fetch origin main --no-tags
-            base="$(git merge-base origin/main HEAD)"
-          fi
-          head="$(git rev-parse HEAD)"
-          echo "base=$base" >> "$GITHUB_OUTPUT"
-          echo "head=$head" >> "$GITHUB_OUTPUT"
-
-      - name: Classify CI relevance
-        id: relevance
-        shell: bash
-        env:
-          VERCEL_ENV: production
-          VERCEL_GIT_PREVIOUS_SHA: ${{ steps.range.outputs.base }}
-          VERCEL_GIT_COMMIT_SHA: ${{ steps.range.outputs.head }}
-        run: |
-          changed="$(git diff --name-only --no-renames "${{ steps.range.outputs.base }}" "${{ steps.range.outputs.head }}")"
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "needs_validation=true" >> "$GITHUB_OUTPUT"
-          elif printf '%s\n' "$changed" | grep -Eq '^\.github/(workflows/self-hosted-ci\.yml$|runner/)'; then
-            echo "needs_validation=true" >> "$GITHUB_OUTPUT"
-          elif [[ -z "$changed" ]]; then
-            echo "needs_validation=false" >> "$GITHUB_OUTPUT"
-          elif printf '%s\n' "$changed" | grep -Ev '^(docs/|AGENTS\.md$|README\.md$|\.github/)' | grep -q .; then
-            echo "needs_validation=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "needs_validation=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Setup Node 24
-        if: steps.relevance.outputs.needs_validation == 'true'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           package-manager-cache: false
 
+      - name: Resolve test range
+        id: range
+        shell: bash
+        run: |
+          set -euo pipefail
+          event="${{ github.event_name }}"
+          if [[ "$event" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          elif [[ "$event" == "push" ]]; then
+            base="${{ github.event.before }}"
+            if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+              base="$(git rev-parse HEAD^ 2>/dev/null || true)"
+            fi
+          else
+            git fetch origin main --no-tags
+            base="$(git merge-base origin/main HEAD)"
+          fi
+
+          if [[ -z "$base" ]]; then
+            echo "::error::Could not resolve a comparison base."
+            exit 1
+          fi
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$base"
+          fi
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            echo "::error::Comparison base $base is unavailable."
+            exit 1
+          fi
+
+          head="$(git rev-parse HEAD)"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "head=$head" >> "$GITHUB_OUTPUT"
+
+      - name: Validate CI planner contract
+        run: node --test tests/ci-plan.test.mjs
+
+      - name: Plan CI depth
+        id: plan
+        env:
+          CI_BASE_SHA: ${{ steps.range.outputs.base }}
+          CI_HEAD_SHA: ${{ steps.range.outputs.head }}
+        run: >-
+          node scripts/ci-plan.mjs
+          --event "${{ github.event_name }}"
+          --base "$CI_BASE_SHA"
+          --head "$CI_HEAD_SHA"
+
+      - name: Documentation contract
+        if: steps.plan.outputs.mode == 'docs'
+        env:
+          CI_BASE_SHA: ${{ steps.range.outputs.base }}
+          CI_HEAD_SHA: ${{ steps.range.outputs.head }}
+        run: node scripts/ci-docs-contract.mjs
+
       - name: Install dependencies
-        if: steps.relevance.outputs.needs_validation == 'true'
+        if: steps.plan.outputs.mode == 'full'
         run: npm ci
 
       - name: Deterministic verification
-        if: steps.relevance.outputs.needs_validation == 'true'
+        if: steps.plan.outputs.mode == 'full'
         run: npm run verify:deploy
 
       - name: Build static production artifact
-        if: steps.relevance.outputs.needs_validation == 'true'
+        if: steps.plan.outputs.mode == 'full'
         run: npm run build
 
       - name: Risk-based browser acceptance
-        if: steps.relevance.outputs.needs_validation == 'true'
+        if: steps.plan.outputs.mode == 'full'
         env:
           CI_BASE_SHA: ${{ steps.range.outputs.base }}
           CI_HEAD_SHA: ${{ steps.range.outputs.head }}
