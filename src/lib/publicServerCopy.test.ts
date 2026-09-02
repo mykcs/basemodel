@@ -78,6 +78,15 @@ describe('public server copy', () => {
     expect(staticServerDiagram).toContain('approved persistent workspace');
   });
 
+  it('ships a copyable prompt for refreshing the storage snapshot without granting cleanup authority', () => {
+    expect(serverOverview).toContain('刷新服务器空间快照');
+    expect(serverOverview).toContain('data-copy-label');
+    expect(serverOverview).toContain('server-storage-pressure-audit-sop.md');
+    expect(serverOverview).toContain('不授权清理服务器文件');
+    expect(serverOverview).toContain('Do not single out any account as “ours.”');
+    expect(serverOverview).toContain('merge to main');
+  });
+
   it('keeps code blocks content-height-driven instead of equal-height filler panels', () => {
     expect(guide).toContain('.gate-copy pre{min-height:0!important;height:auto!important');
     expect(guide).not.toMatch(/\.gate-copy pre\{[^}]*min-height:\s*(?:1\d{2}|[2-9]\d)px/i);

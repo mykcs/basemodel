@@ -16,6 +16,45 @@ const userStorage = [
   { label: t('用户七', 'User 7'), home: '<0.01 GiB', docker: '<0.01 GiB', total: '<0.01 GiB', share: '<0.1%' },
 ];
 
+const refreshPrompt = t(
+  `请刷新 BaseModel 服务器页面的空间使用快照。
+
+目标页面：https://basemodel-preview.vercel.app/research/seed-openevo/flow/server/
+仓库：mykcs/basemodel
+
+请先读取仓库中的 docs/agents/current/server-storage-pressure-audit-sop.md，并按其中流程执行。
+
+要求：
+1. 先对共享实验服务器做只读空间审计，不要因为这条 Prompt 自动删除、清理、移动或重下载任何模型、checkpoint、run、缓存、容器或镜像。
+2. 读取主文件系统的 total / used / available / Use%，再统计每个可识别账户的主目录占用。
+3. 对 Docker 只统计能够通过 home mount 可靠归属到账户的 writable layer；共享镜像、build cache、volume、无法可靠归属的容器层和系统文件必须单独保留，不能按名字或标签强行分摊给某个人。
+4. 所有账户按“主目录 + 可归属 Docker writable layer”的合计从大到小重新排序，只在公开页面写成“用户一、用户二……”；不要把任何账户单独标成“我们”，不要公开或持久化真实用户名、home 路径、容器名/ID、SSH 信息、IP、GPU UUID，也不要保存真实账户与匿名编号的映射。
+5. 同时刷新页面上仍然需要的 CPU、RAM、GPU 库存事实；库存事实、实验分配和 GPU 使用授权必须分开。
+6. 页面必须显示明确的 UTC+8 快照时间，并说明这是静态快照，不是实时监控。
+7. 用本次实测数据更新中文和英文 server 页面及相关测试；不要从旧页面抄“当前”数字。
+8. 修改后运行仓库要求的 deterministic Gate、build、overflow 和 UI/browser 验收；开 PR，确认 exact-head Preview 后合并到 main，并检查 Production 页面。
+
+最后请汇报：本次快照时间、磁盘总量/已用/可用、匿名用户可归属总量、未归属 Docker 写入层、共享/系统占用、PR、merge commit 和 Production 验收结果。`,
+  `Refresh the BaseModel server storage snapshot.
+
+Target page: https://basemodel-preview.vercel.app/research/seed-openevo/flow/server/
+Repository: mykcs/basemodel
+
+Read docs/agents/current/server-storage-pressure-audit-sop.md first and follow that procedure.
+
+Requirements:
+1. Start with a read-only audit of the shared experiment server. This prompt does not authorize deleting, cleaning, moving, or redownloading models, checkpoints, runs, caches, containers, or images.
+2. Measure total / used / available / Use% for the main filesystem, then measure each identifiable account home directory.
+3. For Docker, attribute only writable layers that can be reliably tied to an account through its home mount. Keep shared images, build cache, volumes, unattributed container layers, and system files separate; never assign them to a person from names or labels.
+4. Sort all accounts by attributable total (home + attributable Docker writable layer) and publish only temporary anonymous labels User 1, User 2, and so on. Do not single out any account as “ours.” Do not publish or persist usernames, home paths, container names/IDs, SSH details, IPs, GPU UUIDs, or the real-account-to-anonymous-label mapping.
+5. Refresh any CPU, RAM, and GPU inventory facts that the page still needs. Keep server inventory, experiment allocation, and GPU authorization distinct.
+6. Show an explicit UTC+8 snapshot time and state that this is a static snapshot, not live monitoring.
+7. Update both Chinese and English server pages and related tests from the new measurements; do not copy “current” values from the old page.
+8. Run the repository-required deterministic Gate, build, overflow, and UI/browser acceptance; open a PR, verify the exact-head Preview, merge to main, and verify Production.
+
+Finally report the snapshot time, filesystem total/used/free, anonymous attributable totals, unattributed Docker writable layers, shared/system usage, PR, merge commit, and Production acceptance result.`
+);
+
 const gpuFacts = [
   { k: t('GPU 数量', 'GPU count'), v: '8 × RTX 5090' },
   { k: t('代际 / 架构', 'Generation / architecture'), v: 'GeForce RTX 50 · Blackwell' },
@@ -161,9 +200,23 @@ const gpuFacts = [
     </div>
   </section>
 
-  <section class="server-section server-section--privacy">
+  <section class="server-section">
     <div class="section-heading">
       <span>04</span>
+      <div>
+        <small>{t('快捷操作', 'Quick action')}</small>
+        <h2>{t('刷新服务器空间快照', 'Refresh the server storage snapshot')}</h2>
+      </div>
+    </div>
+    <p class="section-lede">{t('这个 Prompt 用来把当前页面的刷新流程带到新的 ChatGPT 对话里。复制后直接发送即可；它默认只做只读审计和网页更新，不授权清理服务器文件。', 'This prompt carries the page-refresh workflow into a new ChatGPT conversation. Copy and send it directly; by default it authorizes only a read-only audit and webpage update, not server cleanup.')}</p>
+    <div class="refresh-prompt">
+      <pre data-copy-label={t('复制刷新 Prompt', 'Copy refresh prompt')}><code>{refreshPrompt}</code></pre>
+    </div>
+  </section>
+
+  <section class="server-section server-section--privacy">
+    <div class="section-heading">
+      <span>05</span>
       <div>
         <small>{t('隐私边界', 'Privacy boundary')}</small>
         <h2>{t('资源归属与隐私', 'Usage attribution and privacy')}</h2>
@@ -257,6 +310,10 @@ const gpuFacts = [
   .gpu-note{margin-top:.85rem;padding:1rem;border:1px solid var(--line);border-radius:14px}
   .gpu-note strong{font-size:.8rem}
   .gpu-note p{margin:.3rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}
+
+  .refresh-prompt{max-width:100%}
+  .refresh-prompt pre{max-height:32rem;overflow:auto;margin:0;padding:1rem;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--ink) 3%,var(--surface));white-space:pre-wrap;overflow-wrap:anywhere;font-size:.72rem;line-height:1.65}
+  .refresh-prompt code{font:inherit;color:inherit}
 
   .privacy-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
   .privacy-grid>div{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
