@@ -8,7 +8,10 @@ const labEn = read('src/pages/en/lab.astro');
 const serverExplainer = read('src/components/research/explainer/ServerExplainer.tsx');
 const staticServerDiagram = read('src/components/research/ServerAuthorityDiagram.astro');
 const experimentProgram = read('src/components/research/OpenEvoExperimentProgram.astro');
-const publicOwners = [guide, labZh, labEn, serverExplainer, staticServerDiagram, experimentProgram];
+const serverOverview = read('src/components/research/Lyg2171ServerOverview.astro');
+const serverRouteZh = read('src/pages/research/seed-openevo/flow/server.astro');
+const serverRouteEn = read('src/pages/en/research/seed-openevo/flow/server.astro');
+const publicOwners = [guide, labZh, labEn, serverExplainer, staticServerDiagram, experimentProgram, serverOverview, serverRouteZh, serverRouteEn];
 
 const forbidden = [
   'dev-wangr',
@@ -29,6 +32,23 @@ describe('public server copy', () => {
     for (const source of publicOwners) {
       for (const value of forbidden) expect(source).not.toContain(value);
     }
+  });
+
+  it('keeps the public storage snapshot anonymous, dated, and separate from shared Docker attribution', () => {
+    for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六', '用户七']) expect(serverOverview).toContain(label);
+    for (const value of ['107.8 GiB', '65.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
+    expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
+    expect(serverOverview).toContain('19.0 GiB');
+    expect(serverOverview).toContain('147.7 GiB');
+    expect(serverOverview).toContain('共享 Docker');
+    expect(serverOverview).toContain('shared Docker');
+    expect(serverOverview).not.toContain('我们的账户');
+    expect(serverOverview).not.toContain('我们的主目录');
+    expect(serverOverview).not.toContain('Our home directory');
+    expect(serverOverview).not.toMatch(/\/data\/home\//);
+    expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
+    expect(serverRouteZh).toContain('2026-09-03 实验服务器库存与存储快照');
+    expect(serverRouteEn).toContain('2026-09-03 server inventory and storage snapshot');
   });
 
   it('uses transferable role placeholders in the public reproduction runbook', () => {

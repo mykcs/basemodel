@@ -137,7 +137,7 @@ For the concrete failure mode where a recent broad audit became stale within day
 
 ### `/lab/`, remote compute, SSH/SFTP/rsync, or hardware disclosure
 
-Read [`current/personal-compute-profile-consumer.md`](current/personal-compute-profile-consumer.md) plus the matched scenario trigger. Keep personal device inventories, private profile feeds, hostnames, usernames, VPN endpoints, tokens, and other identifying infrastructure out of the public repository. Publish only minimum reproducibility-relevant aggregate facts.
+Read [`current/personal-compute-profile-consumer.md`](current/personal-compute-profile-consumer.md) plus the matched scenario trigger. Keep personal device inventories, private profile feeds, hostnames, usernames, VPN endpoints, tokens, and other identifying infrastructure out of the public repository. Publish only minimum reproducibility-relevant aggregate facts. For shared experiment-server disk pressure, storage attribution, or cleanup, also load [`current/server-storage-pressure-audit-sop.md`](current/server-storage-pressure-audit-sop.md).
 
 ### Private → public visibility change
 

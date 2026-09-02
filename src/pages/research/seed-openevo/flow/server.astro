@@ -4,7 +4,7 @@ import SeedOpenEvoResearchNav from '../../../../components/research/SeedOpenEvoR
 import Lyg2171ServerOverview from '../../../../components/research/Lyg2171ServerOverview.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="lyg2171 服务器简介" description="lyg2171 实验服务器的硬件与资源快照：CPU、内存、8×RTX 5090，以及 2026-09-02 的主文件系统容量、匿名用户 1–6 与我们的主目录 / Docker 写入层占用和剩余空间。" locale={locale}>
+<AppLayout title="实验服务器简介" description="2026-09-03 实验服务器库存与存储快照：CPU、内存、可见的 8×RTX 5090、主文件系统容量、匿名账户主目录与 Docker 写入层、共享占用和剩余空间。" locale={locale}>
   <div class="server-route">
     <SeedOpenEvoResearchNav locale={locale} page="server" />
     <Lyg2171ServerOverview locale={locale} />

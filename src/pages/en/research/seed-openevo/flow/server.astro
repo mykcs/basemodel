@@ -4,7 +4,7 @@ import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenE
 import Lyg2171ServerOverview from '../../../../../components/research/Lyg2171ServerOverview.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="lyg2171 server overview" description="Hardware and resource snapshot for the lyg2171 experiment server: CPU, memory, 8×RTX 5090 GPUs, plus the 2026-09-02 filesystem capacity, home-directory / Docker writable-layer usage for our account and anonymous Users 1–6, and remaining space." locale={locale}>
+<AppLayout title="Experiment server overview" description="2026-09-03 server inventory and storage snapshot: CPU, memory, 8 visible RTX 5090 GPUs, filesystem capacity, anonymous home-directory and Docker writable-layer usage, shared usage, and remaining space." locale={locale}>
   <div class="server-route">
     <SeedOpenEvoResearchNav locale={locale} page="server" />
     <Lyg2171ServerOverview locale={locale} />
