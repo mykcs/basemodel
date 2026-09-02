@@ -11,6 +11,7 @@
 - [`research-site-presentation-contract.md`](research-site-presentation-contract.md) — 结论、解释与技术证据分层；
 - [`scientific-state-provenance.md`](scientific-state-provenance.md) — current / historical / successor / amended lineage 与 provenance 边界；
 - [`ui-change-visual-acceptance-gate.md`](ui-change-visual-acceptance-gate.md) — Desktop / iPhone / light / dark / reduced-motion 的验收要求。
+- [`openevo-capability-exploration-two-map-implementation-runbook.md`](openevo-capability-exploration-two-map-implementation-runbook.md) — 实施顺序、latest-authority 同步、一项一汇报协议、完整测试 / 浏览器 / Preview / PR / Production 验收合同。
 
 本文件是当前 OpenEvo capability-exploration 的**页面结构与实施合同**。它不冻结任何 live round、score、PID、GPU 或最新 SHA；这些易变事实必须继续从 `mykcs/openevo-experiment` 的当前 scientific authority 读取。
 
