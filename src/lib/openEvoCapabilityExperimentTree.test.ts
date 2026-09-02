@@ -119,7 +119,7 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(lobby).toContain('data-map-choice="redesign"');
     expect(lobby).toContain('/capability-exploration/first-run/');
     expect(lobby).toContain('/capability-exploration/openevo-2-0/');
-    expect(zhFirstRun).toContain('data-testid="openevo-first-run-shell"');
-    expect(enFirstRun).toContain('data-testid="openevo-first-run-shell"');
+    expect(zhFirstRun).toContain('OpenEvoFirstRunMap');
+    expect(enFirstRun).toContain('OpenEvoFirstRunMap');
   });
 });
