@@ -23,16 +23,16 @@ const rows = [
 <section id="stage1-version-comparison" class="s1-version" data-testid="stage1-version-comparison" aria-labelledby="stage1-version-title">
   <header class="s1-version__head">
     <p>STAGE 1 · TRAJECTORY COLLECTION VERSION</p>
-    <h2 id="stage1-version-title">{t('同一批题，两次 Stage 1：新版是当前主线，旧版保留作历史对照','Same tasks, two Stage-1 realizations: new is current, old remains historical')}</h2>
-    <span>{t('Stage 2 后来设计错了，不代表旧 Stage 1 作废。旧版 Stage 1 仍是有效的历史 trajectory corpus；但它和 Ceiling-1.0 使用的 corrected Stage 1 不是“完全相同的 1,440 条”，因为随机 seed 与真实 decoding 行为不同。','The later Stage-2 design error does not invalidate old Stage 1. The old Stage 1 remains a valid historical trajectory corpus, but it is not the identical set of 1,440 trajectories used by the corrected Stage 1 in Ceiling-1.0 because the seed and effective decoding differ.')}</span>
+    <h2 id="stage1-version-title">{t('同一批题，两次历史 Stage 1：都保留，但新版 successor 还会再采一批','Same tasks, two historical Stage-1 realizations: both remain evidence, while the current successor recollects again')}</h2>
+    <span>{t('Stage 2 后来设计错了，不代表旧 Stage 1 作废。旧版 Stage 1 仍是有效的历史 trajectory corpus；但它和 Ceiling-1.0 使用的 corrected Stage 1 不是“完全相同的 1,440 条”，因为随机 seed 与真实 decoding 行为不同。现在 Harness201.1 又改变了 action channel，因此当前 successor 会再从 fresh Stage 1 重采，下面两批都只作为历史证据。','The later Stage-2 design error does not invalidate old Stage 1. The old Stage 1 remains a valid historical trajectory corpus, but it is not the identical set of 1,440 trajectories used by the corrected Stage 1 in Ceiling-1.0 because the seed and effective decoding differ. Harness201.1 later changes the action channel again, so the current successor recollects another fresh Stage 1; both sets below are historical evidence.')}</span>
   </header>
 
   <div class="s1-version__versions" aria-label={t('Stage 1 新旧版本','New and old Stage-1 versions')}>
     <article class="s1-version__card s1-version__card--current">
-      <span>{t('01 · 当前主线 / 优先展示','01 · CURRENT / PRIMARY')}</span>
-      <h3>{t('新版：fresh corrected Stage 1','New: fresh corrected Stage 1')}</h3>
+      <span>{t('01 · Ceiling-1.0 历史主线','01 · CEILING-1.0 HISTORICAL')}</span>
+      <h3>{t('Ceiling-1.0：fresh corrected Stage 1（历史）','Ceiling-1.0: fresh corrected Stage 1 (historical)')}</h3>
       <dl><div><dt>rollouts</dt><dd>180 × 8 = 1,440</dd></div><div><dt>seed base</dt><dd>148000000</dd></div><div><dt>runtime decoding</dt><dd>0.4 · 1.0 · 0 · 1.0</dd></div></dl>
-      <p>{t('这是 OpenEVO-Ceiling-1.0 当前采用的 Stage 1：独立重新采样，并把冻结的 top_p / top_k / repetition penalty 真正传进 Transformers。','This is the current OpenEVO-Ceiling-1.0 Stage 1: an independent resample with the frozen top_p / top_k / repetition penalty actually forwarded into Transformers.')}</p>
+      <p>{t('这是 OpenEVO-Ceiling-1.0 当时采用的 Stage 1：独立重新采样，并把冻结的 top_p / top_k / repetition penalty 真正传进 Transformers。','This is the Stage 1 used by the historical OpenEVO-Ceiling-1.0 lineage: an independent resample with the frozen top_p / top_k / repetition penalty actually forwarded into Transformers.')}</p>
     </article>
     <a class="s1-version__card s1-version__card--legacy" href={p('/research/seed-openevo/study/capability-exploration/stage1-previous/')} aria-label={t('打开旧版 Stage 1 历史产物','Open old Stage-1 historical artifacts')}>
       <span>{t('02 · 历史对照 / 不删除','02 · HISTORICAL / RETAINED')}</span>

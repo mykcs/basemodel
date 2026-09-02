@@ -26,7 +26,7 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
     <div>
       <p>OPENEVO 2.0 · MINI STUDY 01</p>
       <h1>{t('Harness 2.0 迷你实验','Harness 2.0 mini study')}</h1>
-      <strong>{t('安全门通过，但还不能进入正式 Stage 2。','The safety gate passed, but formal Stage 2 is still on hold.')}</strong>
+      <strong>{t('这次历史资格检查的安全门通过，但 v1 当时没有进入正式 Stage 2。','This historical qualification passed its safety gate, but v1 did not enter formal Stage 2 at the time.')}</strong>
       <span>{t('我们用同一个 3B 起点、同一批已经消费过的训练题和同一套采样规则，比较“完全不注入 carrier”与“注入 interface-safe Harness 2.0”。这次实验不是为了挑高分版本，而是先确认新的 harness 会不会把动作接口搞坏。','Using the same 3B starting point, the same already-consumed training tasks, and the same sampling rules, we paired a no-carrier control against the interface-safe Harness 2.0 candidate. This was not a score-selection experiment; it first asked whether the new harness damages the action interface.')}</span>
     </div>
     <aside aria-label={t('实验结论','Study decision')}>
@@ -36,9 +36,9 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
       <span>V1 FORMAL ACTIVATION</span>
       <strong>HOLD</strong>
       <small>{t('这是 Mini Study 01 当时的 v1 closeout；后续 2.0.1 mechanical qualification 已经 PASS。','This is the v1 closeout from Mini Study 01; the later 2.0.1 mechanical qualification has since passed.')}</small>
-      <span>2.0.1 FOLLOW-UP</span>
+      <span>2.0.1 FOLLOW-UP · HISTORICAL SNAPSHOT</span>
       <strong>MECHANICAL PASS</strong>
-      <small>{t('Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；formal_stage2_authorized=false。','Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; formal_stage2_authorized=false.')}</small>
+      <small>{t('当时 Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；formal_stage2_authorized=false。','At that time, scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; formal_stage2_authorized=false.')}</small>
     </aside>
   </header>
 
@@ -126,8 +126,8 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
 
   <section class="h2study__section" aria-labelledby="next-title">
     <p class="kicker">HARNESS 2.0.1 · FOLLOW-UP</p>
-    <h2 id="next-title">{t('这四项是 v1 closeout 当时冻结的 2.0.1 计划；后续机械资格已经 PASS','These four items were the frozen 2.0.1 plan from the v1 closeout; the later mechanical qualification is now PASS')}</h2>
-    <p>{t('Mini Study 01 的 v1 结果保持原样，不把后来的 2.0.1 paired metrics 倒写进旧实验。这里另外同步 2.0.1 的后续状态：mechanical qualification = PASS；scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；下一阶段 = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL。','The Mini Study 01 v1 result remains unchanged; later 2.0.1 paired metrics are not backfilled into the old study. This section separately reports the 2.0.1 follow-up state: mechanical qualification = PASS; scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; next phase = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL.')}</p>
+    <h2 id="next-title">{t('这四项是 v1 closeout 当时冻结的 2.0.1 计划；下面的 PASS / HOLD 是当时的 follow-up 快照','These four items were the frozen 2.0.1 plan from the v1 closeout; the PASS / HOLD below is a historical follow-up snapshot')}</h2>
+    <p>{t('Mini Study 01 的 v1 结果保持原样，不把后来的 2.0.1 paired metrics 倒写进旧实验。这里保留当时的 2.0.1 follow-up：mechanical qualification = PASS；scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT；当时下一阶段是 STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL。之后研究继续推进到 Harness201.1 + fresh Stage 1 successor；当前状态请回到父级“重新设计 OpenEvo”地图。','The Mini Study 01 v1 result remains unchanged; later 2.0.1 paired metrics are not backfilled into the old study. This section preserves the 2.0.1 follow-up snapshot: mechanical qualification = PASS; scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT; the next phase at that time was STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL. Research later advanced to a Harness201.1 + fresh Stage-1 successor; return to the parent Redesigning OpenEvo map for the current state.')}</p>
     <ol class="h2study__next">
       <li><span>01</span><div><strong>{t('共享 prompt 明确 English-only','Make the shared prompt explicitly English-only')}</strong><p>{t('Control 与 Harness2 一起改；parser 不放宽。','Change both Control and Harness2; do not relax the parser.')}</p></div></li>
       <li><span>02</span><div><strong>{t('Context Governor 真正变薄','Make the Context Governor genuinely thin')}</strong><p>{t('不再每一步同时注入 Memory + Skill + Agent；保留小型全局 authority，只提供当前最相关的非全局经验。','Stop injecting Memory + Skill + Agent on every step; keep a tiny global authority policy and only the minimal relevant non-global context.')}</p></div></li>

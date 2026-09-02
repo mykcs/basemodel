@@ -4,7 +4,7 @@ import { openEvoHarness2Qualification as q } from '../data/openEvoHarness2Qualif
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const component = read('../components/research/OpenEvoHarness2MiniStudy.astro');
-const parent = read('../components/research/OpenEvo2Strategy.astro');
+const parent = read('../components/research/OpenEvoRedesignMap.astro');
 const chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const zhRoute = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
 const enRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
@@ -45,24 +45,24 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).toContain('Mini Study 01 的 v1 结果保持原样');
     expect(component).toContain('mechanical qualification = PASS');
     expect(component).toContain('scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT');
-    expect(component).toContain('下一阶段 = STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
+    expect(component).toContain('当时下一阶段是 STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
     expect(component).toContain('不能把它写成已经证实的因果原因');
     expect(component).toContain('不能继续把责任归到“3B 本身”');
     expect(component).toContain('不能单独证明它造成了非法动作增加');
     expect(component).not.toContain('3B 本身在语言 contract');
   });
 
-  it('wires the study into the bilingual OpenEVO 2.0 research path', () => {
+  it('wires the historical study into the bilingual redesign path without making the old HOLD current', () => {
     expect(zhRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(enRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(parent).toContain('/openevo-2-0/harness-2-0/');
-    expect(parent).toContain('MINI STUDY 01 · 128 + 128');
-    expect(chooser).toContain('第三版 · 2.0.1 机械资格已完成');
-    expect(chooser).toContain('HOLD_FOR_STAGE2_READINESS_AUDIT');
-    expect(chooser).toContain('formal_stage2_authorized=false');
-    expect(parent).toContain('这条 Harness 分支在方法空间里的位置');
-    expect(parent).toContain('部署时只用学到的 policy');
-    expect(parent).toContain('不能把 Harness 2.x 写成“更接近 SEED”的必然下一步');
-    expect(parent).toContain('https://github.com/jinyangwu/SEED');
+    expect(parent).toContain('HARNESS201.1 · NEW SCIENTIFIC BOUNDARY');
+    expect(parent).toContain('FRESH STAGE 1');
+    expect(parent).toContain('5/64');
+    expect(chooser).toContain('第三次转折 · 从 Stage 1 重开');
+    expect(chooser).toContain('Harness201.1 后重新采 Stage 1');
+    expect(chooser).not.toContain('Stage 1 不重做');
+    expect(component).toContain('PASS / HOLD 是当时的 follow-up 快照');
+    expect(component).toContain('Harness201.1 + fresh Stage 1 successor');
   });
 });
