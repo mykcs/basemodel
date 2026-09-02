@@ -21,7 +21,7 @@ test('future route silhouettes are visible before they unlock, and selected node
   const exit = tree.locator('[data-step="floor-exit"]');
 
   await expect(analysis).toBeVisible();
-  await expect(analysis).toHaveAttribute('hidden', '');
+  await expect(analysis).toHaveAttribute('data-preview-state', 'preview');
   await expect(exit).toBeVisible();
   expect(Number(await stage1.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(1);
   expect(Number(await analysis.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(0.5);
@@ -29,13 +29,32 @@ test('future route silhouettes are visible before they unlock, and selected node
 
   await stage1.click();
   await expect(stage1).toHaveCSS('opacity', '1');
-  await expect(analysis).not.toHaveAttribute('hidden', '');
+  await expect(analysis).toHaveAttribute('data-preview-state', 'active');
   const currentAnalysis = tree.locator('[data-analysis="current-state"]');
   expect(Number(await currentAnalysis.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(1);
 
   await currentAnalysis.click();
   await expect(currentAnalysis).toHaveCSS('opacity', '1');
-  await expect(exit).not.toHaveAttribute('hidden', '');
+  await expect(exit).toHaveAttribute('data-preview-state', 'active');
+});
+
+test('MiniMax runtime comparison is an optional side study, not a Stage-2 gate', async ({ page }) => {
+  await page.goto(path, { waitUntil: 'domcontentloaded' });
+  const tree = page.getByTestId('openevo-capability-experiment-tree');
+  const study = tree.locator('[data-runtime-study]');
+
+  await tree.locator('[data-stage1="current"]').click();
+  await expect(study).toHaveAttribute('data-preview-state', 'preview');
+  await tree.locator('[data-analysis="current-state"]').click();
+  await expect(study).toHaveAttribute('data-preview-state', 'active');
+
+  await tree.locator('[data-analysis-runtime="server"]').click();
+  await expect(tree.locator('[data-runtime-detail-panel="server"]')).toBeVisible();
+  await expect(tree.locator('[data-selected-path-text]')).toContainText('服务器 CPU');
+
+  await tree.locator('[data-analysis-runtime="kaggle"]').click();
+  await expect(tree.locator('[data-runtime-detail-panel="kaggle"]')).toBeVisible();
+  await expect(tree.locator('[data-selected-path-text]')).toContainText('Kaggle CPU');
 });
 
 test('Stage 1 is floor one and entering Stage 2 changes the map', async ({ page }) => {
@@ -63,7 +82,7 @@ test('historical Stage 2 shows its zero-update outcome before the repair gate', 
   await expect(bug).toContainText('没有任何完整数据块触发参数更新');
   await expect(outcome).toBeVisible();
   await expect(outcome).not.toHaveAttribute('hidden', '');
-  await expect(repairColumn).toHaveAttribute('hidden', '');
+  await expect(repairColumn).toHaveAttribute('data-preview-state', 'preview');
 
   // The historical result belongs to the failed run itself; it does not require repairing the rule first.
   await outcome.click();
@@ -76,7 +95,7 @@ test('historical Stage 2 shows its zero-update outcome before the repair gate', 
 
   // Repairing the bug is a separate continuation action for successor designs.
   await bug.click();
-  await expect(repairColumn).not.toHaveAttribute('hidden', '');
+  await expect(repairColumn).toHaveAttribute('data-preview-state', 'active');
   const repair = tree.locator('[data-repair="legacy-gate"]');
   await repair.click();
   await expect(repair).toHaveClass(/rogue-node--resolved/);
@@ -90,10 +109,10 @@ test('Ceiling-1.0 and OpenEVO 2.0 use separate arrows and separate next nodes', 
   const ceilingOutcome = tree.locator('[data-current-outcome-slot="ceiling"]');
   const evo2Outcome = tree.locator('[data-current-outcome-slot="evo2"]');
 
-  await expect(ceilingArrow).toHaveAttribute('hidden', '');
-  await expect(evo2Arrow).toHaveAttribute('hidden', '');
-  await expect(ceilingOutcome).toHaveAttribute('hidden', '');
-  await expect(evo2Outcome).toHaveAttribute('hidden', '');
+  await expect(ceilingArrow).toHaveAttribute('data-preview-state', 'preview');
+  await expect(evo2Arrow).toHaveAttribute('data-preview-state', 'preview');
+  await expect(ceilingOutcome).toHaveAttribute('data-preview-state', 'preview');
+  await expect(evo2Outcome).toHaveAttribute('data-preview-state', 'preview');
 
   const rowCenters = await tree.locator('[data-stage2-branch="current"]').evaluate((board) => {
     const center = (el: Element | null) => {
@@ -113,19 +132,19 @@ test('Ceiling-1.0 and OpenEVO 2.0 use separate arrows and separate next nodes', 
   expect(Math.abs(rowCenters.ceilingArrow - rowCenters.evo2Arrow)).toBeGreaterThan(70);
 
   await tree.locator('[data-stage2="ceiling"]').click();
-  await expect(ceilingArrow).not.toHaveAttribute('hidden', '');
-  await expect(evo2Arrow).toHaveAttribute('hidden', '');
-  await expect(ceilingOutcome).not.toHaveAttribute('hidden', '');
-  await expect(evo2Outcome).toHaveAttribute('hidden', '');
-  await expect(ceilingOutcome).toContainText('只属于 Ceiling-1.0 这条路线');
+  await expect(ceilingArrow).toHaveAttribute('data-preview-state', 'active');
+  await expect(evo2Arrow).toHaveAttribute('data-preview-state', 'preview');
+  await expect(ceilingOutcome).toHaveAttribute('data-preview-state', 'active');
+  await expect(evo2Outcome).toHaveAttribute('data-preview-state', 'preview');
+  await expect(ceilingOutcome).toContainText('继续 7B 训练');
 
   await tree.locator('[data-stage2="evo2"]').click();
-  await expect(ceilingArrow).toHaveAttribute('hidden', '');
-  await expect(evo2Arrow).not.toHaveAttribute('hidden', '');
-  await expect(ceilingOutcome).toHaveAttribute('hidden', '');
-  await expect(evo2Outcome).not.toHaveAttribute('hidden', '');
+  await expect(ceilingArrow).toHaveAttribute('data-preview-state', 'preview');
+  await expect(evo2Arrow).toHaveAttribute('data-preview-state', 'active');
+  await expect(ceilingOutcome).toHaveAttribute('data-preview-state', 'preview');
+  await expect(evo2Outcome).toHaveAttribute('data-preview-state', 'active');
   await expect(evo2Outcome).toContainText('Harness 2.0.1 · Mechanical PASS');
-  await expect(evo2Outcome).not.toContainText('Ceiling-1.0 当前运行线');
+  await expect(evo2Outcome).not.toContainText('继续 7B 训练');
 });
 
 test('OpenEVO 2.0 shows Harness 2.0.1 mechanical PASS and locks readiness instead', async ({ page }) => {

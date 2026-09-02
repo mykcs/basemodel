@@ -103,7 +103,31 @@ const stories = [
             </div>
           </div>
           <div data-analysis-branch="current" data-route-preview-branch data-preview-state="preview">
-            <button class="rogue-node rogue-node--current" type="button" data-analysis="current-state" aria-pressed="false"><i>◇</i><b>{t('1,440 条 MiniMax 分析','1,440 MiniMax analyses')}</b><small>OPSD · Text Memory · Skill Bundle · Agent System</small></button>
+            <div class="current-analysis-stack">
+              <button class="rogue-node rogue-node--current" type="button" data-analysis="current-state" aria-pressed="false"><i>◇</i><b>{t('1,440 条 MiniMax 分析','1,440 MiniMax analyses')}</b><small>OPSD · Text Memory · Skill Bundle · Agent System</small></button>
+              <section class="runtime-study" data-runtime-study data-preview-state="preview" aria-labelledby="runtime-study-title">
+                <header class="runtime-study__head">
+                  <div><span>{t('可选支线研究','OPTIONAL SIDE STUDY')}</span><strong id="runtime-study-title">{t('分析发生在哪里，会改变 MiniMax 学到的东西吗？','Does the analysis runtime change what MiniMax learns?')}</strong></div>
+                  <em>{t('不阻塞 Stage 2','Does not gate Stage 2')}</em>
+                </header>
+                <div class="runtime-study__choices">
+                  <button class="rogue-node rogue-node--sidequest" type="button" data-analysis-runtime="server" aria-pressed="false"><i>⌂</i><b>{t('服务器 CPU','Server CPU')}</b><small>{t('同一批 3B 轨迹留在服务器，用 MiniMax-M3 做任务后分析','Keep the same 3B trajectories on the server and run MiniMax-M3 post-episode analysis')}</small></button>
+                  <button class="rogue-node rogue-node--sidequest" type="button" data-analysis-runtime="kaggle" aria-pressed="false"><i>◇</i><b>Kaggle CPU</b><small>{t('同一 1,440 条轨迹、同一 analyzer、同一参数；用 0910 账号做复现','Same 1,440 trajectories, analyzer, and settings; replicate with account 0910')}</small></button>
+                </div>
+                <div class="runtime-study__detail" data-runtime-detail>
+                  <p data-runtime-detail-default>{t('这不是新的训练阶段，只是在问：把同一份轨迹送到不同运行环境，MiniMax 的分析结构会不会系统性变化。','This is not a new training stage. It asks whether sending the same trajectories through different runtimes systematically changes the structure of MiniMax analysis.')}</p>
+                  <div data-runtime-detail-panel="server" hidden>
+                    <b>{t('服务器基线','Server baseline')}</b>
+                    <span>{t('正式 3B 分析已经 1,440 / 1,440 parse_ok。主对比会只拿其中由 0910 账号完成的 1,378 条，与 Kaggle 的对应轨迹逐条比较；账号切换前保留的 62 条单独看。','The formal 3B analysis is 1,440 / 1,440 parse_ok. The primary comparison uses the 1,378 trajectories completed under account 0910 and pairs them with the same Kaggle trajectories; the 62 pre-rotation results are analyzed separately.')}</span>
+                  </div>
+                  <div data-runtime-detail-panel="kaggle" hidden>
+                    <b>{t('Kaggle 复现','Kaggle replication')}</b>
+                    <span>{t('Kaggle 只换 CPU / 网络运行环境；轨迹、MiniMax-M3、analyzer 脚本和分析参数都保持一致。我们比较规则化程度、主题、长度、reasoning 与逐轨迹相似度，而不是只看几个词是否相同。','Kaggle changes only the CPU/network runtime; trajectories, MiniMax-M3, analyzer code, and analysis settings stay fixed. We compare rule-like structure, themes, length, reasoning, and paired trajectory similarity rather than a few word-level differences.')}</span>
+                  </div>
+                  <aside><b>{t('地图规则','MAP RULE')}</b><span>{t('如果最后没有稳定的结构差异，这条支线会折叠回一个“MiniMax 分析”节点；只有发现可重复的差异，才把“服务器 / Kaggle”升级成正式分叉。','If no stable structural difference appears, this side study collapses back into one “MiniMax analysis” node. Only a reproducible difference promotes Server / Kaggle into a formal fork.')}</span></aside>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
         <div class="map-connector" aria-hidden="true">→</div>
@@ -250,7 +274,7 @@ const stories = [
 </section>
 <script>
   document.querySelectorAll<HTMLElement>('[data-experiment-tree]').forEach((root) => {
-    const state = { stage1: '', analysis: '', stage2: '', bugResolved: false };
+    const state = { stage1: '', analysis: '', analysisRuntime: '', stage2: '', bugResolved: false };
     const one = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector);
     const all = <T extends HTMLElement>(selector: string) => [...root.querySelectorAll<T>(selector)];
     const pressed = (selector: string, active: HTMLElement | null) => all<HTMLElement>(selector).forEach((el) => el.setAttribute('aria-pressed', el === active ? 'true' : 'false'));
@@ -284,6 +308,7 @@ const stories = [
       const parts: string[] = [];
       if (state.stage1) parts.push(label('[data-stage1]', state.stage1, 'data-stage1'));
       if (state.analysis) parts.push(label('[data-analysis]', state.analysis, 'data-analysis'));
+      if (state.analysisRuntime) parts.push(label('[data-analysis-runtime]', state.analysisRuntime, 'data-analysis-runtime'));
       if (state.stage2) parts.push(label('[data-stage2]', state.stage2, 'data-stage2'));
       const target = one<HTMLElement>('[data-selected-path-text]');
       if (target) target.textContent = parts.join(' → ') || root.dataset.emptyPath || '';
@@ -332,6 +357,14 @@ const stories = [
       if (lineageIsMobile()) { bodyOverflowBeforeDialog = document.body.style.overflow; document.body.style.overflow = 'hidden'; }
       requestAnimationFrame(() => { positionLineageDetail(trigger); lineageCard.focus(); });
     };
+    const resetRuntimeStudy = () => {
+      state.analysisRuntime = '';
+      pressed('[data-analysis-runtime]', null);
+      const study = one<HTMLElement>('[data-runtime-study]'); if (study) setPreviewState(study, true);
+      const defaultCopy = one<HTMLElement>('[data-runtime-detail-default]'); if (defaultCopy) defaultCopy.hidden = false;
+      all<HTMLElement>('[data-runtime-detail-panel]').forEach((panel) => panel.hidden = true);
+    };
+
     const resetStage2Map = () => {
       closeLineageDetail(false);
       state.stage2 = ''; state.bugResolved = false;
@@ -344,7 +377,7 @@ const stories = [
     all<HTMLButtonElement>('[data-stage1]').forEach((button) => button.addEventListener('click', () => {
       if (previewDisabled(button)) return;
       state.stage1 = button.dataset.stage1 || ''; state.analysis = '';
-      pressed('[data-stage1]', button); pressed('[data-analysis]', null);
+      pressed('[data-stage1]', button); pressed('[data-analysis]', null); resetRuntimeStudy();
       const analysis = one<HTMLElement>('[data-step="analysis"]'); if (analysis) setPreviewState(analysis, false);
       all<HTMLElement>('[data-analysis-branch]').forEach((branch) => setPreviewState(branch, branch.dataset.analysisBranch !== state.stage1));
       const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) setPreviewState(exit, true);
@@ -353,9 +386,18 @@ const stories = [
 
     all<HTMLButtonElement>('[data-analysis]').forEach((button) => button.addEventListener('click', () => {
       if (previewDisabled(button)) return;
-      state.analysis = button.dataset.analysis || ''; pressed('[data-analysis]', button);
+      state.analysis = button.dataset.analysis || ''; pressed('[data-analysis]', button); resetRuntimeStudy();
+      const study = one<HTMLElement>('[data-runtime-study]'); if (study && state.analysis === 'current-state') setPreviewState(study, false);
       const exit = one<HTMLElement>('[data-step="floor-exit"]'); if (exit) setPreviewState(exit, false);
       hideStories(); updatePath();
+    }));
+
+    all<HTMLButtonElement>('[data-analysis-runtime]').forEach((button) => button.addEventListener('click', () => {
+      if (previewDisabled(button) || state.analysis !== 'current-state') return;
+      state.analysisRuntime = button.dataset.analysisRuntime || ''; pressed('[data-analysis-runtime]', button);
+      const defaultCopy = one<HTMLElement>('[data-runtime-detail-default]'); if (defaultCopy) defaultCopy.hidden = true;
+      all<HTMLElement>('[data-runtime-detail-panel]').forEach((panel) => panel.hidden = panel.dataset.runtimeDetailPanel !== state.analysisRuntime);
+      updatePath();
     }));
 
     one<HTMLButtonElement>('[data-enter-stage2]')?.addEventListener('click', (event) => {
@@ -533,6 +575,10 @@ const stories = [
 .lineage-detail__card>p{margin:0 2.2rem .28rem 0;color:var(--color-text-muted);font:800 .5rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.lineage-detail__card h3{margin:0 2rem .6rem 0;font-size:1rem;line-height:1.2}.lineage-detail__content{display:grid;gap:.58rem}.lineage-detail__content p{margin:0;font-size:.7rem;line-height:1.55}.lineage-detail__content dl{display:grid;gap:.4rem;margin:0}.lineage-detail__content dl>div{display:grid;gap:.08rem;padding-top:.38rem;border-top:1px solid var(--color-border)}.lineage-detail__content dt{font-size:.59rem;font-weight:800}.lineage-detail__content dd{margin:0;color:var(--color-text-muted);font-size:.62rem;line-height:1.45}.lineage-detail__content ul{display:grid;gap:.42rem;margin:0;padding:0;list-style:none}.lineage-detail__content li{display:grid;gap:.08rem;padding-top:.4rem;border-top:1px solid var(--color-border)}.lineage-detail__content li b{font-size:.62rem}.lineage-detail__content li span{color:var(--color-text-muted);font-size:.6rem;line-height:1.42}.lineage-detail__content>small{color:var(--color-text-muted);font-size:.55rem;line-height:1.42}.lineage-detail__action{min-height:38px;padding:.48rem .58rem;border:1px solid var(--color-border);border-radius:var(--radius-control);background:transparent;color:var(--color-text);font-size:.62rem;font-weight:760;text-align:left;cursor:pointer}.lineage-detail__action:hover,.lineage-detail__action:focus-visible{border-color:var(--color-accent);outline:none}
 .floor[data-floor="stage2"][data-route="current"] [data-current-outcome-slot="ceiling"][data-preview-state="preview"]{opacity:.42;filter:saturate(.55)}
 .map-column{display:flex;min-width:0;flex-direction:column;gap:.48rem}.map-column__label{color:var(--color-text-muted);font:800 .56rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.map-column__label--bug{color:var(--color-danger)}.map-connector{pointer-events:none;display:grid;place-items:center;color:var(--color-text-muted);font-size:1rem}.node-stack{display:grid;gap:.46rem}.node-stack--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.current-analysis-stack{display:grid;gap:.5rem}.runtime-study{display:grid;gap:.48rem;padding:.58rem;border:1px dashed color-mix(in srgb,var(--color-accent) 42%,var(--color-border));border-radius:var(--radius-panel);background:color-mix(in srgb,var(--color-accent) 2.5%,var(--color-bg));transition:opacity .15s ease,filter .15s ease}.runtime-study[data-preview-state="preview"]{opacity:.34;pointer-events:none;filter:saturate(.45)}
+.runtime-study__head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.45rem;align-items:start}.runtime-study__head>div{display:grid;gap:.14rem}.runtime-study__head span{color:var(--color-accent);font:800 .5rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.runtime-study__head strong{font-size:.7rem;line-height:1.35}.runtime-study__head em{padding:.22rem .38rem;border:1px solid color-mix(in srgb,var(--color-positive) 45%,var(--color-border));border-radius:999px;color:var(--color-positive);font-size:.52rem;font-style:normal;font-weight:800;white-space:nowrap}
+.runtime-study__choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}.rogue-node--sidequest{min-height:58px;padding:.62rem .62rem .62rem 2.45rem;border-style:dashed}.rogue-node--sidequest>i{left:.68rem;top:.7rem}.rogue-node--sidequest b{font-size:.72rem}.rogue-node--sidequest small{font-size:.6rem}
+.runtime-study__detail{display:grid;gap:.42rem;padding-top:.45rem;border-top:1px solid var(--color-border)}.runtime-study__detail>p{margin:0;color:var(--color-text-muted);font-size:.62rem;line-height:1.5}.runtime-study__detail>div{display:grid;gap:.12rem}.runtime-study__detail>div b{font-size:.64rem}.runtime-study__detail>div span{color:var(--color-text-muted);font-size:.6rem;line-height:1.48}.runtime-study__detail aside{display:grid;gap:.1rem;padding:.42rem .48rem;border-left:2px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 4%,transparent)}.runtime-study__detail aside b{color:var(--color-accent);font:800 .5rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.runtime-study__detail aside span{font-size:.58rem;line-height:1.45}
 .rogue-node{position:relative;width:100%;min-height:64px;padding:.72rem .78rem .72rem 2.65rem;border:1px solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-bg);color:var(--color-text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,opacity .15s ease}
 .rogue-node>i{position:absolute;left:.78rem;top:.82rem;display:grid;place-items:center;width:1.28rem;height:1.28rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text-muted);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal}.rogue-node b,.rogue-node small,.rogue-node em{display:block}.rogue-node b{font-size:.79rem;line-height:1.35}.rogue-node small{margin-top:.16rem;color:var(--color-text-muted);font-size:.67rem;line-height:1.42}.rogue-node em{margin-top:.36rem;color:var(--color-danger);font-size:.62rem;font-style:normal;font-weight:760}
 .rogue-node[aria-pressed="false"]{opacity:.7}.rogue-node:hover,.rogue-node:focus-visible{transform:translateY(-2px);border-color:var(--color-accent);outline:none}.rogue-node[aria-pressed="true"]{opacity:1;border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));box-shadow:inset 0 0 0 1px var(--color-accent)}
@@ -552,7 +598,7 @@ const stories = [
   .lineage-detail__card h3{font-size:1.08rem}.lineage-detail__content p{font-size:.76rem}.lineage-detail__content dd{font-size:.69rem}.lineage-detail__content li b{font-size:.69rem}.lineage-detail__content li span{font-size:.67rem}.lineage-detail__action{font-size:.69rem}
 }
 @media(max-width:520px){
-  .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:var(--radius-feature)}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid{grid-template-columns:1fr}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}
+  .rogue-run{padding:.72rem 0}.floor{padding:.68rem;border-radius:var(--radius-feature)}.floor__header{gap:.36rem;padding-bottom:.62rem}.floor__header>div strong{font-size:1.05rem}.floor__header p{font-size:.72rem}.floor__map,.floor__map--stage2{padding:.72rem 0 .05rem}.node-stack--grid,.runtime-study__choices{grid-template-columns:1fr}.runtime-study__head{grid-template-columns:1fr}.runtime-study__head em{justify-self:start}.rogue-node{min-height:58px;padding:.68rem .72rem .68rem 2.5rem}.rogue-node>i{left:.72rem;top:.75rem}.rogue-node b{font-size:.81rem}.rogue-node small{font-size:.7rem}.map-column__label{font-size:.58rem}.map-connector{height:.82rem}.floor-back{width:100%}
 }
 
 </style>
