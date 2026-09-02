@@ -168,13 +168,18 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
 }
 
 test('global shell and navigation survive computed CSS across every public route class', async ({ page }, testInfo) => {
-  test.setTimeout(testInfo.project.name === 'chromium' ? 180_000 : 120_000);
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
 
   expect(staticPublicRoutes.length, 'public static route registry unexpectedly shrank').toBeGreaterThan(40);
   const routePaths = testInfo.project.name === 'chromium'
     ? chromiumRoutePaths
     : [...webkitRepresentativeRoutes];
+
+  // This test intentionally grows with the public route registry. Budget per
+  // route instead of using a fixed whole-suite timeout so adding legitimate
+  // public pages cannot turn complete coverage into a runner-speed failure.
+  const perRouteBudgetMs = 4_000;
+  test.setTimeout(Math.max(120_000, routePaths.length * perRouteBudgetMs));
 
   for (const path of routePaths) {
     await test.step(path, async () => {
