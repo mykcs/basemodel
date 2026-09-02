@@ -8,15 +8,24 @@ const firstRun = read('../components/research/OpenEvoFirstRunMap.astro');
 const redesign = read('../components/research/OpenEvoRedesignMap.astro');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/archive/index.astro');
 const en = read('../pages/en/research/seed-openevo/study/capability-exploration/archive/index.astro');
+const zhIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
+const enIndex = read('../pages/en/research/seed-openevo/study/capability-exploration/index.astro');
 
 describe('OpenEvo experiment archive', () => {
-  it('keeps the archive secondary to the two main maps', () => {
+  it('keeps exactly two primary maps and demotes the archive from top-level route choice', () => {
+    expect((lobby.match(/data-map-choice=/g) || []).length).toBe(2);
+    expect(lobby).toContain('data-map-choice="first-run"');
+    expect(lobby).toContain('data-map-choice="redesign"');
+    expect(lobby).not.toContain('data-map-choice="archive"');
+    expect(lobby).toContain('<details class="map-lobby__archive">');
     expect(lobby).toContain('/capability-exploration/archive/');
     expect(lobby).toContain('打开完整实验档案');
     expect(lobby).toContain('Server/Kaggle');
     expect(archive).toContain('两张肉鸽地图只讲研究主剧情');
     expect(archive).toContain('Map one: first experiment');
     expect(archive).toContain('Map two: Redesigning OpenEvo');
+    expect(zhIndex).toContain('OpenEvoCapabilityMapLobby');
+    expect(enIndex).toContain('OpenEvoCapabilityMapLobby');
   });
 
   it('classifies Harness attempts as diagnostic evidence rather than continuation checkpoints', () => {
@@ -40,7 +49,7 @@ describe('OpenEvo experiment archive', () => {
     expect(archive).toContain('不能因为调度方便就改变正式 task budget');
   });
 
-  it('retains links to historical Stage1, Stage2, Ceiling, and analysis pages', () => {
+  it('retains links and bilingual files for historical deep routes', () => {
     for (const route of [
       '/capability-exploration/stage1-previous/',
       '/capability-exploration/stage2-256-window/',
@@ -49,6 +58,15 @@ describe('OpenEvo experiment archive', () => {
       '/study/results/7b-minimax-analysis/',
       '/study/results/four-arm-analysis/',
     ]) expect(archive).toContain(route);
+
+    for (const relative of [
+      '../pages/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro',
+      '../pages/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro',
+      '../pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro',
+      '../pages/en/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro',
+      '../pages/en/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro',
+      '../pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro',
+    ]) expect(() => read(relative)).not.toThrow();
   });
 
   it('lets both main maps disclose technical details into the archive', () => {

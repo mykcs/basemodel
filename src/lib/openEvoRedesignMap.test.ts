@@ -19,6 +19,8 @@ describe('OpenEvo redesign successor map', () => {
 
   it('restarts from a fresh 1,440-trajectory Stage 1 with no old learned state', () => {
     expect(map).toContain('FLOOR 1 · FRESH STAGE 1');
+    expect(map).toContain('202609021800');
+    expect(map).toContain('不会把“合同已冻结”冒充成“两个 arm 都已经完成并 seal 了 1,440 条”');
     expect(map).toContain('180 tasks × 8 rollouts each = 1,440 fresh trajectories');
     expect(map).toContain('No old Memory / Skill / Agent');
     expect(map).toContain('No old OPSD / Stage2 state');
@@ -27,19 +29,26 @@ describe('OpenEvo redesign successor map', () => {
 
   it('keeps MiniMax post-hoc and visibly ends the teacher budget at the sealed pool', () => {
     expect(map).toContain('MINIMAX ANALYSIS');
+    expect(map).toContain('202609022300');
+    expect(map).toContain('它没有宣告 MiniMax 已经 1,440/1,440 完成');
+    expect(map).toContain('analysis-authorized');
     expect(map).toContain('post-hoc analyzer');
     expect(map).toContain('TEACHER EVIDENCE POOL SEAL');
     expect(map).toContain('From here onward: external teacher calls = 0');
-    expect(map).toContain('1,440 analyses');
+    expect(map).toContain('closeout still requires all 1,440 source identities to be parse_ok');
   });
 
-  it('rebuilds all Stage-1 downstream state from the same fresh corpus', () => {
+  it('keeps fresh Stage-1 downstream locked instead of inheriting older successor completion', () => {
     for (const label of ['OPSD', 'Text Memory', 'Skill Bundle', 'Agent System']) expect(map).toContain(label);
-    expect(map).toContain('record count is 18,490');
-    expect(map).toContain('A1 saturation → bounded A2');
-    expect(map).toContain('same 20');
-    expect(map).toContain('first10 + last10');
-    expect(map).toContain('max split depth=1');
+    expect(map).toContain('downstream_not_authorized_here');
+    expect(map).toContain('更早的 3B successor');
+    expect(map).toContain('自己的合法 trigger');
+    expect(map).not.toContain('record count is 18,490');
+    expect(map).not.toContain('A1 saturation → bounded A2');
+    expect((map.match(/class=\"downstream-card[^\"]*\" data-node-kind=\"(?:mainline|scientific-amendment)\" data-node-state=\"future\"/g) || []).length).toBe(4);
+    expect(map).not.toMatch(/<article class="[^"]*downstream-card--complete[^"]*"/);
+    expect(map).not.toContain('BOUND TO NEW CORPUS');
+    expect(map).not.toContain('SAME-CORPUS SUCCESSOR');
   });
 
   it('keeps Stage-2 origin, new Stage 2, and final evaluation future-locked', () => {
@@ -56,7 +65,7 @@ describe('OpenEvo redesign successor map', () => {
     expect(map).toContain('data-node-kind="branch" data-node-state="current"');
     expect(map).toContain('0/64');
     expect(map).toContain('maximum of 29');
-    expect(map).toContain('remaining a separate model lineage');
+    expect(map).toContain('downstream data and carriers remain model-specific');
   });
 
   it('uses progressive disclosure with desktop positioning and a mobile dialog', () => {

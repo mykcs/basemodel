@@ -115,7 +115,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(redesign).toContain('reasoning soft · action hard');
     expect(redesign).toContain('FLOOR 1 · FRESH STAGE 1');
     expect(redesign).toContain('旧 3B lineage 停在 Harness diagnosis');
-    expect(redesign).toContain('老师在这里退出');
+    expect(redesign).toContain('TEACHER EVIDENCE POOL SEAL');
+    expect(redesign).toContain('下一道 seal · 尚未宣告完成');
     expect(redesign).toContain('STAGE 2 ORIGIN SEAL');
     expect(redesign).toContain('data-node-state="future"');
     expect(redesign).not.toContain('Ceiling-1.0 已暂停');
