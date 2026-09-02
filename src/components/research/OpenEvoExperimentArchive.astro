@@ -1,0 +1,135 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const routes = {
+  lobby: p('/research/seed-openevo/study/capability-exploration/'),
+  firstRun: p('/research/seed-openevo/study/capability-exploration/first-run/'),
+  redesign: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  stage1: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'),
+  oldStage2: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'),
+  ceiling: p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/'),
+  harness: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'),
+  minimax: p('/research/seed-openevo/study/minimax-teacher/'),
+  analysis3b: p('/research/seed-openevo/study/results/3b-minimax-analysis/'),
+  analysis7b: p('/research/seed-openevo/study/results/7b-minimax-analysis/'),
+  fourArm: p('/research/seed-openevo/study/results/four-arm-analysis/'),
+};
+---
+<main class="archive" data-testid="openevo-experiment-archive">
+  <header class="archive__head">
+    <a href={routes.lobby}>{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
+    <p>EVIDENCE ROOM · PROGRESSIVE DISCLOSURE</p>
+    <h1>{t('实验档案', 'Experiment archive')}</h1>
+    <strong>{t(
+      '两张肉鸽地图只讲研究主剧情。这里保存运行环境、失败资格赛、API 恢复、checkpoint、PR / SHA 和旧结果页，让技术细节仍然可追，但不抢第一层叙事。',
+      'The two roguelike maps carry the research story. This archive preserves execution environments, failed qualifications, API recovery, checkpoints, PR / SHA evidence, and historical result pages without putting them on the top-level spine.'
+    )}</strong>
+    <span>{t(
+      '判断方法很简单：如果它改变模型看到什么、怎么行动或允许学多少，它回到主地图作为 scientific amendment；如果它只让同一个实验更可靠地运行，它留在这里作为 engineering / evidence。',
+      'The rule is simple: if something changes what the model sees, how it acts, or how much it is allowed to learn, it belongs back on the main map as a scientific amendment. If it only makes the same experiment run more reliably, it stays here as engineering / evidence.'
+    )}</span>
+  </header>
+
+  <nav class="archive__jump" aria-label={t('档案分类', 'Archive categories')}>
+    <a href="#harness">01 · Harness</a>
+    <a href="#minimax">02 · MiniMax</a>
+    <a href="#runtime">03 · Runtime</a>
+    <a href="#artifacts">04 · Artifacts</a>
+  </nav>
+
+  <section id="harness" class="archive-section">
+    <header>
+      <span>01 · DIAGNOSTIC EVIDENCE</span>
+      <h2>{t('Harness / G3：失败资格赛为什么值得保留', 'Harness / G3: why failed qualifications still matter')}</h2>
+      <p>{t('这些 attempt 不是“继续点下一关”的 checkpoint，而是帮助我们定位 action validity 问题的诊断证据。', 'These attempts are diagnostic evidence for locating action-validity problems, not checkpoints that can simply continue into the next stage.')}</p>
+    </header>
+    <div class="archive-grid">
+      <article>
+        <b>{t('科学证据', 'SCIENTIFIC EVIDENCE')}</b>
+        <h3>{t('Harness201 / G3 HOLD', 'Harness201 / G3 HOLD')}</h3>
+        <p>{t('attempt4 的 round0 出现 33/128 invalid termination，随后 HOLD；不能在同一 lineage 热换 parser / interface 后从 round1 接着跑。', 'Attempt4 produced 33/128 invalid terminations in round 0 and was then held; the parser / interface cannot be hot-swapped inside the same lineage and resumed from round 1.')}</p>
+        <a href={routes.harness}>{t('打开 Harness 诊断记录 →', 'Open the harness diagnostic record →')}</a>
+      </article>
+      <article>
+        <b>{t('为什么不在主地图展开 attempt1/2/3/4', 'WHY ATTEMPT1/2/3/4 STAY OUT OF THE MAIN MAP')}</b>
+        <h3>{t('它们回答“为什么改”，不是四条新科学路线', 'They explain why the design changed; they are not four new scientific routes')}</h3>
+        <p>{t('主地图只保留导致决策变化的结论；每个 attempt 的精确 receipt、gate、parser counterfactual 放在诊断页和实验仓库。', 'The main map keeps only the conclusion that changed the decision. Exact receipts, gates, and parser counterfactuals stay in the diagnostic page and experiment repository.')}</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="minimax" class="archive-section">
+    <header>
+      <span>02 · EXECUTION ENVIRONMENT</span>
+      <h2>{t('MiniMax：科学角色只有一个，执行环境可以有多个', 'MiniMax: one scientific role, multiple execution environments')}</h2>
+      <p>{t('MiniMax 都是在 Stage 1 轨迹完成以后做 post-hoc analysis。服务器或 Kaggle 只是“在哪里跑这项分析”；除非受控比较证明环境本身系统性改变输出，否则不画成科学分叉。', 'MiniMax always performs post-hoc analysis after Stage-1 trajectories are complete. Server versus Kaggle is simply where that analysis runs; it is not a scientific branch unless a controlled comparison shows that the environment systematically changes the output.')}</p>
+    </header>
+    <div class="archive-grid archive-grid--three">
+      <article>
+        <b>SERVER / KAGGLE</b>
+        <h3>{t('执行位置属于 metadata', 'Execution location is metadata')}</h3>
+        <p>{t('同输入、同 prompt、同模型、同 schema 时，优先把两边视为同一个 scientific node 的不同 execution backend。', 'With the same input, prompt, model, and schema, treat the two locations as execution backends for the same scientific node.')}</p>
+      </article>
+      <article>
+        <b>API RELIABILITY</b>
+        <h3>{t('429 / Retry-After / resume', '429 / Retry-After / resume')}</h3>
+        <p>{t('只有 parse_ok=true 才算完成；已经成功的分析不重复调用；429 按 Retry-After / 更慢退避重试。这些修复改变可靠性，不改变 teacher budget 或科学角色。', 'Only parse_ok=true counts as complete; successful analyses are not called again; 429s retry with Retry-After / slower backoff. These changes affect reliability, not the teacher budget or scientific role.')}</p>
+      </article>
+      <article>
+        <b>{t('教师角色', 'TEACHER ROLE')}</b>
+        <h3>{t('MiniMax 不替学生执行 WebShop 动作', 'MiniMax does not act in WebShop for the student')}</h3>
+        <p>{t('它读已经结束的 trajectory，再生成 hindsight evidence；teacher pool seal 后不在 Stage 2 回来救场。', 'It reads completed trajectories and produces hindsight evidence; after the teacher-pool seal it does not return to rescue Stage 2.')}</p>
+        <a href={routes.minimax}>{t('打开 MiniMax 教师说明 →', 'Open the MiniMax teacher explanation →')}</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="runtime" class="archive-section">
+    <header>
+      <span>03 · ENGINEERING PATCH LANE</span>
+      <h2>{t('长跑修复：修“怎么跑”，不偷改“跑什么”', 'Long-run repairs: fix how the run executes without redefining what it is')}</h2>
+      <p>{t('这些内容在第一张地图只显示成一个小 patch node；这里展开它们的职责边界。', 'These appear as one small patch node on the first map; the archive expands their responsibility boundaries.')}</p>
+    </header>
+    <div class="runtime-list">
+      <div><b>trainer source</b><span>{t('确保内层训练进程加载冻结的正确代码来源。', 'Ensure the inner trainer loads the intended frozen execution source.')}</span></div>
+      <div><b>restart validator</b><span>{t('从真实 state / receipt 恢复，不把某个历史 round 写死成永恒起点。', 'Recover from the real state / receipts rather than hard-coding one historical round forever.')}</span></div>
+      <div><b>execution provenance</b><span>{t('最终 seal 保留跨重启 / 修复的真实历史执行版本。', 'Final seals retain the real historical execution versions across restarts and repairs.')}</span></div>
+      <div><b>HF cold archive</b><span>{t('远端验证过的 checkpoint 可以移出本地热存储，但必须保持 round / component 身份绑定。', 'Remotely verified checkpoints may leave local hot storage only while preserving round / component identity binding.')}</span></div>
+      <div><b>GPU / lease / holder</b><span>{t('属于资源执行策略；不能因为调度方便就改变正式 task budget、模型状态或 scientific gate。', 'These are resource-execution policies; scheduling convenience cannot change the formal task budget, model state, or scientific gate.')}</span></div>
+    </div>
+    <a class="archive-section__route" href={routes.ceiling}>{t('打开 7B Ceiling-1.0 主实验页 →', 'Open the 7B Ceiling-1.0 experiment page →')}</a>
+  </section>
+
+  <section id="artifacts" class="archive-section">
+    <header>
+      <span>04 · RETAINED ARTIFACTS</span>
+      <h2>{t('旧页面、结果和产物不删除，只从主导航降权', 'Historical pages, results, and artifacts remain available; they are only de-emphasized')}</h2>
+      <p>{t('这里是研究人员追数字、轨迹、adapter、checkpoint、历史四臂结果时的入口。', 'Use these routes when you need exact metrics, trajectories, adapters, checkpoints, or historical four-arm results.')}</p>
+    </header>
+    <nav class="artifact-links" aria-label={t('历史实验与结果入口', 'Historical experiment and result routes')}>
+      <a href={routes.stage1}><span>{t('历史 Stage 1', 'Historical Stage 1')}</span><small>{t('旧 trajectory / adapter / HF / GitHub 产物', 'Old trajectory / adapter / HF / GitHub artifacts')}</small></a>
+      <a href={routes.oldStage2}><span>{t('旧 Stage 2', 'Old Stage 2')}</span><small>{t('256-window / 7-vs-8 的完整历史证据', 'Full 256-window / 7-vs-8 historical evidence')}</small></a>
+      <a href={routes.ceiling}><span>Ceiling-1.0</span><small>{t('7B 持续更新与容量 amendment', '7B sustained updates and the capacity amendment')}</small></a>
+      <a href={routes.analysis3b}><span>3B / MiniMax</span><small>{t('历史结果页', 'Historical result page')}</small></a>
+      <a href={routes.analysis7b}><span>7B / MiniMax</span><small>{t('历史结果页', 'Historical result page')}</small></a>
+      <a href={routes.fourArm}><span>{t('四组联合分析', 'Four-arm analysis')}</span><small>{t('跨 arm 结果与证据边界', 'Cross-arm results and evidence boundaries')}</small></a>
+    </nav>
+  </section>
+
+  <footer class="archive__footer">
+    <a href={routes.firstRun}>{t('← 第一张地图：第一轮实验', '← Map one: first experiment')}</a>
+    <a href={routes.redesign}>{t('第二张地图：重新设计 OpenEvo →', 'Map two: Redesigning OpenEvo →')}</a>
+  </footer>
+</main>
+
+<style>
+.archive{width:min(1080px,calc(100% - 2rem));margin:0 auto 4rem}.archive__head{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:.6rem 1.5rem;align-items:end;padding:1.25rem 0 1.4rem;border-bottom:1px solid var(--line)}.archive__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.78rem;text-decoration:none}.archive__head>a:hover,.archive__head>a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive__head>p{grid-column:1/-1;margin:.25rem 0 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.08em}.archive__head h1{grid-column:1;margin:0;font-size:clamp(2.4rem,5.7vw,4.8rem);line-height:.95;letter-spacing:-.05em}.archive__head strong,.archive__head span{grid-column:2;display:block}.archive__head strong{font-size:1.02rem;line-height:1.55}.archive__head span{color:var(--muted);font-size:.89rem;line-height:1.62}.archive__jump{display:flex;flex-wrap:wrap;gap:.5rem 1.15rem;padding:1rem 0;border-bottom:1px solid var(--line)}.archive__jump a{color:var(--muted);font:750 .66rem/1.3 var(--font-mono);text-decoration:none}.archive__jump a:hover,.archive__jump a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive-section{display:grid;grid-template-columns:minmax(220px,.52fr) minmax(0,1.48fr);gap:1.2rem;padding:1.45rem 0;border-bottom:1px solid var(--line);scroll-margin-top:calc(var(--site-header-height) + 1rem)}.archive-section>header{display:grid;align-content:start;gap:.35rem}.archive-section>header span{color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.07em}.archive-section h2{margin:0;font-size:1.2rem;line-height:1.18}.archive-section>header p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.52}.archive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.archive-grid--three{grid-template-columns:repeat(3,minmax(0,1fr))}.archive-grid article{display:grid;align-content:start;gap:.35rem;padding:.78rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.archive-grid b{color:var(--muted);font:800 .5rem/1.25 var(--font-mono);letter-spacing:.05em}.archive-grid h3{margin:0;font-size:.82rem;line-height:1.25}.archive-grid p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.48}.archive-grid a,.archive-section__route{width:max-content;max-width:100%;color:var(--accent-deep);font-size:.66rem;font-weight:750;text-underline-offset:.2em}.runtime-list{display:grid}.runtime-list>div{display:grid;grid-template-columns:150px 1fr;gap:.75rem;padding:.55rem 0;border-top:1px solid var(--line)}.runtime-list>div:first-child{border-top:0}.runtime-list b{font:.76rem/1.35 var(--font-mono)}.runtime-list span{color:var(--muted);font-size:.69rem;line-height:1.48}.archive-section__route{grid-column:2;margin-top:-.6rem}.artifact-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.artifact-links a{display:grid;gap:.14rem;padding:.65rem;border-top:1px solid var(--line);color:inherit;text-decoration:none}.artifact-links a:hover,.artifact-links a:focus-visible{border-color:var(--accent-deep);outline:none}.artifact-links span{font-size:.76rem;font-weight:780}.artifact-links small{color:var(--muted);font-size:.62rem;line-height:1.4}.archive__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.archive__footer a{color:var(--accent-deep);font-size:.76rem;font-weight:750;text-underline-offset:.2em}
+@media(max-width:880px){.archive__head{grid-template-columns:1fr}.archive__head h1,.archive__head strong,.archive__head span{grid-column:1}.archive-section{grid-template-columns:1fr}.archive-section__route{grid-column:1;margin-top:0}.archive-grid--three{grid-template-columns:1fr}.archive-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.archive{width:min(100% - 1rem,1080px)}.archive__head h1{font-size:clamp(2.35rem,12vw,3.5rem)}.archive__jump{display:grid}.archive-grid,.artifact-links{grid-template-columns:1fr}.runtime-list>div{grid-template-columns:1fr;gap:.2rem}.archive__footer{display:grid}}
+</style>

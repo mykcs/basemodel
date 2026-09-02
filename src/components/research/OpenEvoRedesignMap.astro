@@ -11,6 +11,7 @@ const links = {
   lobby: p('/research/seed-openevo/study/capability-exploration/'),
   firstRun: p('/research/seed-openevo/study/capability-exploration/first-run/'),
   harness: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'),
+  archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
 };
 ---
 <main class="redesign" data-redesign-map data-testid="openevo-redesign-map">
@@ -210,6 +211,7 @@ const links = {
   <template data-redesign-detail-template="minimax">
     <p>{t('MiniMax 是 post-hoc analyzer：输入是已经完成的 1,440 条 student trajectory；输出是后续 OPSD / carrier 使用的 teacher evidence。服务器或 Kaggle 只是执行环境，不自动变成科学分支。', 'MiniMax is a post-hoc analyzer: its inputs are the 1,440 completed student trajectories, and its outputs become teacher evidence for later OPSD / carriers. Server versus Kaggle is an execution environment, not automatically a scientific branch.')}</p>
     <small>{t('429、Retry-After、resume 只认 parse_ok=true 等属于工程可靠性，放进实验档案而不是主路线。', '429 handling, Retry-After, and resume-counts-only-parse_ok=true are engineering reliability details and belong in the archive rather than the mainline.')}</small>
+    <a href={links.archive}>{t('打开 MiniMax / execution 档案 →', 'Open the MiniMax / execution archive →')}</a>
   </template>
   <template data-redesign-detail-template="teacher-seal">
     <p>{t('Teacher Evidence Pool 把“老师能看到什么”冻结下来。后续 OPSD / Memory / Skill / Agent 都绑定同一份 analysis corpus；Stage2 不允许再扩大 teacher budget。', 'The Teacher Evidence Pool freezes what the teacher was allowed to see. OPSD / Memory / Skill / Agent all bind to that same analysis corpus, and Stage2 cannot expand the teacher budget later.')}</p>

@@ -1,0 +1,8 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoExperimentArchive from '../../../../../../components/research/OpenEvoExperimentArchive.astro';
+const locale = 'zh' as const;
+---
+<AppLayout title="OpenEvo 实验档案" description="OpenEvo 能力探索的技术档案：Harness/G3 诊断、MiniMax Server/Kaggle 执行环境、429/retry/resume、Stage2 runtime 修复、旧 Stage1/Stage2/Ceiling-1.0 与历史结果入口。" locale={locale}>
+  <OpenEvoExperimentArchive locale={locale} />
+</AppLayout>

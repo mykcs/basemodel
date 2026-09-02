@@ -9,6 +9,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const firstRunHref = p('/research/seed-openevo/study/capability-exploration/first-run/');
+const archiveHref = p('/research/seed-openevo/study/capability-exploration/archive/');
 const redesignHref = p('/research/seed-openevo/study/capability-exploration/openevo-2-0/');
 const archiveLinks = [
   { href: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'), label: t('历史 Stage 1', 'Historical Stage 1') },
@@ -58,9 +59,10 @@ const archiveLinks = [
   <details class="map-lobby__archive">
     <summary>{t('实验档案：旧 Stage 1、旧 Stage 2、Ceiling-1.0 与 Harness 诊断', 'Experiment archive: old Stage 1, old Stage 2, Ceiling-1.0, and harness diagnostics')}</summary>
     <p>{t(
-      '这些页面保留精确的历史实验、数字和技术证据，但不再和两张主地图争夺第一层导航。',
-      'These pages preserve exact historical experiments, metrics, and technical evidence without competing with the two primary maps for top-level navigation.'
+      '这些页面保留精确的历史实验、数字和技术证据，但不再和两张主地图争夺第一层导航。Server/Kaggle、429/retry、G3 attempt、checkpoint / HF、runtime patch 与 PR / SHA 也集中放进完整档案。',
+      'These pages preserve exact historical experiments, metrics, and technical evidence without competing with the two primary maps for top-level navigation. Server/Kaggle, 429/retry, G3 attempts, checkpoint / HF, runtime patches, and PR / SHA evidence are grouped in the full archive.'
     )}</p>
+    <a class="map-lobby__archive-main" href={archiveHref}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a>
     <nav aria-label={t('实验档案链接', 'Experiment archive links')}>
       {archiveLinks.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
@@ -87,6 +89,7 @@ const archiveLinks = [
 .map-lobby__archive{border-top:1px solid var(--line);padding:1rem 0;color:var(--muted)}
 .map-lobby__archive summary{cursor:pointer;color:var(--ink);font-weight:750;line-height:1.45}
 .map-lobby__archive p{max-width:48rem;margin:.75rem 0;font-size:.9rem;line-height:1.6}
+.map-lobby__archive-main{display:inline-block;margin-bottom:.7rem;color:var(--accent-deep);font-size:.88rem;font-weight:760;text-underline-offset:.2em}
 .map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.45rem 1rem}
 .map-lobby__archive a{color:var(--accent-deep);font-size:.88rem;text-underline-offset:.2em}
 @media(max-width:760px){
