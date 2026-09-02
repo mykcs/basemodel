@@ -1,0 +1,33 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import { localePath } from '../../../../../../i18n';
+const locale = 'zh' as const;
+const p = (path: string) => localePath(locale, path);
+---
+<AppLayout
+  title="第一轮 OpenEvo 实验"
+  description="第一轮 OpenEvo 实验保留从 Stage 1 到 Stage 2 的历史探索：7B 提供持续参数更新与容量 amendment 证据，3B 暴露 bootstrap、action validity 与 Harness 设计问题，并推动新的 OpenEvo successor。"
+  locale={locale}
+>
+  <main class="first-run-shell" data-testid="openevo-first-run-shell">
+    <header>
+      <p>HISTORICAL MAP · FIRST RUN</p>
+      <h1>第一轮 OpenEvo 实验</h1>
+      <strong>这轮实验不是一条需要被删掉的旧路线。7B 让我们第一次完整看到 Stage 2 持续更新，3B 和长期运行又把更新规则、行动接口和参数容量的问题暴露出来。</strong>
+      <span>历史 Stage 1、旧 Stage 2、Ceiling-1.0 和 Harness 诊断页面继续保留精确数字与技术证据；这张地图负责把它们之间的因果关系重新组织清楚。</span>
+    </header>
+    <nav aria-label="第一轮实验的历史证据入口">
+      <a href={p('/research/seed-openevo/study/capability-exploration/stage1-previous/')}>历史 Stage 1</a>
+      <a href={p('/research/seed-openevo/study/capability-exploration/stage2-256-window/')}>旧 Stage 2</a>
+      <a href={p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/')}>Ceiling-1.0</a>
+      <a href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/')}>Harness 诊断记录</a>
+    </nav>
+    <footer>
+      <a href={p('/research/seed-openevo/study/capability-exploration/')}>← 返回能力探索</a>
+      <a href={p('/research/seed-openevo/study/capability-exploration/openevo-2-0/')}>重新设计 OpenEvo →</a>
+    </footer>
+  </main>
+</AppLayout>
+<style>
+.first-run-shell{width:min(920px,calc(100% - 2rem));margin:0 auto 4rem;padding-top:1.4rem}.first-run-shell header{display:grid;gap:.7rem;padding-bottom:1.4rem;border-bottom:1px solid var(--line)}.first-run-shell header p{margin:0;color:var(--accent-deep);font:800 .68rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.first-run-shell h1{margin:0;font-size:clamp(2.35rem,6vw,4.7rem);line-height:.97;letter-spacing:-.05em}.first-run-shell header strong{max-width:48rem;font-size:1.05rem;line-height:1.55}.first-run-shell header span{max-width:48rem;color:var(--muted);line-height:1.65}.first-run-shell nav{display:flex;flex-wrap:wrap;gap:.55rem 1.1rem;padding:1.2rem 0}.first-run-shell nav a,.first-run-shell footer a{color:var(--accent-deep);text-underline-offset:.2em}.first-run-shell footer{display:flex;justify-content:space-between;gap:1rem;padding-top:1rem;border-top:1px solid var(--line);font-weight:700}@media(max-width:760px){.first-run-shell{width:min(100% - 1rem,920px);padding-top:1rem}.first-run-shell nav{display:grid}.first-run-shell footer{display:grid}.first-run-shell h1{font-size:clamp(2.3rem,12vw,3.5rem)}}
+</style>

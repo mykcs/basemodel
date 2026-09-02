@@ -6,6 +6,9 @@ const tree = read('../components/research/OpenEvoCapabilityExperimentTree.astro'
 const treeMarkup = tree.slice(0, tree.indexOf('<script>'));
 const zhIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
 const enIndex = read('../pages/en/research/seed-openevo/study/capability-exploration/index.astro');
+const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
+const zhFirstRun = read('../pages/research/seed-openevo/study/capability-exploration/first-run/index.astro');
+const enFirstRun = read('../pages/en/research/seed-openevo/study/capability-exploration/first-run/index.astro');
 
 describe('OpenEvo roguelike experiment tree', () => {
   it('models Stage 1 and Stage 2 as separate floors', () => {
@@ -107,9 +110,16 @@ describe('OpenEvo roguelike experiment tree', () => {
     expect(tree).toContain('继续看这条线的完整实验页与证据');
   });
 
-  it('mounts before detailed blocks on both locale homepages', () => {
-    expect(zhIndex).toContain('OpenEvoCapabilityExperimentTree');
-    expect(enIndex).toContain('OpenEvoCapabilityExperimentTree');
-    expect(zhIndex.indexOf('OpenEvoCapabilityExperimentTree locale')).toBeLessThan(zhIndex.indexOf('OpenEvoStage1VersionComparison locale'));
+  it('uses the capability homepage as a two-map lobby and preserves a first-run child route', () => {
+    expect(zhIndex).toContain('OpenEvoCapabilityMapLobby');
+    expect(enIndex).toContain('OpenEvoCapabilityMapLobby');
+    expect(zhIndex).not.toContain('OpenEvoCapabilityExperimentTree');
+    expect(enIndex).not.toContain('OpenEvoCapabilityExperimentTree');
+    expect(lobby).toContain('data-map-choice="first-run"');
+    expect(lobby).toContain('data-map-choice="redesign"');
+    expect(lobby).toContain('/capability-exploration/first-run/');
+    expect(lobby).toContain('/capability-exploration/openevo-2-0/');
+    expect(zhFirstRun).toContain('data-testid="openevo-first-run-shell"');
+    expect(enFirstRun).toContain('data-testid="openevo-first-run-shell"');
   });
 });
