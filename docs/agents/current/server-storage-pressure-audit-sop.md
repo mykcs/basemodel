@@ -23,15 +23,17 @@ Record total, used, available, and `Use%`. Keep `df` semantics intact: `Use%` ca
 
 Then measure identifiable home directories with `du -x -s -B1`. Do **not** assume the current mount namespace can see every `/data/home/*` directory. On this shared Docker host, a reliable inventory may require enumerating bind-mounted home roots from authorized development containers and running the read-only `du` from the namespace that can see each mount.
 
-Public output is sorted by size and renamed every snapshot:
+**Completeness gate:** if the namespace exposes fewer homes than the known shared-server topology or the running development-container mounts imply, stop. The result is an incomplete view, not an anonymous ranking. Resolve the missing namespaces before publishing user counts or percentages.
+
+Public output is sorted by **attributable total** (home + reliably attributable Docker writable layer) and renamed every snapshot:
 
 ```text
-User 1 = largest identifiable home in this snapshot
+User 1 = largest attributable total in this snapshot
 User 2 = second largest
 ...
 ```
 
-The mapping is ephemeral and must not be written into the repository.
+The mapping is ephemeral and must not be written into the repository. Never add a special “ours / our account” row; the owner is anonymous under the same rule as every other account.
 
 ## 2. Split personal and shared usage
 
@@ -46,13 +48,25 @@ Typical categories are `runs`, `models`, `control/worktrees`, retention archives
 
 Docker is a **shared daemon**. `docker system df` reports daemon-wide storage, not per-user ownership. An image's repository name, a Compose label, or a task working directory does not justify charging the whole image to one person because image layers may be shared by many containers.
 
-For the public page, calculate:
+For account attribution, inspect container writable-layer size (`SizeRw`) and mounts. Assign a writable layer to an account **only** when a single reliable bind-mounted home identifies that owner. Keep ambiguous or ownerless writable layers separate. Then calculate the public buckets as:
 
 ```text
-unattributed used = df used - sum(identifiable home-directory usage)
+account attributable total = home bytes + reliably attributable Docker SizeRw
+unattributed Docker writable layers = sum(SizeRw with no reliable account owner)
+shared/system used = df used - sum(account attributable totals) - unattributed Docker writable layers
 ```
 
-Describe this remainder as shared/unattributed. It can include Docker images, container writable layers, build cache, system files, and other storage outside measured homes.
+`df used` already includes the bytes represented by those buckets; do not add them again. Reconcile `df total` separately with `used + available + filesystem reserve/rounding`.
+
+### Docker failure fallback
+
+A daemon-wide summary can fail because one historical snapshot/image record is inconsistent. Do **not** repair the daemon, remove images, or run prune merely to make the audit command succeed. Instead:
+
+1. record `docker system df` as unavailable for this snapshot;
+2. continue the attribution audit with read-only per-container `docker inspect --size`;
+3. if a batch inspect fails, retry per container or in smaller batches so one stale object does not erase all usable measurements;
+4. count any truly unreadable containers and leave their size/ownership **unknown**, not zero;
+5. publish only the measurements that were actually obtained.
 
 ## 3. Safety gate before any deletion
 
@@ -102,8 +116,9 @@ A useful quick report answers four questions in this order:
 
 ```text
 filesystem: total / used / available / Use%
-anonymous home ranking: User 1, User 2, ...
-shared/unattributed remainder: size + what it may contain
+anonymous attributable ranking: User 1, User 2, ...
+unattributed Docker writable layers: size / unknown count
+shared/system remainder: size + what it may contain
 safe reclaim candidates: estimated reclaim + why each is recoverable
 ```
 
@@ -113,12 +128,13 @@ After cleanup, report **measured deletion/reclaim bytes** separately from the ne
 
 When refreshing `/research/seed-openevo/flow/server/`:
 
-- use a dated static snapshot;
+- use a dated static snapshot with an explicit timezone;
 - publish only anonymous user rankings and aggregate hardware/storage facts;
-- regenerate anonymous numbering from that snapshot's size order;
-- never publish the identity mapping or a user's internal directory names;
+- regenerate anonymous numbering from that snapshot's attributable-total order and never single out “our” account;
+- never publish or persist the identity mapping or a user's internal directory names;
 - keep shared Docker/system usage unattributed unless ownership is independently proven;
 - keep server inventory separate from live GPU allocation/authorization;
+- update each factual number from the fresh measurement, not from chained global string replacement against the previous snapshot; after editing, sweep for stale old timestamp/used/free/percent/bucket values and verify the arithmetic before expensive browser acceptance;
 - say that the page is a snapshot, not a live monitor.
 
 The owning privacy/topology policy remains `personal-compute-profile-consumer.md`; this SOP owns the storage-audit procedure.

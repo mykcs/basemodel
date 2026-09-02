@@ -15,6 +15,12 @@ The historical cases that motivated these rules include `../history/2026-08-17-p
 
 A previously valid report becomes historical evidence when the PR head changes or when the intended merge base changes materially.
 
+## 0. Decide hosted-acceptance needs before creating the branch
+
+Before the first branch/ref mutation, decide whether the task requires exact-head Vercel Preview acceptance. Then read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs` **before** choosing the prefix.
+
+A `docs/**` branch can be correct for documentation-only work and still be the wrong release vehicle for a user-facing change that requires Preview. If no Preview appears, first classify branch eligibility and exact-head opt-in state; do not call Vercel unhealthy and do not create probe commits.
+
 ## 1. Resolve the acceptance identity first
 
 Before deciding that a PR can merge, record:
@@ -136,6 +142,8 @@ Typical shared surfaces include:
 
 Build the final combined tree first, then validate **that tree**. A clean textual merge is not combined-product acceptance.
 
+When resolving a **rebase**, remember that `ours` / `theirs` labels do not mean what many operators expect from an ordinary merge: the stage roles are relative to the rebase operation. Do not use the label as semantic authority. Inspect the actual blobs/commits, or materialize the required base explicitly (for example `git show origin/main:path`) and transplant the intended contribution. If an automated conflict-resolution script aborts, verify `git status` and file contents before `git add` / `rebase --continue`; a failed patch attempt is not evidence that the conflict was resolved.
+
 ### 5.1 Research/provenance overlaps: newest authority first, feature contribution second
 
 A UI-only or infrastructure branch can still contain stale copies of research text. When a conflict touches experiment status, artifact roots, checkpoint identity, provenance labels, result interpretation, or other scientific publication facts, treat conflict resolution as a publication-integrity boundary.
@@ -188,6 +196,18 @@ provider exact-head state
 ```
 
 A READY deployment badge proves provider completion, not product acceptance.
+
+### Required CI queue / long-browser diagnosis
+
+A required self-hosted check that is `queued` or spends many minutes in browser acceptance is not automatically stuck. Before canceling/restarting:
+
+1. read live workflow/job state and branch protection to confirm which check is actually required;
+2. inspect whether the sole runner is legitimately occupied by `main` or another earlier job; do not cancel unrelated valid work merely to move the current PR forward;
+3. once the job is running, distinguish progress from hang using job steps and runner process evidence (active Playwright/browser processes, changing renderer/test activity, CPU use);
+4. treat that process evidence as diagnosis only — the required GitHub check must still reach SUCCESS before merge;
+5. cancel only obsolete runs that belong to a superseded head of the same work and are safe to discard.
+
+Do not merge around a required check merely because local and Preview evidence are already green.
 
 ### 6.1 Prove the required Gate actually executed
 
