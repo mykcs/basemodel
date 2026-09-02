@@ -1,8 +1,12 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
-import OpenEvo2Strategy from '../../../../../../../components/research/OpenEvo2Strategy.astro';
+import OpenEvoRedesignMap from '../../../../../../../components/research/OpenEvoRedesignMap.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEVO 2.0" description="Harness 2.0.1 mechanical qualification is complete and PASS, while scientific closeout remains HOLD_FOR_STAGE2_READINESS_AUDIT with formal_stage2_authorized=false and final_panel_access_authorized=false." locale={locale}>
-  <OpenEvo2Strategy locale={locale} />
+<AppLayout
+  title="Redesigning OpenEvo"
+  description="The OpenEvo successor restarts from Harness201.1 and a fresh Stage 1: a new action interface, MiniMax post-hoc analysis, a sealed teacher-evidence pool, and fresh OPSD / Memory / Skill / Agent state form the new Stage-2 origin. The old 3B lineage remains historical evidence rather than a successor prefix."
+  locale={locale}
+>
+  <OpenEvoRedesignMap locale={locale} />
 </AppLayout>

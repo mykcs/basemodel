@@ -1,8 +1,12 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
-import OpenEvo2Strategy from '../../../../../../components/research/OpenEvo2Strategy.astro';
+import OpenEvoRedesignMap from '../../../../../../components/research/OpenEvoRedesignMap.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEVO 2.0：Harness 2.0.1 机械资格已通过，正式 Stage 2 仍等待 readiness audit" description="Harness 2.0 的第一轮 128+128 迷你实验已封存；后续 Harness 2.0.1 mechanical qualification 已 PASS，但 scientific closeout 为 HOLD_FOR_STAGE2_READINESS_AUDIT，formal_stage2_authorized=false、final_panel_access_authorized=false。" locale={locale}>
-  <OpenEvo2Strategy locale={locale} />
+<AppLayout
+  title="重新设计 OpenEvo"
+  description="OpenEvo successor 从 Harness201.1 与 fresh Stage 1 重新开始：新的行动接口、MiniMax 任务后分析、teacher evidence pool、OPSD / Memory / Skill / Agent 共同组成新的 Stage 2 起点；旧 3B lineage 保留为历史证据而不作为新版前缀。"
+  locale={locale}
+>
+  <OpenEvoRedesignMap locale={locale} />
 </AppLayout>
