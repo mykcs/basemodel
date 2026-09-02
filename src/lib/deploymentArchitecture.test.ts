@@ -7,6 +7,8 @@ const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePat
 describe('Vercel production deployment architecture', () => {
   const workflowsDir = new URL('../../.github/workflows/', import.meta.url);
   const selfHostedWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
+  const ciPlan = readText('../../scripts/ci-plan.mjs');
+  const ciDocsContract = readText('../../scripts/ci-docs-contract.mjs');
   const runnerDockerfile = readText('../../.github/runner/Dockerfile');
   const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
   const runnerReconcile = readText('../../.github/runner/mac-orbstack-reconcile.sh');
@@ -32,10 +34,15 @@ describe('Vercel production deployment architecture', () => {
     expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
     expect(selfHostedWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
     expect(selfHostedWorkflow).toContain('persist-credentials: false');
-    expect(selfHostedWorkflow).toContain('needs_validation=true');
-    expect(selfHostedWorkflow).toContain("grep -Ev '^(docs/|AGENTS\\.md$|README\\.md$|\\.github/)'");
+    expect(selfHostedWorkflow).toContain('node scripts/ci-plan.mjs');
+    expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'docs'");
+    expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'full'");
+    expect(selfHostedWorkflow).toContain('node scripts/ci-docs-contract.mjs');
+    expect(selfHostedWorkflow).not.toContain('needs_validation=true');
     expect(selfHostedWorkflow).not.toContain('node scripts/vercel-ignore-build.mjs');
-    expect(selfHostedWorkflow).toContain('runner/');
+    expect(ciPlan).toContain('code, CI, config, test, asset, data, or mixed PR diff requires full validation');
+    expect(ciDocsContract).toContain("git(['diff', '--check'");
+    expect(ciDocsContract).toContain("git(['diff', '--name-only'");
     expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(selfHostedWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
@@ -111,9 +118,12 @@ describe('Vercel production deployment architecture', () => {
     expect(selfHostedWorkflow).not.toMatch(/uses:\s+actions\/[^@\s]+@v\d+/);
   });
 
-  it('runs the full validation path for manual canary checks', () => {
-    expect(selfHostedWorkflow).toContain('if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]');
-    expect(selfHostedWorkflow).toContain('echo "needs_validation=true" >> "$GITHUB_OUTPUT"');
+  it('revalidates merged main and keeps manual canary checks fail-closed full', () => {
+    expect(selfHostedWorkflow).toContain('push:');
+    expect(selfHostedWorkflow).toContain('branches: [main]');
+    expect(ciPlan).toContain("eventName === 'push'");
+    expect(ciPlan).toContain("eventName === 'workflow_dispatch'");
+    expect(ciPlan).toContain("mode: 'full'");
   });
 
   it('cleans only the completed job workspace while preserving dependency caches', () => {
