@@ -33,22 +33,28 @@ Preview branch eligibility is only the first filter; it is **not permission to s
 Browser regression no longer runs inside the ordinary Vercel Production build. The repository-owned `.github/workflows/self-hosted-ci.yml` uses the existing `scripts/vercel-ui-plan.ts` policy on a repository-scoped self-hosted runner. The runner is the execution environment; GitHub Actions is only the scheduler/control plane.
 
 ```text
-non-UI / governance-only diff
--> skip before npm install
+proven Markdown-only PR (`README.md`, `AGENTS.md`, `docs/**/*.md`)
+-> dependency-free CI planner + documentation contract
+-> skip npm install, build and browser work
 
-content/local UI diff
--> verify:deploy + build
--> focused mapped Chromium specs / changed-route smoke
+code / CI / config / test / data / asset / mixed / unproven PR
+-> fail closed to full deterministic verification + build
+-> existing browser risk planner chooses focused or complete Chromium scope
 
-shared/global UI diff
--> verify:deploy + build
--> complete Chromium UI matrix
+main push
+-> always rerun the full deterministic/build path
+-> browser scope is still resolved by the existing risk planner
+
+manual workflow_dispatch
+-> always full validation
 
 Lab/server-relevant diff
 -> additionally run the dedicated 12-case Lab gate
 ```
 
-`scripts/ci-ui-gate.mjs` deliberately reuses `vercel-ui-plan.ts`; it does not maintain a second provider-specific risk taxonomy. Playwright is limited to one worker by default, and the workflow uses one concurrency group per PR/ref. The workflow has `contents: read` only, disables persisted checkout credentials, and only accepts same-repository work from the owner account.
+`scripts/ci-plan.mjs` owns CPU-CI depth and deliberately has only one narrow fast path: proven Markdown-only PRs. `scripts/ci-docs-contract.mjs` still performs `git diff --check`, path validation and conflict/NUL checks, so documentation PRs are no longer an empty-green classification. Any empty, mixed, unknown or unproven diff fails closed to full validation. `scripts/ci-ui-gate.mjs` continues to reuse `vercel-ui-plan.ts`; it does not maintain a second provider-specific browser-risk taxonomy. The workflow uses one concurrency group per PR/ref, has `contents: read` only, disables persisted checkout credentials, and only accepts same-repository work from the owner account.
+
+Playwright remains at **one worker** on the 4-CPU / 4-GB Mac runner. A controlled 2026-09-02 PR #408 A/B held the 107-case Chromium + 12-case Lab scope and runner fixed while changing only workers `1 -> 2`. The one-worker baseline passed (`107 passed` in 13.9m, Lab `12 passed` in 56.8s). Two workers reduced elapsed time but timed out `research-explainer-layout` after 90s while `global-header-visibility` was concurrently long-running; memory stayed below the container limit and OOM kills remained zero. The two-worker candidate was rejected instead of weakening timeouts or adding retries.
 
 The old `scripts/vercel-ui-gate.mjs` and `scripts/vercel-lab-browser-gate.mjs` remain as rollback/reference implementations, but `vercel.json` must not call them in the ordinary Production build. If the new CI path proves unreliable, rollback is to restore those two commands before weakening browser acceptance.
 
@@ -68,7 +74,7 @@ The Docker base image, downloaded GitHub runner archive and every GitHub-authore
 
 For Mac disk-pressure or cache-maintenance work, run the installed Doctor before and after any mutation and use the filesystem backing `$HOME`, not the sealed system-volume reading, for capacity decisions. A cleanup task must prove `busy=false`, no relevant host package-manager or Docker/Buildx build process, and the actual cache roots before using tool-owned cleanup commands. The zero-mount runner cannot use the host's npm/pip/uv/pnpm caches: clearing them is machine-wide developer-cache maintenance, not runner optimization, and requires that broader scope in the current task. Never infer deletion safety from `du` or `docker system df` alone: preserve active/warm runner state, images, stopped rollback containers, registered worktrees, mixed-purpose directories, and OrbStack internals unless their ownership and recovery value have been separately resolved. BuildKit is host-wide shared state; an age filter reduces scope but is not a universal safety guarantee. The reconcile loop warns below 15% free space and intentionally does not auto-prune.
 
-`main` branch protection requires the `basemodel-self-hosted` status check with strict up-to-date semantics. Force-push and branch deletion are disabled. Administrator enforcement is intentionally left off as the emergency recovery path if the on-demand runner itself becomes unavailable. A docs/governance-only PR still needs the runner online long enough to classify the diff, but exits before Node/npm installation or browser work.
+`main` branch protection requires the `basemodel-self-hosted` status check with strict up-to-date semantics. Force-push and branch deletion are disabled. Administrator enforcement is intentionally left off as the emergency recovery path if the on-demand runner itself becomes unavailable. A proven Markdown-only PR still needs the runner online and Node available long enough to run the dependency-free planner/tests and documentation contract, but it exits before `npm ci`, deterministic package checks, the static build or browser work. After merge, the `main` push is revalidated through the full deterministic/build path even when the PR already passed.
 
 ### Cloudflare post-deploy smoke
 
