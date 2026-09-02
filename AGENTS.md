@@ -32,6 +32,15 @@ Before non-trivial work, read in this order:
 
 Files under `docs/agents/history/` and `docs/agent-context/` are evidence and rationale, not instructions to restore previous architecture. The older product-vision document from PR #64 is retained under history; current product authority is the executable product plus the current integrity, research-mission, visual and deployment policies.
 
+### Pre-mutation guards for repeatedly escaped failures
+
+Before creating a branch, running compound local/remote shell automation, or mutating shared experiment-server storage:
+
+- **Preview first, branch second.** Decide whether exact-head Vercel Preview acceptance is required **before** choosing the branch prefix. If it is required, load `branch-and-pr-conventions.md` and use a deployment-eligible ref; do not create `docs/**` first and discover the policy only after the missing Preview.
+- **Name the shell when syntax matters.** If a command depends on Bash semantics (`VAR=value`, `set -euo pipefail`, loops, arrays, heredocs, process substitution), invoke `/bin/bash` explicitly. A parser failure under `fish` is an execution-surface failure, not repository or server failure.
+- **Shared storage begins read-only.** A model/checkpoint/run is protected by future planned use as well as current process references. “Not mounted/open right now” is never deletion authority. Load `server-storage-pressure-audit-sop.md` before server-space mutation.
+- **Incomplete namespace is not a complete inventory.** If a shared-server `du` view exposes only a subset of expected homes, stop publication/attribution and resolve the missing bind-mounted namespaces first. Never turn one visible home into “all users.”
+
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
 When a task involves lab connectivity, remote compute, SSH/SFTP/rsync, or hardware disclosure, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). Base Model stores only a generic public topology: never add the owner's personal device inventory, private profile feed, IP/hostname/username, VPN endpoint, access token or other identifying infrastructure detail. Publish only the minimum aggregate hardware facts required for a reproducible experiment.

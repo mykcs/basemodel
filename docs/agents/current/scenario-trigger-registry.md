@@ -54,12 +54,12 @@ Completed Vercel pilot/adoption records live under `docs/agents/history/`; they 
 
 **Automatic response:**
 
-1. Read [`server-storage-pressure-audit-sop.md`](server-storage-pressure-audit-sop.md) and `personal-compute-profile-consumer.md`.
-2. Start read-only: `df` for filesystem truth, then `du` for identifiable home roots, then authorized workspace breakdown. Do not infer all users from one mount namespace if bind-mounted homes are hidden there.
-3. Keep per-user home usage separate from shared Docker/system usage. `docker system df` is daemon-wide and is not per-user attribution.
+1. Read [`server-storage-pressure-audit-sop.md`](server-storage-pressure-audit-sop.md) and `personal-compute-profile-consumer.md` **before the first mutation or public-number update**.
+2. Start read-only: `df` for filesystem truth, then `du` for identifiable home roots, then authorized workspace breakdown. If the current namespace exposes only a subset of expected homes, classify the inventory as incomplete and resolve bind-mounted home namespaces before publishing a ranking.
+3. Attribute only Docker writable layers that have one reliable home-mount owner. Shared images/build cache/volumes stay shared; unreadable or owner-ambiguous writable layers stay unattributed. `docker system df` is daemon-wide and may itself fail because of stale snapshots; that failure is not permission to repair/prune the shared daemon.
 4. Before mutation, prove ownership, current/future working-set status, process/container references, recoverability, and scientific retention authority. “Not open right now” is not deletion authority.
 5. Prefer clean remote-recoverable Git checkouts and verified cold archives of old text/JSON-heavy runs before models, checkpoints, active runs, or shared images. Broad Docker prune is forbidden on the shared daemon without explicit scope authority.
-6. Public website refreshes must use temporary anonymous rankings (`用户一 / 用户二 / …`), dated snapshots, and no identity mapping, username, home path, container identity, SSH detail, IP, or GPU UUID.
+6. Public website refreshes must regenerate temporary anonymous rankings (`用户一 / 用户二 / …`) by attributable total, never single out an account as “ours,” and persist no identity mapping, username, home path, container identity, SSH detail, IP, or GPU UUID.
 7. Report measured bytes reclaimed separately from the final `df` value because concurrent experiments can change free space during the cleanup.
 
 ---

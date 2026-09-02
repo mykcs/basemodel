@@ -87,7 +87,8 @@ When local execution is genuinely required, assume the user device may already b
 - Do not kill, pause, or rewrite an unrelated task merely because it slows the current task. Only terminate processes that clearly belong to the current work or that the owner explicitly authorized you to stop.
 - If contention is real, reduce worker count or otherwise lower pressure rather than treating slowness as a product regression.
 - A remote-tool timeout, vanished terminal session, or stale monitoring stream is **not** evidence that the underlying command failed. Confirm the child PID/process state, exit status, or a durable runner artifact before declaring PASS/FAIL/stuck.
-- Distinguish local environment pathologies from product failures. For example, a dev server that rejects dependencies because a symlinked `node_modules` escapes its allowed root is an environment/layout problem until the production tree proves otherwise.
+- Treat shell dialect as part of the execution environment. When syntax relies on Bash (`VAR=value`, `set -euo pipefail`, compound loops, arrays, heredocs, process substitution), invoke `/bin/bash` explicitly locally, and prefer an explicit remote interpreter (`ssh host 'bash -s'`, `python3 -`, or an uploaded script) over multi-layer quoting. A parser error before mutation is not repository/server corruption.
+- Distinguish local environment pathologies from product failures. A clean worktree with no `node_modules` is an environment/setup gap, not a compile failure. Reuse a known lockfile-compatible local dependency tree or install the lockfile locally; never spend a hosted Preview merely to diagnose missing local packages, and never commit temporary dependency symlinks.
 - Clean up only the worktrees, ports, browser sessions, and processes owned by the current task.
 
 Historical case: [`../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md).
