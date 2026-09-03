@@ -34,7 +34,7 @@ describe('hosting architecture ownership', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
-    expect(selfHostedWorkflow).toContain('persist-credentials: false');
+    expect(selfHostedWorkflow).toContain('persist-credentials: true');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');

@@ -33,7 +33,7 @@ describe('Vercel production deployment architecture', () => {
     expect(workflowFiles).toEqual(['self-hosted-ci.yml']);
     expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
     expect(selfHostedWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
-    expect(selfHostedWorkflow).toContain('persist-credentials: false');
+    expect(selfHostedWorkflow).toContain('persist-credentials: true');
     expect(selfHostedWorkflow).toContain('node scripts/ci-plan.mjs');
     expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'docs'");
     expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'full'");

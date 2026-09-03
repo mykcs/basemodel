@@ -34,14 +34,21 @@ describe('public server copy', () => {
     }
   });
 
-  it('keeps the public storage snapshot anonymous, dated, and separate from shared Docker attribution', () => {
-    for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六', '用户七']) expect(serverOverview).toContain(label);
-    for (const value of ['107.8 GiB', '65.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
-    expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
-    expect(serverOverview).toContain('19.0 GiB');
-    expect(serverOverview).toContain('147.7 GiB');
+  it('keeps the public storage snapshot owner-relative, otherwise anonymous, dated, and separate from shared Docker attribution', () => {
+    expect(serverOverview).toContain("t('我', 'Me')");
+    expect(serverOverview).toContain('data-storage-responsibility-view=\"owner-relative-v1\"');
+    for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六']) expect(serverOverview).toContain(label);
+    for (const value of ['108.0 GiB', '67.3 GiB', '23.9 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
+    expect(serverOverview).toContain('2026-09-03 02:09 (UTC+8)');
+    expect(serverOverview).toContain('12.15 GiB');
+    expect(serverOverview).toContain('147.1 GiB');
     expect(serverOverview).toContain('共享 Docker');
     expect(serverOverview).toContain('shared Docker');
+    expect(serverOverview).toContain('空间责任');
+    expect(serverOverview).toContain('不是“谁亲手写了每个文件”');
+    expect(serverOverview).toContain('A container must map uniquely to one account');
+    expect(serverOverview).toContain('storage-bar__mine');
+    expect(serverOverview).toContain('storage-bar__user--1');
     expect(serverOverview).not.toContain('我们的账户');
     expect(serverOverview).not.toContain('我们的主目录');
     expect(serverOverview).not.toContain('Our home directory');
@@ -83,7 +90,8 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('data-copy-label');
     expect(serverOverview).toContain('server-storage-pressure-audit-sop.md');
     expect(serverOverview).toContain('不授权清理服务器文件');
-    expect(serverOverview).toContain('Do not single out any account as “ours.”');
+    expect(serverOverview).toContain('只在公开页面把它写成“我”');
+    expect(serverOverview).toContain('publish only the relative label “Me”');
     expect(serverOverview).toContain('merge to main');
   });
 
