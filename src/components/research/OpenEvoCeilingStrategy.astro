@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { openEvoCeilingStage2Snapshot as snap } from '../../data/openEvoCeilingStage2Snapshot';
+import { openEvoCurrentAuthorityProjection as current } from '../../data/openEvoCurrentAuthorityProjection';
 import OpenEvoStage2StrategyChooser from './OpenEvoStage2StrategyChooser.astro';
 
 interface Props { locale: Locale }
@@ -19,9 +20,22 @@ const stage1 = [
 ---
 <main class="ceiling" data-testid="ceiling-stage2-strategy">
   <OpenEvoStage2StrategyChooser locale={locale} active="ceiling" />
+  <section class="ceiling__current" data-testid="openevo-current-authority-projection">
+    <div class="ceiling__current-copy">
+      <p class="kicker">CURRENT AUTHORITY · {current.freezeId}</p>
+      <h2>{t('现在的主线是 3B + Qwen3-1.7B；下面的 7B / 旧 3B 是历史对照', 'The current mainline is 3B + Qwen3-1.7B; the 7B / older 3B material below is historical')}</h2>
+      <p>{t('这张卡只投影实验仓库里已经 hash 绑定的 current router / campaign / phase release。它不是第二套实时数据库，也不会自己决定实验状态。', 'This card only projects the hash-bound current router, campaign, and phase releases from the experiment repository. It is not a second live database and never decides experiment state on its own.')}</p>
+    </div>
+    <div class="ceiling__current-arms">
+      <article><span>Qwen2.5-3B</span><strong>{current.qwen25ThreeB.stage}</strong><p>{t('当前 scientific activation / external executor 已被 Master Plan 只读接入；旧 df2 partial 明确禁止续跑。', 'The current scientific activation / external executor is adopted read-only by the Master Plan; the old df2 partial lineage is explicitly no-resume.')}</p></article>
+      <article><span>Qwen3-1.7B</span><strong>{current.qwen3OneP7B.stage}</strong><p>{t('当前 formal successor 已被只读接入；Qwen3 下游继续固定 thinking=false。', 'The current formal successor is adopted read-only; downstream Qwen3 remains pinned to thinking=false.')}</p></article>
+      <article><span>MASTER PLAN v2</span><strong>{t('防重复启动', 'duplicate-launch protection')}</strong><p>{t('现有 external executor 接管期间，Master Plan execution authority=false；只有完成 single-executor takeover 后才允许总控点火。', 'While the existing external executor owns the phase, Master Plan execution authority stays false; launch is allowed only after single-executor takeover.')}</p></article>
+    </div>
+    <p class="ceiling__current-source">{t(`派生快照：${current.observedAt} · freeze ${current.freezeId} · control head ${current.sourceControlHead.slice(0,8)}。实时 round / GPU / PID 必须回实验仓库读取。`, `Derived snapshot: ${current.observedAt} · freeze ${current.freezeId} · control head ${current.sourceControlHead.slice(0,8)}. Live round / GPU / PID state must be read from the experiment repository.`)}</p>
+  </section>
   <header class="ceiling__hero">
     <div>
-      <p>OPENEVO-CEILING-1.0 · {t('第二版 Stage 2', 'SECOND STAGE-2 DESIGN')}</p>
+      <p>{t('历史 Ceiling-1.0 快照 · 第二版 Stage 2', 'HISTORICAL CEILING SNAPSHOT · SECOND STAGE-2 DESIGN')}</p>
       <h1>{t('旧的 7 对 8 门槛删掉了，但 3B 还是没有学起来', 'The old 7-versus-8 gate was removed, but 3B still did not start learning')}</h1>
       <span>{t('Ceiling-1.0 保留同样的 WebShop 任务预算和老师预算，不再要求“同一批必须凑齐 8 个重复成功任务”。改成每 128 次任务形成一轮共同证据，再分别判断参数、文本记忆、技能和 Agent 规则有没有足够证据值得更新。7B 在这套方案下继续产生了新的 SD-LoRA 组件，但 3B 跑了 18 轮仍然是 0，因此问题从“旧门槛太苛刻”进一步转向“经验文本和 WebShop 动作接口是否把 3B 带偏”。', 'Ceiling-1.0 keeps the same WebShop and teacher budgets but removes the requirement that one batch contain eight repeatedly successful tasks. Every 128 attempts now form one shared evidence round, after which parameters, text memory, skills, and agent rules independently decide whether there is enough evidence to change. 7B continued producing new SD-LoRA components, while 3B remained at zero after 18 rounds, shifting attention from the old gate to whether experience text is disrupting the smaller model’s WebShop action interface.')}</span>
     </div>
@@ -96,6 +110,7 @@ const stage1 = [
 <style>
 .ceiling{width:min(1180px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--color-text)}
 .ceiling__hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:2rem;align-items:end;padding:2rem 0;border-bottom:1px solid var(--color-border)}.ceiling__hero>div>p,.kicker{margin:0 0 .55rem;color:var(--color-accent);font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.ceiling__hero h1,.ceiling__section h2{margin:0;letter-spacing:-.04em}.ceiling__hero h1{font-size:clamp(2rem,5vw,4rem)}.ceiling__hero>div>span{display:block;margin-top:.8rem;color:var(--color-text-muted);line-height:1.7}.ceiling__hero aside{display:flex;flex-direction:column;gap:.35rem;padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-panel)}.ceiling__hero aside span{color:var(--color-text-muted);font:800 .6rem ui-monospace,SFMono-Regular,Menlo,monospace}.ceiling__hero aside strong{font-size:.8rem}.ceiling__hero aside small{color:var(--color-text-muted);line-height:1.55}
+.ceiling__current{margin:1rem 0 1.4rem;padding:1.2rem;border:1px solid var(--color-accent);border-radius:var(--radius-panel);background:color-mix(in srgb,var(--color-accent) 5%,transparent)}.ceiling__current-copy h2{margin:.3rem 0;font-size:clamp(1.35rem,3vw,2.15rem)}.ceiling__current-copy>p:last-child,.ceiling__current-source{color:var(--color-text-muted);line-height:1.6}.ceiling__current-arms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:1rem}.ceiling__current-arms article{padding:.85rem;border:1px solid var(--color-border);border-radius:var(--radius-control)}.ceiling__current-arms span{color:var(--color-accent);font:800 .64rem ui-monospace,SFMono-Regular,Menlo,monospace}.ceiling__current-arms strong{display:block;margin:.35rem 0;font-size:.82rem}.ceiling__current-arms p{margin:0;color:var(--color-text-muted);font-size:.72rem;line-height:1.55}.ceiling__current-source{margin:.9rem 0 0;font-size:.68rem;overflow-wrap:anywhere}@media(max-width:760px){.ceiling__current-arms{grid-template-columns:1fr}}
 .ceiling__section{padding:2.2rem 0;border-bottom:1px solid var(--color-border)}.ceiling__section h2{font-size:clamp(1.4rem,3vw,2.25rem)}.ceiling__section>p,.ceiling__note,.ceiling__snapshot-note{color:var(--color-text-muted);line-height:1.65}.ceiling__budget,.ceiling__cards,.ceiling__rounds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin-top:1.1rem}.ceiling__budget>div,.ceiling__cards article,.ceiling__rounds article,.ceiling__carrier-grid article,.ceiling__arm-status article{padding:.9rem;border:1px solid var(--color-border);border-radius:var(--radius-panel)}.ceiling__budget b,.ceiling__rounds b{display:block;color:var(--color-accent);font:850 1.35rem ui-monospace,SFMono-Regular,Menlo,monospace}.ceiling__budget span{display:block;margin-top:.3rem;color:var(--color-text-muted);font-size:.7rem}.ceiling__cards span{color:var(--color-accent);font:800 .62rem ui-monospace,SFMono-Regular,Menlo,monospace}.ceiling__cards strong,.ceiling__rounds strong,.ceiling__carrier-grid strong{display:block;margin:.4rem 0;font-size:.8rem}.ceiling__cards p,.ceiling__rounds p,.ceiling__carrier-grid p{margin:0;color:var(--color-text-muted);font-size:.72rem;line-height:1.55}
 .ceiling__transition{display:flex;align-items:center;justify-content:center;gap:.8rem;margin-top:1rem;padding:1rem;border:1px dashed var(--color-border);border-radius:var(--radius-panel);text-align:center}.ceiling__transition code{white-space:normal;font-size:.68rem}.ceiling__transition span{color:var(--color-accent);font-size:.72rem}
 .ceiling__compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.ceiling__compare>div{padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-panel)}.ceiling__compare>div:first-child{border-style:dashed}.ceiling__compare ul{margin:.8rem 0 0;padding-left:1.1rem}.ceiling__compare li{margin:.45rem 0;color:var(--color-text-muted);font-size:.76rem;line-height:1.55}
