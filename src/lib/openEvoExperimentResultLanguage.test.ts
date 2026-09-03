@@ -7,13 +7,14 @@ const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astr
 const stage1Versions = read('../components/research/OpenEvoStage1VersionComparison.astro');
 const legacyStage1Archive = read('../components/research/OpenEvoLegacyStage1Archive.astro');
 const capabilityIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
+const capabilityLobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const stage2Chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Archive.astro');
 const legacyStage2Journey = read('../components/research/OpenEvoLegacyStage2ResearchJourney.astro');
 const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
 const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
-const openEvo2 = read('../components/research/OpenEvo2Strategy.astro');
+const redesign = read('../components/research/OpenEvoRedesignMap.astro');
 const legacyResultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
@@ -26,11 +27,11 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${openEvo2}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
-    expect(stage1Versions).toContain('新版：fresh corrected Stage 1');
+    expect(stage1Versions).toContain('Ceiling-1.0：fresh corrected Stage 1（历史）');
     expect(stage1Versions).toContain('旧版：previous Stage 1 replicate');
     expect(stage1Versions).toContain('180 × 8 = 1,440');
     expect(stage1Versions).toContain('145000000');
@@ -45,10 +46,13 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage1Versions).toContain('不能把两批 1,440 条当成同一批 trajectory');
   });
 
-  it('keeps old Stage 1 usable and links its retained artifacts', () => {
+  it('keeps old Stage 1 usable while the redesign starts from a fresh successor boundary', () => {
     expect(capabilityIndex).not.toContain('当前 corrected Stage 1 仍是共同起点');
-    expect(capabilityIndex).toContain('接下来的训练分成两个阶段：Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练。');
-    expect(capabilityIndex).toContain('Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1');
+    expect(capabilityIndex).not.toContain('Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1');
+    expect(capabilityIndex).toContain('OpenEvoCapabilityMapLobby');
+    expect(capabilityLobby).toContain('第一轮 OpenEvo 实验');
+    expect(capabilityLobby).toContain('重新设计 OpenEvo');
+    expect(capabilityLobby).toContain('旧轨迹保留为历史证据，不冒充新版数据');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');
@@ -64,7 +68,7 @@ describe('OpenEvo capability-exploration result language', () => {
 
   it('separates the superseded window-local method-control from the current Ceiling-1.0 mainline', () => {
     expect(stage2Chooser).toContain('第一版 · 已取代');
-    expect(stage2Chooser).toContain('第二版 · 3B 问题暴露');
+    expect(stage2Chooser).toContain('第二版 · 7B 点燃，3B 暴露新问题');
     expect(legacyStage2Archive).toContain('SUPERSEDED METHOD-CONTROL');
     expect(legacyStage2Archive).toContain('data-model-choice="3b"');
     expect(legacyStage2Archive).toContain('data-teacher-choice="minimax"');
@@ -102,23 +106,22 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(legacyStage2Journey).toContain('分数和成功数只作为诊断');
   });
 
-  it('adds OpenEVO 2.0 as a successor without pretending Ceiling-1.0 already stopped', () => {
-    expect(stage2Chooser).toContain('OpenEVO 2.0');
-    expect(stage2Chooser).toContain('经验怎样整理并进入下一步');
+  it('adds the OpenEvo redesign as a fresh successor without rewriting Ceiling-1.0 history', () => {
+    expect(stage2Chooser).toContain('重新设计 OpenEvo');
+    expect(stage2Chooser).toContain('Harness201.1 后重新采 Stage 1');
     expect(stage2Chooser).toContain('/openevo-2-0/');
-    expect(openEvo2).toContain('当前页面永远比历史经验优先');
-    expect(openEvo2).toContain('三份历史经验不再重复写同一套按钮攻略');
-    expect(openEvo2).toContain('把不同类型的失败分开记');
-    expect(openEvo2).toContain('正式重跑前，先用两组各 128 次的小实验验接口');
-    expect(openEvo2).toContain('2.0.1 Mechanical PASS；Scientific closeout = HOLD_FOR_STAGE2_READINESS_AUDIT');
-    expect(openEvo2).toContain('STAGE2_READINESS_AUDIT_AND_DRESS_REHEARSAL');
-    expect(openEvo2).toContain('formal_stage2_authorized=false');
-    expect(openEvo2).toContain('Ceiling-1.0 已经产生的结果不改写');
-    expect(openEvo2).not.toContain('Ceiling-1.0 已暂停');
-    expect(openEvo2).toContain('不能把分化直接归因成“小模型更怕上下文”');
-    expect(openEvo2).toContain('候选机制');
-    expect(openEvo2).not.toContain('同样的历史上下文对小模型负担更重');
-    expect(openEvo2).not.toContain('最可能出问题的经验注入接口');
+    expect(stage2Chooser).not.toContain('Stage 1 不重做');
+    expect(redesign).toContain('HARNESS201.1 · NEW SCIENTIFIC BOUNDARY');
+    expect(redesign).toContain('reasoning soft · action hard');
+    expect(redesign).toContain('FLOOR 1 · FRESH STAGE 1');
+    expect(redesign).toContain('旧 3B lineage 停在 Harness diagnosis');
+    expect(redesign).toContain('TEACHER EVIDENCE POOL SEAL');
+    expect(redesign).toContain('下一道 seal · 尚未宣告完成');
+    expect(redesign).toContain('STAGE 2 ORIGIN SEAL');
+    expect(redesign).toContain('data-node-state="future"');
+    expect(redesign).not.toContain('Ceiling-1.0 已暂停');
+    expect(ceilingStage2).toContain('Ceiling-1.0 历史证据原样保留');
+    expect(ceilingStage2).toContain('新版从新的 Harness 与 fresh Stage 1 重新开始');
     expect(legacyStage2Journey).toContain('不能在其余变量中继续排名谁最可能是根因');
     expect(legacyStage2Journey).not.toContain('真正的问题更可能出在新的上下文 / 动作接口');
     expect(analysis).toContain('训练 loss 不是任务得分的单调代理指标');

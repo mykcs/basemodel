@@ -38,10 +38,10 @@ describe('reader context before relational status copy', () => {
     for (const phrase of regressions) expect(publicSource).not.toContain(phrase);
   });
 
-  it('keeps the accepted relationship wording and CASE-060 in canonical guidance', () => {
-    expect(publicSource).toContain('接下来的训练分成两个阶段：Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练。');
+  it('keeps current relationship wording and CASE-060 in canonical guidance', () => {
+    expect(publicSource).toContain('后续 Harness 研究改变了 on-policy action contract，因此新版不再从旧 Stage 1 直接分叉，而是 fresh Stage 1 重开。');
     expect(publicSource).toContain('并行规模保持 8 张 GPU');
-    expect(publicSource).toContain('Ceiling-1.0 每轮把同一批 128 次任务记录');
+    expect(publicSource).toContain('每 128 次任务形成一轮共同证据');
     expect(designSpec).toContain('关系性结论需要先给最小参照物');
     expect(designSpec).toContain('CASE-060');
     expect(copyCases).toContain('CASE-060 — “共同 / 继续 / 仍然 / 后续”前先给参照物');
