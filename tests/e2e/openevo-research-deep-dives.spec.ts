@@ -4,10 +4,11 @@ const lobbyPath = '/research/seed-openevo/study/capability-exploration/';
 const stage1Path = '/research/seed-openevo/study/capability-exploration/stage1-evolution/';
 const stage2Path = '/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/';
 
-test('OpenEvo lobby exposes the Stage 1 and 7B deep-dive maps without replacing the two primary maps', async ({ page }) => {
+test('OpenEvo lobby exposes the Stage 1 and 7B deep-dive maps while marking the older redesign as predecessor', async ({ page }) => {
   await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-map-choice="first-run"]')).toBeVisible();
-  await expect(page.locator('[data-map-choice="redesign"]')).toBeVisible();
+  await expect(page.locator('[data-map-choice="redesign"]')).toContainText('重设计前序地图');
+  await expect(page.locator('[data-map-choice="redesign"]')).toContainText('202609030400');
   await expect(page.locator('[data-deep-dive="stage1-evolution"]')).toHaveAttribute('href', stage1Path);
   await expect(page.locator('[data-deep-dive="stage2-7b-analysis"]')).toHaveAttribute('href', stage2Path);
 });
@@ -25,18 +26,19 @@ test('Stage 1 evolution map explains the causal path to the shared 202609030400 
   await expect(map.locator('a[href="https://www.kaggle.com/code/mykcs01/openevo-qwen3-h2011-minimax-m3-formal"]')).toBeVisible();
 });
 
-test('7B Stage 2 analysis map separates sustained parameter learning from transfer claims', async ({ page }) => {
+test('7B Stage 2 analysis map separates parameter learning from transfer claims and does not republish stale counters', async ({ page }) => {
   await page.goto(stage2Path, { waitUntil: 'domcontentloaded' });
   const map = page.getByTestId('openevo-7b-stage2-analysis-map');
   await expect(map).toBeVisible();
   await expect(map).toContainText('20,480');
   await expect(map).toContainText('797');
   await expect(map).toContainText('80 / 80');
-  await expect(map).toContainText('25');
+  await expect(map).toContainText('暂不复制');
   await expect(map).toContainText('Task Vector 默认 diagnostic-only');
   await expect(map).toContainText('64 个 component');
   await expect(map).toContainText('fresh-task');
   await expect(map.locator('a[href="https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments"]')).toBeVisible();
+  await expect(map.locator('a[href*="seed-openevo-research-ia-factual-debt-2026-09-03.md"]')).toBeVisible();
 });
 
 for (const path of [stage1Path, stage2Path]) {
