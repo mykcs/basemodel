@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoStage1EvolutionMap from '../../../../../../components/research/OpenEvoStage1EvolutionMap.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Stage 1 是怎样一步一步做对的"
+  description="用肉鸽路线图解释 OpenEvo WebShop Stage 1 从历史 Harness、问题诊断、跨模型小实验到 202609030400 shared Harness freeze 与 canonical corpus gate 的完整决策链。"
+  locale={locale}
+>
+  <OpenEvoStage1EvolutionMap locale={locale} />
+</AppLayout>
