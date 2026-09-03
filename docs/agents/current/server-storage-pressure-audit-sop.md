@@ -25,15 +25,18 @@ Then measure identifiable home directories with `du -x -s -B1`. Do **not** assum
 
 **Completeness gate:** if the namespace exposes fewer homes than the known shared-server topology or the running development-container mounts imply, stop. The result is an incomplete view, not an anonymous ranking. Resolve the missing namespaces before publishing user counts or percentages.
 
-Public output is sorted by **attributable total** (home + reliably attributable Docker writable layer) and renamed every snapshot:
+For the BaseModel server page, the owner may be shown by the **relative public label** `我 / Me` only when the authorized private execution context or the current user instruction resolves which account is the site owner. Never publish or commit the owner's system username. If owner identity cannot be resolved confidently, do not guess; keep every account anonymous and report the owner-relative view as unavailable.
+
+After excluding the resolved owner, sort the remaining accounts by **attributable total** (home + reliably attributable Docker writable layer) and rename them every snapshot:
 
 ```text
-User 1 = largest attributable total in this snapshot
-User 2 = second largest
+Me = resolved site-owner account, shown without its system username
+User 1 = largest remaining attributable total in this snapshot
+User 2 = second largest remaining attributable total
 ...
 ```
 
-The mapping is ephemeral and must not be written into the repository. Never add a special “ours / our account” row; the owner is anonymous under the same rule as every other account.
+The other-user mapping is ephemeral and must not be written into the repository. `Me` is a product-relative responsibility label, not permission to expose an infrastructure identity.
 
 ## 2. Split personal and shared usage
 
@@ -48,7 +51,7 @@ Typical categories are `runs`, `models`, `control/worktrees`, retention archives
 
 Docker is a **shared daemon**. `docker system df` reports daemon-wide storage, not per-user ownership. An image's repository name, a Compose label, or a task working directory does not justify charging the whole image to one person because image layers may be shared by many containers.
 
-For account attribution, inspect container writable-layer size (`SizeRw`) and mounts. Assign a writable layer to an account **only** when a single reliable bind-mounted home identifies that owner. Keep ambiguous or ownerless writable layers separate. Then calculate the public buckets as:
+For account attribution, inspect container writable-layer size (`SizeRw`) and mounts. Assign a writable layer to an account **only** when a single reliable bind-mounted home identifies that owner. Keep ambiguous or ownerless writable layers separate. Attribution means **operational storage responsibility**, not literal per-file authorship: files produced automatically by Agents, training scripts, or containers are still charged to the controlling account when they land in that account's home or uniquely attributable writable layer. Then calculate the public buckets as:
 
 ```text
 account attributable total = home bytes + reliably attributable Docker SizeRw
@@ -116,7 +119,8 @@ A useful quick report answers four questions in this order:
 
 ```text
 filesystem: total / used / available / Use%
-anonymous attributable ranking: User 1, User 2, ...
+owner attributable total: Me, when owner identity is privately and reliably resolved
+other anonymous attributable ranking: User 1, User 2, ...
 unattributed Docker writable layers: size / unknown count
 shared/system remainder: size + what it may contain
 safe reclaim candidates: estimated reclaim + why each is recoverable
@@ -129,9 +133,9 @@ After cleanup, report **measured deletion/reclaim bytes** separately from the ne
 When refreshing `/research/seed-openevo/flow/server/`:
 
 - use a dated static snapshot with an explicit timezone;
-- publish only anonymous user rankings and aggregate hardware/storage facts;
-- regenerate anonymous numbering from that snapshot's attributable-total order and never single out “our” account;
-- never publish or persist the identity mapping or a user's internal directory names;
+- publish aggregate hardware/storage facts; when the owner is privately and reliably resolved, show only the relative label `我 / Me` for that account and never its system username;
+- exclude the owner, then regenerate all other anonymous numbering from that snapshot's attributable-total order;
+- never publish or persist other users' identity mappings or any user's internal directory names;
 - keep shared Docker/system usage unattributed unless ownership is independently proven;
 - keep server inventory separate from live GPU allocation/authorization;
 - update each factual number from the fresh measurement, not from chained global string replacement against the previous snapshot; after editing, sweep for stale old timestamp/used/free/percent/bucket values and verify the arithmetic before expensive browser acceptance;
