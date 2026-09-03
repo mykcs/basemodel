@@ -2,14 +2,12 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
-import { openEvoCeilingStage2Snapshot as snap } from '../../data/openEvoCeilingStage2Snapshot';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-const pct = ((snap.sevenB.rolloutsConsumed / snap.totalRollouts) * 100).toFixed(2);
 
 const links = {
   lobby: p('/research/seed-openevo/study/capability-exploration/'),
@@ -38,6 +36,12 @@ const evidence = [
     title: 'H1.38A · fresh-task transfer analysis',
     note: t('这是另一条历史 7B 研究线，不是 Ceiling-1.0 的同一 lineage；它帮助我们把“能训练出 adapter”和“稳定提升新任务”分开看。', 'This is a separate historical 7B study, not the same Ceiling-1.0 lineage. It helps separate “the adapter trains and reloads” from “it reliably improves fresh tasks.”'),
   },
+  {
+    href: 'https://github.com/mykcs/basemodel/blob/main/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
+    eyebrow: t('网站事实边界', 'WEBSITE FACT BOUNDARY'),
+    title: t('Phase C factual-debt audit · C04-09', 'Phase C factual-debt audit · C04-09'),
+    note: t('旧 Ceiling 页面上的精确运行快照计数目前标为 stale-unknown；Phase D 重新绑定 immutable receipt 之前，本页故意不复制这些数字。', 'Exact running counters from the old Ceiling page are currently classified stale-unknown; this page deliberately does not repeat them until Phase D restores immutable receipt binding.'),
+  },
 ];
 ---
 
@@ -56,13 +60,19 @@ const evidence = [
     )}</span>
   </header>
 
-  <section class="snapshot" aria-label={t('7B Ceiling-1.0 历史快照', 'Historical 7B Ceiling-1.0 snapshot')}>
-    <div><span>{t('历史快照', 'HISTORICAL SNAPSHOT')}</span><strong>{snap.observedAt}</strong></div>
-    <div><span>{t('已完成轮次', 'completed rounds')}</span><strong>{snap.sevenB.completedRange} · {snap.sevenB.roundsComplete}</strong></div>
-    <div><span>{t('Stage 2 任务尝试', 'Stage-2 attempts')}</span><strong>{snap.sevenB.rolloutsConsumed.toLocaleString()} / {snap.totalRollouts.toLocaleString()} · {pct}%</strong></div>
-    <div><span>{t('已产生 SD-LoRA generation', 'SD-LoRA generations')}</span><strong>{snap.sevenB.sdGenerations}</strong></div>
-    <div><span>{t('Stage 2 外部老师调用', 'external teacher calls')}</span><strong>{snap.sevenB.externalTeacherCalls}</strong></div>
-    <div><span>{t('最终 panel 提前访问', 'final-panel access')}</span><strong>{snap.sevenB.finalPanelAccessCount}</strong></div>
+  <section class="authority-strip" aria-label={t('本页事实边界', 'Evidence boundary for this page')}>
+    <div>
+      <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
+      <strong>{t('旧 256-window 的设计失败与“0 参数更新”结论', 'Old 256-window design failure and the zero-parameter-update conclusion')}</strong>
+    </div>
+    <div>
+      <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
+      <strong>{t('Ceiling-1.0 的参数更新规则、Task Vector diagnostic-only、容量 amendment', 'Ceiling-1.0 update semantics, diagnostic-only Task Vector, and the capacity amendment')}</strong>
+    </div>
+    <div>
+      <span>{t('暂不复制', 'DO NOT REPRINT YET')}</span>
+      <strong>{t('旧 Ceiling 页面上尚未重新绑定 receipt 的精确轮次 / generation 快照计数', 'Exact round / generation snapshot counters from the old Ceiling page until receipt binding is restored')}</strong>
+    </div>
   </section>
 
   <section class="story" aria-labelledby="stage2-story-title">
@@ -90,16 +100,16 @@ const evidence = [
           '每轮包含 16 个任务 × 8 次尝试。只要当前轮至少有一个任务出现 clean exact success，就允许做一次 SD-LoRA 参数更新；没有成功时参数保持不变。成功不跨轮偷偷累积成另一个门槛。',
           'Each round contains 16 tasks × 8 attempts. At least one clean exact-success task in the current round permits one SD-LoRA update; with no success, parameters stay unchanged. Successes are not accumulated across rounds into another hidden gate.'
         )}</p>
-        <a href={links.ceiling}>{t('打开 Ceiling-1.0 规则页 →', 'Open the Ceiling-1.0 design →')}</a>
+        <a href={links.ceiling}>{t('打开 Ceiling-1.0 历史规则页 →', 'Open the historical Ceiling-1.0 design →')}</a>
       </article>
       <span class="connector"></span>
 
       <article class="node node--main node--current">
-        <span>02 · LEARNING IGNITED</span>
+        <span>02 · LEARNING CHAIN IGNITED</span>
         <h3>{t('7B 证明“成功经验 → 真实参数更新”这条链已经打通', '7B proved that successful experience could become real parameter updates')}</h3>
         <p>{t(
-          `到 ${snap.observedAt} 的冻结网页快照，7B 已封存 ${snap.sevenB.completedRange} 轮，消费 ${snap.sevenB.rolloutsConsumed.toLocaleString()} 次 Stage-2 尝试并产生 ${snap.sevenB.sdGenerations} 个 SD-LoRA generation；Stage 2 没有额外老师调用，最终 128 题也没有提前打开。这个结论只说明学习链被点燃，不等于每一轮分数都会单调上升。`,
-          `At the frozen website snapshot (${snap.observedAt}), 7B had sealed rounds ${snap.sevenB.completedRange}, consumed ${snap.sevenB.rolloutsConsumed.toLocaleString()} Stage-2 attempts, and produced ${snap.sevenB.sdGenerations} SD-LoRA generations. Stage 2 used no additional external teacher calls and did not open the final 128-task panel. This proves the learning chain ignited; it does not imply monotonically improving round scores.`
+          'Ceiling-1.0 的历史证据支持一个重要结论：7B 不再停在“有成功轨迹但永远不更新”的状态，而是真的产生了 SD-LoRA 参数更新。这里故意不复述旧网页里的精确轮次、generation 和 component 快照，因为最新网站审计要求先把这些计数重新绑定到 immutable upstream receipt。这个边界不会削弱结论，反而把“我们确定知道什么”和“暂时不能重新发布什么”分开。',
+          'Historical Ceiling-1.0 evidence supports the important conclusion that 7B moved beyond “successful trajectories but no updates” and produced real SD-LoRA parameter updates. This page intentionally does not repeat exact round, generation, or component snapshot counters from the old webpage because the latest website audit requires those numbers to be rebound to immutable upstream receipts first. That boundary separates what we know from what we are not yet allowed to republish.'
         )}</p>
       </article>
       <span class="connector"></span>
@@ -175,5 +185,5 @@ const evidence = [
 </main>
 
 <style>
-.stage2-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage2-map__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage2-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.stage2-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.stage2-map__head h1{grid-column:1;margin:0;font-size:clamp(2.45rem,5.8vw,4.9rem);line-height:.94;letter-spacing:-.055em}.stage2-map__head strong,.stage2-map__head span{grid-column:2;display:block}.stage2-map__head strong{font-size:1.04rem;line-height:1.55}.stage2-map__head span{color:var(--muted);font-size:.9rem;line-height:1.65}.snapshot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}.snapshot div{display:grid;gap:.2rem;padding:.78rem .8rem;border-right:1px solid var(--line);border-top:1px solid var(--line)}.snapshot div:nth-child(3n){border-right:0}.snapshot span{color:var(--muted);font:750 .56rem/1.2 var(--font-mono);text-transform:uppercase}.snapshot strong{font-size:.78rem;line-height:1.35}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 .62rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{display:grid;justify-items:center}.node{width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 .6rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.62}.node>a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:.82rem;font-weight:760;text-underline-offset:.2em}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--history{width:min(700px,95%);background:var(--surface-muted)}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--diagnostic{width:min(690px,94%);border-radius:var(--radius-panel)}.node--diagnostic>strong{display:block;margin-top:.65rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:.8rem}.connector{width:2px;height:2rem;background:var(--line)}.side-study{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1.1rem;padding:1.2rem 0;border-top:1px solid var(--line)}.side-study header p{margin:0;color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.06em}.side-study h2{margin:.35rem 0 0;font-size:1.15rem}.side-study>div{padding:.85rem 1rem;border-left:3px solid var(--line)}.side-study>div strong{font-size:.88rem;line-height:1.5}.side-study>div p{margin:.5rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.58}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:.78rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:.8rem}.evidence nav span{color:var(--muted);font-size:.72rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage2-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage2-map__footer a{color:var(--accent-deep);font-size:.82rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage2-map{width:min(100% - 1rem,1120px)}.stage2-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage2-map__head>*{grid-column:auto!important}.stage2-map__head h1{font-size:clamp(2.35rem,12vw,3.55rem)}.snapshot{grid-template-columns:1fr 1fr}.snapshot div,.snapshot div:nth-child(3n){border-right:1px solid var(--line)}.snapshot div:nth-child(2n){border-right:0}.story>header,.side-study,.evidence{grid-template-columns:1fr}.story>header{gap:.3rem}.node,.node--amend,.node--history,.node--diagnostic{width:100%}.stage2-map__footer{display:grid}}@media(max-width:430px){.snapshot{grid-template-columns:1fr}.snapshot div{border-right:0!important}}
+.stage2-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage2-map__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage2-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.stage2-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.stage2-map__head h1{grid-column:1;margin:0;font-size:clamp(2.45rem,5.8vw,4.9rem);line-height:.94;letter-spacing:-.055em}.stage2-map__head strong,.stage2-map__head span{grid-column:2;display:block}.stage2-map__head strong{font-size:1.04rem;line-height:1.55}.stage2-map__head span{color:var(--muted);font-size:.9rem;line-height:1.65}.authority-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}.authority-strip div{display:grid;gap:.25rem;padding:.8rem;border-right:1px solid var(--line)}.authority-strip div:last-child{border-right:0}.authority-strip span{color:var(--muted);font:750 .56rem/1.2 var(--font-mono)}.authority-strip strong{font-size:.76rem;line-height:1.45}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 .62rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{display:grid;justify-items:center}.node{width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 .6rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.62}.node>a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:.82rem;font-weight:760;text-underline-offset:.2em}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--history{width:min(700px,95%);background:var(--surface-muted)}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--diagnostic{width:min(690px,94%);border-radius:var(--radius-panel)}.node--diagnostic>strong{display:block;margin-top:.65rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:.8rem}.connector{width:2px;height:2rem;background:var(--line)}.side-study{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1.1rem;padding:1.2rem 0;border-top:1px solid var(--line)}.side-study header p{margin:0;color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.06em}.side-study h2{margin:.35rem 0 0;font-size:1.15rem}.side-study>div{padding:.85rem 1rem;border-left:3px solid var(--line)}.side-study>div strong{font-size:.88rem;line-height:1.5}.side-study>div p{margin:.5rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.58}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:.78rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:.8rem}.evidence nav span{color:var(--muted);font-size:.72rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage2-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage2-map__footer a{color:var(--accent-deep);font-size:.82rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage2-map{width:min(100% - 1rem,1120px)}.stage2-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage2-map__head>*{grid-column:auto!important}.stage2-map__head h1{font-size:clamp(2.35rem,12vw,3.55rem)}.authority-strip{grid-template-columns:1fr}.authority-strip div{border-right:0;border-bottom:1px solid var(--line)}.authority-strip div:last-child{border-bottom:0}.story>header,.side-study,.evidence{grid-template-columns:1fr}.story>header{gap:.3rem}.node,.node--amend,.node--history,.node--diagnostic{width:100%}.stage2-map__footer{display:grid}}
 </style>
