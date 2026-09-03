@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
+import OpenEvoExperimentDesignCatalog from './OpenEvoExperimentDesignCatalog.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -184,6 +185,8 @@ const links = {
     </div>
     <small>{t('这是网站同步用的 authority snapshot，不替代实验仓库的 live state / receipt。', 'This is a website synchronization snapshot, not a substitute for the experiment repository’s live state / receipts.')}</small>
   </aside>
+
+  <OpenEvoExperimentDesignCatalog locale={locale} />
 
   <div class="redesign-detail-layer" data-redesign-detail-layer hidden>
     <button class="redesign-detail-layer__backdrop" type="button" data-redesign-detail-close aria-label={t('关闭关卡说明', 'Close stage notes')}></button>
