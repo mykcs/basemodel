@@ -52,7 +52,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(capabilityIndex).toContain('OpenEvoCapabilityMapLobby');
     expect(capabilityLobby).toContain('第一轮 OpenEvo 实验');
     expect(capabilityLobby).toContain('重新设计 OpenEvo');
-    expect(capabilityLobby).toContain('旧轨迹保留为历史证据，不冒充新版数据');
+    expect(capabilityLobby).toContain('重设计前序地图');
+    expect(capabilityLobby).toContain('202609030400 shared Harness freeze');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');
