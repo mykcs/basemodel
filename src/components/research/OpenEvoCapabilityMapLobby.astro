@@ -30,8 +30,8 @@ const archiveLinks = [
         'We first ran a full Stage 1 → Stage 2 exploration. The 7B run showed that the method could sustain parameter updates, while the 3B run and long-horizon execution exposed problems in the update rule, action interface, and parameter capacity.'
       )}</strong>
       <span>{t(
-        '后来的 OpenEvo 重设计直接来自这些实验，但新的行动接口会改变模型真正走出的轨迹，所以新版不能假装是旧实验的普通下一步。两张主地图负责讲研究主剧情；下面两张专题地图专门把 Stage 1 的决策过程和 7B Stage 2 的参数分析展开。',
-        'The later OpenEvo redesign came directly from those experiments, but the new action interface changes the trajectories the model actually produces. Two primary maps carry the research storyline; two focused maps below unpack the Stage-1 decision process and the 7B Stage-2 parameter analysis.'
+        '后来的 OpenEvo 重设计直接来自这些实验，但行动接口的变化会改变模型真正走出的轨迹，所以新版不能假装是旧实验的普通下一步。下面同时保留历史主线、重设计前序地图，以及两张把当前 Stage 1 决策过程和 7B Stage 2 参数分析展开的专题地图。',
+        'The later OpenEvo redesign came directly from those experiments, but changing the action interface changes the trajectories the model actually produces. This lobby therefore keeps the historical mainline, the redesign predecessor map, and two focused maps that unpack the current Stage-1 decision process and the historical 7B Stage-2 parameter analysis.'
       )}</span>
     </div>
   </header>
@@ -47,14 +47,14 @@ const archiveLinks = [
       <strong>{t('进入第一轮实验 →', 'Open the first-run map →')}</strong>
     </a>
 
-    <a class="map-choice map-choice--current" href={redesignHref} data-map-choice="redesign">
-      <span class="map-choice__state">{t('当前设计路线', 'CURRENT DESIGN ROUTE')}</span>
+    <a class="map-choice map-choice--redesign" href={redesignHref} data-map-choice="redesign">
+      <span class="map-choice__state">{t('重设计前序地图', 'REDESIGN PREDECESSOR MAP')}</span>
       <h2>{t('重新设计 OpenEvo', 'Redesigning OpenEvo')}</h2>
       <p>{t(
-        '从新的行动接口重新采集 Stage 1，再做 MiniMax 任务后分析、Stage 1 downstream 准备和新的 Stage 2。旧轨迹保留为历史证据，不冒充新版数据。',
-        'Start again from a new action interface and fresh Stage 1, then rebuild the MiniMax post-hoc analysis, Stage-1 downstream preparation, and the new Stage 2. Old trajectories remain historical evidence rather than being relabeled as redesign data.'
+        '这张图保留我们从旧实验走向 Harness 重设计时的前序方案。里面的 Stage1-202609021800 已被 202609030400 shared Harness freeze 取代，所以它负责解释“我们怎么走到这里”，不再代表当前运行状态。',
+        'This map preserves the predecessor redesign that grew out of the old experiments. Its Stage1-202609021800 entry has been superseded by the 202609030400 shared-harness freeze, so it explains how we got here rather than representing current run state.'
       )}</p>
-      <strong>{t('进入新版实验 →', 'Open the redesign map →')}</strong>
+      <strong>{t('进入前序重设计地图 →', 'Open the redesign predecessor →')}</strong>
     </a>
   </nav>
 
@@ -74,7 +74,7 @@ const archiveLinks = [
       <a href={stage2AnalysisHref} data-deep-dive="stage2-7b-analysis">
         <small>{t('7B 参数证据', '7B PARAMETER EVIDENCE')}</small>
         <strong>{t('7B Stage 2 参数实验与分析', '7B Stage-2 parameter experiments and analysis')}</strong>
-        <span>{t('从 20,480 rollout / 0 更新的旧门槛，走到 Ceiling-1.0 持续 SD-LoRA 更新、Task Vector diagnostic-only、容量 amendment 与 transfer 边界。', 'From the old 20,480-rollout / zero-update gate to sustained Ceiling-1.0 SD-LoRA learning, diagnostic-only Task Vector geometry, the capacity amendment, and transfer boundaries.')}</span>
+        <span>{t('从 20,480 rollout / 0 更新的旧门槛，走到 Ceiling-1.0 持续 SD-LoRA 更新、Task Vector diagnostic-only、容量 amendment 与 transfer 边界；未重新绑定 receipt 的旧快照计数不会复制进来。', 'From the old 20,480-rollout / zero-update gate to sustained Ceiling-1.0 SD-LoRA learning, diagnostic-only Task Vector geometry, the capacity amendment, and transfer boundaries; old snapshot counters without restored receipt binding are deliberately not copied here.')}</span>
         <b>{t('进入地图 →', 'Open map →')}</b>
       </a>
     </nav>
@@ -106,7 +106,7 @@ const archiveLinks = [
 .map-choice:hover,.map-choice:focus-visible{border-color:var(--accent);background:var(--surface-muted)}
 .map-choice:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .map-choice__state{width:max-content;font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--muted)}
-.map-choice--current .map-choice__state{color:var(--accent-deep)}
+.map-choice--redesign .map-choice__state{color:var(--accent-deep)}
 .map-choice h2{margin:0;font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.05;letter-spacing:-.035em}
 .map-choice p{margin:0;color:var(--muted);line-height:1.65}
 .map-choice>strong{align-self:end;margin-top:auto;color:var(--accent-deep);font-size:.9rem}
