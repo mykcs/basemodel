@@ -1,12 +1,12 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
-import OpenEvoStage1EvolutionMap from '../../../../../../../components/research/OpenEvoStage1EvolutionMap.astro';
+import OpenEvoSuccessorExplorationMap from '../../../../../../../components/research/OpenEvoSuccessorExplorationMap.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="How Stage 1 was repaired step by step"
-  description="Why were 1,440 WebShop trajectories still not enough to call the old run the final Stage 1? This map follows the interface failure, paired 3B / 1.7B diagnostics, and the shared 202609030400 design that made a new corpus suitable for downstream analysis."
+  title="Stage-1 exploration history: 3B + 1.7B successor"
+  description="Compatibility route: the real research chronology behind the shared 3B/1.7B Stage-1 harness, from horizon, sampling, history, self-deliberation, and action-channel diagnostics to canonical corpora and downstream capacity decisions."
   locale={locale}
 >
-  <OpenEvoStage1EvolutionMap locale={locale} />
+  <OpenEvoSuccessorExplorationMap locale={locale} />
 </AppLayout>

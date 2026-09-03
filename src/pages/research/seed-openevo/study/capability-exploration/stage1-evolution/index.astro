@@ -1,12 +1,12 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
-import OpenEvoStage1EvolutionMap from '../../../../../../components/research/OpenEvoStage1EvolutionMap.astro';
+import OpenEvoSuccessorExplorationMap from '../../../../../../components/research/OpenEvoSuccessorExplorationMap.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="Stage 1 是怎样一步一步做对的"
-  description="为什么同样是 1,440 条 WebShop 轨迹，旧版还不能直接当作最终 Stage 1？这张图从旧接口的问题、3B / 1.7B 成对小实验讲到 202609030400 共享方案，解释我们怎样确认新数据可以继续进入后续分析。"
+  title="Stage 1 探索史：3B + 1.7B successor"
+  description="兼容入口：按真实研究顺序解释 3B 与 1.7B shared Stage 1 Harness 怎样从 horizon、sampling、history、自我推理与 action-channel 诊断中形成，并继续到 canonical corpus 与 downstream capacity decisions。"
   locale={locale}
 >
-  <OpenEvoStage1EvolutionMap locale={locale} />
+  <OpenEvoSuccessorExplorationMap locale={locale} />
 </AppLayout>

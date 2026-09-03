@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoSuccessorExplorationMap from '../../../../../../../components/research/OpenEvoSuccessorExplorationMap.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="OpenEvo 3B + 1.7B 探索版"
+  description="按真实研究顺序展开 Qwen2.5-3B 与 Qwen3-1.7B successor：从 3B 轨迹问题、15/30 horizon、sampling/history/self-deliberation/action channel 诊断，到 shared Harness freeze、canonical Stage 1、MiniMax 与 Text Memory 4096→bounded 10+10。"
+  locale={locale}
+>
+  <OpenEvoSuccessorExplorationMap locale={locale} />
+</AppLayout>

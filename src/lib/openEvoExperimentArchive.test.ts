@@ -6,6 +6,8 @@ const archive = read('../components/research/OpenEvoExperimentArchive.astro');
 const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const firstRun = read('../components/research/OpenEvoFirstRunMap.astro');
 const redesign = read('../components/research/OpenEvoRedesignMap.astro');
+const successorExploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
+const successorReport = read('../components/research/OpenEvoSuccessorReport.astro');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/archive/index.astro');
 const en = read('../pages/en/research/seed-openevo/study/capability-exploration/archive/index.astro');
 const zhIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
@@ -69,11 +71,15 @@ describe('OpenEvo experiment archive', () => {
     ]) expect(() => read(relative)).not.toThrow();
   });
 
-  it('lets both main maps disclose technical details into the archive', () => {
+  it('keeps the archive reachable from the historical map and both successor readings', () => {
     expect(firstRun).toContain('links.archive');
-    expect(redesign).toContain('links.archive');
     expect(firstRun).toContain('打开完整实验档案');
-    expect(redesign).toContain('MiniMax / execution 档案');
+    expect(successorExploration).toContain('links.archive');
+    expect(successorExploration).toContain('打开完整实验档案');
+    expect(successorReport).toContain('links.archive');
+    expect(successorReport).toContain('完整实验档案');
+    expect(redesign).toContain('data-successor-mode="exploration"');
+    expect(redesign).toContain('data-successor-mode="report"');
   });
 
   it('mounts a shared bilingual archive route', () => {

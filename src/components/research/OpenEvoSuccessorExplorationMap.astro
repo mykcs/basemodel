@@ -1,0 +1,192 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
+import { OPEN_EVO_CEILING_PRINCIPLE, OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const principle = zh ? OPEN_EVO_CEILING_PRINCIPLE.zh : OPEN_EVO_CEILING_PRINCIPLE.en;
+const links = {
+  lobby: p('/research/seed-openevo/study/capability-exploration/'),
+  gateway: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  report: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/report/'),
+  firstRun: p('/research/seed-openevo/study/capability-exploration/first-run/'),
+  archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
+};
+const arm3 = OPEN_EVO_STAGE1_METRICS[0];
+const arm17 = OPEN_EVO_STAGE1_METRICS[1];
+---
+<main class="explore-map" data-testid="openevo-successor-exploration-map">
+  <header class="explore-map__head">
+    <a href={links.gateway}>{t('← 3B + 1.7B successor', '← 3B + 1.7B successor')}</a>
+    <p>ROGUELIKE RESEARCH MAP · EXPLORATION</p>
+    <h1>{t('我们是怎样绕路走到 shared Harness 的', 'How the detours led to the shared harness')}</h1>
+    <strong>{t(
+      '这条路线故意不把研究写得像我们一开始就知道答案。每一次岔路都保留“为什么会这样猜、怎么做小实验、什么被证伪、为什么返回主线”。',
+      'This route deliberately avoids rewriting research as if the answer were known in advance. Every branch keeps the hypothesis, diagnostic, falsification, and reason for returning to the mainline.'
+    )}</strong>
+    <span>{t('探索版包含 current successor 的直接形成过程，也包含真正影响 redesign 的 historical predecessor diagnostics；两者会明确标注，不混成同一个实验批次。', 'The exploration view includes both the direct formation of the current successor and historical predecessor diagnostics that materially shaped the redesign. They are labeled separately rather than blended into one experimental batch.')}</span>
+  </header>
+
+  <blockquote class="explore-map__principle" data-principle>
+    <span>{t('这条路始终不变的约束', 'THE CONSTRAINT THAT STAYS FIXED')}</span>
+    <strong>{principle}</strong>
+  </blockquote>
+
+  <nav class="explore-map__switch" aria-label={t('切换叙事版本', 'Switch narrative view')}>
+    <b>{t('当前：探索版', 'Current: Exploration')}</b>
+    <a href={links.report}>{t('切到报告与论文版 →', 'Switch to report / paper →')}</a>
+  </nav>
+
+  <section class="explore-legend" aria-label={t('探索地图图例', 'Exploration map legend')}>
+    <span><i class="is-main"></i>{t('主线', 'Mainline')}</span>
+    <span><i class="is-test"></i>{t('小实验 / 假设', 'Diagnostic / hypothesis')}</span>
+    <span><i class="is-backtrack"></i>{t('证伪后回退', 'Falsified → backtrack')}</span>
+    <span><i class="is-fix"></i>{t('工程修复', 'Engineering fix')}</span>
+    <span><i class="is-freeze"></i>{t('科学 freeze / boundary', 'Scientific freeze / boundary')}</span>
+  </section>
+
+  <section class="explore-spine" aria-label={t('3B 与 1.7B successor 的探索路线', 'Exploration path for the 3B and 1.7B successor')}>
+    <article class="quest quest--main" data-quest="start">
+      <span>00 · START · HISTORICAL PREDECESSOR</span>
+      <h2>{t('先承认一个事实：3B 的轨迹质量太差，不能只怪模型小', 'Start with an uncomfortable fact: 3B trajectories were too weak to blame size alone')}</h2>
+      <p>{t('第一轮 7B / 3B 实验已经证明 OpenEvo 可以进入持续学习，但 3B 上 exact success 很稀、invalid/serialization 行为又多。研究问题于是变成：到底是能力上限，还是 Harness 把能力测坏了？', 'The first 7B / 3B campaign showed that OpenEvo could enter sustained learning, but 3B had sparse exact success plus substantial invalid/serialization behavior. The next question became: is this the model ceiling, or is the harness corrupting the measurement?')}</p>
+      <a href={links.firstRun}>{t('回看 predecessor →', 'Review predecessor →')}</a>
+    </article>
+    <span class="rail"></span>
+
+    <div class="branch-row branch-row--left" data-exploration-detour="horizon">
+      <article class="quest quest--test">
+        <span>01A · HYPOTHESIS · HISTORICAL H1.17</span>
+        <h2>{t('会不会只是 15 步不够？那就试 30 步', 'Maybe 15 steps are too short? Try 30')}</h2>
+        <p>{t('这是更早 3B predecessor 的诊断，不是 current 202609030400 freeze 内重新消耗的样本。我们把 BASE-15 与 BASE-30 做 paired comparison。', 'This is an earlier 3B predecessor diagnostic, not a new sample consumed inside the current 202609030400 freeze. BASE-15 and BASE-30 were compared pairwise.')}</p>
+        <strong>{t('结果：64/64 valid；所有 paired horizon delta = 0。', 'Result: 64/64 valid; every paired horizon delta = 0.')}</strong>
+        <details><summary>{t('为什么这条路被放弃？', 'Why was this branch abandoned?')}</summary><p>{t('把 horizon 翻倍没有改变 paired outcome，所以“多给时间自然会救回来”没有得到支持。后来 shared Harness 回到 SEED-aligned 的 15 步，把预算继续花在更可疑的接口因素上。', 'Doubling the horizon did not change paired outcomes, so “more time will rescue behavior” was unsupported. The later shared harness returned to the SEED-aligned 15-step boundary and spent diagnostic budget on more plausible interface factors.')}</p><a href={OPEN_EVO_EVIDENCE_LINKS.historicalHorizonPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.historicalHorizonPr} />PR #35 · H1.17</a></details>
+      </article>
+      <b class="backtrack">↩ {t('30 → 15', '30 → 15')}</b>
+    </div>
+    <span class="rail"></span>
+
+    <div class="branch-row branch-row--right" data-exploration-detour="sampling">
+      <article class="quest quest--test">
+        <span>01B · HYPOTHESIS</span>
+        <h2>{t('会不会 sampling 太保守？', 'Maybe sampling is too conservative?')}</h2>
+        <p>{t('把主要嫌疑放在 temperature / top-k 上很自然。小实验显示 T=1.0 会提高行为多样性，但没有单独恢复 reward / loop quality。', 'Temperature / top-k were natural suspects. Diagnostics showed that T=1.0 increased behavioral diversity, but did not by itself recover reward or loop quality.')}</p>
+        <strong>{t('结论：sampling 是条件，不是根因解释。', 'Conclusion: sampling matters, but does not explain the failure by itself.')}</strong>
+      </article>
+      <b class="backtrack">↩ {t('继续找混淆因素', 'Keep searching for the confound')}</b>
+    </div>
+    <span class="rail"></span>
+
+    <div class="branch-row branch-row--left" data-exploration-detour="history">
+      <article class="quest quest--test">
+        <span>01C · HYPOTHESIS</span>
+        <h2>{t('那是不是 history 格式让模型迷路？', 'Maybe the history format is making the model lose context?')}</h2>
+        <p>{t('SEED-native history formatting 确实改变了行为，但单独改 history 仍不足以解释旧版与更好历史行为之间的差距。', 'SEED-native history formatting changed behavior, but history alone still could not explain the gap between the weak run and stronger historical behavior.')}</p>
+        <strong>{t('结论：保留 SEED-native history，但不在这里停止诊断。', 'Conclusion: keep SEED-native history, but do not stop the diagnosis here.')}</strong>
+      </article>
+      <b class="backtrack">↩ {t('回到 prompt / action channel', 'Return to prompt / action channel')}</b>
+    </div>
+    <span class="rail"></span>
+
+    <article class="quest quest--amend" data-quest="deliberation">
+      <span>02 · CAUSAL CLUE</span>
+      <h2>{t('真正强的线索：升级 Harness 时，我们把短自我推理也一起删掉了', 'The stronger clue: the harness upgrade had also removed brief self-deliberation')}</h2>
+      <p>{t('同模型历史对照让这个变化比 temperature 更可疑。于是我们恢复的不是“购物技巧”，而是一个通用接口：action 前先由模型写自己的短 reasoning；内容不被 Harness 指挥。', 'Same-model historical comparisons made this change more suspicious than temperature. What was restored was not shopping advice, but a generic interface: the model writes its own brief reasoning before acting, without the harness prescribing its content.')}</p>
+      <details><summary>{t('这会不会已经是在教它做题？', 'Is this already teaching the model how to solve the task?')}</summary><p>{t('公平性关键是“要求思考”与“告诉它应该想什么”不同。当前 contract 只要求 model-authored pre-action tokens，不给 search/buy heuristics、next-action ranking 或 expert trajectory。', 'The fairness distinction is between asking the model to think and telling it what to think. The current contract requires model-authored pre-action tokens but provides no search/buy heuristics, next-action ranking, or expert trajectory.')}</p></details>
+    </article>
+    <span class="rail"></span>
+
+    <article class="quest quest--amend" data-quest="action-channel">
+      <span>03 · ACTION CHANNEL REDESIGN</span>
+      <h2>{t('再把“想对了但格式写坏”从能力评估里拆出去', 'Separate “right intent, broken serialization” from capability')}</h2>
+      <p>{t('malformed wrapper 经常仍能看出模型想选择一个真实 admissible action。于是接口拥有 action opener，并在 action token prefix 上只允许当前 Allowed actions；parser repair 与 unconstrained fallback 关闭。', 'Malformed wrappers often still revealed intent to choose a real admissible action. The interface therefore owns the action opener and constrains the action token prefix to current Allowed actions, while parser repair and unconstrained fallback remain disabled.')}</p>
+      <strong>{t('这减少 mechanical invalidity，但不替模型从合法动作中选答案。', 'This reduces mechanical invalidity without choosing the answer among legal actions.')}</strong>
+    </article>
+
+    <div class="patch-lane" aria-label={t('不改变科学合同的工程绕路', 'Engineering detours that do not change the scientific contract')}>
+      <article data-fix="sampling-readback"><span>PATCH · RUNTIME READBACK</span><strong>{t('配置写 T=1.0 不等于真正执行读到了 T=1.0', 'Writing T=1.0 in config does not prove runtime read T=1.0')}</strong><p>{t('曾发现 wrapper intent 是 1.0，但实际 module alias 仍读 0.4。修复 read path 并加 runtime receipt；这是 provenance 修复，不重新定义 sampling hypothesis。', 'A wrapper intended 1.0 while the execution module still read 0.4. The read path and runtime receipt were fixed; this is provenance repair, not a new sampling hypothesis.')}</p></article>
+      <article data-fix="model-path"><span>PATCH · MODEL PATH</span><strong>{t('run-local snapshot 会被回收', 'Run-local snapshots can be reclaimed')}</strong><p>{t('正式 launcher 改绑 stable canonical model path 并核对 revision/hash。模型身份不变，因此这是 engineering fix。', 'Formal launchers bind a stable canonical model path and verify revision/hash. Model identity is unchanged, so this remains an engineering fix.')}</p></article>
+    </div>
+    <span class="rail"></span>
+
+    <article class="quest quest--freeze" data-quest="paired-diagnostic">
+      <span>04 · PAIRED 3B + 1.7B DIAGNOSTICS</span>
+      <h2>{t('不能为 3B 单独写一套“更会做题”的 Harness', 'Do not give 3B a private “better-solving” harness')}</h2>
+      <p>{t('最终候选必须在 Qwen2.5-3B 与 Qwen3-1.7B 上成对确认。允许模型自身差异，不允许按 model ID 注入不同策略；最终得到一套共同的 action/history/deliberation contract。', 'The final candidate had to survive paired checks on Qwen2.5-3B and Qwen3-1.7B. Model-native differences are allowed; model-ID-specific strategy injection is not. The result is one shared action/history/deliberation contract.')}</p>
+      <a href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Troubleshooting} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Troubleshooting} />{t('查看完整 diagnosis case →', 'Open the diagnosis case →')}</a>
+    </article>
+    <span class="rail"></span>
+
+    <article class="quest quest--freeze quest--current" data-quest="freeze">
+      <span>05 · FREEZE_ONE_SHARED_STAGE1_HARNESS · {OPEN_EVO_STAGE1_FREEZE.id}</span>
+      <h2>{t('现在才冻结正式 shared Stage 1', 'Only now freeze the formal shared Stage 1')}</h2>
+      <p>{t(`两边都固定为 ${OPEN_EVO_STAGE1_FREEZE.tasks} tasks × ${OPEN_EVO_STAGE1_FREEZE.rolloutsPerTask} rollouts = ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}，max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}，T=${OPEN_EVO_STAGE1_FREEZE.temperature}。reward 不作为 raw corpus PASS gate；先检查 schedule / mechanics / provenance。`, `Both arms are frozen to ${OPEN_EVO_STAGE1_FREEZE.tasks} tasks × ${OPEN_EVO_STAGE1_FREEZE.rolloutsPerTask} rollouts = ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}, max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}, T=${OPEN_EVO_STAGE1_FREEZE.temperature}. Reward is not the raw-corpus PASS gate; schedule, mechanics, and provenance come first.`)}</p>
+      <a href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Pr} />PR #270 · authority</a>
+    </article>
+    <span class="rail"></span>
+
+    <article class="quest quest--evidence" data-quest="raw-results">
+      <span>06 · CANONICAL RAW STAGE 1</span>
+      <h2>{t('共享 Harness 并没有把两种模型“教成一样”', 'A shared harness does not make the two models behave the same')}</h2>
+      <div class="result-pair">
+        <div><b>{arm3.model}</b><strong>{arm3.exact}/{OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><span>{arm3.exactRate} exact · {arm3.positive} positive</span></div>
+        <div><b>{arm17.model}</b><strong>{arm17.exact}/{OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><span>{arm17.exactRate} exact · {arm17.positive} positive</span></div>
+      </div>
+      <p>{t('1.7B raw bootstrap 更强本身就是观察结果；公平的意义是“同一接口下差异可解释”，不是强行把两边成功率拉齐。', 'The stronger raw 1.7B bootstrap is itself an observation. Fairness means differences are measured under one interface, not that the harness forces equal success rates.')}</p>
+    </article>
+    <span class="rail"></span>
+
+    <article class="quest quest--main" data-quest="minimax">
+      <span>07 · AFTER RAW SEAL</span>
+      <h2>{t('这时才让 MiniMax 看轨迹：老师批改，不替学生继续点网页', 'Only after sealing raw trajectories does MiniMax enter: review, not action-taking')}</h2>
+      <p>{t('两个 READY_FOR_MINIMAX receipt 都绑定 1,440 条 source trajectory，并记录 new_webshop_calls=0。MiniMax 生成 post-hoc evidence，不能反向改变已经发生的 raw Stage1。', 'Both READY_FOR_MINIMAX receipts bind 1,440 source trajectories and record new_webshop_calls=0. MiniMax produces post-hoc evidence and cannot reach backward to change raw Stage 1.')}</p>
+    </article>
+    <span class="rail"></span>
+
+    <div class="branch-row branch-row--right" data-exploration-detour="memory-capacity">
+      <article class="quest quest--test">
+        <span>08A · TEXT MEMORY CAPACITY</span>
+        <h2>{t('20 条输入塞不下：先试把输出上限放到 4096', 'Twenty inputs do not fit: first try a 4096-token output cap')}</h2>
+        <p>{t('为了不轻易改变 input topology，A1.1 先对 3B 和 1.7B 对称地扩大 repair 容量。结果两个 arm 都仍然 BLOCKED / extended_repair_failed。', 'To avoid changing input topology too quickly, A1.1 first expanded repair capacity symmetrically for 3B and 1.7B. Both arms still ended BLOCKED / extended_repair_failed.')}</p>
+        <strong>{t('结论：只加 token cap 不够，4096 这条路被证伪。', 'Conclusion: output-cap expansion alone is insufficient; the 4096 branch is falsified.')}</strong>
+        <details><summary>{t('为什么不能一开始就随便拆 10+10？', 'Why not split 10+10 immediately?')}</summary><p>{t('因为 input topology 会改变 consolidation semantics。当前 A2 只有在同一 20-input node 的 primary 2048 与 same-20 repair 2048 都 saturation 后才被允许触发。', 'Because input topology changes consolidation semantics. Current A2 activates only after both the 2048 primary and same-20 2048 repair saturate on the same 20-input node.')}</p></details>
+      </article>
+      <b class="backtrack">↩ {t('4096 失败 → bounded A2', '4096 fails → bounded A2')}</b>
+    </div>
+    <span class="rail"></span>
+
+    <article class="quest quest--amend" data-quest="a2">
+      <span>08B · BOUNDED A2</span>
+      <h2>{t('只有双 saturation 后，才固定拆成 first10 + last10', 'Only after double saturation: fixed first10 + last10')}</h2>
+      <p>{t('A2 是 outcome-blind、max split depth=1 的 deterministic recovery，不允许根据 reward 自适应地继续二分。它改变了容量处理方式，所以必须有明确 trigger receipt，而不能包装成普通工程 patch。', 'A2 is an outcome-blind deterministic recovery with max split depth=1; it may not recursively split based on reward. Because it changes capacity handling, it requires an explicit trigger receipt rather than being hidden as an engineering patch.')}</p>
+      <a href={OPEN_EVO_EVIDENCE_LINKS.capacityAuthority} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.capacityAuthority} />{t('查看 capacity authority →', 'Open capacity authority →')}</a>
+    </article>
+    <span class="rail"></span>
+
+    <article class="quest quest--boundary" data-quest="prestage2">
+      <span>09 · PRE_STAGE2_READY</span>
+      <h2>{t('Stage1 downstream 准备完成，也不等于自动开始 Stage2', 'Stage-1 downstream readiness still does not automatically start Stage 2')}</h2>
+      <p>{t('两个 PRE_STAGE2_READY receipt 都能绑定 adapter、Memory、Skill、Agent 与 provenance，并且 status=PASS；但同时明确写着 stage2_authorized=false、requires separate activation。', 'Both PRE_STAGE2_READY receipts bind adapter, Memory, Skill, Agent, and provenance with status=PASS, while also stating stage2_authorized=false and requiring a separate activation.')}</p>
+      <strong>{t('探索地图在这里停：准备好 ≠ 已获准继续。', 'The exploration map stops here: ready ≠ authorized to continue.')}</strong>
+    </article>
+  </section>
+
+  <OpenEvoHarnessFairnessPanel locale={locale} />
+
+  <footer class="explore-map__footer">
+    <a href={links.gateway}>{t('← 回到两种读法', '← Back to the two views')}</a>
+    <a href={links.archive}>{t('打开完整实验档案', 'Open the full experiment archive')}</a>
+    <a href={links.report}>{t('把这段历史压成论文式主线 →', 'Compress this history into the report view →')}</a>
+  </footer>
+</main>
+
+<style>
+.explore-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.explore-map__head{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.explore-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.explore-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.explore-map__head h1{grid-column:1;margin:0;font-size:clamp(2.35rem,5.6vw,4.8rem);line-height:.95;letter-spacing:-.055em}.explore-map__head strong,.explore-map__head span{grid-column:2;display:block}.explore-map__head strong{font-size:1.02rem;line-height:1.55}.explore-map__head span{color:var(--muted);font-size:.88rem;line-height:1.62}.explore-map__principle{display:grid;gap:.25rem;margin:.9rem 0;padding:.82rem 1rem;border:0;border-left:4px double var(--accent-deep);background:var(--surface-muted)}.explore-map__principle span{color:var(--accent-deep);font:800 .54rem/1.2 var(--font-mono);letter-spacing:.06em}.explore-map__principle strong{font-size:.95rem;line-height:1.5}.explore-map__switch{display:flex;justify-content:space-between;gap:1rem;padding:.7rem 0;border-bottom:1px solid var(--line);font-size:.76rem}.explore-map__switch b{font-weight:800}.explore-map__switch a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.explore-legend{display:flex;flex-wrap:wrap;gap:.55rem 1rem;padding:.72rem 0;color:var(--muted);font-size:.68rem}.explore-legend span{display:inline-flex;align-items:center;gap:.35rem}.explore-legend i{width:1rem;height:.42rem;border:1px solid var(--line);border-radius:999px;background:var(--surface)}.explore-legend .is-main{background:var(--accent);border-color:var(--accent)}.explore-legend .is-test{border-style:dashed}.explore-legend .is-backtrack{border-color:var(--accent-deep);background:transparent}.explore-legend .is-fix{width:.72rem;background:var(--surface-muted)}.explore-legend .is-freeze{height:.58rem;border:3px double var(--accent-deep)}.explore-spine{display:grid;justify-items:center;padding:.65rem 0}.quest{position:relative;width:min(770px,100%);padding:1rem 1.05rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.quest>span{display:block;margin-bottom:.4rem;color:var(--muted);font:800 .55rem/1.25 var(--font-mono);letter-spacing:.06em}.quest h2{margin:0 0 .42rem;font-size:1.12rem;line-height:1.22}.quest p{margin:.3rem 0 0;color:var(--muted);font-size:.81rem;line-height:1.6}.quest>strong{display:block;margin-top:.5rem;font-size:.76rem;line-height:1.45}.quest>a,.quest details a{display:inline-flex;align-items:center;gap:.35rem;margin-top:.55rem;color:var(--accent-deep);font-size:.72rem;font-weight:750;text-underline-offset:.2em}.quest details{margin-top:.65rem;padding-top:.55rem;border-top:1px solid var(--line)}.quest summary{cursor:pointer;font-size:.74rem;font-weight:780}.quest details p{font-size:.72rem}.quest--main{border-left:4px solid var(--accent)}.quest--test{border-style:dashed}.quest--amend{border:3px double color-mix(in srgb,var(--accent-deep) 70%,var(--line))}.quest--freeze{border-top:4px double var(--accent-deep)}.quest--current{box-shadow:inset 4px 0 0 var(--accent-deep)}.quest--evidence{background:var(--surface-muted)}.quest--boundary{border-bottom:4px double var(--accent-deep)}.rail{width:2px;height:1.6rem;background:var(--line)}.branch-row{position:relative;width:min(880px,100%);display:grid;grid-template-columns:minmax(0,1fr) 95px;gap:.55rem;align-items:center}.branch-row--left{transform:translateX(-4%)}.branch-row--right{transform:translateX(4%)}.branch-row .quest{width:100%}.backtrack{display:grid;place-items:center;min-height:3.6rem;padding:.4rem;border:1px dashed var(--accent-deep);border-radius:var(--radius-control);color:var(--accent-deep);font:800 .59rem/1.35 var(--font-mono);text-align:center}.patch-lane{width:min(830px,96%);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin:.3rem 0 .4rem 3.5rem}.patch-lane article{padding:.68rem .75rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.patch-lane span{display:block;color:var(--muted);font:800 .5rem/1.2 var(--font-mono);letter-spacing:.05em}.patch-lane strong{display:block;margin-top:.22rem;font-size:.74rem;line-height:1.4}.patch-lane p{margin:.3rem 0 0;color:var(--muted);font-size:.67rem;line-height:1.48}.result-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:.7rem 0}.result-pair>div{display:grid;gap:.15rem;padding:.65rem;border-top:1px solid var(--line);background:var(--surface)}.result-pair b{color:var(--muted);font:800 .54rem/1.2 var(--font-mono)}.result-pair strong{font-size:1.4rem}.result-pair span{font-size:.66rem}.explore-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.explore-map__footer a{color:var(--accent-deep);font-size:.78rem;font-weight:750;text-underline-offset:.2em}
+@media(max-width:760px){.explore-map{width:min(100% - 1rem,1120px)}.explore-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.explore-map__head>a,.explore-map__head>p,.explore-map__head h1,.explore-map__head strong,.explore-map__head span{grid-column:auto}.explore-map__head h1{font-size:clamp(2.25rem,11vw,3.45rem)}.explore-map__switch{align-items:flex-start;flex-direction:column;gap:.25rem}.branch-row,.branch-row--left,.branch-row--right{grid-template-columns:1fr;transform:none;width:100%}.backtrack{min-height:0;width:calc(100% - 1.4rem);justify-self:end}.patch-lane{width:calc(100% - 1.4rem);grid-template-columns:1fr;margin:.3rem 0 .4rem 1.4rem}.result-pair{grid-template-columns:1fr}.explore-map__footer{display:grid}}
+</style>

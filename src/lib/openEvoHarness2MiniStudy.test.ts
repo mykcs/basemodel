@@ -4,7 +4,10 @@ import { openEvoHarness2Qualification as q } from '../data/openEvoHarness2Qualif
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const component = read('../components/research/OpenEvoHarness2MiniStudy.astro');
-const parent = read('../components/research/OpenEvoRedesignMap.astro');
+const gateway = read('../components/research/OpenEvoRedesignMap.astro');
+const exploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
+const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
+const narrative = read('../data/openEvoSuccessorNarrative.ts');
 const chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const zhRoute = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
 const enRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
@@ -52,13 +55,16 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).not.toContain('3B 本身在语言 contract');
   });
 
-  it('wires the historical study into the bilingual redesign path without making the old HOLD current', () => {
+  it('keeps the historical mini-study reachable without making its HOLD the current successor state', () => {
     expect(zhRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(enRoute).toContain('OpenEvoHarness2MiniStudy');
-    expect(parent).toContain('/openevo-2-0/harness-2-0/');
-    expect(parent).toContain('HARNESS201.1 · NEW SCIENTIFIC BOUNDARY');
-    expect(parent).toContain('FRESH STAGE 1');
-    expect(parent).toContain('5/64');
+    expect(lobby).toContain('/openevo-2-0/harness-2-0/');
+    expect(gateway).toContain('OPEN_EVO_STAGE1_FREEZE.id');
+    expect(narrative).toContain("id: '202609030400'");
+    expect(gateway).toContain('探索版');
+    expect(gateway).toContain('报告与论文版');
+    expect(exploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(exploration).toContain('paired');
     expect(chooser).toContain('第三次转折 · 从 Stage 1 重开');
     expect(chooser).toContain('Harness201.1 后重新采 Stage 1');
     expect(chooser).not.toContain('Stage 1 不重做');

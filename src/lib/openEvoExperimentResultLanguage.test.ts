@@ -15,6 +15,9 @@ const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
 const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
 const redesign = read('../components/research/OpenEvoRedesignMap.astro');
+const successorExploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
+const successorReport = read('../components/research/OpenEvoSuccessorReport.astro');
+const successorNarrative = read('../data/openEvoSuccessorNarrative.ts');
 const legacyResultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const resultsAppendix = read('../components/research/OpenEvoWebShopResultsAppendix.astro');
@@ -27,7 +30,7 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${successorExploration}\n${successorReport}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
@@ -111,14 +114,17 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage2Chooser).toContain('Harness201.1 后重新采 Stage 1');
     expect(stage2Chooser).toContain('/openevo-2-0/');
     expect(stage2Chooser).not.toContain('Stage 1 不重做');
-    expect(redesign).toContain('HARNESS201.1 · NEW SCIENTIFIC BOUNDARY');
-    expect(redesign).toContain('reasoning soft · action hard');
-    expect(redesign).toContain('FLOOR 1 · FRESH STAGE 1');
-    expect(redesign).toContain('旧 3B lineage 停在 Harness diagnosis');
-    expect(redesign).toContain('TEACHER EVIDENCE POOL SEAL');
-    expect(redesign).toContain('下一道 seal · 尚未宣告完成');
-    expect(redesign).toContain('STAGE 2 ORIGIN SEAL');
-    expect(redesign).toContain('data-node-state="future"');
+    expect(redesign).toContain('同一个实验，两种读法');
+    expect(redesign).toContain('OPEN_EVO_STAGE1_FREEZE.id');
+    expect(successorNarrative).toContain("id: '202609030400'");
+    expect(successorExploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(successorExploration).toContain('4096 失败 → bounded A2');
+    expect(successorReport).toContain('共享一套 strategy-neutral bootstrap harness');
+    expect(successorReport).toContain('MiniMax 对已完成 trajectory 做 task-after analysis');
+    expect(successorReport).toContain('PRE_STAGE2_READY');
+    expect(successorReport).toContain('stage2_authorized=false');
+    expect(successorReport).toContain('“Stage2 已经证明稳定提升”');
+    expect(successorReport).toContain('不支持');
     expect(redesign).not.toContain('Ceiling-1.0 已暂停');
     expect(ceilingStage2).toContain('Ceiling-1.0 历史证据原样保留');
     expect(ceilingStage2).toContain('新版从新的 Harness 与 fresh Stage 1 重新开始');

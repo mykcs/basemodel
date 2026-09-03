@@ -263,6 +263,83 @@ HOLD / STOPPED evidence
 
 ---
 
+## 4.5 第二张地图内部再分两种读法（2026-09-04）
+
+第二张地图不再要求一张页面同时承担“真实探索史”和“论文式结论”两种互相冲突的叙事任务。`/openevo-2-0/` 作为 successor gateway，下面固定分成两个语义一致但叙事顺序不同的子页面：
+
+```text
+重新设计 OpenEvo
+  ├─ 探索版 / exploration/
+  │    按实际诊断与修复顺序：问题 → 假设 → 小实验 → 证伪/回退 → 新假设 → freeze
+  └─ 报告与论文版 / report/
+       按论文顺序：研究问题 → 冻结设计 → 结果 → 为什么这样设计 → 证据 → claim boundary
+```
+
+两页必须消费同一份稳定事实数据，不能各自手写一套数字或 Harness 定义。推荐单一 data owner：`src/data/openEvoSuccessorNarrative.ts`。
+
+### 稳定设计哲学常量
+
+除非 scientific authority 明确改变研究问题，以下句子作为 capability-ceiling 叙事的稳定常量，不在页面间改写同义句：
+
+> **在 SEED-aligned 的 WebShop 任务、轨迹与评测预算内，先冻结规则、再看结果，探索 OpenEvo 能把当前基座模型推到多高。**
+
+English companion:
+
+> **Within a SEED-aligned WebShop task, rollout, and evaluation envelope, freeze the rules before seeing outcomes and probe how far OpenEvo can push the current base model.**
+
+`SEED-aligned` 表示研究问题与 WebShop task / rollout / evaluation envelope 对齐，不得扩写成“所有 runtime compute 与 SEED 完全相同”。
+
+### 探索版叙事合同
+
+探索版允许复杂、绕路和回退，而且**必须保留负结果的方向作用**。每个分叉至少回答：
+
+1. 当时观察到了什么；
+2. 为什么形成这个假设；
+3. 跑了什么最小诊断；
+4. 结果支持 / 证伪了什么；
+5. 因此主线向哪里前进或回退。
+
+真实存在的历史 predecessor diagnosis 可以作为“进入当前 successor 之前的探索节点”，但必须标明 historical predecessor，不得冒充 202609030400 shared Stage1 的同批 A/B。比如：15→30 horizon 的 paired 结果为零，因此 later shared harness 回到 15；这是旧 3B 诊断对 redesign 的输入，不是 current freeze 内重新消耗的实验预算。
+
+### 报告 / 论文版叙事合同
+
+报告版不按“我们先猜了什么”排序，而按 claim-bearing 结构：
+
+```text
+研究问题
+  ↓
+共享、strategy-neutral Harness
+  ↓
+canonical raw Stage1（两 arm 各 1,440）
+  ↓
+bootstrap behavior signal
+  ↓
+post-hoc MiniMax
+  ↓
+bounded Stage1 downstream carriers
+  ↓
+PRE_STAGE2_READY / separate Stage2 activation
+```
+
+每一段固定使用 `What / Why / Evidence / Boundary` 四层。主要结论与会改变解释的 caveat 保持可见；receipt、SHA、ablation 细节可以放 `<details>`。
+
+### Harness 公平性披露合同
+
+页面不得使用 `No assistance` 这类绝对词。统一公开口径是 **strategy-neutral bootstrap harness**，并同时披露：
+
+- 任务、当前 observation、recent history、当前 admissible / Allowed actions：属于环境接口；
+- hard action envelope / interface-owned action opener：属于 interface scaffolding，会降低机械非法动作，必须披露，但不选择答案；
+- generic brief self-deliberation：属于 model-generic prompting scaffold，不包含 WebShop-specific strategy；
+- raw Stage1 不注入 Memory / Skill / Agent System / SD adapter；
+- raw Stage1 external teacher action calls = 0；
+- MiniMax 只在 raw Stage1 seal 后做 post-hoc analysis；
+- final panel 在 Stage1 不可访问；
+- 公开 WebShop benchmark 可能存在 base-model pretraining contamination，当前实验不能证明其不存在。
+
+因此可支持的是“共享接口、公平资源语义、无 task-solving strategy / answer leakage 的运行设计”，不能支持“模型从未受任何脚手架”“模型预训练从未见过 WebShop”。
+
+---
+
 ## 5. 第二张地图的详细主剧情
 
 ### 5.1 新起点：Harness / action contract
