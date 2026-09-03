@@ -596,18 +596,20 @@ Evidence: [2026-09-03 route inventory and disposition matrix](./seed-openevo-res
 
 ## Phase C — Audit factual claims and freshness
 
-- [ ] **C01** Extract mutable scientific-state claims from research overview pages.
-- [ ] **C02** Extract mutable claims from Study/design pages.
-- [ ] **C03** Extract mutable claims from Results and result subpages.
-- [ ] **C04** Extract mutable claims from capability-exploration and Stage-specific pages.
-- [ ] **C05** Extract mutable claims from model-specific self/MiniMax/cross-arm analysis pages.
-- [ ] **C06** For each claim, record source evidence, source SHA, checked date, and claim boundary where available.
-- [ ] **C07** Mark claims as `current-supported`, `historical-supported`, `superseded`, `stale-unknown`, `duplicate`, or `unsupported`.
-- [ ] **C08** Resolve contradictions by walking upstream authority rather than choosing the newest-looking website page.
-- [ ] **C09** Identify old tests/docs that force stale phase/allocation/next-step wording.
-- [ ] **C10** Produce a factual-debt register that future rewrites consume.
+- [x] **C01** Extract mutable scientific-state claims from research overview pages.
+- [x] **C02** Extract mutable claims from Study/design pages.
+- [x] **C03** Extract mutable claims from Results and result subpages.
+- [x] **C04** Extract mutable claims from capability-exploration and Stage-specific pages.
+- [x] **C05** Extract mutable claims from model-specific self/MiniMax/cross-arm analysis pages.
+- [x] **C06** For each claim, record source evidence, source SHA, checked date, and claim boundary where available.
+- [x] **C07** Mark claims as `current-supported`, `historical-supported`, `superseded`, `stale-unknown`, `duplicate`, or `unsupported`.
+- [x] **C08** Resolve contradictions by walking upstream authority rather than choosing the newest-looking website page.
+- [x] **C09** Identify old tests/docs that force stale phase/allocation/next-step wording.
+- [x] **C10** Produce a factual-debt register that future rewrites consume.
 
 **Phase C acceptance:** no planned rewrite relies on an undated website statement as its own source of truth.
+
+Evidence: [2026-09-03 factual-debt register](./seed-openevo-research-ia-factual-debt-2026-09-03.md).
 
 ---
 
@@ -862,6 +864,7 @@ Use this table for milestone evidence while executing the checklist.
 | 2026-09-03 | Masterplan created | this document | No website mutation performed by creation of this plan. |
 | 2026-09-03 | Phase A · A01–A07 | [authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md) | Baselines pinned; standards/contracts reconciled; catalog hard-code boundary documented; current-campaign router conflict recorded. |
 | 2026-09-03 | Phase B · B01–B10 | [route inventory](./seed-openevo-research-ia-route-inventory-2026-09-03.md) | 65 concrete URLs / 39 semantic routes inventoried; sitemap/search/navigation/duplication/locale/disposition debt recorded. |
+| 2026-09-03 | Phase C · C01–C10 | [factual-debt register](./seed-openevo-research-ia-factual-debt-2026-09-03.md) | Current/historical/superseded claims classified; WB1/202609021800/202609030400 conflicts resolved by object ownership; stale tests/docs registered. |
 
 ---
 
