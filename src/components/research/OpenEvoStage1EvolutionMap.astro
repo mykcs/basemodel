@@ -1,0 +1,181 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const links = {
+  lobby: p('/research/seed-openevo/study/capability-exploration/'),
+  redesign: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  historical: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'),
+  archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
+};
+
+const evidence = [
+  {
+    href: 'https://github.com/mykcs/openevo-experiment/pull/270',
+    eyebrow: t('当前科学权威', 'CURRENT SCIENTIFIC AUTHORITY'),
+    title: t('PR #270 · shared Stage 1 freeze', 'PR #270 · shared Stage 1 freeze'),
+    note: t('Freeze 202609030400；3B 与 1.7B 共用同一套 Stage 1 接口与采样合同。', 'Freeze 202609030400; 3B and 1.7B share one Stage-1 interface and sampling contract.'),
+  },
+  {
+    href: 'https://www.kaggle.com/code/mykcs01/openevo-qwen3-h2011-minimax-m3-formal',
+    eyebrow: t('执行环境示例', 'EXECUTION BACKEND EXAMPLE'),
+    title: t('Kaggle · MiniMax post-hoc analysis notebook', 'Kaggle · MiniMax post-hoc analysis notebook'),
+    note: t('Kaggle 是“在哪里执行分析”，不是 Stage 1 科学合同本身；这里保留它作为可追的执行入口。', 'Kaggle records where the post-hoc analysis ran; it is not the Stage-1 scientific contract itself.'),
+  },
+  {
+    href: 'https://github.com/mykcs/basemodel/blob/main/docs/agents/current/seed-openevo-research-ia-authority-snapshot-2026-09-03.md',
+    eyebrow: t('网站权威边界', 'WEBSITE AUTHORITY BOUNDARY'),
+    title: t('Research IA authority snapshot · 2026-09-03', 'Research IA authority snapshot · 2026-09-03'),
+    note: t('网站只消费公开安全的派生视图；Git / preregistration / receipt 仍然高于页面文案。', 'The website is a public-safe derived view; Git, preregistration, and receipts remain authoritative over page copy.'),
+  },
+];
+---
+
+<main class="stage1-map" data-testid="openevo-stage1-evolution-map">
+  <header class="stage1-map__head">
+    <a href={links.lobby}>{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
+    <p>ROGUELIKE RESEARCH MAP · STAGE 1 EVOLUTION</p>
+    <h1>{t('Stage 1 是怎样一步一步做对的', 'How Stage 1 was repaired step by step')}</h1>
+    <strong>{t(
+      '最终那套 Stage 1 不是一开始就知道答案。我们先跑出问题，再用小实验把“模型能力不足”和“Harness 把模型带偏”分开，最后才冻结一套 3B 与 1.7B 都能共用的接口。',
+      'The final Stage 1 was not obvious at the beginning. We first exposed failures, then used small diagnostics to separate model weakness from harness-induced failure, and only then froze one interface shared by 3B and 1.7B.'
+    )}</strong>
+    <span>{t(
+      '这张图只讲“为什么改”。已经发生过的旧轨迹仍然属于旧 lineage，不会因为我们后来找到更好的 Harness 就被倒写成新版数据。',
+      'This map explains why the design changed. Historical trajectories remain in their original lineage and are never retroactively relabeled as data from the repaired harness.'
+    )}</span>
+  </header>
+
+  <section class="map-legend" aria-label={t('地图图例', 'Map legend')}>
+    <span><i class="legend-main"></i>{t('主线里程碑', 'Mainline milestone')}</span>
+    <span><i class="legend-amend"></i>{t('科学设定变化', 'Scientific amendment')}</span>
+    <span><i class="legend-fix"></i>{t('不改科学语义的工程修复', 'Semantics-preserving engineering fix')}</span>
+    <span><i class="legend-evidence"></i>{t('证据入口', 'Evidence')}</span>
+  </section>
+
+  <section class="story" aria-labelledby="stage1-story-title">
+    <header>
+      <p>FLOOR 1 → FLOOR 6</p>
+      <h2 id="stage1-story-title">{t('从“能跑”到“可以作为 canonical corpus”', 'From “it runs” to a canonical corpus')}</h2>
+    </header>
+
+    <div class="spine">
+      <article class="node node--main">
+        <span>01 · HISTORICAL STAGE 1</span>
+        <h3>{t('先按旧 Harness 收集 1,440 条轨迹', 'Collect 1,440 trajectories with the historical harness')}</h3>
+        <p>{t(
+          '基本任务预算从来没有变：180 个 WebShop 任务，每个任务 8 次 rollout，总共 1,440 条。问题不是“有没有数据”，而是 3B 的 exact success 太稀少，同时 invalid action / parser 行为让我们无法确定失败到底来自模型还是接口。',
+          'The task budget itself stayed fixed: 180 WebShop tasks × 8 rollouts = 1,440 trajectories. The problem was not a lack of data; 3B exact success was extremely sparse while invalid-action and parser behavior made it hard to tell model failure from interface failure.'
+        )}</p>
+        <a href={links.historical}>{t('打开历史 Stage 1 →', 'Open historical Stage 1 →')}</a>
+      </article>
+      <span class="connector"></span>
+
+      <article class="node node--blocked">
+        <span>02 · DIAGNOSIS</span>
+        <h3>{t('发现真正的大问题：Harness 改动也在改变模型会不会“合法行动”', 'The harness itself was changing whether the model could act legally')}</h3>
+        <p>{t(
+          '我们一度把主要注意力放在 temperature / top-k，但交叉对照以后，最强的因果线索变成：升级 Harness 时把短小的模型自我推理一起删掉了，同时 action serialization 也不稳定。于是“模型不会做题”和“接口让动作失效”被混在了一起。',
+          'We initially focused on temperature and top-k. Cross-model comparisons instead pointed to a stronger causal clue: a harness upgrade had removed the model’s short self-deliberation while action serialization was also unstable. Model inability and interface-induced invalidity had become confounded.'
+        )}</p>
+      </article>
+      <span class="connector"></span>
+
+      <article class="node node--amend">
+        <span>03 · PAIRED MINI EXPERIMENTS</span>
+        <h3>{t('不直接重跑 1,440：先让 3B 和 1.7B 在同一套候选 Harness 上做成对小实验', 'Do paired 3B/1.7B diagnostics before another full 1,440 run')}</h3>
+        <p>{t(
+          '候选方案保留模型自己写出的 pre-action deliberation，同时由接口硬性保证 Allowed Actions 与 action opener。重点不是帮模型“作弊”，而是把机械格式错误从能力评估里拿掉。最终候选先通过 paired 64 + 64 的跨模型确认，再允许进入正式重采。',
+          'The candidate keeps model-authored pre-action deliberation while the interface guarantees Allowed Actions and the action opener. The point is not to solve the task for the model, but to remove mechanical serialization failure from capability measurement. The final candidate passed paired 64 + 64 diagnostics before formal recollection.'
+        )}</p>
+      </article>
+      <span class="connector"></span>
+
+      <article class="node node--main node--current">
+        <span>04 · FREEZE_ONE_SHARED_STAGE1_HARNESS</span>
+        <h3>{t('冻结一套真正跨模型共享的 Stage 1', 'Freeze one genuinely shared Stage-1 harness')}</h3>
+        <p>{t(
+          'Freeze ID 是 202609030400。3B 与 1.7B 不允许按 model ID 偷偷走不同策略；只允许模型 ID、revision、dtype、chat-template thinking 开关和 run name 这些模型本身的差异。',
+          'Freeze ID: 202609030400. The 3B and 1.7B arms may not branch behavior by model ID; only model identity, revision, dtype, chat-template thinking setting, and run name may differ.'
+        )}</p>
+        <dl>
+          <div><dt>{t('观察格式', 'observation')}</dt><dd>SEED-native + history length 2</dd></div>
+          <div><dt>{t('采样', 'sampling')}</dt><dd>T=1.0 · top_p=1.0 · top_k=0 · repetition_penalty=1.0</dd></div>
+          <div><dt>{t('思考', 'deliberation')}</dt><dd>{t('soft；至少 4 个模型自己写的 pre-action tokens', 'soft; ≥4 model-authored pre-action tokens')}</dd></div>
+          <div><dt>{t('动作', 'action')}</dt><dd>{t('hard Allowed-actions + interface-owned opener', 'hard Allowed-actions + interface-owned opener')}</dd></div>
+          <div><dt>{t('禁止泄漏', 'no leakage')}</dt><dd>Memory / Skill / Agent = none · teacher calls = 0</dd></div>
+        </dl>
+      </article>
+
+      <div class="patch-lane" aria-label={t('正式启动前的工程修复', 'Engineering fixes before formal launch')}>
+        <article>
+          <span>PATCH A · RESOLVED</span>
+          <strong>{t('采样 readback 修复', 'Sampling readback fix')}</strong>
+          <p>{t('外层 nominally 设成 T=1.0，但正式执行路径曾读到另一个还停在 0.4 的 module alias。修复的是实际 read path，不是重新改科学采样合同。', 'The outer wrapper nominally set T=1.0 while the real execution path read another module alias still at 0.4. The fix binds the actual read path without changing the qualified scientific sampling contract.')}</p>
+        </article>
+        <article>
+          <span>PATCH B · RESOLVED</span>
+          <strong>{t('3B 模型路径修复', 'Stable 3B model-path fix')}</strong>
+          <p>{t('旧 launcher 指向可被回收的 run-local snapshot；正式运行改绑稳定 canonical model path，并核对 hash。模型身份没有变。', 'The old launcher referenced a reclaimable run-local snapshot. Formal execution now binds the stable canonical model path and verifies hashes; model identity does not change.')}</p>
+        </article>
+      </div>
+
+      <span class="connector"></span>
+      <article class="node node--gate">
+        <span>05 · RAW CORPUS PASS GATE</span>
+        <h3>{t('Stage 1 的 PASS 不看“分数够不够高”，先看这批数据是不是科学上可用', 'Stage-1 PASS validates the corpus before asking whether the score is high')}</h3>
+        <p>{t(
+          '每个模型都必须独立做到 1,440 / 1,440 schedule coverage、180 × 8、所有 worker 正常退出、0 engineering invalid、0 invalid action termination、0 parser repair、0 constraint escape，并且每一步都有非空 pre-action deliberation 与真实 sampling readback。任务成功率不是 raw corpus 的 PASS gate。',
+          'Each arm independently needs 1,440 / 1,440 schedule coverage, 180 × 8 tasks, clean worker exits, zero engineering invalids, zero invalid action termination, zero parser repair, zero constraint escape, non-empty pre-action deliberation receipts, and real sampling readback. Reward is not the raw-corpus PASS gate.'
+        )}</p>
+      </article>
+      <span class="connector"></span>
+
+      <article class="node node--main">
+        <span>06 · AFTER RAW STAGE 1</span>
+        <h3>{t('1,440 条封存以后，还不能直接跳进 Stage 2', 'Sealing 1,440 trajectories is not permission to jump straight into Stage 2')}</h3>
+        <p>{t(
+          '下一步是 trajectory / provenance / behavior audit；通过后才让 MiniMax-M3 对 1,440 / 1,440 做任务后分析，形成 Frozen Teacher Evidence，再构造 OPSD、Text Memory、Skill Bundle、Agent System。只有这一整条链封口后才叫 STAGE1_SEALED。',
+          'Next comes a trajectory / provenance / behavior audit. Only after it passes does MiniMax-M3 analyze all 1,440 completed trajectories to create Frozen Teacher Evidence, followed by OPSD, Text Memory, Skill Bundle, and Agent System construction. Only then is STAGE1_SEALED.'
+        )}</p>
+        <div class="handoff" aria-label={t('Stage 1 封存流程', 'Stage-1 sealing flow')}>
+          <code>1440 raw</code><b>→</b><code>audit</code><b>→</b><code>MiniMax 1440</code><b>→</b><code>Frozen Teacher</code><b>→</b><code>4 carriers</code><b>→</b><code>STAGE1_SEALED</code>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="evidence" aria-labelledby="stage1-evidence-title">
+    <header>
+      <p>EVIDENCE · NOT NEW STORY NODES</p>
+      <h2 id="stage1-evidence-title">{t('去哪里看原始权威与外部平台', 'Where to inspect authority and provider evidence')}</h2>
+      <span>{t('Git 里的 freeze / receipt 决定科学身份；Kaggle 只说明某一步在哪里执行。', 'Git freeze / receipts define scientific identity; Kaggle only records an execution backend.')}</span>
+    </header>
+    <nav>
+      {evidence.map((item) => (
+        <a href={item.href} target="_blank" rel="noreferrer">
+          <small>{item.eyebrow}</small>
+          <strong><ExternalBrandMark href={item.href} />{item.title}</strong>
+          <span>{item.note}</span>
+          <b aria-hidden="true">↗</b>
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <footer class="stage1-map__footer">
+    <a href={links.redesign}>{t('回到 OpenEvo 重设计主地图 →', 'Back to the OpenEvo redesign map →')}</a>
+    <a href={links.archive}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a>
+  </footer>
+</main>
+
+<style>
+.stage1-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage1-map__head{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage1-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.stage1-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.stage1-map__head h1{grid-column:1;margin:0;font-size:clamp(2.45rem,5.9vw,5rem);line-height:.94;letter-spacing:-.055em}.stage1-map__head strong,.stage1-map__head span{grid-column:2;display:block}.stage1-map__head strong{font-size:1.04rem;line-height:1.55}.stage1-map__head span{color:var(--muted);font-size:.9rem;line-height:1.65}.map-legend{display:flex;flex-wrap:wrap;gap:.55rem 1.2rem;padding:.85rem 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:.72rem}.map-legend span{display:inline-flex;align-items:center;gap:.42rem}.map-legend i{display:inline-block;width:1.15rem;height:.35rem;border-radius:999px;background:var(--line)}.map-legend .legend-main{height:.55rem;background:var(--accent)}.map-legend .legend-amend{height:.55rem;border:1px double var(--accent-deep);background:transparent}.map-legend .legend-fix{height:.42rem;background:var(--surface-muted);border:1px solid var(--line)}.map-legend .legend-evidence{height:0;border-top:2px dotted var(--muted);background:none}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 .62rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{position:relative;display:grid;justify-items:center}.node{position:relative;width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 .6rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.62}.node a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:.82rem;font-weight:760;text-underline-offset:.2em}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--blocked{width:min(700px,95%);border-left:4px solid var(--muted)}.node--gate{width:min(720px,97%);border-radius:var(--radius-panel);background:var(--surface-muted)}.node dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem;margin:.85rem 0 0}.node dl div{padding:.55rem .65rem;border-top:1px solid var(--line)}.node dt{color:var(--muted);font:750 .58rem/1.2 var(--font-mono);text-transform:uppercase}.node dd{margin:.2rem 0 0;font-size:.76rem;line-height:1.4}.connector{width:2px;height:2rem;background:var(--line)}.patch-lane{width:min(680px,92%);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin:.75rem 0 0 4.5rem}.patch-lane article{padding:.75rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface-muted)}.patch-lane span{display:block;margin-bottom:.28rem;color:var(--muted);font:800 .55rem/1.2 var(--font-mono)}.patch-lane strong{font-size:.83rem}.patch-lane p{margin:.35rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.5}.handoff{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-top:.85rem;padding:.7rem;border-top:1px solid var(--line)}.handoff code{padding:.25rem .38rem;border-radius:4px;background:var(--surface-muted);font-size:.68rem}.handoff b{color:var(--muted);font-size:.72rem}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:.78rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:.8rem}.evidence nav span{color:var(--muted);font-size:.72rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage1-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage1-map__footer a{color:var(--accent-deep);font-size:.82rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage1-map{width:min(100% - 1rem,1120px)}.stage1-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage1-map__head>*{grid-column:auto!important}.stage1-map__head h1{font-size:clamp(2.35rem,12vw,3.55rem)}.story>header{grid-template-columns:1fr;gap:.3rem}.node,.node--amend,.node--blocked,.node--gate{width:100%}.node dl{grid-template-columns:1fr}.patch-lane{width:calc(100% - 1.4rem);grid-template-columns:1fr;margin:.75rem 0 0 1.4rem}.evidence{grid-template-columns:1fr}.stage1-map__footer{display:grid}.handoff{gap:.25rem}.handoff code{font-size:.62rem}}
+</style>
