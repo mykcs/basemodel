@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoSuccessorExplorationMap from '../../../../../../components/research/OpenEvoSuccessorExplorationMap.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Stage 1 探索史：3B + 1.7B successor"
+  description="兼容入口：按真实研究顺序解释 3B 与 1.7B shared Stage 1 Harness 怎样从 horizon、sampling、history、自我推理与 action-channel 诊断中形成，并继续到 canonical corpus 与 downstream capacity decisions。"
+  locale={locale}
+>
+  <OpenEvoSuccessorExplorationMap locale={locale} />
+</AppLayout>

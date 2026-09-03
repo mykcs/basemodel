@@ -2,84 +2,67 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
-const map = read('../components/research/OpenEvoRedesignMap.astro');
+const gateway = read('../components/research/OpenEvoRedesignMap.astro');
+const exploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
+const report = read('../components/research/OpenEvoSuccessorReport.astro');
+const fairness = read('../components/research/OpenEvoHarnessFairnessPanel.astro');
+const narrative = read('../data/openEvoSuccessorNarrative.ts');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
 const en = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
+const zhExplore = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/index.astro');
+const enReport = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.astro');
 
-describe('OpenEvo redesign successor map', () => {
-  it('makes Harness201.1 the new scientific boundary instead of a continuation node', () => {
-    expect(map).toContain('HARNESS201.1 · NEW SCIENTIFIC BOUNDARY');
-    expect(map).toContain('data-node-kind="scientific-amendment" data-node-state="current"');
-    expect(map).toContain('reasoning soft · action hard');
-    expect(map).toContain('dynamic set of WebShop actions');
-    expect(map).toContain('fuzzy repair');
-    expect(map).toContain('5/64');
-    expect(map).toContain('maximum of 11');
+describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
+  it('makes one successor expose exactly two readings over one shared fact set', () => {
+    expect(gateway).toContain('同一个实验，两种读法');
+    expect(gateway).toContain('data-successor-mode="exploration"');
+    expect(gateway).toContain('data-successor-mode="report"');
+    expect((gateway.match(/data-successor-mode=/g) || []).length).toBe(2);
+    expect(gateway).toContain('OPEN_EVO_STAGE1_FREEZE.id');
+    expect(narrative).toContain("id: '202609030400'");
+    expect(gateway).toContain('它们不是两个实验，也不会拥有两套不同的数字');
   });
 
-  it('restarts from a fresh 1,440-trajectory Stage 1 with no old learned state', () => {
-    expect(map).toContain('FLOOR 1 · FRESH STAGE 1');
-    expect(map).toContain('202609021800');
-    expect(map).toContain('不会把“合同已冻结”冒充成“两个 arm 都已经完成并 seal 了 1,440 条”');
-    expect(map).toContain('180 tasks × 8 rollouts each = 1,440 fresh trajectories');
-    expect(map).toContain('No old Memory / Skill / Agent');
-    expect(map).toContain('No old OPSD / Stage2 state');
-    expect(map).toContain('qualification rows cannot be counted inside the formal 1,440');
+  it('keeps the exploration view chronological, falsifiable, and visibly backtracking', () => {
+    expect(exploration).toContain('ROGUELIKE RESEARCH MAP · EXPLORATION');
+    expect(exploration).toContain('15 步不够？那就试 30 步');
+    expect(exploration).toContain('30 → 15');
+    expect(exploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(exploration).toContain('PATCH · MODEL PATH');
+    expect(exploration).toContain('4096 失败 → bounded A2');
+    expect(exploration).toContain('PRE_STAGE2_READY');
   });
 
-  it('keeps MiniMax post-hoc and visibly ends the teacher budget at the sealed pool', () => {
-    expect(map).toContain('MINIMAX ANALYSIS');
-    expect(map).toContain('202609022300');
-    expect(map).toContain('它没有宣告 MiniMax 已经 1,440/1,440 完成');
-    expect(map).toContain('analysis-authorized');
-    expect(map).toContain('post-hoc analyzer');
-    expect(map).toContain('TEACHER EVIDENCE POOL SEAL');
-    expect(map).toContain('From here onward: external teacher calls = 0');
-    expect(map).toContain('closeout still requires all 1,440 source identities to be parse_ok');
+  it('uses the report view as a linear What / Why / Evidence / Boundary argument', () => {
+    expect(report).toContain('REPORT / PAPER VIEW · CANONICAL STAGE 1 → PRE-STAGE 2');
+    for (const label of ['What', 'Why', 'Evidence', 'Boundary']) expect(report).toContain(`<dt>${label}</dt>`);
+    expect(report).toContain('共享一套 strategy-neutral bootstrap harness');
+    expect(report).toContain('Qwen2.5-3B 与 Qwen3-1.7B');
+    expect(report).toContain('MiniMax 对已完成 trajectory 做 task-after analysis');
+    expect(report).toContain('OPSD / Memory / Skill / Agent');
+    expect(report).toContain('stage2_authorized=false');
+    expect(report).toContain('stage2_requires_separate_activation=true');
   });
 
-  it('keeps fresh Stage-1 downstream locked instead of inheriting older successor completion', () => {
-    for (const label of ['OPSD', 'Text Memory', 'Skill Bundle', 'Agent System']) expect(map).toContain(label);
-    expect(map).toContain('downstream_not_authorized_here');
-    expect(map).toContain('更早的 3B successor');
-    expect(map).toContain('自己的合法 trigger');
-    expect(map).not.toContain('record count is 18,490');
-    expect(map).not.toContain('A1 saturation → bounded A2');
-    expect((map.match(/class=\"downstream-card[^\"]*\" data-node-kind=\"(?:mainline|scientific-amendment)\" data-node-state=\"future\"/g) || []).length).toBe(4);
-    expect(map).not.toMatch(/<article class="[^"]*downstream-card--complete[^"]*"/);
-    expect(map).not.toContain('BOUND TO NEW CORPUS');
-    expect(map).not.toContain('SAME-CORPUS SUCCESSOR');
+  it('preserves the scientific fairness boundary instead of claiming zero scaffolding', () => {
+    expect(fairness).toContain('strategy-neutral bootstrap harness');
+    expect(fairness).toContain('不是“零脚手架裸跑”');
+    expect(fairness).toContain('task-solving strategy');
+    expect(fairness).toContain('hard action envelope');
+    expect(fairness).toContain('external teacher actions');
+    expect(fairness).toContain('final-panel information');
   });
 
-  it('keeps Stage-2 origin, new Stage 2, and final evaluation future-locked', () => {
-    expect(map).toContain('STAGE 2 ORIGIN SEAL');
-    expect(map).toContain('NEW STAGE 2');
-    expect(map).toContain('FINAL EVALUATION');
-    expect((map.match(/data-node-state="future"/g) || []).length).toBeGreaterThanOrEqual(3);
-    expect(map).toContain('redesign-connector--future');
-    expect(map).toContain('The old 7-vs-8 and 256-window rules do not return');
+  it('keeps historical evidence from being relabeled into the successor', () => {
+    expect(report).toContain('旧 3B 轨迹只能作为 predecessor evidence，不能改名接到 successor');
+    expect(exploration).toContain('historical predecessor diagnostics');
+    expect(exploration).toContain('不混成同一个实验批次');
   });
 
-  it('shows Qwen3-1.7B as a parallel branch rather than replacing the 3B successor', () => {
-    expect(map).toContain('Qwen3-1.7B');
-    expect(map).toContain('data-node-kind="branch" data-node-state="current"');
-    expect(map).toContain('0/64');
-    expect(map).toContain('maximum of 29');
-    expect(map).toContain('downstream data and carriers remain model-specific');
-  });
-
-  it('uses progressive disclosure with desktop positioning and a mobile dialog', () => {
-    expect(map).toContain('data-redesign-detail-layer');
-    expect(map).toContain('role="dialog"');
-    expect(map).toContain("window.matchMedia('(max-width: 720px)')");
-    expect(map).toContain("event.key === 'Escape'");
-    expect(map).toContain('trigger?.focus()');
-  });
-
-  it('mounts the shared successor map on both locale routes', () => {
+  it('mounts the gateway and both views bilingually', () => {
     expect(zh).toContain('OpenEvoRedesignMap');
     expect(en).toContain('OpenEvoRedesignMap');
-    expect(zh).not.toContain('OpenEvo2Strategy');
-    expect(en).not.toContain('OpenEvo2Strategy');
+    expect(zhExplore).toContain('OpenEvoSuccessorExplorationMap');
+    expect(enReport).toContain('OpenEvoSuccessorReport');
   });
 });

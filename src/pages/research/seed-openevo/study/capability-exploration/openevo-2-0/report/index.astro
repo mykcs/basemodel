@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoSuccessorReport from '../../../../../../../components/research/OpenEvoSuccessorReport.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="OpenEvo 3B + 1.7B 报告与论文版"
+  description="用论文式直线结构说明 Qwen2.5-3B 与 Qwen3-1.7B 的 shared strategy-neutral Harness、公平性边界、canonical 1,440×2 Stage 1 结果、MiniMax post-hoc analysis、bounded carriers 与 PRE_STAGE2_READY。"
+  locale={locale}
+>
+  <OpenEvoSuccessorReport locale={locale} />
+</AppLayout>

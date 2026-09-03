@@ -1,0 +1,123 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
+import { OPEN_EVO_CEILING_PRINCIPLE, OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const principle = zh ? OPEN_EVO_CEILING_PRINCIPLE.zh : OPEN_EVO_CEILING_PRINCIPLE.en;
+const links = {
+  gateway: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
+  exploration: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/'),
+  archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
+};
+const arm3 = OPEN_EVO_STAGE1_METRICS[0];
+const arm17 = OPEN_EVO_STAGE1_METRICS[1];
+---
+<main class="report-map" data-testid="openevo-successor-report">
+  <header class="report-map__head">
+    <a href={links.gateway}>{t('← 3B + 1.7B successor', '← 3B + 1.7B successor')}</a>
+    <p>REPORT / PAPER VIEW · CANONICAL STAGE 1 → PRE-STAGE 2</p>
+    <h1>{t('3B 与 1.7B：共享 Harness 下的自进化起点', '3B and 1.7B: a shared-harness starting point for self-evolution')}</h1>
+    <strong>{principle}</strong>
+    <span>{t(
+      '这一页只写最终可辩护的设计与证据。失败假设、绕路和工程修复不消失，但降到 evidence details；如果要看研究是怎么走出来的，切到探索版。',
+      'This page presents only the final defensible design and evidence. Failed hypotheses, detours, and engineering fixes remain available in evidence details; use the exploration view to follow how the design emerged.'
+    )}</span>
+  </header>
+
+  <nav class="report-map__switch" aria-label={t('切换叙事版本', 'Switch narrative view')}>
+    <a href={links.exploration}>{t('← 看真实探索过程', '← Read the exploration history')}</a>
+    <b>{t('当前：报告与论文版', 'Current: Report / paper')}</b>
+  </nav>
+
+  <section class="report-hero" aria-labelledby="report-result-title">
+    <div class="report-hero__question">
+      <span>RESEARCH QUESTION</span>
+      <h2 id="report-result-title">{t('不给模型 WebShop 解题策略，只给共享环境接口，它自己能从哪里起跑？', 'With no WebShop solving strategy supplied, where can each model bootstrap from under one shared interface?')}</h2>
+      <p>{t(`冻结 ${OPEN_EVO_STAGE1_FREEZE.id} 后，两个模型都使用同一套 strategy-neutral bootstrap harness，各跑 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 条 raw trajectory。`, `Under freeze ${OPEN_EVO_STAGE1_FREEZE.id}, both models use one strategy-neutral bootstrap harness and each produces ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} raw trajectories.`)}</p>
+    </div>
+    <div class="report-hero__metrics">
+      <article data-arm={arm3.id}><span>{arm3.model}</span><strong>{arm3.exact} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><b>{arm3.exactRate} exact success</b><small>{arm3.positive} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} {t('条有正分', 'positive trajectories')} · {arm3.exactTaskIdentities} {t('个不同任务 exact', 'distinct exact-success tasks')}</small></article>
+      <article data-arm={arm17.id}><span>{arm17.model}</span><strong>{arm17.exact} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><b>{arm17.exactRate} exact success</b><small>{arm17.positive} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} {t('条有正分', 'positive trajectories')} · {arm17.exactTaskIdentities} {t('个不同任务 exact', 'distinct exact-success tasks')}</small></article>
+    </div>
+    <aside><strong>{t('解释边界：', 'Interpretation boundary:')}</strong>{t(' 1.7B 在 raw Stage1 的起跑线明显更高，但这只证明 shared Harness 下的 bootstrap difference；它不是 Stage2 学习增益，也不是“1.7B 普遍强于 3B”的因果证明。', ' the 1.7B arm has a clearly higher raw Stage-1 starting point, but this establishes only a bootstrap difference under the shared harness. It is not a Stage-2 learning gain or causal proof that 1.7B is generally stronger than 3B.')}</aside>
+  </section>
+
+  <section class="paper-spine" aria-label={t('论文式线性实验主线', 'Linear paper-style experiment mainline')}>
+    <article data-paper-step="harness">
+      <div class="paper-step__index"><span>01</span><b>HARNESS</b></div>
+      <div class="paper-step__body">
+        <h2>{t('共享一套 strategy-neutral bootstrap harness', 'Use one strategy-neutral bootstrap harness')}</h2>
+        <dl><div><dt>What</dt><dd>{t('两个 arm 都看到 task、当前 observation、recent history 和当前 Allowed actions；action 用 hard envelope，action opener 由接口拥有；action 前保留模型自己写的短 reasoning。', 'Both arms receive the task, current observation, recent history, and current Allowed actions; actions use a hard envelope with an interface-owned opener, while brief pre-action reasoning remains model-authored.')}</dd></div><div><dt>Why</dt><dd>{t('把“模型不会做题”和“模型想做合法动作却被 serialization 弄坏”分开；同时不为某个 model ID 加私有购物策略。', 'Separate task inability from serialization-induced invalidity, without giving either model ID a private shopping strategy.')}</dd></div><div><dt>Evidence</dt><dd>{t(`freeze ${OPEN_EVO_STAGE1_FREEZE.id}；T=${OPEN_EVO_STAGE1_FREEZE.temperature}、top_p=${OPEN_EVO_STAGE1_FREEZE.topP}、top_k=${OPEN_EVO_STAGE1_FREEZE.topK}、max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}；raw Stage1 learned carriers=none、teacher action calls=0。`, `Freeze ${OPEN_EVO_STAGE1_FREEZE.id}; T=${OPEN_EVO_STAGE1_FREEZE.temperature}, top_p=${OPEN_EVO_STAGE1_FREEZE.topP}, top_k=${OPEN_EVO_STAGE1_FREEZE.topK}, max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}; raw Stage-1 learned carriers=none and teacher action calls=0.`)}</dd></div><div><dt>Boundary</dt><dd>{t('这不是“零脚手架”。hard action envelope 与通用 deliberation 都是实验条件；它们不提供 task-solving policy。', 'This is not “zero scaffolding.” The hard action envelope and generic deliberation are experimental conditions; they do not provide a task-solving policy.')}</dd></div></dl>
+        <details><summary>{t('展开设计形成证据', 'Open design-formation evidence')}</summary><p>{t('paired diagnostics 先分别检查 sampling、history、self-deliberation 与 action serialization；temperature-only 与 history-only 都不足以解释行为恢复，最终候选才进入 shared freeze。', 'Paired diagnostics separately examined sampling, history, self-deliberation, and action serialization. Temperature-only and history-only explanations were insufficient before the final candidate entered the shared freeze.')}</p><a href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Troubleshooting} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Troubleshooting} />diagnosis case</a></details>
+      </div>
+    </article>
+    <span class="paper-connector"></span>
+
+    <article data-paper-step="raw-stage1">
+      <div class="paper-step__index"><span>02</span><b>RAW STAGE 1</b></div>
+      <div class="paper-step__body">
+        <h2>{t('每个模型独立采 180 × 8 = 1,440 条', 'Collect 180 × 8 = 1,440 trajectories independently per model')}</h2>
+        <dl><div><dt>What</dt><dd>{t('Qwen2.5-3B 与 Qwen3-1.7B 分别执行完整 WebShop schedule，不共享 trajectory，也不把 qualification rows 算进 formal corpus。', 'Qwen2.5-3B and Qwen3-1.7B independently execute the full WebShop schedule; trajectories are not shared and qualification rows are not counted inside the formal corpus.')}</dd></div><div><dt>Why</dt><dd>{t('新的 action channel 会改变 on-policy trajectory，所以旧 3B 轨迹只能作为 predecessor evidence，不能改名接到 successor。', 'The new action channel changes on-policy trajectories, so old 3B data can remain predecessor evidence but cannot be relabeled into the successor.')}</dd></div><div><dt>Evidence</dt><dd>{t('两个 canonical corpus 都达到 1,440；raw corpus gate 先验证 coverage、mechanics 与 provenance，而不是先要求 reward 达标。', 'Both canonical corpora reach 1,440; the raw-corpus gate validates coverage, mechanics, and provenance rather than imposing a reward threshold.')}</dd></div><div><dt>Boundary</dt><dd>{t('raw corpus PASS 只说明这批数据可以被科学地解释，不等于模型已经“学会 WebShop”。', 'Raw-corpus PASS means the data are scientifically interpretable; it does not mean the model has already “learned WebShop.”')}</dd></div></dl>
+      </div>
+    </article>
+    <span class="paper-connector"></span>
+
+    <article data-paper-step="behavior">
+      <div class="paper-step__index"><span>03</span><b>BOOTSTRAP SIGNAL</b></div>
+      <div class="paper-step__body">
+        <h2>{t('两边都能直接成功，但起跑线不同', 'Both models can succeed directly, with different starting points')}</h2>
+        <dl><div><dt>What</dt><dd>{t(`${arm3.model}: ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact；${arm17.model}: ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact。`, `${arm3.model}: ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact; ${arm17.model}: ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact.`)}</dd></div><div><dt>Why</dt><dd>{t('自进化需要一个可学习的 bootstrap signal；这些 exact success 证明 raw policy 并非完全没有完整成功行为。', 'Self-evolution needs a learnable bootstrap signal; these exact successes show that the raw policies are not devoid of complete successful behavior.')}</dd></div><div><dt>Evidence</dt><dd>{t(`${arm3.positive} 条 3B trajectory 与 ${arm17.positive} 条 1.7B trajectory 得到 >0 的部分奖励；exact 分别覆盖 ${arm3.exactTaskIdentities} 与 ${arm17.exactTaskIdentities} 个不同任务。`, `${arm3.positive} 3B trajectories and ${arm17.positive} 1.7B trajectories receive >0 partial reward; exact success covers ${arm3.exactTaskIdentities} and ${arm17.exactTaskIdentities} distinct tasks respectively.`)}</dd></div><div><dt>Boundary</dt><dd>{t('成功率差异是 Stage1 baseline；后续比较学习曲线必须保留这条起跑线差异。', 'The success-rate difference is a Stage-1 baseline; later learning-curve comparisons must preserve this starting-point difference.')}</dd></div></dl>
+      </div>
+    </article>
+    <span class="paper-connector"></span>
+
+    <article data-paper-step="minimax">
+      <div class="paper-step__index"><span>04</span><b>POST-HOC ANALYSIS</b></div>
+      <div class="paper-step__body">
+        <h2>{t('raw Stage1 封存后，MiniMax-M3 才进入', 'MiniMax-M3 enters only after raw Stage 1 is sealed')}</h2>
+        <dl><div><dt>What</dt><dd>{t('MiniMax 对已完成 trajectory 做 task-after analysis，形成后续 carrier 可消费的 teacher evidence。', 'MiniMax performs post-hoc analysis of completed trajectories to create teacher evidence for downstream carriers.')}</dd></div><div><dt>Why</dt><dd>{t('把外部分析预算与模型自己的 WebShop 行为严格分开，避免“老师边看边指挥行动”。', 'Keep external analysis budget separate from the model’s WebShop behavior and avoid a teacher directing actions online.')}</dd></div><div><dt>Evidence</dt><dd>{t('两个 READY_FOR_MINIMAX receipt 都绑定 trajectory_count=1440，并写 new_webshop_calls=0。', 'Both READY_FOR_MINIMAX receipts bind trajectory_count=1440 and record new_webshop_calls=0.')}</dd></div><div><dt>Boundary</dt><dd>{t('因此可以说 Stage1 behavior collection teacher-free；不能说整个 OpenEvo evolution 从未使用外部 analyzer。', 'Therefore Stage-1 behavior collection can be called teacher-free; the overall OpenEvo evolution cannot be described as never using an external analyzer.')}</dd></div></dl>
+      </div>
+    </article>
+    <span class="paper-connector"></span>
+
+    <article data-paper-step="carriers">
+      <div class="paper-step__index"><span>05</span><b>BOUNDED CARRIERS</b></div>
+      <div class="paper-step__body">
+        <h2>{t('用冻结 evidence 构造 OPSD / Memory / Skill / Agent', 'Construct OPSD / Memory / Skill / Agent from frozen evidence')}</h2>
+        <dl><div><dt>What</dt><dd>{t('两边分别生成自己的 initial adapter、Text Memory、Skill Bundle 与 Agent System，并绑定同一 lineage 的 provenance。', 'Each arm builds its own initial adapter, Text Memory, Skill Bundle, and Agent System with provenance bound to the same lineage.')}</dd></div><div><dt>Why</dt><dd>{t('这些是 Stage1 之后的学习 carrier，不能提前泄漏回 raw Stage1；容量问题也必须用预先定义的 deterministic rule 处理。', 'These are post-Stage-1 learning carriers and cannot leak backward into raw Stage 1; capacity problems also need pre-defined deterministic handling.')}</dd></div><div><dt>Evidence</dt><dd>{t('Text Memory A1.1 的 4096-token extended repair 对 3B / 1.7B 都失败；current A2 只有双 saturation 后才 fixed first10 + last10，max split depth=1。', 'Text-Memory A1.1 4096-token extended repair failed for both 3B and 1.7B; current A2 uses fixed first10 + last10 only after double saturation, with max split depth=1.')}</dd></div><div><dt>Boundary</dt><dd>{t('10+10 不是看到 reward 后才挑的 adaptive split；如果按结果决定 topology，会改变科学语义。', '10+10 is not an outcome-selected adaptive split; choosing topology after observing rewards would change the scientific semantics.')}</dd></div></dl>
+        <details><summary>{t('展开 4096 → 10+10 的证据链', 'Open the 4096 → 10+10 evidence chain')}</summary><p>{t('先尝试保持完整 20-input topology，只扩大输出修复容量；两边都 extended_repair_failed。A2 随后以同一个 20-input node 的 primary + same20 repair 双 saturation 为 trigger，才允许 bounded fixed split。', 'The first attempt kept the full 20-input topology and only expanded output repair capacity; both arms returned extended_repair_failed. A2 then uses double saturation of the same 20-input node—primary plus same20 repair—as the trigger for a bounded fixed split.')}</p><a href={OPEN_EVO_EVIDENCE_LINKS.capacityAuthority} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.capacityAuthority} />capacity authority</a></details>
+      </div>
+    </article>
+    <span class="paper-connector"></span>
+
+    <article data-paper-step="boundary" class="paper-step--boundary">
+      <div class="paper-step__index"><span>06</span><b>PRE_STAGE2_READY</b></div>
+      <div class="paper-step__body">
+        <h2>{t('Stage1 产物可加载，但 Stage2 仍需独立授权', 'Stage-1 products are loadable, while Stage 2 still needs separate authorization')}</h2>
+        <dl><div><dt>What</dt><dd>{t('两个 PRE_STAGE2_READY receipt 都是 PASS，并绑定 adapter / Memory / Skill / Agent / model revision / provenance。', 'Both PRE_STAGE2_READY receipts are PASS and bind adapter / Memory / Skill / Agent / model revision / provenance.')}</dd></div><div><dt>Why</dt><dd>{t('把“准备好了”与“允许开始下一阶段”分开，防止工程自动续跑越过科学 gate。', 'Separate “ready” from “authorized to start the next phase,” preventing automated execution from crossing a scientific gate.')}</dd></div><div><dt>Evidence</dt><dd><code>stage2_authorized=false</code> · <code>stage2_requires_separate_activation=true</code></dd></div><div><dt>Boundary</dt><dd>{t('这页到此只支持 Stage1→PRE_STAGE2_READY 的结论；Stage2 学习效果必须由后续独立 activation 和新证据回答。', 'This page supports conclusions only through Stage1→PRE_STAGE2_READY. Stage-2 learning effects require a separate activation and new evidence.')}</dd></div></dl>
+      </div>
+    </article>
+  </section>
+
+  <OpenEvoHarnessFairnessPanel locale={locale} />
+
+  <section class="report-boundaries" aria-labelledby="report-boundary-title">
+    <p>WHAT THIS RESULT DOES / DOES NOT CLAIM</p>
+    <h2 id="report-boundary-title">{t('论文里应该直接写清楚的边界', 'Boundaries that should stay explicit in the paper')}</h2>
+    <div><article><strong>{t('支持', 'Supported')}</strong><p>{t('共享 strategy-neutral 接口；raw Stage1 无 learned-carrier / teacher-action / final-panel 泄漏；两个模型各自有可测的 bootstrap signal；post-hoc analyzer 与 online acting 分离。', 'One shared strategy-neutral interface; no learned-carrier / teacher-action / final-panel leakage in raw Stage 1; measurable bootstrap signals for both models; post-hoc analysis separated from online acting.')}</p></article><article><strong>{t('不支持', 'Not supported')}</strong><p>{t('“完全没有任何脚手架”；“基座模型预训练从未见过 WebShop”；“1.7B 普遍强于 3B”；“Stage2 已经证明稳定提升”。', '“No scaffolding at all”; “the base models never saw WebShop in pretraining”; “1.7B is generally stronger than 3B”; or “Stage 2 has already proven stable improvement.”')}</p></article></div>
+  </section>
+
+  <footer class="report-map__footer"><a href={links.exploration}>{t('← 看这些设计是怎样一步一步被试出来的', '← See how these choices were actually discovered')}</a><a href={links.archive}>{t('完整实验档案', 'Full experiment archive')}</a><a href={links.gateway}>{t('回到两种读法 →', 'Back to the two views →')}</a></footer>
+</main>
+
+<style>
+.report-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.report-map__head{display:grid;grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.report-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.report-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.report-map__head h1{grid-column:1;margin:0;font-size:clamp(2.25rem,5.1vw,4.45rem);line-height:.97;letter-spacing:-.052em}.report-map__head strong,.report-map__head span{grid-column:2;display:block}.report-map__head strong{font-size:1rem;line-height:1.52}.report-map__head span{color:var(--muted);font-size:.86rem;line-height:1.62}.report-map__switch{display:flex;justify-content:space-between;gap:1rem;padding:.72rem 0;border-bottom:1px solid var(--line);font-size:.76rem}.report-map__switch a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.report-hero{display:grid;grid-template-columns:minmax(230px,.65fr) minmax(0,1.35fr);gap:.8rem 1rem;padding:1rem 0;border-bottom:1px solid var(--line)}.report-hero__question{display:grid;align-content:start;gap:.3rem}.report-hero__question>span{color:var(--accent-deep);font:800 .55rem/1.2 var(--font-mono);letter-spacing:.06em}.report-hero__question h2{margin:0;font-size:1.3rem;line-height:1.16}.report-hero__question p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}.report-hero__metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.report-hero__metrics article{display:grid;gap:.18rem;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.report-hero__metrics span{color:var(--muted);font:800 .55rem/1.2 var(--font-mono)}.report-hero__metrics strong{font-size:1.8rem;line-height:1}.report-hero__metrics b{font-size:.73rem}.report-hero__metrics small{color:var(--muted);font-size:.66rem;line-height:1.42}.report-hero>aside{grid-column:2;padding:.62rem .75rem;border-left:3px solid var(--line);color:var(--muted);font-size:.71rem;line-height:1.5}.report-hero>aside strong{color:var(--ink)}.paper-spine{display:grid;justify-items:center;padding:1.1rem 0}.paper-spine>article{display:grid;grid-template-columns:135px minmax(0,1fr);gap:.9rem;width:min(880px,100%);padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.paper-spine>article.paper-step--boundary{border-bottom:4px double var(--accent-deep)}.paper-step__index{display:grid;align-content:start;gap:.22rem;padding-right:.75rem;border-right:1px solid var(--line)}.paper-step__index span{font:700 2rem/1 var(--font-mono);color:color-mix(in srgb,var(--accent-deep) 60%,var(--muted))}.paper-step__index b{color:var(--muted);font:800 .52rem/1.2 var(--font-mono);letter-spacing:.06em}.paper-step__body h2{margin:0 0 .7rem;font-size:1.08rem;line-height:1.22}.paper-step__body dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin:0}.paper-step__body dl>div{padding:.55rem .65rem;border-top:1px solid var(--line);background:var(--surface-muted)}.paper-step__body dt{color:var(--accent-deep);font:800 .53rem/1.2 var(--font-mono);text-transform:uppercase}.paper-step__body dd{margin:.25rem 0 0;font-size:.71rem;line-height:1.5}.paper-step__body details{margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--line)}.paper-step__body summary{cursor:pointer;font-size:.73rem;font-weight:780}.paper-step__body details p{margin:.5rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.5}.paper-step__body details a{display:inline-flex;align-items:center;gap:.35rem;margin-top:.5rem;color:var(--accent-deep);font-size:.68rem;font-weight:750;text-underline-offset:.2em}.paper-connector{width:2px;height:1.65rem;background:var(--line)}.report-boundaries{padding:1rem 0;border-bottom:1px solid var(--line)}.report-boundaries>p{margin:0;color:var(--accent-deep);font:800 .55rem/1.2 var(--font-mono);letter-spacing:.06em}.report-boundaries h2{margin:.3rem 0 .7rem;font-size:1.18rem}.report-boundaries>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.report-boundaries article{padding:.72rem;border:1px solid var(--line);border-radius:var(--radius-panel)}.report-boundaries article strong{font-size:.78rem}.report-boundaries article p{margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}.report-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.report-map__footer a{color:var(--accent-deep);font-size:.78rem;font-weight:750;text-underline-offset:.2em}
+@media(max-width:760px){.report-map{width:min(100% - 1rem,1120px)}.report-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.report-map__head>a,.report-map__head>p,.report-map__head h1,.report-map__head strong,.report-map__head span{grid-column:auto}.report-map__head h1{font-size:clamp(2.2rem,10.5vw,3.35rem)}.report-map__switch{align-items:flex-start;flex-direction:column}.report-hero{grid-template-columns:1fr}.report-hero__metrics{grid-template-columns:1fr}.report-hero>aside{grid-column:auto}.paper-spine>article{grid-template-columns:1fr}.paper-step__index{grid-template-columns:auto 1fr;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:0 0 .5rem}.paper-step__index b{justify-self:end}.paper-step__body dl{grid-template-columns:1fr}.report-boundaries>div{grid-template-columns:1fr}.report-map__footer{display:grid}}
+</style>
