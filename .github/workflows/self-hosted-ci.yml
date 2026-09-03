@@ -47,10 +47,10 @@ jobs:
           if [[ "$event" == "pull_request" ]]; then
             # A queued pull_request event can carry an older trigger-time base
             # while GitHub regenerates refs/pull/<n>/merge on a newer main.
-            # Validate against the exact base parent of the merge candidate that
-            # actions/checkout actually tested; this keeps depth=2 sufficient and
-            # avoids restoring persisted credentials just to refetch stale history.
-            base="$(git rev-parse HEAD^2 2>/dev/null || true)"
+            # GitHub's tested PR merge ref has the base as first parent and the
+            # PR head as second parent. Bind validation to the exact first parent
+            # of the merge candidate that actions/checkout actually tested.
+            base="$(git rev-parse HEAD^1 2>/dev/null || true)"
             declared_base="${{ github.event.pull_request.base.sha }}"
             if [[ -n "$base" && "$base" != "$declared_base" ]]; then
               echo "::notice::PR base advanced while queued; validating tested merge base $base instead of trigger-time base $declared_base."
