@@ -153,6 +153,49 @@ Prefer updating an existing canonical document over creating another near-duplic
 
 Do not mechanically create memory, case, ADR, or handoff files after every task. Persistence should be earned by future utility.
 
+
+## 3.1 Authority freeze, moving refs, and retrospective handoff
+
+When a task depends on a dated audit, plan, or execution snapshot, treat the
+snapshot as a bounded evidence object rather than as a claim that the repository
+will remain unchanged.
+
+Before acting:
+
+1. identify the live repository/ref and the bounded comparison baseline
+   separately;
+2. fetch the current PR/repository state instead of inferring state from a user
+   summary, branch name, or old document;
+3. record exact commit SHAs and, for important files, blob/file identities;
+4. read the named parent standards and the parent repository policy they
+   reference;
+5. write the precedence between owner instruction, frozen scientific evidence,
+   active object-owning lineage, governance, generated projections, provider
+   metadata, and website copy;
+6. evaluate each checkbox against its acceptance criterion, not against the fact
+   that a previous Agent marked it complete.
+
+If main moves after the snapshot:
+
+- do not rewrite the old baseline into the new head;
+- finish the bounded audit against the pinned baseline and record later movement as
+  drift, or open a successor snapshot and re-run the affected rows;
+- do not combine current claims from one SHA with route/content observations from
+  another without labeling the boundary.
+
+When depositing experience, classify it before writing:
+
+- cross-task invariant -> existing current owner or executable guard;
+- recognizable trigger -> scenario registry plus the existing owner;
+- incident and causal explanation -> indexed history case;
+- short-lived continuation -> dated handoff only when another Agent needs it;
+- current PID, GPU occupancy, branch head, provider status, or transient ETA ->
+  do not promote to durable policy or long-term memory.
+
+A retrospective is not complete until its history case is indexed, its durable
+rules are placed in the current owner, its trigger is discoverable, and volatile
+state is explicitly excluded.
+
 ## 4. Make recurring lessons triggerable
 
 A reusable lesson is incomplete if future Agents cannot recognize **when** it should become active.

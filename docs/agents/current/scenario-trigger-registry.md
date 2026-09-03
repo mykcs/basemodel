@@ -316,6 +316,29 @@ Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-tabl
 
 Persist only when the lesson is likely to recur or expensive to forget. Current cross-task rule -> update its existing `current/` owner; short-lived live state -> `LATEST.md`; reusable incident/migration rationale -> `history/`; pre-current superseded milestone/context -> `archive/`; task-local scratch -> do not persist.
 
+## TRIGGER: retrospective, handoff, or experience retention
+
+**Cues:** the owner asks to review a conversation end-to-end, extract lessons,
+record repeated mistakes, update Agent memory, write a handoff, or explain why a
+previous retrospective did not prevent recurrence.
+
+**Automatic response:**
+
+1. read the root Agent router, current Agent principles, documentation index,
+   scenario registry, and the task's current scientific/engineering owner;
+2. search existing current policies and history before creating a new file;
+3. separate stable rules, project-specific lessons, and temporary state;
+4. promote only cross-task rules to the existing current owner or executable
+   guard; put causal incident detail in an indexed history case;
+5. update the trigger/index so a future Agent can discover the case;
+6. check whether a real memory-write capability exists; never claim that a
+   search, repository commit, or conversation summary was written to long-term
+   memory;
+7. record what was deliberately not persisted and why.
+
+**Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
+behavior, and live resource state must be re-checked when the next task begins.
+
 ## Trigger maintenance
 
 Keep this registry short enough to scan. When a scenario becomes a normal standing rule, move detail into the owning current doc and leave only the trigger here. Remove triggers that describe already-completed migrations as future work.
