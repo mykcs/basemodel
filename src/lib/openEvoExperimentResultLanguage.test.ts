@@ -13,6 +13,7 @@ const legacyStage2Archive = read('../components/research/OpenEvoLegacyStage2Arch
 const legacyStage2Journey = read('../components/research/OpenEvoLegacyStage2ResearchJourney.astro');
 const legacyStage2Data = read('../data/openEvoLegacyStage2Archive.ts');
 const ceilingStage2Snapshot = read('../data/openEvoCeilingStage2Snapshot.ts');
+const currentAuthorityProjection = read('../data/openEvoCurrentAuthorityProjection.ts');
 const ceilingStage2 = read('../components/research/OpenEvoCeilingStrategy.astro');
 const redesign = read('../components/research/OpenEvoRedesignMap.astro');
 const successorExploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
@@ -30,9 +31,20 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${successorExploration}\n${successorReport}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const resultFamilyCopy = `${currentAuthorityProjection}\n${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${successorExploration}\n${successorReport}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
+  it('projects current 202609030400 authority without turning the website into a live database', () => {
+    expect(currentAuthorityProjection).toContain("freezeId: '202609030400'");
+    expect(currentAuthorityProjection).toContain("masterPlanExecutionAuthority: false");
+    expect(currentAuthorityProjection).toContain("chatTemplateEnableThinking: false");
+    expect(currentAuthorityProjection).toContain('e439cbba64d2071ad7c1a239b84e893fd135bc78');
+    expect(currentAuthorityProjection).toContain('e73b1022b76b23875a40bffc9b7975feda57816e');
+    expect(ceilingStage2).toContain('openevo-current-authority-projection');
+    expect(ceilingStage2).toContain('Master Plan execution authority=false');
+    expect(ceilingStage2).toContain('历史 Ceiling-1.0 快照');
+  });
+
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
     expect(stage1Versions).toContain('Ceiling-1.0：fresh corrected Stage 1（历史）');
     expect(stage1Versions).toContain('旧版：previous Stage 1 replicate');
