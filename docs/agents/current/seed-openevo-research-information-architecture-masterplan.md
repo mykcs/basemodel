@@ -573,6 +573,8 @@ Checkboxes below are the operational source of truth for this project.
 
 Evidence: [2026-09-03 authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md).
 
+Evidence: [2026-09-03 authority revalidation](./seed-openevo-research-ia-authority-revalidation-2026-09-03.md).
+
 ---
 
 ## Phase B — Inventory the entire existing research site
@@ -863,6 +865,7 @@ Use this table for milestone evidence while executing the checklist.
 | --- | --- | --- | --- |
 | 2026-09-03 | Masterplan created | this document | No website mutation performed by creation of this plan. |
 | 2026-09-03 | Phase A · A01–A07 | [authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md) | Baselines pinned; standards/contracts reconciled; catalog hard-code boundary documented; current-campaign router conflict recorded. |
+| 2026-09-03 | Phase A revalidation · A01–A07 | [authority revalidation](./seed-openevo-research-ia-authority-revalidation-2026-09-03.md) | Current main drift and upstream refs rechecked; original 3151686… audit baseline preserved; no additional Phase B–N checkbox changed. |
 | 2026-09-03 | Phase B · B01–B10 | [route inventory](./seed-openevo-research-ia-route-inventory-2026-09-03.md) | 65 concrete URLs / 39 semantic routes inventoried; sitemap/search/navigation/duplication/locale/disposition debt recorded. |
 | 2026-09-03 | Phase C · C01–C10 | [factual-debt register](./seed-openevo-research-ia-factual-debt-2026-09-03.md) | Current/historical/superseded claims classified; WB1/202609021800/202609030400 conflicts resolved by object ownership; stale tests/docs registered. |
 
