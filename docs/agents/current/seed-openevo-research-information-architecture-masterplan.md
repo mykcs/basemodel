@@ -561,15 +561,17 @@ Checkboxes below are the operational source of truth for this project.
 
 ## Phase A — Freeze the baseline and collect authority documents
 
-- [ ] **A01** Record the exact `basemodel/main` SHA used as the website-audit baseline.
-- [ ] **A02** Record the exact `openevo-experiment` authority branch/SHA used for the first identity/provenance audit.
-- [ ] **A03** Read and reconcile the current cross-platform experiment asset standard.
-- [ ] **A04** Read the current artifact archive/publication and experiment-standard parents referenced by that standard.
-- [ ] **A05** Read the current `basemodel` scientific-state provenance, research mission, presentation, copy, visual, and deployment contracts relevant to this work.
-- [ ] **A06** Inspect the current Experiment Designs implementation already on `main` and document what is hard-coded versus generated.
-- [ ] **A07** Define a dated audit snapshot so website facts are never silently mixed across upstream SHAs.
+- [x] **A01** Record the exact `basemodel/main` SHA used as the website-audit baseline.
+- [x] **A02** Record the exact `openevo-experiment` authority branch/SHA used for the first identity/provenance audit.
+- [x] **A03** Read and reconcile the current cross-platform experiment asset standard.
+- [x] **A04** Read the current artifact archive/publication and experiment-standard parents referenced by that standard.
+- [x] **A05** Read the current `basemodel` scientific-state provenance, research mission, presentation, copy, visual, and deployment contracts relevant to this work.
+- [x] **A06** Inspect the current Experiment Designs implementation already on `main` and document what is hard-coded versus generated.
+- [x] **A07** Define a dated audit snapshot so website facts are never silently mixed across upstream SHAs.
 
 **Phase A acceptance:** one authority note identifies every source repository/ref used by the audit and the precedence order between them.
+
+Evidence: [2026-09-03 authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md).
 
 ---
 
@@ -856,6 +858,7 @@ Use this table for milestone evidence while executing the checklist.
 | Date (SGT) | Phase / items | Evidence | Notes |
 | --- | --- | --- | --- |
 | 2026-09-03 | Masterplan created | this document | No website mutation performed by creation of this plan. |
+| 2026-09-03 | Phase A · A01–A07 | [authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md) | Baselines pinned; standards/contracts reconciled; catalog hard-code boundary documented; current-campaign router conflict recorded. |
 
 ---
 
