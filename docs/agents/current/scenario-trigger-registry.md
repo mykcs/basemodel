@@ -136,22 +136,6 @@ Historical end-to-end case: [`../history/2026-08-30-site-optimization-implementa
 
 ---
 
-## TRIGGER: PR validation uses a merge candidate or fails before source tests
-
-**Cues:** a pull-request check names a synthetic merge ref/commit; the PR head moved while a run was queued; checkout tries to fetch the declared base; persist-credentials: false is present; a deterministic failure appears after an earlier failure was said to be fixed; a branch file and the tested result appear to disagree.
-
-**Automatic response:**
-
-1. Record the live PR head/base and the workflow SHA before reading conclusions from any check.
-2. Inspect the first failing step and the actual merge-candidate parents/tree. For a merge candidate, the second parent is the tested base; do not assume the trigger-time declared base can be fetched from a shallow unauthenticated checkout.
-3. Compare candidate, feature branch, and intended base before changing copy, CSS, tests, or scientific data.
-4. Classify the failure as implementation/contract, validator/test drift, checkout/bootstrap/credential, runner/provider, or stale-head cancellation.
-5. Fix only the owning layer. Preserve fail-closed CSS/evidence/research gates and historical labels; never remove an assertion or add an exception solely to obtain green.
-6. Require a new successful check for the exact new head. A canceled run or a green check on an older SHA is not merge evidence.
-7. Read ../history/2026-09-03-pr420-deterministic-verification-and-exact-head-retrospective.md for the worked case, then return to the current policies and live state.
-
----
-
 ## TRIGGER: deterministic Gate fails and weakening it looks tempting
 
 **Cues:** a copy/docs-like change fails a semantic/evidence/hardening audit; the easiest path to green is to remove an assertion.

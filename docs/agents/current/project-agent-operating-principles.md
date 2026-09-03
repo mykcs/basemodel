@@ -196,45 +196,6 @@ A retrospective is not complete until its history case is indexed, its durable
 rules are placed in the current owner, its trigger is discoverable, and volatile
 state is explicitly excluded.
 
-
-## 3.2 PR candidate identity and deterministic-failure classification
-
-A pull-request check may validate GitHub's synthetic merge candidate rather than the
-feature branch's isolated tree. The candidate's second parent is the base that was
-actually tested; a workflow must not assume that the trigger-time declared base is
-still fetchable or current.
-
-Before classifying a PR failure:
-
-1. record the live PR head, base, workflow SHA, and (when available) the merge
-   candidate SHA and its parents;
-2. inspect the first failing step and the actual candidate tree, not only the
-   branch file or final red badge;
-3. compare the candidate with the feature branch and current intended base when a
-   conflict or moving-main boundary can change which file wins;
-4. classify the owner as implementation/scientific or UI contract, validator/test
-   drift, checkout/credential/bootstrap, runner/provider, or stale/superseded
-   state;
-5. repair only the owning layer, then require a new exact-head check.
-
-A shallow checkout with persist-credentials: false must not fetch the declared base
-over an unauthenticated remote as a fallback. For a pull-request merge candidate,
-derive the tested base from the candidate's actual second parent (or make an
-explicit authenticated full-history strategy); do not silently broaden credentials
-or rely on a stale trigger-time base SHA.
-
-A deterministic assertion remains valuable when its semantic contract is still
-valid. If copy or UI language intentionally changes, update the assertion to the
-new stable contract only after checking the exact candidate and preserving the
-historical/scientific boundary. Do not delete an assertion, weaken an audit, add a
-compatibility exception, or change research meaning merely to turn a red check
-green.
-
-A canceled run, an older green SHA, or a branch-only inspection is not proof for
-the next head. The merge sequence is: live head/base, actual candidate tree and
-first failing step, owning-layer repair, new check for the same head, Preview when
-required, then a final live-head read immediately before merge.
-
 ## 4. Make recurring lessons triggerable
 
 A reusable lesson is incomplete if future Agents cannot recognize **when** it should become active.
