@@ -577,18 +577,20 @@ Evidence: [2026-09-03 authority snapshot](./seed-openevo-research-ia-authority-s
 
 ## Phase B — Inventory the entire existing research site
 
-- [ ] **B01** Enumerate every SEED × OpenEvo public route from sitemap plus filesystem routes.
-- [ ] **B02** Classify every route as `concept`, `design`, `run`, `asset`, `analysis`, `result`, `history`, `operations`, or `mixed`.
-- [ ] **B03** Record parent/child links currently exposed by navigation and in-page links.
-- [ ] **B04** Identify orphan pages that are reachable only by old links or search.
-- [ ] **B05** Identify duplicate pages describing the same scientific design/run/result.
-- [ ] **B06** Identify pages that mix stable explanation with mutable live-state claims.
-- [ ] **B07** Identify pages whose title/path no longer matches their scientific role.
-- [ ] **B08** Inventory bilingual vs Chinese-only coverage.
-- [ ] **B09** Inventory current search-index coverage for research objects.
-- [ ] **B10** Produce a route inventory table with recommended disposition: `keep`, `rewrite`, `merge`, `redirect`, `historical`, or `remove-after-redirect`.
+- [x] **B01** Enumerate every SEED × OpenEvo public route from sitemap plus filesystem routes.
+- [x] **B02** Classify every route as `concept`, `design`, `run`, `asset`, `analysis`, `result`, `history`, `operations`, or `mixed`.
+- [x] **B03** Record parent/child links currently exposed by navigation and in-page links.
+- [x] **B04** Identify orphan pages that are reachable only by old links or search.
+- [x] **B05** Identify duplicate pages describing the same scientific design/run/result.
+- [x] **B06** Identify pages that mix stable explanation with mutable live-state claims.
+- [x] **B07** Identify pages whose title/path no longer matches their scientific role.
+- [x] **B08** Inventory bilingual vs Chinese-only coverage.
+- [x] **B09** Inventory current search-index coverage for research objects.
+- [x] **B10** Produce a route inventory table with recommended disposition: `keep`, `rewrite`, `merge`, `redirect`, `historical`, or `remove-after-redirect`.
 
 **Phase B acceptance:** every existing research route has exactly one disposition and one intended semantic owner.
+
+Evidence: [2026-09-03 route inventory and disposition matrix](./seed-openevo-research-ia-route-inventory-2026-09-03.md).
 
 ---
 
@@ -859,6 +861,7 @@ Use this table for milestone evidence while executing the checklist.
 | --- | --- | --- | --- |
 | 2026-09-03 | Masterplan created | this document | No website mutation performed by creation of this plan. |
 | 2026-09-03 | Phase A · A01–A07 | [authority snapshot](./seed-openevo-research-ia-authority-snapshot-2026-09-03.md) | Baselines pinned; standards/contracts reconciled; catalog hard-code boundary documented; current-campaign router conflict recorded. |
+| 2026-09-03 | Phase B · B01–B10 | [route inventory](./seed-openevo-research-ia-route-inventory-2026-09-03.md) | 65 concrete URLs / 39 semantic routes inventoried; sitemap/search/navigation/duplication/locale/disposition debt recorded. |
 
 ---
 
