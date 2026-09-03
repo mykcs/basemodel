@@ -37,7 +37,7 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(map).toContainText('暂不复制');
     await expect(map).toContainText('Task Vector 默认 diagnostic-only');
     await expect(map).toContainText('64 个 component');
-    await expect(map).toContainText('fresh-task');
+    await expect(map.getByText(/fresh-task transfer 未必稳定为正/)).toBeVisible();
     await expect(map.locator('a[href="https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments"]')).toBeVisible();
     await expect(map.locator('a[href*="seed-openevo-research-ia-factual-debt-2026-09-03.md"]')).toBeVisible();
   });
