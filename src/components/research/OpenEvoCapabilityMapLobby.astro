@@ -11,6 +11,8 @@ const p = (path: string) => localePath(locale, path);
 const firstRunHref = p('/research/seed-openevo/study/capability-exploration/first-run/');
 const archiveHref = p('/research/seed-openevo/study/capability-exploration/archive/');
 const redesignHref = p('/research/seed-openevo/study/capability-exploration/openevo-2-0/');
+const stage1EvolutionHref = p('/research/seed-openevo/study/capability-exploration/stage1-evolution/');
+const stage2AnalysisHref = p('/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/');
 const archiveLinks = [
   { href: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'), label: t('历史 Stage 1', 'Historical Stage 1') },
   { href: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'), label: t('旧 Stage 2：256-window 设计', 'Old Stage 2: 256-window design') },
@@ -28,8 +30,8 @@ const archiveLinks = [
         'We first ran a full Stage 1 → Stage 2 exploration. The 7B run showed that the method could sustain parameter updates, while the 3B run and long-horizon execution exposed problems in the update rule, action interface, and parameter capacity.'
       )}</strong>
       <span>{t(
-        '后来的 OpenEvo 重设计直接来自这些实验，但新的行动接口会改变模型真正走出的轨迹，所以新版不能假装是旧实验的普通下一步。我们把历史探索和新版实验拆成两张地图。',
-        'The later OpenEvo redesign came directly from those experiments, but the new action interface changes the trajectories the model actually produces. The redesign therefore cannot be presented as an ordinary next step in the old lineage, so the two stories live on separate maps.'
+        '后来的 OpenEvo 重设计直接来自这些实验，但新的行动接口会改变模型真正走出的轨迹，所以新版不能假装是旧实验的普通下一步。两张主地图负责讲研究主剧情；下面两张专题地图专门把 Stage 1 的决策过程和 7B Stage 2 的参数分析展开。',
+        'The later OpenEvo redesign came directly from those experiments, but the new action interface changes the trajectories the model actually produces. Two primary maps carry the research storyline; two focused maps below unpack the Stage-1 decision process and the 7B Stage-2 parameter analysis.'
       )}</span>
     </div>
   </header>
@@ -56,11 +58,33 @@ const archiveLinks = [
     </a>
   </nav>
 
+  <section class="map-lobby__deep-dives" aria-labelledby="deep-dives-title">
+    <header>
+      <p>RESEARCH DEEP DIVES</p>
+      <h2 id="deep-dives-title">{t('把两段最重要的“为什么”单独展开', 'Two focused maps for the most important “why” questions')}</h2>
+      <span>{t('它们不是新的实验 lineage，而是把已经发生过的证据按因果顺序重新组织。', 'These are not new experiment lineages; they reorganize existing evidence into causal stories.')}</span>
+    </header>
+    <nav aria-label={t('专题研究地图', 'Focused research maps')}>
+      <a href={stage1EvolutionHref} data-deep-dive="stage1-evolution">
+        <small>{t('当前 Stage 1 的来路', 'HOW CURRENT STAGE 1 EMERGED')}</small>
+        <strong>{t('Stage 1 是怎样一步一步做对的', 'How Stage 1 was repaired step by step')}</strong>
+        <span>{t('旧 Harness → 问题诊断 → 3B / 1.7B 成对小实验 → shared Harness freeze → canonical corpus gate → MiniMax / downstream handoff。', 'Historical harness → diagnosis → paired 3B / 1.7B diagnostics → shared-harness freeze → canonical corpus gate → MiniMax / downstream handoff.')}</span>
+        <b>{t('进入地图 →', 'Open map →')}</b>
+      </a>
+      <a href={stage2AnalysisHref} data-deep-dive="stage2-7b-analysis">
+        <small>{t('7B 参数证据', '7B PARAMETER EVIDENCE')}</small>
+        <strong>{t('7B Stage 2 参数实验与分析', '7B Stage-2 parameter experiments and analysis')}</strong>
+        <span>{t('从 20,480 rollout / 0 更新的旧门槛，走到 Ceiling-1.0 持续 SD-LoRA 更新、Task Vector diagnostic-only、容量 amendment 与 transfer 边界。', 'From the old 20,480-rollout / zero-update gate to sustained Ceiling-1.0 SD-LoRA learning, diagnostic-only Task Vector geometry, the capacity amendment, and transfer boundaries.')}</span>
+        <b>{t('进入地图 →', 'Open map →')}</b>
+      </a>
+    </nav>
+  </section>
+
   <details class="map-lobby__archive">
     <summary>{t('实验档案：旧 Stage 1、旧 Stage 2、Ceiling-1.0 与 Harness 诊断', 'Experiment archive: old Stage 1, old Stage 2, Ceiling-1.0, and harness diagnostics')}</summary>
     <p>{t(
-      '这些页面保留精确的历史实验、数字和技术证据，但不再和两张主地图争夺第一层导航。Server/Kaggle、429/retry、G3 attempt、checkpoint / HF、runtime patch 与 PR / SHA 也集中放进完整档案。',
-      'These pages preserve exact historical experiments, metrics, and technical evidence without competing with the two primary maps for top-level navigation. Server/Kaggle, 429/retry, G3 attempts, checkpoint / HF, runtime patches, and PR / SHA evidence are grouped in the full archive.'
+      '这些页面保留精确的历史实验、数字和技术证据，但不再和主地图争夺第一层导航。Server/Kaggle、429/retry、G3 attempt、checkpoint / HF、runtime patch 与 PR / SHA 也集中放进完整档案。',
+      'These pages preserve exact historical experiments, metrics, and technical evidence without competing with the primary maps for top-level navigation. Server/Kaggle, 429/retry, G3 attempts, checkpoint / HF, runtime patches, and PR / SHA evidence are grouped in the full archive.'
     )}</p>
     <a class="map-lobby__archive-main" href={archiveHref}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a>
     <nav aria-label={t('实验档案链接', 'Experiment archive links')}>
@@ -86,6 +110,17 @@ const archiveLinks = [
 .map-choice h2{margin:0;font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.05;letter-spacing:-.035em}
 .map-choice p{margin:0;color:var(--muted);line-height:1.65}
 .map-choice>strong{align-self:end;margin-top:auto;color:var(--accent-deep);font-size:.9rem}
+.map-lobby__deep-dives{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.1rem 0 1.35rem;border-top:1px solid var(--line)}
+.map-lobby__deep-dives header>p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}
+.map-lobby__deep-dives header h2{margin:.35rem 0 .45rem;font-size:1.16rem;line-height:1.18}
+.map-lobby__deep-dives header span{display:block;color:var(--muted);font-size:.78rem;line-height:1.52}
+.map-lobby__deep-dives nav{display:grid;gap:.65rem}
+.map-lobby__deep-dives nav>a{display:grid;gap:.33rem;padding:.9rem 1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);color:inherit;text-decoration:none}
+.map-lobby__deep-dives nav>a:hover,.map-lobby__deep-dives nav>a:focus-visible{border-color:var(--accent);background:var(--surface-muted)}
+.map-lobby__deep-dives nav small{color:var(--accent-deep);font:800 .57rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.map-lobby__deep-dives nav strong{font-size:.96rem;line-height:1.25}
+.map-lobby__deep-dives nav span{color:var(--muted);font-size:.78rem;line-height:1.52}
+.map-lobby__deep-dives nav b{margin-top:.1rem;color:var(--accent-deep);font-size:.76rem}
 .map-lobby__archive{border-top:1px solid var(--line);padding:1rem 0;color:var(--muted)}
 .map-lobby__archive summary{cursor:pointer;color:var(--ink);font-weight:750;line-height:1.45}
 .map-lobby__archive p{max-width:48rem;margin:.75rem 0;font-size:.9rem;line-height:1.6}
@@ -100,6 +135,7 @@ const archiveLinks = [
   .map-lobby__intro{font-size:.9rem;line-height:1.5}
   .map-lobby__choices{grid-template-columns:1fr;padding:1rem 0}
   .map-choice{min-height:0;padding:1rem}
+  .map-lobby__deep-dives{grid-template-columns:1fr}
   .map-lobby__archive nav{display:grid;gap:.55rem}
 }
 @media(prefers-reduced-motion:reduce){.map-choice{transition:none}}
