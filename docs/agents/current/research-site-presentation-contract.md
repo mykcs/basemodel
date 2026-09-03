@@ -153,6 +153,8 @@ Evidence links should point as close to primary truth as possible:
 - historical judgment -> the dated commit/report that made it;
 - human summary -> supporting aid, not primary evidence when a machine/source artifact exists.
 
+On a public route, a claim-local evidence link should be anonymously readable **or visibly labeled restricted/private before the click**. A link that works only in the owner's authenticated Hugging Face/GitHub/provider session is not an ordinary public evidence link. If preservation material must remain private, expose a separately audited public-safe mirror/summary rather than changing the privacy boundary merely for UI convenience.
+
 When practical, prefer immutable commit links and exact line ranges.
 
 Every inferential claim should preserve a minimal bridge:

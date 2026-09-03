@@ -704,3 +704,87 @@ Production
 The most important stopping rule is:
 
 > **Never use publication cleanup to rewrite scientific history, and never use scientific supersession as implicit storage-deletion authority. Preserve the exact old evidence, explain why it is no longer the current method, and let the current experiment publish from its own authority.**
+
+---
+
+## 2026-09-03 follow-up: public page acceptance did not prove public artifact access
+
+A later audit exposed one remaining false-complete boundary in the historical closeout above. The BaseModel Production routes were public and correctly rendered the superseded/current Stage-2 split, and the historical HF archive/model-state links pointed to real repositories and pinned revisions. But several of those HF repositories were still **private**.
+
+So the earlier Production route acceptance proved:
+
+```text
+public BaseModel page
++ correct historical labels
++ real artifact target identity
+```
+
+but it did **not** prove:
+
+```text
+anonymous reader can fetch the linked HF artifact
+```
+
+### Why the earlier retrospective did not prevent this
+
+This file already said to “state private/public access honestly,” and the experiment-side HF governance retrospective already recommended account-level classification. Those rules were true but too weakly operationalized:
+
+- they did not name anonymous reachability as its own release gate;
+- they did not distinguish internal preservation completion from public distribution completion;
+- the account-level registry was still only a recommendation in a deep historical case;
+- provider visibility was easy to infer from owner-authenticated inspection instead of testing the reader path.
+
+This is exactly the class of repeat mistake where “we wrote a retrospective” was insufficient because the lesson stayed historical rather than becoming a current trigger/runbook invariant.
+
+### Corrected durable model
+
+Use four separate layers:
+
+```text
+1. PRESERVED
+   exact historical bytes/pointers safely archived
+
+2. PUBLICATION_SAFE
+   the proposed public subset passed privacy/license/provenance/secret gates
+
+3. PUBLICLY_REACHABLE
+   anonymous readers can access the live provider target
+
+4. WEBSITE_WIRED
+   the public site points to that exact verified public target
+```
+
+Do not report layer 4 merely because layers 1 and the page route are green.
+
+### Private archive vs public mirror
+
+The owner approved a safer architecture for the superseded H1.45/H1.46 material:
+
+```text
+private full archive
+= complete warehouse / historical recovery source
+
+minimal public mirror
+= museum display case for public-safe model states and provenance
+```
+
+The mirror should contain only the actual entry/bootstrap model states or no-update pointer, minimal configs/manifests, checksums, and a Chinese-first bilingual superseded warning. It should not carry the full raw run roots, full trajectory corpus, full MiniMax analysis corpus, credentials, private host identity, or unchanged third-party base weights.
+
+The mirror must be derived from a pinned immutable source revision, pass its own public-release gate, be fresh-downloaded and hash-verified, and only then replace private HF links on the public website. The private archive remains the preservation/scientific source and is not made public merely for link convenience.
+
+### Repeated-mistake prevention applied after this follow-up
+
+The lesson was promoted out of this historical file into current owners:
+
+- `experiment-result-publication-workflow.md` now owns public artifact reachability and the private-archive/public-mirror pattern;
+- `scenario-trigger-registry.md` automatically triggers the anonymous-access check for old/new/superseded artifact work;
+- `research-site-presentation-contract.md` requires public evidence links to be anonymously readable or visibly labeled restricted before the click;
+- experiment-side `AGENTS.md` / publication Playbook route account-level HF governance through a machine-readable registry and live provider verification.
+
+### Volatile facts deliberately not promoted
+
+The particular HF OAuth scope available to one ChatGPT connector, whether one HF repo is private on a given day, a current repo head/revision, and transient API/billing/tool errors remain dated operational facts. They must be re-read live and must not become timeless BaseModel copy or current policy.
+
+### One-line rule
+
+> **A public page with a real HF link is not a completed public artifact publication until an unauthenticated reader can actually reach the intended public target — or the page clearly tells them the target is restricted.**

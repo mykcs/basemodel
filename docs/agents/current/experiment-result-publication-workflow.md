@@ -243,6 +243,28 @@ When the superseded layer itself produced historically useful run artifacts, pre
 - Preserve exact runtime identity by immutable image/tag digest in its owning registry when practical; reproducibility does not require duplicating every OCI layer into the dataset archive.
 - When the replacement experiment is still running, publish stable protocol separately from mutable progress. Any live progress belongs in a dated, receipt-backed snapshot and must not be treated as timeless current state.
 
+### Public artifact access: preservation is not distribution
+
+For a **public** research route, an external HF/checkpoint/archive link has a separate acceptance obligation from the page itself:
+
+```text
+page renders publicly
+!= external artifact exists
+!= owner-authenticated artifact access
+!= anonymous reader access
+```
+
+Before presenting an external artifact as a public download/evidence target:
+
+- read live provider visibility/access state; repository prose or a historical receipt is not enough;
+- verify the intended target is anonymously/publicly reachable, not merely reachable with the owner's HF session;
+- if the canonical complete archive should remain private, keep it private and publish a **purpose-built minimal public mirror** instead of toggling the whole archive public;
+- bind the mirror to an immutable private/source revision and include only public-safe model states/pointers/config/provenance/checksums/README required by the reader purpose;
+- require an independent secret/privacy/license/provenance gate plus fresh-download/hash verification for the mirror;
+- update the website link only after the exact public mirror revision exists and passes reachability verification; until then, label the target `private` / `restricted` rather than making the reader discover the permission wall by clicking.
+
+A public mirror is a **distribution surface**, not a replacement scientific authority. Historical bytes remain anchored to their canonical source/archive identity.
+
 Historical case: [`../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md`](../history/2026-08-31-superseded-stage2-archive-ceiling-publication-retrospective.md).
 
 ## Pre-built result scaffolds and later fill-in
