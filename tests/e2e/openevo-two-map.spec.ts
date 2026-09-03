@@ -109,7 +109,7 @@ test('reduced motion preserves static route meaning', async ({ page }) => {
   await expect(page.locator('[data-node-kind="scientific-amendment"]').first()).toBeVisible();
   await page.goto(redesign, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-node-state="future"]').first()).toBeVisible();
-  await expect(page.getByText('FINAL EVALUATION')).toBeVisible();
+  await expect(page.getByText('FINAL EVALUATION', { exact: true })).toBeVisible();
 });
 
 test('English routes mount the same two-map architecture', async ({ page }) => {
@@ -117,5 +117,30 @@ test('English routes mount the same two-map architecture', async ({ page }) => {
   await expect(page.locator('[data-map-choice]')).toHaveCount(2);
   await page.goto('/en/research/seed-openevo/study/capability-exploration/openevo-2-0/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByText('ANALYSIS CONTRACT FROZEN · 202609022300')).toBeVisible();
+  await assertNoPageOverflow(page);
+});
+
+test('redesign exposes seven experiment design families with pinned technical evidence', async ({ page }) => {
+  await page.goto(redesign, { waitUntil: 'domcontentloaded' });
+  const catalog = page.getByTestId('openevo-experiment-design-catalog');
+  await expect(catalog).toBeVisible();
+  await expect(catalog.locator('[data-design-family]')).toHaveCount(7);
+  await expect(catalog.getByText('Shared Stage1 Harness and Deliberation')).toBeVisible();
+  await expect(catalog.getByText('GDN D1 Prospective Geometry Confirmation')).toBeVisible();
+  await expect(catalog.getByText('Ceiling-1.0 End-to-End Autonomous Campaign')).toBeVisible();
+  const firstDetails = catalog.locator('details').first();
+  await firstDetails.locator('summary').click();
+  await expect(firstDetails.locator('a').first()).toBeVisible();
+  await assertNoPageOverflow(page);
+});
+
+test('experiment design catalog stays usable on iPhone and the English route', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(redesign, { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('openevo-experiment-design-catalog').locator('[data-design-family]')).toHaveCount(7);
+  await assertNoPageOverflow(page);
+  await page.goto('/en/research/seed-openevo/study/capability-exploration/openevo-2-0/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByText('The new OpenEvo program is split into seven design families')).toBeVisible();
+  await expect(page.getByTestId('openevo-experiment-design-catalog').locator('[data-design-family]')).toHaveCount(7);
   await assertNoPageOverflow(page);
 });

@@ -1,0 +1,195 @@
+---
+import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+interface Member { label: string; status: string; sha: string; path: string }
+interface Family {
+  id: string; index: string; title: string; state: string; kind: 'amendment' | 'mainline' | 'analysis';
+  summary: string; question: string; fixed: string; models: string[]; members: Member[];
+}
+
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const governanceSha = 'bb57c88eb5de3036dee3ea9b095bc550dd6882c8';
+const evidenceRoot = `https://github.com/mykcs/openevo-experiment/blob/${governanceSha}/docs/evidence/server-audits/2026-09-03/cross-platform-asset-governance-dry-run`;
+const catalogHref = `${evidenceRoot}/DESIGN_FAMILY_DRY_RUN.json`;
+const summaryHref = `${evidenceRoot}/PUBLIC_SAFE_DRY_RUN_SUMMARY.json`;
+const sourceHref = (member: Member) => `https://github.com/mykcs/openevo-experiment/blob/${member.sha}/${member.path}`;
+
+const families: Family[] = [
+  {
+    id: 'stage1-shared-harness-deliberation', index: '01', kind: 'amendment',
+    title: 'Shared Stage1 Harness and Deliberation', state: t('冻结 / 预注册', 'FROZEN / PREREGISTERED'),
+    summary: t('先把两个小模型共用的行动接口定死，再分别验证短自我推理、format-light 与 seed-native successor。它改变的是接口，不是 WebShop 策略。', 'Freeze one action interface for both small models, then test short self-deliberation, format-light prompting, and seed-native successors. The interface changes; WebShop strategy does not.'),
+    question: t('能否用同一套 strategy-neutral Harness，让 Qwen2.5-3B 保住能力，同时让 Qwen3-1.7B 恢复可用轨迹？', 'Can one strategy-neutral harness preserve Qwen2.5-3B while recovering usable Qwen3-1.7B trajectories?'),
+    fixed: t('不注入旧 Memory / Skill / Agent / SD adapter；qualification 不算正式 1,440 条。', 'No old Memory / Skill / Agent / SD adapter is injected; qualification rows do not count toward the formal 1,440.'),
+    models: ['Qwen2.5-3B', 'Qwen3-1.7B'], members: [],
+  },
+  {
+    id: 'fresh-stage1-202609021800', index: '02', kind: 'mainline',
+    title: 'Fresh Stage1 202609021800', state: t('设计已冻结', 'DESIGN FROZEN'),
+    summary: t('在新接口下重新采集双模型 Stage 1。冻结的是共同的 180 × 8 采集合同，不把“设计已冻结”写成“运行已经完成”。', 'Recollect Stage 1 under the new interface. The shared 180 × 8 collection contract is frozen; a frozen design is not reported as a completed run.'),
+    question: t('换了行动接口以后，两种模型在同一任务/预算合同下会产生什么 on-policy 轨迹？', 'What on-policy trajectories do the two models produce under the same task and budget contract after the action interface changes?'),
+    fixed: t('180 个任务 × 8 次；Stage1-only；teacher calls、training updates、final-panel access 都为 0。', '180 tasks × 8 rollouts; Stage1 only; teacher calls, training updates, and final-panel access remain zero.'),
+    models: ['Qwen2.5-3B', 'Qwen3-1.7B'], members: [],
+  },
+  {
+    id: 'stage1-minimax-posthoc', index: '03', kind: 'analysis',
+    title: 'Stage1 MiniMax Post-Hoc Analysis', state: t('分析合同已冻结', 'ANALYSIS CONTRACT FROZEN'),
+    summary: t('MiniMax 只回看已经发生的 Stage 1 轨迹，不生成 WebShop action，也不修补原始 trajectory。', 'MiniMax only reviews Stage-1 trajectories after they occur; it does not generate WebShop actions or repair source trajectories.'),
+    question: t('固定轨迹逐条交给同一个外部 analyzer 后，会提取出什么 teacher evidence？', 'What teacher evidence is extracted when the same frozen trajectories are reviewed by one external analyzer?'),
+    fixed: t('不新增 WebShop 调用；source identity 必须一一对应；只有 parse_ok=true 才计完成。', 'No new WebShop calls; source identities remain one-to-one; only parse_ok=true counts as complete.'),
+    models: ['Qwen2.5-3B', 'Qwen3-1.7B'], members: [],
+  },
+  {
+    id: 'stage1-opsd-v2', index: '04', kind: 'mainline',
+    title: 'OPSD v2 Parametric Bootstrap', state: t('设计已冻结', 'DESIGN FROZEN'),
+    summary: t('把冻结的 Stage 1 + MiniMax 证据变成参数初始化 adapter；这是参数通道，不是新的环境采样阶段。', 'Turn frozen Stage-1 + MiniMax evidence into a parametric bootstrap adapter; this is a parameter path, not another environment-sampling phase.'),
+    question: t('同一批 teacher evidence 能否稳定地产生两种模型各自的参数初始化？', 'Can the same teacher-evidence contract produce stable model-specific parametric bootstraps?'),
+    fixed: t('new WebShop calls = 0；new student generations = 0；external teacher calls = 0；final-panel access = 0。', 'new WebShop calls = 0; new student generations = 0; external teacher calls = 0; final-panel access = 0.'),
+    models: ['Qwen2.5-3B', 'Qwen3-1.7B'], members: [],
+  },
+  {
+    id: 'stage2-vnext', index: '05', kind: 'amendment',
+    title: 'Stage2-vNext Persistent Evidence Learning', state: t('设计冻结 / 诊断预注册', 'DESIGN FROZEN / DIAGNOSTICS PREREGISTERED'),
+    summary: t('Stage 2 不再把证据锁死在单个 256-rollout 窗口；candidate state 只有在冻结的因果门槛下证明有益才允许晋级。', 'Stage 2 no longer traps evidence inside one 256-rollout window; a candidate state is promoted only after passing a frozen causal-benefit gate.'),
+    question: t('跨轮保留证据、允许合法 NOOP，并对 candidate state 做因果验收后，3B 能否真正持续学习？', 'Can 3B sustain learning when evidence persists across rounds, NOOP is legitimate, and changed candidate states require causal acceptance?'),
+    fixed: t('旧 7-vs-8 / 16-success gate 不回到主规则；final panel 仍锁住；外部 teacher 不在 Stage 2 回来。', 'The old 7-vs-8 / 16-success gate does not return; the final panel remains locked; the external teacher does not return in Stage 2.'),
+    models: ['Qwen2.5-3B'], members: [],
+  },
+  {
+    id: 'gdn-d1', index: '06', kind: 'analysis',
+    title: 'GDN D1 Prospective Geometry Confirmation', state: t('前瞻设计已冻结', 'PROSPECTIVE DESIGN FROZEN'),
+    summary: t('等新 lineage 自己到达 sealed Stage2-vNext，再前瞻检查 late Task Vector 是否越来越能被历史更新子空间解释，并验证 K=64 bounded state。', 'After the new lineage reaches its own sealed Stage2-vNext state, prospectively test whether late Task Vectors become explainable by prior update span and whether a K=64 bounded state preserves behavior.'),
+    question: t('旧 7B D0 的几何现象会不会在新 lineage 上复现？bounded state 能否保持确定性行为？', 'Does the old 7B D0 geometry replicate on the new lineage, and can the bounded state preserve deterministic behavior?'),
+    fixed: t('diagnostic-only；cross-arm 不池化；不能修改 online training 或下一轮状态。', 'Diagnostic only; no cross-arm pooling; it cannot modify online training or the next-round state.'),
+    models: ['Qwen2.5-3B', 'Qwen3-1.7B'], members: [],
+  },
+];
+
+const autonomous = {
+  id: 'ceiling1-end-to-end-autonomous', title: 'Ceiling-1.0 End-to-End Autonomous Campaign',
+  state: t('控制面已冻结 · 无自动执行权限', 'CONTROL PLANE FROZEN · NO AUTOMATIC EXECUTION AUTHORITY'),
+  summary: t('它把 Stage1 collection → MiniMax → OPSD → Text Memory → Skill Bundle → Agent System → Stage2-vNext → GDN → final evaluation → final analysis 串成依赖 DAG；它负责“什么时候能进入下一关”，不替代各阶段自己的科学设计。', 'It connects Stage1 collection → MiniMax → OPSD → Text Memory → Skill Bundle → Agent System → Stage2-vNext → GDN → final evaluation → final analysis as a dependency DAG. It governs release order rather than replacing the scientific design of each stage.'),
+  members: [] as Member[],
+};
+
+const memberSets: Record<string, Member[]> = {
+  'fresh-stage1-202609021800': [
+    { label: 'Stage1 202609021800 Design Freeze', status: 'FROZEN', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/stage1/202609021800/design.json' },
+    { label: 'Stage1 Source Freeze', status: 'FROZEN', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/stage1/202609021800/freeze.json' },
+    { label: 'Stage1 Schedule Reference', status: 'REFERENCE', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/stage1/202609021800/schedule.json' },
+  ],
+  'stage1-minimax-posthoc': [
+    { label: 'Stage1 202609021800 MiniMax Successor', status: 'FROZEN', sha: 'c60419cad2e4ff0aad0b7e22177ac6e16475fe97', path: 'configs/experiment/stage1/202609021800/successors/202609022300-minimax.json' },
+  ],
+  'stage1-opsd-v2': [
+    { label: 'OPSD v2 Formal Design', status: 'FROZEN', sha: '4682ae2f138e00bf1113d5c815a96055171f5611', path: 'configs/experiment/campaigns/202609021800/science/opsd-v2.json' },
+  ],
+};
+memberSets['stage1-shared-harness-deliberation'] = [
+  { label: 'Harness201.1 Interface', status: 'FROZEN DESIGN', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling-1.0-harness2011-interface-v1.json' },
+  { label: 'Harness201.1 Paired Microqualification', status: 'PREREGISTERED', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling-1.0-harness2011-paired-microqualification-v1.json' },
+  { label: 'Qwen2.5-3B Native Stage1', status: 'FROZEN PREREG', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/designs/openevo-ceiling1-qwen25-3b-harness2011-native-stage1-v1.json' },
+  { label: 'Shared Stage1 Harness201.1', status: 'FROZEN PREREG', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/designs/openevo-ceiling1-stage1-harness2011-shared-v1.json' },
+  { label: 'Qwen2.5-3B Seed-Native Neutral', status: 'FROZEN QUALIFICATION', sha: 'd1a244bf2499435d766abbad664c29a2bdd60a35', path: 'configs/experiment/diagnostics/q25-stage1-seed-native-neutral-prereg-20260903.json' },
+  { label: 'Qwen2.5-3B Short Deliberation Pilot', status: 'FROZEN PILOT', sha: 'bcdd06250da194fd397b7ae61a71241a6cb146e3', path: 'configs/experiment/diagnostics/q25-stage1-short-deliberation-paired-pilot-20260903.json' },
+  { label: 'Qwen2.5-3B Stage1 Successor', status: 'FROZEN QUALIFICATION', sha: 'd1a244bf2499435d766abbad664c29a2bdd60a35', path: 'configs/experiment/diagnostics/q25-stage1-successor-prereg-20260903.json' },
+  { label: 'Shared Format-Light Deliberation', status: 'FROZEN PILOT', sha: '0ccba52e4f1c92680cebe6542340e1ed0a1bc875', path: 'configs/experiment/diagnostics/shared-stage1-format-light-delib-crossmodel-prereg-20260903.json' },
+  { label: 'Shared Short Deliberation Candidate', status: 'FROZEN PILOT', sha: '1d08703c611292a2b6e6d88455add1d762957958', path: 'configs/experiment/diagnostics/shared-stage1-short-delib-candidate-prereg-20260903.json' },
+];
+memberSets['stage2-vnext'] = [
+  { label: 'Harness201 Stage2 Readiness Gauntlet', status: 'PREREGISTERED', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling-1.0-harness201-stage2-readiness-gauntlet-v1.json' },
+  { label: 'Carrier Benefit Ablation', status: 'DIAGNOSTIC PREREG', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-stage2-preformal-carrier-benefit-ablation-v1.json' },
+  { label: 'Step Evidence Audit', status: 'DIAGNOSTIC PREREG', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-stage2-preformal-step-evidence-audit-v1.json' },
+  { label: 'Step Evidence Audit · Target-Bound', status: 'DIAGNOSTIC PREREG', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-stage2-preformal-step-evidence-audit-v2-target-bound.json' },
+  { label: 'Step SD Causal Microtest', status: 'DIAGNOSTIC PREREG', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-stage2-preformal-step-sd-causal-microtest-v1.json' },
+  { label: 'Stage2-vNext 3B', status: 'FROZEN DESIGN', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-stage2-vnext-3b-v1.json' },
+];
+memberSets['gdn-d1'] = [
+  { label: 'Task Vector Observability', status: 'FROZEN DIAGNOSTIC POLICY', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling-1.0-task-vector-observability-v1.json' },
+  { label: 'GDN D1 Accepted Geometry Manifest', status: 'TEMPLATE', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-gdn-d1-accepted-geometry-manifest-template-v1.json' },
+  { label: 'GDN D1 Prospective Confirmation', status: 'FROZEN DESIGN', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/designs/openevo-ceiling1-gdn-d1-prospective-confirmation-v1.json' },
+];
+autonomous.members = [
+  { label: 'End-to-End Autonomous Campaign', status: 'CONTROL PLANE FROZEN', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800-ceiling1-autonomous-v1.json' },
+  { label: 'Autonomy Release Gap Matrix', status: 'CONTROL PLANE PARTIAL', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800/AUTONOMY_RELEASE_GAP_MATRIX.json' },
+  { label: 'Qwen2.5-3B Stage1A Release', status: 'ROUTING RELEASE', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800/releases/qwen25-3b-stage1a.json' },
+  { label: 'Qwen2.5-3B Stage1B MiniMax Release', status: 'FROZEN ROUTING RELEASE', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800/releases/qwen25-3b-stage1b-minimax.json' },
+  { label: 'Qwen3-1.7B Stage1A Release', status: 'ROUTING RELEASE', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800/releases/qwen3-1p7b-stage1a.json' },
+  { label: 'Qwen3-1.7B Stage1B MiniMax Release', status: 'FROZEN ROUTING RELEASE', sha: '3abc55ada81ba3915e6537d39ea9d49811dae738', path: 'configs/experiment/campaigns/202609021800/releases/qwen3-1p7b-stage1b-minimax.json' },
+  { label: 'Autonomous GPU Resource Policy', status: 'RESOURCE POLICY FROZEN', sha: '4682ae2f138e00bf1113d5c815a96055171f5611', path: 'configs/experiment/campaigns/202609021800/resources/autonomous-gpu-v1.json' },
+  { label: 'Autonomy Release Gap Matrix · OPSD branch', status: 'CONTROL PLANE PARTIAL', sha: '4682ae2f138e00bf1113d5c815a96055171f5611', path: 'configs/experiment/campaigns/202609021800/AUTONOMY_RELEASE_GAP_MATRIX.json' },
+];
+for (const family of families) family.members = memberSets[family.id] || [];
+---
+<section class="design-catalog" data-ui-audit="contrast layout" data-testid="openevo-experiment-design-catalog" aria-labelledby="design-catalog-title">
+  <header class="design-catalog__head">
+    <p>EXPERIMENT DESIGNS · 2026-09-03 SNAPSHOT</p>
+    <h2 id="design-catalog-title">{t('新一轮 OpenEvo 已经拆成 7 个设计族', 'The new OpenEvo program is split into seven design families')}</h2>
+    <div>
+      <strong>{t('49 个近期 design / control / diagnostic JSON 不等于 49 个独立实验。真正面向读者的主线是 6 个科学设计族；第 7 个是负责放行顺序的 autonomous control plane。', 'Forty-nine recent design, control, and diagnostic JSON files do not represent 49 independent experiments. Six reader-facing scientific design families form the mainline; the seventh is the autonomous release-control plane.')}</strong>
+      <span>{t('下面只描述设计本身，不把 FROZEN / PREREGISTERED 冒充成运行完成。每个技术子设计都保留 pinned Git source。', 'This section describes design state only; FROZEN or PREREGISTERED is never presented as run completion. Every technical child design keeps a pinned Git source.')}</span>
+    </div>
+    <nav aria-label={t('设计证据', 'Design evidence')}>
+      <a href={catalogHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={catalogHref} />DESIGN_FAMILY_DRY_RUN.json</a>
+      <a href={summaryHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={summaryHref} />PUBLIC_SAFE_DRY_RUN_SUMMARY.json</a>
+    </nav>
+  </header>
+
+  <ol class="design-catalog__route" aria-label={t('新实验设计主线', 'New experiment design mainline')}>
+    {families.map((family) => (
+      <li class:list={['design-family', `design-family--${family.kind}`]} data-ui-audit-item data-design-family={family.id}>
+        <div class="design-family__rail" aria-hidden="true"><b>{family.index}</b><span></span></div>
+        <article>
+          <header><span>{family.state}</span><h3>{family.title}</h3></header>
+          <p class="design-family__summary">{family.summary}</p>
+          <dl>
+            <div><dt>{t('科学问题', 'Question')}</dt><dd>{family.question}</dd></div>
+            <div><dt>{t('保持不变', 'Held fixed')}</dt><dd>{family.fixed}</dd></div>
+            <div><dt>{t('模型', 'Models')}</dt><dd>{family.models.join(' · ')}</dd></div>
+          </dl>
+          <details>
+            <summary>{t(`技术子设计 ${family.members.length} 项`, `${family.members.length} technical child designs`)}</summary>
+            <ul>
+              {family.members.map((member) => <li><a href={sourceHref(member)} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceHref(member)} />{member.label}</a><span>{member.status}</span></li>)}
+            </ul>
+          </details>
+        </article>
+      </li>
+    ))}
+  </ol>
+  <aside class="design-control" data-ui-audit-item data-design-family={autonomous.id}>
+    <div><span>{autonomous.state}</span><h3>{autonomous.title}</h3><p>{autonomous.summary}</p></div>
+    <details>
+      <summary>{t(`控制面文件 ${autonomous.members.length} 项`, `${autonomous.members.length} control-plane files`)}</summary>
+      <ul>{autonomous.members.map((member) => <li><a href={sourceHref(member)} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceHref(member)} />{member.label}</a><span>{member.status}</span></li>)}</ul>
+    </details>
+  </aside>
+
+  <footer class="design-catalog__boundary">
+    <strong>{t('边界：设计目录不是实验结果。', 'Boundary: the design catalog is not an experiment result.')}</strong>
+    <span>{t('运行完成、PASS/FAIL、指标和最终结论仍然只从对应的 Git-backed receipt / reconciliation / result 发布；server-private path、credential transport 和 private provider identifier 不进入这里。', 'Run completion, PASS/FAIL, metrics, and final claims are published only from the corresponding Git-backed receipt, reconciliation, or result. Server-private paths, credential transport, and private provider identifiers do not enter this surface.')}</span>
+  </footer>
+</section>
+
+<style>
+.design-catalog{margin:2.2rem 0 0;padding:1.35rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.design-catalog__head{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:.5rem 1.4rem;align-items:end}
+.design-catalog__head>p{grid-column:1/-1;margin:0;color:var(--accent-deep);font:800 .62rem/1.3 var(--font-mono);letter-spacing:.08em}
+.design-catalog__head h2{margin:0;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1;letter-spacing:-.045em}
+.design-catalog__head>div{display:grid;gap:.4rem;max-width:46rem}.design-catalog__head strong{font-size:.96rem;line-height:1.55}.design-catalog__head span{color:var(--muted);font-size:.82rem;line-height:1.55}
+.design-catalog__head nav{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.45rem 1rem;margin-top:.4rem}.design-catalog__head a,.design-family a,.design-control a{color:var(--accent-deep);text-underline-offset:.2em}
+.design-catalog__head nav a{font:700 .62rem/1.35 var(--font-mono)}
+.design-catalog__route{display:grid;gap:0;width:min(900px,100%);margin:1.5rem auto 0;padding:0;list-style:none}
+.design-family{display:grid;grid-template-columns:52px minmax(0,1fr);gap:.8rem;min-width:0}.design-family__rail{display:grid;grid-template-rows:auto 1fr;justify-items:center}.design-family__rail b{display:grid;width:34px;height:34px;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--surface);font:800 .62rem var(--font-mono);color:var(--muted)}.design-family__rail span{width:1px;min-height:24px;background:var(--line)}
+.design-family--amendment .design-family__rail b{border-style:double;border-width:3px;color:var(--accent-deep)}.design-family--analysis .design-family__rail b{border-style:dashed}
+.design-family article{min-width:0;padding:0 0 1.15rem}.design-family article>header{display:flex;flex-wrap:wrap;gap:.32rem .7rem;align-items:baseline}.design-family article>header span{color:var(--muted);font:800 .54rem/1.3 var(--font-mono);letter-spacing:.06em}.design-family h3,.design-control h3{margin:0;font-size:1.02rem;line-height:1.3}.design-family__summary{max-width:52rem;margin:.35rem 0 .6rem;color:var(--ink);font-size:.8rem;line-height:1.55}
+.design-family dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:0}.design-family dl>div{min-width:0;padding-top:.42rem;border-top:1px solid var(--line)}.design-family dt{color:var(--muted);font:800 .54rem/1.3 var(--font-mono);letter-spacing:.05em}.design-family dd{margin:.18rem 0 0;color:var(--muted);font-size:.68rem;line-height:1.45}
+.design-family details,.design-control details{margin-top:.58rem;border-top:1px dashed var(--line);padding-top:.45rem}.design-family summary,.design-control summary{cursor:pointer;width:max-content;max-width:100%;color:var(--accent-deep);font-size:.67rem;font-weight:760}.design-family ul,.design-control ul{display:grid;gap:.38rem;margin:.55rem 0 0;padding:0;list-style:none}.design-family details li,.design-control li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.55rem;align-items:start}.design-family details li a,.design-control li a{min-width:0;overflow-wrap:anywhere;font-size:.66rem}.design-family details li span,.design-control li span{color:var(--muted);font:700 .5rem/1.3 var(--font-mono);letter-spacing:.04em;text-align:right}
+.design-control{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.72fr);gap:1rem;width:min(900px,100%);margin:.2rem auto 0;padding:.9rem 0;border-top:3px double var(--line);border-bottom:1px solid var(--line)}.design-control>div{display:grid;gap:.25rem}.design-control>div>span{color:var(--muted);font:800 .54rem/1.3 var(--font-mono);letter-spacing:.06em}.design-control p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}.design-control details{margin:0;padding:.15rem 0 0;border-top:0}
+.design-catalog__boundary{display:grid;grid-template-columns:minmax(0,.6fr) minmax(0,1.4fr);gap:.7rem 1.2rem;width:min(900px,100%);margin:1rem auto 0;padding-top:.8rem}.design-catalog__boundary strong{font-size:.76rem}.design-catalog__boundary span{color:var(--muted);font-size:.68rem;line-height:1.5}
+@media(max-width:760px){.design-catalog{margin-top:1.5rem}.design-catalog__head{grid-template-columns:1fr;gap:.45rem}.design-catalog__head>p,.design-catalog__head nav{grid-column:1}.design-catalog__route{margin-top:1.1rem}.design-family{grid-template-columns:38px minmax(0,1fr);gap:.55rem}.design-family__rail b{width:30px;height:30px}.design-family dl{grid-template-columns:1fr;gap:.4rem}.design-family dl>div{padding-top:.35rem}.design-control{grid-template-columns:1fr}.design-catalog__boundary{grid-template-columns:1fr}.design-family details li,.design-control li{grid-template-columns:1fr;gap:.08rem}.design-family details li span,.design-control li span{text-align:left}}
+</style>
