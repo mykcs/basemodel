@@ -36,6 +36,7 @@ describe('public server copy', () => {
 
   it('keeps the public storage snapshot owner-relative, otherwise anonymous, dated, and separate from shared Docker attribution', () => {
     expect(serverOverview).toContain("t('我', 'Me')");
+    expect(serverOverview).toContain('data-storage-responsibility-view=\"owner-relative-v1\"');
     for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六']) expect(serverOverview).toContain(label);
     for (const value of ['108.0 GiB', '67.3 GiB', '23.9 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
     expect(serverOverview).toContain('2026-09-03 02:09 (UTC+8)');
