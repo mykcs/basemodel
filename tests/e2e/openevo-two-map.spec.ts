@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { registerOpenEvoResearchDeepDiveTests } from './openevo-research-deep-dives.cases';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const firstRun = `${root}first-run/`;
@@ -12,6 +13,8 @@ async function assertNoPageOverflow(page: Page) {
   }));
   expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
 }
+
+registerOpenEvoResearchDeepDiveTests();
 
 test('desktop lobby exposes exactly two primary maps and keeps archive secondary', async ({ page }) => {
   const response = await page.goto(root, { waitUntil: 'domcontentloaded' });
