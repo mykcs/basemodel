@@ -1,6 +1,6 @@
 # OpenEvo 3B + 1.7B successor：探索版 / 报告版实施 Masterplan
 
-状态：**IMPLEMENTED · LOCAL ACCEPTANCE PASS · RELEASE PENDING — 2026-09-04**
+状态：**DONE · MERGED · PRODUCTION ACCEPTED — 2026-09-04**
 
 目标：把 `mykcs/basemodel` 的第二张 OpenEvo 肉鸽地图升级成同一 successor 的两种读法：探索版保留真实研究绕路，报告版提供可直接用于论文/研究报告的线性 claim。两页共享同一 Harness、公平性、Stage1 数字与 provenance 数据源。
 
@@ -112,14 +112,20 @@ Owner 在本次 prompt 中明确要求离开对话、**中间不用汇报**。�
 
 ### Git / Vercel / release
 
-- [ ] 一次 coherent final commit，message 含 `[vercel-preview]`。
-- [ ] fast-forward push 到 PR #420 branch，无覆盖他人 commit。
-- [ ] PR #420 body/title 更新为 dual narrative scope，并记录 exact scientific authority。
-- [ ] exact-head Vercel Preview READY 且 source SHA 匹配。
-- [ ] Preview changed routes zh/en desktop+iPhone browser PASS。
-- [ ] required CI / review blockers 清零。
-- [ ] merge 后单独验证 Production deployment 与 zh/en changed routes。
+- [x] 一次 coherent final commit，message 含 `[vercel-preview]`。
+- [x] fast-forward push 到 PR #420 branch，无覆盖他人 commit。
+- [x] PR #420 body/title 更新为 dual narrative scope，并记录 exact scientific authority。
+- [x] exact-head Vercel Preview READY 且 source SHA 匹配。
+- [x] Preview changed routes zh/en desktop+iPhone browser PASS。
+- [x] required CI / review blockers 清零。
+- [x] merge 后单独验证 Production deployment 与 zh/en changed routes。
 
 ## Execution closeout
 
-完成代码、测试、Preview、PR 与 Production 后，把上面未完成项全部打勾，并在这里写最终 exact head / merge SHA / Production acceptance。若任一步因 provider 或外部 required check 尚未 terminal，本任务状态只能写 `IMPLEMENTED_AWAITING_PROVIDER`，不能假装 DONE。
+最终 feature head：`f12e3da794abe236e58c67da1c260d839e40c702`。PR #420 的 required Self-hosted CI run `33798151187` 完整 PASS，其中 deterministic verification、static production build、153-case Chromium risk gate 与 12-case Lab gate 均正常结束。
+
+Exact-head Preview deployment：`dpl_2hHkWytc4HmBS8X8rk3v9bo76yJV`，source SHA 精确为 `f12e3da794abe236e58c67da1c260d839e40c702`，状态 `READY`。Preview 对 capability lobby、successor gateway、exploration、report 与英文镜像做 desktop 1440×1000 + iPhone 390×844 共 14 个 hosted smoke：全部 HTTP 200、H1 匹配、无 page-level horizontal overflow、0 console/page error。
+
+PR #420 以 squash merge 进入 `main`，merge SHA：`06a1f941eee0267420caa8a02716bc6c1692464c`。Production deployment：`dpl_7scPqwe832dMo4BzZmN7Gjm8CHva`，target=`production`，source=`main@06a1f941eee0267420caa8a02716bc6c1692464c`，状态 `READY`，正式 alias 包含 `basemodel-preview.vercel.app`。
+
+Production 再独立执行同一 7 路由 × desktop/iPhone = 14 个 smoke，全部 HTTP 200、正确 H1、scrollWidth == clientWidth、0 console/page error。至此本 Masterplan 的代码、科学叙事、Preview、required CI、merge 与 Production acceptance 均已闭环；后续 Stage2 实验状态不属于本网站交付的 release gate。
