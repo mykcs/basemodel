@@ -1,9 +1,9 @@
 # SEED × OpenEvo Research Information Architecture Masterplan
 
-Status: **ACTIVE EXECUTION MASTERPLAN**  
-Created: **2026-09-03 (SGT)**  
-Repository: `mykcs/basemodel`  
-Scientific authority: `mykcs/openevo-experiment`  
+Status: **ACTIVE EXECUTION MASTERPLAN**
+Created: **2026-09-03 (SGT)**
+Repository: `mykcs/basemodel`
+Scientific authority: `mykcs/openevo-experiment`
 Scope: SEED × OpenEvo research website information architecture, scientific-state projection, experiment/design/run/asset navigation, provenance, historical supersession, external-provider bindings, migration, validation, and release.
 
 > This file is the checkbox-driven execution authority for the website reorganization requested on 2026-09-03. Future Agents should continue from the first unchecked item whose prerequisites are satisfied. Do not declare this project complete until every required acceptance item is checked with evidence.
@@ -102,11 +102,10 @@ The reader primarily needs:
 
 ```text
 What question are we asking?
--> What did we change?
--> What stayed fixed?
+-> What did we do?
 -> What happened?
--> What does it mean?
--> What is the next valid question?
+-> Why does that matter?
+-> Technical evidence if needed
 ```
 
 They should not need to understand SHA formats, provider IDs, or raw receipt schemas unless they choose to inspect evidence.
