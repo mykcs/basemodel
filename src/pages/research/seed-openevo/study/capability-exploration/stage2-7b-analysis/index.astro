@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvo7BStage2AnalysisMap from '../../../../../../components/research/OpenEvo7BStage2AnalysisMap.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="7B Stage 2 参数实验与分析"
+  description="把 OpenEvo 7B Stage 2 的旧 256-window 失败、Ceiling-1.0 持续更新、Task Vector 诊断、SD-LoRA 容量 amendment 与 transfer 边界整理成一张历史参数分析地图。"
+  locale={locale}
+>
+  <OpenEvo7BStage2AnalysisMap locale={locale} />
+</AppLayout>
