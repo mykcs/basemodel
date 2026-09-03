@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoStage1EvolutionMap from '../../../../../../../components/research/OpenEvoStage1EvolutionMap.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="How Stage 1 was repaired step by step"
+  description="A roguelike research map tracing OpenEvo WebShop Stage 1 from the historical harness through diagnosis, paired cross-model experiments, the 202609030400 shared-harness freeze, and the canonical-corpus gate."
+  locale={locale}
+>
+  <OpenEvoStage1EvolutionMap locale={locale} />
+</AppLayout>
