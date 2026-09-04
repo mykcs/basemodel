@@ -83,8 +83,8 @@ prune_old_bundle_backups() {
 }
 
 runner_busy_state() {
-  local repo="$1" name="$2" value
-  if ! value="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" --jq ".runners[] | select(.name == \"$name\") | .busy" 2>/dev/null)"; then
+  local repo="$1" label="$2" value
+  if ! value="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" --jq ".runners[] | select([.labels[].name] | index(\"$label\")) | .busy" 2>/dev/null)"; then
     printf '%s\n' unknown; return 0
   fi
   case "$value" in true) printf '%s\n' busy ;; false) printf '%s\n' idle ;; *) printf '%s\n' unknown ;; esac
@@ -119,7 +119,9 @@ maybe_prune_build_cache() {
   [[ -f "$shared_state_dir/build-cache-prune-epoch" ]] && last_prune="$(<"$shared_state_dir/build-cache-prune-epoch")"
   [[ "$last_prune" =~ ^[0-9]+$ ]] || last_prune=0
   (( now - last_prune >= prune_interval )) || return 0
-  for state in     "$(runner_busy_state mykcs/basemodel basemodel-macbook-container-v2)"     "$(runner_busy_state mykcs/openevo-experiment openevo-macbook-container-v2)"; do
+  for state in \
+    "$(runner_busy_state mykcs/basemodel basemodel-ci)" \
+    "$(runner_busy_state mykcs/openevo-experiment openevo-mac-ci)"; do
     [[ "$state" == idle ]] || { log "build-cache prune skipped because a Mac CI runner is $state"; return 0; }
   done
   if [[ "$dry_run" == 1 ]]; then log "dry-run: would cap Docker build cache at $build_cache_max_used_space"; return 0; fi
