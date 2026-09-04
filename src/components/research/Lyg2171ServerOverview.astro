@@ -76,10 +76,10 @@ const gpuFacts = [
   <header class="server-hero">
     <div class="server-hero__eyebrow">{t('OpenEvo / WebShop · 实验服务器', 'OpenEvo / WebShop · experiment server')}</div>
     <h1>{t('实验服务器简介', 'Experiment server overview')}</h1>
-    <p>{t('2026-09-04 13:46（UTC+8）的安全快照显示，这台机器仍为 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。主文件系统当前约有 16.5 GiB 可用、df 报 97% 使用率；磁盘空间仍是最紧张的资源。', 'The safe 2026-09-04 13:46 (UTC+8) snapshot still shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The main filesystem has about 16.5 GiB available and df reports 97% used, so disk capacity remains the tightest resource.')}</p>
+    <p>{t('2026-09-05 00:49（UTC+8）的安全快照显示，这台机器仍为 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。主文件系统当前约有 16.1 GiB 可用、df 报 97% 使用率；磁盘空间仍是最紧张的资源。', 'The safe 2026-09-05 00:49 (UTC+8) snapshot still shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The main filesystem has about 16.1 GiB available and df reports 97% used, so disk capacity remains the tightest resource.')}</p>
     <div class="snapshot-note">
       <strong>{t('数据时间', 'Data timestamp')}</strong>
-      <span>2026-09-04 13:46 (UTC+8)</span>
+      <span>2026-09-05 00:49 (UTC+8)</span>
       <span>{t('静态快照，不是实时监控面板', 'Static snapshot, not a live monitoring dashboard')}</span>
     </div>
   </header>
@@ -87,9 +87,9 @@ const gpuFacts = [
   <section class="priority-grid" aria-label={t('关键资源', 'Key resources')}>
     <article class="priority-card priority-card--attention">
       <span>{t('磁盘剩余', 'Disk free')}</span>
-      <strong>16.5 GiB</strong>
+      <strong>16.1 GiB</strong>
       <h2>{t('主文件系统可用空间', 'Main filesystem available')}</h2>
-      <p>{t('本次全盘快照中，df 报告 97% 已使用。当前只剩约 16.5 GiB 普通可写空间，因此整理、归档与精确 reclaim 的优先级很高。', 'In this global snapshot, df reports 97% used with only about 16.5 GiB available to ordinary writes, so artifact governance, archival, and precise reclaim are high priority.')}</p>
+      <p>{t('本次全盘快照中，df 报告 97% 已使用。当前约有 16.1 GiB 普通可写空间，因此整理、归档与精确 reclaim 的优先级很高。', 'In this global snapshot, df reports 97% used with about 16.1 GiB available to ordinary writes, so artifact governance, archival, and precise reclaim are high priority.')}</p>
     </article>
     <article class="priority-card">
       <span>GPU</span>
@@ -107,7 +107,7 @@ const gpuFacts = [
       <span>RAM</span>
       <strong>1.0 TiB</strong>
       <h2>{t('内存容量', 'System memory')}</h2>
-      <p>{t('快照时约 82.9 GiB 正在使用，Linux 报告约 909.2 GiB available；RAM 仍远比磁盘宽裕。', 'At the snapshot, about 82.9 GiB was in use and Linux reported about 909.2 GiB available; RAM remains far less constrained than disk.')}</p>
+      <p>{t('快照时约 84.1 GiB 正在使用，Linux 报告约 884.0 GiB available；RAM 仍远比磁盘宽裕。', 'At the snapshot, about 84.1 GiB was in use and Linux reported about 884.0 GiB available; RAM remains far less constrained than disk.')}</p>
     </article>
   </section>
 
@@ -119,13 +119,13 @@ const gpuFacts = [
         <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。2026-09-04 13:46（UTC+8）实测已用约 397.3 GiB，df 报 97% 使用率，普通写入约剩 16.5 GiB。下方归属条仍使用 2026-09-03 01:11（UTC+8）最近一次完整快照：我固定放在最前，其余账户按可归属容量从大到小排列。', 'The main filesystem has about 436.0 GiB total capacity. At 2026-09-04 13:46 (UTC+8), about 397.3 GiB was used, df reported 97%, and about 16.5 GiB remained available to ordinary writes. The attribution bar below still uses the most recent complete snapshot from 2026-09-03 01:11 (UTC+8): Me is pinned first, then the remaining accounts are ordered by attributable usage from largest to smallest.')}</p>
+    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。2026-09-05 00:49（UTC+8）实测已用约 397.7 GiB，df 报 97% 使用率，普通写入约剩 16.1 GiB。下方归属条仍使用 2026-09-03 01:11（UTC+8）最近一次完整快照：我固定放在最前，其余账户按可归属容量从大到小排列。', 'The main filesystem has about 436.0 GiB total capacity. At 2026-09-05 00:49 (UTC+8), about 397.7 GiB was used, df reported 97%, and about 16.1 GiB remained available to ordinary writes. The attribution bar below still uses the most recent complete snapshot from 2026-09-03 01:11 (UTC+8): Me is pinned first, then the remaining accounts are ordered by attributable usage from largest to smallest.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
         <div><span>{t('文件系统', 'Filesystem')}</span><strong>436.0 GiB</strong></div>
-        <div><span>{t('已用', 'Used')}</span><strong>397.3 GiB</strong></div>
-        <div><span>{t('可用', 'Available')}</span><strong>16.5 GiB</strong></div>
+        <div><span>{t('已用', 'Used')}</span><strong>397.7 GiB</strong></div>
+        <div><span>{t('可用', 'Available')}</span><strong>16.1 GiB</strong></div>
         <div><span>df Use%</span><strong>97%</strong></div>
       </div>
 
@@ -147,6 +147,10 @@ const gpuFacts = [
         <span class="storage-bar__reserved" style="width:5.1%" title={t('文件系统保留 / 舍入 · 22.2 GiB · 5.1%', 'Filesystem reserve / rounding · 22.2 GiB · 5.1%')}></span>
       </div>
       <p class="storage-order-note">{t('我固定在最前；其余用户按可归属容量从大到小。小分段的精确数字保留在悬停提示与图表的可访问描述里，不再铺成一整片卡片。', 'Me is pinned first; the remaining users are sorted by attributable usage from largest to smallest. Exact values for small segments remain in hover text and the chart’s accessible description instead of being repeated as a large card grid.')}</p>
+      <div class="why-df">
+        <strong>{t('本轮精确回收', 'Precise reclaim in this pass')}</strong>
+        <p>{t('经 storage-reclaim-20260905-v1 明确授权后，3 个已确认无活跃引用、且 exact Git commit 可从 GitHub 恢复的旧 linked worktree 已用 Git worktree 机制移除：逻辑删除 392,462,336 bytes；同期 df Available 净增加 389,718,016 bytes。第 4 个候选因仍被一个 shell 的 cwd 占用而自动 HOLD，没有删除。', 'After explicit approval of storage-reclaim-20260905-v1, three old linked worktrees with no live references and exact GitHub-recoverable commits were removed through Git worktree: 392,462,336 logical bytes deleted, while df Available increased by 389,718,016 bytes over the same interval. The fourth candidate was automatically held because a live shell still had its cwd there, so it was not deleted.')}</p>
+      </div>
       <div class="why-df">
         <strong>{t('归属不能靠名字猜', 'Ownership cannot be guessed from names')}</strong>
         <p>{t('这台服务器上多人同时做 OpenEvo。文件名、run 名、容器名、Docker tag 或“看起来像某个实验”的路径都只是线索，不是 ownership 证据。清理前必须把 filesystem / run manifest / Git / container reference / artifact digest 等证据闭合；归属不清就 HOLD。', 'Multiple people run OpenEvo on this server. File names, run names, container names, Docker tags, or paths that look like a particular experiment are clues, not ownership evidence. Before cleanup, filesystem, run-manifest, Git, container-reference, artifact-digest, and related provenance must close the loop; unresolved ownership is HOLD.')}</p>
@@ -203,7 +207,7 @@ const gpuFacts = [
     <div class="privacy-grid">
       <div>
         <strong>{t('公开展示', 'Shown publicly')}</strong>
-        <p>{t('2026-09-04 13:46（UTC+8）的全盘容量、已用/可用空间与硬件库存，以及单独标注为 2026-09-03 01:11（UTC+8）的最近一次完整归属快照。站点 owner 只显示为相对标签“我”，其他账户继续匿名。', 'The live-safe 2026-09-04 13:46 (UTC+8) global capacity/hardware snapshot plus the separately dated most recent complete attribution snapshot from 2026-09-03 01:11 (UTC+8). The site owner appears only as the relative label “Me”; all other accounts remain anonymous.')}</p>
+        <p>{t('2026-09-05 00:49（UTC+8）的全盘容量、已用/可用空间与硬件库存，以及单独标注为 2026-09-03 01:11（UTC+8）的最近一次完整归属快照。站点 owner 只显示为相对标签“我”，其他账户继续匿名。', 'The live-safe 2026-09-05 00:49 (UTC+8) global capacity/hardware snapshot plus the separately dated most recent complete attribution snapshot from 2026-09-03 01:11 (UTC+8). The site owner appears only as the relative label “Me”; all other accounts remain anonymous.')}</p>
       </div>
       <div>
         <strong>{t('不公开', 'Not shown')}</strong>
@@ -214,7 +218,7 @@ const gpuFacts = [
 
   <details class="measurement-notes">
     <summary>{t('数据来源', 'Data sources')}</summary>
-    <p>{t('2026-09-04 current 全盘容量来自对主文件系统的 live df；CPU/RAM/GPU 库存也在同次安全审计中复核。跨用户 home 的完整匿名归属没有在今天强行重跑：不会为了网页统计去进入同学容器或利用 Docker 管理能力挂载同学目录，因此归属条保留为 2026-09-03 的最近一次完整快照，并只把站点 owner 显示为相对标签“我”。Docker 名称/标签永远不作为 ownership 证明。页面只保存公开安全的聚合/匿名数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The 2026-09-04 current global capacity comes from a live df of the main filesystem; CPU/RAM/GPU inventory was rechecked in the same safe audit. Complete cross-user home attribution was intentionally not forced today: the page refresh does not enter sibling-user containers or use Docker-admin capability to mount sibling homes, so the attribution bar remains the most recent complete snapshot from 2026-09-03 and exposes the site owner only as the relative label “Me”. Docker names/labels are never ownership proof. The page stores only public-safe aggregate/anonymous figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or anonymous-label mappings.')}</p>
+    <p>{t('2026-09-05 current 全盘容量来自对主文件系统的 live df；CPU/RAM/GPU 库存也在同次安全审计中复核。跨用户 home 的完整匿名归属没有在今天强行重跑：不会为了网页统计去进入同学容器或利用 Docker 管理能力挂载同学目录，因此归属条保留为 2026-09-03 的最近一次完整快照，并只把站点 owner 显示为相对标签“我”。Docker 名称/标签永远不作为 ownership 证明。页面只保存公开安全的聚合/匿名数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The 2026-09-05 current global capacity comes from a live df of the main filesystem; CPU/RAM/GPU inventory was rechecked in the same safe audit. Complete cross-user home attribution was intentionally not forced today: the page refresh does not enter sibling-user containers or use Docker-admin capability to mount sibling homes, so the attribution bar remains the most recent complete snapshot from 2026-09-03 and exposes the site owner only as the relative label “Me”. Docker names/labels are never ownership proof. The page stores only public-safe aggregate/anonymous figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or anonymous-label mappings.')}</p>
   </details>
 </main>
 

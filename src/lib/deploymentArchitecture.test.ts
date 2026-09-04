@@ -12,6 +12,7 @@ describe('Vercel production deployment architecture', () => {
   const runnerDockerfile = readText('../../.github/runner/Dockerfile');
   const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
   const runnerReconcile = readText('../../.github/runner/mac-orbstack-reconcile.sh');
+  const runnerHousekeeping = readText('../../.github/runner/mac-orbstack-housekeeping.sh');
   const runnerInstall = readText('../../.github/runner/mac-orbstack-install-launch-agent.sh');
   const astroConfig = readText('../../astro.config.mjs');
   const appLayout = readText('../../src/layouts/AppLayout.astro');
@@ -110,6 +111,24 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerReconcile).toContain('disk_warning_interval=21600');
     expect(runnerReconcile).not.toContain('docker system prune');
     expect(runnerReconcile).not.toContain('pmset -a');
+    expect(runnerReconcile).toContain('mac-orbstack-housekeeping.sh');
+    expect(runnerInstall).toContain('mac-orbstack-housekeeping.sh');
+    expect(runnerHousekeeping).toContain('container_backup_prefix="${container}-backup-"');
+    expect(runnerHousekeeping).toContain('bundle_backup_prefix="libexec.backup-"');
+    expect(runnerHousekeeping).toContain('docker container rm -- "$name"');
+    expect(runnerHousekeeping).toContain('docker builder prune --force --max-used-space');
+    expect(runnerHousekeeping).toContain('run_with_timeout');
+    expect(runnerHousekeeping).toContain('CI_HOST_BUILD_CACHE_MAX_USED_SPACE:-6GB');
+    expect(runnerHousekeeping).toContain('basemodel-ci');
+    expect(runnerHousekeeping).toContain('openevo-mac-ci');
+    expect(runnerHousekeeping).toContain('select(.status ==');
+    expect(runnerHousekeeping).toContain('elif any then');
+    expect(runnerHousekeeping).toContain('local_container="$3"');
+    expect(runnerHousekeeping).toContain('all(.status ==');
+    expect(runnerHousekeeping).toContain('offline');
+    expect(runnerHousekeeping).toContain('docker container inspect --format');
+    expect(runnerHousekeeping).toContain(') >/dev/null 2>&1 &');
+    expect(runnerHousekeeping).not.toContain('docker system prune');
   });
 
   it('pins every GitHub-authored action to an immutable commit', () => {

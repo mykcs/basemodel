@@ -37,8 +37,8 @@ describe('public server copy', () => {
   it('keeps current capacity separate from the compact owner-first attribution bar', () => {
     for (const label of ['我', '用户一', '用户二', '用户三', '用户四', '用户五', '用户六']) expect(serverOverview).toContain(label);
     for (const value of ['65.8 GiB', '15.1%', '107.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
-    for (const value of ['397.3 GiB', '16.5 GiB', '97%']) expect(serverOverview).toContain(value);
-    expect(serverOverview).toContain('2026-09-04 13:46 (UTC+8)');
+    for (const value of ['397.7 GiB', '16.1 GiB', '97%']) expect(serverOverview).toContain(value);
+    expect(serverOverview).toContain('2026-09-05 00:49 (UTC+8)');
     expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
     expect(serverOverview).toContain('data-storage-responsibility-view="owner-relative-historical-v2"');
     expect(serverOverview).toContain('storage-attribution-owner');
@@ -60,8 +60,10 @@ describe('public server copy', () => {
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-04 实验服务器容量与硬件快照');
-    expect(serverRouteEn).toContain('2026-09-04 server capacity and hardware snapshot');
+    expect(serverRouteZh).toContain('2026-09-05 实验服务器容量与硬件快照');
+    expect(serverRouteZh).toContain('16.1 GiB');
+    expect(serverRouteEn).toContain('2026-09-05 server capacity and hardware snapshot');
+    expect(serverRouteEn).toContain('16.1 GiB');
   });
 
   it('uses transferable role placeholders in the public reproduction runbook', () => {

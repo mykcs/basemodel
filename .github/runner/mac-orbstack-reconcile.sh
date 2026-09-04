@@ -6,6 +6,7 @@ legacy_container="basemodel-ci-runner"
 state_dir="${BASEMODEL_CI_STATE_DIR:-${HOME}/Library/Application Support/BasemodelCI}"
 bundle_dir="${RUNNER_BUNDLE_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 log_tag="basemodel-ci-runner"
+housekeeping="$bundle_dir/mac-orbstack-housekeeping.sh"
 failure_epoch_file="$state_dir/reconcile-failure-epoch"
 backoff_seconds=900
 disk_warning_epoch_file="$state_dir/disk-warning-epoch"
@@ -61,6 +62,7 @@ if orbctl status >/dev/null 2>&1 && docker container inspect "$container" >/dev/
 fi
 
 if [[ "$health" == 'healthy' ]]; then
+  "$housekeeping" >/dev/null 2>&1 || log "warning: runner housekeeping failed"
   exit 0
 fi
 
@@ -69,6 +71,7 @@ if BASEMODEL_CI_SUPERVISED=1 \
   RUNNER_BUNDLE_DIR="$bundle_dir" \
   "$bundle_dir/mac-orbstack-start.sh"; then
   printf '%s\n' 0 > "$failure_epoch_file"
+  "$housekeeping" >/dev/null 2>&1 || log "warning: runner housekeeping failed"
   log "runner reconciled from health state: $health"
 else
   printf '%s\n' "$now_epoch" > "$failure_epoch_file"
