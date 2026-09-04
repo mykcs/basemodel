@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-08-30**
+Last reviewed: **2026-09-05**
 
 ## Authority
 
@@ -15,6 +15,27 @@ Production identity = https://basemodel-preview.vercel.app
 **Vercel is the only ordinary deployment authority.** Historical provider files, snapshots or fallback scripts are not normal Preview, release, Production verification, quota-reporting or completion-report surfaces.
 
 GitHub Actions is re-enabled only as a **self-hosted CI control plane**. Heavy jobs run on the repository-scoped `basemodel-ci` runner, never on GitHub-hosted runners. GitHub Pages remains retired.
+
+
+### 2026-09-05 CI execution review is open; current authority has not moved yet
+
+The 2026-08-29 Mac/OrbStack design was accepted against the workload measured then. New 2026-09-04/05 evidence now satisfies that document's own re-evaluation triggers: recent successful `full` jobs are roughly in the 20–25 minute class, the browser phase dominates the wall-clock, and the same Mac is an interactive control surface for Remote Desktop Commander / SSH / browser automation. This creates real host-contention and availability cost even when the runner itself is isolated.
+
+Therefore **provider/execution review is legitimately reopened**, but no candidate provider is current authority merely because it was researched or proved on another repository. Until a replacement Base Model gate is implemented, exact-head qualified, wired into the required status, and the predecessor automatic lifecycle is retired, the repository-scoped self-hosted workflow remains current required CI.
+
+The review must optimize workload semantics before provider migration:
+
+```text
+real job phase decomposition
+-> safe fast/focused/full planning
+-> long-test decomposition / sharding benchmark
+-> provider/account/quota qualification
+-> exact-head replay against historical high-cost PRs
+-> required-check cutover
+-> old automatic runner retirement
+```
+
+Do not convert dated allowance numbers (Cloudflare, CircleCI, GitHub, Vercel or another runner service) into permanent repository facts. Re-check them live at decision time. Cloudflare Pages build counts, Workers Builds minutes/timeouts, Vercel deployment/build usage, and CI-runner credits are different meters and must not be compared as one number.
 
 ## Vercel responsibilities
 
@@ -91,9 +112,9 @@ These controls reduce future consumption only; they do not erase Build CPU alrea
 
 Historical diagnosis, parallel-Agent friction, Preview-auth verification, shell/editing noise, and migration-build evidence are recorded in [`../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). Use that file for rationale; this document remains the current behavior owner.
 
-## 2026-08-29 decision rationale — keep the current architecture
+## 2026-08-29 decision rationale — historical accepted baseline; review reopened 2026-09-05
 
-The current architecture is an accepted decision, not an open migration project. Future Agents may improve implementation details or documentation, but should **not** reopen provider selection merely because another execution surface exists. Revisit the architecture only when new evidence changes one of the constraints below.
+The Mac/OrbStack architecture was the accepted decision for the workload measured on 2026-08-29. It must not be reopened merely because another provider exists; however, the 2026-09-05 measurements documented above now meet the policy's own re-evaluation threshold. Treat the old rationale as the baseline that a successor must beat, not as a prohibition on evidence-driven review. Until a successor completes exact-head qualification and required-check cutover, the existing self-hosted path remains authoritative.
 
 The migration was driven by measured bottlenecks rather than provider preference. A representative pre-migration Production build spent roughly `4.8m` in the 92-case Chromium matrix plus about `33s` in the 12-case Lab gate, while `verify:deploy` was roughly `40s` and the Astro build itself roughly `6–7s`. After browser acceptance moved off Vercel, an actual Production build completed in about `47s`. That evidence is why the first optimization target was browser execution, not an immediate rewrite of every deterministic audit or a micro-optimization of repeated package installation.
 
