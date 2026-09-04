@@ -1,8 +1,10 @@
 # Server storage pressure audit SOP
 
 Status: **current**
-Last reviewed: **2026-09-03**
+Last reviewed: **2026-09-04**
 Audience: Agents auditing or reclaiming space on the shared experiment server
+
+> **Scope router (2026-09-04):** this file owns the **read-only/public snapshot** path. For the owner-requested end-to-end workflow that inventories research artifacts, proves ownership, repairs Run/Artifact passports, publishes to GitHub/Hugging Face/GHCR, verifies restore, proposes an exact reclaim manifest, performs approved precise reclaim, and then refreshes this page, use [`server-artifact-governance-and-reclaim-sop.md`](server-artifact-governance-and-reclaim-sop.md).
 
 ## Purpose
 
@@ -12,18 +14,22 @@ The public Base Model site may publish only aggregate hardware facts and **anony
 
 ## 1. Fast read-only inventory
 
-Start with the filesystem, not one user's home directory:
+Start with the **persistent project filesystem**, not one user's home directory and not an assumed container root. The control environment may itself use an overlay root, so first resolve the filesystem that backs the approved persistent workspace, then run `df` on a path on that filesystem. Use `/` only when live mount evidence proves it is the same target.
+
+Conceptually:
 
 ```bash
-df -B1 /
-df -h /
+findmnt -T <approved-persistent-workspace> -o TARGET,SOURCE,FSTYPE,OPTIONS
+df -B1 <approved-persistent-workspace>
+df -hT <approved-persistent-workspace>
+df -ih <approved-persistent-workspace>
 ```
 
-Record total, used, available, and `Use%`. Keep `df` semantics intact: `Use%` can differ from simple `used / total` because filesystem reserve and rounding exist.
+Do not publish the private workspace path. Record total, used, available, `Use%`, and inode use from the resolved persistent filesystem. Keep `df` semantics intact: `Use%` can differ from simple `used / total` because filesystem reserve and rounding exist.
 
-Then measure identifiable home directories with `du -x -s -B1`. Do **not** assume the current mount namespace can see every `/data/home/*` directory. On this shared Docker host, a reliable inventory may require enumerating bind-mounted home roots from authorized development containers and running the read-only `du` from the namespace that can see each mount.
+Then measure only home directories that are visible through an **already-authorized, non-bypass** path. Do **not** assume the current mount namespace can see every account home. Also do not `docker exec` into sibling-user development containers, request arbitrary host mounts through the raw Docker socket, or otherwise exercise a stronger shared-control-plane capability merely to refresh a public ranking.
 
-**Completeness gate:** if the namespace exposes fewer homes than the known shared-server topology or the running development-container mounts imply, stop. The result is an incomplete view, not an anonymous ranking. Resolve the missing namespaces before publishing user counts or percentages.
+**Completeness gate:** if the current authorized view cannot cover the full known account topology, the result is an incomplete attribution view, not a new anonymous ranking. Refresh global `df`/hardware facts, keep the most recent previously complete anonymous attribution clearly dated as historical, and say that attribution was intentionally not refreshed. Never turn partial measurements into fresh User 1/User 2 percentages.
 
 Public output is sorted by **attributable total** (home + reliably attributable Docker writable layer) and renamed every snapshot:
 
@@ -37,12 +43,14 @@ The mapping is ephemeral and must not be written into the repository. Never add 
 
 ## 2. Split personal and shared usage
 
-For an authorized user's home, find the large roots first:
+For an authorized user's home, find the large roots first, but keep the I/O bounded and use timeouts/shallower metadata when live science is writing heavily:
 
 ```bash
-du -x -B1 -d1 /path/to/authorized/home | sort -nr | head -40
-du -x -B1 -d1 /path/to/authorized/workspace | sort -nr | head -40
+timeout 20s du -x -B1 -d1 <authorized-home> | sort -nr | head -40
+timeout 20s du -x -B1 -d1 <authorized-workspace> | sort -nr | head -40
 ```
+
+A read-only recursive walk can still create meaningful metadata I/O. Do not crawl every home/tree simply because the command cannot delete files.
 
 Typical categories are `runs`, `models`, `control/worktrees`, retention archives, caches, and temporary files. Treat a directory name as a clue, not deletion authority.
 
@@ -72,7 +80,7 @@ A daemon-wide summary can fail because one historical snapshot/image record is i
 
 A path is not safe to delete merely because nothing has it open **right now**. Before mutation, answer all of these:
 
-1. Is it owned by the user whose cleanup was authorized?
+1. Is project/account ownership proven from evidence rather than inferred from a filename, OpenEvo label, container/image name, top-level directory owner, or old chat?
 2. Is it part of the current or next planned experiment working set?
 3. Do running processes, container mounts, watchers, or orchestration scripts reference it?
 4. Is it unique scientific evidence, a checkpoint, a frozen model dependency, or a rollback point?
@@ -81,6 +89,8 @@ A path is not safe to delete merely because nothing has it open **right now**. B
 7. If it is a Git checkout, is it clean and is the exact HEAD available from an accepted remote?
 
 If any answer is unknown, classify it as **hold / inspect**, not delete.
+
+For directories, top-level inode ownership is **not** recursive ownership proof. Descendant UIDs, mounts, active/open files, symlinks, Git common-dir/worktree topology, and live resume/config references must be handled explicitly.
 
 ## 4. Preferred reclaim order
 

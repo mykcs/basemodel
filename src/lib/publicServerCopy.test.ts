@@ -34,21 +34,25 @@ describe('public server copy', () => {
     }
   });
 
-  it('keeps the public storage snapshot anonymous, dated, and separate from shared Docker attribution', () => {
+  it('separates the current global storage snapshot from the last complete anonymous attribution snapshot', () => {
     for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六', '用户七']) expect(serverOverview).toContain(label);
     for (const value of ['107.8 GiB', '65.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
+    for (const value of ['397.3 GiB', '16.5 GiB', '97%']) expect(serverOverview).toContain(value);
+    expect(serverOverview).toContain('2026-09-04 13:46 (UTC+8)');
     expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
+    expect(serverOverview).toContain('最近一次完整匿名归属拆分');
+    expect(serverOverview).toContain('Most recent complete anonymous attribution');
     expect(serverOverview).toContain('19.0 GiB');
     expect(serverOverview).toContain('147.7 GiB');
-    expect(serverOverview).toContain('共享 Docker');
-    expect(serverOverview).toContain('shared Docker');
+    expect(serverOverview).toContain('不为了刷新网页越过同学的权限边界');
+    expect(serverOverview).toContain('rather than crossing sibling-user boundaries');
     expect(serverOverview).not.toContain('我们的账户');
     expect(serverOverview).not.toContain('我们的主目录');
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-03 实验服务器库存与存储快照');
-    expect(serverRouteEn).toContain('2026-09-03 server inventory and storage snapshot');
+    expect(serverRouteZh).toContain('2026-09-04 实验服务器容量与硬件快照');
+    expect(serverRouteEn).toContain('2026-09-04 server capacity and hardware snapshot');
   });
 
   it('uses transferable role placeholders in the public reproduction runbook', () => {
@@ -78,13 +82,18 @@ describe('public server copy', () => {
     expect(staticServerDiagram).toContain('approved persistent workspace');
   });
 
-  it('ships a copyable prompt for refreshing the storage snapshot without granting cleanup authority', () => {
-    expect(serverOverview).toContain('刷新服务器空间快照');
+  it('ships a copyable end-to-end artifact governance, publication, and reclaim prompt', () => {
+    expect(serverOverview).toContain('整理、上传与清理服务器空间');
     expect(serverOverview).toContain('data-copy-label');
-    expect(serverOverview).toContain('server-storage-pressure-audit-sop.md');
-    expect(serverOverview).toContain('不授权清理服务器文件');
-    expect(serverOverview).toContain('Do not single out any account as “ours.”');
-    expect(serverOverview).toContain('merge to main');
+    expect(serverOverview).toContain('server-artifact-governance-and-reclaim-sop.md');
+    expect(serverOverview).toContain('Run Manifest');
+    expect(serverOverview).toContain('Hugging Face');
+    expect(serverOverview).toContain('GHCR');
+    expect(serverOverview).toContain('名字看起来像我们的”一律不算证据');
+    expect(serverOverview).toContain('zero ownership evidence');
+    expect(serverOverview).toContain('NOT_AUTHORIZED');
+    expect(serverOverview).toContain('exact-head Preview');
+    expect(serverOverview).toContain('未知删除清单不被这条 Prompt 预授权');
   });
 
   it('keeps code blocks content-height-driven instead of equal-height filler panels', () => {
