@@ -36,7 +36,7 @@ restore_installation() {
 }
 
 install -d -m 0755 "$state_dir" "$launch_agents_dir" "$candidate_dir"
-for file in Dockerfile entrypoint.sh job-completed.sh mac-orbstack-start.sh mac-orbstack-stop.sh mac-orbstack-reconcile.sh mac-orbstack-doctor.sh; do
+for file in Dockerfile entrypoint.sh job-completed.sh mac-orbstack-start.sh mac-orbstack-stop.sh mac-orbstack-reconcile.sh mac-orbstack-doctor.sh mac-orbstack-housekeeping.sh; do
   cp "$source_dir/$file" "$candidate_dir/$file"
 done
 chmod 0755 "$candidate_dir"/*.sh
