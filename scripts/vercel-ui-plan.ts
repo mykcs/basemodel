@@ -22,17 +22,24 @@ const HOSTED_GATE_OWNERS = new Set([
   '.github/workflows/self-hosted-ci.yml',
 ]);
 
-const SCOPED_EXPLAINER_ROUTES = new Map<string, string[]>([
-  ['src/components/research/explainer/EnvironmentExplainers.tsx', ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/']],
-  ['src/styles/interactive-research-explainer-environments.css', ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/']],
-  ['src/components/research/explainer/MethodExplainers.tsx', ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/']],
-  ['src/styles/interactive-research-explainer-methods.css', ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/', '/lab/', '/en/lab/']],
-  ['src/components/research/explainer/ServerExplainer.tsx', ['/lab/', '/en/lab/']],
-  ['src/styles/interactive-research-explainer-server.css', ['/lab/', '/en/lab/']],
+interface RouteOwner {
+  routes: string[];
+  specs?: string[];
+}
+
+const ROUTE_OWNERS = new Map<string, RouteOwner>([
+  ['src/components/research/explainer/EnvironmentExplainers.tsx', { routes: ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-environments.css', { routes: ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/explainer/MethodExplainers.tsx', { routes: ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-methods.css', { routes: ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/', '/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/explainer/ServerExplainer.tsx', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-server.css', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/Lyg2171ServerOverview.astro', { routes: ['/research/seed-openevo/flow/server/', '/en/research/seed-openevo/flow/server/'] }],
 ]);
-const SCOPED_EXPLAINER_COMPANIONS = new Set([
+const ROUTE_OWNER_COMPANIONS = new Set([
   'src/lib/interactiveResearchExplainers.test.ts',
   'tests/e2e/research-explainer-layout.spec.ts',
+  'src/lib/publicServerCopy.test.ts',
 ]);
 
 function normalizePath(file: string): string {
@@ -73,26 +80,33 @@ function contentSpecs(files: string[]): string[] {
   return [...specs];
 }
 
-function scopedExplainerPlan(changedFiles: string[], risk: UiRisk): HostedUiPlan | undefined {
+function routeOwnedPlan(changedFiles: string[], risk: UiRisk): HostedUiPlan | undefined {
   const routes = new Set<string>();
+  const specs = new Set<string>();
   let ownedChange = false;
 
   for (const file of changedFiles) {
-    const ownedRoutes = SCOPED_EXPLAINER_ROUTES.get(file);
-    if (ownedRoutes) {
+    const owner = ROUTE_OWNERS.get(file);
+    if (owner) {
       ownedChange = true;
-      for (const route of ownedRoutes) routes.add(route);
+      for (const route of owner.routes) routes.add(route);
+      for (const spec of owner.specs ?? []) specs.add(spec);
       continue;
     }
-    if (SCOPED_EXPLAINER_COMPANIONS.has(file) || file.startsWith('docs/')) continue;
+    const pageRoute = pageFileToRoute(file);
+    if (pageRoute) {
+      routes.add(pageRoute);
+      continue;
+    }
+    if (ROUTE_OWNER_COMPANIONS.has(file) || classifyUiRisk([file]).risk === 'none') continue;
     return undefined;
   }
 
   if (!ownedChange || routes.size === 0 || routes.size > MAX_CHANGED_ROUTE_SMOKE) return undefined;
   return {
     mode: 'focused', risk, changedFiles, routes: [...routes].sort(),
-    specs: ['tests/e2e/research-explainer-layout.spec.ts'],
-    reason: 'Bounded explainer implementation changes use exact owned routes plus the geometry/readability regression owner instead of unrelated browser suites.',
+    specs: [...specs].sort(),
+    reason: 'All UI owners in this diff have an explicit bounded route map; test only those routes plus their registered regression owners.',
   };
 }
 
@@ -113,8 +127,8 @@ export function planHostedUi(files: string[]): HostedUiPlan {
   }
 
   const assessment = classifyUiRisk(changedFiles);
-  const scopedExplainer = scopedExplainerPlan(changedFiles, assessment.risk);
-  if (scopedExplainer) return scopedExplainer;
+  const routeOwned = routeOwnedPlan(changedFiles, assessment.risk);
+  if (routeOwned) return routeOwned;
 
   if (assessment.risk === 'none') {
     return {

@@ -44,6 +44,47 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['src/components/research/explainer/MethodExplainers.tsx', 'src/styles/tokens.css']).mode).toBe('full');
   });
 
+  it('replays PR #430 as bounded server-route coverage instead of a full-site matrix', () => {
+    const plan = planHostedUi([
+      'src/components/research/Lyg2171ServerOverview.astro',
+      'src/lib/publicServerCopy.test.ts',
+    ]);
+
+    expect(plan.mode).toBe('focused');
+    expect(plan.routes).toEqual([
+      '/en/research/seed-openevo/flow/server/',
+      '/research/seed-openevo/flow/server/',
+    ]);
+    expect(plan.specs).toEqual([]);
+  });
+
+  it('replays PR #426 with docs and concrete server pages as bounded route coverage', () => {
+    const plan = planHostedUi([
+      'AGENTS.md',
+      'docs/agents/current/scenario-trigger-registry.md',
+      'docs/agents/current/server-artifact-governance-and-reclaim-sop.md',
+      'docs/agents/current/server-storage-pressure-audit-sop.md',
+      'src/components/research/Lyg2171ServerOverview.astro',
+      'src/lib/publicServerCopy.test.ts',
+      'src/pages/en/research/seed-openevo/flow/server.astro',
+      'src/pages/research/seed-openevo/flow/server.astro',
+    ]);
+
+    expect(plan.mode).toBe('focused');
+    expect(plan.routes).toEqual([
+      '/en/research/seed-openevo/flow/server/',
+      '/research/seed-openevo/flow/server/',
+    ]);
+  });
+
+  it('fails closed when a bounded owner is mixed with an unrelated shared component', () => {
+    const plan = planHostedUi([
+      'src/components/research/Lyg2171ServerOverview.astro',
+      'src/components/research/Example.astro',
+    ]);
+    expect(plan.mode).toBe('full');
+  });
+
   it('fails closed to the complete matrix for shared or global UI changes', () => {
     expect(planHostedUi(['src/components/research/Example.astro']).mode).toBe('full');
     expect(planHostedUi(['src/styles/tokens.css']).mode).toBe('full');
