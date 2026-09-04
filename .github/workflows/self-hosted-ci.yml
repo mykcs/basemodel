@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 45
     env:
       CI: '1'
-      PLAYWRIGHT_WORKERS: '1'
+      PLAYWRIGHT_WORKERS: '2'
     steps:
       - name: Checkout tested merge candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
