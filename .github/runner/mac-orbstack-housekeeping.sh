@@ -85,7 +85,7 @@ prune_old_bundle_backups() {
 runner_busy_state() {
   local repo="$1" label="$2" local_container="$3" state listing running
   if ! state="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" \
-    --jq "[.runners[] | select(([.labels[].name] | index(\"$label\")) != null)] as \\$matching | [\\$matching[] | select(.status == \"online\") | .busy] as \\$online | \\$online | if (\\$matching | length) == 0 then \"unknown\" elif length == 0 then (if (\\$matching | all(.status == \"offline\")) then \"offline\" else \"unknown\" end) elif any then \"busy\" else \"idle\" end" 2>/dev/null)"; then
+    --jq "[.runners[] | select(([.labels[].name] | index(\"$label\")) != null)] as \$matching | [\$matching[] | select(.status == \"online\") | .busy] as \$online | \$online | if (\$matching | length) == 0 then \"unknown\" elif length == 0 then (if (\$matching | all(.status == \"offline\")) then \"offline\" else \"unknown\" end) elif any then \"busy\" else \"idle\" end" 2>/dev/null)"; then
     printf '%s\n' unknown
     return 0
   fi
