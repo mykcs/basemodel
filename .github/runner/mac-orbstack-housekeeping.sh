@@ -28,7 +28,7 @@ run_with_timeout() {
       sleep 2
       kill -KILL "$command_pid" 2>/dev/null || true
     fi
-  ) &
+  ) >/dev/null 2>&1 &
   watchdog_pid=$!
   wait "$command_pid" || status=$?
   kill "$watchdog_pid" 2>/dev/null || true
