@@ -49,6 +49,8 @@ test('Landscape keeps static learning content and hydrates controls when visible
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
   const fullView = page.getByRole('button', { name: '完整视图' });
   await fullView.scrollIntoViewIfNeeded();
+  const island = fullView.locator('xpath=ancestor::astro-island[1]');
+  await expect(island).not.toHaveAttribute('ssr', '');
   await fullView.click();
   await expect(page.locator('.landscape-view-note')).toBeVisible();
 });
