@@ -43,9 +43,8 @@ jobs:
           fc-match sans-serif || true
           fc-match Inter || true
 
-      - name: Reproduce tablet-light canonical figure gate
+      - name: Reproduce canonical figure gate
         run: >-
           npx playwright test tests/e2e/canonical-research-figures.spec.ts
           --project=chromium
-          --grep '^tablet-light keeps canonical research figures readable and overflow-safe$'
           --max-failures=1
