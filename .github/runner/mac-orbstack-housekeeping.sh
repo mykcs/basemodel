@@ -111,8 +111,7 @@ maybe_prune_build_cache() {
     fi
     rm -rf -- "$stale_lock"
   fi
-  printf '%s
-' "$$" > "$lock_dir/pid"
+  printf '%s\n' "$$" > "$lock_dir/pid"
   trap 'rm -f "$shared_state_dir/lock/pid" 2>/dev/null || true; rmdir "$shared_state_dir/lock" 2>/dev/null || true' EXIT
   [[ -f "$shared_state_dir/build-cache-check-epoch" ]] && last_check="$(<"$shared_state_dir/build-cache-check-epoch")"
   [[ "$last_check" =~ ^[0-9]+$ ]] || last_check=0
