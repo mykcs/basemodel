@@ -83,11 +83,13 @@ prune_old_bundle_backups() {
 }
 
 runner_busy_state() {
-  local repo="$1" label="$2" value
-  if ! value="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" --jq ".runners[] | select([.labels[].name] | index(\"$label\")) | .busy" 2>/dev/null)"; then
-    printf '%s\n' unknown; return 0
+  local repo="$1" label="$2" state
+  if ! state="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" \
+    --jq "[.runners[] | select(([.labels[].name] | index(\"$label\")) != null) | select(.status == \"online\") | .busy] | if length == 0 then \"unknown\" elif any then \"busy\" else \"idle\" end" 2>/dev/null)"; then
+    printf '%s\n' unknown
+    return 0
   fi
-  case "$value" in true) printf '%s\n' busy ;; false) printf '%s\n' idle ;; *) printf '%s\n' unknown ;; esac
+  case "$state" in busy|idle|unknown) printf '%s\n' "$state" ;; *) printf '%s\n' unknown ;; esac
 }
 
 maybe_prune_build_cache() {
