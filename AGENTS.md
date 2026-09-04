@@ -41,6 +41,7 @@ Before creating a branch, running compound local/remote shell automation, or mut
 - **Shared storage begins read-only.** A model/checkpoint/run is protected by future planned use as well as current process references. “Not mounted/open right now” is never deletion authority. For snapshot-only work load `server-storage-pressure-audit-sop.md`; for the end-to-end organize → passport → publish/verify → reclaim workflow load `server-artifact-governance-and-reclaim-sop.md` as well.
 - **Incomplete namespace is not a complete inventory.** If the currently authorized view exposes only a subset of expected homes, do not enter sibling-user containers or exercise Docker/admin mount capability merely to complete a public ranking. Refresh global facts, preserve the most recent complete anonymous attribution as separately dated historical evidence, and never turn one visible home into “all users.”
 - **Names are zero ownership evidence on the shared experiment server.** `OpenEvo`, a familiar run/checkpoint/container/image name, a project-looking path, or a top-level UID is not by itself authority to upload, move, or delete an object. Close filesystem + Run/Artifact manifest + Git/runtime/reference evidence first; unresolved ownership is HOLD.
+- **CI/provider changes start from a role-and-workload model, not a provider name.** Separate Git/source hosting, CI control plane, CI compute, deployment, and post-deploy observation; measure real phase wall-clock first; then verify live privacy/account eligibility, billing unit, per-job timeout, concurrency, and quota semantics. Do not move an inefficient full gate unchanged merely because another provider has a free tier, and do not confuse a deployment limit with CI compute allowance.
 
 When account-level shared Agent conventions are available, they supplement this repository. Project facts and project-specific constraints remain canonical here.
 
@@ -91,7 +92,7 @@ main
 
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
-GitHub Actions and GitHub Pages remain intentionally retired. Astro/React remain the application stack; do not rewrite them merely because deployment ownership changed.
+GitHub-hosted Actions compute and GitHub Pages remain intentionally retired for the ordinary Base Model path. GitHub Actions is currently used only as the control plane for the repository-scoped self-hosted CI workflow described in `deployment-policy.md`; do not read the scheduler as proof that GitHub-hosted compute is being consumed. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
 Eligible Preview branches are **opt-in at the exact head**: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the Preview commit message before provider build compute is spent. Omit the token on intermediate pushes. Production on `main` remains automatic and does not require the token.
 
