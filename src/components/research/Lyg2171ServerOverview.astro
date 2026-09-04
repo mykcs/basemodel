@@ -7,13 +7,13 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 
 const userStorage = [
-  { label: t('用户一', 'User 1'), home: '97.1 GiB', docker: '10.7 GiB', total: '107.8 GiB', share: '24.7%' },
-  { label: t('用户二', 'User 2'), home: '59.0 GiB', docker: '6.81 GiB', total: '65.8 GiB', share: '15.1%' },
-  { label: t('用户三', 'User 3'), home: '17.1 GiB', docker: '5.13 GiB', total: '22.2 GiB', share: '5.1%' },
-  { label: t('用户四', 'User 4'), home: '13.6 GiB', docker: '1.69 GiB', total: '15.3 GiB', share: '3.5%' },
-  { label: t('用户五', 'User 5'), home: '4.42 GiB', docker: '3.39 GiB', total: '7.81 GiB', share: '1.8%' },
-  { label: t('用户六', 'User 6'), home: '2.85 GiB', docker: '0.29 GiB', total: '3.14 GiB', share: '0.7%' },
-  { label: t('用户七', 'User 7'), home: '<0.01 GiB', docker: '<0.01 GiB', total: '<0.01 GiB', share: '<0.1%' },
+  { label: t('用户一', 'User 1'), total: '107.8 GiB', share: '24.7%', width: '24.7%', tone: 1 },
+  { label: t('用户二', 'User 2'), total: '65.8 GiB', share: '15.1%', width: '15.1%', tone: 2 },
+  { label: t('用户三', 'User 3'), total: '22.2 GiB', share: '5.1%', width: '5.1%', tone: 3 },
+  { label: t('用户四', 'User 4'), total: '15.3 GiB', share: '3.5%', width: '3.5%', tone: 4 },
+  { label: t('用户五', 'User 5'), total: '7.81 GiB', share: '1.8%', width: '1.8%', tone: 5 },
+  { label: t('用户六', 'User 6'), total: '3.14 GiB', share: '0.7%', width: '0.7%', tone: 6 },
+  { label: t('用户七', 'User 7'), total: '<0.01 GiB', share: '<0.1%', width: '0%', tone: 7, tiny: true },
 ];
 
 const refreshPrompt = t(
@@ -119,7 +119,7 @@ const gpuFacts = [
         <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。2026-09-04 13:46（UTC+8）实测已用约 397.3 GiB，df 报 97% 使用率，普通写入约剩 16.5 GiB。下面先显示今天可安全刷新的一致全盘事实；跨用户容量归属仍保留最近一次完整匿名快照，不为了刷新网页越过同学的权限边界。', 'The main filesystem has about 436.0 GiB total capacity. At 2026-09-04 13:46 (UTC+8), about 397.3 GiB was used, df reported 97%, and about 16.5 GiB remained available to ordinary writes. The first block shows today’s safely refreshable global facts; cross-user attribution remains the most recent complete anonymous snapshot rather than crossing sibling-user boundaries just to refresh the page.')}</p>
+    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。2026-09-04 13:46（UTC+8）实测已用约 397.3 GiB，df 报 97% 使用率，普通写入约剩 16.5 GiB。上面的四个数字是今天的 current snapshot；下面这根总额度条直接嵌入 User 1–7 与共享类别，但为了不伪造实时归属，它明确使用 2026-09-03 01:11（UTC+8）最近一次完整匿名归属快照。', 'The main filesystem has about 436.0 GiB total capacity. At 2026-09-04 13:46 (UTC+8), about 397.3 GiB was used, df reported 97%, and about 16.5 GiB remained available to ordinary writes. The four numbers above are today’s current snapshot. The single allocation bar below directly embeds User 1–7 plus shared categories, while explicitly using the most recent complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8) rather than pretending stale attribution is live.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
@@ -128,38 +128,38 @@ const gpuFacts = [
         <div><span>{t('可用', 'Available')}</span><strong>16.5 GiB</strong></div>
         <div><span>df Use%</span><strong>97%</strong></div>
       </div>
-      <div class="storage-bar" role="img" aria-label={t('2026-09-04 13:46（UTC+8）主文件系统：总容量 436.0 GiB；已用 397.3 GiB；普通可用 16.5 GiB；文件系统保留与舍入约 22.2 GiB。', '2026-09-04 13:46 (UTC+8) main filesystem: 436.0 GiB total; 397.3 GiB used; 16.5 GiB available to ordinary writes; about 22.2 GiB filesystem reserve/rounding.')}>
-        <span class="storage-bar__used" style="width:91.1%"></span>
-        <span class="storage-bar__free" style="width:3.8%"></span>
-        <span class="storage-bar__reserved" style="width:5.1%"></span>
+
+      <div class="snapshot-subhead">
+        <div><strong>{t('空间归属总览', 'Storage attribution overview')}</strong><span>2026-09-03 01:11 (UTC+8)</span></div>
+        <p>{t('User 1–7 的编号只属于这次完整快照。今天没有为了更新排行去进入同学容器或借助 Docker 管理能力挂载同学 home；因此 current 容量数字与这根归属条使用不同、且都明确标注的时间戳。', 'User 1–7 labels belong only to this complete snapshot. Today’s refresh did not enter sibling-user containers or use Docker-admin capability to mount sibling homes just to recompute a ranking, so the current capacity cards and this attribution bar intentionally carry different, explicit timestamps.')}</p>
       </div>
-      <div class="storage-legend">
-        <div><i class="legend-swatch legend-swatch--used"></i><span>{t('当前已用', 'Current used')}</span><strong>397.3 GiB · 91.1%</strong></div>
-        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('普通可用', 'Available')}</span><strong>16.5 GiB · 3.8%</strong></div>
+      <div class="storage-bar storage-bar--attribution" role="img" aria-label={t('2026-09-03 01:11（UTC+8）完整匿名空间归属：用户一 107.8 GiB；用户二 65.8 GiB；用户三 22.2 GiB；用户四 15.3 GiB；用户五 7.81 GiB；用户六 3.14 GiB；用户七小于 0.01 GiB；未归属 Docker 19.0 GiB；共享/系统 147.7 GiB；当时可用 25.1 GiB；文件系统保留/舍入 22.2 GiB。', 'Complete anonymous storage attribution at 2026-09-03 01:11 (UTC+8): User 1 107.8 GiB; User 2 65.8 GiB; User 3 22.2 GiB; User 4 15.3 GiB; User 5 7.81 GiB; User 6 3.14 GiB; User 7 under 0.01 GiB; unattributed Docker 19.0 GiB; shared/system 147.7 GiB; 25.1 GiB available then; 22.2 GiB filesystem reserve/rounding.')}>
+        {userStorage.map((item) => (
+          <span
+            class:list={['storage-bar__account', `storage-bar__account--${item.tone}`, item.tiny && 'storage-bar__account--tiny']}
+            style={`width:${item.width}`}
+            title={`${item.label} · ${item.total} · ${item.share}`}
+          ><b>{item.label}</b></span>
+        ))}
+        <span class="storage-bar__docker" style="width:4.4%" title={t('未归属 Docker · 19.0 GiB · 4.4%', 'Unattributed Docker · 19.0 GiB · 4.4%')}></span>
+        <span class="storage-bar__shared" style="width:33.9%" title={t('共享 / 系统 · 147.7 GiB · 33.9%', 'Shared / system · 147.7 GiB · 33.9%')}></span>
+        <span class="storage-bar__free" style="width:5.7%" title={t('当时可用 · 25.1 GiB · 5.7%', 'Available then · 25.1 GiB · 5.7%')}></span>
+        <span class="storage-bar__reserved" style="width:5.1%" title={t('文件系统保留 / 舍入 · 22.2 GiB · 5.1%', 'Filesystem reserve / rounding · 22.2 GiB · 5.1%')}></span>
+      </div>
+      <div class="storage-legend storage-legend--accounts">
+        {userStorage.map((item) => (
+          <div>
+            <i class={`legend-swatch legend-swatch--account legend-swatch--account-${item.tone}`}></i>
+            <span>{item.label}</span>
+            <strong>{item.total} · {item.share}</strong>
+          </div>
+        ))}
+        <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker', 'Unattributed Docker')}</span><strong>19.0 GiB · 4.4%</strong></div>
+        <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统', 'Shared / system')}</span><strong>147.7 GiB · 33.9%</strong></div>
+        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('当时可用', 'Available then')}</span><strong>25.1 GiB · 5.7%</strong></div>
         <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
       </div>
-      <p class="fine-print">{t('这里的 91.1% 是 used / total 的物理拆分比例；df 的 97% 使用率使用的是普通用户可用空间语义，因此两者不需要相等。所有 current 数字来自 2026-09-04 13:46（UTC+8）的 live df。', 'The 91.1% segment is the physical used/total share; df’s 97% follows ordinary-user available-space semantics, so the two percentages need not match. All current figures here come from the live 2026-09-04 13:46 (UTC+8) df snapshot.')}</p>
-
-      <div class="attribution-history">
-        <div class="snapshot-subhead">
-          <div><strong>{t('最近一次完整匿名归属拆分', 'Most recent complete anonymous attribution')}</strong><span>2026-09-03 01:11 (UTC+8)</span></div>
-          <p>{t('今天没有为了重算排行榜去进入同学容器或借助 Docker 管理能力挂载同学 home。所以下面的归属拆分明确保留为昨天的完整快照，而不是拿部分数据伪装成今天的排行。', 'Today’s refresh did not enter sibling-user containers or use Docker-admin capability to mount sibling homes merely to recompute the ranking. The attribution split below therefore remains explicitly the last complete snapshot instead of presenting partial data as a fresh ranking.')}</p>
-        </div>
-        <div class="storage-bar" role="img" aria-label={t('2026-09-03 01:11（UTC+8）完整匿名归属快照：可按账户归属 222.0 GiB；未归属 Docker 写入层 19.0 GiB；共享/系统占用 147.7 GiB；当时可用 25.1 GiB；文件系统保留/舍入 22.2 GiB。', 'Complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8): 222.0 GiB account-attributed; 19.0 GiB unattributed Docker writable layers; 147.7 GiB shared/system usage; 25.1 GiB then available; 22.2 GiB filesystem reserve/rounding.')}>
-          <span class="storage-bar__users" style="width:50.9%"></span>
-          <span class="storage-bar__docker" style="width:4.4%"></span>
-          <span class="storage-bar__shared" style="width:33.9%"></span>
-          <span class="storage-bar__free" style="width:5.7%"></span>
-          <span class="storage-bar__reserved" style="width:5.1%"></span>
-        </div>
-        <div class="storage-legend">
-          <div><i class="legend-swatch legend-swatch--users"></i><span>{t('可按账户归属', 'Account-attributed')}</span><strong>222.0 GiB · 50.9%</strong></div>
-          <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker 写入层', 'Unattributed Docker writable layers')}</span><strong>19.0 GiB · 4.4%</strong></div>
-          <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统占用', 'Shared / system usage')}</span><strong>147.7 GiB · 33.9%</strong></div>
-          <div><i class="legend-swatch legend-swatch--free"></i><span>{t('当时可用', 'Available then')}</span><strong>25.1 GiB · 5.7%</strong></div>
-          <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
-        </div>
-      </div>
+      <p class="fine-print">{t('User 1–7 按这次快照的可归属总量从大到小临时编号，不保存真实账户映射。上面的 2026-09-04 current df 数字仍是最新全盘事实；这根 2026-09-03 归属条只回答“最近一次完整看清时，空间分别归到哪里”。', 'User 1–7 are temporary labels ranked by attributable total in this snapshot, with no real-account mapping stored. The 2026-09-04 current df cards above remain the latest global truth; this 2026-09-03 attribution bar answers only where space belonged the last time the complete attribution view was safely available.')}</p>
       <div class="why-df">
         <strong>{t('归属不能靠名字猜', 'Ownership cannot be guessed from names')}</strong>
         <p>{t('这台服务器上多人同时做 OpenEvo。文件名、run 名、容器名、Docker tag 或“看起来像某个实验”的路径都只是线索，不是 ownership 证据。清理前必须把 filesystem / run manifest / Git / container reference / artifact digest 等证据闭合；归属不清就 HOLD。', 'Multiple people run OpenEvo on this server. File names, run names, container names, Docker tags, or paths that look like a particular experiment are clues, not ownership evidence. Before cleanup, filesystem, run-manifest, Git, container-reference, artifact-digest, and related provenance must close the loop; unresolved ownership is HOLD.')}</p>
@@ -170,42 +170,6 @@ const gpuFacts = [
   <section class="server-section">
     <div class="section-heading">
       <span>02</span>
-      <div>
-        <small>{t('账户占用', 'Account usage')}</small>
-        <h2>{t('各用户磁盘占用', 'Disk usage by account')}</h2>
-      </div>
-    </div>
-    <p class="section-lede">{t('下面保留的是 2026-09-03 01:11（UTC+8）最近一次完整匿名归属快照：每个账户的“可归属合计” = 主目录 + 能通过当时完整证据可靠归属的 Docker 写入层。今天没有跨越同学权限边界重算，因此不要把这张表理解成 2026-09-04 的实时排行。', 'The table below is the most recent complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8). Each attributable total combines the home directory with Docker writable layers that were reliably attributable under that complete evidence set. Today’s refresh did not cross sibling-user authority boundaries to recompute it, so this is not a live 2026-09-04 ranking.')}</p>
-    <div class="storage-table-wrap" role="region" aria-label={t('匿名账户磁盘占用表', 'Anonymized account disk-usage table')} tabindex="0">
-      <table class="storage-table">
-        <thead>
-          <tr>
-            <th scope="col">{t('账户', 'Account')}</th>
-            <th scope="col">{t('主目录', 'Home directory')}</th>
-            <th scope="col">{t('Docker 写入层', 'Docker writable layers')}</th>
-            <th scope="col">{t('可归属合计', 'Attributable total')}</th>
-            <th scope="col">{t('全盘占比', 'Share of filesystem')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userStorage.map((item) => (
-            <tr>
-              <th scope="row">{item.label}</th>
-              <td>{item.home}</td>
-              <td>{item.docker}</td>
-              <td><strong>{item.total}</strong></td>
-              <td>{item.share}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <p class="fine-print">{t('用户一到七是 2026-09-03 01:11（UTC+8）快照中按“可归属合计”从大到小重新生成的临时匿名标签，不是公开身份，也不会跨快照保持同一个编号。网页不保存真实账户与匿名编号之间的对应关系。', 'Users 1–7 are temporary anonymous labels regenerated from attributable-total ranking in the complete 2026-09-03 01:11 (UTC+8) attribution snapshot. They are not public identities and the numbering does not persist across snapshots. The page does not store the mapping between real accounts and anonymous labels.')}</p>
-  </section>
-
-  <section class="server-section">
-    <div class="section-heading">
-      <span>03</span>
       <div>
         <small>GPU</small>
         <h2>{t('GPU 规格', 'GPU specifications')}</h2>
@@ -223,7 +187,7 @@ const gpuFacts = [
 
   <section class="server-section">
     <div class="section-heading">
-      <span>04</span>
+      <span>03</span>
       <div>
         <small>{t('快捷操作', 'Quick action')}</small>
         <h2>{t('整理、上传与清理服务器空间', 'Govern, publish, and reclaim server artifacts')}</h2>
@@ -243,7 +207,7 @@ const gpuFacts = [
 
   <section class="server-section server-section--privacy">
     <div class="section-heading">
-      <span>05</span>
+      <span>04</span>
       <div>
         <small>{t('隐私边界', 'Privacy boundary')}</small>
         <h2>{t('资源归属与隐私', 'Usage attribution and privacy')}</h2>
@@ -300,25 +264,34 @@ const gpuFacts = [
   .storage-status__numbers strong{margin-top:.2rem;font-size:1.35rem;letter-spacing:-.035em}
   .storage-bar{display:flex;height:30px;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--ink) 3%,transparent)}
   .storage-bar span{display:block;height:100%}
-  .storage-bar__used{background:var(--accent-deep)}
-  .storage-bar__users{background:var(--accent-deep)}
   .storage-bar__docker{background:color-mix(in srgb,var(--accent-deep) 52%,var(--surface))}
   .storage-bar__shared{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
   .storage-bar__free{background:color-mix(in srgb,var(--accent) 18%,var(--surface))}
   .storage-bar__reserved{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink) 15%,var(--surface)) 0 4px,transparent 4px 8px)}
+  .storage-bar--attribution{height:38px;margin-top:.15rem}
+  .storage-bar .storage-bar__account{display:flex;align-items:center;justify-content:center;min-width:0;border-right:1px solid color-mix(in srgb,var(--surface) 38%,transparent)}
+  .storage-bar__account b{overflow:hidden;padding:0 .18rem;color:var(--on-accent);font:800 .56rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.02em;white-space:nowrap;text-overflow:clip}
+  .storage-bar__account--1,.legend-swatch--account-1{background:var(--accent-deep)}
+  .storage-bar__account--2,.legend-swatch--account-2{background:color-mix(in srgb,var(--accent-deep) 82%,var(--ink))}
+  .storage-bar__account--3,.legend-swatch--account-3{background:color-mix(in srgb,var(--accent-deep) 68%,var(--surface))}
+  .storage-bar__account--4,.legend-swatch--account-4{background:color-mix(in srgb,var(--accent-deep) 54%,var(--surface))}
+  .storage-bar__account--5,.legend-swatch--account-5{background:color-mix(in srgb,var(--accent-deep) 42%,var(--surface))}
+  .storage-bar__account--6,.legend-swatch--account-6{background:color-mix(in srgb,var(--accent-deep) 30%,var(--surface))}
+  .storage-bar__account--3 b{color:var(--ink)}
+  .storage-bar__account--4 b,.storage-bar__account--5 b,.storage-bar__account--6 b{display:none}
+  .storage-bar__account--7{border-right:0;border-left:1px solid var(--accent-deep)}
+  .legend-swatch--account-7{border:1px solid var(--accent-deep);background:transparent}
+  .storage-bar__account--tiny b{display:none}
   .storage-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.75rem}
   .storage-legend>div{display:grid;grid-template-columns:auto 1fr;gap:.08rem .45rem;align-items:center;padding:.62rem .7rem;border:1px solid var(--line);border-radius:10px}
   .storage-legend span{color:var(--muted);font-size:.68rem}
   .storage-legend strong{grid-column:2;font-size:.82rem}
   .legend-swatch{grid-row:1/3;width:9px;height:9px;border-radius:50%}
-  .legend-swatch--used{background:var(--accent-deep)}
-  .legend-swatch--users{background:var(--accent-deep)}
   .legend-swatch--docker{background:color-mix(in srgb,var(--accent-deep) 52%,var(--surface))}
   .legend-swatch--shared{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
   .legend-swatch--free{background:color-mix(in srgb,var(--accent) 38%,var(--surface))}
   .legend-swatch--reserved{border:1px solid var(--muted);background:transparent}
   .fine-print{margin:.85rem 0 0;color:var(--muted);font-size:.68rem;line-height:1.6}
-  .attribution-history{margin-top:1.15rem;padding-top:1.05rem;border-top:1px dashed var(--line)}
   .snapshot-subhead{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.8rem;align-items:start;margin-bottom:.8rem}
   .snapshot-subhead strong,.snapshot-subhead span{display:block}
   .snapshot-subhead strong{font-size:.82rem}.snapshot-subhead span{margin-top:.16rem;color:var(--muted);font:700 .66rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
@@ -326,16 +299,6 @@ const gpuFacts = [
   .why-df{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--accent) 6%,transparent)}
   .why-df strong{font-size:.8rem}
   .why-df p{margin:.25rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}
-
-  .storage-table-wrap{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-  .storage-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}
-  .storage-table{width:100%;min-width:720px;border-collapse:collapse;font-size:.78rem;font-variant-numeric:tabular-nums}
-  .storage-table th,.storage-table td{padding:.72rem .8rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
-  .storage-table th:first-child,.storage-table td:first-child{text-align:left}
-  .storage-table thead th{color:var(--muted);font-size:.68rem;font-weight:760;background:color-mix(in srgb,var(--ink) 3%,transparent)}
-  .storage-table tbody tr:last-child>*{border-bottom:0}
-  .storage-table tbody th{font-weight:760}
-  .storage-table__ours>*{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
 
   .gpu-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:1.1rem 0 0}
   .gpu-facts>div{padding:.95rem 1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
