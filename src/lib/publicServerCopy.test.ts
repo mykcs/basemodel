@@ -34,22 +34,27 @@ describe('public server copy', () => {
     }
   });
 
-  it('separates the current global storage snapshot from the last complete anonymous attribution snapshot', () => {
-    for (const label of ['用户一', '用户二', '用户三', '用户四', '用户五', '用户六', '用户七']) expect(serverOverview).toContain(label);
-    for (const value of ['107.8 GiB', '65.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
+  it('keeps current capacity separate from the compact owner-first attribution bar', () => {
+    for (const label of ['我', '用户一', '用户二', '用户三', '用户四', '用户五', '用户六']) expect(serverOverview).toContain(label);
+    for (const value of ['65.8 GiB', '15.1%', '107.8 GiB', '22.2 GiB', '15.3 GiB', '7.81 GiB', '3.14 GiB']) expect(serverOverview).toContain(value);
     for (const value of ['397.3 GiB', '16.5 GiB', '97%']) expect(serverOverview).toContain(value);
     expect(serverOverview).toContain('2026-09-04 13:46 (UTC+8)');
     expect(serverOverview).toContain('2026-09-03 01:11 (UTC+8)');
-    expect(serverOverview).toContain('空间归属总览');
-    expect(serverOverview).toContain('Storage attribution overview');
-    expect(serverOverview).toContain('storage-bar__account');
+    expect(serverOverview).toContain('data-storage-responsibility-view="owner-relative-historical-v2"');
+    expect(serverOverview).toContain('storage-attribution-owner');
+    expect(serverOverview).toContain("tone: 'mine'");
+    expect(serverOverview.indexOf("label: t('我', 'Me')")).toBeLessThan(serverOverview.indexOf("label: t('用户一', 'User 1')"));
+    expect(serverOverview).not.toContain('storage-legend');
+    expect(serverOverview).not.toContain('legend-swatch');
+    expect(serverOverview).not.toContain('用户七');
+    expect(serverOverview).not.toContain('User 7');
     expect(serverOverview).not.toContain('各用户磁盘占用');
     expect(serverOverview).not.toContain('Disk usage by account');
     expect(serverOverview).not.toContain('storage-table');
     expect(serverOverview).toContain('19.0 GiB');
     expect(serverOverview).toContain('147.7 GiB');
-    expect(serverOverview).toContain('今天没有为了更新排行去进入同学容器');
-    expect(serverOverview).toContain('did not enter sibling-user containers');
+    expect(serverOverview).toContain('其余用户按可归属容量从大到小');
+    expect(serverOverview).toContain('remaining users are sorted by attributable usage');
     expect(serverOverview).not.toContain('我们的账户');
     expect(serverOverview).not.toContain('我们的主目录');
     expect(serverOverview).not.toContain('Our home directory');
