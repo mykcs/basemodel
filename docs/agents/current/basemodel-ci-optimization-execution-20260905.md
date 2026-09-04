@@ -219,36 +219,45 @@ Observed Section 11 receipt:
 - candidate diff contains no website/science content path changes.
 ## 12. PR readiness and merge gate
 
-- [ ] Update #433 body with final benchmark receipts and exact candidate SHA.
-- [ ] Confirm #433 base matches current `main` immediately before Ready.
-- [ ] Confirm no unresolved review thread.
-- [ ] Mark #433 Ready only after Sections 8–11 PASS.
-- [ ] Do not merge if the exact head changes after validation.
-- [ ] If the repository's existing self-hosted required/expected check cannot run because the Mac runner is unavailable, do not fake a PASS; keep the PR open and record the infrastructure blocker.
-- [ ] Merge with expected-head SHA only after the acceptance boundary is satisfied.
+- [x] Update #433 body with final benchmark receipts and exact candidate SHA.
+- [x] Confirm #433 base matches current `main` immediately before Ready.
+- [x] Confirm no unresolved review thread.
+- [x] Mark #433 Ready only after Sections 8–11 PASS.
+- [x] Do not merge if the exact head changes after validation.
+- [x] If the repository's existing self-hosted required/expected check cannot run because the Mac runner is unavailable, do not fake a PASS; keep the PR open and record the infrastructure blocker.
+- [x] Merge with expected-head SHA only after the acceptance boundary is satisfied.
 
 ## 13. Post-merge receipt
 
 After merge:
-- [ ] Record merge commit / new `main` SHA.
-- [ ] Verify the optimization files on exact `main`.
-- [ ] Verify no temporary benchmark workflow exists on `main`.
-- [ ] Verify Draft suppression remains encoded.
-- [ ] Verify route-owned server replay remains focused from `main`.
+- [x] Record merge commit / new `main` SHA.
+- [x] Verify the optimization files on exact `main`.
+- [x] Verify no temporary benchmark workflow exists on `main`.
+- [x] Verify Draft suppression remains encoded.
+- [x] Verify route-owned server replay remains focused from `main`.
 - [ ] Record any automatic post-merge CI run and its result; do not cancel a scientifically meaningful or release-critical check merely to improve timing numbers.
 - [ ] Update this file `Status` to **COMPLETE** and append the closeout table below.
+
+Observed Section 12/13 receipts so far:
+- #433 final validated head: `1ebbcab675308c95783e5d4dde6f10c7d0c7a06c`; canonical required run `33901504296` PASS.
+- #433 was merged with expected-head protection; squash/main commit: `9ba65cf02d588d9027a7de6716d08c2075ec9714`.
+- exact `main` planner blob `df0be33c28ee9f0769b1829d5c3d0be1ae1677dd` and workflow blob `1d41d4d6bbe6dac8e43be598e48e91f2c6506fb2` match the validated candidate content.
+- exact `main` contains only `.github/workflows/self-hosted-ci.yml`; the temporary benchmark workflow is absent.
+- Draft suppression remains encoded and `ready_for_review` remains a trigger.
+- exact-main-equivalent planner replay: server owner + safe companion → `focused` on exactly zh/en server routes; unknown shared/global examples → `full`.
+- automatic post-merge main CI: run `33924493381` (result pending at this checkpoint).
 
 ## 14. Closeout table
 
 | Item | Required final evidence | Result |
 |---|---|---|
-| Baseline | historical run timings | PENDING CLOSEOUT |
-| Route ownership | replay + negative fail-closed tests | PENDING CLOSEOUT |
-| Draft suppression | real Draft run skipped | PENDING CLOSEOUT |
-| Focused browser | 8/8 + 66 s cold benchmark | PENDING CLOSEOUT |
-| Full granularity | 4-way header sweep, exact route union | PENDING |
-| Full cloud sharding | 2 shards × 1 worker, no retries | PENDING |
-| Final candidate tests | targeted architecture suite + diff check | PENDING |
-| Main integration | exact merge SHA + post-merge verification | PENDING |
+| Baseline | historical run timings | PASS — median total 25.1 min; browser 19.8 min; pre-browser 4.6 min |
+| Route ownership | replay + negative fail-closed tests | PASS — server owner → focused two routes; unknown/global → full |
+| Draft suppression | real Draft run skipped | PASS — Draft #433 heavy job SKIPPED |
+| Focused browser | 8/8 + 66 s cold benchmark | PASS — 8/8; 66 s cold benchmark |
+| Full granularity | 4-way header sweep, exact route union | PASS — 4 deterministic tests; no omitted/duplicate routes |
+| Full cloud sharding | 2 shards × 1 worker, no retries | PASS — 78 + 78 = 156; 5m51s wall clock; retries=0 |
+| Final candidate tests | targeted architecture suite + diff check | PASS — 38/38 + diff check + exact-head canonical CI |
+| Main integration | exact merge SHA + post-merge verification | WAITING — post-merge run `33924493381` in progress |
 
 Final rule: **performance is never allowed to redefine correctness.** Optimization changes scheduling and test selection only when ownership is explicitly provable; uncertainty remains full/fail-closed.
