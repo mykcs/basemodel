@@ -169,23 +169,34 @@ Observed Section 9 receipt:
 Purpose: prove the restructured full suite is ready for a future cloud runner without changing the canonical provider in this PR.
 
 Temporary benchmark design:
-- [ ] Create a branch-only temporary workflow; never add it to `main`.
-- [ ] Use two independent Ubuntu jobs in parallel.
-- [ ] Each job uses exactly 1 Playwright worker.
-- [ ] Run shard `1/2` and `2/2` over the same canonical Chromium UI spec list.
-- [ ] Use exact Playwright `1.62.1` browser/runtime compatibility.
-- [ ] Run the static build before browser execution or pass an exact build artifact; never test stale output.
-- [ ] Record per-shard wall clock, total hosted runner minutes, test counts, failures, retries (must be 0), and setup overhead.
-- [ ] Delete the temporary workflow after the receipt is captured.
+- [x] Create a branch-only temporary workflow; it was never added to `main`.
+- [x] Use two independent GitHub-hosted Ubuntu jobs in parallel, each executing inside the canonical Debian 12 runtime container.
+- [x] Each job uses exactly 1 Playwright worker.
+- [x] Run shard `1/2` and `2/2` over the same canonical Chromium UI spec list.
+- [x] Use exact Playwright `1.62.1` browser/runtime compatibility and canonical Debian 12 base.
+- [x] Run a fresh 474-page static build independently in each shard before browser execution.
+- [x] Record per-shard wall clock, total hosted runner minutes, test counts, failures, retries (0), and setup overhead.
+- [x] Delete the temporary workflow after the receipt is captured.
 
 Acceptance:
-- [ ] both shards PASS;
-- [ ] no retries convert failure to PASS;
-- [ ] union of sharded tests equals the unsharded discovered test set;
-- [ ] full-browser wall clock is materially below the historical ~19.8 min median (target ≤12 min; ≤14 min acceptable with documented setup overhead);
-- [ ] total temporary benchmark spend is recorded.
+- [x] both shards PASS;
+- [x] no retries convert failure to PASS (`retries=0`);
+- [x] union of sharded tests equals the unsharded discovered test set: **156 = 78 + 78**, unique=156, duplicates=0;
+- [x] full-browser wall clock = **5m51s**, materially below historical ~19.8 min and the ≤12 min target;
+- [x] total temporary benchmark spend is recorded: successful full benchmark **10.7 runner-min**; all focused/full/diagnostic measurement runs combined **21.55 runner-min**.
 
 If sharding fails, do not weaken assertions; fix test granularity or reject sharding.
+
+Observed Section 10 receipt (successful run `33900586206`):
+- exact candidate benchmark head: `b1ef43d92014ee1a6de744bfe485f4a5c31d8993`;
+- shard 1 job `101113462772`: 78/78 PASS; UI 3m18s; Lab 12/12 PASS in 29s; total job 4m51s;
+- shard 2 job `101113462996`: 78/78 PASS; UI 4m52s; total job 5m51s;
+- both jobs launched at the same time, therefore blocking browser wall clock = **5m51s**;
+- successful full benchmark runner consumption = **10.7 min**;
+- all one-off optimization measurement runs combined = **21.55 hosted runner-min**;
+- no retry, no Vercel build, and the Draft self-hosted job remained skipped.
+
+A first native-Ubuntu benchmark exposed a rendering-environment mismatch in the canonical figure gate. Re-running the unchanged figure/test in the canonical Debian 12 + Playwright 1.62.1 runtime passed; the successful sharded benchmark therefore pins that runtime rather than weakening any geometry assertion.
 
 ## 11. Repository contract validation
 
