@@ -1,9 +1,13 @@
 # Basemodel CI Optimization — executable implementation checklist
 
-Status: **IN PROGRESS**  
-Owner: repository CI architecture  
-Execution branch: `ci/route-owned-browser-planner-20260905`  
-Primary PR: `#433`  
+Status: **IN PROGRESS**
+
+Owner: repository CI architecture
+
+Execution branch: `ci/route-owned-browser-planner-20260905`
+
+Primary PR: `#433`
+
 Scope start: 2026-09-05 (UTC+8)
 
 ## 0. Completion definition
@@ -128,12 +132,12 @@ Current authority observed at checklist creation:
 - main ruleset `main-pr-gate` requires PR-based integration and has no bypass actor.
 
 Required steps:
-- [ ] Fetch latest `main` into the dedicated worktree.
-- [ ] Merge latest `main` into the #433 branch without force-push.
-- [ ] Resolve only genuine textual conflicts; do not overwrite newer server/research content.
-- [ ] Re-run targeted planner/architecture tests after sync.
-- [ ] Replay PR #426/#430 fixtures after sync.
-- [ ] Record the new exact #433 head.
+- [x] Fetch latest `main` into the dedicated worktree.
+- [x] Merge latest `main` into the #433 branch without force-push.
+- [x] Resolve only genuine textual conflicts; do not overwrite newer server/research content. (Merge was conflict-free.)
+- [x] Re-run targeted planner/architecture tests after sync: **17/17 PASS**.
+- [x] Replay PR #426/#430 fixtures after sync: both remain `focused` on the two server routes.
+- [x] Record the post-sync merge receipt: `f690d3eb3376c33c415c2ea1539d21f1e10be314` (before this checklist-update commit).
 
 PASS standard: #433 contains current `main` plus CI-only changes, with no unrelated source drift.
 
