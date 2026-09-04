@@ -121,6 +121,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerHousekeeping).toContain('CI_HOST_BUILD_CACHE_MAX_USED_SPACE:-6GB');
     expect(runnerHousekeeping).toContain('basemodel-ci');
     expect(runnerHousekeeping).toContain('openevo-mac-ci');
+    expect(runnerHousekeeping).toContain('select(.status ==');
+    expect(runnerHousekeeping).toContain('elif any then');
     expect(runnerHousekeeping).not.toContain('docker system prune');
   });
 
