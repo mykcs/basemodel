@@ -12,6 +12,7 @@ describe('Vercel production deployment architecture', () => {
   const runnerDockerfile = readText('../../.github/runner/Dockerfile');
   const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
   const runnerReconcile = readText('../../.github/runner/mac-orbstack-reconcile.sh');
+  const runnerHousekeeping = readText('../../.github/runner/mac-orbstack-housekeeping.sh');
   const runnerInstall = readText('../../.github/runner/mac-orbstack-install-launch-agent.sh');
   const astroConfig = readText('../../astro.config.mjs');
   const appLayout = readText('../../src/layouts/AppLayout.astro');
@@ -43,7 +44,7 @@ describe('Vercel production deployment architecture', () => {
     expect(ciPlan).toContain('code, CI, config, test, asset, data, or mixed PR diff requires full validation');
     expect(ciDocsContract).toContain("git(['diff', '--check'");
     expect(ciDocsContract).toContain("git(['diff', '--name-only'");
-    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '2'");
     expect(selfHostedWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
     expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
@@ -110,6 +111,17 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerReconcile).toContain('disk_warning_interval=21600');
     expect(runnerReconcile).not.toContain('docker system prune');
     expect(runnerReconcile).not.toContain('pmset -a');
+    expect(runnerReconcile).toContain('mac-orbstack-housekeeping.sh');
+    expect(runnerInstall).toContain('mac-orbstack-housekeeping.sh');
+    expect(runnerHousekeeping).toContain('container_backup_prefix="${container}-backup-"');
+    expect(runnerHousekeeping).toContain('bundle_backup_prefix="libexec.backup-"');
+    expect(runnerHousekeeping).toContain('docker container rm -- "$name"');
+    expect(runnerHousekeeping).toContain('docker builder prune --force --max-used-space');
+    expect(runnerHousekeeping).toContain('run_with_timeout');
+    expect(runnerHousekeeping).toContain('CI_HOST_BUILD_CACHE_MAX_USED_SPACE:-6GB');
+    expect(runnerHousekeeping).toContain('basemodel-macbook-container-v2');
+    expect(runnerHousekeeping).toContain('openevo-macbook-container-v2');
+    expect(runnerHousekeeping).not.toContain('docker system prune');
   });
 
   it('pins every GitHub-authored action to an immutable commit', () => {
