@@ -34,6 +34,21 @@ The replay inputs are encoded in `src/lib/vercelHostedUiGate.test.ts`, so future
 
 Heavy self-hosted CI does not run for Draft pull requests. `ready_for_review` remains an explicit trigger, so the merge-ready exact head still receives the existing blocking acceptance.
 
-## Next measurement
+## Focused browser benchmark
 
-When the existing basemodel runner is idle, benchmark the exact focused server route gate (2 routes × mobile/desktop × light/dark) on the same runner. Record wall time here before changing the required CI provider or retiring the Mac runner.
+A temporary GitHub-hosted Ubuntu 24.04 benchmark was run on Draft PR #433 so it did not compete with the busy Mac runner. The temporary workflow is not part of the proposed final architecture.
+
+Successful run `33897594449` / job `101103791595`:
+
+- cold hosted job wall time: **66 s**
+- `npm ci`: **13 s**
+- 474-page production build: **10 s**
+- cold Chromium + Linux browser dependency install: **25 s**
+- focused server browser gate: **9 s**
+- focused matrix: 2 exact server routes × mobile/desktop × light/dark = **8/8 PASS**
+
+The first benchmark run (`33897274555`) exposed an ambiguity in the generic changed-route smoke: the server page legitimately contains the canonical layout `#main-content` plus an internal server-overview `<main>`, so `locator('main')` violated Playwright strict mode. The harness was corrected to target the existing canonical `#main-content`, already used by the site skip link, page outline, header regression tests, and other e2e tests. No website content or CSS changed.
+
+This **does not mean the complete blocking CI is 66 seconds**: the benchmark intentionally isolated build + focused browser work and did not duplicate the full deterministic `verify:deploy` suite. Using the observed median pre-browser baseline (~4.6 min), a route-owned server change should target roughly **5–7 min blocking wall time** instead of the historical ~23–26 min full jobs. That projection must be confirmed on a normal merge-ready change after adoption.
+
+The two one-off hosted benchmark attempts consumed only about **2.2 GitHub-hosted runner minutes total** and are not retained as recurring workflows.
