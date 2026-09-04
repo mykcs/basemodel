@@ -36,8 +36,9 @@ if (routes.length === 0) {
         });
 
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
-        await expect(page.locator('main')).toBeVisible();
-        await expect(page.locator('main h1').first()).toBeVisible();
+        const main = page.locator('#main-content');
+        await expect(main).toBeVisible();
+        await expect(main.locator('h1').first()).toBeVisible();
 
         const description = await page.locator('meta[name="description"]').getAttribute('content');
         expect(description?.trim().length ?? 0, `${route} should keep a non-empty description`).toBeGreaterThan(0);

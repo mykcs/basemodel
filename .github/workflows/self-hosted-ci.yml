@@ -19,7 +19,9 @@ jobs:
     name: basemodel-self-hosted
     if: >-
       github.event_name != 'pull_request' ||
-      (github.event.pull_request.head.repo.full_name == github.repository && github.actor == 'mykcs')
+      (github.event.pull_request.draft == false &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       github.actor == 'mykcs')
     runs-on: [self-hosted, basemodel-ci]
     timeout-minutes: 45
     env:
