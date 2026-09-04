@@ -149,14 +149,21 @@ File:
 - `tests/e2e/global-header-visibility.spec.ts`
 
 Required implementation:
-- [ ] Split the long all-public-routes header sweep into 4 deterministic test cases.
-- [ ] Partition by stable route index modulo 4.
-- [ ] Preserve every route, every viewport/theme state, and every existing assertion.
-- [ ] Assert every shard is non-empty.
-- [ ] Add/retain a regression contract proving the four-shard structure exists.
-- [ ] Keep canonical Mac `PLAYWRIGHT_WORKERS='1'` unless a Mac-specific benchmark proves 2 workers reliable.
+- [x] Split the long all-public-routes header sweep into 4 deterministic test cases.
+- [x] Partition by stable route index modulo 4 through `partitionRoundRobin`.
+- [x] Preserve every route, every viewport/theme state, and every existing assertion.
+- [x] Assert every shard is non-empty.
+- [x] Add regression contracts: `ciRouteSharding.test.ts` + deployment architecture assertions.
+- [x] Keep canonical Mac `PLAYWRIGHT_WORKERS='1'`; no unproven Mac worker increase was adopted.
 
 PASS standard: route union is identical to the pre-split set; duplicate route coverage = 0; omitted route coverage = 0.
+
+Observed Section 9 receipt:
+- sharding/planner/architecture tests: **38/38 PASS**;
+- helper proof over 86 synthetic routes: **22/22/21/21**, unique union exact;
+- Header Chromium discovery: **6 tests** (4 route shards + operability + 404);
+- full Chromium UI discovery: **156 tests / 24 files**;
+- canonical Mac worker count remains **1**.
 ## 10. Full-browser cloud sharding benchmark
 
 Purpose: prove the restructured full suite is ready for a future cloud runner without changing the canonical provider in this PR.

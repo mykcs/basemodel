@@ -4,6 +4,7 @@ import {
   toEnglishPath,
   zhOnlyStaticPaths,
 } from '../../src/lib/sitemapRoutes';
+import { partitionRoundRobin } from '../../src/lib/ciRouteSharding';
 
 type Theme = 'light' | 'dark';
 
@@ -167,33 +168,38 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
   expect(snapshot.mainRight, `${context}: main content must not escape right viewport edge`).toBeLessThanOrEqual(state.viewport.width + 2);
 }
 
-test('global shell and navigation survive computed CSS across every public route class', async ({ page }, testInfo) => {
-  await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
+const globalHeaderRouteShardCount = 4;
 
-  expect(staticPublicRoutes.length, 'public static route registry unexpectedly shrank').toBeGreaterThan(40);
-  const routePaths = testInfo.project.name === 'chromium'
-    ? chromiumRoutePaths
-    : [...webkitRepresentativeRoutes];
+for (let shardIndex = 0; shardIndex < globalHeaderRouteShardCount; shardIndex += 1) {
+  test(`global shell and navigation survive computed CSS across every public route class [shard ${shardIndex + 1}/${globalHeaderRouteShardCount}]`, async ({ page }, testInfo) => {
+    await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
 
-  // This test intentionally grows with the public route registry. Budget per
-  // route instead of using a fixed whole-suite timeout so adding legitimate
-  // public pages cannot turn complete coverage into a runner-speed failure.
-  const perRouteBudgetMs = 4_000;
-  test.setTimeout(Math.max(120_000, routePaths.length * perRouteBudgetMs));
+    expect(staticPublicRoutes.length, 'public static route registry unexpectedly shrank').toBeGreaterThan(40);
+    const allRoutePaths = testInfo.project.name === 'chromium'
+      ? chromiumRoutePaths
+      : [...webkitRepresentativeRoutes];
+    const routePaths = partitionRoundRobin(allRoutePaths, globalHeaderRouteShardCount)[shardIndex]!;
 
-  for (const path of routePaths) {
-    await test.step(path, async () => {
-      const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
-      expect(response?.status(), `${path}: public route must render successfully`).toBe(200);
+    // Keep the existing per-route budget. Splitting changes scheduling granularity
+    // only: every route and every geometry/theme assertion remains unchanged.
+    const perRouteBudgetMs = 4_000;
+    test.setTimeout(Math.max(120_000, routePaths.length * perRouteBudgetMs));
+    expect(routePaths.length, `header route shard ${shardIndex + 1} unexpectedly empty`).toBeGreaterThan(0);
 
-      // One navigation per route is enough: theme attributes and media queries are
-      // switched live so the same page is checked at 390 / 768 / 1440 and light / dark.
-      for (const state of headerStates) {
-        await assertGlobalHeader(page, path, state);
-      }
-    });
-  }
-});
+    for (const path of routePaths) {
+      await test.step(path, async () => {
+        const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status(), `${path}: public route must render successfully`).toBe(200);
+
+        // One navigation per route is enough: theme attributes and media queries are
+        // switched live so the same page is checked at 390 / 768 / 1440 and light / dark.
+        for (const state of headerStates) {
+          await assertGlobalHeader(page, path, state);
+        }
+      });
+    }
+  });
+}
 
 test('responsive navigation controls remain operable instead of merely visible', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
