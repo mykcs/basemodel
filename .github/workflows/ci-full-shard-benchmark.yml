@@ -8,16 +8,14 @@ permissions:
   contents: read
 
 jobs:
-  browser-shard:
+  canonical-runtime-diagnostic:
     if: >-
       github.event.pull_request.draft == true &&
       github.event.pull_request.head.ref == 'ci/route-owned-browser-planner-20260905'
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    container:
+      image: node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+    timeout-minutes: 10
     env:
       CI: '1'
       PLAYWRIGHT_REUSE_BUILD: '1'
@@ -27,33 +25,27 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24'
-          cache: npm
-
       - name: Install dependencies
         run: npm ci
 
       - name: Build static production artifact
         run: npm run build
 
-      - name: Install Chromium
+      - name: Install canonical Chromium runtime
         run: npx playwright install --with-deps chromium
 
-      - name: Run Chromium UI shard
+      - name: Print rendering runtime
         shell: bash
         run: |
           set -euo pipefail
-          SECONDS=0
-          npm run test:ui -- --shard=${{ matrix.shard }}/2
-          echo "ui_shard_${{ matrix.shard }}_seconds=$SECONDS" >> "$GITHUB_STEP_SUMMARY"
+          cat /etc/os-release
+          npx playwright --version
+          fc-match sans-serif || true
+          fc-match Inter || true
 
-      - name: Run Lab gate once
-        if: matrix.shard == 1
-        shell: bash
-        run: |
-          set -euo pipefail
-          SECONDS=0
-          npx playwright test --config tests/e2e/lab-playwright.config.ts
-          echo "lab_gate_seconds=$SECONDS" >> "$GITHUB_STEP_SUMMARY"
+      - name: Reproduce tablet-light canonical figure gate
+        run: >-
+          npx playwright test tests/e2e/canonical-research-figures.spec.ts
+          --project=chromium
+          --grep '^tablet-light keeps canonical research figures readable and overflow-safe$'
+          --max-failures=1
