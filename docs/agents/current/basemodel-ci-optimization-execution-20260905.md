@@ -201,14 +201,22 @@ A first native-Ubuntu benchmark exposed a rendering-environment mismatch in the 
 ## 11. Repository contract validation
 
 Required commands on the final candidate:
-- [ ] `npx vitest run src/lib/vercelHostedUiGate.test.ts src/lib/hostingArchitecture.test.ts src/lib/deploymentArchitecture.test.ts`
-- [ ] planner replay for PR #426 and #430 remains `focused`.
-- [ ] unknown shared/global examples remain `full`.
-- [ ] `git diff --check` PASS.
-- [ ] no temporary workflow files remain.
-- [ ] diff contains no website content/science changes.
+- [x] `npx vitest run src/lib/vercelHostedUiGate.test.ts src/lib/hostingArchitecture.test.ts src/lib/deploymentArchitecture.test.ts src/lib/ciRouteSharding.test.ts` → **38/38 PASS**.
+- [x] planner replay for PR #426 and #430 remains `focused` on exactly the two server routes.
+- [x] unknown shared/global/mixed examples remain `full`.
+- [x] `git diff --check` PASS.
+- [x] no temporary workflow files remain.
+- [x] diff contains no website content/science changes; candidate paths are CI/tests/docs only.
 
 PASS standard: CI architecture tests encode the optimization and fail if Draft suppression, route ownership, canonical main selector, or full-test sharding regresses.
+
+Observed Section 11 receipt:
+- latest main synchronized before validation: `8c5fee55ff215d91e7c18a976c07b60d752ba22b`;
+- post-sync candidate before this checklist commit: `751ee3b916d64f1a141a706a52c161c52fdb5d3a`;
+- 38/38 targeted contract tests PASS in 268 ms;
+- #426/#430 replay focused; unknown/global/mixed fail closed to full;
+- temporary benchmark workflow absent;
+- candidate diff contains no website/science content path changes.
 ## 12. PR readiness and merge gate
 
 - [ ] Update #433 body with final benchmark receipts and exact candidate SHA.
