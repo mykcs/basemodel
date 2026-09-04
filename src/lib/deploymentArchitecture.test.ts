@@ -124,7 +124,8 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerHousekeeping).toContain('select(.status ==');
     expect(runnerHousekeeping).toContain('elif any then');
     expect(runnerHousekeeping).toContain('local_container="$3"');
-    expect(runnerHousekeeping).toContain('.status == \"offline\"');
+    expect(runnerHousekeeping).toContain('all(.status ==');
+    expect(runnerHousekeeping).toContain('offline');
     expect(runnerHousekeeping).toContain('docker container inspect --format');
     expect(runnerHousekeeping).toContain(') >/dev/null 2>&1 &');
     expect(runnerHousekeeping).not.toContain('docker system prune');
