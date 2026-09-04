@@ -9,6 +9,7 @@ describe('Vercel production deployment architecture', () => {
   const selfHostedWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
   const ciPlan = readText('../../scripts/ci-plan.mjs');
   const ciDocsContract = readText('../../scripts/ci-docs-contract.mjs');
+  const headerVisibility = readText('../../tests/e2e/global-header-visibility.spec.ts');
   const runnerDockerfile = readText('../../.github/runner/Dockerfile');
   const runnerStart = readText('../../.github/runner/mac-orbstack-start.sh');
   const runnerReconcile = readText('../../.github/runner/mac-orbstack-reconcile.sh');
@@ -43,7 +44,8 @@ describe('Vercel production deployment architecture', () => {
     expect(ciPlan).toContain('code, CI, config, test, asset, data, or mixed PR diff requires full validation');
     expect(ciDocsContract).toContain("git(['diff', '--check'");
     expect(ciDocsContract).toContain("git(['diff', '--name-only'");
-    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '2'");
+    expect(headerVisibility).toContain('const globalHeaderRouteShardCount = 4;');
     expect(selfHostedWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
     expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
