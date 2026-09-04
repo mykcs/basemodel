@@ -65,6 +65,7 @@ Completed Vercel pilot/adoption records live under `docs/agents/history/`; they 
 9. Permanent capacity reclaim still requires the current exact `NOT_AUTHORIZED` manifest, technical + plain reports, owner approval of that exact version, and an immediate live re-check. A safe-route DENY/HOLD is not permission to retry via root. Never broad-prune the shared Docker daemon.
 10. Record quarantined, logically deleted, and physically reclaimed bytes separately. Same-filesystem quarantine normally frees no blocks; concurrent experiments can make `df` delta differ from logical deletion bytes.
 11. Public website refreshes publish safely measurable current global facts plus only complete anonymous attribution snapshots. Never persist usernames, home paths, container identities, SSH/IP/GPU UUIDs, or anonymous-label mappings.
+12. When the task crosses into BaseModel mutation/release, treat that as a fresh scenario transition: re-read root `AGENTS.md`, branch conventions, deployment policy, and current required-check state before creating the branch. Verify visible body + route metadata on exact-head Preview and again on stable Production. Admin mergeability never substitutes for required CI authority.
 
 ---
 

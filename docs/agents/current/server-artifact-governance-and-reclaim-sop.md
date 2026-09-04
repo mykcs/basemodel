@@ -1,7 +1,7 @@
 # Shared experiment server artifact governance, publication, and reclaim SOP
 
 Status: **current task orchestrator**  
-Last reviewed: **2026-09-04 (UTC+8)**  
+Last reviewed: **2026-09-05 (UTC+8)**
 Audience: ChatGPT / Codex / other Agents that have authorized access to the experiment server and the relevant GitHub / Hugging Face / container-registry tooling
 
 ## Purpose
@@ -62,11 +62,16 @@ These own scientific lineage, run provenance, checkpoint/trajectory semantics, p
 
 ### BaseModel public-page authority
 
-Read from `mykcs/basemodel`:
+Read from `mykcs/basemodel` **again when the workflow crosses from server work into website mutation/release**:
 
-- `docs/agents/current/server-storage-pressure-audit-sop.md`
-- this document
-- the tests that enforce public server privacy/copy rules
+- root `AGENTS.md` and `docs/agents/README.md`;
+- `docs/agents/current/branch-and-pr-conventions.md`;
+- `docs/agents/current/deployment-policy.md` and `hosting-architecture.md`;
+- `docs/agents/current/server-storage-pressure-audit-sop.md`;
+- this document;
+- the tests that enforce public server privacy/copy and route metadata rules.
+
+Do not assume that reading this SOP at the beginning preserves current branch/CI/deployment authority hours later. The website phase is a new authority boundary: re-read its router before choosing the branch or merging.
 
 These own the public snapshot presentation, not private server ownership.
 
@@ -265,6 +270,8 @@ git common-dir / worktree relationship
 remote reachability of the exact HEAD
 live process/container/config references
 ```
+
+`git status = clean` is not recovery proof. The exact HEAD must be independently reachable from the durable remote (for example an exact GitHub commit read), or the checkout is `HOLD_UNPUSHED_OR_DANGLING_GIT_OBJECT`. A local Git object database is not an archive.
 
 Remove linked worktrees with Git's worktree mechanism, not blind `rm -rf`.
 
@@ -605,12 +612,14 @@ Authorization becomes invalid for an object if its size/hash/ownership/liveness/
 
 Immediately before each mutation re-check:
 
-- exact target identity;
+- exact target identity and current size/hash where applicable;
 - ownership;
-- active process/container/config/resume references;
+- active process/container/config/resume references, including process `cwd`, `root`, open file descriptors, and command-line references when a directory/worktree is involved;
 - retention class / analysis hold;
 - remote recovery proof;
 - approved manifest membership.
+
+Do not use a naive `pgrep -f <target-path>`/`ps | grep <target-path>` result as the final liveness oracle when the audit command itself contains that target string. Exclude the audit process/ancestor chain or inspect `/proc`/equivalent process references directly. A self-match is an audit artifact; a foreign process whose `cwd`/fd/root points inside the target is a real live dependency and invalidates that object's prior deletion authorization.
 
 ### File / symlink fast path
 
@@ -695,7 +704,13 @@ Never publish or persist real usernames, home paths, SSH aliases, IPs, container
 
 ### Website acceptance
 
-Update Chinese and English copy/tests, then run the repository-required deterministic checks, build, overflow/static checks, and browser/UI verification. Open a PR, validate the exact-head Preview, merge only when ready, and verify the final Vercel page.
+Before creating the BaseModel branch, re-read the current branch/deployment owners and decide whether exact-head Preview is required. If it is, choose a deployment-eligible branch first and put `[vercel-preview]` only on the final acceptance head. Do not create an ineligible branch and discover this after waiting for a Preview that can never exist.
+
+Update Chinese and English copy **and route metadata**. Acceptance must cover the visible body plus `<meta name=description>`, OpenGraph/Twitter descriptions, canonical/hreflang, and the stable Production alias; stale share/search metadata is a public stale-data bug even when the body is correct. Add/refresh deterministic assertions for these snapshot values so the metadata cannot silently lag the page.
+
+Run checks in dependency order: deterministic/source checks -> production build -> checks that consume `dist/` (including overflow/static preflight) -> focused browser/UI verification. A `dist/404.html`/missing-build artifact error from an overflow script is an execution-order failure, not a page regression.
+
+Open a PR, validate the exact-head Preview, then read the current required-check authority before merge. `mergeable=true`, admin API permission, local PASS, or Vercel READY cannot substitute for a required CI check. If a required self-hosted runner is offline/queued, HOLD unless the owner explicitly chooses the documented emergency recovery path. After merge, verify the Production deployment SHA and read the real stable-domain zh/en routes **including metadata**, not only the provider READY badge.
 
 ---
 
