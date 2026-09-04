@@ -10,6 +10,7 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path:string) => localePath(locale,path);
 const pct = ((snap.sevenB.rolloutsConsumed / snap.totalRollouts) * 100).toFixed(2);
+const final7 = snap.sevenBFinalCloseout;
 const stage1 = [
   { n:'01', title:'OPSD', text:t('这是 Stage 1 里唯一真正改模型参数的通道。MiniMax 已经写好的任务后分析只作为额外参考，学生模型自己的原始回答不被替换；最后由 OPSD 产生最初的参数更新。','This is the only Stage-1 channel that changes model parameters. Sealed MiniMax hindsight is used only as extra context, the student’s original completion is not replaced, and OPSD produces the initial parameter updates.') },
   { n:'02', title:'Text Memory', text:t('把 1,440 条老师分析整理成可复用的文字经验。整理完成后不再继续调用 MiniMax、GPT 或 GLM；后续只让同规模的本地 Qwen 对已有经验做归纳。','Turn all 1,440 teacher analyses into reusable textual experience. After that, no additional MiniMax, GPT, or GLM calls are made; later consolidation uses only the same-scale local Qwen.') },
@@ -22,8 +23,8 @@ const stage1 = [
   <header class="ceiling__hero">
     <div>
       <p>OPENEVO-CEILING-1.0 · {t('第二版 Stage 2', 'SECOND STAGE-2 DESIGN')}</p>
-      <h1>{t('旧的 7 对 8 门槛删掉了，但 3B 还是没有学起来', 'The old 7-versus-8 gate was removed, but 3B still did not start learning')}</h1>
-      <span>{t('Ceiling-1.0 保留同样的 WebShop 任务预算和老师预算，不再要求“同一批必须凑齐 8 个重复成功任务”。改成每 128 次任务形成一轮共同证据，再分别判断参数、文本记忆、技能和 Agent 规则有没有足够证据值得更新。7B 在这套方案下继续产生了新的 SD-LoRA 组件，但 3B 跑了 18 轮仍然是 0，因此问题从“旧门槛太苛刻”进一步转向“经验文本和 WebShop 动作接口是否把 3B 带偏”。', 'Ceiling-1.0 keeps the same WebShop and teacher budgets but removes the requirement that one batch contain eight repeatedly successful tasks. Every 128 attempts now form one shared evidence round, after which parameters, text memory, skills, and agent rules independently decide whether there is enough evidence to change. 7B continued producing new SD-LoRA components, while 3B remained at zero after 18 rounds, shifting attention from the old gate to whether experience text is disrupting the smaller model’s WebShop action interface.')}</span>
+      <h1>{t('7B 已经走到终点：49.33 分，58 / 128 完整成功', 'The 7B lineage reached its endpoint: 49.33 score with 58 / 128 exact successes')}</h1>
+      <span>{t('Ceiling-1.0 去掉旧的批次门槛后，7B 最终完成 149 个完整 round（0–148）、19,072 次 accepted Stage-2 rollout，并积累 143 个 SD-LoRA component。冻结 checkpoint 后才首次打开 128 题 final panel：Task Score ×100 = 49.33，完整成功 58 / 128 = 45.31%。旧的 2026-08-31 快照仍原样保留在下面，作为当时运行到 25 个 component 时的历史记录。', 'After Ceiling-1.0 removed the old batch gate, the 7B lineage ultimately completed 149 full rounds (0–148), consumed 19,072 accepted Stage-2 rollouts, and accumulated 143 SD-LoRA components. The 128-task final panel was opened only after the checkpoint was frozen: Task Score ×100 = 49.33 with 58 / 128 = 45.31% exact success. The older 2026-08-31 snapshot below is preserved unchanged as the historical state when the run had reached 25 components.')}</span>
     </div>
     <aside>
       <span>{t('当时的运行快照 · 2026-08-31', 'RUN SNAPSHOT · 2026-08-31')}</span>
@@ -31,6 +32,22 @@ const stage1 = [
       <small>{t(`当时已经做了 ${snap.sevenB.rolloutsConsumed.toLocaleString()} / ${snap.totalRollouts.toLocaleString()} 次 Stage-2 任务（${pct}%）。最终 128 题还没有被打开过，所以这些数字没有拿最终评测来调参。`, `${snap.sevenB.rolloutsConsumed.toLocaleString()} / ${snap.totalRollouts.toLocaleString()} Stage-2 attempts had been consumed (${pct}%). The final 128-task panel had not been opened, so these decisions were not tuned against final evaluation.`)}</small>
     </aside>
   </header>
+
+  <section class="ceiling__section ceiling__final" data-testid="ceiling-7b-final-closeout">
+    <p class="kicker">{t('7B 最终封存 · 2026-09-04', '7B FINAL CLOSEOUT · 2026-09-04')}</p>
+    <h2>{t('149 个完整 round 后，最终 WebShop Score = 49.33，完整成功率 = 45.31%', 'After 149 completed rounds: WebShop Score = 49.33 and exact success = 45.31%')}</h2>
+    <div class="ceiling__budget">
+      <div><b>{final7.completedRounds}</b><span>{t('完整 Stage-2 rounds · 0–148', 'completed Stage-2 rounds · 0–148')}</span></div>
+      <div><b>{final7.acceptedRollouts.toLocaleString()}</b><span>{t('accepted Stage-2 rollouts', 'accepted Stage-2 rollouts')}</span></div>
+      <div><b>{final7.sdComponents}</b><span>{t('最终 SD-LoRA components', 'final SD-LoRA components')}</span></div>
+      <div><b>{final7.exactSuccessCount} / {final7.finalPanelSize}</b><span>{t('完整成功 · 45.31%', 'exact success · 45.31%')}</span></div>
+    </div>
+    <div class="ceiling__arm-status">
+      <article class="running"><span>OPENEVO · 7B</span><strong>49.33 / 100</strong><p>{t('128 / 128 全部完成；7 条 action-admissibility failure 按 fail-closed 计 0；runtime error 为 0。headline 始终以全部 128 题为分母。', 'All 128 / 128 tasks completed. Seven action-admissibility failures count as zero under the fail-closed contract; runtime errors are zero. The headline denominator remains all 128 tasks.')}</p></article>
+      <article><span>SEED · PAPER REFERENCE</span><strong>89.7 / 100 · 78.1%</strong><p>{t('这是 SEED Table 1 对 Qwen2.5-7B-Instruct 的论文报告值，不是我们在同一 checkpoint / 同一 exact denominator 上本地重跑出的 paired result。因此这里只报告数值差距：Score −40.37、Success −32.79 个百分点，不把它写成方法因果效应。', 'These are the SEED Table 1 paper-reported values for Qwen2.5-7B-Instruct, not a local paired rerun on the same checkpoint and exact denominator. We therefore report only the numerical gaps—Score −40.37 and Success −32.79 percentage points—rather than a causal method effect.')}</p></article>
+    </div>
+    <p class="ceiling__note">{t('partial round149 的 96 条 rollout 只保留 provenance，没有进入最终 checkpoint 或最终分数。final panel 在 checkpoint 冻结后只打开 1 次；Stage 2 额外外部老师调用为 0。重 checkpoint、最终评测和身份证均已远端 exact verify。', 'The 96 rollouts from partial round149 remain provenance only and do not enter the final checkpoint or score. The final panel was opened exactly once after checkpoint freeze, and Stage 2 made zero additional external-teacher calls. Heavy checkpoints, final evaluation evidence, and identity receipts are remotely exact-verified.')}</p>
+  </section>
   <section class="ceiling__section">
     <p class="kicker">{t('Ceiling-1.0 想回答什么', 'SCIENTIFIC QUESTION')}</p>
     <h2>{t('不给更多老师、不增加做题次数，只改学习规则，OpenEVO 能走多远？', 'How far can OpenEVO improve if budgets stay fixed and only the learning rule changes?')}</h2>
@@ -53,6 +70,7 @@ const stage1 = [
   <section class="ceiling__section">
     <p class="kicker">{t('Stage 2 怎么跑', 'HOW STAGE 2 RUNS')}</p>
     <h2>{t('每 128 次任务是一轮整理经验，不再是一道“过不了就不准学”的门', 'Every 128 attempts form one learning round, not a gate that blocks learning entirely')}</h2>
+    <p>{t('每 128 次任务形成一轮共同证据；这是一项历史设计规则，不是最终结果分母。', 'Every 128 attempts form one shared evidence round; this is a historical design rule, not the final-evaluation denominator.')}</p>
     <div class="ceiling__rounds">
       <article><b>128</b><strong>{t('次任务尝试组成一轮', 'task attempts per round')}</strong><p>{t('一轮包含 16 个任务，每个任务做 8 次。参数、文字记忆、技能和 Agent 规则都看这一轮同一份任务记录，起点也都是同一个上一轮模型状态。', 'One round contains 16 tasks with eight attempts each. Parameters, text memory, skills, and agent rules all read the same task evidence and start from the same previous-round state.')}</p></article>
       <article><b>0..16</b><strong>{t('参数训练最多选 16 条成功轨迹', 'up to 16 success traces for parameter training')}</strong><p>{t('每个任务最多取最早的一条干净完整成功。一个成功都没有时，这一轮参数不变；只要至少有 1 个任务成功，就允许做一次 SD-LoRA 更新。', 'At most the earliest clean exact success is selected from each task. With no success, parameters stay unchanged for that round; with at least one successful task, one SD-LoRA update is allowed.')}</p></article>
@@ -75,7 +93,7 @@ const stage1 = [
       <article><strong>Skill Bundle</strong><p>{t('至少需要两个不同任务支持同一种策略，才把它写进技能；第一次整理仍不够清楚时最多再修一次，之后还不满足就保持原样。', 'A strategy needs support from at least two distinct tasks before it enters the skill bundle. If the first summary is still inadequate, it may be repaired once; otherwise the state stays unchanged.')}</p></article>
       <article><strong>Agent System</strong><p>{t('至少需要三个不同任务共同支持，才修改更高层的行为原则。它只能看上一轮状态和这一轮任务记录，不能偷看同一轮其他模块刚写出的新内容。', 'At least three distinct tasks must support a change to higher-level behavior rules. It can see only the previous state and current-round evidence, not new outputs produced by other modules in the same round.')}</p></article>
     </div>
-    <p class="ceiling__note">{t('Task Vector 在这版里只用于分析，不会修改训练，也不会影响下一轮。最初沿用的 64-component guard 现在只保留为 upstream provenance：正在运行的 7B Ceiling-1.0 已通过容量 amendment 取消独立的 64-component stop，改由 effective rank ≤ 4096、VRAM、磁盘/产物增长和剩余 rollout 预算共同约束；rank reduction / compression 仍未启用。这个 amendment 只授权 7B，不自动授权 3B。', 'Task Vector is diagnostic only and does not alter training or the next round. The original 64-component guard is now retained only as upstream provenance: the ongoing 7B Ceiling-1.0 line has a capacity amendment that removes the independent 64-component stop and instead retains effective rank ≤ 4096 together with VRAM, disk/artifact-growth, and remaining-rollout-budget bounds. Rank reduction / compression is still inactive. This amendment authorizes 7B only and does not automatically authorize 3B.')}</p>
+    <p class="ceiling__note">{t('Task Vector 在这版里只用于分析，不会修改训练，也不会影响下一轮。最初沿用的 64-component guard 现在只保留为 upstream provenance：7B Ceiling-1.0 当时通过容量 amendment 取消了独立的 64-component stop，最终走到 143 components；当时仍保留 effective rank ≤ 4096 等容量保护，formal 训练里始终没有启用 rank reduction / compression。训练结束后的 K64/K80/K96 只属于只读机制诊断，不回写 final checkpoint。这个 amendment 只授权 7B，不自动授权 3B。', 'Task Vector is diagnostic only and does not alter training or the next round. The original 64-component guard is now retained only as upstream provenance: the 7B Ceiling-1.0 lineage used a capacity amendment that removed the independent 64-component stop and ultimately reached 143 components while retaining capacity safeguards such as effective rank ≤ 4096. Formal training never activated rank reduction / compression; the later K64/K80/K96 studies are read-only mechanism diagnostics and do not alter the final checkpoint. The amendment applied to 7B only and did not automatically authorize 3B.')}</p>
   </section>
 
   <section class="ceiling__section">

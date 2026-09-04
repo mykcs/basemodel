@@ -15,6 +15,16 @@ export const openEvoCeilingStage2Snapshot = {
     rolloutsConsumed: 3_968, sdGenerations: 25, sdComponents: 25,
     externalTeacherCalls: 0, finalPanelAccessCount: 0,
   },
+  sevenBFinalCloseout: {
+    observedAt: '2026-09-04', status: 'CLOSED_REMOTE_VERIFIED',
+    completedRounds: 149, completedRange: '0–148', acceptedRollouts: 19_072,
+    partialRound149Excluded: true, sdComponents: 143,
+    externalTeacherCalls: 0, finalPanelAccessCount: 1, finalPanelSize: 128,
+    meanTaskScore: 49.326636904761905, exactSuccessCount: 58, exactSuccessPct: 45.3125,
+    actionAdmissibilityFailures: 7, runtimeErrors: 0,
+    seedPaperReference: { score: 89.7, successPct: 78.1 },
+    archiveHead: '5e9797b81855ffd28d430c3a0a9a292982abe009',
+  },
   threeB: {
     status: 'RUNNING_UNDER_HARNESS_REVIEW', roundsComplete: 18, completedRange: '0–17', nextRound: 18,
     rolloutsConsumed: 2_304, sdComponents: 0, externalTeacherCalls: 0, finalPanelAccessCount: 0,
