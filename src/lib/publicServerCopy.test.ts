@@ -60,8 +60,10 @@ describe('public server copy', () => {
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-04 实验服务器容量与硬件快照');
-    expect(serverRouteEn).toContain('2026-09-04 server capacity and hardware snapshot');
+    expect(serverRouteZh).toContain('2026-09-05 实验服务器容量与硬件快照');
+    expect(serverRouteZh).toContain('16.1 GiB');
+    expect(serverRouteEn).toContain('2026-09-05 server capacity and hardware snapshot');
+    expect(serverRouteEn).toContain('16.1 GiB');
   });
 
   it('uses transferable role placeholders in the public reproduction runbook', () => {
