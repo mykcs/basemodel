@@ -1,13 +1,15 @@
 name: CI optimization benchmark
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [synchronize]
 
 permissions:
   contents: read
 
 jobs:
   focused-server-browser:
+    if: github.event.pull_request.draft == true && github.head_ref == 'ci/route-owned-browser-planner-20260905'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
