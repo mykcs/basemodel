@@ -48,19 +48,23 @@ Completed Vercel pilot/adoption records live under `docs/agents/history/`; they 
 
 ---
 
-## TRIGGER: shared experiment server disk pressure / storage attribution / cleanup
+## TRIGGER: shared experiment server disk pressure / storage attribution / artifact publication / cleanup
 
-**Cues:** server disk is nearly full; “who is using space”; compare anonymous users; find large runs/models/checkpoints; Docker storage pressure; reclaim space without disturbing scientific work.
+**Cues:** server disk is nearly full; “who is using space”; compare anonymous users; organize runs/checkpoints/analysis outputs; give experiment artifacts passports; publish to GitHub/Hugging Face/GHCR; reclaim space without disturbing scientific work.
 
 **Automatic response:**
 
-1. Read [`server-storage-pressure-audit-sop.md`](server-storage-pressure-audit-sop.md) and `personal-compute-profile-consumer.md` **before the first mutation or public-number update**.
-2. Start read-only: `df` for filesystem truth, then `du` for identifiable home roots, then authorized workspace breakdown. If the current namespace exposes only a subset of expected homes, classify the inventory as incomplete and resolve bind-mounted home namespaces before publishing a ranking.
-3. Attribute only Docker writable layers that have one reliable home-mount owner. Shared images/build cache/volumes stay shared; unreadable or owner-ambiguous writable layers stay unattributed. `docker system df` is daemon-wide and may itself fail because of stale snapshots; that failure is not permission to repair/prune the shared daemon.
-4. Before mutation, prove ownership, current/future working-set status, process/container references, recoverability, and scientific retention authority. “Not open right now” is not deletion authority.
-5. Prefer clean remote-recoverable Git checkouts and verified cold archives of old text/JSON-heavy runs before models, checkpoints, active runs, or shared images. Broad Docker prune is forbidden on the shared daemon without explicit scope authority.
-6. Public website refreshes must regenerate temporary anonymous rankings (`用户一 / 用户二 / …`) by attributable total, never single out an account as “ours,” and persist no identity mapping, username, home path, container identity, SSH detail, IP, or GPU UUID.
-7. Report measured bytes reclaimed separately from the final `df` value because concurrent experiments can change free space during the cleanup.
+1. For snapshot-only work read [`server-storage-pressure-audit-sop.md`](server-storage-pressure-audit-sop.md). For the full organize → passport → publish/verify → reclaim workflow read [`server-artifact-governance-and-reclaim-sop.md`](server-artifact-governance-and-reclaim-sop.md) plus `personal-compute-profile-consumer.md` **before the first mutation or public-number update**.
+2. Start read-only and resolve the persistent workspace filesystem before using `df`; a control container's `/` may be overlay and must not be assumed to be the persistent data filesystem.
+3. Treat read-only audit I/O as a resource budget. Start with exact metadata, known roots, current references, and bounded/shallow `du`; do not default to whole-tree `find`/checksum crawls on a live research filesystem.
+4. If the authorized view exposes only a subset of expected homes, classify account attribution as incomplete. Do not `docker exec` into sibling-user containers or use raw-Docker/admin mount capabilities merely to complete a dashboard. Refresh current global facts and keep the most recent complete anonymous attribution visibly historical instead of publishing a partial new ranking.
+5. Before touching an object, prove ownership/lineage. A filename, OpenEvo label, familiar run/container/image tag, project-looking path, or top-level directory owner is a clue, never deletion authority. Directory owner is not subtree ownership. Unknown/shared/external objects are HOLD.
+6. Reuse current Run Manifest / artifact-publication contracts for passports. Deduplicate before upload; route small code/evidence/manifests to GitHub, model-derived state to Hugging Face model repos, appropriate large research data to HF dataset/private staging, and OCI runtimes to GHCR. W&B is telemetry/cross-linking, not the only backup.
+7. Upload success is not recovery proof. Require immutable remote revision/digest/hash plus fresh read/download/reload/restore verification before a scientific object can enter a reclaim proposal.
+8. Keep `P0_ACTIVE`, `P1_ANALYSIS_HOLD`, `P2_ARCHIVE_THEN_RECLAIM`, `P3_REBUILDABLE`, and `X_SHARED_OR_UNKNOWN` separate. Exact recoverability, live/path dependency, hot-recovery window, owner analysis hold, ownership, and deletion authorization are independent gates.
+9. Permanent capacity reclaim still requires the current exact `NOT_AUTHORIZED` manifest, technical + plain reports, owner approval of that exact version, and an immediate live re-check. A safe-route DENY/HOLD is not permission to retry via root. Never broad-prune the shared Docker daemon.
+10. Record quarantined, logically deleted, and physically reclaimed bytes separately. Same-filesystem quarantine normally frees no blocks; concurrent experiments can make `df` delta differ from logical deletion bytes.
+11. Public website refreshes publish safely measurable current global facts plus only complete anonymous attribution snapshots. Never persist usernames, home paths, container identities, SSH/IP/GPU UUIDs, or anonymous-label mappings.
 
 ---
 

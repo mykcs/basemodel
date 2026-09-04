@@ -17,42 +17,50 @@ const userStorage = [
 ];
 
 const refreshPrompt = t(
-  `请刷新 BaseModel 服务器页面的空间使用快照。
+  `请执行一次“共享实验服务器科研资产整理、上传与空间回收”。
 
 目标页面：https://basemodel-preview.vercel.app/research/seed-openevo/flow/server/
 仓库：mykcs/basemodel
 
-请先读取仓库中的 docs/agents/current/server-storage-pressure-audit-sop.md，并按其中流程执行。
+开始前，请完整读取并严格执行：
+docs/agents/current/server-artifact-governance-and-reclaim-sop.md
 
-要求：
-1. 先对共享实验服务器做只读空间审计，不要因为这条 Prompt 自动删除、清理、移动或重下载任何模型、checkpoint、run、缓存、容器或镜像。
-2. 读取主文件系统的 total / used / available / Use%，再统计每个可识别账户的主目录占用。
-3. 对 Docker 只统计能够通过 home mount 可靠归属到账户的 writable layer；共享镜像、build cache、volume、无法可靠归属的容器层和系统文件必须单独保留，不能按名字或标签强行分摊给某个人。
-4. 所有账户按“主目录 + 可归属 Docker writable layer”的合计从大到小重新排序，只在公开页面写成“用户一、用户二……”；不要把任何账户单独标成“我们”，不要公开或持久化真实用户名、home 路径、容器名/ID、SSH 信息、IP、GPU UUID，也不要保存真实账户与匿名编号的映射。
-5. 同时刷新页面上仍然需要的 CPU、RAM、GPU 库存事实；库存事实、实验分配和 GPU 使用授权必须分开。
-6. 页面必须显示明确的 UTC+8 快照时间，并说明这是静态快照，不是实时监控。
-7. 用本次实测数据更新中文和英文 server 页面及相关测试；不要从旧页面抄“当前”数字。
-8. 修改后运行仓库要求的 deterministic Gate、build、overflow 和 UI/browser 验收；开 PR，确认 exact-head Preview 后合并到 main，并检查 Production 页面。
+这份 Markdown 是本任务的详细执行方案和验收标准。不要只给我一个计划；凡是当前权限和既有 policy 已经允许、且不需要新的科学/可见性/不可逆人类决策的步骤，请实际执行到闭环。
 
-最后请汇报：本次快照时间、磁盘总量/已用/可用、匿名用户可归属总量、未归属 Docker 写入层、共享/系统占用、PR、merge commit 和 Production 验收结果。`,
-  `Refresh the BaseModel server storage snapshot.
+你将依次完成：
+1. 读取当前服务器/项目 authority，做低 I/O 的 live 空间与活跃引用盘点；
+2. 对准备触碰的每个对象证明 ownership / lineage。OpenEvo、checkpoint、容器或镜像“名字看起来像我们的”一律不算证据；归属不闭合就 HOLD；
+3. 按现有 Run Manifest / artifact manifest 标准给有科学意义的 run、checkpoint、trajectory、analysis/report、evaluation output、runtime 等补齐“身份证”，并输出 coverage receipt；
+4. 查重后按语义上传/复用：代码、配置、small evidence/manifest → GitHub；checkpoint/adapter → Hugging Face model repo；大 trajectory/analysis data → 合适的 HF dataset/private staging；OCI runtime → GHCR；W&B 只作为 telemetry/cross-link，不当唯一备份；
+5. 对每个远端对象记录 immutable revision/digest/hash，并做 fresh read/download/reload/restore 验证；上传成功本身不等于可删除；
+6. 把本地对象分成 P0_ACTIVE / P1_ANALYSIS_HOLD / P2_ARCHIVE_THEN_RECLAIM / P3_REBUILDABLE / X_SHARED_OR_UNKNOWN，并保护 active、analysis hold、hot-recovery、shared/unknown 对象；
+7. 生成 exact reclaim manifest（初始 NOT_AUTHORIZED）和技术版/通俗版报告。未知删除清单不被这条 Prompt 预授权；到这个唯一不可逆 gate 时，请让我批准 exact manifest；批准后重新检查 liveness/ownership，再精确删除，禁止 shared Docker broad prune；
+8. 删除后分别记录 logical deleted bytes 和 df 实测变化；最后刷新中英文 BaseModel server 页面，若跨用户归属无法在不越权的情况下完整重算，就只刷新全盘 current snapshot，并把最近一次完整匿名归属快照明确标成历史，不允许用部分数据伪装成新排行；
+9. 跑 deterministic tests、build、overflow/UI/browser acceptance，开 PR，验 exact-head Preview，合并并检查最终 Vercel 页面。
+
+最终请交付：inventory/ownership 汇总、身份证覆盖率、GitHub/HF/GHCR 发布与复用清单、每个远端 immutable revision/digest + restore 结果、protected/HOLD 清单、exact reclaim manifest 与实际回收字节、更新后的服务器快照、PR/merge commit/Preview/Production 验收结果。`,
+  `Run one end-to-end shared experiment-server artifact governance, publication, and space-reclaim pass.
 
 Target page: https://basemodel-preview.vercel.app/research/seed-openevo/flow/server/
 Repository: mykcs/basemodel
 
-Read docs/agents/current/server-storage-pressure-audit-sop.md first and follow that procedure.
+Before acting, read and strictly follow:
+docs/agents/current/server-artifact-governance-and-reclaim-sop.md
 
-Requirements:
-1. Start with a read-only audit of the shared experiment server. This prompt does not authorize deleting, cleaning, moving, or redownloading models, checkpoints, runs, caches, containers, or images.
-2. Measure total / used / available / Use% for the main filesystem, then measure each identifiable account home directory.
-3. For Docker, attribute only writable layers that can be reliably tied to an account through its home mount. Keep shared images, build cache, volumes, unattributed container layers, and system files separate; never assign them to a person from names or labels.
-4. Sort all accounts by attributable total (home + attributable Docker writable layer) and publish only temporary anonymous labels User 1, User 2, and so on. Do not single out any account as “ours.” Do not publish or persist usernames, home paths, container names/IDs, SSH details, IPs, GPU UUIDs, or the real-account-to-anonymous-label mapping.
-5. Refresh any CPU, RAM, and GPU inventory facts that the page still needs. Keep server inventory, experiment allocation, and GPU authorization distinct.
-6. Show an explicit UTC+8 snapshot time and state that this is a static snapshot, not live monitoring.
-7. Update both Chinese and English server pages and related tests from the new measurements; do not copy “current” values from the old page.
-8. Run the repository-required deterministic Gate, build, overflow, and UI/browser acceptance; open a PR, verify the exact-head Preview, merge to main, and verify Production.
+That Markdown is the detailed execution plan and acceptance contract. Do not stop at a plan: execute every step already authorized by current policy until a genuine scientific, visibility, authority, or irreversible human gate is reached.
 
-Finally report the snapshot time, filesystem total/used/free, anonymous attributable totals, unattributed Docker writable layers, shared/system usage, PR, merge commit, and Production acceptance result.`
+You will:
+1. read current authority and take a low-I/O live storage/liveness snapshot;
+2. prove ownership/lineage for every object you may touch. A name containing OpenEvo, checkpoint, a familiar container/image tag, or a project-like path is zero ownership evidence; unresolved ownership is HOLD;
+3. build or repair canonical run/artifact passports for meaningful runs, checkpoints, trajectories, analysis/reports, evaluation outputs, runtimes, and related evidence, then report passport coverage;
+4. deduplicate and route artifacts by semantics: code/config/small evidence/manifests to GitHub; checkpoints/adapters to a Hugging Face model repo; large trajectories/analysis data to an appropriate HF dataset/private staging area; OCI runtimes to GHCR; W&B is telemetry/cross-linking, not the only backup;
+5. record immutable remote revisions/digests/hashes and perform fresh read/download/reload/restore verification. Upload success alone never makes a local copy deletable;
+6. classify local material as P0_ACTIVE / P1_ANALYSIS_HOLD / P2_ARCHIVE_THEN_RECLAIM / P3_REBUILDABLE / X_SHARED_OR_UNKNOWN and protect active, analysis-hold, hot-recovery, shared, and unknown state;
+7. produce an exact reclaim manifest (initially NOT_AUTHORIZED) plus technical and plain-language reports. This prompt does not pre-authorize an unknown deletion list. Stop only at that irreversible gate for approval of the exact manifest; after approval, re-check liveness/ownership and delete precisely. Never use broad shared-Docker prune;
+8. record logical deleted bytes separately from the observed df change, then refresh both BaseModel server locales. If cross-user attribution cannot be recomputed completely without crossing authority/privacy boundaries, refresh the current global snapshot and keep the last complete anonymous attribution explicitly historical rather than fabricating a partial new ranking;
+9. run deterministic tests, build, overflow/UI/browser acceptance, open a PR, verify the exact-head Preview, merge, and verify the final Vercel page.
+
+Final delivery: inventory/ownership summary, passport coverage, GitHub/HF/GHCR publish/reuse matrix, immutable remote revisions/digests plus restore results, protected/HOLD set, exact reclaim manifest and actual reclaimed bytes, refreshed server snapshot, PR/merge commit, Preview, and Production acceptance.`
 );
 
 const gpuFacts = [
@@ -68,10 +76,10 @@ const gpuFacts = [
   <header class="server-hero">
     <div class="server-hero__eyebrow">{t('OpenEvo / WebShop · 实验服务器', 'OpenEvo / WebShop · experiment server')}</div>
     <h1>{t('实验服务器简介', 'Experiment server overview')}</h1>
-    <p>{t('2026-09-03 的服务器库存快照显示，这台机器有 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。同期存储快照中，主文件系统约有 25.1 GiB 可用；磁盘空间仍是当前最紧张的资源。', 'The 2026-09-03 server inventory snapshot shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The storage snapshot from the same check shows about 25.1 GiB free on the main filesystem, so disk capacity remains the tightest resource.')}</p>
+    <p>{t('2026-09-04 13:46（UTC+8）的安全快照显示，这台机器仍为 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。主文件系统当前约有 16.5 GiB 可用、df 报 97% 使用率；磁盘空间仍是最紧张的资源。', 'The safe 2026-09-04 13:46 (UTC+8) snapshot still shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The main filesystem has about 16.5 GiB available and df reports 97% used, so disk capacity remains the tightest resource.')}</p>
     <div class="snapshot-note">
       <strong>{t('数据时间', 'Data timestamp')}</strong>
-      <span>2026-09-03 01:11 (UTC+8)</span>
+      <span>2026-09-04 13:46 (UTC+8)</span>
       <span>{t('静态快照，不是实时监控面板', 'Static snapshot, not a live monitoring dashboard')}</span>
     </div>
   </header>
@@ -79,9 +87,9 @@ const gpuFacts = [
   <section class="priority-grid" aria-label={t('关键资源', 'Key resources')}>
     <article class="priority-card priority-card--attention">
       <span>{t('磁盘剩余', 'Disk free')}</span>
-      <strong>25.1 GiB</strong>
+      <strong>16.5 GiB</strong>
       <h2>{t('主文件系统可用空间', 'Main filesystem available')}</h2>
-      <p>{t('本次存储快照中，df 报告 94% 已使用。大 checkpoint、共享 Docker/容器层或重复实验副本仍可能很快把它推满。', 'In this storage snapshot, df reports 94% used. Large checkpoints, shared Docker/container layers, or duplicate experiment copies can still fill it quickly.')}</p>
+      <p>{t('本次全盘快照中，df 报告 97% 已使用。当前只剩约 16.5 GiB 普通可写空间，因此整理、归档与精确 reclaim 的优先级很高。', 'In this global snapshot, df reports 97% used with only about 16.5 GiB available to ordinary writes, so artifact governance, archival, and precise reclaim are high priority.')}</p>
     </article>
     <article class="priority-card">
       <span>GPU</span>
@@ -99,7 +107,7 @@ const gpuFacts = [
       <span>RAM</span>
       <strong>1.0 TiB</strong>
       <h2>{t('内存容量', 'System memory')}</h2>
-      <p>{t('快照时约 65.8 GiB 正在使用，Linux 报告约 926.5 GiB available；RAM 远比磁盘宽裕。', 'At the snapshot, about 65.8 GiB was in use and Linux reported about 926.5 GiB available; RAM is far less constrained than disk.')}</p>
+      <p>{t('快照时约 82.9 GiB 正在使用，Linux 报告约 909.2 GiB available；RAM 仍远比磁盘宽裕。', 'At the snapshot, about 82.9 GiB was in use and Linux reported about 909.2 GiB available; RAM remains far less constrained than disk.')}</p>
     </article>
   </section>
 
@@ -111,37 +119,50 @@ const gpuFacts = [
         <h2>{t('磁盘使用情况', 'Filesystem usage')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。本次快照已用 388.7 GiB，df 报 94% 使用率，普通写入约剩 25.1 GiB。能按账户可靠归属的部分单独计算；共享 Docker 镜像和系统占用不强行分摊给任何个人。', 'The main filesystem has about 436.0 GiB of total capacity. This snapshot shows 388.7 GiB used, df at 94%, and about 25.1 GiB available for ordinary writes. Usage that can be reliably tied to an account is counted separately; shared Docker images and system usage are not forced onto an individual.')}</p>
+    <p class="section-lede">{t('主文件系统总容量约 436.0 GiB。2026-09-04 13:46（UTC+8）实测已用约 397.3 GiB，df 报 97% 使用率，普通写入约剩 16.5 GiB。下面先显示今天可安全刷新的一致全盘事实；跨用户容量归属仍保留最近一次完整匿名快照，不为了刷新网页越过同学的权限边界。', 'The main filesystem has about 436.0 GiB total capacity. At 2026-09-04 13:46 (UTC+8), about 397.3 GiB was used, df reported 97%, and about 16.5 GiB remained available to ordinary writes. The first block shows today’s safely refreshable global facts; cross-user attribution remains the most recent complete anonymous snapshot rather than crossing sibling-user boundaries just to refresh the page.')}</p>
 
     <div class="storage-status">
       <div class="storage-status__numbers">
         <div><span>{t('文件系统', 'Filesystem')}</span><strong>436.0 GiB</strong></div>
-        <div><span>{t('已用', 'Used')}</span><strong>388.7 GiB</strong></div>
-        <div><span>{t('可用', 'Available')}</span><strong>25.1 GiB</strong></div>
-        <div><span>df Use%</span><strong>94%</strong></div>
+        <div><span>{t('已用', 'Used')}</span><strong>397.3 GiB</strong></div>
+        <div><span>{t('可用', 'Available')}</span><strong>16.5 GiB</strong></div>
+        <div><span>df Use%</span><strong>97%</strong></div>
       </div>
-      <div class="storage-bar" role="img" aria-label={t('436.0 GiB 主文件系统：可按账户归属的主目录与 Docker 写入层合计 222.0 GiB；无法归属到具体账户的 Docker 写入层 19.0 GiB；其余共享与系统占用 147.7 GiB；可用 25.1 GiB；文件系统保留与舍入 22.2 GiB。', '436.0 GiB main filesystem: 222.0 GiB is attributable to accounts through home directories plus Docker writable layers; 19.0 GiB is Docker writable-layer usage not attributable to a specific account; 147.7 GiB is other shared/system usage; 25.1 GiB is available; 22.2 GiB is filesystem reserve/rounding.') }>
-        <span class="storage-bar__users" style="width:50.9%"></span>
-        <span class="storage-bar__docker" style="width:4.4%"></span>
-        <span class="storage-bar__shared" style="width:33.9%"></span>
-        <span class="storage-bar__free" style="width:5.7%"></span>
+      <div class="storage-bar" role="img" aria-label={t('2026-09-04 13:46（UTC+8）主文件系统：总容量 436.0 GiB；已用 397.3 GiB；普通可用 16.5 GiB；文件系统保留与舍入约 22.2 GiB。', '2026-09-04 13:46 (UTC+8) main filesystem: 436.0 GiB total; 397.3 GiB used; 16.5 GiB available to ordinary writes; about 22.2 GiB filesystem reserve/rounding.')}>
+        <span class="storage-bar__used" style="width:91.1%"></span>
+        <span class="storage-bar__free" style="width:3.8%"></span>
         <span class="storage-bar__reserved" style="width:5.1%"></span>
       </div>
       <div class="storage-legend">
-        <div><i class="legend-swatch legend-swatch--users"></i><span>{t('可按账户归属', 'Account-attributed')}</span><strong>222.0 GiB · 50.9%</strong></div>
-        <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker 写入层', 'Unattributed Docker writable layers')}</span><strong>19.0 GiB · 4.4%</strong></div>
-        <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统占用', 'Shared / system usage')}</span><strong>147.7 GiB · 33.9%</strong></div>
-        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('可用空间', 'Available')}</span><strong>25.1 GiB · 5.7%</strong></div>
+        <div><i class="legend-swatch legend-swatch--used"></i><span>{t('当前已用', 'Current used')}</span><strong>397.3 GiB · 91.1%</strong></div>
+        <div><i class="legend-swatch legend-swatch--free"></i><span>{t('普通可用', 'Available')}</span><strong>16.5 GiB · 3.8%</strong></div>
         <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
       </div>
-      <p class="fine-print">{t('“可按账户归属”只把主目录和能够通过容器 home 挂载明确关联到该账户的 Docker 写入层相加。共享 Docker 镜像、构建缓存和系统文件不会因为方便统计就分摊给某个用户。所有百分比均以 436.0 GiB 总容量为分母。', '“Account-attributed” adds only home-directory usage and Docker writable layers that can be tied to an account through its home mount. Shared Docker images, build cache, and system files are not assigned to a user just to make the totals look complete. All percentages use 436.0 GiB total capacity as the denominator.')}</p>
-      <div class="why-df">
-        <strong>{t('为什么 df 显示 94%', 'Why df reports 94%')}</strong>
-        <p>{t('df 的 94% 不是简单的 388.7 ÷ 436.0，因为文件系统会保留一部分空间；普通写入当前约有 25.1 GiB。', 'The 94% shown by df is not simply 388.7 ÷ 436.0 because the filesystem reserves part of its capacity; about 25.1 GiB is currently available for ordinary writes.')}</p>
+      <p class="fine-print">{t('这里的 91.1% 是 used / total 的物理拆分比例；df 的 97% 使用率使用的是普通用户可用空间语义，因此两者不需要相等。所有 current 数字来自 2026-09-04 13:46（UTC+8）的 live df。', 'The 91.1% segment is the physical used/total share; df’s 97% follows ordinary-user available-space semantics, so the two percentages need not match. All current figures here come from the live 2026-09-04 13:46 (UTC+8) df snapshot.')}</p>
+
+      <div class="attribution-history">
+        <div class="snapshot-subhead">
+          <div><strong>{t('最近一次完整匿名归属拆分', 'Most recent complete anonymous attribution')}</strong><span>2026-09-03 01:11 (UTC+8)</span></div>
+          <p>{t('今天没有为了重算排行榜去进入同学容器或借助 Docker 管理能力挂载同学 home。所以下面的归属拆分明确保留为昨天的完整快照，而不是拿部分数据伪装成今天的排行。', 'Today’s refresh did not enter sibling-user containers or use Docker-admin capability to mount sibling homes merely to recompute the ranking. The attribution split below therefore remains explicitly the last complete snapshot instead of presenting partial data as a fresh ranking.')}</p>
+        </div>
+        <div class="storage-bar" role="img" aria-label={t('2026-09-03 01:11（UTC+8）完整匿名归属快照：可按账户归属 222.0 GiB；未归属 Docker 写入层 19.0 GiB；共享/系统占用 147.7 GiB；当时可用 25.1 GiB；文件系统保留/舍入 22.2 GiB。', 'Complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8): 222.0 GiB account-attributed; 19.0 GiB unattributed Docker writable layers; 147.7 GiB shared/system usage; 25.1 GiB then available; 22.2 GiB filesystem reserve/rounding.')}>
+          <span class="storage-bar__users" style="width:50.9%"></span>
+          <span class="storage-bar__docker" style="width:4.4%"></span>
+          <span class="storage-bar__shared" style="width:33.9%"></span>
+          <span class="storage-bar__free" style="width:5.7%"></span>
+          <span class="storage-bar__reserved" style="width:5.1%"></span>
+        </div>
+        <div class="storage-legend">
+          <div><i class="legend-swatch legend-swatch--users"></i><span>{t('可按账户归属', 'Account-attributed')}</span><strong>222.0 GiB · 50.9%</strong></div>
+          <div><i class="legend-swatch legend-swatch--docker"></i><span>{t('未归属 Docker 写入层', 'Unattributed Docker writable layers')}</span><strong>19.0 GiB · 4.4%</strong></div>
+          <div><i class="legend-swatch legend-swatch--shared"></i><span>{t('共享 / 系统占用', 'Shared / system usage')}</span><strong>147.7 GiB · 33.9%</strong></div>
+          <div><i class="legend-swatch legend-swatch--free"></i><span>{t('当时可用', 'Available then')}</span><strong>25.1 GiB · 5.7%</strong></div>
+          <div><i class="legend-swatch legend-swatch--reserved"></i><span>{t('文件系统保留 / 舍入', 'Filesystem reserve / rounding')}</span><strong>22.2 GiB · 5.1%</strong></div>
+        </div>
       </div>
       <div class="why-df">
-        <strong>{t('共享 Docker 不能按名字分摊', 'Shared Docker is not assigned by name')}</strong>
-        <p>{t('镜像层、build cache 和部分容器层属于共享 daemon。镜像名、容器标签或某次任务路径看起来像某个账户，不代表整份共享镜像都属于该账户。', 'Image layers, build cache, and some container layers belong to the shared daemon. An image name, container label, or task path that looks associated with one account does not make the entire shared image that account’s usage.')}</p>
+        <strong>{t('归属不能靠名字猜', 'Ownership cannot be guessed from names')}</strong>
+        <p>{t('这台服务器上多人同时做 OpenEvo。文件名、run 名、容器名、Docker tag 或“看起来像某个实验”的路径都只是线索，不是 ownership 证据。清理前必须把 filesystem / run manifest / Git / container reference / artifact digest 等证据闭合；归属不清就 HOLD。', 'Multiple people run OpenEvo on this server. File names, run names, container names, Docker tags, or paths that look like a particular experiment are clues, not ownership evidence. Before cleanup, filesystem, run-manifest, Git, container-reference, artifact-digest, and related provenance must close the loop; unresolved ownership is HOLD.')}</p>
       </div>
     </div>
   </section>
@@ -154,7 +175,7 @@ const gpuFacts = [
         <h2>{t('各用户磁盘占用', 'Disk usage by account')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('每个账户的“可归属合计” = 主目录 + 与该账户 home 挂载关联的 Docker 写入层。Docker 写入层是容器内部新增、还没有算进主目录的文件；共享镜像不属于某一个用户。', 'Each account’s “attributable total” equals its home directory plus Docker writable layers tied to that account’s home mount. A writable layer contains files added inside a container that are not part of the home directory; shared images do not belong to one user.')}</p>
+    <p class="section-lede">{t('下面保留的是 2026-09-03 01:11（UTC+8）最近一次完整匿名归属快照：每个账户的“可归属合计” = 主目录 + 能通过当时完整证据可靠归属的 Docker 写入层。今天没有跨越同学权限边界重算，因此不要把这张表理解成 2026-09-04 的实时排行。', 'The table below is the most recent complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8). Each attributable total combines the home directory with Docker writable layers that were reliably attributable under that complete evidence set. Today’s refresh did not cross sibling-user authority boundaries to recompute it, so this is not a live 2026-09-04 ranking.')}</p>
     <div class="storage-table-wrap" role="region" aria-label={t('匿名账户磁盘占用表', 'Anonymized account disk-usage table')} tabindex="0">
       <table class="storage-table">
         <thead>
@@ -179,7 +200,7 @@ const gpuFacts = [
         </tbody>
       </table>
     </div>
-    <p class="fine-print">{t('用户一到七是 2026-09-03 01:11（UTC+8）快照中按“可归属合计”从大到小重新生成的临时匿名标签，不是公开身份，也不会跨快照保持同一个编号。网页不保存真实账户与匿名编号之间的对应关系。', 'Users 1–7 are temporary anonymous labels regenerated from attributable-total ranking in the 2026-09-03 01:11 (UTC+8) snapshot. They are not public identities and the numbering does not persist across snapshots. The page does not store the mapping between real accounts and anonymous labels.')}</p>
+    <p class="fine-print">{t('用户一到七是 2026-09-03 01:11（UTC+8）快照中按“可归属合计”从大到小重新生成的临时匿名标签，不是公开身份，也不会跨快照保持同一个编号。网页不保存真实账户与匿名编号之间的对应关系。', 'Users 1–7 are temporary anonymous labels regenerated from attributable-total ranking in the complete 2026-09-03 01:11 (UTC+8) attribution snapshot. They are not public identities and the numbering does not persist across snapshots. The page does not store the mapping between real accounts and anonymous labels.')}</p>
   </section>
 
   <section class="server-section">
@@ -205,12 +226,18 @@ const gpuFacts = [
       <span>04</span>
       <div>
         <small>{t('快捷操作', 'Quick action')}</small>
-        <h2>{t('刷新服务器空间快照', 'Refresh the server storage snapshot')}</h2>
+        <h2>{t('整理、上传与清理服务器空间', 'Govern, publish, and reclaim server artifacts')}</h2>
       </div>
     </div>
-    <p class="section-lede">{t('这个 Prompt 用来把当前页面的刷新流程带到新的 ChatGPT 对话里。复制后直接发送即可；它默认只做只读审计和网页更新，不授权清理服务器文件。', 'This prompt carries the page-refresh workflow into a new ChatGPT conversation. Copy and send it directly; by default it authorizes only a read-only audit and webpage update, not server cleanup.')}</p>
+    <p class="section-lede">{t('当你准备整理服务器时，复制下面这段 Prompt 到一个能够操作服务器与相关远端仓库的 ChatGPT / Codex 对话。它会先读取一份详细 Markdown，然后按“盘点 → 身份证 → 上传/验证 → 精确 reclaim → 网页刷新”执行；未知删除清单仍只在 exact manifest 处向你确认一次。', 'When you are ready to organize the server, copy this prompt into a ChatGPT/Codex conversation that can operate the server and relevant remotes. It first reads a detailed Markdown contract, then runs inventory → passports → publish/verify → precise reclaim → webpage refresh; an unknown deletion list still pauses once at the exact-manifest approval gate.')}</p>
+    <div class="prompt-summary" aria-label={t('这次会做什么', 'What this workflow does')}>
+      <div><strong>{t('整理', 'Organize')}</strong><span>{t('盘点、归属证明、P0/P1/P2/P3/X 分类', 'Inventory, ownership proof, P0/P1/P2/P3/X classification')}</span></div>
+      <div><strong>{t('身份证', 'Passport')}</strong><span>{t('Run Manifest + artifact digest / lineage / restore 信息', 'Run Manifest + artifact digest / lineage / restore identity')}</span></div>
+      <div><strong>{t('上传', 'Publish')}</strong><span>{t('GitHub / Hugging Face / GHCR 按语义路由并 fresh verify', 'Route to GitHub / Hugging Face / GHCR and fresh-verify')}</span></div>
+      <div><strong>{t('清理', 'Reclaim')}</strong><span>{t('exact manifest 授权后精确删除，并实测 df', 'Precise deletion after exact-manifest approval, then measured df')}</span></div>
+    </div>
     <div class="refresh-prompt">
-      <pre data-copy-label={t('复制刷新 Prompt', 'Copy refresh prompt')}><code>{refreshPrompt}</code></pre>
+      <pre data-copy-label={t('复制服务器整理 Prompt', 'Copy server-governance prompt')}><code>{refreshPrompt}</code></pre>
     </div>
   </section>
 
@@ -225,7 +252,7 @@ const gpuFacts = [
     <div class="privacy-grid">
       <div>
         <strong>{t('公开展示', 'Shown publicly')}</strong>
-        <p>{t('总容量、总占用、可用空间、GPU 型号与数量，以及按可归属总量排序的匿名“用户一、用户二……”、主目录与 Docker 写入层大小。匿名编号只对应 2026-09-03 01:11（UTC+8）这次快照，不保存身份映射。', 'Total capacity, total usage, free space, GPU model/count, anonymous users ranked by attributable total, and the home-directory/Docker writable-layer split. Anonymous numbering applies only to the 2026-09-03 01:11 (UTC+8) snapshot, and no identity mapping is stored.')}</p>
+        <p>{t('2026-09-04 13:46（UTC+8）的全盘容量、已用/可用空间与硬件库存，以及单独标注为 2026-09-03 01:11（UTC+8）的最近一次完整匿名账户归属快照。网页不保存真实身份映射。', 'The live-safe 2026-09-04 13:46 (UTC+8) global capacity/hardware snapshot plus the separately dated most recent complete anonymous account-attribution snapshot from 2026-09-03 01:11 (UTC+8). No real-identity mapping is stored.')}</p>
       </div>
       <div>
         <strong>{t('不公开', 'Not shown')}</strong>
@@ -236,7 +263,7 @@ const gpuFacts = [
 
   <details class="measurement-notes">
     <summary>{t('数据来源', 'Data sources')}</summary>
-    <p>{t('主文件系统来自 df -B1 /；可识别账户的主目录来自只读 du；Docker 写入层来自容器 size 信息，并通过容器挂载到的 home 目录做匿名归属；无法可靠归属的容器写入层保留为单独一项。Docker system df 只用于汇总共享镜像、容器、卷和 build cache，不把共享镜像强行分摊给个人。CPU / GPU 规格沿用已核验的硬件配置。页面只保存匿名后的容量数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The main filesystem comes from df -B1 /; home-directory sizes for identifiable accounts come from read-only du measurements; Docker writable-layer sizes come from container size data and are anonymized by the home directory mounted into each container. Writable layers that cannot be reliably tied to an account remain separate. Docker system df is used only for shared image/container/volume/build-cache totals; shared images are not forced onto individual users. CPU/GPU specifications remain the previously verified hardware configuration. The page stores only anonymized capacity figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or the anonymous-label mapping.')}</p>
+    <p>{t('2026-09-04 current 全盘容量来自对主文件系统的 live df；CPU/RAM/GPU 库存也在同次安全审计中复核。跨用户 home 的完整匿名归属没有在今天强行重跑：不会为了网页统计去进入同学容器或利用 Docker 管理能力挂载同学目录，因此账户表保留为 2026-09-03 的最近一次完整匿名快照。Docker 名称/标签永远不作为 ownership 证明。页面只保存公开安全的聚合/匿名数字，不保存用户名、SSH 地址、GPU UUID、容器名、容器 ID 或匿名编号映射。', 'The 2026-09-04 current global capacity comes from a live df of the main filesystem; CPU/RAM/GPU inventory was rechecked in the same safe audit. Complete cross-user home attribution was intentionally not forced today: the page refresh does not enter sibling-user containers or use Docker-admin capability to mount sibling homes, so the account table remains the most recent complete anonymous snapshot from 2026-09-03. Docker names/labels are never ownership proof. The page stores only public-safe aggregate/anonymous figures, not usernames, SSH endpoints, GPU UUIDs, container names/IDs, or anonymous-label mappings.')}</p>
   </details>
 </main>
 
@@ -273,6 +300,7 @@ const gpuFacts = [
   .storage-status__numbers strong{margin-top:.2rem;font-size:1.35rem;letter-spacing:-.035em}
   .storage-bar{display:flex;height:30px;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--ink) 3%,transparent)}
   .storage-bar span{display:block;height:100%}
+  .storage-bar__used{background:var(--accent-deep)}
   .storage-bar__users{background:var(--accent-deep)}
   .storage-bar__docker{background:color-mix(in srgb,var(--accent-deep) 52%,var(--surface))}
   .storage-bar__shared{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
@@ -283,12 +311,18 @@ const gpuFacts = [
   .storage-legend span{color:var(--muted);font-size:.68rem}
   .storage-legend strong{grid-column:2;font-size:.82rem}
   .legend-swatch{grid-row:1/3;width:9px;height:9px;border-radius:50%}
+  .legend-swatch--used{background:var(--accent-deep)}
   .legend-swatch--users{background:var(--accent-deep)}
   .legend-swatch--docker{background:color-mix(in srgb,var(--accent-deep) 52%,var(--surface))}
   .legend-swatch--shared{background:color-mix(in srgb,var(--ink) 48%,var(--surface))}
   .legend-swatch--free{background:color-mix(in srgb,var(--accent) 38%,var(--surface))}
   .legend-swatch--reserved{border:1px solid var(--muted);background:transparent}
   .fine-print{margin:.85rem 0 0;color:var(--muted);font-size:.68rem;line-height:1.6}
+  .attribution-history{margin-top:1.15rem;padding-top:1.05rem;border-top:1px dashed var(--line)}
+  .snapshot-subhead{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.8rem;align-items:start;margin-bottom:.8rem}
+  .snapshot-subhead strong,.snapshot-subhead span{display:block}
+  .snapshot-subhead strong{font-size:.82rem}.snapshot-subhead span{margin-top:.16rem;color:var(--muted);font:700 .66rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .snapshot-subhead p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.65}
   .why-df{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--accent-deep);background:color-mix(in srgb,var(--accent) 6%,transparent)}
   .why-df strong{font-size:.8rem}
   .why-df p{margin:.25rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}
@@ -311,6 +345,9 @@ const gpuFacts = [
   .gpu-note strong{font-size:.8rem}
   .gpu-note p{margin:.3rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}
 
+  .prompt-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin:0 0 1rem}
+  .prompt-summary>div{padding:.8rem;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  .prompt-summary strong,.prompt-summary span{display:block}.prompt-summary strong{font-size:.78rem}.prompt-summary span{margin-top:.25rem;color:var(--muted);font-size:.68rem;line-height:1.55}
   .refresh-prompt{max-width:100%}
   .refresh-prompt pre{max-height:32rem;overflow:auto;margin:0;padding:1rem;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--ink) 3%,var(--surface));white-space:pre-wrap;overflow-wrap:anywhere;font-size:.72rem;line-height:1.65}
   .refresh-prompt code{font:inherit;color:inherit}
@@ -323,10 +360,10 @@ const gpuFacts = [
   .measurement-notes summary{cursor:pointer;font-weight:760;font-size:.82rem}
   .measurement-notes p{margin:.7rem 0 0;color:var(--muted);font-size:.75rem;line-height:1.7}
 
-  @media(max-width:960px){.priority-grid{grid-template-columns:1fr 1fr}.storage-legend,.gpu-facts{grid-template-columns:1fr 1fr}}
+  @media(max-width:960px){.priority-grid{grid-template-columns:1fr 1fr}.storage-legend,.gpu-facts,.prompt-summary{grid-template-columns:1fr 1fr}.snapshot-subhead{grid-template-columns:1fr}}
   @media(max-width:640px){
     .server-hero h1{max-width:12ch}
-    .priority-grid,.storage-status__numbers,.storage-legend,.gpu-facts,.privacy-grid{grid-template-columns:1fr}
+    .priority-grid,.storage-status__numbers,.storage-legend,.gpu-facts,.privacy-grid,.prompt-summary{grid-template-columns:1fr}
     .priority-card{min-height:0}
     .storage-bar{height:24px}
     .snapshot-note span+span{padding-left:0;border-left:0}
