@@ -83,13 +83,36 @@ prune_old_bundle_backups() {
 }
 
 runner_busy_state() {
-  local repo="$1" label="$2" state
+  local repo="$1" label="$2" local_container="$3" state listing running
   if ! state="$(run_with_timeout "$command_timeout" gh api "repos/$repo/actions/runners" \
-    --jq "[.runners[] | select(([.labels[].name] | index(\"$label\")) != null) | select(.status == \"online\") | .busy] | if length == 0 then \"unknown\" elif any then \"busy\" else \"idle\" end" 2>/dev/null)"; then
+    --jq "[.runners[] | select(([.labels[].name] | index(\"$label\")) != null)] as \\$matching | [\\$matching[] | select(.status == \"online\") | .busy] as \\$online | \\$online | if (\\$matching | length) == 0 then \"unknown\" elif length == 0 then (if (\\$matching | all(.status == \"offline\")) then \"offline\" else \"unknown\" end) elif any then \"busy\" else \"idle\" end" 2>/dev/null)"; then
     printf '%s\n' unknown
     return 0
   fi
-  case "$state" in busy|idle|unknown) printf '%s\n' "$state" ;; *) printf '%s\n' unknown ;; esac
+  case "$state" in
+    busy|idle)
+      printf '%s\n' "$state"
+      ;;
+    offline)
+      # A deliberately stopped runner is safe only when the corresponding local
+      # container is also proven absent or stopped. A running-but-disconnected
+      # container remains fail-closed as unknown because it may still own a job.
+      if ! listing="$(run_with_timeout "$command_timeout" docker container ls -a --format '{{.Names}}')"; then
+        printf '%s\n' unknown
+      elif ! grep -Fxq "$local_container" <<<"$listing"; then
+        printf '%s\n' idle
+      elif ! running="$(run_with_timeout "$command_timeout" docker container inspect --format '{{.State.Running}}' "$local_container" 2>/dev/null)"; then
+        printf '%s\n' unknown
+      elif [[ "$running" == false ]]; then
+        printf '%s\n' idle
+      else
+        printf '%s\n' unknown
+      fi
+      ;;
+    *)
+      printf '%s\n' unknown
+      ;;
+  esac
 }
 
 maybe_prune_build_cache() {
@@ -121,8 +144,8 @@ maybe_prune_build_cache() {
   [[ "$last_prune" =~ ^[0-9]+$ ]] || last_prune=0
   (( now - last_prune >= prune_interval )) || return 0
   for state in \
-    "$(runner_busy_state mykcs/basemodel basemodel-ci)" \
-    "$(runner_busy_state mykcs/openevo-experiment openevo-mac-ci)"; do
+    "$(runner_busy_state mykcs/basemodel basemodel-ci basemodel-ci-runner-v2)" \
+    "$(runner_busy_state mykcs/openevo-experiment openevo-mac-ci openevo-ci-runner-v2)"; do
     [[ "$state" == idle ]] || { log "build-cache prune skipped because a Mac CI runner is $state"; return 0; }
   done
   if [[ "$dry_run" == 1 ]]; then log "dry-run: would cap Docker build cache at $build_cache_max_used_space"; return 0; fi
