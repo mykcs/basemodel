@@ -23,6 +23,8 @@ h1, h2, h3, p { margin-top: 0; } h1 { font-size: clamp(2.5rem, 6vw, 5.2rem); lin
 .page-header { padding: 58px 0 32px; } .page-header h1 { font-size: clamp(2rem, 4vw, 3.8rem); margin-bottom: 12px; }
 .status-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 8px; font-size: .68rem; font-weight: 750; white-space: nowrap; } .status-verified { background: color-mix(in srgb, var(--color-positive) 12%, var(--surface)); color: var(--color-positive); } .status-partial { background: color-mix(in srgb, var(--color-warning) 12%, var(--surface)); color: var(--color-warning); } .status-demo { background: color-mix(in srgb, var(--color-warning) 12%, var(--surface)); color: var(--color-warning); } .status-unknown { background: var(--surface-muted); color: var(--muted); }
 .landscape-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 18px 0 10px; }
+fieldset.landscape-controls { border: 0; padding: 0; min-inline-size: 0; }
+fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; cursor: progress; }
 .landscape-controls .field { min-width: 145px; }
 .landscape-learning-list { margin: 22px 0; }
 .landscape-learning-list h2 { margin-bottom: 5px; }
