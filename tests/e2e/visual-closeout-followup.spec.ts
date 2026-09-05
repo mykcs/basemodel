@@ -1,5 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+import { waitForHydratedExplainer } from './hydration-ready';
+
 type Theme = 'light' | 'dark';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
@@ -50,13 +52,6 @@ async function settle(page: Page) {
     if ('fonts' in document) await document.fonts.ready;
   });
   await page.waitForTimeout(80);
-}
-
-async function ensureHydrated(root: Locator) {
-  await root.scrollIntoViewIfNeeded();
-  await expect(root.locator('.irx-transport')).toBeVisible();
-  const island = root.locator('xpath=ancestor::astro-island[1]');
-  if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
 }
 
 async function audit1280Page(page: Page) {
@@ -229,7 +224,7 @@ function assertStepperStable(baseline: StepperBox[], current: StepperBox[], labe
 }
 
 async function walkGeometry(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
   for (;;) {
     const issues = await auditConnectorGeometry(root, viewportWidth, requiresMainStage);
@@ -241,7 +236,7 @@ async function walkGeometry(root: Locator, viewportWidth: number, requiresMainSt
 }
 
 async function walkStepper(root: Locator, label: string) {
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   const baseline = await stepperBoxes(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
   for (;;) {
