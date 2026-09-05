@@ -9,10 +9,11 @@ const stage2Path = `${lobbyPath}stage2-7b-analysis/`;
 const principle = '在 SEED-aligned 的 WebShop 任务、轨迹与评测预算内，先冻结规则、再看结果，探索 OpenEvo 能把当前基座模型推到多高。';
 
 export function registerOpenEvoResearchDeepDiveTests() {
-  test('OpenEvo lobby keeps exactly two primary maps and exposes both successor reading modes', async ({ page }) => {
+  test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
     await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('[data-map-choice]')).toHaveCount(2);
+    await expect(page.locator('[data-map-choice]')).toHaveCount(3);
     await expect(page.locator('[data-map-choice="redesign"]')).toContainText('当前 successor · 3B + 1.7B');
+    await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
     await expect(page.locator('[data-deep-dive="successor-report"]')).toHaveAttribute('href', reportPath);
     await expect(page.locator('[data-deep-dive="stage2-7b-analysis"]')).toHaveAttribute('href', stage2Path);
