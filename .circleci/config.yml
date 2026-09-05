@@ -65,7 +65,6 @@ jobs:
             npm ci
             npm run verify:deploy
             npm run build
-    timeout-minutes: 20
 
   browser_shard:
     parameters:
@@ -120,7 +119,6 @@ jobs:
 
             npm ci
             node scripts/ci-ui-gate.mjs
-    timeout-minutes: 20
 
 workflows:
   pr_cloud_ci:
