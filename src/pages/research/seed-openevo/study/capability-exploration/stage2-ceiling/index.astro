@@ -3,6 +3,6 @@ import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoCeilingStrategy from '../../../../../../components/research/OpenEvoCeilingStrategy.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="第二版 Stage 2：旧门槛去掉了，但 3B 仍然没有学起来" description="Ceiling-1.0 去掉了旧的 7 对 8 门槛，改为每 128 次任务形成一轮证据。快照中 7B 已经产生 25 个 SD-LoRA 组件，而 3B 跑完 18 轮仍是 0；后续 Harness 诊断进一步发现 action contract 会改变模型实际产生的轨迹，因此新版 successor 从 fresh Stage 1 重新开始。" locale={locale}>
+<AppLayout title="Ceiling-1.0 7B 最终结果：49.33 分 / 45.31% 完整成功" description="Ceiling-1.0 保留 2026-08-31 历史快照，并新增 7B 最终 closeout：149 个完整 round、19,072 accepted rollouts、143 个 SD-LoRA components；冻结 128 题 final panel 上 Task Score ×100 = 49.33，完整成功 58/128 = 45.31%。" locale={locale}>
   <OpenEvoCeilingStrategy locale={locale} />
 </AppLayout>

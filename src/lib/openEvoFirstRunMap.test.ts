@@ -26,10 +26,14 @@ describe('OpenEvo first-run historical map', () => {
     expect(map).toContain('replay_capacity=64 是另一项独立配置');
   });
 
-  it('marks compression as future rather than an active capacity policy', () => {
-    expect(map).toContain('data-node-state="future"');
-    expect(map).toContain('rank reduction / compression');
-    expect(map).toContain('future scientific amendment');
+  it('keeps compression out of the formal lineage while publishing the resolved post-run mechanism diagnostic', () => {
+    expect(map).toContain('POST-RUN PARAMETER ANALYSIS');
+    expect(map).toContain('data-node-kind="evidence" data-node-state="resolved"');
+    expect(map).toContain('update stable rank 16.55');
+    expect(map).toContain('K64');
+    expect(map).toContain('K80');
+    expect(map).toContain('K96');
+    expect(map).toContain('不属于 formal final checkpoint');
   });
 
   it('preserves the stopped 3B evidence without turning the harness diagnosis into an amendment', () => {
