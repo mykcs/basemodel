@@ -96,7 +96,7 @@ The Landscape implementation is a useful reference: the interactive shell is vis
 
 ## Regression expectations
 
-Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. `npm test` reports the explicit `test:structural` and `test:behavior` categories; `src/lib/testTaxonomy.test.ts` fails if any `*.test.ts/tsx` file is omitted. Browser-only behavior remains Playwright/on-demand on the repository-scoped self-hosted runner and is never classified as Vitest.
+Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. `npm test` reports the explicit `test:structural` and `test:behavior` categories; `src/lib/testTaxonomy.test.ts` fails if any `*.test.ts/tsx` file is omitted. Browser-only behavior remains Playwright in CircleCI risk-based acceptance and is never classified as Vitest; the repository-scoped Mac/OrbStack runner is manual fallback only.
 
 The regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and performance contracts.
 
@@ -111,4 +111,4 @@ Follow the Vercel deployment policy:
 - batch evidence-driven fixes before a corrective Preview instead of pushing one build per thought;
 - merge the accepted release once and verify Production separately.
 
-GitHub Actions is active only as the repository-scoped self-hosted CI control plane; GitHub-hosted runners and GitHub Pages remain outside ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling remain legacy rollback/provider-specific surfaces, while `cloudflare/production-smoke/` is the active monitoring-only exception and does not build or publish the site.
+CircleCI GitHub App execution is the ordinary CI path. GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner; GitHub-hosted runners and GitHub Pages remain outside ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling remain legacy rollback/provider-specific surfaces, while `cloudflare/production-smoke/` is the active monitoring-only exception and does not build or publish the site.

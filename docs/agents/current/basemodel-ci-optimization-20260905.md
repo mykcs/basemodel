@@ -32,7 +32,7 @@ The replay inputs are encoded in `src/lib/vercelHostedUiGate.test.ts`, so future
 
 ## Draft policy
 
-Heavy self-hosted CI does not run for Draft pull requests. `ready_for_review` remains an explicit trigger, so the merge-ready exact head still receives the existing blocking acceptance.
+At the time of PR #433, heavy self-hosted CI did not run for Draft pull requests and `ready_for_review` triggered the merge-ready blocking acceptance. This is historical optimization evidence; current CI provider/trigger authority is owned by `deployment-policy.md` and `hosting-architecture.md`.
 
 ## Focused browser benchmark
 

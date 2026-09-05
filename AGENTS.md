@@ -25,7 +25,7 @@ Before non-trivial work, read in this order:
 10. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
 11. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
 12. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-13. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Preview + Production workflow, build budget, parallel integration, release and Production boundary.
+13. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current CircleCI CI authority, Mac fallback boundary, Vercel Preview + Production workflow, build budget, parallel integration, release and Production boundary.
 14. [`docs/agents/current/public-release-security-gate.md`](docs/agents/current/public-release-security-gate.md) — required before any private → public visibility change.
 15. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
 16. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
@@ -79,6 +79,12 @@ Preserve Learn / Run / Compare as distinct entry modes. Keep ALFWorld success-ra
 ```text
 GitHub = source of truth
 
+non-draft PR / release candidate
+  -> CircleCI GitHub App
+  -> ci/circleci: deterministic
+  -> ci/circleci: browser_shard_1
+  -> ci/circleci: browser_shard_2
+
 deployment-eligible non-main branch / PR + exact-head `[vercel-preview]`
   -> Vercel project `basemodel-preview`
   -> npm run verify:deploy
@@ -86,13 +92,18 @@ deployment-eligible non-main branch / PR + exact-head `[vercel-preview]`
   -> protected Vercel Preview
 
 main
+  -> CircleCI post-merge revalidation
   -> Vercel project `basemodel-preview` Production
   -> https://basemodel-preview.vercel.app
+
+manual CI recovery only
+  -> GitHub Actions workflow_dispatch
+  -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
-GitHub-hosted Actions compute and GitHub Pages remain intentionally retired for the ordinary Base Model path. GitHub Actions is currently used only as the control plane for the repository-scoped self-hosted CI workflow described in `deployment-policy.md`; do not read the scheduler as proof that GitHub-hosted compute is being consumed. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
+CircleCI GitHub App execution is the ordinary Base Model CI path. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
 Eligible Preview branches are **opt-in at the exact head**: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the Preview commit message before provider build compute is spent. Omit the token on intermediate pushes. Production on `main` remains automatic and does not require the token.
 

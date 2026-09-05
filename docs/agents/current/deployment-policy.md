@@ -1,43 +1,86 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-05**
+Last reviewed: **2026-09-06**
 
 ## Authority
 
 ```text
 GitHub = canonical source
-deployment-eligible non-main / PR + exact-head `[vercel-preview]` = Vercel Preview build
-deployment-eligible non-main / PR without the token = trigger is ignored before the site build
-main = Vercel Production
-Production identity = https://basemodel-preview.vercel.app
+
+non-draft PR merge candidate
+-> CircleCI GitHub App CI
+-> deterministic repository gate
+-> risk-based Chromium acceptance (focused or 2 full shards)
+
+main
+-> CircleCI post-merge revalidation
+-> Vercel Production
+-> https://basemodel-preview.vercel.app
+
+manual recovery only
+-> GitHub Actions workflow_dispatch
+-> repository-scoped Mac/OrbStack runner
 ```
 
-**Vercel is the only ordinary deployment authority.** Historical provider files, snapshots or fallback scripts are not normal Preview, release, Production verification, quota-reporting or completion-report surfaces.
+**Vercel is the only ordinary deployment authority. CircleCI is the ordinary CI execution authority.** GitHub Actions hosted compute and GitHub Pages remain outside the ordinary Base Model path. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
 
-GitHub Actions is re-enabled only as a **self-hosted CI control plane**. Heavy jobs run on the repository-scoped `basemodel-ci` runner, never on GitHub-hosted runners. GitHub Pages remains retired.
+### CircleCI primary CI
 
+The repository-owned `.circleci/config.yml` is the primary CI contract. The `mykcs` CircleCI organization is connected through the CircleCI GitHub App for `mykcs/basemodel`; provider-side trigger configuration must stay narrow:
 
-### 2026-09-05 CI execution review is open; current authority has not moved yet
+- non-draft PR opened;
+- PR marked ready for review;
+- pushes to open non-draft PRs;
+- pushes to the default branch.
 
-The 2026-08-29 Mac/OrbStack design was accepted against the workload measured then. New 2026-09-04/05 evidence now satisfies that document's own re-evaluation triggers: recent successful `full` jobs are roughly in the 20–25 minute class, the browser phase dominates the wall-clock, and the same Mac is an interactive control surface for Remote Desktop Commander / SSH / browser automation. This creates real host-contention and availability cost even when the runner itself is isolated.
+Draft iteration therefore consumes no heavy browser CI until the PR becomes merge-ready. Redundant branch workflows are auto-cancelled provider-side.
 
-Therefore **provider/execution review is legitimately reopened**, but no candidate provider is current authority merely because it was researched or proved on another repository. Until a replacement Base Model gate is implemented, exact-head qualified, wired into the required status, and the predecessor automatic lifecycle is retired, the repository-scoped self-hosted workflow remains current required CI.
-
-The review must optimize workload semantics before provider migration:
+`main` branch protection uses strict up-to-date semantics and requires all three cloud contexts:
 
 ```text
-real job phase decomposition
--> safe fast/focused/full planning
--> long-test decomposition / sharding benchmark
--> provider/account/quota qualification
--> exact-head replay against historical high-cost PRs
--> required-check cutover
--> old automatic runner retirement
+ci/circleci: deterministic
+ci/circleci: browser_shard_1
+ci/circleci: browser_shard_2
 ```
 
-Do not convert dated allowance numbers (Cloudflare, CircleCI, GitHub, Vercel or another runner service) into permanent repository facts. Re-check them live at decision time. Cloudflare Pages build counts, Workers Builds minutes/timeouts, Vercel deployment/build usage, and CI-runner credits are different meters and must not be compared as one number.
+A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
 
-## Vercel responsibilities
+The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent shards with one Playwright worker each; focused browser work is owned by shard 1 and shard 2 exits before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
+
+Do not treat CircleCI provider configuration, a green historical run, or a branch-head benchmark as merge evidence. Required acceptance is the current exact PR head/current-base result plus the repository's ordinary merge rules.
+
+### Risk-aware browser gate
+
+Browser regression does not run inside the ordinary Vercel Production build. `scripts/ci-ui-gate.mjs` reuses `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific duplicate.
+
+```text
+non-UI / governance-only diff
+-> deterministic documentation contract
+-> browser jobs halt before install
+
+bounded route-owned UI diff
+-> verify:deploy + build
+-> focused mapped Chromium specs / changed-route smoke
+
+shared/global/unknown UI diff
+-> verify:deploy + build
+-> complete Chromium matrix split across two cloud shards
+
+Lab/server-relevant diff
+-> dedicated 12-case Lab gate on shard 1
+```
+
+Changes to the CI/browser gate, CircleCI config, merge-candidate preparation, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions or silently reclassify unknown ownership merely to reduce credits.
+
+### Mac manual fallback
+
+`.github/workflows/self-hosted-ci.yml` is a **manual recovery canary only**. It has `workflow_dispatch` and no automatic PR/main triggers. Its job is `basemodel-mac-fallback`, runs on the repository-scoped `basemodel-ci` OrbStack runner, and explicitly forces the complete browser matrix so a manual canary cannot accidentally become a no-op when base/head are identical.
+
+The assets under `.github/runner/` remain recoverable infrastructure: immutable runner/container inputs, start/stop/reconcile/doctor scripts, bounded workspace cleanup, no host mounts, no Docker socket, no published ports, dropped Linux capabilities, bounded CPU/memory/process/log limits, and fail-closed busy-state checks. They are **not** ordinary CI execution authority.
+
+On the owner's Mac, the BaseModel LaunchAgent should remain disabled during ordinary operation so Remote Desktop Commander, SSH, browser automation, and other control-plane work do not compete with persistent CI. If the cloud provider is unavailable and a manual fallback is explicitly needed, restore the runner deliberately, run the manual canary, then return it to the disabled state. Never redirect ordinary CI to research/GPU servers.
+
+### Vercel responsibilities
 
 Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
 
@@ -47,107 +90,24 @@ Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-Preview branch eligibility is only the first filter; it is **not permission to spend build compute on every intermediate push**. `scripts/vercel-ignore-build.mjs` requires the exact-head commit message to contain `[vercel-preview]` when `VERCEL_ENV=preview`. Without that token, an eligible Preview trigger exits through the ignored-build path before `verify:deploy`, the static build, or hosted Playwright runs. Production is never gated by this token. A tokenized Preview can still be ignored when the proven Git range is docs/governance-only. Preview `robots.txt` also uses `Disallow: /` for cooperative crawlers.
-
-### Risk-aware self-hosted browser gate
-
-Browser regression no longer runs inside the ordinary Vercel Production build. The repository-owned `.github/workflows/self-hosted-ci.yml` uses the existing `scripts/vercel-ui-plan.ts` policy on a repository-scoped self-hosted runner. The runner is the execution environment; GitHub Actions is only the scheduler/control plane.
-
-```text
-non-UI / governance-only diff
--> skip before npm install
-
-content/local UI diff
--> verify:deploy + build
--> focused mapped Chromium specs / changed-route smoke
-
-shared/global UI diff
--> verify:deploy + build
--> complete Chromium UI matrix
-
-Lab/server-relevant diff
--> additionally run the dedicated 12-case Lab gate
-```
-
-`scripts/ci-ui-gate.mjs` deliberately reuses `vercel-ui-plan.ts`; it does not maintain a second provider-specific risk taxonomy. Playwright is limited to one worker by default, and the workflow uses one concurrency group per PR/ref. The workflow has `contents: read` only, disables persisted checkout credentials, and only accepts same-repository work from the owner account.
-
-The old `scripts/vercel-ui-gate.mjs` and `scripts/vercel-lab-browser-gate.mjs` remain as rollback/reference implementations, but `vercel.json` must not call them in the ordinary Production build. If the new CI path proves unreliable, rollback is to restore those two commands before weakening browser acceptance.
-
-### Mac runner lifecycle
-
-The zero-extra-cost runner is packaged under `.github/runner/` and runs inside OrbStack's Docker engine rather than directly in the daily macOS user session. The container has **no host mounts, no Docker socket, no published ports and no Linux capabilities**. It is capped at 4 CPU / 4 GB RAM / 4 GB additional swap / 1 GB shared memory / 1,024 processes, uses `no-new-privileges`, and limits Docker logs to five 20 MB files. The GitHub workflow itself keeps Playwright at one worker.
-
-A user-level LaunchAgent installed by `.github/runner/mac-orbstack-install-launch-agent.sh` is the only automatic lifecycle owner; Docker restart policy remains `no`. It checks once per minute, starts or repairs the runner only on AC power, stops it within a bounded grace period when AC power is unavailable, and backs off for 15 minutes after a failed repair to avoid retry churn. It writes events to the macOS unified log instead of unbounded files and only warns on low disk space; it never prunes Docker globally or changes `pmset` preferences. Manual stop persists a disabled state until the start script is run explicitly.
-
-Runner replacement is fail-closed: GitHub availability and `busy=false` must be proven before a container is stopped, image and runtime-contract drift are reconciled, and failed candidates are renamed for inspection rather than deleted. Initial migration uses a separate `basemodel-macbook-container-v2` registration, so the stopped legacy container remains a real rollback path. Keep the old container, image and registration for at least 72 hours and three successful full CI canaries; removal is a separate irreversible maintenance decision.
-
-The current runner image is arm64 Linux on Apple Silicon. This is acceptable for the present suite because the Chromium screenshot-signature case captures a signature into the build artifact rather than comparing against a committed x86 pixel baseline. If future tests introduce platform-pinned pixel baselines, keep those tests on one declared baseline platform instead of silently mixing architectures.
-
-The container is persistent between start/stop cycles, so npm and Playwright caches stay local to the isolated runner. A bounded hook cleans only the repository workspace before and after each job; it preserves those dependency/browser caches and refuses paths outside the runner work root. Cleaning on both boundaries also covers residue from a prior abrupt interruption. The workflow intentionally does **not** upload an npm cache to GitHub Actions; this avoids a redundant ~100 MB post-job cache transfer and any dependency on hosted cache storage.
-
-The Docker base image, downloaded GitHub runner archive and every GitHub-authored workflow action are pinned to immutable digests. Manual `workflow_dispatch` always runs the full deterministic/build/browser path and is the supported canary mechanism. Use `.github/runner/mac-orbstack-doctor.sh` to inspect power, disk, container isolation/limits, memory peak/OOM events, GitHub online/busy state, installed runner version and LaunchAgent state.
-
-For Mac disk-pressure or cache-maintenance work, run the installed Doctor before and after any mutation and use the filesystem backing `$HOME`, not the sealed system-volume reading, for capacity decisions. A cleanup task must prove `busy=false`, no relevant host package-manager or Docker/Buildx build process, and the actual cache roots before using tool-owned cleanup commands. The zero-mount runner cannot use the host's npm/pip/uv/pnpm caches: clearing them is machine-wide developer-cache maintenance, not runner optimization, and requires that broader scope in the current task. Never infer deletion safety from `du` or `docker system df` alone: preserve active/warm runner state, images, stopped rollback containers, registered worktrees, mixed-purpose directories, and OrbStack internals unless their ownership and recovery value have been separately resolved. BuildKit is host-wide shared state; an age filter reduces scope but is not a universal safety guarantee. The reconcile loop warns below 15% free space and intentionally does not auto-prune.
-
-`main` branch protection requires the `basemodel-self-hosted` status check with strict up-to-date semantics. Force-push and branch deletion are disabled. Administrator enforcement is intentionally left off as the emergency recovery path if the on-demand runner itself becomes unavailable. A docs/governance-only PR still needs the runner online long enough to classify the diff, but exits before Node/npm installation or browser work.
+Preview branch eligibility is only the first filter; it is **not permission to spend build compute on every intermediate push**. `scripts/vercel-ignore-build.mjs` requires the exact-head commit message to contain `[vercel-preview]` when `VERCEL_ENV=preview`. Without that token, an eligible Preview trigger exits through the ignored-build path before `verify:deploy`, the static build, or hosted browser work. Production is never gated by this token. A tokenized Preview can still be ignored when the proven Git range is docs/governance-only.
 
 ### Cloudflare post-deploy smoke
 
-Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`. `/healthz` only proves the Worker is alive; `/check` is intentionally locked unless `SMOKE_TOKEN` is configured as a Cloudflare secret. The scheduled smoke does not require that secret.
+Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`.
 
 Do not move repository compilation, npm installation, Vitest, the full Playwright matrix, or screenshot baselines into this Worker. Its job is post-deploy observation, not CI replacement.
 
-### Cost guardrails
+### Cost and provider guardrails
 
-The 2026-08-27 billing audit showed that BaseModel Build CPU, not public traffic, dominated variable Vercel usage. Keep these safeguards together:
+- Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
+- Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
+- Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
+- Heavy Chromium/Lab acceptance belongs to CircleCI; Vercel Production must not install Chromium merely to duplicate CI.
+- CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
+- A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
-- Vercel project build-machine selection is intentionally **fixed Standard**. Do not restore elastic auto-upsizing without a measured same-workload cost reason; the previous elastic policy had promoted this project to a larger class because of long builds.
-- Speed Insights is disabled for the project, and the public shell does not inject the Speed Insights client. Re-enable it only when the performance data is actively needed and the event cost is accepted.
-- `robots.txt` keeps ordinary search and user-requested AI retrieval available while opting out named training crawlers. This is a cooperative, zero-request-analysis guard; do not add BotID deep analysis or paid firewall rate limiting merely to reduce cost unless traffic evidence shows those products would save more than they consume.
-- Heavy Chromium and Lab execution belongs to the self-hosted CI runner; Vercel Production must not install Chromium or provider-specific `dnf` browser libraries.
-- `scripts/ci-ui-gate.mjs` keeps Lab selection diff-aware and reuses the same focused/full UI planner used by the historical Vercel gate.
-- Cloudflare production smoke is deliberately tiny and independent; failures there are post-deploy health evidence, not permission to weaken pre-merge CI.
-
-These controls reduce future consumption only; they do not erase Build CPU already accumulated in the billing period.
-
-Historical diagnosis, parallel-Agent friction, Preview-auth verification, shell/editing noise, and migration-build evidence are recorded in [`../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](../history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). Use that file for rationale; this document remains the current behavior owner.
-
-## 2026-08-29 decision rationale — historical accepted baseline; review reopened 2026-09-05
-
-The Mac/OrbStack architecture was the accepted decision for the workload measured on 2026-08-29. It must not be reopened merely because another provider exists; however, the 2026-09-05 measurements documented above now meet the policy's own re-evaluation threshold. Treat the old rationale as the baseline that a successor must beat, not as a prohibition on evidence-driven review. Until a successor completes exact-head qualification and required-check cutover, the existing self-hosted path remains authoritative.
-
-The migration was driven by measured bottlenecks rather than provider preference. A representative pre-migration Production build spent roughly `4.8m` in the 92-case Chromium matrix plus about `33s` in the 12-case Lab gate, while `verify:deploy` was roughly `40s` and the Astro build itself roughly `6–7s`. After browser acceptance moved off Vercel, an actual Production build completed in about `47s`. That evidence is why the first optimization target was browser execution, not an immediate rewrite of every deterministic audit or a micro-optimization of repeated package installation.
-
-Keep these concepts separate:
-
-```text
-CI relevance != Vercel deploy relevance
-
-docs/governance-only
--> self-hosted classifier may finish immediately
--> Vercel ignored-build path
-
-test / workflow / runner-only
--> self-hosted CI must still validate
--> Vercel should not build the website
-
-product / runtime / deploy-relevant
--> self-hosted validation as required by risk
--> Vercel build/deploy as required by deploy relevance
-```
-
-This separation is intentional. Do not reuse the Vercel ignored-build classifier as the sole CI relevance classifier: a test-only change is not a reason to rebuild Production, but it is still something CI must validate.
-
-## Deferred ideas, not current work
-
-Several technically valid alternatives were discussed and intentionally left as future options rather than changes to the accepted design:
-
-- **Content/tree identity for test-proof reuse.** Commit SHA alone is too strict because a PR head and its merge commit can differ even when their Git tree is identical. Tree/build-input identity is useful evidence when proving that the tested source equals the released source. Do not add a Vercel-side GitHub-token lookup or proof registry merely for architectural neatness; the current required-check + protected-main model is simpler.
-- **Build once, test once, promote the same immutable deployment.** A future release model could build a Vercel candidate once, test that exact deployment, then promote it instead of rebuilding on `main`. This is stronger artifact identity than correlating two builds, but it would change the current Git-integration release model and is therefore deferred.
-- **Different heavy runner hardware.** The Mac/OrbStack runner is accepted now because it adds no recurring service fee and measured idle cost is tiny. If runner availability starts blocking merges, platform-pinned visual baselines appear, or CI volume grows materially, re-evaluate an ephemeral/dedicated x86 Linux runner. Do not move CI onto the research/GPU server.
-- **Cloudflare Browser Rendering.** If current Cloudflare capability and quota are re-verified, a very small number of real-browser Production probes could complement the HTTP smoke. It should remain a post-deploy probe layer, not a destination for the 92-case UI matrix, Lab matrix, repository compilation, npm installation, or screenshot-baseline ownership.
-
-Re-open the architecture only for evidence such as repeated merge blocking because the local runner is unavailable, a new need for one canonical x86 visual-baseline platform, materially higher CI volume, Vercel cost remaining high after browser offload, or a deliberate move to build-once promotion. Provider pricing, quotas and product capabilities are time-sensitive; re-check them at that time rather than treating this 2026-08-29 discussion as permanent market truth.
+The Mac/OrbStack architecture was the accepted 2026-08-29 baseline and the 20–25 minute CI investigation/optimization is preserved in the dated history documents. Those files explain why the architecture changed; they do not override this current authority. See [`../history/2026-09-05-ci-first-principles-cloud-migration-and-web-ci-retrospective.md`](../history/2026-09-05-ci-first-principles-cloud-migration-and-web-ci-retrospective.md) and [`../history/2026-09-05-basemodel-ci-optimization-closeout-experience.md`](../history/2026-09-05-basemodel-ci-optimization-closeout-experience.md).
 
 ## Vercel build-budget discipline
 

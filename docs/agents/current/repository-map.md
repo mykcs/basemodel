@@ -73,7 +73,7 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 ## Deployment map
 
 ```text
-GitHub PR / release candidate          -> repository-scoped self-hosted CI
+GitHub PR / release candidate          -> CircleCI GitHub App risk-based CI
 GitHub non-main deployment-eligible ref  -> optional Vercel Preview
 GitHub main                              -> Vercel Production
 Production identity                     -> https://basemodel-preview.vercel.app
@@ -81,7 +81,7 @@ Cloudflare production-smoke Worker       -> post-deploy monitoring only
 Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
 ```
 
-Vercel remains the only ordinary deployment authority. GitHub Actions is active only as the self-hosted CI control plane; GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
+Vercel remains the only ordinary deployment authority. CircleCI GitHub App execution is the ordinary CI path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
 
 ## Change-to-check guidance
 
