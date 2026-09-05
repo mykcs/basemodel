@@ -10,6 +10,7 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const prepareScript = join(repoRoot, 'scripts', 'ci-circleci-prepare.sh');
 
 const git = (cwd, args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
+const rangeReceipt = () => join(mkdtempSync(join(tmpdir(), 'basemodel-circleci-env-')), 'range.env');
 
 function parseEnv(path) {
   return Object.fromEntries(
@@ -39,7 +40,7 @@ function fixtureRepo() {
 
 test('pull_request mode materializes a clean two-parent merge candidate', () => {
   const { cwd, base, head } = fixtureRepo();
-  const out = join(cwd, 'range.env');
+  const out = rangeReceipt();
 
   execFileSync('bash', [prepareScript, '--event', 'pull_request', '--base', base, '--head', head, '--output', out], {
     cwd,
@@ -60,7 +61,7 @@ test('pull_request mode materializes a clean two-parent merge candidate', () => 
 
 test('push mode binds validation to the pushed commit and its first parent', () => {
   const { cwd, base, head } = fixtureRepo();
-  const out = join(cwd, 'range.env');
+  const out = rangeReceipt();
 
   execFileSync('bash', [prepareScript, '--event', 'push', '--head', head, '--output', out], {
     cwd,
