@@ -16,7 +16,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const steps = OPEN_EVO_MECHANISM_STEPS.map((step) => ({ ...step, copy: zh ? step.zh : step.en }));
 const experiments = OPEN_EVO_MECHANISM_EXPERIMENTS;
 const boundaries = zh ? OPEN_EVO_MECHANISM_BOUNDARIES.zh : OPEN_EVO_MECHANISM_BOUNDARIES.en;
-const sourceUrl = `https://github.com/mykcs/openevo-experiment/pull/${OPEN_EVO_MECHANISM_SOURCE.sourcePr}`;
+const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO_MECHANISM_SOURCE.mergedCommit}`;
 ---
 
 <article class="mechanism-map" data-testid="openevo-mechanism-map">
@@ -143,7 +143,7 @@ const sourceUrl = `https://github.com/mykcs/openevo-experiment/pull/${OPEN_EVO_M
     <div>
       <p>PROVENANCE</p>
       <strong>{t('现在展示的是“已经冻结的计划”，不是实验结果', 'This page shows a frozen plan, not a scientific result')}</strong>
-      <span>{t('科学源 PR #319；网站只在结果真正出现后升级状态和结论。', 'Scientific source PR #319; the site upgrades status and claims only after results actually exist.')}</span>
+      <span>{t('科学合同已合并：PR #319 · main 8d2f202；网站只在结果真正出现后升级状态和结论。', 'Scientific contract merged as PR #319 · main 8d2f202; the site upgrades status and claims only after results actually exist.')}</span>
     </div>
     <a href={sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={sourceUrl} />{t('查看科学合同与身份证 →', 'Open the scientific contract and passports →')}</a>
   </footer>

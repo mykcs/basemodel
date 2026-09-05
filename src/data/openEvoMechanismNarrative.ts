@@ -3,7 +3,7 @@ export type MechanismNarrativeLocale = 'zh' | 'en';
 export const OPEN_EVO_MECHANISM_SOURCE = {
   programId: 'openevo-mechanism-1.0-202609052200',
   sourcePr: 319,
-  sourceHead: '454ec88a1a7fb2058e7f2fb9c8fb9bf30cdf4053',
+  mergedCommit: '8d2f2024c8b70f633f9824ce2e01272582bbdc0b',
   state: 'PREREGISTERED_EXECUTION_LOCKED',
 } as const;
 
