@@ -233,3 +233,43 @@ Post-release finding/corrective PR, if any:
 5. Build success is not discovery completeness: the first Production release contained the new routes but omitted them from `sitemap.xml`, requiring focused PR #132 and route tests.
 
 Provider mechanics and repository merge settings are time-sensitive. Re-check them before repeating the implementation details; the semantic decision model is the durable part.
+
+## Exact duplicate test PRs: choose by semantic diff and preserve evidence
+
+When multiple PRs claim the same narrow test fix, do not choose a canonical PR from title, creation time, `mergeable`, or a green badge alone.
+
+Before mutating PR state, compare each exact head against the same base and record:
+
+```text
+head SHA and base SHA
+changed path(s), additions, deletions, and byte-level details
+functional invariant added or removed
+unrelated formatting/EOF/lockfile churn
+focused-repeat evidence and exact-head required-check evidence
+current-main movement and overlap with intervening commits
+```
+
+Use this decision order:
+
+1. Reject any candidate that weakens or deletes the existing assertion.
+2. Prefer the smallest patch that fully restores the intended contract.
+3. Treat byte-level cleanliness (for example, avoiding an unrelated final-newline deletion) as a tie-breaker, not as a reason to discard stronger functional evidence.
+4. Preserve stronger evidence from a non-canonical duplicate in the canonical PR's body or thread before closing the duplicate.
+5. Comment the supersession relationship and close duplicate PRs explicitly once the replacement is identified.
+6. Do not delete branches automatically; first check whether they are the only reachable home of useful history or are referenced by another PR/workflow.
+
+For hydration tests specifically, wait on a real readiness signal such as the owning Astro island losing its `ssr` marker. Do not replace the synchronization with a guessed sleep, globally eager hydration, a removed assertion, or a click that intentionally bypasses the product contract. A test that proves behavior after hydration is distinct from a product guarantee that the first visible pre-hydration click is preserved; keep those claims separate.
+
+The post-closeout record should state:
+
+```text
+canonical PR and exact head
+functional equivalence/difference of every duplicate
+evidence retained from closed candidates
+current-main/base-drift assessment
+closed duplicate PR numbers and reason
+remaining merge/release boundary
+```
+
+Historical worked example: [the 2026-09-05 Landscape hydration PR deduplication](../history/2026-09-05-landscape-pr-deduplication-retrospective.md).
+\n
