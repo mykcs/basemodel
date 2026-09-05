@@ -31,6 +31,7 @@ if (shardIndex > shardTotal) {
 const primaryShard = shardIndex === 1;
 const ownsBuild = process.env.CI_BROWSER_BUILD === '1';
 const installWithDeps = process.env.CI_PLAYWRIGHT_WITH_DEPS === '1';
+const forceFull = process.env.CI_UI_FORCE_FULL === '1';
 
 const run = (command, args, extraEnv = {}) => {
   console.log(`[ci-ui-gate] ${command} ${args.join(' ')}`);
@@ -79,6 +80,16 @@ console.log(`[ci-ui-gate] ${plan.reason}`);
 if (!['skip', 'focused', 'full'].includes(plan.mode)) {
   console.error('[ci-ui-gate] invalid planner mode; fail closed');
   process.exit(1);
+}
+
+if (forceFull) {
+  plan = {
+    ...plan,
+    mode: 'full',
+    risk: 'global',
+    reason: 'Explicit fallback canary requests the complete browser acceptance matrix.',
+  };
+  console.log('[ci-ui-gate] force-full fallback canary enabled');
 }
 
 if (plan.mode === 'skip') {
@@ -152,7 +163,7 @@ const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   || file.startsWith('.github/runner/')
 ));
 
-const labRelevant = ciInfrastructureChanged || plan.changedFiles.some((file) => (
+const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
   /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
   || file.startsWith('src/layouts/')
   || file.startsWith('src/styles/')

@@ -20,6 +20,8 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-ui-plan.ts',
   'scripts/ci-ui-gate.mjs',
   '.github/workflows/self-hosted-ci.yml',
+  '.circleci/config.yml',
+  'scripts/ci-circleci-prepare.sh',
 ]);
 
 interface RouteOwner {
@@ -122,7 +124,7 @@ export function planHostedUi(files: string[]): HostedUiPlan {
       changedFiles,
       routes: [],
       specs: [],
-      reason: 'The CI/browser gate or its runner environment changed; fail closed to the complete Chromium regression matrix.',
+      reason: 'The CI/browser gate or its execution environment changed; fail closed to the complete Chromium regression matrix.',
     };
   }
 

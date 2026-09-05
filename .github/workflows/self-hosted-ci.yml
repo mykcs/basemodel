@@ -1,37 +1,28 @@
-name: Self-hosted CI
+name: Mac CI fallback
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: basemodel-self-hosted-${{ github.event.pull_request.number || github.ref }}
+  group: basemodel-mac-fallback-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
-    name: basemodel-self-hosted
-    if: >-
-      github.event_name != 'pull_request' ||
-      (github.event.pull_request.draft == false &&
-       github.event.pull_request.head.repo.full_name == github.repository &&
-       github.actor == 'mykcs')
+    name: basemodel-mac-fallback
     runs-on: [self-hosted, basemodel-ci]
     timeout-minutes: 45
     env:
       CI: '1'
       PLAYWRIGHT_WORKERS: '1'
     steps:
-      - name: Checkout tested merge candidate
+      - name: Checkout selected ref
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: ${{ (github.event_name == 'pull_request' || github.event_name == 'push') && '2' || '0' }}
+          fetch-depth: 2
           persist-credentials: false
 
       - name: Setup Node 24
@@ -40,85 +31,35 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
-      - name: Resolve test range
+      - name: Resolve manual fallback range
         id: range
         shell: bash
         run: |
           set -euo pipefail
-          event="${{ github.event_name }}"
-          if [[ "$event" == "pull_request" ]]; then
-            # A queued pull_request event can carry an older trigger-time base
-            # while GitHub regenerates refs/pull/<n>/merge on a newer main.
-            # GitHub's tested PR merge ref has the base as first parent and the
-            # PR head as second parent. Bind validation to the exact first parent
-            # of the merge candidate that actions/checkout actually tested.
-            base="$(git rev-parse HEAD^1 2>/dev/null || true)"
-            declared_base="${{ github.event.pull_request.base.sha }}"
-            if [[ -n "$base" && "$base" != "$declared_base" ]]; then
-              echo "::notice::PR base advanced while queued; validating tested merge base $base instead of trigger-time base $declared_base."
-            fi
-          elif [[ "$event" == "push" ]]; then
-            base="${{ github.event.before }}"
-            if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
-              base="$(git rev-parse HEAD^ 2>/dev/null || true)"
-            fi
-          else
-            git fetch origin main --no-tags
-            base="$(git merge-base origin/main HEAD)"
-          fi
-
-          if [[ -z "$base" ]]; then
-            echo "::error::Could not resolve a comparison base."
-            exit 1
-          fi
-          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
-            git fetch --no-tags --depth=1 origin "$base"
-          fi
-          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
-            echo "::error::Comparison base $base is unavailable."
-            exit 1
-          fi
-
+          base="$(git rev-parse HEAD^ 2>/dev/null || true)"
           head="$(git rev-parse HEAD)"
+          if [[ -z "$base" ]]; then
+            echo "::error::Could not resolve parent commit for the manual fallback canary."
+            exit 1
+          fi
           echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "head=$head" >> "$GITHUB_OUTPUT"
 
-      - name: Validate CI planner contract
-        run: node --test tests/ci-plan.test.mjs
-
-      - name: Plan CI depth
-        id: plan
-        env:
-          CI_BASE_SHA: ${{ steps.range.outputs.base }}
-          CI_HEAD_SHA: ${{ steps.range.outputs.head }}
-        run: >-
-          node scripts/ci-plan.mjs
-          --event "${{ github.event_name }}"
-          --base "$CI_BASE_SHA"
-          --head "$CI_HEAD_SHA"
-
-      - name: Documentation contract
-        if: steps.plan.outputs.mode == 'docs'
-        env:
-          CI_BASE_SHA: ${{ steps.range.outputs.base }}
-          CI_HEAD_SHA: ${{ steps.range.outputs.head }}
-        run: node scripts/ci-docs-contract.mjs
+      - name: Validate CI planner contracts
+        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs
 
       - name: Install dependencies
-        if: steps.plan.outputs.mode == 'full'
         run: npm ci
 
       - name: Deterministic verification
-        if: steps.plan.outputs.mode == 'full'
         run: npm run verify:deploy
 
       - name: Build static production artifact
-        if: steps.plan.outputs.mode == 'full'
         run: npm run build
 
-      - name: Risk-based browser acceptance
-        if: steps.plan.outputs.mode == 'full'
+      - name: Complete browser fallback canary
         env:
           CI_BASE_SHA: ${{ steps.range.outputs.base }}
           CI_HEAD_SHA: ${{ steps.range.outputs.head }}
+          CI_UI_FORCE_FULL: '1'
         run: node scripts/ci-ui-gate.mjs

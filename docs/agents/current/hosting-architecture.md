@@ -1,31 +1,54 @@
-# Hosting architecture — self-hosted CI + Vercel + Cloudflare smoke
+# Hosting architecture — CircleCI + Vercel + Cloudflare smoke
 
-Last reviewed: **2026-08-30**
+Last reviewed: **2026-09-06**
 
-Status: **current release architecture. Vercel remains the only ordinary deployment provider; GitHub self-hosted Actions supplies pre-merge CI and Cloudflare supplies post-deploy smoke only.**
+Status: **current release architecture. CircleCI supplies ordinary pre-merge/post-merge CI, Vercel remains the only ordinary deployment provider, Cloudflare supplies post-deploy smoke, and the Mac/OrbStack runner is manual fallback only.**
 
 ## Current decision
 
 ```text
 GitHub = source of truth
 
-PR / release candidate
-  -> repository-scoped self-hosted CI
-  -> deterministic checks + risk-based Playwright
+non-draft PR / release candidate
+  -> CircleCI GitHub App
+  -> deterministic repository gate
+  -> risk-based Playwright
+     -> focused coverage on shard 1, or
+     -> full coverage across 2 independent 1-worker shards
 
-Vercel Preview / main Production
-  -> npm run verify:deploy
-  -> npm run build
-  -> deploy static artifact
+main
+  -> CircleCI post-merge revalidation
+  -> Vercel Production
+     -> npm run verify:deploy
+     -> npm run build
+     -> deploy static artifact
+
+manual CI recovery only
+  -> GitHub Actions workflow_dispatch
+  -> repository-scoped Mac/OrbStack runner
 
 Cloudflare production-smoke Worker
   -> https://basemodel-production-smoke.mykcs01.workers.dev/healthz
   -> scheduled HTTP / canonical / robots / sitemap / redirect checks every 30 minutes
 ```
 
-Astro, React and GitHub do not change. This is provider-ownership consolidation, not an application-stack rewrite.
+Astro, React and GitHub do not change. This is execution-ownership consolidation, not an application-stack rewrite.
 
-The self-hosted executor is the repository-scoped `basemodel-ci` runner inside a no-mount/no-socket OrbStack container on the Mac. A user LaunchAgent owns AC-only lifecycle reconciliation; GitHub `busy=false` gates replacement, and the previous runner remains stopped but recoverable through the 72-hour/three-canary observation window. The executable safety contract is owned by `.github/runner/`, `.github/workflows/self-hosted-ci.yml` and `current/deployment-policy.md`.
+## CI execution ownership
+
+The executable primary CI contract is `.circleci/config.yml` plus `scripts/ci-circleci-prepare.sh`, `scripts/ci-plan.mjs`, `scripts/ci-ui-gate.mjs`, and `scripts/vercel-ui-plan.ts`.
+
+For pull requests, CircleCI validates an explicitly materialized `base + PR head` merge candidate. The three required cloud contexts are:
+
+```text
+ci/circleci: deterministic
+ci/circleci: browser_shard_1
+ci/circleci: browser_shard_2
+```
+
+Full browser work uses the qualified Debian 12 / Node 24 runtime with one Playwright worker per shard. The longest global-header sweep is decomposed so sharding can actually distribute work; do not replace sharding with extra workers on one constrained machine.
+
+The retained `.github/workflows/self-hosted-ci.yml` is manual fallback only. `.github/runner/` preserves the no-mount/no-socket OrbStack recovery implementation, but no ordinary PR or `main` event should require the Mac runner. The local LaunchAgent stays disabled during ordinary operation.
 
 ## Vercel contract
 
@@ -46,14 +69,15 @@ The ordinary lifecycle is:
 ```text
 one coherent branch/PR
 -> one atomic multi-file push
--> self-hosted risk-based CI
+-> CircleCI risk-based CI
 -> optional exact-head Vercel Preview
 -> merge accepted release to main
+-> CircleCI post-merge revalidation
 -> one lightweight Vercel Production build
 -> Cloudflare/public Production smoke
 ```
 
-The provider-trigger count is part of acceptance evidence. Completion reports should distinguish total triggers, `READY`, `ERROR`, `CANCELED`, ignored/skipped, exact-head Preview acceptance and Production acceptance.
+The provider-trigger count is part of acceptance evidence. Completion reports should distinguish CI status, Vercel trigger counts, `READY`, `ERROR`, `CANCELED`, ignored/skipped, exact-head Preview acceptance and Production acceptance.
 
 ## Domain boundary
 
@@ -65,15 +89,16 @@ When a custom domain is adopted, update `PUBLIC_SITE_URL`/Astro canonical identi
 
 ```text
 repository contract updated
--> self-hosted CI passes the required risk plan
+-> exact PR merge candidate passes all required CircleCI contexts
 -> optional exact-head Vercel Preview build / route inspection
 -> merge accepted release to main
+-> CircleCI main revalidation passes
 -> lightweight Vercel Production build
 -> verify Production HTTP/routes/canonical/hreflang/robots/sitemap
 -> Cloudflare scheduled smoke continues independent observation
 ```
 
-A READY Preview is not Production evidence.
+A READY Preview is not Production evidence. A historical CircleCI run is not current merge evidence.
 
 ## Public-source boundary
 
