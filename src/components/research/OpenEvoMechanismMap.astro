@@ -1,0 +1,158 @@
+---
+import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import {
+  OPEN_EVO_MECHANISM_BOUNDARIES,
+  OPEN_EVO_MECHANISM_EXPERIMENTS,
+  OPEN_EVO_MECHANISM_PRINCIPLE,
+  OPEN_EVO_MECHANISM_SOURCE,
+  OPEN_EVO_MECHANISM_STEPS,
+} from '../../data/openEvoMechanismNarrative';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const steps = OPEN_EVO_MECHANISM_STEPS.map((step) => ({ ...step, copy: zh ? step.zh : step.en }));
+const experiments = OPEN_EVO_MECHANISM_EXPERIMENTS;
+const boundaries = zh ? OPEN_EVO_MECHANISM_BOUNDARIES.zh : OPEN_EVO_MECHANISM_BOUNDARIES.en;
+const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO_MECHANISM_SOURCE.mergedCommit}`;
+---
+
+<article class="mechanism-map" data-testid="openevo-mechanism-map">
+  <header class="mechanism-hero">
+    <div class="mechanism-hero__eyebrow">
+      <span>OPENEVO × WEBSHOP</span>
+      <b>{t('新主实验 · 执行仍锁定', 'NEW PRIMARY PROGRAM · EXECUTION LOCKED')}</b>
+    </div>
+    <h1>{t('从“能走多高”到“能不能主动干预”', 'From “how high can it go?” to “can we steer it?”')}</h1>
+    <p class="mechanism-hero__lead">{zh ? OPEN_EVO_MECHANISM_PRINCIPLE.zh : OPEN_EVO_MECHANISM_PRINCIPLE.en}</p>
+    <div class="mechanism-hero__status" role="status">
+      <strong>OpenEVO-Mechanism-1.0</strong>
+      <span>{t('科学设计已冻结；Ray 资源身份已兼容真机池；没有启动任何新任务。', 'Scientific design is frozen; Ray resource identities are live-pool compatible; no new task has been launched.')}</span>
+    </div>
+  </header>
+  <section class="mechanism-question" aria-labelledby="mechanism-question-title">
+    <div>
+      <p>THE QUESTION CHANGED</p>
+      <h2 id="mechanism-question-title">{t('Ceiling 已经告诉我们“发生了变化”，现在要证明“这些变化到底有没有用”', 'Ceiling told us that change happened. Now we have to prove whether the change matters.')}</h2>
+    </div>
+    <dl>
+      <div>
+        <dt>{t('旧问题', 'Previous question')}</dt>
+        <dd>{t('同等资源下，OpenEvo 的能力天花板在哪里？', 'Under matched resources, where is OpenEvo’s capability ceiling?')}</dd>
+      </div>
+      <div>
+        <dt>{t('新问题', 'New question')}</dt>
+        <dd>{t('OpenEvo 学到的参数方向是否有方向特异的因果作用，并能否反过来指导下一次自我进化？', 'Are OpenEvo’s learned parameter directions causally direction-specific, and can they guide a later self-improvement step?')}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="mechanism-flow" aria-labelledby="mechanism-flow-title">
+    <header>
+      <p>OBSERVE → INTERVENE → STEER</p>
+      <h2 id="mechanism-flow-title">{t('三步，不允许跳步', 'Three steps, with no shortcuts')}</h2>
+      <span>{t('先做描述，再做因果干预；只有干预通过预注册门槛，才允许把几何知识反馈回 OpenEvo。', 'Describe first, intervene second. Geometry can enter the OpenEvo loop only after passing the preregistered causal gate.')}</span>
+    </header>
+    <ol>
+      {steps.map((step) => (
+        <li data-step={step.id}>
+          <small>{step.copy.kicker}</small>
+          <strong>{step.copy.title}</strong>
+          <p>{step.copy.body}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section class="mechanism-passports" aria-labelledby="mechanism-passports-title">
+    <header>
+      <p>EXPERIMENT PASSPORTS</p>
+      <h2 id="mechanism-passports-title">{t('四张身份证：三个主实验，一个 SEED 参照探针', 'Four passports: three primary experiments and one SEED reference probe')}</h2>
+      <span>{t('每个实验先冻结问题、预算、停止条件和不能说的话。GPU 空出来，只代表“可以排队”，不代表“应该启动”。', 'Each experiment freezes its question, budget, stopping rule, and claim boundary first. Free GPU capacity means “schedulable,” not “scientifically authorized.”')}</span>
+    </header>
+    <div class="passport-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{t('实验', 'Experiment')}</th>
+            <th>{t('要回答什么', 'Question')}</th>
+            <th>{t('固定预算', 'Frozen budget')}</th>
+            <th>{t('现在', 'Now')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {experiments.map((row) => (
+            <tr>
+              <th scope="row"><code>{row.id}</code><strong>{zh ? row.nameZh : row.nameEn}</strong></th>
+              <td>{zh ? row.questionZh : row.questionEn}</td>
+              <td>{zh ? row.budgetZh : row.budgetEn}</td>
+              <td><span class="status-lock">{zh ? row.stateZh : row.stateEn}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mechanism-causal" aria-labelledby="mechanism-causal-title">
+    <header>
+      <p>WHAT COUNTS AS CAUSAL?</p>
+      <h2 id="mechanism-causal-title">{t('“参数变得多”不等于“这个参数有用”', '“The parameter moved a lot” does not mean “the parameter is useful.”')}</h2>
+    </header>
+    <div class="causal-grid">
+      <article>
+        <small>{t('TaskVector', 'TaskVector')}</small>
+        <strong>{t('把未来方向移植到一个更早、真实不存在的反事实状态', 'Transplant a future direction into an earlier counterfactual state')}</strong>
+        <p>{t('用 +0.5τ、+1τ、−1τ 和 3 个 Gram 同范数随机方向比较。这样测试的是方向，不是“改的权重更多”。', 'Compare +0.5τ, +1τ, −1τ, and three Gram-norm-matched random directions. This isolates direction from simply changing more weight.')}</p>
+      </article>
+      <article>
+        <small>{t('Parameter themes', 'Parameter themes')}</small>
+        <strong>{t('先冻结 top-3 theme，再逐个敲掉', 'Freeze the top three themes first, then knock them out one by one')}</strong>
+        <p>{t('只有敲掉某个 theme 后的行为下降超过同范数随机敲除，才允许称为因果重要。', 'A theme is called causally important only if its knockout hurts behavior more than norm-matched random knockouts.')}</p>
+      </article>
+    </div>
+  </section>
+  <section class="mechanism-ray" aria-labelledby="mechanism-ray-title">
+    <div>
+      <p>RAY RESOURCE PLAN</p>
+      <h2 id="mechanism-ray-title">{t('先让新实验“进池子”，但不抢正在跑的 1.7B / 3B', 'Put the new experiments in the pool without stealing from the running 1.7B/3B line')}</h2>
+      <p>{t('新 workload 的科学身份和资源槽身份被分开。它们使用 secondary_spare：只在 q17 逻辑槽释放后才有资格占用；当前 3B 可以继续跑。', 'Scientific arm identity is separated from resource-slot identity. New workloads use secondary_spare, so they become eligible only after the q17 logical lane is released while the current 3B can continue.')}</p>
+    </div>
+    <dl>
+      <div><dt>{t('真机验收', 'Live validation')}</dt><dd>RAY_PROFILE_REGISTRY = PASS</dd></div>
+      <div><dt>{t('当前池', 'Existing pool')}</dt><dd>CEILING1_RAY_POOL = LIVE</dd></div>
+      <div><dt>{t('验收副作用', 'Validation side effects')}</dt><dd>{t('state SHA 前后相同 · 0 新 reservation', 'state SHA unchanged · 0 new reservations')}</dd></div>
+      <div><dt>{t('科学启动权', 'Science activation')}</dt><dd>{t('仍锁定', 'Still locked')}</dd></div>
+    </dl>
+  </section>
+
+  <section class="mechanism-boundary" aria-labelledby="mechanism-boundary-title">
+    <header>
+      <p>BOUNDARY</p>
+      <h2 id="mechanism-boundary-title">{t('这次明确不做什么', 'What this program explicitly does not do')}</h2>
+    </header>
+    <ul>{boundaries.map((item) => <li>{item}</li>)}</ul>
+    <aside>
+      <strong>{t('SEED 在这里不是主角。', 'SEED is not the main character here.')}</strong>
+      <span>{t('M1-D 只采 1,440 条 Stage1 轨迹并做 MiniMax 分析，到 Stage2 门口自动停止。它回答“初始化教材有什么不同”，不是“能不能复现论文最终分数”。', 'M1-D collects only 1,440 Stage1 trajectories and runs MiniMax analysis, then stops before Stage2. It asks how initialization corpora differ, not whether we can reproduce the paper’s final score.')}</span>
+    </aside>
+  </section>
+
+  <footer class="mechanism-evidence">
+    <div>
+      <p>PROVENANCE</p>
+      <strong>{t('现在展示的是“已经冻结的计划”，不是实验结果', 'This page shows a frozen plan, not a scientific result')}</strong>
+      <span>{t('科学合同已合并：PR #319 · main 8d2f202；网站只在结果真正出现后升级状态和结论。', 'Scientific contract merged as PR #319 · main 8d2f202; the site upgrades status and claims only after results actually exist.')}</span>
+    </div>
+    <a href={sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={sourceUrl} />{t('查看科学合同与身份证 →', 'Open the scientific contract and passports →')}</a>
+  </footer>
+</article>
+<style>
+.mechanism-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;display:grid;gap:1.2rem}.mechanism-map>*{min-width:0}.mechanism-map p{margin:0}.mechanism-hero{padding:2rem 0 1.4rem;border-bottom:1px solid var(--line);display:grid;gap:1rem}.mechanism-hero__eyebrow{display:flex;justify-content:space-between;gap:1rem;align-items:center;font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.mechanism-hero__eyebrow span{color:var(--accent-deep)}.mechanism-hero__eyebrow b{padding:.35rem .55rem;border:1px solid var(--line);border-radius:999px;color:var(--muted)}.mechanism-hero h1{max-width:950px;margin:0;font-size:clamp(2.5rem,6vw,5.6rem);line-height:.94;letter-spacing:-.06em}.mechanism-hero__lead{max-width:780px;color:var(--muted);font-size:1.05rem;line-height:1.7}.mechanism-hero__status{display:grid;grid-template-columns:minmax(210px,.45fr) minmax(0,1fr);gap:1rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-hero__status span{color:var(--muted);line-height:1.55}
+.mechanism-question,.mechanism-flow,.mechanism-passports,.mechanism-causal,.mechanism-ray,.mechanism-boundary,.mechanism-evidence{padding:1.25rem 0;border-bottom:1px solid var(--line)}.mechanism-question>div>p,.mechanism-flow header>p,.mechanism-passports header>p,.mechanism-causal header>p,.mechanism-ray>div>p:first-child,.mechanism-boundary header>p,.mechanism-evidence p{color:var(--accent-deep);font:800 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.mechanism-question{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:1.4rem}.mechanism-question h2,.mechanism-flow h2,.mechanism-passports h2,.mechanism-causal h2,.mechanism-ray h2,.mechanism-boundary h2{margin:.35rem 0 0;font-size:clamp(1.5rem,3.2vw,2.35rem);line-height:1.08;letter-spacing:-.04em}.mechanism-question dl{margin:0;display:grid;gap:.7rem}.mechanism-question dl div{padding:.9rem;border-left:3px solid var(--line);background:var(--surface-muted)}.mechanism-question dt{color:var(--muted);font-size:.75rem;font-weight:800}.mechanism-question dd{margin:.25rem 0 0;line-height:1.55}
+.mechanism-flow header,.mechanism-passports header{display:grid;grid-template-columns:minmax(220px,.6fr) minmax(0,1.4fr);gap:.8rem 1.2rem;align-items:end}.mechanism-flow header>p,.mechanism-passports header>p{grid-column:1/-1}.mechanism-flow header span,.mechanism-passports header span{color:var(--muted);line-height:1.6}.mechanism-flow ol{list-style:none;margin:1rem 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}.mechanism-flow li{display:grid;gap:.45rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.mechanism-flow small{color:var(--accent-deep);font:800 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.mechanism-flow li strong{font-size:1.05rem}.mechanism-flow li p{color:var(--muted);line-height:1.55;font-size:.9rem}
+.passport-table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;margin-top:1rem}.mechanism-passports table{width:100%;min-width:860px;border-collapse:collapse;text-align:left}.mechanism-passports th,.mechanism-passports td{padding:.85rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}.mechanism-passports thead th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.04em}.mechanism-passports tbody th{width:18%}.mechanism-passports tbody th code{display:block;width:max-content;margin-bottom:.3rem;color:var(--accent-deep);font-size:.72rem}.mechanism-passports tbody th strong{display:block}.mechanism-passports tbody td{color:var(--muted);font-size:.88rem}.status-lock{color:var(--ink);font-weight:700}
+.mechanism-causal header{max-width:800px}.causal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.causal-grid article{display:grid;gap:.45rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel)}.causal-grid small{color:var(--accent-deep);font:800 .65rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.causal-grid strong{font-size:1.08rem;line-height:1.35}.causal-grid p{color:var(--muted);line-height:1.6}.mechanism-ray{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:1.4rem}.mechanism-ray>div>p:last-child{margin-top:.65rem;color:var(--muted);line-height:1.65}.mechanism-ray dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.mechanism-ray dl div{padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-ray dt{color:var(--muted);font-size:.72rem;font-weight:800}.mechanism-ray dd{margin:.25rem 0 0;font:750 .78rem/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.mechanism-boundary{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1fr);gap:1rem 1.4rem}.mechanism-boundary header{grid-row:span 2}.mechanism-boundary ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.mechanism-boundary li{padding:.7rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);font-size:.88rem;line-height:1.45}.mechanism-boundary aside{display:grid;gap:.3rem;padding:.9rem;border-left:3px solid var(--accent);background:var(--surface-muted)}.mechanism-boundary aside span{color:var(--muted);line-height:1.55}.mechanism-evidence{display:flex;justify-content:space-between;gap:1.2rem;align-items:end;border-bottom:0}.mechanism-evidence>div{display:grid;gap:.35rem}.mechanism-evidence span{color:var(--muted);font-size:.88rem}.mechanism-evidence a{flex:none;color:var(--accent-deep);font-weight:800;text-underline-offset:.2em}
+@media(max-width:760px){.mechanism-map{width:min(100% - 1rem,1120px)}.mechanism-hero{padding-top:1.2rem}.mechanism-hero__eyebrow{align-items:flex-start;flex-direction:column}.mechanism-hero__status,.mechanism-question,.mechanism-flow header,.mechanism-passports header,.mechanism-ray,.mechanism-boundary{grid-template-columns:1fr}.mechanism-flow ol,.causal-grid{grid-template-columns:1fr}.mechanism-boundary header{grid-row:auto}.mechanism-boundary ul{grid-template-columns:1fr}.mechanism-ray dl{grid-template-columns:1fr}.mechanism-evidence{display:grid;align-items:start}}
+</style>

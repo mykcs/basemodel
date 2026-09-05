@@ -14,18 +14,20 @@ const zhIndex = read('../pages/research/seed-openevo/study/capability-exploratio
 const enIndex = read('../pages/en/research/seed-openevo/study/capability-exploration/index.astro');
 
 describe('OpenEvo experiment archive', () => {
-  it('keeps exactly two primary maps and demotes the archive from top-level route choice', () => {
-    expect((lobby.match(/data-map-choice=/g) || []).length).toBe(2);
+  it('keeps exactly three primary maps and demotes the archive from top-level route choice', () => {
+    expect((lobby.match(/data-map-choice=/g) || []).length).toBe(3);
     expect(lobby).toContain('data-map-choice="first-run"');
     expect(lobby).toContain('data-map-choice="redesign"');
+    expect(lobby).toContain('data-map-choice="mechanism-1-0"');
     expect(lobby).not.toContain('data-map-choice="archive"');
     expect(lobby).toContain('<details class="map-lobby__archive">');
     expect(lobby).toContain('/capability-exploration/archive/');
     expect(lobby).toContain('打开完整实验档案');
     expect(lobby).toContain('Server/Kaggle');
-    expect(archive).toContain('两张肉鸽地图只讲研究主剧情');
+    expect(archive).toContain('三张主地图只讲研究主剧情');
     expect(archive).toContain('Map one: first experiment');
     expect(archive).toContain('Map two: Redesigning OpenEvo');
+    expect(archive).toContain('Map three: Mechanism-1.0');
     expect(zhIndex).toContain('OpenEvoCapabilityMapLobby');
     expect(enIndex).toContain('OpenEvoCapabilityMapLobby');
   });
