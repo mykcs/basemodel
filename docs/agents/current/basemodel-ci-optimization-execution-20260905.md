@@ -1,6 +1,6 @@
 # Basemodel CI Optimization — executable implementation checklist
 
-Status: **IN PROGRESS**
+Status: **COMPLETE**
 
 Owner: repository CI architecture
 
@@ -235,17 +235,20 @@ After merge:
 - [x] Verify no temporary benchmark workflow exists on `main`.
 - [x] Verify Draft suppression remains encoded.
 - [x] Verify route-owned server replay remains focused from `main`.
-- [ ] Record any automatic post-merge CI run and its result; do not cancel a scientifically meaningful or release-critical check merely to improve timing numbers.
-- [ ] Update this file `Status` to **COMPLETE** and append the closeout table below.
+- [x] Record any automatic post-merge CI run and its result; do not cancel a scientifically meaningful or release-critical check merely to improve timing numbers.
+- [x] Update this file `Status` to **COMPLETE** and append the closeout table below.
 
-Observed Section 12/13 receipts so far:
+Observed Section 12/13 receipts:
 - #433 final validated head: `1ebbcab675308c95783e5d4dde6f10c7d0c7a06c`; canonical required run `33901504296` PASS.
 - #433 was merged with expected-head protection; squash/main commit: `9ba65cf02d588d9027a7de6716d08c2075ec9714`.
 - exact `main` planner blob `df0be33c28ee9f0769b1829d5c3d0be1ae1677dd` and workflow blob `1d41d4d6bbe6dac8e43be598e48e91f2c6506fb2` match the validated candidate content.
 - exact `main` contains only `.github/workflows/self-hosted-ci.yml`; the temporary benchmark workflow is absent.
 - Draft suppression remains encoded and `ready_for_review` remains a trigger.
 - exact-main-equivalent planner replay: server owner + safe companion → `focused` on exactly zh/en server routes; unknown shared/global examples → `full`.
-- automatic post-merge main CI: run `33924493381` (result pending at this checkpoint).
+- automatic post-merge main CI run `33924493381` is bound to exact `main` SHA `9ba65cf02d588d9027a7de6716d08c2075ec9714`.
+- run `33924493381` attempt 1 passed deterministic verification and production build, then failed only at `tests/e2e/ordinary-tech-debt-round2.spec.ts` in `Landscape keeps static learning content and hydrates controls when visible`: after clicking the SSR-rendered `Full view` control, `.landscape-view-note` was not observed within 5 seconds.
+- the failing Landscape island is mounted with `client:visible`; neither that product component nor this test was changed by #433. The failure is therefore classified as a transient SSR-to-hydration timing race rather than a #433 product regression; no assertion or site behavior was weakened to make it pass.
+- GitHub reran the same workflow as attempt 2 with the same exact SHA. Attempt 2 completed `SUCCESS` (`run_attempt=2`, job `101207409119`), including `Deterministic verification`, `Build static production artifact`, and `Risk-based browser acceptance` all PASS. Final run conclusion: **SUCCESS**.
 
 ## 14. Closeout table
 
@@ -258,6 +261,6 @@ Observed Section 12/13 receipts so far:
 | Full granularity | 4-way header sweep, exact route union | PASS — 4 deterministic tests; no omitted/duplicate routes |
 | Full cloud sharding | 2 shards × 1 worker, no retries | PASS — 78 + 78 = 156; 5m51s wall clock; retries=0 |
 | Final candidate tests | targeted architecture suite + diff check | PASS — 38/38 + diff check + exact-head canonical CI |
-| Main integration | exact merge SHA + post-merge verification | WAITING — post-merge run `33924493381` in progress |
+| Main integration | exact merge SHA + post-merge verification | PASS — `main@9ba65cf02d588d9027a7de6716d08c2075ec9714`; post-merge run `33924493381` attempt 2 SUCCESS on the same exact SHA |
 
 Final rule: **performance is never allowed to redefine correctness.** Optimization changes scheduling and test selection only when ownership is explicitly provable; uncertainty remains full/fail-closed.
