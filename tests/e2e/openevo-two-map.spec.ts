@@ -98,6 +98,15 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
+for (const path of [root, `/en${root}`]) {
+  test(`tablet layout keeps ${path} usable`, async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await assertNoPageOverflow(page);
+    await expect(page.locator('[data-map-choice]')).toHaveCount(3);
+  });
+}
+
 for (const path of [root, firstRun, successor, exploration, report, mechanism, archive]) {
   test(`iphone layout keeps ${path} usable`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
