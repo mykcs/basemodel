@@ -160,6 +160,48 @@ inherited base debt
 
 Historical differential-attribution case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md).
 
+## 6.1 CI optimization preserves acceptance semantics
+
+When CI becomes slow or expensive, optimize the **work selected and the dominant measured phase** before changing provider or buying a larger runner.
+
+Required sequence:
+
+```text
+measure recent real jobs by phase
+-> identify the dominant cost
+-> separate CI relevance from deploy relevance
+-> improve safe affected-surface selection
+-> split long indivisible tests so parallelism can work
+-> benchmark the exact same gate on candidate runners
+-> only then migrate required-status authority
+```
+
+Rules:
+
+- A provider migration is not a performance optimization by itself. Moving a 20–25 minute gate unchanged to another cloud merely moves the bill/timeout/queue.
+- Use `fast / focused / full` only when each lower tier has a defensible impact map. Unknown/shared/global/CI-classifier changes fail closed to the stronger tier.
+- The planner, workflow, test-selection code, Playwright config, runner image and acceptance harness must never use their own optimized low-risk path without explicit self-protection.
+- Directory names are weak evidence of impact. Prefer semantic ownership (`component/style/data -> owned routes/specs`) when it can be maintained deterministically; otherwise keep the conservative full path.
+- Playwright `workers` and CI **shards** solve different problems. Increasing workers on one CPU-bound machine can increase contention; split long single tests first, then benchmark independent shards on separate executors when wall-clock matters.
+- Heuristic changed-test features may be useful as an early signal but cannot silently replace the final merge/release proof when the tool itself documents incomplete impact inference.
+- Preserve the strongest required acceptance on the exact merge candidate. Do not save minutes by converting a real merge gate into a non-blocking nightly check unless the product-risk contract is deliberately changed.
+
+Provider selection is a separate decision. Before adopting a runner/provider, verify live:
+
+```text
+private-repository support and source-access boundary
+account eligibility (personal vs organization)
+GitHub App/repository permission scope
+secret/fork/SSH-debug behavior
+billing unit and free-tier reset/overage behavior
+single-job timeout
+concurrency / queue semantics
+CPU/RAM/architecture/browser support
+required-check integration and failure visibility
+```
+
+Pricing, quotas and product eligibility are time-sensitive evidence, not durable architecture facts. Record dated measurements in history and keep current policy provider-neutral where possible.
+
 ## 7. Chromium and WebKit have different execution boundaries
 
 - Vercel's hosted browser gate is Chromium-only.

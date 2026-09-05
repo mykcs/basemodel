@@ -58,8 +58,8 @@ const links = {
   <section class="lineage-map" aria-live="polite">
     <div class="lineage-panel" data-first-run-panel="7b">
       <header class="lineage-panel__head">
-        <span>{t('7B · FROZEN LEGACY LINEAGE', '7B · FROZEN LEGACY LINEAGE')}</span>
-        <strong>{t('这条线不再换新 Harness；它按已经冻结的实验合同走到终点，作为完整历史对照。', 'This lineage does not switch to the new harness mid-run. It follows its frozen contract to the endpoint as a complete historical comparison.')}</strong>
+        <span>{t('7B · CLOSED LEGACY LINEAGE', '7B · CLOSED LEGACY LINEAGE')}</span>
+        <strong>{t('这条线已经按冻结实验合同完成并封存：149 个完整 round 后才打开 final panel，随后完成参数机制分析、远端归档和本地重资产退休。', 'This lineage is now complete under its frozen contract: the final panel was opened only after 149 completed rounds, followed by parameter-mechanism closeout, remote archival, and retirement of heavy local payloads.')}</strong>
       </header>
 
       <div class="lineage-spine" aria-label={t('7B 历史实验主线', '7B historical experiment mainline')}>
@@ -97,9 +97,9 @@ const links = {
 
         <div class="run-with-patch">
           <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="frozen">
-            <span>FROZEN LEGACY</span>
-            <h3>{t('让这条 7B 旧线按原规则跑完', 'Let the frozen 7B lineage finish under its own rules')}</h3>
-            <p>{t('新版 Harness 出现以后，不在这条已经跑了很远的实验上热换 Stage 1、Harness 或 Stage 2 规则。它继续作为完整历史对照。', 'Once the new harness exists, this long-running experiment does not hot-swap Stage 1, harness, or Stage-2 rules. It continues as a complete historical comparison.')}</p>
+            <span>FINAL CLOSEOUT · 2026-09-04</span>
+            <h3>{t('149 个完整 round 后封存：49.33 分，58 / 128 完整成功', 'Sealed after 149 completed rounds: 49.33 score and 58 / 128 exact successes')}</h3>
+            <p>{t('最终 checkpoint 使用 round 0–148，共 19,072 条 accepted Stage-2 rollout、143 个 SD-LoRA component。partial round149 的 96 条只留 provenance，不进入 checkpoint。final panel 在 checkpoint 冻结后只打开一次。', 'The final checkpoint uses rounds 0–148: 19,072 accepted Stage-2 rollouts and 143 SD-LoRA components. The 96 rollouts from partial round149 remain provenance only and do not enter the checkpoint. The final panel was opened exactly once after checkpoint freeze.')}</p>
             <button type="button" data-first-run-detail="frozen-7b" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
           </article>
           <aside class="patch-node" data-node-kind="engineering-fix" data-node-state="resolved">
@@ -111,10 +111,10 @@ const links = {
         </div>
         <span class="lineage-connector lineage-connector--future" aria-hidden="true"></span>
 
-        <article class="lineage-node lineage-node--future" data-node-kind="scientific-amendment" data-node-state="future">
-          <span>{t('未来研究 · 尚未启用', 'FUTURE STUDY · NOT ACTIVE')}</span>
-          <h3>{t('以后可能压缩已经积累的参数更新', 'Accumulated parameter updates may be compressed later')}</h3>
-          <p>{t('rank reduction / compression 仍是 future scientific amendment，不属于当前 7B frozen lineage 的既成事实。', 'Rank reduction / compression remains a future scientific amendment rather than an active part of the frozen 7B lineage.')}</p>
+        <article class="lineage-node lineage-node--diagnostic" data-node-kind="evidence" data-node-state="resolved">
+          <span>{t('POST-RUN PARAMETER ANALYSIS', 'POST-RUN PARAMETER ANALYSIS')}</span>
+          <h3>{t('143 个 component 的最终参数几何已经封口', 'Final parameter geometry is closed through 143 components')}</h3>
+          <p>{t('full-W 的 RMS / spectral / stable-rank 里程碑分析覆盖到 132 components；最终 exact Task-Vector geometry 补到 143：update stable rank 16.55，95% energy rank 77，最后 139–143 的 residual-energy 中位数 0.0597。另有 K64/K80/K96 function intervention 检查压缩方向是否改变决策。', 'Full-W RMS / spectral / stable-rank milestone analysis reaches 132 components; exact final Task-Vector geometry extends to 143: update stable rank 16.55, 95% energy rank 77, and median residual energy 0.0597 over components 139–143. K64/K80/K96 function interventions separately test whether reduced task-vector capacity changes decisions.')}</p>
           <button type="button" data-first-run-detail="future-compression" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
       </div>
@@ -123,7 +123,8 @@ const links = {
         <p>OUTCOME</p>
         <h2 id="outcome-7b-title">{t('7B 这条线留下了什么？', 'What did the 7B lineage teach us?')}</h2>
         <ul>
-          <li>{t('Stage 2 可以真的持续学习：clean success 能进入真实参数更新。', 'Stage 2 can sustain real learning: clean success can become a real parameter update.')}</li>
+          <li>{t('Stage 2 可以真的持续学习：149 个完整 round 最终形成 143 个 SD-LoRA component。', 'Stage 2 can sustain real learning: 149 completed rounds ultimately produced 143 SD-LoRA components.')}</li>
+          <li>{t('最终 128 题：Task Score ×100 = 49.33，完整成功 58/128 = 45.31%；SEED 89.7 / 78.1 只作为论文报告参考值，不冒充本地 paired reproduction。', 'Final 128 tasks: Task Score ×100 = 49.33 and exact success = 58/128 = 45.31%; SEED 89.7 / 78.1 is shown only as a paper-reported reference, not a local paired reproduction.')}</li>
           <li>{t('工程容量不能偷偷冒充科学终点：64-component guard 必须作为显式 amendment 处理。', 'Engineering capacity cannot silently become the scientific endpoint: the 64-component guard needs an explicit amendment boundary.')}</li>
           <li>{t('长跑修复要与科学修改分层：恢复和归档问题可以修，但不能顺手改实验问题。', 'Long-run repairs must stay separate from scientific changes: resume and archive issues can be fixed without quietly redefining the experiment.')}</li>
         </ul>
@@ -211,8 +212,8 @@ const links = {
       <dl><div><dt>{t('改变', 'Changed')}</dt><dd>{t('不再用“最多 64 个 component”作为独立停止条件。', 'The stream no longer stops solely because it reached 64 components.')}</dd></div><div><dt>{t('保持不变', 'Unchanged')}</dt><dd>{t('rank=8、总 Stage 2 rollout 预算、task schedule、parser/evaluator、teacher budget 不因此改变；effective-rank cap 仍是 4096，replay_capacity=64 是另一项独立配置。', 'Rank=8, the Stage-2 rollout budget, task schedule, parser/evaluator, and teacher budget do not change because of this amendment; the effective-rank cap remains 4096, while replay_capacity=64 is a separate setting.')}</dd></div></dl>
     </template>
     <template data-first-run-detail-template="frozen-7b">
-      <p>{t('这条 7B 实验已经沿旧设计运行很远。后来我们认为新的 Harness 更合理，但不能在同一次正式实验中途换掉会改变 trajectory 语义的接口，再把前后结果当成一条纯净 lineage。', 'This 7B experiment had already progressed far under the older design. A later harness may be better, but swapping a trajectory-changing interface into the middle of the same formal run would make the before/after lineage scientifically ambiguous.')}</p>
-      <strong>{t('处理方式：冻结科学合同，让旧线按自己的规则收尾；新版另开 successor。', 'Disposition: freeze the scientific contract, let the old lineage finish under its own rules, and open a separate successor for the redesign.')}</strong>
+      <p>{t('这条 7B 实验没有在中途热换 Harness。最终使用 round 0–148 的完整状态进入锁定 128 题：49.33 分、58/128 完整成功；7 条 action-admissibility failure 按 fail-closed 计 0，runtime error 为 0。', 'This 7B experiment never hot-swapped its harness mid-lineage. The complete state after rounds 0–148 entered the locked 128-task panel: 49.33 score, 58/128 exact successes, seven fail-closed action-admissibility failures, and zero runtime errors.')}</p>
+      <strong>{t('处理方式：final checkpoint、结果、参数分析和身份证均远端 exact verify；重资产随后从服务器退休。', 'Disposition: the final checkpoint, results, parameter analysis, and identity receipts are remotely exact-verified; heavy server payloads are then retired.')}</strong>
     </template>
     <template data-first-run-detail-template="runtime-fixes">
       <p>{t('这些修复只让既定实验正确运行，不改变实验问题本身。', 'These repairs keep the already-defined experiment running correctly without changing the scientific question.')}</p>
@@ -220,7 +221,7 @@ const links = {
       <a href={links.archive}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a>
     </template>
     <template data-first-run-detail-template="future-compression">
-      <p>{t('压缩 / rank reduction 如果以后加入，会再次改变参数容量合同，所以不能为了省磁盘或显存就偷偷放进当前 lineage。它必须有独立 scientific amendment 与 qualification。', 'Compression / rank reduction would change the parameter-capacity contract again. It cannot be inserted quietly to save disk or VRAM; it needs its own scientific amendment and qualification.')}</p>
+      <p>{t('这项分析没有把压缩状态写回训练。K64 在已消费的 32 行 function probe 上保持 32/32 greedy action；K80 改变 1/32，K96 改变 2/32。D1 因此把 K64 记为 primary PASS，但它只是一项 post-run mechanism diagnostic，不属于 formal final checkpoint。', 'This analysis never writes a compressed state back into training. K64 preserves 32/32 greedy actions on the already-consumed function probe; K80 changes 1/32 and K96 changes 2/32. D1 therefore records K64 as the primary PASS candidate, but it remains a post-run mechanism diagnostic rather than part of the formal final checkpoint.')}</p>
     </template>
     <template data-first-run-detail-template="3b-stage1">
       <p>{t('旧 3B Stage 1 同样收集 1,440 条轨迹，但 exact success 很稀少，而且历史实现里还出现了较多 parser repair / invalid-action termination。后来我们因此把“能力弱”和“接口把动作弄坏”拆成两个问题。', 'The old 3B Stage 1 also collected 1,440 trajectories, but exact success was very sparse and the historical runtime showed many parser repairs / invalid-action terminations. That forced us to separate “weak capability” from “the interface damaged the action.”')}</p>

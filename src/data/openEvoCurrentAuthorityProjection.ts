@@ -7,7 +7,7 @@ export const openEvoCurrentAuthorityProjection = {
   derivedOnly: true,
   observedAt: '2026-09-04 SGT · post-#305 merge',
   freezeId: '202609030400',
-  sourceControlHead: '4e8c3ab72f8e4f5e1e0c52b35da2a45c596ec415',
+  authorityBindingCommit: '4e8c3ab72f8e4f5e1e0c52b35da2a45c596ec415',
   campaignManifestSha256: '211f3cc923b6ccf3d760e12f6266b3193f6b08a91d95b0a0f369ccd8e632c9a5',
   masterPlanExecutionAuthority: false,
   runtimeAuthority: {

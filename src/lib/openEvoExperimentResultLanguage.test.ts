@@ -36,7 +36,7 @@ const resultFamilyCopy = `${currentAuthorityProjection}\n${scaffold}\n${stage1Ve
 describe('OpenEvo capability-exploration result language', () => {
   it('projects current 202609030400 authority without turning the website into a live database', () => {
     expect(currentAuthorityProjection).toContain("freezeId: '202609030400'");
-    expect(currentAuthorityProjection).toContain("sourceControlHead: '4e8c3ab72f8e4f5e1e0c52b35da2a45c596ec415'");
+    expect(currentAuthorityProjection).toContain("authorityBindingCommit: '4e8c3ab72f8e4f5e1e0c52b35da2a45c596ec415'");
     expect(currentAuthorityProjection).toContain("campaignManifestSha256: '211f3cc923b6ccf3d760e12f6266b3193f6b08a91d95b0a0f369ccd8e632c9a5'");
     expect(currentAuthorityProjection).toContain("identityTimestamp: '202609042025'");
     expect(currentAuthorityProjection).toContain('a96710a1a7ee764743358c90d224dab2617639d8db627bb85052b7da6d52a8ea');
@@ -52,7 +52,7 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(ceilingStage2).toContain('openevo-current-authority-projection');
     expect(ceilingStage2).toContain('Master Plan execution authority=false');
     expect(ceilingStage2).toContain('SHARED RAY · {current.runtimeAuthority.identityTimestamp}');
-    expect(ceilingStage2).toContain('历史 Ceiling-1.0 快照');
+    expect(ceilingStage2).toContain('authority bind');
   });
 
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
