@@ -5,6 +5,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const snap = read('../data/openEvoCeilingStage2Snapshot.ts');
 const ceiling = read('../components/research/OpenEvoCeilingStrategy.astro');
 const firstRun = read('../components/research/OpenEvoFirstRunMap.astro');
+const archive = read('../components/research/OpenEvoExperimentArchive.astro');
 const zhPage = read('../pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro');
 const enPage = read('../pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro');
 
@@ -47,6 +48,25 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(firstRun).toContain('K64');
     expect(firstRun).toContain('不属于 formal final checkpoint');
     expect(ceiling).toContain('formal 训练里始终没有启用 rank reduction / compression');
+  });
+
+
+  it('pins role-specific archive identities and preserves the current verification boundary', () => {
+    expect(snap).not.toContain('archiveHead');
+    expect(snap).toContain("status: 'CLOSED_ARCHIVED'");
+    expect(snap).toContain("repository: 'miyuki17/openevo-ceiling1-v2-archive'");
+    expect(snap).toContain("componentStoreRevision: '3266fa00db4df513b4f420dc7df7a042af9ec40a'");
+    expect(snap).toContain("fullLineageRevision: 'f51bcfe315f08c6c2f7fe3b4677bcc2f8a3d2b55'");
+    expect(snap).toContain("fullLineageSha256: '58cb13e8d12d66c7876ca30a356d9a2ef0d192493d23adf37cf89c6a02752266'");
+    expect(snap).toContain("parameterAnalysisRevision: 'bfae0f84f137cc0022befe1300c84da9c1039873'");
+    expect(snap).toContain("parameterAnalysisSha256: 'ecee4e5f36e3e5c3125dfcb71cb3f1e79751be9ed3a5fcd58f7d0b783e4f079c'");
+    expect(snap).toContain("sourceCommit: 'fbb3d59d6a7cc7474374bf8991164dcf53c23eeb'");
+    expect(snap).toContain("priorRemoteVerification: 'PASS'");
+    expect(snap).toContain("currentFreshRead: 'TOOL_ERROR_INVALID_VALUE'");
+    expect(ceiling).toContain('private / restricted research asset');
+    expect(ceiling).toContain('not represented as a fresh current verification');
+    expect(firstRun).toContain('is not upgraded to a current fresh PASS');
+    expect(archive).toContain('prior PASS is not a current fresh verification');
   });
 
   it('updates both localized Ceiling page descriptions with the final 7B closeout', () => {
