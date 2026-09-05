@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForHydratedIsland } from './hydration-ready';
+
 test('does not mount the global quick-view shell on unrelated routes', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.global-quick-view')).toHaveCount(0);
@@ -48,9 +50,7 @@ test('Landscape keeps static learning content and hydrates controls when visible
   await page.goto('/landscape/');
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
   const fullView = page.getByRole('button', { name: '完整视图' });
-  await fullView.scrollIntoViewIfNeeded();
-  const island = fullView.locator('xpath=ancestor::astro-island[1]');
-  await expect(island).not.toHaveAttribute('ssr', '');
+  await waitForHydratedIsland(fullView);
   await fullView.click();
   await expect(page.locator('.landscape-view-note')).toBeVisible();
 });
