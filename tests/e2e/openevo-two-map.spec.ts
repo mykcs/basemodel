@@ -6,6 +6,7 @@ const firstRun = `${root}first-run/`;
 const successor = `${root}openevo-2-0/`;
 const exploration = `${successor}exploration/`;
 const report = `${successor}report/`;
+const mechanism = `${root}mechanism-1-0/`;
 const archive = `${root}archive/`;
 
 async function assertNoPageOverflow(page: Page) {
@@ -18,14 +19,28 @@ async function assertNoPageOverflow(page: Page) {
 
 registerOpenEvoResearchDeepDiveTests();
 
-test('desktop lobby exposes exactly two primary maps and keeps archive secondary', async ({ page }) => {
+test('desktop lobby exposes exactly three primary maps and keeps archive secondary', async ({ page }) => {
   const response = await page.goto(root, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
-  await expect(page.locator('[data-map-choice]')).toHaveCount(2);
+  await expect(page.locator('[data-map-choice]')).toHaveCount(3);
   await expect(page.locator('[data-map-choice="first-run"]')).toBeVisible();
   await expect(page.locator('[data-map-choice="redesign"]')).toBeVisible();
+  await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toHaveAttribute('href', mechanism);
   await expect(page.locator('[data-map-choice="archive"]')).toHaveCount(0);
   await expect(page.locator('.map-lobby__archive')).toBeVisible();
+  await assertNoPageOverflow(page);
+});
+
+test('Mechanism-1.0 exposes frozen passports, Ray readiness, and explicit non-result boundaries', async ({ page }) => {
+  const response = await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
+  expect(response?.status()).toBe(200);
+  const map = page.getByTestId('openevo-mechanism-map');
+  await expect(map).toContainText('OpenEVO-Mechanism-1.0');
+  for (const id of ['M1-A', 'M1-B', 'M1-C', 'M1-D']) await expect(map).toContainText(id);
+  await expect(map).toContainText('1,440 + MiniMax');
+  await expect(map).toContainText('SEED Stage2 = 0');
+  await expect(map).toContainText('执行仍锁定');
+  await expect(map).toContainText('0 新 reservation');
   await assertNoPageOverflow(page);
 });
 
@@ -58,7 +73,7 @@ test('successor gateway exposes exactly two reading modes and shared Stage1 fact
   await assertNoPageOverflow(page);
 });
 
-for (const path of [root, firstRun, successor, exploration, report, archive, `${root}stage1-previous/`, `${root}stage2-256-window/`, `${root}stage2-ceiling/`, `${successor}harness-2-0/`, `${root}stage1-evolution/`]) {
+for (const path of [root, firstRun, successor, exploration, report, mechanism, archive, `${root}stage1-previous/`, `${root}stage2-256-window/`, `${root}stage2-ceiling/`, `${successor}harness-2-0/`, `${root}stage1-evolution/`]) {
   test(`desktop route ${path} is healthy`, async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -72,7 +87,7 @@ for (const path of [root, firstRun, successor, exploration, report, archive, `${
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  for (const path of [root, firstRun, successor, exploration, report, archive]) {
+  for (const path of [root, firstRun, successor, exploration, report, mechanism, archive]) {
     test(`${theme} theme keeps ${path} readable and overflow-safe`, async ({ page }) => {
       await page.addInitScript((nextTheme) => localStorage.setItem('atlas-theme', nextTheme), theme);
       await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -83,7 +98,7 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
-for (const path of [root, firstRun, successor, exploration, report, archive]) {
+for (const path of [root, firstRun, successor, exploration, report, mechanism, archive]) {
   test(`iphone layout keeps ${path} usable`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -115,7 +130,8 @@ test('reduced motion preserves static map semantics', async ({ page }) => {
 test('English routes mount the same successor gateway and dual narrative architecture', async ({ page }) => {
   const enRoot = '/en/research/seed-openevo/study/capability-exploration/';
   await page.goto(enRoot, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('[data-map-choice]')).toHaveCount(2);
+  await expect(page.locator('[data-map-choice]')).toHaveCount(3);
+  await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toBeVisible();
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
   await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });

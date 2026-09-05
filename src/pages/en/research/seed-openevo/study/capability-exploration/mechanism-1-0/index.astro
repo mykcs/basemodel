@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoMechanismMap from '../../../../../../../components/research/OpenEvoMechanismMap.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="OpenEVO-Mechanism-1.0: From parameter change to causal intervention"
+  description="After Ceiling-1.0, use TaskVector causal transplant, parameter-theme knockout, and a conditional guided microtrial to test whether OpenEvo’s learned parameter structure is useful and can steer later self-improvement."
+  locale={locale}
+>
+  <OpenEvoMechanismMap locale={locale} />
+</AppLayout>
