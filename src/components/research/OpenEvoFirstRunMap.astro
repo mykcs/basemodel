@@ -213,7 +213,7 @@ const links = {
     </template>
     <template data-first-run-detail-template="frozen-7b">
       <p>{t('这条 7B 实验没有在中途热换 Harness。最终使用 round 0–148 的完整状态进入锁定 128 题：49.33 分、58/128 完整成功；7 条 action-admissibility failure 按 fail-closed 计 0，runtime error 为 0。', 'This 7B experiment never hot-swapped its harness mid-lineage. The complete state after rounds 0–148 entered the locked 128-task panel: 49.33 score, 58/128 exact successes, seven fail-closed action-admissibility failures, and zero runtime errors.')}</p>
-      <strong>{t('处理方式：final checkpoint、结果、参数分析和身份证均远端 exact verify；重资产随后从服务器退休。', 'Disposition: the final checkpoint, results, parameter analysis, and identity receipts are remotely exact-verified; heavy server payloads are then retired.')}</strong>
+      <strong>{t('处理方式：治理 receipt 记录此前远端验证 PASS，随后退休服务器重资产；2026-09-05 的最新 fresh-read 因工具参数错误未完成，不能升级成当前 fresh PASS。精确归档 revision 与哈希见实验档案。', 'Disposition: governance receipts record a prior remote-verification PASS before heavy server payloads were retired. The latest fresh-read on 2026-09-05 did not complete because of a tool-parameter error and is not upgraded to a current fresh PASS. Exact archive revisions and hashes are listed in the experiment archive.')}</strong>
     </template>
     <template data-first-run-detail-template="runtime-fixes">
       <p>{t('这些修复只让既定实验正确运行，不改变实验问题本身。', 'These repairs keep the already-defined experiment running correctly without changing the scientific question.')}</p>
