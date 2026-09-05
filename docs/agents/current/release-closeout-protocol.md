@@ -283,6 +283,28 @@ Verify:
 
 Preview acceptance is not Production acceptance.
 
+
+
+### 9.1 Keep three release identities separate
+
+A research publication closeout normally has three independent identities:
+
+scientific evidence/archive identity
+  != website source/merge commit
+  != provider deployment identity
+
+Record all three when they exist. A field such as an experiment archive head, an immutable model/archive revision, a Git merge SHA, or a Vercel deployment ID belongs to its own system and must be labeled with that system. Never replace one with another because they are all hexadecimal strings, and never infer that a website commit proves the scientific archive bytes were restored.
+
+For a PR whose exact-head acceptance predates a moving main:
+
+1. compare the accepted head with the current base by changed file and shared contract;
+2. classify intervening commits as overlapping, provider-policy-affecting, or provably independent;
+3. preserve old exact-head evidence only within its original scope;
+4. if changed surfaces are independent, let the merged main Production deployment close combined-tree acceptance;
+5. if they overlap or alter acceptance machinery, rerun affected checks on the combined tree before release.
+
+A successful pre-merge run named “tested merge candidate” is evidence about the tree it actually checked, not a timeless certificate for every later base. A post-merge READY deployment is provider completion; it still needs representative Production route and metadata verification under Section 9.
+
 ## 10. Completion report contract
 
 A release-closeout report should contain:
