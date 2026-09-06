@@ -17,6 +17,8 @@ For any non-trivial task:
 
 `/AGENTS.md` is the fast router and invariant layer. [`../README.md`](../README.md) owns the documentation lifecycle and archive boundary. This file owns task selection.
 
+- [`history/2026-09-06-browser-test-list-experiment-lessons.md`](history/2026-09-06-browser-test-list-experiment-lessons.md) — historical Playwright test-list experiment lessons: acceptance-versus-performance evidence, stable timing identity, provider-log boundaries, and explicit accepted/superseded/rejected lineage.
+
 ## Task bundles
 
 ### User-facing page, copy, navigation, explanation, or feature
