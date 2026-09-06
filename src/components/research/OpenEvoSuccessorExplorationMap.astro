@@ -3,6 +3,9 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
+import ResearchOrientation from './ResearchOrientation.astro';
+import ResearchJourney from './ResearchJourney.astro';
+import ResearchDepth from './ResearchDepth.astro';
 import { OPEN_EVO_CEILING_PRINCIPLE, OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
 
 interface Props { locale: Locale }
@@ -20,18 +23,49 @@ const links = {
 };
 const arm3 = OPEN_EVO_STAGE1_METRICS[0];
 const arm17 = OPEN_EVO_STAGE1_METRICS[1];
+const terms = zh ? [
+  { term: '假设 / diagnostic', meaning: '用一个小而受控的实验排查“为什么 3B 表现差”，不是正式结果 arm。' },
+  { term: '证伪', meaning: '某个解释没有被配对证据支持，因此下一步不再把它当成主要根因。' },
+  { term: 'shared freeze', meaning: '多轮诊断后才允许固定的一套 3B + 1.7B 公共 Harness 与 Stage1 合同。' },
+  { term: 'engineering fix', meaning: '修复执行/路径/readback 问题，但不改变科学问题、模型身份或预算。' },
+] : [
+  { term: 'hypothesis / diagnostic', meaning: 'A small controlled test of why 3B behavior is weak, not a formal result arm.' },
+  { term: 'falsified', meaning: 'The paired evidence did not support an explanation strongly enough to keep it as the main cause.' },
+  { term: 'shared freeze', meaning: 'The common 3B + 1.7B harness and Stage-1 contract frozen only after the diagnostic sequence.' },
+  { term: 'engineering fix', meaning: 'A repair to execution, paths, or readback that does not change the scientific question, model identity, or budget.' },
+];
+const summarySteps = zh ? [
+  { id: 'symptom', kicker: '问题', title: '3B 的轨迹太弱，但不能直接归因于“模型小”', summary: 'exact success 稀少，同时 invalid / serialization 问题很多。', detail: '于是研究先问：这是模型能力上限，还是 Harness 把本来可执行的意图测坏了？', outcome: '把“模型不行”和“接口测坏”拆成可检验的两个解释。', state: '起点' },
+  { id: 'falsify', kicker: '证伪', title: '先排除几个直觉解释：更多步数、sampling、history 都不够', summary: '30-step paired delta=0；T=1.0 和 SEED-native history 会改行为，但都不能单独解释恢复。', detail: '这些小实验没有白跑：它们把搜索范围从“给模型更多机会”缩到 prompt / deliberation / action channel。', outcome: '研究从宽泛调参转向接口语义。', state: '3 条路被排除' },
+  { id: 'interface', kicker: '更强线索', title: '真正值得追的是自我推理被删掉，以及合法动作被格式化破坏', summary: '恢复 model-authored brief reasoning，并把 mechanical invalidity 从能力评估里拆出去。', detail: 'Harness 可以拥有 action opener 和合法动作 envelope，但不能替模型从合法动作里挑答案。', outcome: '得到一个既能合法交互、又不教 WebShop 策略的候选 Harness。', state: '候选形成' },
+  { id: 'freeze', kicker: '配对验证', title: '同一个候选必须同时过 3B 和 1.7B，才冻结 shared Stage1', summary: `最终冻结 ${OPEN_EVO_STAGE1_FREEZE.id}：每个模型 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 条，T=${OPEN_EVO_STAGE1_FREEZE.temperature}，max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}。`, detail: '不能为 3B 单独加“更会做题”的 Harness；模型差异允许存在，model-ID-specific strategy 不允许。', outcome: '从诊断阶段进入真正可比较的 canonical Stage1。', state: '已冻结' },
+  { id: 'after-seal', kicker: '封存以后', title: '先看 raw 起跑线，再让 MiniMax 批改，最后处理 carrier 容量', summary: `${arm3.model}: ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact；${arm17.model}: ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact。随后 MiniMax post-hoc，4096 失败后才触发 bounded 10+10。`, detail: 'PRE_STAGE2_READY 只说明下游材料可加载；Stage2 仍需独立 activation。', outcome: '探索地图在“ready ≠ authorized”处停止。', state: 'Stage1 已收口' },
+] : [
+  { id: 'symptom', kicker: 'PROBLEM', title: '3B trajectories were weak, but “the model is small” was not enough', summary: 'Exact success was sparse while invalid / serialization behavior was common.', detail: 'The research question became whether this was a capability ceiling or a harness that corrupted measurement.', outcome: 'Separate model inability from interface-induced failure.', state: 'Starting point' },
+  { id: 'falsify', kicker: 'FALSIFY', title: 'Rule out simple explanations: more steps, sampling, and history are not enough', summary: 'The 30-step paired delta was zero; T=1.0 and SEED-native history changed behavior but did not explain recovery alone.', detail: 'These diagnostics narrowed the search from generic tuning toward prompt, deliberation, and the action channel.', outcome: 'Move from broad tuning to interface semantics.', state: '3 branches rejected' },
+  { id: 'interface', kicker: 'STRONGER CLUE', title: 'The stronger clue was removed self-deliberation plus broken legal-action serialization', summary: 'Restore model-authored brief reasoning and separate mechanical invalidity from capability.', detail: 'The harness may own the action opener and legal-action envelope but may not choose the answer for the model.', outcome: 'A strategy-neutral harness candidate emerges.', state: 'Candidate formed' },
+  { id: 'freeze', kicker: 'PAIRED CHECK', title: 'The same candidate must pass on both 3B and 1.7B before the shared freeze', summary: `Freeze ${OPEN_EVO_STAGE1_FREEZE.id}: ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} trajectories per model, T=${OPEN_EVO_STAGE1_FREEZE.temperature}, max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}.`, detail: 'The models may differ, but model-ID-specific solving strategies are forbidden.', outcome: 'Diagnostics become a comparable canonical Stage 1.', state: 'Frozen' },
+  { id: 'after-seal', kicker: 'AFTER SEAL', title: 'Read the raw starting point, then MiniMax review, then bounded carrier recovery', summary: `${arm3.model}: ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact; ${arm17.model}: ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} exact. MiniMax enters post hoc; 4096 fails before bounded 10+10.`, detail: 'PRE_STAGE2_READY means downstream artifacts are loadable, not that Stage 2 is authorized.', outcome: 'The exploration stops at “ready ≠ authorized.”', state: 'Stage1 closed' },
+];
 ---
 <main class="explore-map" data-testid="openevo-successor-exploration-map">
-  <header class="explore-map__head">
-    <a href={links.gateway}>{t('← 3B + 1.7B successor', '← 3B + 1.7B successor')}</a>
-    <p>ROGUELIKE RESEARCH MAP · EXPLORATION</p>
-    <h1>{t('我们是怎样绕路走到 shared Harness 的', 'How the detours led to the shared harness')}</h1>
-    <strong>{t(
-      '这条路线故意不把研究写得像我们一开始就知道答案。每一次岔路都保留“为什么会这样猜、怎么做小实验、什么被证伪、为什么返回主线”。',
-      'This route deliberately avoids rewriting research as if the answer were known in advance. Every branch keeps the hypothesis, diagnostic, falsification, and reason for returning to the mainline.'
-    )}</strong>
-    <span>{t('探索版包含 current successor 的直接形成过程，也包含真正影响 redesign 的 historical predecessor diagnostics；两者会明确标注，不混成同一个实验批次。', 'The exploration view includes both the direct formation of the current successor and historical predecessor diagnostics that materially shaped the redesign. They are labeled separately rather than blended into one experimental batch.')}</span>
-  </header>
+  <ResearchOrientation
+    locale={locale}
+    eyebrow="ROGUELIKE RESEARCH MAP · EXPLORATION"
+    title={t('3B 为什么这么弱？', 'Why was 3B so weak?')}
+    lede={t('探索版保留真正改变设计的失败假设和回退，但先给你一条 5 步摘要。完整诊断树仍可展开审计，不再要求第一次来的读者把所有工程枝杈都读完。', 'Start with five decisions that changed the design. The full diagnostic tree remains available below for audit.')}
+    question={t('3B 为什么这么弱：真的是模型能力不够，还是 Harness / action channel 把能力测坏了？', 'Was weak 3B behavior a capability limit, or did the harness / action channel corrupt the measurement?')}
+    why={t('如果根因是接口，我们不能拿被接口破坏的轨迹去证明“模型不会”；如果根因是能力，我们也不能靠更会做题的 Harness 把结果救回来。', 'If the harness caused failure, weak trajectories cannot prove model inability; if capability did, task-solving help cannot be used to rescue it.')}
+    start={t('从第一轮 3B 的 weak trajectories 和 high invalid/serialization behavior 开始。', 'Start from the first 3B campaign: weak trajectories plus invalid / serialization failures.')}
+    finish={t(`在 ${OPEN_EVO_STAGE1_FREEZE.id} shared Stage1 封存、MiniMax post-hoc 与 bounded carrier 准备完成后停在 PRE_STAGE2_READY；Stage2 仍需独立授权。`, `Stop at PRE_STAGE2_READY after freeze ${OPEN_EVO_STAGE1_FREEZE.id}, MiniMax review, and bounded-carrier preparation; Stage 2 needs separate authority.`)}
+    state={t('探索结论已经形成并冻结；这页是形成过程，不是一个仍在调参的 live notebook。', 'The exploration conclusion is frozen; this page explains how it formed.')}
+    stateTone="sealed"
+    backHref={links.gateway}
+    backLabel={t('两种读法', 'Two reading modes')}
+    actionHref="#exploration-summary"
+    actionLabel={t('先看五步摘要', 'Start with the five-step summary')}
+    terms={terms}
+  />
 
   <blockquote class="explore-map__principle" data-principle>
     <span>{t('这条路始终不变的约束', 'THE CONSTRAINT THAT STAYS FIXED')}</span>
@@ -43,6 +77,22 @@ const arm17 = OPEN_EVO_STAGE1_METRICS[1];
     <a href={links.report}>{t('切到报告与论文版 →', 'Switch to report / paper →')}</a>
   </nav>
 
+  <div id="exploration-summary">
+    <ResearchJourney
+      locale={locale}
+      eyebrow="HYPOTHESIS → TEST → DECISION"
+      title={t('先用五步看懂：每次失败到底改变了什么', 'Start with five steps: what did each failure actually change?')}
+      intro={t('摘要只保留会改变下一步科学设计的证据；完整的 30-step、sampling、history、readback、4096 等细节在下面可展开。', 'The summary keeps only evidence that changed the next scientific decision. Full 30-step, sampling, history, readback, 4096, and other details remain expandable below.')}
+      steps={summarySteps}
+    />
+  </div>
+
+  <ResearchDepth
+    locale={locale}
+    kind="history"
+    summary={t('完整探索路线：所有假设、证伪、工程修复与 freeze 证据', 'Complete exploration route: every hypothesis, falsification, engineering repair, and freeze')}
+    intro={t('这里保留完整研究历史，供复盘和审计；这些 historical predecessor diagnostics 不混成同一个实验批次，也不会被改名接到 current freeze。第一次阅读不需要打开。', 'The complete research history is preserved here for reconstruction and audit. Historical predecessor diagnostics are not relabeled or mixed into the current experiment batch; a first reading does not require opening it.')}
+  >
   <section class="explore-legend" aria-label={t('探索地图图例', 'Exploration map legend')}>
     <span><i class="is-main"></i>{t('主线', 'Mainline')}</span>
     <span><i class="is-test"></i>{t('小实验 / 假设', 'Diagnostic / hypothesis')}</span>
@@ -178,6 +228,7 @@ const arm17 = OPEN_EVO_STAGE1_METRICS[1];
   </section>
 
   <OpenEvoHarnessFairnessPanel locale={locale} />
+  </ResearchDepth>
 
   <footer class="explore-map__footer">
     <a href={links.gateway}>{t('← 回到两种读法', '← Back to the two views')}</a>

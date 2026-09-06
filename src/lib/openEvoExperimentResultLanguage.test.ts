@@ -53,9 +53,10 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(capabilityIndex).not.toContain('当前 corrected Stage 1 仍是共同起点');
     expect(capabilityIndex).not.toContain('Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1');
     expect(capabilityIndex).toContain('OpenEvoCapabilityMapLobby');
-    expect(capabilityLobby).toContain('第一轮 OpenEvo 实验');
-    expect(capabilityLobby).toContain('重新设计 OpenEvo');
-    expect(capabilityLobby).toContain('旧轨迹保留为历史证据，不冒充新版数据');
+    expect(capabilityLobby).toContain("id: 'first-run'");
+    expect(capabilityLobby).toContain('第一轮：OpenEvo 能不能真的持续更新？');
+    expect(capabilityLobby).toContain("id: 'redesign'");
+    expect(capabilityLobby).toContain('不会把旧轨迹冒充成新实验数据');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');

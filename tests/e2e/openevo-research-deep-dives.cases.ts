@@ -11,8 +11,14 @@ const principle = '在 SEED-aligned 的 WebShop 任务、轨迹与评测预算�
 export function registerOpenEvoResearchDeepDiveTests() {
   test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
     await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
+    const orientation = page.locator('[data-research-orientation]');
+    await expect(orientation).toBeVisible();
+    await expect(orientation.locator('[data-orientation-field]')).toHaveCount(5);
+    await expect(orientation).toContainText('从哪里开始');
+    await expect(orientation).toContainText('什么时候结束');
+    await expect(page.locator('[data-research-journey] [data-research-step]')).toHaveCount(3);
     await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-    await expect(page.locator('[data-map-choice="redesign"]')).toContainText('独立的新一轮设计 · 3B + 1.7B');
+    await expect(page.locator('[data-research-step="redesign"]')).toContainText('当前 successor');
     await expect(page.locator('[data-map-choice="redesign"]')).toHaveAttribute('href', gatewayPath);
     await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
@@ -23,7 +29,10 @@ export function registerOpenEvoResearchDeepDiveTests() {
   test('successor gateway makes exploration and report two views of one evidence set', async ({ page }) => {
     await page.goto(gatewayPath, { waitUntil: 'domcontentloaded' });
     const gateway = page.getByTestId('openevo-successor-gateway');
+    await expect(gateway.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
+    await expect(gateway.locator('[data-reading-choice]')).toBeVisible();
     await expect(gateway.locator('[data-successor-mode]')).toHaveCount(2);
+    await expect(gateway.locator('[data-successor-mode]').first()).toHaveAttribute('data-successor-mode', 'report');
     await expect(gateway.locator('[data-principle]')).toContainText(principle);
     await expect(gateway.locator('[data-arm="qwen25-3b"]')).toContainText('22 / 1440');
     await expect(gateway.locator('[data-arm="qwen3-1p7b"]')).toContainText('50 / 1440');
@@ -33,6 +42,9 @@ export function registerOpenEvoResearchDeepDiveTests() {
   test('exploration view preserves real detours, backtracking, engineering fixes, and the shared freeze', async ({ page }) => {
     await page.goto(explorationPath, { waitUntil: 'domcontentloaded' });
     const map = page.getByTestId('openevo-successor-exploration-map');
+    await expect(map.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
+    await expect(map.locator('[data-research-journey] [data-research-step]')).toHaveCount(5);
+    await expect(map.locator('[data-research-depth="history"]')).toBeVisible();
     await expect(map.locator('[data-principle]')).toContainText(principle);
     await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('64/64 valid');
     await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('paired horizon delta = 0');
@@ -51,6 +63,9 @@ export function registerOpenEvoResearchDeepDiveTests() {
   test('report view is a linear claim-bearing map with explicit fairness and contamination boundaries', async ({ page }) => {
     await page.goto(reportPath, { waitUntil: 'domcontentloaded' });
     const report = page.getByTestId('openevo-successor-report');
+    await expect(report.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
+    await expect(report.locator('[data-research-journey]')).toBeVisible();
+    await expect(report.locator('[data-research-step]')).toHaveCount(6);
     await expect(report.locator('[data-paper-step]')).toHaveCount(6);
     await expect(report.locator('[data-arm="qwen25-3b"]')).toContainText('22 / 1440');
     await expect(report.locator('[data-arm="qwen3-1p7b"]')).toContainText('50 / 1440');
