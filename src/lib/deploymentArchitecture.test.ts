@@ -38,7 +38,9 @@ describe('Vercel production deployment architecture', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('browser_shard_1');
     expect(circleCiConfig).toContain('browser_shard_2');
-    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
+    expect(circleCiConfig).toContain('browser_shard_3');
+    expect(circleCiConfig).toContain('browser_shard_4');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "4"');
     expect(circleCiConfig).toContain('scripts/ci-circleci-prepare.sh');
     expect(circleCiConfig).toContain('node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
