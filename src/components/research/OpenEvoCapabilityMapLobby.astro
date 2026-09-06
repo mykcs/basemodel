@@ -39,21 +39,21 @@ const terms = zh ? [
 const steps = zh ? [
   {
     id: 'first-run', kicker: '第一代问题', title: '第一轮：OpenEvo 能不能真的持续更新？',
-    summary: '先从旧 Stage1 走到 Stage2，观察 7B / 3B 的真实训练、失败与容量问题。',
+    summary: '从初始经验到后续学习，观察 7B / 3B 的参数更新、失败和容量限制。',
     detail: '这轮实验告诉我们“系统能跑起来”，也暴露了 action interface、更新规则和参数容量会影响结论。',
     outcome: '研究重点从“跑通”转向“怎样让比较更公平、起跑线更可信”。', state: '历史证据',
     href: firstRunHref, hrefLabel: '进入第一轮实验', mapChoice: 'first-run',
   },
   {
-    id: 'redesign', kicker: '第二代问题', title: '重新设计：在同一 Harness 下，3B 和 1.7B 从哪里起跑？',
-    summary: '冻结 shared strategy-neutral Harness，让两个模型各自采 1,440 条，再用同一 post-hoc 分析。',
+    id: 'redesign', kicker: '第二代问题', title: '重新设计：两种模型使用相同购物接口，各自表现怎样？',
+    summary: '固定一套不提供具体购物解法的接口。两种模型各完成 1,440 次尝试，再用同一套方法分析已有记录。',
     detail: '这一代把“模型能力”和“接口把合法动作写坏”拆开，并把探索过程与论文式报告分成两种读法。',
-    outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '当前 successor',
-    href: redesignHref, hrefLabel: '进入 3B + 1.7B successor', mapChoice: 'redesign',
+    outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '新一轮设计',
+    href: redesignHref, hrefLabel: '进入 3B + 1.7B 学习实验', mapChoice: 'redesign',
   },
   {
     id: 'mechanism-1-0', kicker: '第三代问题', title: 'Mechanism-1.0：分数变了以后，参数里到底发生了什么？',
-    summary: '从 TaskVector 和 parameter themes 出发，做真正的因果干预，而不是只画参数图。',
+    summary: '把学习留下的参数变化加上或移除，与同幅度随机修改比较，检查哪些变化影响购物表现。',
     detail: '只有方向特异的因果证据通过预注册门槛，才允许把这些结构反馈到下一次 OpenEvo。',
     outcome: '研究从“能走多高”推进到“能不能解释、验证并控制自我进化”。', state: '当前主实验', current: true,
     href: mechanismHref, hrefLabel: '进入 Mechanism-1.0', mapChoice: 'mechanism-1-0',

@@ -48,16 +48,16 @@ const terms = zh ? [
 
   <blockquote class="successor-gateway__principle" data-principle>
     <span>{t('这一代实验的固定原则', 'FIXED PRINCIPLE')}</span>
-    <strong>{principle}</strong>
-    <small>{t('“SEED-aligned”只指 task / rollout / evaluation envelope 对齐，不声称 runtime compute 完全相同。', '“SEED-aligned” refers to the task / rollout / evaluation envelope, not identical runtime compute.')}</small>
+    <strong>{zh ? '在与 SEED 对齐的购物任务、尝试次数和评测预算内，先固定规则再看结果，研究 OpenEvo 能把模型提高到什么程度。' : principle}</strong>
+    <small>{t('这里对齐的是任务和评测预算，不表示计算资源完全相同。', '“SEED-aligned” refers to the task / rollout / evaluation envelope, not identical runtime compute.')}</small>
   </blockquote>
 
-  <nav class="successor-gateway__choices" data-reading-choice aria-label={t('选择 successor 读法', 'Choose how to read the successor')}>
+  <nav class="successor-gateway__choices" data-reading-choice aria-label={t('选择阅读方式', 'Choose how to read the successor')}>
     <a href={links.report} data-successor-mode="report">
       <span>{t('第一次看 / 汇报 / 写论文', 'NEW READER / PRESENTATION / PAPER')}</span>
       <h2>{t('先看报告版', 'Start with the report')}</h2>
       <strong>{t('你会得到：最终设计、关键数字、支持什么、不能说什么', 'You get: final design, key numbers, supported claims, and claim boundaries')}</strong>
-      <p>{t('如果你只是想快速理解这次 successor 做了什么，选这个。正文按一条科学论证线走，不要求你先知道所有失败尝试。', 'Choose this if you want to understand what the successor ultimately did. The page follows one scientific argument without requiring the full history of failed attempts.')}</p>
+      <p>{t('查看这次学习实验的设置、结果和适用范围。需要追溯设计原因时，再阅读探索过程。', 'Choose this if you want to understand what the successor ultimately did. The page follows one scientific argument without requiring the full history of failed attempts.')}</p>
       <b>{t('进入报告与论文版 →', 'Open report / paper view →')}</b>
     </a>
     <a href={links.exploration} data-successor-mode="exploration">
@@ -79,8 +79,8 @@ const terms = zh ? [
         <article data-arm={arm.id}>
           <span>{arm.model}</span>
           <strong>{arm.exact} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong>
-          <b>{arm.exactRate} exact success</b>
-          <small>{arm.positive} positive trajectories · {arm.exactTaskIdentities} {t('个不同任务出现 exact success', 'distinct tasks with exact success')}</small>
+          <b>{arm.exactRate} {t('完全成功率', 'exact success')}</b>
+          <small>{arm.positive} {t('次尝试获得正分', 'positive trajectories')} · {arm.exactTaskIdentities} {t('道不同任务曾完全成功', 'distinct tasks with exact success')}</small>
         </article>
       ))}
     </div>
@@ -98,10 +98,10 @@ const terms = zh ? [
   <ResearchDepth
     locale={locale}
     kind="history"
-    summary={t('七个设计族与第一轮 predecessor evidence', 'Seven design families and predecessor evidence from the first campaign')}
+    summary={t('七类设计与第一轮历史证据', 'Seven design families and predecessor evidence from the first campaign')}
     intro={t('这部分用于研究者追踪完整设计空间。它不再承担“第一次看 successor 应该先理解什么”的职责。', 'This section preserves the full design space for researchers. It no longer owns the first-time reading path.')}
   >
-    <div class="successor-gateway__history"><strong>{t('第一轮 7B / 3B 实验仍保留为 predecessor evidence。', 'The first 7B / 3B campaign remains predecessor evidence.')}</strong><a href={links.firstRun}>{t('回看第一轮实验 →', 'Review the first experiment →')}</a></div>
+    <div class="successor-gateway__history"><strong>{t('第一轮 7B / 3B 实验保留为独立的历史证据。', 'The first 7B / 3B campaign remains predecessor evidence.')}</strong><a href={links.firstRun}>{t('回看第一轮实验 →', 'Review the first experiment →')}</a></div>
     <OpenEvoExperimentDesignCatalog locale={locale} />
   </ResearchDepth>
 </main>

@@ -6,7 +6,7 @@ const explorationPath = `${gatewayPath}exploration/`;
 const reportPath = `${gatewayPath}report/`;
 const stage1CompatPath = `${lobbyPath}stage1-evolution/`;
 const stage2Path = `${lobbyPath}stage2-7b-analysis/`;
-const principle = '在 SEED-aligned 的 WebShop 任务、轨迹与评测预算内，先冻结规则、再看结果，探索 OpenEvo 能把当前基座模型推到多高。';
+const principle = '在与 SEED 对齐的购物任务、尝试次数和评测预算内，先固定规则再看结果，研究 OpenEvo 能把模型提高到什么程度。';
 
 export function registerOpenEvoResearchDeepDiveTests() {
   test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
@@ -18,7 +18,7 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(orientation).toContainText('什么时候结束');
     await expect(page.locator('[data-research-journey] [data-research-step]')).toHaveCount(3);
     await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-    await expect(page.locator('[data-research-step="redesign"]')).toContainText('当前 successor');
+    await expect(page.locator('[data-research-step="redesign"]')).toContainText('新一轮设计');
     await expect(page.locator('[data-map-choice="redesign"]')).toHaveAttribute('href', gatewayPath);
     await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);

@@ -33,11 +33,11 @@ const terms = zh ? [
   { term: 'M1-D', meaning: 'An independent SEED Stage-1 initialization reference over 1,440 experiences; it does not supply the M1-C steering signal.' },
 ];
 const m1dSteps = zh ? [
-  { id: 'qualify', kicker: 'START', title: '先匹配任务、模型和运行环境', summary: '只有 identity / world / endpoint qualification 全部通过，独立 release 才允许 Stage1 开始。', outcome: 'M1-D 获得 Stage1 执行权，但仍然没有结果。', state: '已授权' },
-  { id: 'collect', kicker: 'COLLECT', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '用 SEED Stage1 采集语义完成固定任务；MiniMax 这时不在线指导模型。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
-  { id: 'seal', kicker: 'SEAL', title: '先封存 1,440 条 trajectory 和 corpus identity', summary: 'completion receipt 与 corpus SHA 出现之前，网站不发布 exact / mean score / invalid 等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: '等待结果封存' },
-  { id: 'analyze', kicker: 'POST-HOC', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '再和已有 OpenEvo 3B Stage1 用同一 analyzer 比成功、错误、搜索循环和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
-  { id: 'stop', kicker: 'STOP', title: '比较完成后硬停：SEED Stage2 = 0', summary: '不生成 skill、不做 SFT、不训练 SEED Stage2，也不访问 final panel。', outcome: 'M1-D closeout，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
+  { id: 'qualify', kicker: '开始', title: '先匹配任务、模型和运行环境', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: 'M1-D 获得 Stage1 执行权，但仍然没有结果。', state: '已授权' },
+  { id: 'collect', kicker: '收集', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '模型按 SEED 的方法完成规定的购物任务；MiniMax 不在购物过程中指导它。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
+  { id: 'seal', kicker: '固定记录', title: '核对并固定保存全部 1,440 次购物记录', summary: '保存完成证明和整批数据的校验值后，才发布完全成功率、平均分和无效尝试比例等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: '等待结果封存' },
+  { id: 'analyze', kicker: '事后分析', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '用同一个分析器，比较 SEED 与已有 OpenEvo 初始记录中的成功、错误、重复搜索和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
+  { id: 'stop', kicker: '结束', title: '比较完成后硬停：SEED Stage2 = 0', summary: '比较完成即结束：不生成技能、不做监督微调、不进入 SEED 后续训练，也不使用最终测试题。', outcome: 'M1-D closeout，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
 ] : [
   { id: 'qualify', kicker: 'START', title: 'Match the task world, model identity, and runtime first', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'M1-D gains execution authority but still has no result.', state: 'Authorized' },
   { id: 'collect', kicker: 'COLLECT', title: 'Use the same 3B model for 180 × 8 = 1,440 attempts', summary: 'Collect the frozen task set under SEED Stage-1 semantics; MiniMax does not guide online actions.', outcome: 'Produce one complete raw Stage-1 corpus.', state: 'Fixed budget' },
@@ -130,7 +130,7 @@ const stateItems = experiments.map((row) => ({
   <section class="mechanism-map__section" id="initialization-reference" aria-labelledby="mechanism-reference-title">
     <h2 id="mechanism-reference-title">{t('独立参照 M1-D：从哪里开始，在哪里硬停？', 'Independent reference M1-D: where does it start and where does it hard-stop?')}</h2>
     <p>{t('M1-D 只比较初始化阶段收集的购物经验。它不提供 M1-C 的方向信号，也不继续执行 SEED 后续训练。', 'M1-D compares only the shopping experience collected during initialization. It does not supply the M1-C direction signal and does not continue into later SEED training.')}</p>
-    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('START → 1,440 → trajectory seal → MiniMax → matched compare → STOP。', 'START → 1,440 → trajectory seal → MiniMax → matched compare → STOP.')} steps={m1dSteps} compact />
+    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('核对前提 → 购物 1,440 次 → 固定记录 → MiniMax 事后分析 → 比较 → 结束。', 'START → 1,440 → trajectory seal → MiniMax → matched compare → STOP.')} steps={m1dSteps} compact />
     <ExperimentLifecycle experiment={reference} locale={locale} />
     <OpenEvoM1DResults locale={locale} />
   </section>

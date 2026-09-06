@@ -124,7 +124,7 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(successorReport).toContain('MiniMax 对已完成 trajectory 做 task-after analysis');
     expect(successorReport).toContain('PRE_STAGE2_READY');
     expect(successorReport).toContain('stage2_authorized=false');
-    expect(successorReport).toContain('“Stage2 已经证明稳定提升”');
+    expect(successorReport).toContain('“后续学习已经证明能稳定提升”');
     expect(successorReport).toContain('不支持');
     expect(redesign).not.toContain('Ceiling-1.0 已暂停');
     expect(ceilingStage2).toContain('Ceiling-1.0 历史证据原样保留');
