@@ -86,7 +86,6 @@ jobs:
       CI: "1"
       PLAYWRIGHT_WORKERS: "1"
       CI_PLAYWRIGHT_JUNIT_OUTPUT_FILE: "test-results/playwright-junit.xml"
-      CI_REQUIRE_NATIVE_TIMINGS: "1"
       CI_BROWSER_BUILD: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
       CI_BROWSER_SHARD_TOTAL: "2"

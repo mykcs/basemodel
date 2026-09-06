@@ -56,6 +56,7 @@ export const circleCiTimingAssignments = ({ canonical, shardTotal, spawn = spawn
   const input = `${[...byTitle.keys()].join('\n')}\n`;
   const assignments = [];
   const missingTitles = new Set();
+  const timingWarnings = [];
 
   for (let index = 0; index < shardTotal; index += 1) {
     const result = spawn('circleci', [
@@ -72,14 +73,32 @@ export const circleCiTimingAssignments = ({ canonical, shardTotal, spawn = spawn
     }
     if (result.stderr) process.stderr.write(result.stderr);
     for (const line of (result.stderr ?? '').split(/\r?\n/)) {
-      const match = line.match(/No timing found for "(.+)"/);
+      const match = line.match(/No timing found for "(.+)"/i);
       if (match) missingTitles.add(match[1]);
+      if (/falling back|No timing data|auto-detect(?:ing)? timing/i.test(line)) timingWarnings.push(line);
     }
     assignments.push(result.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean));
   }
 
   validateAssignments({ assignments, canonicalTitles: byTitle });
-  return { assignments, byTitle, missingTitles };
+  return { assignments, byTitle, missingTitles, timingWarnings };
+};
+
+export const chooseCircleCiAssignment = ({ canonical, shardIndex, shardTotal, fallbackReserve, native }) => {
+  const nativeUsable = native && native.missingTitles.size === 0 && native.timingWarnings.length === 0;
+  if (!nativeUsable) {
+    const fallback = assignByTiming({ tests: canonical, shardTotal, primaryReserveSeconds: fallbackReserve });
+    const reason = !native
+      ? 'native-unavailable'
+      : native.missingTitles.size > 0
+        ? `missing-history:${native.missingTitles.size}`
+        : `timing-warning:${native.timingWarnings.length}`;
+    return { selected: fallback.assignments[shardIndex - 1], mode: 'static-fallback', reason };
+  }
+
+  const selected = native.assignments[shardIndex - 1].map((title) => native.byTitle.get(title));
+  if (selected.some((identity) => !identity)) throw new Error('selected test could not be mapped back to canonical identity');
+  return { selected, mode: 'native', reason: 'complete-history' };
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -89,31 +108,21 @@ if (isMain) {
     const shardIndex = Number(args['shard-index']);
     const shardTotal = Number(args['shard-total']);
     const fallbackReserve = Number(args['fallback-primary-reserve-seconds'] ?? 1);
-    const requireNative = args['require-native'] === '1';
     const output = args.output;
     if (!Number.isInteger(shardIndex) || shardIndex < 1 || shardIndex > shardTotal || shardTotal < 2) throw new Error('invalid shard index/total');
     if (!Number.isFinite(fallbackReserve) || fallbackReserve < 0) throw new Error('fallback reserve must be non-negative');
     if (!output) throw new Error('--output is required');
 
     const canonical = listCanonicalTestsWithoutJunit();
-    const native = circleCiTimingAssignments({ canonical, shardTotal });
-    let selected;
-    let mode = 'native';
-
-    if (native.missingTitles.size > 0) {
-      if (requireNative) {
-        throw new Error(`native timing required but ${native.missingTitles.size}/${canonical.length} test(s) have no history`);
-      }
-      const fallback = assignByTiming({ tests: canonical, shardTotal, primaryReserveSeconds: fallbackReserve });
-      selected = fallback.assignments[shardIndex - 1];
-      mode = 'static-fallback';
-    } else {
-      selected = native.assignments[shardIndex - 1].map((title) => native.byTitle.get(title));
+    let native = null;
+    try {
+      native = circleCiTimingAssignments({ canonical, shardTotal });
+    } catch (error) {
+      console.warn('[ci-circleci-test-list] native timing unavailable; using static fallback:', error instanceof Error ? error.message : error);
     }
-
-    if (selected.some((identity) => !identity)) throw new Error('selected test could not be mapped back to canonical identity');
-    writeFileSync(output, `${selected.join('\n')}\n`);
-    console.log(`[ci-circleci-test-list] mode=${mode} canonical=${canonical.length} shard=${shardIndex}/${shardTotal} selected=${selected.length} native-missing=${native.missingTitles.size}`);
+    const plan = chooseCircleCiAssignment({ canonical, shardIndex, shardTotal, fallbackReserve, native });
+    writeFileSync(output, `${plan.selected.join('\n')}\n`);
+    console.log(`[ci-circleci-test-list] mode=${plan.mode} reason=${plan.reason} canonical=${canonical.length} shard=${shardIndex}/${shardTotal} selected=${plan.selected.length}`);
   } catch (error) {
     console.error('[ci-circleci-test-list]', error instanceof Error ? error.message : error);
     process.exit(1);

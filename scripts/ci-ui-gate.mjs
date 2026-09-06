@@ -191,7 +191,6 @@ if (plan.mode === 'focused') {
         '--shard-index', String(shardIndex),
         '--shard-total', String(shardTotal),
         '--fallback-primary-reserve-seconds', String(primaryReserveSeconds),
-        '--require-native', process.env.CI_REQUIRE_NATIVE_TIMINGS === '1' ? '1' : '0',
         '--output', testListPath,
       ];
   console.log(`[ci-ui-gate] browser scheduler=${labRelevant ? 'static-lab-aware' : 'circleci-native-timing'}`);
