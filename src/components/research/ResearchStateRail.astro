@@ -21,10 +21,10 @@ const zh = locale === 'zh';
       <li data-state-item={item.id} data-state-lifecycle={item.lifecycle} data-current={item.current ? 'true' : undefined}>
         <div><code>{item.id}</code><strong>{item.name}</strong></div>
         <dl>
-          <div><dt>{zh ? '运行状态' : 'Lifecycle'}</dt><dd>{item.lifecycleLabel}</dd></div>
-          <div><dt>{zh ? '科学结论' : 'Scientific result'}</dt><dd>{item.resultLabel ?? (zh ? '未提供结果状态' : 'Result status not supplied')}</dd></div>
+          <div><dt>{zh ? '运行状态' : 'Lifecycle'}</dt><dd data-reader-answer>{item.lifecycleLabel}</dd></div>
+          <div><dt>{zh ? '科学结论' : 'Scientific result'}</dt><dd data-reader-answer>{item.resultLabel ?? (zh ? '未提供结果状态' : 'Result status not supplied')}</dd></div>
         </dl>
-        {item.note && <p>{item.note}</p>}
+        {item.note && <p data-reader-answer>{item.note}</p>}
       </li>
     ))}
   </ul>

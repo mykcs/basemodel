@@ -183,3 +183,18 @@
 - 旧卡片“默认全部可见”不再是验收代理；正确契约是摘要默认可见，展开后证据完整、键盘可达、无 JS 时核心含义仍成立。
 
 这部分是 #499 任务记录的后续收敛，不创建第二套长期规范；长期约束仍由现有 website / research presentation owner 文档和可执行测试共同持有。
+
+
+## PR #516 统一实现的历史发布凭据
+
+这是对既有 #499 记录的追加，不覆盖其当时的范围与结果，也不表示今天的实时部署版本。
+
+- 实现：[PR #516](https://github.com/mykcs/basemodel/pull/516)，最终接受 head `ec95f1d5c46f06dce77a457728b63711f1f5e04a`，base `bcc9b9ae9966a131f9b4fd444dbd2e0b3e85cba0`，merge `859c74d07a546f7473b1536994ff4b4b769a93ee`。
+- 首次 Preview 为 `dpl_Genj3gRtxzEAhYYp9YxYf2xSrA8Z`；独立 base 更新后，最终 exact-head Preview 为 `dpl_8Sty3mWcCSLo6ThA4h7TiSZGYCyQ`。实际是两次 Preview，不把“一次 Preview”的计划改写成完成事实。
+- 对话中的 Production 回执为 `dpl_2cp2BZcpLRsbybihkhJuZn3Bnu3E`，绑定上述 merge 并通过稳定域页面回查；合并后 deterministic 与四个 browser shard 均成功。这里是当时回执，不承诺此部署仍是最新。
+- 本地统一树完成 `verify:deploy`、184 项 canonical Chromium 与 74 项 reader Chromium / 74 项 reader WebKit。计数归属当时树/套件，不是永久验收数量，也不证明真人理解率。
+- WebKit 首轮 73/74，英文入口 orientation bottom 为 638.390625px，阈值为 635px（633px 视口加既有2px容差）。通过缩短英文重复文案修复；未减小可读字体、未放宽阈值。后续完整74项重跑通过。
+- 桌面五问首屏通过；手机暗色回查只有“无横向溢出”的证据，中文/英文 orientation 曾高于844px，不能写成手机五问也都在第一屏。
+- 主阅读层迁移覆盖入口、first-run、Mechanism、successor gateway、report、exploration；保留其他历史页面的背景入口，不声称13条路线全部重写正文。
+
+完整对话的新增反例、重复犯错分析与记忆写入边界追加在 [既有经验案例](2026-09-07-reader-journey-experience-retention.md#8-完整对话的增量复核)，不新建平行规范。

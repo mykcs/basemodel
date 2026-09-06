@@ -64,3 +64,12 @@ Astra 最后一次整合复核确认主要拓扑、状态、任务步骤与时�
 最初链接 dpl_5HLjByMdzMCZtVsJV2eMMU3oic59 指向 d00e986（#480）的旧部署，不会自动包含后续改稿。正式阅读入口使用 basemodel-preview.vercel.app。
 
 完整 preflight:ui：PASS，374 项 Chromium/WebKit 测试通过（7.9 分钟，重试 0）。此后仅吸纳独立 #517 主线配置及本验收记录；研究组件字节保持不变。Preview/CI/Production 以 PR 的后续精确提交记录为准，未观察到的状态不标为 PASS。
+
+
+## 当前主线与可读性覆盖补充
+
+首次候选 1ffb70e 与文字修正版 ee4dda6 各自通过完整 374 项跨浏览器检查；两者均生成真实 READY Preview。实际阅读走查推动第二版清理默认摘要黑话与数字单位。它们不是后续提交的精确验收凭据。
+
+REPEAT-CORRECTION：主线 #519 在验收期间前进到 01871f4，并保留了新增组件逃出旧字号选择器的已知漏洞。当前所有者为 human-thinking §10.10、release-closeout §6.3/6.4。已核查真实 main ref、九个独立变动路径及现有 assertVisibleReaderGeometry 选择器；允许整合同一 PR，并给 Orientation/StateRail/Journey 的核心回答添加共享 data-reader-answer 标记。现有字号、对比度和几何检查扩至六条主阅读路线，且逐项检查实际语义节点确实进入选择器；关闭折叠中的 summary 仍应按其可见几何验收。源码、主线或部署身份变化时重新核验，不把旧版 PASS 改写为新版 PASS。
+
+本轮仍是源码导出：保留已知主线和改动清单，通过 Git blob 比对验证来源，再用原子 Git-data 提交发布；不伪称有 .git 的干净工作树。后续当前候选的 CI/Preview/Production 凭据追加在 PR #518 与用户交付 Markdown。

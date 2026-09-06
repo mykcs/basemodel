@@ -25,14 +25,19 @@ async function assertVisibleReaderGeometry(page: Page) {
       const channel = value / 255;
       return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
     }).reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index]!, 0);
-    const selectors = '[data-reader-page] [data-reader-purpose], [data-reader-page] [data-reader-task], [data-lifecycle] dd, [data-reader-question], [data-result-status]';
+    const selectors = '[data-reader-page] [data-reader-purpose], [data-reader-page] [data-reader-task], [data-lifecycle] dd, [data-reader-question], [data-result-status], [data-reader-answer]';
     const answers = document.querySelectorAll<HTMLElement>(selectors);
     if (answers.length === 0) failures.push('no reader answers found');
+    const ownedAnswers = document.querySelectorAll('[data-orientation-field] dd, [data-state-lifecycle] dd, [data-research-step] summary em');
+    if (ownedAnswers.length === 0) failures.push('no shared reader answers found');
+    ownedAnswers.forEach((node) => {
+      if (!node.matches('[data-reader-answer]')) failures.push('shared reader answer escaped geometry checks');
+    });
     answers.forEach((node) => {
       const style = getComputedStyle(node);
       const box = node.getBoundingClientRect();
       const name = node.textContent?.trim().slice(0, 45) ?? '';
-      if (box.width === 0 || box.height === 0 || node.closest('details:not([open])')) failures.push(`hidden answer: ${name}`);
+      if (box.width === 0 || box.height === 0) failures.push(`hidden answer: ${name}`);
       if (node.scrollWidth > node.clientWidth + 2) failures.push(`clipped answer: ${name}`);
       if (parseFloat(style.fontSize) < 15) failures.push(`small primary answer: ${name}`);
       const foreground = parse(style.color);
@@ -103,7 +108,7 @@ export function registerReaderJourneyTests() {
         test(`reader journey ${locale} ${width}px ${theme}: visible answer geometry and contrast`, async ({ page }) => {
           await page.setViewportSize({ width, height: 1000 });
           await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
-          for (const path of [root, mechanism]) {
+          for (const path of primaryReadingPaths) {
             await page.goto(`${prefix}${path}`, { waitUntil: 'domcontentloaded' });
             await page.evaluate(() => document.fonts.ready);
             await expect(page.locator('html')).toHaveAttribute('data-theme', theme);

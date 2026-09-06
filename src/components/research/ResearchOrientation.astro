@@ -36,11 +36,11 @@ const labels = zh
     <p data-reader-purpose>{props.lede}</p>
   </div>
   <dl class="research-orientation__fields">
-    <div data-orientation-field="question"><dt>{labels.question}</dt><dd>{props.question}</dd></div>
-    <div data-orientation-field="why"><dt>{labels.why}</dt><dd>{props.why}</dd></div>
-    <div data-orientation-field="start"><dt>{labels.start}</dt><dd>{props.start}</dd></div>
-    <div data-orientation-field="finish"><dt>{labels.finish}</dt><dd>{props.finish}</dd></div>
-    <div data-orientation-field="state" class="is-state"><dt>{labels.state}</dt><dd>{props.state}</dd></div>
+    <div data-orientation-field="question"><dt>{labels.question}</dt><dd data-reader-answer>{props.question}</dd></div>
+    <div data-orientation-field="why"><dt>{labels.why}</dt><dd data-reader-answer>{props.why}</dd></div>
+    <div data-orientation-field="start"><dt>{labels.start}</dt><dd data-reader-answer>{props.start}</dd></div>
+    <div data-orientation-field="finish"><dt>{labels.finish}</dt><dd data-reader-answer>{props.finish}</dd></div>
+    <div data-orientation-field="state" class="is-state"><dt>{labels.state}</dt><dd data-reader-answer>{props.state}</dd></div>
   </dl>
   {props.actionHref && props.actionLabel && (
     <a class="research-orientation__action" href={props.actionHref}>{props.actionLabel} →</a>

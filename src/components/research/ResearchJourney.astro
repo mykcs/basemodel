@@ -38,7 +38,7 @@ const zh = locale === 'zh';
         <details open={step.current || (!steps.some((item) => item.current) && index === 0)}>
           <summary>
             <span class="research-journey__index">{String(index + 1).padStart(2, '0')}</span>
-            <span class="research-journey__summary"><small>{step.kicker}</small><strong>{step.title}</strong><em>{step.summary}</em></span>
+            <span class="research-journey__summary"><small>{step.kicker}</small><strong>{step.title}</strong><em data-reader-answer>{step.summary}</em></span>
             {step.state && <b>{step.state}</b>}
           </summary>
           <div class="research-journey__body">
