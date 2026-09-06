@@ -271,11 +271,13 @@ This exception is for import/composition structure only. The moment a change alt
 
 ### Layer 3 — failure evidence
 
-Playwright is configured to retain on failure:
+Playwright failure evidence remains three-part:
 
-- screenshot;
-- trace;
+- screenshot from the authoritative first run;
+- trace from the authoritative first run;
 - video.
+
+Local/default browser runs retain video on the original failure. The ordinary CircleCI success path defers video recording to avoid paying encoding/I/O cost for every passing test. If the authoritative first run fails, the wrapper keeps that failure status, preserves its screenshot + trace, and uses Playwright `--last-failed` only as a diagnostic rerun with video forced on. The diagnostic rerun writes to an isolated output directory, so it cannot erase the first-run evidence, and it can never convert the original red acceptance result to green even if the failed test passes when reproduced. CircleCI uploads the first-run `test-results` and the deferred-video directory only on failure, so both evidence sets remain available from the failed job's Artifacts tab without adding success-path artifact upload cost.
 
 Do not report only “Playwright failed.” Inspect the first failing route/theme/viewport and identify whether the root cause is color pairing, clipping, overlap, overflow, or state transition.
 

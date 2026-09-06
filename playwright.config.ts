@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 const useSystemChrome = process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === '1';
 const reuseBuiltOutput = process.env.PLAYWRIGHT_REUSE_BUILD === '1';
+const deferFailureVideo = process.env.PLAYWRIGHT_DEFER_FAILURE_VIDEO === '1';
+const diagnosticVideo = process.env.PLAYWRIGHT_DIAGNOSTIC_VIDEO === '1';
 const previewPort = process.env.PLAYWRIGHT_PORT ?? '4327';
 const previewURL = `http://127.0.0.1:${previewPort}/`;
 
@@ -34,7 +36,7 @@ export default defineConfig({
     baseURL: previewURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: diagnosticVideo ? 'on' : deferFailureVideo ? 'off' : 'retain-on-failure',
   },
   projects: [
     {

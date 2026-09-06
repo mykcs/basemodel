@@ -7,6 +7,7 @@ const packageJson = JSON.parse(read('../../package.json')) as {
 };
 const playwrightConfig = read('../../playwright.config.ts');
 const vercelUiGate = read('../../scripts/vercel-ui-gate.mjs');
+const ciUiGate = read('../../scripts/ci-ui-gate.mjs');
 const browserGate = read('../../tests/e2e/ui-safety.spec.ts');
 const canonicalFigureGate = read('../../tests/e2e/canonical-research-figures.spec.ts');
 const webShopThemeGate = read('../../tests/e2e/webshop-training-theme.spec.ts');
@@ -61,10 +62,17 @@ describe('UI visual acceptance gate contract', () => {
     expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
-  it('retains evidence when browser verification fails', () => {
+  it('retains first-failure evidence while deferring CircleCI video cost', () => {
     expect(playwrightConfig).toContain("trace: 'retain-on-failure'");
     expect(playwrightConfig).toContain("screenshot: 'only-on-failure'");
-    expect(playwrightConfig).toContain("video: 'retain-on-failure'");
+    expect(playwrightConfig).toContain("video: diagnosticVideo ? 'on' : deferFailureVideo ? 'off' : 'retain-on-failure'");
+    expect(playwrightConfig).toContain("process.env.PLAYWRIGHT_DEFER_FAILURE_VIDEO === '1'");
+    expect(playwrightConfig).toContain("process.env.PLAYWRIGHT_DIAGNOSTIC_VIDEO === '1'");
+    expect(ciUiGate).toContain('original failure remains authoritative');
+    expect(ciUiGate).toContain("'--last-failed'");
+    expect(ciUiGate).toContain("'--output', diagnosticOutputDir");
+    expect(ciUiGate).toContain('ci-diagnostic-results');
+    expect(policy).toContain('it can never convert the original red acceptance result to green');
   });
 
   it('covers themes, viewports, overflow, clipping, overlap, and theme transitions', () => {

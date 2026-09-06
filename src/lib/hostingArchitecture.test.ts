@@ -38,6 +38,17 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('PLAYWRIGHT_DEFER_FAILURE_VIDEO: "1"');
+    expect(ciUiGate).toContain('--last-failed');
+    expect(ciUiGate).toContain('PLAYWRIGHT_DIAGNOSTIC_VIDEO');
+    expect(ciUiGate).toContain('original failure remains authoritative');
+    expect(ciUiGate).toContain('process.exit(originalStatus)');
+    expect(ciUiGate).toContain("'--output', diagnosticOutputDir");
+    expect(circleCiConfig).toContain('path: test-results');
+    expect(circleCiConfig).toContain('path: ci-diagnostic-results');
+    expect(circleCiConfig).toContain('destination: browser-failure-primary-<< parameters.shard_index >>');
+    expect(circleCiConfig).toContain('destination: browser-failure-video-<< parameters.shard_index >>');
+    expect(circleCiConfig.match(/when: on_fail/g)?.length).toBeGreaterThanOrEqual(2);
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);

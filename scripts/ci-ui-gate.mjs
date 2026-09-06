@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { rmSync } from 'node:fs';
+import { existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -107,14 +107,66 @@ if (ownsBuild) {
 }
 
 const transformCacheDir = join(tmpdir(), `basemodel-playwright-transform-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}`);
+const safeHead = head.replace(/[^A-Za-z0-9._-]/g, '_');
+const lastRunFile = join(tmpdir(), `basemodel-playwright-last-run-${safeHead}-${shardIndex}of${shardTotal}.json`);
+const diagnosticOutputDir = join(process.cwd(), 'ci-diagnostic-results', `${safeHead}-${shardIndex}of${shardTotal}`);
 rmSync(transformCacheDir, { recursive: true, force: true });
+rmSync(lastRunFile, { force: true });
+rmSync(diagnosticOutputDir, { recursive: true, force: true });
 console.log(`[ci-ui-gate] fresh Playwright transform cache: ${transformCacheDir}`);
+console.log(`[ci-ui-gate] Playwright last-run identity: ${lastRunFile}`);
+console.log(`[ci-ui-gate] deferred-video output: ${diagnosticOutputDir}`);
 
 const browserEnv = {
   CI: '1',
   PLAYWRIGHT_REUSE_BUILD: '1',
   PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? '1',
+  PLAYWRIGHT_LAST_RUN_OUTPUT_FILE: lastRunFile,
   PWTEST_CACHE_DIR: transformCacheDir,
+};
+
+const runBrowserAcceptance = (args, extraEnv = {}) => {
+  console.log(`[ci-ui-gate] npx ${args.join(' ')}`);
+  const result = spawnSync('npx', args, {
+    stdio: 'inherit',
+    env: { ...process.env, ...browserEnv, ...extraEnv },
+  });
+  if (result.error) {
+    console.error('[ci-ui-gate] failed to start browser acceptance:', result.error);
+    process.exit(1);
+  }
+  if (result.status === 0) return;
+
+  const originalStatus = result.status ?? 1;
+  console.error(`[ci-ui-gate] browser acceptance failed with status ${originalStatus}; original failure remains authoritative`);
+  if (!existsSync(lastRunFile)) {
+    console.error('[ci-ui-gate] Playwright last-run file missing; cannot collect deferred video diagnostics');
+    process.exit(originalStatus);
+  }
+
+  const diagnosticArgs = [
+    ...args,
+    '--last-failed',
+    `--last-failed-file=${lastRunFile}`,
+    '--output', diagnosticOutputDir,
+  ];
+  console.error('[ci-ui-gate] collecting video for only the last-failed tests in an isolated output directory; this diagnostic rerun cannot change the CI result');
+  const diagnostic = spawnSync('npx', diagnosticArgs, {
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      ...browserEnv,
+      ...extraEnv,
+      PLAYWRIGHT_DEFER_FAILURE_VIDEO: '0',
+      PLAYWRIGHT_DIAGNOSTIC_VIDEO: '1',
+    },
+  });
+  if (diagnostic.error) {
+    console.error('[ci-ui-gate] deferred video diagnostic failed to start:', diagnostic.error);
+  } else {
+    console.error(`[ci-ui-gate] deferred video diagnostic status=${diagnostic.status ?? '<signal>'}; preserving original failure status=${originalStatus}`);
+  }
+  process.exit(originalStatus);
 };
 
 const installArgs = ['playwright', 'install'];
@@ -164,13 +216,9 @@ if (plan.mode === 'focused') {
     process.exit(1);
   }
 
-  run(
-    'npx',
+  runBrowserAcceptance(
     ['playwright', 'test', ...specs, '--project=chromium', '--max-failures=1'],
-    {
-      ...browserEnv,
-      VERCEL_CHANGED_ROUTES: plan.routes.join(','),
-    },
+    { VERCEL_CHANGED_ROUTES: plan.routes.join(',') },
   );
 } else if (shardTotal > 1) {
   const testListPath = join(tmpdir(), `basemodel-playwright-tests-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}.txt`);
@@ -186,10 +234,8 @@ if (plan.mode === 'focused') {
     ],
     browserEnv,
   );
-  run(
-    'npx',
+  runBrowserAcceptance(
     ['playwright', 'test', '--project=chromium', '--max-failures=1', '--test-list', testListPath],
-    browserEnv,
   );
 } else {
   run('npm', ['run', 'test:ui'], browserEnv);
