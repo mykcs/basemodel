@@ -1,5 +1,7 @@
 # Latest Agent handoff
 
+> **CI performance evidence routing.** 当前性能协议见 [runbook](current/ci-performance-experiment-runbook.md)，发布执行主体见 [deployment-policy](current/deployment-policy.md)。Vercel构建使用现行部署配置，不沿用本快照中过时的provider浏览器gate命令。下方科研状态按原日期理解，不代表此刻live状态；本次不据记忆刷新科研快照。
+
 Last updated: **2026-08-28**
 
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
@@ -127,8 +129,6 @@ For ordinary deployable changes, the Vercel build command must actually execute:
 ```bash
 npm run verify:deploy
 npm run build
-node scripts/vercel-ui-gate.mjs
-node scripts/vercel-lab-browser-gate.mjs
 ```
 
 `SKIPPED`, ignored, canceled, stale-head, or rate-limited execution is not `PASS`.

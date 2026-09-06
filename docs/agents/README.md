@@ -1,5 +1,9 @@
 # Agent documentation
 
+## CI性能实验：开始、继续、采用或回退
+
+先读 [current CI performance experiment runbook](current/ci-performance-experiment-runbook.md)，刷新完整运行台账；已关闭PR和评论也是证据。提供商/发布权限继续由 [deployment policy](current/deployment-policy.md) 承担。案例与历史更正见 [2026-09-06 browser CI evidence audit](history/2026-09-06-browser-ci-evidence-audit-retrospective.md)。历史时长和测试数不是永久阈值。
+
 Stable task router for `mykcs/basemodel`.
 
 The documentation system uses **progressive disclosure**: every Agent gets a small bootstrap, then loads only the owners that match the task. Do not turn this repository into one giant reading list, and do not create a second current policy merely because an older document is awkward to update.

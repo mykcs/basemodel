@@ -1,5 +1,15 @@
 # Scenario trigger registry
 
+## CI performance experiment / benchmark decision
+
+**触发**：优化等待/录像/缓存/runtime/分桶，测critical path，用户要求继续或收口，以及候选采用/回退。
+
+**先读**：[CI performance experiment runbook](ci-performance-experiment-runbook.md)；provider与发布权限仍由deployment-policy承担。
+
+**预检**：完整open/closed/merged PR和评论台账，精确执行tree/workflow/job/attempt，实际planner与qualification/steady-state模式，全部样本、预定决策规则和声明时刻。
+
+**防御**：找不到不等于不存在；不混workflow计时、不挑最快control、不把维护权衡写成零效应证明。阶段切换重读。历史见 [browser CI audit](../history/2026-09-06-browser-ci-evidence-audit-retrospective.md)。
+
 Last reviewed: **2026-08-31**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.

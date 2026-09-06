@@ -308,3 +308,7 @@ Do not include Cloudflare in an ordinary completion report merely because histor
 A historical external Git integration may still exist outside repository control. Until it is disabled account-side, an existing skip prefix may remain necessary as a silent compatibility safeguard. It is not an ordinary deployment stage, quota to monitor, or completion-report line unless it unexpectedly activates or the task explicitly concerns its retirement.
 
 Do not infer exact provider quota counters without authoritative account evidence.
+
+## CI performance evidence owner
+
+性能实验与采用/回退的证据流程由 [ci-performance-experiment-runbook.md](ci-performance-experiment-runbook.md) 统一承担。本文继续拥有provider职责与发布验收权威；已完成优化checklist与历史retrospective只提供带日期证据，不另立现行性能阈值。新协议是人工操作规则，本次未部署额外自动merge或跨job覆盖gate。

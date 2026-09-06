@@ -1,5 +1,7 @@
 # Basemodel CI Optimization — executable implementation checklist
 
+> **Historical completed execution receipt.** 本文件保留2026-09-05执行与验收历史。时长、head、测试数和采用门槛只属于当时样本；后续性能实验统一遵循 [current runbook](ci-performance-experiment-runbook.md)，provider职责遵循 [deployment policy](deployment-policy.md)。保留原数据，不升级为永久阈值。
+
 Status: **COMPLETE**
 
 Owner: repository CI architecture
