@@ -1,0 +1,26 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Term { term: string; meaning: string }
+interface Props { locale: Locale; terms: Term[] }
+const { locale, terms } = Astro.props;
+const zh = locale === 'zh';
+---
+{terms.length > 0 && (
+  <details class="research-glossary" data-research-glossary>
+    <summary>{zh ? '第一次看？先认识这几个词' : 'New here? Start with these terms'}</summary>
+    <dl>
+      {terms.map((item) => (
+        <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>
+      ))}
+    </dl>
+  </details>
+)}
+<style>
+.research-glossary{width:min(1120px,calc(100% - 2rem));margin:.55rem auto 0;padding-top:.65rem;border-top:1px solid var(--line)}
+.research-glossary summary{cursor:pointer;width:max-content;max-width:100%;color:var(--accent-deep);font-weight:780;font-size:.82rem}
+.research-glossary dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin:.7rem 0 0}
+.research-glossary dl>div{padding:.65rem .72rem;border-left:2px solid var(--line);background:var(--surface-muted)}
+.research-glossary dt{font-weight:800;font-size:.76rem}.research-glossary dd{margin:.2rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.5}
+@media(max-width:760px){.research-glossary{width:min(100% - 1rem,1120px)}.research-glossary dl{grid-template-columns:1fr}}
+</style>

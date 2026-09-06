@@ -161,3 +161,25 @@
 本文件的“完成”指**网站工程与发布链路完成**。它不伪造“真实同学/老师理解率”。如果未来真实读者仍产生关键误解，应把具体误解转化为同一语义 owner 下的页面修复和可判别回归，而不是再增加一套平行规范。
 
 后续 main 可以继续产生与本功能无关的 docs-only commit；这不把 Production runtime identity 改写成那些 docs commit。网站运行版本、Git main 版本、实验科学证据版本始终分别记录。
+
+## 2026-09-07 统一读者体系收敛
+
+并行实现收敛后，只保留一套 canonical reader system：#499 已有的 WebShop 任务背景、13 条 capability route context、typed lifecycle 与 M1-A successor 科学修订继续作为事实和生命周期所有者；新增的 `ResearchOrientation`、`ResearchJourney`、`ResearchDepth`、`ResearchStateRail` 只负责阅读层级，不复制科学状态。
+
+### 增强后的页面合同
+
+- 六个主阅读页面第一屏固定回答：研究问题、为什么重要、从哪里开始、什么时候结束、当前状态。
+- 顺序性研究必须用 3–6 步的语义旅程表达；依赖、GO/NO-GO 和 STOP 不能只藏在段落里。
+- 授权、实际运行、结果封存、科学结论继续由 typed lifecycle 分开；阅读组件不得自行推断或改变状态。
+- WebShop 任务背景继续由 `ResearchTaskContext` / `ResearchRouteContext` 提供，避免新读者先遇到项目缩写。
+- 深层 provenance、完整诊断历史和运行细节使用命名 disclosure；核心结论不依赖展开或 JavaScript。
+
+### 量化验收
+
+- `ResearchOrientation` 的五个字段必须在源码与浏览器回归中可检测。
+- capability 主线、first-run、Mechanism、successor report / exploration 必须保留显式 journey 或线性 argument。
+- 1280×633 桌面首屏要求 orientation 完整落在首屏；中英文分别验收。
+- 390 / 768 / 1280+ 宽度、light / dark、reduced-motion、全部 disclosure 展开状态均不得产生页面级横向溢出。
+- 旧卡片“默认全部可见”不再是验收代理；正确契约是摘要默认可见，展开后证据完整、键盘可达、无 JS 时核心含义仍成立。
+
+这部分是 #499 任务记录的后续收敛，不创建第二套长期规范；长期约束仍由现有 website / research presentation owner 文档和可执行测试共同持有。

@@ -3,14 +3,15 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
-import { OPEN_EVO_CEILING_PRINCIPLE, OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_Q17_FINAL, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
+import ResearchOrientation from './ResearchOrientation.astro';
+import ResearchDepth from './ResearchDepth.astro';
+import { OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_Q17_FINAL, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-const principle = zh ? OPEN_EVO_CEILING_PRINCIPLE.zh : OPEN_EVO_CEILING_PRINCIPLE.en;
 const links = {
   gateway: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/'),
   exploration: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/'),
@@ -19,18 +20,36 @@ const links = {
 const arm3 = OPEN_EVO_STAGE1_METRICS[0];
 const arm17 = OPEN_EVO_STAGE1_METRICS[1];
 const final17 = OPEN_EVO_Q17_FINAL;
+const terms = zh ? [
+  { term: 'shared Harness', meaning: '两个模型共用的环境接口规则；允许合法 WebShop 动作，但不给购物解题策略。' },
+  { term: 'raw Stage1', meaning: '模型还没有消费 learned carriers 时自己采出的第一批 1,440 条正式轨迹。' },
+  { term: 'MiniMax post-hoc', meaning: '轨迹封存以后才做的外部批改分析；不替模型在线点网页。' },
+  { term: 'carrier', meaning: '把已封存证据带入后续学习的结构，例如 adapter、Memory、Skill、Agent；不能提前泄漏回 raw Stage1。' },
+] : [
+  { term: 'shared harness', meaning: 'One environment interface shared by both models. It permits legal WebShop actions without supplying a shopping strategy.' },
+  { term: 'raw Stage 1', meaning: 'The first 1,440 formal trajectories collected by each model before any learned carrier is consumed.' },
+  { term: 'MiniMax post hoc', meaning: 'External review that begins only after trajectories are sealed; it never clicks WebShop for the model.' },
+  { term: 'carrier', meaning: 'A structure that carries sealed evidence into later learning, such as adapter, Memory, Skill, or Agent; it cannot leak backward into raw Stage 1.' },
+];
 ---
 <main class="report-map" data-testid="openevo-successor-report">
-  <header class="report-map__head">
-    <a href={links.gateway}>{t('← 3B + 1.7B successor', '← 3B + 1.7B successor')}</a>
-    <p>REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT</p>
-    <h1>{t('3B 与 1.7B：共享 Harness 下的自进化起点', '3B and 1.7B: a shared-harness starting point for self-evolution')}</h1>
-    <strong>{principle}</strong>
-    <span>{t(
-      '这一页只写最终可辩护的设计与证据。失败假设、绕路和工程修复不消失，但降到 evidence details；如果要看研究是怎么走出来的，切到探索版。',
-      'This page presents only the final defensible design and evidence. Failed hypotheses, detours, and engineering fixes remain available in evidence details; use the exploration view to follow how the design emerged.'
-    )}</span>
-  </header>
+  <ResearchOrientation
+    locale={locale}
+    eyebrow="REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT"
+    title={t('3B 和 1.7B，从哪里起跑？', 'Where do 3B and 1.7B start?')}
+    lede={t('这页只保留最终可辩护的科学论证：共享 Harness → 各自 1,440 条 raw Stage1 → 起跑线差异 → MiniMax → bounded carriers → 独立 Stage2 gate。失败假设与工程修复仍能展开审计。', 'Follow one claim path: shared harness → 1,440 raw trajectories per model → starting-point difference → MiniMax → bounded carriers → a separate Stage-2 gate.')}
+    question={t('不给某个模型私有 WebShop 解题策略，只给共享环境接口，它们各自能从哪里起跑？', 'Under one shared interface, where can 3B and 1.7B bootstrap without private WebShop-solving help?')}
+    why={t('如果起跑线和接口不对齐，后续 Stage2 的学习曲线就不能被当成公平的模型比较。', 'Aligned starting points and interfaces are required before later Stage-2 learning can be compared fairly.')}
+    start={t(`从 ${OPEN_EVO_STAGE1_FREEZE.id} shared freeze 开始：每个模型独立采 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 条。`, `Start at freeze ${OPEN_EVO_STAGE1_FREEZE.id}: each model independently collects ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} trajectories.`)}
+    finish={t('Stage1 evidence 封存并进入 PRE_STAGE2_READY；Stage2 必须另行授权。1.7B 后续已完成独立 Stage2 + 固定 final panel，3B 尚未到同一收口。', 'Stop at PRE_STAGE2_READY; Stage 2 needs separate authority. The later 1.7B path has a final closeout; 3B does not.')}
+    state={t('Stage1 比较已封存；1.7B final closeout 已完成；3B 的最终同口径 closeout 仍未完成。', 'Stage 1 is sealed; the 1.7B final closeout is complete; the matched 3B closeout is not.')}
+    stateTone="sealed"
+    backHref={links.gateway}
+    backLabel={t('两种读法', 'Two reading modes')}
+    actionHref="#report-mainline"
+    actionLabel={t('直接看六步科学论证', 'Jump to the six-step scientific argument')}
+    terms={terms}
+  />
 
   <nav class="report-map__switch" aria-label={t('切换叙事版本', 'Switch narrative view')}>
     <a href={links.exploration}>{t('← 看真实探索过程', '← Read the exploration history')}</a>
@@ -74,8 +93,8 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </details>
   </section>
 
-  <section class="paper-spine" aria-label={t('论文式线性实验主线', 'Linear paper-style experiment mainline')}>
-    <article data-paper-step="harness">
+  <section id="report-mainline" class="paper-spine" data-research-journey aria-label={t('论文式线性实验主线', 'Linear paper-style experiment mainline')}>
+    <article data-paper-step="harness" data-research-step="harness">
       <div class="paper-step__index"><span>01</span><b>HARNESS</b></div>
       <div class="paper-step__body">
         <h2>{t('共享一套 strategy-neutral bootstrap harness', 'Use one strategy-neutral bootstrap harness')}</h2>
@@ -85,7 +104,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
     <span class="paper-connector"></span>
 
-    <article data-paper-step="raw-stage1">
+    <article data-paper-step="raw-stage1" data-research-step="raw-stage1">
       <div class="paper-step__index"><span>02</span><b>RAW STAGE 1</b></div>
       <div class="paper-step__body">
         <h2>{t('每个模型独立采 180 × 8 = 1,440 条', 'Collect 180 × 8 = 1,440 trajectories independently per model')}</h2>
@@ -94,7 +113,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
     <span class="paper-connector"></span>
 
-    <article data-paper-step="behavior">
+    <article data-paper-step="behavior" data-research-step="behavior">
       <div class="paper-step__index"><span>03</span><b>BOOTSTRAP SIGNAL</b></div>
       <div class="paper-step__body">
         <h2>{t('两边都能直接成功，但起跑线不同', 'Both models can succeed directly, with different starting points')}</h2>
@@ -103,7 +122,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
     <span class="paper-connector"></span>
 
-    <article data-paper-step="minimax">
+    <article data-paper-step="minimax" data-research-step="minimax">
       <div class="paper-step__index"><span>04</span><b>POST-HOC ANALYSIS</b></div>
       <div class="paper-step__body">
         <h2>{t('raw Stage1 封存后，MiniMax-M3 才进入', 'MiniMax-M3 enters only after raw Stage 1 is sealed')}</h2>
@@ -112,7 +131,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
     <span class="paper-connector"></span>
 
-    <article data-paper-step="carriers">
+    <article data-paper-step="carriers" data-research-step="carriers">
       <div class="paper-step__index"><span>05</span><b>BOUNDED CARRIERS</b></div>
       <div class="paper-step__body">
         <h2>{t('用冻结 evidence 构造 OPSD / Memory / Skill / Agent', 'Construct OPSD / Memory / Skill / Agent from frozen evidence')}</h2>
@@ -122,7 +141,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
     <span class="paper-connector"></span>
 
-    <article data-paper-step="boundary" class="paper-step--boundary">
+    <article data-paper-step="boundary" data-research-step="boundary" class="paper-step--boundary">
       <div class="paper-step__index"><span>06</span><b>PRE_STAGE2_READY</b></div>
       <div class="paper-step__body">
         <h2>{t('Stage1 产物可加载，但 Stage2 仍需独立授权', 'Stage-1 products are loadable, while Stage 2 still needs separate authorization')}</h2>
@@ -131,7 +150,7 @@ const final17 = OPEN_EVO_Q17_FINAL;
     </article>
   </section>
 
-  <OpenEvoHarnessFairnessPanel locale={locale} />
+  <ResearchDepth locale={locale} kind="method" summary={t('共享 Harness 的公平性与污染边界', 'Shared-harness fairness and contamination boundaries')} intro={t('这些边界必须保留，但不需要抢占第一次阅读的主线。', 'These boundaries remain auditable without dominating the first reading path.')}><OpenEvoHarnessFairnessPanel locale={locale} /></ResearchDepth>
 
   <section class="report-boundaries" aria-labelledby="report-boundary-title">
     <p>WHAT THIS RESULT DOES / DOES NOT CLAIM</p>

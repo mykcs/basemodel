@@ -1,6 +1,9 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
+import ResearchOrientation from './ResearchOrientation.astro';
+import ResearchJourney from './ResearchJourney.astro';
+import ResearchDepth from './ResearchDepth.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -16,22 +19,49 @@ const links = {
   harness: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'),
   archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
 };
+const terms = zh ? [
+  { term: 'Stage 1', meaning: '先让模型自己跑 WebShop，形成第一批可学习经验；老师只在任务结束后分析。' },
+  { term: 'Stage 2', meaning: '模型继续消费新经验并更新参数的阶段；第一轮 7B 与 3B 在这里走出了很不同的路径。' },
+  { term: 'round', meaning: '第一轮 7B Stage2 的基本推进单位：每轮消费一批新的任务结果，再决定是否产生参数更新。' },
+  { term: 'SD-LoRA component', meaning: '一次被接受的参数更新留下的 LoRA 组件；component 数量不是 replay buffer，也不是最终科学分数。' },
+] : [
+  { term: 'Stage 1', meaning: 'The model first acts on WebShop to create an initial experience corpus; the external teacher reviews only after tasks finish.' },
+  { term: 'Stage 2', meaning: 'The model keeps consuming new experience and updating parameters. The first 7B and 3B lineages diverged sharply here.' },
+  { term: 'round', meaning: 'The basic unit of the first 7B Stage 2: consume one new batch of task outcomes, then decide whether a parameter update is produced.' },
+  { term: 'SD-LoRA component', meaning: 'A LoRA component left by one accepted parameter update; component count is not the replay buffer and not the final scientific score.' },
+];
+const summarySteps = zh ? [
+  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '这里先建立“模型原本能做什么”的起跑线，再把证据整理成后续学习输入。', outcome: '老师退出在线交互；后续 Stage2 只允许使用已经封存的经验。', state: '历史起点' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 的学习点燃了，3B 的旧线却暴露了 Harness 问题', summary: '7B 能持续产生真实 SD-LoRA 更新；旧 3B Stage2 跑到 3,200 条后停下来，不再硬解释成“模型太弱”。', detail: '3B 的 action parsing / invalid termination 说明接口本身可能污染能力测量，因此旧线不能继续冒充公平比较。', outcome: '7B 可以继续封存能力天花板；3B 必须回到 fresh Stage1 redesign。', state: '路径分叉' },
+  { id: 'closeout', kicker: '03 · OUTCOME', title: '第一轮最终留下两种不同证据', summary: '7B：149 个完整 round 后 49.33 分、58/128 exact；3B：旧 lineage 停止，并触发 shared-Harness successor。', detail: '这不是“7B 赢、3B 输”的简单排行榜，而是一次能跑深以后才看见的机制差异和测量风险。', outcome: '下一张地图不续跑旧 3B，而是重新冻结 3B + 1.7B 的共同起跑线。', state: '历史已封存' },
+] : [
+  { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both lineages first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'The external teacher exits online interaction; Stage 2 can consume only sealed evidence.', state: 'Historical start' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B learning ignited while the old 3B path exposed harness problems', summary: '7B sustained real SD-LoRA updates; the old 3B Stage 2 stopped after 3,200 rollouts instead of being simplified to “the model is too weak.”', detail: '3B action parsing and invalid termination showed that the interface itself could corrupt capability measurement.', outcome: '7B could continue toward a ceiling closeout; 3B had to restart from a fresh Stage-1 redesign.', state: 'Paths diverge' },
+  { id: 'closeout', kicker: '03 · OUTCOME', title: 'The first campaign ultimately left two different kinds of evidence', summary: '7B: 49.33 score and 58/128 exact after 149 completed rounds; 3B: the old lineage stops and triggers the shared-harness successor.', detail: 'This is not a simple “7B wins, 3B loses” leaderboard; it is evidence about sustained learning and measurement risk.', outcome: 'The next map restarts the comparison under a shared 3B + 1.7B harness.', state: 'Historical closeout' },
+];
 ---
 <main class="first-run" data-first-run-map data-testid="openevo-first-run-map">
-  <header class="first-run__head">
-    <a href={links.lobby} class="first-run__back">{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
-    <p>HISTORICAL MAP · FIRST RUN</p>
-    <h1>{t('第一轮 OpenEvo 实验', 'First OpenEvo experiment run')}</h1>
-    <strong>{t(
-      '这轮实验跑得足够深，才让我们看见 OpenEvo 真正会在哪里卡住。7B 给出了持续参数更新的完整路径；3B 则把 bootstrap、action validity 和 Harness 设计问题暴露出来。',
-      'This run went far enough to expose where OpenEvo actually breaks down. The 7B lineage produced a complete sustained-update path, while 3B exposed bootstrap, action-validity, and harness-design problems.'
-    )}</strong>
-    <span>{t(
-      '这张地图保留历史设计本来的样子。后来出现的新 Harness 不会被倒写进旧实验；它会在第二张地图从新的 Stage 1 重新开始。',
-      'This map preserves the historical design as it actually ran. The later harness is not retroactively inserted into this experiment; it starts again from a new Stage 1 on the second map.'
-    )}</span>
-  </header>
+  <ResearchOrientation
+    locale={locale}
+    eyebrow="HISTORICAL MAP · FIRST RUN"
+    title={t('第一轮 OpenEvo，哪里真的学起来了？', 'Where did the first OpenEvo run actually learn?')}
+    lede={t('这轮实验跑得足够深，才暴露两个不同事实：7B 能持续把成功经验写进参数；3B 的旧线则让我们发现 action validity 和 Harness 会污染“模型到底会不会”的判断。', 'The deep run split two ways: 7B sustained real parameter updates; old 3B exposed action-validity and harness measurement problems.')}
+    question={t('OpenEvo 能不能真的持续更新参数；如果某条模型线学不起来，我们怎样区分模型能力和接口问题？', 'Can OpenEvo sustain real updates, and is a failed lineage a model problem or an interface problem?')}
+    why={t('这轮是后面 redesign 和 Mechanism-1.0 的前因：没有它，就不知道“跑通”之后还会遇到哪些测量和容量陷阱。', 'This run revealed the measurement and capacity traps that later forced the redesign and Mechanism-1.0.')}
+    start={t('从最早的 7B / 3B WebShop Stage1 经验开始，两条线随后进入各自的历史 Stage2。', 'Start from the original 7B / 3B WebShop Stage 1, then follow their separate historical Stage 2 paths.')}
+    finish={t('7B 在 149 个完整 round 后封存并打开一次 final panel；旧 3B 在 3,200 条 Stage2 rollout 后停止，下一代必须从 fresh Stage1 重启。', '7B seals after 149 rounds; old 3B stops after 3,200 Stage-2 rollouts and must restart from a fresh Stage 1.')}
+    state={t('这是已封存的历史实验：7B 有 final closeout；3B old lineage 已停止，不能被后来的 shared Harness 倒写。', 'Sealed history: 7B has a final closeout; old 3B is stopped and is not rewritten with the later shared harness.')}
+    stateTone="historical"
+    backHref={links.lobby}
+    backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
+    actionHref="#first-run-summary"
+    actionLabel={t('先看三步摘要', 'Start with the three-step summary')}
+    terms={terms}
+  />
 
+  <div id="first-run-summary"><ResearchJourney locale={locale} eyebrow="STAGE 1 → STAGE 2 → OUTCOME" title={t('三步看懂第一轮为什么重要', 'Understand why the first campaign matters in three steps')} intro={t('详细 7B / 3B lineage 仍完整保留在下面；第一次看只需要先理解这三步。', 'The full 7B / 3B lineages remain below; a first reading only needs these three steps.')} steps={summarySteps} /></div>
+
+  <div id="first-run-lineages"><ResearchDepth locale={locale} kind="history" summary={t('完整第一轮 lineage：切换 7B / 3B，查看每个关卡、工程修复与证据', 'Full first-run lineages: switch 7B / 3B and inspect every stage, engineering fix, and evidence')} intro={t('这是历史审计层。它保留原来的交互和全部证据，但不再要求第一次来的读者默认展开。', 'This is the historical audit layer. It keeps the original interaction and all evidence without forcing it into the default reading path.')} >
   <aside class="first-run__prelude" aria-label={t('更早的 Stage 2 经验', 'Earlier Stage-2 evidence')}>
     <strong>{t('更早的一条 Stage 2 路线已经提醒过我们：成功轨迹存在，不等于参数真的会更新。', 'An earlier Stage-2 route had already shown that successful trajectories do not automatically become parameter updates.')}</strong>
     <span>{t('旧 256-window 规则把早期 method-control 条件变成了长期门槛，导致大量成功经验没有触发更新。Ceiling-1.0 因此改成按轮处理新经验。', 'The old 256-window rule promoted an early method-control condition into a long-term gate, so many successes never triggered an update. Ceiling-1.0 therefore moved to round-level evidence.')}</span>
@@ -234,6 +264,7 @@ const links = {
       <strong>{t('这次失败真正改变的是我们的设计判断：reasoning 与 action validity 应该分开。', 'The failure changed the design judgment: reasoning and action validity should be separated.')}</strong>
     </template>
   </section>
+  </ResearchDepth></div>
 </main>
 
 <script>

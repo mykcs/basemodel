@@ -1,0 +1,33 @@
+---
+import type { Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  summary: string;
+  intro?: string;
+  open?: boolean;
+  kind?: 'method' | 'evidence' | 'history' | 'operations';
+}
+const { locale, summary, intro, open = false, kind = 'evidence' } = Astro.props;
+const zh = locale === 'zh';
+const labels = {
+  method: zh ? '方法细节' : 'Method depth',
+  evidence: zh ? '证据与来源' : 'Evidence depth',
+  history: zh ? '历史与回退' : 'History depth',
+  operations: zh ? '运行与工程' : 'Operations depth',
+};
+---
+<details class="research-depth" data-research-depth={kind} open={open}>
+  <summary><span>{labels[kind]}</span><strong>{summary}</strong></summary>
+  <div class="research-depth__body">
+    {intro && <p class="research-depth__intro">{intro}</p>}
+    <slot />
+  </div>
+</details>
+<style>
+.research-depth{width:min(1120px,calc(100% - 2rem));margin:.75rem auto;border-block:1px solid var(--line);background:var(--surface)}
+.research-depth>summary{display:grid;grid-template-columns:10rem minmax(0,1fr);gap:1rem;align-items:center;padding:.78rem 0;cursor:pointer;list-style:none}.research-depth>summary::-webkit-details-marker{display:none}.research-depth>summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}.research-depth>summary span{color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}.research-depth>summary strong{font-size:.86rem;line-height:1.4}.research-depth>summary strong::after{content:'＋';float:right;color:var(--muted);font-weight:500}.research-depth[open]>summary strong::after{content:'−'}
+.research-depth__body{padding:.15rem 0 1rem 11rem}.research-depth__intro{max-width:50rem;margin:0 0 .75rem;color:var(--muted);font-size:.78rem;line-height:1.55}
+.research-depth__body :global(> :first-child){margin-top:0}.research-depth__body :global(> :last-child){margin-bottom:0}
+@media(max-width:760px){.research-depth{width:min(100% - 1rem,1120px)}.research-depth>summary{grid-template-columns:1fr;gap:.25rem}.research-depth__body{padding-left:0}}
+</style>

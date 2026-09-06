@@ -25,10 +25,16 @@ test('desktop lobby exposes exactly three primary maps and keeps archive seconda
   const response = await page.goto(root, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
   await expect(page.locator('[data-map-choice]')).toHaveCount(3);
+  await expect(page.locator('[data-research-step="first-run"] summary')).toBeVisible();
+  await expect(page.locator('[data-research-step="redesign"] summary')).toBeVisible();
+  await page.locator('[data-research-step="first-run"] summary').click();
+  await page.locator('[data-research-step="redesign"] summary').click();
   await expect(page.locator('[data-map-choice="first-run"]')).toBeVisible();
   await expect(page.locator('[data-map-choice="redesign"]')).toBeVisible();
   await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toHaveAttribute('href', mechanism);
   await expect(page.locator('[data-map-choice="archive"]')).toHaveCount(0);
+  const archiveDepth = page.locator('[data-research-depth="history"]').last();
+  await archiveDepth.locator('summary').first().click();
   await expect(page.locator('.map-lobby__archive')).toBeVisible();
   await assertNoPageOverflow(page);
 });
@@ -37,7 +43,10 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
   const response = await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
   const map = page.getByTestId('openevo-mechanism-map');
-  await expect(map).toContainText('OpenEVO-Mechanism-1.0');
+  await expect(map.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
+  await expect(map.locator('[data-research-journey]')).toHaveCount(2);
+  await expect(map.locator('[data-research-state-rail] [data-state-item]')).toHaveCount(4);
+  await expect(map).toContainText('MECHANISM-1.0');
   for (const id of ['M1-A', 'M1-B', 'M1-C', 'M1-D']) await expect(map).toContainText(id);
   await expect(map).toContainText('1,440 + MiniMax');
   await expect(map).toContainText('SEED Stage2 = 0');
@@ -54,6 +63,10 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
 
 test('first-run defaults to 7B, switches to 3B, and restores focus after detail close', async ({ page }) => {
   await page.goto(firstRun, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
+  await expect(page.locator('[data-research-journey] [data-research-step]')).toHaveCount(3);
+  const lineageDepth = page.locator('[data-research-depth="history"]');
+  await lineageDepth.locator('summary').first().click();
   const arm7 = page.locator('[data-first-run-arm="7b"]');
   const arm3 = page.locator('[data-first-run-arm="3b"]');
   await expect(arm7).toHaveAttribute('aria-pressed', 'true');
@@ -135,9 +148,15 @@ test('report evidence details are keyboard-operable and preserve visible claim b
 test('reduced motion preserves static map semantics', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(firstRun, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-research-journey]')).toBeVisible();
+  const firstRunDepth = page.locator('[data-research-depth="history"]');
+  await firstRunDepth.locator('summary').first().click();
   await expect(page.locator('[data-first-run-arm="7b"]')).toBeVisible();
   await expect(page.locator('[data-node-kind="scientific-amendment"]').first()).toBeVisible();
   await page.goto(exploration, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-research-journey]')).toBeVisible();
+  const explorationDepth = page.locator('[data-research-depth="history"]');
+  await explorationDepth.locator('summary').first().click();
   await expect(page.locator('[data-exploration-detour="horizon"]')).toBeVisible();
   await expect(page.locator('[data-quest="freeze"]')).toBeVisible();
   await page.goto(report, { waitUntil: 'domcontentloaded' });
@@ -151,6 +170,7 @@ test('English routes mount the same successor gateway and dual narrative archite
   await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toBeVisible();
   await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
   const mechanismMap = page.getByTestId('openevo-mechanism-map');
+  await expect(mechanismMap.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
   await expect(mechanismMap).toContainText('M1-D PHASE ACTIVATED');
   await expect(mechanismMap).toContainText('results not sealed');
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
@@ -165,6 +185,8 @@ test('English routes mount the same successor gateway and dual narrative archite
 test('successor gateway retains the seven experiment design families with pinned technical evidence', async ({ page }) => {
   await page.goto(successor, { waitUntil: 'domcontentloaded' });
   const catalog = page.getByTestId('openevo-experiment-design-catalog');
+  const catalogDepth = page.locator('[data-research-depth="history"]');
+  await catalogDepth.locator('summary').first().click();
   await expect(catalog).toBeVisible();
   await expect(catalog.locator('[data-design-family]')).toHaveCount(7);
   const firstDetails = catalog.locator('details').first();

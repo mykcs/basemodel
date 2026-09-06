@@ -3,6 +3,14 @@ import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes'
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const mechanism = `${root}mechanism-1-0/`;
+const primaryReadingPaths = [
+  root,
+  `${root}first-run/`,
+  mechanism,
+  `${root}openevo-2-0/`,
+  `${root}openevo-2-0/report/`,
+  `${root}openevo-2-0/exploration/`,
+] as const;
 const fields = ['start', 'action', 'stop', 'output'] as const;
 
 async function assertVisibleReaderGeometry(page: Page) {
@@ -104,6 +112,37 @@ export function registerReaderJourneyTests() {
         });
       }
     }
+
+    test(`reader journey ${locale}: primary orientation fits the 1280x633 first screen`, async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 633 });
+      for (const path of primaryReadingPaths) {
+        await page.goto(`${prefix}${path}`, { waitUntil: 'domcontentloaded' });
+        await page.evaluate(() => document.fonts.ready);
+        const orientation = page.locator('[data-research-orientation]');
+        await expect(orientation, path).toBeVisible();
+        await expect(orientation.locator('[data-orientation-field]'), path).toHaveCount(5);
+        const geometry = await orientation.evaluate((node) => {
+          const box = node.getBoundingClientRect();
+          return { top: box.top, bottom: box.bottom, viewport: window.innerHeight };
+        });
+        expect(geometry.bottom, `${path} orientation bottom`).toBeLessThanOrEqual(geometry.viewport + 2);
+      }
+    });
+
+    test(`reader journey ${locale}: expanded disclosures stay page-overflow-safe on phone`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      for (const path of primaryReadingPaths) {
+        await page.goto(`${prefix}${path}`, { waitUntil: 'domcontentloaded' });
+        await page.evaluate(() => {
+          document.querySelectorAll<HTMLDetailsElement>('details').forEach((node) => { node.open = true; });
+        });
+        const geometry = await page.evaluate(() => ({
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
+        }));
+        expect(geometry.scrollWidth, path).toBeLessThanOrEqual(geometry.clientWidth + 2);
+      }
+    });
   }
 
   test('reader journey: manual illustration is keyboard-operable and never changes experiment state', async ({ page }) => {

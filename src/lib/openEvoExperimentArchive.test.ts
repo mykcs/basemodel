@@ -15,15 +15,12 @@ const enIndex = read('../pages/en/research/seed-openevo/study/capability-explora
 
 describe('OpenEvo experiment archive', () => {
   it('keeps exactly three primary maps and demotes the archive from top-level route choice', () => {
-    expect((lobby.match(/data-map-choice=/g) || []).length).toBe(3);
-    expect(lobby).toContain('data-map-choice="first-run"');
-    expect(lobby).toContain('data-map-choice="redesign"');
-    expect(lobby).toContain('data-map-choice="mechanism-1-0"');
-    expect(lobby).not.toContain('data-map-choice="archive"');
-    expect(lobby).toContain('<details class="map-lobby__archive">');
+    const mapChoices = [...lobby.matchAll(/mapChoice: '(first-run|redesign|mechanism-1-0)'/g)].map((match) => match[1]);
+    expect(new Set(mapChoices)).toEqual(new Set(['first-run', 'redesign', 'mechanism-1-0']));
+    expect(lobby).not.toContain("mapChoice: 'archive'");
+    expect(lobby).toContain('ResearchDepth');
     expect(lobby).toContain('/capability-exploration/archive/');
     expect(lobby).toContain('打开完整实验档案');
-    expect(lobby).toContain('Server/Kaggle');
     expect(archive).toContain('三张主地图只讲研究主剧情');
     expect(archive).toContain('Map one: first experiment');
     expect(archive).toContain('Map two: Redesigning OpenEvo');
