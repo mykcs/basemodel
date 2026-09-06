@@ -1,0 +1,16 @@
+{
+  "identity": "202609061700",
+  "purpose": "BaseModel CircleCI browser dependency image qualification",
+  "base_main_sha": "87da4ade801a5def32a8585458648bb4bc5014b6",
+  "base_image": "node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e",
+  "playwright_version": "1.62.1",
+  "published_image": "ghcr.io/mykcs/basemodel-ci-browser-deps@sha256:b9f272d0f86bd646b9b007457b74616086ab1d5cee76eef38f897a37d0f40e56",
+  "builder_pr": 461,
+  "builder_actions_run": 34025005110,
+  "builder_run_result": "success",
+  "prebaked": ["git", "openssh-client", "ca-certificates", "playwright install-deps chromium"],
+  "runtime_browser_install": "npx playwright install chromium",
+  "contains_project_source": false,
+  "contains_browser_binary": false,
+  "package_visibility": "public"
+}

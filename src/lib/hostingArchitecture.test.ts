@@ -38,6 +38,8 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('ghcr.io/mykcs/basemodel-ci-browser-deps@sha256:b9f272d0f86bd646b9b007457b74616086ab1d5cee76eef38f897a37d0f40e56');
+    expect(circleCiConfig).not.toContain('CI_PLAYWRIGHT_WITH_DEPS: "1"');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
