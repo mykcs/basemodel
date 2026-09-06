@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-02**
+Last reviewed: **2026-09-06**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -318,6 +318,28 @@ For a PR whose exact-head acceptance predates a moving main:
 5. if they overlap or alter acceptance machinery, rerun affected checks on the combined tree before release.
 
 A successful pre-merge run named “tested merge candidate” is evidence about the tree it actually checked, not a timeless certificate for every later base. A post-merge READY deployment is provider completion; it still needs representative Production route and metadata verification under Section 9.
+
+### 9.2 Scientific archive identity and freshness boundary
+
+A research publication may need three independent ledgers:
+
+```text
+scientific evidence/archive identity
+  != website source/merge identity
+  != provider deployment identity
+```
+
+When a page publishes a scientific archive, the data projection must pin the archive by role (for example component store, full lineage, and parameter analysis), revision, and—where applicable—content hash. A single field such as `archiveHead` is not sufficient when it hides which object was identified.
+
+Before calling an archive current or verified:
+
+1. read the object-owning scientific repository and its governance receipt;
+2. label private/restricted access explicitly;
+3. distinguish prior remote verification from a new fresh-read;
+4. treat a tool-parameter error, unavailable private artifact, or incomplete read as unresolved—not as PASS;
+5. expose the exact evidence commit/path that supports the projection.
+
+Do not replace an immutable scientific archive revision with a website commit, Vercel deployment ID, PR number, or a plausible-looking hexadecimal string. A successful website build proves the public projection rendered; it does not prove that private scientific bytes were freshly re-read.
 
 ## 10. Completion report contract
 
