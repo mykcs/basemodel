@@ -11,11 +11,12 @@ if (!base) {
 }
 
 function git(args, options = {}) {
+  const gitArgs = ['--no-pager', ...args];
   if (options.capture === false) {
-    execFileSync('git', args, { stdio: 'inherit' });
+    execFileSync('git', gitArgs, { stdio: 'inherit' });
     return '';
   }
-  return execFileSync('git', args, {
+  return execFileSync('git', gitArgs, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
