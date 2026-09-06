@@ -235,8 +235,8 @@ async function walkGeometry(root: Locator, viewportWidth: number, requiresMainSt
     const issues = await auditConnectorGeometry(root, viewportWidth, requiresMainStage);
     expect(issues, issues.join('\n')).toEqual([]);
     if (await next.isDisabled()) break;
-    await next.click();
-    await root.page().waitForTimeout(40);
+    await advanceStepWithinExistingBudget(root, next);
+    // The helper owns the same bounded settle budget as the former fixed sleep.
   }
 }
 
@@ -247,8 +247,8 @@ async function walkStepper(root: Locator, label: string) {
   for (;;) {
     assertStepperStable(baseline, await stepperBoxes(root), label);
     if (await next.isDisabled()) break;
-    await next.click();
-    await root.page().waitForTimeout(40);
+    await advanceStepWithinExistingBudget(root, next);
+    // The helper owns the same bounded settle budget as the former fixed sleep.
   }
 }
 
@@ -339,3 +339,61 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
     });
   }
 });
+
+async function advanceStepWithinExistingBudget(root: Locator, next: Locator) {
+  const progress = root.locator('.irx-progress[role="progressbar"]');
+  const before = await progress.getAttribute('aria-valuenow');
+  await next.click();
+  const ceiling = 40;
+  if (before === null) {
+    await root.page().waitForTimeout(ceiling);
+    return;
+  }
+
+  await root.evaluate(async (section, state) => {
+    const progressNode = section.querySelector<HTMLElement>('.irx-progress[role="progressbar"]');
+    const deadline = performance.now() + state.ceiling;
+    const remaining = () => Math.max(0, deadline - performance.now());
+    const waitOneFrameWithinBudget = async () => {
+      const budget = remaining();
+      if (budget <= 0) return;
+      await new Promise<void>((resolve) => {
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+          resolve();
+        };
+        const timer = window.setTimeout(finish, budget);
+        window.requestAnimationFrame(finish);
+      });
+    };
+
+    if (!progressNode) {
+      await new Promise<void>((resolve) => window.setTimeout(resolve, remaining()));
+      return;
+    }
+    if (progressNode.getAttribute('aria-valuenow') !== state.before) {
+      await waitOneFrameWithinBudget();
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      let settled = false;
+      const finish = async (advanced: boolean) => {
+        if (settled) return;
+        settled = true;
+        observer.disconnect();
+        window.clearTimeout(timer);
+        if (advanced) await waitOneFrameWithinBudget();
+        resolve();
+      };
+      const observer = new MutationObserver(() => {
+        if (progressNode.getAttribute('aria-valuenow') !== state.before) void finish(true);
+      });
+      observer.observe(progressNode, { attributes: true, attributeFilter: ['aria-valuenow'] });
+      const timer = window.setTimeout(() => void finish(false), remaining());
+    });
+  }, { before, ceiling });
+}
