@@ -34,7 +34,7 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
   });
 
   it('uses the report view as a linear What / Why / Evidence / Boundary argument', () => {
-    expect(report).toContain('REPORT / PAPER VIEW · CANONICAL STAGE 1 → PRE-STAGE 2');
+    expect(report).toContain('REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT');
     for (const label of ['What', 'Why', 'Evidence', 'Boundary']) expect(report).toContain(`<dt>${label}</dt>`);
     expect(report).toContain('共享一套 strategy-neutral bootstrap harness');
     expect(report).toContain('Qwen2.5-3B 与 Qwen3-1.7B');
@@ -42,6 +42,18 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
     expect(report).toContain('OPSD / Memory / Skill / Agent');
     expect(report).toContain('stage2_authorized=false');
     expect(report).toContain('stage2_requires_separate_activation=true');
+  });
+
+  it('publishes the sealed 1.7B final panel without confusing it with the training trajectory score', () => {
+    expect(narrative).toContain('OPEN_EVO_Q17_FINAL');
+    expect(narrative).toContain('score: 37.60');
+    expect(narrative).toContain('successPercent: 0.78125');
+    expect(report).toContain('qwen3-1p7b-final-closeout');
+    expect(report).toContain('R159 = {final17.stage2.finalTrainingTrajectoryScore.toFixed(2)}');
+    expect(report).toContain('不是 final eval');
+    expect(report).toContain('engineering-invalid');
+    expect(report).toContain('128/128 valid');
+    expect(report).toContain('PR #348 · final closeout evidence');
   });
 
   it('preserves the scientific fairness boundary instead of claiming zero scaffolding', () => {

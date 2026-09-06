@@ -40,8 +40,20 @@ export const OPEN_EVO_STAGE1_METRICS = [
   },
 ] as const;
 
+export const OPEN_EVO_Q17_FINAL = {
+  model: 'Qwen3-1.7B',
+  stage2: { rounds: 160, rollouts: 20_480, finalTrainingTrajectoryScore: 53.30, acceptedParametricUpdates: 7 },
+  finalEval: { tasks: 128, score: 37.60, successPercent: 0.78125, exactSuccesses: 1, valid: 128, interfaceFailures: 0, parserRepairs: 0, engineeringInvalid: 0 },
+  seedReference: { score: 87.1, successPercent: 77.3 },
+  delta: { scorePoints: -49.50, successPercentagePoints: -76.52 },
+  parameterGeometry: { top1EnergySharePercent: 93.84, rank95: 2 },
+  finalStateId: '267f9fedcb3850f03c1484b014ebd25745c5241d82c5c64f911c1a19f6b0fb84',
+  executionSha: '9781716e3f52395dc9c9da4c5a35a7214bbb1efb',
+} as const;
+
 export const OPEN_EVO_EVIDENCE_LINKS = {
   sharedStage1Pr: 'https://github.com/mykcs/openevo-experiment/pull/270',
+  qwen3FinalCloseoutPr: 'https://github.com/mykcs/openevo-experiment/pull/348',
   sharedStage1Design: 'https://github.com/mykcs/openevo-experiment/blob/research/shared-stage1-min-deliberation-final-candidate-20260903/configs/experiment/stage1/202609030400/design.json',
   prestage2Design: 'https://github.com/mykcs/openevo-experiment/blob/research/shared-stage1-min-deliberation-final-candidate-20260903/configs/experiment/stage1/202609030400/prestage2_shared.json',
   capacityAuthority: 'https://github.com/mykcs/openevo-experiment/blob/research/shared-stage1-min-deliberation-final-candidate-20260903/docs/experiment-tracking/OPEN_EVO_CEILING_1.0_CAPACITY_AUTHORITY_2026-09-03.md',
