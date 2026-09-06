@@ -19,9 +19,9 @@ test('canonical Playwright list is fully covered by the baseline timing receipt'
   assert.deepEqual(tests.filter((name) => !receipt.timings_seconds[name]), []);
 });
 
-test('three timing-balanced shards cover every canonical test exactly once', () => {
+test('two timing-balanced shards cover every canonical test exactly once', () => {
   const tests = listCanonicalTests();
-  const result = assignByTiming({ tests, shardTotal: 3, primaryReserveSeconds: 30 });
+  const result = assignByTiming({ tests, shardTotal: 2, primaryReserveSeconds: 30 });
   assert.deepEqual(result.unknownTests, []);
   assert.equal(result.assignments.flat().length, 163);
   assert.equal(new Set(result.assignments.flat()).size, 163);

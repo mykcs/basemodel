@@ -84,7 +84,6 @@ non-draft PR / release candidate
   -> ci/circleci: deterministic
   -> ci/circleci: browser_shard_1
   -> ci/circleci: browser_shard_2
-ci/circleci: browser_shard_3
 
 deployment-eligible non-main branch / PR + exact-head `[vercel-preview]`
   -> Vercel project `basemodel-preview`
