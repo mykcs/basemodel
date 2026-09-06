@@ -31,7 +31,7 @@ test('desktop lobby exposes exactly three primary maps and keeps archive seconda
   await assertNoPageOverflow(page);
 });
 
-test('Mechanism-1.0 exposes frozen passports, Ray readiness, and explicit non-result boundaries', async ({ page }) => {
+test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and explicit non-result boundaries', async ({ page }) => {
   const response = await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
   const map = page.getByTestId('openevo-mechanism-map');
@@ -39,8 +39,11 @@ test('Mechanism-1.0 exposes frozen passports, Ray readiness, and explicit non-re
   for (const id of ['M1-A', 'M1-B', 'M1-C', 'M1-D']) await expect(map).toContainText(id);
   await expect(map).toContainText('1,440 + MiniMax');
   await expect(map).toContainText('SEED Stage2 = 0');
-  await expect(map).toContainText('执行仍锁定');
-  await expect(map).toContainText('0 新 reservation');
+  await expect(map).toContainText('M1-D 阶段已激活');
+  await expect(map).toContainText('结果未封存');
+  await expect(map).toContainText('GPU0–3 SHARED RAY = AUTHORIZED');
+  await expect(map).toContainText('M1-D STAGE1 = ACTIVATED');
+  await expect(map).not.toContainText('执行仍锁定');
   await assertNoPageOverflow(page);
 });
 
@@ -141,6 +144,10 @@ test('English routes mount the same successor gateway and dual narrative archite
   await page.goto(enRoot, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-map-choice]')).toHaveCount(3);
   await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toBeVisible();
+  await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
+  const mechanismMap = page.getByTestId('openevo-mechanism-map');
+  await expect(mechanismMap).toContainText('M1-D PHASE ACTIVATED');
+  await expect(mechanismMap).toContainText('results not sealed');
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
   await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });

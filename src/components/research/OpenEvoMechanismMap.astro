@@ -23,13 +23,13 @@ const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO
   <header class="mechanism-hero">
     <div class="mechanism-hero__eyebrow">
       <span>OPENEVO × WEBSHOP</span>
-      <b>{t('新主实验 · 执行仍锁定', 'NEW PRIMARY PROGRAM · EXECUTION LOCKED')}</b>
+      <b>{t('主实验 · M1-D 阶段已激活', 'PRIMARY PROGRAM · M1-D PHASE ACTIVATED')}</b>
     </div>
     <h1>{t('从“能走多高”到“能不能主动干预”', 'From “how high can it go?” to “can we steer it?”')}</h1>
     <p class="mechanism-hero__lead">{zh ? OPEN_EVO_MECHANISM_PRINCIPLE.zh : OPEN_EVO_MECHANISM_PRINCIPLE.en}</p>
     <div class="mechanism-hero__status" role="status">
       <strong>OpenEVO-Mechanism-1.0</strong>
-      <span>{t('科学设计已冻结；Ray 资源身份已兼容真机池；没有启动任何新任务。', 'Scientific design is frozen; Ray resource identities are live-pool compatible; no new task has been launched.')}</span>
+      <span>{t('科学设计已冻结；M1-D Stage1 已由独立 release 授权，MiniMax post-hoc 绑定也已冻结；M1-A / M1-B / M1-C 仍锁定，结果尚未封存。', 'Scientific design is frozen; M1-D Stage1 has an independent execution release and its MiniMax post-hoc binding is frozen. M1-A / M1-B / M1-C remain locked, and no M1-D result is sealed yet.')}</span>
     </div>
   </header>
   <section class="mechanism-question" aria-labelledby="mechanism-question-title">
@@ -116,14 +116,14 @@ const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO
   <section class="mechanism-ray" aria-labelledby="mechanism-ray-title">
     <div>
       <p>RAY RESOURCE PLAN</p>
-      <h2 id="mechanism-ray-title">{t('先让新实验“进池子”，但不抢正在跑的 1.7B / 3B', 'Put the new experiments in the pool without stealing from the running 1.7B/3B line')}</h2>
-      <p>{t('新 workload 的科学身份和资源槽身份被分开。它们使用 secondary_spare：只在 q17 逻辑槽释放后才有资格占用；当前 3B 可以继续跑。', 'Scientific arm identity is separated from resource-slot identity. New workloads use secondary_spare, so they become eligible only after the q17 logical lane is released while the current 3B can continue.')}</p>
+      <h2 id="mechanism-ray-title">{t('M1-D 已进入共享 GPU0–3 Ray 池，但正式采集仍只允许单 GPU、无抢占', 'M1-D is authorized on the shared GPU0–3 Ray pool, but formal collection still uses exactly one GPU with no preemption')}</h2>
+      <p>{t('当前 release 只修正正式 driver 的参数解析，不改变科学合同或资源合同：Ray 从 GPU0–3 中选择一张当前空闲卡，申请 9000 MiB、使用 secondary_spare、不得抢占；具体 GPU 编号不是科学变量。M1-A / M1-B / M1-C 仍未获得执行权。', 'The current release only repairs formal-driver argument parsing; it changes neither the scientific nor the resource contract. Ray selects one currently free GPU from GPU0–3, requests 9000 MiB on secondary_spare, and never preempts. The physical GPU index is not a scientific variable. M1-A / M1-B / M1-C remain unauthorized for execution.')}</p>
     </div>
     <dl>
-      <div><dt>{t('真机验收', 'Live validation')}</dt><dd>RAY_PROFILE_REGISTRY = PASS</dd></div>
-      <div><dt>{t('当前池', 'Existing pool')}</dt><dd>CEILING1_RAY_POOL = LIVE</dd></div>
-      <div><dt>{t('验收副作用', 'Validation side effects')}</dt><dd>{t('state SHA 前后相同 · 0 新 reservation', 'state SHA unchanged · 0 new reservations')}</dd></div>
-      <div><dt>{t('科学启动权', 'Science activation')}</dt><dd>{t('仍锁定', 'Still locked')}</dd></div>
+      <div><dt>{t('端点资格', 'Endpoint qualification')}</dt><dd>POLICY_ENDPOINT = PASS</dd></div>
+      <div><dt>{t('当前池', 'Current pool')}</dt><dd>GPU0–3 SHARED RAY = AUTHORIZED</dd></div>
+      <div><dt>{t('资源规则', 'Resource rule')}</dt><dd>1 GPU · 9000 MiB · NO PREEMPTION</dd></div>
+      <div><dt>{t('科学启动权', 'Science activation')}</dt><dd>M1-D STAGE1 = ACTIVATED</dd></div>
     </dl>
   </section>
 
@@ -142,10 +142,10 @@ const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO
   <footer class="mechanism-evidence">
     <div>
       <p>PROVENANCE</p>
-      <strong>{t('现在展示的是“已经冻结的计划”，不是实验结果', 'This page shows a frozen plan, not a scientific result')}</strong>
-      <span>{t('科学合同已合并：PR #319 · main 8d2f202；网站只在结果真正出现后升级状态和结论。', 'Scientific contract merged as PR #319 · main 8d2f202; the site upgrades status and claims only after results actually exist.')}</span>
+      <strong>{t('现在展示的是“已冻结设计 + M1-D 执行状态”，不是实验结果', 'This page shows frozen design plus M1-D execution status, not a scientific result')}</strong>
+      <span>{t('初始科学合同来自 PR #319；当前 authority snapshot 为 main b4cdf8e，已经包含 202609062029 的 M1-D Stage1 successor release 与 202609061925 的 MiniMax post-hoc binding。新 release 在 0 条正式轨迹时修复 argparse abbreviation，明确不改变科学语义。结果只有在 trajectory / MiniMax seal 真正出现后才会上站。', 'The initial scientific contract came from PR #319. The current authority snapshot is main b4cdf8e, including the 202609062029 M1-D Stage1 successor release and the 202609061925 MiniMax post-hoc binding. The successor fixes argparse abbreviation at zero formal trajectories and explicitly leaves scientific semantics unchanged. Results appear here only after trajectory and MiniMax seals actually exist.')}</span>
     </div>
-    <a href={sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={sourceUrl} />{t('查看科学合同与身份证 →', 'Open the scientific contract and passports →')}</a>
+    <a href={sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={sourceUrl} />{t('查看当前科学 authority →', 'Open the current scientific authority →')}</a>
   </footer>
 </article>
 <style>
