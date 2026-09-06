@@ -83,7 +83,7 @@ jobs:
     resource_class: medium
     environment:
       CI: "1"
-      PLAYWRIGHT_WORKERS: "1"
+      PLAYWRIGHT_WORKERS: "2"
       CI_BROWSER_BUILD: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
       CI_BROWSER_SHARD_TOTAL: "2"
