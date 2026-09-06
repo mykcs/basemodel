@@ -30,6 +30,7 @@ if (shardIndex > shardTotal) {
 }
 const primaryShard = shardIndex === 1;
 const ownsBuild = process.env.CI_BROWSER_BUILD === '1';
+const ownsInstall = process.env.CI_BROWSER_INSTALL === '1';
 const installWithDeps = process.env.CI_PLAYWRIGHT_WITH_DEPS === '1';
 const forceFull = process.env.CI_UI_FORCE_FULL === '1';
 
@@ -47,8 +48,8 @@ const run = (command, args, extraEnv = {}) => {
 };
 
 const planner = spawnSync(
-  'npx',
-  ['tsx', 'scripts/vercel-ui-plan.ts', '--json'],
+  process.execPath,
+  ['--experimental-strip-types', 'scripts/vercel-ui-plan.ts', '--json'],
   {
     encoding: 'utf8',
     env: {
@@ -100,6 +101,12 @@ if (plan.mode === 'skip') {
 if (plan.mode === 'focused' && !primaryShard) {
   console.log('[ci-ui-gate] focused browser coverage is owned by shard 1; PASS');
   process.exit(0);
+}
+
+// Use the same dependency-free planner before spending npm/browser work.
+// Only the shards that actually own acceptance need a dependency install.
+if (ownsInstall) {
+  run('npm', ['ci']);
 }
 
 if (ownsBuild) {

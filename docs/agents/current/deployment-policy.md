@@ -35,19 +35,17 @@ The repository-owned `.circleci/config.yml` is the primary CI contract. The `myk
 
 Draft iteration therefore consumes no heavy browser CI until the PR becomes merge-ready. Redundant branch workflows are auto-cancelled provider-side.
 
-`main` branch protection uses strict up-to-date semantics and requires all five cloud contexts:
+`main` branch protection uses strict up-to-date semantics and requires all three cloud contexts:
 
 ```text
 ci/circleci: deterministic
 ci/circleci: browser_shard_1
 ci/circleci: browser_shard_2
-ci/circleci: browser_shard_3
-ci/circleci: browser_shard_4
 ```
 
-A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all five jobs. If base/head identity cannot be proven, CI fails closed.
+A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
 
-The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses four independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
+The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
 Provider control commands do not automatically imply shell termination: CircleCI `circleci-agent step halt` stops later steps but the current shell continues. Any successful early-exit branch must explicitly terminate the current shell (for example `exit 0`) and have a deterministic guard so a valid docs-only plan cannot fall through into a fail-closed `mode != full` branch.
 
 CI subprocesses must also be explicitly non-interactive when their output is attached to runner terminal streams. Do not assume `CI=1`, a container runtime, or a hosted runner disables tool pagers or prompts. Git commands that can inherit stdout/stderr must disable paging at the command boundary (for example `git --no-pager`); a no-output timeout after the planner/tests have already succeeded should be investigated as a blocked pager/prompt before changing timeout policy.
@@ -71,13 +69,25 @@ bounded route-owned UI diff
 
 shared/global/unknown UI diff
 -> verify:deploy + build
--> complete Chromium matrix split across four cloud shards
+-> complete Chromium matrix split across two cloud shards
 
 Lab/server-relevant diff
 -> dedicated 12-case Lab gate on shard 1
 ```
 
 Changes to the CI/browser gate, CircleCI config, merge-candidate preparation, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions or silently reclassify unknown ownership merely to reduce credits.
+
+### Budget-first execution
+
+The default full-browser pool is two independent `medium` executors, one Playwright worker per executor, retries=0, using the unchanged canonical exact-test scheduler. This restores the previously qualified lower-credit profile rather than making the four-medium latency trade-off the default. The full suite, overflow and Lab gates remain intact; only their executor partition changes. The historical four-medium measurement is retained as a latency/cost trade-off, not rewritten as an invalid run or a saving.
+
+The shared UI planner runs with the pinned Node runtime before dependency installation. CircleCI sets `CI_BROWSER_INSTALL=1`; `ci-ui-gate.mjs` installs dependencies only after the plan proves that this shard owns browser work. Against the previous four-job configuration, a skip plan installs zero browser-job dependency trees instead of four, focused mode installs one instead of four, and full mode installs two instead of four. Pure Markdown PRs already exited before npm and continue doing so.
+
+The no-dependency/failed-installer regressions run only in the full deterministic path so prose-only PRs do not pay their fixture cost. Main post-merge revalidation, the deterministic check and both complete-coverage browser contexts remain required from the same CircleCI App. Protection must be migrated only after both new exact-head browser partitions and deterministic pass; never leave stale required shard names or bypass an actually failing check.
+
+Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
+
+For the owner's free-tier constraint, adoption is judged by total provider consumption per accepted change, not the fastest shard. Account for repeated pushes, pre- and post-merge runs, startup, queueing, active cores and paid overage. Do not add paid model/API calls to ordinary CI. Cloudflare Workers Builds and Vercel Sandbox remain unactivated candidates until account entitlement, credential isolation, exact-base/head status binding and measured budget are qualified. Public quota tables do not establish the account's remaining balance.
 
 ### Mac manual fallback
 
