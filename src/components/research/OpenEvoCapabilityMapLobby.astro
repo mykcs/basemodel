@@ -39,21 +39,21 @@ const terms = zh ? [
 const steps = zh ? [
   {
     id: 'first-run', kicker: '第一代问题', title: '第一轮：OpenEvo 能不能真的持续更新？',
-    summary: '先从旧 Stage1 走到 Stage2，观察 7B / 3B 的真实训练、失败与容量问题。',
+    summary: '从初始经验到后续学习，观察 7B / 3B 的参数更新、失败和容量限制。',
     detail: '这轮实验告诉我们“系统能跑起来”，也暴露了 action interface、更新规则和参数容量会影响结论。',
     outcome: '研究重点从“跑通”转向“怎样让比较更公平、起跑线更可信”。', state: '历史证据',
     href: firstRunHref, hrefLabel: '进入第一轮实验', mapChoice: 'first-run',
   },
   {
-    id: 'redesign', kicker: '第二代问题', title: '重新设计：在同一 Harness 下，3B 和 1.7B 从哪里起跑？',
-    summary: '冻结 shared strategy-neutral Harness，让两个模型各自采 1,440 条，再用同一 post-hoc 分析。',
+    id: 'redesign', kicker: '第二代问题', title: '重新设计：两种模型使用相同购物接口，各自表现怎样？',
+    summary: '固定一套不提供具体购物解法的接口。两种模型各完成 1,440 次尝试，再用同一套方法分析已有记录。',
     detail: '这一代把“模型能力”和“接口把合法动作写坏”拆开，并把探索过程与论文式报告分成两种读法。',
-    outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '当前 successor',
-    href: redesignHref, hrefLabel: '进入 3B + 1.7B successor', mapChoice: 'redesign',
+    outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '新一轮设计',
+    href: redesignHref, hrefLabel: '进入 3B + 1.7B 学习实验', mapChoice: 'redesign',
   },
   {
     id: 'mechanism-1-0', kicker: '第三代问题', title: 'Mechanism-1.0：分数变了以后，参数里到底发生了什么？',
-    summary: '从 TaskVector 和 parameter themes 出发，做真正的因果干预，而不是只画参数图。',
+    summary: '把学习留下的参数变化加上或移除，与同幅度随机修改比较，检查哪些变化影响购物表现。',
     detail: '只有方向特异的因果证据通过预注册门槛，才允许把这些结构反馈到下一次 OpenEvo。',
     outcome: '研究从“能走多高”推进到“能不能解释、验证并控制自我进化”。', state: '当前主实验', current: true,
     href: mechanismHref, hrefLabel: '进入 Mechanism-1.0', mapChoice: 'mechanism-1-0',
@@ -68,18 +68,19 @@ const steps = zh ? [
   <ResearchOrientation
     locale={locale}
     eyebrow="OPENEVO × WEBSHOP · CAPABILITY EXPLORATION"
-    title={t('OpenEvo 这条研究线，走过三个问题', 'Three questions shaped this study')}
-    lede={t('如果你第一次看，不需要先理解所有 run ID。先沿着三代问题走：能不能持续进化 → 怎样公平比较起跑线 → 哪些参数变化真的有因果作用。', 'New here? Follow one sequence: can it evolve → can we compare fairly → which parameter changes are actually causal?')}
-    question={t('OpenEvo 在 WebShop 上能学到什么，以及我们怎样从“跑出更高分”走到“解释并控制它为什么变强”？', 'How far can OpenEvo learn on WebShop, and which parameter changes actually matter?')}
-    why={t('不同版本改过 Harness、action channel 和学习 carrier；如果不按研究问题分代，旧结果和新结果很容易被错误地当成同一次实验。', 'Each generation changed the harness or learning setup. Mixing them would mix different scientific objects.')}
-    start={t('从第一轮 7B / 3B Stage1 → Stage2 的真实实验开始。', 'Start with the first real 7B / 3B Stage-1 → Stage-2 campaign.')}
-    finish={t('当前主线走到 Mechanism-1.0：先做因果验证，只有通过 GO gate 才允许尝试 guided OpenEvo。', 'The current line reaches Mechanism-1.0; only a causal GO can unlock guided OpenEvo.')}
-    state={t('第一轮是历史证据；3B + 1.7B successor 是当前可比性基线；Mechanism-1.0 是当前主实验。', 'First campaign = history; 3B + 1.7B = comparison baseline; Mechanism-1.0 = current program.')}
+    title={t("模型怎样从购物经验中学习？", "How do models learn from shopping experience?")}
+    lede={t("模型在模拟商店里搜索、选规格和购买，目标是买到符合要求的商品。我们研究怎样让它利用经验改善下一次尝试。", "A model searches, chooses options and purchases in a simulated store. We study how experience can improve its next attempt.")}
+    question={t("模型能否持续学习，哪些变化真的有效？", "Can the model keep learning, and which changes matter?")}
+    why={t("不同实验使用过不同规则，需要分开解释证据。", "Experiments used different rules, so their evidence must be interpreted separately.")}
+    start={t("第一轮先检查经验能否带来真实的模型更新。", "The first campaign checks whether experience produces real updates.")}
+    finish={t("机制实验检验学到的变化是否有效，再决定是否继续。", "Mechanism experiments test learned changes before deciding whether to continue.")}
+    state={t("第一轮是历史记录；新设计与机制实验回答后续问题。", "The first campaign is history; redesign and mechanism studies ask the next questions.")}
     stateTone="authorized"
     actionHref={mechanismHref}
     actionLabel={t('直接看当前主实验', 'Jump to the current primary program')}
     terms={terms}
   />
+
 
   <ResearchTaskContext locale={locale} />
 
@@ -110,5 +111,5 @@ const steps = zh ? [
   </ResearchDepth>
 </section>
 <style>
-.map-lobby{display:contents}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 .54rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:.82rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:.72rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:.76rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:.78rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:.74rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
+.map-lobby{display:contents}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 .875rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:1rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:1rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:1rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:1rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
 </style>

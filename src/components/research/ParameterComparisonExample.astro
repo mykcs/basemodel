@@ -1,0 +1,74 @@
+---
+import type { Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const variants = [
+ { id: 'baseline', name: t('较早的模型', 'Earlier model'), change: t('保留较早的参数，不加入变化。', 'Keep the earlier parameters without adding a change.'), purpose: t('提供起点，其他模型都与它做对照。', 'Provide the starting point for the comparisons.') },
+ { id: 'learned', name: t('加上真实变化', 'Add the learned change'), change: t('从后来两个已接受模型取参数差值，加到同一个较早模型上。', 'Take the parameter difference between two later accepted models and add it to the same earlier model.'), purpose: t('检查这段学习留下的特定变化是否影响购物行为。', 'Test whether this specific change left by learning affects shopping behavior.') },
+ { id: 'random', name: t('加上随机变化', 'Add a random change'), change: t('改变相同幅度，但换成随机方向。正式实验使用三个随机方向。', 'Change the same amount in a random direction. The formal experiment uses three random directions.'), purpose: t('检查行为差异是否只来自“参数被改动了”。', 'Check whether a behavioral difference merely comes from changing parameters at all.') },
+];
+---
+<section class="parameter-example" data-parameter-example aria-labelledby="parameter-example-title" data-ui-audit="contrast layout">
+  <h2 id="parameter-example-title">{t('参数变化的对照实验', 'Comparing parameter changes')}</h2>
+  <p>{t('Ceiling-1.0 留下了训练历史；Mechanism-1.0 用它检查参数变化的作用。', 'Ceiling-1.0 preserved the training history; Mechanism-1.0 uses it to test the effects of parameter changes.')}</p>
+  <p>{t('模型靠内部的一组数值决定下一步动作，这些数值叫参数。学习会调整它们。我们保存学习过程中的模型，再把后来两个模型的参数相减，得到一份“改动清单”。', 'A model uses internal numerical values, called parameters, to choose its next action. Learning adjusts them. We save models during learning, then subtract the parameters of two later models to obtain a record of the change.')}</p>
+  <p>{t('把这份改动加到同一个较早模型上，再让它做同一批购物任务，才能检验这份变化的作用。人为修改出的模型要单独测试，不能直接借用后来模型的成绩。', 'Add that change to the same earlier model and test it on the same set of shopping tasks. This probes the effect of the change. The modified model needs its own evaluation; it cannot inherit the later model’s score.')}</p>
+  <div class="parameter-example__controls" data-parameter-controls hidden>
+    <fieldset><legend>{t('比较哪种修改', 'Choose a comparison')}</legend>{variants.map((variant, i) => <label><input type="radio" name="parameter-comparison" value={variant.id} checked={i === 0} />{variant.name}</label>)}</fieldset>
+  </div>
+  <div class="parameter-example__comparisons" aria-live="polite">
+    {variants.map((variant) => <article data-parameter-case={variant.id} data-ui-audit-item>
+      <h3>{variant.name}</h3>
+      <svg viewBox="0 0 360 160" role="img" aria-label={variant.id === 'baseline' ? t('同一个较早模型的起点', 'The same earlier model as a starting point') : t('从同一个起点出发的参数修改；箭头长度相同', 'A parameter change from the same starting point; arrows have equal length')}>
+        <path class="parameter-example__axis" d="M30 120H330M160 140V20" />
+        <circle cx="160" cy="120" r="6" />
+        {variant.id === 'learned' && <path class="parameter-example__vector" d="M160 120L280 60M263 60H280V77" />}
+        {variant.id === 'random' && <path class="parameter-example__vector" d="M160 120L40 60M57 60H40V77" />}
+        <text x="170" y="145">{t('同一起点', 'Same starting point')}</text>
+      </svg>
+      <dl><div><dt>{t('改了什么', 'What changes')}</dt><dd>{variant.change}</dd></div><div><dt>{t('检验什么', 'What this tests')}</dt><dd>{variant.purpose}</dd></div></dl>
+    </article>)}
+  </div>
+  <p class="parameter-example__fixed"><strong>{t('保持相同', 'Kept the same')}</strong> {t('较早的模型起点、测试任务和评判办法。真实与随机修改还要匹配改动幅度。', 'The earlier starting model, evaluation tasks, and scoring procedure. Learned and random modifications also match the amount of change.')}</p>
+  <p class="parameter-example__caption">{t('箭头是二维概念示意，坐标没有物理单位，也不是实际参数投影。示意不显示购物成绩；哪种修改有效要由真实实验回答。', 'The arrows are a two-dimensional conceptual illustration, not measured parameter projections; the axes have no physical units. No shopping scores are shown. The real experiment must determine which changes have an effect.')}</p>
+</section>
+<script>
+function initializeParameterExamples() {
+ document.querySelectorAll<HTMLElement>('[data-parameter-example]').forEach((root) => {
+  if (root.dataset.initialized) return;
+  const controls = root.querySelector<HTMLElement>('[data-parameter-controls]');
+  const cases = [...root.querySelectorAll<HTMLElement>('[data-parameter-case]')];
+  const inputs = [...root.querySelectorAll<HTMLInputElement>('input[type="radio"]')];
+  if (!controls || cases.length !== 3 || inputs.length !== 3) return;
+  root.dataset.initialized = 'true';
+  const show = () => cases.forEach((panel) => { panel.hidden = panel.dataset.parameterCase !== inputs.find((input) => input.checked)?.value; });
+  inputs.forEach((input) => input.addEventListener('change', show));
+  show(); controls.hidden = false;
+ });
+}
+initializeParameterExamples();
+document.addEventListener('astro:page-load', initializeParameterExamples);
+</script>
+<style>
+.parameter-example{margin:2rem 0;padding:1.5rem 0;border-block:1px solid var(--line);color:var(--ink);font-size:1rem;line-height:1.8}
+.parameter-example h2{font-size:1.6rem;line-height:1.4;margin:0 0 1rem}
+.parameter-example>p{max-width:48rem}
+.parameter-example fieldset{border:0;padding:0;margin:1rem 0;display:flex;flex-wrap:wrap;gap:.75rem}
+.parameter-example legend{font-weight:700;margin-bottom:.6rem}
+.parameter-example label{padding:.6rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);cursor:pointer;display:flex;gap:.5rem;align-items:center;min-height:44px}
+.parameter-example label:has(:checked){border-color:var(--accent-deep);background:var(--surface-muted)}
+.parameter-example label:focus-within{outline:2px solid var(--accent-deep);outline-offset:3px}
+.parameter-example__comparisons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1rem}
+.parameter-example article{border:1px solid var(--line);background:var(--surface);padding:1rem;border-radius:var(--radius-panel);min-width:0}
+.parameter-example article[hidden]{display:none}
+.parameter-example h3{margin:0;font-size:1.2rem}
+.parameter-example svg{display:block;width:100%;max-width:360px;height:auto;fill:var(--accent-deep)}
+.parameter-example svg text{fill:var(--ink);font:14px sans-serif}
+.parameter-example__axis{fill:none;stroke:var(--line);stroke-width:1}
+.parameter-example__vector{fill:none;stroke:var(--accent-deep);stroke-width:3}
+.parameter-example dl{margin:0;display:grid;gap:.7rem}.parameter-example dt{font-weight:700}.parameter-example dd{margin:0}
+.parameter-example__fixed{border-left:3px solid var(--accent-deep);padding:.7rem 1rem;background:var(--surface-muted)}
+.parameter-example__caption{font-size:.875rem;line-height:1.7;color:var(--muted)}
+</style>

@@ -44,11 +44,12 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
   expect(response?.status()).toBe(200);
   const map = page.getByTestId('openevo-mechanism-map');
   await expect(map.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
-  await expect(map.locator('[data-research-journey]')).toHaveCount(2);
+  await expect(map.locator('[data-research-journey]')).toHaveCount(1);
   await expect(map.locator('[data-research-state-rail] [data-state-item]')).toHaveCount(4);
   await expect(map).toContainText('MECHANISM-1.0');
   for (const id of ['M1-A', 'M1-B', 'M1-C', 'M1-D']) await expect(map).toContainText(id);
-  await expect(map).toContainText('1,440 + MiniMax');
+  await expect(map.locator('[data-experiment="M1-D"]')).toContainText('1,440');
+  await expect(map.locator('[data-experiment="M1-D"]')).toContainText('MiniMax');
   await expect(map).toContainText('SEED Stage2 = 0');
   await expect(map).toContainText('M1-D 阶段已激活');
   await expect(map).toContainText('结果未封存');
@@ -138,7 +139,7 @@ for (const path of [root, firstRun, successor, exploration, report, mechanism, a
 
 test('report evidence details are keyboard-operable and preserve visible claim boundaries', async ({ page }) => {
   await page.goto(report, { waitUntil: 'domcontentloaded' });
-  const details = page.locator('[data-paper-step="carriers"] details');
+  const details = page.locator('[data-paper-step="carriers"] details').filter({ has: page.getByText('展开 4096 → 10+10 的证据链', { exact: true }) });
   await details.locator('summary').focus();
   await page.keyboard.press('Enter');
   await expect(details).toHaveAttribute('open', '');

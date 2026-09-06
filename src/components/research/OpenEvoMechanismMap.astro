@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import ParameterComparisonExample from './ParameterComparisonExample.astro';
 import ResearchTaskContext from './ResearchTaskContext.astro';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchJourney from './ResearchJourney.astro';
@@ -31,23 +32,12 @@ const terms = zh ? [
   { term: 'causal intervention', meaning: 'Add or remove the real change and compare it with equally sized random changes to test whether behavior changes because of that direction.' },
   { term: 'M1-D', meaning: 'An independent SEED Stage-1 initialization reference over 1,440 experiences; it does not supply the M1-C steering signal.' },
 ];
-const mainSteps = zh ? [
-  { id: 'observe', kicker: '01 · 历史证据', title: '先从 Ceiling 已封存的训练历史里找参数变化', summary: '先确认模型真的发生过哪些参数更新，哪些状态可区分；这一层只描述，不把“变化大”说成“有用”。', detail: 'M1-A 原预注册的末段取点后来发现不可识别，因此保留原记录并用独立 successor 改成相邻且不同的接受状态。', outcome: '得到可以被真正干预的候选方向，同时保留不可识别这一负证据。', state: '历史已封存' },
-  { id: 'intervene', kicker: '02 · 因果检查', title: 'M1-A 加真实变化，M1-B 移除主要变化', summary: '两条支线都必须和同幅度随机修改比较，才知道行为变化是不是方向特异。', detail: 'M1-A 与 M1-B 回答不同问题，不要求彼此同时执行；它们目前都没有执行授权。', outcome: '得到“真实方向是否比随机方向更能改变行为”的证据。', state: 'A/B 仍锁定' },
-  { id: 'gate', kicker: '03 · GO / NO-GO', title: '只有方向特异信号达到预注册门槛，才允许进入下一步', summary: '优先检查 M1-A successor；未通过时再检查 M1-B Theme 1。两者都没有信号就直接停止。', detail: '门槛在结果前冻结，不能看到分数以后临时换方向或改阈值。', outcome: '得到明确的 GO 或 NO-GO，而不是为了正结果继续试。', state: '等待 A/B 结果' },
-  { id: 'steer', kicker: '04 · STEER OR STOP', title: 'GO 才能启动 M1-C；NO-GO 就在这里结束', summary: 'M1-C 是三臂、固定 1,536 次尝试的 bounded microtrial，并且仍需独立执行授权。', detail: '它测试“已验证的方向能否提高后续学习效率”，不是新的能力天花板分数。', outcome: 'Mechanism 主线得到一个可复现的 steer / no-steer 结论。', state: '条件锁定' },
-] : [
-  { id: 'observe', kicker: '01 · SEALED HISTORY', title: 'Start from parameter changes in the sealed Ceiling training history', summary: 'Identify which updates actually occurred and which states are distinct. This layer is descriptive; large movement is not yet called useful.', detail: 'The original late M1-A anchors turned out to be non-identifiable, so the record is preserved and a separate successor uses adjacent distinct accepted states.', outcome: 'Produce an intervenable candidate direction while preserving non-identifiability as real negative evidence.', state: 'History sealed' },
-  { id: 'intervene', kicker: '02 · CAUSAL TESTS', title: 'M1-A adds a real change; M1-B removes a major change', summary: 'Both branches must beat equally sized random modifications before any direction-specific causal claim is allowed.', detail: 'M1-A and M1-B answer different questions and do not need to execute simultaneously; both remain unauthorized.', outcome: 'Measure whether real directions change behavior more than random directions.', state: 'A/B locked' },
-  { id: 'gate', kicker: '03 · GO / NO-GO', title: 'Only a preregistered direction-specific signal can unlock the next step', summary: 'Check the M1-A successor first; if it misses, check M1-B Theme 1. If neither carries signal, stop.', detail: 'The gate is frozen before outcomes; directions and thresholds cannot be changed after seeing scores.', outcome: 'Produce an explicit GO or NO-GO instead of chasing a positive result.', state: 'Awaiting A/B evidence' },
-  { id: 'steer', kicker: '04 · STEER OR STOP', title: 'GO may unlock M1-C; NO-GO ends the causal path', summary: 'M1-C is a bounded three-arm, 1,536-attempt microtrial and still requires its own execution release.', detail: 'It tests whether a validated direction improves later learning efficiency, not a new capability-ceiling score.', outcome: 'Close Mechanism with a reproducible steer / no-steer conclusion.', state: 'Conditionally locked' },
-];
 const m1dSteps = zh ? [
-  { id: 'qualify', kicker: 'START', title: '先匹配任务、模型和运行环境', summary: '只有 identity / world / endpoint qualification 全部通过，独立 release 才允许 Stage1 开始。', outcome: 'M1-D 获得 Stage1 执行权，但仍然没有结果。', state: '已授权' },
-  { id: 'collect', kicker: 'COLLECT', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '用 SEED Stage1 采集语义完成固定任务；MiniMax 这时不在线指导模型。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
-  { id: 'seal', kicker: 'SEAL', title: '先封存 1,440 条 trajectory 和 corpus identity', summary: 'completion receipt 与 corpus SHA 出现之前，网站不发布 exact / mean score / invalid 等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: '等待结果封存' },
-  { id: 'analyze', kicker: 'POST-HOC', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '再和已有 OpenEvo 3B Stage1 用同一 analyzer 比成功、错误、搜索循环和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
-  { id: 'stop', kicker: 'STOP', title: '比较完成后硬停：SEED Stage2 = 0', summary: '不生成 skill、不做 SFT、不训练 SEED Stage2，也不访问 final panel。', outcome: 'M1-D closeout，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
+  { id: 'qualify', kicker: '开始', title: '先匹配任务、模型和运行环境', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: 'M1-D 获得 Stage1 执行权，但仍然没有结果。', state: '已授权' },
+  { id: 'collect', kicker: '收集', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '模型按 SEED 的方法完成规定的购物任务；MiniMax 不在购物过程中指导它。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
+  { id: 'seal', kicker: '固定记录', title: '核对并固定保存全部 1,440 次购物记录', summary: '保存完成证明和整批数据的校验值后，才发布完全成功率、平均分和无效尝试比例等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: '等待结果封存' },
+  { id: 'analyze', kicker: '事后分析', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '用同一个分析器，比较 SEED 与已有 OpenEvo 初始记录中的成功、错误、重复搜索和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
+  { id: 'stop', kicker: '结束', title: '比较完成后硬停：SEED Stage2 = 0', summary: '比较完成即结束：不生成技能、不做监督微调、不进入 SEED 后续训练，也不使用最终测试题。', outcome: 'M1-D closeout，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
 ] : [
   { id: 'qualify', kicker: 'START', title: 'Match the task world, model identity, and runtime first', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'M1-D gains execution authority but still has no result.', state: 'Authorized' },
   { id: 'collect', kicker: 'COLLECT', title: 'Use the same 3B model for 180 × 8 = 1,440 attempts', summary: 'Collect the frozen task set under SEED Stage-1 semantics; MiniMax does not guide online actions.', outcome: 'Produce one complete raw Stage-1 corpus.', state: 'Fixed budget' },
@@ -55,7 +45,7 @@ const m1dSteps = zh ? [
   { id: 'analyze', kicker: 'POST-HOC', title: 'Run MiniMax on 1,440 / 1,440 with the same analysis contract', summary: 'Then compare the SEED corpus with existing OpenEvo 3B Stage 1 using the same analyzer for success, errors, loops, and diversity.', outcome: 'Measure structural differences in initialization experience, not SEED final performance.', state: 'Preregistered' },
   { id: 'stop', kicker: 'STOP', title: 'Hard stop after the comparison: SEED Stage 2 = 0', summary: 'No skill generation, SFT, SEED Stage 2 training, or final-panel access.', outcome: 'Close M1-D with only the initialization-corpus claim.', state: 'Hard boundary' },
 ];
-const stateLifecycle = (row: (typeof experiments)[number]) => row.execution === 'locked' ? 'locked' as const : row.execution === 'authorized' ? 'authorized' as const : row.execution === 'running' ? 'running' as const : row.results === 'sealed' ? 'sealed' as const : 'authorized' as const;
+const stateLifecycle = (row: (typeof experiments)[number]) => row.execution;
 const stateItems = experiments.map((row) => ({
   id: row.id,
   name: row.name[locale],
@@ -70,32 +60,24 @@ const stateItems = experiments.map((row) => ({
   <ResearchOrientation
     locale={locale}
     eyebrow="OPENEVO × WEBSHOP · MECHANISM-1.0"
-    title={t('OpenEvo 学到的参数方向有用吗？', 'Do OpenEvo’s learned parameter directions matter?')}
-    lede={t('让模型在模拟商店里按要求购物，再把训练留下的参数变化真正加进去、拿出来，与同幅度随机变化比较。目标不是再画一张参数图，而是判断哪些变化会因果地改变行为。', 'Let the model shop in a simulated store, then actually add and remove learned parameter changes and compare them with equally sized random changes. The goal is not another parameter plot, but a causal test of which changes alter behavior.')}
-    question={t('训练留下的参数方向是否会因果地改变 WebShop 行为；如果会，能不能用它指导下一次自我进化？', 'Do learned parameter directions causally change WebShop behavior, and if so can they guide the next self-improvement step?')}
-    why={t('只知道分数或参数变了，还不能解释 OpenEvo 为什么有效；只有方向特异的干预证据，才可能把“跑出结果”升级成“可控制的方法”。', 'A score change or parameter movement alone does not explain why OpenEvo works. Direction-specific intervention evidence is what could turn “it produced a result” into a controllable method.')}
-    start={t('从 Ceiling 已封存的真实训练历史、可辨识的接受状态和独立科学 release 开始；不可识别的原 M1-A 记录保持原样。', 'Start from the sealed Ceiling training history, identifiable accepted states, and separate scientific releases; preserve the non-identifiable original M1-A record as-is.')}
-    finish={t('M1-A/B 得出 GO/NO-GO；GO 且另获授权才进入 M1-C。M1-D 独立在 1,440 + MiniMax 对比后硬停，SEED Stage2 = 0。', 'M1-A/B produce a GO/NO-GO; only a GO plus separate authority can unlock M1-C. M1-D independently stops after the 1,440 + MiniMax comparison, with SEED Stage 2 = 0.')}
-    state={t('M1-A / M1-B / M1-C 仍锁定；M1-D Stage1 已授权但结果未封存。授权、运行、封存和科学结论分开记录。', 'M1-A / M1-B / M1-C remain locked; M1-D Stage 1 is authorized but its result is unsealed. Authority, execution, sealing, and scientific conclusions are tracked separately.')}
+    title={t("学到的参数变化真的有用吗？", "Do learned parameter changes actually help?")}
+    lede={t("模型完成购物后会留下经验。学习会改变模型内部的数值（参数）；我们把这些变化加上或移除，再与同幅度随机修改比较。", "Shopping produces experience. Learning changes numbers inside the model—its parameters. We add or remove these changes and compare with equally sized random modifications.")}
+    question={t("真正学到的变化，比随机修改更有效吗？", "Do learned changes have a greater effect than random changes?")}
+    why={t("分数和参数一起变化，还不能证明是哪种变化起作用。", "Scores and parameters moving together do not show which change caused the effect.")}
+    start={t("从已经保存的训练历史中选取可区分的模型状态，并取得各实验的执行授权。", "Choose distinct saved model states and obtain authority for each experiment.")}
+    finish={t("A/B 检验方向；通过门槛才可申请 C。D 独立在 1,440 次尝试及分析比较后结束。", "A/B test directions; passing the gate permits a request for C. D stops independently after 1,440 attempts and analysis.")}
+    state={t("A、B、C 尚未获执行授权；D 已授权，结果未封存。", "A, B and C are not authorized; D is authorized and its results are unsealed.")}
     stateTone="authorized"
     backHref={p('/research/seed-openevo/study/capability-exploration/')}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
-    actionHref="#mechanism-causal-journey"
+    actionHref="#experiment-dependencies"
     actionLabel={t('先看因果主线', 'Start with the causal path')}
     terms={terms}
   />
 
   <ResearchTaskContext locale={locale} />
 
-  <div id="mechanism-causal-journey">
-    <ResearchJourney
-      locale={locale}
-      eyebrow="OBSERVE → INTERVENE → GO / NO-GO → STEER OR STOP"
-      title={t('主线只有四步；M1-D 是独立参照，不是第四个因果实验', 'The causal path has four steps; M1-D is an independent reference, not a fourth causal experiment')}
-      intro={t('先把“参数变化”变成可识别对象，再做方向特异干预；只有通过预注册门槛，才允许把几何知识反馈回 OpenEvo。', 'First make parameter changes identifiable, then run direction-specific interventions. Geometry may enter the OpenEvo loop only after the preregistered gate passes.')}
-      steps={mainSteps}
-    />
-  </div>
+  <ParameterComparisonExample locale={locale} />
 
   <ResearchStateRail
     locale={locale}
@@ -148,7 +130,7 @@ const stateItems = experiments.map((row) => ({
   <section class="mechanism-map__section" id="initialization-reference" aria-labelledby="mechanism-reference-title">
     <h2 id="mechanism-reference-title">{t('独立参照 M1-D：从哪里开始，在哪里硬停？', 'Independent reference M1-D: where does it start and where does it hard-stop?')}</h2>
     <p>{t('M1-D 只比较初始化阶段收集的购物经验。它不提供 M1-C 的方向信号，也不继续执行 SEED 后续训练。', 'M1-D compares only the shopping experience collected during initialization. It does not supply the M1-C direction signal and does not continue into later SEED training.')}</p>
-    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('START → 1,440 → trajectory seal → MiniMax → matched compare → STOP。', 'START → 1,440 → trajectory seal → MiniMax → matched compare → STOP.')} steps={m1dSteps} compact />
+    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('核对前提 → 购物 1,440 次 → 固定记录 → MiniMax 事后分析 → 比较 → 结束。', 'START → 1,440 → trajectory seal → MiniMax → matched compare → STOP.')} steps={m1dSteps} compact />
     <ExperimentLifecycle experiment={reference} locale={locale} />
     <OpenEvoM1DResults locale={locale} />
   </section>

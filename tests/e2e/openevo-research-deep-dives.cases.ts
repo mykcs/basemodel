@@ -6,7 +6,7 @@ const explorationPath = `${gatewayPath}exploration/`;
 const reportPath = `${gatewayPath}report/`;
 const stage1CompatPath = `${lobbyPath}stage1-evolution/`;
 const stage2Path = `${lobbyPath}stage2-7b-analysis/`;
-const principle = '在 SEED-aligned 的 WebShop 任务、轨迹与评测预算内，先冻结规则、再看结果，探索 OpenEvo 能把当前基座模型推到多高。';
+const principle = '在与 SEED 对齐的购物任务、尝试次数和评测预算内，先固定规则再看结果，研究 OpenEvo 能把模型提高到什么程度。';
 
 export function registerOpenEvoResearchDeepDiveTests() {
   test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
@@ -18,7 +18,7 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(orientation).toContainText('什么时候结束');
     await expect(page.locator('[data-research-journey] [data-research-step]')).toHaveCount(3);
     await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-    await expect(page.locator('[data-research-step="redesign"]')).toContainText('当前 successor');
+    await expect(page.locator('[data-research-step="redesign"]')).toContainText('新一轮设计');
     await expect(page.locator('[data-map-choice="redesign"]')).toHaveAttribute('href', gatewayPath);
     await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
@@ -46,10 +46,10 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(map.locator('[data-research-journey] [data-research-step]')).toHaveCount(5);
     await expect(map.locator('[data-research-depth="history"]')).toBeVisible();
     await expect(map.locator('[data-principle]')).toContainText(principle);
-    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('64/64 valid');
-    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('paired horizon delta = 0');
-    await expect(map.locator('[data-exploration-detour="sampling"]')).toContainText('T=1.0');
-    await expect(map.locator('[data-quest="deliberation"]')).toContainText('短自我推理');
+    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('64 条记录全部有效');
+    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('每一对任务的结果差值都是 0');
+    await expect(map.locator('[data-exploration-detour="sampling"]')).toContainText('温度设为 1.0');
+    await expect(map.locator('[data-quest="deliberation"]')).toContainText('动作前的短思考');
     await expect(map.locator('[data-fix]')).toHaveCount(2);
     await expect(map.locator('[data-quest="freeze"]')).toContainText('202609030400');
     await expect(map.locator('[data-quest="raw-results"]')).toContainText('22/1440');
@@ -69,10 +69,13 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(report.locator('[data-paper-step]')).toHaveCount(6);
     await expect(report.locator('[data-arm="qwen25-3b"]')).toContainText('22 / 1440');
     await expect(report.locator('[data-arm="qwen3-1p7b"]')).toContainText('50 / 1440');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('What');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Why');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Evidence');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Boundary');
+    await expect(report.locator('[data-paper-step="harness"] .paper-step__meaning')).toHaveCount(2);
+    await expect(report.locator('[data-paper-step="harness"] .paper-step__meaning').first()).toBeVisible();
+    await expect(report.locator('.report-chronology tbody tr')).toHaveCount(3);
+    await report.locator('[data-paper-step="harness"] .paper-step__technical summary').click();
+    for (const label of ['操作', '理由', '记录', '适用范围']) {
+      await expect(report.locator('[data-paper-step="harness"] dt').filter({ hasText: label })).toBeVisible();
+    }
     await expect(report.locator('[data-paper-step="minimax"]')).toContainText('new_webshop_calls=0');
     await expect(report.locator('[data-paper-step="carriers"]')).toContainText('4096');
     await expect(report.locator('[data-paper-step="carriers"]')).toContainText('first10 + last10');
