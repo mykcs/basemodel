@@ -19,7 +19,6 @@ const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-ui-plan.ts',
   'scripts/ci-ui-gate.mjs',
-  'scripts/ci-ui-full-shard.mjs',
   '.github/workflows/self-hosted-ci.yml',
   '.circleci/config.yml',
   'scripts/ci-circleci-prepare.sh',

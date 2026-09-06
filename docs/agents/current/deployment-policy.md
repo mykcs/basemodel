@@ -45,7 +45,7 @@ ci/circleci: browser_shard_2
 
 A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
 
-The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with two Playwright workers each. The canonical `test:ui` suite is partitioned by measured spec work instead of raw test count, while focused browser work is owned by shard 1 and shard 2 exits before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
+The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with two Playwright workers each, matching the two available vCPUs per job. Focused browser work is owned by shard 1 and shard 2 exits before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
 
 Do not treat CircleCI provider configuration, a green historical run, or a branch-head benchmark as merge evidence. Required acceptance is the current exact PR head/current-base result plus the repository's ordinary merge rules.
 

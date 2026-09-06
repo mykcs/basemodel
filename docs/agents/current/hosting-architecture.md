@@ -46,7 +46,7 @@ ci/circleci: browser_shard_1
 ci/circleci: browser_shard_2
 ```
 
-Full browser work uses the qualified Debian 12 / Node 24 runtime on two CircleCI `medium` shards. Each shard uses two Playwright workers to match the two available vCPUs, and `scripts/ci-ui-full-shard.mjs` partitions the canonical `test:ui` specs by measured work instead of raw test count. The Mac fallback remains one worker; do not transfer cloud parallelism assumptions back to the constrained personal runner.
+Full browser work uses the qualified Debian 12 / Node 24 runtime on two CircleCI `medium` shards with two Playwright workers per shard, matching the two available vCPUs. The Mac fallback remains one worker; do not transfer cloud parallelism assumptions back to the constrained personal runner.
 
 The retained `.github/workflows/self-hosted-ci.yml` is manual fallback only. `.github/runner/` preserves the no-mount/no-socket OrbStack recovery implementation, but no ordinary PR or `main` event should require the Mac runner. The local LaunchAgent stays disabled during ordinary operation.
 
