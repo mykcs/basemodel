@@ -217,17 +217,29 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
   }, { width: viewportWidth, requiresMainStage });
 }
 
+async function waitForRootGeometryWithinExistingBudget(
+  root: Locator,
+  viewportWidth: number,
+  requiresMainStage: boolean,
+) {
+  const deadline = Date.now() + 40;
+  let issues = await auditRoot(root, viewportWidth, requiresMainStage);
+  while (issues.length > 0 && Date.now() < deadline) {
+    await root.page().waitForTimeout(Math.min(5, Math.max(1, deadline - Date.now())));
+    issues = await auditRoot(root, viewportWidth, requiresMainStage);
+  }
+  expect(issues, issues.join('\n')).toEqual([]);
+}
+
 async function stepThrough(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
   await ensureHydrated(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
   await expect(root).toHaveAttribute('data-overview', 'true');
   await next.click();
-  for (;;) {
-    const issues = await auditRoot(root, viewportWidth, requiresMainStage);
-    expect(issues, issues.join('\n')).toEqual([]);
-    if (await next.isDisabled()) break;
+  await waitForRootGeometryWithinExistingBudget(root, viewportWidth, requiresMainStage);
+  while (!(await next.isDisabled())) {
     await next.click();
-    await root.page().waitForTimeout(40);
+    await waitForRootGeometryWithinExistingBudget(root, viewportWidth, requiresMainStage);
   }
 }
 
