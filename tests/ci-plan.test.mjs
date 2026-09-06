@@ -1,9 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { classifyCiMode } from '../scripts/ci-plan.mjs';
+
+const circleCiConfig = readFileSync(new URL('../.circleci/config.yml', import.meta.url), 'utf8');
 
 test('pure Markdown documentation PR uses docs mode', () => {
   assert.equal(classifyCiMode('pull_request', ['README.md', 'docs/agents/current/example.md']).mode, 'docs');
+});
+
+test('CircleCI docs-mode halts terminate the current shell successfully', () => {
+  const haltAndExitPairs = circleCiConfig.match(/circleci-agent step halt\n\s+exit 0/g) ?? [];
+  assert.equal(haltAndExitPairs.length, 2);
 });
 
 test('CI and workflow files fail closed to full', () => {
