@@ -115,7 +115,6 @@ const browserEnv = {
   PLAYWRIGHT_REUSE_BUILD: '1',
   PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? '1',
   PWTEST_CACHE_DIR: transformCacheDir,
-  PLAYWRIGHT_JUNIT_OUTPUT_FILE: plan.mode === 'full' ? (process.env.CI_PLAYWRIGHT_JUNIT_OUTPUT_FILE ?? '') : '',
 };
 
 const installArgs = ['playwright', 'install'];
@@ -126,7 +125,6 @@ run('npx', installArgs);
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
   || file === 'scripts/ci-ui-test-list.mjs'
-  || file === 'scripts/ci-ui-circleci-test-list.mjs'
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
@@ -177,24 +175,17 @@ if (plan.mode === 'focused') {
 } else if (shardTotal > 1) {
   const testListPath = join(tmpdir(), `basemodel-playwright-tests-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}.txt`);
   const primaryReserveSeconds = labRelevant ? 30 : 1;
-  const schedulerScript = labRelevant ? 'scripts/ci-ui-test-list.mjs' : 'scripts/ci-ui-circleci-test-list.mjs';
-  const schedulerArgs = labRelevant
-    ? [
-        schedulerScript,
-        '--shard-index', String(shardIndex),
-        '--shard-total', String(shardTotal),
-        '--primary-reserve-seconds', String(primaryReserveSeconds),
-        '--output', testListPath,
-      ]
-    : [
-        schedulerScript,
-        '--shard-index', String(shardIndex),
-        '--shard-total', String(shardTotal),
-        '--fallback-primary-reserve-seconds', String(primaryReserveSeconds),
-        '--output', testListPath,
-      ];
-  console.log(`[ci-ui-gate] browser scheduler=${labRelevant ? 'static-lab-aware' : 'circleci-native-timing'}`);
-  run('node', schedulerArgs, browserEnv);
+  run(
+    'node',
+    [
+      'scripts/ci-ui-test-list.mjs',
+      '--shard-index', String(shardIndex),
+      '--shard-total', String(shardTotal),
+      '--primary-reserve-seconds', String(primaryReserveSeconds),
+      '--output', testListPath,
+    ],
+    browserEnv,
+  );
   run(
     'npx',
     ['playwright', 'test', '--project=chromium', '--max-failures=1', '--test-list', testListPath],
