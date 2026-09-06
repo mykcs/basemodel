@@ -46,7 +46,7 @@ ci/circleci: browser_shard_1
 ci/circleci: browser_shard_2
 ```
 
-Full browser work uses the qualified Debian 12 / Node 24 runtime with one Playwright worker per shard. The longest global-header sweep is decomposed so sharding can actually distribute work; do not replace sharding with extra workers on one constrained machine.
+Full browser work uses the qualified Debian 12 / Node 24 runtime on two independent CircleCI `medium` shards with one Playwright worker each. Instead of Playwright raw-count sharding, the full Chromium suite is enumerated into exact `--test-list` inputs and balanced by the retained `202609061200` one-worker timing receipt. New or renamed tests are conservatively weighted and remain in coverage. The Mac fallback stays one-worker and is not part of ordinary cloud scheduling.
 
 The retained `.github/workflows/self-hosted-ci.yml` is manual fallback only. `.github/runner/` preserves the no-mount/no-socket OrbStack recovery implementation, but no ordinary PR or `main` event should require the Mac runner. The local LaunchAgent stays disabled during ordinary operation.
 

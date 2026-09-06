@@ -122,6 +122,32 @@ if (installWithDeps) installArgs.push('--with-deps');
 installArgs.push('chromium');
 run('npx', installArgs);
 
+const ciInfrastructureChanged = plan.changedFiles.some((file) => (
+  file === 'scripts/ci-ui-gate.mjs'
+  || file === 'scripts/ci-ui-test-list.mjs'
+  || file === 'scripts/ci-ui-test-timings-202609061200.json'
+  || file === 'scripts/vercel-ui-plan.ts'
+  || file === '.github/workflows/self-hosted-ci.yml'
+  || file === '.circleci/config.yml'
+  || file === 'scripts/ci-circleci-prepare.sh'
+  || file.startsWith('.github/runner/')
+));
+
+const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
+  /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
+  || file.startsWith('src/layouts/')
+  || file.startsWith('src/styles/')
+  || file === 'src/components/research/InteractiveResearchExplainer.tsx'
+  || file === 'src/components/research/explainer/ResearchExplainerPrimitives.tsx'
+  || file === 'src/components/research/explainer/ServerExplainer.tsx'
+  || file.startsWith('public/')
+  || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
+  || /^(?:package|package-lock)\.json$/.test(file)
+  || file === 'scripts/vercel-lab-browser-gate.mjs'
+  || /^tests\/e2e\/lab-/.test(file)
+  || file === 'tests/e2e/lab-playwright.config.ts'
+));
+
 if (primaryShard) {
   run('node', ['scripts/ui-overflow-preflight.mjs'], browserEnv);
 } else {
@@ -146,37 +172,28 @@ if (plan.mode === 'focused') {
       VERCEL_CHANGED_ROUTES: plan.routes.join(','),
     },
   );
+} else if (shardTotal > 1) {
+  const testListPath = join(tmpdir(), `basemodel-playwright-tests-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}.txt`);
+  const primaryReserveSeconds = labRelevant ? 30 : 1;
+  run(
+    'node',
+    [
+      'scripts/ci-ui-test-list.mjs',
+      '--shard-index', String(shardIndex),
+      '--shard-total', String(shardTotal),
+      '--primary-reserve-seconds', String(primaryReserveSeconds),
+      '--output', testListPath,
+    ],
+    browserEnv,
+  );
+  run(
+    'npx',
+    ['playwright', 'test', '--project=chromium', '--max-failures=1', '--test-list', testListPath],
+    browserEnv,
+  );
 } else {
-  const fullArgs = ['run', 'test:ui'];
-  if (shardTotal > 1) {
-    fullArgs.push('--', `--shard=${shardIndex}/${shardTotal}`);
-  }
-  run('npm', fullArgs, browserEnv);
+  run('npm', ['run', 'test:ui'], browserEnv);
 }
-
-const ciInfrastructureChanged = plan.changedFiles.some((file) => (
-  file === 'scripts/ci-ui-gate.mjs'
-  || file === 'scripts/vercel-ui-plan.ts'
-  || file === '.github/workflows/self-hosted-ci.yml'
-  || file === '.circleci/config.yml'
-  || file === 'scripts/ci-circleci-prepare.sh'
-  || file.startsWith('.github/runner/')
-));
-
-const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
-  /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
-  || file.startsWith('src/layouts/')
-  || file.startsWith('src/styles/')
-  || file === 'src/components/research/InteractiveResearchExplainer.tsx'
-  || file === 'src/components/research/explainer/ResearchExplainerPrimitives.tsx'
-  || file === 'src/components/research/explainer/ServerExplainer.tsx'
-  || file.startsWith('public/')
-  || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
-  || /^(?:package|package-lock)\.json$/.test(file)
-  || file === 'scripts/vercel-lab-browser-gate.mjs'
-  || /^tests\/e2e\/lab-/.test(file)
-  || file === 'tests/e2e/lab-playwright.config.ts'
-));
 
 if (labRelevant && primaryShard) {
   console.log('[ci-ui-gate] Lab-relevant diff detected; running the 12-case Lab gate on shard 1');
