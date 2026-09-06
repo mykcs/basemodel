@@ -36,8 +36,10 @@ describe('hosting architecture ownership', () => {
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(circleCiConfig).toContain('pr_cloud_ci:');
     expect(circleCiConfig).toContain('main_cloud_ci:');
-    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "4"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('resource_class: small');
+    expect(circleCiConfig).toContain('name: browser_shard_4');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
