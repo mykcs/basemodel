@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoMechanismMap from '../../../../../../components/research/OpenEvoMechanismMap.astro';
+import OpenEvoM1DResults from '../../../../../../components/research/OpenEvoM1DResults.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -9,4 +10,5 @@ const locale = 'zh' as const;
   locale={locale}
 >
   <OpenEvoMechanismMap locale={locale} />
+  <OpenEvoM1DResults locale={locale} />
 </AppLayout>
