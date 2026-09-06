@@ -1,6 +1,6 @@
 # 网站读者路径修复：方案、技术细节与验收记录
 
-日期：2026-09-06。分支：`research/reader-journey-20260906`。状态：源码修复和完整本地验收完成，进入发布验收。
+日期：2026-09-06。实现分支：`research/reader-journey-20260906`。状态：**工程交付完成**；PR #499 已合并，Production 已完成独立验收。
 本文件是有边界的任务记录，不是另一套写作规范。长期规则更新已有 owner；可检查的规则落实到组件、数据和测试。
 
 ## 目标与根因
@@ -65,9 +65,9 @@
 - [x] 更新现行规范；加入语义、负例和浏览器回归。
 - [x] 冷读逐问走查，记录答案位置；未冒称真人理解率。
 - [x] deterministic / build / UI preflight 通过：509 项 Vitest + 358 项 Chromium/WebKit，retries=0。
-- [ ] exact-head Preview 中英文实际浏览器验收。
-- [ ] 独立 PR、CI 验收和 base 漂移复核。
-- [ ] 合并及 Production 单独验收；未发生则保持未勾选。
+- [x] exact-head Preview 中英文实际浏览器验收：`941cd336f25ff9db3007bce512300838e976b6ef` / `dpl_3vvb9T5druXKa5H7cazbWH41NttX`。
+- [x] 独立 PR #499、三项 CircleCI required checks、Vercel Preview Comments 与 base 漂移复核全部通过。
+- [x] PR #499 合并为 `35f08d2d233e5a2a3545845d2978165d1cfd2cce`；Vercel Production `dpl_4wpTGYmYCpdYJ2qZavy1Fq9r7tcs` READY，并完成真实公开路由验收。
 
 ## 验收记录
 
@@ -76,13 +76,16 @@
 | 验收层 | 结果 |
 |---|---|
 | `verify:deploy` | PASS；结构性测试 472，行为测试 37，共 509 项 |
-| `build` | PASS；476 个静态路由各一个 H1；3,974 个 GitHub/HF 外链品牌标记通过 |
+| `build` | PASS；最终组合树 478 个静态路由各一个 H1；3,974 个 GitHub/HF 外链品牌标记通过 |
 | `ui:overflow-preflight` | PASS；390 / 768 / 1440 宽 |
-| `test:ui:all` | 358 / 358 PASS，7.4 分钟，零重试 |
+| `test:ui:all` | 最终组合树 358 / 358 PASS，7.6 分钟，零重试 |
 | 冷读与实际浏览器 | 本地中英文结构和交互走查；下方保留逐问答案位置；不是受试者实验 |
-| exact-head Preview / CI / Production | 发布后在同一 PR 的验收回执记录准确 SHA、状态和路由；本地结果不替代部署验收 |
+| exact-head Preview | `941cd336...` → `dpl_3vvb9T5...` READY；中文/英文 390px、暗色模式、1440px lobby 均实机走查，无页面级横向溢出 |
+| PR CI | PR #499 current-base merge candidate；deterministic + browser shard 1 + browser shard 2 全部 SUCCESS，Vercel Preview Comments SUCCESS |
+| merge | `35f08d2d233e5a2a3545845d2978165d1cfd2cce`；expected-head 锁定 `941cd336...` 后 merge |
+| Production | `dpl_4wpTGYmYCpdYJ2qZavy1Fq9r7tcs` READY，source commit=`35f08d2d...`；post-merge 三项 CircleCI 全 SUCCESS；稳定入口真实浏览器复核 PASS |
 
-在 `349655bbc384b80ef8f89e3621469d4b5d8a3be3` 上完成上述完整验收。发布前 main 新增 `49ee3aa47660e299e59a6a1bb4d070b61ef3510e`，差异只有独立 Mac/CI 历史文档；运行代码、测试与构建合同完全相同，分支已快进纳入。
+第一轮完整验收完成后，main 继续前进。最终发布前的 current base 为 `76d93d1012ee1f5e7247554023e0804169080077`（#497，只新增中英文 development workflow 页面）。实现分支通过两父 merge commit `941cd336f25ff9db3007bce512300838e976b6ef` 纳入该 base；无冲突，并在**合并后的完整组合树**重新运行 `preflight:ui`，再次得到 358 / 358 Chromium + WebKit PASS。随后 exact-head CircleCI / Preview 全绿才合并。
 
 ## 参考
 
@@ -143,3 +146,18 @@
 用户提供的是某次提交的固定 Vercel deployment URL，不会因后续提交自动更新。验收使用新提交对应的 Preview；正式发布后检查稳定入口 `https://basemodel-preview.vercel.app`。具体提交和部署状态分别记录，避免把旧页面缓存与新代码混为一谈。
 
 依据：Vercel generated URLs 文档 https://vercel.com/docs/deployments/generated-urls 。临时 Preview share 参数只用于会话审阅，不进入本文件、代码或 PR。
+
+## 最终发布收口
+
+- 实现 PR：[#499](https://github.com/mykcs/basemodel/pull/499)。
+- 最终接受 head：`941cd336f25ff9db3007bce512300838e976b6ef`；接受 base：`76d93d1012ee1f5e7247554023e0804169080077`。
+- exact-head Preview：`dpl_3vvb9T5druXKa5H7cazbWH41NttX`，READY。
+- merge commit：`35f08d2d233e5a2a3545845d2978165d1cfd2cce`。
+- Production：`dpl_4wpTGYmYCpdYJ2qZavy1Fq9r7tcs`，READY，stable alias=`https://basemodel-preview.vercel.app`。
+- post-merge CI：`ci/circleci: deterministic`、`browser_shard_1`、`browser_shard_2` 全部 SUCCESS。
+- Production 实测：中文 Mechanism 390px、暗色 390px、英文 Mechanism 390px、中文 capability lobby 1440px 均无页面级横向溢出；Mechanism 中英文各只有一个 H1；中文页可见购物任务解释；canonical 指向稳定 Production 域。
+- GitHub review threads：0；Vercel unresolved toolbar threads：0。
+
+本文件的“完成”指**网站工程与发布链路完成**。它不伪造“真实同学/老师理解率”。如果未来真实读者仍产生关键误解，应把具体误解转化为同一语义 owner 下的页面修复和可判别回归，而不是再增加一套平行规范。
+
+后续 main 可以继续产生与本功能无关的 docs-only commit；这不把 Production runtime identity 改写成那些 docs commit。网站运行版本、Git main 版本、实验科学证据版本始终分别记录。
