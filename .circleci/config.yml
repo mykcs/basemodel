@@ -41,7 +41,7 @@ jobs:
             source /tmp/basemodel-ci-range.env
             set +a
 
-            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs
+            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-ui-circleci-shadow-split.test.mjs
             plan_output="$(node scripts/ci-plan.mjs \
               --event "$CI_LOGICAL_EVENT" \
               --base "$CI_BASE_SHA" \
@@ -123,6 +123,7 @@ jobs:
             npm ci
             mkdir -p test-results
             node scripts/ci-ui-gate.mjs
+            node scripts/ci-ui-circleci-shadow-split.mjs
       - store_test_results:
           path: test-results
 

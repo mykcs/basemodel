@@ -125,6 +125,7 @@ run('npx', installArgs);
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
   || file === 'scripts/ci-ui-test-list.mjs'
+  || file === 'scripts/ci-ui-circleci-shadow-split.mjs'
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
