@@ -146,6 +146,11 @@ if (plan.mode === 'focused') {
       VERCEL_CHANGED_ROUTES: plan.routes.join(','),
     },
   );
+} else if (
+  shardTotal > 1
+  && process.env.CI_BROWSER_SHARD_STRATEGY === 'historical-test-list'
+) {
+  run('node', ['scripts/ci-playwright-test-list.mjs'], browserEnv);
 } else {
   const fullArgs = ['run', 'test:ui'];
   if (shardTotal > 1) {

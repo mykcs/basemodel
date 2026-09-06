@@ -87,11 +87,12 @@ jobs:
       CI_BROWSER_BUILD: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
       CI_BROWSER_SHARD_TOTAL: "2"
+      CI_BROWSER_SHARD_STRATEGY: "historical-test-list"
     steps:
       - bootstrap_git
       - checkout
       - run:
-          name: Risk-based browser acceptance shard << parameters.shard_index >>/2
+          name: Historical-runtime test-list browser acceptance shard << parameters.shard_index >>/2
           command: |
             set -euo pipefail
             bash scripts/ci-circleci-prepare.sh \

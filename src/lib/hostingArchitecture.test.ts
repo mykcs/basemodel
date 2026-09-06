@@ -38,6 +38,8 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_STRATEGY: "historical-test-list"');
+    expect(ciUiGate).toContain('scripts/ci-playwright-test-list.mjs');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
