@@ -168,7 +168,7 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
   expect(snapshot.mainRight, `${context}: main content must not escape right viewport edge`).toBeLessThanOrEqual(state.viewport.width + 2);
 }
 
-const globalHeaderRouteShardCount = 4;
+const globalHeaderRouteShardCount = 8;
 
 for (let shardIndex = 0; shardIndex < globalHeaderRouteShardCount; shardIndex += 1) {
   test(`global shell and navigation survive computed CSS across every public route class [shard ${shardIndex + 1}/${globalHeaderRouteShardCount}]`, async ({ page }, testInfo) => {

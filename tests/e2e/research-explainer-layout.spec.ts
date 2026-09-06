@@ -231,24 +231,33 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
   }
 }
 
-for (const matrix of matrices) {
-  test(`${matrix.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
-    await page.setViewportSize(matrix.viewport);
-    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+const routeGroups = [
+  { name: 'zh', routes: routes.filter((route) => !route.path.startsWith('/en/')) },
+  { name: 'en', routes: routes.filter((route) => route.path.startsWith('/en/')) },
+] as const;
 
-    for (const route of routes.filter((route) => routeInScope(route.path))) {
-      await test.step(route.path, async () => {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await settle(page);
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
-        for (const kind of route.kinds) {
-          const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-          await expect(root).toBeVisible();
-          await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
-        }
-      });
-    }
-  });
+for (const matrix of matrices) {
+  for (const group of routeGroups) {
+    const scopedRoutes = group.routes.filter((route) => routeInScope(route.path));
+    if (scopedRoutes.length === 0) continue;
+    test(`${matrix.name} ${group.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
+      await page.setViewportSize(matrix.viewport);
+      await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+
+      for (const route of scopedRoutes) {
+        await test.step(route.path, async () => {
+          await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+          await settle(page);
+          expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+          for (const kind of route.kinds) {
+            const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+            await expect(root).toBeVisible();
+            await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
+          }
+        });
+      }
+    });
+  }
 }
 
 test('interactive transport stays bottom-docked from the initial render', async ({ page }) => {

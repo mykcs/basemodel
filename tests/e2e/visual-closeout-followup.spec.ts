@@ -252,6 +252,11 @@ async function walkStepper(root: Locator, label: string) {
   }
 }
 
+const explainerRouteGroups = [
+  { name: 'zh', routes: explainerRoutes.filter((route) => !route.path.startsWith('/en/')) },
+  { name: 'en', routes: explainerRoutes.filter((route) => route.path.startsWith('/en/')) },
+] as const;
+
 for (const theme of ['light', 'dark'] as const) {
   test(`1280-${theme} keeps representative pages inside the viewport`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
@@ -266,21 +271,23 @@ for (const theme of ['light', 'dark'] as const) {
     }
   });
 
-  test(`1280-${theme} keeps all interactive research connectors attached`, async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.addInitScript((value: Theme) => localStorage.setItem('atlas-theme', value), theme);
-    for (const route of explainerRoutes) {
-      await test.step(route.path, async () => {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await settle(page);
-        for (const kind of route.kinds) {
-          const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-          await expect(root).toBeVisible();
-          await walkGeometry(root, 1280, route.requiresMainStage);
-        }
-      });
-    }
-  });
+  for (const group of explainerRouteGroups) {
+    test(`1280-${theme} ${group.name} keeps all interactive research connectors attached`, async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.addInitScript((value: Theme) => localStorage.setItem('atlas-theme', value), theme);
+      for (const route of group.routes) {
+        await test.step(route.path, async () => {
+          await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+          await settle(page);
+          for (const kind of route.kinds) {
+            const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+            await expect(root).toBeVisible();
+            await walkGeometry(root, 1280, route.requiresMainStage);
+          }
+        });
+      }
+    });
+  }
 }
 
 for (const viewport of [

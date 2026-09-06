@@ -6,6 +6,22 @@ const timingReceipt = JSON.parse(
   readFileSync(new URL('./ci-ui-test-timings-202609061200.json', import.meta.url), 'utf8'),
 );
 
+export const stableTimingKey = (test) => {
+  const match = test.match(/^(\[[^\]]+\] › .+?):\d+:\d+( › .+)$/);
+  if (!match) throw new Error(`cannot derive stable timing key: ${test}`);
+  return `${match[1]}${match[2]}`;
+};
+
+const normalizeTimings = (timings) => {
+  const normalized = {};
+  for (const [test, seconds] of Object.entries(timings)) {
+    const key = stableTimingKey(test);
+    if (Object.hasOwn(normalized, key)) throw new Error(`duplicate stable timing key: ${key}`);
+    normalized[key] = seconds;
+  }
+  return normalized;
+};
+
 export const parseCanonicalList = (stdout) => {
   const tests = stdout
     .split(/\r?\n/)
@@ -19,14 +35,18 @@ export const parseCanonicalList = (stdout) => {
 export const assignByTiming = ({ tests, shardTotal, primaryReserveSeconds = 0, timings = timingReceipt.timings_seconds }) => {
   if (!Number.isInteger(shardTotal) || shardTotal < 1) throw new Error('shardTotal must be a positive integer');
   if (!Number.isFinite(primaryReserveSeconds) || primaryReserveSeconds < 0) throw new Error('primaryReserveSeconds must be non-negative');
-  const knownWeights = Object.values(timings).filter((value) => Number.isFinite(value) && value > 0);
+  const stableTimings = normalizeTimings(timings);
+  const knownWeights = Object.values(stableTimings).filter((value) => Number.isFinite(value) && value > 0);
   const unknownWeight = knownWeights.length > 0 ? Math.max(...knownWeights) : 1;
   const loads = Array.from({ length: shardTotal }, (_, index) => index === 0 ? primaryReserveSeconds : 0);
   const assignments = Array.from({ length: shardTotal }, () => []);
   const unknownTests = [];
 
+  const stableCurrentKeys = tests.map(stableTimingKey);
+  if (new Set(stableCurrentKeys).size !== stableCurrentKeys.length) throw new Error('canonical suite contains duplicate stable timing keys');
+
   const weighted = tests.map((test) => {
-    const measured = timings[test];
+    const measured = stableTimings[stableTimingKey(test)];
     if (!Number.isFinite(measured) || measured <= 0) {
       unknownTests.push(test);
       return { test, weight: unknownWeight };

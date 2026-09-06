@@ -52,7 +52,7 @@ describe('Vercel production deployment architecture', () => {
     expect(ciDocsContract).toContain("git(['diff', '--check'");
     expect(ciDocsContract).toContain("git(['diff', '--name-only'");
     expect(macFallbackWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
-    expect(headerVisibility).toContain('const globalHeaderRouteShardCount = 4;');
+    expect(headerVisibility).toContain('const globalHeaderRouteShardCount = 8;');
     expect(headerVisibility).toContain('partitionRoundRobin');
     expect(macFallbackWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
