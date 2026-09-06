@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 const useSystemChrome = process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === '1';
 const reuseBuiltOutput = process.env.PLAYWRIGHT_REUSE_BUILD === '1';
 const previewPort = process.env.PLAYWRIGHT_PORT ?? '4327';
+const junitOutputFile = process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE?.trim();
 const previewURL = `http://127.0.0.1:${previewPort}/`;
 
 const requestedCiWorkers = process.env.PLAYWRIGHT_WORKERS;
@@ -29,7 +30,11 @@ export default defineConfig({
   // default; a known hosted runner can opt into bounded parallelism explicitly.
   retries: 0,
   workers: process.env.CI ? ciWorkers : undefined,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ...(junitOutputFile ? [['junit', { outputFile: junitOutputFile }] as const] : []),
+  ],
   use: {
     baseURL: previewURL,
     trace: 'retain-on-failure',
