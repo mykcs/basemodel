@@ -1,0 +1,100 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+---
+
+<AppLayout title="当前开发方案" description="说明三个活跃网站现在如何分工使用 GitHub、CircleCI、Vercel、Cloudflare 与本地 Mac，以及为什么开发、CI、Preview、Production 和监控必须分层。" locale="zh">
+  <div class="shell dev-plan">
+    <header class="page-header">
+      <span class="section-kicker">开发方式 · 2026-09-06</span>
+      <h1>这三个活跃网站现在怎么开发</h1>
+      <p class="lede">目标不是“所有仓库都用同一个厂商”，而是让每一层只做自己擅长的事：GitHub 保存源码，云端 CI 做验收，Preview 只在需要时花资源，Production 保持简单，MacBook 留给 Remote Desktop、SSH 和日常工作。</p>
+    </header>
+
+    <section class="principle-grid" aria-label="共同原则">
+      <article><strong>GitHub = 源码 SSOT</strong><span>代码、配置、PR 和可审计历史都从 GitHub 出发。</span></article>
+      <article><strong>CI ≠ 部署</strong><span>测试通过不等于网站已经上线；部署成功也不能替代测试。</span></article>
+      <article><strong>Cloud first, Mac quiet</strong><span>普通 CI 不再把 MacBook 当常驻计算服务器，也绝不借科研 GPU 跑通用 CI。</span></article>
+      <article><strong>Exact head + post-merge</strong><span>合并前验证当前候选，合并后再验证真正进入 main 的版本。</span></article>
+    </section>
+
+    <section>
+      <h2>三个站点各自怎么做</h2>
+      <div class="site-grid">
+        <article class="site-card">
+          <div class="eyebrow">BaseModel</div>
+          <h3>研究网站：重验收放到 CircleCI</h3>
+          <p><strong>源码：</strong><code>mykcs/basemodel</code></p>
+          <p><strong>CI：</strong>CircleCI GitHub App。deterministic 检查与两个独立 Playwright browser shard 并行；风险规划器决定 skip / focused / full。</p>
+          <p><strong>部署：</strong>Vercel。Preview 只给需要真实网页验收的 exact head；main 负责 Production。</p>
+          <p><strong>Fallback：</strong>Mac/OrbStack runner 只保留手动恢复，不自动启动。</p>
+          <a href="https://basemodel-preview.vercel.app" rel="noopener">打开 Production →</a>
+        </article>
+
+        <article class="site-card">
+          <div class="eyebrow">fuhuo</div>
+          <h3>静态工作入口：让部署保持极轻</h3>
+          <p><strong>源码：</strong><code>mykcs/fuhuo_20260419</code></p>
+          <p><strong>验收：</strong>仓库自己的机器配置/远程策略检查 + Astro build，不为了账户统一再加第二套重 CI。</p>
+          <p><strong>部署：</strong>Vercel Git Integration。Preview build 必须 exact-head 显式 opt-in；main 只有真正网站输入变化才花 Production build。</p>
+          <p><strong>边界：</strong>Mac/RMC 运维脚本不是网站部署输入，Cloudflare 保持非 canonical。</p>
+          <a href="https://fuhuo-20260419.vercel.app" rel="noopener">打开 Production →</a>
+        </article>
+
+        <article class="site-card">
+          <div class="eyebrow">mykcs.github.io</div>
+          <h3>个人主页：GitHub Pages canonical，Cloudflare 做 Preview</h3>
+          <p><strong>源码：</strong><code>mykcs/mykcs.github.io</code>，实际 Astro 应用在 <code>astro/</code>。</p>
+          <p><strong>验收：</strong><code>pnpm run build</code> 是共享正确性 Gate，需要时再加浏览器 / SEO / i18n 检查。</p>
+          <p><strong>Preview：</strong>优先 Wrangler Direct Upload，避免每个开发提交都消耗 Git-connected Cloudflare Pages Build。</p>
+          <p><strong>Production：</strong>GitHub Pages 保持 canonical；Cloudflare mirror 保持 noindex。</p>
+          <a href="https://mykcs.github.io/zh/" rel="noopener">打开 Production →</a>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>一次普通改动怎么走</h2>
+      <ol class="flow">
+        <li><strong>先判断改动属于哪一层。</strong><span>源码、CI、Preview、Production、监控分开看，不因为一个层出问题就重装另一个层。</span></li>
+        <li><strong>在一个 coherent branch / PR 里完成。</strong><span>尽量一次原子提交，减少重复 hosted build。</span></li>
+        <li><strong>先跑最便宜、最确定的 Gate。</strong><span>结构 / 单测 / build 先于完整浏览器。</span></li>
+        <li><strong>浏览器测试按影响范围升级。</strong><span>局部页面只测局部；shared/global/CI planner 自身变化 fail-closed 到 full。</span></li>
+        <li><strong>只有确实需要真实页面时才做 Preview。</strong><span>Preview 是验收工具，不是每次 push 的默认副作用。</span></li>
+        <li><strong>merge 后再确认 Production。</strong><span>main 的 CI、部署状态与真实公开 URL 分开验收。</span></li>
+      </ol>
+    </section>
+
+    <section class="guardrail">
+      <h2>这套方案明确不做什么</h2>
+      <ul>
+        <li>不把 MacBook 当 24×7 CI farm；它优先服务 Remote Desktop Commander、浏览器、SSH 和日常控制。</li>
+        <li>不把科研 GPU 服务器当普通 CPU CI 的 fallback。</li>
+        <li>不为了“统一”把三种网站硬塞进同一个 provider。</li>
+        <li>不把 Vercel/Cloudflare 的部署额度当成 CI 计算额度，也不把某个月的免费额度写成永久事实。</li>
+        <li>不通过减少最终验收语义来追求更快；优化的是触发时机、影响范围、缓存与并行方式。</li>
+      </ul>
+    </section>
+
+    <p class="note">这是一张人类可读的开发方案投影。具体 required checks、provider trigger、Build Watch 和额度等会变化的事实，以各仓库当前配置和 provider live state 为准。</p>
+  </div>
+</AppLayout>
+
+<style>
+  .dev-plan { padding-block: clamp(2rem, 5vw, 4.5rem); }
+  .principle-grid, .site-grid { display: grid; gap: 1rem; margin: 1.5rem 0 3rem; }
+  .principle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .principle-grid article, .site-card, .guardrail { border: 1px solid var(--border, #d9d9d9); border-radius: 1rem; padding: 1.25rem; background: color-mix(in srgb, var(--surface, #fff) 92%, transparent); }
+  .principle-grid strong, .principle-grid span { display: block; }
+  .principle-grid span { margin-top: .45rem; color: var(--muted, #666); }
+  .site-card h3 { margin-top: .4rem; }
+  .site-card p { margin: .75rem 0; }
+  .eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #666); }
+  .flow { display: grid; gap: .85rem; padding-left: 1.4rem; margin-bottom: 3rem; }
+  .flow strong, .flow span { display: block; }
+  .flow span, .note { color: var(--muted, #666); }
+  .guardrail { margin: 2rem 0; }
+  .note { max-width: 70ch; font-size: .92rem; }
+  @media (max-width: 900px) { .site-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 680px) { .principle-grid { grid-template-columns: 1fr; } }
+</style>
