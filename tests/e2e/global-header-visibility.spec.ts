@@ -283,3 +283,5 @@ test('404 fallback keeps a usable global navigation escape hatch', async ({ page
     await assertGlobalHeader(page, fallbackRoute, state);
   }
 });
+
+// benchmark-only no-op: header-state control 202609062235
