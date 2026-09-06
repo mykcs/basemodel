@@ -94,6 +94,7 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['scripts/ci-ui-test-timings-202609061200.json']).mode).toBe('full');
     expect(planHostedUi(['.github/workflows/self-hosted-ci.yml']).mode).toBe('full');
     expect(planHostedUi(['.circleci/config.yml']).mode).toBe('full');
+    expect(planHostedUi(['.circleci/browser-runtime.Dockerfile']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-circleci-prepare.sh']).mode).toBe('full');
     expect(planHostedUi(['.github/runner/Dockerfile']).mode).toBe('full');
   });

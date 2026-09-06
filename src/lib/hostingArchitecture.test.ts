@@ -18,6 +18,7 @@ const ciUiGate = read('scripts/ci-ui-gate.mjs');
 const labPlaywrightConfig = read('tests/e2e/lab-playwright.config.ts');
 const macFallbackWorkflow = read('.github/workflows/self-hosted-ci.yml');
 const circleCiConfig = read('.circleci/config.yml');
+const browserRuntime = read('.circleci/browser-runtime.Dockerfile');
 const productionSmoke = read('cloudflare/production-smoke/src/index.js');
 const productionSmokeConfig = JSON.parse(read('cloudflare/production-smoke/wrangler.jsonc')) as {
   name?: string; triggers?: { crons?: string[] };
@@ -38,6 +39,12 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('ghcr.io/mykcs/basemodel-ci-browser@sha256:8db8a291f50b9ac3dc00e1e02477924e816b09ec5904bf731efb64f268d2712a');
+    expect(circleCiConfig).toContain('CI_PLAYWRIGHT_WITH_DEPS: "0"');
+    expect(circleCiConfig).toContain('Verify prebuilt browser runtime');
+    expect(browserRuntime).toContain('FROM node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e');
+    expect(browserRuntime).toContain('playwright@1.62.1 install --with-deps chromium');
+    expect(browserRuntime).toContain('PLAYWRIGHT_BROWSERS_PATH=/ms-playwright');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);

@@ -23,6 +23,7 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/ci-ui-test-timings-202609061200.json',
   '.github/workflows/self-hosted-ci.yml',
   '.circleci/config.yml',
+  '.circleci/browser-runtime.Dockerfile',
   'scripts/ci-circleci-prepare.sh',
 ]);
 

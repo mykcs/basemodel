@@ -79,16 +79,24 @@ jobs:
       shard_index:
         type: integer
     docker:
-      - image: node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+      - image: ghcr.io/mykcs/basemodel-ci-browser@sha256:8db8a291f50b9ac3dc00e1e02477924e816b09ec5904bf731efb64f268d2712a
     resource_class: medium
     environment:
       CI: "1"
       PLAYWRIGHT_WORKERS: "1"
       CI_BROWSER_BUILD: "1"
-      CI_PLAYWRIGHT_WITH_DEPS: "1"
+      CI_PLAYWRIGHT_WITH_DEPS: "0"
       CI_BROWSER_SHARD_TOTAL: "2"
     steps:
-      - bootstrap_git
+      - run:
+          name: Verify prebuilt browser runtime
+          command: |
+            set -euo pipefail
+            test "$(node -p 'process.versions.node.split(`.`)[0]')" = "24"
+            git --version
+            test "${PLAYWRIGHT_BROWSERS_PATH:-}" = "/ms-playwright"
+            test -d /ms-playwright/chromium-1234
+            test -d /ms-playwright/chromium_headless_shell-1234
       - checkout
       - run:
           name: Risk-based browser acceptance shard << parameters.shard_index >>/2
