@@ -12,12 +12,12 @@ export function canonicalTestId(line) {
   const rest = trimmed.slice(PREFIX.length);
   const separator = rest.indexOf(' › ');
   if (separator < 0) return null;
-  const file = rest.slice(0, separator).replace(/:\\d+(?::\\d+)?$/, '');
+  const file = rest.slice(0, separator).replace(/:\d+(?::\d+)?$/, '');
   return `${file} › ${rest.slice(separator + 3)}`;
 }
 
 export function parseListedTests(output) {
-  const cleanOutput = output.replace(/\\u001b\\[[0-?]*[ -\\/]*[@-~]/g, '');
+  const cleanOutput = output.replace(/\u001b\[[0-?]*[ -\/]*[@-~]/g, '');
   const tests = [];
   const seen = new Set();
   for (const rawLine of cleanOutput.split('\n')) {
