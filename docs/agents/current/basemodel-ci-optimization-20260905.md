@@ -52,3 +52,16 @@ The first benchmark run (`33897274555`) exposed an ambiguity in the generic chan
 This **does not mean the complete blocking CI is 66 seconds**: the benchmark intentionally isolated build + focused browser work and did not duplicate the full deterministic `verify:deploy` suite. Using the observed median pre-browser baseline (~4.6 min), a route-owned server change should target roughly **5–7 min blocking wall time** instead of the historical ~23–26 min full jobs. That projection must be confirmed on a normal merge-ready change after adoption.
 
 The two one-off hosted benchmark attempts consumed only about **2.2 GitHub-hosted runner minutes total** and are not retained as recurring workflows.
+
+## 2026-09-06 successor-experiment boundary
+
+A later experiment evaluated replacing the retained static exact-test timing receipt with CircleCI historical test timing. The candidate was correct and fail-safe, but its ordinary-full steady-state benchmark did **not** show a clear repeatable end-to-end improvement above hosted-runner variance. PR #473 was merged before its own performance acceptance rule completed and was subsequently reverted by PR #481 after post-merge validation.
+
+Current meaning of this baseline:
+
+- the proven static exact-test scheduler remains the current BaseModel authority;
+- the 2026-09-06 adaptive implementation is historical experimental evidence, not a dormant successor to restore;
+- future timing-scheduler changes must use the causal benchmark protocol in `website-engineering-standard.md` §6.2 and the exact acceptance/merge boundary in `release-closeout-protocol.md`;
+- historical PR numbers, SHAs and timing samples belong to the dated retrospective, not to future current-state assumptions.
+
+Detailed case: [`../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md`](../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md).
