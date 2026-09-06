@@ -1,6 +1,6 @@
 # Scientific-state provenance for public research pages
 
-Last reviewed: **2026-08-26**
+Last reviewed: **2026-09-07**
 
 Status: **current**
 Audience: research, content, UI, review, and release Agents
