@@ -19,7 +19,7 @@ export function canonicalTestId(line) {
 export function parseListedTests(output) {
   const tests = [];
   const seen = new Set();
-  for (const rawLine of output.split('\\n')) {
+  for (const rawLine of output.split('\n')) {
     const line = rawLine.trim();
     const id = canonicalTestId(line);
     if (!id || seen.has(id)) continue;
@@ -63,7 +63,7 @@ function run(command, args, extraEnv = {}) {
   const result = spawnSync(command, args, {
     encoding: 'utf8',
     env: { ...process.env, ...extraEnv },
-    stdio: ['ignore', 'pipe', 'inherit'],
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
   if (result.error) throw result.error;
   return result;
@@ -88,9 +88,10 @@ function main() {
   const listed = run('npm', ['run', 'test:ui', '--', '--list', '--reporter=list']);
   if (listed.status !== 0) {
     process.stdout.write(listed.stdout || '');
+    process.stderr.write(listed.stderr || '');
     process.exit(listed.status ?? 1);
   }
-  const tests = parseListedTests(listed.stdout || '');
+  const tests = parseListedTests(`${listed.stdout || ''}\n${listed.stderr || ''}`);
   if (tests.length === 0) throw new Error('Playwright discovery returned no test cases');
   const { shards, fallbackMs, unseen } = partitionByHistoricalDuration(tests, history, shardTotal);
   const shard = shards[shardIndex - 1];
@@ -102,7 +103,7 @@ function main() {
 
   const directory = mkdtempSync(join(tmpdir(), 'basemodel-playwright-test-list-'));
   const listPath = join(directory, `shard-${shardIndex}-of-${shardTotal}.txt`);
-  writeFileSync(listPath, `# Generated from frozen historical Playwright timings.\\n${shard.tests.map((test) => test.line).join('\\n')}\\n`);
+  writeFileSync(listPath, `# Generated from frozen historical Playwright timings.\n${shard.tests.map((test) => test.line).join('\n')}\n`);
   const started = Date.now();
   const result = spawnSync('npx', [
     'playwright', 'test',
