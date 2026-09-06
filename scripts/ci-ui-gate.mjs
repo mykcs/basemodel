@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fullUiShardPlan } from './ci-ui-full-shard.mjs';
 
 const base = process.env.CI_BASE_SHA?.trim();
 const head = process.env.CI_HEAD_SHA?.trim() || 'HEAD';
@@ -122,6 +123,31 @@ if (installWithDeps) installArgs.push('--with-deps');
 installArgs.push('chromium');
 run('npx', installArgs);
 
+const ciInfrastructureChanged = plan.changedFiles.some((file) => (
+  file === 'scripts/ci-ui-gate.mjs'
+  || file === 'scripts/ci-ui-full-shard.mjs'
+  || file === 'scripts/vercel-ui-plan.ts'
+  || file === '.github/workflows/self-hosted-ci.yml'
+  || file === '.circleci/config.yml'
+  || file === 'scripts/ci-circleci-prepare.sh'
+  || file.startsWith('.github/runner/')
+));
+
+const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
+  /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
+  || file.startsWith('src/layouts/')
+  || file.startsWith('src/styles/')
+  || file === 'src/components/research/InteractiveResearchExplainer.tsx'
+  || file === 'src/components/research/explainer/ResearchExplainerPrimitives.tsx'
+  || file === 'src/components/research/explainer/ServerExplainer.tsx'
+  || file.startsWith('public/')
+  || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
+  || /^(?:package|package-lock)\.json$/.test(file)
+  || file === 'scripts/vercel-lab-browser-gate.mjs'
+  || /^tests\/e2e\/lab-/.test(file)
+  || file === 'tests/e2e/lab-playwright.config.ts'
+));
+
 if (primaryShard) {
   run('node', ['scripts/ui-overflow-preflight.mjs'], browserEnv);
 } else {
@@ -146,37 +172,26 @@ if (plan.mode === 'focused') {
       VERCEL_CHANGED_ROUTES: plan.routes.join(','),
     },
   );
-} else {
-  const fullArgs = ['run', 'test:ui'];
-  if (shardTotal > 1) {
-    fullArgs.push('--', `--shard=${shardIndex}/${shardTotal}`);
+} else if (shardTotal > 1) {
+  const weighted = fullUiShardPlan({
+    shardIndex,
+    shardTotal,
+    primaryReserveSeconds: labRelevant ? 23 : 1,
+  });
+  console.log(
+    `[ci-ui-gate] weighted shard estimate=${weighted.estimatedLoads.map((value) => value.toFixed(1)).join('/')}s`,
+  );
+  if (weighted.unknownSpecs.length > 0) {
+    console.log(`[ci-ui-gate] conservative weights used for: ${weighted.unknownSpecs.join(', ')}`);
   }
-  run('npm', fullArgs, browserEnv);
+  run(
+    'npx',
+    ['playwright', 'test', ...weighted.specs, ...weighted.passthroughArgs],
+    browserEnv,
+  );
+} else {
+  run('npm', ['run', 'test:ui'], browserEnv);
 }
-
-const ciInfrastructureChanged = plan.changedFiles.some((file) => (
-  file === 'scripts/ci-ui-gate.mjs'
-  || file === 'scripts/vercel-ui-plan.ts'
-  || file === '.github/workflows/self-hosted-ci.yml'
-  || file === '.circleci/config.yml'
-  || file === 'scripts/ci-circleci-prepare.sh'
-  || file.startsWith('.github/runner/')
-));
-
-const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
-  /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
-  || file.startsWith('src/layouts/')
-  || file.startsWith('src/styles/')
-  || file === 'src/components/research/InteractiveResearchExplainer.tsx'
-  || file === 'src/components/research/explainer/ResearchExplainerPrimitives.tsx'
-  || file === 'src/components/research/explainer/ServerExplainer.tsx'
-  || file.startsWith('public/')
-  || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
-  || /^(?:package|package-lock)\.json$/.test(file)
-  || file === 'scripts/vercel-lab-browser-gate.mjs'
-  || /^tests\/e2e\/lab-/.test(file)
-  || file === 'tests/e2e/lab-playwright.config.ts'
-));
 
 if (labRelevant && primaryShard) {
   console.log('[ci-ui-gate] Lab-relevant diff detected; running the 12-case Lab gate on shard 1');
