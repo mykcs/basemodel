@@ -278,7 +278,7 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 
 ## TRIGGER: user-visible copy, beginner explanation, research narrative, or broad UI rewrite
 
-**Cues:** heading/introduction/callout/status copy, `说人话`, `不要 AI 味`, `自然一点`, “make this easier to understand”, technical explainer, research result story, onboarding, bilingual rewrite, process/evidence visual.
+**Cues:** heading/introduction/callout/status copy, `说人话`, `不要 AI 味`, `自然一点`, “make this easier to understand”, technical explainer, research result story, onboarding, bilingual rewrite, process/evidence visual, or the owner says previous readability fixes/standards/examples have repeatedly failed.
 
 **Automatic response:**
 
@@ -293,8 +293,11 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
 10. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
 11. If one member of a repeated experiment/report family changes presentation grammar, identify sibling routes and the shared semantic owner before patching. Propagate through the shared component/primitive when the semantic object is the same, add structural coverage that discovers future siblings, and preserve intentional visual differences where the semantic object genuinely differs.
+12. When the owner reports repeated comprehension failure despite prior prose standards, do not answer with another wording guide alone. Audit the shared semantic owner and sibling routes; establish typed required fields/state when practical; add negative cases and rendered reader-journey checks to the normal Gate; and keep explicit coverage labels so contextualized pages are not reported as fully rebuilt. Structural/visual PASS and Agent cold-read PASS must remain separate from measured human-comprehension evidence.
 
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
+
+Reader-journey repeat-failure case: [`../history/2026-09-07-reader-journey-experience-retention.md`](../history/2026-09-07-reader-journey-experience-retention.md) records why earlier style-guide-only fixes did not hold, the executable-contract repair, stale-check/worktree/provider/tool-path friction, and the exact separation between engineering acceptance and real human comprehension.
 
 Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md`](../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md) records the 7B paper-table refinement that became a shared capability-exploration report contract, including mobile local-scroll semantics, moving-main synchronization, stale-test repair, protected-Preview authentication friction, and exact-head release closeout.
 
@@ -315,7 +318,7 @@ Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-tabl
 **Automatic response:**
 
 1. Separate repository state, provider state, local-only state, and human authorization.
-2. Try another safe entrypoint before escalating tools; use the narrowest surface that actually owns the missing state.
+2. Try another safe entrypoint before escalating tools; use the narrowest surface that actually owns the missing state. A tool/schema listing, one HTTP/Git transport error, or a vanished output stream is not proof that the underlying capability is absent.
 3. Do not relax a hard constraint merely to produce an output.
 4. Never commit a live bearer token as ordinary Git content, even in a private repository.
 5. Prefer execution-environment secret injection, authenticated provider tooling, OS/keychain-backed state on a trusted machine, or an integrated secret manager.
@@ -362,7 +365,8 @@ previous retrospective did not prevent recurrence.
 6. check whether a real memory-write capability exists; never claim that a
    search, repository commit, or conversation summary was written to long-term
    memory;
-7. record what was deliberately not persisted and why.
+7. before summarizing “blocked/done”, reconstruct the outcome from exact refs, PR/check/provider/test artifacts rather than trusting a previous assistant sentence or arbitrary working-tree file;
+8. record what was deliberately not persisted and why.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.

@@ -79,6 +79,27 @@ In particular:
 
 Tool convenience is not sufficient justification for broader access. The default is **cloud-side for cloud-owned state, device-side only for device-owned state**.
 
+### Reconstruct from durable state after partial execution or tool confusion
+
+A conversation is not an execution ledger. If a long task contains partial tool output, reconnects, timeouts, or a prior assistant message that says “blocked”, “not done”, or “done”, rebuild the state from durable evidence before acting on that prose.
+
+Use the smallest relevant tuple, for example:
+
+```text
+repository task -> target ref + exact commit + worktree status + PR
+release task    -> accepted head/base + required checks + deployment SHA/ID + real-route acceptance
+research task   -> scientific authority ref + receipt/result identity + authorization state
+```
+
+Rules:
+
+- tool discovery/schema listing proves only that a capability may exist; perform the appropriate read/action before claiming success or impossibility;
+- a local Git HTTPS/HTTP2 timeout is a transport observation, not an authorization verdict; when policy allows, retry with the repository connector or another authenticated read path before changing credentials/remotes;
+- a remote-tool timeout or missing stream is not command failure until the child process/exit artifact says so;
+- if prior narrative conflicts with branch/PR/provider/test state, the durable artifact wins and the narrative must be corrected;
+- `blocked` means no safe authorized path remains except a real human boundary, not “the first path was awkward”;
+- `done` means the task's actual acceptance boundary is evidenced, not “a file/prototype/plan exists”.
+
 ### Respect concurrent local execution and separate monitoring from execution
 
 When local execution is genuinely required, assume the user device may already be running other Agents, builds, browsers, training clients, or tests.
@@ -185,7 +206,13 @@ If main moves after the snapshot:
 - do not combine current claims from one SHA with route/content observations from
   another without labeling the boundary.
 
-When depositing experience, classify it before writing:
+When depositing experience, classify it before writing. Use three explicit retention classes so temporary state cannot masquerade as policy:
+
+- **A — durable cross-task rule:** expected to remain useful across future tasks/months. Put it in the existing current owner, Agent router, executable guard, or shared user-policy/memory system when a real memory-write capability exists.
+- **B — project-scoped lesson:** valid because of this repository/experiment architecture or lineage. Put it in the existing project runbook/current owner and/or an indexed history case; do not generalize it into account-wide truth.
+- **C — transient state:** current PID/GPU occupancy, branch/PR head, provider status, current round/percentage, temporary worktree path, one-time ETA. Keep it only in a bounded handoff/history receipt when needed to reconstruct the incident; never promote it to current policy or long-term memory.
+
+Then choose the destination:
 
 - cross-task invariant -> existing current owner or executable guard;
 - recognizable trigger -> scenario registry plus the existing owner;

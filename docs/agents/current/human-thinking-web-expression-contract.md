@@ -361,6 +361,26 @@ Acceptance requires both missing-field/state negative tests and the rendered rea
 
 Record a cold-read walkthrough: task, purpose, start, stop, current evidence, and next dependency, each with an answer location. This walkthrough and browser checks establish inspectable prerequisites; they do not establish a measured human comprehension rate. A real reader misunderstanding must update the owning data/component and a discriminating regression, rather than add another overlapping prose standard.
 
+### 10.9 Three acceptance layers; do not use one as a proxy for another
+
+Readability work has three different evidence layers:
+
+1. **Structural/visual safety** — heading order, visibility, contrast, overflow, responsive geometry, no-JS, keyboard, reduced-motion. This proves the page is renderable and operable.
+2. **Reader-journey semantics** — the visible path actually answers the task, purpose, starting state, start/stop conditions, output, evidence state, and next dependency. Protect this with typed content contracts, route discovery/inventory, negative-state tests, and rendered browser assertions.
+3. **Human comprehension** — a real target reader can accurately explain the causal path and boundaries without hidden oral context. Agent cold-read checks are preparation evidence, not a measured human pass rate.
+
+`toBeVisible`, a green contrast/overflow audit, or “the words exist somewhere in the DOM” does **not** prove layer 2 or 3. Conversely, a human liking one screenshot does not replace deterministic geometry/accessibility checks. Report which layer each piece of evidence actually supports.
+
+When the owner says that the site has been “fixed many times”, that standards/examples already exist, or the same misunderstanding keeps returning, treat that as evidence that prose guidance alone failed. Before writing another style rule:
+
+- locate the shared semantic owner and every sibling route that encodes the same concept;
+- move required start/action/stop/output/evidence state into typed data/schema consumed by the rendered component when practical;
+- add failure-producing negative cases for missing/invalid states, not only positive snapshots;
+- ensure the regression is registered in the normal owning Gate, not stranded in a one-off test file;
+- keep an honest scope inventory (`rebuilt`, `contextualized`, `untouched` or equivalent) so one repaired page cannot be reported as whole-family completion.
+
+The durable fix for repeated comprehension drift is therefore **owner + executable contract + route coverage + rendered acceptance**, with prose standards explaining why rather than carrying the enforcement alone.
+
 ---
 
 ## 11. Ownership and relationship to other contracts
