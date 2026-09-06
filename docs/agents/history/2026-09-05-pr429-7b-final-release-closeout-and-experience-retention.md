@@ -269,3 +269,36 @@ When asked “is this release ready?” or “did the previous closeout solve it
 | ChatGPT memory changed | actual memory-write result; none was available here |
 
 The purpose is not to make future Agents memorize PR #429. It is to make them perform the same evidence separation automatically.
+
+
+---
+
+## Follow-up correction — provenance identity repair (2026-09-06)
+
+The initial release closeout was accepted, but its public projection still carried an ambiguous archive field. A later audit found that the displayed `archiveHead` and a PR-description revision were not the current repository-traceable canonical archive identities. This did not invalidate the published scientific numbers; it exposed an identity-model defect.
+
+The corrective rule is now executable and user-facing:
+
+- role-specific immutable identities are stored for component store, full lineage, and parameter analysis;
+- full-lineage and parameter-analysis SHA-256 values are published alongside their revisions;
+- the Hugging Face dataset is labeled private/restricted;
+- the exact OpenEVO governance commit and receipt paths are linked;
+- prior remote verification is retained as historical evidence;
+- an incomplete/tool-error fresh-read is explicitly not a current PASS;
+- regression tests reject the obsolete single `archiveHead` field and the old overclaiming copy.
+
+The repair was delivered in BaseModel PR #446 and merged through the expected-head process. The exact merge and deployment identifiers are temporary release evidence; future Agents must re-read live state. The scientific result remains a derived projection of the object-owning experiment repository.
+
+### Repeated-error analysis
+
+This was a recurrence of an older pattern: a hexadecimal identifier was treated as self-explanatory, and “remote verified” was allowed to collapse historical verification, current readability, and public rendering into one phrase. Earlier documents described the three-ledger rule, but the rule was not enforced at the data shape or regression-test boundary.
+
+To prevent a third recurrence:
+
+1. current release policy owns the abstract three-ledger and freshness rules;
+2. the dated history preserves the concrete incident and corrected assumptions;
+3. the data contract uses role-specific names and hashes rather than one generic head;
+4. tests fail on the obsolete field and on unsupported fresh-verification wording;
+5. public research surfaces disclose private/restricted access and link the owning evidence.
+
+Do not promote the temporary PR/merge/deployment IDs or the failed fresh-read error into current scientific state.
