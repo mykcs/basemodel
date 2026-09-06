@@ -250,7 +250,32 @@ cache/log/tmp                    -> do not archive; regenerate
 
 **Anti-example:** editing a dated activation record to pretend CircleCI was always primary, or leaving `ACTIVE PRIMARY` at the top after a later cutover.
 
-## 16. Scientific-semantics boundary
+## 16. Friction 13 — provider “halt” control was mistaken for shell `exit`
+
+**What happened:** the experience-deposition PR itself exposed a dormant CircleCI docs-mode bug. Both CircleCI jobs called `circleci-agent step halt` for a valid `mode=docs`, but the same shell continued into the following fail-closed `mode != full` branch and returned failure.
+
+**Why:** provider orchestration commands and shell process control were mentally collapsed into one mechanism.
+
+**Missing assumption:** `circleci-agent step halt` changes what CircleCI schedules **after the current step**; it does not terminate the current Bash command body.
+
+**Precheck next time:** for every provider-level early-stop/skip command, verify whether it exits the current shell/process or only changes later scheduling. Exercise the fast path itself, not only the planner that selects it.
+
+**Defensive rule:** a successful early-return path must end the current execution scope explicitly and must have a deterministic test that proves it cannot fall through into an error branch.
+
+**Anti-example:**
+
+```bash
+if [[ "$mode" == docs ]]; then
+  circleci-agent step halt
+fi
+if [[ "$mode" != full ]]; then
+  exit 1
+fi
+```
+
+The provider halt does not make the second `if` unreachable. Use an explicit successful exit/return after the halt.
+
+## 17. Scientific-semantics boundary
 
 This conversation was operational/CI work. It deliberately did **not** use the RTX 5090 research server as a convenient CI fallback and did not change OpenEvo Stage1/Stage2 task identity, sampling, seeds, model state, reward, eligibility, final panel, or GPU scheduling semantics.
 
@@ -260,7 +285,7 @@ The reusable principle is broader:
 
 A browser test worker count is not scientific sampling, but weakening browser coverage to obtain a faster green check would still alter the product acceptance semantics. Likewise, routing ordinary CPU CI to the scientific GPU server would change resource isolation even if no experiment code changed.
 
-## 17. Repeated-error audit
+## 18. Repeated-error audit
 
 Several failures had already appeared in earlier BaseModel/OpenEvo retrospectives:
 
@@ -283,7 +308,7 @@ root AGENTS invariant
 -> executable housekeeping / CI architecture
 ```
 
-## 18. Durable memory candidates
+## 19. Durable memory candidates
 
 Cross-conversation memory candidates from this case are intentionally narrow:
 
@@ -296,7 +321,7 @@ Cross-conversation memory candidates from this case are intentionally narrow:
 
 This execution environment exposes personal-context **read** capability but no writable long-term-memory action. Therefore no claim is made that account-level ChatGPT memory was updated. The durable, writable representation for this task is the repository hierarchy above.
 
-## 19. Completion boundary
+## 20. Completion boundary
 
 This experience deposition is complete when:
 
