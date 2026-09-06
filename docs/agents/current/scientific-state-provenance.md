@@ -1,6 +1,6 @@
 # Scientific-state provenance for public research pages
 
-Last reviewed: **2026-08-26**
+Last reviewed: **2026-09-07**
 
 Status: **current**
 Audience: research, content, UI, review, and release Agents
@@ -23,6 +23,24 @@ actual openevo-experiment checkout / branch / SHA used by the scientific work
 ```
 
 An active scientific branch may intentionally be ahead of default `main`. Do not replace a newer active-branch result with an older default-branch status page merely because `main` is easier to fetch.
+
+## Scientific lifecycle state is not one boolean
+
+For experiment-facing pages, keep at least these states semantically separate when they apply:
+
+```text
+registered / preregistered / locked
+!= execution authorized
+!= observed running
+!= execution completed
+!= result sealed / publishable
+```
+
+Each transition requires its own upstream evidence/receipt. A website label, deployment, or code merge may **project** an upstream state but cannot create scientific authorization, running state, completion, or a sealed result. If the upstream evidence does not provide an actual start/end time, keep it unknown rather than inventing an ETA, percentage, or timestamp.
+
+Also separate **measurement identifiability** from **measured effect**. A causal contrast that cannot be formed (for example because two required model states resolve to the same bytes and the task vector is zero by construction) is `not identifiable`/blocked evidence, not an observed zero causal effect. Preserve the predecessor design and its failure reason; a successor experiment may repair identifiability, but it does not retroactively turn the predecessor into a valid null result.
+
+Tests should reject impossible state combinations (for example `running` without a run-start receipt, `sealed` without a result receipt, or `locked` with active execution timestamps) instead of merely snapshotting a status string.
 
 ## What a static public site may say
 
