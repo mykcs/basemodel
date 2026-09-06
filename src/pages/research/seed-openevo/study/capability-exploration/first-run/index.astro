@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoFirstRunMap from '../../../../../../components/research/OpenEvoFirstRunMap.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -8,5 +9,6 @@ const locale = 'zh' as const;
   description="第一轮 OpenEvo 实验保留从 Stage 1 到 Stage 2 的历史探索：7B 提供持续参数更新与容量 amendment 证据，3B 暴露 bootstrap、action validity 与 Harness 设计问题，并推动新的 OpenEvo successor。"
   locale={locale}
 >
+  <ResearchRouteContext locale={locale} route="first-run" />
   <OpenEvoFirstRunMap locale={locale} />
 </AppLayout>

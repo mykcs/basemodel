@@ -14,8 +14,8 @@ The default reader should be able to understand the scientific question and the 
 Default language and reader model:
 
 - research-result routes are **Chinese-first** by default; English may mirror the evidence faithfully, but should not force the Chinese primary reading path into translation-shaped prose;
-- understands the broad SEED / OpenEvo / WebShop project context;
-- has **not** followed every experiment iteration;
+- may be a student or teacher with no agent background and no SEED / OpenEvo / WebShop project context;
+- needs the concrete task, model role, experiment purpose, and start/stop conditions explained in the visible main path;
 - wants to know what was tested, what happened, why the result matters, what the evidence supports, and what remains unknown;
 - may later inspect source, hashes, commands, configs, logs, or raw outputs to challenge authenticity or reproduce the work.
 

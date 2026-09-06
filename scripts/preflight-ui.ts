@@ -32,6 +32,18 @@ const RISK_ORDER: UiRisk[] = ['none', 'content', 'local', 'shared', 'global'];
 
 export const ESCAPED_UI_REGRESSIONS: EscapedUiRegression[] = [
   {
+    id: 'reader-journey-default-visible',
+    failureClass: 'experiment task, start, stop or dependency exists only as jargon or hidden source text',
+    stage: 'browser',
+    gate: 'tests/e2e/openevo-two-map.spec.ts',
+  },
+  {
+    id: 'reader-lifecycle-evidence',
+    failureClass: 'missing lifecycle fields or unevidenced execution/result states reach the public narrative',
+    stage: 'deterministic',
+    gate: 'src/data/openEvoMechanismNarrative.test.ts',
+  },
+  {
     id: 'theme-scope',
     failureClass: 'light/dark or emitted CSS scoping mismatch',
     stage: 'browser',

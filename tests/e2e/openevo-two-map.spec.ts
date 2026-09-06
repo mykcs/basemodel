@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { registerReaderJourneyTests } from './reader-journey.cases';
 import { registerOpenEvoResearchDeepDiveTests } from './openevo-research-deep-dives.cases';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
@@ -18,6 +19,7 @@ async function assertNoPageOverflow(page: Page) {
 }
 
 registerOpenEvoResearchDeepDiveTests();
+registerReaderJourneyTests();
 
 test('desktop lobby exposes exactly three primary maps and keeps archive secondary', async ({ page }) => {
   const response = await page.goto(root, { waitUntil: 'domcontentloaded' });
@@ -43,7 +45,10 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
   await expect(map).toContainText('结果未封存');
   await expect(map).toContainText('GPU0–3 SHARED RAY = AUTHORIZED');
   await expect(map).toContainText('M1-D STAGE1 = ACTIVATED');
-  await expect(map).not.toContainText('执行仍锁定');
+  // Authority belongs to each experiment, not the whole program: the M1-A
+  // successor remains locked even though M1-D Stage1 has an independent release.
+  for (const id of ['M1-A', 'M1-B', 'M1-C']) await expect(map.locator(`[data-experiment="${id}"]`)).toHaveAttribute('data-execution', 'locked');
+  await expect(map.locator('[data-experiment="M1-D"]')).toHaveAttribute('data-execution', 'authorized');
   await assertNoPageOverflow(page);
 });
 

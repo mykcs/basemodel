@@ -12,7 +12,8 @@ export function registerOpenEvoResearchDeepDiveTests() {
   test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
     await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-    await expect(page.locator('[data-map-choice="redesign"]')).toContainText('当前 successor · 3B + 1.7B');
+    await expect(page.locator('[data-map-choice="redesign"]')).toContainText('独立的新一轮设计 · 3B + 1.7B');
+    await expect(page.locator('[data-map-choice="redesign"]')).toHaveAttribute('href', gatewayPath);
     await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
     await expect(page.locator('[data-deep-dive="successor-report"]')).toHaveAttribute('href', reportPath);

@@ -1,8 +1,10 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoHarness2MiniStudy from '../../../../../../../components/research/OpenEvoHarness2MiniStudy.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout title="Harness 2.0 mini study" description="Historical record of the Harness 2.0 v1 paired 128+128 qualification and the later 2.0.1 PASS/HOLD snapshot. The current OpenEvo redesign has since moved to a Harness201.1 + fresh Stage-1 successor and is tracked on the parent map." locale={locale}>
+  <ResearchRouteContext locale={locale} route="openevo-2-0/harness-2-0" />
   <OpenEvoHarness2MiniStudy locale={locale} />
 </AppLayout>
