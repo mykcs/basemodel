@@ -21,7 +21,7 @@ Current branch eligibility is executable policy in `vercel.json`; `research/**` 
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
 
-Browser-heavy acceptance now runs **before merge in CircleCI**. `scripts/ci-ui-gate.mjs` reuses the existing `vercel-ui-plan.ts` skip/focused/full policy; focused coverage is owned by one shard, full coverage uses four independent one-worker shards in the qualified Debian 12 runtime, and the 12-case Lab gate runs only where the diff can affect Lab/server UI. Vercel Production remains `verify:deploy + astro build` only. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
+Browser-heavy acceptance now runs **before merge in CircleCI**. `scripts/ci-ui-gate.mjs` reuses the existing `vercel-ui-plan.ts` skip/focused/full policy; focused coverage is owned by one shard, full coverage uses two independent one-worker shards in the qualified Debian 12 runtime, and the 12-case Lab gate runs only where the diff can affect Lab/server UI. Vercel Production remains `verify:deploy + astro build` only. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
 
 ## Current research state
 

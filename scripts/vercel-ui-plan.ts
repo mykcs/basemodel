@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { classifyUiRisk, type UiRisk } from './preflight-ui';
+import { classifyUiRisk, type UiRisk } from './preflight-ui.ts';
 
 export type HostedUiMode = 'skip' | 'focused' | 'full';
 

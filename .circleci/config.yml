@@ -63,6 +63,7 @@ jobs:
               exit 1
             fi
 
+            node --test tests/ci-browser-budget.test.mjs
             npm ci
             npm run verify:deploy
             npm run build
@@ -86,13 +87,14 @@ jobs:
       CI: "1"
       PLAYWRIGHT_WORKERS: "1"
       CI_BROWSER_BUILD: "1"
+      CI_BROWSER_INSTALL: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
-      CI_BROWSER_SHARD_TOTAL: "4"
+      CI_BROWSER_SHARD_TOTAL: "2"
     steps:
       - bootstrap_git
       - checkout
       - run:
-          name: Risk-based browser acceptance shard << parameters.shard_index >>/4
+          name: Risk-based browser acceptance shard << parameters.shard_index >>/2
           command: |
             set -euo pipefail
             bash scripts/ci-circleci-prepare.sh \
@@ -119,7 +121,6 @@ jobs:
               exit 1
             fi
 
-            npm ci
             node scripts/ci-ui-gate.mjs
 
 workflows:
@@ -142,19 +143,6 @@ workflows:
           base_sha: << pipeline.event.github.pull_request.base.sha >>
           head_sha: << pipeline.event.github.pull_request.head.sha >>
           shard_index: 2
-      - browser_shard:
-          name: browser_shard_3
-          event: pull_request
-          base_sha: << pipeline.event.github.pull_request.base.sha >>
-          head_sha: << pipeline.event.github.pull_request.head.sha >>
-          shard_index: 3
-      - browser_shard:
-          name: browser_shard_4
-          event: pull_request
-          base_sha: << pipeline.event.github.pull_request.base.sha >>
-          head_sha: << pipeline.event.github.pull_request.head.sha >>
-          shard_index: 4
-
   main_cloud_ci:
     when: pipeline.event.name == "push" and pipeline.git.branch == "main"
     jobs:
@@ -171,17 +159,6 @@ workflows:
           event: push
           head_sha: << pipeline.git.revision >>
           shard_index: 2
-      - browser_shard:
-          name: browser_shard_3
-          event: push
-          head_sha: << pipeline.git.revision >>
-          shard_index: 3
-      - browser_shard:
-          name: browser_shard_4
-          event: push
-          head_sha: << pipeline.git.revision >>
-          shard_index: 4
-
   manual_cloud_ci:
     when: pipeline.event.name == "api"
     jobs:
@@ -198,13 +175,3 @@ workflows:
           event: api
           head_sha: << pipeline.git.revision >>
           shard_index: 2
-      - browser_shard:
-          name: browser_shard_3
-          event: api
-          head_sha: << pipeline.git.revision >>
-          shard_index: 3
-      - browser_shard:
-          name: browser_shard_4
-          event: api
-          head_sha: << pipeline.git.revision >>
-          shard_index: 4
