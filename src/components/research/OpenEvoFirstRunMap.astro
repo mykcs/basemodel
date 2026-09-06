@@ -31,11 +31,11 @@ const terms = zh ? [
   { term: 'SD-LoRA component', meaning: 'A LoRA component left by one accepted parameter update; component count is not the replay buffer and not the final scientific score.' },
 ];
 const summarySteps = zh ? [
-  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '这里先建立“模型原本能做什么”的起跑线，再把证据整理成后续学习输入。', outcome: '老师退出在线交互；后续 Stage2 只允许使用已经封存的经验。', state: '历史起点' },
+  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '这里先建立“模型原本能做什么”的起跑线，再把证据整理成后续学习输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
   { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 的学习点燃了，3B 的旧线却暴露了 Harness 问题', summary: '7B 能持续产生真实 SD-LoRA 更新；旧 3B Stage2 跑到 3,200 条后停下来，不再硬解释成“模型太弱”。', detail: '3B 的 action parsing / invalid termination 说明接口本身可能污染能力测量，因此旧线不能继续冒充公平比较。', outcome: '7B 可以继续封存能力天花板；3B 必须回到 fresh Stage1 redesign。', state: '路径分叉' },
   { id: 'closeout', kicker: '03 · OUTCOME', title: '第一轮最终留下两种不同证据', summary: '7B：149 个完整 round 后 49.33 分、58/128 exact；3B：旧 lineage 停止，并触发 shared-Harness successor。', detail: '这不是“7B 赢、3B 输”的简单排行榜，而是一次能跑深以后才看见的机制差异和测量风险。', outcome: '下一张地图不续跑旧 3B，而是重新冻结 3B + 1.7B 的共同起跑线。', state: '历史已封存' },
 ] : [
-  { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both lineages first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'The external teacher exits online interaction; Stage 2 can consume only sealed evidence.', state: 'Historical start' },
+  { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both lineages first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'Initial task scores record the model’s own shopping behavior; external analysis takes place after those attempts end.', state: 'Historical start' },
   { id: 'stage2', kicker: '02 · STAGE 2', title: '7B learning ignited while the old 3B path exposed harness problems', summary: '7B sustained real SD-LoRA updates; the old 3B Stage 2 stopped after 3,200 rollouts instead of being simplified to “the model is too weak.”', detail: '3B action parsing and invalid termination showed that the interface itself could corrupt capability measurement.', outcome: '7B could continue toward a ceiling closeout; 3B had to restart from a fresh Stage-1 redesign.', state: 'Paths diverge' },
   { id: 'closeout', kicker: '03 · OUTCOME', title: 'The first campaign ultimately left two different kinds of evidence', summary: '7B: 49.33 score and 58/128 exact after 149 completed rounds; 3B: the old lineage stops and triggers the shared-harness successor.', detail: 'This is not a simple “7B wins, 3B loses” leaderboard; it is evidence about sustained learning and measurement risk.', outcome: 'The next map restarts the comparison under a shared 3B + 1.7B harness.', state: 'Historical closeout' },
 ];
@@ -44,13 +44,13 @@ const summarySteps = zh ? [
   <ResearchOrientation
     locale={locale}
     eyebrow="HISTORICAL MAP · FIRST RUN"
-    title={t('第一轮 OpenEvo，哪里真的学起来了？', 'Where did the first OpenEvo run actually learn?')}
-    lede={t('这轮实验跑得足够深，才暴露两个不同事实：7B 能持续把成功经验写进参数；3B 的旧线则让我们发现 action validity 和 Harness 会污染“模型到底会不会”的判断。', 'The deep run split two ways: 7B sustained real parameter updates; old 3B exposed action-validity and harness measurement problems.')}
-    question={t('OpenEvo 能不能真的持续更新参数；如果某条模型线学不起来，我们怎样区分模型能力和接口问题？', 'Can OpenEvo sustain real updates, and is a failed lineage a model problem or an interface problem?')}
-    why={t('这轮是后面 redesign 和 Mechanism-1.0 的前因：没有它，就不知道“跑通”之后还会遇到哪些测量和容量陷阱。', 'This run revealed the measurement and capacity traps that later forced the redesign and Mechanism-1.0.')}
-    start={t('从最早的 7B / 3B WebShop Stage1 经验开始，两条线随后进入各自的历史 Stage2。', 'Start from the original 7B / 3B WebShop Stage 1, then follow their separate historical Stage 2 paths.')}
-    finish={t('7B 在 149 个完整 round 后封存并打开一次 final panel；旧 3B 在 3,200 条 Stage2 rollout 后停止，下一代必须从 fresh Stage1 重启。', '7B seals after 149 rounds; old 3B stops after 3,200 Stage-2 rollouts and must restart from a fresh Stage 1.')}
-    state={t('这是已封存的历史实验：7B 有 final closeout；3B old lineage 已停止，不能被后来的 shared Harness 倒写。', 'Sealed history: 7B has a final closeout; old 3B is stopped and is not rewritten with the later shared harness.')}
+    title={t('第一轮 OpenEvo，哪里真的学起来了？', 'Learning in the first run')}
+    lede={t("7B 能持续把经验用于参数更新；早期 3B 的失败则暴露了购物接口和动作格式问题。两条路线留下不同的证据。","7B sustained updates from experience. Early 3B failures exposed problems in the shopping interface.")}
+    question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
+    why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Distinguish model capability, interface errors and capacity limits before the next design.")}
+    start={t("7B 与 3B 各自收集初始购物经验，再进入后续学习。","7B and 3B collect initial shopping experience, then learn separately.")}
+    finish={t("7B 完成 149 轮；旧 3B 在 3,200 次后续尝试后停止。","7B completes 149 rounds; old 3B stops after 3,200 later attempts.")}
+    state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","History is sealed. 7B completed final evaluation; old 3B stopped.")}
     stateTone="historical"
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}

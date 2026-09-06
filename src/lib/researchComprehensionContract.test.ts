@@ -62,7 +62,7 @@ describe('research comprehension primitives', () => {
 
   it('keeps orientation and lifecycle state semantic in server-rendered HTML', () => {
     expect(orientation).toContain('<dl class="research-orientation__fields">');
-    expect(stateRail).toContain('<ol>');
+    expect(stateRail).toContain('<ul>');
     expect(stateRail).toContain('Scientific result');
     for (const source of [orientation, stateRail]) expect(source).not.toContain('client:');
   });

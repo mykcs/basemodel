@@ -46,10 +46,10 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(map.locator('[data-research-journey] [data-research-step]')).toHaveCount(5);
     await expect(map.locator('[data-research-depth="history"]')).toBeVisible();
     await expect(map.locator('[data-principle]')).toContainText(principle);
-    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('64/64 valid');
-    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('paired horizon delta = 0');
-    await expect(map.locator('[data-exploration-detour="sampling"]')).toContainText('T=1.0');
-    await expect(map.locator('[data-quest="deliberation"]')).toContainText('短自我推理');
+    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('64 条记录全部有效');
+    await expect(map.locator('[data-exploration-detour="horizon"]')).toContainText('每一对任务的结果差值都是 0');
+    await expect(map.locator('[data-exploration-detour="sampling"]')).toContainText('温度设为 1.0');
+    await expect(map.locator('[data-quest="deliberation"]')).toContainText('动作前的短思考');
     await expect(map.locator('[data-fix]')).toHaveCount(2);
     await expect(map.locator('[data-quest="freeze"]')).toContainText('202609030400');
     await expect(map.locator('[data-quest="raw-results"]')).toContainText('22/1440');
@@ -69,10 +69,13 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(report.locator('[data-paper-step]')).toHaveCount(6);
     await expect(report.locator('[data-arm="qwen25-3b"]')).toContainText('22 / 1440');
     await expect(report.locator('[data-arm="qwen3-1p7b"]')).toContainText('50 / 1440');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('What');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Why');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Evidence');
-    await expect(report.locator('[data-paper-step="harness"]')).toContainText('Boundary');
+    await expect(report.locator('[data-paper-step="harness"] .paper-step__meaning')).toHaveCount(2);
+    await expect(report.locator('[data-paper-step="harness"] .paper-step__meaning').first()).toBeVisible();
+    await expect(report.locator('.report-chronology tbody tr')).toHaveCount(3);
+    await report.locator('[data-paper-step="harness"] .paper-step__technical summary').click();
+    for (const label of ['操作', '理由', '记录', '适用范围']) {
+      await expect(report.locator('[data-paper-step="harness"] dt').filter({ hasText: label })).toBeVisible();
+    }
     await expect(report.locator('[data-paper-step="minimax"]')).toContainText('new_webshop_calls=0');
     await expect(report.locator('[data-paper-step="carriers"]')).toContainText('4096');
     await expect(report.locator('[data-paper-step="carriers"]')).toContainText('first10 + last10');

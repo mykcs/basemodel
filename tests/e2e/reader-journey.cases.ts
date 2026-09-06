@@ -26,7 +26,9 @@ async function assertVisibleReaderGeometry(page: Page) {
       return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
     }).reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index]!, 0);
     const selectors = '[data-reader-page] [data-reader-purpose], [data-reader-page] [data-reader-task], [data-lifecycle] dd, [data-reader-question], [data-result-status]';
-    document.querySelectorAll<HTMLElement>(selectors).forEach((node) => {
+    const answers = document.querySelectorAll<HTMLElement>(selectors);
+    if (answers.length === 0) failures.push('no reader answers found');
+    answers.forEach((node) => {
       const style = getComputedStyle(node);
       const box = node.getBoundingClientRect();
       const name = node.textContent?.trim().slice(0, 45) ?? '';
@@ -148,7 +150,7 @@ export function registerReaderJourneyTests() {
   test('reader journey: manual illustration is keyboard-operable and never changes experiment state', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
-    const before = await page.locator('[data-reader-status]').innerText();
+    const before = await page.locator('[data-reader-status]').allInnerTexts();
     const next = page.locator('[data-example-next]');
     await expect(next).toBeVisible();
     await next.focus();
@@ -165,7 +167,7 @@ export function registerReaderJourneyTests() {
     await page.locator('[data-example-reset]').focus();
     await page.keyboard.press('Enter');
     await expect(page.locator('[data-example-position]')).toHaveText('1 / 4');
-    expect(await page.locator('[data-reader-status]').innerText()).toBe(before);
+    expect(await page.locator('[data-reader-status]').allInnerTexts()).toEqual(before);
     await expect(page.locator('[role="progressbar"]')).toHaveCount(0);
     // The site-wide reduced-motion owner keeps a tiny !important duration.
     // This component disables transition properties entirely; inspect actual
@@ -183,4 +185,67 @@ export function registerReaderJourneyTests() {
     await expect(page).toHaveURL(/#m1-c$/);
     await expect(page.locator('#m1-c [data-lifecycle="start"]')).toBeVisible();
   });
+
+  for (const locale of ['zh', 'en'] as const) {
+    const prefix = locale === 'en' ? '/en' : '';
+    test(`reader explanation ${locale}: shopping scene and parameter changes expose different objects`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(`${prefix}${mechanism}`);
+      const scene = page.locator('[data-shopping-scene]');
+      await expect(scene).toBeVisible();
+      await expect(scene.locator('[data-shopping-frame="0"]')).toBeVisible();
+      const brief = await scene.locator('.shopping-scene__brief').innerText();
+      const status = await page.locator('[data-reader-status]').allInnerTexts();
+      await page.locator('[data-example-next]').click();
+      await expect(scene.locator('[data-shopping-frame="1"]')).toBeVisible();
+      await expect(scene.locator('[data-shopping-frame="1"]')).toContainText('$24');
+      await page.locator('[data-example-next]').click();
+      await expect(scene.locator('[data-shopping-frame="2"]')).toBeVisible();
+      await page.locator('[data-example-next]').click();
+      await expect(scene.locator('[data-shopping-frame="3"]')).toBeVisible();
+      expect(await scene.locator('.shopping-scene__brief').innerText()).toBe(brief);
+      const comparison = page.locator('[data-parameter-example]');
+      await expect(comparison.locator('[data-parameter-case="baseline"]')).toBeVisible();
+      await comparison.locator('input[value="learned"]').check();
+      await expect(comparison.locator('[data-parameter-case="learned"]')).toBeVisible();
+      await comparison.locator('input[value="random"]').focus();
+      await page.keyboard.press('Space');
+      await expect(comparison.locator('[data-parameter-case="random"]')).toBeVisible();
+      await expect(comparison.locator('[data-parameter-case="learned"]')).toBeHidden();
+      await expect(comparison.locator('.parameter-example__fixed')).toBeVisible();
+      expect(await page.locator('[data-reader-status]').allInnerTexts()).toEqual(status);
+      await assertVisibleReaderGeometry(page);
+    });
+
+    test(`reader explanation ${locale}: static comparisons and report chronology survive narrow expanded layout`, async ({ browser }) => {
+      const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 360, height: 844 }, colorScheme: 'dark' });
+      const page = await context.newPage();
+      try {
+        await page.goto(`${prefix}${mechanism}`);
+        for (const name of ['baseline', 'learned', 'random']) await expect(page.locator(`[data-parameter-case="${name}"]`)).toBeVisible();
+        for (let step = 0; step < 4; step++) await expect(page.locator(`[data-shopping-frame="${step}"]`)).toBeVisible();
+        await expect(page.locator('[data-parameter-controls]')).toBeHidden();
+        for (const suffix of ['openevo-2-0/', 'openevo-2-0/report/', 'openevo-2-0/exploration/']) {
+          await page.goto(`${prefix}${root}${suffix}`);
+          await expect(page.locator('h1')).toHaveCount(1);
+          for (const summary of await page.locator('details > summary').all()) {
+            if (await summary.isVisible()) await summary.click();
+          }
+          expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+          if (suffix.includes('/report/')) {
+            await expect(page.locator('.report-chronology tbody tr')).toHaveCount(3);
+            await expect(page.locator('.paper-step__meaning')).toHaveCount(12);
+            const styles = await page.locator('.paper-step__meaning').evaluateAll((nodes) => nodes.map((node) => ({
+              size: parseFloat(getComputedStyle(node).fontSize),
+              width: node.getBoundingClientRect().width,
+            })));
+            expect(styles.every((style) => style.size >= 16 && style.width >= 200)).toBe(true);
+            await expect(page.locator('[data-paper-step="boundary"] h2')).toContainText(locale === 'zh' ? '当时' : 'at that time');
+          }
+        }
+      } finally { await context.close(); }
+    });
+  }
+
 }

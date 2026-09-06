@@ -4,7 +4,7 @@ import type { Locale } from '../../i18n';
 interface Item {
   id: string;
   name: string;
-  lifecycle: 'planned' | 'authorized' | 'running' | 'sealed' | 'analyzed' | 'locked';
+  lifecycle: 'completed' | 'planned' | 'authorized' | 'running' | 'sealed' | 'analyzed' | 'locked';
   lifecycleLabel: string;
   resultLabel?: string;
   note?: string;
@@ -16,23 +16,23 @@ const zh = locale === 'zh';
 ---
 <section class="research-state-rail" data-research-state-rail data-reader-status aria-label={title}>
   <header><p>{zh ? '实验状态' : 'PROGRAM STATE'}</p><h2>{title}</h2>{intro && <span>{intro}</span>}</header>
-  <ol>
+  <ul>
     {items.map((item) => (
-      <li data-state-item={item.id} data-state-lifecycle={item.lifecycle} aria-current={item.current ? 'step' : undefined}>
+      <li data-state-item={item.id} data-state-lifecycle={item.lifecycle} data-current={item.current ? 'true' : undefined}>
         <div><code>{item.id}</code><strong>{item.name}</strong></div>
         <dl>
           <div><dt>{zh ? '运行状态' : 'Lifecycle'}</dt><dd>{item.lifecycleLabel}</dd></div>
-          <div><dt>{zh ? '科学结论' : 'Scientific result'}</dt><dd>{item.resultLabel ?? (zh ? '还没有结果' : 'No result yet')}</dd></div>
+          <div><dt>{zh ? '科学结论' : 'Scientific result'}</dt><dd>{item.resultLabel ?? (zh ? '未提供结果状态' : 'Result status not supplied')}</dd></div>
         </dl>
         {item.note && <p>{item.note}</p>}
       </li>
     ))}
-  </ol>
+  </ul>
 </section>
 <style>
 .research-state-rail{width:min(1120px,calc(100% - 2rem));margin:0 auto;padding:1rem 0;border-bottom:1px solid var(--line)}
-.research-state-rail>header{display:grid;grid-template-columns:minmax(220px,.6fr) minmax(0,1.4fr);gap:.35rem 1rem;align-items:end;margin-bottom:.7rem}.research-state-rail>header p{grid-column:1/-1;margin:0;color:var(--accent-deep);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.07em}.research-state-rail h2{margin:0;font-size:1.35rem}.research-state-rail header span{color:var(--muted);font-size:.78rem;line-height:1.5}
-.research-state-rail ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}.research-state-rail li{min-width:0;padding:.68rem .72rem;border-top:2px solid var(--line);background:var(--surface-muted)}.research-state-rail li[aria-current="step"]{border-top-color:var(--accent);background:var(--surface)}.research-state-rail li>div:first-child{display:grid;gap:.16rem}.research-state-rail code{color:var(--accent-deep);font-size:.66rem}.research-state-rail strong{font-size:.82rem;line-height:1.3}.research-state-rail dl{display:grid;gap:.28rem;margin:.55rem 0 0}.research-state-rail dl>div{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:.3rem}.research-state-rail dt{color:var(--muted);font-size:.62rem}.research-state-rail dd{margin:0;font-size:.68rem;line-height:1.35}.research-state-rail li>p{margin:.45rem 0 0;color:var(--muted);font-size:.67rem;line-height:1.4}
-@media(max-width:900px){.research-state-rail ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.research-state-rail{width:min(100% - 1rem,1120px)}.research-state-rail>header{grid-template-columns:1fr}.research-state-rail>header p{grid-column:auto}.research-state-rail ol{grid-template-columns:1fr}}
+.research-state-rail>header{display:grid;grid-template-columns:minmax(220px,.6fr) minmax(0,1.4fr);gap:.35rem 1rem;align-items:end;margin-bottom:.7rem}.research-state-rail>header p{grid-column:1/-1;margin:0;color:var(--accent-deep);font:800 .875rem/1.2 var(--font-mono);letter-spacing:.07em}.research-state-rail h2{margin:0;font-size:1.35rem}.research-state-rail header span{color:var(--muted);font-size:1rem;line-height:1.5}
+.research-state-rail ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}.research-state-rail li{min-width:0;padding:.68rem .72rem;border-top:2px solid var(--line);background:var(--surface-muted)}.research-state-rail li[data-current="true"]{border-top-color:var(--accent);background:var(--surface)}.research-state-rail li>div:first-child{display:grid;gap:.16rem}.research-state-rail code{color:var(--accent-deep);font-size:1rem}.research-state-rail strong{font-size:1rem;line-height:1.3}.research-state-rail dl{display:grid;gap:.28rem;margin:.55rem 0 0}.research-state-rail dl>div{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:.3rem}.research-state-rail dt{color:var(--muted);font-size:1rem}.research-state-rail dd{margin:0;font-size:1rem;line-height:1.35}.research-state-rail li>p{margin:.45rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
+@media(max-width:900px){.research-state-rail ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.research-state-rail{width:min(100% - 1rem,1120px)}.research-state-rail>header{grid-template-columns:1fr}.research-state-rail>header p{grid-column:auto}.research-state-rail ul{grid-template-columns:1fr}}
 </style>
