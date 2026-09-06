@@ -108,7 +108,7 @@ function main() {
   const started = Date.now();
   const result = spawnSync('npx', [
     'playwright', 'test',
-    `--test-list=${listPath}`,
+    '--test-list', listPath,
     '--project=chromium',
     '--max-failures=1',
   ], {
