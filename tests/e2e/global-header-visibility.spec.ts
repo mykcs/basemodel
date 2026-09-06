@@ -59,21 +59,21 @@ const webkitRepresentativeRoutes = [
 
 const fallbackRoute = '/__header-gate-404__/';
 
-async function settleLayout(page: Page) {
-  await page.evaluate(() => new Promise<void>((resolve) => {
-    requestAnimationFrame(() => resolve());
-  }));
-}
+const sameViewport = (left: { width: number; height: number } | null, right: HeaderState['viewport']) =>
+  Boolean(left && left.width === right.width
+    && left.height === right.height);
+
+// Snapshot reads below synchronously flush pending CSS/layout changes.
 
 async function assertGlobalHeader(page: Page, path: string, state: HeaderState) {
-  await page.setViewportSize(state.viewport);
-  await page.evaluate((theme: Theme) => {
-    document.documentElement.dataset.theme = theme;
-  }, state.theme);
-  await settleLayout(page);
-
+  const viewport = page.viewportSize();
+  if (!sameViewport(viewport, state.viewport)) {
+    await page.setViewportSize(state.viewport);
+  }
   const context = `${path} / ${state.name}`;
-  const snapshot = await page.evaluate(({ desktop }) => {
+  const snapshot = await page.evaluate(({ desktop, theme }) => {
+    document.documentElement.dataset.theme = theme;
+
     const visible = (element: Element | null) => {
       if (!element) return false;
       const style = getComputedStyle(element);
@@ -136,7 +136,7 @@ async function assertGlobalHeader(page: Page, path: string, state: HeaderState) 
       mainLeft: mainRect?.left ?? 0,
       mainRight: mainRect?.right ?? 0,
     };
-  }, { desktop: state.viewport.width >= 1080 });
+  }, { desktop: state.viewport.width >= 1080, theme: state.theme });
 
   expect(snapshot.count, `${context}: exactly one global site header must exist`).toBe(1);
   expect(snapshot.headerVisible, `${context}: global site header must be visible after computed CSS`).toBe(true);
