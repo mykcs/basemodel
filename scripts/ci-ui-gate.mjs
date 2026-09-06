@@ -128,12 +128,22 @@ if (preinstalledBrowser) {
     console.error('[ci-ui-gate] preinstalled browser image identity is incomplete');
     process.exit(2);
   }
+  const identityScript = "const p=require('@playwright/test/package.json'); const {chromium}=require('@playwright/test'); process.stdout.write(JSON.stringify({version:p.version,executablePath:chromium.executablePath()}))";
   const identity = spawnSync(
     'node',
-    ['-e', "const p=require('@playwright/test/package.json'); const {chromium}=require('@playwright/test'); process.stdout.write(p.version+'\n'+chromium.executablePath())"],
+    ['-e', identityScript],
     { encoding: 'utf8', env: { ...process.env, ...browserEnv } },
   );
-  const [actualVersion, executablePath] = (identity.stdout ?? '').trim().split('\n');
+  let runtimeIdentity;
+  try {
+    runtimeIdentity = JSON.parse(identity.stdout ?? '{}');
+  } catch (error) {
+    if (identity.stderr) process.stderr.write(identity.stderr);
+    console.error('[ci-ui-gate] preinstalled Playwright identity returned invalid JSON', error);
+    process.exit(2);
+  }
+  const actualVersion = runtimeIdentity.version;
+  const executablePath = runtimeIdentity.executablePath;
   if (identity.status !== 0 || actualVersion !== expectedVersion || !executablePath || !existsSync(executablePath)) {
     if (identity.stderr) process.stderr.write(identity.stderr);
     console.error(`[ci-ui-gate] preinstalled Playwright identity mismatch: expected=${expectedVersion} actual=${actualVersion ?? '<none>'} executable=${executablePath ?? '<none>'}`);

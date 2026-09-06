@@ -42,6 +42,8 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('CI_PLAYWRIGHT_PREINSTALLED: "1"');
     expect(circleCiConfig).toContain('CI_PLAYWRIGHT_IMAGE_VERSION: "1.62.1"');
     expect(ciUiGate).toContain('preinstalled Playwright');
+    expect(ciUiGate).toContain('JSON.stringify({version:p.version,executablePath:chromium.executablePath()})');
+    expect(ciUiGate).toContain("JSON.parse(identity.stdout ?? '{}')");
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
