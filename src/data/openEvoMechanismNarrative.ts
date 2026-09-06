@@ -3,8 +3,11 @@ export type MechanismNarrativeLocale = 'zh' | 'en';
 export const OPEN_EVO_MECHANISM_SOURCE = {
   programId: 'openevo-mechanism-1.0-202609052200',
   sourcePr: 319,
-  mergedCommit: '8d2f2024c8b70f633f9824ce2e01272582bbdc0b',
-  state: 'PREREGISTERED_EXECUTION_LOCKED',
+  programCommit: '8d2f2024c8b70f633f9824ce2e01272582bbdc0b',
+  mergedCommit: 'b4cdf8ecc5d442f984402f517a6d5b6b5e5e3bc9',
+  activationRelease: 'configs/experiment/activations/openevo-mechanism1-m1d-stage1-execution-release-202609062029.json',
+  minimaxBinding: 'configs/experiment/designs/openevo-mechanism1-m1d-minimax-posthoc-202609061925.json',
+  state: 'M1D_STAGE1_ACTIVATED_MINIMAX_BOUND_RESULTS_UNSEALED',
 } as const;
 
 export const OPEN_EVO_MECHANISM_PRINCIPLE = {
@@ -36,7 +39,7 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS = [
     questionZh: '后 25% 学到的参数方向，移植到 50% 状态后还会不会改变 WebShop 行为？',
     questionEn: 'Does the parameter direction learned in the final 25% still change WebShop behavior when transplanted into the 50% state?',
     budgetZh: '≤576 个闭环诊断 episode', budgetEn: '≤576 closed-loop diagnostic episodes',
-    stateZh: '已预注册 · 等 1.7B terminal seal', stateEn: 'Preregistered · waiting for 1.7B terminal seal',
+    stateZh: '已预注册 · 当前仍锁定', stateEn: 'Preregistered · currently locked',
   },
   {
     id: 'M1-B',
@@ -44,7 +47,7 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS = [
     questionZh: '哪些 principal parameter themes 真正承载行为，而不是只在图上变化很大？',
     questionEn: 'Which principal parameter themes actually carry behavior rather than merely looking large in a plot?',
     budgetZh: '≤448 个闭环诊断 episode', budgetEn: '≤448 closed-loop diagnostic episodes',
-    stateZh: '已预注册 · 等 terminal measurement pack', stateEn: 'Preregistered · waiting for terminal measurement pack',
+    stateZh: '已预注册 · 当前仍锁定', stateEn: 'Preregistered · currently locked',
   },
   {
     id: 'M1-C',
@@ -60,11 +63,11 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS = [
     questionZh: '同样 1,440 条 WebShop 经验预算，SEED Stage1 给 3B 产生怎样的初始教材？',
     questionEn: 'Under the same 1,440-trajectory WebShop envelope, what initial training corpus does SEED Stage1 produce for 3B?',
     budgetZh: '固定 1,440 + MiniMax；SEED Stage2 = 0', budgetEn: 'Fixed 1,440 + MiniMax; SEED Stage2 = 0',
-    stateZh: '支持实验 · 等 matched manifest / runtime qualification', stateEn: 'Supporting experiment · waiting for matched manifest/runtime qualification',
+    stateZh: 'Stage1 已激活 · 1,440 + MiniMax 已冻结 · 结果未封存', stateEn: 'Stage1 activated · 1,440 + MiniMax frozen · results not sealed',
   },
 ] as const;
 
 export const OPEN_EVO_MECHANISM_BOUNDARIES = {
-  zh: ['不改正在运行的 Ceiling 1.7B / 3B', '不看 final panel', '不做跨模型 TaskVector 算术', '不完整复现 SEED Stage2', '负结果和 null result 原样保留'],
-  en: ['Do not modify the running Ceiling 1.7B/3B line', 'No final-panel access', 'No cross-model TaskVector arithmetic', 'No full SEED Stage2 reproduction', 'Null and negative results remain first-class outcomes'],
+  zh: ['不改 Ceiling 的运行线和已封存资产', '不看 final panel', '不做跨模型 TaskVector 算术', '不完整复现 SEED Stage2', '负结果和 null result 原样保留'],
+  en: ['Do not modify the Ceiling execution line or sealed assets', 'No final-panel access', 'No cross-model TaskVector arithmetic', 'No full SEED Stage2 reproduction', 'Null and negative results remain first-class outcomes'],
 } as const;
