@@ -80,6 +80,20 @@ The assets under `.github/runner/` remain recoverable infrastructure: immutable 
 
 On the owner's Mac, the BaseModel LaunchAgent should remain disabled during ordinary operation so Remote Desktop Commander, SSH, browser automation, and other control-plane work do not compete with persistent CI. If the cloud provider is unavailable and a manual fallback is explicitly needed, restore the runner deliberately, run the manual canary, then return it to the disabled state. Never redirect ordinary CI to research/GPU servers.
 
+Recovery state is deliberately layered:
+
+```text
+GitHub repository -> canonical Dockerfile / runner scripts / policy
+private GHCR      -> optional clean immutable runner-image recovery copy
+Mac/OrbStack      -> disabled manual-fallback container + bounded local cache
+```
+
+Do not archive a registered runner container as the recovery image. Runner registration credentials, `.runner` identity, workspace, diagnostics, package/browser caches and temporary files are machine state and must remain reconstructible/disposable. If a clean runner image is published to GHCR, verify the package is private and the remote manifest digest equals the intended local immutable identity before treating it as recovery evidence. Hugging Face is for scientific/model/data artifacts, not OCI CI runtimes.
+
+Housekeeping is fail-closed around shared state: a cache prune requires the BaseModel runner to be proven idle and every peer sharing that Docker/BuildKit cache to be proven idle, or intentionally disabled with its runner container stopped/absent. Unknown state means no prune. Keep bounded tool-owned cache policies and deliberate rollback/fallback assets; `docker system df` reclaimable output alone never authorizes deletion and broad `docker system prune` is outside ordinary runner housekeeping.
+
+The accepted cloud browser design uses **independent shards with one Playwright worker each**. Historical attempts to run two Playwright workers inside the same bounded Mac executor reduced elapsed time before failure but did not preserve the complete matrix: first the monolithic all-route header sweep timed out, then after deterministic route sharding another layout test timed out. Therefore worker-count experiments must remain isolated benchmarks and may enter current CI only after the entire exact-head matrix passes without retries/semantic weakening and the improvement is material.
+
 ### Vercel responsibilities
 
 Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
