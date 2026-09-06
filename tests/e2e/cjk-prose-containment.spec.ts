@@ -1,5 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+import { waitForHydratedIsland } from './hydration-ready';
+
 const routes = [
   ['/research/seed-openevo/flow/webshop/', 'webshop'],
   ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
@@ -71,9 +73,7 @@ async function auditLongLeafText(root: Locator, viewportWidth: number) {
 }
 
 async function auditAllStates(root: Locator, viewportWidth: number) {
-  await root.scrollIntoViewIfNeeded();
-  const island = root.locator('xpath=ancestor::astro-island[1]');
-  if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
+  await waitForHydratedIsland(root);
 
   const audit = async () => {
     const issues = await auditLongLeafText(root, viewportWidth);
