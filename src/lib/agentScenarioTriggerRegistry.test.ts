@@ -52,9 +52,10 @@ describe('Agent scenario-trigger discovery', () => {
 
   it('protects exact-head validation and honest Preview evidence', () => {
     expect(registry).toContain('Compare the candidate head with current intended `main`');
-    expect(registry).toContain('new exact head for deploy-relevant work');
-    expect(registry).toContain('A READY badge is not visual/product acceptance');
-    expect(registry).toContain('a prior Preview is not evidence for a later synchronized tree');
+    expect(registry).toContain('Keep one live semantic candidate through independent drift');
+    expect(registry).toContain('read the provider\'s real execution state');
+    expect(registry).toContain('`ignored/skipped/canceled` is not Preview acceptance');
+    expect(registry).toContain('provider READY remains separate from visual/product acceptance');
   });
 
   it('keeps valid Gates stronger than convenience', () => {

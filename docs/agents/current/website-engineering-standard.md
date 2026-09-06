@@ -90,26 +90,26 @@ When a user supplies a screenshot, logo, icon, or visual reference and asks to u
 
 Historical case: [`../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md).
 
-## 4. SSR-visible controls must preserve the user's first interaction
+## 4. SSR-visible controls need an explicit product readiness contract
 
-Visibility and hydration are different states. An Astro/React control can be visible in SSR HTML while its client handler is not attached yet.
+Visibility and hydration are different states. An Astro/React control can be visible in SSR HTML while its client handler is not attached yet. The product must therefore choose and expose one of two coherent contracts before the control is presented to the user:
 
-The durable rule from the 2026-08-21 QuickView incident is:
+1. **Interactive during the SSR→hydrated gap:** the product preserves the user's first interaction through a route-scoped pre-hydration bridge or another canonical mechanism, then hands off to React/store ownership after hydration.
+2. **Interactive only after hydration:** SSR renders the whole React-owned control group explicitly unavailable (for example a disabled `fieldset` plus a product-owned busy/readiness signal). Hydration flips that product state once, then the group becomes interactive.
 
-> If a server-rendered control is presented to the user as clickable, the product must not silently lose the first click merely because the owning island has not hydrated yet.
+The invalid middle state is “looks enabled and clickable, but silently drops the event until hydration.”
 
-Therefore:
+Testing follows the product contract:
 
-- A browser test that intentionally exercises **hydrated** behavior should wait for a real hydration signal, not a guessed sleep.
-- But “the click happened before hydration” is **not automatically a harness failure** when a real user can make that same click on visible SSR UI.
-- For independently hydrated trigger/receiver islands, prefer the least invasive readiness design. A tiny delegated/pre-hydration bridge that preserves the first interaction can be better than making every island eager.
-- Such a bridge must be route-scoped, act only during the SSR→hydrated gap, and hand off to the canonical React/store path after hydration.
-- When first-click preservation matters, add a deterministic regression that keeps the trigger island unhydrated (for example by blocking its client bundle or asserting its `ssr` marker), performs the visible SSR click, and verifies the real product effect.
-- If an interaction still fails after required hydration or after the first-click bridge has accepted it, treat that as a product/browser failure until disproven.
+- A test for hydrated behavior waits on the **product readiness signal** when the product exposes one.
+- An Astro `ssr` marker may still diagnose island hydration or geometry timing, but it is not a substitute for a product-level readiness contract.
+- If SSR presents a control as clickable, add a deterministic first-interaction regression that holds the island unhydrated and verifies the real product effect.
+- If SSR presents the control as unavailable, add SSR output coverage plus a browser regression proving `unavailable -> ready -> enabled` and the first enabled interaction.
+- For independently hydrated trigger/receiver islands, prefer the least invasive readiness design; do not globally upgrade every island to `client:load` unless the product contract requires it.
 
-Do not “fix” hydration races by globally upgrading every island to `client:load` without evidence.
+This is the root-cause boundary: synchronize the **product state** first; test synchronization then consumes that state instead of inventing a parallel readiness model.
 
-Detailed owner: `ui-change-visual-acceptance-gate.md`. Historical evidence remains under `docs/agents/history/` and PR #185.
+Detailed owner: `ui-change-visual-acceptance-gate.md`. Historical evidence remains under `docs/agents/history/`, including the 2026-09-07 root-cause closeout case.
 
 ## 5. Browser-local persistence is untrusted, long-lived input
 
