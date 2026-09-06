@@ -16,9 +16,14 @@ The task started as a seemingly simple question: what inside OrbStack on the own
 - interpreting a long self-hosted queue as a stuck job;
 - using Bash syntax through a Fish-default execution surface;
 - attempting branch/rebase work in dirty or stale local worktrees;
-- preserving a dated migration document under a current-looking path without making its historical status impossible to miss.
+- preserving a dated migration document under a current-looking path without making its historical status impossible to miss;
+- assuming a provider-level halt command also exits the current shell;
+- assuming hosted CI cannot enter a pager/prompt merely because `CI=1` or Docker is present;
+- treating a newly written regression test as authoritative before validating its own fixture;
+- letting parallel duplicate PRs accumulate instead of selecting one canonical root fix;
+- treating a checked PR snapshot as stable while another Agent can move or merge it.
 
-The final architecture avoided those traps by separating source, recovery images, mutable local state, CI authority, and deployment authority rather than trying to make one layer serve every purpose.
+The final architecture and closeout avoided those traps by separating source, recovery images, mutable local state, CI authority, deployment authority, exact-head acceptance, and provider execution semantics rather than trying to make one layer or one green badge serve every purpose.
 
 ## 2. A / B / C information classification
 
@@ -35,7 +40,11 @@ Promote these into startup/current policy or executable guards:
 - OCI runtime recovery belongs in a container registry; scientific model/data artifacts follow the experiment publication path;
 - upload is not recovery proof until immutable remote identity and readback are verified;
 - fallback `offline + disabled + stopped` can be healthy desired state;
-- browser-performance changes must preserve the full acceptance contract.
+- browser-performance changes must preserve the full acceptance contract;
+- CI subprocesses attached to terminal streams must be made explicitly non-interactive when paging/prompting is possible;
+- a newly written regression guard should, when practical, demonstrate the causal witness `pre-fix FAIL -> post-fix PASS` before it is treated as authoritative evidence;
+- exact-head/current-base/shared-PR state must be refreshed immediately before writes or merge because another Agent can move or complete the work between checks;
+- duplicate fixes should converge to one canonical minimal root repair with explicit supersession rather than being stacked merely because one duplicate is larger.
 
 ### B. Project-level lessons
 
@@ -45,6 +54,9 @@ Keep these in BaseModel/OpenEvo CI runbooks and this case:
 - The BaseModel/OpenEvo runner bundles have repository-owned start/stop/doctor/reconcile/housekeeping scripts and intentionally isolated containers.
 - Shared Mac BuildKit pruning needs awareness of every runner that shares the OrbStack daemon.
 - Historical Mac activation/cutover documents must not be read as current provider authority after later migrations.
+- BaseModel CircleCI uses different event semantics: a documentation-only PR may take the `docs` fast path, while `main` push revalidation is intentionally `full`; identical status-context names do not imply the same execution path.
+- `scripts/ci-docs-contract.mjs` owns the documentation contract, and its Git helper is intentionally `--no-pager`; root-fix changes to CI machinery must themselves receive the full CircleCI contract before the original docs PR is refreshed.
+- When GitHub exposes CircleCI status metadata but not causal logs, provider-log inspection through an authorized UI/browser is a legitimate diagnostic escalation; authentication/session details remain outside repository evidence.
 
 ### C. Transient state
 
@@ -54,11 +66,13 @@ Do **not** promote these into current policy or account memory:
 - current Docker image/container byte counts;
 - current PR numbers/heads/check queues as live authority;
 - current runner `online/busy` state;
-- temporary worktree paths;
 - temporary benchmark containers;
-- current process IDs, elapsed times, and one-off cache totals.
+- current process IDs, elapsed times, and one-off cache totals;
+- exact PR/job/workflow IDs and SHAs once they are no longer needed as historical receipts;
+- temporary browser profile/session identity used to reach a provider UI;
+- task-owned worktree paths and short-lived debug branches.
 
-They remain below only where useful to explain causality.
+They remain below only where useful to explain causality. They must never be restated as live authority in `current/` policy or account memory.
 
 ## 3. Historical sequence, without turning it into authority
 
@@ -71,8 +85,13 @@ They remain below only where useful to explain causality.
 7. The Mac runner cleanup/housekeeping changes were merged (historical BaseModel PR #428 and OpenEvo follow-up work). Old stopped legacy registrations/containers were retired only after current recovery paths were proved.
 8. The later CI migration made cloud execution primary and the Mac runner manual fallback. BaseModel's accepted design became two independent cloud browser shards with one worker each rather than two workers competing inside one bounded Mac executor.
 9. At final closeout the Mac fallback LaunchAgents/runners were intentionally disabled/offline; BuildKit had already been pruned below its cap. An unreferenced local CircleCI qualification image was removed only after proving no container referenced it. Stopped fallback runner containers were retained because current policy still treats them as recovery assets.
+10. The docs-only experience-deposition PR #467 exposed a separate CircleCI control-flow defect: `circleci-agent step halt` did not exit the current Bash step. Root-fix PR #469 added explicit successful shell exits plus a deterministic guard.
+11. After #469 landed, #467 exact head `0b5101d…` passed both browser docs-mode shards but deterministic stopped at `--More-- (END)` and hit CircleCI's ten-minute no-output timeout. The cause was Git paging on inherited terminal streams, not a failing repository assertion.
+12. Root-fix PR #484 made the documentation contract's Git helper explicitly `--no-pager`, protected it with a behavioral guard, passed the full CircleCI contract, and merged. A parallel wider duplicate (#483) was compared, marked superseded, and closed instead of being stacked.
+13. #467 was refreshed onto the accepted root fix. Its relative diff remained five documentation files, exact-head docs-mode CircleCI passed, and the PR was merged by another actor while final readiness was being re-read. The resulting `main` commit was then validated separately through the full post-merge CircleCI path.
+14. PR #485 deposited the non-interactive subprocess rule into the current deployment owner and extended this historical case; its own docs-mode CI and the subsequent main full revalidation both passed.
 
-Historical numbers in this section are evidence only. Do not use them as today's disk or provider state.
+Historical numbers, PR states, SHAs, and provider job identities in this section are evidence only. Do not use them as today's live state.
 
 ## 4. Friction 1 — OrbStack `In Use` / Docker `reclaimable` were almost treated as activity/deletion semantics
 
@@ -289,7 +308,82 @@ The provider halt does not make the second `if` unreachable. Use an explicit suc
 
 **Anti-example:** increasing CircleCI's no-output timeout, suppressing the documentation contract, or redirecting away diagnostics without first proving the job is doing real work. Those changes hide the symptom while preserving the interactive wait.
 
-## 18. Scientific-semantics boundary
+## 18. Friction 15 — a red provider status was not enough to identify the failing mechanism
+
+**What happened:** GitHub exposed the three CircleCI status contexts and the deterministic job target URL, but the status API did not contain the causal step output. The two browser shards were green while deterministic was red. Local reproduction of the planner and documentation contract passed, so the decisive evidence had to come from the actual CircleCI job output. The first browser session was unauthenticated; an already-authorized local browser session was used to inspect the provider log rather than asking the owner to relay it manually.
+
+**Why:** provider status surfaces are optimized for state (`pending / success / failure`), not necessarily for root-cause detail. A local reproduction can also differ from the hosted terminal/TTY surface even when code and commits match.
+
+**Missing assumption:** a red status, elapsed duration, or target URL is a pointer to evidence, not the evidence itself. Authentication/session state is a tooling boundary separate from repository correctness.
+
+**Precheck next time:** capture exact head/base and status contexts, then read the failing provider job's last successful step plus raw stdout/stderr. If the connected API exposes only status metadata, use an authorized provider UI/browser path when available; do not persist browser-profile names, cookies, or session material in repository evidence.
+
+**Defensive rule:** do not infer a CI root cause from color or duration. Resolve the failing execution layer from the provider log before changing code, timeouts, or acceptance semantics.
+
+**Anti-example:** seeing `deterministic = failure` at ten minutes and immediately increasing the timeout without checking that the last terminal state was an interactive pager.
+
+## 19. Friction 16 — the first new regression test failed because the test fixture was wrong
+
+**What happened:** the first behavioral regression test for `git --no-pager` used a fake `git` logger. Its string escaping wrote a literal `\\t` sequence while the assertion expected a real tab, so the new test failed even though the production helper already prepended `--no-pager`. The fixture was corrected to log JSON argument arrays. The same test was then run once against the pre-fix implementation, where it failed on the first Git invocation, and again against the fixed implementation, where it passed.
+
+**Why:** the regression guard and its fixture were both new code. The initial failure was interpreted only after inspecting what the fixture actually emitted instead of assuming the implementation was still wrong.
+
+**Missing assumption:** a newly written test has not yet earned authority. Test fixtures, escaping, mocks, fake executables, clocks, and environment setup can be the failing implementation.
+
+**Precheck next time:** when a new guard fails after the intended product/root fix, inspect fixture output and isolate the harness from the implementation. Prefer a causal witness: the same guard should fail against the known pre-fix behavior and pass against the fixed behavior.
+
+**Defensive rule:** a regression test becomes strong evidence only after **fail-before / pass-after** is demonstrated when practical. A new red test is not automatic proof of a product regression.
+
+**Anti-example:** repeatedly changing production CI logic to satisfy a fake executable whose own logging/escaping is malformed.
+
+## 20. Friction 17 — a parallel Agent produced a wider duplicate root-fix PR
+
+**What happened:** while the narrow pager fix was being prepared, another Agent independently opened PR #483 for the same `git --no-pager` root cause. It also added ignored stdin and a separate nine-case documentation-contract suite. The narrow PR #484 changed only the central Git helper plus one behavioral guard, passed the complete deterministic + two-browser-shard contract, and was merged. The wider duplicate was compared path-by-path, found unnecessary for the observed failure, marked superseded, closed, and its remote branch was later deleted.
+
+**Why:** parallel Agents can converge on the same diagnosis at nearly the same time. A larger patch can look “stronger” because it includes more tests or defensive changes even when those additions are not necessary to close the root cause.
+
+**Missing assumption:** canonicality is not proportional to patch size or number of tests. The correct choice minimizes semantic surface while preserving the strongest necessary evidence and acceptance contract.
+
+**Precheck next time:** compare duplicate PRs by exact head/base, root-cause semantics, changed files, extra-scope necessity, accepted CI evidence, ancestry/dependents, and whether useful evidence can be retained without merging redundant code.
+
+**Defensive rule:** one root cause should have one canonical fix. Do not stack a duplicate merely for “extra confidence” when the extra scope is not required; explicitly close/supersede the alternate path and preserve its useful evidence in the disposition record.
+
+**Anti-example:** merging #484 and then merging #483 because “nine tests are better than one,” thereby re-opening already-accepted CI surfaces and creating two historical owners for the same repair.
+
+## 21. Friction 18 — shared PR state changed between final acceptance and the intended merge action
+
+**What happened:** after #467 was refreshed onto the pager fix, exact head `eb8954a…` passed deterministic plus both browser docs-mode shards. While the final merge/readiness check was underway, another actor merged the PR. The correct response was not another merge attempt: live `main` was refreshed, the actual merge commit was identified, and post-merge CircleCI was followed to completion. The main-push deterministic job ran longer because `push` is intentionally `full`, not `docs`; its continuing output distinguished it from the earlier pager stall.
+
+**Why:** GitHub PR state is shared mutable state, and the same named job can execute a different plan under `pull_request` and `push` events.
+
+**Missing assumption:** a checked PR/head snapshot is not a lock, and job-name similarity does not imply execution-path identity.
+
+**Precheck next time:** immediately before any merge/write, re-fetch PR state, head, base, review threads, and current `main`. If another actor already merged or moved the head, stop the planned mutation and switch to verification of the state that actually exists. When diagnosing runtime, inspect event/plan mode and live output rather than comparing wall-clock alone.
+
+**Defensive rule:** acceptance belongs to an exact tree **and execution context**. Docs-mode PR acceptance and main full revalidation are separate evidence layers; a concurrent merge turns the next task into post-merge verification, not a retry of the merge mutation.
+
+**Anti-example:** treating a two-minute main deterministic run as recurrence of a docs-mode pager hang merely because the status context is also named `deterministic`, or attempting to force a second merge after the PR is already closed/merged.
+
+## 22. Zero-context diagnostic recipe for this failure family
+
+A future Agent encountering “docs-only PR, browser shards green, deterministic red/slow” should use this sequence before modifying CI:
+
+1. Fetch the live PR and record exact head SHA, intended base SHA, changed files, mergeability, and all required status contexts.
+2. Inspect the **exact PR head**, not only current `main`, to verify which CI fixes/config are actually present.
+3. Materialize or reproduce the repository's exact merge-candidate preparation path; run the CI control tests, planner, and documentation contract against that identity.
+4. If local control tests pass but hosted deterministic fails, obtain the real provider log and locate the last successful output. Distinguish active progress from no-output wait.
+5. Classify the layer: product/contract, CI planner, shell/provider control, interactive subprocess/pager, test harness/fixture, environment, or inherited base debt.
+6. Fix the smallest causal owner. Keep `git diff --check`, safe-path checks, browser coverage, required status names, and timeout/quality thresholds unchanged unless separate evidence proves one of those contracts is itself wrong.
+7. Add a behavioral regression guard. When practical, prove it fails on the known pre-fix behavior and passes on the fixed behavior.
+8. Because a CI-script/test change changes acceptance machinery, let the root-fix PR receive the repository's ordinary **full** deterministic + browser contract.
+9. Merge the accepted root fix first. Then refresh the original docs-only PR onto current `main`, confirm its relative diff is still documentation-only, and require fresh exact-head docs-mode statuses.
+10. Race-check immediately before merge. If another Agent moved/merged the PR, do not overwrite or duplicate the action; verify the resulting `main` commit instead.
+11. Follow post-merge `main` full revalidation separately. A longer full run with continuing output is not equivalent to a docs-mode no-output hang.
+12. Close duplicate/superseded PRs, remove only task-owned worktrees/branches/browser sessions, and leave unrelated concurrent work untouched.
+
+This recipe is incident guidance, not a second current CI authority. `deployment-policy.md`, `release-closeout-protocol.md`, branch/PR conventions, and executable tests remain authoritative.
+
+## 23. Scientific-semantics boundary
 
 This conversation was operational/CI work. It deliberately did **not** use the RTX 5090 research server as a convenient CI fallback and did not change OpenEvo Stage1/Stage2 task identity, sampling, seeds, model state, reward, eligibility, final panel, or GPU scheduling semantics.
 
@@ -299,7 +393,7 @@ The reusable principle is broader:
 
 A browser test worker count is not scientific sampling, but weakening browser coverage to obtain a faster green check would still alter the product acceptance semantics. Likewise, routing ordinary CPU CI to the scientific GPU server would change resource isolation even if no experiment code changed.
 
-## 19. Repeated-error audit
+## 24. Repeated-error audit
 
 Several failures had already appeared in earlier BaseModel/OpenEvo retrospectives:
 
@@ -311,6 +405,9 @@ Several failures had already appeared in earlier BaseModel/OpenEvo retrospective
 | provider-role confusion | old Mac/Cloudflare/CircleCI cases remained discoverable and could look operational | current provider owner is explicit; old activation docs must be marked historical/manual fallback |
 | cleanup from size/reclaimable output | prior disk-pressure lessons focused on server storage, not Mac runner fallback semantics | Mac trigger now owns reference/liveness/recovery classification and forbids size-only deletion |
 | “upload” treated as backup | archive rules existed mainly for scientific artifacts | Mac trigger/deployment policy now require clean-image classification plus private GHCR immutable digest readback |
+| exact-head / moving-main acceptance | older closeouts had already shown stale heads and moving bases, but shared PR state can still change during the final seconds of a task | current release closeout requires a live race-check plus expected-head locking; this conversation correctly switched to post-merge verification when #467 was merged concurrently |
+| duplicate PR convergence | earlier duplicate-PR cases existed, but parallel Agents can independently rediscover the same root cause before either sees the other's branch | compare exact root semantics and evidence, choose one canonical fix, explicitly supersede the other, and delete only after dependency/reachability checks |
+| red CI -> weaken timeout/gate | earlier optimization work repeatedly made “make it green” tempting when the failure layer was unclear | provider logs + fail-before/pass-after regression evidence now separate interactive waits/test-fixture failures from acceptance-contract defects |
 
 The recurring meta-failure was **information level**: a lesson placed only in a deep incident file was not guaranteed to trigger during a superficially different task. The fix is not another giant retrospective. It is the combination used here:
 
@@ -322,7 +419,26 @@ root AGENTS invariant
 -> executable housekeeping / CI architecture
 ```
 
-## 19. Durable memory candidates
+## 25. Durable-rule placement audit
+
+The closeout deliberately avoids copying every lesson into every layer. The current ownership map is:
+
+| Lesson | Class | Durable owner / protection | Placement decision |
+| --- | --- | --- | --- |
+| Bash semantics require explicit Bash | A | `/AGENTS.md` + `project-agent-operating-principles.md` | already startup-visible; do not repeat here as current authority |
+| dirty/concurrent worktree and moving shared state | A | `project-agent-operating-principles.md` + `release-closeout-protocol.md` | existing current rules already require isolation, live refresh, and race-check |
+| provider halt is not shell exit | A | `deployment-policy.md` + `tests/ci-plan.test.mjs` | current policy + executable regression guard |
+| inherited Git output must not page interactively | A | `deployment-policy.md` + `scripts/ci-docs-contract.mjs` + `tests/ci-plan.test.mjs` | landed during this conversation via #484/#485; no second policy owner needed |
+| red CI is not permission to weaken the Gate | A | `scenario-trigger-registry.md` + `release-closeout-protocol.md` | already current; this case supplies the provider/pager example |
+| exact-head/base drift and merge race | A | `release-closeout-protocol.md` | already current and stronger than any incident-specific wording |
+| duplicate fixes converge to one canonical path | A | `branch-and-pr-conventions.md` + `multi-pr-semantic-integration-playbook.md` | existing current ownership; this case records #483/#484 as evidence |
+| `pre-fix FAIL -> post-fix PASS` for a newly written regression guard | B for now | this historical case + the concrete no-pager executable guard | keep as a project diagnostic technique until recurrence justifies another cross-task policy sentence; current release rules already classify test-harness failure |
+| docs PR fast path vs main push full revalidation | B | `deployment-policy.md` | BaseModel-specific execution semantics, already current |
+| provider status may require authenticated UI log inspection | B | this case / tool boundary | diagnostic technique only; browser profile/session identity is transient and must not become policy |
+
+This is the stopping rule against policy sprawl: a lesson can be reusable without becoming another startup bullet. Promote only when the existing owner cannot express or trigger it reliably.
+
+## 26. Durable memory candidates
 
 Cross-conversation memory candidates from this case are intentionally narrow:
 
@@ -331,11 +447,15 @@ Cross-conversation memory candidates from this case are intentionally narrow:
 - explicit Bash should be selected for Bash semantics;
 - dirty concurrent worktrees must not be reset/rebased merely for convenience;
 - current provider/experiment authority must be re-read instead of inferred from a historical retrospective;
-- backups must be identity-verified before local destructive cleanup.
+- backups must be identity-verified before local destructive cleanup;
+- a CI red status or no-output timeout is not causal evidence: inspect the provider log and make subprocess non-interactivity explicit before changing acceptance budgets;
+- exact-head/current-base state must be re-read immediately before merge/write because parallel Agents can move or merge shared PR state;
+- prefer one narrow, evidence-backed canonical root fix and explicitly retire duplicate PR paths rather than stacking redundant patches;
+- preserve the user's standing preference for root-cause replacement over layered patches, and never trade away deterministic/browser/scientific acceptance semantics merely to obtain green CI.
 
 This execution environment exposes personal-context **read** capability but no writable long-term-memory action. Therefore no claim is made that account-level ChatGPT memory was updated. The durable, writable representation for this task is the repository hierarchy above.
 
-## 20. Completion boundary
+## 27. Completion boundary
 
 This experience deposition is complete when:
 
