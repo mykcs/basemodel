@@ -227,7 +227,7 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
     expect(issues, issues.join('\n')).toEqual([]);
     if (await next.isDisabled()) break;
     await next.click();
-    await root.page().waitForTimeout(40);
+    await waitForRootGeometryWithinExistingBudget(root, viewportWidth, requiresMainStage);
   }
 }
 
@@ -479,3 +479,18 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+
+async function waitForRootGeometryWithinExistingBudget(
+  root: Locator,
+  viewportWidth: number,
+  requiresMainStage: boolean,
+) {
+  const deadline = Date.now() + 40;
+  let issues = await auditRoot(root, viewportWidth, requiresMainStage);
+  while (issues.length > 0 && Date.now() < deadline) {
+    await root.page().waitForTimeout(Math.min(5, Math.max(1, deadline - Date.now())));
+    issues = await auditRoot(root, viewportWidth, requiresMainStage);
+  }
+  expect(issues, issues.join('\n')).toEqual([]);
+}

@@ -236,7 +236,7 @@ async function walkGeometry(root: Locator, viewportWidth: number, requiresMainSt
     expect(issues, issues.join('\n')).toEqual([]);
     if (await next.isDisabled()) break;
     await next.click();
-    await root.page().waitForTimeout(40);
+    await waitForConnectorGeometryWithinExistingBudget(root, viewportWidth, requiresMainStage);
   }
 }
 
@@ -248,7 +248,7 @@ async function walkStepper(root: Locator, label: string) {
     assertStepperStable(baseline, await stepperBoxes(root), label);
     if (await next.isDisabled()) break;
     await next.click();
-    await root.page().waitForTimeout(40);
+    await waitForStepperWithinExistingBudget(root, baseline, label);
   }
 }
 
@@ -339,3 +339,31 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
     });
   }
 });
+
+
+async function waitForConnectorGeometryWithinExistingBudget(
+  root: Locator,
+  viewportWidth: number,
+  requiresMainStage: boolean,
+) {
+  const deadline = Date.now() + 40;
+  let issues = await auditConnectorGeometry(root, viewportWidth, requiresMainStage);
+  while (issues.length > 0 && Date.now() < deadline) {
+    await root.page().waitForTimeout(Math.min(5, Math.max(1, deadline - Date.now())));
+    issues = await auditConnectorGeometry(root, viewportWidth, requiresMainStage);
+  }
+  expect(issues, issues.join('\n')).toEqual([]);
+}
+
+async function waitForStepperWithinExistingBudget(root: Locator, baseline: StepperBox[], label: string) {
+  const deadline = Date.now() + 40;
+  for (;;) {
+    try {
+      assertStepperStable(baseline, await stepperBoxes(root), label);
+      return;
+    } catch (error) {
+      if (Date.now() >= deadline) throw error;
+      await root.page().waitForTimeout(Math.min(5, Math.max(1, deadline - Date.now())));
+    }
+  }
+}
