@@ -46,6 +46,7 @@ ci/circleci: browser_shard_2
 A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
 
 The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
+Provider control commands do not automatically imply shell termination: CircleCI `circleci-agent step halt` stops later steps but the current shell continues. Any successful early-exit branch must explicitly terminate the current shell (for example `exit 0`) and have a deterministic guard so a valid docs-only plan cannot fall through into a fail-closed `mode != full` branch.
 
 Do not treat CircleCI provider configuration, a green historical run, or a branch-head benchmark as merge evidence. Required acceptance is the current exact PR head/current-base result plus the repository's ordinary merge rules.
 
@@ -79,6 +80,20 @@ Changes to the CI/browser gate, CircleCI config, merge-candidate preparation, or
 The assets under `.github/runner/` remain recoverable infrastructure: immutable runner/container inputs, start/stop/reconcile/doctor scripts, bounded workspace cleanup, no host mounts, no Docker socket, no published ports, dropped Linux capabilities, bounded CPU/memory/process/log limits, and fail-closed busy-state checks. They are **not** ordinary CI execution authority.
 
 On the owner's Mac, the BaseModel LaunchAgent should remain disabled during ordinary operation so Remote Desktop Commander, SSH, browser automation, and other control-plane work do not compete with persistent CI. If the cloud provider is unavailable and a manual fallback is explicitly needed, restore the runner deliberately, run the manual canary, then return it to the disabled state. Never redirect ordinary CI to research/GPU servers.
+
+Recovery state is deliberately layered:
+
+```text
+GitHub repository -> canonical Dockerfile / runner scripts / policy
+private GHCR      -> optional clean immutable runner-image recovery copy
+Mac/OrbStack      -> disabled manual-fallback container + bounded local cache
+```
+
+Do not archive a registered runner container as the recovery image. Runner registration credentials, `.runner` identity, workspace, diagnostics, package/browser caches and temporary files are machine state and must remain reconstructible/disposable. If a clean runner image is published to GHCR, verify the package is private and the remote manifest digest equals the intended local immutable identity before treating it as recovery evidence. Hugging Face is for scientific/model/data artifacts, not OCI CI runtimes.
+
+Housekeeping is fail-closed around shared state: a cache prune requires the BaseModel runner to be proven idle and every peer sharing that Docker/BuildKit cache to be proven idle, or intentionally disabled with its runner container stopped/absent. Unknown state means no prune. Keep bounded tool-owned cache policies and deliberate rollback/fallback assets; `docker system df` reclaimable output alone never authorizes deletion and broad `docker system prune` is outside ordinary runner housekeeping.
+
+The accepted cloud browser design uses **independent shards with one Playwright worker each**. Historical attempts to run two Playwright workers inside the same bounded Mac executor reduced elapsed time before failure but did not preserve the complete matrix: first the monolithic all-route header sweep timed out, then after deterministic route sharding another layout test timed out. Therefore worker-count experiments must remain isolated benchmarks and may enter current CI only after the entire exact-head matrix passes without retries/semantic weakening and the improvement is material.
 
 ### Vercel responsibilities
 
