@@ -294,7 +294,7 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
 10. If the user identifies a mistake in a **semantic level** (for example who owns an action transition, which layer is evidence, or what state persists), audit every sibling visual/copy surface that encodes the same level: lede, canonical figure, sibling stages, static prose, summaries, and tests. Do not fix only the named specimen.
 11. If one member of a repeated experiment/report family changes presentation grammar, identify sibling routes and the shared semantic owner before patching. Propagate through the shared component/primitive when the semantic object is the same, add structural coverage that discovers future siblings, and preserve intentional visual differences where the semantic object genuinely differs.
-12. When the owner reports repeated comprehension failure despite prior prose standards, do not answer with another wording guide alone. Audit the shared semantic owner and sibling routes; establish typed required fields/state when practical; add negative cases and rendered reader-journey checks to the normal Gate; and keep explicit coverage labels so contextualized pages are not reported as fully rebuilt. Structural/visual PASS and Agent cold-read PASS must remain separate from measured human-comprehension evidence.
+12. Apply `REPEAT-CORRECTION` and the correction-to-action witness in `project-agent-operating-principles.md` before the next affected action. Apply §10.10 of `human-thinking-web-expression-contract.md` to five-question orientation, actual dependency topology, readable text size, and desktop-versus-mobile scope. When the owner reports repeated comprehension failure despite prior prose standards, do not answer with another wording guide alone. Audit the shared semantic owner and sibling routes; establish typed required fields/state when practical; add negative cases and rendered reader-journey checks to the normal Gate; and keep explicit coverage labels so contextualized pages are not reported as fully rebuilt. Structural/visual PASS and Agent cold-read PASS must remain separate from measured human-comprehension evidence.
 
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
 
@@ -367,7 +367,8 @@ previous retrospective did not prevent recurrence.
    search, repository commit, or conversation summary was written to long-term
    memory;
 7. before summarizing “blocked/done”, reconstruct the outcome from exact refs, PR/check/provider/test artifacts rather than trusting a previous assistant sentence or arbitrary working-tree file;
-8. record what was deliberately not persisted and why.
+8. record what was deliberately not persisted and why; if a rule already existed but was violated, identify the missing use-site witness rather than claiming the rule was absent;
+9. correct dated snapshots that masquerade as current authority by adding an explicit historical scope and current-owner pointer, without changing their recorded facts; report memory-write availability separately from repository persistence.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.

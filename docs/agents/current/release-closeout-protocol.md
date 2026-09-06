@@ -269,6 +269,12 @@ A current-base refresh may change ancestry without changing the semantic fix. Ke
 
 Historical worked case: [`../history/2026-09-07-root-cause-owner-convergence-and-release-topology-retrospective.md`](../history/2026-09-07-root-cause-owner-convergence-and-release-topology-retrospective.md).
 
+### 6.4 Source exports are not Git worktrees
+
+A downloaded/copied source tree may be useful for bounded testing without containing `.git`. Label it `source export`; do not report it as a clean exact-head checkout when `git rev-parse` fails. Preserve its known base plus an explicit changed-file inventory and content hashes. Do not fabricate or repair Git metadata to make the label true.
+
+To publish an accepted export, use a healthy isolated worktree or an atomic Git-data update based on the verified remote base. Read back every changed blob and the final commit/tree; validate the final combined candidate under the current checks. A prior test of a different export/base is historical evidence, not an exact-head receipt. Never overlay generated output, dependency symlinks, or an older whole repository onto newer main.
+
 ## 7. Race-check immediately before merge
 
 Right before merge, re-read live state and require all applicable conditions to still match the accepted evidence:
@@ -332,6 +338,8 @@ Verify:
 - canonical/hreflang/robots/sitemap/discovery are checked when the change can affect them.
 
 Preview acceptance is not Production acceptance.
+
+A generated deployment URL identifies that deployment; it does not become the latest website when a later commit ships. Verify the stable Production alias and its backing deployment/SHA before sending the owner a “latest site” link. Preserve old URLs as historical references only. Temporary protected-Preview share credentials stay in the ephemeral review surface, never in Git or a retrospective.
 
 
 

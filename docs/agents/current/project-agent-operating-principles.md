@@ -225,6 +225,24 @@ A retrospective is not complete until its history case is indexed, its durable
 rules are placed in the current owner, its trigger is discoverable, and volatile
 state is explicitly excluded.
 
+### Correction-to-action witness
+
+Use the marker `REPEAT-CORRECTION` when the same owner correction or failure class recurs. Before the next affected action, put one compact witness in the existing task/PR record:
+
+`trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue`
+
+The artifact is the actual command argument/readback/test result, not “read AGENTS”. For shell failures it includes the outer interpreter; for a source export it includes its classification and base/tree mapping; for release claims it includes the tested head and deployment identity. Do not store credentials or full unrelated process arguments.
+
+This is execution of an existing safeguard, **not a new scientific gate or a request for another acknowledgement**. Reuse stable evidence while its fingerprint matches, and refresh only the facts that can have changed. A repeat means that retrieval, abstraction, enforcement, or use-site execution failed; identify which instead of appending the same rule again.
+
+### Progress reports have bounded meanings
+
+For repeated “continue / where are we?” requests, report the current goal, the last verified artifact, the actual missing condition, and the next authorized action. Explain the work in Chinese before identifiers unless the owner requests another language. Do not substitute schema discovery, repeated polling, or another plan for execution.
+
+“Almost done”, “last gate”, and an unmeasured 80%/90% are not acceptance evidence. Use a phase/acceptance checklist; keep implementation, local testing, PR, hosted acceptance, Production, and real-reader feedback separate. Report test suite, ref/tree, and environment together; the total number of green tests is not a measure of understanding. Do not promise later background delivery without an actual supported automation.
+
+For conversation retention, distinguish visible user/tool evidence, independently fetched repository evidence, prior assistant summaries, and unavailable/redacted material. Summaries may locate evidence but cannot fill missing commands, outcomes, or responsibility attribution. A repository write, a personal-context search, and a real long-term-memory write have different receipts.
+
 ## 4. Make recurring lessons triggerable
 
 A reusable lesson is incomplete if future Agents cannot recognize **when** it should become active.
