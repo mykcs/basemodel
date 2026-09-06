@@ -35,17 +35,19 @@ The repository-owned `.circleci/config.yml` is the primary CI contract. The `myk
 
 Draft iteration therefore consumes no heavy browser CI until the PR becomes merge-ready. Redundant branch workflows are auto-cancelled provider-side.
 
-`main` branch protection uses strict up-to-date semantics and requires all three cloud contexts:
+`main` branch protection uses strict up-to-date semantics and requires all five cloud contexts:
 
 ```text
 ci/circleci: deterministic
 ci/circleci: browser_shard_1
 ci/circleci: browser_shard_2
+ci/circleci: browser_shard_3
+ci/circleci: browser_shard_4
 ```
 
-A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
+A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all five jobs. If base/head identity cannot be proven, CI fails closed.
 
-The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
+The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses four independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
 Provider control commands do not automatically imply shell termination: CircleCI `circleci-agent step halt` stops later steps but the current shell continues. Any successful early-exit branch must explicitly terminate the current shell (for example `exit 0`) and have a deterministic guard so a valid docs-only plan cannot fall through into a fail-closed `mode != full` branch.
 
 CI subprocesses must also be explicitly non-interactive when their output is attached to runner terminal streams. Do not assume `CI=1`, a container runtime, or a hosted runner disables tool pagers or prompts. Git commands that can inherit stdout/stderr must disable paging at the command boundary (for example `git --no-pager`); a no-output timeout after the planner/tests have already succeeded should be investigated as a blocked pager/prompt before changing timeout policy.
@@ -69,7 +71,7 @@ bounded route-owned UI diff
 
 shared/global/unknown UI diff
 -> verify:deploy + build
--> complete Chromium matrix split across two cloud shards
+-> complete Chromium matrix split across four cloud shards
 
 Lab/server-relevant diff
 -> dedicated 12-case Lab gate on shard 1

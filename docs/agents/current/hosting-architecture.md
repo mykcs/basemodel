@@ -38,15 +38,17 @@ Astro, React and GitHub do not change. This is execution-ownership consolidation
 
 The executable primary CI contract is `.circleci/config.yml` plus `scripts/ci-circleci-prepare.sh`, `scripts/ci-plan.mjs`, `scripts/ci-ui-gate.mjs`, and `scripts/vercel-ui-plan.ts`.
 
-For pull requests, CircleCI validates an explicitly materialized `base + PR head` merge candidate. The three required cloud contexts are:
+For pull requests, CircleCI validates an explicitly materialized `base + PR head` merge candidate. The five required cloud contexts are:
 
 ```text
 ci/circleci: deterministic
 ci/circleci: browser_shard_1
 ci/circleci: browser_shard_2
+ci/circleci: browser_shard_3
+ci/circleci: browser_shard_4
 ```
 
-Full browser work uses the qualified Debian 12 / Node 24 runtime on two independent CircleCI `medium` shards with one Playwright worker each. Instead of Playwright raw-count sharding, the full Chromium suite is enumerated into exact `--test-list` inputs and balanced by the retained `202609061200` one-worker timing receipt. New or renamed tests are conservatively weighted and remain in coverage. The Mac fallback stays one-worker and is not part of ordinary cloud scheduling.
+Full browser work uses the qualified Debian 12 / Node 24 runtime on four independent CircleCI `medium` shards with one Playwright worker each. Instead of Playwright raw-count sharding, the full Chromium suite is enumerated into exact `--test-list` inputs and balanced by the retained `202609061200` one-worker timing receipt. New or renamed tests are conservatively weighted and remain in coverage. The Mac fallback stays one-worker and is not part of ordinary cloud scheduling.
 
 The retained `.github/workflows/self-hosted-ci.yml` is manual fallback only. `.github/runner/` preserves the no-mount/no-socket OrbStack recovery implementation, but no ordinary PR or `main` event should require the Mac runner. The local LaunchAgent stays disabled during ordinary operation.
 

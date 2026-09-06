@@ -24,7 +24,7 @@ import AppLayout from '../layouts/AppLayout.astro';
           <div class="eyebrow">BaseModel</div>
           <h3>研究网站：重验收放到 CircleCI</h3>
           <p><strong>源码：</strong><code>mykcs/basemodel</code></p>
-          <p><strong>CI：</strong>CircleCI GitHub App。deterministic 检查与两个独立 Playwright browser shard 并行；风险规划器决定 skip / focused / full。</p>
+          <p><strong>CI：</strong>CircleCI GitHub App。deterministic 检查与四个独立 Playwright browser shard 并行；风险规划器决定 skip / focused / full。</p>
           <p><strong>部署：</strong>Vercel。Preview 只给需要真实网页验收的 exact head；main 负责 Production。</p>
           <p><strong>Fallback：</strong>Mac/OrbStack runner 只保留手动恢复，不自动启动。</p>
           <a href="https://basemodel-preview.vercel.app" rel="noopener">打开 Production →</a>

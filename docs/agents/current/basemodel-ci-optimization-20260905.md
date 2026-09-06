@@ -64,4 +64,14 @@ Current meaning of this baseline:
 - future timing-scheduler changes must use the causal benchmark protocol in `website-engineering-standard.md` §6.2 and the exact acceptance/merge boundary in `release-closeout-protocol.md`;
 - historical PR numbers, SHAs and timing samples belong to the dated retrospective, not to future current-state assumptions.
 
+## 2026-09-06 four-shard cloud acceptance
+
+A later frozen-series experiment kept the same static exact-test scheduler, 163-test Chromium population, CircleCI `medium` class, one Playwright worker per executor, retries=0, and every browser assertion. Only the number of independent cloud browser executors changed.
+
+- 2×`medium` frozen control: **363 s / 6m03s** critical path, about **111 browser credits**;
+- 3×`medium`: **285 s / 4m45s**, about **124 credits**; it remained unmerged because its pre-registered gate required <=270 s;
+- 4×`medium`: **228 s / 3m48s**, about **139.2 credits**; it satisfied the pre-registered <=255 s, >=30 s vs 3-way, >=90 s vs 2-way, and <=150-credit gates.
+
+The accepted mechanism is therefore **independent same-class sharding**, not more Playwright workers inside one executor and not a larger executor class. The four-way result cuts critical-path wall time by **135 s / 37.2%** versus the frozen two-way control for roughly **25% more browser credits**, while retaining the same test population and semantics. Branch protection must require all four browser contexts before this layout is merge-authoritative.
+
 Detailed case: [`../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md`](../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md).
