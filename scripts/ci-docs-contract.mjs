@@ -11,11 +11,13 @@ if (!base) {
 }
 
 function git(args, options = {}) {
+  // CI may provide a TTY; Git commands always finish without an interactive pager.
+  const command = ['--no-pager', ...args];
   if (options.capture === false) {
-    execFileSync('git', args, { stdio: 'inherit' });
+    execFileSync('git', command, { stdio: ['ignore', 'inherit', 'inherit'] });
     return '';
   }
-  return execFileSync('git', args, {
+  return execFileSync('git', command, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();

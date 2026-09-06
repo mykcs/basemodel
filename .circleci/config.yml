@@ -41,7 +41,7 @@ jobs:
             source /tmp/basemodel-ci-range.env
             set +a
 
-            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs
+            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-docs-contract.test.mjs
             plan_output="$(node scripts/ci-plan.mjs \
               --event "$CI_LOGICAL_EVENT" \
               --base "$CI_BASE_SHA" \
