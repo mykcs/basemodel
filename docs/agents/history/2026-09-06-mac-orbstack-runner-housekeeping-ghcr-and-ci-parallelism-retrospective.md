@@ -275,7 +275,21 @@ fi
 
 The provider halt does not make the second `if` unreachable. Use an explicit successful exit/return after the halt.
 
-## 17. Scientific-semantics boundary
+## 17. Friction 14 — inherited CI terminal streams opened Git's pager
+
+**What happened:** after the `step halt` fallthrough was fixed, the same docs-only deposition PR reached a second, independent failure. Exact head `0b5101d6dfcabe751f0769f04d0c170085f6be71` passed both browser docs-mode shards, completed merge-candidate preparation, passed all nine CI plan/prepare tests, and classified the five-file diff as `mode=docs`. The deterministic job then stopped producing output while the documentation contract ran `git diff --check`; its last visible terminal state was `--More-- (END)`. CircleCI killed the step only after the 10-minute no-output deadline.
+
+**Why:** the documentation contract deliberately inherited stdout/stderr for `git diff --check` so whitespace diagnostics stayed visible, but that also attached Git to the runner's terminal surface. The implementation assumed a hosted CI process would therefore remain non-interactive. Under the actual CircleCI terminal behavior, Git could invoke a pager and wait for input. Local runs with captured output did not exercise that surface.
+
+**Missing assumption:** non-interactive intent is not the same as non-interactive process behavior. `CI=1`, Docker, and provider execution do not by themselves prove that a subprocess cannot page or prompt when terminal streams are inherited.
+
+**Precheck next time:** for every CI subprocess that inherits stdin/stdout/stderr, inspect pager/prompt behavior explicitly. Reproduce suspicious no-output stalls under a real or simulated TTY, and distinguish "the test is slow" from "the process is waiting for input" before changing timeouts.
+
+**Defensive rule:** make non-interactivity explicit at the owning helper boundary. The canonical fix prepends `git --no-pager` to every Git invocation in `ci-docs-contract.mjs`, including the streamed whitespace check, and protects that behavior with a regression test that rejects any Git call lacking `--no-pager`. Keep the underlying `git diff --check`, safe-path, conflict-marker, NUL-byte, merge-candidate, and browser contracts unchanged.
+
+**Anti-example:** increasing CircleCI's no-output timeout, suppressing the documentation contract, or redirecting away diagnostics without first proving the job is doing real work. Those changes hide the symptom while preserving the interactive wait.
+
+## 18. Scientific-semantics boundary
 
 This conversation was operational/CI work. It deliberately did **not** use the RTX 5090 research server as a convenient CI fallback and did not change OpenEvo Stage1/Stage2 task identity, sampling, seeds, model state, reward, eligibility, final panel, or GPU scheduling semantics.
 
@@ -285,7 +299,7 @@ The reusable principle is broader:
 
 A browser test worker count is not scientific sampling, but weakening browser coverage to obtain a faster green check would still alter the product acceptance semantics. Likewise, routing ordinary CPU CI to the scientific GPU server would change resource isolation even if no experiment code changed.
 
-## 18. Repeated-error audit
+## 19. Repeated-error audit
 
 Several failures had already appeared in earlier BaseModel/OpenEvo retrospectives:
 
