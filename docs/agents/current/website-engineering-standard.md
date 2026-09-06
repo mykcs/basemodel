@@ -202,6 +202,41 @@ required-check integration and failure visibility
 
 Pricing, quotas and product eligibility are time-sensitive evidence, not durable architecture facts. Record dated measurements in history and keep current policy provider-neutral where possible.
 
+## 6.2 CI performance experiments require a frozen causal benchmark
+
+A performance experiment must answer **one pre-registered causal question**. Do not decide what counts as success after seeing the run. Before the first benchmark ref mutation, record:
+
+```text
+question / proposed mechanism
+candidate base + head/tree
+control ref/tree
+canonical test identities/count
+executor, shard count, Playwright workers, retries
+qualification-only extras (Lab gate, reserve, diagnostics, planner mode)
+metric and critical-path definition
+meaningful-improvement rule
+rough theoretical maximum upside
+concurrent-run policy
+```
+
+Measurement rules:
+
+1. **Qualification is not steady state.** A CI-infrastructure PR may deliberately trigger stronger self-protection: different shard reserve, a Lab tail, diagnostics, or another qualification-only path. Those extra costs prove correctness but are not automatically the cost ordinary post-merge PRs will pay. When the shapes differ, measure steady state with a benchmark-only stacked PR whose diff is ordinary `full` and whose base is the candidate. Never merge that benchmark PR.
+2. **Freeze the control.** A PR base branch is a moving ref, not an immutable commit. If the experiment needs the pre-change scheduler or another historical control, create/use a dedicated frozen base ref at the exact commit. Re-read GitHub's resolved `base_sha` after the PR opens.
+3. **One workflow measurement -> one fresh commit SHA.** CircleCI currently reports legacy GitHub status contexts keyed by commit SHA. Reusing one SHA under multiple PR/base/workflow contexts can mix old and new statuses. For an identical-tree repeat, create a new commit that points to the exact same tree; do not alter source merely to obtain another sample.
+4. **Run candidate and control sequentially.** Search overlapping PRs and active provider runs first. Do not create duplicate benchmark PRs, and do not intentionally overlap your own candidate/control runs on shared hosted capacity. Record unavoidable external overlap as noise.
+5. **Preserve test identity byte-for-byte when identity is part of timing.** If a no-op marker is needed to trigger an ordinary-full PR, append it after existing test definitions so line-based Playwright identities do not move, then diff the canonical `--list` identity set. The benchmark must not add/drop/rename tests, change retries, or alter quality thresholds.
+6. **Use the repository's canonical runner/config for identity discovery.** A bare `playwright --list` can load a different config/fixture path and fail for reasons the canonical `test:ui` command does not. A fresh worktree without `node_modules` is an environment/bootstrap gap, not a candidate regression. Normalize the local environment before interpreting source correctness.
+7. **Separate wall-clock layers.** GitHub `pending -> success` is useful as a user-visible critical-path measure but can contain queue, spin-up, setup, and test execution. When provider job timing is available, inspect those layers before assigning causality. Do not invent a queue explanation merely because two runs differ.
+8. **Hosted critical path outranks a local hotspot for hosted-CI decisions.** A local focused A/B can prove that one loop became cheaper, but it cannot authorize a CI optimization when the hosted slower shard/overall critical path does not improve. Compare the maximum browser-shard duration, not the best-looking shard.
+9. **Estimate the upside before spending CI.** If the code path can save at most `X` seconds in total and `X` is already smaller than observed hosted variance/critical-path noise, stop or use a cheaper focused measurement. Do not spend full CI repeatedly on an optimization whose theoretical ceiling cannot satisfy the meaningful-improvement rule.
+10. **Repeat only to resolve a decision, not to fish for a green number.** When the candidate-control delta is inside observed runner variance, use an identical-tree repeat. If the advantage remains small/non-causal/non-repeatable, reject the complexity even when the implementation is correct.
+11. **Do not let tooling churn become experimental treatment.** Review diffs after formatters; legacy `.mjs`/config files may produce large quote/format rewrites. Restore unrelated churn before benchmarking so the causal diff stays narrow.
+12. **Network and authorization failures are different layers.** A Git HTTPS connection timeout is not proof that credentials are wrong. Classify transport vs auth first; if local push transport is unavailable and a connected GitHub write path exists, preserve the same intended tree through that path rather than changing credentials or the experiment.
+13. **Qualify adaptive inputs in shadow before making them authoritative.** When a new scheduler depends on provider historical timing or another learned/adaptive signal, first compute its complete assignment after the existing authoritative run and verify non-empty buckets, exact union, no duplicates, no unknown identities, and no silent provider fallback. Missing/new timing must fall back to the proven conservative scheduler for that run so a new test can execute and seed history; an optimizer must not create a cold-start deadlock where missing history prevents the test that would generate that history.
+
+Stopping rule: an optimization that does not demonstrate a **clear, meaningful, repeatable** end-to-end benefit under unchanged acceptance semantics is closed unmerged. A scientifically/engineering-correct negative experiment is a successful outcome when it prevents permanent complexity.
+
 ## 7. Chromium and WebKit have different execution boundaries
 
 - Vercel's hosted browser gate is Chromium-only.

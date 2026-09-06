@@ -52,6 +52,7 @@ Before any GitHub/provider mutation:
 4. when several files form one coherent change, prepare them before the first provider-triggering update and prefer one atomic multi-file commit when practical;
 5. after a write, verify the returned target/branch/SHA instead of assuming the intended mutation happened;
 6. if an accidental write occurs, stop, classify it, clean or neutralize it immediately when possible, and disclose any residue in closeout rather than hiding it.
+7. immediately before mutating a shared branch or PR, refresh its remote head and current PR state; if another Agent changed the head, base, body, draft state, or overlapping files, re-read that delta before writing rather than treating your earlier snapshot as a lock.
 
 Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention.
 
@@ -82,13 +83,14 @@ Tool convenience is not sufficient justification for broader access. The default
 
 When local execution is genuinely required, assume the user device may already be running other Agents, builds, browsers, training clients, or tests.
 
-- Before starting an expensive browser/build matrix, inspect relevant running processes and resource contention when practical.
+- Before starting an expensive browser/build matrix, inspect relevant running processes and resource contention when practical. Keep process inspection scoped to the task-owned PID/process family and the minimum fields needed. Avoid whole-machine command-line dumps merely to answer whether one process is alive: unrelated command arguments can contain credentials, tokens, private paths, or other users' state. If broad output is accidentally exposed, do not copy it into repository docs or reports.
 - Prefer an isolated worktree plus unique local ports for concurrent repository work.
 - Do not kill, pause, or rewrite an unrelated task merely because it slows the current task. Only terminate processes that clearly belong to the current work or that the owner explicitly authorized you to stop.
 - If contention is real, reduce worker count or otherwise lower pressure rather than treating slowness as a product regression.
 - A remote-tool timeout, vanished terminal session, or stale monitoring stream is **not** evidence that the underlying command failed. Confirm the child PID/process state, exit status, or a durable runner artifact before declaring PASS/FAIL/stuck.
-- Treat shell dialect as part of the execution environment. When syntax relies on Bash (`VAR=value`, `set -euo pipefail`, compound loops, arrays, heredocs, process substitution), invoke `/bin/bash` explicitly locally, and prefer an explicit remote interpreter (`ssh host 'bash -s'`, `python3 -`, or an uploaded script) over multi-layer quoting. A parser error before mutation is not repository/server corruption.
+- Treat shell dialect as part of the execution environment. When syntax relies on Bash (`VAR=value`, `set -euo pipefail`, compound loops, arrays, heredocs, process substitution), set the execution tool's shell to `/bin/bash` when supported or invoke a standalone Bash/Python script. Prefer an explicit remote interpreter (`ssh host 'bash -s'`, `python3 -`, or an uploaded script) over multi-layer quoting. An inner `bash -lc` does not rescue malformed quoting already parsed by an outer Fish shell. A parser error before mutation is not repository/server corruption.
 - Distinguish local environment pathologies from product failures. A clean worktree with no `node_modules` is an environment/setup gap, not a compile failure. Reuse a known lockfile-compatible local dependency tree or install the lockfile locally; never spend a hosted Preview merely to diagnose missing local packages, and never commit temporary dependency symlinks.
+- If a worktree unexpectedly becomes dirty or tracked files appear/disappear while you are working, stop mutation and compare `HEAD`, index, worktree diff, mtimes when useful, and remote branch state. Another Agent may be editing the same checkout. Do not `reset --hard`, restore, format, or overwrite those files until ownership is resolved; move your work to an isolated worktree when necessary.
 - Clean up only the worktrees, ports, browser sessions, and processes owned by the current task.
 
 Historical case: [`../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md`](../history/2026-08-27-seed-glm-stage1-and-brand-asset-retrospective.md).
