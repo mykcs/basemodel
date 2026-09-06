@@ -52,6 +52,8 @@ CI subprocesses must also be explicitly non-interactive when their output is att
 
 Do not treat CircleCI provider configuration, a green historical run, or a branch-head benchmark as merge evidence. Required acceptance is the current exact PR head/current-base result plus the repository's ordinary merge rules.
 
+The 2026-09-06 adaptive CircleCI historical-timing scheduler experiment was qualified for correctness but did not demonstrate a meaningful repeatable steady-state wall-clock gain and was reverted. Current authority remains the exact-test static timing scheduler described above. Do not resurrect the adaptive implementation from historical PRs; any successor must use the frozen causal benchmark protocol in `website-engineering-standard.md` §6.2.
+
 ### Risk-aware browser gate
 
 Browser regression does not run inside the ordinary Vercel Production build. `scripts/ci-ui-gate.mjs` reuses `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific duplicate.

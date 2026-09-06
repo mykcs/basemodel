@@ -248,6 +248,20 @@ required Gate/browser evidence is still the accepted run
 
 If head or material base state changed, stop and refresh acceptance instead of merging from memory.
 
+### 7.1 Explicit acceptance rules are merge-authorization boundaries
+
+A PR can be mergeable and all currently required checks can be green while the work is still **not authorized to merge**. This is especially common for CI/performance experiments whose PR body pre-registers a later steady-state benchmark, control, canary, or repeat requirement.
+
+Rules:
+
+1. Treat an explicit acceptance rule in the task/PR as part of merge authority, not as optional prose. If it says "do not merge until candidate + control", a green qualification run only proves correctness of the candidate implementation.
+2. For performance experiments, keep the implementation PR non-authoritative while measurement remains incomplete. When non-draft state is required to trigger qualification CI, it is acceptable to mark the PR Ready for that run and then return it to Draft while benchmark/control work proceeds; mark it Ready for merge only after the pre-registered acceptance rule is satisfied.
+3. Benchmark-only PRs are measurement harnesses and must never merge. Close them after recording the receipt.
+4. In multi-Agent work, re-read the PR body, head/base, draft state, benchmark/control PRs, and current `main` immediately before merge. Another Agent's push, close/reopen, or merge can invalidate the earlier plan.
+5. If a candidate is merged before its own acceptance boundary completes, preserve that historical fact. Do not silently reinterpret the merge as evidence that the criterion passed. Finish post-merge validation and, when the criterion is not met, repair or revert only the candidate-owned surfaces while preserving later independent `main` work.
+
+Counterexample: a CI-infrastructure PR can pass deterministic + both browser shards because those jobs are **qualification** runs, while the PR's stated question is whether ordinary post-merge full-browser work becomes faster. Merging from the green qualification alone answers the wrong question.
+
 ## 8. Lock the merge to the accepted head
 
 When the merge interface supports an expected-head SHA, use it.
