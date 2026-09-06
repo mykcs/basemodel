@@ -41,7 +41,7 @@ jobs:
             source /tmp/basemodel-ci-range.env
             set +a
 
-            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs
+            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-ui-circleci-test-list.test.mjs
             plan_output="$(node scripts/ci-plan.mjs \
               --event "$CI_LOGICAL_EVENT" \
               --base "$CI_BASE_SHA" \
@@ -85,6 +85,7 @@ jobs:
     environment:
       CI: "1"
       PLAYWRIGHT_WORKERS: "1"
+      CI_PLAYWRIGHT_JUNIT_OUTPUT_FILE: "test-results/playwright-junit.xml"
       CI_BROWSER_BUILD: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
       CI_BROWSER_SHARD_TOTAL: "2"
@@ -120,7 +121,10 @@ jobs:
             fi
 
             npm ci
+            mkdir -p test-results
             node scripts/ci-ui-gate.mjs
+      - store_test_results:
+          path: test-results
 
 workflows:
   pr_cloud_ci:
