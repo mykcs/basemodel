@@ -17,3 +17,5 @@ test('Chinese-only route advertises no fabricated English target on desktop or m
   await page.locator('[data-menu-toggle]').click();
   await expect(page.locator('.mobile-menu .lang-switch')).toHaveCount(0);
 });
+
+// benchmark-only no-op: large-executor steady-state 202609062255
