@@ -1,5 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+import { waitForHydratedExplainer } from './hydration-ready';
+
 type Theme = 'light' | 'dark';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
@@ -39,13 +41,6 @@ async function settle(page: Page) {
     if ('fonts' in document) await document.fonts.ready;
   });
   await page.waitForTimeout(80);
-}
-
-async function ensureHydrated(root: Locator) {
-  await root.scrollIntoViewIfNeeded();
-  await expect(root.locator('.irx-transport')).toBeVisible();
-  const island = root.locator('xpath=ancestor::astro-island[1]');
-  if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
 }
 
 async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
@@ -218,7 +213,7 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
 }
 
 async function stepThrough(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
   await expect(root).toHaveAttribute('data-overview', 'true');
   await next.click();
@@ -269,7 +264,7 @@ test('interactive transport stays bottom-docked from the initial render', async 
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await settle(page);
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-      await ensureHydrated(root);
+      await waitForHydratedExplainer(root);
       const transport = root.locator('.irx-transport');
       await expect(transport).toHaveCSS('position', 'fixed');
       expect(await transport.evaluate((node) => Boolean(node.closest('.irx-controls')))).toBe(true);
@@ -286,7 +281,7 @@ test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await settle(page);
       const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
-      await ensureHydrated(root);
+      await waitForHydratedExplainer(root);
       const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
       for (let index = 0; index < 5; index += 1) await next.click();
       await page.waitForTimeout(120);
@@ -335,7 +330,7 @@ test('WebShop product detail columns do not overlap at an intermediate desktop w
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
-    await ensureHydrated(root);
+    await waitForHydratedExplainer(root);
     const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
     for (let index = 0; index < 5; index += 1) await next.click();
     await page.waitForTimeout(100);
@@ -398,7 +393,7 @@ test('SEED visibly separates policy, harness, benchmark environment, and sealed 
     await page.setViewportSize(viewport);
     await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
     const root = page.locator('[data-interactive-research-explainer="seed"]');
-    await ensureHydrated(root);
+    await waitForHydratedExplainer(root);
 
     const stage1Model = root.locator('.irx-seed-runtime-boundary .irx-seed-role-model');
     const stage1Harness = root.locator('.irx-seed-runtime-boundary .irx-seed-role-harness');
@@ -442,7 +437,7 @@ test('research explainers preserve meaning with reduced motion', async ({ page }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   await expect(root).toHaveAttribute('data-reduced-motion', 'true');
   await expect(root.locator('.irx-transport button').filter({ hasText: /减少动态|Reduced motion/ })).toBeDisabled();
   await expect(root.locator('[data-flow-id="seed-next"]')).toBeVisible();
@@ -453,7 +448,7 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.setViewportSize({ width: 1440, height: 738 });
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
   await page.waitForTimeout(650);
   const before = await page.evaluate(() => window.scrollY);
@@ -471,7 +466,7 @@ test('research framework opens as a system map and can enter and leave trace mod
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/research/seed-openevo/flow/openevo/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="openevo"]');
-  await ensureHydrated(root);
+  await waitForHydratedExplainer(root);
   await expect(root).toHaveAttribute('data-overview', 'true');
   await expect(root.locator('.irx-paper-caption')).toContainText('SYSTEM MAP');
   await root.getByRole('button', { name: '开始追踪' }).click();

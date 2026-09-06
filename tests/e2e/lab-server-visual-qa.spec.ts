@@ -1,5 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+import { waitForHydratedExplainer } from './hydration-ready';
+
 type Theme = 'light' | 'dark';
 type Locale = 'zh' | 'en';
 type Anchor = 'left' | 'right' | 'top' | 'bottom';
@@ -33,18 +35,11 @@ async function settle(page: Page) {
   await page.waitForTimeout(100);
 }
 
-async function ensureHydrated(root: Locator, viewportWidth: number) {
-  await root.scrollIntoViewIfNeeded();
+async function readyServerExplainer(root: Locator, viewportWidth: number) {
+  await waitForHydratedExplainer(root);
   await expect(root).toBeVisible();
-  await expect(root.locator('.irx-transport')).toBeVisible();
-  const island = root.locator('xpath=ancestor::astro-island[1]');
-  if (await island.count()) await expect(island).not.toHaveAttribute('ssr', '');
-
-  // ConnectorLayer measures its SVG geometry on requestAnimationFrame after the
-  // React island hydrates. The old gate sampled immediately after `ssr` was
-  // removed, so a fast run could observe the legal one-frame state where the
-  // transport existed but the connector SVG had not been measured yet. Wait on
-  // the actual rendered contract instead of sleeping/retrying the whole test.
+  // ConnectorLayer measures SVG geometry on the animation frame after hydration.
+  // Readiness therefore includes the rendered connector contract on desktop.
   if (viewportWidth > 760) {
     const edgeLayer = root.locator('.irx-edge-layer');
     await expect(edgeLayer).toBeVisible();
@@ -214,7 +209,7 @@ for (const route of routes) {
       await settle(page);
 
       const root = page.locator('[data-interactive-research-explainer="server"]').first();
-      await ensureHydrated(root, matrix.viewport.width);
+      await readyServerExplainer(root, matrix.viewport.width);
       await assertGeometry(root, matrix.viewport.width);
       await assertInspectorSynchronization(root, route.locale);
       await assertKeyboardNavigation(root, route.locale);
