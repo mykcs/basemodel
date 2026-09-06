@@ -157,10 +157,11 @@ Historical case: [`../history/2026-09-06-circleci-benchmark-causality-and-multi-
 
 1. Compare the candidate head with current intended `main`.
 2. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
-3. Synchronize when necessary without discarding newer intended semantics.
-4. Re-run the required deterministic/browser acceptance on the new exact head for deploy-relevant work.
-5. Verify provider metadata points to that commit and inspect the required real route/interaction/metadata.
-6. A READY badge is not visual/product acceptance; a prior Preview is not evidence for a later synchronized tree.
+3. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
+4. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
+5. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.
+6. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
+7. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
 
 ---
 

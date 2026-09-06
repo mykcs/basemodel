@@ -233,6 +233,42 @@ The 2026-08-26 Results closeout exposed exactly this failure mode: `vercel-ui-ga
 
 This is the same ownership principle as escaped-regression wiring: **a test that exists, or a command that exits 0, is not durable protection unless the intended release path executes it.**
 
+### 6.2 Provider success must represent the required execution
+
+A successful GitHub status context is not sufficient when the provider can report success for an ignored/skipped deployment. Read the owning provider object and classify its actual state.
+
+For BaseModel Vercel Preview acceptance:
+
+```text
+GitHub context = success
+AND deployment metadata points to the exact accepted SHA
+AND provider readyState/state = READY
+AND the required build path actually executed
+```
+
+`CANCELED`, ignored build, or policy skip is **SKIPPED BY POLICY**, not a product Preview PASS. This remains true when the outer GitHub `Vercel` context is green.
+
+`scripts/vercel-ignore-build.mjs` evaluates both the exact-head `[vercel-preview]` opt-in and the deploy-relevant changed range. A zero-content release-marker commit can therefore carry the token while still producing an ignored deployment because `previous -> head` contains no deploy-relevant path. When hosted Preview acceptance is required, the exact head that carries `[vercel-preview]` must also contain (or otherwise prove in its evaluated range) the deploy-relevant candidate change.
+
+Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
+
+### 6.3 Keep one live candidate through independent base drift
+
+Moving `main` is normal shared-state behavior; repeated new PRs are not the default freshness mechanism.
+
+Before an expensive final Gate:
+
+1. inspect open/recent PRs that are likely to merge into the same base and choose a reasonably stable acceptance window;
+2. keep one live candidate PR for one semantic root fix;
+3. when `main` advances, compare the intervening paths/contracts with the candidate's semantic diff;
+4. for provably independent drift, update/synchronize the same candidate branch when repository policy requires current-base freshness, preserving the semantic contribution;
+5. rerun the checks required by the **current** branch-protection/provider contract, plus any checks affected by overlap;
+6. create a successor PR only when the semantic scope, release routing, authority owner, or acceptance topology actually changes.
+
+A current-base refresh may change ancestry without changing the semantic fix. Keep those claims separate. Do not manufacture a chain of `#N -> #N+1 -> #N+2` successors solely because unrelated documentation merged while CI was running.
+
+Historical worked case: [`../history/2026-09-07-root-cause-owner-convergence-and-release-topology-retrospective.md`](../history/2026-09-07-root-cause-owner-convergence-and-release-topology-retrospective.md).
+
 ## 7. Race-check immediately before merge
 
 Right before merge, re-read live state and require all applicable conditions to still match the accepted evidence:
