@@ -25,7 +25,7 @@ export function parseListedTests(output) {
     const id = canonicalTestId(line);
     if (!id || seen.has(id)) continue;
     seen.add(id);
-    tests.push({ id, line: `${PREFIX}${id}` });
+    tests.push({ id, line });
   }
   return tests;
 }
