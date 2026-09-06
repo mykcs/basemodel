@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { rmSync } from 'node:fs';
+import { existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -31,6 +31,7 @@ if (shardIndex > shardTotal) {
 const primaryShard = shardIndex === 1;
 const ownsBuild = process.env.CI_BROWSER_BUILD === '1';
 const installWithDeps = process.env.CI_PLAYWRIGHT_WITH_DEPS === '1';
+const preinstalledBrowser = process.env.CI_PLAYWRIGHT_PREINSTALLED === '1';
 const forceFull = process.env.CI_UI_FORCE_FULL === '1';
 
 const run = (command, args, extraEnv = {}) => {
@@ -117,10 +118,34 @@ const browserEnv = {
   PWTEST_CACHE_DIR: transformCacheDir,
 };
 
-const installArgs = ['playwright', 'install'];
-if (installWithDeps) installArgs.push('--with-deps');
-installArgs.push('chromium');
-run('npx', installArgs);
+if (preinstalledBrowser) {
+  if (installWithDeps) {
+    console.error('[ci-ui-gate] preinstalled browser image cannot also request runtime dependency installation');
+    process.exit(2);
+  }
+  const expectedVersion = process.env.CI_PLAYWRIGHT_IMAGE_VERSION?.trim();
+  if (!expectedVersion || process.env.PLAYWRIGHT_BROWSERS_PATH !== '/ms-playwright') {
+    console.error('[ci-ui-gate] preinstalled browser image identity is incomplete');
+    process.exit(2);
+  }
+  const identity = spawnSync(
+    'node',
+    ['-e', "const p=require('@playwright/test/package.json'); const {chromium}=require('@playwright/test'); process.stdout.write(p.version+'\n'+chromium.executablePath())"],
+    { encoding: 'utf8', env: { ...process.env, ...browserEnv } },
+  );
+  const [actualVersion, executablePath] = (identity.stdout ?? '').trim().split('\n');
+  if (identity.status !== 0 || actualVersion !== expectedVersion || !executablePath || !existsSync(executablePath)) {
+    if (identity.stderr) process.stderr.write(identity.stderr);
+    console.error(`[ci-ui-gate] preinstalled Playwright identity mismatch: expected=${expectedVersion} actual=${actualVersion ?? '<none>'} executable=${executablePath ?? '<none>'}`);
+    process.exit(2);
+  }
+  console.log(`[ci-ui-gate] preinstalled Playwright ${actualVersion} chromium: ${executablePath}`);
+} else {
+  const installArgs = ['playwright', 'install'];
+  if (installWithDeps) installArgs.push('--with-deps');
+  installArgs.push('chromium');
+  run('npx', installArgs);
+}
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'

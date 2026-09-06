@@ -38,6 +38,10 @@ describe('hosting architecture ownership', () => {
     expect(circleCiConfig).toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(circleCiConfig).toContain('mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e');
+    expect(circleCiConfig).toContain('CI_PLAYWRIGHT_PREINSTALLED: "1"');
+    expect(circleCiConfig).toContain('CI_PLAYWRIGHT_IMAGE_VERSION: "1.62.1"');
+    expect(ciUiGate).toContain('preinstalled Playwright');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
     expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);

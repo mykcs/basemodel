@@ -79,16 +79,16 @@ jobs:
       shard_index:
         type: integer
     docker:
-      - image: node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+      - image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
     resource_class: medium
     environment:
       CI: "1"
       PLAYWRIGHT_WORKERS: "1"
       CI_BROWSER_BUILD: "1"
-      CI_PLAYWRIGHT_WITH_DEPS: "1"
+      CI_PLAYWRIGHT_PREINSTALLED: "1"
+      CI_PLAYWRIGHT_IMAGE_VERSION: "1.62.1"
       CI_BROWSER_SHARD_TOTAL: "2"
     steps:
-      - bootstrap_git
       - checkout
       - run:
           name: Risk-based browser acceptance shard << parameters.shard_index >>/2
