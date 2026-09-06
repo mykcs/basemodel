@@ -44,13 +44,18 @@ test('paper quick-view first click survives before the visible React island hydr
   await expect(dialog).toHaveAttribute('open', '');
 });
 
-test('Landscape keeps static learning content and hydrates controls when visible', async ({ page }) => {
+test('Landscape enables controls when the visible island is ready', async ({ page }) => {
   await page.goto('/landscape/');
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
   const fullView = page.getByRole('button', { name: '完整视图' });
   await fullView.scrollIntoViewIfNeeded();
-  const island = fullView.locator('xpath=ancestor::astro-island[1]');
-  await expect(island).not.toHaveAttribute('ssr', '');
+  await expect(page.locator('.landscape-controls')).toHaveAttribute('aria-busy', 'false');
+  const layout = await page.locator('.landscape-controls').evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { display: style.display, border: style.borderTopWidth, padding: style.paddingTop };
+  });
+  expect(layout).toEqual({ display: 'flex', border: '0px', padding: '0px' });
+  await expect(fullView).toBeEnabled();
   await fullView.click();
   await expect(page.locator('.landscape-view-note')).toBeVisible();
 });
