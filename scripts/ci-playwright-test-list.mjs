@@ -17,9 +17,10 @@ export function canonicalTestId(line) {
 }
 
 export function parseListedTests(output) {
+  const cleanOutput = output.replace(/\\u001b\\[[0-?]*[ -\\/]*[@-~]/g, '');
   const tests = [];
   const seen = new Set();
-  for (const rawLine of output.split('\n')) {
+  for (const rawLine of cleanOutput.split('\n')) {
     const line = rawLine.trim();
     const id = canonicalTestId(line);
     if (!id || seen.has(id)) continue;
