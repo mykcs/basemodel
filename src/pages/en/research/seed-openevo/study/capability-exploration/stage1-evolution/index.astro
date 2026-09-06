@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoSuccessorExplorationMap from '../../../../../../../components/research/OpenEvoSuccessorExplorationMap.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
@@ -8,5 +9,6 @@ const locale = 'en' as const;
   description="Compatibility route: the real research chronology behind the shared 3B/1.7B Stage-1 harness, from horizon, sampling, history, self-deliberation, and action-channel diagnostics to canonical corpora and downstream capacity decisions."
   locale={locale}
 >
+  <ResearchRouteContext locale={locale} route="stage1-evolution" />
   <OpenEvoSuccessorExplorationMap locale={locale} />
 </AppLayout>

@@ -5,7 +5,7 @@ Audience: Agents editing experiment results, benchmark reports, research notes, 
 
 ## Reader model
 
-Assume the reader is a technically capable lab peer who knows the shared project name and broad goal, but did not run the experiment sequence and does not know the internal run IDs, campaign names, debugging history, or shorthand.
+Assume the reader is a student or teacher encountering agents and this project for the first time. Establish the concrete task, what the model controls, the research question, and what starts and ends an experiment before relying on project terms. Technical depth remains available in local evidence disclosures.
 
 The page must teach enough context for that reader to understand the scientific question, evidence, inference, and boundary without reconstructing the project from GitHub archaeology.
 
@@ -115,7 +115,7 @@ For a research-results page, verify all of the following:
 
 1. Does the title or first paragraph enter the scientific subject immediately?
 2. Is there any sentence explaining how the article is written rather than explaining the research? Remove it unless it resolves a real ambiguity.
-3. Can a lab peer unfamiliar with the run history understand WebShop, the tested update, and what “fresh” means before seeing internal IDs?
+3. Can a reader with no agent or project background explain the shopping task, tested change, start/stop conditions, and supported outcome from visible content alone?
 4. Do experiment IDs remain provenance rather than narrative structure?
 5. Does each major positive or negative conclusion have evidence, inference, and a clear boundary?
 6. Are invalid measurements separated from scientific failures?

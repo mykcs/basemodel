@@ -1,8 +1,10 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoCeilingStrategy from '../../../../../../../components/research/OpenEvoCeilingStrategy.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout title="Ceiling-1.0 7B final: 49.33 score / 45.31% exact success" description="Ceiling-1.0 preserves the 2026-08-31 historical snapshot and adds the 7B final closeout: 149 completed rounds, 19,072 accepted rollouts, 143 SD-LoRA components, and 49.33 score / 58 of 128 exact successes on the frozen final panel." locale={locale}>
+  <ResearchRouteContext locale={locale} route="stage2-ceiling" />
   <OpenEvoCeilingStrategy locale={locale} />
 </AppLayout>

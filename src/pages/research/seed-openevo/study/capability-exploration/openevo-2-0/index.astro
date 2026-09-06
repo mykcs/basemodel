@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoRedesignMap from '../../../../../../components/research/OpenEvoRedesignMap.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -8,5 +9,6 @@ const locale = 'zh' as const;
   description="Qwen2.5-3B 与 Qwen3-1.7B successor 的双入口：探索版按真实诊断/回退顺序讲，报告与论文版按 shared Harness→canonical Stage 1→MiniMax→carriers→PRE_STAGE2_READY 的直线讲。"
   locale={locale}
 >
+  <ResearchRouteContext locale={locale} route="openevo-2-0" />
   <OpenEvoRedesignMap locale={locale} />
 </AppLayout>

@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoLegacyStage1Archive from '../../../../../../../components/research/OpenEvoLegacyStage1Archive.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
@@ -8,5 +9,6 @@ const locale = 'en' as const;
   description="Reusable historical OpenEvo Stage-1 trajectories, MiniMax analyzer outputs, adapters, pinned Hugging Face revisions, and GitHub audit evidence."
   locale={locale}
 >
+  <ResearchRouteContext locale={locale} route="stage1-previous" />
   <OpenEvoLegacyStage1Archive locale={locale} />
 </AppLayout>

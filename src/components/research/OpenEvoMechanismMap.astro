@@ -1,158 +1,104 @@
 ---
 import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
-import {
-  OPEN_EVO_MECHANISM_BOUNDARIES,
-  OPEN_EVO_MECHANISM_EXPERIMENTS,
-  OPEN_EVO_MECHANISM_PRINCIPLE,
-  OPEN_EVO_MECHANISM_SOURCE,
-  OPEN_EVO_MECHANISM_STEPS,
-} from '../../data/openEvoMechanismNarrative';
-
+import ResearchTaskContext from './ResearchTaskContext.astro';
+import ExperimentLifecycle from './ExperimentLifecycle.astro';
+import OpenEvoM1DResults from './OpenEvoM1DResults.astro';
+import { OPEN_EVO_MECHANISM_SOURCE as source, OPEN_EVO_MECHANISM_EXPERIMENTS as experiments, OPEN_EVO_MECHANISM_BOUNDARIES, mechanismEvidenceUrl } from '../../data/openEvoMechanismNarrative';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const steps = OPEN_EVO_MECHANISM_STEPS.map((step) => ({ ...step, copy: zh ? step.zh : step.en }));
-const experiments = OPEN_EVO_MECHANISM_EXPERIMENTS;
-const boundaries = zh ? OPEN_EVO_MECHANISM_BOUNDARIES.zh : OPEN_EVO_MECHANISM_BOUNDARIES.en;
-const sourceUrl = `https://github.com/mykcs/openevo-experiment/commit/${OPEN_EVO_MECHANISM_SOURCE.mergedCommit}`;
+const p = (path: string) => localePath(locale, path);
+const causal = experiments.filter((row) => row.track === 'causal');
+const reference = experiments.find((row) => row.id === 'M1-D')!;
+const amendment = mechanismEvidenceUrl(source.m1aAmendment);
+const gateAmendment = mechanismEvidenceUrl(source.m1cAmendment);
+const release = `https://github.com/mykcs/openevo-experiment/blob/${source.activationCommit}/${source.activationRelease}`;
 ---
-
-<article class="mechanism-map" data-testid="openevo-mechanism-map">
-  <header class="mechanism-hero">
-    <div class="mechanism-hero__eyebrow">
-      <span>OPENEVO × WEBSHOP</span>
-      <b>{t('主实验 · M1-D 阶段已激活', 'PRIMARY PROGRAM · M1-D PHASE ACTIVATED')}</b>
-    </div>
-    <h1>{t('从“能走多高”到“能不能主动干预”', 'From “how high can it go?” to “can we steer it?”')}</h1>
-    <p class="mechanism-hero__lead">{zh ? OPEN_EVO_MECHANISM_PRINCIPLE.zh : OPEN_EVO_MECHANISM_PRINCIPLE.en}</p>
-    <div class="mechanism-hero__status" role="status">
-      <strong>OpenEVO-Mechanism-1.0</strong>
-      <span>{t('科学设计已冻结；M1-D Stage1 已由独立 release 授权，MiniMax post-hoc 绑定也已冻结；M1-A / M1-B / M1-C 仍锁定，结果尚未封存。', 'Scientific design is frozen; M1-D Stage1 has an independent execution release and its MiniMax post-hoc binding is frozen. M1-A / M1-B / M1-C remain locked, and no M1-D result is sealed yet.')}</span>
-    </div>
+<article class="mechanism-map" data-testid="openevo-mechanism-map" data-reader-page="mechanism" data-ui-audit="contrast layout">
+  <header class="mechanism-map__hero">
+    <a class="mechanism-map__back" href={p('/research/seed-openevo/study/capability-exploration/')}>{t('能力探索 / 参数机制实验', 'Capability exploration / Parameter-mechanism experiments')}</a>
+    <h1>{t('OpenEvo 参数机制实验', 'OpenEvo parameter-mechanism experiments')}</h1>
+    <p class="mechanism-map__lede" data-reader-purpose>{t('让模型在模拟商店里按要求购物，再检查：它学习后留下的参数变化，是否真的能改变购物行为？', 'Let a model shop in a simulated store, then test whether the parameter changes left by learning actually change its shopping behavior.')}</p>
+    <p class="mechanism-map__identity">OpenEVO-Mechanism-1.0 · <time datetime={source.checkedDate}>{source.checkedDate}</time> {t('发布快照', 'publication snapshot')}</p>
+    <dl class="mechanism-map__snapshot" data-reader-status>
+      <div><dt>{t('主实验', 'Causal experiments')}</dt><dd>{t('移植、移除与后续引导尚待核验或授权。M1-A 使用独立修订方案，原预注册保留。', 'Transplant, removal, and guided learning await qualification or authority. M1-A has a separate successor; its original preregistration is preserved.')}</dd></div>
+      <div><dt>{t('独立参照', 'Independent reference')}</dt><dd>{reference.state[locale]}{t('。', '. ')}{t('已获准执行不等于结果已经完成。', 'Execution authority does not mean results are complete.')}</dd></div>
+    </dl>
+    <p class="mechanism-map__time" data-reader-time>{t('实际开跑和结束时间：此发布快照未提供。结束由下面的固定条件决定，不是倒计时。', 'Actual start and end times are not provided by this publication snapshot. Completion follows the fixed conditions below, not a countdown.')}</p>
   </header>
-  <section class="mechanism-question" aria-labelledby="mechanism-question-title">
-    <div>
-      <p>THE QUESTION CHANGED</p>
-      <h2 id="mechanism-question-title">{t('Ceiling 已经告诉我们“发生了变化”，现在要证明“这些变化到底有没有用”', 'Ceiling told us that change happened. Now we have to prove whether the change matters.')}</h2>
-    </div>
-    <dl>
-      <div>
-        <dt>{t('旧问题', 'Previous question')}</dt>
-        <dd>{t('同等资源下，OpenEvo 的能力天花板在哪里？', 'Under matched resources, where is OpenEvo’s capability ceiling?')}</dd>
-      </div>
-      <div>
-        <dt>{t('新问题', 'New question')}</dt>
-        <dd>{t('OpenEvo 学到的参数方向是否有方向特异的因果作用，并能否反过来指导下一次自我进化？', 'Are OpenEvo’s learned parameter directions causally direction-specific, and can they guide a later self-improvement step?')}</dd>
-      </div>
-    </dl>
+
+  <ResearchTaskContext locale={locale} />
+
+  <section class="mechanism-map__section" id="research-question" aria-labelledby="mechanism-question-title">
+    <h2 id="mechanism-question-title">{t('从观察参数到检验作用', 'From observing parameters to testing their effect')}</h2>
+    <p>{t('模型参数是一组影响模型动作选择的数值。Ceiling-1.0 研究固定资源下模型能做到什么，并留下训练历史；Mechanism-1.0 在这份历史上检验参数变化的作用。', 'Model parameters are values that influence action choices. Ceiling-1.0 studies what the model can achieve within a fixed resource envelope and preserves the training history. Mechanism-1.0 tests the effects of parameter changes from that history.')}</p>
+    <p>{t('数值变化大，只能说明变化大。把真实变化加到模型上，或把一部分移除，再与同样幅度的随机修改比较，才能检查行为变化是否来自这个特定方向。', 'A large numerical change only establishes its magnitude. Adding the real change or removing part of it, then comparing with equally sized random modifications, tests whether behavior depends on that particular direction.')}</p>
   </section>
 
-  <section class="mechanism-flow" aria-labelledby="mechanism-flow-title">
-    <header>
-      <p>OBSERVE → INTERVENE → STEER</p>
-      <h2 id="mechanism-flow-title">{t('三步，不允许跳步', 'Three steps, with no shortcuts')}</h2>
-      <span>{t('先做描述，再做因果干预；只有干预通过预注册门槛，才允许把几何知识反馈回 OpenEvo。', 'Describe first, intervene second. Geometry can enter the OpenEvo loop only after passing the preregistered causal gate.')}</span>
-    </header>
-    <ol>
-      {steps.map((step) => (
-        <li data-step={step.id}>
-          <small>{step.copy.kicker}</small>
-          <strong>{step.copy.title}</strong>
-          <p>{step.copy.body}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-  <section class="mechanism-passports" aria-labelledby="mechanism-passports-title">
-    <header>
-      <p>EXPERIMENT PASSPORTS</p>
-      <h2 id="mechanism-passports-title">{t('四张身份证：三个主实验，一个 SEED 参照探针', 'Four passports: three primary experiments and one SEED reference probe')}</h2>
-      <span>{t('每个实验先冻结问题、预算、停止条件和不能说的话。GPU 空出来，只代表“可以排队”，不代表“应该启动”。', 'Each experiment freezes its question, budget, stopping rule, and claim boundary first. Free GPU capacity means “schedulable,” not “scientifically authorized.”')}</span>
-    </header>
-    <div class="passport-table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>{t('实验', 'Experiment')}</th>
-            <th>{t('要回答什么', 'Question')}</th>
-            <th>{t('固定预算', 'Frozen budget')}</th>
-            <th>{t('现在', 'Now')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {experiments.map((row) => (
-            <tr>
-              <th scope="row"><code>{row.id}</code><strong>{zh ? row.nameZh : row.nameEn}</strong></th>
-              <td>{zh ? row.questionZh : row.questionEn}</td>
-              <td>{zh ? row.budgetZh : row.budgetEn}</td>
-              <td><span class="status-lock">{zh ? row.stateZh : row.stateEn}</span></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+  <section class="mechanism-map__section" id="experiment-dependencies" aria-labelledby="mechanism-dependency-title">
+    <h2 id="mechanism-dependency-title">{t('主实验的依赖关系', 'Dependencies between the causal experiments')}</h2>
+    <figure class="mechanism-route" data-testid="mechanism-dependency-map">
+      <div class="mechanism-route__origin" data-dependency="source">{t('先核验已封存的训练历史和参数分析', 'First verify the sealed training history and parameter analysis')}</div>
+      <svg class="mechanism-route__connector" viewBox="0 0 20 32" aria-hidden="true"><path d="M10 1v27M4 22l6 6 6-6" /></svg>
+      <ul class="mechanism-route__fork" aria-label={t('两个不同的因果问题', 'Two distinct causal questions')}>
+        <li data-ui-audit-item><a href="#m1-a" data-dependency="M1-A"><span>M1-A</span><strong>{t('加上真实变化', 'Add the real change')}</strong><p>{t('检验：移植到更早的模型后，行为是否改变。', 'Test whether transplanting it to an earlier model changes behavior.')}</p></a></li>
+        <li data-ui-audit-item><a href="#m1-b" data-dependency="M1-B"><span>M1-B</span><strong>{t('移除主要变化', 'Remove a major change')}</strong><p>{t('检验：移除之后，行为是否额外受损。', 'Test whether removing it causes extra behavioral harm.')}</p></a></li>
+      </ul>
+      <svg class="mechanism-route__connector" viewBox="0 0 20 32" aria-hidden="true"><path d="M10 1v27M4 22l6 6 6-6" /></svg>
+      <div class="mechanism-route__gate" data-dependency="gate"><strong>{t('特定方向有效的证据达到门槛了吗？', 'Does evidence for a useful direction pass the threshold?')}</strong><p>{t('先检查 M1-A 修订结果；未通过时再检查 M1-B 的第一组变化。', 'Check the M1-A successor first; if it does not pass, check M1-B Theme 1.')}</p></div>
+      <svg class="mechanism-route__connector" viewBox="0 0 20 32" aria-hidden="true"><path d="M10 1v27M4 22l6 6 6-6" /></svg>
+      <ul class="mechanism-route__fork" aria-label={t('门槛检查的两个分支', 'Two possible gate outcomes')}>
+        <li data-ui-audit-item><a href="#m1-c" data-dependency="M1-C"><span>{t('通过门槛，并另获执行授权', 'Gate passes, plus separate execution authority')}</span><strong>{t('M1-C · 指导后续学习', 'M1-C · Guide later learning')}</strong><p>{t('三组各 512 次尝试，修改幅度和任务预算相同。', 'Three arms, 512 attempts each, with equal update magnitude and task budgets.')}</p></a></li>
+        <li class="mechanism-route__stop" data-dependency="stop" data-ui-audit-item><span>{t('未通过门槛', 'Gate does not pass')}</span><strong>{t('结束这条路线，不启动 M1-C', 'End this route without starting M1-C')}</strong><p>{t('记录没有方向特异信号，不为了得到正结果临时换方向。', 'Record no direction-specific signal; do not switch directions to chase a positive result.')}</p></li>
+      </ul>
+      <figcaption>{t('连接线表示证据依赖，不表示实验已经运行。点选实验可跳到它的开始、结束与产出条件。', 'Connections represent evidence dependencies, not completed execution. Select an experiment to inspect its start, stop, and output conditions.')}</figcaption>
+    </figure>
+    <aside class="mechanism-map__reference-branch" data-dependency="M1-D"><strong>{t('独立参照：M1-D', 'Independent reference: M1-D')}</strong><p>{t('它比较最初收集的购物经验，不提供 M1-C 的方向信号，也不是主实验的第四步。', 'It compares initially collected shopping experience. It does not supply a direction signal to M1-C and is not a fourth sequential step.')}</p><a href="#m1-d">{t('查看初始化参照的条件', 'Inspect the initialization-reference conditions')}</a></aside>
   </section>
 
-  <section class="mechanism-causal" aria-labelledby="mechanism-causal-title">
-    <header>
-      <p>WHAT COUNTS AS CAUSAL?</p>
-      <h2 id="mechanism-causal-title">{t('“参数变得多”不等于“这个参数有用”', '“The parameter moved a lot” does not mean “the parameter is useful.”')}</h2>
-    </header>
-    <div class="causal-grid">
-      <article>
-        <small>{t('TaskVector', 'TaskVector')}</small>
-        <strong>{t('把未来方向移植到一个更早、真实不存在的反事实状态', 'Transplant a future direction into an earlier counterfactual state')}</strong>
-        <p>{t('用 +0.5τ、+1τ、−1τ 和 3 个 Gram 同范数随机方向比较。这样测试的是方向，不是“改的权重更多”。', 'Compare +0.5τ, +1τ, −1τ, and three Gram-norm-matched random directions. This isolates direction from simply changing more weight.')}</p>
-      </article>
-      <article>
-        <small>{t('Parameter themes', 'Parameter themes')}</small>
-        <strong>{t('先冻结 top-3 theme，再逐个敲掉', 'Freeze the top three themes first, then knock them out one by one')}</strong>
-        <p>{t('只有敲掉某个 theme 后的行为下降超过同范数随机敲除，才允许称为因果重要。', 'A theme is called causally important only if its knockout hurts behavior more than norm-matched random knockouts.')}</p>
-      </article>
+  <section class="mechanism-map__section" id="causal-experiments" aria-labelledby="mechanism-causal-title">
+    <h2 id="mechanism-causal-title">{t('主实验的开始与结束', 'Start and stop conditions of the causal experiments')}</h2>
+    <p>{t('主实验使用 Qwen3-1.7B 模型；独立参照使用 Qwen2.5-3B 模型。1.7B、3B 是模型规模的名称，不是分数。', 'The causal experiments use Qwen3-1.7B; the independent reference uses Qwen2.5-3B. The 1.7B and 3B labels describe model sizes, not scores.')}</p>
+    <p class="mechanism-map__amendment" data-predecessor-status="not-identifiable">{t('原 M1-A 的两个末段取点对应同一个模型，没有实际参数差异，所以无法检验原定方向。这是取点不可识别，不是已经测得“变化没有用”。修订实验改用相邻且互不相同的接受状态；它仍需独立授权。', 'The original M1-A late anchors resolve to the same model, leaving no parameter difference to test. This is non-identifiability, not a measured absence of causal effect. A separate successor uses adjacent distinct accepted states and still requires independent authority.')}</p>
+    {causal.map((row) => <ExperimentLifecycle experiment={row} locale={locale} />)}
+    <div class="mechanism-map__threshold" data-reader-gate>
+      <h3>{t('后续学习的放行门槛', 'The gate for guided learning')}</h3>
+      <p>{t('优先采用 M1-A 修订方向：加上完整变化后，平均任务分比三个随机对照的中位数至少高 1 分，且完整成功次数不比原模型少。', 'Prefer the M1-A successor direction: its full positive change must beat the median of all three random controls by at least one mean task-score point, without reducing exact-success count relative to the baseline.')}</p>
+      <p>{t('若上述条件未通过，再检查 M1-B 的第一组变化：移除它造成的平均分损失，比每一个随机移除对照至少多 1 分，且完整成功次数没有增加。两者都未通过就不启动 M1-C。', 'Otherwise check M1-B Theme 1: removing it must hurt mean score at least one point more than every random-removal control, without increasing exact-success count. If neither passes, M1-C does not start.')}</p>
+      <a href={gateAmendment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={gateAmendment} />{t('门槛修订依据（需仓库权限）', 'Gate amendment (repository access required)')}</a>
     </div>
-  </section>
-  <section class="mechanism-ray" aria-labelledby="mechanism-ray-title">
-    <div>
-      <p>RAY RESOURCE PLAN</p>
-      <h2 id="mechanism-ray-title">{t('M1-D 已进入共享 GPU0–3 Ray 池，但正式采集仍只允许单 GPU、无抢占', 'M1-D is authorized on the shared GPU0–3 Ray pool, but formal collection still uses exactly one GPU with no preemption')}</h2>
-      <p>{t('当前 release 只修正正式 driver 的参数解析，不改变科学合同或资源合同：Ray 从 GPU0–3 中选择一张当前空闲卡，申请 9000 MiB、使用 secondary_spare、不得抢占；具体 GPU 编号不是科学变量。M1-A / M1-B / M1-C 仍未获得执行权。', 'The current release only repairs formal-driver argument parsing; it changes neither the scientific nor the resource contract. Ray selects one currently free GPU from GPU0–3, requests 9000 MiB on secondary_spare, and never preempts. The physical GPU index is not a scientific variable. M1-A / M1-B / M1-C remain unauthorized for execution.')}</p>
-    </div>
-    <dl>
-      <div><dt>{t('端点资格', 'Endpoint qualification')}</dt><dd>POLICY_ENDPOINT = PASS</dd></div>
-      <div><dt>{t('当前池', 'Current pool')}</dt><dd>GPU0–3 SHARED RAY = AUTHORIZED</dd></div>
-      <div><dt>{t('资源规则', 'Resource rule')}</dt><dd>1 GPU · 9000 MiB · NO PREEMPTION</dd></div>
-      <div><dt>{t('科学启动权', 'Science activation')}</dt><dd>M1-D STAGE1 = ACTIVATED</dd></div>
-    </dl>
+    <details class="mechanism-map__details">
+      <summary>{t('技术细节：原取点、修订取点与随机对照', 'Technical detail: original anchors, successor selection, and random controls')}</summary>
+      <p>{t('原预注册的 25% / 50% / 75% / 100% 分别对应 R27 / R49 / R49 / R49。因此 theta_100% − theta_75% 为零向量；原预注册保留并标记 BLOCKED_NOT_IDENTIFIABLE，不能供给 M1-C 信号。', 'The original 25% / 50% / 75% / 100% anchors map to R27 / R49 / R49 / R49. Thus theta_100% − theta_75% is a zero vector. Preserve that preregistration as BLOCKED_NOT_IDENTIFIABLE; it cannot supply the M1-C signal.')}</p>
+      <p>{t('修订实验机械选取 S(K−2)、S(K−1)、S(K)，用最后两个状态之差作为 TaskVector，移植到 S(K−2)。三份 adapter 身份必须两两不同，Gram 范数有限且大于 0；不根据 reward 挑选另一个窗口。', 'The successor mechanically selects S(K−2), S(K−1), and S(K). The difference of the last two is the TaskVector, transplanted to S(K−2). Adapter identities must be pairwise distinct and the Gram norm finite and positive; reward does not select another window.')}</p>
+      <p>{t('M1-A 保留 +0.5τ、+1τ、−1τ、三个 Gram 范数匹配随机方向及自然状态对照。M1-B 在看行为结果前，按 contribution_norm 冻结前三个 principal parameter themes。M1-C 的方向微调为候选 Gram 范数的 10%，随后缩放回原范数；零更新仍为零更新。', 'M1-A preserves +0.5τ, +1τ, −1τ, three Gram-norm-matched random directions, and natural-state references. M1-B freezes the top three principal parameter themes by contribution_norm before behavioral outcomes. M1-C uses a 10%-of-candidate-Gram-norm nudge, then rescales to the original norm; a zero update remains a no-op.')}</p>
+      <a href={amendment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={amendment} />{t('原预注册处置与独立修订（需仓库权限）', 'Predecessor disposition and separate successor (repository access required)')}</a>
+    </details>
   </section>
 
-  <section class="mechanism-boundary" aria-labelledby="mechanism-boundary-title">
-    <header>
-      <p>BOUNDARY</p>
-      <h2 id="mechanism-boundary-title">{t('这次明确不做什么', 'What this program explicitly does not do')}</h2>
-    </header>
-    <ul>{boundaries.map((item) => <li>{item}</li>)}</ul>
-    <aside>
-      <strong>{t('SEED 在这里不是主角。', 'SEED is not the main character here.')}</strong>
-      <span>{t('M1-D 只采 1,440 条 Stage1 轨迹并做 MiniMax 分析，到 Stage2 门口自动停止。它回答“初始化教材有什么不同”，不是“能不能复现论文最终分数”。', 'M1-D collects only 1,440 Stage1 trajectories and runs MiniMax analysis, then stops before Stage2. It asks how initialization corpora differ, not whether we can reproduce the paper’s final score.')}</span>
-    </aside>
+  <section class="mechanism-map__section" id="initialization-reference" aria-labelledby="mechanism-reference-title">
+    <h2 id="mechanism-reference-title">{t('独立参照：初始经验从哪里来', 'Independent reference: where initial experience comes from')}</h2>
+    <p>{t('初始化阶段（Stage1）先收集模型的购物经验。M1-D 只比较这部分经验，不继续执行 SEED 的后续训练阶段（Stage2）。固定 1,440 + MiniMax；SEED Stage2 = 0。', 'Initialization (Stage1) starts by collecting shopping experience. M1-D compares only that experience and does not continue into SEED’s later training stage (Stage2). Fixed 1,440 + MiniMax; SEED Stage2 = 0.')}</p>
+    <ExperimentLifecycle experiment={reference} locale={locale} />
+    <OpenEvoM1DResults locale={locale} />
   </section>
 
-  <footer class="mechanism-evidence">
-    <div>
-      <p>PROVENANCE</p>
-      <strong>{t('现在展示的是“已冻结设计 + M1-D 执行状态”，不是实验结果', 'This page shows frozen design plus M1-D execution status, not a scientific result')}</strong>
-      <span>{t('初始科学合同来自 PR #319；当前 authority snapshot 为 main b4cdf8e，已经包含 202609062029 的 M1-D Stage1 successor release 与 202609061925 的 MiniMax post-hoc binding。新 release 在 0 条正式轨迹时修复 argparse abbreviation，明确不改变科学语义。结果只有在 trajectory / MiniMax seal 真正出现后才会上站。', 'The initial scientific contract came from PR #319. The current authority snapshot is main b4cdf8e, including the 202609062029 M1-D Stage1 successor release and the 202609061925 MiniMax post-hoc binding. The successor fixes argparse abbreviation at zero formal trajectories and explicitly leaves scientific semantics unchanged. Results appear here only after trajectory and MiniMax seals actually exist.')}</span>
-    </div>
-    <a href={sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={sourceUrl} />{t('查看当前科学 authority →', 'Open the current scientific authority →')}</a>
-  </footer>
+  <section class="mechanism-map__section" id="evidence-boundary" aria-labelledby="mechanism-boundary-title">
+    <h2 id="mechanism-boundary-title">{t('证据边界与来源', 'Evidence boundaries and sources')}</h2>
+    <ul>{OPEN_EVO_MECHANISM_BOUNDARIES[locale].map((item) => <li>{item}</li>)}</ul>
+    <p>{t('诊断任务来自规定的训练任务范围，不能据此宣称对全新任务普遍有效。M1-D 只解释初始化经验，不能与 SEED 论文最终分数直接相减来声称方法优势。', 'Diagnostics use the prescribed training-task range; they do not establish generalization to fresh tasks. M1-D addresses initialization experience only; subtracting a SEED paper-final score cannot establish a method advantage.')}</p>
+    <details class="mechanism-map__details">
+      <summary>{t('运行依据：授权、共享 GPU 与分析器绑定', 'Operational provenance: release, shared GPUs, and analyzer binding')}</summary>
+      <p>{t('以下是执行授权的历史记录，不是实时占用监控。放行记录只授权 M1-D Stage1；不能用它启动 M1-A/B/C。正式采集单 GPU、9000 MiB、无抢占。', 'These are execution-authorization records, not live occupancy. The release authorizes M1-D Stage1 only, not M1-A/B/C. Formal collection uses one GPU, 9000 MiB, and no preemption.')}</p>
+      <dl class="mechanism-map__technical-facts"><div><dt>GPU0–3 SHARED RAY</dt><dd>GPU0–3 SHARED RAY = AUTHORIZED</dd></div><div><dt>M1-D Stage1</dt><dd>M1-D STAGE1 = ACTIVATED</dd></div><div><dt>MiniMax</dt><dd>{source.minimaxBinding}</dd></div></dl>
+      <a href={release} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={release} />{t('独立放行记录（需仓库权限）', 'Independent execution release (repository access required)')}</a>
+    </details>
+    <footer class="mechanism-map__provenance">{t('科学来源', 'Scientific source')}：openevo-experiment/{source.branch} · <time datetime={source.checkedDate}>{source.checkedDate}</time> · <code>{source.mergedCommit.slice(0, 8)}</code>. {t('网站投影已核对的设计与授权，不自行授予实验执行权。', 'The website projects verified design and authorization; it never grants experiment execution authority.')}</footer>
+  </section>
 </article>
 <style>
-.mechanism-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;display:grid;gap:1.2rem}.mechanism-map>*{min-width:0}.mechanism-map p{margin:0}.mechanism-hero{padding:2rem 0 1.4rem;border-bottom:1px solid var(--line);display:grid;gap:1rem}.mechanism-hero__eyebrow{display:flex;justify-content:space-between;gap:1rem;align-items:center;font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.mechanism-hero__eyebrow span{color:var(--accent-deep)}.mechanism-hero__eyebrow b{padding:.35rem .55rem;border:1px solid var(--line);border-radius:999px;color:var(--muted)}.mechanism-hero h1{max-width:950px;margin:0;font-size:clamp(2.5rem,6vw,5.6rem);line-height:.94;letter-spacing:-.06em}.mechanism-hero__lead{max-width:780px;color:var(--muted);font-size:1.05rem;line-height:1.7}.mechanism-hero__status{display:grid;grid-template-columns:minmax(210px,.45fr) minmax(0,1fr);gap:1rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-hero__status span{color:var(--muted);line-height:1.55}
-.mechanism-question,.mechanism-flow,.mechanism-passports,.mechanism-causal,.mechanism-ray,.mechanism-boundary,.mechanism-evidence{padding:1.25rem 0;border-bottom:1px solid var(--line)}.mechanism-question>div>p,.mechanism-flow header>p,.mechanism-passports header>p,.mechanism-causal header>p,.mechanism-ray>div>p:first-child,.mechanism-boundary header>p,.mechanism-evidence p{color:var(--accent-deep);font:800 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.mechanism-question{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:1.4rem}.mechanism-question h2,.mechanism-flow h2,.mechanism-passports h2,.mechanism-causal h2,.mechanism-ray h2,.mechanism-boundary h2{margin:.35rem 0 0;font-size:clamp(1.5rem,3.2vw,2.35rem);line-height:1.08;letter-spacing:-.04em}.mechanism-question dl{margin:0;display:grid;gap:.7rem}.mechanism-question dl div{padding:.9rem;border-left:3px solid var(--line);background:var(--surface-muted)}.mechanism-question dt{color:var(--muted);font-size:.75rem;font-weight:800}.mechanism-question dd{margin:.25rem 0 0;line-height:1.55}
-.mechanism-flow header,.mechanism-passports header{display:grid;grid-template-columns:minmax(220px,.6fr) minmax(0,1.4fr);gap:.8rem 1.2rem;align-items:end}.mechanism-flow header>p,.mechanism-passports header>p{grid-column:1/-1}.mechanism-flow header span,.mechanism-passports header span{color:var(--muted);line-height:1.6}.mechanism-flow ol{list-style:none;margin:1rem 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}.mechanism-flow li{display:grid;gap:.45rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.mechanism-flow small{color:var(--accent-deep);font:800 .62rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.mechanism-flow li strong{font-size:1.05rem}.mechanism-flow li p{color:var(--muted);line-height:1.55;font-size:.9rem}
-.passport-table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;margin-top:1rem}.mechanism-passports table{width:100%;min-width:860px;border-collapse:collapse;text-align:left}.mechanism-passports th,.mechanism-passports td{padding:.85rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}.mechanism-passports thead th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.04em}.mechanism-passports tbody th{width:18%}.mechanism-passports tbody th code{display:block;width:max-content;margin-bottom:.3rem;color:var(--accent-deep);font-size:.72rem}.mechanism-passports tbody th strong{display:block}.mechanism-passports tbody td{color:var(--muted);font-size:.88rem}.status-lock{color:var(--ink);font-weight:700}
-.mechanism-causal header{max-width:800px}.causal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.causal-grid article{display:grid;gap:.45rem;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel)}.causal-grid small{color:var(--accent-deep);font:800 .65rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.causal-grid strong{font-size:1.08rem;line-height:1.35}.causal-grid p{color:var(--muted);line-height:1.6}.mechanism-ray{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:1.4rem}.mechanism-ray>div>p:last-child{margin-top:.65rem;color:var(--muted);line-height:1.65}.mechanism-ray dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.mechanism-ray dl div{padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-ray dt{color:var(--muted);font-size:.72rem;font-weight:800}.mechanism-ray dd{margin:.25rem 0 0;font:750 .78rem/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.mechanism-boundary{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1fr);gap:1rem 1.4rem}.mechanism-boundary header{grid-row:span 2}.mechanism-boundary ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.mechanism-boundary li{padding:.7rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);font-size:.88rem;line-height:1.45}.mechanism-boundary aside{display:grid;gap:.3rem;padding:.9rem;border-left:3px solid var(--accent);background:var(--surface-muted)}.mechanism-boundary aside span{color:var(--muted);line-height:1.55}.mechanism-evidence{display:flex;justify-content:space-between;gap:1.2rem;align-items:end;border-bottom:0}.mechanism-evidence>div{display:grid;gap:.35rem}.mechanism-evidence span{color:var(--muted);font-size:.88rem}.mechanism-evidence a{flex:none;color:var(--accent-deep);font-weight:800;text-underline-offset:.2em}
-@media(max-width:760px){.mechanism-map{width:min(100% - 1rem,1120px)}.mechanism-hero{padding-top:1.2rem}.mechanism-hero__eyebrow{align-items:flex-start;flex-direction:column}.mechanism-hero__status,.mechanism-question,.mechanism-flow header,.mechanism-passports header,.mechanism-ray,.mechanism-boundary{grid-template-columns:1fr}.mechanism-flow ol,.causal-grid{grid-template-columns:1fr}.mechanism-boundary header{grid-row:auto}.mechanism-boundary ul{grid-template-columns:1fr}.mechanism-ray dl{grid-template-columns:1fr}.mechanism-evidence{display:grid;align-items:start}}
+.mechanism-map{width:min(1120px,calc(100% - 2rem));margin:1.5rem auto 4rem;color:var(--ink);font-size:1rem;line-height:1.75}.mechanism-map__hero{padding-bottom:1.25rem;border-bottom:1px solid var(--line)}.mechanism-map__back{font-size:.9rem;color:var(--accent-deep);text-underline-offset:.2em}.mechanism-map h1{font-size:clamp(2rem,3.4vw,2.8rem);line-height:1.3;letter-spacing:-.025em;margin:.7rem 0;max-width:24ch}.mechanism-map__lede{font-size:1.18rem;max-width:48rem;line-height:1.8;margin:.75rem 0}.mechanism-map__identity,.mechanism-map__time{font-size:.88rem;color:var(--muted);line-height:1.7}.mechanism-map__snapshot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin:1.1rem 0}.mechanism-map__snapshot>div{min-width:0;border-left:3px solid var(--accent-deep);padding:.4rem 0 .4rem 1rem}.mechanism-map__snapshot dt{font-weight:750}.mechanism-map__snapshot dd{margin:.3rem 0 0}.mechanism-map__section{margin-top:2.25rem;padding-top:1.5rem;border-top:1px solid var(--line);min-width:0}.mechanism-map h2{font-size:1.6rem;line-height:1.4;margin:0 0 .8rem}.mechanism-map h3{font-size:1.25rem;line-height:1.5}.mechanism-map__section>p,.mechanism-map__section>ul{max-width:48rem;margin:.8rem 0;line-height:1.8}.mechanism-map a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.mechanism-map__section a{color:var(--accent-deep);text-underline-offset:.2em}.mechanism-route{margin:1.3rem 0}.mechanism-route__origin,.mechanism-route__gate{width:min(100%,42rem);margin:auto;text-align:center;padding:.75rem 1rem;border-block:2px solid var(--line);box-sizing:border-box;background:var(--surface-muted)}.mechanism-route__gate p{margin:.4rem 0;line-height:1.7}.mechanism-route__connector{display:block;height:2rem;width:1.25rem;margin:auto;fill:none;stroke:var(--muted);stroke-width:1.5}.mechanism-route__fork{list-style:none;padding:1rem 0 0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;position:relative}.mechanism-route__fork::before{content:"";position:absolute;top:0;left:25%;width:50%;border-top:1px solid var(--muted)}.mechanism-route__fork>li{position:relative;min-width:0}.mechanism-route__fork>li::before{content:"";height:1rem;position:absolute;left:50%;top:-1rem;border-left:1px solid var(--muted)}.mechanism-route__fork a,.mechanism-route__stop{display:block;border:1px solid var(--line);border-radius:var(--radius-panel);padding:1rem;color:var(--ink);text-decoration:none;min-height:100%;box-sizing:border-box;background:var(--surface)}.mechanism-route__fork a:hover{border-color:var(--accent-deep);background:var(--surface-muted)}.mechanism-route__fork span{display:block;font-size:.85rem;font-weight:700;color:var(--accent-deep);margin-bottom:.35rem}.mechanism-route__fork strong{display:block;font-size:1.15rem}.mechanism-route__fork p{margin:.5rem 0 0;line-height:1.75;color:var(--ink)}.mechanism-route figcaption{font-size:.88rem;color:var(--muted);line-height:1.7;margin-top:.9rem}.mechanism-map__reference-branch{border-left:3px dashed var(--color-info);padding:.75rem 1rem;background:var(--surface-muted);max-width:48rem}.mechanism-map__reference-branch p{margin:.4rem 0}.mechanism-map__amendment{padding:.8rem 1rem;border-left:3px solid var(--color-warning);background:var(--surface-muted)}.mechanism-map__threshold{padding:1rem 0;border-top:1px solid var(--line);max-width:48rem}.mechanism-map__threshold h3{margin:0}.mechanism-map__threshold p{line-height:1.8}.mechanism-map__details{padding:1rem 0;border-top:1px solid var(--line);margin-top:1rem}.mechanism-map__details summary{cursor:pointer;font-weight:700;min-height:44px;display:list-item;line-height:1.7}.mechanism-map__details summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.mechanism-map__details p{max-width:48rem;line-height:1.8}.mechanism-map__details a{display:inline-flex;align-items:center;gap:.4rem;max-width:100%;flex-wrap:wrap}.mechanism-map__technical-facts{margin:1rem 0;overflow-wrap:anywhere}.mechanism-map__technical-facts dt{font-weight:700}.mechanism-map__technical-facts dd{margin:.25rem 0 1rem}.mechanism-map__provenance{font-size:.85rem;color:var(--muted);line-height:1.75;margin-top:1rem;overflow-wrap:anywhere}.mechanism-map__provenance code{font-size:inherit}@media(max-width:760px){.mechanism-map{width:calc(100% - 2rem);margin-top:1rem}.mechanism-map__snapshot{grid-template-columns:1fr;gap:.75rem}.mechanism-map h1{font-size:2rem}.mechanism-map__lede{font-size:1.05rem}.mechanism-route__fork{grid-template-columns:1fr;gap:.8rem;padding:0 0 0 1rem;border-left:1px solid var(--muted)}.mechanism-route__fork::before{display:none}.mechanism-route__fork>li::before{left:-1rem;top:1.5rem;width:1rem;height:0;border-left:0;border-top:1px solid var(--muted)}.mechanism-route__connector{margin-left:0}.mechanism-route__origin,.mechanism-route__gate{text-align:left}.mechanism-map__section{margin-top:1.5rem;padding-top:1.25rem}}@media print{.mechanism-map{width:100%;margin:0}.mechanism-route__fork a{color:var(--ink)}}
 </style>

@@ -1,14 +1,12 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoMechanismMap from '../../../../../../components/research/OpenEvoMechanismMap.astro';
-import OpenEvoM1DResults from '../../../../../../components/research/OpenEvoM1DResults.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="OpenEVO-Mechanism-1.0：从参数变化到主动干预"
-  description="在 Ceiling-1.0 之后，用 TaskVector 因果移植、parameter-theme 敲除和条件触发的 guided microtrial，回答 OpenEvo 学到的参数结构是否真的有用、能否反过来指导下一次自我进化。"
+  title="OpenEvo 参数机制实验：任务、开始条件与结束条件"
+  description="从模拟购物任务理解 OpenEvo 的参数机制实验：移植和移除学习变化、后续学习的条件门槛，以及独立 SEED 初始化参照的开始、结束和结果边界。"
   locale={locale}
 >
   <OpenEvoMechanismMap locale={locale} />
-  <OpenEvoM1DResults locale={locale} />
 </AppLayout>

@@ -235,9 +235,9 @@ Do not:
 
 This subsection is **mandatory for experiment-result pages, research closeouts, benchmark narratives, scientific-study summaries, and any page that turns internal experiment evidence into an explanation for another researcher.** It is not limited to the current OpenEvo route.
 
-### 10.1 Write for a lab peer who did not run the experiments
+### 10.1 Write for a reader who is new to agents and this project
 
-The default reader is a technically capable collaborator who knows the shared project area but does **not** know the internal run history.
+The default reader may be a student or teacher with no agent background, project vocabulary, or run history. Explain the concrete environment task and model role first. Preserve technical rigor through local evidence depth rather than assumed familiarity.
 
 Therefore:
 
@@ -338,7 +338,7 @@ The static reading order must remain sufficient. Interaction may reveal depth, b
 Before merging a result-page rewrite, explicitly verify:
 
 - the first screen contains the research question and current conclusion before internal run IDs dominate;
-- a lab peer unfamiliar with the run history can explain what was tested and why it matters;
+- a student or teacher with no agent or project background can explain the task, tested change, start/stop conditions, and supported outcome;
 - the main text contains evidence and reasoning, not only conclusions and numbers;
 - internal experiment IDs function as provenance rather than navigation;
 - negative results are connected to the next hypothesis rather than listed as a changelog;
@@ -348,6 +348,18 @@ Before merging a result-page rewrite, explicitly verify:
 - the page remains useful as plain HTML / print and does not rely on visual effects to carry meaning.
 
 When browser tests can cheaply protect these invariants, add them. For example, assert that reader-oriented question/background copy appears before the first method-specific or run-ID-heavy section.
+
+---
+
+### 10.8 Executable reader contracts and honest scope
+
+For experiment narratives, maintain a typed start/action/stop/output contract that the visible HTML consumes. Distinguish execution authorization, observed running, completion, and sealed results with their own receipts. Static metadata labels cannot grant authority or create outcomes.
+
+For the capability-exploration family, the executable owners are `src/data/openEvoMechanismNarrative.ts`, `ExperimentLifecycle.astro`, `ResearchTaskContext.astro`, and the closed inventory `src/data/capabilityReaderRoutes.ts`. The inventory declares fully rebuilt versus context-only coverage; do not describe a contextualized historical page as a fully rewritten narrative. New family routes must enter this inventory.
+
+Acceptance requires both missing-field/state negative tests and the rendered reader journey in `tests/e2e/openevo-two-map.spec.ts` (registered cases in `reader-journey.cases.ts`). Main answers must remain visible with JavaScript disabled, and the optional step illustration must be keyboard-operable with reduced motion. Existing words anywhere in source or collapsed content are not sufficient.
+
+Record a cold-read walkthrough: task, purpose, start, stop, current evidence, and next dependency, each with an answer location. This walkthrough and browser checks establish inspectable prerequisites; they do not establish a measured human comprehension rate. A real reader misunderstanding must update the owning data/component and a discriminating regression, rather than add another overlapping prose standard.
 
 ---
 
