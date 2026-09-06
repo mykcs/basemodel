@@ -102,11 +102,11 @@ describe('Agent scenario-trigger discovery', () => {
       'map those concepts into SEED',
     ]) expect(seedWorkflow).toContain(token);
     expect(seedWorkflow).not.toContain('PR #104 is the active implementation path');
-    expect(seedWorkflow).toContain('Current ordinary architecture is self-hosted risk-based CI + optional Vercel Preview + Vercel Production');
+    expect(seedWorkflow).toContain('Current ordinary architecture is CircleCI GitHub App risk-based CI + optional Vercel Preview + Vercel Production');
   });
 
   it('does not silently restore Direct Upload as the ordinary Preview default', () => {
-    expect(repositoryMap).toContain('GitHub PR / release candidate          -> repository-scoped self-hosted CI');
+    expect(repositoryMap).toContain('GitHub PR / release candidate          -> CircleCI GitHub App risk-based CI');
     expect(repositoryMap).toContain('GitHub non-main deployment-eligible ref  -> optional Vercel Preview');
     expect(repositoryMap).toContain('GitHub main                              -> Vercel Production');
     expect(repositoryMap).toContain('Production identity                     -> https://basemodel-preview.vercel.app');

@@ -6,7 +6,8 @@ const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePat
 
 describe('Vercel production deployment architecture', () => {
   const workflowsDir = new URL('../../.github/workflows/', import.meta.url);
-  const selfHostedWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
+  const macFallbackWorkflow = readText('../../.github/workflows/self-hosted-ci.yml');
+  const circleCiConfig = readText('../../.circleci/config.yml');
   const ciPlan = readText('../../scripts/ci-plan.mjs');
   const ciDocsContract = readText('../../scripts/ci-docs-contract.mjs');
   const headerVisibility = readText('../../tests/e2e/global-header-visibility.spec.ts');
@@ -30,25 +31,30 @@ describe('Vercel production deployment architecture', () => {
     github?: { autoJobCancelation?: boolean };
   }>('../../vercel.json');
 
-  it('uses GitHub Actions only as a self-hosted CI control plane', () => {
+  it('uses CircleCI as primary CI and keeps GitHub Actions as a manual Mac fallback', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
     expect(workflowFiles).toEqual(['self-hosted-ci.yml']);
-    expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
-    expect(selfHostedWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
-    expect(selfHostedWorkflow).toContain('persist-credentials: false');
-    expect(selfHostedWorkflow).toContain('node scripts/ci-plan.mjs');
-    expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'docs'");
-    expect(selfHostedWorkflow).toContain("steps.plan.outputs.mode == 'full'");
-    expect(selfHostedWorkflow).toContain('node scripts/ci-docs-contract.mjs');
-    expect(selfHostedWorkflow).not.toContain('needs_validation=true');
-    expect(selfHostedWorkflow).not.toContain('node scripts/vercel-ignore-build.mjs');
+    expect(circleCiConfig).toContain('pr_cloud_ci:');
+    expect(circleCiConfig).toContain('main_cloud_ci:');
+    expect(circleCiConfig).toContain('browser_shard_1');
+    expect(circleCiConfig).toContain('browser_shard_2');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
+    expect(circleCiConfig).toContain('scripts/ci-circleci-prepare.sh');
+    expect(circleCiConfig).toContain('node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e');
+    expect(macFallbackWorkflow).toContain('workflow_dispatch:');
+    expect(macFallbackWorkflow).not.toContain('pull_request:');
+    expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
+    expect(macFallbackWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
+    expect(macFallbackWorkflow).not.toMatch(/runs-on:\s*(?:ubuntu|macos|windows)-/);
+    expect(macFallbackWorkflow).toContain('persist-credentials: false');
+    expect(macFallbackWorkflow).toContain("CI_UI_FORCE_FULL: '1'");
     expect(ciPlan).toContain('code, CI, config, test, asset, data, or mixed PR diff requires full validation');
     expect(ciDocsContract).toContain("git(['diff', '--check'");
     expect(ciDocsContract).toContain("git(['diff', '--name-only'");
-    expect(selfHostedWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(macFallbackWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(headerVisibility).toContain('const globalHeaderRouteShardCount = 4;');
     expect(headerVisibility).toContain('partitionRoundRobin');
-    expect(selfHostedWorkflow).not.toContain('cache: npm');
+    expect(macFallbackWorkflow).not.toContain('cache: npm');
     expect(runnerDockerfile).toContain('FROM node:24-bookworm-slim');
     expect(runnerDockerfile).toContain('@playwright/test@1.62.1');
     expect(runnerStart).toContain("grep -q 'AC Power'");
@@ -135,14 +141,19 @@ describe('Vercel production deployment architecture', () => {
   });
 
   it('pins every GitHub-authored action to an immutable commit', () => {
-    expect(selfHostedWorkflow).toContain('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1');
-    expect(selfHostedWorkflow).toContain('actions/setup-node@820762786026740c76f36085b0efc47a31fe5020');
-    expect(selfHostedWorkflow).not.toMatch(/uses:\s+actions\/[^@\s]+@v\d+/);
+    expect(macFallbackWorkflow).toContain('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1');
+    expect(macFallbackWorkflow).toContain('actions/setup-node@820762786026740c76f36085b0efc47a31fe5020');
+    expect(macFallbackWorkflow).not.toMatch(/uses:\s+actions\/[^@\s]+@v\d+/);
   });
 
-  it('revalidates merged main and keeps manual canary checks fail-closed full', () => {
-    expect(selfHostedWorkflow).toContain('push:');
-    expect(selfHostedWorkflow).toContain('branches: [main]');
+  it('revalidates merged main in CircleCI and keeps the Mac fallback explicitly full', () => {
+    expect(circleCiConfig).toContain('main_cloud_ci:');
+    expect(circleCiConfig).toContain('event: push');
+    expect(circleCiConfig).toContain('head_sha: << pipeline.git.revision >>');
+    expect(macFallbackWorkflow).toContain('workflow_dispatch:');
+    expect(macFallbackWorkflow).not.toContain('pull_request:');
+    expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
+    expect(macFallbackWorkflow).toContain("CI_UI_FORCE_FULL: '1'");
     expect(ciPlan).toContain("eventName === 'push'");
     expect(ciPlan).toContain("eventName === 'workflow_dispatch'");
     expect(ciPlan).toContain("mode: 'full'");

@@ -165,7 +165,7 @@ All files below were read at `basemodel@3151686bdc594e723d08764b180532e86ef02fd3
 - `docs/agents/current/research-site-presentation-contract.md` — visible order is scientific question → result → decisive evidence → interpretation → boundary; implementation depth is progressive disclosure.
 - `docs/agents/current/website-design-spec.md` — “说人话” means subject/fact first, then conclusion/mechanism/evidence; internal labels cannot precede the thing they describe.
 - `docs/agents/current/sitewide-visual-knowledge-architecture.md` — visual hierarchy must express dependency, sequence, comparison, evidence, and decision rather than mirror repository folders.
-- `docs/agents/current/deployment-policy.md` — self-hosted CI remains the required control plane; deploy-relevant accepted heads use opt-in exact-head Vercel Preview, then protected merge and separate Production verification.
+- `docs/agents/current/deployment-policy.md` — current CI/deployment authority; provider execution details must be read live from that policy rather than frozen into this 2026-09-03 research-IA snapshot.
 
 These contracts do not override scientific evidence. When presentation guidance and current scientific truth disagree, scientific truth wins and the stale presentation rule must be updated.
 

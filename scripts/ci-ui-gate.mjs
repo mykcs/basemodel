@@ -11,6 +11,28 @@ if (!base) {
   process.exit(2);
 }
 
+const parsePositiveInteger = (name, fallback) => {
+  const raw = process.env[name]?.trim();
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    console.error(`[ci-ui-gate] ${name} must be a positive integer`);
+    process.exit(2);
+  }
+  return parsed;
+};
+
+const shardIndex = parsePositiveInteger('CI_BROWSER_SHARD_INDEX', 1);
+const shardTotal = parsePositiveInteger('CI_BROWSER_SHARD_TOTAL', 1);
+if (shardIndex > shardTotal) {
+  console.error('[ci-ui-gate] CI_BROWSER_SHARD_INDEX cannot exceed CI_BROWSER_SHARD_TOTAL');
+  process.exit(2);
+}
+const primaryShard = shardIndex === 1;
+const ownsBuild = process.env.CI_BROWSER_BUILD === '1';
+const installWithDeps = process.env.CI_PLAYWRIGHT_WITH_DEPS === '1';
+const forceFull = process.env.CI_UI_FORCE_FULL === '1';
+
 const run = (command, args, extraEnv = {}) => {
   console.log(`[ci-ui-gate] ${command} ${args.join(' ')}`);
   const result = spawnSync(command, args, {
@@ -53,11 +75,21 @@ try {
   process.exit(1);
 }
 
-console.log(`[ci-ui-gate] plan=${plan.mode} risk=${plan.risk}`);
+console.log(`[ci-ui-gate] plan=${plan.mode} risk=${plan.risk} shard=${shardIndex}/${shardTotal}`);
 console.log(`[ci-ui-gate] ${plan.reason}`);
 if (!['skip', 'focused', 'full'].includes(plan.mode)) {
   console.error('[ci-ui-gate] invalid planner mode; fail closed');
   process.exit(1);
+}
+
+if (forceFull) {
+  plan = {
+    ...plan,
+    mode: 'full',
+    risk: 'global',
+    reason: 'Explicit fallback canary requests the complete browser acceptance matrix.',
+  };
+  console.log('[ci-ui-gate] force-full fallback canary enabled');
 }
 
 if (plan.mode === 'skip') {
@@ -65,7 +97,16 @@ if (plan.mode === 'skip') {
   process.exit(0);
 }
 
-const transformCacheDir = join(tmpdir(), `basemodel-playwright-transform-${head.replace(/[^A-Za-z0-9._-]/g, '_')}`);
+if (plan.mode === 'focused' && !primaryShard) {
+  console.log('[ci-ui-gate] focused browser coverage is owned by shard 1; PASS');
+  process.exit(0);
+}
+
+if (ownsBuild) {
+  run('npm', ['run', 'build']);
+}
+
+const transformCacheDir = join(tmpdir(), `basemodel-playwright-transform-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}`);
 rmSync(transformCacheDir, { recursive: true, force: true });
 console.log(`[ci-ui-gate] fresh Playwright transform cache: ${transformCacheDir}`);
 
@@ -76,11 +117,16 @@ const browserEnv = {
   PWTEST_CACHE_DIR: transformCacheDir,
 };
 
-// The self-hosted runner owns its browser runtime. Keep provider-specific
-// Amazon Linux dnf/ldd setup out of repository CI and reuse Playwright's
-// persistent runner cache between jobs.
-run('npx', ['playwright', 'install', 'chromium']);
-run('node', ['scripts/ui-overflow-preflight.mjs'], browserEnv);
+const installArgs = ['playwright', 'install'];
+if (installWithDeps) installArgs.push('--with-deps');
+installArgs.push('chromium');
+run('npx', installArgs);
+
+if (primaryShard) {
+  run('node', ['scripts/ui-overflow-preflight.mjs'], browserEnv);
+} else {
+  console.log('[ci-ui-gate] overflow preflight is owned by shard 1');
+}
 
 if (plan.mode === 'focused') {
   const specs = [...plan.specs];
@@ -101,17 +147,23 @@ if (plan.mode === 'focused') {
     },
   );
 } else {
-  run('npm', ['run', 'test:ui'], browserEnv);
+  const fullArgs = ['run', 'test:ui'];
+  if (shardTotal > 1) {
+    fullArgs.push('--', `--shard=${shardIndex}/${shardTotal}`);
+  }
+  run('npm', fullArgs, browserEnv);
 }
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
+  || file === '.circleci/config.yml'
+  || file === 'scripts/ci-circleci-prepare.sh'
   || file.startsWith('.github/runner/')
 ));
 
-const labRelevant = ciInfrastructureChanged || plan.changedFiles.some((file) => (
+const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.some((file) => (
   /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
   || file.startsWith('src/layouts/')
   || file.startsWith('src/styles/')
@@ -126,13 +178,15 @@ const labRelevant = ciInfrastructureChanged || plan.changedFiles.some((file) => 
   || file === 'tests/e2e/lab-playwright.config.ts'
 ));
 
-if (labRelevant) {
-  console.log('[ci-ui-gate] Lab-relevant diff detected; running the 12-case Lab gate');
+if (labRelevant && primaryShard) {
+  console.log('[ci-ui-gate] Lab-relevant diff detected; running the 12-case Lab gate on shard 1');
   run(
     'npx',
     ['playwright', 'test', '--config', 'tests/e2e/lab-playwright.config.ts'],
     browserEnv,
   );
+} else if (labRelevant) {
+  console.log('[ci-ui-gate] Lab gate is owned by shard 1');
 } else {
   console.log('[ci-ui-gate] Lab gate skipped; diff cannot affect Lab/server UI');
 }

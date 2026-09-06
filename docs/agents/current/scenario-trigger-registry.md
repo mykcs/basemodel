@@ -68,14 +68,14 @@ Completed Vercel pilot/adoption records live under `docs/agents/history/`; they 
 
 ---
 
-## TRIGGER: Mac self-hosted runner health, disk pressure, or cache maintenance
+## TRIGGER: Mac fallback runner recovery, health, disk pressure, or cache maintenance
 
-**Cues:** MacBook CI, OrbStack runner, runner Doctor, disk full/low space, Docker cache, npm/pip/uv/pnpm cache, runner cleanup, machine-wide cache cleanup, LaunchAgent warning.
+**Cues:** manual Mac CI fallback, restore OrbStack runner, runner Doctor, disk full/low space, Docker cache, npm/pip/uv/pnpm cache, fallback cleanup, machine-wide cache cleanup, LaunchAgent warning.
 
 **Automatic response:**
 
-1. Read `deployment-policy.md` § Mac runner lifecycle and inspect the executable `.github/runner/` scripts before acting.
-2. Run the installed Doctor first; require the correct home/data-volume capacity, container isolation/health, GitHub `busy=false`, OOM/version state, and LaunchAgent state.
+1. Read `deployment-policy.md` § Mac manual fallback and inspect the executable `.github/runner/` scripts before acting. Do not wake or re-enable the fallback merely to inspect ordinary CI; the default LaunchAgent state is disabled.
+2. When fallback execution is explicitly required, run the installed Doctor before starting/mutating it; require the correct home/data-volume capacity, container isolation/health, GitHub `busy=false`, OOM/version state, and LaunchAgent state.
 3. Inventory targeted roots and classify tool-owned cache versus active/warm state, rollback image/container, worktree, mixed-purpose directory, credentials-adjacent state, and OrbStack internals.
 4. Separate runner state from machine-wide state. With zero host mounts, host npm/pip/uv/pnpm caches do not optimize CI; clear them only when the current task also authorizes host developer-cache maintenance and accept the next local cold download.
 5. Before a mutating cache command, prove no relevant host package-manager or Docker/Buildx build process is active, resolve the real cache root, and confirm the current task authorizes that scope.

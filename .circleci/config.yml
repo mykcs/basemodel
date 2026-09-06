@@ -1,0 +1,176 @@
+version: 2.1
+
+commands:
+  bootstrap_git:
+    steps:
+      - run:
+          name: Bootstrap Git tooling
+          command: |
+            apt-get update
+            apt-get install -y --no-install-recommends git openssh-client ca-certificates
+            rm -rf /var/lib/apt/lists/*
+
+jobs:
+  deterministic:
+    parameters:
+      event:
+        type: string
+      base_sha:
+        type: string
+        default: ""
+      head_sha:
+        type: string
+        default: ""
+    docker:
+      - image: node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+    resource_class: medium
+    environment:
+      CI: "1"
+    steps:
+      - bootstrap_git
+      - checkout
+      - run:
+          name: Deterministic repository gate
+          command: |
+            set -euo pipefail
+            bash scripts/ci-circleci-prepare.sh \
+              --event "<< parameters.event >>" \
+              --base "<< parameters.base_sha >>" \
+              --head "<< parameters.head_sha >>"
+            set -a
+            source /tmp/basemodel-ci-range.env
+            set +a
+
+            node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs
+            plan_output="$(node scripts/ci-plan.mjs \
+              --event "$CI_LOGICAL_EVENT" \
+              --base "$CI_BASE_SHA" \
+              --head "$CI_HEAD_SHA")"
+            printf '%s\n' "$plan_output"
+            mode="$(printf '%s\n' "$plan_output" | sed -n 's/.* mode=\([^ ]*\) .*/\1/p' | head -1)"
+            if [[ -z "$mode" ]]; then
+              echo "Could not parse CI plan mode" >&2
+              exit 1
+            fi
+
+            if [[ "$mode" == "docs" ]]; then
+              node scripts/ci-docs-contract.mjs
+              circleci-agent step halt
+            fi
+            if [[ "$mode" != "full" ]]; then
+              echo "Unexpected CI plan mode: $mode" >&2
+              exit 1
+            fi
+
+            npm ci
+            npm run verify:deploy
+            npm run build
+
+  browser_shard:
+    parameters:
+      event:
+        type: string
+      base_sha:
+        type: string
+        default: ""
+      head_sha:
+        type: string
+        default: ""
+      shard_index:
+        type: integer
+    docker:
+      - image: node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+    resource_class: medium
+    environment:
+      CI: "1"
+      PLAYWRIGHT_WORKERS: "1"
+      CI_BROWSER_BUILD: "1"
+      CI_PLAYWRIGHT_WITH_DEPS: "1"
+      CI_BROWSER_SHARD_TOTAL: "2"
+    steps:
+      - bootstrap_git
+      - checkout
+      - run:
+          name: Risk-based browser acceptance shard << parameters.shard_index >>/2
+          command: |
+            set -euo pipefail
+            bash scripts/ci-circleci-prepare.sh \
+              --event "<< parameters.event >>" \
+              --base "<< parameters.base_sha >>" \
+              --head "<< parameters.head_sha >>"
+            set -a
+            source /tmp/basemodel-ci-range.env
+            export CI_BROWSER_SHARD_INDEX="<< parameters.shard_index >>"
+            set +a
+
+            plan_output="$(node scripts/ci-plan.mjs \
+              --event "$CI_LOGICAL_EVENT" \
+              --base "$CI_BASE_SHA" \
+              --head "$CI_HEAD_SHA")"
+            printf '%s\n' "$plan_output"
+            mode="$(printf '%s\n' "$plan_output" | sed -n 's/.* mode=\([^ ]*\) .*/\1/p' | head -1)"
+            if [[ "$mode" == "docs" ]]; then
+              circleci-agent step halt
+            fi
+            if [[ "$mode" != "full" ]]; then
+              echo "Unexpected CI plan mode: ${mode:-<empty>}" >&2
+              exit 1
+            fi
+
+            npm ci
+            node scripts/ci-ui-gate.mjs
+
+workflows:
+  pr_cloud_ci:
+    when: pipeline.event.name == "pull_request" and pipeline.event.github.pull_request.draft == false
+    jobs:
+      - deterministic:
+          event: pull_request
+          base_sha: << pipeline.event.github.pull_request.base.sha >>
+          head_sha: << pipeline.event.github.pull_request.head.sha >>
+      - browser_shard:
+          name: browser_shard_1
+          event: pull_request
+          base_sha: << pipeline.event.github.pull_request.base.sha >>
+          head_sha: << pipeline.event.github.pull_request.head.sha >>
+          shard_index: 1
+      - browser_shard:
+          name: browser_shard_2
+          event: pull_request
+          base_sha: << pipeline.event.github.pull_request.base.sha >>
+          head_sha: << pipeline.event.github.pull_request.head.sha >>
+          shard_index: 2
+
+  main_cloud_ci:
+    when: pipeline.event.name == "push" and pipeline.git.branch == "main"
+    jobs:
+      - deterministic:
+          event: push
+          head_sha: << pipeline.git.revision >>
+      - browser_shard:
+          name: browser_shard_1
+          event: push
+          head_sha: << pipeline.git.revision >>
+          shard_index: 1
+      - browser_shard:
+          name: browser_shard_2
+          event: push
+          head_sha: << pipeline.git.revision >>
+          shard_index: 2
+
+  manual_cloud_ci:
+    when: pipeline.event.name == "api"
+    jobs:
+      - deterministic:
+          event: api
+          head_sha: << pipeline.git.revision >>
+      - browser_shard:
+          name: browser_shard_1
+          event: api
+          head_sha: << pipeline.git.revision >>
+          shard_index: 1
+      - browser_shard:
+          name: browser_shard_2
+          event: api
+          head_sha: << pipeline.git.revision >>
+          shard_index: 2

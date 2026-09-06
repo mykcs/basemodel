@@ -16,7 +16,8 @@ const shadowBuild = read('scripts/build-workers-shadow.mjs');
 const vercelIgnoreBuild = read('scripts/vercel-ignore-build.mjs');
 const ciUiGate = read('scripts/ci-ui-gate.mjs');
 const labPlaywrightConfig = read('tests/e2e/lab-playwright.config.ts');
-const selfHostedWorkflow = read('.github/workflows/self-hosted-ci.yml');
+const macFallbackWorkflow = read('.github/workflows/self-hosted-ci.yml');
+const circleCiConfig = read('.circleci/config.yml');
 const productionSmoke = read('cloudflare/production-smoke/src/index.js');
 const productionSmokeConfig = JSON.parse(read('cloudflare/production-smoke/wrangler.jsonc')) as {
   name?: string; triggers?: { crons?: string[] };
@@ -28,14 +29,21 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('keeps Vercel lightweight and moves browser acceptance to self-hosted CI', () => {
+  it('keeps Vercel lightweight and moves browser acceptance to CircleCI', () => {
     expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
-    expect(selfHostedWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
-    expect(selfHostedWorkflow).toContain("github.event.pull_request.draft == false");
-    expect(selfHostedWorkflow).toContain('persist-credentials: false');
+    expect(circleCiConfig).toContain('pr_cloud_ci:');
+    expect(circleCiConfig).toContain('main_cloud_ci:');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
+    expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
+    expect(macFallbackWorkflow).toContain('workflow_dispatch:');
+    expect(macFallbackWorkflow).not.toContain('pull_request:');
+    expect(macFallbackWorkflow).not.toMatch(/\n\s*push:/);
+    expect(macFallbackWorkflow).toContain('runs-on: [self-hosted, basemodel-ci]');
+    expect(macFallbackWorkflow).toContain("CI_UI_FORCE_FULL: '1'");
+    expect(macFallbackWorkflow).toContain('persist-credentials: false');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');
@@ -44,7 +52,7 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('self-hosted CI + Vercel + Cloudflare smoke');
+    expect(architecture).toContain('CircleCI + Vercel + Cloudflare smoke');
     expect(architecture).toContain('Vercel remains the only ordinary deployment provider');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
