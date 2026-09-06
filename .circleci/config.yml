@@ -87,12 +87,12 @@ jobs:
       PLAYWRIGHT_WORKERS: "1"
       CI_BROWSER_BUILD: "1"
       CI_PLAYWRIGHT_WITH_DEPS: "1"
-      CI_BROWSER_SHARD_TOTAL: "2"
+      CI_BROWSER_SHARD_TOTAL: "4"
     steps:
       - bootstrap_git
       - checkout
       - run:
-          name: Risk-based browser acceptance shard << parameters.shard_index >>/2
+          name: Risk-based browser acceptance shard << parameters.shard_index >>/4
           command: |
             set -euo pipefail
             bash scripts/ci-circleci-prepare.sh \
@@ -142,6 +142,18 @@ workflows:
           base_sha: << pipeline.event.github.pull_request.base.sha >>
           head_sha: << pipeline.event.github.pull_request.head.sha >>
           shard_index: 2
+      - browser_shard:
+          name: browser_shard_3
+          event: pull_request
+          base_sha: << pipeline.event.github.pull_request.base.sha >>
+          head_sha: << pipeline.event.github.pull_request.head.sha >>
+          shard_index: 3
+      - browser_shard:
+          name: browser_shard_4
+          event: pull_request
+          base_sha: << pipeline.event.github.pull_request.base.sha >>
+          head_sha: << pipeline.event.github.pull_request.head.sha >>
+          shard_index: 4
 
   main_cloud_ci:
     when: pipeline.event.name == "push" and pipeline.git.branch == "main"
@@ -159,6 +171,16 @@ workflows:
           event: push
           head_sha: << pipeline.git.revision >>
           shard_index: 2
+      - browser_shard:
+          name: browser_shard_3
+          event: push
+          head_sha: << pipeline.git.revision >>
+          shard_index: 3
+      - browser_shard:
+          name: browser_shard_4
+          event: push
+          head_sha: << pipeline.git.revision >>
+          shard_index: 4
 
   manual_cloud_ci:
     when: pipeline.event.name == "api"
@@ -176,3 +198,13 @@ workflows:
           event: api
           head_sha: << pipeline.git.revision >>
           shard_index: 2
+      - browser_shard:
+          name: browser_shard_3
+          event: api
+          head_sha: << pipeline.git.revision >>
+          shard_index: 3
+      - browser_shard:
+          name: browser_shard_4
+          event: api
+          head_sha: << pipeline.git.revision >>
+          shard_index: 4
