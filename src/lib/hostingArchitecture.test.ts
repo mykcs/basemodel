@@ -36,7 +36,8 @@ describe('hosting architecture ownership', () => {
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(circleCiConfig).toContain('pr_cloud_ci:');
     expect(circleCiConfig).toContain('main_cloud_ci:');
-    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
+    expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "3"');
+    expect(circleCiConfig).toContain('name: browser_shard_3');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
@@ -45,6 +46,8 @@ describe('hosting architecture ownership', () => {
     expect(macFallbackWorkflow).toContain("CI_UI_FORCE_FULL: '1'");
     expect(macFallbackWorkflow).toContain('persist-credentials: false');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
+    expect(ciUiGate).toContain("'scripts/ci-ui-test-list.mjs'");
+    expect(ciUiGate).toContain('--test-list');
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');
     expect(ciUiGate).toContain('basemodel-playwright-transform-');
