@@ -123,3 +123,25 @@ describe('Agent scenario-trigger discovery', () => {
     expect(history).toContain('conversation memory is a hypothesis');
   });
 });
+
+
+// Protect discoverability only; these checks do not measure reader comprehension
+// or prove that a future executor actually performed a use-site check.
+describe('retained correction use-site routing', () => {
+  it('keeps repeat-correction witnesses reachable from startup and task triggers', () => {
+    expect(root).toContain('REPEAT-CORRECTION');
+    expect(root).toContain('project-agent-operating-principles.md#correction-to-action-witness');
+    expect(principles).toContain('### Correction-to-action witness');
+    expect(principles).toContain('trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue');
+    expect(registry).toContain('REPEAT-CORRECTION');
+  });
+  it('keeps first-screen acceptance scoped and dated snapshots historical', () => {
+    const expression = readFileSync(new URL('../../docs/agents/current/human-thinking-web-expression-contract.md', import.meta.url), 'utf8');
+    const snapshot = readFileSync(new URL('../../docs/agents/current/mechanism-site-authority-snapshot-202609062000.md', import.meta.url), 'utf8');
+    expect(expression).toContain('### 10.10 Five questions are a reader aid, not a new authority');
+    expect(expression).toContain('desktop');
+    expect(expression).toContain('mobile scrolling layout');
+    expect(snapshot).toContain('Historical publication snapshot, not current execution authority');
+    expect(snapshot).toContain('OPEN_EVO_MECHANISM_1.0_CURRENT.md');
+  });
+});

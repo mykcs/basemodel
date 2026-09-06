@@ -383,6 +383,20 @@ The durable fix for repeated comprehension drift is therefore **owner + executab
 
 ---
 
+### 10.10 Five questions are a reader aid, not a new authority
+
+`ResearchOrientation` supplies question / why / start / finish / state; `ResearchJourney`, `ResearchDepth`, `ResearchGlossary`, and `ResearchStateRail` organize the reading depth. They consume existing task/lifecycle/evidence owners; they must not maintain a second scientific-state table.
+
+Before accepting an orientation:
+
+1. Read each answer without its label. Does it explain this task, or merely say “follow the main line / wait for the gate”? Define the shopping task and plain-language role before method codes. Having five nonempty fields is necessary but insufficient.
+2. Preserve dependency topology: a chronological research history can be ordered; parallel causal questions, a conditional branch, and an independent reference must not become a false A→B→C→D sequence just to fit a 3–6-step component.
+3. Put the current evidence and start/stop meaning on the default reading path. Native disclosures may hold operations and detailed history, but their summaries must say what can be opened; keyboard/no-JS access and relevant anchors must still work.
+4. Do not meet a first-screen target by shrinking primary text, tightening it into illegibility, clipping, or hiding a required answer. Shorten redundant copy or change its layout. Transfer the minimum-size/contrast assertions when a semantic answer moves to a new component or changes data attributes; checking only the old selector leaves new state/journey prose unguarded. The historical 1280×633 test is a **desktop** contract, not proof that all five answers fit on a 390×844 phone. A mobile scrolling layout may be correct; report its actual scope.
+5. Browser geometry cannot tell whether a teacher understood the explanation. Keep the three acceptance layers in §10.9 separate and record concrete remaining misunderstandings rather than a fabricated comprehension percentage.
+
+Retain scientific truth before adding the new presentation layer when merging parallel implementations. Test normal state and impossible-state counterexamples; keep the checks registered in the owning suite. Never remove the older lifecycle/authority checks merely because the new orientation checks pass.
+
 ## 11. Ownership and relationship to other contracts
 
 This file owns the durable **expression and information-architecture invariant**, including the reader-first editorial standard for research results.
