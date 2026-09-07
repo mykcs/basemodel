@@ -1,4 +1,8 @@
-/* First-screen attention is a content hierarchy, not a marketing skin. */
+/* First-screen attention is a content hierarchy, not a marketing skin.
+ * This file owns only route-aware composition needed to keep the primary
+ * comprehension task ahead of lower-page detail; scientific content remains
+ * owned by each page/component.
+ */
 body[data-reader-contract-id='flow-server'] .server-hero,
 body[data-reader-contract-id='lab'] .lab-intro {
   box-sizing: border-box;
