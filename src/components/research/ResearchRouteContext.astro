@@ -2,18 +2,29 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { CAPABILITY_READER_ROUTES, type CapabilityReaderRoute } from '../../data/capabilityReaderRoutes';
-interface Props { locale: Locale; route: CapabilityReaderRoute }
-const { locale, route } = Astro.props;
+interface Props { locale: Locale; route: CapabilityReaderRoute; compact?: boolean }
+const { locale, route, compact = false } = Astro.props;
 const record = CAPABILITY_READER_ROUTES.find((entry) => entry.route === route);
 if (!record) throw new Error(`Missing reader role for ${route}`);
 const zh = locale === 'zh';
 const root = localePath(locale, '/research/seed-openevo/study/capability-exploration/');
+const task = compact
+  ? (zh ? 'WebShop：按要求搜索、选规格、购买商品。' : 'WebShop: search, choose options, and buy the requested product.')
+  : (zh ? 'WebShop 是模拟购物任务：模型读取页面，选择搜索、选规格或购买等动作。OpenEvo 研究怎样把这些经验用于后续尝试。' : 'WebShop is a simulated shopping task: the model reads pages and chooses actions such as searching, selecting options, or purchasing. OpenEvo studies how that experience can inform later attempts.');
+const compactPurpose = route === 'first-run'
+  ? (zh ? '第一轮历史记录；不是当前运行。' : 'First-run history; not a live run.')
+  : route === 'openevo-2-0'
+    ? (zh ? '3B 与 1.7B 使用同一购物规则。' : '3B and 1.7B use the same shopping rules.')
+    : route === 'openevo-2-0/report'
+      ? (zh ? '实验方法、结果与结论边界。' : 'Methods, results, and claim boundaries.')
+      : record.purpose[locale];
+const purpose = compact ? compactPurpose : record.purpose[locale];
 ---
-<aside class="research-route-context" data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
+<aside class="research-route-context" data-compact={compact ? 'true' : undefined} data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
   <p class="research-route-context__location"><a href={root}>{zh ? '能力探索' : 'Capability exploration'}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></p>
-  <p data-reader-task>{zh ? 'WebShop 是模拟购物任务：模型读取页面，选择搜索、选规格或购买等动作。OpenEvo 研究怎样把这些经验用于后续尝试。' : 'WebShop is a simulated shopping task: the model reads pages and chooses actions such as searching, selecting options, or purchasing. OpenEvo studies how that experience can inform later attempts.'}</p>
-  <p data-reader-purpose>{record.purpose[locale]}</p>
+  <p data-reader-task>{task}</p>
+  <p data-reader-purpose>{purpose}</p>
 </aside>
 <style>
-.research-route-context{width:min(1120px,calc(100% - 2rem));margin:.75rem auto 0;padding:0 0 .55rem;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--ink)}.research-route-context p{max-width:60rem;line-height:1.52;margin:.22rem 0}.research-route-context__location{font-size:.85rem;line-height:1.4}.research-route-context a{color:var(--accent-deep);text-underline-offset:.2em}.research-route-context a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+.research-route-context{width:min(1120px,calc(100% - 2rem));margin:.75rem auto 0;padding:0 0 .55rem;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--ink)}.research-route-context p{max-width:60rem;line-height:1.52;margin:.22rem 0}.research-route-context__location{font-size:.85rem;line-height:1.4}.research-route-context a{color:var(--accent-deep);text-underline-offset:.2em}.research-route-context a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.research-route-context[data-compact="true"]{display:grid;grid-template-columns:max-content minmax(0,1.25fr) minmax(0,1fr);gap:.25rem .9rem;align-items:baseline;margin-top:.55rem;padding-bottom:.4rem;font-size:.82rem}.research-route-context[data-compact="true"] p{max-width:none;margin:0;color:var(--muted);line-height:1.35}.research-route-context[data-compact="true"] .research-route-context__location{color:var(--ink);font-size:.8rem}@media(max-width:900px){.research-route-context[data-compact="true"]{grid-template-columns:1fr;gap:.12rem;margin-top:.45rem}.research-route-context[data-compact="true"] p{font-size:.78rem}}
 </style>

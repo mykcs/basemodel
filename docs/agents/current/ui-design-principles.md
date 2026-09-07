@@ -25,6 +25,10 @@ The interface should communicate:
 
 A more decorated page is not automatically a better page. If a visual treatment does not improve order, hierarchy, comparison, evidence, decision, failure, topology, or executable action, remove it.
 
+### Attention is a budget
+
+Treat visual emphasis as scarce. A first viewport normally gets one primary semantic center, not a dashboard of equally correct facts. Start from the person’s likely question and mental model, surface the one fact they need first, and let lower-priority complexity appear later through ordinary reading order or progressive disclosure. This is not a marketing-hero rule and not an instruction to imitate Apple’s surface styling; it is a cognition rule. Removing information is only justified when the same scientific meaning remains available later. Evidence boundaries that change interpretation stay visible.
+
 ## 2. Two canvases, one product
 
 ### A. Research Editorial

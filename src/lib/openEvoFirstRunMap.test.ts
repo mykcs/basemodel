@@ -17,9 +17,10 @@ describe('OpenEvo first-run historical map', () => {
   });
 
   it('uses literal first-reader copy instead of decorative branching language', () => {
-    expect(map).toContain('3B 和 7B 的第一轮购物实验');
-    expect(map).toContain('我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验');
-    expect(map).toContain("state: '7B 继续，3B 停止'");
+    expect(map).toContain('3B 和 7B 的第一轮实验');
+    expect(map).toContain('layout="focus"');
+    expect(map).toContain('7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。');
+    expect(map).toContain("state: '7B 继续；3B 停止检查接口'");
     expect(map).not.toContain('第一轮购物学习：7B 与 3B 的分岔');
     expect(map).not.toContain('HISTORICAL MAP · FIRST RUN');
     expect(map).not.toContain('STAGE 1 → STAGE 2 → OUTCOME');
@@ -66,5 +67,7 @@ describe('OpenEvo first-run historical map', () => {
   it('mounts the same shared map on both locale routes', () => {
     expect(zh).toContain('OpenEvoFirstRunMap');
     expect(en).toContain('OpenEvoFirstRunMap');
+    expect(zh).toContain('ResearchRouteContext locale={locale} route="first-run" compact');
+    expect(en).toContain('ResearchRouteContext locale={locale} route="first-run" compact');
   });
 });

@@ -63,6 +63,25 @@ test('Mechanism-1.0 exposes frozen passports, M1-D authorization without a start
   await assertNoPageOverflow(page);
 });
 
+test('first-run gives the subject and result attention before optional orientation detail', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(firstRun, { waitUntil: 'domcontentloaded' });
+  const orientation = page.locator('[data-research-orientation]');
+  await expect(orientation).toHaveAttribute('data-layout', 'focus');
+  await expect(orientation.getByRole('heading', { level: 1 })).toHaveText('3B 和 7B 的第一轮实验');
+  await expect(orientation.locator('[data-reader-purpose]')).toContainText('7B 持续更新参数，并完成最终测试');
+  await expect(orientation.locator('.research-orientation__action')).toContainText('看两种模型各自发生了什么');
+  const optional = orientation.locator('.research-orientation__details');
+  await expect(optional.locator('summary')).toHaveText('实验信息');
+  await expect(orientation.locator('[data-orientation-field]')).toHaveCount(5);
+  await expect(orientation.locator('[data-orientation-field]').first()).toBeHidden();
+  const actionBottom = await orientation.locator('.research-orientation__action').evaluate((node) => node.getBoundingClientRect().bottom);
+  expect(actionBottom).toBeLessThanOrEqual(844);
+  await optional.locator('summary').click();
+  await expect(orientation.locator('[data-orientation-field]').first()).toBeVisible();
+  await assertNoPageOverflow(page);
+});
+
 test('first-run defaults to 7B, switches to 3B, and restores focus after detail close', async ({ page }) => {
   await page.goto(firstRun, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
