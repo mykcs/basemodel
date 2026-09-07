@@ -235,6 +235,14 @@ The artifact is the actual command argument/readback/test result, not “read AG
 
 This is execution of an existing safeguard, **not a new scientific gate or a request for another acknowledgement**. Reuse stable evidence while its fingerprint matches, and refresh only the facts that can have changed. A repeat means that retrieval, abstraction, enforcement, or use-site execution failed; identify which instead of appending the same rule again.
 
+### Concurrent registries allocate identity at integration time
+
+Treat manually numbered shared registries—case libraries, ADR/incident/rule IDs, numbered evidence records, and similar append-only indexes—as shared integration data, not branch-local counters. Before assigning a new ID, read the exact current base and overlapping work when it is relevant. A branch-local `max + 1` is only provisional while other writers can advance the same registry.
+
+Before merge or other shared-ref publication, inspect the **combined candidate tree** for duplicate IDs, duplicate anchors, and references that still point at the old identity. When a collision exists, preserve both factual records and renumber the later/coherent block plus its references; do not drop another Agent's record, overwrite the shared branch, or treat the collision as proof that one case is obsolete. If uniqueness is mechanically checkable, wire it into the normal repository Gate so concurrent branches can fail at integration instead of silently corrupting the registry.
+
+This rule governs durable repository identity only. PR heads, temporary ports, current PIDs, current provider status, and other C-class state remain transient and must not be converted into permanent registry facts merely to make the numbering convenient.
+
 ### Progress reports have bounded meanings
 
 For repeated “continue / where are we?” requests, report the current goal, the last verified artifact, the actual missing condition, and the next authorized action. Explain the work in Chinese before identifiers unless the owner requests another language. Do not substitute schema discovery, repeated polling, or another plan for execution.
