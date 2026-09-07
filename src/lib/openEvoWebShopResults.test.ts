@@ -160,7 +160,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('现在的答案：');
     expect(questions).toContain('我们做了两次对照');
     expect(questions).toContain('这种学习在这两轮实验里还没有转化成稳定的新任务收益');
-    expect(questions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(questions).not.toContain('七个问题 · SEVEN QUESTIONS');
     expect(questions).toContain('sources?: EvidenceRef[]');
     expect(questions).toContain('<OpenEvoEvidenceRefs locale={locale} sources={row.sources ?? []} compact />');
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');

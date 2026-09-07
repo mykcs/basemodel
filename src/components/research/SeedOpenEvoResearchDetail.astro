@@ -11,44 +11,36 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const hasExplainer = Astro.slots.has('default');
 
-const copy: Record<DetailPage, { eyebrow: string; title: string; lede: string }> = {
+const copy: Record<DetailPage, { title: string; lede: string }> = {
   'base-model': {
-    eyebrow: t('实验模型', 'Experiment model'),
     title: t('Qwen2.5-3B-Instruct 实验设置', 'Qwen2.5-3B-Instruct experiment setup'),
     lede: t('记录 checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式。', 'Record the checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode.'),
   },
   seed: {
-    eyebrow: t('方法', 'Method'),
     title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
     lede: t('Stage 1 先由 Qwen policy 通过 SEED / verl-agent 的交互 harness 驱动 Princeton WebShop 环境完成 rollout，轨迹封存后才交给外部 GLM-5.2 生成 hindsight skill 并做 SFT；Stage 2 继续使用同一交互合同，但改由当前 policy 自己复盘，再通过 OPD 与 GRPO 更新参数。', 'Stage 1 first lets the Qwen policy complete rollouts in Princeton WebShop through the SEED / verl-agent interaction harness; only after each trajectory is sealed does external GLM-5.2 generate hindsight skills for SFT. Stage 2 keeps the same interaction contract, moves hindsight analysis to the current policy itself, and then updates parameters with OPD and GRPO.'),
   },
   openevo: {
-    eyebrow: t('方法', 'Method'),
     title: t('OpenEvo 演化流程', 'OpenEvo evolution flow'),
     lede: t('OpenEvo 以任务边界封存证据，运行演化方法，并让后续任务加载接受的 artifact、adapter 或 revision。', 'OpenEvo seals evidence at task boundaries, runs evolution methods, and lets later tasks load accepted artifacts, adapters, or revisions.'),
   },
   benchmarks: {
-    eyebrow: t('实验环境', 'Experiment environments'),
     title: 'ALFWorld 与 WebShop',
     lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
   },
   webshop: {
-    eyebrow: t('实验环境', 'Experiment environment'),
     title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
     lede: t('从 Agent 怎么操作商店开始，一路看清原始 benchmark、官方 small 商品世界、synthetic goal generation、SEED goal split 和最终评分。', 'Start from how the Agent operates the shop, then follow the original benchmark, official small product world, synthetic goal generation, SEED goal split, and final evaluation.'),
   },
   alfworld: {
-    eyebrow: t('实验环境', 'Experiment environment'),
     title: t('ALFWorld 世界状态与任务成功', 'ALFWorld world state and task success'),
     lede: t('沿着物体位置、容器状态、动作前置条件与终局目标，理解文本化具身任务的长期规划。', 'Follow object locations, receptacle state, action preconditions, and terminal goals through a text-based embodied task.'),
   },
   loops: {
-    eyebrow: t('比较', 'Comparison'),
     title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
     lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
   },
   results: {
-    eyebrow: t('研究结果', 'Research findings'),
     title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings'),
     lede: t('我们从七个最自然的问题开始：OpenEvo 有没有学习、有没有成功经验、能不能迁移、能不能持续变好，以及最后能不能和 SEED 在同一套正式评估下比较。', 'We start from seven natural questions: whether OpenEvo learns, whether it has successful experience to learn from, whether that transfers, whether improvement continues, and whether it can ultimately be compared with SEED under the same formal evaluation.'),
   },
@@ -59,7 +51,6 @@ const current = copy[page];
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
   {page !== 'results' && (
     <header class="plain-detail__header">
-      <div>{current.eyebrow}</div>
       <h1>{current.title}</h1>
       <p>{current.lede}</p>
     </header>
@@ -73,8 +64,7 @@ const current = copy[page];
 <style>
   .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
   .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
-  .plain-detail__header>div{color:var(--accent-deep);font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
-  .plain-detail__header h1{margin:.5rem 0 .7rem;letter-spacing:-.035em}
+  .plain-detail__header h1{margin:0 0 .7rem;letter-spacing:-.035em}
   .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}
   .plain-detail__interactive{margin:0 0 2.6rem}
   .plain-detail__interactive :global(.irx){width:100%;margin:0}
@@ -93,7 +83,7 @@ const current = copy[page];
     padding-right:.8rem;
     border-right:1px solid var(--line);
     color:var(--ink);
-    font:800 .64rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+    font:800 .64rem/1.5 var(--font-mono);
     letter-spacing:.06em;
   }
   .plain-detail[data-locale='zh'] .paper-nav::before{content:'本页内容'}
