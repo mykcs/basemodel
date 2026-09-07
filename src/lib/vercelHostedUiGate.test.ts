@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync, readdirSync } from 'node:fs';
 import { pageFileToRoute, planHostedUi } from '../../scripts/vercel-ui-plan';
 
 describe('Vercel hosted UI gate planner', () => {
@@ -83,6 +84,55 @@ describe('Vercel hosted UI gate planner', () => {
       'src/components/research/Example.astro',
     ]);
     expect(plan.mode).toBe('full');
+  });
+
+  it('replays the PR #521 mechanism-copy diff with its complete reader regression owner', () => {
+    const plan = planHostedUi([
+      'src/components/research/OpenEvoMechanismMap.astro',
+      'docs/agents/history/2026-09-07-explorable-research-reader-repair.md',
+    ]);
+    expect(plan.mode).toBe('focused');
+    expect(plan.routes).toEqual([
+      '/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/',
+      '/research/seed-openevo/study/capability-exploration/mechanism-1-0/',
+    ]);
+    // This spec also registers reader-journey and research-deep-dive cases.
+    // Keep it whole: do not filter down to one happy-path mechanism test.
+    expect(plan.specs).toEqual(['tests/e2e/openevo-two-map.spec.ts']);
+  });
+
+  it('keeps the mechanism map local to the two registered page entrypoints', () => {
+    const src = new URL('../', import.meta.url);
+    const importers = readdirSync(src, { recursive: true })
+      .filter((file) => /\.(?:astro|[cm]?[jt]sx?)$/.test(file) && !/\.(?:test|spec)\./.test(file))
+      .filter((file) => /['"][^'"\n]*\/OpenEvoMechanismMap\.astro(?:\?[^'"\n]*)?['"]/.test(readFileSync(new URL(file, src), 'utf8')))
+      .map((file) => `src/${file.replaceAll('\\', '/')}`)
+      .sort();
+    expect(importers).toEqual([
+      'src/pages/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/index.astro',
+      'src/pages/research/seed-openevo/study/capability-exploration/mechanism-1-0/index.astro',
+    ]);
+    const owner = readFileSync(new URL('../components/research/OpenEvoMechanismMap.astro', import.meta.url), 'utf8');
+    expect(owner).not.toMatch(/<script\b|is:global|:global\s*\(|<link\b/i);
+    expect(owner).not.toMatch(/(?:import|@import)[^;\n]*\.css\b/);
+  });
+
+  it('keeps shared research primitives, global styling, and unknown companions full', () => {
+    const owner = 'src/components/research/OpenEvoMechanismMap.astro';
+    for (const companion of [
+      'src/components/research/ResearchOrientation.astro',
+      'src/components/research/ExperimentLifecycle.astro',
+      'src/components/Header.astro',
+      'src/styles/tokens.css',
+      'src/data/openEvoMechanismNarrative.ts',
+      'tests/e2e/openevo-two-map.spec.ts',
+      'scripts/vercel-ui-plan.ts',
+      '.circleci/config.yml',
+    ]) expect(planHostedUi([owner, companion]).mode, companion).toBe('full');
+    expect(planHostedUi([
+      owner,
+      ...Array.from({ length: 7 }, (_, index) => `src/pages/unrelated-${index}.astro`),
+    ]).mode).toBe('full');
   });
 
   it('fails closed to the complete matrix for shared or global UI changes', () => {

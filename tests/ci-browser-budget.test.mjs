@@ -84,6 +84,20 @@ test('focused primary shard still owns install and acceptance', (t) => {
   assert.equal(readFileSync(state.log, 'utf8'), 'npm\nci\n');
 });
 
+test('mechanism-copy changes spend nothing on browser shard 2', (t) => {
+  const state = fixture(t, 'src/components/research/OpenEvoMechanismMap.astro');
+  const result = run(state, { CI_BROWSER_SHARD_INDEX: '2' });
+  assert.match(result.stdout, /plan=focused/);
+  noSpend(state, result);
+});
+test('mechanism-copy shard 1 still propagates dependency installation failures', (t) => {
+  const state = fixture(t, 'src/components/research/OpenEvoMechanismMap.astro');
+  const result = run(state);
+  assert.match(result.stdout, /plan=focused/);
+  assert.equal(result.status, 73);
+  assert.equal(readFileSync(state.log, 'utf8'), 'npm\nci\n');
+});
+
 test('force-full never takes a cheap skip path', (t) => {
   const state = fixture(t);
   const result = run(state, { CI_UI_FORCE_FULL: '1', CI_BROWSER_SHARD_INDEX: '2' });
