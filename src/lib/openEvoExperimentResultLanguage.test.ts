@@ -202,7 +202,8 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('explains legacy result counts and negative states instead of exposing log shorthand', () => {
-    expect(legacyResultNote).toContain('这组页面先统一 7 个词');
+    expect(legacyResultNote).toContain('术语参考（可选）');
+    expect(legacyResultNote).toContain('正文第一次出现时会直接解释');
     expect(legacyResultNote).toContain('cell 数不能直接当任务成功数');
     expect(legacyResultNote).toContain('“未通过”表示实验有效运行但目标门槛没有达到');
     expect(legacyResultNote).toContain('“测量无效”表示当前数据不足以可靠比较');
