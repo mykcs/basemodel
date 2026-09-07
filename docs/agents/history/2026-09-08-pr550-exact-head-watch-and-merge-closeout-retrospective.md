@@ -149,3 +149,16 @@ new authorization
 [ ] Read back merge/main result.
 [ ] Keep transient status in history only, not current policy/memory.
 ```
+
+## 9. 沉淀执行期 addendum：规则已经存在，为什么仍会再次踩到
+
+经验沉淀本身又遇到了四类工程摩擦。它们必须保留为历史真实性，但**不应再复制成第四、第五份 current policy**：
+
+| 沉淀期摩擦 | 现场事实 | 正确处理 | 为什么不再新增长期规则 |
+|---|---|---|---|
+| 熟悉的 BaseModel clone 不是安全写入工作区 | 发现主 clone 位于旧 topic branch，并已有未提交的 `package-lock.json` 变化 | 只读确认 remote/root/HEAD/dirty state；新建从 live main 出发的隔离 worktree；没有 reset、checkout 或覆盖原工作区 | root `AGENTS.md` 已拥有 unexpected shared-state stop-and-read 和 dirty-worktree 边界；本次是执行 witness，不是规则缺失 |
+| 普通 HTTPS `git push` 卡在传输层 | GitHub CLI 认证仍有效；远端 branch readback 仍是 404，说明 push 没有落 ref | 终止卡住的 transport path；没有换 token、没有把仓库判成不可用；改走已授权 Git Data 路径并要求 blob/tree/ref readback | root 已明确“一条 Git/HTTP/provider 路径失败 ≠ capability unavailable”；#550 的上一轮沉淀也记录过相同 transport fallback |
+| 第一次 Git Data blob POST 返回 HTTP 422 | helper 在 POST 时漏传 request body，错误发生在目标 commit/ref 创建之前 | 用一个不被任何 ref 引用的最小 blob probe 验证 endpoint/auth；定位为 client invocation bug；修正后重新从 live state 开始 | `release-closeout-protocol.md` 已说明 client/schema error 在 dispatch 前不是 repository mutation；这里缺的是 use-site 执行仔细度，不是新 SOP |
+| 正要发布时 `main` 被 #551 推进 | fail-closed 脚本发现 expected base 与 live main 不同，在创建候选 ref 前退出 | 比较 `1bb79eb5… -> 51c62282…`；确认 #551 只改 root/router/multi-PR owner/自身 history，与本次两个 current owner 不重叠；再把同一三文件语义贡献构造在新 main 上 | moving-main、stale-governance 与 semantic-owner reconciliation 已由 current owners 覆盖；这里保存的是“已有规则成功阻止 stale-base 写入”的历史 witness |
+
+这四项暴露的共同问题不是“以前没有写规则”，而是：**文档存在不等于操作现场会执行。** durable learning 需要同时有：可发现的 trigger、操作前 witness、写入时 fail-closed guard、错误后的 readback。此次真正新增的 current 增量因此仍然只聚焦 pending-check watch 的 use-site；其余重复摩擦只作为历史证据保留。
