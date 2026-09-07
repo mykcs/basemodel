@@ -159,8 +159,9 @@ describe('interactive research explainers', () => {
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
-  it('bottom-docks transport from initial render only for a real explainer', () => {
-    expect(css).toContain('[data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
+  it('bottom-docks standalone transport but leaves embedded Lab controls in document flow', () => {
+    expect(css).toContain('.plain-detail__interactive>astro-island>[data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
+    expect(css).not.toContain('.irx-split__rail [data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
     expect(css).not.toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport');
     expect(css).not.toContain('.canonical-figure>.irx-controls');
     expect(loopsZh).not.toContain('InteractiveResearchExplainer');
