@@ -180,3 +180,74 @@ C：PID、当前占卡/磁盘余量、轨迹进度、百分比、临时目录、
 因此 #516 的发布成功和已有浏览器通过记录仍保留，但不能从它们推出“用户可读性问题已经彻底解决”。现有 [后续修复 #518](https://github.com/mykcs/basemodel/pull/518) 的候选范围包括这些产品表面；这里只记录复核时的范围，不把候选的自报验收当成已发布事实，也不复制其代码开另一条修复线。
 
 长期规则是：**语义内容换了所有者或DOM标记，相关字号/对比/可见性检查必须一起迁移；测试数量不是覆盖率。** 当前表达合同§10.10已补充这一操作要求。本轮新增文档入口测试只保护规则发现，不能充当尚需产品回归验证的替代品。
+
+
+## 9. 2026-09-07 implementation follow-up: overlap, conflict boundary, and paused handoff
+
+本节只记录本轮“允许执行后”的后续尝试；它不把未合并的源码导出、临时测试结果或暂停状态改写成产品发布事实。
+
+### 发生了什么
+
+用户授权执行后，Agent 先把读者入口、生命周期解释、路线覆盖和浏览器检查组织成一组约 19 个文件的补丁，并做了目标路由的浏览器回归。与此同时，仓库里已有的相关 PR 继续前进，导致初始补丁快照与当前 main/PR 头部不再是同一棵树。合并比较中出现未解决的冲突标记；这些文件没有被当作可交付代码。定向路由检查曾通过，但完整 UI 预检先暴露了一个过时的字面量断言和桌面首屏高度问题：前者应随语义迁移，后者通过删去重复表达和重排解决，不能靠缩小主文字。用户随后明确暂停，因此没有继续创建实现分支、改动实验/GPU/Docker、部署或宣称网页已修复。
+
+### 增量摩擦与防御规则
+
+| 当时发生了什么 | 为什么发生 | 操作前检查 | 防御性规则 | 看似合理但不应该 |
+|---|---|---|---|---|
+| 并行 PR 改变了同一批页面的基线 | 把第一次读取的 main/PR 快照当成静态基线 | 重新读取 main、所有相关 PR 的 base/head、文件 owner 和 CI 身份 | 任何合流前都要在最终组合树上重做语义回归；旧 green 只对旧树有效 | 复用落后分支的 Preview 说“已验证” |
+| patch/export 目录出现冲突标记 | 来源导出被误当成 Git worktree，且合并只按文件而非语义 owner | 检查 .git 身份、三方 diff、冲突标记扫描 | 冲突标记 fail-closed；export 可用于审阅，不能提交或授予 HEAD 身份 | 看到文件齐全就压缩交付，或整文件覆盖掉并行 PR |
+| 旧 E2E 断言期待“阶段已激活” | 文案从执行暗示改为“授权/暂无执行回执”，测试仍锁定旧词 | 判断旧断言保护的科学不变量是否仍成立 | 让断言跟随当前语义 owner，验证授权、实际开始/结束、sealed 各自状态 | 为让 CI 绿而恢复含糊的“已激活” |
+| 受约束状态未进入 schema | 页面先写标签再补数据，导致 impossible state 可出现 | 定义状态转移和互斥字段；例如 authorized 不得有 actualStart/End，running 不得有 actualEnd，sealed 必须 completed | 所有显示状态由 typed facts 派生，并用负例拒绝不可能组合 | 用一个 status 字符串覆盖全部生命周期 |
+| 首屏“装下”与理解混为一谈 | 几何通过被当成信息密度通过 | 检查核心字号、行距、折行、答案是否仍可直接找到 | 先删重复、重排层次、补可滚动分段；不得隐藏答案或压到不可读字号 | 把正文缩到 10px 只为通过 1280×633 |
+| 只验证了命名路由 | 组件复用范围大于已测路由，覆盖统计看起来比实际大 | 建立 route × semantic-owner inventory，逐路跑 reader assertions | “覆盖”必须给出实际 route/locale/owner；未知路由 fail-closed | 用一个中文 URL 的绿灯代表整个 capability family |
+
+### 暂停边界
+
+暂停时保留了审阅用的 patch/export 和 handoff 压缩包，但它们不是 Git worktree、不是当前 main、不是生产部署。没有继续创建实现提交、启动/停止实验、占用 GPU、改容器或升级依赖；本轮新增真实运行/真人理解证据为 0。这些临时路径、压缩包位置、当前 PR/PID/GPU/provider 状态均不进入长期规则或账户记忆。
+
+## 10. 暂停之后的继续执行：smart integration、guarded merge 与 Production 收口
+
+第 9 节记录的“暂停”是当时真实发生的历史边界，不删除、不改写。随后用户明确要求继续，工作恢复，并最终形成 PR #530；因此“暂停”不能被未来 Agent 误读成整个对话的最终状态。下面只记录恢复之后新增的因果经验。
+
+### 实际发生的关键转折
+
+恢复工作时，最初计划仍想沿用此前已经验证过的候选 head，但远端 `main` 已经进入 #524 和 #527。第一次旧结论因此立即失效：不能把旧的 398/398 或“0 path overlap”继续当成当前合并证据。Agent 重新以 live `main` 为基线，发现 #530 的 10 个冲突文件全部来自已经合并的 #524 语义，而 #527 自身的 12 个新增/重构路径与这些冲突路径为 0 交集。进一步比较 #524 PR exact head 与其进入 `main` 后的内容，确认差异只在少量 CI/规范文档，而不是这 10 个冲突文件。最终保留已经审阅过的 `#524 + comprehension repair` 版本，同时完整接受 #527 的 disjoint Study Overview 结构。
+
+组合树缩为 21 个真实差异文件后，旧测试证据被明确降级为历史证据；最终 exact head `a954760...` 重新完成确定性门、478 路由构建、单 H1、三档 viewport overflow 与 Chromium + WebKit 398/398。Vercel Preview 还必须证明是真构建而不是 ignored-build 假绿：provider 记录绑定同一 SHA、`[vercel-preview]` 生效、deploy-relevant 路径被检测、`vercel build` 实际运行。受 Preview Protection 影响，自动浏览器会话被 SSO 挡住，因此没有冒称“托管 Preview 视觉验收已通过”；该层证据由 exact-head 本地浏览器矩阵、hosted required checks 与之后 Production 公共域名验证分别承担。
+
+所有 required checks 终态成功后，Agent 重新读取 PR head、`main`、branch protection、provider 状态和 review threads，再使用 `expected_head_sha=a954760...` 执行 squash merge。第一次 merge 工具调用因为参数名写错，在客户端 schema 校验阶段被拒绝，GitHub 没收到 mutation；这不是“半合并”。修正参数后同一 guarded merge 成功，`main` 成为 `4e8543ab...`，其 tree 与通过完整验证的 PR tree 相同。随后 Vercel Production 明确绑定该 main SHA、真实执行 build，稳定域名中英文 mechanism 页面均返回 200 并包含关键 reader/scientific 语义。main 自动 post-merge CI 也最终全绿；没有人为重跑来浪费 CI 额度。
+
+### 新增摩擦、错误假设与防御规则
+
+| 发生了什么 | 错误假设 / 缺失上下文 | 操作前必须检查 | 防御性规则 | 反面例子 |
+|---|---|---|---|---|
+| 已验证 head 在准备合并时落后于新 main | “刚通过的完整矩阵仍然自动覆盖未来 base” | live main SHA、intervening PR、路径/语义 owner、当前保护规则 | 验收绑定 `head + intended base + tree + required-check contract`；material base drift 必须重建最终组合树并重验受影响层 | 拿旧 398/398 给一个已经换过 base 的树背书 |
+| 冲突出现在 #527 合并之后 | “最近合并的 PR 就是冲突来源” | conflict-path set ∩ 每个 PR changed-path set；旧 PR exact head vs merged-main blob | 先给冲突做归因，再选 side；冲突时间顺序不是因果归属 | 因为 #527 最后合并，就整文件覆盖掉 #527 的 disjoint Study Overview |
+| Preview GitHub/Vercel 状态为绿 | “绿色 provider context 等于真实 Preview build” | deployment object、bound SHA、readyState、ignore-build 日志、真实 build marker | required provider acceptance 要证明执行链，不接受 ignored/skipped/canceled 假绿 | 只看 GitHub `Vercel=success` 就合并 |
+| Preview 被 SSO 挡住 | “自动浏览器打不开 = 应用坏了”或“READY = 已做视觉验收” | HTTP/auth 跳转、provider protection、已有本地/hosted browser evidence | 保护层访问失败单独分类；既不降级应用，也不冒称视觉 PASS | 为了自动化方便关闭 Preview Protection |
+| merge 工具参数 schema 校验失败 | “调用过 merge 就可能已经改了远端” | 错误发生在 dispatch 前还是后；PR/head readback | dispatch 前 schema rejection = 无远端 mutation；修正参数后刷新 merge witness 再重试 | 因参数名错就轮换 Git 凭据或手工改 main |
+| hosted browser shard pending 数分钟 | “pending 太久就是 stuck，要重跑/取消” | required check、job 状态、是否已有失败、是否属于当前 exact head | 正常运行的 required job 保留；不要为追快取消/重触发，终态才是 merge authority | 本地已绿就绕过 pending shard |
+| merge 后又出现 main CI | “PR 通过过，所以 main 自动复验可以当重复垃圾删掉” | 当前仓库 post-merge contract、main SHA、Production identity | pre-merge required checks 决定 merge；post-merge revalidation 是新的 main 身份证据，正常让它收口，不人为重触发 | 合并后取消 main CI 只为省几分钟 |
+
+### 重复犯错检查：为什么以前写过仍会再发生
+
+这次不是所有问题都“再次犯错”，但至少四类旧风险再次出现或差点出现：moving-main、provider-success 过度概括、工具调用层与目标系统层混淆、把自动化工程 PASS 当真人理解 PASS。它们此前已经存在于 release/readability retrospective 中。仍会复发的原因不是缺一篇更长的历史文档，而是：
+
+1. **旧规则缺少合并窗口的机械 witness。** “merge 前刷新”容易被当成一句提醒，没有固定成一组 live tuple + guarded mutation。
+2. **冲突没有先做因果归因。** 过去强调 path-by-path 语义 owner，但没有明确要求把 conflict set 与每个 intervening PR 的 changed-path set 做交集，导致“最近发生 = 最近 PR 导致”很诱人。
+3. **工具错误视觉上很像目标系统错误。** schema validation、transport timeout、provider auth protection 都可能被粗暴压成“GitHub/Vercel 失败”。
+4. **人类理解证据仍不可由工程测试替代。** 这次虽然页面、浏览器、Production 都收口，真实目标读者仍是 0 人；因此不能把 #530 的工程完成改写成“老师/同学已被证明能看懂”。
+
+本轮不再扩写根 `AGENTS.md`：入口已经有 moving-main、REPEAT-CORRECTION、shell、provider、shared-state guards。新增规则直接进入现有 `multi-pr-semantic-integration-playbook.md` 与 `release-closeout-protocol.md`，让未来 Agent 在真正执行 smart merge / release 时读到 use-site 规则。
+
+### A / B / C 信息分层
+
+**A — 长期稳定规则**：冲突先归因再选 side；验收绑定 exact tree/base/contract；required checks 终态后形成 atomic merge-window witness；支持时用 expected-head 锁；dispatch 前 schema rejection 不冒充远端 mutation；provider access/READY/visual acceptance 分层；Production 独立验收；自动化 PASS 不等于真人理解。
+
+**B — BaseModel 项目级经验**：#524/#527/#530 的具体合流方式、`[vercel-preview]` + deploy-relevant classifier、Vercel Preview Protection、CircleCI 三 required contexts、478-route/398-case 这些只用于解释本次 BaseModel release 机制和历史证据；当前数值/规则仍需按 executable/live truth 重查。
+
+**C — 临时状态**：中间 head、workflow/job ID、deployment ID、pending 时长、本地 PID、临时 worktree、当时的 PR mergeability 均只作为本次历史 receipt；不进入长期规则或账户记忆。
+
+### 长期记忆边界
+
+本环境仍没有可调用的长期记忆写接口，因此本轮实际账户级长期记忆写入仍为 **0 条**。没有把仓库提交、personal-context 检索或聊天总结冒称为记忆更新。可作为未来真实记忆接口候选的只有跨项目稳定偏好：中文/零背景 reader-first；重复纠错修 owner/contract 而不是叠 patch；共享状态先读后写且不动他人资源；科学、运行、发布、真人理解证据分层；smart merge 要验证最终组合树并原子锁定 merge。

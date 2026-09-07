@@ -290,6 +290,25 @@ required Gate/browser evidence is still the accepted run
 
 If head or material base state changed, stop and refresh acceptance instead of merging from memory.
 
+### 7.0 Use one atomic merge-window witness
+
+After the required checks become terminal, do not spend the accepted state by doing another unbounded round of branch work. Immediately before the merge mutation, capture one compact live tuple:
+
+```text
+accepted head SHA
+current intended base SHA
+current branch-protection / required-check names and terminal states
+provider deployment ID + bound SHA + real execution state when provider acceptance is required
+unresolved review-thread count
+mergeability / draft state
+```
+
+Then merge with `expected_head_sha=accepted_head` when the interface supports it. The witness and the guarded mutation form one closeout window; if head, material base state, required-check authority, or provider identity changes, leave that window and refresh the affected acceptance instead of merging from memory.
+
+A client/tool schema error that is explicitly rejected **before dispatch** is not a repository mutation. Do not report a partial merge or change credentials/remotes because a local argument name was wrong. Correct the invocation, re-read the live tuple if shared state could have moved, and retry the same guarded mutation. Conversely, a transport timeout after dispatch has unknown side effects until the PR/ref is read back.
+
+PR-body wording, local logs, or a remembered green matrix are not locks. The lock is the exact accepted head plus the live merge guard and readback.
+
 ### 7.1 Explicit acceptance rules are merge-authorization boundaries
 
 A PR can be mergeable and all currently required checks can be green while the work is still **not authorized to merge**. This is especially common for CI/performance experiments whose PR body pre-registers a later steady-state benchmark, control, canary, or repeat requirement.

@@ -113,6 +113,22 @@ reason
 acceptance evidence
 ```
 
+### 4.1 Attribute conflicts before choosing a side
+
+A conflict marker identifies an automatic-merge failure; it does **not** identify which recent PR caused the conflict or which blob owns the current meaning. Before choosing `ours` / `theirs` or copying a whole file, attribute the conflict.
+
+For each material conflict:
+
+1. compute the conflict-path set and the changed-path sets of the intervening `main` commits / candidate PRs;
+2. distinguish exact path overlap from semantic-owner overlap; a newer PR with zero conflict-path overlap must not be blamed for, or discarded because of, conflicts inherited from an earlier merge;
+3. when an older worker PR already landed on `main`, compare its exact PR head with the merged `main` blobs to see whether later policy/CI-only edits changed the file or whether the conflicting content is semantically identical;
+4. retain current authoritative semantics plus the still-valid candidate contribution, then verify that disjoint newer work remains present in the final tree;
+5. record the attribution in the integration PR so a future Agent can distinguish “conflicted after PR X merged” from “PR X actually touched this surface.”
+
+Path-set intersection is an attribution aid, not a semantic-compatibility proof. A zero path intersection can show that one PR did not create those textual conflicts; shared schemas, navigation, generated output, or scientific authority can still conflict semantically and require owner-level review.
+
+Anti-example: `main` advances through PR B, ten files now conflict, and the integrator chooses the candidate's whole-file versions while calling PR B “the conflict source” without checking that PR B's own changed paths are disjoint. That can silently erase valid work and creates a false causal record.
+
 ### 5. Build one integration head
 
 ```text
