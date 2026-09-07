@@ -1,6 +1,6 @@
 # Audience-centered technical copy standard
 
-Last reviewed: **2026-08-27**
+Last reviewed: **2026-09-07**
 Status: current design and writing contract
 Audience: product, design, content, research, and implementation Agents
 Applies to: Basemodel public pages, SEED/OpenEvo research pages, reproduction guides, callouts, troubleshooting, and status language
@@ -32,6 +32,28 @@ Avoid promoting editorial instructions into headings, for example:
 - `为什么我们现在要……`
 
 These can be useful explanations, but they should not visually outrank the subject itself.
+
+
+## First-screen attention contract
+
+**First identify the object; then summarize the experiment. 首屏先认对象，再回答实验做了什么。**
+
+For a research or experiment overview, the first screen should normally resolve this order:
+
+```text
+H1: stable subject + object type when a first-time reader may not know it
+source/resource row: comparison target, paper, training/run links
+TL;DR: what was run or compared + what is currently known + the main claim boundary
+background: link to the canonical explainer when that background already exists elsewhere
+```
+
+Good first-screen identity is explicit enough for a new reader: `OpenEVO (Harness) · WebShop 数据集实验` tells the reader what OpenEVO is and what WebShop is before introducing the SEED comparison. A relation such as `OpenEvo × SEED` is not a substitute for identifying either object. The same identity should survive the global entry label and local research navigation, so the reader does not receive an older relationship-first name before reaching the H1.
+
+**Canonical background belongs behind a link when the overview would otherwise repeat it.** If the site already has one maintained explainer for OpenEVO, SEED, WebShop, or the shared flow, the experiment overview should link there instead of spending the first screen teaching the same background again.
+
+A TL;DR is not a second abstract slogan. It must say, in ordinary language, what the experiment did or is designed to compare and what the evidence currently allows the reader to conclude.
+
+Presenter phrases such as `怎样连起来`, `怎么读`, `如何阅读`, or `先 A，再 B` belong in body copy when they express explanation or sequencing. Use the heading to name the object: `三个研究问题`, `未知状态`, `结果判定`, `复现协议`. Genuine scientific research questions may still be written as questions.
 
 ## 1. Concrete language still matters
 
@@ -203,6 +225,9 @@ Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragra
 12. If the section explains an incident, could a reader first state the experiment in one sentence before encountering the incident name?
 13. Before causal attribution, have you supplied the model/training/evaluation context needed to judge the obvious alternatives?
 14. Did you resolve the exact artifact lineage rather than borrow settings from a nearby historical experiment?
+15. On a first-time entry page, does H1 identify unfamiliar object types before relationships between them?
+16. Does the first-screen TL;DR say what the experiment did / compares and the current evidence boundary, rather than repeat benchmark background?
+17. If a canonical explainer already owns the background, does this page link to it instead of teaching it again?
 
 Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 

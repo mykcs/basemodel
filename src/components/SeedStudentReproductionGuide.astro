@@ -157,7 +157,7 @@ const route = [
 
   <section id="seed-step-00" class="step">
     <b class="step-num">00</b><div>
-      <h3>{t('先在联网电脑把实验包准备完整', 'Prepare the complete experiment bundle online')}</h3>
+      <h3>{t('实验包准备', 'Experiment bundle preparation')}</h3>
       <p>{t('服务器不能临时下载东西，所以第一次准备要耐心一点。代码进 GitHub；Qwen2.5-3B-Instruct、ALFWorld 数据、已经完成 setup 的 WebShop、Linux/Python/CUDA 依赖和下面两份检查脚本都通过 SFTP 送进去。WebShop 的 setup 会下载数据、spaCy 并建搜索索引，这一步要在能联网的 Linux 环境完成。', 'The server cannot download missing pieces later, so the first bundle needs care. Put code in GitHub; move Qwen2.5-3B-Instruct, ALFWorld data, a fully prepared WebShop, Linux/Python/CUDA dependencies, and the two check scripts over SFTP. WebShop setup downloads data and spaCy and builds its search index, so finish that on an online Linux host.')}</p>
       <pre><code>{freezeCode}</code></pre>
       <p class="paths"><code>code/</code><code>models/</code><code>data/alfworld/</code><code>data/webshop/</code><code>env/</code><code>tools/</code><code>runs/</code><code>SHA256SUMS.txt</code></p>
@@ -168,7 +168,7 @@ const route = [
 
   <section id="seed-step-01" class="step">
     <b class="step-num">01</b><div>
-      <h3>{t('服务器先体检；看到 READY 才继续', 'Preflight the server; continue only after READY')}</h3>
+      <h3>{t('服务器预检', 'Server preflight')}</h3>
       <pre><code>{preflight}</code></pre>
       <pre><code>{offlineEnv}</code></pre>
       <p class="tool-links"><a href="/guides/seed-4x3090-preflight.sh">{t('下载 preflight 脚本', 'Download preflight script')}</a></p>
@@ -179,7 +179,7 @@ const route = [
 
   <section id="seed-step-02" class="step">
     <b class="step-num">02</b><div>
-      <h3>ALFWorld · {t('先做最小数据链', 'prove the smallest data path')}</h3>
+      <h3>ALFWorld · {t('最小数据链', 'minimal data path')}</h3>
       <p>{t('SEED 官方脚本已经提供 RUN_MODE=smoke。它会把规模缩小到每种任务 1 个 task、每个 task 1 个 rollout。四卡机器把 DATA_PARALLEL_SIZE 明确写成 4。', 'SEED already provides RUN_MODE=smoke. It reduces the job to one task per type and one rollout per task. On this machine, set DATA_PARALLEL_SIZE explicitly to 4.')}</p>
       <p>{t('这里还有一个现实问题：Stage 1 要调用 skill analyzer。实验室里有可用的本地/内网 OpenAI-compatible endpoint，就把地址写进 SKILL_BASE_URL；没有的话，就在允许联网的环境先生成 Stage-1 数据，保存 hash 后再带回服务器。', 'There is one practical constraint: Stage 1 calls a skill analyzer. If the lab has an internal OpenAI-compatible endpoint, point SKILL_BASE_URL to it. Otherwise generate Stage-1 data in an approved online environment, hash it, and bring it back to the server.')}</p>
       <pre><code>{alfworldSmoke}</code></pre>
@@ -192,7 +192,7 @@ const route = [
 
   <section id="seed-step-03" class="step">
     <b class="step-num">03</b><div>
-      <h3>WebShop · {t('先确认本地商店能用，再做 1×1', 'prove the local shop, then run 1×1')}</h3>
+      <h3>WebShop · {t('本地环境与 1×1 检查', 'local environment and 1×1 check')}</h3>
       <p>{t('先单独打开 WebShop text environment，确认商品、目标和搜索索引都能加载，并亲手完成一次 search/click。这个动作能提前排除大部分 WebShop 环境问题。', 'Open the WebShop text environment by itself first. Confirm products, goals, and the search index load, then complete one search/click interaction. This catches most WebShop environment failures before SEED enters the picture.')}</p>
       <p>{t('WebShop 的 prepare_data 没有 RUN_MODE=smoke，所以用它已经暴露出来的参数把任务缩到 1 task × 1 rollout。', 'WebShop prepare_data has no RUN_MODE=smoke, so use its exposed overrides to reduce the job to 1 task × 1 rollout.')}</p>
       <pre><code>{webshopSmoke}</code></pre>
@@ -204,7 +204,7 @@ const route = [
 
   <section id="seed-step-04" class="step">
     <b class="step-num">04</b><div>
-      <h3>{t('两套 Stage 1 都 PASS，再训练 SFT', 'Train SFT after both Stage-1 checks PASS')}</h3>
+      <h3>{t('Stage 1 检查与 SFT', 'Stage-1 checks and SFT')}</h3>
       <pre><code>{sft}</code></pre>
       <div class="gate"><strong>{t('看到这些就算过', 'Pass when')}</strong><span>{t('两个导出目录都有 config.json 和模型权重；后面的 Stage-2 DRY_RUN 能找到并加载 checkpoint。', 'Both export directories contain config.json and model weights; the Stage-2 DRY_RUN finds and loads each checkpoint.')}</span></div>
       <div class="check-first"><strong>{t('没过先查', 'Check first')}</strong><span>{t('先核对 SFT 输入文件路径和 MODELS_ROOT，再看显存。', 'Check the SFT input paths and MODELS_ROOT before blaming VRAM.')}</span></div>
@@ -213,7 +213,7 @@ const route = [
 
   <section id="seed-step-05" class="step">
     <b class="step-num">05</b><div>
-      <h3>{t('四卡 RL 先 DRY_RUN，再跑一个短实验', 'DRY_RUN four-GPU RL, then run a short experiment')}</h3>
+      <h3>{t('四卡 RL DRY_RUN 与短实验', 'Four-GPU RL DRY_RUN and short run')}</h3>
       <p>{t('SEED 的 Stage-2 wrapper 默认按 8 GPU 写。这里显式改成 4。DRY_RUN 先检查配置；10 epochs 短跑再检查真实显存、通信、保存/恢复和每个 update 要多久。', 'SEED Stage-2 wrappers default to 8 GPUs. Set four explicitly here. DRY_RUN checks configuration; the 10-epoch short run checks real memory, communication, save/resume, and update time.')}</p>
       <pre><code>{dryRun}</code></pre>
       <pre><code>{shortRun}</code></pre>
@@ -225,7 +225,7 @@ const route = [
 
   <section id="seed-step-06" class="step">
     <b class="step-num">06</b><div>
-      <h3>{t('短跑稳定后，再花时间跑完整训练和 GRPO 对照', 'After a stable short run, spend the time on full training and GRPO controls')}</h3>
+      <h3>{t('完整训练与 GRPO 对照', 'Full training and GRPO controls')}</h3>
       <pre><code>{fullRun}</code></pre>
       <h4>{t('同条件 GRPO', 'Same-condition GRPO')}</h4>
       <pre><code>{grpo}</code></pre>
@@ -257,7 +257,7 @@ const route = [
   <section class="time-risk" aria-labelledby="time-title">
     <div>
       <p class="section-kicker">{t('大概需要多久', 'How long')}</p>
-      <h3 id="time-title">{t('先留 1–2 天把链路跑通；完整两套实验先按 3–6 天排机器', 'Reserve 1–2 days to prove the chain; plan 3–6 days for both full experiments')}</h3>
+      <h3 id="time-title">{t('机器时间预算', 'Machine-time budget')}</h3>
       <ul class="timeline">
         <li><strong>4–12h</strong><span>{t('联网端准备离线包：依赖、模型、ALFWorld、WebShop、hash。第一次最费时间。', 'Build the offline bundle: dependencies, model, ALFWorld, WebShop, hashes. The first bundle takes the most time.')}</span></li>
         <li><strong>2–6h</strong><span>{t('服务器体检 + 两个环境最小交互。', 'Server preflight plus minimal interaction in both environments.')}</span></li>

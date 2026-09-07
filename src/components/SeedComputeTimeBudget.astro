@@ -36,7 +36,7 @@ const exampleReserveHours = exampleRawHours * 1.15;
   <header class="budget-head">
     <div>
       <span class="section-kicker">{t('SEED 复现 · 租卡时间预算', 'SEED reproduction · rental-time budget')}</span>
-      <h2 id="seed-compute-hours-title">{t('不同方案到底要租多少小时？先给预算，再用真机数据改掉估算', 'How many rental hours does each option need? Start with a budget, then replace it with measurements')}</h2>
+      <h2 id="seed-compute-hours-title">{t('GPU 租用时长预算', 'GPU rental-time budget')}</h2>
       <p>{t('SEED 论文没有报告 wall-clock 训练小时数，所以这里不能把一个“精确小时数”冒充成论文事实。下面的小时区间是租卡前的工程预算；真正开机后，用前 5 个稳定 update 的耗时重新计算。', 'The SEED paper does not report wall-clock training hours, so an exact runtime cannot honestly be presented as a paper fact. The ranges below are pre-rental engineering budgets; once the machine is running, replace them using the first five stable policy-update timings.')}</p>
     </div>
     <aside>

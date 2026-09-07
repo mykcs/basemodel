@@ -6,7 +6,7 @@ import AppLayout from '../layouts/AppLayout.astro';
   <div class="shell dev-plan">
     <header class="page-header">
       <span class="section-kicker">开发方式 · 2026-09-06</span>
-      <h1>这三个活跃网站现在怎么开发</h1>
+      <h1>三个活跃网站的开发方案</h1>
       <p class="lede">目标不是“所有仓库都用同一个厂商”，而是让每一层只做自己擅长的事：GitHub 保存源码，云端 CI 做验收，Preview 只在需要时花资源，Production 保持简单，MacBook 留给 Remote Desktop、SSH 和日常工作。</p>
     </header>
 
@@ -18,7 +18,7 @@ import AppLayout from '../layouts/AppLayout.astro';
     </section>
 
     <section>
-      <h2>三个站点各自怎么做</h2>
+      <h2>三个站点的职责</h2>
       <div class="site-grid">
         <article class="site-card">
           <div class="eyebrow">BaseModel</div>
@@ -53,7 +53,7 @@ import AppLayout from '../layouts/AppLayout.astro';
     </section>
 
     <section>
-      <h2>一次普通改动怎么走</h2>
+      <h2>普通改动流程</h2>
       <ol class="flow">
         <li><strong>先判断改动属于哪一层。</strong><span>源码、CI、Preview、Production、监控分开看，不因为一个层出问题就重装另一个层。</span></li>
         <li><strong>在一个 coherent branch / PR 里完成。</strong><span>尽量一次原子提交，减少重复 hosted build。</span></li>
@@ -65,7 +65,7 @@ import AppLayout from '../layouts/AppLayout.astro';
     </section>
 
     <section class="guardrail">
-      <h2>这套方案明确不做什么</h2>
+      <h2>方案边界</h2>
       <ul>
         <li>不把 MacBook 当 24×7 CI farm；它优先服务 Remote Desktop Commander、浏览器、SSH 和日常控制。</li>
         <li>不把科研 GPU 服务器当普通 CPU CI 的 fallback。</li>

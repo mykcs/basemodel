@@ -6,7 +6,7 @@ import AppLayout from '../../layouts/AppLayout.astro';
   <div class="shell dev-plan">
     <header class="page-header">
       <span class="section-kicker">Development workflow · 2026-09-06</span>
-      <h1>How the three active websites are developed now</h1>
+      <h1>Development workflow for the three active websites</h1>
       <p class="lede">The goal is not to force every repository onto one vendor. Each layer has one job: GitHub keeps source and history, cloud CI performs acceptance, Preview spends resources only when needed, Production stays simple, and the MacBook remains available for Remote Desktop, SSH and daily work.</p>
     </header>
 
@@ -53,7 +53,7 @@ import AppLayout from '../../layouts/AppLayout.astro';
     </section>
 
     <section>
-      <h2>Flow for an ordinary change</h2>
+      <h2>Ordinary change flow</h2>
       <ol class="flow">
         <li><strong>Classify the layer first.</strong><span>Source, CI, Preview, Production and monitoring are separate failure domains.</span></li>
         <li><strong>Finish one coherent branch / PR.</strong><span>Prefer one atomic update instead of repeated provider-triggering micro-commits.</span></li>
@@ -65,7 +65,7 @@ import AppLayout from '../../layouts/AppLayout.astro';
     </section>
 
     <section class="guardrail">
-      <h2>What this workflow deliberately avoids</h2>
+      <h2>Workflow boundaries</h2>
       <ul>
         <li>No 24×7 MacBook CI farm; the Mac prioritizes Remote Desktop Commander, browser work, SSH and daily control.</li>
         <li>No generic CPU CI fallback onto research GPU servers.</li>

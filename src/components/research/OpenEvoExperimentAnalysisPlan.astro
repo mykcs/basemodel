@@ -189,7 +189,7 @@ const rows = isSeven ? sevenBRows : fourRows;
       </figure>
       <section class="per-arm-section" aria-labelledby="per-arm-title">
         <div class="section-kicker">{t('每个实验内部', 'WITHIN EACH ARM')}</div>
-        <h2 id="per-arm-title">{t('四组各自先回答什么？','What should each arm answer first?')}</h2>
+        <h2 id="per-arm-title">{t('四组实验各自的问题','Questions for each arm')}</h2>
         <div class="per-arm-grid">{armPlans.map((arm) => <article><header><h3>{arm.arm}</h3><span>{arm.state}</span></header><p><strong>{arm.q}</strong></p><p>{arm.evidence}</p><p class="arm-work">{arm.work}</p><footer><span>GPU · {arm.gpu}</span><span>{t('分析时间','Analysis time')} · {arm.time}</span></footer></article>)}</div>
       </section>
     </>
@@ -197,7 +197,7 @@ const rows = isSeven ? sevenBRows : fourRows;
 
   <section class="plan-section" aria-labelledby="plan-title">
     <div class="section-kicker">{t('分析顺序', 'ANALYSIS ORDER')}</div>
-    <h2 id="plan-title">{isSeven ? t('先用现成数据排除解释，再决定是否占 GPU','Use existing evidence to narrow explanations before taking GPUs') : t('等各组可比的最终评测完成前，先做不会污染结果的过程分析','Do non-contaminating process analysis before comparable finals close')}</h2>
+    <h2 id="plan-title">{isSeven ? t('7B 过程分析','7B process analysis') : t('1.7B / 3B 过程分析','1.7B / 3B process analysis')}</h2>
     <div class="plan-table-wrap">
       <table class="plan-table">
         <thead><tr><th>{t('优先级','ID')}</th><th>{t('要回答的问题','Question')}</th>{!isSeven && <th>{t('关键对照','Contrast')}</th>}<th>{t('怎么做','Method')}</th><th>GPU</th><th>{t('预计时间','Time')}</th></tr></thead>

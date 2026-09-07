@@ -36,12 +36,12 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
       <span class="section-kicker">Lab GPU Server · read-only audit 2026-08-16</span>
-      <h1>What server did I actually receive?</h1>
+      <h1>Experiment server hardware and access</h1>
       <p class="lede">This is a public-safe snapshot for a first-time server user. SSH lands in a <strong>development container</strong> that can see 160 CPU threads, about 1 TiB of RAM, and eight RTX 5090 GPUs. But “visible” does not mean “exclusive” or “allocated to me.” The machine is very likely shared, while formal GPU allocation and personal storage quota remain policy questions.</p>
     </header>
 
     <section class="lab-section" aria-labelledby="current-server-title" data-explainer-step="0">
-      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">At a glance</h2></header>
+      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">Server overview</h2></header>
       <dl class="lab-ledger lab-ledger--overview" data-ui-audit="contrast layout">
         <div data-ui-audit-item><dt>System</dt><dd>Ubuntu 22.04 · Linux 5.15 · x86_64</dd></div>
         <div data-ui-audit-item><dt>CPU</dt><dd>2× Xeon Platinum 8380 · 80 physical cores / 160 threads</dd></div>
@@ -70,7 +70,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
       <div class="irx-split__flow">
 
     <section class="lab-section" aria-labelledby="shared-title" data-explainer-step="5">
-      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">What is visible, and what still needs authorization?</h2></header>
+      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">Resource visibility and authorization</h2></header>
       <p>This is the easiest boundary for a beginner to miss. Live evidence can prove that a resource is <strong>visible</strong> or that a capability <strong>works</strong>; it does not automatically prove exclusive ownership, administrative authorization, or a fixed personal quota.</p>
       <div class="lab-table-wrap" data-ui-audit="contrast layout">
         <table class="lab-fact-table">
@@ -88,7 +88,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
     </section>
 
     <section class="lab-section" aria-labelledby="storage-title" data-explainer-step="4">
-      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">Why three 436 GiB views do not add up</h2></header>
+      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">Storage views and capacity</h2></header>
       <p>Start with where the numbers come from: <code>/</code>, <code>/root</code>, and <code>/share</code> are three entry points reported inside one container, not three separately mounted disks. The audit shows they ultimately share one backing filesystem of about 436 GiB, so only <strong>different backing devices</strong> can be summed; these are <strong>three views, not three copies of capacity</strong>.</p>
       <figure class="lab-storage-map" data-ui-audit="contrast layout">
         <figcaption>One visible shared storage pool · 2026-08-16 snapshot</figcaption>
@@ -131,7 +131,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
     </section>
 
     <section class="lab-section" aria-labelledby="first-login-title" data-explainer-step="1">
-      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">Five things to check on your first login</h2></header>
+      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">First-login checks</h2></header>
       <ol class="lab-first-login" data-ui-audit="contrast layout">
         <li data-ui-audit-item><span>01</span><strong>Who am I, and where am I?</strong><p><code>id</code> + <code>pwd</code>. Confirm identity, working directory, and whether you are inside a container.</p></li>
         <li data-ui-audit-item><span>02</span><strong>What are the GPUs doing?</strong><p><code>nvidia-smi</code>. Check model/count/load first; idle does not equal authorized.</p></li>
@@ -143,7 +143,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
     </section>
 
     <section class="lab-section" aria-labelledby="agent-audit-title" data-explainer-step="1">
-      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">Let an Agent inspect an unfamiliar server</h2></header>
+      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">Agent server audit</h2></header>
       <p>These facts should not be hand-entered from memory. A more reproducible flow is to let an SSH-capable Agent run a <strong>read-only audit</strong>, force it to separate live evidence / documentation / unknowns, redact sensitive details, and return a facts package the website can consume.</p>
       <ol class="lab-audit-flow" data-ui-audit="contrast layout" aria-label="Server audit to website workflow">
         <li data-ui-audit-item><span>01</span><strong>Give the Agent a prompt</strong><small>define read-only boundaries and beginner questions</small></li>
@@ -170,7 +170,7 @@ Final self-check: no server changes; no secrets, real other-user identities, or 
     </section>
 
     <section class="lab-section" aria-labelledby="paths-title">
-      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">Where to go next</h2></header>
+      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">Related routes</h2></header>
       <nav class="lab-route-list" aria-label="Experiment pages"><a href={localePath('en','/research/seed-openevo/study/run/')}><span>01</span><strong>Reproduction guide</strong><small>From environment checks to the WebShop / ALFWorld run contract</small></a><a href={localePath('en','/research/seed-openevo/study/')}><span>02</span><strong>Experiment entry</strong><small>OpenEvo × WebShop data flow and evolution boundary</small></a><a href={localePath('en','/research/seed-openevo/study/results/')}><span>03</span><strong>Experiment results</strong><small>Inspect real scores, failures, evidence, and next decisions</small></a></nav>
     </section>
       </div>

@@ -37,12 +37,12 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
   <div class="shell editorial-page lab-current-page">
     <header class="page-header lab-intro">
       <span class="section-kicker">实验室 GPU Server · 只读核验 2026-08-16</span>
-      <h1>我拿到的服务器，到底是什么？</h1>
+      <h1>实验服务器硬件与权限</h1>
       <p class="lede">这是一次面向新手的公开安全快照：你登录后进入的是<strong>开发容器</strong>，能看到 160 个 CPU 线程、约 1 TiB RAM 和 8 张 RTX 5090；但“看得见”不等于“独占”或“已经获准全部使用”。服务器很可能多人共享，正式资源分配与个人 quota 仍需按实验室规则确认。</p>
     </header>
 
     <section class="lab-section" aria-labelledby="current-server-title" data-explainer-step="0">
-      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">一眼看懂</h2></header>
+      <header class="lab-section__heading"><span>VERIFIED SERVER</span><h2 id="current-server-title">服务器概况</h2></header>
       <dl class="lab-ledger lab-ledger--overview" data-ui-audit="contrast layout">
         <div data-ui-audit-item><dt>系统</dt><dd>Ubuntu 22.04 · Linux 5.15 · x86_64</dd></div>
         <div data-ui-audit-item><dt>CPU</dt><dd>2× Xeon Platinum 8380 · 80 物理核 / 160 线程</dd></div>
@@ -71,7 +71,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
       <div class="irx-split__flow">
 
     <section class="lab-section" aria-labelledby="shared-title" data-explainer-step="5">
-      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">哪些资源可见，哪些权限仍需确认</h2></header>
+      <header class="lab-section__heading"><span>SHARED ACCESS</span><h2 id="shared-title">资源可见性与权限</h2></header>
       <p>这是新手最容易误解的一层。实时证据能证明资源<strong>可见</strong>、某种权限<strong>可用</strong>，但不能自动证明资源<strong>独占</strong>、已经获得行政授权，或拥有固定配额。</p>
       <div class="lab-table-wrap" data-ui-audit="contrast layout">
         <table class="lab-fact-table">
@@ -89,7 +89,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
     </section>
 
     <section class="lab-section" aria-labelledby="storage-title" data-explainer-step="4">
-      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">为什么三个 436 GiB 不能相加</h2></header>
+      <header class="lab-section__heading"><span>STORAGE MODEL</span><h2 id="storage-title">存储视图与容量关系</h2></header>
       <p>先看它们的来源：<code>/</code>、<code>/root</code> 和 <code>/share</code> 是同一个容器里报告出来的三个入口，不是三块被分别挂载的磁盘。本次证据显示它们最终指向同一块约 436 GiB 的 backing filesystem，因此只能把<strong>不同 backing device 的容量</strong>相加；这里是<strong>三个视图，不是三份容量</strong>。</p>
       <figure class="lab-storage-map" data-ui-audit="contrast layout">
         <figcaption>同一个可见共享存储池 · 2026-08-16 snapshot</figcaption>
@@ -132,7 +132,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
     </section>
 
     <section class="lab-section" aria-labelledby="first-login-title" data-explainer-step="1">
-      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">新手第一次登录，先看这 5 件事</h2></header>
+      <header class="lab-section__heading"><span>FIRST LOGIN</span><h2 id="first-login-title">首次登录检查</h2></header>
       <ol class="lab-first-login" data-ui-audit="contrast layout">
         <li data-ui-audit-item><span>01</span><strong>我是谁、在哪一层？</strong><p><code>id</code> + <code>pwd</code>。先确认身份、目录，以及你是不是在容器里。</p></li>
         <li data-ui-audit-item><span>02</span><strong>GPU 现在什么状态？</strong><p><code>nvidia-smi</code>。先看型号、数量、占用；空闲不代表已获授权。</p></li>
@@ -144,7 +144,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
     </section>
 
     <section class="lab-section" aria-labelledby="agent-audit-title" data-explainer-step="1">
-      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">让 Agent 帮你检查一台陌生服务器</h2></header>
+      <header class="lab-section__heading"><span>AGENT WORKFLOW</span><h2 id="agent-audit-title">Agent 服务器审计</h2></header>
       <p>网页里的这些事实不是手填出来的。更可复现的流程是：让能 SSH 的 Agent 做<strong>只读体检</strong>，强制区分 live evidence / 文档 / unknown，再脱敏成网页可消费的事实包。</p>
       <ol class="lab-audit-flow" data-ui-audit="contrast layout" aria-label="服务器体检到网页的流程">
         <li data-ui-audit-item><span>01</span><strong>给 Agent Prompt</strong><small>明确只读、安全边界和要回答的问题</small></li>
@@ -171,7 +171,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
     </section>
 
     <section class="lab-section" aria-labelledby="paths-title">
-      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">接下来去哪里</h2></header>
+      <header class="lab-section__heading"><span>NEXT</span><h2 id="paths-title">相关入口</h2></header>
       <nav class="lab-route-list" aria-label="实验页面"><a href={localePath('zh','/research/seed-openevo/study/run/')}><span>01</span><strong>复现指南</strong><small>从环境检查到 WebShop / ALFWorld 运行合同</small></a><a href={localePath('zh','/research/seed-openevo/study/')}><span>02</span><strong>实验入口</strong><small>OpenEvo × WebShop 数据流与演化边界</small></a><a href={localePath('zh','/research/seed-openevo/study/results/')}><span>03</span><strong>实验结果</strong><small>看真实分数、失败、证据与下一步决策</small></a></nav>
     </section>
       </div>
