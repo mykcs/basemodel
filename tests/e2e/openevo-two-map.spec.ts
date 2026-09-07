@@ -178,8 +178,9 @@ test('English routes mount the same successor gateway and dual narrative archite
   await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
   const mechanismMap = page.getByTestId('openevo-mechanism-map');
   await expect(mechanismMap.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
-  await expect(mechanismMap.locator('[data-experiment="M1-D"]')).toContainText('Authorized; no start recorded');
-  await expect(mechanismMap).toContainText('results not sealed');
+  const m1d = mechanismMap.locator('[data-experiment="M1-D"]');
+  await expect(m1d).toContainText('Authorized; no start recorded');
+  await expect(m1d).toContainText('Results unsealed');
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
   await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });
