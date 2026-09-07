@@ -10,7 +10,7 @@ import ResearchStateRail from './ResearchStateRail.astro';
 import ResearchDepth from './ResearchDepth.astro';
 import ExperimentLifecycle from './ExperimentLifecycle.astro';
 import OpenEvoM1DResults from './OpenEvoM1DResults.astro';
-import { OPEN_EVO_MECHANISM_SOURCE as source, OPEN_EVO_MECHANISM_EXPERIMENTS as experiments, OPEN_EVO_MECHANISM_BOUNDARIES, mechanismEvidenceUrl } from '../../data/openEvoMechanismNarrative';
+import { OPEN_EVO_MECHANISM_SOURCE as source, OPEN_EVO_MECHANISM_EXPERIMENTS as experiments, OPEN_EVO_MECHANISM_BOUNDARIES, mechanismEvidenceUrl, mechanismDisplayState, mechanismStateSummary } from '../../data/openEvoMechanismNarrative';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -32,16 +32,17 @@ const terms = zh ? [
   { term: 'causal intervention', meaning: 'Add or remove the real change and compare it with equally sized random changes to test whether behavior changes because of that direction.' },
   { term: 'M1-D', meaning: 'An independent SEED Stage-1 initialization reference over 1,440 experiences; it does not supply the M1-C steering signal.' },
 ];
+const referenceState = mechanismDisplayState(reference, locale);
 const m1dSteps = zh ? [
-  { id: 'qualify', kicker: '开始', title: '先匹配任务、模型和运行环境', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: 'M1-D 获得 Stage1 执行权，但仍然没有结果。', state: '已授权' },
+  { id: 'qualify', kicker: '开始', title: '先匹配任务、模型和运行环境', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: '检查通过且另获授权后，才允许开始收集购物经验。', state: referenceState.execution },
   { id: 'collect', kicker: '收集', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '模型按 SEED 的方法完成规定的购物任务；MiniMax 不在购物过程中指导它。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
-  { id: 'seal', kicker: '固定记录', title: '核对并固定保存全部 1,440 次购物记录', summary: '保存完成证明和整批数据的校验值后，才发布完全成功率、平均分和无效尝试比例等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: '等待结果封存' },
+  { id: 'seal', kicker: '固定记录', title: '核对并固定保存全部 1,440 次购物记录', summary: '保存完成证明和整批数据的校验值后，才发布完全成功率、平均分和无效尝试比例等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: referenceState.result },
   { id: 'analyze', kicker: '事后分析', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '用同一个分析器，比较 SEED 与已有 OpenEvo 初始记录中的成功、错误、重复搜索和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
   { id: 'stop', kicker: '结束', title: '比较完成后硬停：SEED Stage2 = 0', summary: '比较完成即结束：不生成技能、不做监督微调、不进入 SEED 后续训练，也不使用最终测试题。', outcome: 'M1-D 结束，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
 ] : [
-  { id: 'qualify', kicker: 'START', title: 'Match the task world, model identity, and runtime first', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'M1-D gains execution authority but still has no result.', state: 'Authorized' },
+  { id: 'qualify', kicker: 'START', title: 'Match the task world, model identity, and runtime first', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'Qualification and a separate release permit collection to begin.', state: referenceState.execution },
   { id: 'collect', kicker: 'COLLECT', title: 'Use the same 3B model for 180 × 8 = 1,440 attempts', summary: 'Collect the frozen task set under SEED Stage-1 semantics; MiniMax does not guide online actions.', outcome: 'Produce one complete raw Stage-1 corpus.', state: 'Fixed budget' },
-  { id: 'seal', kicker: 'SEAL', title: 'Seal all 1,440 trajectories and the corpus identity first', summary: 'Exact success, mean score, invalid rate, and related fields stay unpublished until the completion receipt and corpus SHA exist.', outcome: 'Turn raw behavior into auditable evidence that cannot be rewritten.', state: 'Awaiting result seal' },
+  { id: 'seal', kicker: 'SEAL', title: 'Seal all 1,440 trajectories and the corpus identity first', summary: 'Exact success, mean score, invalid rate, and related fields stay unpublished until the completion receipt and corpus SHA exist.', outcome: 'Turn raw behavior into auditable evidence that cannot be rewritten.', state: referenceState.result },
   { id: 'analyze', kicker: 'POST-HOC', title: 'Run MiniMax on 1,440 / 1,440 with the same analysis contract', summary: 'Then compare the SEED corpus with existing OpenEvo 3B Stage 1 using the same analyzer for success, errors, loops, and diversity.', outcome: 'Measure structural differences in initialization experience, not SEED final performance.', state: 'Preregistered' },
   { id: 'stop', kicker: 'STOP', title: 'Hard stop after the comparison: SEED Stage 2 = 0', summary: 'No skill generation, SFT, SEED Stage 2 training, or final-panel access.', outcome: 'Close M1-D with only the initialization-corpus claim.', state: 'Hard boundary' },
 ];
@@ -50,8 +51,8 @@ const stateItems = experiments.map((row) => ({
   id: row.id,
   name: row.name[locale],
   lifecycle: stateLifecycle(row),
-  lifecycleLabel: row.state[locale],
-  resultLabel: row.results === 'sealed' ? (zh ? '结果已封存' : 'Result sealed') : (zh ? '结果未封存' : 'Result unsealed'),
+  lifecycleLabel: mechanismDisplayState(row, locale).execution,
+  resultLabel: mechanismDisplayState(row, locale).result,
   note: row.id === 'M1-D' ? (zh ? '独立初始化参照，不给 M1-C 提供方向信号。' : 'Independent initialization reference; it does not supply the M1-C direction signal.') : undefined,
   current: row.id === 'M1-D',
 }));
@@ -59,15 +60,16 @@ const stateItems = experiments.map((row) => ({
 <article data-copy-review class="mechanism-map" data-testid="openevo-mechanism-map" data-reader-page="mechanism" data-ui-audit="contrast layout">
   <ResearchOrientation
     locale={locale}
+    layout="narrative"
     eyebrow="OPENEVO × WEBSHOP · MECHANISM-1.0"
     title={t("AI 练习购物后，哪些变化真的有用？", "What changes help AI after shopping practice?")}
-    lede={t("我们研究 AI 能不能从自己的尝试中学习：让模型在模拟商店按要求买东西，再用这些经验训练它。前面的实验关注“能做到多好”；本页进一步检查，训练留下的哪些内部变化真的影响了购物表现。下面先用一次购物说明任务，再解释怎样做对照实验。", "We train AI on its attempts in a simulated shop. Earlier experiments measured performance; this page tests which internal changes affect it. Start with one shopping example below.")}
+    lede={t("我们研究 AI 能不能从自己的尝试中学习：让模型在模拟商店按要求买东西，再用这些经验训练它。前面的实验关注“能做到多好”；本页进一步检查，训练留下的哪些内部变化真的影响了购物表现。下面先用一次购物说明任务，再解释怎样做对照实验。", "AI learns from shopping attempts in a simulated store. This page tests which internal changes affect its behavior. Begin with one shopping task below.")}
     question={t("学习带来的内部变化，真的影响购物能力吗？", "Do changes from learning affect shopping ability?")}
     why={t("只看分数还不知道原因；弄清哪些变化有用，才能为改进学习方法提供依据。", "Scores alone do not explain why. Finding useful changes can inform better learning methods.")}
-    start={t("从已经保存的训练历史中选取可区分的模型状态，并取得各实验的执行授权。", "Choose distinct saved model states and obtain authority for each experiment.")}
-    finish={t("A/B 检验方向；通过门槛才可申请 C。D 独立在 1,440 次尝试及分析比较后结束。", "A/B test directions; passing the gate permits a request for C. D stops independently after 1,440 attempts and analysis.")}
-    state={t("A、B、C 尚未获执行授权；D 已授权，结果未封存。", "A, B and C are not authorized; D is authorized and its results are unsealed.")}
-    stateTone="authorized"
+    start={t("取出学习时保存的不同模型版本，确认变化可检验；核验通过并另获授权后开始。", "Verify distinct saved models and testable changes; start only with a separate release.")}
+    finish={t("加上、移除变化的比较完成后停下；均未达门槛则结束主线。达标仍需另获批准，后续学习按固定预算结束。独立经验比较在 1,440 次尝试及事后分析核验完成后结束。", "Stop after the add/remove comparisons. Neither passes: end the main route. A pass still needs a separate release for fixed-budget learning. The independent comparison ends after 1,440 attempts and verified post-hoc analysis.")}
+    state={mechanismStateSummary(experiments, locale)}
+    stateTone={experiments.some((row) => row.execution === 'running') ? 'running' : experiments.some((row) => row.execution === 'authorized') ? 'authorized' : 'planned'}
     backHref={p('/research/seed-openevo/study/capability-exploration/')}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
     actionHref="#shopping-task"
@@ -114,6 +116,7 @@ const stateItems = experiments.map((row) => ({
     {causal.map((row) => <ExperimentLifecycle experiment={row} locale={locale} />)}
     <div class="mechanism-map__threshold" data-reader-gate>
       <h3>{t('后续学习的放行门槛', 'The gate for guided learning')}</h3>
+      <p data-score-explanation data-reader-answer>{t('平均任务分是 WebShop 的 task_score 平均值乘以 100。“提高 1 分”相当于原始 task_score 平均值提高 0.01，不是多成功一次。完整成功次数另行统计：只有任务被判为完全成功，才计一次。两项都比较，是为了避免平均完成度提高却少完成了整项任务。', 'Mean task score is the mean WebShop task_score multiplied by 100. One point equals 0.01 in the raw mean score, not one more successful task. Exact-success count separately counts tasks judged completely successful. Checking both prevents a gain in average completion from hiding fewer fully completed tasks.')}</p>
       <p>{t('优先采用 M1-A 修订方向：加上完整变化后，平均任务分比三个随机对照的中位数至少高 1 分，且完整成功次数不比原模型少。', 'Prefer the M1-A successor direction: its full positive change must beat the median of all three random controls by at least one mean task-score point, without reducing exact-success count relative to the baseline.')}</p>
       <p>{t('若上述条件未通过，再检查 M1-B 的第一组变化：移除它造成的平均分损失，比每一个随机移除对照至少多 1 分，且完整成功次数没有增加。两者都未通过就不启动 M1-C。', 'Otherwise check M1-B Theme 1: removing it must hurt mean score at least one point more than every random-removal control, without increasing exact-success count. If neither passes, M1-C does not start.')}</p>
       <a href={gateAmendment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={gateAmendment} />{t('门槛修订依据（需仓库权限）', 'Gate amendment (repository access required)')}</a>
@@ -130,7 +133,7 @@ const stateItems = experiments.map((row) => ({
   <section class="mechanism-map__section" id="initialization-reference" aria-labelledby="mechanism-reference-title">
     <h2 id="mechanism-reference-title">{t('独立参照 M1-D：从哪里开始，在哪里硬停？', 'Independent reference M1-D: where does it start and where does it hard-stop?')}</h2>
     <p>{t('M1-D 只比较初始化阶段收集的购物经验。它不提供 M1-C 的方向信号，也不继续执行 SEED 后续训练。', 'M1-D compares only the shopping experience collected during initialization. It does not supply the M1-C direction signal and does not continue into later SEED training.')}</p>
-    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('核对前提 → 购物 1,440 次 → 固定记录 → MiniMax 事后分析 → 比较 → 结束。', 'START → 1,440 → trajectory seal → MiniMax → matched compare → STOP.')} steps={m1dSteps} compact />
+    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('下面说明约定的执行流程，不是已完成的进度记录。当前：', 'These are the contracted steps, not a record of completed progress. Current state: ') + referenceState.execution + ' · ' + referenceState.result} steps={m1dSteps} compact />
     <ExperimentLifecycle experiment={reference} locale={locale} />
     <OpenEvoM1DResults locale={locale} />
   </section>

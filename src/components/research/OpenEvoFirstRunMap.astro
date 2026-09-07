@@ -49,7 +49,7 @@ const summarySteps = zh ? [
     question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
     why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Distinguish model capability, interface errors and capacity limits before the next design.")}
     start={t("7B 与 3B 各自收集初始购物经验，再进入后续学习。","7B and 3B collect initial shopping experience, then learn separately.")}
-    finish={t("7B 完成 149 轮；旧 3B 在 3,200 次后续尝试后停止。","7B completes 149 rounds; old 3B stops after 3,200 later attempts.")}
+    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 rounds of 128 attempts. Old 3B stops after 3,200 later attempts.")}
     state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","History is sealed. 7B completed final evaluation; old 3B stopped.")}
     stateTone="historical"
     backHref={links.lobby}
@@ -128,8 +128,8 @@ const summarySteps = zh ? [
         <div class="run-with-patch">
           <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="frozen">
             <span>{t("最终结果 · 2026-09-04", "FINAL RESULTS · 2026-09-04")}</span>
-            <h3>{t('149 轮学习后的测试：49.33 分，128 题中 58 题完全成功', 'Sealed after 149 completed rounds: 49.33 score and 58 / 128 exact successes')}</h3>
-            <p>{t('最终模型只使用第 0–148 轮的完整学习结果：19,072 次有效记录的尝试、143 次参数更新。未完成的第 149 轮有 96 次尝试，仅保留作过程记录。模型固定后，才进行一次最终测试。', 'The final checkpoint uses rounds 0–148: 19,072 accepted Stage-2 rollouts and 143 SD-LoRA components. The 96 rollouts from partial round149 remain provenance only and do not enter the checkpoint. The final panel was opened exactly once after checkpoint freeze.')}</p>
+            <h3>{t("149 个完整轮次后的测试：49.33 分，128 题中 58 题完全成功", "Evaluation after 149 complete rounds: 49.33 score and 58 / 128 exact successes")}</h3>
+            <p>{t("最终模型来自第 0–148 轮的完整学习结果，共 149 个完整轮次、19,072 次学习阶段的任务尝试，并记录 143 次已应用的参数更新。未完成的第 149 轮另有 96 次尝试，仅保留作过程记录，没有进入最终模型。模型固定后才进行一次最终测试。20,480 次是原定尝试上限；为什么提前停止仍需原始终止记录核验。", "The final model comes from complete rounds 0–148: 149 complete rounds, 19,072 task attempts during learning, and 143 applied parameter updates. The unfinished round 149 contains another 96 attempts retained only as process history and excluded from the final model. The final evaluation ran once after model freeze. The planned ceiling was 20,480 attempts; the reason for stopping early still requires the original termination record.")}</p>
             <button type="button" data-first-run-detail="frozen-7b" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
           </article>
           <aside class="patch-node" data-node-kind="engineering-fix" data-node-state="resolved">
@@ -366,4 +366,3 @@ const summarySteps = zh ? [
 @media(max-width:720px){.first-run{width:min(100% - 1rem,1120px)}.arm-picker__controls{grid-template-columns:1fr}.lineage-panel{padding:.7rem}.lineage-map{min-height:0}.lineage-node{min-height:0;padding:.78rem .75rem}.lineage-node h3{font-size:1rem}.lineage-node p{font-size:1rem}.patch-node{width:calc(100% - 1.2rem)}.detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:200;pointer-events:auto}.detail-layer__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 30%,transparent)}.detail-card{position:relative;left:auto;top:auto;width:min(90vw,350px);max-height:min(74vh,590px);padding:1rem}.first-run__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}}
 @media(prefers-reduced-motion:reduce){.arm-picker__controls button,.lineage-node,.patch-node{scroll-behavior:auto}}
 </style>
-

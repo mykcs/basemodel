@@ -69,7 +69,10 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');
     expect(stage1Versions).toContain('打开旧版 trajectory / adapter / HF / GitHub 产物');
+    expect(legacyStage1Archive).toContain('2026-08-31 的归档复核');
+    expect(legacyStage1Archive).toContain('这也不代表后来更换共享购物接口的 3B + 1.7B 新实验');
     expect(legacyStage1Archive).toContain('旧购物记录和模型文件可以继续用于历史分析；不能改名当作后续实验重新采集的数据');
+    expect(legacyStage1Archive).not.toContain('今后以新版为准');
     expect(legacyStage1Archive).toContain('openevo-webshop-h145-h146-trajectories');
     expect(legacyStage1Archive).toContain('9bdca2fcb80d3272b5c9c9a32fdc2f3873f03bbc');
     expect(legacyStage1Archive).toContain('openevo-webshop-h145-h146-adapters');
@@ -293,4 +296,3 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
 });
-

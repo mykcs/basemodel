@@ -21,12 +21,12 @@ const artifacts = [
 ] as const;
 ---
 <main data-copy-review class="legacy-s1" data-testid="legacy-stage1-archive">
-  <a class="legacy-s1__back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t("返回能力探索", "Back to capability exploration")}</a>
+  <a class="legacy-s1__back" href={p('/research/seed-openevo/study/capability-exploration/first-run/')}>← {t("返回初始运行", "Back to first run")}</a>
   <header class="legacy-s1__hero">
     <div>
       <p>{t("初始经验 · 历史资料", "INITIAL EXPERIENCE · HISTORICAL RECORDS")}</p>
       <h1>{t("历史初始经验与模型文件", "Historical initial experience and model files")}</h1>
-      <span>{t("初始经验收集让模型独立完成 180 个购物任务、每个尝试 8 次，共 1,440 次，随后保存购物过程和事后分析。这份历史资料与当时修订版采用相同任务、模型版本、购物接口和尝试次数；随机种子与实际采样设置不同，因此不能视为逐条相同的数据。", "Initial collection lets the model independently attempt 180 shopping tasks eight times each, producing 1,440 attempts followed by saved traces and post-task analysis. This historical collection and its contemporary revision used the same tasks, model versions, interface, and attempt count. Their seeds and effective decoding settings differed, so they are not identical corpora.")}</span>
+      <span>{t("初始经验收集让模型独立完成 180 个购物任务、每个尝试 8 次，共 1,440 次，随后保存购物过程和事后分析。2026-08-31 的归档复核将这份历史资料与当时修订版比较：任务、模型版本、购物接口和每组 180×8 次尝试相同，随机种子与实际采样设置不同，因此不能视为逐条相同的数据。这也不代表后来更换共享购物接口的 3B + 1.7B 新实验。", "Initial collection lets the model independently attempt 180 shopping tasks eight times each, producing 1,440 attempts followed by saved traces and post-task analysis. The 2026-08-31 archive review compared this historical collection with its contemporary revision: tasks, model revisions, interface, and 180×8 attempts per arm matched, while seeds and effective decoding settings differed, so they are not identical corpora. It also does not describe the later 3B + 1.7B study with its changed shared shopping interface.")}</span>
     </div>
     <aside><b>{t("可复用范围", "Reuse scope")}</b><p>{t("旧购物记录和模型文件可以继续用于历史分析；不能改名当作后续实验重新采集的数据。", "The old shopping records and model files remain useful for historical analysis; they cannot be relabeled as newly collected data for later experiments.")}</p></aside>
   </header>
@@ -49,11 +49,11 @@ const artifacts = [
   </section>
 
   <section class="legacy-s1__section legacy-s1__meaning" aria-labelledby="legacy-s1-meaning-title">
-    <div><p class="kicker">{t('怎么复用','HOW TO REUSE IT')}</p><h2 id="legacy-s1-meaning-title">{t("历史资料的复用边界", "Boundaries for reusing historical material")}</h2></div>
+    <div><p class="kicker">{t("复用边界", "REUSE BOUNDARY")}</p><h2 id="legacy-s1-meaning-title">{t("历史资料的复用边界", "Boundaries for reusing historical material")}</h2></div>
     <ol>
-      <li><b>01</b><strong>{t("购物行为分析", "Shopping-behavior analysis")}</strong><p>{t("购物记录反映模型在当时随机种子与采样设置下的实际行为。", "The traces record actual model behavior under the seeds and decoding settings used at the time.")}</p></li>
-      <li><b>02</b><strong>{t("原模型状态恢复", "Restoring the original model state")}</strong><p>{t("主模型归档保存初始训练的参数增量和未更新模型的指针，可按原始版本恢复。", "The primary model archive preserves initial-training adapters and pointers to unchanged models for restoration at their original versions.")}</p></li>
-      <li><b>03</b><strong>{t("后续实验的数据选择", "Data selection for later experiments")}</strong><p>{t("当时修订版明确固定了随机种子与采样规则。旧资料继续保留其原始身份；后续实验使用哪批数据，需以各自固定的实验规则为准。", "The contemporary revision pinned its seeds and decoding rules. Old material retains its original identity; each later experiment determines its data under its own fixed protocol.")}</p></li>
+      <li><b>01</b><strong>{t("购物行为分析", "Shopping-behavior analysis")}</strong><p>{t("购物记录真实反映模型在当时随机种子与采样设置下的行为。", "The traces record actual model behavior under the seeds and decoding settings used at the time.")}</p></li>
+      <li><b>02</b><strong>{t("原模型状态恢复", "Restoring the original model state")}</strong><p>{t("主模型归档保存初始训练的参数增量和未更新模型的指针，可按原始身份恢复。", "The primary model archive preserves initial-training parameter increments and pointers to unchanged models for identity-preserving restoration.")}</p></li>
+      <li><b>03</b><strong>{t("后续实验的数据选择", "Data selection for later experiments")}</strong><p>{t("当时修订版另行固定了随机种子与采样规则。旧资料继续保留原始身份；后续实验使用哪批数据，以各自固定的实验规则为准，不能把旧语料改称修订版或新实验的相同数据。", "The contemporary revision separately pinned its seeds and decoding rules. Old material retains its original identity; each later experiment selects data under its own fixed protocol, and the older corpus cannot be relabeled as identical data from the revision or a newer study.")}</p></li>
     </ol>
   </section>
 

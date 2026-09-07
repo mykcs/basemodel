@@ -34,7 +34,8 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).toContain('FORMAL TRAINING');
     expect(component).toContain('暂停启用');
     expect(component).toContain('没有转化为执行授权');
-    expect(component).toContain('formal training was not activated');
+    expect(component).toMatch(/formal (?:Stage 2 was not authorized|training was held)/);
+    expect(component).toContain('did not grant execution authority');
     expect(component).not.toContain('formal activation = PASS');
   });
 
@@ -72,4 +73,3 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(component).toContain('Harness201.1 与重新采集初始经验属于新实验记录');
   });
 });
-

@@ -23,7 +23,7 @@ export const OPEN_EVO_MECHANISM_SOURCE = {
 export const mechanismEvidenceUrl = (path: string) =>
   `https://github.com/mykcs/openevo-experiment/blob/${OPEN_EVO_MECHANISM_SOURCE.mergedCommit}/${path}`;
 
-/** Fields are rendered by ExperimentLifecycle, not merely required in a style guide. */
+/** Fields are rendered by ExperimentLifecycle; public state comes only from the typed facts below, so do not reintroduce a free-form state label. */
 export const mechanismLifecycleSchema = z.object({
   id: z.enum(['M1-A', 'M1-B', 'M1-C', 'M1-D']),
   track: z.enum(['causal', 'reference']),
@@ -33,7 +33,6 @@ export const mechanismLifecycleSchema = z.object({
   action: localized,
   stop: localized,
   output: localized,
-  state: localized,
   execution: z.enum(['locked', 'authorized', 'running', 'completed']),
   results: z.enum(['unsealed', 'sealed']),
   executionRelease: z.string().regex(/^configs\/experiment\/activations\/[a-z0-9.-]+\.json$/).nullable(),
@@ -47,15 +46,56 @@ export const mechanismLifecycleSchema = z.object({
   const issue = (message: string) => context.addIssue({ code: 'custom', message });
   if (record.execution !== 'locked' && !record.executionRelease) issue('Execution state requires an explicit release');
   if (record.execution === 'locked' && (record.executionRelease || record.actualStart || record.actualEnd)) issue('Locked work cannot carry an active release or run timestamps');
+  if (record.execution === 'authorized' && (record.actualStart || record.actualEnd)) issue('Authorization alone cannot carry observed execution timestamps');
+  if (record.execution === 'running' && record.actualEnd) issue('Running work cannot already carry a completion timestamp');
   if (record.execution === 'running' && !record.actualStart) issue('Running requires an actual start receipt timestamp');
   if (record.execution === 'completed' && (!record.actualStart || !record.actualEnd)) issue('Completion requires actual start and end timestamps');
   if (record.actualEnd && !record.actualStart) issue('An end cannot precede an unrecorded start');
   if (record.actualStart && record.actualEnd && Date.parse(record.actualEnd) < Date.parse(record.actualStart)) issue('End time must follow start time');
   if (record.results === 'sealed' && !record.resultReceipt) issue('Sealed outcomes require a result receipt');
   if (record.results === 'unsealed' && record.resultReceipt) issue('A result receipt and publication state must reconcile');
-  if (record.results === 'sealed' && record.execution === 'locked') issue('Locked work has no publishable result');
+  if (record.results === 'sealed' && record.execution !== 'completed') issue('Final result publication requires completed execution');
 });
 export type MechanismLifecycle = z.infer<typeof mechanismLifecycleSchema>;
+
+/** Display projections of receipt-backed facts; free-form historical labels are not state authority. */
+export function mechanismDisplayState(row: MechanismLifecycle, locale: MechanismNarrativeLocale) {
+  const executionLabels = {
+    locked: text('未获执行授权', 'Not authorized'),
+    authorized: text('已授权，尚无开始记录', 'Authorized; no start recorded'),
+    running: text('已开始，尚未完成', 'Started; not completed'),
+    completed: text('执行已完成', 'Execution completed'),
+  };
+  return {
+    execution: executionLabels[row.execution][locale],
+    result: (row.results === 'sealed' ? text('结果已封存', 'Results sealed') : text('结果未封存', 'Results unsealed'))[locale],
+  };
+}
+
+export function mechanismStateSummary(rows: readonly MechanismLifecycle[], locale: MechanismNarrativeLocale) {
+  // Group only identical facts: a later release for one arm must split the summary.
+  const groups = new Map<string, { names: string[]; row: MechanismLifecycle }>();
+  const roles = {
+    'M1-A': text('加上变化', 'Add changes'),
+    'M1-B': text('移除变化', 'Remove changes'),
+    'M1-C': text('后续学习', 'Later learning'),
+    'M1-D': text('独立经验比较', 'Independent experience comparison'),
+  };
+  for (const row of rows) {
+    const key = `${row.execution}:${row.results}`;
+    const group = groups.get(key) ?? { names: [], row };
+    group.names.push(roles[row.id][locale]);
+    groups.set(key, group);
+  }
+  const commonResult = rows.length > 0 && rows.every((row) => row.results === rows[0]!.results);
+  const executionSummary = [...groups.values()].map(({ names, row }) => {
+    const state = mechanismDisplayState(row, locale);
+    return `${names.join(locale === 'zh' ? '、' : ', ')}${locale === 'zh' ? '：' : ': '}${state.execution}${commonResult ? '' : `${locale === 'zh' ? '；' : '; '}${state.result}`}`;
+  }).join(locale === 'zh' ? '。' : '. ') + (locale === 'zh' ? '。' : '.');
+  if (!commonResult) return executionSummary;
+  const result = mechanismDisplayState(rows[0]!, locale).result;
+  return executionSummary + (locale === 'zh' ? `所有实验${result}。` : ` ${result} for all.`);
+}
 
 export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
   {
@@ -66,7 +106,6 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
     action: text('在同一批 64 个诊断任务上，比较原模型、加减真实变化、三个同幅度随机变化，以及两个自然训练状态。', 'On the same 64 diagnostic tasks, compare the baseline, signed changes, three equally sized random changes, and two natural training states.'),
     stop: text('身份或方向检查不通过就停止，消耗 0 个任务；通过并获授权后，最多完成 576 次任务尝试，按固定方案封存。', 'Stop with zero task consumption if identity or direction checks fail. After qualification and authorization, run at most 576 attempts and seal the fixed comparison.'),
     output: text('真实变化相对随机变化造成的任务完成度和完整成功次数差异。', 'Differences in task completion score and exact-success count caused by the real change relative to random changes.'),
-    state: text('修订方案已登记 · 执行仍锁定', 'Successor registered · execution locked'),
     execution: 'locked', results: 'unsealed', executionRelease: null, resultReceipt: null, actualStart: null, actualEnd: null,
     budget: 576, budgetKind: 'maximum',
     source: 'configs/experiment/designs/openevo-mechanism1-taskvector-causal-transplant-202609062100.json',
@@ -79,7 +118,6 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
     action: text('保留原模型作对照，分别移除三组变化，再加入三个同幅度随机移除对照；每组测试同样 64 个诊断任务。', 'Keep the original model as baseline, remove each of three patterns separately, and add three equally sized random-removal controls; each condition uses the same 64 diagnostic tasks.'),
     stop: text('按固定比较方案完成最多 448 次任务尝试后封存；不因分数好坏临时多跑或少跑。', 'Seal after at most 448 attempts in the fixed comparison; outcomes do not change the stopping rule.'),
     output: text('哪些变化的移除会额外损害行为；参数变化很大本身只算观察。', 'Which removals cause extra behavioral harm; a large parameter change alone remains descriptive evidence.'),
-    state: text('方案已登记 · 等待核验与执行授权', 'Registered · awaiting qualification and execution release'),
     execution: 'locked', results: 'unsealed', executionRelease: null, resultReceipt: null, actualStart: null, actualEnd: null,
     budget: 448, budgetKind: 'maximum',
     source: 'configs/experiment/designs/openevo-mechanism1-parameter-theme-knockout-202609052200.json',
@@ -92,7 +130,6 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
     action: text('让普通更新、有效方向引导、随机方向引导三组模型，在相同任务和随机种子下各做 512 次尝试；参数修改幅度相同。', 'Compare ordinary updates, useful-direction guidance, and random-direction guidance on identical tasks and seeds, with 512 attempts per arm and equal update magnitude.'),
     stop: text('无方向特异信号就不启动；启动后按三组共 1,536 次尝试的固定预算结束，不追着好结果加跑。', 'Do not start without a direction-specific signal. Once started, stop at the fixed total of 1,536 attempts across three arms.'),
     output: text('在这次小规模后续学习中，引导是否改善效率；这不是新的能力天花板分数。', 'Whether guidance improves efficiency in this bounded follow-up; this is not a new capability-ceiling score.'),
-    state: text('条件实验 · 门槛通过前保持锁定', 'Conditional experiment · locked until the gate passes'),
     execution: 'locked', results: 'unsealed', executionRelease: null, resultReceipt: null, actualStart: null, actualEnd: null,
     budget: 1536, budgetKind: 'fixed',
     source: 'configs/experiment/designs/openevo-mechanism1-taskvector-guided-microtrial-202609052200.json',
@@ -105,7 +142,6 @@ export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
     action: text('同一个 3B 模型按 SEED 的采集方法完成 180 个任务，每题尝试 8 次；再由 MiniMax 分析这些记录。MiniMax 是事后分析器，不是替模型购物的选手。', 'Use the 3B model with SEED collection semantics on 180 tasks, eight attempts each, then analyze the records with MiniMax. MiniMax analyzes completed attempts; it is not the shopping agent.'),
     stop: text('恰好 1,440 条轨迹和全部 MiniMax 分析通过核验并封存后结束；不生成技能、不训练模型，也不进入 SEED Stage2。', 'Stop once exactly 1,440 trajectories and all MiniMax analyses are verified and sealed; do not generate skills, train the model, or enter SEED Stage2.'),
     output: text('初始经验的成功、错误和多样性差异；只能解释初始化经验，不能当成 SEED 论文最终分数。', 'Differences in success, errors, and diversity of initial experience; these do not reproduce the SEED paper’s final score.'),
-    state: text('M1-D 阶段已激活 · 结果未封存', 'M1-D PHASE ACTIVATED · results not sealed'),
     execution: 'authorized', results: 'unsealed', executionRelease: OPEN_EVO_MECHANISM_SOURCE.activationRelease, resultReceipt: null, actualStart: null, actualEnd: null,
     budget: 1440, budgetKind: 'fixed',
     source: 'configs/experiment/designs/openevo-mechanism1-seed-stage1-init-probe-3b-202609052200.json',

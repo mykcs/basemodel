@@ -1,10 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { OPEN_EVO_MECHANISM_EXPERIMENTS as experiments, OPEN_EVO_MECHANISM_SOURCE as source, mechanismLifecycleSchema } from './openEvoMechanismNarrative';
+import { OPEN_EVO_MECHANISM_EXPERIMENTS as experiments, OPEN_EVO_MECHANISM_SOURCE as source, mechanismLifecycleSchema, mechanismDisplayState, mechanismStateSummary } from './openEvoMechanismNarrative';
 
 const first = experiments[0]!;
 const reference = experiments[3]!;
 
 describe('reader-facing experiment lifecycle and scientific state', () => {
+  it('derives all public state labels from typed facts and rejects free-form state prose', () => {
+    expect(mechanismLifecycleSchema.safeParse({ ...reference, state: { zh: '执行已完成', en: 'Execution completed' } }).success).toBe(false);
+    for (const locale of ['zh', 'en'] as const) {
+      const running = mechanismLifecycleSchema.parse({ ...reference, execution: 'running', actualStart: '2026-09-06T10:00:00Z' });
+      expect(mechanismDisplayState(running, locale).execution).not.toEqual(mechanismDisplayState(reference, locale).execution);
+      expect(mechanismDisplayState(running, locale).result).toEqual(mechanismDisplayState(reference, locale).result);
+      const complete = mechanismLifecycleSchema.parse({ ...running, execution: 'completed', actualEnd: '2026-09-06T12:00:00Z' });
+      expect(mechanismDisplayState(complete, locale).result).toEqual(mechanismDisplayState(reference, locale).result);
+      const sealed = mechanismLifecycleSchema.parse({ ...complete, results: 'sealed', resultReceipt: 'test-fixture-only/completion.json' });
+      expect(mechanismDisplayState(sealed, locale).result).not.toEqual(mechanismDisplayState(complete, locale).result);
+      const mixed = [first, running, sealed];
+      const summary = mechanismStateSummary(mixed, locale);
+      for (const row of mixed) {
+        const display = mechanismDisplayState(row, locale);
+        expect(summary).toContain(display.execution);
+        expect(summary).toContain(display.result);
+      }
+      expect(summary).not.toMatch(/M1-[ABCD]/);
+    }
+  });
   it('defines exactly four experiments with an independent initialization reference', () => {
     expect(experiments.map((row) => row.id)).toEqual(['M1-A', 'M1-B', 'M1-C', 'M1-D']);
     expect(experiments.filter((row) => row.track === 'reference').map((row) => row.id)).toEqual(['M1-D']);
@@ -35,6 +55,9 @@ describe('reader-facing experiment lifecycle and scientific state', () => {
       { ...reference, execution: 'running' },
       { ...reference, execution: 'completed' },
       { ...reference, results: 'sealed' },
+      { ...reference, actualStart: '2026-09-06T10:00:00Z' },
+      { ...reference, execution: 'running', actualStart: '2026-09-06T10:00:00Z', actualEnd: '2026-09-06T12:00:00Z' },
+      { ...reference, results: 'sealed', resultReceipt: 'test-fixture-only/completion.json' },
       { ...reference, actualEnd: '2026-09-06T12:00:00Z' },
       { ...reference, currentScore: 0 },
       { ...reference, finalScore: 0 },

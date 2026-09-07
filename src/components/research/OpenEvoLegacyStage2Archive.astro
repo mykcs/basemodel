@@ -24,8 +24,8 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   <header class="legacy__hero">
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
-      <h1>{t("历史批次更新规则", "Historical batch-update rule")}</h1>
-      <span>{t('历史 Stage 2 一共让模型继续做了 20,480 次 WebShop 任务。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是“没有成功数据”，而是当时把每 256 次尝试单独检查，必须同一批里至少有 8 个不同任务各自成功 2 次，才允许学习；最好的一批只有 7 个。', 'The historical Stage 2 let the model continue for 20,480 WebShop attempts. 7B/self collected 797 trainable exact-success traces and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The problem was not a lack of successful data: every 256 attempts were judged separately, and learning was allowed only if at least eight distinct tasks each succeeded twice inside the same batch; the best batch reached seven.')}</span>
+      <h1>{t("旧批次门槛：有成功经验，参数仍然没有更新", "Old batch gate: successful experience existed, but parameters still did not update")}</h1>
+      <span data-budget-boundary>{t("这个历史 Stage 2 给每组最多 20,480 次 WebShop 任务尝试。3B/self、7B/self 和 7B/MiniMax 完成全部预算；3B/MiniMax 提前停止，完整记录与未完成批次分别保留。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是没有成功数据，而是当时把每 256 次尝试单独检查：同一批里至少要有 8 个不同任务各自成功 2 次才允许更新；最好的一批只有 7 个。", "This historical Stage 2 allowed at most 20,480 WebShop attempts per arm. 3B/self, 7B/self, and 7B/MiniMax completed that budget; 3B/MiniMax stopped early, with complete records and the unfinished batch retained separately. 7B/self collected 797 trainable exact-success trajectories and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The issue was not a lack of successful data: every 256 attempts were judged separately, and an update required at least eight distinct tasks each succeeding twice in that batch; the best batch reached seven.")}</span>
     </div>
     <aside>
       <b>{t("更新门槛的影响", "Effect of the update gate")}</b>
@@ -173,4 +173,3 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
 @media(max-width:800px){.legacy__hero,.legacy__why,.legacy__selector,.legacy__links,.legacy__checkpoint-links{grid-template-columns:1fr}.legacy__metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.legacy__archive-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.legacy__why li{grid-template-columns:30px 1fr}.legacy__why li p{grid-column:2}.legacy__arm-panel>header{flex-direction:column}}
 @media(max-width:520px){.legacy__metrics,.legacy__final,.legacy__archive-facts{grid-template-columns:1fr}}
 </style>
-
