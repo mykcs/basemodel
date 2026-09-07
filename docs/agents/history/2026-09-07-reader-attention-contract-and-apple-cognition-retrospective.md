@@ -158,7 +158,7 @@ attention-first 不是删除证据。科学网页必须同时满足两件事：�
 
 #542 在 #545 closeout 时仍是独立、需要重新整合的 Results 变更；没有为了得到“漂亮历史”把它写成已经被 #545 吸收。compatibility Training Design URL 的旧身份也保留：它曾经是独立页面，#536 之后才变成 Flow owner 的兼容跳转。
 
-本 retrospective 自己的发布阶段又复现了一次 moving-main：#547 的初始 exact head 已经拿到 required CI 绿灯后，#542 才合并进 `main`，使 #547 从 CLEAN 变成 DIRTY。处理方式不是拿旧绿灯强合，而是显式把新 `main` 合进候选树，保留 #542 新增的 CASE-069–071 / Results reader rules 与本次新增的 attention/use-site rules，重新运行 `verify:deploy`，再为新的 exact head 取得 CI。这个事件保留在历史中，因为它直接证明“green once”不是 material base drift 之后的继续授权。
+本 retrospective 自己的发布阶段连续复现了 moving-main。第一次是 #547 的初始 exact head 已经拿到 required CI 绿灯后，#542 才合并进 `main`，使 #547 从 CLEAN 变成 DIRTY；处理方式不是拿旧绿灯强合，而是显式把新 `main` 合进候选树，保留 #542 新增的 CASE-069–071 / Results reader rules 与本次新增的 attention/use-site rules，并重新运行 `verify:deploy`。随后 #541 又在新的 retention PR 打开后合并，改变了 root `AGENTS.md` / docs routers / Vercel docs-only production-isolation contract；因此候选树再次显式吸收 #541 的“root 唯一 bootstrap + router 只负责导航 + Agent-control docs 不触发网站 Production”边界，再对新的 exact tree 重新验证。两次事件都证明：**green once 不是 material base drift 之后的继续授权**。
 
 本次 retrospective 现场又出现一次 Fish parser failure，这个事实保留，因为它证明“规则已写”仍可能在 use-site 失效；随后命令显式改用 `/bin/bash`。没有把 parser failure 说成 Git、服务器或仓库故障。
 

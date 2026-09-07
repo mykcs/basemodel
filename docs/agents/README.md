@@ -1,21 +1,26 @@
-# Agent documentation
+# Agent documentation router
 
-Stable task router for `mykcs/basemodel`.
+Status: **current documentation router**  
+Authority: **navigation only**  
+Canonical repository bootstrap: [`../../AGENTS.md`](../../AGENTS.md)
+
+Stable task router for `mykcs/basemodel`. This file selects documentation; it does not own repository-wide Agent behavior or deployment authority.
 
 The documentation system uses **progressive disclosure**: every Agent gets a small bootstrap, then loads only the owners that match the task. Do not turn this repository into one giant reading list, and do not create a second current policy merely because an older document is awkward to update.
 
 ## Core bootstrap
 
-For any non-trivial task:
+After root `AGENTS.md`, for any non-trivial task:
 
-1. read [`LATEST.md`](LATEST.md) for short-lived current state;
-2. read [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) for autonomy, tool boundaries, write hygiene, and durable-knowledge rules;
-3. read [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) before choosing a branch/PR path;
-4. read [`current/website-engineering-standard.md`](current/website-engineering-standard.md) for cross-cutting implementation and stopping rules;
-5. scan [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) and load the matched bundle below;
-6. inspect executable source/config/tests/manifests and live provider/experiment truth for the surface you will actually change.
+1. use this README to select the task bundle;
+2. read [`LATEST.md`](LATEST.md) for short-lived current state;
+3. read [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) for autonomy, tool boundaries, write hygiene, and durable-knowledge rules;
+4. read [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) before choosing a branch/PR path;
+5. read [`current/website-engineering-standard.md`](current/website-engineering-standard.md) for cross-cutting implementation and stopping rules;
+6. scan [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) and load the matched bundle below;
+7. inspect executable source/config/tests/manifests and live provider/experiment truth for the surface you will actually change.
 
-`/AGENTS.md` is the fast router and invariant layer. [`../README.md`](../README.md) owns the documentation lifecycle and archive boundary. This file owns task selection.
+Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`../README.md`](../README.md) owns the documentation-system lifecycle and archive boundary. This file owns **navigation/task selection only**; durable rules live in their single current policy owner.
 
 ## Task bundles
 
