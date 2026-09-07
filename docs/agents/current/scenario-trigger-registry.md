@@ -138,14 +138,14 @@ Historical end-to-end case: [`../history/2026-08-30-site-optimization-implementa
 1. Read `website-engineering-standard.md` §6.1–6.2, `deployment-policy.md`, and `release-closeout-protocol.md` before the first benchmark ref mutation.
 2. Search live open PRs and active/recent benchmark workflows first. Do not create a duplicate experiment or run candidate/control concurrently with your own other benchmark.
 3. Pre-register the candidate/control exact refs or trees, canonical test identities, executor/worker/retry contract, metric, meaningful improvement rule, theoretical upside bound, and qualification-vs-steady-state distinction.
-4. If the candidate changes CI infrastructure and therefore activates extra Lab/reserve/qualification work, do not compare that raw job duration to an ordinary product-PR baseline. Use a benchmark-only stacked ordinary-full PR on the candidate to measure the post-merge steady-state shape.
+4. If the candidate changes CI infrastructure and therefore activates extra Lab/reserve/qualification work, do not compare that raw job duration to an ordinary product-PR baseline. Use a benchmark-only stacked PR with the ordinary risk class being optimized (focused or full) on the candidate to measure the post-merge steady-state shape. For test-selection changes, execute the [CI evidence preflight](website-engineering-standard.md#ci-evidence-preflight): prove consumers/side effects and retained test identities; do not apply scheduler-only same-population reasoning to a declared selection experiment.
 5. Freeze the control to an immutable branch/ref when exact historical behavior matters; `main` is a moving ref. Give every workflow measurement a fresh head SHA because legacy GitHub status contexts attach to the commit SHA.
 6. Preserve exact test identity and acceptance semantics. Candidate/control runs are sequential; compare the slower browser shard/true critical path, not the best shard or a local hotspot.
 7. Separate queue/provisioning/setup/test time when the provider exposes it. A GitHub `pending -> success` interval includes every layer until proven otherwise.
 8. If the observed benefit is comparable to hosted-runner variance or below the pre-computed upside bound, reject added complexity and close the experiment unmerged. Local focused speedups are diagnostic evidence, not hosted critical-path authority.
 9. If a concurrent Agent moves/merges the candidate before acceptance completes, stop and re-read live state. Finish post-merge validation honestly and use a narrow revert/repair if the pre-registered criterion was not met.
 
-Historical case: [`../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md`](../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md).
+Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchmark-causality-and-multi-agent-closeout-retrospective.md), [`mechanism-route evidence and repetition audit`](../history/2026-09-07-mechanism-ci-route-ownership.md). Dashboard/log interaction failures use the evidence-reading procedure in `deployment-policy.md`; repeated UI timeouts are not CI failure evidence.
 
 ---
 
