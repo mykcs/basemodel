@@ -39,7 +39,7 @@ test('desktop lobby exposes exactly three primary maps and keeps archive seconda
   await assertNoPageOverflow(page);
 });
 
-test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and explicit non-result boundaries', async ({ page }) => {
+test('Mechanism-1.0 exposes frozen passports, M1-D authorization without a start record, and explicit non-result boundaries', async ({ page }) => {
   const response = await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
   const map = page.getByTestId('openevo-mechanism-map');
@@ -51,7 +51,7 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('1,440');
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('MiniMax');
   await expect(map).toContainText('SEED Stage2 = 0');
-  await expect(map).toContainText('M1-D 阶段已激活');
+  await expect(map.locator('[data-experiment="M1-D"]')).toContainText('已授权，尚无开始记录');
   await expect(map).toContainText('结果未封存');
   await expect(map).toContainText('GPU0–3 SHARED RAY = AUTHORIZED');
   await expect(map).toContainText('M1-D STAGE1 = ACTIVATED');
@@ -178,8 +178,9 @@ test('English routes mount the same successor gateway and dual narrative archite
   await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
   const mechanismMap = page.getByTestId('openevo-mechanism-map');
   await expect(mechanismMap.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
-  await expect(mechanismMap).toContainText('M1-D PHASE ACTIVATED');
-  await expect(mechanismMap).toContainText('results not sealed');
+  const m1d = mechanismMap.locator('[data-experiment="M1-D"]');
+  await expect(m1d).toContainText('Authorized; no start recorded');
+  await expect(m1d).toContainText('Results unsealed');
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
   await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });

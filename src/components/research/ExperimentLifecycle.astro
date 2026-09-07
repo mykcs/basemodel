@@ -1,7 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
 import type { MechanismLifecycle } from '../../data/openEvoMechanismNarrative';
-import { mechanismEvidenceUrl } from '../../data/openEvoMechanismNarrative';
+import { mechanismEvidenceUrl, mechanismDisplayState } from '../../data/openEvoMechanismNarrative';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 interface Props { experiment: MechanismLifecycle; locale: Locale }
 const { experiment: row, locale } = Astro.props;
@@ -11,7 +11,7 @@ const source = mechanismEvidenceUrl(row.source);
 ---
 <section id={row.id.toLowerCase()} class="experiment-life" data-experiment={row.id} data-track={row.track} data-execution={row.execution} data-results={row.results} aria-labelledby={`${row.id.toLowerCase()}-title`} data-ui-audit="contrast layout">
   <header>
-    <p class="experiment-life__identity">{row.id} · {row.state[locale]}</p>
+    <p class="experiment-life__identity" data-reader-answer>{row.id} · {mechanismDisplayState(row, locale).execution} · {mechanismDisplayState(row, locale).result}</p>
     <h3 id={`${row.id.toLowerCase()}-title`}>{row.name[locale]}</h3>
     <p class="experiment-life__question" data-reader-question>{row.question[locale]}</p>
   </header>
@@ -26,5 +26,5 @@ const source = mechanismEvidenceUrl(row.source);
   <a class="experiment-life__source" href={source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source} />{zh ? '实验依据（需仓库权限）' : 'Experiment source (repository access required)'}</a>
 </section>
 <style>
-.experiment-life{padding:1.5rem 0;border-top:1px solid var(--line);scroll-margin-top:7rem;min-width:0}.experiment-life header{max-width:48rem}.experiment-life p{margin:.5rem 0;line-height:1.75}.experiment-life__identity{font-size:.85rem;color:var(--accent-deep);font-weight:700}.experiment-life h3{margin:.25rem 0;font-size:1.35rem;line-height:1.4}.experiment-life__question{font-weight:650;color:var(--ink)}.experiment-life dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 2rem;margin:1rem 0}.experiment-life dl>div{min-width:0;padding-left:1rem;border-left:2px solid var(--line)}.experiment-life dt{font-size:.9rem;font-weight:750;color:var(--accent-deep)}.experiment-life dd{margin:.3rem 0 0;line-height:1.75;color:var(--ink)}.experiment-life__source{display:inline-flex;gap:.4rem;align-items:center;font-size:.85rem;color:var(--accent-deep);text-underline-offset:.2em}.experiment-life a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.experiment-life:target{border-color:var(--accent-deep)}@media(max-width:760px){.experiment-life dl{grid-template-columns:1fr;gap:1rem}.experiment-life{padding:1.25rem 0}}
+.experiment-life{padding:1.5rem 0;border-top:1px solid var(--line);scroll-margin-top:7rem;min-width:0}.experiment-life header{max-width:48rem}.experiment-life p{margin:.5rem 0;line-height:1.75}.experiment-life__identity{font-size:1rem;color:var(--accent-deep);font-weight:700}.experiment-life h3{margin:.25rem 0;font-size:1.35rem;line-height:1.4}.experiment-life__question{font-weight:650;color:var(--ink)}.experiment-life dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 2rem;margin:1rem 0}.experiment-life dl>div{min-width:0;padding-left:1rem;border-left:2px solid var(--line)}.experiment-life dt{font-size:.9rem;font-weight:750;color:var(--accent-deep)}.experiment-life dd{margin:.3rem 0 0;line-height:1.75;color:var(--ink)}.experiment-life__source{display:inline-flex;gap:.4rem;align-items:center;font-size:.85rem;color:var(--accent-deep);text-underline-offset:.2em}.experiment-life a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.experiment-life:target{border-color:var(--accent-deep)}@media(max-width:760px){.experiment-life dl{grid-template-columns:1fr;gap:1rem}.experiment-life{padding:1.25rem 0}}
 </style>

@@ -26,8 +26,8 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
     <div>
       <p>{t("购物接口检查 · Mini Study 01", "INTERFACE CHECK · MINI STUDY 01")}</p>
       <h1>{t("购物接口的历史对照实验", "Historical shopping-interface comparison")}</h1>
-      <strong>{t("历史对照中，新接口让更多购物尝试因无效动作提前结束，因此当时没有启用正式训练。", "In this historical comparison, the new interface increased attempts ending early on invalid actions, so formal training was not activated.")}</strong>
-      <span>{t("购物接口（Harness）把模型回答转换成搜索、点击等操作。实验从同一个 3B 模型出发，让两组各完成 128 次相同的购物尝试：对照组不加入经验提示，候选组加入经过检查的记忆、技能和行为规则。任务、随机设置与动作步数限制保持一致。", "The harness turns model responses into searches and clicks. Starting from the same 3B model, two groups made 128 matched shopping attempts each. The control received no learned experience prompts; the candidate received checked memory, skills, and behavior rules. Tasks, randomness, and action limits were held constant.")}</span>
+      <strong>{t("预设接口检查按既定阈值通过，但候选组有更多购物尝试因无效动作提前结束，因此当时没有获准进入正式 Stage 2。", "The preset interface check passed its defined thresholds, but more candidate attempts ended early on invalid actions, so formal Stage 2 was not authorized at that time.")}</strong>
+      <span>{t("购物接口（Harness）把模型回答转换成搜索、点击等操作。实验从同一个 3B 模型出发，让两组各完成 128 次相同的购物尝试：对照组不加入经验提示，候选组加入经过检查的记忆、技能和行为规则。任务、随机设置与动作步数限制保持一致。这次不是按购物得分挑版本，而是检查新接口会不会破坏可执行动作。", "The harness turns model responses into searches and clicks. Starting from the same 3B model, two groups made 128 matched shopping attempts each. The control received no learned experience prompts; the candidate received checked memory, skills, and behavior rules. Tasks, randomness, and action limits were held constant. This comparison did not select a version by shopping score; it tested whether the new interface damaged executable actions.")}</span>
     </div>
     <aside aria-label={t('实验结论','Study decision')}>
       <span>{t("预设接口检查", "PRESET INTERFACE CHECK")}</span>
@@ -162,4 +162,3 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
 @media(max-width:820px){.h2study__hero,.h2study__decision,.h2study__mechanisms{grid-template-columns:1fr}.h2study__flow{grid-template-columns:1fr;grid-template-rows:auto;min-height:0;gap:.7rem}.h2study__flow svg{display:none}.h2study__flow-source{grid-row:auto}.h2study__flow-node+ .h2study__flow-node{margin-top:.8rem}.h2study__paired{grid-template-columns:1fr 1fr}.h2study__evidence-grid{grid-template-columns:1fr}.h2study__evidence-grid>div:nth-child(odd){border-right:0}}
 @media(max-width:520px){.h2study{width:min(100% - 1rem,1120px)}.h2study__bars>div{grid-template-columns:90px minmax(0,1fr) 58px}.h2study__paired{grid-template-columns:1fr}.h2study__hero aside{grid-template-columns:1fr}.h2study__hero aside small{grid-column:auto}}
 </style>
-

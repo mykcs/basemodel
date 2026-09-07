@@ -37,10 +37,10 @@ const evidence = [
     note: t("独立的历史 7B 对照，比较可训练的参数增量与新任务上的实际收益。", "An independent historical 7B control comparing trainable parameter increments with gains on new tasks."),
   },
   {
-    href: 'https://github.com/mykcs/basemodel/blob/main/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
+    href: 'https://github.com/mykcs/basemodel/blob/9bbae312a027d6623de39f61d50ec275d1a9f473/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
     eyebrow: t('网站事实边界', 'WEBSITE FACT BOUNDARY'),
     title: t("旧运行计数的来源核查", "Source audit of historical run counters"),
-    note: t("2026-09-03 的核查记录：旧运行快照部分计数尚未对应到固定版本原始记录，不能作为已核实数字引用。", "The 2026-09-03 audit records that some old snapshot counters lacked immutable source binding and could not be cited as verified values."),
+    note: t("2026-09-03 的核查发现，旧运行快照部分精确计数尚未对应到固定版本原始记录，因此当时不能作为已核实数字引用。这份历史审计解释的是当时的引用边界，不代表后来完成封存后的状态。", "The 2026-09-03 audit found that some exact counters in older run snapshots were not yet bound to immutable source records, so they could not be cited as verified values at that time. This historical audit describes that earlier citation boundary, not the later sealed state."),
   },
 ];
 ---
@@ -54,6 +54,7 @@ const evidence = [
     <span>{t("参数更新说明训练发生了；要知道购物能力有没有提高，还要在未用于训练的任务上比较表现。Ceiling-1.0 的持续学习记录与更早的 7B 参数对照来自不同实验，不能合并成一次运行。", "Parameter updates show that training occurred. Improvement requires a separate comparison on tasks not used for training. Ceiling-1.0 and the earlier 7B parameter controls are separate experiments.")}</span>
   </header>
 
+  <p data-historical-scope>{t("下方容量修订与参数分析采用形成于当时的固定历史记录；‘当时待核验’只描述旧计数的引用状态，不代表当前封存状态。", "The capacity amendment and parameter analysis below use fixed historical records from that period; ‘awaited verification then’ describes only the citation state of older counters and does not describe the current sealed state.")} <a href={p("/research/seed-openevo/study/capability-exploration/stage2-ceiling/")}>{t("查看后来完成的 149 轮学习与 7B 封存结果", "Read the later 149-round completion and sealed 7B results")}</a></p>
   <section class="authority-strip" aria-label={t("历史证据范围", "Scope of historical evidence")}>
     <div>
       <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
@@ -64,8 +65,8 @@ const evidence = [
       <strong>{t("修订规则：按轮更新参数，分析指标仅用于诊断", "Revised rule: round-based updates, with diagnostic-only analysis")}</strong>
     </div>
     <div>
-      <span>{t('暂不复制', 'DO NOT REPRINT YET')}</span>
-      <strong>{t("旧运行快照的精确轮次与更新次数，仍需对应的固定版本记录", "Exact counters from older run snapshots still require matching immutable records")}</strong>
+      <span>{t("当时未核实", "UNVERIFIED THEN")}</span>
+      <strong>{t("旧运行快照的精确轮次与更新次数当时尚未绑定固定版本原始记录；后来封存结果另见上方链接", "Exact round and update counters in the older snapshots were not yet bound to immutable source records at that time; the later sealed result is linked above")}</strong>
     </div>
   </section>
 
@@ -94,8 +95,8 @@ const evidence = [
 
       <article class="node node--main node--current">
         <span>02 · {t("参数更新证据", "UPDATE EVIDENCE")}</span>
-        <h3>{t("已发生的参数更新", "Observed parameter updates")}</h3>
-        <p>{t("Ceiling-1.0 的历史记录确认 7B 产生了真实的 SD-LoRA 参数更新，说明成功经验已经进入参数训练。旧运行快照中的精确轮次与组件数，仍需逐项匹配固定版本的原始记录；这些计数的缺口不等于没有发生训练。", "Historical Ceiling-1.0 evidence confirms real SD-LoRA parameter updates in 7B, showing that successful experience reached parameter training. Exact round and component counters from older snapshots still need matching immutable records; missing counter provenance does not mean training never occurred.")}</p>
+        <h3>{t("7B 已发生真实参数更新", "7B produced real parameter updates")}</h3>
+        <p>{t("Ceiling-1.0 的历史记录确认 7B 产生了真实的 SD-LoRA 参数更新，说明成功经验已经进入参数训练。旧运行快照中的部分精确轮次与组件数在当时尚未逐项匹配固定版本原始记录；这些计数的引用缺口不等于没有发生训练，后来封存的完整结果另见上方链接。", "Historical Ceiling-1.0 records confirm real SD-LoRA parameter updates in 7B, showing that successful experience reached parameter training. Some exact round and component counters in older snapshots had not yet been matched to immutable source records at that time; that citation gap does not mean training never occurred, and the later sealed result is linked above.")}</p>
       </article>
       <span class="connector"></span>
 
@@ -160,4 +161,3 @@ const evidence = [
 <style>
 .stage2-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage2-map__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage2-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.stage2-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.09em}.stage2-map__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.025em}.stage2-map__head strong,.stage2-map__head span{grid-column:2;display:block}.stage2-map__head strong{font-size:1.04rem;line-height:1.55}.stage2-map__head span{color:var(--muted);font-size:1rem;line-height:1.65}.authority-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}.authority-strip div{display:grid;gap:.25rem;padding:.8rem;border-right:1px solid var(--line)}.authority-strip div:last-child{border-right:0}.authority-strip span{color:var(--muted);font:750 1rem/1.2 var(--font-mono)}.authority-strip strong{font-size:1rem;line-height:1.45}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{display:grid;justify-items:center}.node{width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:1rem;line-height:1.62}.node>a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:1rem;font-weight:760;text-underline-offset:.2em}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--history{width:min(700px,95%);background:var(--surface-muted)}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--diagnostic{width:min(690px,94%);border-radius:var(--radius-panel)}.node--diagnostic>strong{display:block;margin-top:.65rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:1rem}.connector{width:2px;height:2rem;background:var(--line)}.side-study{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1.1rem;padding:1.2rem 0;border-top:1px solid var(--line)}.side-study header p{margin:0;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.side-study h2{margin:.35rem 0 0;font-size:1.15rem}.side-study>div{padding:.85rem 1rem;border-left:3px solid var(--line)}.side-study>div strong{font-size:1rem;line-height:1.5}.side-study>div p{margin:.5rem 0 0;color:var(--muted);font-size:1rem;line-height:1.58}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:1rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:1rem}.evidence nav span{color:var(--muted);font-size:1rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage2-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage2-map__footer a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage2-map{width:min(100% - 1rem,1120px)}.stage2-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage2-map__head>a,.stage2-map__head>p,.stage2-map__head h1,.stage2-map__head strong,.stage2-map__head span{grid-column:auto}.stage2-map__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}.authority-strip{grid-template-columns:1fr}.authority-strip div{border-right:0;border-bottom:1px solid var(--line)}.authority-strip div:last-child{border-bottom:0}.story>header,.side-study,.evidence{grid-template-columns:1fr}.story>header{gap:.3rem}.node,.node--amend,.node--history,.node--diagnostic{width:100%}.stage2-map__footer{display:grid}}
 </style>
-

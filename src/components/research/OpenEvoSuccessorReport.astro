@@ -41,8 +41,8 @@ const terms = zh ? [
     question={t("购物经验能否改善模型后来的表现？", "Can shopping experience improve later behavior?")}
     why={t("统一接口并记录各自起点，才能结合起点解释后续变化。", "Use one interface and record each starting point to interpret later changes.")}
     start={t("每种模型先完成 1,440 次购物尝试，保存初始经验。", "Each model first completes 1,440 shopping attempts to collect initial experience.")}
-    finish={t("初始记录封存后，后续学习另获授权；最后用固定题目测试。", "Seal initial records, separately authorize learning, then evaluate on fixed tasks.")}
-    state={t("1.7B 已完成最终测试；3B 尚未完成同口径的最终测试。", "1.7B has completed final evaluation; 3B has not completed the matched evaluation.")}
+    finish={t("1.7B 后续学习完成 160 轮、20,480 次尝试后，固定模型测试 128 题。", "1.7B: 160 learning rounds (20,480 attempts), then a fixed 128-task test.")}
+    state={t("1.7B 测试 37.60 分、1/128 次完全成功；3B 尚未同口径收口。", "1.7B: 37.60 points, 1/128 exact successes. 3B has no matched final result.")}
     stateTone="sealed"
     backHref={links.gateway}
     backLabel={t("3B + 1.7B 学习实验", "3B + 1.7B learning study")}
@@ -60,7 +60,7 @@ const terms = zh ? [
     <h2 id="report-chronology-title">{t('实验阶段与结果位置', 'Experimental stages and results')}</h2>
     <table><thead><tr><th>{t('阶段', 'Stage')}</th><th>{t('做什么', 'Activity')}</th><th>{t('何时结束', 'Completion')}</th></tr></thead><tbody>
     <tr><th>{t('初始经验', 'Initial experience')}</th><td>{t('模型各自完成购物，再分析已有记录', 'Each model shops independently; records are analyzed afterwards')}</td><td>{t('每种模型的 1,440 次尝试固定保存，学习材料通过准备检查', 'Each set of 1,440 attempts is frozen and the learning materials pass readiness checks')}</td></tr>
-    <tr><th>{t('后续学习', 'Later learning')}</th><td>{t('独立授权后，用经验继续更新模型', 'After separate authorization, use experience to update the model')}</td><td>{t('按该阶段的固定预算与停止条件结束；1.7B 的完成记录见下方', 'Stop under that phase’s frozen budget and rules; the 1.7B completion record is below')}</td></tr>
+    <tr><th>{t('后续学习', 'Later learning')}</th><td>{t('独立授权后，用经验继续更新模型', 'After separate authorization, use experience to update the model')}</td><td>{t('1.7B 完成 160 轮、20,480 次尝试后结束；3B 尚未同口径收口', '1.7B stops after 160 rounds / 20,480 attempts; 3B has no matched closeout')}</td></tr>
     <tr><th>{t('最终测试', 'Final evaluation')}</th><td>{t('固定最终模型，完成预定的 128 道测试任务', 'Freeze the final model and evaluate on the predefined 128 tasks')}</td><td>{t('核对有效记录后发布分数；测试期间不继续学习', 'Publish scores after validating the records; no learning continues during evaluation')}</td></tr>
     </tbody></table>
   </section>
@@ -83,14 +83,17 @@ const terms = zh ? [
       <h2 id="q17-final-title">{t("1.7B 最终测试；3B 尚未完成同口径测试", "1.7B final evaluation; matched 3B evaluation remains incomplete")}</h2>
       <span>{t('最终测试使用预先固定的 128 道任务，在模型完成学习后进行。它与最后一轮学习过程中记录的成绩分开计算。', 'Final evaluation uses the predefined set of 128 tasks after learning is complete; it is not the R159 training trajectory score.')}</span>
     </header>
+    <p data-learning-completion>{t(`学习材料准备完成并另获授权后，1.7B 继续完成 ${final17.stage2.rounds} 轮、${final17.stage2.rollouts.toLocaleString()} 次尝试，产生 ${final17.stage2.acceptedParametricUpdates} 次被接受的参数更新。随后固定最终模型，完成 ${final17.finalEval.tasks} 道预定测试任务；测试期间不继续学习。完成学习并不等于已经证明稳定提升。`, `After material preparation and a separate release, 1.7B completed ${final17.stage2.rounds} learning rounds and ${final17.stage2.rollouts.toLocaleString()} attempts, with ${final17.stage2.acceptedParametricUpdates} accepted parameter updates. The final model was then frozen for ${final17.finalEval.tasks} predefined evaluation tasks, with no learning during evaluation. Completing training does not by itself prove stable improvement.`)}</p>
+    <p data-final-score-meaning>{t("平均分反映任务完成程度，完全成功次数只统计完整完成的任务。因此可以有 37.60/100 的平均分，却只有 1/128 次完全成功；两者不是同一种量。", "Mean score measures degree of task completion; exact-success count includes only fully completed tasks. A mean of 37.60/100 can therefore coexist with 1/128 exact successes. These measure different things.")}</p>
     <div class="q17-final__metrics">
       <article><span>{t("最终测试分数", "OpenEVO FINAL SCORE")}</span><strong>{final17.finalEval.score.toFixed(2)}</strong><small>{t('固定 128 道测试任务 · 任务分数 ×100', 'Fixed 128-task panel · Task Score ×100')}</small></article>
       <article><span>{t("完全成功率", "OpenEVO SUCCESS")}</span><strong>{final17.finalEval.successPercent.toFixed(2)}%</strong><small>{final17.finalEval.exactSuccesses} / {final17.finalEval.tasks} {t("次完全成功", "exact successes")}</small></article>
-      <article><span>{t("SEED 对照值", "SEED REFERENCE")}</span><strong>{final17.seedReference.score.toFixed(1)}</strong><small>{final17.seedReference.successPercent.toFixed(1)}% {t("完全成功率", "success")} · {t('项目冻结对照值', 'project-frozen reference')}</small></article>
+      <article><span>{t("SEED 外部参考值", "SEED REFERENCE")}</span><strong>{final17.seedReference.score.toFixed(1)}</strong><small>{final17.seedReference.successPercent.toFixed(1)}% {t("完全成功率", "success")} · {t('项目预先固定的外部参考值', 'project-frozen reference')}</small></article>
       <article><span>{t("已完成学习轮次", "STAGE 2 SEALED")}</span><strong>{final17.stage2.rounds} / {final17.stage2.rounds}</strong><small>{final17.stage2.rollouts.toLocaleString()} {t("次学习过程中的任务尝试", "training rollouts")} · {final17.stage2.acceptedParametricUpdates} {t('次参数更新', 'parametric updates')}</small></article>
     </div>
     <div class="q17-final__comparison">
       <p><b>{t("对照数值之差", "Reference-value difference")}:</b> OpenEVO − SEED = <strong>{final17.delta.scorePoints.toFixed(2)}</strong> {t('分', 'score points')} · <strong>{final17.delta.successPercentagePoints.toFixed(2)} {t('个百分点', 'pp')}</strong>.</p>
+      <p data-reference-boundary>{t("SEED 数字是项目预先固定的外部参考值，不是从本次 OpenEvo 最终测试中得到的配对对照。以上差值不能单独归因于方法优劣。", "The SEED figures are external reference values frozen for this project, not paired controls from this OpenEvo final evaluation. Their differences cannot by themselves establish a method effect.")}</p>
       <p><b>{t("训练成绩与测试成绩的区别", "Training and evaluation scores")}:</b> R159 = {final17.stage2.finalTrainingTrajectoryScore.toFixed(2)} {t('是最后一轮学习过程中的成绩，不是最终测试分数；两者分别记录，不能直接相减。', 'is only the last on-policy training trajectory score, not the final evaluation; the two must not be directly subtracted.')}</p>
     </div>
     <details>
