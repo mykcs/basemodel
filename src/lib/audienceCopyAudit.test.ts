@@ -83,6 +83,8 @@ describe('audience copy audit', () => {
     expect(auditSource).toContain('COPY-EDITORIAL-AS-HEADING');
     expect(auditSource).toContain('COPY-PRESENTER-HEADING');
     expect(auditSource).toContain('COPY-SUBJECT-TITLE-001');
+    expect(auditSource).toContain('COPY-INTERNAL-LABEL-001');
+    expect(auditSource).toContain('COPY-FIRST-READER-JARGON-001');
   });
 
   it('flags presenter-style reading instructions when they are promoted into headings', () => {

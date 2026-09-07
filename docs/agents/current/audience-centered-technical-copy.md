@@ -66,6 +66,15 @@ Normal headings do **not** mean vague headings. Prefer a specific subject over a
 
 Buttons and action links should still say what they do: `查看实验结果`, `打开复现指南`, `比较模型`, `保存实验记录`.
 
+
+### First-reader comparisons name both sides before the statistical design
+
+A comparison label should first tell the reader **who is compared and on what shared object**. Do not replace an internal project code with a statistical term that still requires prior knowledge.
+
+- Prefer two explicit rows — `7B · 基础模型` and `7B · 使用 OpenEVO 学习结果` — over `OpenEVO · 7B 配对评测`.
+- Show each score beside its actual object, then explain that both rows used the same 128 WebShop tasks and evaluation. Only after that, if useful, explain that task-level outcomes can be paired one by one.
+- Terms such as `paired evaluation`, `matched panel`, `paired CI`, or route names belong in the methodological/provenance layer unless the surrounding text already defines them.
+
 ## 2. Separate subject, snapshot, live state, and interpretation
 
 For fast-moving experiment pages, use distinct visual levels:
@@ -125,6 +134,17 @@ Before using a project-specific machine, service, script, phase, or artifact, ex
 - `Phase H0` — a historical Natural Success Search stage that followed the bounded Phase G comparison; do not use the term alone to imply the live campaign is still H0.
 
 After first-use explanation, use the precise technical term consistently instead of replacing it with vague prose.
+
+
+### Internal route names are provenance, not reader-facing identities
+
+Names such as `Track A`, `Track B`, `WB1`, `H1.42`, or a branch nickname may be useful for repository lineage, but they must not be the first identity a public label gives the reader.
+
+Bad first-reader label: `OpenEvo · Track A 7B`.
+
+Preferred first-reader presentation: show `7B · 基础模型` and `7B · 使用 OpenEVO 学习结果` as explicit comparison rows. If a compact label is unavoidable, name both concrete sides before any route or statistical term.
+
+If the internal alias matters for auditability, introduce it only after the concrete object, for example `源码忠实任务测量路线（内部代号 Track A）`. A table row, H1/H2/H3, TL;DR, or first-screen result label must name the actual model / comparison / measurement before the project code.
 
 ### Zero-context incident entry and causal context
 
