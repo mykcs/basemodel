@@ -1,0 +1,94 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import ResearchTechnicalDisclosure from './ResearchTechnicalDisclosure.astro';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const stages = [
+  [t('做题模型', 'Actor'), 'Qwen 3B / 7B', t('自己产生 WebShop 动作', 'produces WebShop actions itself')],
+  [t('交互规则', 'Harness'), 'SEED / OpenEvo', t('组织提示、历史和动作解析', 'organizes prompt, history, and action parsing')],
+  [t('环境', 'Environment'), 'Princeton WebShop', t('返回 observation、score 和状态变化', 'returns observations, scores, and transitions')],
+  [t('封存轨迹', 'Sealed trajectory'), t('完整 episode', 'Completed episode'), t('先把整条做题过程保存下来', 'seals the full attempt first')],
+  [t('事后分析', 'Post-hoc analyzer'), 'GLM / Kimi / MiniMax', t('episode 完成后再读一次轨迹', 'reads the trajectory only after completion')],
+  [t('学习产物', 'Learned output'), 'skill / adapter / checkpoint', t('供后续 bootstrap 或 Stage 2 使用', 'feeds later bootstrap or Stage 2')],
+] as const;
+---
+<div class="training-design-body">
+  <ol class="responsibility-flow" aria-label={t('Stage 1 责任边界', 'Stage-1 responsibility flow')}>
+    {stages.map((stage, index) => (
+      <li>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <div><small>{stage[0]}</small><strong>{stage[1]}</strong><p>{stage[2]}</p></div>
+      </li>
+    ))}
+  </ol>
+  <div class="design-disclosures">
+    <ResearchTechnicalDisclosure
+      eyebrow={false}
+      summary={t('完整系统比较和 learner 对照有什么区别？', 'How do full-system and learner-only comparisons differ?')}
+    >
+      <div class="detail-grid">
+        <article>
+          <strong>{t('完整系统比较', 'Full-system comparison')}</strong>
+          <p>{t('SEED 和 OpenEvo 可以各用自己的 native harness。结论只能说“哪个完整系统更强”，不能把差异全部归因于 Stage 2 learner。', 'SEED and OpenEvo may use their native harnesses. The conclusion is about the complete systems, not solely the Stage-2 learner.')}</p>
+        </article>
+        <article>
+          <strong>{t('只比较 Stage 2 learner', 'Stage-2 learner only')}</strong>
+          <p>{t('共享 Stage 1 trajectories、analyzer、SFT recipe 和 checkpoint，再从同一点分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, analyzer, SFT recipe, and checkpoint, then fork into SEED Stage 2 and OpenEvo Stage 2 from the same point.')}</p>
+        </article>
+      </div>
+    </ResearchTechnicalDisclosure>
+
+    <ResearchTechnicalDisclosure
+      eyebrow={false}
+      summary={t('当前 Stage 1 参数协议', 'Current Stage-1 parameter protocol')}
+    >
+      <dl class="parameter-list">
+        <div><dt>temperature</dt><dd>0.4</dd></div>
+        <div><dt>top-p / top-k</dt><dd>1.0 / off</dd></div>
+        <div><dt>max steps / output</dt><dd>15 / 512</dd></div>
+        <div><dt>history length</dt><dd>2</dd></div>
+        <div><dt>rollout seeds</dt><dd>{t('8 个不同且冻结', '8 distinct and frozen')}</dd></div>
+        <div><dt>malformed regeneration</dt><dd>0</dd></div>
+      </dl>
+      <p class="parameter-note">{t('这些值属于采样与公平协议；它们不是装饰性默认值。旧 temperature=0 的 1,440 rollout 因为高度重复，应作为 greedy ablation 理解，而不是当前 primary。', 'These values belong to the sampling and fairness protocol. The old temperature=0 1,440-rollout run was highly repetitive and should be interpreted as a greedy ablation, not the current primary.')}</p>
+    </ResearchTechnicalDisclosure>
+  </div>
+
+  <p class="design-next"><a href={p('/research/seed-openevo/study/run/')}>{t('按这个协议运行实验', 'Run the experiment with this protocol')} →</a></p>
+</div>
+
+<style>
+  .responsibility-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
+  .responsibility-flow li{position:relative;min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}
+  .responsibility-flow li:not(:last-child)::after{content:'→';position:absolute;z-index:2;right:-.38rem;top:50%;transform:translateY(-50%);padding:.05rem;background:var(--surface);color:var(--muted);font-size:.8rem}
+  .responsibility-flow li>span{color:var(--accent-deep);font:800 .64rem/1 var(--font-mono)}
+  .responsibility-flow small,.responsibility-flow strong{display:block}
+  .responsibility-flow small{margin-top:.6rem;color:var(--muted);font-size:.65rem}
+  .responsibility-flow strong{margin-top:.15rem;font-size:.82rem}
+  .responsibility-flow p{margin:.35rem 0 0;color:var(--muted);font-size:.69rem;line-height:1.45}
+  .design-disclosures{display:grid;gap:.35rem;margin-top:.8rem}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.75rem}
+  .detail-grid article{padding:.7rem;border-left:2px solid var(--line)}
+  .detail-grid p,.parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.55}
+  .parameter-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;padding:.75rem .75rem 0;margin:0}
+  .parameter-list div{display:flex;justify-content:space-between;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--line)}
+  .parameter-list dt{color:var(--muted);font-size:.68rem}
+  .parameter-list dd{margin:0;font-size:.7rem;font-weight:700}
+  .parameter-note{padding:0 .75rem .75rem}
+  .design-next{margin:.8rem 0 0 3.05rem}
+  .design-next a{font-size:.74rem;font-weight:750}
+  @media(max-width:950px){
+    .responsibility-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .responsibility-flow li:nth-child(3)::after{display:none}
+  }
+  @media(max-width:640px){
+    .design-next{margin-left:0}
+    .responsibility-flow,.detail-grid{grid-template-columns:1fr}
+    .responsibility-flow li:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-.52rem;transform:translateX(-50%)}
+    .parameter-list{grid-template-columns:1fr}
+  }
+</style>

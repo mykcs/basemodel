@@ -14,9 +14,9 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '先分清两种“新任务”' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '训练范围内未见任务与 SEED 验证任务' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '七个研究问题' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: '第二次更新后的能力保持' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(6);
   await expect(index.getByTestId('current-source-faithful-q7')).toHaveCount(1);
   await expect(index.locator('#q7')).toHaveCount(1);
@@ -48,7 +48,11 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(currentEvidence.locator('a[href*="server/evidence/analysis.json"]').first()).toBeVisible();
   await expect(currentEvidence.locator('a[href*="server/evidence/reconciliation.json"]').first()).toBeVisible();
   await expect(index.locator('#next-n2')).toBeVisible();
-  await expect(index.locator('#next-n2 a[href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json"]')).toBeVisible();
+  const continuationRecord = index.locator('#next-n2 .step-detail');
+  await expect(continuationRecord).not.toHaveAttribute('open', '');
+  await continuationRecord.locator(':scope > summary').click();
+  await expect(continuationRecord).toHaveAttribute('open', '');
+  await expect(continuationRecord.locator('a[href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json"]')).toBeVisible();
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
@@ -59,9 +63,9 @@ test('English results landing mounts the same unified findings page in English',
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop research findings' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Two task ranges to keep in mind' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'The seven questions we can now answer' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Why can’t we yet say the second generation keeps improving?' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Unseen training-range tasks and SEED validation tasks' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Seven research questions' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'Capability retention after the second update' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(6);
   await expect(index.getByTestId('current-source-faithful-q7')).toHaveCount(1);
   await expect(index.locator('#q7')).toHaveCount(1);

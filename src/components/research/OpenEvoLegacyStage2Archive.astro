@@ -20,7 +20,6 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   `https://huggingface.co/miyuki17/openevo-webshop-h145-h146-adapters/${arm.checkpointPath.endsWith('.json') ? 'blob' : 'tree'}/${adapterRevision}/${arm.checkpointPath}`;
 ---
 <main data-copy-review class="legacy" data-testid="legacy-stage2-archive">
-  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <header class="legacy__hero">
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
@@ -32,9 +31,9 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
       <p>{t('问题不是数字 256 本身，而是“每 256 次任务尝试就把前面的成功清零，再重新判断一次”。同一批里凑不到 8 个重复成功的不同任务，模型就完全不更新参数。这样一条原本适合小实验的数据选择规则，被误当成了长期训练必须反复通过的门。', 'The problem was not the number 256 itself. The program reset the decision every 256 task attempts and discarded earlier success for the next decision. If one batch did not contain eight distinct repeatedly successful tasks, parameters did not update at all. A rule suited to a bounded study was mistakenly turned into a gate that long-running training had to pass repeatedly.')}</p>
     </aside>
   </header>
+  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <OpenEvoLegacyStage2ResearchJourney locale={locale} />
   <section class="legacy__section" aria-labelledby="legacy-arm-title">
-    <p class="kicker">{t('四组历史结果', 'FOUR HISTORICAL RESULTS')}</p>
     <h2 id="legacy-arm-title">{t("四组历史结果", "Four historical groups")}</h2>
     <p class="legacy__intro">{t("Qwen 独立执行搜索和点击，MiniMax 只在任务结束后分析记录。四组分别比较 3B、7B 与是否使用 MiniMax 事后分析；每组记录任务次数、成功经验、参数更新及最终测试。", "Qwen independently performs searches and clicks; MiniMax only reviews completed tasks. The four groups combine 3B or 7B with self-analysis or MiniMax feedback, recording attempts, successful experience, parameter updates, and final tests.")}</p>
     <div class="legacy__selector" data-legacy-stage2-selector>
@@ -89,7 +88,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <p class="legacy__note">* {t("3B/MiniMax 的 38 条可训练成功记录只统计 59 个完整批次；第 60 批停止时已完成 171 次尝试。这些记录原样保留，但不混入完整批次的统计。", "The 38 trainable successes for 3B/MiniMax cover only 59 complete batches. The final partial batch had 171 attempts at stop time; those records are preserved separately from complete-batch statistics.")}</p>
   </section>
   <section class="legacy__section legacy__why">
-    <div><p class="kicker">{t('为什么会 0 次更新', 'WHY ZERO UPDATES')}</p><h2>{t("成功经验未触发训练的原因", "Why successful experience did not trigger training")}</h2></div>
+    <div><h2>{t("成功经验未触发训练的原因", "Why successful experience did not trigger training")}</h2></div>
     <ol>
       <li><b>01</b><strong>{t('每 256 次重新清零判断', 'The decision reset every 256 attempts')}</strong><p>{t('上一批已经积累的成功不会带到下一批继续用。模型必须在单独一批里重新证明自己。', 'Successes from the previous batch could not carry forward. The model had to re-qualify from scratch inside every batch.')}</p></li>
       <li><b>02</b><strong>{t('同一批必须同时凑齐 8 个任务', 'One batch had to contain all eight tasks')}</strong><p>{t('每个任务还要至少完整成功 2 次。7B 两组表现最好的一批都只有 7 个这样的任务，因此永远差 1 个，参数也就永远不更新。', 'Each task also had to succeed at least twice. The best batch in both 7B runs reached only seven such tasks, always one short, so parameters never updated.')}</p></li>
@@ -98,7 +97,6 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   </section>
 
   <section class="legacy__section">
-    <p class="kicker">{t('模型保存点', 'MODEL CHECKPOINTS')}</p>
     <h2>{t("最终保留的模型状态", "Preserved final model states")}</h2>
     <p class="legacy__intro">{t('四组历史实验在 Stage 2 都没有产生新的模型参数。因此这里链接的不是一个虚构的“Stage-2 最终模型”，而是每组真正进入 Stage 2 时使用的参数：3B/self 仍是基础模型，其余三组使用 Stage 1 结束时或 MiniMax 启动训练结束时的第 8 个保存点。', 'None of the four historical runs produced new model parameters in Stage 2. These links therefore point to the real state that entered Stage 2 rather than a fictional Stage-2 checkpoint: 3B/self remained at base, while the other three used the final Stage-1 or MiniMax-bootstrap checkpoint.')}</p>
     <div class="legacy__checkpoint-links">
@@ -109,7 +107,6 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     <p class="legacy__note">{t(`Stage-1 / bootstrap adapter 固定 revision：${adapterRevision}。`, `Pinned Stage-1/bootstrap adapter revision: ${adapterRevision}.`)}</p>
   </section>
   <section class="legacy__section">
-    <p class="kicker">{t('历史产物', 'HISTORICAL ARTIFACTS')}</p>
     <h2>{t("购物记录、模型与运行文件", "Shopping traces, models, and runtime files")}</h2>
     <div class="legacy__archive-facts">
       <div><b>184,168</b><span>{t('个源文件进入 SHA-256 清单', 'source files covered by SHA-256 manifest')}</span></div>
@@ -155,7 +152,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
 <style>
 .legacy{width:min(1180px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--color-text)}
 .legacy__hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);gap:2rem;padding:2rem 0;border-bottom:1px solid var(--color-border)}
-.legacy__hero>div>p,.kicker{margin:0 0 .55rem;color:var(--color-accent);font:800 1rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}
+.legacy__hero>div>p{margin:0 0 .55rem;color:var(--color-accent);font:800 1rem var(--font-mono);letter-spacing:.09em}
 .legacy__hero h1,.legacy__section h2{margin:0;letter-spacing:-.04em}.legacy__hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}
 .legacy__hero>div>span,.legacy__hero aside p,.legacy__intro{display:block;margin:.8rem 0 0;color:var(--color-text-muted);line-height:1.7}
 .legacy__hero aside{align-self:end;padding:1rem;border:1px dashed var(--color-border);border-radius:12px}.legacy__hero aside b{font-size:1rem}.legacy__hero aside p{font-size:1rem;margin-bottom:0}
@@ -164,12 +161,12 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
 .legacy__selector fieldset{min-width:0;margin:0;padding:0;border:0}.legacy__selector legend{margin-bottom:.5rem;color:var(--color-text-muted);font-size:1rem;font-weight:760}
 .legacy__choice-row{display:flex;gap:.45rem;flex-wrap:wrap}.legacy__choice-row button{appearance:none;padding:.58rem .78rem;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg);color:var(--color-text);font:760 1rem/1.2 inherit;cursor:pointer}.legacy__choice-row button[aria-pressed="true"]{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));color:var(--color-accent)}
 .legacy__arm-panels{margin-top:1rem}.legacy__arm-panel{padding:1.1rem;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg)}.legacy__arm-panel[hidden]{display:none}.legacy__arm-panel>header{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.legacy__arm-panel>header>div{display:flex;flex-direction:column;gap:.25rem}.legacy__arm-panel>header span,.legacy__arm-panel>header em{color:var(--color-text-muted);font-size:1rem;font-style:normal}.legacy__arm-panel>header strong{font-size:1.15rem}
-.legacy__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:1rem 0 0}.legacy__metrics>div{padding:.65rem;border-radius:9px;background:color-mix(in srgb,var(--color-text) 3.5%,transparent)}.legacy__metrics dt{color:var(--color-text-muted);font-size:1rem}.legacy__metrics dd{margin:.2rem 0 0;font:760 1rem ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
-.legacy__final{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-top:.7rem;padding:.75rem;border:1px solid color-mix(in srgb,var(--color-accent) 30%,var(--color-border));border-radius:10px}.legacy__final>div{display:flex;flex-direction:column;gap:.2rem}.legacy__final span{color:var(--color-text-muted);font-size:1rem}.legacy__final b{font:820 1rem ui-monospace,SFMono-Regular,Menlo,monospace}.legacy__final--not-run{display:block;color:var(--color-accent);font-size:1rem}.legacy__arm-panel>p{margin:.8rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.6}
+.legacy__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:1rem 0 0}.legacy__metrics>div{padding:.65rem;border-radius:9px;background:color-mix(in srgb,var(--color-text) 3.5%,transparent)}.legacy__metrics dt{color:var(--color-text-muted);font-size:1rem}.legacy__metrics dd{margin:.2rem 0 0;font:760 1rem var(--font-mono);overflow-wrap:anywhere}
+.legacy__final{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-top:.7rem;padding:.75rem;border:1px solid color-mix(in srgb,var(--color-accent) 30%,var(--color-border));border-radius:10px}.legacy__final>div{display:flex;flex-direction:column;gap:.2rem}.legacy__final span{color:var(--color-text-muted);font-size:1rem}.legacy__final b{font:820 1rem var(--font-mono)}.legacy__final--not-run{display:block;color:var(--color-accent);font-size:1rem}.legacy__arm-panel>p{margin:.8rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.6}
 .legacy__actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.8rem}.legacy__actions a{color:var(--color-accent);font-size:1rem;font-weight:760;text-decoration:none}.legacy__actions a:hover{text-decoration:underline}.legacy__note{margin:1rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.65}
-.legacy__why{display:grid;grid-template-columns:minmax(200px,.65fr) minmax(0,1.35fr);gap:1.4rem}.legacy__why ol{list-style:none;margin:0;padding:0}.legacy__why li{display:grid;grid-template-columns:36px minmax(150px,.65fr) minmax(0,1.35fr);gap:.7rem;padding:.8rem 0;border-bottom:1px solid var(--color-border)}.legacy__why li b{color:var(--color-accent);font:800 1rem ui-monospace,SFMono-Regular,Menlo,monospace}.legacy__why li strong{font-size:1rem}.legacy__why li p{margin:0;color:var(--color-text-muted);font-size:1rem;line-height:1.55}
+.legacy__why{display:grid;grid-template-columns:minmax(200px,.65fr) minmax(0,1.35fr);gap:1.4rem}.legacy__why ol{list-style:none;margin:0;padding:0}.legacy__why li{display:grid;grid-template-columns:36px minmax(150px,.65fr) minmax(0,1.35fr);gap:.7rem;padding:.8rem 0;border-bottom:1px solid var(--color-border)}.legacy__why li b{color:var(--color-accent);font:800 1rem var(--font-mono)}.legacy__why li strong{font-size:1rem}.legacy__why li p{margin:0;color:var(--color-text-muted);font-size:1rem;line-height:1.55}
 .legacy__checkpoint-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:1rem}.legacy__checkpoint-links a,.legacy__links a{display:flex;flex-direction:column;gap:.22rem;padding:.8rem;border:1px solid var(--color-border);border-radius:10px;color:var(--color-text);text-decoration:none}.legacy__checkpoint-links a:hover,.legacy__links a:hover{border-color:var(--color-accent)}.legacy__checkpoint-links span,.legacy__checkpoint-links small,.legacy__links span,.legacy__links small{color:var(--color-text-muted);font-size:1rem}.legacy__checkpoint-links strong,.legacy__links strong{font-size:1rem;overflow-wrap:anywhere}
-.legacy__archive-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin-top:1rem}.legacy__archive-facts>div{padding:.8rem;border:1px solid var(--color-border);border-radius:10px}.legacy__archive-facts b{display:block;color:var(--color-accent);font:820 1.05rem ui-monospace,SFMono-Regular,Menlo,monospace}.legacy__archive-facts span{display:block;margin-top:.3rem;color:var(--color-text-muted);font-size:1rem;line-height:1.45}.legacy__links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:.8rem}
+.legacy__archive-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin-top:1rem}.legacy__archive-facts>div{padding:.8rem;border:1px solid var(--color-border);border-radius:10px}.legacy__archive-facts b{display:block;color:var(--color-accent);font:820 1.05rem var(--font-mono)}.legacy__archive-facts span{display:block;margin-top:.3rem;color:var(--color-text-muted);font-size:1rem;line-height:1.45}.legacy__links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:.8rem}
 @media(max-width:800px){.legacy__hero,.legacy__why,.legacy__selector,.legacy__links,.legacy__checkpoint-links{grid-template-columns:1fr}.legacy__metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.legacy__archive-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.legacy__why li{grid-template-columns:30px 1fr}.legacy__why li p{grid-column:2}.legacy__arm-panel>header{flex-direction:column}}
 @media(max-width:520px){.legacy__metrics,.legacy__final,.legacy__archive-facts{grid-template-columns:1fr}}
 </style>

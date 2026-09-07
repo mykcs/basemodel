@@ -25,7 +25,7 @@ const candidateRules: Rule[] = [
   { id: 'COPY-NARRATIVE-FORK', pattern: /分岔|路径分叉|核心分叉问题|设计分岔/g, reason: 'Narrative fork language should be replaced by the concrete experimental operation unless the split itself matters scientifically.' },
   { id: 'COPY-STATIC-ENGLISH-EYEBROW', pattern: /eyebrow="(?:[A-Z][A-Z0-9 ×/·._→+:-]{5,})"/g, reason: 'A static all-English eyebrow on a bilingual surface may be decorative rather than informative.' },
   { id: 'COPY-EDITORIAL-AS-HEADING', pattern: /把[“"'][^\n]{1,60}[”"'][^\n]{0,50}(?:分开|区分)|先[^\n]{0,45}(?:再|然后|最后)[^\n]{0,60}/g, reason: 'Editorial instructions and sequencing sentences belong in body copy, not prominent headings.' },
-  { id: 'COPY-PRESENTER-HEADING', pattern: /<h[1-3]\b[^>]*>[^<\n]{0,260}(?:怎样连起来|如何阅读|怎么读|应该怎么读|我们到底|先[^<\n]{0,100}(?:再|然后|最后)|How\s+(?:to\s+read|should\s+we\s+read|the\s+[^<\n]{1,80}\s+connect)|What\s+[^<\n]{1,80}\s+actually|First\s+[^<\n]{1,100}(?:then|only\s+then))[^<\n]{0,260}<\/h[1-3]>/gi, reason: 'Presenter-style reading instructions should be body copy; headings should name the subject.' },
+  { id: 'COPY-PRESENTER-HEADING', pattern: /<h[1-3]\b[^>]*>[^<\n]{0,260}(?:怎样连起来|如何阅读|怎么读|应该怎么读|我们到底|先(?:分清|看懂|判断|理解|确认)|先[^<\n]{0,100}(?:再|然后|最后)|How\s+(?:to\s+read|should\s+we\s+read|the\s+[^<\n]{1,80}\s+connect)|What\s+[^<\n]{1,80}\s+actually|First\s+[^<\n]{1,100}(?:then|only\s+then))[^<\n]{0,260}<\/h[1-3]>/gi, reason: 'Presenter-style reading instructions consume heading-level attention; headings should name the subject.' },
   { id: 'COPY-ZH-EN-SENTENCE', pattern: /[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g, reason: 'A Chinese surface may be exposing an unexplained full English sentence.' },
 ];
 
@@ -157,11 +157,27 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ban(studyOverview, 'COPY-INTERNAL-LABEL-001', 'Track A', 'The first-reader study overview must name the concrete 7B comparison objects instead of requiring an internal route label.');
   ban(studyOverview, 'COPY-FIRST-READER-JARGON-001', '配对评测', 'The first-reader study overview must state the concrete comparison objects and shared tasks before any statistical design term.');
   for (const forbidden of ['OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'The rejected first-screen wording must not return.');
+
+  const resultsProtocol = 'src/components/research/OpenEvoWebShopResultsProtocol.astro';
+  requireText(resultsProtocol, 'COPY-CONTEXT-SWITCH-001', '训练范围内未见任务与 SEED 验证任务', 'The Results protocol must name the two task populations directly instead of making a reading instruction the visual center.');
+  for (const forbidden of ['先分清两种“新任务”', '先把数字、单位和项目内部编号翻译成人话', 'project-terms', 'goal_idx']) ban(resultsProtocol, 'COPY-CONTEXT-SWITCH-001', forbidden, 'The Results protocol must explain task identity locally instead of requiring a presenter heading or centralized glossary lookup.');
+
+  const resultsMainline = [
+    'src/components/research/OpenEvoWebShopResultsHero.astro',
+    resultsProtocol,
+    'src/components/research/OpenEvoWebShopResultsQuestions.astro',
+    'src/components/research/OpenEvoWebShopCurrentQ7.astro',
+    'src/components/research/OpenEvoWebShopG2Ablation.astro',
+    'src/components/research/OpenEvoWebShopNextSteps.astro',
+  ];
+  for (const file of resultsMainline) {
+    for (const forbidden of ['专业解释：', 'Technical detail:']) ban(file, 'COPY-VISIBLE-LAYER-001', forbidden, 'Information depth must not regress into a repeated visible professional-explanation label on the Results reading path.');
+  }
   ban('src/components/common/SemanticStatusLegend.astro', 'COPY-PRESENTER-HEADING-001', '未知状态如何阅读', 'A presenter-style heading must not replace the Unknown states subject.');
   for (const forbidden of ['结果应该怎么读？', '先判断这次比较能不能信，再判断谁的分数更高']) ban('src/components/research/Seed3090PairedRunAudit.astro', 'COPY-PRESENTER-HEADING-001', forbidden, 'Presenter-style result-reading headings must not return.');
 
   const firstRun = 'src/components/research/OpenEvoFirstRunMap.astro';
-  for (const required of ['3B 和 7B 的第一轮购物实验', '我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。', '7B 继续，3B 停止', '实验说明']) requireText(firstRun, 'COPY-FIRST-RUN-HUMAN-001', required, 'The first-run page must describe the two model experiments directly in ordinary language.');
+  for (const required of ['3B 和 7B 的第一轮实验', 'layout="focus"', '7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。', '7B 继续；3B 停止检查接口', '实验说明']) requireText(firstRun, 'COPY-FIRST-RUN-HUMAN-001', required, 'The first-run page must expose the experiment subject and outcome before lower-priority orientation detail.');
   for (const forbidden of ['第一轮购物学习：7B 与 3B 的分岔', 'HISTORICAL MAP · FIRST RUN', '路径分叉', '两条路线', '关卡说明']) ban(firstRun, 'COPY-FIRST-RUN-HUMAN-002', forbidden, 'Rejected narrative or gamified first-run wording must not return.');
 
   const orientation = 'src/components/research/ResearchOrientation.astro';

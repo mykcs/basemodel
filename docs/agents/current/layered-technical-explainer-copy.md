@@ -4,7 +4,7 @@ Last reviewed: **2026-08-26**
 Status: **current**
 Applies to: Chinese research explainers, benchmark pages, results pages, and technical overview surfaces in Basemodel.
 
-This contract adapts the useful parts of the Cloudflare ELI5 approach to this repository: explain context before detail, write for an intelligent reader who lacks local project context, preserve technical accuracy, and provide multiple reading depths instead of flattening everything into beginner prose.
+This contract defines **information depth**, not a mandatory visible UI template: explain context before detail, write for an intelligent reader who lacks local project context, preserve technical accuracy, and let readers reach exact evidence without forcing them through internal jargon. `website-design-spec.md` and newer live-human PREFERENCE cases in `website-copy-cases.md` own the public voice and visual expression when an older example here conflicts with them.
 
 ## 1. Default reader
 
@@ -12,25 +12,21 @@ Assume the reader is smart but has not followed the project day by day. They sho
 
 Do not write down to the reader. Do not use childish metaphors to replace precise mechanisms. The goal is to remove missing context, not technical substance.
 
-## 2. Three reading layers
+## 2. Three information depths
 
-Important concepts and result claims should normally expose three layers in this order:
+Important concepts and result claims should normally support three depths in this order:
 
 ```text
-L1 · 一句话看懂
-plain-language observation / consequence
-
-L2 · 专业解释
-precise mechanism or statistical interpretation
-Chinese-first terminology + useful English lookup term in parentheses
-
-L3 · 展开实验依据
-exact attempts, confidence intervals, manifests, hashes, configs, code, reports
+Depth 1 · direct observation / consequence in ordinary language
+Depth 2 · precise mechanism or statistical interpretation, explained locally
+Depth 3 · exact attempts, confidence intervals, manifests, hashes, configs, code, reports
 ```
 
-L1 and L2 remain visible. L3 is usually local expandable evidence.
+These are **authoring depths, not required visible headings or cards**. Depth 1 and Depth 2 can be one natural paragraph when that reduces switching cost. Do not automatically render `一句话看懂：` or `专业解释：`, do not add a dashed separator merely to announce a second layer, and do not create a second visual block if the adjacent sentence can carry the mechanism clearly.
 
-The layers must describe the same fact. Do not make L1 more confident than L2, and do not hide a claim-changing caveat only inside L3.
+Depth 3 is usually local progressive disclosure such as `实验依据`, `数据来源`, or `技术回溯`. The main claim and any claim-changing boundary must remain visible; exact provenance may be expandable.
+
+All depths must describe the same fact. Do not make the plain-language statement more confident than the precise interpretation, and do not hide a claim-changing caveat only in evidence. See CASE-067–069 in `website-copy-cases.md`.
 
 ## 3. Chinese-first technical language
 
@@ -51,7 +47,13 @@ Preferred:
 
 Avoid an English-only second visual language on the Chinese route. Section eyebrows such as `PROTOCOL`, `NEXT STEPS`, or `RESEARCH HISTORY` should be paired with Chinese, for example `实验边界 · PROTOCOL`.
 
-Keep project names, model names, code symbols, filenames, config keys, hashes, and experiment IDs unchanged when translation would damage identity.
+Keep project names, model names, code symbols, filenames, config keys, hashes, and experiment IDs unchanged when translation would damage identity, but keep that identity in the provenance/evidence depth unless the reader needs it to understand the sentence.
+
+### 3.1 Explain terms where they are first needed
+
+A centralized glossary is not a substitute for readable prose. On first use, prefer the human-readable/full name, explain what the term means **in this experiment**, and only then preserve the exact internal label when useful. Do not make readers jump to a term grid, decode `goal_idx / Track A / state-v28`, and return to reconstruct the sentence they were reading.
+
+A glossary may still exist as a reference index for precise lookup. It must not be the only place where a term becomes understandable. See CASE-070.
 
 ## 4. Context before mechanism
 

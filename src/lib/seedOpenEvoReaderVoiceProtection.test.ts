@@ -84,7 +84,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       expect(resultsQuestions).toContain(question);
     }
     expect(resultsQuestions).not.toContain("id: 'q7'");
-    expect(currentQ7).toContain('最后还缺哪一个关键实验？');
+    expect(currentQ7).toContain('还缺的方法级对照');
     expect(currentQ7).toContain('id="q7"');
     expect(resultsQuestions).toContain('<details class="evidence-details"');
     expect(currentQ7).toContain('<details class="evidence-details" id="evidence-q7">');
@@ -103,7 +103,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(observationTable).toBeGreaterThan(details);
     expect(transferFigure).toBeGreaterThan(details);
     expect(resultsHero).not.toContain('95% CI');
-    expect(currentQ7.indexOf('95% CI')).toBeLessThan(currentQ7.indexOf('<details class="evidence-details" id="evidence-q7">'));
+    expect(currentQ7.indexOf('95% CI')).toBeGreaterThan(currentQ7.indexOf('<details class="evidence-details" id="evidence-q7">'));
   });
 
   it('pins the lab-reader audience and Chinese-first terminology contract at the route', () => {
@@ -114,19 +114,27 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('展开实验依据');
     expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
     expect(resultsHero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
-    expect(resultsProtocol).toContain('解析器（parser）');
-    expect(resultsProtocol).toContain('source-faithful task semantics');
+    expect(resultsProtocol).toContain('训练范围内未见任务与 SEED 验证任务');
+    expect(resultsProtocol).toContain('任务 500–6909');
+    expect(resultsProtocol).toContain('任务 0–499');
+    expect(resultsProtocol).not.toContain('goal_idx');
   });
 
-  it('protects the plain-language → professional-detail → evidence layering', () => {
-    expect(resultsHero).toContain('研究结果 · RESEARCH FINDINGS');
-    expect(resultsHero).toContain('专业解释：');
-    expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
-    expect(resultsProtocol).toContain('专业解释：');
-    expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
-    expect(currentQ7).toContain('路线 A 机器可读收尾');
+  it('protects direct mainline prose and keeps optional evidence as the deeper layer', () => {
+    expect(resultsHero).not.toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).toContain('OpenEvo × WebShop 研究结果');
+    expect(resultsProtocol).toContain('训练范围内未见任务与 SEED 验证任务');
+    expect(resultsQuestions).not.toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).toContain('七个研究问题');
+    expect(resultsQuestions).toContain('动作读取与任务身份');
+    expect(resultsQuestions).not.toContain('WHY THIS TOOK TIME');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
-    expect(nextSteps).toContain('专业解释：');
+    for (const source of [resultsHero, resultsProtocol, resultsQuestions, currentQ7, nextSteps]) {
+      expect(source).not.toContain('专业解释：');
+      expect(source).not.toContain('Technical detail:');
+    }
+    expect(resultsQuestions).toContain('class="supporting-context"');
+    expect(nextSteps).toContain('<details class="step-detail">');
     expect(researchHub).toContain('适配器（adapter）');
     expect(researchHub).toContain('备用动作（fallback）');
     expect(researchHub).toContain('结束原因（termination）');
@@ -139,31 +147,32 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(researchNav).not.toContain('Experiment results');
   });
 
-  it('protects the H1.38B / H1.39 internal fresh-task boundary', () => {
-    expect(resultsQuestions).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
-    expect(resultsQuestions).toContain('它们不是 0–499 的 SEED 官方保留任务评估');
-    expect(resultsProtocol).toContain('goal_idx ≥ 500');
-    expect(resultsProtocol).toContain('goal_idx 0–499');
+  it('protects the fresh-task boundary in reader-facing language', () => {
+    expect(resultsQuestions).toContain('训练使用的 500–6909 号范围');
+    expect(resultsQuestions).toContain('不是 SEED 留作正式验证的 0–499 号任务');
+    expect(resultsProtocol).toContain('任务 500–6909');
+    expect(resultsProtocol).toContain('任务 0–499');
+    expect(resultsProtocol).not.toContain('goal_idx');
   });
 
-  it('protects H1.40 T2, later H1.42, repaired-primary v2, and the completed source-faithful successor', () => {
-    expect(resultsQuestions).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(resultsQuestions).toContain('T2 根本没有运行');
+  it('protects the scientific boundaries while presenting them in reader-facing language', () => {
+    expect(resultsQuestions).toContain('不能写成“模型已经在这项测试上迁移失败”');
+    expect(resultsQuestions).toContain('预留的新任务测试因为前面的能力检查没有通过而没有启动');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
-    expect(resultsHero).toContain('机制结论以实验编号 H1.41 为时间截点');
+    expect(resultsHero).toContain('机制结论以 8 月 21 日完成的 H1.41 实验为截止点');
     expect(resultsQuestions).toContain('768 个回合');
-    expect(resultsQuestions).toContain('测量接口失效');
-    expect(resultsProtocol).toContain('测量无效（measurement-invalid）');
+    expect(resultsQuestions).toContain('动作读取接口失效');
+    expect(resultsProtocol).toContain('第一次主评测出现 0 分，不代表模型被证明“完全不会做”');
     expect(resultsQuestions).toContain('BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%');
     expect(resultsQuestions).toContain('自助法（bootstrap）95% CI [-0.65, +7.19]');
-    expect(resultsProtocol).toContain('worker 的随机种子会改变目标顺序和实际 instruction');
-    expect(currentQ7).toContain('不是论文当年最终使用的确切 128 题');
+    expect(resultsProtocol).toContain('随机抽样方式会改变任务顺序和最终文字');
+    expect(currentQ7).toContain('论文 89.7 / 78.1% 背后的最终 128 题');
     expect(currentQ7).toContain('128 / 128 PASS');
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
-    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
-    expect(nextSteps).toContain('路线 B（Track B，WB1）');
+    expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
+    expect(nextSteps).toContain('两轮比较回答不同问题');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });
 

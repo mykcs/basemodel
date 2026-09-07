@@ -49,28 +49,28 @@ const meta: Record<string, { title: string; description: string }> = {
     description: '解释 OpenEvo 的任务边界（task boundary）、经验载体（experience carrier）、验证（validation）和后继版本（successor revision）怎样连接起来。',
   },
   'why-it-kept-failing': {
-    title: '为什么早期迁移实验长期没有正向信号？',
-    description: '回看 H1.16–H1.29：经验载体（carrier）、交互长度（horizon）、动作过滤（action filtering）、理想动作标签（oracle labels）和任务身份（task identity）分别造成了什么影响。',
+    title: '早期迁移实验的失败原因',
+    description: '回看早期迁移实验（H1.16–H1.29）：经验载体（carrier）、交互长度（horizon）、动作过滤（action filtering）、理想动作标签（oracle labels）和任务身份（task identity）分别造成了什么影响。',
   },
   'first-positive-transfer': {
-    title: 'H1.38B：第一次可靠的内部新任务迁移',
-    description: 'H1.38B 在 goal_idx ≥ 500 的任务 ID 不重叠面板（task-ID-disjoint panel）上得到第一代正向迁移信号；它不是 SEED 官方保留任务结果。',
+    title: '第一次可靠的新任务迁移',
+    description: '历史实验 H1.38B 在 goal_idx ≥ 500 的任务 ID 不重叠面板（task-ID-disjoint panel）上得到第一代正向迁移信号；它不是 SEED 官方保留任务结果。',
   },
   'independent-replication': {
-    title: 'H1.39：第一代内部迁移的独立复现',
-    description: '换一批任务 ID 不重叠的新任务后，再次观察到普通 LoRA（ordinary LoRA）和 SD-LoRA 相对基础模型（BASE）的正向迁移。',
+    title: '新任务迁移的独立复现',
+    description: '历史实验 H1.39 换一批任务 ID 不重叠的新任务后，再次观察到普通 LoRA（ordinary LoRA）和 SD-LoRA 相对基础模型（BASE）的正向迁移。',
   },
   'second-generation': {
-    title: 'H1.40：第二代持续整合为什么没有通过门槛？',
-    description: 'E2 的新经验和 G2 适配器（adapter）都真实存在，但新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）没有同时通过，因此 T2 没有打开。',
+    title: '第二代连续学习的结果边界',
+    description: '历史实验 H1.40 中，E2 的新经验和 G2 适配器（adapter）都真实存在，但新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）没有同时通过，因此 T2 没有打开。',
   },
   'measurement-boundary': {
-    title: 'H1.41–H1.42：测量边界与不能下的结论',
-    description: '区分测量无效（measurement-invalid）的结果、没有打开的 T2，以及仍然可以保留的上游机制证据。',
+    title: '机制比较的测量边界',
+    description: '历史实验 H1.41–H1.42 区分测量无效（measurement-invalid）的结果、没有打开的 T2，以及仍然可以保留的上游机制证据。',
   },
   'current-conclusion': {
-    title: '截至 H1.41，OpenEvo × WebShop 能下什么结论？',
-    description: '把已经有证据支持、尚未得到支持、测量无效和仍待正式比较的结论分开。',
+    title: 'OpenEVO WebShop 实验：当前结论与证据边界',
+    description: '汇总截至历史实验 H1.41/H1.42 已有证据支持、尚未得到支持、测量无效和仍待正式比较的结论。',
   },
   'benchmark-first': {
     title: '为什么还需要一场正式的 WebShop 比较？',

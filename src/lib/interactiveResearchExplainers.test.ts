@@ -174,9 +174,9 @@ describe('interactive research explainers', () => {
     expect(css).not.toContain('.irx-figures{');
   });
 
-  it('labels the two formal method figures without adding duplicate diagram mounts', () => {
-    expect(explainer).toContain("eyebrow: 'FIGURE 04 · SEED × WEBSHOP'");
-    expect(explainer).toContain("eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP'");
+  it('keeps the two formal method figures free of redundant figure eyebrows', () => {
+    expect(explainer).not.toContain("eyebrow: 'FIGURE 04 · SEED × WEBSHOP'");
+    expect(explainer).not.toContain("eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP'");
     expect(explainer).toContain('irx-inference-strip');
     expect(detailCore).toContain("t('分数与成功边界', 'Score and success boundary')");
     expect(detailCore).toContain("t('世界状态', 'World state')");

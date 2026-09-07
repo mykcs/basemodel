@@ -7,6 +7,8 @@ const studyEn = read('src/pages/en/research/seed-openevo/study/index.astro');
 const designZh = read('src/pages/research/seed-openevo/study/design/index.astro');
 const designEn = read('src/pages/en/research/seed-openevo/study/design/index.astro');
 const overview = read('src/components/research/SeedOpenEvoStudyOverview.astro');
+const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
+const training = read('src/components/research/SeedOpenEvoTrainingDesignOverview.astro');
 
 const formerHomepageOwners = [
   'OpenEvoExperimentGateway',
@@ -53,12 +55,15 @@ describe('study overview information architecture', () => {
     expect(studyEn).toContain('OpenEVO (Harness) · WebShop dataset experiments');
   });
 
-  it('moves training-design depth to the canonical design route', () => {
-    expect(designZh).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(designZh).toContain('OpenEvoFairComparisonExplainer');
-    expect(designZh).toContain('OpenEvoNextExperimentProtocol');
-    expect(designEn).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(designEn).toContain('OpenEvoFairComparisonExplainer');
+  it('moves training design into the flow map and leaves the old route as a redirect', () => {
+    expect(hub).toContain('id="training-design"');
+    expect(hub).toContain('SeedOpenEvoTrainingDesignOverview');
+    expect(training).toContain('Stage 1 责任边界');
+    expect(training).toContain('当前 Stage 1 参数协议');
+    expect(designZh).toContain('/research/seed-openevo/flow/#training-design');
+    expect(designEn).toContain('/en/research/seed-openevo/flow/#training-design');
+    expect(designZh).not.toContain('SeedOpenEvoTrainingDecisionLab');
+    expect(designEn).not.toContain('SeedOpenEvoTrainingDecisionLab');
   });
 
   it('protects scientific wording boundaries on the visible overview', () => {
@@ -75,13 +80,14 @@ describe('study overview information architecture', () => {
     ]) expect(overview).toContain(phrase);
   });
 
-  it('keeps all four deep routes reachable from the overview', () => {
+  it('keeps study actions plus the flow-owned training design reachable', () => {
     for (const path of [
-      '/research/seed-openevo/study/design/',
+      '/research/seed-openevo/flow/#training-design',
       '/research/seed-openevo/study/run/',
       '/research/seed-openevo/study/capability-exploration/',
       '/research/seed-openevo/study/results/',
     ]) expect(overview).toContain(path);
+    expect(overview).not.toContain("p('/research/seed-openevo/study/design/')");
   });
 
   it('records a dated public-state snapshot instead of treating old counters as live truth', () => {

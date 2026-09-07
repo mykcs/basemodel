@@ -29,7 +29,7 @@ describe('capability route reader contracts', () => {
         expect(content).toContain(`<${row.owner} locale={locale} />`);
         expect(row.label[locale].trim().length).toBeGreaterThan(0);
         expect(row.purpose[locale].trim().length).toBeGreaterThan(0);
-        if (row.coverage === 'contextualized') expect(content).toContain(`<ResearchRouteContext locale={locale} route="${row.route}" />`);
+        if (row.coverage === 'contextualized') expect(content).toContain(`<ResearchRouteContext locale={locale} route="${row.route}"`);
         else expect(readFileSync(join(repo, 'src/components/research', `${row.owner}.astro`), 'utf8')).toContain('<ResearchTaskContext locale={locale} />');
       }
     });
