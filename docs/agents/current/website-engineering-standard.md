@@ -221,7 +221,7 @@ concurrent-run policy
 
 Measurement rules:
 
-1. **Qualification is not steady state.** A CI-infrastructure PR may deliberately trigger stronger self-protection: different shard reserve, a Lab tail, diagnostics, or another qualification-only path. Those extra costs prove correctness but are not automatically the cost ordinary post-merge PRs will pay. When the shapes differ, measure steady state with a benchmark-only stacked PR whose diff is ordinary `full` and whose base is the candidate. Never merge that benchmark PR.
+1. **Qualification is not steady state.** A CI-infrastructure PR may deliberately trigger stronger self-protection: different shard reserve, a Lab tail, diagnostics, or another qualification-only path. Those extra costs prove correctness but are not automatically the cost ordinary post-merge PRs will pay. When the shapes differ, measure steady state with a benchmark-only stacked PR whose diff has the ordinary risk class being optimized (`focused` or `full`) and whose base is the candidate. Never merge that benchmark PR.
 2. **Freeze the control.** A PR base branch is a moving ref, not an immutable commit. If the experiment needs the pre-change scheduler or another historical control, create/use a dedicated frozen base ref at the exact commit. Re-read GitHub's resolved `base_sha` after the PR opens.
 3. **One workflow measurement -> one fresh commit SHA.** CircleCI currently reports legacy GitHub status contexts keyed by commit SHA. Reusing one SHA under multiple PR/base/workflow contexts can mix old and new statuses. For an identical-tree repeat, create a new commit that points to the exact same tree; do not alter source merely to obtain another sample.
 4. **Run candidate and control sequentially.** Search overlapping PRs and active provider runs first. Do not create duplicate benchmark PRs, and do not intentionally overlap your own candidate/control runs on shared hosted capacity. Record unavoidable external overlap as noise.
@@ -236,6 +236,25 @@ Measurement rules:
 13. **Qualify adaptive inputs in shadow before making them authoritative.** When a new scheduler depends on provider historical timing or another learned/adaptive signal, first compute its complete assignment after the existing authoritative run and verify non-empty buckets, exact union, no duplicates, no unknown identities, and no silent provider fallback. Missing/new timing must fall back to the proven conservative scheduler for that run so a new test can execute and seed history; an optimizer must not create a cold-start deadlock where missing history prevents the test that would generate that history.
 
 Stopping rule: an optimization that does not demonstrate a **clear, meaningful, repeatable** end-to-end benefit under unchanged acceptance semantics is closed unmerged. A scientifically/engineering-correct negative experiment is a successful outcome when it prevents permanent complexity.
+
+### CI evidence preflight
+
+Before the first provider-triggering write, record the checked artifacts for the applicable rows in the existing PR/task witness. These refine the frozen benchmark protocol; they do not add an approval round.
+
+| Trigger | Required evidence before acting | Invalid shortcut |
+| --- | --- | --- |
+| TypeScript or Node API overloads changed | Repository typecheck with its Node types/compiler options, separately from executable tests. If only a source export is available, name omitted coverage and require complete hosted validation. | Vitest transpilation passed, therefore TypeScript compiles. |
+| Local files came from connector downloads | Classify checkout versus partial export; bind files to ref/blob identities. Whole-source consumer/route inventories require a complete source population. | Create a synthetic local Git history or call a partial export a clean current-main worktree. |
+| Historical control was squash-merged | Use merge-base comparison for contribution ancestry; use exact endpoint tree/blob comparison for equal product content. Enumerate intended CI/test/doc deltas separately. | A three-dot compare displays a page change, therefore the two endpoint page blobs differ. |
+| Optimizing affected-test selection | Prove component consumers, routes and side effects; preserve the complete relevant spec registration (including imported cases), assertions and required route/theme/viewport coverage. Show which previously full-suite work is omitted and why. | Label fewer tests as a faster scheduler, or keep only tests whose filename/title mentions the changed page. |
+| Optimizing scheduling/cache/runtime | Hold the canonical test population and acceptance semantics fixed; isolate the scheduling/runtime treatment. | Change test selection while attributing the gain to executor speed. |
+| Making a budget claim | Report provider workflow wall-clock, sum of all job execution times including setup and early-exit jobs, and queue separately. Record failed/corrective qualification and post-merge work as adoption cost. | Faster longest shard means fewer credits; executor-seconds prove account balance or a money saving. |
+
+Use explicit labels: planner classification, full correctness qualification, ordinary workload measurement, merge, and post-merge validation. A successful status for a policy exit proves that the exit contract ran; it does not prove that skipped tests passed. A discovered test list is not an execution receipt.
+
+A historical one-pair replay supports a bounded case observation, not a universal or independently established repeatability claim. Preserve the pre-registered sample/acceptance rule; do not weaken it after measurement. Broader claims or a protocol requiring repeats need the corresponding evidence. Re-read refs, consumers, test registrations and runtime inputs when they change rather than treating a historical count or hash as permanent.
+
+The [mechanism-route case](../history/2026-09-07-mechanism-ci-route-ownership.md) retains the initial type failure, exact content comparison, bounded measurement and repetition audit.
 
 ## 7. Chromium and WebKit have different execution boundaries
 

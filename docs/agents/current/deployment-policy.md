@@ -103,6 +103,16 @@ Routine Dependabot version updates keep their existing weekly schedule, grouping
 
 For the owner's free-tier constraint, adoption is judged by total provider consumption per accepted change, not the fastest shard. Account for repeated pushes, pre- and post-merge runs, startup, queueing, active cores and paid overage. Do not add paid model/API calls to ordinary CI. Cloudflare Workers Builds and Vercel Sandbox remain unactivated candidates until account entitlement, credential isolation, exact-base/head status binding and measured budget are qualified. Public quota tables do not establish the account's remaining balance.
 
+### Reading provider evidence when the dashboard fails
+
+Use structured exact-SHA provider/status reads for job identity and state, and provider job/workflow timing for consumption evidence. A dashboard interaction timeout is a monitoring failure until job state or terminal output proves otherwise.
+
+For canvas/virtualized logs, DOM snapshots may expose only line numbers even when the screenshot contains text. After the same action fails again without new evidence, change the read path instead of repeating clicks, scrolls or full-page screenshots: use the UI's observed standalone step-output link, documented log retrieval/export where available, or a fresh task-owned tab. Wait for rendering before interpreting a blank screenshot. Keep browser bindings/session boundaries intact; never extract cookies, call hidden page APIs, weaken access controls or close other tasks' tabs to repair monitoring.
+
+Retrieve only missing evidence: metadata for durations, terminal summary for actual passed/skipped/retried cases. Do not rerun a green workflow merely to obtain easier logs. Bound returned output; recover required text hidden by truncation instead of claiming it was read. Follow existing operating-principles wait discipline and record the exact receipt once available.
+
+Historical example and limits: [mechanism CI route ownership](../history/2026-09-07-mechanism-ci-route-ownership.md).
+
 ### Mac manual fallback
 
 `.github/workflows/self-hosted-ci.yml` is a **manual recovery canary only**. It has `workflow_dispatch` and no automatic PR/main triggers. Its job is `basemodel-mac-fallback`, runs on the repository-scoped `basemodel-ci` OrbStack runner, and explicitly forces the complete browser matrix so a manual canary cannot accidentally become a no-op when base/head are identical.
