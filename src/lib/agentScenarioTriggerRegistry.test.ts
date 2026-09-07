@@ -10,6 +10,7 @@ const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided
 const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-design-spec.md', import.meta.url), 'utf8');
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
+const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
@@ -37,6 +38,7 @@ describe('Agent scenario-trigger discovery', () => {
       'TRIGGER: hosting/platform modernization or legacy-provider reactivation',
       'TRIGGER: overlapping PRs / large cross-site change',
       'TRIGGER: reusable lesson discovered',
+      'TRIGGER: retrospective, handoff, or experience retention',
     ]) expect(registry).toContain(trigger);
   });
 
@@ -89,9 +91,20 @@ describe('Agent scenario-trigger discovery', () => {
   it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
     for (const token of ['case cluster', 'at least two nearby cases', 'high-confidence same-family', 'semantic positions']) expect(registry).toContain(token);
     for (const token of ['案例簇', '至少包含当前最接近案例 + 2 个同类/相邻案例', '高置信同类', 'sibling routes']) expect(websiteSpec).toContain(token);
+    expect(registry).toContain('site-reader-attention-contract.md');
+    expect(registry).toContain('product/repository work');
+    expect(registry).toContain('Repository persistence and long-term memory are separate receipts');
     expect(copyCases).toContain('案例簇总结：CASE-061–068');
     expect(copyCases).toContain('当前最接近案例 + 至少 2 个同类/相邻案例');
     expect(copyCases).toContain('案例不是墓碑，而是训练样本');
+  });
+
+  it('keeps the attention-contract retrospective discoverable without confusing repository persistence with memory', () => {
+    expect(readme).toContain('2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md');
+    expect(registry).toContain('2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md');
+    expect(attentionHistory).toContain('本次实际账户级写入');
+    expect(attentionHistory).toContain('**0 条。**');
+    expect(attentionHistory).toContain('Fish parser failure');
   });
 
   it('protects secret and hosting-modernization boundaries', () => {
@@ -138,6 +151,13 @@ describe('Agent scenario-trigger discovery', () => {
 // Protect discoverability only; these checks do not measure reader comprehension
 // or prove that a future executor actually performed a use-site check.
 describe('retained correction use-site routing', () => {
+  it('keeps the first shell and checkout discovery safeguards on the fast path', () => {
+    expect(root).toContain('Before the first compound shell call');
+    expect(root).toContain('/bin/bash');
+    expect(principles).toContain('Do not guess a local checkout path');
+    expect(principles).toContain('resolved root, branch, `HEAD`, dirty state, and intended remote/ref');
+  });
+
   it('keeps repeat-correction witnesses reachable from startup and task triggers', () => {
     expect(root).toContain('REPEAT-CORRECTION');
     expect(root).toContain('project-agent-operating-principles.md#correction-to-action-witness');

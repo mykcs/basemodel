@@ -37,10 +37,18 @@ describe('research-site presentation contract', () => {
     const researchAgents = readFileSync(join(srcRoot, 'components/research/AGENTS.md'), 'utf8');
     const uiContract = readFileSync(join(repoRoot, 'docs/agents/current/ui-design-principles.md'), 'utf8');
     const expressionContract = readFileSync(join(repoRoot, 'docs/agents/current/human-thinking-web-expression-contract.md'), 'utf8');
+    const agentIndex = readFileSync(join(repoRoot, 'docs/agents/README.md'), 'utf8');
+    const attentionContract = readFileSync(join(repoRoot, 'docs/agents/current/site-reader-attention-contract.md'), 'utf8');
 
     for (const source of [rootAgents, researchAgents, uiContract, expressionContract]) {
       expect(source).toContain('research-site-presentation-contract.md');
     }
+    for (const source of [rootAgents, researchAgents, agentIndex]) {
+      expect(source).toContain('site-reader-attention-contract.md');
+    }
+    expect(researchAgents).toContain('src/data/siteReaderContracts.ts');
+    expect(attentionContract).toContain('人的时间和注意力是预算');
+    expect(attentionContract).toContain('src/data/siteReaderContracts.ts');
   });
 
   it('keeps copy-paste operational commands behind explicit technical disclosure', () => {
