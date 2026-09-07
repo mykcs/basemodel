@@ -66,7 +66,7 @@ const rows = isSeven ? sevenBRows : fourRows;
 
   {isSeven && (
     <section class="stage1-choice-map" aria-labelledby="stage1-choice-title" data-testid="stage1-choice-map">
-      <div class="section-kicker">{t('Stage 1 设计分岔', 'STAGE 1 DESIGN FORK')}</div>
+      <div class="section-kicker">{t('Stage 1 的两个设计选择', 'TWO STAGE 1 DESIGN CHOICES')}</div>
       <h2 id="stage1-choice-title">{t('同样 1,440 条轨迹：老师是谁，和讲评怎样写回参数，是两次不同选择','The same 1,440 trajectories create two separate choices: who analyzes them, and how the analysis is written back into parameters')}</h2>
       <p>{t('我们现在把旧实验放回正确的位置：MiniMax 确实完整分析了 1,440 / 1,440 条 7B 轨迹；问题出在后面的参数写入只选了其中 16 条。这里的 16 / 1,440 数的是“真正进入参数训练的讲评记录”，不是模型分数，也不是 MiniMax 只分析了 16 条。这个选择与做题时的采样温度（rollout temperature）无关。','We now place the historical run on the correct branch: MiniMax did analyze all 1,440/1,440 7B trajectories; the later parameter-write stage selected only 16 of them. That choice is independent of rollout temperature.')}</p>
 

@@ -14,7 +14,7 @@ const experimentTracks = [
     title: t('共同 Stage 1，再比较 Stage 2', 'Shared Stage 1, then compare Stage 2'),
     question: t('只把后续学习方法换掉，OpenEvo 还会更好吗？', 'If only the later learner changes, does OpenEvo still improve?'),
     stage1: t('同一 student rollout、同一外部 hindsight analyzer、同一 SFT checkpoint', 'Same student rollouts, same external hindsight analyzer, same SFT checkpoint'),
-    stage2: t('从同一 checkpoint 分叉：SEED vs OpenEvo', 'Fork from the same checkpoint: SEED vs OpenEvo'),
+    stage2: t('从同一 checkpoint 分成 SEED 与 OpenEvo 两组', 'Split the same checkpoint into SEED and OpenEvo arms'),
     claim: t('支持 learner-level 因果对照；不把 harness / bootstrap 差异混进结论。', 'Supports a learner-level controlled comparison without mixing in harness/bootstrap differences.'),
   },
   {
@@ -202,7 +202,7 @@ const history = [
         </details>
       ))}
     </div>
-    <aside class="claim-rule"><strong>{t('记住这个分界', 'Keep this boundary')}</strong><p>{t('“完整系统谁更强？”允许 SEED 和 OpenEvo 各用自己的 native harness；“只比较 learner 谁更强？”则应该共享 Stage 1 / bootstrap checkpoint，再从同一点分叉。', '“Which complete system is stronger?” may allow SEED and OpenEvo to use their native harnesses. “Which learner is stronger?” should share Stage 1 / the bootstrap checkpoint and fork only afterward.')}</p></aside>
+    <aside class="claim-rule"><strong>{t('记住这个分界', 'Keep this boundary')}</strong><p>{t('“完整系统谁更强？”允许 SEED 和 OpenEvo 各用自己的 native harness；“只比较 learner 谁更强？”则应该共享 Stage 1 / bootstrap checkpoint，再从同一 checkpoint 分成两组。', '“Which complete system is stronger?” may allow SEED and OpenEvo to use their native harnesses. “Which learner is stronger?” should share Stage 1 / the bootstrap checkpoint and split into two arms only afterward.')}</p></aside>
   </section>
 
   <section class="lab-section" id="parameters" aria-labelledby="parameters-title">
@@ -291,7 +291,7 @@ const history = [
     </div>
     <div class="claim-panels">
       <section data-claim-panel="system"><strong>{t('路线：Native vs Native', 'Route: Native vs Native')}</strong><p>{t('SEED 用自己的 harness，OpenEvo 也用自己的 harness；匹配 task schedule、environment budget、eval panel。结果回答“哪个完整系统更强”，而不是“哪个 Stage 2 learner 更强”。', 'SEED uses its native harness and OpenEvo uses its native harness; match task schedule, environment budget, and eval panel. The result answers which complete system is stronger, not which Stage-2 learner is stronger.')}</p></section>
-      <section data-claim-panel="learner" hidden><strong>{t('路线：共同 Stage 1 checkpoint 后分叉', 'Route: Fork after a shared Stage-1 checkpoint')}</strong><p>{t('共享 student trajectory、analyzer、SFT recipe 与 checkpoint，然后才分成 SEED Stage 2 / OpenEvo Stage 2。', 'Share student trajectories, analyzer, SFT recipe, and checkpoint; only then fork into SEED Stage 2 vs OpenEvo Stage 2.')}</p></section>
+      <section data-claim-panel="learner" hidden><strong>{t('路线：共同 Stage 1 checkpoint 后分成两组', 'Route: Split after a shared Stage-1 checkpoint')}</strong><p>{t('共享 student trajectory、analyzer、SFT recipe 与 checkpoint，然后才分成 SEED Stage 2 / OpenEvo Stage 2。', 'Share student trajectories, analyzer, SFT recipe, and checkpoint; only then split into SEED Stage 2 vs OpenEvo Stage 2.')}</p></section>
       <section data-claim-panel="teacher" hidden><strong>{t('路线：冻结同一批 student trajectories，只换 analyzer', 'Route: Freeze student trajectories and vary only the analyzer')}</strong><p>{t('例如 MiniMax thinking ON/OFF，或 GLM/MiniMax；API 必须是 post-hoc trajectory analyzer，不能进 WebShop step loop。', 'For example MiniMax thinking ON/OFF or GLM/MiniMax; the API must be a post-hoc trajectory analyzer and must never enter the WebShop step loop.')}</p></section>
       <section data-claim-panel="bootstrap" hidden><strong>{t('路线：No-bootstrap arm', 'Route: No-bootstrap arm')}</strong><p>{t('从原始 checkpoint 直接进入 OpenEvo。把少用的 1,440 个 rollout 明确记为 sample-efficiency 差异，而不是假装预算完全一样。', 'Start OpenEvo directly from the base checkpoint. Treat the missing 1,440 rollouts explicitly as a sample-efficiency difference rather than pretending budgets are identical.')}</p></section>
       <section data-claim-panel="thinking" hidden><strong>{t('路线：严格配对 analyzer ablation', 'Route: Paired analyzer ablation')}</strong><p>{t('同一个 trajectory_id 同时送给 thinking ON 与 OFF；比较 parse、tokens、latency、skill 内容，再决定是否把两份都扩到完整 2,880 jobs。', 'Send each identical trajectory_id to both thinking ON and OFF; compare parsing, tokens, latency, and skill content before deciding whether both arms deserve a full 2,880-job run.')}</p></section>

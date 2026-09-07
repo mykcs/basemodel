@@ -82,9 +82,13 @@ describe('audience copy audit', () => {
     expect(standard).toContain('Current scientific claims must be delegated, not copied');
     expect(auditSource).toContain('COPY-EDITORIAL-AS-HEADING');
     expect(auditSource).toContain('COPY-PRESENTER-HEADING');
+    expect(auditSource).toContain('COPY-NARRATIVE-FORK');
+    expect(auditSource).toContain('COPY-STATIC-ENGLISH-EYEBROW');
     expect(auditSource).toContain('COPY-SUBJECT-TITLE-001');
     expect(auditSource).toContain('COPY-INTERNAL-LABEL-001');
     expect(auditSource).toContain('COPY-FIRST-READER-JARGON-001');
+    expect(standard).toContain('Prefer the literal experimental operation over a narrative metaphor');
+    expect(standard).toContain('Eyebrows and kickers are optional');
   });
 
   it('flags presenter-style reading instructions when they are promoted into headings', () => {
@@ -96,6 +100,20 @@ describe('audience copy audit', () => {
       const findings = scanAudienceCopy(tmpRoot).filter((finding) => finding.ruleId === 'COPY-PRESENTER-HEADING');
       expect(findings).toHaveLength(1);
       expect(findings[0]?.snippet).toContain('三个研究问题怎样连起来');
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('flags narrative fork packaging and static English-only eyebrows as review candidates', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'audience-copy-fork-'));
+    try {
+      const sample = path.join(tmpRoot, 'src', 'components');
+      fs.mkdirSync(sample, { recursive: true });
+      fs.writeFileSync(path.join(sample, 'Fork.astro'), '<div eyebrow="HISTORICAL MAP · FIRST RUN"><h2>7B 与 3B 的分岔</h2></div>\n');
+      const findings = scanAudienceCopy(tmpRoot);
+      expect(findings.some((finding) => finding.ruleId === 'COPY-NARRATIVE-FORK')).toBe(true);
+      expect(findings.some((finding) => finding.ruleId === 'COPY-STATIC-ENGLISH-EYEBROW')).toBe(true);
     } finally {
       fs.rmSync(tmpRoot, { recursive: true, force: true });
     }

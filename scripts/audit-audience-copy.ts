@@ -22,6 +22,8 @@ const candidateRules: Rule[] = [
   { id: 'COPY-CHAT-TONE', pattern: /我们刚才|又失败|正确修法|这就是我们踩过的坑/g, reason: 'Chat or incident-history language should not lead the public path.' },
   { id: 'COPY-LEGACY-POSITIONING', pattern: /智能体基础模型选择地图|Agent Foundation Model Atlas|通用模型选择与论文采用地图/g, reason: 'Legacy product positioning may conflict with the SEED × OpenEvo research mission.' },
   { id: 'COPY-ABSTRACT-PACKAGING', pattern: /第一性研究链|框架改进结论|可核验的路径|可追踪的对话|讲成一场对话/g, reason: 'Abstract packaging may hide the concrete subject or result.' },
+  { id: 'COPY-NARRATIVE-FORK', pattern: /分岔|路径分叉|核心分叉问题|设计分岔/g, reason: 'Narrative fork language should be replaced by the concrete experimental operation unless the split itself matters scientifically.' },
+  { id: 'COPY-STATIC-ENGLISH-EYEBROW', pattern: /eyebrow="(?:[A-Z][A-Z0-9 ×/·._→+:-]{5,})"/g, reason: 'A static all-English eyebrow on a bilingual surface may be decorative rather than informative.' },
   { id: 'COPY-EDITORIAL-AS-HEADING', pattern: /把[“"'][^\n]{1,60}[”"'][^\n]{0,50}(?:分开|区分)|先[^\n]{0,45}(?:再|然后|最后)[^\n]{0,60}/g, reason: 'Editorial instructions and sequencing sentences belong in body copy, not prominent headings.' },
   { id: 'COPY-PRESENTER-HEADING', pattern: /<h[1-3]\b[^>]*>[^<\n]{0,260}(?:怎样连起来|如何阅读|怎么读|应该怎么读|我们到底|先[^<\n]{0,100}(?:再|然后|最后)|How\s+(?:to\s+read|should\s+we\s+read|the\s+[^<\n]{1,80}\s+connect)|What\s+[^<\n]{1,80}\s+actually|First\s+[^<\n]{1,100}(?:then|only\s+then))[^<\n]{0,260}<\/h[1-3]>/gi, reason: 'Presenter-style reading instructions should be body copy; headings should name the subject.' },
   { id: 'COPY-ZH-EN-SENTENCE', pattern: /[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g, reason: 'A Chinese surface may be exposing an unexplained full English sentence.' },
@@ -158,6 +160,22 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ban('src/components/common/SemanticStatusLegend.astro', 'COPY-PRESENTER-HEADING-001', '未知状态如何阅读', 'A presenter-style heading must not replace the Unknown states subject.');
   for (const forbidden of ['结果应该怎么读？', '先判断这次比较能不能信，再判断谁的分数更高']) ban('src/components/research/Seed3090PairedRunAudit.astro', 'COPY-PRESENTER-HEADING-001', forbidden, 'Presenter-style result-reading headings must not return.');
 
+  const firstRun = 'src/components/research/OpenEvoFirstRunMap.astro';
+  for (const required of ['7B 与 3B 的第一轮购物实验', '我们分别用 7B 和 3B 模型做了 WebShop 实验。', '7B 继续；3B 停止检查接口', '实验说明']) requireText(firstRun, 'COPY-FIRST-RUN-HUMAN-001', required, 'The first-run page must describe the two model experiments directly in ordinary language.');
+  for (const forbidden of ['第一轮购物学习：7B 与 3B 的分岔', 'HISTORICAL MAP · FIRST RUN', '路径分叉', '两条路线', '关卡说明']) ban(firstRun, 'COPY-FIRST-RUN-HUMAN-002', forbidden, 'Rejected narrative or gamified first-run wording must not return.');
+
+  const orientation = 'src/components/research/ResearchOrientation.astro';
+  requireText(orientation, 'COPY-EYEBROW-OPTIONAL-001', 'eyebrow?: string;', 'ResearchOrientation must allow pages to omit a decorative eyebrow instead of inventing one.');
+  for (const [file, forbidden] of [
+    ['src/components/research/OpenEvoSuccessorExplorationMap.astro', 'ROGUELIKE RESEARCH MAP · EXPLORATION'],
+    ['src/components/research/OpenEvoSuccessorReport.astro', 'REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT'],
+    ['src/components/research/OpenEvoMechanismMap.astro', 'OPENEVO × WEBSHOP · MECHANISM-1.0'],
+    ['src/components/research/OpenEvoCapabilityMapLobby.astro', 'THE RESEARCH EVOLVED WITH THE QUESTION'],
+    ['src/components/research/OpenEvoRedesignMap.astro', 'OPENEVO SUCCESSOR · QWEN2.5-3B + QWEN3-1.7B'],
+    ['src/components/research/OpenEvoStage1EvolutionMap.astro', 'ROGUELIKE RESEARCH MAP · STAGE 1 EVOLUTION'],
+    ['src/components/research/OpenEvoStage1EvolutionMap.astro', 'FLOOR 1 → FLOOR 6'],
+  ] as const) ban(file, 'COPY-DECORATIVE-EYEBROW-001', forbidden, 'Decorative English map/floor labels must not return to the capability-exploration reading path.');
+
   const exactBanned = [
     ['src/pages/guide.astro', '明天就按这三步做'],
     ['src/pages/_bodies/home-v2.astro', '学习、执行、比较，不再是三套互不相干的网站'],
@@ -217,7 +235,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
-  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, first-screen attention, and branch-aware scientific-state provenance.');
+  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'Prefer the literal experimental operation over a narrative metaphor', 'Eyebrows and kickers are optional', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, literal experimental wording, optional informative eyebrows, first-screen attention, and branch-aware scientific-state provenance.');
 
   return failures;
 }

@@ -24,7 +24,8 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
   });
 
   it('keeps the exploration view chronological, falsifiable, and visibly backtracking', () => {
-    expect(exploration).toContain('ROGUELIKE RESEARCH MAP · EXPLORATION');
+    expect(exploration).toContain('购物接口的探索与修订');
+    expect(exploration).not.toContain('ROGUELIKE RESEARCH MAP · EXPLORATION');
     expect(exploration).toContain('步数上限：15 步与 30 步');
     expect(exploration).toContain('30 → 15');
     expect(exploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
@@ -34,7 +35,8 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
   });
 
   it('uses the report view as a linear What / Why / Evidence / Boundary argument', () => {
-    expect(report).toContain('REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT');
+    expect(report).toContain('3B 与 1.7B 购物学习实验');
+    expect(report).not.toContain('REPORT / PAPER VIEW · STAGE 1 → QWEN3-1.7B FINAL CLOSEOUT');
     for (const label of ['操作', '理由', '记录', '适用范围']) expect(report).toContain(`<dt>{t("${label}",`);
     expect((report.match(/class="paper-step__meaning"/g) || []).length).toBe(12);
     expect(report).toContain('report-chronology');
