@@ -109,3 +109,19 @@ Scientific checks: accepted-state selection and task-score units are from the me
 Regressions cover default explanation order, each stop branch, score scale, typed execution/result projections under later mixed states, external-reference qualification and historical scope/links. Existing no-JS, topology, keyboard, reduced-motion and geometry coverage remains registered. UI preflight classifies this batch as shared: deterministic gate, build, overflow preflight and full cross-browser UI matrix are required before a provider-triggering ref.
 
 Integration witness: main advanced through independent #522 to `aa765005c9af9351b9e8e94cd71a42c0cca6b112`. Its five CI ownership/policy/test files do not overlap this batch and are retained unchanged in the validation surface. This batch changes shared components, so it still requires the full UI matrix; the isolated mechanism optimization does not narrow this acceptance. English first-screen screenshots exposed excess total height; grouped repeated result labels, shortened redundant introduction, and adjusted section padding without reducing font size or hiding answers. The old exact “new version is authoritative” copy assertion was replaced with dated identity and non-equivalence checks, preserving its scientific purpose.
+
+## 2026-09-07：#524 实际整合与当前验收
+
+本次接手首先重新核对实时仓库，而不是沿用交接包中的旧状态。`main` 仍为 `aa765005c9af9351b9e8e94cd71a42c0cca6b112`；PR #524 已前进到 `bdb837152f33ff7e08a85d8df7717aacf9875d11`。新出现的 #527 基于 #524 重构 study 首页，但不直接改本轮 19 个恢复文件，因此本分支不自动吸收 #527；提交前仍需再次检查并行漂移。
+
+交接 zip 实际只包含 handoff 与 plan 两个 Markdown，没有 README 所述的 `implementation/`、`reader-ours/` 等目录。远程源码导出 `/Users/myk/tmp/basemodel-reader-completion-20260907` 与精确 `main` 的 950 个 tracked files 做逐字节比较后，恰好只有交接声明的 19 个文件不同、0 个 tracked file 缺失，因此先从真实 main 恢复这 19 个差异，再把最新 #524 作为第二父节点三方合并。
+
+三方合并真实产生 9 个冲突文件。解决原则不是整文件选择 ours/theirs：保留 #524 的通俗标题、历史字号、展开内容和回归覆盖，同时保留本轮的科学边界。特别是 20,480 明确为旧 Stage 2 **每组**上限；7B 最终模型只纳入 149 个完整轮次 / 19,072 次学习尝试，后续 96 条 partial 不进入最终模型，提前停止原因仍保持 unknown；SEED 数值保持外部冻结参考值而非本地配对因果对照；Harness 机械检查 PASS 不等于正式训练授权；accepted state 明确按训练记录顺序保留，不按购物 reward 选窗口。
+
+状态 owner 进一步收紧：`openEvoMechanismNarrative` 删除未被渲染的自由文本 `state` 字段，只保留 `execution / results / timestamps / release / receipt` 这些 typed facts。strict schema 现在直接拒绝附加自由文本状态；M1-A/B/C 保持 `locked`，M1-D 保持 `authorized + actualStart=null + results=unsealed`，公开文案由 `mechanismDisplayState` 派生为“已授权，尚无开始记录 / 结果未封存”。旧的“M1-D 阶段已激活”中英文 E2E 字符串已经删除，避免测试反向固化含糊状态。
+
+当前整合候选 `5a223ee222aafd58f37397182ad2f0c1f0654484` 已通过相关语义单测、`verify:deploy`、478 路由生产构建和 390/768/1440 overflow preflight；完整 shared UI matrix 尚需在追加本记录后的最终 head 重跑，因此这些绿色结果不能冒充后续 head 的完整验收。
+
+当前授权环境没有可调用的 Astra CLI / tool；本轮不能伪称完成了新的 Astra 独立审读。先前历史记录若有 Astra 证据仍按其原时间点保留，但本次 continuation 的 Astra 项明确记为 unavailable。真人目标读者测试仍为 0；自动化、模型冷读和此前任何 Agent 审读都不计作真人理解率。
+
+发布边界不变：网站改动不授权实验运行。本轮先完成 exact-head 本地全量验收，再一次性推送 `research/**` 分支形成 Preview/PR；合并与 Production 必须单独满足接受条件，未发生前分别标记为 pending。
