@@ -19,7 +19,7 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
   });
 
   it('explains why parser and task-identity audits consumed time without duplicating the technical wrapper trace', () => {
-    expect(questions).toContain('为什么这里花了时间');
+    expect(questions).not.toContain('为什么这里花了时间');
     expect(questions).toContain('模型做了动作，评测器有没有读对');
     expect(questions).toContain('SEED 给动作规定了外层标签 <action>...</action>');
     expect(questions).toContain('兼容性预检（compatibility preflight）');

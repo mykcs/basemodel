@@ -29,7 +29,8 @@ describe('page heading ownership', () => {
   it('names analysis subjects directly instead of using narrative fork or host-language headings', () => {
     expect(analysis).toContain('7B 无外部教师实验的后续分析');
     expect(analysis).toContain('3B / 7B × self / MiniMax 的四组比较');
-    expect(analysis).toContain('Stage 1 的两项设计选择');
+    expect(analysis).not.toContain('Stage 1 的两项设计选择');
+    expect(analysis).toContain('同样 1,440 条轨迹：老师是谁，和讲评怎样写回参数，是两次不同选择');
     expect(analysis).not.toContain('Stage 1 设计分岔');
     expect(analysis).not.toContain('四组实验怎样一起回答问题？');
   });
