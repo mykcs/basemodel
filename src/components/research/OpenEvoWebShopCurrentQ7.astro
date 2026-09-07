@@ -27,29 +27,24 @@ const frozenPanelHref = trackAManifest.href;
       <div class="question-meta">
         <span class="status-badge"><i aria-hidden="true"></i>{t('已完成 · 未证明稳定提升', 'Complete · no stable improvement established')}</span>
       </div>
-      <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
-      <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
-        '源码忠实任务测量路线（Track A）已经完成，不再是“待验证”。纠错后的 128 个任务槽位先逐题通过真实 SEED 运行路径的语义核对；随后基础模型（BASE）和加载冻结 OpenEvo SD-LoRA 适配器后的模型，各完成同一 128 个任务回合，而且全部有效。基础模型的平均任务完成度（Task Score×100）为 7.17、完整成功率 3.9%；SD-LoRA 为 8.74、3.9%。同任务配对后的平均差是 +1.57，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这是一轮有效测量，却仍不能证明 OpenEvo 稳定胜出。真正还缺的是方法对方法的公平比较路线（Track B）：在同一冻结环境、同一任务、同一评测器和匹配预算下重新运行 SEED 与 OpenEvo。',
-        'Source-faithful Track A is no longer awaiting validation. The corrected 128-task panel first passed 128/128 semantic validation against the real SEED runtime path, then BASE and the frozen OpenEvo SD-LoRA each completed 128 valid episodes. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; SD-LoRA reached 8.74 and 3.9%. The paired +1.57 difference has a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEvo win. The major remaining evidence is Track B: rerunning the methods themselves in one frozen world with matched budgets.',
+      <h3 id="current-q7-title">{t('还缺的方法级对照', 'The remaining method-level comparison')}</h3>
+      <p class="conclusion">{t(
+        '同一 128 个 WebShop 任务已经分别给基础模型和加载冻结 OpenEvo 学习结果后的模型做完，而且 256 个任务回合全部有效。基础模型的平均任务完成度为 7.17 / 100、完整成功率 3.9%；OpenEvo 模型为 8.74 / 100、3.9%。平均完成度高了 1.57 分，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这轮测量有效，却还不能证明 OpenEvo 稳定更好。真正还缺的是让 SEED 和 OpenEvo 在同一环境、同一任务、同一评测程序和匹配预算下重新训练并做最终比较。',
+        'The same 128 WebShop tasks have now been run once with the base model and once with the same model plus the frozen OpenEvo learning result, producing 256 valid episodes. The base model scored 7.17/100 mean task progress with 3.9% exact success; the OpenEvo model scored 8.74/100 and 3.9%. The mean progress difference is +1.57, but the 95% interval [-3.21, +6.31] still includes no difference. The measurement is valid, but it does not establish a stable OpenEvo advantage. The remaining method-level test is to rerun SEED and OpenEvo under the same environment, tasks, evaluator, and matched budget.',
       )}</p>
 
       <div class="manifest-callout" data-testid="frozen-128-task-manifest">
         <div class="manifest-copy">
-          <strong>{t('已验证的源码忠实 128 题', 'Validated source-faithful 128-task panel')}</strong>
+          <strong>{t('已核对的 128 个验证任务', 'Validated set of 128 tasks')}</strong>
           <span>{t(
-            '这个 JSON 是纠错后“公开代码第一次验证”任务面板的不可变快照。128/128 表示全部 128 个任务槽位都通过运行时语义核对；执行分支与当前纠错后任务清单的“所选面板内容摘要”（selected-panel digest）都是 4e7ace92…，说明两边引用的是同一份任务内容。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
-            'This JSON is the immutable snapshot of the corrected first-validation panel. Runtime semantic validation is now 128/128 PASS, and the executed branch and corrected mainline manifest share selected-panel digest 4e7ace92…. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
+            '这个 JSON 是纠错后 128 个验证任务的固定快照。128/128 表示全部任务都通过运行时语义核对，执行时使用的任务内容与这份固定清单一致。但公开信息仍不足以证明它就是论文 89.7 / 78.1% 背后的最终 128 题。',
+            'This JSON is the fixed snapshot of the corrected 128 validation tasks. All 128 passed runtime semantic validation and the executed task content matches this fixed manifest. Public information still does not establish that this is the final 128-task denominator behind the paper’s 89.7 / 78.1%.',
           )}</span>
         </div>
         <a class="manifest-link" href={frozenPanelHref}><ExternalBrandMark href={frozenPanelHref} />
           {t('在 GitHub 查看固定的 128 题', 'View the frozen 128 tasks on GitHub')} ↗
         </a>
       </div>
-
-      <p class="professional-explanation"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-        '权威运行时语义核对的机器字段为 total_slots=128、matches=128、mismatches=0，分别表示“计划 128 个任务槽位、128 个全部匹配、0 个语义不匹配”。随后源码忠实配对测量的对账状态 ok=true，表示整套对账检查通过；基础模型和 SD-LoRA 都是 128/128 个任务回合有效，动作解析无效回合为 0。对任务完成度做 10,000 次配对自助重采样后，平均差为 +1.57，95% 置信区间 [-3.21,+6.31]。全部 256 个原始任务回合，以及对账、分析、发布、GPU 和 W&B 运行凭据，都已逐文件原样入库并通过 SHA-256 校验；机器状态 artifact_publication_status=PUBLISHED_AND_VERIFIED 表示“实验产物已发布且校验通过”。仍需保留一个治理例外：科学实验合同和运行准备状态在正式任务开始前已经冻结 / 通过，但 GitHub 分支授权和 main 路由记录的顺序没有先于第一个正式任务回合，所以不能倒写成“当时 main 已授权启动”。',
-        'Authoritative runtime semantic validation reports total_slots=128, matches=128, mismatches=0. The later source-faithful paired measurement reconciled with ok=true, 128/128 valid episodes in both BASE and SD-LoRA, and parser-invalid=0; 10,000 paired bootstrap rounds yielded +1.57 Task Score×100 with 95% CI [-3.21,+6.31]. All 256 raw episodes plus reconciliation, analysis, release, GPU, and W&B receipts were transferred byte-for-byte and verified by per-file SHA-256, so artifact_publication_status is PUBLISHED_AND_VERIFIED. One governance exception remains: the scientific contract was frozen and readiness passed before formal consumption, but GitHub branch authority and the main router did not precede the first formal episode, so the run must not be rewritten as having been launch-authorized by main at that time.',
-      )}</p>
 
       <details class="evidence-details" id="evidence-q7">
         <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
@@ -114,8 +109,6 @@ const frozenPanelHref = trackAManifest.href;
   .manifest-copy span{max-width:72ch;color:var(--color-text-on-tint);font-size:.76rem;line-height:1.55}
   .manifest-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--color-border);border-radius:9px;color:var(--color-accent);font-size:.78rem;font-weight:760;text-decoration:none;white-space:nowrap;background:var(--color-bg)}
   .manifest-link:hover,.manifest-link:focus-visible{text-decoration:underline}
-  .professional-explanation{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem}
-  .conclusion strong,.professional-explanation strong{color:var(--color-text)}
   .evidence-details{max-width:900px;margin-top:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}
   summary{cursor:pointer;padding:13px 15px;font-size:.82rem;font-weight:760}
   .evidence-detail-body{padding:0 15px 15px;border-top:1px solid var(--color-border)}

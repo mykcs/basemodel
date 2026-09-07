@@ -53,6 +53,7 @@ for (const viewport of viewports) {
         titleWidth: titleRect.width,
         headingWidth: headingRect.width,
         titleLines: lines,
+        titleCharacters: visibleCharacters,
         charactersPerLine: visibleCharacters / lines,
         listGap: listRect.top - headingRect.bottom,
         firstCardWidth: firstCardRect.width,
@@ -67,7 +68,8 @@ for (const viewport of viewports) {
     expect(metrics.titleWidth, `questions title collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(360);
     expect(metrics.headingWidth, `questions heading row collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(850);
     expect(metrics.titleLines, `questions title wraps too many times: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(3);
-    expect(metrics.charactersPerLine, `questions title became a narrow text rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(12);
+    const minimumReadableCharactersPerLine = Math.min(metrics.titleCharacters, 12);
+    expect(metrics.charactersPerLine, `questions title became a narrow text rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(minimumReadableCharactersPerLine);
     expect(metrics.listGap, `question cards are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
     expect(metrics.firstCardWidth, `question cards collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
     expect(metrics.currentQ7Width, `current Q7 collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
