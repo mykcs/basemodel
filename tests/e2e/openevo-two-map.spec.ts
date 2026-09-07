@@ -46,7 +46,8 @@ test('Mechanism-1.0 exposes frozen passports, M1-D authorization without a start
   await expect(map.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
   await expect(map.locator('[data-research-journey]')).toHaveCount(1);
   await expect(map.locator('[data-research-state-rail] [data-state-item]')).toHaveCount(4);
-  await expect(map).toContainText('MECHANISM-1.0');
+  await expect(map.getByRole('heading', { level: 1 })).toHaveText('AI 练习购物后，哪些变化真的有用？');
+  await expect(map).not.toContainText('MECHANISM-1.0');
   for (const id of ['M1-A', 'M1-B', 'M1-C', 'M1-D']) await expect(map).toContainText(id);
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('1,440');
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('MiniMax');

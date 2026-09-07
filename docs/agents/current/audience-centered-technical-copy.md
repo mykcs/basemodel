@@ -66,7 +66,6 @@ Normal headings do **not** mean vague headings. Prefer a specific subject over a
 
 Buttons and action links should still say what they do: `查看实验结果`, `打开复现指南`, `比较模型`, `保存实验记录`.
 
-
 ### First-reader comparisons name both sides before the statistical design
 
 A comparison label should first tell the reader **who is compared and on what shared object**. Do not replace an internal project code with a statistical term that still requires prior knowledge.
@@ -74,6 +73,19 @@ A comparison label should first tell the reader **who is compared and on what sh
 - Prefer two explicit rows — `7B · 基础模型` and `7B · 使用 OpenEVO 学习结果` — over `OpenEVO · 7B 配对评测`.
 - Show each score beside its actual object, then explain that both rows used the same 128 WebShop tasks and evaluation. Only after that, if useful, explain that task-level outcomes can be paired one by one.
 - Terms such as `paired evaluation`, `matched panel`, `paired CI`, or route names belong in the methodological/provenance layer unless the surrounding text already defines them.
+
+### 1.1 Prefer the literal experimental operation over a narrative metaphor
+
+When the experiment simply ran two models separately, say that directly. Do not upgrade the relationship into `分岔 / 分叉 / fork / diverge` unless a real shared state is deliberately split and that topology matters to the scientific interpretation.
+
+Prefer:
+
+- `我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验`;
+- `从同一 checkpoint 分成 SEED 与 OpenEvo 两组` when a shared checkpoint is actually split.
+
+Avoid using `分岔`, `路径分叉`, `核心分叉问题`, or `design fork` merely to make a research page sound like a story. The reader should spend attention on the experimental object, not on decoding an invented metaphor.
+
+Eyebrows and kickers are optional. Keep one only when it adds phase, date, status, category, or provenance information that the heading does not already provide. On a Chinese surface, a decorative all-English uppercase eyebrow such as `HISTORICAL MAP · FIRST RUN` or `ROGUELIKE RESEARCH MAP · EXPLORATION` should be removed; if the label is scientifically necessary, provide the Chinese meaning first.
 
 ## 2. Separate subject, snapshot, live state, and interpretation
 
@@ -248,6 +260,8 @@ Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragra
 15. On a first-time entry page, does H1 identify unfamiliar object types before relationships between them?
 16. Does the first-screen TL;DR say what the experiment did / compares and the current evidence boundary, rather than repeat benchmark background?
 17. If a canonical explainer already owns the background, does this page link to it instead of teaching it again?
+18. Does any `fork / 分叉 / 分岔 / diverge` wording describe a real experimental split that matters scientifically, or is it only narrative packaging?
+19. Does every eyebrow/kicker add a real phase/date/status/category/provenance fact, and is a Chinese surface free of decorative English-only eyebrow text?
 
 Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 
@@ -256,7 +270,7 @@ Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` fo
 - H1: page subject only.
 - H2: major subject within the page.
 - H3: subsection/object name.
-- Eyebrow/kicker: phase, date, category, status, or provenance label.
+- Eyebrow/kicker: optional; use only for phase, date, category, status, or provenance that adds information beyond the heading.
 - Paragraph: interpretation, caveat, explanation, or chronology.
 - `<dl>` / compact facts: configuration and status values.
 - `<details>`: optional incident history and troubleshooting.

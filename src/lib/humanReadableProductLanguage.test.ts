@@ -14,6 +14,8 @@ const methodology = read('src/pages/methodology.astro');
 const paperDetail = read('src/pages/_bodies/paper-detail.astro');
 const workspacePage = read('src/pages/workspace/index.astro');
 const audit = read('scripts/audit-audience-copy.ts');
+const firstRun = read('src/components/research/OpenEvoFirstRunMap.astro');
+const orientation = read('src/components/research/ResearchOrientation.astro');
 
 describe('human-readable product language contract', () => {
   it('pins the heading hierarchy rule at the source-directory boundary', () => {
@@ -33,6 +35,15 @@ describe('human-readable product language contract', () => {
     expect(missionHero).toContain("t('研究结果','Research findings')");
     expect(missionHero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
     expect(missionHero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
+  });
+
+  it('keeps the first-run model comparison literal and allows decorative eyebrows to be omitted', () => {
+    expect(firstRun).toContain('3B 和 7B 的第一轮购物实验');
+    expect(firstRun).toContain('我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。');
+    expect(firstRun).not.toContain('第一轮购物学习：7B 与 3B 的分岔');
+    expect(firstRun).not.toContain('HISTORICAL MAP · FIRST RUN');
+    expect(firstRun).not.toContain('关卡说明');
+    expect(orientation).toContain('eyebrow?: string;');
   });
 
   it('keeps high-traffic navigation and tools concrete', () => {
@@ -60,6 +71,8 @@ describe('human-readable product language contract', () => {
     expect(standard).toContain('ALFWorld 与 WebShop 研究');
     expect(standard).toContain('5×RTX5090');
     expect(audit).toContain('COPY-EDITORIAL-AS-HEADING');
+    expect(audit).toContain('COPY-NARRATIVE-FORK');
+    expect(audit).toContain('COPY-STATIC-ENGLISH-EYEBROW');
     expect(audit).toContain('COPY-SUBJECT-TITLE-001');
     expect(audit).toContain('COPY-STATUS-002');
   });
