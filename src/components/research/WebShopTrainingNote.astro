@@ -56,7 +56,7 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'webshop-training' && (
     <main class="note-body">
       <section>
-        <h2>1. WebShop 首先是环境，不是训练算法</h2>
+        <h2>1. WebShop 环境</h2>
         <p>WebShop 把“帮用户买到满足条件的商品”变成一个可以重复运行的交互任务。模型会看到自然语言需求和网页状态，然后不断执行 <code>search[...]</code>、<code>click[...]</code> 等动作。只有真正进入环境执行动作以后，下一页、可点击项和最终得分才会出现。</p>
         <p>所以，一条 WebShop 数据不是普通的问答样本，而更像一段小型程序执行记录：</p>
         <pre><code>{`用户目标
@@ -76,7 +76,7 @@ terminal reward + task score`}</code></pre>
       </section>
 
       <section>
-        <h2>2. 最早的思路：先模仿人，再让策略在环境里继续学</h2>
+        <h2>2. 原始 WebShop 的 IL → RL 训练方案</h2>
         <p>原始官方代码把搜索和商品选择拆开。Search IL 学人类怎样组织搜索词，Choice IL 学人类在当前页面点击什么，Choice RL 再让选择策略根据环境 reward 更新。</p>
         <ResearchTechnicalDisclosure
           eyebrow="REPRODUCTION · ORIGINAL BASELINE"
@@ -110,7 +110,7 @@ python test.py`}</code></pre>
       </section>
 
       <section>
-        <h2>4. 训练方法的差别：经验怎样回到模型</h2>
+        <h2>4. 训练方法与经验写回</h2>
         <div class="comparison-list">
           <div><strong>WebShop 2022</strong><p>主要依靠人类 demonstration、IL 和 policy-gradient RL。</p></div>
           <div><strong>GRPO / GiGPO</strong><p>GRPO / GiGPO 让正在训练的策略在线 rollout；关键问题是 trajectory / step 的 credit assignment。</p></div>
@@ -142,7 +142,7 @@ python test.py`}</code></pre>
       </section>
 
       <section>
-        <h2>2. Stage 1：先训练一个“会复盘自己”的初始策略</h2>
+        <h2>2. SEED Stage 1：hindsight skill SFT</h2>
         <p>论文在 WebShop training split 上采样 180 个 task，每个 task 生成 8 条 rollout，总计 1,440 条 trajectory。随后使用外部的 GLM-5.2 阅读完整 episode，并生成 hindsight skill：这条轨迹里哪些 workflow 值得保留、哪里犯了错、下次应注意什么。</p>
         <p>这些 <code>trajectory → hindsight skill</code> 样本经过格式过滤后，用于 3 epochs SFT。SFT 之后，同一个 checkpoint 有两个角色：既能当 WebShop actor，也能在 episode 结束后当 analyzer。</p>
         <pre><code>{`180 training tasks
@@ -179,7 +179,7 @@ policy_t+1`}</code></pre>
       </section>
 
       <section>
-        <h2>4. OPD 到底在蒸馏什么？</h2>
+        <h2>4. OPD 蒸馏目标</h2>
         <p>SEED 不要求 analyzer 重新生成另一条“正确轨迹”。它拿<strong>已经真实采样过的同一个 action</strong>，分别在普通上下文和“普通上下文 + hindsight skill”中重新计算 token 概率。</p>
         <pre><code>{`log p(action | interaction context)
 
@@ -261,7 +261,7 @@ separate acquisition / retention / preservation / fresh transfer`}</code></pre>
       </section>
 
       <section>
-        <h2>3. 为什么我们先做固定经验，而不是直接照搬 SEED</h2>
+        <h2>3. 固定经验实验的研究位置</h2>
         <p>如果 rollout、teacher、experience selection 和 updater 同时变化，最后分数提高时很难知道到底是谁起作用。我们的 H1.x mechanism lane 先把成功经验冻结，再比较参数写入，因此可以回答一个更干净的问题：</p>
         <blockquote>同一批模型自己产生的经验，换一种写入参数的方法，fresh-task transfer 会不会变？</blockquote>
         <p>目前第一代 parameter write 的 fresh-task transfer 已得到独立 replication；第二代连续参数写入则暴露出 acquisition、retention、preservation 无法同时通过的问题。也正因为 upstream gates 没有过，H1.40 的 fresh T2 panel 没有被打开——它不能被写成“G2 fresh transfer 失败”。</p>

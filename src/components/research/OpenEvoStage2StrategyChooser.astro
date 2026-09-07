@@ -10,7 +10,7 @@ const p = (path:string) => localePath(locale,path);
 <section class="s2-choice" data-testid="stage2-strategy-selector" aria-labelledby="s2-choice-title">
   <div class="s2-choice__head">
     <p>{t('从旧 Stage 2 到新版 OpenEvo 的三次设计转折', 'THREE DESIGN TURNS FROM OLD STAGE 2 TO THE OPENEVO REDESIGN')}</p>
-    <h2 id="s2-choice-title">{t('先修“成功经验进不了训练”，再发现“行动接口本身也会影响我们看到的轨迹”', 'First fix successful experience being blocked from training; then confront how the action interface itself changes the trajectories we observe')}</h2>
+    <h2 id="s2-choice-title">{t('Stage 2 训练阻塞与行动接口', 'Stage 2 training blockage and action interface')}</h2>
     <span>{t('第一版把每 256 次任务单独设门槛，导致有成功经验也不更新；第二版 Ceiling-1.0 删掉这道门，7B 开始持续产生参数更新，而 3B 暴露出 bootstrap 与 action-validity 问题。后续 Harness 研究改变了 on-policy action contract，因此新版不再从旧 Stage 1 直接分叉，而是 fresh Stage 1 重开。', 'The first design judged every 256 attempts separately, so successful experience could still fail to reach training. Ceiling-1.0 removed that gate; 7B began sustaining parameter updates while 3B exposed bootstrap and action-validity problems. Later harness work changed the on-policy action contract, so the redesign no longer forks directly from the old Stage 1 and instead restarts with a fresh Stage 1.')}</span>
   </div>
 

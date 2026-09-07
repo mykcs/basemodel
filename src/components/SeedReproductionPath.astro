@@ -49,7 +49,7 @@ OPENAI_MODEL=glm-5.2`;
   <header class="repro-hero">
     <div>
       <span class="section-kicker">{t('SEED 复现实战 · 从目标倒推', 'SEED reproduction · work backwards from the claim')}</span>
-      <h2 id="seed-reproduction-title">{t('先决定你要证明什么，再按带核验日期的目录选择实际可租 GPU', 'Decide what you need to prove, then choose an available GPU from a dated catalog snapshot')}</h2>
+      <h2 id="seed-reproduction-title">{t('复现目标与 GPU 选择', 'Reproduction goals and GPU selection')}</h2>
       <p>{t('论文写的是 8×NVIDIA A800 80G，但算力市场不是论文附录：卡型、价格和库存都会变化。正确做法不是把“80G”都当成一样，而是把论文条件、当前市场和你的实验声明分开。', 'The paper uses 8×NVIDIA A800 80G, but a cloud marketplace is not a paper appendix: SKUs, prices, and inventory change. Do not treat every “80G” GPU as equivalent; keep paper conditions, current market facts, and your experiment claim separate.')}</p>
     </div>
     <aside>
@@ -70,7 +70,7 @@ OPENAI_MODEL=glm-5.2`;
     <div class="section-heading-inline">
       <div>
         <span class="section-kicker">AI Galaxy / 智星云 · {isZh ? '公开产品快照' : 'public product snapshot'}</span>
-        <h3 id="galaxy-title">{t('截至这个时间，智星云到底有什么，我们到底选什么', 'What AI Galaxy actually lists at this time—and what to choose')}</h3>
+        <h3 id="galaxy-title">{t('智星云 GPU 目录与选择', 'AI Galaxy GPU catalog and selection')}</h3>
       </div>
       <time datetime={market.checkedAtIso}>{isZh ? market.checkedAtZh : market.checkedAtEn}</time>
     </div>
@@ -171,7 +171,7 @@ OPENAI_MODEL=glm-5.2`;
   {!compact && <>
     <section class="block" aria-labelledby="alf-title">
       <span class="section-kicker">01 · ALFWorld</span>
-      <h3 id="alf-title">{t('第一阶段：先用最便宜、最容易诊断的配置把 ALFWorld 跑通', 'Stage one: bring up ALFWorld with the cheapest easy-to-debug configuration')}</h3>
+      <h3 id="alf-title">{t('ALFWorld 最小复现配置', 'ALFWorld minimal reproduction setup')}</h3>
       <p class="muted">{t('这里的目标不是训练出论文分数，而是确认 observation → action → reward → terminal outcome 这条环境链完整。对 Qwen2.5-3B 的单条推理 smoke test，优先用智星云当前公开的 1×RTX 4090 24G；环境没通之前，不要租八卡。', 'The goal here is not paper scores; it is verifying a complete observation → action → reward → terminal-outcome path. For a single Qwen2.5-3B inference smoke test, start with AI Galaxy’s current public 1×RTX 4090 24G option; do not rent eight GPUs before the environment works.')}</p>
       <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{alfworldInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{alfworldRun}</code></pre><p>{t('按顺序保存一条 vanilla rollout，检查 Stage 1 trajectory → skill，再进入 Stage 2；这个顺序让每层证据都能独立验收。', 'Save a vanilla rollout, inspect Stage 1 trajectory → skill, then enter Stage 2. This order makes each evidence layer independently verifiable.')}</p></article></div>
       <p class="protocol"><strong>{t('论文协议：', 'Paper protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 2048；response 512；最大交互 30。测试 140 seen + 134 unseen，并按 6 类任务等权平均。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 2048; response 512; max 30 interactions. Test 140 seen + 134 unseen, equally weighted over six task categories.')}</p>
@@ -187,12 +187,12 @@ OPENAI_MODEL=glm-5.2`;
 
     <section class="block" aria-labelledby="training-title">
       <span class="section-kicker">03 · {t('缩小训练', 'Reduced training')}</span>
-      <h3 id="training-title">{t('环境都通过后，再把租用升级到单张 A100 80G', 'After both environments pass, upgrade to one A100 80G for reduced training')}</h3>
+      <h3 id="training-title">{t('单卡 A100 80G 训练配置', 'Single-A100 80G training setup')}</h3>
       <p>{t('这一步才开始验证 SFT → GRPO / SEED 是否真正产生训练信号。保持 Qwen2.5-3B-Instruct，但缩小 batch、rollout 或任务数；你是在验证机制，不是在复现主表。80GB 的意义是减少因为显存不足而被迫改代码结构，而不是让实验自动变成严格复现。', 'This is where you start testing whether SFT → GRPO / SEED produces real training signals. Keep Qwen2.5-3B-Instruct but reduce batch, rollout count, or tasks; you are validating the mechanism, not reproducing the main table. The value of 80GB is reducing code distortions caused by memory pressure—not making the run strict automatically.')}</p>
     </section>
 
     <section class="block" aria-labelledby="env-title">
-      <span class="section-kicker">04 · Common training config</span><h3 id="env-title">{t('准备论文规模之前，先固定运行变量', 'Pin runtime variables before paper-scale compute')}</h3>
+      <span class="section-kicker">04 · Common training config</span><h3 id="env-title">{t('论文规模运行变量', 'Paper-scale runtime variables')}</h3>
       <pre class="wide"><code>{envFile}</code></pre>
       <p class="protocol">{t('记录 repo commit、模型 revision、tokenizer/chat template、CUDA/driver、依赖锁定和实际 GPU 拓扑。换成 A100 时，GPU 型号与互联也必须进入 manifest，不能只写“8×80GB”。', 'Record repo commit, model revision, tokenizer/chat template, CUDA/driver, dependency lock state, and actual GPU topology. If substituting A100, record the GPU model and interconnect explicitly—not just “8×80GB.”')}</p>
     </section>

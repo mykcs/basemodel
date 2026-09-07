@@ -22,11 +22,31 @@ describe('study overview information architecture', () => {
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
+    expect(overview).toContain('OpenEVO (Harness) · WebShop 数据集实验');
+    expect(overview).toContain('TL;DR');
+    expect(overview).toContain('三个研究问题');
     expect(overview).toContain('实验共同流程');
     expect(overview).toContain('分数与阶段');
-    expect(overview).toContain('三个研究问题怎样连起来');
-    expect(overview).toContain('目前能支持什么结论');
+    expect(overview).toContain('当前结论');
     expect(overview).toContain('下一步科学问题');
+    expect(overview).toContain('https://arxiv.org/abs/2607.14777');
+    expect(overview).toContain('/research/seed-openevo/flow/');
+    expect(overview).not.toContain('OpenEvo × SEED：WebShop 研究');
+    expect(overview).not.toContain('三个研究问题怎样连起来');
+    expect(overview).not.toContain('WebShop 是一个文字购物环境：模型要根据用户需求搜索商品');
+
+    const tldr = overview.indexOf('TL;DR');
+    const questions = overview.indexOf('三个研究问题');
+    const flow = overview.indexOf('实验共同流程');
+    const scores = overview.indexOf('分数与阶段');
+    expect(tldr).toBeLessThan(questions);
+    expect(questions).toBeLessThan(flow);
+    expect(flow).toBeLessThan(scores);
+  });
+
+  it('keeps page metadata aligned with the first-screen object identity', () => {
+    expect(studyZh).toContain('OpenEVO (Harness) · WebShop 数据集实验');
+    expect(studyEn).toContain('OpenEVO (Harness) · WebShop dataset experiments');
   });
 
   it('moves training-design depth to the canonical design route', () => {

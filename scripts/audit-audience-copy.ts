@@ -23,6 +23,7 @@ const candidateRules: Rule[] = [
   { id: 'COPY-LEGACY-POSITIONING', pattern: /智能体基础模型选择地图|Agent Foundation Model Atlas|通用模型选择与论文采用地图/g, reason: 'Legacy product positioning may conflict with the SEED × OpenEvo research mission.' },
   { id: 'COPY-ABSTRACT-PACKAGING', pattern: /第一性研究链|框架改进结论|可核验的路径|可追踪的对话|讲成一场对话/g, reason: 'Abstract packaging may hide the concrete subject or result.' },
   { id: 'COPY-EDITORIAL-AS-HEADING', pattern: /把[“"'][^\n]{1,60}[”"'][^\n]{0,50}(?:分开|区分)|先[^\n]{0,45}(?:再|然后|最后)[^\n]{0,60}/g, reason: 'Editorial instructions and sequencing sentences belong in body copy, not prominent headings.' },
+  { id: 'COPY-PRESENTER-HEADING', pattern: /<h[1-3]\b[^>]*>[^<\n]{0,260}(?:怎样连起来|如何阅读|怎么读|应该怎么读|我们到底|先[^<\n]{0,100}(?:再|然后|最后)|How\s+(?:to\s+read|should\s+we\s+read|the\s+[^<\n]{1,80}\s+connect)|What\s+[^<\n]{1,80}\s+actually|First\s+[^<\n]{1,100}(?:then|only\s+then))[^<\n]{0,260}<\/h[1-3]>/gi, reason: 'Presenter-style reading instructions should be body copy; headings should name the subject.' },
   { id: 'COPY-ZH-EN-SENTENCE', pattern: /[\u3400-\u9fff][^\n]{0,120}[.!?]\s+[A-Z][A-Za-z][A-Za-z ,'-]{18,}[.!?]/g, reason: 'A Chinese surface may be exposing an unexplained full English sentence.' },
 ];
 
@@ -149,6 +150,12 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
     ban(file, 'COPY-ACTION-TITLE-002', 'Turn frameworks and benchmarks into a traceable conversation', 'Rejected conversation packaging must not return.');
   }
 
+  const studyOverview = 'src/components/research/SeedOpenEvoStudyOverview.astro';
+  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', 'TL;DR', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The study overview must preserve object identity, TL;DR, research questions, paper provenance, and the canonical background link.');
+  for (const forbidden of ['OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'The rejected first-screen wording must not return.');
+  ban('src/components/common/SemanticStatusLegend.astro', 'COPY-PRESENTER-HEADING-001', '未知状态如何阅读', 'A presenter-style heading must not replace the Unknown states subject.');
+  for (const forbidden of ['结果应该怎么读？', '先判断这次比较能不能信，再判断谁的分数更高']) ban('src/components/research/Seed3090PairedRunAudit.astro', 'COPY-PRESENTER-HEADING-001', forbidden, 'Presenter-style result-reading headings must not return.');
+
   const exactBanned = [
     ['src/pages/guide.astro', '明天就按这三步做'],
     ['src/pages/_bodies/home-v2.astro', '学习、执行、比较，不再是三套互不相干的网站'],
@@ -208,7 +215,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
-  for (const required of ['Headings name the subject', '标题先命名主题', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings and branch-aware scientific-state provenance.');
+  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, first-screen attention, and branch-aware scientific-state provenance.');
 
   return failures;
 }
