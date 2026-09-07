@@ -80,3 +80,58 @@ REPEAT-CORRECTION：主线 #519 在验收期间前进到 01871f4，并保留了�
 用户再次指出，读者刚进入机制子页仍不知道它要干什么。REPEAT-CORRECTION：触发为首段先说参数、没有先交代任务与研究目的；所有者为 human-thinking §10.10 和现有 ResearchOrientation；核查对象为 0af72ec 的实际机制页开头。允许的下一步是只重写中英文标题、导语、问题/意义，并把首个阅读入口指向已有购物示例；实验状态、依赖关系、预算和结果保持原数据语义。页面源码、主线或首屏几何变化时重新核验。
 
 新的顺序：AI 从尝试中学习 → 模拟购物任务 → 之前问能做到多好 → 本页检查哪些内部变化影响表现 → 先看一次购物，再看对照实验。沿用已有排版、正文大小和回归检查，不另加一块重复长说明，也不以自动测试代替理解率。发布与实测凭据记录在本轮 PR。
+# 2026-09-07 execution follow-up
+
+User authorized implementation of the reviewed comprehension plan. REPEAT-CORRECTION witness: repeated unexplained first-screen codes and incomplete stop summary → existing expression contract §10.8–10.10 and typed lifecycle owner → exact main `9bbae312a027d6623de39f61d50ec275d1a9f473`, rendered reading-path tests, independent Astra review → implement plain roles, complete branches, score units and derived state in an isolated source export → invalidate on main/source/state changes or a new reader misunderstanding. PRs #522/#523 are separate CI optimization/measurement work; preserve them, never merge the measurement PR. No experiment execution is authorized by this website change. Implementation and acceptance receipts follow after actual checks; human comprehension remains unmeasured.
+
+## Implementation scope and cold-read inventory
+
+The existing 13-route inventory is retained (12 unique owners; exploration and its compatibility URL share one owner). `rebuilt`/`contextualized` remains an implementation classification, not a human-comprehension score. Astra independently read the pinned main and identified the following repairs; the shared route context already provides the shopping task and purpose on contextualized routes.
+
+| Route suffix | Default answer location and inspected reader question | Repair / disposition |
+|---|---|---|
+| root | Orientation, shopping example, three entry paths: where should I read? | The finish summary now explains independent paths rather than giving the whole family one mechanism endpoint. |
+| mechanism-1-0 | Orientation → shopping → learning bridge → parameter controls → state → dependencies → lifecycles | Plain roles precede codes; all stop branches in the summary; accepted means retained active states, not reward-selected winners; score units explained locally; displayed execution/results derive from typed facts. |
+| first-run | Orientation, historical closeout: what ran and stopped? | Add 128 attempts per 7B round; distinguish complete and partial records; explicitly leave the original early-stop reason unverified. |
+| openevo-2-0 | Orientation and report link: what is complete? | Give 1.7B's 160-round / 20,480-attempt endpoint and final outcome; retain unfinished matched 3B evaluation. |
+| openevo-2-0/report | Chronology and final-result section: how did preparation become learning and a final test? | Add the training-to-frozen-evaluation bridge and mean-score/exact-success explanation. SEED is an external reference, not a locally paired causal control. |
+| openevo-2-0/exploration | Final journey summary and existing capacity detail | Explain organizing saved shopping experience before the 20-input retry/split mechanics; preserve fixed rules and no extra shopping. |
+| stage1-evolution | Same owner as exploration | Same repair; compatibility URL is not a second independent experiment. |
+| openevo-2-0/harness-2-0 | Opening control/candidate comparison | Explain the changed input as historical-experience hints; preserve common model/tasks/action interpretation and historical qualification scope. |
+| stage1-previous | Opening, archive links, reuse section | Pin the old/new comparison to the 2026-08-31 archive review, separate later shared-interface research, and repair the obsolete return fragment. |
+| stage2-256-window | Opening and gate explanation | Correct 20,480 from an apparent aggregate to a per-arm ceiling; distinguish the early-stopped 3B/MiniMax arm. |
+| stage2-7b-analysis | Historical scope before authority strip, parameter-update section | Change stale current-state claims to historical tense and link later 7B closeout; do not retroactively insert later interventions into training. |
+| stage2-ceiling | Final results and nearby note | Explain complete-round accounting and partial exclusion; do not infer budget exhaustion as the early-stop cause. |
+| archive | Existing task context, evidence navigation and archive sections | No demonstrated main-narrative defect requiring rewrite; technical evidence density is appropriate to this route's lookup purpose. |
+
+Scientific checks: accepted-state selection and task-score units are from the mechanism design at `8ddb7890073bdc0573acb1fc9ef40239e2655979`; SEED reference provenance is from `docs/evidence/server-runs/2026-09-06/qwen3-1p7b-final-closeout/FINAL_ANALYSIS.json` at `e9233c8693c078f61cc08a4409138a3d09d39bd6`. The available 7B governance records establish closeout and artifact identity, not the original early-stop reason. That gap is shown explicitly rather than filled with an invented explanation.
+
+Regressions cover default explanation order, each stop branch, score scale, typed execution/result projections under later mixed states, external-reference qualification and historical scope/links. Existing no-JS, topology, keyboard, reduced-motion and geometry coverage remains registered. UI preflight classifies this batch as shared: deterministic gate, build, overflow preflight and full cross-browser UI matrix are required before a provider-triggering ref.
+
+Integration witness: main advanced through independent #522 to `aa765005c9af9351b9e8e94cd71a42c0cca6b112`. Its five CI ownership/policy/test files do not overlap this batch and are retained unchanged in the validation surface. This batch changes shared components, so it still requires the full UI matrix; the isolated mechanism optimization does not narrow this acceptance. English first-screen screenshots exposed excess total height; grouped repeated result labels, shortened redundant introduction, and adjusted section padding without reducing font size or hiding answers. The old exact “new version is authoritative” copy assertion was replaced with dated identity and non-equivalence checks, preserving its scientific purpose.
+
+## 2026-09-07：#524 实际整合与当前验收
+
+本次接手首先重新核对实时仓库，而不是沿用交接包中的旧状态。`main` 仍为 `aa765005c9af9351b9e8e94cd71a42c0cca6b112`；PR #524 已前进到 `bdb837152f33ff7e08a85d8df7717aacf9875d11`。新出现的 #527 基于 #524 重构 study 首页，但不直接改本轮 19 个恢复文件，因此本分支不自动吸收 #527；提交前仍需再次检查并行漂移。
+
+交接 zip 实际只包含 handoff 与 plan 两个 Markdown，没有 README 所述的 `implementation/`、`reader-ours/` 等目录。远程源码导出 `/Users/myk/tmp/basemodel-reader-completion-20260907` 与精确 `main` 的 950 个 tracked files 做逐字节比较后，恰好只有交接声明的 19 个文件不同、0 个 tracked file 缺失，因此先从真实 main 恢复这 19 个差异，再把最新 #524 作为第二父节点三方合并。
+
+三方合并真实产生 9 个冲突文件。解决原则不是整文件选择 ours/theirs：保留 #524 的通俗标题、历史字号、展开内容和回归覆盖，同时保留本轮的科学边界。特别是 20,480 明确为旧 Stage 2 **每组**上限；7B 最终模型只纳入 149 个完整轮次 / 19,072 次学习尝试，后续 96 条 partial 不进入最终模型，提前停止原因仍保持 unknown；SEED 数值保持外部冻结参考值而非本地配对因果对照；Harness 机械检查 PASS 不等于正式训练授权；accepted state 明确按训练记录顺序保留，不按购物 reward 选窗口。
+
+状态 owner 进一步收紧：`openEvoMechanismNarrative` 删除未被渲染的自由文本 `state` 字段，只保留 `execution / results / timestamps / release / receipt` 这些 typed facts。strict schema 现在直接拒绝附加自由文本状态；M1-A/B/C 保持 `locked`，M1-D 保持 `authorized + actualStart=null + results=unsealed`，公开文案由 `mechanismDisplayState` 派生为“已授权，尚无开始记录 / 结果未封存”。旧的“M1-D 阶段已激活”中英文 E2E 字符串已经删除，避免测试反向固化含糊状态。
+
+当前整合候选 `5a223ee222aafd58f37397182ad2f0c1f0654484` 已通过相关语义单测、`verify:deploy`、478 路由生产构建和 390/768/1440 overflow preflight；完整 shared UI matrix 尚需在追加本记录后的最终 head 重跑，因此这些绿色结果不能冒充后续 head 的完整验收。
+
+当前授权环境没有可调用的 Astra CLI / tool；本轮不能伪称完成了新的 Astra 独立审读。先前历史记录若有 Astra 证据仍按其原时间点保留，但本次 continuation 的 Astra 项明确记为 unavailable。真人目标读者测试仍为 0；自动化、模型冷读和此前任何 Agent 审读都不计作真人理解率。
+
+发布边界不变：网站改动不授权实验运行。本轮先完成 exact-head 本地全量验收，再一次性推送 `research/**` 分支形成 Preview/PR；合并与 Production 必须单独满足接受条件，未发生前分别标记为 pending。
+
+## 2026-09-07：main 漂移与首次完整 UI 回归修复
+
+完整 UI 验收开始后，`main` 由 `aa765005c9af9351b9e8e94cd71a42c0cca6b112` 前进到 `dbab3eb8a499bd33b64a872220fd2d264ab75e62`（#528）。按 exact-tree 规则立即把旧 head 的验收视为失效，并把 #528 的 AGENTS / CI evidence / deployment policy 变更合入本分支；它没有改本轮研究页面。#528 新增的 CI evidence preflight 也已执行：19 文件源码导出先与精确旧 main 的完整 950 tracked-file population 逐字节比较，0 tracked file 缺失；实际整合与后续验证均在真实完整 Git clone 上进行，而不是把导出目录冒充 clean checkout。
+
+失效前的第一轮浏览器矩阵仍作为调试证据保留：Chromium 前 75 项通过，第 76 项暴露历史 Stage 2 的脆弱词序断言。页面已经正确写明“每组最多 20,480 次”，但测试仍只接受旧词序“每组实验…20,480”。修复没有倒退正文，而是在真正的预算说明节点增加 `data-budget-boundary`，让测试保护“per-arm ceiling”语义；同时把 7B 历史审计明确写成“不代表当前封存状态”。
+
+聚焦复验继续暴露一个真实导航问题：`stage1-previous` 的返回链接仍指向能力探索大厅，而不是所属的 `first-run` 历史链。页面链接已改为中英文都返回 `first-run/`。上述预算边界、历史时态与返回路径在 Chromium + WebKit、中文 + 英文共 4 项聚焦检查中全部通过。
+
+当前任务不是 CI 选择/调度优化，因此没有减少 canonical test population。共享 UI classifier 仍要求完整 `test:ui:all`；TypeScript/Node 类型检查由 `verify:deploy` 单独覆盖，浏览器执行不能替代类型检查。最终 provider-triggering push 之前必须在最终 base/head 上重新跑完整 shared preflight；本机 Node 23 不是仓库要求的 Node 24，故本地 PASS 不能替代托管 CI 的目标运行时验证。

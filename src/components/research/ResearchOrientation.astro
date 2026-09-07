@@ -19,6 +19,7 @@ interface Props {
   actionHref?: string;
   actionLabel?: string;
   terms?: Term[];
+  layout?: 'compact' | 'narrative';
 }
 const props = Astro.props;
 const zh = props.locale === 'zh';
@@ -26,7 +27,7 @@ const labels = zh
   ? { question: '研究问题', why: '为什么重要', start: '从哪里开始', finish: '什么时候结束', state: '现在到哪了' }
   : { question: 'Question', why: 'Why it matters', start: 'Starts from', finish: 'Finishes when', state: 'Current state' };
 ---
-<header class="research-orientation" data-research-orientation data-ui-audit="contrast layout" data-locale={props.locale} data-state-tone={props.stateTone ?? 'planned'}>
+<header class="research-orientation" data-research-orientation data-layout={props.layout ?? 'compact'} data-ui-audit="contrast layout" data-locale={props.locale} data-state-tone={props.stateTone ?? 'planned'}>
   <div class="research-orientation__meta">
     {props.backHref && <a href={props.backHref}>← {props.backLabel}</a>}
     <span>{props.eyebrow}</span>
@@ -38,9 +39,10 @@ const labels = zh
   <dl class="research-orientation__fields">
     <div data-orientation-field="question"><dt>{labels.question}</dt><dd data-reader-answer>{props.question}</dd></div>
     <div data-orientation-field="why"><dt>{labels.why}</dt><dd data-reader-answer>{props.why}</dd></div>
+    {props.layout === 'narrative' && <div data-orientation-field="state" class="is-state"><dt>{labels.state}</dt><dd data-reader-answer>{props.state}</dd></div>}
     <div data-orientation-field="start"><dt>{labels.start}</dt><dd data-reader-answer>{props.start}</dd></div>
     <div data-orientation-field="finish"><dt>{labels.finish}</dt><dd data-reader-answer>{props.finish}</dd></div>
-    <div data-orientation-field="state" class="is-state"><dt>{labels.state}</dt><dd data-reader-answer>{props.state}</dd></div>
+    {props.layout !== 'narrative' && <div data-orientation-field="state" class="is-state"><dt>{labels.state}</dt><dd data-reader-answer>{props.state}</dd></div>}
   </dl>
   {props.actionHref && props.actionLabel && (
     <a class="research-orientation__action" href={props.actionHref}>{props.actionLabel} →</a>
@@ -62,6 +64,14 @@ const labels = zh
 .research-orientation[data-locale="en"] .research-orientation__intro{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
 .research-orientation[data-locale="en"] h1{font-size:clamp(1.8rem,3.2vw,2.5rem);line-height:1.25;letter-spacing:-.02em}
 .research-orientation[data-locale="en"] .research-orientation__fields dd{font-size:1rem;line-height:1.6}
+.research-orientation[data-layout="narrative"]{padding-block:.5rem}
+.research-orientation[data-layout="narrative"] .research-orientation__fields{grid-template-columns:repeat(12,minmax(0,1fr))}
+.research-orientation[data-layout="narrative"] [data-orientation-field="question"]{grid-column:span 3}
+.research-orientation[data-layout="narrative"] [data-orientation-field="why"]{grid-column:span 4}
+.research-orientation[data-layout="narrative"] [data-orientation-field="state"]{grid-column:span 5;border-right:0}
+.research-orientation[data-layout="narrative"] [data-orientation-field="start"]{grid-column:span 4;border-top:1px solid var(--line)}
+.research-orientation[data-layout="narrative"] [data-orientation-field="finish"]{grid-column:span 8;border-top:1px solid var(--line)}
 @media(max-width:900px){.research-orientation__fields{grid-template-columns:repeat(2,minmax(0,1fr))}.research-orientation__fields>div{border-bottom:1px solid var(--line)}.research-orientation__fields>div:nth-child(2n){border-right:0}.research-orientation__fields>div:last-child{grid-column:1/-1;border-bottom:0}}
 @media(max-width:760px){.research-orientation{width:min(100% - 1rem,1120px);padding-top:1rem}.research-orientation__meta{align-items:flex-start;flex-direction:column}.research-orientation__intro{grid-template-columns:1fr;gap:.65rem}.research-orientation h1{font-size:clamp(1.8rem,7vw,2.3rem)}.research-orientation__intro p{font-size:1rem;line-height:1.58}.research-orientation__fields{grid-template-columns:1fr}.research-orientation__fields>div,.research-orientation__fields>div:nth-child(2n){border-right:0;border-bottom:1px solid var(--line)}.research-orientation__fields>div:last-child{grid-column:auto}}
+@media(max-width:900px){.research-orientation[data-layout="narrative"] .research-orientation__fields{grid-template-columns:1fr}.research-orientation[data-layout="narrative"] .research-orientation__fields>[data-orientation-field]{grid-column:1;border-right:0;border-top:0}.research-orientation[data-layout="narrative"] .research-orientation__fields>[data-orientation-field]:last-child{border-bottom:0}}
 </style>

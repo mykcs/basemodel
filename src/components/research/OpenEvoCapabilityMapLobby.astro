@@ -40,21 +40,21 @@ const steps = zh ? [
   {
     id: 'first-run', kicker: '第一代问题', title: '第一轮：OpenEvo 能不能真的持续更新？',
     summary: '从初始经验到后续学习，观察 7B / 3B 的参数更新、失败和容量限制。',
-    detail: '这轮实验告诉我们“系统能跑起来”，也暴露了 action interface、更新规则和参数容量会影响结论。',
+    detail: '这轮实验告诉我们“系统能跑起来”，也暴露了 购物动作接口、更新规则和参数容量会影响结论。',
     outcome: '研究重点从“跑通”转向“怎样让比较更公平、起跑线更可信”。', state: '历史证据',
     href: firstRunHref, hrefLabel: '进入第一轮实验', mapChoice: 'first-run',
   },
   {
     id: 'redesign', kicker: '第二代问题', title: '重新设计：两种模型使用相同购物接口，各自表现怎样？',
     summary: '固定一套不提供具体购物解法的接口。两种模型各完成 1,440 次尝试，再用同一套方法分析已有记录。',
-    detail: '这一代把“模型能力”和“接口把合法动作写坏”拆开，并把探索过程与论文式报告分成两种读法。',
+    detail: '这一代分别检查模型的购物表现与接口转换动作时的错误，再固定两种模型共用的运行规则。',
     outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '新一轮设计',
     href: redesignHref, hrefLabel: '进入 3B + 1.7B 学习实验', mapChoice: 'redesign',
   },
   {
     id: 'mechanism-1-0', kicker: '第三代问题', title: 'Mechanism-1.0：分数变了以后，参数里到底发生了什么？',
     summary: '把学习留下的参数变化加上或移除，与同幅度随机修改比较，检查哪些变化影响购物表现。',
-    detail: '只有方向特异的因果证据通过预注册门槛，才允许把这些结构反馈到下一次 OpenEvo。',
+    detail: '只有真实参数方向优于同幅度随机修改的证据达到预设门槛，才可申请用它指导后续学习。',
     outcome: '研究从“能走多高”推进到“能不能解释、验证并控制自我进化”。', state: '当前主实验', current: true,
     href: mechanismHref, hrefLabel: '进入 Mechanism-1.0', mapChoice: 'mechanism-1-0',
   },
@@ -64,7 +64,7 @@ const steps = zh ? [
   { id: 'mechanism-1-0', kicker: 'THIRD QUESTION', title: 'Mechanism-1.0: after scores move, what changed inside the parameters?', summary: 'Use TaskVectors and parameter themes for causal interventions rather than descriptive plots alone.', detail: 'Only preregistered direction-specific causal evidence can be fed back into a later OpenEvo step.', outcome: 'The research moves from “how high can it go?” to “can we explain, validate, and control self-improvement?”', state: 'Current primary program', current: true, href: mechanismHref, hrefLabel: 'Open Mechanism-1.0', mapChoice: 'mechanism-1-0' },
 ];
 ---
-<section class="map-lobby" data-testid="openevo-capability-map-lobby" data-reader-page="lobby" data-ui-audit="contrast layout">
+<section data-copy-review class="map-lobby" data-testid="openevo-capability-map-lobby" data-reader-page="lobby" data-ui-audit="contrast layout">
   <ResearchOrientation
     locale={locale}
     eyebrow="OPENEVO × WEBSHOP · CAPABILITY EXPLORATION"
@@ -73,11 +73,11 @@ const steps = zh ? [
     question={t("模型能否持续学习，哪些变化真的有效？", "Can the model keep learning, and which changes matter?")}
     why={t("不同实验使用过不同规则，需要分开解释证据。", "Experiments used different rules, so their evidence must be interpreted separately.")}
     start={t("第一轮先检查经验能否带来真实的模型更新。", "The first campaign checks whether experience produces real updates.")}
-    finish={t("机制实验检验学到的变化是否有效，再决定是否继续。", "Mechanism experiments test learned changes before deciding whether to continue.")}
+    finish={t("这里是三条研究路径的导航；各实验分别说明开始、停止与结果。", "This is a guide to three research paths; each experiment has its own start, stop and results.")}
     state={t("第一轮是历史记录；新设计与机制实验回答后续问题。", "The first campaign is history; redesign and mechanism studies ask the next questions.")}
     stateTone="authorized"
     actionHref={mechanismHref}
-    actionLabel={t('直接看当前主实验', 'Jump to the current primary program')}
+    actionLabel={t("查看参数机制实验", "View parameter-mechanism experiments")}
     terms={terms}
   />
 
@@ -87,7 +87,7 @@ const steps = zh ? [
   <ResearchJourney
     locale={locale}
     eyebrow="THE RESEARCH EVOLVED WITH THE QUESTION"
-    title={t('按研究问题读，而不是按文件夹读', 'Read by scientific question, not by repository folder')}
+    title={t("三类研究问题", "Three research questions")}
     intro={t('每一步都保留前一步的证据，但不会把旧轨迹冒充成新实验数据。', 'Each generation keeps the evidence from the previous one without relabeling old trajectories as new experimental data.')}
     steps={steps}
   />
@@ -95,21 +95,22 @@ const steps = zh ? [
   <ResearchDepth
     locale={locale}
     kind="method"
-    summary={t('第二代 successor 的两种读法，以及第一轮 7B 参数专题', 'Two ways to read the successor plus the first-run 7B parameter deep dive')}
-    intro={t('这些入口都是同一研究图谱的不同阅读深度，不是新的实验 arm。', 'These are different reading depths of the same research graph, not new experimental arms.')}
+    summary={t("学习实验报告、设计过程与 7B 参数专题", "Learning report, design history, and 7B parameter analysis")}
+    intro={t("实验报告汇总设置与结果；设计过程解释修改原因；7B 专题检查历史参数变化。", "The report summarizes setup and results; design history explains revisions; the 7B study examines historical parameter changes.")}
   >
     <nav class="map-lobby__deep-links" aria-label={t('专题研究地图', 'Focused research maps')}>
       <a href={successorExplorationHref} data-deep-dive="successor-exploration"><small>{t('第二代 · 探索版', 'SECOND GENERATION · EXPLORATION')}</small><strong>{t('看假设怎样被证伪、回退和重新冻结', 'See how hypotheses were falsified, backtracked, and refrozen')}</strong><span>{t('适合想知道“为什么最后会变成现在这套 Harness”的读者。', 'Best when you want to know why the current harness ended up this way.')}</span></a>
-      <a href={successorReportHref} data-deep-dive="successor-report"><small>{t('第二代 · 报告版', 'SECOND GENERATION · REPORT')}</small><strong>{t('直接看最终设计、关键数字与 claim boundary', 'Go straight to the final design, key numbers, and claim boundaries')}</strong><span>{t('适合汇报、论文讨论和快速核对当前结论。', 'Best for presentations, paper discussion, and fast claim checking.')}</span></a>
-      <a href={stage2AnalysisHref} data-deep-dive="stage2-7b-analysis"><small>{t('第一代 · 参数证据', 'FIRST GENERATION · PARAMETER EVIDENCE')}</small><strong>{t('7B Stage2 的 SD-LoRA / TaskVector / 容量证据', '7B Stage-2 SD-LoRA / TaskVector / capacity evidence')}</strong><span>{t('保留为 Mechanism-1.0 的前序参数证据。', 'Preserved as predecessor parameter evidence for Mechanism-1.0.')}</span></a>
-      <a href={stage1EvolutionHref} data-deep-dive="stage1-evolution" class="is-compat"><small>{t('兼容旧入口', 'LEGACY ENTRY')}</small><strong>{t('旧 Stage1 evolution deep link', 'Legacy Stage-1 evolution deep link')}</strong><span>{t('继续可访问，但不再维护另一套事实。', 'Still reachable without maintaining a second fact set.')}</span></a>
+      <a href={successorReportHref} data-deep-dive="successor-report"><small>{t('第二代 · 报告版', 'SECOND GENERATION · REPORT')}</small><strong>{t("实验设置、结果与结论范围", "Experiment setup, results, and claim scope")}</strong><span>{t('适合汇报、论文讨论和快速核对当前结论。', 'Best for presentations, paper discussion, and fast claim checking.')}</span></a>
+      <a href={stage2AnalysisHref} data-deep-dive="stage2-7b-analysis"><small>{t('第一代 · 参数证据', 'FIRST GENERATION · PARAMETER EVIDENCE')}</small><strong>{t("7B 的参数更新、变化方向与容量限制", "7B parameter updates, update directions, and capacity limits")}</strong><span>{t('保留为 Mechanism-1.0 的前序参数证据。', 'Preserved as predecessor parameter evidence for Mechanism-1.0.')}</span></a>
+      <a href={stage1EvolutionHref} data-deep-dive="stage1-evolution" class="is-compat"><small>{t('兼容旧入口', 'LEGACY ENTRY')}</small><strong>{t("初始经验的设计过程（旧书签入口）", "Initial-experience design history (legacy bookmark)")}</strong><span>{t("与 3B + 1.7B 设计过程指向同一份研究记录。", "Opens the same research record as the 3B + 1.7B design history.")}</span></a>
     </nav>
   </ResearchDepth>
 
   <ResearchDepth locale={locale} kind="history" summary={t('旧 Stage1、旧 Stage2、Ceiling-1.0 与 Harness 诊断完整档案', 'Full archive: old Stage 1, old Stage 2, Ceiling-1.0, and harness diagnostics')}>
-    <div class="map-lobby__archive"><p>{t('这些页面保留精确的历史实验、数字和技术证据；它们继续可审计，但不再和当前三代研究问题争夺第一层导航。', 'These pages preserve exact historical experiments, metrics, and technical evidence. They remain auditable without competing with the three current research questions for top-level navigation.')}</p><a class="map-lobby__archive-main" href={archiveHref}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a><nav aria-label={t('实验档案链接', 'Experiment archive links')}>{archiveLinks.map((item) => <a href={item.href}>{item.label}</a>)}</nav></div>
+    <div class="map-lobby__archive"><p>{t("历史档案保存旧实验的购物记录、模型文件、结果和运行修复证据，可按实验与资料类型查阅。", "The historical archive preserves shopping records, model files, results, and runtime-repair evidence, organized by experiment and material type.")}</p><a class="map-lobby__archive-main" href={archiveHref}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a><nav aria-label={t('实验档案链接', 'Experiment archive links')}>{archiveLinks.map((item) => <a href={item.href}>{item.label}</a>)}</nav></div>
   </ResearchDepth>
 </section>
 <style>
-.map-lobby{display:contents}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 .875rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:1rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:1rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:1rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:1rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
+.map-lobby{display:contents}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:1rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:1rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:1rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:1rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
 </style>
+

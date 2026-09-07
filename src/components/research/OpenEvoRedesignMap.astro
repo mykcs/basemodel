@@ -29,7 +29,7 @@ const terms = zh ? [
   { term: 'canonical Stage 1', meaning: 'The formal starting corpus: 180×8=1,440 trajectories collected independently for each model.' },
 ];
 ---
-<main class="successor-gateway" data-testid="openevo-successor-gateway">
+<main data-copy-review class="successor-gateway" data-testid="openevo-successor-gateway">
   <ResearchOrientation
     locale={locale}
     eyebrow="OPENEVO SUCCESSOR · QWEN2.5-3B + QWEN3-1.7B"
@@ -38,8 +38,8 @@ const terms = zh ? [
     question={t("购物经验怎样用于后续学习？", "How does shopping experience feed later learning?")}
     why={t("共同规则减少接口差异，让两种模型的表现更可比较。", "Shared rules reduce interface differences and make behavior more comparable.")}
     start={t("每种模型先完成 1,440 次购物尝试。", "Each model first completes 1,440 shopping attempts.")}
-    finish={t("保存初始记录；后续学习另行授权，以固定测试评价。", "Seal initial records; separately authorize learning and evaluate on fixed tasks.")}
-    state={t("1.7B 已完成最终测试；3B 尚未完成同口径的最终测试。", "1.7B has completed final evaluation; 3B has not completed the matched evaluation.")}
+    finish={t("1.7B 后续学习完成 160 轮、20,480 次尝试后，固定模型测试 128 题。", "1.7B: 160 learning rounds (20,480 attempts), then a fixed 128-task test.")}
+    state={t("1.7B 测试 37.60 分、1/128 次完全成功；3B 尚未同口径收口。", "1.7B: 37.60 points, 1/128 exact successes. 3B has no matched final result.")}
     stateTone="sealed"
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
@@ -55,24 +55,24 @@ const terms = zh ? [
   <nav class="successor-gateway__choices" data-reading-choice aria-label={t('选择阅读方式', 'Choose how to read the successor')}>
     <a href={links.report} data-successor-mode="report">
       <span>{t('第一次看 / 汇报 / 写论文', 'NEW READER / PRESENTATION / PAPER')}</span>
-      <h2>{t('先看报告版', 'Start with the report')}</h2>
-      <strong>{t('你会得到：最终设计、关键数字、支持什么、不能说什么', 'You get: final design, key numbers, supported claims, and claim boundaries')}</strong>
-      <p>{t('查看这次学习实验的设置、结果和适用范围。需要追溯设计原因时，再阅读探索过程。', 'Choose this if you want to understand what the successor ultimately did. The page follows one scientific argument without requiring the full history of failed attempts.')}</p>
-      <b>{t('进入报告与论文版 →', 'Open report / paper view →')}</b>
+      <h2>{t("实验报告", "Experiment report")}</h2>
+      <strong>{t("实验设置、关键结果与结论范围", "Experiment setup, key results, and claim scope")}</strong>
+      <p>{t("报告汇总两种模型的初始购物表现、后续学习和最终测试，并区分已经得到的结果与尚未完成的测量。", "The report brings together initial shopping behavior, later learning, and final tests, distinguishing available results from unfinished measurements.")}</p>
+      <b>{t("查看实验报告 →", "Open experiment report →")}</b>
     </a>
     <a href={links.exploration} data-successor-mode="exploration">
       <span>{t('想追研究推理 / 排查历史', 'RESEARCH REASONING / DIAGNOSTIC HISTORY')}</span>
-      <h2>{t('再看探索版', 'Then read the exploration')}</h2>
-      <strong>{t('你会得到：哪些假设失败了，以及这些失败怎样改变下一步设计', 'You get: which hypotheses failed and how each failure changed the next design decision')}</strong>
-      <p>{t('查看如何排查步数、动作随机性、历史信息、思考过程和容量问题，以及这些检查怎样改变共同规则。', 'Start from weak 3B behavior and follow horizon, sampling, history, self-deliberation, action serialization, and capacity questions into the shared harness. Best for reconstructing research decisions.')}</p>
-      <b>{t('进入探索版 →', 'Open exploration view →')}</b>
+      <h2>{t("设计与排查过程", "Design and diagnostic history")}</h2>
+      <strong>{t("失败现象、对照检查与设计修改", "Failures, controlled checks, and design changes")}</strong>
+      <p>{t("排查记录解释步数限制、动作随机性、历史信息和思考过程如何影响实验设计。", "Diagnostic records explain how action limits, sampling, history, and deliberation affected the design.")}</p>
+      <b>{t("查看设计与排查过程 →", "Open design and diagnostic history →")}</b>
     </a>
   </nav>
   <section class="successor-gateway__snapshot" aria-labelledby="successor-snapshot-title">
     <header>
       <p>CANONICAL RAW STAGE 1 · {OPEN_EVO_STAGE1_FREEZE.id}</p>
-      <h2 id="successor-snapshot-title">{t('学习前的购物表现', 'The first facts shared by both views')}</h2>
-      <span>{t('完全成功表示一次购物满足了全部要求。检查记录是否完整，与判断购物是否成功，是两项不同的检查。', 'Reward is an observed behavior outcome, not the raw-corpus PASS gate.')}</span>
+      <h2 id="successor-snapshot-title">{t("学习前的购物表现", "Shopping behavior before learning")}</h2>
+      <span>{t("完全成功表示一次购物满足了全部要求。记录完整与购物成功，是两项不同的检查。", "Exact success means a shopping attempt satisfied every requirement. Record completeness and shopping success are separate checks.")}</span>
     </header>
     <div>
       {OPEN_EVO_STAGE1_METRICS.map((arm) => (
@@ -90,7 +90,7 @@ const terms = zh ? [
   <ResearchDepth
     locale={locale}
     kind="method"
-    summary={t('共享 Harness 的公平性边界：哪些接口信息允许，哪些会变成“教题”', 'Shared-harness fairness: which interface information is allowed and which would become task-solving help')}
+    summary={t("共享购物接口与公平比较", "Shared shopping interface and fair comparison")}
   >
     <OpenEvoHarnessFairnessPanel locale={locale} compact />
   </ResearchDepth>
@@ -99,14 +99,15 @@ const terms = zh ? [
     locale={locale}
     kind="history"
     summary={t('七类设计与第一轮历史证据', 'Seven design families and predecessor evidence from the first campaign')}
-    intro={t('这部分用于研究者追踪完整设计空间。它不再承担“第一次看 successor 应该先理解什么”的职责。', 'This section preserves the full design space for researchers. It no longer owns the first-time reading path.')}
+    intro={t("七类设计说明模型可获得哪些信息、能够改变哪些状态，以及每种改动怎样影响比较。", "The seven design families specify what information the model receives, which states can change, and how each change affects the comparison.")}
   >
     <div class="successor-gateway__history"><strong>{t('第一轮 7B / 3B 实验保留为独立的历史证据。', 'The first 7B / 3B campaign remains predecessor evidence.')}</strong><a href={links.firstRun}>{t('回看第一轮实验 →', 'Review the first experiment →')}</a></div>
     <OpenEvoExperimentDesignCatalog locale={locale} />
   </ResearchDepth>
 </main>
 <style>
-.successor-gateway{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.successor-gateway__head{display:grid;grid-template-columns:1fr;gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.successor-gateway__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.successor-gateway__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:700 .875rem/1.5 var(--font-mono);letter-spacing:.09em}.successor-gateway__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.02em}.successor-gateway__head strong,.successor-gateway__head span{grid-column:auto;display:block}.successor-gateway__head strong{font-size:1.04rem;line-height:1.55}.successor-gateway__head span{color:var(--muted);font-size:1rem;line-height:1.65}.successor-gateway__principle{display:grid;gap:.28rem;margin:1rem 0;padding:.9rem 1rem;border:0;border-left:4px double var(--accent-deep);background:var(--surface-muted)}.successor-gateway__principle span{color:var(--accent-deep);font:700 .875rem/1.5 var(--font-mono);letter-spacing:.07em}.successor-gateway__principle strong{font-size:1.05rem;line-height:1.5}.successor-gateway__principle small{color:var(--muted);font-size:1rem;line-height:1.45}.successor-gateway__choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;padding:.3rem 0 1.2rem}.successor-gateway__choices>a{display:grid;align-content:start;gap:.5rem;min-height:0;padding:1.05rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);color:inherit;text-decoration:none}.successor-gateway__choices>a:hover,.successor-gateway__choices>a:focus-visible{border-color:var(--accent);background:var(--surface-muted)}.successor-gateway__choices>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.successor-gateway__choices span{color:var(--accent-deep);font:700 .875rem/1.5 var(--font-mono);letter-spacing:.07em}.successor-gateway__choices h2{margin:0;font-size:2rem;line-height:1}.successor-gateway__choices strong{font-size:1rem}.successor-gateway__choices p{margin:0;color:var(--muted);font-size:1rem;line-height:1.58}.successor-gateway__choices b{align-self:end;margin-top:auto;color:var(--accent-deep);font-size:1rem}.successor-gateway__snapshot{display:grid;grid-template-columns:minmax(210px,.48fr) minmax(0,1.52fr);gap:.8rem 1rem;padding:1rem 0;border-top:1px solid var(--line)}.successor-gateway__snapshot header{display:grid;align-content:start;gap:.3rem}.successor-gateway__snapshot header p{margin:0;color:var(--accent-deep);font:700 .875rem/1.5 var(--font-mono);letter-spacing:.06em}.successor-gateway__snapshot h2{margin:0;font-size:1.12rem}.successor-gateway__snapshot header span{color:var(--muted);font-size:1rem;line-height:1.45}.successor-gateway__snapshot>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.successor-gateway__snapshot article{display:grid;gap:.18rem;padding:.78rem;border:1px solid var(--line);border-radius:var(--radius-panel)}.successor-gateway__snapshot article span{color:var(--muted);font:700 .875rem/1.5 var(--font-mono)}.successor-gateway__snapshot article strong{font-size:1.65rem;line-height:1}.successor-gateway__snapshot article b{font-size:1rem}.successor-gateway__snapshot article small{color:var(--muted);font-size:1rem;line-height:1.42}.successor-gateway__snapshot aside{grid-column:auto;padding:.6rem .75rem;border-left:3px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.5}.successor-gateway__history{display:flex;justify-content:space-between;align-items:end;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}.successor-gateway__history>div{display:grid;gap:.2rem}.successor-gateway__history span{color:var(--muted);font:700 .875rem/1.5 var(--font-mono);letter-spacing:.06em}.successor-gateway__history strong{font-size:1rem}.successor-gateway__history a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}
-@media(max-width:760px){.successor-gateway{width:min(100% - 1rem,1120px)}.successor-gateway__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.successor-gateway__head>a,.successor-gateway__head>p,.successor-gateway__head h1,.successor-gateway__head strong,.successor-gateway__head span{grid-column:auto}.successor-gateway__head h1{font-size:clamp(1.9rem,6vw,2.4rem)}.successor-gateway__choices{grid-template-columns:1fr}.successor-gateway__choices>a{min-height:0}.successor-gateway__snapshot{grid-template-columns:1fr}.successor-gateway__snapshot>div{grid-template-columns:1fr}.successor-gateway__snapshot aside{grid-column:auto}.successor-gateway__history{align-items:start;flex-direction:column}}
+.successor-gateway{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.successor-gateway__head{display:grid;grid-template-columns:1fr;gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.successor-gateway__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.successor-gateway__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:700 1rem/1.5 var(--font-mono);letter-spacing:.09em}.successor-gateway__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.02em}.successor-gateway__head strong,.successor-gateway__head span{grid-column:auto;display:block}.successor-gateway__head strong{font-size:1.04rem;line-height:1.55}.successor-gateway__head span{color:var(--muted);font-size:1rem;line-height:1.65}.successor-gateway__principle{display:grid;gap:.28rem;margin:1rem 0;padding:.9rem 1rem;border:0;border-left:4px double var(--accent-deep);background:var(--surface-muted)}.successor-gateway__principle span{color:var(--accent-deep);font:700 1rem/1.5 var(--font-mono);letter-spacing:.07em}.successor-gateway__principle strong{font-size:1.05rem;line-height:1.5}.successor-gateway__principle small{color:var(--muted);font-size:1rem;line-height:1.45}.successor-gateway__choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;padding:.3rem 0 1.2rem}.successor-gateway__choices>a{display:grid;align-content:start;gap:.5rem;min-height:0;padding:1.05rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);color:inherit;text-decoration:none}.successor-gateway__choices>a:hover,.successor-gateway__choices>a:focus-visible{border-color:var(--accent);background:var(--surface-muted)}.successor-gateway__choices>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.successor-gateway__choices span{color:var(--accent-deep);font:700 1rem/1.5 var(--font-mono);letter-spacing:.07em}.successor-gateway__choices h2{margin:0;font-size:2rem;line-height:1}.successor-gateway__choices strong{font-size:1rem}.successor-gateway__choices p{margin:0;color:var(--muted);font-size:1rem;line-height:1.58}.successor-gateway__choices b{align-self:end;margin-top:auto;color:var(--accent-deep);font-size:1rem}.successor-gateway__snapshot{display:grid;grid-template-columns:minmax(210px,.48fr) minmax(0,1.52fr);gap:.8rem 1rem;padding:1rem 0;border-top:1px solid var(--line)}.successor-gateway__snapshot header{display:grid;align-content:start;gap:.3rem}.successor-gateway__snapshot header p{margin:0;color:var(--accent-deep);font:700 1rem/1.5 var(--font-mono);letter-spacing:.06em}.successor-gateway__snapshot h2{margin:0;font-size:1.12rem}.successor-gateway__snapshot header span{color:var(--muted);font-size:1rem;line-height:1.45}.successor-gateway__snapshot>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.successor-gateway__snapshot article{display:grid;gap:.18rem;padding:.78rem;border:1px solid var(--line);border-radius:var(--radius-panel)}.successor-gateway__snapshot article span{color:var(--muted);font:700 1rem/1.5 var(--font-mono)}.successor-gateway__snapshot article strong{font-size:1.65rem;line-height:1}.successor-gateway__snapshot article b{font-size:1rem}.successor-gateway__snapshot article small{color:var(--muted);font-size:1rem;line-height:1.42}.successor-gateway__snapshot aside{grid-column:auto;padding:.6rem .75rem;border-left:3px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.5}.successor-gateway__history{display:flex;justify-content:space-between;align-items:end;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}.successor-gateway__history>div{display:grid;gap:.2rem}.successor-gateway__history span{color:var(--muted);font:700 1rem/1.5 var(--font-mono);letter-spacing:.06em}.successor-gateway__history strong{font-size:1rem}.successor-gateway__history a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}
+@media(max-width:760px){.successor-gateway{width:min(100% - 1rem,1120px)}.successor-gateway__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.successor-gateway__head>a,.successor-gateway__head>p,.successor-gateway__head h1,.successor-gateway__head strong,.successor-gateway__head span{grid-column:auto}.successor-gateway__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}.successor-gateway__choices{grid-template-columns:1fr}.successor-gateway__choices>a{min-height:0}.successor-gateway__snapshot{grid-template-columns:1fr}.successor-gateway__snapshot>div{grid-template-columns:1fr}.successor-gateway__snapshot aside{grid-column:auto}.successor-gateway__history{align-items:start;flex-direction:column}}
 .successor-gateway{color:var(--ink);font-size:1rem;line-height:1.75}.successor-gateway__head strong,.successor-gateway__head span{max-width:48rem}.successor-gateway__choices p{line-height:1.8;color:var(--ink)}.successor-gateway__catalog{padding:1.25rem 0;border-block:1px solid var(--line)}.successor-gateway__catalog summary{cursor:pointer;min-height:44px;font-size:1rem;font-weight:700}
 </style>
+

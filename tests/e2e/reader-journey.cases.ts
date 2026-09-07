@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
+import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const mechanism = `${root}mechanism-1-0/`;
@@ -61,8 +62,100 @@ async function assertVisibleReaderGeometry(page: Page) {
 }
 
 export function registerReaderJourneyTests() {
+  // The previous six-route check covered orientation components only. Historical
+  // bodies and expanded records must be readable in both locales as well.
+  for (const locale of ['zh', 'en'] as const) {
+    for (const width of [390, 1440]) {
+      for (const theme of ['light', 'dark']) {
+        test(`capability copy ${locale} ${width}px ${theme}: historical prose stays readable when expanded`, async ({ page }) => {
+          test.setTimeout(120_000);
+          await page.setViewportSize({ width, height: 1000 });
+          await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+          const routeFailures: string[] = [];
+          for (const route of CAPABILITY_READER_ROUTES) {
+            const path = `${locale === 'en' ? '/en' : ''}${root}${route.route ? `${route.route}/` : ''}`;
+            await page.goto(path, { waitUntil: 'domcontentloaded' });
+            await expect(page.locator('[data-copy-review]'), path).toHaveCount(1);
+            for (const expanded of [false, true]) {
+              if (expanded) await page.locator('[data-copy-review] details').evaluateAll((nodes) => {
+                nodes.forEach((node) => { (node as HTMLDetailsElement).open = true; });
+              });
+              const measured = await page.locator('[data-copy-review]').evaluate((owner) => {
+                const failures: string[] = [];
+                let count = 0;
+                let owned = 0;
+                owner.querySelectorAll<HTMLElement>('p, li, dd, td, small, span, strong, a').forEach((node) => {
+                  // Nested components keep their own typography contracts.
+                  // Astro's scope token identifies prose owned by this component.
+                  const scope = owner.getAttributeNames().find((name) => name.startsWith('data-astro-cid-'));
+                  if (scope && !node.hasAttribute(scope)) return;
+                  if (!node.textContent?.trim()) return;
+                  owned++;
+                  if (!node.checkVisibility({ checkVisibilityCSS: true }) || node.closest('details:not([open])')) return;
+                  count++;
+                  const style = getComputedStyle(node);
+                  const sample = node.textContent.trim().slice(0, 60);
+                  if (parseFloat(style.fontSize) < 15.9) failures.push(`small prose: ${sample}`);
+                  if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
+                });
+                owner.querySelectorAll<HTMLElement>('.lineage-node, .patch-node').forEach((panel) => {
+                  const button = panel.querySelector<HTMLElement>('button[data-first-run-detail]');
+                  if (!button?.checkVisibility({ checkVisibilityCSS: true })) return;
+                  const target = button.getBoundingClientRect();
+                  panel.querySelectorAll('h3, p, strong, small').forEach((prose) => {
+                    const range = document.createRange();
+                    range.selectNodeContents(prose);
+                    for (const rect of range.getClientRects()) {
+                      if (Math.min(rect.right, target.right) - Math.max(rect.left, target.left) > 1 &&
+                          Math.min(rect.bottom, target.bottom) - Math.max(rect.top, target.top) > 1) {
+                        failures.push(`control overlaps prose: ${prose.textContent?.trim().slice(0, 60)}`);
+                        break;
+                      }
+                    }
+                  });
+                });
+                if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) failures.push('document overflow');
+                return { owned, count, failures };
+              });
+              if (measured.owned === 0 || (expanded && measured.count === 0)) routeFailures.push(`${path}: no owned prose measured`);
+              routeFailures.push(...measured.failures.map((failure) => `${path} expanded=${expanded}: ${failure}`));
+            }
+          }
+          expect(routeFailures).toEqual([]);
+        });
+      }
+    }
+  }
+
   for (const locale of ['zh', 'en'] as const) {
     const prefix = locale === 'en' ? '/en' : '';
+    test(`reader journey ${locale}: explanation precedes codes and every stop branch has a visible answer`, async ({ page }) => {
+      await page.goto(`${prefix}${mechanism}`, { waitUntil: 'domcontentloaded' });
+      const orientation = page.locator('[data-research-orientation]');
+      await expect(orientation.locator('[data-orientation-field] dd')).toHaveCount(5);
+      expect(await orientation.innerText()).not.toMatch(/\bM1-[ABCD]\b|\bA\/B\b/);
+      await expect(orientation.locator('[data-orientation-field="state"] dd')).toHaveText(mechanismStateSummary(OPEN_EVO_MECHANISM_EXPERIMENTS, locale));
+      const stop = orientation.locator('[data-orientation-field="finish"] dd');
+      // Each assertion addresses a different missing-branch counterexample.
+      for (const meaning of locale === 'zh' ? [/均未达门槛.*结束主线/, /另获批准/, /固定预算结束/, /1,440.*事后分析.*结束/] : [/Neither passes: end/, /separate release/, /fixed-budget learning/, /1,440.*verified post-hoc analysis/]) await expect(stop).toContainText(meaning);
+      for (const row of OPEN_EVO_MECHANISM_EXPERIMENTS) {
+        const state = mechanismDisplayState(row, locale);
+        await expect(page.locator(`[data-experiment="${row.id}"] header`)).toContainText(state.execution);
+        await expect(page.locator(`[data-experiment="${row.id}"] header`)).toContainText(state.result);
+      }
+      const bridge = page.locator('[data-learning-bridge]');
+      await expect(bridge).toBeVisible();
+      await expect(bridge).toContainText(locale === 'zh' ? /任务结束.*经验用于学习.*参数/ : /ends one task.*learn from its experience.*parameters/);
+      await expect(page.locator('[data-accepted-definition]')).toContainText(locale === 'zh' ? '不按购物成绩挑选' : 'without selecting by shopping score');
+      const score = page.locator('[data-score-explanation]');
+      await expect(score).toBeVisible();
+      for (const meaning of ['task_score', '100', '0.01', locale === 'zh' ? '不是多成功一次' : 'not one more successful task']) await expect(score).toContainText(meaning);
+      const order = await page.evaluate(() => {
+        const before = (a: string, b: string) => Boolean(document.querySelector(a)!.compareDocumentPosition(document.querySelector(b)!) & Node.DOCUMENT_POSITION_FOLLOWING);
+        return [before('[data-reader-task]', '[data-learning-bridge]'), before('[data-learning-bridge]', '[data-accepted-definition]'), before('[data-accepted-definition]', '[data-parameter-case]'), before('[data-score-explanation]', '[data-reader-gate] a')];
+      });
+      expect(order).toEqual([true, true, true, true]);
+    });
     test(`reader journey ${locale}: all declared routes provide task, purpose and one primary title`, async ({ page }) => {
       for (const route of CAPABILITY_READER_ROUTES) {
         const path = `${prefix}${root}${route.route ? `${route.route}/` : ''}`;
@@ -77,6 +170,21 @@ export function registerReaderJourneyTests() {
           await expect(page.locator('[data-reader-route] a')).toHaveAttribute('href', `${prefix}${root}`);
         }
       }
+    });
+
+    test(`reader journey ${locale}: historical scope and final-result comparisons stay explicit`, async ({ page }) => {
+      await page.goto(`${prefix}${root}openevo-2-0/report/`);
+      await expect(page.locator('[data-learning-completion]')).toContainText(/160.*20,480.*7.*128/);
+      await expect(page.locator('[data-reference-boundary]')).toContainText(locale === 'zh' ? /外部参考值.*不是.*配对对照/ : /external reference.*not paired controls/);
+      await expect(page.locator('[data-final-score-meaning]')).toContainText(/37.60.*1\/128/);
+      await page.goto(`${prefix}${root}stage2-256-window/`);
+      await expect(page.locator('[data-budget-boundary]')).toContainText(locale === 'zh' ? /每组最多 20,480/ : /20,480.*per arm/);
+      await page.goto(`${prefix}${root}stage2-7b-analysis/`);
+      await expect(page.locator('[data-historical-scope]')).toContainText(locale === 'zh' ? '不代表当前封存状态' : 'does not describe the current sealed state');
+      await expect(page.locator('[data-historical-scope] a')).toHaveAttribute('href', `${prefix}${root}stage2-ceiling/`);
+      await page.goto(`${prefix}${root}stage1-previous/`);
+      const link = page.locator('.legacy-s1__back');
+      await expect(link).toHaveAttribute('href', `${prefix}${root}first-run/`);
     });
 
     test(`reader journey ${locale}: starts, stops, outcomes and independent branch remain visible without JavaScript`, async ({ browser }) => {
@@ -237,7 +345,15 @@ export function registerReaderJourneyTests() {
           for (const summary of await page.locator('details > summary').all()) {
             if (await summary.isVisible()) await summary.click();
           }
-          expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+          const containment = await page.evaluate(() => {
+            const width = document.documentElement.clientWidth;
+            const escaped = [...document.querySelectorAll<HTMLElement>('[data-copy-review] *')]
+              .filter((node) => node.checkVisibility({ checkVisibilityCSS: true }) && node.getBoundingClientRect().right > width + 2)
+              .map((node) => ({ tag: node.tagName, class: node.className, right: Math.round(node.getBoundingClientRect().right), font: getComputedStyle(node).fontSize }))
+              .slice(-12);
+            return { overflow: document.documentElement.scrollWidth - width, escaped };
+          });
+          expect(containment.overflow, `${suffix}: ${JSON.stringify(containment.escaped)}`).toBeLessThanOrEqual(2);
           if (suffix.includes('/report/')) {
             await expect(page.locator('.report-chronology tbody tr')).toHaveCount(3);
             await expect(page.locator('.paper-step__meaning')).toHaveCount(12);
@@ -254,3 +370,4 @@ export function registerReaderJourneyTests() {
   }
 
 }
+

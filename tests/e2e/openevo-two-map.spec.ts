@@ -39,7 +39,7 @@ test('desktop lobby exposes exactly three primary maps and keeps archive seconda
   await assertNoPageOverflow(page);
 });
 
-test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and explicit non-result boundaries', async ({ page }) => {
+test('Mechanism-1.0 exposes frozen passports, M1-D authorization without a start record, and explicit non-result boundaries', async ({ page }) => {
   const response = await page.goto(mechanism, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
   const map = page.getByTestId('openevo-mechanism-map');
@@ -51,7 +51,7 @@ test('Mechanism-1.0 exposes frozen passports, current M1-D activation, and expli
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('1,440');
   await expect(map.locator('[data-experiment="M1-D"]')).toContainText('MiniMax');
   await expect(map).toContainText('SEED Stage2 = 0');
-  await expect(map).toContainText('M1-D 阶段已激活');
+  await expect(map.locator('[data-experiment="M1-D"]')).toContainText('已授权，尚无开始记录');
   await expect(map).toContainText('结果未封存');
   await expect(map).toContainText('GPU0–3 SHARED RAY = AUTHORIZED');
   await expect(map).toContainText('M1-D STAGE1 = ACTIVATED');
@@ -71,12 +71,18 @@ test('first-run defaults to 7B, switches to 3B, and restores focus after detail 
   const arm7 = page.locator('[data-first-run-arm="7b"]');
   const arm3 = page.locator('[data-first-run-arm="3b"]');
   await expect(arm7).toHaveAttribute('aria-pressed', 'true');
+  const opaqueHistoricalCopy = /clean exact success|invalid termination|action validity|premature-lineage|downstream state|fresh Stage 1 successor|学习链条已经点燃|参数几何已经封口/;
+  await expect(page.locator('[data-first-run-panel="7b"]')).not.toContainText(opaqueHistoricalCopy);
+  await expect(page.locator('[data-first-run-panel="7b"]')).toContainText('143 次参数更新');
   await arm3.click();
   await expect(arm3).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-first-run-panel="3b"]')).toBeVisible();
+  await expect(page.locator('[data-first-run-panel="3b"]')).not.toContainText(opaqueHistoricalCopy);
+  await expect(page.locator('[data-first-run-panel="3b"]')).toContainText('128 次尝试中，有 33 次因动作无效而结束');
   const detail = page.locator('[data-first-run-panel="3b"] [data-first-run-detail]').first();
   await detail.click();
   await expect(page.locator('[data-first-run-detail-layer]')).toBeVisible();
+  await expect(page.locator('[data-first-run-detail-layer]')).not.toContainText(opaqueHistoricalCopy);
   await page.keyboard.press('Escape');
   await expect(page.locator('[data-first-run-detail-layer]')).toBeHidden();
   await expect(detail).toBeFocused();
@@ -172,8 +178,9 @@ test('English routes mount the same successor gateway and dual narrative archite
   await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
   const mechanismMap = page.getByTestId('openevo-mechanism-map');
   await expect(mechanismMap.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
-  await expect(mechanismMap).toContainText('M1-D PHASE ACTIVATED');
-  await expect(mechanismMap).toContainText('results not sealed');
+  const m1d = mechanismMap.locator('[data-experiment="M1-D"]');
+  await expect(m1d).toContainText('Authorized; no start recorded');
+  await expect(m1d).toContainText('Results unsealed');
   await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
   await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });

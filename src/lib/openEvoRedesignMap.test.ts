@@ -69,7 +69,7 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
 
   it('keeps historical evidence from being relabeled into the successor', () => {
     expect(report).toContain('旧 3B 轨迹只能作为 predecessor evidence，不能改名接到 successor');
-    expect(exploration).toContain('historical predecessor diagnostics');
+    expect(exploration).toContain('这些诊断发生在不同历史批次');
     expect(exploration).toContain('旧记录保留原身份');
   });
 
@@ -80,3 +80,4 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
     expect(enReport).toContain('OpenEvoSuccessorReport');
   });
 });
+

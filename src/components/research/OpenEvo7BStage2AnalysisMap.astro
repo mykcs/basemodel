@@ -22,149 +22,123 @@ const evidence = [
     href: 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments',
     eyebrow: t('观测平台', 'OBSERVABILITY'),
     title: 'Weights & Biases · zju-openevo-experiments',
-    note: t('用于看训练曲线、运行指标和参数更新观测；它不是唯一科学权威，最终解释仍回到冻结配置、receipt 与 Git 证据。', 'Use this for training curves, run metrics, and parameter-update observations. It is not the sole scientific authority; frozen configs, receipts, and Git evidence remain authoritative.'),
+    note: t("训练曲线和参数更新观测；科学结论还需对应的固定配置、运行记录与 Git 证据。", "Training curves and parameter-update observations; scientific claims also need matching fixed configurations, run records, and Git evidence."),
   },
   {
     href: 'https://github.com/mykcs/openevo-experiment/blob/8692bf6dfbfdb948b7f6a7229fb65f26a49566a9/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md',
     eyebrow: t('Ceiling-1.0 经验沉淀', 'CEILING-1.0 RETROSPECTIVE'),
-    title: t('Task Vector / capacity / provenance 规则', 'Task Vector / capacity / provenance rules'),
-    note: t('明确规定 Task Vector 默认只做诊断，不把几何曲线直接变成在线训练控制器。', 'Records the durable rule that Task Vector geometry is diagnostic-only by default rather than an online training controller.'),
+    title: t("参数差、容量限制与来源记录", "Task vectors, capacity limits, and provenance"),
+    note: t("记录参数差分析仅用于诊断的边界，不能凭几何曲线自动改变这条实验的训练规则。", "Records the diagnostic-only boundary: geometry does not automatically change the training rule in this experiment."),
   },
   {
     href: 'https://github.com/mykcs/openevo-experiment/blob/8692bf6dfbfdb948b7f6a7229fb65f26a49566a9/docs/science/webshop/reports/OPEN_EVO_WEBSHOP_H1_38A_COMBINED_AND_NEXT_2026-08-19.md',
     eyebrow: t('更早的 7B 参数机制对照', 'EARLIER 7B PARAMETER-MECHANISM CONTROL'),
-    title: 'H1.38A · fresh-task transfer analysis',
-    note: t('这是另一条历史 7B 研究线，不是 Ceiling-1.0 的同一 lineage；它帮助我们把“能训练出 adapter”和“稳定提升新任务”分开看。', 'This is a separate historical 7B study, not the same Ceiling-1.0 lineage. It helps separate “the adapter trains and reloads” from “it reliably improves fresh tasks.”'),
+    title: t("新任务迁移分析 · H1.38A", "New-task transfer analysis · H1.38A"),
+    note: t("独立的历史 7B 对照，比较可训练的参数增量与新任务上的实际收益。", "An independent historical 7B control comparing trainable parameter increments with gains on new tasks."),
   },
   {
-    href: 'https://github.com/mykcs/basemodel/blob/main/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
+    href: 'https://github.com/mykcs/basemodel/blob/9bbae312a027d6623de39f61d50ec275d1a9f473/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
     eyebrow: t('网站事实边界', 'WEBSITE FACT BOUNDARY'),
-    title: t('Phase C factual-debt audit · C04-09', 'Phase C factual-debt audit · C04-09'),
-    note: t('旧 Ceiling 页面上的精确运行快照计数目前标为 stale-unknown；Phase D 重新绑定 immutable receipt 之前，本页故意不复制这些数字。', 'Exact running counters from the old Ceiling page are currently classified stale-unknown; this page deliberately does not repeat them until Phase D restores immutable receipt binding.'),
+    title: t("旧运行计数的来源核查", "Source audit of historical run counters"),
+    note: t("2026-09-03 的核查发现，旧运行快照部分精确计数尚未对应到固定版本原始记录，因此当时不能作为已核实数字引用。这份历史审计解释的是当时的引用边界，不代表后来完成封存后的状态。", "The 2026-09-03 audit found that some exact counters in older run snapshots were not yet bound to immutable source records, so they could not be cited as verified values at that time. This historical audit describes that earlier citation boundary, not the later sealed state."),
   },
 ];
 ---
 
-<main class="stage2-map" data-testid="openevo-7b-stage2-analysis-map">
+<main data-copy-review class="stage2-map" data-testid="openevo-7b-stage2-analysis-map">
   <header class="stage2-map__head">
     <a href={links.lobby}>{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
-    <p>7B STAGE 2 · PARAMETER ANALYSIS MAP</p>
-    <h1>{t('7B Stage 2 到底学到了什么', 'What the 7B Stage 2 experiments actually taught us')}</h1>
-    <strong>{t(
-      '我们当时不只是“跑了很多轮”。真正重要的是：旧 Stage 2 为什么完全没有参数更新、Ceiling-1.0 怎样点燃持续学习、SD-LoRA 的参数状态该怎么解释，以及哪些几何指标只能做诊断，不能拿来在线调参。',
-      'The important story is not simply that many rounds ran. We learned why the old Stage 2 produced zero parameter updates, how Ceiling-1.0 ignited sustained learning, how to interpret SD-LoRA state, and why geometry metrics are diagnostics rather than online tuning signals.'
-    )}</strong>
-    <span>{t(
-      '这页把同一条 7B Ceiling-1.0 历史主线放在中间；其他 7B 参数实验只作为旁证，并明确标出不是同一个 lineage，避免把不同实验的数字拼成一条假历史。',
-      'The 7B Ceiling-1.0 lineage stays on the central spine. Other 7B parameter studies appear only as explicitly separate evidence so metrics from different experiments are not stitched into a false single history.'
-    )}</span>
+    <p>{t("7B 后续学习 · 历史参数分析", "7B STAGE 2 · HISTORICAL PARAMETER ANALYSIS")}</p>
+    <h1>{t("7B 后续学习与参数分析", "7B learning and parameter analysis")}</h1>
+    <strong>{t("7B 模型在模拟商店里完成购物，再用成功经验更新模型内部的数值（参数）。历史实验先遇到更新门槛过高、参数始终不变的问题；修改规则后，模型确实产生了参数更新。", "The 7B model attempts shopping tasks and uses successful experience to update its internal parameters. An overly strict update rule initially prevented every update; a revised rule allowed real parameter updates.")}</strong>
+    <span>{t("参数更新说明训练发生了；要知道购物能力有没有提高，还要在未用于训练的任务上比较表现。Ceiling-1.0 的持续学习记录与更早的 7B 参数对照来自不同实验，不能合并成一次运行。", "Parameter updates show that training occurred. Improvement requires a separate comparison on tasks not used for training. Ceiling-1.0 and the earlier 7B parameter controls are separate experiments.")}</span>
   </header>
 
-  <section class="authority-strip" aria-label={t('本页事实边界', 'Evidence boundary for this page')}>
+  <p data-historical-scope>{t("下方容量修订与参数分析采用形成于当时的固定历史记录；‘当时待核验’只描述旧计数的引用状态，不代表当前封存状态。", "The capacity amendment and parameter analysis below use fixed historical records from that period; ‘awaited verification then’ describes only the citation state of older counters and does not describe the current sealed state.")} <a href={p("/research/seed-openevo/study/capability-exploration/stage2-ceiling/")}>{t("查看后来完成的 149 轮学习与 7B 封存结果", "Read the later 149-round completion and sealed 7B results")}</a></p>
+  <section class="authority-strip" aria-label={t("历史证据范围", "Scope of historical evidence")}>
     <div>
       <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
-      <strong>{t('旧 256-window 的设计失败与“0 参数更新”结论', 'Old 256-window design failure and the zero-parameter-update conclusion')}</strong>
+      <strong>{t("旧规则：成功经验未触发参数更新", "Old rule: successful experience triggered no parameter updates")}</strong>
     </div>
     <div>
       <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
-      <strong>{t('Ceiling-1.0 的参数更新规则、Task Vector diagnostic-only、容量 amendment', 'Ceiling-1.0 update semantics, diagnostic-only Task Vector, and the capacity amendment')}</strong>
+      <strong>{t("修订规则：按轮更新参数，分析指标仅用于诊断", "Revised rule: round-based updates, with diagnostic-only analysis")}</strong>
     </div>
     <div>
-      <span>{t('暂不复制', 'DO NOT REPRINT YET')}</span>
-      <strong>{t('旧 Ceiling 页面上尚未重新绑定 receipt 的精确轮次 / generation 快照计数', 'Exact round / generation snapshot counters from the old Ceiling page until receipt binding is restored')}</strong>
+      <span>{t("当时未核实", "UNVERIFIED THEN")}</span>
+      <strong>{t("旧运行快照的精确轮次与更新次数当时尚未绑定固定版本原始记录；后来封存结果另见上方链接", "Exact round and update counters in the older snapshots were not yet bound to immutable source records at that time; the later sealed result is linked above")}</strong>
     </div>
   </section>
 
   <section class="story" aria-labelledby="stage2-story-title">
     <header>
-      <p>MAINLINE · CEILING-1.0</p>
-      <h2 id="stage2-story-title">{t('参数学习从哪里开始、又在哪些地方差点被误读', 'Where parameter learning started — and where interpretation could go wrong')}</h2>
+      <p>{t("持续学习实验 · Ceiling-1.0", "LEARNING EXPERIMENT · CEILING-1.0")}</p>
+      <h2 id="stage2-story-title">{t("7B 学习规则的变化", "Changes to the 7B learning rule")}</h2>
     </header>
 
     <div class="spine">
       <article class="node node--history">
-        <span>00 · FAILED PREDECESSOR</span>
-        <h3>{t('旧 Stage 2：明明有成功轨迹，参数却一次都没有更新', 'Old Stage 2: successes existed, yet parameters never updated')}</h3>
-        <p>{t(
-          '旧 256-window 设计把早期 method-control 条件变成长期 gate：单个 block 的 qualifying identity 最大只有 7，而 gate 要 8。最终跑完 20,480 条 rollout、得到 797 条 qualified-positive trajectory，但 80 / 80 个 block 都没有触发参数更新。',
-          'The old 256-window design turned an early method-control condition into a permanent gate: the best block reached only seven qualifying identities while the gate required eight. After 20,480 rollouts and 797 qualified-positive trajectories, all 80 / 80 blocks still produced zero parameter updates.'
-        )}</p>
+        <span>00 · {t("旧版实验", "PREDECESSOR")}</span>
+        <h3>{t("旧规则与零次参数更新", "Old rule and zero parameter updates")}</h3>
+        <p>{t("旧实验的 7B/self 组完成了 20,480 次购物尝试，其中 797 条完整成功记录符合训练候选条件。规则把每 256 次尝试单独检查：同一批至少要有 8 个不同任务各完整成功 2 次，才允许更新参数。最好的一批只有 7 个，所以 80 批都没有触发参数更新。这是当时的实验门槛，不是 OpenEvo 的永久规则。", "The historical 7B/self run completed 20,480 shopping attempts, including 797 exact-success traces eligible for training. Each batch of 256 attempts needed at least eight distinct tasks with two exact successes each before parameters could update. The best batch reached seven, so all 80 batches produced no updates. This was the historical experiment rule, not a permanent OpenEvo requirement.")}</p>
         <a href={links.oldStage2}>{t('看旧 Stage 2 的完整证据 →', 'Open the full old Stage-2 evidence →')}</a>
       </article>
       <span class="connector"></span>
 
       <article class="node node--amend">
-        <span>01 · SCIENTIFIC AMENDMENT</span>
-        <h3>{t('Ceiling-1.0：删掉“7 对 8”长期门槛，改成每 128 次任务整理一轮证据', 'Ceiling-1.0 removes the persistent 7-vs-8 gate and learns from each 128-attempt round')}</h3>
-        <p>{t(
-          '每轮包含 16 个任务 × 8 次尝试。只要当前轮至少有一个任务出现 clean exact success，就允许做一次 SD-LoRA 参数更新；没有成功时参数保持不变。成功不跨轮偷偷累积成另一个门槛。',
-          'Each round contains 16 tasks × 8 attempts. At least one clean exact-success task in the current round permits one SD-LoRA update; with no success, parameters stay unchanged. Successes are not accumulated across rounds into another hidden gate.'
-        )}</p>
+        <span>01 · {t("学习规则修订", "LEARNING-RULE AMENDMENT")}</span>
+        <h3>{t("修订后的每轮学习规则", "Revised round-based learning rule")}</h3>
+        <p>{t("Ceiling-1.0 每轮完成 16 个任务、每个尝试 8 次，共 128 次购物。只要本轮至少有一个任务留下符合质量要求的完整成功记录，就允许训练一个小的参数增量（SD-LoRA）；没有成功记录时参数保持不变。成功记录不跨轮累积成另一道门槛。", "Each Ceiling-1.0 round contains 16 tasks with eight attempts each: 128 shopping attempts. At least one clean exact-success trace permits training a small parameter increment with SD-LoRA. Without one, parameters remain unchanged. Successes are not accumulated across rounds into another gate.")}</p>
         <a href={links.ceiling}>{t('打开 Ceiling-1.0 历史规则页 →', 'Open the historical Ceiling-1.0 design →')}</a>
       </article>
       <span class="connector"></span>
 
       <article class="node node--main node--current">
-        <span>02 · LEARNING CHAIN IGNITED</span>
-        <h3>{t('7B 证明“成功经验 → 真实参数更新”这条链已经打通', '7B proved that successful experience could become real parameter updates')}</h3>
-        <p>{t(
-          'Ceiling-1.0 的历史证据支持一个重要结论：7B 不再停在“有成功轨迹但永远不更新”的状态，而是真的产生了 SD-LoRA 参数更新。这里故意不复述旧网页里的精确轮次、generation 和 component 快照，因为最新网站审计要求先把这些计数重新绑定到 immutable upstream receipt。这个边界不会削弱结论，反而把“我们确定知道什么”和“暂时不能重新发布什么”分开。',
-          'Historical Ceiling-1.0 evidence supports the important conclusion that 7B moved beyond “successful trajectories but no updates” and produced real SD-LoRA parameter updates. This page intentionally does not repeat exact round, generation, or component snapshot counters from the old webpage because the latest website audit requires those numbers to be rebound to immutable upstream receipts first. That boundary separates what we know from what we are not yet allowed to republish.'
-        )}</p>
+        <span>02 · {t("参数更新证据", "UPDATE EVIDENCE")}</span>
+        <h3>{t("7B 已发生真实参数更新", "7B produced real parameter updates")}</h3>
+        <p>{t("Ceiling-1.0 的历史记录确认 7B 产生了真实的 SD-LoRA 参数更新，说明成功经验已经进入参数训练。旧运行快照中的部分精确轮次与组件数在当时尚未逐项匹配固定版本原始记录；这些计数的引用缺口不等于没有发生训练，后来封存的完整结果另见上方链接。", "Historical Ceiling-1.0 records confirm real SD-LoRA parameter updates in 7B, showing that successful experience reached parameter training. Some exact round and component counters in older snapshots had not yet been matched to immutable source records at that time; that citation gap does not mean training never occurred, and the later sealed result is linked above.")}</p>
       </article>
       <span class="connector"></span>
 
       <article class="node node--diagnostic">
-        <span>03 · PARAMETER DIAGNOSTICS</span>
-        <h3>{t('Task Vector 可以看方向，但不能因为“看起来很漂亮”就自动改训练规则', 'Task Vector can describe geometry; it cannot automatically control training')}</h3>
-        <p>{t(
-          '我们会在 checkpoint 记录 delta norm、相邻更新 cosine、累计 alignment、path length、effective-rank participation 等几何量。它们适合回答“更新方向是否稳定、是否出现异常漂移”，但当时没有一个通过验证的因果控制器能把这些数直接变成下一轮的 rank、学习率或停止规则。',
-          'Checkpoint diagnostics can include delta norm, adjacent-update cosine, cumulative alignment, path length, and effective-rank participation. They help describe directional stability or anomalous drift, but there was no validated causal controller mapping those values directly to next-round rank, learning rate, or stopping rules.'
-        )}</p>
-        <strong>{t('长期规则：Task Vector 默认 diagnostic-only。', 'Durable rule: Task Vector is diagnostic-only by default.')}</strong>
+        <span>03 · {t("参数诊断", "PARAMETER DIAGNOSTICS")}</span>
+        <h3>{t("参数变化的幅度与方向", "Magnitude and direction of parameter changes")}</h3>
+        <p>{t("比较两个已保存模型的参数，得到参数差向量（Task Vector）。它的长度表示改动幅度；相邻差向量的相似度表示两次更新是否朝相近方向。累计路径和有效秩等指标补充描述变化结构。这些数能帮助发现异常，却不能单独证明下一轮应该怎样调整学习率、参数容量或停止条件。", "Subtracting the parameters of two saved models gives a task vector. Its norm measures update magnitude; similarity between adjacent vectors measures whether updates point in similar directions. Path length and effective rank describe further structure. These diagnostics do not by themselves establish how to adjust learning rate, capacity, or stopping rules.")}</p>
+        <strong>{t("这条历史实验中的参数分析只做诊断，不自动控制训练。", "Parameter analysis in this historical experiment was diagnostic only; it did not automatically control training.")}</strong>
       </article>
       <span class="connector"></span>
 
       <article class="node node--amend">
-        <span>04 · CAPACITY AMENDMENT</span>
-        <h3>{t('64 个 component 不是“模型学到头了”，只是实现里的独立容量停止线', '64 components were an implementation stop, not proof that learning had reached its ceiling')}</h3>
-        <p>{t(
-          '7B 仍有剩余正式训练预算时，原实现会在累计 64 个 SD-LoRA component 后停止继续增加 component。因为这会提前截断科学问题，我们把它作为显式 scientific amendment 处理，而不是悄悄当成实验自然终点。后续 rank reduction / compression 仍然属于 future study，不倒写进这条 frozen lineage。',
-          'The implementation would stop adding SD-LoRA components after 64 even while the 7B formal budget remained. Because that could truncate the scientific question, it was treated as an explicit scientific amendment rather than a natural endpoint. Later rank reduction / compression remains a future study and is not retroactively inserted into the frozen lineage.'
-        )}</p>
+        <span>04 · {t("容量修订", "CAPACITY AMENDMENT")}</span>
+        <h3>{t("参数更新次数的容量限制", "Capacity limit on parameter updates")}</h3>
+        <p>{t("每次 SD-LoRA 更新会增加一个参数组件（component）。原实现最多允许 64 个组件，即使购物尝试预算还有剩余，也会停止新增更新。7B 实验因此单独修订了容量限制。后来的降秩与压缩属于另行研究，不能回写为这次训练已经使用的方法。", "Each SD-LoRA update adds a parameter component. The original implementation allowed at most 64 components, stopping new updates even with shopping budget remaining. The 7B experiment therefore made an explicit capacity amendment. Later rank reduction and compression belong to separate studies and were not part of this training run.")}</p>
       </article>
       <span class="connector"></span>
 
       <article class="node node--main">
-        <span>05 · HOW TO READ THE RESULT</span>
-        <h3>{t('“参数确实在更新”与“新任务稳定变好”必须分开证明', '“Parameters update” and “fresh tasks reliably improve” require separate evidence')}</h3>
-        <p>{t(
-          '更早的 7B 参数机制实验已经提醒我们：成功轨迹可以训练出真实 SD-LoRA adapter，adapter 也能 reload 和跑完整评测，但 fresh-task transfer 未必稳定为正。因此 Ceiling-1.0 的 Stage 2 主线先回答“OpenEVO 能否持续自我更新”，不能把它偷换成“已经证明泛化持续提升”。',
-          'Earlier 7B parameter-mechanism studies showed that successful trajectories can train real SD-LoRA adapters that reload and complete evaluation, while fresh-task transfer can still fail to show reliable positive improvement. Ceiling-1.0 therefore answers whether OpenEVO can sustain self-updating; it does not silently become proof of monotonically improving generalization.'
-        )}</p>
+        <span>05 · {t("结论范围", "CLAIM SCOPE")}</span>
+        <h3>{t("参数学习与新任务表现", "Parameter learning and performance on new tasks")}</h3>
+        <p>{t("更早的独立 7B 对照中，成功经验能训练出可重新加载、可完成评测的参数增量，但在新任务上没有稳定的正向收益。因此，“训练确实发生”与“未见任务上的表现可靠提高”需要分别验证，不能仅凭参数变化推断泛化效果。", "In earlier independent 7B controls, successful experience produced parameter increments that could be reloaded and evaluated, yet gains on new tasks were not reliably positive. Training execution and reliable improvement on unseen tasks therefore require separate evidence.")}</p>
       </article>
     </div>
   </section>
 
   <section class="side-study" aria-labelledby="side-study-title">
     <header>
-      <p>SEPARATE HISTORICAL 7B STUDY · DO NOT MERGE LINEAGES</p>
-      <h2 id="side-study-title">{t('为什么还要看 H1.38A 这类参数对照', 'Why the earlier H1.38A parameter control still matters')}</h2>
+      <p>{t("独立的历史 7B 对照", "INDEPENDENT HISTORICAL 7B CONTROL")}</p>
+      <h2 id="side-study-title">{t("独立对照：训练任务的多样性", "Independent control: training-task diversity")}</h2>
     </header>
     <div>
-      <strong>{t('它回答的是另一个问题：同样的内生成功经验，怎样组织 task identity，会不会改善 fresh-task transfer？', 'It asks a different question: with the same endogenous successes, does task-identity diversity improve fresh-task transfer?')}</strong>
-      <p>{t(
-        '合并后的 192 cells / 768 attempts 不支持“identity count 越多，transfer 单调越好”。D16 raw mean 最高，但 confidence interval 仍跨 0。这个结果让后续注意力从“单纯增加 task identity 数”转向 adaptation method 本身，以及 acquisition / retention / held-out transfer 要分开测。',
-        'Across the reconciled 192 cells / 768 attempts, the data did not support a monotonic “more task identities means better transfer” story. D16 had the highest raw mean, but its interval still crossed zero. That shifted attention from identity count alone toward the adaptation method itself and separate acquisition / retention / held-out transfer measurement.'
-      )}</p>
+      <strong>{t("独立对照检验：同样来自模型自身的成功经验，覆盖更多不同购物任务，能否改善新任务表现？", "The independent control asks whether self-generated successes from more distinct shopping tasks improve performance on new tasks.")}</strong>
+      <p>{t("这项独立对照汇总了 192 个评测单元、768 次尝试，没有发现“训练任务种类越多，新任务表现就越好”的单调关系。D16 组的平均变化最高，但置信区间仍包含 0，无法排除偶然波动。后续研究因此需要分别测量学会训练任务、保留已有能力和迁移到未见任务的效果。", "Across 192 evaluation cells and 768 attempts, the independent control did not show monotonically better transfer with more distinct training tasks. D16 had the highest mean change, but its confidence interval included zero. Follow-up work needs separate measures of acquisition, retention, and transfer to unseen tasks.")}</p>
     </div>
   </section>
 
   <section class="evidence" aria-labelledby="stage2-evidence-title">
     <header>
-      <p>PROVIDER + GIT EVIDENCE</p>
-      <h2 id="stage2-evidence-title">{t('W&B 看曲线，Git 解释这些曲线属于哪条实验', 'Use W&B for curves; use Git to know which experiment those curves belong to')}</h2>
-      <span>{t('这正是为什么网页不能只贴一个 W&B 图就下科学结论。', 'This is why the website should not turn a W&B chart alone into a scientific conclusion.')}</span>
+      <p>{t("数据来源", "SOURCE EVIDENCE")}</p>
+      <h2 id="stage2-evidence-title">{t("训练曲线与原始证据", "Training curves and source evidence")}</h2>
+      <span>{t("W&B 展示训练变化；实验配置与原始记录说明这些变化属于哪个模型、哪组任务和哪条实验。", "W&B shows training changes; configurations and original records identify the model, tasks, and experiment behind them.")}</span>
     </header>
     <nav>
       {evidence.map((item) => (
@@ -185,5 +159,5 @@ const evidence = [
 </main>
 
 <style>
-.stage2-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage2-map__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage2-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.8rem;text-decoration:none}.stage2-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.09em}.stage2-map__head h1{grid-column:1;margin:0;font-size:clamp(2.45rem,5.8vw,4.9rem);line-height:.94;letter-spacing:-.055em}.stage2-map__head strong,.stage2-map__head span{grid-column:2;display:block}.stage2-map__head strong{font-size:1.04rem;line-height:1.55}.stage2-map__head span{color:var(--muted);font-size:.9rem;line-height:1.65}.authority-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}.authority-strip div{display:grid;gap:.25rem;padding:.8rem;border-right:1px solid var(--line)}.authority-strip div:last-child{border-right:0}.authority-strip span{color:var(--muted);font:750 .56rem/1.2 var(--font-mono)}.authority-strip strong{font-size:.76rem;line-height:1.45}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 .62rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{display:grid;justify-items:center}.node{width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 .6rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.62}.node>a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:.82rem;font-weight:760;text-underline-offset:.2em}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--history{width:min(700px,95%);background:var(--surface-muted)}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--diagnostic{width:min(690px,94%);border-radius:var(--radius-panel)}.node--diagnostic>strong{display:block;margin-top:.65rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:.8rem}.connector{width:2px;height:2rem;background:var(--line)}.side-study{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1.1rem;padding:1.2rem 0;border-top:1px solid var(--line)}.side-study header p{margin:0;color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.06em}.side-study h2{margin:.35rem 0 0;font-size:1.15rem}.side-study>div{padding:.85rem 1rem;border-left:3px solid var(--line)}.side-study>div strong{font-size:.88rem;line-height:1.5}.side-study>div p{margin:.5rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.58}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:.78rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:.8rem}.evidence nav span{color:var(--muted);font-size:.72rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage2-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage2-map__footer a{color:var(--accent-deep);font-size:.82rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage2-map{width:min(100% - 1rem,1120px)}.stage2-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage2-map__head>a,.stage2-map__head>p,.stage2-map__head h1,.stage2-map__head strong,.stage2-map__head span{grid-column:auto}.stage2-map__head h1{font-size:clamp(2.35rem,12vw,3.55rem)}.authority-strip{grid-template-columns:1fr}.authority-strip div{border-right:0;border-bottom:1px solid var(--line)}.authority-strip div:last-child{border-bottom:0}.story>header,.side-study,.evidence{grid-template-columns:1fr}.story>header{gap:.3rem}.node,.node--amend,.node--history,.node--diagnostic{width:100%}.stage2-map__footer{display:grid}}
+.stage2-map{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}.stage2-map__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:.55rem 1.6rem;align-items:end;padding:1.35rem 0 1.4rem;border-bottom:1px solid var(--line)}.stage2-map__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.stage2-map__head>p{grid-column:1/-1;margin:.2rem 0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.09em}.stage2-map__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.025em}.stage2-map__head strong,.stage2-map__head span{grid-column:2;display:block}.stage2-map__head strong{font-size:1.04rem;line-height:1.55}.stage2-map__head span{color:var(--muted);font-size:1rem;line-height:1.65}.authority-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}.authority-strip div{display:grid;gap:.25rem;padding:.8rem;border-right:1px solid var(--line)}.authority-strip div:last-child{border-right:0}.authority-strip span{color:var(--muted);font:750 1rem/1.2 var(--font-mono)}.authority-strip strong{font-size:1rem;line-height:1.45}.story{padding:1.35rem 0}.story>header{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:1rem;margin-bottom:1rem}.story>header p{margin:0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em}.story h2{margin:0;font-size:1.35rem;line-height:1.15}.spine{display:grid;justify-items:center}.node{width:min(760px,100%);padding:1.05rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.node>span{display:block;margin-bottom:.42rem;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.node h3{margin:0 0 .48rem;font-size:1.17rem;line-height:1.18}.node p{margin:0;color:var(--muted);font-size:1rem;line-height:1.62}.node>a{display:inline-block;margin-top:.65rem;color:var(--accent-deep);font-size:1rem;font-weight:760;text-underline-offset:.2em}.node--amend{width:min(700px,95%);border-style:double;border-width:3px}.node--history{width:min(700px,95%);background:var(--surface-muted)}.node--current{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}.node--diagnostic{width:min(690px,94%);border-radius:var(--radius-panel)}.node--diagnostic>strong{display:block;margin-top:.65rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:1rem}.connector{width:2px;height:2rem;background:var(--line)}.side-study{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1.1rem;padding:1.2rem 0;border-top:1px solid var(--line)}.side-study header p{margin:0;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.side-study h2{margin:.35rem 0 0;font-size:1.15rem}.side-study>div{padding:.85rem 1rem;border-left:3px solid var(--line)}.side-study>div strong{font-size:1rem;line-height:1.5}.side-study>div p{margin:.5rem 0 0;color:var(--muted);font-size:1rem;line-height:1.58}.evidence{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);gap:1rem;padding:1.25rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence header p{margin:0;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.evidence h2{margin:.35rem 0 .4rem;font-size:1.15rem}.evidence header span{display:block;color:var(--muted);font-size:1rem;line-height:1.52}.evidence nav{display:grid;gap:.55rem}.evidence nav>a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}.evidence nav>a:hover,.evidence nav>a:focus-visible{border-color:var(--accent)}.evidence nav small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence nav strong{display:flex;align-items:center;gap:.38rem;font-size:1rem}.evidence nav span{color:var(--muted);font-size:1rem;line-height:1.45}.evidence nav b{grid-column:2;grid-row:1/span 3;align-self:center;color:var(--accent-deep)}.stage2-map__footer{display:flex;justify-content:space-between;gap:1rem;padding:1rem 0}.stage2-map__footer a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}@media(max-width:760px){.stage2-map{width:min(100% - 1rem,1120px)}.stage2-map__head{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}.stage2-map__head>a,.stage2-map__head>p,.stage2-map__head h1,.stage2-map__head strong,.stage2-map__head span{grid-column:auto}.stage2-map__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}.authority-strip{grid-template-columns:1fr}.authority-strip div{border-right:0;border-bottom:1px solid var(--line)}.authority-strip div:last-child{border-bottom:0}.story>header,.side-study,.evidence{grid-template-columns:1fr}.story>header{gap:.3rem}.node,.node--amend,.node--history,.node--diagnostic{width:100%}.stage2-map__footer{display:grid}}
 </style>
