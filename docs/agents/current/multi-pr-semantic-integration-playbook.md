@@ -1,6 +1,6 @@
 # Multi-PR semantic integration playbook
 
-Last reviewed: **2026-08-12**
+Last reviewed: **2026-09-07**
 
 Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The case that produced these lessons is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
 
@@ -66,6 +66,29 @@ Newer is not automatically authoritative. Older is not automatically useless. Hi
 - **semantic conflict** — intended product/research/UI/device/provider outcomes disagree;
 - **superseded outcome, retained ancestry** — attribution or rationale remains useful, runtime result must not ship;
 - **deferred/rejected** — incomplete, unsafe, unrelated, or not accepted.
+
+#### 3.1 Close a stacked dependency parent-first and child-clean
+
+When a child PR targets an unmerged parent, the child's green state is valid only for that stack identity. Once the parent lands, do not assume that retargeting the child to `main` automatically produces a clean release candidate.
+
+Use this sequence:
+
+1. refresh current `main`, the parent's actual merge commit, the child's old base/head, and all required-check/provider state;
+2. record the **child semantic delta** from the old parent head to the child head before rewriting ancestry;
+3. rebuild/rebase the child on current `main`, preserving that child delta plus every accepted intervening main change;
+4. compare `main..new-child` and require it to contain only the intended child files/semantics; if the parent contribution reappears as part of the child diff, stop and repair the stack rather than merging it wholesale;
+5. treat the rebuilt child as a **new exact head**: rerun the required checks and any Preview/browser acceptance required by the changed surface; old green statuses remain historical evidence for the old SHA only;
+6. merge with expected-head/auto-merge protection when available; if another actor merges first, refresh live state and switch to post-merge verification instead of issuing a second merge attempt.
+
+The purpose is not to manufacture a pretty one-commit history. It is to preserve parent attribution while proving that the final child contribution is exactly the intended semantic delta on top of current main.
+
+Anti-patterns:
+
+- merge the child before the parent because GitHub says both are mergeable;
+- retarget the base and reuse the old exact-head green checks;
+- squash the whole stacked child onto `main` without proving which lines belong to the already-merged parent;
+- force-reset the parent/child branch merely to recover the ancestry shape you expected;
+- treat required checks that are `expected`/`pending` on a fresh rebuilt head as optional because the pre-rebuild SHA was green.
 
 ### 4. Check conflict classes
 
@@ -231,5 +254,6 @@ Post-release finding/corrective PR, if any:
 3. Current provider truth must dominate historical policy: older Cloudflare-era assumptions stayed historical and did not overwrite Vercel authority.
 4. GitHub PR state is not the full disposition record: stacked PRs required explicit closure/comments after incorporation.
 5. Build success is not discovery completeness: the first Production release contained the new routes but omitted them from `sitemap.xml`, requiring focused PR #132 and route tests.
+6. When a stacked parent merges during closeout, the child must be rebuilt on current `main`, proved as a child-only semantic delta, and requalified at the fresh exact head before merge.
 
 Provider mechanics and repository merge settings are time-sensitive. Re-check them before repeating the implementation details; the semantic decision model is the durable part.
