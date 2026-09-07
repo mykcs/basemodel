@@ -1,5 +1,10 @@
 # Documentation
 
+Status: **current documentation-system router**  
+Authority: **navigation only**  
+Canonical repository bootstrap: [`../AGENTS.md`](../AGENTS.md)
+
+
 `docs/` has two jobs: route Agents to the **current source of instruction**, and retain historical evidence without letting old state masquerade as current policy.
 
 ## Start here

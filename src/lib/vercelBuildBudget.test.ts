@@ -63,7 +63,7 @@ describe('Vercel build-budget contract', () => {
       expect(isBuildRelevantPath(filePath), filePath).toBe(false);
     }
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md'])).toBe(false);
-    expect(shouldBuildForFiles(['AGENTS.md', 'docs/agents/README.md', 'docs/agents/current/deployment-policy.md'])).toBe(false);
+    expect(shouldBuildForFiles(['AGENTS.md', 'docs/README.md', 'docs/agents/README.md', 'docs/agents/current/deployment-policy.md'])).toBe(false);
     expect(root).toContain('unique repository-root Agent bootstrap authority');
     expect(isBuildRelevantPath('src/lib/deploymentArchitecture.test.ts')).toBe(false);
     expect(isBuildRelevantPath('src/components/example.spec.tsx')).toBe(false);
