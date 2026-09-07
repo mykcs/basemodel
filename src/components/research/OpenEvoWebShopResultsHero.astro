@@ -20,8 +20,8 @@ const navItems = [
   <p class="eyebrow">{t('研究结果 · RESEARCH FINDINGS', 'OPENEVO × WEBSHOP · RESEARCH FINDINGS')}</p>
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo SD-LoRA 后的模型，追踪三件事：模型是否真的学到可迁移经验、纠错后“同一 128 个任务 × 两个模型组（共 256 个任务回合）”的配对评测是否支持稳定优势、下一轮公平比较还缺什么。',
-    'We compare base Qwen2.5-7B-Instruct with the same model plus OpenEvo SD-LoRA on matched WebShop tasks, tracking three questions: whether the model learns transferable experience, whether the corrected 128×2 evaluation supports a stable advantage, and what remains before the next fair comparison.',
+    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo 学习结果后的同一模型，追踪三件事：模型是否真的学到可迁移经验、同一 128 个任务分别给两个模型做完以后是否出现可靠提升、下一轮 OpenEvo 与 SEED 的公平比较还缺什么。',
+    'We compare base Qwen2.5-7B-Instruct with the same model after loading the OpenEvo learning result on the same WebShop tasks. We track whether the model learns transferable experience, whether running both models on the same 128 tasks shows a reliable improvement, and what remains before a fair OpenEvo-versus-SEED comparison.',
   )}</p>
 
   <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
@@ -32,9 +32,9 @@ const navItems = [
           '模型从自己做成功的任务里学习一次以后，面对训练时没见过的新任务，表现确实可以变好；而且这个现象后来又复现了一次。',
           'After one update from its own successful trajectories, the model can perform better on tasks it did not see during training, and that effect was reproduced independently.',
         )}</p>
-        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          'H1.38B 与 H1.39 支持一次参数更新后的内部新任务迁移（internal fresh task-ID-disjoint transfer）。这仍然不是 SEED 官方最终保留题上的论文复现，也不能证明多代连续改进。',
-          'H1.38B and H1.39 support one-step internal fresh task-ID-disjoint transfer after a parameter update. This is still not a paper reproduction on SEED’s final held-out denominator, and it does not establish stable multi-generation improvement.',
+        <p class="detail">{t(
+          '这个结论来自两次独立的一步更新实验：两次都从训练范围里挑出训练过程中没有出现过的任务。它支持“一次学习后可以迁移到未见任务”，但这些任务不是 SEED 留作正式验证的 0–499 号任务，也不能证明连续很多轮都会越来越好。',
+          'This conclusion comes from two independent one-update experiments, both using tasks from the training range that were not seen during training. It supports transfer after one update, but these are not SEED’s reserved 0–499 validation tasks and it does not establish continual improvement across many updates.',
         )}</p>
         <a class="abstract-evidence" href="#evidence-q4">{t('查看这条结论的实验依据 ↓', 'Open the evidence for this claim ↓')}</a>
       </div>
@@ -44,14 +44,14 @@ const navItems = [
       <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '按照纠错后的 SEED 公开代码任务语义，我们已经完成一轮配对评测：同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计区间仍然包含“没有差异”，所以仍然不能说它稳定更好。',
-          'Using the corrected task semantics recoverable from released SEED code, we completed a 128×2 paired evaluation. OpenEvo has a somewhat higher average task score, but exact success is tied with the base model and the uncertainty interval still crosses no difference, so a stable advantage is not established.',
+          '按照纠错后的 SEED 公开代码任务语义，同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计范围仍然包含“没有差异”，所以仍然不能说它稳定更好。',
+          'Using the corrected task semantics recoverable from released SEED code, the same 128 tasks were run once with the base model and once with the same model plus the OpenEvo learning result, for 256 episodes total. Mean task progress is somewhat higher with OpenEvo, but exact success is tied and the uncertainty range still includes no difference, so a stable advantage is not established.',
         )}</p>
-        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '“源码忠实任务测量路线”（Track A）先逐题核对 SEED 公开代码真正生成的任务语义：128/128 表示计划的 128 个任务槽位全部核对通过。随后基础模型（BASE）和冻结的 SD-LoRA 适配器模型各完成同一 128 个任务，两个模型组都是 128/128 个回合有效，动作解析无效回合为 0。SD-LoRA 的平均任务完成度方向更高，但配对不确定性区间仍包含 0；全部 256 个原始任务回合和对应分析、运行凭据都已逐文件核对并发布。精确统计量放在下方 Q7 的实验依据里。',
-          'Source-faithful Track A first passed authoritative runtime semantic validation at 128/128. BASE and the frozen SD-LoRA then each completed 128/128 valid episodes with parser-invalid=0. Mean Task Score is directionally higher for SD-LoRA, but the paired uncertainty interval crosses zero; all 256 raw episodes plus analysis and receipts are published and byte-for-byte verified. Exact statistics are kept in Q7’s experiment evidence below.',
+        <p class="detail">{t(
+          '这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致；随后基础模型和加载冻结 OpenEvo 适配器后的模型各做一遍，256 个任务回合全部有效。OpenEvo 的平均任务完成度方向更高，但统计范围仍包含“没有差异”；原始回合、分析和运行记录都已发布，精确数字放在下方对应实验依据里。',
+          'The 128 tasks were first checked one by one against the released SEED code and all 128 matched. The base model and the same model with the frozen OpenEvo adapter then each ran the panel, producing 256 valid episodes. Mean task progress was directionally higher with OpenEvo, but the uncertainty range still includes no difference. Raw episodes, analysis, and run records are published below.',
         )}</p>
-        <a class="abstract-evidence" href="#evidence-q7">{t('查看路线 A 的机器证据 ↓', 'Open Track A machine evidence ↓')}</a>
+        <a class="abstract-evidence" href="#evidence-q7">{t('查看这轮 128 题评测的机器证据 ↓', 'Open machine evidence for this 128-task evaluation ↓')}</a>
       </div>
     </div>
 
@@ -59,14 +59,14 @@ const navItems = [
       <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
       <div class="abstract-copy">
         <p class="plain">{t(
-          '最关键的剩余问题已经从“第 28 代结束后应保存的模型演化状态能不能补回来”推进到“是否正式恢复方法对方法的公平比较路线（Track B / WB1），进入第 29 代”。第 28 代（Gen28）的 128 个任务回合已经完成，缺失的第 28 代状态（state-v28）也已经用封存输入补做一次原本延后的本地状态更新，并通过状态完整性对账；但“状态补齐”不等于“下一代训练已获授权”，所以现在仍不能直接续跑。',
-          'The key remaining question has moved from repairing Gen28 continuity to deciding whether Track B / WB1 should formally resume into Gen29. Gen28’s 128 episodes are complete and state-v28 has now been adopted after the sealed-input deferred native update and barrier reconciliation; that adoption does not automatically authorize another generation, so task-bearing continuation remains blocked.',
+          '下一步是继续 OpenEvo 与 SEED 的方法对方法比较。上一轮 128 个任务已经完成，原本漏存的训练状态也已经用封存输入补齐并核对通过；但“状态补齐”不等于“下一轮训练已获授权”，所以现在仍不能直接继续消耗正式任务。',
+          'The next step is to continue the method-versus-method OpenEvo and SEED comparison. The previous 128-task round is complete and the missing retained training state has been reconstructed from sealed inputs and reconciled, but restoring that state does not authorize another round of formal task consumption.',
         )}</p>
-        <p class="technical"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t(
-          '路线 A 已收口，结论是“完成了有效测量，但没有证明稳定提升”（机器状态：measurement-not-proven-stable-improvement），而且它不能冒充论文 89.7 / 78.1% 的精确复现。路线 B / WB1 当前机器状态 GEN28_STATE_V28_BARRIER_PASS_ADOPTED 的含义是：第 28 代缺失的 state-v28 已补齐、通过状态门并被正式采用。匹配经验预算已使用 3,584 / 20,640 个计入预算的任务回合，还剩 17,056。formal_task_consumption_allowed=false 表示“不允许继续消耗正式任务”，gpu_allocation_allowed=false 表示“当前不授权为这一步分配 GPU”，final_test_status=locked 表示“最终测试仍锁定”。因此下一步不是直接训练，而是单独决定第 29 代是否达到恢复执行条件。',
-          'Track A is closed as measurement-not-proven-stable-improvement and must not be presented as an exact reproduction of the paper’s 89.7 / 78.1%. Current WB1 classification is GEN28_STATE_V28_BARRIER_PASS_ADOPTED; the latest native state is state-v28, matched experience accounting is 3,584/20,640 with 17,056 remaining, and formal_task_consumption_allowed=false, gpu_allocation_allowed=false, final_test_status=locked. The next gate is a separate Gen29 execution-readiness / resumption decision.',
+        <p class="detail">{t(
+          '方法对方法比较的匹配经验预算目前已经使用 3,584 / 20,640 个任务回合，还剩 17,056。当前规则明确写着：不能继续消耗正式任务、不能为这一步分配 GPU，最终测试也仍然锁定。因此下一步是先单独确认是否允许恢复执行，而不是直接开始下一轮训练。',
+          'The matched experience budget for the method-versus-method comparison has used 3,584 of 20,640 task episodes, leaving 17,056. Current rules say formal task consumption and GPU allocation are not authorized and the final test remains locked. The next step is therefore a separate resumption decision, not immediately starting another training round.',
         )}</p>
-        <a class="abstract-evidence" href="#next-n2">{t('查看当前 WB1 状态与来源 ↓', 'Open current WB1 state and sources ↓')}</a>
+        <a class="abstract-evidence" href="#next-n2">{t('查看当前执行状态与来源 ↓', 'Open the current execution state and sources ↓')}</a>
       </div>
     </div>
   </div>
@@ -74,8 +74,8 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论以实验编号 H1.41 为时间截点。H1.42 是之后的测量校准记录；2026-08-25 的修复后主评测（PRIMARY-v2）、2026-08-26 的源码忠实任务纠错，以及随后完成的路线 A“同一 128 任务 × 两个模型组”配对测量，都属于更晚的证据层，不会被倒过来混进 H1.41 的机制结论。',
-      'Mechanism conclusions are cut off at H1.41. H1.42 is a later measurement-calibration record; the repaired PRIMARY-v2 on 2026-08-25, the source-faithful task correction on 2026-08-26, and the later completed Track A 128×2 paired measurement are separate evidence layers and are not blended backward into the H1.41 mechanism conclusions.',
+      '机制结论以 8 月 21 日完成的 H1.41 实验为截止点。8 月 25 日的动作读取修复、8 月 26 日的任务构建复查，以及之后完成的“同一 128 个任务分别给两个模型做”的测量，都属于更晚证据，不会倒回去改写早期机制结论。',
+      'Mechanism conclusions are cut off at the H1.41 experiment completed on August 21. The action-reading repair on August 25, the task-construction check on August 26, and the later same-128-tasks/two-model measurement are newer evidence and are not blended backward into the earlier mechanism conclusion.',
     )}</span>
   </div>
 
@@ -99,8 +99,7 @@ const navItems = [
   .abstract-copy{display:grid;gap:8px}
   .abstract-copy p{margin:0;max-width:76ch;line-height:1.72}
   .abstract-copy .plain{font-size:.94rem;color:var(--color-text)}
-  .abstract-copy .technical{padding-top:7px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.8rem}
-  .abstract-copy .technical strong{color:var(--color-text);font-weight:760}
+  .abstract-copy .detail{color:var(--color-text-muted);font-size:.82rem}
   .abstract-evidence{justify-self:start;color:var(--color-accent);font-size:.75rem;font-weight:760;text-decoration:none}.abstract-evidence:hover,.abstract-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
   .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:.8rem}
   .cutoff-note strong{color:var(--color-accent)}

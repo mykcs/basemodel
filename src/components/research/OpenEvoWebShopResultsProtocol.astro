@@ -34,7 +34,6 @@ const seedSamplingSource: EvidenceRef = {
   label: t('SEED worker seed 与 validation 抽样', 'SEED worker seeds and validation sampling'),
   href: `${seedRoot}/agent_system/environments/env_package/webshop/envs.py#L115-L145`,
 };
-const h138bConfig: EvidenceRef = { kind: 'config', label: t('H1.38B 冻结训练配置', 'H1.38B frozen training config'), href: `${heldoutRoot}/configs/experiment/h1.38b-method-control-v1.json` };
 const h138bEvalManifest: EvidenceRef = { kind: 'manifest', label: t('H1.38B 冻结评估任务', 'H1.38B frozen evaluation manifest'), href: `${archiveRoot}/configs/experiment/manifests/h1.38b-method-control-eval-v1.json` };
 const h139EvalManifest: EvidenceRef = { kind: 'manifest', label: t('H1.39 独立新任务组', 'H1.39 independent fresh-task panel'), href: `${archiveRoot}/configs/experiment/manifests/h1.39-mr-independent-panel-v1.json` };
 const sourceFaithfulAudit: EvidenceRef = { kind: 'audit', label: t('SEED 公共代码任务语义审计', 'SEED public-code task-semantics audit'), href: `${sourceFaithfulRoot}/docs/experiment-tracking/SEED_WEBSHOP_PUBLIC_CODE_REPRODUCTION_V1.md` };
@@ -42,30 +41,18 @@ const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: 
 const primaryV1RawEpisode: EvidenceRef = { kind: 'raw-episode', label: t('PRIMARY-v1 BASE 原始回合', 'PRIMARY-v1 BASE raw episode'), href: `${rawEpisodeRoot}/docs/evidence/seed-official-heldout-comparison-v1/episodes/primary/base/episodes/webshop_seed0_goal00395-2026082586.json#L42-L53` };
 const primaryV2Analysis: EvidenceRef = { kind: 'machine-result', label: t('修复后 PRIMARY-v2 配对分析', 'Repaired PRIMARY-v2 paired analysis'), href: `${heldoutRoot}/docs/evidence/seed-official-heldout-comparison-v1/v2/analysis-v2.json` };
 
-type ProtocolCard = { label: string; value: string; body: string; sources: EvidenceRef[] };
-const protocolCards: ProtocolCard[] = [
+type TaskRangeCard = { label: string; value: string; body: string; sources: EvidenceRef[] };
+const taskRangeCards: TaskRangeCard[] = [
   {
-    label: t('主要比较模型', 'Main comparison model'),
-    value: 'Qwen2.5-7B-Instruct',
-    body: t('单步迁移和 2026-08-25 的保留范围评测都围绕同一个冻结的 7B 基础模型。更早的 H0 用过 3B，只作为历史经验供给证据。', 'The one-step transfer results and the 2026-08-25 held-out-range evaluation use the same frozen 7B base model. The earlier H0 experience-supply study used 3B and remains historical evidence.'),
-    sources: [h138bConfig, sourceFaithfulConfig],
+    label: t('训练范围内没有见过的任务', 'Unseen tasks from the training range'),
+    value: t('任务 500–6909', 'Tasks 500–6909'),
+    body: t('训练经验从这段范围里收集；评测时再挑训练过程中没有出现过的任务。它能回答“学到的东西能不能迁移到没见过的任务”，但它不是 SEED 留作正式验证的那批任务。', 'Training experience is collected from this range, and evaluation then selects tasks that were not used during training. This tests transfer to unseen tasks, but these are not the tasks SEED reserves for formal validation.'),
+    sources: [seedSplitSource, sourceFaithfulConfig, h138bEvalManifest, h139EvalManifest],
   },
   {
-    label: t('WebShop 任务世界', 'WebShop task world'),
-    value: t('1,000 商品 · 6,910 个任务目标', '1,000 products · 6,910 goals'),
-    body: t('模型像在购物网站里做任务：搜索、点击、选择商品并尝试完成购买。评测会同时记录“完成了多少”和“有没有完整完成”。', 'The model searches, clicks, chooses products, and attempts a purchase. Evaluation records both partial task progress and whether the task was completed exactly.'),
-    sources: [sourceFaithfulConfig],
-  },
-  {
-    label: t('训练与内部新任务', 'Training and internal fresh tasks'),
-    value: 'goal_idx ≥ 500',
-    body: t('训练经验来自 500–6909。H1.38B / H1.39 也从这个范围选新任务，但会排除训练时已经用过的任务身份，所以它们测试的是“学到的东西能不能迁移到没见过的内部任务”。', 'Training experience comes from 500–6909. H1.38B / H1.39 also sample fresh tasks from this range while excluding task identities used during training, so they test transfer to unseen internal tasks.'),
-    sources: [seedSplitSource, h138bEvalManifest, h139EvalManifest],
-  },
-  {
-    label: t('SEED 官方保留范围', 'SEED official held-out range'),
-    value: 'goal_idx 0–499',
-    body: t('历史 128-task 面板确实来自这个范围，但后续源码审计发现：validation worker 的随机种子会改变目标顺序和实际 instruction。也就是说，“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”。', 'The historical 128-task panel does come from this range, but a later source audit showed that validation worker seeds change goal ordering and the resulting instruction. Matching the numeric range is therefore not enough to reproduce the exact task semantics produced by the released SEED code.'),
+    label: t('SEED 留作验证的任务', 'Tasks SEED reserves for validation'),
+    value: t('任务 0–499', 'Tasks 0–499'),
+    body: t('SEED 的公开代码把这段范围留作验证。我们的历史 128 题来自这里，但后续复查发现：只有编号范围相同还不够，抽样方式也必须一致，最后生成的任务内容才会真正对应。', 'SEED’s released code reserves this range for validation. Our historical 128-task panel came from this range, but later checking showed that matching the numbers alone is not enough: the sampling process must also match so that the generated tasks are actually the same.'),
     sources: [seedValidationSizeSource, seedSplitSource, seedSamplingSource, sourceFaithfulAudit, trackASemanticValidation],
   },
 ];
@@ -74,45 +61,23 @@ const metricDefinitions = [
   { term: t('任务完成度（Task Score）', 'Task Score'), body: t('回答“这项购物任务完成了多少”。即使最后没有完整买对，也可能因为满足了一部分条件而得到部分分。', 'How much of the task was satisfied. Partial progress can receive partial credit even without exact task completion.') },
   { term: t('完整成功（Exact Success）', 'Exact Success'), body: t('回答“最后有没有把整个任务完整做对”。它是一个单独的成功 / 不成功判断。', 'Whether the complete task was satisfied. It is a separate yes/no outcome.') },
 ] as const;
-
-const projectTerms = [
-  { term: t('一次任务尝试（attempt / episode / rollout）', 'Task attempt / episode / rollout'), body: t('模型从拿到一个 WebShop 任务开始，一直做到成功、失败或达到步数上限的一整次过程。它不是一次参数训练，也不是一个单独动作。', 'One complete WebShop task from start until success, failure, or the step limit. It is not a parameter update and not a single action.') },
-  { term: t('评测单元（cell）', 'Evaluation cell'), body: t('实验设计里一个固定的“实验组 × 任务 × 随机种子”等评测格子。多个任务尝试可以组成一个评测单元，所以 cell 数不能直接当成成功任务数。', 'One fixed arm × task × seed-style evaluation unit. Several task attempts may belong to one cell, so cell count is not a success count.') },
-  { term: t('可用于训练的完整成功轨迹（qualified positive）', 'Trainable exact-success trajectory'), body: t('任务完整成功、轨迹完整且动作技术上有效，因而可以作为正向训练经验的一条记录。这个数字数的是轨迹条数，不是不同任务数。', 'A fully successful, complete, technically valid trajectory usable as positive training experience. It counts trajectories, not distinct tasks.') },
-  { term: t('达标任务身份（qualifying identity）', 'Qualifying task identity'), body: t('数的是满足对应成功条件的“不同任务”。同一个任务成功很多次，仍只算一个任务身份；所以它和成功轨迹条数不能混为一谈。', 'Counts distinct tasks that meet the run’s success condition. Many successes on one task still count as one identity, so this is not the same as trajectory count.') },
-  { term: t('门槛（gate）', 'Gate'), body: t('预先规定“满足什么条件才允许进入下一步”的规则。没过门槛通常表示下一步没有启动，不代表前面的实验没运行，也不是模型得了一个负分。', 'A preregistered condition for entering the next stage. Missing a gate usually means the next stage did not start; it does not mean the prior work did not run or that the model received a negative score.') },
-  { term: t('H1.38B / H1.39 / H1.40…', 'H1.38B / H1.39 / H1.40…'), body: t('这些是实验编号，用来指向不同时间的实验批次；数字本身不是模型分数，也不是训练步数。', 'These are experiment identifiers for different runs; the numbers are not model scores or training-step counts.') },
-  { term: t('路线 A（Track A）', 'Track A'), body: t('源码忠实任务测量路线：先按 SEED 公开代码重建并核对任务，再让基础模型与 OpenEvo 模型做同一批任务。它已经完成，但没有证明稳定优势，也不是论文最终 128 题的精确复现。', 'Source-faithful task-measurement line: rebuild and validate tasks from released SEED code, then evaluate BASE and OpenEvo on the same tasks. It is complete but does not establish a stable advantage or reproduce the paper-final 128 exactly.') },
-  { term: t('128×2', '128×2'), body: t('不是 256 个不同任务，而是同一个 128 任务面板给两个模型组各做一遍，所以一共 256 个任务回合。', 'Not 256 distinct tasks: the same 128-task panel is evaluated once for each of two model arms, yielding 256 task episodes.') },
-  { term: t('路线 B / WB1（Track B / WB1）', 'Track B / WB1'), body: t('方法对方法的公平比较路线：在同一个冻结环境、同一批任务、同一评测器和匹配预算下重新运行 SEED 与 OpenEvo。WB1 是这条路线当前实验战役的内部代号。', 'The method-vs-method matched-budget line: rerun SEED and OpenEvo in one frozen environment with the same tasks, evaluator, and matched budget. WB1 is the internal campaign code for this line.') },
-  { term: t('Gen28 / Gen29 与 state-v28', 'Gen28 / Gen29 and state-v28'), body: t('Gen28 / Gen29 分别表示路线 B 的第 28 / 29 个演化代次；state-v28 是第 28 代结束后应该保留下来的模型演化状态。它们不是得分。', 'Gen28 / Gen29 are generations 28 / 29 of Track B; state-v28 is the retained evolution state after generation 28. They are not scores.') },
-  { term: t('BASE / SD-LoRA', 'BASE / SD-LoRA'), body: t('BASE 是没有加载本轮学习适配器的基础模型；SD-LoRA 是同一个基础模型加载 OpenEvo 学到的低秩参数适配器后的版本。', 'BASE is the underlying model without the learned adapter; SD-LoRA is the same base model with the OpenEvo learned low-rank adapter loaded.') },
-  { term: t('配对差 Δ 与 95% 置信区间', 'Paired difference Δ and 95% interval'), body: t('Δ 表示两个模型在同一批任务上的平均差值；如果 95% 不确定性范围仍包含“没有差异（0）”，就只能说观察到方向，不能说已经证明稳定更好。', 'The paired mean difference can be positive while its uncertainty range still includes zero difference. That supports a positive direction, not a proven stable advantage.') },
-  { term: t('false / locked / Pending', 'false / locked / Pending'), body: t('这些是否定状态，不是失败分数：false 通常表示当前没有权限做某一步；locked 表示正式测试仍被锁住；Pending 表示还没有最终结果。它们都不能自动改写成“实验失败”或“模型得 0 分”。', 'These are workflow states, not failure scores: false usually means an action is currently unauthorized, locked means the formal test remains closed, and Pending means no final result yet. None should be converted into “the experiment failed” or a model score of zero.') },
-  { term: t('对账 / 收尾（reconciliation / closeout）', 'Reconciliation / closeout'), body: t('对账是核对“计划做了什么、实际产出了什么、哪些样本有效”；收尾是把一轮实验的最终状态和可用结论固定下来。它们是证据流程，不是新的训练阶段。', 'Reconciliation checks planned versus observed work and sample validity; closeout freezes a run’s final state and supported conclusions. They are evidence processes, not extra training stages.') },
-] as const;
 ---
 
 <section class="results-protocol" id="protocol" aria-labelledby="protocol-title">
   <header class="section-heading">
-    <p>{t('实验边界 · PROTOCOL', 'PROTOCOL')}</p>
+    <p>{t('实验边界', 'Protocol boundary')}</p>
     <div>
-      <h2 id="protocol-title">{t('先分清两种“新任务”', 'Two task ranges to keep in mind')}</h2>
-      <p class="plain-intro">{t('这里最容易误会的一点是：我们已经证明“模型能迁移到训练没见过的新任务”，但那批新任务和 SEED 论文用来做正式验证的保留任务不是同一批。', 'The easiest mistake is to treat all unseen tasks as the same benchmark. We have evidence for transfer to unseen internal tasks, but those are not the same as the SEED official held-out tasks.')}</p>
-      <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('OpenEvo 内部新任务评估使用任务索引 goal_idx ≥ 500，并保证任务 ID 与训练集不重叠；SEED 官方保留范围使用 goal_idx 0–499。后续源码审计又增加了一层要求：除了编号范围相同，还必须匹配验证随机种子（validation seed）、工作进程随机种子（worker seed）、任务目标顺序（goal ordering）以及最终任务文本（instruction）的源码语义。', 'OpenEvo internal fresh-task evaluation uses goal_idx ≥ 500 with task-ID disjointness from training, while the SEED official held-out range is goal_idx 0–499. The later source audit adds another requirement: matching the numeric range must also preserve validation seed, worker seed, goal ordering, and resulting instruction semantics.')}</p>
+      <h2 id="protocol-title">{t('训练范围内未见任务与 SEED 验证任务', 'Unseen training-range tasks and SEED validation tasks')}</h2>
+      <p class="plain-intro">{t('我们已经看到模型能把训练中学到的东西迁移到没有训练过的 WebShop 任务。但这些任务来自训练使用的 500–6909 号范围，不是 SEED 留作正式验证的 0–499 号任务，因此这项结果不能直接当作 SEED 验证集成绩。', 'We have evidence that the model can transfer what it learned to WebShop tasks it did not train on. Those tasks come from the 500–6909 training range, not the 0–499 tasks SEED reserves for validation, so that result is not a SEED validation-set score.')}</p>
+      <p class="range-note">{t('后续按 SEED 公开代码复查时还发现，只对上任务编号也不够：随机抽样方式会改变任务顺序和最终文字。要说“复现了同一批验证任务”，编号范围、抽样方式和实际生成的任务都要对应。', 'A later check against the released SEED code found that matching task numbers is also not enough: random sampling changes task order and the resulting instructions. Reproducing the same validation tasks therefore requires the range, sampling process, and generated tasks to match.')}</p>
     </div>
   </header>
 
-  <div class="project-terms" aria-labelledby="project-terms-title">
-    <div class="project-terms-heading"><h3 id="project-terms-title">{t('先把数字、单位和项目内部编号翻译成人话', 'Numbers, units, and project shorthand')}</h3><p>{t('后面仍保留 Track、Gen 和机器状态代码，方便和实验仓库对账；但它们第一次出现时必须先说明到底在数什么、是否代表失败。', 'Track, generation, and machine-state codes remain visible for auditability, but their meaning must be clear before they are used as evidence.')}</p></div>
-    <dl>{projectTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.body}</dd></div>)}</dl>
-  </div>
-
-  <div class="protocol-grid">
-    {protocolCards.map((card) => (
-      <article class="protocol-card">
-        <small>{card.label}</small>
-        <strong>{card.value}</strong>
+  <div class="task-range-grid" aria-label={t('两类任务范围', 'Two task ranges')}>
+    {taskRangeCards.map((card) => (
+      <article class="task-range-card">
+        <h3>{card.label}</h3>
+        <p class="range-value">{card.value}</p>
         <p>{card.body}</p>
         <OpenEvoEvidenceRefs locale={locale} sources={card.sources} compact ariaLabel={t(`“${card.label}”的来源`, `Sources for ${card.label}`)} />
       </article>
@@ -120,31 +85,36 @@ const projectTerms = [
   </div>
 
   <div class="metric-defs">
-    <div class="metric-defs-heading"><h3>{t('两个分数分别回答两个问题', 'Two scores answer two different questions')}</h3><p>{t('“做得更接近目标”不等于“最后完整做对”。所以结果页会把任务完成度和完整成功分开报告。', 'More partial progress does not necessarily mean exact task completion, so the page reports task progress and exact success separately.')}</p></div>
+    <div class="metric-defs-heading"><h3>{t('任务完成度与完整成功', 'Task progress and exact success')}</h3><p>{t('“做得更接近目标”不等于“最后完整做对”。因此结果页把任务完成度和完整成功分开报告。', 'Getting closer to the goal is not the same as completing the whole task, so the results page reports task progress and exact success separately.')}</p></div>
     <dl class="metric-def-list">{metricDefinitions.map((item) => <div class="metric-def"><dt>{item.term}</dt><dd>{item.body}</dd></div>)}</dl>
   </div>
 
   <div class="boundary-strip">
-    <strong>{t('测量是否可信', 'Measurement validity')}</strong>
+    <h3>{t('测量有效性', 'Measurement validity')}</h3>
     <div>
-      <p class="plain-boundary">{t('第一次主评测出现 0 分，并不是因为我们已经证明模型“完全不会做”，而是评分链路没有正确读懂模型输出的动作格式。修复读取方式以后，才得到可以解释的本地结果。', 'The first primary evaluation produced zeros, but those zeros did not prove that the model had zero capability. The measurement path was not reading the model action format correctly. Only after repairing that reading path did we obtain an interpretable local result.')}</p>
-      <p class="technical-boundary"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('PRIMARY-v1 因动作包装格式与解析器（parser）的动作投影规则不兼容，被判为测量无效（measurement-invalid）。修复后的 PRIMARY-v2 只改变动作包装识别。之后发现的 worker-seed 问题属于“任务语义是否源码忠实”的另一层问题，不能和 parser 故障混为一谈。', 'PRIMARY-v1 was classified as measurement-invalid because the action wrapper and parser projection rules were incompatible. PRIMARY-v2 changed only wrapper recognition. The later worker-seed finding concerns source-faithful task semantics and is a separate issue from the parser failure.')}</p>
-      <OpenEvoEvidenceRefs locale={locale} sources={[{ kind: 'official-code', label: t('SEED <action> parser', 'SEED <action> parser'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` }, primaryV1RawEpisode, primaryV2Analysis, sourceFaithfulAudit]} compact />
+      <p>{t('第一次主评测出现 0 分，不代表模型被证明“完全不会做”。当时评分链路没有正确读懂模型输出的动作格式；修复读取方式以后，才得到可以解释的本地结果。', 'The first primary evaluation produced zeros, but that did not prove the model had zero capability. The scoring path was not reading the model’s action format correctly; only after repairing that path did we obtain an interpretable local result.')}</p>
+      <p class="boundary-context">{t('后来发现的任务抽样问题是另一件事：它影响“是不是同一批任务”，而不是“评分器有没有读懂模型动作”。这两个问题分别核对，避免把测量故障误当成模型能力差异。', 'The later task-sampling issue is different: it affects whether the evaluation used the same tasks, not whether the evaluator could read the model’s action. We check these separately so a measurement failure is not mistaken for a capability difference.')}</p>
+      <OpenEvoEvidenceRefs locale={locale} sources={[{ kind: 'official-code', label: t('SEED 动作读取代码', 'SEED action parser'), href: `${seedRoot}/agent_system/environments/env_package/webshop/projection.py#L32-L40` }, primaryV1RawEpisode, primaryV2Analysis, sourceFaithfulAudit]} compact />
     </div>
   </div>
 
-  <div class="canonical-figure-links" aria-label={t('进一步理解实验设定', 'Further protocol context')}>
-    <span>{t('进一步理解', 'Learn more')}</span>
+  <div class="canonical-figure-links" aria-label={t('相关背景', 'Related background')}>
+    <span>{t('相关背景', 'Related background')}</span>
     <a href={`${localePath(locale, '/research/seed-openevo/flow/webshop/')}#fig-seed-webshop`}>{t('WebShop 与 SEED 的任务划分 →', 'WebShop and SEED task split →')}</a>
     <a href={`${localePath(locale, '/research/seed-openevo/flow/loops/')}#fig-seed-openevo-update-target`}>{t('SEED 与 OpenEvo 分别更新什么 →', 'What SEED and OpenEvo update →')}</a>
   </div>
 </section>
 
 <style>
-  .results-protocol{max-width:1160px;margin:0 auto;padding:36px 24px 48px;color:var(--color-text)}.section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}.section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:750;letter-spacing:.1em}.section-heading h2{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}.section-heading div>p{margin:0;max-width:70ch;font-size:.94rem;line-height:1.68}.plain-intro{color:var(--color-text)}.technical-intro{margin-top:9px!important;padding-top:9px;border-top:1px dashed var(--color-border);color:var(--color-text-muted);font-size:.82rem!important}.technical-intro strong{color:var(--color-text)}
-  .project-terms{margin:0 0 14px;padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.project-terms-heading h3{margin:0;font-size:1.05rem}.project-terms-heading p{margin:7px 0 0;max-width:76ch;color:var(--color-text-muted);font-size:.82rem;line-height:1.6}.project-terms dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 0}.project-terms dl>div{padding:13px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-surface)}.project-terms dt{font-size:.78rem;font-weight:780;line-height:1.45}.project-terms dd{margin:6px 0 0;color:var(--color-text-muted);font-size:.73rem;line-height:1.55}
-  .protocol-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.protocol-card{display:flex;min-height:220px;flex-direction:column;padding:17px;border:1px solid var(--color-border);border-radius:13px;background:var(--color-surface)}.protocol-card small{color:var(--color-accent);font-size:.7rem;font-weight:760;line-height:1.5}.protocol-card strong{margin:14px 0 8px;font-size:.98rem;line-height:1.4;overflow-wrap:anywhere}.protocol-card p{margin:0;color:var(--color-text-muted);font-size:.79rem;line-height:1.62}
+  .results-protocol{max-width:1160px;margin:0 auto;padding:36px 24px 48px;color:var(--color-text)}
+  .section-heading{display:grid;grid-template-columns:145px minmax(0,760px);gap:28px;padding:38px 0 24px;border-top:1px solid var(--color-border)}
+  .section-heading>p{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;font-weight:700;letter-spacing:.06em}
+  .section-heading h2{margin:0 0 10px;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+  .section-heading div>p{margin:0;max-width:72ch;font-size:.94rem;line-height:1.7}.plain-intro{color:var(--color-text)}.range-note{margin-top:10px!important;color:var(--color-text-muted);font-size:.86rem!important}
+  .task-range-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .task-range-card{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.task-range-card h3{margin:0;font-size:1rem;line-height:1.45}.task-range-card .range-value{margin:9px 0 8px;color:var(--color-accent);font-size:1.08rem;font-weight:720}.task-range-card>p:not(.range-value){margin:0;color:var(--color-text-muted);font-size:.82rem;line-height:1.65}
   .metric-defs{margin-top:12px;padding:22px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg)}.metric-defs-heading h3{margin:0;font-size:1.08rem;line-height:1.4;letter-spacing:-.02em}.metric-defs-heading p{margin:8px 0 0;max-width:72ch;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.metric-def-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:18px 0 0}.metric-def{padding:14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.metric-def dt{font-size:.82rem;font-weight:760;line-height:1.5}.metric-def dd{margin:8px 0 0;color:var(--color-text-muted);font-size:.78rem;line-height:1.58}
-  .boundary-strip{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:12px;padding:16px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.boundary-strip>strong{font-size:.78rem}.boundary-strip p{margin:0;max-width:80ch;font-size:.78rem;line-height:1.62}.plain-boundary{color:var(--color-text)}.technical-boundary{margin-top:8px!important;padding-top:8px;border-top:1px dashed var(--color-border);color:var(--color-text-muted)}.technical-boundary strong{color:var(--color-text)}.canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}.canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:750;letter-spacing:.08em}.canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}.canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
-  @media(max-width:960px){.project-terms dl{grid-template-columns:repeat(2,minmax(0,1fr))}.protocol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-def-list{grid-template-columns:1fr}}@media(max-width:720px){.project-terms dl{grid-template-columns:1fr}.results-protocol{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.protocol-grid{grid-template-columns:1fr}.protocol-card{min-height:auto}.boundary-strip{grid-template-columns:1fr;gap:7px}}
+  .boundary-strip{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;margin-top:12px;padding:18px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-surface)}.boundary-strip>h3{margin:0;font-size:.86rem}.boundary-strip p{margin:0;max-width:80ch;font-size:.8rem;line-height:1.65}.boundary-context{margin-top:8px!important;color:var(--color-text-muted)}
+  .canonical-figure-links{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:.78rem}.canonical-figure-links span{color:var(--color-text-muted);font-size:.7rem;font-weight:700;letter-spacing:.05em}.canonical-figure-links a{color:var(--color-accent);font-weight:750;text-decoration:none}.canonical-figure-links a:hover,.canonical-figure-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  @media(max-width:720px){.results-protocol{padding-inline:18px}.section-heading{grid-template-columns:1fr;gap:8px}.task-range-grid,.metric-def-list{grid-template-columns:1fr}.boundary-strip{grid-template-columns:1fr;gap:8px}}
 </style>
