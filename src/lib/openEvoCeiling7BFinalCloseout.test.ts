@@ -27,17 +27,17 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(snap).toContain('exactSuccessPct: 45.3125');
     expect(snap).toContain('actionAdmissibilityFailures: 7');
     expect(snap).toContain('runtimeErrors: 0');
-    expect(ceiling).toContain('128 / 128 全部完成');
-    expect(ceiling).toContain('headline 始终以全部 128 题为分母');
+    expect(ceiling).toContain('128 道测试任务全部完成');
+    expect(ceiling).toContain('平均分始终包含全部 128 题');
     expect(firstRun).toContain('58 / 128 完整成功');
   });
 
   it('keeps SEED paper numbers in a paper-reference claim domain', () => {
     expect(snap).toContain('seedPaperReference: { score: 89.7, successPct: 78.1 }');
     expect(ceiling).toContain('SEED · PAPER REFERENCE');
-    expect(ceiling).toContain('Score −40.37');
-    expect(ceiling).toContain('Success −32.79');
-    expect(ceiling).toContain('不把它写成方法因果效应');
+    expect(ceiling).toContain('40.37');
+    expect(ceiling).toContain('32.79');
+    expect(ceiling).toContain('不能把差值归因于学习方法本身');
     expect(firstRun).toContain('不冒充本地 paired reproduction');
   });
 
@@ -64,9 +64,9 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(snap).toContain("priorRemoteVerification: 'PASS'");
     expect(snap).toContain("currentFreshRead: 'TOOL_ERROR_INVALID_VALUE'");
     expect(ceiling).toContain('private / restricted research asset');
-    expect(ceiling).toContain('not represented as a fresh current verification');
+    expect(ceiling).toContain('the 2026-09-05 reread did not complete because of a tool-argument error');
     expect(firstRun).toContain('is not upgraded to a current fresh PASS');
-    expect(archive).toContain('prior PASS is not a current fresh verification');
+    expect(archive).toContain('does not establish a successful re-verification');
   });
 
   it('updates both localized Ceiling page descriptions with the final 7B closeout', () => {
@@ -76,3 +76,4 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(enPage).toContain('149 completed rounds');
   });
 });
+

@@ -21,7 +21,7 @@ describe('OpenEvo experiment archive', () => {
     expect(lobby).toContain('ResearchDepth');
     expect(lobby).toContain('/capability-exploration/archive/');
     expect(lobby).toContain('打开完整实验档案');
-    expect(archive).toContain('三张主地图只讲研究主剧情');
+    expect(archive).toContain('记录覆盖第一轮能力探索、新一轮学习设计及参数机制实验');
     expect(archive).toContain('Map one: first experiment');
     expect(archive).toContain('Map two: Redesigning OpenEvo');
     expect(archive).toContain('Map three: Mechanism-1.0');
@@ -30,24 +30,24 @@ describe('OpenEvo experiment archive', () => {
   });
 
   it('classifies Harness attempts as diagnostic evidence rather than continuation checkpoints', () => {
-    expect(archive).toContain('Harness201 / G3 HOLD');
-    expect(archive).toContain('33/128 invalid termination');
-    expect(archive).toContain('不能在同一 lineage 热换 parser / interface 后从 round1 接着跑');
-    expect(archive).toContain('它们回答“为什么改”，不是四条新科学路线');
+    expect(archive).toContain('Harness201 的第四次检查');
+    expect(archive).toContain('128 次尝试中有 33 次无效动作终止');
+    expect(archive).toContain('不能更换接口后把下一轮接到同一条旧记录上');
+    expect(archive).toContain('重复排查同一故障不等于增加了四组独立的方法比较');
   });
 
   it('keeps Server and Kaggle as execution metadata unless evidence proves a scientific difference', () => {
     expect(archive).toContain('SERVER / KAGGLE');
-    expect(archive).toContain('执行位置属于 metadata');
-    expect(archive).toContain('不画成科学分叉');
-    expect(archive).toContain('Only parse_ok=true counts as complete');
-    expect(archive).toContain('Retry-After');
+    expect(archive).toContain('服务器和 Kaggle 记录分析在哪里运行');
+    expect(archive).toContain('仅仅运行位置不同，不足以判断使用了不同的学习方法');
+    expect(archive).toContain('分析返回且格式检查通过才算完成（parse_ok=true）');
+    expect(archive).toContain('服务限流（429）时按等待时间重试');
   });
 
   it('collects long-run engineering repairs without promoting them to scientific branches', () => {
-    for (const label of ['trainer source', 'restart validator', 'execution provenance', 'HF cold archive', 'GPU / lease / holder']) expect(archive).toContain(label);
-    expect(archive).toContain('ENGINEERING PATCH LANE');
-    expect(archive).toContain('不能因为调度方便就改变正式 task budget');
+    for (const label of ['训练代码来源', '恢复状态核对', '执行版本记录', 'Hugging Face 归档', 'GPU 分配与占用']) expect(archive).toContain(label);
+    expect(archive).toContain('RUNTIME MAINTENANCE');
+    expect(archive).toContain('不能改变正式任务预算、模型状态或实验判定条件');
   });
 
   it('retains links and bilingual files for historical deep routes', () => {
@@ -86,3 +86,4 @@ describe('OpenEvo experiment archive', () => {
     expect(en).toContain('OpenEvoExperimentArchive');
   });
 });
+
