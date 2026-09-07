@@ -27,10 +27,10 @@ const frozenPanelHref = trackAManifest.href;
       <div class="question-meta">
         <span class="status-badge"><i aria-hidden="true"></i>{t('已完成 · 未证明稳定提升', 'Complete · no stable improvement established')}</span>
       </div>
-      <h3 id="current-q7-title">{t('最后还缺哪一个关键实验？', 'Which critical experiment is still missing?')}</h3>
+      <h3 id="current-q7-title">{t('OpenEVO 与 SEED 的同协议最终比较', 'Final OpenEVO vs SEED comparison under one protocol')}</h3>
       <p class="conclusion"><strong>{t('现在的答案：', 'Current answer: ')}</strong>{t(
-        '源码忠实任务测量路线（Track A）已经完成，不再是“待验证”。纠错后的 128 个任务槽位先逐题通过真实 SEED 运行路径的语义核对；随后基础模型（BASE）和加载冻结 OpenEvo SD-LoRA 适配器后的模型，各完成同一 128 个任务回合，而且全部有效。基础模型的平均任务完成度（Task Score×100）为 7.17、完整成功率 3.9%；SD-LoRA 为 8.74、3.9%。同任务配对后的平均差是 +1.57，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这是一轮有效测量，却仍不能证明 OpenEvo 稳定胜出。真正还缺的是方法对方法的公平比较路线（Track B）：在同一冻结环境、同一任务、同一评测器和匹配预算下重新运行 SEED 与 OpenEvo。',
-        'Source-faithful Track A is no longer awaiting validation. The corrected 128-task panel first passed 128/128 semantic validation against the real SEED runtime path, then BASE and the frozen OpenEvo SD-LoRA each completed 128 valid episodes. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; SD-LoRA reached 8.74 and 3.9%. The paired +1.57 difference has a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEvo win. The major remaining evidence is Track B: rerunning the methods themselves in one frozen world with matched budgets.',
+        '7B 基础模型和加载冻结 OpenEVO SD-LoRA 后的 7B 模型，已经在同一批 128 个 WebShop 任务上完成比较，而且 256 个任务回合全部有效。基础模型的平均任务完成度（Task Score×100）为 7.17、完整成功率 3.9%；OpenEVO 为 8.74、3.9%。同一任务逐题比较后的平均差是 +1.57，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这是一轮有效测量，却仍不能证明 OpenEVO 稳定胜出。真正还缺的是：在同一冻结环境、同一任务、同一评测器和匹配预算下，把 SEED 方法和 OpenEVO 方法重新运行并做最终比较。',
+        'The 7B base model and the same 7B model with the frozen OpenEVO SD-LoRA have now completed the same 128 WebShop tasks, for 256 valid episodes total. BASE reached 7.17 mean Task Score×100 and 3.9% exact success; OpenEVO reached 8.74 and 3.9%. The same-task mean difference is +1.57 with a 95% CI of [-3.21, +6.31], which crosses zero. This is a valid measurement, but it still does not establish a stable OpenEVO win. The major remaining experiment is to rerun SEED and OpenEVO as methods under one frozen environment, the same tasks, evaluator, and matched budget.',
       )}</p>
 
       <div class="manifest-callout" data-testid="frozen-128-task-manifest">

@@ -84,7 +84,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       expect(resultsQuestions).toContain(question);
     }
     expect(resultsQuestions).not.toContain("id: 'q7'");
-    expect(currentQ7).toContain('最后还缺哪一个关键实验？');
+    expect(currentQ7).toContain('OpenEVO 与 SEED 的同协议最终比较');
     expect(currentQ7).toContain('id="q7"');
     expect(resultsQuestions).toContain('<details class="evidence-details"');
     expect(currentQ7).toContain('<details class="evidence-details" id="evidence-q7">');
@@ -162,8 +162,8 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(currentQ7).toContain('BASE 7.17 / 3.9%');
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
-    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
-    expect(nextSteps).toContain('路线 B（Track B，WB1）');
+    expect(nextSteps).toContain('7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势');
+    expect(nextSteps).toContain('WB1 属于独立的路线 B');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });
 

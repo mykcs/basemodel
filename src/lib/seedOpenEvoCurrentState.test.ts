@@ -43,8 +43,8 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
     expect(hero).toContain('128/128 表示计划的 128 个任务槽位全部核对通过');
     expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).toContain('final_test_status=locked');
-    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
-    expect(nextSteps).toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
+    expect(nextSteps).toContain('7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势');
+    expect(nextSteps).toContain('连续学习实验：第 28 代状态已补齐，第 29 代尚未获准执行');
     expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
   });
