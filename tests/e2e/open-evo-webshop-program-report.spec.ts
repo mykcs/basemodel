@@ -14,7 +14,7 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop 研究结果' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: '先分清两种“新任务”' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'OpenEVO 内部新任务与 SEED 官方保留任务' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '我们现在能回答的七个问题' })).toBeVisible();
   await expect(index.getByRole('heading', { name: '第二代为什么还不能说“越学越好”？' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(6);
@@ -59,7 +59,7 @@ test('English results landing mounts the same unified findings page in English',
   await expect(index).toBeVisible();
   await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
   await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop research findings' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Two task ranges to keep in mind' })).toBeVisible();
+  await expect(index.getByRole('heading', { name: 'OpenEVO internal fresh tasks and SEED official held-out tasks' })).toBeVisible();
   await expect(index.getByRole('heading', { name: 'The seven questions we can now answer' })).toBeVisible();
   await expect(index.getByRole('heading', { name: 'Why can’t we yet say the second generation keeps improving?' })).toBeVisible();
   await expect(index.locator('article.question-card')).toHaveCount(6);
