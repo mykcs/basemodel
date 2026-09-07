@@ -44,7 +44,8 @@ describe('audience copy audit', () => {
     const seedPath = fs.readFileSync(path.join(root, 'src/components/SeedReproductionPath.astro'), 'utf8');
     const guide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
     expect(seedPath).not.toMatch(/今天真的租|rent today/);
-    expect(seedPath).toContain('market.checkedAtZh');
+    expect(seedPath).toContain('market.checkedAtIso');
+    expect(seedPath).toContain('公开产品快照');
     expect(guide).not.toMatch(/<h[1-6][^>]*>[^<]*(?:不要|不是|不再)/);
   });
 
@@ -76,20 +77,25 @@ describe('audience copy audit', () => {
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
     expect(standard).toContain('Headings name the subject');
     expect(standard).toContain('标题先命名主题');
+    expect(standard).toContain('首屏先认对象，再回答实验做了什么');
+    expect(standard).toContain('Canonical background belongs behind a link');
     expect(standard).toContain('Current scientific claims must be delegated, not copied');
     expect(auditSource).toContain('COPY-EDITORIAL-AS-HEADING');
     expect(auditSource).toContain('COPY-PRESENTER-HEADING');
     expect(auditSource).toContain('COPY-SUBJECT-TITLE-001');
+    expect(auditSource).toContain('COPY-INTERNAL-LABEL-001');
+    expect(auditSource).toContain('COPY-FIRST-READER-JARGON-001');
   });
 
   it('flags presenter-style reading instructions when they are promoted into headings', () => {
-    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'audience-copy-heading-'));
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'audience-copy-presenter-'));
     try {
-      const sample = path.join(tmpRoot, 'src/components');
+      const sample = path.join(tmpRoot, 'src', 'components');
       fs.mkdirSync(sample, { recursive: true });
-      fs.writeFileSync(path.join(sample, 'Presenter.astro'), '<h2>三个研究问题怎样连起来</h2>\n<h3>结果应该怎么读？</h3>\n');
+      fs.writeFileSync(path.join(sample, 'Presenter.astro'), '<h2>三个研究问题怎样连起来</h2>\n<p>三个研究问题怎样连起来，可以在正文解释。</p>\n');
       const findings = scanAudienceCopy(tmpRoot).filter((finding) => finding.ruleId === 'COPY-PRESENTER-HEADING');
-      expect(findings.length).toBeGreaterThanOrEqual(2);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.snippet).toContain('三个研究问题怎样连起来');
     } finally {
       fs.rmSync(tmpRoot, { recursive: true, force: true });
     }
