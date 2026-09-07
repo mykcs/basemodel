@@ -1,12 +1,10 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
-import SeedOpenEvoResearchNav from '../../../../components/research/SeedOpenEvoResearchNav.astro';
 import Lyg2171ServerOverview from '../../../../components/research/Lyg2171ServerOverview.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout title="实验服务器简介" description="2026-09-05 实验服务器容量与硬件快照：主文件系统当前约剩 16.1 GiB；匿名账户归属保留为 2026-09-03 最近一次完整快照；附本轮精确回收结果与科研资产整理、身份证化、发布和安全 reclaim Prompt。" locale={locale}>
   <div class="server-route">
-    <SeedOpenEvoResearchNav locale={locale} page="server" />
     <Lyg2171ServerOverview locale={locale} />
   </div>
 </AppLayout>
