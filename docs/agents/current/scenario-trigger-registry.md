@@ -283,6 +283,8 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 
 **Automatic response:**
 
+Treat explicit live-page feedback as product/repository work when the owner asked for the page to be fixed; do not substitute an account-memory update for implementation, case deposition, sibling audit, or regression protection. Repository persistence and long-term memory are separate receipts.
+
 1. Load the writing stack from `docs/agents/README.md` by responsibility, not by filename count.
 2. Read `website-design-spec.md` **and `website-copy-cases.md` for every user-facing copy/design task**. For ordinary work, match the closest recent PREFERENCE cases. When the owner gives live-page wording/readability feedback or reports a repeated comprehension problem, read the cases as a **case cluster**: include the current/closest case plus at least two nearby cases from the same failure family. Do not wait for the owner to repeat “说人话 / 去 AI 味”, learn from one specimen, or apply a word blacklist.
 3. For any public technical copy read `audience-centered-technical-copy.md`.
@@ -302,6 +304,8 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 When source-owner coverage/exemptions change, update the maintained `audience-copy-audit-2026-08-12.md` inventory and run the copy audits. Its date marks the original audit baseline; it remains current only because it is deliberately maintained as the owner inventory.
 
 Reader-journey repeat-failure case: [`../history/2026-09-07-reader-journey-experience-retention.md`](../history/2026-09-07-reader-journey-experience-retention.md) records why earlier style-guide-only fixes did not hold, the executable-contract repair, stale-check/worktree/provider/tool-path friction, and the exact separation between engineering acceptance and real human comprehension.
+
+Attention-contract case: [`../history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md`](../history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md) records the direct first-run wording feedback, the correction from “Apple-looking” to cognition-first design, case-cluster propagation, the 50-page-source fail-closed contract, moving-main/redirect/WebKit/Preview friction, and why existing prose rules alone were not enough.
 
 Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md`](../history/2026-08-31-arxiv-like-experiment-table-family-retrospective.md) records the 7B paper-table refinement that became a shared capability-exploration report contract, including mobile local-scroll semantics, moving-main synchronization, stale-test repair, protected-Preview authentication friction, and exact-head release closeout.
 
