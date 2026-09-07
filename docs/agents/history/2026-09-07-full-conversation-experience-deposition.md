@@ -119,3 +119,14 @@ BaseModel 合并前 deterministic、browser_shard_1、browser_shard_2 均成功�
 - **新规律**：测试断言保护的是语义不变量，不是旧文案；生命周期 schema 要拒绝 impossible states。
 - **新规律**：首屏几何、语义 reader path、真人理解是三层验收；缩字体或隐藏答案不能换取几何绿灯。
 - **当前暂停**：实现补丁未创建新分支/提交/部署；本轮只完成经验文档增量，不把 handoff 压缩包或临时状态写成项目长期事实。
+
+## 最终增量：暂停后的 smart merge 与发布收口
+
+上节“当前暂停”是当时真实快照，不能删除；之后用户明确要求继续，最终实现已恢复并经 PR #530 合并上线。完整因果记录见 [`2026-09-07-reader-journey-experience-retention.md`](2026-09-07-reader-journey-experience-retention.md) 第 10 节。
+
+本次新增并实际提升到 current owner 的规则只有两个窄增量：
+
+- `multi-pr-semantic-integration-playbook.md`：**冲突先归因再选 side**。必须比较 conflict-path set 与 intervening PR 的 changed-path set，并在需要时比较旧 PR exact head 与 merged-main blob；“最后合并的 PR”不能被自动认定为冲突来源。
+- `release-closeout-protocol.md`：**atomic merge-window witness**。required checks 终态后，记录 accepted head、current base、current required checks、provider identity、review-thread/merge state，并在支持时用 `expected_head_sha` 做 guarded merge；客户端 schema 校验在 dispatch 前失败不算远端 mutation。
+
+没有再扩写根 `AGENTS.md`，因为 exact-head、moving-main、REPEAT-CORRECTION、shell、provider、shared-state 入口已经存在；继续堆入口文字不会修复 use-site 执行缺口。没有改实验仓库、GPU、Docker、scientific authority 或运行配置。真人目标读者验证仍为 0 人，不能把工程/Production 完成升级成真人理解率结论。长期记忆实际写入仍为 0 条：当前环境无写接口。
