@@ -10,10 +10,10 @@ Verified: 2026-09-07
 - DirectApply last dynamic verification: 15 / 160 rounds, 1,920 / 20,480 rollouts, GDR candidate-probe calls = 0, GDR acceptance evaluations = 0. This is an interim timestamped snapshot, not a final result.
 
 ## Exact-tree product acceptance
-- `npm run verify:deploy`: PASS, including lint, negative gate self-tests, data/semantic/claims/freshness audits, 491 structural tests, 37 behavior tests, v2/adversarial/hardening, and copy strict with 0 strict invariant failures.
+- `npm run verify:deploy`: PASS, including lint, negative gate self-tests, data/semantic/claims/freshness audits, 492 structural tests, 37 behavior tests, v2/adversarial/hardening, and copy strict with 0 strict invariant failures.
 - `npm run build`: PASS — 480 static routes; heading and external-brand audits PASS.
 - Focused Chromium regression `tests/e2e/gdr-directapply.spec.ts`: PASS — 5 / 5.
-- CircleCI hosted-browser matrix reproduced locally from the canonical sharder: shard 1 = **98 / 98 PASS**, shard 2 = **98 / 98 PASS**. The first remote shard-1 failure exposed a real reader-copy contract gap (`data-copy-review` ownership and sub-15.9px reader prose); the page was fixed rather than the gate weakened.
+- CircleCI hosted-browser matrix reproduced locally from the canonical sharder: shard 1 = **100 / 100 PASS**, shard 2 = **100 / 100 PASS**. After integrating current `main` (#530), the canonical sharder contains 200 tests. Both exact current-main shards pass. The first remote shard-1 failure exposed a real reader-copy contract gap (`data-copy-review` ownership and sub-15.9px reader prose); the page was fixed rather than the gate weakened.
 - Reader route is registered in the capability-exploration route contract and mounts the shared first-reader task/context strip in both locales.
 - Viewports: 390px mobile and 1440px desktop have no page-level horizontal overflow; mobile experiment controls render as cards.
 - Axe WCAG 2 A/AA: 0 violations. One `color-contrast` group remains `incomplete` because the automated tool cannot resolve several overlapped/SVG backgrounds.
