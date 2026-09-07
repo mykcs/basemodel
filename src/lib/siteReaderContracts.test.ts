@@ -19,6 +19,20 @@ describe('site-wide reader attention contracts', () => {
         expect(value, row.id).not.toMatch(/\b(?:tbd|todo|placeholder)\b|待定|以后再说/i);
       }
       expect(row.sourceRoute).not.toBe('/**');
+      if (row.firstViewportBudget) {
+        expect(row.firstViewportBudget.maxInteractive, row.id).toBeGreaterThanOrEqual(0);
+        expect(row.firstViewportBudget.maxHeadings, row.id).toBeGreaterThan(0);
+        expect(row.firstViewportBudget.maxTextChars, row.id).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('gives high-level gateways an explicit first-screen budget instead of relying on H1 visibility alone', () => {
+    for (const id of ['home', 'models-index', 'model-detail', 'papers-index', 'guide', 'landscape', 'workspace', 'lab', 'flow', 'flow-server', 'study', 'capability-home']) {
+      const row = SITE_READER_CONTRACTS.find((contract) => contract.id === id);
+      expect(row, id).toBeDefined();
+      expect(row?.firstViewportSelector, id).toBeTruthy();
+      expect(row?.firstViewportBudget, id).toBeDefined();
     }
   });
 
