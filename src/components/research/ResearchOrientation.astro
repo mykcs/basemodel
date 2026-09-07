@@ -5,7 +5,7 @@ import ResearchGlossary from './ResearchGlossary.astro';
 interface Term { term: string; meaning: string }
 interface Props {
   locale: Locale;
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   lede: string;
   question: string;
@@ -28,10 +28,12 @@ const labels = zh
   : { question: 'Question', why: 'Why it matters', start: 'Starts from', finish: 'Finishes when', state: 'Current state' };
 ---
 <header class="research-orientation" data-research-orientation data-layout={props.layout ?? 'compact'} data-ui-audit="contrast layout" data-locale={props.locale} data-state-tone={props.stateTone ?? 'planned'}>
-  <div class="research-orientation__meta">
-    {props.backHref && <a href={props.backHref}>← {props.backLabel}</a>}
-    <span>{props.eyebrow}</span>
-  </div>
+  {(props.backHref || props.eyebrow) && (
+    <div class="research-orientation__meta">
+      {props.backHref && <a href={props.backHref}>← {props.backLabel}</a>}
+      {props.eyebrow && <span>{props.eyebrow}</span>}
+    </div>
+  )}
   <div class="research-orientation__intro">
     <h1>{props.title}</h1>
     <p data-reader-purpose>{props.lede}</p>
