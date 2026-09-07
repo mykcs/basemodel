@@ -43,13 +43,13 @@ const summarySteps = zh ? [
 <main data-copy-review class="first-run" data-first-run-map data-testid="openevo-first-run-map">
   <ResearchOrientation
     locale={locale}
-    title={t("3B 和 7B 的第一轮购物实验", "First WebShop experiments with 3B and 7B")}
-    lede={t("我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。7B 能持续把经验用于参数更新；旧 3B 实验则暴露了购物接口和动作格式问题。","We ran separate WebShop experiments with Qwen2.5-3B and Qwen2.5-7B. The 7B run sustained parameter updates; the old 3B run exposed problems in the shopping interface and action format.")}
-    question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
-    why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Distinguish model capability, interface errors and capacity limits before the next design.")}
-    start={t("3B 和 7B 都先各自收集初始购物经验，再进入后续学习。","3B and 7B each collect initial shopping experience before later learning.")}
-    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 rounds of 128 attempts. Old 3B stops after 3,200 later attempts.")}
-    state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","History is sealed. 7B completed final evaluation; old 3B stopped.")}
+    title={t("3B 和 7B 的第一轮购物实验", "3B and 7B experiments")}
+    lede={t("我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。7B 能持续把经验用于参数更新；旧 3B 实验则暴露了购物接口和动作格式问题。","We ran WebShop experiments with Qwen2.5-3B and Qwen2.5-7B. 7B kept updating; the old 3B exposed interface and action-format problems.")}
+    question={t("经验能否带来持续的模型更新？","Can experience sustain model updates?")}
+    why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Separate model limits, interface errors, and capacity limits before redesigning.")}
+    start={t("3B 和 7B 都先各自收集初始购物经验，再进入后续学习。","3B and 7B each collect initial WebShop experience.")}
+    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 × 128 attempts. Old 3B: 3,200 later attempts, then stopped.")}
+    state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","Sealed history. 7B final tested; old 3B stopped.")}
     stateTone="historical"
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
