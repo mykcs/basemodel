@@ -85,3 +85,16 @@ Navigation acceptance must cover both sides of the split: at least one `flow` ro
 Do not remove useful local detail merely because two routes mention the same noun. Duplication means the same explanatory object is competing in multiple places. A short contextual summary, metric table, or link is allowed when it serves the current route's distinct job.
 
 Likewise, do not flatten the two research journeys simply because every route is related to SEED × OpenEvo. The question is not whether routes share a topic; it is whether they serve the same reader task.
+
+
+## Study planning preflight after repeated comprehension failure
+
+Before restructuring the study gateway, map each research question to its experiments, each claim to its evidence/scope, and each substantial content block to its primary explanatory route. Moving a full article from the gateway into a child page does not by itself repair the argument. Preserve a coherent experiment narrative connecting motivation, intervention, result, interpretation and remaining uncertainty; shared Design/Run references provide reusable depth.
+
+Distinguish three ownership responsibilities: facts/metrics have one authoritative source; reusable explanations have one main route; contextual summaries may appear on multiple routes. Do not ban every repeated noun or remove comparison-critical limits. The visible summary must retain evaluation stage and other conditions needed to interpret a result; raw logs, configuration and commit identity can use progressive disclosure.
+
+Use the common training workflow as orientation, then show execution progress and evidence readiness per experiment. A single global timeline must not imply that independent experiments share one start/end state. Reduction in length is a planning aid, not comprehension evidence. Apply existing reader-journey and human-comprehension acceptance separately.
+
+At implementation, check the existing shared navigation owner and rendered desktop/mobile state, plus direct and indirect page-level component imports. A repeated source navigation string is not by itself proof of two visible navigation bars. Record content destinations and preserve old deep links before removing unique material.
+
+The bounded [study planning/handoff case](../history/2026-09-07-study-planning-handoff-retrospective.md) records user reports versus independent observations and the GDR inference examples. These are preflight refinements to this owner; they do not claim that the study restructure has been implemented or amend scientific execution authority.

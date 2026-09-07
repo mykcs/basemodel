@@ -55,6 +55,8 @@ For UI/layout/theme/CSS work also read:
 - [`current/theme-contrast-contract.md`](current/theme-contrast-contract.md)
 - [`current/ui-change-visual-acceptance-gate.md`](current/ui-change-visual-acceptance-gate.md)
 
+For research-overview planning and Agent handoff, the [study planning case](history/2026-09-07-study-planning-handoff-retrospective.md) explains content ownership, bounded tool reads and plan-versus-implementation evidence; use it after the current owners.
+
 For route-role/deduplication questions in the research area, read [`current/research-journey-experience.md`](current/research-journey-experience.md).
 
 ### SEED × OpenEvo publication / Results

@@ -79,6 +79,14 @@ In particular:
 
 Tool convenience is not sufficient justification for broader access. The default is **cloud-side for cloud-owned state, device-side only for device-owned state**.
 
+### Bounded reads and implementation handoffs
+
+Before a large repository/tool read, name the exact missing fact and bound the returned output. Filter registry metadata to the needed action; retain recursive tree responses in the orchestration layer and print only relevant paths. Read long required documents in explicit sections. A successful fetch with truncated model-visible output is **not** proof of complete reading: recover the missing relevant sections before making a dependent decision. Reuse known schemas and exact local artifact paths rather than rediscovering all tools or searching unrelated workspaces.
+
+When handing a plan to another Agent, separate the immutable plan reference from the mutable implementation base. Include repository, path, PR/ref fallback if unmerged, goal, acceptance criteria, known overlap that must be refreshed, and stage-specific authorization. A docs-only branch is not automatically a valid UI Preview branch. Re-read current branch/deployment rules at implementation time; do not ask again for implementation permission already supplied by the user, and do not infer merge/Production permission from it.
+
+Historical example: [study planning and handoff](../history/2026-09-07-study-planning-handoff-retrospective.md). This adds an operation-time check to the existing read-before-write and progressive-disclosure rules; it does not claim automated enforcement of Agent behavior.
+
 ### Reconstruct from durable state after partial execution or tool confusion
 
 A conversation is not an execution ledger. If a long task contains partial tool output, reconnects, timeouts, or a prior assistant message that says “blocked”, “not done”, or “done”, rebuild the state from durable evidence before acting on that prose.

@@ -368,7 +368,8 @@ previous retrospective did not prevent recurrence.
    memory;
 7. before summarizing “blocked/done”, reconstruct the outcome from exact refs, PR/check/provider/test artifacts rather than trusting a previous assistant sentence or arbitrary working-tree file;
 8. record what was deliberately not persisted and why; if a rule already existed but was violated, identify the missing use-site witness rather than claiming the rule was absent;
-9. correct dated snapshots that masquerade as current authority by adding an explicit historical scope and current-owner pointer, without changing their recorded facts; report memory-write availability separately from repository persistence.
+9. if a plan/handoff or large repository read is involved, apply the bounded-read and implementation-handoff checks in `project-agent-operating-principles.md`; recover required sections hidden by truncation before claiming they were read. The [study planning case](../history/2026-09-07-study-planning-handoff-retrospective.md) is the concrete failure example;
+10. correct dated snapshots that masquerade as current authority by adding an explicit historical scope and current-owner pointer, without changing their recorded facts; report memory-write availability separately from repository persistence.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.
