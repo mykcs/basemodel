@@ -6,6 +6,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const resultsPageZh = read('../pages/research/seed-openevo/study/results.astro');
 const resultsPageEn = read('../pages/en/research/seed-openevo/study/results.astro');
 const experimentPage = read('../pages/research/seed-openevo/study/index.astro');
+const designPage = read('../pages/research/seed-openevo/study/design/index.astro');
 const researchDetail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const hero = read('../components/research/OpenEvoWebShopResultsHero.astro');
 const protocol = read('../components/research/OpenEvoWebShopResultsProtocol.astro');
@@ -362,9 +363,10 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).toContain("'measurement-boundary'");
   });
 
-  it('keeps the experiment route mounted while Results owns the updated benchmark-facing status', () => {
-    expect(experimentPage).toContain('OpenEvoNextExperimentProtocol');
-    expect(nextProtocol).toContain('NEXT EXPERIMENT');
-    expect(nextProtocol).toContain('下一场真正关键的实验是什么？');
+  it('keeps the study overview focused while Design owns the detailed follow-up protocol', () => {
+    expect(experimentPage).not.toContain('OpenEvoNextExperimentProtocol');
+    expect(designPage).toContain('OpenEvoNextExperimentProtocol');
+    expect(nextProtocol).toContain('HISTORICAL DESIGN · NEXT BENCHMARK');
+    expect(nextProtocol).toContain('完整预算的 OpenEvo × SEED 公平比较');
   });
 });

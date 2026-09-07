@@ -74,17 +74,17 @@ describe('SEED × OpenEvo training design lab', () => {
     expect(lab).not.toContain('current live MiniMax');
   });
 
-  it('wires the focused route and the main study page to the same bilingual lab', () => {
+  it('keeps the bilingual training lab on Design while the study route stays an overview', () => {
     expect(zhPage).toContain('SeedOpenEvoTrainingDecisionLab');
     expect(zhPage).toContain('page=\"design\"');
     expect(enPage).toContain('SeedOpenEvoTrainingDecisionLab');
     expect(enPage).toContain('page=\"design\"');
     expect(nav).toContain("'design'");
     expect(nav).toContain("'/research/seed-openevo/study/design/'");
-    expect(zhStudy).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(zhStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />');
-    expect(enStudy).toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(enStudy).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />');
+    expect(zhStudy).toContain('SeedOpenEvoStudyOverview');
+    expect(zhStudy).not.toContain('SeedOpenEvoTrainingDecisionLab');
+    expect(enStudy).toContain('SeedOpenEvoStudyOverview');
+    expect(enStudy).not.toContain('SeedOpenEvoTrainingDecisionLab');
   });
 
   it('keeps interaction optional and reduced-motion readable', () => {
