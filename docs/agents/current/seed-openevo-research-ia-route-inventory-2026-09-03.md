@@ -175,6 +175,8 @@ Result: no frozen SEED × OpenEvo filesystem route was found with zero current i
 
 This table gives every frozen locale-neutral semantic route exactly one primary `type`, one `disposition`, and one intended semantic owner.
 
+> **2026-09-07 human-feedback override for row 11:** `/research/seed-openevo/study/design/` is no longer a canonical content owner or Experiment Designs destination. Its training-design explanation is owned by `/research/seed-openevo/flow/#training-design`; the old zh/en URL is compatibility-only, must not appear in the sitemap or new reader-facing links, and must not regain a page-specific navigation / typography system.
+
 ## 4. Duplicate and overlap groups
 
 ### DUP-01 — two design centers

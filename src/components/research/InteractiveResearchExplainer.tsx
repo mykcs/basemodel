@@ -52,7 +52,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     seed: {
-      eyebrow: 'FIGURE 04 · SEED × WEBSHOP',
+      eyebrow: '',
       title: zh ? 'SEED 的两阶段 WebShop 学习循环' : 'SEED’s two-stage WebShop learning loop',
       lede: zh ? 'Stage 1 先由 Qwen 通过 SEED / verl-agent harness 与 Princeton WebShop 环境交互采轨迹，再由外部 GLM-5.2 离线生成 hindsight skill 并做 SFT；Stage 2 保持同一 interaction contract，改由当前 policy 自己复盘，并把 OPD 与 GRPO 写回下一版参数。' : 'Stage 1 first collects Qwen trajectories through the SEED / verl-agent harness over the Princeton WebShop environment, then uses external GLM-5.2 offline for hindsight-skill SFT; Stage 2 keeps the same interaction contract, moves analysis to the current policy, and writes OPD plus GRPO into the next parameter state.',
       steps: [
@@ -65,7 +65,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     openevo: {
-      eyebrow: 'FIGURE 05 · OPENEVO × WEBSHOP',
+      eyebrow: '',
       title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
       lede: zh ? '先完成 WebShop Task N 并封存 evidence；演化只在 task boundary 之后发生。当前参数化路径把经验写入 SD-LoRA adapter，通过 validation 后才形成 Task N+1 使用的 successor revision。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
       steps: [
@@ -79,7 +79,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       ],
     },
     compare: {
-      eyebrow: 'SEED × OPENEVO',
+      eyebrow: '',
       title: zh ? 'SEED 与 OpenEvo 更新机制' : 'SEED and OpenEvo update mechanisms',
       lede: zh ? '从同一份 completed experience 出发，分别比较 SEED 与 OpenEvo 怎样处理经验、保存什么状态，以及变化何时生效。' : 'Start from the same completed experience and compare how SEED and OpenEvo process it, what each persists, and when each change activates.',
       steps: [

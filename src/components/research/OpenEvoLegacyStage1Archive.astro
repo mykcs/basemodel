@@ -24,7 +24,6 @@ const artifacts = [
   <a class="legacy-s1__back" href={p('/research/seed-openevo/study/capability-exploration/first-run/')}>← {t("返回初始运行", "Back to first run")}</a>
   <header class="legacy-s1__hero">
     <div>
-      <p>{t("初始经验 · 历史资料", "INITIAL EXPERIENCE · HISTORICAL RECORDS")}</p>
       <h1>{t("历史初始经验与模型文件", "Historical initial experience and model files")}</h1>
       <span>{t("初始经验收集让模型独立完成 180 个购物任务、每个尝试 8 次，共 1,440 次，随后保存购物过程和事后分析。2026-08-31 的归档复核将这份历史资料与当时修订版比较：任务、模型版本、购物接口和每组 180×8 次尝试相同，随机种子与实际采样设置不同，因此不能视为逐条相同的数据。这也不代表后来更换共享购物接口的 3B + 1.7B 新实验。", "Initial collection lets the model independently attempt 180 shopping tasks eight times each, producing 1,440 attempts followed by saved traces and post-task analysis. The 2026-08-31 archive review compared this historical collection with its contemporary revision: tasks, model revisions, interface, and 180×8 attempts per arm matched, while seeds and effective decoding settings differed, so they are not identical corpora. It also does not describe the later 3B + 1.7B study with its changed shared shopping interface.")}</span>
     </div>
@@ -32,7 +31,6 @@ const artifacts = [
   </header>
 
   <section class="legacy-s1__section" aria-labelledby="legacy-s1-assets-title">
-    <p class="kicker">{t('旧产物在哪里','WHERE THE OLD ARTIFACTS LIVE')}</p>
     <h2 id="legacy-s1-assets-title">{t("购物记录与模型归档", "Shopping records and model archives")}</h2>
     <p class="legacy-s1__intro">{t("Hugging Face 保存购物记录和模型文件，GitHub 保存验证依据。链接固定到具体版本，便于核对被引用的那份资料；私有研究资产需要相应访问权限。", "Hugging Face holds traces and model files; GitHub holds verification evidence. Links pin specific versions for inspection, and private research assets require appropriate access.")}</p>
     <div class="legacy-s1__artifacts">
@@ -40,7 +38,7 @@ const artifacts = [
     </div>
   </section>
   <section class="legacy-s1__section legacy-s1__audit" aria-labelledby="legacy-s1-audit-title">
-    <div><p class="kicker">{t("GitHub 来源记录", "GITHUB PROVENANCE")}</p><h2 id="legacy-s1-audit-title">{t("归档验证与数据差异", "Archive verification and data differences")}</h2></div>
+    <div><h2 id="legacy-s1-audit-title">{t("归档验证与数据差异", "Archive verification and data differences")}</h2></div>
     <div class="legacy-s1__audit-links">
       <a href={`${githubBase}/docs/evidence/server-audits/2026-08-31/superseded-stage2-publication-closeout.json`}><ExternalBrandMark href={`${githubBase}/docs/evidence/server-audits/2026-08-31/superseded-stage2-publication-closeout.json`} /><strong>{t("发布与验证记录", "Publication and verification record")}</strong><span>{t("记录固定归档版本、远端内容核对、运行校验值和保留状态。", "Records pinned archive revisions, remote content checks, run digests, and retention state.")}</span></a>
       <a href={`${githubBase}/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md`}><ExternalBrandMark href={`${githubBase}/docs/troubleshooting/experiment-ops/CASE-CEILING1-END-TO-END-SCIENCE-ENGINEERING-RETROSPECTIVE-20260831.md`} /><strong>{t('Stage-1 新旧科学边界','Stage-1 old/new scientific boundary')}</strong><span>{t("区分实验规则相同、实际采样不同，以及运行设置修正。", "Distinguishes equivalent protocol, different realized sampling, and corrected runtime settings.")}</span></a>
@@ -49,7 +47,7 @@ const artifacts = [
   </section>
 
   <section class="legacy-s1__section legacy-s1__meaning" aria-labelledby="legacy-s1-meaning-title">
-    <div><p class="kicker">{t("复用边界", "REUSE BOUNDARY")}</p><h2 id="legacy-s1-meaning-title">{t("历史资料的复用边界", "Boundaries for reusing historical material")}</h2></div>
+    <div><h2 id="legacy-s1-meaning-title">{t("历史资料的复用边界", "Boundaries for reusing historical material")}</h2></div>
     <ol>
       <li><b>01</b><strong>{t("购物行为分析", "Shopping-behavior analysis")}</strong><p>{t("购物记录真实反映模型在当时随机种子与采样设置下的行为。", "The traces record actual model behavior under the seeds and decoding settings used at the time.")}</p></li>
       <li><b>02</b><strong>{t("原模型状态恢复", "Restoring the original model state")}</strong><p>{t("主模型归档保存初始训练的参数增量和未更新模型的指针，可按原始身份恢复。", "The primary model archive preserves initial-training parameter increments and pointers to unchanged models for identity-preserving restoration.")}</p></li>
@@ -63,14 +61,14 @@ const artifacts = [
 .legacy-s1{width:min(1180px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--color-text)}
 .legacy-s1__back{display:inline-flex;margin-top:1rem;color:var(--color-accent);font-size:1rem;font-weight:760;text-decoration:none}.legacy-s1__back:hover{text-decoration:underline}
 .legacy-s1__hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:2rem;padding:1.5rem 0 2rem;border-bottom:1px solid var(--color-border)}
-.legacy-s1__hero>div>p,.kicker{margin:0 0 .5rem;color:var(--color-accent);font:800 1rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}.legacy-s1__hero h1,.legacy-s1__section h2{margin:0;letter-spacing:-.04em}.legacy-s1__hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}
+.legacy-s1__hero h1,.legacy-s1__section h2{margin:0;letter-spacing:-.04em}.legacy-s1__hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}
 .legacy-s1__hero>div>span{display:block;max-width:78ch;margin-top:.8rem;color:var(--color-text-muted);line-height:1.7}.legacy-s1__hero aside{align-self:end;padding:1rem;border:1px solid var(--color-accent);border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}.legacy-s1__hero aside b{font-size:1rem}.legacy-s1__hero aside p{margin:.45rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.55}
 .legacy-s1__section{padding:2rem 0;border-bottom:1px solid var(--color-border)}.legacy-s1__section h2{font-size:clamp(1.35rem,3vw,2.15rem)}.legacy-s1__intro{max-width:80ch;margin:.75rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.65}
-.legacy-s1__artifacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:1.1rem}.legacy-s1__artifacts a{display:flex;min-width:0;flex-direction:column;gap:.28rem;padding:1rem;border:1px solid var(--color-border);border-radius:11px;color:var(--color-text);text-decoration:none}.legacy-s1__artifacts a:hover{border-color:var(--color-accent)}.legacy-s1__artifacts span{color:var(--color-accent);font:800 1rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em}.legacy-s1__artifacts strong{font-size:1rem}.legacy-s1__artifacts small{color:var(--color-text-muted);font-size:1rem;line-height:1.5}.legacy-s1__artifacts code{margin-top:auto;padding-top:.4rem;color:var(--color-text-muted);font-size:1rem;overflow-wrap:anywhere}
+.legacy-s1__artifacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:1.1rem}.legacy-s1__artifacts a{display:flex;min-width:0;flex-direction:column;gap:.28rem;padding:1rem;border:1px solid var(--color-border);border-radius:11px;color:var(--color-text);text-decoration:none}.legacy-s1__artifacts a:hover{border-color:var(--color-accent)}.legacy-s1__artifacts span{color:var(--color-accent);font:800 1rem var(--font-mono);letter-spacing:.07em}.legacy-s1__artifacts strong{font-size:1rem}.legacy-s1__artifacts small{color:var(--color-text-muted);font-size:1rem;line-height:1.5}.legacy-s1__artifacts code{margin-top:auto;padding-top:.4rem;color:var(--color-text-muted);font-size:1rem;overflow-wrap:anywhere}
 </style>
 <style>
 .legacy-s1__audit{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:1.4rem}.legacy-s1__audit-links{display:grid;gap:.55rem}.legacy-s1__audit-links a{display:flex;flex-direction:column;gap:.2rem;padding:.8rem;border-left:2px solid var(--color-border);color:var(--color-text);text-decoration:none}.legacy-s1__audit-links a:hover{border-color:var(--color-accent)}.legacy-s1__audit-links strong{font-size:1rem}.legacy-s1__audit-links span{color:var(--color-text-muted);font-size:1rem;line-height:1.5}
-.legacy-s1__meaning{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:1.4rem}.legacy-s1__meaning ol{list-style:none;margin:0;padding:0}.legacy-s1__meaning li{display:grid;grid-template-columns:34px minmax(150px,.65fr) minmax(0,1.35fr);gap:.7rem;padding:.8rem 0;border-bottom:1px solid var(--color-border)}.legacy-s1__meaning li b{color:var(--color-accent);font:800 1rem ui-monospace,SFMono-Regular,Menlo,monospace}.legacy-s1__meaning li strong{font-size:1rem}.legacy-s1__meaning li p{margin:0;color:var(--color-text-muted);font-size:1rem;line-height:1.55}
+.legacy-s1__meaning{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:1.4rem}.legacy-s1__meaning ol{list-style:none;margin:0;padding:0}.legacy-s1__meaning li{display:grid;grid-template-columns:34px minmax(150px,.65fr) minmax(0,1.35fr);gap:.7rem;padding:.8rem 0;border-bottom:1px solid var(--color-border)}.legacy-s1__meaning li b{color:var(--color-accent);font:800 1rem var(--font-mono)}.legacy-s1__meaning li strong{font-size:1rem}.legacy-s1__meaning li p{margin:0;color:var(--color-text-muted);font-size:1rem;line-height:1.55}
 .legacy-s1__foot{margin:1rem 0 0;padding:1rem;border:1px dashed var(--color-border);border-radius:10px;color:var(--color-text-muted);font-size:1rem;line-height:1.65}.legacy-s1__foot strong{color:var(--color-text)}
 @media(max-width:800px){.legacy-s1__hero,.legacy-s1__audit,.legacy-s1__meaning,.legacy-s1__artifacts{grid-template-columns:1fr}.legacy-s1__meaning li{grid-template-columns:28px 1fr}.legacy-s1__meaning li p{grid-column:2}}
 @media(max-width:520px){.legacy-s1{width:min(100% - 1rem,1180px)}.legacy-s1__artifacts a{padding:.85rem}}

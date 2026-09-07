@@ -54,14 +54,14 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'benchmark-first' && (
     <main class="note-body">
       <section class="opening-section">
-        <p class="section-kicker">01 · 已经知道什么</p>
+        <p class="section-number" aria-hidden="true">01</p>
         <h2>OpenEvo 已经有第一代内部迁移证据，但这还不是 SEED 官方保留任务结果。</h2>
         <p>实验编号 H1.38B 首次观察到可靠的“内部新任务迁移”：也就是训练没见过、任务 ID 与训练集不重叠的任务上出现提升。H1.39 又换了一套独立、任务 ID 不重叠的评测面板复现同方向结果。两组正式正向迁移任务都来自 <strong>goal_idx ≥ 500</strong>。</p>
         <p>因此，这些实验支持“第一代内部新任务迁移可以出现并复现”，但不能回答 OpenEvo 在 SEED official held-out tasks（SEED 官方保留任务）0–499 上是否有效。</p>
       </section>
 
       <section>
-        <p class="section-kicker">02 · 缺少什么</p>
+        <p class="section-number" aria-hidden="true">02</p>
         <h2>正式的 OpenEvo vs SEED 比较目前没有结果。</h2>
         <div class="question-card">
           <p>H1.30</p>
@@ -71,7 +71,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <p class="section-kicker">03 · 两类问题</p>
+        <p class="section-number" aria-hidden="true">03</p>
         <h2>最终效果和作用机制需要分别回答。</h2>
         <div class="lane-grid">
           <div class="lane primary">
@@ -88,7 +88,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <p class="section-kicker">04 · 下一项正式证据</p>
+        <p class="section-number" aria-hidden="true">04</p>
         <h2>只需要补一场“与 SEED 严格兼容的公平比较”。</h2>
         <p>训练任务继续来自 500–6909；正式评估只使用 0–499；OpenEvo 与 SEED 使用相同任务身份、环境随机种子（environment seed）、交互规则和评分协议。现有 H0–H1.41 机制实验不需要因此全部重跑。</p>
       </section>
@@ -100,7 +100,7 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'seed-faithful-benchmark' && (
     <main class="note-body">
       <section class="opening-section">
-        <p class="section-kicker">01 · 评价单位</p>
+        <p class="section-number" aria-hidden="true">01</p>
         <h2>WebShop 的基本评价单位是一整个 shopping episode（购物任务回合）。</h2>
         <p>instruction 固定以后，模型每一步动作都会改变下一步 observation（观察）。最终评价的是 frozen policy（冻结策略）从任务开始到终止的 closed-loop behavior（闭环行为），而不是某一个 action token。</p>
         <pre><code>{`Instruction
@@ -117,7 +117,7 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">02 · 数据边界</p>
+        <p class="section-number" aria-hidden="true">02</p>
         <h2>训练区和正式保留任务必须在实验开始前分开。</h2>
         <div class="two-column">
           <div>
@@ -134,13 +134,13 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">03 · Goal ordering</p>
+        <p class="section-number" aria-hidden="true">03</p>
         <h2>任务编号只有在环境随机种子（environment seed）一致时才真正可比。</h2>
         <p>WebShop 会在环境初始化时打乱任务目标顺序（shuffle goals）。如果目标是与 SEED GRPO 的“精确任务编号设定”对齐，应使用 <strong>环境随机种子 = 0</strong>，并保存每个任务的任务编号（goal_idx）、任务文本哈希（instruction hash）与数据版本。</p>
       </section>
 
       <section>
-        <p class="section-kicker">04 · 评分</p>
+        <p class="section-number" aria-hidden="true">04</p>
         <h2>连续任务分数、精确成功和训练 reward 不能混成一个指标。</h2>
         <div class="protocol-table" role="table" aria-label="WebShop evaluation metrics">
           <div class="row head" role="row"><span>指标</span><span>含义</span></div>
@@ -152,13 +152,13 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">05 · 测试时行为</p>
+        <p class="section-number" aria-hidden="true">05</p>
         <h2>正式评估开始以后，模型状态必须保持冻结。</h2>
         <p>不同 held-out tasks（保留任务）之间不更新 memory、adapter 或 policy。否则前一个测试任务会变成后一个任务的训练信息，最终结果就不再表示同一个 frozen agent 在未见任务上的表现。</p>
       </section>
 
       <section>
-        <p class="section-kicker">06 · 可追溯身份</p>
+        <p class="section-number" aria-hidden="true">06</p>
         <h2>每个正式结果都需要能够还原“谁在什么任务上、用什么数据跑出来”。</h2>
         <p>至少保存任务编号（goal_idx）、任务文本哈希（instruction hash）、数据文件 SHA-256、环境随机种子、代码 SHA、模型 / 学习适配器身份、原始任务完成度（raw task_score）与完整成功（Exact Success）。OpenEvo 和 SEED 的比较任务身份必须逐项匹配。</p>
       </section>
@@ -170,7 +170,7 @@ Task Score + exact Success`}</code></pre>
   {note === 'openevo-benchmark-design' && (
     <main class="note-body">
       <section class="opening-section">
-        <p class="section-kicker">01 · 两个变量</p>
+        <p class="section-number" aria-hidden="true">01</p>
         <h2>“进化什么”和“用什么反馈进化”是两个不同问题。</h2>
         <div class="axis-grid">
           <div>
@@ -187,19 +187,19 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">02 · 外部经验载体</p>
+        <p class="section-number" aria-hidden="true">02</p>
         <h2>外部经验载体能否把过去任务中的规律带到后续任务？</h2>
         <p>这类状态可以包含搜索策略、variant 检查、价格约束、失败后的回退策略等经验。关键评价不是记忆文本是否变长，而是冻结后的策略是否在新的任务上带来更高任务完成度（Task Score）和完整成功率。</p>
       </section>
 
       <section>
-        <p class="section-kicker">03 · 参数化经验载体</p>
+        <p class="section-number" aria-hidden="true">03</p>
         <h2>把经验继续写进参数以后，迁移收益和旧能力保持会怎样变化？</h2>
         <p>SD-LoRA 与现有参数写入实验提供了直接机制证据。H1.38B / H1.39 说明第一代内部迁移可以出现；H1.40 则说明第二代的“新知识获取、旧能力保持、已有收益保持”三项还没有同时稳定成立。</p>
       </section>
 
       <section>
-        <p class="section-kicker">04 · 反馈密度</p>
+        <p class="section-number" aria-hidden="true">04</p>
         <h2>稀疏反馈与稠密反馈应该作为单独的消融变量。</h2>
         <div class="lane-grid">
           <div class="lane primary">
@@ -217,7 +217,7 @@ Task Score + exact Success`}</code></pre>
       </section>
 
       <section>
-        <p class="section-kicker">05 · 实验顺序</p>
+        <p class="section-number" aria-hidden="true">05</p>
         <h2>官方保留任务比较与方法变体</h2>
         <p>第一优先级是在同一套冻结的基准比较协议下得到正式 OpenEvo / SEED 结果。随后再比较“外部经验载体 vs 参数化载体”“稀疏反馈 vs 稠密反馈”等变体，用来解释主结果，而不是替代这场仍缺失的方法级正式比较。</p>
       </section>
@@ -227,13 +227,13 @@ Task Score + exact Success`}</code></pre>
 
 <style>
   .benchmark-note{--reading:820px;width:min(1180px,calc(100% - 2rem));margin:1rem auto 5rem;color:var(--color-text)}
-  .note-hero{max-width:960px;margin:0 auto;padding:54px 0 34px}.note-topline{display:flex;justify-content:space-between;gap:24px;margin-bottom:28px;color:var(--color-text-muted);font:700 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.note-topline a{color:var(--color-accent);text-decoration:none}.note-hero h1{max-width:900px;margin:0;font-size:clamp(2.35rem,5.2vw,5rem);line-height:1.01;letter-spacing:-.055em}.dek{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.08rem;line-height:1.75}.status{max-width:780px;margin:20px 0 0;padding:12px 14px;border-left:3px solid var(--color-accent);background:var(--color-surface-muted);color:var(--color-text-muted);font-size:.88rem;line-height:1.6}.status strong{color:var(--color-text)}
-  .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:960px;margin:0 auto 54px;border-block:1px solid var(--color-border)}.series-nav a{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:16px 14px;color:var(--color-text-muted);text-decoration:none;font-size:.82rem;line-height:1.45;border-right:1px solid var(--color-border)}.series-nav a:last-child{border-right:0}.series-nav a span{font:600 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--color-text-muted)}.series-nav a.active{background:var(--color-surface-muted);color:var(--color-text)}
-  .note-body{width:min(var(--reading),100%);margin:0 auto}.note-body section{padding:32px 0 38px;border-top:1px solid var(--color-border)}.opening-section{border-top:0!important;padding-top:0!important}.section-kicker{margin:0 0 10px!important;color:var(--color-accent)!important;font:800 .7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.08em;text-transform:uppercase}.note-body h2{margin:0 0 18px;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.16;letter-spacing:-.035em}.note-body h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4}.note-body p,.note-body li{color:var(--color-text);font-size:1rem;line-height:1.82}.note-body p{margin:0 0 16px}.note-body a{color:var(--color-accent)}
-  .question-card{margin:24px 0;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.question-card p{margin:0 0 8px;color:var(--color-text-muted);font:700 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.question-card strong{display:block;font-size:1.22rem;line-height:1.55}
-  .two-column,.lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.two-column>div,.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.two-column small,.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.two-column p,.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}
-  pre{overflow:auto;margin:22px 0;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-muted);color:var(--color-text);font-size:.84rem;line-height:1.65}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  .protocol-table{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.protocol-table .row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.7fr);gap:18px;padding:13px 16px;border-bottom:1px solid var(--color-border);align-items:start}.protocol-table .row:last-child{border-bottom:0}.protocol-table .row.head{background:var(--color-surface-muted);color:var(--color-text-muted);font:700 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.protocol-table .row span{font-size:.9rem;line-height:1.55}.protocol-table .row strong{font-size:.92rem;line-height:1.55}
+  .note-hero{max-width:960px;margin:0 auto;padding:54px 0 34px}.note-topline{display:flex;justify-content:space-between;gap:24px;margin-bottom:28px;color:var(--color-text-muted);font:700 .72rem/1.4 var(--font-mono);letter-spacing:.06em}.note-topline a{color:var(--color-accent);text-decoration:none}.note-hero h1{max-width:900px;margin:0;font-size:clamp(2.35rem,5.2vw,5rem);line-height:1.01;letter-spacing:-.055em}.dek{max-width:780px;margin:24px 0 0;color:var(--color-text-muted);font-size:1.08rem;line-height:1.75}.status{max-width:780px;margin:20px 0 0;padding:12px 14px;border-left:3px solid var(--color-accent);background:var(--color-surface-muted);color:var(--color-text-muted);font-size:.88rem;line-height:1.6}.status strong{color:var(--color-text)}
+  .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:960px;margin:0 auto 54px;border-block:1px solid var(--color-border)}.series-nav a{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:16px 14px;color:var(--color-text-muted);text-decoration:none;font-size:.82rem;line-height:1.45;border-right:1px solid var(--color-border)}.series-nav a:last-child{border-right:0}.series-nav a span{font:600 .72rem var(--font-mono);color:var(--color-text-muted)}.series-nav a.active{background:var(--color-surface-muted);color:var(--color-text)}
+  .note-body{width:min(var(--reading),100%);margin:0 auto}.note-body section{padding:32px 0 38px;border-top:1px solid var(--color-border)}.opening-section{border-top:0!important;padding-top:0!important}.section-number{margin:0 0 10px!important;color:var(--color-accent)!important;font:800 .7rem/1.4 var(--font-mono)!important;letter-spacing:.08em;text-transform:uppercase}.note-body h2{margin:0 0 18px;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.16;letter-spacing:-.035em}.note-body h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4}.note-body p,.note-body li{color:var(--color-text);font-size:1rem;line-height:1.82}.note-body p{margin:0 0 16px}.note-body a{color:var(--color-accent)}
+  .question-card{margin:24px 0;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.question-card p{margin:0 0 8px;color:var(--color-text-muted);font:700 .72rem/1.4 var(--font-mono);letter-spacing:.06em}.question-card strong{display:block;font-size:1.22rem;line-height:1.55}
+  .two-column,.lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.two-column>div,.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.two-column small,.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 var(--font-mono);letter-spacing:.06em}.two-column p,.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}
+  pre{overflow:auto;margin:22px 0;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-muted);color:var(--color-text);font-size:.84rem;line-height:1.65}code{font-family:var(--font-mono)}
+  .protocol-table{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.protocol-table .row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.7fr);gap:18px;padding:13px 16px;border-bottom:1px solid var(--color-border);align-items:start}.protocol-table .row:last-child{border-bottom:0}.protocol-table .row.head{background:var(--color-surface-muted);color:var(--color-text-muted);font:700 .72rem/1.5 var(--font-mono);text-transform:uppercase}.protocol-table .row span{font-size:.9rem;line-height:1.55}.protocol-table .row strong{font-size:.92rem;line-height:1.55}
   .next-note{padding-top:28px;border-top:1px solid var(--color-border)}.next-note a{font-weight:700;text-decoration:none}
   @media(max-width:760px){.benchmark-note{width:min(100% - 1rem,1180px)}.note-hero{padding-top:30px}.note-topline{flex-direction:column;gap:8px}.series-nav{grid-template-columns:1fr}.series-nav a{border-right:0;border-bottom:1px solid var(--color-border)}.series-nav a:last-child{border-bottom:0}.two-column,.lane-grid,.axis-grid{grid-template-columns:1fr}.protocol-table .row{grid-template-columns:1fr;gap:4px}}
 </style>

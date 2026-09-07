@@ -160,7 +160,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('现在的答案：');
     expect(questions).toContain('我们做了两次对照');
     expect(questions).toContain('这种学习在这两轮实验里还没有转化成稳定的新任务收益');
-    expect(questions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(questions).not.toContain('七个问题 · SEVEN QUESTIONS');
     expect(questions).toContain('sources?: EvidenceRef[]');
     expect(questions).toContain('<OpenEvoEvidenceRefs locale={locale} sources={row.sources ?? []} compact />');
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');
@@ -363,9 +363,11 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).toContain("'measurement-boundary'");
   });
 
-  it('keeps the study overview focused while Design owns the detailed follow-up protocol', () => {
+  it('keeps the historical follow-up protocol without reintroducing a standalone Design page', () => {
     expect(experimentPage).not.toContain('OpenEvoNextExperimentProtocol');
-    expect(designPage).toContain('OpenEvoNextExperimentProtocol');
+    expect(designPage).not.toContain('OpenEvoNextExperimentProtocol');
+    expect(designPage).toContain('/research/seed-openevo/flow/#training-design');
+    expect(designPage).toContain('window.location.replace(target)');
     expect(nextProtocol).toContain('HISTORICAL DESIGN · NEXT BENCHMARK');
     expect(nextProtocol).toContain('完整预算的 OpenEvo × SEED 公平比较');
   });

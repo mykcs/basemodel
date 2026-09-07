@@ -2,6 +2,7 @@
 import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from './SeedOpenEvoMissionHero.astro';
 import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';
+import SeedOpenEvoTrainingDesignOverview from './SeedOpenEvoTrainingDesignOverview.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -22,13 +23,19 @@ const objects = [
   <SeedOpenEvoResearchNav locale={locale} page="hub" />
 
   <section class="mission-section" id="questions">
-    <div class="mission-section__heading"><span>01</span><div><small>{t('范围', 'Scope')}</small><h2>{t('研究对象', 'Research objects')}</h2></div></div>
+    <div class="mission-section__heading"><span>01</span><h2>{t('研究对象', 'Research objects')}</h2></div>
     <p class="section-intro">{t('先知道每个名字在研究里负责什么，再去看公式、实验编号和实现细节。','Start by learning what each named object does in the study, then move into formulas, experiment IDs, and implementation detail.')}</p>
     <div class="object-grid">{objects.map((item)=><a href={item.href}><span>{item.index}</span><strong>{item.title}</strong><p>{item.body}</p></a>)}</div>
   </section>
 
+  <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
+    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
+    <p class="section-intro">{t('Stage 1 的关键边界很简单：Qwen 先独立完成 WebShop episode，完整轨迹封存后，外部 analyzer 才能复盘。老师不能进入 step loop 替模型做题。', 'The key Stage-1 boundary is simple: Qwen completes the WebShop episode first; only after the full trajectory is sealed may an external analyzer review it. The teacher must not enter the step loop and act for the model.')}</p>
+    <SeedOpenEvoTrainingDesignOverview locale={locale} />
+  </section>
+
   <section class="mission-section" id="site-map">
-    <div class="mission-section__heading"><span>02</span><div><small>{t('流程', 'Workflow')}</small><h2>{t('实验路线', 'Experiment route')}</h2></div></div>
+    <div class="mission-section__heading"><span>03</span><h2>{t('实验路线', 'Experiment route')}</h2></div>
     <ol class="run-step-grid">
       <li><span>1</span><h3>{t('先对齐 SEED 的实验条件', 'Reproduce SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><span>2</span><h3>{t('再运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
@@ -37,7 +44,7 @@ const objects = [
   </section>
 
   <section class="mission-section" id="evidence">
-    <div class="mission-section__heading"><span>03</span><div><small>{t('记录', 'Records')}</small><h2>{t('每轮实验要留下什么证据', 'Evidence requirements')}</h2></div></div>
+    <div class="mission-section__heading"><span>04</span><h2>{t('每轮实验要留下什么证据', 'Evidence requirements')}</h2></div>
     <p class="section-intro">{t('一个实验“跑完了”不等于它的科学结论就可信。下面四类记录分别证明环境真的运行、模型真的更新、任务结果真的发生，以及这一轮实验究竟是哪一轮。','A completed process is not automatically a trustworthy scientific result. These four evidence groups establish that the environment ran, the model changed, the task outcome occurred, and the run identity is traceable.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重置（reset）、真实 CUDA 计算，以及明确的模型版本（revision）。','Real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
@@ -52,24 +59,23 @@ const objects = [
   .mission-page{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem}
   .mission-section{padding:1.6rem 0;border-top:1px solid var(--line)}
   .mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:.5rem}
-  .mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
-  .mission-section__heading small{display:block;color:var(--muted);font-size:.68rem}
-  .mission-section__heading h2{margin:.15rem 0 0}
+  .mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
+  .mission-section__heading h2{margin:0}
   .section-intro{max-width:72ch;margin:0 0 1rem 3.05rem;color:var(--muted);font-size:.82rem;line-height:1.65}
   .object-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}
-  .object-grid a{display:flex;min-height:165px;flex-direction:column;padding:.85rem;border:1px solid var(--line);border-radius:13px;color:inherit;text-decoration:none}
-  .object-grid a>span{color:var(--accent-deep);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .object-grid a{display:flex;min-height:165px;flex-direction:column;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}
+  .object-grid a>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
   .object-grid strong{margin-top:auto}
   .object-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
   .run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:0;padding:0;list-style:none}
-  .run-step-grid li{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--line);border-radius:14px}
+  .run-step-grid li{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature)}
   .run-step-grid li>span{display:grid;width:1.8rem;height:1.8rem;place-items:center;border-radius:50%;color:var(--accent-on-fill);background:var(--accent-deep);font-size:.72rem}
   .run-step-grid h3{margin:.7rem 0 .4rem}
   .run-step-grid p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.55}
   .run-step-grid a{margin-top:auto;padding-top:.8rem;font-size:.72rem;font-weight:750}
   .evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}
-  .evidence-grid li{padding:.85rem;border:1px solid var(--line);border-radius:13px}
-  .evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .evidence-grid li{padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel)}
+  .evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
   .evidence-grid strong{display:block;margin-top:.65rem}
   .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
   @media(max-width:900px){.object-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

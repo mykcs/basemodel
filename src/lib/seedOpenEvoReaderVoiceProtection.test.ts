@@ -119,11 +119,14 @@ describe('SEED × OpenEvo reader-voice protection', () => {
   });
 
   it('protects the plain-language → professional-detail → evidence layering', () => {
-    expect(resultsHero).toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).not.toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).toContain('OpenEvo × WebShop 研究结果');
     expect(resultsHero).toContain('专业解释：');
     expect(resultsProtocol).toContain('实验边界 · PROTOCOL');
     expect(resultsProtocol).toContain('专业解释：');
-    expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).not.toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).toContain('我们现在能回答的七个问题');
+    expect(resultsQuestions).not.toContain('WHY THIS TOOK TIME');
     expect(currentQ7).toContain('路线 A 机器可读收尾');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('专业解释：');

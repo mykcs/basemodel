@@ -48,12 +48,14 @@ describe('7B WebShop score comparison', () => {
     expect(analysisPlan).toContain('不能据此判断 SD-LoRA 本身无效');
   });
 
-  it('shares the LaTeX-like table contract across every capability-exploration report page', () => {
-    expect(resultsScaffold).toContain('font-family:"Times New Roman",Times,"Songti SC"');
+  it('shares the research table contract without inventing a page-local font system', () => {
     expect(resultsScaffold).toContain('border-top:1.5px solid var(--color-text)');
     expect(resultsScaffold).toContain('font-variant-numeric:tabular-nums lining-nums');
+    expect(resultsScaffold).toContain('font-family:var(--font-interface)');
+    expect(resultsScaffold).not.toContain('Times New Roman');
     expect(analysisPlan).toContain('.matrix-wrap,.plan-table-wrap');
-    expect(analysisPlan).toContain('font-family:"Times New Roman",Times,"Songti SC"');
+    expect(analysisPlan).toContain('font-family:var(--font-interface)');
+    expect(analysisPlan).not.toContain('Times New Roman');
     for (const page of capabilityReportPages) {
       expect(page).toContain('OpenEvoExperimentResultsScaffold');
     }
