@@ -90,6 +90,36 @@ Anti-patterns:
 - force-reset the parent/child branch merely to recover the ancestry shape you expected;
 - treat required checks that are `expected`/`pending` on a fresh rebuilt head as optional because the pre-rebuild SHA was green.
 
+### 3.2 Stale governance PRs: re-resolve authority topology before refreshing
+
+A governance/documentation PR can become stale in a way that ordinary source-code rebasing does not capture: the **role of a path may have changed**. A file that used to own standing policy may now be navigation-only; a root bootstrap may have become the unique authority; a historical case may have been demoted from current guidance; or an executable test may now own a boundary that prose previously described.
+
+Before refreshing a stale governance PR, classify every changed path against the **current documentation/authority topology**:
+
+| Question | Required check |
+|---|---|
+| Does this path still own the same kind of mutable rule? | Read current root router, documentation governance, and the target file's status/authority header. |
+| Is the semantic rule already present elsewhere on current `main`? | Search current canonical owners and executable tests; do not infer from filenames alone. |
+| Would replaying the old hunk create two writable copies of the same rule? | Compare root/bootstrap, router, runbook/policy, and historical-case responsibilities. |
+| Is the old branch still one coherent decision unit? | Compare `main..old-head` semantically, not only by changed-file count. |
+| Are old checks still evidence for the candidate being proposed now? | No: any rebuilt/refreshed head is a new exact-head candidate and must receive current required checks. |
+
+Disposition rule:
+
+- **Refresh the same PR** when its semantic intent is still absent from current `main`, its changed paths still own that intent, and merging current `main` into/rebuilding the branch preserves a narrow diff.
+- **Create a narrow successor from current `main`** when the useful lesson remains valid but one or more old changed paths no longer own that rule. Carry only the current canonical/history-owner deltas, explicitly link the predecessor, then close the predecessor as superseded.
+- **Close as fully superseded** when current `main` already contains the semantic intent and the stale branch adds no unique evidence or executable protection.
+
+A helper PR whose sole purpose is to merge current `main` into an existing feature branch is acceptable only when the repository/provider workflow makes that the safest non-force update path. Treat it as a mechanical ancestry operation: review that its head is exactly current `main`, merge it into the feature branch, then verify `main..feature` is still the intended narrow semantic delta. The helper PR's mergeability does not validate the feature PR.
+
+Anti-patterns:
+
+- replaying old `docs/agents/README.md` standing rules after that file became navigation-only;
+- choosing `ours` for an entire governance file because the old branch contains a useful paragraph, thereby erasing newer reader/deployment policy;
+- closing a stale PR as "obsolete" without first extracting unique historical/scientific lessons;
+- refreshing a branch and reusing its pre-refresh green checks;
+- declaring the task complete immediately after enabling auto-merge without later reading whether the PR actually merged.
+
 ### 4. Check conflict classes
 
 Do not stop at conflict markers. Review:
