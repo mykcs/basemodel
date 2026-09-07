@@ -202,6 +202,7 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('explains legacy result counts and negative states instead of exposing log shorthand', () => {
+    // CASE-067/reader-first: glossary is optional end-of-note reference, never a prerequisite before the result body.
     expect(legacyResultNote).toContain('术语参考（可选）');
     expect(legacyResultNote).toContain('正文第一次出现时会直接解释');
     expect(legacyResultNote).toContain('cell 数不能直接当任务成功数');
