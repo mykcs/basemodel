@@ -4,6 +4,7 @@ import { localePath } from '../../i18n';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchJourney from './ResearchJourney.astro';
 import ResearchDepth from './ResearchDepth.astro';
+import ResearchGlossary from './ResearchGlossary.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -32,7 +33,7 @@ const terms = zh ? [
 ];
 const summarySteps = zh ? [
   { id: 'stage1', kicker: '01 · STAGE 1', title: '3B 和 7B 都先自己完成任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '先记录模型学习前的购物表现，再把这些经验整理成后续学习的输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
-  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 出现动作解析错误和无效动作终止，因此需要区分接口错误与模型能力不足。', outcome: '7B 继续学习并完成测试；3B 重新设计接口，从新采集的经验开始。', state: '7B 继续，3B 停止' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 出现动作解析错误和无效动作终止，因此需要区分接口错误与模型能力不足。', outcome: '7B 继续学习并完成测试；3B 重新设计接口，从新采集的经验开始。', state: '7B 继续；3B 停止检查接口' },
   { id: 'closeout', kicker: '03 · OUTCOME', title: '7B 完成测试；旧 3B 停止并检查接口', summary: '7B 完成 149 轮学习后，在固定的 128 道测试题上得到 49.33 分，58 题完全成功。旧 3B 实验停止，相关发现推动了下一轮共同购物接口的设计。', detail: '7B 的结果说明参数更新能够持续发生；3B 的接口问题说明，低分未必只由模型能力造成。', outcome: '后续 3B + 1.7B 实验固定共同购物规则，重新收集初始经验。', state: '历史已封存' },
 ] : [
   { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both models first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'Initial task scores record the model’s own shopping behavior; external analysis takes place after those attempts end.', state: 'Historical start' },
@@ -43,8 +44,9 @@ const summarySteps = zh ? [
 <main data-copy-review class="first-run" data-first-run-map data-testid="openevo-first-run-map">
   <ResearchOrientation
     locale={locale}
-    title={t("3B 和 7B 的第一轮购物实验", "3B and 7B WebShop runs")}
-    lede={t("我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。7B 能持续把经验用于参数更新；旧 3B 实验则暴露了购物接口和动作格式问题。","We ran Qwen2.5-3B and Qwen2.5-7B WebShop experiments. 7B kept updating; the old 3B run exposed interface and action-format problems.")}
+    layout="focus"
+    title={t("3B 和 7B 的第一轮实验", "3B and 7B WebShop runs")}
+    lede={t("7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。","7B sustained parameter updates and reached final evaluation; the old 3B run stopped because of shopping-interface and action-format problems.")}
     question={t("经验能否带来持续的模型更新？","Can experience sustain model updates?")}
     why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Separate model limits, interface errors, and capacity limits before redesigning.")}
     start={t("3B 和 7B 都先各自收集初始购物经验，再进入后续学习。","3B and 7B each collect initial WebShop experience.")}
@@ -54,11 +56,14 @@ const summarySteps = zh ? [
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
     actionHref="#first-run-summary"
-    actionLabel={t("查看实验过程", "View the experiment sequence")}
+    actionLabel={t("看两种模型各自发生了什么", "See what happened to each model")}
     terms={terms}
+    showGlossary={false}
   />
 
-  <div id="first-run-summary"><ResearchJourney locale={locale} title={t("初始经验、后续学习与最终结果", "Initial experience, later learning, and outcomes")} intro={t("两种模型各自收集经验，再分别进入学习；7B 完成最终测试，旧 3B 因接口问题停止。", "Each model collected experience and learned separately. 7B completed final evaluation; interface problems stopped the old 3B run.")} steps={summarySteps} /></div>
+  <div id="first-run-summary"><ResearchJourney locale={locale} title={t("3B 和 7B 的实验过程", "3B and 7B experiment sequence")} intro={t("7B 继续学习并完成测试；旧 3B 停止，购物接口随后重做。", "7B continued into final evaluation; the old 3B run stopped and the shopping interface was redesigned.")} steps={summarySteps} /></div>
+
+  <ResearchGlossary locale={locale} terms={terms} />
 
   <div id="first-run-lineages"><ResearchDepth locale={locale} kind="history" summary={t("7B 与 3B 的历史过程和证据", "Historical 7B and 3B runs and evidence")} intro={t("每个节点记录当时的规则、结果和修订。旧 3B 已停止，后来的实验使用新记录。", "Each node records the rules, results, and amendments at that time. The old 3B run stopped; the successor uses new records.")} >
   <aside class="first-run__prelude" aria-label={t('更早的 Stage 2 经验', 'Earlier Stage-2 evidence')}>

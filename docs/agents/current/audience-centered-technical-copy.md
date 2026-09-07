@@ -53,6 +53,8 @@ Good first-screen identity is explicit enough for a new reader: `OpenEVO (Harnes
 
 A TL;DR is not a second abstract slogan. It must say, in ordinary language, what the experiment did or is designed to compare and what the evidence currently allows the reader to conclude.
 
+**One first viewport, one primary comprehension task.** Correct information can still be badly prioritized. If the H1 already identifies the subject, the next strongest text should normally communicate the single most important result or state, not repeat the subject and not open five equal-weight orientation fields. Repeated context, generic orientation, terminology, and history can move to the next section or native progressive disclosure when the mainline remains complete. A caveat that changes the scientific interpretation is not secondary and must remain visible. See CASE-068.
+
 Presenter phrases such as `怎样连起来`, `怎么读`, `如何阅读`, or `先 A，再 B` belong in body copy when they express explanation or sequencing. Use the heading to name the object: `三个研究问题`, `未知状态`, `结果判定`, `复现协议`. Genuine scientific research questions may still be written as questions.
 
 ## 1. Concrete language still matters
