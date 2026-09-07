@@ -126,6 +126,17 @@ Before using a project-specific machine, service, script, phase, or artifact, ex
 
 After first-use explanation, use the precise technical term consistently instead of replacing it with vague prose.
 
+
+### Internal route names are provenance, not reader-facing identities
+
+Names such as `Track A`, `Track B`, `WB1`, `H1.42`, or a branch nickname may be useful for repository lineage, but they must not be the first identity a public label gives the reader.
+
+Bad first-reader label: `OpenEvo · Track A 7B`.
+
+Preferred first-reader label: `OpenEVO · 7B 配对评测` / `OpenEVO · 7B paired evaluation`.
+
+If the internal alias matters for auditability, introduce it only after the concrete object, for example `源码忠实任务测量路线（内部代号 Track A）`. A table row, H1/H2/H3, TL;DR, or first-screen result label must name the actual model / comparison / measurement before the project code.
+
 ### Zero-context incident entry and causal context
 
 A technically clear paragraph can still fail if it assumes the reader already knows the project. For research incidents, parser failures, attribution, or responsibility analysis, assume a first-time reader knows **none** of the phase names, model arms, artifact names, or experiment shorthand.

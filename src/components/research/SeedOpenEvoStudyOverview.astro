@@ -47,7 +47,7 @@ const questions: ResearchQuestion[] = [
     id: 'Q1',
     question: { zh: '在相近的 WebShop 经验预算下，OpenEvo 最终能不能比基线或 SEED 做得更好？', en: 'Under a comparable WebShop experience budget, can OpenEvo ultimately outperform the baseline or SEED?' },
     why: { zh: '这是主问题。训练过程中出现高分、产生很多参数更新，都不能代替同一测试协议下的最终比较。', en: 'This is the main question. High training scores or many parameter updates cannot replace a final comparison under one evaluation protocol.' },
-    experiments: { zh: 'Track A 先完成一轮 7B 配对测量；后续 matched-budget 路线与 MiniMax-teacher SEED Stage2 successor 继续收紧公平比较。', en: 'Track A completed an initial 7B paired measurement; the matched-budget line and the MiniMax-teacher SEED Stage2 successor tighten the fair comparison further.' },
+    experiments: { zh: '已经完成一轮 7B 配对评测；后续 matched-budget 路线与 MiniMax-teacher SEED Stage2 successor 继续收紧公平比较。', en: 'An initial 7B paired evaluation is complete; the matched-budget line and the MiniMax-teacher SEED Stage2 successor tighten the fair comparison further.' },
     unknown: { zh: '当前仍没有一组可以把“现阶段 OpenEvo final”和“同协议 SEED final”直接相减的封存结果。', en: 'There is still no sealed result that permits subtracting a current OpenEvo final score from a same-protocol SEED final score.' },
   },
   {
@@ -68,7 +68,7 @@ const questions: ResearchQuestion[] = [
 
 const scoreRows: ScoreRow[] = [
   {
-    subject: { zh: 'OpenEvo · Track A 7B', en: 'OpenEvo · Track A 7B' },
+    subject: { zh: 'OpenEVO · 7B 配对评测', en: 'OpenEVO · 7B paired evaluation' },
     score: { zh: '8.74 / 100', en: '8.74 / 100' },
     phase: { zh: '已完成的 128-task 源码忠实配对评测；BASE 为 7.17 / 100，Exact Success 两边都是 5 / 128。', en: 'Completed source-faithful 128-task paired evaluation; BASE scored 7.17 / 100, with Exact Success 5 / 128 for both arms.' },
     comparison: { zh: '只能解释这组 OpenEvo vs BASE；不是 SEED paper-final。', en: 'Interprets this OpenEvo-vs-BASE panel only; it is not the SEED paper-final result.' },
@@ -93,7 +93,7 @@ const scoreRows: ScoreRow[] = [
 const claims: Claim[] = [
   {
     state: { zh: '已观察 · 历史测量', en: 'Observed · historical measurement' },
-    observation: { zh: 'Track A 中，OpenEvo 的平均 Task Score 高于同任务 BASE，但 Exact Success 持平，配对不确定性区间仍包含“没有差异”。', en: 'In Track A, OpenEvo had a higher mean Task Score on the same tasks than BASE, while Exact Success was tied and the paired uncertainty interval still included no difference.' },
+    observation: { zh: '这组 7B 配对评测中，OpenEvo 的平均 Task Score 高于同任务 BASE，但 Exact Success 持平，配对不确定性区间仍包含“没有差异”。', en: 'In this 7B paired evaluation, OpenEvo had a higher mean Task Score on the same tasks than BASE, while Exact Success was tied and the paired uncertainty interval still included no difference.' },
     supports: { zh: '支持“这组冻结适配器在该面板上出现正向完成度方向”。', en: 'Supports a positive task-progress direction for this frozen adapter on this panel.' },
     boundary: { zh: '不能证明稳定优势，更不能把它改写成 OpenEvo 已经超过 SEED。', en: 'Does not establish a stable advantage and cannot be rewritten as OpenEvo already outperforming SEED.' },
     href: p('/research/seed-openevo/study/results/'),
@@ -141,8 +141,8 @@ const deepLinks = [
           ? '我们把实验分成两条线：主 benchmark 用冻结评测比较 OpenEVO harness 与基线 / SEED；机制实验用 1.7B / 3B / 7B、MiniMax hindsight、GDR / DirectApply 等对照解释“为什么会变好或变差”。'
           : 'The study has two lines: the main benchmark uses frozen evaluation to compare the OpenEVO harness with baselines / SEED, while mechanism studies use 1.7B / 3B / 7B, MiniMax hindsight, GDR / DirectApply, and related controls to explain why performance may improve or degrade.'}</p>
         <p>{zh
-          ? '目前已经观察到真实参数更新，并在 Track A 的一组 128-task 配对评测里看到 Task Score 的正向方向；同协议的 OpenEVO final vs SEED final 仍未封存，所以现在不能宣布最终谁更强。'
-          : 'So far we have observed real parameter updates and a positive Task Score direction in one 128-task Track A paired evaluation. A same-protocol OpenEVO final versus SEED final is still unsealed, so there is no justified final winner yet.'}</p>
+          ? '目前已经观察到真实参数更新，并在一组 128-task 的 7B 配对评测里看到 Task Score 的正向方向；同协议的 OpenEVO final vs SEED final 仍未封存，所以现在不能宣布最终谁更强。'
+          : 'So far we have observed real parameter updates and a positive Task Score direction in one 128-task 7B paired evaluation. A same-protocol OpenEVO final versus SEED final is still unsealed, so there is no justified final winner yet.'}</p>
       </div>
     </div>
   </header>
@@ -259,7 +259,7 @@ const deepLinks = [
         <li><a href={q17ExecutionSnapshot} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17ExecutionSnapshot} />{zh ? '1.7B 公开执行快照' : '1.7B public execution snapshot'}</a></li>
         <li><a href={threeBExecutionSnapshot} target="_blank" rel="noreferrer"><ExternalBrandMark href={threeBExecutionSnapshot} />{zh ? '3B 公开执行快照' : '3B public execution snapshot'}</a></li>
         <li><a href={seedSuccessor} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSuccessor} />{zh ? 'MiniMax-teacher SEED Stage2 successor 预注册' : 'MiniMax-teacher SEED Stage2 successor preregistration'}</a></li>
-        <li><a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? 'Track A 语义核对 receipt' : 'Track A semantic-validation receipt'}</a></li>
+        <li><a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '7B 配对评测语义核对 receipt' : '7B paired-evaluation semantic-validation receipt'}</a></li>
         <li><a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />{zh ? 'OpenEvo 实验仓库' : 'OpenEvo experiment repository'}</a></li>
       </ul>
     </div>

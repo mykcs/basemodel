@@ -23,6 +23,8 @@ describe('study overview information architecture', () => {
     }
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
     expect(overview).toContain('OpenEVO (Harness) · WebShop 数据集实验');
+    expect(overview).toContain('OpenEVO · 7B 配对评测');
+    expect(overview).not.toContain('Track A');
     expect(overview).toContain('TL;DR');
     expect(overview).toContain('三个研究问题');
     expect(overview).toContain('实验共同流程');
