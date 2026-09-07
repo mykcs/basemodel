@@ -17,11 +17,37 @@ body .site-main a {
   overflow-wrap: anywhere;
 }
 
+/* Reader-attention geometry belongs in the existing page-wide visual owner,
+ * not a new AppLayout CSS import. These two route-scoped rules only keep the
+ * primary comprehension task ahead of lower-page detail. */
+body[data-reader-contract-id='flow-server'] .server-hero,
+body[data-reader-contract-id='lab'] .lab-intro {
+  box-sizing: border-box;
+  min-height: calc(100svh - 110px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+body[data-reader-contract-id='flow-server'] .server-hero {
+  max-width: 900px;
+}
+
+body[data-reader-contract-id='flow-server'] .server-hero > p,
+body[data-reader-contract-id='lab'] .lab-intro .lede {
+  max-width: 58ch;
+}
+
 /* A narrow tablet is still a real two-column browser capture in practice
  * (high-DPI screenshots commonly expose ~680 CSS px). Keep the evidence
  * tables inside the reading column before their global 720px minimum can
  * widen the document and crop the interactive stage above them. */
 @media (max-width: 760px) {
+  body[data-reader-contract-id='flow-server'] .server-hero,
+  body[data-reader-contract-id='lab'] .lab-intro {
+    min-height: calc(100svh - 96px);
+  }
+
   body .site-main .mission-hero__modes,
   body .site-main .seed-use-case:not(.standalone) .detail > ol,
   body .site-main .research-path-list {
