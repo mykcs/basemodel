@@ -20,7 +20,7 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
   });
 
   it('explains action-reading and task-identity audits without adding another jargon layer', () => {
-    expect(questions).toContain('评测有效性');
+    expect(questions).not.toContain('为什么这里花了时间');
     expect(questions).toContain('动作读取与任务身份');
     expect(questions).toContain('SEED 规定动作要放在 <action>...</action> 里面');
     expect(questions).toContain('没有拿真实模型输出检查“评测程序能不能正确读懂”');

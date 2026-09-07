@@ -19,6 +19,7 @@ const p = (path: string) => localePath(locale, path);
 // should never flatten both journeys back into one unrelated row.
 const flowPages = [
   { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/flow/') },
+  { id: 'training-design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/flow/#training-design') },
   { id: 'server', label: 'lyg2171', href: p('/research/seed-openevo/flow/server/') },
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/flow/base-model/') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
@@ -31,7 +32,6 @@ const flowPages = [
 
 const studyPages = [
   { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/study/') },
-  { id: 'design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/study/design/') },
   { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/research/seed-openevo/study/run/') },
   { id: 'capability', label: t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration'), href: p('/research/seed-openevo/study/capability-exploration/') },
   { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/study/results/') },
@@ -44,13 +44,13 @@ const identity = currentTrack === 'flow'
   ? {
       index: '01',
       label: t('流程理解图', 'Flow map'),
-      meta: t('服务器 · 模型 · 方法 · 环境 · 更新机制', 'server · model · methods · environments · update loop'),
+      meta: t('服务器 · 模型 · 方法 · 环境 · 训练设计 · 更新机制', 'server · model · methods · environments · training design · update loop'),
       aria: t('流程理解图子导航', 'Flow map subnavigation'),
     }
   : {
       index: '02',
       label: t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop'),
-      meta: t('实验流程 · 训练设计 · 运行 · 基础能力探索 · 研究结果', 'workflow · training design · execution · capability exploration · findings'),
+      meta: t('实验流程 · 运行 · 基础能力探索 · 研究结果', 'workflow · execution · capability exploration · findings'),
       aria: t('OpenEVO Harness · WebShop 研究子导航', 'OpenEVO Harness · WebShop study subnavigation'),
     };
 ---
@@ -81,7 +81,7 @@ const identity = currentTrack === 'flow'
     margin:1rem 0 2rem;
     padding:.45rem;
     border:1px solid var(--line);
-    border-radius:14px;
+    border-radius:var(--radius-feature);
     background:color-mix(in srgb,var(--surface) 92%,transparent);
     backdrop-filter:blur(16px);
   }
@@ -95,7 +95,7 @@ const identity = currentTrack === 'flow'
   }
   .research-navigation__index{
     color:var(--accent-deep);
-    font:800 .58rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+    font:800 .58rem/1 var(--font-mono);
   }
   .research-navigation__identity strong,
   .research-navigation__identity div>span{display:block}
@@ -126,7 +126,7 @@ const identity = currentTrack === 'flow'
   .research-navigation__links a{
     flex:0 0 auto;
     padding:.58rem .76rem;
-    border-radius:10px;
+    border-radius:var(--radius-panel);
     color:var(--muted);
     font-size:.75rem;
     font-weight:720;

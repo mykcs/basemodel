@@ -121,9 +121,13 @@ describe('SEED × OpenEvo reader-voice protection', () => {
   });
 
   it('protects direct mainline prose and keeps optional evidence as the deeper layer', () => {
-    expect(resultsHero).toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).not.toContain('研究结果 · RESEARCH FINDINGS');
+    expect(resultsHero).toContain('OpenEvo × WebShop 研究结果');
     expect(resultsProtocol).toContain('训练范围内未见任务与 SEED 验证任务');
-    expect(resultsQuestions).toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).not.toContain('七个问题 · SEVEN QUESTIONS');
+    expect(resultsQuestions).toContain('七个研究问题');
+    expect(resultsQuestions).toContain('动作读取与任务身份');
+    expect(resultsQuestions).not.toContain('WHY THIS TOOK TIME');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     for (const source of [resultsHero, resultsProtocol, resultsQuestions, currentQ7, nextSteps]) {
       expect(source).not.toContain('专业解释：');

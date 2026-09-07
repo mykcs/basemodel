@@ -5,6 +5,7 @@ import ExternalBrandMark from '../common/ExternalBrandMark';
 import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchDepth from './ResearchDepth.astro';
+import ResearchGlossary from './ResearchGlossary.astro';
 import { OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_Q17_FINAL, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
 
 interface Props { locale: Locale }
@@ -35,8 +36,9 @@ const terms = zh ? [
 <main data-copy-review class="report-map" data-testid="openevo-successor-report">
   <ResearchOrientation
     locale={locale}
+    layout="focus"
     title={t("3B 与 1.7B 购物学习实验", "3B and 1.7B learning results")}
-    lede={t("两种模型按相同购物规则收集经验，再分别学习。初始成绩、学习过程和最终测试分开记录。", "Shared shopping rules, separate learning. Compare initial scores and final evaluation.")}
+    lede={t("1.7B 最终测试 37.60 分、128 题中 1 题完全成功；3B 还没有同口径最终结果。SEED 数字只是外部参考，不是本地配对对照。", "1.7B final evaluation: 37.60 points and 1/128 exact success; 3B has no matched final result. SEED figures are external references, not local paired controls.")}
     question={t("购物经验能否改善模型后来的表现？", "Can shopping experience improve later behavior?")}
     why={t("统一接口并记录各自起点，才能结合起点解释后续变化。", "Use one interface and record each starting point to interpret later changes.")}
     start={t("每种模型先完成 1,440 次购物尝试，保存初始经验。", "Each model first completes 1,440 shopping attempts to collect initial experience.")}
@@ -48,6 +50,7 @@ const terms = zh ? [
     actionHref="#report-mainline"
     actionLabel={t("查看实验方法", "View the study methods")}
     terms={terms}
+    showGlossary={false}
   />
 
   <nav class="report-map__switch" aria-label={t('切换叙事版本', 'Switch narrative view')}>
@@ -63,6 +66,9 @@ const terms = zh ? [
     <tr><th>{t('最终测试', 'Final evaluation')}</th><td>{t('固定最终模型，完成预定的 128 道测试任务', 'Freeze the final model and evaluate on the predefined 128 tasks')}</td><td>{t('核对有效记录后发布分数；测试期间不继续学习', 'Publish scores after validating the records; no learning continues during evaluation')}</td></tr>
     </tbody></table>
   </section>
+
+  <ResearchGlossary locale={locale} terms={terms} />
+
   <section class="report-hero" aria-labelledby="report-result-title">
     <div class="report-hero__question">
       <span>{t("初始表现", "INITIAL PERFORMANCE")}</span>

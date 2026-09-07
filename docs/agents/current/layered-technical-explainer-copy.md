@@ -53,7 +53,7 @@ Keep project names, model names, code symbols, filenames, config keys, hashes, a
 
 A centralized glossary is not a substitute for readable prose. On first use, prefer the human-readable/full name, explain what the term means **in this experiment**, and only then preserve the exact internal label when useful. Do not make readers jump to a term grid, decode `goal_idx / Track A / state-v28`, and return to reconstruct the sentence they were reading.
 
-A glossary may still exist as a reference index for precise lookup. It must not be the only place where a term becomes understandable. See CASE-068.
+A glossary may still exist as a reference index for precise lookup. It must not be the only place where a term becomes understandable. See CASE-070.
 
 ## 4. Context before mechanism
 

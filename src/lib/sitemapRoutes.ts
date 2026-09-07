@@ -17,7 +17,6 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/flow/seed/',
   '/research/seed-openevo/flow/openevo/',
   '/research/seed-openevo/study/',
-  '/research/seed-openevo/study/design/',
   '/research/seed-openevo/flow/benchmarks/',
   '/research/seed-openevo/flow/webshop/',
   '/research/seed-openevo/flow/alfworld/',
@@ -34,6 +33,10 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/study/results/3b-minimax-analysis/',
   '/research/seed-openevo/study/results/7b-minimax-analysis/',
   '/research/seed-openevo/study/results/four-arm-analysis/',
+] as const;
+
+export const bilingualCompatibilityPaths = [
+  '/research/seed-openevo/study/design/',
 ] as const;
 
 export const zhOnlyStaticPaths = [
@@ -59,7 +62,7 @@ export function toEnglishPath(path: string): string {
 
 export type RouteLocale = 'zh' | 'en';
 
-const bilingualRoutes = new Set<string>(bilingualStaticPaths);
+const bilingualRoutes = new Set<string>([...bilingualStaticPaths, ...bilingualCompatibilityPaths]);
 const zhOnlyRoutes = new Set<string>(zhOnlyStaticPaths);
 const bilingualDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
 
