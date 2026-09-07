@@ -75,26 +75,26 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(researchDetail).toContain("title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')");
   });
 
-  it('starts with a plain-language summary followed by a compact professional layer', () => {
+  it('starts with direct human-readable findings and keeps machine identity out of the primary reading line', () => {
     expect(hero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
     expect(hero).toContain('已经知道');
     expect(hero).toContain('最新评测');
     expect(hero).toContain('接下来');
     expect(hero).toContain('模型从自己做成功的任务里学习一次以后');
-    expect(hero).toContain('同一 128 个任务先给基础模型做一遍，再给加载 SD-LoRA 的模型做一遍，共 256 个任务回合');
-    expect(hero).toContain('统计区间仍然包含“没有差异”');
-    expect(hero).toContain('128/128 表示计划的 128 个任务槽位全部核对通过');
-    expect(hero).toContain('measurement-not-proven-stable-improvement');
-    expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(hero).toContain('专业解释：');
+    expect(hero).toContain('同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合');
+    expect(hero).toContain('统计范围仍然包含“没有差异”');
+    expect(hero).toContain('这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致');
+    expect(hero).not.toContain('measurement-not-proven-stable-improvement');
+    expect(hero).not.toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(hero).not.toContain('专业解释：');
     expect(hero).not.toContain('95% CI');
     expect(hero).not.toContain('formal evaluation denominator');
     expect(hero).not.toContain('github.com/');
     expect(hero).toContain('href="#evidence-q4"');
     expect(hero).toContain('href="#evidence-q7"');
     expect(hero).toContain('href="#next-n2"');
-    expect(hero).toContain('机制结论以实验编号 H1.41 为时间截点');
-    expect(hero).toContain('H1.42 是之后的测量校准记录');
+    expect(hero).toContain('机制结论以 8 月 21 日完成的 H1.41 实验为截止点');
+    expect(hero).toContain('8 月 25 日的动作读取修复、8 月 26 日的任务构建复查');
   });
 
   it('keeps the Results-specific reader contract explicit and pairs it with the latest state override', () => {
@@ -114,19 +114,21 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(currentState).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
   });
 
-  it('teaches the task split and only the two beginner scoring concepts before Q1–Q7', () => {
-    expect(protocol).toContain('OpenEVO 内部新任务与 SEED 官方保留任务');
-    expect(protocol).toContain('Qwen2.5-7B-Instruct');
-    expect(protocol).toContain('goal_idx ≥ 500');
-    expect(protocol).toContain('goal_idx 0–499');
+  it('explains the two task populations and the two scoring concepts locally before Q1–Q7', () => {
+    expect(protocol).toContain('训练范围内未见任务与 SEED 验证任务');
+    expect(protocol).toContain('训练范围内没有见过的任务');
+    expect(protocol).toContain('任务 500–6909');
+    expect(protocol).toContain('SEED 留作验证的任务');
+    expect(protocol).toContain('任务 0–499');
     expect(protocol).toContain('任务完成度（Task Score）');
     expect(protocol).toContain('完整成功（Exact Success）');
     expect(protocol).not.toContain('Qualified Positive');
     expect(protocol).not.toContain('0.667');
-    expect(protocol).toContain('解析器（parser）');
-    expect(protocol).toContain('测量无效（measurement-invalid）');
-    expect(protocol).toContain('编号范围对了');
-    expect(protocol).toContain('实验边界 · PROTOCOL');
+    expect(protocol).not.toContain('goal_idx');
+    expect(protocol).not.toContain('projectTerms');
+    expect(protocol).not.toContain('专业解释：');
+    expect(protocol).toContain('只对上任务编号也不够');
+    expect(protocol).toContain('实验边界');
     expect(protocol).toContain('OpenEvoEvidenceRefs');
     expect(protocol).toContain('envs.py#L115-L145');
     expect(protocol).toContain('h1.38b-method-control-eval-v1.json');
@@ -140,7 +142,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
   });
 
   it('keeps Q1–Q7 with short current answers and claim-local experiment evidence', () => {
-    expect(questions).toContain('我们现在能回答的七个问题');
+    expect(questions).toContain('七个研究问题');
     for (const question of [
       'OpenEvo 真的发生了学习吗？',
       'OpenEvo 有没有成功经验可以学习？',
@@ -155,9 +157,11 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).not.toContain('Track A 当前是 PREPARED');
     expect(questions).not.toContain('formal execution not authorized');
     expect(currentQ7).toContain('id="q7"');
-    expect(currentQ7).toContain('OpenEVO 与 SEED 的同协议最终比较');
+    expect(currentQ7).toContain('还缺的方法级对照');
     expect(currentQ7).toContain('已完成 · 未证明稳定提升');
-    expect(questions).toContain('现在的答案：');
+    expect(questions).not.toContain('现在的答案：');
+    expect(questions).not.toContain('专业解释：');
+    expect(questions).toContain('class="supporting-context"');
     expect(questions).toContain('我们做了两次对照');
     expect(questions).toContain('这种学习在这两轮实验里还没有转化成稳定的新任务收益');
     expect(questions).not.toContain('七个问题 · SEVEN QUESTIONS');
@@ -177,22 +181,22 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('+0.1637');
     expect(questions).toContain('+0.2488');
     expect(questions).toContain('+0.0851');
-    expect(questions).toContain('OpenEvo internal fresh task-ID-disjoint evaluation');
-    expect(questions).toContain('它们不是 0–499 的 SEED 官方保留任务评估');
-    expect(questions).toContain('第二代持续整合尚未建立');
-    expect(questions).toContain('G2 已经在正式 T2 上证明迁移失败');
-    expect(questions).toContain('T2 根本没有运行');
+    expect(questions).toContain('训练使用的 500–6909 号范围');
+    expect(questions).toContain('不是 SEED 留作正式验证的 0–499 号任务');
+    expect(questions).toContain('连续整合尚未建立');
+    expect(questions).toContain('不能写成“模型已经在这项测试上迁移失败”');
+    expect(questions).toContain('预留的新任务测试因为前面的能力检查没有通过而没有启动');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(questions).toContain('不能反过来改写 H1.41 的机制结论');
   });
 
   it('keeps historical repaired-primary evidence while current Q7 owns completed Track A', () => {
     expect(questions).toContain('768 个回合');
-    expect(questions).toContain('两边都出现 0 分');
-    expect(questions).toContain('这个 0 说明测量接口失效，不能解释成模型能力为 0');
+    expect(questions).toContain('两个模型都出现 0 分');
+    expect(questions).toContain('这个 0 说明动作读取接口失效，不能解释成模型能力为 0');
     expect(questions).toContain('BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%');
     expect(questions).toContain('自助法（bootstrap）95% CI [-0.65, +7.19]');
-    expect(protocol).toContain('“编号范围对了”还不等于“生成的是 SEED 代码真正会看到的同一批任务”');
+    expect(protocol).toContain('只对上任务编号也不够：随机抽样方式会改变任务顺序和最终文字');
     expect(currentQ7).toContain('不是论文当年最终使用的确切 128 题');
     expect(currentQ7).toContain('也没有复现 SEED 论文模型保存点对应的 89.7 / 78.1%');
     expect(currentQ7).toContain('128 / 128 PASS');
@@ -294,7 +298,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
 
   it('keeps the G2 three-gate explanation beginner-readable while rendering exact statistics only inside the evidence disclosure', () => {
     expect(g2Ablation).toContain('id="g2-ablation"');
-    expect(g2Ablation).toContain('第二代为什么还不能说“越学越好”？');
+    expect(g2Ablation).toContain('第二次更新后的能力保持');
+    expect(g2Ablation).not.toContain('专业解释：');
     expect(g2Ablation).toContain('第一道门 · 学会新经验');
     expect(g2Ablation).toContain('第二道门 · 保住旧能力');
     expect(g2Ablation).toContain('第三道门 · 保住第一代收益');
@@ -315,23 +320,24 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).not.toContain('经验供给不是当前直接瓶颈');
   });
 
-  it('orders next steps around the completed 7B measurement, continual-learning state, and ALFWorld', () => {
+  it('orders next steps around the completed 128-task measurement, method-level resumption gate, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势');
-    expect(nextSteps).toContain('128/128 任务语义核对通过');
-    expect(nextSteps).toContain('PUBLISHED_AND_VERIFIED');
-    expect(nextSteps).toContain('公开代码能重建的“第一次验证”，不是论文最终 128 题');
-    expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
-    expect(nextSteps).toContain('连续学习实验：第 28 代状态已补齐，第 29 代尚未获准执行');
+    expect(nextSteps).toContain('下一轮 OpenEvo 与 SEED 公平比较');
+    expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
+    expect(nextSteps).toContain('全部 256 个原始任务回合以及对账、分析和运行凭据已逐文件校验并发布');
+    expect(nextSteps).toContain('这个面板不是论文最终 128 题');
+    expect(nextSteps).toContain('不能当作论文 89.7 / 78.1% 的精确复现');
+    expect(nextSteps).toContain('方法对方法比较等待继续授权');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(nextSteps).toContain('WB1 live router · main');
-    expect(nextSteps).toContain('真正恢复执行前仍必须重新读取 live router');
+    expect(nextSteps).toContain('恢复执行前必须重新读取最新的运行授权');
     expect(nextSteps).toContain('id={`next-${step.index.toLowerCase()}`}');
-    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
-    expect(nextSteps).toContain('formal_task_consumption_allowed=false');
+    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
+    expect(nextSteps).not.toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
-    expect(nextSteps).toContain('WB1 属于独立的路线 B');
-    expect(nextSteps).toContain('只有这项同协议方法比较才能真正回答 OpenEVO vs SEED');
+    expect(nextSteps).toContain('两轮比较回答不同问题');
+    expect(nextSteps).toContain('只有后一个实验才能直接回答 OpenEvo 与 SEED 的公平比较');
+    expect(nextSteps).toContain('<details class="step-detail">');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('/research/seed-openevo/study/');
   });
@@ -356,8 +362,10 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(primerMoved).toContain('/research/seed-openevo/flow/loops/#fig-seed-openevo-update-target');
   });
 
-  it('keeps H1.42 as a later measurement-boundary note rather than part of the H1.41 conclusions', () => {
-    expect(hero).toContain('H1.42 是之后的测量校准记录');
+  it('keeps later measurement work separate from the H1.41 mechanism conclusions without surfacing another experiment code in the hero', () => {
+    expect(hero).toContain('机制结论以 8 月 21 日完成的 H1.41 实验为截止点');
+    expect(hero).toContain('8 月 25 日的动作读取修复');
+    expect(hero).not.toContain('H1.42 是之后的测量校准记录');
     expect(appendix).toContain('H1.42 发生在之后，属于测量边界（measurement-boundary）工作');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
     expect(resultNote).toContain("'measurement-boundary'");

@@ -284,10 +284,10 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 **Automatic response:**
 
 1. Load the writing stack from `docs/agents/README.md` by responsibility, not by filename count.
-2. Read `website-design-spec.md` for the canonical website voice and information order. When the owner gives live-page wording/readability feedback, reports a repeated comprehension problem, or asks for human/natural/non-AI wording, also read `website-copy-cases.md` as a **case cluster**: include the current/closest case plus at least two nearby cases from the same failure family. Do not learn from one specimen or apply a word blacklist.
+2. Read `website-design-spec.md` **and `website-copy-cases.md` for every user-facing copy/design task**. For ordinary work, match the closest recent PREFERENCE cases. When the owner gives live-page wording/readability feedback or reports a repeated comprehension problem, read the cases as a **case cluster**: include the current/closest case plus at least two nearby cases from the same failure family. Do not wait for the owner to repeat “说人话 / 去 AI 味”, learn from one specimen, or apply a word blacklist.
 3. For any public technical copy read `audience-centered-technical-copy.md`.
 4. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
-5. For Chinese technical explainers add `layered-technical-explainer-copy.md`.
+5. For Chinese technical explainers add `layered-technical-explainer-copy.md`, but treat its layers as information-depth guidance rather than mandatory visible labels/blocks. The canonical website spec and newer live-human PREFERENCE cases outrank an older rigid display template.
 6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners. **Before writing or substantially rearranging public-page HTML, read `site-reader-attention-contract.md` and register/update that page in `src/data/siteReaderContracts.ts`: audience, one primary task, first-viewport goal, non-hideable boundary, next step, and attention mode. Do not start from a visual template.**
 7. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
 8. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.

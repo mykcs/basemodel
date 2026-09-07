@@ -20,15 +20,15 @@ describe('current Track A wrapper audit and adopted WB1 state', () => {
     expect(wrapper).not.toContain('<section class="wrapper-attribution"');
   });
 
-  it('publishes state-v28 adoption without unlocking Gen29', () => {
+  it('publishes the continuation boundary in human language while retaining the exact state in the record layer', () => {
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
-    expect(nextSteps).toContain('3,584/20,640');
+    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
+    expect(nextSteps).toContain('3,584 / 20,640');
     expect(nextSteps).toContain('17,056');
-    expect(nextSteps).toContain('formal_task_consumption_allowed=false');
-    expect(nextSteps).toContain('gpu_allocation_allowed=false');
-    expect(nextSteps).toContain('final locked 表示最终测试仍锁定');
-    expect(nextSteps).toContain('第 29 代仍需要一次独立的“可以恢复执行”授权');
+    expect(nextSteps).not.toContain('formal_task_consumption_allowed=false');
+    expect(nextSteps).not.toContain('gpu_allocation_allowed=false');
+    expect(nextSteps).toContain('当前记录仍明确禁止继续消耗正式任务和分配 GPU，最终测试也保持锁定');
+    expect(nextSteps).toContain('恢复执行前必须重新读取最新的运行授权');
     expect(nextSteps).toContain('RECONCILIATION.json');
   });
 });
