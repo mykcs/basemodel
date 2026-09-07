@@ -29,7 +29,7 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(snap).toContain('runtimeErrors: 0');
     expect(ceiling).toContain('128 道测试任务全部完成');
     expect(ceiling).toContain('平均分始终包含全部 128 题');
-    expect(firstRun).toContain('58 / 128 完整成功');
+    expect(firstRun).toContain('128 题中 58 题完全成功');
   });
 
   it('keeps SEED paper numbers in a paper-reference claim domain', () => {
@@ -38,15 +38,15 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(ceiling).toContain('40.37');
     expect(ceiling).toContain('32.79');
     expect(ceiling).toContain('不能把差值归因于学习方法本身');
-    expect(firstRun).toContain('不冒充本地 paired reproduction');
+    expect(firstRun).toContain('两份记录不构成本地配对实验');
   });
 
   it('shows parameter-analysis closeout without claiming compression was used in the final checkpoint', () => {
     expect(firstRun).toContain('update stable rank 16.55');
     expect(firstRun).toContain('95% energy rank 77');
-    expect(firstRun).toContain('residual-energy 中位数 0.0597');
+    expect(firstRun).toContain('残余能量中位数为 0.0597');
     expect(firstRun).toContain('K64');
-    expect(firstRun).toContain('不属于 formal final checkpoint');
+    expect(firstRun).toContain('压缩结果没有写回训练或正式最终模型');
     expect(ceiling).toContain('formal 训练里始终没有启用 rank reduction / compression');
   });
 
@@ -76,4 +76,3 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(enPage).toContain('149 completed rounds');
   });
 });
-

@@ -68,7 +68,7 @@ const terms = zh ? [
     <div class="report-hero__question">
       <span>{t("初始表现", "INITIAL PERFORMANCE")}</span>
       <h2 id="report-result-title">{t('初始购物结果', 'Initial shopping results')}</h2>
-      <p>{t(`冻结 ${OPEN_EVO_STAGE1_FREEZE.id} 后，两个模型都使用同一套不教具体解法的购物接口，各自完成 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次购物尝试。`, `Under freeze ${OPEN_EVO_STAGE1_FREEZE.id}, both models use one strategy-neutral bootstrap harness and each produces ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} raw trajectories.`)}</p>
+      <p>{t(`实验设置固定后，两个模型使用同一套不教具体解法的购物接口，各自完成 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次购物尝试。`, `After the settings are fixed, both models use the same shopping interface without task-specific strategy hints. Each completes ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} attempts.`)}</p>
     </div>
     <div class="report-hero__metrics">
       <article data-arm={arm3.id}><span>{arm3.model}</span><strong>{arm3.exact} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><b>{arm3.exactRate} {t("完全成功率", "exact success")}</b><small>{arm3.positive} / {OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} {t('条有正分', 'positive trajectories')} · {arm3.exactTaskIdentities} {t('道不同任务曾完全成功', 'distinct exact-success tasks')}</small></article>
@@ -190,4 +190,3 @@ const terms = zh ? [
 .paper-step__meaning{font-size:1rem;line-height:1.8;max-width:48rem}.paper-step__technical dl{grid-template-columns:1fr}.paper-step__index b{overflow-wrap:anywhere}.report-map__head>span{max-width:48rem}.report-map__head strong{max-width:48rem}
 @media(max-width:600px){.report-chronology th,.report-chronology td{font-size:1rem;padding:.5rem .3rem}.report-chronology th:first-child{width:auto}.report-chronology table{font-size:1rem}}
 </style>
-
