@@ -20,7 +20,6 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
   `https://huggingface.co/miyuki17/openevo-webshop-h145-h146-adapters/${arm.checkpointPath.endsWith('.json') ? 'blob' : 'tree'}/${adapterRevision}/${arm.checkpointPath}`;
 ---
 <main data-copy-review class="legacy" data-testid="legacy-stage2-archive">
-  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <header class="legacy__hero">
     <div>
       <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
@@ -32,6 +31,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
       <p>{t('问题不是数字 256 本身，而是“每 256 次任务尝试就把前面的成功清零，再重新判断一次”。同一批里凑不到 8 个重复成功的不同任务，模型就完全不更新参数。这样一条原本适合小实验的数据选择规则，被误当成了长期训练必须反复通过的门。', 'The problem was not the number 256 itself. The program reset the decision every 256 task attempts and discarded earlier success for the next decision. If one batch did not contain eight distinct repeatedly successful tasks, parameters did not update at all. A rule suited to a bounded study was mistakenly turned into a gate that long-running training had to pass repeatedly.')}</p>
     </aside>
   </header>
+  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <OpenEvoLegacyStage2ResearchJourney locale={locale} />
   <section class="legacy__section" aria-labelledby="legacy-arm-title">
     <h2 id="legacy-arm-title">{t("四组历史结果", "Four historical groups")}</h2>

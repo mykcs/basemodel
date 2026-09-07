@@ -24,7 +24,6 @@ const stage1 = [
 ] as const;
 ---
 <main data-copy-review class="ceiling" data-testid="ceiling-stage2-strategy">
-  <OpenEvoStage2StrategyChooser locale={locale} active="ceiling" />
   <header class="ceiling__hero">
     <div>
       <p>OPENEVO-CEILING-1.0 · {t('第二版 Stage 2', 'SECOND STAGE-2 DESIGN')}</p>
@@ -37,6 +36,7 @@ const stage1 = [
       <small>{t(`当时已经做了 ${snap.sevenB.rolloutsConsumed.toLocaleString()} / ${snap.totalRollouts.toLocaleString()} 次 Stage-2 任务（${pct}%）。最终 128 题还没有被打开过，所以这些数字没有拿最终评测来调参。`, `${snap.sevenB.rolloutsConsumed.toLocaleString()} / ${snap.totalRollouts.toLocaleString()} Stage-2 attempts had been consumed (${pct}%). The final 128-task panel had not been opened, so these decisions were not tuned against final evaluation.`)}</small>
     </aside>
   </header>
+  <OpenEvoStage2StrategyChooser locale={locale} active="ceiling" />
 
   <section class="ceiling__section ceiling__final" data-testid="ceiling-7b-final-closeout">
     <p class="kicker">{t('7B 最终封存 · 2026-09-04', '7B FINAL CLOSEOUT · 2026-09-04')}</p>

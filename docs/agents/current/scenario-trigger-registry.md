@@ -288,7 +288,7 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 3. For any public technical copy read `audience-centered-technical-copy.md`.
 4. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
 5. For Chinese technical explainers add `layered-technical-explainer-copy.md`.
-6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners.
+6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners. **Before writing or substantially rearranging public-page HTML, read `site-reader-attention-contract.md` and register/update that page in `src/data/siteReaderContracts.ts`: audience, one primary task, first-viewport goal, non-hideable boundary, next step, and attention mode. Do not start from a visual template.**
 7. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
 8. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
 9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.
