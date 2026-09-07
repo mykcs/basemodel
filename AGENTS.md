@@ -7,14 +7,14 @@ consult the private [basemodel dialogue archive](https://github.com/mykcs/Codex-
 It is historical evidence only and never overrides current task instructions,
 executable repository truth, or live provider state.
 
-This repository is frequently maintained by coding Agents through GitHub. Keep this root file as a **fast router + non-negotiable project invariants**; detailed current policy belongs under `docs/agents/current/` rather than being duplicated here.
+This repository is frequently maintained by coding Agents through GitHub. This root `AGENTS.md` is the **unique repository-root Agent bootstrap authority** and the first repository file an Agent reads. Detailed topic policy belongs under `docs/agents/current/`; `docs/agents/README.md` is navigation-only and must not become a second mutable copy of Agent rules.
 
 ## Fast start
 
-Before non-trivial work, read in this order:
+You are already reading the repository bootstrap. After this file, read in this order:
 
-1. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and deployment state.
-2. [`docs/agents/README.md`](docs/agents/README.md) — Agent documentation map and precedence.
+1. [`docs/agents/README.md`](docs/agents/README.md) — navigation-only Agent documentation map and topic router.
+2. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and deployment state.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
 4. [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) — cross-cutting website engineering defaults: accepted stack, semantic ownership, static-first/hydration discipline, browser runner boundaries, exact-tree release evidence, build-budget discipline, temporary-harness cleanup, and the stopping rule against unrequested optimization churn.
 5. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
@@ -112,6 +112,8 @@ manual CI recovery only
 CircleCI GitHub App execution is the ordinary Base Model CI path. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
 Eligible Preview branches are **opt-in at the exact head**: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the Preview commit message before provider build compute is spent. Omit the token on intermediate pushes. Production on `main` remains automatic and does not require the token.
+
+**Agent-control documents are never website-production inputs.** A change limited to root `AGENTS.md`, `docs/agents/**`, repository prose, or test-only governance may run repository CI, but `scripts/vercel-ignore-build.mjs` must classify it non-deploy-relevant, so it must not build or replace the Production website. Vercel may still record an `IGNORED`/`CANCELED` Git-integration event before the ignored-build decision; that provider record is not a website publication and must not be reported as Production changed. Cloudflare is not an ordinary deployment provider for this repository.
 
 ## Repository map
 
