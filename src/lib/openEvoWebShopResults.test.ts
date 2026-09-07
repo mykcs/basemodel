@@ -363,9 +363,11 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).toContain("'measurement-boundary'");
   });
 
-  it('keeps the study overview focused while Design owns the detailed follow-up protocol', () => {
+  it('keeps the historical follow-up protocol without reintroducing a standalone Design page', () => {
     expect(experimentPage).not.toContain('OpenEvoNextExperimentProtocol');
-    expect(designPage).toContain('OpenEvoNextExperimentProtocol');
+    expect(designPage).not.toContain('OpenEvoNextExperimentProtocol');
+    expect(designPage).toContain('/research/seed-openevo/flow/#training-design');
+    expect(designPage).toContain('window.location.replace(target)');
     expect(nextProtocol).toContain('HISTORICAL DESIGN · NEXT BENCHMARK');
     expect(nextProtocol).toContain('完整预算的 OpenEvo × SEED 公平比较');
   });

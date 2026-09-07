@@ -746,6 +746,51 @@
 | 2026-08-05 | [`2365f12`](https://github.com/mykcs/basemodel/commit/2365f12) | COPY CHANGE | refactor(i18n): remove redundant evidence labels [BATCH MODE] (done) |
 | 2026-08-05 | [`5163155`](https://github.com/mykcs/basemodel/commit/5163155) | COPY CHANGE | feat(i18n): 全站中英切换 — zh 留根 + en /en/ 前缀 + 字典驱动文案 |
 
+
+## 11A. 2026-09-07 真人反馈：训练设计页的位置、设计语言、字体与动效
+
+### CASE-065 — 页面归属按读者理解路径决定，不按实现模块决定
+**PREFERENCE · 2026-09-07 · direct human feedback**
+前：`训练设计` 作为 OpenEVO Harness / WebShop study 下的独立页面，与流程理解图重复解释 SEED、OpenEvo、WebShop、Stage 1 和责任边界。
+后：把训练设计的必要内容拆进 `流程理解图` 总览；原独立 URL 只保留兼容跳转，不再维护第二份正文。
+规律：**如果一个页面的主要作用是帮助读者理解系统怎样运作，它应该进入理解流程；不要因为代码可以拆成一个 route，就给读者制造一个新的信息架构层。**
+
+### CASE-066 — 标题上方的小字必须新增信息，否则删除
+**PREFERENCE · 2026-09-07 · direct human feedback**
+反面：`SEED × OPENEVO · WEBSHOP` → `WebShop 训练设计实验室`；`先分清谁负责什么` → `责任边界`；`范围` → `研究对象`。
+后：直接使用唯一主题标题 `训练设计`、`责任边界`、`研究对象`。
+规律：**eyebrow / kicker / small label 不是默认装饰位。只有在它提供标题没有提供的分类、状态或证据边界时才保留。**
+
+### CASE-067 — 动效的验收标准是理解收益，不是“页面用了 HTML 动画”
+**PREFERENCE · 2026-09-07 · direct human feedback**
+前：责任边界流程图用暖色小点从左向右循环移动；静态箭头已经完整表达方向，移动点没有新增机制、状态或交互信息。
+后：删除循环移动点，保留静态责任链；需要展开时使用原生 `<details>/<summary>` 做按需披露。
+规律：**HTML/CSS 交互必须降低认知负担、缩短定位时间或揭示状态变化。纯装饰 motion 即使“很轻”也应删除；native disclosure 只有在隐藏次要细节能让主线更清楚时才使用。**
+
+### CASE-068 — 页内跳转不能另起一套“局部导航产品”
+**PREFERENCE · 2026-09-07 · direct human feedback**
+前：`责任边界 / 实验路线 / 参数协议` 被做成训练设计页自己的 chapter / tab 式选择器；它虽然能跳转，却与研究站点已有导航、section 和 disclosure 语法不同。
+后：训练设计成为流程理解图中的普通 section；跨区定位复用共享研究导航，次级内容复用共享 `<details>/<summary>` disclosure，不再维护一套局部 tab / chapter-nav。
+规律：**锚点跳转首先是导航，不是新的控件品类。父页面已有导航、section 和 disclosure 语言时，子内容必须继承；只有真正切换互斥视图或应用状态时才使用 tab。**
+
+### CASE-069 — 字体按语义角色统一，不按局部页面“做风格”
+**PREFERENCE · 2026-09-07 · direct human feedback**
+前：独立训练设计页把 serif 用在自己的 hero / section 标题，又把 monospace 用在普通导航和说明标签上，形成只属于这一页的字体层级。
+后：训练设计继承流程理解图的 interface typography；mono 只保留给序号、参数键、路径、SHA、命令等技术标识，并统一引用共享 `--font-*` token，不在局部组件写原始 font stack。
+规律：**字体是语义，不是局部装饰。正文、导航和普通控件默认继承共享 interface 字体；editorial 字体只用于全站已经定义的重大编辑标题角色；mono 只用于机器标识和代码型信息。任何新字体角色必须先进入共享设计系统。**
+
+### CASE-070 — 共享组件里的装饰层会把一个错误复制到整组页面
+**PREFERENCE · 2026-09-07 · derived from direct human feedback**
+前：共享详情组件统一在 H1 上方生成 `实验模型 / 方法 / 实验环境 / 比较 / 研究结果` 等 eyebrow。单看每页都只是“一行小字”，但一次组件决定让模型、SEED、OpenEvo、WebShop、ALFWorld 和更新机制页面同时出现相同的认知噪声。
+后：在共享组件源头删除这一层，让 H1 直接承担主题；导航已经负责告诉读者自己位于哪一类页面。
+规律：**真人反馈命中共享组件时，不能只修当前 route。先找生成这个模式的共同源头，再审计全部消费者；否则同一个错误会以“另一页的问题”反复回来。**
+
+### CASE-071 — 不要用英文或双语小标签把已经说清的标题再说一遍
+**PREFERENCE · 2026-09-07 · derived from direct human feedback**
+反面：`研究结果 · RESEARCH FINDINGS` → `OpenEvo × WebShop 研究结果`；`七个问题 · SEVEN QUESTIONS` → `我们现在能回答的七个问题`；`OPENEVO × WEBSHOP · GDR → DIRECTAPPLY` → `为什么 44 次学习尝试，最后只让 7 次进入模型？`。
+后：删除前一层装饰标签，保留真正描述内容的 H1/H2。
+规律：**英文、全大写、暖色或 monospace 不会自动产生新的信息层级。中文页面尤其不能靠“中文 + 英文再说一次”制造视觉层次；如果第二行标题已经自解释，上一行应删除。**
+
 ## 12. 使用案例库时的优先级
 
 1. 当前用户明确指出某种写法不自然时，以该反馈为最高权重。

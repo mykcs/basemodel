@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const detail = read('../components/research/SeedOpenEvoResearchDetail.astro');
-const lab = read('../components/research/SeedOpenEvoTrainingDecisionLab.astro');
+const hub = read('../components/research/SeedOpenEvoResearchHub.astro');
+const training = read('../components/research/SeedOpenEvoTrainingDesignOverview.astro');
 const overview = read('../components/research/SeedOpenEvoStudyOverview.astro');
 const analysis = read('../components/research/OpenEvoExperimentAnalysisPlan.astro');
 const studyZh = read('../pages/research/seed-openevo/study/index.astro');
@@ -14,13 +15,15 @@ describe('page heading ownership', () => {
     expect(detail).toContain("page !== 'results'");
   });
 
-  it('gives the study overview one H1 and keeps the design lab standalone on its canonical route', () => {
+  it('keeps training design as an H2 section owned by the flow hub', () => {
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
     expect(studyZh).toContain('SeedOpenEvoStudyOverview');
-    expect(studyZh).not.toContain('SeedOpenEvoTrainingDecisionLab');
-    expect(lab).toContain('headingLevel?: 1 | 2');
-    expect(lab).toContain('headingLevel === 1');
-    expect(designZh).toContain('<SeedOpenEvoTrainingDecisionLab locale={locale} />');
+    expect(hub).toContain('id="training-design"');
+    expect(hub).toContain('<h2 id="training-design-title">');
+    expect(training).not.toContain('<h1');
+    expect(training).not.toContain('<h2');
+    expect(designZh).toContain('window.location.replace(target)');
+    expect(designZh).toContain('/research/seed-openevo/flow/#training-design');
   });
 
   it('names analysis subjects directly instead of using narrative fork or host-language headings', () => {

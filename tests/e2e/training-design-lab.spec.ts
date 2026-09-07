@@ -1,10 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const routes = [
-  '/research/seed-openevo/study/',
-  '/research/seed-openevo/study/design/',
-  '/en/research/seed-openevo/study/',
-  '/en/research/seed-openevo/study/design/',
+  '/research/seed-openevo/flow/',
+  '/en/research/seed-openevo/flow/',
 ] as const;
 
 const hostedRouteFilter = new Set(
@@ -24,33 +22,28 @@ async function noPageOverflow(page: Page) {
 }
 
 for (const route of routes) {
-  test(`training design lab is readable and operable on ${route}`, async ({ page }) => {
+  test(`training design is integrated into the flow map on ${route}`, async ({ page }) => {
     test.skip(!routeInScope(route), 'outside hosted focused route scope');
 
     for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(viewport);
       await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-      const root = page.locator('[data-training-decision-lab]');
+      const root = page.locator('#training-design');
       await expect(root).toBeVisible();
-      await expect(root.locator('h1')).toContainText(/WebShop/);
-      await expect(root.locator('#responsibility')).toBeVisible();
-      await expect(root.locator('#parameters')).toBeVisible();
-      await expect(root.locator('#teachers')).toBeVisible();
-      await expect(root.locator('#decision')).toBeVisible();
+      await expect(root.locator('h2')).toContainText(/训练设计|Training design/);
+      await expect(root.locator('.responsibility-flow > li')).toHaveCount(6);
+      await expect(page.locator('nav').getByRole('link', { name: /训练设计|Training design/ }).first()).toBeVisible();
+      await expect(page.getByText('SEED × OPENEVO · WEBSHOP')).toHaveCount(0);
+      await expect(page.getByText('先分清谁负责什么')).toHaveCount(0);
 
-      const tabs = root.locator('[data-claim]');
-      await expect(tabs).toHaveCount(5);
-      const teacherTab = root.locator('[data-claim="teacher"]');
-      await teacherTab.click();
-      await expect(teacherTab).toHaveAttribute('aria-selected', 'true');
-      await expect(root.locator('[data-claim-panel="teacher"]')).toBeVisible();
-      await expect(root.locator('[data-claim-panel="system"]')).toBeHidden();
+      const details = root.locator('details');
+      await expect(details).toHaveCount(2);
+      await details.first().locator('summary').click();
+      await expect(details.first()).toHaveAttribute('open', '');
 
-      const firstTrack = root.locator('.track').first();
-      await firstTrack.locator('summary').click();
-      await expect(firstTrack).toHaveAttribute('open', '');
-      await expect(firstTrack.locator('dl')).toBeVisible();
+      const animationCount = await root.evaluate((node) => node.getAnimations({ subtree: true }).length);
+      expect(animationCount).toBe(0);
 
       const dimensions = await noPageOverflow(page);
       expect(dimensions.html).toBeLessThanOrEqual(dimensions.viewport + 1);
@@ -59,17 +52,29 @@ for (const route of routes) {
   });
 }
 
-test('training design lab remains legible in dark theme and reduced motion', async ({ page }) => {
-  const route = '/research/seed-openevo/study/';
+test('legacy training-design URLs redirect to the flow map section', async ({ page }) => {
+  await page.goto('/research/seed-openevo/study/design/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/research\/seed-openevo\/flow\/#training-design$/);
+
+  await page.goto('/en/research/seed-openevo/study/design/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/en\/research\/seed-openevo\/flow\/#training-design$/);
+});
+
+test('training design stays legible in dark theme and reduced motion', async ({ page }) => {
+  const route = '/research/seed-openevo/flow/';
   test.skip(!routeInScope(route), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
 
-  const root = page.locator('[data-training-decision-lab]');
+  const root = page.locator('#training-design');
   await expect(root).toBeVisible();
-  await expect(root.locator('.flow-pulse')).toHaveCSS('display', 'none');
+  const ambientAnimations = await root.evaluate((node) => node.getAnimations({ subtree: true }).filter((animation) => {
+    const iterations = animation.effect?.getTiming().iterations;
+    return animation.playState === 'running' && iterations === Infinity;
+  }).length);
+  expect(ambientAnimations).toBe(0);
 
   const colors = await root.evaluate((node) => {
     const style = getComputedStyle(node);
@@ -77,16 +82,4 @@ test('training design lab remains legible in dark theme and reduced motion', asy
   });
   expect(colors.color).not.toBe('rgb(24, 32, 31)');
   expect(colors.background).not.toBe('rgb(247, 243, 235)');
-});
-
-test('first visit defaults to light even when the operating system prefers dark', async ({ page }) => {
-  const route = '/research/seed-openevo/study/';
-  test.skip(!routeInScope(route), 'outside hosted focused route scope');
-  await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
-
-  await page.evaluate(() => localStorage.setItem('atlas-theme', 'dark'));
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
 });

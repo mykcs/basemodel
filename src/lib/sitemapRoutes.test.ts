@@ -2,6 +2,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   bilingualStaticPaths,
+  bilingualCompatibilityPaths,
   availableLocalesForRoute,
   localizedRoute,
   sitemapStaticPaths,
@@ -49,6 +50,16 @@ describe('sitemap route coverage', () => {
     expect(sitemapStaticPaths()).toContain(path);
     expect(sitemapStaticPaths()).toContain(toEnglishPath(path));
     expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+  });
+
+  it('keeps moved training design as a compatibility route, not a sitemap page', () => {
+    const path = '/research/seed-openevo/study/design/';
+    expect(bilingualCompatibilityPaths).toContain(path);
+    expect(bilingualStaticPaths).not.toContain(path);
+    expect(sitemapStaticPaths()).not.toContain(path);
+    expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
+    expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+    expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
   });
 
   it('covers the released bilingual product and research routes', () => {
