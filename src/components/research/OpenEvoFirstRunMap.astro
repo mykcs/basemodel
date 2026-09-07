@@ -49,7 +49,7 @@ const summarySteps = zh ? [
     question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
     why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Distinguish model capability, interface errors and capacity limits before the next design.")}
     start={t("7B 与 3B 各自收集初始购物经验，再进入后续学习。","7B and 3B collect initial shopping experience, then learn separately.")}
-    finish={t("7B 完成 149 轮；旧 3B 在 3,200 次后续尝试后停止。","7B completes 149 rounds; old 3B stops after 3,200 later attempts.")}
+    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 rounds of 128 attempts. Old 3B stops after 3,200 later attempts.")}
     state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","History is sealed. 7B completed final evaluation; old 3B stopped.")}
     stateTone="historical"
     backHref={links.lobby}
@@ -129,7 +129,7 @@ const summarySteps = zh ? [
           <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="frozen">
             <span>FINAL CLOSEOUT · 2026-09-04</span>
             <h3>{t('149 个完整 round 后封存：49.33 分，58 / 128 完整成功', 'Sealed after 149 completed rounds: 49.33 score and 58 / 128 exact successes')}</h3>
-            <p>{t('最终 checkpoint 使用 round 0–148，共 19,072 条 accepted Stage-2 rollout、143 个 SD-LoRA component。partial round149 的 96 条只留 provenance，不进入 checkpoint。final panel 在 checkpoint 冻结后只打开一次。', 'The final checkpoint uses rounds 0–148: 19,072 accepted Stage-2 rollouts and 143 SD-LoRA components. The 96 rollouts from partial round149 remain provenance only and do not enter the checkpoint. The final panel was opened exactly once after checkpoint freeze.')}</p>
+            <p>{t('最终 checkpoint 使用 round 0–148，共 19,072 条 accepted Stage-2 rollout、143 个 SD-LoRA component。partial round149 的 96 条只留 provenance，不进入 checkpoint。final panel 在 checkpoint 冻结后只打开一次。20,480 是尝试上限，本次提前停止的具体原因尚待原始终止记录核验。', 'The final checkpoint uses rounds 0–148: 19,072 accepted Stage-2 rollouts and 143 SD-LoRA components. The 96 rollouts from partial round149 remain provenance only and do not enter the checkpoint. The final panel was opened exactly once after checkpoint freeze. The attempt ceiling was 20,480; the specific reason for stopping early still requires verification against the original termination record.')}</p>
             <button type="button" data-first-run-detail="frozen-7b" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
           </article>
           <aside class="patch-node" data-node-kind="engineering-fix" data-node-state="resolved">

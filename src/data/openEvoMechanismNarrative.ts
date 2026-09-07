@@ -47,15 +47,56 @@ export const mechanismLifecycleSchema = z.object({
   const issue = (message: string) => context.addIssue({ code: 'custom', message });
   if (record.execution !== 'locked' && !record.executionRelease) issue('Execution state requires an explicit release');
   if (record.execution === 'locked' && (record.executionRelease || record.actualStart || record.actualEnd)) issue('Locked work cannot carry an active release or run timestamps');
+  if (record.execution === 'authorized' && (record.actualStart || record.actualEnd)) issue('Authorization alone cannot carry observed execution timestamps');
+  if (record.execution === 'running' && record.actualEnd) issue('Running work cannot already carry a completion timestamp');
   if (record.execution === 'running' && !record.actualStart) issue('Running requires an actual start receipt timestamp');
   if (record.execution === 'completed' && (!record.actualStart || !record.actualEnd)) issue('Completion requires actual start and end timestamps');
   if (record.actualEnd && !record.actualStart) issue('An end cannot precede an unrecorded start');
   if (record.actualStart && record.actualEnd && Date.parse(record.actualEnd) < Date.parse(record.actualStart)) issue('End time must follow start time');
   if (record.results === 'sealed' && !record.resultReceipt) issue('Sealed outcomes require a result receipt');
   if (record.results === 'unsealed' && record.resultReceipt) issue('A result receipt and publication state must reconcile');
-  if (record.results === 'sealed' && record.execution === 'locked') issue('Locked work has no publishable result');
+  if (record.results === 'sealed' && record.execution !== 'completed') issue('Final result publication requires completed execution');
 });
 export type MechanismLifecycle = z.infer<typeof mechanismLifecycleSchema>;
+
+/** Display projections of receipt-backed facts; free-form historical labels are not state authority. */
+export function mechanismDisplayState(row: MechanismLifecycle, locale: MechanismNarrativeLocale) {
+  const executionLabels = {
+    locked: text('未获执行授权', 'Not authorized'),
+    authorized: text('已授权，尚无开始记录', 'Authorized; no start recorded'),
+    running: text('已开始，尚未完成', 'Started; not completed'),
+    completed: text('执行已完成', 'Execution completed'),
+  };
+  return {
+    execution: executionLabels[row.execution][locale],
+    result: (row.results === 'sealed' ? text('结果已封存', 'Results sealed') : text('结果未封存', 'Results unsealed'))[locale],
+  };
+}
+
+export function mechanismStateSummary(rows: readonly MechanismLifecycle[], locale: MechanismNarrativeLocale) {
+  // Group only identical facts: a later release for one arm must split the summary.
+  const groups = new Map<string, { names: string[]; row: MechanismLifecycle }>();
+  const roles = {
+    'M1-A': text('加上变化', 'Add changes'),
+    'M1-B': text('移除变化', 'Remove changes'),
+    'M1-C': text('后续学习', 'Later learning'),
+    'M1-D': text('独立经验比较', 'Independent experience comparison'),
+  };
+  for (const row of rows) {
+    const key = `${row.execution}:${row.results}`;
+    const group = groups.get(key) ?? { names: [], row };
+    group.names.push(roles[row.id][locale]);
+    groups.set(key, group);
+  }
+  const commonResult = rows.length > 0 && rows.every((row) => row.results === rows[0]!.results);
+  const executionSummary = [...groups.values()].map(({ names, row }) => {
+    const state = mechanismDisplayState(row, locale);
+    return `${names.join(locale === 'zh' ? '、' : ', ')}${locale === 'zh' ? '：' : ': '}${state.execution}${commonResult ? '' : `${locale === 'zh' ? '；' : '; '}${state.result}`}`;
+  }).join(locale === 'zh' ? '。' : '. ') + (locale === 'zh' ? '。' : '.');
+  if (!commonResult) return executionSummary;
+  const result = mechanismDisplayState(rows[0]!, locale).result;
+  return executionSummary + (locale === 'zh' ? `所有实验${result}。` : ` ${result} for all.`);
+}
 
 export const OPEN_EVO_MECHANISM_EXPERIMENTS: readonly MechanismLifecycle[] = [
   {

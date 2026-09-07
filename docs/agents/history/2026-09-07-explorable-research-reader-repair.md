@@ -80,3 +80,32 @@ REPEAT-CORRECTION：主线 #519 在验收期间前进到 01871f4，并保留了�
 用户再次指出，读者刚进入机制子页仍不知道它要干什么。REPEAT-CORRECTION：触发为首段先说参数、没有先交代任务与研究目的；所有者为 human-thinking §10.10 和现有 ResearchOrientation；核查对象为 0af72ec 的实际机制页开头。允许的下一步是只重写中英文标题、导语、问题/意义，并把首个阅读入口指向已有购物示例；实验状态、依赖关系、预算和结果保持原数据语义。页面源码、主线或首屏几何变化时重新核验。
 
 新的顺序：AI 从尝试中学习 → 模拟购物任务 → 之前问能做到多好 → 本页检查哪些内部变化影响表现 → 先看一次购物，再看对照实验。沿用已有排版、正文大小和回归检查，不另加一块重复长说明，也不以自动测试代替理解率。发布与实测凭据记录在本轮 PR。
+# 2026-09-07 execution follow-up
+
+User authorized implementation of the reviewed comprehension plan. REPEAT-CORRECTION witness: repeated unexplained first-screen codes and incomplete stop summary → existing expression contract §10.8–10.10 and typed lifecycle owner → exact main `9bbae312a027d6623de39f61d50ec275d1a9f473`, rendered reading-path tests, independent Astra review → implement plain roles, complete branches, score units and derived state in an isolated source export → invalidate on main/source/state changes or a new reader misunderstanding. PRs #522/#523 are separate CI optimization/measurement work; preserve them, never merge the measurement PR. No experiment execution is authorized by this website change. Implementation and acceptance receipts follow after actual checks; human comprehension remains unmeasured.
+
+## Implementation scope and cold-read inventory
+
+The existing 13-route inventory is retained (12 unique owners; exploration and its compatibility URL share one owner). `rebuilt`/`contextualized` remains an implementation classification, not a human-comprehension score. Astra independently read the pinned main and identified the following repairs; the shared route context already provides the shopping task and purpose on contextualized routes.
+
+| Route suffix | Default answer location and inspected reader question | Repair / disposition |
+|---|---|---|
+| root | Orientation, shopping example, three entry paths: where should I read? | The finish summary now explains independent paths rather than giving the whole family one mechanism endpoint. |
+| mechanism-1-0 | Orientation → shopping → learning bridge → parameter controls → state → dependencies → lifecycles | Plain roles precede codes; all stop branches in the summary; accepted means retained active states, not reward-selected winners; score units explained locally; displayed execution/results derive from typed facts. |
+| first-run | Orientation, historical closeout: what ran and stopped? | Add 128 attempts per 7B round; distinguish complete and partial records; explicitly leave the original early-stop reason unverified. |
+| openevo-2-0 | Orientation and report link: what is complete? | Give 1.7B's 160-round / 20,480-attempt endpoint and final outcome; retain unfinished matched 3B evaluation. |
+| openevo-2-0/report | Chronology and final-result section: how did preparation become learning and a final test? | Add the training-to-frozen-evaluation bridge and mean-score/exact-success explanation. SEED is an external reference, not a locally paired causal control. |
+| openevo-2-0/exploration | Final journey summary and existing capacity detail | Explain organizing saved shopping experience before the 20-input retry/split mechanics; preserve fixed rules and no extra shopping. |
+| stage1-evolution | Same owner as exploration | Same repair; compatibility URL is not a second independent experiment. |
+| openevo-2-0/harness-2-0 | Opening control/candidate comparison | Explain the changed input as historical-experience hints; preserve common model/tasks/action interpretation and historical qualification scope. |
+| stage1-previous | Opening, archive links, reuse section | Pin the old/new comparison to the 2026-08-31 archive review, separate later shared-interface research, and repair the obsolete return fragment. |
+| stage2-256-window | Opening and gate explanation | Correct 20,480 from an apparent aggregate to a per-arm ceiling; distinguish the early-stopped 3B/MiniMax arm. |
+| stage2-7b-analysis | Historical scope before authority strip, parameter-update section | Change stale current-state claims to historical tense and link later 7B closeout; do not retroactively insert later interventions into training. |
+| stage2-ceiling | Final results and nearby note | Explain complete-round accounting and partial exclusion; do not infer budget exhaustion as the early-stop cause. |
+| archive | Existing task context, evidence navigation and archive sections | No demonstrated main-narrative defect requiring rewrite; technical evidence density is appropriate to this route's lookup purpose. |
+
+Scientific checks: accepted-state selection and task-score units are from the mechanism design at `8ddb7890073bdc0573acb1fc9ef40239e2655979`; SEED reference provenance is from `docs/evidence/server-runs/2026-09-06/qwen3-1p7b-final-closeout/FINAL_ANALYSIS.json` at `e9233c8693c078f61cc08a4409138a3d09d39bd6`. The available 7B governance records establish closeout and artifact identity, not the original early-stop reason. That gap is shown explicitly rather than filled with an invented explanation.
+
+Regressions cover default explanation order, each stop branch, score scale, typed execution/result projections under later mixed states, external-reference qualification and historical scope/links. Existing no-JS, topology, keyboard, reduced-motion and geometry coverage remains registered. UI preflight classifies this batch as shared: deterministic gate, build, overflow preflight and full cross-browser UI matrix are required before a provider-triggering ref.
+
+Integration witness: main advanced through independent #522 to `aa765005c9af9351b9e8e94cd71a42c0cca6b112`. Its five CI ownership/policy/test files do not overlap this batch and are retained unchanged in the validation surface. This batch changes shared components, so it still requires the full UI matrix; the isolated mechanism optimization does not narrow this acceptance. English first-screen screenshots exposed excess total height; grouped repeated result labels, shortened redundant introduction, and adjusted section padding without reducing font size or hiding answers. The old exact “new version is authoritative” copy assertion was replaced with dated identity and non-equivalence checks, preserving its scientific purpose.

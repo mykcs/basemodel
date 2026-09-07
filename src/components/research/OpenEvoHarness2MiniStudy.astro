@@ -27,7 +27,7 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
       <p>OPENEVO 2.0 · MINI STUDY 01</p>
       <h1>{t('Harness 2.0 迷你实验','Harness 2.0 mini study')}</h1>
       <strong>{t('这次历史资格检查的安全门通过，但 v1 当时没有进入正式 Stage 2。','This historical qualification passed its safety gate, but v1 did not enter formal Stage 2 at the time.')}</strong>
-      <span>{t('我们用同一个 3B 起点、同一批已经消费过的训练题和同一套采样规则，比较“完全不注入 carrier”与“注入 interface-safe Harness 2.0”。这次实验不是为了挑高分版本，而是先确认新的 harness 会不会把动作接口搞坏。','Using the same 3B starting point, the same already-consumed training tasks, and the same sampling rules, we paired a no-carrier control against the interface-safe Harness 2.0 candidate. This was not a score-selection experiment; it first asked whether the new harness damages the action interface.')}</span>
+      <span>{t('我们用同一个 3B 起点、同一批已经消费过的训练题和同一套采样规则，比较“不给历史经验提示”与“给经过接口约束的历史经验提示（Harness 2.0）”。这次实验不是为了挑高分版本，而是先确认新的 harness 会不会把动作接口搞坏。','Using the same 3B starting point, the same already-consumed training tasks, and the same sampling rules, we compared no historical-experience hints with hints constrained to the action interface (Harness 2.0). This was not a score-selection experiment; it first asked whether the new harness damages the action interface.')}</span>
     </div>
     <aside aria-label={t('实验结论','Study decision')}>
       <span>QUALIFICATION</span>
@@ -54,8 +54,8 @@ const semanticDeltaPp = (q.candidate.semanticInvalidRate - q.control.semanticInv
         <path d="M245 165 C330 165 340 248 430 248" />
       </svg>
       <article class="h2study__flow-node h2study__flow-source"><span>SHARED</span><strong>{t('同一个 3B Stage-1 / OPSD 起点','Same 3B Stage-1 / OPSD state')}</strong><small>{t(`训练位置 ${q.window} · temperature ${q.temperature}`,`training positions ${q.window} · temperature ${q.temperature}`)}</small></article>
-      <article class="h2study__flow-node h2study__flow-control"><span>CONTROL</span><strong>{t('不注入 carrier','No carrier injection')}</strong><small>128 / 128</small><p>{t('保留相同 parser、任务、seed、horizon 和采样。','Same parser, tasks, seeds, horizon, and sampling.')}</p></article>
-      <article class="h2study__flow-node h2study__flow-candidate"><span>CANDIDATE</span><strong>Harness 2.0</strong><small>128 / 128</small><p>{t('使用经过 linter 与职责分离的 interface-safe carrier。','Uses interface-safe carriers that passed lint and role separation.')}</p></article>
+      <article class="h2study__flow-node h2study__flow-control"><span>CONTROL</span><strong>{t('不给历史经验提示','No experience hints')}</strong><small>128 / 128</small><p>{t('保留相同 parser、任务、seed、horizon 和采样。','Same parser, tasks, seeds, horizon, and sampling.')}</p></article>
+      <article class="h2study__flow-node h2study__flow-candidate"><span>CANDIDATE</span><strong>{t("给符合接口规则的经验提示", "Interface-constrained experience hints")}</strong><small>128 / 128</small><p>{t('使用经过 linter 与职责分离的 interface-safe carrier。','Uses interface-safe carriers that passed lint and role separation.')}</p></article>
       <figcaption>{t(`两边 formal task consumption = ${q.formalTaskConsumption}，final panel access = ${q.finalPanelAccess}。这批训练位置已经被正式训练消费过，因此资格实验没有偷看最终考试。`,`Formal task consumption = ${q.formalTaskConsumption} and final-panel access = ${q.finalPanelAccess} for both cells. These positions had already been consumed by formal training, so qualification did not inspect the final exam.`)}</figcaption>
     </figure>
   </section>

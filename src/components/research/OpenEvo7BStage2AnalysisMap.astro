@@ -37,10 +37,10 @@ const evidence = [
     note: t('这是另一条历史 7B 研究线，不是 Ceiling-1.0 的同一 lineage；它帮助我们把“能训练出 adapter”和“稳定提升新任务”分开看。', 'This is a separate historical 7B study, not the same Ceiling-1.0 lineage. It helps separate “the adapter trains and reloads” from “it reliably improves fresh tasks.”'),
   },
   {
-    href: 'https://github.com/mykcs/basemodel/blob/main/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
+    href: 'https://github.com/mykcs/basemodel/blob/9bbae312a027d6623de39f61d50ec275d1a9f473/docs/agents/current/seed-openevo-research-ia-factual-debt-2026-09-03.md',
     eyebrow: t('网站事实边界', 'WEBSITE FACT BOUNDARY'),
     title: t('Phase C factual-debt audit · C04-09', 'Phase C factual-debt audit · C04-09'),
-    note: t('旧 Ceiling 页面上的精确运行快照计数目前标为 stale-unknown；Phase D 重新绑定 immutable receipt 之前，本页故意不复制这些数字。', 'Exact running counters from the old Ceiling page are currently classified stale-unknown; this page deliberately does not repeat them until Phase D restores immutable receipt binding.'),
+    note: t('2026-09-03 的网站审计当时将旧页面的运行快照标为待核验；这份历史审计解释了当时为何暂缓引用，不是后来完成封存的状态。', 'The 2026-09-03 website audit marked the old running snapshots as awaiting verification. This historical audit explains why they were withheld then; it is not the status of the later sealed closeout.'),
   },
 ];
 ---
@@ -60,6 +60,7 @@ const evidence = [
     )}</span>
   </header>
 
+  <p data-historical-scope>{t("本页保留容量修订与参数分析形成时的判断，引用下方固定版本的历史记录。这里的“当时待核验”不代表当前封存状态。", "This page preserves judgments from the capacity amendment and parameter analysis, citing the fixed historical records below. “Awaited verification then” does not describe the current sealed state.")} <a href={p("/research/seed-openevo/study/capability-exploration/stage2-ceiling/")}>{t("查看后来完成的 149 轮学习与 7B 封存结果", "Read the later 149-round completion and sealed 7B results")}</a></p>
   <section class="authority-strip" aria-label={t('本页事实边界', 'Evidence boundary for this page')}>
     <div>
       <span>{t('可以继续引用', 'SAFE TO REUSE')}</span>
@@ -70,8 +71,8 @@ const evidence = [
       <strong>{t('Ceiling-1.0 的参数更新规则、Task Vector diagnostic-only、容量 amendment', 'Ceiling-1.0 update semantics, diagnostic-only Task Vector, and the capacity amendment')}</strong>
     </div>
     <div>
-      <span>{t('暂不复制', 'DO NOT REPRINT YET')}</span>
-      <strong>{t('旧 Ceiling 页面上尚未重新绑定 receipt 的精确轮次 / generation 快照计数', 'Exact round / generation snapshot counters from the old Ceiling page until receipt binding is restored')}</strong>
+      <span>{t('当时待核验', 'AWAITED VERIFICATION THEN')}</span>
+      <strong>{t('该分析阶段尚未绑定完整凭据的轮次快照；后来的封存结果见下方链接', 'Round snapshots without complete receipt bindings at that historical stage; later sealed results are linked below')}</strong>
     </div>
   </section>
 
@@ -108,8 +109,8 @@ const evidence = [
         <span>02 · LEARNING CHAIN IGNITED</span>
         <h3>{t('7B 证明“成功经验 → 真实参数更新”这条链已经打通', '7B proved that successful experience could become real parameter updates')}</h3>
         <p>{t(
-          'Ceiling-1.0 的历史证据支持一个重要结论：7B 不再停在“有成功轨迹但永远不更新”的状态，而是真的产生了 SD-LoRA 参数更新。这里故意不复述旧网页里的精确轮次、generation 和 component 快照，因为最新网站审计要求先把这些计数重新绑定到 immutable upstream receipt。这个边界不会削弱结论，反而把“我们确定知道什么”和“暂时不能重新发布什么”分开。',
-          'Historical Ceiling-1.0 evidence supports the important conclusion that 7B moved beyond “successful trajectories but no updates” and produced real SD-LoRA parameter updates. This page intentionally does not repeat exact round, generation, or component snapshot counters from the old webpage because the latest website audit requires those numbers to be rebound to immutable upstream receipts first. That boundary separates what we know from what we are not yet allowed to republish.'
+          'Ceiling-1.0 的历史证据支持一个重要结论：7B 不再停在“有成功轨迹但永远不更新”的状态，而是真的产生了 SD-LoRA 参数更新。这里故意不复述旧网页里的精确轮次、generation 和 component 快照，因为当时审计要求先把这些计数重新绑定到 immutable upstream receipt。这个边界不会削弱结论，反而把“我们确定知道什么”和“当时尚不能重新发布什么”分开。',
+          'Historical Ceiling-1.0 evidence supports the important conclusion that 7B moved beyond “successful trajectories but no updates” and produced real SD-LoRA parameter updates. This page intentionally does not repeat exact round, generation, or component snapshot counters from the old webpage because the audit at that historical stage requires those numbers to be rebound to immutable upstream receipts first. That boundary separates what we know from what could not yet be republished at that stage.'
         )}</p>
       </article>
       <span class="connector"></span>
@@ -129,8 +130,8 @@ const evidence = [
         <span>04 · CAPACITY AMENDMENT</span>
         <h3>{t('64 个 component 不是“模型学到头了”，只是实现里的独立容量停止线', '64 components were an implementation stop, not proof that learning had reached its ceiling')}</h3>
         <p>{t(
-          '7B 仍有剩余正式训练预算时，原实现会在累计 64 个 SD-LoRA component 后停止继续增加 component。因为这会提前截断科学问题，我们把它作为显式 scientific amendment 处理，而不是悄悄当成实验自然终点。后续 rank reduction / compression 仍然属于 future study，不倒写进这条 frozen lineage。',
-          'The implementation would stop adding SD-LoRA components after 64 even while the 7B formal budget remained. Because that could truncate the scientific question, it was treated as an explicit scientific amendment rather than a natural endpoint. Later rank reduction / compression remains a future study and is not retroactively inserted into the frozen lineage.'
+          '7B 仍有剩余正式训练预算时，原实现会在累计 64 个 SD-LoRA component 后停止继续增加 component。因为这会提前截断科学问题，我们把它作为显式 scientific amendment 处理，而不是悄悄当成实验自然终点。在这次容量修订中，降秩与压缩被留给后续独立研究；不能把后来的功能干预倒写为本次训练操作。',
+          'The implementation would stop adding SD-LoRA components after 64 even while the 7B formal budget remained. Because that could truncate the scientific question, it was treated as an explicit scientific amendment rather than a natural endpoint. That capacity amendment left rank reduction and compression to separate later studies; subsequent functional interventions must not be rewritten as operations in this training lineage.'
         )}</p>
       </article>
       <span class="connector"></span>

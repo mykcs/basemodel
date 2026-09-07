@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
+import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const mechanism = `${root}mechanism-1-0/`;
@@ -63,6 +64,33 @@ async function assertVisibleReaderGeometry(page: Page) {
 export function registerReaderJourneyTests() {
   for (const locale of ['zh', 'en'] as const) {
     const prefix = locale === 'en' ? '/en' : '';
+    test(`reader journey ${locale}: explanation precedes codes and every stop branch has a visible answer`, async ({ page }) => {
+      await page.goto(`${prefix}${mechanism}`, { waitUntil: 'domcontentloaded' });
+      const orientation = page.locator('[data-research-orientation]');
+      await expect(orientation.locator('[data-orientation-field] dd')).toHaveCount(5);
+      expect(await orientation.innerText()).not.toMatch(/\bM1-[ABCD]\b|\bA\/B\b/);
+      await expect(orientation.locator('[data-orientation-field="state"] dd')).toHaveText(mechanismStateSummary(OPEN_EVO_MECHANISM_EXPERIMENTS, locale));
+      const stop = orientation.locator('[data-orientation-field="finish"] dd');
+      // Each assertion addresses a different missing-branch counterexample.
+      for (const meaning of locale === 'zh' ? [/均未达门槛.*结束主线/, /另获批准/, /固定预算结束/, /1,440.*事后分析.*结束/] : [/Neither passes: end/, /separate release/, /fixed-budget learning/, /1,440.*verified post-hoc analysis/]) await expect(stop).toContainText(meaning);
+      for (const row of OPEN_EVO_MECHANISM_EXPERIMENTS) {
+        const state = mechanismDisplayState(row, locale);
+        await expect(page.locator(`[data-experiment="${row.id}"] header`)).toContainText(state.execution);
+        await expect(page.locator(`[data-experiment="${row.id}"] header`)).toContainText(state.result);
+      }
+      const bridge = page.locator('[data-learning-bridge]');
+      await expect(bridge).toBeVisible();
+      await expect(bridge).toContainText(locale === 'zh' ? /任务结束.*经验用于学习.*参数/ : /ends one task.*learn from its experience.*parameters/);
+      await expect(page.locator('[data-accepted-definition]')).toContainText(locale === 'zh' ? '不按购物成绩挑选' : 'without selecting by shopping score');
+      const score = page.locator('[data-score-explanation]');
+      await expect(score).toBeVisible();
+      for (const meaning of ['task_score', '100', '0.01', locale === 'zh' ? '不是多成功一次' : 'not one more successful task']) await expect(score).toContainText(meaning);
+      const order = await page.evaluate(() => {
+        const before = (a: string, b: string) => Boolean(document.querySelector(a)!.compareDocumentPosition(document.querySelector(b)!) & Node.DOCUMENT_POSITION_FOLLOWING);
+        return [before('[data-reader-task]', '[data-learning-bridge]'), before('[data-learning-bridge]', '[data-accepted-definition]'), before('[data-accepted-definition]', '[data-parameter-case]'), before('[data-score-explanation]', '[data-reader-gate] a')];
+      });
+      expect(order).toEqual([true, true, true, true]);
+    });
     test(`reader journey ${locale}: all declared routes provide task, purpose and one primary title`, async ({ page }) => {
       for (const route of CAPABILITY_READER_ROUTES) {
         const path = `${prefix}${root}${route.route ? `${route.route}/` : ''}`;
@@ -77,6 +105,21 @@ export function registerReaderJourneyTests() {
           await expect(page.locator('[data-reader-route] a')).toHaveAttribute('href', `${prefix}${root}`);
         }
       }
+    });
+
+    test(`reader journey ${locale}: historical scope and final-result comparisons stay explicit`, async ({ page }) => {
+      await page.goto(`${prefix}${root}openevo-2-0/report/`);
+      await expect(page.locator('[data-learning-completion]')).toContainText(/160.*20,480.*7.*128/);
+      await expect(page.locator('[data-reference-boundary]')).toContainText(locale === 'zh' ? /外部参考值.*不是.*配对对照/ : /external reference.*not paired controls/);
+      await expect(page.locator('[data-final-score-meaning]')).toContainText(/37.60.*1\/128/);
+      await page.goto(`${prefix}${root}stage2-256-window/`);
+      await expect(page.locator('[data-testid="legacy-stage2-archive"]')).toContainText(locale === 'zh' ? /每组实验.*20,480/ : /20,480.*per arm/);
+      await page.goto(`${prefix}${root}stage2-7b-analysis/`);
+      await expect(page.locator('[data-historical-scope]')).toContainText(locale === 'zh' ? '不代表当前封存状态' : 'does not describe the current sealed state');
+      await expect(page.locator('[data-historical-scope] a')).toHaveAttribute('href', `${prefix}${root}stage2-ceiling/`);
+      await page.goto(`${prefix}${root}stage1-previous/`);
+      const link = page.locator('.legacy-s1__back');
+      await expect(link).toHaveAttribute('href', `${prefix}${root}first-run/`);
     });
 
     test(`reader journey ${locale}: starts, stops, outcomes and independent branch remain visible without JavaScript`, async ({ browser }) => {

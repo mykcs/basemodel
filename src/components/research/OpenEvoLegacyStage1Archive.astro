@@ -21,14 +21,14 @@ const artifacts = [
 ] as const;
 ---
 <main class="legacy-s1" data-testid="legacy-stage1-archive">
-  <a class="legacy-s1__back" href={p('/research/seed-openevo/study/capability-exploration/#stage1-version-comparison')}>← {t('返回 Stage 1 新旧对比','Back to Stage-1 comparison')}</a>
+  <a class="legacy-s1__back" href={p('/research/seed-openevo/study/capability-exploration/first-run/')}>← {t('返回第一轮历史实验','Back to the first campaign')}</a>
   <header class="legacy-s1__hero">
     <div>
       <p>STAGE 1 · HISTORICAL REPLICATE · RETAINED</p>
       <h1>{t('旧版 Stage 1：仍然可用的历史产物','Old Stage 1: retained, reusable historical artifacts')}</h1>
-      <span>{t('旧版不是“做错了的 Stage 1”。它与新版属于同一种 trajectory-collection 实验：同一批 180 个任务、同一模型 revision、同一 WebShop harness、同样 180×8 次 rollout。新版只是结合后续实际运行，把独立 seed 与 decoding 参数正式定稿；因此今后以新版为准，旧版继续作为历史 replicate 使用。','The old version is not a “wrong Stage 1”. It is the same kind of trajectory-collection experiment as the current version: the same 180 tasks, model revisions, WebShop harness, and 180×8 rollout budget. The current version simply formalizes an independent seed and the decoding settings used by the runtime, so future work uses the current version while the old one remains a reusable historical replicate.')}</span>
+      <span>{t('这里保留 H1.45/H1.46 的初始购物记录。2026-08-31 的归档复核将它与当时重新固定随机种子、解码设置的版本比较：任务、模型版本、购物接口和每组 180×8 次预算相同，具体采样实现不同。这次历史比较不指后来更换共享购物接口的 3B + 1.7B 新实验。','This preserves H1.45/H1.46 initial shopping records. The 2026-08-31 archive review compared them with the then-refrozen seed and decoding version: tasks, model revisions, shopping interface and 180×8 attempts per arm matched, while sampling realizations differed. This historical comparison does not describe the later 3B + 1.7B study with its changed shared shopping interface.')}</span>
     </div>
-    <aside><b>{t('一句话定位','ONE-LINE POSITION')}</b><p>{t('性质一样，参数有小幅定稿；旧版能用，新实验以新版为准。','Same scientific role, small parameter finalization; old remains usable, new is authoritative going forward.')}</p></aside>
+    <aside><b>{t('一句话定位','ONE-LINE POSITION')}</b><p>{t('保留旧记录的身份与适用范围；它不代表后来新实验的当前状态。','Preserve the older records and their scope; they do not describe the current successor state.')}</p></aside>
   </header>
 
   <section class="legacy-s1__section" aria-labelledby="legacy-s1-assets-title">
@@ -49,11 +49,11 @@ const artifacts = [
   </section>
 
   <section class="legacy-s1__section legacy-s1__meaning" aria-labelledby="legacy-s1-meaning-title">
-    <div><p class="kicker">{t('怎么复用','HOW TO REUSE IT')}</p><h2 id="legacy-s1-meaning-title">{t('旧版可以继续分析，但不要冒充新版的 identical corpus','Reuse it for analysis; do not relabel it as the current identical corpus')}</h2></div>
+    <div><p class="kicker">{t('怎么复用','HOW TO REUSE IT')}</p><h2 id="legacy-s1-meaning-title">{t('历史记录可以复用，但不能改称另一版本的数据','Reuse historical records without relabeling them as another corpus')}</h2></div>
     <ol>
       <li><b>01</b><strong>{t('可以继续读旧 trajectory','Old trajectories remain valid')}</strong><p>{t('它们真实记录了旧 seed + 旧 runtime decoding 下 Qwen 在同一 WebShop 任务上的行为。','They truthfully record Qwen behavior on the same WebShop tasks under the old seed and effective runtime decoding.')}</p></li>
       <li><b>02</b><strong>{t('可以继续用真实 adapter','Real adapters remain reusable')}</strong><p>{t('HF canonical model repo 保存 Stage-1 / bootstrap adapter 与 no-update pointer；后续分析可以按原身份恢复。','The canonical HF model repo preserves Stage-1/bootstrap adapters and no-update pointers for identity-preserving restoration.')}</p></li>
-      <li><b>03</b><strong>{t('以后新实验以新版为准','New work uses the current version')}</strong><p>{t('新版把 seed family 和 decoding contract 正式冻结并接入 runtime。比较历史时保留旧版；继续实验与对外主结果使用新版。','The current version freezes the seed family and decoding contract in runtime. Keep the old one for history; use the current version for future experiments and headline reporting.')}</p></li>
+      <li><b>03</b><strong>{t('不同版本分别引用','Cite each version separately')}</strong><p>{t('当时的修订版本另行冻结了随机种子与解码设置。引用哪份结果，就保留哪份数据和配置身份；不可把旧语料当作修订版本的完全相同数据。','The historical revision separately froze its seeds and decoding settings. Keep each result tied to its own data and configuration; the older corpus is not identical to the revised corpus.')}</p></li>
     </ol>
   </section>
 
