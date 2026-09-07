@@ -31,21 +31,23 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
     expect(currentQ7).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
   });
 
-  it('keeps the validated task panel visible without relabeling it as the paper-final 128', () => {
-    expect(currentQ7).toContain('已验证的源码忠实 128 题');
+  it('keeps the validated task panel visible in human language without relabeling it as the paper-final 128', () => {
+    expect(currentQ7).toContain('已核对的 128 个验证任务');
     expect(currentQ7).toContain('在 GitHub 查看固定的 128 题');
     expect(currentQ7).toContain('configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json');
-    expect(currentQ7).toContain('128/128 表示全部 128 个任务槽位都通过运行时语义核对');
+    expect(currentQ7).toContain('128/128 表示全部任务都通过运行时语义核对');
     expect(currentQ7).toContain('论文 89.7 / 78.1% 背后的最终 128 题');
   });
 
-  it('advances the Hero and Next Steps to Track A closeout and Track B barrier state', () => {
-    expect(hero).toContain('128/128 表示计划的 128 个任务槽位全部核对通过');
-    expect(hero).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(hero).toContain('final_test_status=locked');
-    expect(nextSteps).toContain('7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势');
-    expect(nextSteps).toContain('连续学习实验：第 28 代状态已补齐，第 29 代尚未获准执行');
-    expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
+  it('keeps the Hero human-readable while retaining exact continuation state in the evidence layer', () => {
+    expect(hero).toContain('这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致');
+    expect(hero).toContain('下一步是继续 OpenEvo 与 SEED 的方法对方法比较');
+    expect(hero).not.toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(hero).not.toContain('final_test_status=locked');
+    expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
+    expect(nextSteps).toContain('方法对方法比较等待继续授权');
+    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
+    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
   });
 

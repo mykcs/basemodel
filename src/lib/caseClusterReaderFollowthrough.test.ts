@@ -8,38 +8,42 @@ const next = read('src/components/research/OpenEvoWebShopNextSteps.astro');
 const modelGuide = read('src/components/research/OpenEvoModelExperimentGuide.astro');
 
 describe('case-cluster reader follow-through', () => {
-  it('names the two task populations instead of presenting a reading instruction', () => {
-    expect(protocol).toContain('OpenEVO 内部新任务与 SEED 官方保留任务');
-    expect(protocol).toContain('数字、单位与项目内部编号');
+  it('names the two task populations and explains them where they first appear', () => {
+    expect(protocol).toContain('训练范围内未见任务与 SEED 验证任务');
+    expect(protocol).toContain('训练范围内没有见过的任务');
+    expect(protocol).toContain('任务 500–6909');
+    expect(protocol).toContain('SEED 留作验证的任务');
+    expect(protocol).toContain('任务 0–499');
     expect(protocol).toContain('任务完成度与完整成功');
     expect(protocol).not.toContain('先分清两种“新任务”');
-    expect(protocol).not.toContain('先把数字、单位和项目内部编号翻译成人话');
-    expect(protocol).not.toContain('两个分数分别回答两个问题');
+    expect(protocol).not.toContain('数字、单位与项目内部编号');
+    expect(protocol).not.toContain('project-terms');
+    expect(protocol).not.toContain('goal_idx');
+    expect(protocol).not.toContain('专业解释：');
   });
 
-  it('puts the missing OpenEVO-vs-SEED comparison before internal route names', () => {
-    expect(q7).toContain('OpenEVO 与 SEED 的同协议最终比较');
-    expect(q7).toContain('7B 基础模型和加载冻结 OpenEVO SD-LoRA 后的 7B 模型');
+  it('puts the remaining method comparison before internal route names', () => {
+    expect(q7).toContain('还缺的方法级对照');
+    expect(q7).toContain('同一 128 个 WebShop 任务已经分别给基础模型');
+    expect(q7).toContain('真正还缺的是让 SEED 和 OpenEvo 在同一环境');
     expect(q7).not.toContain('最后还缺哪一个关键实验？');
     expect(q7).not.toContain('源码忠实任务测量路线（Track A）已经完成，不再是“待验证”');
     expect(q7).not.toContain('真正还缺的是方法对方法的公平比较路线（Track B）');
+    expect(q7).not.toContain('专业解释：');
   });
 
-  it('keeps next-step titles about the experiments rather than Track/WB aliases', () => {
+  it('keeps next-step titles about experiments and moves internal state into optional records', () => {
     for (const phrase of [
-      '7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势',
-      '连续学习实验：第 28 代状态已补齐，第 29 代尚未获准执行',
-      'ALFWorld 跨环境复测',
-      'OpenEVO 与 SEED 的同协议方法比较',
-      '已经完成的测量与下一步方法比较',
+      '同一 128 个任务的两模型测量已完成',
+      '方法对方法比较等待继续授权',
+      'WebShop 稳定后再做 ALFWorld 复现',
+      '下一轮 OpenEvo 与 SEED 公平比较',
+      '两轮比较回答不同问题',
     ]) expect(next).toContain(phrase);
-    for (const rejected of [
-      '路线 A 已完成：测量有效，但没有证明稳定胜出',
-      '第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权',
-      '最后再去 ALFWorld 看这个现象是不是 WebShop 特有',
-      '下一场真正会改变结论的实验',
-      '两条路线回答不同问题',
-    ]) expect(next).not.toContain(rejected);
+    expect(next).toContain('<details class="step-detail">');
+    expect(next).not.toContain('专业解释：');
+    expect(next).not.toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
+    expect(next).not.toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
   });
 
   it('explains same-model comparison before paired/statistical terminology', () => {
