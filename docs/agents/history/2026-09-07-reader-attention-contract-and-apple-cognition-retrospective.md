@@ -78,6 +78,7 @@
 | 先猜了不存在的 repo 路径 | 直接 `cd` 到一个猜测的本地 checkout 路径，失败后才搜索真实 clone | 习惯路径被当成环境事实 | repo discovery / `git rev-parse --show-toplevel` / multiple worktrees | 路径未知时先发现再 mutation；路径不是 authority | 路径不存在就推断 repo 没有 checkout 或连接坏了 |
 | Retrospective 自己再次触发 Fish/Bash | 本次沉淀的第一条 compound shell 命令又在默认 Fish 下使用 `ROOT=...` | 已写规则被误认为会自动执行；bootstrap 之前就开始 mutation/discovery | 工具外层 `shell` 参数；下一条命令的真实 interpreter | REPEAT-CORRECTION 必须落到下一次 tool call；本次随后显式 `/bin/bash` | 再写一篇 Fish 文档，但下一条命令仍不指定 shell |
 | 文件读取超时 | 读 `LATEST.md` 的一次文件工具调用超时，随后用安全 `sed` 路径成功 | 单一路径失败被当成 capability 缺失 | child/process/alternate owner-appropriate read path | 一次工具超时不是“文件不存在/能力不可用” | 因一次 timeout 改权限、换凭据或宣布 blocked |
+| Git push transport 失败 | retrospective 同步到新 `main` 后，HTTPS push 先遇到 HTTP/2 framing failure，重试又遇到连接超时 | 把一个传输路径失败误当成仓库不可写，或为了省事回到旧绿 head | durable local tree、remote branch head、可用 GitHub connector/Git Data API | 传输失败先保留 exact tree；用安全的 owner-appropriate alternate path 发布，并校验远端 tree SHA 与已验证本地 tree 相同 | 因 `git push` 失败就宣称 blocked，或 force-push 旧分支跳过 moving-main 整合 |
 
 ## 5. 思维与科研表达上的关键纠正
 
@@ -160,6 +161,8 @@ attention-first 不是删除证据。科学网页必须同时满足两件事：�
 本 retrospective 自己的发布阶段又复现了一次 moving-main：#547 的初始 exact head 已经拿到 required CI 绿灯后，#542 才合并进 `main`，使 #547 从 CLEAN 变成 DIRTY。处理方式不是拿旧绿灯强合，而是显式把新 `main` 合进候选树，保留 #542 新增的 CASE-069–071 / Results reader rules 与本次新增的 attention/use-site rules，重新运行 `verify:deploy`，再为新的 exact head 取得 CI。这个事件保留在历史中，因为它直接证明“green once”不是 material base drift 之后的继续授权。
 
 本次 retrospective 现场又出现一次 Fish parser failure，这个事实保留，因为它证明“规则已写”仍可能在 use-site 失效；随后命令显式改用 `/bin/bash`。没有把 parser failure 说成 Git、服务器或仓库故障。
+
+最终发布时，普通 Git HTTPS push 又连续遇到 HTTP/2 framing failure 与连接超时。这里同样没有把单一 transport failure 升级成“GitHub 不可写”：保留已经通过 `verify:deploy` 的 integrated local tree，改用已授权 GitHub Git Data API 从当前 `main` 构造提交，并要求远端 tree SHA 与本地已验证 tree SHA **逐字相同** 后才继续 PR/CI。这个替代路径改变了传输机制，没有改变候选文件树或验收语义。
 
 ## 10. Future Agent preflight：再次收到类似真人反馈时
 
