@@ -248,7 +248,7 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('translates homepage project codes and status values before using them as evidence', () => {
-    expect(protocol).toContain('先把数字、单位和项目内部编号翻译成人话');
+    expect(protocol).toContain('数字、单位与项目内部编号');
     expect(protocol).toContain('它不是一次参数训练，也不是一个单独动作');
     expect(protocol).toContain('cell 数不能直接当成成功任务数');
     expect(protocol).toContain('数字本身不是模型分数，也不是训练步数');

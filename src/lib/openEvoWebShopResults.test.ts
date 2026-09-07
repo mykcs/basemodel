@@ -115,7 +115,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
   });
 
   it('teaches the task split and only the two beginner scoring concepts before Q1–Q7', () => {
-    expect(protocol).toContain('先分清两种“新任务”');
+    expect(protocol).toContain('OpenEVO 内部新任务与 SEED 官方保留任务');
     expect(protocol).toContain('Qwen2.5-7B-Instruct');
     expect(protocol).toContain('goal_idx ≥ 500');
     expect(protocol).toContain('goal_idx 0–499');
@@ -155,7 +155,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).not.toContain('Track A 当前是 PREPARED');
     expect(questions).not.toContain('formal execution not authorized');
     expect(currentQ7).toContain('id="q7"');
-    expect(currentQ7).toContain('最后还缺哪一个关键实验？');
+    expect(currentQ7).toContain('OpenEVO 与 SEED 的同协议最终比较');
     expect(currentQ7).toContain('已完成 · 未证明稳定提升');
     expect(questions).toContain('现在的答案：');
     expect(questions).toContain('我们做了两次对照');
@@ -315,14 +315,14 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).not.toContain('经验供给不是当前直接瓶颈');
   });
 
-  it('orders next steps around closed Track A, the WB1 state barrier, and ALFWorld', () => {
+  it('orders next steps around the completed 7B measurement, continual-learning state, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('路线 A 已完成：测量有效，但没有证明稳定胜出');
+    expect(nextSteps).toContain('7B 基础模型与 OpenEVO：128 个 WebShop 任务已完成，未证明稳定优势');
     expect(nextSteps).toContain('128/128 任务语义核对通过');
     expect(nextSteps).toContain('PUBLISHED_AND_VERIFIED');
     expect(nextSteps).toContain('公开代码能重建的“第一次验证”，不是论文最终 128 题');
     expect(nextSteps).toContain('也不是声称找回了论文 89.7 / 78.1% 当年使用的确切 128 题');
-    expect(nextSteps).toContain('第 28 代状态断点已修复；路线 B / WB1 等待第 29 代授权');
+    expect(nextSteps).toContain('连续学习实验：第 28 代状态已补齐，第 29 代尚未获准执行');
     expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(nextSteps).toContain('WB1 live router · main');
     expect(nextSteps).toContain('真正恢复执行前仍必须重新读取 live router');
@@ -330,8 +330,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('第 28 代的 state-v28 已补齐、通过状态门并被正式采用');
     expect(nextSteps).toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
-    expect(nextSteps).toContain('路线 B（Track B，WB1）');
-    expect(nextSteps).toContain('只有路线 B 才能真正回答 OpenEvo vs SEED');
+    expect(nextSteps).toContain('WB1 属于独立的路线 B');
+    expect(nextSteps).toContain('只有这项同协议方法比较才能真正回答 OpenEVO vs SEED');
     expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
     expect(nextSteps).toContain('/research/seed-openevo/study/');
   });

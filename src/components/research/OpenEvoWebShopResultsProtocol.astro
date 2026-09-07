@@ -97,14 +97,14 @@ const projectTerms = [
   <header class="section-heading">
     <p>{t('实验边界 · PROTOCOL', 'PROTOCOL')}</p>
     <div>
-      <h2 id="protocol-title">{t('先分清两种“新任务”', 'Two task ranges to keep in mind')}</h2>
+      <h2 id="protocol-title">{t('OpenEVO 内部新任务与 SEED 官方保留任务', 'OpenEVO internal fresh tasks and SEED official held-out tasks')}</h2>
       <p class="plain-intro">{t('这里最容易误会的一点是：我们已经证明“模型能迁移到训练没见过的新任务”，但那批新任务和 SEED 论文用来做正式验证的保留任务不是同一批。', 'The easiest mistake is to treat all unseen tasks as the same benchmark. We have evidence for transfer to unseen internal tasks, but those are not the same as the SEED official held-out tasks.')}</p>
       <p class="technical-intro"><strong>{t('专业解释：', 'Technical detail: ')}</strong>{t('OpenEvo 内部新任务评估使用任务索引 goal_idx ≥ 500，并保证任务 ID 与训练集不重叠；SEED 官方保留范围使用 goal_idx 0–499。后续源码审计又增加了一层要求：除了编号范围相同，还必须匹配验证随机种子（validation seed）、工作进程随机种子（worker seed）、任务目标顺序（goal ordering）以及最终任务文本（instruction）的源码语义。', 'OpenEvo internal fresh-task evaluation uses goal_idx ≥ 500 with task-ID disjointness from training, while the SEED official held-out range is goal_idx 0–499. The later source audit adds another requirement: matching the numeric range must also preserve validation seed, worker seed, goal ordering, and resulting instruction semantics.')}</p>
     </div>
   </header>
 
   <div class="project-terms" aria-labelledby="project-terms-title">
-    <div class="project-terms-heading"><h3 id="project-terms-title">{t('先把数字、单位和项目内部编号翻译成人话', 'Numbers, units, and project shorthand')}</h3><p>{t('后面仍保留 Track、Gen 和机器状态代码，方便和实验仓库对账；但它们第一次出现时必须先说明到底在数什么、是否代表失败。', 'Track, generation, and machine-state codes remain visible for auditability, but their meaning must be clear before they are used as evidence.')}</p></div>
+    <div class="project-terms-heading"><h3 id="project-terms-title">{t('数字、单位与项目内部编号', 'Numbers, units, and project shorthand')}</h3><p>{t('后面仍保留 Track、Gen 和机器状态代码，方便和实验仓库对账；但它们第一次出现时必须先说明到底在数什么、是否代表失败。', 'Track, generation, and machine-state codes remain visible for auditability, but their meaning must be clear before they are used as evidence.')}</p></div>
     <dl>{projectTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.body}</dd></div>)}</dl>
   </div>
 
@@ -120,7 +120,7 @@ const projectTerms = [
   </div>
 
   <div class="metric-defs">
-    <div class="metric-defs-heading"><h3>{t('两个分数分别回答两个问题', 'Two scores answer two different questions')}</h3><p>{t('“做得更接近目标”不等于“最后完整做对”。所以结果页会把任务完成度和完整成功分开报告。', 'More partial progress does not necessarily mean exact task completion, so the page reports task progress and exact success separately.')}</p></div>
+    <div class="metric-defs-heading"><h3>{t('任务完成度与完整成功', 'Task progress and exact success')}</h3><p>{t('“做得更接近目标”不等于“最后完整做对”。所以结果页会把任务完成度和完整成功分开报告。', 'More partial progress does not necessarily mean exact task completion, so the page reports task progress and exact success separately.')}</p></div>
     <dl class="metric-def-list">{metricDefinitions.map((item) => <div class="metric-def"><dt>{item.term}</dt><dd>{item.body}</dd></div>)}</dl>
   </div>
 
