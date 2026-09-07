@@ -55,6 +55,8 @@ For UI/layout/theme/CSS work also read:
 - [`current/theme-contrast-contract.md`](current/theme-contrast-contract.md)
 - [`current/ui-change-visual-acceptance-gate.md`](current/ui-change-visual-acceptance-gate.md)
 
+For the owner-requested `study/` restructure, use [the scoped implementation plan and acceptance matrix](current/study-restructure-plan-202609070900.md). It routes to existing standards and remains unimplemented until an implementation PR supplies evidence.
+
 For route-role/deduplication questions in the research area, read [`current/research-journey-experience.md`](current/research-journey-experience.md).
 
 ### SEED × OpenEvo publication / Results
