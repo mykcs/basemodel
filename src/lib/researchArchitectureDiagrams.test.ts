@@ -88,7 +88,8 @@ describe('research architecture diagrams', () => {
 
   it('compares SEED and OpenEvo by where experience persists without freezing the live campaign', () => {
     expect(compare).toContain('SHARED EXPERIENCE');
-    expect(compare).toContain('Core fork question');
+    expect(compare).toContain('Core comparison question');
+    expect(compare).not.toContain('Core fork question');
     expect(compare).toContain('Where does this experience ultimately live?');
     expect(compare).toContain('memory / artifact / adapter');
     expect(compare).toContain('updated policy checkpoint');

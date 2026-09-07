@@ -41,8 +41,7 @@ const evidence = [
 <main class="stage1-map" data-testid="openevo-stage1-evolution-map">
   <header class="stage1-map__head">
     <a href={links.lobby}>{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
-    <p>ROGUELIKE RESEARCH MAP · STAGE 1 EVOLUTION</p>
-    <h1>{t('Stage 1 是怎样一步一步做对的', 'How Stage 1 was repaired step by step')}</h1>
+    <h1>{t('Stage 1 购物接口的修订过程', 'Stage 1 shopping-interface revisions')}</h1>
     <strong>{t(
       '最终那套 Stage 1 不是一开始就知道答案。我们先跑出问题，再用小实验把“模型能力不足”和“Harness 把模型带偏”分开，最后才冻结一套 3B 与 1.7B 都能共用的接口。',
       'The final Stage 1 was not obvious at the beginning. We first exposed failures, then used small diagnostics to separate model weakness from harness-induced failure, and only then froze one interface shared by 3B and 1.7B.'
@@ -62,7 +61,7 @@ const evidence = [
 
   <section class="story" aria-labelledby="stage1-story-title">
     <header>
-      <p>FLOOR 1 → FLOOR 6</p>
+      <p>{t('六个历史阶段', 'Six historical stages')}</p>
       <h2 id="stage1-story-title">{t('从“能跑”到“可以作为 canonical corpus”', 'From “it runs” to a canonical corpus')}</h2>
     </header>
 

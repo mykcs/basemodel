@@ -81,10 +81,10 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     compare: {
       eyebrow: 'SEED × OPENEVO',
       title: zh ? 'SEED 与 OpenEvo 更新机制' : 'SEED and OpenEvo update mechanisms',
-      lede: zh ? '从同一份 completed experience 真正分叉，比较经验如何被处理、以什么状态保存、什么时候对下一轮或下一任务生效。' : 'Fork from the same completed experience and compare how it is processed, what persists, and when it activates in the next round or task.',
+      lede: zh ? '从同一份 completed experience 出发，分别比较 SEED 与 OpenEvo 怎样处理经验、保存什么状态，以及变化何时生效。' : 'Start from the same completed experience and compare how SEED and OpenEvo process it, what each persists, and when each change activates.',
       steps: [
         { label: zh ? '共同经验' : 'Shared', narration: zh ? '两种方法都从真实 task / observations / sampled actions / outcome 开始。' : 'Both methods start from a real task / observations / sampled actions / outcome.' },
-        { label: zh ? '分叉' : 'Fork', narration: zh ? '同一 experience 进入两套不同更新机制。' : 'The same experience enters two different update mechanisms.' },
+        { label: zh ? '分别处理' : 'Separate', narration: zh ? '同一 experience 分别进入 SEED 与 OpenEvo 的更新机制。' : 'The same experience enters the SEED and OpenEvo update mechanisms separately.' },
         { label: zh ? '更新' : 'Update', narration: zh ? 'SEED 产生训练信号；OpenEvo 跨过 task boundary 运行 evolution method。' : 'SEED creates learning signal; OpenEvo crosses the task boundary and runs an evolution method.' },
         { label: zh ? '保存' : 'Persist', narration: zh ? 'SEED 保存 θt+1 参数；OpenEvo 保存 validated evolved state。' : 'SEED persists θt+1 parameters; OpenEvo persists validated evolved state.' },
         { label: zh ? '生效' : 'Activate', narration: zh ? '两者都改变后续行为，但生效合同与 carrier 不同。' : 'Both can change later behavior, but their activation contract and carriers differ.' },

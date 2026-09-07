@@ -51,7 +51,6 @@ const summarySteps = zh ? [
 <main data-copy-review class="explore-map" data-testid="openevo-successor-exploration-map">
   <ResearchOrientation
     locale={locale}
-    eyebrow="ROGUELIKE RESEARCH MAP · EXPLORATION"
     title={t("购物接口的探索与修订", "Shopping interface study")}
     lede={t("3B 经常无法完成购物。我们逐项检查步数、历史信息和动作传递，形成两种模型共用的购物规则。旧记录保留原身份。", "We tested why 3B failed to shop. Historical records stay distinct.")}
     question={t("失败来自模型能力，还是购物接口？", "Does failure come from the model or its interface?")}
@@ -80,7 +79,6 @@ const summarySteps = zh ? [
   <div id="exploration-summary">
     <ResearchJourney
       locale={locale}
-      eyebrow="HYPOTHESIS → TEST → DECISION"
       title={t("从购物失败到共同规则", "From shopping failures to shared rules")}
       intro={t("增加步数、调整动作随机性和提供历史信息仍不足以解释恢复；动作前的思考与动作传递成为后续检查的重点。", "More steps, adjusted sampling, and task history did not explain recovery alone. Subsequent checks focused on pre-action reasoning and action transmission.")}
       steps={summarySteps}

@@ -68,7 +68,6 @@ const steps = zh ? [
 <section data-copy-review class="map-lobby" data-testid="openevo-capability-map-lobby" data-reader-page="lobby" data-ui-audit="contrast layout">
   <ResearchOrientation
     locale={locale}
-    eyebrow="OPENEVO × WEBSHOP · CAPABILITY EXPLORATION"
     title={t("模型怎样从购物经验中学习？", "How do models learn from shopping experience?")}
     lede={t("模型在模拟商店里搜索、选规格和购买，目标是买到符合要求的商品。我们研究怎样让它利用经验改善下一次尝试。", "A model searches, chooses options and purchases in a simulated store. We study how experience can improve its next attempt.")}
     question={t("模型能否持续学习，哪些变化真的有效？", "Can the model keep learning, and which changes matter?")}
@@ -87,14 +86,13 @@ const steps = zh ? [
 
   <ResearchJourney
     locale={locale}
-    eyebrow="THE RESEARCH EVOLVED WITH THE QUESTION"
     title={t("三类研究问题", "Three research questions")}
     intro={t('每一步都保留前一步的证据，但不会把旧轨迹冒充成新实验数据。', 'Each generation keeps the evidence from the previous one without relabeling old trajectories as new experimental data.')}
     steps={steps}
   />
 
   <aside class="map-lobby__current-ablation" data-current-ablation="gdr-directapply">
-    <div><small>{t('CURRENT STAGE2 ABLATION', 'CURRENT STAGE-2 ABLATION')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><p>{t('GDR-v1 会用 16-task 小考试决定新状态能否继续。DirectApply / No-GDR 正在独立检验：如果只移除这个短期 task-score gate，长期学习路径会怎样？', 'GDR-v1 uses a 16-task probe to decide whether a changed state may continue. DirectApply / No-GDR independently tests what happens when only that short-horizon task-score gate is removed.')}</p></div>
+    <div><small>{t('Stage 2 机制消融', 'Stage 2 mechanism ablation')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><p>{t('GDR-v1 会用 16-task 小考试决定新状态能否继续。DirectApply / No-GDR 正在独立检验：如果只移除这个短期 task-score gate，长期学习路径会怎样？', 'GDR-v1 uses a 16-task probe to decide whether a changed state may continue. DirectApply / No-GDR independently tests what happens when only that short-horizon task-score gate is removed.')}</p></div>
     <a href={gdrDirectApplyHref}>{t('进入 GDR → DirectApply 决策页 →', 'Open the GDR → DirectApply decision page →')}</a>
   </aside>
 

@@ -215,7 +215,7 @@ const unknown = zh ? [
   </section>
 
   <section class="gdr-section" id="round0-match" aria-labelledby="round0-match-title">
-    <p class="gdr-so-what">{t('所以呢？在 treatment 真正分叉之前，R0 rollout 必须先证明两边从同一个行为起点出发。我们逐 episode 核了 128 个 case。', 'So what? Before the treatment can diverge, R0 must show that both arms start from the same behavioral point. We checked all 128 cases episode by episode.')}</p>
+    <p class="gdr-so-what">{t('Round 0 对齐要求：两组开始使用不同 transition policy 之前，先证明 128 个 episode 的行为起点一致。', 'Round 0 matching requirement: before the two arms use different transition policies, verify that all 128 episodes start from the same behavior.')}</p>
     <h2 id="round0-match-title">{t('Round 0：行为语义匹配，但 adapter 不是 bitwise-identical', 'Round 0: behavior is semantically matched, but the adapter is not bitwise-identical')}</h2>
     <div class="gdr-match-grid" data-testid="round0-semantic-match">
       <div><strong>128 / 128</strong><span>task_id</span><small>{t('一致', 'matched')}</small></div>
