@@ -7,6 +7,8 @@ const principles = readFileSync(new URL('../../docs/agents/current/project-agent
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
+const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-design-spec.md', import.meta.url), 'utf8');
+const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
@@ -82,6 +84,14 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('ask what the user needs to click at the content location');
     expect(registry).toContain('Review the whole affected reading journey');
     expect(seedWorkflow).toContain('what observable evidence counts as PASS');
+  });
+
+  it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
+    for (const token of ['case cluster', 'at least two nearby cases', 'high-confidence same-family', 'semantic positions']) expect(registry).toContain(token);
+    for (const token of ['案例簇', '至少包含当前最接近案例 + 2 个同类/相邻案例', '高置信同类', 'sibling routes']) expect(websiteSpec).toContain(token);
+    expect(copyCases).toContain('案例簇总结：CASE-061–066');
+    expect(copyCases).toContain('当前最接近案例 + 至少 2 个同类/相邻案例');
+    expect(copyCases).toContain('案例不是墓碑，而是训练样本');
   });
 
   it('protects secret and hosting-modernization boundaries', () => {

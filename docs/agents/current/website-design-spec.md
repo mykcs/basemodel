@@ -329,13 +329,16 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 任何新增或修改公开文案的任务：
 
 1. 先读本规范。
-2. 如果用户说了 `说人话 / 去 AI 味 / 自然一点 / 不要像 AI 写的`，再读 [`website-copy-cases.md`](website-copy-cases.md) 中最接近的类别；不要只按关键词做替换。
-3. 根据页面职责加载专门规范，例如 Results 加载 reader-first / research-editorial，技术解释页加载 layered explainer。
-4. 先核实事实，再改口吻；不要让文案优化改变证据边界。
-5. 通读所有受影响的 H1/H2/H3、lede、button、callout、empty/error/status 和图注，而不是只改用户点名的一句。
-6. 运行 `npm run audit:copy`，把结果当 review queue，不做机械替换。
-7. 运行 `npm run audit:copy:strict` 与仓库对应验证；UI 改动继续走 browser gate。
-8. 如果用户反馈形成了新的、跨页面可复用的偏好，更新本规范或案例库；不要新建第六套平行 style guide。
+2. 用户给出真人网页反馈、指出重复理解问题，或要求 `说人话 / 去 AI 味 / 自然一点 / 不要像 AI 写的` 时，不只找一个相似句子：从 [`website-copy-cases.md`](website-copy-cases.md) 读取一个**案例簇**，至少包含当前最接近案例 + 2 个同类/相邻案例；新反馈优先于较老案例。
+3. 先把案例簇总结成一句可复用规则，并同时写清“这条规则不意味着什么”。例如 CASE-061–066 的共同规则不是“删除英文”，而是“零上下文首层先展示真实对象、双方、动作与结果；内部代号和方法学术语后置”。
+4. 根据页面职责加载专门规范，例如 Results 加载 reader-first / research-editorial，技术解释页加载 layered explainer。
+5. 先核实事实，再改口吻；不要让文案优化改变证据边界。
+6. 通读当前页面所有受影响的 H1/H2/H3、lede、nav、table subject、result card、button、callout、empty/error/status 和图注，而不是只改用户点名的一句。
+7. 用“语义位置 + 案例里的词语线索”扫描其他 production copy owner、共享组件和 sibling routes。先判断是不是同一个失败机制，再分类为高置信同类 / 不确定 / 有意例外；同一任务里直接修高置信同类，不对不确定项做机械替换。
+8. 运行 `npm run audit:copy`，把结果与案例驱动的扫描结果一起当 review queue；不要把正则命中当作语义结论。
+9. 能机械检测的规律要进入现有 audit/test，优先保护“失败家族”而不是只 ban 一句原话；不能可靠机械检测的规律保留为案例与 Agent 审查步骤。
+10. 运行 `npm run audit:copy:strict` 与仓库对应验证；UI 改动继续走 browser gate，真实桌面/移动 viewport 验收仍不能被字符串测试替代。
+11. 如果用户反馈形成新的、跨页面可复用偏好，更新本规范或案例库并记录本轮传播到哪些 sibling/surface；不要新建第六套平行 style guide。
 
 ## 17. 专门规范的职责
 
