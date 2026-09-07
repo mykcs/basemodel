@@ -65,7 +65,8 @@ for (const viewport of viewports) {
     if (!metrics) return;
 
     expect(metrics.titleWidth, `questions title collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(360);
-    expect(metrics.headingWidth, `questions heading row collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(850);
+    // The simplified heading intentionally uses a focused ~760px reading column; guard against real collapse, not the retired wide eyebrow layout.
+    expect(metrics.headingWidth, `questions heading reading column collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(720);
     expect(metrics.titleLines, `questions title wraps too many times: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(3);
     expect(metrics.charactersPerLine, `questions title became a narrow text rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(12);
     expect(metrics.listGap, `question cards are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
