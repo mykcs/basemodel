@@ -16,6 +16,17 @@ describe('OpenEvo first-run historical map', () => {
     expect(map).toContain('Qwen2.5-3B');
   });
 
+  it('uses literal first-reader copy instead of decorative branching language', () => {
+    expect(map).toContain('3B 和 7B 的第一轮购物实验');
+    expect(map).toContain('我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验');
+    expect(map).toContain("state: '7B 继续，3B 停止'");
+    expect(map).not.toContain('第一轮购物学习：7B 与 3B 的分岔');
+    expect(map).not.toContain('HISTORICAL MAP · FIRST RUN');
+    expect(map).not.toContain('STAGE 1 → STAGE 2 → OUTCOME');
+    expect(map).not.toContain('路径分叉');
+    expect(map).not.toContain('两条模型线');
+  });
+
   it('keeps scientific amendments on the main lineage and runtime repairs in a patch lane', () => {
     expect(map).toContain('data-node-kind="scientific-amendment"');
     expect(map).toContain('data-node-kind="engineering-fix" data-node-state="resolved"');

@@ -57,7 +57,7 @@ const rows = isSeven ? sevenBRows : fourRows;
 <article class="analysis-plan" data-testid={`experiment-analysis-plan-${mode}`}>
   <header class="analysis-hero">
     <p class="eyebrow">{isSeven ? t('实验后分析方案 · 7B / SELF', 'POST-EXPERIMENT ANALYSIS · 7B / SELF') : t('四组联合分析方案 · SELF / MINIMAX', 'FOUR-ARM ANALYSIS · SELF / MINIMAX')}</p>
-    <h2 class="analysis-hero__title">{isSeven ? t('7B 无外部教师实验：我们还能从这一轮实验里知道什么？','7B without an external teacher: what else can this run tell us?') : t('3B / 7B × self / MiniMax：四组实验怎样一起回答问题？','3B / 7B × self / MiniMax: what can the four arms tell us together?')}</h2>
+    <h2 class="analysis-hero__title">{isSeven ? t('7B 无外部教师实验的后续分析','Follow-up analysis of the 7B experiment without an external teacher') : t('3B / 7B × self / MiniMax 的四组比较','3B / 7B × self / MiniMax four-arm comparison')}</h2>
     <p class="lede">{isSeven
       ? t('训练保存点的 GPU 补测已经完成。现在必须把旧运行事实和长期算法分开：7 < 8 准确解释当时程序为什么没有更新，但逐块清零的 8 任务规则只是历史 method-control，不是 OpenEVO 长期 Stage 2 的必然定义。尚未解决的是新的累计—更新—清空合同与逐题失败机制。','The checkpoint GPU sweep is complete. Run fact and long-term algorithm must now be separated: 7 < 8 accurately explains why that program did not update, but the per-block eight-task reset rule was a historical method-control, not a necessary definition of long-term OpenEVO Stage 2. The unresolved work is a new accumulate-update-reset contract and finer per-task failure analysis.')
       : t('这四组可以画成 3B/7B × self/MiniMax 的 2×2 比较图，但它不是一个只改变“老师身份”的纯因果实验。MiniMax 不替学生做 WebShop 任务，而是在一次完整任务轨迹结束后回看并生成监督；这同时改变了启动训练阶段的监督内容和样本选择方式。Stage 2 则都回到本地学生模型自己探索。因此我们比较的是“整套启动处理方式”、模型规模以及后续自主探索，而不能把所有差异都归因给 MiniMax 这个老师本身。','The four arms form a useful 3B/7B × self/MiniMax comparison map, but not a clean causal experiment on teacher identity. MiniMax acts only after a completed trajectory and changes the bootstrap supervision/selection bundle; Stage 2 returns to local student self. We therefore compare treatment bundles, scale, and downstream self-exploration rather than attributing every difference to MiniMax.')}</p>
@@ -66,9 +66,9 @@ const rows = isSeven ? sevenBRows : fourRows;
 
   {isSeven && (
     <section class="stage1-choice-map" aria-labelledby="stage1-choice-title" data-testid="stage1-choice-map">
-      <div class="section-kicker">{t('Stage 1 的两个设计选择', 'TWO STAGE 1 DESIGN CHOICES')}</div>
+      <div class="section-kicker">{t('Stage 1 的两项设计选择', 'TWO STAGE-1 DESIGN CHOICES')}</div>
       <h2 id="stage1-choice-title">{t('同样 1,440 条轨迹：老师是谁，和讲评怎样写回参数，是两次不同选择','The same 1,440 trajectories create two separate choices: who analyzes them, and how the analysis is written back into parameters')}</h2>
-      <p>{t('我们现在把旧实验放回正确的位置：MiniMax 确实完整分析了 1,440 / 1,440 条 7B 轨迹；问题出在后面的参数写入只选了其中 16 条。这里的 16 / 1,440 数的是“真正进入参数训练的讲评记录”，不是模型分数，也不是 MiniMax 只分析了 16 条。这个选择与做题时的采样温度（rollout temperature）无关。','We now place the historical run on the correct branch: MiniMax did analyze all 1,440/1,440 7B trajectories; the later parameter-write stage selected only 16 of them. That choice is independent of rollout temperature.')}</p>
+      <p>{t('旧实验的记录显示：MiniMax 确实完整分析了 1,440 / 1,440 条 7B 轨迹；问题出在后面的参数写入只选了其中 16 条。这里的 16 / 1,440 数的是“真正进入参数训练的讲评记录”，不是模型分数，也不是 MiniMax 只分析了 16 条。这个选择与做题时的采样温度（rollout temperature）无关。','The historical run records that MiniMax did analyze all 1,440/1,440 7B trajectories; the later parameter-write stage selected only 16 of them. That choice is independent of rollout temperature.')}</p>
 
       <div class="choice-flow" role="img" aria-label={t('Stage 1 选择树：1440 条轨迹先选择 GLM 或 MiniMax 分析，再选择 SFT 或 SD-LoRA；SD-LoRA 又分全量利用 1440 条和历史只用 16 条。','Stage-1 choice tree: 1,440 trajectories are analyzed by GLM or MiniMax, then written back by SFT or SD-LoRA; SD-LoRA further branches into full 1,440-record use or the historical 16-record subset.')} >
         <div class="choice-step choice-step--source"><span>01</span><strong>1,440 {t('条 Qwen WebShop 轨迹','Qwen WebShop trajectories')}</strong><small>180 个任务 × 每任务 8 次完整尝试</small></div>

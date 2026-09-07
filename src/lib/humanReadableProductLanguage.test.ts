@@ -38,8 +38,8 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps the first-run model comparison literal and allows decorative eyebrows to be omitted', () => {
-    expect(firstRun).toContain('7B 与 3B 的第一轮购物实验');
-    expect(firstRun).toContain('我们分别用 7B 和 3B 模型做了 WebShop 实验。');
+    expect(firstRun).toContain('3B 和 7B 的第一轮购物实验');
+    expect(firstRun).toContain('我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。');
     expect(firstRun).not.toContain('第一轮购物学习：7B 与 3B 的分岔');
     expect(firstRun).not.toContain('HISTORICAL MAP · FIRST RUN');
     expect(firstRun).not.toContain('关卡说明');

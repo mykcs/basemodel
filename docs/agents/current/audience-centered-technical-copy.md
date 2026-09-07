@@ -80,7 +80,7 @@ When the experiment simply ran two models separately, say that directly. Do not 
 
 Prefer:
 
-- `我们分别用 7B 和 3B 模型做了 WebShop 实验`;
+- `我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验`;
 - `从同一 checkpoint 分成 SEED 与 OpenEvo 两组` when a shared checkpoint is actually split.
 
 Avoid using `分岔`, `路径分叉`, `核心分叉问题`, or `design fork` merely to make a research page sound like a story. The reader should spend attention on the experimental object, not on decoding an invented metaphor.

@@ -161,7 +161,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   for (const forbidden of ['结果应该怎么读？', '先判断这次比较能不能信，再判断谁的分数更高']) ban('src/components/research/Seed3090PairedRunAudit.astro', 'COPY-PRESENTER-HEADING-001', forbidden, 'Presenter-style result-reading headings must not return.');
 
   const firstRun = 'src/components/research/OpenEvoFirstRunMap.astro';
-  for (const required of ['7B 与 3B 的第一轮购物实验', '我们分别用 7B 和 3B 模型做了 WebShop 实验。', '7B 继续；3B 停止检查接口', '实验说明']) requireText(firstRun, 'COPY-FIRST-RUN-HUMAN-001', required, 'The first-run page must describe the two model experiments directly in ordinary language.');
+  for (const required of ['3B 和 7B 的第一轮购物实验', '我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。', '7B 继续，3B 停止', '实验说明']) requireText(firstRun, 'COPY-FIRST-RUN-HUMAN-001', required, 'The first-run page must describe the two model experiments directly in ordinary language.');
   for (const forbidden of ['第一轮购物学习：7B 与 3B 的分岔', 'HISTORICAL MAP · FIRST RUN', '路径分叉', '两条路线', '关卡说明']) ban(firstRun, 'COPY-FIRST-RUN-HUMAN-002', forbidden, 'Rejected narrative or gamified first-run wording must not return.');
 
   const orientation = 'src/components/research/ResearchOrientation.astro';

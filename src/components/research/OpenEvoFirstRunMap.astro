@@ -31,25 +31,25 @@ const terms = zh ? [
   { term: 'SD-LoRA component', meaning: 'A LoRA component left by one accepted parameter update; component count is not the replay buffer and not the final scientific score.' },
 ];
 const summarySteps = zh ? [
-  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '先记录模型学习前的购物表现，再把这些经验整理成后续学习的输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
-  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 出现动作解析错误和无效动作终止，因此需要区分接口错误与模型能力不足。', outcome: '7B 继续学习并完成测试；3B 重新设计接口，从新采集的经验开始。', state: '7B 继续；3B 停止检查接口' },
+  { id: 'stage1', kicker: '01 · STAGE 1', title: '3B 和 7B 都先自己完成任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '先记录模型学习前的购物表现，再把这些经验整理成后续学习的输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 出现动作解析错误和无效动作终止，因此需要区分接口错误与模型能力不足。', outcome: '7B 继续学习并完成测试；3B 重新设计接口，从新采集的经验开始。', state: '7B 继续，3B 停止' },
   { id: 'closeout', kicker: '03 · OUTCOME', title: '7B 完成测试；旧 3B 停止并检查接口', summary: '7B 完成 149 轮学习后，在固定的 128 道测试题上得到 49.33 分，58 题完全成功。旧 3B 实验停止，相关发现推动了下一轮共同购物接口的设计。', detail: '7B 的结果说明参数更新能够持续发生；3B 的接口问题说明，低分未必只由模型能力造成。', outcome: '后续 3B + 1.7B 实验固定共同购物规则，重新收集初始经验。', state: '历史已封存' },
 ] : [
   { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both models first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'Initial task scores record the model’s own shopping behavior; external analysis takes place after those attempts end.', state: 'Historical start' },
   { id: 'stage2', kicker: '02 · STAGE 2', title: '7B sustained parameter updates; old 3B exposed interface problems', summary: '7B sustained real SD-LoRA updates; the old 3B Stage 2 stopped after 3,200 rollouts instead of being simplified to “the model is too weak.”', detail: '3B action parsing and invalid termination showed that the interface itself could corrupt capability measurement.', outcome: '7B could continue toward a ceiling closeout; 3B had to restart from a fresh Stage-1 redesign.', state: '7B continues; 3B stops for interface diagnosis' },
-  { id: 'closeout', kicker: '03 · OUTCOME', title: '7B completed evaluation; the old 3B run stopped for interface diagnosis', summary: '7B: 49.33 score and 58/128 exact after 149 completed rounds; the old 3B run stopped and triggered a shared-harness redesign.', detail: 'This is not a simple “7B wins, 3B loses” leaderboard; it is evidence about sustained learning and measurement risk.', outcome: 'The next map restarts the comparison under a shared 3B + 1.7B harness.', state: 'Historical closeout' },
+  { id: 'closeout', kicker: '03 · OUTCOME', title: '7B completed evaluation; the old 3B run stopped for interface diagnosis', summary: '7B: 49.33 score and 58/128 exact after 149 completed rounds; the old 3B run stopped and triggered a shared-harness redesign.', detail: 'This is not a simple “7B wins, 3B loses” leaderboard; it is evidence about sustained learning and measurement risk.', outcome: 'The next experiment restarts the comparison under a shared 3B + 1.7B harness.', state: 'Historical closeout' },
 ];
 ---
 <main data-copy-review class="first-run" data-first-run-map data-testid="openevo-first-run-map">
   <ResearchOrientation
     locale={locale}
-    title={t("7B 与 3B 的第一轮购物实验", "7B and 3B WebShop runs")}
-    lede={t("我们分别用 7B 和 3B 模型做了 WebShop 实验。7B 能持续把经验用于参数更新；旧 3B 实验则暴露了购物接口和动作格式问题。","We ran separate 7B and 3B WebShop runs. 7B kept updating; the old 3B run exposed interface and action-format problems.")}
-    question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
-    why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Separate model, interface, and capacity limits before the next design.")}
-    start={t("7B 与 3B 各自收集初始购物经验，再进入后续学习。","7B and 3B collect initial shopping experience, then learn separately.")}
-    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 rounds of 128 attempts. Old 3B stops after 3,200 later attempts.")}
-    state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","History is sealed. 7B completed final evaluation; old 3B stopped.")}
+    title={t("3B 和 7B 的第一轮购物实验", "3B and 7B WebShop runs")}
+    lede={t("我们分别用 Qwen2.5-3B 和 Qwen2.5-7B 做 WebShop 实验。7B 能持续把经验用于参数更新；旧 3B 实验则暴露了购物接口和动作格式问题。","We ran Qwen2.5-3B and Qwen2.5-7B WebShop experiments. 7B kept updating; the old 3B run exposed interface and action-format problems.")}
+    question={t("经验能否带来持续的模型更新？","Can experience sustain model updates?")}
+    why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Separate model limits, interface errors, and capacity limits before redesigning.")}
+    start={t("3B 和 7B 都先各自收集初始购物经验，再进入后续学习。","3B and 7B each collect initial WebShop experience.")}
+    finish={t("7B 完成 149 轮，每轮 128 次；旧 3B 在 3,200 次后续尝试后停止。","7B: 149 × 128 attempts. Old 3B: 3,200 later attempts, then stopped.")}
+    state={t("历史记录已封存。7B 已完成最终测试；旧 3B 已停止。","Sealed history. 7B final tested; old 3B stopped.")}
     stateTone="historical"
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
