@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'experiment' | 'design' | 'capability' | 'server' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchPage = 'hub' | 'experiment' | 'briefing' | 'design' | 'capability' | 'server' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
 type ResearchTrack = 'flow' | 'study';
 
 interface Props {
@@ -32,12 +32,13 @@ const flowPages = [
 
 const studyPages = [
   { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/study/') },
+  { id: 'briefing', label: t('阶段汇报', 'Progress briefing'), href: p('/research/seed-openevo/study/briefing/') },
   { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/research/seed-openevo/study/run/') },
   { id: 'capability', label: t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration'), href: p('/research/seed-openevo/study/capability-exploration/') },
   { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/study/results/') },
 ] as const;
 
-const studyPageIds: ResearchPage[] = ['experiment', 'design', 'run', 'capability', 'results'];
+const studyPageIds: ResearchPage[] = ['experiment', 'briefing', 'design', 'run', 'capability', 'results'];
 const currentTrack: ResearchTrack = studyPageIds.includes(page) ? 'study' : 'flow';
 const pages = currentTrack === 'flow' ? flowPages : studyPages;
 const identity = currentTrack === 'flow'
@@ -50,7 +51,7 @@ const identity = currentTrack === 'flow'
   : {
       index: '02',
       label: t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop'),
-      meta: t('实验流程 · 运行 · 基础能力探索 · 研究结果', 'workflow · execution · capability exploration · findings'),
+      meta: t('实验流程 · 阶段汇报 · 运行 · 基础能力探索 · 研究结果', 'workflow · briefing · execution · capability exploration · findings'),
       aria: t('OpenEVO Harness · WebShop 研究子导航', 'OpenEVO Harness · WebShop study subnavigation'),
     };
 ---

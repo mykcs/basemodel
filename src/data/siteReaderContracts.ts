@@ -56,6 +56,7 @@ export const SITE_READER_CONTRACTS = [
   c('flow-loops', '/research/seed-openevo/flow/loops/', '/research/seed-openevo/flow/loops/', 'narrative', '理解经验、反馈和参数更新怎样形成循环', '先看到循环的真实输入输出而不是抽象口号', '循环存在不等于已经证明持续提升', '进入对应实验验证'),
 
   c('study', '/research/seed-openevo/study/', '/research/seed-openevo/study/', 'choice', '理解实验计划并选择要看的实验阶段', '先知道实验研究回答什么问题以及当前证据到哪里', '实验阶段、历史和当前状态分开', '选择运行、能力探索或结果'),
+  { ...c('study-briefing', '/research/seed-openevo/study/briefing/', '/research/seed-openevo/study/briefing/', 'narrative', '向导师和研究组说明项目从问题定义、探索、测量修复到当前机制实验的进展', '先抓住项目已经从“能跑”推进到“能做可归因实验”，并同时看到当前尚不能宣布 OpenEVO 胜过 SEED', '已完成结果、诊断性失败、当前暂停状态与尚未完成的因果结论必须分开', '按页继续看研究问题、关键证据、当前阻塞与下一步', '[data-briefing-primary]'), audience: '魏老师、学长，以及只需要先听懂主线、再按需追问技术细节的研究组读者' },
   { ...c('study-design', '/research/seed-openevo/study/design/', '/research/seed-openevo/study/design/', 'reference', '知道旧训练设计地址已经迁移，并进入新的唯一设计位置', '先看到训练设计已并入流程理解图，而不是误以为这是第二套设计页面', '旧 URL 只做兼容跳转；真正设计内容只有一个语义 owner', '进入流程理解图中的训练设计', '#training-design-title'), redirectsTo: '/research/seed-openevo/flow/' },
   c('study-run', '/research/seed-openevo/study/run/', '/research/seed-openevo/study/run/', 'operational', '知道当前实验怎样运行以及下一步能做什么', '先看到运行状态、阻塞和授权动作', '运行中、已完成和未授权必须分开', '执行或查看对应实验'),
   c('study-results', '/research/seed-openevo/study/results/', '/research/seed-openevo/study/results/', 'focus', '快速抓住当前最重要实验结论和证据边界', '先看到最重要结果而不是术语或阅读说明', '会改变结论含义的 caveat 必须首层可见', '进入对应结果证据'),

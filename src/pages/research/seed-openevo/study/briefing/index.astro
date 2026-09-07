@@ -1,0 +1,13 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoProgressBriefing from '../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
+const locale = 'zh' as const;
+---
+
+<AppLayout
+  title="SEED × OpenEVO 项目阶段汇报"
+  description="面向导师与研究组的阶段汇报：用一页一结论的 HTML 演示说明 SEED × OpenEVO 项目的研究问题、探索路线、实验质量、关键结果、当前阻塞与下一步。"
+  locale={locale}
+>
+  <SeedOpenEvoProgressBriefing locale={locale} />
+</AppLayout>

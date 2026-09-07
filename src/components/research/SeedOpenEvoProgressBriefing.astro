@@ -1,0 +1,216 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+type Copy = { zh: string; en: string };
+
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (copy: Copy) => zh ? copy.zh : copy.en;
+const p = (path: string) => localePath(locale, path);
+
+const studyHref = p('/research/seed-openevo/study/');
+const flowHref = p('/research/seed-openevo/flow/');
+const resultsHref = p('/research/seed-openevo/study/results/');
+const ceilingHref = p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/');
+const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+const q17Pr = 'https://github.com/mykcs/openevo-experiment/pull/378';
+const q17Successor = 'https://github.com/mykcs/openevo-experiment/pull/379';
+const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
+
+const slides = [
+  { id: 'question', label: { zh: '研究问题', en: 'Question' } },
+  { id: 'route', label: { zh: '探索路线', en: 'Exploration' } },
+  { id: 'system', label: { zh: '实验系统', en: 'System' } },
+  { id: 'measurement', label: { zh: '测量修复', en: 'Measurement' } },
+  { id: 'ceiling', label: { zh: '7B 结果', en: '7B result' } },
+  { id: 'twin', label: { zh: '机制对照', en: 'Mechanism twin' } },
+  { id: 'blocker', label: { zh: '当前阻塞', en: 'Blocker' } },
+  { id: 'quality', label: { zh: '质量体系', en: 'Quality' } },
+  { id: 'pace', label: { zh: '推进节奏', en: 'Pace' } },
+  { id: 'next', label: { zh: '下一步', en: 'Next' } },
+] as const;
+const nextLabel = (index: number) => {
+  const next = slides[index + 1];
+  return next ? t(next.label) : (zh ? '回到开头' : 'Back to start');
+};
+const nextHref = (index: number) => {
+  const next = slides[index + 1];
+  return next ? `#${next.id}` : '#briefing-top';
+};
+---
+
+<article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
+  <section id="briefing-top" class="briefing-slide briefing-cover" data-briefing-primary aria-labelledby="briefing-title">
+    <div class="slide-inner">
+      <a class="back-link" href={studyHref}>← {zh ? 'OpenEVO · WebShop 实验' : 'OpenEVO · WebShop study'}</a>
+      <p class="slide-meta"><time datetime="2026-09-08">2026-09-08</time> · {zh ? '给魏老师和学长的阶段汇报' : 'Progress briefing for the advisor and lab'}</p>
+      <h1 id="briefing-title">{zh ? 'SEED × OpenEVO 项目阶段汇报' : 'SEED × OpenEVO project progress'}</h1>
+      <p class="cover-thesis">{zh
+        ? '一句话：我已经把“模型做任务 → 收集经验 → 复盘 → 更新参数 → 冻结测试”跑成一条可重复的实验链。现在最重要的问题已经从“能不能跑”变成“结果为什么可信、变化到底由谁造成”。'
+        : 'In one sentence: the full chain from task interaction to sealed experience, hindsight, parameter updates, and frozen evaluation is now repeatable. The key question has shifted from “can it run?” to “why should we trust the result, and what caused the change?”'}</p>
+      <dl class="cover-status" aria-label={zh ? '当前阶段状态' : 'Current project state'}>
+        <div><dt>{zh ? '已经做到' : 'Completed'}</dt><dd>{zh ? '7B 持续学习完整收口到 128 题最终测试' : 'A full 7B continual-learning run closed out on a 128-task final panel'}</dd></div>
+        <div><dt>{zh ? '正在解决' : 'Resolving now'}</dt><dd>{zh ? 'Q17 的固定 GPU SD-LoRA 确定性问题' : 'Fixed-GPU SD-LoRA determinism for Q17'}</dd></div>
+        <div><dt>{zh ? '现在不能说' : 'Not yet justified'}</dt><dd>{zh ? '“OpenEVO 已经胜过 SEED”' : '“OpenEVO already beats SEED”'}</dd></div>
+      </dl>
+      <nav class="deck-index" aria-label={zh ? '汇报章节' : 'Briefing sections'}>
+        {slides.map((slide, index) => <a href={`#${slide.id}`}><span>{String(index + 1).padStart(2, '0')}</span>{t(slide.label)}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  <section id="question" class="briefing-slide" aria-labelledby="question-title">
+    <div class="slide-inner">
+      <p class="slide-number">01 / 10</p><h2 id="question-title">{zh ? '我到底在研究什么？' : 'What am I actually studying?'}</h2>
+      <p class="slide-thesis">{zh ? '不是把训练分“刷高”。主问题是：在可比的 WebShop 任务预算下，OpenEVO 学完以后，能不能在没参与训练的任务上稳定变好？如果变了，变化来自哪里？' : 'The goal is not to inflate a training score. Under a comparable WebShop task budget, does OpenEVO learning reliably improve performance on unseen tasks, and if it changes, what caused that change?'}</p>
+      <ol class="question-list">
+        <li><span>Q1</span><div><strong>{zh ? '最终效果' : 'Final effect'}</strong><p>{zh ? '同任务、同评测规则、匹配预算下比较 OpenEVO 与基线 / SEED。' : 'Compare OpenEVO with baseline / SEED under the same tasks, evaluation rules, and matched budget.'}</p></div></li>
+        <li><span>Q2</span><div><strong>{zh ? '学习来源' : 'Learning source'}</strong><p>{zh ? '拆开基础模型、初始经验、MiniMax 任务后回看等因素，避免把模型大小、老师和训练路径混成一个变量。' : 'Separate base-model scale, initial experience, and MiniMax post-task hindsight instead of mixing scale, teacher, and training path.'}</p></div></li>
+        <li><span>Q3</span><div><strong>{zh ? '更新机制' : 'Update mechanism'}</strong><p>{zh ? '判断 GDR 的筛选是在保护长期学习，还是把短期看起来变差但长期可能有用的更新挡掉。' : 'Test whether GDR protects long-horizon learning or rejects updates that look worse locally but may help later.'}</p></div></li>
+      </ol>
+      <aside class="evidence-strip"><strong>{zh ? '为什么预算要先钉死' : 'Why the budget must be pinned first'}</strong><p>{zh ? 'SEED 论文：Stage 1 = 1,440 条轨迹；RL = 150 次 policy update × batch 16 × rollout group 8 = 19,200，总计 20,640。公开 WebShop launcher 另有 160 epoch 路径。这两种来源不能被写成同一个“SEED 预算”。' : 'SEED paper: Stage 1 = 1,440 trajectories; RL = 150 policy updates × batch 16 × rollout group 8 = 19,200, for 20,640 total. The public WebShop launcher separately has a 160-epoch path. Those provenances cannot be collapsed into one “SEED budget.”'}</p></aside>
+      <footer class="slide-footer"><span>{zh ? '先定义可比性，再谈输赢。' : 'Comparability comes before declaring a winner.'}</span><a href={nextHref(0)}>{zh ? '下一页' : 'Next'}：{nextLabel(0)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="route" class="briefing-slide" aria-labelledby="route-title">
+    <div class="slide-inner">
+      <p class="slide-number">02 / 10</p><h2 id="route-title">{zh ? '路线是怎么一步步长出来的？' : 'How did the route evolve?'}</h2>
+      <p class="slide-thesis">{zh ? '每次失败我都先判断：这是测量错了、模型真的不会、学习链没动，还是更新机制有问题。然后下一轮只回答其中一个问题。' : 'Each failure is first classified as measurement, model capability, learning-chain, or update-mechanism failure. The next experiment is narrowed to one of those questions.'}</p>
+      <ol class="timeline">
+        <li><span>A</span><div><strong>{zh ? '先修测量' : 'Repair measurement first'}</strong><p>{zh ? '复现 SEED / WebShop 时发现 action wrapper 与 parser 会把可执行行为误判成失败，所以先做 source-faithful 语义核对。' : 'SEED / WebShop reproduction exposed action-wrapper and parser mismatches that could turn executable behavior into false failure, so source-faithful validation came first.'}</p></div></li>
+        <li><span>B</span><div><strong>{zh ? '再拆模型和教师影响' : 'Then separate model and teacher effects'}</strong><p>{zh ? '做 3B / 7B × self / MiniMax 的历史探索；MiniMax 只在任务结束后复盘，不替学生点击网页。' : 'Historical 3B / 7B × self / MiniMax arms explored scale and hindsight; MiniMax only reviews completed trajectories and never acts in WebShop for the student.'}</p></div></li>
+        <li><span>C</span><div><strong>{zh ? '把学习链跑到底' : 'Run the learning chain to completion'}</strong><p>{zh ? '7B Ceiling 不再只看一两个 batch，而是持续到 149 个完整 round，再锁死最终 128 题做 closeout。' : 'The 7B Ceiling study completed 149 full rounds and then closed out on a locked 128-task final panel.'}</p></div></li>
+        <li><span>D</span><div><strong>{zh ? '最后拆机制' : 'Finally isolate the mechanism'}</strong><p>{zh ? '发现 GDR 会改变候选更新能否真正进入模型后，建立 GDR vs DirectApply 双胞胎实验，只允许 transition authority 不同。' : 'Once GDR was shown to control whether candidates enter the model, a GDR-vs-DirectApply twin was designed with transition authority as the sole intended treatment.'}</p></div></li>
+      </ol>
+      <footer class="slide-footer"><span>{zh ? '失败不是“重跑一次”，而是下一轮实验的题目。' : 'A failure becomes the question for the next experiment.'}</span><a href={nextHref(1)}>{zh ? '下一页' : 'Next'}：{nextLabel(1)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="system" class="briefing-slide" aria-labelledby="system-title">
+    <div class="slide-inner">
+      <p class="slide-number">03 / 10</p><h2 id="system-title">{zh ? '现在不是“跑脚本”，而是在控制证据链' : 'This is now an evidence pipeline, not a training script'}</h2>
+      <p class="slide-thesis">{zh ? '任务怎样抽、模型看到了什么、谁做复盘、哪次参数更新被接受，以及最终测试什么时候才能解锁，都要有明确身份。' : 'Task sampling, model inputs, hindsight ownership, retained parameter updates, and final-panel unlock timing all have explicit identities.'}</p>
+      <figure class="pipeline" aria-labelledby="pipeline-caption">
+        <div class="pipeline-row">
+          <div><span>01</span><strong>{zh ? '冻结任务 / seed' : 'Frozen tasks / seed'}</strong></div><i>→</i>
+          <div><span>02</span><strong>Qwen rollout</strong></div><i>→</i>
+          <div><span>03</span><strong>{zh ? '封存 trajectory' : 'Sealed trajectory'}</strong></div><i>→</i>
+          <div><span>04</span><strong>{zh ? '回看 / 训练信号' : 'Hindsight / signal'}</strong></div><i>→</i>
+          <div><span>05</span><strong>SD-LoRA candidate</strong></div><i>→</i>
+          <div><span>06</span><strong>GDR / DirectApply</strong></div><i>→</i>
+          <div><span>07</span><strong>{zh ? '保留模型状态' : 'Retained state'}</strong></div>
+        </div>
+        <figcaption id="pipeline-caption">{zh ? '最终 128 题在训练完成前保持锁定，不允许拿来挑规则、挑 checkpoint 或试跑。' : 'The final 128-task panel stays locked until training ends; it cannot be used to choose rules, checkpoints, or smoke-test variants.'}</figcaption>
+      </figure>
+      <dl class="system-notes">
+        <div><dt>MiniMax</dt><dd>{zh ? '只在 Stage 1 已封存轨迹之后做回看，不负责 WebShop 搜索或点击。' : 'Reviews already sealed Stage-1 trajectories; it does not search or click in WebShop.'}</dd></div>
+        <div><dt>{zh ? 'Q17 资源约束' : 'Q17 resource constraint'}</dt><dd>{zh ? 'rollout 可用 8-GPU pool；SD-LoRA 候选训练必须固定到同一块物理 GPU，避免硬件差异混进 treatment。' : 'Rollouts may use an 8-GPU pool; SD-LoRA candidate training must be pinned to one physical GPU so hardware variation cannot leak into the treatment.'}</dd></div>
+        <div><dt>{zh ? '身份证' : 'State identity'}</dt><dd>{zh ? '任务 manifest、source SHA、candidate hash、receipt、final panel 各有独立身份；历史证据和当前 authority 分开。' : 'Task manifests, source SHAs, candidate hashes, receipts, and final panels have separate identities; historical evidence stays distinct from current authority.'}</dd></div>
+      </dl>
+      <footer class="slide-footer"><span>{zh ? '输入、处理、输出都必须可追溯。' : 'Inputs, transformations, and outputs must all be traceable.'}</span><a href={nextHref(2)}>{zh ? '下一页' : 'Next'}：{nextLabel(2)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="measurement" class="briefing-slide" aria-labelledby="measurement-title">
+    <div class="slide-inner">
+      <p class="slide-number">04 / 10</p><h2 id="measurement-title">{zh ? '第一个大坑：0 分也可能是尺子坏了' : 'First major trap: a zero can mean the ruler is broken'}</h2>
+      <p class="slide-thesis">{zh ? '如果测试接口没正确接住模型动作，0 分首先是测量无效，不是模型能力为 0。' : 'If the evaluation wrapper fails to carry model actions correctly, a zero first means invalid measurement—not zero capability.'}</p>
+      <div class="before-after">
+        <div><span>{zh ? '最初' : 'Before'}</span><strong>{zh ? '动作包装 / parser 不兼容' : 'Action-wrapper / parser mismatch'}</strong><p>{zh ? 'PRIMARY-v1 的 0/0 被判为 measurement-invalid，不能解释成能力为 0。' : 'PRIMARY-v1’s 0/0 was classified measurement-invalid and cannot be interpreted as zero capability.'}</p></div><i>→</i>
+        <div><span>{zh ? '修复后' : 'After'}</span><strong>128 / 128 semantic PASS</strong><p>{zh ? 'source-faithful panel 的运行时语义逐格核对通过，parser-invalid = 0。' : 'The source-faithful panel passed runtime semantic validation cell by cell, with parser-invalid = 0.'}</p></div>
+      </div>
+      <div class="table-wrap" tabindex="0"><table><thead><tr><th>{zh ? '同一批 128 个任务' : 'Same 128 tasks'}</th><th>Task Score ×100</th><th>{zh ? '完整成功' : 'Exact success'}</th></tr></thead><tbody><tr><th scope="row">{zh ? '7B · 基础模型' : '7B · base model'}</th><td>7.17</td><td>5 / 128</td></tr><tr><th scope="row">{zh ? '7B · 冻结 OpenEVO SD-LoRA' : '7B · frozen OpenEVO SD-LoRA'}</th><td>8.74</td><td>5 / 128</td></tr></tbody></table></div>
+      <p class="stat-line"><strong>Δ = +1.57</strong><span>95% CI = [−3.21, +6.31]</span><span>{zh ? '方向为正，但区间跨过 0 → 不能宣称稳定提升' : 'Positive direction, but the interval crosses 0 → no stable-improvement claim'}</span></p>
+      <footer class="slide-footer"><a href={resultsHref}>{zh ? '查看结果证据' : 'Open result evidence'} ↗</a><a href={nextHref(3)}>{zh ? '下一页' : 'Next'}：{nextLabel(3)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="ceiling" class="briefing-slide" aria-labelledby="ceiling-title">
+    <div class="slide-inner">
+      <p class="slide-number">05 / 10</p><h2 id="ceiling-title">{zh ? '7B：把一条学习链真正跑到底' : '7B: running a learning chain all the way through'}</h2>
+      <p class="slide-thesis">{zh ? '这一步证明的不是“能生成 LoRA”，而是持续产生并保留参数变化，最后对锁定的 128 个任务做完整测试。' : 'This proved more than “we can generate LoRA”: parameter changes were retained over time, then evaluated on the locked 128-task final panel.'}</p>
+      <dl class="metric-line"><div><dt>{zh ? '完整学习轮' : 'Completed rounds'}</dt><dd>149</dd><small>round 0–148</small></div><div><dt>{zh ? '计入实验的任务' : 'Accepted rollouts'}</dt><dd>19,072</dd><small>{zh ? 'partial round 149 不混入' : 'partial round 149 excluded'}</small></div><div><dt>SD-LoRA</dt><dd>143</dd><small>{zh ? '保留的 components' : 'retained components'}</small></div><div><dt>{zh ? '最终 Task Score' : 'Final Task Score'}</dt><dd>49.33</dd><small>/ 100</small></div><div><dt>{zh ? '完整成功' : 'Exact success'}</dt><dd>58 / 128</dd><small>45.31%</small></div></dl>
+      <aside class="evidence-strip evidence-positive"><strong>{zh ? '这个结果真正证明什么' : 'What this result actually proves'}</strong><p>{zh ? '学习链能长时间运行、形成真实参数状态，并在独立 final panel 上封存结果。7 个 action-admissibility fail-closed 样本仍保留在 128 题分母里，runtime errors = 0。' : 'The learning chain can run for a long horizon, produce real parameter states, and close out on an independent final panel. Seven fail-closed action-admissibility cases remain in the 128-task denominator; runtime errors = 0.'}</p></aside>
+      <p class="claim-boundary"><strong>{zh ? '它还不能证明：' : 'It still does not prove:'}</strong> {zh ? 'OpenEVO 相对 SEED 的因果优势。89.7 是 SEED 论文参考数字，不是这条 7B run 的本地配对对照。' : 'a causal advantage of OpenEVO over SEED. The SEED paper’s 89.7 is an external reference, not a locally paired control for this 7B run.'}</p>
+      <footer class="slide-footer"><a href={ceilingHref}>{zh ? '查看 7B Ceiling 完整结果' : 'Open the full 7B Ceiling result'} ↗</a><a href={nextHref(4)}>{zh ? '下一页' : 'Next'}：{nextLabel(4)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="twin" class="briefing-slide" aria-labelledby="twin-title">
+    <div class="slide-inner">
+      <p class="slide-number">06 / 10</p><h2 id="twin-title">{zh ? '下一问：到底是不是 GDR 在改变学习？' : 'Next question: is GDR changing the learning?'}</h2>
+      <p class="slide-thesis">{zh ? 'GDR 决定一个已经训练好的候选更新能不能真正进入下一轮。所以 Q17 做双胞胎实验，只改这一件事。' : 'GDR decides whether a trained candidate enters the next state. Q17 therefore uses a twin experiment that changes only this treatment.'}</p>
+      <div class="twin-design"><div><span>ARM A</span><strong>GDR_GATE</strong><p>{zh ? '候选可以被 veto；通过 gate 才应用。' : 'A candidate can be vetoed; only gate-passing candidates are applied.'}</p></div><div class="same-core"><span>{zh ? '两边固定相同' : 'Held identical'}</span><ul><li>common state0</li><li>{zh ? '任务 / seed / sampling' : 'tasks / seeds / sampling'}</li><li>160 rounds × 128 rollouts</li><li>candidate opportunity / probe</li><li>{zh ? '新鲜且锁定的 128-task final' : 'fresh locked 128-task final'}</li></ul></div><div><span>ARM B</span><strong>DIRECT_APPLY</strong><p>{zh ? '候选满足共同 eligibility 就直接进入下一轮，不经过 GDR veto。' : 'Any candidate meeting shared eligibility enters the next state without the GDR veto.'}</p></div></div>
+      <p class="claim-boundary"><strong>{zh ? '统计边界：' : 'Statistical boundary:'}</strong> {zh ? '一对 exact-seed twin 只能算探索性证据；要升级成算法层主张，预注册要求至少 3 个训练 seed。' : 'One exact-seed twin is exploratory evidence only; an algorithm-level claim is preregistered to require at least three training seeds.'}</p>
+      <footer class="slide-footer"><a href={gdrHref}>{zh ? '查看机制说明' : 'Open mechanism explainer'} ↗</a><a href={nextHref(5)}>{zh ? '下一页' : 'Next'}：{nextLabel(5)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="blocker" class="briefing-slide" aria-labelledby="blocker-title">
+    <div class="slide-inner">
+      <p class="slide-number">07 / 10</p><h2 id="blocker-title">{zh ? '为什么我主动停下了 Q17？' : 'Why did I deliberately pause Q17?'}</h2>
+      <p class="slide-thesis">{zh ? 'Round 0 刚做完就发现：两组在 treatment 之前做了完全一样的 128 次任务，但训练出来的 SD-LoRA 候选权重已经不同。继续跑，后面的差异就不能只归因于 GDR。' : 'Immediately after Round 0, the two arms had executed exactly the same 128 pre-treatment tasks, yet their trained SD-LoRA candidate weights already differed. Continuing would make later differences impossible to attribute solely to GDR.'}</p>
+      <dl class="blocker-proof"><div><dt>rollout parity</dt><dd><code>attempts.jsonl</code> · 128 / 128 {zh ? '逐字节一致' : 'byte-identical'}</dd></div><div><dt>{zh ? '训练内容' : 'Training content'}</dt><dd>{zh ? 'prompt / response / reward / task / trace 与 replay payload 相同' : 'prompt / response / reward / task / trace and replay payload identical'}</dd></div><div><dt>{zh ? '随机性' : 'Randomness'}</dt><dd>{zh ? '相同 seed；重复到同一物理 GPU 仍出现不同权重' : 'same seed; repeated training on the same physical GPU still diverges'}</dd></div><div><dt>{zh ? '结果' : 'Result'}</dt><dd><strong>PAUSED</strong> · {zh ? 'Round 1 禁止继续' : 'Round 1 remains forbidden'}</dd></div></dl>
+      <div class="digest-pair"><p><span>GDR</span><code>108960ca15ea1142b6f42e4d1fd29c65407841da00eb72c182fc4a61c7b361de</code></p><p><span>DirectApply</span><code>5f5fe2f855728981cc2e305f26d636e96a05f276bc1d29f059b007a2d43d0326</code></p></div>
+      <aside class="evidence-strip evidence-warning"><strong>{zh ? '恢复前的确定性 gate' : 'Determinism gate before resuming'}</strong><p>{zh ? '同 payload + 同 seed + 同一块指定物理 GPU，独立重复至少 2 次，必须得到相同 adapter SHA256、serialized SD state hash、training loss；不支持的非确定性算子 fail closed。通过后仍需要新的明确 scientific resume authority。' : 'Same payload + same seed + the same designated physical GPU, repeated independently at least twice, must produce identical adapter SHA256, serialized SD-state hashes, and training loss. Unsupported nondeterministic operators fail closed. A new explicit scientific resume authority is still required afterward.'}</p></aside>
+      <footer class="slide-footer"><span class="source-links"><a href={q17Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Pr} />Q17 PR #378 ↗</a><a href={determinismIssue} target="_blank" rel="noreferrer"><ExternalBrandMark href={determinismIssue} />OpenEvo issue #13 ↗</a></span><a href={nextHref(6)}>{zh ? '下一页' : 'Next'}：{nextLabel(6)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="quality" class="briefing-slide" aria-labelledby="quality-title">
+    <div class="slide-inner">
+      <p class="slide-number">08 / 10</p><h2 id="quality-title">{zh ? '我怎么保证“快”没有把质量吃掉？' : 'How do I keep speed from consuming quality?'}</h2>
+      <p class="slide-thesis">{zh ? '质量不是 GPU 跑得满，也不是网页做得漂亮。真正的质量是：一个结果被追问时，我能说清它从哪来、哪里可能错、什么情况下必须停。' : 'Quality is not saturated GPUs or a polished page. It means that when a result is challenged, I can trace where it came from, how it could be wrong, and which condition requires a stop.'}</p>
+      <dl class="quality-layers"><div><dt>{zh ? '科学设计' : 'Scientific design'}</dt><dd><strong>{zh ? '先冻结再运行' : 'Freeze before execution'}</strong><p>{zh ? '任务、seed、预算、final panel、唯一 treatment 都在执行前定义。' : 'Tasks, seeds, budget, final panel, and the sole treatment are defined before execution.'}</p></dd></div><div><dt>{zh ? '工程门禁' : 'Engineering gates'}</dt><dd><strong>fail closed</strong><p>{zh ? 'parser、存储、GPU 身份、确定性、Ray 资源任何一层不满足，就 HOLD，不靠“应该没事”继续。' : 'Parser, storage, GPU identity, determinism, or Ray-resource violations independently hold the run instead of relying on “it should be fine.”'}</p></dd></div><div><dt>{zh ? '证据身份' : 'Evidence identity'}</dt><dd><strong>SHA / manifest / receipt</strong><p>{zh ? '代码、模型状态、轨迹、远端归档都用不可变身份核对；“上传成功”不等于“能恢复”。' : 'Code, model states, trajectories, and remote archives are checked with immutable identities; “uploaded” is not the same as “recoverable.”'}</p></dd></div><div><dt>{zh ? '对外表达' : 'Communication'}</dt><dd><strong>{zh ? '结论和边界一起出现' : 'Claim and boundary appear together'}</strong><p>{zh ? '公开页先让老师抓住一个重点，同时不把会改变科学解释的 caveat 藏掉。' : 'Public pages give the reader one primary focus without hiding caveats that change the scientific interpretation.'}</p></dd></div></dl>
+      <footer class="slide-footer"><a href={flowHref}>{zh ? '查看完整流程理解图' : 'Open the full flow map'} ↗</a><a href={nextHref(7)}>{zh ? '下一页' : 'Next'}：{nextLabel(7)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="pace" class="briefing-slide" aria-labelledby="pace-title">
+    <div class="slide-inner">
+      <p class="slide-number">09 / 10</p><h2 id="pace-title">{zh ? '速度：把“发现问题 → 下一轮有效实验”变短' : 'Pace: shorten the loop from problem to valid next experiment'}</h2>
+      <p class="slide-thesis">{zh ? '我追求的不是更快跑完一个错误实验，而是更快发现它为什么不可信，然后把这个坑变成自动门禁。' : 'The goal is not to finish a flawed experiment faster. It is to discover why it is untrustworthy sooner and turn that failure into an automatic guardrail.'}</p>
+      <ol class="date-line"><li><time datetime="2026-08-25">08-25</time><div><strong>{zh ? '测量链修复' : 'Measurement repaired'}</strong><p>{zh ? '把 wrapper/parser 误差与模型能力分离，得到可解释的 7.17 vs 8.74。' : 'Separated wrapper/parser failure from model capability, yielding an interpretable 7.17 vs 8.74 result.'}</p></div></li><li><time datetime="2026-08-31">08-31</time><div><strong>{zh ? '7B 长周期运行' : '7B long-horizon run'}</strong><p>{zh ? '从短批次诊断推进到持续参数学习。' : 'Moved from short-batch diagnosis to sustained parameter learning.'}</p></div></li><li><time datetime="2026-09-05">09-05</time><div><strong>7B final closeout</strong><p>149 rounds · 19,072 rollouts · 49.33 / 100 · 58 / 128 exact</p></div></li><li><time datetime="2026-09-06">09-06</time><div><strong>{zh ? 'Q17 双胞胎机制实验' : 'Q17 mechanism twin'}</strong><p>{zh ? '把 GDR vs DirectApply 写成只允许一个 treatment variable 的执行合同。' : 'Froze GDR vs DirectApply as an execution contract with one intended treatment variable.'}</p></div></li><li><time datetime="2026-09-07">09-07</time><div><strong>{zh ? '发现确定性污染并暂停' : 'Determinism contamination found; experiment paused'}</strong><p>{zh ? '同 GPU 仍复现候选权重漂移，Round 1 不继续；升级为 OpenEvo Core issue #13。' : 'Candidate-weight drift reproduced even on the same GPU, Round 1 was held, and the root issue became OpenEvo Core issue #13.'}</p></div></li><li><time datetime="2026-09-08">09-08</time><div><strong>{zh ? '把工作变成可讲、可查的汇报' : 'Turn the work into an auditable briefing'}</strong><p>{zh ? '老师先听懂主线；需要追问时，数字、哈希、边界和证据仍在同一页。' : 'The advisor gets the main story first; numbers, hashes, boundaries, and evidence remain available when questioned.'}</p></div></li></ol>
+      <footer class="slide-footer"><span>{zh ? '速度 = 更短的有效研究闭环，不是更高的 GPU 利用率。' : 'Speed = a shorter valid research loop, not higher GPU utilization.'}</span><a href={nextHref(8)}>{zh ? '下一页' : 'Next'}：{nextLabel(8)} ↓</a></footer>
+    </div>
+  </section>
+
+  <section id="next" class="briefing-slide briefing-final" aria-labelledby="next-title">
+    <div class="slide-inner">
+      <p class="slide-number">10 / 10</p><h2 id="next-title">{zh ? '接下来怎么做？' : 'What comes next?'}</h2>
+      <p class="slide-thesis">{zh ? '不是简单“继续跑”。顺序必须先修掉会破坏因果归因的底座，再恢复机制对照，最后把主 benchmark 收口。' : 'The next step is not simply “keep running.” First repair the substrate that breaks attribution, then resume the mechanism twin, then close the main benchmark.'}</p>
+      <ol class="next-steps"><li><span>1</span><div><strong>{zh ? '固定 GPU 确定性资格' : 'Qualify fixed-GPU determinism'}</strong><p>{zh ? '让同 payload / seed / physical GPU 的 SD-LoRA 重复产生相同 adapter SHA、state hash 与 loss。' : 'Require repeated SD-LoRA training with the same payload / seed / physical GPU to reproduce adapter SHA, state hashes, and loss.'}</p></div></li><li><span>2</span><div><strong>{zh ? '干净重启 Q17' : 'Start a clean Q17 successor'}</strong><p>{zh ? '不复用已经受污染的 formal Round0 作为新科学数据；先重做 parity，再等明确 resume authority。算法层结论至少 3 个训练 seed。' : 'Do not reuse contaminated formal Round0 as new science; rebuild parity first, then wait for explicit resume authority. Algorithm-level conclusions require at least three training seeds.'}</p></div></li><li><span>3</span><div><strong>{zh ? '收口 OpenEVO vs SEED 主 benchmark' : 'Close the OpenEVO-vs-SEED main benchmark'}</strong><p>{zh ? '同一任务、同一评测规则、匹配任务预算；final panel 继续锁定到训练结束。' : 'Use the same tasks, evaluation rules, and matched task budget; keep the final panel locked until training ends.'}</p></div></li></ol>
+      <div class="advisor-question"><p>{zh ? '希望魏老师和学长帮我判断的一件事' : 'One priority question for the advisor and senior lab members'}</p><h3>{zh ? '确定性底座修好以后，优先“尽快收口 OpenEVO vs SEED 最终效果”，还是先把“GDR 为什么挡掉更新”机制做得更深？' : 'After determinism is fixed, should we prioritize closing the OpenEVO-vs-SEED final effect sooner, or go deeper on why GDR rejects updates first?'}</h3><span>{zh ? '我的当前顺序：确定性必须先修；之后主 benchmark 与机制研究可以并行，但不共享会污染 treatment 的状态。' : 'My current ordering: determinism first; then the main benchmark and mechanism study may proceed in parallel, without sharing state that contaminates the treatment.'}</span></div>
+      <div class="final-links"><a href={q17Successor} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Successor} />{zh ? 'Q17 clean successor 准备' : 'Q17 clean-successor preparation'} ↗</a><a href={resultsHref}>{zh ? '研究结果' : 'Research findings'} ↗</a><a href="#briefing-top">{zh ? '回到汇报开头' : 'Back to briefing start'} ↑</a></div>
+    </div>
+  </section>
+</article>
+
+<style>
+  .briefing{--briefing-rule:color-mix(in srgb,var(--ink) 18%,var(--line));width:100%;color:var(--ink);background:var(--bg)}
+  .briefing-slide{min-width:0;min-height:calc(100svh - var(--site-header-height));display:grid;align-items:center;border-bottom:1px solid var(--briefing-rule);scroll-margin-top:1rem}.briefing-slide:last-child{border-bottom:0}
+  .slide-inner{width:min(1120px,calc(100% - 2.5rem));min-width:0;margin-inline:auto;padding:clamp(3rem,7vh,6.5rem) 0}.briefing-cover .slide-inner{padding-top:clamp(2.5rem,6vh,5rem)}
+  .back-link{display:inline-block;margin-bottom:1.4rem;color:var(--muted);font-size:.84rem;font-weight:720;text-decoration:none}.back-link:hover,.back-link:focus-visible{text-decoration:underline;text-underline-offset:.2em}
+  .slide-meta,.slide-number{margin:0 0 .9rem;color:var(--accent-deep);font:800 .72rem/1.25 var(--font-mono);letter-spacing:.045em}
+  h1,h2,h3{color:var(--ink);text-wrap:balance}h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:clamp(3rem,7vw,6rem);font-weight:720;line-height:.98;letter-spacing:-.058em}h2{max-width:19ch;margin:0;font-size:clamp(2.25rem,5vw,4.5rem);line-height:1;letter-spacing:-.05em}
+  .cover-thesis,.slide-thesis{max-width:900px;margin:1.5rem 0 0;font-size:clamp(1.18rem,2.2vw,1.72rem);font-weight:580;line-height:1.55;letter-spacing:-.018em}.slide-thesis{max-width:880px;margin-top:1.2rem}
+  .cover-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:2rem 0 0;border-block:1px solid var(--briefing-rule)}.cover-status>div{padding:1rem 1rem 1rem 0}.cover-status>div+div{padding-left:1rem;border-left:1px solid var(--briefing-rule)}.cover-status dt{color:var(--muted);font-size:.72rem;font-weight:780}.cover-status dd{margin:.38rem 0 0;font-size:.96rem;font-weight:720;line-height:1.5}
+  .deck-index{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:2rem;border-top:1px solid var(--briefing-rule)}.deck-index a{display:flex;gap:.5rem;padding:.72rem .6rem .72rem 0;border-bottom:1px solid var(--briefing-rule);color:var(--ink);font-size:.74rem;font-weight:720;text-decoration:none}.deck-index a:nth-child(n+6){border-bottom:0}.deck-index span{color:var(--accent-deep);font-family:var(--font-mono);font-size:.64rem}.deck-index a:hover,.deck-index a:focus-visible{color:var(--accent-deep)}
+  .question-list,.timeline,.date-line,.next-steps{margin:2rem 0 0;padding:0;list-style:none}.question-list li,.timeline li,.date-line li,.next-steps li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;padding:1rem 0;border-top:1px solid var(--briefing-rule)}.question-list li:last-child,.timeline li:last-child,.date-line li:last-child,.next-steps li:last-child{border-bottom:1px solid var(--briefing-rule)}.question-list li>span,.timeline li>span,.next-steps li>span{color:var(--accent-deep);font:850 .72rem/1 var(--font-mono);padding-top:.25rem}.question-list strong,.timeline strong,.date-line strong,.next-steps strong{display:block;font-size:1.02rem}.question-list p,.timeline p,.date-line p,.next-steps p{max-width:78ch;margin:.35rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.65}
+  .evidence-strip{max-width:940px;margin:1.45rem 0 0;padding:1rem 0 0 1rem;border-top:1px solid var(--briefing-rule);border-left:3px solid var(--accent-deep)}.evidence-strip strong{font-size:.78rem}.evidence-strip p{margin:.35rem 0 0;color:var(--muted);font-size:.84rem;line-height:1.65}.evidence-positive{border-left-color:var(--positive)}.evidence-warning{border-left-color:var(--warning)}
+  .slide-footer{display:flex;justify-content:space-between;gap:1rem;align-items:end;margin-top:2rem;padding-top:.75rem;border-top:1px solid var(--briefing-rule);color:var(--muted);font-size:.76rem;line-height:1.45}.slide-footer a,.final-links a{color:var(--ink);font-weight:760;text-decoration:none}.slide-footer a:hover,.slide-footer a:focus-visible,.final-links a:hover,.final-links a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
+  .pipeline{margin:2rem 0 0}.pipeline-row{display:flex;align-items:stretch;gap:.4rem;overflow-x:auto;padding-bottom:.5rem}.pipeline-row>div{flex:1 0 128px;min-height:96px;padding:.75rem;border-top:3px solid var(--accent-deep);background:var(--surface-muted)}.pipeline-row span,.pipeline-row strong{display:block}.pipeline-row span{color:var(--muted);font:800 .62rem/1 var(--font-mono)}.pipeline-row strong{margin-top:.55rem;font-size:.82rem;line-height:1.35}.pipeline-row i{align-self:center;color:var(--muted);font-style:normal}.pipeline figcaption{max-width:82ch;margin:.55rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}
+  .system-notes,.quality-layers,.blocker-proof{margin:1.5rem 0 0;border-top:1px solid var(--briefing-rule)}.system-notes>div,.quality-layers>div,.blocker-proof>div{display:grid;grid-template-columns:180px minmax(0,1fr);gap:1.25rem;padding:.85rem 0;border-bottom:1px solid var(--briefing-rule)}.system-notes dt,.quality-layers dt,.blocker-proof dt{color:var(--muted);font-size:.76rem;font-weight:780}.system-notes dd,.quality-layers dd,.blocker-proof dd{margin:0;font-size:.88rem;line-height:1.6}.quality-layers dd strong{display:block}.quality-layers dd p{margin:.25rem 0 0;color:var(--muted)}.blocker-proof dd strong{color:var(--warning)}
+  .before-after{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;margin:2rem 0}.before-after>div{min-height:145px;padding:1rem 0;border-block:1px solid var(--briefing-rule)}.before-after span{color:var(--accent-deep);font:800 .66rem/1 var(--font-mono)}.before-after strong{display:block;margin:.5rem 0;font-size:1.1rem}.before-after p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.6}.before-after i{color:var(--muted);font-style:normal;font-size:1.5rem}
+  .table-wrap{overflow-x:auto;border-block:1px solid var(--ink);outline-offset:4px}.table-wrap table{width:100%;min-width:650px;border-collapse:collapse}.table-wrap th,.table-wrap td{padding:.75rem;text-align:left;border-bottom:1px solid var(--briefing-rule);font-size:.86rem}.table-wrap tbody tr:last-child th,.table-wrap tbody tr:last-child td{border-bottom:0}.table-wrap td{font-variant-numeric:tabular-nums;font-weight:760}.stat-line{display:flex;flex-wrap:wrap;gap:.55rem 1.25rem;margin:.85rem 0 0;color:var(--muted);font-size:.82rem}.stat-line strong{color:var(--ink)}
+  .metric-line{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:2rem 0 0;border-block:1px solid var(--ink)}.metric-line>div{padding:1rem .8rem 1rem 0}.metric-line>div+div{padding-left:.8rem;border-left:1px solid var(--briefing-rule)}.metric-line dt{min-height:2.3em;color:var(--muted);font-size:.7rem;font-weight:760}.metric-line dd{margin:.25rem 0 .1rem;font-size:clamp(1.55rem,3.4vw,2.75rem);font-weight:820;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.metric-line small{color:var(--muted);font-size:.67rem}.claim-boundary{max-width:900px;margin:1rem 0 0;color:var(--muted);font-size:.84rem;line-height:1.65}.claim-boundary strong{color:var(--ink)}
+  .twin-design{display:grid;grid-template-columns:1fr 1.15fr 1fr;margin:2rem 0;border-block:1px solid var(--ink)}.twin-design>div{padding:1.2rem}.twin-design>div+div{border-left:1px solid var(--briefing-rule)}.twin-design span{display:block;color:var(--accent-deep);font:800 .66rem/1 var(--font-mono)}.twin-design strong{display:block;margin:.45rem 0;font-size:1.05rem}.twin-design p,.twin-design li{color:var(--muted);font-size:.82rem;line-height:1.55}.twin-design p{margin:0}.twin-design ul{margin:.45rem 0 0;padding-left:1.05rem}.same-core{background:var(--surface-muted)}
+  .digest-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--briefing-rule)}.digest-pair p{min-width:0;margin:0}.digest-pair span,.digest-pair code{display:block}.digest-pair span{margin-bottom:.25rem;color:var(--muted);font-size:.68rem;font-weight:760}.digest-pair code,.blocker-proof code{font:650 .68rem/1.45 var(--font-mono);overflow-wrap:anywhere}.source-links,.final-links{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem}.date-line li{grid-template-columns:5rem minmax(0,1fr)}.date-line time{color:var(--accent-deep);font:820 .75rem/1.2 var(--font-mono);padding-top:.18rem}
+  .advisor-question{margin:2rem 0 0;padding:1.2rem 0;border-block:2px solid var(--ink)}.advisor-question p{margin:0;color:var(--accent-deep);font-size:.76rem;font-weight:800}.advisor-question h3{max-width:900px;margin:.65rem 0;font-size:clamp(1.3rem,2.6vw,2rem);line-height:1.35;letter-spacing:-.025em}.advisor-question span{display:block;max-width:85ch;color:var(--muted);font-size:.82rem;line-height:1.6}.final-links{margin-top:1.3rem}.final-links a{font-size:.82rem}
+  a:focus-visible,.table-wrap:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
+  @media(max-width:900px){.cover-status,.metric-line{grid-template-columns:1fr 1fr}.cover-status>div:nth-child(3){grid-column:1/-1;border-left:0;border-top:1px solid var(--briefing-rule);padding-left:0}.metric-line>div:nth-child(3){border-left:0}.metric-line>div:nth-child(n+3){border-top:1px solid var(--briefing-rule)}.metric-line>div:last-child{grid-column:1/-1;border-left:0}.deck-index{grid-template-columns:repeat(2,minmax(0,1fr))}.deck-index a:nth-child(n+6){border-bottom:1px solid var(--briefing-rule)}.deck-index a:last-child{border-bottom:0}.twin-design{grid-template-columns:1fr}.twin-design>div+div{border-left:0;border-top:1px solid var(--briefing-rule)}}
+  @media(max-width:640px){.briefing-slide{min-height:auto}.slide-inner{width:min(100% - 1.25rem,1120px);padding:3rem 0}.briefing-cover .slide-inner{padding-top:2rem}h1{font-size:clamp(2.75rem,14vw,4.3rem)}h2{font-size:clamp(2.1rem,11vw,3.35rem)}.cover-thesis,.slide-thesis{font-size:1.08rem}.cover-status,.metric-line{grid-template-columns:1fr}.cover-status>div,.cover-status>div+div,.cover-status>div:nth-child(3),.metric-line>div,.metric-line>div+div,.metric-line>div:nth-child(3),.metric-line>div:last-child{grid-column:auto;padding:.85rem 0;border-left:0;border-top:1px solid var(--briefing-rule)}.cover-status>div:first-child,.metric-line>div:first-child{border-top:0}.metric-line dt{min-height:0}.metric-line dd{font-size:2rem}.question-list li,.timeline li,.next-steps li{grid-template-columns:3rem minmax(0,1fr)}.date-line li{grid-template-columns:4rem minmax(0,1fr)}.system-notes>div,.quality-layers>div,.blocker-proof>div{grid-template-columns:1fr;gap:.3rem}.before-after{grid-template-columns:1fr;gap:.45rem}.before-after i{transform:rotate(90deg);justify-self:start}.pipeline-row>div{flex-basis:118px}.digest-pair{grid-template-columns:1fr}.slide-footer{align-items:flex-start;flex-direction:column}}
+</style>

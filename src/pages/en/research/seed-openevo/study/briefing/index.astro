@@ -1,0 +1,13 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoProgressBriefing from '../../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
+const locale = 'en' as const;
+---
+
+<AppLayout
+  title="SEED × OpenEVO project progress briefing"
+  description="A slide-like HTML progress briefing for advisors and lab members, covering the SEED × OpenEVO research question, exploration path, experimental quality, results, current blocker, and next steps."
+  locale={locale}
+>
+  <SeedOpenEvoProgressBriefing locale={locale} />
+</AppLayout>
