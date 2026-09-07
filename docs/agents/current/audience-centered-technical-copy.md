@@ -47,7 +47,7 @@ TL;DR: what was run or compared + what is currently known + the main claim bound
 background: link to the canonical explainer when that background already exists elsewhere
 ```
 
-Good first-screen identity is explicit enough for a new reader: `OpenEVO (Harness) · WebShop 数据集实验` tells the reader what OpenEVO is and what WebShop is before introducing the SEED comparison. A relation such as `OpenEvo × SEED` is not a substitute for identifying either object.
+Good first-screen identity is explicit enough for a new reader: `OpenEVO (Harness) · WebShop 数据集实验` tells the reader what OpenEVO is and what WebShop is before introducing the SEED comparison. A relation such as `OpenEvo × SEED` is not a substitute for identifying either object. The same identity should survive the global entry label and local research navigation, so the reader does not receive an older relationship-first name before reaching the H1.
 
 **Canonical background belongs behind a link when the overview would otherwise repeat it.** If the site already has one maintained explainer for OpenEVO, SEED, WebShop, or the shared flow, the experiment overview should link there instead of spending the first screen teaching the same background again.
 
