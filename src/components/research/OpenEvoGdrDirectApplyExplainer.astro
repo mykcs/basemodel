@@ -1,0 +1,330 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const gdr = {
+  rounds: 160,
+  rollouts: 20480,
+  candidates: 44,
+  accepted: 7,
+  acceptanceRate: '15.9%',
+  post49Candidates: 16,
+  post49Accepted: 0,
+};
+const snapshot = {
+  verifiedAt: '2026-09-07T04:28:35Z',
+  completedRounds: 15,
+  rollouts: 1920,
+  totalRollouts: 20480,
+  gdrProbeCalls: 0,
+  acceptanceEvaluations: 0,
+  execution: '90fa6eb4',
+};
+const controls = zh ? [
+  ['Base model', 'Qwen3-1.7B', '相同'],
+  ['Stage1 lineage', '同一封存 lineage', '相同'],
+  ['Harness', '201.1', '相同'],
+  ['Sampling', '同一冻结配置', '相同'],
+  ['Task / seed policy', '同一 schedule + injective seed policy', '相同'],
+  ['每轮预算', '128 rollouts', '相同'],
+  ['总预算', '160 rounds = 20,480 rollouts', '相同'],
+  ['Memory / Skill / Agent / SD-LoRA', '同一机制与容量合同', '相同'],
+  ['Final panel', '训练期间隔离', '相同'],
+  ['External teacher calls', '0', '相同'],
+  ['Candidate transition policy', 'GDR-v1：probe 后 Accept / Reject；DirectApply：通过工程合同后直接进入下一状态', '唯一主要 treatment'],
+] : [
+  ['Base model', 'Qwen3-1.7B', 'Matched'],
+  ['Stage-1 lineage', 'Same sealed lineage', 'Matched'],
+  ['Harness', '201.1', 'Matched'],
+  ['Sampling', 'Same frozen configuration', 'Matched'],
+  ['Task / seed policy', 'Same schedule + injective seed policy', 'Matched'],
+  ['Per-round budget', '128 rollouts', 'Matched'],
+  ['Total budget', '160 rounds = 20,480 rollouts', 'Matched'],
+  ['Memory / Skill / Agent / SD-LoRA', 'Same mechanisms and capacity contract', 'Matched'],
+  ['Final panel', 'Isolated during training', 'Matched'],
+  ['External teacher calls', '0', 'Matched'],
+  ['Candidate transition policy', 'GDR-v1: probe then Accept / Reject; DirectApply: apply after engineering contracts pass', 'Primary treatment'],
+];
+const safetyChecks = zh ? [
+  'artifact integrity', 'dataset contract', 'action / schema contract', 'capacity limit',
+  'SD training success', 'execution identity', 'rollout denominator', 'final-panel isolation',
+] : [
+  'artifact integrity', 'dataset contract', 'action / schema contract', 'capacity limit',
+  'SD training success', 'execution identity', 'rollout denominator', 'final-panel isolation',
+];
+const known = zh ? [
+  '1.7B GDR-v1 产生了 44 个 SD-LoRA candidate，远多于 7 次正式更新。',
+  '只有 7 个 SD-LoRA candidate 被 GDR 接受并进入后续模型状态。',
+  'R49 之后又产生 16 个 SD-LoRA candidate，但 0 个被接受。',
+  'DirectApply 的 transition 不调用 GDR task-score probe；当前已完成轮次的 probe_calls 与 acceptance_evaluations 都是 0。',
+  'DirectApply R0 与 GDR R0 的 128 个 rollout case 在 seed、raw completion、action trajectory、reward 与 invalid 上逐一匹配。',
+  'No-GDR 实验已经启动；当前运行状态只是中途快照，不是最终科学结果。',
+] : [
+  'The 1.7B GDR-v1 run produced 44 SD-LoRA candidates, far more than seven formal updates.',
+  'Only seven SD-LoRA candidates were accepted by GDR and entered the successor model state.',
+  'After R49, 16 more SD-LoRA candidates were produced and none were accepted.',
+  'DirectApply transitions do not call the GDR task-score probe; completed rounds currently record zero probe calls and zero acceptance evaluations.',
+  'DirectApply R0 matches GDR R0 case-by-case across 128 rollout cases for seeds, raw completions, action trajectories, rewards, and invalid status.',
+  'The No-GDR run has started; the live state shown here is an interim snapshot, not a final scientific result.',
+];
+const unknown = zh ? [
+  'GDR 是否降低 160 rounds 后的最终性能。',
+  'DirectApply 是否最终优于 GDR-v1。',
+  '被 GDR 拒绝的 candidate 是否本来就是“好 candidate”。',
+  '更多 SD-LoRA updates 是否一定带来更高 final score。',
+  '未来的 GDR-v2 是否会优于 GDR-v1 或 DirectApply。',
+] : [
+  'Whether GDR lowers final performance after 160 rounds.',
+  'Whether DirectApply ultimately beats GDR-v1.',
+  'Whether rejected candidates were actually “good candidates.”',
+  'Whether more SD-LoRA updates necessarily yield a higher final score.',
+  'Whether a future GDR-v2 would beat GDR-v1 or DirectApply.',
+];
+---
+
+<article data-copy-review class="gdr-page" data-testid="gdr-directapply-page" data-ui-audit="contrast layout" data-reader-page="research-explainer">
+  <header class="gdr-hero" id="top">
+    <a class="gdr-back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
+    <p class="gdr-eyebrow">OPENEVO × WEBSHOP · GDR → DIRECTAPPLY</p>
+    <h1>{t('为什么 44 次学习尝试，最后只让 7 次进入模型？', 'Why did 44 learning attempts become only 7 model updates?')}</h1>
+    <p class="gdr-lede">{t(
+      '我们发现，Qwen3-1.7B 的 Stage2 并不是只训练了 7 次 SD-LoRA。它实际产生了 44 个 SD-LoRA candidate，但旧版 GDR 会先让每个新状态参加一个 16-task 小考试；只要关键指标出现退步，就继续使用旧状态。这个现象让我们提出一个新的对照：如果不让短期分数决定 candidate 能否继续学习，会发生什么？',
+      'Qwen3-1.7B did not train SD-LoRA only seven times. Stage 2 produced 44 SD-LoRA candidates, but GDR-v1 first gave each changed state a 16-task probe and kept the old state whenever key metrics regressed. That raised a new ablation question: what happens if short-horizon task score no longer decides whether a candidate may continue learning?'
+    )}</p>
+    <dl class="gdr-glossary" aria-label={t('第一次阅读术语', 'First-read glossary')}>
+      <div><dt>GDR · GatedDeltaRule</dt><dd>{t('新状态的放行规则：先做一个小 probe，再决定保留新状态还是退回旧状态。', 'A transition rule: probe a changed state first, then keep it or fall back to the incumbent.')}</dd></div>
+      <div><dt>SD-LoRA</dt><dd>{t('一次小型参数学习得到的 adapter candidate；candidate 被训练出来，不等于已经被正式采用。', 'A small trainable adapter candidate; producing it does not mean it has been formally adopted.')}</dd></div>
+    </dl>
+
+    <div class="gdr-answer" role="note">
+      <span>{t('先记住这一句', 'The one sentence to remember')}</span>
+      <strong>{t('44 次尝试学习 → GDR 小考试 → 7 次正式进入模型状态', '44 learning attempts → GDR probe → 7 entered the model state')}</strong>
+      <p>{t('所以「7 次 UPDATE」≠「只训练了 7 次 SD-LoRA」。', 'So “7 updates” does not mean “SD-LoRA trained only seven times.”')} <code>44 candidates → 7 updates</code></p>
+    </div>
+
+    <dl class="gdr-metrics" aria-label={t('GDR-v1 核心数字', 'GDR-v1 key numbers')}>
+      <div><dt>Stage2 rounds</dt><dd>{gdr.rounds}</dd></div>
+      <div><dt>Formal rollouts</dt><dd>{gdr.rollouts.toLocaleString('en-US')}</dd></div>
+      <div class="is-candidate"><dt>SD-LoRA candidates</dt><dd>{gdr.candidates}</dd></div>
+      <div class="is-accepted"><dt>{t('正式 SD UPDATE', 'Formal SD updates')}</dt><dd>{gdr.accepted}</dd></div>
+      <div><dt>Acceptance rate</dt><dd>{gdr.acceptanceRate}</dd></div>
+      <div><dt>{t('R49 后', 'After R49')}</dt><dd>{gdr.post49Candidates} → {gdr.post49Accepted}</dd></div>
+    </dl>
+
+    <figure class="gdr-funnel" data-testid="gdr-44-to-7-funnel">
+      <div class="gdr-funnel__candidate"><b>44</b><span>{t('SD-LoRA candidate 训练尝试', 'SD-LoRA candidate training attempts')}</span></div>
+      <div class="gdr-funnel__gate"><span>GDR-v1</span><small>{t('16-task probe · one-step gate', '16-task probe · one-step gate')}</small></div>
+      <div class="gdr-funnel__accepted"><b>7</b><span>{t('进入后续模型状态', 'entered successor model state')}</span></div>
+      <figcaption>{t('R49 时累计 28 candidates / 7 accepted；最终 44 / 7。因此 R49 后新增 16 candidates，接受数没有再增加。', 'At R49 the cumulative count was 28 candidates / 7 accepted; the sealed run ended at 44 / 7. Thus 16 additional candidates appeared after R49 and none were accepted.')}</figcaption>
+    </figure>
+
+    <div class="gdr-live" data-testid="directapply-live-snapshot">
+      <span class="gdr-live__dot" aria-hidden="true"></span>
+      <div><strong>{t('DirectApply / No-GDR 已启动', 'DirectApply / No-GDR has started')}</strong><p>{t(`上次核验：${snapshot.completedRounds}/160 rounds 完成，${snapshot.rollouts.toLocaleString('en-US')}/${snapshot.totalRollouts.toLocaleString('en-US')} rollouts。这里不是最终结果。`, `Last verified: ${snapshot.completedRounds}/160 rounds complete, ${snapshot.rollouts.toLocaleString('en-US')}/${snapshot.totalRollouts.toLocaleString('en-US')} rollouts. This is not a final result.`)}</p></div>
+      <time datetime={snapshot.verifiedAt}>{snapshot.verifiedAt.replace('T', ' ').replace('Z', ' UTC')}</time>
+    </div>
+  </header>
+
+  <section class="gdr-section" id="two-policies" aria-labelledby="two-policies-title">
+    <p class="gdr-so-what">{t('所以呢？我们不是把 GDR「调松」，而是专门做一个不使用 task-score acceptance gate 的独立 treatment。', 'So what? We did not merely “loosen” GDR. We created a separate treatment with no task-score acceptance gate.')}</p>
+    <h2 id="two-policies-title">{t('同样学习，只有「candidate 怎么进入下一状态」不同', 'Same learning pipeline; only the candidate transition rule changes')}</h2>
+    <div class="gdr-flow-compare">
+      <figure class="gdr-flow is-gdr">
+        <figcaption><b>GDR-v1</b><span>{t('hard one-step monotonic gate', 'hard one-step monotonic gate')}</span></figcaption>
+        <ol>
+          <li><span>1</span><div><strong>Rollout</strong><small>{t('每轮 128 次 WebShop 尝试', '128 WebShop attempts per round')}</small></div></li>
+          <li><span>2</span><div><strong>{t('生成 candidate', 'Generate candidate')}</strong><small>Memory / Skill / Agent / SD-LoRA</small></div></li>
+          <li class="is-gate"><span>3</span><div><strong>16-task probe</strong><small>exact / positive / mean / invalid</small></div></li>
+          <li><span>4</span><div><strong>Accept / Reject</strong><small>{t('所有 non-regression 成立，且至少一项严格改善才接受', 'Accept only if every non-regression check passes and at least one task metric strictly improves')}</small></div></li>
+          <li><span>5</span><div><strong>{t('Reject → 继续旧状态', 'Reject → keep incumbent')}</strong><small>{t('challenger 不进入下一轮', 'challenger does not enter the next round')}</small></div></li>
+        </ol>
+      </figure>
+      <figure class="gdr-flow is-direct">
+        <figcaption><b>DirectApply / No-GDR</b><span>{t('independent ablation', 'independent ablation')}</span></figcaption>
+        <ol>
+          <li><span>1</span><div><strong>Rollout</strong><small>{t('同样每轮 128 次 WebShop 尝试', 'the same 128 WebShop attempts per round')}</small></div></li>
+          <li><span>2</span><div><strong>{t('生成 candidate', 'Generate candidate')}</strong><small>Memory / Skill / Agent / SD-LoRA</small></div></li>
+          <li class="is-contract"><span>3</span><div><strong>{t('工程 / 数据合同', 'Engineering / data contracts')}</strong><small>{t('身份、schema、训练成功、容量等仍然 fail-closed', 'identity, schema, training success, capacity, etc. remain fail-closed')}</small></div></li>
+          <li><span>4</span><div><strong>DirectApply</strong><small>{t('通过合同的 changed candidate 直接成为下一状态', 'a changed candidate that passes contracts becomes the next state')}</small></div></li>
+          <li><span>5</span><div><strong>{t('继续学习', 'Continue learning')}</strong><small>{t('不再用短期 task score 决定生死', 'short-term task score no longer decides survival')}</small></div></li>
+        </ol>
+      </figure>
+    </div>
+
+    <aside class="gdr-safety" data-testid="no-gdr-not-no-safety">
+      <div><span>✓</span><strong>No-GDR ≠ No Safety</strong></div>
+      <p>{t('删除的只有：根据短期 task-score probe 决定 candidate 是否可以进入下一状态。下面这些合同继续保留：', 'Only one thing is removed: using a short-horizon task-score probe to decide whether a candidate may enter the next state. These contracts remain:')}</p>
+      <ul>{safetyChecks.map((item) => <li>{item}</li>)}</ul>
+    </aside>
+  </section>
+
+  <section class="gdr-section" id="why-question-gdr" aria-labelledby="why-question-gdr-title">
+    <p class="gdr-so-what">{t('所以呢？GDR-v1 的问题不是「有 gate」本身，而是它用一步之后的结果，替 160 轮之后的目标做决定。', 'So what? The issue is not simply that GDR has a gate; it lets a one-step result decide for a 160-round objective.')}</p>
+    <h2 id="why-question-gdr-title">{t('为什么我们开始怀疑 GDR-v1 太保守？', 'Why did we begin to suspect GDR-v1 was too conservative?')}</h2>
+    <div class="gdr-problems">
+      <article><span>01</span><h3>Myopic objective</h3><p>{t('真正的问题是「160 rounds 后模型有多好？」；GDR-v1 实际问的是「这个 candidate 下一步是不是立刻不变差，而且至少一项更好？」两者不是同一个目标。', 'The real objective is “how good is the model after 160 rounds?” GDR-v1 instead asks whether this candidate is immediately non-worse on every metric and strictly better on at least one. Those are different objectives.')}</p></article>
+      <article><span>02</span><h3>{t('小 probe 的离散噪声', 'Discrete noise in a small probe')}</h3><p>{t('probe 只有 16 tasks。2/16 → 1/16 只少一题，却会被 hard non-regression rule 看成明显 exact regression。小 panel 的单题波动很容易触发 veto。', 'The probe contains only 16 tasks. A 2/16 → 1/16 shift is one task, yet a hard non-regression rule treats it as an exact-success regression. One discrete task can therefore trigger a veto.')}</p></article>
+      <article><span>03</span><h3>{t('Carrier attribution', 'Carrier attribution')}</h3><p>{t('Memory、Skill、Agent、SD-LoRA 组成同一个 candidate state 再整体评价。因此「整体 candidate 变差」不能直接推出「SD-LoRA delta 本身变差」。', 'Memory, Skill, Agent and SD-LoRA form one candidate state and are evaluated together. A worse combined candidate does not identify the SD-LoRA delta itself as the cause.')}</p></article>
+      <article><span>04</span><h3>{t('探索被提前截断', 'Exploration is truncated')}</h3><p>{t('challenger 在 t 时刻可能比 incumbent 差，但沿同一方向继续几轮后可能反超。GDR-v1 在 t 就把它删除，因此永远观察不到 t+3 / t+5。', 'A challenger can be worse at t yet become better after several more steps along the same path. GDR-v1 deletes it at t, so t+3 or t+5 is never observed.')}</p></article>
+    </div>
+
+    <figure class="gdr-horizon" data-testid="long-horizon-trajectory">
+      <div class="gdr-horizon__chart">
+        <svg viewBox="0 0 760 300" role="img">
+          <title>{t('概念图：challenger 先下降，之后可能超过 incumbent', 'Concept: challenger dips before potentially overtaking incumbent')}</title>
+          <line x1="70" y1="245" x2="720" y2="245" class="axis"/><line x1="70" y1="245" x2="70" y2="35" class="axis"/>
+          <line x1="70" y1="150" x2="720" y2="150" class="incumbent"/>
+          <path d="M110 176 C180 190 230 206 290 188 S405 130 470 112 S590 82 680 68" class="challenger"/>
+          <circle cx="110" cy="176" r="7" class="point p1"/><circle cx="290" cy="188" r="7" class="point p2"/><circle cx="470" cy="112" r="7" class="point p3"/><circle cx="680" cy="68" r="7" class="point p4"/>
+          <text x="82" y="140">incumbent</text><text x="105" y="210">t</text><text x="278" y="220">t+1</text><text x="452" y="102">t+3</text><text x="662" y="58">t+5</text>
+          <text x="580" y="270">future rounds →</text><text x="24" y="65" transform="rotate(-90 24 65)">score</text>
+        </svg>
+      </div>
+      <figcaption><strong>{t('这是研究动机，不是已观测结果。', 'This is a hypothesis illustration, not an observed result.')}</strong> {t('DirectApply 的目的正是让这条可能的长期路径有机会被真实实验观察，而不是在 t 就假设它一定会成功。', 'DirectApply lets such a long-horizon path become observable; it does not assume that the path will actually succeed.')}</figcaption>
+    </figure>
+  </section>
+
+  <section class="gdr-section" id="three-generations" aria-labelledby="three-generations-title">
+    <p class="gdr-so-what">{t('所以呢？我们没有回头改掉旧实验。GDR-v1、DirectApply 和未来 GDR-v2 必须是三个不同实验条件。', 'So what? We did not rewrite the old run. GDR-v1, DirectApply, and any future GDR-v2 must remain distinct experimental conditions.')}</p>
+    <h2 id="three-generations-title">{t('保留旧条件，新增 ablation，未来再研究新 gate', 'Preserve the old condition, add an ablation, then study a new gate separately')}</h2>
+    <div class="gdr-generations">
+      <article class="is-history"><span>{t('已完成条件', 'Completed condition')}</span><h3>GDR-v1</h3><p>hard one-step monotonic gate</p><small>{t('不 retroactively 修改', 'Never retroactively modified')}</small></article>
+      <div class="gdr-generation-arrow" aria-hidden="true">→</div>
+      <article class="is-running"><span>{t('当前独立 ablation', 'Current independent ablation')}</span><h3>DirectApply / No-GDR</h3><p>{t('没有 task-score acceptance gate', 'No task-score acceptance gate')}</p><small>{t('已启动 · 未完成', 'Started · incomplete')}</small></article>
+      <div class="gdr-generation-arrow" aria-hidden="true">→</div>
+      <article class="is-future"><span>{t('Future Work', 'Future work')}</span><h3>GDR-v2</h3><p>probation / long-horizon / trust-region style</p><small>{t('Concept · Not Yet Validated', 'Concept · Not Yet Validated')}</small></article>
+    </div>
+  </section>
+
+  <section class="gdr-section" id="experiment-design" aria-labelledby="experiment-design-title">
+    <p class="gdr-so-what">{t('所以呢？这个实验要回答的不是「能不能多做 update」，而是「candidate transition policy 会不会改变长期学习轨迹」。', 'So what? This experiment is not asking whether we can merely do more updates. It asks whether candidate transition policy changes the long-horizon learning trajectory.')}</p>
+    <h2 id="experiment-design-title">{t('DirectApply 对照实验：只动一个主要 treatment', 'DirectApply ablation: change one primary treatment')}</h2>
+    <div class="gdr-question"><span>{t('实验问题', 'Scientific question')}</span><strong>{t('GDR 到底是在保护模型免受坏更新，还是在阻止长期有价值的学习路径？', 'Does GDR protect the model from bad updates, or block learning paths that become valuable over a longer horizon?')}</strong></div>
+    <div class="gdr-control-table" role="region" aria-label={t('实验控制变量表', 'Experiment controls table')} tabindex="0">
+      <table>
+        <thead><tr><th>{t('变量', 'Variable')}</th><th>{t('冻结 / 对齐', 'Frozen / matched')}</th><th>{t('角色', 'Role')}</th></tr></thead>
+        <tbody>{controls.map(([name, value, role]) => <tr class:list={{ treatment: name === 'Candidate transition policy' }}><th scope="row">{name}</th><td>{value}</td><td>{role}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gdr-section" id="round0-match" aria-labelledby="round0-match-title">
+    <p class="gdr-so-what">{t('所以呢？在 treatment 真正分叉之前，R0 rollout 必须先证明两边从同一个行为起点出发。我们逐 episode 核了 128 个 case。', 'So what? Before the treatment can diverge, R0 must show that both arms start from the same behavioral point. We checked all 128 cases episode by episode.')}</p>
+    <h2 id="round0-match-title">{t('Round 0：行为语义匹配，但 adapter 不是 bitwise-identical', 'Round 0: behavior is semantically matched, but the adapter is not bitwise-identical')}</h2>
+    <div class="gdr-match-grid" data-testid="round0-semantic-match">
+      <div><strong>128 / 128</strong><span>task_id</span><small>{t('一致', 'matched')}</small></div>
+      <div><strong>128 / 128</strong><span>rollout + generation seeds</span><small>{t('一致', 'matched')}</small></div>
+      <div><strong>128 / 128</strong><span>raw completion</span><small>{t('逐步一致', 'stepwise matched')}</small></div>
+      <div><strong>128 / 128</strong><span>action trajectory</span><small>{t('逐步一致', 'stepwise matched')}</small></div>
+      <div><strong>128 / 128</strong><span>reward + invalid</span><small>{t('一致', 'matched')}</small></div>
+      <div class="is-mean"><strong>0.3364082792207789</strong><span>mean score</span><small>{t('两边完全相同', 'exactly equal')}</small></div>
+    </div>
+    <div class="gdr-adapter-drift">
+      <div><span>{t('GDR-v1 R0 task-vector norm', 'GDR-v1 R0 task-vector norm')}</span><b>0.3315128741</b></div>
+      <div><span>{t('DirectApply R0 task-vector norm', 'DirectApply R0 task-vector norm')}</span><b>0.3307554585</b></div>
+      <div><span>{t('相对漂移', 'Relative drift')}</span><b>≈ 0.228%</b></div>
+      <p>{t('trainer seed 都是 1993，训练数据语义与 OpenEVO Core 相同；但运行 GPU 不同，adapter digest / task-vector norm 没有 bitwise 对齐。因此网页只使用 semantic-matched。', 'Both use trainer seed 1993 with the same dataset semantics and OpenEVO Core, but the training GPU differed and adapter digests / task-vector norms are not bitwise equal. The correct claim is semantic-matched.')}</p>
+    </div>
+    <p class="gdr-warning"><strong>{t('禁止的说法：', 'Do not say:')}</strong> “the whole experiment is bitwise-identical.”</p>
+  </section>
+
+  <section class="gdr-section" id="resource-handoffs" aria-labelledby="resource-handoffs-title">
+    <p class="gdr-so-what">{t('所以呢？换 GPU 位置可能只是资源优化；改 worker topology 就已经碰到执行语义。不能只看 Agent 写了一句 scientific_semantics_changed=false。', 'So what? Moving GPU placement can be resource-only; changing worker topology touches execution semantics. An Agent writing scientific_semantics_changed=false is not sufficient evidence.')}</p>
+    <h2 id="resource-handoffs-title">{t('实验运行中的 Agent / Ray handoff：哪些能接受，哪些先拒绝', 'Agent / Ray handoffs: what was accepted, and what was held back')}</h2>
+    <ol class="gdr-timeline" data-testid="resource-handoff-timeline">
+      <li class="is-safe"><span class="gdr-timeline__rail">1</span><div><small>{t('起始执行', 'Source execution')}</small><h3><code>88af1b80</code></h3><p>{t('DirectApply exact-runtime treatment source。transition policy = DIRECT_APPLY_NO_GDR。', 'Exact-runtime DirectApply treatment source. Transition policy = DIRECT_APPLY_NO_GDR.')}</p></div></li>
+      <li class="is-safe"><span class="gdr-timeline__rail">2</span><div><small>{t('resource-only successor', 'resource-only successor')}</small><h3><code>d1a0252c</code> → <code>90fa6eb4</code></h3><p>{t('把资源迁移到 GPU0–3，并增加显式 recovery authority / execution lineage。我们检查了实际 diff：design 没变，Harness / sampling / seed / budget / DirectApply policy 没变；formal rollout replay = 0。', 'Moves resources to GPU0–3 and adds explicit recovery authority / execution lineage. We inspected the actual diff: the design, Harness, sampling, seeds, budget and DirectApply policy are unchanged; formal rollout replay = 0.')}</p><b>{t('采用：继续运行', 'ADOPTED')}</b></div></li>
+      <li class="is-handoff"><span class="gdr-timeline__rail">3</span><div><small>{t('controller handoff', 'controller handoff')}</small><h3>{t('保留已经启动 / 完成的 rollout', 'Preserve the in-flight / completed rollout')}</h3><p>{t('R5 handoff 只终止 controller，rollout container 继续。R5 最终已有 128/128 attempts；恢复时没有重新消费 formal rollout，直接完成 post-rollout transaction。', 'The R5 handoff terminates only the controller while leaving the rollout container running. R5 ultimately has 128/128 attempts; recovery does not consume the formal rollout again and resumes the post-rollout transaction.')}</p><b>formal_rollout_replay = 0</b></div></li>
+      <li class="is-held"><span class="gdr-timeline__rail">4</span><div><small>{t('未经等价验证的 successor', 'unverified-equivalence successor')}</small><h3><code>e47595a0</code> · 4 GPUs × 5 workers/GPU</h3><p>{t('这不是单纯换 GPU：实际 diff 修改了 round driver、launcher、workers_per_gpu、shard layout，并加入 OMP_NUM_THREADS / MKL_NUM_THREADS / TOKENIZERS_PARALLELISM 环境。即使 task 与 seed 不变，也需要先证明行为等价。', 'This is not merely a GPU move. The actual diff changes the round driver, launcher, workers_per_gpu, shard layout, and OMP/MKL/tokenizer thread settings. Even with matched tasks and seeds, behavioral equivalence must be demonstrated first.')}</p><b>{t('未采用：最后核验的正式执行 lineage 仍是 90fa6eb4；5× successor 未获行为等价证明', 'NOT ADOPTED: the last verified formal execution lineage remains 90fa6eb4; the 5× successor lacks behavioral-equivalence evidence')}</b></div></li>
+    </ol>
+  </section>
+
+  <section class="gdr-section" id="engineering-lessons" aria-labelledby="engineering-lessons-title">
+    <p class="gdr-so-what">{t('所以呢？科研系统里「跑得更快」不是独立于科学问题的。每次 handoff 都要像数据库事务一样可核对。', 'So what? In a scientific system, “run it faster” is not automatically independent of the scientific question. Every handoff needs transaction-like evidence.')}</p>
+    <h2 id="engineering-lessons-title">{t('这次留下的六条工程规则', 'Six engineering rules from this incident')}</h2>
+    <ol class="gdr-rules">
+      <li><b>Resource optimization is not automatically scientifically neutral.</b><p>{t('资源优化必须证明没有改变 scientific semantics，而不是默认中立。', 'Resource optimization must demonstrate semantic neutrality; it cannot assume it.')}</p></li>
+      <li><b>{t('Controller handoff 必须是显式事务。', 'Controller handoff must be an explicit transaction.')}</b><p>old SHA · new SHA · state_id · next_round · rollouts_consumed · replay · Harness · sampling · transition policy</p></li>
+      <li><b>{t('不要相信标签，要看实际 diff。', 'Do not trust the label; inspect the actual diff.')}</b><p><code>scientific_semantics_changed=false</code> {t('只能是声明，不是证明。', 'is a claim, not proof.')}</p></li>
+      <li><b>{t('已有 rollout 不得因为 controller 重启而重复消费。', 'Existing rollouts must not be re-consumed after a controller restart.')}</b><p>{t('恢复点应该识别已经 materialized 的 128/128，再继续 post-rollout。', 'Recovery should recognize the already materialized 128/128 and continue post-rollout.')}</p></li>
+      <li><b>{t('历史 receipt 与当前 authority 分开。', 'Historical receipts and current authority are different.')}</b><p>{t('旧 READY 文件存在不代表 Ray pool 仍然 live；必须再检查 heartbeat / liveness。', 'An old READY file does not prove the Ray pool is live; heartbeat / liveness still matters.')}</p></li>
+      <li><b>{t('非标准 provenance receipt 不进入 seal 输入目录。', 'Non-standard provenance receipts stay out of seal inputs.')}</b><p>{t('否则可能训练完 160 rounds 才在 seal 阶段因为额外文件失败。', 'Otherwise a 160-round run can fail only at seal time because of an unexpected extra file.')}</p></li>
+    </ol>
+  </section>
+
+  <section class="gdr-section" id="known-unknown" aria-labelledby="known-unknown-title">
+    <p class="gdr-so-what">{t('所以呢？现在可以确认「GDR 很保守、DirectApply 真正移除了 task-score gate」，但还不能确认「DirectApply 更好」。', 'So what? We can establish that GDR was highly selective and that DirectApply truly removes the task-score gate. We cannot yet establish that DirectApply is better.')}</p>
+    <h2 id="known-unknown-title">{t('Known / Unknown：我们现在知道什么 / 还不知道什么', 'Known / Unknown: what we know / what remains unknown')}</h2>
+    <div class="gdr-known-unknown">
+      <article class="is-known"><span>{t('KNOWN · 有证据', 'KNOWN · supported by evidence')}</span><ul>{known.map((item) => <li>{item}</li>)}</ul></article>
+      <article class="is-unknown"><span>{t('OPEN QUESTION · 等实验', 'OPEN QUESTION · pending experiment')}</span><ul>{unknown.map((item) => <li>{item}</li>)}</ul></article>
+    </div>
+  </section>
+
+  <section class="gdr-section" id="future" aria-labelledby="future-title">
+    <p class="gdr-so-what">{t('所以呢？如果未来再做 GDR-v2，也必须作为新实验，而不是把今天的猜想写回旧结果。', 'So what? Any future GDR-v2 must be a new experiment, not a hypothesis retrofitted into today’s completed run.')}</p>
+    <h2 id="future-title">GDR-v2 · {t('Future Work，只是概念', 'Future work, concept only')}</h2>
+    <div class="gdr-future-flow" role="group" aria-label="Accept Probation Reject">
+      <div><b>Accept</b><span>{t('证据足够时直接进入', 'enter when evidence is strong')}</span></div>
+      <div class="is-probation"><b>Probation</b><span>{t('继续 H=3–5 rounds，再比较长期 trajectory', 'continue H=3–5 rounds, then compare trajectories')}</span></div>
+      <div><b>Reject</b><span>{t('明确违反合同或长期证据差', 'clear contract violation or poor longer-horizon evidence')}</span></div>
+    </div>
+    <p>{t('可能研究：larger matched probe、paired comparison、confidence interval、trust region、delta scaling、carrier-specific attribution、challenger/incumbent branches。', 'Possible research directions: larger matched probes, paired comparison, confidence intervals, trust regions, delta scaling, carrier-specific attribution, and challenger/incumbent branches.')}</p>
+    <strong class="gdr-concept-label">CONCEPT · NOT YET VALIDATED</strong>
+  </section>
+
+  <section class="gdr-section" id="technical-evidence" aria-labelledby="technical-evidence-title">
+    <p class="gdr-so-what">{t('所以呢？上面的故事可以先读懂；下面才是为了审计而保留的 SHA、路径和运行身份。', 'So what? The scientific story should be understandable first. SHAs, paths and execution identities live below for audit.')}</p>
+    <h2 id="technical-evidence-title">{t('Technical Evidence / Provenance', 'Technical Evidence / Provenance')}</h2>
+    <details class="gdr-details" data-testid="technical-provenance">
+      <summary>{t('展开 canonical artifacts 与 execution lineage', 'Expand canonical artifacts and execution lineage')}</summary>
+      <div class="gdr-provenance-grid">
+        <section><h3>GDR-v1 sealed source</h3><dl>
+          <dt>Capsule</dt><dd><code>mechanism1-source-capsule/qwen3-1p7b-ceiling-202609061600-audit1</code></dd>
+          <dt>Sealed state</dt><dd><code>identities/STAGE2_SEALED_qwen3-1p7b.json</code></dd>
+          <dt>Final counters</dt><dd><code>rounds=160 · rollouts=20480 · vnext_sd_candidate_generation_count=44 · parametric_sd_lora=7</code></dd>
+          <dt>R49 state-after</dt><dd><code>vnext_sd_candidate_generation_count=28 · vnext_candidate_accept_count=7</code></dd>
+          <dt>Raw R0 archive</dt><dd><code>miyuki17/openevo-stage2-archive-20260903 @ 360b9ec7…</code></dd>
+          <dt>Raw R0 archive SHA256</dt><dd><code>0c56eca29bddf90e46c2074a49ec2faef69a11bd99fad7e0c6607c7bc2e1a9a3</code></dd>
+        </dl></section>
+        <section><h3>DirectApply treatment</h3><dl>
+          <dt>Design source</dt><dd><code>88af1b80e761a74163a9a19ad34a06b51b4ab20a</code></dd>
+          <dt>Transition policy</dt><dd><code>DIRECT_APPLY_NO_GDR</code></dd>
+          <dt>R0 mean</dt><dd><code>0.3364082792207789</code></dd>
+          <dt>GDR transition calls</dt><dd><code>candidate_probe_calls=0 · acceptance_evaluations=0</code></dd>
+          <dt>Resource lineage</dt><dd><code>88af1b80 → d1a0252c → 90fa6eb4</code></dd>
+          <dt>Held 5× successor</dt><dd><code>e47595a0b2f6f2ce27af7303393fcccb70cfecb4</code></dd>
+        </dl></section>
+        <section><h3>Round-0 semantic comparison</h3><dl>
+          <dt>Cases compared</dt><dd><code>128 / 128</code></dd>
+          <dt>Exact fields</dt><dd><code>task_id · rollout_seed · worker_seed · per-step generation_seed · raw_completion · action · final_task_score · invalid flags</code></dd>
+          <dt>GDR task-vector norm</dt><dd><code>0.3315128741263799</code></dd>
+          <dt>DirectApply task-vector norm</dt><dd><code>0.330755458504799</code></dd>
+          <dt>Relative norm drift</dt><dd><code>0.2284724609%</code></dd>
+          <dt>Trainer seed</dt><dd><code>1993</code></dd>
+        </dl></section>
+        <section><h3>Live snapshot boundary</h3><dl>
+          <dt>Last verified</dt><dd><code>{snapshot.verifiedAt}</code></dd>
+          <dt>Completed</dt><dd><code>{snapshot.completedRounds}/160 rounds · {snapshot.rollouts}/{snapshot.totalRollouts} rollouts</code></dd>
+          <dt>Current verified execution</dt><dd><code>{snapshot.execution}</code></dd>
+          <dt>Authority boundary</dt><dd>{t('本网页是 presentation layer；以上路径只用于核验，不授予、修改或重启任何实验。', 'This page is a presentation layer. These paths are evidence references; the site does not grant, modify, or restart experiment authority.')}</dd>
+        </dl></section>
+      </div>
+    </details>
+    <footer class="gdr-footer">
+      <p><strong>Last verified at:</strong> <time datetime={snapshot.verifiedAt}>{snapshot.verifiedAt.replace('T', ' ').replace('Z', ' UTC')}</time></p>
+      <p>{t('动态运行状态与历史封存结论分开。GDR-v1 数字来自 sealed capsule；DirectApply 进度只代表上次读取 live state 时的快照。', 'Dynamic run state is separated from sealed historical claims. GDR-v1 numbers come from the sealed capsule; DirectApply progress is only the last verified live-state snapshot.')}</p>
+      <p>{t('网站修改只发生在 basemodel 的独立 worktree；没有写入 experiment output、Ray pool、Docker 或 experiment authority。', 'Website changes live only in an independent basemodel worktree; no experiment output, Ray pool, Docker resource, or experiment authority is modified by this page.')}</p>
+    </footer>
+  </section>
+</article>
+
+<style>
+.gdr-page{width:min(1160px,calc(100% - 2rem));margin:1.5rem auto 5rem;color:var(--ink);font-size:1rem;line-height:1.7;overflow-wrap:anywhere}.gdr-page *{box-sizing:border-box}.gdr-page small{font-size:1rem}.gdr-hero{padding:1rem 0 3rem}.gdr-back{display:inline-flex;min-height:44px;align-items:center;color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}.gdr-eyebrow{margin:1.1rem 0 .45rem;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.1em}.gdr-page h1{max-width:19ch;margin:0;font-size:clamp(2.25rem,5.5vw,4.35rem);line-height:1.08;letter-spacing:-.045em}.gdr-lede{max-width:52rem;margin:1.25rem 0 0;font-size:clamp(1.05rem,1.8vw,1.28rem);line-height:1.75;color:var(--ink)}.gdr-glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;max-width:52rem;margin:1rem 0 0}.gdr-glossary>div{padding:.75rem .85rem;border-left:3px solid var(--line);background:var(--surface-muted)}.gdr-glossary dt{font-weight:850}.gdr-glossary dd{margin:.15rem 0 0;color:var(--ink);font-size:1rem;line-height:1.55}.gdr-answer{margin:1.7rem 0 1.25rem;padding:1.15rem 1.25rem;border:1px solid var(--line);border-left:5px solid var(--accent-deep);border-radius:var(--radius-panel);background:var(--surface-muted);box-shadow:0 14px 36px rgb(0 0 0/.045)}.gdr-answer>span{display:block;color:var(--accent-deep);font-weight:800;font-size:1rem}.gdr-answer>strong{display:block;margin:.28rem 0;font-size:clamp(1.16rem,2.2vw,1.55rem);line-height:1.4}.gdr-answer p{margin:.25rem 0 0;color:var(--ink)}.gdr-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem;margin:1rem 0 1.35rem}.gdr-metrics>div{min-width:0;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-metrics dt{font-size:1rem;font-weight:800;color:var(--muted);line-height:1.35}.gdr-metrics dd{margin:.35rem 0 0;font-size:clamp(1.45rem,2.5vw,2rem);font-weight:850;line-height:1.1;letter-spacing:-.03em}.gdr-metrics .is-candidate{border-top:4px solid var(--color-warning)}.gdr-metrics .is-accepted{border-top:4px solid var(--accent-deep)}.gdr-funnel{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(140px,.62fr) minmax(0,.78fr);align-items:stretch;gap:.75rem;margin:1.5rem 0}.gdr-funnel>div{display:flex;flex-direction:column;justify-content:center;min-height:116px;padding:1rem 1.15rem;border-radius:var(--radius-feature)}.gdr-funnel__candidate{background:var(--surface-muted);border:1px solid var(--line)}.gdr-funnel__gate{align-items:center;text-align:center;border:1px dashed var(--color-warning);background:color-mix(in srgb,var(--surface) 88%,var(--color-warning))}.gdr-funnel__accepted{background:color-mix(in srgb,var(--surface) 88%,var(--accent));border:1px solid var(--accent-deep)}.gdr-funnel b{font-size:2.3rem;line-height:1}.gdr-funnel span{font-weight:750}.gdr-funnel small{margin-top:.25rem;color:var(--ink)}.gdr-funnel figcaption{grid-column:1/-1;color:var(--muted);font-size:1rem;line-height:1.6}.gdr-live{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;padding:.9rem 1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-live__dot{width:.7rem;height:.7rem;border-radius:50%;background:var(--color-success);box-shadow:0 0 0 5px color-mix(in srgb,var(--color-success) 18%,transparent)}.gdr-live p{margin:.15rem 0 0;color:var(--muted);font-size:1rem}.gdr-live time{color:var(--muted);font:700 1rem/1.3 var(--font-mono)}.gdr-section{padding:3.6rem 0;border-top:1px solid var(--line)}.gdr-section h2{max-width:28ch;margin:.4rem 0 1.35rem;font-size:clamp(1.75rem,3vw,2.6rem);line-height:1.16;letter-spacing:-.035em}.gdr-so-what{max-width:51rem;margin:0;color:var(--accent-deep);font-size:1rem;font-weight:800;line-height:1.65}.gdr-flow-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.gdr-flow{margin:0;padding:1.2rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);box-shadow:0 12px 32px rgb(0 0 0/.035)}.gdr-flow figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}.gdr-flow figcaption b{font-size:1.35rem}.gdr-flow figcaption span{font-size:1rem;color:var(--muted);text-align:right}.gdr-flow ol{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.55rem}.gdr-flow li{display:grid;grid-template-columns:2rem 1fr;gap:.7rem;align-items:center;padding:.75rem;border:1px solid var(--line);border-radius:var(--radius-panel);position:relative}.gdr-flow li:not(:last-child)::after{content:'↓';position:absolute;bottom:-.75rem;left:1.3rem;z-index:2;color:var(--muted);font-weight:900}.gdr-flow li>span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--surface-muted);font-weight:850}.gdr-flow strong,.gdr-flow small{display:block}.gdr-flow small{margin-top:.1rem;color:var(--muted);line-height:1.45}.gdr-flow .is-gate{border-color:var(--color-warning);background:color-mix(in srgb,var(--surface) 93%,var(--color-warning))}.gdr-flow .is-contract{border-color:var(--color-success);background:color-mix(in srgb,var(--surface) 93%,var(--color-success))}.gdr-safety{margin-top:1rem;padding:1.2rem;border:1px solid var(--color-success);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 96%,var(--color-success))}.gdr-safety>div{display:flex;gap:.6rem;align-items:center}.gdr-safety>div span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--color-success);color:white;font-size:1.2rem;font-weight:900}.gdr-safety>div strong{font-size:1.18rem}.gdr-safety p{max-width:53rem;margin:.7rem 0}.gdr-safety ul{display:flex;flex-wrap:wrap;gap:.45rem;padding:0;margin:.7rem 0 0;list-style:none}.gdr-safety li{padding:.35rem .6rem;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:700 1rem/1.35 var(--font-mono)}.gdr-problems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.gdr-problems article{padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-problems article>span{color:var(--accent-deep);font:850 1rem/1 var(--font-mono)}.gdr-problems h3{margin:.55rem 0 .35rem;font-size:1.18rem}.gdr-problems p{margin:0;color:var(--muted);line-height:1.65}.gdr-horizon{margin:1.2rem 0 0;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface-muted)}.gdr-horizon__chart{width:100%;overflow:hidden}.gdr-horizon svg{display:block;width:100%;height:auto;max-height:320px}.gdr-horizon .axis{stroke:var(--muted);stroke-width:1.2}.gdr-horizon .incumbent{stroke:var(--ink);stroke-width:2;stroke-dasharray:7 7}.gdr-horizon .challenger{fill:none;stroke:var(--accent-deep);stroke-width:4;stroke-linecap:round}.gdr-horizon .point{fill:var(--surface);stroke:var(--accent-deep);stroke-width:4;transform-origin:center;animation:gdr-pulse 3.4s ease-in-out infinite}.gdr-horizon .p2{animation-delay:.45s}.gdr-horizon .p3{animation-delay:.9s}.gdr-horizon .p4{animation-delay:1.35s}.gdr-horizon text{fill:var(--muted);font:700 16px/1 var(--font-sans)}.gdr-horizon figcaption{max-width:52rem;margin-top:.7rem;color:var(--ink);line-height:1.6}.gdr-horizon figcaption strong{color:var(--ink)}@keyframes gdr-pulse{0%,70%,100%{r:7}80%{r:11}}.gdr-generations{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:.7rem;align-items:stretch}.gdr-generations article{padding:1.15rem;border-radius:var(--radius-feature);border:1px solid var(--line);background:var(--surface)}.gdr-generations article>span{font-size:1rem;font-weight:850;color:var(--muted)}.gdr-generations h3{margin:.45rem 0 .15rem;font-size:1.35rem}.gdr-generations p{margin:.2rem 0}.gdr-generations small{display:block;margin-top:.6rem;color:var(--muted)}.gdr-generations .is-running{border-color:var(--accent-deep);box-shadow:inset 0 4px 0 var(--accent-deep)}.gdr-generations .is-future{border-style:dashed}.gdr-generation-arrow{display:grid;place-items:center;color:var(--muted);font-size:1.4rem}.gdr-question{display:grid;gap:.3rem;max-width:53rem;padding:1.1rem 1.2rem;border-left:4px solid var(--accent-deep);background:var(--surface-muted)}.gdr-question span{font-size:1rem;color:var(--accent-deep);font-weight:850}.gdr-question strong{font-size:1.18rem}.gdr-control-table{max-width:100%;margin-top:1rem;overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-control-table:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.gdr-control-table table{width:100%;min-width:760px;border-collapse:collapse}.gdr-control-table th,.gdr-control-table td{padding:.78rem .9rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:1rem}.gdr-control-table thead{background:var(--surface-muted)}.gdr-control-table tbody th{font-weight:800}.gdr-control-table tr:last-child>*{border-bottom:0}.gdr-control-table tr.treatment{background:color-mix(in srgb,var(--surface) 90%,var(--accent))}.gdr-match-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.gdr-match-grid>div{display:flex;flex-direction:column;min-height:122px;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-match-grid strong{font-size:1.35rem;line-height:1.2}.gdr-match-grid span{margin-top:auto;font-weight:750}.gdr-match-grid small{color:var(--color-success);font-weight:800}.gdr-match-grid .is-mean strong{font-size:1rem;overflow-wrap:anywhere}.gdr-adapter-drift{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin-top:.65rem;padding:1rem;border:1px dashed var(--color-warning);border-radius:var(--radius-feature)}.gdr-adapter-drift>div{min-width:0}.gdr-adapter-drift span,.gdr-adapter-drift b{display:block}.gdr-adapter-drift span{font-size:1rem;color:var(--muted)}.gdr-adapter-drift b{font:800 1rem/1.4 var(--font-mono)}.gdr-adapter-drift p{grid-column:1/-1;margin:.3rem 0 0;color:var(--muted)}.gdr-warning{display:inline-block;margin:.8rem 0 0;padding:.55rem .75rem;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 87%,var(--color-warning));font-size:1rem}.gdr-timeline{list-style:none;margin:0;padding:0;display:grid;gap:.8rem;position:relative}.gdr-timeline::before{content:'';position:absolute;left:1.35rem;top:1rem;bottom:1rem;border-left:2px solid var(--line)}.gdr-timeline li{display:grid;grid-template-columns:2.7rem 1fr;gap:.8rem;position:relative}.gdr-timeline__rail{display:grid;place-items:center;align-self:start;width:2.7rem;height:2.7rem;border-radius:50%;background:var(--surface);border:2px solid var(--line);font-weight:900;z-index:1}.gdr-timeline li>div{padding:1rem 1.1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-timeline small{font-weight:850;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.gdr-timeline h3{margin:.3rem 0;font-size:1.12rem}.gdr-timeline p{max-width:55rem;margin:.35rem 0;color:var(--muted)}.gdr-timeline li>div>b{display:inline-block;margin-top:.4rem;color:var(--accent-deep)}.gdr-timeline .is-safe .gdr-timeline__rail{border-color:var(--color-success)}.gdr-timeline .is-held .gdr-timeline__rail{border-color:var(--color-warning)}.gdr-timeline .is-held>div{border-style:dashed;border-color:var(--color-warning)}.gdr-rules{counter-reset:rules;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;padding:0;margin:0}.gdr-rules li{padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-rules li::before{counter-increment:rules;content:'RULE ' counter(rules,decimal-leading-zero);display:block;margin-bottom:.5rem;color:var(--accent-deep);font:850 1rem/1 var(--font-mono)}.gdr-rules b{line-height:1.4}.gdr-rules p{margin:.4rem 0 0;color:var(--muted);line-height:1.55}.gdr-known-unknown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.gdr-known-unknown article{padding:1.1rem;border:1px solid var(--line);border-radius:var(--radius-feature)}.gdr-known-unknown article>span{font:850 1rem/1.2 var(--font-mono);letter-spacing:.03em}.gdr-known-unknown ul{padding-left:1.2rem;margin:.9rem 0 0}.gdr-known-unknown li{margin:.55rem 0}.gdr-known-unknown .is-known{border-color:var(--color-success);background:color-mix(in srgb,var(--surface) 96%,var(--color-success))}.gdr-known-unknown .is-unknown{border-color:var(--color-warning);background:color-mix(in srgb,var(--surface) 96%,var(--color-warning))}.gdr-future-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.gdr-future-flow>div{display:flex;flex-direction:column;gap:.25rem;padding:1rem;border:1px dashed var(--line);border-radius:var(--radius-feature)}.gdr-future-flow .is-probation{border-color:var(--accent-deep);background:var(--surface-muted)}.gdr-future-flow span{color:var(--ink)}.gdr-concept-label{display:inline-block;margin-top:.5rem;color:var(--muted);font:850 1rem/1.3 var(--font-mono)}.gdr-details{border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-details summary{display:list-item;min-height:48px;padding:1rem 1.1rem;cursor:pointer;font-weight:850}.gdr-details summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.gdr-details[open] summary{border-bottom:1px solid var(--line)}.gdr-provenance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:1rem}.gdr-provenance-grid section{min-width:0;padding:.9rem;background:var(--surface-muted);border-radius:var(--radius-panel)}.gdr-provenance-grid h3{margin:0 0 .7rem;font-size:1rem}.gdr-provenance-grid dl{margin:0}.gdr-provenance-grid dt{font-size:1rem;font-weight:850;color:var(--muted)}.gdr-provenance-grid dd{margin:.1rem 0 .7rem;font-size:1rem}.gdr-provenance-grid code{white-space:normal;overflow-wrap:anywhere}.gdr-footer{max-width:55rem;margin-top:1rem;color:var(--muted);font-size:1rem}.gdr-footer p{margin:.35rem 0}.gdr-page a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}@media(prefers-reduced-motion:reduce){.gdr-horizon .point{animation:none}}@media(max-width:900px){.gdr-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.gdr-flow-compare,.gdr-problems,.gdr-known-unknown{grid-template-columns:1fr}.gdr-generations{grid-template-columns:1fr}.gdr-generation-arrow{transform:rotate(90deg);min-height:1.2rem}.gdr-match-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gdr-provenance-grid{grid-template-columns:1fr}}@media(max-width:640px){.gdr-page{width:calc(100% - 1.4rem);margin-top:.5rem}.gdr-hero{padding-bottom:2.4rem}.gdr-page h1{font-size:2.35rem}.gdr-lede{font-size:1.02rem}.gdr-glossary{grid-template-columns:1fr}.gdr-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.gdr-metrics>div{padding:.8rem}.gdr-funnel{grid-template-columns:1fr}.gdr-funnel>div{min-height:auto}.gdr-funnel__gate{min-height:80px}.gdr-funnel figcaption{grid-column:auto}.gdr-live{grid-template-columns:auto 1fr}.gdr-live time{grid-column:2}.gdr-section{padding:2.7rem 0}.gdr-flow{padding:.8rem}.gdr-control-table{overflow:visible;border:0;background:transparent}.gdr-control-table table{min-width:0}.gdr-control-table thead{display:none}.gdr-control-table tbody,.gdr-control-table tr,.gdr-control-table th,.gdr-control-table td{display:block;width:100%}.gdr-control-table tr{margin:0 0 .55rem;padding:.7rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.gdr-control-table th,.gdr-control-table td{padding:.2rem 0;border:0}.gdr-control-table th{font-size:1rem}.gdr-control-table td{color:var(--muted);font-size:1rem}.gdr-control-table td:first-of-type::before{content:'对齐 / Match · ';font-weight:800;color:var(--ink)}.gdr-control-table td:last-of-type::before{content:'角色 / Role · ';font-weight:800;color:var(--ink)}.gdr-control-table tr.treatment{border-color:var(--accent-deep);background:color-mix(in srgb,var(--surface) 92%,var(--accent))}.gdr-flow figcaption{display:grid}.gdr-flow figcaption span{text-align:left}.gdr-problems{grid-template-columns:1fr}.gdr-horizon{padding:.7rem}.gdr-horizon text{font-size:18px}.gdr-match-grid{grid-template-columns:1fr}.gdr-adapter-drift{grid-template-columns:1fr}.gdr-adapter-drift p{grid-column:auto}.gdr-rules{grid-template-columns:1fr}.gdr-future-flow{grid-template-columns:1fr}.gdr-timeline li{grid-template-columns:2.5rem 1fr}.gdr-timeline__rail{width:2.5rem;height:2.5rem}.gdr-timeline::before{left:1.25rem}.gdr-provenance-grid{padding:.7rem}}@media print{.gdr-page{width:100%;margin:0}.gdr-horizon .point{animation:none}.gdr-details{break-inside:avoid}.gdr-details:not([open])>*:not(summary){display:block}}
+</style>
