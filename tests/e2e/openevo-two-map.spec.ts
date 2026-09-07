@@ -71,12 +71,18 @@ test('first-run defaults to 7B, switches to 3B, and restores focus after detail 
   const arm7 = page.locator('[data-first-run-arm="7b"]');
   const arm3 = page.locator('[data-first-run-arm="3b"]');
   await expect(arm7).toHaveAttribute('aria-pressed', 'true');
+  const opaqueHistoricalCopy = /clean exact success|invalid termination|action validity|premature-lineage|downstream state|fresh Stage 1 successor|学习链条已经点燃|参数几何已经封口/;
+  await expect(page.locator('[data-first-run-panel="7b"]')).not.toContainText(opaqueHistoricalCopy);
+  await expect(page.locator('[data-first-run-panel="7b"]')).toContainText('143 次参数更新');
   await arm3.click();
   await expect(arm3).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-first-run-panel="3b"]')).toBeVisible();
+  await expect(page.locator('[data-first-run-panel="3b"]')).not.toContainText(opaqueHistoricalCopy);
+  await expect(page.locator('[data-first-run-panel="3b"]')).toContainText('128 次尝试中，有 33 次因动作无效而结束');
   const detail = page.locator('[data-first-run-panel="3b"] [data-first-run-detail]').first();
   await detail.click();
   await expect(page.locator('[data-first-run-detail-layer]')).toBeVisible();
+  await expect(page.locator('[data-first-run-detail-layer]')).not.toContainText(opaqueHistoricalCopy);
   await page.keyboard.press('Escape');
   await expect(page.locator('[data-first-run-detail-layer]')).toBeHidden();
   await expect(detail).toBeFocused();

@@ -21,9 +21,9 @@ describe('OpenEvo first-run historical map', () => {
     expect(map).toContain('data-node-kind="engineering-fix" data-node-state="resolved"');
     expect(map).toContain('放宽参数学习容量');
     expect(map).toContain('修复训练运行问题');
-    expect(map).toContain('64 数的是累计 SD-LoRA component，不是 replay buffer，也不是 optimizer step');
-    expect(map).toContain('effective-rank cap 仍是 4096');
-    expect(map).toContain('replay_capacity=64 是另一项独立配置');
+    expect(map).toContain('64 指累计参数组件数，即已接受的更新次数，与经验缓存条数、一次训练内的优化步数不同');
+    expect(map).toContain('有效秩上限仍为 4096');
+    expect(map).toContain('经验缓存容量 replay_capacity=64 是另一项配置');
   });
 
   it('keeps compression out of the formal lineage while publishing the resolved post-run mechanism diagnostic', () => {
@@ -33,14 +33,14 @@ describe('OpenEvo first-run historical map', () => {
     expect(map).toContain('K64');
     expect(map).toContain('K80');
     expect(map).toContain('K96');
-    expect(map).toContain('不属于 formal final checkpoint');
+    expect(map).toContain('压缩结果没有写回训练或正式最终模型');
   });
 
   it('preserves the stopped 3B evidence without turning the harness diagnosis into an amendment', () => {
-    expect(map).toContain('3,200 条');
-    expect(map).toContain('33/128 invalid termination');
+    expect(map).toContain('3,200 次尝试永久保留为旧实验记录');
+    expect(map).toContain('128 次尝试中，有 33 次因动作无效而结束');
     expect(map).toContain('data-node-kind="evidence" data-node-state="stopped"');
-    expect(map).toContain('新 Harness 必须从新的 Stage 1 重新开始');
+    expect(map).toContain('新接口需要重新采集初始经验');
     expect(map).toContain('/capability-exploration/openevo-2-0/');
   });
 

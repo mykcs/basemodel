@@ -28,70 +28,64 @@ const routes = {
   fourArm: p('/research/seed-openevo/study/results/four-arm-analysis/'),
 };
 ---
-<main class="archive" data-testid="openevo-experiment-archive">
+<main data-copy-review class="archive" data-testid="openevo-experiment-archive">
   <header class="archive__head">
     <a href={routes.lobby}>{t('← OpenEvo 能力探索', '← OpenEvo capability exploration')}</a>
-    <p>EVIDENCE ROOM · PROGRESSIVE DISCLOSURE</p>
+    <p>{t("研究资料与来源", "RESEARCH RECORDS AND SOURCES")}</p>
     <h1>{t('实验档案', 'Experiment archive')}</h1>
-    <strong>{t(
-      '三张主地图只讲研究主剧情：第一轮能力探索、successor 重设计、Mechanism-1.0 因果干预。这里保存运行环境、失败资格赛、API 恢复、checkpoint、PR / SHA 和旧结果页，让技术细节仍然可追，但不抢第一层叙事。',
-      'Three primary maps carry the research story: the first capability run, the redesigned successor, and Mechanism-1.0 causal intervention. This archive preserves execution environments, failed qualifications, API recovery, checkpoints, PR / SHA evidence, and historical result pages without putting them on the top-level spine.'
-    )}</strong>
-    <span>{t(
-      '判断方法很简单：如果它改变模型看到什么、怎么行动或允许学多少，它回到主地图作为 scientific amendment；如果它只让同一个实验更可靠地运行，它留在这里作为 engineering / evidence。',
-      'The rule is simple: if something changes what the model sees, how it acts, or how much it is allowed to learn, it belongs back on the main map as a scientific amendment. If it only makes the same experiment run more reliably, it stays here as engineering / evidence.'
-    )}</span>
+    <strong>{t("实验档案保存购物记录、模型保存点、接口诊断与运行修复，供研究者核对数字和实验来源。记录覆盖第一轮能力探索、新一轮学习设计及参数机制实验。", "The archive preserves shopping records, saved models, interface diagnostics, and runtime repairs for checking results and provenance across the first campaign, successor learning design, and parameter-mechanism experiments.")}</strong>
+    <span>{t("改变模型接收的信息、可执行动作或学习预算，会改变实验条件，需要单独记录科学修订。恢复中断、重试请求和保存文件则属于运行维护，仍需记录实际采用的版本。", "Changing model inputs, available actions, or learning budget changes experimental conditions and requires a scientific amendment. Restarts, request retries, and file preservation are runtime maintenance whose actual versions must also be recorded.")}</span>
   </header>
 
   <nav class="archive__jump" aria-label={t('档案分类', 'Archive categories')}>
-    <a href="#harness">01 · Harness</a>
+    <a href="#harness">01 · {t("购物接口", "Shopping interface")}</a>
     <a href="#minimax">02 · MiniMax</a>
-    <a href="#runtime">03 · Runtime</a>
-    <a href="#artifacts">04 · Artifacts</a>
+    <a href="#runtime">03 · {t("运行记录", "Runtime")}</a>
+    <a href="#artifacts">04 · {t("模型与数据", "Models and data")}</a>
   </nav>
 
   <section id="harness" class="archive-section">
     <header>
-      <span>01 · DIAGNOSTIC EVIDENCE</span>
-      <h2>{t('Harness / G3：失败资格赛为什么值得保留', 'Harness / G3: why failed qualifications still matter')}</h2>
-      <p>{t('这些 attempt 不是“继续点下一关”的 checkpoint，而是帮助我们定位 action validity 问题的诊断证据。', 'These attempts are diagnostic evidence for locating action-validity problems, not checkpoints that can simply continue into the next stage.')}</p>
+      <span>01 · {t("诊断证据", "DIAGNOSTIC EVIDENCE")}</span>
+      <h2>{t("购物接口诊断", "Shopping-interface diagnostics")}</h2>
+      <p>{t("购物接口把模型回答转换成搜索和点击。诊断记录帮助区分模型没有完成任务，与接口无法执行模型动作这两种失败。", "The shopping interface converts model responses into searches and clicks. Diagnostics separate task failure from an interface being unable to execute the model action.")}</p>
     </header>
     <div class="archive-grid">
       <article>
         <b>{t('科学证据', 'SCIENTIFIC EVIDENCE')}</b>
-        <h3>{t('Harness201 / G3 HOLD', 'Harness201 / G3 HOLD')}</h3>
-        <p>{t('attempt4 的 round0 出现 33/128 invalid termination，随后 HOLD；不能在同一 lineage 热换 parser / interface 后从 round1 接着跑。', 'Attempt4 produced 33/128 invalid terminations in round 0 and was then held; the parser / interface cannot be hot-swapped inside the same lineage and resumed from round 1.')}</p>
+        <h3>{t("128 次尝试中有 33 次无效动作终止", "33 invalid-action terminations in 128 attempts")}</h3>
+        <p>{t("Harness201 的第四次检查在首轮 128 次尝试中，有 33 次因无效动作提前结束，随后暂停。修改动作解析规则会改变实验条件，因此不能更换接口后把下一轮接到同一条旧记录上。", "The fourth Harness201 check had 33 invalid-action terminations in its first 128 attempts and was held. Changing action-parsing rules changes the experiment; a repaired interface cannot resume as the next round of that same old run.")}</p>
         <a href={routes.harness}>{t('打开 Harness 诊断记录 →', 'Open the harness diagnostic record →')}</a>
       </article>
       <article>
-        <b>{t('为什么不在主地图展开 attempt1/2/3/4', 'WHY ATTEMPT1/2/3/4 STAY OUT OF THE MAIN MAP')}</b>
-        <h3>{t('它们回答“为什么改”，不是四条新科学路线', 'They explain why the design changed; they are not four new scientific routes')}</h3>
-        <p>{t('主地图只保留导致决策变化的结论；每个 attempt 的精确 receipt、gate、parser counterfactual 放在诊断页和实验仓库。', 'The main map keeps only the conclusion that changed the decision. Exact receipts, gates, and parser counterfactuals stay in the diagnostic page and experiment repository.')}</p>
+        <b>{t("多次检查的用途", "Purpose of repeated checks")}</b>
+        <h3>{t("接口修改的依据", "Evidence for interface changes")}</h3>
+        <p>{t("各次检查保留原始记录、判定条件和动作解析对照，用于解释修改原因。重复排查同一故障不等于增加了四组独立的方法比较。", "Each check preserves records, criteria, and parser controls that explain a revision. Repeated diagnostics of one failure do not constitute four independent method comparisons.")}</p>
       </article>
     </div>
   </section>
 
   <section id="minimax" class="archive-section">
     <header>
-      <span>02 · EXECUTION ENVIRONMENT</span>
-      <h2>{t('MiniMax：科学角色只有一个，执行环境可以有多个', 'MiniMax: one scientific role, multiple execution environments')}</h2>
-      <p>{t('MiniMax 都是在 Stage 1 轨迹完成以后做 post-hoc analysis。服务器或 Kaggle 只是“在哪里跑这项分析”；除非受控比较证明环境本身系统性改变输出，否则不画成科学分叉。', 'MiniMax always performs post-hoc analysis after Stage-1 trajectories are complete. Server versus Kaggle is simply where that analysis runs; it is not a scientific branch unless a controlled comparison shows that the environment systematically changes the output.')}</p>
+      <span>02 · {t("分析环境", "ANALYSIS ENVIRONMENT")}</span>
+      <h2>{t("MiniMax 事后分析", "MiniMax post-task analysis")}</h2>
+      <p>{t("MiniMax 在初始购物记录完成后分析成功与失败。服务器和 Kaggle 记录分析在哪里运行；只有受控比较才能判断执行环境是否系统性改变输出。", "MiniMax analyzes successes and failures after initial shopping records are complete. Server and Kaggle labels record where analysis ran; a controlled comparison is needed to establish whether runtime location systematically changes outputs.")}</p>
     </header>
     <div class="archive-grid archive-grid--three">
       <article>
-        <b>SERVER / KAGGLE</b>
-        <h3>{t('执行位置属于 metadata', 'Execution location is metadata')}</h3>
-        <p>{t('同输入、同 prompt、同模型、同 schema 时，优先把两边视为同一个 scientific node 的不同 execution backend。', 'With the same input, prompt, model, and schema, treat the two locations as execution backends for the same scientific node.')}</p>
+        <b>{t("服务器 / Kaggle", "SERVER / KAGGLE")}</b>
+        <h3>{t("分析运行的位置", "Where analysis runs")}</h3>
+        <p>{t("比较分析结果时，需同时核对输入、提示、模型与输出格式。仅仅运行位置不同，不足以判断使用了不同的学习方法。", "Comparing analysis outputs requires matching inputs, prompts, models, and output formats. A different runtime location alone does not establish a different learning method.")}</p>
       </article>
       <article>
-        <b>API RELIABILITY</b>
-        <h3>{t('429 / Retry-After / resume', '429 / Retry-After / resume')}</h3>
-        <p>{t('只有 parse_ok=true 才算完成；已经成功的分析不重复调用；429 按 Retry-After / 更慢退避重试。这些修复改变可靠性，不改变 teacher budget 或科学角色。', 'Only parse_ok=true counts as complete; successful analyses are not called again; 429s retry with Retry-After / slower backoff. These changes affect reliability, not the teacher budget or scientific role.')}</p>
+        <b>{t("请求可靠性", "API RELIABILITY")}</b>
+        <h3>{t("请求限流与断点重试", "Rate limits and resumable retries")}</h3>
+        <p>{t("分析返回且格式检查通过才算完成（parse_ok=true）。成功记录不重复请求；服务限流（429）时按等待时间重试。这样修复请求可靠性，同时保留原有分析预算。", "An analysis counts as complete only after response parsing succeeds (parse_ok=true). Successful records are not requested again; rate-limit responses (429) use the prescribed retry delay. This repairs reliability while preserving the analysis budget.")}</p>
       </article>
       <article>
         <b>{t('教师角色', 'TEACHER ROLE')}</b>
         <h3>{t('MiniMax 不替学生执行 WebShop 动作', 'MiniMax does not act in WebShop for the student')}</h3>
-        <p>{t('它读已经结束的 trajectory，再生成 hindsight evidence；teacher pool seal 后不在 Stage 2 回来救场。', 'It reads completed trajectories and produces hindsight evidence; after the teacher-pool seal it does not return to rescue Stage 2.')}</p>
+        <p>{t("MiniMax 阅读已经结束的购物记录，再生成反馈。初始反馈集合固定后，后续学习不再调用它替模型解决任务。", "MiniMax reads completed shopping traces and generates feedback. Once the initial feedback set is sealed, later learning does not call it to solve tasks for the model.")}</p>
         <a href={routes.minimax}>{t('打开 MiniMax 教师说明 →', 'Open the MiniMax teacher explanation →')}</a>
       </article>
     </div>
@@ -99,53 +93,53 @@ const routes = {
 
   <section id="runtime" class="archive-section">
     <header>
-      <span>03 · ENGINEERING PATCH LANE</span>
-      <h2>{t('长跑修复：修“怎么跑”，不偷改“跑什么”', 'Long-run repairs: fix how the run executes without redefining what it is')}</h2>
-      <p>{t('这些内容在第一张地图只显示成一个小 patch node；这里展开它们的职责边界。', 'These appear as one small patch node on the first map; the archive expands their responsibility boundaries.')}</p>
+      <span>03 · {t("运行维护", "RUNTIME MAINTENANCE")}</span>
+      <h2>{t("运行恢复与保存", "Runtime recovery and preservation")}</h2>
+      <p>{t("恢复运行需使用原实验允许的代码与模型状态，并保留中断前后的版本记录；调度与归档不能改变购物预算或学习规则。", "Recovery must use the code and model state permitted by the experiment, with versions recorded before and after interruptions. Scheduling and archival must preserve task budgets and learning rules.")}</p>
     </header>
     <div class="runtime-list">
-      <div><b>trainer source</b><span>{t('确保内层训练进程加载冻结的正确代码来源。', 'Ensure the inner trainer loads the intended frozen execution source.')}</span></div>
-      <div><b>restart validator</b><span>{t('从真实 state / receipt 恢复，不把某个历史 round 写死成永恒起点。', 'Recover from the real state / receipts rather than hard-coding one historical round forever.')}</span></div>
-      <div><b>execution provenance</b><span>{t('最终 seal 保留跨重启 / 修复的真实历史执行版本。', 'Final seals retain the real historical execution versions across restarts and repairs.')}</span></div>
-      <div><b>HF cold archive</b><span>{t('远端验证过的 checkpoint 可以移出本地热存储，但必须保持 round / component 身份绑定。', 'Remotely verified checkpoints may leave local hot storage only while preserving round / component identity binding.')}</span></div>
-      <div><b>GPU / lease / holder</b><span>{t('属于资源执行策略；不能因为调度方便就改变正式 task budget、模型状态或 scientific gate。', 'These are resource-execution policies; scheduling convenience cannot change the formal task budget, model state, or scientific gate.')}</span></div>
+      <div><b>{t("训练代码来源", "Trainer source")}</b><span>{t('确保内层训练进程加载冻结的正确代码来源。', 'Ensure the inner trainer loads the intended frozen execution source.')}</span></div>
+      <div><b>{t("恢复状态核对", "Restart validation")}</b><span>{t("根据实际模型状态和运行记录恢复，不把历史某一轮写成永久起点。", "Recover from actual model state and run records rather than hard-coding one historical round.")}</span></div>
+      <div><b>{t("执行版本记录", "Execution provenance")}</b><span>{t("最终封存记录保留中断、恢复和修复期间实际使用的代码版本。", "The final record preserves code versions actually used across interruptions, recovery, and repairs.")}</span></div>
+      <div><b>{t("Hugging Face 归档", "Hugging Face archive")}</b><span>{t("模型保存点经远端验证后，仍需保留它对应的训练轮次和参数组件身份。", "Remotely verified saved models must retain their training-round and parameter-component identities.")}</span></div>
+      <div><b>{t("GPU 分配与占用", "GPU allocation and occupancy")}</b><span>{t("GPU 分配属于运行安排，不能改变正式任务预算、模型状态或实验判定条件。", "GPU allocation is a runtime arrangement and must preserve formal task budgets, model state, and experiment criteria.")}</span></div>
     </div>
     <a class="archive-section__route" href={routes.ceiling}>{t('打开 7B Ceiling-1.0 主实验页 →', 'Open the 7B Ceiling-1.0 experiment page →')}</a>
   </section>
 
   <section id="artifacts" class="archive-section">
     <header>
-      <span>04 · RETAINED ARTIFACTS</span>
-      <h2>{t('旧页面、结果和产物不删除，只从主导航降权', 'Historical pages, results, and artifacts remain available; they are only de-emphasized')}</h2>
-      <p>{t('这里是研究人员追数字、轨迹、adapter、checkpoint、历史四臂结果时的入口。', 'Use these routes when you need exact metrics, trajectories, adapters, checkpoints, or historical four-arm results.')}</p>
+      <span>04 · {t("已保存资料", "PRESERVED MATERIALS")}</span>
+      <h2>{t("历史结果与模型文件", "Historical results and model files")}</h2>
+      <p>{t("购物轨迹说明模型实际做了什么；模型文件保存训练状态；结果记录说明任务得分及其适用范围。", "Shopping traces record what the model did; model files preserve training state; result records provide scores and their scope.")}</p>
     </header>
     <article class="archive-identity" data-testid="archive-7b-exact-identity">
       <div>
-        <b>7B · EXACT ARCHIVE IDENTITY</b>
-        <h3>{t('三个角色、三个固定 revision；此前 PASS 不等于当前 fresh verify', 'Three roles, three pinned revisions; prior PASS is not a current fresh verification')}</h3>
-        <p>{t('HF 数据集仓库是 private / restricted 研究资产。治理证据记录 prior remote verification = PASS；2026-09-05 最新 fresh-read = TOOL_ERROR_INVALID_VALUE。因此这里只保留已证明的历史边界，不宣称当前重新验证成功。', 'The HF dataset repository is a private / restricted research asset. Governance evidence records prior remote verification = PASS and the latest 2026-09-05 fresh-read = TOOL_ERROR_INVALID_VALUE. This preserves the proven historical boundary without claiming a successful current re-verification.')}</p>
+        <b>{t("7B · 固定版本", "7B · PINNED VERSIONS")}</b>
+        <h3>{t("7B 的三类固定版本归档", "Three pinned 7B archive roles")}</h3>
+        <p>{t("Hugging Face 归档属于私有或受限研究资产。记录显示此前远端验证通过；2026-09-05 的重新读取因工具参数错误未完成，不能据此声称那次重新验证通过。", "The Hugging Face archive is private or restricted. Records show a prior remote verification passed; the 2026-09-05 reread did not complete because of a tool-argument error and does not establish a successful re-verification.")}</p>
       </div>
       <dl>
-        <div><dt>COMPONENT STORE</dt><dd><code>{archive.componentStoreRevision}</code></dd></div>
-        <div><dt>FULL LINEAGE</dt><dd><code>{archive.fullLineageRevision}</code><small>SHA-256 · {archive.fullLineageSha256}</small></dd></div>
-        <div><dt>PARAMETER ANALYSIS</dt><dd><code>{archive.parameterAnalysisRevision}</code><small>SHA-256 · {archive.parameterAnalysisSha256}</small></dd></div>
+        <div><dt>{t("参数组件", "PARAMETER COMPONENTS")}</dt><dd><code>{archive.componentStoreRevision}</code></dd></div>
+        <div><dt>{t("完整训练历史", "FULL TRAINING LINEAGE")}</dt><dd><code>{archive.fullLineageRevision}</code><small>SHA-256 · {archive.fullLineageSha256}</small></dd></div>
+        <div><dt>{t("参数分析", "PARAMETER ANALYSIS")}</dt><dd><code>{archive.parameterAnalysisRevision}</code><small>SHA-256 · {archive.parameterAnalysisSha256}</small></dd></div>
         <div><dt>{t('已退休本地重资产', 'RETIRED LOCAL PAYLOAD')}</dt><dd><code>{archive.governance.retiredLocalBytes.toLocaleString()} bytes</code></dd></div>
       </dl>
       <nav aria-label={t('7B 固定归档与治理来源', 'Pinned 7B archives and governance sources')}>
-        <a href={hfRevisionUrl(archive.componentStoreRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.componentStoreRevision)} />Component store · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
-        <a href={hfRevisionUrl(archive.fullLineageRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.fullLineageRevision)} />Full lineage · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
-        <a href={hfRevisionUrl(archive.parameterAnalysisRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.parameterAnalysisRevision)} />Parameter analysis · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
+        <a href={hfRevisionUrl(archive.componentStoreRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.componentStoreRevision)} />{t("参数组件", "Component store")} · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
+        <a href={hfRevisionUrl(archive.fullLineageRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.fullLineageRevision)} />{t("完整训练历史", "Full lineage")} · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
+        <a href={hfRevisionUrl(archive.parameterAnalysisRevision)} target="_blank" rel="noreferrer"><ExternalBrandMark href={hfRevisionUrl(archive.parameterAnalysisRevision)} />{t("参数分析", "Parameter analysis")} · {t('私有/受限 ↗', 'private/restricted ↗')}</a>
         <a href={governanceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={governanceUrl} />{t('治理技术证据 ↗', 'Governance evidence ↗')}</a>
-        <a href={reuseReceiptUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={reuseReceiptUrl} />{t('发布复用 receipt ↗', 'Publication reuse receipt ↗')}</a>
+        <a href={reuseReceiptUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={reuseReceiptUrl} />{t("归档复用核验记录 ↗", "Archive-reuse verification receipt ↗")}</a>
       </nav>
     </article>
     <nav class="artifact-links" aria-label={t('历史实验与结果入口', 'Historical experiment and result routes')}>
-      <a href={routes.stage1}><span>{t('历史 Stage 1', 'Historical Stage 1')}</span><small>{t('旧 trajectory / adapter / HF / GitHub 产物', 'Old trajectory / adapter / HF / GitHub artifacts')}</small></a>
-      <a href={routes.oldStage2}><span>{t('旧 Stage 2', 'Old Stage 2')}</span><small>{t('256-window / 7-vs-8 的完整历史证据', 'Full 256-window / 7-vs-8 historical evidence')}</small></a>
-      <a href={routes.ceiling}><span>Ceiling-1.0</span><small>{t('7B 持续更新与容量 amendment', '7B sustained updates and the capacity amendment')}</small></a>
+      <a href={routes.stage1}><span>{t('历史 Stage 1', 'Historical Stage 1')}</span><small>{t("购物记录、参数增量与来源证据", "Shopping traces, parameter increments, and provenance")}</small></a>
+      <a href={routes.oldStage2}><span>{t('旧 Stage 2', 'Old Stage 2')}</span><small>{t("每 256 次检查、需 8 个任务重复成功的旧更新规则", "Old update rule: 256-attempt batches requiring eight repeatedly successful tasks")}</small></a>
+      <a href={routes.ceiling}><span>Ceiling-1.0</span><small>{t("7B 持续更新与容量修订", "7B sustained updates and capacity amendment")}</small></a>
       <a href={routes.analysis3b}><span>3B / MiniMax</span><small>{t('历史结果页', 'Historical result page')}</small></a>
       <a href={routes.analysis7b}><span>7B / MiniMax</span><small>{t('历史结果页', 'Historical result page')}</small></a>
-      <a href={routes.fourArm}><span>{t('四组联合分析', 'Four-arm analysis')}</span><small>{t('跨 arm 结果与证据边界', 'Cross-arm results and evidence boundaries')}</small></a>
+      <a href={routes.fourArm}><span>{t('四组联合分析', 'Four-arm analysis')}</span><small>{t("四组结果与结论范围", "Four-group results and claim scope")}</small></a>
     </nav>
   </section>
 
@@ -157,7 +151,8 @@ const routes = {
 </main>
 
 <style>
-.archive{width:min(1080px,calc(100% - 2rem));margin:0 auto 4rem}.archive__head{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:.6rem 1.5rem;align-items:end;padding:1.25rem 0 1.4rem;border-bottom:1px solid var(--line)}.archive__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.78rem;text-decoration:none}.archive__head>a:hover,.archive__head>a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive__head>p{grid-column:1/-1;margin:.25rem 0 0;color:var(--accent-deep);font:800 .64rem/1.3 var(--font-mono);letter-spacing:.08em}.archive__head h1{grid-column:1;margin:0;font-size:clamp(2.4rem,5.7vw,4.8rem);line-height:.95;letter-spacing:-.05em}.archive__head strong,.archive__head span{grid-column:2;display:block}.archive__head strong{font-size:1.02rem;line-height:1.55}.archive__head span{color:var(--muted);font-size:.89rem;line-height:1.62}.archive__jump{display:flex;flex-wrap:wrap;gap:.5rem 1.15rem;padding:1rem 0;border-bottom:1px solid var(--line)}.archive__jump a{color:var(--muted);font:750 .66rem/1.3 var(--font-mono);text-decoration:none}.archive__jump a:hover,.archive__jump a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive-section{display:grid;grid-template-columns:minmax(220px,.52fr) minmax(0,1.48fr);gap:1.2rem;padding:1.45rem 0;border-bottom:1px solid var(--line);scroll-margin-top:calc(var(--site-header-height) + 1rem)}.archive-section>header{display:grid;align-content:start;gap:.35rem}.archive-section>header span{color:var(--muted);font:800 .56rem/1.2 var(--font-mono);letter-spacing:.07em}.archive-section h2{margin:0;font-size:1.2rem;line-height:1.18}.archive-section>header p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.52}.archive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.archive-grid--three{grid-template-columns:repeat(3,minmax(0,1fr))}.archive-grid article{display:grid;align-content:start;gap:.35rem;padding:.78rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.archive-grid b{color:var(--muted);font:800 .5rem/1.25 var(--font-mono);letter-spacing:.05em}.archive-grid h3{margin:0;font-size:.82rem;line-height:1.25}.archive-grid p{margin:0;color:var(--muted);font-size:.66rem;line-height:1.48}.archive-grid a,.archive-section__route{width:max-content;max-width:100%;color:var(--accent-deep);font-size:.66rem;font-weight:750;text-underline-offset:.2em}.runtime-list{display:grid}.runtime-list>div{display:grid;grid-template-columns:150px 1fr;gap:.75rem;padding:.55rem 0;border-top:1px solid var(--line)}.runtime-list>div:first-child{border-top:0}.runtime-list b{font:.76rem/1.35 var(--font-mono)}.runtime-list span{color:var(--muted);font-size:.69rem;line-height:1.48}.archive-section__route{grid-column:2;margin-top:-.6rem}.archive-identity{display:grid;gap:.8rem;margin-bottom:1rem;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.archive-identity b{color:var(--muted);font:800 .5rem/1.25 var(--font-mono);letter-spacing:.05em}.archive-identity h3{margin:.3rem 0;font-size:.9rem}.archive-identity p{margin:0;color:var(--muted);font-size:.68rem;line-height:1.5}.archive-identity dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:0}.archive-identity dl>div{min-width:0;padding:.5rem;border-top:1px solid var(--line)}.archive-identity dt{color:var(--muted);font:800 .52rem/1.2 var(--font-mono)}.archive-identity dd{display:grid;gap:.2rem;margin:.2rem 0 0}.archive-identity code,.archive-identity small{overflow-wrap:anywhere}.archive-identity small{color:var(--muted);font-size:.58rem}.archive-identity nav{display:flex;flex-wrap:wrap;gap:.4rem .75rem}.archive-identity a{color:var(--accent-deep);font-size:.64rem;font-weight:750;text-underline-offset:.2em}.artifact-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.artifact-links a{display:grid;gap:.14rem;padding:.65rem;border-top:1px solid var(--line);color:inherit;text-decoration:none}.artifact-links a:hover,.artifact-links a:focus-visible{border-color:var(--accent-deep);outline:none}.artifact-links span{font-size:.76rem;font-weight:780}.artifact-links small{color:var(--muted);font-size:.62rem;line-height:1.4}.archive__footer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;padding:1rem 0}.archive__footer a:nth-child(2){text-align:center}.archive__footer a:last-child{text-align:right}.archive__footer a{color:var(--accent-deep);font-size:.76rem;font-weight:750;text-underline-offset:.2em}
+.archive{width:min(1080px,calc(100% - 2rem));margin:0 auto 4rem}.archive__head{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:.6rem 1.5rem;align-items:end;padding:1.25rem 0 1.4rem;border-bottom:1px solid var(--line)}.archive__head>a{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.archive__head>a:hover,.archive__head>a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive__head>p{grid-column:1/-1;margin:.25rem 0 0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em}.archive__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.025em}.archive__head strong,.archive__head span{grid-column:2;display:block}.archive__head strong{font-size:1.02rem;line-height:1.55}.archive__head span{color:var(--muted);font-size:1rem;line-height:1.62}.archive__jump{display:flex;flex-wrap:wrap;gap:.5rem 1.15rem;padding:1rem 0;border-bottom:1px solid var(--line)}.archive__jump a{color:var(--muted);font:750 1rem/1.3 var(--font-mono);text-decoration:none}.archive__jump a:hover,.archive__jump a:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}.archive-section{display:grid;grid-template-columns:minmax(220px,.52fr) minmax(0,1.48fr);gap:1.2rem;padding:1.45rem 0;border-bottom:1px solid var(--line);scroll-margin-top:calc(var(--site-header-height) + 1rem)}.archive-section>header{display:grid;align-content:start;gap:.35rem}.archive-section>header span{color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.archive-section h2{margin:0;font-size:1.2rem;line-height:1.18}.archive-section>header p{margin:0;color:var(--muted);font-size:1rem;line-height:1.52}.archive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.archive-grid--three{grid-template-columns:repeat(3,minmax(0,1fr))}.archive-grid article{display:grid;align-content:start;gap:.35rem;padding:.78rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.archive-grid b{color:var(--muted);font:800 1rem/1.25 var(--font-mono);letter-spacing:.05em}.archive-grid h3{margin:0;font-size:1rem;line-height:1.25}.archive-grid p{margin:0;color:var(--muted);font-size:1rem;line-height:1.48}.archive-grid a,.archive-section__route{width:max-content;max-width:100%;color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}.runtime-list{display:grid}.runtime-list>div{display:grid;grid-template-columns:150px 1fr;gap:.75rem;padding:.55rem 0;border-top:1px solid var(--line)}.runtime-list>div:first-child{border-top:0}.runtime-list b{font:.76rem/1.35 var(--font-mono)}.runtime-list span{color:var(--muted);font-size:1rem;line-height:1.48}.archive-section__route{grid-column:2;margin-top:-.6rem}.archive-identity{display:grid;gap:.8rem;margin-bottom:1rem;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.archive-identity b{color:var(--muted);font:800 1rem/1.25 var(--font-mono);letter-spacing:.05em}.archive-identity h3{margin:.3rem 0;font-size:1rem}.archive-identity p{margin:0;color:var(--muted);font-size:1rem;line-height:1.5}.archive-identity dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:0}.archive-identity dl>div{min-width:0;padding:.5rem;border-top:1px solid var(--line)}.archive-identity dt{color:var(--muted);font:800 1rem/1.2 var(--font-mono)}.archive-identity dd{display:grid;gap:.2rem;margin:.2rem 0 0}.archive-identity code,.archive-identity small{overflow-wrap:anywhere}.archive-identity small{color:var(--muted);font-size:1rem}.archive-identity nav{display:flex;flex-wrap:wrap;gap:.4rem .75rem}.archive-identity a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}.artifact-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.artifact-links a{display:grid;gap:.14rem;padding:.65rem;border-top:1px solid var(--line);color:inherit;text-decoration:none}.artifact-links a:hover,.artifact-links a:focus-visible{border-color:var(--accent-deep);outline:none}.artifact-links span{font-size:1rem;font-weight:780}.artifact-links small{color:var(--muted);font-size:1rem;line-height:1.4}.archive__footer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;padding:1rem 0}.archive__footer a:nth-child(2){text-align:center}.archive__footer a:last-child{text-align:right}.archive__footer a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}
 @media(max-width:880px){.archive__head{grid-template-columns:1fr}.archive__head h1,.archive__head strong,.archive__head span{grid-column:1}.archive-section{grid-template-columns:1fr}.archive-section__route{grid-column:1;margin-top:0}.archive-grid--three{grid-template-columns:1fr}.archive-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.archive{width:min(100% - 1rem,1080px)}.archive-identity dl{grid-template-columns:1fr}.archive__head h1{font-size:clamp(2.35rem,12vw,3.5rem)}.archive__jump{display:grid}.archive-grid,.artifact-links{grid-template-columns:1fr}.runtime-list>div{grid-template-columns:1fr;gap:.2rem}.archive__footer{grid-template-columns:1fr}.archive__footer a:nth-child(2),.archive__footer a:last-child{text-align:left}}
+@media(max-width:620px){.archive{width:min(100% - 1rem,1080px)}.archive-identity dl{grid-template-columns:1fr}.archive__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}.archive__jump{display:grid}.archive-grid,.artifact-links{grid-template-columns:1fr}.runtime-list>div{grid-template-columns:1fr;gap:.2rem}.archive__footer{grid-template-columns:1fr}.archive__footer a:nth-child(2),.archive__footer a:last-child{text-align:left}}
 </style>
+

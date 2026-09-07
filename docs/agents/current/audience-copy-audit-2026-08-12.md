@@ -12,6 +12,14 @@ All production user-visible copy owners are covered below as individual high-imp
 
 The 13 priority surfaces from the task are **FIXED**. Remaining candidate matches are either contextual technical terms that are explained nearby, direct safety/research-integrity warnings, dated project-instance material, or factual structured records whose semantics must not be rewritten. No known high-priority copy risk remains in the defined production scope.
 
+## 2026-09-07 capability-route follow-up
+
+The August source-group conclusion above is a dated audit result. It did not cover the later capability-route bodies sufficiently: `OpenEvo7BStage2AnalysisMap.astro` still contained the exact opaque update-gate example prohibited by `website-design-spec.md` case 051, and historical prose used sub-16px text. The narrow strict scanner returned zero invariant failures before this repair.
+
+This follow-up reviews the 12 capability body owners across all 13 route identities and both locales. It rewrites the historical parameter analysis, interface comparison, initial-experience archive, old update-rule archive and Ceiling results; removes editorial headings from the entry, design, exploration, report and first-run summaries; preserves the latest mechanism introduction; and raises component-owned prose to 16px. The result-language test now scans the parameter-analysis owner. The canonical reader-journey suite measures component-owned text on all declared routes before and after disclosure, at 390px/1440px in light/dark and zh/en.
+
+This is a **copy and typography review**, not a claim that every route has been rebuilt against the typed lifecycle contract or that novice comprehension has been measured. Keep the `contextualized` entries in `capabilityReaderRoutes.ts` until their full narrative contract is implemented. Technical evidence panels still retain identifiers and diagnostic notation for audit. Task-specific findings, verification, and remaining boundaries are recorded in [`../history/2026-09-07-capability-copy-standard-followup.md`](../history/2026-09-07-capability-copy-standard-followup.md).
+
 ## Audit method and baseline
 
 The scanner discovers the complete production source boundary: every non-test `src/**/*.astro`, `src/**/*.tsx`, and `src/**/*.ts`; every public structured record under `src/content` and `src/data`; and the public Guide scripts and social image copy in `public/guides/**` and `public/og-cover.svg`. It excludes only concrete non-owner classes: `src/**/*.test.{ts,tsx}`, `src/**/*.spec.{ts,tsx}`, directories named `fixtures` / `__fixtures__`, generated `dist`, dependencies, and private `.omc` state. Repository documentation and test-only strings are not runtime public-copy owners.
@@ -106,3 +114,4 @@ The build and browser UI matrix verify generation, responsive layout, overflow, 
 ## Coverage boundary after completion
 
 There are no unresolved high-priority copy items in the defined production source-owner scope. Candidate output is intentionally non-zero because precise research terminology, dated source evidence, bilingual source literals, and justified warnings require contextual review. A candidate count is not a defect count, and automatic rewriting of factual model/paper records would violate the project’s evidence contract.
+
