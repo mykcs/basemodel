@@ -191,13 +191,6 @@ const contrasts = [
 ---
 
 <main class="exp-scaffold" data-testid={`experiment-results-scaffold-${mode}`}>
-  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
-  <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
-    <strong>{t('旧 Stage 2 规则 · 已取代', 'OLD STAGE-2 RULE · SUPERSEDED')}</strong>
-    <p>{t('本页记录的是已经完成的历史实验。旧 Stage 2 每 256 次任务尝试重新判断一次，只有这一批里至少 8 个不同任务都能各自完整成功 2 次才允许更新参数。这个规则后来被确认不适合作为长期学习算法；当前实验已经转到 OpenEVO-Ceiling-1.0。', 'This page documents a completed historical run. The old Stage 2 reset its decision every 256 task attempts and allowed an update only when at least eight distinct tasks each achieved two exact successes inside that batch. That rule was later judged unsuitable as a long-horizon learning algorithm; the current experiment has moved to OpenEVO-Ceiling-1.0.')}</p>
-  </aside>
-  <OpenEvoExperimentSelector locale={locale} mode={mode} />
-
   <header class="exp-scaffold__hero">
     <div class="exp-scaffold__hero-copy">
       {mode !== 'cross-arm' && current?.eyebrow && <p class="exp-scaffold__eyebrow">{current.eyebrow}</p>}
@@ -212,6 +205,14 @@ const contrasts = [
       <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
     </div>
   </header>
+  <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
+  <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
+    <strong>{t('旧 Stage 2 规则 · 已取代', 'OLD STAGE-2 RULE · SUPERSEDED')}</strong>
+    <p>{t('本页记录的是已经完成的历史实验。旧 Stage 2 每 256 次任务尝试重新判断一次，只有这一批里至少 8 个不同任务都能各自完整成功 2 次才允许更新参数。这个规则后来被确认不适合作为长期学习算法；当前实验已经转到 OpenEVO-Ceiling-1.0。', 'This page documents a completed historical run. The old Stage 2 reset its decision every 256 task attempts and allowed an update only when at least eight distinct tasks each achieved two exact successes inside that batch. That rule was later judged unsuitable as a long-horizon learning algorithm; the current experiment has moved to OpenEVO-Ceiling-1.0.')}</p>
+  </aside>
+  <OpenEvoExperimentSelector locale={locale} mode={mode} />
+
+
 
   {mode === '7b-self' && (
     <section class="exp-scaffold__resource-summary" aria-labelledby="resource-summary-title">

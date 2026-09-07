@@ -11,6 +11,7 @@ import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.
 import '../styles/app.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 import { availableLocalesForRoute, localizedRoute } from '../lib/sitemapRoutes';
+import { readerContractForRoute } from '../data/siteReaderContracts';
 
 interface Props { title: string; description?: string; locale?: Locale }
 type ResearchBridgePage = 'experiment' | 'run' | 'capability';
@@ -28,6 +29,8 @@ const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !is
 const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
+const readerContract = readerContractForRoute(localeNeutralPath);
+if (!readerContract) throw new Error(`Public page is missing a reader-attention contract: ${localeNeutralPath}`);
 const exactRoute = (target: string) => localeNeutralPath === target || localeNeutralPath === `${target}/`;
 const isTodayRunbook = exactRoute('/guide/today');
 const globalQuickViewMounted = exactRoute('/families') || /^\/papers\/[^/]+\/?$/.test(localeNeutralPath);
@@ -118,7 +121,7 @@ const compareTrayLabels = {
     <title>{fullTitle}</title>
     <script type="application/ld+json" is:inline set:html={websiteJsonLd} />
   </head>
-  <body>
+  <body data-reader-contract-id={readerContract.id} data-reader-attention-mode={readerContract.attentionMode}>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
     <ResearchContextBar labels={researchContextLabels} locale={locale} />

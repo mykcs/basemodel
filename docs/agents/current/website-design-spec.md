@@ -39,6 +39,8 @@
 
 这不是 minimalism。会改变结论含义的 caveat、核心比较双方、必要状态和下一步仍须默认可见。目标是 **exactly enough**：一个首屏只有一个明显的认知中心，但完整科学语义仍能沿正常阅读路径恢复。见 [CASE-068](website-copy-cases.md#case-068-首屏不是把所有正确的信息同时摆出来)。
 
+这条原则现在不是自觉性建议。每个公开 page source 必须先登记 [`site-reader-attention-contract.md`](site-reader-attention-contract.md) 定义的全站 Reader Attention Contract；可执行注册表位于 `src/data/siteReaderContracts.ts`。新增页面没有 `audience / primaryTask / firstViewportGoal / mustStayVisible / nextStep / attentionMode` 时，CI 应直接失败。统一的是认知责任，不是页面模板。
+
 例如服务器页应该先写 `lyg2171 服务器简介` 和硬件事实，而不是先问“这台服务器能做什么，以及哪里最容易先用满”。见 [CASE-041](website-copy-cases.md#case-041-服务器标题直接命名对象)。
 
 研究结果也一样：先说观察和结论，再解释实验机制，最后让读者展开证据。见 [CASE-029](website-copy-cases.md#case-029-结论先于实验账本) 与 [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签)。
