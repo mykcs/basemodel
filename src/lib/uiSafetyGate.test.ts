@@ -186,7 +186,7 @@ describe('UI visual acceptance gate contract', () => {
     expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
   });
 
-  it('makes readable research prose and persistent floating control ownership hard release conditions', () => {
+  it('makes readable research prose and context-aware floating control ownership hard release conditions', () => {
     for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
@@ -194,8 +194,10 @@ describe('UI visual acceptance gate contract', () => {
       expect(researchGeometryGate).toContain(term);
     }
     for (const term of [
-      'every true step-by-step owner docks Previous / Next from initial render through interaction',
+      'standalone step-by-step owners dock Previous / Next from initial render through interaction',
       "toHaveCSS('position', 'fixed')",
+      'embedded Lab explainer controls do not enter the first screen before the explainer',
+      "toHaveCSS('position', 'static')",
       'WebShop floating transport also stays inside a mobile viewport',
       'canonical-only comparison routes never expose a floating step transport',
       'SEED transport is bottom-docked before interaction',
