@@ -20,10 +20,16 @@ test('route-scoped global quick view still works from the family timeline', asyn
 
 test('paper-detail quick view hydrates on visibility and opens the shared dialog for recorded model roles', async ({ page }) => {
   await page.goto('/papers/agentbench/');
+  const island = page.locator('astro-island[component-export="PaperRoleDiagram"]');
   const trigger = page.locator('.role-model-quick-view').first();
   await trigger.scrollIntoViewIfNeeded();
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveText(/快速查看|Quick view/);
+  // This case exercises the hydrated React path. Wait on Astro's actual
+  // hydration boundary instead of racing `client:visible`. The next test
+  // deliberately aborts that island and keeps the pre-hydration first-click
+  // bridge as a separate fail-closed contract.
+  await expect(island).not.toHaveAttribute('ssr', '');
   await trigger.click();
   await expect(page.locator('.global-quick-view')).toBeVisible();
 });

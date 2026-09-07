@@ -80,3 +80,4 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
     expect(enReport).toContain('OpenEvoSuccessorReport');
   });
 });
+

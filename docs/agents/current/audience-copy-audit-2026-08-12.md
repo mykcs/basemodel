@@ -114,3 +114,4 @@ The build and browser UI matrix verify generation, responsive layout, overflow, 
 ## Coverage boundary after completion
 
 There are no unresolved high-priority copy items in the defined production source-owner scope. Candidate output is intentionally non-zero because precise research terminology, dated source evidence, bilingual source literals, and justified warnings require contextual review. A candidate count is not a defect count, and automatic rewriting of factual model/paper records would violate the project’s evidence contract.
+
