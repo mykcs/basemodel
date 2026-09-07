@@ -43,6 +43,14 @@ const englishFlowRouteFiles = missionRouteFiles('../pages/en/research/seed-opene
 const englishStudyRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/study/');
 
 describe('sitemap route coverage', () => {
+  it('keeps the shipped GDR → DirectApply page in sitemap and locale discovery', () => {
+    const path = '/research/seed-openevo/study/capability-exploration/gdr-directapply/';
+    expect(bilingualStaticPaths).toContain(path);
+    expect(sitemapStaticPaths()).toContain(path);
+    expect(sitemapStaticPaths()).toContain(toEnglishPath(path));
+    expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+  });
+
   it('covers the released bilingual product and research routes', () => {
     for (const path of [
       '/lab/',
