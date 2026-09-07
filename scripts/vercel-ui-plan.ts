@@ -39,6 +39,12 @@ const ROUTE_OWNERS = new Map<string, RouteOwner>([
   ['src/components/research/explainer/ServerExplainer.tsx', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
   ['src/styles/interactive-research-explainer-server.css', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
   ['src/components/research/Lyg2171ServerOverview.astro', { routes: ['/research/seed-openevo/flow/server/', '/en/research/seed-openevo/flow/server/'] }],
+  // This page-local owner is imported by exactly the two mechanism pages.
+  // vercelHostedUiGate.test.ts guards both import reachability and CSS isolation.
+  ['src/components/research/OpenEvoMechanismMap.astro', {
+    routes: ['/research/seed-openevo/study/capability-exploration/mechanism-1-0/', '/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/'],
+    specs: ['tests/e2e/openevo-two-map.spec.ts'],
+  }],
 ]);
 const ROUTE_OWNER_COMPANIONS = new Set([
   'src/lib/interactiveResearchExplainers.test.ts',

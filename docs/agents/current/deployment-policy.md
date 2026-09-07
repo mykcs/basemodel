@@ -77,6 +77,20 @@ Lab/server-relevant diff
 
 Changes to the CI/browser gate, CircleCI config, merge-candidate preparation, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions or silently reclassify unknown ownership merely to reduce credits.
 
+The page-local `OpenEvoMechanismMap.astro` owner maps to its Chinese and English
+`capability-exploration/mechanism-1-0/` routes. A change confined to that owner and
+safe documentation runs the complete `openevo-two-map.spec.ts` suite (including
+its registered reader-journey and research-deep-dive cases), exact-route
+desktop/mobile × light/dark smoke, and the existing overflow preflight on shard 1.
+Shard 2 exits before npm/browser installation. The deterministic Gate/build and
+post-merge revalidation remain intact. A structural test checks all source files
+for additional consumers and rejects global styles/scripts in this owner. New
+consumers require revisiting the mapping; changes to shared research primitives,
+data, global CSS, or browser tests still use full coverage. The planner change
+itself must qualify through full CI before it can govern ordinary page changes.
+The bounded replay protocol and adoption evidence are indexed in
+[`mechanism CI route ownership`](../history/2026-09-07-mechanism-ci-route-ownership.md).
+
 ### Budget-first execution
 
 The default full-browser pool is two independent `medium` executors, one Playwright worker per executor, retries=0, using the unchanged canonical exact-test scheduler. This restores the previously qualified lower-credit profile rather than making the four-medium latency trade-off the default. The full suite, overflow and Lab gates remain intact; only their executor partition changes. The historical four-medium measurement is retained as a latency/cost trade-off, not rewritten as an invalid run or a saving.
