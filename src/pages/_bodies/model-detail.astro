@@ -49,12 +49,17 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
 ---
 <div class="shell detail-layout model-detail-v3">
   <article>
-    {identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}
-    <h1 class="detail-title">{model.name}</h1>
-    {alternateName && <p class="detail-alias muted">{alternateName}</p>}
-    <p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
-    <ModelDetailTools client:load model={model} locale={locale} />
-    <ModelDetailNav locale={locale} />
+    <header class="model-detail-intro" data-reader-primary>
+      {identityTrail.length > 0 && <div class="eyebrow">{identityTrail.join(' / ')}</div>}
+      <h1 class="detail-title">{model.name}</h1>
+      {alternateName && <p class="detail-alias muted">{alternateName}</p>}
+      <p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
+      <details class="model-detail-actions">
+        <summary>{locale === 'zh' ? '引用、来源与页内导航' : 'Citation, sources, and page navigation'}</summary>
+        <ModelDetailTools client:load model={model} locale={locale} />
+        <ModelDetailNav locale={locale} />
+      </details>
+    </header>
     <CatalogFreshnessNotice locale={locale} compact={true} />
 
     <div id="research-summary">
@@ -149,3 +154,7 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
 
   <aside class="detail-aside" id="evidence"><ClaimEvidencePanel item={model} locale={locale} /></aside>
 </div>
+
+<style>
+  .model-detail-intro{box-sizing:border-box;min-height:min(540px,calc(100svh - 110px));display:flex;flex-direction:column;justify-content:center}.model-detail-actions{max-width:760px;margin-top:.8rem;border-top:1px solid var(--line)}.model-detail-actions>summary{width:max-content;max-width:100%;padding:.7rem 0;color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer;list-style:none}.model-detail-actions>summary::-webkit-details-marker{display:none}.model-detail-actions[open]>summary{color:var(--ink)}@media(max-width:720px){.model-detail-intro{min-height:calc(100svh - 96px)}}
+</style>
