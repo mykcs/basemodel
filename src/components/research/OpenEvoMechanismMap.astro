@@ -60,18 +60,18 @@ const stateItems = experiments.map((row) => ({
   <ResearchOrientation
     locale={locale}
     eyebrow="OPENEVO × WEBSHOP · MECHANISM-1.0"
-    title={t("学到的参数变化真的有用吗？", "Do learned parameter changes actually help?")}
-    lede={t("模型完成购物后会留下经验。学习会改变模型内部的数值（参数）；我们把这些变化加上或移除，再与同幅度随机修改比较。", "Shopping produces experience. Learning changes numbers inside the model—its parameters. We add or remove these changes and compare with equally sized random modifications.")}
-    question={t("真正学到的变化，比随机修改更有效吗？", "Do learned changes have a greater effect than random changes?")}
-    why={t("分数和参数一起变化，还不能证明是哪种变化起作用。", "Scores and parameters moving together do not show which change caused the effect.")}
+    title={t("AI 练习购物后，哪些变化真的有用？", "What changes help AI after shopping practice?")}
+    lede={t("我们研究 AI 能不能从自己的尝试中学习：让模型在模拟商店按要求买东西，再用这些经验训练它。前面的实验关注“能做到多好”；本页进一步检查，训练留下的哪些内部变化真的影响了购物表现。下面先用一次购物说明任务，再解释怎样做对照实验。", "We train AI on its attempts in a simulated shop. Earlier experiments measured performance; this page tests which internal changes affect it. Start with one shopping example below.")}
+    question={t("学习带来的内部变化，真的影响购物能力吗？", "Do changes from learning affect shopping ability?")}
+    why={t("只看分数还不知道原因；弄清哪些变化有用，才能为改进学习方法提供依据。", "Scores alone do not explain why. Finding useful changes can inform better learning methods.")}
     start={t("从已经保存的训练历史中选取可区分的模型状态，并取得各实验的执行授权。", "Choose distinct saved model states and obtain authority for each experiment.")}
     finish={t("A/B 检验方向；通过门槛才可申请 C。D 独立在 1,440 次尝试及分析比较后结束。", "A/B test directions; passing the gate permits a request for C. D stops independently after 1,440 attempts and analysis.")}
     state={t("A、B、C 尚未获执行授权；D 已授权，结果未封存。", "A, B and C are not authorized; D is authorized and its results are unsealed.")}
     stateTone="authorized"
     backHref={p('/research/seed-openevo/study/capability-exploration/')}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
-    actionHref="#experiment-dependencies"
-    actionLabel={t('先看因果主线', 'Start with the causal path')}
+    actionHref="#shopping-task"
+    actionLabel={t('先看一次购物任务', 'Start with one shopping task')}
     terms={terms}
   />
 
