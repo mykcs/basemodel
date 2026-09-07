@@ -3,6 +3,7 @@
 Date: **2026-09-07**
 Status: **historical experience/causal record; not current runtime or scientific authority**
 Parent implementation/release ledger: [`2026-09-06-reader-journey-repair.md`](2026-09-06-reader-journey-repair.md)
+Full-conversation delivery index: [`2026-09-07-full-conversation-experience-deposition.md`](2026-09-07-full-conversation-experience-deposition.md)
 
 This file records the reusable lessons from the end-to-end reader-journey repair conversation. It intentionally does **not** restate the page implementation, PR/Preview/Production checklist, or current experiment state; those remain in the parent ledger and current owners. The purpose here is to explain why apparently reasonable approaches failed and what a future Agent must do differently.
 
