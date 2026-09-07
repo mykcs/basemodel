@@ -103,7 +103,7 @@ describe('Vercel hosted UI gate planner', () => {
 
   it('keeps the mechanism map local to the two registered page entrypoints', () => {
     const src = new URL('../', import.meta.url);
-    const importers = readdirSync(src, { recursive: true })
+    const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })
       .filter((file) => /\.(?:astro|[cm]?[jt]sx?)$/.test(file) && !/\.(?:test|spec)\./.test(file))
       .filter((file) => /['"][^'"\n]*\/OpenEvoMechanismMap\.astro(?:\?[^'"\n]*)?['"]/.test(readFileSync(new URL(file, src), 'utf8')))
       .map((file) => `src/${file.replaceAll('\\', '/')}`)
