@@ -24,17 +24,17 @@ const deepDives = [
   },
   {
     href: p('/research/seed-openevo/study/results/first-positive-transfer/'),
-    title: t('H1.38B：第一次可靠正向迁移', 'H1.38B: the first reliable positive transfer'),
+    title: t('第一次可靠的新任务迁移（历史实验 H1.38B）', 'First reliable fresh-task transfer (historical experiment H1.38B)'),
     body: t('第一次在内部新任务上得到置信区间完全高于 0 的迁移结果。', 'The first internal fresh-task transfer whose confidence interval lay entirely above zero.'),
   },
   {
     href: p('/research/seed-openevo/study/results/independent-replication/'),
-    title: t('H1.39：独立复现', 'H1.39: independent replication'),
+    title: t('新任务迁移的独立复现（历史实验 H1.39）', 'Independent fresh-task replication (historical experiment H1.39)'),
     body: t('冻结训练产物并换一批任务 ID 不重叠的新任务后，再次观察到同方向提升。', 'Frozen artifacts, a new task-ID-disjoint panel, and the same-direction improvement observed again.'),
   },
   {
     href: p('/research/seed-openevo/study/results/second-generation/'),
-    title: t('H1.40 / H1.41：第二代持续整合的边界', 'H1.40 / H1.41: the second-generation integration boundary'),
+    title: t('第二代持续整合的边界（历史实验 H1.40 / H1.41）', 'Second-generation integration boundary (historical experiments H1.40 / H1.41)'),
     body: t('第二代有新经验、也真实写入了参数，但新知识获取、旧能力保持和已有收益保持没有同时成立。', 'Second-generation experience and a real parameter write existed, but acquisition, retention, and preservation did not all hold together.'),
   },
   {
@@ -48,7 +48,7 @@ const legacyLinks = [
   { href: p('/research/seed-openevo/study/results/webshop-training/'), label: t('WebShop 早期说明', 'Early WebShop note') },
   { href: p('/research/seed-openevo/study/results/seed-training/'), label: t('SEED 早期说明', 'Early SEED note') },
   { href: p('/research/seed-openevo/study/results/openevo-training/'), label: t('OpenEvo 早期说明', 'Early OpenEvo note') },
-  { href: p('/research/seed-openevo/study/results/measurement-boundary/'), label: t('H1.42 后续测量笔记', 'H1.42 follow-up measurement note') },
+  { href: p('/research/seed-openevo/study/results/measurement-boundary/'), label: t('测量校准笔记（历史实验 H1.42）', 'Measurement-calibration note (historical experiment H1.42)') },
   { href: p('/research/seed-openevo/study/results/benchmark-first/'), label: t('正式比较设计', 'Formal comparison design') },
   { href: p('/research/seed-openevo/study/results/seed-faithful-benchmark/'), label: t('SEED 公平比较协议', 'SEED-faithful comparison protocol') },
   { href: p('/research/seed-openevo/study/results/openevo-benchmark-design/'), label: t('OpenEvo 方法变体设计', 'OpenEvo method-variant design') },
@@ -78,7 +78,7 @@ const legacyLinks = [
   </div>
 
   <details class="legacy-links">
-    <summary>{t('早期实验与 H1.42 测量校准', 'Earlier experiments and H1.42 measurement calibration')}</summary>
+    <summary>{t('早期实验与后续测量校准', 'Earlier experiments and later measurement calibration')}</summary>
     <p>{t(
       'H1.41 的机制结论只使用当时已经产生的证据。H1.42 发生在之后，属于测量边界（measurement-boundary）工作，因此只能作为后续校准记录来理解。',
       'The H1.41 mechanism conclusions use only evidence available at that cutoff. H1.42 came later and belongs to measurement-boundary work, so it remains a later calibration record.',

@@ -31,37 +31,37 @@ const notes = [
   {
     id: 'why-it-kept-failing',
     index: '04',
-    title: '为什么我们前面一直没有得到可靠的“未参与训练的新任务”提升？',
+    title: '早期迁移实验的失败原因',
     description: '从 3B、7B、parser / fallback 到冻结配对面板：先把“工程上跑通”和“科学上能下结论”分开。',
   },
   {
     id: 'first-positive-transfer',
     index: '05',
-    title: '第一次正结果：什么时候第一次看到可迁移收益？',
+    title: '第一次可靠的新任务迁移',
     description: 'H1.38B 的后续实验第一次在未参与训练的新任务上得到置信区间完全位于 0 以上的结果。',
   },
   {
     id: 'independent-replication',
     index: '06',
-    title: '独立复现：换一批全新 WebShop 任务以后，提升还在吗？',
+    title: '新任务迁移的独立复现',
     description: '冻结训练产物、换独立新任务面板后，同方向提升再次出现，这是当前最强的单代迁移证据。',
   },
   {
     id: 'second-generation',
     index: '07',
-    title: '第二次连续写入：为什么还不能说“多代自进化”成立？',
+    title: '第二代连续学习的结果边界',
     description: '第二轮成功经验并不缺，G2 也真实写进了参数；问题出在新旧能力无法同时稳定保留。',
   },
   {
     id: 'measurement-boundary',
     index: '08',
-    title: 'H1.42：为什么修完测量器以后，机制比较仍然不能下结论？',
+    title: '机制比较的测量边界',
     description: 'Stage A 通过测量校准，但 Stage B 修正测量校验器语义后仍有两个数据无效的任务簇，因此结果只能停在“测量边界”，不能解释机制差异。',
   },
   {
     id: 'current-conclusion',
     index: '09',
-    title: '现在到底能下什么结论？什么还不能说？',
+    title: '当前结论与证据边界',
     description: '把已经支持、明确失败、测量无效和仍未知四类状态分开，避免把研究叙事写得比证据更强。',
   },
 ] as const;
@@ -73,25 +73,14 @@ const current = notes.find((item) => item.id === note)!;
   <header class="note-hero">
     <div class="note-topline">
       <a href={`${root}/`}>← 返回实验结果目录</a>
-      <span>OPENEVO × WEBSHOP · 实验笔记 {current.index}</span>
+      <span>OpenEVO · WebShop 实验笔记 {current.index}</span>
     </div>
     <h1>{current.title}</h1>
     <p class="dek">{current.description}</p>
   </header>
 
 
-  <aside class="note-glossary" aria-label="这组结果页的数字和状态怎么读">
-    <strong>这组页面先统一 7 个词</strong>
-    <dl>
-      <div><dt>任务尝试（attempt）</dt><dd>模型从拿到一个 WebShop 任务开始，到成功、失败或达到步数上限的一整次做题；不是一次参数训练。</dd></div>
-      <div><dt>评测单元（cell）</dt><dd>实验设计里一个固定的“实验组 × 任务 × 随机种子”等评测格子。多个任务尝试会组成一个评测单元，所以 cell 数不能直接当任务成功数。</dd></div>
-      <div><dt>可用于训练的完整成功轨迹</dt><dd>任务真正完成、轨迹完整且动作解析有效的成功记录；旧日志里也叫 qualified positive。</dd></div>
-      <div><dt>达标任务身份</dt><dd>数的是“不同任务”，不是成功轨迹条数；旧日志里的 qualifying identity 指满足对应重复成功条件的一个任务。</dd></div>
-      <div><dt>未参与训练的新任务（fresh task）</dt><dd>训练经验里没出现过的评测任务，用来检查学到的东西能不能迁移，而不是只记住训练题。</dd></div>
-      <div><dt>未通过 vs 测量无效</dt><dd>“未通过”表示实验有效运行但目标门槛没有达到；“测量无效”表示当前数据不足以可靠比较。两者都不等于实验没跑，也不等于所有分数都是 0。</dd></div>
-      <div><dt>T2</dt><dd>预留的第二代新任务迁移评测。只有上游门槛全部通过才会启动；“T2 没打开”表示没有进行这项正式评测，不能写成“T2 评测失败”。</dd></div>
-    </dl>
-  </aside>
+
 
   <nav class="series-nav" aria-label="OpenEvo WebShop 实验笔记">
     {notes.map((item) => (
@@ -104,13 +93,13 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'why-it-kept-failing' && (
     <main class="note-body">
       <section>
-        <h2>1. 最早的问题不是“有没有更新参数”，而是模型根本做不成任务</h2>
+        <h2>1. 早期任务成功率不足</h2>
         <p>早期 3B 路线里，参数写入、学习适配器（adapter）保存和重新加载都能工作，但 WebShop 闭环表现仍然接近 0。后来扩大到 7B，基础做题能力有所改善，却仍然没有在同一批未参与训练的新任务上得到稳定的配对提升。</p>
         <p>这个阶段最重要的收获不是正结果，而是确认：<strong>参数发生变化、训练目标误差（loss）下降、甚至某些行为探针改变，都不能替代真正的闭环任务收益。</strong></p>
       </section>
 
       <section>
-        <h2>2. 动作解析、系统替代动作、任务身份和时期漂移都必须先排除</h2>
+        <h2>2. 测量与执行混杂因素</h2>
         <p>WebShop 的一个动作格式错误，就可能让环境执行系统替代动作（fallback）。只要动作无法解析的任务尝试（parser-invalid attempt）混进统计分母，就很难知道比较的是模型能力还是执行器容错。因此后续实验逐步把动作解析、系统替代动作、任务身份、运行代码 SHA 和严格匹配的评测器都写进冻结契约。</p>
         <p>H1.37-R 把 BASE 在同期重新跑了一次，原始基础模型结果与同期重跑的基础模型结果保持一致，排除了“只是运行时期漂移”这一简单解释。之后 H1.38A-C 用完整冻结面板收口：四个实验组共完成 768 次任务尝试，其中 764 次满足科学有效性要求；D4 / D8 / D16 相对基础模型（BASE）的按任务簇统计 95% 置信区间都跨过 0，而且提升幅度并不随设置强度单调增加。</p>
       </section>
@@ -127,7 +116,7 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'first-positive-transfer' && (
     <main class="note-body">
       <section>
-        <h2>1. 第一次正结果出现在 H1.38B 后续实验</h2>
+        <h2>1. 第一次可靠的新任务迁移</h2>
         <p>这次实验完成 184 / 184 个评测单元、704 / 704 次任务尝试，其中 668 次科学有效；另有 36 次因为动作解析失败或触发系统替代动作（fallback）而被判为无效，不进入有效比较分母。预先固定的选择规则最终选择 B1：SD-LoRA 相对同一批未参与训练的新任务基础模型（BASE）的平均提升为 <strong>+0.124</strong>，95% 置信区间为 <strong>[0.0326, 0.2194]</strong>。</p>
         <div class="metric-grid">
           <div><span>704</span><small>任务尝试总数</small></div>
@@ -138,7 +127,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <h2>2. 为什么它比前面的“看起来变好了”更重要？</h2>
+        <h2>2. 结果可信度</h2>
         <p>训练记录与评测任务身份被明确分开，比较发生在训练未见任务上；同时无效任务尝试没有被悄悄算进有效分母。它仍然只是一次探索性发现，不足以单独支撑强泛化结论，但第一次把问题从“是否可能有迁移”推进到了“能否在独立新任务上再次复现”。</p>
       </section>
 
@@ -154,12 +143,12 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'independent-replication' && (
     <main class="note-body">
       <section>
-        <h2>1. 复现不是继续在原面板上调，而是冻结产物以后换一批任务</h2>
+        <h2>1. 独立任务面板复现</h2>
         <p>H1.39-MR 的核心价值在设计上：训练产物冻结，不再根据评测结果调参，然后换成身份完全不重叠的独立 WebShop 新任务。整轮共有 768 次任务尝试，其中 740 次科学有效，最终形成 58 个数据完整、可以进入配对统计的任务簇。</p>
       </section>
 
       <section>
-        <h2>2. 两条更新路线都高于同一个 BASE</h2>
+        <h2>2. 两种参数更新结果</h2>
         <div class="metric-table" role="table" aria-label="H1.39-MR replication results">
           <div class="row head" role="row"><span>比较</span><span>平均差值</span><span>95% 置信区间</span></div>
           <div class="row" role="row"><span>ordinary − BASE</span><strong>+0.163724</strong><span>[0.078086, 0.251931]</span></div>
@@ -181,7 +170,7 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'second-generation' && (
     <main class="note-body">
       <section>
-        <h2>1. 第二轮并不缺成功经验</h2>
+        <h2>1. 第二轮成功经验</h2>
         <p>H1.40 的第二轮经验采集共完成 256 次任务尝试，其中 132 条轨迹满足“任务完整成功且可用于训练”的要求；这些成功来自 33 个不同任务，而不是 132 个不同任务。随后从中选出 16 条记录并真实创建第二代学习适配器 G2，新增 16 个 SD-LoRA 参数组成项，有效秩为 64（表示这次低秩参数更新的容量）。因此第二轮没有继续建立迁移证据，不能简单归因于“没有可学成功经验”或“参数根本没写进去”。</p>
         <div class="metric-grid">
           <div><span>256</span><small>第二轮任务尝试</small></div>
@@ -192,7 +181,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <h2>2. 真正卡住的是“学新东西”与“保住旧能力”的冲突（stability–plasticity）</h2>
+        <h2>2. 新知识与旧能力的冲突（stability–plasticity）</h2>
         <p>G2 写完之后，上游门要求同时回答三件事：新经验有没有学进去（acquisition，新知识获取）、旧能力有没有保留（retention，旧能力保持）、H1.39 已经复现过的新任务收益有没有保住（preservation，已有收益保持）。这三道门没有一起通过，因此预留的第二代新任务迁移评测（T2）没有启动；这里没有一个可以被称为“T2 迁移失败”的正式结果。</p>
         <p>随后 H1.41 用“保持原更新器”的 C0 和“重置参数幅度”的 C1 做更窄的机制筛选，共完成 96 个评测单元、384 次任务尝试。C0 的新知识获取指标点估计为 0，C0 / C1 的旧能力保持指标都为 −0.065625；C1 在“新知识获取”和“已有收益保持”各有一个数据无效的任务簇，因此机器判定为<strong>测量无效（MEASUREMENT_INVALID）</strong>。这表示当前比较不能支持机制结论，不表示实验没有运行。</p>
       </section>
@@ -209,7 +198,7 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'measurement-boundary' && (
     <main class="note-body">
       <section>
-        <h2>1. H1.42 先问的不是“哪个参数更新方法更好”，而是“这个比较能不能被可靠测出来”</h2>
+        <h2>1. Stage A：测量器校验</h2>
         <p>H1.41 已经出现数据无效的评测任务簇，所以 H1.42-MV 把问题收窄为“测量流程本身是否可靠”。Stage A 完成 <strong>192 个评测单元 / 768 次任务尝试</strong>，并通过预先固定的校准检查，机器状态为 <strong>MV4：测量已验证（MEASUREMENT_VALIDATED）</strong>；只有通过这道门，条件 Stage B 才继续运行。</p>
         <div class="metric-grid">
           <div><span>192</span><small>Stage A 评测单元</small></div>
@@ -220,7 +209,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <h2>2. Stage B 跑完了，但修正测量校验器后仍然不能解释机制差异</h2>
+        <h2>2. Stage B：机制差异仍不可解释</h2>
         <p>Stage B 完成 <strong>144 / 144 个评测单元、576 / 576 次正式任务尝试</strong>。第一次对账曾把“科学实验组”字段 <code>arm</code> 错拿去和“模型加载器身份” <code>sd-lora</code> 比较，导致所有记录被误判为运行器身份不匹配；修正后继续使用同一批不可变运行凭据重新对账。</p>
         <p>修正没有把结果“变成正结果”。C1 的“重置参数幅度”方案在新知识获取任务 <code>webshop_003560</code> 和已有收益保持任务 <code>webshop_004357</code> 上仍各有一个因动作解析或运行时错误而无效的任务簇；旧能力保持部分的三个实验组、八个任务簇则全部有效。因此预先固定的机器判定为 <strong>MVD0：重新测量仍无效（REMEASUREMENT_INVALID）</strong>。这表示机制差异仍不能可靠解释，不表示所有任务都失败。</p>
         <div class="metric-grid">
@@ -232,7 +221,7 @@ const current = notes.find((item) => item.id === note)!;
       </section>
 
       <section>
-        <h2>3. 这篇文章的结论是“停在测量边界”，不是“重置参数幅度无效”</h2>
+        <h2>3. 结论停在测量边界</h2>
         <p>只有所有实验组都拥有完整有效的评测数据，才能解释机制差异。既然 Stage B 仍有无效任务簇，H1.42 就不能证明“重置参数幅度”有或没有可靠机制效应，也不能支持新任务迁移、多代自进化或任何 T2 结论。H1.40、H1.41、H1.42 的 T2 都保持关闭。</p>
         <p>H1.42 总计可核算的评测算力为 <strong>6.4979 GPU 小时</strong>，没有无法归属的资源时间区间。这个数字说明实验确实完整执行并可审计，但“完整跑完”仍然不等于“科学比较有效”。</p>
       </section>
@@ -249,17 +238,17 @@ const current = notes.find((item) => item.id === note)!;
   {note === 'current-conclusion' && (
     <main class="note-body">
       <section>
-        <h2>1. 已经可以说：一次参数写入的跨任务收益可以复现</h2>
+        <h2>1. 已支持：一次参数写入可以产生跨任务收益</h2>
         <p>H1.38B 的探索性发现与 H1.39-MR 的独立复现给出同方向证据。最稳妥的能力结论是：<strong>模型自身成功经验经过一次参数更新后，可以在训练未见的 WebShop 任务上带来可复现收益。</strong></p>
       </section>
 
       <section>
-        <h2>2. 还不能说：我们已经建立了多代自进化</h2>
+        <h2>2. 未支持：多代自进化</h2>
         <p>第二轮虽然成功采集到可学习经验、G2 也真实生成，但“新知识获取、旧能力保持、已有收益保持”三项没有同时过门。H1.41 的机制筛选出现数据无效任务簇；H1.42 专门修复测量规则后，Stage B 仍停在 <strong>MVD0：重新测量仍无效</strong>。因此“第二代没有成功”和“已经知道失败的唯一因果机制”仍然是两件不同的事。</p>
       </section>
 
       <section>
-        <h2>3. 当前证据应该分成四类</h2>
+        <h2>3. 当前证据分类</h2>
         <div class="claim-grid">
           <div><small>已有支持</small><h3>单代的新任务迁移</h3><p>第一次正结果已经在另一批独立新任务上复现。</p></div>
           <div><small>未通过</small><h3>第二代三项上游门槛</h3><p>连续写入没有同时满足新知识获取、旧能力保持和已有收益保持；这是明确的门槛未通过，不等于实验没运行。</p></div>
@@ -276,6 +265,22 @@ const current = notes.find((item) => item.id === note)!;
       <p class="evidence-line"><a href={evidence.ledger}><ExternalBrandMark href={evidence.ledger} />查看完整实验总账 →</a> · <a href={evidence.h142}><ExternalBrandMark href={evidence.h142} />查看最新 H1.42 收尾报告 →</a></p>
     </main>
   )}
+
+  <details class="note-glossary">
+    <summary>术语参考（可选）</summary>
+    <div class="note-glossary__body">
+      <p>这些词在正文第一次出现时会直接解释；这里仅用于回查旧日志中的同义词和状态。</p>
+    <dl>
+      <div><dt>任务尝试（attempt）</dt><dd>模型从拿到一个 WebShop 任务开始，到成功、失败或达到步数上限的一整次做题；不是一次参数训练。</dd></div>
+      <div><dt>评测单元（cell）</dt><dd>实验设计里一个固定的“实验组 × 任务 × 随机种子”等评测格子。多个任务尝试会组成一个评测单元，所以 cell 数不能直接当任务成功数。</dd></div>
+      <div><dt>可用于训练的完整成功轨迹</dt><dd>任务真正完成、轨迹完整且动作解析有效的成功记录；旧日志里也叫 qualified positive。</dd></div>
+      <div><dt>达标任务身份</dt><dd>数的是“不同任务”，不是成功轨迹条数；旧日志里的 qualifying identity 指满足对应重复成功条件的一个任务。</dd></div>
+      <div><dt>未参与训练的新任务（fresh task）</dt><dd>训练经验里没出现过的评测任务，用来检查学到的东西能不能迁移，而不是只记住训练题。</dd></div>
+      <div><dt>未通过 vs 测量无效</dt><dd>“未通过”表示实验有效运行但目标门槛没有达到；“测量无效”表示当前数据不足以可靠比较。两者都不等于实验没跑，也不等于所有分数都是 0。</dd></div>
+      <div><dt>T2</dt><dd>预留的第二代新任务迁移评测。只有上游门槛全部通过才会启动；“T2 没打开”表示没有进行这项正式评测，不能写成“T2 评测失败”。</dd></div>
+    </dl>
+    </div>
+  </details>
 </article>
 
 <style>
@@ -283,7 +288,7 @@ const current = notes.find((item) => item.id === note)!;
   .note-hero{padding:18px 0 42px;border-bottom:1px solid var(--color-border)}
   .note-topline{display:flex;justify-content:space-between;gap:20px;margin-bottom:36px;color:var(--color-text-muted);font-size:.76rem;font-weight:700;letter-spacing:.08em}.note-topline a{color:var(--color-accent);text-decoration:none}.note-topline a:hover{text-decoration:underline}
   .note-hero h1{margin:0;max-width:880px;font-size:clamp(2.15rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}.dek{max-width:760px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.05rem;line-height:1.75}
-  .note-glossary{margin:22px 0 18px;padding:18px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.note-glossary>strong{display:block;margin-bottom:12px;font-size:.9rem}.note-glossary dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0}.note-glossary dl>div{padding:10px 0;border-top:1px solid var(--color-border)}.note-glossary dt{font-size:.76rem;font-weight:800}.note-glossary dd{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;line-height:1.55}
+  .note-glossary{margin:52px 0 0;padding:14px 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.note-glossary>summary{cursor:pointer;color:var(--color-text);font-size:.82rem;font-weight:720}.note-glossary__body{padding:12px 0 4px}.note-glossary__body>p{margin:0 0 10px;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.note-glossary dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0}.note-glossary dl>div{padding:10px 0;border-top:1px solid var(--color-border)}.note-glossary dt{font-size:.76rem;font-weight:800}.note-glossary dd{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;line-height:1.55}
   .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:20px 0 52px}.series-nav a{display:flex;gap:8px;align-items:flex-start;padding:12px;border:1px solid var(--color-border);border-radius:10px;color:var(--color-text-muted);font-size:.73rem;line-height:1.35;text-decoration:none}.series-nav a span{font:600 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.series-nav a.active{background:var(--color-surface);border-color:var(--color-accent);color:var(--color-text)}
   .note-body{max-width:800px;margin:0 auto}.note-body section{margin:0 0 46px}.note-body h2{margin:0 0 16px;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.2;letter-spacing:-.03em}.note-body p{margin:0 0 16px;color:var(--color-text-muted);font-size:1rem;line-height:1.82}.note-body strong{color:var(--color-text)}.note-body code{font-size:.9em}
   .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}.metric-grid div{padding:18px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.metric-grid span{display:block;color:var(--color-text);font:700 1.28rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.03em}.metric-grid small{display:block;margin-top:8px;color:var(--color-text-muted);font-size:.72rem;line-height:1.35}
