@@ -30,6 +30,7 @@ Always load the relevant combination of:
 
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;
 - [`current/website-design-spec.md`](current/website-design-spec.md) — canonical website-level design/copy preference: what “说人话 / 去 AI 味” means, information order, heading voice, and conflict resolution;
+- [`current/site-reader-attention-contract.md`](current/site-reader-attention-contract.md) — executable per-route audience/task/first-viewport/boundary/next-step contract; register or update it before public-page HTML is substantially written or rearranged;
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
 - [`current/sitewide-visual-knowledge-architecture.md`](current/sitewide-visual-knowledge-architecture.md) — whole-site knowledge journey and route roles.
@@ -42,6 +43,7 @@ These files are complementary owners, not competing style guides:
 | Owner | Load when | Owns |
 |---|---|---|
 | [`website-design-spec.md`](current/website-design-spec.md) | every public page/copy task | canonical user preference for natural human wording, anti-AI rhetorical patterns, heading/lede/CTA defaults, and rule precedence |
+| [`site-reader-attention-contract.md`](current/site-reader-attention-contract.md) | any new public page or substantial public-page structure/attention change | per-route audience, primary task, first-viewport goal, non-hideable boundary, next step, attention mode, and executable fail-closed coverage |
 | [`audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) | any public technical copy | headings name subjects, concrete language, context, terminology, audience baseline |
 | [`reader-first-copy-hierarchy.md`](current/reader-first-copy-hierarchy.md) | public explanation/result/incident copy | facts before stage directions, conclusion/numbers before long explanation, visual weight follows semantic weight |
 | [`layered-technical-explainer-copy.md`](current/layered-technical-explainer-copy.md) | Chinese technical/research explainers | L1 plain meaning → L2 mechanism → L3 evidence; Chinese-first terminology and scientific boundaries |
@@ -81,6 +83,7 @@ Then resolve the live scientific authority in `mykcs/openevo-experiment`. An old
 Useful historical cases, after current policy:
 
 - [`history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md`](history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md) — end-to-end recovery of the owner's “说人话 / 去 AI 味” preference from site history: preference-vs-evolution evidence, historical rule drift, case-library design, moving-main synchronization, worktree/shell/tool friction, docs-only Vercel avoidance, self-hosted CI queue diagnosis, and final PR #345 closeout.
+- [`history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md`](history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md) — direct first-run human feedback → literal scientific copy → cognition-first attention hierarchy → site-wide executable Reader Contract; includes reference-design philosophy vs surface imitation, case-cluster propagation, compatibility-redirect semantics, WebKit/first-screen geometry, moving-main integration, protected-Preview boundaries, and repeat-correction lessons.
 - [`history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md`](history/2026-08-26-seed-results-attribution-and-agent-friction-retrospective.md)
 - [`history/2026-08-28-results-provenance-publication-and-release-closeout-retrospective.md`](history/2026-08-28-results-provenance-publication-and-release-closeout-retrospective.md) — end-to-end Results provenance closeout: moving scientific authority, concurrent integration/supersession, stale public metadata, branch-prefix deployment eligibility, Preview gate skip vs PASS, exact-head/Production lineage, and provider-wait discipline.
 - [`history/2026-08-28-site-three-pass-audit-and-release-retrospective.md`](history/2026-08-28-site-three-pass-audit-and-release-retrospective.md) — whole-site facts → reader-first copy → visual-language audit: live-truth precedence, bounded first-party model evidence, stale scientific/test contracts, exact-head Vercel spend control, protected Preview access vs deployment health, Production 91/91 acceptance, and compatibility-token cleanup guidance.

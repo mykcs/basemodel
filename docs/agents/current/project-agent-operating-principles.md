@@ -106,6 +106,7 @@ When local execution is genuinely required, assume the user device may already b
 
 - Before starting an expensive browser/build matrix, inspect relevant running processes and resource contention when practical. Keep process inspection scoped to the task-owned PID/process family and the minimum fields needed. Avoid whole-machine command-line dumps merely to answer whether one process is alive: unrelated command arguments can contain credentials, tokens, private paths, or other users' state. If broad output is accidentally exposed, do not copy it into repository docs or reports.
 - Prefer an isolated worktree plus unique local ports for concurrent repository work.
+- Do not guess a local checkout path. If the owner did not provide the path, or multiple clones/worktrees may exist, discover the repository first and record the resolved root, branch, `HEAD`, dirty state, and intended remote/ref before mutation. A familiar-looking pathname is not authority.
 - Do not kill, pause, or rewrite an unrelated task merely because it slows the current task. Only terminate processes that clearly belong to the current work or that the owner explicitly authorized you to stop.
 - If contention is real, reduce worker count or otherwise lower pressure rather than treating slowness as a product regression.
 - A remote-tool timeout, vanished terminal session, or stale monitoring stream is **not** evidence that the underlying command failed. Confirm the child PID/process state, exit status, or a durable runner artifact before declaring PASS/FAIL/stuck.

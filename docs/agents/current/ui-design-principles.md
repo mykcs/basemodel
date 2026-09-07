@@ -29,6 +29,8 @@ A more decorated page is not automatically a better page. If a visual treatment 
 
 Treat visual emphasis as scarce. A first viewport normally gets one primary semantic center, not a dashboard of equally correct facts. Start from the person’s likely question and mental model, surface the one fact they need first, and let lower-priority complexity appear later through ordinary reading order or progressive disclosure. This is not a marketing-hero rule and not an instruction to imitate Apple’s surface styling; it is a cognition rule. Removing information is only justified when the same scientific meaning remains available later. Evidence boundaries that change interpretation stay visible.
 
+When the owner names a reference product or design system (for example Apple), treat the reference as a hypothesis about **how people perceive, decide, and progress**, not as permission to copy its typography, spacing, rounded corners, hero composition, or marketing voice. When first-party design/developer material exists, read that before third-party “style summaries”; translate the principle into this site's reader task, mental model, visibility, grouping, and progressive-disclosure needs. Do not synthesize unrelated famous websites into a generic mood-board checklist and call that design philosophy.
+
 ## 2. Two canvases, one product
 
 ### A. Research Editorial
