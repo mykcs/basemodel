@@ -14,6 +14,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "gdr-directapply",
+    "coverage": "contextualized",
+    "owner": "OpenEvoGdrDirectApplyExplainer",
+    "label": {
+      "zh": "GDR 与 DirectApply 决策反思",
+      "en": "GDR and DirectApply decision record"
+    },
+    "purpose": {
+      "zh": "解释 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，以及 DirectApply 独立消融真正改变了什么、尚未证明什么。",
+      "en": "Explain why GDR-v1 filtered 44 SD-LoRA candidates into 7 formal updates, what the independent DirectApply ablation changes, and what remains unproven."
+    }
+  },
+  {
     "route": "mechanism-1-0",
     "coverage": "rebuilt",
     "owner": "OpenEvoMechanismMap",
