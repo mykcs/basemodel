@@ -39,7 +39,7 @@ describe('reader context before relational status copy', () => {
   });
 
   it('keeps current relationship wording and CASE-060 in canonical guidance', () => {
-    expect(publicSource).toContain('后续 Harness 研究改变了 on-policy action contract，因此新版不再从旧 Stage 1 直接分叉，而是 fresh Stage 1 重开。');
+    expect(publicSource).toContain('后续 Harness 研究改变了 on-policy action contract，因此新版不再沿用旧 Stage 1，而是重新采集 Stage 1。');
     expect(publicSource).toContain('并行规模保持 8 张 GPU');
     expect(publicSource).toContain('每 128 次任务形成一轮共同证据');
     expect(designSpec).toContain('关系性结论需要先给最小参照物');
