@@ -12,12 +12,12 @@ for (const path of routes) {
 
     const root = page.getByTestId('harness2-mini-study');
     await expect(root).toBeVisible();
-    await expect(root.getByRole('heading', { name: /Harness 2\.0/ }).first()).toBeVisible();
+    await expect(root.getByRole('heading', { name: /购物接口的历史对照实验|Historical shopping-interface comparison/ }).first()).toBeVisible();
     await expect(root).toContainText('128 / 128');
     await expect(root).toContainText('31.25%');
     await expect(root).toContainText('42.19%');
-    await expect(root).toContainText('PASS');
-    await expect(root).toContainText('HOLD');
+    await expect(root).toContainText(/通过|Passed/);
+    await expect(root).toContainText(/暂停启用|Held/);
     await expect(root).toContainText(/Harness 2\.0\.1/i);
 
     const details = root.locator('.h2study__evidence');

@@ -5,11 +5,10 @@ const first = experiments[0]!;
 const reference = experiments[3]!;
 
 describe('reader-facing experiment lifecycle and scientific state', () => {
-  it('derives all public state labels from facts even when old prose disagrees', () => {
+  it('derives all public state labels from typed facts and rejects free-form state prose', () => {
+    expect(mechanismLifecycleSchema.safeParse({ ...reference, state: { zh: '执行已完成', en: 'Execution completed' } }).success).toBe(false);
     for (const locale of ['zh', 'en'] as const) {
-      const stale = { ...reference, state: { zh: '执行已完成', en: 'Execution completed' } };
-      expect(mechanismDisplayState(stale, locale)).toEqual(mechanismDisplayState(reference, locale));
-      const running = mechanismLifecycleSchema.parse({ ...stale, execution: 'running', actualStart: '2026-09-06T10:00:00Z' });
+      const running = mechanismLifecycleSchema.parse({ ...reference, execution: 'running', actualStart: '2026-09-06T10:00:00Z' });
       expect(mechanismDisplayState(running, locale).execution).not.toEqual(mechanismDisplayState(reference, locale).execution);
       expect(mechanismDisplayState(running, locale).result).toEqual(mechanismDisplayState(reference, locale).result);
       const complete = mechanismLifecycleSchema.parse({ ...running, execution: 'completed', actualEnd: '2026-09-06T12:00:00Z' });

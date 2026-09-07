@@ -96,7 +96,7 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(map).toBeVisible();
     await expect(map).toContainText('20,480');
     await expect(map).toContainText('797');
-    await expect(map).toContainText('Task Vector 默认 diagnostic-only');
+    await expect(map).toContainText('参数分析只做诊断，不自动控制训练');
   });
 
   for (const path of [explorationPath, reportPath, stage1CompatPath, stage2Path]) {

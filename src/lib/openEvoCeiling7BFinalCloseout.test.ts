@@ -27,26 +27,26 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(snap).toContain('exactSuccessPct: 45.3125');
     expect(snap).toContain('actionAdmissibilityFailures: 7');
     expect(snap).toContain('runtimeErrors: 0');
-    expect(ceiling).toContain('128 / 128 全部完成');
-    expect(ceiling).toContain('headline 始终以全部 128 题为分母');
-    expect(firstRun).toContain('58 / 128 完整成功');
+    expect(ceiling).toContain('128 道测试任务全部完成');
+    expect(ceiling).toContain('平均分始终包含全部 128 题');
+    expect(firstRun).toContain('128 题中 58 题完全成功');
   });
 
   it('keeps SEED paper numbers in a paper-reference claim domain', () => {
     expect(snap).toContain('seedPaperReference: { score: 89.7, successPct: 78.1 }');
     expect(ceiling).toContain('SEED · PAPER REFERENCE');
-    expect(ceiling).toContain('Score −40.37');
-    expect(ceiling).toContain('Success −32.79');
-    expect(ceiling).toContain('不把它写成方法因果效应');
-    expect(firstRun).toContain('不冒充本地 paired reproduction');
+    expect(ceiling).toContain('40.37');
+    expect(ceiling).toContain('32.79');
+    expect(ceiling).toContain('不能把差值归因于学习方法本身');
+    expect(firstRun).toContain('两份记录不构成本地配对实验');
   });
 
   it('shows parameter-analysis closeout without claiming compression was used in the final checkpoint', () => {
     expect(firstRun).toContain('update stable rank 16.55');
     expect(firstRun).toContain('95% energy rank 77');
-    expect(firstRun).toContain('residual-energy 中位数 0.0597');
+    expect(firstRun).toContain('残余能量中位数为 0.0597');
     expect(firstRun).toContain('K64');
-    expect(firstRun).toContain('不属于 formal final checkpoint');
+    expect(firstRun).toContain('压缩结果没有写回训练或正式最终模型');
     expect(ceiling).toContain('formal 训练里始终没有启用 rank reduction / compression');
   });
 
@@ -64,9 +64,9 @@ describe('Ceiling-1.0 7B final closeout', () => {
     expect(snap).toContain("priorRemoteVerification: 'PASS'");
     expect(snap).toContain("currentFreshRead: 'TOOL_ERROR_INVALID_VALUE'");
     expect(ceiling).toContain('private / restricted research asset');
-    expect(ceiling).toContain('not represented as a fresh current verification');
+    expect(ceiling).toContain('the 2026-09-05 reread did not complete because of a tool-argument error');
     expect(firstRun).toContain('is not upgraded to a current fresh PASS');
-    expect(archive).toContain('prior PASS is not a current fresh verification');
+    expect(archive).toContain('does not establish a successful re-verification');
   });
 
   it('updates both localized Ceiling page descriptions with the final 7B closeout', () => {

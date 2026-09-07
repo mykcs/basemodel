@@ -30,9 +30,17 @@ const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.a
 const questions = read('../components/research/OpenEvoWebShopResultsQuestions.astro');
 const currentQ7 = read('../components/research/OpenEvoWebShopCurrentQ7.astro');
 
-const resultFamilyCopy = `${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${successorExploration}\n${successorReport}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
+const parameterAnalysis = read('../components/research/OpenEvo7BStage2AnalysisMap.astro');
+
+const resultFamilyCopy = `${parameterAnalysis}\n${scaffold}\n${stage1Versions}\n${stage2Chooser}\n${legacyStage2Archive}\n${legacyStage2Journey}\n${legacyStage2Data}\n${ceilingStage2}\n${redesign}\n${successorExploration}\n${successorReport}\n${ceilingStage2Snapshot}\n${analysis}\n${legacyResultNote}\n${movedPrimer}\n${resultsAppendix}\n${program}\n${hero}\n${protocol}\n${planIndex}\n${nextSteps}\n${benchmarkNote}\n${questions}\n${currentQ7}`;
 
 describe('OpenEvo capability-exploration result language', () => {
+  it('explains the historical update gate with attempt, task, success, and update units', () => {
+    for (const meaning of ['7B/self', '20,480 次购物尝试', '797 条完整成功记录', '每 256 次尝试', '8 个不同任务各完整成功 2 次', '最好的一批只有 7 个', '80 批都没有触发参数更新', '不是 OpenEvo 的永久规则']) {
+      expect(parameterAnalysis).toContain(meaning);
+    }
+  });
+
   it('presents current and historical Stage 1 as comparable but non-identical trajectory collections', () => {
     expect(stage1Versions).toContain('Ceiling-1.0：fresh corrected Stage 1（历史）');
     expect(stage1Versions).toContain('旧版：previous Stage 1 replicate');
@@ -62,7 +70,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(stage1Versions).toContain('/stage1-previous/');
     expect(stage1Versions).toContain('打开旧版 trajectory / adapter / HF / GitHub 产物');
     expect(legacyStage1Archive).toContain('2026-08-31 的归档复核');
-    expect(legacyStage1Archive).toContain('这次历史比较不指后来更换共享购物接口的 3B + 1.7B 新实验');
+    expect(legacyStage1Archive).toContain('这也不代表后来更换共享购物接口的 3B + 1.7B 新实验');
+    expect(legacyStage1Archive).toContain('旧购物记录和模型文件可以继续用于历史分析；不能改名当作后续实验重新采集的数据');
     expect(legacyStage1Archive).not.toContain('今后以新版为准');
     expect(legacyStage1Archive).toContain('openevo-webshop-h145-h146-trajectories');
     expect(legacyStage1Archive).toContain('9bdca2fcb80d3272b5c9c9a32fdc2f3873f03bbc');
@@ -129,8 +138,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(successorReport).toContain('“后续学习已经证明能稳定提升”');
     expect(successorReport).toContain('不支持');
     expect(redesign).not.toContain('Ceiling-1.0 已暂停');
-    expect(ceilingStage2).toContain('Ceiling-1.0 历史证据原样保留');
-    expect(ceilingStage2).toContain('新版从新的 Harness 与 fresh Stage 1 重新开始');
+    expect(ceilingStage2).toContain('不能把 Ceiling-1.0 的旧轨迹和旧模型保存点直接当作新实验的起点');
+    expect(ceilingStage2).toContain('新实验需要重新收集初始经验、重新分析并准备学习材料');
     expect(legacyStage2Journey).toContain('不能在其余变量中继续排名谁最可能是根因');
     expect(legacyStage2Journey).not.toContain('真正的问题更可能出在新的上下文 / 动作接口');
     expect(analysis).toContain('训练 loss 不是任务得分的单调代理指标');
@@ -168,7 +177,7 @@ describe('OpenEvo capability-exploration result language', () => {
   it('does not regress to author-only shorthand for negative result states', () => {
     for (const opaque of [
       '80/80 个 block 都没有参数更新',
-      '单个 block 的 qualifying identity 最大只有 7，而 gate 需要 8',
+      'qualifying identity 最大只有 7',
       '0 update / 无 adapter',
       'Stage-2 仍然全是 no-update',
       'success 数据很多，但 gate 一直不打开',

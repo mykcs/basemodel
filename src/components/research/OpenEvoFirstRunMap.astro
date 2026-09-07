@@ -20,10 +20,10 @@ const links = {
   archive: p('/research/seed-openevo/study/capability-exploration/archive/'),
 };
 const terms = zh ? [
-  { term: 'Stage 1', meaning: '先让模型自己跑 WebShop，形成第一批可学习经验；老师只在任务结束后分析。' },
-  { term: 'Stage 2', meaning: '模型继续消费新经验并更新参数的阶段；第一轮 7B 与 3B 在这里走出了很不同的路径。' },
-  { term: 'round', meaning: '第一轮 7B Stage2 的基本推进单位：每轮消费一批新的任务结果，再决定是否产生参数更新。' },
-  { term: 'SD-LoRA component', meaning: '一次被接受的参数更新留下的 LoRA 组件；component 数量不是 replay buffer，也不是最终科学分数。' },
+  { term: 'Stage 1', meaning: '让模型自己完成购物，收集初始经验；外部模型 MiniMax 只在购物结束后分析记录。' },
+  { term: 'Stage 2', meaning: '模型用新收集的购物经验继续学习；7B 持续更新参数，旧 3B 因接口问题停止。' },
+  { term: 'round', meaning: '一轮：7B 每轮完成一批新的购物尝试，再检查其中的成功记录是否满足参数更新条件。' },
+  { term: 'SD-LoRA component', meaning: '一次参数更新增加的一组数值。组件数量记录更新次数，不能代替任务成绩，也不同于缓存的经验条数。' },
 ] : [
   { term: 'Stage 1', meaning: 'The model first acts on WebShop to create an initial experience corpus; the external teacher reviews only after tasks finish.' },
   { term: 'Stage 2', meaning: 'The model keeps consuming new experience and updating parameters. The first 7B and 3B lineages diverged sharply here.' },
@@ -31,20 +31,20 @@ const terms = zh ? [
   { term: 'SD-LoRA component', meaning: 'A LoRA component left by one accepted parameter update; component count is not the replay buffer and not the final scientific score.' },
 ];
 const summarySteps = zh ? [
-  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '这里先建立“模型原本能做什么”的起跑线，再把证据整理成后续学习输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
-  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 的 action parsing / invalid termination 说明接口本身可能污染能力测量，因此旧线不能继续冒充公平比较。', outcome: '7B 可以继续封存能力天花板；3B 必须回到 fresh Stage1 redesign。', state: '路径分叉' },
-  { id: 'closeout', kicker: '03 · OUTCOME', title: '第一轮最终留下两种不同证据', summary: '7B 完成 149 轮学习后，在固定的 128 道测试题上得到 49.33 分，58 题完全成功。旧 3B 实验停止，相关发现推动了下一轮共同购物接口的设计。', detail: '这不是“7B 赢、3B 输”的简单排行榜，而是一次能跑深以后才看见的机制差异和测量风险。', outcome: '下一张地图不续跑旧 3B，而是重新冻结 3B + 1.7B 的共同起跑线。', state: '历史已封存' },
+  { id: 'stage1', kicker: '01 · STAGE 1', title: '两条模型线都先自己跑任务，收集第一批经验', summary: '180 个 WebShop 任务 × 8 次 = 1,440 条轨迹；MiniMax 只在轨迹发生以后分析。', detail: '先记录模型学习前的购物表现，再把这些经验整理成后续学习的输入。', outcome: '初始任务成绩记录模型自己的购物行为；外部分析在这些任务结束后进行。', state: '历史起点' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B 持续产生参数更新，旧 3B 实验暴露了购物接口问题', summary: '7B 持续产生参数更新。旧 3B 在后续完成 3,200 次尝试后停止；其中的接口问题需要单独检查，不能把全部失败归因于模型能力。', detail: '3B 出现动作解析错误和无效动作终止，因此需要区分接口错误与模型能力不足。', outcome: '7B 继续学习并完成测试；3B 重新设计接口，从新采集的经验开始。', state: '路径分叉' },
+  { id: 'closeout', kicker: '03 · OUTCOME', title: '第一轮最终留下两种不同证据', summary: '7B 完成 149 轮学习后，在固定的 128 道测试题上得到 49.33 分，58 题完全成功。旧 3B 实验停止，相关发现推动了下一轮共同购物接口的设计。', detail: '7B 的结果说明参数更新能够持续发生；3B 的接口问题说明，低分未必只由模型能力造成。', outcome: '后续 3B + 1.7B 实验固定共同购物规则，重新收集初始经验。', state: '历史已封存' },
 ] : [
   { id: 'stage1', kicker: '01 · STAGE 1', title: 'Both lineages first act on their own to create experience', summary: '180 WebShop tasks × 8 rollouts = 1,440 trajectories; MiniMax reviews only after trajectories exist.', detail: 'This establishes what the model can already do before the evidence is turned into later learning inputs.', outcome: 'Initial task scores record the model’s own shopping behavior; external analysis takes place after those attempts end.', state: 'Historical start' },
-  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B learning ignited while the old 3B path exposed harness problems', summary: '7B sustained real SD-LoRA updates; the old 3B Stage 2 stopped after 3,200 rollouts instead of being simplified to “the model is too weak.”', detail: '3B action parsing and invalid termination showed that the interface itself could corrupt capability measurement.', outcome: '7B could continue toward a ceiling closeout; 3B had to restart from a fresh Stage-1 redesign.', state: 'Paths diverge' },
+  { id: 'stage2', kicker: '02 · STAGE 2', title: '7B sustained parameter updates; old 3B exposed interface problems', summary: '7B sustained real SD-LoRA updates; the old 3B Stage 2 stopped after 3,200 rollouts instead of being simplified to “the model is too weak.”', detail: '3B action parsing and invalid termination showed that the interface itself could corrupt capability measurement.', outcome: '7B could continue toward a ceiling closeout; 3B had to restart from a fresh Stage-1 redesign.', state: 'Paths diverge' },
   { id: 'closeout', kicker: '03 · OUTCOME', title: 'The first campaign ultimately left two different kinds of evidence', summary: '7B: 49.33 score and 58/128 exact after 149 completed rounds; 3B: the old lineage stops and triggers the shared-harness successor.', detail: 'This is not a simple “7B wins, 3B loses” leaderboard; it is evidence about sustained learning and measurement risk.', outcome: 'The next map restarts the comparison under a shared 3B + 1.7B harness.', state: 'Historical closeout' },
 ];
 ---
-<main class="first-run" data-first-run-map data-testid="openevo-first-run-map">
+<main data-copy-review class="first-run" data-first-run-map data-testid="openevo-first-run-map">
   <ResearchOrientation
     locale={locale}
     eyebrow="HISTORICAL MAP · FIRST RUN"
-    title={t('第一轮 OpenEvo，哪里真的学起来了？', 'Learning in the first run')}
+    title={t("第一轮购物学习：7B 与 3B 的分岔", "7B and 3B: first learning study")}
     lede={t("7B 能持续把经验用于参数更新；早期 3B 的失败则暴露了购物接口和动作格式问题。两条路线留下不同的证据。","7B sustained updates from experience. Early 3B failures exposed problems in the shopping interface.")}
     question={t("经验能否带来持续的模型更新？","Can experience produce sustained model updates?")}
     why={t("区分模型能力、接口错误和容量限制，才能设计下一轮。","Distinguish model capability, interface errors and capacity limits before the next design.")}
@@ -55,32 +55,32 @@ const summarySteps = zh ? [
     backHref={links.lobby}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
     actionHref="#first-run-summary"
-    actionLabel={t('先看三步摘要', 'Start with the three-step summary')}
+    actionLabel={t("查看实验过程", "View the experiment sequence")}
     terms={terms}
   />
 
-  <div id="first-run-summary"><ResearchJourney locale={locale} eyebrow="STAGE 1 → STAGE 2 → OUTCOME" title={t('三步看懂第一轮为什么重要', 'Understand why the first campaign matters in three steps')} intro={t('详细 7B / 3B lineage 仍完整保留在下面；第一次看只需要先理解这三步。', 'The full 7B / 3B lineages remain below; a first reading only needs these three steps.')} steps={summarySteps} /></div>
+  <div id="first-run-summary"><ResearchJourney locale={locale} eyebrow="STAGE 1 → STAGE 2 → OUTCOME" title={t("初始经验、后续学习与最终结果", "Initial experience, later learning, and outcomes")} intro={t("两种模型各自收集经验，再分别进入学习；7B 完成最终测试，旧 3B 因接口问题停止。", "Each model collected experience and learned separately. 7B completed final evaluation; interface problems stopped the old 3B run.")} steps={summarySteps} /></div>
 
-  <div id="first-run-lineages"><ResearchDepth locale={locale} kind="history" summary={t('完整第一轮 lineage：切换 7B / 3B，查看每个关卡、工程修复与证据', 'Full first-run lineages: switch 7B / 3B and inspect every stage, engineering fix, and evidence')} intro={t('这是历史审计层。它保留原来的交互和全部证据，但不再要求第一次来的读者默认展开。', 'This is the historical audit layer. It keeps the original interaction and all evidence without forcing it into the default reading path.')} >
+  <div id="first-run-lineages"><ResearchDepth locale={locale} kind="history" summary={t("7B 与 3B 的历史过程和证据", "Historical 7B and 3B runs and evidence")} intro={t("每个节点记录当时的规则、结果和修订。旧 3B 已停止，后来的实验使用新记录。", "Each node records the rules, results, and amendments at that time. The old 3B run stopped; the successor uses new records.")} >
   <aside class="first-run__prelude" aria-label={t('更早的 Stage 2 经验', 'Earlier Stage-2 evidence')}>
     <strong>{t('更早的一条 Stage 2 路线已经提醒过我们：成功轨迹存在，不等于参数真的会更新。', 'An earlier Stage-2 route had already shown that successful trajectories do not automatically become parameter updates.')}</strong>
-    <span>{t('旧 256-window 规则把早期 method-control 条件变成了长期门槛，导致大量成功经验没有触发更新。Ceiling-1.0 因此改成按轮处理新经验。', 'The old 256-window rule promoted an early method-control condition into a long-term gate, so many successes never triggered an update. Ceiling-1.0 therefore moved to round-level evidence.')}</span>
+    <span>{t("旧规则要求每批 256 次尝试中，至少 8 个不同任务各成功 2 次才更新参数；当时最好只有 7 个，成功经验因此未能触发更新。后来的 Ceiling-1.0 改成按轮处理新经验。", "The old rule required at least eight distinct tasks to succeed twice within each 256-attempt batch. The best batch reached seven, so successes did not trigger an update. The later Ceiling-1.0 processed new experience round by round.")}</span>
     <a href={links.oldStage2}>{t('查看旧 Stage 2 的完整证据 →', 'Open the old Stage-2 evidence →')}</a>
   </aside>
 
   <section class="arm-picker" aria-labelledby="arm-picker-title">
     <div>
-      <p>MODEL LINE</p>
-      <h2 id="arm-picker-title">{t('先看哪条模型线？', 'Choose a model lineage')}</h2>
+      <p>{t("模型", "MODEL")}</p>
+      <h2 id="arm-picker-title">{t("两种模型的历史过程", "Historical runs by model")}</h2>
     </div>
     <div class="arm-picker__controls" role="group" aria-label={t('选择 7B 或 3B', 'Choose 7B or 3B')}>
       <button type="button" data-first-run-arm="7b" aria-pressed="true">
         <strong>Qwen2.5-7B</strong>
-        <small>{t('默认：看完整的 Stage 2 持续进化', 'Default: the full sustained Stage-2 path')}</small>
+        <small>{t("7B：持续学习与最终测试", "7B: sustained learning and final evaluation")}</small>
       </button>
       <button type="button" data-first-run-arm="3b" aria-pressed="false">
         <strong>Qwen2.5-3B</strong>
-        <small>{t('看 bootstrap / Harness 问题怎样暴露', 'See how bootstrap and harness problems surfaced')}</small>
+        <small>{t("3B：初始表现与购物接口问题", "3B: initial performance and interface problems")}</small>
       </button>
     </div>
   </section>
@@ -88,75 +88,75 @@ const summarySteps = zh ? [
   <section class="lineage-map" aria-live="polite">
     <div class="lineage-panel" data-first-run-panel="7b">
       <header class="lineage-panel__head">
-        <span>{t('7B · CLOSED LEGACY LINEAGE', '7B · CLOSED LEGACY LINEAGE')}</span>
-        <strong>{t('这条线已经按冻结实验合同完成并封存：149 个完整 round 后才打开 final panel，随后完成参数机制分析、远端归档和本地重资产退休。', 'This lineage is now complete under its frozen contract: the final panel was opened only after 149 completed rounds, followed by parameter-mechanism closeout, remote archival, and retirement of heavy local payloads.')}</strong>
+        <span>{t("7B · 已完成的历史实验", "7B · CLOSED HISTORICAL RUN")}</span>
+        <strong>{t("7B 按固定规则完成 149 轮学习后，才用预定题目做最终测试。参数分析和远端归档在测试之后完成。", "7B completed 149 learning rounds under fixed rules before evaluation on predefined tasks. Parameter analysis and remote archival followed evaluation.")}</strong>
       </header>
 
       <div class="lineage-spine" aria-label={t('7B 历史实验主线', '7B historical experiment mainline')}>
         <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="historical">
-          <span>FLOOR 1 · STAGE 1</span>
-          <h3>{t('先收集并整理 7B 的经验', 'Collect and prepare 7B experience')}</h3>
-          <p>{t('180 个 WebShop 任务各跑 8 次，形成 1,440 条轨迹；MiniMax 在任务结束后分析这些轨迹，再准备 OPSD、Memory、Skill 和 Agent。', 'Run each of 180 WebShop tasks eight times to produce 1,440 trajectories; MiniMax analyzes those completed trajectories before OPSD, Memory, Skill, and Agent preparation.')}</p>
+          <span>{t("初始经验 · Stage 1", "INITIAL EXPERIENCE · STAGE 1")}</span>
+          <h3>{t('7B 的初始购物经验', 'Collect and prepare 7B experience')}</h3>
+          <p>{t("180 个购物任务各尝试 8 次，留下 1,440 条记录；MiniMax 在购物结束后分析这些记录，再准备参数学习、记忆、技能和智能体的输入。", "Each of 180 shopping tasks was attempted eight times, producing 1,440 records. MiniMax analyzed them after shopping, before inputs for parameter learning, memory, skills, and agents were prepared.")}</p>
           <button type="button" data-first-run-detail="7b-stage1" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="historical">
-          <span>FLOOR 2 · STAGE 2</span>
-          <h3>{t('每轮用新的 128 次任务继续训练', 'Continue training from each new 128-attempt round')}</h3>
-          <p>{t('每轮重新收集一批任务结果，clean exact success 可以触发 SD-LoRA 更新；老师在 Stage 1 结束后退出。', 'Each round collects a fresh batch of task results. Clean exact success can trigger an SD-LoRA update, and the external teacher has already exited after Stage 1.')}</p>
+          <span>{t("后续学习 · Stage 2", "LATER LEARNING · STAGE 2")}</span>
+          <h3>{t('每轮用新的 128 次购物尝试学习', 'Continue training from each new 128-attempt round')}</h3>
+          <p>{t('每轮收集新的购物记录。符合质量要求的完整成功记录可以触发 SD-LoRA 参数更新；外部模型不再参与这一阶段。', 'Each round collects a fresh batch of task results. Clean exact success can trigger an SD-LoRA update, and the external teacher has already exited after Stage 1.')}</p>
           <button type="button" data-first-run-detail="7b-stage2" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="historical">
-          <span>{t('学习真的点燃了', 'LEARNING IGNITED')}</span>
+          <span>{t('成功经验进入参数学习', 'PARAMETER UPDATES BEGIN')}</span>
           <h3>{t('7B 开始持续产生真实参数更新', '7B begins producing sustained parameter updates')}</h3>
-          <p>{t('这条线证明 Stage 2 不再是“收集很多成功轨迹，但参数一次都不动”。成功可以真正进入 SD-LoRA；单轮分数会波动，但学习链条已经点燃。', 'This lineage shows that Stage 2 is no longer “collect many successes while parameters never move.” Success can become a real SD-LoRA update; individual rounds can fluctuate, but the learning chain is active.')}</p>
+          <p>{t('7B 的成功购物记录产生了真实参数更新。各轮得分仍有波动；参数能够更新，与新任务成绩是否提高，需要分别检查。', 'Successful shopping records produced real parameter updates. Scores still varied between rounds; whether updates occur and whether unseen-task performance improves are separate questions.')}</p>
           <button type="button" data-first-run-detail="7b-ignition" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--amendment" data-node-kind="scientific-amendment" data-node-state="historical">
-          <span>SCIENTIFIC AMENDMENT</span>
+          <span>{t("学习规则修订", "LEARNING-RULE AMENDMENT")}</span>
           <h3>{t('放宽参数学习容量', 'Allow more parameter-learning capacity')}</h3>
-          <p>{t('原实现会在累计 64 个 SD-LoRA component 后停止继续增加 component。7B 还有剩余训练预算，所以这条独立停止线被解除。', 'The original implementation stopped adding SD-LoRA components once the stream reached 64 components. The 7B run still had training budget left, so that independent stop was removed.')}</p>
+          <p>{t('每次 SD-LoRA 更新增加一个参数组件。原实现达到 64 个组件就停止新增更新；当时还有剩余训练预算，因此实验另行批准移除这一停止条件。', 'The original implementation stopped adding SD-LoRA components once the stream reached 64 components. The 7B run still had training budget left, so that independent stop was removed.')}</p>
           <button type="button" data-first-run-detail="capacity" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <div class="run-with-patch">
           <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="frozen">
-            <span>FINAL CLOSEOUT · 2026-09-04</span>
-            <h3>{t('149 个完整 round 后封存：49.33 分，58 / 128 完整成功', 'Sealed after 149 completed rounds: 49.33 score and 58 / 128 exact successes')}</h3>
-            <p>{t('最终 checkpoint 使用 round 0–148，共 19,072 条 accepted Stage-2 rollout、143 个 SD-LoRA component。partial round149 的 96 条只留 provenance，不进入 checkpoint。final panel 在 checkpoint 冻结后只打开一次。20,480 是尝试上限，本次提前停止的具体原因尚待原始终止记录核验。', 'The final checkpoint uses rounds 0–148: 19,072 accepted Stage-2 rollouts and 143 SD-LoRA components. The 96 rollouts from partial round149 remain provenance only and do not enter the checkpoint. The final panel was opened exactly once after checkpoint freeze. The attempt ceiling was 20,480; the specific reason for stopping early still requires verification against the original termination record.')}</p>
+            <span>{t("最终结果 · 2026-09-04", "FINAL RESULTS · 2026-09-04")}</span>
+            <h3>{t("149 个完整轮次后的测试：49.33 分，128 题中 58 题完全成功", "Evaluation after 149 complete rounds: 49.33 score and 58 / 128 exact successes")}</h3>
+            <p>{t("最终模型来自第 0–148 轮的完整学习结果，共 149 个完整轮次、19,072 次学习阶段的任务尝试，并记录 143 次已应用的参数更新。未完成的第 149 轮另有 96 次尝试，仅保留作过程记录，没有进入最终模型。模型固定后才进行一次最终测试。20,480 次是原定尝试上限；为什么提前停止仍需原始终止记录核验。", "The final model comes from complete rounds 0–148: 149 complete rounds, 19,072 task attempts during learning, and 143 applied parameter updates. The unfinished round 149 contains another 96 attempts retained only as process history and excluded from the final model. The final evaluation ran once after model freeze. The planned ceiling was 20,480 attempts; the reason for stopping early still requires the original termination record.")}</p>
             <button type="button" data-first-run-detail="frozen-7b" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
           </article>
           <aside class="patch-node" data-node-kind="engineering-fix" data-node-state="resolved">
             <span>{t('已解决的工程修复', 'RESOLVED ENGINEERING FIX')}</span>
             <strong>{t('修复训练运行问题', 'Fix training-run issues')}</strong>
-            <small>{t('恢复、训练代码来源、provenance、冷归档；不改科学问题。', 'Resume, trainer-source, provenance, and cold-archive fixes without changing the scientific question.')}</small>
+            <small>{t('修复中断恢复、代码加载和归档问题，保留原实验问题与完整运行记录。', 'Resume, trainer-source, provenance, and cold-archive fixes without changing the scientific question.')}</small>
             <button type="button" data-first-run-detail="runtime-fixes" aria-expanded="false">+ {t('查看', 'Open')}</button>
           </aside>
         </div>
         <span class="lineage-connector lineage-connector--future" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--diagnostic" data-node-kind="evidence" data-node-state="resolved">
-          <span>{t('POST-RUN PARAMETER ANALYSIS', 'POST-RUN PARAMETER ANALYSIS')}</span>
-          <h3>{t('143 个 component 的最终参数几何已经封口', 'Final parameter geometry is closed through 143 components')}</h3>
-          <p>{t('full-W 的 RMS / spectral / stable-rank 里程碑分析覆盖到 132 components；最终 exact Task-Vector geometry 补到 143：update stable rank 16.55，95% energy rank 77，最后 139–143 的 residual-energy 中位数 0.0597。另有 K64/K80/K96 function intervention 检查压缩方向是否改变决策。', 'Full-W RMS / spectral / stable-rank milestone analysis reaches 132 components; exact final Task-Vector geometry extends to 143: update stable rank 16.55, 95% energy rank 77, and median residual energy 0.0597 over components 139–143. K64/K80/K96 function interventions separately test whether reduced task-vector capacity changes decisions.')}</p>
+          <span>{t('训练后的参数分析', 'POST-RUN PARAMETER ANALYSIS')}</span>
+          <h3>{t('143 次参数更新后的变化分析', 'Parameter analysis after 143 updates')}</h3>
+          <p>{t('分析分为两项：完整权重的幅度与结构测量覆盖到第 132 次更新；最终参数差分析覆盖全部 143 次更新。另用三个压缩方案检查购物动作是否改变。这些都是训练结束后的诊断，详细指标见说明。', 'Full-W RMS / spectral / stable-rank milestone analysis reaches 132 components; exact final Task-Vector geometry extends to 143: update stable rank 16.55, 95% energy rank 77, and median residual energy 0.0597 over components 139–143. K64/K80/K96 function interventions separately test whether reduced task-vector capacity changes decisions.')}</p>
           <button type="button" data-first-run-detail="future-compression" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
       </div>
 
       <section class="lineage-outcome" aria-labelledby="outcome-7b-title">
-        <p>OUTCOME</p>
-        <h2 id="outcome-7b-title">{t('7B 这条线留下了什么？', 'What did the 7B lineage teach us?')}</h2>
+        <p>{t("结果与边界", "RESULTS AND LIMITS")}</p>
+        <h2 id="outcome-7b-title">{t('7B 的结果与适用范围', 'What did the 7B lineage teach us?')}</h2>
         <ul>
-          <li>{t('Stage 2 可以真的持续学习：149 个完整 round 最终形成 143 个 SD-LoRA component。', 'Stage 2 can sustain real learning: 149 completed rounds ultimately produced 143 SD-LoRA components.')}</li>
-          <li>{t('最终 128 题：Task Score ×100 = 49.33，完整成功 58/128 = 45.31%；SEED 89.7 / 78.1 只作为论文报告参考值，不冒充本地 paired reproduction。', 'Final 128 tasks: Task Score ×100 = 49.33 and exact success = 58/128 = 45.31%; SEED 89.7 / 78.1 is shown only as a paper-reported reference, not a local paired reproduction.')}</li>
-          <li>{t('工程容量不能偷偷冒充科学终点：64-component guard 必须作为显式 amendment 处理。', 'Engineering capacity cannot silently become the scientific endpoint: the 64-component guard needs an explicit amendment boundary.')}</li>
-          <li>{t('长跑修复要与科学修改分层：恢复和归档问题可以修，但不能顺手改实验问题。', 'Long-run repairs must stay separate from scientific changes: resume and archive issues can be fixed without quietly redefining the experiment.')}</li>
+          <li>{t('149 轮学习产生了 143 次参数更新，说明成功经验可以持续用于训练。', 'Stage 2 can sustain real learning: 149 completed rounds ultimately produced 143 SD-LoRA components.')}</li>
+          <li>{t('最终 128 道测试题平均得分为 49.33/100，58 题完全成功，成功率 45.31%。SEED 论文报告的 89.7 分与 78.1% 仅供参考；两份记录不构成本地配对实验。', 'Final 128 tasks: Task Score ×100 = 49.33 and exact success = 58/128 = 45.31%; SEED 89.7 / 78.1 is shown only as a paper-reported reference, not a local paired reproduction.')}</li>
+          <li>{t('“最多 64 次更新”是实现中的容量限制，不能直接解释为模型已经学到极限；移除它需要明确记录实验修订。', 'Engineering capacity cannot silently become the scientific endpoint: the 64-component guard needs an explicit amendment boundary.')}</li>
+          <li>{t('运行恢复和归档修复保持原实验问题；改变学习规则则需要单独记录。', 'Long-run repairs must stay separate from scientific changes: resume and archive issues can be fixed without quietly redefining the experiment.')}</li>
         </ul>
         <a href={links.ceiling}>{t('查看 Ceiling-1.0 的完整实验页与证据 →', 'Open the full Ceiling-1.0 experiment and evidence →')}</a>
       </section>
@@ -164,53 +164,53 @@ const summarySteps = zh ? [
 
     <div class="lineage-panel" data-first-run-panel="3b" hidden>
       <header class="lineage-panel__head">
-        <span>{t('3B · STOPPED HISTORICAL LINEAGE', '3B · STOPPED HISTORICAL LINEAGE')}</span>
-        <strong>{t('3B 没有被简单归类为“模型太弱”。它让我们发现旧 Harness 本身会改变 action validity，因此这条线停下来做诊断。', '3B was not simply labeled “too weak.” It exposed that the old harness itself could change action validity, so this lineage stopped for diagnosis.')}</strong>
+        <span>{t('3B · 已停止的历史实验', '3B · STOPPED HISTORICAL RUN')}</span>
+        <strong>{t('旧购物接口会影响模型动作能否被正确接收。3B 实验因此停止并检查接口，不能把全部失败都归因于模型能力。', '3B was not simply labeled “too weak.” It exposed that the old harness itself could change action validity, so this lineage stopped for diagnosis.')}</strong>
       </header>
 
       <div class="lineage-spine lineage-spine--3b" aria-label={t('3B 历史实验主线', '3B historical experiment mainline')}>
         <article class="lineage-node lineage-node--mainline" data-node-kind="mainline" data-node-state="historical">
-          <span>FLOOR 1 · STAGE 1</span>
-          <h3>{t('先完成旧版 3B Stage 1', 'Complete the old 3B Stage 1')}</h3>
-          <p>{t('这批 1,440 条轨迹后来证明成功太稀少，而且 action parsing / invalid termination 也会干扰我们判断模型到底会不会做题。', 'These 1,440 trajectories later showed very sparse success, while action parsing and invalid termination also interfered with the question of what the model could actually do.')}</p>
+          <span>{t("初始经验 · Stage 1", "INITIAL EXPERIENCE · STAGE 1")}</span>
+          <h3>{t('旧 3B 的初始购物经验', 'Complete the old 3B Stage 1')}</h3>
+          <p>{t('这批 1,440 次购物尝试中，完整成功很少；同时存在动作解析错误，以及因动作无效而提前结束的任务，需要区分模型能力与接口问题。', 'These 1,440 trajectories later showed very sparse success, while action parsing and invalid termination also interfered with the question of what the model could actually do.')}</p>
           <button type="button" data-first-run-detail="3b-stage1" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--blocked" data-node-kind="mainline" data-node-state="stopped">
-          <span>{t('过早进入 Stage 2', 'PREMATURE STAGE 2')}</span>
-          <h3>{t('旧 3B Stage 2 跑了 3,200 条后被封存', 'The old 3B Stage 2 was sealed after 3,200 rollouts')}</h3>
-          <p>{t('这 3,200 条保留为 premature-lineage 证据，但不能成为以后新 Harness Stage 2 的合法前缀。', 'Those 3,200 rollouts remain premature-lineage evidence, but they cannot become the legal prefix of a later Stage 2 under the new harness.')}</p>
+          <span>{t('接口准备不足时开始学习', 'PREMATURE STAGE 2')}</span>
+          <h3>{t('旧 3B 在 3,200 次后续尝试后停止', 'The old 3B Stage 2 was sealed after 3,200 rollouts')}</h3>
+          <p>{t('这 3,200 次尝试保留为旧实验记录。新接口会改变购物过程，因此新实验需要重新采集经验，不能从这批旧记录接着学习。', 'Those 3,200 rollouts remain premature-lineage evidence, but they cannot become the legal prefix of a later Stage 2 under the new harness.')}</p>
           <button type="button" data-first-run-detail="3b-premature" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--diagnostic" data-node-kind="evidence" data-node-state="stopped">
-          <span>HARNESS DIAGNOSIS</span>
-          <h3>{t('把“学习不起来”继续追到行动接口', 'Trace “learning does not ignite” back to the action interface')}</h3>
-          <p>{t('Harness201 G3 的 round0 出现 33/128 invalid termination。这个结果没有被拿来临时降低门槛，而是把旧 attempt 封存为 HOLD evidence。', 'Harness201 G3 produced 33/128 invalid terminations in round 0. Instead of lowering the gate after seeing the result, the attempt was sealed as HOLD evidence.')}</p>
+          <span>{t("购物接口诊断", "SHOPPING-INTERFACE DIAGNOSIS")}</span>
+          <h3>{t('检查购物动作为什么失效', 'Investigate why shopping actions fail')}</h3>
+          <p>{t('接口诊断组 Harness201 G3 在第 0 轮的 128 次尝试中，有 33 次因动作无效而结束。该次运行被暂停，原记录封存；准备检查的门槛没有在看到结果后降低。', 'Harness201 G3 produced 33/128 invalid terminations in round 0. Instead of lowering the gate after seeing the result, the attempt was sealed as HOLD evidence.')}</p>
           <button type="button" data-first-run-detail="3b-harness" aria-expanded="false">+ {t('关卡说明', 'Stage notes')}</button>
         </article>
         <span class="lineage-connector lineage-connector--unlock" aria-hidden="true"></span>
 
         <article class="lineage-node lineage-node--unlock" data-node-kind="mainline" data-node-state="stopped">
-          <span>{t('这条旧线停在这里', 'THIS OLD LINEAGE STOPS HERE')}</span>
-          <h3>{t('新 Harness 必须从新的 Stage 1 重新开始', 'The new harness must restart from a fresh Stage 1')}</h3>
-          <p>{t('行动接口改变以后，模型真正走出来的 trajectory 也会改变。因此旧 Stage 1、旧 MiniMax 分析和旧 downstream state 不能冒充 successor。', 'Once the action interface changes, the trajectories the model actually produces change too. The old Stage 1, old MiniMax analysis, and old downstream state therefore cannot be relabeled as the successor.')}</p>
-          <a href={links.redesign}>{t('解锁第二张地图：重新设计 OpenEvo →', 'Unlock map two: Redesigning OpenEvo →')}</a>
+          <span>{t('旧实验停止', 'THIS OLD LINEAGE STOPS HERE')}</span>
+          <h3>{t('新接口需要重新采集初始经验', 'The new harness must restart from a fresh Stage 1')}</h3>
+          <p>{t('接口改变后，模型的购物动作和结果也可能改变。旧购物记录、MiniMax 分析及由它们生成的学习材料，仍属于旧实验；新实验需要重新生成。', 'Once the action interface changes, the trajectories the model actually produces change too. The old Stage 1, old MiniMax analysis, and old downstream state therefore cannot be relabeled as the successor.')}</p>
+          <a href={links.redesign}>{t('查看后续实验的设计 →', 'Unlock map two: Redesigning OpenEvo →')}</a>
         </article>
       </div>
 
       <section class="lineage-outcome" aria-labelledby="outcome-3b-title">
-        <p>OUTCOME</p>
-        <h2 id="outcome-3b-title">{t('3B 这条线留下了什么？', 'What did the 3B lineage teach us?')}</h2>
+        <p>{t("结果与边界", "RESULTS AND LIMITS")}</p>
+        <h2 id="outcome-3b-title">{t('3B 的发现与后续要求', 'What did the 3B lineage teach us?')}</h2>
         <ul>
-          <li>{t('不能把 aggregate score 低直接解释成“模型不会做题”；Harness 可能先破坏 action validity。', 'A low aggregate score cannot be translated directly into “the model cannot solve the task”; the harness may be damaging action validity first.')}</li>
-          <li>{t('失败 qualification 是证据，不是事后改 gate 的理由。', 'A failed qualification is evidence, not permission to tune the gate after observing the result.')}</li>
-          <li>{t('改变 on-policy action contract 后，必须建立 fresh Stage 1 successor。', 'Changing the on-policy action contract requires a fresh Stage-1 successor.')}</li>
+          <li>{t('低平均分可能同时包含模型失败和接口错误，需要分别诊断。', 'A low aggregate score cannot be translated directly into “the model cannot solve the task”; the harness may be damaging action validity first.')}</li>
+          <li>{t('准备检查失败时保留结果，不能事后降低通过门槛。', 'A failed qualification is evidence, not permission to tune the gate after observing the result.')}</li>
+          <li>{t('改变模型与商店交互的规则后，新实验必须重新收集模型自己的购物经验。', 'Changing the on-policy action contract requires a fresh Stage-1 successor.')}</li>
         </ul>
         <div class="lineage-outcome__links">
-          <a href={links.harness}>{t('查看 Harness 诊断证据 →', 'Open the harness diagnostic evidence →')}</a>
+          <a href={links.harness}>{t('查看购物接口的诊断证据 →', 'Open the harness diagnostic evidence →')}</a>
           <a href={links.redesign}>{t('进入重新设计 OpenEvo →', 'Continue to Redesigning OpenEvo →')}</a>
         </div>
       </section>
@@ -227,41 +227,42 @@ const summarySteps = zh ? [
     </div>
 
     <template data-first-run-detail-template="7b-stage1">
-      <p>{t('Stage 1 的角色是先收集经验，再把已经发生的轨迹整理成后续训练可用的输入。MiniMax 只做任务后的分析，不替 7B 生成 WebShop action。', 'Stage 1 first collects experience and then turns completed trajectories into inputs for later learning. MiniMax analyzes tasks after they happen; it does not generate WebShop actions for 7B.')}</p>
-      <dl><div><dt>{t('规模', 'Scale')}</dt><dd>{t('180 个语义任务 × 每任务 8 次 = 1,440 条 trajectory。', '180 semantic tasks × 8 rollouts each = 1,440 trajectories.')}</dd></div><div><dt>{t('老师什么时候退出', 'When the teacher exits')}</dt><dd>{t('1,440 条 post-hoc analysis 封存以后，Stage 2 不再调用外部老师。', 'After the 1,440 post-hoc analyses are sealed, Stage 2 no longer calls the external teacher.')}</dd></div></dl>
+      <p>{t('初始阶段先收集购物经验，再把完整记录整理成后续学习的输入。MiniMax 只在任务结束后分析，不替 7B 选择购物动作。', 'Stage 1 first collects experience and then turns completed trajectories into inputs for later learning. MiniMax analyzes tasks after they happen; it does not generate WebShop actions for 7B.')}</p>
+      <dl><div><dt>{t('规模', 'Scale')}</dt><dd>{t('180 个不同购物任务，每个尝试 8 次，共 1,440 条记录。', '180 semantic tasks × 8 rollouts each = 1,440 trajectories.')}</dd></div><div><dt>{t('外部分析何时结束', 'When the teacher exits')}</dt><dd>{t('1,440 条任务后分析完成并封存后，后续学习不再调用外部模型。', 'After the 1,440 post-hoc analyses are sealed, Stage 2 no longer calls the external teacher.')}</dd></div></dl>
     </template>
     <template data-first-run-detail-template="7b-stage2">
-      <p>{t('Ceiling-1.0 的 Stage 2 改成 round-level 处理。每轮 16 个底层 task，每个 task 8 次 rollout，共 128 条。clean exact success 可以让 SD-LoRA 真正更新；没有 clean success 时合法 NOOP。', 'Ceiling-1.0 Stage 2 uses round-level evidence. Each round contains 16 underlying tasks with eight rollouts per task, for 128 rows. Clean exact success can trigger a real SD-LoRA update; a round with no clean success can legitimately NOOP.')}</p>
-      <small>{t('旧 7-vs-8 / 256-window 门槛属于历史方法问题，不再作为这条 round-level Stage 2 的长期更新规则。', 'The old 7-vs-8 / 256-window gate is historical method evidence, not the long-term update rule for this round-level Stage 2.')}</small>
+      <p>{t('Ceiling-1.0 按轮学习。每轮有 16 个不同购物任务，各尝试 8 次，共 128 次。符合质量要求的完整成功记录可触发 SD-LoRA 参数更新；本轮没有这类记录时，参数保持不变。', 'Ceiling-1.0 Stage 2 uses round-level evidence. Each round contains 16 underlying tasks with eight rollouts per task, for 128 rows. Clean exact success can trigger a real SD-LoRA update; a round with no clean success can legitimately NOOP.')}</p>
+      <small>{t('更早的实验要求每批 256 次中，至少 8 个不同任务各成功 2 次；最好一批只有 7 个。该门槛不再用于这里的按轮学习。', 'The old 7-vs-8 / 256-window gate is historical method evidence, not the long-term update rule for this round-level Stage 2.')}</small>
     </template>
     <template data-first-run-detail-template="7b-ignition">
-      <p>{t('7B 从 round0 就能出现 clean exact success 并产生真实 SD-LoRA UPDATE。后面的 round 分数并不单调，所以“下一轮必须立刻涨分”不能作为合理 hard gate；真正重要的是 success → real update 这条学习链已经成立。', '7B can produce clean exact success and a real SD-LoRA UPDATE from round 0. Later round scores are not monotonic, so “the next round must immediately improve” is not a sound hard gate; the important evidence is that success → real update actually works.')}</p>
+      <p>{t('7B 从第 0 轮就产生了符合质量要求的完整成功记录，并完成真实的 SD-LoRA 参数更新。后续各轮分数有升有降，因此单轮分数是否立刻提高，不能代替对持续学习和最终测试的检查。', '7B can produce clean exact success and a real SD-LoRA UPDATE from round 0. Later round scores are not monotonic, so “the next round must immediately improve” is not a sound hard gate; the important evidence is that success → real update actually works.')}</p>
     </template>
     <template data-first-run-detail-template="capacity">
-      <p>{t('64 数的是累计 SD-LoRA component，不是 replay buffer，也不是 optimizer step。解除独立 component stop 以后，7B 可以继续增加 component，但 effective rank 等容量保护仍然保留。', 'The number 64 counts accumulated SD-LoRA components, not the replay buffer and not optimizer steps. Removing the independent component stop allows the 7B lineage to keep adding components while effective-rank and other capacity guards remain in place.')}</p>
-      <dl><div><dt>{t('改变', 'Changed')}</dt><dd>{t('不再用“最多 64 个 component”作为独立停止条件。', 'The stream no longer stops solely because it reached 64 components.')}</dd></div><div><dt>{t('保持不变', 'Unchanged')}</dt><dd>{t('rank=8、总 Stage 2 rollout 预算、task schedule、parser/evaluator、teacher budget 不因此改变；effective-rank cap 仍是 4096，replay_capacity=64 是另一项独立配置。', 'Rank=8, the Stage-2 rollout budget, task schedule, parser/evaluator, and teacher budget do not change because of this amendment; the effective-rank cap remains 4096, while replay_capacity=64 is a separate setting.')}</dd></div></dl>
+      <p>{t('64 指累计参数组件数，即已接受的更新次数，与经验缓存条数、一次训练内的优化步数不同。解除这一停止条件后，7B 可以继续更新；有效秩等其他容量保护仍保留。', 'The number 64 counts accumulated SD-LoRA components, not the replay buffer and not optimizer steps. Removing the independent component stop allows the 7B lineage to keep adding components while effective-rank and other capacity guards remain in place.')}</p>
+      <dl><div><dt>{t('改变', 'Changed')}</dt><dd>{t('不再仅因达到 64 个参数组件而停止更新。', 'The stream no longer stops solely because it reached 64 components.')}</dd></div><div><dt>{t('保持不变', 'Unchanged')}</dt><dd>{t('单次参数增量的秩仍为 8（rank=8），总尝试预算、任务顺序、动作解析、评分与外部分析预算不变。有效秩上限仍为 4096；经验缓存容量 replay_capacity=64 是另一项配置。', 'Rank=8, the Stage-2 rollout budget, task schedule, parser/evaluator, and teacher budget do not change because of this amendment; the effective-rank cap remains 4096, while replay_capacity=64 is a separate setting.')}</dd></div></dl>
     </template>
     <template data-first-run-detail-template="frozen-7b">
-      <p>{t('这条 7B 实验没有在中途热换 Harness。最终使用 round 0–148 的完整状态进入锁定 128 题：49.33 分、58/128 完整成功；7 条 action-admissibility failure 按 fail-closed 计 0，runtime error 为 0。', 'This 7B experiment never hot-swapped its harness mid-lineage. The complete state after rounds 0–148 entered the locked 128-task panel: 49.33 score, 58/128 exact successes, seven fail-closed action-admissibility failures, and zero runtime errors.')}</p>
-      <strong>{t('处理方式：治理 receipt 记录此前远端验证 PASS，随后退休服务器重资产；2026-09-05 的最新 fresh-read 因工具参数错误未完成，不能升级成当前 fresh PASS。精确归档 revision 与哈希见实验档案。', 'Disposition: governance receipts record a prior remote-verification PASS before heavy server payloads were retired. The latest fresh-read on 2026-09-05 did not complete because of a tool-parameter error and is not upgraded to a current fresh PASS. Exact archive revisions and hashes are listed in the experiment archive.')}</strong>
+      <p>{t('7B 学习期间保持同一购物接口。第 0–148 轮完成后，固定模型并测试预定的 128 道题：平均 49.33/100 分，58 题完全成功。另有 7 次因动作不符合接收规则而失败，按规则计 0 分并保留在总数中；运行时错误为 0。', 'This 7B experiment never hot-swapped its harness mid-lineage. The complete state after rounds 0–148 entered the locked 128-task panel: 49.33 score, 58/128 exact successes, seven fail-closed action-admissibility failures, and zero runtime errors.')}</p>
+      <strong>{t('归档记录显示，此前已完成远端验证，随后移除了服务器上的大文件副本。2026-09-05 的重新读取因工具参数错误未完成，因此只能引用此前的验证，不能声称这次又验证通过。固定归档版本与文件哈希见实验档案。', 'Disposition: governance receipts record a prior remote-verification PASS before heavy server payloads were retired. The latest fresh-read on 2026-09-05 did not complete because of a tool-parameter error and is not upgraded to a current fresh PASS. Exact archive revisions and hashes are listed in the experiment archive.')}</strong>
     </template>
     <template data-first-run-detail-template="runtime-fixes">
       <p>{t('这些修复只让既定实验正确运行，不改变实验问题本身。', 'These repairs keep the already-defined experiment running correctly without changing the scientific question.')}</p>
-      <ul><li>{t('trainer source：保证内层训练加载正确代码。', 'Trainer source: ensure the inner training process loads the intended code.')}</li><li>{t('restart validator：中断后按真实 state 恢复，不写死某个旧 round。', 'Restart validator: recover from the real state instead of assuming one hard-coded old round.')}</li><li>{t('execution provenance：最终记录继承完整历史执行版本。', 'Execution provenance: preserve the full historical execution lineage in the final record.')}</li><li>{t('HF cold archive：已远端验证的旧 checkpoint 不会被误判成丢失。', 'HF cold archive: remotely verified older checkpoints are not mistaken for missing files.')}</li></ul>
+      <ul><li>{t('训练代码来源：保证内层训练加载正确代码。', 'Trainer source: ensure the inner training process loads the intended code.')}</li><li>{t('中断恢复：根据实际保存的进度恢复，不假定某个固定旧轮次。', 'Restart validator: recover from the real state instead of assuming one hard-coded old round.')}</li><li>{t('执行记录：最终记录保留完整历史运行版本。', 'Execution provenance: preserve the full historical execution lineage in the final record.')}</li><li>{t('远端归档：已验证保存的旧模型版本不会被误判为丢失。', 'HF cold archive: remotely verified older checkpoints are not mistaken for missing files.')}</li></ul>
       <a href={links.archive}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a>
     </template>
     <template data-first-run-detail-template="future-compression">
-      <p>{t('这项分析没有把压缩状态写回训练。K64 在已消费的 32 行 function probe 上保持 32/32 greedy action；K80 改变 1/32，K96 改变 2/32。D1 因此把 K64 记为 primary PASS，但它只是一项 post-run mechanism diagnostic，不属于 formal final checkpoint。', 'This analysis never writes a compressed state back into training. K64 preserves 32/32 greedy actions on the already-consumed function probe; K80 changes 1/32 and K96 changes 2/32. D1 therefore records K64 as the primary PASS candidate, but it remains a post-run mechanism diagnostic rather than part of the formal final checkpoint.')}</p>
+      <p>{t("参数差的稳定秩为 16.55；保留 95% 变化能量所需的秩为 77；第 139–143 次更新的残余能量中位数为 0.0597。这些数描述参数变化的结构，不是购物分数。完整权重的 RMS、谱与稳定秩分析覆盖到第 132 个组件，最终参数差分析覆盖到第 143 个。", "The parameter-difference stable rank is 16.55; rank 77 retains 95% of its energy; median residual energy over updates 139–143 is 0.0597. These describe parameter-change structure, not shopping scores. Full-weight RMS, spectral, and stable-rank measurements reach component 132; final parameter-difference analysis reaches 143.")}</p>
+      <p>{t('这项诊断比较三个压缩方案在同一组 32 条已使用的观测输入上，是否改变模型最高概率的动作。K64 保持 32/32 不变，K80 改变 1/32，K96 改变 2/32，因此 D1 将 K64 记为首选通过方案。压缩结果没有写回训练或正式最终模型，也不能据此推断新任务得分。', 'This analysis never writes a compressed state back into training. K64 preserves 32/32 greedy actions on the already-consumed function probe; K80 changes 1/32 and K96 changes 2/32. D1 therefore records K64 as the primary PASS candidate, but it remains a post-run mechanism diagnostic rather than part of the formal final checkpoint.')}</p>
     </template>
     <template data-first-run-detail-template="3b-stage1">
-      <p>{t('旧 3B Stage 1 同样收集 1,440 条轨迹，但 exact success 很稀少，而且历史实现里还出现了较多 parser repair / invalid-action termination。后来我们因此把“能力弱”和“接口把动作弄坏”拆成两个问题。', 'The old 3B Stage 1 also collected 1,440 trajectories, but exact success was very sparse and the historical runtime showed many parser repairs / invalid-action terminations. That forced us to separate “weak capability” from “the interface damaged the action.”')}</p>
+      <p>{t('旧 3B 的初始阶段收集了 1,440 次购物记录，完整成功很少；同时出现较多动作格式修复和因无效动作而结束的任务。因此需要分别检查模型能力与接口错误。', 'The old 3B Stage 1 also collected 1,440 trajectories, but exact success was very sparse and the historical runtime showed many parser repairs / invalid-action terminations. That forced us to separate “weak capability” from “the interface damaged the action.”')}</p>
     </template>
     <template data-first-run-detail-template="3b-premature">
-      <p>{t('旧 3B formal Stage 2 在新 Harness readiness 还没有解决前就开始了。后来它被明确标成 NO_RESUME；已经消费的 3,200 条 rollout 永久保留为 premature-lineage evidence，不删除，也不继续当 successor 前缀。', 'The old 3B formal Stage 2 started before the new harness-readiness question was resolved. It was later marked NO_RESUME; the 3,200 consumed rollouts remain permanent premature-lineage evidence rather than being deleted or reused as the successor prefix.')}</p>
+      <p>{t('旧 3B 在新接口准备问题尚未解决时就开始后续学习。后来这次运行被标为禁止恢复（NO_RESUME）。已完成的 3,200 次尝试永久保留为旧实验记录，新实验需要重新开始。', 'The old 3B formal Stage 2 started before the new harness-readiness question was resolved. It was later marked NO_RESUME; the 3,200 consumed rollouts remain permanent premature-lineage evidence rather than being deleted or reused as the successor prefix.')}</p>
     </template>
     <template data-first-run-detail-template="3b-harness">
-      <p>{t('Harness201 G3 attempt4 的 round0 产生 128 条 accepted shadow rollouts，其中 33 条 invalid-terminated。这个结果触发 HOLD；round1 没有继续，也没有在同一 lineage 里把 parser/interface 热换后继续跑。', 'Harness201 G3 attempt4 produced 128 accepted shadow rollouts in round 0, with 33 invalid-terminated episodes. That result triggered a HOLD; round 1 did not continue, and the parser/interface was not hot-swapped inside the same lineage.')}</p>
-      <strong>{t('这次失败真正改变的是我们的设计判断：reasoning 与 action validity 应该分开。', 'The failure changed the design judgment: reasoning and action validity should be separated.')}</strong>
+      <p>{t('诊断运行 Harness201 G3 attempt4 的第 0 轮完成 128 次有效记录的影子尝试，其中 33 次因动作无效而结束。该结果触发暂停（HOLD）；第 1 轮未继续，也没有在同一次运行中临时更换解析器或接口后继续。', 'Harness201 G3 attempt4 produced 128 accepted shadow rollouts in round 0, with 33 invalid-terminated episodes. That result triggered a HOLD; round 1 did not continue, and the parser/interface was not hot-swapped inside the same lineage.')}</p>
+      <strong>{t('这一结果支持把两个问题分开检查：模型推理是否合理，以及输出的购物动作能否被接口正确接收。', 'The failure changed the design judgment: reasoning and action validity should be separated.')}</strong>
     </template>
   </section>
   </ResearchDepth></div>
@@ -349,19 +350,19 @@ const summarySteps = zh ? [
 <style>
 .first-run{position:relative;width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}
 .first-run__head{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:.65rem 1.6rem;align-items:end;padding:1.25rem 0 1.35rem;border-bottom:1px solid var(--line)}
-.first-run__back{grid-column:1/-1;width:max-content;color:var(--muted);font-size:.78rem;text-decoration:none}.first-run__back:hover,.first-run__back:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}
-.first-run__head>p{grid-column:1/-1;margin:.35rem 0 0;color:var(--accent-deep);font:800 .66rem/1.3 var(--font-mono);letter-spacing:.09em}
-.first-run__head h1{grid-column:1;margin:0;font-size:clamp(2.4rem,5.8vw,4.9rem);line-height:.95;letter-spacing:-.055em}
-.first-run__head strong,.first-run__head span{grid-column:2;display:block;max-width:43rem}.first-run__head strong{align-self:end;font-size:1.04rem;line-height:1.55}.first-run__head span{color:var(--muted);font-size:.91rem;line-height:1.62}
+.first-run__back{grid-column:1/-1;width:max-content;color:var(--muted);font-size:1rem;text-decoration:none}.first-run__back:hover,.first-run__back:focus-visible{color:var(--accent-deep);text-decoration:underline;text-underline-offset:.2em}
+.first-run__head>p{grid-column:1/-1;margin:.35rem 0 0;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.09em}
+.first-run__head h1{grid-column:1;margin:0;font-size:clamp(1.9rem,3.5vw,2.8rem);line-height:1.3;letter-spacing:-.025em}
+.first-run__head strong,.first-run__head span{grid-column:2;display:block;max-width:43rem}.first-run__head strong{align-self:end;font-size:1.04rem;line-height:1.55}.first-run__head span{color:var(--muted);font-size:1rem;line-height:1.62}
 .first-run__prelude{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:.35rem 1.25rem;margin:1rem 0 0;padding:.9rem 0;border-bottom:1px solid var(--line)}
-.first-run__prelude strong{font-size:.91rem;line-height:1.5}.first-run__prelude span{color:var(--muted);font-size:.82rem;line-height:1.55}.first-run__prelude a{grid-column:2;color:var(--accent-deep);font-size:.78rem;text-underline-offset:.2em}
-.arm-picker{display:grid;grid-template-columns:minmax(0,.55fr) minmax(0,1.45fr);gap:1rem;align-items:end;padding:1.25rem 0}.arm-picker p{margin:0;color:var(--muted);font:800 .62rem/1.2 var(--font-mono);letter-spacing:.08em}.arm-picker h2{margin:.2rem 0 0;font-size:1.25rem}.arm-picker__controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.arm-picker__controls button{display:grid;gap:.18rem;min-height:64px;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);color:var(--ink);text-align:left;cursor:pointer}.arm-picker__controls button:hover,.arm-picker__controls button:focus-visible{border-color:var(--accent-deep);outline:none}.arm-picker__controls button[aria-pressed="true"]{border-color:var(--accent-deep);background:color-mix(in srgb,var(--color-accent) 7%,var(--surface));box-shadow:inset 0 0 0 1px var(--accent-deep)}.arm-picker__controls strong{font-size:.82rem}.arm-picker__controls small{color:var(--muted);font-size:.68rem;line-height:1.4}
-.lineage-map{position:relative;min-height:680px}.lineage-panel{position:relative;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.65fr);gap:1rem;align-items:start;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 78%,transparent)}.lineage-panel[hidden]{display:none}.lineage-panel__head{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:1rem;padding-bottom:.85rem;border-bottom:1px solid var(--line)}.lineage-panel__head span{color:var(--muted);font:800 .61rem/1.3 var(--font-mono);letter-spacing:.07em}.lineage-panel__head strong{font-size:.83rem;line-height:1.48}
+.first-run__prelude strong{font-size:1rem;line-height:1.5}.first-run__prelude span{color:var(--muted);font-size:1rem;line-height:1.55}.first-run__prelude a{grid-column:2;color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}
+.arm-picker{display:grid;grid-template-columns:minmax(0,.55fr) minmax(0,1.45fr);gap:1rem;align-items:end;padding:1.25rem 0}.arm-picker p{margin:0;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.08em}.arm-picker h2{margin:.2rem 0 0;font-size:1.25rem}.arm-picker__controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.arm-picker__controls button{display:grid;gap:.18rem;min-height:64px;padding:.72rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);color:var(--ink);text-align:left;cursor:pointer}.arm-picker__controls button:hover,.arm-picker__controls button:focus-visible{border-color:var(--accent-deep);outline:none}.arm-picker__controls button[aria-pressed="true"]{border-color:var(--accent-deep);background:color-mix(in srgb,var(--color-accent) 7%,var(--surface));box-shadow:inset 0 0 0 1px var(--accent-deep)}.arm-picker__controls strong{font-size:1rem}.arm-picker__controls small{color:var(--muted);font-size:1rem;line-height:1.4}
+.lineage-map{position:relative;min-height:680px}.lineage-panel{position:relative;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.65fr);gap:1rem;align-items:start;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 78%,transparent)}.lineage-panel[hidden]{display:none}.lineage-panel__head{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:1rem;padding-bottom:.85rem;border-bottom:1px solid var(--line)}.lineage-panel__head span{color:var(--muted);font:800 1rem/1.3 var(--font-mono);letter-spacing:.07em}.lineage-panel__head strong{font-size:1rem;line-height:1.48}
 .lineage-spine{grid-column:1;display:grid;grid-template-columns:1fr;justify-items:stretch;min-width:0}.lineage-connector{justify-self:center;width:2px;height:24px;background:color-mix(in srgb,var(--color-accent) 56%,var(--line))}.lineage-connector--future{width:0;border-left:1px dashed var(--muted);background:transparent}.lineage-connector--unlock{background:linear-gradient(to bottom,color-mix(in srgb,var(--color-danger) 62%,var(--line)),var(--accent-deep))}
-.lineage-node{position:relative;display:grid;gap:.38rem;min-height:112px;padding:.85rem 3.2rem .85rem .9rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);color:var(--ink)}.lineage-node>span{color:var(--muted);font:800 .58rem/1.3 var(--font-mono);letter-spacing:.07em}.lineage-node h3{margin:0;font-size:1rem;line-height:1.25}.lineage-node p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.52}.lineage-node>button,.patch-node>button{position:absolute;right:.7rem;top:.7rem;min-height:30px;padding:.28rem .48rem;border:1px solid var(--line);border-radius:var(--radius-control);background:transparent;color:var(--muted);font-size:.63rem;cursor:pointer}.lineage-node>button:hover,.lineage-node>button:focus-visible,.lineage-node>button[aria-expanded="true"],.patch-node>button:hover,.patch-node>button:focus-visible,.patch-node>button[aria-expanded="true"]{border-color:var(--accent-deep);color:var(--accent-deep);outline:none}.lineage-node--mainline{border-color:color-mix(in srgb,var(--color-accent) 34%,var(--line))}.lineage-node--amendment{min-height:104px;border-left:4px double var(--accent-deep);border-radius:var(--radius-panel)}.lineage-node--blocked{border-color:color-mix(in srgb,var(--color-danger) 54%,var(--line));background:color-mix(in srgb,var(--color-danger) 4%,var(--surface))}.lineage-node--diagnostic{border-left:4px double var(--danger);border-radius:var(--radius-panel)}.lineage-node--unlock{border-color:var(--accent-deep);background:color-mix(in srgb,var(--color-accent) 5%,var(--surface))}.lineage-node--unlock>a{width:max-content;max-width:100%;color:var(--accent-deep);font-weight:760;font-size:.78rem;text-underline-offset:.2em}.lineage-node--future{border-style:dashed;opacity:.48}.run-with-patch{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,.38fr);gap:.55rem;align-items:start}.patch-node{position:relative;display:grid;gap:.24rem;min-height:76px;margin-top:.8rem;padding:.68rem 2.9rem .68rem .68rem;border:1px solid color-mix(in srgb,var(--color-positive) 48%,var(--line));border-radius:var(--radius-control);background:color-mix(in srgb,var(--color-positive) 4%,var(--surface))}.patch-node>span{color:var(--muted);font:800 .5rem/1.25 var(--font-mono);letter-spacing:.05em}.patch-node>strong{font-size:.72rem}.patch-node>small{color:var(--muted);font-size:.6rem;line-height:1.38}
-.lineage-outcome{grid-column:2;position:sticky;top:calc(var(--site-header-height) + 1rem);display:grid;gap:.55rem;padding:.9rem;border-top:3px solid var(--accent-deep);background:var(--surface)}.lineage-outcome>p{margin:0;color:var(--accent-deep);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.08em}.lineage-outcome h2{margin:0;font-size:1.05rem}.lineage-outcome ul{display:grid;gap:.55rem;margin:0;padding-left:1.1rem;color:var(--muted);font-size:.73rem;line-height:1.48}.lineage-outcome>a,.lineage-outcome__links a{color:var(--accent-deep);font-size:.72rem;font-weight:760;text-underline-offset:.2em}.lineage-outcome__links{display:grid;gap:.4rem}
-.detail-layer[hidden]{display:none}.detail-layer{position:absolute;inset:0;z-index:50;pointer-events:none}.detail-layer__backdrop{display:none}.detail-card{position:absolute;width:310px;max-height:360px;overflow:auto;padding:.95rem;border:1px solid color-mix(in srgb,var(--color-accent) 44%,var(--line));border-radius:var(--radius-panel);background:var(--surface);box-shadow:var(--shadow-floating);pointer-events:auto}.detail-card:focus{outline:none}.detail-card__close{position:absolute;top:.5rem;right:.5rem;width:1.8rem;height:1.8rem;padding:0;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-size:1rem;cursor:pointer}.detail-card__close:hover,.detail-card__close:focus-visible{border-color:var(--accent-deep);outline:none}.detail-card>p{margin:0 2.2rem .25rem 0;color:var(--muted);font:800 .53rem/1.2 var(--font-mono);letter-spacing:.07em}.detail-card h2{margin:0 2rem .65rem 0;font-size:1.02rem}.detail-card [data-first-run-detail-content]{display:grid;gap:.58rem}.detail-card [data-first-run-detail-content] p{margin:0;font-size:.72rem;line-height:1.55}.detail-card dl{display:grid;gap:.45rem;margin:0}.detail-card dl>div{display:grid;gap:.1rem;padding-top:.42rem;border-top:1px solid var(--line)}.detail-card dt{font-size:.62rem;font-weight:800}.detail-card dd{margin:0;color:var(--muted);font-size:.65rem;line-height:1.45}.detail-card ul{display:grid;gap:.38rem;margin:0;padding-left:1rem;color:var(--muted);font-size:.64rem;line-height:1.45}.detail-card small{color:var(--muted);font-size:.6rem;line-height:1.4}.detail-card strong{font-size:.7rem;line-height:1.45}.detail-card a{color:var(--accent-deep);font-size:.66rem;font-weight:750;text-underline-offset:.2em}
+.lineage-node{position:relative;display:grid;gap:.38rem;min-height:112px;padding:.85rem .9rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);color:var(--ink)}.lineage-node>span{color:var(--muted);font:800 1rem/1.3 var(--font-mono);letter-spacing:.07em}.lineage-node h3{margin:0;font-size:1rem;line-height:1.25}.lineage-node p{margin:0;color:var(--muted);font-size:1rem;line-height:1.52}.lineage-node>button,.patch-node>button{position:static;justify-self:start;min-height:44px;padding:.28rem .48rem;border:1px solid var(--line);border-radius:var(--radius-control);background:transparent;color:var(--muted);font-size:1rem;cursor:pointer}.lineage-node>button:hover,.lineage-node>button:focus-visible,.lineage-node>button[aria-expanded="true"],.patch-node>button:hover,.patch-node>button:focus-visible,.patch-node>button[aria-expanded="true"]{border-color:var(--accent-deep);color:var(--accent-deep);outline:none}.lineage-node--mainline{border-color:color-mix(in srgb,var(--color-accent) 34%,var(--line))}.lineage-node--amendment{min-height:104px;border-left:4px double var(--accent-deep);border-radius:var(--radius-panel)}.lineage-node--blocked{border-color:color-mix(in srgb,var(--color-danger) 54%,var(--line));background:color-mix(in srgb,var(--color-danger) 4%,var(--surface))}.lineage-node--diagnostic{border-left:4px double var(--danger);border-radius:var(--radius-panel)}.lineage-node--unlock{border-color:var(--accent-deep);background:color-mix(in srgb,var(--color-accent) 5%,var(--surface))}.lineage-node--unlock>a{width:max-content;max-width:100%;color:var(--accent-deep);font-weight:760;font-size:1rem;text-underline-offset:.2em}.lineage-node--future{border-style:dashed;opacity:.48}.run-with-patch{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,.38fr);gap:.55rem;align-items:start}.patch-node{position:relative;display:grid;gap:.24rem;min-height:76px;margin-top:.8rem;padding:.68rem;border:1px solid color-mix(in srgb,var(--color-positive) 48%,var(--line));border-radius:var(--radius-control);background:color-mix(in srgb,var(--color-positive) 4%,var(--surface))}.patch-node>span{color:var(--muted);font:800 1rem/1.25 var(--font-mono);letter-spacing:.05em}.patch-node>strong{font-size:1rem}.patch-node>small{color:var(--muted);font-size:1rem;line-height:1.38}
+.lineage-outcome{grid-column:2;position:sticky;top:calc(var(--site-header-height) + 1rem);display:grid;gap:.55rem;padding:.9rem;border-top:3px solid var(--accent-deep);background:var(--surface)}.lineage-outcome>p{margin:0;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.08em}.lineage-outcome h2{margin:0;font-size:1.05rem}.lineage-outcome ul{display:grid;gap:.55rem;margin:0;padding-left:1.1rem;color:var(--muted);font-size:1rem;line-height:1.48}.lineage-outcome>a,.lineage-outcome__links a{color:var(--accent-deep);font-size:1rem;font-weight:760;text-underline-offset:.2em}.lineage-outcome__links{display:grid;gap:.4rem}
+.detail-layer[hidden]{display:none}.detail-layer{position:absolute;inset:0;z-index:50;pointer-events:none}.detail-layer__backdrop{display:none}.detail-card{position:absolute;width:310px;max-height:360px;overflow:auto;padding:.95rem;border:1px solid color-mix(in srgb,var(--color-accent) 44%,var(--line));border-radius:var(--radius-panel);background:var(--surface);box-shadow:var(--shadow-floating);pointer-events:auto}.detail-card:focus{outline:none}.detail-card__close{position:absolute;top:.5rem;right:.5rem;width:1.8rem;height:1.8rem;padding:0;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-size:1rem;cursor:pointer}.detail-card__close:hover,.detail-card__close:focus-visible{border-color:var(--accent-deep);outline:none}.detail-card>p{margin:0 2.2rem .25rem 0;color:var(--muted);font:800 1rem/1.2 var(--font-mono);letter-spacing:.07em}.detail-card h2{margin:0 2rem .65rem 0;font-size:1.02rem}.detail-card [data-first-run-detail-content]{display:grid;gap:.58rem}.detail-card [data-first-run-detail-content] p{margin:0;font-size:1rem;line-height:1.55}.detail-card dl{display:grid;gap:.45rem;margin:0}.detail-card dl>div{display:grid;gap:.1rem;padding-top:.42rem;border-top:1px solid var(--line)}.detail-card dt{font-size:1rem;font-weight:800}.detail-card dd{margin:0;color:var(--muted);font-size:1rem;line-height:1.45}.detail-card ul{display:grid;gap:.38rem;margin:0;padding-left:1rem;color:var(--muted);font-size:1rem;line-height:1.45}.detail-card small{color:var(--muted);font-size:1rem;line-height:1.4}.detail-card strong{font-size:1rem;line-height:1.45}.detail-card a{color:var(--accent-deep);font-size:1rem;font-weight:750;text-underline-offset:.2em}
 @media(max-width:900px){.first-run__head{grid-template-columns:1fr}.first-run__head h1,.first-run__head strong,.first-run__head span{grid-column:1}.first-run__prelude{grid-template-columns:1fr}.first-run__prelude a{grid-column:1}.arm-picker{grid-template-columns:1fr}.lineage-panel{grid-template-columns:1fr}.lineage-panel__head{grid-template-columns:1fr}.lineage-outcome{grid-column:1;position:static}.run-with-patch{grid-template-columns:1fr}.patch-node{width:min(80%,280px);margin:.2rem 0 0 1.2rem}}
-@media(max-width:720px){.first-run{width:min(100% - 1rem,1120px)}.arm-picker__controls{grid-template-columns:1fr}.lineage-panel{padding:.7rem}.lineage-map{min-height:0}.lineage-node{min-height:0;padding:.78rem 2.8rem .78rem .75rem}.lineage-node h3{font-size:.95rem}.lineage-node p{font-size:.72rem}.patch-node{width:calc(100% - 1.2rem)}.detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:200;pointer-events:auto}.detail-layer__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 30%,transparent)}.detail-card{position:relative;left:auto;top:auto;width:min(90vw,350px);max-height:min(74vh,590px);padding:1rem}.first-run__head h1{font-size:clamp(2.35rem,12vw,3.6rem)}}
+@media(max-width:720px){.first-run{width:min(100% - 1rem,1120px)}.arm-picker__controls{grid-template-columns:1fr}.lineage-panel{padding:.7rem}.lineage-map{min-height:0}.lineage-node{min-height:0;padding:.78rem .75rem}.lineage-node h3{font-size:1rem}.lineage-node p{font-size:1rem}.patch-node{width:calc(100% - 1.2rem)}.detail-layer{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;z-index:200;pointer-events:auto}.detail-layer__backdrop{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:color-mix(in srgb,var(--color-text) 30%,transparent)}.detail-card{position:relative;left:auto;top:auto;width:min(90vw,350px);max-height:min(74vh,590px);padding:1rem}.first-run__head h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}}
 @media(prefers-reduced-motion:reduce){.arm-picker__controls button,.lineage-node,.patch-node{scroll-behavior:auto}}
 </style>

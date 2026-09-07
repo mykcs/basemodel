@@ -62,6 +62,71 @@ async function assertVisibleReaderGeometry(page: Page) {
 }
 
 export function registerReaderJourneyTests() {
+  // The previous six-route check covered orientation components only. Historical
+  // bodies and expanded records must be readable in both locales as well.
+  for (const locale of ['zh', 'en'] as const) {
+    for (const width of [390, 1440]) {
+      for (const theme of ['light', 'dark']) {
+        test(`capability copy ${locale} ${width}px ${theme}: historical prose stays readable when expanded`, async ({ page }) => {
+          test.setTimeout(120_000);
+          await page.setViewportSize({ width, height: 1000 });
+          await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+          const routeFailures: string[] = [];
+          for (const route of CAPABILITY_READER_ROUTES) {
+            const path = `${locale === 'en' ? '/en' : ''}${root}${route.route ? `${route.route}/` : ''}`;
+            await page.goto(path, { waitUntil: 'domcontentloaded' });
+            await expect(page.locator('[data-copy-review]'), path).toHaveCount(1);
+            for (const expanded of [false, true]) {
+              if (expanded) await page.locator('[data-copy-review] details').evaluateAll((nodes) => {
+                nodes.forEach((node) => { (node as HTMLDetailsElement).open = true; });
+              });
+              const measured = await page.locator('[data-copy-review]').evaluate((owner) => {
+                const failures: string[] = [];
+                let count = 0;
+                let owned = 0;
+                owner.querySelectorAll<HTMLElement>('p, li, dd, td, small, span, strong, a').forEach((node) => {
+                  // Nested components keep their own typography contracts.
+                  // Astro's scope token identifies prose owned by this component.
+                  const scope = owner.getAttributeNames().find((name) => name.startsWith('data-astro-cid-'));
+                  if (scope && !node.hasAttribute(scope)) return;
+                  if (!node.textContent?.trim()) return;
+                  owned++;
+                  if (!node.checkVisibility({ checkVisibilityCSS: true }) || node.closest('details:not([open])')) return;
+                  count++;
+                  const style = getComputedStyle(node);
+                  const sample = node.textContent.trim().slice(0, 60);
+                  if (parseFloat(style.fontSize) < 15.9) failures.push(`small prose: ${sample}`);
+                  if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
+                });
+                owner.querySelectorAll<HTMLElement>('.lineage-node, .patch-node').forEach((panel) => {
+                  const button = panel.querySelector<HTMLElement>('button[data-first-run-detail]');
+                  if (!button?.checkVisibility({ checkVisibilityCSS: true })) return;
+                  const target = button.getBoundingClientRect();
+                  panel.querySelectorAll('h3, p, strong, small').forEach((prose) => {
+                    const range = document.createRange();
+                    range.selectNodeContents(prose);
+                    for (const rect of range.getClientRects()) {
+                      if (Math.min(rect.right, target.right) - Math.max(rect.left, target.left) > 1 &&
+                          Math.min(rect.bottom, target.bottom) - Math.max(rect.top, target.top) > 1) {
+                        failures.push(`control overlaps prose: ${prose.textContent?.trim().slice(0, 60)}`);
+                        break;
+                      }
+                    }
+                  });
+                });
+                if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) failures.push('document overflow');
+                return { owned, count, failures };
+              });
+              if (measured.owned === 0 || (expanded && measured.count === 0)) routeFailures.push(`${path}: no owned prose measured`);
+              routeFailures.push(...measured.failures.map((failure) => `${path} expanded=${expanded}: ${failure}`));
+            }
+          }
+          expect(routeFailures).toEqual([]);
+        });
+      }
+    }
+  }
+
   for (const locale of ['zh', 'en'] as const) {
     const prefix = locale === 'en' ? '/en' : '';
     test(`reader journey ${locale}: explanation precedes codes and every stop branch has a visible answer`, async ({ page }) => {
@@ -280,7 +345,15 @@ export function registerReaderJourneyTests() {
           for (const summary of await page.locator('details > summary').all()) {
             if (await summary.isVisible()) await summary.click();
           }
-          expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+          const containment = await page.evaluate(() => {
+            const width = document.documentElement.clientWidth;
+            const escaped = [...document.querySelectorAll<HTMLElement>('[data-copy-review] *')]
+              .filter((node) => node.checkVisibility({ checkVisibilityCSS: true }) && node.getBoundingClientRect().right > width + 2)
+              .map((node) => ({ tag: node.tagName, class: node.className, right: Math.round(node.getBoundingClientRect().right), font: getComputedStyle(node).fontSize }))
+              .slice(-12);
+            return { overflow: document.documentElement.scrollWidth - width, escaped };
+          });
+          expect(containment.overflow, `${suffix}: ${JSON.stringify(containment.escaped)}`).toBeLessThanOrEqual(2);
           if (suffix.includes('/report/')) {
             await expect(page.locator('.report-chronology tbody tr')).toHaveCount(3);
             await expect(page.locator('.paper-step__meaning')).toHaveCount(12);
