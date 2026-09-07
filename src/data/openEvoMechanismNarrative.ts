@@ -23,7 +23,7 @@ export const OPEN_EVO_MECHANISM_SOURCE = {
 export const mechanismEvidenceUrl = (path: string) =>
   `https://github.com/mykcs/openevo-experiment/blob/${OPEN_EVO_MECHANISM_SOURCE.mergedCommit}/${path}`;
 
-/** Fields are rendered by ExperimentLifecycle, not merely required in a style guide. */
+/** Fields are rendered by ExperimentLifecycle; public state comes only from the typed facts below, so do not reintroduce a free-form state label. */
 export const mechanismLifecycleSchema = z.object({
   id: z.enum(['M1-A', 'M1-B', 'M1-C', 'M1-D']),
   track: z.enum(['causal', 'reference']),
