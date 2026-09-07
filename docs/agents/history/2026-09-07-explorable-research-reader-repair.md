@@ -125,3 +125,13 @@ Integration witness: main advanced through independent #522 to `aa765005c9af9351
 当前授权环境没有可调用的 Astra CLI / tool；本轮不能伪称完成了新的 Astra 独立审读。先前历史记录若有 Astra 证据仍按其原时间点保留，但本次 continuation 的 Astra 项明确记为 unavailable。真人目标读者测试仍为 0；自动化、模型冷读和此前任何 Agent 审读都不计作真人理解率。
 
 发布边界不变：网站改动不授权实验运行。本轮先完成 exact-head 本地全量验收，再一次性推送 `research/**` 分支形成 Preview/PR；合并与 Production 必须单独满足接受条件，未发生前分别标记为 pending。
+
+## 2026-09-07：main 漂移与首次完整 UI 回归修复
+
+完整 UI 验收开始后，`main` 由 `aa765005c9af9351b9e8e94cd71a42c0cca6b112` 前进到 `dbab3eb8a499bd33b64a872220fd2d264ab75e62`（#528）。按 exact-tree 规则立即把旧 head 的验收视为失效，并把 #528 的 AGENTS / CI evidence / deployment policy 变更合入本分支；它没有改本轮研究页面。#528 新增的 CI evidence preflight 也已执行：19 文件源码导出先与精确旧 main 的完整 950 tracked-file population 逐字节比较，0 tracked file 缺失；实际整合与后续验证均在真实完整 Git clone 上进行，而不是把导出目录冒充 clean checkout。
+
+失效前的第一轮浏览器矩阵仍作为调试证据保留：Chromium 前 75 项通过，第 76 项暴露历史 Stage 2 的脆弱词序断言。页面已经正确写明“每组最多 20,480 次”，但测试仍只接受旧词序“每组实验…20,480”。修复没有倒退正文，而是在真正的预算说明节点增加 `data-budget-boundary`，让测试保护“per-arm ceiling”语义；同时把 7B 历史审计明确写成“不代表当前封存状态”。
+
+聚焦复验继续暴露一个真实导航问题：`stage1-previous` 的返回链接仍指向能力探索大厅，而不是所属的 `first-run` 历史链。页面链接已改为中英文都返回 `first-run/`。上述预算边界、历史时态与返回路径在 Chromium + WebKit、中文 + 英文共 4 项聚焦检查中全部通过。
+
+当前任务不是 CI 选择/调度优化，因此没有减少 canonical test population。共享 UI classifier 仍要求完整 `test:ui:all`；TypeScript/Node 类型检查由 `verify:deploy` 单独覆盖，浏览器执行不能替代类型检查。最终 provider-triggering push 之前必须在最终 base/head 上重新跑完整 shared preflight；本机 Node 23 不是仓库要求的 Node 24，故本地 PASS 不能替代托管 CI 的目标运行时验证。

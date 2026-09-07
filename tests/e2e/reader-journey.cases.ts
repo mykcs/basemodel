@@ -178,7 +178,7 @@ export function registerReaderJourneyTests() {
       await expect(page.locator('[data-reference-boundary]')).toContainText(locale === 'zh' ? /外部参考值.*不是.*配对对照/ : /external reference.*not paired controls/);
       await expect(page.locator('[data-final-score-meaning]')).toContainText(/37.60.*1\/128/);
       await page.goto(`${prefix}${root}stage2-256-window/`);
-      await expect(page.locator('[data-testid="legacy-stage2-archive"]')).toContainText(locale === 'zh' ? /每组实验.*20,480/ : /20,480.*per arm/);
+      await expect(page.locator('[data-budget-boundary]')).toContainText(locale === 'zh' ? /每组最多 20,480/ : /20,480.*per arm/);
       await page.goto(`${prefix}${root}stage2-7b-analysis/`);
       await expect(page.locator('[data-historical-scope]')).toContainText(locale === 'zh' ? '不代表当前封存状态' : 'does not describe the current sealed state');
       await expect(page.locator('[data-historical-scope] a')).toHaveAttribute('href', `${prefix}${root}stage2-ceiling/`);
