@@ -89,7 +89,7 @@ describe('Agent scenario-trigger discovery', () => {
   it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
     for (const token of ['case cluster', 'at least two nearby cases', 'high-confidence same-family', 'semantic positions']) expect(registry).toContain(token);
     for (const token of ['案例簇', '至少包含当前最接近案例 + 2 个同类/相邻案例', '高置信同类', 'sibling routes']) expect(websiteSpec).toContain(token);
-    expect(copyCases).toContain('案例簇总结：CASE-061–067');
+    expect(copyCases).toContain('案例簇总结：CASE-061–068');
     expect(copyCases).toContain('当前最接近案例 + 至少 2 个同类/相邻案例');
     expect(copyCases).toContain('案例不是墓碑，而是训练样本');
   });
