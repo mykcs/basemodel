@@ -1,10 +1,19 @@
 import { expect, test } from '@playwright/test';
-import { SITE_READER_CONTRACTS } from '../../src/data/siteReaderContracts';
+import { SITE_READER_CONTRACTS, type ReaderAttentionMode } from '../../src/data/siteReaderContracts';
 
 const viewports = [
   { name: 'desktop', width: 1280, height: 633 },
   { name: 'phone', width: 390, height: 844 },
 ] as const;
+
+const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxHeadings: number; maxTextChars: number }> = {
+  focus: { maxInteractive: 12, maxHeadings: 4, maxTextChars: 1_300 },
+  choice: { maxInteractive: 14, maxHeadings: 4, maxTextChars: 1_400 },
+  reference: { maxInteractive: 14, maxHeadings: 5, maxTextChars: 1_500 },
+  operational: { maxInteractive: 14, maxHeadings: 5, maxTextChars: 1_500 },
+  narrative: { maxInteractive: 16, maxHeadings: 5, maxTextChars: 1_700 },
+  comparison: { maxInteractive: 16, maxHeadings: 5, maxTextChars: 1_700 },
+};
 
 for (const viewport of viewports) {
   test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }) => {
@@ -19,6 +28,14 @@ for (const viewport of viewports) {
         continue;
       }
       if (response.status() >= 500) failures.push(`${contract.id}: HTTP ${response.status()}`);
+      try {
+        await page.waitForLoadState('networkidle', { timeout: 5_000 });
+      } catch {
+        // Hydrated pages may retain background work; two animation frames below
+        // still prevent us from measuring the pre-layout DOMContentLoaded state.
+      }
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+
       if (contract.redirectsTo) {
         try {
           await page.waitForURL((url) => url.pathname.endsWith(contract.redirectsTo!), { timeout: 5_000 });
@@ -64,6 +81,53 @@ for (const viewport of viewports) {
           const box = await primary.boundingBox();
           if (!box || box.y >= viewport.height || box.y + box.height > viewport.height + 2) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
         }
+      }
+
+      if (!contract.redirectsTo) {
+        const metrics = await page.evaluate(() => {
+          const root = document.querySelector('#main-content');
+          if (!root) return { interactive: 0, headings: 0, textChars: 0 };
+
+          const inFirstScreen = (el: Element) => {
+            const closedDetails = el.closest('details:not([open])');
+            if (closedDetails) {
+              const summary = closedDetails.querySelector(':scope > summary');
+              if (!summary || !summary.contains(el)) return false;
+            }
+            const rect = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            const visibleHeight = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
+            const meaningfulVisibleHeight = Math.min(12, Math.max(2, rect.height * 0.25));
+            return rect.width > 0
+              && rect.height > 0
+              && visibleHeight >= meaningfulVisibleHeight
+              && style.display !== 'none'
+              && style.visibility !== 'hidden'
+              && Number.parseFloat(style.opacity || '1') > 0;
+          };
+
+          const interactive = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen).length;
+          const headings = [...root.querySelectorAll('h1,h2,h3')].filter(inFirstScreen).length;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          let textChars = 0;
+          while (walker.nextNode()) {
+            const node = walker.currentNode as Text;
+            const text = node.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+            if (!text) continue;
+            const parent = node.parentElement;
+            if (!parent || !inFirstScreen(parent)) continue;
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            const rect = range.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight) textChars += text.length;
+          }
+          return { interactive, headings, textChars };
+        });
+
+        const budget = contract.firstViewportBudget ?? defaultBudgets[contract.attentionMode];
+        if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}`);
+        if (metrics.headings > budget.maxHeadings) failures.push(`${contract.id}: ${metrics.headings} first-screen headings exceed budget ${budget.maxHeadings}`);
+        if (metrics.textChars > budget.maxTextChars) failures.push(`${contract.id}: ${metrics.textChars} first-screen text characters exceed budget ${budget.maxTextChars}`);
       }
 
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
