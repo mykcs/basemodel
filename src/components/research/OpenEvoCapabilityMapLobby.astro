@@ -41,7 +41,7 @@ const steps = zh ? [
   {
     id: 'first-run', kicker: '第一代问题', title: '第一轮：OpenEvo 能不能真的持续更新？',
     summary: '从初始经验到后续学习，观察 7B / 3B 的参数更新、失败和容量限制。',
-    detail: '这轮实验告诉我们“系统能跑起来”，也暴露了 购物动作接口、更新规则和参数容量会影响结论。',
+    detail: '这轮实验告诉我们“系统能跑起来”，也暴露了购物动作接口、更新规则和参数容量会影响结论。',
     outcome: '研究重点从“跑通”转向“怎样让比较更公平、起跑线更可信”。', state: '历史证据',
     href: firstRunHref, hrefLabel: '进入第一轮实验', mapChoice: 'first-run',
   },
@@ -68,8 +68,9 @@ const steps = zh ? [
 <section data-copy-review class="map-lobby" data-testid="openevo-capability-map-lobby" data-reader-page="lobby" data-ui-audit="contrast layout">
   <ResearchOrientation
     locale={locale}
-    title={t("模型怎样从购物经验中学习？", "How do models learn from shopping experience?")}
-    lede={t("模型在模拟商店里搜索、选规格和购买，目标是买到符合要求的商品。我们研究怎样让它利用经验改善下一次尝试。", "A model searches, chooses options and purchases in a simulated store. We study how experience can improve its next attempt.")}
+    layout="focus"
+    title={t("OpenEvo 的 WebShop 学习实验", "OpenEvo WebShop learning experiments")}
+    lede={t("第一轮已经证明参数可以真实更新，也暴露了旧 3B 的购物接口问题。现在的主问题是：哪些参数变化真的帮助后续任务？", "The first run showed that parameters can really update and exposed the old 3B shopping-interface problem. The current question is which parameter changes actually help later tasks.")}
     question={t("模型能否持续学习，哪些变化真的有效？", "Can the model keep learning, and which changes matter?")}
     why={t("不同实验使用过不同规则，需要分开解释证据。", "Experiments used different rules, so their evidence must be interpreted separately.")}
     start={t("第一轮先检查经验能否带来真实的模型更新。", "The first campaign checks whether experience produces real updates.")}
@@ -77,10 +78,9 @@ const steps = zh ? [
     state={t("第一轮是历史记录；新设计与机制实验回答后续问题。", "The first campaign is history; redesign and mechanism studies ask the next questions.")}
     stateTone="authorized"
     actionHref={mechanismHref}
-    actionLabel={t("查看参数机制实验", "View parameter-mechanism experiments")}
-    terms={terms}
+    actionLabel={t("查看当前参数机制实验", "View the current parameter-mechanism experiment")}
+    showGlossary={false}
   />
-
 
   <ResearchTaskContext locale={locale} />
 
@@ -90,6 +90,11 @@ const steps = zh ? [
     intro={t('每一步都保留前一步的证据，但不会把旧轨迹冒充成新实验数据。', 'Each generation keeps the evidence from the previous one without relabeling old trajectories as new experimental data.')}
     steps={steps}
   />
+
+  <details class="map-lobby__terms">
+    <summary>{t('术语参考（可选）', 'Terminology reference (optional)')}</summary>
+    <dl>{terms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}</dl>
+  </details>
 
   <aside class="map-lobby__current-ablation" data-current-ablation="gdr-directapply">
     <div><small>{t('Stage 2 机制消融', 'Stage 2 mechanism ablation')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><p>{t('GDR-v1 会用 16-task 小考试决定新状态能否继续。DirectApply / No-GDR 正在独立检验：如果只移除这个短期 task-score gate，长期学习路径会怎样？', 'GDR-v1 uses a 16-task probe to decide whether a changed state may continue. DirectApply / No-GDR independently tests what happens when only that short-horizon task-score gate is removed.')}</p></div>
@@ -116,6 +121,5 @@ const steps = zh ? [
   </ResearchDepth>
 </section>
 <style>
-.map-lobby{display:contents}.map-lobby__current-ablation{width:min(1120px,calc(100% - 2rem));margin:1rem auto;padding:1rem 1.15rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;border:1px solid var(--accent-deep);border-radius:var(--radius-panel);background:var(--surface-muted)}.map-lobby__current-ablation div{min-width:0}.map-lobby__current-ablation small{display:block;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__current-ablation strong{display:block;margin:.28rem 0;font-size:1.08rem;line-height:1.4}.map-lobby__current-ablation p{margin:0;max-width:48rem;color:var(--muted);font-size:1rem;line-height:1.55}.map-lobby__current-ablation>a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent-deep);font-weight:800;text-underline-offset:.2em}.map-lobby__current-ablation>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:1rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:1rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:1rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:1rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__current-ablation{width:min(100% - 1rem,1120px);grid-template-columns:1fr;gap:.5rem}.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
+.map-lobby{display:contents}.map-lobby__terms{width:min(1120px,calc(100% - 2rem));margin:1rem auto;border-block:1px solid var(--line)}.map-lobby__terms>summary{padding:.8rem 0;color:var(--muted);font-size:.9rem;font-weight:700;cursor:pointer}.map-lobby__terms dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0 0 .8rem}.map-lobby__terms dl>div{padding:.7rem;border-top:1px solid var(--line)}.map-lobby__terms dt{font-weight:800}.map-lobby__terms dd{margin:.25rem 0 0;color:var(--muted);font-size:.86rem;line-height:1.5}.map-lobby__current-ablation{width:min(1120px,calc(100% - 2rem));margin:1rem auto;padding:1rem 1.15rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;border:1px solid var(--accent-deep);border-radius:var(--radius-panel);background:var(--surface-muted)}.map-lobby__current-ablation div{min-width:0}.map-lobby__current-ablation small{display:block;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__current-ablation strong{display:block;margin:.28rem 0;font-size:1.08rem;line-height:1.4}.map-lobby__current-ablation p{margin:0;max-width:48rem;color:var(--muted);font-size:1rem;line-height:1.55}.map-lobby__current-ablation>a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent-deep);font-weight:800;text-underline-offset:.2em}.map-lobby__current-ablation>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links>a.is-compat{opacity:.72}.map-lobby__deep-links small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono);letter-spacing:.06em}.map-lobby__deep-links strong{font-size:1rem;line-height:1.35}.map-lobby__deep-links span{color:var(--muted);font-size:1rem;line-height:1.45}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:1rem;line-height:1.5}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:1rem;font-weight:800;text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}@media(max-width:760px){.map-lobby__current-ablation,.map-lobby__terms{width:min(100% - 1rem,1120px)}.map-lobby__current-ablation{grid-template-columns:1fr;gap:.5rem}.map-lobby__terms dl,.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
 </style>
-
