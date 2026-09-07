@@ -5,30 +5,30 @@ const items = [
   {
     index: '01',
     href: `${root}/benchmark-first/`,
-    title: '先回答：OpenEvo 最终有没有让 WebShop 表现更强？',
-    body: '把 benchmark（正式比较）与 mechanism study（机制研究）分开：保留已完成的 Track A 证据，再补完整预算主比较，之后用旧 H1 系列解释原因。',
+    title: '先完成 benchmark，再做机制解释',
+    body: '把 benchmark（正式比较）与 mechanism study（机制研究）分开：保留已完成的 Track A 证据，完整预算主比较负责回答“最终有没有更强”，旧 H1 系列只负责解释原因。',
   },
   {
     index: '02',
     href: `${root}/seed-faithful-benchmark/`,
-    title: '怎样才算和 SEED 公平比较？',
+    title: '公平比较固定哪些条件',
     body: '冻结 train / held-out boundary（训练 / 保留任务边界）、同一任务身份、seed、Score / Success 与 test-time no-learning（测试时禁止继续学习）。',
   },
   {
     index: '03',
     href: `${root}/openevo-benchmark-design/`,
-    title: '公平比较之后，还要区分哪些 OpenEvo 变体？',
-    body: 'Native、Param、Sparse、Dense 等方法变体用于下一阶段消融，用来解释究竟是哪种更新方式带来差异。',
+    title: '主结果之后的 OpenEvo 变体消融',
+    body: 'Native、Param、Sparse、Dense 等方法变体用于后续机制消融，回答究竟是哪种更新方式带来差异；它们不替代主 benchmark。',
   },
 ] as const;
 ---
 
 <section class="next-protocol" aria-labelledby="next-protocol-title">
   <header>
-    <p>NEXT EXPERIMENT</p>
+    <p>HISTORICAL DESIGN · NEXT BENCHMARK</p>
     <div>
-      <h2 id="next-protocol-title">下一场真正关键的实验是什么？</h2>
-      <p>目标很简单：让 OpenEvo 和 SEED 使用同一套 WebShop 任务身份、划分、seed 与评分协议，并在完整训练预算边界上比较最终表现。</p>
+      <h2 id="next-protocol-title">完整预算的 OpenEvo × SEED 公平比较</h2>
+      <p>2026-08 冻结的后续 benchmark 设计要求 OpenEvo 和 SEED 使用同一套 WebShop 任务身份、划分、seed 与评分协议，再在完整训练预算边界上比较最终表现。该记录不表示 2026-09-07 的执行状态已经到达这个 benchmark。</p>
     </div>
   </header>
 
@@ -46,8 +46,8 @@ const items = [
   </div>
 
   <aside>
-    <strong>当前最小缺口</strong>
-    <p>已完成的 source-faithful Track A 128-task 测量保留不变，不需要重跑 H0–H1.41。此前冻结的 SEED-vs-OpenEvo long-horizon campaign 使用 21,920 environment rollouts；这个预算来自当前公开 WebShop launcher 的 160-epoch 路径，不是论文写明的 150 policy updates。论文口径是 1,440 条 Stage-1 轨迹 + 19,200 条 RL 轨迹 = 20,640 条环境轨迹。最终仍使用同一份冻结的 128-task manifest。它补充 Track A，而不是推翻或重命名 Track A，也不等于已经复现 SEED paper-final checkpoint。</p>
+    <strong>2026-08 冻结设计的预算口径</strong>
+    <p>已完成的 source-faithful Track A 128-task 测量保留不变，不需要重跑 H0–H1.41。当时冻结的 SEED-vs-OpenEvo long-horizon campaign 使用 21,920 environment rollouts；这个预算来自公开 WebShop launcher 的 160-epoch 路径，不是论文写明的 150 policy updates。论文口径是 1,440 条 Stage-1 轨迹 + 19,200 条 RL 轨迹 = 20,640 条环境轨迹。最终仍使用同一份冻结的 128-task manifest。该设计补充 Track A，而不是推翻或重命名 Track A，也不等于已经复现 SEED paper-final checkpoint。当前执行状态必须回到研究总览标出的科学来源重新解析。</p>
   </aside>
 </section>
 

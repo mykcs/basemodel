@@ -1,28 +1,13 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
-import OpenEvoExperimentGateway from '../../../../../components/research/OpenEvoExperimentGateway.astro';
-import OpenEvoFairComparisonExplainer from '../../../../../components/research/OpenEvoFairComparisonExplainer.astro';
-import SeedOpenEvoTrainingDecisionLab from '../../../../../components/research/SeedOpenEvoTrainingDecisionLab.astro';
+import SeedOpenEvoStudyOverview from '../../../../../components/research/SeedOpenEvoStudyOverview.astro';
 const locale = 'en' as const;
 ---
+
 <AppLayout
-  title="OpenEvo × WebShop experiment"
-  description="Trace the current OpenEvo × WebShop experiment state and understand the frozen SEED-compatible fair-comparison protocol: matched environment experience, native OpenEvo learning, fixed held-out evaluation, parser qualification, checkpoints, and upstream source pinning."
+  title="OpenEvo × SEED: WebShop study"
+  description="Start from the scientific questions: why the OpenEvo × SEED WebShop experiments exist, how they connect, what the current evidence supports, and what remains unknown."
   locale={locale}
 >
-  <OpenEvoExperimentGateway locale={locale} />
-  <section class="comparison-scope" data-fair-comparison-scope aria-label="Boundary between completed evidence and the next experiment">
-    <strong>Keep the two evidence layers separate</strong>
-    <p><b>Completed:</b> source-faithful Track A already measured BASE vs frozen OpenEvo on the fixed 128-task manifest; that result and its interpretation remain unchanged.</p>
-    <p><b>Next experiment:</b> the previously frozen long-horizon campaign uses 21,920 environment rollouts. That is a public-launcher-derived campaign budget from the current 160-epoch WebShop path, not the 150 policy updates stated in the SEED paper. The paper specifies 1,440 Stage-1 trajectories plus 150 × 16 × 8 = 19,200 RL trajectories, or 20,640 environment trajectories if the two stages are summed. It does not rerun Track A and does not claim that the SEED paper-final checkpoint or paper-reported numbers have already been reproduced.</p>
-  </section>
-  <SeedOpenEvoTrainingDecisionLab locale={locale} headingLevel={2} />
-  <OpenEvoFairComparisonExplainer locale={locale} />
+  <SeedOpenEvoStudyOverview locale={locale} />
 </AppLayout>
-
-<style>
-  .comparison-scope{width:min(1120px,calc(100% - 2rem));margin:2rem auto 0;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}
-  .comparison-scope strong{display:block;color:var(--accent-deep);font-size:.78rem}
-  .comparison-scope p{margin:.45rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.65}
-  .comparison-scope b{color:inherit}
-</style>

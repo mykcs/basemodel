@@ -2,14 +2,34 @@
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenEvoResearchNav.astro';
 import SeedOpenEvoTrainingDecisionLab from '../../../../../components/research/SeedOpenEvoTrainingDecisionLab.astro';
+import OpenEvoFairComparisonExplainer from '../../../../../components/research/OpenEvoFairComparisonExplainer.astro';
+import OpenEvoNextExperimentProtocol from '../../../../../components/research/OpenEvoNextExperimentProtocol.astro';
 const locale = 'zh' as const;
 ---
 
 <AppLayout
-  title="WebShop 训练设计实验室 · SEED × OpenEvo"
-  description="把 SEED × OpenEvo 的 WebShop 训练问题拆成责任边界、实验路线、参数协议、教师角色、API 层级和可支持的科学结论。"
+  title="WebShop 训练设计 · SEED × OpenEvo"
+  description="集中承接 SEED × OpenEvo 的训练设计细节：责任边界、实验路线、参数协议、老师角色、公平预算与后续 benchmark 设计。"
   locale={locale}
 >
   <SeedOpenEvoResearchNav locale={locale} page="design" />
   <SeedOpenEvoTrainingDecisionLab locale={locale} />
+
+  <section class="design-history-note" aria-labelledby="design-history-title">
+    <p>历史冻结设计</p>
+    <div>
+      <h2 id="design-history-title">公平预算与后续实验设计</h2>
+      <p>下面的 21,920-rollout campaign 与 20,640 条论文环境轨迹口径，记录的是此前冻结过的比较设计，不代表 2026-09-07 的实时训练进度。实时科学状态回到<a href="/research/seed-openevo/study/">研究总览</a>，再按 openevo-experiment 的实际分支、current-campaign / release 与最新 reconciliation 解析。</p>
+    </div>
+  </section>
+
+  <OpenEvoFairComparisonExplainer locale={locale} />
+  <OpenEvoNextExperimentProtocol />
 </AppLayout>
+
+<style>
+  .design-history-note{width:min(1120px,calc(100% - 2rem));display:grid;grid-template-columns:150px minmax(0,760px);gap:28px;margin:3rem auto 0;padding:1.5rem 0;border-top:2px solid var(--color-text)}
+  .design-history-note>p{margin:.35rem 0 0;color:var(--color-accent);font-size:.74rem;font-weight:800;letter-spacing:.08em}
+  .design-history-note h2{margin:0;font-size:clamp(1.45rem,3vw,2.2rem);letter-spacing:-.03em}.design-history-note div>p{margin:.55rem 0 0;color:var(--color-text-muted);font-size:.9rem;line-height:1.7}.design-history-note a{color:var(--color-accent);text-underline-offset:.18em}
+  @media(max-width:720px){.design-history-note{grid-template-columns:1fr;gap:.35rem}}
+</style>
