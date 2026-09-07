@@ -47,14 +47,14 @@ const questions: ResearchQuestion[] = [
     id: 'Q1',
     question: { zh: '在相近的 WebShop 经验预算下，OpenEvo 最终能不能比基线或 SEED 做得更好？', en: 'Under a comparable WebShop experience budget, can OpenEvo ultimately outperform the baseline or SEED?' },
     why: { zh: '这是主问题。训练过程中出现高分、产生很多参数更新，都不能代替同一测试协议下的最终比较。', en: 'This is the main question. High training scores or many parameter updates cannot replace a final comparison under one evaluation protocol.' },
-    experiments: { zh: '已经完成一轮 7B 配对评测；后续 matched-budget 路线与 MiniMax-teacher SEED Stage2 successor 继续收紧公平比较。', en: 'An initial 7B paired evaluation is complete; the matched-budget line and the MiniMax-teacher SEED Stage2 successor tighten the fair comparison further.' },
-    unknown: { zh: '当前仍没有一组可以把“现阶段 OpenEvo final”和“同协议 SEED final”直接相减的封存结果。', en: 'There is still no sealed result that permits subtracting a current OpenEvo final score from a same-protocol SEED final score.' },
+    experiments: { zh: '已经让 7B 基础模型和加载 OpenEVO 后的 7B 模型做过同一批 128 个 WebShop 任务；下一步是在相同任务、评测规则和匹配任务预算下重新比较 OpenEVO 与 SEED。', en: 'We have already run the 7B base model and the 7B model with OpenEVO on the same 128 WebShop tasks; the next step is to rerun OpenEVO and SEED under the same tasks, evaluation rules, and matched task budget.' },
+    unknown: { zh: '还没有一组在同一套评测规则下完成并封存的 OpenEVO 与 SEED 最终结果，因此现在不能直接比较谁更强。', en: 'There is not yet a completed and sealed OpenEVO-versus-SEED final result under the same evaluation rules, so we cannot directly compare which is stronger.' },
   },
   {
     id: 'Q2',
     question: { zh: '如果表现不同，差异来自哪里：基础模型、起始经验，还是老师生成的 hindsight skill？', en: 'If performance differs, does the gap come from the base model, initial experience, or teacher-generated hindsight skills?' },
     why: { zh: '不同起点会改变后续训练能看到的成功经验数量与质量；不把它们拆开，就很难解释“为什么学得不一样”。', en: 'Different starting points change the amount and quality of successful experience available later; without separating them, the learning gap is hard to interpret.' },
-    experiments: { zh: '1.7B / 3B 的共同 Stage-1 线、MiniMax 轨迹分析，以及新预注册的 MiniMax-teacher SEED Stage2 successor 都服务于这个问题。', en: 'The shared 1.7B / 3B Stage-1 line, MiniMax trajectory analysis, and the newly preregistered MiniMax-teacher SEED Stage2 successor all address this question.' },
+    experiments: { zh: '1.7B / 3B 使用同一套初始经验收集流程，并用 MiniMax 分析轨迹；另有一个把 MiniMax 作为外部教师的 SEED 对照方案已经预注册。', en: 'The 1.7B and 3B lines use the same initial experience-collection process and MiniMax trajectory analysis; a SEED control using MiniMax as an external teacher has also been preregistered.' },
     unknown: { zh: '老师条件与起始经验对最终保留集成绩的独立因果贡献仍待受控对照。', en: 'The independent causal contribution of teacher condition and initial experience to final held-out performance still needs a controlled contrast.' },
   },
   {
@@ -68,24 +68,31 @@ const questions: ResearchQuestion[] = [
 
 const scoreRows: ScoreRow[] = [
   {
-    subject: { zh: 'OpenEVO · 7B 配对评测', en: 'OpenEVO · 7B paired evaluation' },
+    subject: { zh: '7B · 基础模型', en: '7B · base model' },
+    score: { zh: '7.17 / 100', en: '7.17 / 100' },
+    phase: { zh: '同一批 128 个 WebShop 任务；完整成功 5 / 128。', en: 'The same 128 WebShop tasks; 5 / 128 exact successes.' },
+    comparison: { zh: '可以和下一行直接比较。', en: 'Directly comparable with the next row.' },
+    href: p('/research/seed-openevo/study/results/'),
+  },
+  {
+    subject: { zh: '7B · 使用 OpenEVO 学习结果', en: '7B · with OpenEVO learning result' },
     score: { zh: '8.74 / 100', en: '8.74 / 100' },
-    phase: { zh: '已完成的 128-task 源码忠实配对评测；BASE 为 7.17 / 100，Exact Success 两边都是 5 / 128。', en: 'Completed source-faithful 128-task paired evaluation; BASE scored 7.17 / 100, with Exact Success 5 / 128 for both arms.' },
-    comparison: { zh: '只能解释这组 OpenEvo vs BASE；不是 SEED paper-final。', en: 'Interprets this OpenEvo-vs-BASE panel only; it is not the SEED paper-final result.' },
+    phase: { zh: '和上面同一批 128 个任务、同一评测方式；完整成功也是 5 / 128。', en: 'The same 128 tasks and evaluation as above; also 5 / 128 exact successes.' },
+    comparison: { zh: '可以和上一行直接比较：平均 Task Score 高 1.57，但完整成功数没有增加。', en: 'Directly comparable with the row above: mean Task Score is 1.57 higher, with no increase in exact successes.' },
     href: p('/research/seed-openevo/study/results/'),
   },
   {
     subject: { zh: 'SEED · 论文结果', en: 'SEED · paper result' },
     score: { zh: '89.7 / 100', en: '89.7 / 100' },
     phase: { zh: '论文报告的 WebShop 最终结果，用作外部文献参照。', en: 'Paper-reported final WebShop result, retained as an external literature reference.' },
-    comparison: { zh: '模型、训练与评测口径不同，不能和上面的 8.74 直接相减。', en: 'Model, training, and evaluation protocols differ; it cannot be directly subtracted from 8.74 above.' },
+    comparison: { zh: '模型、训练与评测口径不同，不能和上面两个 7B 分数直接比较。', en: 'Model, training, and evaluation protocols differ; it cannot be directly compared with the two 7B scores above.' },
     href: seedSource,
   },
   {
-    subject: { zh: '当前 1.7B / 3B Stage2 与 SEED successor', en: 'Current 1.7B / 3B Stage2 and SEED successor' },
-    score: { zh: '暂无可发布 final-test 分数', en: 'No publishable final-test score yet' },
-    phase: { zh: '公开执行快照仍处于未封存 / 待核对状态；SEED successor 已预注册，但 activation_authority=false。', en: 'Public execution snapshots remain unsealed / reconciliation-pending; the SEED successor is preregistered with activation_authority=false.' },
-    comparison: { zh: '训练过程分、执行进度或注册状态都不能填进最终比较栏。', en: 'Training scores, execution progress, and registration state cannot be inserted into a final-comparison cell.' },
+    subject: { zh: '1.7B / 3B 当前训练与 SEED 对照', en: 'Current 1.7B / 3B training and SEED control' },
+    score: { zh: '还没有可发布的最终测试分数', en: 'No publishable final-test score yet' },
+    phase: { zh: '1.7B / 3B 的训练结果还没有完成最终封存；SEED 对照方案已经预注册，但还没有获准正式启动。', en: 'The 1.7B / 3B training results are not yet finally sealed; the SEED control is preregistered but has not yet been authorized to start.' },
+    comparison: { zh: '训练过程分数和执行进度不能当作最终比较结果。', en: 'Training scores and execution progress are not final comparison results.' },
     href: currentMain,
   },
 ];
@@ -93,7 +100,7 @@ const scoreRows: ScoreRow[] = [
 const claims: Claim[] = [
   {
     state: { zh: '已观察 · 历史测量', en: 'Observed · historical measurement' },
-    observation: { zh: '这组 7B 配对评测中，OpenEvo 的平均 Task Score 高于同任务 BASE，但 Exact Success 持平，配对不确定性区间仍包含“没有差异”。', en: 'In this 7B paired evaluation, OpenEvo had a higher mean Task Score on the same tasks than BASE, while Exact Success was tied and the paired uncertainty interval still included no difference.' },
+    observation: { zh: '在这次“同一批任务、两个 7B 模型”的对比里，OpenEVO 的平均 Task Score 更高，但完整成功数相同；不确定性区间仍包含“没有差异”。', en: 'In this same-task comparison of two 7B models, OpenEVO had a higher mean Task Score, but exact successes were tied; the uncertainty interval still included no difference.' },
     supports: { zh: '支持“这组冻结适配器在该面板上出现正向完成度方向”。', en: 'Supports a positive task-progress direction for this frozen adapter on this panel.' },
     boundary: { zh: '不能证明稳定优势，更不能把它改写成 OpenEvo 已经超过 SEED。', en: 'Does not establish a stable advantage and cannot be rewritten as OpenEvo already outperforming SEED.' },
     href: p('/research/seed-openevo/study/results/'),
@@ -107,9 +114,9 @@ const claims: Claim[] = [
   },
   {
     state: { zh: '待验证 · 当前主问题', en: 'Pending · current main question' },
-    observation: { zh: '截至 2026-09-07 的公开 GitHub 证据，新的 MiniMax-teacher SEED Stage2 successor 已预注册，但正式激活与最终评测仍有独立门槛。', en: 'As of the public GitHub evidence checked on 2026-09-07, the MiniMax-teacher SEED Stage2 successor is preregistered, while formal activation and final evaluation remain separate gates.' },
-    supports: { zh: '支持“实验定义已经收紧，下一步应先完成受控训练与封存，再做同协议 final”。', en: 'Supports the plan to complete controlled training and sealing before a same-protocol final evaluation.' },
-    boundary: { zh: '预注册、训练已开始、训练已完成、final 已封存是四个不同状态；当前不能跳级宣称最终结论。', en: 'Preregistration, training started, training completed, and final result sealed are different states; the current evidence does not justify skipping ahead to a final conclusion.' },
+    observation: { zh: '截至 2026-09-07，一个把 MiniMax 作为外部教师的 SEED Stage 2 对照方案已经预注册，但还没有获准正式启动；最终评测也还没有进行。', en: 'As of 2026-09-07, a SEED Stage 2 control using MiniMax as an external teacher is preregistered but not yet authorized to start; final evaluation has not yet run.' },
+    supports: { zh: '下一步应先完成受控训练并封存结果，再按同一套评测规则做最终测试。', en: 'The next step is to finish controlled training, seal the results, and then run the final test under the same evaluation rules.' },
+    boundary: { zh: '预注册、开始训练、训练结束、最终结果封存是四个不同状态；现在不能跳到最终结论。', en: 'Preregistration, training started, training completed, and final result sealed are four different states; the evidence does not justify jumping to a final conclusion.' },
     href: seedSuccessor,
   },
 ];
@@ -141,8 +148,8 @@ const deepLinks = [
           ? '我们把实验分成两条线：主 benchmark 用冻结评测比较 OpenEVO harness 与基线 / SEED；机制实验用 1.7B / 3B / 7B、MiniMax hindsight、GDR / DirectApply 等对照解释“为什么会变好或变差”。'
           : 'The study has two lines: the main benchmark uses frozen evaluation to compare the OpenEVO harness with baselines / SEED, while mechanism studies use 1.7B / 3B / 7B, MiniMax hindsight, GDR / DirectApply, and related controls to explain why performance may improve or degrade.'}</p>
         <p>{zh
-          ? '目前已经观察到真实参数更新，并在一组 128-task 的 7B 配对评测里看到 Task Score 的正向方向；同协议的 OpenEVO final vs SEED final 仍未封存，所以现在不能宣布最终谁更强。'
-          : 'So far we have observed real parameter updates and a positive Task Score direction in one 128-task 7B paired evaluation. A same-protocol OpenEVO final versus SEED final is still unsealed, so there is no justified final winner yet.'}</p>
+          ? '目前已经观察到真实参数更新；让 7B 基础模型和加载 OpenEVO 后的 7B 模型做同一批 128 个 WebShop 任务时，OpenEVO 的平均 Task Score 更高，但完整成功数没有增加。同一套规则下的 OpenEVO 与 SEED 最终比较还没有完成，所以现在不能宣布谁最终更强。'
+          : 'So far we have observed real parameter updates. When the 7B base model and the 7B model with OpenEVO ran the same 128 WebShop tasks, OpenEVO had a higher mean Task Score but no increase in exact successes. A final OpenEVO-versus-SEED comparison under the same rules is still incomplete, so there is no justified final winner yet.'}</p>
       </div>
     </div>
   </header>
@@ -204,8 +211,8 @@ const deepLinks = [
       </table>
     </div>
     <p class="table-note">{zh
-      ? '因此这里不会把 8.74 和 89.7 做差，也不会把训练中的 round score、更新次数或执行进度填成“当前最终分”。'
-      : 'Therefore this page does not subtract 8.74 from 89.7, and it does not turn round scores, update counts, or execution progress into a “current final score.”'}</p>
+      ? '因此这里不会把 8.74 和 89.7 做差，也不会把训练过程分数、更新次数或执行进度写成“最终分数”。'
+      : 'Therefore this page does not subtract 8.74 from 89.7, and it does not turn training-time scores, update counts, or execution progress into a final score.'}</p>
   </section>
 
   <section class="study-section" aria-labelledby="claims-title">
@@ -235,13 +242,13 @@ const deepLinks = [
       <div>
         <h2 id="next-title">{zh ? '下一步科学问题' : 'Next scientific question'}</h2>
         <p>{zh
-          ? '先完成能够封存的同协议训练与最终评测，再回答 OpenEvo 是否比 matched SEED 更强；随后才能用 GDR / DirectApply 等机制对照解释差异。'
-          : 'First complete sealable same-protocol training and final evaluation, then ask whether OpenEvo outperforms matched SEED; only after that should GDR / DirectApply-style controls explain the difference.'}</p>
+          ? '先让 OpenEVO 和 SEED 在同一套任务、评测规则和匹配任务预算下完成训练与最终测试，再比较谁更强；之后再用 GDR / DirectApply 等机制对照解释差异。'
+          : 'First complete OpenEVO and SEED training and final testing on the same tasks, evaluation rules, and matched task budget; then compare which is stronger, and only afterward use GDR / DirectApply-style controls to explain the difference.'}</p>
       </div>
     </div>
     <p class="stop-rule">{zh
-      ? '停止条件：训练执行结束 ≠ 科学结论成立。只有 final 任务完成、结果封存、统计与来源可核对后，这个主问题才进入“可下结论”。'
-      : 'Stopping rule: execution completed ≠ scientific conclusion established. The main question becomes answerable only after final tasks complete, results are sealed, and statistics plus provenance are auditable.'}</p>
+      ? '停止条件：训练跑完不等于科学结论成立。只有预先固定的最终测试任务全部完成、结果封存、统计与来源可核对后，这个主问题才可以下结论。'
+      : 'Stopping rule: finishing training does not establish the scientific conclusion. The main question becomes answerable only after all predefined final-test tasks complete, results are sealed, and the statistics and provenance are auditable.'}</p>
   </section>
 
   <nav class="deep-links" aria-label={zh ? '研究详情入口' : 'Research detail routes'}>
@@ -259,7 +266,7 @@ const deepLinks = [
         <li><a href={q17ExecutionSnapshot} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17ExecutionSnapshot} />{zh ? '1.7B 公开执行快照' : '1.7B public execution snapshot'}</a></li>
         <li><a href={threeBExecutionSnapshot} target="_blank" rel="noreferrer"><ExternalBrandMark href={threeBExecutionSnapshot} />{zh ? '3B 公开执行快照' : '3B public execution snapshot'}</a></li>
         <li><a href={seedSuccessor} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSuccessor} />{zh ? 'MiniMax-teacher SEED Stage2 successor 预注册' : 'MiniMax-teacher SEED Stage2 successor preregistration'}</a></li>
-        <li><a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '7B 配对评测语义核对 receipt' : '7B paired-evaluation semantic-validation receipt'}</a></li>
+        <li><a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '这 128 个任务的语义核对记录' : 'Semantic-validation record for these 128 tasks'}</a></li>
         <li><a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />{zh ? 'OpenEvo 实验仓库' : 'OpenEvo experiment repository'}</a></li>
       </ul>
     </div>

@@ -23,8 +23,10 @@ describe('study overview information architecture', () => {
     }
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
     expect(overview).toContain('OpenEVO (Harness) · WebShop 数据集实验');
-    expect(overview).toContain('OpenEVO · 7B 配对评测');
+    expect(overview).toContain('7B · 基础模型');
+    expect(overview).toContain('7B · 使用 OpenEVO 学习结果');
     expect(overview).not.toContain('Track A');
+    expect(overview).not.toContain('配对评测');
     expect(overview).toContain('TL;DR');
     expect(overview).toContain('三个研究问题');
     expect(overview).toContain('实验共同流程');
@@ -68,8 +70,8 @@ describe('study overview information architecture', () => {
       '观察：',
       '支持：',
       '不能证明：',
-      '不能和上面的 8.74 直接相减',
-      'activation_authority=false',
+      '不能和上面两个 7B 分数直接比较',
+      '还没有获准正式启动',
     ]) expect(overview).toContain(phrase);
   });
 

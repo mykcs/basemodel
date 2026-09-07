@@ -151,8 +151,8 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const studyOverview = 'src/components/research/SeedOpenEvoStudyOverview.astro';
-  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', 'OpenEVO · 7B 配对评测', 'TL;DR', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The study overview must preserve object identity, TL;DR, research questions, paper provenance, and the canonical background link.');
-  ban(studyOverview, 'COPY-INTERNAL-LABEL-001', 'Track A', 'The first-reader study overview must name the 7B paired evaluation directly instead of requiring an internal route label.');
+  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', '7B · 基础模型', '7B · 使用 OpenEVO 学习结果', 'TL;DR', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The study overview must preserve object identity, TL;DR, research questions, paper provenance, and the canonical background link.');
+  ban(studyOverview, 'COPY-INTERNAL-LABEL-001', 'Track A', 'The first-reader study overview must name the concrete 7B comparison objects instead of requiring an internal route label.');
   for (const forbidden of ['OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'The rejected first-screen wording must not return.');
   ban('src/components/common/SemanticStatusLegend.astro', 'COPY-PRESENTER-HEADING-001', '未知状态如何阅读', 'A presenter-style heading must not replace the Unknown states subject.');
   for (const forbidden of ['结果应该怎么读？', '先判断这次比较能不能信，再判断谁的分数更高']) ban('src/components/research/Seed3090PairedRunAudit.astro', 'COPY-PRESENTER-HEADING-001', forbidden, 'Presenter-style result-reading headings must not return.');
