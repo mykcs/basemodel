@@ -20,4 +20,3 @@
 /* Canonical owners load last while the legacy copies above are retired. */
 @import './components/global-shell.css';
 @import './components/header.css';
-@import './reader-attention.css';
