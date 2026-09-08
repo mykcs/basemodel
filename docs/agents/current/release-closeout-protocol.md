@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-06**
+Last reviewed: **2026-09-08**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -15,11 +15,11 @@ The historical cases that motivated these rules include `../history/2026-08-17-p
 
 A previously valid report becomes historical evidence when the PR head changes or when the intended merge base changes materially.
 
-## 0. Decide hosted-acceptance needs before creating the branch
+## 0. Treat open PR acceptance as automatic
 
-Before the first branch/ref mutation, decide whether the task requires exact-head Vercel Preview acceptance. Then read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs` **before** choosing the prefix.
+Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; they do not opt an open PR into or out of Vercel acceptance.
 
-A `docs/**` branch can be correct for documentation-only work and still be the wrong release vehicle for a user-facing change that requires Preview. If no Preview appears, first classify branch eligibility and exact-head opt-in state; do not call Vercel unhealthy and do not create probe commits.
+Every open PR is expected to create an exact-head Vercel acceptance path automatically. `[vercel-preview]` is only for a non-PR Preview branch that intentionally needs hosted review. If an open PR has no Vercel acceptance object, inspect integration/provider state; do not create probe commits or rename the branch merely to manufacture a Preview.
 
 ## 1. Resolve the acceptance identity first
 
@@ -248,7 +248,7 @@ AND the required build path actually executed
 
 `CANCELED`, ignored build, or policy skip is **SKIPPED BY POLICY**, not a product Preview PASS. This remains true when the outer GitHub `Vercel` context is green.
 
-`scripts/vercel-ignore-build.mjs` evaluates both the exact-head `[vercel-preview]` opt-in and the deploy-relevant changed range. A zero-content release-marker commit can therefore carry the token while still producing an ignored deployment because `previous -> head` contains no deploy-relevant path. When hosted Preview acceptance is required, the exact head that carries `[vercel-preview]` must also contain (or otherwise prove in its evaluated range) the deploy-relevant candidate change.
+For an open PR, `scripts/vercel-ignore-build.mjs` treats the Preview as automatic acceptance when `VERCEL_GIT_PULL_REQUEST_ID` is present; `[vercel-preview]` is no longer a PR requirement. The token remains only for non-PR Preview branches. A PR acceptance claim still requires the required build path to have executed; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
 
 Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
 
@@ -274,6 +274,34 @@ Historical worked case: [`../history/2026-09-07-root-cause-owner-convergence-and
 A downloaded/copied source tree may be useful for bounded testing without containing `.git`. Label it `source export`; do not report it as a clean exact-head checkout when `git rev-parse` fails. Preserve its known base plus an explicit changed-file inventory and content hashes. Do not fabricate or repair Git metadata to make the label true.
 
 To publish an accepted export, use a healthy isolated worktree or an atomic Git-data update based on the verified remote base. Read back every changed blob and the final commit/tree; validate the final combined candidate under the current checks. A prior test of a different export/base is historical evidence, not an exact-head receipt. Never overlay generated output, dependency symlinks, or an older whole repository onto newer main.
+
+### 6.5 Pending-check monitoring is an exact-head state machine
+
+A request such as “watch PR N at exact head H; tell me when either shard finishes; once all required checks finish, summarize readiness” has four separate identities:
+
+```text
+PR number
+accepted / watched head SHA
+named check contexts + terminal states
+notification thresholds + mutation authorization boundary
+```
+
+Rules:
+
+1. **Live-read before installing a watcher.** Re-read the PR head and the named check contexts for the exact SHA immediately. The user's or a prior Agent's “still pending” sentence is a starting hypothesis, not current provider truth. If the requested notification/completion condition is already satisfied, report it now and do not create a redundant background watcher merely to honor stale wording.
+2. **If work is still pending, watch the exact SHA only.** A head move invalidates the watch identity. Stop/fail closed and report the mismatch; never silently retarget the watcher to the new branch head and carry old green checks forward.
+3. **Notification thresholds are not merge thresholds.** “Either shard finished” means send a progress notification. “All named required checks are terminal” means summarize failures or prepare readiness. Neither statement authorizes merge unless the user/task already granted that mutation.
+4. **A later merge instruction changes authorization, not evidence identity.** Treat an explicit later “merge” as a new mutation authorization. Immediately re-run the Section 7 live race-check and then use the Section 8 expected-head guard when supported; do not merge from the earlier readiness sentence.
+5. **No fake background work.** If the environment cannot install a real future condition watch, say so instead of promising to monitor asynchronously. If it can, install the watch only after the immediate live read proves the condition is still pending.
+
+Anti-examples:
+
+- creating a polling/watch task even though both browser shards already reached SUCCESS before the first live read;
+- watching branch name `feature/x` and silently following a new head after `H` moved;
+- treating “all three checks green” as permission to merge when the user explicitly said “without merging anything”;
+- receiving a later “merge” instruction and calling merge without refreshing head/check/mergeability state.
+
+Historical worked case: [`../history/2026-09-08-pr550-exact-head-watch-and-merge-closeout-retrospective.md`](../history/2026-09-08-pr550-exact-head-watch-and-merge-closeout-retrospective.md).
 
 ## 7. Race-check immediately before merge
 
@@ -452,13 +480,13 @@ Do not collapse these stages into “CI green” or “merged successfully.”
 Before diagnosing a Vercel outage or integration failure, inspect:
 
 ```text
-is this branch/ref eligible under vercel.json git.deploymentEnabled?
+is this an open PR (automatic Vercel acceptance) or a non-PR Preview that requires `[vercel-preview]`?
 did Vercel create a deployment object for the exact SHA?
 was the deployment READY / ERROR / CANCELED / ignored?
 is the GitHub status callback describing a real deployment or only provider status state?
 ```
 
-A branch intentionally excluded by deployment policy is a **policy outcome**, not a provider outage. If exact-head hosted acceptance is required, use a ref/deployment path allowed by the current repository policy rather than misclassifying the absence of a Preview as flakiness.
+A non-PR Preview intentionally skipped by deployment policy is a **policy outcome**, not a provider outage. An open PR is expected to produce an automatic Vercel acceptance path; absence of that path is therefore an actionable integration/policy defect, not something to paper over with a no-op commit.
 
 Do not create no-op commits/ref mutations merely to probe whether Git integration will “wake up”. Shared repository state is not a provider-discovery scratchpad; use provider/repository reads first.
 

@@ -129,9 +129,10 @@ const compareTrayLabels = {
     {globalQuickViewMounted && <QuickViewBridge />}
     <main id="main-content" class="site-main">
       {researchBridgePage && (
-        <div class="research-module-nav-shell">
+        <details class="research-module-nav-shell">
+          <summary>{locale === 'zh' ? '研究导航' : 'Research navigation'}</summary>
           <SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />
-        </div>
+        </details>
       )}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
       <slot />
@@ -146,8 +147,11 @@ const compareTrayLabels = {
 <style>
   .research-module-nav-shell{
     width:min(1160px,calc(100% - 2rem));
-    margin-inline:auto;
+    margin:.35rem auto 0;
   }
+  .research-module-nav-shell>summary{width:max-content;max-width:100%;padding:.45rem 0;color:var(--muted);font-size:.78rem;font-weight:700;cursor:pointer;list-style:none}
+  .research-module-nav-shell>summary::-webkit-details-marker{display:none}
+  .research-module-nav-shell[open]>summary{color:var(--ink)}
   @media(max-width:720px){
     .research-module-nav-shell{width:min(100% - 1rem,1160px)}
   }

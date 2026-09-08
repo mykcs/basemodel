@@ -27,6 +27,9 @@ function isLabRelevant(file) {
     || file === 'src/components/research/explainer/ServerExplainer.tsx'
     || file.startsWith('public/')
     || /^(?:astro|playwright)\.config\.[cm]?[jt]s$/.test(file)
+    || file === 'vercel.json'
+    || file === 'scripts/vercel-ui-gate.mjs'
+    || file === 'scripts/vercel-ui-plan.ts'
     || /^(?:package|package-lock)\.json$/.test(file)
     || file === gateOwner
     || /^tests\/e2e\/lab-/.test(file)

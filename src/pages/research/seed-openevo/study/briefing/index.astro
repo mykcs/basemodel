@@ -1,0 +1,13 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoProgressBriefing from '../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
+const locale = 'zh' as const;
+---
+
+<AppLayout
+  title="OpenEVO：从能力天花板到可控自我进化"
+  description="面向课题组的 OpenEVO × SEED 阶段汇报：7B / 1.7B 能力上限实验、参数因果干预、GDR 筛选机制、固定 GPU 可重复性，以及 SEED-style Stage2 对照线。"
+  locale={locale}
+>
+  <SeedOpenEvoProgressBriefing locale={locale} />
+</AppLayout>

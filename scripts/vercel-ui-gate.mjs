@@ -3,12 +3,14 @@ import { availableParallelism } from 'node:os';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const productionBranch = branch === 'main';
+const hostedPreview = process.env.VERCEL_ENV === 'preview';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
 const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
 const shouldRun = productionBranch
+  || hostedPreview
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
   || resultsOverflowValidationBranch.test(branch)
@@ -65,8 +67,8 @@ const fullFallbackPlan = (reason) => ({
   reason,
 });
 
-const productionPlan = (() => {
-  if (!productionBranch) return undefined;
+const hostedPlan = (() => {
+  if (!productionBranch && !hostedPreview) return undefined;
 
   const result = spawnSync('npx', ['tsx', 'scripts/vercel-ui-plan.ts', '--json'], {
     encoding: 'utf8',
@@ -75,7 +77,7 @@ const productionPlan = (() => {
   if (result.error || result.status !== 0) {
     if (result.stdout) process.stdout.write(result.stdout);
     if (result.stderr) process.stderr.write(result.stderr);
-    return fullFallbackPlan('The Production UI planner could not run; fail closed to the complete hosted matrix.');
+    return fullFallbackPlan('The Vercel UI planner could not run; fail closed to the complete hosted matrix.');
   }
 
   try {
@@ -86,34 +88,34 @@ const productionPlan = (() => {
       || !Array.isArray(plan.routes)
       || !Array.isArray(plan.specs)
     ) {
-      return fullFallbackPlan('The Production UI planner returned an invalid shape; fail closed to the complete hosted matrix.');
+      return fullFallbackPlan('The Vercel UI planner returned an invalid shape; fail closed to the complete hosted matrix.');
     }
     return plan;
   } catch (error) {
-    return fullFallbackPlan(`The Production UI planner returned invalid JSON (${error}); fail closed to the complete hosted matrix.`);
+    return fullFallbackPlan(`The Vercel UI planner returned invalid JSON (${error}); fail closed to the complete hosted matrix.`);
   }
 })();
 
-if (productionPlan) {
-  console.log(`[vercel-ui-gate] Production plan: ${productionPlan.mode} (${productionPlan.risk})`);
-  console.log(`[vercel-ui-gate] ${productionPlan.reason}`);
-  if (productionPlan.changedFiles.length > 0) {
-    console.log('[vercel-ui-gate] Production changed files:');
-    for (const file of productionPlan.changedFiles) console.log(`- ${file}`);
+if (hostedPlan) {
+  console.log(`[vercel-ui-gate] Hosted plan: ${hostedPlan.mode} (${hostedPlan.risk})`);
+  console.log(`[vercel-ui-gate] ${hostedPlan.reason}`);
+  if (hostedPlan.changedFiles.length > 0) {
+    console.log('[vercel-ui-gate] Hosted changed files:');
+    for (const file of hostedPlan.changedFiles) console.log(`- ${file}`);
   }
 
-  if (productionPlan.mode === 'skip') {
-    console.log('[vercel-ui-gate] browser layer skipped; verify:deploy and the static production build already passed');
+  if (hostedPlan.mode === 'skip') {
+    console.log('[vercel-ui-gate] browser layer skipped; verify:deploy and the static Vercel build already passed');
     process.exit(0);
   }
 }
 
-const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
-const resultsOverflowOnly = resultsOverflowValidationBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
-const fairComparisonExplainerOnly = fairComparisonExplainerBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch;
-const productionFocused = productionPlan?.mode === 'focused';
+const focusedOnly = focusedFixBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch && !hostedPreview;
+const resultsOverflowOnly = resultsOverflowValidationBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch && !hostedPreview;
+const fairComparisonExplainerOnly = fairComparisonExplainerBranch.test(branch) && !fullUiBranch.test(branch) && !productionBranch && !hostedPreview;
+const hostedFocused = hostedPlan?.mode === 'focused';
 console.log(
-  focusedOnly || resultsOverflowOnly || fairComparisonExplainerOnly || productionFocused
+  focusedOnly || resultsOverflowOnly || fairComparisonExplainerOnly || hostedFocused
     ? `[vercel-ui-gate] running focused exact-${productionBranch ? 'Production' : 'Preview'} Chromium acceptance for ${branch}`
     : `[vercel-ui-gate] running exact-${productionBranch ? 'Production' : 'Preview'} Chromium acceptance for ${branch}`,
 );
@@ -181,12 +183,12 @@ if (ldd.error || ldd.status !== 0 || lddOutput.includes('not found')) {
 // any remaining horizontal overflow fails the deployment.
 run('node', ['scripts/ui-overflow-preflight.mjs'], { CI: '1' });
 
-if (productionFocused) {
-  const specs = [...productionPlan.specs];
-  if (productionPlan.routes.length > 0) specs.push('tests/e2e/vercel-changed-route-smoke.spec.ts');
+if (hostedFocused) {
+  const specs = [...hostedPlan.specs];
+  if (hostedPlan.routes.length > 0) specs.push('tests/e2e/vercel-changed-route-smoke.spec.ts');
 
   if (specs.length === 0) {
-    console.error('[vercel-ui-gate] focused Production plan had no browser targets; fail closed');
+    console.error('[vercel-ui-gate] focused Vercel plan had no browser targets; fail closed');
     process.exit(1);
   }
 
@@ -195,7 +197,7 @@ if (productionFocused) {
     '--project=chromium', '--max-failures=1',
   ], {
     ...hostedPlaywrightEnv,
-    VERCEL_CHANGED_ROUTES: productionPlan.routes.join(','),
+    VERCEL_CHANGED_ROUTES: hostedPlan.routes.join(','),
   });
 } else if (resultsOverflowOnly) {
   run('npx', [

@@ -10,13 +10,13 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
 <AppLayout title={m.guide.pageTitle} description="理解 Agent、SEED 与 OpenEvo 的运行和训练机制，并进入可追溯的 WebShop 实验状态与复现指南。" locale="zh">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
-    <header class="page-header">
-      <span class="section-kicker">学习指南</span>
+    <header class="page-header guide-primary" data-reader-primary>
       <h1>Agent、SEED 与 OpenEvo</h1>
       <p class="lede">从多步 Agent 运行开始，理解 SEED 的参数学习与 OpenEvo 的跨任务演化，再进入 WebShop 实验的历史证据、默认分支快照和实时状态入口。</p>
+      <div class="guide-primary-actions"><a class="button button-primary" href="#agent-run">先看 Agent 怎么运行 ↓</a><a class="button button-secondary" href={localePath('zh','/research/seed-openevo/study/results/')}>直接看 WebShop 结果</a></div>
     </header>
 
-    <AgentToSeedBridge locale="zh" />
+    <div id="agent-run"><AgentToSeedBridge locale="zh" /></div>
 
     <section class="section" aria-labelledby="seed-guide-title">
       <div class="section-heading"><div><span class="section-kicker">论文方法</span><h2 id="seed-guide-title">SEED 复现参考</h2></div></div>
@@ -51,4 +51,5 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
 
 <style>
   .guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.guide-cards a{padding:1rem;border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none}.guide-cards strong,.guide-cards span{display:block}.guide-cards span{margin-top:.4rem;color:var(--muted);font-size:.76rem;line-height:1.45}.section>p{max-width:78ch;color:var(--muted);line-height:1.65}.hardware-truth{padding:.75rem .85rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted);font-size:.78rem}@media(max-width:720px){.guide-cards{grid-template-columns:1fr}}
+  .guide-primary{box-sizing:border-box;max-width:860px;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;padding-block:clamp(2rem,6vh,3.5rem)}.guide-primary .lede{max-width:58ch}.guide-primary-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.1rem}@media(max-width:720px){.guide-primary{min-height:calc(100svh - 96px)}}
 </style>

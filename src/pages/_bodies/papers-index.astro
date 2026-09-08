@@ -13,8 +13,12 @@ const models = modelEntries.map((entry) => entry.data);
 const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map(({ notes: _notes, ...use }) => use) }));
 ---
 <div class="shell">
-  <header class="page-header"><h1>{m.papersIndex.title}</h1><p class="lede">{m.papersIndex.lede}</p></header>
-  <section class="section"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
+  <header class="page-header papers-entry" data-reader-primary>
+    <h1>{m.papersIndex.title}</h1>
+    <p class="lede">{m.papersIndex.lede}</p>
+    <p><a class="button button-primary" href="#paper-browser">{locale === 'zh' ? '开始查找论文 ↓' : 'Start finding papers ↓'}</a></p>
+  </header>
+  <section class="section" id="paper-browser"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
   <details class="paper-matrix-advanced">
     <summary>{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</summary>
     <p class="muted">{locale === 'zh' ? '需要确认某个模型在论文里负责 actor、teacher、critic 等角色时，再展开这张表。' : 'Open this table when you need to inspect actor, teacher, critic, or other model roles in each paper.'}</p>
@@ -29,3 +33,7 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
     </section>
   </noscript>
 </div>
+
+<style>
+  .papers-entry{box-sizing:border-box;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;max-width:860px}.papers-entry .lede{max-width:58ch}@media(max-width:720px){.papers-entry{min-height:calc(100svh - 96px)}}
+</style>

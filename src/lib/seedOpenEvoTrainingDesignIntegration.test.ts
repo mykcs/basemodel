@@ -32,9 +32,8 @@ describe("integrated SEED × OpenEvo training design", () => {
     expect(hub).toContain('<h2 id="training-design-title">');
     expect(training).not.toContain("<h1");
     expect(training).not.toContain("<h2");
-    expect(study).toContain(
-      "p('/research/seed-openevo/flow/#training-design')",
-    );
+    expect(study).toContain("const flowOverview = p('/research/seed-openevo/flow/');");
+    expect(study).not.toContain("p('/research/seed-openevo/flow/#training-design')");
     expect(study).not.toContain("p('/research/seed-openevo/study/design/')");
   });
 

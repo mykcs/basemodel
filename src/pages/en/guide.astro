@@ -10,13 +10,13 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
 ---
 <AppLayout title={m.guide.pageTitle} description="Understand Agent, SEED, and OpenEvo runtime/training mechanisms, then enter traceable WebShop experiment state and reproduction guidance." locale="en">
   <div class="shell editorial-page guide-learning-page" data-guide-source={guideRecord ? 'collection' : 'fallback'}>
-    <header class="page-header">
-      <span class="section-kicker">Learning guide</span>
+    <header class="page-header guide-primary" data-reader-primary>
       <h1>Agent, SEED, and OpenEvo</h1>
       <p class="lede">Start from multi-step agent runtime, understand SEED parameter learning and OpenEvo cross-task evolution, then enter the WebShop experiment’s historical evidence, dated default-branch snapshot, and live-state source.</p>
+      <div class="guide-primary-actions"><a class="button button-primary" href="#agent-run">See how an agent run works ↓</a><a class="button button-secondary" href={localePath('en','/research/seed-openevo/study/results/')}>Go to WebShop findings</a></div>
     </header>
 
-    <AgentToSeedBridge locale="en" />
+    <div id="agent-run"><AgentToSeedBridge locale="en" /></div>
 
     <section class="section" aria-labelledby="seed-guide-title">
       <div class="section-heading"><div><span class="section-kicker">Paper method</span><h2 id="seed-guide-title">SEED reproduction reference</h2></div></div>
@@ -51,4 +51,5 @@ const guideRecord = (await getCollection('guides'))[0]?.data;
 
 <style>
   .guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.guide-cards a{padding:1rem;border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none}.guide-cards strong,.guide-cards span{display:block}.guide-cards span{margin-top:.4rem;color:var(--muted);font-size:.76rem;line-height:1.45}.section>p{max-width:78ch;color:var(--muted);line-height:1.65}.hardware-truth{padding:.75rem .85rem;border-left:2px solid var(--accent-deep);background:var(--surface-muted);font-size:.78rem}@media(max-width:720px){.guide-cards{grid-template-columns:1fr}}
+  .guide-primary{box-sizing:border-box;max-width:860px;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;padding-block:clamp(2rem,6vh,3.5rem)}.guide-primary .lede{max-width:58ch}.guide-primary-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.1rem}@media(max-width:720px){.guide-primary{min-height:calc(100svh - 96px)}}
 </style>

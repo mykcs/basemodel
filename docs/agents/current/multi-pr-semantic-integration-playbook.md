@@ -1,6 +1,6 @@
 # Multi-PR semantic integration playbook
 
-Last reviewed: **2026-09-07**
+Last reviewed: **2026-09-08**
 
 Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The case that produced these lessons is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
 
@@ -135,6 +135,8 @@ Immediately before every shared-ref write, refresh the branch head. An unexpecte
 Keep dependency-update cleanup separate from coordinated product/scientific release semantics. A stale lockfile/version PR, especially an unmergeable or major-version candidate, should be refreshed/re-generated on current `main`, explicitly deferred, or closed as stale; it must not hitchhike into the release merely to make the open-PR count reach zero.
 
 Required closeout labels/reasons must distinguish `absorbed`, `superseded`, `rejected`, `deferred`, and `historical evidence retained`. “Closed” alone is not a scientific or product disposition.
+
+Treat an `absorbed into #N` statement as a **disposition claim to verify, not proof**. Pin the predecessor exact head/base plus intended semantic delta, current `main` plus intervening owner drift, and successor exact head/base. For every intended predecessor contribution, prove survival at the narrowest artifact level: exact blob when it should remain byte-identical, patch/hunk equivalence when the text should remain identical, or an explicitly documented semantic transformation when ownership/topology changed. Preserve unique lineage/history in its historical owner. If any intended contribution is missing, repair the live successor/current owner or build a narrow successor from current `main`; do not revive and merge the stale whole tree. The predecessor's CI/Preview remains historical evidence for that predecessor exact head only; the surviving successor must satisfy its own current acceptance contract.
 
 Historical case: [`../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md`](../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md).
 

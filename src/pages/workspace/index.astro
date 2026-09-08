@@ -3,10 +3,14 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { ResearchWorkspace } from '../../components/workspace/ResearchWorkspace.tsx';
 ---
 <AppLayout title="实验工作台" description="填写模型、GPU、网络、权重和训练条件，筛掉跑不起来的方案，并保存候选、来源和比较结果。" locale="zh">
-  <section class="shell page-header" data-workspace-static-fallback>
+  <section class="shell page-header workspace-primary" data-workspace-static-fallback data-reader-primary>
     <h1>实验工作台</h1>
-    <p class="lede">从当前任务入口设定模型角色、GPU、网络、权重和训练条件；交互工作台会保存候选、比较与证据。</p>
-    <p><a class="button button-primary" href="?v=2&mode=modern">从全新实验任务开始</a></p>
+    <p class="lede">先定义研究目标、模型角色和资源限制，再让工作台筛掉不合适的方案；候选、比较和证据会继续保留在同一个任务里。</p>
+    <p><a class="button button-primary" href="?v=2&mode=modern">开始填写实验条件</a></p>
   </section>
   <ResearchWorkspace client:load locale="zh" />
 </AppLayout>
+
+<style>
+  .workspace-primary{box-sizing:border-box;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;max-width:860px}.workspace-primary .lede{max-width:58ch}@media(max-width:720px){.workspace-primary{min-height:calc(100svh - 96px)}}
+</style>
