@@ -130,28 +130,27 @@ const deepLinks = [
 ---
 
 <div class="study-overview" data-testid="study-overview" data-study-checked="2026-09-07">
-  <header class="study-hero">
+  <header class="study-hero" data-reader-primary>
     <h1>{zh ? 'OpenEVO (Harness) · WebShop 数据集实验' : 'OpenEVO (Harness) · WebShop dataset experiments'}</h1>
-    <div class="hero-meta" aria-label={zh ? '对照、论文与实验资源' : 'Comparison, paper, and experiment resources'}>
-      <span>{zh ? '和 SEED 对照' : 'Compared with SEED'}</span>
-      <a href={seedPaper} target="_blank" rel="noreferrer">
-        <span class="paper-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 1.5h5l3 3v10H4zM9 1.5v3h3M6 8h4M6 10.5h4" /></svg></span>
-        {zh ? 'SEED 论文' : 'SEED paper'}
-      </a>
-      <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
-      <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
-    </div>
-    <div class="tldr" aria-label="TL;DR">
-      <p class="tldr-label">TL;DR</p>
-      <div>
-        <p>{zh
-          ? '我们把实验分成两条线：主 benchmark 用冻结评测比较 OpenEVO harness 与基线 / SEED；机制实验用 1.7B / 3B / 7B、MiniMax hindsight、GDR / DirectApply 等对照解释“为什么会变好或变差”。'
-          : 'The study has two lines: the main benchmark uses frozen evaluation to compare the OpenEVO harness with baselines / SEED, while mechanism studies use 1.7B / 3B / 7B, MiniMax hindsight, GDR / DirectApply, and related controls to explain why performance may improve or degrade.'}</p>
-        <p>{zh
-          ? '目前已经观察到真实参数更新；让 7B 基础模型和加载 OpenEVO 后的 7B 模型做同一批 128 个 WebShop 任务时，OpenEVO 的平均 Task Score 更高，但完整成功数没有增加。同一套规则下的 OpenEVO 与 SEED 最终比较还没有完成，所以现在不能宣布谁最终更强。'
-          : 'So far we have observed real parameter updates. When the 7B base model and the 7B model with OpenEVO ran the same 128 WebShop tasks, OpenEVO had a higher mean Task Score but no increase in exact successes. A final OpenEVO-versus-SEED comparison under the same rules is still incomplete, so there is no justified final winner yet.'}</p>
+    <p class="study-current-finding">{zh
+      ? '让 7B 基础模型和加载 OpenEVO 学习结果后的 7B 模型做同一批 128 个 WebShop 任务时，OpenEVO 的平均 Task Score 更高，但完整成功数仍然都是 5 / 128；同一套规则下的 OpenEVO 与 SEED 最终比较还没有完成，所以现在不能宣布谁最终更强。'
+      : 'When the 7B base model and the same 7B model with the OpenEVO learning result ran the same 128 WebShop tasks, OpenEVO had a higher mean Task Score but exact successes remained 5 / 128 on both sides. A final OpenEVO-versus-SEED comparison under the same rules is still incomplete, so there is no justified final winner yet.'}</p>
+    <a class="study-primary-action" href={p('/research/seed-openevo/study/results/')}>{zh ? '看这轮结果与证据 →' : 'See this result and evidence →'}</a>
+    <details class="study-hero__secondary">
+      <summary>{zh ? '实验结构与参考资料' : 'Study structure and references'}</summary>
+      <p class="study-structure-note">{zh
+        ? '实验分成两条线：主 benchmark 用冻结评测比较 OpenEVO harness 与基线 / SEED；机制实验用 1.7B / 3B / 7B、MiniMax hindsight、GDR / DirectApply 等对照解释为什么会变好或变差。'
+        : 'The study has two lines: the main benchmark uses frozen evaluation to compare the OpenEVO harness with baselines / SEED, while mechanism studies use 1.7B / 3B / 7B, MiniMax hindsight, GDR / DirectApply, and related controls to explain why performance may improve or degrade.'}</p>
+      <div class="hero-meta" aria-label={zh ? '对照、论文与实验资源' : 'Comparison, paper, and experiment resources'}>
+        <span>{zh ? '和 SEED 对照' : 'Compared with SEED'}</span>
+        <a href={seedPaper} target="_blank" rel="noreferrer">
+          <span class="paper-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 1.5h5l3 3v10H4zM9 1.5v3h3M6 8h4M6 10.5h4" /></svg></span>
+          {zh ? 'SEED 论文' : 'SEED paper'}
+        </a>
+        <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
+        <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
       </div>
-    </div>
+    </details>
   </header>
 
   <section class="study-section" aria-labelledby="questions-title">
@@ -277,14 +276,17 @@ const deepLinks = [
   .study-overview{width:min(1120px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
   .study-hero{max-width:980px;padding:2.1rem 0 2.7rem;border-bottom:2px solid var(--color-text)}
   .study-hero h1{margin:0;font-size:clamp(2.3rem,6vw,4.9rem);line-height:1.02;letter-spacing:-.055em;word-break:keep-all;overflow-wrap:normal}
-  .hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;margin:1rem 0 0;color:var(--color-text-muted);font-size:.83rem;line-height:1.5}
+  .study-current-finding{max-width:78ch;margin:1.25rem 0 0;color:var(--color-text);font-size:1rem;line-height:1.72}
+  .study-primary-action{display:inline-block;margin-top:1rem;color:var(--color-accent);font-size:.84rem;font-weight:800;text-decoration:none;text-underline-offset:.2em}
+  .study-primary-action:hover,.study-primary-action:focus-visible{text-decoration:underline}
+  .study-hero__secondary{max-width:820px;margin-top:1rem;border-top:1px solid var(--color-border)}
+  .study-hero__secondary>summary{padding:.85rem 0;cursor:pointer;color:var(--color-text-muted);font-size:.8rem;font-weight:760}
+  .study-structure-note{max-width:76ch;margin:0 0 .8rem;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}
+  .hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;margin:.4rem 0 1rem;color:var(--color-text-muted);font-size:.83rem;line-height:1.5}
   .hero-meta span:first-child{font-weight:760;color:var(--color-text)}
   .hero-meta a{display:inline-flex;align-items:center;gap:.35rem;color:var(--color-text);text-underline-offset:.18em}
   .paper-mark{display:inline-grid;place-items:center;width:1rem;height:1rem}
   .paper-mark svg{display:block;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
-  .tldr{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:1rem;margin:1.45rem 0 0;padding:1.15rem 0;border-top:1px solid var(--color-border)}
-  .tldr-label{margin:.18rem 0 0;color:var(--color-accent);font:800 .76rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
-  .tldr div{max-width:78ch}.tldr div p{margin:0;font-size:1rem;line-height:1.72}.tldr div p+p{margin-top:.65rem;color:var(--color-text-muted)}
   .study-section{padding:2.4rem 0;border-bottom:1px solid var(--color-border)}
   .section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;align-items:start;max-width:900px;margin-bottom:1.4rem}
   .section-heading>p{margin:.3rem 0 0;color:var(--color-accent);font:800 .72rem/1 ui-monospace,SFMono-Regular,Menlo,monospace}
@@ -311,5 +313,5 @@ const deepLinks = [
     .study-overview{width:min(100% - 1.25rem,1120px)}.study-hero{padding-top:1.25rem}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.process{grid-template-columns:1fr}.process li{padding:1rem 0}.process li+li{padding-left:0;border-left:0;border-top:1px solid var(--color-border)}
     .question-map>div{grid-template-columns:1fr;gap:.65rem}.claim-list article{grid-template-columns:1fr;gap:.45rem}.claim-list .claim-state,.claim-list p,.claim-list a{grid-column:1}.claim-list .claim-state{grid-row:auto;margin-bottom:.1rem}.stop-rule{margin-left:0}.deep-links{grid-template-columns:1fr}.deep-links a,.deep-links a:nth-child(even){padding-left:0;border-left:0}.deep-links a+ a{border-top:1px solid var(--color-border)}
   }
-  @media(max-width:390px){.study-hero h1{font-size:clamp(2.1rem,12vw,3rem)}.tldr{grid-template-columns:1fr;gap:.55rem}.study-section{padding:2rem 0}}
+  @media(max-width:390px){.study-hero h1{font-size:clamp(2.1rem,12vw,3rem)}.study-section{padding:2rem 0}}
 </style>
