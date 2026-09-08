@@ -25,8 +25,8 @@ describe('SEED × OpenEVO advisor briefing', () => {
     expect(briefing).toContain('先测 OpenEVO 在固定资源预算下能学到多高');
     expect(briefing).toContain('再分析参数空间里学到了什么');
     expect(briefing).toContain('因果干预和 GDR / DirectApply 单变量实验');
-    expect(briefing).toContain('固定 GPU 确定性 + 第 0 轮比较前一致性 · PASS');
-    expect(briefing).toContain('10 项比较前身份已一致');
+    expect(briefing).toContain('第 1 轮完成 · GDR 已进入第 2 轮');
+    expect(briefing).toContain('第 0 轮比较前 10 项身份一致');
     expect(briefing).not.toContain('Q17 的固定 GPU SD-LoRA 确定性问题');
     expect(briefing).not.toContain('<h2 id="quality-title">');
     expect(briefing).not.toContain('<h2 id="pace-title">');
@@ -47,7 +47,7 @@ describe('SEED × OpenEVO advisor briefing', () => {
   it('registers a current reader contract for the advisor task', () => {
     expect(contracts).toContain("c('study-briefing'");
     expect(contracts).toContain('能力上限 → 参数机制 → 因果控制');
-    expect(contracts).toContain('固定 GPU 确定性与干净第 0 轮比较前 10 项科学身份都已通过');
+    expect(contracts).toContain('Q17 已从干净第 0 轮一致性推进到第 1 轮完成、GDR 第 2 轮在跑');
     expect(contracts).toContain("'.cover-thesis'");
     expect(briefing).toContain('data-briefing-primary');
   });
@@ -116,7 +116,10 @@ describe('SEED × OpenEVO advisor briefing', () => {
     expect(briefing).toContain('只比较 GDR 筛选规则');
     expect(briefing).toContain('还没有回答 GDR 和直接应用更新谁更好');
     expect(briefing).toContain('Q17 第 0 轮 parity v2 · PR #386');
-    expect(briefing).toContain('后续轮次仍由独立 continuation gate 控制');
+    expect(briefing).toContain('第 1 轮已经在不重放 rollout / SD 的情况下完成');
+    expect(briefing).toContain('task-vector geometry 仍然只做诊断');
+    expect(briefing).toContain('GDR 分支已进入第 2 轮');
+    expect(briefing).toContain('Q17 第 1 轮恢复证据 · PR #387');
     expect(briefing).not.toContain('获得针对这套设计的重新启动批准后，只先完成两组第 0 轮');
   });
 
@@ -135,7 +138,9 @@ describe('SEED × OpenEVO advisor briefing', () => {
     expect(briefing).toContain('44 个候选更新只有 7 个进入模型 → 研究 GDR 的筛选作用');
     expect(briefing).toContain('M1-A 算出零方向 → 先解决“方向能不能被识别”');
     expect(briefing).toContain('Q17 比较前权重漂移 → 确定性 gate → 干净第 0 轮 parity PASS');
-    expect(briefing).toContain('最新 v2 审计确认第 0 轮 10 项比较前科学身份一致');
+    expect(briefing).toContain('v2 审计确认第 0 轮 10 项比较前科学身份一致');
+    expect(briefing).toContain('第 1 轮在不重放 rollout / SD 的情况下完成');
+    expect(briefing).toContain('几何修复只改变 Docker mount 拓扑');
   });
 
   it('stays HTML-native while using one-screen briefing sections', () => {

@@ -14,6 +14,7 @@ const flowHref = p('/research/seed-openevo/flow/');
 const q17Pr = 'https://github.com/mykcs/openevo-experiment/pull/378';
 const q17Successor = 'https://github.com/mykcs/openevo-experiment/pull/379';
 const q17ParityPr = 'https://github.com/mykcs/openevo-experiment/pull/386';
+const q17GeometryPr = 'https://github.com/mykcs/openevo-experiment/pull/387';
 const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
 const mechanismPr = 'https://github.com/mykcs/openevo-experiment/pull/319';
 const m1aPr = 'https://github.com/mykcs/openevo-experiment/pull/358';
@@ -32,7 +33,7 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
       <dl class="cover-status" aria-label={t('当前最重要的三条证据', 'Three most important current facts')}>
         <div><dt>{t('7B 最终测试', '7B final panel')}</dt><dd><strong>Task Score · 49.33 / 100</strong><span>{t('完整成功 · 58 / 128 个任务（45.31%）', 'Exact success · 58 / 128 tasks (45.31%)')}</span></dd></div>
         <div><dt>{t('1.7B 最终测试', '1.7B final panel')}</dt><dd><strong>Task Score · 37.60 / 100</strong><span>{t('完整成功 · 1 / 128 个任务（0.78%）', 'Exact success · 1 / 128 tasks (0.78%)')}</span></dd></div>
-        <div><dt>{t('Q17 当前状态', 'Q17 current state')}</dt><dd><strong>{t('固定 GPU 确定性 + 第 0 轮比较前一致性 · PASS', 'Fixed-GPU determinism + clean Round0 pre-treatment parity · PASS')}</strong><span>{t('干净第 0 轮的 10 项比较前身份已一致；这里还没有 GDR vs DirectApply 效果结论', 'All 10 clean-Round0 pre-treatment identities match; no GDR-vs-DirectApply effect is claimed here')}</span></dd></div>
+        <div><dt>{t('Q17 当前状态', 'Q17 current state')}</dt><dd><strong>{t('第 1 轮完成 · GDR 已进入第 2 轮', 'Round1 complete · GDR has entered Round2')}</strong><span>{t('第 0 轮比较前 10 项身份一致；第 1 轮没有重放 rollout 或 SD，几何检查仍只做诊断；这里还不宣称 GDR vs DirectApply 谁更好', 'All 10 Round0 pre-treatment identities match; Round1 completed without rollout or SD replay, and geometry remains diagnostic-only; no GDR-vs-DirectApply winner is claimed here')}</span></dd></div>
       </dl>
       <p class="metric-legend">{t(
         'Task Score 衡量任务完成到什么程度；完整成功只统计整道任务真正完成的题数。两个指标回答不同问题，所以分开报告。',
@@ -174,7 +175,7 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
         <li><span>01</span><div><strong>{t('任务完成程度上升、完整成功不变 → 指标拆开', 'Task progress rises while exact success is flat → split the metrics')}</strong><p>{t('同一批 128 个任务里，Task Score 从 7.17 升到 8.74，但完整成功仍是 5 / 128。于是我们把“部分进展”和“真正完成任务”拆成两个信号，而不是用一个总分概括学习。', 'On the same 128 tasks, Task Score rose from 7.17 to 8.74 while exact success stayed 5 / 128. We therefore separated partial progress from complete task success rather than relying on one scalar.')}</p></div></li>
         <li><span>02</span><div><strong>{t('44 个候选更新只有 7 个进入模型 → 研究 GDR 的筛选作用', '44 candidates but only 7 enter the model → study GDR admission')}</strong><p>{t('问题从“再调学习率或 LoRA rank”转向“为什么大多数已经训练出的更新没有进入后续模型”。', 'The question shifts from another learning-rate or LoRA-rank tweak to why most trained updates never enter the later model state.')}</p></div></li>
         <li><span>03</span><div><strong>{t('M1-A 算出零方向 → 先解决“方向能不能被识别”', 'M1-A yields a zero direction → repair identifiability first')}</strong><p>{t('不把“实验构造没有产生可识别方向”包装成“这个方向没有因果作用”；先换成相邻且确实不同的参数状态。', 'Do not rebrand an unidentifiable experimental construction as a causal null; first rebuild the direction from adjacent distinct parameter states.')}</p></div></li>
-        <li><span>04</span><div><strong>{t('Q17 比较前权重漂移 → 确定性 gate → 干净第 0 轮 parity PASS', 'Q17 pre-treatment drift → determinism gate → clean Round0 parity PASS')}</strong><p>{t('旧实验在 GDR 真正生效前已经不同，所以先停止归因；固定 GPU 确定性通过后重新建立干净双组实验。最新 v2 审计确认第 0 轮 10 项比较前科学身份一致，旧 v1 HOLD 被保留为一次 schema 读取错误的证据。', 'The old twin diverged before GDR treatment, so attribution stopped. After fixed-GPU determinism passed, the clean twin was rebuilt; the v2 audit now confirms all 10 Round0 pre-treatment scientific identities match, while the old v1 HOLD is preserved as evidence of the schema-reading error.')}</p></div></li>
+        <li><span>04</span><div><strong>{t('Q17 比较前权重漂移 → 确定性 gate → 干净第 0 轮 parity PASS', 'Q17 pre-treatment drift → determinism gate → clean Round0 parity PASS')}</strong><p>{t('旧实验在 GDR 真正生效前已经不同，所以先停止归因；固定 GPU 确定性通过后重新建立干净双组实验。v2 审计确认第 0 轮 10 项比较前科学身份一致；随后第 1 轮在不重放 rollout / SD 的情况下完成，存储重启后的几何修复只改变 Docker mount 拓扑，仍然 diagnostic-only。', 'The old twin diverged before GDR treatment, so attribution stopped. After fixed-GPU determinism passed, the clean twin was rebuilt and all 10 Round0 pre-treatment identities matched. Round1 then completed without rollout / SD replay; the post-restart geometry repair changed only Docker mount topology and remains diagnostic-only.')}</p></div></li>
       </ol>
       <footer class="slide-footer"><span>{t('这条“异常 → 改写科学问题 → 更窄实验”的链条，才是这轮工作的研究方法。', 'This anomaly → gate → narrower-experiment loop is the research method behind the work.')}</span><a href="#next">{t('下一页：下一步 ↓', 'Next: next steps ↓')}</a></footer>
     </div>
@@ -186,7 +187,7 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
       <h2 id="next-title">{t('下一步：三条线在同一因果图里汇合', 'Next: three lines converge into one causal graph')}</h2>
       <p class="slide-thesis">{t('下一阶段的目标不是增加实验数量，而是让 Q17、参数机制实验和 SEED 对照线分别回答“哪些更新能进入模型、参数方向有没有因果作用、初始化与教师模型贡献了什么”三个可以拼接的问题。', 'The next phase is about making Q17, Mechanism-1.0, and the SEED successor answer three composable questions: update admission, parameter direction, and initialization / teacher effects.')}</p>
       <ol class="next-steps">
-        <li><span>1</span><div><strong>{t('Q17：从“能不能干净比较”进入 treatment evidence', 'Q17: from clean attribution to treatment evidence')}</strong><p>{t('干净第 0 轮的 v2 比较前一致性已经 PASS：两组在 GDR 生效前的 10 项科学身份一致。后续轮次仍由独立 continuation gate 控制；只有 treatment 之后的差异才允许归因给 GDR / DirectApply，这里还不宣称谁更好。', 'Clean Round0 pre-treatment parity v2 is PASS across all 10 scientific identities. Later rounds remain behind a separate continuation gate; only post-treatment differences may be attributed to GDR versus DirectApply, and no winner is claimed here.')}</p></div></li>
+        <li><span>1</span><div><strong>{t('Q17：已经进入正式 treatment evidence', 'Q17: formal treatment evidence is under way')}</strong><p>{t('干净第 0 轮的 10 项比较前科学身份一致；第 1 轮已经在不重放 rollout / SD 的情况下完成，恢复后的 task-vector geometry 仍然只做诊断，GDR 分支已进入第 2 轮。只有 treatment 之后、且保持冻结合同不变的差异才允许归因给 GDR / DirectApply；这里仍不宣称谁更好。', 'All 10 clean-Round0 pre-treatment scientific identities match. Round1 completed without rollout / SD replay; recovered task-vector geometry remains diagnostic-only, and the GDR arm has entered Round2. Only post-treatment differences under the frozen contract may be attributed to GDR versus DirectApply; no winner is claimed here.')}</p></div></li>
         <li><span>2</span><div><strong>{t('参数机制实验', 'Mechanism-1.0')}</strong><p>{t('先做参数方向移植和主要主题删除；只有效果明显超过同范数随机对照，才进入 1,536 条轨迹的三组前瞻实验。', 'TaskVector transplant / theme knockout comes first; only a direction-specific effect beyond norm-matched random controls unlocks the 1,536-rollout microtrial.')}</p></div></li>
         <li><span>3</span><div><strong>{t('SEED-style Stage2 对照线', 'SEED-style Stage2 对照线')}</strong><p>{t('先确认 SFT 模型身份，再单独批准 Stage2 启动；训练期间继续不查看最终测试题。', 'Seal the SFT model identity, then activate Stage2 separately; the same-protocol final comparison keeps the final panel locked during training.')}</p></div></li>
       </ol>
@@ -194,7 +195,7 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
         <p>{t('希望魏老师和学长一起判断的研究取舍', 'Research choice for advisor discussion')}</p>
         <h3>{t('Q17 之后，优先做参数方向的因果干预，还是匹配条件的 SEED-style Stage2 对照？', 'After Q17, prioritize causal intervention on parameter directions or the matched SEED-style Stage2 comparison?')}</h3>
       </div>
-      <div class="final-links"><a href={q17ParityPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17ParityPr} />Q17 第 0 轮 parity v2 · PR #386 ↗</a><a href={q17Successor} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Successor} />Q17 干净实验准备记录 ↗</a><a href={flowHref}>{t('实验流程理解图 ↗', 'Experiment flow ↗')}</a><a href="#briefing-top">{t('回到开头 ↑', 'Back to top ↑')}</a></div>
+      <div class="final-links"><a href={q17ParityPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17ParityPr} />Q17 第 0 轮 parity v2 · PR #386 ↗</a><a href={q17GeometryPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17GeometryPr} />Q17 第 1 轮恢复证据 · PR #387 ↗</a><a href={q17Successor} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Successor} />Q17 干净实验准备记录 ↗</a><a href={flowHref}>{t('实验流程理解图 ↗', 'Experiment flow ↗')}</a><a href="#briefing-top">{t('回到开头 ↑', 'Back to top ↑')}</a></div>
     </div>
   </section>
 </article>
