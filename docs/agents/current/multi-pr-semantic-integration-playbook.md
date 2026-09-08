@@ -1,8 +1,8 @@
 # Multi-PR semantic integration playbook
 
-Last reviewed: **2026-09-07**
+Last reviewed: **2026-09-08**
 
-Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The case that produced these lessons is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
+Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The cases that produced these lessons include [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md) and [`../history/2026-09-08-pr552-superseded-absorption-closeout-retrospective.md`](../history/2026-09-08-pr552-superseded-absorption-closeout-retrospective.md).
 
 ## Core rule
 
@@ -119,6 +119,39 @@ Anti-patterns:
 - closing a stale PR as "obsolete" without first extracting unique historical/scientific lessons;
 - refreshing a branch and reusing its pre-refresh green checks;
 - declaring the task complete immediately after enabling auto-merge without later reading whether the PR actually merged.
+
+### 3.3 Prove absorption before leaving a predecessor superseded
+
+When a stale/worker PR has already been closed with wording such as “absorbed into PR #N”, treat that sentence as a **disposition claim to verify**, not as proof that the contribution survived.
+
+Pin the predecessor and successor separately:
+
+```text
+predecessor PR + exact head + old base + intended semantic delta
+current main + intervening owner changes
+successor/integration PR + exact head + base + current semantic delta
+```
+
+Then prove the carry-forward:
+
+1. enumerate the predecessor's changed files and identify which hunks/blobs are actual semantic contributions versus obsolete topology or historical-only material;
+2. inspect intervening `main` changes for exact-path and semantic-owner overlap so the transplant cannot silently erase newer authority;
+3. verify every intended predecessor contribution exists in the successor/current owner at **artifact level** — exact blob when it should remain byte-identical, patch/hunk equivalence when the text should remain identical, or an explicitly documented semantic transformation when the destination/topology changed;
+4. verify that unique history/lineage evidence was preserved in the correct historical owner rather than being dropped merely because the predecessor will not merge;
+5. keep the predecessor's CI/Preview as historical evidence for the predecessor exact head only; the successor must satisfy its own current release contract on its own exact head;
+6. when absorption is complete, keep the predecessor closed/superseded and preserve one live release line. Do not revive or independently merge it for aesthetic history, to consume old green checks, or to make every useful PR show `merged=true`.
+
+If any intended contribution is missing, the predecessor is **not yet safely superseded**. Repair the live successor/current owner or build a narrow current-main successor; do not reopen and merge a stale whole tree merely because it is mechanically mergeable.
+
+Anti-patterns:
+
+- trusting “absorbed into #557” in a PR body without comparing the predecessor's changed-file set to #557/current owner;
+- reviving a closed predecessor because GitHub still reports `mergeable=true`;
+- interpreting a closed-unmerged PR's `merge_commit_sha` field as proof that it landed instead of checking `merged`/`merged_at` and ancestry;
+- carrying predecessor green checks forward to a successor that also changes reader-facing/runtime code;
+- creating a fresh Preview or release-marker commit solely to ceremonially close a docs-only predecessor whose contribution is already proven in the live integration line.
+
+Historical worked case: [`../history/2026-09-08-pr552-superseded-absorption-closeout-retrospective.md`](../history/2026-09-08-pr552-superseded-absorption-closeout-retrospective.md).
 
 ### 4. Check conflict classes
 
