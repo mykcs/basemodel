@@ -12,6 +12,8 @@ const sitemap = read('./sitemapRoutes.ts');
 describe('SEED × OpenEVO progress briefing', () => {
   it('publishes a bilingual route and wires it into the study navigation', () => {
     expect(zhPage).toContain('SeedOpenEvoProgressBriefing');
+    expect(zhPage).not.toContain('SeedOpenEvoResearchNav');
+    expect(enPage).not.toContain('SeedOpenEvoResearchNav');
     expect(enPage).toContain('SeedOpenEvoProgressBriefing');
     expect(nav).toContain("id: 'briefing'");
     expect(nav).toContain("p('/research/seed-openevo/study/briefing/')");
@@ -28,7 +30,10 @@ describe('SEED × OpenEVO progress briefing', () => {
   it('keeps the main scientific claim boundary in the first screen', () => {
     expect(briefing).toContain('7B 持续学习完整收口到 128 题最终测试');
     expect(briefing).toContain('Q17 的固定 GPU SD-LoRA 确定性问题');
-    expect(briefing).toContain('“OpenEVO 已经胜过 SEED”');
+    expect(briefing).toContain('OpenEVO vs SEED 的同口径最终比较还没完成');
+    expect(briefing).not.toContain('质量不是“页面做得漂亮”');
+    expect(briefing).not.toContain('最核心的问题不是');
+    expect(briefing).not.toContain('下一步不是简单');
   });
 
   it('pins the completed 7B closeout without promoting it to a SEED causal comparison', () => {
@@ -62,5 +67,8 @@ describe('SEED × OpenEVO progress briefing', () => {
     expect(briefing).toContain('<figure class="pipeline"');
     expect(briefing).toContain('<table>');
     expect(briefing).not.toContain('grid-template-columns:repeat(4,minmax(0,1fr))');
+    expect(briefing).toContain('scroll-snap-align:start');
+    expect(briefing).not.toContain('class="deck-index"');
+    expect(briefing).toContain('border-radius:var(--radius-feature)');
   });
 });

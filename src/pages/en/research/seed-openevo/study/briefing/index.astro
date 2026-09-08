@@ -1,6 +1,5 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
-import SeedOpenEvoResearchNav from '../../../../../../components/research/SeedOpenEvoResearchNav.astro';
 import SeedOpenEvoProgressBriefing from '../../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
 const locale = 'en' as const;
 ---
@@ -10,11 +9,5 @@ const locale = 'en' as const;
   description="Lab-facing SEED × OpenEVO progress briefing covering the research question, exploration path, 7B result, GDR / DirectApply mechanism study, Q17 determinism blocker, quality system, pace, and next steps."
   locale={locale}
 >
-  <div class="briefing-nav-shell"><SeedOpenEvoResearchNav locale={locale} page="briefing" /></div>
   <SeedOpenEvoProgressBriefing locale={locale} />
 </AppLayout>
-
-<style>
-  .briefing-nav-shell{width:min(1160px,calc(100% - 2rem));margin-inline:auto}
-  @media(max-width:720px){.briefing-nav-shell{width:min(100% - 1rem,1160px)}}
-</style>
