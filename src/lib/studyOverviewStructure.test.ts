@@ -18,36 +18,60 @@ const formerHomepageOwners = [
 ];
 
 describe('study overview information architecture', () => {
-  it('keeps the overview as one research argument instead of embedding whole detail pages', () => {
+  it('keeps one canonical Study owner while preserving the accepted reader-first semantics', () => {
     for (const page of [studyZh, studyEn]) {
-      expect(page).toContain('SeedOpenEvoStudyOverview');
+      expect(page).toContain('import SeedOpenEvoStudyOverview from');
+      expect(page).toContain('<SeedOpenEvoStudyOverview locale={locale} />');
+      expect(page).not.toContain('SeedOpenEvoStudyOverviewReaderFirst');
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
-    expect(overview).toContain('OpenEVO (Harness) · WebShop 数据集实验');
-    expect(overview).toContain('7B · 基础模型');
-    expect(overview).toContain('7B · 使用 OpenEVO 学习结果');
-    expect(overview).not.toContain('Track A');
-    expect(overview).not.toContain('配对评测');
-    expect(overview).toContain('TL;DR');
-    expect(overview).toContain('三个研究问题');
-    expect(overview).toContain('实验共同流程');
-    expect(overview).toContain('分数与阶段');
-    expect(overview).toContain('当前结论');
-    expect(overview).toContain('下一步科学问题');
-    expect(overview).toContain('https://arxiv.org/abs/2607.14777');
-    expect(overview).toContain('/research/seed-openevo/flow/');
-    expect(overview).not.toContain('OpenEvo × SEED：WebShop 研究');
-    expect(overview).not.toContain('三个研究问题怎样连起来');
-    expect(overview).not.toContain('WebShop 是一个文字购物环境：模型要根据用户需求搜索商品');
+    for (const required of [
+      'OpenEVO (Harness) · WebShop 数据集实验',
+      '和 SEED 对照',
+      'https://arxiv.org/abs/2607.14777',
+      'GitHub',
+      '训练资源与运行条件',
+      '流程理解图：OpenEVO / SEED / WebShop',
+      'TL;DR',
+      '三个研究问题',
+      '当前可直接比较的 7B 结果',
+      '7B · 基础模型',
+      '7B · 使用 OpenEVO 学习结果',
+      '7.17',
+      '8.74',
+      '5 / 128',
+      '95% CI [-3.21, +6.31]',
+      '不能和上面两个 7B 分数直接比较',
+      '现在不能宣布谁最终更强',
+      '研究入口',
+    ]) expect(overview).toContain(required);
 
+    for (const forbidden of [
+      'Track A',
+      '配对评测',
+      '实验共同流程',
+      '分数与阶段',
+      'main benchmark',
+      'MiniMax hindsight',
+      '三个研究问题怎样连起来',
+      'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品',
+    ]) expect(overview).not.toContain(forbidden);
+  });
+
+  it('keeps accepted provenance direct and orders depth after the reader answer', () => {
+    const sourceLinks = overview.indexOf('class="source-links"');
     const tldr = overview.indexOf('TL;DR');
     const questions = overview.indexOf('三个研究问题');
-    const flow = overview.indexOf('实验共同流程');
-    const scores = overview.indexOf('分数与阶段');
+    const measurement = overview.indexOf('当前可直接比较的 7B 结果');
+    const routes = overview.indexOf('研究入口');
+    expect(sourceLinks).toBeGreaterThanOrEqual(0);
+    expect(sourceLinks).toBeLessThan(tldr);
     expect(tldr).toBeLessThan(questions);
-    expect(questions).toBeLessThan(flow);
-    expect(flow).toBeLessThan(scores);
+    expect(questions).toBeLessThan(measurement);
+    expect(measurement).toBeLessThan(routes);
+    expect(overview).toContain('<details class="depth">');
+    expect(overview).toContain('<details class="provenance">');
   });
 
   it('keeps page metadata aligned with the first-screen object identity', () => {
@@ -66,23 +90,20 @@ describe('study overview information architecture', () => {
     expect(designEn).not.toContain('SeedOpenEvoTrainingDecisionLab');
   });
 
-  it('protects scientific wording boundaries on the visible overview', () => {
+  it('protects the scientific comparison boundary on the visible overview', () => {
     for (const phrase of [
-      '候选更新',
-      '正式应用',
       '训练分',
-      'final',
-      '观察：',
-      '支持：',
-      '不能证明：',
+      '候选更新数量',
+      '95% CI [-3.21, +6.31]',
+      '不能证明稳定优势',
       '不能和上面两个 7B 分数直接比较',
-      '还没有获准正式启动',
+      '还没有获得正式运行任务的授权',
     ]) expect(overview).toContain(phrase);
   });
 
-  it('keeps study actions plus the flow-owned training design reachable', () => {
+  it('keeps the four semantic owners reachable without rebuilding them on Study', () => {
     for (const path of [
-      '/research/seed-openevo/flow/#training-design',
+      '/research/seed-openevo/flow/',
       '/research/seed-openevo/study/run/',
       '/research/seed-openevo/study/capability-exploration/',
       '/research/seed-openevo/study/results/',
@@ -90,10 +111,10 @@ describe('study overview information architecture', () => {
     expect(overview).not.toContain("p('/research/seed-openevo/study/design/')");
   });
 
-  it('records a dated public-state snapshot instead of treating old counters as live truth', () => {
+  it('records a dated public-state snapshot instead of treating progress as a final result', () => {
     expect(overview).toContain('data-study-checked="2026-09-07"');
     expect(overview).toContain('1ad894cfd76157b4f9ecde7e81351bd7564a1f65');
-    expect(overview).toContain('exec/stage2-shared-final-freeze-202609050041');
-    expect(overview).toContain('不复制聊天记录里的历史 Rxx 进度');
+    expect(overview).toContain('下一阶段的 SEED 对照方案已经预先登记');
+    expect(overview).toContain('不会把尚未封存的训练进度写成最终结果');
   });
 });

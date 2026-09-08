@@ -275,6 +275,34 @@ A downloaded/copied source tree may be useful for bounded testing without contai
 
 To publish an accepted export, use a healthy isolated worktree or an atomic Git-data update based on the verified remote base. Read back every changed blob and the final commit/tree; validate the final combined candidate under the current checks. A prior test of a different export/base is historical evidence, not an exact-head receipt. Never overlay generated output, dependency symlinks, or an older whole repository onto newer main.
 
+### 6.5 Pending-check monitoring is an exact-head state machine
+
+A request such as “watch PR N at exact head H; tell me when either shard finishes; once all required checks finish, summarize readiness” has four separate identities:
+
+```text
+PR number
+accepted / watched head SHA
+named check contexts + terminal states
+notification thresholds + mutation authorization boundary
+```
+
+Rules:
+
+1. **Live-read before installing a watcher.** Re-read the PR head and the named check contexts for the exact SHA immediately. The user's or a prior Agent's “still pending” sentence is a starting hypothesis, not current provider truth. If the requested notification/completion condition is already satisfied, report it now and do not create a redundant background watcher merely to honor stale wording.
+2. **If work is still pending, watch the exact SHA only.** A head move invalidates the watch identity. Stop/fail closed and report the mismatch; never silently retarget the watcher to the new branch head and carry old green checks forward.
+3. **Notification thresholds are not merge thresholds.** “Either shard finished” means send a progress notification. “All named required checks are terminal” means summarize failures or prepare readiness. Neither statement authorizes merge unless the user/task already granted that mutation.
+4. **A later merge instruction changes authorization, not evidence identity.** Treat an explicit later “merge” as a new mutation authorization. Immediately re-run the Section 7 live race-check and then use the Section 8 expected-head guard when supported; do not merge from the earlier readiness sentence.
+5. **No fake background work.** If the environment cannot install a real future condition watch, say so instead of promising to monitor asynchronously. If it can, install the watch only after the immediate live read proves the condition is still pending.
+
+Anti-examples:
+
+- creating a polling/watch task even though both browser shards already reached SUCCESS before the first live read;
+- watching branch name `feature/x` and silently following a new head after `H` moved;
+- treating “all three checks green” as permission to merge when the user explicitly said “without merging anything”;
+- receiving a later “merge” instruction and calling merge without refreshing head/check/mergeability state.
+
+Historical worked case: [`../history/2026-09-08-pr550-exact-head-watch-and-merge-closeout-retrospective.md`](../history/2026-09-08-pr550-exact-head-watch-and-merge-closeout-retrospective.md).
+
 ## 7. Race-check immediately before merge
 
 Right before merge, re-read live state and require all applicable conditions to still match the accepted evidence:

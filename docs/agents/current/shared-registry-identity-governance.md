@@ -31,6 +31,8 @@ PR heads, temporary ports, current PIDs, current provider status, GPU occupancy,
 
 ## BaseModel use-site
 
-`docs/agents/current/website-copy-cases.md` is currently protected by `src/lib/websiteCopyCaseIdGovernance.test.ts`. When that test reports a duplicate, resolve identity on the integrated candidate tree first; do not weaken the test or restore an older branch-local numbering plan.
+The BaseModel copy-case registry includes the canonical `docs/agents/current/website-copy-cases.md` plus current companion records named `docs/agents/current/website-copy-case-*.md`. All of them share one CASE-number namespace and are protected together by `src/lib/websiteCopyCaseIdGovernance.test.ts`. A companion file is not a second allocator.
+
+When that test reports a duplicate, resolve identity on the integrated candidate tree first; do not weaken the test or restore an older branch-local numbering plan.
 
 For the incident that motivated this guard, see `docs/agents/history/2026-09-08-case-id-registry-collision-retrospective.md`.

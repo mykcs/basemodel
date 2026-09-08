@@ -57,13 +57,14 @@ describe('human-readable product language contract', () => {
     expect(header).not.toContain('形成可保存的研究任务');
   });
 
-  it('uses normal subject headings on methodology and paper pages', () => {
+  it('uses normal subject headings on methodology, paper, and workspace pages', () => {
     for (const title of ['数据来源与缺失信息', '缺失值状态', '证据来源', '模型推荐边界']) expect(methodology).toContain(title);
     for (const title of ['方法摘要', '复现方式', '模型角色']) expect(paperDetail).toContain(title);
     expect(methodology).not.toContain('这些数字从哪里来，缺数据时怎么看');
     expect(paperDetail).not.toContain('这些模型在论文里分别负责什么');
     expect(workspacePage).toContain('<h1>实验工作台</h1>');
-    expect(workspacePage).toContain('模型、GPU、网络、权重和训练条件');
+    expect(workspacePage).toContain('先定义研究目标、模型角色和资源限制');
+    expect(workspacePage).toContain('开始填写实验条件');
   });
 
   it('keeps the durable standard and scanner aligned with the subject-heading rule', () => {

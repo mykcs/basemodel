@@ -1,12 +1,10 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
-import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenEvoResearchNav.astro';
 import Lyg2171ServerOverview from '../../../../../components/research/Lyg2171ServerOverview.astro';
 const locale = 'en' as const;
 ---
 <AppLayout title="Experiment server overview" description="2026-09-05 server capacity and hardware snapshot: about 16.1 GiB remains on the main filesystem; anonymous account attribution remains the most recent complete 2026-09-03 snapshot; includes this pass’s precise reclaim result plus the artifact governance, passport, publication, and safe-reclaim prompt." locale={locale}>
   <div class="server-route">
-    <SeedOpenEvoResearchNav locale={locale} page="server" />
     <Lyg2171ServerOverview locale={locale} />
   </div>
 </AppLayout>

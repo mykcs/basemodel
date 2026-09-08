@@ -7,12 +7,10 @@ const ownerRoutes = [
   ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
   ['/research/seed-openevo/flow/seed/', 'seed'],
   ['/research/seed-openevo/flow/openevo/', 'openevo'],
-  ['/lab/', 'server'],
   ['/en/research/seed-openevo/flow/webshop/', 'webshop'],
   ['/en/research/seed-openevo/flow/alfworld/', 'alfworld'],
   ['/en/research/seed-openevo/flow/seed/', 'seed'],
   ['/en/research/seed-openevo/flow/openevo/', 'openevo'],
-  ['/en/lab/', 'server'],
 ] as const;
 
 async function settle(page: Page) {
@@ -38,7 +36,7 @@ function expectInsideViewport(rect: { x: number; y: number; width: number; heigh
   expect(rect.y + rect.height).toBeLessThanOrEqual(height);
 }
 
-test('every true step-by-step owner docks Previous / Next from initial render through interaction', async ({ page }) => {
+test('standalone step-by-step owners dock Previous / Next from initial render through interaction', async ({ page }) => {
   const viewport = { width: 1440, height: 900 };
   await page.setViewportSize(viewport);
 
@@ -58,6 +56,23 @@ test('every true step-by-step owner docks Previous / Next from initial render th
       expect(rect).not.toBeNull();
       expectInsideViewport(rect!, viewport.width, viewport.height);
     });
+  }
+});
+
+test('embedded Lab explainer controls do not enter the first screen before the explainer', async ({ page }) => {
+  const viewport = { width: 1280, height: 633 };
+  await page.setViewportSize(viewport);
+  for (const path of ['/lab/', '/en/lab/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await settle(page);
+    const root = page.locator('[data-interactive-research-explainer="server"]').first();
+    const transport = root.locator('.irx-transport');
+    // Sticky within the explainer is allowed; only viewport-level fixed docking is forbidden here.
+    expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
+    await expect(transport).not.toBeInViewport();
+    await root.scrollIntoViewIfNeeded();
+    await activate(root);
+    expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
   }
 });
 

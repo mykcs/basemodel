@@ -1,0 +1,20 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import SeedOpenEvoResearchNav from '../../../../../components/research/SeedOpenEvoResearchNav.astro';
+import SeedOpenEvoProgressBriefing from '../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
+const locale = 'zh' as const;
+---
+
+<AppLayout
+  title="SEED × OpenEVO 项目阶段汇报"
+  description="面向课题组的 SEED × OpenEVO 阶段汇报：研究问题、探索路线、7B 结果、GDR / DirectApply 机制实验、Q17 确定性阻塞、质量体系与下一步。"
+  locale={locale}
+>
+  <div class="briefing-nav-shell"><SeedOpenEvoResearchNav locale={locale} page="briefing" /></div>
+  <SeedOpenEvoProgressBriefing locale={locale} />
+</AppLayout>
+
+<style>
+  .briefing-nav-shell{width:min(1160px,calc(100% - 2rem));margin-inline:auto}
+  @media(max-width:720px){.briefing-nav-shell{width:min(100% - 1rem,1160px)}}
+</style>

@@ -27,7 +27,7 @@ describe('Agent scenario-trigger discovery', () => {
     for (const trigger of [
       'TRIGGER: remembered plan or current doc may be stale',
       'TRIGGER: Preview, Production, release, hosting, or Cloudflare',
-      'TRIGGER: exact-head acceptance / `main` moved / provider says READY',
+      'TRIGGER: exact-head acceptance / pending-check watch / `main` moved / provider says READY',
       'TRIGGER: deterministic Gate fails and weakening it looks tempting',
       'TRIGGER: SEED / OpenEvo / ALFWorld / WebShop / reproduction / GPU choice',
       'TRIGGER: offline lab server / SSH / SFTP / rsync / no outbound internet',
