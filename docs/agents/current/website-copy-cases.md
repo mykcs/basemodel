@@ -968,3 +968,15 @@
 **2026-09-08 交付介质补充**：视觉探索可以用静态 mockup 帮助确认方向，但最终交付介质固定为 **HTML 页面**，不是 PPT / Keynote / 图片式 slide。视觉参考只能转译成原生 HTML + CSS；标题、数字、表格、证据链接和正文必须保持真实 DOM，可复制、可搜索、可访问、可响应式阅读。**“像汇报”描述的是信息节奏，不是文件格式。**
 
 **2026-09-08 再次纠正**：`第一道门：先证明测量是真的` 单独占一页，观众得到的主要印象只是“修好了接口 / parser”，科研含量并没有因此变强。处理原则进一步收紧：如果一段工程工作只能说明“系统终于按预期工作”，它应压缩成证据备注或直接略过；只有当它改变了可解释性、可识别性、因果归因或实验假设时，才升级为科研主线。该页因此删除，保留的科学内容改为“同一批任务上 Task Score 上升而完整成功不变，因此把两个评价信号拆开”。
+
+<a id="case-083-案例库必须进入生成和验收闭环"></a>
+### CASE-083 — 案例库必须改变下一次任务的生成与验收
+**PREFERENCE · PROCESS · 2026-09-08 · direct owner workflow feedback**
+
+**反面流程**：`写入案例库 → 等未来 Agent 自己想起来`。过去已经反复证明，只把“说人话 / 去 AI 味 / 减少注意力负担”的反馈写成 Markdown，或者把某个被拒绝词加进 audit，并不会让下一次第一次输出自动更接近 owner。案例存在，但 retrieval、跨案例抽象和生成后的偏好验收没有稳定执行，Agent 仍会从自己的默认审美开始。
+
+**认可流程**：`反馈 → Gold Pair → Preference Model → task-time retrieval → blind cold read → preference judge → release`。原始 CASE 继续保存具体语境；被明确接受的 `Rejected → Accepted` 形成偏好对；多个案例再形成带 scope / confidence / supporting cases / anti-overgeneralization 的 Preference Model。新任务开始前主动检索最相关的模型维度和偏好对；生成后先做不看历史答案的 Phase A cold read，再做看历史偏好的 Phase B pairwise comparison。
+
+规律：**案例不是长期记忆的替代品，也不是墓碑。一次真人纠正只有在它改变下一次任务的 pre-write context 和 post-write evaluation 时，才真正产生累积学习。不能把单个页面实现细节升级成全局规则；当前明确指令 > 最新直接反馈 > 多案例偏好模型 > 通用设计原则 > Agent 自己的审美。**
+
+边界：这套系统不声称修改了模型权重，也不把 Agent 自评伪装成人类偏好测量。deterministic audit 保护已知 precedent；独立 Agent / 真人 cold read 检查注意力、自然度和阅读欲望；真正的人类反馈仍是最高价值的新训练样本。
