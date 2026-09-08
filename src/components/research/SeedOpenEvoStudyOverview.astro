@@ -130,13 +130,16 @@ const deepLinks = [
 ---
 
 <div class="study-overview" data-testid="study-overview" data-study-checked="2026-09-07">
+  <div class="study-first-screen">
   <header class="study-hero" data-reader-primary>
     <h1>{zh ? 'OpenEVO (Harness) · WebShop 数据集实验' : 'OpenEVO (Harness) · WebShop dataset experiments'}</h1>
     <p class="study-current-finding">{zh
       ? '让 7B 基础模型和加载 OpenEVO 学习结果后的 7B 模型做同一批 128 个 WebShop 任务时，OpenEVO 的平均 Task Score 更高，但完整成功数仍然都是 5 / 128；同一套规则下的 OpenEVO 与 SEED 最终比较还没有完成，所以现在不能宣布谁最终更强。'
       : 'When the 7B base model and the same 7B model with the OpenEVO learning result ran the same 128 WebShop tasks, OpenEVO had a higher mean Task Score but exact successes remained 5 / 128 on both sides. A final OpenEVO-versus-SEED comparison under the same rules is still incomplete, so there is no justified final winner yet.'}</p>
     <a class="study-primary-action" href={p('/research/seed-openevo/study/results/')}>{zh ? '看这轮结果与证据 →' : 'See this result and evidence →'}</a>
-    <details class="study-hero__secondary">
+  </header>
+  </div>
+  <details class="study-hero__secondary">
       <summary>{zh ? '实验结构与参考资料' : 'Study structure and references'}</summary>
       <p class="study-structure-note">{zh
         ? '实验分成两条线：主 benchmark 用冻结评测比较 OpenEVO harness 与基线 / SEED；机制实验用 1.7B / 3B / 7B、MiniMax hindsight、GDR / DirectApply 等对照解释为什么会变好或变差。'
@@ -150,8 +153,7 @@ const deepLinks = [
         <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
         <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
       </div>
-    </details>
-  </header>
+  </details>
 
   <section class="study-section" aria-labelledby="questions-title">
     <div class="section-heading">
@@ -274,6 +276,7 @@ const deepLinks = [
 
 <style>
   .study-overview{width:min(1120px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
+  .study-first-screen{min-height:calc(100svh - 6rem)}
   .study-hero{max-width:980px;padding:2.1rem 0 2.7rem;border-bottom:2px solid var(--color-text)}
   .study-hero h1{margin:0;font-size:clamp(2.3rem,6vw,4.9rem);line-height:1.02;letter-spacing:-.055em;word-break:keep-all;overflow-wrap:normal}
   .study-current-finding{max-width:78ch;margin:1.25rem 0 0;color:var(--color-text);font-size:1rem;line-height:1.72}

@@ -383,8 +383,13 @@ test('simplified information architecture avoids stacking the retired research m
     await settle(page);
     await expect(page.locator('.research-mainline')).toHaveCount(0);
     await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(2);
+    const localNavigation = page.locator('[data-research-navigation]').first();
+    const navigationShell = page.locator('details').filter({ has: localNavigation }).first();
+    await expect(navigationShell.locator(':scope > summary')).toBeVisible();
+    await expect(localNavigation).not.toBeVisible();
+    await navigationShell.locator(':scope > summary').click();
+    await expect(localNavigation).toBeVisible();
   }
-  await expect(page.locator('[data-research-navigation]')).toBeVisible();
 });
 
 test('SEED visibly separates policy, harness, benchmark environment, and sealed evidence', async ({ page }) => {

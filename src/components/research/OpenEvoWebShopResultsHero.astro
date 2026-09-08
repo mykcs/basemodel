@@ -17,6 +17,7 @@ const navItems = [
 ---
 
 <header class="results-hero">
+  <div class="results-first-screen">
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
     '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo 学习结果后的同一模型。现在最重要的是先判断：同一 128 个任务跑完两边以后，OpenEvo 是否已经显示出可靠优势。',
@@ -35,6 +36,7 @@ const navItems = [
     )}</p>
     <a class="primary-evidence" href="#evidence-q7">{t('看这轮 128 题评测证据 ↓', 'Open the 128-task evaluation evidence ↓')}</a>
   </section>
+  </div>
 
   <details class="progress-detail">
     <summary>{t('展开完整进度：已经知道 / 最新评测 / 接下来', 'Open full progress: known / latest evaluation / next')}</summary>
@@ -101,6 +103,7 @@ const navItems = [
 
 <style>
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
+  .results-first-screen{min-height:calc(100svh - 7rem)}
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
   .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:1.02rem;line-height:1.75}
   .results-primary{max-width:820px;margin-top:24px;padding:18px 0;border-block:2px solid var(--color-text)}

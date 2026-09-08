@@ -39,7 +39,11 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
 
   await expect(index.locator('a[href="#evidence-q4"]')).toHaveCount(1);
-  await expect(index.locator('a[href="#evidence-q7"]')).toHaveCount(1);
+  const currentEvidenceLinks = index.locator('a[href="#evidence-q7"]');
+  await expect(currentEvidenceLinks).toHaveCount(2);
+  await expect(index.locator('.results-primary a[href="#evidence-q7"]')).toBeVisible();
+  await expect(index.locator('details.progress-detail a[href="#evidence-q7"]')).not.toBeVisible();
+  await expect(index.locator('a[href="#evidence-q7"]:visible')).toHaveCount(1);
   await expect(index.locator('a[href="#next-n2"]')).toHaveCount(1);
   const currentEvidence = index.locator('#evidence-q7');
   await expect(currentEvidence).not.toHaveAttribute('open', '');
