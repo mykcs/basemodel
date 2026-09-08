@@ -47,12 +47,12 @@ The prefix is not determined only by the file extension. A Markdown change can s
 
 ## BaseModel deployment exception: final-gate refs have executable meaning
 
-Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; hosted acceptance is requested separately by a `ci/vercel-gate-*` ref that points to the exact final PR head SHA.
+Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; hosted acceptance is requested separately by moving the persistent `ci/vercel-gate-final` ref to the exact final PR head SHA.
 
 The spend rule is now:
 
 1. **Ordinary working branch:** no Vercel deployment while iterating.
-2. **Final candidate:** create/move a `ci/vercel-gate-*` ref to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref.
+2. **Final candidate:** move the already-existing `ci/vercel-gate-final` ref to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref. Creating a brand-new alias at an already-known SHA is not a valid trigger because the Git integration may emit no build event.
 3. **Any triggered gate Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`; once provider compute is intentionally requested, it fails open into the real Gate.
 4. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend.
 5. **Docs/governance-only final candidate:** the explicit gate still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.

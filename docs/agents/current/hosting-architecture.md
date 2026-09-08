@@ -13,7 +13,7 @@ working PR / development branch
   -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
-  -> `ci/vercel-gate-*` ref points to the exact PR head SHA
+  -> existing persistent `ci/vercel-gate-final` ref is moved to the exact PR head SHA
   -> Vercel Preview
   -> verify:deploy
   -> static build
@@ -37,7 +37,7 @@ Vercel is the ordinary CI and deployment authority. The stable Production identi
 
 ## Exact-head acceptance ownership
 
-Branch protection keeps strict current-base semantics and requires `Vercel`. Ordinary PR/development refs are intentionally not deployment-enabled. Hosted acceptance is requested only by creating a `ci/vercel-gate-*` ref that points to the **same exact commit SHA** as the final PR head; the gate ref cannot add or rewrite content. `scripts/vercel-ignore-build.mjs` remains fail-open after that spend gate:
+Branch protection keeps strict current-base semantics and requires `Vercel`. Ordinary PR/development refs are intentionally not deployment-enabled. Hosted acceptance is requested only by moving the existing persistent `ci/vercel-gate-final` ref to the **same exact commit SHA** as the final PR head; the gate ref cannot add or rewrite content. Do not delete/recreate the ref as the normal trigger: the 2026-09-08 canary showed that creating a new alias directly at an already-known SHA produced no Vercel event, while updating an existing ref to that SHA produced the required exact-head Vercel status. `scripts/vercel-ignore-build.mjs` remains fail-open after that spend gate:
 
 - every triggered gate Preview: real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
 - `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;

@@ -19,7 +19,7 @@ A previously valid report becomes historical evidence when the PR head changes o
 
 Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; ordinary working branches are intentionally not Vercel deployment triggers.
 
-When a PR is genuinely ready for hosted acceptance, create a `ci/vercel-gate-*` ref pointing to the **exact current PR head SHA**. The gate ref is an execution alias only: no extra commit, cherry-pick, or rewritten tree is allowed. Once the gate ref reaches Vercel, the Ignored Build Step fails open because it cannot safely prove PR identity; `[vercel-preview]` is not an executable acceptance switch. If the exact candidate SHA has no Vercel acceptance object after its gate ref is pushed, inspect integration/provider state rather than manufacturing probe commits.
+When a PR is genuinely ready for hosted acceptance, move the existing persistent `ci/vercel-gate-final` ref to the **exact current PR head SHA**. The gate ref is an execution alias only: no extra commit, cherry-pick, or rewritten tree is allowed. Once the gate ref reaches Vercel, the Ignored Build Step fails open because it cannot safely prove PR identity; `[vercel-preview]` is not an executable acceptance switch. If the exact candidate SHA has no Vercel acceptance object after the persistent gate ref update, inspect integration/provider state rather than manufacturing probe commits or creating another alias ref.
 
 ## 1. Resolve the acceptance identity first
 

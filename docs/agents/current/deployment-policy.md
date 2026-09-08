@@ -11,7 +11,7 @@ working PR / development branch
 -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
--> create an explicit `ci/vercel-gate-*` ref pointing to the exact PR head SHA
+-> move the persistent `ci/vercel-gate-final` ref to the exact PR head SHA
 -> Vercel Pro Preview on that exact SHA
 -> npm run verify:deploy
 -> npm run build
@@ -37,7 +37,7 @@ manual recovery only
 
 ### Exact-head and current-base acceptance
 
-`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, create or move a `ci/vercel-gate-*` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
+`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, move the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
 
 For gate Previews, `scripts/vercel-ui-plan.ts` uses the previous accepted Vercel SHA when available. A first gate Preview with no previous accepted SHA **fails closed to the complete Chromium matrix** instead of pretending that `HEAD^` represents the whole PR. Later gate runs compare the accumulated range from the previous accepted Vercel SHA to the current head. Unknown comparison state also fails closed to full coverage.
 
@@ -62,10 +62,10 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 
 ### Final-gate Preview and ordinary working-ref policy
 
-`vercel.json -> git.deploymentEnabled` is the first spend gate. Ordinary development refs are disabled before provider compute; only `main` and explicit `ci/vercel-gate-*` refs are deployment-enabled. The repository-owned `scripts/vercel-ignore-build.mjs` remains a second fail-safe once an enabled ref reaches Vercel:
+`vercel.json -> git.deploymentEnabled` is the first spend gate. Ordinary development refs are disabled before provider compute; only `main` and explicit `ci/vercel-gate-final` refs are deployment-enabled. The repository-owned `scripts/vercel-ignore-build.mjs` remains a second fail-safe once an enabled ref reaches Vercel:
 
 - every triggered `VERCEL_ENV=preview` execution is a real acceptance build. The Ignored Build Step intentionally does **not** rely on `VERCEL_GIT_PULL_REQUEST_ID`, because real provider evidence showed that variable can be absent at the pre-build boundary;
-- a `ci/vercel-gate-*` ref is an execution alias, not a new candidate: it must point byte-for-byte to the exact PR head commit SHA;
+- `ci/vercel-gate-final` is one persistent execution alias, not a new candidate: update that existing ref byte-for-byte to the exact PR head commit SHA;
 - `[vercel-preview]` is only a historical/review marker and never opens the spend gate;
 - a docs/governance-only final candidate still runs `verify:deploy` when its explicit gate ref is created, but the browser planner may skip Chromium when the diff is proven non-UI;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
@@ -149,7 +149,7 @@ Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-Every Preview that reaches Vercel through an enabled `ci/vercel-gate-*` ref is real acceptance and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Ordinary working refs are excluded earlier by `git.deploymentEnabled`; Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
+Every Preview that reaches Vercel through an enabled `ci/vercel-gate-final` ref is real acceptance and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Ordinary working refs are excluded earlier by `git.deploymentEnabled`; Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
 
 ### Cloudflare post-deploy smoke
 
@@ -185,7 +185,7 @@ one coherent branch/PR with as many local commits as needed
 Rules:
 
 1. Finish the coherent code/content batch and run the strongest available local/Agent checks before the first push. Do not push every typo, intermediate experiment or file write.
-2. **Ordinary working refs do not trigger Vercel.** Push intermediate development commits as needed; create a `ci/vercel-gate-*` ref only when the exact candidate is ready for hosted acceptance. Do not use `[vercel-preview]` as a spend switch.
+2. **Ordinary working refs do not trigger Vercel.** Push intermediate development commits as needed; when the exact candidate is ready, move the persistent `ci/vercel-gate-final` ref to that SHA. Do not create a fresh gate alias per PR and do not use `[vercel-preview]` as a spend switch.
 3. Reuse the existing branch/PR. Do not create a duplicate PR to repair the same deployment or migration unless the old branch is genuinely unsafe to continue.
 4. When a GitHub connector would otherwise write files one by one, prefer a checked-out worktree or one Git data API multi-file commit (`blob -> tree -> commit -> ref`). Sequential Contents API writes can create one Vercel deployment per ref update.
 5. Keep stacked PRs only for real, reviewable dependencies. Stabilize the parent before repeatedly pushing the child, and do not mirror the same fix across multiple branches.
@@ -234,7 +234,7 @@ The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so 
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
-`vercel.json -> git.deploymentEnabled` deliberately blocks ordinary working refs and enables only `main` plus `ci/vercel-gate-*`. Final acceptance is requested by creating a gate ref that points to the exact PR head SHA; `scripts/vercel-ignore-build.mjs` then fails open for that Preview so the required `Vercel` status cannot be satisfied by an ignored deployment. Spend control therefore starts before provider compute, with the risk planner providing a second layer of runtime optimization. If the exact candidate SHA lacks a green Vercel status, it is not merge-ready.
+`vercel.json -> git.deploymentEnabled` deliberately blocks ordinary working refs and enables only `main` plus `ci/vercel-gate-final`. Final acceptance is requested by updating the existing persistent gate ref to the exact PR head SHA; `scripts/vercel-ignore-build.mjs` then fails open for that Preview so the required `Vercel` status cannot be satisfied by an ignored deployment. Spend control therefore starts before provider compute, with the risk planner providing a second layer of runtime optimization. If the exact candidate SHA lacks a green Vercel status, it is not merge-ready.
 
 ## Node runtime major contract
 

@@ -7,7 +7,7 @@
       "*": false,
       "**/*": false,
       "main": true,
-      "ci/vercel-gate-*": true
+      "ci/vercel-gate-final": true
     }
   },
   "github": {
