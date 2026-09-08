@@ -1,6 +1,6 @@
 # Human Preference Learning System
 
-Status: **current**  
+Status: **current**
 Audience: coding, writing, design, review, and release Agents
 
 This file owns how direct human feedback becomes reusable project behavior. It does **not** claim model-weight fine-tuning or account-level memory. The learning loop is repository-level: structured preference data, task-time retrieval, pairwise examples, independent cold reading, and executable verification.
