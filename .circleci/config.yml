@@ -124,41 +124,8 @@ jobs:
             node scripts/ci-ui-gate.mjs
 
 workflows:
-  pr_cloud_ci:
-    when: pipeline.event.name == "pull_request" and pipeline.event.github.pull_request.draft == false
-    jobs:
-      - deterministic:
-          event: pull_request
-          base_sha: << pipeline.event.github.pull_request.base.sha >>
-          head_sha: << pipeline.event.github.pull_request.head.sha >>
-      - browser_shard:
-          name: browser_shard_1
-          event: pull_request
-          base_sha: << pipeline.event.github.pull_request.base.sha >>
-          head_sha: << pipeline.event.github.pull_request.head.sha >>
-          shard_index: 1
-      - browser_shard:
-          name: browser_shard_2
-          event: pull_request
-          base_sha: << pipeline.event.github.pull_request.base.sha >>
-          head_sha: << pipeline.event.github.pull_request.head.sha >>
-          shard_index: 2
-  main_cloud_ci:
-    when: pipeline.event.name == "push" and pipeline.git.branch == "main"
-    jobs:
-      - deterministic:
-          event: push
-          head_sha: << pipeline.git.revision >>
-      - browser_shard:
-          name: browser_shard_1
-          event: push
-          head_sha: << pipeline.git.revision >>
-          shard_index: 1
-      - browser_shard:
-          name: browser_shard_2
-          event: push
-          head_sha: << pipeline.git.revision >>
-          shard_index: 2
+  # Automatic PR/main CircleCI workflows are intentionally disabled.
+  # Vercel is the only ordinary required CI authority; keep CircleCI only for explicit API recovery.
   manual_cloud_ci:
     when: pipeline.event.name == "api"
     jobs:

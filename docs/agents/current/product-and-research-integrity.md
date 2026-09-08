@@ -350,7 +350,7 @@ Important invariant coverage includes:
 - source identity stays deterministic;
 - completion checklists cannot be satisfied by dead/unwired components.
 
-Risk-based Playwright acceptance runs in Vercel Pro before merge and again on Vercel Production. CircleCI is retained as non-blocking post-cutover shadow/fallback evidence, and the repository-scoped Mac/OrbStack runner is manual fallback only. Deterministic source/data/unit/V2 audits remain deployment blockers; Cloudflare production-smoke only observes the deployed Vercel origin.
+Risk-based Playwright acceptance runs in Vercel Pro before merge and again on Vercel Production. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained, and the repository-scoped Mac/OrbStack runner is manual fallback only. Deterministic source/data/unit/V2 audits remain deployment blockers; Cloudflare production-smoke only observes the deployed Vercel origin.
 
 ## How future agents should continue
 
@@ -362,7 +362,7 @@ Before proposing a broad redesign:
 4. Preserve evidence/unknown semantics and stable IDs.
 5. Prefer changing the smallest coherent product slice that closes a real research workflow.
 6. Add a regression that proves the behavior is wired into the real path.
-7. Use branch -> PR -> automatic exact-head Vercel Pro deterministic + risk-based browser acceptance -> merge for deployment-sensitive work; treat CircleCI only as non-blocking post-cutover shadow/fallback evidence.
+7. Use branch -> PR -> automatic exact-head Vercel Pro deterministic + risk-based browser acceptance -> merge for deployment-sensitive work; treat CircleCI only as explicit API-triggered manual fallback; do not restore automatic PR/main CircleCI workflows.
 8. Keep GitHub Actions limited to explicit `workflow_dispatch` for the repository-scoped Mac/OrbStack fallback; do not reintroduce automatic Mac CI, GitHub-hosted runners, or GitHub Pages.
 9. Do not ask the owner to relay logs/content between tools when connected tools can retrieve them.
 10. Keep external-service and unavailable-fact boundaries explicit rather than faking completion.

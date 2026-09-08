@@ -29,13 +29,15 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('makes Vercel the exact-head acceptance provider while retaining CircleCI as non-blocking shadow evidence', () => {
+  it('makes Vercel the exact-head acceptance provider while keeping CircleCI manual-only', () => {
     expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
-    expect(circleCiConfig).toContain('pr_cloud_ci:');
-    expect(circleCiConfig).toContain('main_cloud_ci:');
+    expect(circleCiConfig).not.toContain('pr_cloud_ci:');
+    expect(circleCiConfig).not.toContain('main_cloud_ci:');
+    expect(circleCiConfig).toContain('manual_cloud_ci:');
+    expect(circleCiConfig).toContain('pipeline.event.name == "api"');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
     expect(circleCiConfig).toContain('PLAYWRIGHT_WORKERS: "1"');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
@@ -54,7 +56,7 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('Vercel Pro + CircleCI shadow + Cloudflare smoke');
+    expect(architecture).toContain('Vercel Pro + manual fallbacks + Cloudflare smoke');
     expect(architecture).toContain('Vercel is the ordinary CI and deployment authority');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);

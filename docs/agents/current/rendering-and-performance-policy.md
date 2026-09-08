@@ -96,7 +96,7 @@ The Landscape implementation is a useful reference: the interactive shell is vis
 
 ## Regression expectations
 
-Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. `npm test` reports the explicit `test:structural` and `test:behavior` categories; `src/lib/testTaxonomy.test.ts` fails if any `*.test.ts/tsx` file is omitted. Browser-only behavior remains Playwright in CircleCI risk-based acceptance and is never classified as Vitest; the repository-scoped Mac/OrbStack runner is manual fallback only.
+Deterministic rendering/evidence contracts that are cheap to verify belong in Vitest and therefore in `verify:deploy`. `npm test` reports the explicit `test:structural` and `test:behavior` categories; `src/lib/testTaxonomy.test.ts` fails if any `*.test.ts/tsx` file is omitted. Browser-only behavior remains Playwright in Vercel risk-based acceptance and is never classified as Vitest; CircleCI and the repository-scoped Mac/OrbStack runner are manual fallback surfaces only.
 
 The regression suite under `src/lib/optimizationPhase.test.ts` protects several static-first, localization and performance contracts.
 
@@ -111,4 +111,4 @@ Follow the Vercel deployment policy:
 - batch evidence-driven fixes before a corrective Preview instead of pushing one build per thought;
 - merge the accepted release once and verify Production separately.
 
-Vercel Pro is the ordinary CI and deployment path, including risk-based Chromium acceptance before merge and again on Production. CircleCI is non-blocking post-cutover shadow/fallback evidence. GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner; GitHub-hosted runners and GitHub Pages remain outside ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling remain legacy rollback/provider-specific surfaces, while `cloudflare/production-smoke/` is the active monitoring-only exception and does not build or publish the site.
+Vercel Pro is the ordinary CI and deployment path, including risk-based Chromium acceptance before merge and again on Production. CircleCI automatic PR/main workflows are disabled; only explicit API-triggered manual fallback remains. GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner; GitHub-hosted runners and GitHub Pages remain outside ordinary `basemodel` deployment. Cloudflare Pages/build helpers and Workers shadow tooling remain legacy rollback/provider-specific surfaces, while `cloudflare/production-smoke/` is the active monitoring-only exception and does not build or publish the site.
