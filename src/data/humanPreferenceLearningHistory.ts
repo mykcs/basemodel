@@ -170,6 +170,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       'briefing-dense-status-v1',
       'briefing-soft-slide-family',
       'briefing-overminimal-html',
+      'briefing-engineering-gate-highlight',
       'briefing-decorative-bubbles',
       'briefing-mechanism-math-depth',
     ],
