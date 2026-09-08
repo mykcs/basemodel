@@ -29,8 +29,8 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('keeps Vercel lightweight and moves browser acceptance to CircleCI', () => {
-    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
+  it('makes Vercel the exact-head acceptance provider while retaining CircleCI as non-blocking shadow evidence', () => {
+    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
@@ -54,8 +54,8 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('CircleCI + Vercel + Cloudflare smoke');
-    expect(architecture).toContain('Vercel remains the only ordinary deployment provider');
+    expect(architecture).toContain('Vercel Pro + CircleCI shadow + Cloudflare smoke');
+    expect(architecture).toContain('Vercel is the ordinary CI and deployment authority');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
     expect(latest).toContain('current/hosting-architecture.md');
@@ -65,7 +65,7 @@ describe('hosting architecture ownership', () => {
     expect(architecture).toContain('Legacy hosting — not ordinary workflow');
     expect(architecture).toContain('production-smoke');
     expect(latest).toContain('Cloudflare production-smoke');
-    expect(latest).toContain('Vercel remains the ordinary deployment provider');
+    expect(latest).toContain('Vercel is the ordinary CI and deployment authority');
   });
 
   it('uses a tiny scheduled Cloudflare Worker for real Production smoke only', () => {
