@@ -1,5 +1,7 @@
+export type HumanFeedbackCaseId = `CASE-${string}`;
+
 export interface HumanFeedbackPrecedent {
-  id: `CASE-${string}`;
+  id: HumanFeedbackCaseId;
   title: string;
   tags: string[];
   principle: string;
@@ -57,6 +59,22 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['相关案例绑定', '同类页面扫描', '回归保护'],
   },
   {
+    id: 'CASE-065',
+    title: '内部路线代号不能代替实验对象',
+    tags: ['代号', '身份', 'Track A', 'provenance', '首层'],
+    principle: '公开首层先命名真实对象；内部 route、branch、phase 名只在需要精确索引时作为 provenance 出现。',
+    antiPatterns: ['OpenEvo · Track A 7B'],
+    positiveSignals: ['7B · 基础模型', '7B · 使用 OpenEVO 学习结果'],
+  },
+  {
+    id: 'CASE-066',
+    title: '不要用方法学术语替代比较双方',
+    tags: ['配对评测', '统计术语', '比较', 'ELI5', '对象'],
+    principle: '能直接显示比较双方、共同任务和分数时先显示这些；paired analysis 等方法学术语放到第二层解释。',
+    antiPatterns: ['OpenEVO · 7B 配对评测'],
+    positiveSignals: ['7B · 基础模型', '7B · 使用 OpenEVO 学习结果', '同一批 128 个 WebShop 任务'],
+  },
+  {
     id: 'CASE-067',
     title: '直接说实验事实，少用叙事隐喻',
     tags: ['AI味', '隐喻', '实验', '标题'],
@@ -112,9 +130,17 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['按工程模块或项目状态流水账组织汇报'],
     positiveSignals: ['Ceiling → Mechanism → Control', '问题驱动叙事'],
   },
+  {
+    id: 'CASE-083',
+    title: '案例库必须改变下一次任务的生成与验收',
+    tags: ['案例库', '偏好学习', 'Gold Pair', 'Preference Model', 'cold read', 'judge', '举一反三'],
+    principle: '真人纠正必须进入下一次任务的 pre-write retrieval 与 post-write judge；只保存 Markdown 案例而不改变生成上下文和验收流程，不算学会。',
+    antiPatterns: ['写入案例库 → 等未来 Agent 自己想起来', '只靠 style guide 或词语黑名单'],
+    positiveSignals: ['Rejected → Accepted Gold Pair', 'Preference Model', 'task-time retrieval', 'blind cold read', 'preference judge'],
+  },
 ];
 
-export const READER_CONTRACT_PRECEDENTS: Record<string, string[]> = {
+export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-results': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],

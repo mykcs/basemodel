@@ -12,17 +12,11 @@ The reader-first hierarchy, research editorial style, research-site presentation
 
 ## Human-feedback precedent retrieval is a pre-write step
 
-Before the first substantial copy/layout edit, run:
-
-```bash
-npm run feedback:retrieve -- "<page role + feedback cue + reader problem>"
-```
-
-Examples of useful queries are `Study 首屏 标题 AI味 TLDR`, `Results 结果 术语 认知负担`, or `Capability ADHD 注意力 视觉中心`. Read the returned structured precedents in `src/data/humanFeedbackPrecedents.ts` and the source cases in `docs/agents/current/website-copy-cases.md` before writing.
+Before the first substantial copy/layout edit, execute the repository-owned `feedback:retrieve` task using the current Reader Contract plus page role, feedback cue, and reader problem. Concrete command syntax lives in `docs/agents/current/human-preference-learning-system.md`, not in this research-surface directory. Examples of useful retrieval cues are `Study 首屏 标题 AI味 TLDR`, `Results 结果 术语 认知负担`, or `Capability ADHD 注意力 视觉中心`. Read the returned structured precedents in `src/data/humanFeedbackPrecedents.ts` and the source cases in `docs/agents/current/website-copy-cases.md` before writing.
 
 For routes already listed in `READER_CONTRACT_PRECEDENTS`, those cases are part of the page's design contract. A later generic preference such as “reduce first-screen links” does not authorize deleting a bound human-feedback requirement such as architecture identity, an explicit TL;DR, or a source affordance. Reconcile the semantic reasons instead of counting elements mechanically.
 
-After one direct owner correction, scan sibling research surfaces for the same failure mechanism before declaring the fix complete. `npm run audit:human-feedback` is the deterministic regression layer; it does not replace a zero-context cold read for attention, reading desire, or scientific comprehension.
+After one direct owner correction, scan sibling research surfaces for the same failure mechanism before declaring the fix complete. For material copy/layout work, execute the repository-owned `feedback:cold-read` task in **Phase A blind** before exposing the reviewer to Reader Contracts or historical preferences, save the answers, then execute Phase B compare; when an independent reviewer/human is available, generate a judge receipt and verify it with the repository-owned `feedback:judge` task. Exact command syntax is owned by `human-preference-learning-system.md`. The repository-owned `audit:human-feedback` task is the deterministic regression layer; it does not replace blind preference review or measured human comprehension.
 
 For visible research copy:
 

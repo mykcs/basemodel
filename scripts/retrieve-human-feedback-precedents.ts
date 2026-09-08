@@ -1,63 +1,57 @@
 import process from 'node:process';
-import {
-  HUMAN_FEEDBACK_PRECEDENTS,
-  READER_CONTRACT_PRECEDENTS,
-} from '../src/data/humanFeedbackPrecedents';
+import { retrieveHumanPreferenceContext } from '../src/lib/humanPreferenceLearning';
 
-const rawQuery = process.argv.slice(2).join(' ').trim();
-if (!rawQuery) {
-  console.error('Usage: npm run feedback:retrieve -- "首屏 标题 AI味"');
+const args = process.argv.slice(2);
+const contractArg = args.find((arg) => arg.startsWith('--contract='));
+const contractId = contractArg?.split('=', 2)[1]?.trim();
+const query = args.filter((arg) => !arg.startsWith('--contract=')).join(' ').trim();
+
+if (!query) {
+  console.error('Usage: npm run feedback:retrieve -- --contract=study "首屏 标题 AI味"');
   process.exit(1);
 }
 
-const query = rawQuery.toLowerCase();
-const tokens = rawQuery
-  .split(/[\s,，。/|:：;；()（）\[\]【】]+/)
-  .map((token) => token.trim().toLowerCase())
-  .filter(Boolean);
-
-const boundContractsByCase = new Map<string, string[]>();
-for (const [contractId, caseIds] of Object.entries(READER_CONTRACT_PRECEDENTS)) {
-  for (const caseId of caseIds) {
-    const list = boundContractsByCase.get(caseId) ?? [];
-    list.push(contractId);
-    boundContractsByCase.set(caseId, list);
-  }
-}
-
-const ranked = HUMAN_FEEDBACK_PRECEDENTS.map((precedent) => {
-  const haystack = [precedent.title, precedent.principle, ...precedent.tags, ...precedent.antiPatterns, ...precedent.positiveSignals]
-    .join(' ')
-    .toLowerCase();
-  let score = 0;
-  for (const tag of precedent.tags) {
-    const normalized = tag.toLowerCase();
-    if (query.includes(normalized)) score += 6;
-  }
-  for (const token of tokens) {
-    if (token.length < 2) continue;
-    if (haystack.includes(token)) score += 2;
-  }
-  if (query.includes(precedent.id.toLowerCase())) score += 20;
-  return { precedent, score };
-})
-  .filter(({ score }) => score > 0)
-  .sort((a, b) => b.score - a.score || a.precedent.id.localeCompare(b.precedent.id))
-  .slice(0, 8);
-
-if (!ranked.length) {
-  console.log(`No structured precedent matched: ${rawQuery}`);
-  console.log('Read docs/agents/current/website-copy-cases.md and add a structured precedent only if the feedback mechanism is genuinely reusable.');
+const result = retrieveHumanPreferenceContext(query, contractId);
+if (!result.cases.length && !result.preferences.length) {
+  console.log(`No structured preference context matched: ${query}`);
+  console.log('Read docs/agents/current/website-copy-cases.md as the canonical raw feedback library; promote a new structured preference only if the mechanism is reusable.');
   process.exit(0);
 }
 
-console.log(`Human-feedback precedents for: ${rawQuery}\n`);
-for (const { precedent, score } of ranked) {
-  const contracts = boundContractsByCase.get(precedent.id) ?? [];
-  console.log(`${precedent.id} · ${precedent.title} · score ${score}`);
-  console.log(`  rule: ${precedent.principle}`);
-  console.log(`  avoid: ${precedent.antiPatterns.join(' / ')}`);
-  console.log(`  prefer: ${precedent.positiveSignals.join(' / ')}`);
-  if (contracts.length) console.log(`  bound reader contracts: ${contracts.join(', ')}`);
+console.log('# Human Preference Brief');
+console.log(`Query: ${query}`);
+if (contractId) console.log(`Reader Contract: ${contractId}`);
+console.log('Precedence: current explicit owner instruction > latest direct feedback case > repeated preference model > generic design guidance > Agent aesthetics.');
+console.log('');
+
+if (result.preferences.length) {
+  console.log('## Preference Model');
+  for (const { preference, score } of result.preferences) {
+    console.log(`${preference.id} · ${preference.title} · score ${score} · confidence ${preference.confidence}`);
+    console.log(`  prefer: ${preference.statement}`);
+    console.log(`  evidence: ${preference.supportingCaseIds.join(', ')}`);
+    console.log(`  do not overlearn: ${preference.antiOvergeneralization.join(' / ')}`);
+  }
   console.log('');
+}
+
+if (result.goldPairs.length) {
+  console.log('## Gold Pairs · rejected → accepted');
+  for (const { pair } of result.goldPairs) {
+    console.log(`${pair.id} · ${pair.caseId}`);
+    console.log(`  REJECTED: ${pair.rejected}`);
+    console.log(`  ACCEPTED: ${pair.accepted}`);
+    console.log(`  because: ${pair.reason}`);
+  }
+  console.log('');
+}
+
+if (result.cases.length) {
+  console.log('## Source Cases');
+  for (const { precedent, score } of result.cases) {
+    console.log(`${precedent.id} · ${precedent.title} · score ${score}`);
+    console.log(`  rule: ${precedent.principle}`);
+    console.log(`  avoid: ${precedent.antiPatterns.join(' / ')}`);
+    console.log(`  prefer: ${precedent.positiveSignals.join(' / ')}`);
+  }
 }
