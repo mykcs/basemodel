@@ -11,6 +11,14 @@ export interface HumanFeedbackPrecedent {
 
 export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   {
+    id: 'CASE-027',
+    title: '中文含义先于无信息英文标签',
+    tags: ['英文眉题', '术语', '认知负担', 'briefing'],
+    principle: '英文只有在它命名真实技术对象、检索身份或独立阅读模式时才保留；删掉不损失信息的英文眉题属于认知噪声。',
+    antiPatterns: ['OpenEVO · SEED × WebShop', 'AGENDA / RESULTS / QUESTION / MECHANISM'],
+    positiveSignals: ['直接中文标题', 'LoRA / RL / GDR / TaskVector 等必要技术对象保留'],
+  },
+  {
     id: 'CASE-029',
     title: '结论先于实验账本',
     tags: ['结果', '结论', '证据', '科研页面'],
@@ -126,9 +134,9 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     id: 'CASE-082',
     title: '科研汇报按研究问题组织',
     tags: ['briefing', '科研汇报', '叙事', '研究问题'],
-    principle: '阶段汇报按问题 → 假设 → 实验 → 结果 → 决策转折组织，不让工程状态模块替代研究主线。',
-    antiPatterns: ['按工程模块或项目状态流水账组织汇报'],
-    positiveSignals: ['Ceiling → Mechanism → Control', '问题驱动叙事'],
+    principle: '阶段汇报按问题 → 假设 → 实验 → 结果 → 决策转折组织，不让工程状态模块替代研究主线；真正决定机制理解的公式、参数和对照数据可以更硬核。',
+    antiPatterns: ['按工程模块或项目状态流水账组织汇报', '为了极简删掉能够证明机制设计的数学细节', '纯装饰气泡抢占科研内容注意力'],
+    positiveSignals: ['Ceiling → Mechanism → Control', '问题驱动叙事', '关键机制用公式 + 真实参数 + 对照阈值解释'],
   },
   {
     id: 'CASE-083',
@@ -144,7 +152,7 @@ export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> =
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-results': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
-  'study-briefing': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082'],
+  'study-briefing': ['CASE-027', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };
