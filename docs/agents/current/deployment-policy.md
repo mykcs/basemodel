@@ -58,8 +58,8 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 
 `vercel.json -> git.deploymentEnabled` allows ordinary branch refs to reach Vercel's classifier. The expensive build policy remains inside `scripts/vercel-ignore-build.mjs`:
 
-- a proven PR Preview (`VERCEL_ENV=preview` plus `VERCEL_GIT_PULL_REQUEST_ID`) is an automatic acceptance build and does **not** require `[vercel-preview]`;
-- a non-PR Preview still requires `[vercel-preview]` on the exact head, so exploratory branch pushes remain opt-in;
+- every `VERCEL_ENV=preview` execution is an automatic acceptance build. The Ignored Build Step intentionally does **not** rely on `VERCEL_GIT_PULL_REQUEST_ID`, because real provider evidence showed that variable can be absent at the pre-build boundary even for an open PR;
+- `[vercel-preview]` is no longer a pre-build opt-in. Non-PR Preview spend is controlled by batching ref updates and the risk-aware browser planner rather than by an unsafe PR-identity guess;
 - a docs/governance-only PR still runs `verify:deploy` so repository contracts are actually checked, but the browser planner may skip Chromium when the diff is proven non-UI;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
 
@@ -96,7 +96,7 @@ The canonical Chromium suite remains `npm run test:ui`. Vercel chooses Playwrigh
 
 ### Budget-first execution
 
-Vercel Pro is metered, so the speed gain does not authorize push spam. Keep `github.autoJobCancelation=true`, finish coherent batches before pushing, let PR heads run the risk-aware acceptance path, and reserve `[vercel-preview]` for non-PR hosted review. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
+Vercel Pro is metered, so fail-open Preview acceptance does not authorize push spam. Keep `github.autoJobCancelation=true`, finish coherent batches before pushing, and let the risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
 
@@ -142,7 +142,7 @@ Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-PR Preview acceptance is automatic and cannot be skipped by omitting a commit token. Non-PR Preview branches remain budget-gated by `[vercel-preview]`. Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
+Preview acceptance is automatic for every Preview and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
 
 ### Cloudflare post-deploy smoke
 
@@ -178,7 +178,7 @@ one coherent branch/PR
 Rules:
 
 1. Finish the coherent code/content batch and run the strongest available local/Agent checks before the first push. Do not push every typo, intermediate experiment or file write.
-2. **PR heads are automatic acceptance builds.** Use `[vercel-preview]` only for a non-PR Preview branch that intentionally needs hosted review; ordinary non-PR intermediate pushes should omit it and be ignored before the expensive build.
+2. **Every Preview head is an automatic acceptance build.** Do not use `[vercel-preview]` to suppress non-PR Git Previews; reduce spend by batching intermediate ref updates before push and by the shared risk planner.
 3. Reuse the existing branch/PR. Do not create a duplicate PR to repair the same deployment or migration unless the old branch is genuinely unsafe to continue.
 4. When a GitHub connector would otherwise write files one by one, prefer a checked-out worktree or one Git data API multi-file commit (`blob -> tree -> commit -> ref`). Sequential Contents API writes can create one Vercel deployment per ref update.
 5. Keep stacked PRs only for real, reviewable dependencies. Stabilize the parent before repeatedly pushing the child, and do not mirror the same fix across multiple branches.
@@ -227,7 +227,7 @@ The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so 
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
-`vercel.json -> git.deploymentEnabled` now allows ordinary branch refs to reach the provider classifier so every open PR can create its required Vercel status. Spend control happens in `scripts/vercel-ignore-build.mjs`: PRs are automatic acceptance builds; non-PR Preview branches remain `[vercel-preview]` opt-in. If an open PR has no Vercel acceptance object, treat that as an integration/policy defect rather than expected branch-prefix behavior; the exact closeout procedure is owned by `release-closeout-protocol.md`.
+`vercel.json -> git.deploymentEnabled` now allows ordinary branch refs to reach the provider classifier so every open PR can create its required Vercel status. `scripts/vercel-ignore-build.mjs` fails open for every Preview so a required `Vercel` status cannot be satisfied by an ignored deployment. Spend control comes from coherent push batching, same-branch cancellation, and risk-based browser selection. If an open PR has no Vercel acceptance object, treat that as an integration/policy defect rather than expected branch-prefix behavior; the exact closeout procedure is owned by `release-closeout-protocol.md`.
 
 ## Node runtime major contract
 

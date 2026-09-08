@@ -132,7 +132,7 @@ describe('Agent scenario-trigger discovery', () => {
 
   it('does not silently restore Direct Upload as the ordinary Preview default', () => {
     expect(repositoryMap).toContain('GitHub PR / release candidate          -> automatic Vercel Pro acceptance Preview');
-    expect(repositoryMap).toContain('GitHub non-PR Preview ref                -> optional `[vercel-preview]` Vercel Preview');
+    expect(repositoryMap).toContain('GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)');
     expect(repositoryMap).toContain('GitHub main                              -> Vercel Production with the same acceptance contract');
     expect(repositoryMap).toContain('Production identity                     -> https://basemodel-preview.vercel.app');
     expect(repositoryMap).toContain('CircleCI                                -> non-blocking shadow/fallback evidence during cutover');

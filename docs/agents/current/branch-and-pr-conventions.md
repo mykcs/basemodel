@@ -51,13 +51,13 @@ Current `vercel.json` allows ordinary branch refs to reach the Vercel Git classi
 
 The spend rule is now:
 
-1. **Open PR Preview:** automatic when Vercel exposes `VERCEL_GIT_PULL_REQUEST_ID`; no `[vercel-preview]` token is required.
-2. **Non-PR Preview branch:** still requires `[vercel-preview]` on the exact head before expensive hosted acceptance runs.
+1. **Any Vercel Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`, because that signal was absent in a real PR ignore-step execution.
+2. **`[vercel-preview]`:** optional historical/review marker only; it no longer gates Git-integrated Preview execution.
 3. **Docs/governance-only PR:** still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
 4. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
 5. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
 
-Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for the semantic owner of the work, not to manipulate Vercel eligibility. Keep `[vercel-preview]` as an explicit spend decision only for non-PR hosted review.
+Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for the semantic owner of the work, not to manipulate Vercel eligibility. Batch pushes and use the risk planner for spend control; do not rely on `[vercel-preview]` to make a Preview disappear before required acceptance.
 
 ## PR titles
 

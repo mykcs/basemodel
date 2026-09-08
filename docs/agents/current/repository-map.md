@@ -74,7 +74,7 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 
 ```text
 GitHub PR / release candidate          -> automatic Vercel Pro acceptance Preview
-GitHub non-PR Preview ref                -> optional `[vercel-preview]` Vercel Preview
+GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)
 GitHub main                              -> Vercel Production with the same acceptance contract
 Production identity                     -> https://basemodel-preview.vercel.app
 CircleCI                                -> non-blocking shadow/fallback evidence during cutover
