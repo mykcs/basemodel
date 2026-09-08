@@ -120,6 +120,25 @@ Anti-patterns:
 - refreshing a branch and reusing its pre-refresh green checks;
 - declaring the task complete immediately after enabling auto-merge without later reading whether the PR actually merged.
 
+### 3.3 Repository-wide backlog closeout: reduce authorities, not just PR count
+
+When the owner asks to “clean up all open PRs”, “finish the backlog”, or otherwise reduce many historical/current PRs, treat the task as an **authority migration**.
+
+Before closing or merging each PR, record: `exact head/base -> changed paths -> current semantic owner -> unique delta -> current-main equivalent -> disposition`. A stale PR may still contain one unique rule, scientific lineage note, route, test, or registry entry that current `main` lacks. Extract or explicitly reject that delta before closure.
+
+Prefer convergence to **one live release authority per accepted product/research decision**. If two PRs are parts of one release and their overlap is narrow, absorb the independent files plus only the narrow shared-owner delta into the designated release head, then close the worker PR as `absorbed` with lineage. Do not sequentially merge parallel implementations merely because both are green.
+
+Shared registries and scientific/publication owners require entry-level reconciliation. Preserve the newest authoritative surrounding file and transplant only the still-valid entry/change from the worker branch; never replace a current registry with an older whole-file blob to recover one useful row.
+
+Immediately before every shared-ref write, refresh the branch head. An unexpected non-fast-forward means the snapshot used to construct the write expired. **Never force to recover the expected topology.** Inspect the intervening commit, rebuild the intended delta on the new head, and retry as a fast-forward. Any rebuilt head is a new exact-head acceptance identity.
+
+Keep dependency-update cleanup separate from coordinated product/scientific release semantics. A stale lockfile/version PR, especially an unmergeable or major-version candidate, should be refreshed/re-generated on current `main`, explicitly deferred, or closed as stale; it must not hitchhike into the release merely to make the open-PR count reach zero.
+
+Required closeout labels/reasons must distinguish `absorbed`, `superseded`, `rejected`, `deferred`, and `historical evidence retained`. “Closed” alone is not a scientific or product disposition.
+
+Historical case: [`../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md`](../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md).
+
+
 ### 4. Check conflict classes
 
 Do not stop at conflict markers. Review:
