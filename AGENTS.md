@@ -27,7 +27,7 @@ You are already reading the repository bootstrap. After this file, read in this 
 10. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
 11. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
 12. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-13. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Pro CI/deployment authority, CircleCI shadow boundary, Mac fallback boundary, Preview + Production workflow, build budget, parallel integration, release and Production boundary.
+13. [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md) and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — current Vercel Pro CI/deployment authority, CircleCI manual-fallback boundary, Mac fallback boundary, Preview + Production workflow, build budget, parallel integration, release and Production boundary.
 14. [`docs/agents/current/public-release-security-gate.md`](docs/agents/current/public-release-security-gate.md) — required before any private → public visibility change.
 15. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
 16. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
@@ -95,7 +95,7 @@ non-draft PR / release candidate
   -> risk-based Chromium acceptance
   -> Lab gate when relevant
   -> required GitHub status: Vercel
-  -> CircleCI may run only as non-blocking post-cutover shadow/fallback evidence
+  -> CircleCI automatic PR/main workflows are disabled; explicit API fallback only
 
 non-main Preview ref
   -> Vercel Preview runs real acceptance; `[vercel-preview]` is only a historical/review marker, not an ignore gate
@@ -112,7 +112,7 @@ manual CI recovery only
 
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
-Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI is retained only as non-blocking post-cutover shadow/fallback evidence and must not be a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
+Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI automatic PR/main workflows are disabled; `.circleci/config.yml` is retained only for explicit API-triggered manual fallback and must never become a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
 Pull-request Previews are automatic acceptance builds. The Ignored Build Step must fail open for **every** `VERCEL_ENV=preview` because real provider evidence showed `VERCEL_GIT_PULL_REQUEST_ID` is not reliable at that pre-build boundary. `[vercel-preview]` no longer controls whether a Git-integrated Preview runs; Production on `main` remains automatic.
 

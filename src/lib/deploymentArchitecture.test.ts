@@ -31,11 +31,13 @@ describe('Vercel production deployment architecture', () => {
     github?: { autoJobCancelation?: boolean };
   }>('../../vercel.json');
 
-  it('uses CircleCI as primary CI and keeps GitHub Actions as a manual Mac fallback', () => {
+  it('uses Vercel as primary CI while retaining CircleCI and Mac as manual fallbacks', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
     expect(workflowFiles).toEqual(['self-hosted-ci.yml']);
-    expect(circleCiConfig).toContain('pr_cloud_ci:');
-    expect(circleCiConfig).toContain('main_cloud_ci:');
+    expect(circleCiConfig).not.toContain('pr_cloud_ci:');
+    expect(circleCiConfig).not.toContain('main_cloud_ci:');
+    expect(circleCiConfig).toContain('manual_cloud_ci:');
+    expect(circleCiConfig).toContain('pipeline.event.name == "api"');
     expect(circleCiConfig).toContain('browser_shard_1');
     expect(circleCiConfig).toContain('browser_shard_2');
     expect(circleCiConfig).toContain('CI_BROWSER_SHARD_TOTAL: "2"');
@@ -146,9 +148,11 @@ describe('Vercel production deployment architecture', () => {
     expect(macFallbackWorkflow).not.toMatch(/uses:\s+actions\/[^@\s]+@v\d+/);
   });
 
-  it('revalidates merged main in CircleCI and keeps the Mac fallback explicitly full', () => {
-    expect(circleCiConfig).toContain('main_cloud_ci:');
-    expect(circleCiConfig).toContain('event: push');
+  it('keeps CircleCI and Mac recovery manual while preserving full fallback coverage', () => {
+    expect(circleCiConfig).not.toContain('main_cloud_ci:');
+    expect(circleCiConfig).not.toContain('pr_cloud_ci:');
+    expect(circleCiConfig).toContain('manual_cloud_ci:');
+    expect(circleCiConfig).toContain('event: api');
     expect(circleCiConfig).toContain('head_sha: << pipeline.git.revision >>');
     expect(macFallbackWorkflow).toContain('workflow_dispatch:');
     expect(macFallbackWorkflow).not.toContain('pull_request:');
