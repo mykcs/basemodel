@@ -10,7 +10,6 @@ import {
   buildHumanPreferenceBrief,
   candidateReceiptTemplate,
   verifyCandidateReceipt,
-  type HumanPreferenceCandidateReceipt,
 } from './humanPreferenceBrief';
 
 describe('human preference learning v2', () => {
