@@ -149,19 +149,22 @@ Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchma
 
 ---
 
-## TRIGGER: exact-head acceptance / `main` moved / provider says READY
+## TRIGGER: exact-head acceptance / pending-check watch / `main` moved / provider says READY
 
-**Cues:** a validated branch is behind `main`; another PR merged during a long task; Preview succeeded on an older head; provider status is green but the user asked to verify the real site.
+**Cues:** the user asks to watch named CI checks on an exact PR head; a required shard is reported pending; a validated branch is behind `main`; another PR merged during a long task; Preview succeeded on an older head; provider status is green but the user asked to verify the real site.
 
 **Automatic response:**
 
-1. Compare the candidate head with current intended `main`.
-2. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
-3. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
-4. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
-5. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.
-6. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
-7. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
+1. Pin the PR number, exact watched/accepted head SHA, named required checks, notification thresholds, and whether merge is currently authorized.
+2. Perform an immediate live read before creating any watcher. If the requested condition is already true, report it immediately; if the head no longer matches, stop rather than silently retargeting. Only install a real future condition watch when the condition remains pending and the environment actually supports background monitoring.
+3. Compare the candidate head with current intended `main`.
+4. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
+5. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
+6. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
+7. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.
+8. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
+9. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
+10. Keep readiness separate from mutation authority. A later explicit “merge” changes authorization only; re-read the live merge tuple and use expected-head locking rather than spending an earlier readiness report. See `release-closeout-protocol.md` §6.5–8.
 
 ---
 
