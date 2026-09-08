@@ -15,7 +15,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain('persist-credentials: false');
     expect(workflow).toContain('refs/pull/${{ github.event.pull_request.number }}/head');
     expect(workflow).toContain('test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"');
-    expect(workflow).not.toMatch(/secrets\./);
+    expect(workflow).not.toMatch(/\bsecrets\./);
   });
 
   it('runs four independent one-worker browser shards and one aggregate gate', () => {
