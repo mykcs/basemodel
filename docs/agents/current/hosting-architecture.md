@@ -1,8 +1,8 @@
-# Hosting architecture — Vercel Pro + CircleCI shadow + Cloudflare smoke
+# Hosting architecture — Vercel Pro + manual fallbacks + Cloudflare smoke
 
 Last reviewed: **2026-09-08**
 
-Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI is non-blocking post-cutover shadow/fallback evidence; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
+Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI automatic PR/main workflows are disabled and API-triggered fallback only; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
 
 ## Current decision
 
@@ -16,7 +16,6 @@ non-draft PR / release candidate
   -> risk-based Chromium acceptance
   -> Lab gate when relevant
   -> required GitHub status: Vercel
-  -> optional/non-blocking CircleCI shadow
 
 main
   -> Vercel Production
@@ -25,11 +24,12 @@ main
   -> Cloudflare production-smoke observes the real origin
 
 manual CI recovery only
+  -> CircleCI `manual_cloud_ci` via explicit API trigger
   -> GitHub Actions workflow_dispatch
   -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
-Vercel is the ordinary CI and deployment authority. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI does not own merge readiness after the cutover; a red CircleCI shadow result is still actionable evidence, but a merely queued/pending CircleCI job must not block an exact-head Vercel-green PR.
+Vercel is the ordinary CI and deployment authority. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI does not run automatically for PRs or `main`; it exists only as explicit API-triggered recovery and never owns merge readiness.
 
 ## Exact-head acceptance ownership
 
@@ -49,13 +49,13 @@ The first PR Preview without a previous accepted Vercel SHA fails closed to the 
 - build: `npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs`
 - canonical project domain: `https://basemodel-preview.vercel.app`
 
-`vercel-ui-gate.mjs` and the retained CircleCI `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 12-case Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
+`vercel-ui-gate.mjs` and the retained manual CircleCI `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 12-case Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
 
 Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`; Production uses the stable project domain/canonical. `vercel.json` must not disable `main`.
 
-## CircleCI shadow and manual fallback
+## Manual fallback surfaces
 
-The repository-owned `.circleci/config.yml` and its two-shard timing scheduler remain preserved as optional post-cutover shadow/fallback evidence. They are not required GitHub contexts and do not own merge readiness. Do not weaken or delete those contracts merely to make a shadow run green; if a shadow result finds a real regression that Vercel missed, treat that as a Vercel-contract defect and repair the shared acceptance surface.
+The repository-owned `.circleci/config.yml` and its two-shard timing scheduler remain preserved for explicit API-triggered recovery only. Automatic PR and `main` workflows are disabled, so normal repository activity must not start CircleCI. CircleCI is not a required GitHub context and does not own merge readiness. Do not weaken or delete those contracts merely to make a manual recovery run green; if an explicitly triggered fallback finds a real regression that Vercel missed, treat that as a Vercel-contract defect and repair the shared acceptance surface.
 
 The retained `.github/workflows/self-hosted-ci.yml` remains manual `workflow_dispatch` fallback only. No ordinary PR or `main` event should require the Mac runner, and research/GPU servers are never substitute website CI runners.
 
