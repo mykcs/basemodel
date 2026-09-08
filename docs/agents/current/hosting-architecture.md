@@ -2,7 +2,7 @@
 
 Last reviewed: **2026-09-08**
 
-Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI is non-blocking shadow evidence during cutover; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
+Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI is non-blocking post-cutover shadow/fallback evidence; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
 
 ## Current decision
 
@@ -35,8 +35,8 @@ Vercel is the ordinary CI and deployment authority. The stable Production identi
 
 Branch protection keeps strict current-base semantics and requires `Vercel`. Every open PR branch is eligible to reach Vercel. `scripts/vercel-ignore-build.mjs` distinguishes PR acceptance from ordinary branch previews:
 
-- PR Preview: automatic; `[vercel-preview]` is not required;
-- non-PR Preview: exact-head `[vercel-preview]` remains explicit opt-in;
+- every Preview: automatic real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
+- `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;
 - docs/governance-only PR: still runs `verify:deploy`, while the browser planner may skip when UI risk is proven absent;
 - docs/governance-only `main`: ignored as non-deploy-relevant, so an `AGENTS.md`/`docs/agents/**`-only merge cannot publish a new Production website.
 
@@ -55,7 +55,7 @@ Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`; Prod
 
 ## CircleCI shadow and manual fallback
 
-The repository-owned `.circleci/config.yml` and its two-shard timing scheduler remain preserved as shadow/fallback evidence during the migration. They are not required GitHub contexts once the Vercel exact-head gate is qualified. Do not weaken or delete those contracts merely to make a shadow run green; if a shadow result finds a real regression that Vercel missed, treat that as a Vercel-contract defect and repair the shared acceptance surface.
+The repository-owned `.circleci/config.yml` and its two-shard timing scheduler remain preserved as optional post-cutover shadow/fallback evidence. They are not required GitHub contexts and do not own merge readiness. Do not weaken or delete those contracts merely to make a shadow run green; if a shadow result finds a real regression that Vercel missed, treat that as a Vercel-contract defect and repair the shared acceptance surface.
 
 The retained `.github/workflows/self-hosted-ci.yml` remains manual `workflow_dispatch` fallback only. No ordinary PR or `main` event should require the Mac runner, and research/GPU servers are never substitute website CI runners.
 

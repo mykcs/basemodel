@@ -39,7 +39,7 @@ Files under `docs/agents/history/` and `docs/agent-context/` are evidence and ra
 Before creating a branch, running compound local/remote shell automation, or mutating shared experiment-server storage:
 
 - **Repeated correction needs a use-site witness (REPEAT-CORRECTION).** Before repeating the next affected command, design choice, or completion claim, record `trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue` in the existing task/PR record. Reading or linking a retrospective is not proof that its check ran. Follow [the correction-to-action rule](docs/agents/current/project-agent-operating-principles.md#correction-to-action-witness); do not add a new approval layer.
-- **PR acceptance is provider-owned, branch names are semantic.** Open PRs automatically enter the Vercel acceptance path regardless of prefix. Load `branch-and-pr-conventions.md` to choose the semantic owner; use `[vercel-preview]` only when a non-PR branch intentionally needs hosted Preview acceptance.
+- **PR acceptance is provider-owned, branch names are semantic.** Open PRs automatically enter the Vercel acceptance path regardless of prefix. Because the Ignored Build Step cannot safely prove PR identity, every Vercel Preview now fails open into real `verify:deploy`; do not use `[vercel-preview]` as a pre-build safety gate.
 - **Name the shell when syntax matters.** If a command depends on Bash semantics (`VAR=value`, `set -euo pipefail`, loops, arrays, heredocs, process substitution), set the execution tool's shell/interpreter to `/bin/bash` or run a standalone Bash/Python script explicitly. Do not assume an inner `bash -lc` protects a complex command from an outer `fish` parser; nested quoting can fail before Bash starts. A parser failure under `fish` is an execution-surface failure, not repository or server failure.
 - **Shared storage begins read-only.** A model/checkpoint/run is protected by future planned use as well as current process references. “Not mounted/open right now” is never deletion authority. For snapshot-only work load `server-storage-pressure-audit-sop.md`; for the end-to-end organize → passport → publish/verify → reclaim workflow load `server-artifact-governance-and-reclaim-sop.md` as well.
 - **Incomplete namespace is not a complete inventory.** If the currently authorized view exposes only a subset of expected homes, do not enter sibling-user containers or exercise Docker/admin mount capability merely to complete a public ranking. Refresh global facts, preserve the most recent complete anonymous attribution as separately dated historical evidence, and never turn one visible home into “all users.”
@@ -95,10 +95,10 @@ non-draft PR / release candidate
   -> risk-based Chromium acceptance
   -> Lab gate when relevant
   -> required GitHub status: Vercel
-  -> CircleCI may run only as non-blocking shadow evidence during cutover
+  -> CircleCI may run only as non-blocking post-cutover shadow/fallback evidence
 
-non-PR Preview branch
-  -> `[vercel-preview]` remains explicit opt-in
+non-main Preview ref
+  -> Vercel Preview runs real acceptance; `[vercel-preview]` is only a historical/review marker, not an ignore gate
 
 main
   -> Vercel project `basemodel-preview` Production
@@ -112,9 +112,9 @@ manual CI recovery only
 
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
-Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI is retained only as non-blocking shadow evidence during the cutover and must not be a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
+Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI is retained only as non-blocking post-cutover shadow/fallback evidence and must not be a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
-Pull-request Previews are automatic acceptance builds: `scripts/vercel-ignore-build.mjs` must not require `[vercel-preview]` when `VERCEL_GIT_PULL_REQUEST_ID` proves a PR. Non-PR Preview branches remain exact-head opt-in with `[vercel-preview]`. Production on `main` remains automatic and does not require the token.
+Pull-request Previews are automatic acceptance builds. The Ignored Build Step must fail open for **every** `VERCEL_ENV=preview` because real provider evidence showed `VERCEL_GIT_PULL_REQUEST_ID` is not reliable at that pre-build boundary. `[vercel-preview]` no longer controls whether a Git-integrated Preview runs; Production on `main` remains automatic.
 
 **Agent-control documents are never website-production inputs.** A change limited to root `AGENTS.md`, `docs/agents/**`, repository prose, or test-only governance may run repository CI, but `scripts/vercel-ignore-build.mjs` must classify it non-deploy-relevant, so it must not build or replace the Production website. Vercel may still record an `IGNORED`/`CANCELED` Git-integration event before the ignored-build decision; that provider record is not a website publication and must not be reported as Production changed. Cloudflare is not an ordinary deployment provider for this repository.
 
@@ -165,7 +165,7 @@ read LATEST + current policy
 -> classify independent, stacked, superseded and semantically conflicting work
 -> finish one coherent change or one explicit integration/release head before the first provider-triggering push
 -> publish one atomic multi-file branch update when possible
--> let an open PR create its automatic exact-head Vercel acceptance Preview; use `[vercel-preview]` only for a non-PR Preview that intentionally needs hosted acceptance
+-> let an open PR create its automatic exact-head Vercel acceptance Preview; treat any non-main Git Preview as real acceptance too, because ignore-time PR identity is not trusted
 -> verify that exact-head Preview
 -> verify build logs and inspect real Preview route(s)
 -> batch evidence-driven fixes into at most one normal corrective push
@@ -194,7 +194,7 @@ one branch / integration PR
 ```
 
 Do not push every typo, file write, speculative experiment or intermediate thought. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes.
-On ordinary PR branches, Vercel acceptance is automatic and risk-based. On non-PR Preview branches, omit `[vercel-preview]` from intermediate commits and add it only when the exact head is ready for hosted acceptance; ignored non-PR triggers then avoid `verify:deploy`, build, and Playwright.
+Vercel acceptance is automatic and risk-based for every Preview. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it must not decide whether the Ignored Build Step skips a Preview. Control spend by batching ref updates and risk-based browser selection, not by a PR-identity signal unavailable at ignore time.
 
 Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
 

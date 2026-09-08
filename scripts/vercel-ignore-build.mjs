@@ -15,11 +15,9 @@ const BUILD_RELEVANT_CONFIG = [
   /^tsconfig(?:\.[^/]+)?\.json$/,
 ];
 
-export const PREVIEW_OPT_IN_TOKEN = '[vercel-preview]';
-
-export function previewBuildOptedIn(env, commitMessage) {
-  const pullRequestPreview = env.VERCEL_ENV === 'preview' && Boolean(env.VERCEL_GIT_PULL_REQUEST_ID?.trim());
-  return env.VERCEL_ENV !== 'preview' || pullRequestPreview || commitMessage.includes(PREVIEW_OPT_IN_TOKEN);
+export function mustRunAcceptanceBuild(env) {
+  // Required Preview acceptance fails open here because PR identity is not reliable at the Ignored Build Step boundary.
+  return env.VERCEL_ENV === 'preview';
 }
 
 export function isBuildRelevantPath(filePath) {
@@ -50,32 +48,16 @@ function resolveRange(env) {
   return { base: `${head}^`, head };
 }
 
-function commitMessageForHead(env, head) {
-  const fromVercel = env.VERCEL_GIT_COMMIT_MESSAGE?.trim();
-  if (fromVercel) return fromVercel;
-  return runGit(['log', '-1', '--format=%B', head]);
-}
-
 export function main(env = process.env) {
   try {
     const { base, head } = resolveRange(env);
     runGit(['cat-file', '-e', `${base}^{commit}`]);
     runGit(['cat-file', '-e', `${head}^{commit}`]);
 
-    const pullRequestPreview = env.VERCEL_ENV === 'preview' && Boolean(env.VERCEL_GIT_PULL_REQUEST_ID?.trim());
-    if (env.VERCEL_ENV === 'preview') {
-      const commitMessage = commitMessageForHead(env, head);
-      if (!previewBuildOptedIn(env, commitMessage)) {
-        console.log(
-          `[vercel-ignore-build] Non-PR Preview skipped by default. Add ${PREVIEW_OPT_IN_TOKEN} to the exact head commit message when hosted Preview acceptance is intentionally required.`,
-        );
-        process.exitCode = 0;
-        return;
-      }
+    const previewAcceptance = mustRunAcceptanceBuild(env);
+    if (previewAcceptance) {
       console.log(
-        pullRequestPreview
-          ? `[vercel-ignore-build] PR #${env.VERCEL_GIT_PULL_REQUEST_ID} is an automatic Vercel acceptance build.`
-          : `[vercel-ignore-build] Preview opt-in token accepted: ${PREVIEW_OPT_IN_TOKEN}`,
+        '[vercel-ignore-build] Preview acceptance cannot be safely skipped before PR identity is proven; running verify:deploy.',
       );
     }
 
@@ -84,15 +66,15 @@ export function main(env = process.env) {
     const relevantFiles = changedFiles.filter(isBuildRelevantPath);
 
     if (relevantFiles.length === 0) {
-      if (pullRequestPreview) {
+      if (previewAcceptance) {
         console.log(
-          '[vercel-ignore-build] PR acceptance still runs verify:deploy for a docs/governance-only diff; this produces Preview evidence but never changes Production.',
+          '[vercel-ignore-build] Preview acceptance still runs verify:deploy for a docs/governance-only diff; this produces acceptance evidence but never changes Production.',
         );
         process.exitCode = 1;
         return;
       }
       console.log(
-        '[vercel-ignore-build] Proven Git range has no deploy-relevant changes; skip this non-PR Preview or main/Production build.',
+        '[vercel-ignore-build] Proven Git range has no deploy-relevant changes; skip this main/Production build.',
       );
       process.exitCode = 0;
       return;

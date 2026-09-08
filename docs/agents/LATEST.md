@@ -1,6 +1,8 @@
 # Latest Agent handoff
 
-Last updated: **2026-08-28**
+Last updated: **2026-08-28** (research-state snapshot)
+
+CI architecture last verified: **2026-09-08**
 
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
@@ -17,7 +19,9 @@ Production                        -> https://basemodel-preview.vercel.app
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-Every open PR branch is eligible to reach Vercel. `scripts/vercel-ignore-build.mjs` auto-runs PR acceptance when `VERCEL_GIT_PULL_REQUEST_ID` is present; `[vercel-preview]` is now reserved for non-PR Preview branches. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Vercel is the ordinary CI and deployment authority.** CircleCI may remain as non-blocking shadow evidence during cutover; GitHub Actions is retained only as manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner.
+**Live CI control plane (verified 2026-09-08):** protected `main` requires the GitHub status **`Vercel` only**. The Vercel-first cutover is complete; CircleCI has no merge authority.
+
+Every Vercel Preview now enters real acceptance. `scripts/vercel-ignore-build.mjs` intentionally fails open for `VERCEL_ENV=preview` because PR identity is not reliable at the Ignored Build Step boundary; `[vercel-preview]` is only a historical/review marker and never decides whether a Preview runs. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Vercel is the ordinary CI and deployment authority.** CircleCI may remain only as non-blocking post-cutover shadow/fallback evidence; GitHub Actions is retained only as manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner.
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
 

@@ -101,3 +101,11 @@ The stable candidates are the A-class rules above. They are persisted in reposit
 The historical failure at `ebb8a214...` remains a real failed exact-head Vercel deployment; it is not rewritten as a platform outage. The successor `c1ee4f2...` remains the narrow assertion-alignment fix that qualified the hosted contract. The later ruleset change and merge happened concurrently and were observed, not performed by this conversation. Production READY evidence closed the migration at that time.
 
 Future Agents must re-read current repository, GitHub ruleset and Vercel state before acting. This file explains **why** the rules exist; it does not say what is currently pending or green.
+
+## 9. Retrospective closeout self-audit: the required status could still become a false green
+
+While depositing this very case, docs-only PR #566 exposed a second-order flaw. GitHub showed the required `Vercel` context as SUCCESS, but provider readback showed the Preview deployment was `CANCELED` by the Ignored Build Step before `verify:deploy`. Its log classified the open-PR branch as a “Non-PR Preview” because `VERCEL_GIT_PULL_REQUEST_ID` was absent at that pre-build execution boundary. The merge was therefore allowed by a green outer status that did not represent the required repository Gate.
+
+This is historical evidence that the earlier automatic-PR design had an unsafe premise, not evidence that ignored deployments are acceptable. The executable successor removes PR/non-PR discrimination from the Ignored Build Step: every `VERCEL_ENV=preview` fails open into real acceptance. Docs-only `main`/Production can still be ignored because Production publication and PR acceptance have different safety requirements.
+
+The repeated-error lesson is stronger than the original incident: **a rule can be correctly written in current policy and still be violated by its executable classifier.** Closeout must test the actual provider path that is supposed to enforce the rule.

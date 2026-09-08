@@ -1,9 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
-  PREVIEW_OPT_IN_TOKEN,
   isBuildRelevantPath,
-  previewBuildOptedIn,
+  mustRunAcceptanceBuild,
   shouldBuildForFiles,
 } from '../../scripts/vercel-ignore-build.mjs';
 
@@ -26,12 +25,10 @@ describe('Vercel build-budget contract', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
   });
 
-  it('auto-runs PR Preview acceptance while retaining explicit opt-in for non-PR Preview builds', () => {
-    expect(PREVIEW_OPT_IN_TOKEN).toBe('[vercel-preview]');
-    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: intermediate change')).toBe(false);
-    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview', VERCEL_GIT_PULL_REQUEST_ID: '563' }, 'fix: PR change')).toBe(true);
-    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: ready for review [vercel-preview]')).toBe(true);
-    expect(previewBuildOptedIn({ VERCEL_ENV: 'production' }, 'fix: release')).toBe(true);
+  it('fails open to real acceptance for every Preview before PR identity can be proven', () => {
+    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'preview' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'preview', VERCEL_GIT_PULL_REQUEST_ID: '563' })).toBe(true);
+    expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(false);
   });
 
   it('builds for deploy-relevant source and configuration', () => {
@@ -104,11 +101,10 @@ describe('Vercel build-budget contract', () => {
 
   it('keeps docs-only Production skipped while forcing PR verification through Vercel', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
-    expect(ignoreBuildScript).not.toContain('mustRunAcceptanceBuild');
-    expect(ignoreBuildScript).toContain('VERCEL_GIT_PULL_REQUEST_ID');
-    expect(ignoreBuildScript).toContain('PR acceptance still runs verify:deploy');
+    expect(ignoreBuildScript).toContain('mustRunAcceptanceBuild');
+    expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
+    expect(ignoreBuildScript).toContain('Preview acceptance still runs verify:deploy');
     expect(ignoreBuildScript).toContain('VERCEL_ENV');
-    expect(ignoreBuildScript).toContain(PREVIEW_OPT_IN_TOKEN);
     expect(deploymentPolicy).toContain('docs/governance-only PR');
     expect(deploymentPolicy).toContain('must not publish a Production build');
   });
