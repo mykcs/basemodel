@@ -6,6 +6,7 @@ const navigation = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const layout = read('src/layouts/AppLayout.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
+const studyOverview = read('src/components/research/SeedOpenEvoStudyOverview.astro');
 const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
 const resultsZh = read('src/pages/research/seed-openevo/study/results.astro');
 const resultsEn = read('src/pages/en/research/seed-openevo/study/results.astro');
@@ -25,6 +26,7 @@ const studyIds = [
   "id: 'experiment'",
   "id: 'run'",
   "id: 'capability'",
+  "id: 'briefing'",
   "id: 'results'",
 ];
 
@@ -50,18 +52,24 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("label: t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop')");
     expect(navigation).toContain("t('实验流程', 'Experiment workflow')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
-    expect(navigation).toContain("t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration')");
+    expect(navigation).toContain("t('OpenEVO 基础能力探索实验', 'OpenEVO capability exploration')");
+    expect(navigation).toContain("t('阶段汇报', 'Progress briefing')");
+    expect(navigation).toContain("{ id: 'openevo', label: 'OpenEVO'");
     expect(navigation).toContain("t('研究结果', 'Research findings')");
     expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
     expect(navigation).not.toContain('const pages = [');
   });
 
   it('mounts the same canonical nav on research pages and both bridge routes', () => {
-    expect(hub).toContain('<SeedOpenEvoResearchNav locale={locale} page="hub" />');
-    expect(detail).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
+    expect(hub).not.toContain('SeedOpenEvoResearchNav');
+    expect(detail).not.toContain('SeedOpenEvoResearchNav');
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/flow') ? 'hub'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/flow/webshop') ? 'webshop'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/results') ? 'results'");
     expect(layout).toContain("/^\\/research\\/seed-openevo\\/study\\/capability-exploration(?:\\/|$)/.test(localeNeutralPath)");
     expect(layout).toContain("isCapabilityExplorationPage ? 'capability'");
     expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
@@ -73,11 +81,20 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(detail).not.toContain('独立方法框架');
   });
 
-  it('keeps active state and responsive behavior while changing only the contextual child set', () => {
+  it('keeps the canonical research navigation visibly sticky across flow, study, results, and briefing surfaces', () => {
     expect(navigation).toContain("aria-current={item.id === page ? 'page' : undefined}");
     expect(navigation).toContain('overflow-x:auto');
+    expect(navigation).toContain('top:calc(var(--site-header-height) + .5rem)');
     expect(navigation).toContain('@media(max-width:720px)');
     expect(navigation).not.toContain('page ===');
+    expect(layout).toContain('<div class="research-module-nav-shell">');
+    expect(layout).not.toContain('<details class="research-module-nav-shell">');
+    expect(layout).toContain('.research-module-nav-shell :global(.research-navigation){position:static;margin:0}');
+    expect(layout.indexOf('<div class="research-module-nav-shell">')).toBeLessThan(layout.indexOf('<main id="main-content"'));
+    expect(detail).not.toContain('SeedOpenEvoResearchNav');
+    expect(hub).not.toContain('SeedOpenEvoResearchNav');
+    expect(detail).not.toContain('<details class="plain-detail__nav">');
+    expect(studyOverview).not.toContain('.research-module-nav-shell){display:none}');
   });
 
   it('labels Results navigation by the research content rather than report filing language', () => {

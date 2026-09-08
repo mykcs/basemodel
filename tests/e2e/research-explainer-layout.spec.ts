@@ -375,7 +375,7 @@ test('resource menu keeps utility labels and descriptions from overlapping', asy
   expect(issues, issues.join('\n')).toEqual([]);
 });
 
-test('simplified information architecture avoids stacking the retired research mainline', async ({ page }) => {
+test('simplified information architecture keeps the canonical research navigation continuously visible', async ({ page }) => {
   test.skip(!routeInScope('/research/seed-openevo/flow/webshop/'), 'outside hosted focused route scope');
   await page.setViewportSize({ width: 1440, height: 738 });
   for (const path of ['/research/seed-openevo/study/run/', '/research/seed-openevo/flow/webshop/']) {
@@ -384,11 +384,34 @@ test('simplified information architecture avoids stacking the retired research m
     await expect(page.locator('.research-mainline')).toHaveCount(0);
     await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(2);
     const localNavigation = page.locator('[data-research-navigation]').first();
-    const navigationShell = page.locator('details').filter({ has: localNavigation }).first();
-    await expect(navigationShell.locator(':scope > summary')).toBeVisible();
-    await expect(localNavigation).not.toBeVisible();
-    await navigationShell.locator(':scope > summary').click();
     await expect(localNavigation).toBeVisible();
+    await expect(page.locator('details').filter({ has: localNavigation })).toHaveCount(0);
+
+    const firstScreen = await page.evaluate(() => {
+      const header = document.querySelector<HTMLElement>('[data-site-header]');
+      const nav = document.querySelector<HTMLElement>('[data-research-navigation]');
+      if (!header || !nav) return null;
+      const headerRect = header.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      return { headerBottom: headerRect.bottom, navTop: navRect.top };
+    });
+    expect(firstScreen).not.toBeNull();
+    expect(firstScreen!.navTop).toBeGreaterThanOrEqual(firstScreen!.headerBottom - 1);
+
+    await page.evaluate(() => window.scrollTo({ top: Math.min(1200, Math.max(0, document.documentElement.scrollHeight - innerHeight)), behavior: 'auto' }));
+    await page.waitForTimeout(150);
+    await expect(localNavigation).toBeVisible();
+    const scrolled = await page.evaluate(() => {
+      const header = document.querySelector<HTMLElement>('[data-site-header]');
+      const nav = document.querySelector<HTMLElement>('[data-research-navigation]');
+      if (!header || !nav) return null;
+      const headerRect = header.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      return { headerBottom: headerRect.bottom, navTop: navRect.top, navBottom: navRect.bottom };
+    });
+    expect(scrolled).not.toBeNull();
+    expect(scrolled!.navTop).toBeGreaterThanOrEqual(scrolled!.headerBottom - 1);
+    expect(scrolled!.navBottom).toBeGreaterThan(scrolled!.headerBottom);
   }
 });
 
