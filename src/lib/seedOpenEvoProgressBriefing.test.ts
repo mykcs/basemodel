@@ -25,7 +25,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('2026-09-08');
     expect(briefing).toContain('汇报人');
     expect(briefing).toContain('OpenEVO 项目组');
-    expect(briefing).toContain('从“跑出一个结果”，走到“能解释结果、能做公平对照”');
+    expect(briefing).toContain('OpenEVO 做到了什么、这些结果为什么可信、遇到问题以后我们怎样把它变成更干净的下一步实验');
   });
 
   it('puts a plain-language agenda beside a Too long, Don\'t read summary', () => {
@@ -37,6 +37,16 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('接下来优先押哪条线');
   });
 
+
+
+  it('removes meaningless English eyebrow labels and decorative bubbles', () => {
+    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '>Q17 UPDATE<', '>SEED CONTROL<', '>RESEARCH LOGIC<', '>DISCUSSION<']) {
+      expect(briefing).not.toContain(token);
+    }
+    expect(briefing).toContain("Too long, Don't read");
+    expect(briefing).not.toContain('.briefing-slide::before');
+    expect(briefing).not.toContain('.briefing-slide::after');
+  });
   it('starts results with a SEED-paper-style WebShop Score / Succ table', () => {
     expect(briefing).toContain('class="paper-table"');
     expect(briefing).toContain('WebShop Score');
@@ -71,17 +81,22 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('keeps the research arc understandable before internal experiment names', () => {
     expect(briefing).toContain('我们真正想回答的，不只是“最后多少分”');
     expect(briefing).toContain('能力上限 → 参数机制 → 因果控制');
-    expect(briefing).toContain('实验原则：一次只改一个原因');
-    expect(briefing).toContain('工程实现可以变，但不能偷偷变成新的实验变量');
+    expect(briefing).toContain('质量标准：不是“跑出来”，而是能解释、能复现、能公平比较');
+    expect(briefing).toContain('Q17 的目标就是两组只差“候选更新要不要经过 GDR”');
   });
 
-  it('preserves the parameter-mechanism intervention evidence', () => {
-    expect(briefing).toContain('把学习方向搬到旧模型');
-    expect(briefing).toContain('TaskVector');
-    expect(briefing).toContain('3 个同范数随机对照');
-    expect(briefing).toContain('R14、R27、R49');
-    expect(briefing).toContain('0.6082257746');
-    expect(briefing).toContain('没有把它写成“这个方向没用”');
+  it('makes the parameter mechanism genuinely technical with equations, controls, and exact data', () => {
+    expect(briefing).toContain('TaskVector：把“参数方向”变成一个可以被实验操纵的量');
+    expect(briefing).toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
+    expect(briefing).toContain('√(δcᵀGδc) = 0.6082257746');
+    expect(briefing).toContain('θ′(λ) = θ<sub>R14</sub> + λτ');
+    expect(briefing).toContain('λ ∈ &#123;−1, 0, 0.5, 1&#125;');
+    expect(briefing).toContain('‖r<sub>i</sub>‖<sub>F</sub> = ‖τ‖<sub>F</sub>');
+    expect(briefing).toContain('参数基底有 7 个 SD-LoRA 组件，每个组件 rank=8');
+    expect(briefing).toContain('9 个 cell × 每个 64 个配对任务 = 最多 576 条');
+    expect(briefing).toContain('高至少 1.0 个 Task Score 点');
+    expect(briefing).toContain('τ = 0');
+    expect(briefing).toContain('R14 / R27 / R49');
   });
 
   it('explains what 44 and 7 count before asking the GDR question', () => {
@@ -115,12 +130,25 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('Stage2 贡献多少？');
   });
 
-  it('turns anomalies into narrower research questions', () => {
-    expect(briefing).toContain('异常改变了下一个问题');
-    expect(briefing).toContain('Task Score 7.17 → 8.74');
-    expect(briefing).toContain('44 个候选更新，只有 7 个进入模型');
-    expect(briefing).toContain('参数方向算成 0');
-    expect(briefing).toContain('两组在真正比较前就已经不同');
+  it('shows thought, quality, and speed through concrete problem-to-solution evidence', () => {
+    expect(briefing).toContain('遇到问题时，我们怎么把它变成下一步实验');
+    expect(briefing).toContain('可识别性失败，不是因果零效应');
+    expect(briefing).toContain('任何后续差异都不能归因给 GDR');
+    expect(briefing).toContain('思路');
+    expect(briefing).toContain('质量');
+    expect(briefing).toContain('速度');
+    expect(briefing).toContain('9 月 8 日把 Q17 从“不可公平归因”推进到干净对照运行');
+    expect(briefing).toContain('提速 1.63×');
+  });
+
+  it('proves speed without silently changing the experiment', () => {
+    expect(briefing).toContain('636.7 s → 389.6 s');
+    expect(briefing).toContain('1.63×');
+    expect(briefing).toContain('独立的 DirectApply-only 并行资格实验');
+    expect(briefing).toContain('128 条 attempts 逐字节相同');
+    expect(briefing).toContain('5 / 128 完整成功');
+    expect(briefing).toContain('LoRA adapter 和 training loss 全部保持一致');
+    expect(briefing).toContain('DirectApply 并行资格实验 · PR #404');
   });
 
   it('makes the final advisor decision concrete enough to choose', () => {
@@ -156,7 +184,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(contracts).toContain('DirectApply 尚无最终分数');
     expect(contracts).toContain('GDR 到第 13 轮检查点');
     expect(contracts).toContain('DirectApply 第 1 轮为 84 / 128 个有效结果');
-    expect(contracts).toContain("'.cover-kicker'");
+    expect(contracts).toContain("'#briefing-title'");
     expect(briefing).toContain('data-briefing-primary');
   });
 });
