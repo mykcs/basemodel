@@ -30,6 +30,25 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: many open PRs / repository backlog cleanup / parallel release lines
+
+**Cues:** “clean up all open PRs”, “close the backlog”, many stale + current PRs coexist, several Agents produced parallel implementations, or multiple PRs appear to represent one product/research release.
+
+**Automatic response:**
+
+1. Load `multi-pr-semantic-integration-playbook.md` and `release-closeout-protocol.md`; snapshot the **entire live open-PR set**, not only the current user's PRs.
+2. For every candidate classify exact head/base, changed paths, current semantic owner, unique delta, and disposition. Do not use age, mergeability, or open-PR count as authority.
+3. Before closing a stale PR, prove its unique delta is already present, explicitly absorbed into the current owner, intentionally rejected, or retained as historical-only evidence.
+4. When multiple PRs implement one accepted decision, converge them into one live release authority when compatible; preserve worker lineage in closure comments rather than maintaining parallel release paths.
+5. Shared registries/research contracts are reconciled entry-by-entry against the newest authoritative file; never restore an older whole-file snapshot for one useful entry.
+6. Immediately before every shared branch/ref write, refresh its live head. A non-fast-forward invalidates the write snapshot: inspect concurrent movement and rebuild; never force through unknown Agent work.
+7. Treat any integrated/rebuilt head as a fresh exact-head CI/Preview identity. Old green checks are history, not merge authorization.
+8. Keep stale dependency-version/lockfile PRs separate from a coordinated product/scientific release unless dependency change is itself part of the accepted release decision.
+
+Historical case: [`../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md`](../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md).
+
+---
+
 ## TRIGGER: Preview, Production, release, hosting, or Cloudflare
 
 **Cues:** Vercel, deploy, Preview URL, Production, release, Cloudflare Pages/Workers, `pages.dev`, Direct Upload, Wrangler, build quota/count.
