@@ -149,13 +149,13 @@ Several failures were already documented before this conversation:
 3. **Exact-head CI identity** already existed in the release-closeout protocol.
 4. **Historical docs vs current authority** already existed in the governance reconciliation rules.
 
-Why did they recur? The problem was not absence of prose. The use-site trigger was incomplete: “clean up all open PRs” was not explicitly recognized as a semantic-integration scenario requiring a candidate table, per-PR unique-delta extraction, and pre-write live-head witness. As a result, an Agent could have read the right repository generally but still execute one step from stale conversational context.
+Why did they recur? The problem was not absence of prose. The use-site trigger was incomplete: “clean up all open PRs” was not explicit in the multi-PR procedure, so an Agent could have read the right repository generally but still execute one step from stale conversational context.
 
 The correction is therefore hierarchical rather than additive:
 
 - root `AGENTS.md` remains the unique bootstrap;
-- `multi-pr-semantic-integration-playbook.md` receives the new backlog-consolidation procedure;
-- `scenario-trigger-registry.md` gains an observable backlog/parallel-PR trigger;
+- `multi-pr-semantic-integration-playbook.md` receives the backlog-consolidation and absorption-proof procedure;
+- the existing scenario registry already routes overlapping-PR / large cross-site work, so no second backlog trigger is added;
 - this dated file retains causal details and anti-examples only;
 - no volatile PR/GPU/PID state is promoted.
 
@@ -163,7 +163,7 @@ The correction is therefore hierarchical rather than additive:
 
 | Finding | Class | Destination |
 |---|---|---|
-| backlog cleanup is authority migration | A | current multi-PR playbook + trigger |
+| backlog cleanup is authority migration | A | current multi-PR playbook; existing overlapping-PR trigger remains the router |
 | non-fast-forward => snapshot expired | A | current multi-PR playbook; root shared-state guard already owns general form |
 | explicit Bash when syntax depends on Bash | A | already in root/operating principles; history records recurrence, no duplicate rule |
 | exact-head evidence invalidation | A | already in release-closeout protocol; history records recurrence, no duplicate rule |

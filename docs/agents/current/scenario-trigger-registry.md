@@ -30,25 +30,6 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
-## TRIGGER: many open PRs / repository backlog cleanup / parallel release lines
-
-**Cues:** “clean up all open PRs”, “close the backlog”, many stale + current PRs coexist, several Agents produced parallel implementations, or multiple PRs appear to represent one product/research release.
-
-**Automatic response:**
-
-1. Load `multi-pr-semantic-integration-playbook.md` and `release-closeout-protocol.md`; snapshot the **entire live open-PR set**, not only the current user's PRs.
-2. For every candidate classify exact head/base, changed paths, current semantic owner, unique delta, and disposition. Do not use age, mergeability, or open-PR count as authority.
-3. Before closing a stale PR, prove its unique delta is already present, explicitly absorbed into the current owner, intentionally rejected, or retained as historical-only evidence.
-4. When multiple PRs implement one accepted decision, converge them into one live release authority when compatible; preserve worker lineage in closure comments rather than maintaining parallel release paths.
-5. Shared registries/research contracts are reconciled entry-by-entry against the newest authoritative file; never restore an older whole-file snapshot for one useful entry.
-6. Immediately before every shared branch/ref write, refresh its live head. A non-fast-forward invalidates the write snapshot: inspect concurrent movement and rebuild; never force through unknown Agent work.
-7. Treat any integrated/rebuilt head as a fresh exact-head CI/Preview identity. Old green checks are history, not merge authorization.
-8. Keep stale dependency-version/lockfile PRs separate from a coordinated product/scientific release unless dependency change is itself part of the accepted release decision.
-
-Historical case: [`../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md`](../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md).
-
----
-
 ## TRIGGER: Preview, Production, release, hosting, or Cloudflare
 
 **Cues:** Vercel, deploy, Preview URL, Production, release, Cloudflare Pages/Workers, `pages.dev`, Direct Upload, Wrangler, build quota/count.
@@ -168,19 +149,22 @@ Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchma
 
 ---
 
-## TRIGGER: exact-head acceptance / `main` moved / provider says READY
+## TRIGGER: exact-head acceptance / pending-check watch / `main` moved / provider says READY
 
-**Cues:** a validated branch is behind `main`; another PR merged during a long task; Preview succeeded on an older head; provider status is green but the user asked to verify the real site.
+**Cues:** the user asks to watch named CI checks on an exact PR head; a required shard is reported pending; a validated branch is behind `main`; another PR merged during a long task; Preview succeeded on an older head; provider status is green but the user asked to verify the real site.
 
 **Automatic response:**
 
-1. Compare the candidate head with current intended `main`.
-2. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
-3. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
-4. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
-5. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.
-6. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
-7. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
+1. Pin the PR number, exact watched/accepted head SHA, named required checks, notification thresholds, and whether merge is currently authorized.
+2. Perform an immediate live read before creating any watcher. If the requested condition is already true, report it immediately; if the head no longer matches, stop rather than silently retargeting. Only install a real future condition watch when the condition remains pending and the environment actually supports background monitoring.
+3. Compare the candidate head with current intended `main`.
+4. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
+5. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
+6. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
+7. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.
+8. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
+9. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
+10. Keep readiness separate from mutation authority. A later explicit “merge” changes authorization only; re-read the live merge tuple and use expected-head locking rather than spending an earlier readiness report. See `release-closeout-protocol.md` §6.5–8.
 
 ---
 
