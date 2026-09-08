@@ -1,13 +1,13 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
-import SeedOpenEvoStudyOverview from '../../../../components/research/SeedOpenEvoStudyOverview.astro';
+import SeedOpenEvoStudyOverviewReaderFirst from '../../../../components/research/SeedOpenEvoStudyOverviewReaderFirst.astro';
 const locale = 'zh' as const;
 ---
 
 <AppLayout
-  title="OpenEVO (Harness) · WebShop 数据集实验"
-  description="OpenEVO harness 在 WebShop 数据集上的主 benchmark 与机制实验总览，包含 SEED 对照、训练资源、三个研究问题、当前证据与结论边界。"
+  title="OpenEVO Harness · WebShop 数据集实验"
+  description="在 WebShop 上测试 OpenEVO Harness：先看当前最重要结论，再按流程理解实验、结果、机制与复现证据。"
   locale={locale}
 >
-  <SeedOpenEvoStudyOverview locale={locale} />
+  <SeedOpenEvoStudyOverviewReaderFirst locale={locale} />
 </AppLayout>
