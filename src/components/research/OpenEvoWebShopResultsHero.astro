@@ -19,56 +19,72 @@ const navItems = [
 <header class="results-hero">
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo 学习结果后的同一模型，追踪三件事：模型是否真的学到可迁移经验、同一 128 个任务分别给两个模型做完以后是否出现可靠提升、下一轮 OpenEvo 与 SEED 的公平比较还缺什么。',
-    'We compare base Qwen2.5-7B-Instruct with the same model after loading the OpenEvo learning result on the same WebShop tasks. We track whether the model learns transferable experience, whether running both models on the same 128 tasks shows a reliable improvement, and what remains before a fair OpenEvo-versus-SEED comparison.',
+    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo 学习结果后的同一模型。现在最重要的是先判断：同一 128 个任务跑完两边以后，OpenEvo 是否已经显示出可靠优势。',
+    'We compare base Qwen2.5-7B-Instruct with the same model after loading the OpenEvo learning result on the same WebShop tasks. The first question is whether the completed matched 128-task evaluation already shows a reliable advantage.',
   )}</p>
 
-  <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
-    <div class="abstract-row">
-      <span class="abstract-label established">{t('已经知道', 'What we know')}</span>
-      <div class="abstract-copy">
-        <p class="plain">{t(
-          '模型从自己做成功的任务里学习一次以后，面对训练时没见过的新任务，表现确实可以变好；而且这个现象后来又复现了一次。',
-          'After one update from its own successful trajectories, the model can perform better on tasks it did not see during training, and that effect was reproduced independently.',
-        )}</p>
-        <p class="detail">{t(
-          '这个结论来自两次独立的一步更新实验：两次都从训练范围里挑出训练过程中没有出现过的任务。它支持“一次学习后可以迁移到未见任务”，但这些任务不是 SEED 留作正式验证的 0–499 号任务，也不能证明连续很多轮都会越来越好。',
-          'This conclusion comes from two independent one-update experiments, both using tasks from the training range that were not seen during training. It supports transfer after one update, but these are not SEED’s reserved 0–499 validation tasks and it does not establish continual improvement across many updates.',
-        )}</p>
-        <a class="abstract-evidence" href="#evidence-q4">{t('查看这条结论的实验依据 ↓', 'Open the evidence for this claim ↓')}</a>
-      </div>
-    </div>
+  <section class="results-primary" aria-label={t('当前最重要结论', 'Current primary finding')}>
+    <strong>{t('当前结论', 'Current finding')}</strong>
+    <p class="primary-result">{t(
+      '两边各完成 128 个任务，共 256 个有效任务回合。OpenEvo 的平均任务完成度方向更高，但完整成功数与基础模型相同，统计范围也仍然包含“没有差异”。',
+      'Each side completed the same 128 tasks, for 256 valid episodes. Mean task progress is directionally higher with OpenEvo, but exact successes are tied with the base model and the uncertainty range still includes no difference.',
+    )}</p>
+    <p class="primary-boundary">{t(
+      '因此这轮结果还不能写成“OpenEvo 已稳定优于基础模型”。下一步仍是 OpenEvo 与 SEED 的同协议比较；恢复训练状态本身也不等于获准继续消耗正式任务。',
+      'So this result does not establish that OpenEvo is reliably better than the base model. The next scientific step remains a same-protocol OpenEvo-versus-SEED comparison, and restoring training state does not itself authorize more formal task consumption.',
+    )}</p>
+    <a class="primary-evidence" href="#evidence-q7">{t('看这轮 128 题评测证据 ↓', 'Open the 128-task evaluation evidence ↓')}</a>
+  </section>
 
-    <div class="abstract-row">
-      <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
-      <div class="abstract-copy">
-        <p class="plain">{t(
-          '按照纠错后的 SEED 公开代码任务语义，同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计范围仍然包含“没有差异”，所以仍然不能说它稳定更好。',
-          'Using the corrected task semantics recoverable from released SEED code, the same 128 tasks were run once with the base model and once with the same model plus the OpenEvo learning result, for 256 episodes total. Mean task progress is somewhat higher with OpenEvo, but exact success is tied and the uncertainty range still includes no difference, so a stable advantage is not established.',
-        )}</p>
-        <p class="detail">{t(
-          '这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致；随后基础模型和加载冻结 OpenEvo 适配器后的模型各做一遍，256 个任务回合全部有效。OpenEvo 的平均任务完成度方向更高，但统计范围仍包含“没有差异”；原始回合、分析和运行记录都已发布，精确数字放在下方对应实验依据里。',
-          'The 128 tasks were first checked one by one against the released SEED code and all 128 matched. The base model and the same model with the frozen OpenEvo adapter then each ran the panel, producing 256 valid episodes. Mean task progress was directionally higher with OpenEvo, but the uncertainty range still includes no difference. Raw episodes, analysis, and run records are published below.',
-        )}</p>
-        <a class="abstract-evidence" href="#evidence-q7">{t('查看这轮 128 题评测的机器证据 ↓', 'Open machine evidence for this 128-task evaluation ↓')}</a>
+  <details class="progress-detail">
+    <summary>{t('展开完整进度：已经知道 / 最新评测 / 接下来', 'Open full progress: known / latest evaluation / next')}</summary>
+    <div class="abstract-box" aria-label={t('30 秒进度摘要', '30-second progress summary')}>
+      <div class="abstract-row">
+        <span class="abstract-label established">{t('已经知道', 'What we know')}</span>
+        <div class="abstract-copy">
+          <p class="plain">{t(
+            '模型从自己做成功的任务里学习一次以后，面对训练时没见过的新任务，表现确实可以变好；而且这个现象后来又复现了一次。',
+            'After one update from its own successful trajectories, the model can perform better on tasks it did not see during training, and that effect was reproduced independently.',
+          )}</p>
+          <p class="detail">{t(
+            '这个结论来自两次独立的一步更新实验：两次都从训练范围里挑出训练过程中没有出现过的任务。它支持“一次学习后可以迁移到未见任务”，但这些任务不是 SEED 留作正式验证的 0–499 号任务，也不能证明连续很多轮都会越来越好。',
+            'This conclusion comes from two independent one-update experiments, both using tasks from the training range that were not seen during training. It supports transfer after one update, but these are not SEED’s reserved 0–499 validation tasks and it does not establish continual improvement across many updates.',
+          )}</p>
+          <a class="abstract-evidence" href="#evidence-q4">{t('查看这条结论的实验依据 ↓', 'Open the evidence for this claim ↓')}</a>
+        </div>
       </div>
-    </div>
 
-    <div class="abstract-row">
-      <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
-      <div class="abstract-copy">
-        <p class="plain">{t(
-          '下一步是继续 OpenEvo 与 SEED 的方法对方法比较。上一轮 128 个任务已经完成，原本漏存的训练状态也已经用封存输入补齐并核对通过；但“状态补齐”不等于“下一轮训练已获授权”，所以现在仍不能直接继续消耗正式任务。',
-          'The next step is to continue the method-versus-method OpenEvo and SEED comparison. The previous 128-task round is complete and the missing retained training state has been reconstructed from sealed inputs and reconciled, but restoring that state does not authorize another round of formal task consumption.',
-        )}</p>
-        <p class="detail">{t(
-          '方法对方法比较的匹配经验预算目前已经使用 3,584 / 20,640 个任务回合，还剩 17,056。当前规则明确写着：不能继续消耗正式任务、不能为这一步分配 GPU，最终测试也仍然锁定。因此下一步是先单独确认是否允许恢复执行，而不是直接开始下一轮训练。',
-          'The matched experience budget for the method-versus-method comparison has used 3,584 of 20,640 task episodes, leaving 17,056. Current rules say formal task consumption and GPU allocation are not authorized and the final test remains locked. The next step is therefore a separate resumption decision, not immediately starting another training round.',
-        )}</p>
-        <a class="abstract-evidence" href="#next-n2">{t('查看当前执行状态与来源 ↓', 'Open the current execution state and sources ↓')}</a>
+      <div class="abstract-row">
+        <span class="abstract-label latest">{t('最新评测', 'Latest evaluation')}</span>
+        <div class="abstract-copy">
+          <p class="plain">{t(
+            '按照纠错后的 SEED 公开代码任务语义，同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合。OpenEvo 的平均完成度高一点，但完整成功率和基础模型一样，而且统计范围仍然包含“没有差异”，所以仍然不能说它稳定更好。',
+            'Using the corrected task semantics recoverable from released SEED code, the same 128 tasks were run once with the base model and once with the same model plus the OpenEvo learning result, for 256 episodes total. Mean task progress is somewhat higher with OpenEvo, but exact success is tied and the uncertainty range still includes no difference, so a stable advantage is not established.',
+          )}</p>
+          <p class="detail">{t(
+            '这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致；随后基础模型和加载冻结 OpenEvo 适配器后的模型各做一遍，256 个任务回合全部有效。OpenEvo 的平均任务完成度方向更高，但统计范围仍包含“没有差异”；原始回合、分析和运行记录都已发布，精确数字放在下方对应实验依据里。',
+            'The 128 tasks were first checked one by one against the released SEED code and all 128 matched. The base model and the same model with the frozen OpenEvo adapter then each ran the panel, producing 256 valid episodes. Mean task progress was directionally higher with OpenEvo, but the uncertainty range still includes no difference. Raw episodes, analysis, and run records are published below.',
+          )}</p>
+          <a class="abstract-evidence" href="#evidence-q7">{t('查看这轮 128 题评测的机器证据 ↓', 'Open machine evidence for this 128-task evaluation ↓')}</a>
+        </div>
+      </div>
+
+      <div class="abstract-row">
+        <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
+        <div class="abstract-copy">
+          <p class="plain">{t(
+            '下一步是继续 OpenEvo 与 SEED 的方法对方法比较。上一轮 128 个任务已经完成，原本漏存的训练状态也已经用封存输入补齐并核对通过；但“状态补齐”不等于“下一轮训练已获授权”，所以现在仍不能直接继续消耗正式任务。',
+            'The next step is to continue the method-versus-method OpenEvo and SEED comparison. The previous 128-task round is complete and the missing retained training state has been reconstructed from sealed inputs and reconciled, but restoring that state does not authorize another round of formal task consumption.',
+          )}</p>
+          <p class="detail">{t(
+            '方法对方法比较的匹配经验预算目前已经使用 3,584 / 20,640 个任务回合，还剩 17,056。当前规则明确写着：不能继续消耗正式任务、不能为这一步分配 GPU，最终测试也仍然锁定。因此下一步是先单独确认是否允许恢复执行，而不是直接开始下一轮训练。',
+            'The matched experience budget for the method-versus-method comparison has used 3,584 of 20,640 task episodes, leaving 17,056. Current rules say formal task consumption and GPU allocation are not authorized and the final test remains locked. The next step is therefore a separate resumption decision, not immediately starting another training round.',
+          )}</p>
+          <a class="abstract-evidence" href="#next-n2">{t('查看当前执行状态与来源 ↓', 'Open the current execution state and sources ↓')}</a>
+        </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
@@ -87,7 +103,15 @@ const navItems = [
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
   .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
   .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:1.02rem;line-height:1.75}
-  .abstract-box{max-width:960px;margin-top:30px;border-block:2px solid var(--color-text)}
+  .results-primary{max-width:820px;margin-top:24px;padding:18px 0;border-block:2px solid var(--color-text)}
+  .results-primary>strong{display:block;color:var(--color-accent);font-size:.76rem;letter-spacing:.03em}
+  .results-primary p{max-width:76ch;margin:8px 0 0;line-height:1.68}
+  .primary-result{font-size:1rem;color:var(--color-text)}
+  .primary-boundary{font-size:.86rem;color:var(--color-text-muted)}
+  .primary-evidence{display:inline-block;margin-top:12px;color:var(--color-accent);font-size:.78rem;font-weight:780;text-decoration:none}.primary-evidence:hover,.primary-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  .progress-detail{max-width:960px;margin-top:20px;border-bottom:1px solid var(--color-border)}
+  .progress-detail>summary{padding:12px 0;cursor:pointer;color:var(--color-text-muted);font-size:.8rem;font-weight:720}
+  .abstract-box{max-width:960px;margin-top:4px;border-block:1px solid var(--color-border)}
   .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}
   .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
   .abstract-label{font-size:.74rem;font-weight:800;letter-spacing:.04em;line-height:1.7}
