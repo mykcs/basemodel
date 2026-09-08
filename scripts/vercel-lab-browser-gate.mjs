@@ -1,22 +1,9 @@
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import { changedFilesForVercel } from './vercel-git-range.mjs';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const gateOwner = 'scripts/vercel-lab-browser-gate.mjs';
-
-function git(args) {
-  return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
-}
-
-function changedFilesForVercel(env = process.env) {
-  const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
-  const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
-  const base = previous && previous !== head ? previous : `${head}^`;
-  git(['cat-file', '-e', `${base}^{commit}`]);
-  git(['cat-file', '-e', `${head}^{commit}`]);
-  const output = git(['diff', '--name-only', '--no-renames', base, head]);
-  return output ? output.split(/\r?\n/).filter(Boolean) : [];
-}
 
 function isLabRelevant(file) {
   return /^src\/pages\/(?:en\/)?lab\.astro$/.test(file)
@@ -30,6 +17,8 @@ function isLabRelevant(file) {
     || file === 'vercel.json'
     || file === 'scripts/vercel-ui-gate.mjs'
     || file === 'scripts/vercel-ui-plan.ts'
+    || file === 'scripts/vercel-git-range.mjs'
+    || file === 'scripts/request-vercel-final-gate.mjs'
     || /^(?:package|package-lock)\.json$/.test(file)
     || file === gateOwner
     || /^tests\/e2e\/lab-/.test(file)

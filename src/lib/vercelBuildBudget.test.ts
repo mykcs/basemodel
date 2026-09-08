@@ -38,6 +38,7 @@ describe('Vercel build-budget contract', () => {
     expect(enabled['**/*']).toBe(false);
     expect(enabled.main).toBe(true);
     expect(enabled['ci/vercel-gate-final']).toBe(true);
+    expect(enabled['ci/vercel-gate-base']).toBeUndefined();
     expect(enabled['ci/vercel-gate-*']).toBeUndefined();
     expect(enabled['research/**']).toBeUndefined();
     expect(enabled['agent/semantic-release-*']).toBeUndefined();
@@ -98,7 +99,7 @@ describe('Vercel build-budget contract', () => {
       expect(deploymentPolicy).toContain(token);
     }
     expect(latest).toContain('current/deployment-policy.md');
-    expect(vercelWorkflow).toContain('The main saving comes from reducing pushes');
+    expect(vercelWorkflow).toContain('The main saving comes from reducing provider-triggering ref updates');
     expect(vercelWorkflow).toContain('VERCEL_GIT_PREVIOUS_SHA');
   });
 
@@ -119,5 +120,7 @@ describe('Vercel build-budget contract', () => {
     expect(ignoreBuildScript).toContain('VERCEL_ENV');
     expect(deploymentPolicy).toContain('docs/governance-only final candidate');
     expect(deploymentPolicy).toContain('must not publish a Production build');
+    expect(deploymentPolicy).toContain('ci/vercel-gate-base');
+    expect(deploymentPolicy).toContain('request-vercel-final-gate.mjs');
   });
 });
