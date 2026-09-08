@@ -57,6 +57,8 @@ jobs:
   browser:
     name: public-browser-${{ matrix.shard }}-of-4
     runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -70,6 +72,7 @@ jobs:
       CI_BROWSER_INSTALL: '1'
       CI_BROWSER_BUILD: '1'
       CI_PLAYWRIGHT_WITH_DEPS: '0'
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
       PLAYWRIGHT_WORKERS: '1'
     steps:
       - name: Checkout exact PR head

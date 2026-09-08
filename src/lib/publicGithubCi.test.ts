@@ -22,6 +22,8 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain('shard: [1, 2, 3, 4]');
     expect(workflow).toContain("CI_BROWSER_SHARD_TOTAL: '4'");
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
+    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e');
+    expect(workflow).toContain('PLAYWRIGHT_BROWSERS_PATH: /ms-playwright');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');
     expect(workflow).toContain('name: public-ci-gate');
     expect(workflow).toContain('cancel-in-progress: true');
