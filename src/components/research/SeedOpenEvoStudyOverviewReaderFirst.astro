@@ -24,152 +24,118 @@ const capability = p('/research/seed-openevo/study/capability-exploration/');
 
 const questions = [
   {
-    title: { zh: 'OpenEVO 最终真的更强吗？', en: 'Is OpenEVO actually stronger at the end?' },
-    body: { zh: '这是主问题。必须在同一批任务、同一评测规则和匹配预算下比较最终冻结模型，训练过程里的高分不能代替这个答案。', en: 'This is the main question. The final frozen models must be compared on the same tasks, evaluation rules, and matched budget; high training-time scores cannot substitute for that answer.' },
+    id: 'Q1',
+    title: { zh: 'OpenEVO 最终能不能比基线或 SEED 做得更好？', en: 'Can OpenEVO ultimately outperform the baseline or SEED?' },
+    body: { zh: '这是主问题。必须在同一批任务、同一评测规则和匹配预算下比较最终冻结模型；训练过程里的高分不能代替这个答案。', en: 'This is the main question. Final frozen models must be compared on the same tasks, evaluation rules, and matched budget; training-time scores cannot substitute for that answer.' },
   },
   {
-    title: { zh: '如果不同，差异从哪里来？', en: 'If they differ, where does the gap come from?' },
-    body: { zh: '我们把基础模型、起始经验、MiniMax hindsight 等因素拆开，避免把不同起点误写成学习方法本身的效果。', en: 'We separate base model, starting experience, MiniMax hindsight, and related factors so different starting points are not mistaken for method effects.' },
+    id: 'Q2',
+    title: { zh: '如果表现不同，差异从哪里来？', en: 'If performance differs, where does the gap come from?' },
+    body: { zh: '基础模型、起始经验与 MiniMax hindsight 等因素必须拆开，避免把不同起点误写成学习方法本身的效果。', en: 'Base model, starting experience, MiniMax hindsight, and related factors must be separated so different starting points are not mistaken for method effects.' },
   },
   {
+    id: 'Q3',
     title: { zh: '更新筛选是在保护训练，还是挡住了长期有用的更新？', en: 'Does update filtering protect training or block updates that help later?' },
     body: { zh: 'GDR、No-GDR 与 DirectApply 属于机制实验，用来解释训练为什么变化；它们不能直接冒充主 benchmark 的最终结论。', en: 'GDR, No-GDR, and DirectApply are mechanism studies used to explain training behavior; they cannot stand in for the final benchmark conclusion.' },
   },
 ] as const;
 
 const routes = [
-  { href: flowOverview, title: { zh: '我先想看懂整个实验', en: 'I want to understand the experiment first' }, body: { zh: '从 WebShop、SEED、OpenEVO 到训练与评测，按流程建立完整心智模型。', en: 'Build the mental model from WebShop, SEED, and OpenEVO through training and evaluation.' } },
-  { href: results, title: { zh: '我想直接看现在的结果', en: 'I want the current results' }, body: { zh: '看已经封存的测量、统计解释，以及哪些结论现在仍然不能下。', en: 'See sealed measurements, statistical interpretation, and conclusions that are still not justified.' } },
-  { href: capability, title: { zh: '我想知道为什么会这样', en: 'I want to know why this happened' }, body: { zh: '看 1.7B / 3B / 7B、GDR、DirectApply、参数更新与轨迹分析。', en: 'Explore 1.7B / 3B / 7B, GDR, DirectApply, parameter updates, and trajectory analysis.' } },
-  { href: runDetails, title: { zh: '我想复现实验', en: 'I want to reproduce the experiment' }, body: { zh: '进入运行条件、证据文件、开始与停止条件，以及执行入口。', en: 'Open run conditions, evidence files, start/stop criteria, and execution entry points.' } },
+  { href: flowOverview, title: { zh: '流程理解', en: 'Understand the flow' }, body: { zh: 'WebShop、SEED、OpenEVO、训练设计与评测分别是什么。', en: 'What WebShop, SEED, OpenEVO, training design, and evaluation each do.' } },
+  { href: results, title: { zh: '研究结果', en: 'Research results' }, body: { zh: '已经封存的测量、统计解释，以及当前仍不能证明的内容。', en: 'Sealed measurements, statistical interpretation, and what remains unproven.' } },
+  { href: capability, title: { zh: '机制与能力实验', en: 'Mechanism and capability studies' }, body: { zh: '1.7B / 3B / 7B、GDR、DirectApply、参数更新与轨迹分析。', en: '1.7B / 3B / 7B, GDR, DirectApply, parameter updates, and trajectory analysis.' } },
+  { href: runDetails, title: { zh: '运行与复现', en: 'Run and reproduce' }, body: { zh: '运行条件、证据文件、开始与停止条件，以及执行入口。', en: 'Run conditions, evidence files, start/stop criteria, and execution entry points.' } },
 ] as const;
 ---
 
 <main class="study" data-testid="study-overview" data-study-checked="2026-09-07">
   <header class="hero" data-study-orientation>
-    <p class="eyebrow">{zh ? '研究 · WebShop' : 'Research · WebShop'}</p>
-    <h1>OpenEVO Harness</h1>
-    <p class="dek">{zh
-      ? '在 WebShop 上测试一个问题：给 OpenEVO 与 SEED 可比较的实验预算，OpenEVO 能把模型能力推到哪里？'
-      : 'One question on WebShop: under a budget comparable with SEED, how far can the OpenEVO harness push model capability?'}</p>
+    <h1>{zh ? 'OpenEVO (Harness) · WebShop 数据集实验' : 'OpenEVO (Harness) · WebShop dataset experiments'}</h1>
 
-    <nav class="source-links" aria-label={zh ? '论文与研究资源' : 'Paper and research resources'}>
+    <nav class="source-links" aria-label={zh ? '对照、论文与实验资源' : 'Comparison, paper, and experiment resources'}>
       <span>{zh ? '和 SEED 对照' : 'Compared with SEED'}</span>
-      <a href={seedPaper} target="_blank" rel="noreferrer"><span class="paper" aria-hidden="true">▱</span>{zh ? '论文' : 'Paper'}</a>
-      <a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />GitHub</a>
-      <a href={flowOverview}>{zh ? '先看流程' : 'Start with the flow'}</a>
+      <a href={seedPaper} target="_blank" rel="noreferrer"><span class="paper-mark" aria-hidden="true">▱</span>{zh ? 'SEED 论文' : 'SEED paper'}</a>
+      <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
+      <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
     </nav>
 
-    <div class="answer" data-study-answer>
-      <p class="answer-label">{zh ? '现在最重要的答案' : 'The answer that matters now'}</p>
-      <p class="answer-title">{zh ? '还不能宣布 OpenEVO 超过 SEED。' : 'We cannot yet claim OpenEVO beats SEED.'}</p>
-      <p>{zh
-        ? '已经完成的一次同任务 7B 测量里，OpenEVO 的平均 Task Score 从 7.17 提到 8.74，但完整成功仍是 5 / 128；差异的不确定性区间仍包含“没有提升”。真正的 OpenEVO × SEED 同协议最终比较还没完成。'
-        : 'In one completed same-task 7B measurement, mean Task Score moved from 7.17 to 8.74, but exact success stayed 5 / 128; the uncertainty interval still includes no improvement. The final OpenEVO × SEED comparison under one protocol is not finished yet.'}</p>
-      <a href={results}>{zh ? '看结果与证据边界 →' : 'See results and evidence boundaries →'}</a>
+    <div class="tldr" aria-label="TL;DR" data-study-answer>
+      <p class="tldr-label">TL;DR</p>
+      <div>
+        <p class="lead">{zh
+          ? '这项研究问一件事：在可比较的 WebShop 任务预算下，OpenEVO harness 最终能把模型能力推到哪里。主 benchmark 负责回答“最终表现怎样”，机制实验只负责解释“为什么会变好或变差”。'
+          : 'This study asks one thing: under a comparable WebShop task budget, how far can the OpenEVO harness ultimately push model capability? The main benchmark answers final performance; mechanism studies explain why performance may change.'}</p>
+        <p>{zh
+          ? '目前同一批 128 个 WebShop 任务上的 7B 测量中，平均 Task Score 从 7.17 提到 8.74，但完整成功仍是 5 / 128，且差异的 95% 区间仍包含“没有提升”。OpenEVO 与 SEED 的同协议最终比较还没有完成，所以现在不能宣布谁最终更强。'
+          : 'In the completed 7B measurement on the same 128 WebShop tasks, mean Task Score moved from 7.17 to 8.74, but exact success remained 5 / 128 and the 95% interval still includes no improvement. The final matched-protocol OpenEVO-versus-SEED comparison is not complete, so there is no justified winner yet.'}</p>
+      </div>
     </div>
   </header>
 
-  <section class="mental-model" aria-labelledby="model-title">
-    <div class="section-intro">
-      <p class="kicker">01</p>
-      <div>
-        <h2 id="model-title">{zh ? '先用一条线看懂这个研究' : 'Understand the study as one line first'}</h2>
-        <p>{zh ? '细节很多，但主 benchmark 的逻辑只有五步。' : 'There are many details, but the main benchmark has only five steps.'}</p>
-      </div>
+  <section aria-labelledby="questions-title">
+    <div class="section-heading">
+      <span>01</span>
+      <div><h2 id="questions-title">{zh ? '三个研究问题' : 'Three research questions'}</h2><p>{zh ? '一个问题判断最终效果，两个问题解释差异来源。' : 'One question establishes final performance; two questions explain where any difference comes from.'}</p></div>
     </div>
-    <ol class="flowline">
-      <li><span>1</span><strong>WebShop</strong><small>{zh ? '固定任务环境' : 'fixed task environment'}</small></li>
-      <li><span>2</span><strong>OpenEVO Harness</strong><small>{zh ? '收集经验并学习' : 'collect experience and learn'}</small></li>
-      <li><span>3</span><strong>{zh ? '冻结模型' : 'Freeze model'}</strong><small>{zh ? '停止继续学习' : 'stop further learning'}</small></li>
-      <li><span>4</span><strong>{zh ? '固定测试' : 'Frozen evaluation'}</strong><small>Task Score + Exact Success</small></li>
-      <li><span>5</span><strong>{zh ? '和 SEED 比较' : 'Compare with SEED'}</strong><small>{zh ? '相同规则后再下结论' : 'conclude only under matched rules'}</small></li>
-    </ol>
-    <p class="boundary">{zh
-      ? '训练分、候选更新数量和参数变化可以帮助解释过程，但都不能直接当成第 5 步的最终比较结果。'
-      : 'Training scores, candidate-update counts, and parameter changes can explain the process, but none of them is the final comparison in step 5.'}</p>
+    <div class="question-list">
+      {questions.map((item) => (
+        <article><span>{item.id}</span><div><h3>{t(item.title)}</h3><p>{t(item.body)}</p></div></article>
+      ))}
+    </div>
   </section>
 
-  <section class="measurement" aria-labelledby="measurement-title">
-    <div class="section-intro">
-      <p class="kicker">02</p>
-      <div>
-        <h2 id="measurement-title">{zh ? '已经测到正向变化，但证据还不足以证明稳定提升' : 'We measured a positive direction, not a stable improvement'}</h2>
-        <p>{zh ? '这两个数字来自同一批 128 个 WebShop 任务，可以直接比较；SEED 论文的 89.7 不是同一协议，不能放在这里做差。' : 'These two numbers come from the same 128 WebShop tasks and are directly comparable. SEED paper’s 89.7 uses a different protocol and must not be subtracted from them.'}</p>
-      </div>
+  <section aria-labelledby="measurement-title">
+    <div class="section-heading">
+      <span>02</span>
+      <div><h2 id="measurement-title">{zh ? '当前可直接比较的 7B 结果' : 'The 7B result that is directly comparable today'}</h2><p>{zh ? '这两个数字来自同一批 128 个 WebShop 任务和同一评测方式。' : 'These two numbers come from the same 128 WebShop tasks and the same evaluation procedure.'}</p></div>
     </div>
 
-    <div class="paired" aria-label={zh ? '7B 同任务配对测量' : '7B same-task paired measurement'}>
+    <div class="paired" aria-label={zh ? '7B 同任务比较' : '7B same-task comparison'}>
       <div>
-        <p>{zh ? '7B 基础模型' : '7B base model'}</p>
+        <p>{zh ? '7B · 基础模型' : '7B · base model'}</p>
         <strong>7.17</strong><span>/ 100</span>
         <small>5 / 128 {zh ? '完整成功' : 'exact successes'}</small>
       </div>
-      <div class="delta" aria-label={zh ? '平均 Task Score 差异' : 'Mean Task Score difference'}>
-        <span>+1.57</span>
-        <small>95% CI [-3.21, +6.31]</small>
-      </div>
+      <div class="delta"><strong>+1.57</strong><small>95% CI [-3.21, +6.31]</small></div>
       <div>
-        <p>{zh ? '7B + OpenEVO 学习结果' : '7B + OpenEVO learning result'}</p>
+        <p>{zh ? '7B · 使用 OpenEVO 学习结果' : '7B · with OpenEVO learning result'}</p>
         <strong>8.74</strong><span>/ 100</span>
         <small>5 / 128 {zh ? '完整成功' : 'exact successes'}</small>
       </div>
     </div>
 
-    <details class="protocol-note">
-      <summary>{zh ? '为什么不能直接和 SEED 论文的 89.7 比？' : 'Why can’t these numbers be directly compared with SEED paper’s 89.7?'}</summary>
-      <p>{zh
-        ? 'SEED 的 89.7 是论文报告的 WebShop 最终结果，但模型、训练与评测口径和上面这次 7B 配对测量不同。它保留为外部文献参照，不作为同协议胜负结论。'
-        : 'SEED’s 89.7 is the paper-reported final WebShop result, but its model, training, and evaluation protocol differ from the 7B paired measurement above. It remains an external literature reference, not a matched-protocol winner.'}</p>
-      <a href={seedSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSource} />{zh ? '查看 SEED 原始仓库' : 'Open the SEED source repository'}</a>
+    <p class="comparison-boundary">{zh
+      ? 'SEED 论文报告的 89.7 / 100 使用不同的模型、训练与评测口径，因此只能作为外部文献参照，不能和上面两个 7B 分数直接比较。'
+      : 'SEED paper reports 89.7 / 100 under a different model, training setup, and evaluation protocol. It is an external literature reference and cannot be directly compared with the two 7B scores above.'}</p>
+    <details class="depth">
+      <summary>{zh ? '查看这组比较的来源与解释边界' : 'Open sources and interpretation boundaries'}</summary>
+      <p>{zh ? '平均分出现正向方向，但完整成功数没有增加，且置信区间包含零，因此不能证明稳定优势。训练分、候选更新数量或执行进度也不能改写成 final。' : 'The mean moved in a positive direction, but exact successes did not increase and the confidence interval includes zero, so this does not establish a stable advantage. Training scores, candidate-update counts, and execution progress also cannot be relabeled as final.'}</p>
+      <div class="depth-links">
+        <a href={results}>{zh ? '完整结果与统计解释 →' : 'Full results and statistical interpretation →'}</a>
+        <a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '128 任务语义核对记录' : '128-task semantic-validation record'}</a>
+        <a href={seedSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSource} />{zh ? 'SEED 原始仓库' : 'SEED source repository'}</a>
+      </div>
     </details>
   </section>
 
-  <section class="questions" aria-labelledby="questions-title">
-    <div class="section-intro">
-      <p class="kicker">03</p>
-      <div>
-        <h2 id="questions-title">{zh ? '一个主问题，两个“为什么”问题' : 'One main question, then two “why” questions'}</h2>
-        <p>{zh ? '先判断最终表现，再解释差异来源和更新机制。这个顺序不能倒过来。' : 'First establish final performance, then explain where any difference came from and how the update mechanism behaved.'}</p>
-      </div>
+  <section aria-labelledby="routes-title">
+    <div class="section-heading">
+      <span>03</span>
+      <div><h2 id="routes-title">{zh ? '研究入口' : 'Research routes'}</h2><p>{zh ? '背景、结果、机制与复现各自只有一个语义 owner，避免在总览里重复讲一遍。' : 'Background, results, mechanisms, and reproduction each keep one semantic owner instead of being repeated on the overview.'}</p></div>
     </div>
-    <div class="question-list">
-      {questions.map((item, index) => (
-        <article>
-          <span>Q{index + 1}</span>
-          <div><h3>{t(item.title)}</h3><p>{t(item.body)}</p></div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="routes" aria-labelledby="routes-title">
-    <div class="section-intro">
-      <p class="kicker">04</p>
-      <div>
-        <h2 id="routes-title">{zh ? '接下来按你的问题继续' : 'Continue by the question you have next'}</h2>
-        <p>{zh ? '导航不按仓库对象分类，而按读者下一步真正想知道什么分类。' : 'These routes are organized by the reader’s next question, not by repository objects.'}</p>
-      </div>
-    </div>
-    <nav class="route-list" aria-label={zh ? '研究下一步' : 'Research next steps'}>
-      {routes.map((item) => (
-        <a href={item.href}>
-          <div><strong>{t(item.title)}</strong><span>{t(item.body)}</span></div>
-          <b aria-hidden="true">→</b>
-        </a>
-      ))}
+    <nav class="route-list" aria-label={zh ? '研究详情入口' : 'Research detail routes'}>
+      {routes.map((item) => <a href={item.href}><div><strong>{t(item.title)}</strong><span>{t(item.body)}</span></div><b aria-hidden="true">→</b></a>)}
     </nav>
   </section>
 
   <details class="provenance">
-    <summary>{zh ? '研究状态与来源（审计层）' : 'Research state and sources (audit layer)'}</summary>
+    <summary>{zh ? '当前状态来源与核验边界' : 'Current-state sources and verification boundary'}</summary>
     <div>
       <p>{zh
-        ? '页面科学状态核验日期为 2026-09-07。openevo-experiment 是科学状态权威。MiniMax-teacher SEED Stage2 successor 已预注册，但正式任务消耗仍需明确授权；因此本页不会把未封存训练进度写成最终结果。'
-        : 'Scientific state on this page was checked on 2026-09-07. openevo-experiment is the scientific authority. The MiniMax-teacher SEED Stage2 successor is preregistered, while formal task consumption still requires explicit authorization; unsealed training progress is therefore not presented as a final result.'}</p>
+        ? '核验日期：2026-09-07。科学状态以 openevo-experiment 为权威；MiniMax-teacher SEED Stage2 successor 已预注册，但正式任务消耗仍需明确授权。因此这里不复制聊天记录里的历史 Rxx 进度，也不把任何未封存训练分写成 final。'
+        : 'Checked 2026-09-07. openevo-experiment is the scientific authority. The MiniMax-teacher SEED Stage2 successor is preregistered, while formal task consumption still requires explicit authorization. This page therefore does not copy historical Rxx counters from chat or relabel unsealed training scores as final.'}</p>
       <ul>
         <li><a href={currentMain} target="_blank" rel="noreferrer"><ExternalBrandMark href={currentMain} />openevo-experiment/main @ 1ad894c</a></li>
-        <li><a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '128 任务语义核对记录' : '128-task semantic-validation record'}</a></li>
         <li><a href={seedSuccessor} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSuccessor} />{zh ? 'SEED Stage2 successor 预注册' : 'SEED Stage2 successor preregistration'}</a></li>
         <li><a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />{zh ? 'OpenEVO 实验仓库' : 'OpenEVO experiment repository'}</a></li>
       </ul>
@@ -179,38 +145,16 @@ const routes = [
 
 <style>
   .study{width:min(1080px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
-  .hero{max-width:960px;padding:3.2rem 0 3rem}
-  .eyebrow,.kicker{margin:0;color:var(--color-text-muted);font-size:.72rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
-  .hero h1{max-width:900px;margin:.55rem 0 0;font-size:clamp(3rem,8vw,6.8rem);line-height:.94;letter-spacing:-.065em}
-  .dek{max-width:780px;margin:1.3rem 0 0;font-size:clamp(1.2rem,2.5vw,1.7rem);line-height:1.48;letter-spacing:-.02em}
-  .source-links{display:flex;flex-wrap:wrap;gap:.45rem 1rem;align-items:center;margin:1.15rem 0 0;color:var(--color-text-muted);font-size:.84rem}
-  .source-links>span{font-weight:700;color:var(--color-text)}
-  .source-links a{display:inline-flex;align-items:center;gap:.32rem;color:inherit;text-underline-offset:.2em}.paper{font-size:1.05rem}
-  .answer{max-width:820px;margin:3.2rem 0 0;padding:1.4rem 0 1.55rem;border-block:1px solid var(--color-text)}
-  .answer-label{margin:0 0 .55rem;color:var(--color-text-muted);font-size:.78rem;font-weight:750}
-  .answer-title{margin:0;font-size:clamp(1.65rem,3vw,2.55rem);line-height:1.15;letter-spacing:-.035em;font-weight:800}
-  .answer p:not(.answer-label):not(.answer-title){max-width:75ch;margin:.85rem 0 0;color:var(--color-text-muted);font-size:.98rem;line-height:1.72}
-  .answer a{display:inline-block;margin-top:.9rem;color:var(--color-accent);font-size:.9rem;font-weight:750;text-underline-offset:.2em}
-  section{padding:3.2rem 0;border-top:1px solid var(--color-border)}
-  .section-intro{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;max-width:900px;margin-bottom:1.6rem}
-  .kicker{padding-top:.35rem;color:var(--color-accent)}
-  .section-intro h2{margin:0;font-size:clamp(1.7rem,3.6vw,2.85rem);line-height:1.12;letter-spacing:-.04em}
-  .section-intro div>p{max-width:72ch;margin:.65rem 0 0;color:var(--color-text-muted);line-height:1.7}
-  .flowline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;padding:0;list-style:none;border-block:1px solid var(--color-text)}
-  .flowline li{position:relative;padding:1.15rem 1rem 1.15rem 0;min-height:118px}.flowline li+li{padding-left:1rem;border-left:1px solid var(--color-border)}
-  .flowline li+li::before{content:'→';position:absolute;left:-.46rem;top:1.05rem;padding:0 .12rem;background:var(--color-bg);color:var(--color-text-muted)}
-  .flowline span{display:block;margin-bottom:1rem;color:var(--color-text-muted);font-size:.7rem}.flowline strong{display:block;font-size:.96rem;line-height:1.35}.flowline small{display:block;margin-top:.35rem;color:var(--color-text-muted);line-height:1.45}
-  .boundary{max-width:78ch;margin:1rem 0 0;color:var(--color-text-muted);font-size:.88rem;line-height:1.7}
-  .paired{display:grid;grid-template-columns:1fr minmax(150px,.55fr) 1fr;align-items:stretch;border-block:1px solid var(--color-text)}
-  .paired>div{padding:1.25rem 0}.paired>div:last-child{padding-left:1.2rem;border-left:1px solid var(--color-border)}
-  .paired p{margin:0 0 .8rem;color:var(--color-text-muted);font-size:.8rem}.paired strong{font-size:clamp(2.4rem,6vw,4.6rem);line-height:.9;letter-spacing:-.055em;font-variant-numeric:tabular-nums}.paired>div>span{margin-left:.3rem;color:var(--color-text-muted)}
-  .paired small{display:block;margin-top:.75rem;color:var(--color-text-muted)}
-  .delta{display:grid;place-content:center;text-align:center;border-left:1px solid var(--color-border)}.delta span{margin:0!important;color:var(--color-text);font-size:1.45rem;font-weight:800}.delta small{margin:.4rem 0 0}
-  .protocol-note,.provenance{margin-top:1rem;border-bottom:1px solid var(--color-border)}
-  .protocol-note summary,.provenance summary{cursor:pointer;padding:.9rem 0;font-weight:750}.protocol-note p,.provenance p{max-width:80ch;margin:0;color:var(--color-text-muted);font-size:.88rem;line-height:1.7}.protocol-note a,.provenance a{display:inline-flex;align-items:center;gap:.35rem;margin-top:.7rem;color:var(--color-accent);font-size:.82rem;overflow-wrap:anywhere}.provenance div{padding-bottom:1.1rem}.provenance ul{margin:.7rem 0 0;padding-left:1.1rem}.provenance li+li{margin-top:.3rem}
-  .question-list{border-top:1px solid var(--color-border)}.question-list article{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;padding:1.25rem 0;border-bottom:1px solid var(--color-border)}.question-list article>span{color:var(--color-accent);font-size:.76rem;font-weight:800}.question-list h3{margin:0;font-size:1.08rem;line-height:1.45}.question-list p{max-width:75ch;margin:.45rem 0 0;color:var(--color-text-muted);font-size:.9rem;line-height:1.7}
-  .route-list{border-block:1px solid var(--color-text)}.route-list a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:1.1rem 0;color:var(--color-text);text-decoration:none}.route-list a+a{border-top:1px solid var(--color-border)}.route-list strong{display:block;font-size:1rem}.route-list span{display:block;max-width:76ch;margin-top:.28rem;color:var(--color-text-muted);font-size:.86rem;line-height:1.6}.route-list b{color:var(--color-accent)}.route-list a:hover strong,.route-list a:focus-visible strong{text-decoration:underline;text-underline-offset:.2em}
+  .hero{max-width:980px;padding:2.6rem 0 3rem}
+  .hero h1{margin:0;font-size:clamp(2.6rem,6.4vw,5.4rem);line-height:1;letter-spacing:-.055em;word-break:keep-all}
+  .source-links{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;margin:1.05rem 0 0;color:var(--color-text-muted);font-size:.84rem;line-height:1.5}.source-links>span{font-weight:760;color:var(--color-text)}.source-links a{display:inline-flex;align-items:center;gap:.32rem;color:inherit;text-underline-offset:.2em}.paper-mark{font-size:1.05rem}
+  .tldr{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:1rem;margin:2rem 0 0;padding:1.35rem 0;border-block:1px solid var(--color-text)}.tldr-label{margin:.2rem 0 0;color:var(--color-accent);font-size:.76rem;font-weight:800;letter-spacing:.04em}.tldr div{max-width:78ch}.tldr div p{margin:0;font-size:1rem;line-height:1.72}.tldr .lead{font-size:clamp(1.12rem,2vw,1.35rem);line-height:1.55;letter-spacing:-.015em}.tldr div p+p{margin-top:.85rem;color:var(--color-text-muted)}
+  section{padding:3rem 0;border-top:1px solid var(--color-border)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;max-width:900px;margin-bottom:1.5rem}.section-heading>span{padding-top:.35rem;color:var(--color-accent);font-size:.72rem;font-weight:800}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.5vw,2.7rem);line-height:1.13;letter-spacing:-.04em}.section-heading div>p{max-width:72ch;margin:.6rem 0 0;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
+  .question-list{border-top:1px solid var(--color-border)}.question-list article{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--color-border)}.question-list article>span{color:var(--color-accent);font-size:.74rem;font-weight:800}.question-list h3{margin:0;font-size:1.04rem;line-height:1.5}.question-list p{max-width:76ch;margin:.42rem 0 0;color:var(--color-text-muted);font-size:.89rem;line-height:1.68}
+  .paired{display:grid;grid-template-columns:1fr minmax(150px,.55fr) 1fr;border-block:1px solid var(--color-text)}.paired>div{padding:1.2rem 0}.paired>div:last-child{padding-left:1.2rem;border-left:1px solid var(--color-border)}.paired p{margin:0 0 .8rem;color:var(--color-text-muted);font-size:.8rem}.paired>div>strong{font-size:clamp(2.4rem,5.5vw,4.5rem);line-height:.9;letter-spacing:-.055em;font-variant-numeric:tabular-nums}.paired>div>span{margin-left:.3rem;color:var(--color-text-muted)}.paired small{display:block;margin-top:.7rem;color:var(--color-text-muted)}.paired .delta{display:grid;place-content:center;text-align:center;border-left:1px solid var(--color-border)}.paired .delta strong{font-size:1.45rem;letter-spacing:-.02em}.paired .delta small{margin-top:.35rem}
+  .comparison-boundary{max-width:80ch;margin:1rem 0 0;color:var(--color-text-muted);font-size:.88rem;line-height:1.7}.depth,.provenance{margin-top:1rem;border-bottom:1px solid var(--color-border)}.depth summary,.provenance summary{cursor:pointer;padding:.9rem 0;font-weight:760}.depth p,.provenance p{max-width:80ch;margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.7}.depth-links{display:flex;flex-wrap:wrap;gap:.5rem 1rem;padding:.7rem 0 1rem}.depth a,.provenance a{display:inline-flex;align-items:center;gap:.32rem;color:var(--color-accent);font-size:.82rem;overflow-wrap:anywhere}.provenance div{padding-bottom:1rem}.provenance ul{margin:.7rem 0 0;padding-left:1.1rem}.provenance li+li{margin-top:.3rem}
+  .route-list{border-block:1px solid var(--color-text)}.route-list a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:1.05rem 0;color:var(--color-text);text-decoration:none}.route-list a+a{border-top:1px solid var(--color-border)}.route-list strong{display:block;font-size:.98rem}.route-list span{display:block;max-width:76ch;margin-top:.25rem;color:var(--color-text-muted);font-size:.84rem;line-height:1.58}.route-list b{color:var(--color-accent)}.route-list a:hover strong,.route-list a:focus-visible strong{text-decoration:underline;text-underline-offset:.2em}
   a:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
-  @media(max-width:760px){.study{width:min(100% - 1.25rem,1080px)}.hero{padding-top:1.7rem}.section-intro{grid-template-columns:2rem minmax(0,1fr);gap:.65rem}.flowline{grid-template-columns:1fr}.flowline li{min-height:0;padding:1rem 0}.flowline li+li{padding-left:0;border-left:0;border-top:1px solid var(--color-border)}.flowline li+li::before{display:none}.flowline span{margin-bottom:.35rem}.paired{grid-template-columns:1fr}.paired>div,.paired>div:last-child{padding:1rem 0;border-left:0}.delta{padding:1rem 0!important;border-block:1px solid var(--color-border);border-left:0}.question-list article{grid-template-columns:2rem minmax(0,1fr)}}
-  @media(max-width:390px){.hero h1{font-size:clamp(2.9rem,16vw,4.2rem)}.dek{font-size:1.12rem}.answer{margin-top:2.2rem}section{padding:2.5rem 0}}
+  @media(max-width:760px){.study{width:min(100% - 1.25rem,1080px)}.hero{padding-top:1.6rem}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.6rem}.paired{grid-template-columns:1fr}.paired>div,.paired>div:last-child{padding:1rem 0;border-left:0}.paired .delta{padding:1rem 0;border-block:1px solid var(--color-border);border-left:0}.question-list article{grid-template-columns:2rem minmax(0,1fr)}}
+  @media(max-width:430px){.hero h1{font-size:clamp(2.45rem,12vw,3.55rem)}.tldr{grid-template-columns:1fr;gap:.55rem}.tldr-label{margin:0}section{padding:2.5rem 0}}
 </style>
