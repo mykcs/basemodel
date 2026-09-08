@@ -248,7 +248,7 @@ AND the required build path actually executed
 
 `CANCELED`, ignored build, or policy skip is **SKIPPED BY POLICY**, not a product Preview PASS. This remains true when the outer GitHub `Vercel` context is green.
 
-`scripts/vercel-ignore-build.mjs` evaluates both the exact-head `[vercel-preview]` opt-in and the deploy-relevant changed range. A zero-content release-marker commit can therefore carry the token while still producing an ignored deployment because `previous -> head` contains no deploy-relevant path. When hosted Preview acceptance is required, the exact head that carries `[vercel-preview]` must also contain (or otherwise prove in its evaluated range) the deploy-relevant candidate change.
+For an open PR, `scripts/vercel-ignore-build.mjs` treats the Preview as automatic acceptance when `VERCEL_GIT_PULL_REQUEST_ID` is present; `[vercel-preview]` is no longer a PR requirement. The token remains only for non-PR Preview branches. A PR acceptance claim still requires the required build path to have executed; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
 
 Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
 
@@ -452,13 +452,13 @@ Do not collapse these stages into “CI green” or “merged successfully.”
 Before diagnosing a Vercel outage or integration failure, inspect:
 
 ```text
-is this branch/ref eligible under vercel.json git.deploymentEnabled?
+is this an open PR (automatic Vercel acceptance) or a non-PR Preview that requires `[vercel-preview]`?
 did Vercel create a deployment object for the exact SHA?
 was the deployment READY / ERROR / CANCELED / ignored?
 is the GitHub status callback describing a real deployment or only provider status state?
 ```
 
-A branch intentionally excluded by deployment policy is a **policy outcome**, not a provider outage. If exact-head hosted acceptance is required, use a ref/deployment path allowed by the current repository policy rather than misclassifying the absence of a Preview as flakiness.
+A non-PR Preview intentionally skipped by deployment policy is a **policy outcome**, not a provider outage. An open PR is expected to produce an automatic Vercel acceptance path; absence of that path is therefore an actionable integration/policy defect, not something to paper over with a no-op commit.
 
 Do not create no-op commits/ref mutations merely to probe whether Git integration will “wake up”. Shared repository state is not a provider-discovery scratchpad; use provider/repository reads first.
 

@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-06**
+Last reviewed: **2026-09-08**
 
 ## Authority
 
@@ -8,60 +8,56 @@ Last reviewed: **2026-09-06**
 GitHub = canonical source
 
 non-draft PR merge candidate
--> CircleCI GitHub App CI
--> deterministic repository gate
--> risk-based Chromium acceptance (focused or 2 full shards)
+-> Vercel Pro Preview (automatic for PRs)
+-> npm run verify:deploy
+-> npm run build
+-> risk-based Chromium acceptance
+-> 12-case Lab acceptance when relevant
+-> required GitHub status: Vercel
+-> CircleCI may run as non-blocking shadow evidence during cutover
 
 main
--> CircleCI post-merge revalidation
 -> Vercel Production
+-> the same deterministic + risk-based browser contract
 -> https://basemodel-preview.vercel.app
+-> Cloudflare production-smoke observes the released origin
 
 manual recovery only
 -> GitHub Actions workflow_dispatch
 -> repository-scoped Mac/OrbStack runner
 ```
 
-**Vercel is the only ordinary deployment authority. CircleCI is the ordinary CI execution authority.** GitHub Actions hosted compute and GitHub Pages remain outside the ordinary Base Model path. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
+**Vercel is the ordinary CI and deployment authority.** GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary Base Model path. CircleCI is retained only as non-blocking shadow evidence while the Vercel-first cutover is being observed; a pending CircleCI job must not hold a merge after the exact-head required Vercel status is green. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
 
-### CircleCI primary CI
+### Exact-head and current-base acceptance
 
-The repository-owned `.circleci/config.yml` is the primary CI contract. The `mykcs` CircleCI organization is connected through the CircleCI GitHub App for `mykcs/basemodel`; provider-side trigger configuration must stay narrow:
+`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Vercel validates the exact PR head. If `main` moves, strict protection makes the branch stale and forces a current-base update plus a fresh Vercel result before merge; a historical Preview is never current merge evidence.
 
-- non-draft PR opened;
-- PR marked ready for review;
-- pushes to open non-draft PRs;
-- pushes to the default branch.
+For PR Previews, `scripts/vercel-ui-plan.ts` uses the previous accepted Vercel SHA when available. A first PR Preview with no previous accepted SHA **fails closed to the complete Chromium matrix** instead of pretending that `HEAD^` represents the whole PR. Later Preview runs compare the accumulated range from the previous accepted Vercel SHA to the current head. Unknown comparison state also fails closed to full coverage.
 
-Draft iteration therefore consumes no heavy browser CI until the PR becomes merge-ready. Redundant branch workflows are auto-cancelled provider-side.
+### PR Preview and non-PR Preview policy
 
-`main` branch protection uses strict up-to-date semantics and requires all three cloud contexts:
+`vercel.json -> git.deploymentEnabled` allows ordinary branch refs to reach Vercel's classifier. The expensive build policy remains inside `scripts/vercel-ignore-build.mjs`:
 
-```text
-ci/circleci: deterministic
-ci/circleci: browser_shard_1
-ci/circleci: browser_shard_2
+- a proven PR Preview (`VERCEL_ENV=preview` plus `VERCEL_GIT_PULL_REQUEST_ID`) is an automatic acceptance build and does **not** require `[vercel-preview]`;
+- a non-PR Preview still requires `[vercel-preview]` on the exact head, so exploratory branch pushes remain opt-in;
+- a docs/governance-only PR still runs `verify:deploy` so repository contracts are actually checked, but the browser planner may skip Chromium when the diff is proven non-UI;
+- a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
+
+### Risk-aware browser gate on Vercel Pro
+
+The Vercel build command is:
+
+```bash
+npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs
 ```
 
-A PR check must validate the **merge candidate**, not merely the branch head. `scripts/ci-circleci-prepare.sh` materializes `base + PR head` as a two-parent synthetic merge commit and exports the exact comparison range used by all three jobs. If base/head identity cannot be proven, CI fails closed.
-
-The cloud runtime is pinned to the qualified Debian 12 / Node 24 container identity. Deterministic validation and browser validation are separate jobs. Full browser acceptance uses two independent CircleCI `medium` shards with one Playwright worker each. `scripts/ci-ui-test-list.mjs` enumerates the current canonical Chromium suite and assigns individual test cases by the exact `202609061200` one-worker timing receipt; unknown or renamed tests remain included with a conservative weight. Focused browser work is owned by shard 1 and the other shards exit before browser installation. Documentation-only PRs exit before npm/browser work after the documentation contract passes.
-Provider control commands do not automatically imply shell termination: CircleCI `circleci-agent step halt` stops later steps but the current shell continues. Any successful early-exit branch must explicitly terminate the current shell (for example `exit 0`) and have a deterministic guard so a valid docs-only plan cannot fall through into a fail-closed `mode != full` branch.
-
-CI subprocesses must also be explicitly non-interactive when their output is attached to runner terminal streams. Do not assume `CI=1`, a container runtime, or a hosted runner disables tool pagers or prompts. Git commands that can inherit stdout/stderr must disable paging at the command boundary (for example `git --no-pager`); a no-output timeout after the planner/tests have already succeeded should be investigated as a blocked pager/prompt before changing timeout policy.
-
-Do not treat CircleCI provider configuration, a green historical run, or a branch-head benchmark as merge evidence. Required acceptance is the current exact PR head/current-base result plus the repository's ordinary merge rules.
-
-The 2026-09-06 adaptive CircleCI historical-timing scheduler experiment was qualified for correctness but did not demonstrate a meaningful repeatable steady-state wall-clock gain and was reverted. Current authority remains the exact-test static timing scheduler described above. Do not resurrect the adaptive implementation from historical PRs; any successor must use the frozen causal benchmark protocol in `website-engineering-standard.md` §6.2.
-
-### Risk-aware browser gate
-
-Browser regression does not run inside the ordinary Vercel Production build. `scripts/ci-ui-gate.mjs` reuses `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific duplicate.
+`vercel-ui-gate.mjs` and `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific weaker copy.
 
 ```text
 non-UI / governance-only diff
--> deterministic documentation contract
--> browser jobs halt before install
+-> verify:deploy + static build
+-> hosted browser layer may skip
 
 bounded route-owned UI diff
 -> verify:deploy + build
@@ -69,39 +65,21 @@ bounded route-owned UI diff
 
 shared/global/unknown UI diff
 -> verify:deploy + build
--> complete Chromium matrix split across two cloud shards
+-> complete canonical Chromium matrix
 
 Lab/server-relevant diff
--> dedicated 12-case Lab gate on shard 1
+-> dedicated 12-case Lab gate
 ```
 
-Changes to the CI/browser gate, CircleCI config, merge-candidate preparation, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions or silently reclassify unknown ownership merely to reduce credits.
+Changes to the Vercel gate, planner, deployment config, CircleCI shadow config, merge-candidate tooling, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions, reader-contract checks, scientific-content boundaries, or unknown-owner handling merely to reduce wall time or credits.
 
-The page-local `OpenEvoMechanismMap.astro` owner maps to its Chinese and English
-`capability-exploration/mechanism-1-0/` routes. A change confined to that owner and
-safe documentation runs the complete `openevo-two-map.spec.ts` suite (including
-its registered reader-journey and research-deep-dive cases), exact-route
-desktop/mobile × light/dark smoke, and the existing overflow preflight on shard 1.
-Shard 2 exits before npm/browser installation. The deterministic Gate/build and
-post-merge revalidation remain intact. A structural test checks all source files
-for additional consumers and rejects global styles/scripts in this owner. New
-consumers require revisiting the mapping; changes to shared research primitives,
-data, global CSS, or browser tests still use full coverage. The planner change
-itself must qualify through full CI before it can govern ordinary page changes.
-The bounded replay protocol and adoption evidence are indexed in
-[`mechanism CI route ownership`](../history/2026-09-07-mechanism-ci-route-ownership.md).
+The canonical Chromium suite remains `npm run test:ui`. Vercel chooses Playwright workers from visible build CPUs with the existing half-CPU rule capped at four; provider evidence, not a hard-coded Pro assumption, decides the actual worker count. CircleCI's two-shard implementation and static timing receipt remain useful shadow/fallback evidence but no longer own merge readiness.
 
 ### Budget-first execution
 
-The default full-browser pool is two independent `medium` executors, one Playwright worker per executor, retries=0, using the unchanged canonical exact-test scheduler. This restores the previously qualified lower-credit profile rather than making the four-medium latency trade-off the default. The full suite, overflow and Lab gates remain intact; only their executor partition changes. The historical four-medium measurement is retained as a latency/cost trade-off, not rewritten as an invalid run or a saving.
-
-The shared UI planner runs with the pinned Node runtime before dependency installation. CircleCI sets `CI_BROWSER_INSTALL=1`; `ci-ui-gate.mjs` installs dependencies only after the plan proves that this shard owns browser work. Against the previous four-job configuration, a skip plan installs zero browser-job dependency trees instead of four, focused mode installs one instead of four, and full mode installs two instead of four. Pure Markdown PRs already exited before npm and continue doing so.
-
-The no-dependency/failed-installer regressions run only in the full deterministic path so prose-only PRs do not pay their fixture cost. Main post-merge revalidation, the deterministic check and both complete-coverage browser contexts remain required from the same CircleCI App. Protection must be migrated only after both new exact-head browser partitions and deterministic pass; never leave stale required shard names or bypass an actually failing check.
+Vercel Pro is metered, so the speed gain does not authorize push spam. Keep `github.autoJobCancelation=true`, finish coherent batches before pushing, let PR heads run the risk-aware acceptance path, and reserve `[vercel-preview]` for non-PR hosted review. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
-
-For the owner's free-tier constraint, adoption is judged by total provider consumption per accepted change, not the fastest shard. Account for repeated pushes, pre- and post-merge runs, startup, queueing, active cores and paid overage. Do not add paid model/API calls to ordinary CI. Cloudflare Workers Builds and Vercel Sandbox remain unactivated candidates until account entitlement, credential isolation, exact-base/head status binding and measured budget are qualified. Public quota tables do not establish the account's remaining balance.
 
 ### Reading provider evidence when the dashboard fails
 
@@ -139,13 +117,13 @@ The accepted cloud browser design uses **independent shards with one Playwright 
 
 Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
 
-`npm run verify:deploy && npm run build`
+`npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs`
 
 Do not disable Vercel Git deployment on `main`.
 
 Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-Preview branch eligibility is only the first filter; it is **not permission to spend build compute on every intermediate push**. `scripts/vercel-ignore-build.mjs` requires the exact-head commit message to contain `[vercel-preview]` when `VERCEL_ENV=preview`. Without that token, an eligible Preview trigger exits through the ignored-build path before `verify:deploy`, the static build, or hosted browser work. Production is never gated by this token. A tokenized Preview can still be ignored when the proven Git range is docs/governance-only.
+PR Preview acceptance is automatic and cannot be skipped by omitting a commit token. Non-PR Preview branches remain budget-gated by `[vercel-preview]`. Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
 
 ### Cloudflare post-deploy smoke
 
@@ -158,7 +136,7 @@ Do not move repository compilation, npm installation, Vitest, the full Playwrigh
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Heavy Chromium/Lab acceptance belongs to CircleCI; Vercel Production must not install Chromium merely to duplicate CI.
+- Heavy Chromium/Lab acceptance belongs to the Vercel Pro gate. CircleCI may shadow the same contract during cutover but must not duplicate merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
@@ -181,7 +159,7 @@ one coherent branch/PR
 Rules:
 
 1. Finish the coherent code/content batch and run the strongest available local/Agent checks before the first push. Do not push every typo, intermediate experiment or file write.
-2. **Opt in only the exact head that needs hosted review.** Put `[vercel-preview]` in that commit message; ordinary intermediate pushes on deployment-eligible Preview branches should omit it and be ignored before the expensive build.
+2. **PR heads are automatic acceptance builds.** Use `[vercel-preview]` only for a non-PR Preview branch that intentionally needs hosted review; ordinary non-PR intermediate pushes should omit it and be ignored before the expensive build.
 3. Reuse the existing branch/PR. Do not create a duplicate PR to repair the same deployment or migration unless the old branch is genuinely unsafe to continue.
 4. When a GitHub connector would otherwise write files one by one, prefer a checked-out worktree or one Git data API multi-file commit (`blob -> tree -> commit -> ref`). Sequential Contents API writes can create one Vercel deployment per ref update.
 5. Keep stacked PRs only for real, reviewable dependencies. Stabilize the parent before repeatedly pushing the child, and do not mirror the same fix across multiple branches.
