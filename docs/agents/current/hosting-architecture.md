@@ -4,6 +4,8 @@ Last reviewed: **2026-09-08**
 
 Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI automatic PR/main workflows are disabled and API-triggered fallback only; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
 
+Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
+
 ## Current decision
 
 ```text
