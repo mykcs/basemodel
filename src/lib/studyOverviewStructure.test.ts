@@ -18,9 +18,11 @@ const formerHomepageOwners = [
 ];
 
 describe('study overview information architecture', () => {
-  it('keeps the overview as one research argument instead of embedding whole detail pages', () => {
+  it('keeps exactly one Study owner and one research argument', () => {
     for (const page of [studyZh, studyEn]) {
-      expect(page).toContain('SeedOpenEvoStudyOverview');
+      expect(page).toContain('import SeedOpenEvoStudyOverview from');
+      expect(page).toContain('<SeedOpenEvoStudyOverview locale={locale} />');
+      expect(page).not.toContain('SeedOpenEvoStudyOverviewReaderFirst');
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
@@ -32,6 +34,9 @@ describe('study overview information architecture', () => {
     expect(overview).not.toContain('TL;DR');
     expect(overview).toContain('study-current-finding');
     expect(overview).toContain('实验结构与参考资料');
+    expect(overview).toContain('和 SEED 对照');
+    expect(overview).toContain('训练资源与运行条件');
+    expect(overview).toContain('流程理解图：OpenEVO / SEED / WebShop');
     expect(overview).toContain('三个研究问题');
     expect(overview).toContain('实验共同流程');
     expect(overview).toContain('分数与阶段');
@@ -39,6 +44,9 @@ describe('study overview information architecture', () => {
     expect(overview).toContain('下一步科学问题');
     expect(overview).toContain('https://arxiv.org/abs/2607.14777');
     expect(overview).toContain('/research/seed-openevo/flow/');
+    expect(overview).toContain('不确定性区间仍包含');
+    expect(overview).toContain('不能证明稳定优势');
+    expect(overview).toContain('现在不能宣布谁最终更强');
     expect(overview).not.toContain('OpenEvo × SEED：WebShop 研究');
     expect(overview).not.toContain('三个研究问题怎样连起来');
     expect(overview).not.toContain('WebShop 是一个文字购物环境：模型要根据用户需求搜索商品');
