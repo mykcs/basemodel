@@ -11,6 +11,7 @@ import {
   type HumanFeedbackPairId,
   type HumanPreferenceDimension,
   type HumanPreferenceId,
+  type HumanPreferenceScope,
 } from '../data/humanPreferenceModel';
 
 const tokenize = (value: string) =>
@@ -90,16 +91,42 @@ export function retrieveHumanPreferenceContext(
   return { query, contractId, cases, preferences, goldPairs };
 }
 
+export function preferenceScopesForContract(contractId: string): HumanPreferenceScope[] {
+  const contract = readerContractById(contractId);
+  if (!contract) return [];
+  const scopes = new Set<HumanPreferenceScope>(['all-public-ui']);
+  if (contract.sourceRoute.startsWith('/research/')) {
+    scopes.add('research-ui');
+    scopes.add('research-copy');
+  }
+  if (contractId === 'study') scopes.add('study');
+  if (contractId === 'study-run') scopes.add('run');
+  if (contractId === 'study-briefing') scopes.add('briefing');
+  if (contractId === 'study-results' || contractId.startsWith('result-')) scopes.add('results');
+  if (contractId.startsWith('capability-')) scopes.add('capability');
+  return [...scopes];
+}
+
 export function preferenceIdsForContract(contractId: string): HumanPreferenceId[] {
   const caseIds = new Set((READER_CONTRACT_PRECEDENTS[contractId] ?? []) as HumanFeedbackCaseId[]);
+  const scopes = new Set(preferenceScopesForContract(contractId));
   return HUMAN_PREFERENCE_MODEL
-    .filter((preference) => preference.supportingCaseIds.some((caseId) => caseIds.has(caseId)))
+    .filter((preference) => preference.activation !== 'explicit-cues')
+    .filter((preference) =>
+      preference.scopes.some((scope) => scopes.has(scope)) ||
+      preference.supportingCaseIds.some((caseId) => caseIds.has(caseId)),
+    )
     .map((preference) => preference.id);
 }
 
 export function goldPairIdsForContract(contractId: string): HumanFeedbackPairId[] {
   const caseIds = new Set((READER_CONTRACT_PRECEDENTS[contractId] ?? []) as HumanFeedbackCaseId[]);
-  return HUMAN_FEEDBACK_GOLD_PAIRS.filter((pair) => caseIds.has(pair.caseId)).map((pair) => pair.id);
+  const scopes = new Set(preferenceScopesForContract(contractId));
+  const preferenceIds = new Set(preferenceIdsForContract(contractId));
+  return HUMAN_FEEDBACK_GOLD_PAIRS
+    .filter((pair) => pair.preferenceIds.some((preferenceId) => preferenceIds.has(preferenceId)))
+    .filter((pair) => caseIds.has(pair.caseId) || pair.scopes.some((scope) => scopes.has(scope)))
+    .map((pair) => pair.id);
 }
 
 export function readerContractById(contractId: string) {

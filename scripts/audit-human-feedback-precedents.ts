@@ -70,6 +70,11 @@ for (const [contractId, caseIds] of Object.entries(READER_CONTRACT_PRECEDENTS)) 
   for (const caseId of caseIds) if (!precedentIds.has(caseId)) failures.push(`${contractId}: unknown precedent ${caseId}`);
 }
 
+for (const contract of SITE_READER_CONTRACTS) {
+  if (preferenceIdsForContract(contract.id).length < 4) failures.push(`${contract.id}: missing cross-site Preference Model baseline`);
+  if (goldPairIdsForContract(contract.id).length < 2) failures.push(`${contract.id}: missing cross-site Gold Pair baseline`);
+}
+
 for (const requiredContract of ['study', 'study-results', 'study-run', 'study-briefing', 'capability-home', 'capability-first-run']) {
   if (!READER_CONTRACT_PRECEDENTS[requiredContract]?.length) failures.push(`${requiredContract}: missing required human-feedback precedent binding`);
   if (preferenceIdsForContract(requiredContract).length < 2) failures.push(`${requiredContract}: requires at least two learned preference dimensions`);

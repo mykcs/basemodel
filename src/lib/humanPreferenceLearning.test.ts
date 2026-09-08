@@ -48,6 +48,24 @@ describe('human preference learning loop', () => {
     }
   });
 
+  it('gives ordinary public Reader Contracts a cross-site preference baseline', () => {
+    expect(preferenceIdsForContract('model-detail')).toEqual(expect.arrayContaining([
+      'PREF-OBJECT-FIRST',
+      'PREF-DIRECT-FACTS',
+      'PREF-FIRST-SCREEN-ATTENTION',
+      'PREF-PROGRESSIVE-DISCLOSURE',
+      'PREF-INLINE-TERMINOLOGY',
+    ]));
+    expect(goldPairIdsForContract('model-detail')).toEqual(expect.arrayContaining([
+      'PAIR-063-HEADING',
+      'PAIR-068-ATTENTION',
+      'PAIR-069-VISUAL-CENTER',
+    ]));
+    const compare = buildPreferenceCompareRead('model-detail').join('\n');
+    expect(compare).toContain('PREF-FIRST-SCREEN-ATTENTION');
+    expect(compare).toContain('PAIR-068-ATTENTION');
+  });
+
   it('requires every preference to carry evidence and an anti-overgeneralization boundary', () => {
     for (const preference of HUMAN_PREFERENCE_MODEL) {
       expect(preference.supportingCaseIds.length, preference.id).toBeGreaterThan(0);

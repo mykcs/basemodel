@@ -52,7 +52,7 @@ raw human cases
 - retrieval tags;
 - anti-overgeneralization boundaries.
 
-The model is deliberately scoped. One page-specific correction must not become a universal law merely because it is easy to encode.
+The model is deliberately scoped. Every public Reader Contract inherits the `all-public-ui` baseline preferences and reusable baseline Gold Pairs; research/result/run/briefing/capability scopes then add narrower evidence, and the six highest-risk research entry points keep explicit CASE bindings. One page-specific correction must not become a universal law merely because it is easy to encode.
 
 Precedence remains:
 
