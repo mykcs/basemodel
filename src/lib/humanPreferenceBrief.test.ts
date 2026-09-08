@@ -91,7 +91,7 @@ describe('human preference learning v2', () => {
     const receiptScript = fs.readFileSync('scripts/verify-human-preference-candidate-receipt.ts', 'utf8');
     expect(doc).toContain('Preference Trajectory');
     expect(doc).toContain('Golden / Silver / Rejected Visual Set');
-    expect(doc).toContain('2–3 个内部候选');
+    expect(doc).toContain('2–3 internal candidates');
     expect(briefScript).toContain('buildHumanPreferenceBrief');
     expect(receiptScript).toContain('verifyCandidateReceipt');
   });
