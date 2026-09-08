@@ -10,6 +10,7 @@ export const bilingualStaticPaths = [
   '/methodology/',
   '/workspace/',
   '/data-status/',
+  '/development/',
   '/lab/',
   '/research/seed-openevo/flow/',
   '/research/seed-openevo/flow/server/',
