@@ -120,6 +120,7 @@ Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence
 
 Read:
 
+- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — why BaseModel uses final-candidate-only Vercel instead of always-on CircleCI / GitHub Actions / Cloudflare CI; read before proposing a provider migration
 - [`current/hosting-architecture.md`](current/hosting-architecture.md)
 - [`current/deployment-policy.md`](current/deployment-policy.md)
 - [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)

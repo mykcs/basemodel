@@ -4,6 +4,8 @@ Last reviewed: **2026-09-08**
 
 ## Authority
 
+Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns the executable release/validation policy; the rationale file explains why the provider topology was chosen and when to reconsider it.
+
 ```text
 GitHub = canonical source
 
