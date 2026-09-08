@@ -23,7 +23,7 @@ const flowPages = [
   { id: 'server', label: 'lyg2171', href: p('/research/seed-openevo/flow/server/') },
   { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/flow/base-model/') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
-  { id: 'openevo', label: 'OpenEvo', href: p('/research/seed-openevo/flow/openevo/') },
+  { id: 'openevo', label: 'OpenEVO', href: p('/research/seed-openevo/flow/openevo/') },
   { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/flow/benchmarks/') },
   { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/flow/webshop/') },
   { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/flow/alfworld/') },
@@ -33,7 +33,7 @@ const flowPages = [
 const studyPages = [
   { id: 'experiment', label: t('实验流程', 'Experiment workflow'), href: p('/research/seed-openevo/study/') },
   { id: 'run', label: t('运行实验', 'Run experiment'), href: p('/research/seed-openevo/study/run/') },
-  { id: 'capability', label: t('OpenEvo 基础能力探索实验', 'OpenEvo capability exploration'), href: p('/research/seed-openevo/study/capability-exploration/') },
+  { id: 'capability', label: t('OpenEVO 基础能力探索实验', 'OpenEVO capability exploration'), href: p('/research/seed-openevo/study/capability-exploration/') },
   { id: 'briefing', label: t('阶段汇报', 'Progress briefing'), href: p('/research/seed-openevo/study/briefing/') },
   { id: 'results', label: t('研究结果', 'Research findings'), href: p('/research/seed-openevo/study/results/') },
 ] as const;
@@ -74,7 +74,7 @@ const identity = currentTrack === 'flow'
   .research-navigation{
     position:sticky;
     z-index:12;
-    top:.5rem;
+    top:calc(var(--site-header-height) + .5rem);
     display:grid;
     grid-template-columns:auto minmax(0,1fr);
     gap:.55rem;

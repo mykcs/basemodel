@@ -14,7 +14,7 @@ import { availableLocalesForRoute, localizedRoute } from '../lib/sitemapRoutes';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 interface Props { title: string; description?: string; locale?: Locale }
-type ResearchBridgePage = 'experiment' | 'run' | 'capability';
+type ResearchBridgePage = 'experiment' | 'run' | 'capability' | 'briefing';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -38,6 +38,7 @@ const isCapabilityExplorationPage = /^\/research\/seed-openevo\/study\/capabilit
   || /^\/research\/seed-openevo\/study\/results\/(?:3b-self-analysis|7b-self-analysis|3b-minimax-analysis|7b-minimax-analysis|four-arm-analysis)\/?$/.test(localeNeutralPath);
 const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/study') ? 'experiment'
   : exactRoute('/research/seed-openevo/study/run') ? 'run'
+  : exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'
   : isCapabilityExplorationPage ? 'capability'
   : null;
 const currentRoute = localizedRoute(localeNeutralPath, locale) ?? pathNoBase;
@@ -129,10 +130,9 @@ const compareTrayLabels = {
     {globalQuickViewMounted && <QuickViewBridge />}
     <main id="main-content" class="site-main">
       {researchBridgePage && (
-        <details class="research-module-nav-shell">
-          <summary>{locale === 'zh' ? '研究导航' : 'Research navigation'}</summary>
+        <div class="research-module-nav-shell">
           <SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />
-        </details>
+        </div>
       )}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
       <slot />
@@ -146,12 +146,13 @@ const compareTrayLabels = {
 
 <style>
   .research-module-nav-shell{
+    position:sticky;
+    z-index:12;
+    top:calc(var(--site-header-height) + .5rem);
     width:min(1160px,calc(100% - 2rem));
-    margin:.35rem auto 0;
+    margin:.65rem auto 1rem;
   }
-  .research-module-nav-shell>summary{width:max-content;max-width:100%;padding:.45rem 0;color:var(--muted);font-size:.78rem;font-weight:700;cursor:pointer;list-style:none}
-  .research-module-nav-shell>summary::-webkit-details-marker{display:none}
-  .research-module-nav-shell[open]>summary{color:var(--ink)}
+  .research-module-nav-shell :global(.research-navigation){position:static;margin:0}
   @media(max-width:720px){
     .research-module-nav-shell{width:min(100% - 1rem,1160px)}
   }

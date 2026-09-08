@@ -49,16 +49,13 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
 const current = copy[page];
 ---
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
+  <SeedOpenEvoResearchNav locale={locale} page={page} />
   {page !== 'results' && (
     <header class="plain-detail__header">
       <h1>{current.title}</h1>
       <p>{current.lede}</p>
     </header>
   )}
-  <details class="plain-detail__nav">
-    <summary>{t('研究导航', 'Research navigation')}</summary>
-    <SeedOpenEvoResearchNav locale={locale} page={page} />
-  </details>
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
   {page !== 'results' && page !== 'webshop' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
   {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
@@ -66,7 +63,6 @@ const current = copy[page];
 
 <style>
   .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
-  .plain-detail__nav{margin:0 0 1.25rem;border-block:1px solid var(--line)}.plain-detail__nav>summary{width:max-content;max-width:100%;padding:.72rem 0;color:var(--muted);font-size:.8rem;font-weight:720;cursor:pointer}.plain-detail__nav[open]>summary{color:var(--ink)}.plain-detail__nav :global(.research-navigation){position:static;margin:.1rem 0 .8rem}
   .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
   .plain-detail__header h1{margin:0 0 .7rem;letter-spacing:-.035em}
   .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}

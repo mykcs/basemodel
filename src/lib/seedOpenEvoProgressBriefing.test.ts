@@ -4,18 +4,21 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const briefing = read('../components/research/SeedOpenEvoProgressBriefing.astro');
 const nav = read('../components/research/SeedOpenEvoResearchNav.astro');
+const layout = read('../layouts/AppLayout.astro');
 const zhPage = read('../pages/research/seed-openevo/study/briefing/index.astro');
 const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
 describe('SEED × OpenEVO summer review HTML deck', () => {
-  it('publishes a bilingual briefing route without the study subnav competing with the deck', () => {
+  it('publishes the bilingual briefing inside the same always-visible study navigation as the surrounding research pages', () => {
     expect(zhPage).toContain('OpenEVO 暑期考核汇报');
     expect(enPage).toContain('OpenEVO Summer Research Review');
-    expect(zhPage).not.toContain('SeedOpenEvoResearchNav');
-    expect(enPage).not.toContain('SeedOpenEvoResearchNav');
     expect(nav).toContain("id: 'briefing'");
+    expect(nav).toContain("t('阶段汇报', 'Progress briefing')");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'");
+    expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
+    expect(layout).not.toContain('<details class="research-module-nav-shell">');
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
   });
 
