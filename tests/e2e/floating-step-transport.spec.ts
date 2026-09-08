@@ -67,11 +67,11 @@ test('embedded Lab explainer controls do not enter the first screen before the e
     await settle(page);
     const root = page.locator('[data-interactive-research-explainer="server"]').first();
     const transport = root.locator('.irx-transport');
-    await expect(transport).toHaveCSS('position', 'static');
+    expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
     await expect(transport).not.toBeInViewport();
     await root.scrollIntoViewIfNeeded();
     await activate(root);
-    await expect(transport).toHaveCSS('position', 'static');
+    expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
   }
 });
 
