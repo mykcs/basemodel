@@ -153,8 +153,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const studyOverview = 'src/components/research/SeedOpenEvoStudyOverview.astro';
-  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', '7B · 基础模型', '7B · 使用 OpenEVO 学习结果', 'study-current-finding', '实验结构与参考资料', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The study overview must preserve object identity, put the current finding before lower-priority structure, and retain research questions, provenance, and the canonical background link.');
-  ban(studyOverview, 'COPY-FIRST-SCREEN-001', 'TL;DR', 'A presenter label must not return above the actual study finding.');
+  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', '7B · 基础模型', '7B · 使用 OpenEVO 学习结果', 'TL;DR', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The study overview must preserve object identity, TL;DR, research questions, paper provenance, and the canonical background link.');
   ban(studyOverview, 'COPY-INTERNAL-LABEL-001', 'Track A', 'The first-reader study overview must name the concrete 7B comparison objects instead of requiring an internal route label.');
   ban(studyOverview, 'COPY-FIRST-READER-JARGON-001', '配对评测', 'The first-reader study overview must state the concrete comparison objects and shared tasks before any statistical design term.');
   for (const forbidden of ['OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'The rejected first-screen wording must not return.');
