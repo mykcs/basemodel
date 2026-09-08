@@ -1,0 +1,103 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const briefingHref = p('/research/seed-openevo/study/briefing/');
+const h17 = 'https://github.com/mykcs/openevo-experiment/blob/b3091ed70f060742147e931b8533784c8dfe1745/docs/science/webshop/runs/2026-08-15/h1.17-horizon-interface-diagnostic.md';
+const q17 = 'https://github.com/mykcs/openevo-experiment/pull/378';
+const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
+---
+
+<article class="technical-notes" data-ui-audit="surface">
+  <header class="technical-intro">
+    <a class="back-link" href={briefingHref}>← {t('返回暑期考核汇报', 'Back to summer review')}</a>
+    <h1>{t('技术推导与实验严谨性', 'Technical derivations and experimental rigor')}</h1>
+    <p>{t('主汇报只保留会改变科研判断的结论。这里展开完整推导、负向实验、对照定义和复现边界，方便感兴趣的读者继续追证据。', 'The main talk keeps only conclusions that change the research judgment. This page expands the derivations, negative experiments, comparison definitions, and reproducibility boundaries for readers who want the full evidence.')}</p>
+  </header>
+
+  <section>
+    <h2>{t('1. 15 步还是 30 步：一次干净的负向实验', '1. 15 or 30 steps: a clean negative experiment')}</h2>
+    <p>{t('H1.17 只改变 WebShop 的 max_steps：15 与 30。memory、adapter、prompt、parser 和任务列表全部保持不变。64 条比较中 64 条尝试都有效，两种条件 reward 都是 0，每个配对差值都是 0。', 'H1.17 changed only WebShop max_steps: 15 versus 30. Memory, adapter, prompt, parser, and task identity stayed fixed. All 64 attempts were valid, both conditions had zero reward, and every paired delta was zero.')}</p>
+    <div class="evidence-row"><span>15 steps</span><strong>0</strong><span>30 steps</span><strong>0</strong><span>Δ</span><strong>0.0</strong></div>
+    <p>{t('因此，“15 步太短”不是充分解释。后续应该换科学问题，而不是继续在 horizon 上搜索。', 'Therefore “15 steps is too short” is not a sufficient explanation. The next move is a new scientific question, not more horizon search.')}</p>
+    <p class="source"><a href={h17} target="_blank" rel="noreferrer"><ExternalBrandMark href={h17} /> H1.17 evidence</a></p>
+  </section>
+
+  <section>
+    <h2>{t('2. Text Memory：2048 → 4096 为什么仍然不够', '2. Text Memory: why 2048 → 4096 was still insufficient')}</h2>
+    <div class="capacity-chain" aria-label={t('Text Memory 容量实验链', 'Text Memory capacity experiment chain')}>
+      <div><strong>A1 · 2048</strong><p>{t('出现容量饱和。', 'Capacity saturated.')}</p></div><i>→</i>
+      <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('对称翻倍单次 token 上限后仍然失败，否定“只要加容量就行”。', 'Symmetric doubling of the per-call token cap still failed, rejecting “just make it larger.”')}</p></div><i>→</i>
+      <div><strong>A2 · 20 records → 10+10</strong><p>{t('这里的 20 是记录数，不是 token 数：20 条 primary 与同 20 条 repair 都饱和时才固定拆成 10+10，随后压缩并回并；最大分裂深度 1。', 'Here 20 counts records, not tokens: only after the 20-item primary and the same 20-item repair both saturate do we split deterministically into 10+10, compress, and merge; max split depth is one.')}</p></div>
+    </div>
+    <p>{t('这里的科学含义不是“10+10 一定让最终分数更高”，而是容量失败的解释发生了变化：单纯扩大容器不够，需要结构化、有限的分解。', 'The scientific claim is not that 10+10 necessarily raises the final benchmark score. The diagnosis changed: a larger container alone was insufficient, so the successor uses structured, bounded decomposition.')}</p>
+  </section>
+
+  <section>
+    <h2>{t('3. TaskVector：从 SD-LoRA 更新到真实参数方向', '3. TaskVector: from SD-LoRA updates to a real parameter direction')}</h2>
+    <p>{t('每个 SD-LoRA 组件都对应真实权重空间中的一个 ΔW。相邻且不同的状态 R27 与 R49 定义方向：', 'Each SD-LoRA component corresponds to a real ΔW in weight space. Adjacent distinct states R27 and R49 define the direction:')}</p>
+    <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
+    <p>{t('为了不把 7 个系数的欧氏距离误当成真实权重距离，我们使用组件之间的 Gram 矩阵 G：', 'To avoid treating Euclidean distance between seven coefficients as the true weight-space distance, we use the component Gram matrix G:')}</p>
+    <div class="equation">‖τ‖<sub>F</sub> = √(δcᵀGδc) = 0.6082257746</div>
+    <p>{t('基底包含 7 个 rank-8 SD-LoRA 组件。干预使用 λ∈{−1,0,0.5,1} 的有符号剂量，并加入 3 个与 τ 同 Frobenius 范数的随机方向。这样可以区分“这个方向有用”和“只要参数动得够多就会变”。', 'The basis contains seven rank-8 SD-LoRA components. Interventions use signed doses λ∈{−1,0,0.5,1} and three random directions with the same Frobenius norm as τ. This separates a direction-specific effect from generic parameter movement.')}</p>
+    <div class="equation">θ′(λ) = θ<sub>R14</sub> + λτ</div>
+    <p>{t('最多 9 组条件 × 64 个配对任务 = 576 条闭环轨迹。只有 +1.0τ 比三个同范数随机对照的中位数至少高 1.0 Task Score，同时完整成功不下降，才进入后续 1,536 条轨迹实验。', 'The cap is 9 conditions × 64 paired tasks = 576 closed-loop episodes. The follow-up 1,536-rollout experiment unlocks only if +1.0τ beats the median of the three norm-matched random controls by at least 1.0 Task Score without degrading exact success.')}</p>
+    <aside><strong>{t('为什么曾经得到 τ=0？', 'Why did τ once equal zero?')}</strong><p>{t('早期把 75% 和 100% 当作两个锚点，但它们实际上都落到 R49。我们把这判为“不可识别”，而不是“因果效果为零”，随后改成真实不同的 R14 / R27 / R49。', 'The early 75% and 100% anchors both resolved to R49. We classified this as unidentifiable rather than a causal null, then rebuilt the design around genuinely distinct R14 / R27 / R49 states.')}</p></aside>
+  </section>
+
+  <section>
+    <h2>{t('4. Gated Delta Rule 与 DirectApply 到底只差什么', '4. What exactly differs between Gated Delta Rule and DirectApply')}</h2>
+    <p>{t('两条路线都会先训练出同类 SD-LoRA 候选 Δt。GDR（Gated Delta Rule）多一步准入判断：', 'Both routes first train the same kind of SD-LoRA candidate Δt. GDR (Gated Delta Rule) adds one admission decision:')}</p>
+    <div class="equation piecewise">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('若接受', 'if accepted')}<br />θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('若拒绝', 'if rejected')}</div>
+    <p>{t('DirectApply 去掉这一步否决：满足共同训练条件的候选直接进入后续模型。1.7B 的 44 个候选中只有 7 个被 GDR 接受，因此这不是一个小实现差异，而是可能改变长期学习轨迹的机制变量。', 'DirectApply removes that veto: a candidate that satisfies the shared training conditions enters the next state directly. GDR admitted only 7 of 44 candidates in the 1.7B run, so this is a mechanism variable that can change the long-term learning trajectory.')}</p>
+    <p class="source"><a href={q17} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17} /> GDR / DirectApply diagnostic lineage</a></p>
+  </section>
+
+  <section>
+    <h2>{t('5. 严谨性与复现：为什么这些细节放在这里', '5. Rigor and reproducibility')}</h2>
+    <p>{t('这些证据是实验成立的前提，而不是演讲主线。只有当它们改变“这个结果还能不能解释”时，才需要回到主汇报。', 'These checks are prerequisites for a valid experiment, not the main talk. They return to the main narrative only when they change whether the result is interpretable.')}</p>
+    <details>
+      <summary>{t('为什么旧 Q17 不继续原地修改', 'Why the old Q17 experiment was not modified in place')}</summary>
+      <p>{t('旧双组实验原本冻结为“只差 GDR”。如果中途把其中一组改成 DirectApply-only，后面的差异就回答了另一个问题。因此旧证据保留为诊断，新 DirectApply 从同一个冻结起点建立独立实验身份。', 'The old twin was frozen around one difference: GDR. Switching an arm to DirectApply-only in place would make later results answer a different question. The old evidence remains diagnostic, and the fresh DirectApply experiment starts from the same frozen state under a separate identity.')}</p>
+    </details>
+    <details>
+      <summary>{t('固定 GPU 重复性与参数哈希', 'Fixed-GPU repeatability and parameter hashes')}</summary>
+      <p>{t('在正式比较前，同一历史 Round0 payload、seed 1993、同一块 RTX 5090 独立执行两次；adapter、序列化 SD state、replay/semantic manifest 与 training loss 一致。这个证据只说明可以开始做可归因的比较，不说明 DirectApply 更好。', 'Before the formal comparison, the same historical Round0 payload and seed 1993 were run independently twice on the same RTX 5090. Adapter state, serialized SD state, replay/semantic manifests, and training loss matched. This establishes eligibility for attribution; it does not show DirectApply is better.')}</p>
+    </details>
+    <details>
+      <summary>{t('并行提速为什么不改变科学结果', 'Why the parallel speedup does not change the science')}</summary>
+      <p>{t('独立 DirectApply 第 0 轮把每卡采样进程从 1 提到 2：636.7 s → 389.6 s（约 1.63×）。128 条尝试逐字节一致，Score、5 / 128 完整成功、LoRA adapter 和 training loss 都保持一致。', 'Independent DirectApply Round0 moved from 1 to 2 rollout workers per GPU: 636.7 s → 389.6 s (~1.63×). All 128 attempts were byte-identical, with unchanged Score, 5 / 128 exact success, LoRA adapter, and training loss.')}</p>
+    </details>
+    <p class="source"><a href={direct} target="_blank" rel="noreferrer"><ExternalBrandMark href={direct} /> DirectApply qualification evidence</a></p>
+  </section>
+</article>
+
+<style>
+  .technical-notes{max-width:980px;margin:0 auto;padding:44px 24px 96px;color:var(--ink)}
+  .technical-intro{padding:28px 0 34px;border-bottom:1px solid var(--line)}
+  .back-link{display:inline-block;margin-bottom:24px;color:var(--muted);font-weight:700;text-decoration:none}
+  .back-link:hover,.back-link:focus-visible,.source a:hover,.source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
+  h1{max-width:780px;margin:0;font:700 clamp(42px,6vw,72px)/1 var(--font-editorial);letter-spacing:-.05em}
+  .technical-intro>p{max-width:780px;margin:22px 0 0;color:var(--muted);font-size:20px;line-height:1.65}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  h2{margin:0 0 18px;font-size:30px;line-height:1.2;letter-spacing:-.025em}
+  section>p{max-width:820px;margin:12px 0;color:var(--muted);font-size:16px;line-height:1.75}
+  .equation{margin:18px 0;padding:18px 22px;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);font:650 24px/1.45 Georgia,'Times New Roman',serif;overflow-x:auto}
+  .piecewise{line-height:1.8}
+  .evidence-row{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin:22px 0;padding:18px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+  .evidence-row span{color:var(--muted);font-size:13px}.evidence-row strong{font:760 22px var(--font-mono)}
+  .capacity-chain{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;margin:24px 0}
+  .capacity-chain>div{padding:20px;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}
+  .capacity-chain i{align-self:center;font-style:normal;color:var(--muted)}
+  .capacity-chain p{margin:8px 0 0;color:var(--muted);line-height:1.55}
+  aside{margin:22px 0;padding:18px 20px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface))}
+  aside p{margin:8px 0 0;color:var(--muted);line-height:1.6}
+  details{margin:12px 0;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}
+  summary{cursor:pointer;padding:16px 18px;font-weight:760}details p{margin:0;padding:0 18px 18px;color:var(--muted);line-height:1.7}
+  .source{font-size:13px}.source a{color:var(--ink);font-weight:700;text-decoration:none}
+  @media(max-width:720px){.capacity-chain{grid-template-columns:1fr}.capacity-chain i{transform:rotate(90deg);justify-self:center}.evidence-row{grid-template-columns:auto 1fr}.technical-notes{padding-inline:18px}}
+</style>

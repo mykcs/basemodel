@@ -19,6 +19,7 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/flow/openevo/',
   '/research/seed-openevo/study/',
   '/research/seed-openevo/study/briefing/',
+  '/research/seed-openevo/study/briefing/technical-notes/',
   '/research/seed-openevo/flow/benchmarks/',
   '/research/seed-openevo/flow/webshop/',
   '/research/seed-openevo/flow/alfworld/',

@@ -48,6 +48,7 @@ const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed
   : exactRoute('/research/seed-openevo/study') ? 'experiment'
   : exactRoute('/research/seed-openevo/study/run') ? 'run'
   : exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'
+  : exactRoute('/research/seed-openevo/study/briefing/technical-notes') ? 'briefing'
   : exactRoute('/research/seed-openevo/study/results') ? 'results'
   : isCapabilityExplorationPage ? 'capability'
   : null;

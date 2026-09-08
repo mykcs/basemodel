@@ -1,6 +1,5 @@
 ---
 import { localePath, type Locale } from '../../i18n';
-import ExternalBrandMark from '../common/ExternalBrandMark';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -8,25 +7,19 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
-const ceilingHref = p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/');
 const flowHref = p('/research/seed-openevo/flow/');
-const q17Pr = 'https://github.com/mykcs/openevo-experiment/pull/378';
-const q17DirectW2Pr = 'https://github.com/mykcs/openevo-experiment/pull/404';
-const q17DirectProbe4Pr = 'https://github.com/mykcs/openevo-experiment/pull/406';
-const mechanismPr = 'https://github.com/mykcs/openevo-experiment/pull/319';
-const m1aPr = 'https://github.com/mykcs/openevo-experiment/pull/358';
-const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
+const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
 ---
 
 <article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
   <section id="briefing-top" class="briefing-slide briefing-cover" data-briefing-primary aria-labelledby="briefing-title">
     <div class="slide-inner">
       <h1 id="briefing-title">{t('OpenEVO 暑期考核汇报', 'OpenEVO Summer Research Review')}</h1>
-      <p class="cover-thesis">{t('这次汇报想回答三件事：OpenEVO 做到了什么、这些结果为什么可信、遇到问题以后我们怎样把它变成更干净的下一步实验。', 'This review answers three things: what OpenEVO achieved, why the evidence is trustworthy, and how each problem was turned into a cleaner next experiment.')}</p>
+      <p class="cover-thesis">{t('OpenEVO 让模型从任务经验中持续更新记忆与参数。我们用模拟网购任务 WebShop 测试它的学习上限，并把 SEED 论文结果作为参照；7B 分数没有达到预期后，我们把问题拆成更小、可以被实验否证的问题。', 'OpenEVO lets a model keep updating its memory and parameters from task experience. We use the simulated shopping task WebShop to test that learning ceiling and SEED paper results as a reference; when the 7B score remained below our target, we broke the problem into smaller falsifiable questions.')}</p>
       <dl class="cover-meta" aria-label={t('汇报基本信息', 'Briefing information')}>
         <div><dt>{t('汇报日期', 'Date')}</dt><dd>2026-09-08</dd></div>
         <div><dt>{t('汇报人', 'Presenter')}</dt><dd>{t('OpenEVO 项目组', 'OpenEVO project team')}</dd></div>
-        <div><dt>{t('主题', 'Topic')}</dt><dd>{t('长周期自我进化、参数机制与 SEED 对照', 'Long-horizon self-improvement, mechanisms, and SEED comparison')}</dd></div>
+        <div><dt>{t('任务', 'Task')}</dt><dd>WebShop</dd></div>
       </dl>
     </div>
   </section>
@@ -34,32 +27,32 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
   <section id="contents" class="briefing-slide tone-blue" aria-labelledby="contents-title">
     <div class="slide-inner split-slide">
       <div class="agenda-pane">
-          <h2 id="contents-title">{t('今天讲四件事', 'Four things today')}</h2>
+        <h2 id="contents-title">{t('目录', 'Agenda')}</h2>
         <ol class="agenda-list">
-          <li><span>01</span><strong>{t('我们现在做到哪了', 'Where we are now')}</strong></li>
-          <li><span>02</span><strong>{t('这些结果说明了什么', 'What the results mean')}</strong></li>
-          <li><span>03</span><strong>{t('为什么下一步这样设计实验', 'Why the next experiments look this way')}</strong></li>
-          <li><span>04</span><strong>{t('接下来优先押哪条线', 'Which direction to prioritize next')}</strong></li>
+          <li><span>01</span><strong>{t('7B 长周期结果', '7B long-horizon result')}</strong></li>
+          <li><span>02</span><strong>{t('1.7B / 3B 诊断实验', '1.7B / 3B diagnostic experiments')}</strong></li>
+          <li><span>03</span><strong>{t('参数方向与更新准入', 'Parameter direction and update admission')}</strong></li>
+          <li><span>04</span><strong>{t('当前结果与下一步选择', 'Current results and next priority')}</strong></li>
         </ol>
       </div>
       <aside class="tldr-pane" aria-label="Too long, Don't read">
         <p class="tldr-label">Too long, Don't read</p>
-        <h3>{t('一句话版本', 'One-minute version')}</h3>
         <ul>
-          <li>{t('7B 和 1.7B 的长周期实验都已经跑完整。', 'Both 7B and 1.7B long-horizon runs are complete.')}</li>
-          <li>{t('1.7B 训练出了 44 个参数更新候选，但只有 7 个真正进入后续模型；这让我们开始怀疑 GDR 筛得太保守。', 'The 1.7B line trained 44 update candidates, but only 7 entered later model states; that makes GDR admission itself a research question.')}</li>
-          <li>{t('旧 Q17 双组对照已经冻结为诊断证据：如果在同一个实验里中途改成只用 DirectApply，原来“只差 GDR”这个比较条件就被破坏了，所以我们没有硬接着跑。', 'The old Q17 twin is frozen as diagnostic evidence: switching the same experiment to DirectApply-only would break the original one-variable comparison contract, so we did not continue it in place.')}</li>
-          <li>{t('DirectApply 现在用一个全新的独立实验从同一冻结起点重新开始；第 0 轮已经证明：每卡 2 个并行采样进程与原来 1 个进程得到的 128 条结果逐字节一致，同时快了 1.63×。现在仍然没有 GDR / DirectApply 的胜负结论。', 'DirectApply now restarts as a fresh experiment from the same frozen start; Round0 proves 2 workers/GPU is byte-identical to the 1-worker baseline across all 128 attempts while running 1.63× faster. There is still no GDR-versus-DirectApply winner.')}</li>
+          <li>{t('7B 长周期实验完成后，最终测试是 49.33 / 100；这说明 OpenEVO 能持续学，但离我们想追的能力上限还有明显距离。', 'The long-horizon 7B run finished at 49.33 / 100 on the final panel: OpenEVO can keep learning, but the ceiling is still well below the target we want to understand.')}</li>
+          <li>{t('我们没有把低分简单归因给“步数太少”或“容量太小”：15→30 步仍然是 0；2048→4096 仍然解决不了 Text Memory 的容量问题。', 'We did not blame the low result on short horizons or small capacity: 15→30 steps remained zero, and 2048→4096 still did not solve Text Memory capacity.')}</li>
+          <li>{t('真正值得追的信号出现在更新机制：1.7B 训练出了 44 个 SD-LoRA 参数更新候选，GDR（Gated Delta Rule，更新筛选规则）最终只让 7 个进入后续模型。', 'The more interesting signal appeared in update admission: the 1.7B run trained 44 SD-LoRA parameter-update candidates, but GDR (Gated Delta Rule, an update filter) admitted only 7 into later model states.')}</li>
+          <li>{t('因此我们正在做 DirectApply（直接应用更新）对照：拿掉 GDR 的否决权。最终分数还没收口，当前不能提前宣布谁更好。', 'We are therefore running a DirectApply comparison, which applies qualifying updates without the GDR veto. Its final score is not sealed yet, so there is no winner to claim.')}</li>
         </ul>
       </aside>
       <p class="slide-number">02 / 11</p>
     </div>
   </section>
 
-  <section id="ceiling" class="briefing-slide tone-paper" aria-labelledby="ceiling-title">
+  <section id="results" class="briefing-slide tone-paper" aria-labelledby="results-title">
     <div class="slide-inner">
-      <h2 id="ceiling-title">{t('WebShop 当前结果', 'Current WebShop results')}</h2>
-      <p class="slide-thesis">{t('先用和 SEED 论文相同的两列看结果：任务得分 Score，以及整道任务完全完成的成功率 Succ.。', 'Start with the same two WebShop columns used in the SEED paper: task Score and complete-task success rate (Succ.).')}</p>
+      <h2 id="results-title">{t('当前 WebShop 结果与 SEED 论文参照', 'Current WebShop results and the SEED paper reference')}</h2>
+      <p class="slide-thesis">{t('沿用 SEED 论文常见的两列：Score 看任务要求完成了多少，Succ. 看整道任务是否完整成功。', 'Use the familiar two WebShop columns from the SEED paper: Score for partial task completion and Succ. for full task success.')}</p>
+      <p class="table-boundary"><strong>{t('SEED 与 OpenEVO 不是同协议直接对照。', 'SEED and OpenEVO are not a same-protocol head-to-head comparison.')}</strong>{t('SEED 是论文报告值；OpenEVO 是本地冻结 128 题终评。这里统一用 Score / Succ. 方便读表，不能直接用 89.7 与 49.33 的差值判断胜负。', 'SEED values are paper-reported; OpenEVO uses our local frozen 128-task final panel. The shared Score / Succ. columns are for readability, not for declaring a winner from the 89.7 versus 49.33 gap.')}</p>
       <div class="paper-table-wrap" tabindex="0" aria-label={t('SEED 论文与 OpenEVO 当前 WebShop 结果', 'SEED paper and current OpenEVO WebShop results')}>
         <table class="paper-table">
           <thead><tr><th>{t('方法', 'Method')}</th><th>WebShop Score</th><th>WebShop Succ.</th></tr></thead>
@@ -70,174 +63,144 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
             <tr><th scope="row">SEED (Qwen3-1.7B)</th><td>87.1</td><td>77.3%</td></tr>
             <tr class="method-group ours"><th colspan="3">OpenEVO {t('（我们的实验）', '(our experiments)')}</th></tr>
             <tr><th scope="row">OpenEVO {t('（7B，长周期训练）', '(7B, long-horizon)')}</th><td>49.33</td><td>45.31%</td></tr>
-            <tr><th scope="row">OpenEVO {t('（1.7B，GDR 筛选）', '(1.7B, GDR-gated)')}</th><td>37.60</td><td>0.78%</td></tr>
-            <tr class="pending-row"><th scope="row">OpenEVO {t('（1.7B，不经过 GDR）', '(1.7B, without GDR)')}</th><td>—</td><td>—</td></tr>
+            <tr><th scope="row">OpenEVO {t('（1.7B，GDR）', '(1.7B, GDR)')}</th><td>37.60</td><td>0.78%</td></tr>
+            <tr class="pending-row"><th scope="row">OpenEVO {t('（3B，独立实验线）', '(3B, independent line)')}</th><td>—</td><td>—</td></tr>
+            <tr class="pending-row"><th scope="row">OpenEVO {t('（1.7B，DirectApply）', '(1.7B, DirectApply)')}</th><td>—</td><td>—</td></tr>
           </tbody>
         </table>
       </div>
       <div class="table-notes">
-        <p><strong>Score</strong> {t('看任务要求满足了多少；', 'measures partial requirement satisfaction;')} <strong>Succ.</strong> {t('只看任务是否完整成功。', 'counts only fully completed tasks.')}</p>
-        <p>{t('SEED 是论文报告值；OpenEVO 是本地冻结的 128 题最终测试，因此这张表先用于统一阅读方式，不把它写成已经完成的同协议胜负比较。DirectApply 尚无最终分数，所以留空。', 'SEED values are paper-reported; OpenEVO uses our frozen local 128-task final panel. The table standardizes reading, not yet an apples-to-apples causal comparison. DirectApply has no final score yet, so it stays blank.')}</p>
+        <p><strong>Score</strong> {t('看任务要求满足了多少；', 'measures partial requirement satisfaction;')} <strong>Succ.</strong> {t('只统计完整成功。', 'counts only fully completed tasks.')}</p>
+        <p>{t('3B 确实做过独立实验线，但目前没有一个能与这张冻结终评表直接并列的最终分数，所以不硬填；DirectApply 也还没有最终分数。', 'The 3B line is real, but we do not have a final number that belongs beside this frozen panel, so it remains blank; DirectApply is also unfinished.')}</p>
       </div>
       <p class="slide-number">03 / 11</p>
     </div>
   </section>
 
-  <section id="question" class="briefing-slide tone-blue" aria-labelledby="question-title">
+  <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
     <div class="slide-inner">
-      <h2 id="question-title">{t('我们真正想回答的，不只是“最后多少分”', 'The real question is bigger than the final score')}</h2>
-      <p class="slide-thesis">{t('我把研究拆成三个连续问题：先确认能学到多高，再问模型内部学到了什么，最后主动改变这些东西，看行为会不会跟着变。', 'The project is three linked questions: how far can it learn, what changed inside the model, and does behavior move when we intervene on those changes?')}</p>
-      <ol class="three-questions">
-        <li><span>1</span><div><strong>{t('能力上限', 'Capability ceiling')}</strong><p>{t('固定预算和最终测试，OpenEVO 能持续学多久，最后到什么水平？', 'With budget and final evaluation frozen, how far can OpenEVO keep learning?')}</p></div></li>
-        <li><span>2</span><div><strong>{t('参数机制', 'Parameter mechanism')}</strong><p>{t('行为变了以后，模型参数里究竟形成了什么方向和结构？', 'When behavior changes, what directions and structure appear in parameter space?')}</p></div></li>
-        <li><span>3</span><div><strong>{t('因果控制', 'Causal control')}</strong><p>{t('把这些方向加进去、拿掉，或者改变“哪些更新能进入模型”，行为会不会按预测改变？', 'If we add or remove those directions, or change which updates enter the model, does behavior change as predicted?')}</p></div></li>
-      </ol>
-      <p class="bottom-claim">{t('研究主线：能力上限 → 参数机制 → 因果控制。', 'Research arc: capability ceiling → parameter mechanism → causal control.')}</p>
+      <h2 id="seven-b-title">{t('7B 长周期实验：最终 49.33 分，瓶颈在哪里？', '7B long-horizon experiment: final Score 49.33 — where is the bottleneck?')}</h2>
+      <p class="slide-thesis">{t('这条线给了我们第一个完整基线：同一套 WebShop 任务流里，模型持续产生经验、吸收反馈并更新参数，最后再一次性看冻结终评。', 'This gave us the first complete baseline: on one WebShop trajectory stream, the model keeps collecting experience, absorbing feedback, updating parameters, and only then sees the frozen final evaluation.')}</p>
+      <div class="three-questions">
+        <li><span>1</span><div><strong>{t('第一阶段（Stage 1）', 'Stage 1')}</strong><p>{t('Qwen2.5-7B；180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹；temperature=0.4；每条最多 15 步。', 'Qwen2.5-7B; 180 tasks × 8 rollouts = 1,440 trajectories; temperature=0.4; max 15 steps.')}</p></div></li>
+        <li><span>2</span><div><strong>{t('第二阶段（Stage 2）', 'Stage 2')}</strong><p>{t('长周期继续和环境交互，并做低秩参数更新（SD-LoRA）；最终完整收口 149 轮、19,072 条有效环境交互。', 'Long-horizon environment interaction with low-rank parameter updates (SD-LoRA); 149 completed rounds and 19,072 accepted rollouts.')}</p></div></li>
+        <li><span>3</span><div><strong>{t('最终测试', 'Final test')}</strong><p><b>49.33 / 100</b><br />{t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</p></div></li>
+      </div>
+      <p class="bottom-claim">{t('这个结果把下一问变清楚：OpenEVO 已经能长期更新，但到底是哪一层限制了它继续变强？', 'The result sharpened the next question: OpenEVO can update for a long time, so which layer prevents those updates from translating into a higher ceiling?')}</p>
       <p class="slide-number">04 / 11</p>
     </div>
   </section>
 
-  <section id="design" class="briefing-slide tone-green" aria-labelledby="design-title">
+  <section id="small-arms" class="briefing-slide tone-green" aria-labelledby="small-arms-title">
     <div class="slide-inner">
-      <h2 id="design-title">{t('我怎么保证：结果可信，而且推进得快', 'How I keep the result trustworthy without slowing the work down')}</h2>
-      <p class="slide-thesis">{t('每次提速、修复或换实现，我先问一件事：它会不会悄悄改变我要回答的科学问题？不会，才继续。', 'Every speedup or engineering change starts with one question: does it silently change the scientific question? Only changes that preserve the experiment are allowed through.')}</p>
-      <div class="quality-flow">
-        <div><strong>{t('同一把尺子', 'One ruler')}</strong><p>{t('同一批任务同时报告 Score 和完整成功率。', 'Use the same tasks and report Score plus exact success.')}</p></div><i>→</i>
-        <div><strong>{t('一次只改一个原因', 'One causal change')}</strong><p>{t('Q17 两组只差：候选更新要不要经过 GDR。', 'Q17 differs only in whether GDR may reject an update.')}</p></div><i>→</i>
-        <div><strong>{t('异常先分类', 'Diagnose before fixing')}</strong><p>{t('先分清是测量、可识别性还是因果归因出了问题。', 'First locate measurement, identifiability, or attribution failure.')}</p></div>
+      <h2 id="small-arms-title">{t('1.7B 和 3B：用更小实验定位瓶颈', '1.7B and 3B: smaller experiments to locate the bottleneck')}</h2>
+      <p class="slide-thesis">{t('小模型更适合做诊断：同一个假设可以更快做单变量实验，先排除错误解释，再决定值不值得回到大模型继续投入预算。', 'Smaller models are useful diagnostic instruments: we can isolate one hypothesis faster, eliminate bad explanations, and only then decide what deserves the larger-model budget.')}</p>
+      <div class="choice-grid">
+        <div class="choice north">
+          <span>1.7B</span><h3>{t('完整跑完 GDR 长周期线', 'Completed the GDR long-horizon line')}</h3>
+          <p>{t('160 轮 / 20,480 次环境交互；最终 Score 37.60 / 100，完整成功 1 / 128。更重要的是，它暴露出 44→7 的更新准入瓶颈。', '160 rounds / 20,480 rollouts; final Score 37.60 / 100 and 1 / 128 complete success. More importantly, it exposed the 44→7 update-admission bottleneck.')}</p>
+        </div>
+        <div class="choice south">
+          <span>3B</span><h3>{t('独立实验线确实做过', 'A real independent experiment line')}</h3>
+          <p>{t('Qwen2.5-3B 也按 180×8 的第一阶段采集过 1,440 条轨迹，后续也有独立的持续学习实验线。它帮助我们验证同一套任务接口、容量和持续学习设计。当前没有一个可直接并入最终冻结分数表的终评分数。', 'Qwen2.5-3B also collected 1,440 Stage-1 trajectories under the 180×8 schedule and had its own Stage-2 lineage. It helped test the shared task interface, capacity, and continual-learning design. We do not currently have a final score that belongs in the frozen results table.')}</p>
+        </div>
       </div>
-      <div class="speed-proof">
-        <div class="speed-proof-number"><span>{t('提速资格实验', 'Speed qualification')}</span><strong>636.7 s → 389.6 s <b>1.63×</b></strong></div>
-        <div><strong>{t('速度变了，科学结果没变', 'Faster execution, same experiment')}</strong><p>{t('独立 DirectApply 第 0 轮：每卡并行采样进程 1 → 2；128 条尝试记录逐字节相同，Score、5 / 128 完整成功、LoRA adapter 与训练损失全部一致。', 'Independent DirectApply-only Round0: workers/GPU 1 → 2; all 128 attempts are byte-identical, with unchanged Score, 5 / 128 exact success, LoRA adapter, and training loss.')}</p></div>
-      </div>
-      <p class="source-note"><a href={q17DirectW2Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17DirectW2Pr} /> {t('DirectApply 并行资格实验 · PR #404', 'DirectApply parallelism qualification · PR #404')}</a></p>
       <p class="slide-number">05 / 11</p>
+    </div>
+  </section>
+
+  <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
+    <div class="slide-inner">
+      <h2 id="horizon-title">{t('15 → 30 步：任务得分仍然为 0', '15 → 30 steps: task score remains zero')}</h2>
+      <p class="slide-thesis">{t('这次只改一件事：每条轨迹最多能走 15 步还是 30 步。如果 30 步明显更好，才能说明问题主要出在步数限制。', 'Only one variable changes: whether each trajectory can take at most 15 or 30 actions. If 30 clearly improves behavior, the horizon explanation survives; otherwise it does not.')}</p>
+      <div class="before-after">
+        <div class="before"><span>15 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('同一批任务、同一接口；轨迹在 15 步结束。', 'Same tasks and interface; traces end at 15 steps.')}</p></div>
+        <div class="after"><span>30 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('64 / 64 条尝试有效；每个配对差值仍然是 0。', 'All 64 attempts are valid; every paired delta remains zero.')}</p></div>
+      </div>
+      <p class="bottom-claim">{t('结论很直接：把动作预算翻倍不足以解释失败。于是我们停止继续增加步数，换下一个假设。', 'Conclusion: doubling the action budget is not a sufficient explanation. We stop increasing the horizon and move to the next hypothesis.')}</p>
+      <p class="slide-number">06 / 11</p>
+    </div>
+  </section>
+
+  <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
+    <div class="slide-inner">
+      <h2 id="capacity-title">{t('2048 → 4096：单次记忆容量翻倍仍然失败', 'Second explanation: does a larger single memory budget solve it? 2048 → 4096 still fails')}</h2>
+      <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从 2048 对称翻到 4096。结果仍然失败，于是问题从“容量够不够大”转成“饱和以后应该怎样组织信息”。', 'We first doubled the Text Memory generation token cap symmetrically from 2048 to 4096. It still failed, shifting the question from “is the capacity large enough?” to “how should information be organized after saturation?”')}</p>
+      <div class="before-after">
+        <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
+        <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
+      </div>
+      <p class="bottom-claim">{t('这个结果把问题从“继续堆容量”推进到“怎样有边界地处理饱和”；最终成绩是否因此提高，仍由后续终评回答。', 'The result moves the question from “add more capacity” to “handle saturation with a bounded structure”; whether that improves the final score remains a later evaluation question.')}</p>
+      <p class="slide-number">07 / 11</p>
     </div>
   </section>
 
   <section id="mechanism" class="briefing-slide tone-gold" aria-labelledby="mechanism-title">
     <div class="slide-inner">
-      <h2 id="mechanism-title">{t('TaskVector：把“参数方向”变成一个可以被实验操纵的量', 'TaskVector: turn a parameter direction into an experimental intervention')}</h2>
-      <p class="slide-thesis">{t('这里可以更硬核一点：我们不是只看参数有没有变化，而是明确写出方向、范数和干预强度，再用同范数随机方向排除“只是参数动得多”这个解释。', 'The mechanism study explicitly defines the direction, its norm, and intervention dose, then uses norm-matched random directions to rule out a generic parameter-magnitude explanation.')}</p>
+      <h2 id="mechanism-title">{t('TaskVector（参数更新方向）：检验模型连续更新时到底学到了什么', 'TaskVector (parameter-update direction): test what successive updates actually learn')}</h2>
+      <p class="slide-thesis">{t('如果连续两次更新真的学到了同一种东西，它们在参数空间里应该形成一个可测量的方向。TaskVector 把这个方向写成一个可以主动加回模型、拿掉或反向施加的量。', 'If successive updates learn something coherent, they should form a measurable direction in parameter space. TaskVector turns that direction into an intervention we can add, remove, or reverse.')}</p>
       <div class="mechanism-math">
         <div class="formula-card">
-          <strong>{t('1. 从相邻且不同的参数状态定义方向', '1. Define the direction from adjacent distinct states')}</strong>
-          <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
-          <div class="equation">‖τ‖<sub>F</sub> = √(δcᵀGδc) = 0.6082257746</div>
-          <p>{t('R14 是移植目标，R27 是前一个不同状态，R49 是最终状态。参数基底有 7 个 SD-LoRA 组件，每个组件 rank=8；Gᵢⱼ=⟨BᵢAᵢ, BⱼAⱼ⟩F，所以这里算的是实际 ΔW 的 Frobenius 几何，不是简单比较 7 个系数的欧氏长度。', 'R14 is the transplant target, R27 the previous distinct state, and R49 the final state. The basis has seven rank-8 SD-LoRA components; Gᵢⱼ=⟨BᵢAᵢ,BⱼAⱼ⟩F, so the norm is exact Frobenius geometry in ΔW space rather than Euclidean distance between seven coefficients.')}</p>
+          <strong>{t('定义一个参数方向', 'Define a parameter direction')}</strong>
+          <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub></div>
+          <div class="equation">‖τ‖<sub>F</sub> = 0.608</div>
+          <p>{t('然后比较 +τ、−τ 和同范数随机方向，看行为变化是不是“方向特异”的，而不只是因为参数动得更多。', 'Then compare +τ, −τ, and norm-matched random directions to test whether behavior is direction-specific rather than merely responding to larger parameter movement.')}</p>
         </div>
         <div class="formula-card">
-          <strong>{t('2. 做有符号、有剂量、带随机对照的干预', '2. Signed, dose-controlled interventions with random controls')}</strong>
-          <div class="equation">θ′(λ) = θ<sub>R14</sub> + λτ, &nbsp; λ ∈ &#123;−1, 0, 0.5, 1&#125;</div>
-          <div class="equation">‖r<sub>i</sub>‖<sub>F</sub> = ‖τ‖<sub>F</sub>, &nbsp; i ∈ &#123;1,2,3&#125;</div>
-          <p>{t('总共 9 组实验条件 × 每组 64 个配对任务 = 最多 576 条闭环轨迹；所有实验条件使用同一任务顺序和配对生成随机种子。', 'Nine cells × 64 paired tasks gives at most 576 closed-loop episodes; every cell uses the same task order and paired generation seeds.')}</p>
+          <strong>{t('一次失败反而让定义更严格', 'A failed construction made the definition stricter')}</strong>
+          <p>{t('最早的 75% 和 100% 两个锚点都落在第 49 轮保存的同一个参数状态（R49），所以 τ=0。这个结果说明原构造不可识别；我们随后改用第 14、27、49 轮三个真实不同的参数状态。', 'The first 75% and 100% anchors both resolved to the same saved Round-49 parameter state (R49), so τ=0. That made the construction unidentifiable; we rebuilt it from genuinely distinct Round-14, Round-27, and Round-49 states.')}</p>
+          <p class="source-note"><a href={technicalHref}>{t('完整技术推导与实验门槛', 'Full technical derivation and experimental thresholds')}</a></p>
         </div>
       </div>
-      <div class="mechanism-rules">
-        <div><strong>{t('为什么要正负方向？', 'Why signed directions?')}</strong><span>{t('如果 +τ 和 −τ 产生相反趋势，比“参数动了以后碰巧变好”更像方向性证据。', 'Opposite effects for +τ and −τ are stronger directional evidence than generic movement.')}</span></div>
-        <div><strong>{t('为什么要同范数随机对照？', 'Why norm-matched random controls?')}</strong><span>{t('随机方向也移动同样大的参数距离；只有 τ 明显更强，才能说“方向”本身有信息。', 'Random controls move the same Gram-norm distance, isolating direction from magnitude.')}</span></div>
-        <div><strong>{t('什么时候值得继续？', 'When does this unlock the next experiment?')}</strong><span>{t('+1.0τ 必须比 3 个随机对照的中位数高至少 1.0 个 Task Score 点，而且完整成功不能比基线更差，才进入后续 1,536 条轨迹验证。', '+1.0τ must beat the median of the three random controls by ≥1.0 Task Score point without reducing exact success before the 1,536-rollout follow-up is unlocked.')}</span></div>
-      </div>
-      <aside class="mechanism-note"><strong>{t('这里曾经真的做错过一次', 'This construction really did fail once')}</strong><p>{t('最初选的 75% 和 100% 两个锚点其实都对应 R49，所以 τ = 0。我们没有把它写成“这个方向没有因果作用”，而是先承认实验不可识别，再改用确实不同的 R14 / R27 / R49。', 'The original 75% and 100% anchors both resolved to R49, so τ = 0. We did not call that a causal null; we marked the experiment unidentifiable and rebuilt it from distinct R14 / R27 / R49 states.')}</p></aside>
-      <p class="source-note"><a href={mechanismPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={mechanismPr} /> PR #319</a> · <a href={m1aPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={m1aPr} /> PR #358</a></p>
-      <p class="slide-number">06 / 11</p>
-    </div>
-  </section>
-
-  <section id="twin" class="briefing-slide tone-rose" aria-labelledby="twin-title">
-    <div class="slide-inner">
-      <h2 id="twin-title">{t('训练出 44 个参数更新候选，最后只有 7 个真正进入模型', '44 update candidates were trained; only 7 actually entered the model')}</h2>
-      <p class="slide-thesis">{t('这让问题从“再调一遍学习率”变成：GDR 会不会把短期看起来变差、长期却有价值的更新拒绝得太早？', 'The question shifts from another learning-rate tweak to whether GDR rejects updates that look worse immediately but help later.')}</p>
-      <div class="twin-design">
-        <div class="arm-a"><span>{t('如果经过 GDR', 'GDR treatment')}</span><strong>{t('候选可以被拒绝', 'Candidate may be rejected')}</strong><p>{t('候选更新训练出来以后，GDR 仍可以决定“不进入下一轮模型”。', 'After training, GDR may still keep the candidate out of the next model state.')}</p></div>
-        <div class="same-core"><span>{t('公平比较必须保持', 'A fair comparison must hold')}</span><ul><li>{t('同一冻结起点', 'same frozen start')}</li><li>{t('同一任务和随机种子', 'same tasks and seeds')}</li><li>{t('同一训练配置和候选机会', 'same training config and candidate opportunities')}</li><li>{t('唯一变化：候选更新是否能被 GDR 拒绝', 'only change: whether GDR may reject the candidate update')}</li></ul></div>
-        <div class="arm-b"><span>{t('如果直接应用', 'DirectApply treatment')}</span><strong>{t('合格候选直接进入下一轮', 'Qualifying candidate enters directly')}</strong><p>{t('候选满足共同训练条件以后，不再经过 GDR 否决。', 'A candidate meeting the common training conditions is not vetoed by GDR.')}</p></div>
-      </div>
-      <p class="bottom-claim">{t('我们原本按这个单变量合同做 twin；但后来发现“在旧双组对照里直接改成只用 DirectApply”会改变已经冻结的对照条件。这个恢复方式被拒绝，旧证据保留作诊断，DirectApply 改成新的独立实验身份。任何最终的 GDR / DirectApply 算法级结论仍至少需要 3 个 training seeds。', 'The twin was designed around this one-variable contract. Later, an in-place switch to DirectApply-only was rejected because it would mutate the frozen comparison conditions. The old evidence stays diagnostic, and DirectApply now uses a fresh experiment identity. Any final algorithm-level GDR-versus-DirectApply claim still requires at least three training seeds.')}</p>
-      <p class="source-note"><a href={q17Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Pr} /> {t('旧 Q17 双组对照 · PR #378', 'old Q17 twin · PR #378')}</a> · <a href={q17DirectW2Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17DirectW2Pr} /> {t('新 DirectApply 实验 · PR #404', 'fresh DirectApply experiment · PR #404')}</a></p>
-      <p class="slide-number">07 / 11</p>
-    </div>
-  </section>
-
-  <section id="determinism" class="briefing-slide tone-green" aria-labelledby="determinism-title">
-    <div class="slide-inner">
-      <h2 id="determinism-title">{t('发现旧实验不能再“硬接”以后，我们重新开了一条 DirectApply 实验', 'When the old twin could no longer be continued cleanly, we restarted DirectApply as a fresh experiment')}</h2>
-      <p class="slide-thesis">{t('这里的选择不是“为了严谨而重跑一遍”。如果在旧双组对照里中途改变对照条件，后面的结果就无法回答原来的因果问题。我们保留旧证据，但不改写旧实验轮次；新的 DirectApply 从同一个冻结起点重新开始。', 'This is not a rerun for neatness. Changing treatment inside the frozen twin would make later results answer a different causal question. We preserve the old evidence without rewriting old rounds, and restart DirectApply from the same frozen start under a new experiment identity.')}</p>
-      <div class="before-after">
-        <div class="before"><span>{t('旧双组对照 · 保留作诊断', 'Old twin · diagnostic')}</span><strong>{t('不能把后续路线就地改成只用 DirectApply', 'Do not mutate the treatment in place')}</strong><p>{t('GDR 线曾推进到第 13 轮，DirectApply 第 1 轮留下 84 / 128 个有效位置；但继续时改变已经冻结的对照条件，会破坏原来的单变量归因，所以这些证据保留，不再硬拼成新的公平对照。', 'The GDR line reached Round13 and DirectApply Round1 left 84 / 128 valid positions, but changing the frozen comparison conditions during continuation would break the original one-variable attribution. Those receipts remain diagnostic rather than being stitched into a new fair comparison.')}</p></div>
-        <div class="after"><span>{t('新 DirectApply · 独立实验', 'Fresh DirectApply · separate experiment')}</span><strong>{t('同一冻结起点，新的实验身份', 'Same frozen start, new experiment identity')}</strong><p>{t('旧实验轮次不复用。第 0 轮的 W1 / W2 资格实验已经证明：128 条尝试记录逐字节一致，Score、5 / 128 完整成功、LoRA adapter 和训练损失全部一致。', 'Old experiment rounds are not reused. Round0 W1/W2 qualification shows byte-identical 128 attempts with unchanged Score, 5 / 128 exact success, LoRA adapter, and training loss.')}</p></div>
-      </div>
-      <div class="current-twin-status">
-        <div><span>{t('已经证明', 'Proven')}</span><strong>636.7 s → 389.6 s · 1.63×</strong><p>{t('每卡并行采样进程 1 → 2，在不改变第 0 轮科学结果的前提下提速。', 'Workers/GPU 1 → 2 speeds up Round0 without changing the scientific result.')}</p></div>
-        <div><span>{t('下一项提速仍在资格中', 'Next speedup still qualifying')}</span><strong>{t('候选评估并行化', 'parallel candidate evaluation')}</strong><p>{t('第 4 轮的影子回放已经逐条复现前 12 / 16 个候选评估结果；完整资格尚未结束，因此还没有切换正式实验控制器。', 'A Round4 shadow replay has exactly reproduced the first 12 / 16 candidate-evaluation rows. Qualification is not complete, so the formal experiment controller has not switched.')}</p></div>
-      </div>
-      <div class="plain-language-result"><strong>{t('现在能下的结论：', 'What we can say now:')}</strong><p>{t('我们把“不能在旧实验里中途换问题”变成了新的实验身份，并证明 DirectApply 的采样可以在结果不变的前提下提速；但仍然没有 GDR / DirectApply 的最终胜负结论。', 'We turned an invalid in-place change to the comparison question into a fresh experiment identity and proved DirectApply rollout can be faster without changing Round0 results. There is still no final GDR-versus-DirectApply winner.')}</p></div>
-      <p class="source-note"><a href={q17Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Pr} /> {t('旧双组对照 · #378', 'old twin · #378')}</a> · <a href={q17DirectW2Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17DirectW2Pr} /> {t('DirectApply W2 · #404', 'DirectApply W2 · #404')}</a> · <a href={q17DirectProbe4Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17DirectProbe4Pr} /> {t('候选评估并行资格 · #406', 'candidate-evaluation parallelism qualification · #406')}</a></p>
       <p class="slide-number">08 / 11</p>
     </div>
   </section>
 
-  <section id="seed" class="briefing-slide tone-blue" aria-labelledby="seed-title">
+  <section id="gdr" class="briefing-slide tone-rose" aria-labelledby="gdr-title">
     <div class="slide-inner">
-      <h2 id="seed-title">{t('SEED 对照线：把“起点、教师、后续训练”拆开看', 'SEED control: separate start state, teacher, and later training')}</h2>
-      <p class="slide-thesis">{t('我们不是去追论文里的 89.7 这个单点数字，而是把 SEED 的训练链拆开，问清每一层到底贡献了什么。', 'The goal is not to chase the paper’s 89.7 as a single target; it is to decompose the SEED training chain and identify what each stage contributes.')}</p>
-      <figure class="pipeline" aria-labelledby="seed-pipeline-caption">
-        <div class="pipeline-row">
-          <div><span>01</span><strong>{t('同一个 WebShop 环境', 'Matched WebShop environment')}</strong></div><i>→</i>
-          <div><span>02</span><strong>Stage1 · 1,440</strong></div><i>→</i>
-          <div><span>03</span><strong>MiniMax {t('事后分析', 'hindsight')} · 1,440 / 1,440</strong></div><i>→</i>
-          <div><span>04</span><strong>SFT · 1,296 / 144</strong></div><i>→</i>
-          <div><span>05</span><strong>{t('Stage2 · 单独批准后启动', 'Stage2 · separately activated')}</strong></div>
+      <h2 id="gdr-title">{t('GDR：本来有 44 次机会更新参数，实际只有 7 次进入了后续模型', 'GDR: 44 parameter-update opportunities were trained, but only 7 entered later model states')}</h2>
+      <p class="slide-thesis">{t('GDR 是 Gated Delta Rule。每次训练会产生一个 SD-LoRA 参数更新候选 Δ；GDR 再判断这个候选能不能进入下一轮模型。', 'GDR stands for Gated Delta Rule. Each update opportunity produces an SD-LoRA candidate Δ; GDR then decides whether that candidate is allowed into the next model state.')}</p>
+      <div class="mechanism-math">
+        <div class="formula-card">
+          <strong>{t('最简单的写法', 'The simplest form')}</strong>
+          <div class="equation">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('如果 GDR 接受', 'if GDR accepts')}</div>
+          <div class="equation">θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('如果 GDR 拒绝', 'if GDR rejects')}</div>
         </div>
-        <figcaption id="seed-pipeline-caption">{t('当前使用 MiniMax-M3 作为教师模型，因此这是独立教师条件，不等同于论文原始 GLM-5.2 设置。离线 SFT 准备已经允许进行；Stage2 还没有获准启动。', 'MiniMax-M3 is the current teacher condition, so this is not paper-exact GLM-5.2. Offline SFT preparation is authorized; Stage2 has not yet been activated.')}</figcaption>
-      </figure>
-      <div class="seed-questions">
-        <div><strong>{t('起点贡献多少？', 'How much comes from initialization?')}</strong><p>{t('同一批 Stage1 轨迹能否改变后续上限？', 'Does the same Stage1 experience change the later ceiling?')}</p></div>
-        <div><strong>{t('教师贡献多少？', 'How much comes from the teacher?')}</strong><p>{t('事后分析带来的知识，究竟有多少被 SFT 吸收？', 'How much hindsight knowledge is actually absorbed by SFT?')}</p></div>
-        <div><strong>{t('第二阶段训练贡献多少？', 'How much comes from Stage2?')}</strong><p>{t('匹配训练条件后，再和 OpenEVO 做最终比较。', 'Only after conditions are matched do we make the final OpenEVO comparison.')}</p></div>
+        <div class="formula-card">
+          <strong>44 → 7</strong>
+          <p>{t('1.7B 长周期实验里，44 个 SD-LoRA 更新候选都真正训练出来了；但 GDR 最终只接受 7 个，所以只有 7 次更新进入后续模型状态。', 'In the 1.7B long-horizon run, all 44 SD-LoRA update candidates were actually trained; GDR admitted only 7, so only seven updates entered later model states.')}</p>
+          <p>{t('这把问题从“学习率还要不要调”变成了一个更有意思的问题：一次短期判断，会不会过早拒绝那些短期变差、长期却有价值的更新？', 'This shifts the question away from another learning-rate tweak: can a short-term gate reject updates that look worse immediately but would help later?')}</p>
+        </div>
       </div>
-      <p class="source-note"><a href={seedStage2Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedStage2Pr} /> SEED Stage2 · PR #375</a></p>
+      <p class="source-note"><a href={technicalHref}>{t('GDR 的判定逻辑与完整实验定义', 'GDR decision logic and full experimental definition')}</a></p>
       <p class="slide-number">09 / 11</p>
     </div>
   </section>
 
-  <section id="turning-points" class="briefing-slide tone-gold" aria-labelledby="turning-points-title">
+  <section id="directapply" class="briefing-slide tone-green" aria-labelledby="directapply-title">
     <div class="slide-inner">
-      <h2 id="turning-points-title">{t('遇到问题，我们先判断“哪一层科学有效性坏了”', 'When something breaks, identify which scientific validity layer broke')}</h2>
-      <p class="slide-thesis">{t('真正值得汇报的不是“修了多少 bug”，而是异常怎样改变了下一步实验。', 'The useful story is not how many bugs were fixed, but how each anomaly changed the next experiment.')}</p>
-      <div class="diagnosis-table" role="table" aria-label={t('问题、判断和下一步实验', 'Problem, diagnosis, and next experiment')}>
-        <div class="diagnosis-head" role="row"><strong>{t('看到什么', 'Observation')}</strong><strong>{t('我的判断', 'Diagnosis')}</strong><strong>{t('下一步怎么改', 'Next experiment')}</strong></div>
-        <div role="row"><b>Score ↑，{t('完整成功不变', 'exact flat')}</b><span>{t('一个总分混了两种现象', 'one scalar mixes two phenomena')}</span><p>{t('同一批 128 题拆成“部分进展 / 真正完成”两个指标。', 'split partial progress from full completion on the same 128 tasks.')}</p></div>
-        <div role="row"><b>44 {t('个候选，只进 7 个', 'candidates, only 7 admitted')}</b><span>{t('瓶颈可能是更新准入', 'admission may be the bottleneck')}</span><p>{t('把 GDR / DirectApply 做成只改一个变量的对照。', 'isolate GDR versus DirectApply as one treatment variable.')}</p></div>
-        <div role="row"><b>TaskVector = 0</b><span>{t('不可识别，不是因果零效应', 'unidentifiable, not a causal null')}</span><p>{t('回到状态谱系，重建 R14 / R27 / R49。', 'rebuild from distinct R14 / R27 / R49 states.')}</p></div>
-        <div role="row"><b>{t('GDR 生效前两组已不同', 'arms differ before GDR acts')}</b><span>{t('后续差异不能归因给 GDR', 'later differences are not attributable')}</span><p>{t('停止旧双组对照，修复重复性，再建立干净的第 0 轮。', 'stop the old twin, restore reproducibility, rebuild clean Round0.')}</p></div>
-        <div role="row"><b>{t('想在旧双组对照里改成只用 DirectApply', 'switch the old twin to DirectApply-only')}</b><span>{t('这会改变已经冻结的科学问题', 'this mutates the frozen scientific question')}</span><p>{t('拒绝就地改变对照条件；旧证据只作诊断，另开新的 DirectApply 实验身份。', 'reject the in-place comparison-condition change; keep old evidence diagnostic and open a fresh DirectApply experiment identity.')}</p></div>
+      <h2 id="directapply-title">{t('DirectApply：拿掉 GDR 的否决权，只改这一个变量', 'DirectApply: remove only the GDR veto')}</h2>
+      <p class="slide-thesis">{t('两条路线都训练同样的 SD-LoRA 候选；区别只有一个：GDR 可以拒绝候选，DirectApply 对满足共同训练条件的候选直接应用。', 'Both routes train the same kind of SD-LoRA candidate. The single intended difference is whether GDR may veto the update or DirectApply applies a qualifying candidate directly.')}</p>
+      <div class="before-after">
+        <div class="before"><span>GDR</span><strong>{t('训练 Δ → 再决定要不要更新', 'train Δ → decide whether to update')}</strong><p>{t('候选可能被拒绝，因此后续模型不一定看到这次学习。', 'A candidate can be rejected, so later states may never see that learning event.')}</p></div>
+        <div class="after"><span>DirectApply</span><strong>{t('训练 Δ → 直接进入后续模型', 'train Δ → apply it to the next state')}</strong><p>{t('不再用 GDR 做第二次否决。这样才能直接问：44→7 的筛选到底帮助了长期学习，还是限制了它？', 'There is no second GDR veto. This directly tests whether the 44→7 filtering helped long-term learning or constrained it.')}</p></div>
       </div>
-      <div class="proof-line"><strong>{t('思路', 'Thinking')}</strong><span>{t('先定位失效层，再改问题', 'locate the broken validity layer first')}</span><strong>{t('质量', 'Quality')}</strong><span>{t('不把构造失败包装成科研结论', 'never rebrand invalid construction as a result')}</span><strong>{t('速度', 'Speed')}</strong><span>{t('当天把不可归因的 Q17 从旧双组对照拆成新的实验身份，并验证 1.63× 提速不改结果', 'same-day separation of the invalid twin into a fresh experiment identity plus a 1.63× semantics-preserving speed qualification')}</span></div>
+      <div class="plain-language-result"><strong>{t('当前状态', 'Current state')}</strong><p>{t('DirectApply 的独立实验已经启动，但最终冻结分数还没有收口，所以结果表保持空白。由于暑期考核时间点就在这里，我们目前的能力天花板故事先讲到这里。', 'The independent DirectApply experiment has started, but its frozen final score is not sealed yet, so the results table remains blank. At the summer-review cutoff, this is where the current ceiling story stops.')}</p></div>
+      <p class="source-note"><a href={technicalHref}>{t('严谨性、重复性与复现实验细节', 'Rigor, reproducibility, and execution details')}</a></p>
       <p class="slide-number">10 / 11</p>
     </div>
   </section>
 
   <section id="next" class="briefing-slide briefing-final" aria-labelledby="next-title">
     <div class="slide-inner">
-      <h2 id="next-title">{t('最后想请老师和学长帮我选一个优先级', 'One priority choice for advisor discussion')}</h2>
-      <p class="slide-thesis">{t('旧 Q17 双组对照已经冻结，新的 DirectApply 独立实验还在推进，也还没有 GDR / DirectApply 的最终胜负。这不影响更大的路线选择：下一阶段先把机制证据做深，还是先把 SEED 匹配对照做齐？', 'The old Q17 twin is frozen, the fresh DirectApply experiment is still progressing, and there is no final GDR-versus-DirectApply winner. The larger sequencing choice remains: deepen mechanism evidence first, or complete the matched SEED comparison first?')}</p>
+      <h2 id="next-title">{t('下一步优先级：先做机制，还是先做 SEED 匹配比较？', 'Next priority: mechanism first, or matched SEED comparison first?')}</h2>
+      <p class="slide-thesis">{t('现在已经有一条清楚的研究链：7B 给出第一条长周期基线；1.7B / 3B 帮我们快速排除错误解释；TaskVector 和 44→7 又把问题推进到参数机制与更新准入。下一步两条线都值得做，但优先级不同。', 'We now have a coherent chain: 7B provides the long-horizon baseline; 1.7B / 3B let us falsify explanations quickly; TaskVector and the 44→7 result move the question into parameter mechanisms and update admission. Both next steps matter, but the ordering is a real choice.')}</p>
       <div class="choice-grid">
-        <div class="choice north">
-          <span>{t('向北', 'NORTH')}</span>
-          <h3>{t('先做参数因果实验', 'Mechanism first')}</h3>
-          <p>{t('继续 TaskVector 移植、参数主题删除和前瞻三组验证。', 'Continue TaskVector transplant, theme knockout, and the prospective three-arm trial.')}</p>
-          <dl><div><dt>{t('主要回答', 'Answers')}</dt><dd>{t('OpenEVO 为什么会变强？模型内部到底学到了什么？', 'Why does OpenEVO improve, and what was learned internally?')}</dd></div><div><dt>{t('更适合', 'Choose this if')}</dt><dd>{t('优先追求机制解释、因果证据和科研亮点。', 'mechanistic explanation and causal evidence are the priority.')}</dd></div></dl>
-        </div>
-        <div class="choice south">
-          <span>{t('向南', 'SOUTH')}</span>
-          <h3>{t('先做 SEED 匹配对照', 'Matched SEED comparison first')}</h3>
-          <p>{t('把 SFT 模型身份确认后启动匹配条件的第二阶段训练，再做最终测试。', 'Seal the SFT model identity, activate matched Stage2, then run final evaluation.')}</p>
-          <dl><div><dt>{t('主要回答', 'Answers')}</dt><dd>{t('在尽量相同的训练条件下，OpenEVO 和 SEED 到底差多少？', 'Under matched training conditions, how far apart are OpenEVO and SEED?')}</dd></div><div><dt>{t('更适合', 'Choose this if')}</dt><dd>{t('优先需要一个更直观、容易对外比较的结果。', 'a direct, externally legible benchmark comparison is the priority.')}</dd></div></dl>
-        </div>
+        <div class="choice north"><span>{t('向北', 'NORTH')}</span><h3>{t('先把机制证据做深', 'Deepen the mechanism evidence first')}</h3><p>{t('收 TaskVector 因果干预，再把 GDR / DirectApply 做成完整对照。回答：OpenEVO 为什么变强，什么更新真正有用？', 'Finish TaskVector causal interventions and the GDR / DirectApply comparison. Answer: why does OpenEVO improve, and which updates actually matter?')}</p></div>
+        <div class="choice south"><span>{t('向南', 'SOUTH')}</span><h3>{t('先把 SEED 匹配比较做齐', 'Complete the matched SEED comparison first')}</h3><p>{t('把训练条件尽量匹配后完成最终测试。回答：在相近资源和协议下，OpenEVO 和 SEED 到底差多少？', 'Match the training conditions as closely as possible and finish the final evaluation. Answer: under comparable resources and protocol, how far apart are OpenEVO and SEED?')}</p></div>
       </div>
-      <div class="decision-note"><strong>{t('希望老师判断的不是“做不做”，而是：', 'The question is not whether to do both, but:')}</strong><p>{t('先把论文故事做深（向北），还是先把对照结果做齐（向南）？', 'deepen the scientific mechanism story first (north), or complete the matched comparison first (south)?')}</p></div>
-      <p class="final-source"><a href={flowHref}>{t('实验流程理解图', 'Experiment flow')}</a> · <a href={ceilingHref}>{t('能力上限证据', 'Ceiling evidence')}</a></p>
+      <div class="decision-note"><strong>{t('想请老师和学长判断优先级：', 'Advisor decision:')}</strong><p>{t('先追“为什么有效”的机制证据，还是先追“到底差多少”的对外比较结果？', 'first deepen the evidence for why it works, or first finish the externally legible comparison of how much it differs?')}</p></div>
+      <p class="final-source"><a href={flowHref}>{t('实验流程', 'Experiment flow')}</a> · <a href={technicalHref}>{t('技术推导与实验严谨性', 'Technical derivations and rigor')}</a></p>
     </div>
   </section>
 </article>
@@ -256,15 +219,15 @@ const seedStage2Pr = 'https://github.com/mykcs/openevo-experiment/pull/375';
   .cover-meta{display:grid;grid-template-columns:190px 220px 1fr;gap:16px;margin:auto 0 0}.cover-meta>div{padding:18px 20px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--rule)}.cover-meta dt{color:var(--muted);font-size:12px;font-weight:760}.cover-meta dd{margin:7px 0 0;font-size:16px;font-weight:720}
   .slide-number{position:absolute;right:42px;bottom:28px;margin:0;padding:6px 10px;border:1px solid var(--rule);border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--muted);font:800 12px/1 var(--font-mono);letter-spacing:.06em}
   .split-slide{display:grid;grid-template-columns:40% 60%;gap:48px;padding-top:70px}.agenda-pane,.tldr-pane{min-width:0}.agenda-list{margin:34px 0 0;padding:0;list-style:none;display:grid;gap:20px}.agenda-list li{display:flex;align-items:center;gap:16px}.agenda-list span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font:800 12px var(--font-mono)}.agenda-list strong{font-size:22px}.tldr-pane{align-self:center;padding:34px 38px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--positive) 35%,var(--line))}.tldr-pane h3{margin-top:14px;font-size:30px}.tldr-pane ul{margin:24px 0 0;padding-left:22px;display:grid;gap:16px}.tldr-pane li{font-size:17px;line-height:1.48}
-  .paper-table-wrap{margin-top:28px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:10px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr 1.65fr;gap:28px;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
-  .three-questions{display:grid;grid-template-columns:repeat(3,1fr);margin:40px 0 0;padding:0;list-style:none;gap:18px}.three-questions li{padding:25px 26px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.three-questions span,.quality-grid>div>span{display:grid;place-items:center;width:48px;height:48px;margin-bottom:18px;border-radius:50%;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:850 14px var(--font-mono)}.three-questions strong{display:block;font-size:22px}.three-questions p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.quality-grid>div{padding:20px 22px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.quality-grid>div:nth-child(2)>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.quality-grid>div:nth-child(3)>span{background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning)}.quality-grid>div:nth-child(4)>span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.quality-grid strong{display:block;font-size:18px;line-height:1.28}.quality-grid p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.44}.quality-grid .speed-number{margin-top:10px;color:var(--ink);font:750 17px/1.2 var(--font-mono)}.quality-grid .speed-number b{color:var(--accent-deep)}
+  .table-boundary{max-width:1040px;margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface));color:var(--muted);font-size:15px;line-height:1.4}.table-boundary strong{display:block;color:var(--ink);margin:0 0 3px;font-size:16px}.paper-table-wrap{margin-top:14px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:7px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr 1.65fr;gap:28px;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
+  .three-questions{display:grid;grid-template-columns:repeat(3,1fr);margin:40px 0 0;padding:0;list-style:none;gap:18px}.three-questions li{padding:25px 26px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.three-questions span,.quality-grid>div>span{display:grid;place-items:center;width:48px;height:48px;margin-bottom:18px;border-radius:50%;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:850 14px var(--font-mono)}.three-questions strong{display:block;font-size:22px}.three-questions p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}.three-questions p b{color:var(--ink);font:760 20px/1.2 var(--font-mono)}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.quality-grid>div{padding:20px 22px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.quality-grid>div:nth-child(2)>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.quality-grid>div:nth-child(3)>span{background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning)}.quality-grid>div:nth-child(4)>span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.quality-grid strong{display:block;font-size:18px;line-height:1.28}.quality-grid p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.44}.quality-grid .speed-number{margin-top:10px;color:var(--ink);font:750 17px/1.2 var(--font-mono)}.quality-grid .speed-number b{color:var(--accent-deep)}
   .bottom-claim{margin:auto 0 0;max-width:950px;padding:14px 18px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 76%,transparent);color:var(--muted);font-size:15px;line-height:1.5}
-  .mechanism-math{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.formula-card{padding:18px 20px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 86%,transparent)}.formula-card>strong{font-size:15px}.equation{margin-top:11px;padding:9px 12px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));font:650 22px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}.formula-card p{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.42}.mechanism-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.mechanism-rules>div{padding:11px 13px;border-top:2px solid color-mix(in srgb,var(--warning) 45%,var(--line))}.mechanism-rules strong{display:block;font-size:12px}.mechanism-rules span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.38}.mechanism-note{margin-top:10px;padding:11px 14px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 28%,var(--line))}.mechanism-note strong{font-size:12px}.mechanism-note p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.38}.twin-design span,.before-after span,.choice>span{display:inline-block;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,var(--surface));color:var(--warning);font:800 11px var(--font-mono);letter-spacing:.05em}
+  .mechanism-math{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.formula-card{padding:18px 20px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 86%,transparent)}.formula-card>strong{font-size:15px}.equation{margin-top:11px;padding:9px 12px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));font:650 22px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}.formula-card p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.46}.mechanism-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.mechanism-rules>div{padding:11px 13px;border-top:2px solid color-mix(in srgb,var(--warning) 45%,var(--line))}.mechanism-rules strong{display:block;font-size:12px}.mechanism-rules span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.38}.mechanism-note{margin-top:10px;padding:11px 14px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 28%,var(--line))}.mechanism-note strong{font-size:12px}.mechanism-note p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.38}.twin-design span,.before-after span,.choice>span{display:inline-block;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,var(--surface));color:var(--warning);font:800 11px var(--font-mono);letter-spacing:.05em}
   .twin-design{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:16px;margin-top:30px}.twin-design>div{padding:24px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.twin-design .arm-a{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.twin-design .same-core{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}.twin-design .arm-b{background:color-mix(in srgb,var(--positive) 9%,var(--surface))}.twin-design strong{display:block;margin-top:13px;font-size:21px}.twin-design p,.twin-design li{color:var(--muted);font-size:14px;line-height:1.48}.twin-design p{margin:8px 0 0}.twin-design ul{margin:12px 0 0;padding-left:18px}
   .before-after{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}.before-after>div{padding:28px 30px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.before{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.after{background:color-mix(in srgb,var(--positive) 11%,var(--surface))}.before-after .before span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.before-after .after span{background:color-mix(in srgb,var(--positive) 17%,var(--surface));color:var(--positive)}.before-after strong{display:block;margin-top:16px;font-size:24px}.before-after p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.current-twin-status{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.current-twin-status>div{padding:14px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.current-twin-status span{color:var(--accent-deep);font:800 11px var(--font-mono)}.current-twin-status strong{display:block;margin-top:6px;font-size:16px}.current-twin-status p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.42}.plain-language-result{margin-top:14px;padding:14px 18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line))}.plain-language-result p{display:inline;margin:0 0 0 8px;color:var(--muted);font-size:14px;line-height:1.46}
   .pipeline{margin:34px 0 0}.pipeline-row{display:flex;align-items:stretch;gap:9px}.pipeline-row>div{flex:1;min-width:0;padding:20px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid var(--rule)}.pipeline-row span{color:var(--blue);font:800 11px var(--font-mono)}.pipeline-row strong{display:block;margin-top:9px;font-size:14px;line-height:1.35}.pipeline-row i{align-self:center;color:var(--muted);font-style:normal}.pipeline figcaption{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.48}.seed-questions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}.seed-questions>div{padding:18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--rule)}.seed-questions strong{font-size:16px}.seed-questions p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
   .turning-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0 0;padding:0;list-style:none}.turning-list li{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:16px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.turning-list span{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning);font:800 10px var(--font-mono)}.turning-list strong{font-size:15px}.turning-list p{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.4}.proof-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.proof-strip>div{padding:12px 14px;border-radius:var(--radius-panel);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 80%,transparent)}.proof-strip strong{display:block;color:var(--accent-deep);font-size:12px}.proof-strip span{display:block;margin-top:4px;color:var(--muted);font-size:10.5px;line-height:1.38}
-  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}.choice{padding:30px 32px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.choice.north{background:color-mix(in srgb,var(--blue) 10%,var(--surface))}.choice.south{background:color-mix(in srgb,var(--positive) 10%,var(--surface))}.choice.north>span{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}.choice.south>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.choice h3{margin-top:16px;font-size:30px}.choice>p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.choice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}.choice dl>div{padding-top:12px;border-top:1px solid var(--rule)}.choice dt{color:var(--muted);font-size:11px;font-weight:800}.choice dd{margin:6px 0 0;font-size:13px;line-height:1.42}.decision-note{margin-top:24px;padding:18px 22px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--warning) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}.decision-note p{display:inline;margin-left:7px;font-size:17px}.source-note,.final-source{margin:auto 0 0;color:var(--muted);font-size:12px}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}.choice{padding:30px 32px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.choice.north{background:color-mix(in srgb,var(--blue) 10%,var(--surface))}.choice.south{background:color-mix(in srgb,var(--positive) 10%,var(--surface))}.choice.north>span{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}.choice.south>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.choice h3{margin-top:16px;font-size:30px}.choice>p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.choice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}.choice dl>div{padding-top:12px;border-top:1px solid var(--rule)}.choice dt{color:var(--muted);font-size:11px;font-weight:800}.choice dd{margin:6px 0 0;font-size:13px;line-height:1.42}.decision-note{margin-top:24px;padding:18px 22px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--warning) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}.decision-note p{display:inline;margin-left:7px;font-size:17px}.source-note,.final-source{margin:auto 0 0;color:var(--muted);font-size:12px}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
   a:focus-visible,.paper-table-wrap:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
   .quality-flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:10px;align-items:stretch;margin-top:34px}.quality-flow>div{padding:24px 25px;border-top:3px solid color-mix(in srgb,var(--positive) 44%,var(--line));background:color-mix(in srgb,var(--surface) 72%,transparent)}.quality-flow i{align-self:center;text-align:center;color:var(--muted);font-style:normal;font-size:24px}.quality-flow strong{font-size:20px}.quality-flow p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}.speed-proof{display:grid;grid-template-columns:37% 1fr;gap:26px;align-items:center;margin-top:25px;padding:20px 24px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 8%,var(--surface))}.speed-proof-number span{display:block;color:var(--muted);font-size:12px;font-weight:750}.speed-proof-number strong{display:block;margin-top:8px;font:760 23px/1.2 var(--font-mono)}.speed-proof-number b{color:var(--accent-deep);margin-left:10px}.speed-proof>div:last-child strong{font-size:17px}.speed-proof>div:last-child p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.diagnosis-table{display:grid;margin-top:24px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}.diagnosis-table>div{display:grid;grid-template-columns:28% 30% 42%;align-items:center;border-top:1px solid var(--rule);min-height:66px}.diagnosis-table>div:first-child{border-top:0}.diagnosis-table b,.diagnosis-table span,.diagnosis-table p,.diagnosis-table strong{margin:0;padding:10px 14px}.diagnosis-table b{font-size:14px}.diagnosis-table span,.diagnosis-table p{color:var(--muted);font-size:12px;line-height:1.38}.diagnosis-table>.diagnosis-head{min-height:42px;background:color-mix(in srgb,var(--warning) 7%,var(--surface))}.diagnosis-head strong{font-size:12px}.proof-line{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1.35fr;gap:8px 12px;align-items:start;margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}.proof-line strong{color:var(--accent-deep);font-size:12px}.proof-line span{color:var(--muted);font-size:11px;line-height:1.4}
 
