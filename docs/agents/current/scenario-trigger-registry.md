@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-08-31**
+Last reviewed: **2026-09-08**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -43,6 +43,8 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 5. If Cloudflare Direct Upload is the required fallback, use `direct-upload-preview-policy.md` and `direct-upload-preview-command.md`; never silently substitute a Git-connected Pages build because credentials are missing.
 6. Keep source state, deterministic Gate/build, provider READY, real-route acceptance, and Production acceptance separate in reports.
 7. Do not quote exact provider quota/price counters without authoritative current evidence.
+8. If the task changes the blocking CI/provider owner, treat cutover as a transaction: inspect the exact-head provider execution **and** live GitHub required-status/ruleset state before mutation and again before closeout. Repository docs/config alone cannot prove blocking authority moved; a concurrent live ruleset change is a stop-and-read event, not permission to overwrite it.
+9. Localize provider red states by the first failing execution phase before changing architecture. A repository `verify:deploy` assertion failure, browser/product failure, environment/bootstrap failure, ignored policy outcome, and provider infrastructure failure require different fixes.
 
 Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts, CI-vs-deploy relevance mistakes, and the later Doctor-led safe disk/cache maintenance pass, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
 

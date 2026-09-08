@@ -318,6 +318,20 @@ required Gate/browser evidence is still the accepted run
 
 If head or material base state changed, stop and refresh acceptance instead of merging from memory.
 
+### 6.6 Provider-authority cutover witness
+
+When the release itself changes which provider/check is blocking, the ordinary exact-head tuple is incomplete until the **live required-status owner** is read back. Record together:
+
+```text
+repository contract SHA
+replacement provider execution + exact bound SHA + real READY/PASS state
+live ruleset/branch-protection required context + integration identity
+predecessor role after cutover (shadow/fallback/retired)
+post-merge Production/main execution state
+```
+
+A green replacement Preview while GitHub still requires the predecessor is qualification evidence, not a completed cutover. Conversely, if a concurrent operator already changed the ruleset or merged the PR, stop the planned mutation, read the durable state, and continue from the new boundary; do not replay the same write or report that you performed an action you did not perform.
+
 ### 7.0 Use one atomic merge-window witness
 
 After the required checks become terminal, do not spend the accepted state by doing another unbounded round of branch work. Immediately before the merge mutation, capture one compact live tuple:
