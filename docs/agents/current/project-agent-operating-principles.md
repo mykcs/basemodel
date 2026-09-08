@@ -56,28 +56,33 @@ Before any GitHub/provider mutation:
 
 Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention.
 
-### Use the narrowest execution surface
+### Choose the fastest safe execution surface
 
-A connected user device, remote desktop, SSH target, or local checkout is a stronger execution boundary than a repository/provider connector. Do not cross that boundary merely because local shell tools or a familiar Git workflow are more convenient.
+A connected user device, remote desktop, SSH target, or local checkout is a stronger execution boundary than a repository/provider connector. Crossing that boundary therefore needs a concrete benefit, but **cloud-only is not the goal**. The default is the **fastest safe path**: choose the narrowest surface that materially shortens the feedback loop or improves validation quality without weakening authority, safety, or reproducibility.
 
-For repository and hosted-site work, default to the narrowest surface that can complete the task:
+Use this routing model for BaseModel work:
 
 ```text
-GitHub repository state -> GitHub connector
-Vercel deployment state -> Vercel connector
-user device / uncommitted local state -> remote desktop or local-machine tool only when actually required
+small repository/content/docs change -> GitHub connector
+UI / multi-file / local-execution-heavy change -> isolated local worktree through Remote Desktop Commander when it is faster
+PR / review / merge / exact-SHA status -> GitHub connector
+Preview / Production provider state -> Vercel/provider connector
 ```
 
-In particular:
+A local/RDC path has real value when it enables a materially faster or stronger loop such as: targeted Vitest in the same checkout, `astro check`, static build, dev-server inspection, Playwright/browser verification, reuse of a lockfile-compatible dependency tree, or one coherent multi-file Git commit instead of slow sequential file API writes. Shared navigation, layout, CSS, responsive behavior, and component-plus-test edits are typical examples.
 
-- if GitHub read/write/PR operations can complete the requested repository change, stay on GitHub;
-- if Vercel can verify Preview/Production state, stay on Vercel;
-- do not invoke Remote Desktop Commander, SSH, or another user-device path only to make patching easier, run redundant local checks, or work around API ergonomics;
-- use a user-device tool when the task materially depends on local-only state: uncommitted files, a local-only binary/build environment, a device service, a reproduction that exists only on that machine, or an explicit user request to operate there;
-- if the owner explicitly frames the task as “网页端 / GitHub 里完成”, treat that as an execution-scope constraint unless the task becomes impossible without a stronger surface; if escalation becomes necessary, explain why before crossing the boundary when practical;
-- minimize local reads/writes to the exact state needed for the task, and do not inspect unrelated files or device state.
+Rules:
 
-Tool convenience is not sufficient justification for broader access. The default is **cloud-side for cloud-owned state, device-side only for device-owned state**.
+- **Small and self-contained stays cloud-side.** A one-line copy fix, Markdown/Agent-doc edit, small static-data correction, or ordinary PR metadata change should normally use GitHub directly when that is simpler and equally verifiable.
+- **Use RDC/local worktrees when the gain is concrete.** Prefer it for UI, shared components, multi-file refactors, or changes where local test/build/dev/browser feedback will likely catch mistakes before a hosted gate. Convenience alone is not enough; the expected gain should be shorter feedback, stronger local evidence, fewer provider-triggering iterations, or safer atomic editing.
+- **RDC is an accelerator, never a dependency.** If the Mac/device is offline or unhealthy and the repository/provider path can safely continue, continue without waiting for the device. Do not make ordinary BaseModel development depend on one machine.
+- **Return authority to the cloud.** Local Git/test/build evidence is preflight evidence only. GitHub remains canonical source/PR state, and exact-head hosted acceptance remains the release authority. Never substitute a green local build for the required Vercel/provider gate.
+- **Isolate local work.** Before mutation, resolve the repository root, exact remote/base SHA, branch, dirty state, shell, and intended worktree. Prefer a task-owned worktree and unique port; never reuse or overwrite another Agent's dirty checkout merely because it is already open.
+- **Keep device access scoped.** Do not inspect unrelated files/processes or use SSH/device access that the task does not need. The fact that RDC is online does not authorize broad machine inspection.
+- **Avoid provider churn.** When a local loop can cheaply prove a UI/multi-file candidate before the final Vercel gate, use it. Conversely, do not run an expensive local matrix that adds no useful evidence for a trivial docs/content edit.
+- **Programmatic control planes remain first choice for control-plane actions.** GitHub/Vercel/Cloudflare mutations, PR state, checks, deployments, and settings should use their connector/CLI/API rather than coordinate-based browser clicking unless no supported programmatic route exists.
+
+This is deliberately neither `GitHub-first` nor `RDC-first`. It is **fastest-safe-path first**: use RDC when it buys real development speed or validation value; otherwise do not call it.
 
 ### Reconstruct from durable state after partial execution or tool confusion
 
