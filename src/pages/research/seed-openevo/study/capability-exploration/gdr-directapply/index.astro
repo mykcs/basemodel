@@ -5,10 +5,10 @@ import ResearchRouteContext from '../../../../../../components/research/Research
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="GDR → DirectApply：为什么 44 次学习尝试只留下 7 次更新"
-  description="Qwen3-1.7B Stage2 的 GDR-v1 决策反思与 DirectApply / No-GDR 独立对照：44 个 SD-LoRA candidates、7 次正式更新、Round-0 semantic matching 与资源 handoff 的科学语义。"
+  title="GDR → DirectApply：44 次学习为什么只留下 7 次更新"
+  description="1.7B Stage2 实际训练 44 个 SD-LoRA 候选更新，GDR-v1 只放行 7 个；这解释更新次数，但不证明 GDR 降低最终性能或 DirectApply 更好。No-GDR 只移除短期 task-score 放行规则，工程与数据安全合同继续保留。"
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="gdr-directapply" />
+  <ResearchRouteContext locale={locale} route="gdr-directapply" compact linkedLocation={false} />
   <OpenEvoGdrDirectApplyExplainer locale={locale} />
 </AppLayout>

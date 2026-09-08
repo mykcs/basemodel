@@ -5,10 +5,10 @@ import ResearchRouteContext from '../../../../../../../components/research/Resea
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="GDR → DirectApply: why 44 learning attempts became 7 updates"
-  description="A research decision record for Qwen3-1.7B Stage 2: GDR-v1, the DirectApply / No-GDR ablation, Round-0 semantic matching, and the scientific meaning of resource handoffs."
+  title="GDR → DirectApply: why 44 learning attempts left only 7 updates"
+  description="Stage 2 trained 44 SD-LoRA candidate updates and GDR-v1 admitted only 7. That explains the update count; it does not establish worse final performance or a DirectApply advantage. No-GDR removes short-horizon task-score admission while keeping engineering and data-safety contracts."
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="gdr-directapply" />
+  <ResearchRouteContext locale={locale} route="gdr-directapply" compact linkedLocation={false} />
   <OpenEvoGdrDirectApplyExplainer locale={locale} />
 </AppLayout>

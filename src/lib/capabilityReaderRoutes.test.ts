@@ -35,6 +35,17 @@ describe('capability route reader contracts', () => {
     });
   }
 
+  it('keeps the GDR route context compact without duplicating its navigation action', () => {
+    for (const locale of ['zh', 'en'] as const) {
+      const prefix = locale === 'en' ? 'en/' : '';
+      const route = readFileSync(join(repo, `src/pages/${prefix}${base}/gdr-directapply/index.astro`), 'utf8');
+      expect(route).toContain('ResearchRouteContext locale={locale} route="gdr-directapply" compact linkedLocation={false}');
+    }
+    const context = readFileSync(join(repo, 'src/components/research/ResearchRouteContext.astro'), 'utf8');
+    expect(context).toContain('linkedLocation?: boolean');
+    expect(context).toContain('linkedLocation = true');
+  });
+
   it('keeps reader regression cases in the actual standard browser gate', () => {
     const scripts = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).scripts as Record<string, string>;
     for (const gate of ['test:ui', 'test:ui:all']) expect(scripts[gate]).toContain('tests/e2e/openevo-two-map.spec.ts');

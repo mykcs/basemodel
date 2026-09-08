@@ -45,6 +45,19 @@ describe('2026-09-07 human-feedback visual language protection', () => {
     expect(gdr).not.toContain('OPENEVO × WEBSHOP · GDR → DIRECTAPPLY');
   });
 
+  it('keeps the GDR decision page answer-first while preserving the scientific boundary', () => {
+    expect(gdr).toContain('class="gdr-primary"');
+    expect(gdr).toContain('44 个候选被训练，7 个进入后续模型。');
+    expect(gdr).toContain('这解释了更新次数，但还不能证明最终性能。');
+    expect(gdr).toContain('No-GDR 只移除短期 task-score 放行规则');
+    expect(gdr).toContain('工程与数据安全合同仍保留');
+    expect(gdr).toContain('GDR / SD-LoRA 术语与完整计数');
+    expect(gdr).not.toContain('class="gdr-lede"');
+    expect(gdr).not.toContain('class="gdr-answer"');
+    expect(gdr.indexOf('class="gdr-primary"')).toBeLessThan(gdr.indexOf('data-testid="gdr-44-to-7-funnel"'));
+    expect(gdr.indexOf('data-testid="gdr-44-to-7-funnel"')).toBeLessThan(gdr.indexOf('GDR / SD-LoRA 术语与完整计数'));
+  });
+
   it('folds generic section categories into the actual heading', () => {
     for (const phrase of ['Ceiling-1.0 想回答什么', 'Stage 1 留给下一阶段什么', 'Stage 2 怎么跑', '四类状态什么时候可以改', '当时跑到哪里']) {
       expect(ceiling).not.toContain(phrase);

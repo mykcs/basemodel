@@ -2,8 +2,8 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { CAPABILITY_READER_ROUTES, type CapabilityReaderRoute } from '../../data/capabilityReaderRoutes';
-interface Props { locale: Locale; route: CapabilityReaderRoute; compact?: boolean }
-const { locale, route, compact = false } = Astro.props;
+interface Props { locale: Locale; route: CapabilityReaderRoute; compact?: boolean; linkedLocation?: boolean }
+const { locale, route, compact = false, linkedLocation = true } = Astro.props;
 const record = CAPABILITY_READER_ROUTES.find((entry) => entry.route === route);
 if (!record) throw new Error(`Missing reader role for ${route}`);
 const zh = locale === 'zh';
@@ -21,7 +21,7 @@ const compactPurpose = route === 'first-run'
 const purpose = compact ? compactPurpose : record.purpose[locale];
 ---
 <aside class="research-route-context" data-compact={compact ? 'true' : undefined} data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
-  <p class="research-route-context__location"><a href={root}>{zh ? '能力探索' : 'Capability exploration'}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></p>
+  <p class="research-route-context__location">{linkedLocation ? <a href={root}>{zh ? '能力探索' : 'Capability exploration'}</a> : <span>{zh ? '能力探索' : 'Capability exploration'}</span>}<span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></p>
   <p data-reader-task>{task}</p>
   <p data-reader-purpose>{purpose}</p>
 </aside>
