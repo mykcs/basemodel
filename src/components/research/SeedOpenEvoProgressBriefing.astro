@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -179,7 +180,7 @@ const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
         </div>
       </div>
       <aside class="evidence-strip evidence-warning"><strong>{t('恢复前的确定性 gate', 'Determinism gate before resuming')}</strong><p>{t('同 payload + 同 seed + 同一块指定物理 GPU，独立重复至少 2 次，必须得到相同 adapter SHA256、serialized SD state hash、training loss；不支持的非确定性算子必须 fail closed。通过后还需要新的、明确的 scientific resume authority。', 'Same payload + same seed + the same designated physical GPU, repeated independently at least twice, must produce identical adapter SHA256, serialized SD-state hashes, and training loss. Unsupported nondeterministic operators must fail closed. A new explicit scientific resume authority is still required afterward.')}</p></aside>
-      <footer class="slide-footer"><span class="source-links"><a href={q17Pr} target="_blank" rel="noreferrer">Q17 PR #378 ↗</a><a href={determinismIssue} target="_blank" rel="noreferrer">OpenEvo issue #13 ↗</a></span><a href="#quality">{t('下一页：质量体系 ↓', 'Next: quality ↓')}</a></footer>
+      <footer class="slide-footer"><span class="source-links"><a href={q17Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Pr} />Q17 PR #378 ↗</a><a href={determinismIssue} target="_blank" rel="noreferrer"><ExternalBrandMark href={determinismIssue} />OpenEvo issue #13 ↗</a></span><a href="#quality">{t('下一页：质量体系 ↓', 'Next: quality ↓')}</a></footer>
     </div>
   </section>
 
@@ -230,7 +231,7 @@ const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
         <h3>{t('确定性底座修好以后，研究优先级应更偏向“尽快收口 OpenEVO vs SEED 最终效果”，还是先把“GDR 为什么挡掉更新”机制做得更深？', 'After the determinism substrate is fixed, should we prioritize closing the OpenEVO-vs-SEED final effect sooner, or go deeper on why GDR rejects updates first?')}</h3>
         <span>{t('我的当前顺序：确定性必须先修；之后主 benchmark 与机制研究可以并行，但不共享会污染 treatment 的状态。', 'My current ordering: determinism first; then the main benchmark and mechanism study may proceed in parallel without sharing state that contaminates the treatment.')}</span>
       </div>
-      <div class="final-links"><a href={q17Successor} target="_blank" rel="noreferrer">Q17 clean successor ↗</a><a href={resultsHref}>{t('研究结果 ↗', 'Research findings ↗')}</a><a href="#briefing-top">{t('回到开头 ↑', 'Back to start ↑')}</a></div>
+      <div class="final-links"><a href={q17Successor} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17Successor} />Q17 clean successor ↗</a><a href={resultsHref}>{t('研究结果 ↗', 'Research findings ↗')}</a><a href="#briefing-top">{t('回到开头 ↑', 'Back to start ↑')}</a></div>
     </div>
   </section>
 </article>
