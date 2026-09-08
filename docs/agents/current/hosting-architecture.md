@@ -1,8 +1,8 @@
-# Hosting architecture — Vercel Pro + manual fallbacks + Cloudflare smoke
+# Hosting architecture — public GHA preflight + Vercel Pro authority + manual fallbacks
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-09**
 
-Status: **current release architecture. Vercel Pro supplies ordinary pre-merge acceptance and the only ordinary Preview/Production deployment path; CircleCI automatic PR/main workflows are disabled and API-triggered fallback only; Cloudflare supplies post-deploy smoke; the Mac/OrbStack runner is manual fallback only.**
+Status: **current release architecture. Public GitHub Actions supplies automatic read-only PR preflight on independent hosted runners; Vercel Pro remains the only required final-candidate acceptance and ordinary Preview/Production deployment authority; CircleCI and Mac/OrbStack are manual fallback only; Cloudflare supplies post-deploy smoke.**
 
 Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
 
@@ -12,6 +12,9 @@ Provider-selection rationale and rejected alternatives: [`ci-provider-decision.m
 GitHub = source of truth
 
 working PR / development branch
+  -> public hosted GitHub Actions preflight
+  -> deterministic gate + shared risk planner
+  -> full work uses 4 independent Chromium shards; bounded work uses focused coverage
   -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
@@ -32,11 +35,17 @@ main
 
 manual CI recovery only
   -> CircleCI `manual_cloud_ci` via explicit API trigger
-  -> GitHub Actions workflow_dispatch
+  -> self-hosted GitHub Actions workflow_dispatch
   -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
-Vercel is the ordinary CI and deployment authority. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI does not run automatically for PRs or `main`; it exists only as explicit API-triggered recovery and never owns merge readiness.
+Public hosted GitHub Actions is the ordinary **preflight compute** surface, while Vercel remains the ordinary **final acceptance and deployment authority**. The stable Production identity remains `https://basemodel-preview.vercel.app`. The public preflight is intentionally non-required; CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own merge readiness.
+
+## Public GitHub Actions preflight
+
+`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. Full/global browser work uses four independent public Linux runners with the repository timing scheduler and one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
+
+Qualification run `34261768688` on exact head `b1551fffefa9061530a688e48343ea21e4ab0670` covered all 204 canonical Chromium identities exactly once as 51/51/52/50 and passed every shard with retries=0. The slowest browser acceptance step was 191 s versus about 402 s for the representative Vercel full-browser tail, a measured critical-path reduction of about 52.5%. The slowest complete browser job including container/setup overhead was 227 s. This evidence authorizes the public GHA lane as automatic early feedback; it does **not** replace the required Vercel final status.
 
 ## Exact-head acceptance ownership
 
@@ -56,7 +65,7 @@ Persistent final-gate browser scope is anchored to live `main`, not to the previ
 - build: `npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs`
 - canonical project domain: `https://basemodel-preview.vercel.app`
 
-`vercel-ui-gate.mjs` and the retained manual CircleCI `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 12-case Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
+`vercel-ui-gate.mjs`, the public GHA `ci-ui-gate.mjs`, and the retained manual CircleCI path share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 12-case Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
 
 Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`; Production uses the stable project domain/canonical. `vercel.json` must not disable `main`.
 
@@ -70,6 +79,7 @@ The retained `.github/workflows/self-hosted-ci.yml` remains manual `workflow_dis
 
 ```text
 repository contract updated
+-> public GHA preflight supplies early deterministic/browser evidence
 -> exact PR head/current base receives required Vercel success
 -> inspect real Preview route/metadata when the change is user-facing
 -> merge accepted release to main

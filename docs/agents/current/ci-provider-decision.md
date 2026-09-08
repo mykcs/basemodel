@@ -1,6 +1,6 @@
 # BaseModel CI provider decision — fast, cheap, exact-head
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-09**
 
 Status: **current provider-selection rationale for `mykcs/basemodel`**.  
 Executable authority remains `vercel.json`, repository scripts/tests, the live GitHub ruleset, [`hosting-architecture.md`](hosting-architecture.md), and [`deployment-policy.md`](deployment-policy.md). If this rationale disagrees with executable or live control-plane state, executable/live state wins and this document must be corrected in the same closeout.
@@ -9,7 +9,7 @@ Human-facing projection: [`/development/`](/development/) explains the same arch
 
 ## One-sentence decision
 
-**Use Vercel Pro only for explicit final-candidate acceptance and Production; spend zero Vercel compute on ordinary working pushes; keep CircleCI, GitHub Actions/Mac, and Cloudflare as recovery/observation surfaces rather than duplicate always-on CI.**
+**Use public GitHub Actions as the automatic, read-only, four-shard PR preflight; keep Vercel Pro as the only required final-candidate acceptance and Preview/Production authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
 
 The optimization target is not "find the provider with the largest free quota." It is:
 
@@ -18,10 +18,14 @@ The optimization target is not "find the provider with the largest free quota." 
 ## Current topology
 
 ```text
-ordinary research/fix/docs/feature work
-  -> GitHub only
-  -> local / Agent checks as useful
+ordinary research/fix/docs/feature PR push
+  -> public GitHub Actions preflight
+       -> deterministic repository gate
+       -> risk-based browser planner
+       -> full/global work: 4 independent Chromium shards, 1 worker each
+       -> bounded work: focused mapped coverage
   -> zero ordinary Vercel Preview compute
+  -> Mac is optional acceleration/control only, never required CI
 
 final non-draft candidate, current with main
   -> node scripts/request-vercel-final-gate.mjs <PR_NUMBER>
@@ -42,7 +46,7 @@ main
 
 manual recovery only
   -> CircleCI explicit API trigger
-  -> GitHub Actions workflow_dispatch
+  -> self-hosted GitHub Actions workflow_dispatch
   -> Mac/OrbStack repository-scoped fallback
 ```
 
@@ -89,21 +93,25 @@ Therefore:
 
 Do not re-enable automatic CircleCI merely because credits refill. Re-enable it only if there is a measured reliability or correctness gap that Vercel cannot cover efficiently.
 
-## Why GitHub Actions is not the ordinary website runner
+## Why public GitHub Actions is the ordinary preflight, not merge authority
 
-GitHub Actions is excellent control-plane infrastructure, but an always-on hosted Actions copy of the BaseModel site gate would usually mean:
+Making the repository public changed the cost/performance trade-off without changing the deployment trust boundary. Standard public GitHub-hosted runners can now provide parallel PR feedback without consuming the private-repository Actions minute budget, while Vercel still owns the real Preview/Production environment and the required merge status.
+
+The accepted qualification on exact head `b1551fffefa9061530a688e48343ea21e4ab0670` used workflow run `34261768688` with a digest-pinned Playwright 1.62.1 Noble image, read-only repository permission, no secrets, `pull_request` rather than `pull_request_target`, retries=0, and one Playwright worker per runner. The canonical 204 Chromium identities were assigned exactly once across four independent shards as `51 + 51 + 52 + 50`. All four passed. Browser acceptance steps were 114 s, 113 s, 182 s, and 191 s; the slowest complete browser job was 227 s including container/setup overhead. The prior representative Vercel full-browser tail was about 402 s, so the measured browser-step critical path fell by about 52.5%, exceeding the preregistered 35% improvement threshold.
+
+This does **not** make GitHub Actions a second merge authority. Its job is early, free, parallel evidence:
 
 ```text
-GitHub-hosted build/browser CI
-+ Vercel build/browser/deploy
-= duplicated hosted compute
+working PR push
+-> public GHA preflight catches deterministic/browser regressions quickly
+-> no Vercel spend
+
+final candidate
+-> Vercel exact-head Preview proves the deployment environment
+-> Vercel remains the required GitHub status
 ```
 
-That is not our default optimization target.
-
-Self-hosted GitHub Actions on the Mac is also not ordinary CI because it turns a personal machine into always-on infrastructure and creates availability, disk/cache, runner-service, and network maintenance obligations.
-
-Keep GitHub Actions/Mac as manual fallback/qualification surfaces. Reconsider hosted Actions only if Vercel can no longer provide the required acceptance contract at acceptable cost/latency.
+A red public preflight must be investigated; it is not ignored merely because it is non-required. But provider availability or a public-runner anomaly does not silently replace the Vercel final gate. The self-hosted Mac workflow remains manual fallback and is deliberately separate from the public hosted preflight.
 
 ## Why Cloudflare Pages / Workers are not ordinary BaseModel CI
 
@@ -153,14 +161,14 @@ We do **not** pay the complexity cost of making both providers full pre-merge au
 Think in terms of provider-triggering events, not commits:
 
 ```text
-many local/working commits
-  cost: Git only
+many working PR pushes
+  cost: public standard GHA preflight; zero ordinary Vercel compute
 
 one final gate request
   cost: one real Vercel acceptance build
 
 at most one evidence-driven corrective gate
-  cost: one additional acceptance build when a real gate finding justifies it
+  cost: one additional Vercel acceptance build when a real gate finding justifies it
 
 one accepted merge to main
   cost: one Production build when the change is deploy-relevant
@@ -174,13 +182,13 @@ Do not push typo-by-typo to the final gate. Do not create empty commits to obtai
 
 For a normal BaseModel PR:
 
-1. Work on the semantic branch (`research/*`, `fix/*`, `docs/*`, etc.). Ordinary pushes should not start Vercel.
-2. Run the strongest sensible local/Agent validation before requesting hosted compute.
+1. Work on the semantic branch (`research/*`, `fix/*`, `docs/*`, etc.). Ordinary pushes start the public GHA preflight but must not start Vercel.
+2. Use the public GHA result as early evidence. Investigate any real deterministic/browser regression; do not rerun Vercel merely to duplicate a green preflight. Local/RDC checks are optional accelerators when they shorten the loop.
 3. Refresh `main`; ensure the PR is non-draft, mergeable, and current-base.
 4. Run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` from a current checkout. Do not manually create a new gate alias.
 5. Require `Vercel=SUCCESS` on the exact current PR head.
 6. If the change is user-facing, inspect the real Preview/routes and preserve the reader/scientific boundaries.
-7. Immediately before merge, re-check head SHA, base freshness, required status, and review threads.
+7. Immediately before merge, re-check head SHA, base freshness, required status, public-preflight state, and review threads.
 8. Merge the accepted exact head.
 9. Verify the resulting Production deployment and relevant public routes/metadata.
 
