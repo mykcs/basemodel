@@ -68,16 +68,18 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('covers themes, viewports, overflow, clipping, overlap, and theme transitions', () => {
-    expect(browserGate).toContain("theme: 'light'");
-    expect(browserGate).toContain("theme: 'dark'");
-    expect(browserGate).toContain('width: 390');
-    expect(browserGate).toContain('width: 768');
-    expect(browserGate).toContain('width: 1440');
-    expect(browserGate).toContain('document horizontal overflow');
-    expect(browserGate).toContain('clipped horizontally');
-    expect(browserGate).toContain('audited siblings overlap');
-    expect(browserGate).toContain('low contrast');
-    expect(browserGate).toContain('theme switching updates page and surface colors without a reload');
+    for (const term of [
+      "theme: 'light'",
+      "theme: 'dark'",
+      'width: 390',
+      'width: 768',
+      'width: 1440',
+      'document horizontal overflow',
+      'clipped horizontally',
+      'audited siblings overlap',
+      'low contrast',
+      'theme switching updates page and surface colors without a reload',
+    ]) expect(browserGate).toContain(term);
   });
 
   it('keeps all legacy WebShop primer routes under exact computed-theme browser regression', () => {
@@ -85,9 +87,7 @@ describe('UI visual acceptance gate contract', () => {
       '/research/seed-openevo/study/results/webshop-training/',
       '/research/seed-openevo/study/results/seed-training/',
       '/research/seed-openevo/study/results/openevo-training/',
-    ]) {
-      expect(webShopThemeGate).toContain(route);
-    }
+    ]) expect(webShopThemeGate).toContain(route);
     for (const term of [
       "['light', 'dark']",
       "name: 'desktop'",
@@ -97,9 +97,7 @@ describe('UI visual acceptance gate contract', () => {
       'articleBorder',
       "locator('[data-theme-toggle]').first().click()",
       'migration page updates its reading surface when theme toggles without reload',
-    ]) {
-      expect(webShopThemeGate).toContain(term);
-    }
+    ]) expect(webShopThemeGate).toContain(term);
   });
 
   it('crawls public route classes and requires the computed global shell to stay usable', () => {
@@ -124,9 +122,7 @@ describe('UI visual acceptance gate contract', () => {
       'responsive navigation controls remain operable instead of merely visible',
       'mobile navigation sections must stack vertically rather than squeeze side-by-side',
       '/__header-gate-404__/',
-    ]) {
-      expect(headerVisibilityGate).toContain(term);
-    }
+    ]) expect(headerVisibilityGate).toContain(term);
     expect(headerVisibilityGate).toContain("testInfo.project.name === 'chromium'");
     expect(headerVisibilityGate).toContain('public route must render successfully');
     expect(headerVisibilityGate).toContain('public static route registry unexpectedly shrank');
@@ -145,9 +141,7 @@ describe('UI visual acceptance gate contract', () => {
       "mode: 'desktop'",
       'responsive header breakpoint handoff has no navigation dead zone',
       'responsive header handoff must not create horizontal overflow',
-    ]) {
-      expect(headerBreakpointGate).toContain(term);
-    }
+    ]) expect(headerBreakpointGate).toContain(term);
     expect(headerStyles).toContain('@media (max-width: 1080px)');
     expect(headerStyles).toContain('.site-header .mission-nav');
     expect(headerStyles).toContain('.site-header .menu-toggle');
@@ -197,13 +191,11 @@ describe('UI visual acceptance gate contract', () => {
       'standalone step-by-step owners dock Previous / Next from initial render through interaction',
       "toHaveCSS('position', 'fixed')",
       'embedded Lab explainer controls do not enter the first screen before the explainer',
-      "toHaveCSS('position', 'static')",
+      "getComputedStyle(node).position)).not.toBe('fixed')",
       'WebShop floating transport also stays inside a mobile viewport',
       'canonical-only comparison routes never expose a floating step transport',
       'SEED transport is bottom-docked before interaction',
-    ]) {
-      expect(floatingTransportGate).toContain(term);
-    }
+    ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
     expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
     expect(interactiveResearchStyles).toContain('position:fixed');
