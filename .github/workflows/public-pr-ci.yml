@@ -92,6 +92,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 

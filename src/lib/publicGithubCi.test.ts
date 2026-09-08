@@ -14,6 +14,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain('contents: read');
     expect(workflow).toContain('persist-credentials: false');
     expect(workflow).toContain('refs/pull/${{ github.event.pull_request.number }}/head');
+    expect(workflow).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
     expect(workflow).toContain('test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"');
     expect(workflow).not.toMatch(/\bsecrets\./);
   });
