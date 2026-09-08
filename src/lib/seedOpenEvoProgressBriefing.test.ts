@@ -20,8 +20,9 @@ describe('SEED × OpenEVO progress briefing', () => {
 
   it('registers the route in the reader attention contract', () => {
     expect(contracts).toContain("c('study-briefing'");
-    expect(contracts).toContain("'[data-briefing-primary]'");
+    expect(contracts).toContain("'.cover-thesis'");
     expect(briefing).toContain('data-briefing-primary');
+    expect(briefing).toContain('class="cover-thesis"');
   });
 
   it('keeps the main scientific claim boundary in the first screen', () => {
