@@ -89,6 +89,7 @@ jobs:
           cache: npm
 
       - name: Bind exact candidate identity
+        shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
