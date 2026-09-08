@@ -30,6 +30,7 @@ Always load the relevant combination of:
 
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;
 - [`current/website-design-spec.md`](current/website-design-spec.md) — canonical website-level design/copy preference: what “说人话 / 去 AI 味” means, information order, heading voice, and conflict resolution;
+- [`current/human-preference-learning-system.md`](current/human-preference-learning-system.md) — executable human-feedback learning loop: scoped Preference Model, rejected↔accepted Gold Pairs, task-time retrieval, two-phase cold read, and judge receipts;
 - [`current/site-reader-attention-contract.md`](current/site-reader-attention-contract.md) — executable per-route audience/task/first-viewport/boundary/next-step contract; register or update it before public-page HTML is substantially written or rearranged;
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
@@ -53,7 +54,7 @@ These files are complementary owners, not competing style guides:
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
 
-If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, also read [`current/website-copy-cases.md`](current/website-copy-cases.md). The case library is the interpretation evidence for that instruction; do not reduce it to a word blacklist.
+If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, read [`current/website-copy-cases.md`](current/website-copy-cases.md) **and** [`current/human-preference-learning-system.md`](current/human-preference-learning-system.md), then run `npm run feedback:retrieve -- "<task cues>"` before writing. The case library is raw preference evidence; do not reduce it to a word blacklist or expect passive storage to change the next draft.
 
 For UI/layout/theme/CSS work also read:
 
