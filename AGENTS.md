@@ -95,7 +95,7 @@ non-draft PR / release candidate
   -> risk-based Chromium acceptance
   -> Lab gate when relevant
   -> required GitHub status: Vercel
-  -> CircleCI may run only as non-blocking shadow evidence during cutover
+  -> CircleCI may run only as non-blocking post-cutover shadow/fallback evidence
 
 non-main Preview ref
   -> Vercel Preview runs real acceptance; `[vercel-preview]` is only a historical/review marker, not an ignore gate
@@ -112,7 +112,7 @@ manual CI recovery only
 
 **Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
 
-Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI is retained only as non-blocking shadow evidence during the cutover and must not be a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
+Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI is retained only as non-blocking post-cutover shadow/fallback evidence and must not be a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
 
 Pull-request Previews are automatic acceptance builds. The Ignored Build Step must fail open for **every** `VERCEL_ENV=preview` because real provider evidence showed `VERCEL_GIT_PULL_REQUEST_ID` is not reliable at that pre-build boundary. `[vercel-preview]` no longer controls whether a Git-integrated Preview runs; Production on `main` remains automatic.
 
