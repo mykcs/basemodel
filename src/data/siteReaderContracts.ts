@@ -38,7 +38,7 @@ const c = (
 export const SITE_READER_CONTRACTS = [
   c('home', '/', '/', 'choice', '判断这个站点能帮助自己完成什么研究任务', '先认出 SEED × OpenEvo 研究主题和两个主要入口', '研究对象与两条主线的区别', '选择流程理解或实验研究入口', '.mission-hero__lede', { maxInteractive: 2, maxHeadings: 1, maxTextChars: 420 }),
   c('not-found', '/404/', '/404/', 'reference', '知道当前地址不存在并安全返回有效入口', '明确页面不存在，而不是让读者误以为内容加载失败', '错误状态和返回路径', '返回首页或主要导航'),
-  c('development', '/development/', '/development/', 'reference', '了解开发状态和页面用途', '先知道这是开发信息而非实验结论', '开发/生产边界', '进入对应正式页面或开发说明'),
+  c('development', '/development/', '/development/', 'reference', '理解 BaseModel 用哪些工具开发、验收和上线，以及当前 CI 为什么这样分工', '先看到 GitHub → Vercel → Production → Cloudflare 的主线，并知道 ChatGPT 是人的控制入口', 'CircleCI / GitHub Actions 只是手动恢复；Cloudflare 不负责普通 BaseModel 部署；网页是人类投影，Agent 文档和 live provider state 才是执行依据', '继续看每个工具的职责和一次改动怎样上线', '.development-hero .lede', { maxInteractive: 0, maxHeadings: 1, maxTextChars: 520 }),
   c('models-index', '/models/', '/models/', 'choice', '从模型目录中找到适合继续查看的模型', '先知道这是模型目录以及如何筛选', '目录对象与筛选含义', '开始筛选或选择其他浏览方式', '.models-entry .button-primary', { maxInteractive: 2, maxHeadings: 1, maxTextChars: 420 }),
   c('model-detail', '/models/[id]/', '/models/kimi-k2-thinking/', 'reference', '确认一个模型是什么、能否用于当前实验', '先认出模型身份和最影响实验决策的事实', '来源、许可与实验约束', '检查研究摘要，再按需展开引用和页内导航', '.model-detail-intro', { maxInteractive: 4, maxHeadings: 2, maxTextChars: 720 }),
   c('families', '/families/', '/families/', 'choice', '按模型家族理解可选模型关系', '先知道家族页在组织什么对象', '家族关系不是性能结论', '选择家族或具体模型'),

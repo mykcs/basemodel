@@ -5,6 +5,8 @@ Last reviewed: **2026-09-08**
 Status: **current provider-selection rationale for `mykcs/basemodel`**.  
 Executable authority remains `vercel.json`, repository scripts/tests, the live GitHub ruleset, [`hosting-architecture.md`](hosting-architecture.md), and [`deployment-policy.md`](deployment-policy.md). If this rationale disagrees with executable or live control-plane state, executable/live state wins and this document must be corrected in the same closeout.
 
+Human-facing projection: [`/development/`](/development/) explains the same architecture for readers. That webpage is a presentation layer, not a second CI authority; Agents must continue to read this document plus executable/live state.
+
 ## One-sentence decision
 
 **Use Vercel Pro only for explicit final-candidate acceptance and Production; spend zero Vercel compute on ordinary working pushes; keep CircleCI, GitHub Actions/Mac, and Cloudflare as recovery/observation surfaces rather than duplicate always-on CI.**

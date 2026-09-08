@@ -1,0 +1,155 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+
+interface Props { locale: 'zh' | 'en'; }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+
+<AppLayout
+  title={t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}
+  description={t(
+    'BaseModel 当前使用 GitHub、Vercel、Cloudflare、CircleCI、GitHub Actions，以及 ChatGPT 的 GitHub 与 Remote Desktop Commander 插件完成开发、CI、发布和恢复。',
+    'How BaseModel uses GitHub, Vercel, Cloudflare, CircleCI, GitHub Actions, and ChatGPT with the GitHub and Remote Desktop Commander plugins for development, CI, release, and recovery.',
+  )}
+  locale={locale}
+>
+  <main class="shell development-page">
+    <header class="development-hero">
+      <h1>{t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}</h1>
+      <p class="lede">
+        {t(
+          '我们在 ChatGPT 网页端发起和审阅工作，用 GitHub 管代码，用 Vercel 做最终候选验收和 Production，用 Cloudflare 盯线上状态；CircleCI 和 GitHub Actions 只保留手动恢复。',
+          'We start and review work in ChatGPT, keep the code in GitHub, use Vercel for final-candidate acceptance and Production, and use Cloudflare to watch the live site; CircleCI and GitHub Actions are manual recovery paths only.',
+        )}
+      </p>
+    </header>
+
+    <section class="development-system" aria-labelledby="development-system-title">
+      <h2 id="development-system-title">{t('一条主线', 'The main path')}</h2>
+      <ol class="development-flow" aria-label={t('BaseModel 开发与上线流程', 'BaseModel development and release flow')}>
+        <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
+        <li data-role="source"><span>02</span><div><strong>GitHub</strong><small>{t('源码、分支、PR、main', 'source, branches, PRs, main')}</small></div></li>
+        <li data-role="accept"><span>03</span><div><strong>Vercel</strong><small>{t('最终候选 CI + Preview', 'final-candidate CI + Preview')}</small></div></li>
+        <li data-role="ship"><span>04</span><div><strong>Vercel Production</strong><small>{t('main 上线', 'ship main')}</small></div></li>
+        <li data-role="observe"><span>05</span><div><strong>Cloudflare</strong><small>{t('上线后健康检查', 'post-deploy health checks')}</small></div></li>
+      </ol>
+      <p class="system-boundary">
+        {t(
+          '平时开发不会因为每次 push 都启动一套重型云 CI。只有真正准备合并的版本才花一次完整验收资源。',
+          'Ordinary development does not start a heavy cloud CI run for every push. Full hosted acceptance is reserved for a version that is actually ready to merge.',
+        )}
+      </p>
+    </section>
+
+    <section aria-labelledby="tool-roles-title">
+      <h2 id="tool-roles-title">{t('每个工具负责什么', 'What each tool does')}</h2>
+      <div class="tool-roles">
+        <article><h3>{t('ChatGPT 网页端', 'ChatGPT on the web')}</h3><p>{t('这是人的控制界面：提出目标、给反馈、看 Preview、决定是否继续。它不替代 GitHub 里的源码和历史。', 'This is the human control surface: set goals, give feedback, review Previews, and decide what happens next. It does not replace source or history in GitHub.')}</p></article>
+        <article><h3>{t('GitHub 插件', 'GitHub plugin')}</h3><p>{t('让 Agent 直接读写仓库、PR、检查状态和评论。能走 API 的控制面优先走 API，不靠浏览器反复点按钮。', 'It lets the Agent read and write repositories, pull requests, checks, and comments directly. Provider control planes use APIs first instead of repeated browser clicking.')}</p></article>
+        <article><h3>Remote Desktop Commander</h3><p>{t('需要真实文件系统、终端、Git、Node、Playwright 或本机 CLI 时，通过授权的电脑执行。它是开发工具；只有主 CI 不可用时，才作为手动恢复路径。', 'When the work needs the real filesystem, terminal, Git, Node, Playwright, or a local CLI, it runs on an authorized computer. It is a development tool and only becomes a manual recovery path when the primary CI is unavailable.')}</p></article>
+        <article><h3>GitHub</h3><p>{t('源码的唯一主线。分支、PR、main、required check 和可审计历史都在这里。合并只认当前候选 SHA 的验收结果。', 'The source-of-truth repository. Branches, PRs, main, required checks, and auditable history live here. Merge acceptance belongs to the current candidate SHA.')}</p></article>
+        <article><h3>Vercel</h3><p>{t('既是 BaseModel 的正式部署平台，也是最终候选的主要 CI。最终候选会跑仓库检查、静态构建和按风险选择的 Chromium 验收；main 负责 Production。', 'Vercel is both the BaseModel deployment platform and the primary final-candidate CI surface. A final candidate runs repository checks, the static build, and risk-based Chromium acceptance; main owns Production.')}</p></article>
+        <article><h3>Cloudflare</h3><p>{t('当前不负责 BaseModel 的普通部署。它保留上线后的 production smoke：独立检查正式站点的 HTTP、canonical、robots、sitemap 和跳转是否健康。', 'Cloudflare is not the ordinary BaseModel deployment provider. Its active role is post-deploy production smoke: independently checking HTTP, canonical metadata, robots, sitemap, and redirects on the live site.')}</p></article>
+        <article><h3>CircleCI</h3><p>{t('2026-09-08，CircleCI credits 已耗尽，因此它退出普通 PR/main 流程。已经验证过的配置仍保留，只在需要独立恢复或交叉验证时显式手动触发。', 'On 2026-09-08, the CircleCI credit balance was exhausted, so it left the ordinary PR/main path. The qualified configuration remains available only for explicit manual recovery or cross-checking.')}</p></article>
+        <article><h3>GitHub Actions</h3><p>{t('不承担日常托管 CI。仓库只保留 workflow_dispatch 等手动恢复入口，需要时可以调用 Mac/OrbStack 的手动恢复环境，而不是让个人电脑一直在线等任务。', 'It is not the everyday hosted CI path. The repository keeps manual workflow_dispatch recovery, including the Mac/OrbStack recovery environment when needed, without requiring a personal computer to stay online waiting for jobs.')}</p></article>
+      </div>
+    </section>
+
+    <section class="ci-section" aria-labelledby="ci-title">
+      <h2 id="ci-title">{t('CI 方案', 'CI design')}</h2>
+      <p class="section-lede">
+        {t(
+          '我们优化的不是“哪家免费次数最多”，而是一次可信合并要花多少钱、等多久。',
+          'The optimization target is not “which provider has the biggest free quota,” but the cost and waiting time of one trustworthy merge.',
+        )}
+      </p>
+      <ol class="ci-steps">
+        <li><strong>{t('普通分支只开发。', 'Ordinary branches are for development.')}</strong><span>{t('research、fix、docs 等分支可以继续迭代，不因为每个 push 都消耗 Vercel Preview。', 'research, fix, docs, and other working branches can keep moving without paying for a Vercel Preview on every push.')}</span></li>
+        <li><strong>{t('最终候选才请求 Vercel。', 'Only a final candidate requests Vercel.')}</strong><span>{t('候选必须与当前 main 对齐，并把验收状态绑定到同一个 exact SHA。', 'The candidate must be current with main, and acceptance must bind to that exact SHA.')}</span></li>
+        <li><strong>{t('测试范围按风险升级。', 'Browser scope escalates with risk.')}</strong><span>{t('非 UI 改动可以不跑浏览器；局部页面只跑映射测试；共享、全局或无法判断的改动会完整跑 Chromium。', 'Non-UI changes can skip browsers; bounded page changes use mapped tests; shared, global, or uncertain changes run the full Chromium matrix.')}</span></li>
+        <li><strong>{t('GitHub 决定能不能合并。', 'GitHub decides whether the PR can merge.')}</strong><span>{t('main 的 required check 是 Vercel。旧的 CircleCI green、旧 Preview 或别的 SHA 都不能借来当当前证据。', 'The required check on main is Vercel. An old CircleCI green, an old Preview, or a result from another SHA cannot be borrowed as current evidence.')}</span></li>
+        <li><strong>{t('合并后再看真正的 Production。', 'Production is verified after merge.')}</strong><span>{t('Vercel 发布 main；Cloudflare 再从外部观察正式站点。CI、部署和上线后监控是三层不同证据。', 'Vercel ships main; Cloudflare then observes the live site independently. CI, deployment, and post-deploy monitoring are three different evidence layers.')}</span></li>
+      </ol>
+
+      <details class="technical-detail">
+        <summary>{t('Agent 执行时用到的 exact-head 细节', 'Exact-head details used by the Agent')}</summary>
+        <p>{t('真正准备合并时，Agent 运行', 'When a PR is genuinely ready, the Agent runs')} <code>node scripts/request-vercel-final-gate.mjs &lt;PR_NUMBER&gt;</code>{zh ? '。' : '.'}</p>
+        <p>{t('这个 helper 先把', 'The helper first pins')} <code>ci/vercel-gate-base</code> {t('固定到当前 main，再把持久的', 'to live main, then moves persistent')} <code>ci/vercel-gate-final</code> {t('移动到 PR 的 exact head。具体规则仍以仓库文档和可执行配置为准。', 'to the exact PR head. Repository docs and executable configuration remain authoritative for the details.')}</p>
+      </details>
+    </section>
+
+    <section aria-labelledby="change-flow-title">
+      <h2 id="change-flow-title">{t('一次改动怎样上线', 'How one change gets shipped')}</h2>
+      <ol class="change-flow">
+        <li><span>1</span><div><strong>{t('在 ChatGPT 里说清楚要改什么', 'Describe the change in ChatGPT')}</strong><p>{t('人负责目标、反馈和最终判断。', 'The human owns the goal, feedback, and final judgment.')}</p></div></li>
+        <li><span>2</span><div><strong>{t('Agent 在 GitHub / 本机完成实现', 'The Agent implements through GitHub / the local machine')}</strong><p>{t('仓库读写优先 GitHub 插件；文件、终端和本机工具需要时用 Remote Desktop Commander。', 'Repository operations prefer the GitHub plugin; filesystem, terminal, and local tools use Remote Desktop Commander when needed.')}</p></div></li>
+        <li><span>3</span><div><strong>{t('先做便宜的本地检查', 'Run cheap local checks first')}</strong><p>{t('类型检查、单元测试和静态 build 在本地完成；这些检查通过后才请求托管计算。', 'Type checks, unit tests, and the static build catch predictable problems before hosted compute is spent.')}</p></div></li>
+        <li><span>4</span><div><strong>{t('最终候选跑一次 Vercel 验收', 'Run one Vercel acceptance on the final candidate')}</strong><p>{t('这一次才做 exact-head Preview 和需要的浏览器测试。', 'This is when the exact-head Preview and the required browser tests run.')}</p></div></li>
+        <li><span>5</span><div><strong>{t('通过后合并 main', 'Merge to main after acceptance')}</strong><p>{t('如果 main 或候选变了，就重新验当前 SHA。', 'If main or the candidate changes, acceptance is repeated on the new current SHA.')}</p></div></li>
+        <li><span>6</span><div><strong>{t('检查 Production', 'Verify Production')}</strong><p>{t('确认 Vercel 正式部署，再看 Cloudflare smoke 和真实公开页面。', 'Confirm the Vercel Production deployment, then check Cloudflare smoke and the real public site.')}</p></div></li>
+      </ol>
+    </section>
+
+    <section class="docs-boundary" aria-labelledby="docs-boundary-title">
+      <h2 id="docs-boundary-title">{t('人看网页，Agent 看文档', 'Humans use this page; Agents use the docs')}</h2>
+      <p>{t('这张页面只负责让人快速理解当前方案。Agent 开始工作时应该先读仓库里的 ', 'This page is the human-readable map. An Agent starting work should read ')}<code>AGENTS.md</code>、<code>docs/agents/current/ci-provider-decision.md</code>、<code>hosting-architecture.md</code> {t('和可执行配置。', 'and the executable configuration.')}</p>
+      <p>{t('供应商额度、required checks、runner 状态都会变化，所以这里不把某个月的价格或次数写成永久规则。页面和文档如果与 live provider state 冲突，以 live state 和仓库可执行配置为准。', 'Provider quotas, required checks, and runner state can change. This page therefore does not freeze a monthly price or quota as permanent policy. If the page or docs disagree with live provider state, live state and executable repository configuration win.')}</p>
+    </section>
+  </main>
+</AppLayout>
+
+<style>
+  .development-page { padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .development-hero { display: grid; align-content: center; min-height: calc(100svh - 80px); max-width: 860px; margin-bottom: clamp(3rem, 7vw, 6rem); }
+  .development-hero h1 { max-width: 14ch; margin: 0; font-size: clamp(2.35rem, 6vw, 5.5rem); line-height: .98; letter-spacing: -.045em; }
+  .development-hero .lede { max-width: 760px; margin: 1.35rem 0 0; color: var(--text); font-size: clamp(1.08rem, 2vw, 1.35rem); line-height: 1.65; }
+  section { margin-block: clamp(3.5rem, 8vw, 7rem); }
+  section > h2 { max-width: 760px; margin-bottom: 1.5rem; font-size: clamp(1.65rem, 3.3vw, 2.5rem); letter-spacing: -.025em; }
+  .development-system { margin-top: 0; }
+  .development-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.7rem); margin: 1.5rem 0; padding: 0; list-style: none; }
+  .development-flow li { position: relative; min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
+  .development-flow li:not(:last-child)::after { content: ''; position: absolute; top: 50%; left: calc(100% + 1px); width: clamp(1rem, 2vw, 1.7rem); height: 1px; background: var(--line-strong, var(--line)); }
+  .development-flow li:not(:last-child)::before { content: ''; position: absolute; z-index: 1; top: calc(50% - 4px); left: calc(100% + clamp(1rem, 2vw, 1.7rem) - 7px); width: 7px; height: 7px; border-top: 1px solid var(--line-strong, var(--line)); border-right: 1px solid var(--line-strong, var(--line)); transform: rotate(45deg); }
+  .development-flow li[data-role='control'] { border-top-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+  .development-flow li[data-role='source'] { border-top-color: color-mix(in srgb, #6d5bd0 58%, var(--line)); }
+  .development-flow li[data-role='accept'], .development-flow li[data-role='ship'] { border-top-color: color-mix(in srgb, #2f8f5b 58%, var(--line)); }
+  .development-flow li[data-role='observe'] { border-top-color: color-mix(in srgb, #2a72b8 58%, var(--line)); }
+  .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: 750 .72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .development-flow strong, .development-flow small { display: block; }
+  .development-flow strong { font-size: .98rem; }
+  .development-flow small { margin-top: .35rem; color: var(--muted); line-height: 1.45; }
+  .system-boundary, .section-lede { max-width: 760px; color: var(--muted); font-size: 1.02rem; line-height: 1.75; }
+  .tool-roles { border-top: 1px solid var(--line); }
+  .tool-roles article { display: grid; grid-template-columns: minmax(170px, .7fr) minmax(0, 2fr); gap: 2rem; padding: 1.35rem 0; border-bottom: 1px solid var(--line); }
+  .tool-roles h3, .tool-roles p { margin: 0; }
+  .tool-roles h3 { font-size: 1rem; }
+  .tool-roles p { max-width: 760px; color: var(--muted); line-height: 1.7; }
+  .ci-section { max-width: 980px; }
+  .ci-steps { margin: 2rem 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+  .ci-steps li { display: grid; grid-template-columns: minmax(190px, .85fr) minmax(0, 1.8fr); gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
+  .ci-steps strong, .ci-steps span { display: block; }
+  .ci-steps span { color: var(--muted); line-height: 1.7; }
+  .technical-detail { margin-top: 2rem; padding: 1rem 0; border-block: 1px solid var(--line); }
+  .technical-detail summary { cursor: pointer; font-weight: 700; }
+  .technical-detail p { max-width: 780px; color: var(--muted); line-height: 1.7; }
+  .change-flow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+  .change-flow li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
+  .change-flow li:nth-child(odd) { padding-right: 1rem; }
+  .change-flow > li > span { color: var(--accent); font: 750 .72rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .change-flow strong { display: block; }
+  .change-flow p { margin: .35rem 0 0; color: var(--muted); line-height: 1.6; }
+  .docs-boundary { max-width: 820px; padding-top: 1.5rem; border-top: 2px solid var(--text); }
+  .docs-boundary p { color: var(--muted); line-height: 1.75; }
+  code { font-size: .9em; overflow-wrap: anywhere; }
+  @media (max-width: 860px) {
+    .development-flow { grid-template-columns: 1fr; gap: 1.5rem; }
+    .development-flow li { padding: 1rem; }
+    .development-flow li:not(:last-child)::after { top: 100%; left: 50%; width: 1px; height: 1.5rem; }
+    .development-flow li:not(:last-child)::before { top: calc(100% + 1.5rem - 8px); left: calc(50% - 3px); transform: rotate(135deg); }
+    .tool-roles article, .ci-steps li { grid-template-columns: 1fr; gap: .5rem; }
+    .change-flow { grid-template-columns: 1fr; }
+    .change-flow li:nth-child(odd) { padding-right: 0; }
+  }
+</style>
