@@ -12,6 +12,7 @@ describe('reader-first Study overview', () => {
       'OpenEVO (Harness) · WebShop 数据集实验',
       '和 SEED 对照',
       'https://arxiv.org/abs/2607.14777',
+      'GitHub',
       '训练资源与运行条件',
       '流程理解图：OpenEVO / SEED / WebShop',
       'TL;DR',
