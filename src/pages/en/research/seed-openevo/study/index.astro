@@ -1,13 +1,13 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
-import SeedOpenEvoStudyOverview from '../../../../../components/research/SeedOpenEvoStudyOverview.astro';
+import SeedOpenEvoStudyOverviewReaderFirst from '../../../../../components/research/SeedOpenEvoStudyOverviewReaderFirst.astro';
 const locale = 'en' as const;
 ---
 
 <AppLayout
   title="OpenEVO (Harness) · WebShop dataset experiments"
-  description="Start with the 7B base-versus-OpenEVO result on the same 128 WebShop tasks: mean Task Score is higher, but exact success remains 5/128 versus 5/128; a same-protocol OpenEVO-versus-SEED final comparison is still incomplete."
+  description="Overview of the OpenEVO Harness experiments on WebShop, covering the research questions, the directly comparable 7B result, mechanism-study boundaries, and reproduction routes."
   locale={locale}
 >
-  <SeedOpenEvoStudyOverview locale={locale} />
+  <SeedOpenEvoStudyOverviewReaderFirst locale={locale} />
 </AppLayout>
