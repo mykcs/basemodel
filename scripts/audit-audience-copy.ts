@@ -153,11 +153,10 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const studyOverview = 'src/components/research/SeedOpenEvoStudyOverview.astro';
-  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', '7B · 基础模型', '7B · 使用 OpenEVO 学习结果', 'study-current-finding', '实验结构与参考资料', '三个研究问题', '当前结论', 'https://arxiv.org/abs/2607.14777', '/research/seed-openevo/flow/']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The Study overview must preserve object identity and the direct current finding first, while keeping experiment structure, research questions, paper provenance, and the canonical background link available without competing for first-screen attention.');
-  ban(studyOverview, 'COPY-FIRST-SCREEN-001', 'TL;DR', 'A presenter label must not return above the Study finding; the summary itself should carry the meaning.');
+  for (const required of ['OpenEVO (Harness) · WebShop 数据集实验', '和 SEED 对照', 'https://arxiv.org/abs/2607.14777', 'GitHub', '训练资源与运行条件', '流程理解图：OpenEVO / SEED / WebShop', 'TL;DR', '三个研究问题', '当前可直接比较的 7B 结果', '7B · 基础模型', '7B · 使用 OpenEVO 学习结果', '研究入口']) requireText(studyOverview, 'COPY-FIRST-SCREEN-001', required, 'The Study overview must preserve the accepted direct provenance strip, the explicit TL;DR reader answer, the concrete 7B evidence, and routes to the deeper semantic owners.');
   ban(studyOverview, 'COPY-INTERNAL-LABEL-001', 'Track A', 'The first-reader study overview must name the concrete 7B comparison objects instead of requiring an internal route label.');
   ban(studyOverview, 'COPY-FIRST-READER-JARGON-001', '配对评测', 'The first-reader study overview must state the concrete comparison objects and shared tasks before any statistical design term.');
-  for (const forbidden of ['OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'The rejected first-screen wording must not return.');
+  for (const forbidden of ['实验共同流程', '分数与阶段', 'main benchmark', 'MiniMax hindsight', 'OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'Study must keep the accepted reader-first overview and route duplicated flow, score-table, and internal vocabulary to their canonical semantic owners.');
 
   const resultsProtocol = 'src/components/research/OpenEvoWebShopResultsProtocol.astro';
   requireText(resultsProtocol, 'COPY-CONTEXT-SWITCH-001', '训练范围内未见任务与 SEED 验证任务', 'The Results protocol must name the two task populations directly instead of making a reading instruction the visual center.');
