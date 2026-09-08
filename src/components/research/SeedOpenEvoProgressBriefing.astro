@@ -23,8 +23,8 @@ const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
       <p class="slide-meta"><time datetime="2026-09-08">2026-09-08</time> · {t('研究组阶段汇报', 'Lab progress briefing')}</p>
       <h1 id="briefing-title">{t('SEED × OpenEVO 项目阶段汇报', 'SEED × OpenEVO project progress')}</h1>
       <p class="cover-thesis">{t(
-        '我们已经把“模型做任务 → 收集经验 → 复盘 → 更新参数 → 冻结测试”跑成一条可重复的实验链。现在的重点已经从“能不能跑”变成“结果为什么可信、一个变量能不能被单独归因”。',
-        'We now have a repeatable chain from task interaction to sealed experience, hindsight, parameter updates, and frozen evaluation. The main question has shifted from “can it run?” to “why should we trust the result, and can one variable be isolated?”'
+        '7B 学习链已经完整跑通。现在的核心是让结果可信、变量可单独归因；Q17 因固定 GPU 下 SD-LoRA 仍不确定，继续保持暂停。',
+        'The 7B learning chain now runs end to end. The priority is trustworthy, single-variable attribution; Q17 remains paused because SD-LoRA still diverges on a fixed GPU.'
       )}</p>
       <dl class="cover-status" aria-label={t('当前阶段状态', 'Current project state')}>
         <div><dt>{t('已经做到', 'Completed')}</dt><dd>{t('7B 持续学习完整收口到 128 题最终测试', 'A full 7B continual-learning run closed out on a 128-task final panel')}</dd></div>
@@ -241,6 +241,7 @@ const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
   .briefing-slide{min-height:calc(100svh - var(--site-header-height) - 4rem);display:grid;align-items:center;border-bottom:1px solid var(--rule);scroll-margin-top:1rem}
   .briefing-slide:last-child{border-bottom:0}
   .slide-inner{width:min(1120px,calc(100% - 2.5rem));margin-inline:auto;padding:clamp(3rem,7vh,6rem) 0}
+  .slide-inner,.cover-status>div,.deck-index a,.system-notes dd,.quality-layers dd,.twin-design>div,.blocker-proof dd,.slide-footer>*{min-width:0}
   .slide-meta,.slide-number{margin:0 0 .9rem;color:var(--accent-deep);font:800 .72rem/1.25 var(--font-mono);letter-spacing:.045em}
   h1,h2,h3{color:var(--ink);text-wrap:balance}
   h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:clamp(3rem,7vw,6rem);font-weight:720;line-height:.98;letter-spacing:-.058em}
@@ -251,6 +252,7 @@ const determinismIssue = 'https://github.com/mykcs/OpenEvo/issues/13';
   .cover-status dt{color:var(--muted);font-size:.72rem;font-weight:780}.cover-status dd{margin:.38rem 0 0;font-size:.96rem;font-weight:720;line-height:1.5}
   .deck-index{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:2rem;border-top:1px solid var(--rule)}
   .deck-index a{display:flex;gap:.5rem;padding:.72rem .6rem .72rem 0;border-bottom:1px solid var(--rule);color:var(--ink);font-size:.74rem;font-weight:720;text-decoration:none}.deck-index span{color:var(--accent-deep);font-family:var(--font-mono);font-size:.64rem}
+  .deck-index a,.slide-footer a,.final-links a{overflow-wrap:anywhere}
   .question-list,.timeline,.date-line,.next-steps{margin:2rem 0 0;padding:0;list-style:none}
   .question-list li,.timeline li,.date-line li,.next-steps li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;padding:1rem 0;border-top:1px solid var(--rule)}
   .question-list li:last-child,.timeline li:last-child,.date-line li:last-child,.next-steps li:last-child{border-bottom:1px solid var(--rule)}
