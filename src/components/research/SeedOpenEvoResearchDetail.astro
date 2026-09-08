@@ -1,7 +1,6 @@
 ---
 import type { Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
-import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';
 import ExplainerScrollLink from './ExplainerScrollLink.astro';
 
 type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
@@ -49,7 +48,6 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
 const current = copy[page];
 ---
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
-  <SeedOpenEvoResearchNav locale={locale} page={page} />
   {page !== 'results' && (
     <header class="plain-detail__header">
       <h1>{current.title}</h1>

@@ -149,18 +149,22 @@ const identity = currentTrack === 'flow'
   }
   @media(max-width:720px){
     .research-navigation{
-      grid-template-columns:1fr;
-      gap:.3rem;
-      margin:.6rem 0 1.2rem;
-      padding:.4rem;
+      grid-template-columns:minmax(0,auto) minmax(0,1fr);
+      gap:.22rem;
+      margin:0;
+      padding:.3rem;
     }
     .research-navigation__identity{
-      gap:.4rem;
-      padding:.2rem .4rem .05rem;
-      border-right:0;
+      min-width:0;
+      max-width:8.5rem;
+      gap:.3rem;
+      padding:.12rem .42rem .12rem .28rem;
     }
-    .research-navigation__identity div>span{margin-top:0}
-    .research-navigation__links a{padding:.54rem .68rem;font-size:.72rem}
+    .research-navigation__identity strong{max-width:6.8rem;font-size:.64rem}
+    .research-navigation__identity div>span{display:none}
+    .research-navigation__links{scrollbar-width:none}
+    .research-navigation__links::-webkit-scrollbar{display:none}
+    .research-navigation__links a{padding:.44rem .56rem;font-size:.69rem}
   }
   @media(max-width:430px){
     .research-navigation__identity div>span{display:none}

@@ -23,7 +23,7 @@ body .site-main a {
 body[data-reader-contract-id='flow-server'] .server-hero,
 body[data-reader-contract-id='lab'] .lab-intro {
   box-sizing: border-box;
-  min-height: calc(100svh - 110px);
+  min-height: calc(100svh - 110px - var(--research-nav-offset, 0px));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,7 +45,7 @@ body[data-reader-contract-id='lab'] .lab-intro .lede {
 @media (max-width: 760px) {
   body[data-reader-contract-id='flow-server'] .server-hero,
   body[data-reader-contract-id='lab'] .lab-intro {
-    min-height: calc(100svh - 96px);
+    min-height: calc(100svh - 96px - var(--research-nav-offset, 0px));
   }
 
   body .site-main .mission-hero__modes,

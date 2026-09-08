@@ -61,14 +61,15 @@ describe('SEED × OpenEvo research navigation', () => {
   });
 
   it('mounts the same canonical nav on research pages and both bridge routes', () => {
-    expect(hub).toContain('<SeedOpenEvoResearchNav locale={locale} page="hub" />');
-    expect(hub.indexOf('<SeedOpenEvoResearchNav locale={locale} page="hub" />')).toBeLessThan(hub.indexOf('<SeedOpenEvoMissionHero locale={locale} compact />'));
-    expect(detail).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
-    expect(detail.indexOf('<SeedOpenEvoResearchNav locale={locale} page={page} />')).toBeLessThan(detail.indexOf('<header class="plain-detail__header">'));
+    expect(hub).not.toContain('SeedOpenEvoResearchNav');
+    expect(detail).not.toContain('SeedOpenEvoResearchNav');
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/flow') ? 'hub'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/flow/webshop') ? 'webshop'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/study/results') ? 'results'");
     expect(layout).toContain("/^\\/research\\/seed-openevo\\/study\\/capability-exploration(?:\\/|$)/.test(localeNeutralPath)");
     expect(layout).toContain("isCapabilityExplorationPage ? 'capability'");
     expect(layout).toContain('<SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />');
@@ -89,7 +90,9 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(layout).toContain('<div class="research-module-nav-shell">');
     expect(layout).not.toContain('<details class="research-module-nav-shell">');
     expect(layout).toContain('.research-module-nav-shell :global(.research-navigation){position:static;margin:0}');
-    expect(detail).toContain('<SeedOpenEvoResearchNav locale={locale} page={page} />');
+    expect(layout.indexOf('<div class="research-module-nav-shell">')).toBeLessThan(layout.indexOf('<main id="main-content"'));
+    expect(detail).not.toContain('SeedOpenEvoResearchNav');
+    expect(hub).not.toContain('SeedOpenEvoResearchNav');
     expect(detail).not.toContain('<details class="plain-detail__nav">');
     expect(studyOverview).not.toContain('.research-module-nav-shell){display:none}');
   });

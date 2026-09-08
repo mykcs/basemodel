@@ -1,7 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from './SeedOpenEvoMissionHero.astro';
-import SeedOpenEvoResearchNav from './SeedOpenEvoResearchNav.astro';
 import SeedOpenEvoTrainingDesignOverview from './SeedOpenEvoTrainingDesignOverview.astro';
 
 interface Props { locale: Locale }
@@ -19,7 +18,6 @@ const objects = [
 ];
 ---
 <div class="mission-page plain-mission-hub">
-  <SeedOpenEvoResearchNav locale={locale} page="hub" />
   <SeedOpenEvoMissionHero locale={locale} compact />
 
   <section class="mission-section" id="questions">
