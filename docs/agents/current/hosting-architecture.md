@@ -9,13 +9,17 @@ Status: **current release architecture. Vercel Pro supplies ordinary pre-merge a
 ```text
 GitHub = source of truth
 
-non-draft PR / release candidate
-  -> automatic Vercel Preview
+working PR / development branch
+  -> no ordinary Vercel Preview while iterating
+
+final non-draft current-base candidate
+  -> `ci/vercel-gate-*` ref points to the exact PR head SHA
+  -> Vercel Preview
   -> verify:deploy
   -> static build
   -> risk-based Chromium acceptance
   -> Lab gate when relevant
-  -> required GitHub status: Vercel
+  -> required GitHub status: Vercel on that exact SHA
 
 main
   -> Vercel Production
@@ -33,14 +37,14 @@ Vercel is the ordinary CI and deployment authority. The stable Production identi
 
 ## Exact-head acceptance ownership
 
-Branch protection keeps strict current-base semantics and requires `Vercel`. Every open PR branch is eligible to reach Vercel. `scripts/vercel-ignore-build.mjs` distinguishes PR acceptance from ordinary branch previews:
+Branch protection keeps strict current-base semantics and requires `Vercel`. Ordinary PR/development refs are intentionally not deployment-enabled. Hosted acceptance is requested only by creating a `ci/vercel-gate-*` ref that points to the **same exact commit SHA** as the final PR head; the gate ref cannot add or rewrite content. `scripts/vercel-ignore-build.mjs` remains fail-open after that spend gate:
 
-- every Preview: automatic real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
+- every triggered gate Preview: real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
 - `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;
-- docs/governance-only PR: still runs `verify:deploy`, while the browser planner may skip when UI risk is proven absent;
+- docs/governance-only final candidate: still runs `verify:deploy`, while the browser planner may skip when UI risk is proven absent;
 - docs/governance-only `main`: ignored as non-deploy-relevant, so an `AGENTS.md`/`docs/agents/**`-only merge cannot publish a new Production website.
 
-The first PR Preview without a previous accepted Vercel SHA fails closed to the complete Chromium matrix. Subsequent Preview runs may compare the previous accepted same-branch Vercel SHA to the current head. Base drift is handled by strict branch protection: an out-of-date PR must refresh and obtain a new required Vercel result before merge.
+The first gate Preview without a previous accepted Vercel SHA fails closed to the complete Chromium matrix. Subsequent gate runs may compare the previous accepted Vercel SHA to the current head. Base drift is handled by strict branch protection: an out-of-date PR must refresh and obtain a fresh exact-SHA gate result before merge.
 
 ## Vercel contract
 

@@ -45,19 +45,21 @@ Do not create new branches such as `chatgpt/*`, `claude/*`, or `codex/*` merely 
 
 The prefix is not determined only by the file extension. A Markdown change can still be `research/*` if it is part of a research release that must receive an exact-head Preview.
 
-## BaseModel deployment exception: PR status has executable meaning
+## BaseModel deployment exception: final-gate refs have executable meaning
 
-Current `vercel.json` allows ordinary branch refs to reach the Vercel Git classifier so an open PR can always produce its required exact-head acceptance status. Branch prefixes remain semantic/readability conventions; they no longer decide whether a PR is allowed to run Vercel acceptance.
+Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; hosted acceptance is requested separately by a `ci/vercel-gate-*` ref that points to the exact final PR head SHA.
 
 The spend rule is now:
 
-1. **Any Vercel Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`, because that signal was absent in a real PR ignore-step execution.
-2. **`[vercel-preview]`:** optional historical/review marker only; it no longer gates Git-integrated Preview execution.
-3. **Docs/governance-only PR:** still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
-4. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
-5. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
+1. **Ordinary working branch:** no Vercel deployment while iterating.
+2. **Final candidate:** create/move a `ci/vercel-gate-*` ref to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref.
+3. **Any triggered gate Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`; once provider compute is intentionally requested, it fails open into the real Gate.
+4. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend.
+5. **Docs/governance-only final candidate:** the explicit gate still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
+6. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
+7. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
 
-Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for the semantic owner of the work, not to manipulate Vercel eligibility. Batch pushes and use the risk planner for spend control; do not rely on `[vercel-preview]` to make a Preview disappear before required acceptance.
+Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for semantic ownership, not Vercel eligibility. The separate gate ref is the execution control.
 
 ## PR titles
 

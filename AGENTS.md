@@ -187,14 +187,13 @@ Default target for one coherent feature or accepted release batch:
 
 ```text
 one branch / integration PR
--> one atomic push
--> one initial Preview
--> at most one corrective Preview after real inspection
+-> ordinary working pushes spend zero Vercel build compute
+-> one `ci/vercel-gate-*` ref on the exact final-candidate SHA
+-> at most one corrective gate Preview after real inspection
 -> one Production build per accepted release batch
 ```
 
-Do not push every typo, file write, speculative experiment or intermediate thought. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes.
-Vercel acceptance is automatic and risk-based for every Preview. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it must not decide whether the Ignored Build Step skips a Preview. Control spend by batching ref updates and risk-based browser selection, not by a PR-identity signal unavailable at ignore time.
+Do not push every typo, file write, speculative experiment or intermediate thought to a provider-triggering ref. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes. Ordinary working refs are not deployment-enabled; Vercel acceptance begins only when an explicit `ci/vercel-gate-*` ref points to the exact PR head SHA. Every Preview that does reach Vercel remains fail-open into real risk-based acceptance. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it is not a spend switch.
 
 Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
 

@@ -15,11 +15,11 @@ The historical cases that motivated these rules include `../history/2026-08-17-p
 
 A previously valid report becomes historical evidence when the PR head changes or when the intended merge base changes materially.
 
-## 0. Treat open PR acceptance as automatic
+## 0. Keep working refs cheap; request hosted acceptance explicitly
 
-Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; they do not opt an open PR into or out of Vercel acceptance.
+Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; ordinary working branches are intentionally not Vercel deployment triggers.
 
-Every open PR is expected to create an exact-head Vercel acceptance path automatically. The Ignored Build Step now fails open for every Preview because it cannot safely prove PR identity; `[vercel-preview]` is not an executable acceptance switch. If an open PR has no Vercel acceptance object, inspect integration/provider state; do not create probe commits or rename the branch merely to manufacture a Preview.
+When a PR is genuinely ready for hosted acceptance, create a `ci/vercel-gate-*` ref pointing to the **exact current PR head SHA**. The gate ref is an execution alias only: no extra commit, cherry-pick, or rewritten tree is allowed. Once the gate ref reaches Vercel, the Ignored Build Step fails open because it cannot safely prove PR identity; `[vercel-preview]` is not an executable acceptance switch. If the exact candidate SHA has no Vercel acceptance object after its gate ref is pushed, inspect integration/provider state rather than manufacturing probe commits.
 
 ## 1. Resolve the acceptance identity first
 
@@ -248,7 +248,7 @@ AND the required build path actually executed
 
 `CANCELED`, ignored build, or policy skip is **SKIPPED BY POLICY**, not a product Preview PASS. This remains true when the outer GitHub `Vercel` context is green.
 
-For every Preview, `scripts/vercel-ignore-build.mjs` must continue into real acceptance without relying on `VERCEL_GIT_PULL_REQUEST_ID`; that variable was absent at the ignore step in a real open-PR deployment. `[vercel-preview]` is not a build/skip requirement. A PR acceptance claim still requires the required build path to have executed; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
+For every gate Preview that is intentionally triggered, `scripts/vercel-ignore-build.mjs` must continue into real acceptance without relying on `VERCEL_GIT_PULL_REQUEST_ID`; that variable was absent at the ignore step in a real open-PR deployment. `[vercel-preview]` is not a build/skip requirement. A PR acceptance claim still requires the required build path to have executed on the exact candidate SHA; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
 
 Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
 
