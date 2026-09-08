@@ -35,6 +35,25 @@ manual recovery only
 
 For PR Previews, `scripts/vercel-ui-plan.ts` uses the previous accepted Vercel SHA when available. A first PR Preview with no previous accepted SHA **fails closed to the complete Chromium matrix** instead of pretending that `HEAD^` represents the whole PR. Later Preview runs compare the accumulated range from the previous accepted Vercel SHA to the current head. Unknown comparison state also fails closed to full coverage.
 
+### Provider cutover is a repository + live-control-plane transaction
+
+Changing `vercel.json`, tests, docs, or the declared current architecture is only the **repository half** of a CI/provider migration. Before reporting that blocking acceptance authority moved, read the live GitHub ruleset/branch-protection state and prove the replacement provider object for the exact head.
+
+Required sequence:
+
+```text
+replacement repository contract
+-> exact-head provider execution really runs and passes
+-> live required-status authority is switched atomically
+-> predecessor may remain as non-blocking shadow/fallback
+-> merge under the new required authority
+-> Production/main executes the same contract and reaches accepted state
+```
+
+Do not create a temporary window with no required acceptance by deleting the predecessor check first and adding the successor later. Preserve unrelated PR/review/thread protections while changing only the required-status owner. Immediately before mutating provider/repository control-plane state, re-read it: another Agent or administrator may already have completed the change. If the desired live state already exists, do not overwrite it merely to make this conversation the writer of record.
+
+A replacement provider `ERROR` must also be localized by **execution phase** before the migration is blamed on infrastructure. A failure inside `verify:deploy` from a stale authority assertion is repository contract drift; a browser assertion is product/acceptance evidence; a missing binary/library is environment; only provider/platform evidence should be labeled provider infrastructure failure.
+
 ### PR Preview and non-PR Preview policy
 
 `vercel.json -> git.deploymentEnabled` allows ordinary branch refs to reach Vercel's classifier. The expensive build policy remains inside `scripts/vercel-ignore-build.mjs`:
