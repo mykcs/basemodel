@@ -18,6 +18,9 @@ const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/study\/results(?:\/|$
 const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-ui-plan.ts',
+  'scripts/vercel-ui-gate.mjs',
+  'scripts/vercel-lab-browser-gate.mjs',
+  'vercel.json',
   'scripts/ci-ui-gate.mjs',
   'scripts/ci-ui-test-list.mjs',
   'scripts/ci-ui-test-timings-202609061200.json',

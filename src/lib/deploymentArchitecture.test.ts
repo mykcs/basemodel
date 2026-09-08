@@ -179,10 +179,10 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerDockerfile).toContain('sha256sum -c -');
   });
 
-  it('keeps browser regression out of the Vercel Production build command', () => {
-    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build');
-    expect(vercelConfig.buildCommand).not.toContain('vercel-ui-gate');
-    expect(vercelConfig.buildCommand).not.toContain('vercel-lab-browser-gate');
+  it('runs browser regression inside the Vercel build command during the Vercel-first migration', () => {
+    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
+    expect(vercelConfig.buildCommand).toContain('vercel-ui-gate');
+    expect(vercelConfig.buildCommand).toContain('vercel-lab-browser-gate');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain('const ciInfrastructureChanged');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain("file.startsWith('.github/runner/')");
   });

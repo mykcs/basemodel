@@ -3,12 +3,14 @@ import { availableParallelism } from 'node:os';
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? '';
 const productionBranch = branch === 'main';
+const hostedPreview = process.env.VERCEL_ENV === 'preview';
 const fullUiBranch = /^(?:agent\/(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-|agent\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-)/;
 const focusedFixBranch = /^fix\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)/;
 const resultsOverflowValidationBranch = /^(?:fix|research)\/results-mobile-overflow(?:-|$)/;
 const resultsReleaseBranch = /^research\/results-(?:.+)$/;
 const fairComparisonExplainerBranch = /^research\/eli5-fair-comparison(?:-|$)/;
 const shouldRun = productionBranch
+  || hostedPreview
   || fullUiBranch.test(branch)
   || focusedFixBranch.test(branch)
   || resultsOverflowValidationBranch.test(branch)

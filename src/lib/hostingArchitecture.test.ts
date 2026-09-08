@@ -29,8 +29,8 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('keeps Vercel lightweight and moves browser acceptance to CircleCI', () => {
-    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build');
+  it('runs exact-head browser acceptance on Vercel while retaining CircleCI during migration', () => {
+    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
