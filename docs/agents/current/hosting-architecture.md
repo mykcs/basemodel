@@ -35,8 +35,8 @@ Vercel is the ordinary CI and deployment authority. The stable Production identi
 
 Branch protection keeps strict current-base semantics and requires `Vercel`. Every open PR branch is eligible to reach Vercel. `scripts/vercel-ignore-build.mjs` distinguishes PR acceptance from ordinary branch previews:
 
-- PR Preview: automatic; `[vercel-preview]` is not required;
-- non-PR Preview: exact-head `[vercel-preview]` remains explicit opt-in;
+- every Preview: automatic real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
+- `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;
 - docs/governance-only PR: still runs `verify:deploy`, while the browser planner may skip when UI risk is proven absent;
 - docs/governance-only `main`: ignored as non-deploy-relevant, so an `AGENTS.md`/`docs/agents/**`-only merge cannot publish a new Production website.
 
