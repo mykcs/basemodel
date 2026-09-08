@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-06**
+Last reviewed: **2026-09-08**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -15,11 +15,11 @@ The historical cases that motivated these rules include `../history/2026-08-17-p
 
 A previously valid report becomes historical evidence when the PR head changes or when the intended merge base changes materially.
 
-## 0. Decide hosted-acceptance needs before creating the branch
+## 0. Treat open PR acceptance as automatic
 
-Before the first branch/ref mutation, decide whether the task requires exact-head Vercel Preview acceptance. Then read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs` **before** choosing the prefix.
+Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; they do not opt an open PR into or out of Vercel acceptance.
 
-A `docs/**` branch can be correct for documentation-only work and still be the wrong release vehicle for a user-facing change that requires Preview. If no Preview appears, first classify branch eligibility and exact-head opt-in state; do not call Vercel unhealthy and do not create probe commits.
+Every open PR is expected to create an exact-head Vercel acceptance path automatically. `[vercel-preview]` is only for a non-PR Preview branch that intentionally needs hosted review. If an open PR has no Vercel acceptance object, inspect integration/provider state; do not create probe commits or rename the branch merely to manufacture a Preview.
 
 ## 1. Resolve the acceptance identity first
 

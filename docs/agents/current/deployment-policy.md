@@ -166,7 +166,7 @@ Rules:
 6. When several already-accepted PRs belong to one release window, one explicit integration/release head plus one merge to `main` may be used if authorship, review, rollback and ownership remain clear. Do not combine unrelated or unaccepted work only to reduce build count.
 7. Batch evidence-driven Preview fixes. The normal budget is one initial Preview plus at most one corrective Preview; more pushes require a concrete reason such as a newly discovered Gate failure, exact-head synchronization conflict or real browser finding.
 8. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
-9. Docs/Agent-only changes should remain outside deploy-relevant paths so the ignored-build step can skip them on PR, `main` and Production as well as ordinary branch Previews. The Vercel environment/ref class does not override a proven docs-only diff. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to obtain a Preview badge.
+9. Docs/Agent-only changes should remain outside deploy-relevant paths. On an open PR they still run `verify:deploy` so repository contracts are validated, while the hosted browser layer may skip when UI risk is proven absent. On non-PR Previews and `main`/Production, a proven docs-only range may be ignored entirely. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to manufacture a Preview badge.
 10. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
 11. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
 
@@ -204,11 +204,11 @@ latest intended base
 - `github.autoJobCancelation: true` keeps the newest same-branch job authoritative;
 - `ignoreCommand: node scripts/vercel-ignore-build.mjs` decides whether a build is needed.
 
-The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so multi-commit pushes and accumulated docs-only changes are classified against the previous successful deployment, rather than only looking at `HEAD^..HEAD`. The same path decision applies to ordinary branch Previews, PRs, `main` and Production: when the proven range contains no deploy-relevant path, the command exits `0` and Vercel ignores the build. Missing Git history, an invalid range, or any uncertainty **fails open** and runs the build. An ignored trigger may still appear as an ignored/skipped deployment record; the guarantee here is that Vercel does not execute the site build for a proven docs/Agent-only range.
+The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so multi-commit pushes and accumulated changes are classified against the previous successful deployment, rather than only looking at `HEAD^..HEAD`. Open PRs are a deliberate exception to complete ignore: a proven docs/Agent-only PR still enters the build and runs `verify:deploy`, after which `vercel-ui-plan.ts` may skip Chromium. Proven docs-only non-PR Previews and `main`/Production may be ignored before the build. Missing Git history, an invalid range, or any uncertainty **fails open** and runs the build.
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
-Branch/ref deployment eligibility is also policy. When `vercel.json -> git.deploymentEnabled` excludes a ref class, the absence of a Preview deployment is expected and must not be reported as a Vercel outage. Release/debugging Agents must check ref eligibility and live deployment objects before assigning provider blame; the exact closeout procedure is owned by `release-closeout-protocol.md`.
+`vercel.json -> git.deploymentEnabled` now allows ordinary branch refs to reach the provider classifier so every open PR can create its required Vercel status. Spend control happens in `scripts/vercel-ignore-build.mjs`: PRs are automatic acceptance builds; non-PR Preview branches remain `[vercel-preview]` opt-in. If an open PR has no Vercel acceptance object, treat that as an integration/policy defect rather than expected branch-prefix behavior; the exact closeout procedure is owned by `release-closeout-protocol.md`.
 
 ## Node runtime major contract
 
