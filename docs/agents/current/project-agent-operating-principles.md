@@ -278,3 +278,7 @@ When prose is the right representation, preserve the parts that make the lesson 
 > Do not try to make the Agent remember everything. Make it able to solve forward, know when current knowledge may be stale, know where to look, and leave genuinely reusable knowledge where a future Agent will naturally discover and act on it.
 
 Apply this principle through the repository's existing structure rather than creating a second governance system beside it.
+
+### Provider control planes: CLI/API before GUI
+
+For GitHub, Vercel, Cloudflare, and similar provider settings, prefer an authorized connector, CLI, or REST/API route. Browser GUI interaction is a fallback only when no supported programmatic route exists; do not use repeated coordinate/mouse clicking as the normal control-plane mechanism. This reduces stale-page, focus, timing, and accidental-click failures and leaves auditable commands/results.
