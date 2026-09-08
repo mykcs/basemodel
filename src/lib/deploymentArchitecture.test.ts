@@ -234,7 +234,7 @@ describe('Vercel production deployment architecture', () => {
       '*': false,
       '**/*': false,
       main: true,
-      'ci/vercel-gate-*': true,
+      'ci/vercel-gate-final': true,
     });
     expect(vercelConfig.github?.autoJobCancelation).toBe(true);
   });

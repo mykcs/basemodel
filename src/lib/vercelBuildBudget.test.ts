@@ -37,7 +37,8 @@ describe('Vercel build-budget contract', () => {
     expect(enabled['*']).toBe(false);
     expect(enabled['**/*']).toBe(false);
     expect(enabled.main).toBe(true);
-    expect(enabled['ci/vercel-gate-*']).toBe(true);
+    expect(enabled['ci/vercel-gate-final']).toBe(true);
+    expect(enabled['ci/vercel-gate-*']).toBeUndefined();
     expect(enabled['research/**']).toBeUndefined();
     expect(enabled['agent/semantic-release-*']).toBeUndefined();
   });
