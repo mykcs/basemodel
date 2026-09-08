@@ -179,10 +179,10 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerDockerfile).toContain('sha256sum -c -');
   });
 
-  it('keeps browser regression out of the Vercel Production build command', () => {
-    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build');
-    expect(vercelConfig.buildCommand).not.toContain('vercel-ui-gate');
-    expect(vercelConfig.buildCommand).not.toContain('vercel-lab-browser-gate');
+  it('runs provider-owned deterministic and browser acceptance inside the Vercel build command', () => {
+    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
+    expect(vercelConfig.buildCommand).toContain('vercel-ui-gate');
+    expect(vercelConfig.buildCommand).toContain('vercel-lab-browser-gate');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain('const ciInfrastructureChanged');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain("file.startsWith('.github/runner/')");
   });
@@ -225,10 +225,10 @@ describe('Vercel production deployment architecture', () => {
     expect(buildCloudflare).toContain('Legacy/fallback Cloudflare validation only');
   });
 
-  it('spends automatic Vercel deployments on production, semantic-release, and research preview branches', () => {
+  it('allows every PR branch to reach the Vercel acceptance classifier while preserving explicit non-PR Preview gating', () => {
     expect(vercelConfig.git?.deploymentEnabled).toEqual({
-      '*': false,
-      '**/*': false,
+      '*': true,
+      '**/*': true,
       main: true,
       'agent/semantic-release-*': true,
       'research/**': true,

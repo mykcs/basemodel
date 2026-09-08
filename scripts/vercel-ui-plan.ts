@@ -18,6 +18,9 @@ const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/study\/results(?:\/|$
 const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-ui-plan.ts',
+  'scripts/vercel-ui-gate.mjs',
+  'scripts/vercel-lab-browser-gate.mjs',
+  'vercel.json',
   'scripts/ci-ui-gate.mjs',
   'scripts/ci-ui-test-list.mjs',
   'scripts/ci-ui-test-timings-202609061200.json',
@@ -230,6 +233,10 @@ type ProcessEnvironment = Record<string, string | undefined>;
 export function changedFilesForVercel(env: ProcessEnvironment = process.env): string[] {
   const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
   const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
+  const pullRequestPreview = env.VERCEL_ENV === 'preview' && Boolean(env.VERCEL_GIT_PULL_REQUEST_ID?.trim());
+  if (pullRequestPreview && (!previous || previous === head)) {
+    throw new Error('first PR Preview has no previous accepted Vercel SHA; require the complete browser matrix');
+  }
   const base = previous && previous !== head ? previous : `${head}^`;
 
   git(['cat-file', '-e', `${base}^{commit}`]);

@@ -1,11 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run verify:deploy && npm run build",
+  "buildCommand": "npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs",
   "ignoreCommand": "node scripts/vercel-ignore-build.mjs",
   "git": {
     "deploymentEnabled": {
-      "*": false,
-      "**/*": false,
+      "*": true,
+      "**/*": true,
       "main": true,
       "agent/semantic-release-*": true,
       "research/**": true

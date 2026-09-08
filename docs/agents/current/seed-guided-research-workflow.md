@@ -158,7 +158,7 @@ This teaching document deliberately contains **no separate hosting plan**. Deplo
 - `release-closeout-protocol.md`;
 - executable `vercel.json` and provider state.
 
-Current ordinary architecture is CircleCI GitHub App risk-based CI + optional Vercel Preview + Vercel Production, with Cloudflare production-smoke as monitoring only and the Mac/OrbStack runner retained only for explicit manual fallback. Historical Cloudflare/Vercel migration states belong under `docs/agents/history/` and must not be restored from an old teaching document.
+Current ordinary architecture is Vercel Pro deterministic + risk-based browser acceptance on automatic PR Previews and Vercel Production, with CircleCI retained only as non-blocking shadow/fallback evidence during cutover, Cloudflare production-smoke as monitoring only, and the Mac/OrbStack runner retained only for explicit manual fallback. Historical provider-migration states belong under `docs/agents/history/` and must not be restored from an old teaching document.
 
 ## Maintenance rule
 

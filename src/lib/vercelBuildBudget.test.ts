@@ -26,9 +26,10 @@ describe('Vercel build-budget contract', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
   });
 
-  it('requires an explicit exact-head opt-in before spending on Preview builds', () => {
+  it('auto-runs PR Preview acceptance while retaining explicit opt-in for non-PR Preview builds', () => {
     expect(PREVIEW_OPT_IN_TOKEN).toBe('[vercel-preview]');
     expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: intermediate change')).toBe(false);
+    expect(previewBuildOptedIn({ VERCEL_ENV: 'preview', VERCEL_GIT_PULL_REQUEST_ID: '563' }, 'fix: PR change')).toBe(true);
     expect(previewBuildOptedIn({ VERCEL_ENV: 'preview' }, 'fix: ready for review [vercel-preview]')).toBe(true);
     expect(previewBuildOptedIn({ VERCEL_ENV: 'production' }, 'fix: release')).toBe(true);
   });
@@ -95,19 +96,20 @@ describe('Vercel build-budget contract', () => {
   it('makes ordinary deployment reporting Vercel-first', () => {
     expect(root).toContain('Vercel is the only ordinary deployment provider');
     expect(root).toContain('Ordinary completion reports are **Vercel-first**');
-    expect(latest).toContain('Vercel remains the ordinary deployment provider');
+    expect(latest).toContain('Vercel is the ordinary CI and deployment authority');
     expect(deploymentPolicy).toContain('Vercel-first completion report');
     expect(deploymentPolicy).toContain('Do not include Cloudflare in an ordinary completion report');
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 
-  it('does not override proven docs-only diffs for PR, main or Production', () => {
+  it('keeps docs-only Production skipped while forcing PR verification through Vercel', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
     expect(ignoreBuildScript).not.toContain('mustRunAcceptanceBuild');
-    expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
+    expect(ignoreBuildScript).toContain('VERCEL_GIT_PULL_REQUEST_ID');
+    expect(ignoreBuildScript).toContain('PR acceptance still runs verify:deploy');
     expect(ignoreBuildScript).toContain('VERCEL_ENV');
     expect(ignoreBuildScript).toContain(PREVIEW_OPT_IN_TOKEN);
-    expect(deploymentPolicy).toContain('PR, `main` and Production');
-    expect(deploymentPolicy).toContain('does not override a proven docs-only diff');
+    expect(deploymentPolicy).toContain('docs/governance-only PR');
+    expect(deploymentPolicy).toContain('must not publish a Production build');
   });
 });

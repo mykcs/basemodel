@@ -45,27 +45,19 @@ Do not create new branches such as `chatgpt/*`, `claude/*`, or `codex/*` merely 
 
 The prefix is not determined only by the file extension. A Markdown change can still be `research/*` if it is part of a research release that must receive an exact-head Preview.
 
-## BaseModel deployment exception: prefix has executable meaning
+## BaseModel deployment exception: PR status has executable meaning
 
-For this repository, branch naming is not only cosmetic. Current `vercel.json` enables Git-triggered deployments for:
+Current `vercel.json` allows ordinary branch refs to reach the Vercel Git classifier so an open PR can always produce its required exact-head acceptance status. Branch prefixes remain semantic/readability conventions; they no longer decide whether a PR is allowed to run Vercel acceptance.
 
-```text
-main
-agent/semantic-release-*
-research/**
-```
+The spend rule is now:
 
-and disables other branch patterns by default. This is **eligibility only**: on Vercel Preview, `scripts/vercel-ignore-build.mjs` still requires `[vercel-preview]` in the exact-head commit message before the expensive site build is allowed to run. Eligible intermediate pushes without the token are intentionally ignored. `main` Production does not require the token.
+1. **Open PR Preview:** automatic when Vercel exposes `VERCEL_GIT_PULL_REQUEST_ID`; no `[vercel-preview]` token is required.
+2. **Non-PR Preview branch:** still requires `[vercel-preview]` on the exact head before expensive hosted acceptance runs.
+3. **Docs/governance-only PR:** still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
+4. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
+5. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
 
-Therefore:
-
-1. If a non-main change **requires exact-head Vercel Preview acceptance**, use `research/**` unless it is specifically the `agent/semantic-release-*` flow, finish the coherent local batch first, and add `[vercel-preview]` only to the exact head that should consume the hosted Preview.
-2. `docs/**`, `fix/**`, `ci/**`, and other ordinary prefixes are currently **not Vercel-deployment-eligible** by name. Use them only when Preview is not required, or deliberately change the executable deployment policy as part of the work.
-3. Do not label a branch `docs/**` solely because all changed files are Markdown if the release contract requires a Preview.
-4. Do not add `[vercel-preview]` to intermediate commits merely because their branch is eligible; the token is an explicit spend decision for hosted acceptance.
-5. If documentation and `vercel.json` / `scripts/vercel-ignore-build.mjs` disagree, executable configuration wins and this document must be corrected.
-
-This exception explains why two branches containing substantially the same documentation change can behave differently when one is `docs/...` and the other is `research/...`.
+Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for the semantic owner of the work, not to manipulate Vercel eligibility. Keep `[vercel-preview]` as an explicit spend decision only for non-PR hosted review.
 
 ## PR titles
 

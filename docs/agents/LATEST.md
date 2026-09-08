@@ -10,18 +10,18 @@ This file is a short current-state router. Detailed policy belongs under `docs/a
 
 ```text
 GitHub `mykcs/basemodel`          = website source of truth
-deployment-eligible non-main PR + exact-head `[vercel-preview]` -> Vercel Preview build
+open PR exact head                  -> automatic Vercel Pro acceptance Preview
 main                              -> Vercel Production
 Production                        -> https://basemodel-preview.vercel.app
 
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-Current branch eligibility is executable policy in `vercel.json`; `research/**` is deployment-eligible. Preview build spend is a second explicit gate: `scripts/vercel-ignore-build.mjs` requires `[vercel-preview]` in the exact-head Preview commit message, so eligible intermediate pushes are ignored before the site build; `main` Production is unaffected. Vercel remains the ordinary deployment provider and the only ordinary deployment authority. CircleCI GitHub App execution is the ordinary CI authority; GitHub Actions is retained only as a manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture.
+Every open PR branch is eligible to reach Vercel. `scripts/vercel-ignore-build.mjs` auto-runs PR acceptance when `VERCEL_GIT_PULL_REQUEST_ID` is present; `[vercel-preview]` is now reserved for non-PR Preview branches. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Vercel is the ordinary CI and deployment authority.** CircleCI may remain as non-blocking shadow evidence during cutover; GitHub Actions is retained only as manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner.
 
 The current hosting owner is `current/hosting-architecture.md`; the current release/deployment owner is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
 
-Browser-heavy acceptance now runs **before merge in CircleCI**. `scripts/ci-ui-gate.mjs` reuses the existing `vercel-ui-plan.ts` skip/focused/full policy; focused coverage is owned by one shard, full coverage uses two independent one-worker shards in the qualified Debian 12 runtime, and the 12-case Lab gate runs only where the diff can affect Lab/server UI. Vercel Production remains `verify:deploy + astro build` only. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
+Browser-heavy acceptance now runs **inside Vercel Pro before merge**. The Vercel gate and retained CircleCI shadow share `vercel-ui-plan.ts` skip/focused/full policy; first/unknown PR comparisons fail closed to the complete Chromium matrix, and the 12-case Lab gate runs where relevant. Vercel Production runs the same deterministic + risk-based browser contract. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
 
 ## Current research state
 
