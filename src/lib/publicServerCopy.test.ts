@@ -66,12 +66,14 @@ describe('public server copy', () => {
     expect(serverRouteEn).toContain('16.1 GiB');
   });
 
-  it('uses transferable role placeholders in the public reproduction runbook', () => {
+  it('uses transferable role placeholders and keeps private server identity out of the public reproduction runbook', () => {
     for (const placeholder of ['<ordinary-account>', '<approved-control-account>', '<approved-persistent-workspace>', '<lab-infrastructure-checkout>']) {
       expect(guide).toContain(placeholder);
     }
-    expect(guide).toContain('真实服务器身份和路径回实验室私有运行文档解析');
-    expect(guide).toContain('resolve real server identities and paths from the private laboratory runbook');
+    expect(guide).toContain('技术能力不等于项目授权');
+    expect(guide).toContain('真实 SSH 身份、hostname、端口和项目路径只从实验室私有运行文档解析');
+    expect(guide).toContain('Technical capability is not project authorization');
+    expect(guide).toContain('Resolve real SSH identities, hostnames, ports, and project paths only from the private laboratory runbook');
   });
 
   it('uses neutral laboratory naming and explains the 436 GiB provenance before the conclusion', () => {
