@@ -3,56 +3,147 @@
 Status: **current**
 Audience: coding, writing, design, review, and release Agents
 
-This file owns how direct human feedback becomes reusable project behavior. It does **not** claim model-weight fine-tuning or account-level memory. The learning loop is repository-level: structured preference data, task-time retrieval, pairwise examples, independent cold reading, and executable verification.
+This file owns how direct human feedback becomes reusable project behavior. It does **not** claim model-weight fine-tuning or account-level memory. The learning loop is repository-level: structured preference evidence, task-time compilation, internal candidate screening, blind review, and executable verification.
 
-## Why the case library alone was insufficient
+## The success criterion
 
-`website-copy-cases.md` is the canonical raw feedback history, but passive storage does not guarantee use. The repeated failure pattern was:
+A case library is not successful because it contains many notes.
+
+A correction counts as learned only when it changes both:
+
+1. **the next generation context** — what the Agent sees before the first substantial draft; and
+2. **the next evaluation context** — what can reject that draft before the owner has to repeat the same correction.
+
+The metric we care about is therefore:
+
+> **How many times does the owner need to correct the same failure family again?**
+
+## Why the original case library was insufficient
+
+The old failure loop was:
 
 ```text
 owner correction
 -> case written down
--> future Agent starts from its default aesthetic anyway
--> rule is remembered late or applied as a word blacklist
--> owner must correct the same failure family again
+-> future Agent starts from default aesthetics anyway
+-> one keyword or visual detail is copied mechanically
+-> the underlying failure mechanism returns in a new form
+-> owner repeats the correction
 ```
 
-A correction counts as learned only when it changes both **the next generation context** and **the next evaluation context**.
+A raw case is valuable evidence, but passive storage is not learning.
 
-## Four executable layers
+## Learning stack
 
 ```text
-raw human cases
+raw human case
+-> Human Feedback Event
+-> Preference Trajectory
+-> Golden / Silver / Rejected Visual Set
 -> rejected ↔ accepted Gold Pairs
 -> scoped Preference Model
--> task-time retrieval
+-> task-time Preference Brief
+-> 2–3 internal candidates + pairwise screening
 -> Phase A blind cold read
 -> Phase B preference comparison
 -> judge receipt / browser + deterministic gates
--> release
+-> owner review
 -> new feedback returns to the loop
 ```
 
-### 1. Raw cases remain canonical evidence
+The existing CASE / Gold Pair / Preference Model system remains valid. V2 adds the missing **trajectory, visual, escalation, and pre-generation screening** layers.
 
-`docs/agents/current/website-copy-cases.md` keeps the owner feedback, rejected/accepted examples, reason, propagation scope, and boundaries. Do not rewrite history to fit a newer abstraction.
+## 1. Raw cases remain canonical history
 
-### 2. Gold Pairs preserve preference direction
+`docs/agents/current/website-copy-cases.md` preserves the owner feedback, reason, rejected/accepted examples when known, scope, and boundaries. Do not rewrite history to make a newer abstraction look cleaner.
 
-`HUMAN_FEEDBACK_GOLD_PAIRS` keeps concrete `REJECTED -> ACCEPTED` examples. A pair is stronger than a ban word because it preserves *direction* and the failure mechanism. Do not promote an unaccepted PR or an Agent-only rewrite into a Gold Pair.
+Raw cases answer: **What did the owner actually say?**
 
-### 3. Preference Model generalizes across cases
+## 2. Human Feedback Events preserve intermediate verdicts
 
-`HUMAN_PREFERENCE_MODEL` stores cross-case dimensions with:
+`src/data/humanPreferenceLearningHistory.ts` stores individual feedback moments as events.
+
+A verdict is not binary:
+
+- `rejected` — this direction should not survive owner review;
+- `better` — clearly better than a predecessor, but not approved;
+- `promising` — a useful positive direction or technical-depth signal;
+- `accepted` — owner explicitly accepts this concrete result;
+- `canonical` — owner explicitly approves it as a reusable standard/reference.
+
+**Never promote “好多了 / 比之前好” into `accepted` or `canonical`.**
+
+This preserves the most valuable information in iterative design: the owner may prefer B over A without wanting B copied forever.
+
+## 3. Preference Trajectory preserves pairwise direction
+
+A Gold Pair records one reusable rejected → accepted contrast. A Preference Trajectory records a longer sequence of comparisons such as:
+
+```text
+dense card wall
+  < soft slide direction
+  > over-minimal HTML
+  < later balanced candidate
+```
+
+The system must preserve *why* one variant beat another. This prevents overlearning such as:
+
+```text
+"cards caused overload"
+-> incorrectly learn "all information density is bad"
+-> produce an empty page
+```
+
+The correct learned mechanism may instead be:
+
+> competing visual centers are bad; structured information can remain.
+
+## 4. Golden / Silver / Rejected Visual Set
+
+Visual preference cannot be represented faithfully by prose alone.
+
+`HUMAN_VISUAL_REFERENCE_SET` uses four tiers:
+
+- `rejected` — direct negative evidence;
+- `silver` — directionally positive, but **not** approved as a template;
+- `golden` — reusable visual anchor explicitly approved by the owner;
+- `current-candidate` — under review; never treat as learned preference yet.
+
+A visual reference should be reconstructable when possible with Git SHA / PR / route. Screenshots may be stored when they are stable and worth the repository weight, but an unapproved screenshot must never be promoted to Golden merely because an Agent likes it.
+
+**Golden promotion rule:** only explicit owner language such as `OK / 可以 / 就按这个标准 / 以后参考这个` can create a Golden reference.
+
+## 5. Failure-family escalation
+
+A repeated correction is stronger evidence than a one-off page detail.
+
+`failureFamilySeverity()` classifies mechanisms:
+
+- `normal` — one observed event;
+- `repeated` — the same mechanism appears at least twice;
+- `hard` — at least three events, or the owner explicitly says this was already corrected before.
+
+Hard does **not** mean “turn one word into a global blacklist.” It means the failure mechanism must be explicitly checked before owner review.
+
+Example:
+
+```text
+OpenEVO · SEED × WebShop
+AGENDA / RESULTS / MECHANISM
+```
+
+are not forbidden because English is forbidden. They belong to a hard family when the English eyebrow adds no identity, technical definition, or navigation value and therefore creates pure attention tax.
+
+## 6. Preference Model still owns cross-case generalization
+
+`src/data/humanPreferenceModel.ts` remains the cross-case model with:
 
 - scope;
 - confidence;
 - priority;
-- supporting case IDs;
+- supporting cases;
 - retrieval tags;
 - anti-overgeneralization boundaries.
-
-The model is deliberately scoped. Every public Reader Contract inherits the `all-public-ui` baseline preferences and reusable baseline Gold Pairs; research/result/run/briefing/capability scopes then add narrower evidence, and the six highest-risk research entry points keep explicit CASE bindings. One page-specific correction must not become a universal law merely because it is easy to encode.
 
 Precedence remains:
 
@@ -64,102 +155,164 @@ current explicit owner instruction
 > Agent aesthetics
 ```
 
-### 4. Retrieval and judging are required use sites
+One page-specific correction must not silently become a universal law.
 
-Before substantial public copy/layout work, run a Preference Brief:
+## 7. Mandatory task-time Preference Brief
+
+For material user-facing copy/layout/design work, **do this before the first substantial draft**, not after a rejection:
 
 ```bash
-npm run feedback:retrieve -- --contract=study "Study 首屏 标题 AI味 注意力"
+npx tsx scripts/generate-human-preference-brief.ts \
+  --contract=study-briefing \
+  "科研汇报 去 AI 味 ADHD 注意力 TaskVector 公式"
 ```
 
-The command returns relevant preference dimensions, Gold Pairs, source cases, and anti-overgeneralization boundaries. Retrieval failure is a signal to read the canonical case library; it is not permission to invent a new global preference.
+The brief compiles:
 
-## Two-phase cold read
+- current hard/repeated failure families;
+- direct feedback events;
+- relevant Preference Trajectories;
+- Golden / Silver / Rejected visual references;
+- existing Preference Model rules;
+- Gold Pairs;
+- anti-overgeneralization boundaries.
 
-A cold read must actually be blind.
+`feedback:retrieve` remains a useful low-level search tool. The **Preference Brief** is the generation-time owner because it combines the old retrieval layer with trajectories, visual evidence, and escalation.
+
+If the brief says there is no Golden reference, the Agent must not invent one.
+
+## 8. Internal 2–3 candidate screening
+
+Material user-facing work should not expose the Agent's first aesthetic guess to the owner.
+
+Generate a receipt template:
+
+```bash
+npx tsx scripts/generate-human-preference-candidate-receipt.ts \
+  --contract=study-briefing \
+  "refresh OpenEVO advisor briefing" \
+  > /tmp/preference-candidates.json
+```
+
+Then create **2–3 internal candidates**. For visual work each candidate must have a screenshot reference.
+
+Each candidate records:
+
+- hypothesis;
+- first attention center;
+- intended information density;
+- visual-language rationale;
+- screenshot reference;
+- predicted failure families.
+
+The selected candidate must beat every other candidate in a recorded pairwise comparison with visible evidence.
+
+Before owner review:
+
+```bash
+npx tsx scripts/verify-human-preference-candidate-receipt.ts \
+  /tmp/preference-candidates.json
+```
+
+The verifier fails when:
+
+- there are fewer than 2 or more than 3 candidates;
+- a visual candidate has no screenshot;
+- the selected candidate did not beat every alternative;
+- a current hard failure family was not checked;
+- the receipt says the owner was shown the discarded internal variants.
+
+The point is not to make the owner choose among three drafts. The point is to use historical feedback to reject weak drafts **before** the owner sees them.
+
+## 9. Two-phase cold read remains mandatory after generation
+
+Candidate screening uses learned preferences and is therefore not a blind review. A separate blind pass is still required.
 
 ### Phase A — blind
 
 ```bash
-npm run feedback:cold-read -- study --phase=blind --url=<rendered-url>
+npm run feedback:cold-read -- study-briefing --phase=blind --url=<rendered-url>
 ```
 
-Give the rendered page and Phase A questions to a reviewer who has not read the implementation, PR, Reader Contract, case library, Preference Model, or Gold Pairs. Save the answers **before** revealing historical preference evidence.
+The reviewer sees only the rendered artifact and answers what it appears to be about, first attention target, terminology friction, competing centers, hidden boundaries, suggested changes, and desire to continue reading.
 
-Phase A asks what the page appears to be about, first attention target, most important fact/action, machine-like wording, terminology friction, competing visual centers, hidden boundaries, suggested changes, and desire to continue reading.
+Save Phase A before revealing preference evidence.
 
 ### Phase B — compare
 
-Only after Phase A is saved:
-
 ```bash
-npm run feedback:cold-read -- study --phase=compare
+npm run feedback:cold-read -- study-briefing --phase=compare
 ```
 
-Now reveal the intended Reader Contract, scoped Preference Model, anti-overgeneralization boundaries, and required Gold Pairs. The reviewer compares the candidate against those precedents instead of guessing the owner's taste from scratch.
+Now reveal the Reader Contract, Preference Model, Gold Pairs, and historical boundaries. Compare rather than guess.
 
-## Judge receipt
-
-Generate a fail-closed receipt template:
+## 10. Judge receipt remains the post-generation gate
 
 ```bash
-npm run feedback:cold-read -- study --phase=receipt --url=<rendered-url> > /tmp/study-preference-judge.json
+npm run feedback:cold-read -- study-briefing --phase=receipt --url=<rendered-url> > /tmp/preference-judge.json
+npm run feedback:judge -- /tmp/preference-judge.json
 ```
 
-Fill it from the saved Phase A + Phase B review, then verify:
+A PASS requires exact Git SHA + rendered URL, a real blind-first ordering, complete judgments, scientific-boundary PASS, no failed bound preference, no rejected-like required pair, and zero unresolved concern.
 
-```bash
-npm run feedback:judge -- /tmp/study-preference-judge.json
-```
+Browser/structural PASS still does not prove human comprehension.
 
-A PASS receipt requires:
-
-- an exact Git SHA and rendered URL;
-- an identified independent Agent or human reviewer;
-- proof that Phase A happened before preference reveal;
-- answers to every blind-read question;
-- judgments for every contract-bound preference and Gold Pair;
-- no `fail` preference judgment;
-- no `rejected-like` required pair;
-- scientific-boundary PASS;
-- zero unresolved concerns.
-
-An `intentional-exception` is allowed only with an explicit reason. This prevents the system from overlearning a case into a rigid template.
-
-## Feedback ingestion lifecycle
+## 11. Feedback ingestion lifecycle
 
 When the owner gives new direct feedback:
 
-1. preserve the rejected surface and the accepted replacement once known;
-2. record why the preference exists, not merely the disliked token;
-3. add/update the canonical CASE first;
-4. decide whether it belongs to an existing preference dimension or creates a genuinely new scoped dimension;
-5. add a Gold Pair only when the direction is accepted and reusable;
-6. update retrieval tags and supporting evidence;
-7. scan sibling surfaces by failure mechanism;
-8. add deterministic protection only for reliably detectable invariants;
-9. run blind + comparison review for material user-facing changes;
-10. record the release receipt separately from human-comprehension evidence.
+1. preserve the exact owner signal and rejected surface;
+2. record the verdict accurately (`better` is not `accepted`);
+3. append/update the canonical CASE;
+4. create a Human Feedback Event;
+5. connect it to a Preference Trajectory when a prior variant exists;
+6. identify the underlying failure mechanism, not only the visible token;
+7. recompute whether that family is normal / repeated / hard;
+8. update a Silver/Golden/Rejected visual reference only when evidence supports the tier;
+9. update Preference Model / Gold Pair only when the abstraction is reusable and scoped;
+10. scan sibling surfaces by failure mechanism;
+11. add deterministic protection only for mechanically detectable invariants;
+12. run Preference Brief → internal candidates → blind cold read → preference compare on the next material task.
 
-## Anti-overfitting rules
+## 12. Anti-overfitting rules
 
-Do not turn these assets into a larger word blacklist. In particular:
+Do not turn this system into a larger word blacklist or frozen style guide.
 
-- a rejected word can still be correct in a different semantic role;
+- a rejected word can be correct in another semantic role;
+- a Silver visual is not a template;
+- absence of Golden evidence means uncertainty, not permission for Agent taste;
 - scientific caveats outrank minimalism;
 - exact technical terms remain valid when the reader needs them;
+- reducing cognitive load does not mean deleting useful mathematical depth;
 - page-specific accepted implementation details do not automatically become global defaults;
-- a generic preference cannot override a newer explicit owner correction;
-- browser/structural PASS does not prove human comprehension;
-- a judge receipt does not prove a human liked the page; it proves the preference-review procedure actually ran.
+- a generic preference cannot override a newer direct owner correction;
+- a browser Gate cannot certify that the owner will like or understand a page;
+- a judge receipt proves the review protocol ran; it does not manufacture owner approval.
+
+## 13. Current briefing lesson encoded by V2
+
+The 2026-09-08 OpenEVO briefing is the first explicit Preference Trajectory.
+
+The important learned distinction is not `cards bad / circles good / minimal good`.
+
+It is:
+
+> **Remove elements that make the reader decide where to look or decode author-internal language; preserve information, color, mathematics, or structure when they directly carry the research argument.**
+
+That is why a decorative pale bubble can be rejected while a dense TaskVector formula can be preferred on the mechanism slide.
 
 ## Ownership map
 
-- canonical raw feedback: `website-copy-cases.md`;
+- raw feedback history: `docs/agents/current/website-copy-cases.md`;
 - structured precedent index: `src/data/humanFeedbackPrecedents.ts`;
 - cross-case model + Gold Pairs: `src/data/humanPreferenceModel.ts`;
-- retrieval logic: `src/lib/humanPreferenceLearning.ts` + `feedback:retrieve`;
+- event / trajectory / visual / escalation evidence: `src/data/humanPreferenceLearningHistory.ts`;
+- old retrieval + cold-read context: `src/lib/humanPreferenceLearning.ts`;
+- V2 Preference Brief + candidate receipt verification: `src/lib/humanPreferenceBrief.ts`;
+- Preference Brief CLI: `scripts/generate-human-preference-brief.ts`;
+- candidate receipt template: `scripts/generate-human-preference-candidate-receipt.ts`;
+- candidate verifier: `scripts/verify-human-preference-candidate-receipt.ts`;
 - blind/compare protocol: `feedback:cold-read`;
-- receipt validation: `src/lib/humanPreferenceJudge.ts` + `feedback:judge`;
-- deterministic integrity: `audit:human-feedback` and structural tests;
-- rendered attention/geometry: Reader Contract + browser gates.
+- final preference judge: `src/lib/humanPreferenceJudge.ts` + `feedback:judge`;
+- deterministic integrity: structural tests + `audit:human-feedback`;
+- rendered geometry: Reader Contract + browser gates.
