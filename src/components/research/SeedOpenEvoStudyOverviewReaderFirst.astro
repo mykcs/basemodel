@@ -31,20 +31,20 @@ const questions = [
   {
     id: 'Q2',
     title: { zh: '如果表现不同，差异从哪里来？', en: 'If performance differs, where does the gap come from?' },
-    body: { zh: '基础模型、起始经验与 MiniMax hindsight 等因素必须拆开，避免把不同起点误写成学习方法本身的效果。', en: 'Base model, starting experience, MiniMax hindsight, and related factors must be separated so different starting points are not mistaken for method effects.' },
+    body: { zh: '基础模型、起始经验与 MiniMax 的事后分析（hindsight）等因素必须拆开，避免把不同起点误写成学习方法本身的效果。', en: 'Base model, starting experience, MiniMax hindsight analysis, and related factors must be separated so different starting points are not mistaken for method effects.' },
   },
   {
     id: 'Q3',
     title: { zh: '更新筛选是在保护训练，还是挡住了长期有用的更新？', en: 'Does update filtering protect training or block updates that help later?' },
-    body: { zh: 'GDR、No-GDR 与 DirectApply 属于机制实验，用来解释训练为什么变化；它们不能直接冒充主 benchmark 的最终结论。', en: 'GDR, No-GDR, and DirectApply are mechanism studies used to explain training behavior; they cannot stand in for the final benchmark conclusion.' },
+    body: { zh: 'GDR、No-GDR 与 DirectApply 属于机制实验，用来解释训练为什么变化；它们不能直接冒充主实验的最终结论。', en: 'GDR, No-GDR, and DirectApply are mechanism studies used to explain training behavior; they cannot stand in for the main experiment’s final conclusion.' },
   },
 ] as const;
 
 const routes = [
-  { href: flowOverview, title: { zh: '流程理解', en: 'Understand the flow' }, body: { zh: 'WebShop、SEED、OpenEVO、训练设计与评测分别是什么。', en: 'What WebShop, SEED, OpenEVO, training design, and evaluation each do.' } },
-  { href: results, title: { zh: '研究结果', en: 'Research results' }, body: { zh: '已经封存的测量、统计解释，以及当前仍不能证明的内容。', en: 'Sealed measurements, statistical interpretation, and what remains unproven.' } },
-  { href: capability, title: { zh: '机制与能力实验', en: 'Mechanism and capability studies' }, body: { zh: '1.7B / 3B / 7B、GDR、DirectApply、参数更新与轨迹分析。', en: '1.7B / 3B / 7B, GDR, DirectApply, parameter updates, and trajectory analysis.' } },
-  { href: runDetails, title: { zh: '运行与复现', en: 'Run and reproduce' }, body: { zh: '运行条件、证据文件、开始与停止条件，以及执行入口。', en: 'Run conditions, evidence files, start/stop criteria, and execution entry points.' } },
+  { href: flowOverview, title: { zh: '了解实验流程', en: 'Understand the experiment flow' }, body: { zh: 'WebShop、SEED、OpenEVO、训练设计与评测分别是什么。', en: 'What WebShop, SEED, OpenEVO, training design, and evaluation each do.' } },
+  { href: results, title: { zh: '查看研究结果', en: 'View the research results' }, body: { zh: '已经封存的测量、统计解释，以及当前仍不能证明的内容。', en: 'Sealed measurements, statistical interpretation, and what remains unproven.' } },
+  { href: capability, title: { zh: '理解变化原因', en: 'Understand why performance changes' }, body: { zh: '1.7B / 3B / 7B、GDR、DirectApply、参数更新与轨迹分析。', en: '1.7B / 3B / 7B, GDR, DirectApply, parameter updates, and trajectory analysis.' } },
+  { href: runDetails, title: { zh: '复现实验', en: 'Reproduce the experiment' }, body: { zh: '运行条件、证据文件、开始与停止条件，以及执行入口。', en: 'Run conditions, evidence files, start/stop criteria, and execution entry points.' } },
 ] as const;
 ---
 
@@ -55,6 +55,7 @@ const routes = [
     <nav class="source-links" aria-label={zh ? '对照、论文与实验资源' : 'Comparison, paper, and experiment resources'}>
       <span>{zh ? '和 SEED 对照' : 'Compared with SEED'}</span>
       <a href={seedPaper} target="_blank" rel="noreferrer"><span class="paper-mark" aria-hidden="true">▱</span>{zh ? 'SEED 论文' : 'SEED paper'}</a>
+      <a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />GitHub</a>
       <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
       <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
     </nav>
@@ -63,8 +64,8 @@ const routes = [
       <p class="tldr-label">TL;DR</p>
       <div>
         <p class="lead">{zh
-          ? '这项研究问一件事：在可比较的 WebShop 任务预算下，OpenEVO harness 最终能把模型能力推到哪里。主 benchmark 负责回答“最终表现怎样”，机制实验只负责解释“为什么会变好或变差”。'
-          : 'This study asks one thing: under a comparable WebShop task budget, how far can the OpenEVO harness ultimately push model capability? The main benchmark answers final performance; mechanism studies explain why performance may change.'}</p>
+          ? '这项研究问一件事：在可比较的 WebShop 任务预算下，OpenEVO harness（实验架构）最终能把模型能力推到哪里。主实验负责回答“最终表现怎样”，机制实验只负责解释“为什么会变好或变差”。'
+          : 'This study asks one thing: under a comparable WebShop task budget, how far can the OpenEVO harness ultimately push model capability? The main experiment answers final performance; mechanism studies explain why performance may change.'}</p>
         <p>{zh
           ? '目前同一批 128 个 WebShop 任务上的 7B 测量中，平均 Task Score 从 7.17 提到 8.74，但完整成功仍是 5 / 128，且差异的 95% 区间仍包含“没有提升”。OpenEVO 与 SEED 的同协议最终比较还没有完成，所以现在不能宣布谁最终更强。'
           : 'In the completed 7B measurement on the same 128 WebShop tasks, mean Task Score moved from 7.17 to 8.74, but exact success remained 5 / 128 and the 95% interval still includes no improvement. The final matched-protocol OpenEVO-versus-SEED comparison is not complete, so there is no justified winner yet.'}</p>
@@ -121,7 +122,7 @@ const routes = [
   <section aria-labelledby="routes-title">
     <div class="section-heading">
       <span>03</span>
-      <div><h2 id="routes-title">{zh ? '研究入口' : 'Research routes'}</h2><p>{zh ? '背景、结果、机制与复现各自只有一个语义 owner，避免在总览里重复讲一遍。' : 'Background, results, mechanisms, and reproduction each keep one semantic owner instead of being repeated on the overview.'}</p></div>
+      <div><h2 id="routes-title">{zh ? '研究入口' : 'Research routes'}</h2><p>{zh ? '流程背景、结果、机制与复现分别放在各自页面，这里只保留入口。' : 'Flow background, results, mechanisms, and reproduction live on their own pages; this overview only keeps the routes.'}</p></div>
     </div>
     <nav class="route-list" aria-label={zh ? '研究详情入口' : 'Research detail routes'}>
       {routes.map((item) => <a href={item.href}><div><strong>{t(item.title)}</strong><span>{t(item.body)}</span></div><b aria-hidden="true">→</b></a>)}
