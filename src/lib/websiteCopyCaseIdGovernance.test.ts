@@ -1,10 +1,13 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const cases = readFileSync(
-  new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url),
-  'utf8',
-);
+const currentDocs = new URL('../../docs/agents/current/', import.meta.url);
+const caseFiles = readdirSync(currentDocs)
+  .filter((name) => name === 'website-copy-cases.md' || /^website-copy-case-.*\.md$/.test(name))
+  .sort();
+const cases = caseFiles
+  .map((name) => readFileSync(new URL(name, currentDocs), 'utf8'))
+  .join('\n');
 
 const duplicates = (values: string[]) => {
   const counts = new Map<string, number>();
@@ -23,10 +26,11 @@ const requiredCapture = (match: RegExpMatchArray, index: number) => {
 const governance = 'docs/agents/current/shared-registry-identity-governance.md';
 
 describe('website copy case ID governance', () => {
-  it('keeps CASE identities unique in the integrated tree', () => {
-    const ids = [...cases.matchAll(/^### CASE-(\d{3})\b/gm)].map(
+  it('keeps CASE identities unique across the canonical library and current companion cases', () => {
+    const ids = [...cases.matchAll(/^(?:### |# )CASE-(\d{3})\b/gm)].map(
       (match) => `CASE-${requiredCapture(match, 1)}`,
     );
+    expect(caseFiles).toContain('website-copy-cases.md');
     expect(ids.length).toBeGreaterThan(0);
     expect(
       duplicates(ids),
