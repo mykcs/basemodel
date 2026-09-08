@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 export const VERCEL_FINAL_GATE_REF = 'ci/vercel-gate-final';
 export const VERCEL_FINAL_BASE_REF = 'ci/vercel-gate-base';
+export const VERCEL_PUBLIC_REPOSITORY_REMOTE = 'https://github.com/mykcs/basemodel.git';
 
 function git(args) {
   return execFileSync('git', args, {
@@ -23,20 +24,33 @@ export function parseLsRemote(output, ref) {
   return sha;
 }
 
-function remoteSha(ref) {
-  return parseLsRemote(git(['ls-remote', 'origin', ref]), ref);
+export function repositoryRemoteForVercel(env = process.env) {
+  const owner = env.VERCEL_GIT_REPO_OWNER?.trim();
+  const slug = env.VERCEL_GIT_REPO_SLUG?.trim();
+  if (owner && owner !== 'mykcs') {
+    throw new Error(`unexpected Vercel Git owner: ${owner}`);
+  }
+  if (slug && slug !== 'basemodel') {
+    throw new Error(`unexpected Vercel Git repository: ${slug}`);
+  }
+  return VERCEL_PUBLIC_REPOSITORY_REMOTE;
 }
 
-function persistentGateBase(head) {
+function remoteSha(ref, repositoryRemote) {
+  return parseLsRemote(git(['ls-remote', repositoryRemote, ref]), ref);
+}
+
+function persistentGateBase(head, env) {
   const liveMainRef = 'refs/heads/main';
   const gateBaseRef = `refs/heads/${VERCEL_FINAL_BASE_REF}`;
-  const liveMain = remoteSha(liveMainRef);
-  const gateBase = remoteSha(gateBaseRef);
+  const repositoryRemote = repositoryRemoteForVercel(env);
+  const liveMain = remoteSha(liveMainRef, repositoryRemote);
+  const gateBase = remoteSha(gateBaseRef, repositoryRemote);
   if (gateBase !== liveMain) {
     throw new Error(`persistent gate base is stale: ${gateBase} != live main ${liveMain}`);
   }
   git([
-    'fetch', '--no-tags', '--depth=1', 'origin',
+    'fetch', '--no-tags', '--depth=1', repositoryRemote,
     `${gateBaseRef}:refs/remotes/origin/${VERCEL_FINAL_BASE_REF}`,
   ]);
   git(['cat-file', '-e', `${gateBase}^{commit}`]);
@@ -50,7 +64,7 @@ export function resolveVercelComparisonRange(env = process.env) {
   const persistentGatePreview = env.VERCEL_ENV === 'preview' && branch === VERCEL_FINAL_GATE_REF;
 
   if (persistentGatePreview) {
-    return { base: persistentGateBase(head), head, source: 'persistent-gate-base' };
+    return { base: persistentGateBase(head, env), head, source: 'persistent-gate-base' };
   }
 
   const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();

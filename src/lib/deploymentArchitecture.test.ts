@@ -33,7 +33,7 @@ describe('Vercel production deployment architecture', () => {
 
   it('uses Vercel as primary CI while retaining CircleCI and Mac as manual fallbacks', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
-    expect(workflowFiles).toEqual(['self-hosted-ci.yml']);
+    expect(workflowFiles).toEqual(['public-pr-ci.yml', 'self-hosted-ci.yml']);
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
     expect(circleCiConfig).not.toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('manual_cloud_ci:');

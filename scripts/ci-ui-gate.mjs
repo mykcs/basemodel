@@ -135,6 +135,7 @@ const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
+  || file === '.github/workflows/public-pr-ci.yml'
   || file === '.circleci/config.yml'
   || file === 'scripts/ci-circleci-prepare.sh'
   || file.startsWith('.github/runner/')
