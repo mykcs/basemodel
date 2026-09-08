@@ -29,7 +29,9 @@ describe('study overview information architecture', () => {
     expect(overview).toContain('7B · 使用 OpenEVO 学习结果');
     expect(overview).not.toContain('Track A');
     expect(overview).not.toContain('配对评测');
-    expect(overview).toContain('TL;DR');
+    expect(overview).not.toContain('TL;DR');
+    expect(overview).toContain('study-current-finding');
+    expect(overview).toContain('实验结构与参考资料');
     expect(overview).toContain('三个研究问题');
     expect(overview).toContain('实验共同流程');
     expect(overview).toContain('分数与阶段');
@@ -41,11 +43,13 @@ describe('study overview information architecture', () => {
     expect(overview).not.toContain('三个研究问题怎样连起来');
     expect(overview).not.toContain('WebShop 是一个文字购物环境：模型要根据用户需求搜索商品');
 
-    const tldr = overview.indexOf('TL;DR');
+    const currentFinding = overview.indexOf('study-current-finding');
+    const secondary = overview.indexOf('实验结构与参考资料');
     const questions = overview.indexOf('三个研究问题');
     const flow = overview.indexOf('实验共同流程');
     const scores = overview.indexOf('分数与阶段');
-    expect(tldr).toBeLessThan(questions);
+    expect(currentFinding).toBeLessThan(secondary);
+    expect(secondary).toBeLessThan(questions);
     expect(questions).toBeLessThan(flow);
     expect(flow).toBeLessThan(scores);
   });
