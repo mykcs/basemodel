@@ -1,7 +1,7 @@
-import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { classifyUiRisk, type UiRisk } from './preflight-ui.ts';
+import { changedFilesForVercel as changedFilesForPersistentGate } from './vercel-git-range.mjs';
 
 export type HostedUiMode = 'skip' | 'focused' | 'full';
 
@@ -18,6 +18,8 @@ const RESULTS_ROUTE = /^\/(?:en\/)?research\/seed-openevo\/study\/results(?:\/|$
 const MAX_CHANGED_ROUTE_SMOKE = 8;
 const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-ui-plan.ts',
+  'scripts/vercel-git-range.mjs',
+  'scripts/request-vercel-final-gate.mjs',
   'scripts/vercel-ui-gate.mjs',
   'scripts/vercel-lab-browser-gate.mjs',
   'vercel.json',
@@ -221,28 +223,10 @@ export function planHostedUi(files: string[]): HostedUiPlan {
   };
 }
 
-function git(args: string[]): string {
-  return execFileSync('git', args, {
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-  }).trim();
-}
-
 type ProcessEnvironment = Record<string, string | undefined>;
 
 export function changedFilesForVercel(env: ProcessEnvironment = process.env): string[] {
-  const head = env.VERCEL_GIT_COMMIT_SHA?.trim() || 'HEAD';
-  const previous = env.VERCEL_GIT_PREVIOUS_SHA?.trim();
-  const pullRequestPreview = env.VERCEL_ENV === 'preview' && Boolean(env.VERCEL_GIT_PULL_REQUEST_ID?.trim());
-  if (pullRequestPreview && (!previous || previous === head)) {
-    throw new Error('first PR Preview has no previous accepted Vercel SHA; require the complete browser matrix');
-  }
-  const base = previous && previous !== head ? previous : `${head}^`;
-
-  git(['cat-file', '-e', `${base}^{commit}`]);
-  git(['cat-file', '-e', `${head}^{commit}`]);
-  const output = git(['diff', '--name-only', '--no-renames', base, head]);
-  return output ? output.split(/\r?\n/).map(normalizePath).filter(Boolean) : [];
+  return changedFilesForPersistentGate(env);
 }
 
 export function planCurrentVercelDeployment(env: ProcessEnvironment = process.env): HostedUiPlan {

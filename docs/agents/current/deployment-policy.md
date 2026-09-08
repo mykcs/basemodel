@@ -11,7 +11,7 @@ working PR / development branch
 -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
--> move the persistent `ci/vercel-gate-final` ref to the exact PR head SHA
+-> run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it records live `main` in non-deploy `ci/vercel-gate-base` before moving persistent `ci/vercel-gate-final` to the exact PR head SHA
 -> Vercel Pro Preview on that exact SHA
 -> npm run verify:deploy
 -> npm run build
@@ -37,9 +37,9 @@ manual recovery only
 
 ### Exact-head and current-base acceptance
 
-`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, move the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
+`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first pins non-deploy `ci/vercel-gate-base` to live `main`, then moves the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
 
-For gate Previews, `scripts/vercel-ui-plan.ts` uses the previous accepted Vercel SHA when available. A first gate Preview with no previous accepted SHA **fails closed to the complete Chromium matrix** instead of pretending that `HEAD^` represents the whole PR. Later gate runs compare the accumulated range from the previous accepted Vercel SHA to the current head. Unknown comparison state also fails closed to full coverage.
+For the persistent final-gate Preview, `scripts/request-vercel-final-gate.mjs` first pins non-deploy `ci/vercel-gate-base` to the exact live `main`, then moves `ci/vercel-gate-final` to the candidate. `scripts/vercel-git-range.mjs` independently checks that the remote base ref still equals live `main` and compares that base tree directly with the exact candidate. It deliberately does **not** use `VERCEL_GIT_PREVIOUS_SHA` for the persistent gate, because that SHA can belong to an unrelated prior PR and would cause expensive false-full browser runs. Missing/stale base identity fails closed to the complete Chromium matrix.
 
 ### Provider cutover is a repository + live-control-plane transaction
 
@@ -230,7 +230,7 @@ latest intended base
 - `github.autoJobCancelation: true` keeps the newest same-branch job authoritative;
 - `ignoreCommand: node scripts/vercel-ignore-build.mjs` decides whether a build is needed.
 
-The ignore script compares `VERCEL_GIT_PREVIOUS_SHA` with the current commit so a gate run is classified against the previous successful deployment rather than only looking at `HEAD^..HEAD`. An enabled gate Preview fails open into real acceptance: a proven docs/Agent-only candidate still runs `verify:deploy`, after which `vercel-ui-plan.ts` may skip Chromium. Proven docs-only `main`/Production ranges may be ignored before the build. Missing Git history, an invalid range, or any uncertainty **fails open** and runs the build.
+The ignored-build step still uses `VERCEL_GIT_PREVIOUS_SHA` for ordinary `main`/Production build relevance, but persistent final-gate browser selection does not. For `ci/vercel-gate-final`, `scripts/vercel-git-range.mjs` compares the exact candidate against remote `ci/vercel-gate-base`, after verifying that base ref still equals live `main`. An enabled gate Preview therefore always runs `verify:deploy` and the static build, while a proven docs/Agent-only candidate can skip Chromium/Lab. Missing/stale base identity, invalid Git range, or any uncertainty **fails closed to full browser acceptance**, not to a cheaper assumption.
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
