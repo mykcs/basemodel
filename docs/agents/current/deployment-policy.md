@@ -14,7 +14,7 @@ non-draft PR merge candidate
 -> risk-based Chromium acceptance
 -> 12-case Lab acceptance when relevant
 -> required GitHub status: Vercel
--> CircleCI may run as non-blocking shadow evidence during cutover
+-> CircleCI may run as non-blocking post-cutover shadow/fallback evidence
 
 main
 -> Vercel Production
@@ -27,7 +27,9 @@ manual recovery only
 -> repository-scoped Mac/OrbStack runner
 ```
 
-**Vercel is the ordinary CI and deployment authority.** GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary Base Model path. CircleCI is retained only as non-blocking shadow evidence while the Vercel-first cutover is being observed; a pending CircleCI job must not hold a merge after the exact-head required Vercel status is green. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
+**Cutover state: complete.** Live `main` branch protection was verified on **2026-09-08** at `main@f64f742807e269885970eb2c5e7499b7af3639d2`: the only required GitHub status is **`Vercel`**. CircleCI contexts are not required checks and do not own merge readiness.
+
+**Vercel is the ordinary CI and deployment authority.** GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary Base Model path. CircleCI is retained only as non-blocking post-cutover shadow/fallback evidence; it has no merge authority, and a pending CircleCI job must not hold a merge after the exact-head required Vercel status is green. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
 
 ### Exact-head and current-base acceptance
 
@@ -155,7 +157,7 @@ Do not move repository compilation, npm installation, Vitest, the full Playwrigh
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Heavy Chromium/Lab acceptance belongs to the Vercel Pro gate. CircleCI may shadow the same contract during cutover but must not duplicate merge authority.
+- Heavy Chromium/Lab acceptance belongs to the Vercel Pro gate. CircleCI may shadow the same contract for diagnostic/fallback evidence but must not duplicate merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 

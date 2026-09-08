@@ -77,12 +77,12 @@ GitHub PR / release candidate          -> automatic Vercel Pro acceptance Previe
 GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)
 GitHub main                              -> Vercel Production with the same acceptance contract
 Production identity                     -> https://basemodel-preview.vercel.app
-CircleCI                                -> non-blocking shadow/fallback evidence during cutover
+CircleCI                                -> non-blocking post-cutover shadow/fallback evidence
 Cloudflare production-smoke Worker       -> post-deploy monitoring only
 Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
 ```
 
-Vercel Pro is the ordinary CI and deployment authority. CircleCI is retained as non-blocking shadow/fallback evidence during the cutover; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
+Vercel Pro is the ordinary CI and deployment authority. CircleCI is retained as non-blocking post-cutover shadow/fallback evidence; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
 
 ## Change-to-check guidance
 
