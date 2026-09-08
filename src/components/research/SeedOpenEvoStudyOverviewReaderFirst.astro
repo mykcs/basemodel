@@ -110,7 +110,7 @@ const routes = [
       : 'SEED paper reports 89.7 / 100 under a different model, training setup, and evaluation protocol. It is an external literature reference and cannot be directly compared with the two 7B scores above.'}</p>
     <details class="depth">
       <summary>{zh ? '查看这组比较的来源与解释边界' : 'Open sources and interpretation boundaries'}</summary>
-      <p>{zh ? '平均分出现正向方向，但完整成功数没有增加，且置信区间包含零，因此不能证明稳定优势。训练分、候选更新数量或执行进度也不能改写成 final。' : 'The mean moved in a positive direction, but exact successes did not increase and the confidence interval includes zero, so this does not establish a stable advantage. Training scores, candidate-update counts, and execution progress also cannot be relabeled as final.'}</p>
+      <p>{zh ? '平均分出现正向方向，但完整成功数没有增加，且置信区间包含零，因此不能证明稳定优势。训练分、候选更新数量或执行进度也不能当作最终结果。' : 'The mean moved in a positive direction, but exact successes did not increase and the confidence interval includes zero, so this does not establish a stable advantage. Training scores, candidate-update counts, and execution progress also cannot be presented as the final result.'}</p>
       <div class="depth-links">
         <a href={results}>{zh ? '完整结果与统计解释 →' : 'Full results and statistical interpretation →'}</a>
         <a href={trackAEvidence} target="_blank" rel="noreferrer"><ExternalBrandMark href={trackAEvidence} />{zh ? '128 任务语义核对记录' : '128-task semantic-validation record'}</a>
@@ -133,11 +133,11 @@ const routes = [
     <summary>{zh ? '当前状态来源与核验边界' : 'Current-state sources and verification boundary'}</summary>
     <div>
       <p>{zh
-        ? '核验日期：2026-09-07。科学状态以 openevo-experiment 为权威；MiniMax-teacher SEED Stage2 successor 已预注册，但正式任务消耗仍需明确授权。因此这里不复制聊天记录里的历史 Rxx 进度，也不把任何未封存训练分写成 final。'
-        : 'Checked 2026-09-07. openevo-experiment is the scientific authority. The MiniMax-teacher SEED Stage2 successor is preregistered, while formal task consumption still requires explicit authorization. This page therefore does not copy historical Rxx counters from chat or relabel unsealed training scores as final.'}</p>
+        ? '核验日期：2026-09-07。科学状态以 openevo-experiment 为准。下一阶段的 SEED 对照方案已经预先登记，但还没有获得正式运行任务的授权；因此本页不会把尚未封存的训练进度写成最终结果。'
+        : 'Checked 2026-09-07. Scientific state follows openevo-experiment. The next SEED comparison stage has been preregistered, but formal task execution is not yet authorized; this page therefore does not present unsealed training progress as a final result.'}</p>
       <ul>
         <li><a href={currentMain} target="_blank" rel="noreferrer"><ExternalBrandMark href={currentMain} />openevo-experiment/main @ 1ad894c</a></li>
-        <li><a href={seedSuccessor} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSuccessor} />{zh ? 'SEED Stage2 successor 预注册' : 'SEED Stage2 successor preregistration'}</a></li>
+        <li><a href={seedSuccessor} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSuccessor} />{zh ? '下一阶段 SEED 对照预登记' : 'Next SEED comparison preregistration'}</a></li>
         <li><a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />{zh ? 'OpenEVO 实验仓库' : 'OpenEVO experiment repository'}</a></li>
       </ul>
     </div>
