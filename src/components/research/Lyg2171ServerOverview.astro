@@ -75,7 +75,7 @@ const gpuFacts = [
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="owner-relative-historical-v2">
   <header class="server-hero">
     <h1>{t('实验服务器简介', 'Experiment server overview')}</h1>
-    <p>{t('2026-09-05 00:49（UTC+8）的安全快照显示，这台机器仍为 2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存，并可见 8 × RTX 5090。主文件系统当前约有 16.1 GiB 可用、df 报 97% 使用率；磁盘空间仍是最紧张的资源。', 'The safe 2026-09-05 00:49 (UTC+8) snapshot still shows 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 visible RTX 5090 GPUs. The main filesystem has about 16.1 GiB available and df reports 97% used, so disk capacity remains the tightest resource.')}</p>
+    <p>{t('截至 2026-09-05 00:49（UTC+8）：2 × Intel Xeon Platinum 8380、约 1.0 TiB 内存、8 × RTX 5090。主文件系统仅剩约 16.1 GiB（df：97% 已用），当前最紧张的是磁盘空间。', 'At 2026-09-05 00:49 (UTC+8): 2 × Intel Xeon Platinum 8380 CPUs, about 1.0 TiB RAM, and 8 × RTX 5090 GPUs. The main filesystem has only about 16.1 GiB free (df: 97% used), making disk space the current bottleneck.')}</p>
     <div class="snapshot-note">
       <strong>{t('数据时间', 'Data timestamp')}</strong>
       <span>2026-09-05 00:49 (UTC+8)</span>

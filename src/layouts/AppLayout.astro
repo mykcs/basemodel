@@ -14,7 +14,7 @@ import { availableLocalesForRoute, localizedRoute } from '../lib/sitemapRoutes';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 interface Props { title: string; description?: string; locale?: Locale }
-type ResearchBridgePage = 'experiment' | 'run' | 'capability';
+type ResearchBridgePage = 'hub' | 'experiment' | 'run' | 'capability' | 'briefing' | 'results' | 'server' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -36,8 +36,19 @@ const isTodayRunbook = exactRoute('/guide/today');
 const globalQuickViewMounted = exactRoute('/families') || /^\/papers\/[^/]+\/?$/.test(localeNeutralPath);
 const isCapabilityExplorationPage = /^\/research\/seed-openevo\/study\/capability-exploration(?:\/|$)/.test(localeNeutralPath)
   || /^\/research\/seed-openevo\/study\/results\/(?:3b-self-analysis|7b-self-analysis|3b-minimax-analysis|7b-minimax-analysis|four-arm-analysis)\/?$/.test(localeNeutralPath);
-const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/study') ? 'experiment'
+const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed-openevo/flow') ? 'hub'
+  : exactRoute('/research/seed-openevo/flow/server') ? 'server'
+  : exactRoute('/research/seed-openevo/flow/base-model') ? 'base-model'
+  : exactRoute('/research/seed-openevo/flow/seed') ? 'seed'
+  : exactRoute('/research/seed-openevo/flow/openevo') ? 'openevo'
+  : exactRoute('/research/seed-openevo/flow/benchmarks') ? 'benchmarks'
+  : exactRoute('/research/seed-openevo/flow/webshop') ? 'webshop'
+  : exactRoute('/research/seed-openevo/flow/alfworld') ? 'alfworld'
+  : exactRoute('/research/seed-openevo/flow/loops') ? 'loops'
+  : exactRoute('/research/seed-openevo/study') ? 'experiment'
   : exactRoute('/research/seed-openevo/study/run') ? 'run'
+  : exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'
+  : exactRoute('/research/seed-openevo/study/results') ? 'results'
   : isCapabilityExplorationPage ? 'capability'
   : null;
 const currentRoute = localizedRoute(localeNeutralPath, locale) ?? pathNoBase;
@@ -121,19 +132,18 @@ const compareTrayLabels = {
     <title>{fullTitle}</title>
     <script type="application/ld+json" is:inline set:html={websiteJsonLd} />
   </head>
-  <body data-reader-contract-id={readerContract.id} data-reader-attention-mode={readerContract.attentionMode}>
+  <body data-reader-contract-id={readerContract.id} data-reader-attention-mode={readerContract.attentionMode} data-research-nav={researchBridgePage ? 'persistent' : undefined}>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
     <ResearchContextBar labels={researchContextLabels} locale={locale} />
     {globalQuickViewMounted && <GlobalModelQuickView client:idle labels={quickViewLabels} locale={locale} />}
     {globalQuickViewMounted && <QuickViewBridge />}
+    {researchBridgePage && (
+      <div class="research-module-nav-shell">
+        <SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />
+      </div>
+    )}
     <main id="main-content" class="site-main">
-      {researchBridgePage && (
-        <details class="research-module-nav-shell">
-          <summary>{locale === 'zh' ? '研究导航' : 'Research navigation'}</summary>
-          <SeedOpenEvoResearchNav locale={locale} page={researchBridgePage} />
-        </details>
-      )}
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
       <slot />
     </main>
@@ -145,14 +155,17 @@ const compareTrayLabels = {
 </html>
 
 <style>
+  body[data-research-nav='persistent']{--research-nav-offset:5.0625rem}
   .research-module-nav-shell{
+    position:sticky;
+    z-index:12;
+    top:calc(var(--site-header-height) + .5rem);
     width:min(1160px,calc(100% - 2rem));
-    margin:.35rem auto 0;
+    margin:.65rem auto 1rem;
   }
-  .research-module-nav-shell>summary{width:max-content;max-width:100%;padding:.45rem 0;color:var(--muted);font-size:.78rem;font-weight:700;cursor:pointer;list-style:none}
-  .research-module-nav-shell>summary::-webkit-details-marker{display:none}
-  .research-module-nav-shell[open]>summary{color:var(--ink)}
+  .research-module-nav-shell :global(.research-navigation){position:static;margin:0}
   @media(max-width:720px){
+    body[data-research-nav='persistent']{--research-nav-offset:4.4375rem}
     .research-module-nav-shell{width:min(100% - 1rem,1160px)}
   }
 </style>

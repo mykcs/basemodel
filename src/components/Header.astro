@@ -43,6 +43,7 @@ const utilityLinks = [
   { path: '/workspace/', label: t('实验工作台', 'Experiment workspace'), description: t('保存模型、GPU、网络和训练条件', 'Save model, GPU, network, and training settings') },
   { path: '/data-status/', label: m.nav.dataStatus, description: t('数据更新、目录核验、未知字段与证据状态', 'Dataset updates, catalog checks, unknown fields, and evidence status') },
   { path: '/methodology/', label: t('方法与边界', 'Methodology'), description: t('事实来源、证据等级和比较边界', 'Sources, evidence levels, and comparison boundaries') },
+  { path: '/development/', label: t('开发', 'Development'), description: t('这个网站怎么开发、检查和上线', 'How this site is developed, checked, and shipped') },
 ].map((link) => ({
   ...link,
   href: localePath(locale, link.path),
@@ -91,7 +92,7 @@ const commandMenuLabels = {
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
             <small>{t('实验资料', 'Research resources')}</small>
-            <strong>{t('模型、论文、比较工具、实验工作台与证据状态', 'Models, papers, comparison tools, experiment workspace, and evidence status')}</strong>
+            <strong>{t('模型、论文、实验、证据与开发', 'Models, papers, experiments, evidence, and development')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -133,7 +134,7 @@ const commandMenuLabels = {
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
           <span id="mobile-tools-title">{t('资料', 'Resources')}</span>
-          <small>{t('模型、论文、比较、实验与证据', 'Models, papers, comparison, experiments, and evidence')}</small>
+          <small>{t('模型、论文、实验、证据与开发', 'Models, papers, experiments, evidence, and development')}</small>
         </div>
         <nav class="mobile-utility-links" aria-label={t('资料', 'Resources')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}

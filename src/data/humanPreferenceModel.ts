@@ -67,12 +67,13 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     scopes: ['all-public-ui', 'research-ui', 'research-copy', 'study', 'results', 'run', 'briefing', 'capability'],
     confidence: 'repeated-explicit',
     priority: 5,
-    retrievalTags: ['AI味', '说人话', '主持人', '标题', '分岔', '隐喻', '开场', '不是', '不能'],
-    supportingCaseIds: ['CASE-063', 'CASE-067', 'CASE-081'],
+    retrievalTags: ['AI味', '说人话', '主持人', '标题', '英文眉题', '分岔', '隐喻', '开场', '不是', '不能'],
+    supportingCaseIds: ['CASE-027', 'CASE-063', 'CASE-067', 'CASE-081'],
     antiOvergeneralization: [
       '真实研究问题可以是问句。',
       '真正改变科学解释的否定句和 caveat 必须保留，并贴近所约束的 claim。',
       '能建立正确心智模型的必要类比不是禁用项。',
+      'LoRA / RL / GDR / TaskVector 等真实技术对象不是禁用项；要删的是不增加信息的英文装饰标签。',
     ],
   },
   {
@@ -142,7 +143,8 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     supportingCaseIds: ['CASE-082'],
     antiOvergeneralization: [
       '不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。',
-      '“像汇报”描述信息节奏，不要求把 HTML 变成 PPT。',
+      '“像汇报”描述信息节奏；当用户明确要求固定 16:9 HTML 演讲稿时，应保留固定演讲构图。',
+      '降低认知负担不等于降低科研深度；机制页可以用公式、真实参数和定量阈值，只要它们直接回答研究问题。',
     ],
   },
   {
@@ -172,6 +174,17 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     accepted: 'OpenEVO (Harness) · WebShop 数据集实验',
     reason: '先给关系会迫使零上下文读者猜对象类型；认可版本先建立 Harness 与数据集身份。',
     failureMechanisms: ['relation-before-identity', 'abstract-before-concrete'],
+    ownerStatus: 'accepted',
+  },
+  {
+    id: 'PAIR-027-ENGLISH-EYEBROW',
+    caseId: 'CASE-027',
+    preferenceIds: ['PREF-DIRECT-FACTS'],
+    scopes: ['briefing', 'research-copy'],
+    rejected: 'OpenEVO · SEED × WebShop',
+    accepted: 'OpenEVO 暑期考核汇报',
+    reason: '英文眉题没有增加标题之外的新对象或导航意义，却要求中文观众额外判断一次；直接进入真实标题更轻。',
+    failureMechanisms: ['meaningless-english-eyebrow', 'attention-tax'],
     ownerStatus: 'accepted',
   },
   {
