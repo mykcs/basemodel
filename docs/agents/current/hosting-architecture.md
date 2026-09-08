@@ -37,7 +37,7 @@ Vercel is the ordinary CI and deployment authority. The stable Production identi
 
 ## Exact-head acceptance ownership
 
-Branch protection keeps strict current-base semantics and requires `Vercel`. Ordinary PR/development refs are intentionally not deployment-enabled. Hosted acceptance is requested only by creating a `ci/vercel-gate-*` ref that points to the **same exact commit SHA** as the final PR head; the gate ref cannot add or rewrite content. `scripts/vercel-ignore-build.mjs` remains fail-open after that spend gate:
+Branch protection keeps strict current-base semantics and requires `Vercel`. Ordinary PR/development refs are intentionally not deployment-enabled. Hosted acceptance is requested only by moving the persistent `ci/vercel-gate-current` ref to the **same exact commit SHA** as the final PR head; the gate ref cannot add or rewrite content. Qualification #574 proved that creating a new alias ref at an already-existing SHA is not a reliable Vercel trigger, while moving the existing ref is. `scripts/vercel-ignore-build.mjs` remains fail-open after that spend gate:
 
 - every triggered gate Preview: real acceptance; the Ignored Build Step does not trust PR identity at pre-build time;
 - `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;

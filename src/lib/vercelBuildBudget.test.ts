@@ -87,7 +87,8 @@ describe('Vercel build-budget contract', () => {
       'Vercel build-budget discipline',
       'one coherent branch/PR',
       'ordinary pushes spend zero Vercel build compute',
-      'one explicit final gate ref',
+      'persistent `ci/vercel-gate-current` ref',
+      'creating a new gate alias directly at an already-existing SHA may not emit the Git push event',
       'at most one corrective gate Preview',
       'one Production build per accepted release batch',
       'Sequential Contents API writes',
@@ -103,6 +104,8 @@ describe('Vercel build-budget contract', () => {
 
   it('makes ordinary deployment reporting Vercel-first', () => {
     expect(root).toContain('Vercel is the only ordinary deployment provider');
+    expect(root).toContain('persistent `ci/vercel-gate-current` ref');
+    expect(root).not.toContain('Open PRs automatically enter the Vercel acceptance path');
     expect(root).toContain('Ordinary completion reports are **Vercel-first**');
     expect(latest).toContain('Vercel is the ordinary CI and deployment authority');
     expect(deploymentPolicy).toContain('Vercel-first completion report');

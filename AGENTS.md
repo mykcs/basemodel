@@ -39,7 +39,7 @@ Files under `docs/agents/history/` and `docs/agent-context/` are evidence and ra
 Before creating a branch, running compound local/remote shell automation, or mutating shared experiment-server storage:
 
 - **Repeated correction needs a use-site witness (REPEAT-CORRECTION).** Before repeating the next affected command, design choice, or completion claim, record `trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue` in the existing task/PR record. Reading or linking a retrospective is not proof that its check ran. Follow [the correction-to-action rule](docs/agents/current/project-agent-operating-principles.md#correction-to-action-witness); do not add a new approval layer.
-- **PR acceptance is provider-owned, branch names are semantic.** Open PRs automatically enter the Vercel acceptance path regardless of prefix. Because the Ignored Build Step cannot safely prove PR identity, every Vercel Preview now fails open into real `verify:deploy`; do not use `[vercel-preview]` as a pre-build safety gate.
+- **PR acceptance is provider-owned and final-candidate-triggered.** Ordinary working refs do not enter Vercel. Keep one persistent `ci/vercel-gate-current` ref and move it to the exact ready PR head SHA; once that enabled ref reaches Vercel, the Preview fails open into real `verify:deploy`. Qualification #574 proved that merely creating a new alias ref at an already-existing SHA may not emit the provider push event. `[vercel-preview]` is not a spend or safety gate.
 - **Name the shell when syntax matters.** If a command depends on Bash semantics (`VAR=value`, `set -euo pipefail`, loops, arrays, heredocs, process substitution), set the execution tool's shell/interpreter to `/bin/bash` or run a standalone Bash/Python script explicitly. Do not assume an inner `bash -lc` protects a complex command from an outer `fish` parser; nested quoting can fail before Bash starts. A parser failure under `fish` is an execution-surface failure, not repository or server failure.
 - **Shared storage begins read-only.** A model/checkpoint/run is protected by future planned use as well as current process references. “Not mounted/open right now” is never deletion authority. For snapshot-only work load `server-storage-pressure-audit-sop.md`; for the end-to-end organize → passport → publish/verify → reclaim workflow load `server-artifact-governance-and-reclaim-sop.md` as well.
 - **Incomplete namespace is not a complete inventory.** If the currently authorized view exposes only a subset of expected homes, do not enter sibling-user containers or exercise Docker/admin mount capability merely to complete a public ranking. Refresh global facts, preserve the most recent complete anonymous attribution as separately dated historical evidence, and never turn one visible home into “all users.”
@@ -165,7 +165,7 @@ read LATEST + current policy
 -> classify independent, stacked, superseded and semantically conflicting work
 -> finish one coherent change or one explicit integration/release head before the first provider-triggering push
 -> publish one atomic multi-file branch update when possible
--> let an open PR create its automatic exact-head Vercel acceptance Preview; treat any non-main Git Preview as real acceptance too, because ignore-time PR identity is not trusted
+-> when the exact non-draft PR head is genuinely final, move the persistent `ci/vercel-gate-current` ref to that same SHA; ordinary PR pushes stay outside Vercel
 -> verify that exact-head Preview
 -> verify build logs and inspect real Preview route(s)
 -> batch evidence-driven fixes into at most one normal corrective push
@@ -188,12 +188,12 @@ Default target for one coherent feature or accepted release batch:
 ```text
 one branch / integration PR
 -> ordinary working pushes spend zero Vercel build compute
--> one `ci/vercel-gate-*` ref on the exact final-candidate SHA
+-> one move of the persistent `ci/vercel-gate-current` ref to the exact final-candidate SHA
 -> at most one corrective gate Preview after real inspection
 -> one Production build per accepted release batch
 ```
 
-Do not push every typo, file write, speculative experiment or intermediate thought to a provider-triggering ref. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes. Ordinary working refs are not deployment-enabled; Vercel acceptance begins only when an explicit `ci/vercel-gate-*` ref points to the exact PR head SHA. Every Preview that does reach Vercel remains fail-open into real risk-based acceptance. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it is not a spend switch.
+Do not push every typo, file write, speculative experiment or intermediate thought to a provider-triggering ref. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes. Ordinary working refs are not deployment-enabled; Vercel acceptance begins only when the existing persistent `ci/vercel-gate-current` ref is moved to the exact PR head SHA. Do not create a fresh gate alias at an already-existing SHA and assume it emitted a Vercel trigger. Every Preview that does reach Vercel remains fail-open into real risk-based acceptance. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it is not a spend switch.
 
 Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
 
