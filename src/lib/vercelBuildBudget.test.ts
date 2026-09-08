@@ -11,6 +11,7 @@ const read = (path: string) =>
 
 const vercel = JSON.parse(read('vercel.json')) as {
   ignoreCommand?: string;
+  git?: { deploymentEnabled?: Record<string, boolean> };
   github?: { autoJobCancelation?: boolean };
 };
 const root = read('AGENTS.md');
@@ -25,10 +26,20 @@ describe('Vercel build-budget contract', () => {
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
   });
 
-  it('fails open to real acceptance for every Preview before PR identity can be proven', () => {
+  it('fails open to real acceptance for every triggered gate Preview', () => {
     expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'preview' })).toBe(true);
     expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'preview', VERCEL_GIT_PULL_REQUEST_ID: '563' })).toBe(true);
     expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(false);
+  });
+
+  it('spends hosted Preview compute only on explicit exact-SHA gate refs', () => {
+    const enabled = vercel.git?.deploymentEnabled ?? {};
+    expect(enabled['*']).toBe(false);
+    expect(enabled['**/*']).toBe(false);
+    expect(enabled.main).toBe(true);
+    expect(enabled['ci/vercel-gate-*']).toBe(true);
+    expect(enabled['research/**']).toBeUndefined();
+    expect(enabled['agent/semantic-release-*']).toBeUndefined();
   });
 
   it('builds for deploy-relevant source and configuration', () => {
@@ -75,9 +86,9 @@ describe('Vercel build-budget contract', () => {
     for (const token of [
       'Vercel build-budget discipline',
       'one coherent branch/PR',
-      'one atomic multi-file push',
-      'one initial exact-head Preview',
-      'at most one corrective Preview',
+      'ordinary pushes spend zero Vercel build compute',
+      'one explicit final gate ref',
+      'at most one corrective gate Preview',
       'one Production build per accepted release batch',
       'Sequential Contents API writes',
       'Git data API multi-file commit',
@@ -99,13 +110,13 @@ describe('Vercel build-budget contract', () => {
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 
-  it('keeps docs-only Production skipped while forcing PR verification through Vercel', () => {
+  it('keeps docs-only Production skipped while forcing final gate verification through Vercel', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
     expect(ignoreBuildScript).toContain('mustRunAcceptanceBuild');
     expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
     expect(ignoreBuildScript).toContain('Preview acceptance still runs verify:deploy');
     expect(ignoreBuildScript).toContain('VERCEL_ENV');
-    expect(deploymentPolicy).toContain('docs/governance-only PR');
+    expect(deploymentPolicy).toContain('docs/governance-only final candidate');
     expect(deploymentPolicy).toContain('must not publish a Production build');
   });
 });

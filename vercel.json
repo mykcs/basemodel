@@ -4,11 +4,10 @@
   "ignoreCommand": "node scripts/vercel-ignore-build.mjs",
   "git": {
     "deploymentEnabled": {
-      "*": true,
-      "**/*": true,
+      "*": false,
+      "**/*": false,
       "main": true,
-      "agent/semantic-release-*": true,
-      "research/**": true
+      "ci/vercel-gate-*": true
     }
   },
   "github": {

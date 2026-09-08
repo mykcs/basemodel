@@ -229,13 +229,12 @@ describe('Vercel production deployment architecture', () => {
     expect(buildCloudflare).toContain('Legacy/fallback Cloudflare validation only');
   });
 
-  it('allows every PR branch to reach the Vercel acceptance classifier while preserving explicit non-PR Preview gating', () => {
+  it('keeps ordinary working refs free and reserves Vercel for exact-SHA gate refs plus main', () => {
     expect(vercelConfig.git?.deploymentEnabled).toEqual({
-      '*': true,
-      '**/*': true,
+      '*': false,
+      '**/*': false,
       main: true,
-      'agent/semantic-release-*': true,
-      'research/**': true,
+      'ci/vercel-gate-*': true,
     });
     expect(vercelConfig.github?.autoJobCancelation).toBe(true);
   });
