@@ -88,6 +88,30 @@ describe('Agent scenario-trigger discovery', () => {
     expect(seedWorkflow).toContain('what observable evidence counts as PASS');
   });
 
+  it('keeps retrospective capability discovery read-only at the use site', () => {
+    expect(registry).toContain('Tool/connector capability discovery must stay read-only');
+    expect(registry).toContain('never call `create` / `update` / `delete` merely to prove a connector works');
+  });
+
+  it('binds permitted closeout mutations to the exact target action before dispatch', () => {
+    expect(registry).toContain('Before any permitted closeout mutation, bind the target noun to the exact action');
+    expect(registry).toContain('open PR -> create_pull_request');
+    expect(registry).toContain('A nearby write capability is not an acceptable substitute');
+  });
+
+  it('escalates repeated closeout action mismatch by changing mutation surface', () => {
+    expect(registry).toContain('Escalate repeated action-selection mismatch by changing execution surface');
+    expect(registry).toContain('Do not keep retrying the same connector mutation');
+    expect(registry).toContain('`gh pr create` for opening a PR');
+  });
+
+  it('routes advisor briefing work through scientific-story and experiment-inventory preflight', () => {
+    expect(registry).toContain('Advisor briefing / slides / projected-deck specialization');
+    expect(registry).toContain('the current website is publication state, not experiment-inventory authority');
+    expect(registry).toContain('engineering validity as a prerequisite rather than an automatic research highlight');
+    expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
+  });
+
   it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
     for (const token of ['case cluster', 'at least two nearby cases', 'high-confidence same-family', 'semantic positions']) expect(registry).toContain(token);
     for (const token of ['案例簇', '至少包含当前最接近案例 + 2 个同类/相邻案例', '高置信同类', 'sibling routes']) expect(websiteSpec).toContain(token);
